@@ -42,8 +42,8 @@ namespace osgDB {
 
         SharedStateManager();
 
-        void setShareMode(unsigned int mode) { shareMode = mode; }
-        unsigned int getShareMode() { return shareMode; }
+        void setShareMode(unsigned int mode) { _shareMode = mode; }
+        unsigned int getShareMode() { return _shareMode; }
 
         // Call right after each unload and before Registry cache prune.
         void prune();
@@ -53,7 +53,10 @@ namespace osgDB {
 
         void apply(osg::Node& node);
         void apply(osg::Geode& geode);
-        
+        // Answers the question "Will this state set be eliminated by
+        // the SharedStateManager because an equivalent one has been
+        // seen already?" Safe to call from the pager thread.
+        bool isShared(osg::StateSet* stateSet);
     protected:
 
         void process(osg::StateSet* ss, osg::Object* parent);
@@ -62,24 +65,46 @@ namespace osgDB {
         void setStateSet(osg::StateSet* ss, osg::Object* object);
         void shareTextures(osg::StateSet* ss);
 
+        struct CompareStateAttributes
+        {
+            bool operator()(const osg::ref_ptr<osg::StateAttribute>& lhs,
+                            const osg::ref_ptr<osg::StateAttribute>& rhs)
+        {
+            return *lhs < *rhs;
+        }
+        };
+
+        struct CompareStateSets
+        {
+            bool operator()(const osg::ref_ptr<osg::StateSet>& lhs,
+                            const osg::ref_ptr<osg::StateSet>& rhs)
+        {
+            return lhs->compare(*rhs, true) < 0;
+        }
+        };
+        
         // Lists of shared objects
-        typedef std::set< osg::ref_ptr<osg::StateAttribute> > TextureSet;
+        typedef std::set< osg::ref_ptr<osg::StateAttribute>, CompareStateAttributes > TextureSet;
         TextureSet _sharedTextureList;
-        typedef std::set< osg::ref_ptr<osg::StateSet> > StateSetSet;
+
+        typedef std::set< osg::ref_ptr<osg::StateSet>, CompareStateSets > StateSetSet;
         StateSetSet _sharedStateSetList;
 
         // Temporary lists just to avoid unnecessary find calls
         typedef std::pair<osg::StateAttribute*, bool> TextureSharePair;
         typedef std::map<osg::StateAttribute*, TextureSharePair> TextureTextureSharePairMap;
         TextureTextureSharePairMap tmpSharedTextureList;
+
         typedef std::pair<osg::StateSet*, bool> StateSetSharePair;
         typedef std::map<osg::StateSet*, StateSetSharePair> StateSetStateSetSharePairMap;
         StateSetStateSetSharePairMap tmpSharedStateSetList;
 
         // Share connection mutex 
-        unsigned int shareMode;
+        unsigned int _shareMode;
 
-        OpenThreads::Mutex *mutex;
+        OpenThreads::Mutex *_mutex;
+        // Mutex for doing isShared queries from other threads
+        mutable OpenThreads::Mutex _listMutex;
     };
 
 }

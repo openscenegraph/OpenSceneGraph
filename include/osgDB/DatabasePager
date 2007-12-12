@@ -334,7 +334,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         inline static bool isCompiled(const osg::Texture* texture,
                                       unsigned int contextID)
         {
-            return texture->getTextureObject(contextID);
+            return( texture->getTextureObject(contextID) != NULL );
         }
         // Is texture compiled for all active contexts?
         inline bool isCompiled(osg::Texture* texture) const

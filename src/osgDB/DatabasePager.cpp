@@ -772,7 +772,7 @@ void DatabasePager::run()
                          _dataToCompileList.end(), SortFileRequestFunctor());
                     // Prune all the old entries.
                     DatabaseRequestList::iterator tooOld
-                        = find_if(_dataToCompileList.begin(),
+                        = std::find_if(_dataToCompileList.begin(),
                                   _dataToCompileList.end(),
                                   refPtrAdapt(std::not1(std::bind2nd(std::mem_fun(&DatabaseRequest
                                                                    ::isRequestCurrent),
@@ -1281,7 +1281,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
                 // not guaranteed to still be at the beginning of the
                 // list.
                 DatabaseRequestList::iterator requestIter
-                    = find(_dataToCompileList.begin(), _dataToCompileList.end(),
+                    = std::find(_dataToCompileList.begin(), _dataToCompileList.end(),
                            databaseRequest);
                 if (requestIter != _dataToCompileList.end())
                 {

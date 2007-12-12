@@ -99,6 +99,11 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                      __void__setFont__Font_P1,
 	                      "Set the Font to use to render the text. ",
 	                      "setFont(0) sets the use of the default font. ");
+	I_Method1(void, setFont, IN, osg::ref_ptr< osgText::Font >, font,
+	          Properties::NON_VIRTUAL,
+	          __void__setFont__osg_ref_ptrT1_Font_,
+	          "Set the Font to use to render the text. ",
+	          "");
 	I_Method1(void, setFont, IN, const std::string &, fontfile,
 	          Properties::NON_VIRTUAL,
 	          __void__setFont__C5_std_string_R1,
@@ -421,9 +426,9 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_SimpleProperty(const osg::Vec4 &, ColorGradientTopRight, 
 	                 __C5_osg_Vec4_R1__getColorGradientTopRight, 
 	                 0);
-	I_SimpleProperty(osgText::Font *, Font, 
+	I_SimpleProperty(osg::ref_ptr< osgText::Font >, Font, 
 	                 0, 
-	                 __void__setFont__Font_P1);
+	                 __void__setFont__osg_ref_ptrT1_Font_);
 	I_SimpleProperty(const osgText::Text::TextureGlyphQuadMap &, TextureGlyphQuadMap, 
 	                 __C5_TextureGlyphQuadMap_R1__getTextureGlyphQuadMap, 
 	                 0);
@@ -517,6 +522,46 @@ BEGIN_VALUE_REFLECTOR(osgText::Text::GlyphQuads)
 	I_PublicMemberProperty(osgText::Text::GlyphQuads::TexCoords, _texcoords);
 	I_PublicMemberProperty(osgText::Text::GlyphQuads::LineNumbers, _lineNumbers);
 	I_PublicMemberProperty(osgText::Text::GlyphQuads::ColorCoords, _colorCoords);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgText::Font *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgText::Font > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgText::Font *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgText::Font *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgText::Font > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgText::Font *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font::GlyphTexture >)

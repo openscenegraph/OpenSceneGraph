@@ -42,7 +42,7 @@ Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):
 //    TODO 
 //}
 
-void Text3D::setFont(Font3D * font)
+void Text3D::setFont(osg::ref_ptr<Font3D> font)
 { 
     _font = font;
     
@@ -51,7 +51,7 @@ void Text3D::setFont(Font3D * font)
 
 void Text3D::setFont(const std::string & fontfile)
 { 
-    setFont(readRefFont3DFile(fontfile).get());
+    setFont(readRefFont3DFile(fontfile));
 }
 
 String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last)

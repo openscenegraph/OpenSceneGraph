@@ -26,3 +26,8 @@ IF   (BUILD_OSG_WRAPPERS)
     ADD_SUBDIRECTORY(osgIntrospection)
     ADD_SUBDIRECTORY(osgWrappers)
 ENDIF(BUILD_OSG_WRAPPERS)
+
+IF(MSVC80)
+  OPTION(OSG_MSVC_GENERATE_PLUGINS_AND_WRAPPERS_MANIFESTS "Generate or not manifests files under VS8 for dynamically loaded dlls" ON)
+ENDIF(MSVC80)
+

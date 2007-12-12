@@ -1,3 +1,4 @@
+#include <memory.h>
 #include <osgSim/ShapeAttribute>
 
 namespace osgSim

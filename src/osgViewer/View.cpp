@@ -241,16 +241,15 @@ void View::setStartTick(osg::Timer_t tick)
     _startTick = tick;
 }
 
-void View::setSceneData(osg::Node* node)
+void View::setSceneData(osg::ref_ptr<osg::Node> node)
 {
-    if (_scene->getSceneData()==node) return;
+    if (node==_scene->getSceneData()) return;
 
-    Scene* scene = Scene::getScene(node);
-    
+    osg::ref_ptr<Scene> scene = Scene::getScene(node.get());
 
-    if (scene)
+    if (scene.valid())
     {
-        osg::notify(osg::INFO)<<"View::setSceneData() Sharing scene "<<scene<<std::endl;
+        osg::notify(osg::INFO)<<"View::setSceneData() Sharing scene "<<scene.get()<<std::endl;
         _scene = scene;
     }
     else
@@ -266,7 +265,7 @@ void View::setSceneData(osg::Node* node)
             osg::notify(osg::INFO)<<"View::setSceneData() Reusing exisitng scene"<<_scene.get()<<std::endl;
         }
 
-        _scene->setSceneData(node);
+        _scene->setSceneData(node.get());
     }
 
     if (getSceneData())

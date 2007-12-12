@@ -67,12 +67,12 @@ Text::~Text()
 {
 }
 
-void Text::setFont(Font* font)
+void Text::setFont(osg::ref_ptr<Font> font)
 {
     if (_font==font) return;
     
     osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : DefaultFont::instance()->getStateSet();
-    osg::StateSet* newFontStateSet = font ? font->getStateSet() : DefaultFont::instance()->getStateSet();
+    osg::StateSet* newFontStateSet = font.valid() ? font->getStateSet() : DefaultFont::instance()->getStateSet();
     
     if (getStateSet() == previousFontStateSet)
     {
@@ -86,7 +86,7 @@ void Text::setFont(Font* font)
 
 void Text::setFont(const std::string& fontfile)
 {
-    setFont(readRefFontFile(fontfile).get());
+    setFont(readRefFontFile(fontfile));
 }
 
 

@@ -93,6 +93,11 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text3D)
 	                      __void__setFont__Font3D_P1,
 	                      "Set the Font to use to render the text. ",
 	                      "setFont(0) sets the use of the default font. ");
+	I_Method1(void, setFont, IN, osg::ref_ptr< osgText::Font3D >, font,
+	          Properties::NON_VIRTUAL,
+	          __void__setFont__osg_ref_ptrT1_Font3D_,
+	          "Set the Font to use to render the text. ",
+	          "");
 	I_Method1(void, setFont, IN, const std::string &, fontfile,
 	          Properties::NON_VIRTUAL,
 	          __void__setFont__C5_std_string_R1,
@@ -171,14 +176,54 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text3D)
 	I_SimpleProperty(float, CharacterDepth, 
 	                 __float__getCharacterDepth, 
 	                 __void__setCharacterDepth__float);
-	I_SimpleProperty(osgText::Font3D *, Font, 
+	I_SimpleProperty(osg::ref_ptr< osgText::Font3D >, Font, 
 	                 0, 
-	                 __void__setFont__Font3D_P1);
+	                 __void__setFont__osg_ref_ptrT1_Font3D_);
 	I_SimpleProperty(osgText::Text3D::RenderMode, RenderMode, 
 	                 __RenderMode__getRenderMode, 
 	                 __void__setRenderMode__RenderMode);
 	I_SimpleProperty(bool, ThreadSafeRefUnref, 
 	                 0, 
 	                 __void__setThreadSafeRefUnref__bool);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font3D >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgText::Font3D *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgText::Font3D > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgText::Font3D *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgText::Font3D *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgText::Font3D > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgText::Font3D *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 

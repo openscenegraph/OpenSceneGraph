@@ -87,7 +87,7 @@ class OSGSIM_EXPORT ShapeAttributeList : public osg::Object, public std::vector<
         ShapeAttributeList(const ShapeAttributeList& sal,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
             osg::Object(sal, copyop)
         {
-            copy(sal.begin(),sal.end(), begin());
+            std::copy(sal.begin(),sal.end(), begin());
         }
     
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

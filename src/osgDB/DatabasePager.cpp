@@ -768,7 +768,7 @@ void DatabasePager::run()
                 if (loadedObjectsNeedToBeCompiled)
                 {
                     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
-                    sort(_dataToCompileList.begin(),
+                    std::sort(_dataToCompileList.begin(),
                          _dataToCompileList.end(), SortFileRequestFunctor());
                     // Prune all the old entries.
                     DatabaseRequestList::iterator tooOld

@@ -54,6 +54,10 @@ extern OSGTEXT_EXPORT Font3D* readFont3DFile(const std::string& filename, const 
 /** read a font from specified stream.*/
 extern OSGTEXT_EXPORT Font3D* readFont3DStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions = 0);
 
+extern OSGTEXT_EXPORT osg::ref_ptr<Font3D> readRefFont3DFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions = 0);
+
+extern OSGTEXT_EXPORT osg::ref_ptr<Font3D> readRefFont3DStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions = 0);
+
 extern OSGTEXT_EXPORT std::string findFont3DFile(const std::string& str);
 
 /** Pure virtual base class for fonts.

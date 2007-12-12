@@ -51,7 +51,7 @@ void Text3D::setFont(Font3D * font)
 
 void Text3D::setFont(const std::string & fontfile)
 { 
-    setFont(readFont3DFile(fontfile));
+    setFont(readRefFont3DFile(fontfile).get());
 }
 
 String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last)

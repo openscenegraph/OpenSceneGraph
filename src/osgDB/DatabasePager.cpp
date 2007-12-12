@@ -687,13 +687,13 @@ void DatabasePager::run()
                     // do *not* assume that we only have one DatabasePager, or that reaNodeFile is thread safe...
                     static OpenThreads::Mutex s_serialize_readNodeFile_mutex;
                     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_serialize_readNodeFile_mutex);
-                    databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName,
+                    databaseRequest->_loadedModel = osgDB::readRefNodeFile(databaseRequest->_fileName,
                         databaseRequest->_loadOptions.get());
                 }
                 else
                 {
                     // assume that we only have one DatabasePager, or that readNodeFile is thread safe...
-                    databaseRequest->_loadedModel = osgDB::readNodeFile(databaseRequest->_fileName,
+                    databaseRequest->_loadedModel = osgDB::readRefNodeFile(databaseRequest->_fileName,
                         databaseRequest->_loadOptions.get());
                 }
                     

@@ -86,7 +86,7 @@ void Text::setFont(Font* font)
 
 void Text::setFont(const std::string& fontfile)
 {
-    setFont(readFontFile(fontfile));
+    setFont(readRefFontFile(fontfile).get());
 }
 
 

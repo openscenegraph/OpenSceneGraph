@@ -344,7 +344,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                              _activeGraphicsContexts.end(),
                              bind1st(mem_fun(&osg::Texture::getTextureObject),
                                      texture))
-                    == _activeGraphicsContexts.size());
+                    == (int)_activeGraphicsContexts.size());
         }
         
         inline static bool isCompiled(const osg::StateSet* stateSet,
@@ -376,7 +376,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                                  _activeGraphicsContexts.end(),
                                  bind1st(mem_fun(&osg::Texture::getTextureObject),
                                          texture))
-                        != _activeGraphicsContexts.size()))
+                        != (int)_activeGraphicsContexts.size()))
                     return false;
             }
             return true;
@@ -402,7 +402,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                                  _activeGraphicsContexts.end(),
                                  bind1st(mem_fun(&osg::Drawable::getDisplayList),
                                          drawable))
-                        == _activeGraphicsContexts.size());
+                        == (int)_activeGraphicsContexts.size());
             }
             return true;
         }

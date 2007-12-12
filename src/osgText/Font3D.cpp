@@ -168,6 +168,72 @@ osgText::Font3D* readFont3DStream(std::istream& stream, const osgDB::ReaderWrite
     return 0;
 }
 
+osg::ref_ptr<Font3D> readRefFont3DFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions)
+{
+    if (filename=="") return 0;
+
+    std::string foundFile = findFont3DFile(filename);
+    if (foundFile.empty()) return 0;
+    
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_Font3DFileMutex);
+
+    osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
+    if (!userOptions)
+    {
+        localOptions = new osgDB::ReaderWriter::Options;
+        localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
+        // ** HACK to load Font3D instead of Font
+        localOptions->setPluginData("3D", (void*) 1);
+    }
+    else
+    {
+        userOptions->setPluginData("3D", (void*) 1);
+    }
+
+    osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(foundFile, userOptions ? userOptions : localOptions.get());
+    
+    // if the object is a font then return it.
+    osgText::Font3D* font3D = dynamic_cast<osgText::Font3D*>(object.get());
+    if (font3D) return osg::ref_ptr<Font3D>(font3D);
+
+    return 0;
+}
+
+osg::ref_ptr<Font3D> readRefFont3DStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_Font3DFileMutex);
+
+    osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
+    if (!userOptions)
+    {
+        localOptions = new osgDB::ReaderWriter::Options;
+        localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
+        localOptions->setPluginData("3D", (void*) 1);
+    }
+    else
+    {
+        userOptions->setPluginData("3D", (void*) 1);
+    }
+
+    // there should be a better way to get the FreeType ReaderWriter by name...
+    osgDB::ReaderWriter *reader = osgDB::Registry::instance()->getReaderWriterForExtension("ttf");
+    if (reader == 0) return 0;
+    
+    osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, userOptions ? userOptions : localOptions.get());
+    if (rr.error())
+    {
+        osg::notify(osg::WARN) << rr.message() << std::endl;
+        return 0;
+    }
+    if (!rr.validObject()) return 0;
+
+    // if the object is a font then return it.
+    osgText::Font3D* font3D = dynamic_cast<osgText::Font3D*>(rr.getObject());
+    if (font3D) return osg::ref_ptr<Font3D>(font3D);
+
+    return 0;
+}
+
 Font3D::Font3D(Font3DImplementation* implementation):
     osg::Object(true),
     _depth(1),

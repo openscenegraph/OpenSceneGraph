@@ -68,19 +68,19 @@ namespace osgDB {
         struct CompareStateAttributes
         {
             bool operator()(const osg::ref_ptr<osg::StateAttribute>& lhs,
-                            const osg::ref_ptr<osg::StateAttribute>& rhs)
-        {
-            return *lhs < *rhs;
-        }
+                            const osg::ref_ptr<osg::StateAttribute>& rhs) const
+            {
+                return *lhs < *rhs;
+            }
         };
 
         struct CompareStateSets
         {
             bool operator()(const osg::ref_ptr<osg::StateSet>& lhs,
-                            const osg::ref_ptr<osg::StateSet>& rhs)
-        {
-            return lhs->compare(*rhs, true) < 0;
-        }
+                            const osg::ref_ptr<osg::StateSet>& rhs) const
+            {
+                return lhs->compare(*rhs, true) < 0;
+            }
         };
         
         // Lists of shared objects

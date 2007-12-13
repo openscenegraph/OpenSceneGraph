@@ -105,6 +105,9 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
         
         void setDefinedInFile(bool flag) { _definedInFile = flag; }
         bool getDefinedInFile() const { return _definedInFile; }
+        
+        void setTransformScaledByResolution(bool scaledByResolution) { _transformScaledByResolution = scaledByResolution; }
+        bool getTransformScaledByResolution() const { return _transformScaledByResolution; }
 
     protected:
 
@@ -120,6 +123,7 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
         osg::Matrixd                        _inverse;
         
         bool                                _definedInFile;
+        bool                                _transformScaledByResolution;
 
 };
 

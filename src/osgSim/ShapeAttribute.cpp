@@ -50,10 +50,31 @@ ShapeAttribute::ShapeAttribute(const char * name, const char * value) :
     _string[str.size()] = 0;
 }
 
-ShapeAttribute::ShapeAttribute(const ShapeAttribute & sa) :
-    _name(sa._name),
-    _type(sa._type)
+ShapeAttribute::ShapeAttribute(const ShapeAttribute & sa)
 {
+    copy(sa);
+}
+    
+    
+ShapeAttribute::~ShapeAttribute()
+{
+    free(); 
+}
+
+void ShapeAttribute::free()
+{
+    if ((_type == STRING) && (_string)) 
+    {
+        delete [] _string; 
+        _string = 0;
+    }
+}
+
+void ShapeAttribute::copy(const ShapeAttribute& sa)
+{
+    _name = sa._name;
+    _type = sa._type;
+
     switch (_type)
     {
         case INTEGER:
@@ -82,13 +103,16 @@ ShapeAttribute::ShapeAttribute(const ShapeAttribute & sa) :
         }
     }
 }
-    
-    
-ShapeAttribute::~ShapeAttribute()
-{
-    if ((_type == STRING) && (_string)) delete [] _string; 
-}
 
+ShapeAttribute& ShapeAttribute::operator = (const ShapeAttribute& sa)
+{
+    if (&sa == this) return *this;
+    
+    free();
+    copy(sa);
+    
+    return *this;
+}
 
 
 int ShapeAttribute::compare(const osgSim::ShapeAttribute& sa) const
@@ -122,11 +146,8 @@ int ShapeAttribute::compare(const osgSim::ShapeAttribute& sa) const
             if (sa._integer<_integer) return 1;
         }
     }
-    
     return 0;
 }
-    
-
 
 
 /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

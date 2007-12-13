@@ -41,11 +41,15 @@ class OSGSIM_EXPORT ShapeAttribute
         ShapeAttribute(const char * name);
         ShapeAttribute(const char * name, int value);
         ShapeAttribute(const char * name, double value);
+        
+        /** Note, ShapeAttribute takes a copy of both name and value, the calling code should manage its own clean up of the original strings.*/
         ShapeAttribute(const char * name, const char * value);
+        
         ShapeAttribute(const ShapeAttribute & sa);
             
         ~ShapeAttribute();
         
+        ShapeAttribute& operator = (const ShapeAttribute& sa);
         
         const std::string & getName() const { return _name; }
         const Type getType() const { return _type; }
@@ -59,6 +63,9 @@ class OSGSIM_EXPORT ShapeAttribute
         
         
     private:
+    
+        void free();
+        void copy(const ShapeAttribute& sa);
         
         std::string _name;
         Type _type;
@@ -67,7 +74,7 @@ class OSGSIM_EXPORT ShapeAttribute
         {
             int _integer;
             double _double;
-            char * _string;
+            char* _string;
         };
         
         

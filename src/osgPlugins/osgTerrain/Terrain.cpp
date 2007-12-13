@@ -79,12 +79,21 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr, bool& itrAdvanced)
                 fr += 2;
                 localAdvanced = true;
             }
+            
+            
 
 
             if (fr.matchSequence("CoordinateSystem %w") || fr.matchSequence("CoordinateSystem %s") )
             {
                 locator->setCoordinateSystem(fr[1].getStr());
 
+                fr += 2;
+                localAdvanced = true;
+            }
+
+            if (fr.matchSequence("TransformScaledByResolution %w"))
+            {
+                locator->setTransformScaledByResolution(fr[1].matchWord("TRUE") || fr[1].matchWord("True") || fr[1].matchWord("true"));
                 fr += 2;
                 localAdvanced = true;
             }
@@ -518,7 +527,9 @@ bool writeLocator(const osgTerrain::Locator& locator, osgDB::Output& fw)
             fw<<"PROJECTED"<<std::endl;
             break;
         }
-    }    
+    }   
+    
+    fw.indent()<<"TransformScaledByResolution " << (locator.getTransformScaledByResolution() ? "TRUE":"FALSE") <<std::endl;
 
     const osg::Matrixd& matrix = locator.getTransform();
     fw.indent() << "Transform {" << std::endl;

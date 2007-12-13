@@ -221,6 +221,7 @@
 #define SUPPORT_CPP 1
 #endif
 
+#include <string.h>
 #include <stdio.h>
 #include <fstream>
 #include <string>

@@ -1116,14 +1116,7 @@ yydestruct (yytype, yyvaluep)
   /* Pacify ``unused variable'' warnings.  */
   (void) yyvaluep;
 
-  switch (yytype)
-    {
-
-      default:
-        break;
-    }
 }
-
 
 /* Prevent warnings from -Wmissing-prototypes.  */
 
@@ -2239,7 +2232,7 @@ bool CameraConfig::parseFile( const std::string &file )
 
 #if defined (SUPPORT_CPP)
 
-    char *cpp_path =
+    const char *cpp_path =
   #if defined(__APPLE__)
                 "/usr/bin/cpp";
   #else

@@ -34,7 +34,8 @@
 namespace osgProducer {
 
 #define notImplemented {std::cout << __FILE__ << " " << __LINE__ << std::endl;}
-  struct CameraGroup : public osg::Referenced {
+  class CameraGroup : public osg::Referenced {
+  public:
     enum ThreadModel {
       SingleThreaded,
       ThreadPerRenderSurface,
@@ -44,7 +45,8 @@ namespace osgProducer {
   };
 
 
-  struct InputArea : public osg::Referenced {
+  class InputArea : public osg::Referenced {
+  public:
     void addRenderSurface(RenderSurface* s) { _rs.push_back(s); }
     std::vector<osg::ref_ptr<RenderSurface> > _rs;
   };

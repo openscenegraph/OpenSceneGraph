@@ -23,104 +23,39 @@ osgDB::RegisterDotOsgWrapperProxy ShapeAttributeList_Proxy
     osgDB::DotOsgWrapper::READ_AND_WRITE
 );
 
-
-
-osgSim::ShapeAttribute::Type ShapeAttributeList_typeStringToEnum(std::string type)
-{
-    if (type == "STRING") return osgSim::ShapeAttribute::STRING;
-    else if (type == "DOUBLE") return osgSim::ShapeAttribute::DOUBLE;
-    else if (type == "INTEGER") return osgSim::ShapeAttribute::INTEGER;
-    else return osgSim::ShapeAttribute::UNKNOW;
-}
-void ShapeAttributeList_typeEnumToString(osgSim::ShapeAttribute::Type type, std::string & typeStr)
-{
-    switch (type)
-    {
-    case osgSim::ShapeAttribute::STRING:  typeStr = "STRING"; break;
-    case osgSim::ShapeAttribute::DOUBLE:  typeStr = "DOUBLE"; break;
-    case osgSim::ShapeAttribute::INTEGER: typeStr = "INTEGER"; break;
-    default: typeStr = "UNKNOW"; break;
-    }
-}
-
-
 bool ShapeAttributeList_readLocalData(osg::Object &obj, osgDB::Input &fr)
 {
     bool iteratorAdvanced = false;
     ShapeAttributeList &sal = static_cast<ShapeAttributeList &>(obj);
 
     
-    int size = 0;
+    int entry = fr[0].getNoNestedBrackets();
     
-    if (fr[0].matchWord("size") && fr[1].getInt(size))
+    while (!fr.eof() && fr[0].getNoNestedBrackets()>=entry)
     {
-        sal.reserve(size);
-        fr += 2;
-        iteratorAdvanced = true;
-    }
-    
-    if (size)
-    {
-        std::string name;
-        osgSim::ShapeAttribute::Type type;
-        for (int i = 0; i < size; ++i)
-        {   
-            if (fr.matchSequence("name %s"))
-            {
-               name = fr[1].getStr();    
-               fr += 2;
-               iteratorAdvanced = true;
-            }
-            if (fr[0].matchWord("type"))
-            {
-               type = ShapeAttributeList_typeStringToEnum(fr[1].getStr());
-               fr += 2;
-               iteratorAdvanced = true;
-            
-                switch (type)
-                {
-                    case osgSim::ShapeAttribute::STRING:
-                    {
-                        if (fr.matchSequence("value %s"))
-                        {
-                           std::string value = fr[1].getStr();
-                           fr += 2;
-                           iteratorAdvanced = true;
-                           sal.push_back(osgSim::ShapeAttribute((const char *) name.c_str(), (char*) value.c_str()));
-                        }
-                        break;
-                    }
-                    case osgSim::ShapeAttribute::DOUBLE:
-                    {
-                        double value;
-                        if (fr[0].matchWord("value") && fr[1].getFloat(value))
-                        {
-                           fr += 2;
-                           iteratorAdvanced = true;
-                           sal.push_back(osgSim::ShapeAttribute((const char *) name.c_str(), value));
-                        }
-                        break;
-                    }
-                    case osgSim::ShapeAttribute::INTEGER:
-                    {
-                        int value;
-                        if (fr[0].matchWord("value") && fr[1].getInt(value))
-                        {
-                           fr += 2;
-                           iteratorAdvanced = true;
-                           sal.push_back(osgSim::ShapeAttribute((const char *) name.c_str(), value));
-                        }
-                        break;
-                    }
-                    case osgSim::ShapeAttribute::UNKNOW:
-                    default:
-                    {
-                        sal.push_back(osgSim::ShapeAttribute((const char *) name.c_str()));
-                        break;
-                    }
-                }
-            }
+        if (fr.matchSequence("string %s %s"))
+        {
+            sal.push_back(osgSim::ShapeAttribute(fr[1].getStr(), fr[2].getStr()));
+            fr += 3;
+            iteratorAdvanced = true;
         }
+        else if (fr.matchSequence("double %s %f"))
+        {
+            double value;
+            fr[2].getFloat(value);
+            sal.push_back(osgSim::ShapeAttribute(fr[1].getStr(), value));
+            fr += 3;
+            iteratorAdvanced = true;
+        }
+        else if (fr.matchSequence("int %s %i"))
+        {
+            int value;
+            fr[2].getInt(value);
+            sal.push_back(osgSim::ShapeAttribute(fr[1].getStr(), value));
+            fr += 3;
+            iteratorAdvanced = true;
+        }
+        else ++fr;
     }
 
     return iteratorAdvanced;
@@ -131,38 +66,27 @@ bool ShapeAttributeList_writeLocalData(const osg::Object &obj, osgDB::Output &fw
 {
     const ShapeAttributeList &sal = static_cast<const ShapeAttributeList &>(obj);
 
-    unsigned int size = sal.size();
-    fw.indent()<<"size "<< size << std::endl;
-
-    if (size)
+    for (ShapeAttributeList::const_iterator it = sal.begin(); it != sal.end(); ++it)
     {
-        std::string type;
-        ShapeAttributeList::const_iterator it, end = sal.end();
-        for (it = sal.begin(); it != end; ++it)
+        switch (it->getType())
         {
-            fw.indent()<<"name \""<< it->getName() << "\"" << std::endl;
-            ShapeAttributeList_typeEnumToString(it->getType(), type);
-            fw.indent()<<"type "<< type << std::endl;
-            switch (it->getType())
-            {
             case osgSim::ShapeAttribute::STRING:
             {
-                fw.indent()<<"value \""<< it->getString() << "\"" << std::endl;
+                fw.indent()<<"string "<< fw.wrapString(it->getName())<<" "<<fw.wrapString(it->getString()) << std::endl;
                 break;
             }
             case osgSim::ShapeAttribute::INTEGER:
             {
-                fw.indent()<<"value "<< it->getInt() << std::endl;
+                fw.indent()<<"int    "<< fw.wrapString(it->getName())<<" "<<it->getInt() << std::endl;
                 break;
             }
             case osgSim::ShapeAttribute::DOUBLE:
             {
-                fw.indent()<<"value "<< it->getDouble() << std::endl;
+                fw.indent()<<"double "<< fw.wrapString(it->getName())<<" "<<it->getDouble() << std::endl;
                 break;
             }
             case osgSim::ShapeAttribute::UNKNOW:
-            default: break;
-            }
+                default: break;
         }
     }
     return true;

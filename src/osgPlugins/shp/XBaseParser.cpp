@@ -3,8 +3,10 @@
 #include <vector>
 #include <string>
 
+#include <memory.h>
+#include <stdio.h>
+#include <stdlib.h>
 #if defined(_MSC_VER) || defined(__MINGW32__)
-    #include <stdio.h>
     #include <io.h>
 #else
     #include <unistd.h>

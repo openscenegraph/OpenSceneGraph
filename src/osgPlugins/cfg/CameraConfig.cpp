@@ -27,6 +27,8 @@
 #  include <X11/Xlib.h>
 #endif
 
+#include <memory.h>
+#include <stdlib.h>
 #include <iostream>
 #include <cmath>
 #include "CameraConfig.h"
@@ -65,8 +67,8 @@ CameraConfig::CameraConfig() :
     _offset_matrix[4] = 0.0; _offset_matrix[5] = 1.0; _offset_matrix[6] = 0.0; _offset_matrix[7] = 0.0;
     _offset_matrix[8] = 0.0; _offset_matrix[9] = 0.0; _offset_matrix[10] = 1.0; _offset_matrix[11] = 0.0;
     _offset_matrix[12] = 0.0; _offset_matrix[13] = 0.0; _offset_matrix[14] = 0.0; _offset_matrix[15] = 1.0;
-	
-	_threadModelDirective = CameraGroup::getDefaultThreadModel();
+    
+    _threadModelDirective = CameraGroup::getDefaultThreadModel();
 
 }
 

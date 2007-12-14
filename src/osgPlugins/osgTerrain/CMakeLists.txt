@@ -2,6 +2,7 @@
 
 
 SET(TARGET_SRC 
+    Locator.cpp
     Terrain.cpp
     GeometryTechnique.cpp
     ReaderWriterOsgTerrain.cpp

@@ -98,6 +98,7 @@ class OSGSHADOW_EXPORT ShadowMap : public ShadowTechnique
 
         osg::ref_ptr<osg::LightSource>  _ls;
 
+        osg::ref_ptr<osg::Uniform>      _ambientBiasUniform;
         UniformList                     _uniformList;
         ShaderList                      _shaderList;
         unsigned int                    _baseTextureUnit;

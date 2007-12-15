@@ -81,7 +81,7 @@ using namespace osgShadow;
     ShadowMap::ShadowMap():
     _baseTextureUnit(0),
         _shadowTextureUnit(1),
-        _ambientBias(0.3f,1.2f),
+        _ambientBias(0.5f,0.5f),
         _textureSize(1024,1024)
     {
     }
@@ -133,8 +133,8 @@ using namespace osgShadow;
         osg::Uniform* shadowTextureSampler = new osg::Uniform("osgShadow_shadowTexture",(int)_shadowTextureUnit);
         _uniformList.push_back(shadowTextureSampler);
 
-        osg::Uniform* ambientBias = new osg::Uniform("osgShadow_ambientBias",_ambientBias);
-        _uniformList.push_back(ambientBias);
+        _ambientBiasUniform = new osg::Uniform("osgShadow_ambientBias",_ambientBias);
+        _uniformList.push_back(_ambientBiasUniform.get());
 
     }
 
@@ -201,7 +201,32 @@ using namespace osgShadow;
 
             osg::StateSet* stateset = _camera->getOrCreateStateSet();
 
-            float factor = 0.0f;
+
+#if 1
+            // cull front faces so that only backfaces contribute to depth map
+
+            osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
+            cull_face->setMode(osg::CullFace::FRONT);
+            stateset->setAttribute(cull_face.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+            stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+
+            // negative polygonoffset - move the backface nearer to the eye point so that backfaces
+            // shadow themselves
+            float factor = -1.0f;
+            float units = -1.0f;
+
+            osg::ref_ptr<osg::PolygonOffset> polygon_offset = new osg::PolygonOffset;
+            polygon_offset->setFactor(factor);
+            polygon_offset->setUnits(units);
+            stateset->setAttribute(polygon_offset.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+            stateset->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+#else
+            // disabling cull faces so that only front and backfaces contribute to depth map
+            stateset->setMode(GL_CULL_FACE, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
+
+            // negative polygonoffset - move the backface nearer to the eye point
+            // so that front faces do not shadow themselves.
+            float factor = 1.0f;
             float units = 1.0f;
 
             osg::ref_ptr<osg::PolygonOffset> polygon_offset = new osg::PolygonOffset;
@@ -209,12 +234,7 @@ using namespace osgShadow;
             polygon_offset->setUnits(units);
             stateset->setAttribute(polygon_offset.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
             stateset->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-
-            osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
-            cull_face->setMode(osg::CullFace::FRONT);
-            stateset->setAttribute(cull_face.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-            stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-
+#endif
         }
 
         {
@@ -352,7 +372,7 @@ using namespace osgShadow;
 
             }
         }
-
+        
         osg::Matrix eyeToWorld;
         eyeToWorld.invert(*cv.getModelViewMatrix());
 
@@ -363,6 +383,9 @@ using namespace osgShadow;
 
         if (selectLight)
         {
+
+            // set to ambient on light to black so that the ambient bias uniform can take it's affect
+            const_cast<osg::Light*>(selectLight)->setAmbient(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
 
             //std::cout<<"----- VxOSG::ShadowMap selectLight spot cutoff "<<selectLight->getSpotCutoff()<<std::endl;
 

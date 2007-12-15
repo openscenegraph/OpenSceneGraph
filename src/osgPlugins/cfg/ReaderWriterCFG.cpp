@@ -38,48 +38,62 @@ using namespace osgProducer;
 static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
 {
     VisualChooser& vc = *rs.getVisualChooser();
-    osg::GraphicsContext::Traits* trait = new osg::GraphicsContext::Traits;
+    
+    osg::GraphicsContext::Traits* traits = new osg::GraphicsContext::Traits;
+    
     for (std::vector<VisualChooser::VisualAttribute>::iterator it = vc._visual_attributes.begin(); 
         it != vc._visual_attributes.end(); 
         it++)
     {
-        if (it->_attribute == VisualChooser::DoubleBuffer)
-            trait->doubleBuffer = true;
-        else if (it->_attribute == VisualChooser::DepthSize)
-            trait->depth = it->_parameter;
-        else if (it->_attribute == VisualChooser::RedSize)
-            trait->red = it->_parameter;
-        else if (it->_attribute == VisualChooser::BlueSize)
-            trait->blue = it->_parameter;
-        else if (it->_attribute == VisualChooser::GreenSize)
-            trait->green = it->_parameter;
-        else if (it->_attribute == VisualChooser::AlphaSize)
-            trait->alpha = it->_parameter;
-        else
-            std::cout << it->_attribute << " value " << it->_parameter << std::endl;
+        switch(it->_attribute)
+        {
+            case(VisualChooser::UseGL):            break; // on by default in osgViewer
+            case(VisualChooser::BufferSize):       break; // no present mapping
+            case(VisualChooser::Level):            traits->level = it->_parameter; break;
+            case(VisualChooser::RGBA):             break; // automatically set in osgViewer
+            case(VisualChooser::DoubleBuffer):     traits->doubleBuffer = true; break; 
+            case(VisualChooser::Stereo):           traits->quadBufferStereo = true; break;
+            case(VisualChooser::AuxBuffers):       break; // no present mapping
+            case(VisualChooser::RedSize):          traits->red = it->_parameter; break;
+            case(VisualChooser::GreenSize):        traits->green = it->_parameter; break;
+            case(VisualChooser::BlueSize):         traits->blue = it->_parameter; break;
+            case(VisualChooser::AlphaSize):        traits->alpha = it->_parameter; break;
+            case(VisualChooser::DepthSize):        traits->depth = it->_parameter; break;
+            case(VisualChooser::StencilSize):      traits->stencil = it->_parameter; break;
+            case(VisualChooser::AccumRedSize):     break; // no present mapping
+            case(VisualChooser::AccumGreenSize):   break; // no present mapping
+            case(VisualChooser::AccumBlueSize):    break; // no present mapping
+            case(VisualChooser::AccumAlphaSize):   break; // no present mapping
+            case(VisualChooser::Samples):          traits->samples = it->_parameter; break;
+            case(VisualChooser::SampleBuffers):    traits->sampleBuffers = it->_parameter; break;
+        }
     }
+    
+    traits->hostName = rs.getHostName();
+    traits->displayNum = rs.getDisplayNum();
+    traits->screenNum = rs.getScreenNum();
+    traits->windowName = rs.getWindowName();
+    traits->x = rs.getWindowOriginX();
+    traits->y = rs.getWindowOriginY();
+    traits->width = rs.getWindowWidth();
+    traits->height = rs.getWindowHeight();
+    traits->windowDecoration = rs.usesBorder();
+    traits->sharedContext = 0;
+    traits->pbuffer = (rs.getDrawableType()==osgProducer::RenderSurface::DrawableType_PBuffer);
 
-    trait->windowName = rs.getWindowName();
-    trait->x = rs.getWindowOriginX();
-    trait->y = rs.getWindowOriginY();
-    trait->width = rs.getWindowWidth();
-    trait->height = rs.getWindowHeight();
-    trait->windowDecoration = rs.usesBorder();
-    trait->sharedContext = 0;
-
-    return trait;
+    return traits;
  }
 
 static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter::Options* option)
 {
     osg::ref_ptr<CameraConfig> config = new CameraConfig;
-    std::cout << "Parse file " << file << std::endl;
+    //std::cout << "Parse file " << file << std::endl;
     config->parseFile(file);
 
     RenderSurface* rs = 0;
     Camera* cm = 0;
     std::map<RenderSurface*,osg::ref_ptr<osg::GraphicsContext> > surfaces;
-    osgViewer::View* _view = new osgViewer::View;
+    osg::ref_ptr<osgViewer::View> _view = new osgViewer::View;
 
     for (int i = 0; i < (int)config->getNumberOfCameras(); i++)
     {
@@ -93,22 +107,25 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
         if (surfaces.find(rs) != surfaces.end())
         {
             gc = surfaces[rs];
-            traits = gc->getTraits();
+            traits = gc.valid() ? gc->getTraits() : 0;
         }
         else
         {
             osg::GraphicsContext::Traits* newtraits = buildTrait(*rs);
             
-            newtraits->readDISPLAY();
-            if (newtraits->displayNum<0) newtraits->displayNum = 0;
-            
+            osg::GraphicsContext::ScreenIdentifier si;
+            si.readDISPLAY();
+
+            if (si.displayNum>=0) newtraits->displayNum = si.displayNum;
+            if (si.screenNum>=0) newtraits->screenNum = si.screenNum;
+    
             gc = osg::GraphicsContext::createGraphicsContext(newtraits);
             
             surfaces[rs] = gc.get();
             traits = gc.valid() ? gc->getTraits() : 0;
         }
 
-        std::cout << rs->getWindowName() << " " << rs->getWindowOriginX() << " " << rs->getWindowOriginY() << " " << rs->getWindowWidth() << " " << rs->getWindowHeight() << std::endl;
+        // std::cout << rs->getWindowName() << " " << rs->getWindowOriginX() << " " << rs->getWindowOriginY() << " " << rs->getWindowWidth() << " " << rs->getWindowHeight() << std::endl;
 
         if (gc.valid())
         {
@@ -133,37 +150,29 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
             osg::Matrix offset = osg::Matrix::identity();
             cm->setViewByMatrix(offset);
             osg::Matrix view = osg::Matrix(cm->getPositionAndAttitudeMatrix());
-            #if 1
+
+            // setup projection from parent
+            osg::Matrix offsetProjection = osg::Matrix::inverse(_view->getCamera()->getProjectionMatrix()) * projection;
+            _view->addSlave(camera.get(), offsetProjection, view);
+
+            #if 0
             std::cout << "Matrix Projection " << projection << std::endl;
             std::cout << "Matrix Projection master " << _view->getCamera()->getProjectionMatrix() << std::endl;
             // will work only if it's a post multyply in the producer camera
             std::cout << "Matrix View " << view << std::endl;
-            #endif
-            // setup projection from parent
-            osg::Matrix offsetProjection = osg::Matrix::inverse(_view->getCamera()->getProjectionMatrix()) * projection;
             std::cout << _view->getCamera()->getProjectionMatrix() * offsetProjection << std::endl;
-            //    std::cout << "setViewByMatrix " << offset << std::endl;
-
-            _view->addSlave(camera.get(), offsetProjection, view);
-            //     _view->getCamera()->setProjectionMatrix(projection); //osg::Matrix::identity());
-            //     _view->addSlave(camera.get(), osg::Matrix::identity(), view);
+            #endif
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+            osg::notify(osg::INFO)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+            return 0;
         }
         
     }
 
-#if 0
-    if (_view->getNumberOfCameras() == 1)
-    {
-        _view->addSlave(camera.get());
-    }
-#endif
-
-    std::cout << "done" << std::endl;
-    return _view;
+    // std::cout << "done" << std::endl;
+    return _view.release();
 }
 
 //
@@ -198,7 +207,7 @@ public:
         ReadResult result;
         osg::ref_ptr<osg::View> view = load(path, options);
         if(! view.valid())
-            result = ReadResult("failed to load " + path);
+            result = ReadResult("Error: could not load " + path);
         else
             result = ReadResult(view.get());
 

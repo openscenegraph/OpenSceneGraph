@@ -219,7 +219,7 @@ bool Viewer::readConfiguration(const std::string& filename)
     osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename);
     if (!object) 
     {
-        osg::notify(osg::NOTICE)<<"Error: Unable to load configuration file \""<<filename<<"\""<<std::endl;
+        //osg::notify(osg::NOTICE)<<"Error: Unable to load configuration file \""<<filename<<"\""<<std::endl;
         return false;
     }
     

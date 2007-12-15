@@ -1428,7 +1428,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             {
                 if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE)
                 {
-                    osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
+                    // osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
                     return *ritr;
                 }
             }
@@ -1437,7 +1437,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             {
                 if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
                 {
-                    osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
+                    // osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
                     return *ritr;
                 }
             }
@@ -1480,7 +1480,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             {
                 if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE)
                 {
-                    osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
+                    // osg::notify(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
                     return *ritr;
                 }
             }
@@ -1489,7 +1489,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             {
                 if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
                 {
-                    osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
+                    // osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
                     return *ritr;
                 }
             }

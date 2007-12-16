@@ -206,7 +206,8 @@ public:
     public:
     
         FontImplementation():
-            osg::Referenced(true) {}
+            osg::Referenced(true),
+            _facade(0) {}
     
         virtual std::string getFileName() const = 0;
 

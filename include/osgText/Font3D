@@ -146,7 +146,8 @@ public:
     public:
     
         Font3DImplementation():
-            osg::Referenced(true) {}
+            osg::Referenced(true),
+            _facade(0) {}
     
         virtual std::string getFileName() const = 0;
 
@@ -188,6 +189,7 @@ public:
     public:
 
         Glyph3D(unsigned int glyphCode):
+            osg::Referenced(true),
             _glyphCode(glyphCode), 
             _horizontalBearing(0,0),
             _horizontalAdvance(0),

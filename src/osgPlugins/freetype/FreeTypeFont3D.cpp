@@ -188,7 +188,11 @@ FreeTypeFont3D::FreeTypeFont3D(const std::string& filename, FT_Face face, unsign
     _filename(filename),
     _buffer(0),
     _face(face),
-    _flags(flags)
+    _flags(flags),
+    _scale(1.0),
+    _shiftY(0.0),
+    _shiftX(0.0),
+    _charScale(1.0)
 {
     init();
 }
@@ -197,13 +201,18 @@ FreeTypeFont3D::FreeTypeFont3D(FT_Byte* buffer, FT_Face face, unsigned int flags
     _filename(""),
     _buffer(buffer),
     _face(face),
-    _flags(flags)
+    _flags(flags),
+    _scale(1.0),
+    _shiftY(0.0),
+    _shiftX(0.0),
+    _charScale(1.0)
 {
     init();
 }
 
 void FreeTypeFont3D::init()
 {
+
     FT_Error _error = FT_Set_Pixel_Sizes(_face, 32, 32);
     if (_error)
     {

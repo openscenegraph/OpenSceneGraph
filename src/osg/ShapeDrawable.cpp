@@ -1320,8 +1320,111 @@ class PrimitiveShapeVisitor : public ConstShapeVisitor
 
         PrimitiveFunctor& _functor;
         const TessellationHints*  _hints;
+
+    private:
+        // helpers for apply( Cylinder | Sphere | Capsule )
+        void createCylinderBody(unsigned int numSegments, float radius, float height, const osg::Matrix& matrix);
+        void createHalfSphere(unsigned int numSegments, unsigned int numRows, float radius, int which, float zOffset, const osg::Matrix& matrix);
 };
 
+
+
+void PrimitiveShapeVisitor::createCylinderBody(unsigned int numSegments, float radius, float height, const osg::Matrix& matrix)
+{
+    const float angleDelta = 2.0f*osg::PI/(float)numSegments;
+    
+    const float r = radius;
+    const float h = height;
+    
+    float basez = -h*0.5f;
+    float topz = h*0.5f;
+    
+    float angle = 0.0f;
+    
+    _functor.begin(GL_QUAD_STRIP);
+
+        for(unsigned int bodyi=0;
+            bodyi<numSegments;
+            ++bodyi,angle+=angleDelta)
+        {
+            float c = cosf(angle);
+            float s = sinf(angle);
+
+            _functor.vertex(osg::Vec3(c*r,s*r,topz) * matrix);
+            _functor.vertex(osg::Vec3(c*r,s*r,basez) * matrix);
+        }
+
+        // do last point by hand to ensure no round off errors.
+        _functor.vertex(osg::Vec3(r,0.0f,topz));
+        _functor.vertex(osg::Vec3(r,0.0f,basez));
+    
+    _functor.end();
+}
+
+
+void PrimitiveShapeVisitor::createHalfSphere(unsigned int numSegments, unsigned int numRows, float radius, int which, float zOffset, const osg::Matrix& matrix)
+{
+    float lDelta = osg::PI/(float)numRows;
+    float vDelta = 1.0f/(float)numRows;
+
+    // top half is 0, bottom is 1.
+    bool top = (which==0);
+
+    float angleDelta = osg::PI*2.0f/(float)numSegments;
+
+    float lBase=-osg::PI*0.5f + (top?(lDelta*(numRows/2)):0.0f);
+    float rBase=(top?(cosf(lBase)*radius):0.0f);
+    float zBase=(top?(sinf(lBase)*radius):-radius);
+    float vBase=(top?(vDelta*(numRows/2)):0.0f);
+    float nzBase=(top?(sinf(lBase)):-1.0f);
+    float nRatioBase=(top?(cosf(lBase)):0.0f);
+
+    unsigned int rowbegin = top?numRows/2:0;
+    unsigned int rowend   = top?numRows:numRows/2;
+
+    for(unsigned int rowi=rowbegin; rowi<rowend; ++rowi)
+    {
+
+        float lTop = lBase+lDelta;
+        float rTop = cosf(lTop)*radius;
+        float zTop = sinf(lTop)*radius;
+        float vTop = vBase+vDelta;
+        float nzTop= sinf(lTop);
+        float nRatioTop= cosf(lTop);
+
+        _functor.begin(GL_QUAD_STRIP);
+
+            float angle = 0.0f;
+
+            for(unsigned int topi=0; topi<numSegments;
+                ++topi,angle+=angleDelta)
+            {
+
+                float c = cosf(angle);
+                float s = sinf(angle);
+
+                _functor.vertex(osg::Vec3(c*rTop,s*rTop,zTop+zOffset) * matrix);
+                _functor.vertex(osg::Vec3(c*rBase,s*rBase,zBase+zOffset) * matrix);
+
+            }
+  
+            // do last point by hand to ensure no round off errors.
+            _functor.vertex(osg::Vec3(rTop,0.0f,zTop+zOffset) * matrix);
+            _functor.vertex(osg::Vec3(rBase,0.0f,zBase+zOffset) * matrix);            
+
+        _functor.end();
+        
+        
+        lBase=lTop;
+        rBase=rTop;
+        zBase=zTop;
+        vBase=vTop;
+        nzBase=nzTop;
+        nRatioBase=nRatioTop;
+
+    }
+        
+}
 
 
 
@@ -1348,7 +1451,6 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
     float vDelta = 1.0f/(float)numRows;
 
     float angleDelta = osg::PI*2.0f/(float)numSegments;
-    float texCoordHorzDelta = 1.0f/(float)numSegments;
 
     float lBase=-osg::PI*0.5f;
     float rBase=0.0f;
@@ -1364,8 +1466,6 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
         float rTop = cosf(lTop)*sphere.getRadius();
         float zTop = sinf(lTop)*sphere.getRadius();
         float vTop = vBase+vDelta;
-        //float nzTop= sinf(lTop);
-        //float nRatioTop= cosf(lTop);
 
         _functor.begin(GL_QUAD_STRIP);
 
@@ -1374,7 +1474,7 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
 
             for(unsigned int topi=0;
                 topi<numSegments;
-                ++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
+                ++topi,angle+=angleDelta)
             {
 
                 float c = cosf(angle);
@@ -1401,8 +1501,6 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
 
 void PrimitiveShapeVisitor::apply(const Box& box)
 {
-
-
     float x = box.getHalfLengths().x();
     float y = box.getHalfLengths().y();
     float z = box.getHalfLengths().z();
@@ -1486,9 +1584,17 @@ void PrimitiveShapeVisitor::apply(const Cone& cone)
     Matrix matrix = cone.computeRotationMatrix();
     matrix.setTrans(cone.getCenter());
 
-
     unsigned int numSegments = 40;
-    unsigned int numRows = 10;
+    unsigned int numRows = 20;
+    float ratio = (_hints ? _hints->getDetailRatio() : 1.0f);
+    if (ratio > 0.0f && ratio != 1.0f) {
+        numRows = (unsigned int) (numRows * ratio);
+        if (numRows < MIN_NUM_ROWS)
+            numRows = MIN_NUM_ROWS;
+        numSegments = (unsigned int) (numSegments * ratio);
+        if (numSegments < MIN_NUM_SEGMENTS)
+            numSegments = MIN_NUM_SEGMENTS;
+    }
 
     float r = cone.getRadius();
     float h = cone.getHeight();
@@ -1498,8 +1604,6 @@ void PrimitiveShapeVisitor::apply(const Cone& cone)
     normalz *= normalRatio;
 
     float angleDelta = 2.0f*osg::PI/(float)numSegments;
-    float texCoordHorzDelta = 1.0/(float)numSegments;
-    float texCoordRowDelta = 1.0/(float)numRows;
     float hDelta = cone.getHeight()/(float)numRows;
     float rDelta = cone.getRadius()/(float)numRows;
 
@@ -1508,13 +1612,11 @@ void PrimitiveShapeVisitor::apply(const Cone& cone)
     float topv=1.0f;
     float basez=topz-hDelta;
     float baser=rDelta;
-    float basev=topv-texCoordRowDelta;
     float angle;
-    float texCoord;
 
     for(unsigned int rowi=0;
         rowi<numRows;
-        ++rowi,topz=basez, basez-=hDelta, topr=baser, baser+=rDelta, topv=basev, basev-=texCoordRowDelta)
+        ++rowi,topz=basez, basez-=hDelta, topr=baser, baser+=rDelta)
     {
         // we can't use a fan for the cone top
         // since we need different normals at the top
@@ -1522,10 +1624,9 @@ void PrimitiveShapeVisitor::apply(const Cone& cone)
         _functor.begin(GL_QUAD_STRIP);
 
             angle = 0.0f;
-            texCoord = 0.0f;
             for(unsigned int topi=0;
                 topi<numSegments;
-                ++topi,angle+=angleDelta,texCoord+=texCoordHorzDelta)
+                ++topi,angle+=angleDelta)
             {
 
                 float c = cosf(angle);
@@ -1550,14 +1651,13 @@ void PrimitiveShapeVisitor::apply(const Cone& cone)
     _functor.begin(GL_TRIANGLE_FAN);
 
     angle = osg::PI*2.0f;
-    texCoord = 1.0f;
     basez = cone.getBaseOffset();
 
     _functor.vertex(Vec3(0.0f,0.0f,basez)*matrix);
 
     for(unsigned int bottomi=0;
         bottomi<numSegments;
-        ++bottomi,angle-=angleDelta,texCoord-=texCoordHorzDelta)
+        ++bottomi,angle-=angleDelta)
     {
 
         float c = cosf(angle);
@@ -1578,41 +1678,24 @@ void PrimitiveShapeVisitor::apply(const Cylinder& cylinder)
     matrix.setTrans(cylinder.getCenter());
 
     unsigned int numSegments = 40;
+    float ratio = (_hints ? _hints->getDetailRatio() : 1.0f);
+    if (ratio > 0.0f && ratio != 1.0f) {
+        numSegments = (unsigned int) (numSegments * ratio);
+        if (numSegments < MIN_NUM_SEGMENTS)
+            numSegments = MIN_NUM_SEGMENTS;
+    }
 
     float angleDelta = 2.0f*osg::PI/(float)numSegments;
-
-    float texCoordDelta = 1.0/(float)numSegments;
 
     float r = cylinder.getRadius();
     float h = cylinder.getHeight();
 
     float basez = -h*0.5f;
     float topz = h*0.5f;
+    float angle;
 
     // cylinder body
-    _functor.begin(GL_QUAD_STRIP);
-
-        float angle = 0.0f;
-        float texCoord = 0.0f;
-        for(unsigned int bodyi=0;
-            bodyi<numSegments;
-            ++bodyi,angle+=angleDelta,texCoord+=texCoordDelta)
-        {
-
-            float c = cosf(angle);
-            float s = sinf(angle);
-
-            _functor.vertex(Vec3(c*r,s*r,topz)*matrix);
-            _functor.vertex(Vec3(c*r,s*r,basez)*matrix);
-
-        }
-
-        // do last point by hand to ensure no round off errors.
-        _functor.vertex(Vec3(r,0.0f,topz)*matrix);
-        _functor.vertex(Vec3(r,0.0f,basez)*matrix);
-
-    _functor.end();
-
+    createCylinderBody(numSegments, cylinder.getRadius(), cylinder.getHeight(), matrix);
 
     // cylinder top
     _functor.begin(GL_TRIANGLE_FAN);
@@ -1620,10 +1703,9 @@ void PrimitiveShapeVisitor::apply(const Cylinder& cylinder)
         _functor.vertex(Vec3(0.0f,0.0f,topz)*matrix);
 
         angle = 0.0f;
-        texCoord = 0.0f;
         for(unsigned int topi=0;
             topi<numSegments;
-            ++topi,angle+=angleDelta,texCoord+=texCoordDelta)
+            ++topi,angle+=angleDelta)
         {
 
             float c = cosf(angle);
@@ -1643,10 +1725,9 @@ void PrimitiveShapeVisitor::apply(const Cylinder& cylinder)
         _functor.vertex(Vec3(0.0f,0.0f,basez)*matrix);
 
         angle = osg::PI*2.0f;
-        texCoord = 1.0f;
         for(unsigned int bottomi=0;
             bottomi<numSegments;
-            ++bottomi,angle-=angleDelta,texCoord-=texCoordDelta)
+            ++bottomi,angle-=angleDelta)
         {
 
             float c = cosf(angle);
@@ -1661,11 +1742,40 @@ void PrimitiveShapeVisitor::apply(const Cylinder& cylinder)
     _functor.end();
 }
 
-void PrimitiveShapeVisitor::apply(const Capsule& /*capsule*/)
+void PrimitiveShapeVisitor::apply(const Capsule& capsule)
 {
-#if 0
-     notify(NOTICE)<<"Warning: PrimitiveShapeVisitor doesn't implement apply(Capsule&) (yet)."<<std::endl;
-#endif   
+    Matrix matrix = capsule.computeRotationMatrix();
+    matrix.setTrans(capsule.getCenter());
+
+    unsigned int numSegments = 40;
+    unsigned int numRows = 20;
+    float ratio = (_hints ? _hints->getDetailRatio() : 1.0f);
+    if (ratio > 0.0f && ratio != 1.0f) {
+        numRows = (unsigned int) (numRows * ratio);
+        if (numRows < MIN_NUM_ROWS)
+            numRows = MIN_NUM_ROWS;
+        numSegments = (unsigned int) (numSegments * ratio);
+        if (numSegments < MIN_NUM_SEGMENTS)
+            numSegments = MIN_NUM_SEGMENTS;
+    }
+
+    float angleDelta = 2.0f*osg::PI/(float)numSegments;
+
+    float r = capsule.getRadius();
+    float h = capsule.getHeight();
+
+    float basez = -h*0.5f;
+    float topz = h*0.5f;
+
+    // capsule body
+    createCylinderBody(numSegments, capsule.getRadius(), capsule.getHeight(), matrix);
+
+    // capsule top cap
+    createHalfSphere(numSegments, numRows, capsule.getRadius(), 0, capsule.getHeight()/2.0f, matrix);
+
+    // capsule bottom cap
+    createHalfSphere(numSegments, numRows, capsule.getRadius(), 1, -capsule.getHeight()/2.0f, matrix);
+
 }
 
 void PrimitiveShapeVisitor::apply(const InfinitePlane&)

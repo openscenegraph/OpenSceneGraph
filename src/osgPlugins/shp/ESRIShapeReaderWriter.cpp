@@ -2,6 +2,8 @@
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
 
+#include <osgTerrain/Locator>
+
 #include "ESRIType.h"
 
 #include "ESRIShape.h"
@@ -68,7 +70,44 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
                 }
             }    
 
+            if (sp.getGeode())
+            {
             
+                std::string projFileName(osgDB::getNameLessExtension(fileName) + ".prj");
+                if (osgDB::fileExists(projFileName))
+                {
+                    std::ifstream fin(projFileName.c_str());
+                    if (fin)
+                    {
+                        std::string projstring;
+                        while(!fin.eof())
+                        {
+                            char readline[4096];
+                            *readline = 0;
+                            fin.getline(readline, sizeof(readline));
+                            if (!projstring.empty() && !fin.eof())
+                            {
+                                projstring += '\n';
+                            }
+                            projstring += readline;
+
+                        }
+                        
+                        if (!projstring.empty())
+                        {
+                            osgTerrain::Locator* locator = new osgTerrain::Locator;
+                            sp.getGeode()->setUserData(locator);
+
+                            locator->setFormat("WKT");
+                            locator->setCoordinateSystem(projstring);
+                            locator->setDefinedInFile(false);
+                        }
+                    }
+                    
+                }
+
+
+            }
             return sp.getGeode();
         }
 };

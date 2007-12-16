@@ -42,6 +42,7 @@
 #include <osgText/Text>
 
 #include <osgViewer/Viewer>
+#include <osgGA/StateSetManipulator>
 
 #include <iostream>
 
@@ -101,7 +102,7 @@ public:
         
         bool divide(unsigned int maxNumTreesPerCell=10);
         
-        bool devide(bool xAxis, bool yAxis, bool zAxis);
+        bool divide(bool xAxis, bool yAxis, bool zAxis);
         
         void bin();
 
@@ -243,7 +244,7 @@ bool ForestTechniqueManager::Cell::divide(unsigned int maxNumTreesPerCell)
 
     float radius = _bb.radius();
     float divide_distance = radius*0.7f;
-    if (devide((_bb.xMax()-_bb.xMin())>divide_distance,(_bb.yMax()-_bb.yMin())>divide_distance,(_bb.zMax()-_bb.zMin())>divide_distance))
+    if (divide((_bb.xMax()-_bb.xMin())>divide_distance,(_bb.yMax()-_bb.yMin())>divide_distance,(_bb.zMax()-_bb.zMin())>divide_distance))
     {
         // recusively divide the new cells till maxNumTreesPerCell is met.
         for(CellList::iterator citr=_cells.begin();
@@ -260,7 +261,7 @@ bool ForestTechniqueManager::Cell::divide(unsigned int maxNumTreesPerCell)
    }
 }
 
-bool ForestTechniqueManager::Cell::devide(bool xAxis, bool yAxis, bool zAxis)
+bool ForestTechniqueManager::Cell::divide(bool xAxis, bool yAxis, bool zAxis)
 {
     if (!(xAxis || yAxis || zAxis)) return false;
 
@@ -1099,6 +1100,7 @@ int main( int argc, char **argv )
     osg::ref_ptr<ForestTechniqueManager> ttm = new ForestTechniqueManager;
     
     viewer.addEventHandler(new TechniqueEventHandler(ttm.get()));
+    viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
 
     // add model to viewer.
     viewer.setSceneData( ttm->createScene((unsigned int)numTreesToCreates) );

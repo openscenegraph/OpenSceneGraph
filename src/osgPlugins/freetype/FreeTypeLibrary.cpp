@@ -45,7 +45,8 @@ FreeTypeLibrary::~FreeTypeLibrary()
         FreeTypeFont* fontImplementation = *_fontImplementationSet.begin();
         _fontImplementationSet.erase(_fontImplementationSet.begin());
         osgText::Font* font = fontImplementation->_facade;
-        font->setImplementation(0);
+        if (font) font->setImplementation(0);
+        fontImplementation->_facade = 0;
     }
     
     while(!_font3DImplementationSet.empty())
@@ -53,7 +54,8 @@ FreeTypeLibrary::~FreeTypeLibrary()
         FreeTypeFont3D* font3DImplementation = *_font3DImplementationSet.begin();
         _font3DImplementationSet.erase(_font3DImplementationSet.begin());
         osgText::Font3D* font3D = font3DImplementation->_facade;
-        font3D->setImplementation(0);
+        if (font3D) font3D->setImplementation(0);
+        font3DImplementation->_facade = 0;
     }
     
     FT_Done_FreeType( _ftlibrary);
@@ -76,8 +78,8 @@ bool FreeTypeLibrary::getFace(const std::string& fontfile,unsigned int index, FT
     }
     else if (error)
     {
-        osg::notify(osg::WARN)<<" .... another error code means that the font file could notd"<<std::endl;
-        osg::notify(osg::WARN)<<" .... be opened, read or simply that it is broken..d"<<std::endl;
+        osg::notify(osg::WARN)<<" .... another error code means that the font file could not"<<std::endl;
+        osg::notify(osg::WARN)<<" .... be opened, read or simply that it is broken.."<<std::endl;
         return false;
     }
     

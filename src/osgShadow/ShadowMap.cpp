@@ -433,7 +433,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
                 lightDir.normalize();
 
                 // set the position far away along the light direction
-                osg::Vec3 position = lightDir * bb.radius()  * 20;
+                osg::Vec3 position = bb.center() + lightDir * bb.radius() * 2;
 
                 float centerDistance = (position-bb.center()).length();
 

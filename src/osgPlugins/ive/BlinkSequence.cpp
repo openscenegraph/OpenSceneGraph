@@ -74,8 +74,11 @@ void BlinkSequence::read(DataInputStream* in){
         }
         // Read in phase shift.
         setPhaseShift(in->readDouble());
+
         // Read in SequenceGroup
-        setSequenceGroup(new osgSim::SequenceGroup(in->readDouble()));
+        double baseTime = in->readDouble();
+        if (baseTime!=0.0) setSequenceGroup(new osgSim::SequenceGroup(baseTime));
+        
     }
     else{
         throw Exception("BlinkSequence::read(): Expected BlinkSequence identification.");

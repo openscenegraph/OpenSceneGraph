@@ -1092,7 +1092,7 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
    
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     float numTreesToCreates = 10000;
     arguments.read("--trees",numTreesToCreates);

@@ -22,7 +22,7 @@ const char* osgShadowGetVersion()
 }
 
 
-const char* osgShaodowGetLibraryName()
+const char* osgShadowGetLibraryName()
 {
     return "OpenSceneGraph Shadow Library";
 }

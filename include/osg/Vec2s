@@ -12,7 +12,7 @@
 */
 
 #ifndef OSG_VEC2S
-#define OSG_VEC2S        1
+#define OSG_VEC2S 1
 
 namespace osg {
 
@@ -36,7 +36,7 @@ class Vec2s
         inline bool operator != (const Vec2s& v) const { return _v[0]!=v._v[0] || _v[1]!=v._v[1]; }
         inline bool operator <  (const Vec2s& v) const
         {
-            if (_v[0]<v._v[0])      return true;
+            if (_v[0]<v._v[0]) return true;
             else if (_v[0]>v._v[0]) return false;
             else return (_v[1]<v._v[1]);
         }
@@ -74,24 +74,47 @@ class Vec2s
             return Vec2s(_v[0]*rhs, _v[1]*rhs);
         }
 
+        inline Vec2s& operator *= (value_type rhs)
+        {
+            _v[0]*=rhs;
+            _v[1]*=rhs;
+            return *this;
+        }
+
         inline Vec2s operator / (value_type rhs) const
         {
             return Vec2s(_v[0]/rhs, _v[1]/rhs);
         }
 
-        inline Vec2s operator + (value_type rhs) const
+        inline Vec2s& operator /= (value_type rhs)
         {
-            return Vec2s(_v[0]+rhs, _v[1]+rhs);
+            _v[0]/=rhs;
+            _v[1]/=rhs;
+            return *this;
         }
-
-        inline Vec2s operator - (value_type rhs) const
+        
+        inline Vec2s operator * (const Vec2s& rhs) const
         {
-            return Vec2s(_v[0]-rhs, _v[1]-rhs);
+            return Vec2s(_v[0]*rhs._v[0], _v[1]*rhs._v[1]);
         }
-
+        
+        inline Vec2s& operator *= (const Vec2s& rhs)
+        {
+            _v[0] *= rhs._v[0];
+            _v[1] *= rhs._v[1];
+            return *this;
+        }
+        
         inline Vec2s operator + (const Vec2s& rhs) const
         {
             return Vec2s(_v[0]+rhs._v[0], _v[1]+rhs._v[1]);
+        }
+
+        inline Vec2s& operator += (const Vec2s& rhs)
+        {
+            _v[0] += rhs._v[0];
+            _v[1] += rhs._v[1];
+            return *this;
         }
 
         inline Vec2s operator - (const Vec2s& rhs) const
@@ -99,13 +122,21 @@ class Vec2s
             return Vec2s(_v[0]-rhs._v[0], _v[1]-rhs._v[1]);
         }
 
-        inline Vec2s operator * (const Vec2s& rhs) const
+        inline Vec2s& operator -= (const Vec2s& rhs)
         {
-            return Vec2s(_v[0]*rhs._v[0], _v[1]*rhs._v[1]);
+            _v[0]-=rhs._v[0];
+            _v[1]-=rhs._v[1];
+            return *this;
         }
 
-};
 
-}
+        inline Vec2s operator - () const
+        {
+            return Vec2s (-_v[0], -_v[1]);
+        }
+        
 
+};    // end of class Vec2s
+
+}    // end of namespace osg
 #endif

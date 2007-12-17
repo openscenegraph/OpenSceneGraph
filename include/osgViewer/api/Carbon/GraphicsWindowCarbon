@@ -101,6 +101,9 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         
         virtual void resizedImplementation(int x, int y, int width, int height);
         
+        virtual void setWindowName (const std::string & name);
+        virtual void useCursor(bool cursorOn);
+        
         WindowRef getNativeWindowRef() { return _window; }
         
         bool handleMouseEvent(EventRef theEvent);

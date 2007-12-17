@@ -603,9 +603,9 @@ bool GraphicsWindowCarbon::realizeImplementation()
     if (!_traits) return false;
     
     setWindowDecoration(_traits->windowDecoration);
+    useCursor(_traits->useCursor);
     
     // move the window to the right screen
-
     OSXCarbonWindowingSystemInterface* wsi = dynamic_cast<OSXCarbonWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
     if (wsi) {
@@ -646,10 +646,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
         installEventHandler();
     
     // set the window title
-    if (!_traits->windowName.empty()) {
-        CFStringRef windowtitle = CFStringCreateWithBytes( kCFAllocatorDefault, (const UInt8*)(_traits->windowName.c_str()), _traits->windowName.length(),kCFStringEncodingUTF8, false );
-        SetWindowTitleWithCFString( _window, windowtitle );
-    }
+    setWindowName(_traits->windowName);
     
     // create the context
     AGLContext sharedContextCarbon = NULL;
@@ -1127,6 +1124,46 @@ void GraphicsWindowCarbon::grabFocusIfPointerInWindow()
    osg::notify(osg::ALWAYS) << "GraphicsWindowCarbon::grabFocusIfPointerInWindow" << std::endl;
 }
 
+
+void GraphicsWindowCarbon::useCursor(bool cursorOn)
+{
+
+    if (_traits.valid())
+        _traits->useCursor = cursorOn;
+    OSXCarbonWindowingSystemInterface* wsi = dynamic_cast<OSXCarbonWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    if (wsi == NULL) {
+        osg::notify(osg::WARN) << "GraphicsWindowCarbon::useCursor :: could not get OSXCarbonWindowingSystemInterface" << std::endl;
+        return;
+    }
+    
+    CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
+    CGDisplayErr err = kCGErrorSuccess;
+    switch (cursorOn)
+    {
+        case true:
+            err = CGDisplayShowCursor(displayId);
+            break;
+        case false:
+            err = CGDisplayHideCursor(displayId);
+            break;
+    }
+    if (err != kCGErrorSuccess) {
+        osg::notify(osg::WARN) << "GraphicsWindowCarbon::useCursor failed with " << err << std::endl;
+    }
+}
+
+
+
+void GraphicsWindowCarbon::setWindowName (const std::string& name) 
+{
+    _traits->windowName = name;
+    if (!_traits->windowName.empty()) 
+    {
+        CFStringRef windowtitle = CFStringCreateWithBytes( kCFAllocatorDefault, (const UInt8*)(_traits->windowName.c_str()), _traits->windowName.length(),kCFStringEncodingUTF8, false );
+        SetWindowTitleWithCFString( _window, windowtitle );
+        CFRelease(windowtitle);
+    }
+}
 
 
 void GraphicsWindowCarbon::transformMouseXY(float& x, float& y)

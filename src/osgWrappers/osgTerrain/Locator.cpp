@@ -157,6 +157,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	          __bool__getDefinedInFile,
 	          "",
 	          "");
+	I_Method1(void, setTransformScaledByResolution, IN, bool, scaledByResolution,
+	          Properties::NON_VIRTUAL,
+	          __void__setTransformScaledByResolution__bool,
+	          "",
+	          "");
+	I_Method0(bool, getTransformScaledByResolution,
+	          Properties::NON_VIRTUAL,
+	          __bool__getTransformScaledByResolution,
+	          "",
+	          "");
 	I_StaticMethod4(bool, convertLocalCoordBetween, IN, const osgTerrain::Locator &, source, IN, const osg::Vec3d &, sourceNDC, IN, const osgTerrain::Locator &, destination, IN, osg::Vec3d &, destinationNDC,
 	                __bool__convertLocalCoordBetween__C5_Locator_R1__C5_osg_Vec3d_R1__C5_Locator_R1__osg_Vec3d_R1_S,
 	                "",
@@ -179,5 +189,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	I_SimpleProperty(const osg::Matrixd &, Transform, 
 	                 __C5_osg_Matrixd_R1__getTransform, 
 	                 __void__setTransform__C5_osg_Matrixd_R1);
+	I_SimpleProperty(bool, TransformScaledByResolution, 
+	                 __bool__getTransformScaledByResolution, 
+	                 __void__setTransformScaledByResolution__bool);
 END_REFLECTOR
 

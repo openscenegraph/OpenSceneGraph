@@ -50,7 +50,7 @@ BEGIN_VALUE_REFLECTOR(osgSim::ShapeAttribute)
 	               "");
 	I_Constructor2(IN, const char *, name, IN, const char *, value,
 	               ____ShapeAttribute__C5_char_P1__C5_char_P1,
-	               "",
+	               "Note, ShapeAttribute takes a copy of both name and value, the calling code should manage its own clean up of the original strings. ",
 	               "");
 	I_Constructor1(IN, const osgSim::ShapeAttribute &, sa,
 	               Properties::NON_EXPLICIT,

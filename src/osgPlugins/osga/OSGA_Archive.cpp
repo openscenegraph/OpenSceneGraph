@@ -8,6 +8,90 @@
 
 using namespace osgDB;
 
+/*
+Functions to convert between
+    std::streampos ( typedef'ed as iostream::pos_type 
+              used as seekp,seekg argument and tellp,tellg return value )
+and 
+    OSGA_Archive::pos_type (64 bit file position index)
+
+Purpose:
+    To allow using OSGA files larger than 4GiB in Windows.
+
+    std::streampos is used as argument to iostreams seekp and seekg methods
+    and is returned as result from iostream tellp and tellg methods.
+
+    std::streampos can be implicitly cast from/to std::streamoff as 
+    std::streampos class defines appropriate constructor and cast operator.
+
+    Since std::streamoff is usually defined as simple int, 
+    it is possible to call seekp( ), seekg( ) with int argument and
+    assign tellp(), tellg() result to int type.
+
+    But this implicit methods fail when std::streamoff is 32 bit and 
+    std::streampos actually points past 32 bit addressable range (2 GiB).
+
+    Even if std::streamoff is 32 bit and incapable of representing 64 bit file
+    positions, original std::streampos may be prefectly able to handle them.
+   
+    But, when such situation occurs more elaborate conversion methods from/to   
+    std::streampos are needed. Functions below employ such methods. 
+    
+    I made this fix for use with 32 bit Windows OSG. Acutally this 
+    solution is not dependent on OS but standard C++ library. 
+    Microsoft SDKs always use some version of Dinkumware libs. 
+
+    Practically this tweak is made for Dinkumware C++ libs. I hope it can 
+    be easily extended to other 32bit systems supporting 64bit files, provided
+    their std::streampos implementations are similar.
+
+    I based my solution on a small portion of boost iostreams code.
+    For additional reference look at: 
+        http://boost.org/boost/iostreams/positioning.hpp
+*/
+
+/* 
+    Recognize Dinkumware std C++ lib implementation. Its used by Microsoft, 
+    but method is more generic - should work in all Dinkumware environments.
+
+    Complex condition below was taken from 
+        http://boost.org/boost/iostreams/positioning.hpp
+
+    Great thanks to J.Tukanis and G. Sylvester-Bradley for figuring it out.
+*/
+#if ((defined(_YVALS) && !defined(__IBMCPP__)) || defined(_CPPLIB_VER)) && \
+     !defined(__SGI_STL_PORT) && !defined(_STLPORT_VERSION) \
+     && !defined(__QNX__)
+
+inline std::streampos STREAM_POS( const OSGA_Archive::pos_type pos )
+{ 
+    return std::streampos( std::mbstate_t(), pos );
+}
+
+inline OSGA_Archive::pos_type ARCHIVE_POS( const std::streampos & pos )
+{ 
+#if defined(_CPPLIB_VER)//newer Dinkumware(eg: one included with VC++ 2003,2005)
+    fpos_t position = pos.seekpos();
+#else // older Dinkumware (eg: one included in Win Server 2003 Platform SDK )
+    fpos_t position = pos.get_fpos_t();
+#endif
+    std::streamoff offset = pos.operator std::streamoff( ) - _FPOSOFF( position );
+
+    return OSGA_Archive::pos_type( position + offset );
+}
+#else // non Dinkumware std C++ lib implementations 
+// do the old school streampos <-> streamoff casts
+inline std::streampos STREAM_POS( const OSGA_Archive::pos_type pos )
+{ 
+    return std::streampos( pos );
+}
+
+inline OSGA_Archive::pos_type ARCHIVE_POS( const std::streampos & pos )
+{ 
+    return OSGA_Archive::pos_type( pos );
+}
+#endif // Dinkumware std C++ lib 
+////////////////////////////////////////////////////////////////////////////////
 float OSGA_Archive::s_currentSupportedVersion = 0.0;
 const unsigned int ENDIAN_TEST_NUMBER = 0x00000001;
 
@@ -49,7 +133,7 @@ OSGA_Archive::IndexBlock* OSGA_Archive::IndexBlock::read(std::istream& in, bool 
     if (!in) return 0;
 
     osg::ref_ptr<IndexBlock> indexBlock = new IndexBlock;
-    indexBlock->_filePosition = in.tellg();
+    indexBlock->_filePosition = ARCHIVE_POS( in.tellg() );
     in.read(reinterpret_cast<char*>(&indexBlock->_blockSize), sizeof(indexBlock->_blockSize));
     in.read(reinterpret_cast<char*>(&indexBlock->_filePositionNextIndexBlock), sizeof(indexBlock->_filePositionNextIndexBlock));
     in.read(reinterpret_cast<char*>(&indexBlock->_offsetOfNextAvailableSpace), sizeof(indexBlock-> _offsetOfNextAvailableSpace));
@@ -162,22 +246,27 @@ bool OSGA_Archive::IndexBlock::getFileReferences(FileNamePositionMap& indexMap) 
 
 void OSGA_Archive::IndexBlock::write(std::ostream& out)
 {
+    pos_type currentPos = ARCHIVE_POS( out.tellp() );
+
     if (_filePosition==pos_type(0))
     {
         osg::notify(osg::INFO)<<"OSGA_Archive::IndexBlock::write() setting _filePosition"<<std::endl;
-        _filePosition = out.tellp();
+        _filePosition = currentPos;
     }
     else
     {
-         out.seekp(_filePosition);
+         out.seekp( STREAM_POS( _filePosition ) );
     }
-    osg::notify(osg::INFO)<<"OSGA_Archive::IndexBlock::write() to _filePosition"<<out.tellp()<<std::endl;
+    osg::notify(osg::INFO)<<"OSGA_Archive::IndexBlock::write() to _filePosition"<< ARCHIVE_POS( out.tellp() )<<std::endl;
 
     out.write(reinterpret_cast<char*>(&_blockSize), sizeof(_blockSize));
     out.write(reinterpret_cast<char*>(&_filePositionNextIndexBlock), sizeof(_filePositionNextIndexBlock));
     out.write(reinterpret_cast<char*>(&_offsetOfNextAvailableSpace), sizeof(_offsetOfNextAvailableSpace));
 
     out.write(reinterpret_cast<char*>(_data),_blockSize);
+
+    if( _filePosition < currentPos ) // move file ptr to the end of file 
+        out.seekp( STREAM_POS( currentPos ) );
     
     osg::notify(osg::INFO)<<"OSGA_Archive::IndexBlock::write() end"<<std::endl;
 }
@@ -251,17 +340,44 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
     {
         if (status==WRITE && open(filename,READ))
         {
+            pos_type file_size( 0 );
+            _input.seekg( 0, std::ios_base::end );
+            file_size = ARCHIVE_POS( _input.tellg() ); 
+            if( _input.is_open() && file_size <= 0 )
+            {   // compute end of file postition manually ... 
+                // seekp( 0, ios::end ), tellp( ) fails in 32 bit windows with files > 4 GiB
+                size_t BlockHeaderSize = 
+                    sizeof( unsigned int /*_blockSize*/ ) + 
+                    sizeof( pos_type /*_filePositionNextIndexBlock*/ ) +
+                    sizeof( unsigned int /*_offsetOfNextAvailableSpace*/ );
+          
+                for(IndexBlockList::iterator itr=_indexBlockList.begin();
+                    itr!=_indexBlockList.end();
+                    ++itr)
+                {
+                    pos_type end = (*itr)->getPosition() + BlockHeaderSize + (*itr)->getBlockSize();
+                    if( file_size < end ) file_size = end;
+                }
+
+                for(FileNamePositionMap::iterator mitr=_indexMap.begin();
+                    mitr!=_indexMap.end();
+                    ++mitr)
+                {
+                    pos_type end = mitr->second.first + mitr->second.second;
+                    if( file_size < end ) file_size = end;
+                }
+            }
             _input.close();
             _status = WRITE;
 
             _output.open(filename.c_str(), std::ios_base::binary | std::ios_base::in | std::ios_base::out);
-            
-            osg::notify(osg::INFO)<<"File position after open = "<<(int)_output.tellp()<<" is_open "<<_output.is_open()<<std::endl;
 
-            // place write position at end of file.
-            _output.seekp(0, std::ios::end);
+            osg::notify(osg::INFO)<<"File position after open = "<<ARCHIVE_POS( _output.tellp() )<<" is_open "<<_output.is_open()<<std::endl;
 
-            osg::notify(osg::INFO)<<"File position after seekp = "<<(int)_output.tellp()<<std::endl;
+            // place write position at end of file. 
+            _output.seekp( STREAM_POS( file_size ) );
+
+            osg::notify(osg::INFO)<<"File position after seekp = "<<ARCHIVE_POS( _output.tellp() )<<std::endl;
 
             osg::notify(osg::INFO)<<"OSGA_Archive::open("<<filename<<") open for writing"<<std::endl;
 
@@ -284,12 +400,7 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
                 _indexBlockList.push_back(indexBlock);
             }
 
-            osg::notify(osg::INFO)<<"File position after write = "<<(int)_output.tellp()<<std::endl;
-
-            // place write position at end of file.
-            _output.seekp(0,std::ios::end);
-
-            osg::notify(osg::INFO)<<"File position after seekp = "<<(int)_output.tellp()<<std::endl;
+            osg::notify(osg::INFO)<<"File position after write = "<<ARCHIVE_POS( _output.tellp() )<<std::endl;
 
             return true;
         }
@@ -337,7 +448,7 @@ bool OSGA_Archive::_open(std::istream& input)
                 _indexBlockList.push_back(indexBlock);
                 if (indexBlock->getPositionNextIndexBlock()==pos_type(0)) break;
 
-                input.seekg(indexBlock->getPositionNextIndexBlock());
+                input.seekg( STREAM_POS( indexBlock->getPositionNextIndexBlock() ) );
             }
 
             // now need to build the filename map.
@@ -464,7 +575,7 @@ bool OSGA_Archive::addFileReference(pos_type position, size_type size, const std
     // if not one available create a new block.    
     if (!indexBlock)
     {
-        if (previousBlock.valid()) previousBlock->setPositionNextIndexBlock(_output.tellp());
+        if (previousBlock.valid()) previousBlock->setPositionNextIndexBlock( ARCHIVE_POS( _output.tellp() ) );
     
         indexBlock = new IndexBlock(blockSize);
         indexBlock->write(_output);
@@ -549,7 +660,7 @@ ReaderWriter::ReadResult OSGA_Archive::read(const ReadFunctor& readFunctor)
 
     if (_status!=READ) 
     {
-        osg::notify(osg::INFO)<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed, archive opened as read only."<<std::endl;
+        osg::notify(osg::INFO)<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed, archive opened as write only."<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_HANDLED);
     }
     
@@ -563,15 +674,15 @@ ReaderWriter::ReadResult OSGA_Archive::read(const ReadFunctor& readFunctor)
     ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(readFunctor._filename));
     if (!rw)
     {
-        osg::notify(osg::INFO)<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed to find appropriate plugin to write file."<<std::endl;
+        osg::notify(osg::INFO)<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed to find appropriate plugin to read file."<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_HANDLED);
     }
     
     osg::notify(osg::INFO)<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<")"<<std::endl;
     
-    _input.seekg(itr->second.first);
+    _input.seekg( STREAM_POS( itr->second.first ) );
 
-    // set up proxy stream buffer to proide the faked ending.
+    // set up proxy stream buffer to provide the faked ending.
     std::istream& ins = _input;
     proxy_streambuf mystreambuf(ins.rdbuf(),itr->second.second);
     ins.rdbuf(&mystreambuf);
@@ -663,15 +774,12 @@ ReaderWriter::WriteResult OSGA_Archive::write(const WriteFunctor& writeFunctor)
     
     osg::notify(osg::INFO)<<"OSGA_Archive::write(obj, "<<writeFunctor._filename<<")"<<std::endl;
     
-    // place write position at end of file.
-    _output.seekp(0,std::ios::end);
-    
-    pos_type position = _output.tellp();
+    pos_type position = ARCHIVE_POS( _output.tellp() );
     
     WriteResult result = writeFunctor.doWrite(*rw,_output);
     
-    pos_type final_position = _output.tellp();
-    size_type size = size_type(final_position-position);
+    pos_type final_position = ARCHIVE_POS( _output.tellp() );
+    size_type size = size_type( final_position-position );
 
     if (result.success()) addFileReference(position, size, writeFunctor._filename);
     

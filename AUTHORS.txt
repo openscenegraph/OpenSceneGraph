@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.2.0
+OpenSceneGraph Library 2.3.0
 
-281 Contributors:
+294 Contributors:
 
 Firstname Surname
 -----------------
@@ -15,48 +15,49 @@ Paul Martz
 Farshid Lashkari
 Stephan Huber
 Bob Kuehne
-Martin Lavery
 Ulrich Hertlein
+Martin Lavery
 Eric Sokolowsky
 Tree 
-Mike Wittman
-Luigi Calori
 Trajce Nikolov
+Mike Wittman
+Mathias Fröhlich
+Luigi Calori
+David Callu
 Pavel Moloshtan
 Tom Jolley
-Mathias Fröhlich
 Norman Vine
-David Callu
-Alberto Farre
 Roger James
+Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
+Andy Skinner
 Olaf Flebbe
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
 Michael Gronager
+Jean-Sebastien Guay
 Daniel Sjölie
 Colin McDonald
 Chris Hanson
-Jean-Sebastien Guay
-David Spilling
-Andy Skinner
 Per Fahlberg
+David Spilling
 Joran Jessurun
+Jeremy Moles
 Frederic Marmond
 David Fries
 Boris Bralo
 Yefei He
 Sondra Iverson
+Serge Lages
 Rune Schmidt Jensen
-Neil Salter
 Mike Connell
-Jeremy Moles
 Jason Daly
 Jason Beverage
 Ben Discoe
+Sherman Wilcox
 Sasa Bistrovic
 Rainer Oder
 Paul Melis
@@ -64,6 +65,7 @@ Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Loic Dachary
+Joseph Steel
 Joakim Simonsson
 Jan Peciva
 Jan Ciger
@@ -71,21 +73,22 @@ Gordon Tomlinson
 Brad Colbert
 Art Tevs
 Andreas Ekstrand
+Adrian Egli
+Wojciech Lewandowski
 Vivek Rajan
 Stephane Simon
-Sherman Wilcox
 Sean Spicer
 Ravi Mathur
 Nikolaus Hanekamp
+Neil Salter
+Mihai Radu
 Michael Platings
 Michael Hartman
 Laurens Voerman
-Joseph Steel
 John Shue
 David Guthrie
 Corbin Holtz
 Brad Christiansen
-Adrian Egli
 Toshiyuki Takahei
 Thom DeCarlo
 Terry Welsh
@@ -93,19 +96,23 @@ Simon Julier
 Sebastien Grignard
 Romano Magacho
 Paul de Repentigny
-Mihai Radu
 Luc Frauciel
 Leandro Motta Barros
 José Delport
+Daniel Larimer
 Carlo Camporesi
 Bryan Thrall
 Bruce Clay
 Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
+Tony Horrobin
 Sohey Yamamoto
-Serge Lages
+Roland Smeenk
+Richard Schmidt
 Phil Atkin
+Peter Hrenka
+Neil Hughes
 Mattias Linde
 Mathieu Marache
 Maria Ten
@@ -117,27 +124,27 @@ James French
 Gabor Dorka
 Donn Mielcarek
 Domenico Mangieri
-Daniel Larimer
+Colin Dunlop
 Charles Cole
 Blake Williams
 Antoine Hue
 Anders Backman
 Ali Botorabi
+Alberto Luaces
 Zach Deedler
 Yuzhong Shen
 Tugkan Calapoglu
-Tony Horrobin
+Tim Moore
 Tim Daoust
 Thibault Genessay
 Terrex 
 Steve Lunsford
 Stephan Eilemann
 Stanislav Blinov
-Roland Smeenk
 Riccardo Corsi
+Ralf Kern
 Rafa Giatan
 Philip Lowman
-Peter Hrenka
 Perry Miller
 Nathan Monteleone
 Michael Henheffer
@@ -151,21 +158,23 @@ Joseph Winston
 John Aughey
 Johan Nouvel
 Igor Kravtchenko
+Gustavo Wagner
 Gerrick Bivins
 George Tarantilis
 Garret Potts
 Fabio Mierlo
 Edgar Ellis
+Donald Cipperly
 David Ergo
+David Cullu
 Daniel Trstenjak
 Csaba Halasz
+Cedric Pinson
 Andrew Sampson
 Andrew Lorino
 Andreas Goebel
-Alberto Luaces
 Zbigniew Sroczynski
 Yuri Vilmanis
-Wojciech Lewandowski
 Warren Macchi
 Wang Lam
 Walter J. Altice
@@ -178,7 +187,6 @@ Vaclav Bilek
 Tyge 
 Troy Yee
 Tino Schwarze
-Tim Moore
 Thom Carlo
 Tery Welsh
 Tanguy Fautré
@@ -192,11 +200,12 @@ Robert Swain
 Rick Pingry
 Reinhard Sainitzer
 Rein Kadijk
-Ralf Kern
 Qing Shen
 Philipp Siemoleit
+Paul Obermeier
 Paul Fredrikson
 Parag Chaudhur
+Panagiotis Papadakos
 Orhun Birsoy
 Ole-Morten Duesund
 Nicolas Brodu
@@ -204,6 +213,7 @@ Nathan Cournia
 Morné Pistorius
 Mirko Viviani
 Mikkel GjÃ¸l
+Mike Garrity
 Michael Polak
 Michael Morrison
 Michael Logan
@@ -217,11 +227,13 @@ Mason Menninger
 Martin Spott
 Martin Amueller
 Mario Valle
+Mario Guimaraes
 Marin Lavery
 Louis Hamilton
 Lewis Harmon
 Kristopher Bixler
 Karsten Weiss
+Karl Heijdenberg
 Josh Portway
 John Tan
 John Grant
@@ -234,10 +246,11 @@ Jason Howlett
 Jason Ballenger
 J.E. Hoffmann
 Henrique Bucher
-Gustavo Wagner
+Hautio Jari
 Guillaume Millet
 Graeme Harkness
 Glenn Waldrom
+Gino van den Bergen
 Gian Lorenzetto
 George Papagiannakis
 Gary Quinn
@@ -256,11 +269,11 @@ Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
 Doug McCorkle
-Donny Cipperly
 Dean Iverson
 David Jung
 David Gurhrie
 Dan Minor
+Cyril Brulebois
 Clay Fowler
 Chuck Sembroski
 Chuck Seberion

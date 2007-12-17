@@ -205,6 +205,8 @@ bool validName(const std::string& first)
     if (first=="TexMat(Matrix") return false;
     if (first=="GraphicsWindowX11") return false;
     if (first=="OperationThread") return false;
+    if (first=="SimpleViewer") return false;
+    if (first=="IndexFaceSets") return false;
     return true;
 }
 
@@ -217,7 +219,9 @@ std::string typoCorrection(const std::string& name)
     if (name=="") return "";
 #endif
     if (name=="Martsz") return "Martz";
+    if (name=="Matz")  return "Martz";
     if (name=="Froenlich") return "Fröhlich";
+    if (name=="Froechlich") return "Fröhlich";
     if (name=="Froelich") return "Fröhlich";    
     if (name=="Fruciel") return "Frauciel";
     if (name=="Hebelin") return "Herbelin";
@@ -315,14 +319,30 @@ std::string typoCorrection(const std::string& name)
     if (name=="Skinnder") return "Skinner";
     if (name=="Mihair")  return "Mihai";
     if (name=="Mahai")  return "Mihai";
-    
-    if (name=="SimpleViewer") return "";
+    if (name=="Wojiech")  return "Wojciech";
+    if (name=="Leandowski")  return "Lewandowski";
+    if (name=="Aderian")  return "Adrian";
     
     return name;
 }
 
 void nameCorrection(NamePair& name)
 {
+    if (name.first=="Ralf" && name.second=="Karn")
+    {
+        name.first = "Ralf";
+        name.second = "Kern";
+    }
+    if (name.first=="Donny" && name.second=="Cipperly")
+    {
+        name.first = "Donald";
+        name.second = "Cipperly";
+    }
+    if (name.first=="Gino" && name.second=="")
+    {
+        name.first = "Gino";
+        name.second = "van den Bergen";
+    }
     if (name.first=="Radu" && name.second=="Mihai")
     {
         name.first = "Mihai";

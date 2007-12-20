@@ -185,6 +185,18 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr, bool& itrAdvanced)
         itrAdvanced = true;
     }
         
+    unsigned int minLevel=0;
+    if (fr.read("MinLevel",minLevel))
+    {
+        itrAdvanced = true;
+    }
+
+    unsigned int maxLevel = MAXIMUM_NUMBER_OF_LEVELS;
+    if (fr.read("MaxLevel",maxLevel))
+    {
+        itrAdvanced = true;
+    }
+
 
     if (fr.matchSequence("CompositeLayer {"))
     {
@@ -290,6 +302,9 @@ osgTerrain::Layer* readLayer(osgDB::Input& fr, bool& itrAdvanced)
     {
         layer->setLocator(locator.get());
     }
+    
+    layer->setMinLevel(minLevel);
+    layer->setMaxLevel(maxLevel);
     
     return layer.release();
 }
@@ -553,6 +568,16 @@ bool writeLayer(const osgTerrain::Layer& layer, osgDB::Output& fw)
     {
         writeLocator(*layer.getLocator(),fw);
     }
+
+    if (layer.getMinLevel()!=0)
+    {
+        fw.indent()<<"MinLevel "<<layer.getMinLevel()<<std::endl;
+    } 
+
+    if (layer.getMinLevel()!=MAXIMUM_NUMBER_OF_LEVELS)
+    {
+        fw.indent()<<"MaxLevel "<<layer.getMaxLevel()<<std::endl;
+    } 
 
     const osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<const osgTerrain::ProxyLayer*>(&layer);
     if (proxyLayer)

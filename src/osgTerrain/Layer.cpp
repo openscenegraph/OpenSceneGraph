@@ -16,13 +16,17 @@
 
 using namespace osgTerrain;
 
-Layer::Layer()
+Layer::Layer():
+    _minLevel(0),
+    _maxLevel(MAXIMUM_NUMBER_OF_LEVELS)
 {
 }
 
 Layer::Layer(const Layer& layer,const osg::CopyOp& copyop):
     osg::Object(layer,copyop),
-    _filename(layer._filename)
+    _filename(layer._filename),
+    _minLevel(layer._minLevel),
+    _maxLevel(layer._maxLevel)
 {
 }
 

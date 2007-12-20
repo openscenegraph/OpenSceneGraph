@@ -14,15 +14,13 @@
 #ifndef OSGPRODUCER_CAMERA
 #define OSGPRODUCER_CAMERA
 
-#include "RenderSurface.h"
 #include <osg/Referenced>
 #include <osg/Matrix>
-#include <osg/Math>
 #include <osg/Vec3>
 
-#include <vector>
+#include "RenderSurface.h"
 
-#include <osg/Math>
+#include <vector>
 
 namespace osgProducer {
 

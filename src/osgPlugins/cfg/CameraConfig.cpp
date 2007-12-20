@@ -11,6 +11,9 @@
  * OpenSceneGraph Public License for more details.
  */
 
+#include <osg/Notify>
+#include <osg/ref_ptr>
+#include <osg/io_utils>
 
 #if defined(WIN32) && !defined(__CYGWIN__)
     #include <Io.h>
@@ -30,11 +33,9 @@
 #include <memory.h>
 #include <stdlib.h>
 #include <iostream>
-#include <cmath>
+
 #include "CameraConfig.h"
-#include <osg/Notify>
-#include <osg/ref_ptr>
-#include <osg/io_utils>
+
 
 using namespace osgProducer;
 

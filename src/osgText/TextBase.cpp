@@ -39,7 +39,7 @@ TextBase::TextBase():
     _characterSizeMode(OBJECT_COORDS),
     _maximumWidth(0.0f),
     _maximumHeight(0.0f),
-    _lineSpacing(1.0f),
+    _lineSpacing(0.0f),
     _alignment(BASE_LINE),
     _axisAlignment(XY_PLANE),
     _autoRotateToScreen(false),

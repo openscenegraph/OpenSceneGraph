@@ -16,8 +16,6 @@
 
 #include <stdio.h>
 
-#include "Camera.h"
-#include "RenderSurface.h"
 #include <osg/Referenced>
 #include <osg/Matrix>
 #include <osgViewer/View>
@@ -28,6 +26,9 @@
 #include <osg/Notify>
 #include <osg/Vec2>
 #include <iostream>
+
+#include "Camera.h"
+#include "RenderSurface.h"
 
 //#undef SUPPORT_CPP
 

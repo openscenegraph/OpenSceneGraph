@@ -106,7 +106,7 @@ public:
         {   // near plane
             Face& face = createFace();
             face.name = "near";
-            face.plane.set(0.0,0.0,-1.0,1.0);
+            face.plane.set(0.0,0.0,1.0,1.0);
             face.vertices.push_back(v000);
             face.vertices.push_back(v010);
             face.vertices.push_back(v110);
@@ -117,7 +117,7 @@ public:
         {   // far plane
             Face& face = createFace();
             face.name = "far";
-            face.plane.set(0.0,0.0,1.0,1.0);
+            face.plane.set(0.0,0.0,-1.0,1.0);
             face.vertices.push_back(v001);
             face.vertices.push_back(v101);
             face.vertices.push_back(v111);

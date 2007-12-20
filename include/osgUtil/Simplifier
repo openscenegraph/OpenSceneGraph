@@ -28,7 +28,7 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 {
     public:
 
-        Simplifier(float sampleRatio=1.0f, float maximumError=FLT_MAX, float maximumLength=0.0);
+        Simplifier(double sampleRatio=1.0, double maximumError=FLT_MAX, double maximumLength=0.0);
 
 
         void setSampleRatio(float sampleRatio) { _sampleRatio = sampleRatio; }
@@ -104,9 +104,9 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 
     protected:
     
-        float _sampleRatio;
-        float _maximumError;
-        float _maximumLength;
+        double _sampleRatio;
+        double _maximumError;
+        double _maximumLength;
         bool  _triStrip;
         bool  _smoothing;
         

@@ -56,6 +56,13 @@ class EdgeCollapse
 {
 public:
 
+
+#if 1
+    typedef float error_type;
+#else
+    typedef double error_type;
+#endif
+
     struct Triangle;
     struct Edge;
     struct Point;
@@ -102,11 +109,14 @@ public:
         return computeInterpolatedPoint(edge,0.5f);
     }
     
-    float computeErrorMetric(Edge* edge,Point* point) const
+    error_type computeErrorMetric(Edge* edge,Point* point) const
     {
         if (_computeErrorMetricUsingLength)
         {
-            return (edge->_p1->_vertex - edge->_p2->_vertex).length();
+            error_type dx = error_type(edge->_p1->_vertex.x()) - error_type(edge->_p2->_vertex.x());
+            error_type dy = error_type(edge->_p1->_vertex.y()) - error_type(edge->_p2->_vertex.y());
+            error_type dz = error_type(edge->_p1->_vertex.z()) - error_type(edge->_p2->_vertex.z());
+            return sqrt(dx*dx + dy*dy + dz*dz);
         }
         else if (point)
         {
@@ -116,9 +126,9 @@ public:
             std::copy( edge->_p2->_triangles.begin(), edge->_p2->_triangles.end(), std::inserter(triangles,triangles.begin()));
 
             const osg::Vec3& vertex = point->_vertex;
-            float error = 0.0f;
+            error_type error = 0.0;
 
-            if (triangles.empty()) return 0.0f;
+            if (triangles.empty()) return 0.0;
 
             for(LocalTriangleSet::iterator itr=triangles.begin();
                 itr!=triangles.end();
@@ -128,7 +138,7 @@ public:
             }
             
             // use average of error
-            error /= (float)triangles.size();
+            error /= error_type(triangles.size());
 
             return error;
         }
@@ -164,7 +174,7 @@ public:
         {
             edge->updateMaxNormalDeviationOnEdgeCollapse();
 
-            if (edge->getMaxNormalDeviationOnEdgeCollapse()<=1.0f && !edge->isAdjacentToBoundary())
+            if (edge->getMaxNormalDeviationOnEdgeCollapse()<=1.0 && !edge->isAdjacentToBoundary())
                 edge->setErrorMetric( computeErrorMetric( edge, edge->_proposedPoint.get()));
             else
                 edge->setErrorMetric( FLT_MAX );
@@ -196,7 +206,7 @@ public:
                 edge->_proposedPoint = computeOptimalPoint(edge);
                 edge->updateMaxNormalDeviationOnEdgeCollapse();
 
-                if (edge->getMaxNormalDeviationOnEdgeCollapse()<=1.0f && !edge->isAdjacentToBoundary())
+                if (edge->getMaxNormalDeviationOnEdgeCollapse()<=1.0 && !edge->isAdjacentToBoundary())
                     edge->setErrorMetric( computeErrorMetric( edge, edge->_proposedPoint.get()));
                 else
                     edge->setErrorMetric( FLT_MAX );
@@ -303,7 +313,7 @@ public:
 
     struct Edge : public osg::Referenced
     {
-        Edge(): _errorMetric(0.0f), _maximumDeviation(1.0f) {}
+        Edge(): _errorMetric(0.0), _maximumDeviation(1.0) {}
         
         void clear()
         {
@@ -317,13 +327,13 @@ public:
         
         TriangleSet _triangles;
 
-        float _errorMetric;
-        float _maximumDeviation;
+        error_type _errorMetric;
+        error_type _maximumDeviation;
 
         osg::ref_ptr<Point> _proposedPoint;
 
-        void setErrorMetric(float errorMetric) { _errorMetric = errorMetric; }
-        float getErrorMetric() const { return _errorMetric; }
+        void setErrorMetric(error_type errorMetric) { _errorMetric = errorMetric; }
+        error_type getErrorMetric() const { return _errorMetric; }
         
         bool operator < ( const Edge& rhs) const
         {
@@ -394,7 +404,7 @@ public:
             }
         }
         
-        float getMaxNormalDeviationOnEdgeCollapse() const { return _maximumDeviation; } 
+        error_type getMaxNormalDeviationOnEdgeCollapse() const { return _maximumDeviation; } 
 
     };
 
@@ -465,7 +475,7 @@ public:
         }
         
         // note return 1 - dotproduct, so that deviation is in the range of 0.0 to 2.0, where 0 is coincident, 1.0 is 90 degrees, and 2.0 is 180 degrees.
-        float computeNormalDeviationOnEdgeCollapse(Edge* edge,Point* pNew) const
+        error_type computeNormalDeviationOnEdgeCollapse(Edge* edge,Point* pNew) const
         {
             const Point* p1 = (_p1==edge->_p1 || _p1==edge->_p2) ? pNew : _p1.get();  
             const Point* p2 = (_p2==edge->_p1 || _p2==edge->_p2) ? pNew : _p2.get();  
@@ -474,13 +484,16 @@ public:
             osg::Vec3 new_normal = (p2->_vertex - p1->_vertex) ^ (p3->_vertex - p2->_vertex);
             new_normal.normalize();
 
-            float result = 1.0f - (new_normal.x() * _plane[0] + new_normal.y() * _plane[1] + new_normal.z() * _plane[2]);
+            error_type result = 1.0 - (new_normal.x() * _plane[0] + new_normal.y() * _plane[1] + new_normal.z() * _plane[2]);
             return result;
         }
 
-        float distance(const osg::Vec3& vertex) const
+        error_type distance(const osg::Vec3& vertex) const
         {
-            return _plane.distance(vertex);
+            return error_type(_plane[0])*error_type(vertex.x())+
+                   error_type(_plane[1])*error_type(vertex.y())+
+                   error_type(_plane[2])*error_type(vertex.z())+
+                   error_type(_plane[3]);
         }
         
         bool isBoundaryTriangle() const
@@ -1686,7 +1699,7 @@ void EdgeCollapse::copyBackToGeometry()
 }
 
 
-Simplifier::Simplifier(float sampleRatio, float maximumError, float maximumLength):
+Simplifier::Simplifier(double sampleRatio, double maximumError, double maximumLength):
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
             _sampleRatio(sampleRatio),
             _maximumError(maximumError),

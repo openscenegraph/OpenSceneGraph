@@ -430,6 +430,26 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __C5_Locator_P1__getLocator,
 	          "",
 	          "");
+	I_Method1(void, setMinLevel, IN, unsigned int, minLevel,
+	          Properties::NON_VIRTUAL,
+	          __void__setMinLevel__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMinLevel,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMinLevel,
+	          "",
+	          "");
+	I_Method1(void, setMaxLevel, IN, unsigned int, maxLevel,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxLevel__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaxLevel,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMaxLevel,
+	          "",
+	          "");
 	I_Method1(void, setValidDataOperator, IN, osgTerrain::ValidDataOperator *, validDataOp,
 	          Properties::NON_VIRTUAL,
 	          __void__setValidDataOperator__ValidDataOperator_P1,
@@ -549,6 +569,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_SimpleProperty(osgTerrain::Locator *, Locator, 
 	                 __Locator_P1__getLocator, 
 	                 __void__setLocator__Locator_P1);
+	I_SimpleProperty(unsigned int, MaxLevel, 
+	                 __unsigned_int__getMaxLevel, 
+	                 __void__setMaxLevel__unsigned_int);
+	I_SimpleProperty(unsigned int, MinLevel, 
+	                 __unsigned_int__getMinLevel, 
+	                 __void__setMinLevel__unsigned_int);
 	I_SimpleProperty(unsigned, ModifiedCount, 
 	                 0, 
 	                 __void__setModifiedCount__unsigned);

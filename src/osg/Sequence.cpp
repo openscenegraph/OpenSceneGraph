@@ -205,6 +205,13 @@ void Sequence::traverse(NodeVisitor& nv)
 {
     if (getNumChildren()==0) return;
 
+    const FrameStamp* framestamp = nv.getFrameStamp();
+    if (framestamp)
+    {
+        _now = framestamp->getSimulationTime();
+    }
+
+
     if (nv.getVisitorType()==NodeVisitor::UPDATE_VISITOR && 
         _mode == START &&
         !_frameTime.empty() && getNumChildren()!=0)
@@ -222,12 +229,8 @@ void Sequence::traverse(NodeVisitor& nv)
         int _sbegin = osg::minimum(_ubegin,_uend);
         int _send = osg::maximum(_ubegin,_uend);
 
-        const FrameStamp* framestamp = nv.getFrameStamp();
         if (framestamp)
         {
-          
-            _now = framestamp->getSimulationTime();
-
             // hack for last frame time
             if (_lastFrameTime>0. && _nrepsRemain==1 && _saveRealLastFrameTime<0.)
             {

@@ -91,6 +91,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Notify
     ${HEADER_PATH}/Object
     ${HEADER_PATH}/OccluderNode
+    ${HEADER_PATH}/OcclusionQueryNode
     ${HEADER_PATH}/OperationThread
     ${HEADER_PATH}/PagedLOD
     ${HEADER_PATH}/Plane
@@ -247,6 +248,7 @@ ADD_LIBRARY(${LIB_NAME}
     Notify.cpp
     Object.cpp
     OccluderNode.cpp
+    OcclusionQueryNode.cpp
     OperationThread.cpp
     PagedLOD.cpp
     Point.cpp

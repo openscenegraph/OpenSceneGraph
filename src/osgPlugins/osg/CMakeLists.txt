@@ -42,6 +42,7 @@ Node.cpp
 NodeCallback.cpp
 Object.cpp
 OccluderNode.cpp
+OcclusionQueryNode.cpp
 PagedLOD.cpp
 Point.cpp
 PointSprite.cpp

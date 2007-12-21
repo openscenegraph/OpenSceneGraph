@@ -1,6 +1,8 @@
 #include <osgGA/UFOManipulator>
 #include <osgUtil/IntersectVisitor>
 
+#include <osg/io_utils>
+
 #ifndef M_PI
 # define M_PI       3.14159265358979323846  /* pi */
 #endif
@@ -74,7 +76,7 @@ void UFOManipulator::setByMatrix( const osg::Matrixd &mat )
     _position.set( _inverseMatrix(3,0), _inverseMatrix(3,1), _inverseMatrix(3,2 ));
     osg::Matrix R(_inverseMatrix);
     R(3,0) = R(3,1) = R(3,2) = 0.0;
-    _direction = osg::Vec3(0,0,-1) * R; // yep.
+    _direction = osg::Vec3(0,0,-1) * R; // camera up is +Z, regardless of CoordinateFrame
 
     _stop();
 }
@@ -87,7 +89,7 @@ void UFOManipulator::setByInverseMatrix( const osg::Matrixd &invmat)
     _position.set( _inverseMatrix(3,0), _inverseMatrix(3,1), _inverseMatrix(3,2 ));
     osg::Matrix R(_inverseMatrix);
     R(3,0) = R(3,1) = R(3,2) = 0.0;
-    _direction = osg::Vec3(0,0,-1) * R; // yep.
+    _direction = osg::Vec3(0,0,-1) * R; // camera up is +Z, regardless of CoordinateFrame
 
     _stop();
 }
@@ -116,9 +118,11 @@ void UFOManipulator::computeHomePosition()
     osgUtil::IntersectVisitor iv;
     iv.setTraversalMask(_intersectTraversalMask);
 
+    osg::CoordinateFrame cf( getCoordinateFrame(bs.center()) ); // not sure what position to use here
+    osg::Vec3d upVec( getUpVector(cf) );
     osg::ref_ptr<osg::LineSegment> seg = new osg::LineSegment;
-    osg::Vec3 A = bs.center() + (osg::Vec3(0,0,1)*(bs.radius()*2));
-    osg::Vec3 B = bs.center() + (osg::Vec3(0,0,-1)*(bs.radius()*2));
+    osg::Vec3 A = bs.center() + (upVec*(bs.radius()*2));
+    osg::Vec3 B = bs.center() + (-upVec*(bs.radius()*2));
 
     if( (B-A).length() == 0.0)
     {
@@ -126,8 +130,8 @@ void UFOManipulator::computeHomePosition()
     }
 
     /*
-    seg->set( bs.center() + (osg::Vec3(0,0,1)*(bs.radius()*2)), 
-              bs.center() + (osg::Vec3(0,0,-1)*(bs.radius()*2)) );
+    seg->set( bs.center() + (upVec*(bs.radius()*2)), 
+              bs.center() + (-upVec*(bs.radius()*2)) );
               */
     seg->set( A, B );
 
@@ -141,8 +145,9 @@ void UFOManipulator::computeHomePosition()
     {
         osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(seg.get());
         osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-        if( fabs(ip[2]) < ground )
-            ground = ip[2];
+        double d = ip.length();
+        if( d < ground )
+            ground = d;
     }
     else
     {
@@ -151,8 +156,8 @@ void UFOManipulator::computeHomePosition()
     }
 
 
-    osg::Vec3 p(bs.center()[0], bs.center()[1], ground + (_minHeightAboveGround*1.25) );
-    setHomePosition( p, p + osg::Vec3(0,1,0), osg::Vec3(0,0,1) );
+    osg::Vec3 p(bs.center() + upVec*( ground + _minHeightAboveGround*1.25 ) );
+    setHomePosition( p, p + getFrontVector(cf), upVec );
 }
 
 void UFOManipulator::init(const GUIEventAdapter&, GUIActionAdapter&)
@@ -410,6 +415,7 @@ void UFOManipulator::_keyDown( const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             home(ea.getTime());
             break;
     }
+
 }
 
 void UFOManipulator::_frame( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter & )
@@ -426,18 +432,21 @@ void UFOManipulator::_frame( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
         _t0 = t1;
     }
 
+    osg::CoordinateFrame cf( getCoordinateFrame(_position) );
+    osg::Vec3d upVec( getUpVector(cf) );
     if( fabs( _directionRotationRate ) > _directionRotationEpsilon )
     {
-        _direction = _direction * osg::Matrix::rotate( _directionRotationRate, osg::Vec3(0,0,1));
+      _direction = _direction * osg::Matrix::rotate( _directionRotationRate, upVec);
     }
 
     {
-        osg::Vec3 _sideVec = _direction * osg::Matrix::rotate( -M_PI*0.5, osg::Vec3(0,0,1));
+      osg::Vec3 _sideVec = _direction * osg::Matrix::rotate( -M_PI*0.5, upVec);
 
         _position += ((_direction       * _forwardSpeed) + 
                       (_sideVec         * _sideSpeed) +
-                      (osg::Vec3(0,0,1) * _upSpeed))
+                      (upVec * _upSpeed))
                        * _dt;
+
     }
 
     _pitchOffset += _pitchOffsetRate * _dt;
@@ -448,13 +457,13 @@ void UFOManipulator::_frame( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
     if( _yawOffset >= M_PI || _yawOffset < -M_PI ) 
         _yawOffset *= -1;
 
-    _offset       = osg::Matrix::rotate( _yawOffset, osg::Vec3(0,1,0),
-                                         _pitchOffset, osg::Vec3(1,0,0),
-                                         0.0, osg::Vec3(0,0,1));
+    _offset       = osg::Matrix::rotate( _yawOffset, getSideVector(cf),
+                                         _pitchOffset, getFrontVector(cf),
+                                         0.0, upVec);
 
     _adjustPosition();
 
-    _inverseMatrix.makeLookAt( _position, _position + _direction, osg::Vec3(0,0,1)); 
+    _inverseMatrix.makeLookAt( _position, _position + _direction, upVec); 
     _matrix.invert(_inverseMatrix);
 
     if( _decelerateUpSideRate )
@@ -511,9 +520,11 @@ void UFOManipulator::_adjustPosition()
 
 
     // Down line segment at 3 times our intersect distance
+    osg::CoordinateFrame cf( getCoordinateFrame(_position) );
+    osg::Vec3d upVec( getUpVector(cf) );
     osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
     segDown->set(   _position, 
-                    _position - (osg::Vec3(0,0, _minHeightAboveGround*3)));
+                    _position - upVec*_minHeightAboveGround*3);
     iv.addLineSegment( segDown.get() );
 
     _node->accept(iv);
@@ -543,8 +554,10 @@ void UFOManipulator::_adjustPosition()
             if (!hitList.empty())
             {
                 osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-                if( _position[2] - ip[2] < _minHeightAboveGround )
-                    _position[2] = ip[2] + _minHeightAboveGround;
+                double d = (ip - _position).length();
+            
+                if( d < _minHeightAboveGround )
+                  _position = ip + (upVec * _minHeightAboveGround);
             }
         }
 
@@ -564,6 +577,6 @@ void UFOManipulator::getCurrentPositionAsLookAt( osg::Vec3 &eye, osg::Vec3 &cent
 {
     eye = _position;
     center = _position + _direction;
-    up.set( 0, 0, 1 );
+    up.set(getUpVector(getCoordinateFrame(_position)));
 }
 

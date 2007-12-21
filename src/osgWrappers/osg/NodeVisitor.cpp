@@ -25,6 +25,7 @@
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/OccluderNode>
+#include <osg/OcclusionQueryNode>
 #include <osg/PagedLOD>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Projection>
@@ -320,6 +321,11 @@ BEGIN_OBJECT_REFLECTOR(osg::NodeVisitor)
 	I_Method1(void, apply, IN, osg::OccluderNode &, node,
 	          Properties::VIRTUAL,
 	          __void__apply__OccluderNode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::OcclusionQueryNode &, node,
+	          Properties::VIRTUAL,
+	          __void__apply__OcclusionQueryNode_R1,
 	          "",
 	          "");
 	I_Method1(void, setDatabaseRequestHandler, IN, osg::NodeVisitor::DatabaseRequestHandler *, handler,

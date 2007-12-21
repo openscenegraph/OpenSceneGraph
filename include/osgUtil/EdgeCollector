@@ -140,8 +140,7 @@ public:
         
         void clear();
 
-        inline bool operator < (const Triangle& rhs) const;
-
+        bool operator < (const Triangle& rhs) const;
 
         void setOrderedPoints(Point* p1, Point* p2, Point* p3);
         

@@ -12,6 +12,7 @@
 */
 
 #include <osgUtil/ReversePrimitiveFunctor>
+#include <algorithm>
 
 
 template <typename Type>

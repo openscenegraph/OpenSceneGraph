@@ -77,7 +77,10 @@ public:
     void writeVec4sArray(const osg::Vec4sArray* a);    
     void writeVec2bArray(const osg::Vec2bArray* a);
     void writeVec3bArray(const osg::Vec3bArray* a);
-    void writeVec4bArray(const osg::Vec4bArray* a);    
+    void writeVec4bArray(const osg::Vec4bArray* a);
+    void writeVec2dArray(const osg::Vec2dArray* a);
+    void writeVec3dArray(const osg::Vec3dArray* a);
+    void writeVec4dArray(const osg::Vec4dArray* a);  
     void writeMatrixf(const osg::Matrixf& mat);
     void writeMatrixd(const osg::Matrixd& mat);
 

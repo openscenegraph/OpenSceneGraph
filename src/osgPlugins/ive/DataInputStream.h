@@ -82,7 +82,10 @@ public:
     osg::Vec4bArray* readVec4bArray();
     osg::Vec2sArray* readVec2sArray();
     osg::Vec3sArray* readVec3sArray();
-    osg::Vec4sArray* readVec4sArray();    
+    osg::Vec4sArray* readVec4sArray();
+    osg::Vec2dArray* readVec2dArray();
+    osg::Vec3dArray* readVec3dArray();
+    osg::Vec4dArray* readVec4dArray();    
 
     osg::Image* readImage(std::string s);
     osg::Image* readImage(IncludeImageMode mode);

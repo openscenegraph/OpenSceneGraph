@@ -145,6 +145,6 @@ int main(int argc, char** argv)
 
     viewer.realize();
 
-    viewer.run();
+    return viewer.run();
 
 }

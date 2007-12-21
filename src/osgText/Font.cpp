@@ -691,10 +691,17 @@ void Font::GlyphTexture::apply(osg::State& state) const
             s_subloadAllGlyphsTogether = true;
         }
 
+        if (s_renderer && strstr((const char*)s_renderer,"Sun")!=0)
+        {
+            // we're running on an solaris x server, so need to work around its
+            // subloading bugs by loading all at once.
+            s_subloadAllGlyphsTogether = true;
+        }
+
         const char* str = getenv("OSG_TEXT_INCREMENTAL_SUBLOADING");
         if (str)
         {
-            s_subloadAllGlyphsTogether = strcmp(str,"OFF")==0 || strcmp(str,"Off")==0 || strcmp(str,"Off")==0;
+            s_subloadAllGlyphsTogether = strcmp(str,"OFF")==0 || strcmp(str,"Off")==0 || strcmp(str,"off")==0;
         }
     }
 

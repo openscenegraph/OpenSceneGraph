@@ -160,8 +160,8 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
 
         double    _t0;
         double    _dt;
-        osg::Vec3 _direction;
-        osg::Vec3 _position;
+        osg::Vec3d _direction;
+        osg::Vec3d _position;
 
 
         bool _shift;

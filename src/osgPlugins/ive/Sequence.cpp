@@ -35,6 +35,12 @@ void Sequence::write(DataOutputStream* out)
 
     // Write Sequence's properties.
 
+    if (out->getVersion() >= VERSION_0022)
+    {
+        // Write default frame time
+        out->writeFloat(getDefaultTime()) ;
+    }
+
     // Write frame times.
     int size = getNumChildren();
     out->writeInt(size);
@@ -42,6 +48,13 @@ void Sequence::write(DataOutputStream* out)
     {
         out->writeFloat(getTime(i));
     }
+    
+    if (out->getVersion() >= VERSION_0022)
+    {
+        // Write last frame time
+        out->writeFloat(getLastFrameTime()) ;
+    }
+
     // Write loop mode & interval
     osg::Sequence::LoopMode mode;
     int begin, end;
@@ -59,6 +72,19 @@ void Sequence::write(DataOutputStream* out)
 
     // Write sequence mode
     out->writeInt(getMode());
+
+    if (out->getVersion() >= VERSION_0022)
+    {
+        // Write sync as an integer
+        bool sync ;
+        getSync(sync) ;
+        out->writeInt((int)sync) ;
+
+        // Write clearOnStop as an integer
+        bool clearOnStop ;
+        getClearOnStop(clearOnStop) ;
+        out->writeInt((int)clearOnStop) ;
+    }
 
 }
 
@@ -82,12 +108,26 @@ void Sequence::read(DataInputStream* in)
         }
 
         // Read Sequence's properties
+
+        if (in->getVersion() >= VERSION_0022)
+        {
+            // Read default frame time
+            setDefaultTime(in->readFloat());
+        }
+
         // Read frame times.
         int size = in->readInt();
         for(int i=0;i<size;i++)
         {
             setTime(i, in->readFloat());
         }
+    
+        if (in->getVersion() >= VERSION_0022)
+        {
+            // Read last frame time
+            setLastFrameTime(in->readFloat());
+        }
+
         // Read loop mode & interval
         int mode = in->readInt();
         int begin = in->readInt();
@@ -101,6 +141,15 @@ void Sequence::read(DataInputStream* in)
 
         // Read sequence mode
         setMode((osg::Sequence::SequenceMode)in->readInt());
+
+        if (in->getVersion() >= VERSION_0022)
+        {
+            // Read sync from an integer
+            setSync((in->readInt())!=0) ;
+
+            // Read clearOnStop from an integer
+            setClearOnStop((in->readInt())!=0) ;
+        }
     }
     else
     {

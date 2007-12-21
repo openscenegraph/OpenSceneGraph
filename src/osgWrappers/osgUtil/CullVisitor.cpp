@@ -25,6 +25,7 @@
 #include <osg/Matrixf>
 #include <osg/Node>
 #include <osg/OccluderNode>
+#include <osg/OcclusionQueryNode>
 #include <osg/Polytope>
 #include <osg/Projection>
 #include <osg/RenderInfo>
@@ -165,6 +166,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_Method1(void, apply, IN, osg::OccluderNode &, node,
 	          Properties::VIRTUAL,
 	          __void__apply__osg_OccluderNode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::OcclusionQueryNode &, node,
+	          Properties::VIRTUAL,
+	          __void__apply__osg_OcclusionQueryNode_R1,
 	          "",
 	          "");
 	I_Method1(void, pushStateSet, IN, const osg::StateSet *, ss,

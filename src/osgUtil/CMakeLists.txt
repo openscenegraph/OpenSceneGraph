@@ -9,17 +9,20 @@ ENDIF(DYNAMIC_OPENSCENEGRAPH)
 SET(LIB_NAME osgUtil)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
+    ${HEADER_PATH}/ConvertVec
     ${HEADER_PATH}/CubeMapGenerator
     ${HEADER_PATH}/CullVisitor
     ${HEADER_PATH}/DelaunayTriangulator
     ${HEADER_PATH}/DisplayRequirementsVisitor
+    ${HEADER_PATH}/EdgeCollector
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/GLObjectsVisitor
     ${HEADER_PATH}/HalfWayMapGenerator
     ${HEADER_PATH}/HighlightMapGenerator
-    ${HEADER_PATH}/IntersectVisitor
     ${HEADER_PATH}/IntersectionVisitor
+    ${HEADER_PATH}/IntersectVisitor
     ${HEADER_PATH}/LineSegmentIntersector
+    ${HEADER_PATH}/OperationArrayFunctor
     ${HEADER_PATH}/Optimizer
     ${HEADER_PATH}/PlaneIntersector
     ${HEADER_PATH}/PolytopeIntersector
@@ -28,6 +31,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/RenderBin
     ${HEADER_PATH}/RenderLeaf
     ${HEADER_PATH}/RenderStage
+    ${HEADER_PATH}/ReversePrimitiveFunctor
     ${HEADER_PATH}/SceneView
     ${HEADER_PATH}/Simplifier
     ${HEADER_PATH}/SmoothingVisitor
@@ -49,11 +53,12 @@ ADD_LIBRARY(${LIB_NAME}
     CullVisitor.cpp
     DelaunayTriangulator.cpp
     DisplayRequirementsVisitor.cpp
+    EdgeCollector.cpp
     GLObjectsVisitor.cpp
     HalfWayMapGenerator.cpp
     HighlightMapGenerator.cpp
-    IntersectVisitor.cpp
     IntersectionVisitor.cpp
+    IntersectVisitor.cpp
     LineSegmentIntersector.cpp
     Optimizer.cpp
     PlaneIntersector.cpp
@@ -62,6 +67,7 @@ ADD_LIBRARY(${LIB_NAME}
     RenderBin.cpp
     RenderLeaf.cpp
     RenderStage.cpp
+    ReversePrimitiveFunctor.cpp
     SceneView.cpp
     Simplifier.cpp
     SmoothingVisitor.cpp
@@ -71,11 +77,11 @@ ADD_LIBRARY(${LIB_NAME}
     Tessellator.cpp
     TransformAttributeFunctor.cpp
     TransformCallback.cpp
-    TriStripVisitor.cpp
     TriStrip_graph_array.h
     TriStrip_heap_array.h
     TriStrip_tri_stripper.cpp
     TriStrip_tri_stripper.h
+    TriStripVisitor.cpp
     UpdateVisitor.cpp
     Version.cpp
 )

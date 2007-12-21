@@ -475,7 +475,10 @@ osg::Array* DataInputStream::readArray(){
         case 11:   return readVec4sArray();
         case 12:   return readVec2bArray();        
         case 13:   return readVec3bArray();        
-        case 14:   return readVec4bArray();        
+        case 14:   return readVec4bArray();
+        case 15:   return readVec2dArray();
+        case 16:   return readVec3dArray();
+        case 17:   return readVec4dArray();        
         default: throw Exception("Unknown array type in DataInputStream::readArray()");
     }
 }
@@ -803,6 +806,80 @@ osg::Vec4sArray* DataInputStream::readVec4sArray()
        }
     }
 
+    return a;
+}
+
+osg::Vec2dArray* DataInputStream::readVec2dArray()
+{
+    int size = readInt();
+    if (size == 0)
+        return NULL;
+
+    osg::Vec2dArray* a = new osg::Vec2dArray(size);
+    
+    _istream->read((char*)&((*a)[0]), DOUBLESIZE*2*size);
+
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readVec2dArray(): Failed to read Vec2d array.");
+
+    if (_verboseOutput) std::cout<<"read/writeVec2dArray() ["<<size<<"]"<<std::endl;
+    
+    if (_byteswap)
+    {
+       double *ptr = (double*)&((*a)[0]) ;
+       for (int i = 0 ; i < size*2 ; i++ )
+       {
+          osg::swapBytes((char *)&(ptr[i]), DOUBLESIZE) ;
+       }
+    }
+    return a;
+}
+
+osg::Vec3dArray* DataInputStream::readVec3dArray()
+{
+    int size = readInt();
+    if (size == 0)
+        return NULL;
+    osg::Vec3dArray* a = new osg::Vec3dArray(size);
+
+    _istream->read((char*)&((*a)[0]), DOUBLESIZE*3*size);
+    
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readVec3dArray(): Failed to read Vec3d array.");
+
+    if (_verboseOutput) std::cout<<"read/writeVec3dArray() ["<<size<<"]"<<std::endl;
+    
+
+    if (_byteswap)
+    {
+       double *ptr = (double*)&((*a)[0]) ;
+       for (int i = 0 ; i < size*3 ; i++ )
+       {
+          osg::swapBytes((char *)&(ptr[i]),DOUBLESIZE) ;
+       }
+    }
+    return a;
+}
+
+osg::Vec4dArray* DataInputStream::readVec4dArray(){
+    int size = readInt();
+    if (size == 0)
+        return NULL;
+    osg::Vec4dArray* a = new osg::Vec4dArray(size);
+
+    _istream->read((char*)&((*a)[0]), DOUBLESIZE*4*size);
+
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readVec4dArray(): Failed to read Vec4d array.");
+
+    if (_verboseOutput) std::cout<<"read/writeVec4dArray() ["<<size<<"]"<<std::endl;
+    
+    if (_byteswap) {
+       double *ptr = (double*)&((*a)[0]) ;
+       for (int i = 0 ; i < size*4 ; i++ ) {
+          osg::swapBytes((char *)&(ptr[i]),DOUBLESIZE) ;
+       }
+    }
     return a;
 }
 

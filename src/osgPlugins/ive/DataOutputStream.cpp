@@ -400,7 +400,19 @@ void DataOutputStream::writeArray(const osg::Array* a){
          case osg::Array::Vec4bArrayType:
              writeChar((char)14);
              writeVec4bArray(static_cast<const osg::Vec4bArray*>(a));
-             break;            
+             break;
+         case osg::Array::Vec2dArrayType: 
+             writeChar((char)15);
+             writeVec2dArray(static_cast<const osg::Vec2dArray*>(a));
+             break;
+         case osg::Array::Vec3dArrayType: 
+             writeChar((char)16);
+             writeVec3dArray(static_cast<const osg::Vec3dArray*>(a));
+             break;
+          case osg::Array::Vec4dArrayType: 
+             writeChar((char)17);
+             writeVec4dArray(static_cast<const osg::Vec4dArray*>(a));
+             break;
         default: throw Exception("Unknown array type in DataOutputStream::writeArray()");
     }
 }
@@ -576,6 +588,39 @@ void DataOutputStream::writeVec4bArray(const osg::Vec4bArray* a)
     }
 
     if (_verboseOutput) std::cout<<"read/writeVec4bArray() ["<<size<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeVec2dArray(const osg::Vec2dArray* a)
+{
+    int size = a->size();
+    writeInt(size);
+    for(int i=0;i<size;i++){
+        writeVec2d((*a)[i]);
+    }
+    
+    if (_verboseOutput) std::cout<<"read/writeVec2dArray() ["<<size<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeVec3dArray(const osg::Vec3dArray* a)
+{
+    int size = a->size();
+    writeInt(size);
+    for(int i = 0; i < size; i++){
+        writeVec3d((*a)[i]);
+    }
+    
+    if (_verboseOutput) std::cout<<"read/writeVec3dArray() ["<<size<<"]"<<std::endl;
+}
+
+void DataOutputStream::writeVec4dArray(const osg::Vec4dArray* a)
+{
+    int size = a->size();
+    writeInt(size);
+    for(int i=0;i<size;i++){
+        writeVec4d((*a)[i]);
+    }
+    
+    if (_verboseOutput) std::cout<<"read/writeVec4dArray() ["<<size<<"]"<<std::endl;
 }
 
 void DataOutputStream::writeMatrixf(const osg::Matrixf& mat)

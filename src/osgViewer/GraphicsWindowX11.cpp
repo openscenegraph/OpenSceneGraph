@@ -30,6 +30,10 @@
 
 #include <X11/Xmd.h>        /* For CARD16 */
 
+#ifdef OSGVIEWER_USE_XRANDR
+#include <X11/extensions/Xrandr.h>
+#endif
+
 #include <unistd.h>
 
 using namespace osgViewer;
@@ -1293,9 +1297,90 @@ int X11ErrorHandling(Display* display, XErrorEvent* event)
 
 }
 
-struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
+class X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
 {
+#ifdef OSGVIEWER_USE_XRANDR
+    // TODO: Investigate whether or not Robert thinks we should store/restore the original
+    // resolution in the destructor; I'm not sure the other ones do this, and it may be the
+    // responsibility of the user.
+    bool _setScreen(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int width, unsigned height, double rate) {
+        Display* display = XOpenDisplay(si.displayName().c_str());
+        
+        if(display)
+        {
+            XRRScreenConfiguration* sc = XRRGetScreenInfo(display, RootWindow(display, si.screenNum));
 
+            if(!sc)
+            {
+                osg::notify(osg::NOTICE) << "Unable to create XRRScreenConfiguration on display \"" << XDisplayName(si.displayName().c_str()) << "\"."<<std::endl;
+                return false;
+            }
+
+            int      numScreens = 0;
+            int      numRates   = 0;
+            Rotation currentRot = 0;
+            bool     okay       = false;
+
+            XRRConfigRotations(sc, &currentRot);
+            
+            // If the width or height are zero, use our defaults.
+            if(!width || !height)
+            {
+                getScreenResolution(si, width, height);
+            }
+
+            // If this somehow fails, okay will still be false, no iteration will take place below,
+            // and the sc pointer will still be freed later on.
+            XRRScreenSize* ss = XRRConfigSizes(sc, &numScreens);
+
+            for(int i = 0; i < numScreens; i++)
+            {
+                if(ss[i].width == static_cast<int>(width) && ss[i].height == static_cast<int>(height))
+                {
+                    short* rates     = XRRConfigRates(sc, i, &numRates);
+                    bool   rateFound = false;
+                    
+                    // Search for our rate in the list of acceptable rates given to us by Xrandr.
+                    // If it's not found, rateFound will still be false and the call will never
+                    // be made to XRRSetScreenConfigAndRate since the rate will be invalid.
+                    for(int r = 0; r < numRates; r++)
+                    {
+                        if(rates[r] == static_cast<short>(rate))
+                        {
+                            rateFound = true;
+                            break;
+                        }
+                    }
+
+                    if(rate > 0.0f && !rateFound)
+                    {
+                        osg::notify(osg::NOTICE) << "Unable to find valid refresh rate " << rate << " on display \"" << XDisplayName(si.displayName().c_str()) << "\"."<<std::endl;
+                    }
+                    else if(XRRSetScreenConfigAndRate(display, sc, DefaultRootWindow(display), i, currentRot, static_cast<short>(rate), CurrentTime) != RRSetConfigSuccess)
+                    {
+                        osg::notify(osg::NOTICE) << "Unable to set resolution to " << width << "x" << height << " on display \"" << XDisplayName(si.displayName().c_str()) << "\"."<<std::endl;
+                    }
+                    else
+                    {
+                        okay = true;
+                        break;
+                    }
+                }
+            }
+    
+            XRRFreeScreenConfigInfo(sc);
+    
+            return okay;
+        }
+        else
+        {
+            osg::notify(osg::NOTICE) << "Unable to open display \"" << XDisplayName(si.displayName().c_str()) << "\"."<<std::endl;
+            return false;
+        }
+    }
+#endif
+
+public:
     X11WindowingSystemInterface()
     {
         osg::notify(osg::INFO)<<"X11WindowingSystemInterface()"<<std::endl;
@@ -1359,6 +1444,26 @@ struct X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSyste
             width = 0;
             height = 0;
         }
+    }
+
+    virtual bool setScreenResolution(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int width, unsigned int height)
+    {
+#ifdef OSGVIEWER_USE_XRANDR
+        return _setScreen(si, width, height, 0.0f);
+#else
+        osg::notify(osg::NOTICE) << "You must build osgViewer with Xrandr 1.2 or higher for setScreenResolution support!" << std::endl;
+        return false;
+#endif
+    }
+
+    virtual bool setScreenRefreshRate(const osg::GraphicsContext::ScreenIdentifier& si, double rate)
+    {
+#ifdef OSGVIEWER_USE_XRANDR
+        return _setScreen(si, 0, 0, rate);
+#else
+        osg::notify(osg::NOTICE) << "You must build osgViewer with Xrandr 1.2 or higher for setScreenRefreshRate support!" << std::endl;
+        return false;
+#endif
     }
 
     virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)

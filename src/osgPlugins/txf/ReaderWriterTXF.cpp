@@ -39,7 +39,7 @@ class ReaderWriterTXF : public osgDB::ReaderWriter
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             std::ifstream stream;
-        stream.open(fileName.c_str(), std::ios::in | std::ios::binary);
+            stream.open(fileName.c_str(), std::ios::in | std::ios::binary);
             if (!stream.is_open()) return ReadResult::FILE_NOT_FOUND;
 
             TXFFont* impl = new TXFFont(fileName);

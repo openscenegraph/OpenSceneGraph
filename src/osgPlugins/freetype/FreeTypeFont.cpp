@@ -58,8 +58,10 @@ FreeTypeFont::~FreeTypeFont()
     }
 }
 
-void FreeTypeFont::setFontResolution(unsigned int width, unsigned int height)
+void FreeTypeFont::setFontResolution(const osgText::FontSizePair& fontSize)
 {
+    int width = fontSize.first;
+    int height = fontSize.second;
     int maxAxis = std::max(width, height);
     int margin = _facade->getGlyphImageMargin() + (int)((float)maxAxis * _facade->getGlyphImageMarginRatio());
 

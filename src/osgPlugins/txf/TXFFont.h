@@ -28,7 +28,7 @@ public:
 
     virtual std::string getFileName() const;
 
-    virtual void setFontResolution(unsigned int width, unsigned int height);
+    virtual void setFontResolution(const osgText::FontSizePair&);
 
     virtual osgText::Font::Glyph* getGlyph(unsigned int charcode);
 

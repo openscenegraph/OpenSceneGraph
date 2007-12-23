@@ -261,9 +261,9 @@ std::string Font::getFileName() const
     return "";
 }
 
-void Font::setFontResolution(unsigned int width, unsigned int height)
+void Font::setFontResolution(const FontSizePair& fontSize)
 {
-    if (_implementation.valid()) _implementation->setFontResolution(width, height);
+    if (_implementation.valid()) _implementation->setFontResolution(fontSize);
 }
 
 unsigned int Font::getFontWidth() const

@@ -32,8 +32,7 @@ using namespace osgText;
 //#define TREES_CODE_FOR_MAKING_SPACES_EDITABLE
 
 TextBase::TextBase():
-    _fontWidth(32),
-    _fontHeight(32),
+    _fontSize(32,32),
     _characterHeight(32),
     _characterAspectRatio(1.0f),
     _characterSizeMode(OBJECT_COORDS),
@@ -55,8 +54,7 @@ TextBase::TextBase():
 
 TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
     osg::Drawable(textBase,copyop),
-    _fontWidth(textBase._fontWidth),
-    _fontHeight(textBase._fontHeight),
+    _fontSize(textBase._fontSize),
     _characterHeight(textBase._characterHeight),
     _characterAspectRatio(textBase._characterAspectRatio),
     _characterSizeMode(textBase._characterSizeMode),
@@ -82,8 +80,7 @@ TextBase::~TextBase()
 
 void TextBase::setFontResolution(unsigned int width, unsigned int height)
 {
-    _fontWidth = width;
-    _fontHeight = height;
+    _fontSize = FontSizePair(width,height);
     computeGlyphRepresentation();
 }
 

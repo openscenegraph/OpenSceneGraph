@@ -82,7 +82,7 @@ TXFFont::getFileName() const
 }
 
 void
-TXFFont::setFontResolution(unsigned int, unsigned int)
+TXFFont::setFontResolution(const osgText::FontSizePair&)
 {
     osg::notify(osg::INFO) << "TXFFont::setFontResolution(,) call is ignored." << std::endl;
 }

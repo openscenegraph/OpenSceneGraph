@@ -279,7 +279,7 @@ void Text::computeGlyphRepresentation()
     
     unsigned int lineNumber = 0;
 
-    activefont->setFontResolution(_fontWidth,_fontHeight);
+    activefont->setFontResolution(_fontSize);
     
     float hr = _characterHeight/(float)activefont->getFontHeight();
     float wr = hr/_characterAspectRatio;
@@ -696,9 +696,9 @@ void Text::computePositions(unsigned int contextID) const
                    scale_font_vert=-scale_font_vert;
                 matrix.postMult(osg::Matrix::scale(scale_font_hori, scale_font_vert,1.0f));
             }
-            else if (pixelSizeVert>_fontHeight)
+            else if (pixelSizeVert>getFontHeight())
             {
-                float scale_font = _fontHeight/pixelSizeVert;
+                float scale_font = getFontHeight()/pixelSizeVert;
                 matrix.postMult(osg::Matrix::scale(scale_font, scale_font,1.0f));
             }
 

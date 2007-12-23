@@ -41,8 +41,8 @@ public:
       * the closest supported font size will be selected.*/
     void setFontResolution(unsigned int width, unsigned int height);
 
-    unsigned int getFontWidth() const { return _fontWidth; }
-    unsigned int getFontHeight() const { return _fontHeight; }
+    unsigned int getFontWidth() const { return _fontSize.first; }
+    unsigned int getFontHeight() const { return _fontSize.second; }
     
     
     /** Set the text using a osgText::String.*/
@@ -239,8 +239,7 @@ protected:
     
     
     // members which have public access.
-    unsigned int                            _fontWidth;
-    unsigned int                            _fontHeight;
+    FontSizePair                            _fontSize;
     float                                   _characterHeight;
     float                                   _characterAspectRatio;
     CharacterSizeMode                       _characterSizeMode;

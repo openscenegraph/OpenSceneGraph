@@ -33,9 +33,9 @@ public:
     /** NOP with DefaultFont since it only supports a single fixed sized font. */
     virtual void setSize(unsigned int width, unsigned int height);
 
-    virtual Font::Glyph* getGlyph(unsigned int charcode);
+    virtual Font::Glyph* getGlyph(const FontResolution& fontRes, unsigned int charcode);
     
-    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
+    virtual osg::Vec2 getKerning(const FontResolution&, unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
     
     virtual bool hasVertical() const;
 

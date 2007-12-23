@@ -207,8 +207,6 @@ osg::ref_ptr<Font> osgText::readRefFontStream(std::istream& stream, const osgDB:
 
 Font::Font(FontImplementation* implementation):
     osg::Object(true),
-    _width(16),
-    _height(16),
     _margin(1),
     _marginRatio(0.02),
     _textureWidthHint(1024),
@@ -259,21 +257,6 @@ std::string Font::getFileName() const
 {
     if (_implementation.valid()) return _implementation->getFileName();
     return "";
-}
-
-void Font::setFontResolution(const FontSizePair& fontSize)
-{
-    if (_implementation.valid()) _implementation->setFontResolution(fontSize);
-}
-
-unsigned int Font::getFontWidth() const
-{
-    return _width;
-}
-
-unsigned int Font::getFontHeight() const
-{
-    return _height;
 }
 
 void Font::setGlyphImageMargin(unsigned int margin)
@@ -345,9 +328,9 @@ osg::Texture::FilterMode Font::getMagFilterHint() const
 }
 
 
-Font::Glyph* Font::getGlyph(unsigned int charcode)
+Font::Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 {
-    FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(FontSizePair(_width,_height));
+    FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontRes);
     if (itr!=_sizeGlyphMap.end())
     {
         GlyphMap& glyphmap = itr->second;    
@@ -355,7 +338,7 @@ Font::Glyph* Font::getGlyph(unsigned int charcode)
         if (gitr!=glyphmap.end()) return gitr->second.get();
     }
 
-    if (_implementation.valid()) return _implementation->getGlyph(charcode);
+    if (_implementation.valid()) return _implementation->getGlyph(fontRes, charcode);
     else return 0;
 }
 
@@ -401,9 +384,9 @@ void Font::releaseGLObjects(osg::State* state) const
     // const_cast<Font*>(this)->_sizeGlyphMap.clear();
 }
 
-osg::Vec2 Font::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType)
+osg::Vec2 Font::getKerning(const FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType)
 {
-    if (_implementation.valid()) return _implementation->getKerning(leftcharcode,rightcharcode,kerningType);
+    if (_implementation.valid()) return _implementation->getKerning(fontRes, leftcharcode,rightcharcode,kerningType);
     else return osg::Vec2(0.0f,0.0f);
 }
 
@@ -415,9 +398,9 @@ bool Font::hasVertical() const
 
 
 
-void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph)
+void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph)
 {
-    _sizeGlyphMap[FontSizePair(width,height)][charcode]=glyph;
+    _sizeGlyphMap[fontRes][charcode]=glyph;
     
     int posX=0,posY=0;
     

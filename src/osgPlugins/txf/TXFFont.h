@@ -28,13 +28,11 @@ public:
 
     virtual std::string getFileName() const;
 
-    virtual void setFontResolution(const osgText::FontSizePair&);
-
-    virtual osgText::Font::Glyph* getGlyph(unsigned int charcode);
+    virtual osgText::Font::Glyph* getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode);
 
     virtual bool hasVertical() const;
 
-    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType);
+    virtual osg::Vec2 getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType);
 
     bool loadFont(std::istream& stream);
 

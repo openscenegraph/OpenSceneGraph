@@ -17,7 +17,7 @@
 namespace osgText
 {
 
-typedef std::pair< unsigned int, unsigned int > FontSizePair;
+typedef std::pair< unsigned int, unsigned int > FontResolution;
 
 enum KerningType
 {

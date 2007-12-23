@@ -31,20 +31,23 @@ public:
 
     virtual std::string getFileName() const { return _filename; }
 
-    virtual void setFontResolution(const osgText::FontSizePair& fontSize);
-
-    virtual osgText::Font::Glyph* getGlyph(unsigned int charcode);
+    virtual osgText::Font::Glyph* getGlyph(const osgText::FontResolution& fontRes,unsigned int charcode);
         
-    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType _kerningType);
+    virtual osg::Vec2 getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType _kerningType);
     
     virtual bool hasVertical() const;
 
 protected:
 
-    std::string     _filename;
-    FT_Byte*        _buffer;
-    FT_Face         _face;
-    unsigned int    _flags;
+    void setFontResolution(const osgText::FontResolution& fontSize);
+
+    OpenThreads::Mutex      _mutex;
+    osgText::FontResolution _currentRes;
+
+    std::string             _filename;
+    FT_Byte*                _buffer;
+    FT_Face                 _face;
+    unsigned int            _flags;
 };
 
 #endif

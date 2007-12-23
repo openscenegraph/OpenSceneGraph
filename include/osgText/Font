@@ -97,17 +97,12 @@ public:
     osg::StateSet* getStateSet() { return _stateset.get(); }
     const osg::StateSet* getStateSet() const { return _stateset.get(); }
 
-    /** Set the pixel width and height hint.*/
-    virtual void setFontResolution(const FontSizePair& fontSize);
     
-    unsigned int getFontWidth() const;
-    unsigned int getFontHeight() const;
-
     /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
-    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
+    virtual osg::Vec2 getKerning(const FontResolution& fontSize, unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
 
     /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
-    virtual Glyph* getGlyph(unsigned int charcode);
+    virtual Glyph* getGlyph(const FontResolution& fontSize, unsigned int charcode);
     
     /** Return true if this font provides vertical alignments and spacing or glyphs.*/
     virtual bool hasVertical() const;
@@ -170,13 +165,13 @@ protected:
 
     virtual ~Font();
     
-    void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph);
+    void addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph);
     
     typedef std::vector< osg::ref_ptr<GlyphTexture> >       GlyphTextureList;
     typedef std::vector< osg::ref_ptr<osg::StateSet> >      StateSetList;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph> >   GlyphMap;
     
-    typedef std::map< FontSizePair, GlyphMap >              FontSizeGlyphMap;
+    typedef std::map< FontResolution, GlyphMap >              FontSizeGlyphMap;
     
     osg::ref_ptr<osg::TexEnv>       _texenv;
     osg::ref_ptr<osg::StateSet>     _stateset;
@@ -184,8 +179,7 @@ protected:
     GlyphTextureList                _glyphTextureList;
     
     // current active size of font
-    unsigned int                    _width;
-    unsigned int                    _height;
+    FontResolution                    _fontSize;
     unsigned int                    _margin;
     float                           _marginRatio;
 
@@ -210,25 +204,18 @@ public:
     
         virtual std::string getFileName() const = 0;
 
-        /** Set the pixel width and height hint.*/
-        virtual void setFontResolution(const FontSizePair& fontSize) = 0;
-
         /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
-        virtual Glyph* getGlyph(unsigned int charcode) = 0;
+        virtual Glyph* getGlyph(const FontResolution& fontRes, unsigned int charcode) = 0;
 
         /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
-        virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType) = 0;
+        virtual osg::Vec2 getKerning(const FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType) = 0;
 
         /** Return true if this font provides vertical alignments and spacing or glyphs.*/
         virtual bool hasVertical() const = 0;
         
-        void setFontWidth(unsigned int width) { _facade->_width = width; }
-
-        void setFontHeight(unsigned int height) { _facade->_height = height; }
-        
-        void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph)
+        void addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph)
         {
-            _facade->addGlyph(width, height, charcode, glyph);
+            _facade->addGlyph(fontRes, charcode, glyph);
         }
 
         Font* _facade;

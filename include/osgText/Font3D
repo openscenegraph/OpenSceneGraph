@@ -83,9 +83,6 @@ public:
 
     virtual std::string getFileName() const;
 
-    /** Set the pixel width and height hint.*/
-//    virtual void setFontResolution(unsigned int width, unsigned int height, unsigned int depth);
-    
     unsigned int getFontWidth() const { return _width; }
     unsigned int getFontHeight() const { return _height; }
     unsigned int getFontDepth() const { return _depth; }
@@ -150,9 +147,6 @@ public:
             _facade(0) {}
     
         virtual std::string getFileName() const = 0;
-
-        /** Set the pixel width and height hint.*/
-//        virtual void setFontResolution(unsigned int width, unsigned int height, unsigned int depth) = 0;
 
         /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
         virtual Glyph3D* getGlyph(unsigned int charcode) = 0;

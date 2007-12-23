@@ -80,7 +80,7 @@ TextBase::~TextBase()
 
 void TextBase::setFontResolution(unsigned int width, unsigned int height)
 {
-    _fontSize = FontSizePair(width,height);
+    _fontSize = FontResolution(width,height);
     computeGlyphRepresentation();
 }
 

@@ -111,7 +111,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
     Font* activefont = getActiveFont();
     if (!activefont) return last;
 
-    float hr = _characterHeight/(float)activefont->getFontHeight();
+    float hr = _characterHeight/getFontHeight();
     float wr = hr/_characterAspectRatio;
 
     bool kerning = true;
@@ -138,7 +138,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
             return lastChar;
         }
 
-        Font::Glyph* glyph = activefont->getGlyph(charcode);
+        Font::Glyph* glyph = activefont->getGlyph(_fontSize, charcode);
         if (glyph)
         {
 
@@ -161,14 +161,14 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
                 {
                   case LEFT_TO_RIGHT:
                   {
-                    osg::Vec2 delta(activefont->getKerning(previous_charcode,charcode,_kerningType));
+                    osg::Vec2 delta(activefont->getKerning(_fontSize, previous_charcode,charcode,_kerningType));
                     cursor.x() += delta.x() * wr;
                     cursor.y() += delta.y() * hr;
                     break;
                   }
                   case RIGHT_TO_LEFT:
                   {
-                    osg::Vec2 delta(activefont->getKerning(charcode,previous_charcode,_kerningType));
+                    osg::Vec2 delta(activefont->getKerning(_fontSize, charcode,previous_charcode,_kerningType));
                     cursor.x() -= delta.x() * wr;
                     cursor.y() -= delta.y() * hr;
                     break;
@@ -225,7 +225,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
                 --lastValidChar;
                 
                 // Subtract off glyphs from the cursor position (to correctly center text)
-                Font::Glyph* glyph = activefont->getGlyph(*lastValidChar);
+                Font::Glyph* glyph = activefont->getGlyph(_fontSize, *lastValidChar);
                 if (glyph)
                 {
                     switch(_layout)
@@ -263,7 +263,7 @@ void Text::computeGlyphRepresentation()
         return;
     }
     
-    OpenThreads::ScopedLock<Font::FontMutex> lock(*(activefont->getSerializeFontCallsMutex()));
+    //OpenThreads::ScopedLock<Font::FontMutex> lock(*(activefont->getSerializeFontCallsMutex()));
 
     // initialize bounding box, it will be expanded during glyph position calculation
     _textBB.init();
@@ -279,9 +279,7 @@ void Text::computeGlyphRepresentation()
     
     unsigned int lineNumber = 0;
 
-    activefont->setFontResolution(_fontSize);
-    
-    float hr = _characterHeight/(float)activefont->getFontHeight();
+    float hr = _characterHeight/getFontHeight();
     float wr = hr/_characterAspectRatio;
 
     for(String::iterator itr=_text.begin();
@@ -404,7 +402,7 @@ void Text::computeGlyphRepresentation()
             {
                 unsigned int charcode = *itr;
 
-                Font::Glyph* glyph = activefont->getGlyph(charcode);
+                Font::Glyph* glyph = activefont->getGlyph(_fontSize, charcode);
                 if (glyph)
                 {
                     float width = (float)(glyph->s()) * wr;
@@ -427,14 +425,14 @@ void Text::computeGlyphRepresentation()
                         {
                           case LEFT_TO_RIGHT:
                           {
-                            osg::Vec2 delta(activefont->getKerning(previous_charcode,charcode,_kerningType));
+                            osg::Vec2 delta(activefont->getKerning(_fontSize, previous_charcode,charcode,_kerningType));
                             cursor.x() += delta.x() * wr;
                             cursor.y() += delta.y() * hr;
                             break;
                           }
                           case RIGHT_TO_LEFT:
                           {
-                            osg::Vec2 delta(activefont->getKerning(charcode,previous_charcode,_kerningType));
+                            osg::Vec2 delta(activefont->getKerning(_fontSize, charcode,previous_charcode,_kerningType));
                             cursor.x() -= delta.x() * wr;
                             cursor.y() -= delta.y() * hr;
                             break;

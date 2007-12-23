@@ -239,7 +239,7 @@ protected:
     
     
     // members which have public access.
-    FontSizePair                            _fontSize;
+    FontResolution                          _fontSize;
     float                                   _characterHeight;
     float                                   _characterAspectRatio;
     CharacterSizeMode                       _characterSizeMode;

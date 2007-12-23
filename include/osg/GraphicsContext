@@ -424,7 +424,7 @@ class OSG_EXPORT GraphicsContext : public Object
         OperationQueue                      _operations;
         osg::ref_ptr<Operation>             _currentOperation;
 
-        ref_ptr<GraphicsThread>           _graphicsThread;
+        ref_ptr<GraphicsThread>             _graphicsThread;
         
         ref_ptr<ResizedCallback>            _resizedCallback;
         

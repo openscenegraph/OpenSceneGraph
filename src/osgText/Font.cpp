@@ -347,7 +347,7 @@ osg::Texture::FilterMode Font::getMagFilterHint() const
 
 Font::Glyph* Font::getGlyph(unsigned int charcode)
 {
-    SizeGlyphMap::iterator itr = _sizeGlyphMap.find(SizePair(_width,_height));
+    FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(FontSizePair(_width,_height));
     if (itr!=_sizeGlyphMap.end())
     {
         GlyphMap& glyphmap = itr->second;    
@@ -417,7 +417,7 @@ bool Font::hasVertical() const
 
 void Font::addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph)
 {
-    _sizeGlyphMap[SizePair(width,height)][charcode]=glyph;
+    _sizeGlyphMap[FontSizePair(width,height)][charcode]=glyph;
     
     int posX=0,posY=0;
     

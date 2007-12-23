@@ -52,14 +52,14 @@ Font::Glyph* DefaultFont::getGlyph(unsigned int charcode)
 {
     if (_sizeGlyphMap.empty()) return 0;
 
-    SizeGlyphMap::iterator itr = _sizeGlyphMap.find(SizePair(_width,_height));
+    FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(FontSizePair(_width,_height));
     if (itr==_sizeGlyphMap.end())
     {
         // no font found of correct size, will need to find the nearest.
         itr = _sizeGlyphMap.begin();
         int mindeviation = abs((int)_width-(int)itr->first.first)+
                            abs((int)_height-(int)itr->first.second);
-        SizeGlyphMap::iterator sitr=itr;
+        FontSizeGlyphMap::iterator sitr=itr;
         ++sitr;
         for(;
             sitr!=_sizeGlyphMap.end();

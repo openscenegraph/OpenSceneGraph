@@ -481,8 +481,10 @@ class UpdateTextOperation : public osg::Operation
 {
 public:
 
-    UpdateTextOperation(osg::Group* group):        
+    UpdateTextOperation(const osg::Vec3& center, float diameter, osg::Group* group):        
         Operation("UpdateTextOperation", true),
+        _center(center),
+        _diameter(diameter),
         _maxNumChildren(200),
         _maxNumTextPerGeode(10),
         _group(group)
@@ -544,7 +546,7 @@ public:
 
         for(unsigned int i=0; i<_maxNumTextPerGeode; ++i)
         {
-            osg::Vec3 position(float(rand()) / float(RAND_MAX), float(rand()) / float(RAND_MAX), float(i)/float(_maxNumTextPerGeode));
+            osg::Vec3 position(float(rand()) / float(RAND_MAX) - 0.5f, float(rand()) / float(RAND_MAX) - 0.5f, float(i)/float(_maxNumTextPerGeode) - 0.5f);
 
             std::string str;
             unsigned int _numCharacters = 5;
@@ -555,10 +557,10 @@ public:
                         
             osgText::Text* text = new osgText::Text;
             text->setDataVariance(osg::Object::DYNAMIC);
-            text->setPosition(position);
+            text->setPosition(_center + position * _diameter);
             text->setFont("times.ttf");
             text->setText(str);
-            text->setCharacterSize(0.025f);
+            text->setCharacterSize(0.025f * _diameter);
             text->setAxisAlignment(osgText::Text::SCREEN);
             
             geode->addDrawable(text);
@@ -583,6 +585,8 @@ public:
 
     typedef std::list< osg::ref_ptr<osg::Geode> > AvailableList;
 
+    osg::Vec3                   _center;
+    float                       _diameter;
     unsigned int                _maxNumChildren;
     unsigned int                _maxNumTextPerGeode;
     
@@ -618,6 +622,18 @@ int main(int argc, char** argv)
         // create a group to add everything into.
         osg::Group* mainGroup = new osg::Group;
         
+        osg::Vec3 center(0.5f,0.5f,0.5f);
+        float diameter = 1.0f;
+        
+        osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+        if (loadedModel.valid())
+        {
+            mainGroup->addChild(loadedModel.get());
+            
+            center = loadedModel->getBound().center();
+            diameter = loadedModel->getBound().radius() * 2.0f;
+        }
+        
         for(unsigned int i=0; i<numThreads; ++i)
         {
             osg::Group* textGroup = new osg::Group;
@@ -630,7 +646,7 @@ int main(int argc, char** argv)
 
             // create the operation that will run in the background and
             // sync once per frame with the main viewer loop.
-            updateOperation = new UpdateTextOperation(textGroup);
+            updateOperation = new UpdateTextOperation(center, diameter, textGroup);
 
             // add the operation to the operation thread and start it.
             operationThread->add(updateOperation.get());
@@ -643,7 +659,7 @@ int main(int argc, char** argv)
             // add a unit cube for the text to appear within.
             osg::Geode* geode = new osg::Geode;
             geode->getOrCreateStateSet()->setAttribute(new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE));
-            geode->addDrawable(new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.5f,0.5f,0.5f),1.0)));
+            geode->addDrawable(new osg::ShapeDrawable(new osg::Box(center,diameter)));
 
             mainGroup->addChild(geode);
         }

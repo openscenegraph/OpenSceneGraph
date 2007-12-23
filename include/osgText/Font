@@ -24,6 +24,7 @@
 #include <osg/buffered_value>
 #include <osg/TexEnv>
 #include <osgDB/ReaderWriter>
+
 #include <osgText/Export>
 #include <osgText/KerningType>
 
@@ -33,7 +34,6 @@ namespace osgText {
 
 class Font;
 class Text;
-
 
 /** Read a font from specified file. The filename may contain a path.
   * It will search for the font file in the following places in this order: 
@@ -176,12 +176,11 @@ protected:
     typedef std::vector< osg::ref_ptr<osg::StateSet> >      StateSetList;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph> >   GlyphMap;
     
-    typedef std::pair< unsigned int, unsigned int >         SizePair;
-    typedef std::map< SizePair, GlyphMap >                  SizeGlyphMap;
+    typedef std::map< FontSizePair, GlyphMap >              FontSizeGlyphMap;
     
     osg::ref_ptr<osg::TexEnv>       _texenv;
     osg::ref_ptr<osg::StateSet>     _stateset;
-    SizeGlyphMap                    _sizeGlyphMap;
+    FontSizeGlyphMap                _sizeGlyphMap;
     GlyphTextureList                _glyphTextureList;
     
     // current active size of font

@@ -328,8 +328,6 @@ STD_MAP_REFLECTOR(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >)
 
 STD_MAP_REFLECTOR(std::map< GLenum COMMA  unsigned int >)
 
-STD_PAIR_REFLECTOR(std::pair< unsigned int COMMA  unsigned int >)
-
 STD_SET_REFLECTOR(std::set< osg::Drawable * >)
 
 STD_SET_REFLECTOR(std::set< osg::StateSet * >)

@@ -14,6 +14,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <stdlib.h>
 #include "DefaultFont.h"
 
 #include <osg/Notify>

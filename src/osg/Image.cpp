@@ -25,6 +25,7 @@
 #include <osg/Texture2DArray>
 
 #include <string.h>
+#include <stdlib.h>
 
 #include "dxtctool.h"
 

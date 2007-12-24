@@ -12,6 +12,7 @@
 */
 #include <osg/Notify>
 #include <string>
+#include <stdlib.h>
 #include <iostream>
 #include <fstream>
 

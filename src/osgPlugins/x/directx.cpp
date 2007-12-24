@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <string.h>
 
 #include <math.h>
 

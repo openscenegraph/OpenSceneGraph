@@ -29,6 +29,8 @@
 #include "directx.h"
 
 #include <iostream>
+#include <string.h>
+#include <stdlib.h>
 
 #include <osg/Notify>
 

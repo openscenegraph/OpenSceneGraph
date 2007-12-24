@@ -185,6 +185,9 @@ class OSG_EXPORT Sequence : public Group
         // stopping when it gets to zero.  init to 0
         int _nreps, _nrepsRemain;
 
+        // frame step (are we stepping forward or backward?)
+        int _step;
+
         // default frame time for newly created frames or children- default is 1.
         // set by setDefaultTime
         double _defaultTime ;

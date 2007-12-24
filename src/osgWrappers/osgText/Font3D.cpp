@@ -70,7 +70,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font3D)
 	I_Method0(unsigned int, getFontWidth,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getFontWidth,
-	          "Set the pixel width and height hint. ",
+	          "",
 	          "");
 	I_Method0(unsigned int, getFontHeight,
 	          Properties::NON_VIRTUAL,

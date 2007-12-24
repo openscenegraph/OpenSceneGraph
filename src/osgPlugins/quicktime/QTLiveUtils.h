@@ -12,7 +12,7 @@
 */
 
 #ifdef __APPLE__
-    #include <Quicktime/Quicktime.h>
+    #include <QuickTime/QuickTime.h>
     #include <Carbon/Carbon.h>
     #define QT_HANDLE_IMAGES_ALSO
 #else

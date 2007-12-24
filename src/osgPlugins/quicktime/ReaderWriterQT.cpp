@@ -19,7 +19,7 @@
 #include "Components.h"
 #include "QuickTimeComponents.h"
 #else
-#include <Quicktime/Quicktime.h>
+#include <QuickTime/QuickTime.h>
 #endif
 
 #ifndef SEEK_SET

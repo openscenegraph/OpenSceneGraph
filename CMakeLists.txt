@@ -469,7 +469,7 @@ IF(BUILD_DOCUMENTATION)
     # It runs the final generated Doxyfile against it.
     # The DOT_PATH is substituted into the Doxyfile.
     ADD_CUSTOM_TARGET(DoxygenDoc ${DOXYGEN}
-        ${PROJECT_BINARY_DIR}/docs/doxyfile
+        ${PROJECT_BINARY_DIR}/doc/doxyfile
     )
 ENDIF(BUILD_DOCUMENTATION)
 

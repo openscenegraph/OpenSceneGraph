@@ -12,7 +12,7 @@
 */
 
 #include <stdlib.h>
-#include <values.h>
+#include <float.h>
 
 #include <fstream>
 #include <osgViewer/Viewer>

@@ -626,6 +626,12 @@ OcclusionQueryNode::setQueryStateSets( osg::StateSet* ss, osg::StateSet* ssDebug
     _queryGeode->setStateSet( ss );
     _debugGeode->setStateSet( ssDebug );
 }
+void
+OcclusionQueryNode::getQueryStateSets( osg::StateSet* ss, osg::StateSet* ssDebug )
+{
+    ss = _queryGeode->getStateSet();
+    ssDebug = _debugGeode->getStateSet();
+}
 
 bool
 OcclusionQueryNode::getPassed() const

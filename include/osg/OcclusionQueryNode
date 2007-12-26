@@ -67,6 +67,7 @@ public:
     // Set the StateSets used by the OQN when rendering OQ geometry
     //   or debug bounding geometry.
     void setQueryStateSets( osg::StateSet* ss, osg::StateSet* ssDebug );
+    void getQueryStateSets( osg::StateSet* ss, osg::StateSet* ssDebug );
 
     // For statistics gathering, e.g., by a NodeVisitor.
     bool getPassed() const;

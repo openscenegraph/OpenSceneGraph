@@ -14,6 +14,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CullVisitor
     ${HEADER_PATH}/DelaunayTriangulator
     ${HEADER_PATH}/DisplayRequirementsVisitor
+    ${HEADER_PATH}/DrawElementTypeSimplifier
     ${HEADER_PATH}/EdgeCollector
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/GLObjectsVisitor
@@ -53,6 +54,7 @@ ADD_LIBRARY(${LIB_NAME}
     CullVisitor.cpp
     DelaunayTriangulator.cpp
     DisplayRequirementsVisitor.cpp
+    DrawElementTypeSimplifier.cpp
     EdgeCollector.cpp
     GLObjectsVisitor.cpp
     HalfWayMapGenerator.cpp

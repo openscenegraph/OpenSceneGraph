@@ -68,7 +68,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::ReversePrimitiveFunctor)
 	          __void__setVertexArray__unsigned__C5_osg_Vec4d_P1,
 	          "",
 	          "");
-	I_Method3(void, drawArrays, IN, GLenum, x, IN, GLint, x, IN, GLsizei, x,
+	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count,
 	          Properties::VIRTUAL,
 	          __void__drawArrays__GLenum__GLint__GLsizei,
 	          "",
@@ -88,7 +88,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::ReversePrimitiveFunctor)
 	          __void__drawElements__GLenum__GLsizei__C5_GLuint_P1,
 	          "",
 	          "");
-	I_Method1(void, begin, IN, GLenum, x,
+	I_Method1(void, begin, IN, GLenum, mode,
 	          Properties::VIRTUAL,
 	          __void__begin__GLenum,
 	          "Mimics the OpenGL glBegin() function. ",

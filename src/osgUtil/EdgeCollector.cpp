@@ -12,6 +12,7 @@
 */
 
 #include <osgUtil/EdgeCollector>
+#include <osgUtil/ConvertVec>
 
 #include <osg/TriangleIndexFunctor>
 
@@ -357,9 +358,7 @@ class CopyVertexArrayToPointsVisitor : public osg::ArrayVisitor
                 _pointList[i] = new EdgeCollector::Point;
                 _pointList[i]->_index = i;
                 
-                osg::Vec2& value = array[i];
-                osg::Vec3& vertex = _pointList[i]->_vertex;
-                vertex.set(value.x(),value.y(),0.0f);  
+                osgUtil::ConvertVec<osg::Vec2, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);  
             }
         }
 
@@ -385,9 +384,46 @@ class CopyVertexArrayToPointsVisitor : public osg::ArrayVisitor
                 _pointList[i] = new EdgeCollector::Point;
                 _pointList[i]->_index = i;
                 
-                osg::Vec4& value = array[i];
-                osg::Vec3& vertex = _pointList[i]->_vertex;
-                vertex.set(value.x()/value.w(),value.y()/value.w(),value.z()/value.w());  
+                osgUtil::ConvertVec<osg::Vec4, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);  
+            }
+        }
+
+        virtual void apply(osg::Vec2dArray& array)
+        {
+            if (_pointList.size()!=array.size()) return;
+        
+            for(unsigned int i=0;i<_pointList.size();++i) 
+            {
+                _pointList[i] = new EdgeCollector::Point;
+                _pointList[i]->_index = i;
+                
+                osgUtil::ConvertVec<osg::Vec2d, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);  
+            }
+        }
+        
+        virtual void apply(osg::Vec3dArray& array)
+        {
+            if (_pointList.size()!=array.size()) return;
+        
+            for(unsigned int i=0;i<_pointList.size();++i) 
+            {
+                _pointList[i] = new EdgeCollector::Point;
+                _pointList[i]->_index = i;
+                
+                _pointList[i]->_vertex = array[i];
+            }
+        }
+        
+        virtual void apply(osg::Vec4dArray& array)
+        {
+            if (_pointList.size()!=array.size()) return;
+        
+            for(unsigned int i=0;i<_pointList.size();++i) 
+            {
+                _pointList[i] = new EdgeCollector::Point;
+                _pointList[i]->_index = i;
+                
+                osgUtil::ConvertVec<osg::Vec4d, osg::Vec3d>::convert(array[i], _pointList[i]->_vertex);  
             }
         }
         

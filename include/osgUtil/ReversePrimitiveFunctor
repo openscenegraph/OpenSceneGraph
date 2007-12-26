@@ -22,54 +22,36 @@ namespace osgUtil {
 
 class ReversePrimitiveFunctor : public osg::PrimitiveIndexFunctor
 {
-public:
-
-    virtual ~ReversePrimitiveFunctor() {}
-
-    osg::PrimitiveSet * getReversedPrimitiveSet() { return _reversedPrimitiveSet.get(); }
+    public:
     
-    virtual void setVertexArray(unsigned int /*count*/,const osg::Vec2* /*vertices*/)
-    { osg::notify(osg::WARN) << "ReversePrimitiveFunctor : not implemented " << std::endl; }
-
-    virtual void setVertexArray(unsigned int /*count*/,const osg::Vec3* /*vertices*/)
-    { osg::notify(osg::WARN) << "ReversePrimitiveFunctor : not implemented " << std::endl; }
-
-    virtual void setVertexArray(unsigned int /*count*/,const osg::Vec4* /*vertices*/)
-    { osg::notify(osg::WARN) << "ReversePrimitiveFunctor : not implemented " << std::endl; }
-
-    virtual void setVertexArray(unsigned int /*count*/,const osg::Vec2d* /*vertices*/)
-    { osg::notify(osg::WARN) << "ReversePrimitiveFunctor : not implemented " << std::endl; }
-
-    virtual void setVertexArray(unsigned int /*count*/,const osg::Vec3d* /*vertices*/)
-    { osg::notify(osg::WARN) << "ReversePrimitiveFunctor : not implemented " << std::endl; }
-
-    virtual void setVertexArray(unsigned int /*count*/,const osg::Vec4d* /*vertices*/)
-    { osg::notify(osg::WARN) << "ReversePrimitiveFunctor : not implemented " << std::endl; }
-
-    virtual void drawArrays(GLenum /*mode*/,GLint /*first*/,GLsizei /*count*/)
-    { osg::notify(osg::WARN) << "ReversePrimitiveFunctor : not implemented " << std::endl; }
-
-    virtual void drawElements(GLenum mode,GLsizei count,const GLubyte* indices);
-
-    virtual void drawElements(GLenum mode,GLsizei count,const GLushort* indices);
-
-    virtual void drawElements(GLenum mode,GLsizei count,const GLuint* indices);
- 
-
-    /// Mimics the OpenGL \c glBegin() function.
-    virtual void begin(GLenum /*mode*/)
-    { osg::notify(osg::WARN) << "ReversePrimitiveFunctor : not implemented " << std::endl; }
-
-    virtual void vertex(unsigned int /*pos*/)
-    { osg::notify(osg::WARN) << "ReversePrimitiveFunctor : not implemented " << std::endl; }
-
-    virtual void end()
-    { osg::notify(osg::WARN) << "ReversePrimitiveFunctor : not implemented " << std::endl; }
+        virtual ~ReversePrimitiveFunctor() {}
     
+        osg::PrimitiveSet * getReversedPrimitiveSet() { return _reversedPrimitiveSet.get(); }
+        
+        virtual void setVertexArray(unsigned int , const osg::Vec2* ) {}
+        virtual void setVertexArray(unsigned int , const osg::Vec3* ) {}
+        virtual void setVertexArray(unsigned int , const osg::Vec4* ) {}
+        virtual void setVertexArray(unsigned int , const osg::Vec2d* ) {}
+        virtual void setVertexArray(unsigned int , const osg::Vec3d* ) {}
+        virtual void setVertexArray(unsigned int , const osg::Vec4d* ) {}
     
-    osg::ref_ptr<osg::PrimitiveSet> _reversedPrimitiveSet;
+        virtual void drawArrays(GLenum mode,GLint first,GLsizei count);
+        virtual void drawElements(GLenum mode,GLsizei count, const GLubyte* indices);
+        virtual void drawElements(GLenum mode,GLsizei count, const GLushort* indices);
+        virtual void drawElements(GLenum mode,GLsizei count, const GLuint* indices);
+     
     
+        /// Mimics the OpenGL \c glBegin() function.
+        virtual void begin(GLenum mode);
+        virtual void vertex(unsigned int /*pos*/);
+        virtual void end();
+        
+        
+        osg::ref_ptr<osg::PrimitiveSet> _reversedPrimitiveSet;
     
+    private:
+    
+        bool _running;
 };
 
 } // end osgUtil namespace

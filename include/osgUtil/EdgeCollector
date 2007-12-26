@@ -25,6 +25,9 @@
 #include <osg/Geometry>
 #include <osg/ref_ptr>
 
+#include <osgUtil/Export>
+
+
 namespace osgUtil {
 
     struct dereference_less
@@ -55,7 +58,8 @@ namespace osgUtil {
         }
     };
 
-class EdgeCollector
+
+class OSGUTIL_EXPORT EdgeCollector
 {
 public:
     
@@ -92,7 +96,7 @@ public:
 
         unsigned int _index;
 
-        osg::Vec3           _vertex;
+        osg::Vec3d          _vertex;
         TriangleSet         _triangles;
 
         void clear() { _triangles.clear(); }

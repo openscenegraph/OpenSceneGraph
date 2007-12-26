@@ -217,7 +217,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::EdgeCollector::Point)
 	          "");
 	I_PublicMemberProperty(bool, _protected);
 	I_PublicMemberProperty(unsigned int, _index);
-	I_PublicMemberProperty(osg::Vec3, _vertex);
+	I_PublicMemberProperty(osg::Vec3d, _vertex);
 	I_PublicMemberProperty(osgUtil::EdgeCollector::TriangleSet, _triangles);
 END_REFLECTOR
 

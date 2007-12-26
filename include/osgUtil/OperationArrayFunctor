@@ -65,7 +65,7 @@ struct AddRangeOperator
         typedef typename ArrayType::ElementDataType ElementDataType;
                 
         ElementDataType convertedVector;
-        osgUtil::ConvertVec<osg::Vec3, ElementDataType>::convert(_vector, convertedVector);
+        osgUtil::ConvertVec<osg::Vec3d, ElementDataType>::convert(_vector, convertedVector);
         
         typename ArrayType::iterator it = array.begin();
         std::advance(it, _begin);
@@ -80,7 +80,7 @@ struct AddRangeOperator
     unsigned int _begin;
     unsigned int _count;
     
-    osg::Vec3 _vector;
+    osg::Vec3d _vector;
 };
 typedef OperationArrayFunctor<AddRangeOperator> AddRangeFunctor;
 
@@ -92,7 +92,7 @@ struct MultiplyRangeOperator
         typedef typename ArrayType::ElementDataType ElementDataType;
                 
         ElementDataType convertedVector;
-        osgUtil::ConvertVec<osg::Vec3, ElementDataType>::convert(_vector, convertedVector);
+        osgUtil::ConvertVec<osg::Vec3d, ElementDataType>::convert(_vector, convertedVector);
         
         typename ArrayType::iterator it = array.begin();
         std::advance(it, _begin);
@@ -107,7 +107,7 @@ struct MultiplyRangeOperator
     unsigned int _begin;
     unsigned int _count;
     
-    osg::Vec3 _vector;
+    osg::Vec3d _vector;
 };
 typedef OperationArrayFunctor<MultiplyRangeOperator> MultiplyRangeFunctor;
 

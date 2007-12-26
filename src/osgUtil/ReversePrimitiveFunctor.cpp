@@ -97,6 +97,76 @@ osg::PrimitiveSet * drawElementsTemplate(GLenum mode,GLsizei count, const typena
 
 namespace osgUtil {
 
+void ReversePrimitiveFunctor::drawArrays(GLenum mode, GLint first, GLsizei count)
+{
+    if (count==0) return ;
+    
+    osg::DrawElementsUInt * dePtr = new osg::DrawElementsUInt(mode);
+    osg::DrawElementsUInt & de = *dePtr;
+    de.reserve(count);
+
+    GLint end = first + count;
+    
+    switch (mode) 
+    {
+        case (GL_TRIANGLES): 
+        {
+            for (GLint i=first; i<end; i+=3) 
+            {
+                de.push_back(i);
+                de.push_back(i+2);
+                de.push_back(i+1);
+            }
+            break;
+        }
+        case (GL_QUADS): 
+        {
+            for (GLint i=first; i<end; i+=4) 
+            {
+                de.push_back(i);
+                de.push_back(i+3);
+                de.push_back(i+2);
+                de.push_back(i+1);
+            }
+            break;
+        }
+        case (GL_TRIANGLE_STRIP):
+        case (GL_QUAD_STRIP): 
+        {
+            for (GLint i=first; i<end; i+=2) 
+            {
+                de.push_back(i+1);
+                de.push_back(i);
+            }
+            break;
+        }
+        case (GL_TRIANGLE_FAN): 
+        {
+            de.push_back(first);
+    
+            for (GLint i=end-1; i>first; i--) 
+                de.push_back(i);
+
+            break;
+        }
+        case (GL_POLYGON):
+        case (GL_POINTS):
+        case (GL_LINES):
+        case (GL_LINE_STRIP):
+        case (GL_LINE_LOOP): 
+        {
+            for (GLint i=end-1; i>=first; i--) 
+                de.push_back(i);
+    
+            break;
+        }
+        default:
+            break;
+    }
+
+    _reversedPrimitiveSet = &de;
+}
+
 void ReversePrimitiveFunctor::drawElements(GLenum mode,GLsizei count,const GLubyte* indices)
 {
     _reversedPrimitiveSet = drawElementsTemplate<osg::DrawElementsUByte>(mode, count, indices);
@@ -110,4 +180,39 @@ void ReversePrimitiveFunctor::drawElements(GLenum mode,GLsizei count,const GLuin
     _reversedPrimitiveSet = drawElementsTemplate<osg::DrawElementsUInt>(mode, count, indices);
 }
 
+void ReversePrimitiveFunctor::begin(GLenum mode)
+{
+    if (_running)
+        osg::notify(osg::WARN) << "ReversePrimitiveFunctor : call \"begin\" without call \"end\"." << std::endl;
+    else
+    {
+        _running = true;
+        
+        _reversedPrimitiveSet = new osg::DrawElementsUInt(mode);
+    }
+}
+
+void ReversePrimitiveFunctor::vertex(unsigned int pos)
+{
+    if (_running == false)
+        osg::notify(osg::WARN) << "ReversePrimitiveFunctor : call \"vertex(" << pos << ")\" without call \"begin\"." << std::endl;
+    else
+    {
+        static_cast<osg::DrawElementsUInt*>(_reversedPrimitiveSet.get())->push_back(pos);
+    }
+}
+
+void ReversePrimitiveFunctor::end()
+{ 
+    if (_running == false)
+        osg::notify(osg::WARN) << "ReversePrimitiveFunctor : call \"end\" without call \"begin\"." << std::endl;
+    else
+    {
+        _running = false;
+    
+        osg::ref_ptr<osg::DrawElementsUInt> tmpDe(static_cast<osg::DrawElementsUInt*>(_reversedPrimitiveSet.get()));
+    
+        _reversedPrimitiveSet = drawElementsTemplate<osg::DrawElementsUInt>(tmpDe->getMode(), tmpDe->size(), &(tmpDe->front()));
+    }
+}
 } // end osgUtil namespace

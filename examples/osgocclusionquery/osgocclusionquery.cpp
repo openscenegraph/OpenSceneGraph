@@ -63,66 +63,6 @@
 
 // NodeVisitors and utility functions for OcclusionQueryNode
 
-// Create and return a StateSet appropriate for performing an occlusion
-//   query test (disable lighting, texture mapping, etc). Probably some
-//   room for improvement here. Could disable shaders, for example.
-osg::StateSet*
-initOQState()
-{
-    osg::StateSet* state = new osg::StateSet;
-    // TBD Possible bug, need to allow user to set render bin number.
-    state->setRenderBinDetails( 9, "RenderBin" );
-
-    state->setMode( GL_LIGHTING, osg::StateAttribute::OFF |
-        osg::StateAttribute::PROTECTED);
-    state->setTextureMode( 0, GL_TEXTURE_2D, osg::StateAttribute::OFF |
-        osg::StateAttribute::PROTECTED);
-    state->setMode( GL_CULL_FACE, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-
-    osg::ColorMask* cm = new osg::ColorMask( false, false, false, false );
-    state->setAttributeAndModes( cm, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-    osg::Depth* d = new osg::Depth( osg::Depth::LEQUAL, 0.f, 1.f, false );
-    state->setAttributeAndModes( d, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-    osg::PolygonMode* pm = new osg::PolygonMode(
-        osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL );
-    state->setAttributeAndModes( pm, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-
-    osg::PolygonOffset* po = new osg::PolygonOffset( -1., -1. );
-    state->setAttributeAndModes( po, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-
-    return state;
-}
-
-// Create and return a StateSet for rendering a debug representation of query geometry.
-osg::StateSet*
-initOQDebugState()
-{
-    osg::StateSet* debugState = new osg::StateSet;
-
-    debugState->setMode( GL_LIGHTING, osg::StateAttribute::OFF |
-        osg::StateAttribute::PROTECTED);
-    debugState->setTextureMode( 0, GL_TEXTURE_2D, osg::StateAttribute::OFF |
-        osg::StateAttribute::PROTECTED);
-    debugState->setMode( GL_CULL_FACE, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-
-    osg::PolygonMode* pm = new osg::PolygonMode(
-        osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE );
-    debugState->setAttributeAndModes( pm, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-
-    osg::PolygonOffset* po = new osg::PolygonOffset( -1., -1. );
-    debugState->setAttributeAndModes( po, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-
-    return debugState;
-}
-
 // Use this visitor to insert OcclusionQueryNodes (OQNs) in the
 //   visited subgraph. Only one OQN will test any particular node
 //   (no nesting). See also OcclusionQueryNonFlatVisitor.
@@ -320,10 +260,15 @@ OcclusionQueryVisitor::OcclusionQueryVisitor()
     _nameIdx( 0 ),
     _occluderThreshold( 5000 )
 {
-    // Init StateSet for occlusion query geometry.
-    _state = initOQState();
-    // Initialize StateSet for debug geometry
-    _debugState = initOQDebugState();
+    // Create a dummy OcclusionQueryNode just so we can get its state.
+    // We'll then share that state between all OQNs we add to the visited scene graph.
+    osg::ref_ptr<osg::OcclusionQueryNode> oqn = new osg::OcclusionQueryNode;
+
+    osg::StateSet* ss( NULL );
+    osg::StateSet* ssDebug( NULL );
+    oqn->getQueryStateSets( ss, ssDebug );
+    _state = ss;
+    _debugState = ssDebug;
 }
 
 OcclusionQueryVisitor::~OcclusionQueryVisitor()

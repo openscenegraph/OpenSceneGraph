@@ -116,6 +116,11 @@ BEGIN_OBJECT_REFLECTOR(osg::OcclusionQueryNode)
 	          __void__setQueryStateSets__osg_StateSet_P1__osg_StateSet_P1,
 	          "",
 	          "");
+	I_Method2(void, getQueryStateSets, IN, osg::StateSet *, ss, IN, osg::StateSet *, ssDebug,
+	          Properties::NON_VIRTUAL,
+	          __void__getQueryStateSets__osg_StateSet_P1__osg_StateSet_P1,
+	          "",
+	          "");
 	I_Method0(bool, getPassed,
 	          Properties::NON_VIRTUAL,
 	          __bool__getPassed,

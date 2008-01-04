@@ -59,6 +59,7 @@ Multisample.cpp
 Node.cpp
 Object.cpp
 OccluderNode.cpp
+OcclusionQueryNode.cpp
 PagedLOD.cpp
 Point.cpp
 PointSprite.cpp
@@ -155,6 +156,7 @@ MultiTextureControl.h
 Node.h
 Object.h
 OccluderNode.h
+OcclusionQueryNode.h
 PagedLOD.h
 Point.h
 PointSprite.h

@@ -71,6 +71,7 @@
 #include "Transform.h"
 #include "Switch.h"
 #include "OccluderNode.h"
+#include "OcclusionQueryNode.h"
 #include "Impostor.h"
 #include "CoordinateSystemNode.h"
 #include "Uniform.h"
@@ -1417,6 +1418,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVEOCCLUDERNODE){
         node = new osg::OccluderNode();
         ((ive::OccluderNode*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEOCCLUSIONQUERYNODE){
+        node = new osg::OcclusionQueryNode();
+        ((ive::OcclusionQueryNode*)(node))->read(this);
     }
     else if(nodeTypeID== IVEVISIBILITYGROUP){
         node = new osgSim::VisibilityGroup();

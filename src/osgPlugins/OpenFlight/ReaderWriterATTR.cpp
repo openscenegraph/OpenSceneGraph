@@ -160,7 +160,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
         attr->hemisphere = in.readInt32();
         in.forward(4);
         in.forward(4);
-        in.forward(149);
+        in.forward(149*4);
         attr->comments = in.readString(512);
 
         // v12 ends here

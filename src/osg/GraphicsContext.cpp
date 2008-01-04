@@ -55,7 +55,12 @@ GraphicsContext::WindowingSystemInterface* GraphicsContext::getWindowingSystemIn
 GraphicsContext* GraphicsContext::createGraphicsContext(Traits* traits)
 {
     if (s_WindowingSystemInterface.valid())
+    {
+        // catch any undefined values.
+        if (traits) traits->setUndefinedScreenDetailsToDefaultScreen();
+        
         return s_WindowingSystemInterface->createGraphicsContext(traits);
+    }
     else
         return 0;    
 }

@@ -38,7 +38,7 @@ class PushLevel : public Record
 
         META_Record(PushLevel)
 
-        virtual void read(RecordInputStream& /*in*/, Document& document)
+        virtual void readRecord(RecordInputStream& /*in*/, Document& document)
         {
             document.pushLevel();
         }
@@ -63,6 +63,13 @@ class PopLevel : public Record
 
         virtual void read(RecordInputStream& /*in*/, Document& document)
         {
+            // Finally call dispose() for primary with push, pop level pair. 
+            PrimaryRecord* primary = document.getTopOfLevelStack();
+            if (primary)
+            {
+                primary->dispose(document);
+            }
+
             document.popLevel();
         }
 
@@ -181,9 +188,6 @@ class PushAttribute : public Record
         virtual void read(RecordInputStream& in, Document& document)
         {
             readRecord(in,document);
-    //      in().seekg(in.getEndOfRecord(), std::ios_base::beg);
-            // loop until PopAttribute
-
         }
 
     protected:

@@ -96,7 +96,7 @@ class Document
         const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 
         // Current primar record
-        void setCurrentPrimaryRecord(PrimaryRecord* record) {_currentPrimaryRecord=record; }
+        void setCurrentPrimaryRecord(PrimaryRecord* record) { _currentPrimaryRecord=record; }
         PrimaryRecord* getCurrentPrimaryRecord() { return _currentPrimaryRecord.get(); }
         const PrimaryRecord* getCurrentPrimaryRecord() const { return _currentPrimaryRecord.get(); }
 
@@ -112,7 +112,6 @@ class Document
         // Extension stack
         void pushExtension();
         void popExtension();
-
 
         void setHeaderNode(osg::Node* node) { _osgHeader = node; }
         osg::Node* getHeaderNode() { return _osgHeader.get(); }

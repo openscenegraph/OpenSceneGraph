@@ -113,7 +113,7 @@ public:
 
     META_setID(_lpn)
     META_setComment(_lpn)
-    META_setMatrix(_lpn)
+    META_dispose(_lpn)
 
     // Add lightpoint, add two if bidirectional.
     virtual void addVertex(Vertex& vertex)
@@ -263,7 +263,7 @@ public:
 
     META_setID(_lpn)
     META_setComment(_lpn)
-    META_setMatrix(_lpn)
+    META_dispose(_lpn)
 
     // Add lightpoint, add two if bidirectional.
     virtual void addVertex(Vertex& vertex)
@@ -481,8 +481,16 @@ protected:
             _parent->addChild(*((osg::Group*)_switch.get()));
     }
 
-    virtual void popLevel(Document& document)
+    virtual void dispose(Document& document)
     {
+        if (!_switch.valid()) return;
+
+        // Insert transform(s)
+        if (_matrix.valid())
+        {
+            insertMatrixTransform(*_switch,*_matrix,_numberOfReplications);
+        }
+
         // Set default sets: 0 for all off, 1 for all on
         _switch->setAllChildrenOff( 0 );
         _switch->setAllChildrenOn( 1 );

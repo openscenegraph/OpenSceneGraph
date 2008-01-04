@@ -54,7 +54,6 @@ public:
 
     META_setID(_header)
     META_setComment(_header)
-//  META_setMatrix(_header)
     META_setMultitexture(_header)
     META_addChild(_header)
 
@@ -132,7 +131,7 @@ protected:
         document.setHeaderNode(_header.get());
     }
 
-    virtual void popLevel(Document& document)
+    virtual void dispose(Document& document)
     {
         if (_header.valid())
         {
@@ -186,7 +185,6 @@ public:
 
     META_setID(_group)
     META_setComment(_group)
-    META_setMatrix(_group)
     META_setMultitexture(_group)
     META_addChild(_group)
 
@@ -236,8 +234,16 @@ protected:
             _parent->addChild(*_group);
     }
 
-    virtual void popLevel(Document& document)
+    virtual void dispose(Document& document)
     {
+        if (!_group.valid()) return;
+
+        // Insert transform(s)
+        if (_matrix.valid())
+        {
+            insertMatrixTransform(*_group,*_matrix,_numberOfReplications);
+        }
+
         // Children are added!
         osg::Sequence* sequence = dynamic_cast<osg::Sequence*>(_group.get());
         if (sequence && sequence->getNumChildren() > 0)
@@ -318,14 +324,13 @@ public:
 
     META_setID(_dof)
     META_setComment(_dof)
-    META_setMatrix(_dof)
     META_setMultitexture(_dof)
     META_addChild(_dof)
+    META_dispose(_dof)
 
 protected:
 
     virtual ~DegreeOfFreedom() {}
-
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
@@ -453,14 +458,13 @@ public:
 
     META_setID(_lod)
     META_setComment(_lod)
-    META_setMatrix(_lod)
     META_setMultitexture(_lod)
     META_addChild(_impChild0)
+    META_dispose(_lod)
 
 protected:
 
     virtual ~LevelOfDetail() {}
-
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
@@ -509,14 +513,13 @@ public:
 
     META_setID(_lod)
     META_setComment(_lod)
-    META_setMatrix(_lod)
     META_setMultitexture(_lod)
     META_addChild(_impChild0)
+    META_dispose(_lod)
 
 protected:
 
     virtual ~OldLevelOfDetail() {}
-
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
@@ -570,8 +573,8 @@ public:
 
     META_setID(_multiSwitch)
     META_setComment(_multiSwitch)
-    META_setMatrix(_multiSwitch)
     META_setMultitexture(_multiSwitch)
+    META_dispose(_multiSwitch)
 
     virtual void addChild(osg::Node& child)
     {
@@ -593,7 +596,6 @@ public:
 protected:
 
     virtual ~Switch() {}
-
     virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         std::string id = in.readString(8);
@@ -652,14 +654,13 @@ public:
 
     META_setID(_external)
     META_setComment(_external)
-    META_setMatrix(_external)
     META_setMultitexture(_external)
     META_addChild(_external)
+    META_dispose(_external)
 
 protected:
 
     virtual ~ExternalReference() {}
-
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string strFile = in.readString(200);
@@ -717,11 +718,12 @@ RegisterRecordProxy<ExternalReference> g_ExternalReference(EXTERNAL_REFERENCE_OP
 */
 class InstanceDefinition : public PrimaryRecord
 {
+    int _number;
     osg::ref_ptr<osg::Group> _instanceDefinition;
 
 public:
 
-    InstanceDefinition() {}
+    InstanceDefinition():_number(0) {}
 
     META_Record(InstanceDefinition)
 
@@ -730,28 +732,32 @@ public:
     META_setMultitexture(_instanceDefinition)
     META_addChild(_instanceDefinition)
 
-    virtual void setMatrix(osg::Matrix& matrix)
-    {
-        osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform(matrix);
-        transform->setDataVariance(osg::Object::STATIC);
-        transform->addChild(_instanceDefinition.get());
-        _instanceDefinition = transform.get();
-    }
-
 protected:
 
     virtual ~InstanceDefinition() {}
-
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         in.forward(2);
-        uint16 number = in.readUInt16();
+        _number = (int)in.readUInt16();
 
         _instanceDefinition = new osg::Group;
+    }
+
+    virtual void dispose(Document& document)
+    {
+        // Insert transform(s)
+        if (_matrix.valid())
+        {
+            osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform(*_matrix);
+            transform->setDataVariance(osg::Object::STATIC);
+            transform->addChild(_instanceDefinition.get());
+            _instanceDefinition = transform.get();
+        }
 
         //  Add to instance definition table.
-        document.setInstanceDefinition(number,_instanceDefinition.get());
+        document.setInstanceDefinition(_number,_instanceDefinition.get());
     }
+
 };
 
 RegisterRecordProxy<InstanceDefinition> g_InstanceDefinition(INSTANCE_DEFINITION_OP);
@@ -771,7 +777,6 @@ public:
 protected:
 
     virtual ~InstanceReference() {}
-
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         in.forward(2);
@@ -781,7 +786,7 @@ protected:
         osg::Node* instance = document.getInstanceDefinition(number);
 
         // Add this implementation to parent implementation.
-        if (_parent.valid())
+        if (_parent.valid() && instance)
             _parent->addChild(*instance);
     }
 };
@@ -803,14 +808,13 @@ public:
 
     META_setID(_extension)
     META_setComment(_extension)
-    META_setMatrix(_extension)
     META_setMultitexture(_extension)
     META_addChild(_extension)
+    META_dispose(_extension)
 
 protected:
 
     virtual ~Extension() {}
-
     virtual void readRecord(RecordInputStream& in, Document& /*document*/)
     {
         std::string id = in.readString(8);
@@ -850,85 +854,68 @@ public:
 
     META_setID(_object)
     META_setComment(_object)
-
-    virtual void setMatrix(osg::Matrix& matrix)
-    {
-        if (_object.valid())
-            insertMatrixTransform(*_object,matrix);
-        else
-        {
-            _object = new osg::MatrixTransform(matrix);
-            _object->setDataVariance(osg::Object::STATIC);
-
-            if (_parent.valid())
-                _parent->addChild(*_object);
-        }
-    }
-
-    virtual void addChild(osg::Node& child)
-    {
-        // If object excists it means it is preserved.
-        if (_object.valid())
-            _object->addChild(&child);
-        // If no object add child to parent.
-        else if (_parent.valid())
-            _parent->addChild(child);
-    }
+    META_addChild(_object)
 
 protected:
 
-    virtual ~Object() {}
-
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
-        // Is it safe to remove the object?
-        if (!document.getPreserveObject())
-        {
-            // The following tests need a valid parent.
-            if (!_parent.valid())
-                return;
+        std::string id = in.readString(8);
+        /*uint32 flags =*/ in.readUInt32();
 
+        _object = new osg::Group;
+        _object->setName(id);
+
+        // Postpone add-to-parent until we know a bit more.
+    }
+
+    virtual void dispose(Document& document)
+    {
+        if (!_parent.valid() || !_object.valid()) return;
+
+        // Is it safe to remove _object?
+        if (!document.getPreserveObject() && isSafeToRemoveObject() && !_matrix.valid())
+        {
+            // Add children of _object to parent.
+            // _object will not be added to graph.
+            for (unsigned int i=0; i<_object->getNumChildren(); ++i)
+            {
+                _parent->addChild(*(_object->getChild(i)));
+            }
+        }
+        else
+        {
+            _parent->addChild(*_object);
+        }
+
+        // Insert transform(s)
+        if (_matrix.valid())
+        {
+            insertMatrixTransform(*_object,*_matrix,_numberOfReplications);
+        }
+    }
+
+    bool isSafeToRemoveObject() const
+    {
+        // The following tests need a valid parent.
+        if (_parent.valid())
+        {
             // LODs adds an empty child group so it is safe to remove this object record.
             if (typeid(*_parent)==typeid(flt::LevelOfDetail))
-                return;
+                return true;
 
             if (typeid(*_parent)==typeid(flt::OldLevelOfDetail))
-                return;
+                return true;
 
             // If parent is a Group record we have to check for animation.
             Group* parentGroup = dynamic_cast<flt::Group*>(_parent.get());
             if (parentGroup && !parentGroup->hasAnimation())
-                return;
+                return true;
         }
 
-        std::string id = in.readString(8);
-        _object = new osg::Group;
-        _object->setName(id);
-
-
-#if 1
-        /*uint32 flags =*/ in.readUInt32();
-#else
-
-        // The Object "Flat Shaded" checkbox in Creator is used by the "Calculate Shading" operation,
-        // it is not a flat shaded state attribute.
-        
-        uint32 flags = in.readUInt32();
-        // Flat shaded?
-        if (flags & FLAT_SHADED)
-        {
-            static osg::ref_ptr<osg::ShadeModel> shademodel;
-            if (!shademodel.valid())
-            {
-                shademodel = new osg::ShadeModel;
-                shademodel->setMode(osg::ShadeModel::FLAT);
-            }
-            _object->getOrCreateStateSet()->setAttribute(shademodel.get());
-        }
-#endif
-        if (_parent.valid())
-            _parent->addChild(*_object);
+        return false;
     }
+
 };
 
 RegisterRecordProxy<Object> g_Object(OBJECT_OP);
@@ -952,12 +939,11 @@ public:
 
     META_setID(_lightSource)
     META_setComment(_lightSource)
-    META_setMatrix(_lightSource)
+    META_dispose(_lightSource)
 
 protected:
 
     virtual ~LightSource() {}
-
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);

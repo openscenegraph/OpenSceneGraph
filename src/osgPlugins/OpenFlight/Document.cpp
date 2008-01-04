@@ -46,44 +46,36 @@ Document::Document() :
 {
 }
 
-
 Document::~Document()
 {
 }
 
-
 void Document::pushLevel()
 {
     _levelStack.push_back(_currentPrimaryRecord.get());
-    _levelStack.back()->pushLevel(*this);
     _level++;
 }
 
-
 void Document::popLevel()
 {
-    _levelStack.back()->popLevel(*this);
     _levelStack.pop_back();
 
     if (!_levelStack.empty())
-        _currentPrimaryRecord = _levelStack.back().get();
+        _currentPrimaryRecord = _levelStack.back();
 
     if (--_level<=0)
         _done = true;
 }
-
 
 void Document::pushSubface()
 {
     _subfaceLevel++;
 }
 
-
 void Document::popSubface()
 {
     _subfaceLevel--;
 }
-
 
 void Document::pushExtension()
 {
@@ -95,7 +87,6 @@ void Document::pushExtension()
 
     _extensionStack.push_back(_currentPrimaryRecord.get());
 }
-
 
 void Document::popExtension()
 {
@@ -109,7 +100,6 @@ void Document::popExtension()
     _extensionStack.pop_back();
 }
 
-
 osg::Node* Document::getInstanceDefinition(int no)
 {
     InstanceDefinitionMap::iterator itr = _instanceDefinitionMap.find(no);
@@ -118,7 +108,6 @@ osg::Node* Document::getInstanceDefinition(int no)
 
     return NULL;
 }
-
 
 double flt::unitsToMeters(CoordUnits unit)
 {

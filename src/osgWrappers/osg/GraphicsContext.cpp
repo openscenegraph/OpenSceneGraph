@@ -437,12 +437,17 @@ BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
 	          Properties::NON_VIRTUAL,
 	          __void__readDISPLAY,
 	          "Read the DISPLAY environmental variable, and set the ScreenIdentifier accordingly. ",
-	          "");
+	          "Note, if either of displayNum or screenNum are not defined then -1 is set respectively to signify the this parameter has not been set. When parameters are undefined one can call call setUndefinedScreenDetalstoDefaultScreen() method after readDISPLAY() to ensure valid values. ");
 	I_Method1(void, setScreenIdentifier, IN, const std::string &, displayName,
 	          Properties::NON_VIRTUAL,
 	          __void__setScreenIdentifier__C5_std_string_R1,
 	          "Set the screenIndentifier from the displayName string. ",
-	          "");
+	          "Note, if either of displayNum or screenNum are not defined then -1 is set respectively to signify the this parameter has not been set. When parameters are undefined one can call call setUndefinedScreenDetalstoDefaultScreen() method after readDISPLAY() to ensure valid values. ");
+	I_Method0(void, setUndefinedScreenDetailsToDefaultScreen,
+	          Properties::NON_VIRTUAL,
+	          __void__setUndefinedScreenDetailsToDefaultScreen,
+	          "Set any undefined displayNum or screenNum values (i.e. ",
+	          "-1) to the default display & screen of 0 respectively. ");
 	I_SimpleProperty(const std::string &, ScreenIdentifier, 
 	                 0, 
 	                 __void__setScreenIdentifier__C5_std_string_R1);

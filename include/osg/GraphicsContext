@@ -38,11 +38,24 @@ class OSG_EXPORT GraphicsContext : public Object
             /** Return the display name in the form hostName::displayNum:screenNum. */    
             std::string displayName() const;
             
-            /** Read the DISPLAY environmental variable, and set the ScreenIdentifier accordingly.*/
+            /** Read the DISPLAY environmental variable, and set the ScreenIdentifier accordingly.
+              * Note, if either of displayNum or screenNum are not defined then -1 is set respectively to
+              * signify the this parameter has not been set. When parameters are undefined one can call
+              * call setUndefinedScreenDetalstoDefaultScreen() method after readDISPLAY() to ensure valid values. */
             void readDISPLAY();
             
-            /** Set the screenIndentifier from the displayName string.*/
+            /** Set the screenIndentifier from the displayName string.
+              * Note, if either of displayNum or screenNum are not defined then -1 is set respectively to
+              * signify the this parameter has not been set. When parameters are undefined one can call
+              * call setUndefinedScreenDetalstoDefaultScreen() method after readDISPLAY() to ensure valid values. */
             void setScreenIdentifier(const std::string& displayName);
+
+            /** Set any undefined displayNum or screenNum values (i.e. -1) to the default display & screen of 0 respectively.*/
+            void setUndefinedScreenDetailsToDefaultScreen()
+            {
+                if (displayNum<0) displayNum = 0;
+                if (screenNum<0) screenNum = 0;
+            }
 
             std::string  hostName;
             int displayNum;

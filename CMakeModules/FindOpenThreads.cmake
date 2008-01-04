@@ -43,36 +43,36 @@
 # may change.
 
 FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
+    PATHS
     $ENV{OPENTHREADS_INCLUDE_DIR}
     $ENV{OPENTHREADS_DIR}/include
     $ENV{OPENTHREADS_DIR}
     $ENV{OSG_INCLUDE_DIR}
     $ENV{OSG_DIR}/include
     $ENV{OSG_DIR}
+    $ENV{OSGDIR}/include
+    $ENV{OSGDIR}
     NO_DEFAULT_PATH
 )
 
-IF(NOT OPENTHREADS_INCLUDE_DIR)
-    FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
-        PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
-        PATH_SUFFIXES include
-    )
-ENDIF(NOT OPENTHREADS_INCLUDE_DIR)
+FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
+    PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
+    NO_DEFAULT_PATH
+    PATH_SUFFIXES include
+)
 
-IF(NOT OPENTHREADS_INCLUDE_DIR)
-    FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
-        ~/Library/Frameworks
-        /Library/Frameworks
-        /usr/local/include
-        /usr/include
-        /sw/include # Fink
-        /opt/local/include # DarwinPorts
-        /opt/csw/include # Blastwave
-        /opt/include
-        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OpenThreads_ROOT]/include
-        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
-    )
-ENDIF(NOT OPENTHREADS_INCLUDE_DIR)
+FIND_PATH(OPENTHREADS_INCLUDE_DIR OpenThreads/Thread
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/include
+    /usr/include
+    /sw/include # Fink
+    /opt/local/include # DarwinPorts
+    /opt/csw/include # Blastwave
+    /opt/include
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OpenThreads_ROOT]/include
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
+)
 
 
 FIND_LIBRARY(OPENTHREADS_LIBRARY 
@@ -86,39 +86,39 @@ FIND_LIBRARY(OPENTHREADS_LIBRARY
     $ENV{OSG_DIR}/lib64
     $ENV{OSG_DIR}/lib
     $ENV{OSG_DIR}
+    $ENV{OSGDIR}/lib64
+    $ENV{OSGDIR}/lib
+    $ENV{OSGDIR}
     NO_DEFAULT_PATH
 )
 
-IF(NOT OPENTHREADS_LIBRARY)
-    FIND_LIBRARY(OPENTHREADS_LIBRARY 
-        NAMES OpenThreads OpenThreadsWin32 
-        PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
-        PATH_SUFFIXES lib64 lib
-    )
-ENDIF(NOT OPENTHREADS_LIBRARY)
+FIND_LIBRARY(OPENTHREADS_LIBRARY 
+    NAMES OpenThreads OpenThreadsWin32 
+  PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
+    NO_DEFAULT_PATH
+    PATH_SUFFIXES lib64 lib
+)
 
-IF(NOT OPENTHREADS_LIBRARY)
-    FIND_LIBRARY(OPENTHREADS_LIBRARY 
-        NAMES OpenThreads OpenThreadsWin32 
-        PATHS
-        ~/Library/Frameworks
-        /Library/Frameworks
-        /usr/local/lib64
-        /usr/local/lib
-        /usr/lib64
-        /usr/lib
-        /sw/lib64
-        /sw/lib
-        /opt/local/lib64
-        /opt/local/lib
-        /opt/csw/lib64
-        /opt/csw/lib
-        /opt/lib64
-        /opt/lib
-        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OpenThreads_ROOT]/lib
-        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
-    )
-ENDIF(NOT OPENTHREADS_LIBRARY)
+FIND_LIBRARY(OPENTHREADS_LIBRARY 
+    NAMES OpenThreads OpenThreadsWin32 
+    PATHS
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/lib64
+    /usr/local/lib
+    /usr/lib64
+    /usr/lib
+    /sw/lib64
+    /sw/lib
+    /opt/local/lib64
+    /opt/local/lib
+    /opt/csw/lib64
+    /opt/csw/lib
+    /opt/lib64
+    /opt/lib
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OpenThreads_ROOT]/lib
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+)
 
 
 FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
@@ -133,40 +133,37 @@ FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG
     $ENV{OSG_DIR}/lib64
     $ENV{OSG_DIR}/lib
     $ENV{OSG_DIR}
-    ${CMAKE_PREFIX_PATH}/lib64
-    ${CMAKE_PREFIX_PATH}/lib
-    ${CMAKE_PREFIX_PATH}
+    $ENV{OSGDIR}/lib64
+    $ENV{OSGDIR}/lib
+    $ENV{OSGDIR}
     NO_DEFAULT_PATH
 )
 
-IF(NOT OPENTHREADS_LIBRARY_DEBUG)
-    FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
-        NAMES OpenThreadsd OpenThreadsWin32d
-        PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
-        PATH_SUFFIXES lib64 lib
-    )
-ENDIF(NOT OPENTHREADS_LIBRARY_DEBUG)
+FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
+    NAMES OpenThreadsd OpenThreadsWin32d
+    PATHS ${CMAKE_PREFIX_PATH} # Unofficial: We are proposing this.
+    NO_DEFAULT_PATH
+    PATH_SUFFIXES lib64 lib
+)
 
-IF(NOT OPENTHREADS_LIBRARY_DEBUG)
-    FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
-        NAMES OpenThreadsd OpenThreadsWin32d
-        PATHS
-        /usr/local/lib64
-        /usr/local/lib
-        /usr/lib64
-        /usr/lib
-        /sw/lib64
-        /sw/lib
-        /opt/local/lib64
-        /opt/local/lib
-        /opt/csw/lib64
-        /opt/csw/lib
-        /opt/lib64
-        /opt/lib
-        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OpenThreads_ROOT]/lib
-        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
-    )
-ENDIF(NOT OPENTHREADS_LIBRARY_DEBUG)
+FIND_LIBRARY(OPENTHREADS_LIBRARY_DEBUG 
+    NAMES OpenThreadsd OpenThreadsWin32d
+    PATHS
+    /usr/local/lib64
+    /usr/local/lib
+    /usr/lib64
+    /usr/lib
+    /sw/lib64
+    /sw/lib
+    /opt/local/lib64
+    /opt/local/lib
+    /opt/csw/lib64
+    /opt/csw/lib
+    /opt/lib64
+    /opt/lib
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OpenThreads_ROOT]/lib
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+)
 
 
 IF(OPENTHREADS_LIBRARY)

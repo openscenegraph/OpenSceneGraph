@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.3.0
+OpenSceneGraph Library 2.3.1
 
-294 Contributors:
+296 Contributors:
 
 Firstname Surname
 -----------------
@@ -10,8 +10,8 @@ Marco Jez
 Mike Weiblen
 Eric Wing
 Brede Johansen
-Geoff Michel
 Paul Martz
+Geoff Michel
 Farshid Lashkari
 Stephan Huber
 Bob Kuehne
@@ -19,9 +19,9 @@ Ulrich Hertlein
 Martin Lavery
 Eric Sokolowsky
 Tree 
+Mathias Fröhlich
 Trajce Nikolov
 Mike Wittman
-Mathias Fröhlich
 Luigi Calori
 David Callu
 Pavel Moloshtan
@@ -32,20 +32,21 @@ Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
+Jean-Sebastien Guay
 Andy Skinner
 Olaf Flebbe
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
 Michael Gronager
-Jean-Sebastien Guay
 Daniel Sjölie
 Colin McDonald
 Chris Hanson
 Per Fahlberg
+Jeremy Moles
 David Spilling
 Joran Jessurun
-Jeremy Moles
+Jason Daly
 Frederic Marmond
 David Fries
 Boris Bralo
@@ -54,9 +55,9 @@ Sondra Iverson
 Serge Lages
 Rune Schmidt Jensen
 Mike Connell
-Jason Daly
 Jason Beverage
 Ben Discoe
+Wojciech Lewandowski
 Sherman Wilcox
 Sasa Bistrovic
 Rainer Oder
@@ -74,7 +75,6 @@ Brad Colbert
 Art Tevs
 Andreas Ekstrand
 Adrian Egli
-Wojciech Lewandowski
 Vivek Rajan
 Stephane Simon
 Sean Spicer
@@ -88,6 +88,7 @@ Laurens Voerman
 John Shue
 David Guthrie
 Corbin Holtz
+Bryan Thrall
 Brad Christiansen
 Toshiyuki Takahei
 Thom DeCarlo
@@ -99,9 +100,9 @@ Paul de Repentigny
 Luc Frauciel
 Leandro Motta Barros
 José Delport
+John Kelso
 Daniel Larimer
 Carlo Camporesi
-Bryan Thrall
 Bruce Clay
 Alberto Barbati
 Vladimir Shabanov
@@ -118,7 +119,6 @@ Mathieu Marache
 Maria Ten
 Ken Sewell
 Julian Ortiz
-John Kelso
 Jeremy Bell
 James French
 Gabor Dorka
@@ -192,6 +192,7 @@ Tery Welsh
 Tanguy Fautré
 Sylvan Marie
 Sylvain Marie
+Sid Byce
 Shane Arnott
 Sebastien Kuntz
 Rudolf Wiedemann
@@ -200,6 +201,7 @@ Robert Swain
 Rick Pingry
 Reinhard Sainitzer
 Rein Kadijk
+Rafa Gaitan
 Qing Shen
 Philipp Siemoleit
 Paul Obermeier

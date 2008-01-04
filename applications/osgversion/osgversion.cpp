@@ -207,6 +207,7 @@ bool validName(const std::string& first)
     if (first=="OperationThread") return false;
     if (first=="SimpleViewer") return false;
     if (first=="IndexFaceSets") return false;
+    if (first=="Quicktime") return false;
     return true;
 }
 
@@ -322,6 +323,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Wojiech")  return "Wojciech";
     if (name=="Leandowski")  return "Lewandowski";
     if (name=="Aderian")  return "Adrian";
+    if (name=="Callue")  return "Callu";
     
     return name;
 }

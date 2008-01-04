@@ -40,14 +40,13 @@ class RoadSegment : public PrimaryRecord
 
         META_setID(_roadSegment)
         META_setComment(_roadSegment)
-        META_setMatrix(_roadSegment)
         META_setMultitexture(_roadSegment)
         META_addChild(_roadSegment)
+        META_dispose(_roadSegment)
 
     protected:
 
         virtual ~RoadSegment() {}
-
         virtual void readRecord(RecordInputStream& in, Document& /*document*/)
         {
             _roadSegment = new osg::Group;
@@ -78,14 +77,13 @@ class RoadConstruction : public PrimaryRecord
 
         META_setID(_roadConstruction)
         META_setComment(_roadConstruction)
-        META_setMatrix(_roadConstruction)
         META_setMultitexture(_roadConstruction)
         META_addChild(_roadConstruction)
+        META_dispose(_roadConstruction)
 
     protected:
 
         virtual ~RoadConstruction() {}
-
         virtual void readRecord(RecordInputStream& in, Document& /*document*/)
         {
             _roadConstruction = new osg::Group;
@@ -117,14 +115,13 @@ class RoadPath : public PrimaryRecord
 
         META_setID(_roadPath)
         META_setComment(_roadPath)
-        META_setMatrix(_roadPath)
         META_setMultitexture(_roadPath)
         META_addChild(_roadPath)
+        META_dispose(_roadPath)
 
     protected:
 
         virtual ~RoadPath() {}
-
         virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/)
         {
             _roadPath = new osg::Group;

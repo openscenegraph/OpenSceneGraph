@@ -30,50 +30,38 @@ Record::Record()
 {
 }
 
-Record::~Record()
-{
-}
-
-void Record::setParent(PrimaryRecord* parent)
-{
-    _parent = parent;
-}
-
-//PrimaryRecord& Record::parent()
-//{
-//    if (!_parent)
-//        throw std::runtime_error("Record::parent(): invalid pointer to parent exception.");
-//
-//    return *_parent;
-//}
-
-
 void Record::read(RecordInputStream& in, Document& document)
 {
-    setParent(document.getCurrentPrimaryRecord());
+    _parent = document.getCurrentPrimaryRecord();
 
     // Read record body.
     readRecord(in,document);
 }
 
-
 void Record::readRecord(RecordInputStream& /*in*/, Document& /*document*/)
 {
 }
-
 
 PrimaryRecord::PrimaryRecord() :
     _numberOfReplications(0)
 {
 }
 
-
 void PrimaryRecord::read(RecordInputStream& in, Document& document)
 {
-    setParent(document.getTopOfLevelStack());
+    PrimaryRecord* parentPrimary = document.getTopOfLevelStack();
+    PrimaryRecord* currentPrimary = document.getCurrentPrimaryRecord();
 
-    // Update primary record.
+    // Finally call dispose() for primary without push, pop level pair. 
+    if (currentPrimary && currentPrimary!=parentPrimary)
+    {
+        currentPrimary->dispose(document);
+    }
+
+   // Update current primary record.
     document.setCurrentPrimaryRecord(this);
+
+     _parent = parentPrimary;
 
     // Read record body.
     readRecord(in,document);
@@ -82,27 +70,47 @@ void PrimaryRecord::read(RecordInputStream& in, Document& document)
 ///////////////////////////////////////////////////////////////////////////////////
 // Helper methods
 
-// Insert matrix-tranform above node.
-// Return transform.
-osg::ref_ptr<osg::MatrixTransform> flt::insertMatrixTransform(osg::Node& node, const osg::Matrix& matrix)
+// Insert matrix-tranform(s)
+//
+// node: node to apply transform
+// matrix: transformation matrix
+// numberOfReplications: zero for regular transform, number of copies if replication is used.
+void flt::insertMatrixTransform(osg::Node& node, const osg::Matrix& matrix, int numberOfReplications)
 {
     osg::ref_ptr<osg::Node> ref = &node;
-    osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform(matrix);
-    transform->setDataVariance(osg::Object::STATIC);
-
-    // Replace parent
     osg::Node::ParentList parents = node.getParents();
+
+    // Disconnect node from parents.
     for (osg::Node::ParentList::iterator itr=parents.begin();
         itr!=parents.end();
         ++itr)
     {
-        (*itr)->replaceChild(&node,transform.get());
+        (*itr)->removeChild(&node);
     }
 
-    // Make primary a child of matrix transform.
-    transform->addChild(&node);
+    // Start without transformation if replication.
+    osg::Matrix accumulatedMatrix = (numberOfReplications > 0)? osg::Matrix::identity() : matrix;
 
-    return transform;
+    for (int n=0; n<=numberOfReplications; n++)
+    {
+        // Accumulate transformation for each replication.
+        osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform(accumulatedMatrix);
+        transform->setDataVariance(osg::Object::STATIC);
+
+        // Add transform to parents
+        for (osg::Node::ParentList::iterator itr=parents.begin();
+            itr!=parents.end();
+            ++itr)
+        {
+            (*itr)->addChild(transform.get());
+        }
+
+        // Make primary a child of matrix transform.
+        transform->addChild(&node);
+
+        // Accumulate transform if multiple replications.
+        accumulatedMatrix *= matrix;
+    }
 }
 
 

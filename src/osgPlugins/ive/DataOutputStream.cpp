@@ -73,6 +73,7 @@
 #include "Transform.h"
 #include "Switch.h"
 #include "OccluderNode.h"
+#include "OcclusionQueryNode.h"
 #include "Impostor.h"
 #include "CoordinateSystemNode.h"
 
@@ -1037,6 +1038,9 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osg::OccluderNode*>(node)){
             ((ive::OccluderNode*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osg::OcclusionQueryNode*>(node)){
+            ((ive::OcclusionQueryNode*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::Transform*>(node)){
             ((ive::Transform*)(node))->write(this);

@@ -309,7 +309,7 @@ void Sequence::traverse(NodeVisitor& nv)
                 if (!_sync || 
                     ((_now - _start) <= (_frameTime[_value]+_frameTime[nextValue])*osg::absolute(_speed)) )
                 {
-                    _start += _frameTime[_value];
+                    _start += _frameTime[_value]*osg::absolute(_speed);
                     // repeat or change directions?
                     if ( (_step>0 && nextValue==_send) || 
                          (_step<0 && nextValue==_sbegin))

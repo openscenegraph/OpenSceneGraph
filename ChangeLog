@@ -1,3 +1,222 @@
+2007-12-26 22:00 +0000 [r7754]  robert:
+
+	* From Paul Martz, "The osgocclusionquery example contained some
+	  duplicate code that was also in the core OSG occlusion query
+	  code. This change removes the need for that."
+
+2007-12-26 21:43 +0000 [r7753]  robert:
+
+	* Updated wrappers
+
+2007-12-26 21:39 +0000 [r7751-7752]  robert:
+
+	* From David Callu, further work in support of shapefile support in
+	  VirtualPlanetBuilder
+
+	* Suppressed reflection of problem templates/typedefs
+
+2007-12-25 21:11 +0000 [r7750]  robert:
+
+	* Replaced values.h with float.h is avoid Windows compile issues
+
+2007-12-24 15:37 +0000 [r7749]  robert:
+
+	* Updated wrappers
+
+2007-12-24 15:32 +0000 [r7748]  robert:
+
+	* Fom Brede Johansen, "I have added the OSGPL license to the
+	  OpenFlight source files"
+
+2007-12-24 15:19 +0000 [r7747]  robert:
+
+	* From Sid Byce, fixes for compiling with gcc 4.3
+
+2007-12-24 14:47 +0000 [r7745-7746]  robert:
+
+	* From Rafa Gaitan, "I have corrected some includes of the
+	  quicktime plugin from Quicktime/Quicktime.h to
+	  QuickTime/QuickTime.h. MacOsX filesystem is normally case
+	  insensitive, but in my case I changed that option and the
+	  quicktime headers were not found. Now compiles fine and on case
+	  insesitive file systems should work correctly too. "
+
+	* From Jason Daly, "I'm still having a problem with SWING
+	  animations on sequences. Here's the fix again, merged with this
+	  morning's svn (including the other Sequence fixes from J-S)."
+
+2007-12-24 12:56 +0000 [r7744]  robert:
+
+	* Based on Suggestions from "Harald A" fixed CMake setup of Doxygen
+	  docs
+
+2007-12-23 18:15 +0000 [r7743]  robert:
+
+	* Convert osgText and freetype plugin across to keeping the font
+	  size as state that is passed into the getGlyph and getKerning
+	  methods rather than a current state of the font itself.
+
+2007-12-23 13:45 +0000 [r7742]  robert:
+
+	* Moved Font code across to using FontSizePair internally and on
+	  Font methods, but still using original implemetations.
+
+2007-12-23 13:18 +0000 [r7741]  robert:
+
+	* Renamed osgText::Font::SizePair to osgText::FontSizePair in prep
+	  for use this more widely within osgText/freetype plugin. Added
+	  support for inserting loading models into --mt multithreaded
+	  implementation.
+
+2007-12-23 13:08 +0000 [r7740]  robert:
+
+	* Fixed indentation
+
+2007-12-21 17:56 +0000 [r7739]  robert:
+
+	* From Jean-Sebastien Guay, added new version of feetype into
+	  search list
+
+2007-12-21 17:33 +0000 [r7738]  robert:
+
+	* Added copyright notice and tweaked genwrapper
+
+2007-12-21 17:26 +0000 [r7737]  robert:
+
+	* Updated wrappers
+
+2007-12-21 16:18 +0000 [r7736]  robert:
+
+	* From Paul Martz, "added include<alogrithm> to prevent VS8 compile
+	  error"
+
+2007-12-21 15:54 +0000 [r7735]  robert:
+
+	* Removed OperationArrayFunctor for wrappers to avoid compile
+	  errors assocaited with them
+
+2007-12-21 15:46 +0000 [r7734]  robert:
+
+	* Removed inappropriate inline
+
+2007-12-21 15:04 +0000 [r7733]  robert:
+
+	* Updated wrappers
+
+2007-12-21 14:49 +0000 [r7732]  robert:
+
+	* From Paul Martz, .osg support for OcclusionQueryNode
+
+2007-12-21 14:45 +0000 [r7731]  robert:
+
+	* From Paul Martz, Introduced osg::OcclusionQueryNode with support
+	  for OpenGL occlusion query extension
+
+2007-12-21 14:21 +0000 [r7730]  robert:
+
+	* From Bryan Thrall, "UFOManipulator ignores any attached
+	  CoordinateFrameCallback; the attached files fix this (based on
+	  2.2 release). "
+
+2007-12-21 14:16 +0000 [r7729]  robert:
+
+	* From Mathias Froehlich, "Something to extend the texture
+	  subloading blacklist. ... we have problems with that on solaris."
+
+2007-12-21 14:13 +0000 [r7728]  robert:
+
+	* From John Kelso,"Attached is the ive reader/writer for the 2.x
+	  version of the osg::Sequence node. "
+
+2007-12-21 13:32 +0000 [r7726-7727]  robert:
+
+	* From Jeremy Moles, "Here is a implementation of
+	  setScreeResolution and setScreenRefreshRate for systems support
+	  Xrandr. The include CMakeFile makes this optional, and turns it
+	  OFF by default, in which case any person trying to use these
+	  functions under Linux will be instructed to build osgViewer w/
+	  Xrandr support. "
+
+	* Added return
+
+2007-12-21 13:18 +0000 [r7725]  robert:
+
+	* From Jean-Sebastien Guay, "When using osg::Sequence you can stop
+	  the sequence by setting the mode to STOP. Subsequently, you can
+	  restart it from the beginning by setting the mode to START. This
+	  does not work as expected. The _now time is not updated while the
+	  mode is STOP, which causes the items in the sequence to flash by
+	  very quickly when the mode is set to START. For example, if the
+	  mode was set to STOP and left that way for 30 seconds, and there
+	  are 10 items in the sequence, when the mode is set to START all
+	  the items will flash by (in 3 loops) while the _now time catches
+	  up with the real time, and then the sequence will go on at the
+	  rate it should. This is a simple fix for that, which updates the
+	  _now time regardless of the mode the sequence is in."
+
+2007-12-21 13:07 +0000 [r7724]  robert:
+
+	* From David Callu, various classes in support of
+	  VirtualPlanetBuilder
+
+2007-12-21 12:36 +0000 [r7723]  robert:
+
+	* From David Callue, added support for reading/writing Vec*dArray
+	  to .ive plugin
+
+2007-12-20 17:30 +0000 [r7722]  robert:
+
+	* Updated wrappers
+
+2007-12-20 15:51 +0000 [r7720-7721]  robert:
+
+	* Added support for min to max level ranges for Layers in support
+	  of VirtualPlanetBuilder usage of this.
+
+	* Added an optional use of doubles for computing error metrics to
+	  help investigate precision issues seen in VPB when working with
+	  small segments of geographic data.
+
+2007-12-20 15:40 +0000 [r7719]  robert:
+
+	* Reset the the _lineSpacing to 0.0f to fix the line spacing when
+	  word wrapping takes place
+
+2007-12-20 14:40 +0000 [r7718]  robert:
+
+	* From Wojciech Lewandowski, "By complete coincidence I just have
+	  read an old OSG submission mail related to bugfixes in
+	  osg::Polytope.setToUnitFrustum and setToBoundingBox It was sent
+	  at beginning of december. I read it when purging my Thrash emails
+	  and found it there this because it was wrongly classified as
+	  SPAM. What stroke me in this email was the fact that there was
+	  once an error in Polytope class. Since I adopted CustomPolytope
+	  (osgSim OverlayNode.cpp) for my minimal shadow area computations
+	  I checked my code for this error. And I found it in
+	  CustomPolytope::setToUnitFrustum method.
+	  CustomPolytope::setToBoundingBox seemed OK. So I went back to the
+	  origin and fixed this error in OverlayNode.cpp as well. I have
+	  not tested it in OverlayNode though (I don't know how) so please
+	  look at this carefully. But it seems to work fine with my shadow
+	  calculations."
+
+2007-12-20 10:48 +0000 [r7717]  robert:
+
+	* Reorder includes in an attempt to avoid compile problems under
+	  Cygwin.
+
+2007-12-17 21:52 +0000 [r7715]  robert:
+
+	* Updated AUTHORS files
+
+2007-12-17 21:35 +0000 [r7714]  robert:
+
+	* Updated ChangeLog for 2.3.0 release
+
+2007-12-17 21:08 +0000 [r7713]  robert:
+
+	* Updated version number for 2.3.0 dev release
+
 2007-12-17 18:38 +0000 [r7711]  robert:
 
 	* From Paul Obermeier, "Please find enclosed the following 2 bug

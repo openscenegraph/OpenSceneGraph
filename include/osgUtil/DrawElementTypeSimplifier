@@ -20,13 +20,13 @@
 namespace osgUtil
 {
 
-class DrawElementTypeSimplifier
+class OSGUTIL_EXPORT DrawElementTypeSimplifier
 {
     public:
         void simplify(osg::Geometry & geometry) const;
 };
 
-class DrawElementTypeSimplifierVisitor : public osg::NodeVisitor
+class OSGUTIL_EXPORT DrawElementTypeSimplifierVisitor : public osg::NodeVisitor
 {
     public:
         

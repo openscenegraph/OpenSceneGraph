@@ -17,6 +17,8 @@
 #include <osg/Geometry>
 #include <osg/NodeVisitor>
 
+#include <osgUtil/Export>
+
 namespace osgUtil
 {
 

@@ -68,8 +68,6 @@ public:
     struct Edgeloop;
     struct Point;
 
-
-
     typedef std::list<osg::ref_ptr<osg::UIntArray> > IndexArrayList;
     
     ~EdgeCollector();
@@ -88,7 +86,7 @@ public:
     typedef std::set< osg::ref_ptr<Triangle> >                                  TriangleSet;
     typedef std::map< osg::ref_ptr<Triangle>, unsigned int, dereference_less >  TriangleMap;
 
-    struct Point : public osg::Referenced
+    struct OSGUTIL_EXPORT Point : public osg::Referenced
     {
         Point(): _protected(false), _index(0) {}
         
@@ -106,7 +104,7 @@ public:
         bool isBoundaryPoint() const;
     };
 
-    struct Edge : public osg::Referenced
+    struct OSGUTIL_EXPORT Edge : public osg::Referenced
     {
         void clear();
 
@@ -138,7 +136,7 @@ public:
         bool beginConnected(const Edge& rhs) const { return (_op1 == rhs._op2); }
     };
 
-    struct Triangle : public osg::Referenced
+    struct OSGUTIL_EXPORT Triangle : public osg::Referenced
     {
         Triangle() {}
         
@@ -169,7 +167,7 @@ public:
         osg::Plane _plane;        
     };
 
-    class Edgeloop : public osg::Referenced
+    class OSGUTIL_EXPORT Edgeloop : public osg::Referenced
     {
         public:
             typedef std::vector<osg::ref_ptr<Edge> > EdgeList;

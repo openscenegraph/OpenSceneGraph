@@ -167,16 +167,15 @@ public:
         osg::Plane _plane;        
     };
 
-    class OSGUTIL_EXPORT Edgeloop : public osg::Referenced
+    struct OSGUTIL_EXPORT Edgeloop : public osg::Referenced
     {
-        public:
-            typedef std::vector<osg::ref_ptr<Edge> > EdgeList;
-            
-            bool isClosed() { return (_edgeList.back()->endConnected(*_edgeList.front().get())); }
-            
-            osg::UIntArray * toIndexArray() const;
-            
-            EdgeList _edgeList;
+        typedef std::vector<osg::ref_ptr<Edge> > EdgeList;
+        
+        bool isClosed() { return (_edgeList.back()->endConnected(*_edgeList.front().get())); }
+        
+        osg::UIntArray * toIndexArray() const;
+        
+        EdgeList _edgeList;
     };
 
 

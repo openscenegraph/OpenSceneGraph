@@ -19,7 +19,7 @@ namespace Utility
 /*!
   Reads a file and returns a string
  */
-bool readFile(char* fName, std::string& s);
+bool readFile(const char* fName, std::string& s);
 
 /*!
   Converts a number to a string

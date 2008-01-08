@@ -14,7 +14,7 @@
 #include <osg/Geode>
 #include <osgDB/FileUtils>
 
-bool Utility::readFile(char* fName, std::string& s)
+bool Utility::readFile(const char* fName, std::string& s)
 {
   std::string foundFile = osgDB::findDataFile(fName);
   if (foundFile.empty()) return false;

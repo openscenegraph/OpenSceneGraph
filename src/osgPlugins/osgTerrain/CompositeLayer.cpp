@@ -31,8 +31,6 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
     bool itrAdvanced = false;
     
-    osg::notify(osg::NOTICE)<<"Composite layer "<<fr[0].getStr()<<std::endl;
-
     osg::ref_ptr<osgTerrain::Locator> locator = 0;
 
     do
@@ -42,8 +40,6 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
         osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
         locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
         if (readObject.valid()) itrAdvanced = true;
-
-        osg::notify(osg::NOTICE)<<"Composite layer after locator read "<<fr[0].getStr()<<std::endl;
 
         if (fr.matchSequence("file %s") || fr.matchSequence("file %w") )
         {

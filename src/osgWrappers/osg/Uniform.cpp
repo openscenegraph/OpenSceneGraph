@@ -152,6 +152,33 @@ BEGIN_ENUM_REFLECTOR(osg::Uniform::Type)
 	I_EnumLabel(osg::Uniform::SAMPLER_2D_ARRAY);
 	I_EnumLabel(osg::Uniform::SAMPLER_1D_ARRAY_SHADOW);
 	I_EnumLabel(osg::Uniform::SAMPLER_2D_ARRAY_SHADOW);
+	I_EnumLabel(osg::Uniform::FLOAT_MAT2x3);
+	I_EnumLabel(osg::Uniform::FLOAT_MAT2x4);
+	I_EnumLabel(osg::Uniform::FLOAT_MAT3x2);
+	I_EnumLabel(osg::Uniform::FLOAT_MAT3x4);
+	I_EnumLabel(osg::Uniform::FLOAT_MAT4x2);
+	I_EnumLabel(osg::Uniform::FLOAT_MAT4x3);
+	I_EnumLabel(osg::Uniform::SAMPLER_BUFFER);
+	I_EnumLabel(osg::Uniform::SAMPLER_CUBE_SHADOW);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_VEC2);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_VEC3);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_VEC4);
+	I_EnumLabel(osg::Uniform::INT_SAMPLER_1D);
+	I_EnumLabel(osg::Uniform::INT_SAMPLER_2D);
+	I_EnumLabel(osg::Uniform::INT_SAMPLER_3D);
+	I_EnumLabel(osg::Uniform::INT_SAMPLER_CUBE);
+	I_EnumLabel(osg::Uniform::INT_SAMPLER_2D_RECT);
+	I_EnumLabel(osg::Uniform::INT_SAMPLER_1D_ARRAY);
+	I_EnumLabel(osg::Uniform::INT_SAMPLER_2D_ARRAY);
+	I_EnumLabel(osg::Uniform::INT_SAMPLER_BUFFER);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_SAMPLER_1D);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_SAMPLER_2D);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_SAMPLER_3D);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_SAMPLER_CUBE);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_SAMPLER_2D_RECT);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_SAMPLER_1D_ARRAY);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_SAMPLER_2D_ARRAY);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT_SAMPLER_BUFFER);
 	I_EnumLabel(osg::Uniform::UNDEFINED);
 END_REFLECTOR
 

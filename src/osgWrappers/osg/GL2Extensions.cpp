@@ -98,6 +98,26 @@ BEGIN_OBJECT_REFLECTOR(osg::GL2Extensions)
 	          __bool__isLanguage100Supported,
 	          "",
 	          "");
+	I_Method1(void, setGeometryShader4Supported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setGeometryShader4Supported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isGeometryShader4Supported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isGeometryShader4Supported,
+	          "",
+	          "");
+	I_Method1(void, setGpuShader4Supported, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setGpuShader4Supported__bool,
+	          "",
+	          "");
+	I_Method0(bool, isGpuShader4Supported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isGpuShader4Supported,
+	          "",
+	          "");
 	I_Method2(void, glBlendEquationSeparate, IN, GLenum, modeRGB, IN, GLenum, modeAlpha,
 	          Properties::NON_VIRTUAL,
 	          __void__glBlendEquationSeparate__GLenum__GLenum,
@@ -588,7 +608,62 @@ BEGIN_OBJECT_REFLECTOR(osg::GL2Extensions)
 	          __bool__getFragDataLocation__C5_char_P1__GLuint_R1,
 	          "",
 	          "");
-	I_Method3(void, glBindFragDataLocation, IN, GLuint, program, IN, GLuint, colorNumber, IN, const GLchar *, name,
+	I_Method4(void, glUniformMatrix2x3fv, IN, GLint, location, IN, GLsizei, count, IN, GLboolean, transpose, IN, const GLfloat *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniformMatrix2x3fv__GLint__GLsizei__GLboolean__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method4(void, glUniformMatrix3x2fv, IN, GLint, location, IN, GLsizei, count, IN, GLboolean, transpose, IN, const GLfloat *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniformMatrix3x2fv__GLint__GLsizei__GLboolean__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method4(void, glUniformMatrix2x4fv, IN, GLint, location, IN, GLsizei, count, IN, GLboolean, transpose, IN, const GLfloat *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniformMatrix2x4fv__GLint__GLsizei__GLboolean__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method4(void, glUniformMatrix4x2fv, IN, GLint, location, IN, GLsizei, count, IN, GLboolean, transpose, IN, const GLfloat *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniformMatrix4x2fv__GLint__GLsizei__GLboolean__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method4(void, glUniformMatrix3x4fv, IN, GLint, location, IN, GLsizei, count, IN, GLboolean, transpose, IN, const GLfloat *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniformMatrix3x4fv__GLint__GLsizei__GLboolean__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method4(void, glUniformMatrix4x3fv, IN, GLint, location, IN, GLsizei, count, IN, GLboolean, transpose, IN, const GLfloat *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniformMatrix4x3fv__GLint__GLsizei__GLboolean__C5_GLfloat_P1,
+	          "",
+	          "");
+	I_Method3(void, glProgramParameteri, IN, GLuint, program, IN, GLenum, pname, IN, GLint, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glProgramParameteri__GLuint__GLenum__GLint,
+	          "",
+	          "");
+	I_Method4(void, glFramebufferTexture, IN, GLenum, target, IN, GLenum, attachment, IN, GLuint, texture, IN, GLint, level,
+	          Properties::NON_VIRTUAL,
+	          __void__glFramebufferTexture__GLenum__GLenum__GLuint__GLint,
+	          "",
+	          "");
+	I_Method5(void, glFramebufferTextureLayer, IN, GLenum, target, IN, GLenum, attachment, IN, GLuint, texture, IN, GLint, level, IN, GLint, layer,
+	          Properties::NON_VIRTUAL,
+	          __void__glFramebufferTextureLayer__GLenum__GLenum__GLuint__GLint__GLint,
+	          "",
+	          "");
+	I_Method5(void, glFramebufferTextureFace, IN, GLenum, target, IN, GLenum, attachment, IN, GLuint, texture, IN, GLint, level, IN, GLenum, face,
+	          Properties::NON_VIRTUAL,
+	          __void__glFramebufferTextureFace__GLenum__GLenum__GLuint__GLint__GLenum,
+	          "",
+	          "");
+	I_Method3(void, glGetUniformuiv, IN, GLuint, program, IN, GLint, location, IN, GLuint *, params,
+	          Properties::NON_VIRTUAL,
+	          __void__glGetUniformuiv__GLuint__GLint__GLuint_P1,
+	          "",
+	          "");
+	I_Method3(void, glBindFragDataLocation, IN, GLuint, program, IN, GLuint, color, IN, const GLchar *, name,
 	          Properties::NON_VIRTUAL,
 	          __void__glBindFragDataLocation__GLuint__GLuint__C5_GLchar_P1,
 	          "",
@@ -596,6 +671,46 @@ BEGIN_OBJECT_REFLECTOR(osg::GL2Extensions)
 	I_Method2(GLint, glGetFragDataLocation, IN, GLuint, program, IN, const GLchar *, name,
 	          Properties::NON_VIRTUAL,
 	          __GLint__glGetFragDataLocation__GLuint__C5_GLchar_P1,
+	          "",
+	          "");
+	I_Method2(void, glUniform1ui, IN, GLint, location, IN, GLuint, v0,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniform1ui__GLint__GLuint,
+	          "",
+	          "");
+	I_Method3(void, glUniform2ui, IN, GLint, location, IN, GLuint, v0, IN, GLuint, v1,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniform2ui__GLint__GLuint__GLuint,
+	          "",
+	          "");
+	I_Method4(void, glUniform3ui, IN, GLint, location, IN, GLuint, v0, IN, GLuint, v1, IN, GLuint, v2,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniform3ui__GLint__GLuint__GLuint__GLuint,
+	          "",
+	          "");
+	I_Method5(void, glUniform4ui, IN, GLint, location, IN, GLuint, v0, IN, GLuint, v1, IN, GLuint, v2, IN, GLuint, v3,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniform4ui__GLint__GLuint__GLuint__GLuint__GLuint,
+	          "",
+	          "");
+	I_Method3(void, glUniform1uiv, IN, GLint, location, IN, GLsizei, count, IN, const GLuint *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniform1uiv__GLint__GLsizei__C5_GLuint_P1,
+	          "",
+	          "");
+	I_Method3(void, glUniform2uiv, IN, GLint, location, IN, GLsizei, count, IN, const GLuint *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniform2uiv__GLint__GLsizei__C5_GLuint_P1,
+	          "",
+	          "");
+	I_Method3(void, glUniform3uiv, IN, GLint, location, IN, GLsizei, count, IN, const GLuint *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniform3uiv__GLint__GLsizei__C5_GLuint_P1,
+	          "",
+	          "");
+	I_Method3(void, glUniform4uiv, IN, GLint, location, IN, GLsizei, count, IN, const GLuint *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__glUniform4uiv__GLint__GLsizei__C5_GLuint_P1,
 	          "",
 	          "");
 	I_StaticMethod2(osg::GL2Extensions *, Get, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
@@ -612,9 +727,15 @@ BEGIN_OBJECT_REFLECTOR(osg::GL2Extensions)
 	I_SimpleProperty(bool, FragmentShaderSupported, 
 	                 0, 
 	                 __void__setFragmentShaderSupported__bool);
+	I_SimpleProperty(bool, GeometryShader4Supported, 
+	                 0, 
+	                 __void__setGeometryShader4Supported__bool);
 	I_SimpleProperty(float, GlVersion, 
 	                 __float__getGlVersion, 
 	                 0);
+	I_SimpleProperty(bool, GpuShader4Supported, 
+	                 0, 
+	                 __void__setGpuShader4Supported__bool);
 	I_SimpleProperty(bool, Language100Supported, 
 	                 0, 
 	                 __void__setLanguage100Supported__bool);

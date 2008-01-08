@@ -118,6 +118,12 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
     bool itrAdvanced = false;
 
+    osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
+    if (readObject.valid()) itrAdvanced = true;
+
+    osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
+    if (locator) terrain.setLocator(locator);
+
     if (fr.matchSequence("ElevationLayer {"))
     {
         int entry = fr[0].getNoNestedBrackets();
@@ -289,7 +295,7 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
         itrAdvanced = true;
     }
 
-    osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::TerrainTechnique>());
+    readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::TerrainTechnique>());
     if (readObject.valid())
     {
         terrain.setTerrainTechnique(dynamic_cast<osgTerrain::TerrainTechnique*>(readObject.get()));

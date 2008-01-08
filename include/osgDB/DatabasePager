@@ -339,12 +339,12 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         // Is texture compiled for all active contexts?
         inline bool isCompiled(osg::Texture* texture) const
         {
-            using namespace std;
-            return (count_if(_activeGraphicsContexts.begin(),
-                             _activeGraphicsContexts.end(),
-                             bind1st(mem_fun(&osg::Texture::getTextureObject),
-                                     texture))
-                    == (int)_activeGraphicsContexts.size());
+            for (ActiveGraphicsContexts::iterator iter=_activeGraphicsContexts.begin();
+                   iter!=_activeGraphicsContexts.end(); ++iter )
+            {
+                if ( texture->getTextureObject(*iter) == NULL ) return false;
+            }
+            return true;
         }
         
         inline static bool isCompiled(const osg::StateSet* stateSet,
@@ -364,20 +364,20 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         inline bool isCompiled(osg::StateSet* stateSet)
         {
-            using namespace std;
             for (unsigned i = 0;
                  i < stateSet->getTextureAttributeList().size();
                  ++i)
             {
                 osg::Texture* texture
                     = dynamic_cast<osg::Texture*>(stateSet->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
-                if (texture
-                    && (count_if(_activeGraphicsContexts.begin(),
-                                 _activeGraphicsContexts.end(),
-                                 bind1st(mem_fun(&osg::Texture::getTextureObject),
-                                         texture))
-                        != (int)_activeGraphicsContexts.size()))
-                    return false;
+                if (texture)
+                {
+                    for (ActiveGraphicsContexts::iterator iter=_activeGraphicsContexts.begin();
+                            iter!=_activeGraphicsContexts.end(); ++iter )
+                    {
+                        if ( texture->getTextureObject(*iter) == NULL ) return false;
+                    }
+                }
             }
             return true;
         }
@@ -395,14 +395,13 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         inline bool isCompiled(const osg::Drawable* drawable) const
         {
-            using namespace std;
             if (drawable->getUseDisplayList())
             {
-                return (count_if(_activeGraphicsContexts.begin(),
-                                 _activeGraphicsContexts.end(),
-                                 bind1st(mem_fun(&osg::Drawable::getDisplayList),
-                                         drawable))
-                        == (int)_activeGraphicsContexts.size());
+                for (ActiveGraphicsContexts::iterator iter=_activeGraphicsContexts.begin();
+                        iter!=_activeGraphicsContexts.end(); ++iter )
+                {
+                    if ( drawable->getDisplayList(*iter) == 0 ) return false;
+                }
             }
             return true;
         }

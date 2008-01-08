@@ -210,7 +210,7 @@ void ConvertToInventor::apply(osg::Node &node)
 
 
 template<typename fieldClass, typename ivType, typename osgType>
-static void osgArray2ivMField_template(const osg::Array *array, fieldClass &field, int startIndex = 0, int stopIndex = 0, int numItemsUntilMinusOne = 0)
+void osgArray2ivMField_template(const osg::Array *array, fieldClass &field, int startIndex = 0, int stopIndex = 0, int numItemsUntilMinusOne = 0)
 {
   int i,num = array->getNumElements();
   if (startIndex!=0 || stopIndex!=0) {
@@ -250,7 +250,7 @@ static void osgArray2ivMField_template(const osg::Array *array, fieldClass &fiel
 
 
 template<typename ivType, typename osgType, int shift>
-static void osgArray2ivMField_composite_template_worker(ivType *dest, osgType *src, int num, int numItemsUntilMinusOne = 0)
+void osgArray2ivMField_composite_template_worker(ivType *dest, osgType *src, int num, int numItemsUntilMinusOne = 0)
 {
   for (int i=0; i<num; i++, src+=shift)
     dest[i] = ivType(src);
@@ -258,7 +258,7 @@ static void osgArray2ivMField_composite_template_worker(ivType *dest, osgType *s
 
 
 template<>
-static void osgArray2ivMField_composite_template_worker<SbColor, GLubyte, 4>(SbColor *dest, GLubyte *src, int num, int numItemsUntilMinusOne)
+void osgArray2ivMField_composite_template_worker<SbColor, GLubyte, 4>(SbColor *dest, GLubyte *src, int num, int numItemsUntilMinusOne)
 {
   for (int i=0; i<num; i++, src+=4)
     dest[i].setValue(src[0]/255.f, src[1]/255.f, src[2]/255.f);
@@ -266,7 +266,7 @@ static void osgArray2ivMField_composite_template_worker<SbColor, GLubyte, 4>(SbC
 
 
 template<>
-static void osgArray2ivMField_composite_template_worker<SbVec3f, float, 2>(SbVec3f *dest, float *src, int num, int numItemsUntilMinusOne)
+void osgArray2ivMField_composite_template_worker<SbVec3f, float, 2>(SbVec3f *dest, float *src, int num, int numItemsUntilMinusOne)
 {
   for (int i=0; i<num; i++, src+=2)
     dest[i].setValue(src[0], src[1], 0.f);
@@ -274,7 +274,7 @@ static void osgArray2ivMField_composite_template_worker<SbVec3f, float, 2>(SbVec
 
 
 template<typename fieldClass, typename ivType, typename osgType, int shift>
-static void osgArray2ivMField_composite_template(const osg::Array *array, fieldClass &field, int startIndex = 0, int stopIndex = 0, int numItemsUntilMinusOne = 0)
+void osgArray2ivMField_composite_template(const osg::Array *array, fieldClass &field, int startIndex = 0, int stopIndex = 0, int numItemsUntilMinusOne = 0)
 {
   int num = array->getNumElements();
   if (startIndex!=0 || stopIndex!=0) {
@@ -295,7 +295,7 @@ static void osgArray2ivMField_composite_template(const osg::Array *array, fieldC
 
 
 template<typename fieldClass, typename ivType, typename osgType, int numComponents>
-static void osgArray2ivMField_pack_template(const osg::Array *array, fieldClass &field,
+void osgArray2ivMField_pack_template(const osg::Array *array, fieldClass &field,
                                             osgType mul, osgType max, osgType min,
                                             int startIndex = 0, int stopIndex = 0, int numItemsUntilMinusOne = 0)
 {
@@ -326,7 +326,7 @@ static void osgArray2ivMField_pack_template(const osg::Array *array, fieldClass 
 
 
 template<typename fieldClass, typename fieldItemType>
-static bool applicateIntType(const osg::Array *array, fieldClass &field, int startIndex, int stopIndex, int numItemsUntilMinusOne)
+bool ivApplicateIntType(const osg::Array *array, fieldClass &field, int startIndex, int stopIndex, int numItemsUntilMinusOne)
 {
   if (field.isOfType(fieldClass::getClassTypeId()))
   {
@@ -367,10 +367,10 @@ static void osgArray2ivMField(const osg::Array *array, SoMField &field, int star
                                           (array, (SoMFFloat&)field, startIndex, stopIndex, numItemsUntilMinusOne); return;
     }
   }
-  else if (applicateIntType<SoMFInt32,  int32_t>(array, (SoMFInt32&) field, startIndex, stopIndex, numItemsUntilMinusOne)) return; 
-  else if (applicateIntType<SoMFUInt32,uint32_t>(array, (SoMFUInt32&)field, startIndex, stopIndex, numItemsUntilMinusOne)) return;
-  else if (applicateIntType<SoMFShort,  int16_t>(array, (SoMFShort&) field, startIndex, stopIndex, numItemsUntilMinusOne)) return; 
-  else if (applicateIntType<SoMFUShort,uint16_t>(array, (SoMFUShort&)field, startIndex, stopIndex, numItemsUntilMinusOne)) return;
+  else if (ivApplicateIntType<SoMFInt32,  int32_t>(array, (SoMFInt32&) field, startIndex, stopIndex, numItemsUntilMinusOne)) return; 
+  else if (ivApplicateIntType<SoMFUInt32,uint32_t>(array, (SoMFUInt32&)field, startIndex, stopIndex, numItemsUntilMinusOne)) return;
+  else if (ivApplicateIntType<SoMFShort,  int16_t>(array, (SoMFShort&) field, startIndex, stopIndex, numItemsUntilMinusOne)) return; 
+  else if (ivApplicateIntType<SoMFUShort,uint16_t>(array, (SoMFUShort&)field, startIndex, stopIndex, numItemsUntilMinusOne)) return;
   else if (field.isOfType(SoMFVec2f::getClassTypeId()))
   {
     switch (array->getType())
@@ -415,7 +415,7 @@ static void osgArray2ivMField(const osg::Array *array, SoMField &field, int star
 
 
 template<typename variableType, typename indexType>
-static bool deindex(variableType *dest, const variableType *src, const int srcNum,
+bool ivDeindex(variableType *dest, const variableType *src, const int srcNum,
                     const indexType *indices, const int numToProcess)
 {
   for (int i=0; i<numToProcess; i++) {
@@ -428,7 +428,7 @@ static bool deindex(variableType *dest, const variableType *src, const int srcNu
 
 
 template<typename variableType>
-static bool deindex(variableType *dest, const variableType *src, const int srcNum,
+bool ivDeindex(variableType *dest, const variableType *src, const int srcNum,
                     const osg::Array *indices, const int numToProcess)
 {
   if (int(indices->getNumElements()) < numToProcess) {
@@ -439,17 +439,17 @@ static bool deindex(variableType *dest, const variableType *src, const int srcNu
   switch (indices->getType()) {
   case osg::Array::ByteArrayType:
   case osg::Array::UByteArrayType:
-      return deindex<variableType, GLbyte>(dest, src, srcNum,
+      return ivDeindex<variableType, GLbyte>(dest, src, srcNum,
                                            (GLbyte*)indices->getDataPointer(), numToProcess);
       break;
   case osg::Array::ShortArrayType:
   case osg::Array::UShortArrayType:
-      return deindex<variableType, GLshort>(dest, src, srcNum,
+      return ivDeindex<variableType, GLshort>(dest, src, srcNum,
                                             (GLshort*)indices->getDataPointer(), numToProcess);
       break;
   case osg::Array::IntArrayType:
   case osg::Array::UIntArrayType:
-      return deindex<variableType, GLint>(dest, src, srcNum,
+      return ivDeindex<variableType, GLint>(dest, src, srcNum,
                                           (GLint*)indices->getDataPointer(), numToProcess);
       break;
   default:
@@ -460,7 +460,7 @@ static bool deindex(variableType *dest, const variableType *src, const int srcNu
 
 
 template<typename variableType, typename fieldType>
-static bool processArray(const osg::Array *indices, const osg::Array *drawElemIndices,
+bool ivProcessArray(const osg::Array *indices, const osg::Array *drawElemIndices,
                          fieldType *destField, const fieldType *srcField,
                          int startIndex, int numToProcess)
 {
@@ -470,11 +470,11 @@ static bool processArray(const osg::Array *indices, const osg::Array *drawElemIn
     
     // "deindex" original data
     if (indices && !drawElemIndices)
-      ok = deindex<variableType>(destField->startEditing(),
+      ok = ivDeindex<variableType>(destField->startEditing(),
                                  srcField->getValues(startIndex),
                                  srcField->getNum(), indices, numToProcess); else
     if (!indices && drawElemIndices)
-      ok = deindex<variableType>(destField->startEditing(),
+      ok = ivDeindex<variableType>(destField->startEditing(),
                                  srcField->getValues(startIndex),
                                  srcField->getNum(), drawElemIndices, numToProcess);
     else {
@@ -1197,7 +1197,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
       nonIndexedCoords = new SoCoordinate4;
       if (ok) {
         ((SoCoordinate4*)nonIndexedCoords)->point.setNum(n);
-        ok = processArray<SbVec4f,SoMFVec4f>(g->getVertexIndices(),
+        ok = ivProcessArray<SbVec4f,SoMFVec4f>(g->getVertexIndices(),
                                              drawElemIndices,
                                              &((SoCoordinate4*)nonIndexedCoords)->point,
                                              &((SoCoordinate4*)ivCoords)->point,
@@ -1207,7 +1207,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
       nonIndexedCoords = new SoCoordinate3;
       if (ok) {
         ((SoCoordinate3*)nonIndexedCoords)->point.setNum(n);
-        ok = processArray<SbVec3f,SoMFVec3f>(g->getVertexIndices(),
+        ok = ivProcessArray<SbVec3f,SoMFVec3f>(g->getVertexIndices(),
                                              drawElemIndices,
                                              &((SoCoordinate3*)nonIndexedCoords)->point,
                                              &((SoCoordinate3*)ivCoords)->point,
@@ -1221,7 +1221,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
         nonIndexedTexCoords = new SoTextureCoordinate2;
         if (ok) {
           ((SoTextureCoordinate2*)nonIndexedTexCoords)->point.setNum(n);
-          ok = processArray<SbVec2f,SoMFVec2f>(g->getTexCoordIndices(0),
+          ok = ivProcessArray<SbVec2f,SoMFVec2f>(g->getTexCoordIndices(0),
                                                drawElemIndices,
                                                &((SoTextureCoordinate2*)nonIndexedTexCoords)->point,
                                                &((SoTextureCoordinate2*)ivTexCoords)->point,
@@ -1232,7 +1232,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
         nonIndexedTexCoords = new SoTextureCoordinate3;
         if (ok) {
           ((SoTextureCoordinate3*)nonIndexedTexCoords)->point.setNum(n);
-          ok = processArray<SbVec3f,SoMFVec3f>(g->getTexCoordIndices(0),
+          ok = ivProcessArray<SbVec3f,SoMFVec3f>(g->getTexCoordIndices(0),
                                                drawElemIndices,
                                                &((SoTextureCoordinate3*)nonIndexedTexCoords)->point,
                                                &((SoTextureCoordinate3*)ivCoords)->point,
@@ -1246,7 +1246,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
       nonIndexedNormals = new SoNormal;
       if (ok) {
         nonIndexedNormals->vector.setNum(numNormalsUsed==0 ? 1 : numNormalsUsed);
-        ok = processArray<SbVec3f,SoMFVec3f>(g->getNormalIndices(),
+        ok = ivProcessArray<SbVec3f,SoMFVec3f>(g->getNormalIndices(),
                                              g->getNormalBinding()==osg::Geometry::BIND_PER_VERTEX ? drawElemIndices : NULL,
                                              &nonIndexedNormals->vector, &ivNormals->vector,
                                              normalStart, numNormalsUsed==0 ? 1 : numNormalsUsed);
@@ -1269,7 +1269,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
                                    &((SoMaterial*)ivMaterial)->diffuseColor :
                                    &((SoBaseColor*)ivMaterial)->rgb;
         dstColorField->setNum(numColorsUsed==0 ? 1 : numColorsUsed);
-        ok = processArray<SbColor,SoMFColor>(g->getColorIndices(),
+        ok = ivProcessArray<SbColor,SoMFColor>(g->getColorIndices(),
                                             g->getColorBinding()==osg::Geometry::BIND_PER_VERTEX ? drawElemIndices : NULL,
                                             dstColorField, srcColorField,
                                             colorStart, numColorsUsed==0 ? 1 : numColorsUsed);

@@ -2828,6 +2828,3 @@ void Program::PerContextProgram::useProgram() const
 {
     _extensions->glUseProgram( _glProgramHandle  );
 }
-
-
-/*EOF*/

@@ -190,5 +190,3 @@ class OSG_EXPORT Shader : public osg::Object
 }
 
 #endif
-
-/*EOF*/

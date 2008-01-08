@@ -282,5 +282,3 @@ class OSG_EXPORT Program : public osg::StateAttribute
 }
 
 #endif
-
-/*EOF*/

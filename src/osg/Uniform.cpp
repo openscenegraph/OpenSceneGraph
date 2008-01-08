@@ -1299,6 +1299,3 @@ void Uniform::setEventCallback(Callback* ec)
     }
 }
 
-
-/*EOF*/
-

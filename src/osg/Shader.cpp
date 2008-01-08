@@ -389,5 +389,3 @@ void Shader::PerContextShader::detachShader(GLuint program) const
 {
     _extensions->glDetachShader( program, _glShaderHandle );
 }
-
-/*EOF*/

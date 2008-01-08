@@ -473,5 +473,3 @@ class OSG_EXPORT Uniform : public Object
 }
 
 #endif
-
-/*EOF*/

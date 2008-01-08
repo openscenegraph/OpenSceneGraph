@@ -408,6 +408,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	                __void__flushAllDeletedDisplayLists__unsigned_int_S,
 	                "Flush all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
 	                "");
+	I_StaticMethod1(void, discardAllDeletedDisplayLists, IN, unsigned int, contextID,
+	                __void__discardAllDeletedDisplayLists__unsigned_int_S,
+	                "Flush all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
+	                "Note, unlike flush no OpenGL calls are made, instead the handles are all removed. this call is useful for when an OpenGL context has been destroyed. ");
 	I_StaticMethod2(void, flushDeletedDisplayLists, IN, unsigned int, contextID, IN, double &, availableTime,
 	                __void__flushDeletedDisplayLists__unsigned_int__double_R1_S,
 	                "Flush the cached display list which need to be deleted in the OpenGL context related to contextID. ",
@@ -420,6 +424,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	                __void__flushDeletedVertexBufferObjects__unsigned_int__double__double_R1_S,
 	                "Flush all the cached vertex buffer objects which need to be deleted in the OpenGL context related to contextID. ",
 	                "");
+	I_StaticMethod1(void, discardDeletedVertexBufferObjects, IN, unsigned int, contextID,
+	                __void__discardDeletedVertexBufferObjects__unsigned_int_S,
+	                "Flush all the cached vertex buffer objects which need to be deleted in the OpenGL context related to contextID. ",
+	                "Note, unlike flush no OpenGL calls are made, instead the handles are all removed. this call is useful for when an OpenGL context has been destroyed. ");
 	I_StaticMethod2(osg::Drawable::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
 	                "Function to call to get the extension of a specified context. ",

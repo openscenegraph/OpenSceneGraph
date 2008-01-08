@@ -173,6 +173,10 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexProgram)
 	                __void__flushDeletedVertexProgramObjects__unsigned_int__double__double_R1_S,
 	                "Flush all the cached vertex programs which need to be deleted in the OpenGL context related to contextID. ",
 	                "");
+	I_StaticMethod1(void, discardDeletedVertexProgramObjects, IN, unsigned int, contextID,
+	                __void__discardDeletedVertexProgramObjects__unsigned_int_S,
+	                "discard all the cached vertex programs which need to be deleted in the OpenGL context related to contextID. ",
+	                "Note, unlike flush no OpenGL calls are made, instead the handles are all removed. this call is useful for when an OpenGL context has been destroyed. ");
 	I_StaticMethod2(osg::VertexProgram::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
 	                "Function to call to get the extension of a specified context. ",

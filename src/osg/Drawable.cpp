@@ -116,6 +116,14 @@ void Drawable::flushAllDeletedDisplayLists(unsigned int contextID)
     dll.clear();         
 }
 
+void Drawable::discardAllDeletedDisplayLists(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
+
+    DisplayListMap& dll = s_deletedDisplayListCache[contextID];
+    dll.clear();         
+}
+
 void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availableTime)
 {
     // if no time available don't try to flush objects.
@@ -206,8 +214,6 @@ void Drawable::deleteVertexBufferObject(unsigned int contextID,GLuint globj)
     }
 }
 
-/** flush all the cached display lists which need to be deleted
-  * in the OpenGL context related to contextID.*/
 void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*currentTime*/, double& availableTime)
 {
     // if no time available don't try to flush objects.
@@ -242,6 +248,13 @@ void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*c
     }    
     
     availableTime -= elapsedTime;
+}
+
+void Drawable::discardDeletedVertexBufferObjects(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
+    DisplayListMap& dll = s_deletedVertexBufferObjectCache[contextID];
+    dll.clear();
 }
 
 

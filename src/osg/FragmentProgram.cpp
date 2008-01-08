@@ -73,6 +73,13 @@ void FragmentProgram::flushDeletedFragmentProgramObjects(unsigned int contextID,
     availableTime -= elapsedTime;
 }
 
+void FragmentProgram::discardDeletedFragmentProgramObjects(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFragmentProgramObjectCache);
+    FragmentProgramObjectList& vpol = s_deletedFragmentProgramObjectCache[contextID];
+    vpol.clear();
+}
+
 
 FragmentProgram::FragmentProgram()
 {

@@ -173,6 +173,10 @@ BEGIN_OBJECT_REFLECTOR(osg::FragmentProgram)
 	                __void__flushDeletedFragmentProgramObjects__unsigned_int__double__double_R1_S,
 	                "flush all the cached fragment programs which need to be deleted in the OpenGL context related to contextID. ",
 	                "");
+	I_StaticMethod1(void, discardDeletedFragmentProgramObjects, IN, unsigned int, contextID,
+	                __void__discardDeletedFragmentProgramObjects__unsigned_int_S,
+	                "discard all the cached fragment programs which need to be deleted in the OpenGL context related to contextID. ",
+	                "Note, unlike flush no OpenGL calls are made, instead the handles are all removed. this call is useful for when an OpenGL context has been destroyed. ");
 	I_StaticMethod2(osg::FragmentProgram::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
 	                "Function to call to get the extension of a specified context. ",

@@ -237,6 +237,10 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	                __void__flushDeletedFrameBufferObjects__unsigned_int__double__double_R1_S,
 	                "flush all the cached FBOs which need to be deleted in the OpenGL context related to contextID. ",
 	                "");
+	I_StaticMethod1(void, discardDeletedFrameBufferObjects, IN, unsigned int, contextID,
+	                __void__discardDeletedFrameBufferObjects__unsigned_int_S,
+	                "discard all the cached FBOs which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
 	I_ProtectedMethod0(void, dirtyAll,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -347,6 +351,10 @@ BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
 	                __void__flushDeletedRenderBuffers__unsigned_int__double__double_R1_S,
 	                "flush all the cached RenderBuffers which need to be deleted in the OpenGL context related to contextID. ",
 	                "");
+	I_StaticMethod1(void, discardDeletedRenderBuffers, IN, unsigned int, contextID,
+	                __void__discardDeletedRenderBuffers__unsigned_int_S,
+	                "discard all the cached RenderBuffers which need to be deleted in the OpenGL context related to contextID. ",
+	                "Note, unlike flush no OpenGL calls are made, instead the handles are all removed. this call is useful for when an OpenGL context has been destroyed. ");
 	I_ProtectedMethod0(void, dirtyAll,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

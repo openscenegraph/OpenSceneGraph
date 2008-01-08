@@ -83,6 +83,13 @@ void Shader::flushDeletedGlShaders(unsigned int contextID,double /*currentTime*/
     availableTime -= elapsedTime;
 }
 
+void Shader::discardDeletedGlShaders(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlShaderCache);
+
+    GlShaderHandleList& pList = s_deletedGlShaderCache[contextID];
+    pList.clear();
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // osg::Shader

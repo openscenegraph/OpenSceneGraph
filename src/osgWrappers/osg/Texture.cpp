@@ -475,6 +475,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                __void__flushAllDeletedTextureObjects__unsigned_int_S,
 	                "",
 	                "");
+	I_StaticMethod1(void, discardAllDeletedTextureObjects, IN, unsigned int, contextID,
+	                __void__discardAllDeletedTextureObjects__unsigned_int_S,
+	                "",
+	                "");
 	I_StaticMethod3(void, flushDeletedTextureObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
 	                __void__flushDeletedTextureObjects__unsigned_int__double__double_R1_S,
 	                "",

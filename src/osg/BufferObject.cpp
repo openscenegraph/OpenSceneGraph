@@ -48,8 +48,6 @@ void BufferObject::deleteBufferObject(unsigned int contextID,GLuint globj)
     }
 }
 
-/** flush all the cached display list which need to be deleted
-  * in the OpenGL context related to contextID.*/
 void BufferObject::flushDeletedBufferObjects(unsigned int contextID,double /*currentTime*/, double& availableTime)
 {
     // if no time available don't try to flush objects.
@@ -84,6 +82,13 @@ void BufferObject::flushDeletedBufferObjects(unsigned int contextID,double /*cur
     }    
     
     availableTime -= elapsedTime;
+}
+
+void BufferObject::discardDeletedBufferObjects(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedBufferObjectCache);
+    DisplayListMap& dll = s_deletedBufferObjectCache[contextID];
+    dll.clear();
 }
 
 

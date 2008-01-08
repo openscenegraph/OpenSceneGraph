@@ -886,6 +886,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         static unsigned int getMinimumNumberOfTextureObjectsToRetainInCache();
 
         static void flushAllDeletedTextureObjects(unsigned int contextID);
+
+        static void discardAllDeletedTextureObjects(unsigned int contextID);
         
         static void flushDeletedTextureObjects(unsigned int contextID,double currentTime, double& availableTime);
 

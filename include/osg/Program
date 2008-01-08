@@ -124,6 +124,12 @@ class OSG_EXPORT Program : public osg::StateAttribute
           * in the OpenGL context related to contextID.*/
         static void flushDeletedGlPrograms(unsigned int contextID,double currentTime, double& availableTime);
 
+        /** discard all the cached glPrograms which need to be deleted
+          * in the OpenGL context related to contextID.
+          * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
+          * this call is useful for when an OpenGL context has been destroyed. */
+        static void discardDeletedGlPrograms(unsigned int contextID);
+
         struct ActiveVarInfo {
             ActiveVarInfo() : _location(-1), _type(Uniform::UNDEFINED), _size(-1) {}
             ActiveVarInfo( GLint loc, GLenum type, GLint size ) : _location(loc), _type(type), _size(size) {}

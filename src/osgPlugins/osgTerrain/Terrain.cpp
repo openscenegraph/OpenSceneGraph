@@ -20,336 +20,10 @@ osgDB::RegisterDotOsgWrapperProxy Terrain_Proxy
 (
     new osgTerrain::Terrain,
     "Terrain",
-    "Object Terrain Group ",
+    "Object Terrain Group",
     Terrain_readLocalData,
     Terrain_writeLocalData
 );
-
-osgTerrain::Layer* readLayer(osgDB::Input& fr, bool& itrAdvanced)
-{
-    osg::ref_ptr<osgTerrain::Layer> layer;
-    osg::ref_ptr<osgTerrain::Locator> locator;
-
-    // read any locator data first.
-    if (fr.matchSequence("Locator %w %f %f %f"))
-    {
-
-        double x,y,w,h;
-        fr[2].getFloat(x);
-        fr[3].getFloat(y);
-        fr[4].getFloat(w);
-        fr[5].getFloat(h);
-
-        locator = new osgTerrain::Locator;
-
-        if (fr[1].matchWord("GEOCENTRIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
-        else if (fr[1].matchWord("GEOGRAPHIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOGRAPHIC);
-        else locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
-        locator->setTransformAsExtents(x,y,x+w,y+h);
-
-        fr += 6;
-        itrAdvanced = true;
-    }
-
-    if (fr.matchSequence("Locator {"))
-    {
-        locator = new osgTerrain::Locator;
-
-        int local_entry = fr[0].getNoNestedBrackets();
-
-        fr += 2;
-        while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
-        {
-            bool localAdvanced = false;
-
-            if (fr.matchSequence("Format %w") || fr.matchSequence("Format %s") )
-            {
-                locator->setFormat(fr[1].getStr());
-
-                fr += 2;
-                localAdvanced = true;
-            }
-
-            if (fr.matchSequence("CoordinateSystemType %w"))
-            {
-                if (fr[1].matchWord("GEOCENTRIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
-                else if (fr[1].matchWord("GEOGRAPHIC")) locator->setCoordinateSystemType(osgTerrain::Locator::GEOGRAPHIC);
-                else locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
-
-                fr += 2;
-                localAdvanced = true;
-            }
-            
-            
-
-
-            if (fr.matchSequence("CoordinateSystem %w") || fr.matchSequence("CoordinateSystem %s") )
-            {
-                locator->setCoordinateSystem(fr[1].getStr());
-
-                fr += 2;
-                localAdvanced = true;
-            }
-
-            if (fr.matchSequence("TransformScaledByResolution %w"))
-            {
-                locator->setTransformScaledByResolution(fr[1].matchWord("TRUE") || fr[1].matchWord("True") || fr[1].matchWord("true"));
-                fr += 2;
-                localAdvanced = true;
-            }
-
-            if (fr.matchSequence("Transform {"))
-            {
-                int tansform_entry = fr[0].getNoNestedBrackets();
-
-                fr += 2;
-
-                int row=0;
-                int col=0;
-                double v;
-                osg::Matrixd matrix;
-                while (!fr.eof() && fr[0].getNoNestedBrackets()>tansform_entry)
-                {
-                    if (fr[0].getFloat(v))
-                    {
-                        matrix(row,col)=v;
-                        ++col;
-                        if (col>=4)
-                        {
-                            col = 0;
-                            ++row;
-                        }
-                        ++fr;
-                    }
-                    else fr.advanceOverCurrentFieldOrBlock();
-                }
-
-                locator->setTransform(matrix);
-
-                ++fr;
-                localAdvanced = true;
-            }
-
-
-            if (fr.matchSequence("Extents %f %f %f %f"))
-            {
-                double minX,minY,maxX,maxY;
-                fr[1].getFloat(minX);
-                fr[2].getFloat(minY);
-                fr[3].getFloat(maxX);
-                fr[4].getFloat(maxY);
-
-                locator->setTransformAsExtents(minX, minY, maxX, maxY);
-
-                fr += 5;
-                localAdvanced = true;
-            }
-
-            if (!localAdvanced) ++fr;
-        }
-
-        itrAdvanced = true;
-
-        ++fr;
-    }
-
-    if (fr.matchSequence("EllipsoidLocator %f %f %f %f"))
-    {
-        double x,y,w,h;
-        fr[1].getFloat(x);
-        fr[2].getFloat(y);
-        fr[3].getFloat(w);
-        fr[4].getFloat(h);
-
-        locator = new osgTerrain::Locator;
-        locator->setCoordinateSystemType(osgTerrain::Locator::GEOCENTRIC);
-        locator->setTransformAsExtents(x,y,x+w,y+h);
-
-        fr += 5;
-        itrAdvanced = true;
-    }
-
-    if (fr.matchSequence("CartesianLocator %f %f %f %f"))
-    {
-        double x,y,w,h;
-        fr[1].getFloat(x);
-        fr[2].getFloat(y);
-        fr[3].getFloat(w);
-        fr[4].getFloat(h);
-
-        locator = new osgTerrain::Locator;
-        locator->setCoordinateSystemType(osgTerrain::Locator::PROJECTED);
-        locator->setTransformAsExtents(x,y,x+w,y+h);
-
-        fr += 5;
-        itrAdvanced = true;
-    }
-        
-    unsigned int minLevel=0;
-    if (fr.read("MinLevel",minLevel))
-    {
-        itrAdvanced = true;
-    }
-
-    unsigned int maxLevel = MAXIMUM_NUMBER_OF_LEVELS;
-    if (fr.read("MaxLevel",maxLevel))
-    {
-        itrAdvanced = true;
-    }
-
-
-    if (fr.matchSequence("CompositeLayer {"))
-    {
-
-        osg::ref_ptr<osgTerrain::CompositeLayer> cl = new osgTerrain::CompositeLayer;
-
-        int local_entry = fr[0].getNoNestedBrackets();
-
-        fr += 2;
-        while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
-        {
-            osg::notify(osg::INFO)<<"Composite layer "<<fr[0].getStr()<<std::endl;
-            bool localAdvanced = false;
-            
-            if (fr.matchSequence("file %s") || fr.matchSequence("file %w") )
-            {
-                cl->addLayer(fr[1].getStr());
-                fr += 2;
-                localAdvanced = true;
-            }
-            else
-            {
-                osgTerrain::Layer* layer = readLayer(fr, localAdvanced);
-                if (layer) cl->addLayer(layer);
-            }
-            
-            if (!localAdvanced) ++fr;
-
-        }
-        
-        layer = cl.get();
-
-        osg::notify(osg::INFO)<<"End of Composite layer "<<fr[0].getStr()<<std::endl;
-
-        ++fr;
-    }
-
-    if (fr.matchSequence("ProxyLayer %w") || fr.matchSequence("ProxyLayer %s"))
-    {
-        osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
-        osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
-        if (proxyLayer)
-        {
-            layer = proxyLayer;
-        }
-        else
-        {
-            osg::notify(osg::NOTICE)<<"Warning: Failed to create ProxyLayer "<<fr[1].getStr()<<std::endl;
-        }
-
-        fr += 2;
-        itrAdvanced = true;
-    }
-
-    if (fr.matchSequence("Images {") || fr.matchSequence("images {"))
-    {
-        osg::ref_ptr<osgTerrain::CompositeLayer> cl = new osgTerrain::CompositeLayer;
-
-        int local_entry = fr[0].getNoNestedBrackets();
-
-        fr += 2;
-        while (!fr.eof() && fr[0].getNoNestedBrackets()>local_entry)
-        {
-            cl->addLayer(fr[0].getStr());
-            ++fr;
-        }
-
-        layer = cl.get();
-        ++fr;
-        itrAdvanced = true;
-    }
-
-    if (fr.matchSequence("Image %w") || fr.matchSequence("image %w") || 
-        fr.matchSequence("Image %s") || fr.matchSequence("image %s"))
-    {
-        osg::ref_ptr<osg::Image> image = osgDB::readImageFile(fr[1].getStr());
-        if (image.valid())
-        {
-            osg::ref_ptr<osgTerrain::ImageLayer> imagelayer = new osgTerrain::ImageLayer;
-            imagelayer->setImage(image.get());
-            layer = imagelayer.get();
-        }
-
-        fr += 2;
-        itrAdvanced = true;
-    }
-
-    if (fr.matchSequence("HeightField %w") || fr.matchSequence("HeightField  %s"))
-    {
-        osg::ref_ptr<osg::HeightField> hf = osgDB::readHeightFieldFile(fr[1].getStr());
-        if (hf.valid())
-        {
-            osg::ref_ptr<osgTerrain::HeightFieldLayer> hflayer = new osgTerrain::HeightFieldLayer;
-            hflayer->setHeightField(hf.get());
-            layer = hflayer.get();
-        }
-
-        fr += 2;
-        itrAdvanced = true;
-    }
-    
-    if (layer.valid() && locator.valid())
-    {
-        layer->setLocator(locator.get());
-    }
-    
-    layer->setMinLevel(minLevel);
-    layer->setMaxLevel(maxLevel);
-    
-    return layer.release();
-}
-
-osgTerrain::Layer* readNestedLayer(osgDB::Input& fr)
-{
-    int entry = fr[0].getNoNestedBrackets();
-
-    fr += 2;
-
-    osg::ref_ptr<osgTerrain::CompositeLayer> compositeLayer = 0;
-    osg::ref_ptr<osgTerrain::Layer> layer = 0;
-
-    while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
-    {
-        bool itrAdvanced = false;
-        
-        osg::ref_ptr<osgTerrain::Layer> new_layer = readLayer(fr,itrAdvanced);
-        if (new_layer.valid())
-        {
-            if (layer.valid())
-            {
-                compositeLayer = new osgTerrain::CompositeLayer;
-                compositeLayer->addLayer(layer.get());
-                compositeLayer->addLayer(new_layer.get());
-                layer = 0;
-            }
-            else if (compositeLayer.valid())
-            {
-                compositeLayer->addLayer(new_layer.get());
-            }
-            else
-            {
-                layer = new_layer;
-            }
-            
-        }
-        
-        if (!itrAdvanced) ++fr;
-    }
-    
-    if (compositeLayer.valid()) return compositeLayer.release();
-    if (layer.valid()) return layer.release();
-    return 0; 
-}
 
 osg::TransferFunction* readTransferFunction(osgDB::Input& fr)
 {
@@ -446,9 +120,46 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
     if (fr.matchSequence("ElevationLayer {"))
     {
-        osgTerrain::Layer* layer = readNestedLayer(fr);
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
 
-        if (layer) terrain.setElevationLayer(layer);
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            bool localAdvanced = false;
+
+            osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
+            osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
+            if (readObject.valid()) localAdvanced = true;
+
+            if (fr.matchSequence("ProxyLayer %s") || fr.matchSequence("ProxyLayer %w") )
+            {
+                osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
+                osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
+                if (proxyLayer)
+                {
+                    proxyLayer->setLocator(locator);
+                    terrain.setElevationLayer(proxyLayer);
+                }
+            
+                fr += 2;
+
+                localAdvanced = true;
+            }
+            else
+            {
+                osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Layer>());
+                osgTerrain::Layer* readLayer = dynamic_cast<osgTerrain::Layer*>(readObject.get());
+                if (readLayer)
+                {
+                    readLayer->setLocator(locator);
+                    terrain.setElevationLayer(readLayer);
+                }
+
+                if (readObject.valid()) localAdvanced = true;
+            }
+
+            if (!localAdvanced) ++fr;
+        }
 
         itrAdvanced = true;
     }
@@ -463,8 +174,46 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
             ++fr;
         }
 
-        osgTerrain::Layer* layer = readNestedLayer(fr);
-        if (layer) terrain.setColorLayer(layerNum, layer);
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+
+        while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+        {
+            bool localAdvanced = false;
+
+            osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
+            osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
+            if (readObject.valid()) localAdvanced = true;
+
+            if (fr.matchSequence("ProxyFile %s") || fr.matchSequence("ProxyFile %w") )
+            {
+                osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
+                osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
+                if (proxyLayer)
+                {
+                    proxyLayer->setLocator(locator);
+                    terrain.setColorLayer(layerNum, proxyLayer);
+                }                
+            
+                fr += 2;
+
+                localAdvanced = true;
+            }
+            else
+            {
+                osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Layer>());
+                osgTerrain::Layer* readLayer = dynamic_cast<osgTerrain::Layer*>(readObject.get());
+                if (readLayer)
+                {
+                    readLayer->setLocator(locator);
+                    terrain.setColorLayer(layerNum, readLayer);
+                }
+
+                if (readObject.valid()) localAdvanced = true;
+            }
+
+            if (!localAdvanced) ++fr;
+        }
 
         itrAdvanced = true;
     }
@@ -515,118 +264,6 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
     return itrAdvanced;
 }
 
-bool writeLocator(const osgTerrain::Locator& locator, osgDB::Output& fw)
-{
-    
-    fw.indent()<<"Locator {"<<std::endl;
-    fw.moveIn();
-
-    if (!locator.getFormat().empty()) fw.indent()<<"Format "<<fw.wrapString(locator.getFormat())<<std::endl;
-    if (!locator.getCoordinateSystem().empty()) fw.indent()<<"CoordinateSystem "<<fw.wrapString(locator.getCoordinateSystem())<<std::endl;
-
-    fw.indent()<<"CoordinateSystemType ";
-    switch(locator.getCoordinateSystemType())
-    {
-        case(osgTerrain::Locator::GEOCENTRIC):
-        {        
-            fw<<"GEOCENTRIC"<<std::endl;
-            break;
-        }
-        case(osgTerrain::Locator::GEOGRAPHIC):
-        {        
-            fw<<"GEOGRAPHIC"<<std::endl;
-            break;
-        }
-        case(osgTerrain::Locator::PROJECTED):
-        {        
-            fw<<"PROJECTED"<<std::endl;
-            break;
-        }
-    }   
-    
-    fw.indent()<<"TransformScaledByResolution " << (locator.getTransformScaledByResolution() ? "TRUE":"FALSE") <<std::endl;
-
-    const osg::Matrixd& matrix = locator.getTransform();
-    fw.indent() << "Transform {" << std::endl;
-    fw.moveIn();
-    fw.indent() << matrix(0,0) << " " << matrix(0,1) << " " << matrix(0,2) << " " << matrix(0,3) << std::endl;
-    fw.indent() << matrix(1,0) << " " << matrix(1,1) << " " << matrix(1,2) << " " << matrix(1,3) << std::endl;
-    fw.indent() << matrix(2,0) << " " << matrix(2,1) << " " << matrix(2,2) << " " << matrix(2,3) << std::endl;
-    fw.indent() << matrix(3,0) << " " << matrix(3,1) << " " << matrix(3,2) << " " << matrix(3,3) << std::endl;
-    fw.moveOut();
-    fw.indent() << "}"<< std::endl;
-
-    fw.moveOut();
-    fw.indent()<<"}"<<std::endl;
-
-    return false;
-}
-
-bool writeLayer(const osgTerrain::Layer& layer, osgDB::Output& fw)
-{
-    if (layer.getLocator() && !(layer.getLocator()->getDefinedInFile()))
-    {
-        writeLocator(*layer.getLocator(),fw);
-    }
-
-    if (layer.getMinLevel()!=0)
-    {
-        fw.indent()<<"MinLevel "<<layer.getMinLevel()<<std::endl;
-    } 
-
-    if (layer.getMinLevel()!=MAXIMUM_NUMBER_OF_LEVELS)
-    {
-        fw.indent()<<"MaxLevel "<<layer.getMaxLevel()<<std::endl;
-    } 
-
-    const osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<const osgTerrain::ProxyLayer*>(&layer);
-    if (proxyLayer)
-    {
-        fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
-        return true;
-    }
-
-    const osgTerrain::ImageLayer* imageLayer = dynamic_cast<const osgTerrain::ImageLayer*>(&layer);
-    if (imageLayer)
-    {
-        fw.indent()<<"Image "<<imageLayer->getFileName()<<std::endl;
-        return true;
-    }
-
-    const osgTerrain::HeightFieldLayer* hfLayer = dynamic_cast<const osgTerrain::HeightFieldLayer*>(&layer);
-    if (hfLayer)
-    {
-        fw.indent()<<"HeightField "<<hfLayer->getFileName()<<std::endl;
-        return true;
-    }
-    
-    
-    const osgTerrain::CompositeLayer* compositeLayer = dynamic_cast<const osgTerrain::CompositeLayer*>(&layer);
-    if (compositeLayer)
-    {
-        fw.indent()<<"CompositeLayer {"<<std::endl;
-        fw.moveIn();
-        for(unsigned int i=0; i<compositeLayer->getNumLayers();++i)
-        {
-            if (compositeLayer->getLayer(i))
-            {
-                writeLayer(*(compositeLayer->getLayer(i)), fw);
-            }
-            else if (!compositeLayer->getFileName(i).empty())
-            {
-                fw.indent()<<"file "<<compositeLayer->getFileName(i)<<std::endl;
-            }
-        }
-        fw.moveOut();
-        fw.indent()<<"}"<<std::endl;
-        
-        return true;
-        
-    }
-    
-    return false;
-}
-
 bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 {
     const osgTerrain::Terrain& terrain = static_cast<const osgTerrain::Terrain&>(obj);
@@ -634,9 +271,9 @@ bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     int prec = fw.precision();
     fw.precision(15);
 
-    if (terrain.getLocator()) 
+    if (terrain.getLocator())
     {
-        writeLocator(*terrain.getLocator(),fw);
+        fw.writeObject(*terrain.getLocator());
     }
 
     if (terrain.getElevationLayer())
@@ -645,8 +282,25 @@ bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 
         fw.moveIn();
         
-        writeLayer(*terrain.getElevationLayer(), fw);
-        
+        const osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<const osgTerrain::ProxyLayer*>(terrain.getElevationLayer());
+        if (proxyLayer)
+        {
+            if (!proxyLayer->getFileName().empty())
+            {
+                const osgTerrain::Locator* locator = proxyLayer->getLocator();
+                if (locator && !locator->getDefinedInFile())
+                {
+                    fw.writeObject(*locator);
+                }
+
+                fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
+            }
+        }
+        else if (terrain.getElevationLayer())
+        {
+            fw.writeObject(*terrain.getElevationLayer());
+        }
+
         fw.moveOut();
 
         fw.indent()<<"}"<<std::endl;
@@ -667,8 +321,22 @@ bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
             }
 
             fw.moveIn();
+            
+            const osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<const osgTerrain::ProxyLayer*>(layer);
+            if (proxyLayer)
+            {
+                const osgTerrain::Locator* locator = proxyLayer->getLocator();
+                if (locator && !locator->getDefinedInFile())
+                {
+                    fw.writeObject(*locator);
+                }
 
-            writeLayer(*layer, fw);
+                if (!proxyLayer->getFileName().empty()) fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
+            }
+            else if (layer)
+            {
+                fw.writeObject(*terrain.getColorLayer(i));
+            }
 
             fw.moveOut();
 

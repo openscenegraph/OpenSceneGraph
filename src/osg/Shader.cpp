@@ -1,6 +1,7 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
+ * Copyright (C) 2008 Zebra Imaging
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -13,7 +14,7 @@
 */
 
 /* file:   src/osg/Shader.cpp
- * author: Mike Weiblen 2005-06-15
+ * author: Mike Weiblen 2008-01-02
 */
 
 #include <fstream>
@@ -191,6 +192,7 @@ const char* Shader::getTypename() const
     {
         case VERTEX:    return "VERTEX";
         case FRAGMENT:  return "FRAGMENT";
+        case GEOMETRY:  return "GEOMETRY";
         default:        return "UNDEFINED";
     }
 }
@@ -200,6 +202,7 @@ Shader::Type Shader::getTypeId( const std::string& tname )
 {
     if( tname == "VERTEX" )     return VERTEX;
     if( tname == "FRAGMENT" )   return FRAGMENT;
+    if( tname == "GEOMETRY" )   return GEOMETRY;
     return UNDEFINED;
 }
 

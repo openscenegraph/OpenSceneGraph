@@ -1,5 +1,6 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
+ * Copyright (C) 2008 Zebra Imaging
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -11,7 +12,7 @@
 */
 
 /* file:   include/osg/Uniform
- * author: Mike Weiblen 2006-05-15
+ * author: Mike Weiblen 2008-01-02
 */
 
 #ifndef OSG_UNIFORM
@@ -35,7 +36,7 @@ class GL2Extensions;
 class NodeVisitor;
 
 ///////////////////////////////////////////////////////////////////////////
-// C++ classes to represent the GLSL-specific "mat2" & "mat3" types.
+// C++ classes to represent the GLSL-specific types.
 
 class OSG_EXPORT Matrix2
 {
@@ -137,6 +138,15 @@ class OSG_EXPORT Matrix3
         float _mat[3][3];
 };
 
+// TODO add new GL 2.1 non-square matrix types
+// class OSG_EXPORT Matrix2x3
+// class OSG_EXPORT Matrix3x2
+// class OSG_EXPORT Matrix2x4
+// class OSG_EXPORT Matrix4x2
+// class OSG_EXPORT Matrix3x4
+// class OSG_EXPORT Matrix4x3
+
+
 ///////////////////////////////////////////////////////////////////////////
 
 /** Uniform encapsulates glUniform values */
@@ -170,7 +180,36 @@ class OSG_EXPORT Uniform : public Object
             SAMPLER_2D_ARRAY  = GL_SAMPLER_2D_ARRAY_EXT,
             SAMPLER_1D_ARRAY_SHADOW = GL_SAMPLER_1D_ARRAY_SHADOW_EXT,
             SAMPLER_2D_ARRAY_SHADOW = GL_SAMPLER_2D_ARRAY_SHADOW_EXT,
-            
+
+// TODO the following must be integrated fully here and Uniform.cpp
+            FLOAT_MAT2x3 = GL_FLOAT_MAT2x3,
+            FLOAT_MAT2x4 = GL_FLOAT_MAT2x4,
+            FLOAT_MAT3x2 = GL_FLOAT_MAT3x2,
+            FLOAT_MAT3x4 = GL_FLOAT_MAT3x4,
+            FLOAT_MAT4x2 = GL_FLOAT_MAT4x2,
+            FLOAT_MAT4x3 = GL_FLOAT_MAT4x3,
+            SAMPLER_BUFFER = GL_SAMPLER_BUFFER_EXT,
+            SAMPLER_CUBE_SHADOW = GL_SAMPLER_CUBE_SHADOW_EXT,
+            UNSIGNED_INT_VEC2 = GL_UNSIGNED_INT_VEC2_EXT,
+            UNSIGNED_INT_VEC3 = GL_UNSIGNED_INT_VEC3_EXT,
+            UNSIGNED_INT_VEC4 = GL_UNSIGNED_INT_VEC4_EXT,
+            INT_SAMPLER_1D       = GL_INT_SAMPLER_1D_EXT,
+            INT_SAMPLER_2D       = GL_INT_SAMPLER_2D_EXT,
+            INT_SAMPLER_3D       = GL_INT_SAMPLER_3D_EXT,
+            INT_SAMPLER_CUBE     = GL_INT_SAMPLER_CUBE_EXT,
+            INT_SAMPLER_2D_RECT  = GL_INT_SAMPLER_2D_RECT_EXT,
+            INT_SAMPLER_1D_ARRAY = GL_INT_SAMPLER_1D_ARRAY_EXT,
+            INT_SAMPLER_2D_ARRAY = GL_INT_SAMPLER_2D_ARRAY_EXT,
+            INT_SAMPLER_BUFFER   = GL_INT_SAMPLER_BUFFER_EXT,
+            UNSIGNED_INT_SAMPLER_1D       = GL_UNSIGNED_INT_SAMPLER_1D_EXT,
+            UNSIGNED_INT_SAMPLER_2D       = GL_UNSIGNED_INT_SAMPLER_2D_EXT,
+            UNSIGNED_INT_SAMPLER_3D       = GL_UNSIGNED_INT_SAMPLER_3D_EXT,
+            UNSIGNED_INT_SAMPLER_CUBE     = GL_UNSIGNED_INT_SAMPLER_CUBE_EXT,
+            UNSIGNED_INT_SAMPLER_2D_RECT  = GL_UNSIGNED_INT_SAMPLER_2D_RECT_EXT,
+            UNSIGNED_INT_SAMPLER_1D_ARRAY = GL_UNSIGNED_INT_SAMPLER_1D_ARRAY_EXT,
+            UNSIGNED_INT_SAMPLER_2D_ARRAY = GL_UNSIGNED_INT_SAMPLER_2D_ARRAY_EXT,
+            UNSIGNED_INT_SAMPLER_BUFFER   = GL_UNSIGNED_INT_SAMPLER_BUFFER_EXT,
+
             UNDEFINED = 0x0
         };
 
@@ -236,6 +275,7 @@ class OSG_EXPORT Uniform : public Object
         Uniform( const char* name, bool b0, bool b1 );
         Uniform( const char* name, bool b0, bool b1, bool b2 );
         Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 );
+        // TODO must add new types
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         virtual int compare(const Uniform& rhs) const;

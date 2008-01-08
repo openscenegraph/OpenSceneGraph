@@ -1,6 +1,7 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
+ * Copyright (C) 2008 Zebra Imaging
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -13,7 +14,7 @@
 */
 
 /* file:        src/osg/Program.cpp
- * author:      Mike Weiblen 2006-03-25
+ * author:      Mike Weiblen 2008-01-02
 */
 
 #include <fstream>
@@ -54,6 +55,8 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     _isVertexShaderSupported = rhs._isVertexShaderSupported;
     _isFragmentShaderSupported = rhs._isFragmentShaderSupported;
     _isLanguage100Supported = rhs._isLanguage100Supported;
+    _isGeometryShader4Supported = rhs._isGeometryShader4Supported;
+    _isGpuShader4Supported = rhs._isGpuShader4Supported;
 
     _glBlendEquationSeparate = rhs._glBlendEquationSeparate;
     _glDrawBuffers = rhs._glDrawBuffers;
@@ -154,8 +157,32 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     _glDeleteObjectARB = rhs._glDeleteObjectARB;
     _glGetHandleARB = rhs._glGetHandleARB;
 
+    // GL 2.1
+    _glUniformMatrix2x3fv = rhs._glUniformMatrix2x3fv;
+    _glUniformMatrix3x2fv = rhs._glUniformMatrix3x2fv;
+    _glUniformMatrix2x4fv = rhs._glUniformMatrix2x4fv;
+    _glUniformMatrix4x2fv = rhs._glUniformMatrix4x2fv;
+    _glUniformMatrix3x4fv = rhs._glUniformMatrix3x4fv;
+    _glUniformMatrix4x3fv = rhs._glUniformMatrix4x3fv;
+
+    // EXT_geometry_shader4
+    _glProgramParameteri = rhs._glProgramParameteri;
+    _glFramebufferTexture = rhs._glFramebufferTexture;
+    _glFramebufferTextureLayer = rhs._glFramebufferTextureLayer;
+    _glFramebufferTextureFace = rhs._glFramebufferTextureFace;
+
+    // EXT_gpu_shader4
+    _glGetUniformuiv = rhs._glGetUniformuiv;
     _glBindFragDataLocation = rhs._glBindFragDataLocation;
     _glGetFragDataLocation = rhs._glGetFragDataLocation;
+    _glUniform1ui = rhs._glUniform1ui;
+    _glUniform2ui = rhs._glUniform2ui;
+    _glUniform3ui = rhs._glUniform3ui;
+    _glUniform4ui = rhs._glUniform4ui;
+    _glUniform1uiv = rhs._glUniform1uiv;
+    _glUniform2uiv = rhs._glUniform2uiv;
+    _glUniform3uiv = rhs._glUniform3uiv;
+    _glUniform4uiv = rhs._glUniform4uiv;
 }
 
 
@@ -169,6 +196,8 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
     if (!rhs._isVertexShaderSupported) _isVertexShaderSupported = false;
     if (!rhs._isFragmentShaderSupported) _isFragmentShaderSupported = false;
     if (!rhs._isLanguage100Supported) _isLanguage100Supported = false;
+    if (!rhs._isGeometryShader4Supported) _isGeometryShader4Supported = false;
+    if (!rhs._isGpuShader4Supported) _isGpuShader4Supported = false;
 
     if (!rhs._glBlendEquationSeparate) _glBlendEquationSeparate = 0;
     if (!rhs._glDrawBuffers) _glDrawBuffers = 0;
@@ -269,8 +298,32 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
     if (!rhs._glDeleteObjectARB) _glDeleteObjectARB = 0;
     if (!rhs._glGetHandleARB) _glGetHandleARB = 0;
 
+    // GL 2.1
+    if (!rhs._glUniformMatrix2x3fv) _glUniformMatrix2x3fv = 0;
+    if (!rhs._glUniformMatrix3x2fv) _glUniformMatrix3x2fv = 0;
+    if (!rhs._glUniformMatrix2x4fv) _glUniformMatrix2x4fv = 0;
+    if (!rhs._glUniformMatrix4x2fv) _glUniformMatrix4x2fv = 0;
+    if (!rhs._glUniformMatrix3x4fv) _glUniformMatrix3x4fv = 0;
+    if (!rhs._glUniformMatrix4x3fv) _glUniformMatrix4x3fv = 0;
+
+    // EXT_geometry_shader4
+    if (!rhs._glProgramParameteri) _glProgramParameteri = 0;
+    if (!rhs._glFramebufferTexture) _glFramebufferTexture = 0;
+    if (!rhs._glFramebufferTextureLayer) _glFramebufferTextureLayer = 0;
+    if (!rhs._glFramebufferTextureFace) _glFramebufferTextureFace = 0;
+
+    // EXT_gpu_shader4
+    if (!rhs._glGetUniformuiv) _glGetUniformuiv = 0;
     if (!rhs._glBindFragDataLocation) _glBindFragDataLocation = 0;
     if (!rhs._glGetFragDataLocation) _glGetFragDataLocation = 0;
+    if (!rhs._glUniform1ui) _glUniform1ui = 0;
+    if (!rhs._glUniform2ui) _glUniform2ui = 0;
+    if (!rhs._glUniform3ui) _glUniform3ui = 0;
+    if (!rhs._glUniform4ui) _glUniform4ui = 0;
+    if (!rhs._glUniform1uiv) _glUniform1uiv = 0;
+    if (!rhs._glUniform2uiv) _glUniform2uiv = 0;
+    if (!rhs._glUniform3uiv) _glUniform3uiv = 0;
+    if (!rhs._glUniform4uiv) _glUniform4uiv = 0;
 }
 
 
@@ -290,6 +343,8 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     _isVertexShaderSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader");
     _isFragmentShaderSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_fragment_shader");
     _isLanguage100Supported = osg::isGLExtensionSupported(contextID,"GL_ARB_shading_language_100");
+    _isGeometryShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4");
+    _isGpuShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_gpu_shader4");
 
     if( isGlslSupported() )
     {
@@ -409,12 +464,32 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     _glDeleteObjectARB = osg::getGLExtensionFuncPtr("glDeleteObjectARB");
     _glGetHandleARB = osg::getGLExtensionFuncPtr("glGetHandleARB");
 
-    // v2.1 check also for EXT and ARB names, since this extension can became ARB later
-    _glBindFragDataLocation = osg::getGLExtensionFuncPtr("glBindFragDataLocation", "glBindFragDataLocationARB");
-    if (_glBindFragDataLocation == NULL) _glBindFragDataLocation = osg::getGLExtensionFuncPtr("glBindFragDataLocationEXT");
-    _glGetFragDataLocation = osg::getGLExtensionFuncPtr("glGetFragDataLocation", "glGetFragDataLocationARB");
-    if (_glGetFragDataLocation == NULL) _glGetFragDataLocation = osg::getGLExtensionFuncPtr("glGetFragDataLocationEXT");
+    // GL 2.1
+    _glUniformMatrix2x3fv = osg::getGLExtensionFuncPtr( "glUniformMatrix2x3fv" );
+    _glUniformMatrix3x2fv = osg::getGLExtensionFuncPtr( "glUniformMatrix3x2fv" );
+    _glUniformMatrix2x4fv = osg::getGLExtensionFuncPtr( "glUniformMatrix2x4fv" );
+    _glUniformMatrix4x2fv = osg::getGLExtensionFuncPtr( "glUniformMatrix4x2fv" );
+    _glUniformMatrix3x4fv = osg::getGLExtensionFuncPtr( "glUniformMatrix3x4fv" );
+    _glUniformMatrix4x3fv = osg::getGLExtensionFuncPtr( "glUniformMatrix4x3fv" );
 
+    // EXT_geometry_shader4
+    _glProgramParameteri = osg::getGLExtensionFuncPtr( "glProgramParameteri", "glProgramParameteriEXT" );
+    _glFramebufferTexture = osg::getGLExtensionFuncPtr( "glFramebufferTexture", "glFramebufferTextureEXT" );
+    _glFramebufferTextureLayer = osg::getGLExtensionFuncPtr( "glFramebufferTextureLayer", "glFramebufferTextureLayerEXT" );
+    _glFramebufferTextureFace = osg::getGLExtensionFuncPtr( "glFramebufferTextureFace", "glFramebufferTextureFaceEXT" );
+
+    // EXT_gpu_shader4
+    _glGetUniformuiv = osg::getGLExtensionFuncPtr( "glGetUniformuiv", "glGetUniformuivEXT" );
+    _glBindFragDataLocation = osg::getGLExtensionFuncPtr( "glBindFragDataLocation", "glBindFragDataLocationEXT" );
+    _glGetFragDataLocation = osg::getGLExtensionFuncPtr( "glGetFragDataLocation", "glGetFragDataLocationEXT" );
+    _glUniform1ui = osg::getGLExtensionFuncPtr( "glUniform1ui", "glUniform1uiEXT" );
+    _glUniform2ui = osg::getGLExtensionFuncPtr( "glUniform2ui", "glUniform2uiEXT" );
+    _glUniform3ui = osg::getGLExtensionFuncPtr( "glUniform3ui", "glUniform3uiEXT" );
+    _glUniform4ui = osg::getGLExtensionFuncPtr( "glUniform4ui", "glUniform4uiEXT" );
+    _glUniform1uiv = osg::getGLExtensionFuncPtr( "glUniform1uiv", "glUniform1uivEXT" );
+    _glUniform2uiv = osg::getGLExtensionFuncPtr( "glUniform2uiv", "glUniform2uivEXT" );
+    _glUniform3uiv = osg::getGLExtensionFuncPtr( "glUniform3uiv", "glUniform3uivEXT" );
+    _glUniform4uiv = osg::getGLExtensionFuncPtr( "glUniform4uiv", "glUniform4uivEXT" );
 }
 
 
@@ -1795,12 +1870,158 @@ void GL2Extensions::glVertexAttribPointer(GLuint index, GLint size, GLenum type,
     }
 }
 
-void GL2Extensions::glBindFragDataLocation(GLuint program, GLuint colorIndex, const GLchar *name) const
+
+void GL2Extensions::glUniformMatrix2x3fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const
+{
+    if (_glUniformMatrix2x3fv)
+    {
+        typedef void (APIENTRY * UniformMatrix2x3fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        ((UniformMatrix2x3fvProc)_glUniformMatrix2x3fv)( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix2x3fv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix3x2fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const
+{
+    if (_glUniformMatrix3x2fv)
+    {
+        typedef void (APIENTRY * UniformMatrix3x2fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        ((UniformMatrix3x2fvProc)_glUniformMatrix3x2fv)( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix3x2fv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix2x4fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const
+{
+    if (_glUniformMatrix2x4fv)
+    {
+        typedef void (APIENTRY * UniformMatrix2x4fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        ((UniformMatrix2x4fvProc)_glUniformMatrix2x4fv)( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix2x4fv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix4x2fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const
+{
+    if (_glUniformMatrix4x2fv)
+    {
+        typedef void (APIENTRY * UniformMatrix4x2fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        ((UniformMatrix4x2fvProc)_glUniformMatrix4x2fv)( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix4x2fv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix3x4fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const
+{
+    if (_glUniformMatrix3x4fv)
+    {
+        typedef void (APIENTRY * UniformMatrix3x4fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        ((UniformMatrix3x4fvProc)_glUniformMatrix3x4fv)( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix3x4fv" );
+    }
+}
+
+void GL2Extensions::glUniformMatrix4x3fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const
+{
+    if (_glUniformMatrix4x3fv)
+    {
+        typedef void (APIENTRY * UniformMatrix4x3fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
+        ((UniformMatrix4x3fvProc)_glUniformMatrix4x3fv)( location, count, transpose, value );
+    }
+    else
+    {
+        NotSupported( "glUniformMatrix4x3fv" );
+    }
+}
+
+
+void GL2Extensions::glProgramParameteri( GLuint program, GLenum pname, GLint value ) const
+{
+    if (_glProgramParameteri)
+    {
+        typedef void (APIENTRY * ProgramParameteriProc)( GLuint program, GLenum pname, GLint value );
+        ((ProgramParameteriProc)_glProgramParameteri)( program, pname, value );
+    }
+    else
+    {
+        NotSupported( "glProgramParameteri" );
+    }
+}
+
+void GL2Extensions::glFramebufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level ) const
+{
+    if (_glFramebufferTexture)
+    {
+        typedef void (APIENTRY * FramebufferTextureProc)( GLenum target, GLenum attachment, GLuint texture, GLint level );
+        ((FramebufferTextureProc)_glFramebufferTexture)( target, attachment, texture, level );
+    }
+    else
+    {
+        NotSupported( "glFramebufferTexture" );
+    }
+}
+
+void GL2Extensions::glFramebufferTextureLayer( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer ) const
+{
+    if (_glFramebufferTextureLayer)
+    {
+        typedef void (APIENTRY * FramebufferTextureLayerProc)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer );
+        ((FramebufferTextureLayerProc)_glFramebufferTextureLayer)( target, attachment, texture, level, layer );
+    }
+    else
+    {
+        NotSupported( "glFramebufferTextureLayer" );
+    }
+}
+
+void GL2Extensions::glFramebufferTextureFace( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face ) const
+{
+    if (_glFramebufferTextureFace)
+    {
+        typedef void (APIENTRY * FramebufferTextureFaceProc)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face );
+        ((FramebufferTextureFaceProc)_glFramebufferTextureFace)( target, attachment, texture, level, face );
+    }
+    else
+    {
+        NotSupported( "glFramebufferTextureFace" );
+    }
+}
+
+
+void GL2Extensions::glGetUniformuiv( GLuint program, GLint location, GLuint* params ) const
+{
+    if (_glGetUniformuiv)
+    {
+        typedef void (APIENTRY * GetUniformuivProc)( GLuint program, GLint location, GLuint* params );
+        ((GetUniformuivProc)_glGetUniformuiv)( program, location, params );
+    }
+    else
+    {
+        NotSupported( "glGetUniformuiv" );
+    }
+}
+
+void GL2Extensions::glBindFragDataLocation( GLuint program, GLuint color, const GLchar* name ) const
 {
     if (_glBindFragDataLocation)
     {
-        typedef void (APIENTRY * BindFragDataLocationProc)(GLuint , GLuint, const GLchar*);
-        ((BindFragDataLocationProc)_glBindFragDataLocation)(program, colorIndex, name);
+        typedef void (APIENTRY * BindFragDataLocationProc)( GLuint program, GLuint color, const GLchar* name );
+        ((BindFragDataLocationProc)_glBindFragDataLocation)( program, color, name );
     }
     else
     {
@@ -1808,12 +2029,12 @@ void GL2Extensions::glBindFragDataLocation(GLuint program, GLuint colorIndex, co
     }
 }
 
-GLint GL2Extensions::glGetFragDataLocation(GLuint program, const GLchar *name) const
+GLint GL2Extensions::glGetFragDataLocation( GLuint program, const GLchar* name ) const
 {
     if (_glGetFragDataLocation)
     {
-        typedef GLint (APIENTRY * GetFragDataLocationProc)(GLuint,  const GLchar*);
-        return ((GetFragDataLocationProc)_glGetFragDataLocation)(program, name);
+        typedef GLint (APIENTRY * GetFragDataLocationProc)( GLuint program, const GLchar* name );
+        return ((GetFragDataLocationProc)_glGetFragDataLocation)( program, name );
     }
     else
     {
@@ -1821,6 +2042,112 @@ GLint GL2Extensions::glGetFragDataLocation(GLuint program, const GLchar *name) c
         return -1;
     }
 }
+
+
+void GL2Extensions::glUniform1ui( GLint location, GLuint v0 ) const
+{
+    if (_glUniform1ui)
+    {
+        typedef void (APIENTRY * Uniform1uiProc)( GLint location, GLuint v0 );
+        ((Uniform1uiProc)_glUniform1ui)( location, v0 );
+    }
+    else
+    {
+        NotSupported( "glUniform1ui" );
+    }
+}
+
+void GL2Extensions::glUniform2ui( GLint location, GLuint v0, GLuint v1 ) const
+{
+    if (_glUniform2ui)
+    {
+        typedef void (APIENTRY * Uniform2uiProc)( GLint location, GLuint v0, GLuint v1 );
+        ((Uniform2uiProc)_glUniform2ui)( location, v0, v1 );
+    }
+    else
+    {
+        NotSupported( "glUniform2ui" );
+    }
+}
+
+void GL2Extensions::glUniform3ui( GLint location, GLuint v0, GLuint v1, GLuint v2 ) const
+{
+    if (_glUniform3ui)
+    {
+        typedef void (APIENTRY * Uniform3uiProc)( GLint location, GLuint v0, GLuint v1, GLuint v2 );
+        ((Uniform3uiProc)_glUniform3ui)( location, v0, v1, v2 );
+    }
+    else
+    {
+        NotSupported( "glUniform3ui" );
+    }
+}
+
+void GL2Extensions::glUniform4ui( GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3 ) const
+{
+    if (_glUniform4ui)
+    {
+        typedef void (APIENTRY * Uniform4uiProc)( GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3 );
+        ((Uniform4uiProc)_glUniform4ui)( location, v0, v1, v2, v3 );
+    }
+    else
+    {
+        NotSupported( "glUniform4ui" );
+    }
+}
+
+void GL2Extensions::glUniform1uiv( GLint location, GLsizei count, const GLuint *value ) const
+{
+    if (_glUniform1uiv)
+    {
+        typedef void (APIENTRY * Uniform1uivProc)( GLint location, GLsizei count, const GLuint *value );
+        ((Uniform1uivProc)_glUniform1uiv)( location, count, value );
+    }
+    else
+    {
+        NotSupported( "glUniform1uiv" );
+    }
+}
+
+void GL2Extensions::glUniform2uiv( GLint location, GLsizei count, const GLuint *value ) const
+{
+    if (_glUniform2uiv)
+    {
+        typedef void (APIENTRY * Uniform2uivProc)( GLint location, GLsizei count, const GLuint *value );
+        ((Uniform2uivProc)_glUniform2uiv)( location, count, value );
+    }
+    else
+    {
+        NotSupported( "glUniform2uiv" );
+    }
+}
+
+void GL2Extensions::glUniform3uiv( GLint location, GLsizei count, const GLuint *value ) const
+{
+    if (_glUniform3uiv)
+    {
+        typedef void (APIENTRY * Uniform3uivProc)( GLint location, GLsizei count, const GLuint *value );
+        ((Uniform3uivProc)_glUniform3uiv)( location, count, value );
+    }
+    else
+    {
+        NotSupported( "glUniform3uiv" );
+    }
+}
+
+void GL2Extensions::glUniform4uiv( GLint location, GLsizei count, const GLuint *value ) const
+{
+    if (_glUniform4uiv)
+    {
+        typedef void (APIENTRY * Uniform4uivProc)( GLint location, GLsizei count, const GLuint *value );
+        ((Uniform4uivProc)_glUniform4uiv)( location, count, value );
+    }
+    else
+    {
+        NotSupported( "glUniform4uiv" );
+    }
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 // C++-friendly convenience methods
@@ -1989,7 +2316,9 @@ void Program::discardDeletedGlPrograms(unsigned int contextID)
 // osg::Program
 ///////////////////////////////////////////////////////////////////////////
 
-Program::Program()
+Program::Program() :
+    _geometryVerticesOut(0), _geometryInputType(GL_TRIANGLES),
+    _geometryOutputType(GL_TRIANGLE_STRIP)
 {
 }
 
@@ -1998,6 +2327,9 @@ Program::Program(const Program& rhs, const osg::CopyOp& copyop):
     osg::StateAttribute(rhs, copyop)
 {
     osg::notify(osg::FATAL) << "how got here?" << std::endl;
+    _geometryVerticesOut = rhs._geometryVerticesOut;
+    _geometryInputType = rhs._geometryInputType;
+    _geometryOutputType = rhs._geometryOutputType;
 }
 
 
@@ -2022,6 +2354,15 @@ int Program::compare(const osg::StateAttribute& sa) const
 
     if( getName() < rhs.getName() ) return -1;
     if( rhs.getName() < getName() ) return 1;
+
+    if( _geometryVerticesOut < rhs._geometryVerticesOut ) return -1;
+    if( rhs._geometryVerticesOut < _geometryVerticesOut ) return 1;
+
+    if( _geometryInputType < rhs._geometryInputType ) return -1;
+    if( rhs._geometryInputType < _geometryInputType ) return 1;
+
+    if( _geometryOutputType < rhs._geometryOutputType ) return -1;
+    if( rhs._geometryOutputType < _geometryOutputType ) return 1;
 
     ShaderList::const_iterator litr=_shaderList.begin();
     ShaderList::const_iterator ritr=rhs._shaderList.begin();
@@ -2146,6 +2487,41 @@ bool Program::removeShader( Shader* shader )
     }
 
     return false;
+}
+
+
+void Program::setParameter( GLenum pname, GLint value )
+{
+    switch( pname )
+    {
+        case GL_GEOMETRY_VERTICES_OUT_EXT:
+            _geometryVerticesOut = value;
+            dirtyProgram();
+            break;
+        case GL_GEOMETRY_INPUT_TYPE_EXT:
+            _geometryInputType = value;
+            dirtyProgram();    // needed?
+            break;
+        case GL_GEOMETRY_OUTPUT_TYPE_EXT:
+            _geometryOutputType = value;
+            dirtyProgram();    // needed?
+            break;
+        default:
+            osg::notify(osg::WARN) << "setParameter invalid param " << pname << std::endl;
+            break;
+    }
+}
+
+GLint Program::getParameter( GLenum pname ) const
+{
+    switch( pname )
+    {
+        case GL_GEOMETRY_VERTICES_OUT_EXT: return _geometryVerticesOut;
+        case GL_GEOMETRY_INPUT_TYPE_EXT:   return _geometryInputType;
+        case GL_GEOMETRY_OUTPUT_TYPE_EXT:  return _geometryOutputType;
+    }
+    osg::notify(osg::WARN) << "getParameter invalid param " << pname << std::endl;
+    return 0;
 }
 
 
@@ -2287,6 +2663,10 @@ void Program::PerContextProgram::linkProgram()
         << " id=" << _glProgramHandle
         << " contextID=" << _contextID
         <<  std::endl;
+
+    _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_VERTICES_OUT_EXT, _program->_geometryVerticesOut );
+    _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_INPUT_TYPE_EXT, _program->_geometryInputType );
+    _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_OUTPUT_TYPE_EXT, _program->_geometryOutputType );
 
     // Detach removed shaders
     for( unsigned int i=0; i < _shadersToDetach.size(); ++i )

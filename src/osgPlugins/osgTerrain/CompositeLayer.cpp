@@ -41,6 +41,18 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
         locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
         if (readObject.valid()) itrAdvanced = true;
 
+        unsigned int minLevel=0;
+        if (fr.read("MinLevel",minLevel))
+        {
+            itrAdvanced = true;
+        }
+
+        unsigned int maxLevel = MAXIMUM_NUMBER_OF_LEVELS;
+        if (fr.read("MaxLevel",maxLevel))
+        {
+            itrAdvanced = true;
+        }
+
         if (fr.matchSequence("file %s") || fr.matchSequence("file %w") )
         {
             layer.addLayer(fr[1].getStr());
@@ -60,6 +72,9 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                     locator = 0;
                 }
 
+                if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
+                if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
+
                 layer.addLayer(proxyLayer);
             }                
 
@@ -73,12 +88,16 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
             osgTerrain::Layer* readLayer = dynamic_cast<osgTerrain::Layer*>(readObject.get());
             if (readLayer)
             {
-                layer.addLayer(readLayer);
                 if (locator.valid())
                 {
                     readLayer->setLocator(locator.get());
                     locator = 0;
                 }
+
+                if (minLevel!=0) readLayer->setMinLevel(minLevel);
+                if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) readLayer->setMaxLevel(maxLevel);
+
+                layer.addLayer(readLayer);
             }
 
             if (readObject.valid()) itrAdvanced = true;
@@ -109,6 +128,16 @@ bool CompositeLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
                     {
                         fw.writeObject(*locator);
                     }
+                    
+                    if (proxyLayer->getMinLevel()!=0)
+                    {
+                        fw.indent()<<"MinLevel "<<layer.getMinLevel()<<std::endl;
+                    } 
+
+                    if (proxyLayer->getMaxLevel()!=MAXIMUM_NUMBER_OF_LEVELS)
+                    {
+                        fw.indent()<<"MaxLevel "<<layer.getMaxLevel()<<std::endl;
+                    } 
                 
                     fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
                 }

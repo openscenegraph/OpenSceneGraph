@@ -42,8 +42,16 @@ bool HeightFieldLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
         fr += 2;
         itrAdvanced = true;
     }
-   
 
+    osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osg::HeightField>());
+    if (readObject.valid()) itrAdvanced = true;
+
+    osg::HeightField* hf = dynamic_cast<osg::HeightField*>(readObject.get());
+    if (hf)
+    {
+        layer.setHeightField(hf);
+    }
+    
     return itrAdvanced;
 }
 
@@ -54,6 +62,13 @@ bool HeightFieldLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     if (!layer.getFileName().empty())
     {
         fw.indent()<<"file "<<layer.getFileName()<<std::endl;
+    }
+    else
+    {
+        if (layer.getHeightField())
+        {
+            fw.writeObject(*layer.getHeightField());
+        }
     }
 
     return true;

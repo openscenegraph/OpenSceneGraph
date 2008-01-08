@@ -1,5 +1,6 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
+ * Copyright (C) 2008 Zebra Imaging
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -11,7 +12,7 @@
 */
 
 /* file:   src/osg/Uniform.cpp
- * author: Mike Weiblen 2006-05-15
+ * author: Mike Weiblen 2008-01-02
 */
 #include <string.h>
 
@@ -273,7 +274,34 @@ const char* Uniform::getTypename( Type t )
     case SAMPLER_2D_SHADOW: return "sampler2DShadow";
     case SAMPLER_1D_ARRAY_SHADOW: return "sampler1DArrayShadow";
     case SAMPLER_2D_ARRAY_SHADOW: return "sampler2DArrayShadow";
-    default:                return "UNDEFINED";
+    case FLOAT_MAT2x3:  return "mat2x3";
+    case FLOAT_MAT2x4:  return "mat2x4";
+    case FLOAT_MAT3x2:  return "mat3x2";
+    case FLOAT_MAT3x4:  return "mat3x4";
+    case FLOAT_MAT4x2:  return "mat4x2";
+    case FLOAT_MAT4x3:  return "mat4x3";
+    case SAMPLER_BUFFER:       return "samplerBuffer";
+    case SAMPLER_CUBE_SHADOW:  return "samplerCubeShadow";
+    case UNSIGNED_INT_VEC2:    return "uvec2";
+    case UNSIGNED_INT_VEC3:    return "uvec3";
+    case UNSIGNED_INT_VEC4:    return "uvec4";
+    case INT_SAMPLER_1D:       return "isampler1D";
+    case INT_SAMPLER_2D:       return "isampler2D";
+    case INT_SAMPLER_3D:       return "isampler3D";
+    case INT_SAMPLER_CUBE:     return "isamplerCube";
+    case INT_SAMPLER_2D_RECT:  return "isampler2DRect";
+    case INT_SAMPLER_1D_ARRAY: return "isampler1DArray";
+    case INT_SAMPLER_2D_ARRAY: return "isampler2DArray";
+    case INT_SAMPLER_BUFFER:   return "isamplerBuffer";
+    case UNSIGNED_INT_SAMPLER_1D:       return "usampler1D";
+    case UNSIGNED_INT_SAMPLER_2D:       return "usampler2D";
+    case UNSIGNED_INT_SAMPLER_3D:       return "usampler3D";
+    case UNSIGNED_INT_SAMPLER_CUBE:     return "usamplerCube";
+    case UNSIGNED_INT_SAMPLER_2D_RECT:  return "usampler2DRect";
+    case UNSIGNED_INT_SAMPLER_1D_ARRAY: return "usampler1DArray";
+    case UNSIGNED_INT_SAMPLER_2D_ARRAY: return "usampler2DArray";
+    case UNSIGNED_INT_SAMPLER_BUFFER:   return "usamplerBuffer";
+    default: return "UNDEFINED";
     }
 }
 
@@ -294,26 +322,59 @@ int Uniform::getTypeNumComponents( Type t )
     case SAMPLER_2D_SHADOW:
     case SAMPLER_1D_ARRAY_SHADOW:
     case SAMPLER_2D_ARRAY_SHADOW:
+    case SAMPLER_BUFFER:
+    case SAMPLER_CUBE_SHADOW:
+    case INT_SAMPLER_1D:
+    case INT_SAMPLER_2D:
+    case INT_SAMPLER_3D:
+    case INT_SAMPLER_CUBE:
+    case INT_SAMPLER_2D_RECT:
+    case INT_SAMPLER_1D_ARRAY:
+    case INT_SAMPLER_2D_ARRAY:
+    case INT_SAMPLER_BUFFER:
+    case UNSIGNED_INT_SAMPLER_1D:
+    case UNSIGNED_INT_SAMPLER_2D:
+    case UNSIGNED_INT_SAMPLER_3D:
+    case UNSIGNED_INT_SAMPLER_CUBE:
+    case UNSIGNED_INT_SAMPLER_2D_RECT:
+    case UNSIGNED_INT_SAMPLER_1D_ARRAY:
+    case UNSIGNED_INT_SAMPLER_2D_ARRAY:
+    case UNSIGNED_INT_SAMPLER_BUFFER:
         return 1;
 
     case FLOAT_VEC2:
     case INT_VEC2:
     case BOOL_VEC2:
+    case UNSIGNED_INT_VEC2:
         return 2;
 
     case FLOAT_VEC3:
     case INT_VEC3:
     case BOOL_VEC3:
+    case UNSIGNED_INT_VEC3:
         return 3;
 
     case FLOAT_VEC4:
     case FLOAT_MAT2:
     case INT_VEC4:
     case BOOL_VEC4:
+    case UNSIGNED_INT_VEC4:
         return 4;
+
+    case FLOAT_MAT2x3:
+    case FLOAT_MAT3x2:
+        return 6;
+
+    case FLOAT_MAT2x4:
+    case FLOAT_MAT4x2:
+        return 8;
 
     case FLOAT_MAT3:
         return 9;
+
+    case FLOAT_MAT3x4:
+    case FLOAT_MAT4x3:
+        return 12;
 
     case FLOAT_MAT4:
         return 16;
@@ -337,9 +398,9 @@ Uniform::Type Uniform::getTypeId( const std::string& tname )
     if( tname == "bvec2" )           return BOOL_VEC2;
     if( tname == "bvec3" )           return BOOL_VEC3;
     if( tname == "bvec4" )           return BOOL_VEC4;
-    if( tname == "mat2" )            return FLOAT_MAT2;
-    if( tname == "mat3" )            return FLOAT_MAT3;
-    if( tname == "mat4" )            return FLOAT_MAT4;
+    if( tname == "mat2" || tname == "mat2x2" ) return FLOAT_MAT2;
+    if( tname == "mat3" || tname == "mat3x3" ) return FLOAT_MAT3;
+    if( tname == "mat4" || tname == "mat4x4" ) return FLOAT_MAT4;
     if( tname == "sampler1D" )       return SAMPLER_1D;
     if( tname == "sampler2D" )       return SAMPLER_2D;
     if( tname == "sampler1DArray" )  return SAMPLER_1D_ARRAY;
@@ -350,6 +411,34 @@ Uniform::Type Uniform::getTypeId( const std::string& tname )
     if( tname == "sampler2DShadow" ) return SAMPLER_2D_SHADOW;
     if( tname == "sampler1DArrayShadow" ) return SAMPLER_1D_ARRAY_SHADOW;
     if( tname == "sampler2DArrayShadow" ) return SAMPLER_2D_ARRAY_SHADOW;
+    if( tname == "mat2x3" )          return FLOAT_MAT2x3;
+    if( tname == "mat2x4" )          return FLOAT_MAT2x4;
+    if( tname == "mat3x2" )          return FLOAT_MAT3x2;
+    if( tname == "mat3x4" )          return FLOAT_MAT3x4;
+    if( tname == "mat4x2" )          return FLOAT_MAT4x2;
+    if( tname == "mat4x3" )          return FLOAT_MAT4x3;
+    if( tname == "samplerBuffer" )     return SAMPLER_BUFFER;
+    if( tname == "samplerCubeShadow" ) return SAMPLER_CUBE_SHADOW;
+    if( tname == "uvec2" )           return UNSIGNED_INT_VEC2;
+    if( tname == "uvec3" )           return UNSIGNED_INT_VEC3;
+    if( tname == "uvec4" )           return UNSIGNED_INT_VEC4;
+    if( tname == "isampler1D" )      return INT_SAMPLER_1D;
+    if( tname == "isampler2D" )      return INT_SAMPLER_2D;
+    if( tname == "isampler3D" )      return INT_SAMPLER_3D;
+    if( tname == "isamplerCube" )    return INT_SAMPLER_CUBE;
+    if( tname == "isampler2DRect" )  return INT_SAMPLER_2D_RECT;
+    if( tname == "isampler1DArray" ) return INT_SAMPLER_1D_ARRAY;
+    if( tname == "isampler2DArray" ) return INT_SAMPLER_2D_ARRAY;
+    if( tname == "isamplerBuffer" )  return INT_SAMPLER_BUFFER;
+    if( tname == "usampler1D" )      return UNSIGNED_INT_SAMPLER_1D;
+    if( tname == "usampler2D" )      return UNSIGNED_INT_SAMPLER_2D;
+    if( tname == "usampler3D" )      return UNSIGNED_INT_SAMPLER_3D;
+    if( tname == "usamplerCube" )    return UNSIGNED_INT_SAMPLER_CUBE;
+    if( tname == "usampler2DRect" )  return UNSIGNED_INT_SAMPLER_2D_RECT;
+    if( tname == "usampler1DArray" ) return UNSIGNED_INT_SAMPLER_1D_ARRAY;
+    if( tname == "usampler2DArray" ) return UNSIGNED_INT_SAMPLER_2D_ARRAY;
+    if( tname == "usamplerBuffer" )  return UNSIGNED_INT_SAMPLER_BUFFER;
+
     return UNDEFINED;
 }
 
@@ -368,6 +457,24 @@ Uniform::Type Uniform::getGlApiType( Type t )
     case SAMPLER_2D_SHADOW:
     case SAMPLER_1D_ARRAY_SHADOW:
     case SAMPLER_2D_ARRAY_SHADOW:
+    case SAMPLER_BUFFER:
+    case SAMPLER_CUBE_SHADOW:
+    case INT_SAMPLER_1D:
+    case INT_SAMPLER_2D:
+    case INT_SAMPLER_3D:
+    case INT_SAMPLER_CUBE:
+    case INT_SAMPLER_2D_RECT:
+    case INT_SAMPLER_1D_ARRAY:
+    case INT_SAMPLER_2D_ARRAY:
+    case INT_SAMPLER_BUFFER:
+    case UNSIGNED_INT_SAMPLER_1D:
+    case UNSIGNED_INT_SAMPLER_2D:
+    case UNSIGNED_INT_SAMPLER_3D:
+    case UNSIGNED_INT_SAMPLER_CUBE:
+    case UNSIGNED_INT_SAMPLER_2D_RECT:
+    case UNSIGNED_INT_SAMPLER_1D_ARRAY:
+    case UNSIGNED_INT_SAMPLER_2D_ARRAY:
+    case UNSIGNED_INT_SAMPLER_BUFFER:
         return INT;
 
     case BOOL_VEC2:
@@ -395,6 +502,12 @@ GLenum Uniform::getInternalArrayType( Type t )
     case FLOAT_MAT2:
     case FLOAT_MAT3:
     case FLOAT_MAT4:
+    case FLOAT_MAT2x3:
+    case FLOAT_MAT2x4:
+    case FLOAT_MAT3x2:
+    case FLOAT_MAT3x4:
+    case FLOAT_MAT4x2:
+    case FLOAT_MAT4x3:
         return GL_FLOAT;
 
     case INT:
@@ -415,8 +528,30 @@ GLenum Uniform::getInternalArrayType( Type t )
     case SAMPLER_2D_SHADOW:
     case SAMPLER_1D_ARRAY_SHADOW:
     case SAMPLER_2D_ARRAY_SHADOW:
+    case SAMPLER_BUFFER:
+    case SAMPLER_CUBE_SHADOW:
+    case INT_SAMPLER_1D:
+    case INT_SAMPLER_2D:
+    case INT_SAMPLER_3D:
+    case INT_SAMPLER_CUBE:
+    case INT_SAMPLER_2D_RECT:
+    case INT_SAMPLER_1D_ARRAY:
+    case INT_SAMPLER_2D_ARRAY:
+    case INT_SAMPLER_BUFFER:
+    case UNSIGNED_INT_SAMPLER_1D:
+    case UNSIGNED_INT_SAMPLER_2D:
+    case UNSIGNED_INT_SAMPLER_3D:
+    case UNSIGNED_INT_SAMPLER_CUBE:
+    case UNSIGNED_INT_SAMPLER_2D_RECT:
+    case UNSIGNED_INT_SAMPLER_1D_ARRAY:
+    case UNSIGNED_INT_SAMPLER_2D_ARRAY:
+    case UNSIGNED_INT_SAMPLER_BUFFER:
         return GL_INT;
 
+    // TODO integrate new types
+    case UNSIGNED_INT_VEC2:
+    case UNSIGNED_INT_VEC3:
+    case UNSIGNED_INT_VEC4:
     default:
         return 0;
     }

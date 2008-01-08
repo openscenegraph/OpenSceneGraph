@@ -2,6 +2,7 @@
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2007 Art Tevs
+ * Copyright (C) 2008 Zebra Imaging
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commericial and non commericial
@@ -13,7 +14,7 @@
 */
 
 /* file:        include/osg/GL2Extensions
- * author:      Mike Weiblen 2005-05-05
+ * author:      Mike Weiblen 2008-01-02
 */
 
 #ifndef OSG_GL2EXTENSIONS
@@ -31,8 +32,7 @@
     #define GL_SAMPLER_2D_ARRAY_SHADOW_EXT    0x8DC4
 #endif
 
-
-#ifndef GL_VERSION_2_0    //[
+#ifndef GL_VERSION_2_0
 #define GL_VERSION_2_0 1
 typedef char GLchar;
 #define GL_BLEND_EQUATION_RGB             GL_BLEND_EQUATION
@@ -119,7 +119,90 @@ typedef char GLchar;
 #define GL_STENCIL_BACK_REF               0x8CA3
 #define GL_STENCIL_BACK_VALUE_MASK        0x8CA4
 #define GL_STENCIL_BACK_WRITEMASK         0x8CA5
-#endif    //]
+#endif
+
+#ifndef GL_VERSION_2_1
+#define GL_VERSION_2_1 1
+#define GL_CURRENT_RASTER_SECONDARY_COLOR 0x845F
+#define GL_PIXEL_PACK_BUFFER              0x88EB
+#define GL_PIXEL_UNPACK_BUFFER            0x88EC
+#define GL_PIXEL_PACK_BUFFER_BINDING      0x88ED
+#define GL_PIXEL_UNPACK_BUFFER_BINDING    0x88EF
+#define GL_FLOAT_MAT2x3                   0x8B65
+#define GL_FLOAT_MAT2x4                   0x8B66
+#define GL_FLOAT_MAT3x2                   0x8B67
+#define GL_FLOAT_MAT3x4                   0x8B68
+#define GL_FLOAT_MAT4x2                   0x8B69
+#define GL_FLOAT_MAT4x3                   0x8B6A
+#define GL_SRGB                           0x8C40
+#define GL_SRGB8                          0x8C41
+#define GL_SRGB_ALPHA                     0x8C42
+#define GL_SRGB8_ALPHA8                   0x8C43
+#define GL_SLUMINANCE_ALPHA               0x8C44
+#define GL_SLUMINANCE8_ALPHA8             0x8C45
+#define GL_SLUMINANCE                     0x8C46
+#define GL_SLUMINANCE8                    0x8C47
+#define GL_COMPRESSED_SRGB                0x8C48
+#define GL_COMPRESSED_SRGB_ALPHA          0x8C49
+#define GL_COMPRESSED_SLUMINANCE          0x8C4A
+#define GL_COMPRESSED_SLUMINANCE_ALPHA    0x8C4B
+#endif
+
+// EXT_geometry_shader4
+#ifndef GL_GEOMETRY_SHADER_EXT
+#define GL_GEOMETRY_SHADER_EXT                       0x8DD9
+#define GL_GEOMETRY_VERTICES_OUT_EXT                 0x8DDA
+#define GL_GEOMETRY_INPUT_TYPE_EXT                   0x8DDB
+#define GL_GEOMETRY_OUTPUT_TYPE_EXT                  0x8DDC
+#define GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS_EXT      0x8C29
+#define GL_MAX_GEOMETRY_VARYING_COMPONENTS_EXT       0x8DDD
+#define GL_MAX_VERTEX_VARYING_COMPONENTS_EXT         0x8DDE
+#define GL_MAX_VARYING_COMPONENTS_EXT                0x8B4B
+#define GL_MAX_GEOMETRY_UNIFORM_COMPONENTS_EXT       0x8DDF
+#define GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT          0x8DE0
+#define GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS_EXT  0x8DE1
+#define GL_LINES_ADJACENCY_EXT                       0x000A
+#define GL_LINE_STRIP_ADJACENCY_EXT                  0x000B
+#define GL_TRIANGLES_ADJACENCY_EXT                   0x000C
+#define GL_TRIANGLE_STRIP_ADJACENCY_EXT              0x000D
+#define GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS_EXT  0x8DA8
+#define GL_FRAMEBUFFER_INCOMPLETE_LAYER_COUNT_EXT    0x8DA9
+#define GL_FRAMEBUFFER_ATTACHMENT_LAYERED_EXT        0x8DA7
+#define GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER_EXT  0x8CD4
+#define GL_PROGRAM_POINT_SIZE_EXT                    0x8642
+#endif
+
+// EXT_gpu_shader4
+#ifndef GL_INT_SAMPLER_2D_EXT
+#define GL_SAMPLER_1D_ARRAY_EXT               0x8DC0
+#define GL_SAMPLER_2D_ARRAY_EXT               0x8DC1
+#define GL_SAMPLER_BUFFER_EXT                 0x8DC2
+#define GL_SAMPLER_1D_ARRAY_SHADOW_EXT        0x8DC3
+#define GL_SAMPLER_2D_ARRAY_SHADOW_EXT        0x8DC4
+#define GL_SAMPLER_CUBE_SHADOW_EXT            0x8DC5
+#define GL_UNSIGNED_INT_VEC2_EXT              0x8DC6
+#define GL_UNSIGNED_INT_VEC3_EXT              0x8DC7
+#define GL_UNSIGNED_INT_VEC4_EXT              0x8DC8
+#define GL_INT_SAMPLER_1D_EXT                 0x8DC9
+#define GL_INT_SAMPLER_2D_EXT                 0x8DCA
+#define GL_INT_SAMPLER_3D_EXT                 0x8DCB
+#define GL_INT_SAMPLER_CUBE_EXT               0x8DCC
+#define GL_INT_SAMPLER_2D_RECT_EXT            0x8DCD
+#define GL_INT_SAMPLER_1D_ARRAY_EXT           0x8DCE
+#define GL_INT_SAMPLER_2D_ARRAY_EXT           0x8DCF
+#define GL_INT_SAMPLER_BUFFER_EXT             0x8DD0
+#define GL_UNSIGNED_INT_SAMPLER_1D_EXT        0x8DD1
+#define GL_UNSIGNED_INT_SAMPLER_2D_EXT        0x8DD2
+#define GL_UNSIGNED_INT_SAMPLER_3D_EXT        0x8DD3
+#define GL_UNSIGNED_INT_SAMPLER_CUBE_EXT      0x8DD4
+#define GL_UNSIGNED_INT_SAMPLER_2D_RECT_EXT   0x8DD5
+#define GL_UNSIGNED_INT_SAMPLER_1D_ARRAY_EXT  0x8DD6
+#define GL_UNSIGNED_INT_SAMPLER_2D_ARRAY_EXT  0x8DD7
+#define GL_UNSIGNED_INT_SAMPLER_BUFFER_EXT    0x8DD8
+#define GL_MIN_PROGRAM_TEXEL_OFFSET_EXT       0x8904
+#define GL_MAX_PROGRAM_TEXEL_OFFSET_EXT       0x8905
+#endif
+
 
 namespace osg {
 
@@ -150,6 +233,12 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
 
         void setLanguage100Supported(bool flag) { _isLanguage100Supported = flag; }
         bool isLanguage100Supported() const { return _isLanguage100Supported; }
+
+        void setGeometryShader4Supported(bool flag) { _isGeometryShader4Supported = flag; }
+        bool isGeometryShader4Supported() const { return _isGeometryShader4Supported; }
+
+        void setGpuShader4Supported(bool flag) { _isGpuShader4Supported = flag; }
+        bool isGpuShader4Supported() const { return _isGpuShader4Supported; }
 
         /** Function to call to get the extension of a specified context.
           * If the Exentsion object for that context has not yet been created then
@@ -266,9 +355,32 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool getAttribLocation( const char* attribName, GLuint& slot ) const;
         bool getFragDataLocation( const char* fragDataName, GLuint& slot) const;
 
-        //EXT_gpu_shader4 to support frag data binding
-        void glBindFragDataLocation(GLuint program, GLuint colorNumber, const GLchar *name) const;
-        GLint glGetFragDataLocation(GLuint program, const GLchar *name) const;
+        // GL 2.1
+        void glUniformMatrix2x3fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
+        void glUniformMatrix3x2fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
+        void glUniformMatrix2x4fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
+        void glUniformMatrix4x2fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
+        void glUniformMatrix3x4fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
+        void glUniformMatrix4x3fv( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value ) const;
+
+        // EXT_geometry_shader4
+        void glProgramParameteri( GLuint program, GLenum pname, GLint value ) const;
+        void glFramebufferTexture( GLenum target, GLenum attachment, GLuint texture, GLint level ) const;
+        void glFramebufferTextureLayer( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer ) const;
+        void glFramebufferTextureFace( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face ) const;
+
+        // EXT_gpu_shader4
+        void glGetUniformuiv( GLuint program, GLint location, GLuint *params ) const;
+        void glBindFragDataLocation( GLuint program, GLuint color, const GLchar *name ) const;
+        GLint glGetFragDataLocation( GLuint program, const GLchar *name ) const;
+        void glUniform1ui( GLint location, GLuint v0 ) const;
+        void glUniform2ui( GLint location, GLuint v0, GLuint v1 ) const;
+        void glUniform3ui( GLint location, GLuint v0, GLuint v1, GLuint v2 ) const;
+        void glUniform4ui( GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3 ) const;
+        void glUniform1uiv( GLint location, GLsizei count, const GLuint *value ) const;
+        void glUniform2uiv( GLint location, GLsizei count, const GLuint *value ) const;
+        void glUniform3uiv( GLint location, GLsizei count, const GLuint *value ) const;
+        void glUniform4uiv( GLint location, GLsizei count, const GLuint *value ) const;
 
     protected:
         ~GL2Extensions() {}
@@ -280,6 +392,8 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool _isVertexShaderSupported;
         bool _isFragmentShaderSupported;
         bool _isLanguage100Supported;
+        bool _isGeometryShader4Supported;
+        bool _isGpuShader4Supported;
 
         void* _glBlendEquationSeparate;
         void* _glDrawBuffers;
@@ -380,8 +494,32 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void* _glDeleteObjectARB;
         void* _glGetHandleARB;
 
+        // GL 2.1
+        void* _glUniformMatrix2x3fv;
+        void* _glUniformMatrix3x2fv;
+        void* _glUniformMatrix2x4fv;
+        void* _glUniformMatrix4x2fv;
+        void* _glUniformMatrix3x4fv;
+        void* _glUniformMatrix4x3fv;
+
+        // EXT_geometry_shader4
+        void* _glProgramParameteri;
+        void* _glFramebufferTexture;
+        void* _glFramebufferTextureLayer;
+        void* _glFramebufferTextureFace;
+
+        // EXT_gpu_shader4
+        void* _glGetUniformuiv;
         void* _glBindFragDataLocation;
         void* _glGetFragDataLocation;
+        void* _glUniform1ui;
+        void* _glUniform2ui;
+        void* _glUniform3ui;
+        void* _glUniform4ui;
+        void* _glUniform1uiv;
+        void* _glUniform2uiv;
+        void* _glUniform3uiv;
+        void* _glUniform4uiv;
 };
 
 }

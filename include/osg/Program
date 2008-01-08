@@ -1,6 +1,7 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
+ * Copyright (C) 2008 Zebra Imaging
  *
  * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commericial and non commericial
@@ -12,7 +13,7 @@
 */
 
 /* file:        include/osg/Program
- * author:      Mike Weiblen 2006-03-25
+ * author:      Mike Weiblen 2008-01-02
 */
 
 #ifndef OSG_PROGRAM
@@ -91,6 +92,10 @@ class OSG_EXPORT Program : public osg::StateAttribute
           * Mark Program as needing relink.  Return true for success */
         bool removeShader( Shader* shader );
 
+        /** Set/get GL program parameters */
+        void setParameter( GLenum pname, GLint value );
+        GLint getParameter( GLenum pname ) const;
+
         /** Add an attribute location binding. */
         void addBindAttribLocation( const std::string& name, GLuint index );
         
@@ -152,8 +157,6 @@ class OSG_EXPORT Program : public osg::StateAttribute
         class OSG_EXPORT PerContextProgram : public osg::Referenced
         {
             public:
-
-
                 PerContextProgram(const Program* program, unsigned int contextID);
 
                 GLuint getHandle() const {return _glProgramHandle;}
@@ -234,7 +237,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 /** Is our glProgram successfully linked? */
                 bool _isLinked;
                 const unsigned int _contextID;
-                
+
                 ActiveVarInfoMap _uniformInfoMap;
                 ActiveVarInfoMap _attribInfoMap;
                 
@@ -266,6 +269,11 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
         typedef std::vector< ref_ptr<Shader> > ShaderList;
         ShaderList _shaderList;
+
+        /** Parameters maintained with glProgramParameteriEXT */
+        GLint _geometryVerticesOut;
+        GLint _geometryInputType;
+        GLint _geometryOutputType;
 
     private:
         Program& operator=(const Program&);        // disallowed

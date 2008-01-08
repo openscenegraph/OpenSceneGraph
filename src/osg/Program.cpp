@@ -1977,6 +1977,13 @@ void Program::flushDeletedGlPrograms(unsigned int contextID,double /*currentTime
     availableTime -= elapsedTime;
 }
 
+void Program::discardDeletedGlPrograms(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlProgramCache);
+    GlProgramHandleList& pList = s_deletedGlProgramCache[contextID];
+    pList.clear();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 // osg::Program

@@ -132,6 +132,13 @@ void RenderBuffer::flushDeletedRenderBuffers(unsigned int contextID,double /*cur
     availableTime -= elapsedTime;
 }
 
+void RenderBuffer::discardDeletedRenderBuffers(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedRenderBufferCache);
+    RenderBufferHandleList& pList = s_deletedRenderBufferCache[contextID];
+    pList.clear();
+}
+
 
 RenderBuffer::RenderBuffer()
 :    Object(),
@@ -530,6 +537,14 @@ void FrameBufferObject::flushDeletedFrameBufferObjects(unsigned int contextID,do
     }
 
     availableTime -= elapsedTime;
+}
+
+void FrameBufferObject::discardDeletedFrameBufferObjects(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedFrameBufferObjectCache);
+    FrameBufferObjectHandleList& pList = s_deletedFrameBufferObjectCache[contextID];
+
+    pList.clear();
 }
 
 

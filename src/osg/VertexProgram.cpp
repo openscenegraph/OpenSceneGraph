@@ -73,6 +73,13 @@ void VertexProgram::flushDeletedVertexProgramObjects(unsigned int contextID,doub
     availableTime -= elapsedTime;
 }
 
+void VertexProgram::discardDeletedVertexProgramObjects(unsigned int contextID)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexProgramObjectCache);
+    VertexProgramObjectList& vpol = s_deletedVertexProgramObjectCache[contextID];
+    vpol.clear();
+}
+
 
 VertexProgram::VertexProgram()
 {

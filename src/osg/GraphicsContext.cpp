@@ -16,6 +16,7 @@
 #include <osg/GraphicsContext>
 #include <osg/Camera>
 #include <osg/View>
+#include <osg/GLObjects>
 
 #include <osg/FrameBufferObject>
 #include <osg/Program>
@@ -464,21 +465,9 @@ void GraphicsContext::close(bool callCloseImplementation)
         
             osg::notify(osg::INFO)<<"Doing Flush"<<std::endl;
 
-            // flush all the OpenGL object buffer for this context.
-            double availableTime = 100.0f;
-            double currentTime = _state->getFrameStamp()?_state->getFrameStamp()->getReferenceTime():0.0;
+            osg::flushAllDeletedGLObjects(_state->getContextID());
 
-            osg::FrameBufferObject::flushDeletedFrameBufferObjects(_state->getContextID(),currentTime,availableTime);
-            osg::RenderBuffer::flushDeletedRenderBuffers(_state->getContextID(),currentTime,availableTime);
-            osg::Texture::flushAllDeletedTextureObjects(_state->getContextID());
-            osg::Drawable::flushAllDeletedDisplayLists(_state->getContextID());
-            osg::Drawable::flushDeletedVertexBufferObjects(_state->getContextID(),currentTime,availableTime);
-            osg::VertexProgram::flushDeletedVertexProgramObjects(_state->getContextID(),currentTime,availableTime);
-            osg::FragmentProgram::flushDeletedFragmentProgramObjects(_state->getContextID(),currentTime,availableTime);
-            osg::Program::flushDeletedGlPrograms(_state->getContextID(),currentTime,availableTime);
-            osg::Shader::flushDeletedGlShaders(_state->getContextID(),currentTime,availableTime);
-
-            osg::notify(osg::INFO)<<"Done Flush "<<availableTime<<std::endl;
+            osg::notify(osg::INFO)<<"Done Flush "<<std::endl;
 
             _state->reset();
 
@@ -486,11 +475,22 @@ void GraphicsContext::close(bool callCloseImplementation)
         }
         else
         {
-            osg::notify(osg::INFO)<<"makeCurrent did not succedd, could not do flush/deletion of OpenGL objects."<<std::endl;
+            osg::notify(osg::INFO)<<"makeCurrent did not succeed, could not do flush/deletion of OpenGL objects."<<std::endl;
         }
     }
     
     if (callCloseImplementation) closeImplementation();
+
+
+    // now discard any deleted deleted OpenGL objects that the are still hanging around - such as due to 
+    // the the flushDelete*() methods not being invoked, such as when using GraphicContextEmbedded where makeCurrent
+    // does not work.
+    if (_state.valid())
+    {
+        osg::notify(osg::INFO)<<"Doing discard of deleted OpenGL objects."<<std::endl;
+
+        osg::discardAllDeletedGLObjects(_state->getContextID());
+    }
 
     if (_state.valid())
     {

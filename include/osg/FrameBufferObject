@@ -171,6 +171,10 @@ namespace osg
           * in the OpenGL context related to contextID.*/
         static void flushDeletedRenderBuffers(unsigned int contextID,double currentTime, double& availableTime);
 
+        /** discard all the cached RenderBuffers which need to be deleted in the OpenGL context related to contextID.
+          * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
+          * this call is useful for when an OpenGL context has been destroyed. */
+        static void discardDeletedRenderBuffers(unsigned int contextID);
 
     protected:
         virtual ~RenderBuffer();
@@ -314,6 +318,10 @@ namespace osg
         /** flush all the cached FBOs which need to be deleted
           * in the OpenGL context related to contextID.*/
         static void flushDeletedFrameBufferObjects(unsigned int contextID,double currentTime, double& availableTime);
+
+        /** discard all the cached FBOs which need to be deleted
+          * in the OpenGL context related to contextID.*/
+        static void discardDeletedFrameBufferObjects(unsigned int contextID);
 
     protected:
         virtual ~FrameBufferObject();

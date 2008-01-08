@@ -157,6 +157,12 @@ class OSG_EXPORT BufferObject : public Object
           * in the OpenGL context related to contextID.*/
         static void flushDeletedBufferObjects(unsigned int contextID,double /*currentTime*/, double& availableTime);
 
+        /** dicard all the cached display list which need to be deleted
+          * in the OpenGL context related to contextID.
+          * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
+          * this call is useful for when an OpenGL context has been destroyed. */
+        static void discardDeletedBufferObjects(unsigned int contextID);
+
         /** Extensions class which encapsulates the querying of extensions and
         * associated function pointers, and provide convenience wrappers to
         * check for the extensions or use the associated functions.*/

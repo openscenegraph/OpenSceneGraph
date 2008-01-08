@@ -132,6 +132,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	          __bool__removeShader__Shader_P1,
 	          "Remove osg::Shader from this osg::Program. ",
 	          "Mark Program as needing relink. Return true for success ");
+	I_Method2(void, setParameter, IN, GLenum, pname, IN, GLint, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setParameter__GLenum__GLint,
+	          "Set/get GL program parameters. ",
+	          "");
+	I_Method1(GLint, getParameter, IN, GLenum, pname,
+	          Properties::NON_VIRTUAL,
+	          __GLint__getParameter__GLenum,
+	          "",
+	          "");
 	I_Method2(void, addBindAttribLocation, IN, const std::string &, name, IN, GLuint, index,
 	          Properties::NON_VIRTUAL,
 	          __void__addBindAttribLocation__C5_std_string_R1__GLuint,
@@ -205,6 +215,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	I_SimpleProperty(const osg::Program::FragDataBindingList &, FragDataBindingList, 
 	                 __C5_FragDataBindingList_R1__getFragDataBindingList, 
 	                 0);
+	I_IndexedProperty(GLint, Parameter, 
+	                  __GLint__getParameter__GLenum, 
+	                  __void__setParameter__GLenum__GLint, 
+	                  0);
 	I_ArrayProperty(osg::Shader *, Shader, 
 	                __Shader_P1__getShader__unsigned_int, 
 	                0, 

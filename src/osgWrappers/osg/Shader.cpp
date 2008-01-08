@@ -27,6 +27,7 @@ BEGIN_ENUM_REFLECTOR(osg::Shader::Type)
 	I_DeclaringFile("osg/Shader");
 	I_EnumLabel(osg::Shader::VERTEX);
 	I_EnumLabel(osg::Shader::FRAGMENT);
+	I_EnumLabel(osg::Shader::GEOMETRY);
 	I_EnumLabel(osg::Shader::UNDEFINED);
 END_REFLECTOR
 

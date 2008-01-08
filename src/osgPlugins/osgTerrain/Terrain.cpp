@@ -131,13 +131,28 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
             osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
             if (readObject.valid()) localAdvanced = true;
 
+            unsigned int minLevel=0;
+            if (fr.read("MinLevel",minLevel))
+            {
+                itrAdvanced = true;
+            }
+
+            unsigned int maxLevel = MAXIMUM_NUMBER_OF_LEVELS;
+            if (fr.read("MaxLevel",maxLevel))
+            {
+                itrAdvanced = true;
+            }
+
             if (fr.matchSequence("ProxyLayer %s") || fr.matchSequence("ProxyLayer %w") )
             {
                 osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
                 osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
                 if (proxyLayer)
                 {
-                    proxyLayer->setLocator(locator);
+                    if (locator) proxyLayer->setLocator(locator);
+                    if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
+                    if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
+
                     terrain.setElevationLayer(proxyLayer);
                 }
             
@@ -151,7 +166,10 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 osgTerrain::Layer* readLayer = dynamic_cast<osgTerrain::Layer*>(readObject.get());
                 if (readLayer)
                 {
-                    readLayer->setLocator(locator);
+                    if (locator) readLayer->setLocator(locator);
+                    if (minLevel!=0) readLayer->setMinLevel(minLevel);
+                    if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) readLayer->setMaxLevel(maxLevel);
+
                     terrain.setElevationLayer(readLayer);
                 }
 
@@ -185,13 +203,28 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
             osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
             if (readObject.valid()) localAdvanced = true;
 
+            unsigned int minLevel=0;
+            if (fr.read("MinLevel",minLevel))
+            {
+                itrAdvanced = true;
+            }
+
+            unsigned int maxLevel = MAXIMUM_NUMBER_OF_LEVELS;
+            if (fr.read("MaxLevel",maxLevel))
+            {
+                itrAdvanced = true;
+            }
+
             if (fr.matchSequence("ProxyFile %s") || fr.matchSequence("ProxyFile %w") )
             {
                 osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
                 osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
                 if (proxyLayer)
                 {
-                    proxyLayer->setLocator(locator);
+                    if (locator) proxyLayer->setLocator(locator);
+                    if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
+                    if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
+
                     terrain.setColorLayer(layerNum, proxyLayer);
                 }                
             
@@ -205,7 +238,10 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 osgTerrain::Layer* readLayer = dynamic_cast<osgTerrain::Layer*>(readObject.get());
                 if (readLayer)
                 {
-                    readLayer->setLocator(locator);
+                    if (locator) readLayer->setLocator(locator);
+                    if (minLevel!=0) readLayer->setMinLevel(minLevel);
+                    if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) readLayer->setMaxLevel(maxLevel);
+
                     terrain.setColorLayer(layerNum, readLayer);
                 }
 
@@ -293,6 +329,16 @@ bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
                     fw.writeObject(*locator);
                 }
 
+                if (proxyLayer->getMinLevel()!=0)
+                {
+                    fw.indent()<<"MinLevel "<<proxyLayer->getMinLevel()<<std::endl;
+                } 
+
+                if (proxyLayer->getMaxLevel()!=MAXIMUM_NUMBER_OF_LEVELS)
+                {
+                    fw.indent()<<"MaxLevel "<<proxyLayer->getMaxLevel()<<std::endl;
+                } 
+
                 fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
             }
         }
@@ -330,6 +376,16 @@ bool Terrain_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
                 {
                     fw.writeObject(*locator);
                 }
+
+                if (proxyLayer->getMinLevel()!=0)
+                {
+                    fw.indent()<<"MinLevel "<<proxyLayer->getMinLevel()<<std::endl;
+                } 
+
+                if (proxyLayer->getMaxLevel()!=MAXIMUM_NUMBER_OF_LEVELS)
+                {
+                    fw.indent()<<"MaxLevel "<<proxyLayer->getMaxLevel()<<std::endl;
+                } 
 
                 if (!proxyLayer->getFileName().empty()) fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
             }

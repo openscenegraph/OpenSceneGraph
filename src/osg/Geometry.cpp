@@ -2630,7 +2630,7 @@ void Geometry::accept(PrimitiveIndexFunctor& functor) const
     return;
 }
 
-unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
+static unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
 {
 
     unsigned int totalNumberOfPrimitives = 0;

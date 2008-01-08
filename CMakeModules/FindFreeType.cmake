@@ -25,6 +25,7 @@
 # I'm going to attempt to cut out the middleman and hope 
 # everything still works.
 FIND_PATH(FREETYPE_INCLUDE_DIR_ft2build ft2build.h 
+  PATHS
   $ENV{FREETYPE_DIR}
   NO_DEFAULT_PATH
   PATH_SUFFIXES include    

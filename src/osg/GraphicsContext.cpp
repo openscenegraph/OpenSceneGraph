@@ -35,32 +35,44 @@
 using namespace osg;
 
 /////////////////////////////////////////////////////////////////////////////
-//
-//  GraphicsContext static method implementations
-//
 
-static ref_ptr<GraphicsContext::WindowingSystemInterface> s_WindowingSystemInterface;
+
+// Use a static reference pointer to hold the window system interface.
+// Wrap this within a function, in order to control the order in which
+// the static pointer's constructor is executed. 
+
+static ref_ptr<GraphicsContext::WindowingSystemInterface> &windowingSystemInterfaceRef()
+{
+    static ref_ptr<GraphicsContext::WindowingSystemInterface> s_WindowingSystemInterface;
+    return s_WindowingSystemInterface;
+}
+
+
+//  GraphicsContext static method implementations
 
 void GraphicsContext::setWindowingSystemInterface(WindowingSystemInterface* callback)
 {
-    s_WindowingSystemInterface = callback;
-    osg::notify(osg::INFO)<<"GraphicsContext::setWindowingSystemInterface() "<<s_WindowingSystemInterface.get()<<"\t"<<&s_WindowingSystemInterface<<std::endl;
+    ref_ptr<GraphicsContext::WindowingSystemInterface> &wsref = windowingSystemInterfaceRef();
+    wsref = callback;
+    osg::notify(osg::INFO)<<"GraphicsContext::setWindowingSystemInterface() "<<wsref.get()<<"\t"<<&wsref<<std::endl;
 }
 
 GraphicsContext::WindowingSystemInterface* GraphicsContext::getWindowingSystemInterface()
 {
-    osg::notify(osg::INFO)<<"GraphicsContext::getWindowingSystemInterface() "<<s_WindowingSystemInterface.get()<<"\t"<<&s_WindowingSystemInterface<<std::endl;
-    return s_WindowingSystemInterface.get();
+    ref_ptr<GraphicsContext::WindowingSystemInterface> &wsref = windowingSystemInterfaceRef();
+    osg::notify(osg::INFO)<<"GraphicsContext::getWindowingSystemInterface() "<<wsref.get()<<"\t"<<&wsref<<std::endl;
+    return wsref.get();
 }
 
 GraphicsContext* GraphicsContext::createGraphicsContext(Traits* traits)
 {
-    if (s_WindowingSystemInterface.valid())
+    ref_ptr<GraphicsContext::WindowingSystemInterface> &wsref = windowingSystemInterfaceRef();
+    if ( wsref.valid())
     {
         // catch any undefined values.
         if (traits) traits->setUndefinedScreenDetailsToDefaultScreen();
         
-        return s_WindowingSystemInterface->createGraphicsContext(traits);
+        return wsref->createGraphicsContext(traits);
     }
     else
         return 0;    

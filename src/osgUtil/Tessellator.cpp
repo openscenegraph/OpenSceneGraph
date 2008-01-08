@@ -600,7 +600,7 @@ void Tessellator::reduceArray(osg::Array * cold, const unsigned int nnu)
     }
 }
 
-unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
+static unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
 {
 
     unsigned int totalNumberOfPrimitives = 0;

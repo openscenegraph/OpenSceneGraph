@@ -20,7 +20,7 @@ osgDB::RegisterDotOsgWrapperProxy ImageLayer_Proxy
 (
     new osgTerrain::ImageLayer,
     "ImageLayer",
-    "Object ImageLayer Layer",
+    "Object Layer ImageLayer",
     ImageLayer_readLocalData,
     ImageLayer_writeLocalData
 );

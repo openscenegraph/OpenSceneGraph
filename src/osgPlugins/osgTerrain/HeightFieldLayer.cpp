@@ -20,7 +20,7 @@ osgDB::RegisterDotOsgWrapperProxy HeightFieldLayer_Proxy
 (
     new osgTerrain::HeightFieldLayer,
     "HeightFieldLayer",
-    "Object HeightFieldLayer Layer",
+    "Object Layer HeightFieldLayer",
     HeightFieldLayer_readLocalData,
     HeightFieldLayer_writeLocalData
 );

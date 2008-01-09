@@ -229,8 +229,8 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     buffer._geometry = new osg::Geometry;
     if (buffer._geometry.valid()) buffer._geode->addDrawable(buffer._geometry.get());
     
-    unsigned int numRows = 100;
-    unsigned int numColumns = 100;
+    unsigned int numRows = 20;
+    unsigned int numColumns = 20;
     
     if (elevationLayer)
     {
@@ -597,10 +597,11 @@ void GeometryTechnique::applyTransparency()
     if (colorLayer)
     {
         osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(colorLayer);
-        if (imageLayer) {
+        if (imageLayer)
+        {
             osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
             if (tf) containsTransparency = tf->getImage()->isImageTranslucent();
-            else containsTransparency = imageLayer->getImage()->isImageTranslucent();
+            else containsTransparency = imageLayer->getImage() ? imageLayer->getImage()->isImageTranslucent() : false;
         }  
     }
     

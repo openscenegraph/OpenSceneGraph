@@ -29,8 +29,7 @@ class EllipsoidModel : public Object
 {
     public:
 
-   /** WGS_84 is a common representation of the earth's spheroid
-     */
+        /** WGS_84 is a common representation of the earth's spheroid */
         EllipsoidModel(double radiusEquator = WGS_84_RADIUS_EQUATOR,
                        double radiusPolar = WGS_84_RADIUS_POLAR):
             _radiusEquator(radiusEquator),

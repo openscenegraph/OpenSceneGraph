@@ -339,7 +339,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         // Is texture compiled for all active contexts?
         inline bool isCompiled(osg::Texture* texture) const
         {
-            for (ActiveGraphicsContexts::iterator iter=_activeGraphicsContexts.begin();
+            for (ActiveGraphicsContexts::const_iterator iter=_activeGraphicsContexts.begin();
                    iter!=_activeGraphicsContexts.end(); ++iter )
             {
                 if ( texture->getTextureObject(*iter) == NULL ) return false;
@@ -397,7 +397,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         {
             if (drawable->getUseDisplayList())
             {
-                for (ActiveGraphicsContexts::iterator iter=_activeGraphicsContexts.begin();
+                for (ActiveGraphicsContexts::const_iterator iter=_activeGraphicsContexts.begin();
                         iter!=_activeGraphicsContexts.end(); ++iter )
                 {
                     if ( drawable->getDisplayList(*iter) == 0 ) return false;

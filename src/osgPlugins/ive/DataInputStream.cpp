@@ -89,6 +89,8 @@
 
 #include "Text.h"
 
+#include "Terrain.h"
+
 #include <osg/Endian>
 #include <osg/Notify>
 #include <osg/io_utils>
@@ -1450,6 +1452,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVEMULTITEXTURECONTROL){
         node = new osgFX::MultiTextureControl();
         ((ive::MultiTextureControl*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVETERRAIN){
+        node = new osgTerrain::Terrain();
+        ((ive::Terrain*)(node))->read(this);
     }
     else{
         throw Exception("Unknown node identification in DataInputStream::readNode()");

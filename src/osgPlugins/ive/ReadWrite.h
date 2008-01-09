@@ -120,6 +120,17 @@ namespace ive {
 #define IVEVISIBILITYGROUP              0x00100009
 #define IVEDIRECTIONALSECTOR            0x0010000A
 
+// osgTerrain classes
+#define IVETERRAIN                      0x00200001
+#define IVELOCATOR                      0x00200002
+#define IVELAYER                        0x00200003
+#define IVEIMAGELAYER                   0x00200004
+#define IVEHEIGHTFIELDLAYER             0x00200005
+#define IVECOMPOSITELAYER               0x00200006
+#define IVEPROXYLAYER                   0x00200007
+#define IVETERRAINTECHNIQUE             0x00200008
+#define IVEGEOMETRYTECHNIQUE            0x00200009
+
 // osgFX classes
 #define IVEMULTITEXTURECONTROL          0x01000001
 

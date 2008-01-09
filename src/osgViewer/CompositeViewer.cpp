@@ -908,6 +908,10 @@ void CompositeViewer::updateTraversal()
     
     double beginUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
+    _updateVisitor->reset();
+    _updateVisitor->setFrameStamp(getFrameStamp());
+    _updateVisitor->setTraversalNumber(getFrameStamp()->getFrameNumber());
+
     Scenes scenes;
     getScenes(scenes);
     for(Scenes::iterator sitr = scenes.begin();

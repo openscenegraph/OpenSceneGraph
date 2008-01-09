@@ -32,19 +32,12 @@ void ImageLayer::write(DataOutputStream* out)
         throw Exception("ImageLayer::write(): Could not cast this osgLayer::ImageLayer to an osgTerrain::Layer.");
 
 
-    if (getFileName().empty() && getImage())
-    {
-        // using inline image
-        out->writeBool(true);  
-        out->writeChar(out->getIncludeImageMode());
-        out->writeImage(out->getIncludeImageMode(),getImage());
-    }
-    else
-    {
-        // using external image file
-        out->writeBool(false);        
-        out->writeString(getFileName());
-    }
+    IncludeImageMode imMode = out->getIncludeImageMode();
+
+    if (getFileName().empty() && imMode==IMAGE_REFERENCE_FILE) imMode = IMAGE_INCLUDE_DATA;
+
+    out->writeChar(imMode);
+    out->writeImage(imMode,getImage());
 
 }
 
@@ -66,21 +59,8 @@ void ImageLayer::read(DataInputStream* in)
         throw Exception("ImageLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
 
 
-    bool useInlineImage = in->readBool();
-    
-    if (useInlineImage)
-    {
-        // Should we read image data from stream
-        IncludeImageMode includeImg = (IncludeImageMode)in->readChar();
-
-        setImage(in->readImage(includeImg));
-    }
-    else
-    {
-        std::string filename = in->readString();
-        setFileName(filename);
-        
-        setImage(osgDB::readImageFile(filename,in->getOptions()));
-    }
+    // Should we read image data from stream
+    IncludeImageMode includeImg = (IncludeImageMode)in->readChar();
+    setImage(in->readImage(includeImg));
 
 }

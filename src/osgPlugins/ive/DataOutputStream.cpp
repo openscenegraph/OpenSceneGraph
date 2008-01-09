@@ -90,6 +90,8 @@
 
 #include "Text.h"
 
+#include "Terrain.h"
+
 #include <osg/Notify>
 #include <osg/io_utils>
 #include <osgDB/FileUtils>
@@ -978,7 +980,7 @@ void DataOutputStream::writeNode(const osg::Node* node)
     else
     {
         // id doesn't exist so create a new ID and
-        // register the stateset.
+        // register the node.
 
         int id = _nodeMap.size();
         _nodeMap[node] = id;
@@ -1053,6 +1055,9 @@ void DataOutputStream::writeNode(const osg::Node* node)
         }
         else if(dynamic_cast<const osgFX::MultiTextureControl*>(node)){
             ((ive::MultiTextureControl*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osgTerrain::Terrain*>(node)){
+            ((ive::Terrain*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::Group*>(node)){
             ((ive::Group*)(node))->write(this);

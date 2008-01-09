@@ -2,198 +2,210 @@
 
 
 SET(TARGET_SRC
-AlphaFunc.cpp
-AnimationPath.cpp
-AnimationPathCallback.cpp
-AutoTransform.cpp
-AzimElevationSector.cpp
-AzimSector.cpp
-Billboard.cpp
-BlendColor.cpp
-BlendFunc.cpp
-BlinkSequence.cpp
-Camera.cpp
-CameraView.cpp
-ClipNode.cpp
-ClipPlane.cpp
-ClusterCullingCallback.cpp
-ColorMask.cpp
-ConeSector.cpp
-ConvexPlanarOccluder.cpp
-ConvexPlanarPolygon.cpp
-CoordinateSystemNode.cpp
-CullFace.cpp
-DOFTransform.cpp
-DataInputStream.cpp
-DataOutputStream.cpp
-Depth.cpp
-DirectionalSector.cpp
-DrawArrayLengths.cpp
-DrawArrays.cpp
-DrawElementsUByte.cpp
-DrawElementsUInt.cpp
-DrawElementsUShort.cpp
-Drawable.cpp
-ElevationSector.cpp
-EllipsoidModel.cpp
-Exception.cpp
-FragmentProgram.cpp
-FrontFace.cpp
-Geode.cpp
-Geometry.cpp
-Group.cpp
-Image.cpp
-Impostor.cpp
-LOD.cpp
-Light.cpp
-LightModel.cpp
-LightPoint.cpp
-LightPointNode.cpp
-LightSource.cpp
-LineWidth.cpp
-Material.cpp
-MatrixTransform.cpp
-MultiSwitch.cpp
-MultiTextureControl.cpp
-Multisample.cpp
-Node.cpp
-Object.cpp
-OccluderNode.cpp
-OcclusionQueryNode.cpp
-PagedLOD.cpp
-Point.cpp
-PointSprite.cpp
-PolygonMode.cpp
-PolygonOffset.cpp
-PositionAttitudeTransform.cpp
-PrimitiveSet.cpp
-Program.cpp
-ProxyNode.cpp
-ReaderWriterIVE.cpp
-Scissor.cpp
-Sequence.cpp
-ShadeModel.cpp
-Shader.cpp
-Shape.cpp
-ShapeDrawable.cpp
-StateSet.cpp
-Stencil.cpp
-Switch.cpp
-TexEnv.cpp
-TexEnvCombine.cpp
-TexGen.cpp
-TexGenNode.cpp
-TexMat.cpp
-Text.cpp
-Texture.cpp
-Texture1D.cpp
-Texture2D.cpp
-Texture3D.cpp
-TextureCubeMap.cpp
-TextureRectangle.cpp
-Transform.cpp
-Uniform.cpp
-VertexProgram.cpp
-Viewport.cpp
-VisibilityGroup.cpp
+    AlphaFunc.cpp
+    AnimationPath.cpp
+    AnimationPathCallback.cpp
+    AutoTransform.cpp
+    AzimElevationSector.cpp
+    AzimSector.cpp
+    Billboard.cpp
+    BlendColor.cpp
+    BlendFunc.cpp
+    BlinkSequence.cpp
+    Camera.cpp
+    CameraView.cpp
+    ClipNode.cpp
+    ClipPlane.cpp
+    ClusterCullingCallback.cpp
+    ColorMask.cpp
+    ConeSector.cpp
+    ConvexPlanarOccluder.cpp
+    ConvexPlanarPolygon.cpp
+    CoordinateSystemNode.cpp
+    CullFace.cpp
+    DOFTransform.cpp
+    DataInputStream.cpp
+    DataOutputStream.cpp
+    Depth.cpp
+    DirectionalSector.cpp
+    DrawArrayLengths.cpp
+    DrawArrays.cpp
+    DrawElementsUByte.cpp
+    DrawElementsUInt.cpp
+    DrawElementsUShort.cpp
+    Drawable.cpp
+    ElevationSector.cpp
+    EllipsoidModel.cpp
+    Exception.cpp
+    FragmentProgram.cpp
+    FrontFace.cpp
+    Geode.cpp
+    Geometry.cpp
+    Group.cpp
+    Image.cpp
+    Impostor.cpp
+    LOD.cpp
+    Light.cpp
+    LightModel.cpp
+    LightPoint.cpp
+    LightPointNode.cpp
+    LightSource.cpp
+    LineWidth.cpp
+    Material.cpp
+    MatrixTransform.cpp
+    MultiSwitch.cpp
+    MultiTextureControl.cpp
+    Multisample.cpp
+    Node.cpp
+    Object.cpp
+    OccluderNode.cpp
+    OcclusionQueryNode.cpp
+    PagedLOD.cpp
+    Point.cpp
+    PointSprite.cpp
+    PolygonMode.cpp
+    PolygonOffset.cpp
+    PositionAttitudeTransform.cpp
+    PrimitiveSet.cpp
+    Program.cpp
+    ProxyNode.cpp
+    ReaderWriterIVE.cpp
+    Scissor.cpp
+    Sequence.cpp
+    ShadeModel.cpp
+    Shader.cpp
+    Shape.cpp
+    ShapeDrawable.cpp
+    StateSet.cpp
+    Stencil.cpp
+    Switch.cpp
+    TexEnv.cpp
+    TexEnvCombine.cpp
+    TexGen.cpp
+    TexGenNode.cpp
+    TexMat.cpp
+    Text.cpp
+    Texture.cpp
+    Texture1D.cpp
+    Texture2D.cpp
+    Texture3D.cpp
+    TextureCubeMap.cpp
+    TextureRectangle.cpp
+    Terrain.cpp
+    Locator.cpp
+    Layer.cpp
+    HeightFieldLayer.cpp
+    ImageLayer.cpp
+    CompositeLayer.cpp
+    Transform.cpp
+    Uniform.cpp
+    VertexProgram.cpp
+    Viewport.cpp
+    VisibilityGroup.cpp
 )
 SET(TARGET_H
-AlphaFunc.h
-AnimationPath.h
-AnimationPathCallback.h
-AutoTransform.h
-AzimElevationSector.h
-AzimSector.h
-Billboard.h
-BlendColor.h
-BlendFunc.h
-BlinkSequence.h
-Camera.h
-CameraView.h
-ClipNode.h
-ClipPlane.h
-ClusterCullingCallback.h
-ColorMask.h
-ConeSector.h
-ConvexPlanarOccluder.h
-ConvexPlanarPolygon.h
-CoordinateSystemNode.h
-CullFace.h
-DOFTransform.h
-DataInputStream.h
-DataOutputStream.h
-DataTypeSize.h
-Depth.h
-DirectionalSector.h
-DrawArrayLengths.h
-DrawArrays.h
-DrawElementsUByte.h
-DrawElementsUInt.h
-DrawElementsUShort.h
-Drawable.h
-ElevationSector.h
-EllipsoidModel.h
-Exception.h
-FragmentProgram.h
-FrontFace.h
-Geode.h
-Geometry.h
-Group.h
-Image.h
-Impostor.h
-IveVersion.h
-LOD.h
-Light.h
-LightModel.h
-LightPoint.h
-LightPointNode.h
-LightSource.h
-LineWidth.h
-Material.h
-MatrixTransform.h
-MultiSwitch.h
-MultiTextureControl.h
-Node.h
-Object.h
-OccluderNode.h
-OcclusionQueryNode.h
-PagedLOD.h
-Point.h
-PointSprite.h
-PolygonMode.h
-PolygonOffset.h
-PositionAttitudeTransform.h
-PrimitiveSet.h
-Program.h
-ProxyNode.h
-ReadWrite.h
-Scissor.h
-Sequence.h
-ShadeModel.h
-Shader.h
-Shape.h
-ShapeDrawable.h
-StateSet.h
-Stencil.h
-Switch.h
-TexEnv.h
-TexEnvCombine.h
-TexGen.h
-TexGenNode.h
-TexMat.h
-Text.h
-Texture.h
-Texture1D.h
-Texture2D.h
-Texture3D.h
-TextureCubeMap.h
-TextureRectangle.h
-Transform.h
-Uniform.h
-VertexProgram.h
-Viewport.h
-VisibilityGroup.h
+    AlphaFunc.h
+    AnimationPath.h
+    AnimationPathCallback.h
+    AutoTransform.h
+    AzimElevationSector.h
+    AzimSector.h
+    Billboard.h
+    BlendColor.h
+    BlendFunc.h
+    BlinkSequence.h
+    Camera.h
+    CameraView.h
+    ClipNode.h
+    ClipPlane.h
+    ClusterCullingCallback.h
+    ColorMask.h
+    ConeSector.h
+    ConvexPlanarOccluder.h
+    ConvexPlanarPolygon.h
+    CoordinateSystemNode.h
+    CullFace.h
+    DOFTransform.h
+    DataInputStream.h
+    DataOutputStream.h
+    DataTypeSize.h
+    Depth.h
+    DirectionalSector.h
+    DrawArrayLengths.h
+    DrawArrays.h
+    DrawElementsUByte.h
+    DrawElementsUInt.h
+    DrawElementsUShort.h
+    Drawable.h
+    ElevationSector.h
+    EllipsoidModel.h
+    Exception.h
+    FragmentProgram.h
+    FrontFace.h
+    Geode.h
+    Geometry.h
+    Group.h
+    Image.h
+    Impostor.h
+    IveVersion.h
+    LOD.h
+    Light.h
+    LightModel.h
+    LightPoint.h
+    LightPointNode.h
+    LightSource.h
+    LineWidth.h
+    Material.h
+    MatrixTransform.h
+    MultiSwitch.h
+    MultiTextureControl.h
+    Node.h
+    Object.h
+    OccluderNode.h
+    OcclusionQueryNode.h
+    PagedLOD.h
+    Point.h
+    PointSprite.h
+    PolygonMode.h
+    PolygonOffset.h
+    PositionAttitudeTransform.h
+    PrimitiveSet.h
+    Program.h
+    ProxyNode.h
+    ReadWrite.h
+    Scissor.h
+    Sequence.h
+    ShadeModel.h
+    Shader.h
+    Shape.h
+    ShapeDrawable.h
+    StateSet.h
+    Stencil.h
+    Switch.h
+    TexEnv.h
+    TexEnvCombine.h
+    TexGen.h
+    TexGenNode.h
+    TexMat.h
+    Text.h
+    Texture.h
+    Texture1D.h
+    Texture2D.h
+    Texture3D.h
+    TextureCubeMap.h
+    TextureRectangle.h
+    Terrain.h
+    Transform.h
+    Locator.h
+    Layer.h
+    HeightFieldLayer.h
+    ImageLayer.h
+    CompositeLayer.h
+    Uniform.h
+    VertexProgram.h
+    Viewport.h
+    VisibilityGroup.h
 )
-SET(TARGET_ADDED_LIBRARIES osgSim osgFX osgText )
+SET(TARGET_ADDED_LIBRARIES osgSim osgFX osgText osgTerrain)
 #### end var setup  ###
 SETUP_PLUGIN(ive)

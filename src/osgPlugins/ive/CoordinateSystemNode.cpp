@@ -65,8 +65,8 @@ void CoordinateSystemNode::read(DataInputStream* in){
         // Read coord string
         setCoordinateSystem( in->readString());
 
-        bool readEllopsoidModel = in->readBool();
-        if (readEllopsoidModel)
+        bool readEllipsoidModel = in->readBool();
+        if (readEllipsoidModel)
         {
             osg::EllipsoidModel* em = new osg::EllipsoidModel();
             ((ive::EllipsoidModel*)(em))->read(in);

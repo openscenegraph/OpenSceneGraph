@@ -41,6 +41,9 @@ public:
 
     virtual osg::BoundingSphere computeBound() const;
 
+    virtual void releaseGLObjects( osg::State* state = 0 ) const;
+    
+    
     // When disabled, OQN doesn't perform occlusion queries, and simply
     //   renders its children.
     void setQueriesEnabled( bool enable=true );
@@ -78,6 +81,16 @@ public:
     bool getPassed( const osg::Camera* camera, float distanceToEyePoint );
     void traverseQuery( const osg::Camera* camera, osg::NodeVisitor& nv );
     void traverseDebug( osg::NodeVisitor& nv );
+
+
+    // Delete unused query IDs for this contextID.
+    static void flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime );
+
+    // discard all the cached query objects which need to be deleted
+    // in the OpenGL context related to contextID.
+    // Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
+    // this call is useful for when an OpenGL context has been destroyed.
+    static void discardDeletedQueryObjects( unsigned int contextID );
 
 protected:
     virtual ~OcclusionQueryNode();

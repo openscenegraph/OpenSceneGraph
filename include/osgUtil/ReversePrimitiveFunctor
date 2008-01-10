@@ -16,11 +16,12 @@
 
 #include <osg/PrimitiveSet>
 #include <osg/Notify>
+#include <osgUtil/Export>
 
 namespace osgUtil {
 
 
-class ReversePrimitiveFunctor : public osg::PrimitiveIndexFunctor
+class OSGUTIL_EXPORT ReversePrimitiveFunctor : public osg::PrimitiveIndexFunctor
 {
     public:
     

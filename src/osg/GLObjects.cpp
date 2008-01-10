@@ -19,6 +19,7 @@
 #include <osg/BufferObject>
 #include <osg/FrameBufferObject>
 #include <osg/Drawable>
+#include <osg/OcclusionQueryNode>
 
 void osg::flushDeletedGLObjects(unsigned int contextID, double currentTime, double& availableTime)
 {
@@ -32,6 +33,7 @@ void osg::flushDeletedGLObjects(unsigned int contextID, double currentTime, doub
     osg::Shader::flushDeletedGlShaders(contextID,currentTime,availableTime);
     osg::Texture::flushDeletedTextureObjects(contextID,currentTime,availableTime);
     osg::VertexProgram::flushDeletedVertexProgramObjects(contextID,currentTime,availableTime);
+    osg::OcclusionQueryNode::flushDeletedQueryObjects(contextID,currentTime,availableTime);
 }
 
 void osg::flushAllDeletedGLObjects(unsigned int contextID)
@@ -48,6 +50,7 @@ void osg::flushAllDeletedGLObjects(unsigned int contextID)
     osg::Shader::flushDeletedGlShaders(contextID,currentTime,availableTime);
     osg::Texture::flushAllDeletedTextureObjects(contextID);
     osg::VertexProgram::flushDeletedVertexProgramObjects(contextID,currentTime,availableTime);
+    osg::OcclusionQueryNode::flushDeletedQueryObjects(contextID,currentTime,availableTime);
 }
 
 void osg::discardAllDeletedGLObjects(unsigned int contextID)
@@ -62,4 +65,5 @@ void osg::discardAllDeletedGLObjects(unsigned int contextID)
     osg::Shader::discardDeletedGlShaders(contextID);
     osg::Texture::discardAllDeletedTextureObjects(contextID);
     osg::VertexProgram::discardDeletedVertexProgramObjects(contextID);
+    osg::OcclusionQueryNode::discardDeletedQueryObjects(contextID);
 }

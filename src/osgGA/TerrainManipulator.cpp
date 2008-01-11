@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -22,7 +22,7 @@ using namespace osgGA;
 
 TerrainManipulator::TerrainManipulator()
 {
-    _rotationMode =ELEVATION_AZIM; 
+    _rotationMode =ELEVATION_AZIM;
     _distance = 1.0;
 
     _thrown = false;
@@ -45,7 +45,7 @@ void TerrainManipulator::setRotationMode(RotationMode mode)
 void TerrainManipulator::setNode(osg::Node* node)
 {
     _node = node;
-    
+
     if (_node.get())
     {
         const osg::BoundingSphere& boundingSphere=_node->getBound();
@@ -53,10 +53,10 @@ void TerrainManipulator::setNode(osg::Node* node)
         _minimumDistance = osg::clampBetween(
             boundingSphere._radius * minimumDistanceScale,
             0.00001f,1.0f);
-            
+
         osg::notify(osg::INFO)<<"Setting terrain manipulator _minimumDistance to "<<_minimumDistance<<std::endl;
     }
-    if (getAutoComputeHomePosition()) computeHomePosition();    
+    if (getAutoComputeHomePosition()) computeHomePosition();
 }
 
 
@@ -96,6 +96,23 @@ void TerrainManipulator::getUsage(osg::ApplicationUsage& usage) const
 
 bool TerrainManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
 {
+
+    switch(ea.getEventType())
+    {
+        case(GUIEventAdapter::FRAME):
+            if (_thrown)
+            {
+                if (calcMovement()) us.requestRedraw();
+            }
+            return false;
+        default:
+            break;
+    }
+
+
+    if (ea.getHandled()) return false;
+
+
     switch(ea.getEventType())
     {
         case(GUIEventAdapter::PUSH):
@@ -168,12 +185,6 @@ bool TerrainManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
                 return true;
             }
             return false;
-        case(GUIEventAdapter::FRAME):
-            if (_thrown)
-            {
-                if (calcMovement()) us.requestRedraw();
-            }
-            return false;
         default:
             return false;
     }
@@ -213,7 +224,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 
     osg::Vec3 lookVector(- matrix(2,0),-matrix(2,1),-matrix(2,2));
     osg::Vec3 eye(matrix(3,0),matrix(3,1),matrix(3,2));
-    
+
     osg::notify(INFO)<<"eye point "<<eye<<std::endl;
     osg::notify(INFO)<<"lookVector "<<lookVector<<std::endl;
 
@@ -256,7 +267,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
             _center = ip;
 
             _distance = (eye-ip).length();
-            
+
             osg::Matrix rotation_matrix = osg::Matrixd::translate(0.0,0.0,-_distance)*
                                           matrix*
                                           osg::Matrixd::translate(-_center);
@@ -270,17 +281,17 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
     if (!hitFound)
     {
         CoordinateFrame eyePointCoordFrame = getCoordinateFrame( eye );
-        
+
         // clear the intersect visitor ready for a new test
-        iv.reset(); 
-               
+        iv.reset();
+
         osg::ref_ptr<osg::LineSegment> segDowVector = new osg::LineSegment;
         segLookVector->set(eye+getUpVector(eyePointCoordFrame)*distance,
                            eye-getUpVector(eyePointCoordFrame)*distance);
         iv.addLineSegment(segLookVector.get());
 
         _node->accept(iv);
-        
+
         hitFound = false;
         if (iv.hits())
         {
@@ -299,7 +310,7 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
                 hitFound = true;
             }
         }
-    }    
+    }
 
     CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
     _previousUp = getUpVector(coordinateFrame);
@@ -325,7 +336,7 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
     osg::Vec3 lv(center-eye);
     _distance = lv.length();
     _center = center;
-    
+
     osg::notify(osg::INFO) << "In compute"<< std::endl;
 
     if (_node.valid())
@@ -425,28 +436,28 @@ bool TerrainManipulator::calcMovement()
             osg::Vec3d lookVector = -getUpVector(rotation_matrix);
             osg::Vec3d sideVector = getSideVector(rotation_matrix);
             osg::Vec3d upVector = getFrontVector(rotation_matrix);
-            
+
             CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
             osg::Vec3d localUp = getUpVector(coordinateFrame);
             //osg::Vec3d localUp = _previousUp;
-            
+
 
             osg::Vec3d forwardVector = localUp^sideVector;
             sideVector = forwardVector^localUp;
 
             forwardVector.normalize();
             sideVector.normalize();
-            
+
             osg::Quat rotate_elevation;
             rotate_elevation.makeRotate(dy,sideVector);
 
             osg::Quat rotate_azim;
             rotate_azim.makeRotate(-dx,localUp);
-            
+
             _rotation = _rotation * rotate_elevation * rotate_azim;
-            
+
         }
-        
+
         return true;
 
     }
@@ -481,7 +492,7 @@ bool TerrainManipulator::calcMovement()
         _center += dv;
 
         // need to recompute the intersection point along the look vector.
-        
+
         if (_node.valid())
         {
 
@@ -543,7 +554,7 @@ bool TerrainManipulator::calcMovement()
             {
                 osg::notify(osg::INFO)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
             }
-        }        
+        }
 
         return true;
     }
@@ -563,7 +574,7 @@ bool TerrainManipulator::calcMovement()
         {
             _distance = _minimumDistance;
         }
-        
+
         return true;
 
     }
@@ -593,7 +604,7 @@ void TerrainManipulator::clampOrientation()
 
             sideVector = upVector^localUp;
             sideVector.normalize();
-        
+
         }
 
         Vec3d newUpVector = sideVector^lookVector;
@@ -654,7 +665,7 @@ void TerrainManipulator::trackball(osg::Vec3& axis,double & angle, double  p1x, 
 
 // Robert,
 //
-// This was the quick 'n' dirty  fix to get the trackball doing the right 
+// This was the quick 'n' dirty  fix to get the trackball doing the right
 // thing after fixing the Quat rotations to be right-handed.  You may want
 // to do something more elegant.
 //   axis = p1^p2;

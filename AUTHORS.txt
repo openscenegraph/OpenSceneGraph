@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.3.1
+OpenSceneGraph Library 2.3.2
 
-296 Contributors:
+297 Contributors:
 
 Firstname Surname
 -----------------
@@ -28,19 +28,19 @@ Pavel Moloshtan
 Tom Jolley
 Norman Vine
 Roger James
+Jean-Sebastien Guay
 Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
-Jean-Sebastien Guay
 Andy Skinner
 Olaf Flebbe
 Gideon May
 Don Tidrow
+Colin McDonald
 Romano José Magacho da Silva
 Michael Gronager
 Daniel Sjölie
-Colin McDonald
 Chris Hanson
 Per Fahlberg
 Jeremy Moles
@@ -57,6 +57,7 @@ Rune Schmidt Jensen
 Mike Connell
 Jason Beverage
 Ben Discoe
+Adrian Egli
 Wojciech Lewandowski
 Sherman Wilcox
 Sasa Bistrovic
@@ -74,7 +75,6 @@ Gordon Tomlinson
 Brad Colbert
 Art Tevs
 Andreas Ekstrand
-Adrian Egli
 Vivek Rajan
 Stephane Simon
 Sean Spicer
@@ -159,6 +159,7 @@ John Aughey
 Johan Nouvel
 Igor Kravtchenko
 Gustavo Wagner
+Glenn Waldron
 Gerrick Bivins
 George Tarantilis
 Garret Potts
@@ -251,7 +252,6 @@ Henrique Bucher
 Hautio Jari
 Guillaume Millet
 Graeme Harkness
-Glenn Waldrom
 Gino van den Bergen
 Gian Lorenzetto
 George Papagiannakis
@@ -274,6 +274,7 @@ Doug McCorkle
 Dean Iverson
 David Jung
 David Gurhrie
+Daniel Stien
 Dan Minor
 Cyril Brulebois
 Clay Fowler

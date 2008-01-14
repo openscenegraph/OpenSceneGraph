@@ -23,6 +23,10 @@
 #define GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS 0x8B4D
 #endif
 
+#ifndef GL_MAX_TEXTURE_UNITS
+#define GL_MAX_TEXTURE_UNITS 0x84E2
+#endif
+
 using namespace std;
 using namespace osg;
 
@@ -742,17 +746,24 @@ void State::initializeExtensionProcs()
     _glDisableVertexAttribArray =  (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
     _glBindBuffer = (BindBufferProc) osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB");
 
-    _glMaxTextureUnits = 1;
-    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
-
-    if (osg::getGLVersionNumber() < 2.0)
+    if ( osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_shader") )
     {
-        _glMaxTextureCoords = _glMaxTextureUnits;
+        glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,&_glMaxTextureUnits);
+        glGetIntegerv(GL_MAX_TEXTURE_COORDS,&_glMaxTextureCoords);
+    }
+    else if ( osg::getGLVersionNumber() >= 1.3 ||
+                                 osg::isGLExtensionSupported(_contextID,"GL_ARB_multitexture") ||
+                                 osg::isGLExtensionSupported(_contextID,"GL_EXT_multitexture") )
+    {
+        GLint maxTextureUnits;
+        glGetIntegerv(GL_MAX_TEXTURE_UNITS,&maxTextureUnits);
+        _glMaxTextureUnits = maxTextureUnits;
+        _glMaxTextureCoords = maxTextureUnits;
     }
     else
     {
-        glGetIntegerv(GL_MAX_TEXTURE_COORDS,&_glMaxTextureCoords);
-        _glMaxTextureUnits = maximum(_glMaxTextureCoords,_glMaxTextureUnits);
+        _glMaxTextureUnits = 1;
+        _glMaxTextureCoords = 1;
     }
 
     _extensionProcsInitialized = true;
@@ -782,7 +793,7 @@ bool State::setActiveTextureUnit( unsigned int unit )
 {
     if (unit!=_currentActiveTextureUnit)
     {
-        if (_glActiveTexture && unit < (unsigned int)_glMaxTextureUnits)
+        if (_glActiveTexture && unit < (unsigned int)(maximum(_glMaxTextureCoords,_glMaxTextureUnits)) )
         {
             _glActiveTexture(GL_TEXTURE0+unit);
             _currentActiveTextureUnit = unit;

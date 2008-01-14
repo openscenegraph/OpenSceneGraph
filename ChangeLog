@@ -1,3 +1,193 @@
+2008-01-14 11:07 +0000 [r7794]  robert:
+
+	* Updated wrappers
+
+2008-01-14 10:14 +0000 [r7793]  robert:
+
+	* From Daniel Stien, "When removing a child from a osg::Group,
+	  childRemoved is called after the node has already been erased
+	  from the node list, causing childRemoved to be performed on the
+	  consecutive node. Lines 180 and 182 are swapped in the attached
+	  Group.cpp. "
+
+2008-01-11 12:16 +0000 [r7792]  robert:
+
+	* From Adrian Egli, made the getHandled() functionality consistent
+	  with the rest of the osgGA::MatrixManipulators
+
+2008-01-10 11:08 +0000 [r7791]  robert:
+
+	* From Jean-Sebastien Guay, added OSGUTIL_EXPORT for Windows build
+
+2008-01-10 11:02 +0000 [r7790]  robert:
+
+	* From Paul Martz, "his pretty much wraps up the OcclusionQueryNode
+	  work. I might make some additional modifications if testing
+	  reveals any issues, otherwise it's ready for 2.4."
+
+2008-01-09 21:17 +0000 [r7789]  robert:
+
+	* Indentation/bracket fixes and change of default size
+
+2008-01-09 21:00 +0000 [r7788]  robert:
+
+	* Simplified the image reading/writing
+
+2008-01-09 16:56 +0000 [r7787]  robert:
+
+	* Adding missing files
+
+2008-01-09 16:35 +0000 [r7786]  robert:
+
+	* Added support for reading and writing osgTerrain objects
+
+2008-01-09 14:22 +0000 [r7785]  robert:
+
+	* Added setting of UpdateVisitor's FrameStamp and TraversalNumber
+	  in updateTraversal()
+
+2008-01-09 11:42 +0000 [r7784]  robert:
+
+	* From Mike Weiblen, build fix for VS8.
+
+2008-01-08 23:20 +0000 [r7783]  ewing:
+
+	* Updates to resync Xcode project with current state of repository.
+	  Added several missing plugins (e.g. osgdb_osgShadow,
+	  osgdb_osgViewer, osgdb_Terrain). Added dependency information
+	  hoping that the Xcode 3 parallel target building will work now.
+
+2008-01-08 18:13 +0000 [r7782]  robert:
+
+	* From Colin McDonald, build fixes for Solaris.
+
+2008-01-08 17:18 +0000 [r7781]  robert:
+
+	* From Jean-Sebastien Guay, Warning fixes
+
+2008-01-08 16:09 +0000 [r7780]  robert:
+
+	* Added support for reading and writing the Terrain's Locator
+
+2008-01-08 15:20 +0000 [r7779]  robert:
+
+	* Added writing and reading of inlined HeightField
+
+2008-01-08 14:38 +0000 [r7777-7778]  robert:
+
+	* Removed non standard and redundent /*EOF*/
+
+	* Updated wrappers
+
+2008-01-08 14:29 +0000 [r7776]  robert:
+
+	* From Mike Weiblen, support for geometry shaders, and
+	  osgeometryshaders example to demonstrate them.
+
+2008-01-08 14:22 +0000 [r7775]  robert:
+
+	* Fixed warning
+
+2008-01-08 13:56 +0000 [r7774]  robert:
+
+	* Added support for MinLevel and MaxLevel for ProxyLayer
+
+2008-01-08 13:24 +0000 [r7772-7773]  robert:
+
+	* Introduced new osg::discardDeletedOpenGLObjects() methods, and
+	  usage of it in GrpahicsContext::close() to handle cases where
+	  deletingOpenGLObjects is no possible, such as when
+	  GraphicsWindowEmbedded is used.
+
+	* Removed debug info
+
+2008-01-08 13:10 +0000 [r7771]  robert:
+
+	* Reorganised the .osg support for osgTerrain NodeKit to make it
+	  more extensible
+
+2008-01-07 09:47 +0000 [r7770]  robert:
+
+	* Added OSGUTIL_EXPORTs
+
+2008-01-06 17:53 +0000 [r7769]  robert:
+
+	* Added missing #include <osgUtil/Export>
+
+2008-01-06 10:52 +0000 [r7768]  robert:
+
+	* Added exports for Windows build
+
+2008-01-04 20:03 +0000 [r7767]  robert:
+
+	* Fixed date
+
+2008-01-04 20:00 +0000 [r7766]  robert:
+
+	* From Eric Wing, "Attached are a few Find modules with updates.
+	  Among other things, they contain better support for environmental
+	  variables to pre-empt the autodection default search path order
+	  which is very helpful for people who do automated builds. (I
+	  recommend that the remaining modules consider adding the same
+	  system to make things consistent and easier for those people that
+	  want to do the automated builds.) The CMAKE_PREFIX_PATH has also
+	  been added to help people. I don't recommend adding this to the
+	  other modules because it looks like CMake agreed with my idea and
+	  will be adding the support in 2.6. So when that ships, people
+	  will get it for free. (In the meantime, my modules that do have
+	  it, it can be used.) Finally, I've submitted all of these modules
+	  to official CMake plus more so they will be in the next version
+	  of CMake. It looks like I may need to sort some compatibility
+	  issues out with the KDE people who seem to have conflicting
+	  modules, but this is unrelated to the updates submitted here as
+	  OSG already has these conflicts. I figured I would just sync OSG
+	  up with my current/best versions. Also of note, I added the large
+	  batch of Findosg*.cmake modules to CMake so people building
+	  against OpenSceneGraph can use these without writing their own. I
+	  wasn't sure if I should submit them here or not since they are
+	  for building against OSG and not for building OSG itself. So they
+	  are not included. "
+
+2008-01-04 15:33 +0000 [r7764-7765]  robert:
+
+	* From Glenn Waldron, "I found that
+	  osg::Sequence::setDuration(speed,reps) was not changing the
+	  animation speed factor as expected. The one-line fix (line 312)
+	  is attached"
+
+	* From Paul Martz, "Correction to size of reserved filed in .attr
+	  file, Spec says "149*4" bytes, not "149""
+
+2008-01-04 15:15 +0000 [r7763]  robert:
+
+	* Updated wrappers
+
+2008-01-04 13:57 +0000 [r7762]  robert:
+
+	* Added catch for handling cases where undefined settings for
+	  dislayNum and screenNum are used
+
+2008-01-04 12:03 +0000 [r7759-7760]  robert:
+
+	* Updated data on readme
+
+	* Updated AUTHORS file for 2.3.1 release
+
+2008-01-04 11:45 +0000 [r7757-7758]  robert:
+
+	* Updated version number for 2.3.1 release
+
+	* Updated logs for 2.3.1 releae
+
+2008-01-04 11:26 +0000 [r7756]  robert:
+
+	* From Brede Johansen, support for contiuation records.
+
+2008-01-04 11:14 +0000 [r7755]  robert:
+
+	* From Paul Martz, completion of .ive and .osg support for
+	  OcclusionQueryNode
+
 2007-12-26 22:00 +0000 [r7754]  robert:
 
 	* From Paul Martz, "The osgocclusionquery example contained some

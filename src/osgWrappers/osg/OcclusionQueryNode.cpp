@@ -16,6 +16,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/OcclusionQueryNode>
+#include <osg/State>
 #include <osg/StateSet>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -71,6 +72,11 @@ BEGIN_OBJECT_REFLECTOR(osg::OcclusionQueryNode)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
 	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	                      Properties::VIRTUAL,
+	                      __void__releaseGLObjects__osg_State_P1,
+	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_MethodWithDefaults1(void, setQueriesEnabled, IN, bool, enable, true,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setQueriesEnabled__bool,
@@ -141,6 +147,14 @@ BEGIN_OBJECT_REFLECTOR(osg::OcclusionQueryNode)
 	          __void__traverseDebug__osg_NodeVisitor_R1,
 	          "",
 	          "");
+	I_StaticMethod3(void, flushDeletedQueryObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
+	                __void__flushDeletedQueryObjects__unsigned_int__double__double_R1_S,
+	                "",
+	                "");
+	I_StaticMethod1(void, discardDeletedQueryObjects, IN, unsigned int, contextID,
+	                __void__discardDeletedQueryObjects__unsigned_int_S,
+	                "",
+	                "");
 	I_ProtectedMethod0(void, createSupportNodes,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

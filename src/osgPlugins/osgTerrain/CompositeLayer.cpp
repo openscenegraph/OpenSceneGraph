@@ -75,21 +75,14 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
         }
         else if (fr.matchSequence("ProxyLayer %s") || fr.matchSequence("ProxyLayer %w"))
         {
-            osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
-            osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
-            if (proxyLayer)
-            {
-                if (locator.valid())
-                {
-                    proxyLayer->setLocator(locator.get());
-                    locator = 0;
-                }
+            osgTerrain::ProxyLayer* proxyLayer = new osgTerrain::ProxyLayer;
+            proxyLayer->setFileName(fr[1].getStr());
 
-                if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
-                if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
+            if (locator.valid()) proxyLayer->setLocator(locator.get());
+            if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
+            if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
 
-                layer.addLayer(proxyLayer);
-            }                
+            layer.addLayer(proxyLayer);
 
             fr += 2;
 

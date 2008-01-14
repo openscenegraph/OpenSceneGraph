@@ -151,16 +151,14 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
             if (fr.matchSequence("ProxyLayer %s") || fr.matchSequence("ProxyLayer %w") )
             {
-                osg::ref_ptr<osg::Object> image = osgDB::readObjectFile(std::string(fr[1].getStr())+".gdal");
-                osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(image.get());
-                if (proxyLayer)
-                {
-                    if (locator) proxyLayer->setLocator(locator);
-                    if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
-                    if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
+                osgTerrain::ProxyLayer* proxyLayer = new osgTerrain::ProxyLayer;
+                proxyLayer->setFileName(fr[1].getStr());
 
-                    terrain.setElevationLayer(proxyLayer);
-                }
+                if (locator) proxyLayer->setLocator(locator);
+                if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
+                if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
+
+                terrain.setElevationLayer(proxyLayer);
             
                 fr += 2;
 

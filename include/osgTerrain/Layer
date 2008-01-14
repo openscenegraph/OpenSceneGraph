@@ -306,35 +306,40 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
         ProxyLayer(const ProxyLayer& proxyLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
         META_Object(osgTerrain, ProxyLayer);
+        
+        /** Set the implementation layer that does the actual work.*/
+        void setImplementation(Layer* layer) { _implementation = layer; }
+        
+        /** Get the implementation layer that does the actual work.*/
+        Layer* getImplementation() { return _implementation.get(); }
 
-        /** Return if this ProxyLayer is attached to valid file handle.*/
-        virtual bool isOpen() const { return false; }
+        /** Get the const implementation layer that does the actual work.*/
+        const Layer* getImplementation() const { return _implementation.get(); }
 
-        /** Open a file.*/
-        void openFile(const std::string& fileName)
-        {
-            if (_filename!=fileName)
-            {
-                if (isOpen()) close();
-                
-                _filename = fileName;
-            }
+        virtual void setFileName(const std::string& filename);
+        virtual const std::string& getFileName() const { return _filename; }
 
-            if (!isOpen()) open();
-        }
+        virtual unsigned int getNumColumns() const;
+        virtual unsigned int getNumRows() const;
+        
+        virtual bool transform(float offset, float scale);
 
-        /** Open the any associated file handle.*/
-        virtual void open() {}
+        virtual bool getValue(unsigned int i, unsigned int j, float& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec2& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec3& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec4& value) const;
 
-        /** Open the any associated file handle.*/
-        virtual void close() {}
+        virtual void dirty();
+        virtual void setModifiedCount(unsigned int value);
+        virtual unsigned int getModifiedCount() const;
 
-        /** Extract an ImageLayer from the ProxyLayer.*/
-        virtual ImageLayer* extractImageLayer(unsigned int /*sourceMinX*/, unsigned int /*sourceMinY*/, unsigned int /*sourceMaxX*/, unsigned int /*sourceMaxY*/, unsigned int /*targetWidth*/=0, unsigned int /*targetHeight*/=0) { return 0; }
+        virtual osg::BoundingSphere computeBound() const;
 
     protected:
 
         virtual ~ProxyLayer();
+        
+        osg::ref_ptr<Layer> _implementation;
 
 
 };

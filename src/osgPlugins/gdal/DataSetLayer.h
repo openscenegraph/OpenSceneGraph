@@ -21,7 +21,7 @@
 
 namespace GDALPlugin {
 
-class DataSetLayer : public osgTerrain::ProxyLayer
+class DataSetLayer : public osgTerrain::Layer
 {
     public:
 

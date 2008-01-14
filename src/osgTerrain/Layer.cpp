@@ -364,3 +364,75 @@ ProxyLayer::~ProxyLayer()
 {
 }
 
+void ProxyLayer::setFileName(const std::string& filename)
+{
+    _filename = filename;
+    if (_implementation.valid())
+    {
+        _implementation->setFileName(_filename);
+    }
+}
+
+unsigned int ProxyLayer::getNumColumns() const
+{
+    if (_implementation.valid()) return _implementation->getNumColumns();
+    else return 0;
+}
+
+unsigned int ProxyLayer::getNumRows() const
+{
+    if (_implementation.valid()) return _implementation->getNumRows();
+    else return 0;
+}
+
+bool ProxyLayer::transform(float offset, float scale)
+{
+    if (_implementation.valid()) return _implementation->transform(offset,scale);
+    else return false;
+}
+
+bool ProxyLayer::getValue(unsigned int i, unsigned int j, float& value) const
+{
+    if (_implementation.valid()) return _implementation->getValue(i,j,value);
+    else return false;
+}
+
+bool ProxyLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) const
+{
+    if (_implementation.valid()) return _implementation->getValue(i,j,value);
+    else return false;
+}
+
+bool ProxyLayer::getValue(unsigned int i, unsigned int j, osg::Vec3& value) const
+{
+    if (_implementation.valid()) return _implementation->getValue(i,j,value);
+    else return false;
+}
+
+bool ProxyLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value) const
+{
+    if (_implementation.valid()) return _implementation->getValue(i,j,value);
+    else return false;
+}
+
+void ProxyLayer::dirty()
+{
+    if (_implementation.valid()) _implementation->dirty();
+}
+
+void ProxyLayer::setModifiedCount(unsigned int value)
+{
+    if (_implementation.valid()) _implementation->setModifiedCount(value);
+};
+
+unsigned int ProxyLayer::getModifiedCount() const
+{
+    return _implementation.valid() ? _implementation->getModifiedCount() : 0;
+}
+
+
+osg::BoundingSphere ProxyLayer::computeBound() const
+{
+    if (_implementation.valid()) return _implementation->computeBound();
+}
+

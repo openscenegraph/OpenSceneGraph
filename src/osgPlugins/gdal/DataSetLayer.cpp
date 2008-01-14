@@ -32,11 +32,12 @@ _dataset(0), _gdalReader(0)
 DataSetLayer::DataSetLayer(const std::string& fileName):
 _dataset(0), _gdalReader(0)
 {
-    openFile(fileName);
+    setFileName(fileName);
+    open();
 }
 
 DataSetLayer::DataSetLayer(const DataSetLayer& dataSetLayer,const osg::CopyOp& copyop):
-ProxyLayer(dataSetLayer), _gdalReader(dataSetLayer._gdalReader)
+    Layer(dataSetLayer), _gdalReader(dataSetLayer._gdalReader)
 {
     if (dataSetLayer._dataset) open();
 }
@@ -52,6 +53,9 @@ void DataSetLayer::open()
 
     if (getFileName().empty()) return;
 
+
+    osg::notify(osg::NOTICE)<<"DataSetLayer::open()"<<getFileName()<<std::endl;
+
     _dataset = static_cast<GDALDataset*>(GDALOpen(getFileName().c_str(),GA_ReadOnly));
 
     setUpLocator();
@@ -59,6 +63,8 @@ void DataSetLayer::open()
 
 void DataSetLayer::close()
 {
+    osg::notify(osg::NOTICE)<<"DataSetLayer::close()"<<getFileName()<<std::endl;
+
     if (_dataset)
     {
         GDALClose(static_cast<GDALDatasetH>(_dataset));

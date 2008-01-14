@@ -177,9 +177,9 @@ bool Group::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
 
         }
 
-        _children.erase(_children.begin()+pos,_children.begin()+endOfRemoveRange);
-
         childRemoved(pos,endOfRemoveRange-pos);
+
+        _children.erase(_children.begin()+pos,_children.begin()+endOfRemoveRange);
 
         if (updateCallbackRemoved)
         {

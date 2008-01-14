@@ -618,30 +618,94 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method0(bool, isOpen,
-	          Properties::VIRTUAL,
-	          __bool__isOpen,
-	          "Return if this ProxyLayer is attached to valid file handle. ",
-	          "");
-	I_Method1(void, openFile, IN, const std::string &, fileName,
+	I_Method1(void, setImplementation, IN, osgTerrain::Layer *, layer,
 	          Properties::NON_VIRTUAL,
-	          __void__openFile__C5_std_string_R1,
-	          "Open a file. ",
+	          __void__setImplementation__Layer_P1,
+	          "Set the implementation layer that does the actual work. ",
 	          "");
-	I_Method0(void, open,
+	I_Method0(osgTerrain::Layer *, getImplementation,
+	          Properties::NON_VIRTUAL,
+	          __Layer_P1__getImplementation,
+	          "Get the implementation layer that does the actual work. ",
+	          "");
+	I_Method0(const osgTerrain::Layer *, getImplementation,
+	          Properties::NON_VIRTUAL,
+	          __C5_Layer_P1__getImplementation,
+	          "Get the const implementation layer that does the actual work. ",
+	          "");
+	I_Method1(void, setFileName, IN, const std::string &, filename,
 	          Properties::VIRTUAL,
-	          __void__open,
-	          "Open the any associated file handle. ",
+	          __void__setFileName__C5_std_string_R1,
+	          "",
 	          "");
-	I_Method0(void, close,
+	I_Method0(const std::string &, getFileName,
 	          Properties::VIRTUAL,
-	          __void__close,
-	          "Open the any associated file handle. ",
+	          __C5_std_string_R1__getFileName,
+	          "",
 	          "");
-	I_MethodWithDefaults6(osgTerrain::ImageLayer *, extractImageLayer, IN, unsigned, int, , IN, unsigned, int, , IN, unsigned, int, , IN, unsigned, int, , IN, unsigned, int, 0, IN, unsigned, int, 0,
-	                      Properties::VIRTUAL,
-	                      __ImageLayer_P1__extractImageLayer__unsigned__unsigned__unsigned__unsigned__unsigned__unsigned,
-	                      "Extract an ImageLayer from the ProxyLayer. ",
-	                      "");
+	I_Method0(unsigned int, getNumColumns,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumColumns,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumRows,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumRows,
+	          "",
+	          "");
+	I_Method2(bool, transform, IN, float, offset, IN, float, scale,
+	          Properties::VIRTUAL,
+	          __bool__transform__float__float,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, float &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__float_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec2 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec2_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec3 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec4 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(void, dirty,
+	          Properties::VIRTUAL,
+	          __void__dirty,
+	          "increment the modified count. ",
+	          "\" ");
+	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	          Properties::VIRTUAL,
+	          __void__setModifiedCount__unsigned_int,
+	          "Set the modified count value. ",
+	          "");
+	I_Method0(unsigned int, getModifiedCount,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getModifiedCount,
+	          "Get modified count value. ",
+	          "");
+	I_Method0(osg::BoundingSphere, computeBound,
+	          Properties::VIRTUAL,
+	          __osg_BoundingSphere__computeBound,
+	          "",
+	          "");
+	I_SimpleProperty(const std::string &, FileName, 
+	                 __C5_std_string_R1__getFileName, 
+	                 __void__setFileName__C5_std_string_R1);
+	I_SimpleProperty(osgTerrain::Layer *, Implementation, 
+	                 __Layer_P1__getImplementation, 
+	                 __void__setImplementation__Layer_P1);
+	I_SimpleProperty(unsigned int, ModifiedCount, 
+	                 __unsigned_int__getModifiedCount, 
+	                 __void__setModifiedCount__unsigned_int);
 END_REFLECTOR
 

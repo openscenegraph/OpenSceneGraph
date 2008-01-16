@@ -486,7 +486,9 @@ void GeometryTechnique::applyColorLayers()
 
             texture2D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
             texture2D->setFilter(osg::Texture::MAG_FILTER, filter==Terrain::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
-            
+            texture2D->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+            texture2D->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+                
             if (tf)
             {
                 // up the precision of the internal texture format to its maximum.

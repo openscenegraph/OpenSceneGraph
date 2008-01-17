@@ -555,9 +555,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __unsigned_int__getModifiedCount,
 	          "Get modified count value. ",
 	          "");
-	I_Method0(osg::BoundingSphere, computeBound,
+	I_Method1(osg::BoundingSphere, computeBound, IN, bool, treatAsElevationLayer,
 	          Properties::VIRTUAL,
-	          __osg_BoundingSphere__computeBound,
+	          __osg_BoundingSphere__computeBound__bool,
 	          "",
 	          "");
 	I_SimpleProperty(const osg::Vec4 &, DefaultValue, 
@@ -693,9 +693,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	          __unsigned_int__getModifiedCount,
 	          "Get modified count value. ",
 	          "");
-	I_Method0(osg::BoundingSphere, computeBound,
+	I_Method1(osg::BoundingSphere, computeBound, IN, bool, treatAsElevationLayer,
 	          Properties::VIRTUAL,
-	          __osg_BoundingSphere__computeBound,
+	          __osg_BoundingSphere__computeBound__bool,
 	          "",
 	          "");
 	I_SimpleProperty(const std::string &, FileName, 

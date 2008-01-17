@@ -34,32 +34,56 @@ Layer::~Layer()
 {
 }
 
-osg::BoundingSphere Layer::computeBound() const
+osg::BoundingSphere Layer::computeBound(bool treatAsElevationLayer) const
 {
     osg::BoundingSphere bs;
     if (!getLocator()) return bs;
-
-    osg::Vec3d v;
-    if (getLocator()->convertLocalToModel(osg::Vec3d(0.0,0.0,0.0), v))
-    {
-        bs.expandBy(v);
-    }
     
-    if (getLocator()->convertLocalToModel(osg::Vec3d(1.0,0.0,0.0), v))
+    if (treatAsElevationLayer)
     {
-        bs.expandBy(v);
-    }
+        osg::BoundingBox bb;
+        unsigned int numColumns = getNumColumns();
+        unsigned int numRows = getNumRows();
+        for(unsigned int r=0;r<numRows;++r)
+        {
+            for(unsigned int c=0;c<numColumns;++c)
+            {
+                float value = 0.0f;
+                bool validValue = getValidValue(c,r, value);
+                if (validValue) 
+                {
+                    osg::Vec3d ndc, v;
+                    ndc.x() = ((double)c)/(double)(numColumns-1), 
+                    ndc.y() = ((double)r)/(double)(numRows-1);
+                    ndc.z() = value;
 
-    if (getLocator()->convertLocalToModel(osg::Vec3d(1.0,1.0,0.0), v))
-    {
-        bs.expandBy(v);
+                    if (getLocator()->convertLocalToModel(ndc, v))
+                    {
+                        bb.expandBy(v);
+                    }
+                }
+            }
+        }
+        bs.expandBy(bb);
     }
-
-    if (getLocator()->convertLocalToModel(osg::Vec3d(0.0,1.0,0.0), v))
+    else
     {
-        bs.expandBy(v);
-    }
     
+        osg::Vec3d v;
+        if (getLocator()->convertLocalToModel(osg::Vec3d(0.5,0.5,0.0), v))
+        {
+            bs.center() = v;
+        }
+
+        if (getLocator()->convertLocalToModel(osg::Vec3d(0.0,0.0,0.0), v))
+        {
+            bs.expandBy(v);
+            
+            bs.radius() = (bs.center() - v).length();
+        }
+
+    }
+        
     return bs;
 }
 
@@ -431,8 +455,8 @@ unsigned int ProxyLayer::getModifiedCount() const
 }
 
 
-osg::BoundingSphere ProxyLayer::computeBound() const
+osg::BoundingSphere ProxyLayer::computeBound(bool treatAsElevationLayer) const
 {
-    if (_implementation.valid()) return _implementation->computeBound();
+    if (_implementation.valid()) return _implementation->computeBound(treatAsElevationLayer);
 }
 

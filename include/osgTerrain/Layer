@@ -160,7 +160,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         /** Get modified count value. */
         virtual unsigned int getModifiedCount() const { return 0; }
 
-        virtual osg::BoundingSphere computeBound() const;
+        virtual osg::BoundingSphere computeBound(bool treatAsElevationLayer) const;
 
     protected:
 
@@ -333,7 +333,7 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
         virtual void setModifiedCount(unsigned int value);
         virtual unsigned int getModifiedCount() const;
 
-        virtual osg::BoundingSphere computeBound() const;
+        virtual osg::BoundingSphere computeBound(bool treatAsElevationLayer) const;
 
     protected:
 

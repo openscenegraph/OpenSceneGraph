@@ -104,14 +104,19 @@ osg::BoundingSphere Terrain::computeBound() const
 {
     osg::BoundingSphere bs;
     
-    if (_elevationLayer.valid()) bs.expandBy(_elevationLayer->computeBound());
-
-    for(Layers::const_iterator itr = _colorLayers.begin();
-        itr != _colorLayers.end();
-        ++itr)
+    if (_elevationLayer.valid())
     {
-        if (itr->layer.valid()) bs.expandBy(itr->layer->computeBound());
+        bs.expandBy(_elevationLayer->computeBound(true));
     }
-
+    else
+    {
+        for(Layers::const_iterator itr = _colorLayers.begin();
+            itr != _colorLayers.end();
+            ++itr)
+        {
+            if (itr->layer.valid()) bs.expandBy(itr->layer->computeBound(false));
+        }
+    }
+    
     return bs;
 }

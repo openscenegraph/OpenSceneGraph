@@ -249,7 +249,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
     
     bool requiresSkirt = skirtHeight != 0.0f;
-    osg::notify(osg::NOTICE)<<"Skirt height = "<<skirtHeight<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Skirt height = "<<skirtHeight<<std::endl;
     
     
     unsigned int numVertices = numRows * numColumns;

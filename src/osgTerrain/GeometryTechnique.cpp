@@ -241,6 +241,17 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     bool treatBoundariesToValidDataAsDefaultValue = _terrain->getTreatBoundariesToValidDataAsDefaultValue();
     osg::notify(osg::INFO)<<"TreatBoundariesToValidDataAsDefaultValue="<<treatBoundariesToValidDataAsDefaultValue<<std::endl;
     
+    float skirtHeight = 0.0f;
+    HeightFieldLayer* hfl = dynamic_cast<HeightFieldLayer*>(elevationLayer);
+    if (hfl && hfl->getHeightField()) 
+    {
+        skirtHeight = hfl->getHeightField()->getSkirtHeight();
+    }
+    
+    bool requiresSkirt = skirtHeight != 0.0f;
+    osg::notify(osg::NOTICE)<<"Skirt height = "<<skirtHeight<<std::endl;
+    
+    
     unsigned int numVertices = numRows * numColumns;
 
     // allocate and assign vertices

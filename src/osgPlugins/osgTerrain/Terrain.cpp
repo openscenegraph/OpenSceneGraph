@@ -20,7 +20,7 @@ osgDB::RegisterDotOsgWrapperProxy Terrain_Proxy
 (
     new osgTerrain::Terrain,
     "Terrain",
-    "Object Terrain Group",
+    "Object Node Terrain Group",
     Terrain_readLocalData,
     Terrain_writeLocalData
 );

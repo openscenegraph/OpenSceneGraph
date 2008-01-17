@@ -12,6 +12,7 @@
 */
 
 #include <osgTerrain/Terrain>
+#include <osg/ClusterCullingCallback>
 
 using namespace osg;
 using namespace osgTerrain;
@@ -42,6 +43,15 @@ Terrain::~Terrain()
 
 void Terrain::traverse(osg::NodeVisitor& nv)
 {
+    if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
+    {
+        osg::ClusterCullingCallback* ccc = dynamic_cast<osg::ClusterCullingCallback*>(getCullCallback());
+        if (ccc)
+        {
+            if (ccc->cull(&nv,0,static_cast<State *>(0))) return;
+        }
+    }
+
     if (_terrainTechnique.valid())
     {
         _terrainTechnique->traverse(nv);

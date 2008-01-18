@@ -27,10 +27,10 @@ class OSG_EXPORT ClipPlane : public StateAttribute
     public :
 
         ClipPlane();
-        inline ClipPlane(unsigned int no) { setClipPlaneNum(no); }
-        inline ClipPlane(unsigned int no,const Vec4d& plane)    { setClipPlaneNum(no); setClipPlane(plane); }
-        inline ClipPlane(unsigned int no,const Plane& plane)   { setClipPlaneNum(no); setClipPlane(plane); }
-        inline ClipPlane(unsigned int no,double a,double b,double c,double d)  { setClipPlaneNum(no); setClipPlane(a,b,c,d); }
+        inline ClipPlane(unsigned int no):_clipPlaneNum(no) {}
+        inline ClipPlane(unsigned int no,const Vec4d& plane):_clipPlaneNum(no) { setClipPlane(plane); }
+        inline ClipPlane(unsigned int no,const Plane& plane):_clipPlaneNum(no) { setClipPlane(plane); }
+        inline ClipPlane(unsigned int no,double a,double b,double c,double d): _clipPlaneNum(no) { setClipPlane(a,b,c,d); }
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         ClipPlane(const ClipPlane& cp,const CopyOp& copyop=CopyOp::SHALLOW_COPY):

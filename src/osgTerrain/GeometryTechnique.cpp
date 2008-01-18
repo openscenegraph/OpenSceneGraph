@@ -116,7 +116,7 @@ void GeometryTechnique::init()
     
     applyTransparency();
     
-    smoothGeometry();
+    // smoothGeometry();
 
     if (buffer._transform.valid()) buffer._transform->setThreadSafeRefUnref(true);
 
@@ -248,11 +248,11 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         skirtHeight = hfl->getHeightField()->getSkirtHeight();
     }
     
-    bool requiresSkirt = skirtHeight != 0.0f;
-    // osg::notify(osg::NOTICE)<<"Skirt height = "<<skirtHeight<<std::endl;
-    
-    
-    unsigned int numVertices = numRows * numColumns;
+    bool createSkirt = skirtHeight != 0.0f;
+  
+    unsigned int numVerticesInBody = numColumns*numRows;
+    unsigned int numVerticesInSkirt = createSkirt ? numColumns*2 + numRows*2 - 4 : 0;
+    unsigned int numVertices = numVerticesInBody+numVerticesInSkirt;
 
     // allocate and assign vertices
     osg::Vec3Array* _vertices = new osg::Vec3Array;
@@ -319,13 +319,13 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
 
     typedef std::vector<int> Indices;
-    Indices indices(numColumns*numRows, -1);
+    Indices indices(numVertices, -1);
     
     // populate vertex and tex coord arrays
-    unsigned int j;
+    unsigned int i, j;
     for(j=0; j<numRows; ++j)
     {
-        for(unsigned int i=0; i<numColumns; ++i)
+        for(i=0; i<numColumns; ++i)
         {
             unsigned int iv = j*numColumns + i;
             osg::Vec3d ndc( ((double)i)/(double)(numColumns-1), ((double)j)/(double)(numRows-1), 0.0);
@@ -371,7 +371,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 }
 
                 // compute the local normal
-                osg::Vec3d ndc_one( (double)i/(double)(numColumns-1), (double)j/(double)(numColumns-1), 1.0);
+                osg::Vec3d ndc_one = ndc; ndc_one.z() += 1.0;
                 osg::Vec3d model_one;
                 masterLocator->convertLocalToModel(ndc_one, model_one);
                 model_one = model_one - model;
@@ -384,7 +384,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             }
         }
     }
-
+    
     // populate primitive sets
 //    bool optimizeOrientations = _elevations!=0;
     bool swapOrientation = !(masterLocator->orientationOpenGL());
@@ -394,9 +394,9 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
     if (buffer._geometry.valid()) buffer._geometry->addPrimitiveSet(elements);
 
-    for(unsigned int j=0; j<numRows-1; ++j)
+    for(j=0; j<numRows-1; ++j)
     {
-        for(unsigned int i=0; i<numColumns-1; ++i)
+        for(i=0; i<numColumns-1; ++i)
         {
             int i00;
             int i01;
@@ -465,6 +465,157 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         }
     }
     
+    osg::ref_ptr<osg::Vec3Array> skirtVectors = new osg::Vec3Array((*_normals));
+    
+    if (elevationLayer)
+    {
+        smoothGeometry();
+        
+        _normals = dynamic_cast<osg::Vec3Array*>(buffer._geometry->getNormalArray());
+        
+        if (!_normals) createSkirt = false;
+    }
+
+    if (createSkirt)
+    {
+        osg::ref_ptr<osg::DrawElementsUShort> skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+
+        // create bottom skirt vertices
+        int r,c;
+        r=0;
+        for(c=0;c<numColumns;++c)
+        {
+            int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
+            if (orig_i>=0)
+            {
+                unsigned int new_i = _vertices->size(); // index of new index of added skirt point
+                osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
+                (*_vertices).push_back(new_v);
+                (*_normals).push_back((*_normals)[orig_i]);
+                (*_texcoords).push_back((*_texcoords)[orig_i]);
+                
+                skirtDrawElements->push_back(orig_i);
+                skirtDrawElements->push_back(new_i);
+            }
+            else
+            {
+                if (!skirtDrawElements->empty())
+                {
+                    buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+                    skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+                }
+                
+            }
+        }
+
+        if (!skirtDrawElements->empty())
+        {
+            buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+            skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+        }
+
+        // create right skirt vertices
+        c=numColumns-1;
+        for(r=0;r<numRows;++r)
+        {
+            int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
+            if (orig_i>=0)
+            {
+                unsigned int new_i = _vertices->size(); // index of new index of added skirt point
+                osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
+                (*_vertices).push_back(new_v);
+                (*_normals).push_back((*_normals)[orig_i]);
+                (*_texcoords).push_back((*_texcoords)[orig_i]);
+                
+                skirtDrawElements->push_back(orig_i);
+                skirtDrawElements->push_back(new_i);
+            }
+            else
+            {
+                if (!skirtDrawElements->empty())
+                {
+                    buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+                    skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+                }
+                
+            }
+        }
+
+        if (!skirtDrawElements->empty())
+        {
+            buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+            skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+        }
+
+        // create top skirt vertices
+        r=numRows-1;
+        for(c=numColumns-1;c>=0;--c)
+        {
+            int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
+            if (orig_i>=0)
+            {
+                unsigned int new_i = _vertices->size(); // index of new index of added skirt point
+                osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
+                (*_vertices).push_back(new_v);
+                (*_normals).push_back((*_normals)[orig_i]);
+                (*_texcoords).push_back((*_texcoords)[orig_i]);
+                
+                skirtDrawElements->push_back(orig_i);
+                skirtDrawElements->push_back(new_i);
+            }
+            else
+            {
+                if (!skirtDrawElements->empty())
+                {
+                    buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+                    skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+                }
+                
+            }
+        }
+
+        if (!skirtDrawElements->empty())
+        {
+            buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+            skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+        }
+
+        // create left skirt vertices
+        c=0;
+        for(r=numRows-1;r>=0;--r)
+        {
+            int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
+            if (orig_i>=0)
+            {
+                unsigned int new_i = _vertices->size(); // index of new index of added skirt point
+                osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
+                (*_vertices).push_back(new_v);
+                (*_normals).push_back((*_normals)[orig_i]);
+                (*_texcoords).push_back((*_texcoords)[orig_i]);
+                
+                skirtDrawElements->push_back(orig_i);
+                skirtDrawElements->push_back(new_i);
+            }
+            else
+            {
+                if (!skirtDrawElements->empty())
+                {
+                    buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+                    skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+                }
+                
+            }
+        }
+
+        if (!skirtDrawElements->empty())
+        {
+            buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+            skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+        }
+    }
+
+
+
     // if (_terrainGeometry.valid()) _terrainGeometry->setUseDisplayList(false);
     if (buffer._geometry.valid()) buffer._geometry->setUseVertexBufferObjects(true);
 }

@@ -9,6 +9,8 @@
 
 #include "DePee.h"
 
+#include <stdio.h>
+
 #include <osg/GLExtensions>
 #include <osg/Node>
 #include <osg/MatrixTransform>

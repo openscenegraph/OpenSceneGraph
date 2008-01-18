@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <iostream>
 #include <fstream>
+#include <stdio.h>
 #include <osg/Geometry>
 #include <osg/Geode>
 #include <osgDB/FileUtils>

@@ -87,6 +87,11 @@ BEGIN_OBJECT_REFLECTOR(osg::OperationQueue)
 	          __bool__empty,
 	          "Return true if the operation queue is empty. ",
 	          "");
+	I_Method0(unsigned int, getNumOperationsInQueue,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumOperationsInQueue,
+	          "Return the num of pending operations that are sitting in the OperationQueue. ",
+	          "");
 	I_Method1(void, add, IN, osg::Operation *, operation,
 	          Properties::NON_VIRTUAL,
 	          __void__add__Operation_P1,

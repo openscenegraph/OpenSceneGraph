@@ -133,7 +133,7 @@ void ClipNode::setStateSetModes(StateSet& stateset,StateAttribute::GLModeValue v
     }
 }
 
-void ClipNode::setLocalStateSetModes(const StateAttribute::GLModeValue value)
+void ClipNode::setLocalStateSetModes(StateAttribute::GLModeValue value)
 {
     _value = value;
     if (!_stateset) _stateset = new StateSet;

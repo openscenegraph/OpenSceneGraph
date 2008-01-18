@@ -16,6 +16,8 @@
 *  THE SOFTWARE.
 */
 
+#include <stdlib.h>
+
 #include "GliderManipulator.h"
 #include <osg/Notify>
 

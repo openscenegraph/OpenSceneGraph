@@ -31,6 +31,9 @@
 namespace osg
 {
 
+//#define ENFORCE_THREADSAFE
+//#define DEBUG_OBJECT_ALLOCATION_DESTRUCTION
+
 // specialized smart pointer, used to get round auto_ptr<>'s lack of the destructor reseting itself to 0.
 struct DeleteHandlerPointer
 {
@@ -79,7 +82,6 @@ struct DeleteHandlerPointer
 
 typedef std::set<Observer*> ObserverSet;
 
-//#define ENFORCE_THREADSAFE
 
 static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;
 // static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
@@ -108,6 +110,15 @@ DeleteHandler* Referenced::getDeleteHandler()
     return s_deleteHandler.get();
 }
 
+#ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
+OpenThreads::Mutex& getNumObjectMutex()
+{
+    static OpenThreads::Mutex s_numObjectMutex;
+    return s_numObjectMutex;
+}
+static int s_numObjects = 0;
+#endif
+
 Referenced::Referenced():
     _refMutex(0),
     _refCount(0),
@@ -117,6 +128,15 @@ Referenced::Referenced():
     if (s_useThreadSafeReferenceCounting)
 #endif
         _refMutex = new OpenThreads::Mutex;
+        
+#ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getNumObjectMutex());
+        ++s_numObjects;
+        osg::notify(osg::NOTICE)<<"Object created, total num="<<s_numObjects<<std::endl;
+    }
+#endif
+
 }
 
 Referenced::Referenced(bool threadSafeRefUnref):
@@ -130,6 +150,14 @@ Referenced::Referenced(bool threadSafeRefUnref):
     if (threadSafeRefUnref)
 #endif
         _refMutex = new OpenThreads::Mutex;
+
+#ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getNumObjectMutex());
+        ++s_numObjects;
+        osg::notify(osg::NOTICE)<<"Object created, total num="<<s_numObjects<<std::endl;
+    }
+#endif
 }
 
 Referenced::Referenced(const Referenced&):
@@ -141,10 +169,26 @@ Referenced::Referenced(const Referenced&):
     if (s_useThreadSafeReferenceCounting)
 #endif
         _refMutex = new OpenThreads::Mutex;
+
+#ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getNumObjectMutex());
+        ++s_numObjects;
+        osg::notify(osg::NOTICE)<<"Object created, total num="<<s_numObjects<<std::endl;
+    }
+#endif
 }
 
 Referenced::~Referenced()
 {
+#ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getNumObjectMutex());
+        --s_numObjects;
+        osg::notify(osg::NOTICE)<<"Object deleted, total num="<<s_numObjects<<std::endl;
+    }
+#endif
+
     if (_refCount>0)
     {
         notify(WARN)<<"Warning: deleting still referenced object "<<this<<" of type '"<<typeid(this).name()<<"'"<<std::endl;

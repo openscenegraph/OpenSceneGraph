@@ -255,14 +255,14 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     unsigned int numVertices = numVerticesInBody+numVerticesInSkirt;
 
     // allocate and assign vertices
-    osg::Vec3Array* _vertices = new osg::Vec3Array;
-    if (buffer._geometry.valid()) buffer._geometry->setVertexArray(_vertices);
+    osg::ref_ptr<osg::Vec3Array> _vertices = new osg::Vec3Array;
+    if (buffer._geometry.valid()) buffer._geometry->setVertexArray(_vertices.get());
 
     // allocate and assign normals
-    osg::Vec3Array* _normals = new osg::Vec3Array;
+    osg::ref_ptr<osg::Vec3Array> _normals = new osg::Vec3Array;
     if (buffer._geometry.valid())
     {
-        buffer._geometry->setNormalArray(_normals);
+        buffer._geometry->setNormalArray(_normals.get());
         buffer._geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
     }
     
@@ -274,7 +274,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     float scaleHeight = 1.0;
 
     // allocate and assign tex coords
-    osg::Vec2Array* _texcoords = 0;
+    osg::ref_ptr<osg::Vec2Array> _texcoords;
     if (colorLayer)
     {
         color_index = texcoord_index;
@@ -282,10 +282,10 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
         _texcoords = new osg::Vec2Array;
         
-        if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(color_index, _texcoords);
+        if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(color_index, _texcoords.get());
     }
 
-    osg::FloatArray* _elevations = new osg::FloatArray;
+    osg::ref_ptr<osg::FloatArray> _elevations = new osg::FloatArray;
     osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
     if (tf)
     {
@@ -295,25 +295,25 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         if (!colorLayer)
         {
             // _elevations = new osg::FloatArray(numVertices);
-            if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(tf_index, _elevations);
+            if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(tf_index, _elevations.get());
 
             minHeight = tf->getMinimum();
             scaleHeight = 1.0f/(tf->getMaximum()-tf->getMinimum());
         }
     }
 
-    if (_vertices) _vertices->reserve(numVertices);
-    if (_texcoords) _texcoords->reserve(numVertices);
-    if (_elevations) _elevations->reserve(numVertices);
-    if (_normals) _normals->reserve(numVertices);
+    if (_vertices.valid()) _vertices->reserve(numVertices);
+    if (_texcoords.valid()) _texcoords->reserve(numVertices);
+    if (_elevations.valid()) _elevations->reserve(numVertices);
+    if (_normals.valid()) _normals->reserve(numVertices);
         
     // allocate and assign color
-    osg::Vec4Array* _colors = new osg::Vec4Array(1);
+    osg::ref_ptr<osg::Vec4Array> _colors = new osg::Vec4Array(1);
     (*_colors)[0].set(1.0f,1.0f,1.0f,1.0f);
     
     if (buffer._geometry.valid())
     {
-        buffer._geometry->setColorArray(_colors);
+        buffer._geometry->setColorArray(_colors.get());
         buffer._geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
 
@@ -365,7 +365,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
                 }
 
-                if (_elevations)
+                if (_elevations.valid())
                 {
                     (*_elevations).push_back((ndc.z()-minHeight)*scaleHeight);
                 }
@@ -389,10 +389,10 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 //    bool optimizeOrientations = _elevations!=0;
     bool swapOrientation = !(masterLocator->orientationOpenGL());
     
-    osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLES);
+    osg::ref_ptr<osg::DrawElementsUInt> elements = new osg::DrawElementsUInt(GL_TRIANGLES);
     elements->reserve((numRows-1) * (numColumns-1) * 6);
 
-    if (buffer._geometry.valid()) buffer._geometry->addPrimitiveSet(elements);
+    if (buffer._geometry.valid()) buffer._geometry->addPrimitiveSet(elements.get());
 
     for(j=0; j<numRows-1; ++j)
     {
@@ -615,8 +615,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
 
 
-
-    // if (_terrainGeometry.valid()) _terrainGeometry->setUseDisplayList(false);
+    // if (buffer._geometry.valid()) _terrainGeometry->setUseDisplayList(false);
     if (buffer._geometry.valid()) buffer._geometry->setUseVertexBufferObjects(true);
 }
 

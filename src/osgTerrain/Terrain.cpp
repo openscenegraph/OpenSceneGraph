@@ -21,7 +21,7 @@ Terrain::Terrain():
     _requiresNormals(true),
     _treatBoundariesToValidDataAsDefaultValue(false)
 {
-    setNumChildrenRequiringUpdateTraversal(1);
+    //setNumChildrenRequiringUpdateTraversal(1);
     setThreadSafeRefUnref(true);
 }
 
@@ -32,7 +32,7 @@ Terrain::Terrain(const Terrain& terrain,const osg::CopyOp& copyop):
     _requiresNormals(terrain._requiresNormals),
     _treatBoundariesToValidDataAsDefaultValue(terrain._treatBoundariesToValidDataAsDefaultValue)
 {
-    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
+    //setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
     
     if (terrain.getTerrainTechnique()) setTerrainTechnique(dynamic_cast<TerrainTechnique*>(terrain.getTerrainTechnique()->cloneType()));
 }

@@ -908,7 +908,8 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
 void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
 {
     //osg::notify(osg::NOTICE)<<"DatabasePager::removeExpiredSubgraphs()"<<std::endl;
-
+    
+    
     // osg::Timer_t before = osg::Timer::instance()->tick();
 
     double expiryTime = currentFrameTime - _expiryDelay;
@@ -1015,6 +1016,27 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
     //double t = osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick());
     //osg::notify(osg::NOTICE)<<"   time 1 "<<t<<" ms "<<_pagedLODList.size()<<" pagedLOD's"<<std::endl;
     //osg::notify(osg::NOTICE)<<"   average time = "<<t/(double)_pagedLODList.size()<<" ms/per PagedLOD"<<std::endl;
+
+#if 0
+    int s_numActive = 0;
+    int s_numInactive = 0;
+    int s_numRemoved = 0;
+
+    int numActive = _activePagedLODList.size();
+    int numInactive = _inactivePagedLODList.size();
+    int numRemoved = childrenRemoved.size();
+    
+    
+    if (s_numActive != numActive ||
+        s_numInactive != numInactive ||
+        s_numRemoved != numRemoved)
+    {
+        osg::notify(osg::NOTICE)<<"numActive="<<numActive<<",  numInactive="<<numInactive<<",  numRemoved="<<numRemoved<<std::endl;
+        s_numActive = numActive;
+        s_numInactive = numInactive;
+        s_numRemoved = numRemoved;
+    }
+#endif
 
     if (!childrenRemoved.empty())
     { 

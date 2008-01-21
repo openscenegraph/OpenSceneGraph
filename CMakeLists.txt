@@ -444,6 +444,12 @@ IF(APPLE)
 ENDIF(APPLE)
 
 
+OPTION(BUILD_REFERENCE_DOCS "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
+
+IF(BUILD_REFERENCE_DOCS)
+    SET(BUILD_DOCUMENTATION YES)
+ENDIF(BUILD_REFERENCE_DOCS)
+
 # For Doxygen
 #FIXME: I haven't figured out what to do with OSG's multiple doxyfiles 
 # and footer.
@@ -452,6 +458,7 @@ INCLUDE(${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL)
 # To build the documention, you will have to enable it
 # and then do the equivalent of "make DoxygenDoc".
 IF(BUILD_DOCUMENTATION)
+    SET(BUILD_DOCUMENTATION YES)
     IF(DOT)
         SET(HAVE_DOT YES)
     ELSE(DOT)

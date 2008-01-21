@@ -1,0 +1,403 @@
+/* -*- mode: c++; c-default-style: k&r; tab-width: 4; c-basic-offset: 4; -*- 
+ * Copyright (C) 2007 Cedric Pinson - mornifle@plopbyte.net
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#include <osg/Image>
+#include <osg/Notify>
+#include <osg/Geode>
+#include <osg/GL>
+#include <osg/Geometry>
+#include <osg/Point>
+#include <osg/Material>
+#include <osg/TriangleFunctor>
+#include <osgUtil/Tessellator>
+
+#include <osgDB/Registry>
+#include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
+#include <osgDB/ImageOptions>
+
+#include <OpenThreads/ScopedLock>
+#include <OpenThreads/ReentrantMutex>
+#include <gdal_priv.h>
+#include <ogr_feature.h>
+#include <cpl_error.h>
+#include <ogr_core.h>
+#include <ogr_feature.h>
+#include <ogrsf_frmts.h>
+
+//#include <iostream>
+
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)
+
+static osg::Material* createDefaultMaterial()
+{
+    osg::Vec4 color;
+    for (int i = 0; i < 3; i++)
+        color[i] = (1.0 * (rand() / (1.0*RAND_MAX)));
+    color[3] = 1;
+    osg::Material* mat = new osg::Material;
+    mat->setDiffuse(osg::Material::FRONT_AND_BACK, color);
+    return mat;
+}
+
+struct TriangulizeFunctor 
+{
+    osg::Vec3Array* _vertexes;
+
+    // do nothing
+    void operator ()(const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3, bool treatVertexDataAsTemporary) {
+        _vertexes->push_back(v1);
+        _vertexes->push_back(v2);
+        _vertexes->push_back(v3);
+    }
+};
+
+static osg::Vec3Array* triangulizeGeometry(osg::Geometry* src)
+{
+    if (src->getNumPrimitiveSets() == 1 && 
+        src->getPrimitiveSet(0)->getType() == osg::PrimitiveSet::DrawArraysPrimitiveType &&
+        src->getVertexArray() &&
+        src->getVertexArray()->getType() == osg::Array::Vec3ArrayType)
+        return static_cast<osg::Vec3Array*>(src->getVertexArray());
+
+    osg::TriangleFunctor<TriangulizeFunctor> functor;
+    osg::Vec3Array* array = new osg::Vec3Array;
+    functor._vertexes = array;
+    src->accept(functor);
+    return array;
+}
+
+
+class ReaderWriterOGR : public osgDB::ReaderWriter
+{
+public:
+    virtual const char* className() const { return "OGR file reader"; }
+    virtual bool acceptsExtension(const std::string& extension) const
+    {
+        return osgDB::equalCaseInsensitive(extension,"ogr") || 
+            osgDB::equalCaseInsensitive(extension,"ogr");
+    }
+
+    virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+    {
+        if (osgDB::equalCaseInsensitive(osgDB::getFileExtension(file),"ogr"))
+        {
+            return readObject(osgDB::getNameLessExtension(file),options);
+        }
+
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
+        std::string fileName = osgDB::findDataFile( file, options );
+        if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+        return readFile(fileName, options);
+    }
+
+    virtual ReadResult readFile(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+    {
+        if (OGRSFDriverRegistrar::GetRegistrar()->GetDriverCount() == 0)
+            OGRRegisterAll();
+
+        // Try to open data source
+        OGRDataSource* file = OGRSFDriverRegistrar::Open(fileName.c_str());
+        if (!file)
+            return 0;
+
+        osg::Group* group = new osg::Group;
+
+        for (int i = 0; i < file->GetLayerCount(); i++) 
+        {
+            osg::Group* node = readLayer(file->GetLayer(i), file->GetName());
+            if (node)
+                group->addChild( node );
+        }
+        OGRDataSource::DestroyDataSource( file );
+        return group;
+    }
+
+    osg::Group* readLayer(OGRLayer* ogrLayer, const std::string& name) const
+    {
+        if (!ogrLayer)
+            return 0;
+
+        osg::Group* layer = new osg::Group;
+        layer->setName(ogrLayer->GetLayerDefn()->GetName());
+        ogrLayer->ResetReading();
+
+        OGRFeature* ogrFeature = NULL;
+        while ((ogrFeature = ogrLayer->GetNextFeature()) != NULL) 
+        {
+            osg::Geode* feature = readFeature(ogrFeature);
+            if (feature)
+                layer->addChild(feature);
+            OGRFeature::DestroyFeature( ogrFeature );
+        }
+        return layer;
+    }
+
+    osg::Geometry* pointsToDrawable(const OGRPoint* points) const
+    {
+        osg::Geometry* pointGeom = new osg::Geometry();
+        osg::Vec3Array* vertices = new osg::Vec3Array();
+        vertices->push_back(osg::Vec3(points->getX(), points->getY(), points->getZ()));
+        pointGeom->setVertexArray(vertices);
+        pointGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, 1));
+        return pointGeom;
+    }
+    osg::Geometry* linearRingToDrawable(OGRLinearRing* ring) const
+    {
+        osg::Geometry* contourGeom = new osg::Geometry();
+        osg::Vec3Array* vertices = new osg::Vec3Array();
+        OGRPoint point;
+        for(int j = 0; j < ring->getNumPoints(); j++)
+        {
+            ring->getPoint(j, &point);
+            vertices->push_back(osg::Vec3(point.getX(), point.getY(),point.getZ()));
+        }
+        contourGeom->setVertexArray(vertices);
+        contourGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP, 0, vertices->size()));
+        return contourGeom;
+    }
+
+    osg::Geometry* lineStringToDrawable(OGRLineString* lineString) const
+    {
+        osg::Geometry* contourGeom = new osg::Geometry();
+        osg::Vec3Array* vertices = new osg::Vec3Array();
+        OGRPoint point;
+        for(int j = 0; j < lineString->getNumPoints(); j++) 
+        {
+            lineString->getPoint(j, &point);
+            vertices->push_back(osg::Vec3(point.getX(), point.getY(), point.getZ()));
+        }
+
+        contourGeom->setVertexArray(vertices);
+        contourGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, 0, vertices->size()));
+        return contourGeom;
+    }
+
+    osg::Geometry* multiPolygonToDrawable(OGRMultiPolygon* mpolygon) const
+    {
+        osg::Geometry* geom = new osg::Geometry;
+
+        unsigned int total = 0;
+        for (int i = 0; i < mpolygon->getNumGeometries(); i++ ) 
+        {
+            OGRGeometry* ogrGeom = mpolygon->getGeometryRef(i);
+            OGRwkbGeometryType ogrGeomType = ogrGeom->getGeometryType();
+
+            if (wkbPolygon != ogrGeomType && wkbPolygon25D != ogrGeomType)
+                continue; // skip
+
+            OGRPolygon* polygon = static_cast<OGRPolygon*>(ogrGeom);
+            osg::ref_ptr<osg::Drawable> drw = polygonToDrawable(polygon);
+            osg::ref_ptr<osg::Geometry> geometry = drw->asGeometry();
+            if (geometry.valid() && geometry->getVertexArray() && 
+                geometry->getVertexArray()->getNumElements() && 
+                geometry->getNumPrimitiveSets() &&
+                geometry->getVertexArray()->getType() == osg::Array::Vec3ArrayType ) 
+            {
+
+                if (!geom->getVertexArray()) 
+                { // no yet data we put the first in
+                    osg::Vec3Array* arraySrc = static_cast<osg::Vec3Array*>(geom->getVertexArray());
+                    geom->setVertexArray(geometry->getVertexArray());
+                    geom->setPrimitiveSetList(geometry->getPrimitiveSetList());
+
+                } 
+                else 
+                { // already a polygon then append
+                    int size = geom->getVertexArray()->getNumElements();
+                    osg::Vec3Array* arrayDst = static_cast<osg::Vec3Array*>(geom->getVertexArray());
+                    osg::ref_ptr<osg::Vec3Array> triangulized = triangulizeGeometry(geometry.get());
+                    if (triangulized.valid()) 
+                    {
+                        arrayDst->insert(arrayDst->end(), triangulized->begin(), triangulized->end());
+                        // shift index 
+                        geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, size, triangulized->size()));
+                    }
+                }
+            } 
+            else
+                osg::notify(osg::WARN) << "Warning something wrong with a polygon in a multi polygon" << std::endl;
+        }
+
+        if (geom->getVertexArray())
+            osg::notify() << "osgOgrFeature::multiPolygonToGeode " << geom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
+
+        return geom;
+    }
+
+    osg::Geometry* polygonToDrawable(OGRPolygon* polygon) const
+    {
+        osg::Geometry* geom = new osg::Geometry();
+        osg::Vec3Array* vertices = new osg::Vec3Array();
+        geom->setVertexArray(vertices);
+        {
+            OGRLinearRing *ring = polygon->getExteriorRing();
+            OGRPoint point;
+            for(int i = 0; i < ring->getNumPoints(); i++)
+            {
+                ring->getPoint(i, &point);
+                vertices->push_back(osg::Vec3(point.getX(), point.getY(), point.getZ()));
+            }
+            geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP, 0, vertices->size()));
+        }
+
+        if (polygon->getNumInteriorRings()) 
+        {
+            for (int i = 0; i < polygon->getNumInteriorRings(); i++)
+            {
+                OGRLinearRing *ring = polygon->getInteriorRing(i);
+                OGRPoint point;
+                for (int j = 0; j < ring->getNumPoints(); j++) 
+                {
+                    ring->getPoint(j, &point);
+                    vertices->push_back(osg::Vec3(point.getX(), point.getY(), point.getZ()));
+                }
+                geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_LOOP, vertices->size()-ring->getNumPoints() , ring->getNumPoints()));
+            }
+        }
+        osgUtil::Tessellator tsl;
+        tsl.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
+        tsl.setBoundaryOnly(false);
+        tsl.retessellatePolygons(*geom);
+
+        osg::Vec3Array* array = triangulizeGeometry(geom);
+        geom->setVertexArray(array);
+        geom->removePrimitiveSet(0,geom->getNumPrimitiveSets());
+        geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES, 0, array->size()));
+  
+        return geom;
+    }
+    osg::Geometry* multiLineStringToDrawable(OGRMultiLineString* mlineString) const
+    {
+        osg::Geometry* geom = new osg::Geometry;
+
+        for (int i = 0; i < mlineString->getNumGeometries(); i++ ) 
+        {
+            OGRGeometry* ogrGeom = mlineString->getGeometryRef(i);
+            OGRwkbGeometryType ogrGeomType = ogrGeom->getGeometryType();
+
+            if (wkbLineString != ogrGeomType && wkbLineString25D != ogrGeomType)
+                continue; // skip
+
+            OGRLineString* lineString = static_cast<OGRLineString*>(ogrGeom);
+            osg::ref_ptr<osg::Geometry> geometry = lineStringToDrawable(lineString);
+            if (geometry.valid() && 
+                geometry->getVertexArray() && 
+                geometry->getNumPrimitiveSets() &&
+                geometry->getVertexArray()->getType() == osg::Array::Vec3ArrayType) 
+            {
+
+                if (!geom->getVertexArray())
+                {
+                    geom->setVertexArray(geometry->getVertexArray());
+                    geom->setPrimitiveSetList(geometry->getPrimitiveSetList());
+
+                } 
+                else 
+                {
+                    int size = geom->getVertexArray()->getNumElements();
+
+                    osg::Vec3Array* arraySrc = static_cast<osg::Vec3Array*>(geometry->getVertexArray());
+                    osg::Vec3Array* arrayDst = static_cast<osg::Vec3Array*>(geom->getVertexArray());
+                    arrayDst->insert(arrayDst->end(), arraySrc->begin(), arraySrc->end());
+                    // shift index 
+                    geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, size, arraySrc->size()));
+                }
+            }
+        }
+        return geom;
+    }
+
+    osg::Geode* readFeature(OGRFeature* ogrFeature) const
+    {
+
+        if (!ogrFeature || !ogrFeature->GetGeometryRef())
+            return 0;
+          
+        osg::Geometry* drawable = 0;
+        bool disableCulling = false;
+        // Read the geometry
+        switch(ogrFeature->GetGeometryRef()->getGeometryType()) {
+        case wkbPoint:
+        case wkbPoint25D:
+            // point to drawable
+            drawable = pointsToDrawable(static_cast<OGRPoint *>(ogrFeature->GetGeometryRef()));
+            disableCulling = true;
+            break; 
+
+        case wkbLinearRing:
+            drawable = linearRingToDrawable(static_cast<OGRLinearRing *>(ogrFeature->GetGeometryRef()));
+            break;
+
+        case wkbLineString:
+        case wkbLineString25D:
+            drawable = lineStringToDrawable(static_cast<OGRLineString*>(ogrFeature->GetGeometryRef()));
+            break;
+
+        case wkbPolygon:
+        case wkbPolygon25D:
+                drawable = polygonToDrawable(static_cast<OGRPolygon*>(ogrFeature->GetGeometryRef()));
+            break;
+
+        case wkbMultiPoint:
+        case wkbMultiPoint25D:
+            break;
+
+        case wkbMultiLineString:
+        case wkbMultiLineString25D:
+            drawable = multiLineStringToDrawable(static_cast<OGRMultiLineString*>(ogrFeature->GetGeometryRef()));
+            break;
+
+        case wkbMultiPolygon:
+        case wkbMultiPolygon25D:
+            drawable = multiPolygonToDrawable(static_cast<OGRMultiPolygon*>(ogrFeature->GetGeometryRef()));
+            break;
+
+        case wkbGeometryCollection:
+        case wkbGeometryCollection25D:
+            osg::notify(osg::WARN) << "This geometry is not yet implemented " << OGRGeometryTypeToName(ogrFeature->GetGeometryRef()->getGeometryType()) << std::endl;
+            break;
+
+        case wkbNone:
+            osg::notify(osg::WARN) << "No WKB Geometry " << OGRGeometryTypeToName(ogrFeature->GetGeometryRef()->getGeometryType()) << std::endl;
+            break;
+
+        case wkbUnknown:
+        default:
+            osg::notify(osg::WARN) << "Unknown WKB Geometry " << OGRGeometryTypeToName(ogrFeature->GetGeometryRef()->getGeometryType()) << std::endl;
+            break;
+        }
+
+        if (!drawable)
+            return 0;
+
+        osg::Geode* geode = new osg::Geode();
+        if (disableCulling)
+            geode->setCullingActive(false); // because culling on one points geode is always true, so i disable it
+        geode->addDrawable(drawable);
+        geode->getOrCreateStateSet()->setAttributeAndModes(createDefaultMaterial(),true);
+        for(int i = 0; i < ogrFeature->GetFieldCount(); i++) {
+            geode->addDescription(std::string(ogrFeature->GetFieldDefnRef(i)->GetNameRef()) + " : " + std::string(ogrFeature->GetFieldAsString(i)));
+        }
+        return geode;
+    }
+
+    mutable OpenThreads::ReentrantMutex _serializerMutex;
+        
+};
+
+// now register with Registry to instantiate the above
+// reader/writer.
+osgDB::RegisterReaderWriterProxy<ReaderWriterOGR> g_readerWriter_OGR_Proxy;

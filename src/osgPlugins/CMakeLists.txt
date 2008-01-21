@@ -88,6 +88,7 @@ IF(TIFF_FOUND)
 ENDIF(TIFF_FOUND)
 IF(GDAL_FOUND)
     ADD_SUBDIRECTORY(gdal)
+    ADD_SUBDIRECTORY(ogr)
 ENDIF(GDAL_FOUND)
 
 ############################################################

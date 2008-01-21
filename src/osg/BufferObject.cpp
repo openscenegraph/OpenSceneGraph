@@ -28,7 +28,7 @@
 
 using namespace osg;
 
-// static cache of deleted display lists which can only 
+// static cache of deleted buffer object lists which can only 
 // by completely deleted once the appropriate OpenGL context
 // is set.  Used osg::BufferObject::deleteDisplayList(..) and flushDeletedBufferObjects(..) below.
 typedef std::multimap<unsigned int,GLuint> DisplayListMap;

@@ -867,7 +867,9 @@ bool Geometry::insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
 
 bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemove)
 {
-    if (i<_primitives.size() && numElementsToRemove>0)
+    if (numElementsToRemove==0) return false;
+
+    if (i<_primitives.size())
     {
         if (i+numElementsToRemove<=_primitives.size())
         {

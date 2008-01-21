@@ -215,6 +215,7 @@ ADD_LIBRARY(${LIB_NAME}
     FrameBufferObject.cpp
     FrameStamp.cpp
     FrontFace.cpp
+    GL2Extensions.cpp
     GLExtensions.cpp
     GLObjects.cpp
     Geode.cpp

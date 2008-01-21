@@ -1,0 +1,21 @@
+Mapping extensionless header files to C++ in Visual Studio
+=============================================================================
+
+Previous versions of the OSG included registry files which enabled syntax 
+highlighting for OSG's extensionless headers in Visual Studio. These are not 
+needed anymore, because starting with Visual Studio 2002 (7.0), there is a 
+setting that will map extensionless files to a certain language in the 
+options. This also works for the Express Editions.
+
+1. Go to Tools-Options.
+2. Open the Text Editor section, and click on File Extension.
+3. At the bottom of the window, check the Map Extensionless Files To 
+   checkbox, and select Microsoft Visual C++ in the list to the right.
+
+Note that if you use this feature for other languages, you will have to 
+change it when needed. If that is too cumbersome you may want to generate 
+the registry files and do it that way instead. Please see the 
+.reg files in previous versions of OSG in the VisualStudio directory for 
+a guide on how to do that (hint: check the location of the registry key
+to make sure the added values end up in the right place for your version
+of Visual Studio).

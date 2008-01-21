@@ -619,11 +619,19 @@ void DatabasePager::run()
 {
     osg::notify(osg::INFO)<<"DatabasePager::run()"<<std::endl;
 
+#if 1
     // need to set the texture object manager to be able to reuse textures
     osg::Texture::setMinimumNumberOfTextureObjectsToRetainInCache(100);
     
+    // need to set the display list manager to be able to reuse display lists
+    osg::Drawable::setMinimumNumberOfDisplayListsToRetainInCache(100);
+#else
     // need to set the texture object manager to be able to reuse textures
-    osg::Drawable::setMinimumNumberOfDisplayListsToRetainInCache(500);
+    osg::Texture::setMinimumNumberOfTextureObjectsToRetainInCache(0);
+    
+    // need to set the display list manager to be able to reuse display lists
+    osg::Drawable::setMinimumNumberOfDisplayListsToRetainInCache(0);
+#endif
 
     bool firstTime = true;
     
@@ -1018,9 +1026,9 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
     //osg::notify(osg::NOTICE)<<"   average time = "<<t/(double)_pagedLODList.size()<<" ms/per PagedLOD"<<std::endl;
 
 #if 0
-    int s_numActive = 0;
-    int s_numInactive = 0;
-    int s_numRemoved = 0;
+    static int s_numActive = 0;
+    static int s_numInactive = 0;
+    static int s_numRemoved = 0;
 
     int numActive = _activePagedLODList.size();
     int numInactive = _inactivePagedLODList.size();

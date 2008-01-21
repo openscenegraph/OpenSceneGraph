@@ -194,69 +194,10 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availabl
     }
     elapsedTime = timer.delta_s(start_tick,timer.tick());
     
-    // if (noDeleted) notify(NOTICE)<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
+    if (noDeleted!=0) notify(INFO)<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
 
     availableTime -= elapsedTime;
 }
-
-
-static OpenThreads::Mutex s_mutex_deletedVertexBufferObjectCache;
-static DeletedDisplayListCache s_deletedVertexBufferObjectCache;
-
-void Drawable::deleteVertexBufferObject(unsigned int contextID,GLuint globj)
-{
-    if (globj!=0)
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
-        
-        // insert the globj into the cache for the appropriate context.
-        s_deletedVertexBufferObjectCache[contextID].insert(DisplayListMap::value_type(0,globj));
-    }
-}
-
-void Drawable::flushDeletedVertexBufferObjects(unsigned int contextID,double /*currentTime*/, double& availableTime)
-{
-    // if no time available don't try to flush objects.
-    if (availableTime<=0.0) return;
-
-    const osg::Timer& timer = *osg::Timer::instance();
-    osg::Timer_t start_tick = timer.tick();
-    double elapsedTime = 0.0;
-
-
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
-
-        const Extensions* extensions = getExtensions(contextID,true);
-
-        unsigned int noDeleted = 0;
-
-        DisplayListMap& dll = s_deletedVertexBufferObjectCache[contextID];
-
-        DisplayListMap::iterator ditr=dll.begin();
-        for(;
-            ditr!=dll.end() && elapsedTime<availableTime;
-            ++ditr)
-        {
-            extensions->glDeleteBuffers(1,&(ditr->second));
-            elapsedTime = timer.delta_s(start_tick,timer.tick());
-            ++noDeleted;
-        }
-        if (ditr!=dll.begin()) dll.erase(dll.begin(),ditr);
-
-        if (noDeleted!=0) notify(osg::INFO)<<"Number VBOs deleted = "<<noDeleted<<std::endl;
-    }    
-    
-    availableTime -= elapsedTime;
-}
-
-void Drawable::discardDeletedVertexBufferObjects(unsigned int contextID)
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedVertexBufferObjectCache);
-    DisplayListMap& dll = s_deletedVertexBufferObjectCache[contextID];
-    dll.clear();
-}
-
 
 Drawable::Drawable()
     :Object(true)

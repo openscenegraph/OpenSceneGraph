@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.3.2
+OpenSceneGraph Library 2.3.3
 
-297 Contributors:
+298 Contributors:
 
 Firstname Surname
 -----------------
@@ -27,17 +27,17 @@ David Callu
 Pavel Moloshtan
 Tom Jolley
 Norman Vine
-Roger James
 Jean-Sebastien Guay
+Roger James
 Alberto Farre
+Andy Skinner
 André Garneau
 Ruben Lopez
 Randall Hopper
-Andy Skinner
+Colin McDonald
 Olaf Flebbe
 Gideon May
 Don Tidrow
-Colin McDonald
 Romano José Magacho da Silva
 Michael Gronager
 Daniel Sjölie
@@ -126,6 +126,7 @@ Donn Mielcarek
 Domenico Mangieri
 Colin Dunlop
 Charles Cole
+Cedric Pinson
 Blake Williams
 Antoine Hue
 Anders Backman
@@ -170,7 +171,6 @@ David Ergo
 David Cullu
 Daniel Trstenjak
 Csaba Halasz
-Cedric Pinson
 Andrew Sampson
 Andrew Lorino
 Andreas Goebel
@@ -257,6 +257,7 @@ Gian Lorenzetto
 George Papagiannakis
 Gary Quinn
 Galen Faidley
+Frederic Bouvier
 Frashid Lashkari
 Frank Warmerdam
 Frank Lindeman

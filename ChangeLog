@@ -1,3 +1,172 @@
+2008-01-22 10:28 +0000 [r7832]  robert:
+
+	* Added missing checks for null pointers
+
+2008-01-21 18:06 +0000 [r7831]  robert:
+
+	* From Jean-Sebastien Guay, notes on how to enable syntax
+	  highlighting in VS.
+
+2008-01-21 17:04 +0000 [r7830]  robert:
+
+	* Fixed debug build of Inventor plugin
+
+2008-01-21 14:42 +0000 [r7828-7829]  robert:
+
+	* From Drederic Bouvier, "I noticed the AC3D loader resets database
+	  path given as Options, preventing users to put textures in
+	  another directory. This patch adds the model path to the path
+	  list instead of replacing it."
+
+	* Introduced BUILD_REFERENCE_DOCS option to make it a bit clearer
+	  how to enable and build the DoxygenDocs
+
+2008-01-21 12:01 +0000 [r7826-7827]  robert:
+
+	* From Cedric Pinson, "you can find as attachement a readerwriter
+	  for ogr files (.tab, .gml, .shp ...) ogr is a part of gdal so i
+	  added the build of ogr plugin if gdal is found. to test it
+	  osgviewerd -e ogr file.tab or osgviewerd -e ogr file.gml or
+	  osgviewerd -e ogr file.shp "
+
+	* Fixed Geometry::removePrimitiveSet method so that it no longer
+	  emits a warning when removing 0 elements form an empty primtive
+	  set list.
+
+2008-01-21 11:47 +0000 [r7825]  robert:
+
+	* From Mike Weiblen, restructured GL2Extensions so that they now
+	  live in their own GL2Extensions.cpp file rather than in
+	  Program.cpp
+
+2008-01-21 11:40 +0000 [r7821-7824]  robert:
+
+	* Updated version number for 2.3.3 release
+
+	* Updated wrappers
+
+	* Fixed debugged code path and set the minimum number of display
+	  lists to retain in cache to the same amount as the number of
+	  textures
+
+	* Removed redundental vertex buffer object flush methods
+
+2008-01-21 11:27 +0000 [r7820]  robert:
+
+	* Moved useful elements of the old VisualStudio directory into a
+	  new PlatformSpecifics/Windows directory
+
+2008-01-19 18:26 +0000 [r7818-7819]  robert:
+
+	* Added thread safe debugging checking of allocation/deallocations
+
+	* Added use of ref_ptr<> throughout geometry setup code to prevent
+	  memory leaks
+
+2008-01-19 13:41 +0000 [r7817]  robert:
+
+	* Added debugging messages to help monitor expiry of inactive
+	  children. Debug messages current #if 0'd out, but added now for
+	  future tests when required.
+
+2008-01-19 13:31 +0000 [r7816]  robert:
+
+	* Disabled the default enabling of update traversal on
+	  osgTerrain::Terrain as this was preventing PagedLOD subgraphs
+	  from expiring inactive subgraphs
+
+2008-01-18 21:29 +0000 [r7815]  robert:
+
+	* Updated wrappers
+
+2008-01-18 21:08 +0000 [r7813-7814]  robert:
+
+	* Removed erroneous const in method parameter
+
+	* From Andy Skinner, build fixes for Solaris.
+
+2008-01-18 21:01 +0000 [r7812]  robert:
+
+	* Moved the setting of _clipPlaneNum from the {} body to the
+	  intializer list to avoid reading from an unitialized variable.
+
+2008-01-18 20:55 +0000 [r7811]  robert:
+
+	* From Paul Martz, Hi Robert -- "as you and J-S and I have been
+	  discussing on osg-users, this submission changes the clamp mode
+	  for the fake white texture applied to non-textured geometry.
+	  CLAMP_TO_EDGE will keep the geometry a consistent color across
+	  the entire texture coordinate range."
+
+2008-01-18 16:36 +0000 [r7810]  robert:
+
+	* Added support for rendering skirts into
+	  osgTerrain::GeometryTechinque
+
+2008-01-18 09:17 +0000 [r7809]  robert:
+
+	* Added getNumOperationsInQueue() method
+
+2008-01-17 22:26 +0000 [r7807-7808]  robert:
+
+	* Commented out debug message
+
+	* Added computation of skirt height for osgTerrain::Terrain height
+	  fields.
+
+2008-01-17 17:10 +0000 [r7806]  robert:
+
+	* Added call to ClusterCullingCallback to determine if the Terrain
+	  node is culled by cluster culling.
+
+2008-01-17 16:41 +0000 [r7805]  robert:
+
+	* Added Node to Terrain serialization
+
+2008-01-17 15:37 +0000 [r7804]  robert:
+
+	* Fixed the computation of terrain bounding volume so that it
+	  properly accounts for elevation layers
+
+2008-01-16 15:05 +0000 [r7803]  robert:
+
+	* Changed the Texture clamp mode to CLAMP_TO_EDGE
+
+2008-01-14 14:53 +0000 [r7801-7802]  robert:
+
+	* Updated wrappers
+
+	* Refactor osgTerrain::ProxyLayer so that it is now a pure Proxy,
+	  defering implementations to an Implementation rather than a
+	  subclass of ProxyLayer. Updating the osgTerrain and GDAL plugins
+	  to comply with this refactor.
+
+2008-01-14 13:14 +0000 [r7800]  robert:
+
+	* Added back in checks for various verions of gdal
+
+2008-01-14 12:14 +0000 [r7798]  robert:
+
+	* Updated AUTHORS file and osgversion for 2.3.2 release
+
+2008-01-14 11:44 +0000 [r7797]  robert:
+
+	* Added geometry shader extension supported check to geometry
+	  shader parameter calls
+
+2008-01-14 11:30 +0000 [r7796]  robert:
+
+	* From Colin McDonald, "Multi-texturing fails with recent osg on
+	  older graphics cards, due to use of parameter
+	  GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS which is only part of the
+	  standard from 2.0 onwards. I've updated src/osg/State.cpp, so
+	  that it attempts to be more rigorous regarding OpenGL version and
+	  extension checking."
+
+2008-01-14 11:22 +0000 [r7795]  robert:
+
+	* Updated ChangeLog, date and version number for 2.6.2 release
+
 2008-01-14 11:07 +0000 [r7794]  robert:
 
 	* Updated wrappers

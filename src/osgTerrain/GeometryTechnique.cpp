@@ -491,8 +491,8 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 unsigned int new_i = _vertices->size(); // index of new index of added skirt point
                 osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*_vertices).push_back(new_v);
-                (*_normals).push_back((*_normals)[orig_i]);
-                (*_texcoords).push_back((*_texcoords)[orig_i]);
+                if (_normals.valid()) (*_normals).push_back((*_normals)[orig_i]);
+                if (_texcoords.valid()) (*_texcoords).push_back((*_texcoords)[orig_i]);
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);
@@ -524,8 +524,8 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 unsigned int new_i = _vertices->size(); // index of new index of added skirt point
                 osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*_vertices).push_back(new_v);
-                (*_normals).push_back((*_normals)[orig_i]);
-                (*_texcoords).push_back((*_texcoords)[orig_i]);
+                if (_normals.valid()) (*_normals).push_back((*_normals)[orig_i]);
+                if (_texcoords.valid()) (*_texcoords).push_back((*_texcoords)[orig_i]);
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);
@@ -557,8 +557,8 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 unsigned int new_i = _vertices->size(); // index of new index of added skirt point
                 osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*_vertices).push_back(new_v);
-                (*_normals).push_back((*_normals)[orig_i]);
-                (*_texcoords).push_back((*_texcoords)[orig_i]);
+                if (_normals.valid()) (*_normals).push_back((*_normals)[orig_i]);
+                if (_texcoords.valid()) (*_texcoords).push_back((*_texcoords)[orig_i]);
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);
@@ -590,8 +590,8 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 unsigned int new_i = _vertices->size(); // index of new index of added skirt point
                 osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*_vertices).push_back(new_v);
-                (*_normals).push_back((*_normals)[orig_i]);
-                (*_texcoords).push_back((*_texcoords)[orig_i]);
+                if (_normals.valid()) (*_normals).push_back((*_normals)[orig_i]);
+                if (_texcoords.valid()) (*_texcoords).push_back((*_texcoords)[orig_i]);
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);

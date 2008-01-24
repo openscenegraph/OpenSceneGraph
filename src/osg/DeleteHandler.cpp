@@ -16,52 +16,6 @@
 namespace osg
 {
 
-// specialized smart pointer, used to get round auto_ptr<>'s lack of the destructor reseting itself to 0.
-struct DeleteHandlerPointer
-{
-    DeleteHandlerPointer():
-        _ptr(0) {}
-
-    DeleteHandlerPointer(DeleteHandler* ptr):
-        _ptr(ptr) {}
-
-    ~DeleteHandlerPointer()
-    {
-        delete _ptr;
-        _ptr = 0;
-    }
-
-    inline DeleteHandlerPointer& operator = (DeleteHandler* ptr)
-    {
-        if (_ptr==ptr) return *this;
-        delete _ptr;
-        _ptr = ptr;
-        return *this;
-    }
-
-    void reset(DeleteHandler* ptr)
-    {
-        if (_ptr==ptr) return;
-        delete _ptr;
-        _ptr = ptr;
-    }
-
-    inline DeleteHandler& operator*()  { return *_ptr; }
-
-    inline const DeleteHandler& operator*() const { return *_ptr; }
-
-    inline DeleteHandler* operator->() { return _ptr; }
-
-    inline const DeleteHandler* operator->() const   { return _ptr; }
-
-    DeleteHandler* get() { return _ptr; }
-
-    const DeleteHandler* get() const { return _ptr; }
-
-    DeleteHandler* _ptr;
-};
-
-
 DeleteHandler::DeleteHandler(int numberOfFramesToRetainObjects):
     _numFramesToRetainObjects(numberOfFramesToRetainObjects),
     _currentFrameNumber(0)

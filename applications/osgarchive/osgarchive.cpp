@@ -155,7 +155,7 @@ int main( int argc, char **argv )
                 std::cout<<"readObejct time = "<<osg::Timer::instance()->delta_m(start,osg::Timer::instance()->tick())<<std::endl;
                 if (obj.valid())
                 {
-                    if (obj.valid()) osgDB::writeObjectFile(*obj, *itr);
+                    osgDB::writeObjectFile(*obj, *itr);
                 }
             }
         }

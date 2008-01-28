@@ -703,7 +703,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     _camera->setReadBuffer(buffer);
 }
 
-static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, double sphere_radius, double collar_radius,osg::Image* intensityMap)
+static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, double sphere_radius, double collar_radius,osg::Image* intensityMap, const osg::Matrix& projectorMatrix)
 {
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
@@ -747,8 +747,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
 
     osg::Vec3 cursor = bottom;
     int i,j;
-    
-    
+
     if (centerProjection)
     {
         for(i=0;i<noSteps;++i)
@@ -772,7 +771,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
                                    cos(phi));
 
                 vertices->push_back(cursor);
-                texcoords0->push_back(texcoord);
+                texcoords0->push_back(texcoord * projectorMatrix);
 
                 osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
                 if (intensityMap)
@@ -816,7 +815,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
                                    z / sphere_radius);
 
                 vertices->push_back(cursor);
-                texcoords0->push_back(texcoord);
+                texcoords0->push_back(texcoord * projectorMatrix);
 
                 osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
                 if (intensityMap)
@@ -858,7 +857,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
     return geometry;
 }
 
-void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned int screenNum, osg::Image* intensityMap)
+void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned int screenNum, osg::Image* intensityMap, const osg::Matrixd& projectorMatrix)
 {
     osg::notify(osg::INFO)<<"View::setUpViewFor3DSphericalDisplay(rad="<<radius<<", cllr="<<collar<<", sn="<<screenNum<<", im="<<intensityMap<<")"<<std::endl;
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
@@ -867,7 +866,6 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return;
     }
-
 
     osg::GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();
@@ -1047,7 +1045,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
     // distortion correction set up.
     {
         osg::Geode* geode = new osg::Geode();
-        geode->addDrawable(create3DSphericalDisplayDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), radius, collar, applyIntensityMapAsColours ? intensityMap : 0));
+        geode->addDrawable(create3DSphericalDisplayDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), radius, collar, applyIntensityMapAsColours ? intensityMap : 0, projectorMatrix));
 
         // new we need to add the texture to the mesh, we do so by creating a 
         // StateSet to contain the Texture StateAttribute.
@@ -1063,14 +1061,14 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setGraphicsContext(gc.get());
         camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
-        camera->setClearColor( osg::Vec4(0.1,0.1,1.0,1.0) );
+        camera->setClearColor( osg::Vec4(0.0,0.0,0.0,1.0) );
         camera->setViewport(new osg::Viewport(0, 0, width, height));
         GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
         camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
         camera->setAllowEventFocus(false);
-        //camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
+        camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
         //camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
         
         camera->setProjectionMatrixAsOrtho2D(0,width,0,height);
@@ -1093,7 +1091,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
     }
 }
 
-static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, double sphere_radius, double collar_radius, osg::Image* intensityMap)
+static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::Vec3& origin, const osg::Vec3& widthVector, const osg::Vec3& heightVector, double sphere_radius, double collar_radius, osg::Image* intensityMap, const osg::Matrix& projectorMatrix)
 {
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
@@ -1109,7 +1107,6 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
     
     osg::notify(osg::INFO)<<"createParoramicSphericalDisplayDistortionMesh : Projector position = "<<projector<<std::endl;
     osg::notify(osg::INFO)<<"createParoramicSphericalDisplayDistortionMesh : distance = "<<distance<<std::endl;
-
 
     // create the quad to visualize.
     osg::Geometry* geometry = new osg::Geometry();
@@ -1137,48 +1134,49 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
     
     osg::Vec3 top = origin + yAxis*height;
 
-    osg::Vec3d screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
+    osg::Vec3 screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
     float screenRadius = heightVector.length() * 0.5f;
 
     double rotation = 0.0;
 
-    osg::Vec3 cursor = bottom;
-    int i,j;
-    
-    int midSteps = noSteps/2;
-    
-    for(i=0;i<midSteps;++i)
+    geometry->getOrCreateStateSet()->setMode(GL_CULL_FACE, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
+
+    for(int i=0;i<noSteps;++i)
     {
         osg::Vec3 cursor = bottom+dy*(float)i;
-        for(j=0;j<midSteps;++j)
+        for(int j=0;j<noSteps;++j)
         {
-            osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
-            double theta = atan2(delta.x(), -delta.y());
-            theta += 2*osg::PI;
-
-            double phi = osg::PI_2 * delta.length() / screenRadius;
-            if (phi > osg::PI_2) phi = osg::PI_2;
-
-            double f = distance * sin(phi);
-            double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
-            double l = e * cos(phi);
-            double h = e * sin(phi);
-            double gamma = atan2(h, l-distance);
-
-            osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
-
-            // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
-
-            if (flip)
-                vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
-            else
-                vertices->push_back(cursor);
+            osg::Vec2 texcoord(double(i)/double(noSteps-1), double(j)/double(noSteps-1));
+            double theta = texcoord.x() * 2.0 * osg::PI;
+            double phi = (1.0-texcoord.y()) * osg::PI;
             
-            texcoords0->push_back( texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
+            if (texcoord_flip) texcoord.y() = 1.0f - texcoord.y();
+
+            osg::Vec3 pos(sin(phi)*sin(theta), sin(phi)*cos(theta), cos(phi));
+            pos = pos*projectorMatrix;
+            
+            double alpha = atan2(pos.x(), pos.y());
+            if (alpha<0.0) alpha += 2.0*osg::PI;
+            
+            double beta = atan2(sqrt(pos.x()*pos.x() + pos.y()*pos.y()), pos.z());
+            if (beta<0.0) beta += 2.0*osg::PI;
+
+            double gamma = atan2(sqrt(pos.x()*pos.x() + pos.y()*pos.y()), pos.z()+distance);
+            if (gamma<0.0) gamma += 2.0*osg::PI;
+            
+            
+            osg::Vec3 v = screenCenter + osg::Vec3(sin(alpha)*gamma*2.0/osg::PI, -cos(alpha)*gamma*2.0/osg::PI, 0.0f)*screenRadius;
+             
+            if (flip)
+                vertices->push_back(osg::Vec3(v.x(), top.y()-(v.y()-origin.y()),v.z()));
+            else
+                vertices->push_back(v);
+
+            texcoords0->push_back( texcoord );
         
-            osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
+            osg::Vec2 texcoord1(alpha/(2.0*osg::PI), 1.0f - beta/osg::PI);
             if (intensityMap)
-            {            
+            {
                 colors->push_back(intensityMap->getColor(texcoord1));
             }
             else
@@ -1187,93 +1185,10 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
                 if (texcoords1) texcoords1->push_back( texcoord1 );
             }
 
-            if (j+1<midSteps) cursor += dx;
+
         }
-
-        for(;j<noSteps;++j)
-        {
-            osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
-            double theta = atan2(delta.x(), -delta.y());
-            double phi = osg::PI_2 * delta.length() / screenRadius;
-            if (phi > osg::PI_2) phi = osg::PI_2;
-
-            double f = distance * sin(phi);
-            double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
-            double l = e * cos(phi);
-            double h = e * sin(phi);
-            double gamma = atan2(h, l-distance);
-
-            osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
-
-            // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
-
-            if (flip)
-                vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
-            else
-                vertices->push_back(cursor);
-
-            texcoords0->push_back( texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
-
-            osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
-            if (intensityMap)
-            {            
-                colors->push_back(intensityMap->getColor(texcoord1));
-            }
-            else
-            {
-                colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-                if (texcoords1) texcoords1->push_back( texcoord1 );
-            }
-
-            cursor += dx;
-        }
-        // osg::notify(osg::NOTICE)<<std::endl;
     }
-    
-    for(;i<noSteps;++i)
-    {
-        osg::Vec3 cursor = bottom+dy*(float)i;
-        for(j=0;j<noSteps;++j)
-        {
-            osg::Vec2 delta(cursor.x() - screenCenter.x(), cursor.y() - screenCenter.y());
-            double theta = atan2(delta.x(), -delta.y());
-            if (theta<0.0) theta += 2*osg::PI;
-            double phi = osg::PI_2 * delta.length() / screenRadius;
-            if (phi > osg::PI_2) phi = osg::PI_2;
 
-            double f = distance * sin(phi);
-            double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
-            double l = e * cos(phi);
-            double h = e * sin(phi);
-            double gamma = atan2(h, l-distance);
-
-            osg::Vec2 texcoord(theta/(2.0*osg::PI), 1.0-gamma/osg::PI);
-
-            // osg::notify(osg::NOTICE)<<"cursor = "<<cursor<< " theta = "<<theta<< "phi="<<phi<<" gamma = "<<gamma<<" texcoord="<<texcoord<<std::endl;
-
-            if (flip)
-                vertices->push_back(osg::Vec3(cursor.x(), top.y()-(cursor.y()-origin.y()),cursor.z()));
-            else
-                vertices->push_back(cursor);
-
-            texcoords0->push_back( texcoord_flip ? osg::Vec2(texcoord.x(), 1.0f - texcoord.y()) : texcoord);
-
-            osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
-            if (intensityMap)
-            {            
-                colors->push_back(intensityMap->getColor(texcoord1));
-            }
-            else
-            {
-                colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
-                if (texcoords1) texcoords1->push_back( texcoord1 );
-            }
-
-            cursor += dx;
-        }
-
-        // osg::notify(osg::NOTICE)<<std::endl;
-    }
 
     // pass the created vertex array to the points geometry object.
     geometry->setVertexArray(vertices);
@@ -1284,21 +1199,42 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
     geometry->setTexCoordArray(0,texcoords0);
     if (texcoords1) geometry->setTexCoordArray(1,texcoords1);
 
-    for(i=0;i<noSteps-1;++i)
+    osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES);
+    geometry->addPrimitiveSet(elements);
+
+    for(int i=0;i<noSteps-1;++i)
     {
-        osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::QUAD_STRIP);
-        for(j=0;j<noSteps;++j)
+        for(int j=0;j<noSteps-1;++j)
         {
-            elements->push_back(j+(i+1)*noSteps);
-            elements->push_back(j+(i)*noSteps);
+            int i1 = j+(i+1)*noSteps;
+            int i2 = j+(i)*noSteps;
+            int i3 = j+1+(i)*noSteps;
+            int i4 = j+1+(i+1)*noSteps;
+            
+            osg::Vec3& v1 = (*vertices)[i1];
+            osg::Vec3& v2 = (*vertices)[i2];
+            osg::Vec3& v3 = (*vertices)[i3];
+            osg::Vec3& v4 = (*vertices)[i4];
+
+            if ((v1-screenCenter).length()>screenRadius) continue;
+            if ((v2-screenCenter).length()>screenRadius) continue;
+            if ((v3-screenCenter).length()>screenRadius) continue;
+            if ((v4-screenCenter).length()>screenRadius) continue;
+            
+            elements->push_back(i1);
+            elements->push_back(i2);
+            elements->push_back(i3);
+            
+            elements->push_back(i1);
+            elements->push_back(i3);
+            elements->push_back(i4);
         }
-        geometry->addPrimitiveSet(elements);
     }
-    
+   
     return geometry;
 }
 
-void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, unsigned int screenNum, osg::Image* intensityMap)
+void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, unsigned int screenNum, osg::Image* intensityMap, const osg::Matrixd& projectorMatrix)
 {
     osg::notify(osg::INFO)<<"View::setUpViewForPanoramicSphericalDisplay(rad="<<radius<<", cllr="<<collar<<", sn="<<screenNum<<", im="<<intensityMap<<")"<<std::endl;
 
@@ -1386,7 +1322,7 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
     // distortion correction set up.
     {
         osg::Geode* geode = new osg::Geode();
-        geode->addDrawable(createParoramicSphericalDisplayDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), radius, collar, applyIntensityMapAsColours ? intensityMap : 0));
+        geode->addDrawable(createParoramicSphericalDisplayDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), radius, collar, applyIntensityMapAsColours ? intensityMap : 0, projectorMatrix));
 
         // new we need to add the texture to the mesh, we do so by creating a 
         // StateSet to contain the Texture StateAttribute.
@@ -1406,14 +1342,14 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setGraphicsContext(gc.get());
         camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
-        camera->setClearColor( osg::Vec4(0.1,0.1,1.0,1.0) );
+        camera->setClearColor( osg::Vec4(0.0,0.0,0.0,1.0) );
         camera->setViewport(new osg::Viewport(0, 0, width, height));
         GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
         camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
         camera->setAllowEventFocus(false);
-        //camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
+        camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
         //camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
         
         camera->setProjectionMatrixAsOrtho2D(0,width,0,height);

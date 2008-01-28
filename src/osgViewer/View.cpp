@@ -1161,7 +1161,7 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
             double beta = atan2(sqrt(pos.x()*pos.x() + pos.y()*pos.y()), pos.z());
             if (beta<0.0) beta += 2.0*osg::PI;
 
-            double gamma = atan2(sqrt(pos.x()*pos.x() + pos.y()*pos.y()), pos.z()+distance);
+            double gamma = atan2(sqrt(double(pos.x()*pos.x() + pos.y()*pos.y())), double(pos.z()+distance));
             if (gamma<0.0) gamma += 2.0*osg::PI;
             
             

@@ -583,7 +583,7 @@ void Camera::Lens::_updateFOV()
 }
 
 
-void Camera::setOffset( const osg::Matrix::value_type matrix[16], double xshear, double yshear )
+void Camera::setOffset( const osg::Matrix::value_type matrix[16],  const osg::Matrix::value_type xshear,  const osg::Matrix::value_type yshear )
 {
     memcpy( _offset._matrix, matrix, sizeof(osg::Matrix::value_type[16]));
     _offset._xshear = xshear;

@@ -25,6 +25,7 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/BlendFunc>
 #include <osg/ClearNode>
+#include <osg/Version>
 
 #include <osgUtil/Tessellator>
 #include <osgUtil/CullVisitor>
@@ -477,6 +478,14 @@ int main( int argc, char **argv )
     
     std::string label = "OpenSceneGraph";
     std::string subscript = "";
+
+    bool showVersion = false;
+    while (arguments.read("--version")) { showVersion = true; } 
+    if( showVersion )
+    {
+        label += " ";
+        label += osgGetVersion();
+    }
 
     while (arguments.read("--label", label)) {} 
     while (arguments.read("--subscript", subscript)) {} 

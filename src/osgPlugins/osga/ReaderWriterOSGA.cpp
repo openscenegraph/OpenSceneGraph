@@ -58,7 +58,13 @@ public:
         if (!result.validArchive()) return result;
 
 
-        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = new osgDB::ReaderWriter::Options;
+        // copy the incoming options if possible so that plugin options can be applied to files
+        // inside the archive
+        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = 
+            options?
+            new osgDB::ReaderWriter::Options( *options ) :
+            new osgDB::ReaderWriter::Options;
+
         local_options->setDatabasePath(file);
 
         ReadResult result_2 = result.getArchive()->readImage(result.getArchive()->getMasterFileName(),local_options.get());
@@ -80,7 +86,13 @@ public:
         if (!result.validArchive()) return result;
 
 
-        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = new osgDB::ReaderWriter::Options;
+        // copy the incoming options if possible so that plugin options can be applied to files
+        // inside the archive
+        osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = 
+            options?
+            new osgDB::ReaderWriter::Options( *options ) :
+            new osgDB::ReaderWriter::Options;
+
         local_options->setDatabasePath(file);
 
         ReadResult result_2 = result.getArchive()->readNode(result.getArchive()->getMasterFileName(),local_options.get());

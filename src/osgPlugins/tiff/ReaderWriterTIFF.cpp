@@ -412,7 +412,7 @@ simage_tiff_load(std::istream& fin,
             photometric != PHOTOMETRIC_MINISWHITE &&
             photometric != PHOTOMETRIC_MINISBLACK)
         {
-            /*Bad photometric; can only handle Grayscale, RGB and Palette images :-( */
+            osg::notify(osg::DEBUG_INFO) << "Bad photometric; can only handle Grayscale, RGB and Palette images" << std::endl;
             TIFFClose(in);
             tifferror = ERR_UNSUPPORTED;
             return NULL;
@@ -432,7 +432,7 @@ simage_tiff_load(std::istream& fin,
             samplesperpixel != 3 &&
             samplesperpixel != 4)
         {
-            /* Bad samples/pixel */
+            osg::notify(osg::DEBUG_INFO) << "Bad samples/pixel" << std::endl;
             tifferror = ERR_UNSUPPORTED;
             TIFFClose(in);
             return NULL;
@@ -449,7 +449,7 @@ simage_tiff_load(std::istream& fin,
     {
          if (bitspersample != 8 && bitspersample != 16)
         {
-            /* can only handle 8 and 16 bit samples. */
+            osg::notify(osg::DEBUG_INFO) << "can only handle 8 and 16 bit samples" << std::endl;
             TIFFClose(in);
             tifferror = ERR_UNSUPPORTED;
             return NULL;
@@ -642,12 +642,12 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
         ReadResult readTIFStream(std::istream& fin) const
         {
             unsigned char *imageData = NULL;
-            int width_ret;
-            int height_ret;
-            int numComponents_ret;
-            uint16 bitspersample;
+            int width_ret = -1;
+            int height_ret = -1;
+            int numComponents_ret = -1;
+            uint16 bitspersample_ret = 0;
 
-            imageData = simage_tiff_load(fin, width_ret, height_ret, numComponents_ret, bitspersample);
+            imageData = simage_tiff_load(fin, width_ret, height_ret, numComponents_ret, bitspersample_ret);
 
             if (imageData==NULL) 
             {
@@ -669,7 +669,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                 numComponents_ret == 3 ? GL_RGB :
                 numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
 
-            unsigned int dataType = bitspersample==8 ? GL_UNSIGNED_BYTE : GL_UNSIGNED_SHORT;
+            unsigned int dataType = bitspersample_ret==8 ? GL_UNSIGNED_BYTE : GL_UNSIGNED_SHORT;
 
             osg::Image* pOsgImage = new osg::Image;
             pOsgImage->setImage(s,t,r,

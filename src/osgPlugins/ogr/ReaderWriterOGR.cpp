@@ -36,9 +36,7 @@
 #include <ogr_feature.h>
 #include <ogrsf_frmts.h>
 
-//#include <iostream>
-
-#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)
+#define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
 
 static osg::Material* createDefaultMaterial()
 {
@@ -81,7 +79,9 @@ static osg::Vec3Array* triangulizeGeometry(osg::Geometry* src)
 
 class ReaderWriterOGR : public osgDB::ReaderWriter
 {
+
 public:
+    ReaderWriterOGR() {}
     virtual const char* className() const { return "OGR file reader"; }
     virtual bool acceptsExtension(const std::string& extension) const
     {
@@ -113,11 +113,18 @@ public:
         if (!file)
             return 0;
 
+        bool useRandomColorByFeature = false;
+        if (options) 
+        {
+            if (options->getOptionString() == "UseRandomColorByFeature")
+                useRandomColorByFeature = true;
+        }
+
         osg::Group* group = new osg::Group;
 
         for (int i = 0; i < file->GetLayerCount(); i++) 
         {
-            osg::Group* node = readLayer(file->GetLayer(i), file->GetName());
+            osg::Group* node = readLayer(file->GetLayer(i), file->GetName(), useRandomColorByFeature);
             if (node)
                 group->addChild( node );
         }
@@ -125,7 +132,7 @@ public:
         return group;
     }
 
-    osg::Group* readLayer(OGRLayer* ogrLayer, const std::string& name) const
+    osg::Group* readLayer(OGRLayer* ogrLayer, const std::string& name, bool useRandomColorByFeature) const
     {
         if (!ogrLayer)
             return 0;
@@ -137,7 +144,7 @@ public:
         OGRFeature* ogrFeature = NULL;
         while ((ogrFeature = ogrLayer->GetNextFeature()) != NULL) 
         {
-            osg::Geode* feature = readFeature(ogrFeature);
+            osg::Geode* feature = readFeature(ogrFeature, useRandomColorByFeature);
             if (feature)
                 layer->addChild(feature);
             OGRFeature::DestroyFeature( ogrFeature );
@@ -320,7 +327,7 @@ public:
         return geom;
     }
 
-    osg::Geode* readFeature(OGRFeature* ogrFeature) const
+    osg::Geode* readFeature(OGRFeature* ogrFeature, bool useRandomColorByFeature) const
     {
 
         if (!ogrFeature || !ogrFeature->GetGeometryRef())
@@ -387,7 +394,8 @@ public:
         if (disableCulling)
             geode->setCullingActive(false); // because culling on one points geode is always true, so i disable it
         geode->addDrawable(drawable);
-        geode->getOrCreateStateSet()->setAttributeAndModes(createDefaultMaterial(),true);
+        if (useRandomColorByFeature)
+            geode->getOrCreateStateSet()->setAttributeAndModes(createDefaultMaterial(),true);
         for(int i = 0; i < ogrFeature->GetFieldCount(); i++) {
             geode->addDescription(std::string(ogrFeature->GetFieldDefnRef(i)->GetNameRef()) + " : " + std::string(ogrFeature->GetFieldAsString(i)));
         }

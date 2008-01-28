@@ -297,7 +297,7 @@ SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_BINDIR})
 SET(OUTPUT_LIBDIR ${PROJECT_BINARY_DIR}/lib)
 MAKE_DIRECTORY(${OUTPUT_LIBDIR})
 IF(NOT MSVC)
-	MAKE_DIRECTORY(${OUTPUT_LIBDIR}/${OSG_PLUGINS})	
+    MAKE_DIRECTORY(${OUTPUT_LIBDIR}/${OSG_PLUGINS})    
 ENDIF(NOT MSVC)
 SET(LIBRARY_OUTPUT_PATH ${OUTPUT_LIBDIR})
 
@@ -444,21 +444,36 @@ IF(APPLE)
 ENDIF(APPLE)
 
 
-OPTION(BUILD_REFERENCE_DOCS "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
+OPTION(BUILD_REF_DOCS "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
 
-IF(BUILD_REFERENCE_DOCS)
+IF(BUILD_REF_DOCS)
     SET(BUILD_DOCUMENTATION YES)
-ENDIF(BUILD_REFERENCE_DOCS)
+    OPTION(BUILD_REF_DOCS_SEARCHENGINE "Enable doxygen's search engine (requires that documentation to be installed on a php enabled web server)" OFF)
+    OPTION(BUILD_REF_DOCS_TAGFILE "Generate a tag file named osg.tag on the documentation web server" OFF)
+ENDIF(BUILD_REF_DOCS)
 
 # For Doxygen
 #FIXME: I haven't figured out what to do with OSG's multiple doxyfiles 
 # and footer.
 INCLUDE(${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL)
-
+OPTION(BUILD_DOCUMENTATION "Build osg documentation" OFF)
 # To build the documention, you will have to enable it
 # and then do the equivalent of "make DoxygenDoc".
 IF(BUILD_DOCUMENTATION)
     SET(BUILD_DOCUMENTATION YES)
+
+    IF(BUILD_REF_DOCS)
+        SET(SEARCHENGINE YES)
+    ELSE(BUILD_REF_DOCS)
+        SET(SEARCHENGINE NO)
+    ENDIF(BUILD_REF_DOCS)
+    
+    IF(BUILD_REF_DOCS_TAGFILE)
+        SET(GENERATE_TAGFILE "doc/OpenSceneGraphReferenceDocs/osg.tag")
+    ELSE(BUILD_REF_DOCS_TAGFILE)
+        SET(GENERATE_TAGFILE "")
+    ENDIF(BUILD_REF_DOCS_TAGFILE)
+    
     IF(DOT)
         SET(HAVE_DOT YES)
     ELSE(DOT)

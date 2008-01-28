@@ -22,10 +22,12 @@
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
 #include <osg/TexMat>
+#include <osg/DeleteHandler>
 
 #include <osgUtil/Optimizer>
 #include <osgUtil/IntersectionVisitor>
 #include <osgUtil/GLObjectsVisitor>
+#include <osgUtil/RenderLeaf>
 
 static osg::ApplicationUsageProxy ViewerBase_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_CONFIG_FILE <filename>","Specify a viewer configuration file to load by default.");
 static osg::ApplicationUsageProxy ViewerBase_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREADING <value>","Set the threading model using by Viewer, <value> can be SingleThreaded, CullDrawThreadPerContext, DrawThreadPerContext or CullThreadPerCameraDrawThreadPerContext.");

@@ -604,7 +604,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
     
     setWindowDecoration(_traits->windowDecoration);
     useCursor(_traits->useCursor);
-    
+
     // move the window to the right screen
     OSXCarbonWindowingSystemInterface* wsi = dynamic_cast<OSXCarbonWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
@@ -804,7 +804,8 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
     }
     else
     {
-    
+        UInt32 clickCount;
+        GetEventParameter(theEvent, kEventParamClickCount, typeUInt32, NULL, sizeof(clickCount), NULL, &clickCount);
         // swap right and middle buttons so that middle button is 2, right button is 3.
         if (mouseButton==3) mouseButton = 2;
         else if (mouseButton==2) mouseButton = 3;
@@ -862,7 +863,10 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                         }
                     }
                     
-                    getEventQueue()->mouseButtonPress(mx, my, mouseButton);
+                    if (clickCount > 1) 
+                        getEventQueue()->mouseDoubleButtonPress(mx,my, mouseButton);
+                    else
+                        getEventQueue()->mouseButtonPress(mx, my, mouseButton);
                 }
                 break;
             case kEventMouseUp:
@@ -1164,6 +1168,7 @@ void GraphicsWindowCarbon::setWindowName (const std::string& name)
         CFRelease(windowtitle);
     }
 }
+
 
 
 void GraphicsWindowCarbon::transformMouseXY(float& x, float& y)

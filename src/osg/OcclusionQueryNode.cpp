@@ -36,6 +36,8 @@
 #include <vector>
 
 
+typedef osg::buffered_value< osg::ref_ptr< osg::Drawable::Extensions > > OcclusionQueryBufferedExtensions;
+static OcclusionQueryBufferedExtensions s_OQ_bufferedExtensions;
 
 //
 // Support classes, used by (and private to) OcclusionQueryNode.
@@ -260,18 +262,14 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
 
     osg::Drawable::Extensions* getExtensions( unsigned int contextID, bool createIfNotInitalized )
     {
-        if (!s_extensions[ contextID ] && createIfNotInitalized)
-            s_extensions[ contextID ] = new osg::Drawable::Extensions( contextID );
-        return s_extensions[ contextID ].get();
+        if (!s_OQ_bufferedExtensions[ contextID ] && createIfNotInitalized)
+            s_OQ_bufferedExtensions[ contextID ] = new osg::Drawable::Extensions( contextID );
+        return s_OQ_bufferedExtensions[ contextID ].get();
     }
 
-    typedef osg::buffered_value< osg::ref_ptr< osg::Drawable::Extensions > > BufferedExtensions;
-    static BufferedExtensions s_extensions;
 
     osg::Drawable::Extensions* _extensionsFallback;
 };
-
-RetrieveQueriesCallback::BufferedExtensions RetrieveQueriesCallback::s_extensions;
 
 
 

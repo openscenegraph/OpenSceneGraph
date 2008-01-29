@@ -1,3 +1,89 @@
+2008-01-29 20:45 +0000 [r7852]  robert:
+
+	* Updated wrappers
+
+2008-01-29 12:24 +0000 [r7851]  robert:
+
+	* Reorganized the static vector used for buffering extensions to
+	  prevent an crash on exit.
+
+2008-01-29 10:28 +0000 [r7850]  robert:
+
+	* Updated versions for OSG-2.3.4 release
+
+2008-01-28 20:54 +0000 [r7848-7849]  robert:
+
+	* From Mike Weiblen, "1) best practices suggest that values passed
+	  by-reference should be initialized. 2) explanatory comments are
+	  handy when available as notify() messages."
+
+	* From Mike Weiblen, "an aesthetic enhancement for displaying
+	  important version information."
+
+2008-01-28 20:31 +0000 [r7847]  robert:
+
+	* From Roger James, "A small fix for compiling with
+	  OSG_USE_FLOAT_MATRIX"
+
+2008-01-28 20:27 +0000 [r7846]  robert:
+
+	* From Rainer Oder, removed duplicate conditional
+
+2008-01-28 19:54 +0000 [r7845]  robert:
+
+	* Fixed BUILD_REF_DOCS_SEARCHENGINE conditional
+
+2008-01-28 19:42 +0000 [r7844]  robert:
+
+	* Added explict casts to double to prevent VS compiler error
+
+2008-01-28 18:29 +0000 [r7843]  robert:
+
+	* From Jean-Christophe Lombardo and Robert Osfield, added
+	  BUILD_REF_DOCS_SEARCHENGINE and BUILD_REF_DOCS_TAGFILE options
+	  for being doxygen docs.
+
+2008-01-28 17:00 +0000 [r7842]  robert:
+
+	* From Glen Waldon, "This change patches ReaderWriterOSGA.cpp so
+	  that it passes along the ReaderWriter::Options to files loaded
+	  from inside the archive. Previously it was discarding them.
+	  example: osgviewer -O noLoadExternalReferenceFiles archive.osga"
+
+2008-01-28 16:38 +0000 [r7841]  robert:
+
+	* From Stephan Huber, added support for double click event for OSX.
+
+2008-01-28 16:13 +0000 [r7840]  robert:
+
+	* From Cedric Pinson, "default white behaviour : osgviewerd -e ogr
+	  yourFile randomize color by feature: osgviewerd -e ogr -O
+	  UseRandomColorByFeature yourFile"
+
+2008-01-28 15:41 +0000 [r7838]  robert:
+
+	* Added projectorMatrix parameter support to *SphericalDisplay
+	  setup functions and .view, this allows one to flip, rotate, or
+	  turn up side the position of the projector. Note, projector at
+	  base of display is the default.
+
+2008-01-28 15:36 +0000 [r7837]  robert:
+
+	* Added include RenderLeaf to make sure #define's are defined
+	  correctly
+
+2008-01-26 20:03 +0000 [r7836]  shuber:
+
+	* From Stephan Huber: updated XCode project
+
+2008-01-24 10:04 +0000 [r7835]  robert:
+
+	* Removed duplicate declaration of DeleteHandlerPointer
+
+2008-01-22 11:13 +0000 [r7833]  robert:
+
+	* Updated ChangeLog, Authors and readme for 2.3.3 release
+
 2008-01-22 10:28 +0000 [r7832]  robert:
 
 	* Added missing checks for null pointers

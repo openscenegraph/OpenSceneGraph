@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.3.3
+OpenSceneGraph Library 2.3.4
 
-298 Contributors:
+299 Contributors:
 
 Firstname Surname
 -----------------
@@ -26,9 +26,9 @@ Luigi Calori
 David Callu
 Pavel Moloshtan
 Tom Jolley
+Roger James
 Norman Vine
 Jean-Sebastien Guay
-Roger James
 Alberto Farre
 Andy Skinner
 André Garneau
@@ -54,6 +54,7 @@ Yefei He
 Sondra Iverson
 Serge Lages
 Rune Schmidt Jensen
+Rainer Oder
 Mike Connell
 Jason Beverage
 Ben Discoe
@@ -61,7 +62,6 @@ Adrian Egli
 Wojciech Lewandowski
 Sherman Wilcox
 Sasa Bistrovic
-Rainer Oder
 Paul Melis
 Martin Naylor
 Martin Aumueller
@@ -102,6 +102,7 @@ Leandro Motta Barros
 José Delport
 John Kelso
 Daniel Larimer
+Cedric Pinson
 Carlo Camporesi
 Bruce Clay
 Alberto Barbati
@@ -121,12 +122,12 @@ Ken Sewell
 Julian Ortiz
 Jeremy Bell
 James French
+Glenn Waldron
 Gabor Dorka
 Donn Mielcarek
 Domenico Mangieri
 Colin Dunlop
 Charles Cole
-Cedric Pinson
 Blake Williams
 Antoine Hue
 Anders Backman
@@ -160,7 +161,6 @@ John Aughey
 Johan Nouvel
 Igor Kravtchenko
 Gustavo Wagner
-Glenn Waldron
 Gerrick Bivins
 George Tarantilis
 Garret Potts
@@ -244,6 +244,7 @@ John Donovan
 John Davis
 Joan Abadie
 Joakim Simmonsson
+Jean-Christophe Lombardo
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger

@@ -58,7 +58,7 @@ class VectorGLubyte: public std::vector<GLubyte>
 public:
     VectorGLubyte(): vector_type() {}
     VectorGLubyte(const VectorGLubyte &copy): vector_type(copy) {}
-    VectorGLubyte(GLubyte* beg, GLubyte* end): vector_type(beg, end) {}
+    VectorGLubyte(const GLubyte* beg, const GLubyte* end): vector_type(beg, end) {}
     explicit VectorGLubyte(unsigned int n): vector_type(n) {}
 };
 
@@ -68,7 +68,7 @@ class VectorGLushort: public std::vector<GLushort>
 public:
     VectorGLushort(): vector_type() {}
     VectorGLushort(const VectorGLushort &copy): vector_type(copy) {}
-    VectorGLushort(GLushort* beg, GLushort* end): vector_type(beg, end) {}
+    VectorGLushort(const GLushort* beg, const GLushort* end): vector_type(beg, end) {}
     explicit VectorGLushort(unsigned int n): vector_type(n) {}
 };
 
@@ -78,7 +78,7 @@ class VectorGLuint: public std::vector<GLuint>
 public:
     VectorGLuint(): vector_type() {}
     VectorGLuint(const VectorGLuint &copy): vector_type(copy) {}
-    VectorGLuint(GLuint* beg, GLuint* end): vector_type(beg, end) {}
+    VectorGLuint(const GLuint* beg, const GLuint* end): vector_type(beg, end) {}
     explicit VectorGLuint(unsigned int n): vector_type(n) {}
 };
 
@@ -516,15 +516,15 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
         DrawElementsUByte(GLenum mode=0):
             DrawElements(DrawElementsUBytePrimitiveType,mode) {}
     
-        DrawElementsUByte(const DrawElementsUByte& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+        DrawElementsUByte(const DrawElementsUByte& array, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             DrawElements(array,copyop),
             vector_type(array) {}
 
-        DrawElementsUByte(GLenum mode,unsigned int no,GLubyte* ptr) : 
+        DrawElementsUByte(GLenum mode, unsigned int no, const GLubyte* ptr) : 
             DrawElements(DrawElementsUBytePrimitiveType,mode),
             vector_type(ptr,ptr+no) {}
 
-        DrawElementsUByte(GLenum mode,unsigned int no) : 
+        DrawElementsUByte(GLenum mode, unsigned int no) : 
             DrawElements(DrawElementsUBytePrimitiveType,mode),
             vector_type(no) {}
 
@@ -590,11 +590,11 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
             DrawElements(array,copyop),
             vector_type(array) {}
 
-        DrawElementsUShort(GLenum mode,unsigned int no,GLushort* ptr) : 
+        DrawElementsUShort(GLenum mode, unsigned int no, const GLushort* ptr) : 
             DrawElements(DrawElementsUShortPrimitiveType,mode),
             vector_type(ptr,ptr+no) {}
 
-        DrawElementsUShort(GLenum mode,unsigned int no) : 
+        DrawElementsUShort(GLenum mode, unsigned int no) : 
             DrawElements(DrawElementsUShortPrimitiveType,mode),
             vector_type(no) {}
 
@@ -664,11 +664,11 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
             DrawElements(array,copyop),
             vector_type(array) {}
 
-        DrawElementsUInt(GLenum mode,unsigned int no,GLuint* ptr) : 
+        DrawElementsUInt(GLenum mode, unsigned int no, const GLuint* ptr) : 
             DrawElements(DrawElementsUIntPrimitiveType,mode),
             vector_type(ptr,ptr+no) {}
 
-        DrawElementsUInt(GLenum mode,unsigned int no) : 
+        DrawElementsUInt(GLenum mode, unsigned int no) : 
             DrawElements(DrawElementsUIntPrimitiveType,mode),
             vector_type(no) {}
 

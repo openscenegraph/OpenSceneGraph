@@ -113,16 +113,18 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         class WindowData : public osg::Referenced
         {
             public:
-                WindowData(WindowRef window):
-                    _window(window), _installEventHandler(false) {}
+                WindowData(WindowRef window, AGLDrawable* drawable=NULL ): //ADEGLI
+                    _window(window), _AGLDrawable(drawable) ,_installEventHandler(false) {} //ADEGLI
                 
                 WindowRef getNativeWindowRef() { return _window; }
                 void setInstallEventHandler(bool flag) { _installEventHandler = flag; }
                 bool installEventHandler() { return _installEventHandler; }
-            
+                AGLDrawable* getAGLDrawable() { return _AGLDrawable; } //ADEGLI
+                
             private:
-                WindowRef   _window;
-                bool        _installEventHandler;
+                WindowRef    _window;
+                AGLDrawable* _AGLDrawable; //ADEGLI
+                bool         _installEventHandler;
             
         };
         

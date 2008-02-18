@@ -24,6 +24,10 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(osg::Vec3d, osg::LineSegment::vec_type)
+
+TYPE_NAME_ALIAS(osg::LineSegment::vec_type::value_type, osg::LineSegment::value_type)
+
 BEGIN_OBJECT_REFLECTOR(osg::LineSegment)
 	I_DeclaringFile("osg/LineSegment");
 	I_BaseType(osg::Referenced);
@@ -35,33 +39,33 @@ BEGIN_OBJECT_REFLECTOR(osg::LineSegment)
 	               ____LineSegment__C5_LineSegment_R1,
 	               "",
 	               "");
-	I_Constructor2(IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e,
-	               ____LineSegment__C5_Vec3_R1__C5_Vec3_R1,
+	I_Constructor2(IN, const osg::LineSegment::vec_type &, s, IN, const osg::LineSegment::vec_type &, e,
+	               ____LineSegment__C5_vec_type_R1__C5_vec_type_R1,
 	               "",
 	               "");
-	I_Method2(void, set, IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e,
+	I_Method2(void, set, IN, const osg::LineSegment::vec_type &, s, IN, const osg::LineSegment::vec_type &, e,
 	          Properties::NON_VIRTUAL,
-	          __void__set__C5_Vec3_R1__C5_Vec3_R1,
+	          __void__set__C5_vec_type_R1__C5_vec_type_R1,
 	          "",
 	          "");
-	I_Method0(osg::Vec3 &, start,
+	I_Method0(osg::LineSegment::vec_type &, start,
 	          Properties::NON_VIRTUAL,
-	          __Vec3_R1__start,
+	          __vec_type_R1__start,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, start,
+	I_Method0(const osg::LineSegment::vec_type &, start,
 	          Properties::NON_VIRTUAL,
-	          __C5_Vec3_R1__start,
+	          __C5_vec_type_R1__start,
 	          "",
 	          "");
-	I_Method0(osg::Vec3 &, end,
+	I_Method0(osg::LineSegment::vec_type &, end,
 	          Properties::NON_VIRTUAL,
-	          __Vec3_R1__end,
+	          __vec_type_R1__end,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, end,
+	I_Method0(const osg::LineSegment::vec_type &, end,
 	          Properties::NON_VIRTUAL,
-	          __C5_Vec3_R1__end,
+	          __C5_vec_type_R1__end,
 	          "",
 	          "");
 	I_Method0(bool, valid,

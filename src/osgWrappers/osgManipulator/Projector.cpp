@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/LineSegment>
 #include <osg/Matrix>
 #include <osg/Plane>
 #include <osg/Quat>
@@ -104,33 +105,33 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::LineProjector)
 	I_Constructor0(____LineProjector,
 	               "",
 	               "");
-	I_Constructor2(IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e,
-	               ____LineProjector__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	I_Constructor2(IN, const osg::LineSegment::vec_type &, s, IN, const osg::LineSegment::vec_type &, e,
+	               ____LineProjector__C5_osg_LineSegment_vec_type_R1__C5_osg_LineSegment_vec_type_R1,
 	               "",
 	               "");
-	I_Method2(void, setLine, IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e,
+	I_Method2(void, setLine, IN, const osg::LineSegment::vec_type &, s, IN, const osg::LineSegment::vec_type &, e,
 	          Properties::NON_VIRTUAL,
-	          __void__setLine__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	          __void__setLine__C5_osg_LineSegment_vec_type_R1__C5_osg_LineSegment_vec_type_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getLineStart,
+	I_Method0(const osg::LineSegment::vec_type &, getLineStart,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getLineStart,
+	          __C5_osg_LineSegment_vec_type_R1__getLineStart,
 	          "",
 	          "");
-	I_Method0(osg::Vec3 &, getLineStart,
+	I_Method0(osg::LineSegment::vec_type &, getLineStart,
 	          Properties::NON_VIRTUAL,
-	          __osg_Vec3_R1__getLineStart,
+	          __osg_LineSegment_vec_type_R1__getLineStart,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getLineEnd,
+	I_Method0(const osg::LineSegment::vec_type &, getLineEnd,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getLineEnd,
+	          __C5_osg_LineSegment_vec_type_R1__getLineEnd,
 	          "",
 	          "");
-	I_Method0(osg::Vec3 &, getLineEnd,
+	I_Method0(osg::LineSegment::vec_type &, getLineEnd,
 	          Properties::NON_VIRTUAL,
-	          __osg_Vec3_R1__getLineEnd,
+	          __osg_LineSegment_vec_type_R1__getLineEnd,
 	          "",
 	          "");
 	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3 &, projectedPoint,
@@ -138,11 +139,11 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::LineProjector)
 	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given line. ",
 	          "Returns true on successful projection. ");
-	I_SimpleProperty(osg::Vec3 &, LineEnd, 
-	                 __osg_Vec3_R1__getLineEnd, 
+	I_SimpleProperty(osg::LineSegment::vec_type &, LineEnd, 
+	                 __osg_LineSegment_vec_type_R1__getLineEnd, 
 	                 0);
-	I_SimpleProperty(osg::Vec3 &, LineStart, 
-	                 __osg_Vec3_R1__getLineStart, 
+	I_SimpleProperty(osg::LineSegment::vec_type &, LineStart, 
+	                 __osg_LineSegment_vec_type_R1__getLineStart, 
 	                 0);
 END_REFLECTOR
 

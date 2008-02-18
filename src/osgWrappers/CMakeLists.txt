@@ -78,8 +78,13 @@ MACRO(ADD_WRAPPER_LIB SUBDIR EXPORTDEF)
                 #changing bin to something else breaks this hack
                 #the dll are placed in bin/${OSG_PLUGINS} 
                 
-            SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES PREFIX "../../bin/${OSG_PLUGINS}/")
-                 SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES IMPORT_PREFIX "../")
+                IF(NOT MSVC_IDE)
+                    SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES PREFIX "../bin/${OSG_PLUGINS}/")
+                ELSE(NOT MSVC_IDE)
+                    SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES PREFIX "../../bin/${OSG_PLUGINS}/" IMPORT_PREFIX "../")
+                ENDIF(NOT MSVC_IDE)
+                
+                
         ELSE(OSG_MSVC_VERSIONED_DLL)
             
             #in standard mode (unversioned) the .lib and .dll are placed in lib/<debug or release>/${OSG_PLUGINS}.

@@ -92,13 +92,15 @@ class OSGMANIPULATOR_EXPORT LineProjector : public Projector
 
         LineProjector();
 
-        LineProjector(const osg::Vec3& s, const osg::Vec3& e);
+        LineProjector(const osg::LineSegment::vec_type& s, const osg::LineSegment::vec_type& e);
 
-        inline void setLine(const osg::Vec3& s, const osg::Vec3& e) { _line->start() = s; _line->end() = e; }
-        inline const osg::Vec3& getLineStart() const { return _line->start(); }
-        inline osg::Vec3& getLineStart() { return _line->start(); }
-        inline const osg::Vec3& getLineEnd() const { return _line->end(); }
-        inline osg::Vec3& getLineEnd() { return _line->end(); }
+        inline void setLine(const osg::LineSegment::vec_type& s, const osg::LineSegment::vec_type& e) { _line->start() = s; _line->end() = e; }
+
+        inline const osg::LineSegment::vec_type& getLineStart() const { return _line->start(); }
+        inline osg::LineSegment::vec_type& getLineStart() { return _line->start(); }
+
+        inline const osg::LineSegment::vec_type& getLineEnd() const { return _line->end(); }
+        inline osg::LineSegment::vec_type& getLineEnd() { return _line->end(); }
 
         /**
          * Calculates the object coordinates (projectedPoint) of a window 

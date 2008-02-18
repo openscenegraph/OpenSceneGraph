@@ -127,15 +127,15 @@ class OSGMANIPULATOR_EXPORT TranslateInLineCommand : public MotionCommand
 
         TranslateInLineCommand();
 
-        TranslateInLineCommand(const osg::Vec3& s, const osg::Vec3& e);
+        TranslateInLineCommand(const osg::LineSegment::vec_type& s, const osg::LineSegment::vec_type& e);
 
         virtual bool execute();
         virtual bool unexecute();
         virtual void applyConstraint(const Constraint*);
 
-        inline void setLine(const osg::Vec3& s, const osg::Vec3& e) { _line->start() = s; _line->end() = e; }
-        inline const osg::Vec3& getLineStart() const { return _line->start(); }
-        inline const osg::Vec3& getLineEnd() const { return _line->end(); }
+        inline void setLine(const osg::LineSegment::vec_type& s, const osg::LineSegment::vec_type& e) { _line->start() = s; _line->end() = e; }
+        inline const osg::LineSegment::vec_type& getLineStart() const { return _line->start(); }
+        inline const osg::LineSegment::vec_type& getLineEnd() const { return _line->end(); }
 
         inline void setTranslation(const osg::Vec3& t) { _translation = t; }
         inline const osg::Vec3& getTranslation() const { return _translation; }

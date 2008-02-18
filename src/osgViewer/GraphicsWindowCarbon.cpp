@@ -21,6 +21,8 @@
 
 #include <Carbon/Carbon.h>
 #include <OpenGL/OpenGL.h>
+
+#include <iostream>
 using namespace osgViewer;
 
 
@@ -32,7 +34,7 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
     Rect                bounds;
     OSStatus            result = eventNotHandledErr; /* report failure by default */
     
-    
+    osg::notify(osg::INFO) << "GraphicsWindowEventHandler" << std::endl;
 
     GraphicsWindowCarbon* w = (GraphicsWindowCarbon*)userData;
     if (!w)
@@ -89,8 +91,8 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
             break;
     }
     
-    if (result == eventNotHandledErr)
-        result = CallNextEventHandler (nextHandler, event);
+    //if (result == eventNotHandledErr)
+    //    result = CallNextEventHandler (nextHandler, event);
         
     return result;
 }
@@ -590,9 +592,8 @@ void GraphicsWindowCarbon::installEventHandler() {
         {kEventClassKeyboard, kEventHotKeyReleased},
     };
     
-
     InstallWindowEventHandler(_window, NewEventHandlerUPP(GraphicsWindowEventHandler),  GetEventTypeCount(windEventList), windEventList, this, NULL);
-}
+ }
 
 
 bool GraphicsWindowCarbon::realizeImplementation()
@@ -601,6 +602,8 @@ bool GraphicsWindowCarbon::realizeImplementation()
     if (!_initialized) init();
     if (!_initialized) return false;
     if (!_traits) return false;
+    
+    osg::notify(osg::INFO) << "GraphicsWindowCarbon:: realizeIMplementation" << std::endl;
     
     setWindowDecoration(_traits->windowDecoration);
     useCursor(_traits->useCursor);
@@ -615,7 +618,9 @@ bool GraphicsWindowCarbon::realizeImplementation()
         _traits->x += screenLeft;
     }
     
-    WindowData *windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
+    //ADEGLI WindowData *windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
+    WindowData *windowData = ( _traits.get() && _traits->inheritedWindowData.get() ) ? static_cast<osgViewer::GraphicsWindowCarbon::WindowData*>(_traits->inheritedWindowData.get()) : 0; //ADEGLI
+     
     _ownsWindow = (windowData) ? (windowData->getNativeWindowRef() == NULL) : true;
     
     if (_ownsWindow) {
@@ -635,7 +640,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
         }
     }
     else {
-        _window = windowData->getNativeWindowRef();
+         _window = windowData->getNativeWindowRef();
     }
     
     Rect titleRect;
@@ -670,7 +675,18 @@ bool GraphicsWindowCarbon::realizeImplementation()
         osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation failed creating a context: " << aglGetError() << std::endl;
         return false;
     }
-       
+
+     
+    if ( windowData && windowData->getAGLDrawable() ) {
+        aglSetDrawable(_context, (AGLDrawable)*(windowData->getAGLDrawable()) ); //ADEGLI
+        // ShowWindow(_window); //ADEGLI
+        
+    } else {
+        aglSetDrawable(_context, GetWindowPort(_window)); //ADEGLI
+        ShowWindow(_window); //ADEGLI
+        MenubarController::instance()->attachWindow(this);
+    }
+    
     makeCurrent();
 
     if ((_traits->useMultiThreadedOpenGLEngine) && (OpenThreads::GetNumberOfProcessors() > 1)) {
@@ -691,8 +707,8 @@ bool GraphicsWindowCarbon::realizeImplementation()
             osg::notify(osg::INFO) << "GraphicsWindowCarbon:: Multi-threaded OpenGL Execution not available" << std::endl;
         } 
     }
-    aglSetDrawable(_context, GetWindowPort(_window));
-    ShowWindow(_window);
+    //ADEGLI aglSetDrawable(_context, GetWindowPort(_window));
+    //ADEGLI ShowWindow(_window);
     
     //enable vsync
     if (_traits->vsync) {
@@ -700,8 +716,6 @@ bool GraphicsWindowCarbon::realizeImplementation()
         aglSetInteger (_context, AGL_SWAP_INTERVAL, &swap);
     }
 
-    MenubarController::instance()->attachWindow(this);
-    
     _realized = true;
     return _realized;
 }
@@ -1002,7 +1016,7 @@ bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
     UInt32 rawkey;
     GetEventParameter (theEvent,kEventParamKeyCode,typeUInt32, NULL,sizeof(rawkey), NULL,&rawkey);
     
-    // std::cout << "key code: " << rawkey << " modifiers: " << modifierKeys << std::endl;
+    // osg::notify(osg::INFO) << "key code: " << rawkey << " modifiers: " << modifierKeys << std::endl;
             
     UInt32 dataSize;
     /* jbw check return status so that we don't allocate a huge array */
@@ -1021,12 +1035,14 @@ bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
         case kEventRawKeyRepeat:
         {
             //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
+            osg::notify(osg::INFO) << "GraphicsWindowCarbon::keyPress" << std::endl;
             getEventQueue()->keyPress(keychar);
             break;
         }
         
         case kEventRawKeyUp:
         {                 
+            osg::notify(osg::INFO) << "GraphicsWindowCarbon::keyPress" << std::endl;
             //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
             getEventQueue()->keyRelease(keychar);
             break;

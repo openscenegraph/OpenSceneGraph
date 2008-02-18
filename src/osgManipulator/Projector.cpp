@@ -26,10 +26,10 @@ bool computeClosestPoints(const osg::LineSegment& l1, const osg::LineSegment& l2
     // An explanation of the algorithm can be found at
     // http://www.geometryalgorithms.com/Archive/algorithm_0106/algorithm_0106.htm
     
-    osg::Vec3 u = l1.end() - l1.start(); u.normalize();
-    osg::Vec3 v = l2.end() - l2.start(); v.normalize();
+    osg::LineSegment::vec_type u = l1.end() - l1.start(); u.normalize();
+    osg::LineSegment::vec_type v = l2.end() - l2.start(); v.normalize();
 
-    osg::Vec3 w0 = l1.start() - l2.start();
+    osg::LineSegment::vec_type w0 = l1.start() - l2.start();
 
     float a = u * u;
     float b = u * v;
@@ -227,10 +227,10 @@ Projector::~Projector()
 
 LineProjector::LineProjector()
 {
-    _line = new osg::LineSegment(osg::Vec3(0.0,0.0,0.0), osg::Vec3(1.0,0.0,0.0));
+    _line = new osg::LineSegment(osg::LineSegment::vec_type(0.0,0.0,0.0), osg::LineSegment::vec_type(1.0,0.0,0.0));
 }
 
-LineProjector::LineProjector(const osg::Vec3& s, const osg::Vec3& e)
+LineProjector::LineProjector(const osg::LineSegment::vec_type& s, const osg::LineSegment::vec_type& e)
 {
     _line = new osg::LineSegment(s,e);
 }

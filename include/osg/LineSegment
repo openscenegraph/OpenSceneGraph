@@ -25,19 +25,22 @@ class OSG_EXPORT LineSegment : public Referenced
 {
     public:
 
+        typedef Vec3d vec_type;
+        typedef vec_type::value_type value_type;
+
         LineSegment() {};
         LineSegment(const LineSegment& seg) : Referenced(),_s(seg._s),_e(seg._e) {}
-        LineSegment(const Vec3& s,const Vec3& e) : _s(s),_e(e) {}
+        LineSegment(const vec_type& s,const vec_type& e) : _s(s),_e(e) {}
 
         LineSegment& operator = (const LineSegment& seg) { _s = seg._s;  _e = seg._e; return *this; }
 
-        inline void set(const Vec3& s,const Vec3& e) { _s=s; _e=e; }
+        inline void set(const vec_type& s,const vec_type& e) { _s=s; _e=e; }
         
-        inline Vec3& start() { return _s; }
-        inline const Vec3& start() const { return _s; }
+        inline vec_type& start() { return _s; }
+        inline const vec_type& start() const { return _s; }
 
-        inline Vec3& end() { return _e; }
-        inline const Vec3& end() const { return _e; }
+        inline vec_type& end() { return _e; }
+        inline const vec_type& end() const { return _e; }
 
         inline bool valid() const { return _s.valid() && _e.valid() && _s!=_e; }
 
@@ -71,10 +74,10 @@ class OSG_EXPORT LineSegment : public Referenced
 
         virtual ~LineSegment();
         
-        static bool intersectAndClip(Vec3& s,Vec3& e,const BoundingBox& bb);
+        static bool intersectAndClip(vec_type& s,vec_type& e,const BoundingBox& bb);
 
-        Vec3 _s;
-        Vec3 _e;
+        vec_type _s;
+        vec_type _e;
 };
 
 }

@@ -55,7 +55,7 @@ TranslateInLineCommand::TranslateInLineCommand()
     _line = new osg::LineSegment;
 }
 
-TranslateInLineCommand::TranslateInLineCommand(const osg::Vec3& s, const osg::Vec3& e)
+TranslateInLineCommand::TranslateInLineCommand(const osg::LineSegment::vec_type& s, const osg::LineSegment::vec_type& e)
 {
     _line = new osg::LineSegment(s,e);
 }

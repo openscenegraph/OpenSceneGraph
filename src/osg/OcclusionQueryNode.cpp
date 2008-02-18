@@ -521,9 +521,12 @@ OcclusionQueryNode::~OcclusionQueryNode()
 }
 
 OcclusionQueryNode::OcclusionQueryNode( const OcclusionQueryNode& oqn, const osg::CopyOp& copyop )
-  : Group( oqn, copyop )
+  : Group( oqn, copyop ),
+    _passed( false )
 {
     _enabled = oqn._enabled;
+    _visThreshold = oqn._visThreshold;
+    _queryFrameCount = oqn._queryFrameCount;
     _debugBB = oqn._debugBB;
 
     // Regardless of shallow or deep, create unique support nodes.

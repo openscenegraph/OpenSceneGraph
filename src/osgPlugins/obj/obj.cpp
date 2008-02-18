@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <iostream>
 #include <fstream>
 #include <stdio.h>
 
@@ -283,6 +284,17 @@ bool Model::readMTL(std::istream& fin)
     return true;
 }
 
+std::string trim(const std::string& s)
+{
+  if(s.length() == 0)
+    return s;
+  int b = s.find_first_not_of(" \t");
+  int e = s.find_last_not_of(" \t");
+  if(b == -1) // No non-spaces
+    return "";
+  return std::string(s, b, e - b + 1);
+}
+
 bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* options)
 {
     osg::notify(osg::INFO)<<"Reading OBJ file"<<std::endl;
@@ -403,7 +415,7 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
             }
             else if (strncmp(line,"usemtl ",7)==0)
             {
-                std::string materialName(line+7);
+                std::string materialName( line+7 );
                 if (currentElementState.materialName != materialName)
                 {
                     currentElementState.materialName = materialName;
@@ -412,11 +424,14 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
             }
             else if (strncmp(line,"mtllib ",7)==0)
             {
-            
-                std::string fileName = osgDB::findDataFile( line+7, options );
-                if (!fileName.empty())
+                std::string materialFileName = trim( line+7 );
+                std::string fullPathFileName = osgDB::findDataFile( materialFileName, options );
+                osg::notify(osg::INFO) << "--" << line+7 << "--" << std::endl;
+                osg::notify(osg::INFO) << "--" << materialFileName << "--" << std::endl;
+                osg::notify(osg::INFO) << "--" << fullPathFileName << "--" << std::endl;
+                if (!fullPathFileName.empty())
                 {
-                    std::ifstream mfin(fileName.c_str());
+                    std::ifstream mfin( fullPathFileName.c_str() );
                     if (mfin)
                     {
                         readMTL(mfin);

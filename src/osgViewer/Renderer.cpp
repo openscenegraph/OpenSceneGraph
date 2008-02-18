@@ -30,7 +30,7 @@
 using namespace osgViewer;
 
 //#define DEBUG_MESSAGE osg::notify(osg::NOTICE)
-#define DEBUG_MESSAGE osg::notify(osg::INFO)
+#define DEBUG_MESSAGE osg::notify(osg::DEBUG_FP)
 
 
 OpenGLQuerySupport::OpenGLQuerySupport():

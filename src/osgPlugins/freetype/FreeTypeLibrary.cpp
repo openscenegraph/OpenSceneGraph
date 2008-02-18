@@ -46,7 +46,7 @@ FreeTypeLibrary::~FreeTypeLibrary()
         _fontImplementationSet.erase(_fontImplementationSet.begin());
         osgText::Font* font = fontImplementation->_facade;
         if (font) font->setImplementation(0);
-        fontImplementation->_facade = 0;
+        else fontImplementation->_facade = 0;
     }
     
     while(!_font3DImplementationSet.empty())
@@ -55,7 +55,7 @@ FreeTypeLibrary::~FreeTypeLibrary()
         _font3DImplementationSet.erase(_font3DImplementationSet.begin());
         osgText::Font3D* font3D = font3DImplementation->_facade;
         if (font3D) font3D->setImplementation(0);
-        font3DImplementation->_facade = 0;
+        else font3DImplementation->_facade = 0;
     }
     
     FT_Done_FreeType( _ftlibrary);

@@ -63,11 +63,19 @@ class PopLevel : public Record
 
         virtual void read(RecordInputStream& /*in*/, Document& document)
         {
-            // Finally call dispose() for primary with push, pop level pair. 
-            PrimaryRecord* primary = document.getTopOfLevelStack();
-            if (primary)
+            PrimaryRecord* parentPrimary = document.getTopOfLevelStack();
+            PrimaryRecord* currentPrimary = document.getCurrentPrimaryRecord();
+
+            // Call dispose() for primary without push, pop level pair. 
+            if (currentPrimary && currentPrimary!=parentPrimary)
             {
-                primary->dispose(document);
+                currentPrimary->dispose(document);
+            }
+
+            // Call dispose() for primary with push, pop level pair. 
+            if (parentPrimary)
+            {
+                parentPrimary->dispose(document);
             }
 
             document.popLevel();

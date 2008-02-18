@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/LineSegment>
 #include <osg/Matrix>
 #include <osg/Plane>
 #include <osg/Quat>
@@ -385,8 +386,8 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	I_Constructor0(____TranslateInLineCommand,
 	               "",
 	               "");
-	I_Constructor2(IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e,
-	               ____TranslateInLineCommand__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	I_Constructor2(IN, const osg::LineSegment::vec_type &, s, IN, const osg::LineSegment::vec_type &, e,
+	               ____TranslateInLineCommand__C5_osg_LineSegment_vec_type_R1__C5_osg_LineSegment_vec_type_R1,
 	               "",
 	               "");
 	I_Method0(bool, execute,
@@ -404,19 +405,19 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
-	I_Method2(void, setLine, IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e,
+	I_Method2(void, setLine, IN, const osg::LineSegment::vec_type &, s, IN, const osg::LineSegment::vec_type &, e,
 	          Properties::NON_VIRTUAL,
-	          __void__setLine__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	          __void__setLine__C5_osg_LineSegment_vec_type_R1__C5_osg_LineSegment_vec_type_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getLineStart,
+	I_Method0(const osg::LineSegment::vec_type &, getLineStart,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getLineStart,
+	          __C5_osg_LineSegment_vec_type_R1__getLineStart,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getLineEnd,
+	I_Method0(const osg::LineSegment::vec_type &, getLineEnd,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getLineEnd,
+	          __C5_osg_LineSegment_vec_type_R1__getLineEnd,
 	          "",
 	          "");
 	I_Method1(void, setTranslation, IN, const osg::Vec3 &, t,
@@ -434,11 +435,11 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	          __osg_Matrix__getMotionMatrix,
 	          "Gets the matrix for transforming the Selection. ",
 	          "This matrix is in the command's coordinate systems. ");
-	I_SimpleProperty(const osg::Vec3 &, LineEnd, 
-	                 __C5_osg_Vec3_R1__getLineEnd, 
+	I_SimpleProperty(const osg::LineSegment::vec_type &, LineEnd, 
+	                 __C5_osg_LineSegment_vec_type_R1__getLineEnd, 
 	                 0);
-	I_SimpleProperty(const osg::Vec3 &, LineStart, 
-	                 __C5_osg_Vec3_R1__getLineStart, 
+	I_SimpleProperty(const osg::LineSegment::vec_type &, LineStart, 
+	                 __C5_osg_LineSegment_vec_type_R1__getLineStart, 
 	                 0);
 	I_SimpleProperty(osg::Matrix, MotionMatrix, 
 	                 __osg_Matrix__getMotionMatrix, 

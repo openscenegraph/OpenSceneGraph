@@ -546,7 +546,10 @@ public:
 
         for(unsigned int i=0; i<_maxNumTextPerGeode; ++i)
         {
-            osg::Vec3 position(float(rand()) / float(RAND_MAX) - 0.5f, float(rand()) / float(RAND_MAX) - 0.5f, float(i)/float(_maxNumTextPerGeode) - 0.5f);
+            float x = float(rand()) / float(RAND_MAX) - 0.5f;
+            float y = float(rand()) / float(RAND_MAX) - 0.5f;
+            float z = float(i)      / float(_maxNumTextPerGeode) - 0.5f;
+            osg::Vec3 position(x, y, z);
 
             std::string str;
             unsigned int _numCharacters = 5;

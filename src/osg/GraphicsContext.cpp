@@ -214,8 +214,15 @@ unsigned int GraphicsContext::createNewContextID()
     
     osg::notify(osg::INFO)<<"GraphicsContext::createNewContextID() creating contextID="<<contextID<<std::endl;
     
+#if 1    
+    // always update, consitent with how osgProducer used to work.
+    bool updateContextID = true;
+#else
+    // update if new contextID exceeds only one.
+    bool updateContextID = (contextID+1) > osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();
+#endif
 
-    if ( (contextID+1) > osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts() )
+    if (updateContextID)
     {
         osg::notify(osg::INFO)<<"Updating the MaxNumberOfGraphicsContexts to "<<contextID+1<<std::endl;
 

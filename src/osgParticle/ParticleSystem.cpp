@@ -183,7 +183,7 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
         const Particle* currentParticle = &_particles[i];
         if (currentParticle->isAlive())
         {
-            if (currentParticle->getShape() != startParticle->getShape());
+            if (currentParticle->getShape() != startParticle->getShape())
             {
                 startParticle->endRender();
                 currentParticle->beginRender();

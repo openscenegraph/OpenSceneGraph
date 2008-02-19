@@ -173,36 +173,37 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
     _draw_count = 0;
     if (_particles.size() <= 0) return;
 
-    Particle_vector::const_iterator i;
-    Particle_vector::const_iterator i0 = _particles.begin();
-    Particle_vector::const_iterator end = _particles.end();
-    
-    i0->beginRender();
-
     float scale = sqrtf(static_cast<float>(_detail));
-    for (i=i0; i<end; i+=_detail) {
-        if (i->isAlive()) {
-            if (i->getShape() != i0->getShape()) {
-                i0->endRender();
-                i->beginRender();
-                i0 = i;
+
+    const Particle* startParticle = &_particles[0];
+    startParticle->beginRender();
+
+    for(unsigned int i=0; i<_particles.size(); i+=_detail)
+    {
+        const Particle* currentParticle = &_particles[i];
+        if (currentParticle->isAlive())
+        {
+            if (currentParticle->getShape() != startParticle->getShape());
+            {
+                startParticle->endRender();
+                currentParticle->beginRender();
+                startParticle = currentParticle;
             }
             ++_draw_count;
 
             switch (_alignment) {
                 case BILLBOARD:
-                    i->render(modelview.preMult(i->getPosition()), osg::Vec3(1, 0, 0), osg::Vec3(0, 1, 0), scale);
+                    currentParticle->render(modelview.preMult(currentParticle->getPosition()), osg::Vec3(1, 0, 0), osg::Vec3(0, 1, 0), scale);
                     break;
                 case FIXED:
-                    i->render(i->getPosition(), _align_X_axis, _align_Y_axis, scale);
+                    currentParticle->render(currentParticle->getPosition(), _align_X_axis, _align_Y_axis, scale);
                     break;
-                default: ;
+                default:;
             }            
-            
-        }        
+        } 
     }
 
-    i0->endRender();
+    startParticle->endRender();
     
 }
 

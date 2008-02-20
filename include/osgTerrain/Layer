@@ -36,9 +36,20 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         
         META_Object(osgTerrain, Layer);
         
+        /** Set the file name of the data associated with this layer. */
         virtual void setFileName(const std::string& filename) { _filename = filename; }
+
+        /** Get the file name of the layer. */
         virtual const std::string& getFileName() const { return _filename; }
         
+        /** Set the texture unit to assign layer to if required. 
+          * Negative values signifies that no texture unit has been assigned. */
+        void setTextureUnit(int textureUnit) { _textureUnit = textureUnit; }
+
+        /** Get the texture unit to assign layer to if required.*/
+        int getTextureUnit() const { return _textureUnit; }
+
+
         void setLocator(Locator* locator) { _locator = locator; }
         Locator* getLocator() { return _locator.get(); }
         const Locator* getLocator() const { return _locator.get(); }
@@ -167,6 +178,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         virtual ~Layer();
 
         std::string                     _filename;
+        int                             _textureUnit;
         osg::ref_ptr<Locator>           _locator;
         unsigned int                    _minLevel;
         unsigned int                    _maxLevel;

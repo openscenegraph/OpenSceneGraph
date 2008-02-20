@@ -30,6 +30,16 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction)
 	I_Constructor0(____TransferFunction,
 	               "",
 	               "");
+	I_Method1(void, setTextureUnit, IN, int, textureUnit,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureUnit__int,
+	          "Set the texture unit to assign layer to if required. ",
+	          "Negative values signifies that no texture unit has been assigned. ");
+	I_Method0(int, getTextureUnit,
+	          Properties::NON_VIRTUAL,
+	          __int__getTextureUnit,
+	          "Get the texture unit to assign layer to if required. ",
+	          "");
 	I_Method0(osg::Image *, getImage,
 	          Properties::NON_VIRTUAL,
 	          __osg_Image_P1__getImage,
@@ -69,6 +79,9 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction)
 	I_SimpleProperty(osg::Texture *, Texture, 
 	                 __osg_Texture_P1__getTexture, 
 	                 0);
+	I_SimpleProperty(int, TextureUnit, 
+	                 __int__getTextureUnit, 
+	                 __void__setTextureUnit__int);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)

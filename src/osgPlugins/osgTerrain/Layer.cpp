@@ -35,6 +35,13 @@ bool Layer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
     if (locator) layer.setLocator(locator);
     
+    int textureUnit=-1;
+    if (fr.read("TextureUnit",textureUnit))
+    {
+        itrAdvanced = true;
+        layer.setTextureUnit(textureUnit);
+    }
+
     unsigned int minLevel=0;
     if (fr.read("MinLevel",minLevel))
     {
@@ -60,6 +67,11 @@ bool Layer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     {
         fw.writeObject(*layer.getLocator());
     }
+
+    if (layer.getTextureUnit()>=0)
+    {
+        fw.indent()<<"TextureUnit "<<layer.getTextureUnit()<<std::endl;
+    } 
 
     if (layer.getMinLevel()!=0)
     {

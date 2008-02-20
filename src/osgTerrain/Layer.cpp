@@ -17,6 +17,7 @@
 using namespace osgTerrain;
 
 Layer::Layer():
+    _textureUnit(-1),
     _minLevel(0),
     _maxLevel(MAXIMUM_NUMBER_OF_LEVELS)
 {
@@ -25,6 +26,7 @@ Layer::Layer():
 Layer::Layer(const Layer& layer,const osg::CopyOp& copyop):
     osg::Object(layer,copyop),
     _filename(layer._filename),
+    _textureUnit(layer._textureUnit),
     _minLevel(layer._minLevel),
     _maxLevel(layer._maxLevel)
 {

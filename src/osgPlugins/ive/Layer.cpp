@@ -39,6 +39,11 @@ void Layer::write(DataOutputStream* out)
     LayerHelper helper;
     helper.writeLocator(out, getLocator());
 
+    if (out->getVersion() >= VERSION_0023)
+    {
+        out->writeInt(getTextureUnit());
+    }
+    
     out->writeUInt(getMinLevel());
     out->writeUInt(getMaxLevel());
 }
@@ -63,6 +68,11 @@ void Layer::read(DataInputStream* in)
     LayerHelper helper;
     setLocator(helper.readLocator(in));
 
+    if (in->getVersion() >= VERSION_0023)
+    {
+        setTextureUnit(in->readInt());
+    }
+    
     setMinLevel(in->readUInt());
     setMaxLevel(in->readUInt());
 

@@ -166,12 +166,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	I_Method1(void, setFileName, IN, const std::string &, filename,
 	          Properties::VIRTUAL,
 	          __void__setFileName__C5_std_string_R1,
-	          "",
+	          "Set the file name of the data associated with this layer. ",
 	          "");
 	I_Method0(const std::string &, getFileName,
 	          Properties::VIRTUAL,
 	          __C5_std_string_R1__getFileName,
-	          "",
+	          "Get the file name of the layer. ",
 	          "");
 	I_Method2(bool, transform, IN, float, offset, IN, float, scale,
 	          Properties::VIRTUAL,
@@ -287,12 +287,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	I_Method1(void, setFileName, IN, const std::string &, filename,
 	          Properties::VIRTUAL,
 	          __void__setFileName__C5_std_string_R1,
-	          "",
+	          "Set the file name of the data associated with this layer. ",
 	          "");
 	I_Method0(const std::string &, getFileName,
 	          Properties::VIRTUAL,
 	          __C5_std_string_R1__getFileName,
-	          "",
+	          "Get the file name of the layer. ",
 	          "");
 	I_Method2(bool, transform, IN, float, offset, IN, float, scale,
 	          Properties::VIRTUAL,
@@ -408,12 +408,22 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_Method1(void, setFileName, IN, const std::string &, filename,
 	          Properties::VIRTUAL,
 	          __void__setFileName__C5_std_string_R1,
-	          "",
+	          "Set the file name of the data associated with this layer. ",
 	          "");
 	I_Method0(const std::string &, getFileName,
 	          Properties::VIRTUAL,
 	          __C5_std_string_R1__getFileName,
-	          "",
+	          "Get the file name of the layer. ",
+	          "");
+	I_Method1(void, setTextureUnit, IN, int, textureUnit,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureUnit__int,
+	          "Set the texture unit to assign layer to if required. ",
+	          "Negative values signifies that no texture unit has been assigned. ");
+	I_Method0(int, getTextureUnit,
+	          Properties::NON_VIRTUAL,
+	          __int__getTextureUnit,
+	          "Get the texture unit to assign layer to if required. ",
 	          "");
 	I_Method1(void, setLocator, IN, osgTerrain::Locator *, locator,
 	          Properties::NON_VIRTUAL,
@@ -578,6 +588,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_SimpleProperty(unsigned, ModifiedCount, 
 	                 0, 
 	                 __void__setModifiedCount__unsigned);
+	I_SimpleProperty(int, TextureUnit, 
+	                 __int__getTextureUnit, 
+	                 __void__setTextureUnit__int);
 	I_SimpleProperty(osgTerrain::ValidDataOperator *, ValidDataOperator, 
 	                 __ValidDataOperator_P1__getValidDataOperator, 
 	                 __void__setValidDataOperator__ValidDataOperator_P1);
@@ -636,12 +649,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	I_Method1(void, setFileName, IN, const std::string &, filename,
 	          Properties::VIRTUAL,
 	          __void__setFileName__C5_std_string_R1,
-	          "",
+	          "Set the file name of the data associated with this layer. ",
 	          "");
 	I_Method0(const std::string &, getFileName,
 	          Properties::VIRTUAL,
 	          __C5_std_string_R1__getFileName,
-	          "",
+	          "Get the file name of the layer. ",
 	          "");
 	I_Method0(unsigned int, getNumColumns,
 	          Properties::VIRTUAL,

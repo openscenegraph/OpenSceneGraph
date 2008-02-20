@@ -255,14 +255,14 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     unsigned int numVertices = numVerticesInBody+numVerticesInSkirt;
 
     // allocate and assign vertices
-    osg::ref_ptr<osg::Vec3Array> _vertices = new osg::Vec3Array;
-    if (buffer._geometry.valid()) buffer._geometry->setVertexArray(_vertices.get());
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    if (buffer._geometry.valid()) buffer._geometry->setVertexArray(vertices.get());
 
     // allocate and assign normals
-    osg::ref_ptr<osg::Vec3Array> _normals = new osg::Vec3Array;
+    osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array;
     if (buffer._geometry.valid())
     {
-        buffer._geometry->setNormalArray(_normals.get());
+        buffer._geometry->setNormalArray(normals.get());
         buffer._geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
     }
     
@@ -274,18 +274,18 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     float scaleHeight = 1.0;
 
     // allocate and assign tex coords
-    osg::ref_ptr<osg::Vec2Array> _texcoords;
+    osg::ref_ptr<osg::Vec2Array> texcoords;
     if (colorLayer)
     {
         color_index = texcoord_index;
         ++texcoord_index;
 
-        _texcoords = new osg::Vec2Array;
+        texcoords = new osg::Vec2Array;
         
-        if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(color_index, _texcoords.get());
+        if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(color_index, texcoords.get());
     }
 
-    osg::ref_ptr<osg::FloatArray> _elevations = new osg::FloatArray;
+    osg::ref_ptr<osg::FloatArray> elevations = new osg::FloatArray;
     osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
     if (tf)
     {
@@ -294,26 +294,26 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
         if (!colorLayer)
         {
-            // _elevations = new osg::FloatArray(numVertices);
-            if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(tf_index, _elevations.get());
+            // elevations = new osg::FloatArray(numVertices);
+            if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(tf_index, elevations.get());
 
             minHeight = tf->getMinimum();
             scaleHeight = 1.0f/(tf->getMaximum()-tf->getMinimum());
         }
     }
 
-    if (_vertices.valid()) _vertices->reserve(numVertices);
-    if (_texcoords.valid()) _texcoords->reserve(numVertices);
-    if (_elevations.valid()) _elevations->reserve(numVertices);
-    if (_normals.valid()) _normals->reserve(numVertices);
+    if (vertices.valid()) vertices->reserve(numVertices);
+    if (texcoords.valid()) texcoords->reserve(numVertices);
+    if (elevations.valid()) elevations->reserve(numVertices);
+    if (normals.valid()) normals->reserve(numVertices);
         
     // allocate and assign color
-    osg::ref_ptr<osg::Vec4Array> _colors = new osg::Vec4Array(1);
-    (*_colors)[0].set(1.0f,1.0f,1.0f,1.0f);
+    osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(1);
+    (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
     
     if (buffer._geometry.valid())
     {
-        buffer._geometry->setColorArray(_colors.get());
+        buffer._geometry->setColorArray(colors.get());
         buffer._geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
     }
 
@@ -343,12 +343,12 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             
             if (validValue)
             {
-                indices[iv] = _vertices->size();
+                indices[iv] = vertices->size();
             
                 osg::Vec3d model;
                 masterLocator->convertLocalToModel(ndc, model);
 
-                (*_vertices).push_back(model - centerModel);
+                (*vertices).push_back(model - centerModel);
 
                 if (colorLayer)
                 {
@@ -356,18 +356,18 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                     {
                         osg::Vec3d color_ndc;
                         Locator::convertLocalCoordBetween(*masterLocator, ndc, *colorLocator, color_ndc);
-                        (*_texcoords).push_back(osg::Vec2(color_ndc.x(), color_ndc.y()));
+                        (*texcoords).push_back(osg::Vec2(color_ndc.x(), color_ndc.y()));
                     }
                     else
                     {
-                        (*_texcoords).push_back(osg::Vec2(ndc.x(), ndc.y()));
+                        (*texcoords).push_back(osg::Vec2(ndc.x(), ndc.y()));
                     }
 
                 }
 
-                if (_elevations.valid())
+                if (elevations.valid())
                 {
-                    (*_elevations).push_back((ndc.z()-minHeight)*scaleHeight);
+                    (*elevations).push_back((ndc.z()-minHeight)*scaleHeight);
                 }
 
                 // compute the local normal
@@ -376,7 +376,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 masterLocator->convertLocalToModel(ndc_one, model_one);
                 model_one = model_one - model;
                 model_one.normalize();            
-                (*_normals).push_back(model_one);
+                (*normals).push_back(model_one);
             }
             else
             {
@@ -386,7 +386,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
     
     // populate primitive sets
-//    bool optimizeOrientations = _elevations!=0;
+//    bool optimizeOrientations = elevations!=0;
     bool swapOrientation = !(masterLocator->orientationOpenGL());
     
     osg::ref_ptr<osg::DrawElementsUInt> elements = new osg::DrawElementsUInt(GL_TRIANGLES);
@@ -428,10 +428,10 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             
             if (numValid==4)
             {
-                float e00 = (*_elevations)[i00];
-                float e10 = (*_elevations)[i10];
-                float e01 = (*_elevations)[i01];
-                float e11 = (*_elevations)[i11];
+                float e00 = (*elevations)[i00];
+                float e10 = (*elevations)[i10];
+                float e01 = (*elevations)[i01];
+                float e11 = (*elevations)[i11];
 
                 if (fabsf(e00-e11)<fabsf(e01-e10))
                 {
@@ -465,15 +465,15 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         }
     }
     
-    osg::ref_ptr<osg::Vec3Array> skirtVectors = new osg::Vec3Array((*_normals));
+    osg::ref_ptr<osg::Vec3Array> skirtVectors = new osg::Vec3Array((*normals));
     
     if (elevationLayer)
     {
         smoothGeometry();
         
-        _normals = dynamic_cast<osg::Vec3Array*>(buffer._geometry->getNormalArray());
+        normals = dynamic_cast<osg::Vec3Array*>(buffer._geometry->getNormalArray());
         
-        if (!_normals) createSkirt = false;
+        if (!normals) createSkirt = false;
     }
 
     if (createSkirt)
@@ -488,11 +488,11 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
             if (orig_i>=0)
             {
-                unsigned int new_i = _vertices->size(); // index of new index of added skirt point
-                osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
-                (*_vertices).push_back(new_v);
-                if (_normals.valid()) (*_normals).push_back((*_normals)[orig_i]);
-                if (_texcoords.valid()) (*_texcoords).push_back((*_texcoords)[orig_i]);
+                unsigned int new_i = vertices->size(); // index of new index of added skirt point
+                osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
+                (*vertices).push_back(new_v);
+                if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
+                if (texcoords.valid()) (*texcoords).push_back((*texcoords)[orig_i]);
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);
@@ -521,11 +521,11 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
             if (orig_i>=0)
             {
-                unsigned int new_i = _vertices->size(); // index of new index of added skirt point
-                osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
-                (*_vertices).push_back(new_v);
-                if (_normals.valid()) (*_normals).push_back((*_normals)[orig_i]);
-                if (_texcoords.valid()) (*_texcoords).push_back((*_texcoords)[orig_i]);
+                unsigned int new_i = vertices->size(); // index of new index of added skirt point
+                osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
+                (*vertices).push_back(new_v);
+                if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
+                if (texcoords.valid()) (*texcoords).push_back((*texcoords)[orig_i]);
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);
@@ -554,11 +554,11 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
             if (orig_i>=0)
             {
-                unsigned int new_i = _vertices->size(); // index of new index of added skirt point
-                osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
-                (*_vertices).push_back(new_v);
-                if (_normals.valid()) (*_normals).push_back((*_normals)[orig_i]);
-                if (_texcoords.valid()) (*_texcoords).push_back((*_texcoords)[orig_i]);
+                unsigned int new_i = vertices->size(); // index of new index of added skirt point
+                osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
+                (*vertices).push_back(new_v);
+                if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
+                if (texcoords.valid()) (*texcoords).push_back((*texcoords)[orig_i]);
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);
@@ -587,11 +587,11 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
             if (orig_i>=0)
             {
-                unsigned int new_i = _vertices->size(); // index of new index of added skirt point
-                osg::Vec3 new_v = (*_vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
-                (*_vertices).push_back(new_v);
-                if (_normals.valid()) (*_normals).push_back((*_normals)[orig_i]);
-                if (_texcoords.valid()) (*_texcoords).push_back((*_texcoords)[orig_i]);
+                unsigned int new_i = vertices->size(); // index of new index of added skirt point
+                osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
+                (*vertices).push_back(new_v);
+                if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
+                if (texcoords.valid()) (*texcoords).push_back((*texcoords)[orig_i]);
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);

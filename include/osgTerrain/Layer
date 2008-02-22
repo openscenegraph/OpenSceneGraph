@@ -17,6 +17,7 @@
 #include <osg/Image>
 #include <osg/Shape>
 #include <osg/Array>
+#include <osg/TransferFunction>
 
 #include <osgTerrain/Locator>
 #include <osgTerrain/ValidDataOperator>
@@ -42,13 +43,6 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         /** Get the file name of the layer. */
         virtual const std::string& getFileName() const { return _filename; }
         
-        /** Set the texture unit to assign layer to if required. 
-          * Negative values signifies that no texture unit has been assigned. */
-        void setTextureUnit(int textureUnit) { _textureUnit = textureUnit; }
-
-        /** Get the texture unit to assign layer to if required.*/
-        int getTextureUnit() const { return _textureUnit; }
-
 
         void setLocator(Locator* locator) { _locator = locator; }
         Locator* getLocator() { return _locator.get(); }
@@ -71,6 +65,26 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         void setDefaultValue(const osg::Vec4& value) { _defaultValue = value; }
         const osg::Vec4& getDefaultValue() const { return _defaultValue; }
         
+        enum Filter
+        {
+            NEAREST,
+            LINEAR
+        };
+
+        /** Set the texture filter to use when do texture associated with this layer.*/
+        void setFilter(Filter filter) { _filter = filter; }
+
+        /** Get the texture filter to use when do texture associated with this layer.*/
+        Filter getFilter() const { return _filter; }
+
+
+        /** Return image associated with layer if supported. */        
+        virtual osg::Image* getImage() { return 0; }
+
+        /** Return const image associated with layer if supported. */        
+        virtual const osg::Image* getImage() const { return 0; }
+
+
         virtual bool transform(float offset, float scale) { return false; }
 
 
@@ -178,12 +192,12 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         virtual ~Layer();
 
         std::string                     _filename;
-        int                             _textureUnit;
         osg::ref_ptr<Locator>           _locator;
         unsigned int                    _minLevel;
         unsigned int                    _maxLevel;
         osg::ref_ptr<ValidDataOperator> _validDataOperator;
         osg::Vec4                       _defaultValue;
+        Filter                          _filter;
 
 };
 
@@ -191,7 +205,7 @@ class OSGTERRAIN_EXPORT ImageLayer : public Layer
 {
     public:
 
-        ImageLayer();
+        ImageLayer(osg::Image* image=0);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ImageLayer(const ImageLayer& imageLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
@@ -204,8 +218,12 @@ class OSGTERRAIN_EXPORT ImageLayer : public Layer
         virtual bool transform(float offset, float scale);
 
         void setImage(osg::Image* image);
-        osg::Image* getImage() { return _image.get(); }
-        const osg::Image* getImage() const { return _image.get(); }
+
+        /** Return image associated with layer. */  
+        virtual osg::Image* getImage() { return _image.get(); }
+
+        /** Return const image associated with layer. */
+        virtual const osg::Image* getImage() const { return _image.get(); }
 
         virtual unsigned int getNumColumns() const { return _image.valid() ? _image->s() : 0; }
         virtual unsigned int getNumRows() const { return _image.valid() ? _image->t() : 0;  }
@@ -227,11 +245,55 @@ class OSGTERRAIN_EXPORT ImageLayer : public Layer
 
 };
 
+class OSGTERRAIN_EXPORT ContourLayer : public Layer
+{
+    public:
+
+        ContourLayer(osg::TransferFunction1D* tf=0);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ContourLayer(const ContourLayer& tfLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgTerrain, ContourLayer);
+
+        virtual bool transform(float offset, float scale);
+
+        void setTransferFunction(osg::TransferFunction1D* tf);
+        osg::TransferFunction1D* getTransferFunction() { return _tf.get(); }
+        const osg::TransferFunction1D* getTransferFunction() const { return _tf.get(); }
+
+        /** Return image associated with layer. */  
+        virtual osg::Image* getImage() { return _tf.valid() ? _tf->getImage() : 0; }
+
+        /** Return const image associated with layer. */
+        virtual const osg::Image* getImage() const { return _tf.valid() ? _tf->getImage() : 0; }
+
+
+        virtual unsigned int getNumColumns() const { return _tf.valid() ? _tf->getNumberCellsX() : 0; }
+        virtual unsigned int getNumRows() const { return _tf.valid() ? 1 : 0;  }
+
+        virtual bool getValue(unsigned int i, unsigned int j, float& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec2& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec3& value) const;
+        virtual bool getValue(unsigned int i, unsigned int j, osg::Vec4& value) const;
+
+        virtual void dirty();
+        virtual void setModifiedCount(unsigned int value);
+        virtual unsigned int getModifiedCount() const;
+
+    protected:
+
+        virtual ~ContourLayer() {}
+
+        osg::ref_ptr<osg::TransferFunction1D>    _tf;
+
+};
+
 class OSGTERRAIN_EXPORT HeightFieldLayer : public Layer
 {
     public:
 
-        HeightFieldLayer();
+        HeightFieldLayer(osg::HeightField* hf=0);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         HeightFieldLayer(const HeightFieldLayer& hfLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);

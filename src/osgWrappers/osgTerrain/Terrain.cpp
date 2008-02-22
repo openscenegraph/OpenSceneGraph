@@ -15,7 +15,6 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/OperationThread>
-#include <osg/TransferFunction>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
 #include <osgTerrain/Terrain>
@@ -28,12 +27,6 @@
 #ifdef OUT
 #undef OUT
 #endif
-
-BEGIN_ENUM_REFLECTOR(osgTerrain::Terrain::Filter)
-	I_DeclaringFile("osgTerrain/Terrain");
-	I_EnumLabel(osgTerrain::Terrain::NEAREST);
-	I_EnumLabel(osgTerrain::Terrain::LINEAR);
-END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	I_DeclaringFile("osgTerrain/Terrain");
@@ -145,31 +138,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __C5_Layer_P1__getColorLayer__unsigned_int,
 	          "Set const color layer with specified layer number. ",
 	          "");
-	I_Method2(void, setColorTransferFunction, IN, unsigned int, i, IN, osg::TransferFunction *, tf,
-	          Properties::NON_VIRTUAL,
-	          __void__setColorTransferFunction__unsigned_int__osg_TransferFunction_P1,
-	          "Set a color transfer function with specified layer number. ",
-	          "");
-	I_Method1(osg::TransferFunction *, getColorTransferFunction, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __osg_TransferFunction_P1__getColorTransferFunction__unsigned_int,
-	          "Get color transfer function with specified layer number. ",
-	          "");
-	I_Method1(const osg::TransferFunction *, getColorTransferFunction, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_TransferFunction_P1__getColorTransferFunction__unsigned_int,
-	          "Get const color transfer function with specified layer number. ",
-	          "");
-	I_Method2(void, setColorFilter, IN, unsigned int, i, IN, osgTerrain::Terrain::Filter, filter,
-	          Properties::NON_VIRTUAL,
-	          __void__setColorFilter__unsigned_int__Filter,
-	          "Set a color filter with specified layer number. ",
-	          "");
-	I_Method1(osgTerrain::Terrain::Filter, getColorFilter, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __Filter__getColorFilter__unsigned_int,
-	          "Set const color filter with specified layer number. ",
-	          "");
 	I_Method0(unsigned int, getNumColorLayers,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumColorLayers,
@@ -215,10 +183,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers. ",
 	          "");
-	I_IndexedProperty(osgTerrain::Terrain::Filter, ColorFilter, 
-	                  __Filter__getColorFilter__unsigned_int, 
-	                  __void__setColorFilter__unsigned_int__Filter, 
-	                  0);
 	I_ArrayProperty(osgTerrain::Layer *, ColorLayer, 
 	                __Layer_P1__getColorLayer__unsigned_int, 
 	                __void__setColorLayer__unsigned_int__osgTerrain_Layer_P1, 
@@ -226,10 +190,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	                0, 
 	                0, 
 	                0);
-	I_IndexedProperty(osg::TransferFunction *, ColorTransferFunction, 
-	                  __osg_TransferFunction_P1__getColorTransferFunction__unsigned_int, 
-	                  __void__setColorTransferFunction__unsigned_int__osg_TransferFunction_P1, 
-	                  0);
 	I_SimpleProperty(osgTerrain::Layer *, ElevationLayer, 
 	                 __Layer_P1__getElevationLayer, 
 	                 __void__setElevationLayer__Layer_P1);

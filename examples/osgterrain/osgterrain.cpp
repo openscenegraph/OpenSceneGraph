@@ -646,6 +646,8 @@ int main(int argc, char** argv)
 
     std::string filterName;
 
+    osgTerrain::Layer::Filter filter = osgTerrain::Layer::LINEAR;
+
     bool readParameter = false;
     float minValue, maxValue;
     float scale = 1.0f;
@@ -703,6 +705,7 @@ int main(int argc, char** argv)
                 
                 hfl->setLocator(locator.get());
                 hfl->setValidDataOperator(validDataOperator.get());
+                hfl->setFilter(filter);
                 
                 if (offset!=0.0f || scale!=1.0f)
                 {
@@ -737,6 +740,7 @@ int main(int argc, char** argv)
                 imageLayer->setImage(image.get());
                 imageLayer->setLocator(locator.get());
                 imageLayer->setValidDataOperator(validDataOperator.get());
+                imageLayer->setFilter(filter);
                 
                 if (offset!=0.0f || scale!=1.0f)
                 {
@@ -771,6 +775,7 @@ int main(int argc, char** argv)
                 imageLayer->setImage(image.get());
                 imageLayer->setLocator(locator.get());
                 imageLayer->setValidDataOperator(validDataOperator.get());
+                imageLayer->setFilter(filter);
                 
                 if (offset!=0.0f || scale!=1.0f)
                 {
@@ -800,17 +805,22 @@ int main(int argc, char** argv)
             if (filterName=="NEAREST")
             {
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
-                terrain->setColorFilter(layerNum, osgTerrain::Terrain::NEAREST);
+                filter = osgTerrain::Layer::NEAREST;
             }
             else if (filterName=="LINEAR") 
             {
+                filter = osgTerrain::Layer::LINEAR;
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
-                terrain->setColorFilter(layerNum, osgTerrain::Terrain::LINEAR);
             }
             else
             {
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<" unrecognized filter name, please use LINEAER or NEAREST."<<std::endl;
             }            
+
+            if (terrain->getColorLayer(layerNum))
+            {
+                terrain->getColorLayer(layerNum)->setFilter(filter);
+            }
             
         }
 
@@ -832,7 +842,7 @@ int main(int argc, char** argv)
             
             osg::notify(osg::NOTICE)<<"--tf "<<minValue<<" "<<maxValue<<std::endl;
 
-            terrain->setColorTransferFunction(layerNum, tf.get());
+            terrain->setColorLayer(layerNum, new osgTerrain::ContourLayer(tf.get()));
         }
         else
         {

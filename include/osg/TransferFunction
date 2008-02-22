@@ -31,13 +31,6 @@ class OSG_EXPORT TransferFunction : public osg::Referenced
     
         TransferFunction();
 
-        /** Set the texture unit to assign layer to if required. 
-          * Negative values signifies that no texture unit has been assigned. */
-        void setTextureUnit(int textureUnit) { _textureUnit = textureUnit; }
-
-        /** Get the texture unit to assign layer to if required.*/
-        int getTextureUnit() const { return _textureUnit; }
-
         osg::Image* getImage() { return _image.get(); }
         const osg::Image* getImage() const { return _image.get(); }
         
@@ -53,7 +46,6 @@ class OSG_EXPORT TransferFunction : public osg::Referenced
 
         typedef std::vector<osg::Vec4> Colors;
 
-        int                         _textureUnit; 
         Colors                      _colors;
         osg::ref_ptr<osg::Image>    _image;
         osg::ref_ptr<osg::Texture>  _texture;

@@ -90,6 +90,10 @@
 #include "Text.h"
 
 #include "Terrain.h"
+#include "Locator.h"
+#include "ImageLayer.h"
+#include "HeightFieldLayer.h"
+#include "CompositeLayer.h"
 
 #include <osg/Endian>
 #include <osg/Notify>
@@ -1470,4 +1474,93 @@ osg::Node* DataInputStream::readNode()
     return node;
 }
 
+osgTerrain::Layer* DataInputStream::readLayer()
+{
+    // Read node unique ID.
+    int id = readInt();
+    if (id<0) return 0;
+    
+    // See if layer is already in the list.
+    LayerMap::iterator itr= _layerMap.find(id);
+    if (itr!=_layerMap.end()) return itr->second.get();
+
+    // Layer is not in list.
+    // Create a new Layer,
+
+    osgTerrain::Layer* layer = 0;
+    int layerid = peekInt();
+    
+    if (layerid==IVEHEIGHTFIELDLAYER)
+    {
+        layer = new osgTerrain::HeightFieldLayer;
+        ((ive::HeightFieldLayer*)(layer))->read(this);
+    }
+    else if (layerid==IVEIMAGELAYER)
+    {
+        layer = new osgTerrain::ImageLayer;
+        ((ive::ImageLayer*)(layer))->read(this);
+    }
+    else if (layerid==IVECOMPOSITELAYER)
+    {
+        layer = new osgTerrain::CompositeLayer;
+        ((ive::CompositeLayer*)(layer))->read(this);
+    }
+    else if (layerid==IVEPROXYLAYER)
+    {
+        std::string filename = readString();
+        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename+".gdal");
+        osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<osgTerrain::ProxyLayer*>(object.get());
+        
+        osg::ref_ptr<osgTerrain::Locator> locator = readLocator();
+        unsigned int minLevel = readUInt();
+        unsigned int maxLevel = readUInt();
+        
+        if (proxyLayer)
+        {
+            if (locator.valid()) proxyLayer->setLocator(locator.get());
+            
+            proxyLayer->setMinLevel(minLevel);
+            proxyLayer->setMaxLevel(maxLevel);
+        }
+        
+        layer = proxyLayer;
+    }
+    else{
+        throw Exception("Unknown layer identification in DataInputStream::readLayer()");
+    }
+
+    // and add it to the node map,
+    _layerMap[id] = layer;
+        
+
+    if (_verboseOutput) std::cout<<"read/writeLayer() ["<<id<<"]"<<std::endl;
+    
+    return layer;
+}
+
+
+osgTerrain::Locator* DataInputStream::readLocator()
+{
+    // Read statesets unique ID.
+    int id = readInt();
+    if (id<0) return 0;
+    
+    // See if stateset is already in the list.
+    LocatorMap::iterator itr= _locatorMap.find(id);
+    if (itr!=_locatorMap.end()) return itr->second.get();
+
+    // Locator is not in list.
+    // Create a new locator,
+    osgTerrain::Locator* locator = new osgTerrain::Locator();
+
+    // read its properties from stream
+    ((ive::Locator*)(locator))->read(this);
+        
+    // and add it to the locator map,
+    _locatorMap[id] = locator;
+
+    if (_verboseOutput) std::cout<<"read/writeLocator() ["<<id<<"]"<<std::endl;
+    
+    return locator;
+}
 

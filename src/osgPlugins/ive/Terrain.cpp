@@ -31,19 +31,33 @@ void Terrain::write(DataOutputStream* out)
     else
         throw Exception("Terrain::write(): Could not cast this osgTerrain::Terrain to an osg::Group.");
 
-    LayerHelper helper;
-
-    helper.writeLocator(out, getLocator());
-
-    helper.writeLayer(out, getElevationLayer());
-    
-    out->writeUInt(getNumColorLayers());
-    
-    for(unsigned int i=0; i<getNumColorLayers(); ++i)
+    if (out->getVersion() >= VERSION_0023)
     {
-        helper.writeLayer(out, getColorLayer(i));
+        out->writeLocator(getLocator());
+        out->writeLayer(getElevationLayer());
+
+        out->writeUInt(getNumColorLayers());
+        for(unsigned int i=0; i<getNumColorLayers(); ++i)
+        {
+            out->writeLayer(getColorLayer(i));
+        }
     }
-    
+    else
+    {
+        LayerHelper helper;
+
+        helper.writeLocator(out, getLocator());
+
+        helper.writeLayer(out, getElevationLayer());
+
+        out->writeUInt(getNumColorLayers());
+
+        for(unsigned int i=0; i<getNumColorLayers(); ++i)
+        {
+            helper.writeLayer(out, getColorLayer(i));
+        }
+    }
+        
     writeTerrainTechnique(out, getTerrainTechnique());
 
 }
@@ -63,18 +77,31 @@ void Terrain::read(DataInputStream* in)
     else
         throw Exception("Terrain::read(): Could not cast this osgTerrain::Terrain to an osg::Group.");
 
-    LayerHelper helper;
-
-    setLocator(helper.readLocator(in));
-
-    setElevationLayer(helper.readLayer(in));
-
-    unsigned int numColorLayers = in->readUInt();
-    for(unsigned int i=0; i<numColorLayers; ++i)
+    if (in->getVersion() >= VERSION_0023)
     {
-        setColorLayer(i, helper.readLayer(in));
+        setLocator(in->readLocator());
+        setElevationLayer(in->readLayer());
+        unsigned int numColorLayers = in->readUInt();
+        for(unsigned int i=0; i<numColorLayers; ++i)
+        {
+            setColorLayer(i, in->readLayer());
+        }        
     }
-    
+    else
+    {
+        LayerHelper helper;
+
+        setLocator(helper.readLocator(in));
+
+        setElevationLayer(helper.readLayer(in));
+
+        unsigned int numColorLayers = in->readUInt();
+        for(unsigned int i=0; i<numColorLayers; ++i)
+        {
+            setColorLayer(i, helper.readLayer(in));
+        }
+    }
+        
     setTerrainTechnique(readTerrainTechnique(in));
 
 }

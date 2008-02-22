@@ -71,7 +71,7 @@ void TerrainTechnique::traverse(osg::NodeVisitor& nv)
     // if app traversal update the frame count.
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
-        if (_dirty) init();
+        if (_dirty) _terrain->init();
 
         osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
         if (uv)
@@ -91,7 +91,7 @@ void TerrainTechnique::traverse(osg::NodeVisitor& nv)
         }
     }
 
-    if (_dirty) init();
+    if (_dirty) _terrain->init();
 
     // otherwise fallback to the Group::traverse()
     _terrain->osg::Group::traverse(nv);

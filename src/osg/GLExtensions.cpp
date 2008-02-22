@@ -48,6 +48,22 @@ float osg::getGLVersionNumber()
     return( atof( vs.substr( 0, vs.find( " " ) ).c_str() ) );
 }
 
+bool osg::isExtensionInExtensionString(const char *extension, const char *extensionString)
+{
+    const char *startOfWord = extensionString;
+    const char *endOfWord;
+    while ((endOfWord = strchr(startOfWord,' ')) != 0)
+    {
+        if (strncmp(extension, startOfWord, endOfWord - startOfWord) == 0)
+            return true;
+        startOfWord = endOfWord+1;
+    }
+    if (*startOfWord && strcmp(extension, startOfWord) == 0)
+        return true;
+   
+   return false;
+}
+
 bool osg::isGLExtensionSupported(unsigned int contextID, const char *extension)
 {
     ExtensionSet& extensionSet = s_glExtensionSetList[contextID];

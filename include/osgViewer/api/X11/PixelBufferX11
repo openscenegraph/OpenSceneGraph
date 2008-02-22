@@ -77,7 +77,6 @@ class OSGVIEWER_EXPORT PixelBufferX11 : public osg::GraphicsContext
 
         Display* getDisplay() const { return _display; }
         
-        Window& getParent() { return _parent; }
         GLXPbuffer& getPbuffer() { return _pbuffer; }
         GLXContext& getGLXContext() { return _glxContext; }
 
@@ -91,13 +90,14 @@ class OSGVIEWER_EXPORT PixelBufferX11 : public osg::GraphicsContext
 
         bool            _valid;
         Display*        _display;
-        Window          _parent;
         GLXPbuffer      _pbuffer;
         XVisualInfo*    _visualInfo;
         GLXContext      _glxContext;
 
         bool            _initialized;
         bool            _realized;
+
+        bool            _useGLX1_3;
 };
 
 }

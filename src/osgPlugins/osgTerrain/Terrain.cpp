@@ -258,40 +258,6 @@ bool Terrain_readLocalData(osg::Object& obj, osgDB::Input &fr)
         itrAdvanced = true;
     }
 
-    if ((firstMatched = fr.matchSequence("ColorTransferFunction %i {")) || fr.matchSequence("ColorTransferFunction {") )
-    {
-        unsigned int layerNum = 0;
-        if (firstMatched)
-        {
-             fr[1].getUInt(layerNum);        
-            ++fr;
-        }
-
-        osg::TransferFunction* tf = readTransferFunction(fr);
-        if (tf) terrain.setColorTransferFunction(layerNum, tf);
-
-        itrAdvanced = true;
-    }
-
-    if (fr[0].matchWord("ColorFilter"))
-    {
-        unsigned int layerNum = 0;
-        if (fr.matchSequence("ColorFilter %i"))
-        {
-            fr[1].getUInt(layerNum);
-            fr += 2;
-        }
-        else
-        {
-            ++fr;
-        }
-
-        if (fr[0].matchWord("NEAREST")) terrain.setColorFilter(layerNum, osgTerrain::Terrain::NEAREST);
-        else if (fr[0].matchWord("LINEAR")) terrain.setColorFilter(layerNum, osgTerrain::Terrain::LINEAR);
-
-        ++fr;
-        itrAdvanced = true;
-    }
 
     readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::TerrainTechnique>());
     if (readObject.valid())

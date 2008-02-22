@@ -44,8 +44,6 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         
         virtual void applyColorLayers();
         
-        virtual void applyTransferFunctions();
-        
         virtual void applyTransparency();
         
         virtual void smoothGeometry();

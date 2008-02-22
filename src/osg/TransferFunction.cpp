@@ -19,8 +19,7 @@ using namespace osg;
 //
 // TransferFunction base class
 //
-TransferFunction::TransferFunction():
-    _textureUnit(-1)
+TransferFunction::TransferFunction()
 {
 }
 

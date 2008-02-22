@@ -93,21 +93,7 @@ void Terrain::setColorLayer(unsigned int i, osgTerrain::Layer* layer)
 {
     if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
     
-    _colorLayers[i].layer = layer;
-}
-
-void Terrain::setColorTransferFunction(unsigned int i, osg::TransferFunction* tf)
-{
-    if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
-    
-    _colorLayers[i].transferFunction = tf;
-}
-
-void Terrain::setColorFilter(unsigned int i, Filter filter)
-{
-    if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
-    
-    _colorLayers[i].filter = filter;
+    _colorLayers[i] = layer;
 }
 
 osg::BoundingSphere Terrain::computeBound() const
@@ -124,7 +110,7 @@ osg::BoundingSphere Terrain::computeBound() const
             itr != _colorLayers.end();
             ++itr)
         {
-            if (itr->layer.valid()) bs.expandBy(itr->layer->computeBound(false));
+            if (itr->valid()) bs.expandBy((*itr)->computeBound(false));
         }
     }
     

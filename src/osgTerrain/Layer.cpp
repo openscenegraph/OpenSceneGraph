@@ -17,18 +17,18 @@
 using namespace osgTerrain;
 
 Layer::Layer():
-    _textureUnit(-1),
     _minLevel(0),
-    _maxLevel(MAXIMUM_NUMBER_OF_LEVELS)
+    _maxLevel(MAXIMUM_NUMBER_OF_LEVELS),
+    _filter(LINEAR)
 {
 }
 
 Layer::Layer(const Layer& layer,const osg::CopyOp& copyop):
     osg::Object(layer,copyop),
     _filename(layer._filename),
-    _textureUnit(layer._textureUnit),
     _minLevel(layer._minLevel),
-    _maxLevel(layer._maxLevel)
+    _maxLevel(layer._maxLevel),
+    _filter(layer._filter)
 {
 }
 
@@ -94,7 +94,8 @@ osg::BoundingSphere Layer::computeBound(bool treatAsElevationLayer) const
 //
 // ImageLayer
 //
-ImageLayer::ImageLayer()
+ImageLayer::ImageLayer(osg::Image* image):
+    _image(image)
 {
 }
 
@@ -263,10 +264,112 @@ unsigned int ImageLayer::getModifiedCount() const
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// ContourLayer
+//
+ContourLayer::ContourLayer(osg::TransferFunction1D* tf):
+    _tf(tf)
+{
+    _filter = NEAREST;
+}
+
+ContourLayer::ContourLayer(const ContourLayer& contourLayer,const osg::CopyOp& copyop):
+    Layer(contourLayer, copyop),
+    _tf(contourLayer._tf)
+{
+}
+
+void ContourLayer::setTransferFunction(osg::TransferFunction1D* tf)
+{
+    _tf = tf;
+}
+
+bool ContourLayer::transform(float offset, float scale)
+{
+    if (!_tf) return false;
+
+    osg::notify(osg::NOTICE)<<"ContourLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
+
+    for(unsigned int i=0; i<_tf->getNumberCellsX(); ++i)
+    {
+        osg::Vec4 value = _tf->getValue(i);
+        value.r() = offset + value.r()* scale;
+        value.g() = offset + value.g()* scale;
+        value.b() = offset + value.b()* scale;
+        value.a() = offset + value.a()* scale;
+        _tf->setValue(i, value);
+    }
+
+    dirty();
+
+    return true;
+}
+
+bool ContourLayer::getValue(unsigned int i, unsigned int j, float& value) const
+{
+    if (!_tf) return false;
+
+    const osg::Vec4& v = _tf->getValue(i);
+    value = v[0];
+
+    return true;
+}
+
+bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) const
+{
+    if (!_tf) return false;
+
+    const osg::Vec4& v = _tf->getValue(i);
+    value.x() = v.x();
+    value.y() = v.y();
+
+    return true;
+}
+
+bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec3& value) const
+{
+    if (!_tf) return false;
+
+    const osg::Vec4& v = _tf->getValue(i);
+    value.x() = v.x();
+    value.y() = v.y();
+    value.z() = v.z();
+
+    return true;
+}
+
+bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value) const
+{
+    if (!_tf) return false;
+
+    value = _tf->getValue(i);
+
+    return true;
+}
+
+void ContourLayer::dirty()
+{
+    if (getImage()) getImage()->dirty();
+}
+
+void ContourLayer::setModifiedCount(unsigned int value)
+{
+    if (getImage()) getImage()->setModifiedCount(value);
+}
+
+unsigned int ContourLayer::getModifiedCount() const
+{
+    if (!getImage()) return 0;
+    else return getImage()->getModifiedCount();
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // HeightFieldLayer
 //
-HeightFieldLayer::HeightFieldLayer():
-    _modifiedCount(0)
+HeightFieldLayer::HeightFieldLayer(osg::HeightField* hf):
+    _modifiedCount(0),
+    _heightField(hf)
 {
 }
 

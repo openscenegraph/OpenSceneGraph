@@ -15,6 +15,7 @@
 #include <osg/Image>
 #include <osg/Object>
 #include <osg/Shape>
+#include <osg/TransferFunction>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -128,12 +129,137 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	                __void__removeLayer__unsigned_int);
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgTerrain::ContourLayer)
+	I_DeclaringFile("osgTerrain/Layer");
+	I_BaseType(osgTerrain::Layer);
+	I_ConstructorWithDefaults1(IN, osg::TransferFunction1D *, tf, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____ContourLayer__osg_TransferFunction1D_P1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osgTerrain::ContourLayer &, tfLayer, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ContourLayer__C5_ContourLayer_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method2(bool, transform, IN, float, offset, IN, float, scale,
+	          Properties::VIRTUAL,
+	          __bool__transform__float__float,
+	          "",
+	          "");
+	I_Method1(void, setTransferFunction, IN, osg::TransferFunction1D *, tf,
+	          Properties::NON_VIRTUAL,
+	          __void__setTransferFunction__osg_TransferFunction1D_P1,
+	          "",
+	          "");
+	I_Method0(osg::TransferFunction1D *, getTransferFunction,
+	          Properties::NON_VIRTUAL,
+	          __osg_TransferFunction1D_P1__getTransferFunction,
+	          "",
+	          "");
+	I_Method0(const osg::TransferFunction1D *, getTransferFunction,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_TransferFunction1D_P1__getTransferFunction,
+	          "",
+	          "");
+	I_Method0(osg::Image *, getImage,
+	          Properties::VIRTUAL,
+	          __osg_Image_P1__getImage,
+	          "Return image associated with layer. ",
+	          "");
+	I_Method0(const osg::Image *, getImage,
+	          Properties::VIRTUAL,
+	          __C5_osg_Image_P1__getImage,
+	          "Return const image associated with layer. ",
+	          "");
+	I_Method0(unsigned int, getNumColumns,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumColumns,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumRows,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getNumRows,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, float &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__float_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec2 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec2_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec3 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec3_R1,
+	          "",
+	          "");
+	I_Method3(bool, getValue, IN, unsigned int, i, IN, unsigned int, j, IN, osg::Vec4 &, value,
+	          Properties::VIRTUAL,
+	          __bool__getValue__unsigned_int__unsigned_int__osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(void, dirty,
+	          Properties::VIRTUAL,
+	          __void__dirty,
+	          "increment the modified count. ",
+	          "\" ");
+	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	          Properties::VIRTUAL,
+	          __void__setModifiedCount__unsigned_int,
+	          "Set the modified count value. ",
+	          "");
+	I_Method0(unsigned int, getModifiedCount,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getModifiedCount,
+	          "Get modified count value. ",
+	          "");
+	I_SimpleProperty(osg::Image *, Image, 
+	                 __osg_Image_P1__getImage, 
+	                 0);
+	I_SimpleProperty(unsigned int, ModifiedCount, 
+	                 __unsigned_int__getModifiedCount, 
+	                 __void__setModifiedCount__unsigned_int);
+	I_SimpleProperty(osg::TransferFunction1D *, TransferFunction, 
+	                 __osg_TransferFunction1D_P1__getTransferFunction, 
+	                 __void__setTransferFunction__osg_TransferFunction1D_P1);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	I_DeclaringFile("osgTerrain/Layer");
 	I_BaseType(osgTerrain::Layer);
-	I_Constructor0(____HeightFieldLayer,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, osg::HeightField *, hf, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____HeightFieldLayer__osg_HeightField_P1,
+	                           "",
+	                           "");
 	I_ConstructorWithDefaults2(IN, const osgTerrain::HeightFieldLayer &, hfLayer, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____HeightFieldLayer__C5_HeightFieldLayer_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
@@ -252,9 +378,11 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	I_DeclaringFile("osgTerrain/Layer");
 	I_BaseType(osgTerrain::Layer);
-	I_Constructor0(____ImageLayer,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, osg::Image *, image, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____ImageLayer__osg_Image_P1,
+	                           "",
+	                           "");
 	I_ConstructorWithDefaults2(IN, const osgTerrain::ImageLayer &, imageLayer, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____ImageLayer__C5_ImageLayer_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
@@ -305,14 +433,14 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	          "",
 	          "");
 	I_Method0(osg::Image *, getImage,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __osg_Image_P1__getImage,
-	          "",
+	          "Return image associated with layer. ",
 	          "");
 	I_Method0(const osg::Image *, getImage,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __C5_osg_Image_P1__getImage,
-	          "",
+	          "Return const image associated with layer. ",
 	          "");
 	I_Method0(unsigned int, getNumColumns,
 	          Properties::VIRTUAL,
@@ -370,6 +498,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	                 __void__setModifiedCount__unsigned_int);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osgTerrain::Layer::Filter)
+	I_DeclaringFile("osgTerrain/Layer");
+	I_EnumLabel(osgTerrain::Layer::NEAREST);
+	I_EnumLabel(osgTerrain::Layer::LINEAR);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_DeclaringFile("osgTerrain/Layer");
 	I_BaseType(osg::Object);
@@ -414,16 +548,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          Properties::VIRTUAL,
 	          __C5_std_string_R1__getFileName,
 	          "Get the file name of the layer. ",
-	          "");
-	I_Method1(void, setTextureUnit, IN, int, textureUnit,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureUnit__int,
-	          "Set the texture unit to assign layer to if required. ",
-	          "Negative values signifies that no texture unit has been assigned. ");
-	I_Method0(int, getTextureUnit,
-	          Properties::NON_VIRTUAL,
-	          __int__getTextureUnit,
-	          "Get the texture unit to assign layer to if required. ",
 	          "");
 	I_Method1(void, setLocator, IN, osgTerrain::Locator *, locator,
 	          Properties::NON_VIRTUAL,
@@ -494,6 +618,26 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Vec4_R1__getDefaultValue,
 	          "",
+	          "");
+	I_Method1(void, setFilter, IN, osgTerrain::Layer::Filter, filter,
+	          Properties::NON_VIRTUAL,
+	          __void__setFilter__Filter,
+	          "Set the texture filter to use when do texture associated with this layer. ",
+	          "");
+	I_Method0(osgTerrain::Layer::Filter, getFilter,
+	          Properties::NON_VIRTUAL,
+	          __Filter__getFilter,
+	          "Get the texture filter to use when do texture associated with this layer. ",
+	          "");
+	I_Method0(osg::Image *, getImage,
+	          Properties::VIRTUAL,
+	          __osg_Image_P1__getImage,
+	          "Return image associated with layer if supported. ",
+	          "");
+	I_Method0(const osg::Image *, getImage,
+	          Properties::VIRTUAL,
+	          __C5_osg_Image_P1__getImage,
+	          "Return const image associated with layer if supported. ",
 	          "");
 	I_Method2(bool, transform, IN, float, offset, IN, float, scale,
 	          Properties::VIRTUAL,
@@ -576,6 +720,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_SimpleProperty(const std::string &, FileName, 
 	                 __C5_std_string_R1__getFileName, 
 	                 __void__setFileName__C5_std_string_R1);
+	I_SimpleProperty(osgTerrain::Layer::Filter, Filter, 
+	                 __Filter__getFilter, 
+	                 __void__setFilter__Filter);
+	I_SimpleProperty(osg::Image *, Image, 
+	                 __osg_Image_P1__getImage, 
+	                 0);
 	I_SimpleProperty(osgTerrain::Locator *, Locator, 
 	                 __Locator_P1__getLocator, 
 	                 __void__setLocator__Locator_P1);
@@ -588,9 +738,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_SimpleProperty(unsigned, ModifiedCount, 
 	                 0, 
 	                 __void__setModifiedCount__unsigned);
-	I_SimpleProperty(int, TextureUnit, 
-	                 __int__getTextureUnit, 
-	                 __void__setTextureUnit__int);
 	I_SimpleProperty(osgTerrain::ValidDataOperator *, ValidDataOperator, 
 	                 __ValidDataOperator_P1__getValidDataOperator, 
 	                 __void__setValidDataOperator__ValidDataOperator_P1);

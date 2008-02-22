@@ -95,11 +95,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	          __void__applyColorLayers,
 	          "",
 	          "");
-	I_Method0(void, applyTransferFunctions,
-	          Properties::VIRTUAL,
-	          __void__applyTransferFunctions,
-	          "",
-	          "");
 	I_Method0(void, applyTransparency,
 	          Properties::VIRTUAL,
 	          __void__applyTransparency,

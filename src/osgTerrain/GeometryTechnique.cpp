@@ -27,6 +27,8 @@
 
 using namespace osgTerrain;
 
+#define NEW_COORD_CODE
+
 GeometryTechnique::GeometryTechnique():
     _currentReadOnlyBuffer(1),
     _currentWriteBuffer(0)
@@ -98,7 +100,7 @@ void GeometryTechnique::setFilterMatrixAs(FilterType filterType)
 
 void GeometryTechnique::init()
 {
-    osg::notify(osg::INFO)<<"Doing init()"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Doing GeometryTechnique::init()"<<std::endl;
     
     if (!_terrain) return;
 
@@ -111,9 +113,6 @@ void GeometryTechnique::init()
     generateGeometry(masterLocator, centerModel);
     
     applyColorLayers();
-    
-    applyTransferFunctions();
-    
     applyTransparency();
     
     // smoothGeometry();
@@ -151,9 +150,6 @@ osg::Vec3d GeometryTechnique::computeCenterModel(Locator* masterLocator)
     
     osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
     osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
-    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
-
-    if ((elevationLayer==colorLayer) && colorTF) colorLayer = 0;
 
     Locator* elevationLocator = elevationLayer ? elevationLayer->getLocator() : 0;
     Locator* colorLocator = colorLayer ? colorLayer->getLocator() : 0;
@@ -213,22 +209,16 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     BufferData& buffer = getWriteBuffer();
     
     osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
-    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
-    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
-    
-    if ((elevationLayer==colorLayer) && colorTF) colorLayer = 0;
 
-    Locator* colorLocator = colorLayer ? colorLayer->getLocator() : 0;
-
-    if (!colorLocator) colorLocator = masterLocator;
-    
     buffer._geode = new osg::Geode;
     if(buffer._transform.valid())
         buffer._transform->addChild(buffer._geode.get());
     
     buffer._geometry = new osg::Geometry;
-    if (buffer._geometry.valid()) buffer._geode->addDrawable(buffer._geometry.get());
-    
+    buffer._geode->addDrawable(buffer._geometry.get());
+        
+    osg::Geometry* geometry = buffer._geometry.get();
+
     unsigned int numRows = 20;
     unsigned int numColumns = 20;
     
@@ -256,66 +246,55 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
     // allocate and assign vertices
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
-    if (buffer._geometry.valid()) buffer._geometry->setVertexArray(vertices.get());
+    vertices->reserve(numVertices);
+    geometry->setVertexArray(vertices.get());
 
     // allocate and assign normals
     osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array;
-    if (buffer._geometry.valid())
-    {
-        buffer._geometry->setNormalArray(normals.get());
-        buffer._geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-    }
+    if (normals.valid()) normals->reserve(numVertices);
+    geometry->setNormalArray(normals.get());
+    geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
     
-    int texcoord_index = 0;
-    int color_index = -1;
-    int tf_index = -1;
 
     float minHeight = 0.0;
     float scaleHeight = 1.0;
 
     // allocate and assign tex coords
-    osg::ref_ptr<osg::Vec2Array> texcoords;
-    if (colorLayer)
+    typedef std::pair< osg::ref_ptr<osg::Vec2Array>, Locator* > TexCoordLocatorPair;
+    typedef std::map< Layer*, TexCoordLocatorPair > LayerToTexCoordMap;
+
+    LayerToTexCoordMap layerToTexCoordMap;
+    for(unsigned int layerNum=0; layerNum<_terrain->getNumColorLayers(); ++layerNum)
     {
-        color_index = texcoord_index;
-        ++texcoord_index;
-
-        texcoords = new osg::Vec2Array;
-        
-        if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(color_index, texcoords.get());
-    }
-
-    osg::ref_ptr<osg::FloatArray> elevations = new osg::FloatArray;
-    osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
-    if (tf)
-    {
-        tf_index = texcoord_index;
-        ++texcoord_index;
-
-        if (!colorLayer)
+        osgTerrain::Layer* colorLayer = _terrain->getColorLayer(layerNum);
+        if (colorLayer)
         {
-            // elevations = new osg::FloatArray(numVertices);
-            if (buffer._geometry.valid()) buffer._geometry->setTexCoordArray(tf_index, elevations.get());
-
-            minHeight = tf->getMinimum();
-            scaleHeight = 1.0f/(tf->getMaximum()-tf->getMinimum());
+            LayerToTexCoordMap::iterator itr = layerToTexCoordMap.find(colorLayer);
+            if (itr!=layerToTexCoordMap.end())
+            {
+                geometry->setTexCoordArray(layerNum, itr->second.first.get());
+            }
+            else
+            {
+                TexCoordLocatorPair& tclp = layerToTexCoordMap[colorLayer];
+                tclp.first = new osg::Vec2Array;
+                tclp.first->reserve(numVertices);
+                tclp.second = colorLayer->getLocator() ? colorLayer->getLocator() : masterLocator;
+                geometry->setTexCoordArray(layerNum, tclp.first.get());
+            }
         }
     }
 
-    if (vertices.valid()) vertices->reserve(numVertices);
-    if (texcoords.valid()) texcoords->reserve(numVertices);
+    osg::ref_ptr<osg::FloatArray> elevations = new osg::FloatArray;
     if (elevations.valid()) elevations->reserve(numVertices);
-    if (normals.valid()) normals->reserve(numVertices);
         
+
     // allocate and assign color
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
     
-    if (buffer._geometry.valid())
-    {
-        buffer._geometry->setColorArray(colors.get());
-        buffer._geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-    }
+    geometry->setColorArray(colors.get());
+    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
 
     typedef std::vector<int> Indices;
@@ -350,9 +329,13 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
                 (*vertices).push_back(model - centerModel);
 
-                if (colorLayer)
+                for(LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
+                    itr != layerToTexCoordMap.end();
+                    ++itr)
                 {
-                    if (colorLocator!= masterLocator)
+                    osg::Vec2Array* texcoords = itr->second.first.get();
+                    Locator* colorLocator = itr->second.second;
+                    if (colorLocator != masterLocator)
                     {
                         osg::Vec3d color_ndc;
                         Locator::convertLocalCoordBetween(*masterLocator, ndc, *colorLocator, color_ndc);
@@ -362,7 +345,6 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                     {
                         (*texcoords).push_back(osg::Vec2(ndc.x(), ndc.y()));
                     }
-
                 }
 
                 if (elevations.valid())
@@ -392,7 +374,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     osg::ref_ptr<osg::DrawElementsUInt> elements = new osg::DrawElementsUInt(GL_TRIANGLES);
     elements->reserve((numRows-1) * (numColumns-1) * 6);
 
-    if (buffer._geometry.valid()) buffer._geometry->addPrimitiveSet(elements.get());
+    geometry->addPrimitiveSet(elements.get());
 
     for(j=0; j<numRows-1; ++j)
     {
@@ -471,7 +453,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     {
         smoothGeometry();
         
-        normals = dynamic_cast<osg::Vec3Array*>(buffer._geometry->getNormalArray());
+        normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
         
         if (!normals) createSkirt = false;
     }
@@ -492,7 +474,13 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*vertices).push_back(new_v);
                 if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
-                if (texcoords.valid()) (*texcoords).push_back((*texcoords)[orig_i]);
+
+                for(LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
+                    itr != layerToTexCoordMap.end();
+                    ++itr)
+                {
+                    itr->second.first->push_back((*itr->second.first)[orig_i]);
+                }
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);
@@ -501,7 +489,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             {
                 if (!skirtDrawElements->empty())
                 {
-                    buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+                    geometry->addPrimitiveSet(skirtDrawElements.get());
                     skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
                 }
                 
@@ -510,7 +498,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
         if (!skirtDrawElements->empty())
         {
-            buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+            geometry->addPrimitiveSet(skirtDrawElements.get());
             skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
         }
 
@@ -525,7 +513,12 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*vertices).push_back(new_v);
                 if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
-                if (texcoords.valid()) (*texcoords).push_back((*texcoords)[orig_i]);
+                for(LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
+                    itr != layerToTexCoordMap.end();
+                    ++itr)
+                {
+                    itr->second.first->push_back((*itr->second.first)[orig_i]);
+                }
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);
@@ -534,7 +527,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             {
                 if (!skirtDrawElements->empty())
                 {
-                    buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+                    geometry->addPrimitiveSet(skirtDrawElements.get());
                     skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
                 }
                 
@@ -543,7 +536,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
         if (!skirtDrawElements->empty())
         {
-            buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+            geometry->addPrimitiveSet(skirtDrawElements.get());
             skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
         }
 
@@ -558,7 +551,12 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*vertices).push_back(new_v);
                 if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
-                if (texcoords.valid()) (*texcoords).push_back((*texcoords)[orig_i]);
+                for(LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
+                    itr != layerToTexCoordMap.end();
+                    ++itr)
+                {
+                    itr->second.first->push_back((*itr->second.first)[orig_i]);
+                }
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);
@@ -567,7 +565,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             {
                 if (!skirtDrawElements->empty())
                 {
-                    buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+                    geometry->addPrimitiveSet(skirtDrawElements.get());
                     skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
                 }
                 
@@ -576,7 +574,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
         if (!skirtDrawElements->empty())
         {
-            buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+            geometry->addPrimitiveSet(skirtDrawElements.get());
             skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
         }
 
@@ -591,7 +589,12 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*vertices).push_back(new_v);
                 if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
-                if (texcoords.valid()) (*texcoords).push_back((*texcoords)[orig_i]);
+                for(LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
+                    itr != layerToTexCoordMap.end();
+                    ++itr)
+                {
+                    itr->second.first->push_back((*itr->second.first)[orig_i]);
+                }
                 
                 skirtDrawElements->push_back(orig_i);
                 skirtDrawElements->push_back(new_i);
@@ -600,7 +603,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             {
                 if (!skirtDrawElements->empty())
                 {
-                    buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+                    geometry->addPrimitiveSet(skirtDrawElements.get());
                     skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
                 }
                 
@@ -609,136 +612,79 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
         if (!skirtDrawElements->empty())
         {
-            buffer._geometry->addPrimitiveSet(skirtDrawElements.get());
+            geometry->addPrimitiveSet(skirtDrawElements.get());
             skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
         }
     }
 
 
-    // if (buffer._geometry.valid()) _terrainGeometry->setUseDisplayList(false);
-    if (buffer._geometry.valid()) buffer._geometry->setUseVertexBufferObjects(true);
+    // _terrainGeometry->setUseDisplayList(false);
+    geometry->setUseVertexBufferObjects(true);
 }
 
 void GeometryTechnique::applyColorLayers()
 {
     BufferData& buffer = getWriteBuffer();
+
+    typedef std::map<osgTerrain::Layer*, osg::Texture*> LayerToTextureMap;
+    LayerToTextureMap layerToTextureMap;
     
-    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
-    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
-    osgTerrain::Terrain::Filter filter = _terrain->getColorFilter(0);
-    
-    osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
-    
-    int color_index = -1;
-    
-    if (colorLayer)
+    for(unsigned int layerNum=0; layerNum<_terrain->getNumColorLayers(); ++layerNum)
     {
-        color_index++;
+        osgTerrain::Layer* colorLayer = _terrain->getColorLayer(layerNum);
+        if (!colorLayer) continue;
+
+        osg::Image* image = colorLayer->getImage();
+        if (!image) continue;
+
         osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(colorLayer);
+        osgTerrain::ContourLayer* contourLayer = dynamic_cast<osgTerrain::ContourLayer*>(colorLayer);
         if (imageLayer)
         {
-            osg::Image* image = imageLayer->getImage();
             osg::StateSet* stateset = buffer._geode->getOrCreateStateSet();
 
-            osg::Texture2D* texture2D = new osg::Texture2D;
-            texture2D->setImage(image);
-            texture2D->setResizeNonPowerOfTwoHint(false);
-            stateset->setTextureAttributeAndModes(color_index, texture2D, osg::StateAttribute::ON);
-
-            texture2D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
-            texture2D->setFilter(osg::Texture::MAG_FILTER, filter==Terrain::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
-            texture2D->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
-            texture2D->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
-                
-            if (tf)
+            osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(layerToTextureMap[colorLayer]);
+            if (!texture2D)
             {
-                // up the precision of the internal texture format to its maximum.
-                //image->setInternalTextureFormat(GL_LUMINANCE32F_ARB);
-                image->setInternalTextureFormat(GL_LUMINANCE16);
-            }
-        }
-    }
-}
+                texture2D = new osg::Texture2D;
+                texture2D->setImage(image);
+                texture2D->setResizeNonPowerOfTwoHint(false);
+                texture2D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
+                texture2D->setFilter(osg::Texture::MAG_FILTER, colorLayer->getFilter()==Layer::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
+                texture2D->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+                texture2D->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
 
-void GeometryTechnique::applyTransferFunctions()
-{
-    BufferData& buffer = getWriteBuffer();
-    
-    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
-    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
-    osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
-    
-    int color_index = -1;
-    int tf_index = -1;
-    
-    if (colorLayer) {
-        color_index++;
-        tf_index++;
-    }
-    
-    if (tf)
-    {
-        osg::notify(osg::INFO)<<"Requires TransferFunction"<<std::endl;
-        tf_index++;
-        osg::Image* image = tf->getImage();
-        osg::StateSet* stateset = buffer._geode->getOrCreateStateSet();
-        osg::Texture1D* texture1D = new osg::Texture1D;
-        texture1D->setImage(image);
-        texture1D->setResizeNonPowerOfTwoHint(false);
-        texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
-        texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::NEAREST);
-        stateset->setTextureAttributeAndModes(tf_index, texture1D, osg::StateAttribute::ON);
+                layerToTextureMap[colorLayer] = texture2D;
 
-        if (colorLayer)
-        {
-            osg::notify(osg::INFO)<<"Using fragment program"<<std::endl;
-        
-            osg::Program* program = new osg::Program;
-            stateset->setAttribute(program);
+                // osg::notify(osg::NOTICE)<<"Creating new ImageLayer texture "<<layerNum<<std::endl;
 
-            // get shaders from source
-            std::string vertexShaderFile = osgDB::findDataFile("shaders/lookup.vert");
-            if (!vertexShaderFile.empty())
-            {
-                program->addShader(osg::Shader::readShaderFile(osg::Shader::VERTEX, vertexShaderFile));
             }
             else
             {
-                osg::notify(osg::INFO)<<"Not found lookup.vert"<<std::endl;
+                // osg::notify(osg::NOTICE)<<"Reusing ImageLayer texture "<<layerNum<<std::endl;
             }
 
-            std::string fragmentShaderFile = osgDB::findDataFile("shaders/lookup.frag");
-            if (!fragmentShaderFile.empty())
-            {
-                program->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
-            }
-            else
-            {
-                osg::notify(osg::INFO)<<"Not found lookup.frag"<<std::endl;
-            }
-
-            osg::Uniform* sourceSampler = new osg::Uniform("sourceTexture",color_index);
-            stateset->addUniform(sourceSampler);
-
-            osg::Uniform* lookupTexture = new osg::Uniform("lookupTexture",tf_index);
-            stateset->addUniform(lookupTexture);
-
-            stateset->addUniform(_filterWidthUniform.get());
-            stateset->addUniform(_filterMatrixUniform.get());
-            stateset->addUniform(_filterBiasUniform.get());
-
-            osg::Uniform* lightingEnabled = new osg::Uniform("lightingEnabled",true);
-            stateset->addUniform(lightingEnabled);
-
-            osg::Uniform* minValue = new osg::Uniform("minValue", tf->getMinimum());
-            stateset->addUniform(minValue);
-
-            osg::Uniform* inverseRange = new osg::Uniform("inverseRange", 1.0f/(tf->getMaximum()-tf->getMinimum()));
-            stateset->addUniform(inverseRange);
+            stateset->setTextureAttributeAndModes(layerNum, texture2D, osg::StateAttribute::ON);
+            
         }
-        else
+        else if (contourLayer)
         {
-            osg::notify(osg::INFO)<<"Using standard OpenGL fixed function pipeline"<<std::endl;
+            osg::StateSet* stateset = buffer._geode->getOrCreateStateSet();
+
+            osg::Texture1D* texture1D = dynamic_cast<osg::Texture1D*>(layerToTextureMap[colorLayer]);
+            if (!texture1D)
+            {
+                texture1D = new osg::Texture1D;
+                texture1D->setImage(image);
+                texture1D->setResizeNonPowerOfTwoHint(false);
+                texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
+                texture1D->setFilter(osg::Texture::MAG_FILTER, colorLayer->getFilter()==Layer::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
+
+                layerToTextureMap[colorLayer] = texture1D;
+            }
+            
+            stateset->setTextureAttributeAndModes(layerNum, texture1D, osg::StateAttribute::ON);
+
         }
     }
 }
@@ -747,25 +693,15 @@ void GeometryTechnique::applyTransparency()
 {
     BufferData& buffer = getWriteBuffer();
     
-    osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
-    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
-    osg::TransferFunction* colorTF = _terrain->getColorTransferFunction(0);
-
-    // if the elevationLayer and colorLayer are the same, and there is colorTF then
-    // simply assign as a texture coordinate.
-    if ((elevationLayer==colorLayer) && colorTF) colorLayer = 0;
-    
     bool containsTransparency = false;
-    
-    if (colorLayer)
+    for(unsigned int i=0; i<_terrain->getNumColorLayers(); ++i)
     {
-        osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(colorLayer);
-        if (imageLayer)
+        osg::Image* image = _terrain->getColorLayer(i)->getImage();
+        if (image)
         {
-            osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(colorTF);
-            if (tf) containsTransparency = tf->getImage()->isImageTranslucent();
-            else containsTransparency = imageLayer->getImage() ? imageLayer->getImage()->isImageTranslucent() : false;
-        }  
+            containsTransparency = image->isImageTranslucent();
+            break;
+        }        
     }
     
     if (containsTransparency)
@@ -816,7 +752,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
     // if app traversal update the frame count.
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
-        if (_dirty) init();
+        if (_dirty) _terrain->init();
 
         osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
         if (uv)
@@ -840,7 +776,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
     if (_dirty) 
     {
         osg::notify(osg::INFO)<<"******* Doing init ***********"<<std::endl;
-        init();
+        _terrain->init();
     }
 
     BufferData& buffer = getReadOnlyBuffer();

@@ -35,12 +35,26 @@ bool Layer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
     if (locator) layer.setLocator(locator);
     
-    int textureUnit=-1;
-    if (fr.read("TextureUnit",textureUnit))
+    if (fr[0].matchWord("Filter"))
     {
+        unsigned int layerNum = 0;
+        if (fr.matchSequence("Filter %i"))
+        {
+            fr[1].getUInt(layerNum);
+            fr += 2;
+        }
+        else
+        {
+            ++fr;
+        }
+
+        if (fr[0].matchWord("NEAREST")) layer.setFilter(osgTerrain::Layer::NEAREST);
+        else if (fr[0].matchWord("LINEAR")) layer.setFilter(osgTerrain::Layer::LINEAR);
+
+        ++fr;
         itrAdvanced = true;
-        layer.setTextureUnit(textureUnit);
     }
+
 
     unsigned int minLevel=0;
     if (fr.read("MinLevel",minLevel))
@@ -67,11 +81,18 @@ bool Layer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     {
         fw.writeObject(*layer.getLocator());
     }
-
-    if (layer.getTextureUnit()>=0)
+    
+    if (layer.getFilter()!=osgTerrain::Layer::LINEAR)
     {
-        fw.indent()<<"TextureUnit "<<layer.getTextureUnit()<<std::endl;
-    } 
+        if (layer.getFilter()==osgTerrain::Layer::LINEAR)
+        {
+            fw.indent()<<"Filter LINEAER"<<std::endl;
+        }
+        else
+        {
+            fw.indent()<<"Filter NEAREST"<<std::endl;
+        }
+    }
 
     if (layer.getMinLevel()!=0)
     {

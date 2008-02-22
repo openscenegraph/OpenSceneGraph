@@ -91,6 +91,10 @@
 #include "Text.h"
 
 #include "Terrain.h"
+#include "Locator.h"
+#include "ImageLayer.h"
+#include "HeightFieldLayer.h"
+#include "CompositeLayer.h"
 
 #include <osg/Notify>
 #include <osg/io_utils>
@@ -1182,5 +1186,101 @@ void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
         default:
             throw Exception("DataOutputStream::writeImage(): Invalid IncludeImageMode value.");
             break;
+    }
+}
+
+
+void DataOutputStream::writeLayer(const osgTerrain::Layer* layer)
+{
+    if (layer==0)
+    {
+        writeInt(-1);
+        return;
+    }
+
+    LayerMap::iterator itr = _layerMap.find(layer);
+    if (itr!=_layerMap.end())
+    {
+        // Id already exists so just write ID.
+        writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeLayer() ["<<itr->second<<"]"<<std::endl;
+    }
+    else
+    {
+        // id doesn't exist so create a new ID and
+        // register the stateset.
+
+        int id = _layerMap.size();
+        _layerMap[layer] = id;
+
+        // write the id.
+        writeInt(id);
+        
+        if (dynamic_cast<const osgTerrain::HeightFieldLayer*>(layer))
+        {
+            ((ive::HeightFieldLayer*)(layer))->write(this);
+        }
+        else if (dynamic_cast<const osgTerrain::ImageLayer*>(layer))
+        {
+            ((ive::ImageLayer*)(layer))->write(this);
+        }
+        else if (dynamic_cast<const osgTerrain::CompositeLayer*>(layer))
+        {
+            ((ive::CompositeLayer*)(layer))->write(this);
+        }
+        else if (dynamic_cast<const osgTerrain::ProxyLayer*>(layer))
+        {
+            writeInt(IVEPROXYLAYER);
+            writeString(layer->getFileName());
+
+            const osgTerrain::Locator* locator = layer->getLocator();
+            bool writeOutLocator = locator && !locator->getDefinedInFile();
+            writeLocator(writeOutLocator ? locator : 0 );
+
+            writeUInt(layer->getMinLevel());
+            writeUInt(layer->getMaxLevel());
+        }
+        else
+        {
+            throw Exception("Unknown layer in DataOutputStream::writeLayer()");
+        }
+        if (_verboseOutput) std::cout<<"read/writeLayer() ["<<id<<"]"<<std::endl;
+    }
+}
+
+
+void DataOutputStream::writeLocator(const osgTerrain::Locator* locator)
+{
+    if (locator==0)
+    {
+        writeInt(-1);
+        return;
+    }
+
+    LocatorMap::iterator itr = _locatorMap.find(locator);
+    if (itr!=_locatorMap.end())
+    {
+        // Id already exists so just write ID.
+        writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeLocator() ["<<itr->second<<"]"<<std::endl;
+    }
+    else
+    {
+        // id doesn't exist so create a new ID and
+        // register the locator.
+
+        int id = _locatorMap.size();
+        _locatorMap[locator] = id;
+
+        // write the id.
+        writeInt(id);
+
+        // write the locator.
+        ((ive::Locator*)(locator))->write(this);
+
+        if (_verboseOutput) std::cout<<"read/writeLocator() ["<<id<<"]"<<std::endl;
+
     }
 }

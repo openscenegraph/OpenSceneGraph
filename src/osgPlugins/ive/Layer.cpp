@@ -36,14 +36,18 @@ void Layer::write(DataOutputStream* out)
     else
         throw Exception("Layer::write(): Could not cast this osgLayer::Layer to an osg::Object.");
 
-    LayerHelper helper;
-    helper.writeLocator(out, getLocator());
-
+ 
     if (out->getVersion() >= VERSION_0023)
     {
-        out->writeInt(getTextureUnit());
+        out->writeLocator(getLocator());
+        out->writeUInt(getFilter());
     }
-    
+    else
+    {
+        LayerHelper helper;
+        helper.writeLocator(out, getLocator());
+    }
+
     out->writeUInt(getMinLevel());
     out->writeUInt(getMaxLevel());
 }
@@ -65,14 +69,17 @@ void Layer::read(DataInputStream* in)
     else
         throw Exception("Layer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
 
-    LayerHelper helper;
-    setLocator(helper.readLocator(in));
-
     if (in->getVersion() >= VERSION_0023)
     {
-        setTextureUnit(in->readInt());
+        setLocator(in->readLocator());
+        setFilter(osgTerrain::Layer::Filter(in->readUInt()));
     }
-    
+    else
+    {
+        LayerHelper helper;
+        setLocator(helper.readLocator(in));
+    }
+
     setMinLevel(in->readUInt());
     setMaxLevel(in->readUInt());
 

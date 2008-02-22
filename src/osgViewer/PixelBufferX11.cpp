@@ -18,6 +18,7 @@
 
 #include <osgViewer/api/X11/PixelBufferX11>
 #include <osgViewer/api/X11/GraphicsWindowX11>
+#include <osg/GLExtensions>
 
 #include <X11/Xlib.h>
 
@@ -25,38 +26,15 @@
 
 using namespace osgViewer;
 
-#ifdef GLX_VERSION_1_3
-static GLXFBConfig getFBConfigFromVisual(::Display* dpy, XVisualInfo* visualInfo)
-{
-#if defined(__APPLE__) || defined(_AIX) || defined(__hpux)
-    int screen = visualInfo->screen;
-    int nelements;
-    GLXFBConfig *configs = glXGetFBConfigs(dpy, screen, &nelements);
-    for( int i = 0; i < nelements; i++ )
-    {
-        int visual_id;
-        if( glXGetFBConfigAttrib( dpy, configs[i], GLX_VISUAL_ID, &visual_id ) == 0 )
-        {
-            if( (unsigned int)visual_id == visualInfo->visualid )
-                return configs[i];
-        }
-    }
-    return NULL;
-#else
-    return glXGetFBConfigFromVisualSGIX( dpy, visualInfo );
-#endif
-}
-#endif
-
 PixelBufferX11::PixelBufferX11(osg::GraphicsContext::Traits* traits)
   : _valid(false),
     _display(0),
-    _parent(0),
     _pbuffer(0),
     _visualInfo(0),
     _glxContext(0),
     _initialized(false),
-    _realized(false)
+    _realized(false),
+    _useGLX1_3(false)
 {
     _traits = traits;
 
@@ -85,7 +63,7 @@ PixelBufferX11::~PixelBufferX11()
     close(true);
 }
 
-#ifdef GLX_VERSION_1_3
+#if defined(GLX_VERSION_1_3) || defined(GLX_SGIX_pbuffer)
 bool PixelBufferX11::createVisualInfo()
 {
     typedef std::vector<int> Attributes;
@@ -153,7 +131,7 @@ void PixelBufferX11::init()
         return;
     }
 
-     // Query for GLX extension
+    // Query for GLX extension
     int errorBase, eventBase;
     if( glXQueryExtension( _display, &errorBase, &eventBase)  == False )
     {
@@ -178,16 +156,46 @@ void PixelBufferX11::init()
         return;
     }
 
-    // We need to have at least GLX 1.3 to use getFBConfigFromVisual and glXCreatePbuffer
-    if (major < 1 || (major == 1 && minor < 3))
+    // Just be paranoid, if we are older than 1.1, we cannot even call glxQueryExtensionString
+    if (1 < major || (1 == major && minor < 1))
     {
         osg::notify(osg::NOTICE) << "Error: " << XDisplayName(_traits->displayName().c_str())
-                                 << " GLX version " << major << "." << minor << " is too little." << std::endl;
+                                 << " GLX version " << major << "." << minor << " is too old." << std::endl;
         XCloseDisplay( _display );
         _display = 0;
         _valid = false;
         return;
     }
+
+    bool haveGLX1_3 = false;
+    bool haveSGIX_pbuffer = false;
+
+    // We need to have at least GLX 1.3 to use getFBConfigFromVisual and glXCreatePbuffer
+    if (1 < major || (1 == major && 3 <= minor))
+    {
+        haveGLX1_3 = true;
+    }
+
+#if defined(GLX_VERSION_1_1)
+    // We need at least GLX 1.1 for glXQueryExtensionsString
+    if (!haveGLX1_3 && 1 <= minor)
+    {
+        const char *extensions = glXQueryExtensionsString(_display, screen);
+        haveSGIX_pbuffer = osg::isExtensionInExtensionString("GLX_SGIX_pbuffer", extensions)
+           && osg::isExtensionInExtensionString("GLX_SGIX_fbconfig", extensions);
+    }
+#endif
+
+    if (!haveGLX1_3 && !haveSGIX_pbuffer)
+    {
+        osg::notify(osg::NOTICE) << "Error: " << XDisplayName(_traits->displayName().c_str())
+                                 << " no Pbuffer support in GLX available." << std::endl;
+        XCloseDisplay( _display );
+        _display = 0;
+        _valid = false;
+        return;
+    }
+
     
     if (!createVisualInfo())
     {
@@ -237,43 +245,53 @@ void PixelBufferX11::init()
         return;
     }
     
-    _parent = RootWindow( _display, screen );
-
-    XWindowAttributes watt;
-    XGetWindowAttributes( _display, _parent, &watt );
-    // unsigned int parentWindowHeight = watt.height;
-
-    XSetWindowAttributes swatt;
-    swatt.colormap = XCreateColormap( _display, _parent, _visualInfo->visual, AllocNone);
-    //swatt.colormap = DefaultColormap( _dpy, 10 );
-    swatt.background_pixel = 0;
-    swatt.border_pixel = 0;
-    swatt.event_mask =  0;
-    unsigned long mask = CWBackPixel | CWBorderPixel | CWEventMask | CWColormap;
-
-    bool overrideRedirect = false;
-    if (overrideRedirect)
+#ifdef GLX_VERSION_1_3
+    // First try the regular glx extension if we have a new enough version available.
+    if (haveGLX1_3)
     {
-        swatt.override_redirect = true;
-        mask |= CWOverrideRedirect;
+        int nelements;
+        GLXFBConfig *fbconfigs = glXGetFBConfigs( _display, screen, &nelements );
+        for ( int i = 0; i < nelements; ++i )
+        {
+            int visual_id;
+            if ( glXGetFBConfigAttrib( _display, fbconfigs[i], GLX_VISUAL_ID, &visual_id ) == 0 )
+            {
+                if ( !_pbuffer && (unsigned int)visual_id == _visualInfo->visualid )
+                {
+                    typedef std::vector <int> AttributeList;
+                   
+                    AttributeList attributes;
+                    attributes.push_back( GLX_PBUFFER_WIDTH );
+                    attributes.push_back( _traits->width );
+                    attributes.push_back( GLX_PBUFFER_HEIGHT );
+                    attributes.push_back( _traits->height );
+                    attributes.push_back( 0L );
+                    
+                    _pbuffer = glXCreatePbuffer(_display, fbconfigs[i], &attributes.front() );
+                    _useGLX1_3 = true;
+                }
+            }
+        }
+
+        XFree( fbconfigs );
     }
+#endif
 
-    GLXFBConfig fbconfig = getFBConfigFromVisual( _display, _visualInfo );
+#ifdef GLX_SGIX_pbuffer
+    // If we still have no pbuffer but a capable display with the SGIX extension, try to use that
+    if (!_pbuffer && haveSGIX_pbuffer)
+    {
+        GLXFBConfigSGIX fbconfig = glXGetFBConfigFromVisualSGIX( _display, _visualInfo );
 
-    typedef std::vector <int> AttributeList;
+        _pbuffer = glXCreateGLXPbufferSGIX(_display, fbconfig, _traits->width, _traits->height, 0 );
 
-    AttributeList attributes;
-    attributes.push_back( GLX_PBUFFER_WIDTH );
-    attributes.push_back( _traits->width );
-    attributes.push_back( GLX_PBUFFER_HEIGHT );
-    attributes.push_back( _traits->height );
-    attributes.push_back( 0L );
+        XFree( fbconfig );
+    }
+#endif
 
-    _pbuffer = glXCreatePbuffer(_display, fbconfig, &attributes.front() );
-                             
     if (!_pbuffer)
     {
-        osg::notify(osg::NOTICE)<<"Error: Unable to create Window."<<std::endl;
+        osg::notify(osg::NOTICE)<<"Error: Unable to create pbuffer."<<std::endl;
         XCloseDisplay( _display );
         _display = 0;
         _glxContext = 0;
@@ -301,16 +319,25 @@ void PixelBufferX11::closeImplementation()
     
         if (_pbuffer)
         {
-            glXDestroyPbuffer(_display, _pbuffer);
+            if (_useGLX1_3)
+            {
+#ifdef GLX_VERSION_1_3
+                glXDestroyPbuffer(_display, _pbuffer);
+#endif
+            }
+            else
+            {
+#ifdef GLX_SGIX_pbuffer
+                glXDestroyGLXPbufferSGIX(_display, _pbuffer);
+#endif
+            }
         }
 
         XFlush( _display );
         XSync( _display,0 );
-
     }
     
     _pbuffer = 0;
-    _parent = 0;
     _glxContext = 0;
 
     if (_visualInfo)
@@ -347,7 +374,6 @@ void PixelBufferX11::closeImplementation()
 {
     // osg::notify(osg::NOTICE)<<"Closing PixelBufferX11"<<std::endl;
     _pbuffer = 0;
-    _parent = 0;
     _glxContext = 0;
     _initialized = false;
     _realized = false;

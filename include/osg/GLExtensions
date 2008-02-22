@@ -28,6 +28,10 @@ namespace osg {
 */
 extern OSG_EXPORT float getGLVersionNumber();
 
+/** Return true if "extension" is contained in "extensionString".
+*/
+extern OSG_EXPORT bool isExtensionInExtensionString(const char *extension, const char *extensionString);
+
 /** Return true if OpenGL "extension" is supported.
   * Note: Must only be called within a valid OpenGL context,
   * undefined behavior may occur otherwise.

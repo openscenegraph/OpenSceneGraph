@@ -61,6 +61,20 @@ class OSG_EXPORT ProxyNode : public Group
 
         /** Get how the center of object should be determined when computed which child is active.*/
         CenterMode getCenterMode() const { return _centerMode; }
+        
+        /** Modes which control how the proxynode external reference are loaded.*/
+        enum LoadingExternalReferenceMode
+        {
+            LOAD_IMMEDIATELY,
+            DEFER_LOADING_TO_DATABASE_PAGER,
+            NO_AUTOMATIC_LOADING
+        };
+
+        /** Set how the child loading is done.*/
+        void setLoadingExternalReferenceMode(LoadingExternalReferenceMode mode) { _loadingExtReference=mode; }
+
+        /** Get the setted mode of loading.*/
+        LoadingExternalReferenceMode getLoadingExternalReferenceMode() const { return _loadingExtReference; }
 
         /** Sets the object-space point which defines the center of the osg::ProxyNode.  
             center is affected by any transforms in the hierarchy above the osg::ProxyNode.*/
@@ -87,6 +101,8 @@ class OSG_EXPORT ProxyNode : public Group
 
         FileNameList        _filenameList;
         std::string         _databasePath;
+        
+        LoadingExternalReferenceMode _loadingExtReference;
         
         CenterMode          _centerMode;
         Vec3                _userDefinedCenter;

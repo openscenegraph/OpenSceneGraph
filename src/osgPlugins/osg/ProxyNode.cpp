@@ -32,7 +32,7 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
     bool iteratorAdvanced = false;
 
     ProxyNode& proxyNode = static_cast<ProxyNode&>(obj);
-    
+
     if (fr.matchSequence("Center %f %f %f"))
     {
         Vec3 center;
@@ -46,6 +46,19 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
     }
     else
         proxyNode.setCenterMode(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);
+
+    if (fr.matchSequence("ExtRefMode %s") || fr.matchSequence("ExtRefMode %w"))
+    {
+        if      (fr[1].matchWord("LOAD_IMMEDIATELY"))
+            proxyNode.setLoadingExternalReferenceMode(ProxyNode::LOAD_IMMEDIATELY);
+        else if (fr[1].matchWord("DEFER_LOADING_TO_DATABASE_PAGER"))
+            proxyNode.setLoadingExternalReferenceMode(ProxyNode::DEFER_LOADING_TO_DATABASE_PAGER);
+        else if (fr[1].matchWord("NO_AUTOMATIC_LOADING"))
+            proxyNode.setLoadingExternalReferenceMode(ProxyNode::NO_AUTOMATIC_LOADING);
+            
+        fr+=2;
+        iteratorAdvanced = true;
+    }
 
     float radius;
     if (fr[0].matchWord("Radius") && fr[1].getFloat(radius))
@@ -101,7 +114,7 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
 
     }
 
-    unsigned int num_children;
+    unsigned int num_children = 0;
     if (fr[0].matchWord("num_children") &&
         fr[1].getUInt(num_children))
     {
@@ -124,17 +137,20 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr)
         fpl.pop_front();
     }
 
-    for(i=0; i<proxyNode.getNumFileNames(); i++)
+    if(proxyNode.getLoadingExternalReferenceMode() == ProxyNode::LOAD_IMMEDIATELY)
     {
-        if(i>=proxyNode.getNumChildren() && !proxyNode.getFileName(i).empty())
+        for(i=0; i<proxyNode.getNumFileNames(); i++)
         {
-            osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)fr.getOptions())->getDatabasePathList();
-            fpl.push_front( fpl.empty() ? osgDB::getFilePath(proxyNode.getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(proxyNode.getFileName(i)));
-            osg::Node *node = osgDB::readNodeFile(proxyNode.getFileName(i), fr.getOptions());
-            fpl.pop_front();
-            if(node)
+            if(i>=proxyNode.getNumChildren() && !proxyNode.getFileName(i).empty())
             {
-                proxyNode.insertChild(i, node);
+                osgDB::FilePathList& fpl = ((osgDB::ReaderWriter::Options*)fr.getOptions())->getDatabasePathList();
+                fpl.push_front( fpl.empty() ? osgDB::getFilePath(proxyNode.getFileName(i)) : fpl.front()+'/'+ osgDB::getFilePath(proxyNode.getFileName(i)));
+                osg::Node *node = osgDB::readNodeFile(proxyNode.getFileName(i), fr.getOptions());
+                fpl.pop_front();
+                if(node)
+                {
+                    proxyNode.insertChild(i, node);
+                }
             }
         }
     }
@@ -152,6 +168,21 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
     const ProxyNode& proxyNode = static_cast<const ProxyNode&>(obj);
 
     if (proxyNode.getCenterMode()==osg::ProxyNode::USER_DEFINED_CENTER) fw.indent() << "Center "<< proxyNode.getCenter() << std::endl;
+
+    fw.indent() << "ExtRefMode ";
+    
+    switch(proxyNode.getLoadingExternalReferenceMode())
+    {
+    case ProxyNode::LOAD_IMMEDIATELY:
+        fw.indent() << "LOAD_IMMEDIATELY" <<std::endl;
+        break;
+    case ProxyNode::DEFER_LOADING_TO_DATABASE_PAGER:
+        fw.indent() << "DEFER_LOADING_TO_DATABASE_PAGER" <<std::endl;
+        break;
+    case ProxyNode::NO_AUTOMATIC_LOADING:
+        fw.indent() << "NO_AUTOMATIC_LOADING" <<std::endl;
+        break;
+    }
 
     fw.indent() << "Radius "<<proxyNode.getRadius()<<std::endl;
 

@@ -253,6 +253,10 @@ namespace osgIntrospection
         Value createInstance(ValueList& args) const;
         inline Value createInstance() const;
 
+        // This function is called internally to reset all the elements contained in that type.
+        // used in the type loading process: it solves a false positive issue on VS 7.1 and 8 compilers in debug builds.
+        void reset();
+        
     protected:
         Type(const ExtendedTypeInfo &ti)
         :    _ti(ti), 

@@ -51,17 +51,32 @@ namespace
 
 }
 
-Type::~Type() 
-{ 
+void Type::reset()
+{
     for (PropertyInfoList::const_iterator i=_props.begin(); i!=_props.end(); ++i)
         delete *i;
     for (MethodInfoList::const_iterator i=_methods.begin(); i!=_methods.end(); ++i)
         delete *i;
+    for (MethodInfoList::const_iterator i=_protected_methods.begin(); i!=_protected_methods.end(); ++i)
+        delete *i;
     for (ConstructorInfoList::const_iterator i=_cons.begin(); i!=_cons.end(); ++i)
         delete *i;
+    for (ConstructorInfoList::const_iterator i=_protected_cons.begin(); i!=_protected_cons.end(); ++i)
+        delete *i;
+
+    _props.clear();
+    _methods.clear();
+    _protected_methods.clear();
+    _cons.clear();
+    _protected_cons.clear();
 
     delete _rw;
     delete _cmp;
+}
+
+Type::~Type() 
+{ 
+    reset();
 }
 
 bool Type::isSubclassOf(const Type& type) const

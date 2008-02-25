@@ -79,6 +79,11 @@ namespace osgIntrospection
         static const Converter* getConverter(const Type& source, const Type& dest);
         static bool getConversionPath(const Type& source, const Type& dest, ConverterList& conv);
         
+        // This function should be called (at least on windows platforms using Visual Studio 7.1 or 8 as compiler) to unregister 
+        // all the known types before exiting your program: otherwise, you will get a lot of false positive memory leaks in debug builds.
+        // It might also be used to dynamically reload the description of the known types (?)
+        static void uninitialize();
+        
     private:
         template<typename C> friend class Reflector;
         template<typename C> friend struct TypeNameAliasProxy;

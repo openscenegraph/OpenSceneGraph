@@ -44,9 +44,11 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
             _currentCursor(0),
             _initialized(false),
             _realized(false),
-            _timeOfLastCheckEvents(-1.0)
+            _timeOfLastCheckEvents(-1.0),
+            _lastEventType(0)
         {
             _traits = traits;
+            memset(_keyMap, 0, 32);
 
             init();
             
@@ -158,7 +160,10 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
 
 
         void transformMouseXY(float& x, float& y);
-        void adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask);
+        void adaptKey(XKeyEvent& keyevent, int& keySymbol);
+        void forceKey(int key, double time, bool state);
+        void getModifierMap(char* keymap) const;
+        int getModifierMask() const;
         
         bool            _valid;
         Display*        _display;
@@ -177,7 +182,9 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         bool            _ownsWindow;
 
         double          _timeOfLastCheckEvents;
+        int             _lastEventType;
 
+        char            _keyMap[32];
         std::map<MouseCursor,Cursor> _mouseCursorMap;
 };
 

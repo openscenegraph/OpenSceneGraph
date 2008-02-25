@@ -14,7 +14,6 @@
 #include <osg/BoundingSphere>
 #include <osg/Matrix>
 #include <osg/Plane>
-#include <osg/Vec3>
 #include <osg/Vec3d>
 #include <osg/Vec3f>
 #include <osg/Vec4d>
@@ -174,9 +173,9 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	          __double__dotProductNormal__C5_osg_Vec3d_R1,
 	          "calculate the dot product of the plane normal and a point. ",
 	          "");
-	I_Method1(int, intersect, IN, const std::vector< osg::Vec3 > &, vertices,
+	I_Method1(int, intersect, IN, const std::vector< osg::Vec3f > &, vertices,
 	          Properties::NON_VIRTUAL,
-	          __int__intersect__C5_std_vectorT1_Vec3__R1,
+	          __int__intersect__C5_std_vectorT1_Vec3f__R1,
 	          "intersection test between plane and vertex list return 1 if the bs is completely above plane, return 0 if the bs intersects the plane, return -1 if the bs is completely below the plane. ",
 	          "");
 	I_Method1(int, intersect, IN, const std::vector< osg::Vec3d > &, vertices,
@@ -210,4 +209,6 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::Vec3d >)
+
+STD_VECTOR_REFLECTOR(std::vector< osg::Vec3f >)
 

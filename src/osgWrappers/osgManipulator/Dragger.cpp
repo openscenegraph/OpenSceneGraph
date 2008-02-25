@@ -233,9 +233,9 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	          __void__setCamera__osg_Camera_P1,
 	          "",
 	          "");
-	I_Method2(void, addIntersection, IN, const osg::NodePath &, nodePath, IN, osg::Vec3, intersectionPoint,
+	I_Method2(void, addIntersection, IN, const osg::NodePath &, nodePath, IN, const osg::Vec3 &, intersectionPoint,
 	          Properties::NON_VIRTUAL,
-	          __void__addIntersection__C5_osg_NodePath_R1__osg_Vec3,
+	          __void__addIntersection__C5_osg_NodePath_R1__C5_osg_Vec3_R1,
 	          "",
 	          "");
 	I_Method2(void, setMousePosition, IN, float, pixel_x, IN, float, pixel_y,

@@ -34,6 +34,13 @@ BEGIN_ENUM_REFLECTOR(osg::ProxyNode::CenterMode)
 	I_EnumLabel(osg::ProxyNode::USER_DEFINED_CENTER);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osg::ProxyNode::LoadingExternalReferenceMode)
+	I_DeclaringFile("osg/ProxyNode");
+	I_EnumLabel(osg::ProxyNode::LOAD_IMMEDIATELY);
+	I_EnumLabel(osg::ProxyNode::DEFER_LOADING_TO_DATABASE_PAGER);
+	I_EnumLabel(osg::ProxyNode::NO_AUTOMATIC_LOADING);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	I_DeclaringFile("osg/ProxyNode");
 	I_BaseType(osg::Group);
@@ -129,6 +136,16 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	          __CenterMode__getCenterMode,
 	          "Get how the center of object should be determined when computed which child is active. ",
 	          "");
+	I_Method1(void, setLoadingExternalReferenceMode, IN, osg::ProxyNode::LoadingExternalReferenceMode, mode,
+	          Properties::NON_VIRTUAL,
+	          __void__setLoadingExternalReferenceMode__LoadingExternalReferenceMode,
+	          "Set how the child loading is done. ",
+	          "");
+	I_Method0(osg::ProxyNode::LoadingExternalReferenceMode, getLoadingExternalReferenceMode,
+	          Properties::NON_VIRTUAL,
+	          __LoadingExternalReferenceMode__getLoadingExternalReferenceMode,
+	          "Get the setted mode of loading. ",
+	          "");
 	I_Method1(void, setCenter, IN, const osg::Vec3 &, center,
 	          Properties::NON_VIRTUAL,
 	          __void__setCenter__C5_Vec3_R1,
@@ -176,6 +193,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	                0, 
 	                0, 
 	                0);
+	I_SimpleProperty(osg::ProxyNode::LoadingExternalReferenceMode, LoadingExternalReferenceMode, 
+	                 __LoadingExternalReferenceMode__getLoadingExternalReferenceMode, 
+	                 __void__setLoadingExternalReferenceMode__LoadingExternalReferenceMode);
 	I_SimpleProperty(float, Radius, 
 	                 __float__getRadius, 
 	                 __void__setRadius__float);

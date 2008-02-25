@@ -104,7 +104,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
 
         }
 
-        void addIntersection(const osg::NodePath& nodePath, osg::Vec3 intersectionPoint)
+        void addIntersection(const osg::NodePath& nodePath, const osg::Vec3& intersectionPoint)
         {
             bool needToResetHitIter = _hitList.empty();
             _hitList.push_back(NodePathIntersectionPair(nodePath, intersectionPoint));

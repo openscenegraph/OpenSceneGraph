@@ -199,10 +199,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font)
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
-	I_StaticMethod0(osgText::Font::FontMutex *, getSerializeFontCallsMutex,
-	                __FontMutex_P1__getSerializeFontCallsMutex_S,
-	                "Get the mutex that enables the serialization of calls to this font. ",
-	                "");
 	I_ProtectedMethod3(void, addGlyph, IN, const osgText::FontResolution &, fontRes, IN, unsigned int, charcode, IN, osgText::Font::Glyph *, glyph,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

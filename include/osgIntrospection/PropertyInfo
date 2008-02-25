@@ -354,6 +354,8 @@ namespace osgIntrospection
         /// this method, for example NoDefaultValueAttribute.
         Value getDefaultValue() const;
 
+        virtual ~PropertyInfo() {};
+        
     protected:            
         virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;
 

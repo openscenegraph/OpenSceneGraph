@@ -115,7 +115,11 @@ namespace osgIntrospection
 
     protected:
         virtual void getInheritedProviders(CustomAttributeProviderList& providers) const = 0;
-        virtual ~CustomAttributeProvider() {}
+        virtual ~CustomAttributeProvider() {
+            for(CustomAttributeList::iterator it = attribs_.begin(); it != attribs_.end(); ++it) {
+                delete (*it);
+            }
+        }
 
     private:
         CustomAttributeList attribs_;

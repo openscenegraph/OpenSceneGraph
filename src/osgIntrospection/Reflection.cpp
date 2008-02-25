@@ -113,12 +113,10 @@ Type* Reflection::getOrRegisterType(const ExtendedTypeInfo &ti, bool replace_if_
             std::string old_namespace = i->second->getNamespace();
             std::vector<std::string> old_aliases = i->second->_aliases;
 
-            Type* newtype = new (i->second) Type(ti);
-            newtype->_name = old_name;
-            newtype->_namespace = old_namespace;
-            newtype->_aliases.swap(old_aliases);
-
-            return newtype;
+            i->second->reset();
+            i->second->_name = old_name;
+            i->second->_namespace = old_namespace;
+            i->second->_aliases.swap(old_aliases);
         }
         return i->second;
     }
@@ -128,7 +126,16 @@ Type* Reflection::getOrRegisterType(const ExtendedTypeInfo &ti, bool replace_if_
 
 void Reflection::registerConverter(const Type& source, const Type& dest, const Converter* cvt)
 {
+    const Converter* old = NULL;
+    StaticData::ConverterMap::iterator it = getOrCreateStaticData().convmap[&source].find(&dest);
+
+    if(it != getOrCreateStaticData().convmap[&source].end())
+        old = it->second;
+
     getOrCreateStaticData().convmap[&source][&dest] = cvt;
+    
+    if(old)
+        delete old;
 }
 
 const Converter* Reflection::getConverter(const Type& source, const Type& dest)
@@ -195,4 +202,10 @@ bool Reflection::accum_conv_path(const Type& source, const Type& dest, Converter
     }
 
     return false;
+}
+
+void Reflection::uninitialize() {
+    if(_static_data)
+        delete _static_data;
+    _static_data = 0;
 }

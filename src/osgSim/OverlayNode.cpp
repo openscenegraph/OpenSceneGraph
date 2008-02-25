@@ -641,6 +641,9 @@ public:
                     // is first edge point inside plane?
                     if (distance_a>=0.0) newVertices.push_back(vertices[i]);
 
+                    // add point to new face if point exactly on a plane
+                    if (distance_a==0.0) newFace.vertices.push_back(vertices[i]); 
+
                     // does edge intersect plane
                     if (distance_a * distance_b<0.0)
                     {

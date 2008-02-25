@@ -18,6 +18,7 @@
 using namespace osg;
 
 ProxyNode::ProxyNode() : 
+    _loadingExtReference(LOAD_IMMEDIATELY),
     _centerMode(USER_DEFINED_CENTER),
     _radius(-1)
 {
@@ -26,6 +27,7 @@ ProxyNode::ProxyNode() :
 ProxyNode::ProxyNode(const ProxyNode& proxynode,const CopyOp& copyop):
     Group(proxynode,copyop),
     _filenameList(proxynode._filenameList),
+    _loadingExtReference(proxynode._loadingExtReference),
     _centerMode(proxynode._centerMode),
     _userDefinedCenter(proxynode._userDefinedCenter),
     _radius(proxynode._radius)
@@ -54,7 +56,9 @@ void ProxyNode::setDatabasePath(const std::string& path)
 
 void ProxyNode::traverse(NodeVisitor& nv)
 {
-    if (nv.getDatabaseRequestHandler() && _filenameList.size()>_children.size() && nv.getVisitorType()==NodeVisitor::CULL_VISITOR)
+    if (nv.getDatabaseRequestHandler() && _filenameList.size()>_children.size() &&
+        nv.getVisitorType()==NodeVisitor::CULL_VISITOR &&
+        _loadingExtReference!=NO_AUTOMATIC_LOADING)
     {
         for(unsigned int i=_children.size(); i<_filenameList.size(); ++i)
         {

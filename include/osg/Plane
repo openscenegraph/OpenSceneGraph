@@ -189,14 +189,14 @@ class OSG_EXPORT Plane
             return 1 if the bs is completely above plane,
             return 0 if the bs intersects the plane,
             return -1 if the bs is completely below the plane.*/
-        inline int intersect(const std::vector<Vec3>& vertices) const
+        inline int intersect(const std::vector<Vec3f>& vertices) const
         {
             if (vertices.empty()) return -1;
 
             int noAbove = 0;
             int noBelow = 0;
             int noOn = 0;
-            for(std::vector<Vec3>::const_iterator itr=vertices.begin();
+            for(std::vector<Vec3f>::const_iterator itr=vertices.begin();
                 itr != vertices.end();
                 ++itr)
             {
@@ -229,9 +229,9 @@ class OSG_EXPORT Plane
                 itr != vertices.end();
                 ++itr)
             {
-                float d = distance(*itr);
-                if (d>0.0f) ++noAbove;
-                else if (d<0.0f) ++noBelow;
+                double d = distance(*itr);
+                if (d>0.0) ++noAbove;
+                else if (d<0.0) ++noBelow;
                 else ++noOn;
             }
 

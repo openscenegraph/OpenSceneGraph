@@ -32,12 +32,6 @@ static osg::ApplicationUsageProxy Font_e0(osg::ApplicationUsage::ENVIRONMENTAL_V
 
 static OpenThreads::ReentrantMutex s_FontFileMutex;
 
-Font::FontMutex* osgText::Font::getSerializeFontCallsMutex()
-{
-    static OpenThreads::Mutex s_serializeFontCallsMutex;
-    return &s_serializeFontCallsMutex;
-}
-
 std::string osgText::findFontFile(const std::string& str)
 {
     // try looking in OSGFILEPATH etc first for fonts.
@@ -330,14 +324,17 @@ osg::Texture::FilterMode Font::getMagFilterHint() const
 
 Font::Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 {
-    FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontRes);
-    if (itr!=_sizeGlyphMap.end())
     {
-        GlyphMap& glyphmap = itr->second;    
-        GlyphMap::iterator gitr = glyphmap.find(charcode);
-        if (gitr!=glyphmap.end()) return gitr->second.get();
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
+        FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontRes);
+        if (itr!=_sizeGlyphMap.end())
+        {
+            GlyphMap& glyphmap = itr->second;    
+            GlyphMap::iterator gitr = glyphmap.find(charcode);
+            if (gitr!=glyphmap.end()) return gitr->second.get();
+        }
     }
-
+    
     if (_implementation.valid()) return _implementation->getGlyph(fontRes, charcode);
     else return 0;
 }
@@ -400,6 +397,8 @@ bool Font::hasVertical() const
 
 void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
+
     _sizeGlyphMap[fontRes][charcode]=glyph;
     
     int posX=0,posY=0;

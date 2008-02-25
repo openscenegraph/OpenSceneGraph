@@ -111,9 +111,6 @@ public:
     virtual void setThreadSafeRefUnref(bool threadSafe);
     
     typedef OpenThreads::Mutex Font3DMutex;
-    
-    /** Get the mutex that enables the serialization of calls to this font.*/
-    static Font3DMutex* getSerializeFontCallsMutex();
 
 protected:
 

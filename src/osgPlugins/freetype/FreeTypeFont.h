@@ -41,7 +41,6 @@ protected:
 
     void setFontResolution(const osgText::FontResolution& fontSize);
 
-    OpenThreads::Mutex      _mutex;
     osgText::FontResolution _currentRes;
 
     std::string             _filename;

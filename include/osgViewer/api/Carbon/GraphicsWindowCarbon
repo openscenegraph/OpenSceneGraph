@@ -108,6 +108,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         
         bool handleMouseEvent(EventRef theEvent);
         bool handleKeyboardEvent(EventRef theEvent);
+        bool handleModifierKeys(EventRef theEvent);
 
         /** WindowData is used to pass in the Carbon window handle attached the GraphicsContext::Traits structure. */
         class WindowData : public osg::Referenced
@@ -161,9 +162,11 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
     private:        
         /// computes the window attributes
         WindowAttributes computeWindowAttributes(bool useWindowDecoration, bool supportsResize);
-    
+        void handleModifierKey(UInt32 modifierKey, UInt32 modifierMask, osgGA::GUIEventAdapter::KeySymbol keySymbol);
+
         
-        bool _closeRequested;
+        bool            _closeRequested;
+        UInt32            _lastModifierKeys;
 };
 
 }

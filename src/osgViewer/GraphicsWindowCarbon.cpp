@@ -50,7 +50,7 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
             if (w->handleMouseEvent(event))
                 result = noErr;
             break;
-       
+               
         case kEventClassKeyboard:
             if (w->handleKeyboardEvent(event))
                 result = noErr;
@@ -88,6 +88,7 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
                 }
             }
         default:
+            //std::cout << "unknown: " << GetEventClass(event) << std::endl;
             break;
     }
     
@@ -494,7 +495,8 @@ void GraphicsWindowCarbon::init()
     if (_initialized) return;
 
     getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
-
+    
+    _lastModifierKeys = 0;
     _windowTitleHeight = 0;
     _closeRequested = false;
     _ownsWindow = false;
@@ -978,40 +980,9 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
 
 bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
 {
-    
-    
-    OSStatus status; 
-
-    // Key modifiers, Numlock not supported...
-
-    UInt32 modifierKeys;
-    unsigned int modifierMask = 0;
-    GetEventParameter (theEvent,kEventParamKeyModifiers,typeUInt32, NULL,sizeof(modifierKeys), NULL,&modifierKeys);
-    
-    
-    if( modifierKeys & shiftKey )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_SHIFT;
-    }
-    if( modifierKeys & alphaLock )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK;
-    }
-    if( modifierKeys & controlKey )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_CTRL;
-    }
-    if( modifierKeys & optionKey )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_ALT;
-    }
-    
-    // we map the command-key to the META-key
-    if( modifierKeys & cmdKey )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_META;
-    }
-    
+    handleModifierKeys(theEvent);
+        
+    OSStatus status;
     
     UInt32 rawkey;
     GetEventParameter (theEvent,kEventParamKeyCode,typeUInt32, NULL,sizeof(rawkey), NULL,&rawkey);
@@ -1055,6 +1026,50 @@ bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
 
     delete[] uniChars;
 
+    return true;
+}
+
+void GraphicsWindowCarbon::handleModifierKey(UInt32 modifierKey, UInt32 modifierMask, osgGA::GUIEventAdapter::KeySymbol keySymbol) {
+
+    if ((modifierKey & modifierMask) && !(_lastModifierKeys & modifierMask))
+    {
+        getEventQueue()->keyPress(keySymbol);
+    }
+    
+    if (!(modifierKey & modifierMask) && (_lastModifierKeys & modifierMask))
+    {
+        getEventQueue()->keyRelease(keySymbol);
+    }
+}
+
+bool GraphicsWindowCarbon::handleModifierKeys(EventRef theEvent) 
+{
+    UInt32 modifierKeys;
+    GetEventParameter (theEvent,kEventParamKeyModifiers,typeUInt32, NULL,sizeof(modifierKeys), NULL,&modifierKeys);
+
+    //std::cout << modifierKeys << std::endl;
+    if (_lastModifierKeys == modifierKeys)
+        return false;
+        
+    handleModifierKey(modifierKeys, shiftKey, osgGA::GUIEventAdapter::KEY_Shift_L);
+    handleModifierKey(modifierKeys, controlKey, osgGA::GUIEventAdapter::KEY_Control_L);
+    handleModifierKey(modifierKeys, optionKey, osgGA::GUIEventAdapter::KEY_Alt_L);
+    handleModifierKey(modifierKeys, cmdKey, osgGA::GUIEventAdapter::KEY_Super_L);
+    
+    // Caps lock needs some special handling, i did not find a way to get informed when the caps-lock-key gets released    
+    if ((modifierKeys & alphaLock) && !(_lastModifierKeys & alphaLock))
+    {
+        getEventQueue()->keyPress(osgGA::GUIEventAdapter::KEY_Caps_Lock);
+        getEventQueue()->keyRelease(osgGA::GUIEventAdapter::KEY_Caps_Lock);
+    }
+    
+    if (!(modifierKeys & alphaLock) && (_lastModifierKeys & alphaLock))
+    {
+        getEventQueue()->keyPress(osgGA::GUIEventAdapter::KEY_Caps_Lock);
+        getEventQueue()->keyRelease(osgGA::GUIEventAdapter::KEY_Caps_Lock);
+    }
+    
+    _lastModifierKeys = modifierKeys;
     return true;
 }
 

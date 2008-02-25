@@ -12,8 +12,8 @@
 */
 
 /* Note, elements of GraphicsWindowX11 have used Prodcer/RenderSurface_X11.cpp as both
- * a guide to use of X11/GLX and copiying directly in the case of setBorder().
- * These elements are license under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
+ * a guide to use of X11/GLX and copying directly in the case of setBorder().
+ * These elements are licensed under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
 
 #include <osgViewer/api/X11/GraphicsWindowX11>
@@ -171,6 +171,23 @@ static int remapX11Key(int key)
 {
     static X11KeyboardMap s_x11KeyboardMap;
     return s_x11KeyboardMap.remapKey(key);
+}
+
+// Functions to handle key maps of type char[32] as contained in
+// an XKeymapEvent or returned by XQueryKeymap().
+static inline bool keyMapGetKey(const char* map, unsigned int key)
+{
+    return (map[(key & 0xff) / 8] & (1 << (key & 7))) != 0;
+}
+
+static inline void keyMapSetKey(char* map, unsigned int key)
+{
+    map[(key & 0xff) / 8] |= (1 << (key & 7));
+}
+
+static inline void keyMapClearKey(char* map, unsigned int key)
+{
+    map[(key & 0xff) / 8] &= ~(1 << (key & 7));
 }
 
 GraphicsWindowX11::~GraphicsWindowX11()
@@ -693,7 +710,8 @@ bool GraphicsWindowX11::createWindow()
 
     XSelectInput( _eventDisplay, _window, ExposureMask | StructureNotifyMask | 
                                      KeyPressMask | KeyReleaseMask |
-                                     PointerMotionMask  | ButtonPressMask | ButtonReleaseMask);
+                                     PointerMotionMask | ButtonPressMask | ButtonReleaseMask |
+                                     KeymapStateMask | FocusChangeMask );
 
     XFlush( _eventDisplay );
     XSync( _eventDisplay, 0 );
@@ -862,7 +880,7 @@ void GraphicsWindowX11::swapBuffersImplementation()
             {
                 if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
                 {
-                    osg::notify(osg::INFO)<<"DeleteWindow event recieved"<<std::endl;
+                    osg::notify(osg::INFO)<<"DeleteWindow event received"<<std::endl;
                     getEventQueue()->closeWindow();
                 }
             }
@@ -900,10 +918,10 @@ void GraphicsWindowX11::checkEvents()
         {
             case ClientMessage:
             {
-                osg::notify(osg::NOTICE)<<"ClientMessage event recieved"<<std::endl;
+                osg::notify(osg::NOTICE)<<"ClientMessage event received"<<std::endl;
                 if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
                 {
-                    osg::notify(osg::NOTICE)<<"DeleteWindow event recieved"<<std::endl;
+                    osg::notify(osg::NOTICE)<<"DeleteWindow event received"<<std::endl;
                     // FIXME only do if _ownsWindow ?
                     destroyWindowRequested = true;
                     getEventQueue()->closeWindow(eventTime);
@@ -914,19 +932,15 @@ void GraphicsWindowX11::checkEvents()
                 break;
 
             case GravityNotify :
-                osg::notify(osg::INFO)<<"GravityNotify event recieved"<<std::endl;
-                break;
-
-            case UnmapNotify :
-                osg::notify(osg::INFO)<<"UnmapNotify event recieved"<<std::endl;
+                osg::notify(osg::INFO)<<"GravityNotify event received"<<std::endl;
                 break;
 
             case ReparentNotify:
-                osg::notify(osg::INFO)<<"ReparentNotify event recieved"<<std::endl;
+                osg::notify(osg::INFO)<<"ReparentNotify event received"<<std::endl;
                 break;
 
             case DestroyNotify :
-                osg::notify(osg::NOTICE)<<"DestroyNotify event recieved"<<std::endl;
+                osg::notify(osg::NOTICE)<<"DestroyNotify event received"<<std::endl;
                 _realized =  false;
                 _valid = false;
                 break;
@@ -972,8 +986,77 @@ void GraphicsWindowX11::checkEvents()
                 break;
             }
 
-           case MotionNotify :
-           {
+            case FocusIn :
+                osg::notify(osg::INFO)<<"FocusIn event received"<<std::endl;
+                break;
+
+            case UnmapNotify :
+            case FocusOut :
+            {
+                osg::notify(osg::INFO)<<"FocusOut/UnmapNotify event received"<<std::endl;
+                if (ev.type == FocusOut && ev.xfocus.mode != NotifyNormal) break;
+
+                char modMap[32];
+                getModifierMap(modMap);
+
+                // release normal (non-modifier) keys
+                for (unsigned int key = 8; key < 256; key++)
+                {
+                    bool isModifier = keyMapGetKey(modMap, key);
+                    if (!isModifier) forceKey(key, eventTime, false);
+                }
+
+                // release modifier keys
+                for (unsigned int key = 8; key < 256; key++)
+                {
+                    bool isModifier = keyMapGetKey(modMap, key);
+                    if (isModifier) forceKey(key, eventTime, false);
+                }
+                break;
+            }
+
+            case KeymapNotify :
+            {
+                osg::notify(osg::INFO)<<"KeymapNotify event received"<<std::endl;
+
+                // KeymapNotify is guaranteed to directly follow either a FocusIn or
+                // an EnterNotify event. We are only interested in the FocusIn case.
+                if (_lastEventType != FocusIn) break;
+
+                char modMap[32];
+                getModifierMap(modMap);
+
+                // release normal (non-modifier) keys
+                for (unsigned int key = 8; key < 256; key++)
+                {
+                    bool isModifier = keyMapGetKey(modMap, key);
+                    if (isModifier) continue;
+                    bool isPressed = keyMapGetKey(ev.xkeymap.key_vector, key);
+                    if (!isPressed) forceKey(key, eventTime, false);
+                }
+
+                // press/release modifier keys
+                for (unsigned int key = 8; key < 256; key++)
+                {
+                    bool isModifier = keyMapGetKey(modMap, key);
+                    if (!isModifier) continue;
+                    bool isPressed = keyMapGetKey(ev.xkeymap.key_vector, key);
+                    forceKey(key, eventTime, isPressed);
+                }
+
+                // press normal keys
+                for (unsigned int key = 8; key < 256; key++)
+                {
+                    bool isModifier = keyMapGetKey(modMap, key);
+                    if (isModifier) continue;
+                    bool isPressed = keyMapGetKey(ev.xkeymap.key_vector, key);
+                    if (isPressed) forceKey(key, eventTime, true);
+                }
+                break;
+            }
+
+            case MotionNotify :
+            {
                 if (firstEventTime==0) firstEventTime = ev.xmotion.time;
                 Time relativeTime = ev.xmotion.time - firstEventTime;
                 eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
@@ -1087,11 +1170,10 @@ void GraphicsWindowX11::checkEvents()
                 Time relativeTime = ev.xmotion.time - firstEventTime;
                 eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
 
+                keyMapSetKey(_keyMap, ev.xkey.keycode);
                 int keySymbol = 0;
-                unsigned int modifierMask = 0;
-                adaptKey(ev.xkey, keySymbol, modifierMask);
+                adaptKey(ev.xkey, keySymbol);
 
-                //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
                 getEventQueue()->keyPress(keySymbol, eventTime);
                 break;
             }
@@ -1118,20 +1200,20 @@ void GraphicsWindowX11::checkEvents()
                     }
                 }
 #endif                
+                keyMapClearKey(_keyMap, ev.xkey.keycode);
                 int keySymbol = 0;
-                unsigned int modifierMask = 0;
-                adaptKey(ev.xkey, keySymbol, modifierMask);
+                adaptKey(ev.xkey, keySymbol);
                 
-                //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
                 getEventQueue()->keyRelease(keySymbol, eventTime);
                 break;
             }
             
             default:
-                osg::notify(osg::NOTICE)<<"Other event"<<std::endl;
+                osg::notify(osg::NOTICE)<<"Other event "<<ev.type<<std::endl;
                 break;
                 
         }
+        _lastEventType = ev.type;
     }
 
     if (windowX != _traits->x || 
@@ -1193,42 +1275,13 @@ void GraphicsWindowX11::transformMouseXY(float& x, float& y)
     }
 }
 
-void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned int& modifierMask)
+void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol)
 {
     Display* display = _eventDisplay;
  
-    static XComposeStatus state;
     unsigned char keybuf[32];
-    XLookupString( &keyevent, (char *)keybuf, sizeof(keybuf), NULL, &state );
+    XLookupString( &keyevent, (char *)keybuf, sizeof(keybuf), NULL, NULL );
 
-    modifierMask = 0;
-    if( keyevent.state & ShiftMask )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_SHIFT;
-    }
-    if( keyevent.state & LockMask )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK;
-    }
-    if( keyevent.state & ControlMask )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_CTRL;
-    }
-    if( keyevent.state & Mod1Mask )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_ALT;
-    }
-    if( keyevent.state & Mod2Mask )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_NUM_LOCK;
-    }
-    if( keyevent.state & Mod4Mask )
-    {
-        modifierMask |= osgGA::GUIEventAdapter::MODKEY_META;
-    }
-
-    keySymbol = keybuf[0];
-    
     KeySym ks = XKeycodeToKeysym( display, keyevent.keycode, 0 );
     int remappedKey = remapX11Key(ks);
     if (remappedKey & 0xff00) 
@@ -1241,8 +1294,70 @@ void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol, unsigned i
         // normal ascii key
         keySymbol = keybuf[0];
     }
-    
-    
+}
+
+// Function to inject artificial key presses/releases.
+void GraphicsWindowX11::forceKey(int key, double time, bool state)
+{
+    if (!(state ^ keyMapGetKey(_keyMap, key))) return; // already pressed/released
+
+    XKeyEvent event;
+    event.serial = 0;
+    event.send_event = True;
+    event.display = _eventDisplay;
+    event.window = _window;
+    event.subwindow = 0;
+    event.time = time;
+    event.x = 0;
+    event.y = 0;
+    event.x_root = 0;
+    event.y_root = 0;
+    event.state = getModifierMask();
+    event.keycode = key;
+    event.same_screen = True;
+
+    int keySymbol = 0;
+    if (state)
+    {
+        event.type = KeyPress;
+        adaptKey(event, keySymbol);
+        getEventQueue()->keyPress(keySymbol, time);
+        keyMapSetKey(_keyMap, key);
+    }
+    else
+    {
+        event.type = KeyRelease;
+        adaptKey(event, keySymbol);
+        getEventQueue()->keyRelease(keySymbol, time);
+        keyMapClearKey(_keyMap, key);
+    }
+}
+
+// Returns char[32] keymap with bits for every modifier key set.
+void GraphicsWindowX11::getModifierMap(char* keymap) const
+{
+    memset(keymap, 0, 32);
+    XModifierKeymap *mkm = XGetModifierMapping(_eventDisplay);
+    KeyCode *m = mkm->modifiermap;
+    for (int i = 0; i < mkm->max_keypermod * 8; i++, m++)
+    {
+        if (*m) keyMapSetKey(keymap, *m);
+    }
+}
+
+int GraphicsWindowX11::getModifierMask() const
+{
+    int mask = 0;
+    XModifierKeymap *mkm = XGetModifierMapping(_eventDisplay);
+    for (int i = 0; i < mkm->max_keypermod * 8; i++)
+    {
+        unsigned int key = mkm->modifiermap[i];
+        if (key && keyMapGetKey(_keyMap, key))
+        {
+            mask |= 1 << (i / mkm->max_keypermod);
+        }
+    }
+    return mask;
 }
 
 void GraphicsWindowX11::requestWarpPointer(float x,float y)

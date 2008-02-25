@@ -69,6 +69,8 @@ FreeTypeLibrary* FreeTypeLibrary::instance()
 
 bool FreeTypeLibrary::getFace(const std::string& fontfile,unsigned int index, FT_Face & face)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getMutex());
+
     FT_Error error = FT_New_Face( _ftlibrary, fontfile.c_str(), index, &face );
     if (error == FT_Err_Unknown_File_Format)
     {
@@ -110,6 +112,8 @@ bool FreeTypeLibrary::getFace(const std::string& fontfile,unsigned int index, FT
 
 FT_Byte* FreeTypeLibrary::getFace(std::istream& fontstream, unsigned int index, FT_Face & face)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getMutex());
+
     FT_Open_Args args;
 
     std::streampos start = fontstream.tellg();
@@ -159,6 +163,7 @@ osgText::Font* FreeTypeLibrary::getFont(const std::string& fontfile, unsigned in
     FT_Face face;
     if (getFace(fontfile, index, face) == false) return (0);
 
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getMutex());
     
     FreeTypeFont* fontImp = new FreeTypeFont(fontfile,face,flags);
     osgText::Font* font = new osgText::Font(fontImp);
@@ -174,6 +179,8 @@ osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int i
     if (face == 0) return (0);
 
     
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getMutex());
+
     FreeTypeFont* fontImp = new FreeTypeFont(buffer,face,flags);
     osgText::Font* font = new osgText::Font(fontImp);
     
@@ -187,6 +194,7 @@ osgText::Font3D* FreeTypeLibrary::getFont3D(const std::string& fontfile, unsigne
     FT_Face face;
     if (getFace(fontfile, index, face) == false) return (0);
 
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getMutex());
     
     FreeTypeFont3D* font3DImp = new FreeTypeFont3D(fontfile,face,flags);
     osgText::Font3D* font3D = new osgText::Font3D(font3DImp);
@@ -197,11 +205,13 @@ osgText::Font3D* FreeTypeLibrary::getFont3D(const std::string& fontfile, unsigne
 }
 osgText::Font3D* FreeTypeLibrary::getFont3D(std::istream& fontstream, unsigned int index, unsigned int flags)
 {
+
     FT_Face face = 0;
     FT_Byte * buffer = getFace(fontstream, index, face);
     if (face == 0) return (0);
     
-    
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getMutex());
+
     FreeTypeFont3D* font3DImp = new FreeTypeFont3D(buffer,face,flags);
     osgText::Font3D* font3D = new osgText::Font3D(font3DImp);
     

@@ -37,12 +37,6 @@ static OpenThreads::ReentrantMutex s_Font3DFileMutex;
 namespace osgText
 {
 
-Font::FontMutex* Font3D::getSerializeFontCallsMutex()
-{
-    static OpenThreads::Mutex s_serializeFontCallsMutex;
-    return &s_serializeFontCallsMutex;
-}
-
 std::string findFont3DFile(const std::string& str)
 {
     // try looking in OSGFILEPATH etc first for fonts.

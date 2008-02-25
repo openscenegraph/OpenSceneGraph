@@ -158,9 +158,6 @@ public:
 
     typedef OpenThreads::Mutex FontMutex;
     
-    /** Get the mutex that enables the serialization of calls to this font.*/
-    static FontMutex* getSerializeFontCallsMutex();
-
 protected:
 
     virtual ~Font();
@@ -173,13 +170,15 @@ protected:
     
     typedef std::map< FontResolution, GlyphMap >              FontSizeGlyphMap;
     
+    mutable OpenThreads::Mutex      _glyphMapMutex;
+    
     osg::ref_ptr<osg::TexEnv>       _texenv;
     osg::ref_ptr<osg::StateSet>     _stateset;
     FontSizeGlyphMap                _sizeGlyphMap;
     GlyphTextureList                _glyphTextureList;
     
     // current active size of font
-    FontResolution                    _fontSize;
+    FontResolution                  _fontSize;
     unsigned int                    _margin;
     float                           _marginRatio;
 

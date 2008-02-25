@@ -224,8 +224,6 @@ void Text3D::computeGlyphRepresentation()
         return;
     }
     
-    OpenThreads::ScopedLock<Font3D::Font3DMutex> lock(*(_font->getSerializeFontCallsMutex()));
-
     // initialize bounding box, it will be expanded during glyph position calculation
     _textBB.init();
 

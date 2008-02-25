@@ -97,7 +97,7 @@ void FreeTypeFont::setFontResolution(const osgText::FontResolution& fontSize)
 
 osgText::Font::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
 
     setFontResolution(fontRes);
 
@@ -201,7 +201,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& font
 
 osg::Vec2 FreeTypeFont::getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
 
     if (!FT_HAS_KERNING(_face) || (kerningType == osgText::KERNING_NONE)) return osg::Vec2(0.0f,0.0f);
 
@@ -233,5 +233,6 @@ osg::Vec2 FreeTypeFont::getKerning(const osgText::FontResolution& fontRes, unsig
 
 bool FreeTypeFont::hasVertical() const
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
     return FT_HAS_VERTICAL(_face)!=0;
 }

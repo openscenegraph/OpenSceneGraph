@@ -35,6 +35,8 @@ public:
     /** get the singleton instance.*/
     static FreeTypeLibrary* instance();
 
+    OpenThreads::Mutex& getMutex() { return _mutex; }
+
     osgText::Font* getFont(const std::string& fontfile,unsigned int index=0, unsigned int flags=0);
     osgText::Font* getFont(std::istream& fontstream, unsigned int index=0, unsigned int flags=0);
     
@@ -61,9 +63,10 @@ protected:
     typedef std::set< FreeTypeFont* > FontImplementationSet;
     typedef std::set< FreeTypeFont3D* > Font3DImplementationSet;
 
-    FT_Library              _ftlibrary;
-    FontImplementationSet   _fontImplementationSet;
-    Font3DImplementationSet _font3DImplementationSet;
+    mutable OpenThreads::Mutex  _mutex;
+    FT_Library                  _ftlibrary;
+    FontImplementationSet       _fontImplementationSet;
+    Font3DImplementationSet     _font3DImplementationSet;
 
 };
 

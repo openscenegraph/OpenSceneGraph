@@ -1307,7 +1307,7 @@ void GraphicsWindowX11::forceKey(int key, double time, bool state)
     event.display = _eventDisplay;
     event.window = _window;
     event.subwindow = 0;
-    event.time = time;
+    event.time = 0;
     event.x = 0;
     event.y = 0;
     event.x_root = 0;

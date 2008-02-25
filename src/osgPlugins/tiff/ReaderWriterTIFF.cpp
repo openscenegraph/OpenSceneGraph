@@ -751,6 +751,16 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             return WriteResult::FILE_SAVED;
         }
 
+        virtual ReadResult readObject(std::istream& fin,const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            return readImage(fin, options);
+        }
+
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            return readImage(file, options);
+        }
+
         virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options* =NULL) const
         {
             return readTIFStream(fin);

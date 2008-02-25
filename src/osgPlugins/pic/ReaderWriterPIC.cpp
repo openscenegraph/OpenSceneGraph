@@ -194,6 +194,11 @@ class ReaderWriterPIC : public osgDB::ReaderWriter
         virtual const char* className() const { return "PIC Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"pic"); }
 
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            return readImage(file, options);
+        }
+
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);

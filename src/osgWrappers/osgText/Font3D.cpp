@@ -122,10 +122,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font3D)
 	          __void__setThreadSafeRefUnref__bool,
 	          "Set whether to use a mutex to ensure ref() and unref(). ",
 	          "");
-	I_StaticMethod0(osgText::Font3D::Font3DMutex *, getSerializeFontCallsMutex,
-	                __Font3DMutex_P1__getSerializeFontCallsMutex_S,
-	                "Get the mutex that enables the serialization of calls to this font. ",
-	                "");
 	I_ProtectedMethod2(void, addGlyph, IN, unsigned int, charcode, IN, osgText::Font3D::Glyph3D *, glyph,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

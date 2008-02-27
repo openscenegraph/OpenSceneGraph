@@ -34,6 +34,11 @@ void LightPointNode::write(DataOutputStream* out){
     out->writeFloat(getMaxPixelSize());
     out->writeFloat(getMaxVisibleDistance2());
 
+    if (out->getVersion() >= VERSION_0024)
+    {
+        out->writeBool(getPointSprite());
+    }
+
     // Write out LightPoints.
     unsigned int size = getNumLightPoints();
     out->writeUInt(size);
@@ -60,6 +65,11 @@ void LightPointNode::read(DataInputStream* in){
         setMaxPixelSize(in->readFloat());
         setMaxVisibleDistance2(in->readFloat());
 
+        if (in->getVersion() >= VERSION_0024)
+        {
+            setPointSprite(in->readBool());
+        }
+        
         // Read in lightpoints.
         unsigned int size = in->readUInt();
         for(unsigned int i=0; i<size; i++ ){

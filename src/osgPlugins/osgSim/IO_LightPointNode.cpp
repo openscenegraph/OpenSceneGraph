@@ -64,6 +64,22 @@ bool LightPointNode_readLocalData(osg::Object &obj, osgDB::Input &fr)
         itAdvanced = true;
     }
 
+    if (fr[0].matchWord("pointSprite"))
+    {
+        if (fr[1].matchWord("FALSE"))
+        {
+            lightpointnode.setPointSprite(false);
+            fr+=2;
+            itAdvanced = true;
+        }
+        else if (fr[1].matchWord("TRUE"))
+        {
+            lightpointnode.setPointSprite(true);
+            fr+=2;
+            itAdvanced = true;
+        }
+    }
+
     if (fr[0].matchWord("lightPoint")) {
         LightPoint lp;
         if (readLightPoint(lp, fr)) {
@@ -86,6 +102,8 @@ bool LightPointNode_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.indent() << "maxPixelSize " << lightpointnode.getMaxPixelSize() << std::endl;
 
     fw.indent() << "maxVisibleDistance2 " << lightpointnode.getMaxVisibleDistance2() << std::endl;
+
+    fw.indent() << "pointSprite " << ( lightpointnode.getPointSprite() ? "TRUE" : "FALSE" ) << std::endl;
 
     LightPointNode::LightPointList const lightpointlist = lightpointnode.getLightPointList();
     LightPointNode::LightPointList::const_iterator itr;

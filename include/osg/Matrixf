@@ -312,6 +312,10 @@ class OSG_EXPORT Matrixf
 #endif
 
         void setRotate(const Quat& q);
+        /** Get the matrix rotation as a Quat. Note that this function
+          * assumes a non-scaled matrix and will return incorrect results
+          * for scaled matrixces. Consider decompose() instead.
+          */
         Quat getRotate() const;
 
 

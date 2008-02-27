@@ -208,6 +208,7 @@ class NetReader : public osgDB::ReaderWriter
                              opt.substr( 0, index ) == "LOCAL_CACHE_DIR" )
                     {
                         localCacheDir = opt.substr(index+1);
+                        osg::notify(osg::INFO)<<"LOCAL_CACHE_DIR="<<localCacheDir<<std::endl;
                     }
                     else if( opt.substr( 0, index ) == "cache_mode" ||
                              opt.substr( 0, index ) == "CACHE_MODE" )

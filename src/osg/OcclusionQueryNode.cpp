@@ -654,22 +654,68 @@ OcclusionQueryNode::getDebugDisplay() const
 
 
 void
-OcclusionQueryNode::setQueryStateSets( osg::StateSet* ss, osg::StateSet* ssDebug )
+OcclusionQueryNode::setQueryStateSet( osg::StateSet* ss )
 {
-    if (!_queryGeode.valid() || !_debugGeode.valid())
+    if (!_queryGeode)
     {
-        osg::notify( osg::WARN ) << "osgOQ: OcclusionQueryNode:: Invalid support node(s)." << std::endl;
+        osg::notify( osg::WARN ) << "osgOQ: OcclusionQueryNode:: Invalid query support node." << std::endl;
         return;
     }
 
     _queryGeode->setStateSet( ss );
-    _debugGeode->setStateSet( ssDebug );
 }
-void
-OcclusionQueryNode::getQueryStateSets( osg::StateSet* ss, osg::StateSet* ssDebug )
+osg::StateSet*
+OcclusionQueryNode::getQueryStateSet()
 {
-    ss = _queryGeode->getStateSet();
-    ssDebug = _debugGeode->getStateSet();
+    if (!_queryGeode)
+    {
+        osg::notify( osg::WARN ) << "osgOQ: OcclusionQueryNode:: Invalid query support node." << std::endl;
+        return NULL;
+    }
+    return _queryGeode->getStateSet();
+}
+
+const osg::StateSet*
+OcclusionQueryNode::getQueryStateSet() const
+{
+    if (!_queryGeode)
+    {
+        osg::notify( osg::WARN ) << "osgOQ: OcclusionQueryNode:: Invalid query support node." << std::endl;
+        return NULL;
+    }
+    return _queryGeode->getStateSet();
+}
+
+void
+OcclusionQueryNode::setDebugStateSet( osg::StateSet* ss )
+{
+    if (!_debugGeode)
+    {
+        osg::notify( osg::WARN ) << "osgOQ: OcclusionQueryNode:: Invalid debug support node." << std::endl;
+        return;
+    }
+    _debugGeode->setStateSet( ss );
+}
+
+osg::StateSet*
+OcclusionQueryNode::getDebugStateSet()
+{
+    if (!_debugGeode.valid())
+    {
+        osg::notify( osg::WARN ) << "osgOQ: OcclusionQueryNode:: Invalid debug support node." << std::endl;
+        return NULL;
+    }
+    return _debugGeode->getStateSet();
+}
+const osg::StateSet*
+OcclusionQueryNode::getDebugStateSet() const
+{
+    if (!_debugGeode.valid())
+    {
+        osg::notify( osg::WARN ) << "osgOQ: OcclusionQueryNode:: Invalid debug support node." << std::endl;
+        return NULL;
+    }
+    return _debugGeode->getStateSet();
 }
 
 bool
@@ -724,7 +770,8 @@ OcclusionQueryNode::createSupportNodes()
     // Creste state sets. Note that the osgOQ visitors (which place OQNs throughout
     //   the scene graph) create a single instance of these StateSets shared
     //   between all OQNs for efficiency.
-    setQueryStateSets( initOQState(), initOQDebugState() );
+    setQueryStateSet( initOQState() );
+    setDebugStateSet( initOQDebugState() );
 }
 
 

@@ -67,10 +67,20 @@ public:
     bool getDebugDisplay() const;
 
 
-    // Set the StateSets used by the OQN when rendering OQ geometry
-    //   or debug bounding geometry.
-    void setQueryStateSets( osg::StateSet* ss, osg::StateSet* ssDebug );
-    void getQueryStateSets( osg::StateSet* ss, osg::StateSet* ssDebug );
+    // Set and get the StateSet used by the OcclusionQueryNode
+    //   when rendering the query geometry. OQN creates its own by
+    //   default, but if you use many OQNs you might want to use
+    //   this method to set all OQNs to use the same StateSet
+    //   for more efficient processing.
+    void setQueryStateSet( osg::StateSet* ss );
+    osg::StateSet* getQueryStateSet();
+    const osg::StateSet* getQueryStateSet() const;
+
+    // Set and get the StateSet used by the OcclusionQueryNode
+    //   when rendering the debug query geometry (see setDebugDisplay).
+    void setDebugStateSet( osg::StateSet* ss );
+    osg::StateSet* getDebugStateSet();
+    const osg::StateSet* getDebugStateSet() const;
 
     // For statistics gathering, e.g., by a NodeVisitor.
     bool getPassed() const;

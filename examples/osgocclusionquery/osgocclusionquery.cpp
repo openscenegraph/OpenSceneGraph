@@ -264,11 +264,8 @@ OcclusionQueryVisitor::OcclusionQueryVisitor()
     // We'll then share that state between all OQNs we add to the visited scene graph.
     osg::ref_ptr<osg::OcclusionQueryNode> oqn = new osg::OcclusionQueryNode;
 
-    osg::StateSet* ss( NULL );
-    osg::StateSet* ssDebug( NULL );
-    oqn->getQueryStateSets( ss, ssDebug );
-    _state = ss;
-    _debugState = ssDebug;
+    _state = oqn->getQueryStateSet();
+    _debugState = oqn->getDebugStateSet();
 }
 
 OcclusionQueryVisitor::~OcclusionQueryVisitor()
@@ -354,7 +351,8 @@ OcclusionQueryVisitor::addOQN( osg::Node& node )
                 oqn->setName( getNextOQNName() );
                 // Set all OQNs to use the same query StateSets (instead of multiple copies
                 //   of the same StateSet) for efficiency.
-                oqn->setQueryStateSets( _state.get(), _debugState.get() );
+                oqn->setQueryStateSet( _state.get() );
+                oqn->setDebugStateSet( _debugState.get() );
             }
         }
     }

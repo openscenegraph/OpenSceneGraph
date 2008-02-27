@@ -117,14 +117,34 @@ BEGIN_OBJECT_REFLECTOR(osg::OcclusionQueryNode)
 	          __bool__getDebugDisplay,
 	          "",
 	          "");
-	I_Method2(void, setQueryStateSets, IN, osg::StateSet *, ss, IN, osg::StateSet *, ssDebug,
+	I_Method1(void, setQueryStateSet, IN, osg::StateSet *, ss,
 	          Properties::NON_VIRTUAL,
-	          __void__setQueryStateSets__osg_StateSet_P1__osg_StateSet_P1,
+	          __void__setQueryStateSet__osg_StateSet_P1,
 	          "",
 	          "");
-	I_Method2(void, getQueryStateSets, IN, osg::StateSet *, ss, IN, osg::StateSet *, ssDebug,
+	I_Method0(osg::StateSet *, getQueryStateSet,
 	          Properties::NON_VIRTUAL,
-	          __void__getQueryStateSets__osg_StateSet_P1__osg_StateSet_P1,
+	          __osg_StateSet_P1__getQueryStateSet,
+	          "",
+	          "");
+	I_Method0(const osg::StateSet *, getQueryStateSet,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_StateSet_P1__getQueryStateSet,
+	          "",
+	          "");
+	I_Method1(void, setDebugStateSet, IN, osg::StateSet *, ss,
+	          Properties::NON_VIRTUAL,
+	          __void__setDebugStateSet__osg_StateSet_P1,
+	          "",
+	          "");
+	I_Method0(osg::StateSet *, getDebugStateSet,
+	          Properties::NON_VIRTUAL,
+	          __osg_StateSet_P1__getDebugStateSet,
+	          "",
+	          "");
+	I_Method0(const osg::StateSet *, getDebugStateSet,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_StateSet_P1__getDebugStateSet,
 	          "",
 	          "");
 	I_Method0(bool, getPassed,
@@ -164,6 +184,9 @@ BEGIN_OBJECT_REFLECTOR(osg::OcclusionQueryNode)
 	I_SimpleProperty(bool, DebugDisplay, 
 	                 __bool__getDebugDisplay, 
 	                 __void__setDebugDisplay__bool);
+	I_SimpleProperty(osg::StateSet *, DebugStateSet, 
+	                 __osg_StateSet_P1__getDebugStateSet, 
+	                 __void__setDebugStateSet__osg_StateSet_P1);
 	I_SimpleProperty(bool, Passed, 
 	                 __bool__getPassed, 
 	                 0);
@@ -173,6 +196,9 @@ BEGIN_OBJECT_REFLECTOR(osg::OcclusionQueryNode)
 	I_SimpleProperty(int, QueryFrameCount, 
 	                 __int__getQueryFrameCount, 
 	                 __void__setQueryFrameCount__int);
+	I_SimpleProperty(osg::StateSet *, QueryStateSet, 
+	                 __osg_StateSet_P1__getQueryStateSet, 
+	                 __void__setQueryStateSet__osg_StateSet_P1);
 	I_SimpleProperty(unsigned int, VisibilityThreshold, 
 	                 __unsigned_int__getVisibilityThreshold, 
 	                 __void__setVisibilityThreshold__unsigned_int);

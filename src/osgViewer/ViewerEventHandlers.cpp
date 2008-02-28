@@ -15,6 +15,8 @@
 #include <float.h>
 
 #include <fstream>
+#include <sstream>
+
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
@@ -514,5 +516,62 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
 
     return false;
 }
+
+LODScaleHandler::LODScaleHandler():
+    _keyEventIncreaseLODScale('*'),
+    _keyEventDecreaseLODScale('/')
+{
+}
+
+bool LODScaleHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+{
+    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+    osg::Camera* camera = view ? view->getCamera() : 0;
+    if (!camera) return false;
+
+    if (ea.getHandled()) return false;
+
+    switch(ea.getEventType())
+    {
+        case(osgGA::GUIEventAdapter::KEYUP):
+        {
+            if (ea.getKey() == _keyEventIncreaseLODScale)
+            {
+                camera->setLODScale(camera->getLODScale()*1.1);
+                osg::notify(osg::NOTICE)<<"LODScale = "<<camera->getLODScale()<<std::endl;
+                return true;
+            }
+
+            else if (ea.getKey() == _keyEventDecreaseLODScale)
+            {
+                camera->setLODScale(camera->getLODScale()/1.1);
+                osg::notify(osg::NOTICE)<<"LODScale = "<<camera->getLODScale()<<std::endl;
+                return true;
+            }        
+
+            break;
+        }
+    default:
+        break;
+    }
+
+    return false;
+}
+
+void LODScaleHandler::getUsage(osg::ApplicationUsage& usage) const
+{
+    {
+        std::ostringstream ostr;
+        ostr<<char(_keyEventIncreaseLODScale);
+        usage.addKeyboardMouseBinding(ostr.str(),"Increase LODScale.");
+    }
+    
+    {
+        std::ostringstream ostr;
+        ostr<<char(_keyEventDecreaseLODScale);
+        usage.addKeyboardMouseBinding(ostr.str(),"Decrease LODScale.");
+    }
+}
+
 
 }

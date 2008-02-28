@@ -216,11 +216,11 @@ protected:
 };
 
 /**
-Event handler allowing the user to record the animation "path" of a camera. In it's current
-implementation, this handler cannot guarantee the final view matrix is correct; it is
-conceivable that the matrix may be one frame off. Eh--not a big deal! :)
-TODO: Write the file as we go, not when it's all done.
-TODO: Create an osgviewer on-screen indication that animation is taking place.
+ * Event handler allowing the user to record the animation "path" of a camera. In it's current
+ * implementation, this handler cannot guarantee the final view matrix is correct; it is
+ * conceivable that the matrix may be one frame off. Eh--not a big deal! :)
+ * TODO: Write the file as we go, not when it's all done.
+ * TODO: Create an osgviewer on-screen indication that animation is taking place.
 */
 class OSGVIEWER_EXPORT RecordCameraPathHandler : public osgGA::GUIEventHandler
 {
@@ -255,6 +255,33 @@ protected:
         osg::ref_ptr<osg::AnimationPath>                _animPath;
         osg::ref_ptr<osgGA::AnimationPathManipulator>   _animPathManipulator;
         osg::ref_ptr<osgGA::MatrixManipulator>          _oldManipulator;
+};
+
+/** Event handler for increase/decreasing LODScale.*/
+class OSGVIEWER_EXPORT LODScaleHandler : public osgGA::GUIEventHandler 
+{
+    public: 
+
+        LODScaleHandler();
+
+        void setKeyEventIncreaseLODScale(int key) { _keyEventIncreaseLODScale = key; }
+        int getKeyEventIncreaseLODScale() const { return _keyEventIncreaseLODScale; }
+        
+        void setKeyEventDecreaseLODScale(int key) { _keyEventDecreaseLODScale = key; }
+        int getKeyEventDecreaseLODScale() const { return _keyEventDecreaseLODScale; }
+
+        bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
+
+    protected:
+
+
+        int _keyEventIncreaseLODScale;
+        int _keyEventDecreaseLODScale;
+        
+        
 };
 
 }

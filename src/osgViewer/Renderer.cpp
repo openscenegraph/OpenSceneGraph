@@ -390,10 +390,6 @@ void Renderer::draw()
         _availableQueue.add(sceneView);
 
         double availableTime = 0.004; // 4 ms
-        if (databasePager && databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
-        {
-            databasePager->compileGLObjects(*(sceneView->getState()), availableTime);
-        }
 
         if (compileThread)
         {
@@ -402,6 +398,11 @@ void Renderer::draw()
         else
         {
             sceneView->flushDeletedGLObjects(availableTime);
+        }
+
+        if (databasePager && databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
+        {
+            databasePager->compileGLObjects(*(sceneView->getState()), availableTime);
         }
 
         if (acquireGPUStats)

@@ -29,7 +29,7 @@ static osg::ApplicationUsageProxy DatabasePager_e3(osg::ApplicationUsage::ENVIRO
 static osg::ApplicationUsageProxy DatabasePager_e4(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_PRIORITY <mode>", "Set the thread priority to DEFAULT, MIN, LOW, NOMINAL, HIGH or MAX.");
 static osg::ApplicationUsageProxy DatabasePager_e5(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_CHILDREN_TO_REMOVE_PER_FRAME <int>", "Set the maximum number of PagedLOD child to remove per frame.");
 static osg::ApplicationUsageProxy DatabasePager_e6(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_MINIMUM_INACTIVE_PAGEDLOD <int>", "Set the minimum number of inactive PagedLOD child to keep.");
-
+static osg::ApplicationUsageProxy DatabasePager_e7(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EXPIRY_DELAY <float> ","Set the length of time a PagedLOD child is kept in memory, without being used, before its tagged as expired, and ear marked to deletion.");
 // Convert function objects that take pointer args into functions that a
 // reference to an osg::ref_ptr. This is quite useful for doing STL
 // operations on lists of ref_ptr. This code assumes that a function
@@ -166,9 +166,15 @@ DatabasePager::DatabasePager()
     _deleteRemovedSubgraphsInDatabaseThread = false;
 #endif
     
-    _expiryDelay = 10;
-
     const char* ptr=0;
+
+    _expiryDelay = 10.0;
+    if( (ptr = getenv("OSG_EXPIRY_DELAY")) != 0)
+    {
+        _expiryDelay = atof(ptr);
+        osg::notify(osg::NOTICE)<<"Expiry delay = "<<_expiryDelay<<std::endl;
+    }
+
     _doPreCompile = true;
     if( (ptr = getenv("OSG_DO_PRE_COMPILE")) != 0)
     {

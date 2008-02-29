@@ -31,6 +31,9 @@
 #include <osg/PolygonOffset>
 #include <osg/MatrixTransform>
 #include <osg/Camera>
+#include <osg/RenderInfo>
+
+#include <osgDB/WriteFile>
 
 #include <osgText/Text>
 
@@ -187,6 +190,81 @@ osg::Camera* createHUD()
     return camera;
 }
 
+struct SnapImage : public osg::Camera::DrawCallback
+{
+    SnapImage(const std::string& filename):
+        _filename(filename),
+        _snapImage(false)
+    {
+        _image = new osg::Image;        
+    }
+
+    virtual void operator () (osg::RenderInfo& renderInfo) const
+    {
+
+        if (!_snapImage) return;
+    
+        osg::notify(osg::NOTICE)<<"Camera callback"<<std::endl;
+
+        osg::Camera* camera = renderInfo.getCurrentCamera();
+        osg::Viewport* viewport = camera ? camera->getViewport() : 0;
+
+        osg::notify(osg::NOTICE)<<"Camera callback "<<camera<<" "<<viewport<<std::endl;
+
+        if (viewport && _image.valid())
+        {
+            _image->readPixels(int(viewport->x()),int(viewport->y()),int(viewport->width()),int(viewport->height()),
+                               GL_RGBA,
+                               GL_UNSIGNED_BYTE);
+            osgDB::writeImageFile(*_image, _filename);
+            
+            osg::notify(osg::NOTICE)<<"Taken screenshot, and written to '"<<_filename<<"'"<<std::endl;             
+        }
+       
+        _snapImage = false;
+    }
+
+    std::string                         _filename;
+    mutable bool                        _snapImage;
+    mutable osg::ref_ptr<osg::Image>    _image;
+};
+
+struct SnapeImageHandler : public osgGA::GUIEventHandler
+{
+
+    SnapeImageHandler(int key,SnapImage* si):
+        _key(key),
+        _snapImage(si) {}
+
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        if (ea.getHandled()) return false;
+
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYUP):
+            {
+                if (ea.getKey() == _key)
+                {
+                    osg::notify(osg::NOTICE)<<"event handler"<<std::endl;
+                    _snapImage->_snapImage = true;
+                    return true;
+                }
+
+                break;
+            }
+        default:
+            break;
+        }
+
+        return false;
+    }
+    
+    int                     _key;
+    osg::ref_ptr<SnapImage> _snapImage;
+};
+
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -273,6 +351,14 @@ int main( int argc, char **argv )
     {
         // construct the viewer.
         osgViewer::Viewer viewer;
+        
+        SnapImage* preDrawCallback = new SnapImage("preDrawCallback.png");
+        viewer.getCamera()->setPostDrawCallback(preDrawCallback);        
+        viewer.addEventHandler(new SnapeImageHandler('p',preDrawCallback));
+        
+        SnapImage* finalDrawCallback = new SnapImage("finalDrawCallback.png");
+        viewer.getCamera()->setFinalDrawCallback(finalDrawCallback);        
+        viewer.addEventHandler(new SnapeImageHandler('f',finalDrawCallback));
 
         osg::ref_ptr<osg::Group> group  = new osg::Group;
 

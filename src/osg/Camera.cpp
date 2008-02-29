@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Camera>
+#include <osg/RenderInfo>
 #include <osg/Notify>
 
 using namespace osg;
@@ -53,8 +54,10 @@ Camera::Camera(const Camera& camera,const CopyOp& copyop):
     _renderTargetImplementation(camera._renderTargetImplementation),
     _renderTargetFallback(camera._renderTargetFallback),
     _bufferAttachmentMap(camera._bufferAttachmentMap),
+    _initialDrawCallback(camera._initialDrawCallback),
     _preDrawCallback(camera._preDrawCallback),
-    _postDrawCallback(camera._postDrawCallback)
+    _postDrawCallback(camera._postDrawCallback),
+    _finalDrawCallback(camera._finalDrawCallback)
 {
     // need to copy/share graphics context?
 }
@@ -66,6 +69,19 @@ Camera::~Camera()
     
     if (_graphicsContext.valid()) _graphicsContext->removeCamera(this);
 }
+
+void Camera::DrawCallback::operator () (osg::RenderInfo& renderInfo) const
+{
+    if (renderInfo.getCurrentCamera())
+    {
+        operator()(*(renderInfo.getCurrentCamera()));
+    }
+    else
+    {
+        osg::notify(osg::WARN)<<"Error: Camera::DrawCallback called without valid camera."<<std::endl;
+    }
+}
+
 
 void Camera::setGraphicsContext(GraphicsContext* context) 
 {

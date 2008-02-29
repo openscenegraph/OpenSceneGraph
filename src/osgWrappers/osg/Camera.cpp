@@ -24,6 +24,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/OperationThread>
+#include <osg/RenderInfo>
 #include <osg/State>
 #include <osg/Stats>
 #include <osg/Texture>
@@ -507,10 +508,25 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __C5_osg_Object_P1__getRenderingCache,
 	          "Get the const Rendering cache that is used for cached objects associated with rendering of subgraphs. ",
 	          "");
+	I_Method1(void, setIntialDrawCallback, IN, osg::Camera::DrawCallback *, cb,
+	          Properties::NON_VIRTUAL,
+	          __void__setIntialDrawCallback__DrawCallback_P1,
+	          "Set the initial draw callback for custom operations to be done before the drawing of the camera's subgraph and pre render stages. ",
+	          "");
+	I_Method0(osg::Camera::DrawCallback *, getInitialDrawCallback,
+	          Properties::NON_VIRTUAL,
+	          __DrawCallback_P1__getInitialDrawCallback,
+	          "Get the initial draw callback. ",
+	          "");
+	I_Method0(const osg::Camera::DrawCallback *, getUnitialDrawCallback,
+	          Properties::NON_VIRTUAL,
+	          __C5_DrawCallback_P1__getUnitialDrawCallback,
+	          "Get the const initial draw callback. ",
+	          "");
 	I_Method1(void, setPreDrawCallback, IN, osg::Camera::DrawCallback *, cb,
 	          Properties::NON_VIRTUAL,
 	          __void__setPreDrawCallback__DrawCallback_P1,
-	          "Set the pre draw callback for custom operations to be done before the drawing of the camera's subgraph has been completed. ",
+	          "Set the pre draw callback for custom operations to be done before the drawing of the camera's subgraph but after any pre render stages have been completed. ",
 	          "");
 	I_Method0(osg::Camera::DrawCallback *, getPreDrawCallback,
 	          Properties::NON_VIRTUAL,
@@ -525,7 +541,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_Method1(void, setPostDrawCallback, IN, osg::Camera::DrawCallback *, cb,
 	          Properties::NON_VIRTUAL,
 	          __void__setPostDrawCallback__DrawCallback_P1,
-	          "Set the post draw callback for custom operations to be done after the drawing of the camera's subgraph has been completed. ",
+	          "Set the post draw callback for custom operations to be done after the drawing of the camera's subgraph but before the any post render stages have been completed. ",
 	          "");
 	I_Method0(osg::Camera::DrawCallback *, getPostDrawCallback,
 	          Properties::NON_VIRTUAL,
@@ -536,6 +552,21 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          Properties::NON_VIRTUAL,
 	          __C5_DrawCallback_P1__getPostDrawCallback,
 	          "Get the const post draw callback. ",
+	          "");
+	I_Method1(void, setFinalDrawCallback, IN, osg::Camera::DrawCallback *, cb,
+	          Properties::NON_VIRTUAL,
+	          __void__setFinalDrawCallback__DrawCallback_P1,
+	          "Set the final draw callback for custom operations to be done after the drawing of the camera's subgraph and all of the post render stages has been completed. ",
+	          "");
+	I_Method0(osg::Camera::DrawCallback *, getFinalDrawCallback,
+	          Properties::NON_VIRTUAL,
+	          __DrawCallback_P1__getFinalDrawCallback,
+	          "Get the final draw callback. ",
+	          "");
+	I_Method0(const osg::Camera::DrawCallback *, getFinalDrawCallback,
+	          Properties::NON_VIRTUAL,
+	          __C5_DrawCallback_P1__getFinalDrawCallback,
+	          "Get the const final draw callback. ",
 	          "");
 	I_Method0(OpenThreads::Mutex *, getDataChangeMutex,
 	          Properties::NON_VIRTUAL,
@@ -589,9 +620,18 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(GLenum, DrawBuffer, 
 	                 __GLenum__getDrawBuffer, 
 	                 __void__setDrawBuffer__GLenum);
+	I_SimpleProperty(osg::Camera::DrawCallback *, FinalDrawCallback, 
+	                 __DrawCallback_P1__getFinalDrawCallback, 
+	                 __void__setFinalDrawCallback__DrawCallback_P1);
 	I_SimpleProperty(osg::GraphicsContext *, GraphicsContext, 
 	                 __GraphicsContext_P1__getGraphicsContext, 
 	                 __void__setGraphicsContext__GraphicsContext_P1);
+	I_SimpleProperty(osg::Camera::DrawCallback *, InitialDrawCallback, 
+	                 __DrawCallback_P1__getInitialDrawCallback, 
+	                 0);
+	I_SimpleProperty(osg::Camera::DrawCallback *, IntialDrawCallback, 
+	                 0, 
+	                 __void__setIntialDrawCallback__DrawCallback_P1);
 	I_SimpleProperty(osg::Matrixd, InverseViewMatrix, 
 	                 __Matrixd__getInverseViewMatrix, 
 	                 0);
@@ -634,6 +674,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(osg::Camera::TransformOrder, TransformOrder, 
 	                 __TransformOrder__getTransformOrder, 
 	                 __void__setTransformOrder__TransformOrder);
+	I_SimpleProperty(const osg::Camera::DrawCallback *, UnitialDrawCallback, 
+	                 __C5_DrawCallback_P1__getUnitialDrawCallback, 
+	                 0);
 	I_SimpleProperty(osg::View *, View, 
 	                 __View_P1__getView, 
 	                 __void__setView__View_P1);

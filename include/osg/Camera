@@ -29,6 +29,7 @@ namespace osg {
 
 // forward declare View to allow Camera to point back to the View that its within
 class View;
+class RenderInfo;
 
 /** Camera - is a subclass of Transform which represents encapsulates the settings of a Camera.
 */
@@ -401,10 +402,22 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
             META_Object(osg,DrawCallback)
         
+            virtual void operator () (osg::RenderInfo& renderInfo) const;
+
             virtual void operator () (const osg::Camera& /*camera*/) const {}
         };
         
-       /** Set the pre draw callback for custom operations to be done before the drawing of the camera's subgraph has been completed.*/
+        /** Set the initial draw callback for custom operations to be done before the drawing of the camera's subgraph and pre render stages.*/
+        void setIntialDrawCallback(DrawCallback* cb) { _preDrawCallback = cb; }
+
+        /** Get the initial draw callback.*/
+        DrawCallback* getInitialDrawCallback() { return _initialDrawCallback.get(); }
+
+        /** Get the const initial draw callback.*/
+        const DrawCallback* getUnitialDrawCallback() const { return _initialDrawCallback.get(); }
+ 
+
+        /** Set the pre draw callback for custom operations to be done before the drawing of the camera's subgraph but after any pre render stages have been completed.*/
         void setPreDrawCallback(DrawCallback* cb) { _preDrawCallback = cb; }
 
         /** Get the pre draw callback.*/
@@ -414,7 +427,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         const DrawCallback* getPreDrawCallback() const { return _preDrawCallback.get(); }
  
 
-        /** Set the post draw callback for custom operations to be done after the drawing of the camera's subgraph has been completed.*/
+        /** Set the post draw callback for custom operations to be done after the drawing of the camera's subgraph but before the any post render stages have been completed.*/
         void setPostDrawCallback(DrawCallback* cb) { _postDrawCallback = cb; }
 
         /** Get the post draw callback.*/
@@ -422,6 +435,17 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Get the const post draw callback.*/
         const DrawCallback* getPostDrawCallback() const { return _postDrawCallback.get(); }
+        
+
+        /** Set the final draw callback for custom operations to be done after the drawing of the camera's subgraph and all of the post render stages has been completed.*/
+        void setFinalDrawCallback(DrawCallback* cb) { _finalDrawCallback = cb; }
+
+        /** Get the final draw callback.*/
+        DrawCallback* getFinalDrawCallback() { return _finalDrawCallback.get(); }
+
+        /** Get the const final draw callback.*/
+        const DrawCallback* getFinalDrawCallback() const { return _finalDrawCallback.get(); }
+
  
         OpenThreads::Mutex* getDataChangeMutex() const { return &_dataChangeMutex; }
 
@@ -484,8 +508,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         ref_ptr<GraphicsOperation>          _renderer;
         ref_ptr<Object>                     _renderingCache;
         
+        ref_ptr<DrawCallback>               _initialDrawCallback;
         ref_ptr<DrawCallback>               _preDrawCallback;
         ref_ptr<DrawCallback>               _postDrawCallback;
+        ref_ptr<DrawCallback>               _finalDrawCallback;
 };
 
 }

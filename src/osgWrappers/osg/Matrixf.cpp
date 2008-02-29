@@ -332,8 +332,8 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	I_Method0(osg::Quat, getRotate,
 	          Properties::NON_VIRTUAL,
 	          __Quat__getRotate,
-	          "",
-	          "");
+	          "Get the matrix rotation as a Quat. ",
+	          "Note that this function assumes a non-scaled matrix and will return incorrect results for scaled matrixces. Consider decompose() instead. ");
 	I_Method3(void, setTrans, IN, osg::Matrixf::value_type, tx, IN, osg::Matrixf::value_type, ty, IN, osg::Matrixf::value_type, tz,
 	          Properties::NON_VIRTUAL,
 	          __void__setTrans__value_type__value_type__value_type,

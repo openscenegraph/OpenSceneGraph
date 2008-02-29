@@ -57,7 +57,7 @@ public:
     const View* getView() const { return _view.get(); }
     
     void pushCamera(Camera* camera) { _cameras.push_back(camera); }    
-    void popCamera() { if (_cameras.empty()) _cameras.pop_back(); }
+    void popCamera() { if (!_cameras.empty()) _cameras.pop_back(); }
     
     Camera* getCurrentCamera() { return _cameras.empty() ? 0 : _cameras.back(); }
 

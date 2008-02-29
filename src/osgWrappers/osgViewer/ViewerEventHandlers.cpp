@@ -105,6 +105,50 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	                 __void__setKeyEventTogglesOnScreenHelp__int);
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgViewer::LODScaleHandler)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
+	I_BaseType(osgGA::GUIEventHandler);
+	I_Constructor0(____LODScaleHandler,
+	               "",
+	               "");
+	I_Method1(void, setKeyEventIncreaseLODScale, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventIncreaseLODScale__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventIncreaseLODScale,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventIncreaseLODScale,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventDecreaseLODScale, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventDecreaseLODScale__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventDecreaseLODScale,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventDecreaseLODScale,
+	          "",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "Deprecated, Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	          Properties::VIRTUAL,
+	          __void__getUsage__osg_ApplicationUsage_R1,
+	          "Get the keyboard and mouse usage of this manipulator. ",
+	          "");
+	I_SimpleProperty(int, KeyEventDecreaseLODScale, 
+	                 __int__getKeyEventDecreaseLODScale, 
+	                 __void__setKeyEventDecreaseLODScale__int);
+	I_SimpleProperty(int, KeyEventIncreaseLODScale, 
+	                 __int__getKeyEventIncreaseLODScale, 
+	                 __void__setKeyEventIncreaseLODScale__int);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgViewer::RecordCameraPathHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);

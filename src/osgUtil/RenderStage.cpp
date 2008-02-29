@@ -826,7 +826,16 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 {
     if (_stageDrawnThisFrame) return;
 
+    // push the stages camera so that drawing code can query it     
+    if (_camera) renderInfo.pushCamera(_camera);
+
     _stageDrawnThisFrame = true;
+
+    if (_camera && _camera->getInitialDrawCallback())
+    {
+        // if we have a camera with a intial draw callback invoke it.
+        (*(_camera->getInitialDrawCallback()))(renderInfo);
+    }
 
     // note, SceneView does call to drawPreRenderStages explicitly
     // so there is no need to call it here.
@@ -880,8 +889,8 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 
     if (_camera && _camera->getPreDrawCallback())
     {
-        // if we have a camera with a post draw callback invoke it.
-        (*(_camera->getPreDrawCallback()))(*_camera);
+        // if we have a camera with a pre draw callback invoke it.
+        (*(_camera->getPreDrawCallback()))(renderInfo);
     }
     
     bool doCopyTexture = _texture.valid() ? 
@@ -942,7 +951,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
     if (_camera && _camera->getPostDrawCallback())
     {
         // if we have a camera with a post draw callback invoke it.
-        (*(_camera->getPostDrawCallback()))(*_camera);
+        (*(_camera->getPostDrawCallback()))(renderInfo);
     }
 
     if (_graphicsContext.valid() && _graphicsContext != callingContext)
@@ -974,9 +983,17 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         callingContext->makeCurrent();
     }
 
-    // place the post draw here temprorarily while we figure out how
-    // best to do SceneView.
+    // render all the post draw callbacks
     drawPostRenderStages(renderInfo,previous);
+
+    if (_camera && _camera->getFinalDrawCallback())
+    {
+        // if we have a camera with a final callback invoke it.
+        (*(_camera->getFinalDrawCallback()))(renderInfo);
+    }
+
+    // pop the render stages camera.
+    if (_camera) renderInfo.popCamera();
 }
 
 void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
@@ -988,9 +1005,6 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
         notify(FATAL) << "Error: cannot draw stage due to undefined viewport."<< std::endl;
         return;
     }
-
-    // push the stages camera so that drawing code can query it     
-    if (_camera) renderInfo.pushCamera(_camera);
 
     // set up the back buffer.
     state.applyAttribute(_viewport.get());
@@ -1051,9 +1065,6 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
     RenderBin::drawImplementation(renderInfo,previous);
 
     state.apply();
-
-    // pop the render stages camera.
-    if (_camera) renderInfo.popCamera();
 
 }
 

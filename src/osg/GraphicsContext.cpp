@@ -771,6 +771,10 @@ void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
         ++itr)
     {
         Camera* camera = (*itr);
+        
+        // resize doesn't affect Cameras set up with FBO's.
+        if (camera->getRenderTargetImplementation()==osg::Camera::FRAME_BUFFER_OBJECT) continue;
+        
         Viewport* viewport = camera->getViewport();
         if (viewport)
         {

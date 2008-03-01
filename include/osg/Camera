@@ -414,7 +414,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         DrawCallback* getInitialDrawCallback() { return _initialDrawCallback.get(); }
 
         /** Get the const initial draw callback.*/
-        const DrawCallback* getUnitialDrawCallback() const { return _initialDrawCallback.get(); }
+        const DrawCallback* getInitialDrawCallback() const { return _initialDrawCallback.get(); }
  
 
         /** Set the pre draw callback for custom operations to be done before the drawing of the camera's subgraph but after any pre render stages have been completed.*/

@@ -352,11 +352,11 @@ int main( int argc, char **argv )
         // construct the viewer.
         osgViewer::Viewer viewer;
         
-        SnapImage* preDrawCallback = new SnapImage("preDrawCallback.png");
-        viewer.getCamera()->setPostDrawCallback(preDrawCallback);        
-        viewer.addEventHandler(new SnapeImageHandler('p',preDrawCallback));
+        SnapImage* postDrawCallback = new SnapImage("PostDrawCallback.png");
+        viewer.getCamera()->setPostDrawCallback(postDrawCallback);        
+        viewer.addEventHandler(new SnapeImageHandler('p',postDrawCallback));
         
-        SnapImage* finalDrawCallback = new SnapImage("finalDrawCallback.png");
+        SnapImage* finalDrawCallback = new SnapImage("FinalDrawCallback.png");
         viewer.getCamera()->setFinalDrawCallback(finalDrawCallback);        
         viewer.addEventHandler(new SnapeImageHandler('f',finalDrawCallback));
 

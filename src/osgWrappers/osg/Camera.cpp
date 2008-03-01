@@ -518,9 +518,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __DrawCallback_P1__getInitialDrawCallback,
 	          "Get the initial draw callback. ",
 	          "");
-	I_Method0(const osg::Camera::DrawCallback *, getUnitialDrawCallback,
+	I_Method0(const osg::Camera::DrawCallback *, getInitialDrawCallback,
 	          Properties::NON_VIRTUAL,
-	          __C5_DrawCallback_P1__getUnitialDrawCallback,
+	          __C5_DrawCallback_P1__getInitialDrawCallback,
 	          "Get the const initial draw callback. ",
 	          "");
 	I_Method1(void, setPreDrawCallback, IN, osg::Camera::DrawCallback *, cb,
@@ -674,9 +674,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(osg::Camera::TransformOrder, TransformOrder, 
 	                 __TransformOrder__getTransformOrder, 
 	                 __void__setTransformOrder__TransformOrder);
-	I_SimpleProperty(const osg::Camera::DrawCallback *, UnitialDrawCallback, 
-	                 __C5_DrawCallback_P1__getUnitialDrawCallback, 
-	                 0);
 	I_SimpleProperty(osg::View *, View, 
 	                 __View_P1__getView, 
 	                 __void__setView__View_P1);

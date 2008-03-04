@@ -29,6 +29,8 @@ using namespace osgShadow;
 #include <osgDB/ReadFile>
 #include <osgText/Text>
 
+#define IMPROVE_TEXGEN_PRECISION 1
+
 //////////////////////////////////////////////////////////////////
 // fragment shader
 //
@@ -74,7 +76,7 @@ static const char fragmentShaderSource_debugHUD[] =
     "void main(void) \n"
     "{ \n"
     "   vec4 texResult = texture2D(osgShadow_shadowTexture, gl_TexCoord[0].st ); \n"
-    "   float value = texResult.r + 0.5; \n"
+    "   float value = texResult.r; \n"
     "   gl_FragColor = vec4( value, value, value, 0.8 ); \n"
     "} \n";
 
@@ -179,6 +181,8 @@ void ShadowMap::init()
     {
         // create the camera
         _camera = new osg::Camera;
+
+        _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF_INHERIT_VIEWPOINT);
 
         _camera->setCullCallback(new CameraCullCallback(this));
 
@@ -363,7 +367,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
             if (matrix) 
             {
                 lightpos = light->getPosition() * (*matrix);
-                lightDir = light->getDirection() * (*matrix);
+                lightDir = osg::Matrix::transform3x3( light->getDirection(), *matrix );
             }
             else 
             {
@@ -377,9 +381,8 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
     osg::Matrix eyeToWorld;
     eyeToWorld.invert(*cv.getModelViewMatrix());
 
-    lightpos = lightpos * eyeToWorld;
-    //MR do we do this for the direction also ? preliminary Yes, but still no good result
-    lightDir = lightDir * eyeToWorld;
+    lightpos = lightpos * eyeToWorld;     
+    lightDir = osg::Matrix::transform3x3( lightDir, eyeToWorld );
     lightDir.normalize();
 
     if (selectLight)
@@ -394,7 +397,6 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
         {
             osg::Vec3 position(lightpos.x(), lightpos.y(), lightpos.z());
             float spotAngle = selectLight->getSpotCutoff();
-            _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
             _camera->setProjectionMatrixAsPerspective(spotAngle, 1.0, 0.1, 1000.0);
             _camera->setViewMatrixAsLookAt(position,position+lightDir,osg::Vec3(0.0f,1.0f,0.0f));
         }
@@ -422,7 +424,6 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
                 float top   = (bb.radius()/centerDistance)*znear;
                 float right = top;
 
-                _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
                 _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
                 _camera->setViewMatrixAsLookAt(position,bb.center(),osg::Vec3(0.0f,1.0f,0.0f));
             }
@@ -445,22 +446,12 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
                 float top   = bb.radius();
                 float right = top;
 
-                _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
                 _camera->setProjectionMatrixAsOrtho(-right, right, -top, top, znear, zfar);
                 _camera->setViewMatrixAsLookAt(position,bb.center(),osg::Vec3(0.0f,1.0f,0.0f));
             }
 
 
         }
-            // compute the matrix which takes a vertex from local coords into tex coords
-            // will use this later to specify osg::TexGen..
-            osg::Matrix MVPT = _camera->getViewMatrix() * 
-                _camera->getProjectionMatrix() *
-                osg::Matrix::translate(1.0,1.0,1.0) *
-                osg::Matrix::scale(0.5f,0.5f,0.5f);
-
-            _texgen->setMode(osg::TexGen::EYE_LINEAR);
-            _texgen->setPlanesFromMatrix(MVPT);
 
         cv.setTraversalMask( traversalMask & 
             getShadowedScene()->getCastsShadowTraversalMask() );
@@ -468,7 +459,34 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
         // do RTT camera traversal
         _camera->accept(cv);
 
+        _texgen->setMode(osg::TexGen::EYE_LINEAR);
+
+#if IMPROVE_TEXGEN_PRECISION
+        // compute the matrix which takes a vertex from local coords into tex coords
+        // We actually use two matrices one used to define texgen
+        // and second that will be used as modelview when appling to OpenGL
+        _texgen->setPlanesFromMatrix( _camera->getProjectionMatrix() *
+                                      osg::Matrix::translate(1.0,1.0,1.0) *
+                                      osg::Matrix::scale(0.5f,0.5f,0.5f) );
+
+        // Place texgen with modelview which removes big offsets (making it float friendly)
+        osg::RefMatrix * refMatrix = new osg::RefMatrix
+            ( _camera->getInverseViewMatrix() * *cv.getModelViewMatrix() );
+
+        cv.getRenderStage()->getPositionalStateContainer()->
+             addPositionedTextureAttribute( _shadowTextureUnit, refMatrix, _texgen.get() );
+#else 
+        // compute the matrix which takes a vertex from local coords into tex coords
+        // will use this later to specify osg::TexGen..
+        osg::Matrix MVPT = _camera->getViewMatrix() * 
+               _camera->getProjectionMatrix() *
+               osg::Matrix::translate(1.0,1.0,1.0) *
+               osg::Matrix::scale(0.5f,0.5f,0.5f);
+
+        _texgen->setPlanesFromMatrix(MVPT);
+
         orig_rs->getPositionalStateContainer()->addPositionedTextureAttribute(_shadowTextureUnit, cv.getModelViewMatrix(), _texgen.get());
+#endif
     } // if(selectLight)
 
 
@@ -482,8 +500,53 @@ void ShadowMap::cleanSceneGraph()
 
 ///////////////////// Debug Methods
 
+////////////////////////////////////////////////////////////////////////////////
+// Callback used by debugging hud to display Shadow Map in color buffer
+// OSG does not allow to use the same GL Texture Id with different glTexParams. 
+// Callback simply turns shadow compare mode off via GL while rendering hud and 
+// restores it afterwards. 
+////////////////////////////////////////////////////////////////////////////////
+class DrawableDrawWithDepthShadowComparisonOffCallback: 
+    public osg::Drawable::DrawCallback
+{
+public:
+    // 
+    DrawableDrawWithDepthShadowComparisonOffCallback
+        ( osg::Texture2D * texture, unsigned stage = 0 )
+            : _texture( texture ), _stage( stage )
+    {
+    }
+
+    virtual void drawImplementation
+        ( osg::RenderInfo & ri,const osg::Drawable* drawable ) const
+    {
+        if( _texture.valid() ) {
+            // make sure proper texture is currently applied
+            ri.getState()->applyTextureAttribute( _stage, _texture.get() );
+
+            // Turn off depth comparison mode
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, 
+                             GL_NONE );
+        }
+
+        drawable->drawImplementation(ri);
+
+        if( _texture.valid() ) {
+            // Turn it back on
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, 
+                             GL_COMPARE_R_TO_TEXTURE_ARB );
+        }
+    }
+
+    unsigned                       _stage;
+    osg::ref_ptr< osg::Texture2D > _texture;
+};
+////////////////////////////////////////////////////////////////////////////////
 osg::ref_ptr<osg::Camera> ShadowMap::makeDebugHUD()
 {
+    // Make sure we attach initialized texture to HUD
+    if( !_texture.valid() )    init();
+
     osg::ref_ptr<osg::Camera> camera = new osg::Camera;
 
     osg::Vec2 size(1280, 1024);
@@ -509,7 +572,7 @@ osg::ref_ptr<osg::Camera> ShadowMap::makeDebugHUD()
 
     osg::Vec3 position(10.0f,size.y()-100.0f,0.0f);
     osg::Vec3 delta(0.0f,-120.0f,0.0f); 
-    float lenght = 300.0f;
+    float length = 300.0f;
 
     // turn the text off to avoid linking with osgText
 #if 0
@@ -527,13 +590,18 @@ osg::ref_ptr<osg::Camera> ShadowMap::makeDebugHUD()
     }
 #endif
 
-    osg::Vec3 widthVec(lenght, 0.0f, 0.0f);
-    osg::Vec3 depthVec(0.0f,lenght, 0.0f);
-    osg::Vec3 centerBase( 10.0f + lenght/2, size.y()-lenght/2, 0.0f);
+    osg::Vec3 widthVec(length, 0.0f, 0.0f);
+    osg::Vec3 depthVec(0.0f,length, 0.0f);
+    osg::Vec3 centerBase( 10.0f + length/2, size.y()-length/2, 0.0f);
     centerBase += delta;
 
-    geode->addDrawable( osg::createTexturedQuadGeometry( centerBase-widthVec*0.5f-depthVec*0.5f, 
-                                                         widthVec, depthVec) );
+    osg::Geometry *geometry = osg::createTexturedQuadGeometry
+        ( centerBase-widthVec*0.5f-depthVec*0.5f, widthVec, depthVec );
+
+    geode->addDrawable( geometry );
+
+    geometry->setDrawCallback
+        ( new DrawableDrawWithDepthShadowComparisonOffCallback( _texture.get() ) );
 
     osg::StateSet* stateset = geode->getOrCreateStateSet();
 
@@ -543,9 +611,9 @@ osg::ref_ptr<osg::Camera> ShadowMap::makeDebugHUD()
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
     // test with regular texture
-    //stateset->setTextureAttributeAndModes(_baseTextureUnit, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")));
+    //stateset->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")));
 
-    stateset->setTextureAttributeAndModes(_shadowTextureUnit,_texture.get(),osg::StateAttribute::ON);
+    stateset->setTextureAttributeAndModes(0,_texture.get(),osg::StateAttribute::ON);
 
     //test to check the texture coordinates generated during shadow pass
 #if 0

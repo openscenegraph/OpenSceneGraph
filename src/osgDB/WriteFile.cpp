@@ -53,3 +53,11 @@ bool osgDB::writeNodeFile(const Node& node,const std::string& filename, const Re
     if (wr.error()) notify(WARN) << "Error writing file " << filename << ": " << wr.message() << std::endl;
     return wr.success();
 }
+
+bool osgDB::writeShaderFile(const Shader& shader,const std::string& filename, const ReaderWriter::Options* options )
+{
+    ReaderWriter::WriteResult wr = Registry::instance()->writeShader( shader, filename, options );
+    if (wr.error()) notify(WARN) << "Error writing file " << filename << ": " << wr.message() << std::endl;
+    return wr.success();
+}
+

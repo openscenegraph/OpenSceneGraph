@@ -14,6 +14,7 @@
 #include <osg/Notify>
 #include <osg/Object>
 #include <osg/Image>
+#include <osg/Shader>
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/Geode>
@@ -431,6 +432,11 @@ void Registry::addDotOsgWrapper(DotOsgWrapper* wrapper)
             _nodeWrapperMap[name] = wrapper;
             _nodeWrapperMap[compositeName] = wrapper;
         }
+        if (dynamic_cast<const Shader*>(proto))
+        {
+            _shaderWrapperMap[name] = wrapper;
+            _shaderWrapperMap[compositeName] = wrapper;
+        }
 
 
     }
@@ -468,6 +474,7 @@ void Registry::removeDotOsgWrapper(DotOsgWrapper* wrapper)
     eraseWrapper(_uniformWrapperMap,wrapper);
     eraseWrapper(_stateAttrWrapperMap,wrapper);
     eraseWrapper(_nodeWrapperMap,wrapper);
+    eraseWrapper(_shaderWrapperMap,wrapper);
 }
 
 void Registry::addReaderWriter(ReaderWriter* rw)
@@ -1127,6 +1134,31 @@ Node* Registry::readNode(Input& fr)
 }
 
 //
+// read image from input iterator.
+//
+Shader* Registry::readShader(Input& fr)
+{
+    if (fr[0].matchWord("Use"))
+    {
+        if (fr[1].isString())
+        {
+            Shader* shader = dynamic_cast<Shader*>(fr.getObjectForUniqueID(fr[1].getStr()));
+            if (shader) fr+=2;
+            return shader;
+        }
+        else return NULL;
+
+    }
+
+    osg::Object* obj = readObject(_shaderWrapperMap,fr);
+    osg::Shader* shader = dynamic_cast<Shader*>(obj);
+    if (shader) return shader;
+    else if (obj) obj->unref();
+    
+    return NULL;
+}
+
+//
 // Write object to output 
 //
 bool Registry::writeObject(const osg::Object& obj,Output& fw)
@@ -1311,6 +1343,15 @@ struct Registry::ReadArchiveFunctor : public Registry::ReadFunctor
     virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validArchive(); }
     virtual bool isValid(osg::Object* object) const { return dynamic_cast<osgDB::Archive*>(object)!=0;  }
 
+};
+
+struct Registry::ReadShaderFunctor : public Registry::ReadFunctor
+{
+    ReadShaderFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw)const  { return rw.readShader(_filename, _options); }    
+    virtual bool isValid(ReaderWriter::ReadResult& readResult) const { return readResult.validShader(); }
+    virtual bool isValid(osg::Object* object) const { return dynamic_cast<osg::Shader*>(object)!=0;  }
 };
 
 void Registry::addArchiveExtension(const std::string ext)
@@ -1792,6 +1833,58 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
     return results.front();
 }
 
+ReaderWriter::ReadResult Registry::readShaderImplementation(const std::string& fileName,const ReaderWriter::Options* options)
+{
+    return readImplementation(ReadShaderFunctor(fileName, options),
+                              options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_SHADERS)!=0: false);
+}
+
+ReaderWriter::WriteResult Registry::writeShaderImplementation(const Shader& shader,const std::string& fileName,const ReaderWriter::Options* options)
+{
+    // record the errors reported by readerwriters.
+    typedef std::vector<ReaderWriter::WriteResult> Results;
+    Results results;
+
+    // first attempt to load the file from existing ReaderWriter's
+    AvailableReaderWriterIterator itr(_rwList);
+    for(;itr.valid();++itr)
+    {
+        ReaderWriter::WriteResult rr = itr->writeShader(shader,fileName,options);
+        if (rr.success()) return rr;
+        else results.push_back(rr);
+    }
+
+    results.clear();
+
+    // now look for a plug-in to save the file.
+    std::string libraryName = createLibraryNameForFile(fileName);
+    if (loadLibrary(libraryName))
+    {
+        for(;itr.valid();++itr)
+        {
+            ReaderWriter::WriteResult rr = itr->writeShader(shader,fileName,options);
+            if (rr.success()) return rr;
+            else results.push_back(rr);
+        }
+    }
+
+    if (results.empty())
+    {
+        return ReaderWriter::WriteResult("Warning: Could not find plugin to write shader to file \""+fileName+"\".");
+    }
+    
+    if (results.front().message().empty())
+    {
+        switch(results.front().status())
+        {
+            case(ReaderWriter::WriteResult::FILE_NOT_HANDLED): results.front().message() = "Warning: Write to \""+fileName+"\" not supported."; break;
+            case(ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE): results.front().message() = "Warning: Error in writing to \""+fileName+"\"."; break;
+            default: break;
+        }
+    }
+
+    return results.front();
+}
 
 void Registry::addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp)
 {

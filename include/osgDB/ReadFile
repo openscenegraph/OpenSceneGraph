@@ -132,6 +132,26 @@ inline osg::Node* readNodeFiles(osg::ArgumentParser& parser)
     return readNodeFiles(parser,Registry::instance()->getOptions());
 }
 
+/** Read an osg::Shader from file. 
+  * Return valid osg::Shader on success,
+  * return NULL on failure.
+  * Use the Options object to control cache operations and file search paths in osgDB::Registry.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+extern OSGDB_EXPORT osg::Shader*  readShaderFile(const std::string& filename,const ReaderWriter::Options* options);
+
+/** Read an osg::Shader from file. 
+  * Return valid osg::Shader on success,
+  * return NULL on failure.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+inline osg::Shader*  readShaderFile(const std::string& filename)
+{
+    return readShaderFile(filename,Registry::instance()->getOptions());
+}
+
 
 /** Read an osg::Object from file. 
   * Return an assigned osg::ref_ptr on success,
@@ -211,6 +231,26 @@ extern OSGDB_EXPORT osg::ref_ptr<osg::Node>  readRefNodeFile(const std::string& 
 inline osg::ref_ptr<osg::Node>  readRefNodeFile(const std::string& filename)
 {
     return readRefNodeFile(filename,Registry::instance()->getOptions());
+}
+
+/** Read an osg::Shader from file. 
+  * Return an assigned osg::ref_ptr on success,
+  * return an osg::ref_ptr with a NULL pointer assigned to it on failure.
+  * Use the Options object to control cache operations and file search paths in osgDB::Registry.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+extern OSGDB_EXPORT osg::ref_ptr<osg::Shader>  readRefShaderFile(const std::string& filename,const ReaderWriter::Options* options);
+
+/** Read an osg::Shader from file. 
+  * Return an assigned osg::ref_ptr on success,
+  * return an osg::ref_ptr with a NULL pointer assigned to it on failure.
+  * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
+  * for the filename extension, and this plugin then handles the request
+  * to read the specified file.*/
+inline osg::ref_ptr<osg::Shader>  readRefShaderFile(const std::string& filename)
+{
+    return readRefShaderFile(filename,Registry::instance()->getOptions());
 }
 
 

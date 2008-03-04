@@ -107,6 +107,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	          __C5_char_P1__getTypename,
 	          "Get the Shader type as a descriptive string. ",
 	          "");
+	I_Method1(void, setFileName, IN, const std::string &, fileName,
+	          Properties::NON_VIRTUAL,
+	          __void__setFileName__C5_std_string_R1,
+	          "Set file name for the shader source code. ",
+	          "");
+	I_Method0(const std::string &, getFileName,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getFileName,
+	          "Get filename to which the shader source code belongs. ",
+	          "");
 	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
 	          Properties::VIRTUAL,
 	          __void__resizeGLObjectBuffers__unsigned_int,
@@ -175,6 +185,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	                   __bool__removeProgramRef__osg_Program_P1,
 	                   "",
 	                   "");
+	I_SimpleProperty(const std::string &, FileName, 
+	                 __C5_std_string_R1__getFileName, 
+	                 __void__setFileName__C5_std_string_R1);
 	I_SimpleProperty(const std::string &, ShaderSource, 
 	                 __C5_std_string_R1__getShaderSource, 
 	                 __void__setShaderSource__C5_std_string_R1);

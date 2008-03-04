@@ -83,6 +83,12 @@ class OSG_EXPORT Shader : public osg::Object
         /** Get the Shader type as a descriptive string. */
         const char* getTypename() const;
 
+        /** Set file name for the shader source code. */
+        inline void setFileName(const std::string& fileName) { _shaderFileName = fileName; }
+
+        /** Get filename to which the shader source code belongs. */
+        inline const std::string& getFileName() const { return _shaderFileName; }
+
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
 
@@ -178,6 +184,7 @@ class OSG_EXPORT Shader : public osg::Object
     protected:        /*data*/
         Type _type;
         std::string _shaderSource;
+        std::string _shaderFileName;
         /** osg::Programs that this osg::Shader is attached to */
         typedef std::set< osg::Program* > ProgramSet;
         ProgramSet _programSet;

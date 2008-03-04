@@ -15,6 +15,7 @@
 #include <osg/Image>
 #include <osg/Node>
 #include <osg/Object>
+#include <osg/Shader>
 #include <osg/Shape>
 #include <osg/State>
 #include <osg/StateAttribute>
@@ -179,6 +180,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __osg_Node_P1__readNode__Input_R1,
 	          "",
 	          "");
+	I_Method1(osg::Shader *, readShader, IN, osgDB::Input &, fr,
+	          Properties::NON_VIRTUAL,
+	          __osg_Shader_P1__readShader__Input_R1,
+	          "",
+	          "");
 	I_Method2(bool, writeObject, IN, const osg::Object &, obj, IN, osgDB::Output &, fw,
 	          Properties::NON_VIRTUAL,
 	          __bool__writeObject__C5_osg_Object_R1__Output_R1,
@@ -249,6 +255,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __ReaderWriter_ReadResult__readNodeImplementation__C5_std_string_R1__C5_ReaderWriter_Options_P1,
 	          "",
 	          "");
+	I_Method2(osgDB::ReaderWriter::ReadResult, readShader, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::NON_VIRTUAL,
+	          __ReaderWriter_ReadResult__readShader__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          "",
+	          "");
+	I_Method2(osgDB::ReaderWriter::ReadResult, readShaderImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::NON_VIRTUAL,
+	          __ReaderWriter_ReadResult__readShaderImplementation__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          "",
+	          "");
 	I_Method1(void, setWriteFileCallback, IN, osgDB::Registry::WriteFileCallback *, cb,
 	          Properties::NON_VIRTUAL,
 	          __void__setWriteFileCallback__WriteFileCallback_P1,
@@ -302,6 +318,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_Method3(osgDB::ReaderWriter::WriteResult, writeNodeImplementation, IN, const osg::Node &, node, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
 	          Properties::NON_VIRTUAL,
 	          __ReaderWriter_WriteResult__writeNodeImplementation__C5_osg_Node_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          "",
+	          "");
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeShader, IN, const osg::Shader &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::NON_VIRTUAL,
+	          __ReaderWriter_WriteResult__writeShader__C5_osg_Shader_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          "",
+	          "");
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeShaderImplementation, IN, const osg::Shader &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::NON_VIRTUAL,
+	          __ReaderWriter_WriteResult__writeShaderImplementation__C5_osg_Shader_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
 	          "",
 	          "");
 	I_Method1(void, setCreateNodeFromImage, IN, bool, flag,
@@ -559,6 +585,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry::ReadFileCallback)
 	          __ReaderWriter_ReadResult__readNode__C5_std_string_R1__C5_ReaderWriter_Options_P1,
 	          "",
 	          "");
+	I_Method2(osgDB::ReaderWriter::ReadResult, readShader, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::VIRTUAL,
+	          __ReaderWriter_ReadResult__readShader__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry::ReadFunctor)
@@ -609,6 +640,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry::WriteFileCallback)
 	I_Method3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
 	          Properties::VIRTUAL,
 	          __ReaderWriter_WriteResult__writeNode__C5_osg_Node_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          "",
+	          "");
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeShader, IN, const osg::Shader &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::VIRTUAL,
+	          __ReaderWriter_WriteResult__writeShader__C5_osg_Shader_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
 	          "",
 	          "");
 END_REFLECTOR

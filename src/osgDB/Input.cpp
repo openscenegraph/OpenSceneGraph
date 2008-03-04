@@ -87,15 +87,24 @@ osg::Object* Input::readObject(const std::string& fileName)
     return readObjectFile(fileName,_options.get());
 }
 
+osg::Shader*  Input::readShader()
+{
+    return Registry::instance()->readShader(*this);
+}
+
 osg::Image*  Input::readImage(const std::string& fileName)
 {
-
     return readImageFile(fileName,_options.get());
 }
 
 osg::Node* Input::readNode(const std::string& fileName)
 {
     return readNodeFile(fileName,_options.get());
+}
+
+osg::Shader*  Input::readShader(const std::string& fileName)
+{
+    return readShaderFile(fileName,_options.get());
 }
 
 bool Input::read(Parameter value1)

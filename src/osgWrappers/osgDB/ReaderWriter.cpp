@@ -14,6 +14,7 @@
 #include <osg/Image>
 #include <osg/Node>
 #include <osg/Object>
+#include <osg/Shader>
 #include <osg/Shape>
 #include <osgDB/Archive>
 #include <osgDB/ReaderWriter>
@@ -103,6 +104,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	                      __ReadResult__readNode__C5_std_string_R1__C5_Options_P1,
 	                      "",
 	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readShader, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      Properties::VIRTUAL,
+	                      __ReadResult__readShader__C5_std_string_R1__C5_Options_P1,
+	                      "",
+	                      "");
 	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
 	                      Properties::VIRTUAL,
 	                      __WriteResult__writeObject__C5_osg_Object_R1__C5_std_string_R1__C5_Options_P1,
@@ -121,6 +127,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
 	                      Properties::VIRTUAL,
 	                      __WriteResult__writeNode__C5_osg_Node_R1__C5_std_string_R1__C5_Options_P1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeShader, IN, const osg::Shader &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      Properties::VIRTUAL,
+	                      __WriteResult__writeShader__C5_osg_Shader_R1__C5_std_string_R1__C5_Options_P1,
 	                      "",
 	                      "");
 	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readObject, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
@@ -143,6 +154,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	                      __ReadResult__readNode__std_istream_R1__C5_Options_P1,
 	                      "",
 	                      "");
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readShader, IN, std::istream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      Properties::VIRTUAL,
+	                      __ReadResult__readShader__std_istream_R1__C5_Options_P1,
+	                      "",
+	                      "");
 	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, x, , IN, std::ostream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
 	                      Properties::VIRTUAL,
 	                      __WriteResult__writeObject__C5_osg_Object_R1__std_ostream_R1__C5_Options_P1,
@@ -163,6 +179,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	                      __WriteResult__writeNode__C5_osg_Node_R1__std_ostream_R1__C5_Options_P1,
 	                      "",
 	                      "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeShader, IN, const osg::Shader &, x, , IN, std::ostream &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	                      Properties::VIRTUAL,
+	                      __WriteResult__writeShader__C5_osg_Shader_R1__std_ostream_R1__C5_Options_P1,
+	                      "",
+	                      "");
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::CacheHintOptions)
@@ -173,6 +194,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::CacheHintOptions)
 	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_HEIGHTFIELDS);
 	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_ARCHIVES);
 	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
+	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_SHADERS);
 	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_ALL);
 END_REFLECTOR
 
@@ -344,6 +366,11 @@ BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)
 	          __osgDB_Archive_P1__getArchive,
 	          "",
 	          "");
+	I_Method0(osg::Shader *, getShader,
+	          Properties::NON_VIRTUAL,
+	          __osg_Shader_P1__getShader,
+	          "",
+	          "");
 	I_Method0(bool, validObject,
 	          Properties::NON_VIRTUAL,
 	          __bool__validObject,
@@ -369,6 +396,11 @@ BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)
 	          __bool__validArchive,
 	          "",
 	          "");
+	I_Method0(bool, validShader,
+	          Properties::NON_VIRTUAL,
+	          __bool__validShader,
+	          "",
+	          "");
 	I_Method0(osg::Object *, takeObject,
 	          Properties::NON_VIRTUAL,
 	          __osg_Object_P1__takeObject,
@@ -392,6 +424,11 @@ BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)
 	I_Method0(osgDB::Archive *, takeArchive,
 	          Properties::NON_VIRTUAL,
 	          __osgDB_Archive_P1__takeArchive,
+	          "",
+	          "");
+	I_Method0(osg::Shader *, takeShader,
+	          Properties::NON_VIRTUAL,
+	          __osg_Shader_P1__takeShader,
 	          "",
 	          "");
 	I_Method0(std::string &, message,
@@ -448,6 +485,9 @@ BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)
 	                 0);
 	I_SimpleProperty(osg::Object *, Object, 
 	                 __osg_Object_P1__getObject, 
+	                 0);
+	I_SimpleProperty(osg::Shader *, Shader, 
+	                 __osg_Shader_P1__getShader, 
 	                 0);
 END_REFLECTOR
 

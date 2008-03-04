@@ -59,6 +59,11 @@ ADD_SUBDIRECTORY(ive)
 #
 ADD_SUBDIRECTORY(cfg)
 
+############################################################
+#
+#  Shader plugins
+#
+ADD_SUBDIRECTORY(glsl)
 
 ############################################################
 #

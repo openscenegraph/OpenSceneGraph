@@ -112,7 +112,8 @@ void BlockAndFlushOperation::operator () (GraphicsContext*)
 }
 
 FlushDeletedGLObjectsOperation::FlushDeletedGLObjectsOperation(double availableTime, bool keep):
-    GraphicsOperation("FlushDeletedGLObjectsOperation",keep)
+    GraphicsOperation("FlushDeletedGLObjectsOperation",keep),
+    _availableTime(availableTime)
 {
 }
 

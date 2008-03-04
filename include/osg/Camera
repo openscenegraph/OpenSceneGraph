@@ -207,17 +207,20 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
         inline void setViewMatrix(const osg::Matrixd& matrix) { _viewMatrix.set(matrix);  dirtyBound();}
 
-        /** Set to the position and orientation of view matrix, using the same convention as gluLookAt. */
-        void setViewMatrixAsLookAt(const osg::Vec3& eye,const osg::Vec3& center,const osg::Vec3& up);
-
         /** Get the view matrix. */
         osg::Matrixd& getViewMatrix() { return _viewMatrix; }
 
         /** Get the const view matrix. */
         const osg::Matrixd& getViewMatrix() const { return _viewMatrix; }
 
+        /** Set to the position and orientation of view matrix, using the same convention as gluLookAt. */
+        void setViewMatrixAsLookAt(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up);
+
         /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
-        void getViewMatrixAsLookAt(osg::Vec3& eye,osg::Vec3& center,osg::Vec3& up,float lookDistance=1.0f);
+        void getViewMatrixAsLookAt(osg::Vec3d& eye,osg::Vec3d& center,osg::Vec3d& up,double lookDistance=1.0);
+
+        /** Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. */
+        void getViewMatrixAsLookAt(osg::Vec3f& eye,osg::Vec3f& center,osg::Vec3f& up,float lookDistance=1.0f);
 
         /** Get the inverse view matrix.*/
         Matrixd getInverseViewMatrix() const;

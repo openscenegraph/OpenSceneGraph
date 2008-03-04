@@ -1155,8 +1155,16 @@ void CullVisitor::apply(osg::Camera& camera)
     // Save current cull settings
     CullSettings saved_cull_settings(*this);
 
+#if 1
+    // set cull settings from this Camera
+    setCullSettings(camera);
+
+    // inherit the settings from above
+    inheritCullSettings(saved_cull_settings, camera.getInheritanceMask());
+#else
     // activate all active cull settings from this Camera
     inheritCullSettings(camera);
+#endif
 
     // set the cull mask.
     unsigned int savedTraversalMask = getTraversalMask();

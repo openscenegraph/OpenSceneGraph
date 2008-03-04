@@ -84,6 +84,7 @@ class OSGVIEWER_EXPORT PixelBufferWin32 : public osg::GraphicsContext
         bool            _initialized;
         bool            _valid;
         bool            _realized;
+        int             _boundBuffer;
 };
 
 }

@@ -154,6 +154,36 @@ DECLARE_HANDLE(HPBUFFERARB);
 namespace 
 {
 
+static std::string sysError()
+{
+    DWORD stat, err = GetLastError();
+    LPVOID lpMsgBuf = 0;
+
+    stat = FormatMessage(   FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                     FORMAT_MESSAGE_FROM_SYSTEM |
+                     FORMAT_MESSAGE_IGNORE_INSERTS,
+                     NULL,
+                     err,
+                     MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+                     (LPTSTR) &lpMsgBuf,\
+                     0,NULL 
+                     );
+
+    std::ostringstream msgResult;
+    if ( stat > 0 && lpMsgBuf )
+    {
+        msgResult << (LPCTSTR)lpMsgBuf;
+        LocalFree( lpMsgBuf );
+    }
+    else
+    {
+        msgResult << "Error code " << err;
+    }
+    
+    return msgResult.str();
+}
+
+
     static int __tempwnd_id = 0;
 class TemporaryWindow: public osg::Referenced
 {
@@ -233,12 +263,14 @@ void TemporaryWindow::create()
                                     _instance,
                                     0)))
     {
+        osg::notify(osg::WARN) << "PixelBufferWin32, could not create temporary window: " << sysError() << std::endl;
         kill();
         return;
     }
 
     if (!(_dc = GetDC(_handle)))
     {
+        osg::notify(osg::WARN) << "PixelBufferWin32, could not get device context for temporary window: " << sysError() << std::endl;
         kill();
         return;
     }
@@ -267,12 +299,14 @@ void TemporaryWindow::create()
 
     if (!SetPixelFormat(_dc, visual_id, &pfd))
     {
+        osg::notify(osg::WARN) << "PixelBufferWin32, could not set pixel format for temporary window: " << sysError() << std::endl;
         kill();
         return;
     }
 
     if (!(_context = wglCreateContext(_dc)))
     {
+        osg::notify(osg::WARN) << "PixelBufferWin32, could not get graphics context for temporary window: " << sysError() << std::endl;
         kill();
         return;
     }
@@ -313,7 +347,12 @@ void TemporaryWindow::kill()
 
 bool TemporaryWindow::makeCurrent()
 {
-    return wglMakeCurrent(_dc, _context) == TRUE ? true : false;
+    bool result = wglMakeCurrent(_dc, _context) == TRUE ? true : false;
+    if (!result)
+    {
+        osg::notify(osg::NOTICE) << "PixelBufferWin32, could not make the temporary window's context active: " << sysError() << std::endl;
+    }
+    return result;
 }
 
 class WGLExtensions : public osg::Referenced
@@ -377,39 +416,28 @@ WGLExtensions::~WGLExtensions()
 bool WGLExtensions::isValid()
 {
     return (wglCreatePbufferARB && wglGetPbufferDCARB && wglReleasePbufferDCARB && wglDestroyPbufferARB &&
-        wglQueryPbufferARB && wglBindTexImageARB && wglReleaseTexImageARB && wglChoosePixelFormatARB && 
-        wglMakeContextCurrentARB);
+        wglQueryPbufferARB && wglChoosePixelFormatARB );
 }
 
-osg::ref_ptr<TemporaryWindow> __default_wnd;
 WGLExtensions *WGLExtensions::instance()
 {
     HGLRC context = wglGetCurrentContext();
-    bool nocontext = (context == 0);
-
-    if (nocontext || !__default_wnd.valid())
-    {
-        if (!__default_wnd.valid() || !__default_wnd->getHandle())
-        {
-            __default_wnd = new TemporaryWindow;
-            if (!__default_wnd ->getHandle())
-            {
-                osg::notify(osg::NOTICE) << "WGLExtensions: could not create and initialize the temporary window" << std::endl;
-                return 0;
-            }
-        }
-
-        context = __default_wnd->getContext();
-        if (!__default_wnd->makeCurrent())
-        {
-            osg::notify(osg::NOTICE) << "WGLExtensions: could not make the temporary window's context active" << std::endl;
-        }
-    }
-
+    
+    // Get wgl function pointers for the current graphics context, or if there is no
+    // current context then use a temporary window.
 
     if (!_instances[context])
     {
-        _instances[context] = new WGLExtensions;
+        if ( context == 0 )
+        {
+            osg::ref_ptr<TemporaryWindow> tempWin= new TemporaryWindow;
+            tempWin->makeCurrent();
+            _instances[0] = new WGLExtensions;
+        }
+        else
+        {
+            _instances[context] = new WGLExtensions;
+        }
     }
 
     return _instances[context].get();
@@ -427,7 +455,8 @@ PixelBufferWin32::PixelBufferWin32( osg::GraphicsContext::Traits* traits ):
   _hglrc(0),
   _initialized(false),
   _valid(false),
-  _realized(false)
+  _realized(false),
+  _boundBuffer(0)
 {
     _traits = traits;
 
@@ -454,49 +483,12 @@ PixelBufferWin32::~PixelBufferWin32()
 {
     closeImplementation();
 }
-
-static void doInternalError( char *msg )
-{
-    DWORD err = GetLastError();
-    LPVOID lpMsgBuf = 0;
-    FormatMessage(   FORMAT_MESSAGE_ALLOCATE_BUFFER |
-                     FORMAT_MESSAGE_FROM_SYSTEM |
-                     FORMAT_MESSAGE_IGNORE_INSERTS,
-                     NULL,
-                     err,
-                     MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                     (LPTSTR) &lpMsgBuf,\
-                     0,NULL 
-                     );
-    std::string szMessage = std::string("osgViewer::PixelBufferWin32: Internal Error ")+std::string(msg);
-    MessageBox( NULL, (LPCTSTR)lpMsgBuf, szMessage.c_str(), MB_OK | MB_ICONINFORMATION );
-    if (lpMsgBuf) LocalFree( lpMsgBuf );
-}
     
 void PixelBufferWin32::init()
 {
     if (_initialized) return;
     if (!_traits) return;
     if (!_traits->pbuffer) return;
-
-    struct RestoreContext
-    {
-        RestoreContext()
-        {
-            _hdc = wglGetCurrentDC();
-            _hglrc = wglGetCurrentContext();
-        }
-        ~RestoreContext()
-        {
-            if (_hdc)
-            {
-                wglMakeCurrent(_hdc,_hglrc);
-            }
-        }
-    protected:
-        HDC        _hdc;
-        HGLRC    _hglrc;
-    } restoreContext;
 
     WGLExtensions* wgle = WGLExtensions::instance();
 
@@ -555,7 +547,7 @@ void PixelBufferWin32::init()
         fAttribList.push_back(true);
     }
 
-    if (_traits->target != 0)
+    if (_traits->target != 0 && wgle->wglBindTexImageARB )
     {
         // TODO: Cube Maps
        if (_traits->target == GL_TEXTURE_RECTANGLE)
@@ -621,24 +613,21 @@ void PixelBufferWin32::init()
     _hwnd = reinterpret_cast<HWND>(wgle->wglCreatePbufferARB(hdc, format, _traits->width, _traits->height, &bAttribList[0]));
     if (!_hwnd)
     {
-        //doInternalError("wglCreatePbufferARB() failed");
-        osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglCreatePbufferARB failed" << std::endl;
+        osg::notify(osg::NOTICE) << "PixelBufferWin32::init, wglCreatePbufferARB error: " << sysError() << std::endl;
         return ;
     }
 
     _hdc = wgle->wglGetPbufferDCARB(reinterpret_cast<HPBUFFERARB>(_hwnd));
     if (!_hdc)
     {
-        //doInternalError("wglGetPbufferDCARB() failed");
-        osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglGetPbufferDCARB failed" << std::endl;
+        osg::notify(osg::NOTICE) << "PixelBufferWin32::init, wglGetPbufferDCARB error: " << sysError() << std::endl;
         return;
     }
 
     _hglrc = wglCreateContext(_hdc);
     if (!_hglrc)
     {
-        //doInternalError("wglCreateContext() failed");
-        osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), Error: wglCreateContext failed" << std::endl;
+        osg::notify(osg::NOTICE) << "PixelBufferWin32::init, wglCreateContext error: " << sysError() << std::endl;
         return;
     }
 
@@ -692,7 +681,10 @@ bool PixelBufferWin32::realizeImplementation()
             }
         }
 
-        wglShareLists(hglrc, _hglrc);
+        if ( !wglShareLists(hglrc, _hglrc) )
+        {
+            osg::notify(osg::NOTICE) << "PixelBufferWin32::realizeImplementation, wglShareLists error: " << sysError() << std::endl;
+        }
     }
 
     _realized = true;
@@ -703,13 +695,28 @@ void PixelBufferWin32::closeImplementation()
 {
     if (_hwnd)
     {
-        wglDeleteContext(_hglrc);
-
         WGLExtensions* wgle = WGLExtensions::instance();
+
+        wglMakeCurrent(NULL,NULL);
+
+        if ( !wglDeleteContext(_hglrc) )
+        {
+            osg::notify(osg::NOTICE) << "PixelBufferWin32::closeImplementation, wglDeleteContext error: " << sysError() << std::endl;
+        }
+
         if (wgle && wgle->isValid())
         {
-            wgle->wglReleasePbufferDCARB(reinterpret_cast<HPBUFFERARB>(_hwnd), _hdc);
-            wgle->wglDestroyPbufferARB(reinterpret_cast<HPBUFFERARB>(_hwnd));
+            // Note that closeImplementation() should only be called from the same thread as created the pbuffer,
+            // otherwise these routines will return an error.
+
+            if ( !wgle->wglReleasePbufferDCARB(reinterpret_cast<HPBUFFERARB>(_hwnd), _hdc) )
+            {
+                osg::notify(osg::NOTICE) << "PixelBufferWin32::closeImplementation, wglReleasePbufferDCARB error: " << sysError() << std::endl;
+            }
+            if ( !wgle->wglDestroyPbufferARB(reinterpret_cast<HPBUFFERARB>(_hwnd)) )
+            {
+                osg::notify(osg::NOTICE) << "PixelBufferWin32::closeImplementation, wglDestroyPbufferARB error: " << sysError() << std::endl;
+            }
         }
     }
     _valid = false;
@@ -721,36 +728,50 @@ void PixelBufferWin32::closeImplementation()
 
 bool PixelBufferWin32::makeCurrentImplementation()
 {
-    WGLExtensions* wgle = WGLExtensions::instance();
-    if (!wgle) return false;
-
-    if (_traits->target != 0)
-    {
-        wgle->wglReleaseTexImageARB(reinterpret_cast<HPBUFFERARB>(_hwnd), WGL_FRONT_LEFT_ARB);
-        wgle->wglReleaseTexImageARB(reinterpret_cast<HPBUFFERARB>(_hwnd), WGL_BACK_LEFT_ARB);
-    }
     bool result = wglMakeCurrent(_hdc, _hglrc)==TRUE?true:false;
     if (!result)
     {
-        //doInternalError("wglMakeCurrent() failed");
-        osg::notify(osg::NOTICE) << "PixelBufferWin32::makeCurrentImplementation(), failed" << std::endl;
+        osg::notify(osg::NOTICE) << "PixelBufferWin32::makeCurrentImplementation, wglMakeCurrent error: " << sysError() << std::endl;
     }
+
+    // If the pbuffer is bound to a texture then release it.  This operation requires a current context, so
+    // do it after the MakeCurrent.
+    
+    if ( _boundBuffer!=0 )
+    {
+        WGLExtensions* wgle = WGLExtensions::instance();
+        if ( wgle && wgle->wglReleaseTexImageARB )
+        {
+            if ( !wgle->wglReleaseTexImageARB(reinterpret_cast<HPBUFFERARB>(_hwnd), _boundBuffer) )
+            {
+                osg::notify(osg::NOTICE) << "PixelBufferWin32::makeCurrentImplementation, wglReleaseTexImageARB error: " << sysError() << std::endl;
+            }
+            _boundBuffer=0;
+        }
+    }
+
     return result;
 }
         
 bool PixelBufferWin32::makeContextCurrentImplementation( GraphicsContext* readContext )
 {
+    WGLExtensions* wgle = WGLExtensions::instance();
+
+    if ( !wgle || !wgle->wglMakeContextCurrentARB )
+    {
+        osg::notify(osg::NOTICE) << "PixelBufferWin32, wglMakeContextCurrentARB not available" << std::endl;
+        return false;
+    }
+
     GraphicsWindowWin32* graphicsWindowWin32 = dynamic_cast<GraphicsWindowWin32*>(readContext);
     if (graphicsWindowWin32) 
     {
-        if (WGLExtensions::instance()->wglMakeContextCurrentARB(_hdc, graphicsWindowWin32->getHDC(), _hglrc))
-            return true;
+        return wgle->wglMakeContextCurrentARB(_hdc, graphicsWindowWin32->getHDC(), _hglrc);
     }
     PixelBufferWin32* pixelBufferWin32 = dynamic_cast<PixelBufferWin32*>(_traits->sharedContext);
     if (pixelBufferWin32)
     {
-        if (WGLExtensions::instance()->wglMakeContextCurrentARB(_hdc, pixelBufferWin32->getHDC(), _hglrc))
-            return true;
+        return wgle->wglMakeContextCurrentARB(_hdc, pixelBufferWin32->getHDC(), _hglrc);
     }
     return false;
 }
@@ -768,28 +789,41 @@ bool PixelBufferWin32::releaseContextImplementation()
 
 void PixelBufferWin32::bindPBufferToTextureImplementation( GLenum buffer )
 {
-    bool result;
-
     WGLExtensions* wgle = WGLExtensions::instance();
-    if (!wgle) return;
+    
+    if ( !wgle || !wgle->wglBindTexImageARB )
+    {
+        osg::notify(osg::NOTICE) << "PixelBufferWin32, wglBindTexImageARB not available" << std::endl;
+        return;
+    }
+
+    int bindBuffer;
 
     switch (buffer)
     {
         case GL_BACK:
-            result = wgle->wglBindTexImageARB(reinterpret_cast<HPBUFFERARB>(_hwnd), WGL_BACK_LEFT_ARB);
+            bindBuffer = WGL_BACK_LEFT_ARB;
             break;
         case GL_FRONT:
-            result = wgle->wglBindTexImageARB(reinterpret_cast<HPBUFFERARB>(_hwnd), WGL_FRONT_LEFT_ARB);
+            bindBuffer = WGL_FRONT_LEFT_ARB;
             break;
         default:
-            result = wgle->wglBindTexImageARB(reinterpret_cast<HPBUFFERARB>(_hwnd), static_cast<GLenum>(buffer));
-    } 
-    if (!result)
-    {
-        //doInternalError("wglBindTexImageARB() failed");
-        osg::notify(osg::NOTICE) << "PixelBufferWin32::wglBindTexImageARB(), failed" << std::endl;
+            bindBuffer = static_cast<int>(buffer);
     }
-        
+    
+    if ( bindBuffer != _boundBuffer )
+    {
+        if ( _boundBuffer != 0 && !wgle->wglReleaseTexImageARB(reinterpret_cast<HPBUFFERARB>(_hwnd), _boundBuffer) )
+        {
+            osg::notify(osg::NOTICE) << "PixelBufferWin32::bindPBufferToTextureImplementation, wglReleaseTexImageARB error: " << sysError() << std::endl;
+        }
+
+        if ( !wgle->wglBindTexImageARB(reinterpret_cast<HPBUFFERARB>(_hwnd), bindBuffer) )
+        {
+            osg::notify(osg::NOTICE) << "PixelBufferWin32::bindPBufferToTextureImplementation, wglBindTexImageARB error: " << sysError() << std::endl;
+        }
+        _boundBuffer = bindBuffer;
+    }       
 }
 
 void PixelBufferWin32::swapBuffersImplementation() 

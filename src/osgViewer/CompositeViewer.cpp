@@ -658,10 +658,18 @@ void CompositeViewer::eventTraversal()
                                     {
                                         setCameraWithFocus(camera);
 
-                                        const osg::GraphicsContext::Traits* traits = gw ? gw->getTraits() : 0;
-                                        if (traits) 
+                                        // If this camera is not a slave camera
+                                        if (camera->getView()->getCamera() == camera)
                                         {
-                                            eventState->setInputRange( 0, 0, traits->width, traits->height);
+                                            const osg::GraphicsContext::Traits* traits = gw ? gw->getTraits() : 0;
+                                            if (traits) 
+                                            {
+                                                eventState->setInputRange( 0, 0, traits->width, traits->height);
+                                            }
+                                            else
+                                            {
+                                                eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
+                                            }
                                         }
                                         else
                                         {

@@ -43,9 +43,13 @@ void MultiTextureControl::setTextureWeight(unsigned int unit, float weight)
 
 void MultiTextureControl::updateStateSet()
 {
+#if 0
     osg::StateSet* stateset = getOrCreateStateSet();
-    
     stateset->clear();
+#else
+    // temporary measure to avoid multi-threaded crash
+    osg::StateSet* stateset = new osg::StateSet;
+#endif
     
     unsigned int numTextureUnitsOn = 0;
     unsigned int unit;
@@ -147,52 +151,6 @@ void MultiTextureControl::updateStateSet()
         }
     } 
 
-    
-/*    
-    bool firstActiveTextureUnit = true;
-    for(unsigned int unit = 0;
-        unit < _textureWeightList.size();
-        ++unit)
-    {
-        float r = _textureWeightList[unit];
-        
-        if (r==0.0f)
-        {
-            stateset->setTextureMode(unit, GL_TEXTURE_2D, osg::StateAttribute::OFF);
-        }
-        else 
-        {        
-            stateset->setTextureMode(unit, GL_TEXTURE_2D, osg::StateAttribute::ON);
-            
-            if (firstActiveTextureUnit)
-            {   
-                stateset->setTextureAttribute(unit, new osg::TexEnv);
-                firstActiveTextureUnit = false;
-            }
-            else
-            {
-
-
-
-
-                osg::TexEnvCombine* texenv = new osg::TexEnvCombine;
-                texenv->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
-                texenv->setSource0_RGB(osg::TexEnvCombine::PREVIOUS);
-                texenv->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
-                texenv->setSource1_RGB(osg::TexEnvCombine::TEXTURE);
-                texenv->setOperand1_RGB(osg::TexEnvCombine::SRC_COLOR);
-                texenv->setSource2_RGB(osg::TexEnvCombine::CONSTANT);
-                texenv->setOperand2_RGB(osg::TexEnvCombine::SRC_COLOR);
-                
-                texenv->setConstantColor(osg::Vec4(r,r,r,r));
- 
-                stateset->setTextureAttribute(unit, texenv);
-            }
-            
-        }
-            
-        
-    }
-*/    
+    setStateSet(stateset);
 }
 

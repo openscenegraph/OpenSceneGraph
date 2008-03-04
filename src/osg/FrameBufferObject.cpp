@@ -272,7 +272,7 @@ FrameBufferAttachment::FrameBufferAttachment(Texture2D* target, int level)
     _ximpl->textureTarget = target;
 }
 
-FrameBufferAttachment::FrameBufferAttachment(Texture3D* target, int level, int zoffset)
+FrameBufferAttachment::FrameBufferAttachment(Texture3D* target, int zoffset, int level)
 {
     _ximpl = new Pimpl(Pimpl::TEXTURE3D, level);
     _ximpl->textureTarget = target;

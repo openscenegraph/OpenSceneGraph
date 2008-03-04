@@ -15,6 +15,7 @@
 #define OSGDB_INPUT 1
 
 #include <osg/Image>
+#include <osg/Shader>
 #include <osg/Node>
 #include <osg/Drawable>
 #include <osg/StateAttribute>
@@ -50,10 +51,12 @@ class OSGDB_EXPORT Input : public FieldReaderIterator
         virtual osg::StateAttribute* readStateAttribute();
         virtual osg::Uniform*        readUniform();
         virtual osg::Node*           readNode();
+        virtual osg::Shader*         readShader();
 
         virtual osg::Object*         readObject(const std::string& fileName);
         virtual osg::Image*          readImage(const std::string& fileName);
         virtual osg::Node*           readNode(const std::string& fileName);
+        virtual osg::Shader*         readShader(const std::string& fileName);
         
         virtual osg::Object*         getObjectForUniqueID(const std::string& uniqueID);
         virtual void                 registerUniqueIDForObject(const std::string& uniqueID,osg::Object* obj);

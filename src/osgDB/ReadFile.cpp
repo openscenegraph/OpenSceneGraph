@@ -13,6 +13,7 @@
 #include <osg/Notify>
 #include <osg/Object>
 #include <osg/Image>
+#include <osg/Shader>
 #include <osg/ImageStream>
 #include <osg/Node>
 #include <osg/Group>
@@ -41,6 +42,14 @@ Image* osgDB::readImageFile(const std::string& filename,const ReaderWriter::Opti
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readImage(filename,options);
     if (rr.validImage()) return rr.takeImage();
+    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    return NULL;
+}
+
+Shader* osgDB::readShaderFile(const std::string& filename,const ReaderWriter::Options* options)
+{
+    ReaderWriter::ReadResult rr = Registry::instance()->readShader(filename,options);
+    if (rr.validShader()) return rr.takeShader();
     if (rr.error()) notify(WARN) << rr.message() << std::endl;
     return NULL;
 }
@@ -251,6 +260,14 @@ osg::ref_ptr<osg::Image> osgDB::readRefImageFile(const std::string& filename,con
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readImage(filename,options);
     if (rr.validImage()) return osg::ref_ptr<osg::Image>(rr.getImage());
+    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    return NULL;
+}
+
+osg::ref_ptr<osg::Shader> osgDB::readRefShaderFile(const std::string& filename,const ReaderWriter::Options* options)
+{
+    ReaderWriter::ReadResult rr = Registry::instance()->readShader(filename,options);
+    if (rr.validShader()) return osg::ref_ptr<osg::Shader>(rr.getShader());
     if (rr.error()) notify(WARN) << rr.message() << std::endl;
     return NULL;
 }

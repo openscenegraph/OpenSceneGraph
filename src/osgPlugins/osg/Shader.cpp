@@ -8,6 +8,7 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 #include "osgDB/FileUtils"
+#include "osgDB/WriteFile"
 
 using namespace osg;
 using namespace osgDB;
@@ -84,24 +85,48 @@ bool Shader_writeLocalData(const Object& obj,Output& fw)
 
     fw.indent() << "type " << shader.getTypename() << std::endl;
 
-    // split source text into individual lines
-    std::vector<std::string> lines;
-    std::istringstream iss(shader.getShaderSource());
-    std::string line;
-    while (std::getline(iss, line)) {
-        lines.push_back(line);
+    // osg::notify(osg::NOTICE)<<"fw.getOutputShaderFiles()="<<fw.getOutputShaderFiles()<<std::endl;
+
+    // check whenever output to shader files is requested
+    if (fw.getOutputShaderFiles())
+    {
+        std::string fileName = shader.getFileName();
+
+        if (fileName.empty())
+        {
+            fileName = fw.getShaderFileNameForOutput();
+        }
+        
+        osgDB::writeShaderFile(shader, fileName);
+
+        if (!fileName.empty())
+        {    
+            fw.indent() << "file "<<fw.wrapString(fw.getFileNameForOutput(fileName))<< std::endl;
+        }
+
     }
+    else // no need to write shaders to external files, hence embed it 
+    {
+        
+        // split source text into individual lines
+        std::vector<std::string> lines;
+        std::istringstream iss(shader.getShaderSource());
+        std::string line;
+        while (std::getline(iss, line)) {
+            lines.push_back(line);
+        }
 
-    fw.indent() << "code {\n";
-    fw.moveIn();
-
-    std::vector<std::string>::const_iterator j;
-    for (j=lines.begin(); j!=lines.end(); ++j) {
-        fw.indent() << fw.wrapString(*j) << "\n";
+        fw.indent() << "code {\n";
+        fw.moveIn();
+    
+        std::vector<std::string>::const_iterator j;
+        for (j=lines.begin(); j!=lines.end(); ++j) {
+            fw.indent() << fw.wrapString(*j) << "\n";
+        }
+    
+        fw.moveOut();
+        fw.indent() << "}\n";
     }
-
-    fw.moveOut();
-    fw.indent() << "}\n";
 
     return true;
 }

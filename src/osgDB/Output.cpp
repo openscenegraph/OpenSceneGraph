@@ -46,8 +46,13 @@ void Output::init()
     _indentStep = 2;
     _numIndicesPerLine = 10;
     _pathNameHint = AS_IS;
+    
     _outputTextureFiles = false;
     _textureFileNameNumber = 0;
+
+    _outputShaderFiles = false;
+    _shaderFileNameNumber = 0;
+    
     _writeOutDefaultValues = false;
 
     const char* env = getenv("OSG_WRITE_OUT_DEFAULT_VALUES");
@@ -208,6 +213,22 @@ std::string Output::getTextureFileNameForOutput()
     
     fileName += ".dds";
     ++_textureFileNameNumber;
+    
+    return fileName;
+}
+
+std::string Output::getShaderFileNameForOutput()
+{
+    std::string fileName = osgDB::getNameLessExtension(_filename);
+    if (_shaderFileNameNumber>0)
+    {
+        std::ostringstream o;
+        o << '_' << _shaderFileNameNumber;
+        fileName += o.str();
+    }
+    
+    fileName += ".glsl";
+    ++_shaderFileNameNumber;
     
     return fileName;
 }

@@ -75,12 +75,16 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                     /// cache objects loaded via readObject(filename)
                     CACHE_OBJECTS       = 16, 
 
+                    /// cache shaders loaded via readShader(filename)
+                    CACHE_SHADERS       = 32,
+
                     /// cache on all read*(filename) calls
                     CACHE_ALL           = CACHE_NODES |
                                           CACHE_IMAGES |
                                           CACHE_HEIGHTFIELDS |
                                           CACHE_ARCHIVES |
-                                          CACHE_OBJECTS
+                                          CACHE_OBJECTS |
+                                          CACHE_SHADERS
                 };
             
 
@@ -175,18 +179,21 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 osg::HeightField* getHeightField();
                 osg::Node* getNode();
                 osgDB::Archive* getArchive();
-                
+                osg::Shader* getShader();
+
                 bool validObject() { return _object.valid(); }
                 bool validImage() { return getImage()!=0; }
                 bool validHeightField() { return getHeightField()!=0; }
                 bool validNode() { return getNode()!=0; }
                 bool validArchive() { return getArchive()!=0; }
+                bool validShader() { return getShader()!=0; }
 
                 osg::Object* takeObject();
                 osg::Image* takeImage();
                 osg::HeightField* takeHeightField();
                 osg::Node* takeNode();
                 osgDB::Archive* takeArchive();
+                osg::Shader* takeShader();
 
                 std::string& message() { return _message; }
                 const std::string& message() const { return _message; }
@@ -253,21 +260,25 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         virtual ReadResult readImage(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
         virtual ReadResult readHeightField(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
         virtual ReadResult readNode(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readShader(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
 
         virtual WriteResult writeObject(const osg::Object& /*obj*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeShader(const osg::Shader& /*shader*/,const std::string& /*fileName*/,const Options* =NULL) const {return WriteResult(WriteResult::FILE_NOT_HANDLED); }
 
         virtual ReadResult readObject(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
         virtual ReadResult readImage(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
         virtual ReadResult readHeightField(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
         virtual ReadResult readNode(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
+        virtual ReadResult readShader(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::FILE_NOT_HANDLED); }
 
         virtual WriteResult writeObject(const osg::Object& /*obj*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeImage(const osg::Image& /*image*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
+        virtual WriteResult writeShader(const osg::Shader& /*shader*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
 
 };
 

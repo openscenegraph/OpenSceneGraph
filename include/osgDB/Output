@@ -92,6 +92,11 @@ class OSGDB_EXPORT Output : public std::ofstream
         bool getOutputTextureFiles() const { return _outputTextureFiles; }
 
         virtual std::string getTextureFileNameForOutput();
+
+        void setOutputShaderFiles(bool flag) { _outputShaderFiles = flag; }
+        bool getOutputShaderFiles() const { return _outputShaderFiles; }
+
+        virtual std::string getShaderFileNameForOutput();
         
     protected:
 
@@ -111,8 +116,12 @@ class OSGDB_EXPORT Output : public std::ofstream
         std::string _filename;
         
         PathNameHint _pathNameHint;
+
         bool _outputTextureFiles;
         unsigned int _textureFileNameNumber;
+
+        bool _outputShaderFiles;
+        unsigned int _shaderFileNameNumber;
 
         bool _writeOutDefaultValues;
 };

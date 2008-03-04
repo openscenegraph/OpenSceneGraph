@@ -110,7 +110,8 @@ Shader::Shader(Type type, const std::string& source) :
 Shader::Shader(const Shader& rhs, const osg::CopyOp& copyop):
     osg::Object( rhs, copyop ),
     _type(rhs._type),
-    _shaderSource(rhs._shaderSource)
+    _shaderSource(rhs._shaderSource),
+    _shaderFileName(rhs._shaderFileName)
 {
 }
 
@@ -142,6 +143,9 @@ int Shader::compare(const Shader& rhs) const
 
     if( getShaderSource() < rhs.getShaderSource() ) return -1;
     if( rhs.getShaderSource() < getShaderSource() ) return 1;
+
+    if( getFileName() < rhs.getFileName() ) return -1;
+    if( rhs.getFileName() < getFileName() ) return 1;
     return 0;
 }
 
@@ -171,6 +175,7 @@ bool Shader::loadShaderSourceFromFile( const std::string& fileName )
     }
 
     osg::notify(osg::INFO)<<"Loading shader source file \""<<fileName<<"\""<<std::endl;
+    _shaderFileName = fileName;
 
     sourceFile.seekg(0, std::ios::end);
     int length = sourceFile.tellg();

@@ -14,6 +14,7 @@
 #include <osg/Image>
 #include <osg/Node>
 #include <osg/Object>
+#include <osg/Shader>
 #include <osg/StateAttribute>
 #include <osg/Uniform>
 #include <osgDB/Input>
@@ -86,6 +87,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Input)
 	          __osg_Node_P1__readNode,
 	          "",
 	          "");
+	I_Method0(osg::Shader *, readShader,
+	          Properties::VIRTUAL,
+	          __osg_Shader_P1__readShader,
+	          "",
+	          "");
 	I_Method1(osg::Object *, readObject, IN, const std::string &, fileName,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__readObject__C5_std_string_R1,
@@ -99,6 +105,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Input)
 	I_Method1(osg::Node *, readNode, IN, const std::string &, fileName,
 	          Properties::VIRTUAL,
 	          __osg_Node_P1__readNode__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(osg::Shader *, readShader, IN, const std::string &, fileName,
+	          Properties::VIRTUAL,
+	          __osg_Shader_P1__readShader__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(osg::Object *, getObjectForUniqueID, IN, const std::string &, uniqueID,

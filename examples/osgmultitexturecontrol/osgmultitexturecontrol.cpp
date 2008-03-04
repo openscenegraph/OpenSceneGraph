@@ -173,10 +173,6 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
-    // quick hack to work around threading issue with osgFX::MultiTextureControl node's updating of
-    // its StateAttributes.
-    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
-
     // load the nodes from the commandline arguments.
     osg::Node* rootnode = osgDB::readNodeFiles(arguments);
 

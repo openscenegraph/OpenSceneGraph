@@ -24,6 +24,7 @@
 #include <osgUtil/Optimizer>
 #include <osgDB/ReadFile>
 #include <osgViewer/Viewer>
+#include <osgViewer/CompositeViewer>
 
 #include <osg/Material>
 #include <osg/Geode>
@@ -49,7 +50,7 @@ public:
     
     bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa);
 
-    virtual void pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea);
+    virtual void pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea);
 
     void setLabel(const std::string& name)
     {
@@ -65,10 +66,10 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
 {
     switch(ea.getEventType())
     {
-        case(osgGA::GUIEventAdapter::FRAME):
+        case(osgGA::GUIEventAdapter::PUSH):
         {
-            osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
-            if (viewer) pick(viewer,ea);
+            osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+            if (view) pick(view,ea);
             return false;
         }    
         default:
@@ -76,12 +77,14 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
     }
 }
 
-void PickHandler::pick(osgViewer::Viewer* viewer, const osgGA::GUIEventAdapter& ea)
+void PickHandler::pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea)
 {
     osgUtil::LineSegmentIntersector::Intersections intersections;
 
     std::string gdlist="";
-    if (viewer->computeIntersections(ea.getX(),ea.getY(),intersections))
+    float x = ea.getX();
+    float y = ea.getY();
+    if (view->computeIntersections(x,y,intersections))
     {
         for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
             hitr != intersections.end();
@@ -210,12 +213,8 @@ osg::Node* createHUD(osgText::Text* updateText)
 
 int main( int argc, char **argv )
 {
-
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-
-    // construct the viewer.
-    osgViewer::Viewer viewer;
 
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
@@ -235,11 +234,34 @@ int main( int argc, char **argv )
     // add the HUD subgraph.    
     group->addChild(createHUD(updateText.get()));
 
-    // add the handler for doing the picking
-    viewer.addEventHandler(new PickHandler(updateText.get()));
+    if (arguments.read("--CompositeViewer"))
+    {
+        osg::ref_ptr<osgViewer::View> view = new osgViewer::View;
+        // add the handler for doing the picking
+        view->addEventHandler(new PickHandler(updateText.get()));
 
-    // set the scene to render
-    viewer.setSceneData(group.get());
+        // set the scene to render
+        view->setSceneData(group.get());
 
-    return viewer.run();
+        view->setUpViewAcrossAllScreens();
+
+        osgViewer::CompositeViewer viewer;
+        viewer.addView(view.get());
+
+        return viewer.run();
+
+    }
+    else
+    {
+        osgViewer::Viewer viewer;
+
+        // add the handler for doing the picking
+        viewer.addEventHandler(new PickHandler(updateText.get()));
+
+        // set the scene to render
+        viewer.setSceneData(group.get());
+
+        return viewer.run();
+    }
+
 }

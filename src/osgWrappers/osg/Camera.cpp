@@ -28,7 +28,8 @@
 #include <osg/State>
 #include <osg/Stats>
 #include <osg/Texture>
-#include <osg/Vec3>
+#include <osg/Vec3d>
+#include <osg/Vec3f>
 #include <osg/Vec4>
 #include <osg/View>
 #include <osg/Viewport>
@@ -328,11 +329,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __void__setViewMatrix__C5_osg_Matrixd_R1,
 	          "Set the view matrix. ",
 	          "Can be thought of as setting the position of the world relative to the camera in camera coordinates. ");
-	I_Method3(void, setViewMatrixAsLookAt, IN, const osg::Vec3 &, eye, IN, const osg::Vec3 &, center, IN, const osg::Vec3 &, up,
-	          Properties::NON_VIRTUAL,
-	          __void__setViewMatrixAsLookAt__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
-	          "Set to the position and orientation of view matrix, using the same convention as gluLookAt. ",
-	          "");
 	I_Method0(osg::Matrixd &, getViewMatrix,
 	          Properties::NON_VIRTUAL,
 	          __osg_Matrixd_R1__getViewMatrix,
@@ -343,9 +339,19 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __C5_osg_Matrixd_R1__getViewMatrix,
 	          "Get the const view matrix. ",
 	          "");
-	I_MethodWithDefaults4(void, getViewMatrixAsLookAt, IN, osg::Vec3 &, eye, , IN, osg::Vec3 &, center, , IN, osg::Vec3 &, up, , IN, float, lookDistance, 1.0f,
+	I_Method3(void, setViewMatrixAsLookAt, IN, const osg::Vec3d &, eye, IN, const osg::Vec3d &, center, IN, const osg::Vec3d &, up,
+	          Properties::NON_VIRTUAL,
+	          __void__setViewMatrixAsLookAt__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
+	          "Set to the position and orientation of view matrix, using the same convention as gluLookAt. ",
+	          "");
+	I_MethodWithDefaults4(void, getViewMatrixAsLookAt, IN, osg::Vec3d &, eye, , IN, osg::Vec3d &, center, , IN, osg::Vec3d &, up, , IN, double, lookDistance, 1.0,
 	                      Properties::NON_VIRTUAL,
-	                      __void__getViewMatrixAsLookAt__osg_Vec3_R1__osg_Vec3_R1__osg_Vec3_R1__float,
+	                      __void__getViewMatrixAsLookAt__osg_Vec3d_R1__osg_Vec3d_R1__osg_Vec3d_R1__double,
+	                      "Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. ",
+	                      "");
+	I_MethodWithDefaults4(void, getViewMatrixAsLookAt, IN, osg::Vec3f &, eye, , IN, osg::Vec3f &, center, , IN, osg::Vec3f &, up, , IN, float, lookDistance, 1.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__getViewMatrixAsLookAt__osg_Vec3f_R1__osg_Vec3f_R1__osg_Vec3f_R1__float,
 	                      "Get to the position and orientation of a modelview matrix, using the same convention as gluLookAt. ",
 	                      "");
 	I_Method0(osg::Matrixd, getInverseViewMatrix,

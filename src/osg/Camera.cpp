@@ -231,12 +231,17 @@ bool Camera::getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
     return _projectionMatrix.getPerspective(fovy, aspectRatio, zNear, zFar);
 }                                                 
 
-void Camera::setViewMatrixAsLookAt(const Vec3& eye,const Vec3& center,const Vec3& up)
+void Camera::setViewMatrixAsLookAt(const Vec3d& eye,const Vec3d& center,const Vec3d& up)
 {
     setViewMatrix(osg::Matrixd::lookAt(eye,center,up));
 }
 
-void Camera::getViewMatrixAsLookAt(Vec3& eye,Vec3& center,Vec3& up,float lookDistance)
+void Camera::getViewMatrixAsLookAt(Vec3d& eye,Vec3d& center,Vec3d& up,double lookDistance)
+{
+    _viewMatrix.getLookAt(eye,center,up,lookDistance);
+}
+
+void Camera::getViewMatrixAsLookAt(Vec3f& eye,Vec3f& center,Vec3f& up,float lookDistance)
 {
     _viewMatrix.getLookAt(eye,center,up,lookDistance);
 }

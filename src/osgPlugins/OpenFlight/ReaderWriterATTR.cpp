@@ -102,6 +102,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
         attr->texEnvMode = in.readInt32(AttrData::TEXENV_MODULATE);
         attr->intensityAsAlpha = in.readInt32();
         in.forward(4*8);
+        in.forward(4);
         attr->size_u = in.readFloat64();
         attr->size_v = in.readFloat64();
         attr->originCode = in.readInt32();
@@ -166,7 +167,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
         // v12 ends here
 //      if (in.eof() || (_flt_version <= 12)) return true;
 
-        in.forward(13*4);
+        in.forward(14*4);
         attr->attrVersion = in.readInt32();
         attr->controlPoints = in.readInt32();
         in.forward(4);

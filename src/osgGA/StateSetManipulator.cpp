@@ -21,7 +21,11 @@ StateSetManipulator::StateSetManipulator(osg::StateSet* stateset):
     _backface(false),
     _lighting(false),
     _texture(false),
-    _maxNumOfTextureUnits(4)
+    _maxNumOfTextureUnits(4),
+    _keyEventToggleBackfaceCulling('b'),
+    _keyEventToggleLighting('l'),
+    _keyEventToggleTexturing('t'),
+    _keyEventCyclePolygonMode('w')
 {
     setStateSet(stateset);
 }
@@ -72,62 +76,44 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 
     if (ea.getHandled()) return false;
 
-    if(ea.getEventType()==GUIEventAdapter::KEYDOWN)
+    if (ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN)
     {
 
-        switch( ea.getKey() )
+        if ( ea.getKey() == _keyEventToggleBackfaceCulling )
         {
-
-            case 'b' :
-                setBackfaceEnabled(!getBackfaceEnabled());
-                aa.requestRedraw();
-                return true;
-                break;
-
-            case 'l' :
+            setBackfaceEnabled(!getBackfaceEnabled());
+            aa.requestRedraw();
+            return true;
+        }
+        if ( ea.getKey() == _keyEventToggleLighting )
+        {
                 setLightingEnabled(!getLightingEnabled());
                 aa.requestRedraw();
                 return true;
-                break;
-
-            case 't' :
+        }
+        if ( ea.getKey() == _keyEventToggleTexturing )
+        {
                 setTextureEnabled(!getTextureEnabled());
                 aa.requestRedraw();
                 return true;
-            break;
-
-            case 'w' :
+        }
+        if ( ea.getKey() == _keyEventCyclePolygonMode )
+        {
                 cyclePolygonMode();
                 aa.requestRedraw();
-                break;
-
-#if COMPILE_TEXENVFILTER_USAGE
-            case 'm' :
-                {
-                    osg::TexEnvFilter* texenvfilter = dynamic_cast<osg::TexEnvFilter*>(_stateset->getTextureAttribute(0,osg::StateAttribute::TEXENVFILTER));
-                    if (!texenvfilter) 
-                    {
-                        texenvfilter = new osg::TexEnvFilter;
-                        _stateset->setTextureAttribute(0,texenvfilter);
-                    }
-
-                    // cycle through the available modes.
-                    texenvfilter->setLodBias(texenvfilter->getLodBias()+0.1);
-                    aa.requestRedraw();
-                }
-                break;
-#endif
+                return true;
         }
     }
+
     return false;
 }
 
 void StateSetManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
-    usage.addKeyboardMouseBinding("b","Toggle backface culling");
-    usage.addKeyboardMouseBinding("l","Toggle lighting");
-    usage.addKeyboardMouseBinding("t","Toggle texturing");
-    usage.addKeyboardMouseBinding("w","Toggle polygon fill mode between fill, line (wire frame) and points");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventToggleBackfaceCulling),"Toggle backface culling");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventToggleLighting),"Toggle lighting");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventToggleTexturing),"Toggle texturing");
+    usage.addKeyboardMouseBinding(reinterpret_cast<const char*>(&_keyEventCyclePolygonMode),"Toggle polygon fill mode between fill, line (wire frame) and points");
 }
 
 

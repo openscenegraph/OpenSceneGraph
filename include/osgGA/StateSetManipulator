@@ -69,6 +69,19 @@ public:
         
         void cyclePolygonMode();
 
+
+        void setKeyEventToggleBackfaceCulling(int key) { _keyEventToggleBackfaceCulling = key; }
+        int getKeyEventToggleBackfaceCulling() const { return _keyEventToggleBackfaceCulling; }
+
+        void setKeyEventToggleLighting(int key) { _keyEventToggleLighting = key; }
+        int getKeyEventToggleLighting() const { return _keyEventToggleLighting; }
+
+        void setKeyEventToggleTexturing(int key) { _keyEventToggleTexturing = key; }
+        int getKeyEventToggleTexturing() const { return _keyEventToggleTexturing; }
+
+        void setKeyEventCyclePolygonMode(int key) { _keyEventCyclePolygonMode = key; }
+        int getKeyEventCyclePolygonMode() const { return _keyEventCyclePolygonMode; }
+
 protected:
 
         virtual ~StateSetManipulator();
@@ -81,6 +94,11 @@ protected:
         bool _texture;
         unsigned int _maxNumOfTextureUnits;
         
+        int _keyEventToggleBackfaceCulling;
+        int _keyEventToggleLighting;
+        int _keyEventToggleTexturing;
+        int _keyEventCyclePolygonMode;
+
         osg::PolygonMode* getOrCreatePolygonMode();
 };
 

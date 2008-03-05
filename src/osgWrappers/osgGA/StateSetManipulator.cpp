@@ -118,6 +118,46 @@ BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	          __void__cyclePolygonMode,
 	          "",
 	          "");
+	I_Method1(void, setKeyEventToggleBackfaceCulling, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventToggleBackfaceCulling__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventToggleBackfaceCulling,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventToggleBackfaceCulling,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventToggleLighting, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventToggleLighting__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventToggleLighting,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventToggleLighting,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventToggleTexturing, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventToggleTexturing__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventToggleTexturing,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventToggleTexturing,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventCyclePolygonMode, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventCyclePolygonMode__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventCyclePolygonMode,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventCyclePolygonMode,
+	          "",
+	          "");
 	I_ProtectedMethod0(osg::PolygonMode *, getOrCreatePolygonMode,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -127,6 +167,18 @@ BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	I_SimpleProperty(bool, BackfaceEnabled, 
 	                 __bool__getBackfaceEnabled, 
 	                 __void__setBackfaceEnabled__bool);
+	I_SimpleProperty(int, KeyEventCyclePolygonMode, 
+	                 __int__getKeyEventCyclePolygonMode, 
+	                 __void__setKeyEventCyclePolygonMode__int);
+	I_SimpleProperty(int, KeyEventToggleBackfaceCulling, 
+	                 __int__getKeyEventToggleBackfaceCulling, 
+	                 __void__setKeyEventToggleBackfaceCulling__int);
+	I_SimpleProperty(int, KeyEventToggleLighting, 
+	                 __int__getKeyEventToggleLighting, 
+	                 __void__setKeyEventToggleLighting__int);
+	I_SimpleProperty(int, KeyEventToggleTexturing, 
+	                 __int__getKeyEventToggleTexturing, 
+	                 __void__setKeyEventToggleTexturing__int);
 	I_SimpleProperty(bool, LightingEnabled, 
 	                 __bool__getLightingEnabled, 
 	                 __void__setLightingEnabled__bool);

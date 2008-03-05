@@ -76,6 +76,9 @@ State::State():
     _glDisableVertexAttribArray = 0;
 
     _dynamicObjectCount  = 0;
+
+    _glMaxTextureCoords = 1;
+    _glMaxTextureUnits = 1;
 }
 
 State::~State()

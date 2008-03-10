@@ -698,7 +698,10 @@ int main( int argc, char **argv)
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--entries","Print out number of entries into the ChangeLog file for each contributor.");
     arguments.getApplicationUsage()->addCommandLineOption("--version-number","Print out version number only");
-    arguments.getApplicationUsage()->addCommandLineOption("--soversion-number","Print out shared object version number only");
+    arguments.getApplicationUsage()->addCommandLineOption("--major-number","Print out major version number only");
+    arguments.getApplicationUsage()->addCommandLineOption("--minor-number","Print out minor version number only");
+    arguments.getApplicationUsage()->addCommandLineOption("--patch-number","Print out patch version number only");
+    arguments.getApplicationUsage()->addCommandLineOption("--so-number ","Print out shared object version number only");
     arguments.getApplicationUsage()->addCommandLineOption("--openthreads-version-number","Print out version number for OpenThreads only");
     arguments.getApplicationUsage()->addCommandLineOption("--openthreads-soversion-number","Print out shared object version number for OpenThreads only");
     arguments.getApplicationUsage()->addCommandLineOption("-r <file> or --read <file>","Read the ChangeLog to generate an estimated contributors list.");
@@ -727,7 +730,7 @@ int main( int argc, char **argv)
         return 0;
     }
     
-    if (arguments.read("--soversion-number"))
+    if (arguments.read("--soversion-number") || arguments.read("--so-number") )
     {
         std::cout<<osgGetSOVersion()<<std::endl;
         return 0;

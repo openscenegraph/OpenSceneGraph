@@ -16,7 +16,6 @@
 *  THE SOFTWARE.
 */
 
-#include <osgViewer/Viewer>
 
 #include <osg/Notify>
 
@@ -29,8 +28,11 @@
 #include <osgFX/MultiTextureControl>
 
 #include <osgGA/TerrainManipulator>
+#include <osgGA/StateSetManipulator>
 
-#include <osgUtil/Optimizer>
+#include <osgViewer/ViewerEventHandlers>
+#include <osgViewer/Viewer>
+
 
 #include <iostream>
 
@@ -212,9 +214,33 @@ int main( int argc, char **argv )
     else if (mtc) mtc->setCullCallback(elbc);
     else rootnode->setCullCallback(elbc);
 
-    // add terrain manipulator
-    viewer.setCameraManipulator(new osgGA::TerrainManipulator);
-     
+    // add all the event handlers to the viewer
+    {
+        // add terrain manipulator
+        viewer.setCameraManipulator(new osgGA::TerrainManipulator);
+
+        // add the state manipulator
+        viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+
+        // add the thread model handler
+        viewer.addEventHandler(new osgViewer::ThreadingHandler);
+
+        // add the window size toggle handler
+        viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+
+        // add the stats handler
+        viewer.addEventHandler(new osgViewer::StatsHandler);
+
+        // add the help handler
+        viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
+
+        // add the record camera path handler
+        viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
+
+        // add the LOD Scale handler
+        viewer.addEventHandler(new osgViewer::LODScaleHandler);
+    }
+
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( rootnode );
     

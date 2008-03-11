@@ -2632,7 +2632,7 @@ void Geometry::accept(PrimitiveIndexFunctor& functor) const
     return;
 }
 
-static unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
+unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
 {
 
     unsigned int totalNumberOfPrimitives = 0;
@@ -3788,6 +3788,7 @@ Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVe
     typedef DrawAttributeArrays_TTT<T2USI,N3USI,V3USI>   DrawAttributeArrays_T2N3iV3i;
 
     typedef DrawAttributeArrays_TTT_USI<T2,N3,V3>        DrawAttributeArrays_T2N3V3_i;
+
 
 
     typedef DrawAttributeArrays_TTT<T2,C4,V3>            DrawAttributeArrays_T2C4V3;

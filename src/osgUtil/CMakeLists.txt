@@ -34,6 +34,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/RenderStage
     ${HEADER_PATH}/ReversePrimitiveFunctor
     ${HEADER_PATH}/SceneView
+    ${HEADER_PATH}/SceneGraphBuilder
     ${HEADER_PATH}/Simplifier
     ${HEADER_PATH}/SmoothingVisitor
     ${HEADER_PATH}/StateGraph
@@ -73,6 +74,7 @@ ADD_LIBRARY(${LIB_NAME}
     SceneView.cpp
     Simplifier.cpp
     SmoothingVisitor.cpp
+    SceneGraphBuilder.cpp
     StateGraph.cpp
     Statistics.cpp
     TangentSpaceGenerator.cpp

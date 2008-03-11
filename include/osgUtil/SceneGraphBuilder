@@ -1,0 +1,96 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGUTIL_SCENEGRAPHBUILDER
+#define OSGUTIL_SCENEGRAPHBUILDER 1
+
+#include <osg/NodeVisitor>
+#include <osg/Geode>
+#include <osg/Geometry>
+#include <osg/MatrixTransform>
+
+#include <osgUtil/Export>
+
+namespace osgUtil {
+
+/** A simplifier for reducing the number of traingles in osg::Geometry.
+  */
+class OSGUTIL_EXPORT SceneGraphBuilder
+{
+    public:
+
+        SceneGraphBuilder();
+
+        void glPushMatrix();
+        void glPopMatrix();
+        void glLoadIdentity();
+        void glLoadMatrixd(const GLdouble* m);
+        void glMultMatrixd(const GLdouble* m);
+        void glTranslated(GLdouble x, GLdouble y, GLdouble z);
+        void glScaled(GLdouble x, GLdouble y, GLdouble z);
+        void glRotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z);
+        
+        void glBlendFunc(GLenum srcFactor, GLenum dstFactor);
+        void glCullFace(GLenum mode);
+        void glDepthFunc(GLenum mode);
+        void glFrontFace(GLenum mode);
+        void glLineStipple(GLint factor, GLushort pattern);
+        void glLineWidth(GLfloat lineWidth);
+        void glPointSize(GLfloat pointSize);
+        void glPolygonMode(GLenum face, GLenum mode);
+        void glPolygonOffset(GLfloat factor, GLfloat units);
+        void glPolygonStipple(GLubyte* mask);
+        void glShadeModel(GLenum mode);
+        
+        void glEnable(GLenum mode);
+        void glDisable(GLenum mode);
+        
+        void glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+        void glVertex3f(GLfloat x, GLfloat y, GLfloat z);
+        void glNormal3f(GLfloat x, GLfloat y, GLfloat z);
+
+        void glTexCoord1f(GLfloat x);
+        void glTexCoord2f(GLfloat x, GLfloat y);
+        void glTexCoord3f(GLfloat x, GLfloat y, GLfloat z);
+        void glTexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+
+        void glBegin(GLenum mode);
+        void glEnd();
+
+        osg::Node* getScene();
+        osg::Node* takeScene();
+
+    protected:
+    
+        typedef std::vector<osg::Matrixd> Matrices;
+        
+        void newGeometry();
+        
+        Matrices                            _matrixStack;
+        osg::ref_ptr<osg::StateSet>         _stateSet;
+        
+        osg::Vec3f                          _normal;
+        osg::Vec4f                          _color;
+        osg::Vec4f                          _texCoord;
+    
+        osg::ref_ptr<osg::Geometry>         _currentGeometry;
+        osg::ref_ptr<osg::Geode>            _currentGeode;
+        osg::ref_ptr<osg::MatrixTransform>  _currentTransform;
+        osg::ref_ptr<osg::Group>            _group;
+    
+};
+
+
+}
+
+#endif

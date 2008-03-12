@@ -30,6 +30,11 @@ BEGIN_OBJECT_REFLECTOR(osg::PolygonStipple)
 	I_Constructor0(____PolygonStipple,
 	               "",
 	               "");
+	I_Constructor1(IN, const GLubyte *, mask,
+	               Properties::NON_EXPLICIT,
+	               ____PolygonStipple__C5_GLubyte_P1,
+	               "",
+	               "");
 	I_ConstructorWithDefaults2(IN, const osg::PolygonStipple &, lw, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____PolygonStipple__C5_PolygonStipple_R1__C5_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",

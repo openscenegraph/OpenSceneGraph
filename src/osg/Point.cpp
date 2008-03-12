@@ -29,15 +29,23 @@ using namespace osg;
 
 Point::Point()
 {
-    _size = 1.0f;                // TODO find proper default
-    _fadeThresholdSize = 1.0f;   // TODO find proper default
-                                 // TODO find proper default
-    _distanceAttenuation = Vec3(1, 0.0, 0.0);
+    _size = 1.0f;                               // TODO find proper default
+    _fadeThresholdSize = 1.0f;                  // TODO find proper default
+    _distanceAttenuation = Vec3(1, 0.0, 0.0);   // TODO find proper default
 
     _minSize = 0.0;
     _maxSize = 100.0;//depends on mulitsampling ... some default necessary
 }
 
+Point::Point(float size)
+{
+    _size = size;
+    _fadeThresholdSize = 1.0f;                  // TODO find proper default
+    _distanceAttenuation = Vec3(1, 0.0, 0.0);   // TODO find proper default
+
+    _minSize = 0.0;
+    _maxSize = 100.0;//depends on mulitsampling ... some default necessary
+}
 
 Point::~Point()
 {

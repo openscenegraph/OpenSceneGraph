@@ -26,6 +26,8 @@ class OSG_EXPORT Point : public StateAttribute
 
         Point();
 
+        Point(float size);
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Point(const Point& point,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(point,copyop),

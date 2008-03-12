@@ -30,6 +30,10 @@ BEGIN_OBJECT_REFLECTOR(osg::LineStipple)
 	I_Constructor0(____LineStipple,
 	               "",
 	               "");
+	I_Constructor2(IN, GLint, factor, IN, GLushort, pattern,
+	               ____LineStipple__GLint__GLushort,
+	               "",
+	               "");
 	I_ConstructorWithDefaults2(IN, const osg::LineStipple &, lw, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____LineStipple__C5_LineStipple_R1__C5_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",

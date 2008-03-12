@@ -31,6 +31,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Point)
 	I_Constructor0(____Point,
 	               "",
 	               "");
+	I_Constructor1(IN, float, size,
+	               Properties::NON_EXPLICIT,
+	               ____Point__float,
+	               "",
+	               "");
 	I_ConstructorWithDefaults2(IN, const osg::Point &, point, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____Point__C5_Point_R1__C5_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",

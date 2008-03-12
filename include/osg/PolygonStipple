@@ -26,6 +26,8 @@ class OSG_EXPORT PolygonStipple : public StateAttribute
 
         PolygonStipple();
 
+        PolygonStipple(const GLubyte* mask);
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         PolygonStipple(const PolygonStipple& lw,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 

@@ -43,6 +43,11 @@ PolygonStipple::PolygonStipple()
     setMask(defaultPolygonStippleMask);
 }
 
+PolygonStipple::PolygonStipple(const GLubyte* mask)
+{
+    setMask(mask);
+}
+
 PolygonStipple::PolygonStipple(const PolygonStipple& ps,const CopyOp& copyop):
     StateAttribute(ps,copyop)
 {

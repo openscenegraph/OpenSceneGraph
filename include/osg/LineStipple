@@ -24,6 +24,10 @@ class OSG_EXPORT LineStipple : public StateAttribute
 
         LineStipple();
 
+        LineStipple(GLint factor, GLushort pattern):
+            _factor(factor),
+            _pattern(pattern) {}
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         LineStipple(const LineStipple& lw,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
           StateAttribute(lw,copyop),

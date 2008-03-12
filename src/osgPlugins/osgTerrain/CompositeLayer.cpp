@@ -137,12 +137,12 @@ bool CompositeLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
                     
                     if (proxyLayer->getMinLevel()!=0)
                     {
-                        fw.indent()<<"MinLevel "<<layer.getMinLevel()<<std::endl;
+                        fw.indent()<<"MinLevel "<<proxyLayer->getMinLevel()<<std::endl;
                     } 
 
                     if (proxyLayer->getMaxLevel()!=MAXIMUM_NUMBER_OF_LEVELS)
                     {
-                        fw.indent()<<"MaxLevel "<<layer.getMaxLevel()<<std::endl;
+                        fw.indent()<<"MaxLevel "<<proxyLayer->getMaxLevel()<<std::endl;
                     } 
                 
                     fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;

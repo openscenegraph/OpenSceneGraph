@@ -30,6 +30,7 @@ Document::Document() :
     _useTextureAlphaForTransparancyBinning(true),
     _useBillboardCenter(false),
     _doUnitsConversion(true),
+    _readObjectRecordData(false),
     _desiredUnits(METERS),
     _done(false),
     _level(0),

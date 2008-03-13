@@ -38,6 +38,7 @@
 #include <osg/MatrixTransform>
 #include <osg/Light>
 #include <osg/LightSource>
+#include <osg/Depth>
 
 #include <osg/Notify>
 #include <osgDB/Registry>
@@ -86,10 +87,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &f
 
 #ifdef WIN32
     if(unixFileName[1] == ':') // absolute path
+        fileName = "file:///" + unixFileName;
 #else
     if(unixFileName[0] == '/') // absolute path
-#endif
         fileName = "file://" + unixFileName;
+#endif
     else // relative path
         fileName = unixFileName;
 
@@ -108,10 +110,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &f
         return ReadResult::FILE_NOT_HANDLED;
 
     } else {
-        osg::ref_ptr<osg::MatrixTransform> osg_root = new osg::MatrixTransform(osg::Matrix(1, 0, 0, 0,
-                                         0, 0, 1, 0,
-                                         0, -1, 0, 0,
-                                         0, 0, 0, 1));
+        osg::ref_ptr<osg::MatrixTransform> osg_root = 
+            new osg::MatrixTransform(osg::Matrix( 1,  0,  0,  0,
+                                                  0,  0,  1,  0,
+                                                  0, -1,  0,  0,
+                                                  0,  0,  0,  1));
 
         for (unsigned i = 0; i < mfn.size(); i++) {
             openvrml::node *vrml_node = mfn[i].get();
@@ -147,7 +150,8 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                     osg_group->addChild(convertFromVRML(node).get());
                 }
             }
-        } catch (openvrml::unsupported_interface &e)
+        } 
+        catch (openvrml::unsupported_interface&)
         {
             // no children
         }
@@ -173,7 +177,8 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                     osg_m->addChild(convertFromVRML(node).get());
                 }
             }
-        } catch (openvrml::unsupported_interface &e)
+        } 
+        catch (openvrml::unsupported_interface&)
         {
             // no children
         }
@@ -209,12 +214,11 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                     
                     // get array of vertex coordinate_nodes
                     {
-                        const openvrml::field_value & fv = vrml_ifs->field("coord");
-                        const openvrml::sfnode &sfn = dynamic_cast<const openvrml::sfnode &>(fv);
-                        openvrml::vrml97_node::coordinate_node *vrml_coord_node =
-                            dynamic_cast<openvrml::vrml97_node::coordinate_node *>(sfn.value.get());
+                        const openvrml::field_value& fv = vrml_ifs->field("coord");
+                        const openvrml::sfnode& sfn = dynamic_cast<const openvrml::sfnode&>(fv);
+                        openvrml::vrml97_node::coordinate_node* vrml_coord_node = dynamic_cast<openvrml::vrml97_node::coordinate_node*>(sfn.value.get());
 
-                        const std::vector<openvrml::vec3f> &vrml_coord = vrml_coord_node->point();
+                        const std::vector<openvrml::vec3f>& vrml_coord = vrml_coord_node->point();
                         osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
 
                         unsigned i;
@@ -236,15 +240,23 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                         for (i = 0; i < vrml_coord_index.value.size(); i++)
                         {
                             int index = vrml_coord_index.value[i];
-                            if (index == -1) {
-                                ((osg::DrawArrayLengths*) osg_geom->getPrimitiveSet(0))->push_back(num_vert);
+                            if (index == -1) 
+                            {
+                                static_cast<osg::DrawArrayLengths*>(osg_geom->getPrimitiveSet(0))->push_back(num_vert);
                                 num_vert = 0;
-                            } else {
+                            } 
+                            else 
+                            {
                                 osg_vert_index->push_back(index);
-                                num_vert ++;
+                                ++num_vert;
                             }
                         }
-
+                        if (num_vert)
+                        {
+                            //GvdB: Last coordIndex wasn't -1
+                            static_cast<osg::DrawArrayLengths*>(osg_geom->getPrimitiveSet(0))->push_back(num_vert);
+                        }
+                             
                         osg_geom->setVertexIndices(osg_vert_index.get());
                     }
 
@@ -293,14 +305,13 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
 
                     // get array of normals per vertex (if specified)
                     {
-                        const openvrml::field_value &fv = vrml_ifs->field("normal");
-                        const openvrml::sfnode &sfn = dynamic_cast<const openvrml::sfnode &>(fv);
-                        openvrml::vrml97_node::normal_node *vrml_normal_node =
-                            dynamic_cast<openvrml::vrml97_node::normal_node *>(sfn.value.get());
+                        const openvrml::field_value& fv = vrml_ifs->field("normal");
+                        const openvrml::sfnode& sfn = dynamic_cast<const openvrml::sfnode&>(fv);
+                        openvrml::vrml97_node::normal_node* vrml_normal_node = dynamic_cast<openvrml::vrml97_node::normal_node*>(sfn.value.get());
 
                         if (vrml_normal_node != 0) // if no normals, node is NULL pointer
                         {
-                            const std::vector<openvrml::vec3f> &vrml_normal_coord = vrml_normal_node->vector();
+                            const std::vector<openvrml::vec3f>& vrml_normal_coord = vrml_normal_node->vector();
 
                             osg::ref_ptr<osg::Vec3Array> osg_normalcoords = new osg::Vec3Array();
 
@@ -313,22 +324,24 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                             osg_geom->setNormalArray(osg_normalcoords.get());
 
                             // get array of normal indices
-                            const openvrml::field_value &fv2 = vrml_ifs->field("normalIndex");
-                            const openvrml::mfint32 &vrml_normal_index = dynamic_cast<const openvrml::mfint32 &>(fv2);
+                            const openvrml::field_value& fv2 = vrml_ifs->field("normalIndex");
+                            const openvrml::mfint32& vrml_normal_index = dynamic_cast<const openvrml::mfint32&>(fv2);
 
                             osg::ref_ptr<osg::IntArray> osg_normal_index = new osg::IntArray();
 
-                            if(vrml_normal_index.value.size() > 0)
+                            if (vrml_normal_index.value.size() > 0)
                             {
                                 for (i = 0; i < vrml_normal_index.value.size(); i++)
                                 {
                                     int index = vrml_normal_index.value[i];
-                                    if (index != -1) {
+                                    if (index != -1)
+                                    {
                                         osg_normal_index->push_back(index);
                                     }
                                 }
                                 osg_geom->setNormalIndices(osg_normal_index.get());
-                            } else
+                            } 
+                            else
                                 // unspecified, use the coordIndex field
                                 osg_geom->setNormalIndices(osg_geom->getVertexIndices());
 
@@ -405,6 +418,100 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                     {
                          osg_stateset->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
                     }
+
+                    if (!osg_geom->getNormalArray())
+                    {
+#if 0
+                        // GvdB: This is what I wanted to do, but got zero normals since the triangles were considered temporaries (?)
+                        osgUtil::SmoothingVisitor().smooth(*osg_geom);
+#else
+                        // GvdB: So I ended up computing the smoothing normals myself. Also, I might add support for "creaseAngle" if a big need for it rises.
+                        //       However, for now I can perfectly live with the fact that all edges are smoothed despite the use of a crease angle.     
+                        osg::Vec3Array& coords = *static_cast<osg::Vec3Array*>(osg_geom->getVertexArray());
+                        assert(coords.size());
+    
+                        osg::Vec3Array* normals = new osg::Vec3Array(coords.size());
+
+                        for (osg::Vec3Array::iterator it = normals->begin(); it != normals->end(); ++it)
+                        {
+                            (*it).set(0.0f, 0.0f, 0.0f);
+                        }  
+
+
+                        osg::IntArray& indices = *static_cast<osg::IntArray*>(osg_geom->getVertexIndices());
+                        osg::DrawArrayLengths& lengths = *static_cast<osg::DrawArrayLengths*>(osg_geom->getPrimitiveSet(0));
+                        int index = 0;
+                      
+                        for (osg::DrawArrayLengths::iterator it = lengths.begin(); it != lengths.end(); ++it) 
+                        {
+                            assert(*it >= 3);
+                            const osg::Vec3& v0 = coords[indices[index]];  
+                            const osg::Vec3& v1 = coords[indices[index + 1]];  
+                            const osg::Vec3& v2 = coords[indices[index + 2]];  
+                            
+                            osg::Vec3 normal = (v1 - v0) ^ (v2 - v0);
+                            normal.normalize();
+                            
+                            for (int i = 0; i != *it; ++i)
+                            {
+                                (*normals)[indices[index + i]] += normal;
+                            }
+                          
+                            index += *it;
+                        }
+                       
+                        assert(index == indices.size());
+                      
+                        for(osg::Vec3Array::iterator it = normals->begin(); it != normals->end(); ++it)
+                        {
+                            (*it).normalize();
+                        }
+
+                        osg_geom->setNormalArray(normals);
+                        osg_geom->setNormalIndices(osg_geom->getVertexIndices());
+                        osg_geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);                   
+
+#endif
+                    } 
+
+
+                    osg::DrawArrayLengths& lengths = *static_cast<osg::DrawArrayLengths*>(osg_geom->getPrimitiveSet(0));
+                    
+                    osg::DrawArrayLengths::iterator it = lengths.begin(); 
+                    if (it != lengths.end())
+                    {
+                        switch (*it)
+                        {
+                        case 3:
+                            while (++it != lengths.end() && *it == 3)
+                                ;
+                                       
+                            if (it == lengths.end())
+                            {
+                                // All polys are triangles
+                                osg::ref_ptr<osg::DrawArrays> mesh = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLES);
+                                mesh->setCount(lengths.size() * 3);
+                                osg_geom->removePrimitiveSet(0);
+                                osg_geom->addPrimitiveSet(mesh.get());
+                            }      
+                            break;
+
+                        case 4:
+                            while (++it != lengths.end() && *it == 4)
+                                ;
+
+                            if (it == lengths.end())
+                            {
+                                // All polys are quads
+                                osg::ref_ptr<osg::DrawArrays> mesh = new osg::DrawArrays(osg::PrimitiveSet::QUADS);
+                                mesh->setCount(lengths.size() * 4);
+                                osg_geom->removePrimitiveSet(0);
+                                osg_geom->addPrimitiveSet(mesh.get());
+                            }  
+
+                            break;
+                        }
+                    }                        
                 }
                 else if (openvrml::vrml97_node::box_node* vrml_box = dynamic_cast<openvrml::vrml97_node::box_node*>(vrml_geom)) 
                 {
@@ -786,33 +893,45 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                     dynamic_cast<const openvrml::vrml97_node::material_node *>(vrml_material_node.get());
                 //              std::cerr << "sfnode->Material OK" << std::endl << std::flush;
 
-                if (vrml_material != NULL) {
-                    osg_mat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(vrml_material->ambient_intensity(),
-                                        vrml_material->ambient_intensity(),
-                                        vrml_material->ambient_intensity(),
-                                        1.0));
-                    osg_mat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(vrml_material->diffuse_color().r(),
-                                        vrml_material->diffuse_color().g(),
-                                        vrml_material->diffuse_color().b(),
-                                        1.0));
-                    osg_mat->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(vrml_material->emissive_color().r(),
-                                         vrml_material->emissive_color().g(),
-                                         vrml_material->emissive_color().b(),
-                                         1.0));
-                    osg_mat->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(vrml_material->specular_color().r(),
-                                         vrml_material->specular_color().g(),
-                                         vrml_material->specular_color().b(),
-                                         1.0));
-
-                    osg_mat->setTransparency(osg::Material::FRONT_AND_BACK, vrml_material->transparency() );
-                    //osg_stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                if (vrml_material != NULL) 
+                {
+                    osg_mat->setAmbient(osg::Material::FRONT_AND_BACK, 
+                                        osg::Vec4(vrml_material->ambient_intensity(),
+                                                  vrml_material->ambient_intensity(),
+                                                  vrml_material->ambient_intensity(),
+                                                  1.0));
+                    osg_mat->setDiffuse(osg::Material::FRONT_AND_BACK, 
+                                        osg::Vec4(vrml_material->diffuse_color().r(),
+                                                  vrml_material->diffuse_color().g(),
+                                                  vrml_material->diffuse_color().b(),
+                                                  1.0));
+                    osg_mat->setEmission(osg::Material::FRONT_AND_BACK, 
+                                         osg::Vec4(vrml_material->emissive_color().r(),
+                                                   vrml_material->emissive_color().g(),
+                                                   vrml_material->emissive_color().b(),
+                                                   1.0));
+                    osg_mat->setSpecular(osg::Material::FRONT_AND_BACK, 
+                                         osg::Vec4(vrml_material->specular_color().r(),
+                                                   vrml_material->specular_color().g(),
+                                                   vrml_material->specular_color().b(),
+                                                   1.0));
 
                     osg_mat->setShininess(osg::Material::FRONT_AND_BACK, vrml_material->shininess() );
 
-                    //osg_mat->setColorMode(osg::Material::OFF);
+                    if (vrml_material->transparency() > 0.0f)
+                    {
+                        osg_mat->setTransparency(osg::Material::FRONT_AND_BACK, vrml_material->transparency());
+                        osg_stateset->setMode(GL_BLEND, osg::StateAttribute::ON); 
+                        osg_stateset->setAttribute(new osg::Depth(osg::Depth::LESS, 0.0, 1.0, false)); // GvdB: transparent objects do not write depth
+                        osg_stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                    }
+                    else
+                    {
+                        osg_stateset->setMode(GL_BLEND, osg::StateAttribute::OFF);  
+                        osg_stateset->setRenderingHint(osg::StateSet::OPAQUE_BIN);
+                    }
 
                     osg_stateset->setAttributeAndModes(osg_mat.get());
-                    osg_stateset->setMode(GL_BLEND, osg::StateAttribute::ON);  //bhbn
 
                 }
 

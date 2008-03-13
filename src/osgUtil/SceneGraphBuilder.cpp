@@ -46,20 +46,20 @@ SceneGraphBuilder::SceneGraphBuilder():
 //
 // OpenGL 1.0 building methods
 //
-void SceneGraphBuilder::glPushMatrix()
+void SceneGraphBuilder::PushMatrix()
 {
     if (_matrixStack.empty()) _matrixStack.push_back(osg::Matrixd());
     else _matrixStack.push_back(_matrixStack.back());
 }
 
-void SceneGraphBuilder::glPopMatrix()
+void SceneGraphBuilder::PopMatrix()
 {
     if (!_matrixStack.empty()) _matrixStack.pop_back();
     
     matrixChanged();
 }
 
-void SceneGraphBuilder::glLoadIdentity()
+void SceneGraphBuilder::LoadIdentity()
 {
     if (_matrixStack.empty()) _matrixStack.push_back(osg::Matrixd());
     _matrixStack.back().makeIdentity();
@@ -67,7 +67,7 @@ void SceneGraphBuilder::glLoadIdentity()
     matrixChanged();
 }
 
-void SceneGraphBuilder::glLoadMatrixd(const GLdouble* m)
+void SceneGraphBuilder::LoadMatrixd(const GLdouble* m)
 {
     if (_matrixStack.empty()) _matrixStack.push_back(osg::Matrixd());
     _matrixStack.back().set(m);
@@ -75,7 +75,7 @@ void SceneGraphBuilder::glLoadMatrixd(const GLdouble* m)
     matrixChanged();
 }
 
-void SceneGraphBuilder::glMultMatrixd(const GLdouble* m)
+void SceneGraphBuilder::MultMatrixd(const GLdouble* m)
 {
     if (_matrixStack.empty()) _matrixStack.push_back(osg::Matrixd());
     _matrixStack.back().preMult(osg::Matrixd(m));
@@ -83,7 +83,7 @@ void SceneGraphBuilder::glMultMatrixd(const GLdouble* m)
     matrixChanged();
 }
 
-void SceneGraphBuilder::glTranslated(GLdouble x, GLdouble y, GLdouble z)
+void SceneGraphBuilder::Translated(GLdouble x, GLdouble y, GLdouble z)
 {
     if (_matrixStack.empty()) _matrixStack.push_back(osg::Matrixd());
     _matrixStack.back().preMult(osg::Matrixd::translate(x,y,z));
@@ -91,7 +91,7 @@ void SceneGraphBuilder::glTranslated(GLdouble x, GLdouble y, GLdouble z)
     matrixChanged();
 }
 
-void SceneGraphBuilder::glScaled(GLdouble x, GLdouble y, GLdouble z)
+void SceneGraphBuilder::Scaled(GLdouble x, GLdouble y, GLdouble z)
 {
     if (_matrixStack.empty()) _matrixStack.push_back(osg::Matrixd());
     _matrixStack.back().preMult(osg::Matrixd::scale(x,y,z));
@@ -99,7 +99,7 @@ void SceneGraphBuilder::glScaled(GLdouble x, GLdouble y, GLdouble z)
     matrixChanged();
 }
 
-void SceneGraphBuilder::glRotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z)
+void SceneGraphBuilder::Rotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z)
 {
     if (_matrixStack.empty()) _matrixStack.push_back(osg::Matrixd());
     _matrixStack.back().preMult(osg::Matrixd::rotate(osg::inDegrees(angle),x,y,z));
@@ -107,107 +107,107 @@ void SceneGraphBuilder::glRotated(GLdouble angle, GLdouble x, GLdouble y, GLdoub
     matrixChanged();
 }
 
-void SceneGraphBuilder::glBlendFunc(GLenum srcFactor, GLenum dstFactor)
+void SceneGraphBuilder::BlendFunc(GLenum srcFactor, GLenum dstFactor)
 {
     addAttribute(new osg::BlendFunc(srcFactor, dstFactor));
 }
 
-void SceneGraphBuilder::glCullFace(GLenum mode)
+void SceneGraphBuilder::CullFace(GLenum mode)
 {
     addAttribute(new osg::CullFace(osg::CullFace::Mode(mode)));
 }
 
-void SceneGraphBuilder::glDepthFunc(GLenum mode)
+void SceneGraphBuilder::DepthFunc(GLenum mode)
 {
     addAttribute(new osg::Depth(osg::Depth::Function(mode)));
 }
 
-void SceneGraphBuilder::glFrontFace(GLenum mode)
+void SceneGraphBuilder::FrontFace(GLenum mode)
 {
     addAttribute(new osg::FrontFace(osg::FrontFace::Mode(mode)));
 }
 
-void SceneGraphBuilder::glLineStipple(GLint factor, GLushort pattern)
+void SceneGraphBuilder::LineStipple(GLint factor, GLushort pattern)
 {
     addAttribute(new osg::LineStipple(factor, pattern));
 }
 
-void SceneGraphBuilder::glLineWidth(GLfloat lineWidth)
+void SceneGraphBuilder::LineWidth(GLfloat lineWidth)
 {
     addAttribute(new osg::LineWidth(lineWidth));
 }
 
-void SceneGraphBuilder::glPointSize(GLfloat pointSize)
+void SceneGraphBuilder::PointSize(GLfloat pointSize)
 {
     addAttribute(new osg::Point(pointSize));
 }
 
-void SceneGraphBuilder::glPolygonMode(GLenum face, GLenum mode)
+void SceneGraphBuilder::PolygonMode(GLenum face, GLenum mode)
 {
     addAttribute(new osg::PolygonMode(osg::PolygonMode::Face(face),osg::PolygonMode::Mode(mode)));
 }
 
-void SceneGraphBuilder::glPolygonOffset(GLfloat factor, GLfloat units)
+void SceneGraphBuilder::PolygonOffset(GLfloat factor, GLfloat units)
 {
     addAttribute(new osg::PolygonOffset(factor,units));
 }
 
-void SceneGraphBuilder::glPolygonStipple(const GLubyte* mask)
+void SceneGraphBuilder::PolygonStipple(const GLubyte* mask)
 {
     addAttribute(new osg::PolygonStipple(mask));
 }
 
-void SceneGraphBuilder::glShadeModel(GLenum mode)
+void SceneGraphBuilder::ShadeModel(GLenum mode)
 {
     addAttribute(new osg::ShadeModel(osg::ShadeModel::Mode(mode)));
 }
-void SceneGraphBuilder::glEnable(GLenum mode)
+void SceneGraphBuilder::Enable(GLenum mode)
 {
     addMode(mode, true);
 }
 
-void SceneGraphBuilder::glDisable(GLenum mode)
+void SceneGraphBuilder::Disable(GLenum mode)
 {
     addMode(mode, false);
 }
 
-void SceneGraphBuilder::glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
+void SceneGraphBuilder::Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 {
     _normalSet = true;
     _color.set(red,green,blue,alpha);
 }
 
-void SceneGraphBuilder::glNormal3f(GLfloat x, GLfloat y, GLfloat z)
+void SceneGraphBuilder::Normal3f(GLfloat x, GLfloat y, GLfloat z)
 {
     _normalSet = true;
     _normal.set(x,y,z);
 }
 
-void SceneGraphBuilder::glTexCoord1f(GLfloat x)
+void SceneGraphBuilder::TexCoord1f(GLfloat x)
 {
     _maxNumTexCoordComponents = 1;
     _texCoord.set(x,0.0f,0.0f,1.0f);
 }
 
-void SceneGraphBuilder::glTexCoord2f(GLfloat x, GLfloat y)
+void SceneGraphBuilder::TexCoord2f(GLfloat x, GLfloat y)
 {
     _maxNumTexCoordComponents = 2;
     _texCoord.set(x,y,0.0f,1.0f);
 }
 
-void SceneGraphBuilder::glTexCoord3f(GLfloat x, GLfloat y, GLfloat z)
+void SceneGraphBuilder::TexCoord3f(GLfloat x, GLfloat y, GLfloat z)
 {
     _maxNumTexCoordComponents = 3;
     _texCoord.set(x,y,z,1.0);
 }
 
-void SceneGraphBuilder::glTexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+void SceneGraphBuilder::TexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 {
     _maxNumTexCoordComponents = 4;
     _texCoord.set(x,y,z,w);
 }
 
-void SceneGraphBuilder::glVertex3f(GLfloat x, GLfloat y, GLfloat z)
+void SceneGraphBuilder::Vertex3f(GLfloat x, GLfloat y, GLfloat z)
 {
     osg::Vec3 vertex(x,y,z);
     
@@ -219,7 +219,7 @@ void SceneGraphBuilder::glVertex3f(GLfloat x, GLfloat y, GLfloat z)
     if (_texCoords.valid()) _texCoords->push_back(_texCoord);
 }
 
-void SceneGraphBuilder::glBegin(GLenum mode)
+void SceneGraphBuilder::Begin(GLenum mode)
 {
     // reset geometry
     _primitiveMode = mode;
@@ -236,7 +236,7 @@ void SceneGraphBuilder::glBegin(GLenum mode)
 
 }
 
-void SceneGraphBuilder::glEnd()
+void SceneGraphBuilder::End()
 {
     allocateGeometry();
 
@@ -316,114 +316,114 @@ void SceneGraphBuilder::glEnd()
 //
 //  GLU style building methods
 //
-void SceneGraphBuilder::gluQuadricDrawStyle(GLenum aDrawStyle)
+void SceneGraphBuilder::QuadricDrawStyle(GLenum aDrawStyle)
 {
     _quadricState._drawStyle = aDrawStyle;
 }
 
-void SceneGraphBuilder::gluQuadricNormals(GLenum aNormals)
+void SceneGraphBuilder::QuadricNormals(GLenum aNormals)
 {
     _quadricState._normals = aNormals;
 }
 
-void SceneGraphBuilder::gluQuadricOrientation(GLenum aOrientation)
+void SceneGraphBuilder::QuadricOrientation(GLenum aOrientation)
 {
     _quadricState._orientation = aOrientation;
 }
 
-void SceneGraphBuilder::gluQuadricTexture(GLboolean aTexture)
+void SceneGraphBuilder::QuadricTexture(GLboolean aTexture)
 {
     _quadricState._texture = aTexture;
 }
 
-void SceneGraphBuilder::gluCylinder(GLfloat        aBase,
+void SceneGraphBuilder::Cylinder(GLfloat        aBase,
                              GLfloat        aTop,
                              GLfloat        aHeight,
                              GLint          aSlices,
                              GLint          aStacks)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::gluCylinder("<<aBase<<", "<<aTop<<", "<<aHeight<<", "<<aSlices<<", "<<aStacks<<") not implemented yet"<<std::endl;
+    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::Cylinder("<<aBase<<", "<<aTop<<", "<<aHeight<<", "<<aSlices<<", "<<aStacks<<") not implemented yet"<<std::endl;
 }
 
-void SceneGraphBuilder::gluDisk(GLfloat        aInner,
-                         GLfloat        aOuter,
-                         GLint          aSlices,
-                         GLint          aLoops)
+void SceneGraphBuilder::Disk(GLfloat        inner,
+                             GLfloat        outer,
+                             GLint          slices,
+                             GLint          /*loops*/)
 {
     double angle = 0.0;
-    double delta = 2.0*osg::PI/double(aSlices-1);
+    double delta = 2.0*osg::PI/double(slices-1);
 
-    if (_quadricState._normals!=GLU_NONE) glNormal3f(0.0f,0.0f,1.0f);
+    if (_quadricState._normals!=GLU_NONE) Normal3f(0.0f,0.0f,1.0f);
 
     switch(_quadricState._drawStyle)
     {
         case(GLU_POINT):
         {
-            glBegin(GL_POINTS);
-            if (_quadricState._texture) glTexCoord2f(0.5f,0.5f);
-            glVertex3f(0.0f, 0.0f, 0.0f);
-            for(GLint i=0; i<aSlices; ++i, angle += delta)
+            Begin(GL_POINTS);
+            if (_quadricState._texture) TexCoord2f(0.5f,0.5f);
+            Vertex3f(0.0f, 0.0f, 0.0f);
+            for(GLint i=0; i<slices; ++i, angle += delta)
             {
-                if (_quadricState._texture) glTexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
-                glVertex3f(aOuter*GLfloat(sin(angle)), aOuter*GLfloat(cos(angle)), 0.0f);
+                if (_quadricState._texture) TexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
+                Vertex3f(outer*GLfloat(sin(angle)), outer*GLfloat(cos(angle)), 0.0f);
             }
-            glEnd();
+            End();
             break;
         }
         case(GLU_LINE):
         {
-            glBegin(GL_LINE_LOOP);
-            for(GLint i=0; i<aSlices; ++i, angle += delta)
+            Begin(GL_LINE_LOOP);
+            for(GLint i=0; i<slices; ++i, angle += delta)
             {
-                if (_quadricState._texture) glTexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
-                glVertex3f(aOuter*GLfloat(sin(angle)), aOuter*GLfloat(cos(angle)), 0.0f);
+                if (_quadricState._texture) TexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
+                Vertex3f(outer*GLfloat(sin(angle)), outer*GLfloat(cos(angle)), 0.0f);
             }
-            glEnd();
+            End();
             break;
         }
         case(GLU_FILL):
         {
-            glBegin(GL_TRIANGLE_FAN);
-            if (_quadricState._texture) glTexCoord2f(0.5f,0.5f);
-            glVertex3f(0.0f, 0.0f, 0.0f);
-            for(GLint i=0; i<aSlices; ++i, angle += delta)
+            Begin(GL_TRIANGLE_FAN);
+            if (_quadricState._texture) TexCoord2f(0.5f,0.5f);
+            Vertex3f(0.0f, 0.0f, 0.0f);
+            for(GLint i=0; i<slices; ++i, angle += delta)
             {
-                if (_quadricState._texture) glTexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
-                glVertex3f(aOuter*GLfloat(sin(angle)), aOuter*GLfloat(cos(angle)), 0.0f);
+                if (_quadricState._texture) TexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
+                Vertex3f(outer*GLfloat(sin(angle)), outer*GLfloat(cos(angle)), 0.0f);
             }
-            glEnd();
+            End();
             break;
         }
         case(GLU_SILHOUETTE):
         {
-            glBegin(GL_LINE_LOOP);
-            for(GLint i=0; i<aSlices; ++i, angle += delta)
+            Begin(GL_LINE_LOOP);
+            for(GLint i=0; i<slices; ++i, angle += delta)
             {
-                if (_quadricState._texture) glTexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
-                glVertex3f(aOuter*GLfloat(sin(angle)), aOuter*GLfloat(cos(angle)), 0.0f);
+                if (_quadricState._texture) TexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
+                Vertex3f(outer*GLfloat(sin(angle)), outer*GLfloat(cos(angle)), 0.0f);
             }
-            glEnd();
+            End();
             break;
         }
     }
 }
 
-void SceneGraphBuilder::gluPartialDisk(GLfloat        aInner,
-                                GLfloat        aOuter,
-                                GLint          aSlices,
-                                GLint          aLoops,
-                                GLfloat        aStart,
-                                GLfloat        aSweep)
+void SceneGraphBuilder::PartialDisk(GLfloat        inner,
+                                    GLfloat        outer,
+                                    GLint          slices,
+                                    GLint          loops,
+                                    GLfloat        start,
+                                    GLfloat        sweep)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::gluPartialDisk("<<aInner<<", "<<aOuter<<", "<<aSlices<<", "<<aLoops<<", "<<aStart<<", "<<aSweep<<") not implemented yet."<<std::endl;
+    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::PartialDisk("<<inner<<", "<<outer<<", "<<slices<<", "<<loops<<", "<<start<<", "<<sweep<<") not implemented yet."<<std::endl;
     osg::notify(osg::NOTICE)<<"   quadric("<<_quadricState._drawStyle<<", "<<_quadricState._normals<<", "<<_quadricState._orientation<<", "<<_quadricState._texture<<std::endl;
 }
 
-void SceneGraphBuilder::gluSphere(GLfloat        aRadius,
-                           GLint          aSlices,
-                           GLint          aStacks)
+void SceneGraphBuilder::Sphere(GLfloat        radius,
+                               GLint          /*slices*/,
+                               GLint          /*stacks*/)
 {
-    addShape(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f), aRadius));
+    addShape(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f), radius));
 }
 
 

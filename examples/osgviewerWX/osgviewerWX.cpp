@@ -21,16 +21,22 @@
 // `Main program' equivalent, creating windows and returning main app frame
 bool wxOsgApp::OnInit()
 {
-    // Create the main frame window
-    MainFrame *frame = new MainFrame(NULL, wxT("wxWidgets OSG Sample"),
-        wxDefaultPosition, wxDefaultSize);
-
-    // create osg canvas
-    //    - initialize
-    
+    if (argc<2)
+    {
+        std::cout << wxString(argv[0]).mb_str() <<": requires filename argument." << std::endl;
+        return false;
+    }
 
     int width = 800;
     int height = 600;
+
+    // Create the main frame window
+
+    MainFrame *frame = new MainFrame(NULL, wxT("wxWidgets OSG Sample"),
+        wxDefaultPosition, wxSize(width, height));
+
+    // create osg canvas
+    //    - initialize
 
     int *attributes = new int[6];
     attributes[0] = int(WX_GL_DOUBLEBUFFER);
@@ -42,7 +48,7 @@ bool wxOsgApp::OnInit()
 
     GraphicsWindowWX* gw = new GraphicsWindowWX(frame, wxID_ANY, wxDefaultPosition,
                                                 wxSize(width, height), wxSUNKEN_BORDER, wxT("osgviewerWX"), attributes);
-    
+
     osgViewer::Viewer *viewer = new osgViewer::Viewer;
     viewer->getCamera()->setGraphicsContext(gw);
     viewer->getCamera()->setViewport(0,0,width,height);
@@ -50,9 +56,11 @@ bool wxOsgApp::OnInit()
     viewer->setThreadingModel(osgViewer::Viewer::SingleThreaded);
 
     // load the scene.
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile("cow.osg");
+    wxString fname(argv[1]);
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(std::string(fname.mb_str()));
     if (!loadedModel)
     {
+        std::cout << argv[0] <<": No data loaded." << std::endl;
         return false;
     }
 

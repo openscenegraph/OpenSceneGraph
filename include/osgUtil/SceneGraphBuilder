@@ -139,6 +139,7 @@ class OSGUTIL_EXPORT SceneGraphBuilder
         
         Matrices                            _matrixStack;
         osg::ref_ptr<osg::StateSet>         _stateset;
+        bool                                _statesetAssigned;
         
         bool                                _normalSet;
         osg::Vec3f                          _normal;

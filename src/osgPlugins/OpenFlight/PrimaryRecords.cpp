@@ -30,6 +30,7 @@
 #include <osgSim/DOFTransform>
 #include <osgSim/MultiSwitch>
 #include <osgSim/GeographicLocation>
+#include <osgSim/ObjectRecordData>
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
@@ -861,11 +862,27 @@ protected:
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
-        /*uint32 flags =*/ in.readUInt32();
 
         _object = new osg::Group;
         _object->setName(id);
 
+        if (document.getReadObjectRecordData())
+        {
+            osgSim::ObjectRecordData* ord = new osgSim::ObjectRecordData;
+            ord->_flags = in.readUInt32();
+            ord->_relativePriority = in.readInt16();
+            ord->_transparency = in.readUInt16();
+            ord->_effectID1 = in.readInt16();
+            ord->_effectID2 = in.readInt16();
+            ord->_significance = in.readInt16();
+
+            _object->setUserData( ord );
+        }
+        else
+        {
+            /*uint32 flags =*/ in.readUInt32();
+        }
+        
         // Postpone add-to-parent until we know a bit more.
     }
 

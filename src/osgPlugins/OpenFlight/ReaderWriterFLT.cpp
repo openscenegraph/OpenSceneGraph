@@ -203,6 +203,9 @@ class FLTReaderWriter : public ReaderWriter
                 document.setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
                 osg::notify(osg::DEBUG_INFO) << readerMsg << "noTextureAlphaForTransparancyBinning=" << !document.getUseTextureAlphaForTransparancyBinning() << std::endl;
 
+                document.setReadObjectRecordData(options->getOptionString().find("readObjectRecordData")==std::string::npos);
+                osg::notify(osg::DEBUG_INFO) << readerMsg << "readObjectRecordData=" << !document.getReadObjectRecordData() << std::endl;
+
                 document.setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.
                 osg::notify(osg::DEBUG_INFO) << readerMsg << "noUnitsConversion=" << !document.getDoUnitsConversion() << std::endl;
 

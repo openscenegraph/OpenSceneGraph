@@ -185,8 +185,11 @@ class Document
         void setDesiredUnits(CoordUnits units ) { _desiredUnits=units; }
         CoordUnits getDesiredUnits() const { return _desiredUnits; }
         
-        bool getKeepExternalReferences() const { return _keepExternalReferences; }
         void setKeepExternalReferences( bool flag) { _keepExternalReferences=flag; }
+        bool getKeepExternalReferences() const { return _keepExternalReferences; }
+
+        void setReadObjectRecordData(bool flag) { _readObjectRecordData = flag; }
+        bool getReadObjectRecordData() const { return _readObjectRecordData; }
 
     protected:
 
@@ -199,6 +202,7 @@ class Document
         bool                        _useTextureAlphaForTransparancyBinning;
         bool                        _useBillboardCenter;
         bool                        _doUnitsConversion;
+        bool                        _readObjectRecordData;
         CoordUnits                  _desiredUnits;
         
         bool                        _keepExternalReferences;

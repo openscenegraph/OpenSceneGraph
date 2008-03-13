@@ -34,83 +34,83 @@ class OSGUTIL_EXPORT SceneGraphBuilder
         // 
         //  OpenGL 1.0 style building methods
         //
-        void glPushMatrix();
-        void glPopMatrix();
-        void glLoadIdentity();
-        void glLoadMatrixd(const GLdouble* m);
-        void glMultMatrixd(const GLdouble* m);
-        void glTranslated(GLdouble x, GLdouble y, GLdouble z);
-        void glScaled(GLdouble x, GLdouble y, GLdouble z);
-        void glRotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z);
+        void PushMatrix();
+        void PopMatrix();
+        void LoadIdentity();
+        void LoadMatrixd(const GLdouble* m);
+        void MultMatrixd(const GLdouble* m);
+        void Translated(GLdouble x, GLdouble y, GLdouble z);
+        void Scaled(GLdouble x, GLdouble y, GLdouble z);
+        void Rotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z);
         
-        void glBlendFunc(GLenum srcFactor, GLenum dstFactor);
-        void glCullFace(GLenum mode);
-        void glDepthFunc(GLenum mode);
-        void glFrontFace(GLenum mode);
-        void glLineStipple(GLint factor, GLushort pattern);
-        void glLineWidth(GLfloat lineWidth);
-        void glPointSize(GLfloat pointSize);
-        void glPolygonMode(GLenum face, GLenum mode);
-        void glPolygonOffset(GLfloat factor, GLfloat units);
-        void glPolygonStipple(const GLubyte* mask);
-        void glShadeModel(GLenum mode);
+        void BlendFunc(GLenum srcFactor, GLenum dstFactor);
+        void CullFace(GLenum mode);
+        void DepthFunc(GLenum mode);
+        void FrontFace(GLenum mode);
+        void LineStipple(GLint factor, GLushort pattern);
+        void LineWidth(GLfloat lineWidth);
+        void PointSize(GLfloat pointSize);
+        void PolygonMode(GLenum face, GLenum mode);
+        void PolygonOffset(GLfloat factor, GLfloat units);
+        void PolygonStipple(const GLubyte* mask);
+        void ShadeModel(GLenum mode);
         
-        void glEnable(GLenum mode);
-        void glDisable(GLenum mode);
+        void Enable(GLenum mode);
+        void Disable(GLenum mode);
         
-        void glColor4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
-        void glColor4fv(GLfloat* c) { glColor4f(c[0], c[1], c[2], c[3]); }
+        void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
+        void Color4fv(GLfloat* c) { Color4f(c[0], c[1], c[2], c[3]); }
 
-        void glVertex3f(GLfloat x, GLfloat y, GLfloat z);
-        void glVertex3fv(GLfloat* v) { glVertex3f(v[0], v[1], v[2]); }
+        void Vertex3f(GLfloat x, GLfloat y, GLfloat z);
+        void Vertex3fv(GLfloat* v) { Vertex3f(v[0], v[1], v[2]); }
 
-        void glNormal3f(GLfloat x, GLfloat y, GLfloat z);
-        void glNormal3fv(GLfloat* n) { glNormal3f(n[0], n[1], n[2]); }
+        void Normal3f(GLfloat x, GLfloat y, GLfloat z);
+        void Normal3fv(GLfloat* n) { Normal3f(n[0], n[1], n[2]); }
 
-        void glTexCoord1f(GLfloat x);
-        void glTexCoord1fv(GLfloat* tc) { glTexCoord1f(tc[0]); }
+        void TexCoord1f(GLfloat x);
+        void TexCoord1fv(GLfloat* tc) { TexCoord1f(tc[0]); }
 
-        void glTexCoord2f(GLfloat x, GLfloat y);
-        void glTexCoord2fv(GLfloat* tc) { glTexCoord2f(tc[0],tc[1]); }
+        void TexCoord2f(GLfloat x, GLfloat y);
+        void TexCoord2fv(GLfloat* tc) { TexCoord2f(tc[0],tc[1]); }
 
-        void glTexCoord3f(GLfloat x, GLfloat y, GLfloat z);
-        void glTexCoord3fv(GLfloat* tc) { glTexCoord3f(tc[0], tc[1], tc[2]); }
+        void TexCoord3f(GLfloat x, GLfloat y, GLfloat z);
+        void TexCoord3fv(GLfloat* tc) { TexCoord3f(tc[0], tc[1], tc[2]); }
 
-        void glTexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-        void glTexCoord4fv(GLfloat* tc) { glTexCoord4f(tc[0], tc[1], tc[2], tc[3]); }
+        void TexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        void TexCoord4fv(GLfloat* tc) { TexCoord4f(tc[0], tc[1], tc[2], tc[3]); }
 
-        void glBegin(GLenum mode);
-        void glEnd();
+        void Begin(GLenum mode);
+        void End();
 
         //
         // glu style building methods
         //
-        void gluQuadricDrawStyle(GLenum aDrawStyle);
-        void gluQuadricNormals(GLenum aNormals);
-        void gluQuadricOrientation(GLenum aOrientation);
-        void gluQuadricTexture(GLboolean aTexture);
+        void QuadricDrawStyle(GLenum aDrawStyle);
+        void QuadricNormals(GLenum aNormals);
+        void QuadricOrientation(GLenum aOrientation);
+        void QuadricTexture(GLboolean aTexture);
 
-        void gluCylinder(GLfloat        aBase,
-                         GLfloat        aTop,
-                         GLfloat        aHeight,
-                         GLint          aSlices,
-                         GLint          aStacks);
+        void Cylinder(GLfloat base,
+                      GLfloat top,
+                      GLfloat height,
+                      GLint slices,
+                      GLint stacks);
 
-       void gluDisk(GLfloat        aInner,
-                    GLfloat        aOuter,
-                    GLint          aSlices,
-                    GLint          aLoops);
+       void Disk(GLfloat inner,
+                 GLfloat outer,
+                 GLint slices,
+                 GLint loops);
 
-       void gluPartialDisk(GLfloat        aInner,
-                           GLfloat        aOuter,
-                           GLint          aSlices,
-                           GLint          aLoops,
-                           GLfloat        aStart,
-                           GLfloat        aSweep);
+       void PartialDisk(GLfloat inner,
+                        GLfloat outer,
+                        GLint slices,
+                        GLint loops,
+                        GLfloat start,
+                        GLfloat sweep);
 
-       void gluSphere(GLfloat        aRadius,
-                      GLint          aSlices,
-                      GLint          aStacks);
+       void Sphere(GLfloat radius,
+                   GLint slices,
+                   GLint stacks);
 
 
         //

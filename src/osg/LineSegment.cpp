@@ -155,12 +155,12 @@ bool LineSegment::intersect(const BoundingBox& bb,float& r1,float& r2) const
     bool result = intersectAndClip(s,e,bb);
     if (result)
     {
-        float len = (_e-_s).length();
+        value_type len = (_e-_s).length();
         if (len>0.0f)
         {
-            float inv_len = 1.0f/len;
-            r1 = (s-_s).length()*inv_len;
-            r2 = (e-_e).length()*inv_len;
+            value_type inv_len = 1.0f/len;
+            r1 = (float)((s-_s).length()*inv_len);
+            r2 = (float)((e-_e).length()*inv_len);
         }
         else
         {
@@ -175,10 +175,10 @@ bool LineSegment::intersect(const BoundingBox& bb,float& r1,float& r2) const
 bool LineSegment::intersect(const BoundingSphere& bs,float& r1,float& r2) const
 {
     vec_type sm = _s-bs._center;
-    float c = sm.length2()-bs._radius*bs._radius;
+    value_type c = sm.length2()-bs._radius*bs._radius;
 
     vec_type se = _e-_s;
-    float a = se.length2();
+    value_type a = se.length2();
 
 
     // check for zero length segment.
@@ -195,19 +195,19 @@ bool LineSegment::intersect(const BoundingSphere& bs,float& r1,float& r2) const
         return true;
     }
 
-    float b = sm*se*2.0f;
+    value_type b = sm*se*2.0f;
 
-    float d = b*b-4.0f*a*c;
+    value_type d = b*b-4.0f*a*c;
 
     if (d<0.0f) return false;
 
-    d = sqrtf(d);
+    d = (value_type)sqrt(d);
 
 
-    float div = 1.0f/(2.0f*a);
+    value_type div = 1.0f/(2.0f*a);
 
-    r1 = (-b-d)*div;
-    r2 = (-b+d)*div;
+    r1 = (float)((-b-d)*div);
+    r2 = (float)((-b+d)*div);
 
     if (r1<=0.0f && r2<=0.0f) return false;
 
@@ -220,24 +220,24 @@ bool LineSegment::intersect(const BoundingSphere& bs,float& r1,float& r2) const
 bool LineSegment::intersect(const BoundingSphere& bs) const
 {
     vec_type sm = _s-bs._center;
-    float c = sm.length2()-bs._radius*bs._radius;
+    value_type c = sm.length2()-bs._radius*bs._radius;
     if (c<0.0f) return true;
 
     vec_type se = _e-_s;
-    float a = se.length2();
+    value_type a = se.length2();
 
-    float b = (sm*se)*2.0f;
+    value_type b = (sm*se)*2.0f;
 
-    float d = b*b-4.0f*a*c;
+    value_type d = b*b-4.0f*a*c;
 
     if (d<0.0f) return false;
 
-    d = sqrtf(d);
+    d = (value_type) sqrt(d);
 
-    float div = 1.0f/(2.0f*a);
+    value_type div = 1.0f/(2.0f*a);
 
-    float r1 = (-b-d)*div;
-    float r2 = (-b+d)*div;
+    value_type r1 = (-b-d)*div;
+    value_type r2 = (-b+d)*div;
 
     if (r1<=0.0f && r2<=0.0f) return false;
 
@@ -255,8 +255,8 @@ bool LineSegment::intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& 
 
     vec_type v12 = v2-v1;
     vec_type n12 = v12^vse;
-    float ds12 = (_s-v1)*n12;
-    float d312 = (v3-v1)*n12;
+    value_type ds12 = (_s-v1)*n12;
+    value_type d312 = (v3-v1)*n12;
     if (d312>=0.0f)
     {
         if (ds12<0.0f) return false;
@@ -270,8 +270,8 @@ bool LineSegment::intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& 
 
     vec_type v23 = v3-v2;
     vec_type n23 = v23^vse;
-    float ds23 = (_s-v2)*n23;
-    float d123 = (v1-v2)*n23;
+    value_type ds23 = (_s-v2)*n23;
+    value_type d123 = (v1-v2)*n23;
     if (d123>=0.0f)
     {
         if (ds23<0.0f) return false;
@@ -285,8 +285,8 @@ bool LineSegment::intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& 
 
     vec_type v31 = v1-v3;
     vec_type n31 = v31^vse;
-    float ds31 = (_s-v3)*n31;
-    float d231 = (v2-v3)*n31;
+    value_type ds31 = (_s-v3)*n31;
+    value_type d231 = (v2-v3)*n31;
     if (d231>=0.0f)
     {
         if (ds31<0.0f) return false;
@@ -298,22 +298,22 @@ bool LineSegment::intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& 
         if (ds31<d231) return false;
     }
 
-    float r3 = ds12/d312;
-    float r1 = ds23/d123;
-    float r2 = ds31/d231;
+    value_type r3 = ds12/d312;
+    value_type r1 = ds23/d123;
+    value_type r2 = ds31/d231;
 
-    //    float rt = r1+r2+r3;
+    //    value_type rt = r1+r2+r3;
 
     vec_type in = v1*r1+v2*r2+v3*r3;
 
-    float length = vse.length();
+    value_type length = vse.length();
     vse /= length;
-    float d = (in-_s)*vse;
+    value_type d = (in-_s)*vse;
 
     if (d<0.0f) return false;
     if (d>length) return false;
 
-    r = d/length;
+    r = (float) d/length;
 
     return true;
 }

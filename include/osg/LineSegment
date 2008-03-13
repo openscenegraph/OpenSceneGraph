@@ -52,6 +52,11 @@ class OSG_EXPORT LineSegment : public Referenced
         */
         bool intersect(const BoundingBox& bb,float& r1,float& r2) const;
 
+        /** return true if segment intersects BoundingBox
+          * and return the intersection ratios.
+        */
+        bool intersect(const BoundingBox& bb,double& r1,double& r2) const;
+
         /** return true if segment intersects BoundingSphere. */
         bool intersect(const BoundingSphere& bs) const;
 
@@ -60,10 +65,21 @@ class OSG_EXPORT LineSegment : public Referenced
         */
         bool intersect(const BoundingSphere& bs,float& r1,float& r2) const;
         
+        /** return true if segment intersects BoundingSphere and return the
+          * intersection ratio.
+        */
+        bool intersect(const BoundingSphere& bs,double& r1,double& r2) const;
+
         /** return true if segment intersects triangle
           * and set ratio long segment.
         */
-        bool intersect(const Vec3& v1,const Vec3& v2,const Vec3& v3,float& r);
+        bool intersect(const Vec3f& v1,const Vec3f& v2,const Vec3f& v3,float& r);
+
+        /** return true if segment intersects triangle
+          * and set ratio long segment.
+        */
+        bool intersect(const Vec3d& v1,const Vec3d& v2,const Vec3d& v3,double& r);
+
 
         /** post multiply a segment by matrix.*/
         inline void mult(const LineSegment& seg,const Matrix& m) { _s = seg._s*m; _e = seg._e*m; }

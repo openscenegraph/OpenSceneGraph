@@ -36,7 +36,8 @@ using namespace osgUtil;
 SceneGraphBuilder::SceneGraphBuilder():
     _normal(0.0f,0.0f,1.0f),
     _color(1.0f,1.0f,1.0f,1.0f),
-    _texCoord(0.f,0.0f,0.0f,0.0f)
+    _texCoord(0.f,0.0f,0.0f,1.0f),
+    _statesetAssigned(false)
 {
 }
 
@@ -265,7 +266,43 @@ void SceneGraphBuilder::glEnd()
          _geometry->setNormalBinding(osg::Geometry::BIND_OFF);
     }
     
-    if (_maxNumTexCoordComponents>0)
+    if (_maxNumTexCoordComponents==1)
+    {
+        // convert Vec4Array into FloatArray
+        osg::FloatArray* texCoords = new osg::FloatArray;
+        for(osg::Vec4Array::iterator itr = _texCoords->begin();
+            itr != _texCoords->end();
+            ++itr)
+        {
+            texCoords->push_back(itr->x());
+        }
+         _geometry->setTexCoordArray(0, texCoords);
+    }
+    if (_maxNumTexCoordComponents==2)
+    {
+        // convert Vec4Array into FloatArray
+        osg::Vec2Array* texCoords = new osg::Vec2Array;
+        for(osg::Vec4Array::iterator itr = _texCoords->begin();
+            itr != _texCoords->end();
+            ++itr)
+        {
+            texCoords->push_back(osg::Vec2(itr->x(),itr->y()));
+        }
+         _geometry->setTexCoordArray(0, texCoords);
+    }
+    if (_maxNumTexCoordComponents==3)
+    {
+        // convert Vec4Array into FloatArray
+        osg::Vec3Array* texCoords = new osg::Vec3Array;
+        for(osg::Vec4Array::iterator itr = _texCoords->begin();
+            itr != _texCoords->end();
+            ++itr)
+        {
+            texCoords->push_back(osg::Vec3(itr->x(),itr->y(), itr->z()));
+        }
+         _geometry->setTexCoordArray(0, texCoords);
+    }
+    else if (_maxNumTexCoordComponents==4)
     {
          _geometry->setTexCoordArray(0, _texCoords.get());
     }
@@ -305,8 +342,7 @@ void SceneGraphBuilder::gluCylinder(GLfloat        aBase,
                              GLint          aSlices,
                              GLint          aStacks)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::gluCylinder("<<aBase<<", "<<aTop<<", "<<aHeight<<", "<<aSlices<<", "<<aStacks<<")"<<std::endl;
-    osg::notify(osg::NOTICE)<<"   quadric("<<_quadricState._drawStyle<<", "<<_quadricState._normals<<", "<<_quadricState._orientation<<", "<<_quadricState._texture<<std::endl;
+    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::gluCylinder("<<aBase<<", "<<aTop<<", "<<aHeight<<", "<<aSlices<<", "<<aStacks<<") not implemented yet"<<std::endl;
 }
 
 void SceneGraphBuilder::gluDisk(GLfloat        aInner,
@@ -314,8 +350,62 @@ void SceneGraphBuilder::gluDisk(GLfloat        aInner,
                          GLint          aSlices,
                          GLint          aLoops)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::gluDisk("<<aInner<<", "<<aOuter<<", "<<aSlices<<", "<<aLoops<<")"<<std::endl;
-    osg::notify(osg::NOTICE)<<"   quadric("<<_quadricState._drawStyle<<", "<<_quadricState._normals<<", "<<_quadricState._orientation<<", "<<_quadricState._texture<<std::endl;
+    double angle = 0.0;
+    double delta = 2.0*osg::PI/double(aSlices-1);
+
+    if (_quadricState._normals!=GLU_NONE) glNormal3f(0.0f,0.0f,1.0f);
+
+    switch(_quadricState._drawStyle)
+    {
+        case(GLU_POINT):
+        {
+            glBegin(GL_POINTS);
+            if (_quadricState._texture) glTexCoord2f(0.5f,0.5f);
+            glVertex3f(0.0f, 0.0f, 0.0f);
+            for(GLint i=0; i<aSlices; ++i, angle += delta)
+            {
+                if (_quadricState._texture) glTexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
+                glVertex3f(aOuter*GLfloat(sin(angle)), aOuter*GLfloat(cos(angle)), 0.0f);
+            }
+            glEnd();
+            break;
+        }
+        case(GLU_LINE):
+        {
+            glBegin(GL_LINE_LOOP);
+            for(GLint i=0; i<aSlices; ++i, angle += delta)
+            {
+                if (_quadricState._texture) glTexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
+                glVertex3f(aOuter*GLfloat(sin(angle)), aOuter*GLfloat(cos(angle)), 0.0f);
+            }
+            glEnd();
+            break;
+        }
+        case(GLU_FILL):
+        {
+            glBegin(GL_TRIANGLE_FAN);
+            if (_quadricState._texture) glTexCoord2f(0.5f,0.5f);
+            glVertex3f(0.0f, 0.0f, 0.0f);
+            for(GLint i=0; i<aSlices; ++i, angle += delta)
+            {
+                if (_quadricState._texture) glTexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
+                glVertex3f(aOuter*GLfloat(sin(angle)), aOuter*GLfloat(cos(angle)), 0.0f);
+            }
+            glEnd();
+            break;
+        }
+        case(GLU_SILHOUETTE):
+        {
+            glBegin(GL_LINE_LOOP);
+            for(GLint i=0; i<aSlices; ++i, angle += delta)
+            {
+                if (_quadricState._texture) glTexCoord2f(GLfloat(sin(angle)*0.5+0.5), GLfloat(cos(angle)*0.5+0.5));
+                glVertex3f(aOuter*GLfloat(sin(angle)), aOuter*GLfloat(cos(angle)), 0.0f);
+            }
+            glEnd();
+            break;
+        }
+    }
 }
 
 void SceneGraphBuilder::gluPartialDisk(GLfloat        aInner,
@@ -325,7 +415,7 @@ void SceneGraphBuilder::gluPartialDisk(GLfloat        aInner,
                                 GLfloat        aStart,
                                 GLfloat        aSweep)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::gluPartialDisk("<<aInner<<", "<<aOuter<<", "<<aSlices<<", "<<aLoops<<", "<<aStart<<", "<<aSweep<<")"<<std::endl;
+    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::gluPartialDisk("<<aInner<<", "<<aOuter<<", "<<aSlices<<", "<<aLoops<<", "<<aStart<<", "<<aSweep<<") not implemented yet."<<std::endl;
     osg::notify(osg::NOTICE)<<"   quadric("<<_quadricState._drawStyle<<", "<<_quadricState._normals<<", "<<_quadricState._orientation<<", "<<_quadricState._texture<<std::endl;
 }
 
@@ -375,16 +465,11 @@ void SceneGraphBuilder::matrixChanged()
 void SceneGraphBuilder::addAttribute(osg::StateAttribute* attribute)
 {
     allocateStateSet();
-
     _stateset->setAttribute(attribute);
-
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::addAttribute("<<attribute->className()<<")"<<std::endl;
 }
 
 void SceneGraphBuilder::addMode(GLenum mode, bool enabled)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::addMode("<<mode<<","<<enabled<<")"<<std::endl;
-
     allocateStateSet();
     _stateset->setMode(mode, enabled ? osg::StateAttribute::ON : osg::StateAttribute::OFF);
 }
@@ -392,23 +477,18 @@ void SceneGraphBuilder::addMode(GLenum mode, bool enabled)
 
 void SceneGraphBuilder::addTextureAttribute(unsigned int unit, osg::StateAttribute* attribute)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::addAttribute("<<attribute->className()<<")"<<std::endl;
-
     allocateStateSet();
     _stateset->setTextureAttribute(unit, attribute);
 }
 
 void SceneGraphBuilder::addTextureMode(unsigned int unit, GLenum mode, bool enabled)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::addTextureMode("<<mode<<","<<enabled<<")"<<std::endl;
-
     allocateStateSet();
     _stateset->setTextureMode(unit, mode, enabled ? osg::StateAttribute::ON : osg::StateAttribute::OFF);
 }
 
 void SceneGraphBuilder::addShape(osg::Shape* shape)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::addShape("<<shape->className()<<std::endl;
     osg::ShapeDrawable* sd = new osg::ShapeDrawable(shape);
     sd->setColor(_color);
     
@@ -418,17 +498,22 @@ void SceneGraphBuilder::addShape(osg::Shape* shape)
 void SceneGraphBuilder::addDrawable(osg::Drawable* drawable)
 {
     if (!_geode) _geode = new osg::Geode;
-    
+
+    if (_stateset.valid())
+    {
+        drawable->setStateSet(_stateset.get());
+        _statesetAssigned = true;
+    }
+
     _geode->addDrawable(drawable);
 }
 
 void SceneGraphBuilder::allocateStateSet()
 {
-    if (_geometry.valid())
+    if (_statesetAssigned)
     {
-        completeGeometry();
-        
-        _stateset = 0;
+        _stateset = dynamic_cast<osg::StateSet*>(_stateset->clone(osg::CopyOp::SHALLOW_COPY));
+        _statesetAssigned = false;
     }
     
     if (!_stateset) _stateset = new osg::StateSet;

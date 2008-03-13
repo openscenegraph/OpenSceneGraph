@@ -711,7 +711,7 @@ bool GraphicsWindowX11::createWindow()
     XSelectInput( _eventDisplay, _window, ExposureMask | StructureNotifyMask | 
                                      KeyPressMask | KeyReleaseMask |
                                      PointerMotionMask | ButtonPressMask | ButtonReleaseMask |
-                                     KeymapStateMask | FocusChangeMask );
+                                     KeymapStateMask | FocusChangeMask | EnterWindowMask );
 
     XFlush( _eventDisplay );
     XSync( _eventDisplay, 0 );
@@ -1015,6 +1015,11 @@ void GraphicsWindowX11::checkEvents()
                 break;
             }
 
+            case EnterNotify :
+                osg::notify(osg::INFO)<<"EnterNotify event received"<<std::endl;
+                _lockMask = ev.xcrossing.state & LockMask;
+                break;
+
             case KeymapNotify :
             {
                 osg::notify(osg::INFO)<<"KeymapNotify event received"<<std::endl;
@@ -1170,6 +1175,7 @@ void GraphicsWindowX11::checkEvents()
                 Time relativeTime = ev.xmotion.time - firstEventTime;
                 eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
 
+                _lockMask = ev.xkey.state & LockMask;
                 keyMapSetKey(_keyMap, ev.xkey.keycode);
                 int keySymbol = 0;
                 adaptKey(ev.xkey, keySymbol);
@@ -1199,7 +1205,8 @@ void GraphicsWindowX11::checkEvents()
                         break;
                     }
                 }
-#endif                
+#endif
+                _lockMask = ev.xkey.state & LockMask;
                 keyMapClearKey(_keyMap, ev.xkey.keycode);
                 int keySymbol = 0;
                 adaptKey(ev.xkey, keySymbol);
@@ -1312,7 +1319,7 @@ void GraphicsWindowX11::forceKey(int key, double time, bool state)
     event.y = 0;
     event.x_root = 0;
     event.y_root = 0;
-    event.state = getModifierMask();
+    event.state = getModifierMask() | _lockMask;
     event.keycode = key;
     event.same_screen = True;
 

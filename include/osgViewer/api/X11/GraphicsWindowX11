@@ -45,7 +45,8 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
             _initialized(false),
             _realized(false),
             _timeOfLastCheckEvents(-1.0),
-            _lastEventType(0)
+            _lastEventType(0),
+            _lockMask(0)
         {
             _traits = traits;
             memset(_keyMap, 0, 32);
@@ -183,6 +184,7 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
 
         double          _timeOfLastCheckEvents;
         int             _lastEventType;
+        int             _lockMask;
 
         char            _keyMap[32];
         std::map<MouseCursor,Cursor> _mouseCursorMap;

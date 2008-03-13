@@ -23,7 +23,7 @@
 
 namespace osgUtil {
 
-/** A simplifier for reducing the number of traingles in osg::Geometry.
+/** A class for assisting the building ascene graphs that is equivilant to OpenGL 1.0 style calls.
   */
 class OSGUTIL_EXPORT SceneGraphBuilder
 {

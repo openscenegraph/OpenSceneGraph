@@ -981,7 +981,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
     _techniqueSwitch = new osg::Switch;
 
     {
-        std::cout<<"Creating billboard based forest...";
+        std::cout<<"Creating osg::Billboard based forest...";
         osg::Group* group = new osg::Group;
         group->addChild(createBillboardGraph(cell.get(),dstate));
         group->addChild(createHUDWithText("Using osg::Billboard's to create a forest\n\nPress left cursor key to select OpenGL shader based forest\nPress right cursor key to select double quad based forest"));
@@ -990,7 +990,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
     }
     
     {
-        std::cout<<"Creating billboard based forest...";
+        std::cout<<"Creating double quad based forest...";
         osg::Group* group = new osg::Group;
         group->addChild(createXGraph(cell.get(),dstate));
         group->addChild(createHUDWithText("Using double quads to create a forest\n\nPress left cursor key to select osg::Billboard based forest\nPress right cursor key to select osg::MatrixTransform based forest\n"));
@@ -999,10 +999,10 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
     }
 
     {
-        std::cout<<"Creating billboard based forest...";
+        std::cout<<"Creating osg::MatrixTransform based forest...";
         osg::Group* group = new osg::Group;
         group->addChild(createTransformGraph(cell.get(),dstate));
-        group->addChild(createHUDWithText("Using osg::MatrixTransform's to create a forest\n\nPress left cursor key to select double quad based forest\nPress right cursor key to select OpenGL shder based forest"));
+        group->addChild(createHUDWithText("Using osg::MatrixTransform's to create a forest\n\nPress left cursor key to select double quad based forest\nPress right cursor key to select OpenGL shader based forest"));
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
@@ -1066,7 +1066,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
             stateset->addUniform(baseTextureSampler);
         }
 
-        std::cout<<"Creating billboard based forest...";
+        std::cout<<"Creating OpenGL shader based forest...";
         group->addChild(createShaderGraph(cell.get(),stateset));
         group->addChild(createHUDWithText("Using OpenGL Shader to create a forest\n\nPress left cursor key to select osg::MatrixTransform based forest\nPress right cursor key to select osg::Billboard based forest"));
         _techniqueSwitch->addChild(group);

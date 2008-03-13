@@ -244,69 +244,95 @@ void testGetQuatFromMatrix(const osg::Vec3d& scale)
     tstart = osg::Timer::instance()->tick();
     int count=0;
     for (double rol1 = rol1start; rol1 <= rol1stop; rol1 += rol1step) {
-    for (double pit1 = pit1start; pit1 <= pit1stop; pit1 += pit1step) {
-        for (double yaw1 = yaw1start; yaw1 <= yaw1stop; yaw1 += yaw1step) {
-        for (double rol2 = rol2start; rol2 <= rol2stop; rol2 += rol2step) {
-            for (double pit2 = pit2start; pit2 <= pit2stop; pit2 += pit2step) {
-            for (double yaw2 = yaw2start; yaw2 <= yaw2stop; yaw2 += yaw2step) {
-                count++;
-                // create two quats based on the roll, pitch and yaw values
-                osg::Quat rot_quat1 =
-                osg::Quat(osg::DegreesToRadians(rol1),osg::Vec3d(1,0,0),
-                      osg::DegreesToRadians(pit1),osg::Vec3d(0,1,0),
-                      osg::DegreesToRadians(yaw1),osg::Vec3d(0,0,1));
-                
-                osg::Quat rot_quat2 =
-                osg::Quat(osg::DegreesToRadians(rol2),osg::Vec3d(1,0,0),
-                      osg::DegreesToRadians(pit2),osg::Vec3d(0,1,0),
-                      osg::DegreesToRadians(yaw2),osg::Vec3d(0,0,1));
-                
-                // create an output quat using quaternion math
-                osg::Quat out_quat1;
-                out_quat1 = rot_quat2 * rot_quat1;
-                
-                // create two matrices based on the input quats
-                osg::Matrixd mat1,mat2;
-                mat1.makeRotate(rot_quat1);
-                mat2.makeRotate(rot_quat2);
-        
-                // create an output quat by matrix multiplication and getRotate
-                osg::Matrixd out_mat;
-                out_mat = mat2 * mat1;
-                // add matrix scale for even more nastiness
-                out_mat = out_mat * scalemat;
-                osg::Quat out_quat2;
-                out_quat2 = out_mat.getRotate();
-                
-                // If the quaternion W is <0, then we should reflect
-                // to get it into the positive W
-                if(out_quat1.w()<0) out_quat1 = out_quat1 * -1.0;
-                if(out_quat2.w()<0) out_quat2 = out_quat2 * -1.0;
+        for (double pit1 = pit1start; pit1 <= pit1stop; pit1 += pit1step) {
+            for (double yaw1 = yaw1start; yaw1 <= yaw1stop; yaw1 += yaw1step) {
+                for (double rol2 = rol2start; rol2 <= rol2stop; rol2 += rol2step) {
+                    for (double pit2 = pit2start; pit2 <= pit2stop; pit2 += pit2step) {
+                        for (double yaw2 = yaw2start; yaw2 <= yaw2stop; yaw2 += yaw2step)
+                        {
+                            count++;
+                            // create two quats based on the roll, pitch and yaw values
+                            osg::Quat rot_quat1 =
+                            osg::Quat(osg::DegreesToRadians(rol1),osg::Vec3d(1,0,0),
+                                  osg::DegreesToRadians(pit1),osg::Vec3d(0,1,0),
+                                  osg::DegreesToRadians(yaw1),osg::Vec3d(0,0,1));
 
+                            osg::Quat rot_quat2 =
+                            osg::Quat(osg::DegreesToRadians(rol2),osg::Vec3d(1,0,0),
+                                  osg::DegreesToRadians(pit2),osg::Vec3d(0,1,0),
+                                  osg::DegreesToRadians(yaw2),osg::Vec3d(0,0,1));
 
-                // if the output quat length is not one 
-                // or if the components do not match,
-                // something is amiss
-                if (fabs(1.0-out_quat2.length()) > eps ||
-                (fabs(out_quat1.x()-out_quat2.x())) > eps ||
-                (fabs(out_quat1.y()-out_quat2.y())) > eps ||
-                (fabs(out_quat1.z()-out_quat2.z())) > eps ||
-                (fabs(out_quat1.w()-out_quat2.w())) > eps) {
-                std::cout << "testGetQuatFromMatrix problem at: \n"
-                      << " r1=" << rol1
-                      << " p1=" << pit1
-                      << " y1=" << yaw1
-                      << " r2=" << rol2
-                      << " p2=" << pit2
-                      << " y2=" << yaw2 << "\n";
-                std::cout << "quats:        " << out_quat1 << " length: " << out_quat1.length() << "\n";
-                std::cout << "mats and get: " << out_quat2 << " length: " << out_quat2.length() << "\n\n";
+                            // create an output quat using quaternion math
+                            osg::Quat out_quat1;
+                            out_quat1 = rot_quat2 * rot_quat1;
+
+                            // create two matrices based on the input quats
+                            osg::Matrixd mat1,mat2;
+                            mat1.makeRotate(rot_quat1);
+                            mat2.makeRotate(rot_quat2);
+
+                            // create an output quat by matrix multiplication and getRotate
+                            osg::Matrixd out_mat;
+                            out_mat = mat2 * mat1;
+                            // add matrix scale for even more nastiness
+                            out_mat = out_mat * scalemat;
+                            osg::Quat out_quat2;
+                            out_quat2 = out_mat.getRotate();
+
+                            // If the quaternion W is <0, then we should reflect
+                            // to get it into the positive W.
+                            // Unfortunately, when W is very small (close to 0), the sign
+                            // does not really make sense because of precision problems
+                            // and the reflection might not work.
+                            if(out_quat1.w()<0) out_quat1 = out_quat1 * -1.0;
+                            if(out_quat2.w()<0) out_quat2 = out_quat2 * -1.0;
+
+                            // if the output quat length is not one 
+                            // or if the components do not match,
+                            // something is amiss
+
+                            bool componentsOK = false;
+                            if ( ((fabs(out_quat1.x()-out_quat2.x())) < eps) &&
+                                 ((fabs(out_quat1.y()-out_quat2.y())) < eps) &&
+                                 ((fabs(out_quat1.z()-out_quat2.z())) < eps) &&
+                                 ((fabs(out_quat1.w()-out_quat2.w())) < eps) )
+                                    {
+                                componentsOK = true;
+                            }
+                            // We should also test for q = -q which is valid, so reflect
+                            // one quat.
+                            out_quat2 = out_quat2 * -1.0;
+                            if ( ((fabs(out_quat1.x()-out_quat2.x())) < eps) &&
+                                 ((fabs(out_quat1.y()-out_quat2.y())) < eps) &&
+                                 ((fabs(out_quat1.z()-out_quat2.z())) < eps) &&
+                                 ((fabs(out_quat1.w()-out_quat2.w())) < eps) )
+                            {
+                                componentsOK = true;
+                            }
+
+                            bool lengthOK = false;
+                            if (fabs(1.0-out_quat2.length()) < eps)
+                            {
+                                lengthOK = true;
+                            }
+
+                            if (!lengthOK || !componentsOK)
+                            {
+                                std::cout << "testGetQuatFromMatrix problem at: \n"
+                                      << " r1=" << rol1
+                                      << " p1=" << pit1
+                                      << " y1=" << yaw1
+                                      << " r2=" << rol2
+                                      << " p2=" << pit2
+                                      << " y2=" << yaw2 << "\n";
+                                std::cout << "quats:        " << out_quat1 << " length: " << out_quat1.length() << "\n";
+                                std::cout << "mats and get: " << out_quat2 << " length: " << out_quat2.length() << "\n\n";
+                            }
+                        }
+                    }
                 }
             }
-            }
         }
-        }
-    }
     }
     tstop = osg::Timer::instance()->tick();
     double duration = osg::Timer::instance()->delta_s(tstart,tstop);

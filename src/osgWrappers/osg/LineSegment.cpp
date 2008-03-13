@@ -14,7 +14,8 @@
 #include <osg/BoundingSphere>
 #include <osg/LineSegment>
 #include <osg/Matrix>
-#include <osg/Vec3>
+#include <osg/Vec3d>
+#include <osg/Vec3f>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -83,6 +84,11 @@ BEGIN_OBJECT_REFLECTOR(osg::LineSegment)
 	          __bool__intersect__C5_BoundingBox_R1__float_R1__float_R1,
 	          "return true if segment intersects BoundingBox and return the intersection ratios. ",
 	          "");
+	I_Method3(bool, intersect, IN, const osg::BoundingBox &, bb, IN, double &, r1, IN, double &, r2,
+	          Properties::NON_VIRTUAL,
+	          __bool__intersect__C5_BoundingBox_R1__double_R1__double_R1,
+	          "return true if segment intersects BoundingBox and return the intersection ratios. ",
+	          "");
 	I_Method1(bool, intersect, IN, const osg::BoundingSphere &, bs,
 	          Properties::NON_VIRTUAL,
 	          __bool__intersect__C5_BoundingSphere_R1,
@@ -93,9 +99,19 @@ BEGIN_OBJECT_REFLECTOR(osg::LineSegment)
 	          __bool__intersect__C5_BoundingSphere_R1__float_R1__float_R1,
 	          "return true if segment intersects BoundingSphere and return the intersection ratio. ",
 	          "");
-	I_Method4(bool, intersect, IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2, IN, const osg::Vec3 &, v3, IN, float &, r,
+	I_Method3(bool, intersect, IN, const osg::BoundingSphere &, bs, IN, double &, r1, IN, double &, r2,
 	          Properties::NON_VIRTUAL,
-	          __bool__intersect__C5_Vec3_R1__C5_Vec3_R1__C5_Vec3_R1__float_R1,
+	          __bool__intersect__C5_BoundingSphere_R1__double_R1__double_R1,
+	          "return true if segment intersects BoundingSphere and return the intersection ratio. ",
+	          "");
+	I_Method4(bool, intersect, IN, const osg::Vec3f &, v1, IN, const osg::Vec3f &, v2, IN, const osg::Vec3f &, v3, IN, float &, r,
+	          Properties::NON_VIRTUAL,
+	          __bool__intersect__C5_Vec3f_R1__C5_Vec3f_R1__C5_Vec3f_R1__float_R1,
+	          "return true if segment intersects triangle and set ratio long segment. ",
+	          "");
+	I_Method4(bool, intersect, IN, const osg::Vec3d &, v1, IN, const osg::Vec3d &, v2, IN, const osg::Vec3d &, v3, IN, double &, r,
+	          Properties::NON_VIRTUAL,
+	          __bool__intersect__C5_Vec3d_R1__C5_Vec3d_R1__C5_Vec3d_R1__double_R1,
 	          "return true if segment intersects triangle and set ratio long segment. ",
 	          "");
 	I_Method2(void, mult, IN, const osg::LineSegment &, seg, IN, const osg::Matrix &, m,

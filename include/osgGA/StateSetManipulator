@@ -45,6 +45,7 @@ public:
 
         /** get the attached a STATESTATE.*/
         virtual const osg::StateSet * getStateSet() const;
+        
 
         /** Handle events, return true if handled, false otherwise.*/
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);        
@@ -85,6 +86,8 @@ public:
 protected:
 
         virtual ~StateSetManipulator();
+
+        void clone();
 
         osg::ref_ptr<osg::StateSet> _stateset;
 

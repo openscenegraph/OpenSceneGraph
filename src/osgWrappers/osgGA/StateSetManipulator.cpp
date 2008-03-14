@@ -158,6 +158,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	          __int__getKeyEventCyclePolygonMode,
 	          "",
 	          "");
+	I_ProtectedMethod0(void, clone,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__clone,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(osg::PolygonMode *, getOrCreatePolygonMode,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

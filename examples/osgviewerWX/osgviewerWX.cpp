@@ -18,6 +18,8 @@
 #include <wx/image.h>
 #include <wx/menu.h>
 
+#include <iostream>
+
 // `Main program' equivalent, creating windows and returning main app frame
 bool wxOsgApp::OnInit()
 {

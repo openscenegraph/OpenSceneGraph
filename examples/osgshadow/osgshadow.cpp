@@ -52,7 +52,7 @@
 
 const int ReceivesShadowTraversalMask = 0x1;
 const int CastsShadowTraversalMask = 0x2;
-  
+
 namespace ModelOne
 {
 
@@ -63,7 +63,7 @@ namespace ModelOne
         LEFT_FACE = 4,
         RIGHT_FACE = 8,
         TOP_FACE = 16,
-        BOTTOM_FACE = 32        
+        BOTTOM_FACE = 32
     };
 
     osg::Node* createCube(unsigned int mask)
@@ -100,7 +100,7 @@ namespace ModelOne
 
         if (mask & FRONT_FACE)
         {
-            // front face    
+            // front face
             vertices->push_back(origin);
             vertices->push_back(origin+dx);
             vertices->push_back(origin+dx+dz);
@@ -113,7 +113,7 @@ namespace ModelOne
 
         if (mask & BACK_FACE)
         {
-            // back face    
+            // back face
             vertices->push_back(origin+dy);
             vertices->push_back(origin+dy+dz);
             vertices->push_back(origin+dy+dx+dz);
@@ -126,7 +126,7 @@ namespace ModelOne
 
         if (mask & LEFT_FACE)
         {
-            // left face    
+            // left face
             vertices->push_back(origin+dy);
             vertices->push_back(origin);
             vertices->push_back(origin+dz);
@@ -139,7 +139,7 @@ namespace ModelOne
 
         if (mask & RIGHT_FACE)
         {
-            // right face    
+            // right face
             vertices->push_back(origin+dx+dy);
             vertices->push_back(origin+dx+dy+dz);
             vertices->push_back(origin+dx+dz);
@@ -152,7 +152,7 @@ namespace ModelOne
 
         if (mask & TOP_FACE)
         {
-            // top face    
+            // top face
             vertices->push_back(origin+dz);
             vertices->push_back(origin+dz+dx);
             vertices->push_back(origin+dz+dx+dy);
@@ -165,7 +165,7 @@ namespace ModelOne
 
         if (mask & BOTTOM_FACE)
         {
-            // bottom face    
+            // bottom face
             vertices->push_back(origin);
             vertices->push_back(origin+dy);
             vertices->push_back(origin+dx+dy);
@@ -206,7 +206,7 @@ namespace ModelOne
 
                         sw->setSingleChildOn(_childNum);
                         return true;
-                    }                
+                    }
                     break;
                 }
                 default:
@@ -234,8 +234,8 @@ namespace ModelOne
         sw->addChild(ModelOne::createCube(ModelOne::FRONT_FACE | ModelOne::BACK_FACE | ModelOne::LEFT_FACE | ModelOne::RIGHT_FACE), false);
         sw->addChild(ModelOne::createCube(ModelOne::FRONT_FACE | ModelOne::BACK_FACE | ModelOne::LEFT_FACE | ModelOne::RIGHT_FACE | ModelOne::TOP_FACE), false);
         sw->addChild(ModelOne::createCube(ModelOne::FRONT_FACE | ModelOne::BACK_FACE | ModelOne::LEFT_FACE | ModelOne::RIGHT_FACE | ModelOne::TOP_FACE | ModelOne::BOTTOM_FACE), false);
-        
-        return sw;    
+
+        return sw;
     }
 }
 
@@ -243,7 +243,7 @@ namespace ModelTwo
 {
     osg::AnimationPath* createAnimationPath(const osg::Vec3& center,float radius,double looptime)
     {
-        // set up the animation path 
+        // set up the animation path
         osg::AnimationPath* animationPath = new osg::AnimationPath;
         animationPath->setLoopMode(osg::AnimationPath::LOOP);
 
@@ -265,7 +265,7 @@ namespace ModelTwo
             time += time_delta;
 
         }
-        return animationPath;    
+        return animationPath;
     }
 
     osg::Node* createBase(const osg::Vec3& center,float radius)
@@ -373,12 +373,12 @@ namespace ModelTwo
         // the shadowed model
         osg::Node* shadowed = createBase(center-osg::Vec3(0.0f,0.0f,radius*0.25),radius);
         shadowed->setNodeMask(ReceivesShadowTraversalMask);
-        
+
         osg::Group* group = new osg::Group;
 
         group->addChild(shadowed);
         group->addChild(shadower);
-        
+
         return group;
     }
 }
@@ -457,7 +457,7 @@ namespace ModelThree
 
         return scene;
     }
-    
+
 }
 
 
@@ -475,7 +475,7 @@ osg::Node* createTestModel(osg::ArgumentParser& arguments)
     {
         return ModelThree::createModel(arguments);
     }
-    
+
 }
 
 int main(int argc, char** argv)
@@ -502,12 +502,12 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--minNearSplit", "ParallelSplitShadowMap shadow map near offset.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--maxFarDist", "ParallelSplitShadowMap max far distance to shadow.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--moveVCamFactor", "ParallelSplitShadowMap move the virtual frustum behind the real camera, (also back ground object can cast shadow).");//ADEGLI
-    arguments.getApplicationUsage()->addCommandLineOption("--NVidea", "ParallelSplitShadowMap set default PolygonOffset for NVidea.");//ADEGLI
+    arguments.getApplicationUsage()->addCommandLineOption("--NVidia", "ParallelSplitShadowMap set default PolygonOffset for NVidia.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Factor", "ParallelSplitShadowMap set PolygonOffset factor.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Unit", "ParallelSplitShadowMap set PolygonOffset unit.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--CullFaceFront", "ParallelSplitShadowMap add a cull face: front.");//ADEGLI
 
-    
+
     arguments.getApplicationUsage()->addCommandLineOption("-1", "Use test model one.");
     arguments.getApplicationUsage()->addCommandLineOption("-2", "Use test model two.");
     arguments.getApplicationUsage()->addCommandLineOption("-3", "Use test model three.");
@@ -527,7 +527,7 @@ int main(int argc, char** argv)
 
     // default to single threaded during dev work.
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
-    
+
     while (arguments.read("--SingleThreaded")) viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
     while (arguments.read("--CullDrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);
     while (arguments.read("--DrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::DrawThreadPerContext);
@@ -559,7 +559,7 @@ int main(int argc, char** argv)
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
+            if (apm || !apm->valid())
             {
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
@@ -582,11 +582,11 @@ int main(int argc, char** argv)
 
 
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
-    
+
     shadowedScene->setReceivesShadowTraversalMask(ReceivesShadowTraversalMask);
     shadowedScene->setCastsShadowTraversalMask(CastsShadowTraversalMask);
-    
-    
+
+
     if (arguments.read("--sv"))
     {
         // hint to tell viewer to request stencil buffer when setting up windows
@@ -611,11 +611,11 @@ int main(int argc, char** argv)
         osg::ref_ptr<osgShadow::ParallelSplitShadowMap> pssm = new osgShadow::ParallelSplitShadowMap(NULL,mapcount);
 
         int mapres = 1024;
-        while (arguments.read("--mapres", mapres)) 
+        while (arguments.read("--mapres", mapres))
             pssm->setTextureResolution(mapres);
-        
+
         while (arguments.read("--debug-color")) { pssm->setDebugColorOn(); }
-         
+
 
         int minNearSplit=0;
         while (arguments.read("--minNearSplit", minNearSplit))
@@ -637,7 +637,7 @@ int main(int argc, char** argv)
                 pssm->setMoveVCamBehindRCamFactor(moveVCamFactor);
                 std::cout << "ParallelSplitShadowMap : setMoveVCamBehindRCamFactor(" << moveVCamFactor<<")" << std::endl;
             }
-            
+
 
         double polyoffsetfactor = -0.02;
         double polyoffsetunit = 1.0;
@@ -645,9 +645,9 @@ int main(int argc, char** argv)
         while (arguments.read("--PolyOffset-Unit", polyoffsetunit));
         pssm->setPolygonOffset(osg::Vec2(polyoffsetfactor,polyoffsetunit)); //ATI Radeon
 
-        if (arguments.read("--NVidea")){
+        if (arguments.read("--NVidia")){
             //pssm->setPolygonOffset(osg::Vec2(-0.02,1.0)); //ATI Radeon
-            pssm->setPolygonOffset(osg::Vec2(10.0f,20.0f)); //NVidea 
+            pssm->setPolygonOffset(osg::Vec2(10.0f,20.0f)); //NVidia
         }
 
         if ( arguments.read("--CullFaceFront") ) {
@@ -667,10 +667,10 @@ int main(int argc, char** argv)
         shadowedScene->setShadowTechnique(sm.get());
 
         int mapres = 1024;
-        while (arguments.read("--mapres", mapres)) 
+        while (arguments.read("--mapres", mapres))
             sm->setTextureSize(osg::Vec2s(mapres,mapres));
    }
-    
+
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
     if (model.valid())
     {
@@ -681,13 +681,13 @@ int main(int argc, char** argv)
         model = createTestModel(arguments);
     }
 
-    // get the bounds of the model.    
+    // get the bounds of the model.
     osg::ComputeBoundsVisitor cbbv;
     model->accept(cbbv);
     osg::BoundingBox bb = cbbv.getBoundingBox();
 
     osg::Vec4 lightpos;
-    
+
     if (postionalLight)
     {
         lightpos.set(bb.center().x(), bb.center().y(), bb.zMax() + bb.radius()*2.0f  ,1.0f);
@@ -702,16 +702,16 @@ int main(int argc, char** argv)
     {
 
         osg::Geode* geode = new osg::Geode;
-        
+
         osg::Vec3 widthVec(bb.radius(), 0.0f, 0.0f);
         osg::Vec3 depthVec(0.0f, bb.radius(), 0.0f);
         osg::Vec3 centerBase( (bb.xMin()+bb.xMax())*0.5f, (bb.yMin()+bb.yMax())*0.5f, bb.zMin()-bb.radius()*0.1f );
-        
-        geode->addDrawable( osg::createTexturedQuadGeometry( centerBase-widthVec*1.5f-depthVec*1.5f, 
+
+        geode->addDrawable( osg::createTexturedQuadGeometry( centerBase-widthVec*1.5f-depthVec*1.5f,
                                                              widthVec*3.0f, depthVec*3.0f) );
-                                                             
+
         geode->setNodeMask(shadowedScene->getReceivesShadowTraversalMask());
-        
+
         geode->getOrCreateStateSet()->setTextureAttributeAndModes(0, new osg::Texture2D(osgDB::readImageFile("Images/lz.rgb")));
 
         shadowedScene->addChild(geode);
@@ -719,7 +719,7 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
     ls->getLight()->setPosition(lightpos);
-    
+
     bool spotlight = false;
     if (arguments.read("--spotLight"))
     {
@@ -748,7 +748,7 @@ int main(int argc, char** argv)
 
     shadowedScene->addChild(model.get());
     shadowedScene->addChild(ls.get());
-    
+
     viewer.setSceneData(shadowedScene.get());
 
     // create the windows and run the threads.
@@ -759,12 +759,12 @@ int main(int argc, char** argv)
     {
         osgViewer::Viewer::Windows windows;
         viewer.getWindows(windows);
-        
+
         if (windows.empty()) return 1;
-        
+
         osgShadow::ShadowMap* sm = dynamic_cast<osgShadow::ShadowMap*>(shadowedScene->getShadowTechnique());
         osg::ref_ptr<osg::Camera> hudCamera = sm->makeDebugHUD();
-        
+
         // set up cameras to rendering on the first window available.
         hudCamera->setGraphicsContext(windows[0]);
         hudCamera->setViewport(0,0,windows[0]->getTraits()->width, windows[0]->getTraits()->height);
@@ -789,10 +789,10 @@ int main(int argc, char** argv)
                 lightpos.set(sinf(t),cosf(t),1.0f,0.0f);
             }
             ls->getLight()->setPosition(lightpos);
-            
+
             osg::Vec3f lightDir(-lightpos.x(),-lightpos.y(),-lightpos.z());
             if(spotlight)
-                lightDir =  osg::Vec3(bb.center().x()+sinf(t)*bb.radius()/2.0, bb.center().y() + cosf(t)*bb.radius()/2.0, bb.center().z()) 
+                lightDir =  osg::Vec3(bb.center().x()+sinf(t)*bb.radius()/2.0, bb.center().y() + cosf(t)*bb.radius()/2.0, bb.center().z())
                 - osg::Vec3(lightpos.x(), lightpos.y(), lightpos.z()) ;
             lightDir.normalize();
             ls->getLight()->setDirection(lightDir);
@@ -800,6 +800,6 @@ int main(int argc, char** argv)
 
         viewer.frame();
     }
-    
+
     return 0;
 }

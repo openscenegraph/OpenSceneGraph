@@ -1018,6 +1018,7 @@ void GraphicsWindowX11::checkEvents()
             case EnterNotify :
                 osg::notify(osg::INFO)<<"EnterNotify event received"<<std::endl;
                 _lockMask = ev.xcrossing.state & LockMask;
+                syncCapsLock();
                 break;
 
             case KeymapNotify :
@@ -1030,6 +1031,7 @@ void GraphicsWindowX11::checkEvents()
 
                 char modMap[32];
                 getModifierMap(modMap);
+                syncCapsLock();
 
                 // release normal (non-modifier) keys
                 for (unsigned int key = 8; key < 256; key++)
@@ -1338,6 +1340,20 @@ void GraphicsWindowX11::forceKey(int key, double time, bool state)
         getEventQueue()->keyRelease(keySymbol, time);
         keyMapClearKey(_keyMap, key);
     }
+}
+
+void GraphicsWindowX11::syncCapsLock()
+{
+    unsigned int mask = getEventQueue()->getCurrentEventState()->getModKeyMask();
+    if (_lockMask)
+    {
+        mask |= osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK;
+    }
+    else
+    {
+        mask &= ~osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK;
+    }
+    getEventQueue()->getCurrentEventState()->setModKeyMask(mask);
 }
 
 // Returns char[32] keymap with bits for every modifier key set.

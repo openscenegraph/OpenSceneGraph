@@ -141,10 +141,10 @@ StateSet::StateSet(const StateSet& rhs,const CopyOp& copyop):Object(rhs,copyop)
         rhs_uitr != rhs._uniformList.end();
         ++rhs_uitr)
     {
-    const std::string& name = rhs_uitr->first;
-    const RefUniformPair& rup = rhs_uitr->second;
-    Uniform* uni = copyop(rup.first.get());
-    if (uni)
+        const std::string& name = rhs_uitr->first;
+        const RefUniformPair& rup = rhs_uitr->second;
+        Uniform* uni = copyop(rup.first.get());
+        if (uni)
         {
             _uniformList[name] = RefUniformPair(uni, rup.second);
             uni->addParent(this);

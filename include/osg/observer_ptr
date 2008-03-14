@@ -76,22 +76,14 @@ class observer_ptr : public Observer
         inline bool operator < (const T* ptr) const { return (_ptr<ptr); }
         inline bool operator > (const T* ptr) const { return (_ptr>ptr); }
 
-
-        inline T& operator*()  { return *_ptr; }
-
-        inline const T& operator*() const { return *_ptr; }
-
-        inline T* operator->() { return _ptr; }
-
-        inline const T* operator->() const   { return _ptr; }
+        inline T& operator*() const { return *_ptr; }
+        inline T* operator->() const   { return _ptr; }
+        inline T* get() const { return _ptr; }
 
         inline bool operator!() const   { return _ptr==0L; }
 
         inline bool valid() const       { return _ptr!=0L; }
         
-        inline T* get() { return _ptr; }
-
-        inline const T* get() const { return _ptr; }
 
     private:
         T* _ptr;

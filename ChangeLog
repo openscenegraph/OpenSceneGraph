@@ -1,3 +1,43 @@
+2008-03-14 15:33 +0000 [r7953-7955]  robert:
+
+	* Updated wrappers
+
+	* Added utilty script for cleaning up build files/directories.
+
+	* Fixed indenting
+
+2008-03-14 15:13 +0000 [r7952]  robert:
+
+	* From Melchior Franz, "Attached is a fix for remaining problems in
+	  capslock handling: It sets osgGA's keymask when restoring keys on
+	  FocusIn, according to the state values of XKeyEvent and
+	  XCrossingEvent. (These are the only source for X11's current
+	  capslock state that avoids pulling in the XKB extension.) "
+
+2008-03-14 15:00 +0000 [r7951]  robert:
+
+	* Missing checkin
+
+2008-03-14 14:35 +0000 [r7950]  robert:
+
+	* Added iostream include
+
+2008-03-14 13:21 +0000 [r7949]  robert:
+
+	* Added cloning of the StateSet before modification to work around
+	  threading issue relating to the StateSet being modified by the
+	  event/update thread and read from the draw thread at the same
+	  time.
+
+2008-03-14 12:03 +0000 [r7948]  robert:
+
+	* Converted static const unsigned int definitio to enum.
+
+2008-03-14 11:53 +0000 [r7947]  robert:
+
+	* Updated version/author type fixes, authors, readme and changelog
+	  for 2.3.5 dev release
+
 2008-03-14 11:07 +0000 [r7944-7946]  robert:
 
 	* Updated wrappers

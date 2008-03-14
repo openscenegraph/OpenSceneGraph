@@ -86,6 +86,7 @@ Neil Salter
 Mihai Radu
 Michael Platings
 Michael Hartman
+Melchior Franz
 Laurens Voerman
 John Shue
 David Guthrie
@@ -100,7 +101,6 @@ Sebastien Grignard
 Romano Magacho
 Philip Lowman
 Paul de Repentigny
-Melchior Franz
 Luc Frauciel
 Leandro Motta Barros
 John Kelso

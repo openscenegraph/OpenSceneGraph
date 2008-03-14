@@ -99,19 +99,14 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::Node >)
 	          __void__objectDeleted__void_P1,
 	          "",
 	          "");
-	I_Method0(bool, valid,
-	          Properties::NON_VIRTUAL,
-	          __bool__valid,
-	          "",
-	          "");
 	I_Method0(osg::Node *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
 	          "",
 	          "");
-	I_Method0(const osg::Node *, get,
+	I_Method0(bool, valid,
 	          Properties::NON_VIRTUAL,
-	          __C5_T_P1__get,
+	          __bool__valid,
 	          "",
 	          "");
 	I_SimpleProperty(osg::Node *, , 

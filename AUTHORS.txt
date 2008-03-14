@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.3.4
+OpenSceneGraph Library 2.3.5
 
-299 Contributors:
+298 Contributors:
 
 Firstname Surname
 -----------------
@@ -9,8 +9,8 @@ Don Burns
 Marco Jez
 Mike Weiblen
 Eric Wing
-Brede Johansen
 Paul Martz
+Brede Johansen
 Geoff Michel
 Farshid Lashkari
 Stephan Huber
@@ -18,23 +18,23 @@ Bob Kuehne
 Ulrich Hertlein
 Martin Lavery
 Eric Sokolowsky
-Tree 
 Mathias Fröhlich
+Tree 
+David Callu
 Trajce Nikolov
 Mike Wittman
 Luigi Calori
-David Callu
+Jean-Sebastien Guay
 Pavel Moloshtan
 Tom Jolley
 Roger James
 Norman Vine
-Jean-Sebastien Guay
-Alberto Farre
 Andy Skinner
+Alberto Farre
+Colin McDonald
 André Garneau
 Ruben Lopez
 Randall Hopper
-Colin McDonald
 Olaf Flebbe
 Gideon May
 Don Tidrow
@@ -42,10 +42,12 @@ Romano José Magacho da Silva
 Michael Gronager
 Daniel Sjölie
 Chris Hanson
+Wojciech Lewandowski
 Per Fahlberg
 Jeremy Moles
 David Spilling
 Joran Jessurun
+Art Tevs
 Jason Daly
 Frederic Marmond
 David Fries
@@ -55,26 +57,26 @@ Sondra Iverson
 Serge Lages
 Rune Schmidt Jensen
 Rainer Oder
+Paul Melis
 Mike Connell
+Joakim Simonsson
 Jason Beverage
 Ben Discoe
+Andreas Ekstrand
 Adrian Egli
-Wojciech Lewandowski
 Sherman Wilcox
 Sasa Bistrovic
-Paul Melis
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Loic Dachary
+José Delport
 Joseph Steel
-Joakim Simonsson
 Jan Peciva
 Jan Ciger
 Gordon Tomlinson
+Bryan Thrall
 Brad Colbert
-Art Tevs
-Andreas Ekstrand
 Vivek Rajan
 Stephane Simon
 Sean Spicer
@@ -88,7 +90,7 @@ Laurens Voerman
 John Shue
 David Guthrie
 Corbin Holtz
-Bryan Thrall
+Carlo Camporesi
 Brad Christiansen
 Toshiyuki Takahei
 Thom DeCarlo
@@ -96,22 +98,26 @@ Terry Welsh
 Simon Julier
 Sebastien Grignard
 Romano Magacho
+Philip Lowman
 Paul de Repentigny
+Melchior Franz
 Luc Frauciel
 Leandro Motta Barros
-José Delport
 John Kelso
+Glenn Waldron
 Daniel Larimer
 Cedric Pinson
-Carlo Camporesi
 Bruce Clay
+Alberto Luaces
 Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
 Tony Horrobin
+Thibault Genessay
 Sohey Yamamoto
 Roland Smeenk
 Richard Schmidt
+Rafa Gaitan
 Phil Atkin
 Peter Hrenka
 Neil Hughes
@@ -122,7 +128,6 @@ Ken Sewell
 Julian Ortiz
 Jeremy Bell
 James French
-Glenn Waldron
 Gabor Dorka
 Donn Mielcarek
 Domenico Mangieri
@@ -132,21 +137,18 @@ Blake Williams
 Antoine Hue
 Anders Backman
 Ali Botorabi
-Alberto Luaces
 Zach Deedler
 Yuzhong Shen
 Tugkan Calapoglu
 Tim Moore
 Tim Daoust
-Thibault Genessay
 Terrex 
+Sylvain Marie
 Steve Lunsford
 Stephan Eilemann
 Stanislav Blinov
 Riccardo Corsi
 Ralf Kern
-Rafa Giatan
-Philip Lowman
 Perry Miller
 Nathan Monteleone
 Michael Henheffer
@@ -161,6 +163,7 @@ John Aughey
 Johan Nouvel
 Igor Kravtchenko
 Gustavo Wagner
+Gino van den Bergen
 Gerrick Bivins
 George Tarantilis
 Garret Potts
@@ -168,7 +171,6 @@ Fabio Mierlo
 Edgar Ellis
 Donald Cipperly
 David Ergo
-David Cullu
 Daniel Trstenjak
 Csaba Halasz
 Andrew Sampson
@@ -191,8 +193,6 @@ Tino Schwarze
 Thom Carlo
 Tery Welsh
 Tanguy Fautré
-Sylvan Marie
-Sylvain Marie
 Sid Byce
 Shane Arnott
 Sebastien Kuntz
@@ -200,9 +200,9 @@ Rudolf Wiedemann
 Ronny Krueger
 Robert Swain
 Rick Pingry
+Rene Molenaar
 Reinhard Sainitzer
 Rein Kadijk
-Rafa Gaitan
 Qing Shen
 Philipp Siemoleit
 Paul Obermeier
@@ -243,17 +243,16 @@ John Grant
 John Donovan
 John Davis
 Joan Abadie
-Joakim Simmonsson
 Jean-Christophe Lombardo
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
 J.E. Hoffmann
 Henrique Bucher
+He Sicong
 Hautio Jari
 Guillaume Millet
 Graeme Harkness
-Gino van den Bergen
 Gian Lorenzetto
 George Papagiannakis
 Gary Quinn
@@ -265,7 +264,7 @@ Frank Lindeman
 Frank Lichtenheld
 Ferdinand Cornelissen
 Fabien Dachicourt
-Eric Sokolwsky
+Emmanuel Roche
 Edmond Gheury
 Ed Ralston
 Duvan Cope

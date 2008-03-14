@@ -208,6 +208,8 @@ bool validName(const std::string& first)
     if (first=="SimpleViewer") return false;
     if (first=="IndexFaceSets") return false;
     if (first=="Quicktime") return false;
+    if (first=="SceneGraphBuilder") return false;
+    if (first=="LightPointNode") return false;
     return true;
 }
 
@@ -326,12 +328,24 @@ std::string typoCorrection(const std::string& name)
     if (name=="Aderian")  return "Adrian";
     if (name=="Callue")  return "Callu";
     if (name=="Waldrom")  return "Waldron";
-    
+    if (name=="Atr")  return "Art";
+    if (name=="Lawandowski") return "Lewandowski";
+    if (name=="Sylvan") return "Sylvain";
+    if (name=="Giatan") return "Gaitan";
+    if (name=="Melchoir") return "Melchior";
+    if (name=="Simmonsson") return "Simonsson";
+    if (name=="Sokolwsky") return "Sokolowsky";
+    if (name=="Cullu") return "Callu";
     return name;
 }
 
 void nameCorrection(NamePair& name)
 {
+    if (name.first=="Franz" && name.second=="Melchior")
+    {
+        name.first = "Melchior";
+        name.second = "Franz";
+    }
     if (name.first=="Glen" && name.second=="Waldon")
     {
         name.first = "Glenn";

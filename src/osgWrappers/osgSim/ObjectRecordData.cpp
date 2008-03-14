@@ -22,6 +22,16 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osgSim::ObjectRecordData::Flags)
+	I_DeclaringFile("osgSim/ObjectRecordData");
+	I_EnumLabel(osgSim::ObjectRecordData::DONT_DISPLAY_IN_DAYLIGHT);
+	I_EnumLabel(osgSim::ObjectRecordData::DONT_DISPLAY_AT_DUSK);
+	I_EnumLabel(osgSim::ObjectRecordData::DONT_DISPLAY_AT_NIGHT);
+	I_EnumLabel(osgSim::ObjectRecordData::DONT_ILLUMINATE);
+	I_EnumLabel(osgSim::ObjectRecordData::FLAT_SHADED);
+	I_EnumLabel(osgSim::ObjectRecordData::GROUPS_SHADOW_OBJECT);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgSim::ObjectRecordData)
 	I_DeclaringFile("osgSim/ObjectRecordData");
 	I_BaseType(osg::Object);

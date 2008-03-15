@@ -377,35 +377,35 @@ class NetReader : public osgDB::ReaderWriter
                     else if( directive == "400" )
                     {
                         osg::notify(osg::WARN) << 
-                            "osgPlugin .net: http server response 400 - Bad Request" << std::endl;
+                            "osgPlugin .net: http server response 400 - Bad Request : "<<requestAdd << std::endl;
                         return ReadResult::FILE_NOT_FOUND;
                     }
                     // Code 401 Bad Request
                     else if( directive == "401" )
                     {
                         osg::notify(osg::WARN) << 
-                            "osgPlugin .net: http server response 401 - Unauthorized Access" << std::endl;
+                            "osgPlugin .net: http server response 401 - Unauthorized Access : "<<requestAdd << std::endl;
                         return ReadResult::FILE_NOT_FOUND;
                     }
                     // Code 403 Bad Request
                     else if( directive == "403" )
                     {
                         osg::notify(osg::WARN) << 
-                            "osgPlugin .net: http server response 403 - Access Forbidden" << std::endl;
+                            "osgPlugin .net: http server response 403 - Access forbidden : "<<requestAdd << std::endl;
                         return ReadResult::FILE_NOT_FOUND;
                     }
                     // Code 404 File not found
                     else if( directive == "404" )
                     {
                         osg::notify(osg::WARN) << 
-                            "osgPlugin .net: http server response 404 - File Not Found" << std::endl;
+                            "osgPlugin .net: http server response 404 - File not found : "<<requestAdd<< std::endl;
                         return ReadResult::FILE_NOT_FOUND;
                     }
                     // Code 405 Method not allowed
                     else if( directive == "405" )
                     {
                         osg::notify(osg::WARN) << 
-                            "osgPlugin .net: http server response 405 - Method Not Allowed" << std::endl;
+                            "osgPlugin .net: http server response 405 - Method Not Allowed : " <<requestAdd<< std::endl;
                         return ReadResult::FILE_NOT_FOUND;
                     }
                     // There's more....

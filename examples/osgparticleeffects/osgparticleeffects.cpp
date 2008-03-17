@@ -94,7 +94,8 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
     
         positioned->addChild(glider);
     
-        osg::PositionAttitudeTransform* xform = new osg::PositionAttitudeTransform;    
+        osg::PositionAttitudeTransform* xform = new osg::PositionAttitudeTransform;
+        xform->setDataVariance(osg::Object::DYNAMIC);
         xform->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
         xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0,0.5));
         xform->addChild(positioned);
@@ -119,6 +120,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
         positioned->addChild(cessna);
     
         osg::MatrixTransform* xform = new osg::MatrixTransform;
+        xform->setDataVariance(osg::Object::DYNAMIC);
         xform->setUpdateCallback(new osg::AnimationPathCallback(animationPath,0.0f,1.0));
         xform->addChild(positioned);
 

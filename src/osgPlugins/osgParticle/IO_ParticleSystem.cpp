@@ -43,6 +43,19 @@ bool ParticleSystem_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
 
+    if (fr[0].matchWord("particleScaleReferenceFrame")) {
+        if (fr[1].matchWord("LOCAL_COORDINATES")) {
+            myobj.setParticleScaleReferenceFrame(osgParticle::ParticleSystem::LOCAL_COORDINATES);
+            fr += 2;
+            itAdvanced = true;
+        }
+        if (fr[1].matchWord("")) {
+            myobj.setParticleScaleReferenceFrame(osgParticle::ParticleSystem::WORLD_COORDINATES);
+            fr += 2;
+            itAdvanced = true;
+        }
+    }
+
     if (fr[0].matchWord("alignVectorX")) {
         osg::Vec3 v;
         if (fr[1].getFloat(v.x()) && fr[2].getFloat(v.y()) && fr[3].getFloat(v.z())) {
@@ -135,6 +148,17 @@ bool ParticleSystem_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
             break;
         case osgParticle::ParticleSystem::FIXED:
             fw << "FIXED" << std::endl;
+            break;
+    }
+
+    fw.indent() << "particleScaleReferenceFrame ";
+    switch (myobj.getParticleScaleReferenceFrame()) {
+        default:
+        case osgParticle::ParticleSystem::LOCAL_COORDINATES:
+            fw << "LOCAL_COORDINATES" << std::endl;
+            break;
+        case osgParticle::ParticleSystem::WORLD_COORDINATES:
+            fw << "WORLD_COORDINATES" << std::endl;
             break;
     }
 

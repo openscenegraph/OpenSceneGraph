@@ -83,7 +83,10 @@ namespace osgParticle
             WORLD_COORDINATES
         };
 
+        /** Set whether the particles should be scaled relative to world coordaintes or local coordinates.*/
         void setParticleScaleReferenceFrame(ParticleScaleReferenceFrame rf) { _particleScaleReferenceFrame = rf; }
+
+        /** Get whether the particles should be scaled relative to world coordaintes or local coordinates.*/
         ParticleScaleReferenceFrame getParticleScaleReferenceFrame() const { return _particleScaleReferenceFrame; }
 
 

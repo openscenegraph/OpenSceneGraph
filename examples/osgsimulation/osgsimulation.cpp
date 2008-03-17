@@ -64,6 +64,8 @@
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
 
+#include <osgParticle/FireEffect>
+
 #include <iostream>
 
 osg::Node* createEarth()
@@ -293,6 +295,7 @@ int main(int argc, char **argv)
     std::string pathfile;
     while (arguments.read("-p",pathfile)) {}
 
+    bool addFireEffect = arguments.read("--fire");
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -401,7 +404,16 @@ int main(int argc, char **argv)
                 osg::MatrixTransform* scaler = new osg::MatrixTransform;
                 scaler->addChild(cessna);
                 scaler->setMatrix(osg::Matrixd::scale(s,s,s)*osg::Matrixd::rotate(rotation));
-                scaler->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);        
+                scaler->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);
+                
+                if (addFireEffect)
+                {                
+                    osg::Vec3d center = cessna->getBound().center();
+                    
+                    osgParticle::FireEffect* fire = new osgParticle::FireEffect(center, 10.0f);
+                    scaler->addChild(fire);
+                }
+                
 
                 if (false)
                 {

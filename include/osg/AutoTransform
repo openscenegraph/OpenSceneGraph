@@ -49,10 +49,17 @@ class OSG_EXPORT AutoTransform : public Transform
         inline void setRotation(const Quat& quat) { _rotation = quat; _matrixDirty=true; dirtyBound(); }
         inline const Quat& getRotation() const { return _rotation; }
         
-        inline void setScale(float scale) { _scale.set(scale,scale,scale); _matrixDirty=true; dirtyBound(); }
-        inline void setScale(const Vec3& scale) { _scale = scale; _matrixDirty=true; dirtyBound(); }
+        inline void setScale(float scale) { setScale(osg::Vec3(scale,scale,scale)); }
+
+        void setScale(const Vec3& scale);
         inline const Vec3& getScale() const { return _scale; }
         
+        void setMinimumScale(float minimumScale) { _minimumScale = minimumScale; }
+        float getMinimumScale() const { return _minimumScale; }
+
+        void setMaximumScale(float maximumScale) { _maximumScale = maximumScale; }
+        float getMaximumScale() const { return _maximumScale; }
+
         inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; _matrixDirty=true; dirtyBound(); }
         inline const Vec3& getPivotPoint() const { return _pivotPoint; }
         
@@ -105,6 +112,9 @@ class OSG_EXPORT AutoTransform : public Transform
         mutable Viewport::value_type    _previousHeight;        
         mutable osg::Matrix             _previousProjection;
         mutable osg::Vec3               _previousPosition;
+        
+        float                           _minimumScale;
+        float                           _maximumScale;
 
 
         void computeMatrix() const;

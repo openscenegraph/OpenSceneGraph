@@ -23,6 +23,8 @@ AutoTransform::AutoTransform():
     _autoScaleToScreen(false),
     _scale(1.0f,1.0f,1.0f),
     _firstTimeToInitEyePoint(true),
+    _minimumScale(0.0f),
+    _maximumScale(FLT_MAX),
     _matrixDirty(true)
 {
 //    setNumChildrenRequiringUpdateTraversal(1);
@@ -38,10 +40,28 @@ AutoTransform::AutoTransform(const AutoTransform& pat,const CopyOp& copyop):
     _rotation(pat._rotation),
     _scale(pat._scale),
     _firstTimeToInitEyePoint(true),
+    _minimumScale(pat._minimumScale),
+    _maximumScale(pat._maximumScale),
     _matrixDirty(true)
 {
 //    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }
+
+void AutoTransform::setScale(const Vec3& scale)
+{
+    _scale = scale; 
+    if (_scale.x()<_minimumScale) _scale.x() = _minimumScale;
+    if (_scale.y()<_minimumScale) _scale.y() = _minimumScale;
+    if (_scale.z()<_minimumScale) _scale.z() = _minimumScale;
+    
+    if (_scale.x()>_maximumScale) _scale.x() = _maximumScale;
+    if (_scale.y()>_maximumScale) _scale.y() = _maximumScale;
+    if (_scale.z()>_maximumScale) _scale.z() = _maximumScale;
+    
+    _matrixDirty=true; 
+    dirtyBound();
+}
+
 
 bool AutoTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
@@ -158,6 +178,10 @@ void AutoTransform::accept(NodeVisitor& nv)
                     if (getAutoScaleToScreen())
                     {
                         float size = 1.0f/cs->pixelSize(getPosition(),0.48f);
+                        
+                        if (size<_minimumScale) size = _minimumScale;
+                        if (size>_maximumScale) size = _maximumScale;
+                        
                         setScale(size);
                     }
 

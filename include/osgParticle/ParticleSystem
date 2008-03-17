@@ -75,6 +75,19 @@ namespace osgParticle
         /// Set the alignment vectors.
         inline void setAlignVectors(const osg::Vec3& X, const osg::Vec3& Y);
 
+
+
+        enum ParticleScaleReferenceFrame
+        {
+            LOCAL_COORDINATES,
+            WORLD_COORDINATES
+        };
+
+        void setParticleScaleReferenceFrame(ParticleScaleReferenceFrame rf) { _particleScaleReferenceFrame = rf; }
+        ParticleScaleReferenceFrame getParticleScaleReferenceFrame() const { return _particleScaleReferenceFrame; }
+
+
+
         /// Get the default bounding box
         inline const osg::BoundingBox& getDefaultBoundingBox() const;        
         
@@ -188,7 +201,8 @@ namespace osgParticle
         Alignment _alignment;
         osg::Vec3 _align_X_axis;
         osg::Vec3 _align_Y_axis;
-
+        ParticleScaleReferenceFrame _particleScaleReferenceFrame;
+        
         bool _doublepass;
         bool _frozen;
 

@@ -165,6 +165,8 @@ void ParticleEffect::buildEffect()
 
     if (_useLocalParticleSystem)
     {
+        particleSystem->setParticleScaleReferenceFrame(ParticleSystem::LOCAL_COORDINATES);
+    
         // add the geode to the scene graph
         osg::Geode* geode = new osg::Geode;
         geode->addDrawable(particleSystem.get());

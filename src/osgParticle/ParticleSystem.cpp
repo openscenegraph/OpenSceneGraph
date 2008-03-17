@@ -22,6 +22,7 @@ osgParticle::ParticleSystem::ParticleSystem()
     _alignment(BILLBOARD),
     _align_X_axis(1, 0, 0),
     _align_Y_axis(0, 1, 0),
+    _particleScaleReferenceFrame(WORLD_COORDINATES),
     _doublepass(false),
     _frozen(false),
     _bmin(0, 0, 0), 
@@ -45,6 +46,7 @@ osgParticle::ParticleSystem::ParticleSystem(const ParticleSystem& copy, const os
     _alignment(copy._alignment),
     _align_X_axis(copy._align_X_axis),
     _align_Y_axis(copy._align_Y_axis),
+    _particleScaleReferenceFrame(copy._particleScaleReferenceFrame),
     _doublepass(copy._doublepass),
     _frozen(copy._frozen),
     _bmin(copy._bmin), 
@@ -101,9 +103,6 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
 
     // get the current modelview matrix
     osg::Matrix modelview = state.getModelViewMatrix();
-
-    if (_alignment == BILLBOARD)
-        state.applyModelViewMatrix(0);
 
     // set up depth mask for first rendering pass
     glPushAttrib(GL_DEPTH_BUFFER_BIT); 
@@ -174,9 +173,31 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
     if (_particles.size() <= 0) return;
 
     float scale = sqrtf(static_cast<float>(_detail));
-
+    
     const Particle* startParticle = &_particles[0];
     startParticle->beginRender();
+
+    osg::Vec3 xAxis = _align_X_axis;
+    osg::Vec3 yAxis = _align_Y_axis;
+    
+    if (_alignment==BILLBOARD)
+    {
+        xAxis = osg::Matrix::transform3x3(modelview,xAxis);
+        yAxis = osg::Matrix::transform3x3(modelview,yAxis);
+        float scaleX = xAxis.length();
+        float scaleY = yAxis.length();
+
+        if (_particleScaleReferenceFrame==LOCAL_COORDINATES)
+        {
+            xAxis /= scaleX;
+            yAxis /= scaleY;
+        }
+        else
+        {
+            xAxis /= (scaleX*scaleX);
+            yAxis /= (scaleX*scaleY);
+        }
+    }
 
     for(unsigned int i=0; i<_particles.size(); i+=_detail)
     {
@@ -190,16 +211,8 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
                 startParticle = currentParticle;
             }
             ++_draw_count;
-
-            switch (_alignment) {
-                case BILLBOARD:
-                    currentParticle->render(modelview.preMult(currentParticle->getPosition()), osg::Vec3(1, 0, 0), osg::Vec3(0, 1, 0), scale);
-                    break;
-                case FIXED:
-                    currentParticle->render(currentParticle->getPosition(), _align_X_axis, _align_Y_axis, scale);
-                    break;
-                default:;
-            }            
+            
+            currentParticle->render(currentParticle->getPosition(), xAxis, yAxis, scale);
         } 
     }
 

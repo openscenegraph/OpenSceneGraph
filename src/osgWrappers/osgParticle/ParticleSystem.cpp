@@ -33,6 +33,12 @@ BEGIN_ENUM_REFLECTOR(osgParticle::ParticleSystem::Alignment)
 	I_EnumLabel(osgParticle::ParticleSystem::FIXED);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osgParticle::ParticleSystem::ParticleScaleReferenceFrame)
+	I_DeclaringFile("osgParticle/ParticleSystem");
+	I_EnumLabel(osgParticle::ParticleSystem::LOCAL_COORDINATES);
+	I_EnumLabel(osgParticle::ParticleSystem::WORLD_COORDINATES);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	I_DeclaringFile("osgParticle/ParticleSystem");
 	I_BaseType(osg::Drawable);
@@ -102,6 +108,16 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          Properties::NON_VIRTUAL,
 	          __void__setAlignVectors__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
 	          "Set the alignment vectors. ",
+	          "");
+	I_Method1(void, setParticleScaleReferenceFrame, IN, osgParticle::ParticleSystem::ParticleScaleReferenceFrame, rf,
+	          Properties::NON_VIRTUAL,
+	          __void__setParticleScaleReferenceFrame__ParticleScaleReferenceFrame,
+	          "Set whether the particles should be scaled relative to world coordaintes or local coordinates. ",
+	          "");
+	I_Method0(osgParticle::ParticleSystem::ParticleScaleReferenceFrame, getParticleScaleReferenceFrame,
+	          Properties::NON_VIRTUAL,
+	          __ParticleScaleReferenceFrame__getParticleScaleReferenceFrame,
+	          "Get whether the particles should be scaled relative to world coordaintes or local coordinates. ",
 	          "");
 	I_Method0(const osg::BoundingBox &, getDefaultBoundingBox,
 	          Properties::NON_VIRTUAL,
@@ -280,6 +296,9 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	I_SimpleProperty(osgParticle::ParticleSystem::Alignment, ParticleAlignment, 
 	                 __Alignment__getParticleAlignment, 
 	                 __void__setParticleAlignment__Alignment);
+	I_SimpleProperty(osgParticle::ParticleSystem::ParticleScaleReferenceFrame, ParticleScaleReferenceFrame, 
+	                 __ParticleScaleReferenceFrame__getParticleScaleReferenceFrame, 
+	                 __void__setParticleScaleReferenceFrame__ParticleScaleReferenceFrame);
 	I_SimpleProperty(OpenThreads::ReadWriteMutex *, ReadWriteMutex, 
 	                 __OpenThreads_ReadWriteMutex_P1__getReadWriteMutex, 
 	                 0);

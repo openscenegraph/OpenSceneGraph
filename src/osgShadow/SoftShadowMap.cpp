@@ -232,6 +232,7 @@ void SoftShadowMap::init()
         // create the camera
         _camera = new osg::Camera;
 
+        _camera->setInheritanceMask(0x0);
         _camera->setCullCallback(new CameraCullCallback(this));
 
         _camera->setClearMask(GL_DEPTH_BUFFER_BIT);

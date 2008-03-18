@@ -119,6 +119,26 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	          __C5_Vec3_R1__getScale,
 	          "",
 	          "");
+	I_Method1(void, setMinimumScale, IN, float, minimumScale,
+	          Properties::NON_VIRTUAL,
+	          __void__setMinimumScale__float,
+	          "",
+	          "");
+	I_Method0(float, getMinimumScale,
+	          Properties::NON_VIRTUAL,
+	          __float__getMinimumScale,
+	          "",
+	          "");
+	I_Method1(void, setMaximumScale, IN, float, maximumScale,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaximumScale__float,
+	          "",
+	          "");
+	I_Method0(float, getMaximumScale,
+	          Properties::NON_VIRTUAL,
+	          __float__getMaximumScale,
+	          "",
+	          "");
 	I_Method1(void, setPivotPoint, IN, const osg::Vec3 &, pivot,
 	          Properties::NON_VIRTUAL,
 	          __void__setPivotPoint__C5_Vec3_R1,
@@ -159,6 +179,16 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	          __bool__getAutoScaleToScreen,
 	          "",
 	          "");
+	I_Method1(void, setAutoScaleTransistionWidthRatio, IN, float, ratio,
+	          Properties::NON_VIRTUAL,
+	          __void__setAutoScaleTransistionWidthRatio__float,
+	          "",
+	          "");
+	I_Method0(float, getAutoScaleTransistionWidthRatio,
+	          Properties::NON_VIRTUAL,
+	          __float__getAutoScaleTransistionWidthRatio,
+	          "",
+	          "");
 	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv,
 	          Properties::VIRTUAL,
 	          __bool__computeLocalToWorldMatrix__Matrix_R1__NodeVisitor_P1,
@@ -186,9 +216,18 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	I_SimpleProperty(bool, AutoScaleToScreen, 
 	                 __bool__getAutoScaleToScreen, 
 	                 __void__setAutoScaleToScreen__bool);
+	I_SimpleProperty(float, AutoScaleTransistionWidthRatio, 
+	                 __float__getAutoScaleTransistionWidthRatio, 
+	                 __void__setAutoScaleTransistionWidthRatio__float);
 	I_SimpleProperty(float, AutoUpdateEyeMovementTolerance, 
 	                 __float__getAutoUpdateEyeMovementTolerance, 
 	                 __void__setAutoUpdateEyeMovementTolerance__float);
+	I_SimpleProperty(float, MaximumScale, 
+	                 __float__getMaximumScale, 
+	                 __void__setMaximumScale__float);
+	I_SimpleProperty(float, MinimumScale, 
+	                 __float__getMinimumScale, 
+	                 __void__setMinimumScale__float);
 	I_SimpleProperty(const osg::Vec3 &, PivotPoint, 
 	                 __C5_Vec3_R1__getPivotPoint, 
 	                 __void__setPivotPoint__C5_Vec3_R1);

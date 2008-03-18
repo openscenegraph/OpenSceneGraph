@@ -37,8 +37,16 @@ void AutoTransform::write(DataOutputStream* out){
 
     out->writeBool(getAutoScaleToScreen());
 
+    if ( out->getVersion() >= VERSION_0025 )
+    {
+        out->writeFloat(getMinimumScale());
+        out->writeFloat(getMaximumScale());
+        out->writeFloat(getAutoScaleTransistionWidthRatio());
+    }
+
     out->writeQuat(getRotation());
     out->writeVec3(getScale());
+    
 }
 
 void AutoTransform::read(DataInputStream* in){
@@ -64,8 +72,17 @@ void AutoTransform::read(DataInputStream* in){
 
         setAutoScaleToScreen(in->readBool());
 
+        if ( in->getVersion() >= VERSION_0025 )
+        {
+            setMinimumScale(in->readFloat());
+            setMaximumScale(in->readFloat());
+            setAutoScaleTransistionWidthRatio(in->readFloat());
+        }
+
         setRotation(in->readQuat());
         setScale(in->readVec3());
+
+
     }
     else{
         throw Exception("AutoTransform::read(): Expected AutoTransform identification.");

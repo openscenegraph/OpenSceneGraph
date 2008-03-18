@@ -140,6 +140,18 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr.matchSequence("autoScaleTransistionWidthRatio %f"))
+    {
+        float ratio;
+        fr[1].getFloat(ratio);
+        
+        transform.setAutoScaleTransistionWidthRatio(ratio);
+
+        fr += 2;
+        iteratorAdvanced = true;
+    }
+
+
     return iteratorAdvanced;
 }
 
@@ -167,8 +179,12 @@ bool AutoTransform_writeLocalData(const Object& obj, Output& fw)
       default: fw<<"NO_ROTATION"<<std::endl; break;
     }
 
-
     fw.indent()<<"autoScaleToScreen "<<(transform.getAutoScaleToScreen()?"TRUE":"FALSE")<<std::endl;
-
+    
+    if (transform.getAutoScaleTransistionWidthRatio()!=0.25) 
+    {
+            fw.indent()<<"autoScaleTransistionWidthRatio "<<transform.getAutoScaleTransistionWidthRatio()<<std::endl;
+    }
+    
     return true;
 }

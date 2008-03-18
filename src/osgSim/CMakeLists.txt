@@ -24,6 +24,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/LineOfSight
     ${HEADER_PATH}/MultiSwitch
     ${HEADER_PATH}/OverlayNode
+    ${HEADER_PATH}/ObjectRecordData
     ${HEADER_PATH}/ScalarBar
     ${HEADER_PATH}/ScalarsToColors
     ${HEADER_PATH}/Sector

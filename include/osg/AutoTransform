@@ -83,6 +83,9 @@ class OSG_EXPORT AutoTransform : public Transform
 
         bool getAutoScaleToScreen() const { return _autoScaleToScreen; }
 
+        void setAutoScaleTransistionWidthRatio(float ratio) { _autoScaleTransitionWidthRatio = ratio; }
+        float getAutoScaleTransistionWidthRatio() const { return _autoScaleTransitionWidthRatio; }
+
 
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
 
@@ -115,7 +118,7 @@ class OSG_EXPORT AutoTransform : public Transform
         
         float                           _minimumScale;
         float                           _maximumScale;
-
+        float                           _autoScaleTransitionWidthRatio;
 
         void computeMatrix() const;
 

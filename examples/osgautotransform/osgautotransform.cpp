@@ -28,6 +28,8 @@
 #include <osg/AutoTransform>
 #include <osg/Geometry>
 
+#include <osgDB/WriteFile>
+
 #include <osgText/Text>
 
 #include <iostream>
@@ -112,6 +114,7 @@ osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps, osg::
         osg::Geometry* geom = new osg::Geometry;
         geom->setVertexArray(vertices);
         geom->setColorArray(colors);
+        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
         geom->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP,0,vertices->size()));
 
         osg::Geode* geode = new osg::Geode;
@@ -138,6 +141,7 @@ osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps, osg::
         osg::Geometry* geom = new osg::Geometry;
         geom->setVertexArray(vertices);
         geom->setColorArray(colors);
+        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
         geom->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP,0,vertices->size()));
 
         osg::Geode* geode = new osg::Geode;

@@ -149,6 +149,32 @@ osg::Node* createAxis(const osg::Vec3& s, const osg::Vec3& e, int numReps, osg::
     return group;
 }
 
+osg::Node* createAutoScale(const osg::Vec3& position, float characterSize, const std::string& message, float minScale=0.0, float maxScale=FLT_MAX)
+{
+    std::string timesFont("fonts/arial.ttf");
+
+    osgText::Text* text = new osgText::Text;
+    text->setCharacterSize(characterSize);
+    text->setText(message);
+    text->setFont(timesFont);
+    text->setAlignment(osgText::Text::CENTER_CENTER);
+
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(text);
+    geode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+    osg::AutoTransform* at = new osg::AutoTransform;
+    at->addChild(geode);
+    
+    at->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_SCREEN);
+    at->setAutoScaleToScreen(true);
+    at->setMinimumScale(minScale);
+    at->setMaximumScale(maxScale);
+    at->setPosition(position);
+    
+    return at;
+}
+
 osg::Node* createScene()
 {
     osg::Group* root = new osg::Group;
@@ -158,7 +184,10 @@ osg::Node* createScene()
     root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(1000.0,0.0,0.0),numReps,osg::AutoTransform::ROTATE_TO_CAMERA,osgText::Text::XY_PLANE, "ROTATE_TO_CAMERA"));
     root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,1000.0,0.0),numReps,osg::AutoTransform::ROTATE_TO_SCREEN,osgText::Text::XY_PLANE, "ROTATE_TO_SCREEN"));
     root->addChild(createAxis(osg::Vec3(0.0,0.0,0.0),osg::Vec3(0.0,0.0,1000.0),numReps,osg::AutoTransform::NO_ROTATION,osgText::Text::XZ_PLANE, "NO_ROTATION"));    
-    
+
+    root->addChild(createAutoScale(osg::Vec3(500.0,500.0,500.0), 25.0, "AutoScale with no min, max limits"));
+    root->addChild(createAutoScale(osg::Vec3(500.0,500.0,300.0), 25.0, "AutoScale with minScale = 1, maxScale = 2.0 ", 1, 2.0));
+    root->addChild(createAutoScale(osg::Vec3(500.0,500.0,700.0), 25.0, "AutoScale with minScale = 0.0, maxScale = 5.0 ", 0.0, 5.0));
     return root;
 }
 

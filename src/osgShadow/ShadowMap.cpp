@@ -182,6 +182,8 @@ void ShadowMap::init()
         // create the camera
         _camera = new osg::Camera;
 
+        _camera->setInheritanceMask(0x0);
+        
         _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF_INHERIT_VIEWPOINT);
 
         _camera->setCullCallback(new CameraCullCallback(this));
@@ -548,6 +550,8 @@ osg::ref_ptr<osg::Camera> ShadowMap::makeDebugHUD()
     if( !_texture.valid() )    init();
 
     osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+
+    camera->setInheritanceMask(0x0);
 
     osg::Vec2 size(1280, 1024);
     // set the projection matrix

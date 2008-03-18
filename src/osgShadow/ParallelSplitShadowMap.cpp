@@ -239,7 +239,7 @@ void ParallelSplitShadowMap::init(){
         {
             // create the camera
             pssmShadowSplitTexture._camera = new osg::Camera;
-
+            pssmShadowSplitTexture._camera->setInheritanceMask(0x0);
             pssmShadowSplitTexture._camera->setCullCallback(new CameraCullCallback(this));
 
             #ifndef SHADOW_TEXTURE_DEBUG
@@ -442,6 +442,7 @@ void ParallelSplitShadowMap::init(){
                 pssmShadowSplitTexture._debug_texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
                 // create the camera
                 pssmShadowSplitTexture._debug_camera = new osg::Camera;
+                pssmShadowSplitTexture._debug_camera->setInheritanceMask(0x0);
                 pssmShadowSplitTexture._debug_camera->setCullCallback(new CameraCullCallback(this));
                 pssmShadowSplitTexture._debug_camera->setClearMask(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT);
                 pssmShadowSplitTexture._debug_camera->setClearColor(osg::Vec4(1.0,1.0,1.0,1.0));

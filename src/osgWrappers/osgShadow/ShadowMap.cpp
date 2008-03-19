@@ -79,6 +79,16 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
 	          __unsigned_int__getTextureUnit,
 	          "Get the texture unit that the shadow texture will be applied on. ",
 	          "");
+	I_Method1(void, setPolygonOffset, IN, const osg::Vec2 &, polyOffset,
+	          Properties::NON_VIRTUAL,
+	          __void__setPolygonOffset__C5_osg_Vec2_R1,
+	          "set the polygon offset used initially ",
+	          "");
+	I_Method0(const osg::Vec2 &, getPolygonOffset,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec2_R1__getPolygonOffset,
+	          "get the used polygon offset ",
+	          "");
 	I_Method1(void, setAmbientBias, IN, const osg::Vec2 &, ambientBias,
 	          Properties::NON_VIRTUAL,
 	          __void__setAmbientBias__C5_osg_Vec2_R1,
@@ -162,6 +172,9 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
 	I_SimpleProperty(osg::Light *, Light, 
 	                 0, 
 	                 __void__setLight__osg_Light_P1);
+	I_SimpleProperty(const osg::Vec2 &, PolygonOffset, 
+	                 __C5_osg_Vec2_R1__getPolygonOffset, 
+	                 __void__setPolygonOffset__C5_osg_Vec2_R1);
 	I_SimpleProperty(const osg::Vec2s &, TextureSize, 
 	                 __C5_osg_Vec2s_R1__getTextureSize, 
 	                 __void__setTextureSize__C5_osg_Vec2s_R1);

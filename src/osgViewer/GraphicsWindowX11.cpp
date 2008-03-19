@@ -715,6 +715,7 @@ bool GraphicsWindowX11::createWindow()
 
     XFlush( _eventDisplay );
     XSync( _eventDisplay, 0 );
+    rescanModifierMapping();
 
     return true;
 }
@@ -1017,8 +1018,8 @@ void GraphicsWindowX11::checkEvents()
 
             case EnterNotify :
                 osg::notify(osg::INFO)<<"EnterNotify event received"<<std::endl;
-                _lockMask = ev.xcrossing.state & LockMask;
-                syncCapsLock();
+                _modifierState = ev.xcrossing.state;
+                syncLocks();
                 break;
 
             case KeymapNotify :
@@ -1031,7 +1032,7 @@ void GraphicsWindowX11::checkEvents()
 
                 char modMap[32];
                 getModifierMap(modMap);
-                syncCapsLock();
+                syncLocks();
 
                 // release normal (non-modifier) keys
                 for (unsigned int key = 8; key < 256; key++)
@@ -1061,6 +1062,11 @@ void GraphicsWindowX11::checkEvents()
                 }
                 break;
             }
+
+            case MappingNotify :
+                osg::notify(osg::INFO)<<"MappingNotify event received"<<std::endl;
+                if (ev.xmapping.request == MappingModifier) rescanModifierMapping();
+                break;
 
             case MotionNotify :
             {
@@ -1177,7 +1183,7 @@ void GraphicsWindowX11::checkEvents()
                 Time relativeTime = ev.xmotion.time - firstEventTime;
                 eventTime = baseTime + static_cast<double>(relativeTime)*0.001;
 
-                _lockMask = ev.xkey.state & LockMask;
+                _modifierState = ev.xkey.state;
                 keyMapSetKey(_keyMap, ev.xkey.keycode);
                 int keySymbol = 0;
                 adaptKey(ev.xkey, keySymbol);
@@ -1208,7 +1214,7 @@ void GraphicsWindowX11::checkEvents()
                     }
                 }
 #endif
-                _lockMask = ev.xkey.state & LockMask;
+                _modifierState = ev.xkey.state;
                 keyMapClearKey(_keyMap, ev.xkey.keycode);
                 int keySymbol = 0;
                 adaptKey(ev.xkey, keySymbol);
@@ -1321,7 +1327,7 @@ void GraphicsWindowX11::forceKey(int key, double time, bool state)
     event.y = 0;
     event.x_root = 0;
     event.y_root = 0;
-    event.state = getModifierMask() | _lockMask;
+    event.state = getModifierMask() | (_modifierState & (LockMask | _numLockMask));
     event.keycode = key;
     event.same_screen = True;
 
@@ -1342,18 +1348,37 @@ void GraphicsWindowX11::forceKey(int key, double time, bool state)
     }
 }
 
-void GraphicsWindowX11::syncCapsLock()
+void GraphicsWindowX11::syncLocks()
 {
     unsigned int mask = getEventQueue()->getCurrentEventState()->getModKeyMask();
-    if (_lockMask)
-    {
+
+    if (_modifierState & LockMask)
         mask |= osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK;
-    }
     else
-    {
         mask &= ~osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK;
-    }
+
+    if (_modifierState & _numLockMask)
+        mask |= osgGA::GUIEventAdapter::MODKEY_NUM_LOCK;
+    else
+        mask &= ~osgGA::GUIEventAdapter::MODKEY_NUM_LOCK;
+
     getEventQueue()->getCurrentEventState()->setModKeyMask(mask);
+}
+
+void GraphicsWindowX11::rescanModifierMapping()
+{
+    XModifierKeymap *mkm = XGetModifierMapping(_eventDisplay);
+    KeyCode *m = mkm->modifiermap;
+    KeyCode numlock = XKeysymToKeycode(_eventDisplay, XK_Num_Lock);
+    _numLockMask = 0;
+    for (int i = 0; i < mkm->max_keypermod * 8; i++, m++)
+    {
+        if (*m == numlock)
+        {
+            _numLockMask = 1 << (i / mkm->max_keypermod);
+            break;
+        }
+    }
 }
 
 // Returns char[32] keymap with bits for every modifier key set.

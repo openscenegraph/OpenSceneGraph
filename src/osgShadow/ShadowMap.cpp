@@ -81,10 +81,11 @@ static const char fragmentShaderSource_debugHUD[] =
     "} \n";
 
 ShadowMap::ShadowMap():
-_baseTextureUnit(0),
+    _baseTextureUnit(0),
     _shadowTextureUnit(1),
     _ambientBias(0.5f,0.5f),
-    _textureSize(1024,1024)
+    _textureSize(1024,1024),
+    _polyOffset(1.0,1.0)
 {
 }
 
@@ -100,6 +101,11 @@ ShadowTechnique(copy,copyop),
 void ShadowMap::setTextureUnit(unsigned int unit)
 {
     _shadowTextureUnit = unit;
+}
+
+void ShadowMap::setPolygonOffset(const osg::Vec2& polyOffset)
+{
+    _polyOffset = polyOffset;
 }
 
 void ShadowMap::setAmbientBias(const osg::Vec2& ambientBias)
@@ -209,6 +215,7 @@ void ShadowMap::init()
 
 #if 1
         // cull front faces so that only backfaces contribute to depth map
+        
 
         osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
         cull_face->setMode(osg::CullFace::FRONT);
@@ -217,8 +224,8 @@ void ShadowMap::init()
 
         // negative polygonoffset - move the backface nearer to the eye point so that backfaces
         // shadow themselves
-        float factor = -1.0f;
-        float units = -1.0f;
+        float factor = -_polyOffset[0];
+        float units =  -_polyOffset[1];
 
         osg::ref_ptr<osg::PolygonOffset> polygon_offset = new osg::PolygonOffset;
         polygon_offset->setFactor(factor);
@@ -231,8 +238,8 @@ void ShadowMap::init()
 
         // negative polygonoffset - move the backface nearer to the eye point
         // so that front faces do not shadow themselves.
-        float factor = 1.0f;
-        float units = 1.0f;
+        float factor = _polyOffset[0];
+        float units =  _polyOffset[1];
 
         osg::ref_ptr<osg::PolygonOffset> polygon_offset = new osg::PolygonOffset;
         polygon_offset->setFactor(factor);
@@ -327,7 +334,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
 
     osgUtil::RenderStage* orig_rs = cv.getRenderStage();
 
-    // do traversal of shadow receiving scene which does need to be decorated by the shadow map
+    // do traversal of shadow recieving scene which does need to be decorated by the shadow map
     {
         cv.pushStateSet(_stateset.get());
 
@@ -607,7 +614,6 @@ osg::ref_ptr<osg::Camera> ShadowMap::makeDebugHUD()
 
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-    //stateset->setAttribute(new osg::PolygonOffset(1.0f,1.0f),osg::StateAttribute::ON);
     stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 
     // test with regular texture

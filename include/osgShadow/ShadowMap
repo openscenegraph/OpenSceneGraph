@@ -39,6 +39,12 @@ class OSGSHADOW_EXPORT ShadowMap : public ShadowTechnique
         /** Get the texture unit that the shadow texture will be applied on.*/
         unsigned int getTextureUnit() const { return _shadowTextureUnit; }
 
+        /** set the polygon offset used initially */
+        void setPolygonOffset(const osg::Vec2& polyOffset);
+
+        /** get the used polygon offset */
+        const osg::Vec2& getPolygonOffset() const { return _polyOffset; }
+
         /** Set the values for the ambient bias the shader will use.*/
         void setAmbientBias(const osg::Vec2& ambientBias );
 
@@ -103,6 +109,7 @@ class OSGSHADOW_EXPORT ShadowMap : public ShadowTechnique
         ShaderList                      _shaderList;
         unsigned int                    _baseTextureUnit;
         unsigned int                    _shadowTextureUnit;
+        osg::Vec2                        _polyOffset;
         osg::Vec2                       _ambientBias;
         osg::Vec2s                      _textureSize;
 

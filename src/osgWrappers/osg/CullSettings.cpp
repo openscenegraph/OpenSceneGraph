@@ -48,6 +48,12 @@ BEGIN_ENUM_REFLECTOR(osg::CullSettings::VariablesMask)
 	I_EnumLabel(osg::CullSettings::ALL_VARIABLES);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osg::CullSettings::InheritanceMaskActionOnAttributeSetting)
+	I_DeclaringFile("osg/CullSettings");
+	I_EnumLabel(osg::CullSettings::DISABLE_ASSOCIATED_INHERITANCE_MASK_BIT);
+	I_EnumLabel(osg::CullSettings::DO_NOT_MODIFY_INHERITANCE_MASK);
+END_REFLECTOR
+
 BEGIN_ENUM_REFLECTOR(osg::CullSettings::ComputeNearFarMode)
 	I_DeclaringFile("osg/CullSettings");
 	I_EnumLabel(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
@@ -124,6 +130,21 @@ BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	          __void__readCommandLine__ArgumentParser_R1,
 	          "read the commandline arguments. ",
 	          "");
+	I_Method1(void, setInheritanceMaskActionOnAttributeSetting, IN, osg::CullSettings::InheritanceMaskActionOnAttributeSetting, action,
+	          Properties::NON_VIRTUAL,
+	          __void__setInheritanceMaskActionOnAttributeSetting__InheritanceMaskActionOnAttributeSetting,
+	          "",
+	          "");
+	I_Method0(osg::CullSettings::InheritanceMaskActionOnAttributeSetting, getInheritanceMaskActionOnAttributeSetting,
+	          Properties::NON_VIRTUAL,
+	          __InheritanceMaskActionOnAttributeSetting__getInheritanceMaskActionOnAttributeSetting,
+	          "",
+	          "");
+	I_Method1(void, applyMaskAction, IN, unsigned int, maskBit,
+	          Properties::NON_VIRTUAL,
+	          __void__applyMaskAction__unsigned_int,
+	          "Apply the action, specified by the InheritanceMaskActionOnAttributeSetting, to apply to the inheritance bit mask. ",
+	          "This method is called by CullSettings::set*() parameter methods to ensure that CullSettings inheritance mechanisms doesn't overwrite the local parameter settings. ");
 	I_Method1(void, setImpostorsActive, IN, bool, active,
 	          Properties::NON_VIRTUAL,
 	          __void__setImpostorsActive__bool,
@@ -292,6 +313,9 @@ BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	I_SimpleProperty(unsigned int, InheritanceMask, 
 	                 __unsigned_int__getInheritanceMask, 
 	                 __void__setInheritanceMask__unsigned_int);
+	I_SimpleProperty(osg::CullSettings::InheritanceMaskActionOnAttributeSetting, InheritanceMaskActionOnAttributeSetting, 
+	                 __InheritanceMaskActionOnAttributeSetting__getInheritanceMaskActionOnAttributeSetting, 
+	                 __void__setInheritanceMaskActionOnAttributeSetting__InheritanceMaskActionOnAttributeSetting);
 	I_SimpleProperty(float, LODScale, 
 	                 __float__getLODScale, 
 	                 __void__setLODScale__float);

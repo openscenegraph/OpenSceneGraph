@@ -100,32 +100,52 @@ class OSG_EXPORT CullSettings
         void readCommandLine(ArgumentParser& arguments);
 
 
+        enum InheritanceMaskActionOnAttributeSetting
+        {
+            DISABLE_ASSOCIATED_INHERITANCE_MASK_BIT,
+            DO_NOT_MODIFY_INHERITANCE_MASK
+        };
+        
+        void setInheritanceMaskActionOnAttributeSetting(InheritanceMaskActionOnAttributeSetting action) { _inheritanceMaskActionOnAttributeSetting = action; }
+        InheritanceMaskActionOnAttributeSetting getInheritanceMaskActionOnAttributeSetting() const { return _inheritanceMaskActionOnAttributeSetting; }
+
+        /** Apply the action, specified by the InheritanceMaskActionOnAttributeSetting, to apply to the inheritance bit mask.
+          * This method is called by CullSettings::set*() parameter methods to ensure that CullSettings inheritance mechanisms doesn't overwrite the local parameter settings.*/
+        inline void applyMaskAction(unsigned int maskBit)
+        {
+            if (_inheritanceMaskActionOnAttributeSetting==DISABLE_ASSOCIATED_INHERITANCE_MASK_BIT)
+            {
+                _inheritanceMask = _inheritanceMask & (~maskBit);
+            }
+        }
+
+
         /** Switch the creation of Impostors on or off.
           * Setting active to false forces the CullVisitor to use the Impostor
           * LOD children for rendering. Setting active to true forces the
           * CullVisitor to create the appropriate pre-rendering stages which
           * render to the ImpostorSprite's texture.*/
-        void setImpostorsActive(bool active) { _impostorActive = active; }
+        void setImpostorsActive(bool active) { _impostorActive = active; applyMaskAction(IMPOSTOR_ACTIVE); }
 
         /** Get whether impostors are active or not. */
         bool getImpostorsActive() const { return _impostorActive; }
 
         /** Set the impostor error threshold.
           * Used in calculation of whether impostors remain valid.*/
-        void setImpostorPixelErrorThreshold(float numPixels) { _impostorPixelErrorThreshold=numPixels; }
+        void setImpostorPixelErrorThreshold(float numPixels) { _impostorPixelErrorThreshold=numPixels;  applyMaskAction(IMPOSTOR_PIXEL_ERROR_THRESHOLD); }
 
         /** Get the impostor error threshold.*/
         float getImpostorPixelErrorThreshold() const { return _impostorPixelErrorThreshold; }
 
         /** Set whether ImpostorSprite's should be placed in a depth sorted bin for rendering.*/
-        void setDepthSortImpostorSprites(bool doDepthSort) { _depthSortImpostorSprites = doDepthSort; }
+        void setDepthSortImpostorSprites(bool doDepthSort) { _depthSortImpostorSprites = doDepthSort; applyMaskAction(DEPTH_SORT_IMPOSTOR_SPRITES); }
 
         /** Get whether ImpostorSprite's are depth sorted bin for rendering.*/
         bool getDepthSortImpostorSprites() const { return _depthSortImpostorSprites; }
 
         /** Set the number of frames that an ImpostorSprite is kept whilst not being beyond,
           * before being recycled.*/
-        void setNumberOfFrameToKeepImpostorSprites(int numFrames) { _numFramesToKeepImpostorSprites = numFrames; }
+        void setNumberOfFrameToKeepImpostorSprites(int numFrames) { _numFramesToKeepImpostorSprites = numFrames; applyMaskAction(NUM_FRAMES_TO_KEEP_IMPOSTORS_SPRITES); }
 
         /** Get the number of frames that an ImpostorSprite is kept whilst not being beyond,
           * before being recycled.*/
@@ -138,10 +158,10 @@ class OSG_EXPORT CullSettings
             COMPUTE_NEAR_FAR_USING_PRIMITIVES
         };
 
-        void setComputeNearFarMode(ComputeNearFarMode cnfm) { _computeNearFar=cnfm; } 
+        void setComputeNearFarMode(ComputeNearFarMode cnfm) { _computeNearFar=cnfm; applyMaskAction(COMPUTE_NEAR_FAR_MODE); } 
         ComputeNearFarMode getComputeNearFarMode() const { return _computeNearFar;} 
 
-        void setNearFarRatio(double ratio) { _nearFarRatio = ratio; }
+        void setNearFarRatio(double ratio) { _nearFarRatio = ratio; applyMaskAction(NEAR_FAR_RATIO); }
         double getNearFarRatio() const { return _nearFarRatio; }
 
         enum CullingModeValues
@@ -169,29 +189,29 @@ class OSG_EXPORT CullSettings
         typedef unsigned int CullingMode;
 
         /** Set the culling mode for the CullVisitor to use.*/
-        void setCullingMode(CullingMode mode) { _cullingMode = mode; }
+        void setCullingMode(CullingMode mode) { _cullingMode = mode; applyMaskAction(CULLING_MODE); }
         
         /** Returns the current CullingMode.*/
         CullingMode getCullingMode() const { return _cullingMode; }
 
 
-        void setCullMask(osg::Node::NodeMask nm) { _cullMask = nm; }
+        void setCullMask(osg::Node::NodeMask nm) { _cullMask = nm; applyMaskAction(CULL_MASK); }
         osg::Node::NodeMask getCullMask() const { return _cullMask; }
 
-        void setCullMaskLeft(osg::Node::NodeMask nm) { _cullMaskLeft = nm; }
+        void setCullMaskLeft(osg::Node::NodeMask nm) { _cullMaskLeft = nm; applyMaskAction(CULL_MASK_LEFT); }
         osg::Node::NodeMask getCullMaskLeft() const { return _cullMaskLeft; }
 
-        void setCullMaskRight(osg::Node::NodeMask nm) { _cullMaskRight = nm; }
+        void setCullMaskRight(osg::Node::NodeMask nm) { _cullMaskRight = nm; applyMaskAction(CULL_MASK_RIGHT); }
         osg::Node::NodeMask getCullMaskRight() const { return _cullMaskRight; }
 
         /** Set the LOD bias for the CullVisitor to use.*/
-        void setLODScale(float bias) { _LODScale = bias; }
+        void setLODScale(float bias) { _LODScale = bias; applyMaskAction(LOD_SCALE); }
         
         /** Get the LOD bias.*/
         float getLODScale() const { return _LODScale; }
 
         /** Set the Small Feature Culling Pixel Size.*/
-        void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; }
+        void setSmallFeatureCullingPixelSize(float value) { _smallFeatureCullingPixelSize=value; applyMaskAction(SMALL_FEATURE_CULLING_PIXEL_SIZE); }
 
         /** Get the Small Feature Culling Pixel Size.*/
         float getSmallFeatureCullingPixelSize() const { return _smallFeatureCullingPixelSize; }
@@ -208,7 +228,7 @@ class OSG_EXPORT CullSettings
         };
         
         /** set the ClampProjectionMatrixCallback.*/
-        void setClampProjectionMatrixCallback(ClampProjectionMatrixCallback* cpmc) { _clampProjectionMatrixCallback = cpmc; }
+        void setClampProjectionMatrixCallback(ClampProjectionMatrixCallback* cpmc) { _clampProjectionMatrixCallback = cpmc; applyMaskAction(CLAMP_PROJECTION_MATRIX_CALLBACK); }
         /** get the non const ClampProjectionMatrixCallback.*/
         ClampProjectionMatrixCallback* getClampProjectionMatrixCallback() { return _clampProjectionMatrixCallback.get(); }
         /** get the const ClampProjectionMatrixCallback.*/
@@ -220,6 +240,7 @@ class OSG_EXPORT CullSettings
     protected:
 
         unsigned int                                _inheritanceMask;
+        InheritanceMaskActionOnAttributeSetting     _inheritanceMaskActionOnAttributeSetting;
 
         ComputeNearFarMode                          _computeNearFar;
         CullingMode                                 _cullingMode;

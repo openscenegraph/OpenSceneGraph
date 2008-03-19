@@ -29,6 +29,7 @@ CullSettings::CullSettings(const CullSettings& cs)
 void CullSettings::setDefaults()
 {
     _inheritanceMask = ALL_VARIABLES;
+    _inheritanceMaskActionOnAttributeSetting = DISABLE_ASSOCIATED_INHERITANCE_MASK_BIT;
     _cullingMode = DEFAULT_CULLING;
     _LODScale = 1.0f;
     _smallFeatureCullingPixelSize = 2.0f;
@@ -51,6 +52,7 @@ void CullSettings::setDefaults()
 void CullSettings::setCullSettings(const CullSettings& rhs)
 {
     _inheritanceMask = rhs._inheritanceMask;
+    _inheritanceMaskActionOnAttributeSetting = rhs._inheritanceMaskActionOnAttributeSetting;
 
     _computeNearFar = rhs._computeNearFar;
     _cullingMode = rhs._cullingMode;

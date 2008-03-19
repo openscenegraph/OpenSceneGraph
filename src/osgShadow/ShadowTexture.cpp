@@ -56,8 +56,6 @@ void ShadowTexture::init()
         // create the camera
         _camera = new osg::Camera;
 
-        // _camera->setInheritanceMask(0x0);
-
         _camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
         
         _camera->setCullCallback(new CameraCullCallback(this));

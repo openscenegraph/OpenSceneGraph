@@ -1,3 +1,95 @@
+2008-03-19 12:30 +0000 [r7975]  robert:
+
+	* Updated wrappers
+
+2008-03-19 12:09 +0000 [r7974]  robert:
+
+	* From Sebastian Messerschimdt, Added polygon offset controls
+
+2008-03-19 11:41 +0000 [r7971-7973]  robert:
+
+	* Updated wrappers
+
+	* Revert the Camera::setInheritanceMask(0x) calls that were added
+	  as workaround to a bug introduced by a bug fix to the way the
+	  inhertiance mask was handled in CullVisito::apply(Camera&)
+
+	* Introduced InheritanceMaskActionOnAttributeSetting member to
+	  CullSettings, and associated applyMaskAction method that is now
+	  used in all CullSettings::set*() methods, which by default helps
+	  disable the inheritance mask associated with settings that are
+	  made locally.
+
+2008-03-18 17:44 +0000 [r7970]  robert:
+
+	* Set the CullSettings::InhertianceMask to 0x0 as temporary measure
+	  till we work out the best scheme to use w.r.t inhertiance of
+	  CullSettins.
+
+2008-03-18 15:48 +0000 [r7969]  robert:
+
+	* Updated wrappers
+
+2008-03-18 15:37 +0000 [r7968]  robert:
+
+	* To osg::AutoTransform added support for MinimumScale,
+	  MaximumScale and AutoScaleTransitionWidth parameters and a new
+	  scheme for computing the scaling when using autoscale that
+	  introduces smooth transitions to the scaling of the subgraph so
+	  that it looks more natural.
+
+2008-03-18 10:45 +0000 [r7967]  robert:
+
+	* Added example code showing how to set the minimum and maximum
+	  scales
+
+2008-03-18 09:17 +0000 [r7966]  robert:
+
+	* Added ObjectRecordData to include list
+
+2008-03-17 15:22 +0000 [r7965]  robert:
+
+	* Added minimum and maximum scale support to osg::AutoTransform
+
+2008-03-17 12:23 +0000 [r7964]  robert:
+
+	* Fixed moving model bug where the moving model code was looking
+	  for a transform with DataVariance set to DYNAMIC, but the scene
+	  graph set up code was leaving the setting to default to STATIC.
+	  Fix involved setting DataVariance on moving transoforms to
+	  DYNAMIC.
+
+2008-03-17 12:13 +0000 [r7961-7963]  robert:
+
+	* Updated wrappers
+
+	* Added doxygen docs
+
+	* Introduce
+	  osgParticle::ParticleSystem::s/getParticleScaleReferenceFrame()
+	  to help manage the scaling of particles, whether they should be
+	  relative to the local coordiante frame of the particle system, or
+	  be in world coordinates.
+
+2008-03-17 10:29 +0000 [r7960]  robert:
+
+	* Added fire effect, enabled by --fire command line option. The new
+	  fire effect has been introduced to reproduce the scaling of
+	  paricle effects
+
+2008-03-15 19:27 +0000 [r7959]  robert:
+
+	* Added better error reporting
+
+2008-03-14 16:51 +0000 [r7957]  robert:
+
+	* From Paul Melis, "typo fix : NVidea -> NVidia (including option
+	  --Nvidea)"
+
+2008-03-14 16:24 +0000 [r7956]  robert:
+
+	* Update ChangeLog and AUTHORS.txt file for 2.3.5 release
+
 2008-03-14 15:33 +0000 [r7953-7955]  robert:
 
 	* Updated wrappers

@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.3.5
+OpenSceneGraph Library 2.3.6
 
-298 Contributors:
+299 Contributors:
 
 Firstname Surname
 -----------------
@@ -48,6 +48,7 @@ Jeremy Moles
 David Spilling
 Joran Jessurun
 Art Tevs
+Paul Melis
 Jason Daly
 Frederic Marmond
 David Fries
@@ -57,7 +58,6 @@ Sondra Iverson
 Serge Lages
 Rune Schmidt Jensen
 Rainer Oder
-Paul Melis
 Mike Connell
 Joakim Simonsson
 Jason Beverage
@@ -196,6 +196,7 @@ Tanguy Fautré
 Sid Byce
 Shane Arnott
 Sebastien Kuntz
+Sebastian Messerschimdt
 Rudolf Wiedemann
 Ronny Krueger
 Robert Swain

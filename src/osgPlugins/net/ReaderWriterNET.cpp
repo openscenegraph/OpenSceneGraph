@@ -148,7 +148,7 @@ class NetReader : public osgDB::ReaderWriter
         {
             osg::Timer_t start = osg::Timer::instance()->tick();
 
-            //osg::notify(osg::NOTICE) << "osgPlugin .net: start load" << inFileName << std::endl;
+            osg::notify(osg::NOTICE) << "osgPlugin .net: start load" << inFileName << std::endl;
 
 
             std::string hostname;
@@ -302,10 +302,16 @@ class NetReader : public osgDB::ReaderWriter
                     readResult = readFile(objectType, reader, in, options );
 
                     in.close();
-                    osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
+                    osg::notify(osg::NOTICE) << "osgPlugin .net: " << fileName << 
                                          " fetched from local cache." << std::endl;
                     return readResult;
                 }
+                else
+                {
+                    osg::notify(osg::NOTICE) << "osgPlugin .net: " << fileName << 
+                                         " could not be found in local cache." << std::endl;
+                }
+            
             }
 
             // Fetch from the network
@@ -431,8 +437,8 @@ class NetReader : public osgDB::ReaderWriter
 
             double ms = osg::Timer::instance()->delta_m(start,osg::Timer::instance()->tick());
 
-            osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
-                                         " fetched from server. in" << ms <<" ms"<< std::endl;
+            osg::notify(osg::NOTICE) << "osgPlugin .net: " << fileName << 
+                                         " fetched from server. in " << ms <<" ms"<< std::endl;
 
             if (objectType==ARCHIVE && readResult.validArchive())
             {
@@ -457,7 +463,7 @@ class NetReader : public osgDB::ReaderWriter
                     }
  
                      
-                    osg::notify(osg::DEBUG_INFO) << "osgPlugin .net: " << fileName << 
+                    osg::notify(osg::NOTICE) << "osgPlugin .net: " << fileName << 
                                          " stored to local cache." << std::endl;
                 }
             }

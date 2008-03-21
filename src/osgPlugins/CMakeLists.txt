@@ -96,6 +96,10 @@ IF(GDAL_FOUND)
     ADD_SUBDIRECTORY(ogr)
 ENDIF(GDAL_FOUND)
 
+IF(CURL_FOUND)
+    ADD_SUBDIRECTORY(curl)
+ENDIF(CURL_FOUND)
+
 ############################################################
 #
 #  3rd party 3d plugins

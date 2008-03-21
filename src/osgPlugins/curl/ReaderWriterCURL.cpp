@@ -10,6 +10,7 @@
 */
 
 
+#include <osgDB/FileUtils>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgDB/Registry>
@@ -144,6 +145,22 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                 osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
                 return ReadResult::FILE_NOT_HANDLED;
             }
+            
+            
+            const char* fileCachePath = getenv("OSG_FILE_CACHE");
+            std::string cacheFileName;
+            if (fileCachePath)
+            {
+                cacheFileName = std::string(fileCachePath) + "/" + 
+                                osgDB::getServerAddress(fileName) + "/" + 
+                                osgDB::getServerFileName(fileName);
+            }
+                                                        
+            if (fileCachePath &&osgDB::fileExists(cacheFileName))
+            {
+                osg::notify(osg::NOTICE)<<"Reading cache file "<<cacheFileName<<std::endl;
+                return osgDB::Registry::instance()->readObject(cacheFileName,options);
+            }
 
             std::stringstream buffer;
 
@@ -157,16 +174,47 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
         
             if (res==0)
             {
+
+
                 osg::ref_ptr<Options> local_opt = const_cast<Options*>(options);
                 if (!local_opt) local_opt = new Options;
 
                 local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
-                ReadResult result = readFile(objectType, reader, buffer, local_opt.get() );
+                ReadResult readResult = readFile(objectType, reader, buffer, local_opt.get() );
                 
                 local_opt->getDatabasePathList().pop_front();
-                
-                return result;
+
+                if (fileCachePath && readResult.validObject())
+                {
+                    osg::notify(osg::NOTICE)<<"Writing cache file "<<cacheFileName<<std::endl;
+                    
+                    std::string filePath = osgDB::getFilePath(cacheFileName);
+                    if (!osgDB::fileExists(filePath))
+                    {
+                        osg::notify(osg::NOTICE)<<"Creating directory "<<filePath<<std::endl;
+                        if (osgDB::makeDirectory(filePath))
+                        {
+                            osg::notify(osg::NOTICE)<<"   Created directory"<<std::endl;
+                        }
+                        else
+                        {
+                            osg::notify(osg::NOTICE)<<"   Failed"<<std::endl;
+                        }
+                    }
+                    
+                    switch(objectType)
+                    {
+                    case(OBJECT): osgDB::writeObjectFile( *(readResult.getObject()), cacheFileName ); break;
+                    case(IMAGE): osgDB::writeImageFile( *(readResult.getImage()), cacheFileName ); break;
+                    case(HEIGHTFIELD): osgDB::writeHeightFieldFile( *(readResult.getHeightField()), cacheFileName ); break;
+                    case(NODE): osgDB::writeNodeFile( *(readResult.getNode()), cacheFileName ); break;
+                    default: break;
+                    }
+
+                }
+
+                return readResult;
             }
             else
             {

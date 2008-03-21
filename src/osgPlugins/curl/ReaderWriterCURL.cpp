@@ -110,8 +110,13 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
 
         virtual ReadResult readFile(ObjectType objectType, const std::string& fullFileName, const Options *options) const
         {
+            if (!osgDB::containsServerAddress(fullFileName)) 
+            {
+                osg::notify(osg::NOTICE)<<"File '"<<fullFileName<<"' does not contain server address, cannort load with libcurl plugin."<<std::endl;
+                return ReadResult::FILE_NOT_HANDLED;
+            }
+
             std::string fileName;
-            
             std::string ext = osgDB::getFileExtension(fullFileName);
             if (ext=="curl")
             {
@@ -121,7 +126,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
             {
                 fileName = fullFileName;
             }
-        
+
             osgDB::ReaderWriter *reader = 
                 osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
                 
@@ -159,7 +164,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Read error res = "<<res<<std::endl;
+                osg::notify(osg::NOTICE)<<"Read error, file="<<fileName<<" libcurl result = "<<res<<std::endl;
                 return ReadResult::FILE_NOT_HANDLED;
             }
         }

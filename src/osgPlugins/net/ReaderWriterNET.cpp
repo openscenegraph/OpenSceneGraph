@@ -455,10 +455,10 @@ class NetReader : public osgDB::ReaderWriter
  
                     switch(objectType)
                     {
-                    case(OBJECT): osgDB::writeObjectFile( *(readResult.getObject()), cacheFile );
-                    case(IMAGE): osgDB::writeImageFile( *(readResult.getImage()), cacheFile );
-                    case(HEIGHTFIELD): osgDB::writeHeightFieldFile( *(readResult.getHeightField()), cacheFile );
-                    case(NODE): osgDB::writeNodeFile( *(readResult.getNode()), cacheFile );;
+                    case(OBJECT): osgDB::writeObjectFile( *(readResult.getObject()), cacheFile ); break;
+                    case(IMAGE): osgDB::writeImageFile( *(readResult.getImage()), cacheFile ); break;
+                    case(HEIGHTFIELD): osgDB::writeHeightFieldFile( *(readResult.getHeightField()), cacheFile ); break;
+                    case(NODE): osgDB::writeNodeFile( *(readResult.getNode()), cacheFile );  break;
                     default: break;
                     }
  

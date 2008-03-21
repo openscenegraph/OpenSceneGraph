@@ -112,7 +112,16 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
         {
             if (!osgDB::containsServerAddress(fullFileName)) 
             {
-                osg::notify(osg::NOTICE)<<"File '"<<fullFileName<<"' does not contain server address, cannort load with libcurl plugin."<<std::endl;
+                if (options && !(options->getDatabasePathList().empty()))
+                {
+                    if (osgDB::containsServerAddress(options->getDatabasePathList().front()))
+                    {
+                        std::string newFileName = options->getDatabasePathList().front() + "/" + fullFileName;
+                        
+                        return readFile(objectType, newFileName,options);
+                    }
+                }
+
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
@@ -132,7 +141,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                 
             if (!reader)
             {
-                osg::notify(osg::NOTICE)<<"No ReaderWriter for file "<<fileName<<std::endl;
+                osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
@@ -151,10 +160,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                 osg::ref_ptr<Options> local_opt = const_cast<Options*>(options);
                 if (!local_opt) local_opt = new Options;
 
-                if (local_opt.valid() && local_opt->getDatabasePathList().empty())
-                {
-                    local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
-                }
+                local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
                 ReadResult result = readFile(objectType, reader, buffer, local_opt.get() );
                 
@@ -164,7 +170,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Read error, file="<<fileName<<" libcurl result = "<<res<<std::endl;
+                osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<" result = "<<res<<std::endl;
                 return ReadResult::FILE_NOT_HANDLED;
             }
         }

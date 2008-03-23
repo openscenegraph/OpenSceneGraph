@@ -85,9 +85,39 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
             if (ea.getKey()==' ')
             {
                 _isPaused = false;
+                _timeScale = 1.0;
+                
                 home(ea,us);
                 us.requestRedraw();
                 us.requestContinuousUpdate(false);
+                
+                return true;
+            } 
+            else if (ea.getKey()=='>')
+            {
+                double time = _isPaused ? _pauseTime : ea.getTime();
+                double animationTime = (time+_timeOffset)*_timeScale;
+
+                _timeScale *= 1.1;
+
+                osg::notify(osg::NOTICE)<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
+
+                // adjust timeOffset so the current animationTime does change.
+                _timeOffset = animationTime/_timeScale - time;
+                
+                return true;
+            } 
+            else if (ea.getKey()=='<')
+            {
+                double time = _isPaused ? _pauseTime : ea.getTime();
+                double animationTime = (time+_timeOffset)*_timeScale;
+
+                _timeScale /= 1.1;
+                
+                osg::notify(osg::NOTICE)<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
+
+                // adjust timeOffset so the current animationTime does change.
+                _timeOffset = animationTime/_timeScale - time;
                 
                 return true;
             } 
@@ -119,6 +149,8 @@ void AnimationPathManipulator::getUsage(osg::ApplicationUsage& usage) const
 {
     usage.addKeyboardMouseBinding("AnimationPath: Space","Reset the viewing position to start of animation");
     usage.addKeyboardMouseBinding("AnimationPath: p","Pause/resume animation.");
+    usage.addKeyboardMouseBinding("AnimationPath: <","Slow down animation speed.");
+    usage.addKeyboardMouseBinding("AnimationPath: <","Speed up animation speed.");
 }
 
 void AnimationPathManipulator::handleFrame( double time )

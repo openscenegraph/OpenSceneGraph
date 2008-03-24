@@ -104,6 +104,8 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
                 return;
             }
             
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            
             float deltaTime = 0.01f;
             if (_previousFrame!=-1)
             {
@@ -172,6 +174,8 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
         float                                           _animationTime;
         osg::observer_ptr<osgFX::MultiTextureControl>   _mtc;
         Elevations                                      _elevations;
+        
+        OpenThreads::Mutex                              _mutex;
 };
 
 

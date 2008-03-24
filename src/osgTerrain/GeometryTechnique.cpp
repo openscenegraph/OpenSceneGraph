@@ -228,6 +228,24 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         numRows = elevationLayer->getNumRows();
     }
     
+    
+    double i_sampleFactor = 1.0;
+    double j_sampleFactor = 1.0;
+
+    unsigned int targetSize = 32;
+    if (numColumns==64 && numColumns>targetSize)
+    {
+        unsigned int originalNumColumns = numColumns;
+        unsigned int originalNumRows = numRows;
+    
+        numColumns = targetSize;
+        numRows = targetSize;
+
+        i_sampleFactor = double(originalNumColumns-1)/double(numColumns-1);
+        j_sampleFactor = double(originalNumRows-1)/double(numRows-1);
+    }
+    
+
     bool treatBoundariesToValidDataAsDefaultValue = _terrain->getTreatBoundariesToValidDataAsDefaultValue();
     osg::notify(osg::INFO)<<"TreatBoundariesToValidDataAsDefaultValue="<<treatBoundariesToValidDataAsDefaultValue<<std::endl;
     
@@ -312,10 +330,13 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             bool validValue = true;
      
             
+            unsigned int i_equiv = i_sampleFactor==1.0 ? i : (unsigned int) (double(i)*i_sampleFactor);
+            unsigned int j_equiv = i_sampleFactor==1.0 ? j : (unsigned int) (double(j)*j_sampleFactor);
+            
             if (elevationLayer)
             {
                 float value = 0.0f;
-                validValue = elevationLayer->getValidValue(i,j, value);
+                validValue = elevationLayer->getValidValue(i_equiv,j_equiv, value);
                 // osg::notify(osg::INFO)<<"i="<<i<<" j="<<j<<" z="<<value<<std::endl;
                 ndc.z() = value;
             }
@@ -618,7 +639,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
 
 
-    // _terrainGeometry->setUseDisplayList(false);
+    //geometry->setUseDisplayList(false);
     geometry->setUseVertexBufferObjects(true);
 }
 

@@ -29,6 +29,14 @@
 
 #include <osgGA/TerrainManipulator>
 #include <osgGA/StateSetManipulator>
+#include <osgGA/AnimationPathManipulator>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
+#include <osgGA/StateSetManipulator>
+#include <osgGA/AnimationPathManipulator>
+#include <osgGA/TerrainManipulator>
 
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Viewer>
@@ -216,9 +224,6 @@ int main( int argc, char **argv )
 
     // add all the event handlers to the viewer
     {
-        // add terrain manipulator
-        viewer.setCameraManipulator(new osgGA::TerrainManipulator);
-
         // add the state manipulator
         viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
@@ -239,6 +244,34 @@ int main( int argc, char **argv )
 
         // add the LOD Scale handler
         viewer.addEventHandler(new osgViewer::LODScaleHandler);
+    }
+
+    {
+        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+
+        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
+
+        unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
+        keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
+
+        std::string pathfile;
+        char keyForAnimationPath = '5';
+        while (arguments.read("-p",pathfile))
+        {
+            osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
+            if (apm || !apm->valid()) 
+            {
+                num = keyswitchManipulator->getNumMatrixManipulators();
+                keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
+                ++keyForAnimationPath;
+            }
+        }
+
+        keyswitchManipulator->selectMatrixManipulator(num);
+
+        viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
 
     // add a viewport to the viewer and attach the scene graph.

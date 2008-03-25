@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <float.h>
+#include <limits.h>
 
 #include <fstream>
 #include <sstream>

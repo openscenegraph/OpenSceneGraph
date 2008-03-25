@@ -11,6 +11,9 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <stdio.h>
+#include <string.h>
+
 #include <osg/Notify>
 #include <osg/Object>
 #include <osg/Image>
@@ -26,8 +29,6 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/Archive>
 
-#include <stdio.h>
-
 #include <algorithm>
 #include <set>
 
@@ -36,7 +37,6 @@
 #elif defined(__GNUC__) || !defined(WIN32) || defined(__MWERKS__)
     #include <cctype>
     using std::tolower;
-    using std::strlen;    
 #endif
 
 

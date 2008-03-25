@@ -27,7 +27,6 @@
 #elif defined(__GNUC__) || !defined(WIN32) || defined(__MWERKS__)
     #include <cctype>
     using std::tolower;
-    using std::strlen;    
 #endif
 
 using namespace std;

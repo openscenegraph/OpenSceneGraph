@@ -29,6 +29,9 @@
     #include <QtGui/QKeyEvent>
     #include <QtGui/QApplication>
     #include <QtOpenGL/QGLWidget>
+    #include <QtGui/QMainWindow>
+    #include <QtGui/QMdiSubWindow>
+    #include <QtGui/QMdiArea>
     
     using Qt::WindowFlags;
 
@@ -78,6 +81,7 @@ AdapterWidget::AdapterWidget( QWidget * parent, const char * name, const QGLWidg
 #endif
 {
     _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 void AdapterWidget::resizeGL( int width, int height )
@@ -231,8 +235,26 @@ int mainAdapterWidget(QApplication& a, osg::ArgumentParser& arguments)
 
         viewerWindow->show();
     }
-    else
-    {
+    else if (arguments.read("--mdi")) {
+          std::cout<<"Using ViewetQT MDI version"<<std::endl;
+         /*
+         Following problems are found here:
+         - miminize causes loaded model to disappear (some problem with Camera matrix? - clampProjectionMatrix is invalid)
+         */
+         ViewerQT* viewerWindow = new ViewerQT;
+         viewerWindow->setCameraManipulator(new osgGA::TrackballManipulator);
+         viewerWindow->setSceneData(loadedModel.get());
+ 
+         QMainWindow* mw = new QMainWindow();
+         QMdiArea* mdiArea = new QMdiArea(mw);
+         mw->setCentralWidget(mdiArea);
+
+         QMdiSubWindow *subWindow = mdiArea->addSubWindow(viewerWindow);
+         subWindow->showMaximized();
+         subWindow->setWindowTitle("New Window");
+         mw->show();
+
+    } else {
         ViewerQT* viewerWindow = new ViewerQT;
 
         viewerWindow->setCameraManipulator(new osgGA::TrackballManipulator);

@@ -514,7 +514,6 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--two-sided", "Use two-sided stencil extension for shadow volumes.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-pass", "Use two-pass stencil for shadow volumes.");
 
-
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
@@ -525,25 +524,12 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    // default to single threaded during dev work.
-    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
-
-    while (arguments.read("--SingleThreaded")) viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
-    while (arguments.read("--CullDrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::CullDrawThreadPerContext);
-    while (arguments.read("--DrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::DrawThreadPerContext);
-    while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) viewer.setThreadingModel(osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext);
-
-
     bool postionalLight = true;
     while (arguments.read("--positionalLight")) postionalLight = true;
     while (arguments.read("--directionalLight")) postionalLight = false;
 
     bool updateLightPosition = true;
     while (arguments.read("--noUpdate")) updateLightPosition = false;
-
-
-    int screenNum = -1;
-    while (arguments.read("--screen", screenNum)) viewer.setUpViewOnSingleScreen(screenNum);
 
     // set up the camera manipulators.
     {
@@ -580,12 +566,13 @@ int main(int argc, char** argv)
     // add the record camera path handler
     viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
+    // add the threading handler
+    viewer.addEventHandler( new osgViewer::ThreadingHandler() );
 
     osg::ref_ptr<osgShadow::ShadowedScene> shadowedScene = new osgShadow::ShadowedScene;
 
     shadowedScene->setReceivesShadowTraversalMask(ReceivesShadowTraversalMask);
     shadowedScene->setCastsShadowTraversalMask(CastsShadowTraversalMask);
-
 
     if (arguments.read("--sv"))
     {

@@ -11,6 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
+
+
 #include <osg/Image>
 #include <osg/Notify>
 #include <osg/Geode>
@@ -23,6 +25,8 @@
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/ReentrantMutex>
+
+#include <memory>
 
 #include <gdal_priv.h>
 

@@ -31,6 +31,13 @@ void Terrain::write(DataOutputStream* out)
     else
         throw Exception("Terrain::write(): Could not cast this osgTerrain::Terrain to an osg::Group.");
 
+    if (out->getVersion() >= VERSION_0026)
+    {
+        out->writeInt(getTileID().layer);
+        out->writeInt(getTileID().x);
+        out->writeInt(getTileID().y);
+    }
+
     if (out->getVersion() >= VERSION_0023)
     {
         out->writeLocator(getLocator());
@@ -76,6 +83,14 @@ void Terrain::read(DataInputStream* in)
         ((ive::Group*)(group))->read(in);
     else
         throw Exception("Terrain::read(): Could not cast this osgTerrain::Terrain to an osg::Group.");
+
+    if (in->getVersion() >= VERSION_0026)
+    {
+        int layer = in->readInt();
+        int x = in->readInt();
+        int y = in->readInt();
+        setTileID(osgTerrain::TileID(layer,x,y));
+    }
 
     if (in->getVersion() >= VERSION_0023)
     {

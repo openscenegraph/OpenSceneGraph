@@ -38,6 +38,8 @@
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
 
+#include <osgTerrain/TerrainSystem>
+
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Viewer>
 
@@ -195,6 +197,15 @@ int main( int argc, char **argv )
         osg::notify(osg::NOTICE)<<"Warning: no valid data loaded, please specify a database on the command line."<<std::endl;
         return 1;
     }
+    
+    osgTerrain::TerrainSystem* terrain = findTopMostNodeOfType<osgTerrain::TerrainSystem>(rootnode);
+    if (!terrain)
+    {
+        terrain = new osgTerrain::TerrainSystem;
+        terrain->addChild(rootnode);
+        
+        rootnode = terrain;
+    }    
     
     osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(rootnode);
 

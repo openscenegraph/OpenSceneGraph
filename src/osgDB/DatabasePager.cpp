@@ -732,6 +732,22 @@ void DatabasePager::run()
                                                          _changeAutoUnRef, _valueAutoUnRef,
                                                          _changeAnisotropy, _valueAnisotropy,
                                                          _drawablePolicy, this);
+                    
+                    // push the soon to be parent on the nodepath of the NodeVisitor so that 
+                    // during traversal one can test for where it'll be in the overall scene graph                
+                    osg::NodePathList nodePathList = databaseRequest->_groupForAddingLoadedSubgraph->getParentalNodePaths();
+                    if (!nodePathList.empty())
+                    {
+                        osg::NodePath& nodePath = nodePathList.front();
+                        for(osg::NodePath::iterator nitr = nodePath.begin();
+                            nitr != nodePath.end();
+                            ++nitr)
+                        {
+                            frov.pushOntoNodePath(*nitr);
+                        }
+                    }
+                    
+                    frov.pushOntoNodePath(databaseRequest->_groupForAddingLoadedSubgraph.get());
 
                     databaseRequest->_loadedModel->accept(frov);
 

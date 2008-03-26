@@ -11,19 +11,24 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgTerrain/TileSystem>
+#include <osgTerrain/TerrainSystem>
 
+using namespace osg;
 using namespace osgTerrain;
 
-TileSystem::TileSystem()
+TerrainSystem::TerrainSystem()
 {
 }
 
-TileSystem::TileSystem(const TileSystem& tileSystem,const osg::CopyOp& copyop):
-    osg::Object(tileSystem)
+TerrainSystem::~TerrainSystem()
 {
 }
 
-TileSystem::~TileSystem()
+TerrainSystem::TerrainSystem(const TerrainSystem& ts, const osg::CopyOp& copyop)
 {
+}
+
+void TerrainSystem::traverse(osg::NodeVisitor& nv)
+{
+    Group::traverse(nv);
 }

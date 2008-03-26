@@ -1,0 +1,67 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGTERRAINSYSTEM
+#define OSGTERRAINSYSTEM 1
+
+#include <osg/Group>
+#include <osg/CoordinateSystemNode>
+
+#include <osgTerrain/Terrain>
+
+namespace osgTerrain {
+
+/** TerrainSystem provides a framework for loosely coupling height field data with height rendering algorithms.
+  * This allows TerrainTechnique's to be plugged in at runtime.*/
+class OSGTERRAIN_EXPORT TerrainSystem : public osg::Group
+{
+    public:
+
+        TerrainSystem();
+        
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        TerrainSystem(const TerrainSystem&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Node(osgTerrain, TerrainSystem);
+
+        virtual void traverse(osg::NodeVisitor& nv);
+        
+
+        /** Set the TerrainTechnique that is used as the prototype for all Terrain below the TerrainSystem. */
+        void setTerrainTechnique(osgTerrain::TerrainTechnique* TerrainTechnique);
+
+        /** Get the TerrainTechnique*/
+        TerrainTechnique* getTerrainTechnique() { return _terrainTechnique.get(); }
+        
+        /** Get the const TerrainTechnique*/
+        const TerrainTechnique* getTerrainTechnique() const { return _terrainTechnique.get(); }
+
+    protected:
+
+        virtual ~TerrainSystem();
+
+        friend class TerrainManager;
+
+        void registerPotentialMember(Terrain* terrain);
+
+        osg::ref_ptr<TerrainTechnique>      _terrainTechnique;
+        
+        typedef std::list< osg::observer_ptr<Terrain> > TerrainList;
+        TerrainList _incomingTerrain;
+
+       
+};
+
+}
+
+#endif

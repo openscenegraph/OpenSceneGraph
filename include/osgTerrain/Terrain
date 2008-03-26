@@ -23,6 +23,37 @@
 
 namespace osgTerrain {
 
+class TerrainSystem;
+
+class TileID
+{
+    public:
+    
+        TileID():
+            layer(-1),
+            x(-1),
+            y(-1) {}
+
+        TileID(int in_layer, int in_x, int in_y):
+            layer(in_layer),
+            x(in_x),
+            y(in_y) {}
+            
+        bool operator < (const TileID& rhs) const
+        {
+            if (layer<rhs.layer) return true;
+            if (layer>rhs.layer) return false;
+            if (x<rhs.x) return true;
+            if (x>rhs.x) return false;
+            return y<rhs.y;
+        }
+
+        int layer;
+        int x;
+        int y;
+};
+
+
 /** Terrain provides a framework for loosely coupling height field data with height rendering algorithms.
   * This allows TerrainTechnique's to be plugged in at runtime.*/
 class OSGTERRAIN_EXPORT Terrain : public osg::Group
@@ -41,8 +72,25 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         /** Call init on any attached TerrainTechnique.*/
         void init();
 
+
+        /** Set the TerrainSystem that this Terrain tile is a member of.*/
+        void setTerrainSystem(TerrainSystem* ts) { _terrainSystem = ts; }
+
+        /** Get the TerrainSystem that this Terrain tile is a member of.*/
+        TerrainSystem* getTerrainSystem() { return _terrainSystem; }
+
+        /** Get the const TerrainSystem that this Terrain tile is a member of.*/
+        const TerrainSystem* getTerrainSystem() const { return _terrainSystem; }
+
+        
+        void setTileID(const TileID& tileID) { _tileID = tileID; }
+        
+        const TileID& getTileID() const { return _tileID; }
+        
+        
+
         /** Set the TerrainTechnique*/
-        void setTerrainTechnique(osgTerrain::TerrainTechnique* TerrainTechnique);
+        void setTerrainTechnique(TerrainTechnique* TerrainTechnique);
 
         /** Get the TerrainTechnique*/
         TerrainTechnique* getTerrainTechnique() { return _terrainTechnique.get(); }
@@ -98,15 +146,6 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         bool getTreatBoundariesToValidDataAsDefaultValue() const { return _treatBoundariesToValidDataAsDefaultValue; }
 
 
-        /** Set an OperationQueue to do an data initialization and update work.*/
-        void setOperationQueue(osg::OperationQueue* operations) { _operationQueue = operations; }
-
-        /** Get the OperationsQueue if one is attached, return NULL otherwise.*/
-        osg::OperationQueue* getOperationQueue() { return _operationQueue.get(); }
-
-        /** Get the const OperationsQueue if one is attached, return NULL otherwise.*/
-        const osg::OperationQueue* getOperationsQueue() const { return _operationQueue.get(); }
-
         /** Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers.*/
         virtual osg::BoundingSphere computeBound() const;
 
@@ -115,6 +154,13 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         virtual ~Terrain();
 
         typedef std::vector< osg::ref_ptr<Layer> > Layers;
+
+
+        TerrainSystem*                      _terrainSystem;
+
+        bool                                _hasBeenTraversal;
+        
+        TileID                              _tileID;
 
         osg::ref_ptr<TerrainTechnique>      _terrainTechnique;
         osg::ref_ptr<Locator>               _locator;
@@ -125,8 +171,6 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         
         bool                                _requiresNormals;
         bool                                _treatBoundariesToValidDataAsDefaultValue;
-
-        osg::ref_ptr<osg::OperationQueue>   _operationQueue;
 };
 
 }

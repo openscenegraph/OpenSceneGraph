@@ -12,12 +12,16 @@
 */
 
 #include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainSystem>
+
 #include <osg/ClusterCullingCallback>
 
 using namespace osg;
 using namespace osgTerrain;
 
 Terrain::Terrain():
+    _terrainSystem(0),
+    _hasBeenTraversal(false),
     _requiresNormals(true),
     _treatBoundariesToValidDataAsDefaultValue(false)
 {
@@ -27,6 +31,8 @@ Terrain::Terrain():
 
 Terrain::Terrain(const Terrain& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
+    _terrainSystem(0),
+    _hasBeenTraversal(false),
     _elevationLayer(terrain._elevationLayer),
     _colorLayers(terrain._colorLayers),
     _requiresNormals(terrain._requiresNormals),
@@ -43,6 +49,30 @@ Terrain::~Terrain()
 
 void Terrain::traverse(osg::NodeVisitor& nv)
 {
+    if (!_hasBeenTraversal)
+    {
+        if (!_terrainSystem)
+        {
+            osg::NodePath& nodePath = nv.getNodePath();
+            if (!nodePath.empty())
+            {
+                for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
+                    itr != nodePath.rend() && !_terrainSystem;
+                    ++itr)
+                {
+                    osgTerrain::TerrainSystem* ts = dynamic_cast<TerrainSystem*>(*itr);
+                    if (ts) 
+                    {
+                        osg::notify(osg::NOTICE)<<"Assigning terrain system "<<ts<<std::endl;                        
+                        _terrainSystem = ts;
+                    }
+                }
+            }
+        }
+            
+        _hasBeenTraversal = true;
+    }
+
     if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
         osg::ClusterCullingCallback* ccc = dynamic_cast<osg::ClusterCullingCallback*>(getCullCallback());

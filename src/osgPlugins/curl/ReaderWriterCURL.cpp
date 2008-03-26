@@ -111,6 +111,32 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
 
         virtual ReadResult readFile(ObjectType objectType, const std::string& fullFileName, const Options *options) const
         {
+            std::string cacheFilePath, cacheFileName;
+            std::string proxyAddress, optProxy, optProxyPort;
+
+            if (options)
+            {
+                std::istringstream iss(options->getOptionString());
+                std::string opt;
+                while (iss >> opt) 
+                {
+                    int index = opt.find( "=" );
+                    if( opt.substr( 0, index ) == "OSG_FILE_CACHE" )
+                        cacheFilePath = opt.substr( index+1 ); //Setting Cache Directory by OSG Options
+                    else if( opt.substr( 0, index ) == "OSG_CURL_PROXY" )
+                        optProxy = opt.substr( index+1 );
+                    else if( opt.substr( 0, index ) == "OSG_CURL_PROXYPORT" )
+                        optProxyPort = opt.substr( index+1 );
+                }
+
+                //Setting Proxy by OSG Options
+                if(!optProxy.empty())
+                    if(!optProxyPort.empty())
+                        proxyAddress = optProxy + ":" + optProxyPort;
+                    else
+                        proxyAddress = optProxy + ":8080"; //Port not found, using default
+            }
+
             if (!osgDB::containsServerAddress(fullFileName)) 
             {
                 if (options && !(options->getDatabasePathList().empty()))
@@ -145,21 +171,40 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                 osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
                 return ReadResult::FILE_NOT_HANDLED;
             }
-            
-            
+
+            //Getting CURL Environment Variables (If found rewrite OSG Options)
             const char* fileCachePath = getenv("OSG_FILE_CACHE");
-            std::string cacheFileName;
-            if (fileCachePath)
+            if (fileCachePath) //Env Cache Directory
+                cacheFilePath = std::string(fileCachePath);
+
+            if (!cacheFilePath.empty())
             {
-                cacheFileName = std::string(fileCachePath) + "/" + 
+                cacheFileName = cacheFilePath + "/" + 
                                 osgDB::getServerAddress(fileName) + "/" + 
                                 osgDB::getServerFileName(fileName);
             }
                                                         
-            if (fileCachePath &&osgDB::fileExists(cacheFileName))
+            if (!cacheFilePath.empty() && osgDB::fileExists(cacheFileName))
             {
-                osg::notify(osg::NOTICE)<<"Reading cache file "<<cacheFileName<<std::endl;
+                osg::notify(osg::NOTICE) << "Reading cache file " << cacheFileName << std::endl;
                 return osgDB::Registry::instance()->readObject(cacheFileName,options);
+            }
+
+            const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
+            if (proxyEnvAddress) //Env Proxy Settings
+            {
+                const char* proxyEnvPort = getenv("OSG_CURL_PROXYPORT"); //Searching Proxy Port on Env
+
+                if(proxyEnvPort)
+                    proxyAddress = std::string(proxyEnvAddress) + ":" + std::string(proxyEnvPort);
+                else
+                    proxyAddress = std::string(proxyEnvAddress) + ":8080"; //Default
+            }
+
+            if(!proxyAddress.empty())
+            {
+                osg::notify(osg::NOTICE)<<"Setting proxy: "<<proxyAddress<<std::endl;
+                curl_easy_setopt(_curl, CURLOPT_PROXY, proxyAddress.c_str()); //Sets proxy address and port on libcurl
             }
 
             std::stringstream buffer;
@@ -185,7 +230,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                 
                 local_opt->getDatabasePathList().pop_front();
 
-                if (fileCachePath && readResult.validObject())
+                if (!cacheFilePath.empty() && readResult.validObject())
                 {
                     osg::notify(osg::NOTICE)<<"Writing cache file "<<cacheFileName<<std::endl;
                     

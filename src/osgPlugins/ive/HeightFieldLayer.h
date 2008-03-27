@@ -14,7 +14,7 @@
 #ifndef IVE_HEIGHTFIELDLAYER
 #define IVE_HEIGHTFIELDLAYER 1
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/Layer>
 #include "ReadWrite.h"
 
 namespace ive

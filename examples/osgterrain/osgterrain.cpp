@@ -47,7 +47,7 @@
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 #include <osgTerrain/GeometryTechnique>
 #include <osgTerrain/Layer>
 
@@ -634,7 +634,7 @@ int main(int argc, char** argv)
     }
     
 
-    osg::ref_ptr<osgTerrain::Terrain> terrain = new osgTerrain::Terrain;
+    osg::ref_ptr<osgTerrain::TerrainTile> terrainTile = new osgTerrain::TerrainTile;
     osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::Locator;
     osg::ref_ptr<osgTerrain::ValidDataOperator> validDataOperator = new osgTerrain::NoDataValue(0.0);
     osg::ref_ptr<osgTerrain::Layer> lastAppliedLayer;
@@ -667,7 +667,7 @@ int main(int argc, char** argv)
 
         else if (arguments.read(pos, "-b"))
         {
-            terrain->setTreatBoundariesToValidDataAsDefaultValue(true);
+            terrainTile->setTreatBoundariesToValidDataAsDefaultValue(true);
         }
         
         else if (arguments.read(pos, "-e",x,y,w,h))
@@ -712,7 +712,7 @@ int main(int argc, char** argv)
                     hfl->transform(offset,scale);
                 }
                 
-                terrain->setElevationLayer(hfl.get());
+                terrainTile->setElevationLayer(hfl.get());
                 
                 lastAppliedLayer = hfl.get();
                 
@@ -747,7 +747,7 @@ int main(int argc, char** argv)
                     imageLayer->transform(offset,scale);
                 }
                 
-                terrain->setElevationLayer(imageLayer.get());
+                terrainTile->setElevationLayer(imageLayer.get());
                 
                 lastAppliedLayer = imageLayer.get();
 
@@ -782,7 +782,7 @@ int main(int argc, char** argv)
                     imageLayer->transform(offset,scale);
                 }
 
-                terrain->setColorLayer(layerNum, imageLayer.get());
+                terrainTile->setColorLayer(layerNum, imageLayer.get());
 
                 lastAppliedLayer = imageLayer.get();
 
@@ -817,9 +817,9 @@ int main(int argc, char** argv)
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<" unrecognized filter name, please use LINEAER or NEAREST."<<std::endl;
             }            
 
-            if (terrain->getColorLayer(layerNum))
+            if (terrainTile->getColorLayer(layerNum))
             {
-                terrain->getColorLayer(layerNum)->setFilter(filter);
+                terrainTile->getColorLayer(layerNum)->setFilter(filter);
             }
             
         }
@@ -842,7 +842,7 @@ int main(int argc, char** argv)
             
             osg::notify(osg::NOTICE)<<"--tf "<<minValue<<" "<<maxValue<<std::endl;
 
-            terrain->setColorLayer(layerNum, new osgTerrain::ContourLayer(tf.get()));
+            terrainTile->setColorLayer(layerNum, new osgTerrain::ContourLayer(tf.get()));
         }
         else
         {
@@ -854,14 +854,14 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osg::Group> scene = new osg::Group;
 
-    if (terrain.valid() && (terrain->getElevationLayer() || terrain->getColorLayer(0)))
+    if (terrainTile.valid() && (terrainTile->getElevationLayer() || terrainTile->getColorLayer(0)))
     {
         osg::notify(osg::NOTICE)<<"Terrain created"<<std::endl;
     
-        scene->addChild(terrain.get());
+        scene->addChild(terrainTile.get());
 
         osg::ref_ptr<osgTerrain::GeometryTechnique> geometryTechnique = new osgTerrain::GeometryTechnique;
-        terrain->setTerrainTechnique(geometryTechnique.get());
+        terrainTile->setTerrainTechnique(geometryTechnique.get());
         viewer.addEventHandler(new FilterHandler(geometryTechnique.get()));
         viewer.addEventHandler(new LayerHandler(lastAppliedLayer.get()));
     }

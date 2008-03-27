@@ -11,7 +11,7 @@
 #include <osgDB/Input>
 #include <osgDB/Output>
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 class ReaderWriterTerrain : public osgDB::ReaderWriter
 {

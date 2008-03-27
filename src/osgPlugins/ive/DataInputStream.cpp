@@ -89,7 +89,7 @@
 
 #include "Text.h"
 
-#include "Terrain.h"
+#include "TerrainTile.h"
 #include "Locator.h"
 #include "ImageLayer.h"
 #include "HeightFieldLayer.h"
@@ -1457,9 +1457,9 @@ osg::Node* DataInputStream::readNode()
         node = new osgFX::MultiTextureControl();
         ((ive::MultiTextureControl*)(node))->read(this);
     }
-    else if(nodeTypeID== IVETERRAIN){
-        node = new osgTerrain::Terrain();
-        ((ive::Terrain*)(node))->read(this);
+    else if(nodeTypeID== IVETERRAINTILE){
+        node = new osgTerrain::TerrainTile();
+        ((ive::TerrainTile*)(node))->read(this);
     }
     else{
         throw Exception("Unknown node identification in DataInputStream::readNode()");

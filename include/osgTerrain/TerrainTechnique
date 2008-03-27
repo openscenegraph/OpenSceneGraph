@@ -23,7 +23,7 @@
 
 namespace osgTerrain {
 
-class Terrain;
+class TerrainTile;
 
 class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
 {
@@ -36,8 +36,8 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
         
         META_Object(osgTerrain, TerrainTechnique);
 
-        Terrain* getTerrain() { return _terrain; }
-        const Terrain* getTerrain() const { return _terrain; }
+        TerrainTile* getTerrainTile() { return _terrain; }
+        const TerrainTile* getTerrainTile() const { return _terrain; }
 
         virtual void init();
 
@@ -61,9 +61,9 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
 
         virtual ~TerrainTechnique();
         
-        friend class osgTerrain::Terrain;
+        friend class osgTerrain::TerrainTile;
 
-        Terrain*    _terrain;
+        TerrainTile*    _terrain;
         bool            _dirty;
 
 };

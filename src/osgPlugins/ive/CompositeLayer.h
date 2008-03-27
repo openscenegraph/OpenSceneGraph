@@ -1,7 +1,7 @@
 #ifndef IVE_COMPOSITELAYER
 #define IVE_COMPOSITELAYER 1
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/Layer>
 #include "ReadWrite.h"
 
 namespace ive

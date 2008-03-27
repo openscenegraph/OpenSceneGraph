@@ -12,7 +12,7 @@
 */
 
 #include <osgTerrain/GeometryTechnique>
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 #include <osgUtil/SmoothingVisitor>
 

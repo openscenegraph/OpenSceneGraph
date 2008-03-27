@@ -14,7 +14,8 @@
 #ifndef IVE_IMAGELAYER
 #define IVE_IMAGELAYER 1
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/Layer>
+
 #include "ReadWrite.h"
 
 namespace ive

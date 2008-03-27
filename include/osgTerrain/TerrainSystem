@@ -17,7 +17,7 @@
 #include <osg/Group>
 #include <osg/CoordinateSystemNode>
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 namespace osgTerrain {
 
@@ -50,14 +50,8 @@ class OSGTERRAIN_EXPORT TerrainSystem : public osg::Group
 
         virtual ~TerrainSystem();
 
-        friend class TerrainManager;
-
-        void registerPotentialMember(Terrain* terrain);
-
         osg::ref_ptr<TerrainTechnique>      _terrainTechnique;
         
-        typedef std::list< osg::observer_ptr<Terrain> > TerrainList;
-        TerrainList _incomingTerrain;
 
        
 };

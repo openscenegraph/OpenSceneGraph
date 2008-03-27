@@ -14,7 +14,7 @@
 #ifndef OSGTERRAIN_TILESYSTEM
 #define OSGTERRAIN_TILESYSTEM 1
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 #include <osg/Object>
 #include <osg/observer_ptr>
@@ -36,7 +36,7 @@ class OSGTERRAIN_EXPORT TileSystem : public osg::Object
 
         virtual ~TileSystem();
         
-        typedef std::map< TileID, osg::observer_ptr<Terrain> > TileMap;
+        typedef std::map< TileID, osg::observer_ptr<TerrainTile> > TileMap;
         
         TileMap _tileMap;
 };

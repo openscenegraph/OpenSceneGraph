@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGTERRAIN_TERRAIN
-#define OSGTERRAIN_TERRAIN 1
+#ifndef OSGTERRAIN_TERRAINTILE
+#define OSGTERRAIN_TERRAINTILE 1
 
 #include <osg/Group>
 #include <osg/CoordinateSystemNode>
@@ -56,16 +56,16 @@ class TileID
 
 /** Terrain provides a framework for loosely coupling height field data with height rendering algorithms.
   * This allows TerrainTechnique's to be plugged in at runtime.*/
-class OSGTERRAIN_EXPORT Terrain : public osg::Group
+class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 {
     public:
 
-        Terrain();
+        TerrainTile();
         
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Terrain(const Terrain&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        TerrainTile(const TerrainTile&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Node(osgTerrain, Terrain);
+        META_Node(osgTerrain, TerrainTile);
 
         virtual void traverse(osg::NodeVisitor& nv);
 
@@ -120,7 +120,7 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
 
 
         /** Set a color layer with specified layer number.*/
-        void setColorLayer(unsigned int i, osgTerrain::Layer* layer);
+        void setColorLayer(unsigned int i, Layer* layer);
 
         /** Get color layer with specified layer number.*/
         Layer* getColorLayer(unsigned int i) { return i<_colorLayers.size() ? _colorLayers[i].get() : 0; }
@@ -151,7 +151,7 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
 
     protected:
 
-        virtual ~Terrain();
+        virtual ~TerrainTile();
 
         typedef std::vector< osg::ref_ptr<Layer> > Layers;
 

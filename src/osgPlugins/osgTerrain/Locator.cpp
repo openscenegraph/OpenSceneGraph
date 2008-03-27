@@ -1,4 +1,4 @@
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 #include <iostream>
 #include <string>

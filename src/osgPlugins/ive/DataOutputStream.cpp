@@ -90,7 +90,7 @@
 
 #include "Text.h"
 
-#include "Terrain.h"
+#include "TerrainTile.h"
 #include "Locator.h"
 #include "ImageLayer.h"
 #include "HeightFieldLayer.h"
@@ -1060,8 +1060,8 @@ void DataOutputStream::writeNode(const osg::Node* node)
         else if(dynamic_cast<const osgFX::MultiTextureControl*>(node)){
             ((ive::MultiTextureControl*)(node))->write(this);
         }
-        else if(dynamic_cast<const osgTerrain::Terrain*>(node)){
-            ((ive::Terrain*)(node))->write(this);
+        else if(dynamic_cast<const osgTerrain::TerrainTile*>(node)){
+            ((ive::TerrainTile*)(node))->write(this);
         }
         else if(dynamic_cast<const osg::Group*>(node)){
             ((ive::Group*)(node))->write(this);

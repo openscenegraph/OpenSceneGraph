@@ -7,7 +7,7 @@ SET(TARGET_SRC
     HeightFieldLayer.cpp
     CompositeLayer.cpp
     Layer.cpp
-    Terrain.cpp
+    TerrainTile.cpp
     GeometryTechnique.cpp
     ReaderWriterOsgTerrain.cpp
 )

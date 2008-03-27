@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 #include <osgTerrain/TerrainSystem>
 
 #include <osg/ClusterCullingCallback>
@@ -19,7 +19,7 @@
 using namespace osg;
 using namespace osgTerrain;
 
-Terrain::Terrain():
+TerrainTile::TerrainTile():
     _terrainSystem(0),
     _hasBeenTraversal(false),
     _requiresNormals(true),
@@ -29,7 +29,7 @@ Terrain::Terrain():
     setThreadSafeRefUnref(true);
 }
 
-Terrain::Terrain(const Terrain& terrain,const osg::CopyOp& copyop):
+TerrainTile::TerrainTile(const TerrainTile& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
     _terrainSystem(0),
     _hasBeenTraversal(false),
@@ -43,11 +43,11 @@ Terrain::Terrain(const Terrain& terrain,const osg::CopyOp& copyop):
     if (terrain.getTerrainTechnique()) setTerrainTechnique(dynamic_cast<TerrainTechnique*>(terrain.getTerrainTechnique()->cloneType()));
 }
 
-Terrain::~Terrain()
+TerrainTile::~TerrainTile()
 {
 }
 
-void Terrain::traverse(osg::NodeVisitor& nv)
+void TerrainTile::traverse(osg::NodeVisitor& nv)
 {
     if (!_hasBeenTraversal)
     {
@@ -63,7 +63,7 @@ void Terrain::traverse(osg::NodeVisitor& nv)
                     osgTerrain::TerrainSystem* ts = dynamic_cast<TerrainSystem*>(*itr);
                     if (ts) 
                     {
-                        osg::notify(osg::NOTICE)<<"Assigning terrain system "<<ts<<std::endl;                        
+                        osg::notify(osg::INFO)<<"Assigning terrain system "<<ts<<std::endl;                        
                         _terrainSystem = ts;
                     }
                 }
@@ -92,7 +92,7 @@ void Terrain::traverse(osg::NodeVisitor& nv)
     }
 }
 
-void Terrain::init()
+void TerrainTile::init()
 {
     if (_terrainTechnique.valid() && _terrainTechnique->isDirty())
     {
@@ -100,8 +100,7 @@ void Terrain::init()
     }    
 }
 
-
-void Terrain::setTerrainTechnique(osgTerrain::TerrainTechnique* terrainTechnique)
+void TerrainTile::setTerrainTechnique(TerrainTechnique* terrainTechnique)
 {
     if (_terrainTechnique == terrainTechnique) return; 
 
@@ -114,19 +113,19 @@ void Terrain::setTerrainTechnique(osgTerrain::TerrainTechnique* terrainTechnique
 }
 
 
-void Terrain::setElevationLayer(osgTerrain::Layer* layer)
+void TerrainTile::setElevationLayer(Layer* layer)
 {
     _elevationLayer = layer;
 }
 
-void Terrain::setColorLayer(unsigned int i, osgTerrain::Layer* layer)
+void TerrainTile::setColorLayer(unsigned int i, Layer* layer)
 {
     if (_colorLayers.size() <= i) _colorLayers.resize(i+1);
     
     _colorLayers[i] = layer;
 }
 
-osg::BoundingSphere Terrain::computeBound() const
+osg::BoundingSphere TerrainTile::computeBound() const
 {
     osg::BoundingSphere bs;
     

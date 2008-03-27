@@ -21,7 +21,7 @@
 #include <osg/Uniform>
 #include <osg/ref_ptr>
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 #include <osgDB/ReaderWriter>
 

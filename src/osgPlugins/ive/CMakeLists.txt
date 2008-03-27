@@ -91,7 +91,7 @@ SET(TARGET_SRC
     Texture3D.cpp
     TextureCubeMap.cpp
     TextureRectangle.cpp
-    Terrain.cpp
+    TerrainTile.cpp
     Locator.cpp
     Layer.cpp
     HeightFieldLayer.cpp
@@ -194,7 +194,7 @@ SET(TARGET_H
     Texture3D.h
     TextureCubeMap.h
     TextureRectangle.h
-    Terrain.h
+    TerrainTile.h
     Transform.h
     Locator.h
     Layer.h

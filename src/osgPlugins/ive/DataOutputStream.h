@@ -16,7 +16,7 @@
 #include <osg/Uniform>
 #include <osgDB/ReaderWriter>
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 #include "IveVersion.h"
 #include "DataTypeSize.h"

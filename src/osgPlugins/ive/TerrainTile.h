@@ -11,17 +11,17 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef IVE_TERRAIN
-#define IVE_TERRAIN 1
+#ifndef IVE_TERRAINTILE
+#define IVE_TERRAINTILE 1
 
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 #include "ReadWrite.h"
 
 namespace ive
 {
 
-class Terrain : public osgTerrain::Terrain, public ReadWrite
+class TerrainTile : public osgTerrain::TerrainTile, public ReadWrite
 {
 public:
 	void write(DataOutputStream* out);

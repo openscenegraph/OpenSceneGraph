@@ -12,7 +12,7 @@
 */
 
 #include "Exception.h"
-#include "Terrain.h"
+#include "TerrainTile.h"
 #include "Group.h"
 #include "Layer.h"
 
@@ -20,10 +20,10 @@
 
 using namespace ive;
 
-void Terrain::write(DataOutputStream* out)
+void TerrainTile::write(DataOutputStream* out)
 {
     // Write Terrain's identification.
-    out->writeInt(IVETERRAIN);
+    out->writeInt(IVETERRAINTILE);
     // If the osg class is inherited by any other class we should also write this to file.
     osg::Group*  group = dynamic_cast<osg::Group*>(this);
     if(group)
@@ -69,11 +69,11 @@ void Terrain::write(DataOutputStream* out)
 
 }
 
-void Terrain::read(DataInputStream* in)
+void TerrainTile::read(DataInputStream* in)
 {
     // Peek on Terrain's identification.
     int id = in->peekInt();
-    if (id != IVETERRAIN) throw Exception("Terrain::read(): Expected Terrain identification.");
+    if (id != IVETERRAINTILE) throw Exception("TerrainTile::read(): Expected Terrain identification.");
 
     // Read Terrain's identification.
     id = in->readInt();
@@ -121,7 +121,7 @@ void Terrain::read(DataInputStream* in)
 
 }
 
-void Terrain::writeTerrainTechnique(DataOutputStream* out, osgTerrain::TerrainTechnique* technique)
+void TerrainTile::writeTerrainTechnique(DataOutputStream* out, osgTerrain::TerrainTechnique* technique)
 {
     if (dynamic_cast<osgTerrain::GeometryTechnique*>(technique))
     {
@@ -134,7 +134,7 @@ void Terrain::writeTerrainTechnique(DataOutputStream* out, osgTerrain::TerrainTe
     }
 }
 
-osgTerrain::TerrainTechnique* Terrain::readTerrainTechnique(DataInputStream* in)
+osgTerrain::TerrainTechnique* TerrainTile::readTerrainTechnique(DataInputStream* in)
 {
     bool hasTechnique = in->readBool();
     if (!hasTechnique) return 0;

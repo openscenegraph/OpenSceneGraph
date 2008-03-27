@@ -12,7 +12,7 @@
 */
 
 #include <osgTerrain/TerrainTechnique>
-#include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 using namespace osgTerrain;
 

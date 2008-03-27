@@ -10,7 +10,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/Locator
     ${HEADER_PATH}/Layer
-    ${HEADER_PATH}/Terrain
+    ${HEADER_PATH}/TerrainTile
     ${HEADER_PATH}/TerrainTechnique
     ${HEADER_PATH}/TerrainSystem
     ${HEADER_PATH}/TileSystem
@@ -25,7 +25,7 @@ ADD_LIBRARY(${LIB_NAME}
     ${LIB_PUBLIC_HEADERS}
     Layer.cpp
     Locator.cpp
-    Terrain.cpp
+    TerrainTile.cpp
     TerrainTechnique.cpp
     TerrainSystem.cpp
     TileSystem.cpp

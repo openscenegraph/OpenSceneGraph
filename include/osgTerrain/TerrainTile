@@ -23,7 +23,7 @@
 
 namespace osgTerrain {
 
-class TerrainSystem;
+class Terrain;
 
 class TileID
 {
@@ -73,14 +73,14 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         void init();
 
 
-        /** Set the TerrainSystem that this Terrain tile is a member of.*/
-        void setTerrainSystem(TerrainSystem* ts) { _terrainSystem = ts; }
+        /** Set the Terrain that this Terrain tile is a member of.*/
+        void setTerrain(Terrain* ts) { _terrain = ts; }
 
-        /** Get the TerrainSystem that this Terrain tile is a member of.*/
-        TerrainSystem* getTerrainSystem() { return _terrainSystem; }
+        /** Get the Terrain that this Terrain tile is a member of.*/
+        Terrain* getTerrain() { return _terrain; }
 
-        /** Get the const TerrainSystem that this Terrain tile is a member of.*/
-        const TerrainSystem* getTerrainSystem() const { return _terrainSystem; }
+        /** Get the const Terrain that this Terrain tile is a member of.*/
+        const Terrain* getTerrain() const { return _terrain; }
 
         
         void setTileID(const TileID& tileID) { _tileID = tileID; }
@@ -156,7 +156,7 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         typedef std::vector< osg::ref_ptr<Layer> > Layers;
 
 
-        TerrainSystem*                      _terrainSystem;
+        Terrain*                            _terrain;
 
         bool                                _hasBeenTraversal;
         

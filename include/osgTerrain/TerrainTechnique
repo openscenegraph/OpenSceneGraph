@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGTERRAIN_terrainTECHNIQUE
-#define OSGTERRAIN_terrainTECHNIQUE 1
+#ifndef OSGTERRAIN_terrainTileTECHNIQUE
+#define OSGTERRAIN_terrainTileTECHNIQUE 1
 
 #include <osg/Object>
 
@@ -36,8 +36,8 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
         
         META_Object(osgTerrain, TerrainTechnique);
 
-        TerrainTile* getTerrainTile() { return _terrain; }
-        const TerrainTile* getTerrainTile() const { return _terrain; }
+        TerrainTile* getTerrainTile() { return _terrainTile; }
+        const TerrainTile* getTerrainTile() const { return _terrainTile; }
 
         virtual void init();
 
@@ -63,7 +63,7 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
         
         friend class osgTerrain::TerrainTile;
 
-        TerrainTile*    _terrain;
+        TerrainTile*    _terrainTile;
         bool            _dirty;
 
 };

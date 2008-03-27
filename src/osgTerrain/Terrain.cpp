@@ -11,24 +11,24 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgTerrain/TerrainSystem>
+#include <osgTerrain/Terrain>
 
 using namespace osg;
 using namespace osgTerrain;
 
-TerrainSystem::TerrainSystem()
+Terrain::Terrain()
 {
 }
 
-TerrainSystem::~TerrainSystem()
+Terrain::~Terrain()
 {
 }
 
-TerrainSystem::TerrainSystem(const TerrainSystem& ts, const osg::CopyOp& copyop)
+Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop)
 {
 }
 
-void TerrainSystem::traverse(osg::NodeVisitor& nv)
+void Terrain::traverse(osg::NodeVisitor& nv)
 {
     Group::traverse(nv);
 }

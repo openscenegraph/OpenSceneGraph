@@ -102,7 +102,7 @@ void GeometryTechnique::init()
 {
     // osg::notify(osg::NOTICE)<<"Doing GeometryTechnique::init()"<<std::endl;
     
-    if (!_terrain) return;
+    if (!_terrainTile) return;
 
     BufferData& buffer = getWriteBuffer();
     
@@ -126,8 +126,8 @@ void GeometryTechnique::init()
 
 Locator* GeometryTechnique::computeMasterLocator()
 {
-    osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
-    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
+    osgTerrain::Layer* elevationLayer = _terrainTile->getElevationLayer();
+    osgTerrain::Layer* colorLayer = _terrainTile->getColorLayer(0);
 
     Locator* elevationLocator = elevationLayer ? elevationLayer->getLocator() : 0;
     Locator* colorLocator = colorLayer ? colorLayer->getLocator() : 0;
@@ -148,8 +148,8 @@ osg::Vec3d GeometryTechnique::computeCenterModel(Locator* masterLocator)
 
     BufferData& buffer = getWriteBuffer();
     
-    osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
-    osgTerrain::Layer* colorLayer = _terrain->getColorLayer(0);
+    osgTerrain::Layer* elevationLayer = _terrainTile->getElevationLayer();
+    osgTerrain::Layer* colorLayer = _terrainTile->getColorLayer(0);
 
     Locator* elevationLocator = elevationLayer ? elevationLayer->getLocator() : 0;
     Locator* colorLocator = colorLayer ? colorLayer->getLocator() : 0;
@@ -208,7 +208,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 {
     BufferData& buffer = getWriteBuffer();
     
-    osgTerrain::Layer* elevationLayer = _terrain->getElevationLayer();
+    osgTerrain::Layer* elevationLayer = _terrainTile->getElevationLayer();
 
     buffer._geode = new osg::Geode;
     if(buffer._transform.valid())
@@ -246,7 +246,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
     
 
-    bool treatBoundariesToValidDataAsDefaultValue = _terrain->getTreatBoundariesToValidDataAsDefaultValue();
+    bool treatBoundariesToValidDataAsDefaultValue = _terrainTile->getTreatBoundariesToValidDataAsDefaultValue();
     osg::notify(osg::INFO)<<"TreatBoundariesToValidDataAsDefaultValue="<<treatBoundariesToValidDataAsDefaultValue<<std::endl;
     
     float skirtHeight = 0.0f;
@@ -282,9 +282,9 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     typedef std::map< Layer*, TexCoordLocatorPair > LayerToTexCoordMap;
 
     LayerToTexCoordMap layerToTexCoordMap;
-    for(unsigned int layerNum=0; layerNum<_terrain->getNumColorLayers(); ++layerNum)
+    for(unsigned int layerNum=0; layerNum<_terrainTile->getNumColorLayers(); ++layerNum)
     {
-        osgTerrain::Layer* colorLayer = _terrain->getColorLayer(layerNum);
+        osgTerrain::Layer* colorLayer = _terrainTile->getColorLayer(layerNum);
         if (colorLayer)
         {
             LayerToTexCoordMap::iterator itr = layerToTexCoordMap.find(colorLayer);
@@ -650,9 +650,9 @@ void GeometryTechnique::applyColorLayers()
     typedef std::map<osgTerrain::Layer*, osg::Texture*> LayerToTextureMap;
     LayerToTextureMap layerToTextureMap;
     
-    for(unsigned int layerNum=0; layerNum<_terrain->getNumColorLayers(); ++layerNum)
+    for(unsigned int layerNum=0; layerNum<_terrainTile->getNumColorLayers(); ++layerNum)
     {
-        osgTerrain::Layer* colorLayer = _terrain->getColorLayer(layerNum);
+        osgTerrain::Layer* colorLayer = _terrainTile->getColorLayer(layerNum);
         if (!colorLayer) continue;
 
         osg::Image* image = colorLayer->getImage();
@@ -715,9 +715,9 @@ void GeometryTechnique::applyTransparency()
     BufferData& buffer = getWriteBuffer();
     
     bool containsTransparency = false;
-    for(unsigned int i=0; i<_terrain->getNumColorLayers(); ++i)
+    for(unsigned int i=0; i<_terrainTile->getNumColorLayers(); ++i)
     {
-        osg::Image* image = _terrain->getColorLayer(i)->getImage();
+        osg::Image* image = _terrainTile->getColorLayer(i)->getImage();
         if (image)
         {
             containsTransparency = image->isImageTranslucent();
@@ -747,7 +747,7 @@ void GeometryTechnique::smoothGeometry()
 
 void GeometryTechnique::update(osgUtil::UpdateVisitor* uv)
 {
-    if (_terrain) _terrain->osg::Group::traverse(*uv);
+    if (_terrainTile) _terrainTile->osg::Group::traverse(*uv);
 }
 
 
@@ -756,7 +756,7 @@ void GeometryTechnique::cull(osgUtil::CullVisitor* cv)
     BufferData& buffer = getReadOnlyBuffer();
 
 #if 0
-    if (buffer._terrain) buffer._terrain->osg::Group::traverse(*cv);
+    if (buffer._terrainTile) buffer._terrainTile->osg::Group::traverse(*cv);
 #else
     if (buffer._transform.valid())
     {
@@ -768,12 +768,12 @@ void GeometryTechnique::cull(osgUtil::CullVisitor* cv)
 
 void GeometryTechnique::traverse(osg::NodeVisitor& nv)
 {
-    if (!_terrain) return;
+    if (!_terrainTile) return;
 
     // if app traversal update the frame count.
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
-        if (_dirty) _terrain->init();
+        if (_dirty) _terrainTile->init();
 
         osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
         if (uv)
@@ -797,7 +797,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
     if (_dirty) 
     {
         osg::notify(osg::INFO)<<"******* Doing init ***********"<<std::endl;
-        _terrain->init();
+        _terrainTile->init();
     }
 
     BufferData& buffer = getReadOnlyBuffer();

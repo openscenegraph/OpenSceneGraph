@@ -12,7 +12,7 @@
 */
 
 #include <osgTerrain/TerrainTile>
-#include <osgTerrain/TerrainSystem>
+#include <osgTerrain/Terrain>
 
 #include <osg/ClusterCullingCallback>
 
@@ -20,7 +20,7 @@ using namespace osg;
 using namespace osgTerrain;
 
 TerrainTile::TerrainTile():
-    _terrainSystem(0),
+    _terrain(0),
     _hasBeenTraversal(false),
     _requiresNormals(true),
     _treatBoundariesToValidDataAsDefaultValue(false)
@@ -31,7 +31,7 @@ TerrainTile::TerrainTile():
 
 TerrainTile::TerrainTile(const TerrainTile& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
-    _terrainSystem(0),
+    _terrain(0),
     _hasBeenTraversal(false),
     _elevationLayer(terrain._elevationLayer),
     _colorLayers(terrain._colorLayers),
@@ -51,20 +51,20 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
 {
     if (!_hasBeenTraversal)
     {
-        if (!_terrainSystem)
+        if (!_terrain)
         {
             osg::NodePath& nodePath = nv.getNodePath();
             if (!nodePath.empty())
             {
                 for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
-                    itr != nodePath.rend() && !_terrainSystem;
+                    itr != nodePath.rend() && !_terrain;
                     ++itr)
                 {
-                    osgTerrain::TerrainSystem* ts = dynamic_cast<TerrainSystem*>(*itr);
+                    osgTerrain::Terrain* ts = dynamic_cast<Terrain*>(*itr);
                     if (ts) 
                     {
                         osg::notify(osg::INFO)<<"Assigning terrain system "<<ts<<std::endl;                        
-                        _terrainSystem = ts;
+                        _terrain = ts;
                     }
                 }
             }
@@ -104,11 +104,11 @@ void TerrainTile::setTerrainTechnique(TerrainTechnique* terrainTechnique)
 {
     if (_terrainTechnique == terrainTechnique) return; 
 
-    if (_terrainTechnique.valid()) _terrainTechnique->_terrain = 0;
+    if (_terrainTechnique.valid()) _terrainTechnique->_terrainTile = 0;
 
     _terrainTechnique = terrainTechnique;
     
-    if (_terrainTechnique.valid()) _terrainTechnique->_terrain = this;
+    if (_terrainTechnique.valid()) _terrainTechnique->_terrainTile = this;
     
 }
 

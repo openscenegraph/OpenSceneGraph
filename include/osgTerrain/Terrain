@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGTERRAINSYSTEM
-#define OSGTERRAINSYSTEM 1
+#ifndef OSGTerrain
+#define OSGTerrain 1
 
 #include <osg/Group>
 #include <osg/CoordinateSystemNode>
@@ -21,23 +21,23 @@
 
 namespace osgTerrain {
 
-/** TerrainSystem provides a framework for loosely coupling height field data with height rendering algorithms.
+/** Terrain provides a framework for loosely coupling height field data with height rendering algorithms.
   * This allows TerrainTechnique's to be plugged in at runtime.*/
-class OSGTERRAIN_EXPORT TerrainSystem : public osg::Group
+class OSGTERRAIN_EXPORT Terrain : public osg::Group
 {
     public:
 
-        TerrainSystem();
+        Terrain();
         
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        TerrainSystem(const TerrainSystem&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        Terrain(const Terrain&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Node(osgTerrain, TerrainSystem);
+        META_Node(osgTerrain, Terrain);
 
         virtual void traverse(osg::NodeVisitor& nv);
         
 
-        /** Set the TerrainTechnique that is used as the prototype for all Terrain below the TerrainSystem. */
+        /** Set the TerrainTechnique that is used as the prototype for all Terrain below the Terrain. */
         void setTerrainTechnique(osgTerrain::TerrainTechnique* TerrainTechnique);
 
         /** Get the TerrainTechnique*/
@@ -48,7 +48,7 @@ class OSGTERRAIN_EXPORT TerrainSystem : public osg::Group
 
     protected:
 
-        virtual ~TerrainSystem();
+        virtual ~Terrain();
 
         osg::ref_ptr<TerrainTechnique>      _terrainTechnique;
         

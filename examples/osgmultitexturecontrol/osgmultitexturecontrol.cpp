@@ -38,7 +38,7 @@
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
 
-#include <osgTerrain/TerrainSystem>
+#include <osgTerrain/Terrain>
 
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Viewer>
@@ -198,10 +198,10 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    osgTerrain::TerrainSystem* terrain = findTopMostNodeOfType<osgTerrain::TerrainSystem>(rootnode);
+    osgTerrain::Terrain* terrain = findTopMostNodeOfType<osgTerrain::Terrain>(rootnode);
     if (!terrain)
     {
-        terrain = new osgTerrain::TerrainSystem;
+        terrain = new osgTerrain::Terrain;
         terrain->addChild(rootnode);
         
         rootnode = terrain;

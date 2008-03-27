@@ -46,11 +46,30 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         /** Get the const TerrainTechnique*/
         const TerrainTechnique* getTerrainTechnique() const { return _terrainTechnique.get(); }
 
+
+        /** Get the TerrainTile for a given TileID.*/
+        TerrainTile* getTile(const TileID& tileID);
+
+        /** Get the const TerrainTile for a given TileID.*/
+        const TerrainTile* getTile(const TileID& tileID) const;
+
     protected:
 
         virtual ~Terrain();
+        
+        friend class TerrainTile;
+        
+        void registerTerrainTile(TerrainTile* tile);
+        void unregisterTerrainTile(TerrainTile* tile);
+
+        typedef std::map< TileID, TerrainTile* >    TerrainTileMap;
+        typedef std::set< TerrainTile* >            TerrainTileSet;
 
         osg::ref_ptr<TerrainTechnique>      _terrainTechnique;
+        
+
+        TerrainTileSet                        _terrainTileSet;
+        TerrainTileMap                        _terrainTileMap;
         
 
        

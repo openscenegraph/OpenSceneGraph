@@ -45,7 +45,31 @@ TerrainTile::TerrainTile(const TerrainTile& terrain,const osg::CopyOp& copyop):
 
 TerrainTile::~TerrainTile()
 {
+    if (_terrain) setTerrain(0);
 }
+
+void TerrainTile::setTerrain(Terrain* ts)
+{
+    if (_terrain == ts) return;
+    
+    if (_terrain) _terrain->unregisterTerrainTile(this);
+    
+    _terrain = ts;
+
+    if (_terrain) _terrain->registerTerrainTile(this);
+}
+
+void TerrainTile::setTileID(const TileID& tileID)
+{
+    if (_tileID == tileID) return;
+
+    if (_terrain) _terrain->unregisterTerrainTile(this);
+
+    _tileID = tileID;
+
+    if (_terrain) _terrain->registerTerrainTile(this);
+}
+
 
 void TerrainTile::traverse(osg::NodeVisitor& nv)
 {
@@ -64,7 +88,7 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
                     if (ts) 
                     {
                         osg::notify(osg::INFO)<<"Assigning terrain system "<<ts<<std::endl;                        
-                        _terrain = ts;
+                        setTerrain(ts);
                     }
                 }
             }

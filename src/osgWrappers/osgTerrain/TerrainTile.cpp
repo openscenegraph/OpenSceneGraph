@@ -96,12 +96,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	I_Method1(void, setTileID, IN, const osgTerrain::TileID &, tileID,
 	          Properties::NON_VIRTUAL,
 	          __void__setTileID__C5_TileID_R1,
-	          "",
-	          "");
+	          "Set the TileID (layer, x,y) of the TerrainTile. ",
+	          "The TileID is used so it can be located by its neighbours via the enclosing Terrain node that manages a map of TileID to TerraiTiles. ");
 	I_Method0(const osgTerrain::TileID &, getTileID,
 	          Properties::NON_VIRTUAL,
 	          __C5_TileID_R1__getTileID,
-	          "",
+	          "Get the TileID (layer, x,y) of the TerrainTile. ",
 	          "");
 	I_Method1(void, setTerrainTechnique, IN, osgTerrain::TerrainTechnique *, TerrainTechnique,
 	          Properties::NON_VIRTUAL,
@@ -232,6 +232,11 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::TileID)
 	               ____TileID__int__int__int,
 	               "",
 	               "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
 	I_PublicMemberProperty(int, layer);
 	I_PublicMemberProperty(int, x);
 	I_PublicMemberProperty(int, y);

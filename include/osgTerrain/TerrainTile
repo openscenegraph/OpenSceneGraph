@@ -39,6 +39,16 @@ class TileID
             x(in_x),
             y(in_y) {}
             
+        bool operator == (const TileID& rhs) const        
+        {
+            return (layer==rhs.layer) && (x==rhs.x) && (y==rhs.y);
+        }
+
+        bool operator != (const TileID& rhs) const        
+        {
+            return (layer!=rhs.layer) || (x!=rhs.x) || (y!=rhs.y);
+        }
+
         bool operator < (const TileID& rhs) const
         {
             if (layer<rhs.layer) return true;
@@ -47,6 +57,8 @@ class TileID
             if (x>rhs.x) return false;
             return y<rhs.y;
         }
+        
+        bool valid() const { return layer>=0; }
 
         int layer;
         int x;
@@ -74,7 +86,7 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
 
         /** Set the Terrain that this Terrain tile is a member of.*/
-        void setTerrain(Terrain* ts) { _terrain = ts; }
+        void setTerrain(Terrain* ts);
 
         /** Get the Terrain that this Terrain tile is a member of.*/
         Terrain* getTerrain() { return _terrain; }
@@ -83,10 +95,13 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         const Terrain* getTerrain() const { return _terrain; }
 
         
-        void setTileID(const TileID& tileID) { _tileID = tileID; }
+        /** Set the TileID (layer, x,y) of the TerrainTile.
+          * The TileID is used so it can be located by its neighbours 
+          * via the enclosing Terrain node that manages a map of TileID to TerraiTiles.*/
+        void setTileID(const TileID& tileID);
         
+        /** Get the TileID (layer, x,y) of the TerrainTile.*/
         const TileID& getTileID() const { return _tileID; }
-        
         
 
         /** Set the TerrainTechnique*/
@@ -155,6 +170,7 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
         typedef std::vector< osg::ref_ptr<Layer> > Layers;
 
+        friend class Terrain;
 
         Terrain*                            _terrain;
 

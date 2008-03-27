@@ -22,6 +22,15 @@ Terrain::Terrain()
 
 Terrain::~Terrain()
 {
+    for(TerrainTileSet::iterator itr = _terrainTileSet.begin();
+        itr != _terrainTileSet.end();
+        ++itr)
+    {
+        const_cast<TerrainTile*>(*itr)->_terrain = 0;
+    }
+    
+    _terrainTileSet.clear();
+    _terrainTileMap.clear();
 }
 
 Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop)
@@ -31,4 +40,48 @@ Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop)
 void Terrain::traverse(osg::NodeVisitor& nv)
 {
     Group::traverse(nv);
+}
+
+TerrainTile* Terrain::getTile(const TileID& tileID)
+{
+    TerrainTileMap::iterator itr = _terrainTileMap.find(tileID);
+    if (itr != _terrainTileMap.end()) return 0;
+    
+    return itr->second;
+}
+
+const TerrainTile* Terrain::getTile(const TileID& tileID) const
+{
+    TerrainTileMap::const_iterator itr = _terrainTileMap.find(tileID);
+    if (itr != _terrainTileMap.end()) return 0;
+    
+    return itr->second;
+}
+
+void Terrain::registerTerrainTile(TerrainTile* tile)
+{
+    if (!tile) return;
+    
+    if (tile->getTileID().valid())
+    {
+        _terrainTileMap[tile->getTileID()] = tile;
+    }
+    
+    _terrainTileSet.insert(tile);
+
+    osg::notify(osg::INFO)<<"Terrain::registerTerrainTile "<<tile<<" total number of tile "<<_terrainTileSet.size()<<std::endl;
+}
+
+void Terrain::unregisterTerrainTile(TerrainTile* tile)
+{
+    if (!tile) return;
+
+    if (tile->getTileID().valid())
+    {
+        _terrainTileMap.erase(tile->getTileID());
+    }
+    
+    _terrainTileSet.erase(tile);
+
+    osg::notify(osg::INFO)<<"Terrain::unregisterTerrainTile "<<tile<<" total number of tile "<<_terrainTileSet.size()<<std::endl;
 }

@@ -15,6 +15,7 @@
 #include <osg/Object>
 #include <osgTerrain/Terrain>
 #include <osgTerrain/TerrainTechnique>
+#include <osgTerrain/TerrainTile>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -84,6 +85,28 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __C5_TerrainTechnique_P1__getTerrainTechnique,
 	          "Get the const TerrainTechnique. ",
 	          "");
+	I_Method1(osgTerrain::TerrainTile *, getTile, IN, const osgTerrain::TileID &, tileID,
+	          Properties::NON_VIRTUAL,
+	          __TerrainTile_P1__getTile__C5_TileID_R1,
+	          "Get the TerrainTile for a given TileID. ",
+	          "");
+	I_Method1(const osgTerrain::TerrainTile *, getTile, IN, const osgTerrain::TileID &, tileID,
+	          Properties::NON_VIRTUAL,
+	          __C5_TerrainTile_P1__getTile__C5_TileID_R1,
+	          "Get the const TerrainTile for a given TileID. ",
+	          "");
+	I_ProtectedMethod1(void, registerTerrainTile, IN, osgTerrain::TerrainTile *, tile,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__registerTerrainTile__TerrainTile_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, unregisterTerrainTile, IN, osgTerrain::TerrainTile *, tile,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__unregisterTerrainTile__TerrainTile_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgTerrain::TerrainTechnique *, TerrainTechnique, 
 	                 __TerrainTechnique_P1__getTerrainTechnique, 
 	                 __void__setTerrainTechnique__osgTerrain_TerrainTechnique_P1);

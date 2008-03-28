@@ -189,53 +189,6 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
-    // load the nodes from the commandline arguments.
-    osg::Node* rootnode = osgDB::readNodeFiles(arguments);
-
-    if (!rootnode)
-    {
-        osg::notify(osg::NOTICE)<<"Warning: no valid data loaded, please specify a database on the command line."<<std::endl;
-        return 1;
-    }
-    
-    osgTerrain::Terrain* terrain = findTopMostNodeOfType<osgTerrain::Terrain>(rootnode);
-    if (!terrain)
-    {
-        terrain = new osgTerrain::Terrain;
-        terrain->addChild(rootnode);
-        
-        rootnode = terrain;
-    }    
-    
-    osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(rootnode);
-
-    unsigned int numLayers = 1;
-    osgFX::MultiTextureControl* mtc = findTopMostNodeOfType<osgFX::MultiTextureControl>(rootnode);
-    if (mtc)
-    {
-        numLayers = mtc->getNumTextureWeights();
-    }
-    
-    if (numLayers<2)
-    {
-        osg::notify(osg::NOTICE)<<"Warning: scene must have MultiTextureControl node with at least 2 texture units defined."<<std::endl;
-        return 1;
-    }
-    
-    double maxElevationTransition = 1e6;
-    ElevationLayerBlendingCallback::Elevations elevations;
-    for(unsigned int i=0; i<numLayers; ++i)
-    {
-        elevations.push_back(maxElevationTransition);
-        maxElevationTransition /= 2.0;
-    }
-    
-    ElevationLayerBlendingCallback* elbc = new ElevationLayerBlendingCallback(mtc, elevations);
-
-    // assign to the most appropriate node (the CoordinateSystemNode is best as it provides the elevation on the globe.)
-    if (csn) csn->setCullCallback(elbc);    
-    else if (mtc) mtc->setCullCallback(elbc);
-    else rootnode->setCullCallback(elbc);
 
     // add all the event handlers to the viewer
     {
@@ -261,6 +214,7 @@ int main( int argc, char **argv )
         viewer.addEventHandler(new osgViewer::LODScaleHandler);
     }
 
+    // add all the camera manipulators
     {
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
 
@@ -289,8 +243,59 @@ int main( int argc, char **argv )
         viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
 
-    // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData( rootnode );
+    // set up the scene graph
+    {
+        // load the nodes from the commandline arguments.
+        osg::Node* rootnode = osgDB::readNodeFiles(arguments);
+
+        if (!rootnode)
+        {
+            osg::notify(osg::NOTICE)<<"Warning: no valid data loaded, please specify a database on the command line."<<std::endl;
+            return 1;
+        }
+
+        osgTerrain::Terrain* terrain = findTopMostNodeOfType<osgTerrain::Terrain>(rootnode);
+        if (!terrain)
+        {
+            terrain = new osgTerrain::Terrain;
+            terrain->addChild(rootnode);
+
+            rootnode = terrain;
+        }    
+
+        osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(rootnode);
+
+        unsigned int numLayers = 1;
+        osgFX::MultiTextureControl* mtc = findTopMostNodeOfType<osgFX::MultiTextureControl>(rootnode);
+        if (mtc)
+        {
+            numLayers = mtc->getNumTextureWeights();
+        }
+
+        if (numLayers<2)
+        {
+            osg::notify(osg::NOTICE)<<"Warning: scene must have MultiTextureControl node with at least 2 texture units defined."<<std::endl;
+            return 1;
+        }
+
+        double maxElevationTransition = 1e6;
+        ElevationLayerBlendingCallback::Elevations elevations;
+        for(unsigned int i=0; i<numLayers; ++i)
+        {
+            elevations.push_back(maxElevationTransition);
+            maxElevationTransition /= 2.0;
+        }
+
+        ElevationLayerBlendingCallback* elbc = new ElevationLayerBlendingCallback(mtc, elevations);
+
+        // assign to the most appropriate node (the CoordinateSystemNode is best as it provides the elevation on the globe.)
+        if (csn) csn->setCullCallback(elbc);    
+        else if (mtc) mtc->setCullCallback(elbc);
+        else rootnode->setCullCallback(elbc);
+
+        // add a viewport to the viewer and attach the scene graph.
+        viewer.setSceneData( rootnode );
+    }
     
     // create the windows and run the threads.
     viewer.realize();

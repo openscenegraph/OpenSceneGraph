@@ -25,7 +25,7 @@
 #include <osg/Vec3f>
 #include <osg/Vec3d>
 #include <osg/Vec4f>
-#include "types.h"    
+#include "Types.h"    
 
 namespace flt {
 

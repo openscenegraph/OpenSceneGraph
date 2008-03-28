@@ -18,7 +18,7 @@
 //
 
 #include <iostream>
-#include "opcodes.h"
+#include "Opcodes.h"
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"

@@ -24,7 +24,7 @@ using namespace flt;
 
 AttrData::AttrData() :
     texels_u(0),
-    textel_v(0),
+    texels_v(0),
     direction_u(0),
     direction_v(0),
     x_up(0),

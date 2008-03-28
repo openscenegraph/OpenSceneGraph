@@ -36,17 +36,6 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
 
         virtual void traverse(osg::NodeVisitor& nv);
         
-
-        /** Set the TerrainTechnique that is used as the prototype for all Terrain below the Terrain. */
-        void setTerrainTechnique(osgTerrain::TerrainTechnique* TerrainTechnique);
-
-        /** Get the TerrainTechnique*/
-        TerrainTechnique* getTerrainTechnique() { return _terrainTechnique.get(); }
-        
-        /** Get the const TerrainTechnique*/
-        const TerrainTechnique* getTerrainTechnique() const { return _terrainTechnique.get(); }
-
-
         /** Get the TerrainTile for a given TileID.*/
         TerrainTile* getTile(const TileID& tileID);
 
@@ -65,11 +54,9 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         typedef std::map< TileID, TerrainTile* >    TerrainTileMap;
         typedef std::set< TerrainTile* >            TerrainTileSet;
 
-        osg::ref_ptr<TerrainTechnique>      _terrainTechnique;
-        
-
-        TerrainTileSet                        _terrainTileSet;
-        TerrainTileMap                        _terrainTileMap;
+        mutable OpenThreads::Mutex          _mutex;
+        TerrainTileSet                      _terrainTileSet;
+        TerrainTileMap                      _terrainTileMap;
         
 
        

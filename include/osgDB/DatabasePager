@@ -251,18 +251,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Reset the Stats variables.*/
         void resetStats();
 
-        /** Set the maximum number of PagedLOD child to remove per frame */
-        void setMaximumNumOfRemovedChildPagedLODs(unsigned int number) { _maximumNumOfRemovedChildPagedLODs = number; }
-
-        /** Get the maximum number of PagedLOD child to remove per frame */
-        unsigned int getMaximumNumOfRemovedChildPagedLODs() const { return _maximumNumOfRemovedChildPagedLODs; }
-
-        /** Set the minimum number of inactive PagedLOD child to keep */
-        void setMinimumNumOfInactivePagedLODs(unsigned int number) { _minimumNumOfInactivePagedLODs = number; }
-
-        /** Get the minimum number of inactive PagedLOD child to keep */
-        unsigned int getMinimumNumOfInactivePagedLODs() const { return _minimumNumOfInactivePagedLODs; }
-
         typedef std::list< osg::ref_ptr<osg::PagedLOD> >                PagedLODList;
         typedef std::set< osg::ref_ptr<osg::StateSet> >                 StateSetList;
         typedef std::vector< osg::ref_ptr<osg::Drawable> >              DrawableList;
@@ -309,6 +297,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         // forward declare inner helper classes
         class FindCompileableGLObjectsVisitor;
         friend class FindCompileableGLObjectsVisitor;
+        
+        class MarkPagedLODsVisitor;
         
         class FindPagedLODsVisitor;
         friend class FindPagedLODsVisitor;
@@ -444,9 +434,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         DatabaseRequestList             _dataToMergeList;
         mutable OpenThreads::Mutex      _dataToMergeListMutex;
         
-        
-        PagedLODList                    _activePagedLODList;
-        PagedLODList                    _inactivePagedLODList;
+        PagedLODList                    _pagedLODList;
         
         double                          _expiryDelay;
 
@@ -457,8 +445,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         double                          _targetFrameRate;
         double                          _minimumTimeAvailableForGLCompileAndDeletePerFrame;
         unsigned int                    _maximumNumOfObjectsToCompilePerFrame;
-        unsigned int                    _maximumNumOfRemovedChildPagedLODs;
-        unsigned int                    _minimumNumOfInactivePagedLODs;
         
         double                          _minimumTimeToMergeTile;
         double                          _maximumTimeToMergeTile;

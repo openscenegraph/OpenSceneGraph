@@ -12,6 +12,7 @@
 */
 
 #include <osgTerrain/Terrain>
+#include <OpenThreads/ScopedLock>
 
 using namespace osg;
 using namespace osgTerrain;
@@ -20,8 +21,16 @@ Terrain::Terrain()
 {
 }
 
+Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
+    osg::Group(ts,copyop)
+{
+}
+
+
 Terrain::~Terrain()
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
     for(TerrainTileSet::iterator itr = _terrainTileSet.begin();
         itr != _terrainTileSet.end();
         ++itr)
@@ -33,10 +42,6 @@ Terrain::~Terrain()
     _terrainTileMap.clear();
 }
 
-Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop)
-{
-}
-
 void Terrain::traverse(osg::NodeVisitor& nv)
 {
     Group::traverse(nv);
@@ -44,6 +49,8 @@ void Terrain::traverse(osg::NodeVisitor& nv)
 
 TerrainTile* Terrain::getTile(const TileID& tileID)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
     TerrainTileMap::iterator itr = _terrainTileMap.find(tileID);
     if (itr != _terrainTileMap.end()) return 0;
     
@@ -52,15 +59,20 @@ TerrainTile* Terrain::getTile(const TileID& tileID)
 
 const TerrainTile* Terrain::getTile(const TileID& tileID) const
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
     TerrainTileMap::const_iterator itr = _terrainTileMap.find(tileID);
     if (itr != _terrainTileMap.end()) return 0;
     
     return itr->second;
 }
 
+static unsigned int s_maxNumTiles = 0;
 void Terrain::registerTerrainTile(TerrainTile* tile)
 {
     if (!tile) return;
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     
     if (tile->getTileID().valid())
     {
@@ -69,12 +81,16 @@ void Terrain::registerTerrainTile(TerrainTile* tile)
     
     _terrainTileSet.insert(tile);
 
-    osg::notify(osg::INFO)<<"Terrain::registerTerrainTile "<<tile<<" total number of tile "<<_terrainTileSet.size()<<std::endl;
+    if (_terrainTileSet.size() > s_maxNumTiles) s_maxNumTiles = _terrainTileSet.size();
+
+    // osg::notify(osg::NOTICE)<<"Terrain::registerTerrainTile "<<tile<<" total number of tile "<<_terrainTileSet.size()<<" max = "<<s_maxNumTiles<<std::endl;
 }
 
 void Terrain::unregisterTerrainTile(TerrainTile* tile)
 {
     if (!tile) return;
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     if (tile->getTileID().valid())
     {
@@ -83,5 +99,5 @@ void Terrain::unregisterTerrainTile(TerrainTile* tile)
     
     _terrainTileSet.erase(tile);
 
-    osg::notify(osg::INFO)<<"Terrain::unregisterTerrainTile "<<tile<<" total number of tile "<<_terrainTileSet.size()<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Terrain::unregisterTerrainTile "<<tile<<" total number of tile "<<_terrainTileSet.size()<<" max = "<<s_maxNumTiles<<std::endl;
 }

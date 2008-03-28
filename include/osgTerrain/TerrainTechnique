@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGTERRAIN_terrainTileTECHNIQUE
-#define OSGTERRAIN_terrainTileTECHNIQUE 1
+#ifndef OSGTERRAIN_TERRAINTECHNIQUE
+#define OSGTERRAIN_TERRAINTECHNIQUE 1
 
 #include <osg/Object>
 

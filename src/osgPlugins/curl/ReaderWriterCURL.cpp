@@ -186,8 +186,9 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                                                         
             if (!cacheFilePath.empty() && osgDB::fileExists(cacheFileName))
             {
-                osg::notify(osg::NOTICE) << "Reading cache file " << cacheFileName << std::endl;
-                return osgDB::Registry::instance()->readObject(cacheFileName,options);
+                osg::notify(osg::INFO) << "Reading cache file " << cacheFileName << std::endl;
+                ReadResult result = osgDB::Registry::instance()->readObject(cacheFileName,options);
+                return result;                
             }
 
             const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
@@ -219,7 +220,21 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
         
             if (res==0)
             {
-
+                long code;
+                if(!proxyAddress.empty())
+                {
+                    curl_easy_getinfo(_curl, CURLINFO_HTTP_CONNECTCODE, &code);
+                }
+                else
+                {
+                    curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &code);                    
+                }
+                
+                if (code>=400)
+                {
+                    osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<", error code = "<<code<<std::endl;
+                    return ReadResult::FILE_NOT_FOUND;
+                }
 
                 osg::ref_ptr<Options> local_opt = const_cast<Options*>(options);
                 if (!local_opt) local_opt = new Options;
@@ -227,34 +242,28 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                 local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
                 ReadResult readResult = readFile(objectType, reader, buffer, local_opt.get() );
-                
+
                 local_opt->getDatabasePathList().pop_front();
 
                 if (!cacheFilePath.empty() && readResult.validObject())
                 {
-                    osg::notify(osg::NOTICE)<<"Writing cache file "<<cacheFileName<<std::endl;
+                    osg::notify(osg::INFO)<<"Writing cache file "<<cacheFileName<<std::endl;
                     
                     std::string filePath = osgDB::getFilePath(cacheFileName);
-                    if (!osgDB::fileExists(filePath))
+                    if (osgDB::fileExists(filePath) || osgDB::makeDirectory(filePath))
                     {
-                        osg::notify(osg::NOTICE)<<"Creating directory "<<filePath<<std::endl;
-                        if (osgDB::makeDirectory(filePath))
+                        switch(objectType)
                         {
-                            osg::notify(osg::NOTICE)<<"   Created directory"<<std::endl;
-                        }
-                        else
-                        {
-                            osg::notify(osg::NOTICE)<<"   Failed"<<std::endl;
+                        case(OBJECT): osgDB::writeObjectFile( *(readResult.getObject()), cacheFileName ); break;
+                        case(IMAGE): osgDB::writeImageFile( *(readResult.getImage()), cacheFileName ); break;
+                        case(HEIGHTFIELD): osgDB::writeHeightFieldFile( *(readResult.getHeightField()), cacheFileName ); break;
+                        case(NODE): osgDB::writeNodeFile( *(readResult.getNode()), cacheFileName ); break;
+                        default: break;
                         }
                     }
-                    
-                    switch(objectType)
+                    else
                     {
-                    case(OBJECT): osgDB::writeObjectFile( *(readResult.getObject()), cacheFileName ); break;
-                    case(IMAGE): osgDB::writeImageFile( *(readResult.getImage()), cacheFileName ); break;
-                    case(HEIGHTFIELD): osgDB::writeHeightFieldFile( *(readResult.getHeightField()), cacheFileName ); break;
-                    case(NODE): osgDB::writeNodeFile( *(readResult.getNode()), cacheFileName ); break;
-                    default: break;
+                        osg::notify(osg::NOTICE)<<"Error: Failed to created directory "<<filePath<<std::endl;
                     }
 
                 }
@@ -263,7 +272,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<" result = "<<res<<std::endl;
+                osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<" error = "<<curl_easy_strerror(res)<<std::endl;
                 return ReadResult::FILE_NOT_HANDLED;
             }
         }

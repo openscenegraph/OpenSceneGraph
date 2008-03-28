@@ -40,7 +40,7 @@ namespace flt
 class FltWriteResult : public osgDB::ReaderWriter::WriteResult
 {
 public:
-    FltWriteResult( WriteResult::WriteStatus status=WriteResult::FILE_NOT_HANDLED )
+    FltWriteResult( WriteResult::WriteStatus status=WriteResult::FILE_SAVED )
       : WriteResult( status )
         {}
 

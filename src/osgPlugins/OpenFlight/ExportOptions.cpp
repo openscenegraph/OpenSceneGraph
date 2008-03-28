@@ -23,8 +23,6 @@
 #include <osgDB/ReadFile>
 
 #include "ExportOptions.h"
-//#include "DataOutputStream.h"
-//#include "FltNodeVisitor.h"
 
 #include <fstream>
 #include <sstream>

@@ -451,11 +451,12 @@ class FLTReaderWriter : public ReaderWriter
             //   must use Node::accept() which requires 'node' to be non-const.
             //   Pretty much requires casting away const.
             osg::Node* nodeNonConst = const_cast<osg::Node*>( &node );
+            if (!nodeNonConst)
+                return WriteResult::ERROR_IN_WRITING_FILE;
             nodeNonConst->accept( fnv );
             fnv.complete( node );
 
-            // FIXME: Error-handling?
-            return WriteResult::FILE_SAVED;
+            return fltOpt->getWriteResult();
         }
 
     protected:

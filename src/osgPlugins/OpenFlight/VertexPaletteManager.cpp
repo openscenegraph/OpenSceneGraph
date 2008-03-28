@@ -43,7 +43,7 @@ VertexPaletteManager::~VertexPaletteManager()
         if (_verticesStr.is_open())
         {
             osg::notify( osg::WARN ) << "fltexp: VertexPaletteManager destructor has an open temp file." << std::endl;
-            // This should not happen. FltNodeVisitor::complete should close
+            // This should not happen. FltExportVisitor::complete should close
             // this file before we get to this destructor.
             return;
         }

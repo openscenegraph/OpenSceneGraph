@@ -28,7 +28,7 @@
 #include <osg/Material>
 #include <osg/Light>
 #include <osg/Program>
-#include "types.h"
+#include "Types.h"
 
 
 namespace flt {

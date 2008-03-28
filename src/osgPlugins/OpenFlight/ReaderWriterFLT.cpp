@@ -30,6 +30,9 @@
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
+#include "DataOutputStream.h"
+#include "FltExportVisitor.h"
+#include "ExportOptions.h"
 
 #define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
 
@@ -81,9 +84,44 @@ public:
 
 
 
+/*!
+
+FLTReaderWriter supports importing and exporting OSG scene grqphs
+from/to OpenFlight files.
+
+<table>
+  <tr>
+    <th></th>
+    <th align="center">Node</th>
+    <th align="center">Object</th>
+    <th align="center">Image</th>
+    <th align="center">HeightField</th>
+  </tr>
+  <tr>
+    <td align="right">Read</td>
+    <td align="center"><strong>X</strong></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td align="right">Write</td>
+    <td align="center"><strong>X</strong></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+*/
+
 class FLTReaderWriter : public ReaderWriter
 {
     public:
+        FLTReaderWriter()
+          : _implicitPath( "." )
+        {}
+
         virtual const char* className() const { return "FLT Reader/Writer"; }
 
         virtual bool acceptsExtension(const std::string& extension) const
@@ -347,11 +385,38 @@ class FLTReaderWriter : public ReaderWriter
             return WriteResult::FILE_NOT_HANDLED;
         }
 
-        virtual WriteResult writeNode(const Node& /*node*/,const std::string& /*fileName*/, const osgDB::ReaderWriter::Options* /*options*/) const
+        virtual WriteResult writeNode( const osg::Node& node, const std::string& fileName, const Options* options ) const
         {
-            return WriteResult::FILE_NOT_HANDLED;
+            if ( fileName.empty() )
+            {
+                osg::notify( osg::FATAL ) << "fltexp: writeNode: empty file name" << std::endl;
+                return WriteResult::FILE_NOT_HANDLED;
+            }
+            std::string ext = osgDB::getLowerCaseFileExtension( fileName );
+            if ( !acceptsExtension(ext) )
+                return WriteResult::FILE_NOT_HANDLED;
+
+            // Get and save the implicit path name (in case a path wasn't specified in Options).
+            std::string filePath = osgDB::getFilePath( fileName );
+            if (!filePath.empty())
+                _implicitPath = filePath;
+
+            std::ofstream fOut;
+            fOut.open( fileName.c_str(), std::ios::out | std::ios::binary );
+            if ( fOut.fail())
+            {
+                osg::notify( osg::FATAL ) << "fltexp: Failed to open output stream." << std::endl;
+                return WriteResult::ERROR_IN_WRITING_FILE;
+            }
+
+            WriteResult wr = WriteResult::FILE_NOT_HANDLED;
+            wr = writeNode( node, fOut, options );
+            fOut.close();
+
+            return wr;
         }
-        
+
+
         virtual WriteResult writeObject(const Object& object,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
             const Node* node = dynamic_cast<const Node*>(&object);
@@ -359,12 +424,42 @@ class FLTReaderWriter : public ReaderWriter
             return WriteResult::FILE_NOT_HANDLED;
         }
 
-        virtual WriteResult writeNode(const Node& /*node*/,std::ostream& /*fout*/, const osgDB::ReaderWriter::Options* /*options*/) const
+        virtual WriteResult writeNode( const osg::Node& node, std::ostream& fOut, const Options* options ) const
         {
-            return WriteResult::FILE_NOT_HANDLED;
+            // Convert Options to FltOptions.
+            ExportOptions* fltOpt = new ExportOptions( options );
+            fltOpt->parseOptionsString();
+
+            // If user didn't specify a temp dir, use the output directory
+            //   that was implicit in the output file name.
+            if (fltOpt->getTempDir().empty())
+                fltOpt->setTempDir( _implicitPath );
+            if (!fltOpt->getTempDir().empty())
+            {
+                // If the temp directory doesn't already exist, make it.
+                if ( !osgDB::makeDirectory( fltOpt->getTempDir() ) )
+                {
+                    osg::notify( osg::FATAL ) << "fltexp: Error creating temp dir: " << fltOpt->getTempDir() << std::endl;
+                    return WriteResult::ERROR_IN_WRITING_FILE;
+                }
+            }
+
+            flt::DataOutputStream dos( fOut.rdbuf(), fltOpt->getValidateOnly() );
+            flt::FltExportVisitor fnv( &dos, fltOpt );
+
+            // Hm. 'node' is const, but in order to write out this scene graph,
+            //   must use Node::accept() which requires 'node' to be non-const.
+            //   Pretty much requires casting away const.
+            osg::Node* nodeNonConst = const_cast<osg::Node*>( &node );
+            nodeNonConst->accept( fnv );
+            fnv.complete( node );
+
+            // FIXME: Error-handling?
+            return WriteResult::FILE_SAVED;
         }
 
     protected:
+        mutable std::string _implicitPath;
 
         mutable OpenThreads::ReentrantMutex _serializerMutex;
 };
@@ -372,16 +467,3 @@ class FLTReaderWriter : public ReaderWriter
 // now register with Registry to instantiate the above
 // reader/writer.
 REGISTER_OSGPLUGIN(OpenFlight, FLTReaderWriter)
-
-
-
-
-
-
-
-
-
-
-
-
-

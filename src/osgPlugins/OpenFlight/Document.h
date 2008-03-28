@@ -26,7 +26,7 @@
 #include <osg/Geometry>
 #include <osgDB/ReaderWriter>
 
-#include "types.h"
+#include "Types.h"
 #include "Record.h"
 #include "Pools.h"
 

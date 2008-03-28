@@ -29,6 +29,7 @@
 
 #include "AttrData.h"
 #include "DataInputStream.h"
+#include "DataOutputStream.h"
 
 using namespace osg;
 using namespace osgDB;
@@ -47,6 +48,7 @@ class ReaderWriterATTR : public osgDB::ReaderWriter
         }
 
         virtual ReadResult readObject(const std::string& fileName, const ReaderWriter::Options*) const;
+        virtual ReaderWriter::WriteResult writeObject(const osg::Object& object, const std::string& fileName, const Options* options) const;
 };
 
 
@@ -74,7 +76,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
     try
     {
         attr->texels_u  = in.readInt32();
-        attr->textel_v  = in.readInt32();
+        attr->texels_v  = in.readInt32();
         attr->direction_u  = in.readInt32();
         attr->direction_v  = in.readInt32();
         attr->x_up  = in.readInt32();
@@ -170,7 +172,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
         in.forward(14*4);
         attr->attrVersion = in.readInt32();
         attr->controlPoints = in.readInt32();
-        in.forward(4);
+        attr->numSubtextures = in.readInt32();
 #endif
     }
     catch(...)
@@ -187,19 +189,125 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
 }
 
 
+ReaderWriter::WriteResult
+ReaderWriterATTR::writeObject(const osg::Object& object, const std::string& fileName, const Options* options) const
+{
+    using std::ios;
+
+    std::string ext = osgDB::getLowerCaseFileExtension( fileName );
+    if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
+    const AttrData* attr = dynamic_cast< const AttrData* >( &object );
+    if (attr == NULL)
+    {
+        osg::notify( osg::FATAL ) << "AttrWriter: Invalid Object." << std::endl;
+        return WriteResult::FILE_NOT_HANDLED;
+    }
+
+    std::ofstream fOut;
+    fOut.open( fileName.c_str(), std::ios::out | std::ios::binary );
+
+    if ( fOut.fail())
+        return WriteResult::ERROR_IN_WRITING_FILE;
+
+    flt::DataOutputStream out( fOut.rdbuf() );
+
+
+    out.writeInt32( attr->texels_u );
+    out.writeInt32( attr->texels_v );
+    out.writeInt32( attr->direction_u );
+    out.writeInt32( attr->direction_v );
+    out.writeInt32( attr->x_up );
+    out.writeInt32( attr->y_up );
+    out.writeInt32( attr->fileFormat );
+    out.writeInt32( attr->minFilterMode );
+    out.writeInt32( attr->magFilterMode );
+    out.writeInt32( attr->wrapMode );
+
+    out.writeInt32( attr->wrapMode_u );
+    out.writeInt32( attr->wrapMode_v );
+
+    out.writeInt32( attr->modifyFlag );
+    out.writeInt32( attr->pivot_x );
+    out.writeInt32( attr->pivot_y );
+
+    out.writeInt32( attr->texEnvMode );
+    out.writeInt32( attr->intensityAsAlpha );
+    out.writeFill( 4*8 );
+    out.writeFloat64( attr->size_u );
+    out.writeFloat64( attr->size_v );
+    out.writeInt32( attr->originCode );
+    out.writeInt32( attr->kernelVersion );
+    out.writeInt32( attr->intFormat );
+    out.writeInt32( attr->extFormat );
+    out.writeInt32( attr->useMips );
+    for (int n=0; n<8; n++)
+        out.writeFloat32( attr->of_mips[n] );
+    out.writeInt32( attr->useLodScale );
+    out.writeFloat32( attr->lod0 );
+    out.writeFloat32( attr->scale0 );
+    out.writeFloat32( attr->lod1 );
+    out.writeFloat32( attr->scale1 );
+    out.writeFloat32( attr->lod2 );
+    out.writeFloat32( attr->scale2 );
+    out.writeFloat32( attr->lod3 );
+    out.writeFloat32( attr->scale3 );
+    out.writeFloat32( attr->lod4 );
+    out.writeFloat32( attr->scale4 );
+    out.writeFloat32( attr->lod5 );
+    out.writeFloat32( attr->scale5 );
+    out.writeFloat32( attr->lod6 );
+    out.writeFloat32( attr->scale6 );
+    out.writeFloat32( attr->lod7 );
+    out.writeFloat32( attr->scale7 );
+    out.writeFloat32( attr->clamp );
+    out.writeInt32( attr->magFilterAlpha );
+    out.writeInt32( attr->magFilterColor );
+    out.writeFill( 4 );
+    out.writeFill( 4*8 );
+    out.writeFloat64( attr->lambertMeridian );
+    out.writeFloat64( attr->lambertUpperLat );
+    out.writeFloat64( attr->lambertlowerLat );
+    out.writeFill( 8 );
+    out.writeFill( 4*5 );
+    out.writeInt32( attr->useDetail );
+    out.writeInt32( attr->txDetail_j );
+    out.writeInt32( attr->txDetail_k );
+    out.writeInt32( attr->txDetail_m );
+    out.writeInt32( attr->txDetail_n );
+    out.writeInt32( attr->txDetail_s );
+    out.writeInt32( attr->useTile );
+    out.writeFloat32( attr->txTile_ll_u );
+    out.writeFloat32( attr->txTile_ll_v );
+    out.writeFloat32( attr->txTile_ur_u );
+    out.writeFloat32( attr->txTile_ur_v );
+    out.writeInt32( attr->projection );
+    out.writeInt32( attr->earthModel );
+    out.writeFill( 4 );
+    out.writeInt32( attr->utmZone );
+    out.writeInt32( attr->imageOrigin );
+    out.writeInt32( attr->geoUnits );
+    out.writeFill( 4 );
+    out.writeFill( 4 );
+    out.writeInt32( attr->hemisphere );
+    out.writeFill( 4 );
+    out.writeFill( 4 );
+    out.writeFill( 149*4 );
+    out.writeString( attr->comments, 512 );
+
+    out.writeFill( 13*4 );
+    out.writeInt32( attr->attrVersion );
+    out.writeInt32( attr->controlPoints );
+    out.writeInt32( attr->numSubtextures );
+
+
+    fOut.close();
+
+    return WriteResult::FILE_SAVED;
+}
+
+
 
 // now register with Registry to instantiate the above
 // reader/writer.
 REGISTER_OSGPLUGIN(attr, ReaderWriterATTR)
-
-
-
-
-
-
-
-
-
-
-
-

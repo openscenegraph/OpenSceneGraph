@@ -23,7 +23,7 @@
 #include <queue>
 #include <map>
 #include <osg/ref_ptr>
-#include "opcodes.h"
+#include "Opcodes.h"
 #include "Record.h"
 
 namespace flt {

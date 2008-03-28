@@ -22,7 +22,7 @@
 
 #include <string>
 #include <osg/Object>
-#include "types.h"
+#include "Types.h"
 
 namespace flt {
 
@@ -112,7 +112,7 @@ class AttrData : public osg::Object
         };
   
         int32   texels_u;               // Number of texels in u direction
-        int32   textel_v;               // Number of texels in v direction
+        int32   texels_v;               // Number of texels in v direction
         int32   direction_u;            // Real world size u direction
         int32   direction_v;            // Real world size v direction
         int32   x_up;                   // x component of up vector
@@ -328,6 +328,7 @@ class AttrData : public osg::Object
                                         // definition measured in texels.
         }
     #endif
+        int32   numSubtextures;             // # of subtextures
 
 };
 

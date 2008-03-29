@@ -861,6 +861,12 @@ void Font::Glyph::subload() const
         osg::notify(osg::WARN)<<"before Font::Glyph::subload(): detected OpenGL error '"<<gluErrorString(errorNo)<<std::endl;
     }
 
+    if(s() <= 0 || t() <= 0)
+    {
+        osg::notify(osg::INFO)<<"Font::Glyph::subload(): texture sub-image width and/or height of 0, ignoring operation."<<std::endl;      
+        return;
+    }
+
     glPixelStorei(GL_UNPACK_ALIGNMENT,getPacking());
 
     glTexSubImage2D(GL_TEXTURE_2D,0,

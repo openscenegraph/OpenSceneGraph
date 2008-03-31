@@ -14,7 +14,6 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osgTerrain/Terrain>
-#include <osgTerrain/TerrainTechnique>
 #include <osgTerrain/TerrainTile>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -70,21 +69,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
-	I_Method1(void, setTerrainTechnique, IN, osgTerrain::TerrainTechnique *, TerrainTechnique,
-	          Properties::NON_VIRTUAL,
-	          __void__setTerrainTechnique__osgTerrain_TerrainTechnique_P1,
-	          "Set the TerrainTechnique that is used as the prototype for all Terrain below the Terrain. ",
-	          "");
-	I_Method0(osgTerrain::TerrainTechnique *, getTerrainTechnique,
-	          Properties::NON_VIRTUAL,
-	          __TerrainTechnique_P1__getTerrainTechnique,
-	          "Get the TerrainTechnique. ",
-	          "");
-	I_Method0(const osgTerrain::TerrainTechnique *, getTerrainTechnique,
-	          Properties::NON_VIRTUAL,
-	          __C5_TerrainTechnique_P1__getTerrainTechnique,
-	          "Get the const TerrainTechnique. ",
-	          "");
 	I_Method1(osgTerrain::TerrainTile *, getTile, IN, const osgTerrain::TileID &, tileID,
 	          Properties::NON_VIRTUAL,
 	          __TerrainTile_P1__getTile__C5_TileID_R1,
@@ -107,8 +91,5 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	                   __void__unregisterTerrainTile__TerrainTile_P1,
 	                   "",
 	                   "");
-	I_SimpleProperty(osgTerrain::TerrainTechnique *, TerrainTechnique, 
-	                 __TerrainTechnique_P1__getTerrainTechnique, 
-	                 __void__setTerrainTechnique__osgTerrain_TerrainTechnique_P1);
 END_REFLECTOR
 

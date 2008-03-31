@@ -293,26 +293,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __void__resetStats,
 	          "Reset the Stats variables. ",
 	          "");
-	I_Method1(void, setMaximumNumOfRemovedChildPagedLODs, IN, unsigned int, number,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaximumNumOfRemovedChildPagedLODs__unsigned_int,
-	          "Set the maximum number of PagedLOD child to remove per frame. ",
-	          "");
-	I_Method0(unsigned int, getMaximumNumOfRemovedChildPagedLODs,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getMaximumNumOfRemovedChildPagedLODs,
-	          "Get the maximum number of PagedLOD child to remove per frame. ",
-	          "");
-	I_Method1(void, setMinimumNumOfInactivePagedLODs, IN, unsigned int, number,
-	          Properties::NON_VIRTUAL,
-	          __void__setMinimumNumOfInactivePagedLODs__unsigned_int,
-	          "Set the minimum number of inactive PagedLOD child to keep. ",
-	          "");
-	I_Method0(unsigned int, getMinimumNumOfInactivePagedLODs,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getMinimumNumOfInactivePagedLODs,
-	          "Get the minimum number of inactive PagedLOD child to keep. ",
-	          "");
 	I_StaticMethod0(osg::ref_ptr< osgDB::DatabasePager > &, prototype,
 	                __osg_ref_ptrT1_DatabasePager__R1__prototype_S,
 	                "get the prototype singleton used by DatabasePager::create(). ",
@@ -391,15 +371,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(unsigned int, MaximumNumOfObjectsToCompilePerFrame, 
 	                 __unsigned_int__getMaximumNumOfObjectsToCompilePerFrame, 
 	                 __void__setMaximumNumOfObjectsToCompilePerFrame__unsigned_int);
-	I_SimpleProperty(unsigned int, MaximumNumOfRemovedChildPagedLODs, 
-	                 __unsigned_int__getMaximumNumOfRemovedChildPagedLODs, 
-	                 __void__setMaximumNumOfRemovedChildPagedLODs__unsigned_int);
 	I_SimpleProperty(double, MaximumTimeToMergeTile, 
 	                 __double__getMaximumTimeToMergeTile, 
 	                 0);
-	I_SimpleProperty(unsigned int, MinimumNumOfInactivePagedLODs, 
-	                 __unsigned_int__getMinimumNumOfInactivePagedLODs, 
-	                 __void__setMinimumNumOfInactivePagedLODs__unsigned_int);
 	I_SimpleProperty(double, MinimumTimeAvailableForGLCompileAndDeletePerFrame, 
 	                 __double__getMinimumTimeAvailableForGLCompileAndDeletePerFrame, 
 	                 __void__setMinimumTimeAvailableForGLCompileAndDeletePerFrame__double);

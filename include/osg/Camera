@@ -82,12 +82,6 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
 
-        /** Sets the clear color. */
-        inline void setClearColor(const Vec4& color) { _clearColor = color; }
-
-        /** Returns the clear color. */
-        inline const Vec4& getClearColor() const { return _clearColor; }
-        
         /** Set the clear mask used in glClear(..).
           * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
         inline void setClearMask(GLbitfield mask) { _clearMask = mask; }
@@ -95,9 +89,38 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         /** Get the clear mask.*/
         inline GLbitfield getClearMask() const { return _clearMask; }
 
+        /** Set the clear color used in glClearColor(..). 
+          * glClearColor is only called if mask & GL_COLOR_BUFFER_BIT is true*/
+        void setClearColor(const osg::Vec4& color) { _clearColor=color; }
+        
+        /** Get the clear color.*/
+        const osg::Vec4& getClearColor() const { return _clearColor; }
+        
+        /** Set the clear accum used in glClearAccum(..). 
+          * glClearAcumm is only called if mask & GL_ACCUM_BUFFER_BIT is true. */
+        void setClearAccum(const osg::Vec4& color) { _clearAccum=color; }
+        
+        /** Get the clear accum value.*/
+        const osg::Vec4& getClearAccum() const { return _clearAccum; }
+        
+        /** Set the clear depth used in glClearDepth(..). Defaults to 1.0
+          * glClearDepth is only called if mask & GL_DEPTH_BUFFER_BIT is true. */
+        void setClearDepth(double depth) { _clearDepth=depth; }
+        
+        /** Get the clear depth value.*/
+        double getClearDepth() const { return _clearDepth; }
 
+        /** Set the clear stencil value used in glClearStencil(). Defaults to 0;
+          * glClearStencil is only called if mask & GL_STENCIL_BUFFER_BIT is true*/
+        void setClearStencil(int stencil) { _clearStencil=stencil; }
+        
+        /** Get the clear stencil value.*/
+        int getClearStencil() const { return _clearStencil; }
+        
+        
         /** Set the color mask of the camera to use specified osg::ColorMask. */
         void setColorMask(osg::ColorMask* colorMask);
+
 
         /** Set the color mask of the camera to specified values. */
         void setColorMask(bool red, bool green, bool blue, bool alpha);
@@ -483,8 +506,12 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         
         osg::ref_ptr<osg::DisplaySettings>  _displaySettings;
 
-        Vec4                                _clearColor;
         GLbitfield                          _clearMask;
+        osg::Vec4                           _clearColor;
+        osg::Vec4                           _clearAccum;
+        double                              _clearDepth;
+        int                                 _clearStencil;
+        
         ref_ptr<ColorMask>                  _colorMask;
         ref_ptr<Viewport>                   _viewport;
 

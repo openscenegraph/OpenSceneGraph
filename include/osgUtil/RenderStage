@@ -94,15 +94,12 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         /** Get the clear color.*/
         const osg::Vec4& getClearColor() const { return _clearColor; }
         
-
         /** Set the clear accum used in glClearAccum(..). 
           * glClearAcumm is only called if mask & GL_ACCUM_BUFFER_BIT is true. */
         void setClearAccum(const osg::Vec4& color) { _clearAccum=color; }
         
         /** Get the clear accum.*/
         const osg::Vec4& getClearAccum() const { return _clearAccum; }
-        
-
         
         /** Set the clear depth used in glClearDepth(..). Defaults to 1.0
           * glClearDepth is only called if mask & GL_DEPTH_BUFFER_BIT is true. */
@@ -111,13 +108,13 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         /** Get the clear depth.*/
         double getClearDepth() const { return _clearDepth; }
 
-        
         /** Set the clear stencil value used in glClearStencil(). Defaults to 0;
           * glClearStencil is only called if mask & GL_STENCIL_BUFFER_BIT is true*/
         void setClearStencil(int stencil) { _clearStencil=stencil; }
         
         /** Get the clear color.*/
         int getClearStencil() const { return _clearStencil; }
+        
 
         void setCamera(osg::Camera* camera) { if (_camera!=camera) { _camera = camera; _cameraRequiresSetUp = true; } }
         osg::Camera* getCamera() { return _camera; }

@@ -113,6 +113,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         /** Set the color used in glClearColor().
             Defaults to an off blue color.*/
         void setClearColor(const osg::Vec4& color) { _camera->setClearColor(color); }
+
         /** Get the color used in glClearColor.*/
         const osg::Vec4& getClearColor() const { return _camera->getClearColor(); }
         

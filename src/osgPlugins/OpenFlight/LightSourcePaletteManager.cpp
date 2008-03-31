@@ -22,6 +22,7 @@
 #include <osg/Vec4f>
 #include <cassert>
 #include <sstream>
+#include <stdio.h>
 
 namespace flt
 {

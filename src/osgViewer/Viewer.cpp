@@ -313,7 +313,7 @@ void Viewer::setSceneData(osg::Node* node)
 
     View::setSceneData(node);
 
-    if (_threadingModel!=SingleThreaded)
+    if (_threadingModel!=SingleThreaded && getSceneData())
     {
         // make sure that existing scene graph objects are allocated with thread safe ref/unref
         getSceneData()->setThreadSafeRefUnref(true);
@@ -776,7 +776,7 @@ void Viewer::eventTraversal()
         
     }
 
-    if (_eventVisitor.valid() && _scene.valid())
+    if (_eventVisitor.valid() && getSceneData())
     {
         _eventVisitor->setFrameStamp(getFrameStamp());
         _eventVisitor->setTraversalNumber(getFrameStamp()->getFrameNumber());

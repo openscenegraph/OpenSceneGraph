@@ -184,16 +184,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __C5_osg_DisplaySettings_P1__getDisplaySettings,
 	          "Set the DsplaySettings object associated with this view. ",
 	          "");
-	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color,
-	          Properties::NON_VIRTUAL,
-	          __void__setClearColor__C5_Vec4_R1,
-	          "Sets the clear color. ",
-	          "");
-	I_Method0(const osg::Vec4 &, getClearColor,
-	          Properties::NON_VIRTUAL,
-	          __C5_Vec4_R1__getClearColor,
-	          "Returns the clear color. ",
-	          "");
 	I_Method1(void, setClearMask, IN, GLbitfield, mask,
 	          Properties::NON_VIRTUAL,
 	          __void__setClearMask__GLbitfield,
@@ -203,6 +193,46 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          Properties::NON_VIRTUAL,
 	          __GLbitfield__getClearMask,
 	          "Get the clear mask. ",
+	          "");
+	I_Method1(void, setClearColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
+	          __void__setClearColor__C5_osg_Vec4_R1,
+	          "Set the clear color used in glClearColor(. ",
+	          ".). glClearColor is only called if mask & GL_COLOR_BUFFER_BIT is true ");
+	I_Method0(const osg::Vec4 &, getClearColor,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec4_R1__getClearColor,
+	          "Get the clear color. ",
+	          "");
+	I_Method1(void, setClearAccum, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
+	          __void__setClearAccum__C5_osg_Vec4_R1,
+	          "Set the clear accum used in glClearAccum(. ",
+	          ".). glClearAcumm is only called if mask & GL_ACCUM_BUFFER_BIT is true. ");
+	I_Method0(const osg::Vec4 &, getClearAccum,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec4_R1__getClearAccum,
+	          "Get the clear accum value. ",
+	          "");
+	I_Method1(void, setClearDepth, IN, double, depth,
+	          Properties::NON_VIRTUAL,
+	          __void__setClearDepth__double,
+	          "Set the clear depth used in glClearDepth(. ",
+	          ".). Defaults to 1.0 glClearDepth is only called if mask & GL_DEPTH_BUFFER_BIT is true. ");
+	I_Method0(double, getClearDepth,
+	          Properties::NON_VIRTUAL,
+	          __double__getClearDepth,
+	          "Get the clear depth value. ",
+	          "");
+	I_Method1(void, setClearStencil, IN, int, stencil,
+	          Properties::NON_VIRTUAL,
+	          __void__setClearStencil__int,
+	          "Set the clear stencil value used in glClearStencil(). ",
+	          "Defaults to 0; glClearStencil is only called if mask & GL_STENCIL_BUFFER_BIT is true ");
+	I_Method0(int, getClearStencil,
+	          Properties::NON_VIRTUAL,
+	          __int__getClearStencil,
+	          "Get the clear stencil value. ",
 	          "");
 	I_Method1(void, setColorMask, IN, osg::ColorMask *, colorMask,
 	          Properties::NON_VIRTUAL,
@@ -608,12 +638,21 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(osg::OperationThread *, CameraThread, 
 	                 __OperationThread_P1__getCameraThread, 
 	                 __void__setCameraThread__OperationThread_P1);
+	I_SimpleProperty(const osg::Vec4 &, ClearAccum, 
+	                 __C5_osg_Vec4_R1__getClearAccum, 
+	                 __void__setClearAccum__C5_osg_Vec4_R1);
 	I_SimpleProperty(const osg::Vec4 &, ClearColor, 
-	                 __C5_Vec4_R1__getClearColor, 
-	                 __void__setClearColor__C5_Vec4_R1);
+	                 __C5_osg_Vec4_R1__getClearColor, 
+	                 __void__setClearColor__C5_osg_Vec4_R1);
+	I_SimpleProperty(double, ClearDepth, 
+	                 __double__getClearDepth, 
+	                 __void__setClearDepth__double);
 	I_SimpleProperty(GLbitfield, ClearMask, 
 	                 __GLbitfield__getClearMask, 
 	                 __void__setClearMask__GLbitfield);
+	I_SimpleProperty(int, ClearStencil, 
+	                 __int__getClearStencil, 
+	                 __void__setClearStencil__int);
 	I_SimpleProperty(osg::ColorMask *, ColorMask, 
 	                 __ColorMask_P1__getColorMask, 
 	                 __void__setColorMask__osg_ColorMask_P1);

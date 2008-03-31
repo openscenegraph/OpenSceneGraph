@@ -780,7 +780,10 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     rendergraph->clean();
 
     renderStage->setViewport(getViewport());
-    renderStage->setClearColor(getClearColor());
+    renderStage->setClearColor(_camera->getClearColor());
+    renderStage->setClearDepth(_camera->getClearDepth());
+    renderStage->setClearAccum(_camera->getClearAccum());
+    renderStage->setClearStencil(_camera->getClearStencil());
     renderStage->setClearMask(_camera->getClearMask());
     
 #if 1    

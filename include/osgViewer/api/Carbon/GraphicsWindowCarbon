@@ -35,7 +35,8 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
             _valid(false),
             _initialized(false),
             _realized(false),
-            _ownsWindow(true)
+            _ownsWindow(true),
+            _currentCursor(RightArrowCursor)
         {
             _traits = traits;
 
@@ -103,6 +104,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         
         virtual void setWindowName (const std::string & name);
         virtual void useCursor(bool cursorOn);
+        virtual void setCursor(MouseCursor mouseCursor);
         
         WindowRef getNativeWindowRef() { return _window; }
         
@@ -166,7 +168,8 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
 
         
         bool            _closeRequested;
-        UInt32            _lastModifierKeys;
+        UInt32          _lastModifierKeys;
+        MouseCursor     _currentCursor;
 };
 
 }

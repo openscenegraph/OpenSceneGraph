@@ -23,6 +23,7 @@
 #include <OpenGL/OpenGL.h>
 
 #include <iostream>
+
 using namespace osgViewer;
 
 
@@ -97,6 +98,7 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
         
     return result;
 }
+
 
 static bool s_quit_requested = false;
 
@@ -219,9 +221,10 @@ class MenubarController : public osg::Referenced
         MenubarController() : 
             osg::Referenced(), 
             _list(), 
-            _menubarShown(false) 
+            _menubarShown(false),
+            _mutex() 
         {
-            // the following code will query the system for the available ect on the main-display (typically the displaying showing the menubar + the dock
+            // the following code will query the system for the available rect on the main-display (typically the displaying showing the menubar + the dock
 
             GDHandle mainScreenDevice;
             
@@ -243,10 +246,11 @@ class MenubarController : public osg::Referenced
         
     private: 
         typedef std::list< osg::observer_ptr< GraphicsWindowCarbon > > WindowList;
-        WindowList    _list;
-        bool        _menubarShown;
-        Rect        _availRect;
-        CGRect        _mainScreenBounds;
+        WindowList            _list;
+        bool                _menubarShown;
+        Rect                _availRect;
+        CGRect                _mainScreenBounds;
+        OpenThreads::Mutex    _mutex;
         
 };
 
@@ -260,6 +264,7 @@ MenubarController* MenubarController::instance()
 
 void MenubarController::attachWindow(GraphicsWindowCarbon* win)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     _list.push_back(win);
     update();
 }
@@ -267,6 +272,7 @@ void MenubarController::attachWindow(GraphicsWindowCarbon* win)
 
 void MenubarController::detachWindow(GraphicsWindowCarbon* win) 
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     for(WindowList::iterator i = _list.begin(); i != _list.end(); ) {
         if ((*i).get() == win)
             i = _list.erase(i);
@@ -620,8 +626,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
         _traits->x += screenLeft;
     }
     
-    //ADEGLI WindowData *windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
-    WindowData *windowData = ( _traits.get() && _traits->inheritedWindowData.get() ) ? static_cast<osgViewer::GraphicsWindowCarbon::WindowData*>(_traits->inheritedWindowData.get()) : 0; //ADEGLI
+    WindowData *windowData = ( _traits.get() && _traits->inheritedWindowData.get() ) ? static_cast<osgViewer::GraphicsWindowCarbon::WindowData*>(_traits->inheritedWindowData.get()) : 0; 
      
     _ownsWindow = (windowData) ? (windowData->getNativeWindowRef() == NULL) : true;
     
@@ -680,12 +685,11 @@ bool GraphicsWindowCarbon::realizeImplementation()
 
      
     if ( windowData && windowData->getAGLDrawable() ) {
-        aglSetDrawable(_context, (AGLDrawable)*(windowData->getAGLDrawable()) ); //ADEGLI
-        // ShowWindow(_window); //ADEGLI
-        
+        aglSetDrawable(_context, (AGLDrawable)*(windowData->getAGLDrawable()) ); 
+                
     } else {
-        aglSetDrawable(_context, GetWindowPort(_window)); //ADEGLI
-        ShowWindow(_window); //ADEGLI
+        aglSetDrawable(_context, GetWindowPort(_window)); 
+        ShowWindow(_window); 
         MenubarController::instance()->attachWindow(this);
     }
     
@@ -709,8 +713,8 @@ bool GraphicsWindowCarbon::realizeImplementation()
             osg::notify(osg::INFO) << "GraphicsWindowCarbon:: Multi-threaded OpenGL Execution not available" << std::endl;
         } 
     }
-    //ADEGLI aglSetDrawable(_context, GetWindowPort(_window));
-    //ADEGLI ShowWindow(_window);
+    
+    InitCursor();
     
     //enable vsync
     if (_traits->vsync) {
@@ -751,7 +755,9 @@ void GraphicsWindowCarbon::closeImplementation()
     _valid = false;
     _realized = false;
     
-    MenubarController::instance()->detachWindow(this);
+    // there's a possibility that the MenubarController is destructed already, so prevent a crash:
+    MenubarController* mbc = MenubarController::instance();
+    if (mbc) mbc->detachWindow(this);
     
     if (_pixelFormat)
     {
@@ -814,7 +820,8 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
     
     WindowRef win;
     int fwres = FindWindow(wheresMyMouseGlobal, &win);
-    if ((fwres != inContent) && (fwres > 0) && (mouseButton >= 1))
+    // return false when Window is inactive; For enabling click-to-active on window by delegating event to default handler
+    if (((fwres != inContent) && (fwres > 0) && (mouseButton >= 1)) || !IsWindowActive(win))
     {
         return false;
     }
@@ -1187,6 +1194,43 @@ void GraphicsWindowCarbon::useCursor(bool cursorOn)
     }
 }
 
+// FIXME: need to implement all cursor types
+// FIXME: I used deprecated functions, but don't know if there are any substitutable newer functions...
+void GraphicsWindowCarbon::setCursor(MouseCursor mouseCursor)
+{
+    UInt32 cursor;
+    if (_currentCursor == mouseCursor)
+      return;
+    switch (mouseCursor) 
+    {
+        case NoCursor:
+          HideCursor();
+          _currentCursor = mouseCursor;
+          return;
+        case RightArrowCursor:
+            cursor = kThemeArrowCursor;
+            break;
+        case CrosshairCursor:
+            cursor = kThemeCrossCursor;
+            break;
+        case TextCursor:
+            cursor = kThemeIBeamCursor;
+            break;
+        case UpDownCursor:
+            cursor = kThemeResizeUpDownCursor;
+            break;
+        case LeftRightCursor:
+            cursor = kThemeResizeLeftRightCursor;
+            break;
+        default:
+            cursor = kThemeArrowCursor;
+            osg::notify(osg::WARN) << "GraphicsWindowCarbon::setCursor doesn't implement cursor: type = " << mouseCursor << std::endl;
+    }
+    
+    _currentCursor = mouseCursor;
+    SetThemeCursor(cursor);
+    ShowCursor();
+}
 
 
 void GraphicsWindowCarbon::setWindowName (const std::string& name) 

@@ -347,7 +347,12 @@ FltExportVisitor::apply( osg::Geode& node )
     {
         osg::Geometry* geom = node.getDrawable( idx )->asGeometry();
         if (!geom)
+        {
+            std::string warning( "fltexp: Non-Geometry Drawable encountered. Ignoring." );
+            osg::notify( osg::WARN ) << warning << std::endl;
+            _fltOpt->getWriteResult().warn( warning );
             continue;
+        }
 
         ScopedStatePushPop drawableGuard( this, geom->getStateSet() );
 
@@ -381,7 +386,6 @@ FltExportVisitor::apply( osg::Geode& node )
 
     // Would traverse here if this node could have children.
     //   traverse( (osg::Node&)node );
-
 }
 
 void

@@ -139,7 +139,7 @@ FltExportVisitor::writeFace( const osg::Geode& geode, const osg::Geometry& geom,
         if (c && (c->size() > 0))
         {
             packedColorRaw = (*c)[0];
-            transparency = (1. - packedColorRaw[3]) * (double)0xffff;
+            transparency = flt::uint16((1. - packedColorRaw[3]) * (double)0xffff);
         }
 
         if ( isLit( geom ) )
@@ -337,7 +337,7 @@ FltExportVisitor::writeMesh( const osg::Geode& geode, const osg::Geometry& geom,
         if (c && (c->size() > 0))
         {
             packedColorRaw = (*c)[0];
-            transparency = (1. - packedColorRaw[3]) * (double)0xffff;
+            transparency = flt::uint16((1. - packedColorRaw[3]) * (double)0xffff);
         }
 
         if (isLit( geom ))
@@ -893,7 +893,8 @@ FltExportVisitor::handleDrawArrays( const osg::DrawArrays* da, const osg::Geomet
     }
     else
     {
-        while (first+n <= da->getCount())
+        const unsigned int max( first+count );
+        while (first+n <= max)
         {
             // Need:
             // * Geode for record name (but also need to handle

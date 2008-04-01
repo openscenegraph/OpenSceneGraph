@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.3.6
+OpenSceneGraph Library 2.3.7
 
-299 Contributors:
+302 Contributors:
 
 Firstname Surname
 -----------------
@@ -8,8 +8,8 @@ Robert Osfield
 Don Burns
 Marco Jez
 Mike Weiblen
-Eric Wing
 Paul Martz
+Eric Wing
 Brede Johansen
 Geoff Michel
 Farshid Lashkari
@@ -27,9 +27,9 @@ Luigi Calori
 Jean-Sebastien Guay
 Pavel Moloshtan
 Tom Jolley
+Andy Skinner
 Roger James
 Norman Vine
-Andy Skinner
 Alberto Farre
 Colin McDonald
 André Garneau
@@ -38,11 +38,11 @@ Randall Hopper
 Olaf Flebbe
 Gideon May
 Don Tidrow
+Wojciech Lewandowski
 Romano José Magacho da Silva
 Michael Gronager
 Daniel Sjölie
 Chris Hanson
-Wojciech Lewandowski
 Per Fahlberg
 Jeremy Moles
 David Spilling
@@ -55,17 +55,19 @@ David Fries
 Boris Bralo
 Yefei He
 Sondra Iverson
+Sherman Wilcox
 Serge Lages
 Rune Schmidt Jensen
 Rainer Oder
 Mike Connell
 Joakim Simonsson
 Jason Beverage
+Carlo Camporesi
 Ben Discoe
 Andreas Ekstrand
 Adrian Egli
-Sherman Wilcox
 Sasa Bistrovic
+Melchior Franz
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
@@ -86,12 +88,10 @@ Neil Salter
 Mihai Radu
 Michael Platings
 Michael Hartman
-Melchior Franz
 Laurens Voerman
 John Shue
 David Guthrie
 Corbin Holtz
-Carlo Camporesi
 Brad Christiansen
 Toshiyuki Takahei
 Thom DeCarlo
@@ -189,11 +189,14 @@ Vasily Radostev
 Vaclav Bilek
 Tyge 
 Troy Yee
+Tomas Hnilica
 Tino Schwarze
 Thom Carlo
 Tery Welsh
+Tatsuhiro Nishioka
 Tanguy Fautré
 Sid Byce
+Shuxing Xiao
 Shane Arnott
 Sebastien Kuntz
 Sebastian Messerschimdt

@@ -1,3 +1,267 @@
+2008-04-01 14:52 +0000 [r8024]  robert:
+
+	* Removed svn:externals property
+
+2008-04-01 14:28 +0000 [r8023]  robert:
+
+	* Updated data for 2.3.7 dev release
+
+2008-04-01 11:03 +0000 [r8022]  robert:
+
+	* Updated OpenThreads version to 2.2.1 with the switch of
+	  sources/svn:externals from OpenThreads to OpenSceneGraph.
+
+2008-04-01 10:49 +0000 [r8020]  robert:
+
+	* Moved OpenThreads directly into OpenSceneGraph/trunk rather than
+	  being introduced via svn:externals. This change has been done to
+	  make it easier for OpenSceneGraph users to check out the svn via
+	  https without any conflicts introduced with a http externals.
+
+2008-04-01 10:33 +0000 [r8019]  robert:
+
+	* Updated version numbers for 2.3.7 dev release
+
+2008-04-01 10:11 +0000 [r8018]  robert:
+
+	* From Paul Martz, "Two changes: - Handle DrawArrays first/count
+	  correctly (fixes problem reported by Jason Daly) - Display
+	  warning if non-Geometry Drawable is encountered."
+
+2008-04-01 10:00 +0000 [r8017]  robert:
+
+	* From Tatsuhiro Nishioka and Stephan Huber, bug fixes and
+	  enhancement of cursor suppoort.
+
+2008-03-31 16:23 +0000 [r8016]  robert:
+
+	* Added checks for a valid scene graph before doing various ops on
+	  it.
+
+2008-03-31 14:00 +0000 [r8015]  robert:
+
+	* From Andy Skinner, build fix for Solaris
+
+2008-03-31 11:44 +0000 [r8014]  robert:
+
+	* Added Camera::s/getClearAccum, s/getClearStencil and
+	  s/getClearDepth.
+
+2008-03-31 09:43 +0000 [r8013]  robert:
+
+	* Updated wrappers
+
+2008-03-29 09:59 +0000 [r8011]  robert:
+
+	* From Sherman Wilcox with a little reorganisation from Robert
+	  Osfield, added test for 0 sized subloads, ignoring them to
+	  prevent a divide by zero error occuring on some buggy drivers.
+
+2008-03-28 19:56 +0000 [r8010]  robert:
+
+	* From Paul Martz, "Some small changes and code cleanup. Biggest
+	  change is an improvement to the WriteResult return."
+
+2008-03-28 18:42 +0000 [r8009]  robert:
+
+	* Set Texture::setMaxAnisotropy() to 16.0f for better quality
+	  terrain when looking at shallow angle.
+
+2008-03-28 17:53 +0000 [r8008]  robert:
+
+	* Improved the error capture and reporting
+
+2008-03-28 15:52 +0000 [r8007]  robert:
+
+	* Rewrote the DatabasePager::removeExpiredSubgraphs(double) routine
+	  as it as not expiring subgraphs quick enough to enable reasonable
+	  load balancing. New version isn't perfect and will need further
+	  work, but does at least reduce the memory footprint by as much as
+	  half on test paths on big databases. The rewritten method no
+	  longer uses the the MaximumNumOfRemovedChildPagedLODs and
+	  MinimumNumOfInactivePagedLODs variables so these and associated
+	  methods for accessing them have been removed. - /** Set the
+	  maximum number of PagedLOD child to remove per frame */ - void
+	  setMaximumNumOfRemovedChildPagedLODs(unsigned int number) {
+	  _maximumNumOfRemovedChildPagedLODs = number; } - - /** Get the
+	  maximum number of PagedLOD child to remove per frame */ -
+	  unsigned int getMaximumNumOfRemovedChildPagedLODs() const {
+	  return _maximumNumOfRemovedChildPagedLODs; } - - /** Set the
+	  minimum number of inactive PagedLOD child to keep */ - void
+	  setMinimumNumOfInactivePagedLODs(unsigned int number) {
+	  _minimumNumOfInactivePagedLODs = number; } - - /** Get the
+	  minimum number of inactive PagedLOD child to keep */ - unsigned
+	  int getMinimumNumOfInactivePagedLODs() const { return
+	  _minimumNumOfInactivePagedLODs; }
+
+2008-03-28 15:31 +0000 [r8006]  robert:
+
+	* Introduced mutex into Terrain node to manage the tile system data
+	  structures
+
+2008-03-28 15:28 +0000 [r8005]  robert:
+
+	* Reordered set up of scene and event handlers to prevent warning
+
+2008-03-28 13:22 +0000 [r8004]  robert:
+
+	* Removed old lower case versions
+
+2008-03-28 12:44 +0000 [r8003]  robert:
+
+	* From Paul Martz, "Here's the mods to the OpenFlight plugin to
+	  support FLT export. The ZIP file contains the new .cpp/h files as
+	  well as existing files that I modified. Changes to existing
+	  files: ReaderWriter.cpp -- to support writeNode() of course.
+	  ReaderWriterATTR.cpp -- to support writeObject -- we write .attr
+	  files for textures, if they don't already exist. AttrData.cpp/.h
+	  -- Minor fixes. CMakeLists.txt -- to include the new files in the
+	  build." From Robert Osfield, port to non Windows platforms just
+	  required fixing of header capitilization errors that windows lets
+	  through the net due to having a case insensitive file system.
+
+2008-03-27 13:21 +0000 [r8002]  robert:
+
+	* Removed TileSystem class, and added support for TerrainTile's
+	  automatically registering and unregistering themseles with the
+	  enclosing Terrain node.
+
+2008-03-27 11:56 +0000 [r8000-8001]  robert:
+
+	* Added wrapper for TerrainTile
+
+	* Renamed osgTerrain::TerrainSystem to osgTerrain::Terrain
+
+2008-03-27 10:55 +0000 [r7999]  robert:
+
+	* Renamed Terrain to TerrainTile
+
+2008-03-26 20:06 +0000 [r7998]  robert:
+
+	* Introduce TerrainSystem node which decorates a complete terrain
+	  model made up of Terrain tiles.
+
+2008-03-26 20:03 +0000 [r7996-7997]  robert:
+
+	* From Carlo Camporesi, "I have made some changes in order to allow
+	  the using of proxies via env variables and options. I have
+	  modified also the cmakelist. In this way osg is able to find the
+	  library in 3rdParty directory."
+
+	* From Carlo Comporesi, adding support of finding libcurl in 3rd
+	  party dependencies
+
+2008-03-25 15:21 +0000 [r7995]  robert:
+
+	* From Tomas Hnilica, " Attached is modified source of
+	  AdapterWidget.cpp file from osgviewerQT example. Original was
+	  token today from SVN - trunk. (2.3.6). --mdi option needs to be
+	  set to run MDI version. Few notes: - tested on Windows box (Win
+	  XP) - using QT4 - I was not able to execute the example with
+	  QOSGWidget - had same error like described in [osg-users] "fate
+	  error using QOSGWidget in develop release 2.3.0" thread from
+	  Shuxing Xiao, 2008-01-08. - problems are described in source --
+	  And Later post: The problem of keypress events was solved by QT
+	  community, attached is repaired AdapterWidget.cpp file. In the
+	  AdapterWidget class constructor following line was added:
+	  setFocusPolicy(Qt::ClickFocus); Scene disappearing by resizing to
+	  minimum still needs to be fixed..."
+
+2008-03-25 13:14 +0000 [r7994]  robert:
+
+	* Moved include of c headers to top, and remove using std::strlen
+	  in an attempt to solve gcc4.3 compile problems
+
+2008-03-25 13:06 +0000 [r7993]  robert:
+
+	* Added limits.h to try and avoid gcc 4.3 compile problems
+
+2008-03-25 13:01 +0000 [r7992]  robert:
+
+	* Added #include<memory> to fix gcc 4.3 build problem
+
+2008-03-25 12:26 +0000 [r7991]  robert:
+
+	* Fixed LessGeode operator.
+
+2008-03-25 11:50 +0000 [r7990]  robert:
+
+	* From Wojciech Leandowski, "I removed few lines of code that were
+	  setting Threading mode and Screen mode. I believe they are now
+	  not neccessary because the same does osgViewer::Viewer argument
+	  parser. In fact argument list does not contain these args after
+	  they were parsed by osgViewer::Viewer constructor. I also allowed
+	  myself to add ThreadingHandler to the example."
+
+2008-03-24 18:06 +0000 [r7989]  robert:
+
+	* Added sampling down to 32x32 mesh for 64x64 height fields as a
+	  workaround to memory consumption issues with high res whole earth
+	  paged databases.
+
+2008-03-24 18:03 +0000 [r7988]  robert:
+
+	* Added mutex to prevent multiple cull threads changing the
+	  MultiTextureControl at one time.
+
+2008-03-24 10:53 +0000 [r7987]  robert:
+
+	* Added full range of cameras manipulators to
+	  osgmultitexturecontrol example
+
+2008-03-23 18:28 +0000 [r7986]  robert:
+
+	* Added < and > key bindings to allow the speed to be animation
+	  speed to be increased or decreased.
+
+2008-03-21 18:35 +0000 [r7985]  robert:
+
+	* Added preliminary file cache support. Enabled by setting the
+	  OSG_FILE_CACHE variable.
+
+2008-03-21 18:31 +0000 [r7984]  robert:
+
+	* Added missing break; at end of each case entry.
+
+2008-03-21 15:43 +0000 [r7983]  robert:
+
+	* Fixed push/popping of filepath, removed verbose debug messages
+
+2008-03-21 13:20 +0000 [r7982]  robert:
+
+	* Added better detection and error reporting of files without
+	  proper server address
+
+2008-03-21 13:08 +0000 [r7981]  robert:
+
+	* Added initial cut of libcurl based plugin
+
+2008-03-20 10:24 +0000 [r7979]  robert:
+
+	* Updated date for 2.4.6 release
+
+2008-03-19 21:05 +0000 [r7978]  robert:
+
+	* From Melchoir Franz, "osgViewer toggled the NumLock state
+	  correctly when pressing the NumLock key, but it didn't pick up
+	  the initial state. So, if NumLock was on for the OS at startup
+	  (LED on), it was still off for OSG. And the first keypress turned
+	  the LED off, and NumLock on for OSG. The attached fix picks up
+	  the state on every FocusIn, just like it was done in the last
+	  commits for CapsLock. The difference is, that the NumLock mask
+	  isn't standardized (e.g. 0x10 for Linux, and 0x80 for AIX), so we
+	  have to do a reverse lookup (::rescanModifierMapping()). Note
+	  that I could not reproduce the problem on my system, but someone
+	  else confirmed it twice on his, and the patch fixed it for him.
+	  Changed files: ./include/osgViewer/api/X11/GraphicsWindowX11
+	  ./src/osgViewer/GraphicsWindowX11.cpp "
+
+2008-03-19 17:11 +0000 [r7976-7977]  robert:
+
+	* Update AUTHOR file
+
+	* Updated version and ChangeLog for 2.3.6 dev release.
+
 2008-03-19 12:30 +0000 [r7975]  robert:
 
 	* Updated wrappers

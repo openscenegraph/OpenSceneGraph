@@ -353,6 +353,12 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         stencilAttached = true;
                         break;
                     }
+                    case(osg::Camera::COLOR_BUFFER):
+                    {
+                        fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(attachment));
+                        colorAttached = true;
+                        break;
+                    }
                     default:
                     {
                         fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT+(buffer-osg::Camera::COLOR_BUFFER0), osg::FrameBufferAttachment(attachment));

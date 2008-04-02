@@ -234,8 +234,9 @@ bool OSGA_Archive::IndexBlock::getFileReferences(FileNamePositionMap& indexMap) 
         
         std::string filename(ptr, ptr+filename_size);
         
-        // record this entry into the FileNamePositionMap
-        indexMap[filename] = PositionSizePair(position,size);
+        // record this entry into the FileNamePositionMap. 
+        // Requests for files will be in unix style even on Win32 so need unix style keys in map.
+        indexMap[osgDB::convertFileNameToUnixStyle(filename)] = PositionSizePair(position,size);
         
         ptr += filename_size;
         

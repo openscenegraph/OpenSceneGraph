@@ -338,6 +338,7 @@ const char* Camera_getBufferComponentStr(Camera::BufferComponent buffer)
         case (osg::Camera::DEPTH_BUFFER)             : return "DEPTH_BUFFER";
         case (osg::Camera::STENCIL_BUFFER)           : return "STENCIL_BUFFER";
         case (osg::Camera::COLOR_BUFFER)             : return "COLOR_BUFFER";
+        case (osg::Camera::COLOR_BUFFER0)            : return "COLOR_BUFFER0";
         case (osg::Camera::COLOR_BUFFER1)            : return "COLOR_BUFFER1";
         case (osg::Camera::COLOR_BUFFER2)            : return "COLOR_BUFFER2";
         case (osg::Camera::COLOR_BUFFER3)            : return "COLOR_BUFFER3";

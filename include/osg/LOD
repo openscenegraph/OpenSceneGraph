@@ -43,6 +43,9 @@ class OSG_EXPORT LOD : public Group
 
         META_Node(osg, LOD);
 
+        typedef osg::BoundingSphere::vec_type vec_type;
+        typedef osg::BoundingSphere::value_type value_type;
+
         virtual void traverse(NodeVisitor& nv);
         
         virtual bool addChild(Node *child);
@@ -69,18 +72,18 @@ class OSG_EXPORT LOD : public Group
 
         /** Sets the object-space point which defines the center of the osg::LOD.  
             center is affected by any transforms in the hierarchy above the osg::LOD.*/
-        inline void setCenter(const Vec3& center) { _centerMode=USER_DEFINED_CENTER; _userDefinedCenter = center; }
+        inline void setCenter(const vec_type& center) { _centerMode=USER_DEFINED_CENTER; _userDefinedCenter = center; }
         
         /** return the LOD center point. */
-        inline const Vec3& getCenter() const { if (_centerMode==USER_DEFINED_CENTER) return _userDefinedCenter; else return getBound().center(); }
+        inline const vec_type& getCenter() const { if (_centerMode==USER_DEFINED_CENTER) return _userDefinedCenter; else return getBound().center(); }
 
 
         /** Set the object-space reference radius of the volume enclosed by the LOD. 
           * Used to determine the bounding sphere of the LOD in the absence of any children.*/
-        inline void setRadius(float radius) { _radius = radius; }
+        inline void setRadius(value_type radius) { _radius = radius; }
         
         /** Get the object-space radius of the volume enclosed by the LOD.*/
-        inline float getRadius() const { return _radius; }
+        inline value_type getRadius() const { return _radius; }
 
 
 
@@ -124,8 +127,8 @@ class OSG_EXPORT LOD : public Group
         virtual ~LOD() {}
 
         CenterMode                      _centerMode;
-        Vec3                            _userDefinedCenter;
-        float                           _radius;
+        vec_type                        _userDefinedCenter;
+        value_type                      _radius;
 
         RangeMode                       _rangeMode;
         RangeList                       _rangeList;

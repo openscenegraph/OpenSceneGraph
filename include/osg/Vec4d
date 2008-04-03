@@ -248,8 +248,33 @@ inline Vec4d::value_type operator * (const Vec3d& lhs,const Vec4d& rhs)
     return lhs[0]*rhs[0]+lhs[1]*rhs[1]+lhs[2]*rhs[2]+rhs[3];
 }
 
+/** Compute the dot product of a (Vec3,1.0) and a Vec4d. */
+inline Vec4d::value_type operator * (const Vec3f& lhs,const Vec4d& rhs)
+{
+    return lhs[0]*rhs[0]+lhs[1]*rhs[1]+lhs[2]*rhs[2]+rhs[3];
+}
+
+/** Compute the dot product of a (Vec3,1.0) and a Vec4d. */
+inline Vec4d::value_type operator * (const Vec3d& lhs,const Vec4f& rhs)
+{
+    return lhs[0]*rhs[0]+lhs[1]*rhs[1]+lhs[2]*rhs[2]+rhs[3];
+}
+
+
 /** Compute the dot product of a Vec4d and a (Vec3,1.0). */
 inline Vec4d::value_type operator * (const Vec4d& lhs,const Vec3d& rhs)
+{
+    return lhs[0]*rhs[0]+lhs[1]*rhs[1]+lhs[2]*rhs[2]+lhs[3];
+}
+
+/** Compute the dot product of a Vec4d and a (Vec3,1.0). */
+inline Vec4d::value_type operator * (const Vec4d& lhs,const Vec3f& rhs)
+{
+    return lhs[0]*rhs[0]+lhs[1]*rhs[1]+lhs[2]*rhs[2]+lhs[3];
+}
+
+/** Compute the dot product of a Vec4d and a (Vec3,1.0). */
+inline Vec4d::value_type operator * (const Vec4f& lhs,const Vec3d& rhs)
 {
     return lhs[0]*rhs[0]+lhs[1]*rhs[1]+lhs[2]*rhs[2]+lhs[3];
 }

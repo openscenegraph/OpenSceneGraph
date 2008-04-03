@@ -15,15 +15,15 @@
 
 using namespace osg;
 
-void BoundingSphere::expandBy(const Vec3& v)
+void BoundingSphere::expandBy(const Vec3f& v)
 {
     if (valid())
     {
-        Vec3 dv = v-_center;
-        float r = dv.length();
+        vec_type dv = v-_center;
+        value_type r = dv.length();
         if (r>_radius)
         {
-            float dr = (r-_radius)*0.5f;
+            value_type dr = (r-_radius)*0.5;
             _center += dv*(dr/r);
             _radius += dr;
         } // else do nothing as vertex is within sphere.
@@ -31,25 +31,64 @@ void BoundingSphere::expandBy(const Vec3& v)
     else
     {
         _center = v;
-        _radius = 0.0f;
+        _radius = 0.0;
     }
 }
 
 
-void BoundingSphere::expandRadiusBy(const Vec3& v)
+void BoundingSphere::expandRadiusBy(const Vec3f& v)
 {
     if (valid())
     {
-        float r = (v-_center).length();
+        value_type r = (v-_center).length();
         if (r>_radius) _radius = r;
         // else do nothing as vertex is within sphere.
     }
     else
     {
         _center = v;
-        _radius = 0.0f;
+        _radius = 0.0;
     }
 }
+
+
+
+void BoundingSphere::expandBy(const Vec3d& v)
+{
+    if (valid())
+    {
+        vec_type dv = v-_center;
+        value_type r = dv.length();
+        if (r>_radius)
+        {
+            value_type dr = (r-_radius)*0.5;
+            _center += dv*(dr/r);
+            _radius += dr;
+        } // else do nothing as vertex is within sphere.
+    }
+    else
+    {
+        _center = v;
+        _radius = 0.0;
+    }
+}
+
+
+void BoundingSphere::expandRadiusBy(const Vec3d& v)
+{
+    if (valid())
+    {
+        value_type r = (v-_center).length();
+        if (r>_radius) _radius = r;
+        // else do nothing as vertex is within sphere.
+    }
+    else
+    {
+        _center = v;
+        _radius = 0.0;
+    }
+}
+
 
 
 void BoundingSphere::expandBy(const BoundingSphere& sh)
@@ -107,7 +146,7 @@ void BoundingSphere::expandRadiusBy(const BoundingSphere& sh)
     {
         if (valid())
         {
-            float r = (sh._center-_center).length()+sh._radius;
+            value_type r = (sh._center-_center).length()+sh._radius;
             if (r>_radius) _radius = r;
             // else do nothing as vertex is within sphere.
         }

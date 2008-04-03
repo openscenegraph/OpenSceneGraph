@@ -1,6 +1,13 @@
 #include <osg/Version>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
+
+#include <osg/Matrix>
+#include <osg/Plane>
+#include <osg/BoundingBox>
+#include <osg/BoundingSphere>
+
+
 #include <OpenThreads/Version>
 
 #include <set>
@@ -719,6 +726,10 @@ int main( int argc, char **argv)
     arguments.getApplicationUsage()->addCommandLineOption("--so-number ","Print out shared object version number only");
     arguments.getApplicationUsage()->addCommandLineOption("--openthreads-version-number","Print out version number for OpenThreads only");
     arguments.getApplicationUsage()->addCommandLineOption("--openthreads-soversion-number","Print out shared object version number for OpenThreads only");
+    arguments.getApplicationUsage()->addCommandLineOption("Matrix::value_type","Print the value of Matrix::value_type");
+    arguments.getApplicationUsage()->addCommandLineOption("Plane::value_type","Print the value of Plane::value_type");
+    arguments.getApplicationUsage()->addCommandLineOption("BoundingSphere::value_type","Print the value of BoundingSphere::value_type");
+    arguments.getApplicationUsage()->addCommandLineOption("BoundingBox::value_type","Print the value of BoundingBox::value_type");
     arguments.getApplicationUsage()->addCommandLineOption("-r <file> or --read <file>","Read the ChangeLog to generate an estimated contributors list.");
 
     if (arguments.read("--version-number"))
@@ -776,11 +787,34 @@ int main( int argc, char **argv)
         std::cout<<OPENTHREADS_PATCH_VERSION<<std::endl;
         return 0;
     }
-    
 
     if (arguments.read("--openthreads-soversion-number"))
     {
         std::cout<<OpenThreadsGetSOVersion()<<std::endl;
+        return 0;
+    }
+
+
+    if (arguments.read("Matrix::value_type"))
+    {
+        std::cout<<((sizeof(osg::Matrix::value_type)==4)?"float":"double")<<std::endl;
+        return 0;
+    }
+
+    if (arguments.read("Plane::value_type"))
+    {
+        std::cout<<((sizeof(osg::Plane::value_type)==4)?"float":"double")<<std::endl;
+        return 0;
+    }
+
+    if (arguments.read("BoundingSphere::value_type"))
+    {
+        std::cout<<((sizeof(osg::BoundingSphere::value_type)==4)?"float":"double")<<std::endl;
+        return 0;
+    }
+    if (arguments.read("BoundingBox::value_type"))
+    {
+        std::cout<<((sizeof(osg::BoundingBox::value_type)==4)?"float":"double")<<std::endl;
         return 0;
     }
     

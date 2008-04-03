@@ -16,6 +16,7 @@
 
 #include <osg/Export>
 #include <osg/Vec3>
+#include <osg/Vec3d>
 #include <float.h>
 
 namespace osg {
@@ -30,23 +31,32 @@ class OSG_EXPORT BoundingBox
 {
     public:
     
+#ifdef OSG_USE_DOUBLE_BOUNDINGBOX
+        typedef Vec3d vec_type;
+        typedef doulbe value_type;
+#else
+        typedef Vec3f vec_type;
+        typedef float value_type;
+#endif
+
+    
         /** Minimum extent. (Smallest X, Y, and Z values of all coordinates.) */
-        Vec3 _min;
+        vec_type _min;
         /** Maximum extent. (Greatest X, Y, and Z values of all coordinates.) */
-        Vec3 _max;
+        vec_type _max;
 
         /** Creates an uninitialized bounding box. */
         inline BoundingBox() : _min(FLT_MAX,FLT_MAX,FLT_MAX),
                         _max(-FLT_MAX,-FLT_MAX,-FLT_MAX) {}
     
         /** Creates a bounding box initialized to the given extents. */
-        inline BoundingBox(float xmin,float ymin,float zmin,
-                    float xmax,float ymax,float zmax) :
-                    _min(xmin,ymin,zmin),
-                    _max(xmax,ymax,zmax) {}
+        inline BoundingBox(value_type xmin, value_type ymin, value_type zmin,
+                           value_type xmax, value_type ymax, value_type zmax) :
+                           _min(xmin,ymin,zmin),
+                           _max(xmax,ymax,zmax) {}
 
         /** Creates a bounding box initialized to the given extents. */
-        inline BoundingBox(const Vec3& min,const Vec3& max) : 
+        inline BoundingBox(const vec_type& min,const vec_type& max) : 
                     _min(min),
                     _max(max) {}
 
@@ -64,56 +74,56 @@ class OSG_EXPORT BoundingBox
         }
 
         /** Sets the bounding box extents. */
-        inline void set (float xmin,float ymin,float zmin,
-                         float xmax,float ymax,float zmax)
+        inline void set (value_type xmin, value_type ymin, value_type zmin,
+                         value_type xmax, value_type ymax, value_type zmax)
         {
             _min.set(xmin,ymin,zmin);
             _max.set(xmax,ymax,zmax);
         }
 
         /** Sets the bounding box extents. */
-        inline void set(const Vec3& min,const Vec3& max)
+        inline void set(const vec_type& min,const vec_type& max)
         {
             _min = min;
             _max = max;
         }
 
 
-        inline float& xMin() { return _min.x(); }
-        inline float xMin() const { return _min.x(); }
+        inline value_type& xMin() { return _min.x(); }
+        inline value_type xMin() const { return _min.x(); }
  
-        inline float& yMin() { return _min.y(); }
-        inline float yMin() const { return _min.y(); }
+        inline value_type& yMin() { return _min.y(); }
+        inline value_type yMin() const { return _min.y(); }
  
-        inline float& zMin() { return _min.z(); }
-        inline float zMin() const { return _min.z(); }
+        inline value_type& zMin() { return _min.z(); }
+        inline value_type zMin() const { return _min.z(); }
 
-        inline float& xMax() { return _max.x(); }
-        inline float xMax() const { return _max.x(); }
+        inline value_type& xMax() { return _max.x(); }
+        inline value_type xMax() const { return _max.x(); }
  
-        inline float& yMax() { return _max.y(); }
-        inline float yMax() const { return _max.y(); }
+        inline value_type& yMax() { return _max.y(); }
+        inline value_type yMax() const { return _max.y(); }
  
-        inline float& zMax() { return _max.z(); }
-        inline float zMax() const { return _max.z(); }
+        inline value_type& zMax() { return _max.z(); }
+        inline value_type zMax() const { return _max.z(); }
 
         /** Calculates and returns the bounding box center. */
-        inline const Vec3 center() const
+        inline const vec_type center() const
         {
-            return (_min+_max)*0.5f;
+            return (_min+_max)*0.5;
         }
 
         /** Calculates and returns the bounding box radius. */
-        inline float radius() const
+        inline value_type radius() const
         {
-            return sqrtf(radius2());
+            return sqrt(radius2());
         }
 
         /** Calculates and returns the squared length of the bounding box radius.
           * Note, radius2() is faster to calculate than radius(). */
-        inline float radius2() const
+        inline value_type radius2() const
         {
-            return 0.25f*((_max-_min).length2());
+            return 0.25*((_max-_min).length2());
         }
 
         /** Returns a specific corner of the bounding box.
@@ -121,14 +131,14 @@ class OSG_EXPORT BoundingBox
           * Each bit selects an axis, X, Y, or Z from least- to
           * most-significant. Unset bits select the minimum value
           * for that axis, and set bits select the maximum. */
-        inline const Vec3 corner(unsigned int pos) const
+        inline const vec_type corner(unsigned int pos) const
         {
-            return Vec3(pos&1?_max.x():_min.x(),pos&2?_max.y():_min.y(),pos&4?_max.z():_min.z());
+            return vec_type(pos&1?_max.x():_min.x(),pos&2?_max.y():_min.y(),pos&4?_max.z():_min.z());
         }
 
         /** Expands the bounding box to include the given coordinate.
           * If the box is uninitialized, set its min and max extents to v. */
-        inline void expandBy(const Vec3& v)
+        inline void expandBy(const vec_type& v)
         {
             if(v.x()<_min.x()) _min.x() = v.x();
             if(v.x()>_max.x()) _max.x() = v.x();
@@ -143,7 +153,7 @@ class OSG_EXPORT BoundingBox
         /** Expands the bounding box to include the given coordinate.
           * If the box is uninitialized, set its min and max extents to
           * Vec3(x,y,z). */
-        inline void expandBy(float x,float y,float z)
+        inline void expandBy(value_type x,value_type y,value_type z)
         {
             if(x<_min.x()) _min.x() = x;
             if(x>_max.x()) _max.x() = x;
@@ -180,7 +190,7 @@ class OSG_EXPORT BoundingBox
         }
 
         /** Returns true if this bounding box contains the specified coordinate. */
-        inline bool contains(const Vec3& v) const
+        inline bool contains(const vec_type& v) const
         {
             return valid() && 
                    (v.x()>=_min.x() && v.x()<=_max.x()) &&

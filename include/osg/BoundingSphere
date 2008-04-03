@@ -15,7 +15,8 @@
 #define OSG_BOUNDINGSPHERE 1
 
 #include <osg/Export>
-#include <osg/Vec3>
+#include <osg/Vec3f>
+#include <osg/Vec3d>
 
 namespace osg {
 
@@ -30,64 +31,83 @@ class BoundingBox;
 class OSG_EXPORT BoundingSphere
 {
     public:
+
+#ifdef OSG_USE_DOUBLE_BOUNDINGSPHERE
+        typedef Vec3d vec_type;
+        typedef double value_type;
+#else
+        typedef Vec3f vec_type;
+        typedef float value_type;
+#endif
         
-        Vec3 _center;
-        float _radius;
+        vec_type    _center;
+        value_type  _radius;
 
         /** Construct a default bounding sphere with radius to -1.0f, representing an invalid/unset bounding sphere.*/ 
-        BoundingSphere() : _center(0.0f,0.0f,0.0f),_radius(-1.0f) {}
+        BoundingSphere() : _center(0.0,0.0,0.0),_radius(-1.0) {}
     
         /** Creates a bounding sphere initialized to the given extents. */
-        BoundingSphere(const Vec3& center,float radius) : _center(center),_radius(radius) {}
+        BoundingSphere(const vec_type& center,value_type radius) : _center(center),_radius(radius) {}
 
         /** Creates a bounding sphere initialized to the given extents. */
         BoundingSphere(const BoundingSphere& bs) : _center(bs._center),_radius(bs._radius) {}
 
         /** Creates a bounding sphere initialized to the given extents. */
-        BoundingSphere(const BoundingBox& bb) : _center(0.0f,0.0f,0.0f),_radius(-1.0f) { expandBy(bb); }
+        BoundingSphere(const BoundingBox& bb) : _center(0.0,0.0,0.0),_radius(-1.0) { expandBy(bb); }
 
         /** Clear the bounding sphere. Reset to default values. */
         inline void init()
         {
-            _center.set(0.0f,0.0f,0.0f);
-            _radius = -1.0f;
+            _center.set(0.0,0.0,0.0);
+            _radius = -1.0;
         }
 
         /** Returns true of the bounding sphere extents are valid, false
           * otherwise. */
-        inline bool valid() const { return _radius>=0.0f; }
+        inline bool valid() const { return _radius>=0.0; }
 
-        /** Set the bounding sphere to the given center/radius. */ 
-        inline void set(const Vec3& center,float radius)
+        /** Set the bounding sphere to the given center/radius using floats. */ 
+        inline void set(const vec_type& center,value_type radius)
         {
             _center = center;
             _radius = radius;
         }
 
         /** Returns the center of the bounding sphere. */
-        inline Vec3& center() { return _center; }
+        inline vec_type& center() { return _center; }
+        
         /** Returns the const center of the bounding sphere. */
-        inline const Vec3& center() const { return _center; }
+        inline const vec_type& center() const { return _center; }
 
         /** Returns the radius of the bounding sphere. */
-        inline float& radius() { return _radius; }
+        inline value_type& radius() { return _radius; }
         /** Returns the const radius of the bounding sphere. */
-        inline float radius() const { return _radius; }
+        inline value_type radius() const { return _radius; }
         
         /** Returns the squared length of the radius. Note, For performance
           * reasons, the calling method is responsible for checking to make
           * sure the sphere is valid. */
-        inline float radius2() const { return _radius*_radius; }
+        inline value_type radius2() const { return _radius*_radius; }
 
         /** Expands the sphere to encompass the given point. Repositions the
           * sphere center to minimize the radius increase. If the sphere is
           * uninitialized, set its center to v and radius to zero. */
-        void expandBy(const Vec3& v);
+        void expandBy(const Vec3f& v);
 
         /** Expands the sphere to encompass the given point. Does not
           * reposition the sphere center. If the sphere is
           * uninitialized, set its center to v and radius to zero. */
-        void expandRadiusBy(const Vec3& v);
+        void expandRadiusBy(const Vec3f& v);
+
+        /** Expands the sphere to encompass the given point. Repositions the
+          * sphere center to minimize the radius increase. If the sphere is
+          * uninitialized, set its center to v and radius to zero. */
+        void expandBy(const Vec3d& v);
+
+        /** Expands the sphere to encompass the given point. Does not
+          * reposition the sphere center. If the sphere is
+          * uninitialized, set its center to v and radius to zero. */
+        void expandRadiusBy(const Vec3d& v);
 
         /** Expands the sphere to encompass the given sphere. Repositions the
           * sphere center to minimize the radius increase. If the sphere is
@@ -108,10 +128,11 @@ class OSG_EXPORT BoundingSphere
         void expandRadiusBy(const BoundingBox& bb);
 
         /** Returns true if v is within the sphere. */
-        inline bool contains(const Vec3& v) const
+        inline bool contains(const vec_type& v) const
         {
             return valid() && ((v-_center).length2()<=radius2());
         }
+
 
         /** Returns true if there is a non-empty intersection with the given
           * bounding sphere. */

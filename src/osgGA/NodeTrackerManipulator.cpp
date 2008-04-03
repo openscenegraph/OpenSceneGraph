@@ -105,7 +105,7 @@ void NodeTrackerManipulator::setNode(osg::Node* node)
         const osg::BoundingSphere& boundingSphere=_node->getBound();
         const float minimumDistanceScale = 0.001f;
         _minimumDistance = osg::clampBetween(
-            boundingSphere._radius * minimumDistanceScale,
+            float(boundingSphere._radius) * minimumDistanceScale,
             0.00001f,1.0f);
             
         osg::notify(osg::INFO)<<"Setting Tracker manipulator _minimumDistance to "<<_minimumDistance<<std::endl;

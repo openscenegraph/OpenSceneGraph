@@ -31,6 +31,9 @@ class OSG_EXPORT ProxyNode : public Group
 
         META_Node(osg, ProxyNode);
         
+        typedef osg::BoundingSphere::vec_type vec_type;
+        typedef osg::BoundingSphere::value_type value_type;
+
         virtual void traverse(NodeVisitor& nv);
        
         virtual bool addChild(Node *child);
@@ -81,15 +84,15 @@ class OSG_EXPORT ProxyNode : public Group
         inline void setCenter(const Vec3& center) { _centerMode=USER_DEFINED_CENTER; _userDefinedCenter = center; }
         
         /** return the ProxyNode center point. */
-        inline const Vec3& getCenter() const { if (_centerMode==USER_DEFINED_CENTER) return _userDefinedCenter; else return getBound().center(); }
+        inline const vec_type& getCenter() const { if (_centerMode==USER_DEFINED_CENTER) return _userDefinedCenter; else return getBound().center(); }
 
 
         /** Set the object-space reference radius of the volume enclosed by the ProxyNode. 
           * Used to determine the bounding sphere of the ProxyNode in the absence of any children.*/
-        inline void setRadius(float radius) { _radius = radius; }
+        inline void setRadius(value_type radius) { _radius = radius; }
         
         /** Get the object-space radius of the volume enclosed by the ProxyNode.*/
-        inline float getRadius() const { return _radius; }
+        inline value_type getRadius() const { return _radius; }
 
         virtual BoundingSphere computeBound() const;
 
@@ -105,8 +108,8 @@ class OSG_EXPORT ProxyNode : public Group
         LoadingExternalReferenceMode _loadingExtReference;
         
         CenterMode          _centerMode;
-        Vec3                _userDefinedCenter;
-        float               _radius;
+        vec_type            _userDefinedCenter;
+        value_type          _radius;
         
 };
 

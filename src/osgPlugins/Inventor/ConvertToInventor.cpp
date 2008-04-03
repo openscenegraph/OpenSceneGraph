@@ -1994,7 +1994,8 @@ void ConvertToInventor::apply(osg::LOD& node)
        lod->range.set1Value(i, node.getMaxRange(i));
 
     // set center
-    lod->center.setValue(node.getCenter().ptr());
+    osg::Vec3f center(node.getCenter());
+    lod->center.setValue(center.ptr());
 
     ivLOD = lod;
 

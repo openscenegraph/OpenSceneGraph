@@ -1427,6 +1427,8 @@ void GraphicsWindowX11::requestWarpPointer(float x,float y)
 extern "C" 
 {
 
+typedef int (*X11ErrorHandler)(Display*, XErrorEvent*);
+
 int X11ErrorHandling(Display* display, XErrorEvent* event)
 {
     osg::notify(osg::NOTICE)<<"Got an X11ErrorHandling call display="<<display<<" event="<<event<<std::endl;
@@ -1543,12 +1545,37 @@ class X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystem
     }
 #endif
 
+protected:
+    bool _errorHandlerSet;
+    
+
 public:
     X11WindowingSystemInterface()
     {
         osg::notify(osg::INFO)<<"X11WindowingSystemInterface()"<<std::endl;
-    
-        XSetErrorHandler(X11ErrorHandling);
+
+
+        // Install an X11 error handler, if the application has not already done so.
+        
+        // Set default handler, and get pointer to current handler.
+        X11ErrorHandler currentHandler = XSetErrorHandler(NULL);
+        
+        // Set our handler, and get pointer to default handler.
+        X11ErrorHandler defHandler = XSetErrorHandler(X11ErrorHandling);
+
+        if ( currentHandler == defHandler )
+        {
+            // No application error handler, use ours.
+            // osg::notify(osg::INFO)<<"Set osgViewer X11 error handler"<<std::endl;
+            _errorHandlerSet = 1;
+        }
+        else
+        {
+            // Application error handler exists, leave it set.
+            // osg::notify(osg::INFO)<<"Existing application X11 error handler set"<<std::endl;
+            _errorHandlerSet = 0;
+            XSetErrorHandler(currentHandler);
+        }
     
 #if 0
         if (XInitThreads() == 0)
@@ -1572,7 +1599,23 @@ public:
         }
 
         //osg::notify(osg::NOTICE)<<"~X11WindowingSystemInterface()"<<std::endl;
-        XSetErrorHandler(0);
+
+        // Unset our X11 error handler, providing the application has not replaced it.
+
+        if ( _errorHandlerSet )
+        {
+            X11ErrorHandler currentHandler = XSetErrorHandler(NULL);
+            if ( currentHandler = X11ErrorHandling )
+            {
+                // osg::notify(osg::INFO)<<"osgViewer X11 error handler removed"<<std::endl;
+            }
+            else
+            {
+                // Not our error handler, leave it set.
+                // osg::notify(osg::INFO)<<"Application X11 error handler left"<<std::endl;
+                XSetErrorHandler(currentHandler);
+            }
+        }
     }
 
     virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 

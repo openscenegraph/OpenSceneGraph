@@ -337,6 +337,9 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             { "R8G8B8",      24,   0xff0000,   0x00ff00,   0x0000ff,   0x000000,
               GL_RGB , GL_BGR , GL_UNSIGNED_BYTE }, 
 
+            { "B8G8R8",      24,   0x0000ff,   0x00ff00,   0xff0000,   0x000000,
+              GL_RGB , GL_RGB , GL_UNSIGNED_BYTE }, 
+
             { "A8R8G8B8",    32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000,
               GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE }, 
             { "X8R8G8B8",    32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0x00000000,

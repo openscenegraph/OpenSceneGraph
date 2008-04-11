@@ -5,6 +5,7 @@
 #include <osg/Group>
 #include <osg/Notify>
 #include <osg/Vec3>
+#include <osg/ProxyNode>
 #include <osg/Geometry>
 #include <osg/Texture2D>
 #include <osg/Texture3D>
@@ -18,6 +19,7 @@
 #include <osgDB/ReaderWriter>
 
 #include <osgUtil/Optimizer>
+#include <osgUtil/Simplifier>
 #include <osgUtil/SmoothingVisitor>
 
 #include <osgViewer/GraphicsWindow>
@@ -72,6 +74,37 @@ class MyGraphicsContext {
         
     private:
         osg::ref_ptr<osg::GraphicsContext> _gc;
+};
+
+class DefaultNormalsGeometryVisitor
+    : public osg::NodeVisitor
+{
+public:
+
+    DefaultNormalsGeometryVisitor()
+        : osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ) {
+    }
+
+    virtual void apply( osg::Geode & geode )
+    {
+        for( unsigned int ii = 0; ii < geode.getNumDrawables(); ++ii )
+        {
+            osg::ref_ptr< osg::Geometry > geometry = dynamic_cast< osg::Geometry * >( geode.getDrawable( ii ) );
+            if( geometry.valid() )
+            {
+                osg::ref_ptr< osg::Vec3Array > newnormals = new osg::Vec3Array;
+                newnormals->push_back( osg::Z_AXIS );
+                geometry->setNormalArray( newnormals.get() );
+                geometry->setNormalBinding( osg::Geometry::BIND_OVERALL );
+            }
+        }
+    }
+
+    virtual void apply( osg::Node & node )
+    {
+        traverse( node );
+    }
+
 };
 
 class CompressTexturesVisitor : public osg::NodeVisitor
@@ -369,10 +402,21 @@ static void usage( const char *prog, const char *msg )
         osg::notify(osg::NOTICE)<< std::endl;
         osg::notify(osg::NOTICE) << msg << std::endl;
     }
+
+    // basic usage
     osg::notify(osg::NOTICE)<< std::endl;
     osg::notify(osg::NOTICE)<<"usage:"<< std::endl;
     osg::notify(osg::NOTICE)<<"    " << prog << " [options] infile1 [infile2 ...] outfile"<< std::endl;
     osg::notify(osg::NOTICE)<< std::endl;
+
+    // print env options - especially since optimizer is always _on_
+    osg::notify(osg::NOTICE)<<"environment:" << std::endl;
+    osg::ApplicationUsage::UsageMap um = osg::ApplicationUsage::instance()->getEnvironmentalVariables();
+    std::string envstring;
+    osg::ApplicationUsage::instance()->getFormattedString( envstring, um );
+    osg::notify(osg::NOTICE)<<envstring << std::endl;
+
+    // print tool options
     osg::notify(osg::NOTICE)<<"options:"<< std::endl;
     osg::notify(osg::NOTICE)<<"    -O option          - ReaderWriter option"<< std::endl;
     osg::notify(osg::NOTICE)<< std::endl;
@@ -430,6 +474,10 @@ static void usage( const char *prog, const char *msg )
                               "                         where X, Y, and Z represent the coordinates of the\n"
                               "                         absolute position in world space\n"
                               << std::endl;
+    osg::notify(osg::NOTICE)<<"    --simplify n       - Run simplifier on prior to output. Argument must be a" << std::endl
+                            <<"                         normalized value for the resultant percentage reduction." << std::endl
+                            <<"                         Example: --simplify .5 will produce an 50 reduced model." << std::endl
+                            << std::endl;
     osg::notify(osg::NOTICE)<<"    -s scale           - Scale size of model.  Scale argument must be the \n"
                               "                         following :\n"
                               "\n"
@@ -442,6 +490,7 @@ static void usage( const char *prog, const char *msg )
                               "                         all geometry"<< std::endl;
     osg::notify(osg::NOTICE)<<"    --addMissingColors - Adding a white color value to all geometry that don't have\n"
                               "                         their own color values (--addMissingColours also accepted)."<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --overallNormal    - Replace normals with a single overall normal."<< std::endl;
 
 }
 
@@ -547,6 +596,23 @@ int main( int argc, char **argv )
         do_convert = true;
     }
 
+    float simplifyPercent = 1.0;
+    bool do_simplify = false;
+    while ( arguments.read( "--simplify",str ) )
+    {
+        float nsimp = 1.0;
+        if( sscanf( str.c_str(), "%f",
+                &nsimp ) != 1 )
+        {
+            usage( argv[0], "Scale argument format incorrect." );
+            return 1;
+        }
+        std::cout << str << " " << nsimp << std::endl;
+        simplifyPercent = nsimp;
+        osg::notify( osg::INFO ) << "Simplifying with percentage: " << simplifyPercent << std::endl;
+        do_simplify = true;
+    }
+
     while (arguments.read("-t",str))
     {
         osg::Vec3 trans(0,0,0);
@@ -585,6 +651,9 @@ int main( int argc, char **argv )
     
     bool addMissingColours = false;
     while(arguments.read("--addMissingColours") || arguments.read("--addMissingColors")) { addMissingColours = true; }
+
+    bool do_overallNormal = false;
+    while(arguments.read("--overallNormal") || arguments.read("--overallNormal")) { do_overallNormal = true; }
 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
@@ -671,7 +740,24 @@ int main( int argc, char **argv )
                 std::cout<<"Warning: compressing texture only supported when outputing to .ive"<<std::endl;
             }
         }
-        
+
+        // scrub normals
+        if ( do_overallNormal )
+        {
+            DefaultNormalsGeometryVisitor dngv;
+            root->accept( dngv );
+        }
+
+        // apply any user-specified simplification
+        if ( do_simplify )
+        {
+            osgUtil::Simplifier simple;
+            simple.setSmoothing( smooth );
+            osg::notify( osg::ALWAYS ) << " smoothing: " << smooth << std::endl;
+            simple.setSampleRatio( simplifyPercent );
+            root->accept( simple );
+        }
+
         osgDB::ReaderWriter::WriteResult result = osgDB::Registry::instance()->writeNode(*root,fileNameOut,osgDB::Registry::instance()->getOptions());
         if (result.success())
         {

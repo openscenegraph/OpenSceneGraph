@@ -292,6 +292,9 @@ int main(int argc, char **argv)
     while (arguments.read("--ortho") || arguments.read("--orthographic")) technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY;
     while (arguments.read("--persp") || arguments.read("--perspective")) technique = osgSim::OverlayNode::VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY;
 
+    unsigned int overlayTextureUnit = 1;
+    while (arguments.read("--unit", overlayTextureUnit)) {}
+    
     std::string pathfile;
     while (arguments.read("-p",pathfile)) {}
 
@@ -342,6 +345,7 @@ int main(int argc, char **argv)
             overlayNode->getOrCreateStateSet()->setTextureAttribute(1, new osg::TexEnv(osg::TexEnv::DECAL));
             overlayNode->setOverlaySubgraph(shapefile.get());
             overlayNode->setOverlayTextureSizeHint(1024);
+            overlayNode->setOverlayTextureUnit(overlayTextureUnit);
 
             // insert the OverlayNode between the coordinate system node and its children.
             for(unsigned int i=0; i<csn->getNumChildren(); ++i)

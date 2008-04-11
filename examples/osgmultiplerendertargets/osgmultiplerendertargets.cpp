@@ -34,6 +34,14 @@
 
 #include <iostream>
 
+//
+// Below is relatively straight forward example of use OpenGL multiple render targets extension
+// to FrameBufferObjects/GLSL shaders.
+//
+// Another, more sophisticated MRT example can be found in the osgstereomatch example.
+//
+
+
 // The callback modifies an input image.
 struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
 {

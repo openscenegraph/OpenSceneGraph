@@ -113,6 +113,16 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          __void__penPressure__float__double,
 	          "Method for adapting pen pressure events, placing this event on the back of the event queue, with specified time. ",
 	          "");
+	I_Method3(void, penOrientation, IN, float, tiltX, IN, float, tiltY, IN, float, rotation,
+	          Properties::NON_VIRTUAL,
+	          __void__penOrientation__float__float__float,
+	          "Method for adapting pen orientation events, placing this event on the back of the event queue. ",
+	          "");
+	I_Method4(void, penOrientation, IN, float, tiltX, IN, float, tiltY, IN, float, rotation, IN, double, time,
+	          Properties::NON_VIRTUAL,
+	          __void__penOrientation__float__float__float__double,
+	          "Method for adapting pen orientation events, placing this event on the back of the event queue, with specified time. ",
+	          "");
 	I_Method2(void, penProximity, IN, osgGA::GUIEventAdapter::TabletPointerType, pt, IN, bool, isEntering,
 	          Properties::NON_VIRTUAL,
 	          __void__penProximity__GUIEventAdapter_TabletPointerType__bool,

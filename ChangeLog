@@ -1,3 +1,143 @@
+2008-04-11 13:04 +0000 [r8083-8084]  robert:
+
+	* Added reference to osgstereomatch example to
+	  osgmultiplerendertargets. Added usage example use
+	  OpenSceneGraph-Data/Images examples
+
+	* From Sherman Wilcox, "Here is a patch for cmakelists.txt to add
+	  support for the /MP option in Microsoft compilers as discussed in
+	  osg-users. There is now an advanced option called WIN32_USE_MP
+	  (which defaults to OFF) that will enable the /MP switch for all
+	  builds. I tucked this code block safely within a IF(WIN32)
+	  branch."
+
+2008-04-11 11:58 +0000 [r8082]  robert:
+
+	* From Jose Delport, a MRT example implementing stereo matching.
+
+2008-04-11 11:19 +0000 [r8080]  robert:
+
+	* Updated wrappers
+
+2008-04-11 11:10 +0000 [r8079]  robert:
+
+	* From Melchior Franz, "The GUIEventAdapter header file had
+	  KeySymbols for the super and hyper keys defined already, but
+	  these modifiers were missing in GUIEventAdapter::ModKeyMask, and
+	  the EventQueue ingored them as well. The attached diff/archive
+	  adds the missing parts for Super/Hyper modifier key support. I'm
+	  aware that this might not be supported on all systems/keyboards
+	  out of the box, but decided to submit it anyway because: -
+	  developers are aware of differences between input devices (Some
+	  mice have scroll wheels, others don't. Some have five or more
+	  buttons, some have only one. Some keyboards don't have numpads,
+	  some have AltGr, some don't etc.) - even if someone relies on
+	  Hyper/Super in distributed software, this is easy to fix and
+	  doesn't create lock-in conditions - while the names Hyper/Super
+	  may only be common on X11, they are just symbol names and not
+	  OS-specific - even though some systems might not offer these
+	  additional modifiers by default, it's likely that all of them
+	  have at least 8 modifier levels internally, so it should only be
+	  a matter of OS configuration to make them work - having
+	  super/hyper available is useful to offer a user ways to define
+	  local key definitions that are safe from collisions with
+	  predefined "official" key assignments"
+
+2008-04-11 10:58 +0000 [r8078]  robert:
+
+	* From Sherman Wilcox, "Modified the cmakelists.txt file for the
+	  curl plugin so the proper linker directories are set in Win32.
+	  The old cmakelists.txt would set the lib release folder for debug
+	  builds as well. This should correct that."
+
+2008-04-11 10:31 +0000 [r8076-8077]  robert:
+
+	* From Colin McDonald, fixed typo.
+
+	* From Benoit Laniel, "I use mingw to cross-compile openscenegraph
+	  to win32. However, linux filesystem is case-sensitive. Here are
+	  the modifications needed to make the compiler happy. These are
+	  only some include lines rewritten (Io.h to io.h, Windows.h to
+	  windows.h etc.) for version 2.3.7."
+
+2008-04-11 10:16 +0000 [r8074]  robert:
+
+	* From Bob Kuehne, "1) add simplifier command "--simplifier .5" to
+	  reduce complexity 2) complementarily add a "--overallNormal" to
+	  replace per-vert/per-facet normals with an overall. simplifier
+	  doesn't work in certain cases without less complex normals. this
+	  gets that done. 3) add env var output with full verbose output so
+	  people realize it's active when the app is run - i see this all
+	  the time in training where people run osgconv, with unintended
+	  data transformations due to osgUtil:;Optimzer, for example"
+
+2008-04-11 10:10 +0000 [r8073]  robert:
+
+	* Added --mouse option to enable mouse tracking, and fixed bug in
+	  assumption that nv is not null.
+
+2008-04-03 18:36 +0000 [r8038]  robert:
+
+	* Introduced CMake build option for compiling double or float
+	  versions of osg::BoundingSphere and osg::BoundingBox. Introduced
+	  code in BoundgingSphere, BoundingBox, ProxyNode and LOD to
+	  utilise the above settings. Added Matrix::value_type,
+	  Plane::value_type, BoundingSphere::value_type and
+	  BoundingBox::value_type command line options that report where
+	  the types of floats or doubles.
+
+2008-04-03 18:06 +0000 [r8037]  robert:
+
+	* From Colin McDonald, "The X11WindowingSystemInterface in
+	  osgViewer/GraphicsWindowX11.cpp unconditionally sets the X11
+	  error handler routine, replacing anything that was previously
+	  set. This is a bit unfriendly, as the X11 error handler is a
+	  global attribute which the application, or the GUI toolkit being
+	  used, may well have set itself. So I have modified
+	  X11WindowingSystemInterface to only replace the error handler if
+	  it is the default i.e. if the application has not set it."
+
+2008-04-03 10:26 +0000 [r8033]  robert:
+
+	* From Mattias Helsing, "While using the dds plugin (via osgdem) it
+	  was able to write 24bit images with BGR order but not read them.
+	  My 2-liner fixed it for me but it may be that someone with more
+	  knowledge of the plugin want to insert more pixel formats in the
+	  reading part of the plugin."
+
+2008-04-02 17:08 +0000 [r8032]  robert:
+
+	* From Jose Delport, added support for MRT via glDrawBuffers
+
+2008-04-02 13:57 +0000 [r8030-8031]  robert:
+
+	* From Mattias Helsing, "Subject: osga reading slash mismatch
+	  requests for files in a archive are made with unix style paths.
+	  So to be able to match an entry in map(_indexMap) it's keys needs
+	  to be stored in unix style even on Win32" Note from Robert
+	  Osfied, simplified this submission so that the added conversion
+	  to unix slahes is done on all platforms as this should be safe
+	  and simpler to maintain.
+
+	* Updated to reflect new COLOR_BUFFER0 value
+
+2008-04-02 13:48 +0000 [r8028-8029]  robert:
+
+	* From Jose Delport, introduced osgmultiplerendertargets example
+
+	* Changed the Camera::BufferComponent::COLOR_BUFFER0 from being
+	  equal to COLOR_BUFFER to being COLOR_BUFFER+1 to enable
+	  differentation between non MRT and MRT paths.
+
+2008-04-02 11:28 +0000 [r8027]  robert:
+
+	* From Jose Delport, typo fixes
+
+2008-04-01 17:22 +0000 [r8025]  robert:
+
+	* Updated ChangeLog, osgversion and AUTHOR.txt for 2.3.7 dev
+	  release
+
 2008-04-01 14:52 +0000 [r8024]  robert:
 
 	* Removed svn:externals property

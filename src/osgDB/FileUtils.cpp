@@ -16,9 +16,9 @@
 // for now, the above include is commented out, and the below code takes precedence.
 
 #if defined(WIN32) && !defined(__CYGWIN__)
-    #include <Io.h>
-    #include <Windows.h>
-    #include <Winbase.h>
+    #include <io.h>
+    #include <windows.h>
+    #include <winbase.h>
     #include <sys/types.h>
     #include <sys/stat.h>
     #include <direct.h> // for _mkdir

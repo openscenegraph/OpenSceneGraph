@@ -18,7 +18,7 @@
 #define __FLTEXP_MATERIAL_PALETTE_MANAGER_H__ 1
 
 #include "ExportOptions.h"
-#include <set>
+#include <map>
 
 namespace osg {
     class Material;

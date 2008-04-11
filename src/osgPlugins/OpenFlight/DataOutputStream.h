@@ -55,7 +55,6 @@ public:
     void writeString( const std::string& val, int size, char fill='\0' );
 
     void writeID( const std::string& val );
-    void writeColor32( const osg::Vec4f& val );
     void writeVec2f( const osg::Vec2f& val );
     void writeVec3f( const osg::Vec3f& val );
     void writeVec4f( const osg::Vec4f& val );

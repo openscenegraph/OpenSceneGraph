@@ -140,15 +140,6 @@ DataOutputStream::writeID( const std::string& val )
 
 
 void
-DataOutputStream::writeColor32( const osg::Vec4f& val )
-{
-    writeUInt8( val.a() );
-    writeUInt8( val.b() );
-    writeUInt8( val.g() );
-    writeUInt8( val.r() );
-}
-
-void
 DataOutputStream::writeVec2f( const osg::Vec2f& val )
 {
     writeFloat32( val.x() );

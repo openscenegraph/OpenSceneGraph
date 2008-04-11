@@ -99,6 +99,18 @@ void EventQueue::penPressure(float pressure, double time)
     addEvent(event);
 }
 
+void EventQueue::penOrientation(float tiltX, float tiltY, float rotation, double time)
+{
+    GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
+    event->setEventType(GUIEventAdapter::PEN_ORIENTATION);
+    event->setPenTiltX(tiltX);
+    event->setPenTiltY(tiltY);
+    event->setPenRotation(rotation);
+    event->setTime(time);
+    
+    addEvent(event);
+}
+
 void EventQueue::penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering, double time)
 {
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);

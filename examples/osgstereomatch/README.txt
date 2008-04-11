@@ -4,14 +4,20 @@ A simple algorithm is implemented in both a single- and multi-pass way to show t
 
 The normal osgviewer is used for display and one can obtain the time spent on the GPU by pressing the "s" key twice.
 
-The sample data was downloaded from the Middlebury Stereo Vision Page at http://vision.middlebury.edu/stereo/
 
 Usage examples:
 ---------------
 
-osgstereomatch --left tsukubaL.png --right tsukubaR.png --min 0 --max 15 --window 5
-osgstereomatch --left tsukubaL.png --right tsukubaR.png --min 0 --max 15 --window 5 --single
-osgstereomatch --left teddyL.png --right teddyR.png --min 10 --max 57 --window 7
+Using sample data in OpenSceneGraph-Data distribution:
+
+  osgstereomatch --left Images/dog_left_eye.jpg --right Images/dog_right_eye.jpg --min 0 --max 31 --window 9
+  osgstereomatch --left Images/dog_left_eye.jpg --right Images/dog_right_eye.jpg --min 0 --max 31 --window 9 --single
+
+Using sample data available from the Middlebury Stereo Vision Page at http://vision.middlebury.edu/stereo/ :
+
+  osgstereomatch --left tsukubaL.png --right tsukubaR.png --min 0 --max 15 --window 5
+  osgstereomatch --left tsukubaL.png --right tsukubaR.png --min 0 --max 15 --window 5 --single
+  osgstereomatch --left teddyL.png --right teddyR.png --min 10 --max 57 --window 7
 
 
 Algorithm and implementation details:

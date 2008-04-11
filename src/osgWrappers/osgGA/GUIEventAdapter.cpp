@@ -186,12 +186,18 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::ModKeyMask)
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_RIGHT_ALT);
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_LEFT_META);
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_RIGHT_META);
+	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_LEFT_SUPER);
+	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_RIGHT_SUPER);
+	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_LEFT_HYPER);
+	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_RIGHT_HYPER);
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_NUM_LOCK);
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK);
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_CTRL);
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_SHIFT);
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_ALT);
 	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_META);
+	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_SUPER);
+	I_EnumLabel(osgGA::GUIEventAdapter::MODKEY_HYPER);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::MouseYOrientation)

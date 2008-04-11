@@ -16,7 +16,6 @@
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/Vec3>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -25,6 +24,10 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+TYPE_NAME_ALIAS(osg::BoundingSphere::vec_type, osg::LOD::vec_type)
+
+TYPE_NAME_ALIAS(osg::BoundingSphere::value_type, osg::LOD::value_type)
 
 TYPE_NAME_ALIAS(std::pair< float COMMA  float >, osg::LOD::MinMaxPair)
 
@@ -112,24 +115,24 @@ BEGIN_OBJECT_REFLECTOR(osg::LOD)
 	          __CenterMode__getCenterMode,
 	          "Get how the center of object should be determined when computing which child is active. ",
 	          "");
-	I_Method1(void, setCenter, IN, const osg::Vec3 &, center,
+	I_Method1(void, setCenter, IN, const osg::LOD::vec_type &, center,
 	          Properties::NON_VIRTUAL,
-	          __void__setCenter__C5_Vec3_R1,
+	          __void__setCenter__C5_vec_type_R1,
 	          "Sets the object-space point which defines the center of the osg::LOD. ",
 	          "center is affected by any transforms in the hierarchy above the osg::LOD. ");
-	I_Method0(const osg::Vec3 &, getCenter,
+	I_Method0(const osg::LOD::vec_type &, getCenter,
 	          Properties::NON_VIRTUAL,
-	          __C5_Vec3_R1__getCenter,
+	          __C5_vec_type_R1__getCenter,
 	          "return the LOD center point. ",
 	          "");
-	I_Method1(void, setRadius, IN, float, radius,
+	I_Method1(void, setRadius, IN, osg::LOD::value_type, radius,
 	          Properties::NON_VIRTUAL,
-	          __void__setRadius__float,
+	          __void__setRadius__value_type,
 	          "Set the object-space reference radius of the volume enclosed by the LOD. ",
 	          "Used to determine the bounding sphere of the LOD in the absence of any children. ");
-	I_Method0(float, getRadius,
+	I_Method0(osg::LOD::value_type, getRadius,
 	          Properties::NON_VIRTUAL,
-	          __float__getRadius,
+	          __value_type__getRadius,
 	          "Get the object-space radius of the volume enclosed by the LOD. ",
 	          "");
 	I_Method1(void, setRangeMode, IN, osg::LOD::RangeMode, mode,
@@ -177,15 +180,15 @@ BEGIN_OBJECT_REFLECTOR(osg::LOD)
 	          __BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
 	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
-	I_SimpleProperty(const osg::Vec3 &, Center, 
-	                 __C5_Vec3_R1__getCenter, 
-	                 __void__setCenter__C5_Vec3_R1);
+	I_SimpleProperty(const osg::LOD::vec_type &, Center, 
+	                 __C5_vec_type_R1__getCenter, 
+	                 __void__setCenter__C5_vec_type_R1);
 	I_SimpleProperty(osg::LOD::CenterMode, CenterMode, 
 	                 __CenterMode__getCenterMode, 
 	                 __void__setCenterMode__CenterMode);
-	I_SimpleProperty(float, Radius, 
-	                 __float__getRadius, 
-	                 __void__setRadius__float);
+	I_SimpleProperty(osg::LOD::value_type, Radius, 
+	                 __value_type__getRadius, 
+	                 __void__setRadius__value_type);
 	I_SimpleProperty(const osg::LOD::RangeList &, RangeList, 
 	                 __C5_RangeList_R1__getRangeList, 
 	                 __void__setRangeList__C5_RangeList_R1);

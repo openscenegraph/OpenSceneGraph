@@ -864,6 +864,20 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
             getEventQueue()->penProximity(pointerType, (theTabletRecord.enterProximity != 0));
         }
 
+        // get tilt and rotation from the pen
+        TabletPointRec theTabletPointRecord;
+        if(noErr == GetEventParameter(theEvent,  kEventParamTabletPointRec, typeTabletPointRec, NULL, 
+                sizeof(TabletPointRec), NULL, (void *)&theTabletPointRecord)) 
+        {
+            int penRotation = (int)theTabletPointRecord.rotation * 9 / 575; //to get angle between 0 to 360 grad
+            penRotation = -(((penRotation + 180) % 360) - 180) ;          //for same range on all plattforms we need -180 to 180
+            getEventQueue()->penOrientation (
+                    theTabletPointRecord.tiltX * 60 / 32767.0f,  //multiply with 60 to get angle between -60 to 60 grad
+                    -theTabletPointRecord.tiltY * 60 / 32767.0f,  //multiply with 60 to get angle between -60 to 60 grad
+                    penRotation
+            );
+        }
+            
         switch(GetEventKind(theEvent))
         {
             case kEventMouseDown:

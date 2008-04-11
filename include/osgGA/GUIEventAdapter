@@ -15,6 +15,7 @@
 #define OSGGA_EVENT 1 
 
 #include <osg/Object>
+#include <osg/Matrix>
 #include <osgGA/Export>
 
 namespace osgGA{
@@ -45,11 +46,12 @@ public:
             RESIZE=256,
             SCROLL=512,
             PEN_PRESSURE=1024,
-            PEN_PROXIMITY_ENTER=2048,
-            PEN_PROXIMITY_LEAVE=4096,
-            CLOSE_WINDOW=8192,
-            QUIT_APPLICATION=16384,
-            USER=32768
+            PEN_ORIENTATION=2048,
+            PEN_PROXIMITY_ENTER=4096,
+            PEN_PROXIMITY_LEAVE=8192,
+            CLOSE_WINDOW=16384,
+            QUIT_APPLICATION=32768,
+            USER=65536
         };
 
         enum KeySymbol
@@ -360,6 +362,20 @@ public:
         float getPenPressure()  const { return _pressure; }
         /// sets the pressure from a tablet
         void setPenPressure(float pressure) { _pressure = pressure; }
+        /// get the tiltX, from a tablet input device (range -1 - 1)
+        float getPenTiltX()  const { return _tiltX; }
+        /// sets the tiltX from a tablet
+        void setPenTiltX(float tiltX) { _tiltX = tiltX; }
+        /// get the tiltY, from a tablet input device (range -1 - 1)
+        float getPenTiltY()  const { return _tiltY; }
+        /// sets the tiltY from a tablet
+        void setPenTiltY(float tiltY) { _tiltY = tiltY; }
+        /// get the rotation, from a tablet input device (range 0 - 2PI)
+        float getPenRotation()  const { return _rotation; }
+        /// sets the rotation from a tablet
+        void setPenRotation(float rotation) { _rotation = rotation; }
+        /// get the orientation from a tablet input device as a matrix
+        const osg::Matrix getPenOrientation() const;
         /// get the current used tablet pointer type
         TabletPointerType getTabletPointerType() const { return _tabletPointerType; }
         /// set the current used tablet pointer type
@@ -424,6 +440,9 @@ public:
         float _mx;
         float _my;
         float _pressure;
+        float _tiltX;
+        float _tiltY;
+        float _rotation;
         unsigned int _buttonMask;
         unsigned int _modKeyMask;
         ScrollingMotion _scrollingMotion;

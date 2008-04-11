@@ -89,8 +89,13 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         
         /** Method for adapting pen pressure events, placing this event on the back of the event queue, with specified time.*/
         void penPressure(float pressure, double time);
-        
 
+        /** Method for adapting pen orientation events, placing this event on the back of the event queue.*/
+        void penOrientation(float tiltX, float tiltY, float rotation) { penOrientation(tiltX, tiltY, rotation, getTime()); }
+
+        /** Method for adapting pen orientation events, placing this event on the back of the event queue, with specified time.*/
+        void penOrientation(float tiltX, float tiltY, float rotation, double time);
+        
          /** Method for adapting pen proximity events, placing this event on the back of the event queue.*/
         void penProximity(GUIEventAdapter::TabletPointerType pt, bool isEntering) { penProximity(pt, isEntering, getTime()); }
 

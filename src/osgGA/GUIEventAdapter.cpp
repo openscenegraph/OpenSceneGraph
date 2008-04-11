@@ -39,6 +39,9 @@ GUIEventAdapter::GUIEventAdapter():
     _mx(0.5),
     _my(0.5),
     _pressure(0.0),
+    _tiltX(0.0),
+    _tiltY(0.0),
+    _rotation(0.0),
     _buttonMask(0),
     _modKeyMask(0),
     _scrollingMotion(SCROLL_NONE),
@@ -66,6 +69,9 @@ GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs,const osg::CopyOp& c
     _mx(rhs._mx),
     _my(rhs._my),
     _pressure(rhs._pressure),
+    _tiltX(rhs._tiltX),
+    _tiltY(rhs._tiltY),
+    _rotation(rhs._rotation),
     _buttonMask(rhs._buttonMask),
     _modKeyMask(rhs._modKeyMask),
     _scrollingMotion(rhs._scrollingMotion),
@@ -99,4 +105,16 @@ void GUIEventAdapter::setInputRange(float Xmin, float Ymin, float Xmax, float Ym
     _Ymin = Ymin;
     _Xmax = Xmax;
     _Ymax = Ymax;
+}
+
+const osg::Matrix GUIEventAdapter::getPenOrientation() const
+{
+    float xRad = osg::DegreesToRadians ( getPenTiltY() );
+    float yRad = osg::DegreesToRadians ( getPenTiltX() );
+    float zRad = osg::DegreesToRadians ( getPenRotation() );
+    osg::Matrix xrot = osg::Matrix::rotate ( xRad, osg::Vec3f(1.0f, 0.0f, 0.0f) );
+    osg::Matrix yrot = osg::Matrix::rotate ( yRad, osg::Vec3f(0.0f, 0.0f, 1.0f) );
+    osg::Matrix zrot = osg::Matrix::rotate ( zRad, osg::Vec3f(0.0f, 1.0f, 0.0f) );
+    
+    return ( zrot * yrot * xrot );
 }

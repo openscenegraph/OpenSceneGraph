@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/Matrix>
 #include <osg/Object>
 #include <osgGA/GUIEventAdapter>
 
@@ -43,6 +44,7 @@ BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::EventType)
 	I_EnumLabel(osgGA::GUIEventAdapter::RESIZE);
 	I_EnumLabel(osgGA::GUIEventAdapter::SCROLL);
 	I_EnumLabel(osgGA::GUIEventAdapter::PEN_PRESSURE);
+	I_EnumLabel(osgGA::GUIEventAdapter::PEN_ORIENTATION);
 	I_EnumLabel(osgGA::GUIEventAdapter::PEN_PROXIMITY_ENTER);
 	I_EnumLabel(osgGA::GUIEventAdapter::PEN_PROXIMITY_LEAVE);
 	I_EnumLabel(osgGA::GUIEventAdapter::CLOSE_WINDOW);
@@ -414,6 +416,41 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	          __void__setPenPressure__float,
 	          "sets the pressure from a tablet ",
 	          "");
+	I_Method0(float, getPenTiltX,
+	          Properties::NON_VIRTUAL,
+	          __float__getPenTiltX,
+	          "get the tiltX, from a tablet input device (range -1 - 1) ",
+	          "");
+	I_Method1(void, setPenTiltX, IN, float, tiltX,
+	          Properties::NON_VIRTUAL,
+	          __void__setPenTiltX__float,
+	          "sets the tiltX from a tablet ",
+	          "");
+	I_Method0(float, getPenTiltY,
+	          Properties::NON_VIRTUAL,
+	          __float__getPenTiltY,
+	          "get the tiltY, from a tablet input device (range -1 - 1) ",
+	          "");
+	I_Method1(void, setPenTiltY, IN, float, tiltY,
+	          Properties::NON_VIRTUAL,
+	          __void__setPenTiltY__float,
+	          "sets the tiltY from a tablet ",
+	          "");
+	I_Method0(float, getPenRotation,
+	          Properties::NON_VIRTUAL,
+	          __float__getPenRotation,
+	          "get the rotation, from a tablet input device (range 0 - 2PI) ",
+	          "");
+	I_Method1(void, setPenRotation, IN, float, rotation,
+	          Properties::NON_VIRTUAL,
+	          __void__setPenRotation__float,
+	          "sets the rotation from a tablet ",
+	          "");
+	I_Method0(const osg::Matrix, getPenOrientation,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix__getPenOrientation,
+	          "get the orientation from a tablet input device as a matrix ",
+	          "");
 	I_Method0(osgGA::GUIEventAdapter::TabletPointerType, getTabletPointerType,
 	          Properties::NON_VIRTUAL,
 	          __TabletPointerType__getTabletPointerType,
@@ -494,9 +531,21 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_SimpleProperty(osgGA::GUIEventAdapter::MouseYOrientation, MouseYOrientation, 
 	                 __MouseYOrientation__getMouseYOrientation, 
 	                 __void__setMouseYOrientation__MouseYOrientation);
+	I_SimpleProperty(const osg::Matrix, PenOrientation, 
+	                 __C5_osg_Matrix__getPenOrientation, 
+	                 0);
 	I_SimpleProperty(float, PenPressure, 
 	                 __float__getPenPressure, 
 	                 __void__setPenPressure__float);
+	I_SimpleProperty(float, PenRotation, 
+	                 __float__getPenRotation, 
+	                 __void__setPenRotation__float);
+	I_SimpleProperty(float, PenTiltX, 
+	                 __float__getPenTiltX, 
+	                 __void__setPenTiltX__float);
+	I_SimpleProperty(float, PenTiltY, 
+	                 __float__getPenTiltY, 
+	                 __void__setPenTiltY__float);
 	I_SimpleProperty(float, ScrollingDeltaX, 
 	                 __float__getScrollingDeltaX, 
 	                 0);

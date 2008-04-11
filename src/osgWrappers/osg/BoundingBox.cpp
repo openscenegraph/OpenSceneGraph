@@ -12,7 +12,6 @@
 
 #include <osg/BoundingBox>
 #include <osg/BoundingSphere>
-#include <osg/Vec3>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -22,17 +21,21 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(osg::Vec3f, osg::BoundingBox::vec_type)
+
+TYPE_NAME_ALIAS(float, osg::BoundingBox::value_type)
+
 BEGIN_VALUE_REFLECTOR(osg::BoundingBox)
 	I_DeclaringFile("osg/BoundingBox");
 	I_Constructor0(____BoundingBox,
 	               "Creates an uninitialized bounding box. ",
 	               "");
-	I_Constructor6(IN, float, xmin, IN, float, ymin, IN, float, zmin, IN, float, xmax, IN, float, ymax, IN, float, zmax,
-	               ____BoundingBox__float__float__float__float__float__float,
+	I_Constructor6(IN, osg::BoundingBox::value_type, xmin, IN, osg::BoundingBox::value_type, ymin, IN, osg::BoundingBox::value_type, zmin, IN, osg::BoundingBox::value_type, xmax, IN, osg::BoundingBox::value_type, ymax, IN, osg::BoundingBox::value_type, zmax,
+	               ____BoundingBox__value_type__value_type__value_type__value_type__value_type__value_type,
 	               "Creates a bounding box initialized to the given extents. ",
 	               "");
-	I_Constructor2(IN, const osg::Vec3 &, min, IN, const osg::Vec3 &, max,
-	               ____BoundingBox__C5_Vec3_R1__C5_Vec3_R1,
+	I_Constructor2(IN, const osg::BoundingBox::vec_type &, min, IN, const osg::BoundingBox::vec_type &, max,
+	               ____BoundingBox__C5_vec_type_R1__C5_vec_type_R1,
 	               "Creates a bounding box initialized to the given extents. ",
 	               "");
 	I_Method0(void, init,
@@ -45,104 +48,104 @@ BEGIN_VALUE_REFLECTOR(osg::BoundingBox)
 	          __bool__valid,
 	          "Returns true if the bounding box extents are valid, false otherwise. ",
 	          "");
-	I_Method6(void, set, IN, float, xmin, IN, float, ymin, IN, float, zmin, IN, float, xmax, IN, float, ymax, IN, float, zmax,
+	I_Method6(void, set, IN, osg::BoundingBox::value_type, xmin, IN, osg::BoundingBox::value_type, ymin, IN, osg::BoundingBox::value_type, zmin, IN, osg::BoundingBox::value_type, xmax, IN, osg::BoundingBox::value_type, ymax, IN, osg::BoundingBox::value_type, zmax,
 	          Properties::NON_VIRTUAL,
-	          __void__set__float__float__float__float__float__float,
+	          __void__set__value_type__value_type__value_type__value_type__value_type__value_type,
 	          "Sets the bounding box extents. ",
 	          "");
-	I_Method2(void, set, IN, const osg::Vec3 &, min, IN, const osg::Vec3 &, max,
+	I_Method2(void, set, IN, const osg::BoundingBox::vec_type &, min, IN, const osg::BoundingBox::vec_type &, max,
 	          Properties::NON_VIRTUAL,
-	          __void__set__C5_Vec3_R1__C5_Vec3_R1,
+	          __void__set__C5_vec_type_R1__C5_vec_type_R1,
 	          "Sets the bounding box extents. ",
 	          "");
-	I_Method0(float &, xMin,
+	I_Method0(osg::BoundingBox::value_type &, xMin,
 	          Properties::NON_VIRTUAL,
-	          __float_R1__xMin,
+	          __value_type_R1__xMin,
 	          "",
 	          "");
-	I_Method0(float, xMin,
+	I_Method0(osg::BoundingBox::value_type, xMin,
 	          Properties::NON_VIRTUAL,
-	          __float__xMin,
+	          __value_type__xMin,
 	          "",
 	          "");
-	I_Method0(float &, yMin,
+	I_Method0(osg::BoundingBox::value_type &, yMin,
 	          Properties::NON_VIRTUAL,
-	          __float_R1__yMin,
+	          __value_type_R1__yMin,
 	          "",
 	          "");
-	I_Method0(float, yMin,
+	I_Method0(osg::BoundingBox::value_type, yMin,
 	          Properties::NON_VIRTUAL,
-	          __float__yMin,
+	          __value_type__yMin,
 	          "",
 	          "");
-	I_Method0(float &, zMin,
+	I_Method0(osg::BoundingBox::value_type &, zMin,
 	          Properties::NON_VIRTUAL,
-	          __float_R1__zMin,
+	          __value_type_R1__zMin,
 	          "",
 	          "");
-	I_Method0(float, zMin,
+	I_Method0(osg::BoundingBox::value_type, zMin,
 	          Properties::NON_VIRTUAL,
-	          __float__zMin,
+	          __value_type__zMin,
 	          "",
 	          "");
-	I_Method0(float &, xMax,
+	I_Method0(osg::BoundingBox::value_type &, xMax,
 	          Properties::NON_VIRTUAL,
-	          __float_R1__xMax,
+	          __value_type_R1__xMax,
 	          "",
 	          "");
-	I_Method0(float, xMax,
+	I_Method0(osg::BoundingBox::value_type, xMax,
 	          Properties::NON_VIRTUAL,
-	          __float__xMax,
+	          __value_type__xMax,
 	          "",
 	          "");
-	I_Method0(float &, yMax,
+	I_Method0(osg::BoundingBox::value_type &, yMax,
 	          Properties::NON_VIRTUAL,
-	          __float_R1__yMax,
+	          __value_type_R1__yMax,
 	          "",
 	          "");
-	I_Method0(float, yMax,
+	I_Method0(osg::BoundingBox::value_type, yMax,
 	          Properties::NON_VIRTUAL,
-	          __float__yMax,
+	          __value_type__yMax,
 	          "",
 	          "");
-	I_Method0(float &, zMax,
+	I_Method0(osg::BoundingBox::value_type &, zMax,
 	          Properties::NON_VIRTUAL,
-	          __float_R1__zMax,
+	          __value_type_R1__zMax,
 	          "",
 	          "");
-	I_Method0(float, zMax,
+	I_Method0(osg::BoundingBox::value_type, zMax,
 	          Properties::NON_VIRTUAL,
-	          __float__zMax,
+	          __value_type__zMax,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3, center,
+	I_Method0(const osg::BoundingBox::vec_type, center,
 	          Properties::NON_VIRTUAL,
-	          __C5_Vec3__center,
+	          __C5_vec_type__center,
 	          "Calculates and returns the bounding box center. ",
 	          "");
-	I_Method0(float, radius,
+	I_Method0(osg::BoundingBox::value_type, radius,
 	          Properties::NON_VIRTUAL,
-	          __float__radius,
+	          __value_type__radius,
 	          "Calculates and returns the bounding box radius. ",
 	          "");
-	I_Method0(float, radius2,
+	I_Method0(osg::BoundingBox::value_type, radius2,
 	          Properties::NON_VIRTUAL,
-	          __float__radius2,
+	          __value_type__radius2,
 	          "Calculates and returns the squared length of the bounding box radius. ",
 	          "Note, radius2() is faster to calculate than radius(). ");
-	I_Method1(const osg::Vec3, corner, IN, unsigned int, pos,
+	I_Method1(const osg::BoundingBox::vec_type, corner, IN, unsigned int, pos,
 	          Properties::NON_VIRTUAL,
-	          __C5_Vec3__corner__unsigned_int,
+	          __C5_vec_type__corner__unsigned_int,
 	          "Returns a specific corner of the bounding box. ",
 	          "pos specifies the corner as a number between 0 and 7. Each bit selects an axis, X, Y, or Z from least- to most-significant. Unset bits select the minimum value for that axis, and set bits select the maximum. ");
-	I_Method1(void, expandBy, IN, const osg::Vec3 &, v,
+	I_Method1(void, expandBy, IN, const osg::BoundingBox::vec_type &, v,
 	          Properties::NON_VIRTUAL,
-	          __void__expandBy__C5_Vec3_R1,
+	          __void__expandBy__C5_vec_type_R1,
 	          "Expands the bounding box to include the given coordinate. ",
 	          "If the box is uninitialized, set its min and max extents to v. ");
-	I_Method3(void, expandBy, IN, float, x, IN, float, y, IN, float, z,
+	I_Method3(void, expandBy, IN, osg::BoundingBox::value_type, x, IN, osg::BoundingBox::value_type, y, IN, osg::BoundingBox::value_type, z,
 	          Properties::NON_VIRTUAL,
-	          __void__expandBy__float__float__float,
+	          __void__expandBy__value_type__value_type__value_type,
 	          "Expands the bounding box to include the given coordinate. ",
 	          "If the box is uninitialized, set its min and max extents to Vec3(x,y,z). ");
 	I_Method1(void, expandBy, IN, const osg::BoundingBox &, bb,
@@ -165,12 +168,12 @@ BEGIN_VALUE_REFLECTOR(osg::BoundingBox)
 	          __bool__intersects__C5_BoundingBox_R1,
 	          "Return true if this bounding box intersects the specified bounding box. ",
 	          "");
-	I_Method1(bool, contains, IN, const osg::Vec3 &, v,
+	I_Method1(bool, contains, IN, const osg::BoundingBox::vec_type &, v,
 	          Properties::NON_VIRTUAL,
-	          __bool__contains__C5_Vec3_R1,
+	          __bool__contains__C5_vec_type_R1,
 	          "Returns true if this bounding box contains the specified coordinate. ",
 	          "");
-	I_PublicMemberProperty(osg::Vec3, _min);
-	I_PublicMemberProperty(osg::Vec3, _max);
+	I_PublicMemberProperty(osg::BoundingBox::vec_type, _min);
+	I_PublicMemberProperty(osg::BoundingBox::vec_type, _max);
 END_REFLECTOR
 

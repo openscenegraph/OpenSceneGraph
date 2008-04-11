@@ -26,6 +26,10 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(osg::BoundingSphere::vec_type, osg::ProxyNode::vec_type)
+
+TYPE_NAME_ALIAS(osg::BoundingSphere::value_type, osg::ProxyNode::value_type)
+
 TYPE_NAME_ALIAS(std::vector< std::string >, osg::ProxyNode::FileNameList)
 
 BEGIN_ENUM_REFLECTOR(osg::ProxyNode::CenterMode)
@@ -151,19 +155,19 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	          __void__setCenter__C5_Vec3_R1,
 	          "Sets the object-space point which defines the center of the osg::ProxyNode. ",
 	          "center is affected by any transforms in the hierarchy above the osg::ProxyNode. ");
-	I_Method0(const osg::Vec3 &, getCenter,
+	I_Method0(const osg::ProxyNode::vec_type &, getCenter,
 	          Properties::NON_VIRTUAL,
-	          __C5_Vec3_R1__getCenter,
+	          __C5_vec_type_R1__getCenter,
 	          "return the ProxyNode center point. ",
 	          "");
-	I_Method1(void, setRadius, IN, float, radius,
+	I_Method1(void, setRadius, IN, osg::ProxyNode::value_type, radius,
 	          Properties::NON_VIRTUAL,
-	          __void__setRadius__float,
+	          __void__setRadius__value_type,
 	          "Set the object-space reference radius of the volume enclosed by the ProxyNode. ",
 	          "Used to determine the bounding sphere of the ProxyNode in the absence of any children. ");
-	I_Method0(float, getRadius,
+	I_Method0(osg::ProxyNode::value_type, getRadius,
 	          Properties::NON_VIRTUAL,
-	          __float__getRadius,
+	          __value_type__getRadius,
 	          "Get the object-space radius of the volume enclosed by the ProxyNode. ",
 	          "");
 	I_Method0(osg::BoundingSphere, computeBound,
@@ -178,7 +182,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	                   "",
 	                   "");
 	I_SimpleProperty(const osg::Vec3 &, Center, 
-	                 __C5_Vec3_R1__getCenter, 
+	                 0, 
 	                 __void__setCenter__C5_Vec3_R1);
 	I_SimpleProperty(osg::ProxyNode::CenterMode, CenterMode, 
 	                 __CenterMode__getCenterMode, 
@@ -196,8 +200,8 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	I_SimpleProperty(osg::ProxyNode::LoadingExternalReferenceMode, LoadingExternalReferenceMode, 
 	                 __LoadingExternalReferenceMode__getLoadingExternalReferenceMode, 
 	                 __void__setLoadingExternalReferenceMode__LoadingExternalReferenceMode);
-	I_SimpleProperty(float, Radius, 
-	                 __float__getRadius, 
-	                 __void__setRadius__float);
+	I_SimpleProperty(osg::ProxyNode::value_type, Radius, 
+	                 __value_type__getRadius, 
+	                 __void__setRadius__value_type);
 END_REFLECTOR
 

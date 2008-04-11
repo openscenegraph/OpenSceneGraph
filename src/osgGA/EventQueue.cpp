@@ -275,6 +275,10 @@ void EventQueue::keyPress(int key, double time)
         case(GUIEventAdapter::KEY_Meta_R):       _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_RIGHT_META | _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Alt_L):        _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_LEFT_ALT | _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Alt_R):        _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_RIGHT_ALT | _accumulateEventState->getModKeyMask()); break;
+        case(GUIEventAdapter::KEY_Super_L):      _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_LEFT_SUPER | _accumulateEventState->getModKeyMask()); break;
+        case(GUIEventAdapter::KEY_Super_R):      _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_RIGHT_SUPER | _accumulateEventState->getModKeyMask()); break;
+        case(GUIEventAdapter::KEY_Hyper_L):      _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_LEFT_HYPER | _accumulateEventState->getModKeyMask()); break;
+        case(GUIEventAdapter::KEY_Hyper_R):      _accumulateEventState->setModKeyMask(GUIEventAdapter::MODKEY_RIGHT_HYPER | _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Caps_Lock):
         {
             if ((_accumulateEventState->getModKeyMask() & GUIEventAdapter::MODKEY_CAPS_LOCK)!=0) 
@@ -314,6 +318,10 @@ void EventQueue::keyRelease(int key, double time)
         case(GUIEventAdapter::KEY_Meta_R):       _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_RIGHT_META & _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Alt_L):        _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_LEFT_ALT & _accumulateEventState->getModKeyMask()); break;
         case(GUIEventAdapter::KEY_Alt_R):        _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_RIGHT_ALT & _accumulateEventState->getModKeyMask()); break;
+        case(GUIEventAdapter::KEY_Super_L):      _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_LEFT_SUPER & _accumulateEventState->getModKeyMask()); break;
+        case(GUIEventAdapter::KEY_Super_R):      _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_RIGHT_SUPER & _accumulateEventState->getModKeyMask()); break;
+        case(GUIEventAdapter::KEY_Hyper_L):      _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_LEFT_HYPER & _accumulateEventState->getModKeyMask()); break;
+        case(GUIEventAdapter::KEY_Hyper_R):      _accumulateEventState->setModKeyMask(~GUIEventAdapter::MODKEY_RIGHT_HYPER & _accumulateEventState->getModKeyMask()); break;
         default: break;
     }        
 

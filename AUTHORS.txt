@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.3.7
+OpenSceneGraph Library 2.3.8
 
-302 Contributors:
+304 Contributors:
 
 Firstname Surname
 -----------------
@@ -30,8 +30,8 @@ Tom Jolley
 Andy Skinner
 Roger James
 Norman Vine
-Alberto Farre
 Colin McDonald
+Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
@@ -45,7 +45,9 @@ Daniel Sjölie
 Chris Hanson
 Per Fahlberg
 Jeremy Moles
+J.P. Delport
 David Spilling
+Sherman Wilcox
 Joran Jessurun
 Art Tevs
 Paul Melis
@@ -55,11 +57,11 @@ David Fries
 Boris Bralo
 Yefei He
 Sondra Iverson
-Sherman Wilcox
 Serge Lages
 Rune Schmidt Jensen
 Rainer Oder
 Mike Connell
+Melchior Franz
 Joakim Simonsson
 Jason Beverage
 Carlo Camporesi
@@ -67,12 +69,10 @@ Ben Discoe
 Andreas Ekstrand
 Adrian Egli
 Sasa Bistrovic
-Melchior Franz
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Loic Dachary
-José Delport
 Joseph Steel
 Jan Peciva
 Jan Ciger
@@ -154,6 +154,7 @@ Nathan Monteleone
 Michael Henheffer
 Maya Leonard
 Max Behensky
+Mattias Helsing
 Mathew May
 Martijn Kragtwijk
 Kevin Moiule
@@ -293,6 +294,7 @@ Brandon Hamm
 Brad Anderegg
 Bora Utka
 Blasius Czink
+Benoit Laniel
 Ben van Basten
 Bart Gallet
 Axel Volley

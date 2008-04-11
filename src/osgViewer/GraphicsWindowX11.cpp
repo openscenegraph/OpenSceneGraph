@@ -1605,7 +1605,7 @@ public:
         if ( _errorHandlerSet )
         {
             X11ErrorHandler currentHandler = XSetErrorHandler(NULL);
-            if ( currentHandler = X11ErrorHandling )
+            if ( currentHandler == X11ErrorHandling )
             {
                 // osg::notify(osg::INFO)<<"osgViewer X11 error handler removed"<<std::endl;
             }

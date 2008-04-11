@@ -743,7 +743,7 @@ FltExportVisitor::writeLightPoint( const osgSim::LightPointNode* lpn )
     }
 
     {
-        osg::ref_ptr< osg::Vec3Array > v = new osg::Vec3Array( lpn->getNumLightPoints() );
+        osg::ref_ptr< osg::Vec3dArray > v = new osg::Vec3dArray( lpn->getNumLightPoints() );
         osg::ref_ptr< osg::Vec4Array > c = new osg::Vec4Array( lpn->getNumLightPoints() );
         osg::ref_ptr< osg::Vec3Array > n = new osg::Vec3Array( lpn->getNumLightPoints() );
         osg::Vec3f normal( 0.f, 0.f, 1.f );
@@ -760,7 +760,7 @@ FltExportVisitor::writeLightPoint( const osgSim::LightPointNode* lpn )
                 normal = ds->getDirection();
             (*n)[ idx ] = normal;
         }
-        _vertexPalette->add( v.get(), c.get(), n.get(), NULL, true, true, false );
+        _vertexPalette->add( (const osg::Array*)NULL, v.get(), c.get(), n.get(), NULL, true, true, false );
     }
 
     writeMatrix( lpn->getUserData() );

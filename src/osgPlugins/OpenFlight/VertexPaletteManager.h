@@ -47,13 +47,23 @@ public:
     ~VertexPaletteManager();
 
     void add( const osg::Geometry& geom );
-    void add( const osg::Vec3Array* v, const osg::Vec4Array* c,
+    void add( const osg::Array* key,
+        const osg::Vec3dArray* v, const osg::Vec4Array* c,
         const osg::Vec3Array* n, const osg::Vec2Array* t,
         bool colorPerVertex, bool normalPerVertex, bool allowSharing=true );
 
     unsigned int byteOffset( unsigned int idx ) const;
 
     void write( DataOutputStream& dos ) const;
+
+    /*!
+       Static utility routines for handling the morass of array
+       types that could be found in a Geometry object's vertex/
+       normal/texcoord/color data. */
+    static osg::ref_ptr< const osg::Vec2Array > asVec2Array( const osg::Array* in, const unsigned int n );
+    static osg::ref_ptr< const osg::Vec3Array > asVec3Array( const osg::Array* in, const unsigned int n );
+    static osg::ref_ptr< const osg::Vec3dArray > asVec3dArray( const osg::Array* in, const unsigned int n );
+    static osg::ref_ptr< const osg::Vec4Array > asVec4Array( const osg::Array* in, const unsigned int n );
 
 protected:
     typedef enum {
@@ -67,7 +77,7 @@ protected:
         const osg::Array* n, const osg::Array* t );
     unsigned int recordSize( PaletteRecordType recType );
 
-    void writeRecords( const osg::Vec3Array* v, const osg::Vec4Array* c,
+    void writeRecords( const osg::Vec3dArray* v, const osg::Vec4Array* c,
         const osg::Vec3Array* n, const osg::Vec2Array* t,
         bool colorPerVertex, bool normalPerVertex );
 

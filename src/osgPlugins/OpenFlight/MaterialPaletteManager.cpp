@@ -77,8 +77,7 @@ MaterialPaletteManager::write( DataOutputStream& dos ) const
         dos.writeInt16( (int16) MATERIAL_PALETTE_OP );
         dos.writeInt16( 84 );            // Length - FIXME: hard-code/FLT version?
         dos.writeInt32( m.Index );
-        std::string fakename = "SOMEFAKENAME";
-        dos.writeString( fakename, 12 ); // Name - FIXME: put a 'real' name here?
+        dos.writeString( std::string( "" ), 12 ); // Name - FIXME: put a 'real' name here?
         dos.writeInt32( 0 );             // Flags
         dos.writeFloat32(ambient.r() );
         dos.writeFloat32(ambient.g() );
@@ -93,7 +92,7 @@ MaterialPaletteManager::write( DataOutputStream& dos ) const
         dos.writeFloat32(emissive.g() );
         dos.writeFloat32(emissive.b() );
         dos.writeFloat32(shininess);
-        dos.writeFloat32(1.0f);       // Alpha - unused
+        dos.writeFloat32( diffuse.a() ); // alpha
         dos.writeFloat32(1.0f);       // 'Reserved' - unused
 
         if (m.Material->getAmbientFrontAndBack()   == false   ||
@@ -103,13 +102,9 @@ MaterialPaletteManager::write( DataOutputStream& dos ) const
             m.Material->getShininessFrontAndBack() == false )
 
         {
-            std::stringstream ss;
-            ss  << "Front and back faces of material \'"
-                << fakename
-                << "\' have different material"
-                << "properties - OpenFlt does not support this..."
-                << std::endl;
-           _fltOpt.getWriteResult().warn( ss.str() );
+            std::string warning( "fltexp: No support for different front and back material properties." );
+            osg::notify( osg::WARN ) << warning << std::endl;
+           _fltOpt.getWriteResult().warn( warning );
         }
 
     }

@@ -562,7 +562,7 @@ FltExportVisitor::writeLocalVertexPool( const osg::Geometry& geom, GLenum mode )
 
     const osg::Array* v = geom.getVertexArray();
     uint32 numVerts( v->getNumElements() );
-    const osg::Vec3Array* v3 = dynamic_cast<const osg::Vec3Array*>( v );
+    osg::ref_ptr< const osg::Vec3dArray > v3 = VertexPaletteManager::asVec3dArray( v, numVerts );
     if (!v3)
     {
         std::string warning( "fltexp: writeLocalVertexPool: VertexArray is not Vec3Array." );
@@ -576,51 +576,36 @@ FltExportVisitor::writeLocalVertexPool( const osg::Geometry& geom, GLenum mode )
     const osg::Array* n = geom.getNormalArray();
     const osg::Array* t = geom.getTexCoordArray( 0 );
 
-    std::vector< const osg::Vec2Array* > mtc;
+    osg::ref_ptr< const osg::Vec4Array > c4 = VertexPaletteManager::asVec4Array( c, numVerts );
+    osg::ref_ptr< const osg::Vec3Array > n3 = VertexPaletteManager::asVec3Array( n, numVerts );
+    osg::ref_ptr< const osg::Vec2Array > t2 = VertexPaletteManager::asVec2Array( t, numVerts );
+    if (c && !c4)
+        return;
+    if (n && !n3)
+        return;
+    if (t && !t2)
+        return;
+
+    std::vector< osg::ref_ptr< const osg::Vec2Array > > mtc;
     mtc.resize( 8 );
     int unit=1;
     for( ;unit<8; unit++)
-        mtc[ unit ] = dynamic_cast<const osg::Vec2Array*>( geom.getTexCoordArray( unit ) );
-
-    const osg::Vec4Array* c4 = dynamic_cast<const osg::Vec4Array*>( c );
-    const osg::Vec3Array* n3 = dynamic_cast<const osg::Vec3Array*>( n );
-    const osg::Vec2Array* t2 = dynamic_cast<const osg::Vec2Array*>( t );
-    if (c && !c4)
-    {
-        std::string warning( "fltexp: writeLocalVertexPool: ColorArray is not Vec4Array." );
-        osg::notify( osg::WARN ) << warning << std::endl;
-        _fltOpt->getWriteResult().warn( warning );
-        return;
-    }
-    if (n && !n3)
-    {
-        std::string warning( "fltexp: writeLocalVertexPool: NormalArray is not Vec3Array." );
-        osg::notify( osg::WARN ) << warning << std::endl;
-        _fltOpt->getWriteResult().warn( warning );
-        return;
-    }
-    if (t && !t2)
-    {
-        std::string warning( "fltexp: writeLocalVertexPool: TexCoordArray is not Vec2Array." );
-        osg::notify( osg::WARN ) << warning << std::endl;
-        _fltOpt->getWriteResult().warn( warning );
-        return;
-    }
+        mtc[ unit ] = VertexPaletteManager::asVec2Array( geom.getTexCoordArray( unit ), numVerts );
 
     uint32 attr( HAS_POSITION );
     unsigned int vertSize( sizeof( float64 ) * 3 );
 
-    if (c4 && ( geom.getColorBinding() == osg::Geometry::BIND_PER_VERTEX) )
+    if ( ( c4 != NULL ) && ( geom.getColorBinding() == osg::Geometry::BIND_PER_VERTEX) )
     {
         attr |= HAS_RGBA_COLOR;
         vertSize += sizeof( unsigned int );
     }
-    if (n3 && ( geom.getNormalBinding() == osg::Geometry::BIND_PER_VERTEX) )
+    if ( ( n3 != NULL ) && ( geom.getNormalBinding() == osg::Geometry::BIND_PER_VERTEX) )
     {
         attr |= HAS_NORMAL;
         vertSize += ( sizeof( float32 ) * 3 );
     }
-    if (t2)
+    if ( t2 != NULL )
     {
         attr |= HAS_BASE_UV;
         vertSize += ( sizeof( float32 ) * 2 );
@@ -676,9 +661,7 @@ FltExportVisitor::writeLocalVertexPool( const osg::Geometry& geom, GLenum mode )
     unsigned int idx;
     for( idx=0; idx<numVerts; idx++ )
     {
-        _records->writeFloat64( (*v3)[ idx ][0] );
-        _records->writeFloat64( (*v3)[ idx ][1] );
-        _records->writeFloat64( (*v3)[ idx ][2] );
+        _records->writeVec3d( (*v3)[ idx ] );
 
         if (attr & HAS_RGBA_COLOR)
         {
@@ -763,10 +746,11 @@ FltExportVisitor::writeMultitexture( const osg::Geometry& geom )
                 _fltOpt->getWriteResult().warn( warning.str() );
             }
 
-            _records->writeUInt16( textureIndex ); // texture index
+            // texture index (this value is an unsigned int, but has a -1 default per oflt spec: ugh)
+            _records->writeUInt16( static_cast< uint16 >( textureIndex ) );
             _records->writeUInt16( 0 ); // TBD effect
              // mapping index (this value is an unsigned int, but has a -1 default per oflt spec: ugh)
-            _records->writeUInt16( static_cast<unsigned short>( -1 ) );
+            _records->writeUInt16( static_cast< uint16 >( -1 ) );
             _records->writeUInt16( 0 ); // data
         }
     }
@@ -894,7 +878,7 @@ FltExportVisitor::handleDrawArrays( const osg::DrawArrays* da, const osg::Geomet
     else
     {
         const unsigned int max( first+count );
-        while (first+n <= max)
+        while ((unsigned int)( first+n ) <= max)
         {
             // Need:
             // * Geode for record name (but also need to handle

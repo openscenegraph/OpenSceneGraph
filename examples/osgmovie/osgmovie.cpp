@@ -144,7 +144,11 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             {
                 osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
                 osgUtil::LineSegmentIntersector::Intersections intersections;
-                if (view && view->computeIntersections(ea.getX(), ea.getY(), nv->getNodePath(), intersections))
+                bool foundIntersection = view==0 ? false :
+                    (nv==0 ? view->computeIntersections(ea.getX(), ea.getY(), intersections) :
+                             view->computeIntersections(ea.getX(), ea.getY(), nv->getNodePath(), intersections));
+                
+                if (foundIntersection)
                 {
 
                     // use the nearest intersection                 
@@ -351,6 +355,10 @@ int main(int argc, char** argv)
     while (arguments.read("--texture2D")) useTextureRectangle=false;
     while (arguments.read("--shader")) useShader=true;
 
+    bool mouseTracking = false;
+    while (arguments.read("--mouse")) mouseTracking=true; 
+
+
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
@@ -444,6 +452,7 @@ int main(int argc, char** argv)
 
     // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
     MovieEventHandler* meh = new MovieEventHandler();
+    meh->setMouseTracking( mouseTracking );
     meh->set( viewer.getSceneData() );
     viewer.addEventHandler( meh );
 

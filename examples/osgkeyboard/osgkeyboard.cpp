@@ -389,6 +389,10 @@ public:
                     PRINT(osgGA::GUIEventAdapter::MODKEY_RIGHT_CTRL);
                     PRINT(osgGA::GUIEventAdapter::MODKEY_LEFT_META);
                     PRINT(osgGA::GUIEventAdapter::MODKEY_RIGHT_META);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_LEFT_SUPER);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_RIGHT_SUPER);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_LEFT_HYPER);
+                    PRINT(osgGA::GUIEventAdapter::MODKEY_RIGHT_HYPER);
                     PRINT(osgGA::GUIEventAdapter::MODKEY_NUM_LOCK);
                     PRINT(osgGA::GUIEventAdapter::MODKEY_CAPS_LOCK);
                     break;

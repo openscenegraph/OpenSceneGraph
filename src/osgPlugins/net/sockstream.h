@@ -48,7 +48,7 @@
 #  define SOCKET_ERROR -1
 #else
 #  include <windows.h>
-#  include <Wininet.h>
+#  include <wininet.h>
 //#  include <errno.h>
 #ifdef _MSC_VER 
 #  pragma comment(lib, "Wininet")

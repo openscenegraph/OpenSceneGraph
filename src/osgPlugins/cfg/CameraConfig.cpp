@@ -16,9 +16,9 @@
 #include <osg/io_utils>
 
 #if defined(WIN32) && !defined(__CYGWIN__)
-    #include <Io.h>
-    #include <Windows.h>
-    #include <Winbase.h>
+    #include <io.h>
+    #include <windows.h>
+    #include <winbase.h>
     // set up for windows so acts just like unix access().
     #define F_OK 4
 #else // unix

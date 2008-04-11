@@ -20,9 +20,9 @@
 #endif
 
 #if defined(WIN32) && !defined(__CYGWIN__)
-#include <Io.h>
-#include <Windows.h>
-#include <Winbase.h>
+#include <io.h>
+#include <windows.h>
+#include <winbase.h>
 #elif defined(__APPLE__) && defined(APPLE_PRE_10_3)
 #include <mach-o/dyld.h>
 #else // all other unix

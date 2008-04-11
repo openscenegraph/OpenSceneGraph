@@ -120,6 +120,14 @@ ENDIF(OSG_GLU_TESS_CALLBACK_TRIPLEDOT)
 
 
 IF(WIN32)
+
+    # This option is to enable the /MP switch for Visual Studio 2005 and above compilers
+    OPTION(WIN32_USE_MP "Set to ON to build OpenSceneGraph with the /MP option (Visual Studio 2005 and above)." OFF)
+    MARK_AS_ADVANCED(WIN32_USE_MP)
+    IF(WIN32_USE_MP)        
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+    ENDIF(WIN32_USE_MP)        
+
     ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
     #needed for net plugin
@@ -458,7 +466,6 @@ IF(APPLE)
     OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" OFF)
     
 ENDIF(APPLE)
-
 
 OPTION(BUILD_REF_DOCS "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
 

@@ -205,7 +205,7 @@ class OSG_EXPORT CullSettings
         osg::Node::NodeMask getCullMaskRight() const { return _cullMaskRight; }
 
         /** Set the LOD bias for the CullVisitor to use.*/
-        void setLODScale(float bias) { _LODScale = bias; applyMaskAction(LOD_SCALE); }
+        void setLODScale(float scale) { _LODScale = scale; applyMaskAction(LOD_SCALE); }
         
         /** Get the LOD bias.*/
         float getLODScale() const { return _LODScale; }

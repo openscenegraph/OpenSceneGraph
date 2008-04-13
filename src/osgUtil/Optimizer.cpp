@@ -2530,6 +2530,18 @@ void Optimizer::SpatializeGroupsVisitor::apply(osg::Group& group)
     traverse(group);
 }
 
+void Optimizer::SpatializeGroupsVisitor::apply(osg::Geode& geode)
+{
+    if (typeid(geode)==typeid(osg::Geode))
+    {
+        if (isOperationPermissibleForObject(&geode))
+        {
+            _geodesToDivideList.insert(&geode);
+        }
+    }
+    traverse(geode);
+}
+
 bool Optimizer::SpatializeGroupsVisitor::divide(unsigned int maxNumTreesPerCell)
 {
     bool divided = false;
@@ -2539,6 +2551,14 @@ bool Optimizer::SpatializeGroupsVisitor::divide(unsigned int maxNumTreesPerCell)
     {
         if (divide(*itr,maxNumTreesPerCell)) divided = true;
     }
+    
+    for(GeodesToDivideList::iterator geode_itr=_geodesToDivideList.begin();
+        geode_itr!=_geodesToDivideList.end();
+        ++geode_itr)
+    {
+        if (divide(*geode_itr,maxNumTreesPerCell)) divided = true;
+    }
+    
     return divided;
 }
 
@@ -2709,6 +2729,62 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
     
 }
 
+bool Optimizer::SpatializeGroupsVisitor::divide(osg::Geode* geode, unsigned int maxNumTreesPerCell)
+{
+
+    if (geode->getNumDrawables()<=maxNumTreesPerCell) return false;
+    
+    // create the original box.
+    osg::BoundingBox bb;
+    unsigned int i;
+    for(i=0; i<geode->getNumDrawables(); ++i)
+    {
+        bb.expandBy(geode->getDrawable(i)->getBound().center());
+    }
+    
+    float radius = bb.radius();
+    float divide_distance = radius*0.7f;
+    bool xAxis = (bb.xMax()-bb.xMin())>divide_distance;
+    bool yAxis = (bb.yMax()-bb.yMin())>divide_distance;
+    bool zAxis = (bb.zMax()-bb.zMin())>divide_distance;
+
+    osg::notify(osg::NOTICE)<<"INFO "<<geode->className()<<"  num drawables = "<<geode->getNumDrawables()<<"  xAxis="<<xAxis<<"  yAxis="<<yAxis<<"   zAxis="<<zAxis<<std::endl;
+    
+    if (!xAxis && !yAxis && !zAxis)
+    {
+        osg::notify(osg::INFO)<<"  No axis to divide, stopping division."<<std::endl;
+        return false;
+    }
+    
+    osg::Node::ParentList parents = geode->getParents();
+    if (parents.empty()) 
+    {
+        osg::notify(osg::INFO)<<"  Cannot perform spatialize on root Geode, add a Group above it to allow subdivision."<<std::endl;
+        return false;
+    }
+
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    for(i=0; i<geode->getNumDrawables(); ++i)
+    {
+        osg::Geode* newGeode = new osg::Geode;
+        newGeode->addDrawable(geode->getDrawable(i));
+        group->addChild(newGeode);
+    }
+    
+    divide(group.get(), maxNumTreesPerCell);
+    
+    // keep reference around to prevent it being deleted.
+    osg::ref_ptr<osg::Geode> keepRefGeode = geode;
+    
+    for(osg::Node::ParentList::iterator itr = parents.begin();
+        itr != parents.end();
+        ++itr)
+    {
+        (*itr)->replaceChild(geode, group.get());
+    }
+    
+    return true;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //

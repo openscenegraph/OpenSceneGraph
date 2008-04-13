@@ -81,6 +81,9 @@ osgmultitexture cessnafire.osg
 echo osgoccluder
 osgoccluder glider.osg
 
+echo osgocclusionquery
+osgocclusionquery
+
 echo osgparticle
 osgparticle
 
@@ -128,6 +131,9 @@ osgshaderterrain
 
 echo osgparametric
 osgparametric
+
+echo osgthirdpersonview
+osgthirdpersonview cow.osg
 
 echo osgviewer glsl_simple.osg
 osgviewer glsl_simple.osg

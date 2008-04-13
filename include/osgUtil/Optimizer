@@ -504,14 +504,18 @@ class OSGUTIL_EXPORT Optimizer
                     BaseOptimizerVisitor(optimizer, SPATIALIZE_GROUPS) {}
                 
                 virtual void apply(osg::Group& group);
+                virtual void apply(osg::Geode& geode);
                 
                 bool divide(unsigned int maxNumTreesPerCell=8);
                 
                 bool divide(osg::Group* group, unsigned int maxNumTreesPerCell);
+                bool divide(osg::Geode* geode, unsigned int maxNumTreesPerCell);
                 
                 typedef std::set<osg::Group*> GroupsToDivideList;
                 GroupsToDivideList _groupsToDivideList;
 
+                typedef std::set<osg::Geode*> GeodesToDivideList;
+                GeodesToDivideList _geodesToDivideList;
         };
 
         /** Copy any shared subgraphs, enabling flattening of static transforms.*/

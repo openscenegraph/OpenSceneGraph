@@ -24,7 +24,9 @@ const double WGS_84_RADIUS_EQUATOR = 6378137.0;
 const double WGS_84_RADIUS_POLAR = 6356752.3142;
 
 /** EllipsoidModel encapsulates the ellipsoid used to model astronomical bodies,
- * such as sun, planets, moon etc. */
+ * such as sun, planets, moon etc. 
+ * All distance quantities (i.e. heights + radius) are in meters,
+ * and latitude and longitude are in radians.*/
 class EllipsoidModel : public Object
 {
     public:

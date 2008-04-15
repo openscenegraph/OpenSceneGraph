@@ -159,6 +159,8 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::FrameBufferAttachment >, osg::FrameBufferObject::AttachmentMap)
 
+TYPE_NAME_ALIAS(std::vector< GLenum >, osg::FrameBufferObject::MultipleRenderingTargets)
+
 BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	I_DeclaringFile("osg/FrameBufferObject");
 	I_BaseType(osg::StateAttribute);
@@ -209,14 +211,24 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	          __bool__hasAttachment__GLenum,
 	          "",
 	          "");
+	I_Method2(void, setAttachment, IN, GLenum, attachment_point, IN, const osg::FrameBufferAttachment &, attachment,
+	          Properties::NON_VIRTUAL,
+	          __void__setAttachment__GLenum__C5_FrameBufferAttachment_R1,
+	          "",
+	          "");
 	I_Method1(const osg::FrameBufferAttachment &, getAttachment, IN, GLenum, attachment_point,
 	          Properties::NON_VIRTUAL,
 	          __C5_FrameBufferAttachment_R1__getAttachment__GLenum,
 	          "",
 	          "");
-	I_Method2(void, setAttachment, IN, GLenum, attachment_point, IN, const osg::FrameBufferAttachment &, attachment,
+	I_Method0(bool, hasMultipleRenderingTargets,
 	          Properties::NON_VIRTUAL,
-	          __void__setAttachment__GLenum__C5_FrameBufferAttachment_R1,
+	          __bool__hasMultipleRenderingTargets,
+	          "",
+	          "");
+	I_Method0(const osg::FrameBufferObject::MultipleRenderingTargets &, getMultipleRenderingTargets,
+	          Properties::NON_VIRTUAL,
+	          __C5_MultipleRenderingTargets_R1__getMultipleRenderingTargets,
 	          "",
 	          "");
 	I_Method1(int, compare, IN, const osg::StateAttribute &, sa,
@@ -253,6 +265,9 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	                  0);
 	I_SimpleProperty(const osg::FrameBufferObject::AttachmentMap &, AttachmentMap, 
 	                 __C5_AttachmentMap_R1__getAttachmentMap, 
+	                 0);
+	I_SimpleProperty(const osg::FrameBufferObject::MultipleRenderingTargets &, MultipleRenderingTargets, 
+	                 __C5_MultipleRenderingTargets_R1__getMultipleRenderingTargets, 
 	                 0);
 	I_SimpleProperty(osg::StateAttribute::Type, Type, 
 	                 __Type__getType, 
@@ -373,4 +388,6 @@ BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< GLenum COMMA  osg::FrameBufferAttachment >)
+
+STD_VECTOR_REFLECTOR(std::vector< GLenum >)
 

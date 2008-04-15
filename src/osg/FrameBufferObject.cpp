@@ -556,7 +556,8 @@ FrameBufferObject::FrameBufferObject()
 
 FrameBufferObject::FrameBufferObject(const FrameBufferObject &copy, const CopyOp &copyop)
 :    StateAttribute(copy, copyop),
-    _attachments(copy._attachments)
+    _attachments(copy._attachments),
+    _drawBuffers(copy._drawBuffers)
 {
 }
 
@@ -566,6 +567,26 @@ FrameBufferObject::~FrameBufferObject()
     {
         if (_fboID[i]) deleteFrameBufferObject(i, _fboID[i]);
     }
+}
+
+void FrameBufferObject::setAttachment(GLenum attachment_point, const FrameBufferAttachment &attachment)
+{
+    _attachments[attachment_point] = attachment;
+
+    _drawBuffers.clear();
+
+    // create textures and mipmaps before we bind the frame buffer object
+    for (AttachmentMap::const_iterator i=_attachments.begin(); i!=_attachments.end(); ++i)
+    {
+        const FrameBufferAttachment &fa = i->second;
+
+        // setup draw buffers based on the attachment definition
+        if (i->first >= GL_COLOR_ATTACHMENT0_EXT && i->first <= GL_COLOR_ATTACHMENT15_EXT)
+            _drawBuffers.push_back(i->first);
+    }
+
+
+    dirtyAll();
 }
 
 void FrameBufferObject::apply(State &state) const
@@ -615,7 +636,6 @@ void FrameBufferObject::apply(State &state) const
         static OpenThreads::Mutex s_mutex;
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex);
 
-
         // create textures and mipmaps before we bind the frame buffer object
         for (AttachmentMap::const_iterator i=_attachments.begin(); i!=_attachments.end(); ++i)
         {
@@ -627,6 +647,16 @@ void FrameBufferObject::apply(State &state) const
     
    
     ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
+
+    // enable drawing buffers to render the result to fbo
+    if (_drawBuffers.size() > 0)
+    {
+        GL2Extensions *gl2e = GL2Extensions::Get(state.getContextID(), true );
+        if (gl2e)
+        {
+            gl2e->glDrawBuffers(_drawBuffers.size(), &(_drawBuffers[0]));
+        }
+    }
 
     if (dirtyAttachmentList)
     {

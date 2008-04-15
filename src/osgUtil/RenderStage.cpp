@@ -92,7 +92,6 @@ RenderStage::RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop):
         _viewport(rhs._viewport),
         _drawBuffer(rhs._drawBuffer),
         _readBuffer(rhs._readBuffer),
-        _drawBuffers(rhs._drawBuffers),
         _clearMask(rhs._clearMask),
         _colorMask(rhs._colorMask),
         _clearColor(rhs._clearColor),
@@ -332,7 +331,6 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             bool colorAttached = false;
             bool depthAttached = false;
             bool stencilAttached = false;
-            _drawBuffers.clear(); // MRT buffers
             
             for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
                 itr != bufferAttachments.end();
@@ -366,9 +364,6 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                     {
                         fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT+(buffer-osg::Camera::COLOR_BUFFER0), osg::FrameBufferAttachment(attachment));
                         colorAttached = true;
-
-                        // append to MRT buffer list
-                        _drawBuffers.push_back(GL_COLOR_ATTACHMENT0_EXT+(buffer-osg::Camera::COLOR_BUFFER0));
                         break;
                     }
                 }
@@ -395,7 +390,6 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 fbo_supported = false;
                 fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
                 fbo = 0;
-                _drawBuffers.clear();
                 
                 // clean up.
                 double availableTime = 100.0f;
@@ -707,7 +701,10 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
 {
     osg::State& state = *renderInfo.getState();
 
-    bool using_multiple_render_targets = !(_drawBuffers.empty());
+    osg::FBOExtensions* fbo_ext = _fbo.valid() ? osg::FBOExtensions::instance(state.getContextID(),true) : 0;
+    bool fbo_supported = fbo_ext && fbo_ext->isSupported();
+
+    bool using_multiple_render_targets = fbo_supported && _fbo->hasMultipleRenderingTargets();
     
     if (!using_multiple_render_targets)
     {
@@ -722,21 +719,9 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         }
     }
 
-    osg::FBOExtensions* fbo_ext = _fbo.valid() ? osg::FBOExtensions::instance(state.getContextID(),true) : 0;
-    bool fbo_supported = fbo_ext && fbo_ext->isSupported();
-
     if (fbo_supported)
     {
         _fbo->apply(state);
-    
-        if (using_multiple_render_targets)
-        {
-            GL2Extensions *gl2e = GL2Extensions::Get(state.getContextID(), true );
-            if (gl2e)
-            {
-                gl2e->glDrawBuffers(_drawBuffers.size(), &(_drawBuffers[0]));
-            }
-        }
     }
 
     // do the drawing itself.    
@@ -774,7 +759,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
                  int attachment=itr->first;
                  if (attachment==osg::Camera::DEPTH_BUFFER || attachment==osg::Camera::STENCIL_BUFFER) {
                      // assume first buffer rendered to is the one we want
-                     glReadBuffer(_drawBuffers[0]);
+                     glReadBuffer(_fbo->getMultipleRenderingTargets()[0]);
                  } else {
                      glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
                  }

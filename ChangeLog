@@ -1,3 +1,83 @@
+2008-04-15 19:46 +0000 [r8103]  robert:
+
+	* From Jason Beverage, "The following changes fix the flickering
+	  issue I'm seeing when trying to externally manage my cursor in
+	  Win32. If you set the cursor to InheritCursor,
+	  GraphicsWindowWin32 ignores WM_SETCURSOR and assumes you will set
+	  the cursor yourself."
+
+2008-04-15 19:36 +0000 [r8102]  robert:
+
+	* From Art Trevs, moved multile render targets support from
+	  RenderStage into FrameBufferObject. From Robert Osfield,
+	  refactored the FrameBufferObejcts::_drawBuffers set up so that
+	  its done within the setAttachment method to avoid potential
+	  threading/execution order issues.
+
+2008-04-15 12:52 +0000 [r8099]  robert:
+
+	* Updated wrappers
+
+2008-04-15 11:50 +0000 [r8096]  robert:
+
+	* From Tim Moore, compile fix for gcc 4.3
+
+2008-04-14 10:38 +0000 [r8095]  robert:
+
+	* Added docs explaining units
+
+2008-04-13 19:31 +0000 [r8094]  robert:
+
+	* Added subdivision of Goedes
+
+2008-04-13 14:32 +0000 [r8092-8093]  robert:
+
+	* From Christian Kaser, "I discovered a bug that lead to a space
+	  being displayed at the start of the new line after an automatic
+	  line break (through setMaximumWidth()). The fix simply skips all
+	  spaces at the end of the line, before skipping a line break which
+	  was done already. osgText/Text.cpp: Line 502 ... else { ++itr; }
+	  if (itr!=_text.end()) { // skip over spaces and return. while
+	  (*itr==' ') ++itr; // New if (*itr=='\n') ++itr; } // move to new
+	  line. switch(_layout) { .."
+
+	* From Paul Martz, added osgocclussionquery and osgthirdpersonview
+	  examples
+
+2008-04-12 10:02 +0000 [r8091]  robert:
+
+	* Changed bias parameter to scale
+
+2008-04-11 14:52 +0000 [r8090]  robert:
+
+	* Updadated authors file for dev release
+
+2008-04-11 14:43 +0000 [r8089]  robert:
+
+	* Updated wrappers, and version numbers in prep for next release
+
+2008-04-11 14:33 +0000 [r8088]  robert:
+
+	* Fixed J.P. Delports name
+
+2008-04-11 14:14 +0000 [r8087]  robert:
+
+	* Added --unit entry for controlling which texture unit the overlay
+	  works on.
+
+2008-04-11 13:43 +0000 [r8086]  robert:
+
+	* From Paul Martz,"Several misc changes, but the major fixes
+	  include: * Support for Vec4ubArray for color data * Support for
+	  material transparency Thanks to Neil Hughes, Jason Daly,
+	  yourself, and others for testing and reporting issues."
+
+2008-04-11 13:28 +0000 [r8085]  robert:
+
+	* From Philipp Machler, "We have extended the support for Wacom
+	  Tablet devices: - Mac OS X - not only pressure, but tilt and
+	  z-rotation is supported now "
+
 2008-04-11 13:04 +0000 [r8083-8084]  robert:
 
 	* Added reference to osgstereomatch example to

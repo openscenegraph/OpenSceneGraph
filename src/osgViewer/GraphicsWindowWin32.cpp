@@ -1841,6 +1841,7 @@ void GraphicsWindowWin32::useCursor( bool cursorOn )
 
 void GraphicsWindowWin32::setCursor( MouseCursor mouseCursor )
 {
+    _mouseCursor = mouseCursor;
     HCURSOR newCursor = getOrCreateCursor( mouseCursor);
     if (newCursor == _currentCursor) return;
 
@@ -2176,11 +2177,17 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         ///////////////////
         case WM_SETCURSOR :
         ///////////////////
-            if (_traits->useCursor) 
-                ::SetCursor( _currentCursor);
-            else
-                ::SetCursor(NULL);
-            return TRUE;
+            //The cursor is only modified in response to the WM_SETCURSOR message if the mouse cursor isn't set to
+            //InheritCursor.  InheritCursor lets the user manage the cursor externally.
+            if (_mouseCursor != InheritCursor)
+            {
+                if (_traits->useCursor) 
+                    ::SetCursor( _currentCursor);
+                else
+                    ::SetCursor(NULL);
+                return TRUE;
+            }
+            break;
 
         /////////////////
         case WM_CLOSE   :

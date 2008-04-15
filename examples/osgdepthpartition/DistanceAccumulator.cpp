@@ -22,6 +22,7 @@
 #include <osg/Projection>
 #include <algorithm>
 #include <math.h>
+#include <limits.h>
 
 /** Function that sees whether one DistancePair should come before another in
     an sorted list. Used to sort the vector of DistancePairs. */

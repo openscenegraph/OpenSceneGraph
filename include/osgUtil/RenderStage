@@ -226,8 +226,6 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         
         GLenum                              _drawBuffer;
         GLenum                              _readBuffer;
-        // Buffers passed to glDrawBuffers when using multiple render targets.
-        std::vector<GLenum>                 _drawBuffers;
         GLbitfield                          _clearMask;
         osg::ref_ptr<osg::ColorMask>        _colorMask;
         osg::Vec4                           _clearColor;

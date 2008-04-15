@@ -551,6 +551,8 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::set< osg::Group * >, osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList)
 
+TYPE_NAME_ALIAS(std::set< osg::Geode * >, osgUtil::Optimizer::SpatializeGroupsVisitor::GeodesToDivideList)
+
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
 	I_DeclaringFile("osgUtil/Optimizer");
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
@@ -564,6 +566,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
 	          __void__apply__osg_Group_R1,
 	          "",
 	          "");
+	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
+	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
 	I_MethodWithDefaults1(bool, divide, IN, unsigned int, maxNumTreesPerCell, 8,
 	                      Properties::NON_VIRTUAL,
 	                      __bool__divide__unsigned_int,
@@ -574,7 +581,13 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::SpatializeGroupsVisitor)
 	          __bool__divide__osg_Group_P1__unsigned_int,
 	          "",
 	          "");
+	I_Method2(bool, divide, IN, osg::Geode *, geode, IN, unsigned int, maxNumTreesPerCell,
+	          Properties::NON_VIRTUAL,
+	          __bool__divide__osg_Geode_P1__unsigned_int,
+	          "",
+	          "");
 	I_PublicMemberProperty(osgUtil::Optimizer::SpatializeGroupsVisitor::GroupsToDivideList, _groupsToDivideList);
+	I_PublicMemberProperty(osgUtil::Optimizer::SpatializeGroupsVisitor::GeodesToDivideList, _geodesToDivideList);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
@@ -872,6 +885,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::TextureVisitor)
 END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< osg::Billboard * COMMA  osgUtil::Optimizer::FlattenBillboardVisitor::NodePathList >)
+
+STD_SET_REFLECTOR(std::set< osg::Geode * >)
 
 STD_SET_REFLECTOR(std::set< osg::Group * >)
 

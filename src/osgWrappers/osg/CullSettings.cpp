@@ -245,7 +245,7 @@ BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	          __osg_Node_NodeMask__getCullMaskRight,
 	          "",
 	          "");
-	I_Method1(void, setLODScale, IN, float, bias,
+	I_Method1(void, setLODScale, IN, float, scale,
 	          Properties::NON_VIRTUAL,
 	          __void__setLODScale__float,
 	          "Set the LOD bias for the CullVisitor to use. ",

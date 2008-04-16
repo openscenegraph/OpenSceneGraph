@@ -28,30 +28,30 @@ class OSGGA_EXPORT GUIEventAdapter : public osg::Object
 public:
 
         enum MouseButtonMask { 
-            LEFT_MOUSE_BUTTON=1,
-            MIDDLE_MOUSE_BUTTON=2,
-            RIGHT_MOUSE_BUTTON=4
+            LEFT_MOUSE_BUTTON    = 1<<0,
+            MIDDLE_MOUSE_BUTTON  = 1<<1,
+            RIGHT_MOUSE_BUTTON   = 1<<2
         };
 
         enum EventType {
-            NONE=0,
-            PUSH=1, 
-            RELEASE=2,
-            DOUBLECLICK=4,
-            DRAG=8,
-            MOVE=16,
-            KEYDOWN=32,
-            KEYUP=64,
-            FRAME=128,
-            RESIZE=256,
-            SCROLL=512,
-            PEN_PRESSURE=1024,
-            PEN_ORIENTATION=2048,
-            PEN_PROXIMITY_ENTER=4096,
-            PEN_PROXIMITY_LEAVE=8192,
-            CLOSE_WINDOW=16384,
-            QUIT_APPLICATION=32768,
-            USER=65536
+            NONE                = 0,
+            PUSH                = 1<<0, 
+            RELEASE             = 1<<1,
+            DOUBLECLICK         = 1<<2,
+            DRAG                = 1<<3,
+            MOVE                = 1<<4,
+            KEYDOWN             = 1<<5,
+            KEYUP               = 1<<6,
+            FRAME               = 1<<7,
+            RESIZE              = 1<<8,
+            SCROLL              = 1<<9,
+            PEN_PRESSURE        = 1<<10,
+            PEN_ORIENTATION     = 1<<11,
+            PEN_PROXIMITY_ENTER = 1<<12,
+            PEN_PROXIMITY_LEAVE = 1<<13,
+            CLOSE_WINDOW        = 1<<14,
+            QUIT_APPLICATION    = 1<<15,
+            USER                = 1<<16
         };
 
         enum KeySymbol

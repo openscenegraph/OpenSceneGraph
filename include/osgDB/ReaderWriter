@@ -61,22 +61,22 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                     CACHE_NONE          = 0,
 
                     /// cache nodes loaded via readNode(filename)
-                    CACHE_NODES         = 1,
+                    CACHE_NODES         = 1<<0,
 
                     /// cache images loaded via readImage(filename)
-                    CACHE_IMAGES        = 2,
+                    CACHE_IMAGES        = 1<<1,
 
                     /// cache heightfield loaded via readHeightField(filename)
-                    CACHE_HEIGHTFIELDS  = 4, 
+                    CACHE_HEIGHTFIELDS  = 1<<2, 
 
                     /// cache heightfield loaded via readHeightField(filename)
-                    CACHE_ARCHIVES      = 8, 
+                    CACHE_ARCHIVES      = 1<<3, 
 
                     /// cache objects loaded via readObject(filename)
-                    CACHE_OBJECTS       = 16, 
+                    CACHE_OBJECTS       = 1<<4, 
 
                     /// cache shaders loaded via readShader(filename)
-                    CACHE_SHADERS       = 32,
+                    CACHE_SHADERS       = 1<<5,
 
                     /// cache on all read*(filename) calls
                     CACHE_ALL           = CACHE_NODES |

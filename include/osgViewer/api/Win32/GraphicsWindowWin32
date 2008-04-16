@@ -172,6 +172,8 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         bool            _closeWindow;
         bool            _destroyWindow;
         bool            _destroying;
+
+        MouseCursor     _mouseCursor;
         
         std::map<MouseCursor,HCURSOR> _mouseCursorMap;
 };

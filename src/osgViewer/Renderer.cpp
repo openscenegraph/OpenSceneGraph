@@ -161,6 +161,10 @@ static OpenThreads::Mutex s_drawSerializerMutex;
 Renderer::Renderer(osg::Camera* camera):
     osg::GraphicsOperation("Renderer",true),
     OpenGLQuerySupport(),
+    _targetFrameRate(100.0),
+    _minimumTimeAvailableForGLCompileAndDeletePerFrame(0.001),
+    _flushTimeRatio(0.5),
+    _conservativeTimeRatio(0.5),
     _camera(camera),
     _done(false),
     _graphicsThreadDoesCull(true)
@@ -389,22 +393,13 @@ void Renderer::draw()
 
         _availableQueue.add(sceneView);
 
-        double availableTime = 0.004; // 4 ms
+        osg::Timer_t afterDispatchTick = osg::Timer::instance()->tick();
 
-        if (compileThread)
-        {
-            compileThread->add(_flushOperation.get());
-        }
-        else
-        {
-            sceneView->flushDeletedGLObjects(availableTime);
-        }
+        double dispatchTime = osg::Timer::instance()->delta_s(beforeDrawTick, afterDispatchTick);
 
-        if (databasePager && databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
-        {
-            databasePager->compileGLObjects(*(sceneView->getState()), availableTime);
-        }
-
+        // now flush delete OpenGL objects and compile any objects as required by the DatabasePager
+        flushAndCompile(dispatchTime, sceneView, databasePager, compileThread);
+    
         if (acquireGPUStats)
         {
             endQuery();
@@ -512,20 +507,12 @@ void Renderer::cull_draw()
         sceneView->draw();
     }
 
-    double availableTime = 0.004; // 4 ms
-    if (databasePager && databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
-    {
-        databasePager->compileGLObjects(*(sceneView->getState()), availableTime);
-    }
+    osg::Timer_t afterDispatchTick = osg::Timer::instance()->tick();
+    double cullAndDispatchTime = osg::Timer::instance()->delta_s(beforeCullTick, afterDispatchTick);
 
-    if (compileThread)
-    {
-        compileThread->add(_flushOperation.get());
-    }
-    else
-    {
-        sceneView->flushDeletedGLObjects(availableTime);
-    }
+    // now flush delete OpenGL objects and compile any objects as required by the DatabasePager
+    flushAndCompile(cullAndDispatchTime, sceneView, databasePager, compileThread);
+
 
     if (acquireGPUStats)
     {
@@ -550,6 +537,54 @@ void Renderer::cull_draw()
 
     DEBUG_MESSAGE<<"end cull_draw() "<<this<<std::endl;
 
+}
+
+void Renderer::flushAndCompile(double currentElapsedFrameTime, osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::GraphicsThread* compileThread)
+{
+    
+    double targetFrameRate = _targetFrameRate;
+    double minimumTimeAvailableForGLCompileAndDeletePerFrame = _minimumTimeAvailableForGLCompileAndDeletePerFrame;
+
+    if (databasePager)
+    {
+        targetFrameRate = std::min(targetFrameRate, databasePager->getTargetFrameRate());
+        minimumTimeAvailableForGLCompileAndDeletePerFrame = std::min(minimumTimeAvailableForGLCompileAndDeletePerFrame, databasePager->getMinimumTimeAvailableForGLCompileAndDeletePerFrame());
+    }
+    
+    double targetFrameTime = 1.0/targetFrameRate;
+
+    double availableTime = std::max((targetFrameTime - currentElapsedFrameTime)*_conservativeTimeRatio,
+                                    minimumTimeAvailableForGLCompileAndDeletePerFrame);
+
+    double flushTime = availableTime * _flushTimeRatio;
+    double compileTime = availableTime - flushTime;
+
+#if 0
+    osg::notify(osg::NOTICE)<<"total availableTime = "<<availableTime*1000.0<<std::endl;
+    osg::notify(osg::NOTICE)<<"      flushTime     = "<<flushTime*1000.0<<std::endl;
+    osg::notify(osg::NOTICE)<<"      compileTime   = "<<compileTime*1000.0<<std::endl;
+#endif
+
+    if (compileThread)
+    {
+        compileThread->add(_flushOperation.get());
+    }
+    else
+    {
+        sceneView->flushDeletedGLObjects(flushTime);
+    }
+
+    // if any time left over from flush add this to compile time.        
+    if (flushTime>0.0) compileTime += flushTime;
+
+#if 0
+    osg::notify(osg::NOTICE)<<"      revised compileTime   = "<<compileTime*1000.0<<std::endl;
+#endif
+
+    if (databasePager && databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
+    {
+        databasePager->compileGLObjects(*(sceneView->getState()), compileTime);
+    }
 }
 
 void Renderer::operator () (osg::Object* object)

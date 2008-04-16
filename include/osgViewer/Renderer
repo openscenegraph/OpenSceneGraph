@@ -15,6 +15,7 @@
 #define OSGVIEWER_RENDERER 1
 
 #include <osg/Timer>
+#include <osgDB/DatabasePager>
 #include <osgUtil/SceneView>
 #include <osgViewer/Export>
 
@@ -65,21 +66,71 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
         void setGraphicsThreadDoesCull(bool flag);
         bool getGraphicsThreadDoesCull() const { return _graphicsThreadDoesCull; }
 
-        void cull();
-        void draw();
-        void cull_draw();
+        virtual void cull();
+        virtual void draw();
+        virtual void cull_draw();
 
         virtual void operator () (osg::Object* object);
         
         virtual void operator () (osg::GraphicsContext* context);
 
         virtual void release();
+        
+
+        /** Set the target frame rate that the DatabasePager should assume.
+          * Typically one would set this to the value refresh rate of your display system i.e. 60Hz.
+          * Default value is 100.
+          * Usage notes.  The TargetFrameRate and the MinimumTimeAvailableForGLCompileAndDeletePerFrame
+          * parameters are not directly used by DatabasePager, but are should be used as a guide for how
+          * long to set aside per frame for compiling and deleting OpenGL objects - ie. the value to use 
+          * when calling DatabasePager::compileGLObjectgs(state,availableTime,). The longer amount of
+          * time to set aside  cthe faster databases will be paged in but with increased chance of frame drops,
+          * the lower the amount of time the set aside the slower databases will paged it but with better
+          * chance of avoid any frame drops.  The default values are chosen to achieve the later when running
+          * on a modern mid to high end  PC. 
+          * The way to compute the amount of available time use a scheme such as :
+          *    availableTime = maximum(1.0/targetFrameRate - timeTakenDuringUpdateCullAndDraw, minimumTimeAvailableForGLCompileAndDeletePerFrame). 
+          *
+          * Note, the actual TargetFrameRate used is the minimum of this value and that set in the DatabasePager. */
+        void setTargetFrameRate(double tfr) { _targetFrameRate = tfr; }
+
+        /** Get the target frame rate that the DatabasePager should assume.*/
+        double getTargetFrameRate() const { return _targetFrameRate; }
+        
+        /** Set the minimum amount of time (in seconds) that should be made available for compiling and delete OpenGL objects per frame.
+          * Default value is 0.001 (1 millisecond). 
+          * For usage see notes in setTargetFrameRate.
+          *
+          * Note, the actual TargetFrameRate used is the minimum of this value and that set in the DatabasePager. */
+        void setMinimumTimeAvailableForGLCompileAndDeletePerFrame(double ta) { _minimumTimeAvailableForGLCompileAndDeletePerFrame = ta; }
+
+        /** Get the minimum amount of time that should be made available for compiling and delete OpenGL objects per frame.
+          * For usage see notes in setTargetFrameRate.*/
+        double getMinimumTimeAvailableForGLCompileAndDeletePerFrame() const { return _minimumTimeAvailableForGLCompileAndDeletePerFrame; }
+
+        /** FlushTimeRatio governs how much of the spare time in each frame is used for flushing deleted OpenGL objects.
+          * Default value is 0.5, valid range is 0.1 to 0.9.*/
+        void setFlushTimeRatio(double ratio) { _flushTimeRatio = ratio; }
+        double getFlushTimeRatio() const { return _flushTimeRatio; }
+
+        /** ConservativeTimeRatio governs how much of the measured spare time in each frame is used for flushing deleted and compile new OpenGL objects.
+          * Default value is 0.5, valid range is 0.1 to 1.0.
+          * A ratio near 1.0 will lead to paged databases being compiled and merged quicker but increase the chances of frame drop.
+          * A ratio near 0.1 will lead to paged databases being compiled and merged closer but reduse the chances of frame drop.*/
+        void setConservativeTimeRatio(double ratio) { _conservativeTimeRatio = ratio; }
+        double getConservativeTimeRatio() const { return _conservativeTimeRatio; }
 
     protected:
     
-        void updateSceneView(osgUtil::SceneView* sceneView);
-    
         virtual ~Renderer();
+
+        virtual void updateSceneView(osgUtil::SceneView* sceneView);        
+        virtual void flushAndCompile(double currentElapsedFrameTime, osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::GraphicsThread* compileThread);
+
+        double _targetFrameRate;
+        double _minimumTimeAvailableForGLCompileAndDeletePerFrame;
+        double _flushTimeRatio;
+        double _conservativeTimeRatio;
 
         osg::observer_ptr<osg::Camera>                      _camera;
         

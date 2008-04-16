@@ -113,17 +113,17 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Renderer)
 	          "",
 	          "");
 	I_Method0(void, cull,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__cull,
 	          "",
 	          "");
 	I_Method0(void, draw,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__draw,
 	          "",
 	          "");
 	I_Method0(void, cull_draw,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__cull_draw,
 	          "",
 	          "");
@@ -132,18 +132,76 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Renderer)
 	          __void__release,
 	          "if this operation is a barrier then release it. ",
 	          "");
+	I_Method1(void, setTargetFrameRate, IN, double, tfr,
+	          Properties::NON_VIRTUAL,
+	          __void__setTargetFrameRate__double,
+	          "Set the target frame rate that the DatabasePager should assume. ",
+	          "Typically one would set this to the value refresh rate of your display system i.e. 60Hz. Default value is 100. Usage notes. The TargetFrameRate and the MinimumTimeAvailableForGLCompileAndDeletePerFrame parameters are not directly used by DatabasePager, but are should be used as a guide for how long to set aside per frame for compiling and deleting OpenGL objects - ie. the value to use when calling DatabasePager::compileGLObjectgs(state,availableTime,). The longer amount of time to set aside cthe faster databases will be paged in but with increased chance of frame drops, the lower the amount of time the set aside the slower databases will paged it but with better chance of avoid any frame drops. The default values are chosen to achieve the later when running on a modern mid to high end PC. The way to compute the amount of available time use a scheme such as : availableTime = maximum(1.0/targetFrameRate - timeTakenDuringUpdateCullAndDraw, minimumTimeAvailableForGLCompileAndDeletePerFrame).Note, the actual TargetFrameRate used is the minimum of this value and that set in the DatabasePager. ");
+	I_Method0(double, getTargetFrameRate,
+	          Properties::NON_VIRTUAL,
+	          __double__getTargetFrameRate,
+	          "Get the target frame rate that the DatabasePager should assume. ",
+	          "");
+	I_Method1(void, setMinimumTimeAvailableForGLCompileAndDeletePerFrame, IN, double, ta,
+	          Properties::NON_VIRTUAL,
+	          __void__setMinimumTimeAvailableForGLCompileAndDeletePerFrame__double,
+	          "Set the minimum amount of time (in seconds) that should be made available for compiling and delete OpenGL objects per frame. ",
+	          "Default value is 0.001 (1 millisecond). For usage see notes in setTargetFrameRate.Note, the actual TargetFrameRate used is the minimum of this value and that set in the DatabasePager. ");
+	I_Method0(double, getMinimumTimeAvailableForGLCompileAndDeletePerFrame,
+	          Properties::NON_VIRTUAL,
+	          __double__getMinimumTimeAvailableForGLCompileAndDeletePerFrame,
+	          "Get the minimum amount of time that should be made available for compiling and delete OpenGL objects per frame. ",
+	          "For usage see notes in setTargetFrameRate. ");
+	I_Method1(void, setFlushTimeRatio, IN, double, ratio,
+	          Properties::NON_VIRTUAL,
+	          __void__setFlushTimeRatio__double,
+	          "FlushTimeRatio governs how much of the spare time in each frame is used for flushing deleted OpenGL objects. ",
+	          "Default value is 0.5, valid range is 0.1 to 0.9. ");
+	I_Method0(double, getFlushTimeRatio,
+	          Properties::NON_VIRTUAL,
+	          __double__getFlushTimeRatio,
+	          "",
+	          "");
+	I_Method1(void, setConservativeTimeRatio, IN, double, ratio,
+	          Properties::NON_VIRTUAL,
+	          __void__setConservativeTimeRatio__double,
+	          "ConservativeTimeRatio governs how much of the measured spare time in each frame is used for flushing deleted and compile new OpenGL objects. ",
+	          "Default value is 0.5, valid range is 0.1 to 1.0. A ratio near 1.0 will lead to paged databases being compiled and merged quicker but increase the chances of frame drop. A ratio near 0.1 will lead to paged databases being compiled and merged closer but reduse the chances of frame drop. ");
+	I_Method0(double, getConservativeTimeRatio,
+	          Properties::NON_VIRTUAL,
+	          __double__getConservativeTimeRatio,
+	          "",
+	          "");
 	I_ProtectedMethod1(void, updateSceneView, IN, osgUtil::SceneView *, sceneView,
-	                   Properties::NON_VIRTUAL,
+	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__updateSceneView__osgUtil_SceneView_P1,
 	                   "",
 	                   "");
+	I_ProtectedMethod4(void, flushAndCompile, IN, double, currentElapsedFrameTime, IN, osgUtil::SceneView *, sceneView, IN, osgDB::DatabasePager *, databasePager, IN, osg::GraphicsThread *, compileThread,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__flushAndCompile__double__osgUtil_SceneView_P1__osgDB_DatabasePager_P1__osg_GraphicsThread_P1,
+	                   "",
+	                   "");
+	I_SimpleProperty(double, ConservativeTimeRatio, 
+	                 __double__getConservativeTimeRatio, 
+	                 __void__setConservativeTimeRatio__double);
 	I_SimpleProperty(bool, Done, 
 	                 __bool__getDone, 
 	                 __void__setDone__bool);
+	I_SimpleProperty(double, FlushTimeRatio, 
+	                 __double__getFlushTimeRatio, 
+	                 __void__setFlushTimeRatio__double);
 	I_SimpleProperty(bool, GraphicsThreadDoesCull, 
 	                 __bool__getGraphicsThreadDoesCull, 
 	                 __void__setGraphicsThreadDoesCull__bool);
+	I_SimpleProperty(double, MinimumTimeAvailableForGLCompileAndDeletePerFrame, 
+	                 __double__getMinimumTimeAvailableForGLCompileAndDeletePerFrame, 
+	                 __void__setMinimumTimeAvailableForGLCompileAndDeletePerFrame__double);
+	I_SimpleProperty(double, TargetFrameRate, 
+	                 __double__getTargetFrameRate, 
+	                 __void__setTargetFrameRate__double);
 END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osgViewer::OpenGLQuerySupport::QueryFrameNumberPair >)

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 44;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -765,8 +765,6 @@
 		001D0606065AB39D003310BF /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		001D0615065AB3CD003310BF /* MovieData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D060C065AB3CD003310BF /* MovieData.cpp */; };
 		001D0616065AB3CD003310BF /* MovieData.h in Headers */ = {isa = PBXBuildFile; fileRef = 001D060D065AB3CD003310BF /* MovieData.h */; };
-		001D0617065AB3CD003310BF /* QTtexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D060E065AB3CD003310BF /* QTtexture.cpp */; };
-		001D0618065AB3CD003310BF /* QTtexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 001D060F065AB3CD003310BF /* QTtexture.h */; };
 		001D0619065AB3CD003310BF /* QTUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D0610065AB3CD003310BF /* QTUtils.cpp */; };
 		001D061A065AB3CD003310BF /* QTUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 001D0611065AB3CD003310BF /* QTUtils.h */; };
 		001D061B065AB3CD003310BF /* QuicktimeImageStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D0612065AB3CD003310BF /* QuicktimeImageStream.cpp */; };
@@ -779,7 +777,6 @@
 		001D06CB065AB74C003310BF /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
 		001D06CD065AB74E003310BF /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		001D06D1065AB768003310BF /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
-		001D0751065ABB07003310BF /* osgtext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D0750065ABB07003310BF /* osgtext.cpp */; };
 		001D07A5065AC34D003310BF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		001DFCBA065A90BC003310BF /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		001DFCBB065A90BC003310BF /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -864,8 +861,6 @@
 		0037A1C30C19086E0089AA1C /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 0037A1C10C19086D0089AA1C /* MainMenu.nib */; };
 		0037A1C80C1908A70089AA1C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0037A1C40C1908A50089AA1C /* InfoPlist.strings */; };
 		0037A1C90C1908A70089AA1C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0037A1C60C1908A60089AA1C /* Localizable.strings */; };
-		00388E4A0CFEF22100A7B938 /* TileSystem in Headers */ = {isa = PBXBuildFile; fileRef = 00388E490CFEF22000A7B938 /* TileSystem */; settings = {ATTRIBUTES = (Public, ); }; };
-		00388E4D0CFEF23900A7B938 /* TileSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00388E4C0CFEF23900A7B938 /* TileSystem.cpp */; };
 		00388E890CFEF2E700A7B938 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		00388E8A0CFEF2E700A7B938 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		00388E8B0CFEF2E700A7B938 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
@@ -1068,7 +1063,6 @@
 		006CE7FF092195B500985402 /* OverlayNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0096C5FA0919637300B255F2 /* OverlayNode.cpp */; };
 		006CE8260921965100985402 /* osgSim.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 005580E10624BBB3000A808A /* osgSim.framework */; };
 		006CE834092197C400985402 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
-		006CE9160921AA0100985402 /* osgcamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CE9130921AA0100985402 /* osgcamera.cpp */; };
 		006CE92F0921AA9300985402 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		006CE9300921AA9300985402 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		006CE9310921AA9300985402 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
@@ -1236,7 +1230,6 @@
 		0084FC120D34265B0021E5C9 /* Layer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0084FC0A0D34265A0021E5C9 /* Layer.cpp */; };
 		0084FC130D34265B0021E5C9 /* Locator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0084FC0B0D34265A0021E5C9 /* Locator.cpp */; };
 		0084FC140D34265B0021E5C9 /* ReaderWriterOsgTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0084FC0C0D34265A0021E5C9 /* ReaderWriterOsgTerrain.cpp */; };
-		0084FC150D34265B0021E5C9 /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0084FC0D0D34265B0021E5C9 /* Terrain.cpp */; };
 		0084FC280D3426B50021E5C9 /* osgTerrain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6320CD4307845BC300FE3D2C /* osgTerrain.framework */; };
 		0084FC3B0D3427000021E5C9 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		0084FC5B0D3427B70021E5C9 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -1749,12 +1742,10 @@
 		5B05E7AE0C18079100B0EAD8 /* ViewerCocoa.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B653DC80C1745FF002B54A3 /* ViewerCocoa.mm */; };
 		5B724E770C61FF19001377CD /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5B724E760C61FF18001377CD /* Renderer.cpp */; };
 		5B724E7A0C61FF5A001377CD /* Renderer in Headers */ = {isa = PBXBuildFile; fileRef = 5B724E780C61FF39001377CD /* Renderer */; settings = {ATTRIBUTES = (Public, ); }; };
-		5BC1910B0C15F462002CF5BC /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */; };
 		5BC1910E0C15F48C002CF5BC /* Hint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910D0C15F48C002CF5BC /* Hint.cpp */; };
 		5BC1910F0C15F4AD002CF5BC /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC1910A0C15F462002CF5BC /* ViewerEventHandlers.cpp */; };
 		5BC191110C15F4D5002CF5BC /* Hint in Headers */ = {isa = PBXBuildFile; fileRef = 5BC191100C15F4D4002CF5BC /* Hint */; settings = {ATTRIBUTES = (Public, ); }; };
 		5BC191130C15F4FC002CF5BC /* ViewerEventHandlers in Headers */ = {isa = PBXBuildFile; fileRef = 5BC191120C15F4FC002CF5BC /* ViewerEventHandlers */; settings = {ATTRIBUTES = (Public, ); }; };
-		5BC191140C15F4FC002CF5BC /* ViewerEventHandlers in Resources */ = {isa = PBXBuildFile; fileRef = 5BC191120C15F4FC002CF5BC /* ViewerEventHandlers */; };
 		5BC191180C15F59D002CF5BC /* osgcompositeviewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191150C15F59C002CF5BC /* osgcompositeviewer.cpp */; };
 		5BC191310C15F6B4002CF5BC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5BC1912C0C15F6B3002CF5BC /* Info.plist */; };
 		5BC191360C15F735002CF5BC /* osgviewerGLUT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191350C15F734002CF5BC /* osgviewerGLUT.cpp */; };
@@ -2297,6 +2288,36 @@
 		D42FE58A0B542DD10058A380 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		D42FE58B0B542DD10058A380 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D42FE7CF0B56521B0058A380 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		D4456E520D4F674E005E986E /* osgtext3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4456E510D4F674E005E986E /* osgtext3D.cpp */; };
+		D44F2AA80DA11DD2009144E7 /* TerrainTile in Resources */ = {isa = PBXBuildFile; fileRef = D44F2AA70DA11DD2009144E7 /* TerrainTile */; };
+		D44F2AAA0DA11DED009144E7 /* TerrainTile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AA90DA11DED009144E7 /* TerrainTile.cpp */; };
+		D44F2AAC0DA11E0A009144E7 /* TerrainTile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AAB0DA11E0A009144E7 /* TerrainTile.cpp */; };
+		D44F2AC30DA11E32009144E7 /* DataOutputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AAD0DA11E31009144E7 /* DataOutputStream.cpp */; };
+		D44F2AC40DA11E32009144E7 /* DataOutputStream.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2AAE0DA11E31009144E7 /* DataOutputStream.h */; };
+		D44F2AC50DA11E32009144E7 /* expAncillaryRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AAF0DA11E31009144E7 /* expAncillaryRecords.cpp */; };
+		D44F2AC60DA11E32009144E7 /* expControlRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AB00DA11E31009144E7 /* expControlRecords.cpp */; };
+		D44F2AC70DA11E32009144E7 /* expGeometryRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AB10DA11E31009144E7 /* expGeometryRecords.cpp */; };
+		D44F2AC80DA11E32009144E7 /* ExportOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AB20DA11E31009144E7 /* ExportOptions.cpp */; };
+		D44F2AC90DA11E32009144E7 /* ExportOptions.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2AB30DA11E31009144E7 /* ExportOptions.h */; };
+		D44F2ACA0DA11E32009144E7 /* expPrimaryRecords.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AB40DA11E31009144E7 /* expPrimaryRecords.cpp */; };
+		D44F2ACB0DA11E32009144E7 /* FltExportVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AB50DA11E31009144E7 /* FltExportVisitor.cpp */; };
+		D44F2ACC0DA11E32009144E7 /* FltExportVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2AB60DA11E31009144E7 /* FltExportVisitor.h */; };
+		D44F2ACD0DA11E32009144E7 /* FltWriteResult.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2AB70DA11E32009144E7 /* FltWriteResult.h */; };
+		D44F2ACE0DA11E32009144E7 /* LightSourcePaletteManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AB80DA11E32009144E7 /* LightSourcePaletteManager.cpp */; };
+		D44F2ACF0DA11E32009144E7 /* LightSourcePaletteManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2AB90DA11E32009144E7 /* LightSourcePaletteManager.h */; };
+		D44F2AD00DA11E32009144E7 /* MaterialPaletteManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2ABA0DA11E32009144E7 /* MaterialPaletteManager.cpp */; };
+		D44F2AD10DA11E32009144E7 /* MaterialPaletteManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2ABB0DA11E32009144E7 /* MaterialPaletteManager.h */; };
+		D44F2AD20DA11E32009144E7 /* Opcodes.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2ABC0DA11E32009144E7 /* Opcodes.h */; };
+		D44F2AD30DA11E32009144E7 /* TexturePaletteManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2ABD0DA11E32009144E7 /* TexturePaletteManager.cpp */; };
+		D44F2AD40DA11E32009144E7 /* TexturePaletteManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2ABE0DA11E32009144E7 /* TexturePaletteManager.h */; };
+		D44F2AD50DA11E32009144E7 /* Types.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2ABF0DA11E32009144E7 /* Types.h */; };
+		D44F2AD60DA11E32009144E7 /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2AC00DA11E32009144E7 /* Utils.h */; };
+		D44F2AD70DA11E32009144E7 /* VertexPaletteManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AC10DA11E32009144E7 /* VertexPaletteManager.cpp */; };
+		D44F2AD80DA11E32009144E7 /* VertexPaletteManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2AC20DA11E32009144E7 /* VertexPaletteManager.h */; };
+		D44F2ADC0DA11E6D009144E7 /* TerrainTile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2ADA0DA11E6C009144E7 /* TerrainTile.cpp */; };
+		D44F2ADD0DA11E6D009144E7 /* TerrainTile.h in Headers */ = {isa = PBXBuildFile; fileRef = D44F2ADB0DA11E6D009144E7 /* TerrainTile.h */; };
+		D454D47F0DB4F70E0042E209 /* QTImportExport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D454D47D0DB4F70E0042E209 /* QTImportExport.cpp */; };
+		D454D4800DB4F70E0042E209 /* QTImportExport.h in Headers */ = {isa = PBXBuildFile; fileRef = D454D47E0DB4F70E0042E209 /* QTImportExport.h */; };
 		D47A06760B833F6E00E19024 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
 		D47A06770B833F6E00E19024 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		D47A06780B833F6E00E19024 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -2351,6 +2372,16 @@
 		D47A07040B83413800E19024 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D47A07150B83417900E19024 /* osgmanipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A07120B83417900E19024 /* osgmanipulator.cpp */; };
 		D47A07240B8341AF00E19024 /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47A06810B833F6E00E19024 /* osgManipulator.framework */; };
+		D48DA40F0D990BD800973C07 /* SceneGraphBuilder in Headers */ = {isa = PBXBuildFile; fileRef = D48DA40E0D990BD800973C07 /* SceneGraphBuilder */; settings = {ATTRIBUTES = (Public, ); }; };
+		D48DA4110D990C2B00973C07 /* ObjectRecordData in Headers */ = {isa = PBXBuildFile; fileRef = D48DA4100D990C2B00973C07 /* ObjectRecordData */; settings = {ATTRIBUTES = (Public, ); }; };
+		D48DA4130D990C6E00973C07 /* SceneGraphBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48DA4120D990C6E00973C07 /* SceneGraphBuilder.cpp */; };
+		D48DA45F0D991BDE00973C07 /* osgcamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 006CE9130921AA0100985402 /* osgcamera.cpp */; };
+		D48DA5A00D991E6F00973C07 /* osgViewer.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		D48DA5A10D991E6F00973C07 /* osg.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		D48DA5A20D991E6F00973C07 /* osgDB.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		D48DA5A30D991E6F00973C07 /* osgText.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
+		D48DA5A40D991E6F00973C07 /* osgUtil.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		D48DA5A50D991E6F00973C07 /* osgGA.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D48EC6500B4EBF2F000E05A4 /* CompositeViewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48EC64B0B4EBF2E000E05A4 /* CompositeViewer.cpp */; };
 		D48EC6520B4EBF2F000E05A4 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48EC64D0B4EBF2F000E05A4 /* Scene.cpp */; };
 		D48EC6530B4EBF2F000E05A4 /* View.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48EC64E0B4EBF2F000E05A4 /* View.cpp */; };
@@ -2484,8 +2515,6 @@
 		D4F0928C0D4BB46100BB1AC7 /* Layer.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F092800D4BB46000BB1AC7 /* Layer.h */; };
 		D4F0928D0D4BB46100BB1AC7 /* Locator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F092810D4BB46000BB1AC7 /* Locator.cpp */; };
 		D4F0928E0D4BB46100BB1AC7 /* Locator.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F092820D4BB46000BB1AC7 /* Locator.h */; };
-		D4F0928F0D4BB46100BB1AC7 /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F092830D4BB46000BB1AC7 /* Terrain.cpp */; };
-		D4F092900D4BB46100BB1AC7 /* Terrain.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F092840D4BB46100BB1AC7 /* Terrain.h */; };
 		D4F092AD0D4BB47A00BB1AC7 /* osgTerrain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6320CD4307845BC300FE3D2C /* osgTerrain.framework */; };
 /* End PBXBuildFile section */
 
@@ -5873,6 +5902,21 @@
 			name = "Copy Subheaders to api:Carbon";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D48DA5C20D991E7F00973C07 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				D48DA5A00D991E6F00973C07 /* osgViewer.framework in CopyFiles */,
+				D48DA5A10D991E6F00973C07 /* osg.framework in CopyFiles */,
+				D48DA5A20D991E6F00973C07 /* osgDB.framework in CopyFiles */,
+				D48DA5A30D991E6F00973C07 /* osgText.framework in CopyFiles */,
+				D48DA5A40D991E6F00973C07 /* osgUtil.framework in CopyFiles */,
+				D48DA5A50D991E6F00973C07 /* osgGA.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -6202,8 +6246,6 @@
 		001D0607065AB39D003310BF /* osgdb_qt.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_qt.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		001D060C065AB3CD003310BF /* MovieData.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = MovieData.cpp; path = ../../src/osgPlugins/quicktime/MovieData.cpp; sourceTree = SOURCE_ROOT; };
 		001D060D065AB3CD003310BF /* MovieData.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = MovieData.h; path = ../../src/osgPlugins/quicktime/MovieData.h; sourceTree = SOURCE_ROOT; };
-		001D060E065AB3CD003310BF /* QTtexture.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = QTtexture.cpp; path = ../../src/osgPlugins/quicktime/QTtexture.cpp; sourceTree = SOURCE_ROOT; };
-		001D060F065AB3CD003310BF /* QTtexture.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = QTtexture.h; path = ../../src/osgPlugins/quicktime/QTtexture.h; sourceTree = SOURCE_ROOT; };
 		001D0610065AB3CD003310BF /* QTUtils.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = QTUtils.cpp; path = ../../src/osgPlugins/quicktime/QTUtils.cpp; sourceTree = SOURCE_ROOT; };
 		001D0611065AB3CD003310BF /* QTUtils.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = QTUtils.h; path = ../../src/osgPlugins/quicktime/QTUtils.h; sourceTree = SOURCE_ROOT; };
 		001D0612065AB3CD003310BF /* QuicktimeImageStream.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = QuicktimeImageStream.cpp; path = ../../src/osgPlugins/quicktime/QuicktimeImageStream.cpp; sourceTree = SOURCE_ROOT; };
@@ -6295,8 +6337,6 @@
 		0037A1C20C19086E0089AA1C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		0037A1C50C1908A60089AA1C /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0037A1C70C1908A60089AA1C /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
-		00388E490CFEF22000A7B938 /* TileSystem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TileSystem; sourceTree = "<group>"; };
-		00388E4C0CFEF23900A7B938 /* TileSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TileSystem.cpp; path = ../../src/osgTerrain/TileSystem.cpp; sourceTree = SOURCE_ROOT; };
 		00388E960CFEF2E700A7B938 /* osgterrain_example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgterrain_example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00388F2A0CFEF43A00A7B938 /* osgterrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = osgterrain.cpp; sourceTree = "<group>"; };
 		00388F920CFEF59B00A7B938 /* os_ex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = os_ex.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -6591,7 +6631,6 @@
 		0084FC0A0D34265A0021E5C9 /* Layer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Layer.cpp; sourceTree = "<group>"; };
 		0084FC0B0D34265A0021E5C9 /* Locator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Locator.cpp; sourceTree = "<group>"; };
 		0084FC0C0D34265A0021E5C9 /* ReaderWriterOsgTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReaderWriterOsgTerrain.cpp; sourceTree = "<group>"; };
-		0084FC0D0D34265B0021E5C9 /* Terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Terrain.cpp; sourceTree = "<group>"; };
 		0084FC610D3427B70021E5C9 /* osgdb_cfg.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_cfg.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		0084FC770D34284D0021E5C9 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		0084FC780D34284D0021E5C9 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
@@ -7438,6 +7477,36 @@
 		D41CA8FA0CAAB10200D6176C /* OBJWriterNodeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OBJWriterNodeVisitor.h; sourceTree = "<group>"; };
 		D41CA8FF0CAAB58F00D6176C /* ParallelSplitShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ParallelSplitShadowMap.cpp; sourceTree = "<group>"; };
 		D41CA9010CAAB5A500D6176C /* ParallelSplitShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ParallelSplitShadowMap; sourceTree = "<group>"; };
+		D4456E510D4F674E005E986E /* osgtext3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osgtext3D.cpp; path = ../../examples/osgtext3D/osgtext3D.cpp; sourceTree = SOURCE_ROOT; };
+		D44F2AA70DA11DD2009144E7 /* TerrainTile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TerrainTile; sourceTree = "<group>"; };
+		D44F2AA90DA11DED009144E7 /* TerrainTile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainTile.cpp; path = ../../src/osgTerrain/TerrainTile.cpp; sourceTree = SOURCE_ROOT; };
+		D44F2AAB0DA11E0A009144E7 /* TerrainTile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainTile.cpp; sourceTree = "<group>"; };
+		D44F2AAD0DA11E31009144E7 /* DataOutputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataOutputStream.cpp; sourceTree = "<group>"; };
+		D44F2AAE0DA11E31009144E7 /* DataOutputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataOutputStream.h; sourceTree = "<group>"; };
+		D44F2AAF0DA11E31009144E7 /* expAncillaryRecords.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = expAncillaryRecords.cpp; sourceTree = "<group>"; };
+		D44F2AB00DA11E31009144E7 /* expControlRecords.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = expControlRecords.cpp; sourceTree = "<group>"; };
+		D44F2AB10DA11E31009144E7 /* expGeometryRecords.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = expGeometryRecords.cpp; sourceTree = "<group>"; };
+		D44F2AB20DA11E31009144E7 /* ExportOptions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExportOptions.cpp; sourceTree = "<group>"; };
+		D44F2AB30DA11E31009144E7 /* ExportOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExportOptions.h; sourceTree = "<group>"; };
+		D44F2AB40DA11E31009144E7 /* expPrimaryRecords.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = expPrimaryRecords.cpp; sourceTree = "<group>"; };
+		D44F2AB50DA11E31009144E7 /* FltExportVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FltExportVisitor.cpp; sourceTree = "<group>"; };
+		D44F2AB60DA11E31009144E7 /* FltExportVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FltExportVisitor.h; sourceTree = "<group>"; };
+		D44F2AB70DA11E32009144E7 /* FltWriteResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FltWriteResult.h; sourceTree = "<group>"; };
+		D44F2AB80DA11E32009144E7 /* LightSourcePaletteManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LightSourcePaletteManager.cpp; sourceTree = "<group>"; };
+		D44F2AB90DA11E32009144E7 /* LightSourcePaletteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LightSourcePaletteManager.h; sourceTree = "<group>"; };
+		D44F2ABA0DA11E32009144E7 /* MaterialPaletteManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaterialPaletteManager.cpp; sourceTree = "<group>"; };
+		D44F2ABB0DA11E32009144E7 /* MaterialPaletteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaterialPaletteManager.h; sourceTree = "<group>"; };
+		D44F2ABC0DA11E32009144E7 /* Opcodes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Opcodes.h; sourceTree = "<group>"; };
+		D44F2ABD0DA11E32009144E7 /* TexturePaletteManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TexturePaletteManager.cpp; sourceTree = "<group>"; };
+		D44F2ABE0DA11E32009144E7 /* TexturePaletteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TexturePaletteManager.h; sourceTree = "<group>"; };
+		D44F2ABF0DA11E32009144E7 /* Types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Types.h; sourceTree = "<group>"; };
+		D44F2AC00DA11E32009144E7 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		D44F2AC10DA11E32009144E7 /* VertexPaletteManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VertexPaletteManager.cpp; sourceTree = "<group>"; };
+		D44F2AC20DA11E32009144E7 /* VertexPaletteManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VertexPaletteManager.h; sourceTree = "<group>"; };
+		D44F2ADA0DA11E6C009144E7 /* TerrainTile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TerrainTile.cpp; sourceTree = "<group>"; };
+		D44F2ADB0DA11E6D009144E7 /* TerrainTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TerrainTile.h; sourceTree = "<group>"; };
+		D454D47D0DB4F70E0042E209 /* QTImportExport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QTImportExport.cpp; sourceTree = "<group>"; };
+		D454D47E0DB4F70E0042E209 /* QTImportExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTImportExport.h; sourceTree = "<group>"; };
 		D47A06810B833F6E00E19024 /* osgManipulator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgManipulator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47A068F0B83404400E19024 /* AntiSquish */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = AntiSquish; sourceTree = "<group>"; };
 		D47A06900B83404400E19024 /* Command */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Command; sourceTree = "<group>"; };
@@ -7482,6 +7551,9 @@
 		D47A06CE0B83406700E19024 /* TranslatePlaneDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TranslatePlaneDragger.cpp; sourceTree = "<group>"; };
 		D47A070A0B83413800E19024 /* osgmanipulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgmanipulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47A07120B83417900E19024 /* osgmanipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgmanipulator.cpp; sourceTree = "<group>"; };
+		D48DA40E0D990BD800973C07 /* SceneGraphBuilder */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SceneGraphBuilder; sourceTree = "<group>"; };
+		D48DA4100D990C2B00973C07 /* ObjectRecordData */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ObjectRecordData; sourceTree = "<group>"; };
+		D48DA4120D990C6E00973C07 /* SceneGraphBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneGraphBuilder.cpp; sourceTree = "<group>"; };
 		D48EC64B0B4EBF2E000E05A4 /* CompositeViewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeViewer.cpp; sourceTree = "<group>"; };
 		D48EC64D0B4EBF2F000E05A4 /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
 		D48EC64E0B4EBF2F000E05A4 /* View.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = View.cpp; sourceTree = "<group>"; };
@@ -7555,8 +7627,6 @@
 		D4F092800D4BB46000BB1AC7 /* Layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layer.h; sourceTree = "<group>"; };
 		D4F092810D4BB46000BB1AC7 /* Locator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Locator.cpp; sourceTree = "<group>"; };
 		D4F092820D4BB46000BB1AC7 /* Locator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Locator.h; sourceTree = "<group>"; };
-		D4F092830D4BB46000BB1AC7 /* Terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Terrain.cpp; sourceTree = "<group>"; };
-		D4F092840D4BB46100BB1AC7 /* Terrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Terrain.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -10089,14 +10159,14 @@
 		001D060A065AB3CD003310BF /* quicktime */ = {
 			isa = PBXGroup;
 			children = (
+				D454D47D0DB4F70E0042E209 /* QTImportExport.cpp */,
+				D454D47E0DB4F70E0042E209 /* QTImportExport.h */,
 				00294B6A0CE5577A00A90A9E /* QTLiveUtils.cpp */,
 				00294B6B0CE5577A00A90A9E /* QTLiveUtils.h */,
 				00294B6C0CE5577A00A90A9E /* QuicktimeLiveImageStream.cpp */,
 				00294B6D0CE5577B00A90A9E /* QuicktimeLiveImageStream.h */,
 				001D060C065AB3CD003310BF /* MovieData.cpp */,
 				001D060D065AB3CD003310BF /* MovieData.h */,
-				001D060E065AB3CD003310BF /* QTtexture.cpp */,
-				001D060F065AB3CD003310BF /* QTtexture.h */,
 				001D0610065AB3CD003310BF /* QTUtils.cpp */,
 				001D0611065AB3CD003310BF /* QTUtils.h */,
 				001D0612065AB3CD003310BF /* QuicktimeImageStream.cpp */,
@@ -10196,6 +10266,7 @@
 		001D074C065ABAF2003310BF /* osgtext */ = {
 			isa = PBXGroup;
 			children = (
+				D4456E510D4F674E005E986E /* osgtext3D.cpp */,
 				001D0750065ABB07003310BF /* osgtext.cpp */,
 			);
 			name = osgtext;
@@ -10547,6 +10618,7 @@
 		005580E90624BC1A000A808A /* osgSim */ = {
 			isa = PBXGroup;
 			children = (
+				D48DA4100D990C2B00973C07 /* ObjectRecordData */,
 				0084FAA10D341E910021E5C9 /* ShapeAttribute */,
 				D4C6F0190B83096D0052E667 /* ElevationSlice */,
 				D4C6F01A0B83096D0052E667 /* HeightAboveTerrain */,
@@ -10795,6 +10867,28 @@
 		006E24050AC0D3B900FBB48F /* OpenFlight */ = {
 			isa = PBXGroup;
 			children = (
+				D44F2AAD0DA11E31009144E7 /* DataOutputStream.cpp */,
+				D44F2AAE0DA11E31009144E7 /* DataOutputStream.h */,
+				D44F2AAF0DA11E31009144E7 /* expAncillaryRecords.cpp */,
+				D44F2AB00DA11E31009144E7 /* expControlRecords.cpp */,
+				D44F2AB10DA11E31009144E7 /* expGeometryRecords.cpp */,
+				D44F2AB20DA11E31009144E7 /* ExportOptions.cpp */,
+				D44F2AB30DA11E31009144E7 /* ExportOptions.h */,
+				D44F2AB40DA11E31009144E7 /* expPrimaryRecords.cpp */,
+				D44F2AB50DA11E31009144E7 /* FltExportVisitor.cpp */,
+				D44F2AB60DA11E31009144E7 /* FltExportVisitor.h */,
+				D44F2AB70DA11E32009144E7 /* FltWriteResult.h */,
+				D44F2AB80DA11E32009144E7 /* LightSourcePaletteManager.cpp */,
+				D44F2AB90DA11E32009144E7 /* LightSourcePaletteManager.h */,
+				D44F2ABA0DA11E32009144E7 /* MaterialPaletteManager.cpp */,
+				D44F2ABB0DA11E32009144E7 /* MaterialPaletteManager.h */,
+				D44F2ABC0DA11E32009144E7 /* Opcodes.h */,
+				D44F2ABD0DA11E32009144E7 /* TexturePaletteManager.cpp */,
+				D44F2ABE0DA11E32009144E7 /* TexturePaletteManager.h */,
+				D44F2ABF0DA11E32009144E7 /* Types.h */,
+				D44F2AC00DA11E32009144E7 /* Utils.h */,
+				D44F2AC10DA11E32009144E7 /* VertexPaletteManager.cpp */,
+				D44F2AC20DA11E32009144E7 /* VertexPaletteManager.h */,
 				006E24060AC0D3BA00FBB48F /* AncillaryRecords.cpp */,
 				006E24070AC0D3BA00FBB48F /* AttrData.cpp */,
 				006E24080AC0D3BA00FBB48F /* AttrData.h */,
@@ -10889,6 +10983,7 @@
 		0084FC040D34265A0021E5C9 /* osgTerrain */ = {
 			isa = PBXGroup;
 			children = (
+				D44F2AAB0DA11E0A009144E7 /* TerrainTile.cpp */,
 				0084FC060D34265A0021E5C9 /* CompositeLayer.cpp */,
 				0084FC070D34265A0021E5C9 /* GeometryTechnique.cpp */,
 				0084FC080D34265A0021E5C9 /* HeightFieldLayer.cpp */,
@@ -10896,7 +10991,6 @@
 				0084FC0A0D34265A0021E5C9 /* Layer.cpp */,
 				0084FC0B0D34265A0021E5C9 /* Locator.cpp */,
 				0084FC0C0D34265A0021E5C9 /* ReaderWriterOsgTerrain.cpp */,
-				0084FC0D0D34265B0021E5C9 /* Terrain.cpp */,
 			);
 			name = osgTerrain;
 			path = ../../src/osgPlugins/osgTerrain;
@@ -11146,7 +11240,7 @@
 		00A79F660BE69CCA00F7C39E /* osgTerrain */ = {
 			isa = PBXGroup;
 			children = (
-				00388E490CFEF22000A7B938 /* TileSystem */,
+				D44F2AA70DA11DD2009144E7 /* TerrainTile */,
 				D48ED2A30C71D36C00A72121 /* Terrain */,
 				00A79F670BE69CCB00F7C39E /* Export */,
 				00A79F680BE69CCB00F7C39E /* GeometryTechnique */,
@@ -11703,6 +11797,8 @@
 		5BC2F6820C44C99800671A68 /* ive */ = {
 			isa = PBXGroup;
 			children = (
+				D44F2ADA0DA11E6C009144E7 /* TerrainTile.cpp */,
+				D44F2ADB0DA11E6D009144E7 /* TerrainTile.h */,
 				D4F092790D4BB45F00BB1AC7 /* CompositeLayer.cpp */,
 				D4F0927A0D4BB45F00BB1AC7 /* CompositeLayer.h */,
 				D4F0927B0D4BB45F00BB1AC7 /* HeightFieldLayer.cpp */,
@@ -11713,8 +11809,6 @@
 				D4F092800D4BB46000BB1AC7 /* Layer.h */,
 				D4F092810D4BB46000BB1AC7 /* Locator.cpp */,
 				D4F092820D4BB46000BB1AC7 /* Locator.h */,
-				D4F092830D4BB46000BB1AC7 /* Terrain.cpp */,
-				D4F092840D4BB46100BB1AC7 /* Terrain.h */,
 				0084FE110D342DA80021E5C9 /* OcclusionQueryNode.cpp */,
 				0084FE120D342DA80021E5C9 /* OcclusionQueryNode.h */,
 				5BC2F6830C44C99900671A68 /* AlphaFunc.cpp */,
@@ -11928,7 +12022,7 @@
 		6320CCFE07845B7C00FE3D2C /* osgTerrain */ = {
 			isa = PBXGroup;
 			children = (
-				00388E4C0CFEF23900A7B938 /* TileSystem.cpp */,
+				D44F2AA90DA11DED009144E7 /* TerrainTile.cpp */,
 				00A79F750BE69D0A00F7C39E /* GeometryTechnique.cpp */,
 				00A79F760BE69D0A00F7C39E /* Layer.cpp */,
 				00A79F770BE69D0B00F7C39E /* Locator.cpp */,
@@ -12264,6 +12358,7 @@
 		BE1185F605D71A1300EB53E5 /* osgUtil */ = {
 			isa = PBXGroup;
 			children = (
+				D48DA4120D990C6E00973C07 /* SceneGraphBuilder.cpp */,
 				0084FA5C0D341D2C0021E5C9 /* DrawElementTypeSimplifier.cpp */,
 				0084FA5D0D341D2C0021E5C9 /* EdgeCollector.cpp */,
 				0084FA5E0D341D2C0021E5C9 /* ReversePrimitiveFunctor.cpp */,
@@ -12302,11 +12397,13 @@
 				BE11861305D71A7B00EB53E5 /* Version.cpp */,
 			);
 			name = osgUtil;
+			path = ../../src/osgUtil;
 			sourceTree = SOURCE_ROOT;
 		};
 		BE11863105D71A8500EB53E5 /* osgUtil */ = {
 			isa = PBXGroup;
 			children = (
+				D48DA40E0D990BD800973C07 /* SceneGraphBuilder */,
 				0084FA620D341D4E0021E5C9 /* ConvertVec */,
 				0084FA630D341D4E0021E5C9 /* DrawElementTypeSimplifier */,
 				0084FA640D341D4F0021E5C9 /* EdgeCollector */,
@@ -12345,6 +12442,7 @@
 				BE11864D05D71AD300EB53E5 /* Version */,
 			);
 			name = osgUtil;
+			path = ../../include/osgUtil;
 			sourceTree = "<group>";
 		};
 		BE11876C05D75D5800EB53E5 /* osgText */ = {
@@ -12379,6 +12477,7 @@
 				BE11878005D75E2100EB53E5 /* Version */,
 			);
 			name = osgText;
+			path = ../../include/osgText;
 			sourceTree = "<group>";
 		};
 		BE1188DF05D7641E00EB53E5 /* osgDB */ = {
@@ -12431,6 +12530,7 @@
 				BE11891D05D7665600EB53E5 /* WriteFile */,
 			);
 			name = osgDB;
+			path = ../../include/osgDB;
 			sourceTree = "<group>";
 		};
 		D47A068E0B83404300E19024 /* osgManipulator */ = {
@@ -13083,7 +13183,7 @@
 				D4F0928A0D4BB46100BB1AC7 /* ImageLayer.h in Headers */,
 				D4F0928C0D4BB46100BB1AC7 /* Layer.h in Headers */,
 				D4F0928E0D4BB46100BB1AC7 /* Locator.h in Headers */,
-				D4F092900D4BB46100BB1AC7 /* Terrain.h in Headers */,
+				D44F2ADD0DA11E6D009144E7 /* TerrainTile.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13092,11 +13192,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				001D0616065AB3CD003310BF /* MovieData.h in Headers */,
-				001D0618065AB3CD003310BF /* QTtexture.h in Headers */,
 				001D061A065AB3CD003310BF /* QTUtils.h in Headers */,
 				001D061C065AB3CD003310BF /* QuicktimeImageStream.h in Headers */,
 				00294B6F0CE5577B00A90A9E /* QTLiveUtils.h in Headers */,
 				00294B710CE5577B00A90A9E /* QuicktimeLiveImageStream.h in Headers */,
+				D454D4800DB4F70E0042E209 /* QTImportExport.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13334,6 +13434,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D48DA4110D990C2B00973C07 /* ObjectRecordData in Headers */,
 				0084FAA20D341E920021E5C9 /* ShapeAttribute in Headers */,
 				D4C6F01C0B83096E0052E667 /* ElevationSlice in Headers */,
 				D4C6F01D0B83096E0052E667 /* HeightAboveTerrain in Headers */,
@@ -13459,6 +13560,17 @@
 				006E243A0AC0D3C400FBB48F /* Registry.h in Headers */,
 				006E243D0AC0D3C400FBB48F /* types.h in Headers */,
 				006E243F0AC0D3C400FBB48F /* Vertex.h in Headers */,
+				D44F2AC40DA11E32009144E7 /* DataOutputStream.h in Headers */,
+				D44F2AC90DA11E32009144E7 /* ExportOptions.h in Headers */,
+				D44F2ACC0DA11E32009144E7 /* FltExportVisitor.h in Headers */,
+				D44F2ACD0DA11E32009144E7 /* FltWriteResult.h in Headers */,
+				D44F2ACF0DA11E32009144E7 /* LightSourcePaletteManager.h in Headers */,
+				D44F2AD10DA11E32009144E7 /* MaterialPaletteManager.h in Headers */,
+				D44F2AD20DA11E32009144E7 /* Opcodes.h in Headers */,
+				D44F2AD40DA11E32009144E7 /* TexturePaletteManager.h in Headers */,
+				D44F2AD50DA11E32009144E7 /* Types.h in Headers */,
+				D44F2AD60DA11E32009144E7 /* Utils.h in Headers */,
+				D44F2AD80DA11E32009144E7 /* VertexPaletteManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13904,7 +14016,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00388E4A0CFEF22100A7B938 /* TileSystem in Headers */,
 				D48ED2A40C71D36C00A72121 /* Terrain in Headers */,
 				0037A1510C18FFD50089AA1C /* ValidDataOperator in Headers */,
 				00A79F6E0BE69CCD00F7C39E /* Export in Headers */,
@@ -14086,6 +14197,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D48DA40F0D990BD800973C07 /* SceneGraphBuilder in Headers */,
 				0084FA670D341D4F0021E5C9 /* ConvertVec in Headers */,
 				0084FA680D341D4F0021E5C9 /* DrawElementTypeSimplifier in Headers */,
 				0084FA690D341D4F0021E5C9 /* EdgeCollector in Headers */,
@@ -16327,6 +16439,7 @@
 				00A14CCA084E5821000150AD /* Resources */,
 				00A14CCB084E5821000150AD /* Sources */,
 				00A14CCC084E5821000150AD /* Frameworks */,
+				D48DA5C20D991E7F00973C07 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -17264,7 +17377,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 001103B108736A190015C576 /* Build configuration list for PBXProject "OpenSceneGraph" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.0";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* OpenSceneGraph */;
 			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;
@@ -17881,7 +17994,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BC191140C15F4FC002CF5BC /* ViewerEventHandlers in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18075,6 +18187,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D44F2AA80DA11DD2009144E7 /* TerrainTile in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18942,7 +19055,7 @@
 				D4F092890D4BB46100BB1AC7 /* ImageLayer.cpp in Sources */,
 				D4F0928B0D4BB46100BB1AC7 /* Layer.cpp in Sources */,
 				D4F0928D0D4BB46100BB1AC7 /* Locator.cpp in Sources */,
-				D4F0928F0D4BB46100BB1AC7 /* Terrain.cpp in Sources */,
+				D44F2ADC0DA11E6D009144E7 /* TerrainTile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18951,12 +19064,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				001D0615065AB3CD003310BF /* MovieData.cpp in Sources */,
-				001D0617065AB3CD003310BF /* QTtexture.cpp in Sources */,
 				001D0619065AB3CD003310BF /* QTUtils.cpp in Sources */,
 				001D061B065AB3CD003310BF /* QuicktimeImageStream.cpp in Sources */,
 				001D061D065AB3CD003310BF /* ReaderWriterQT.cpp in Sources */,
 				00294B6E0CE5577B00A90A9E /* QTLiveUtils.cpp in Sources */,
 				00294B700CE5577B00A90A9E /* QuicktimeLiveImageStream.cpp in Sources */,
+				D454D47F0DB4F70E0042E209 /* QTImportExport.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18964,7 +19077,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				001D0751065ABB07003310BF /* osgtext.cpp in Sources */,
+				D4456E520D4F674E005E986E /* osgtext3D.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19226,7 +19339,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				006CE9160921AA0100985402 /* osgcamera.cpp in Sources */,
+				D48DA45F0D991BDE00973C07 /* osgcamera.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19303,6 +19416,17 @@
 				006E243C0AC0D3C400FBB48F /* RoadRecords.cpp in Sources */,
 				006E243E0AC0D3C400FBB48F /* Vertex.cpp in Sources */,
 				006E24400AC0D3C400FBB48F /* VertexRecords.cpp in Sources */,
+				D44F2AC30DA11E32009144E7 /* DataOutputStream.cpp in Sources */,
+				D44F2AC50DA11E32009144E7 /* expAncillaryRecords.cpp in Sources */,
+				D44F2AC60DA11E32009144E7 /* expControlRecords.cpp in Sources */,
+				D44F2AC70DA11E32009144E7 /* expGeometryRecords.cpp in Sources */,
+				D44F2AC80DA11E32009144E7 /* ExportOptions.cpp in Sources */,
+				D44F2ACA0DA11E32009144E7 /* expPrimaryRecords.cpp in Sources */,
+				D44F2ACB0DA11E32009144E7 /* FltExportVisitor.cpp in Sources */,
+				D44F2ACE0DA11E32009144E7 /* LightSourcePaletteManager.cpp in Sources */,
+				D44F2AD00DA11E32009144E7 /* MaterialPaletteManager.cpp in Sources */,
+				D44F2AD30DA11E32009144E7 /* TexturePaletteManager.cpp in Sources */,
+				D44F2AD70DA11E32009144E7 /* VertexPaletteManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19371,7 +19495,7 @@
 				0084FC120D34265B0021E5C9 /* Layer.cpp in Sources */,
 				0084FC130D34265B0021E5C9 /* Locator.cpp in Sources */,
 				0084FC140D34265B0021E5C9 /* ReaderWriterOsgTerrain.cpp in Sources */,
-				0084FC150D34265B0021E5C9 /* Terrain.cpp in Sources */,
+				D44F2AAC0DA11E0A009144E7 /* TerrainTile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19468,7 +19592,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				00A14D55084E5A50000150AD /* osgviewer.cpp in Sources */,
-				5BC1910B0C15F462002CF5BC /* ViewerEventHandlers.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19804,7 +19927,7 @@
 				00A79F780BE69D0B00F7C39E /* GeometryTechnique.cpp in Sources */,
 				00A79F790BE69D0B00F7C39E /* Layer.cpp in Sources */,
 				00A79F7A0BE69D0B00F7C39E /* Locator.cpp in Sources */,
-				00388E4D0CFEF23900A7B938 /* TileSystem.cpp in Sources */,
+				D44F2AAA0DA11DED009144E7 /* TerrainTile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19977,6 +20100,7 @@
 				0084FA5F0D341D2C0021E5C9 /* DrawElementTypeSimplifier.cpp in Sources */,
 				0084FA600D341D2C0021E5C9 /* EdgeCollector.cpp in Sources */,
 				0084FA610D341D2C0021E5C9 /* ReversePrimitiveFunctor.cpp in Sources */,
+				D48DA4130D990C6E00973C07 /* SceneGraphBuilder.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27306,6 +27430,10 @@
 		0011027208736A190015C576 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = NO;
 				DEBUGGING_SYMBOLS = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -27338,6 +27466,10 @@
 		0011027308736A190015C576 /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				COPY_PHASE_STRIP = YES;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -27369,6 +27501,10 @@
 		0011027408736A190015C576 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
@@ -33143,8 +33279,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					ppc,
 					i386,
+					ppc,
 				);
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -33161,10 +33297,10 @@
 					../../include,
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				OTHER_CFLAGS = "-DGLU_TESS_CALLBACK_TRIPLEDOT";
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_CFLAGS = "";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 			};
 			name = Development;
 		};
@@ -33186,10 +33322,10 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = s;
 				HEADER_SEARCH_PATHS = ../../include;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "-DGLU_TESS_CALLBACK_TRIPLEDOT";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				STRIP_STYLE = "non-global";
 			};
 			name = Deployment;
@@ -33214,10 +33350,10 @@
 					../../include,
 					../../../OpenThreads/include,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "-DGLU_TESS_CALLBACK_TRIPLEDOT";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 			};
 			name = Default;
 		};
@@ -34021,6 +34157,8 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
+					"-framework",
+					Carbon,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgcamera;
@@ -34052,6 +34190,8 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
+					"-framework",
+					Carbon,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgcamera;
@@ -34078,6 +34218,8 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
+					"-framework",
+					Carbon,
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgcamera;

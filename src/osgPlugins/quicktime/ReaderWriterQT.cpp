@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sstream>
+
 
 #ifndef __APPLE__
 #include "Components.h"
@@ -27,7 +29,7 @@
 #endif
 #include "QTUtils.h"
 #include "QTLiveUtils.h"
-#include "QTtexture.h"
+#include "QTImportExport.h"
 #include "QuicktimeImageStream.h"
 #include "QuicktimeLiveImageStream.h"
 
@@ -169,7 +171,7 @@ public:
                       osg::notify(osg::ALWAYS) << std::endl;
                       osg::notify(osg::ALWAYS) << "Video Component/Input IDs follow: " << std::endl;
                       osg::notify(osg::ALWAYS) << std::endl;
-                      for (int device_input = 0; device_input < video_device_list.size(); ++device_input)
+                      for (unsigned int device_input = 0; device_input < video_device_list.size(); ++device_input)
                       {
                           OSG_SGDevicePair device_pair = video_device_list[device_input];
                           osg::notify(osg::ALWAYS) << device_pair.first.c_str() << "    " << device_pair.second.c_str() << std::endl;
@@ -183,7 +185,7 @@ public:
                       osg::notify(osg::ALWAYS) << std::endl;
                       osg::notify(osg::ALWAYS) << "Audio Component/Input IDs follow: " << std::endl;
                       osg::notify(osg::ALWAYS) << std::endl;
-                      for (int device_input = 0; device_input < audio_device_list.size(); ++device_input)
+                      for (unsigned int device_input = 0; device_input < audio_device_list.size(); ++device_input)
                       {
                           OSG_SGDevicePair device_pair = audio_device_list[device_input];
                           osg::notify(osg::ALWAYS) << device_pair.first.c_str() << "    " << device_pair.second.c_str() << std::endl;
@@ -246,332 +248,132 @@ public:
          return moov;
       }
  
-      long origWidth, origHeight,buffWidth,buffHeight,buffDepth,origDepth;
+        QuicktimeImportExport importer;
 
-      // NOTE - implememntation means that this will always return 32 bits, so it is hard to work out if 
-      // an image was monochrome. So it will waste texture memory unless it gets a monochrome hint.
+        std::ifstream is;
+        is.open (fileName.c_str(), std::ios::binary | std::ios::in );
+        is.seekg (0, std::ios::end);
+        long length = is.tellg();
+        is.seekg (0, std::ios::beg);
 
-      unsigned char *pixels = LoadBufferFromDarwinPath ( fileName.c_str(), &origWidth,&origHeight,&origDepth,
-         &buffWidth,&buffHeight,
-         &buffDepth);
+        osg::ref_ptr<osg::Image> image = importer.readFromStream(is, fileName, length);
+        is.close();
+        if (!importer.success() || (image == NULL)) {
+            osg::notify(osg::WARN) << "Error reading file " << file << " : " << importer.getLastErrorString() << std::endl;
+            return ReadResult::ERROR_IN_READING_FILE;
+        }
 
-      // IMPORTANT - 
-      // origDepth in BYTES, buffDepth in BITS 
-      if (pixels == 0) 
-      {
-         osg::notify(osg::WARN) << "LoadBufferFromDarwinPath failed " << fileName.c_str() << QTfailureMessage() << std::endl;
-         return 0;
-      }                      
+      _qtExitObserver.addMedia(image.get());
 
-      unsigned int pixelFormat;
-
-      switch(origDepth) 
-      {
-         case 1 :
-            pixelFormat = GL_RGB;
-            break;
-         case 2 :
-            pixelFormat = GL_LUMINANCE_ALPHA;
-            break;
-         case 3 :
-            pixelFormat = GL_RGB;
-            break;
-         case 4 :
-            pixelFormat = GL_RGBA;
-            break;
-         default :
-            osg::notify(osg::WARN) << "Unknown file type in " << fileName.c_str() << " with " << origDepth << std::endl;
-            pixelFormat = (GLenum)-1;
-            return 0;
-            break;
-      }
-
-      {
-         unsigned char *srcp=pixels, *dstp=pixels;
-
-         int i, j;
-
-         // swizzle entire image in-place
-         unsigned char r, g, b, a;
-         for (i=0; i<buffHeight; i++ ) {
-
-            switch (origDepth) 
+      return image.release();
+   }
+   
+    virtual ReadResult readImage (std::istream& is, const osgDB::ReaderWriter::Options* options=NULL) const 
+    {
+        std::string filename = "";
+        long sizeHint(0);
+        // check options for a file-type-hint 
+        if (options) {
+            std::istringstream iss(options->getOptionString());
+            std::string opt;
+            while (iss >> opt) 
             {
-
-               /*
-               since 8-bit tgas will get expanded into colour, have to use RGB code for 8-bit images
-
-               case 1 :
-               for (j=0; j<buffWidth; j++ ) {
-               dstp[0]=srcp[2];
-               srcp+=4;
-               dstp++;
-               }
-               break;
-               */
-               case 2 :
-                  for (j=0; j<buffWidth; j++ ) {
-                     dstp[1]=srcp[0];
-                     dstp[0]=srcp[2];
-                     srcp+=4;
-                     dstp+=2;
-                  }
-                  break;
-
-               case 1 :
-               case 3 :
-                  for (j=0; j<buffWidth; j++ ) {
-                     dstp[0]=srcp[1];
-                     dstp[1]=srcp[2];
-                     dstp[2]=srcp[3];
-                     srcp+=4;
-                     dstp+=3;
-                  }
-                  break;
-               case 4 :
-                  for (j=0; j<buffWidth; j++ ) {
-                     r=srcp[1];
-                     g=srcp[2];
-                     b=srcp[3];
-                     a=srcp[0];
-
-                     dstp[0]=r;
-                     dstp[1]=g;
-                     dstp[2]=b;
-                     dstp[3]=a;
-
-                     srcp+=4;
-                     dstp+=4;
-                  }
-                  break;
-               default :
-                  // osg::notify(osg::WARN) << "ERROR IN RETURNED PIXEL DEPTH, CANNOT COPE" << std::endl;
-                  return 0;
-                  break;
+                int index = opt.find( "=" );
+                if( opt.substr( 0, index ) == "filename" ||
+                    opt.substr( 0, index ) == "FILENAME" )
+                {
+                    filename = opt.substr( index+1 );
+                } else if( opt.substr( 0, index ) == "size" ||
+                    opt.substr( 0, index ) == "SIZE" )
+                {
+                    std::string sizestr = opt.substr( index+1 );
+                    sizeHint = atol(sizestr.c_str());
+                }
             }
-         }
-      }
+        }
+        
+        QuicktimeImportExport importer;
+        osg::ref_ptr<osg::Image> image = importer.readFromStream(is, filename, sizeHint);
+        
+        if (!importer.success() || (image == NULL)) {
+            osg::notify(osg::WARN) << "Error reading from stream "  << importer.getLastErrorString() << std::endl;
+            return ReadResult::ERROR_IN_READING_FILE;
+        }
+        _qtExitObserver.addMedia(image.get());
+        return image.release();
+        
+    }
 
+    virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
+    {
+        std::string ext = osgDB::getFileExtension(fileName);
+        if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
+        initQuicktime();
 
-      Image* image = new Image();
-      image->setFileName(fileName.c_str());
-      image->setImage(buffWidth,buffHeight,1,
-                      buffDepth >> 3,
-                      pixelFormat,
-                      GL_UNSIGNED_BYTE,
-                      pixels,
-                      osg::Image::USE_NEW_DELETE );
+        //Buidl map  of extension <-> osFileTypes
+        std::map<std::string, OSType> extmap;
 
-      notify(DEBUG_INFO) << "image read ok "<<buffWidth<<"  "<<buffHeight<<std::endl;
+        extmap.insert(std::pair<std::string, OSType>("jpg",  kQTFileTypeJPEG));
+        extmap.insert(std::pair<std::string, OSType>("jpeg", kQTFileTypeJPEG));
+        extmap.insert(std::pair<std::string, OSType>("bmp",  kQTFileTypeBMP));
+        extmap.insert(std::pair<std::string, OSType>("tif",  kQTFileTypeTIFF));
+        extmap.insert(std::pair<std::string, OSType>("tiff", kQTFileTypeTIFF));
+        extmap.insert(std::pair<std::string, OSType>("png",  kQTFileTypePNG));
+        extmap.insert(std::pair<std::string, OSType>("gif",  kQTFileTypeGIF));
+        extmap.insert(std::pair<std::string, OSType>("psd",  kQTFileTypePhotoShop));
+        extmap.insert(std::pair<std::string, OSType>("sgi",  kQTFileTypeSGIImage));
+        extmap.insert(std::pair<std::string, OSType>("rgb",  kQTFileTypeSGIImage));
+        extmap.insert(std::pair<std::string, OSType>("rgba", kQTFileTypeSGIImage));
 
-      // add the media to the observer for proper clean up on exit
-      _qtExitObserver.addMedia(image);
+        std::map<std::string, OSType>::iterator cur = extmap.find(ext);
 
-      return image;
-   }
-
-   virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
-   {
-      std::string ext = osgDB::getFileExtension(fileName);
-      if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
-
-      initQuicktime();
-
-      //Buidl map  of extension <-> osFileTypes
-      std::map<std::string, OSType> extmap;
-
-      extmap.insert(std::pair<std::string, OSType>("jpg",  kQTFileTypeJPEG));
-      extmap.insert(std::pair<std::string, OSType>("jpeg", kQTFileTypeJPEG));
-      extmap.insert(std::pair<std::string, OSType>("bmp",  kQTFileTypeBMP));
-      extmap.insert(std::pair<std::string, OSType>("tif",  kQTFileTypeTIFF));
-      extmap.insert(std::pair<std::string, OSType>("tiff", kQTFileTypeTIFF));
-      extmap.insert(std::pair<std::string, OSType>("png",  kQTFileTypePNG));
-      extmap.insert(std::pair<std::string, OSType>("gif",  kQTFileTypeGIF));
-      extmap.insert(std::pair<std::string, OSType>("psd",  kQTFileTypePhotoShop));
-      // extmap.insert(std::pair<std::string, OSType>("tga",  kQTFileTypeTargaImage));
-      extmap.insert(std::pair<std::string, OSType>("sgi",  kQTFileTypeSGIImage));
-      extmap.insert(std::pair<std::string, OSType>("rgb",  kQTFileTypeSGIImage));
-      extmap.insert(std::pair<std::string, OSType>("rgba", kQTFileTypeSGIImage));
-
-      std::map<std::string, OSType>::iterator cur = extmap.find(ext);
-
-      // can not handle this type of file, perhaps a movie?
-      if (cur == extmap.end())
+        // can not handle this type of file, perhaps a movie?
+        if (cur == extmap.end())
          return WriteResult::FILE_NOT_HANDLED;
 
-      OSType desiredType = cur->second;
-      GraphicsExportComponent     geComp     = NULL;
+        std::ofstream os(fileName.c_str(), std::ios::binary | std::ios::trunc | std::ios::out);
+        if(os.good()) 
+        {
+            QuicktimeImportExport exporter;
+            exporter.writeToStream(os, const_cast<osg::Image*>(&img), fileName);
+            
+            if (exporter.success()) 
+                return WriteResult::FILE_SAVED;
+        } 
 
-      OSErr err = OpenADefaultComponent(GraphicsExporterComponentType, desiredType, &geComp);
-
-      if (err != noErr) {
-         osg::notify(osg::WARN) << "ReaderWriterQT: could not open Graphics epxorter for type " << ext << ", Err: " << err << std::endl;
-         return WriteResult::FILE_NOT_HANDLED;
-      }
-
-      GWorldPtr gw = NULL;
-
-      // we are converting the images back to 32bit, it seems, that quicktime can't handle others
-
-      unsigned long desiredPixelFormat = k32ARGBPixelFormat;
-
-
-
-      // we need to swizzle the colours again :)
-      unsigned int numBytes = img.computeNumComponents(img.getPixelFormat());
-
-      unsigned int buffWidth = img.s();
-      unsigned int buffHeight = img.t();
-      char * pixels = (char*) malloc(buffHeight * buffWidth * 4);
-
-
-
-      const unsigned char *srcp = img.data();
-      char *dstp=pixels;
-      unsigned int i, j;
-      for (i=0; i<buffHeight; i++ ) {
-
-         switch (numBytes) {
-            case 1 : 
-               dstp[0] = 0;
-               dstp[1] = srcp[0];
-               dstp[2] = srcp[0];
-               dstp[3] = srcp[0];
-               srcp+=1;
-               dstp+=4;
-
-               break;
-            case 3 :
-               for (j=0; j<buffWidth; j++ ) {
-                  dstp[0]=0;
-                  dstp[1]=srcp[0];
-                  dstp[2]=srcp[1];
-                  dstp[3]=srcp[2];
-
-                  srcp+=3;
-                  dstp+=4;
-               }
-               break;
-
-            case 4 :
-               for (j=0; j<buffWidth; j++ ) {
-                  // shift from RGBA to ARGB
-                  dstp[0]=srcp[3];
-                  dstp[1]=srcp[0];
-                  dstp[2]=srcp[1];
-                  dstp[3]=srcp[2];
-
-                  srcp+=4;
-                  dstp+=4;
-               }
-               break;
-               
-            default :
-               // osg::notify(osg::WARN) << "ERROR IN RETURNED PIXEL DEPTH, CANNOT COPE" << std::endl;
-               return WriteResult::ERROR_IN_WRITING_FILE;
-               break;
-         }
-      }
-
-      // Flip the image
-      unsigned imageSize = buffWidth*buffHeight*4;
-      char *tBuffer = (char*)malloc((size_t)imageSize);
-      unsigned int rowBytes = buffWidth * 4;
-      for (i = 0, j = imageSize - rowBytes; i < imageSize; i += rowBytes, j -= rowBytes)
-         memcpy( &tBuffer[j], &pixels[i], (size_t)rowBytes );
-
-      memcpy(pixels, tBuffer, (size_t)imageSize);
-      free(tBuffer);
-
-      FSSpec* fileSpec = NULL;
-
-      try {
-         Rect bounds;
-         SetRect(&bounds, 0,0, img.s(), img.t());
-
-         err = QTNewGWorldFromPtr(&gw, desiredPixelFormat, &bounds, 0,0,0, pixels, buffWidth*4);
-         if (err != noErr) {
-            osg::notify(osg::WARN) << "ReaderWriterQT: could not create gworld for type " << ext << ", Err: " << err << std::endl;
-            throw err;
-         }
-
-         // create a dummy file at location
-         FILE *fp = fopen(fileName.c_str(), "wb");
-         if (!fp) {
-            osg::notify(osg::WARN) << "ReaderWriterQT: could not create file!" << std::endl;
-            throw err;
-         }
-
-         fclose(fp);
-
-         // get an FSSpec to the file, so quicktime can handle the file.
-         fileSpec = darwinPathToFSSpec( const_cast<char*>(fileName.c_str()) );
-         if (fileSpec == NULL) {
-            osg::notify(osg::WARN) << "ReaderWriterQT: could not get FSSpec" << std::endl;
-            throw err;
-         }
-
-         err = GraphicsExportSetInputGWorld(geComp, gw);
-         if (err != noErr) {
-            osg::notify(osg::WARN) << "ReaderWriterQT: could not set input gworld for type " << ext << ", Err: " << err << std::endl;
-            throw err;
-         }
-
-         err = GraphicsExportSetOutputFile(geComp, fileSpec); 
-         if (err != noErr) {
-            osg::notify(osg::WARN) << "ReaderWriterQT: could not set output file for type " << ext << ", Err: " << err << std::endl;
-            throw err;
-         } 
-
-         // Set the compression quality (needed for JPEG, not necessarily for other formats)
-         if (desiredType == kQTFileTypeJPEG) {
-            err = GraphicsExportSetCompressionQuality(geComp, codecLosslessQuality);
-            if (err != noErr) {
-               osg::notify(osg::WARN) << "ReaderWriterQT: could not set compression for type " << ext << ", Err: " << err << std::endl;
-               throw err;
+        return WriteResult::ERROR_IN_WRITING_FILE; 
+    }
+   
+    virtual WriteResult writeImage (const osg::Image& img, std::ostream& os, const Options* options=NULL) const
+    {
+        std::string filename = "file.jpg"; // use jpeg if not otherwise specified
+        
+        if (options) {
+            std::istringstream iss(options->getOptionString());
+            std::string opt;
+            while (iss >> opt) 
+            {
+                int index = opt.find( "=" );
+                if( opt.substr( 0, index ) == "filename" ||
+                    opt.substr( 0, index ) == "FILENAME" )
+                {
+                    filename = opt.substr( index+1 );
+                }
             }
-         }
-
-         if(32 == numBytes)
-         {
-            err = GraphicsExportSetDepth( geComp,
-               k32ARGBPixelFormat );    // depth
-         }
-         // else k24RGBPixelFormat???
-
-         // do the export
-         err = GraphicsExportDoExport(geComp, NULL);
-         if (err != noErr) {
-            osg::notify(osg::WARN) << "ReaderWriterQT: could not save file for type " << ext << ", Err: " << err << std::endl;
-            throw err;
-         } 
-
-         if (geComp != NULL)
-            CloseComponent(geComp);
-
-         DisposeGWorld (gw);
-         if (fileSpec != NULL ) free(fileSpec);   
-         if (pixels) free(pixels);
-
-         return WriteResult::FILE_SAVED;
-      }
+        }
+        
+        QuicktimeImportExport exporter;
+        exporter.writeToStream(os, const_cast<osg::Image*>(&img), filename);
+            
+        if (exporter.success()) 
+            return WriteResult::FILE_SAVED;
+        
+        return WriteResult::ERROR_IN_WRITING_FILE;         
+    }
 
 
-      catch (...) {
-
-         if (geComp != NULL) CloseComponent(geComp);      
-         if (gw != NULL) DisposeGWorld (gw);
-         if (fileSpec != NULL ) free(fileSpec);
-         if (pixels) free(pixels);
-
-         return WriteResult::ERROR_IN_WRITING_FILE;
-      }
-
-   }
-
-
-   mutable QuicktimeExitObserver _qtExitObserver;
+    mutable QuicktimeExitObserver _qtExitObserver;
 };
 
 // now register with Registry to instantiate the above

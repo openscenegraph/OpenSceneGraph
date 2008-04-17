@@ -81,7 +81,11 @@ AdapterWidget::AdapterWidget( QWidget * parent, const char * name, const QGLWidg
 #endif
 {
     _gw = new osgViewer::GraphicsWindowEmbedded(0,0,width(),height());
+#if USE_QT4
     setFocusPolicy(Qt::ClickFocus);
+#else
+    setFocusPolicy(QWidget::ClickFocus);
+#endif
 }
 
 void AdapterWidget::resizeGL( int width, int height )
@@ -234,6 +238,7 @@ int mainAdapterWidget(QApplication& a, osg::ArgumentParser& arguments)
         }
 
         viewerWindow->show();
+#if USE_QT4
     }
     else if (arguments.read("--mdi")) {
           std::cout<<"Using ViewetQT MDI version"<<std::endl;
@@ -253,7 +258,7 @@ int mainAdapterWidget(QApplication& a, osg::ArgumentParser& arguments)
          subWindow->showMaximized();
          subWindow->setWindowTitle("New Window");
          mw->show();
-
+#endif // USE_QT4
     } else {
         ViewerQT* viewerWindow = new ViewerQT;
 

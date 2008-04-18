@@ -146,3 +146,27 @@ void CullSettings::readCommandLine(ArgumentParser& arguments)
     }
 
 }
+
+void CullSettings::write(std::ostream& out)
+{
+    out<<"CullSettings: "<<this<<" {"<<std::endl;
+    
+    out<<"    _inheritanceMask = "<<_inheritanceMask<<std::endl;
+    out<<"    _inheritanceMaskActionOnAttributeSetting = "<<_inheritanceMaskActionOnAttributeSetting<<std::endl;
+    out<<"    _computeNearFar = "<<_computeNearFar<<std::endl;
+    out<<"    _cullingMode = "<<_cullingMode<<std::endl;
+    out<<"    _LODScale = "<<_LODScale<<std::endl;
+    out<<"    _smallFeatureCullingPixelSize = "<<_smallFeatureCullingPixelSize<<std::endl;
+    out<<"    _clampProjectionMatrixCallback = "<<_clampProjectionMatrixCallback.get()<<std::endl;
+    out<<"    _nearFarRatio = "<<_nearFarRatio<<std::endl;
+    out<<"    _impostorActive = "<<_impostorActive<<std::endl;
+    out<<"    _depthSortImpostorSprites = "<<_depthSortImpostorSprites<<std::endl;
+    out<<"    _impostorPixelErrorThreshold = "<<_impostorPixelErrorThreshold<<std::endl;
+    out<<"    _numFramesToKeepImpostorSprites = "<<_numFramesToKeepImpostorSprites<<std::endl;
+    out<<"    _cullMask = "<<_cullMask<<std::endl;
+    out<<"    _cullMaskLeft = "<<_cullMaskLeft<<std::endl;
+    out<<"    _cullMaskRight = "<<_cullMaskRight<<std::endl;
+    
+    out<<"{"<<std::endl;
+}
+

@@ -318,7 +318,15 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             COLOR_BUFFER4 = COLOR_BUFFER0+4,
             COLOR_BUFFER5 = COLOR_BUFFER0+5,
             COLOR_BUFFER6 = COLOR_BUFFER0+6,
-            COLOR_BUFFER7 = COLOR_BUFFER0+7            
+            COLOR_BUFFER7 = COLOR_BUFFER0+7,
+            COLOR_BUFFER8 = COLOR_BUFFER0+8,
+            COLOR_BUFFER9 = COLOR_BUFFER0+9,
+            COLOR_BUFFER10 = COLOR_BUFFER0+10,
+            COLOR_BUFFER11 = COLOR_BUFFER0+11,
+            COLOR_BUFFER12 = COLOR_BUFFER0+12,
+            COLOR_BUFFER13 = COLOR_BUFFER0+13,
+            COLOR_BUFFER14 = COLOR_BUFFER0+14,
+            COLOR_BUFFER15 = COLOR_BUFFER0+15
         };
 
         void attach(BufferComponent buffer, GLenum internalFormat);

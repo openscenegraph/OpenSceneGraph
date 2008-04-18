@@ -340,43 +340,21 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 osg::Camera::BufferComponent buffer = itr->first;
                 osg::Camera::Attachment& attachment = itr->second;
                 
-                switch(buffer)
-                {
-                    case(osg::Camera::DEPTH_BUFFER):
-                    {
-                        fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(attachment));
-                        depthAttached = true;
-                        break;
-                    }
-                    case(osg::Camera::STENCIL_BUFFER):
-                    {
-                        fbo->setAttachment(GL_STENCIL_ATTACHMENT_EXT, osg::FrameBufferAttachment(attachment));
-                        stencilAttached = true;
-                        break;
-                    }
-                    case(osg::Camera::COLOR_BUFFER):
-                    {
-                        fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(attachment));
-                        colorAttached = true;
-                        break;
-                    }
-                    default:
-                    {
-                        fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT+(buffer-osg::Camera::COLOR_BUFFER0), osg::FrameBufferAttachment(attachment));
-                        colorAttached = true;
-                        break;
-                    }
-                }
+                fbo->setAttachment(buffer, osg::FrameBufferAttachment(attachment));
+                
+                if (buffer==osg::Camera::DEPTH_BUFFER) depthAttached = true;
+                else if (buffer==osg::Camera::STENCIL_BUFFER) stencilAttached = true;
+                else if (buffer>osg::Camera::COLOR_BUFFER) colorAttached = true;
             }
 
             if (!depthAttached)
             {                
-                fbo->setAttachment(GL_DEPTH_ATTACHMENT_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_DEPTH_COMPONENT24)));
+                fbo->setAttachment(osg::Camera::DEPTH_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_DEPTH_COMPONENT24)));
             }
 
             if (!colorAttached)
             {                
-                fbo->setAttachment(GL_COLOR_ATTACHMENT0_EXT, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_RGB)));
+                fbo->setAttachment(osg::Camera::COLOR_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_RGB)));
             }
 
             fbo->apply(state);
@@ -385,7 +363,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             
             if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
             {
-                osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(), FBO setup failed, FBO status= 0x"<<std::hex<<status<<std::endl;
+                osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp(), FBO setup failed, FBO status= 0x"<<std::hex<<status<<std::endl;
 
                 fbo_supported = false;
                 fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);

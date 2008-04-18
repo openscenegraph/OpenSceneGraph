@@ -1,4 +1,4 @@
-OpenSceneGraph Library 2.3.8
+OpenSceneGraph Library 2.3.9
 
 306 Contributors:
 
@@ -12,8 +12,8 @@ Paul Martz
 Eric Wing
 Brede Johansen
 Geoff Michel
-Farshid Lashkari
 Stephan Huber
+Farshid Lashkari
 Bob Kuehne
 Ulrich Hertlein
 Martin Lavery
@@ -50,9 +50,9 @@ David Spilling
 Art Tevs
 Sherman Wilcox
 Joran Jessurun
+Jason Beverage
 Paul Melis
 Jason Daly
-Jason Beverage
 Frederic Marmond
 David Fries
 Boris Bralo
@@ -74,6 +74,7 @@ Martin Aumueller
 Markus Trenkwalder
 Loic Dachary
 Joseph Steel
+John Shue
 Jan Peciva
 Jan Ciger
 Gordon Tomlinson
@@ -89,7 +90,6 @@ Mihai Radu
 Michael Platings
 Michael Hartman
 Laurens Voerman
-John Shue
 David Guthrie
 Corbin Holtz
 Brad Christiansen

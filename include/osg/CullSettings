@@ -235,7 +235,8 @@ class OSG_EXPORT CullSettings
         const ClampProjectionMatrixCallback* getClampProjectionMatrixCallback() const { return _clampProjectionMatrixCallback.get(); }
 
 
-
+        /** Write out internal settings of CullSettings. */
+        void write(std::ostream& out);
 
     protected:
 

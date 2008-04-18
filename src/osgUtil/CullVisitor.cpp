@@ -1152,15 +1152,37 @@ void CullVisitor::apply(osg::Camera& camera)
     StateSet* node_state = camera.getStateSet();
     if (node_state) pushStateSet(node_state);
 
+//#define DEBUG_CULLSETTINGS
+
+#ifdef DEBUG_CULLSETTINGS
+    osg::notify(osg::NOTICE)<<std::endl<<std::endl<<"CullVisitor, before : ";
+    write(osg::notify(osg::NOTICE));
+#endif
+
     // Save current cull settings
     CullSettings saved_cull_settings(*this);
+
+#ifdef DEBUG_CULLSETTINGS
+    osg::notify(osg::NOTICE)<<"CullVisitor, saved_cull_settings : ";
+    saved_cull_settings.write(osg::notify(osg::NOTICE));
+#endif
 
 #if 1
     // set cull settings from this Camera
     setCullSettings(camera);
 
+#ifdef DEBUG_CULLSETTINGS
+    osg::notify(osg::NOTICE)<<"CullVisitor, after setCullSettings(camera) : ";
+    write(osg::notify(osg::NOTICE));
+#endif
     // inherit the settings from above
     inheritCullSettings(saved_cull_settings, camera.getInheritanceMask());
+
+#ifdef DEBUG_CULLSETTINGS
+    osg::notify(osg::NOTICE)<<"CullVisitor, after inheritCullSettings(saved_cull_settings,"<<camera.getInheritanceMask()<<") : ";
+    write(osg::notify(osg::NOTICE));
+#endif
+
 #else
     // activate all active cull settings from this Camera
     inheritCullSettings(camera);

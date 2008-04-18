@@ -344,7 +344,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 
                 if (buffer==osg::Camera::DEPTH_BUFFER) depthAttached = true;
                 else if (buffer==osg::Camera::STENCIL_BUFFER) stencilAttached = true;
-                else if (buffer>osg::Camera::COLOR_BUFFER) colorAttached = true;
+                else if (buffer>=osg::Camera::COLOR_BUFFER) colorAttached = true;
             }
 
             if (!depthAttached)

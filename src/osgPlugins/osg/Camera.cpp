@@ -328,6 +328,14 @@ bool Camera_matchBufferComponentStr(const char* str,Camera::BufferComponent& buf
     else if (strcmp(str,"COLOR_BUFFER5")==0)            buffer = osg::Camera::COLOR_BUFFER5;
     else if (strcmp(str,"COLOR_BUFFER6")==0)            buffer = osg::Camera::COLOR_BUFFER6;
     else if (strcmp(str,"COLOR_BUFFER7")==0)            buffer = osg::Camera::COLOR_BUFFER7;
+    else if (strcmp(str,"COLOR_BUFFER8")==0)            buffer = osg::Camera::COLOR_BUFFER8;
+    else if (strcmp(str,"COLOR_BUFFER9")==0)            buffer = osg::Camera::COLOR_BUFFER9;
+    else if (strcmp(str,"COLOR_BUFFER10")==0)           buffer = osg::Camera::COLOR_BUFFER10;
+    else if (strcmp(str,"COLOR_BUFFER11")==0)           buffer = osg::Camera::COLOR_BUFFER11;
+    else if (strcmp(str,"COLOR_BUFFER12")==0)           buffer = osg::Camera::COLOR_BUFFER12;
+    else if (strcmp(str,"COLOR_BUFFER13")==0)           buffer = osg::Camera::COLOR_BUFFER13;
+    else if (strcmp(str,"COLOR_BUFFER14")==0)           buffer = osg::Camera::COLOR_BUFFER14;
+    else if (strcmp(str,"COLOR_BUFFER15")==0)           buffer = osg::Camera::COLOR_BUFFER15;
     else return false;
     return true;
 }
@@ -346,7 +354,15 @@ const char* Camera_getBufferComponentStr(Camera::BufferComponent buffer)
         case (osg::Camera::COLOR_BUFFER5)            : return "COLOR_BUFFER5";
         case (osg::Camera::COLOR_BUFFER6)            : return "COLOR_BUFFER6";
         case (osg::Camera::COLOR_BUFFER7)            : return "COLOR_BUFFER7";
-        default                                          : return "UnknownBufferComponent";
+        case (osg::Camera::COLOR_BUFFER8)            : return "COLOR_BUFFER8";
+        case (osg::Camera::COLOR_BUFFER9)            : return "COLOR_BUFFER9";
+        case (osg::Camera::COLOR_BUFFER10)           : return "COLOR_BUFFER10";
+        case (osg::Camera::COLOR_BUFFER11)           : return "COLOR_BUFFER11";
+        case (osg::Camera::COLOR_BUFFER12)           : return "COLOR_BUFFER12";
+        case (osg::Camera::COLOR_BUFFER13)           : return "COLOR_BUFFER13";
+        case (osg::Camera::COLOR_BUFFER14)           : return "COLOR_BUFFER14";
+        case (osg::Camera::COLOR_BUFFER15)           : return "COLOR_BUFFER15";
+        default                                      : return "UnknownBufferComponent";
     }
 }
 

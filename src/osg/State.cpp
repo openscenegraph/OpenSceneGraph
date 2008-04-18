@@ -14,6 +14,7 @@
 #include <osg/Notify>
 #include <osg/GLU>
 #include <osg/GLExtensions>
+#include <osg/ApplicationUsage>
 
 #ifndef GL_MAX_TEXTURE_COORDS
 #define GL_MAX_TEXTURE_COORDS 0x8871
@@ -30,6 +31,8 @@
 using namespace std;
 using namespace osg;
 
+static ApplicationUsageProxy State_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_ERROR_CHECKING <type>","ONCE_PER_ATTRIBUTE | ON | on enables fine grained checking,  ONCE_PER_FRAME enables coarse grained checking");
+
 State::State():
     Referenced(true)
 {
@@ -42,11 +45,13 @@ State::State():
 
     _abortRenderingPtr = false;    
 
-#if 1
     _checkGLErrors = ONCE_PER_FRAME;
-#else    
-    _checkGLErrors = ONCE_PER_ATTRIBUTE;
-#endif
+
+    const char* str = getenv("OSG_GL_ERROR_CHECKING");
+    if (str && (strcmp(str,"ONCE_PER_ATTRIBUTE")==0 || strcmp(str,"ON")==0 || strcmp(str,"on")==0))
+    {
+        _checkGLErrors = ONCE_PER_ATTRIBUTE;
+    }
 
     _currentActiveTextureUnit=0;
     _currentClientActiveTextureUnit=0;

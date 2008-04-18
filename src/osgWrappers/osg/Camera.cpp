@@ -86,6 +86,14 @@ BEGIN_ENUM_REFLECTOR(osg::Camera::BufferComponent)
 	I_EnumLabel(osg::Camera::COLOR_BUFFER5);
 	I_EnumLabel(osg::Camera::COLOR_BUFFER6);
 	I_EnumLabel(osg::Camera::COLOR_BUFFER7);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER8);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER9);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER10);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER11);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER12);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER13);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER14);
+	I_EnumLabel(osg::Camera::COLOR_BUFFER15);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Camera)

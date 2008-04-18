@@ -1,3 +1,90 @@
+2008-04-18 14:57 +0000 [r8141]  robert:
+
+	* Added support for COLOR_BUFFER entries up to 15
+
+2008-04-18 14:51 +0000 [r8140]  robert:
+
+	* Updated BufferComponent enum to list COLOR_BUFFERi entries up to
+	  15.
+
+2008-04-18 14:33 +0000 [r8139]  robert:
+
+	* Fixed bug in FBO colour attachement code
+
+2008-04-18 14:14 +0000 [r8138]  robert:
+
+	* Added optional compiled in debugging output to
+	  CullVisitor::apply(osg::Camera&)
+
+2008-04-18 13:57 +0000 [r8137]  robert:
+
+	* Added write(ostream&) method to allow one to print out the
+	  current state
+
+2008-04-18 13:25 +0000 [r8136]  robert:
+
+	* Changed the FrameBufferObject::setAttachment() methods so it now
+	  use osg::Camera::BufferComponent to enable it to distinguish
+	  between MRT and non MRT paths
+
+2008-04-18 11:09 +0000 [r8135]  robert:
+
+	* Introduce OSG_GL_ERROR_CHECKING env var checking to osg::State
+	  constructor so that you can enable fine grained check via env
+	  vars o.e. export OSG_GL_ERROR_CHECKING=ONCE_PER_ATTRIBUTE
+
+2008-04-17 15:30 +0000 [r8132]  robert:
+
+	* From Stephan Huber, "attached you'll find a refactored and
+	  improved quicktime-plugin. I moved all code related to the
+	  image-loading, swizzling etc into an extra class. The quicktime
+	  plugin supports now reading and writing images from/to streams
+	  and the code is less cluttered than previous versions. I removed
+	  QTtexture.h/.cpp and added QTImportExport.h/.cpp. I updated the
+	  CMake-files, I hope they are alright. I used the submitted code
+	  in my own apps since two months or so and it seems pretty stable,
+	  but as always the migration to the osg-quicktime plugin may have
+	  introduced new bugs, so perfect for developer release :)"
+
+2008-04-17 11:12 +0000 [r8127]  robert:
+
+	* From John Shue, build fix for QT 3.x
+
+2008-04-17 09:04 +0000 [r8122]  shuber:
+
+	* updated XCode project
+
+2008-04-16 18:13 +0000 [r8121]  robert:
+
+	* Added new computation of time to allocate to flushing deleted and
+	  compiling OpenGL objects per frame.
+
+2008-04-16 15:23 +0000 [r8118-8119]  robert:
+
+	* From Bob Kuehne, "he attached are conversions of the 3 main
+	  places i found in osg where tokens are used to represent bitmasks
+	  with 'magic' numbers, like 32. i've changed these to a more
+	  representative bitshift representation, showing clearly in which
+	  bit you can expect this token to manifest. ie, converted things
+	  like: from: DEEP_COPY_STATESETS = 8, to: DEEP_COPY_STATESETS =
+	  1<<3, showing clearly that this isn't the _value_ 8, but the
+	  _bit_ 8. this is an old pattern i see (and like to promulgate) to
+	  make code a bit more readable and maintainable. "
+
+	* Updated version number for nex dev release
+
+2008-04-16 10:01 +0000 [r8107]  robert:
+
+	* From Jason Beverage, cursor inheritance support
+
+2008-04-15 20:27 +0000 [r8105]  robert:
+
+	* Updated AUTHORS.txt for release
+
+2008-04-15 20:16 +0000 [r8104]  robert:
+
+	* Updated ChangeLog
+
 2008-04-15 19:46 +0000 [r8103]  robert:
 
 	* From Jason Beverage, "The following changes fix the flickering

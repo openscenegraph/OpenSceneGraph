@@ -157,9 +157,11 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::FrameBufferAttachment >, osg::FrameBufferObject::AttachmentMap)
+TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::FrameBufferAttachment >, osg::FrameBufferObject::AttachmentMap)
 
 TYPE_NAME_ALIAS(std::vector< GLenum >, osg::FrameBufferObject::MultipleRenderingTargets)
+
+TYPE_NAME_ALIAS(osg::Camera::BufferComponent, osg::FrameBufferObject::BufferComponent)
 
 BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	I_DeclaringFile("osg/FrameBufferObject");
@@ -206,11 +208,6 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	          __C5_AttachmentMap_R1__getAttachmentMap,
 	          "",
 	          "");
-	I_Method1(bool, hasAttachment, IN, GLenum, attachment_point,
-	          Properties::NON_VIRTUAL,
-	          __bool__hasAttachment__GLenum,
-	          "",
-	          "");
 	I_Method2(void, setAttachment, IN, GLenum, attachment_point, IN, const osg::FrameBufferAttachment &, attachment,
 	          Properties::NON_VIRTUAL,
 	          __void__setAttachment__GLenum__C5_FrameBufferAttachment_R1,
@@ -219,6 +216,36 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	I_Method1(const osg::FrameBufferAttachment &, getAttachment, IN, GLenum, attachment_point,
 	          Properties::NON_VIRTUAL,
 	          __C5_FrameBufferAttachment_R1__getAttachment__GLenum,
+	          "",
+	          "");
+	I_Method1(bool, hasAttachment, IN, GLenum, attachment_point,
+	          Properties::NON_VIRTUAL,
+	          __bool__hasAttachment__GLenum,
+	          "",
+	          "");
+	I_Method2(void, setAttachment, IN, osg::FrameBufferObject::BufferComponent, attachment_point, IN, const osg::FrameBufferAttachment &, attachment,
+	          Properties::NON_VIRTUAL,
+	          __void__setAttachment__BufferComponent__C5_FrameBufferAttachment_R1,
+	          "",
+	          "");
+	I_Method1(const osg::FrameBufferAttachment &, getAttachment, IN, osg::FrameBufferObject::BufferComponent, attachment_point,
+	          Properties::NON_VIRTUAL,
+	          __C5_FrameBufferAttachment_R1__getAttachment__BufferComponent,
+	          "",
+	          "");
+	I_Method1(bool, hasAttachment, IN, osg::FrameBufferObject::BufferComponent, attachment_point,
+	          Properties::NON_VIRTUAL,
+	          __bool__hasAttachment__BufferComponent,
+	          "",
+	          "");
+	I_Method1(GLenum, convertBufferComponentToGLenum, IN, osg::FrameBufferObject::BufferComponent, attachment_point,
+	          Properties::NON_VIRTUAL,
+	          __GLenum__convertBufferComponentToGLenum__BufferComponent,
+	          "",
+	          "");
+	I_Method1(osg::FrameBufferObject::BufferComponent, convertGLenumToBufferComponent, IN, GLenum, attachment_point,
+	          Properties::NON_VIRTUAL,
+	          __BufferComponent__convertGLenumToBufferComponent__GLenum,
 	          "",
 	          "");
 	I_Method0(bool, hasMultipleRenderingTargets,
@@ -253,6 +280,12 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	                __void__discardDeletedFrameBufferObjects__unsigned_int_S,
 	                "discard all the cached FBOs which need to be deleted in the OpenGL context related to contextID. ",
 	                "");
+	I_ProtectedMethod0(void, updateDrawBuffers,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__updateDrawBuffers,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(void, dirtyAll,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -260,8 +293,8 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	                   "",
 	                   "");
 	I_IndexedProperty(const osg::FrameBufferAttachment &, Attachment, 
-	                  __C5_FrameBufferAttachment_R1__getAttachment__GLenum, 
-	                  __void__setAttachment__GLenum__C5_FrameBufferAttachment_R1, 
+	                  __C5_FrameBufferAttachment_R1__getAttachment__BufferComponent, 
+	                  __void__setAttachment__BufferComponent__C5_FrameBufferAttachment_R1, 
 	                  0);
 	I_SimpleProperty(const osg::FrameBufferObject::AttachmentMap &, AttachmentMap, 
 	                 __C5_AttachmentMap_R1__getAttachmentMap, 
@@ -387,7 +420,7 @@ BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
 	                 __void__setWidth__int);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< GLenum COMMA  osg::FrameBufferAttachment >)
+STD_MAP_REFLECTOR(std::map< osg::Camera::BufferComponent COMMA  osg::FrameBufferAttachment >)
 
 STD_VECTOR_REFLECTOR(std::vector< GLenum >)
 

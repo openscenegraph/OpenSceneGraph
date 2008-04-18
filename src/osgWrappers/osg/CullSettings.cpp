@@ -280,6 +280,11 @@ BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	          __C5_ClampProjectionMatrixCallback_P1__getClampProjectionMatrixCallback,
 	          "get the const ClampProjectionMatrixCallback. ",
 	          "");
+	I_Method1(void, write, IN, std::ostream &, out,
+	          Properties::NON_VIRTUAL,
+	          __void__write__std_ostream_R1,
+	          "Write out internal settings of CullSettings. ",
+	          "");
 	I_SimpleProperty(osg::CullSettings::ClampProjectionMatrixCallback *, ClampProjectionMatrixCallback, 
 	                 __ClampProjectionMatrixCallback_P1__getClampProjectionMatrixCallback, 
 	                 __void__setClampProjectionMatrixCallback__ClampProjectionMatrixCallback_P1);

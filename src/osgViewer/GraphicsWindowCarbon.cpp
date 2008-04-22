@@ -591,6 +591,7 @@ void GraphicsWindowCarbon::installEventHandler() {
         {kEventClassMouse, kEventMouseMoved},
         {kEventClassMouse, kEventMouseDragged},
         {kEventClassMouse, kEventMouseWheelMoved},
+        {kEventClassMouse, 11 /* kEventMouseScroll */},
 
         {kEventClassKeyboard, kEventRawKeyDown},
         {kEventClassKeyboard, kEventRawKeyRepeat},

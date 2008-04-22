@@ -563,5 +563,6 @@ unsigned int ProxyLayer::getModifiedCount() const
 osg::BoundingSphere ProxyLayer::computeBound(bool treatAsElevationLayer) const
 {
     if (_implementation.valid()) return _implementation->computeBound(treatAsElevationLayer);
+    else return osg::BoundingSphere();
 }
 

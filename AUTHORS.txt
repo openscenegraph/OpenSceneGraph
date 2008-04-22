@@ -1,4 +1,4 @@
-OpenSceneGraph Library 2.3.9
+OpenSceneGraph Library 2.3.10
 
 306 Contributors:
 
@@ -21,9 +21,9 @@ Eric Sokolowsky
 Mathias Fröhlich
 Tree 
 David Callu
+Luigi Calori
 Trajce Nikolov
 Mike Wittman
-Luigi Calori
 Jean-Sebastien Guay
 Pavel Moloshtan
 Tom Jolley

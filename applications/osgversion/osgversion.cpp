@@ -217,6 +217,8 @@ bool validName(const std::string& first)
     if (first=="Quicktime") return false;
     if (first=="SceneGraphBuilder") return false;
     if (first=="LightPointNode") return false;
+    if (first=="GeometryTechnique") return false;
+    if (first=="GeoemtryTechnique") return false;
     return true;
 }
 

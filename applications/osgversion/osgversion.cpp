@@ -344,7 +344,8 @@ std::string typoCorrection(const std::string& name)
     if (name=="Sokolwsky") return "Sokolowsky";
     if (name=="Cullu") return "Callu";
     if (name=="Comporesi") return "Camporesi";
-    if (name=="Machler") return "Maechler";
+    if (name=="Machler") return "Mächler";
+    if (name=="Maechler") return "Mächler";
     return name;
 }
 

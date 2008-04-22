@@ -36,6 +36,14 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
 
         virtual void traverse(osg::NodeVisitor& nv);
         
+        /** Set the sample ratio hint that TerrainTile should use when building geometry.
+          * Defaults to 1.0, which means use all original sample points.*/
+        void setSampleRatio(float ratio) { _sampleRatio  = ratio; }
+
+        /** Get the sample ratio hint.*/
+        float getSampleRatio() const { return _sampleRatio; }
+        
+        
         /** Get the TerrainTile for a given TileID.*/
         TerrainTile* getTile(const TileID& tileID);
 
@@ -54,10 +62,11 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         typedef std::map< TileID, TerrainTile* >    TerrainTileMap;
         typedef std::set< TerrainTile* >            TerrainTileSet;
 
+        float                               _sampleRatio;
+
         mutable OpenThreads::Mutex          _mutex;
         TerrainTileSet                      _terrainTileSet;
         TerrainTileMap                      _terrainTileMap;
-        
 
        
 };

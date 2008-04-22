@@ -259,6 +259,7 @@ int main( int argc, char **argv )
         {
             terrain = new osgTerrain::Terrain;
             terrain->addChild(rootnode);
+            terrain->setSampleRatio(0.25f);
 
             rootnode = terrain;
         }    

@@ -17,12 +17,14 @@
 using namespace osg;
 using namespace osgTerrain;
 
-Terrain::Terrain()
+Terrain::Terrain():
+    _sampleRatio(1.0)
 {
 }
 
 Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
-    osg::Group(ts,copyop)
+    osg::Group(ts,copyop),
+    _sampleRatio(ts._sampleRatio)
 {
 }
 

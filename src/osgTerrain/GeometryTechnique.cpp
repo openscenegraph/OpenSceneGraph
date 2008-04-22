@@ -13,6 +13,7 @@
 
 #include <osgTerrain/GeometryTechnique>
 #include <osgTerrain/TerrainTile>
+#include <osgTerrain/Terrain>
 
 #include <osgUtil/SmoothingVisitor>
 
@@ -228,22 +229,24 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         numRows = elevationLayer->getNumRows();
     }
     
+    float sampleRatio = _terrainTile->getTerrain() ? _terrainTile->getTerrain()->getSampleRatio() : 1.0f;
     
     double i_sampleFactor = 1.0;
     double j_sampleFactor = 1.0;
 
-    unsigned int targetSize = 32;
-    if (numColumns==64 && numColumns>targetSize)
+    if (sampleRatio!=1.0f)
     {
+    
         unsigned int originalNumColumns = numColumns;
         unsigned int originalNumRows = numRows;
     
-        numColumns = targetSize;
-        numRows = targetSize;
+        numColumns = std::max((unsigned int) (float(originalNumColumns)*sqrtf(sampleRatio)), 4u);
+        numRows = std::max((unsigned int) (float(originalNumRows)*sqrtf(sampleRatio)),4u);
 
         i_sampleFactor = double(originalNumColumns-1)/double(numColumns-1);
         j_sampleFactor = double(originalNumRows-1)/double(numRows-1);
     }
+    
     
 
     bool treatBoundariesToValidDataAsDefaultValue = _terrainTile->getTreatBoundariesToValidDataAsDefaultValue();

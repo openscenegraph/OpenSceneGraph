@@ -6,11 +6,16 @@ OpenSceneGraph website:
 
     http://www.openscenegraph.org
   
-For the impatient, read the simplified build notes below.
+For the impatient, read the simplified build notes below. For support 
+subscribe to our public mailing list:
+
+    http://www.openscenegraph.org/projects/osg/wiki/MailingLists
+
+
 
 Robert Osfield.
 Project Lead.
-18th April 2008.
+22nd April 2008.
 
 --
 

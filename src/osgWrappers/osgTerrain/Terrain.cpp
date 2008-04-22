@@ -69,6 +69,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
+	I_Method1(void, setSampleRatio, IN, float, ratio,
+	          Properties::NON_VIRTUAL,
+	          __void__setSampleRatio__float,
+	          "Set the sample ratio hint that TerrainTile should use when building geometry. ",
+	          "Defaults to 1.0, which means use all original sample points. ");
+	I_Method0(float, getSampleRatio,
+	          Properties::NON_VIRTUAL,
+	          __float__getSampleRatio,
+	          "Get the sample ratio hint. ",
+	          "");
 	I_Method1(osgTerrain::TerrainTile *, getTile, IN, const osgTerrain::TileID &, tileID,
 	          Properties::NON_VIRTUAL,
 	          __TerrainTile_P1__getTile__C5_TileID_R1,
@@ -91,5 +101,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	                   __void__unregisterTerrainTile__TerrainTile_P1,
 	                   "",
 	                   "");
+	I_SimpleProperty(float, SampleRatio, 
+	                 __float__getSampleRatio, 
+	                 __void__setSampleRatio__float);
 END_REFLECTOR
 

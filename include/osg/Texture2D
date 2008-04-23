@@ -135,10 +135,6 @@ class OSG_EXPORT Texture2D : public Texture
         void allocateMipmap(State& state) const;
 
 
-        /** It's not ideal that _image is mutable, but it's required since
-          * Image::ensureDimensionsArePowerOfTwo() can only be called in a
-          * valid OpenGL context, and therefore within Texture::apply, which
-          * is const. */
         ref_ptr<Image> _image;
 
         /** Subloaded images can have different texture and image sizes. */

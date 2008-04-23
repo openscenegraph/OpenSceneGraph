@@ -134,11 +134,7 @@ class OSG_EXPORT TextureRectangle : public Texture
         void applyTexImage_load(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const;
         void applyTexImage_subload(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLint& inInternalFormat) const;
 
-        // not ideal that _image is mutable, but it's required since
-        // Image::ensureDimensionsArePowerOfTwo() can only be called
-        // in a valid OpenGL context, and therefore within an Texture::apply
-        // which is const...
-        mutable ref_ptr<Image> _image;
+        ref_ptr<Image> _image;
 
         // subloaded images can have different texture and image sizes.
         mutable GLsizei _textureWidth, _textureHeight;

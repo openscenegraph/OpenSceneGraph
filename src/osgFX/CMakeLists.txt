@@ -22,10 +22,16 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Version
 )
 
+IF(APPLE)
+    SET(ADD_LIBRARY_HEADERS "")
+ELSEIF(APPLE)
+    SET(ADD_LIBRARY_HEADERS ${LIB_PUBLIC_HEADERS} )
+ENDIF(APPLE)
+
 # FIXME: For OS X, need flag for Framework or dylib
 ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${LIB_PUBLIC_HEADERS}
+    ${ADD_LIBRARY_HEADERS}
     AnisotropicLighting.cpp
     BumpMapping.cpp
     Cartoon.cpp

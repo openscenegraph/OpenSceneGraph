@@ -1,3 +1,21 @@
+2008-04-22 14:31 +0000 [r8193]  robert:
+
+	* Added return.
+
+2008-04-22 14:15 +0000 [r8192]  robert:
+
+	* From Stephan Huber, "the support for the new mightymouse and new
+	  touchpads was incomplete in GraphicsWindowCarbon. Attached is a
+	  fixed version."
+
+2008-04-22 13:00 +0000 [r8191]  robert:
+
+	* Updated AUTHORS file
+
+2008-04-22 12:52 +0000 [r8189]  robert:
+
+	* Updated ChangeLog, NEWS and READE for 2.3.10 pre release of 2.4.
+
 2008-04-22 11:47 +0000 [r8188]  robert:
 
 	* Updated version number for 2.3.10 dev release

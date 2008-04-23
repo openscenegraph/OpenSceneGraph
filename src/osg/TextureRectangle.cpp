@@ -146,9 +146,13 @@ void TextureRectangle::apply(State& state) const
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
+
+    static OpenThreads::Mutex s_mutex;
+
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-
+    
+    
     if (textureObject != 0)
     {
 
@@ -189,9 +193,12 @@ void TextureRectangle::apply(State& state) const
     }
     else if (_image.valid() && _image->data())
     {
+
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex);
+
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_RECTANGLE);
-
+        
         textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_RECTANGLE, state);
@@ -205,6 +212,8 @@ void TextureRectangle::apply(State& state) const
             TextureRectangle* non_const_this = const_cast<TextureRectangle*>(this);
             non_const_this->_image = 0;
         }
+
+
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {

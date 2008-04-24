@@ -8,16 +8,9 @@ INCLUDE (CheckCXXSourceCompiles)
 SET(LIB_NAME OpenThreads)
 SET(LIB_PUBLIC_HEADERS ${OpenThreads_PUBLIC_HEADERS})
 
-IF(APPLE)
-    SET(ADD_LIBRARY_HEADERS "")
-ELSEIF(APPLE)
-    SET(ADD_LIBRARY_HEADERS ${LIB_PUBLIC_HEADERS} )
-ENDIF(APPLE)
-
-# FIXME: For OS X, need flag for Framework or dylib
 ADD_LIBRARY(${LIB_NAME}
     ${OPENTHREADS_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${ADD_LIBRARY_HEADERS}
+    ${LIB_PUBLIC_HEADERS}
 	PThread.c++
 	PThreadBarrier.c++
 	PThreadBarrierPrivateData.h

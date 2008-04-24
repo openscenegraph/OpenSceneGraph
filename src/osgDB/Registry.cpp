@@ -209,8 +209,10 @@ Registry::Registry()
     addFileExtensionAlias("flv",  "qt");
     addFileExtensionAlias("mpv",  "qt");
     addFileExtensionAlias("dv",   "qt");
-    addFileExtensionAlias("mp4",   "qt");
-    addFileExtensionAlias("m4v",   "qt");
+    addFileExtensionAlias("mp4",  "qt");
+    addFileExtensionAlias("m4v",  "qt");
+    // Add QuickTime live support for OSX
+    addFileExtensionAlias("live", "qt");
 #else
     addFileExtensionAlias("jpg",  "jpeg");
     addFileExtensionAlias("jpe",  "jpeg");
@@ -227,8 +229,12 @@ Registry::Registry()
         addFileExtensionAlias("flv",  "xine");
     #endif
 
+    // support QuickTime for Windows
+    #if defined(USE_QUICKTIME)
+        addFileExtensionAlias("mov", "qt");
+        addFileExtensionAlias("live", "qt");
+    #endif
 #endif
-
 
     // remove geo to lwo alias as the new Carbon Graphics GEO format
     // also uses the .geo. It is still possible to load light wave .geo

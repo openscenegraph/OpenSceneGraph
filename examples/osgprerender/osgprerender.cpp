@@ -40,6 +40,7 @@
 #include <osgDB/ReadFile>
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <iostream>
 
@@ -66,6 +67,8 @@ class MyGeometryCallback :
     
         virtual void update(osg::NodeVisitor* nv,osg::Drawable* drawable)
         {
+            // OpenThreads::Thread::microSleep( 1000 );
+            
             const osg::FrameStamp* fs = nv->getFrameStamp();
             double simulationTime = fs->getSimulationTime();
             if (_firstCall)
@@ -239,6 +242,9 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         // create the to visualize.
         osg::Geometry* polyGeom = new osg::Geometry();
 
+        polyGeom->setName( "PolyGeom" );
+
+        polyGeom->setDataVariance( osg::Object::DYNAMIC );
         polyGeom->setSupportsDisplayList(false);
 
         osg::Vec3 origin(0.0f,0.0f,0.0f);
@@ -279,7 +285,6 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         polyGeom->setVertexArray(vertices);
 
         polyGeom->setTexCoordArray(0,texcoords);
-
 
         osg::Vec4Array* colors = new osg::Vec4Array;
         colors->push_back(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
@@ -405,6 +410,15 @@ int main( int argc, char **argv )
    
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
+
+    // add stats
+    viewer.addEventHandler( new osgViewer::StatsHandler() );
+
+    // add the record camera path handler
+    viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
+
+    // add the threading handler
+    viewer.addEventHandler( new osgViewer::ThreadingHandler() );
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))

@@ -50,16 +50,10 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Version
 )
 
-IF(APPLE)
-    SET(ADD_LIBRARY_HEADERS "")
-ELSEIF(APPLE)
-    SET(ADD_LIBRARY_HEADERS ${LIB_PUBLIC_HEADERS} )
-ENDIF(APPLE)
-
 # FIXME: For OS X, need flag for Framework or dylib
 ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${ADD_LIBRARY_HEADERS}
+    ${LIB_PUBLIC_HEADERS}
     ConnectedParticleSystem.cpp
     Emitter.cpp
     ExplosionDebrisEffect.cpp

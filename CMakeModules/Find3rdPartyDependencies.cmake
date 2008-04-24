@@ -52,14 +52,14 @@ ENDMACRO(FIND_DEPENDENCY DEPNAME INCLUDEFILE LIBRARY_NAMES SEARCHPATHLIST DEBUGS
 
 MACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
         FIND_DEPENDENCY(TIFF tiff.h libtiff ${OSG_3RDPARTY_BIN} "D")
-        FIND_DEPENDENCY(FREETYPE ft2build.h "freetype;freetype219;freetype234;freetype234MT;freetype235" ${OSG_3RDPARTY_BIN} "_D")
+        FIND_DEPENDENCY(FREETYPE ft2build.h "freetype;freetype234;freetype234MT;freetype235" ${OSG_3RDPARTY_BIN} "_D")
         IF(FREETYPE_FOUND)
             #forcing subsequent FindFreeType stuff to not search for other variables.... kind of a hack 
             SET(FREETYPE_INCLUDE_DIR_ft2build ${FREETYPE_INCLUDE_DIR} CACHE PATH "")
             SET(FREETYPE_INCLUDE_DIR_freetype2 ${FREETYPE_INCLUDE_DIR} CACHE PATH "")
             MARK_AS_ADVANCED(FREETYPE_INCLUDE_DIR_ft2build FREETYPE_INCLUDE_DIR_freetype2)
         ENDIF(FREETYPE_FOUND)
-        FIND_DEPENDENCY(CURL curl/curl.h libcurl ${OSG_3RDPARTY_BIN} "D")
+        FIND_DEPENDENCY(CURL curl/curl.h "libcurl;curllib" ${OSG_3RDPARTY_BIN} "D")
         FIND_DEPENDENCY(JPEG jpeglib.h libjpeg ${OSG_3RDPARTY_BIN} "D")
         #FIND_DEPENDENCY(GDAL gdal.h "gdal;gdal_i" ${OSG_3RDPARTY_BIN})
         FIND_DEPENDENCY(GLUT GL/glut.h glut32 ${OSG_3RDPARTY_BIN} "D")

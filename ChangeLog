@@ -1,3 +1,37 @@
+2008-04-24 11:34 +0000 [r8211]  robert:
+
+	* Reverted the changes for ill fated tweaks for Apple build
+
+2008-04-24 10:09 +0000 [r8210]  robert:
+
+	* From Mattias Helsing, "I just made Find3rdPartyDependencies
+	  search for curllib if it can't find libcurl. Mike's 3rdParty only
+	  has curllib. I realize now that the in appended file I have
+	  earlier removed searching for freetype219 since I have it but it
+	  will break the build of osg."
+
+2008-04-23 21:07 +0000 [r8205-8206]  robert:
+
+	* Updated authors file for 2.3.11 release
+
+	* Updated ChangeLog
+
+2008-04-23 20:54 +0000 [r8202]  robert:
+
+	* Updated version number 2.3.11
+
+2008-04-23 20:50 +0000 [r8200-8201]  robert:
+
+	* Refactored the inclusion of the headers in the ADD_LIBRARY so
+	  that they aren't added under OSX.
+
+	* Removed the mutable from the _image variable
+
+2008-04-23 14:10 +0000 [r8195]  robert:
+
+	* Added mutex to object creation to avoid a race condition when
+	  using threaded multiple graphics context
+
 2008-04-22 14:31 +0000 [r8193]  robert:
 
 	* Added return.

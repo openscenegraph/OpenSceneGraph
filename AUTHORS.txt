@@ -123,6 +123,7 @@ Phil Atkin
 Peter Hrenka
 Neil Hughes
 Mattias Linde
+Mattias Helsing
 Mathieu Marache
 Maria Ten
 Ken Sewell
@@ -154,7 +155,6 @@ Nathan Monteleone
 Michael Henheffer
 Maya Leonard
 Max Behensky
-Mattias Helsing
 Mathew May
 Martijn Kragtwijk
 Kevin Moiule

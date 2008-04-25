@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.3.11
+OpenSceneGraph Library 2.4.0
 
-306 Contributors:
+307 Contributors:
 
 Firstname Surname
 -----------------
@@ -35,10 +35,10 @@ Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
+Wojciech Lewandowski
 Olaf Flebbe
 Gideon May
 Don Tidrow
-Wojciech Lewandowski
 Romano José Magacho da Silva
 Michael Gronager
 Daniel Sjölie
@@ -81,7 +81,6 @@ Gordon Tomlinson
 Bryan Thrall
 Brad Colbert
 Vivek Rajan
-Stephane Simon
 Sean Spicer
 Ravi Mathur
 Nikolaus Hanekamp
@@ -96,6 +95,7 @@ Brad Christiansen
 Toshiyuki Takahei
 Thom DeCarlo
 Terry Welsh
+Stephane Lamoliatte
 Simon Julier
 Sebastien Grignard
 Romano Magacho
@@ -106,6 +106,7 @@ Leandro Motta Barros
 John Kelso
 Glenn Waldron
 Daniel Larimer
+Colin Dunlop
 Cedric Pinson
 Bruce Clay
 Alberto Luaces
@@ -133,7 +134,6 @@ James French
 Gabor Dorka
 Donn Mielcarek
 Domenico Mangieri
-Colin Dunlop
 Charles Cole
 Blake Williams
 Antoine Hue
@@ -146,6 +146,7 @@ Tim Daoust
 Terrex 
 Sylvain Marie
 Steve Lunsford
+Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
 Riccardo Corsi

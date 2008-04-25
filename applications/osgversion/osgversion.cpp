@@ -332,13 +332,12 @@ std::string typoCorrection(const std::string& name)
     if (name=="Skinnder") return "Skinner";
     if (name=="Mihair")  return "Mihai";
     if (name=="Mahai")  return "Mihai";
-    if (name=="Wojiech")  return "Wojciech";
-    if (name=="Leandowski")  return "Lewandowski";
+    if (name=="Wojiech" || name=="Wojchiech")  return "Wojciech";
+    if (name=="Leandowski" || name=="Lawandowski")  return "Lewandowski";
     if (name=="Aderian")  return "Adrian";
     if (name=="Callue")  return "Callu";
     if (name=="Waldrom")  return "Waldron";
     if (name=="Atr")  return "Art";
-    if (name=="Lawandowski") return "Lewandowski";
     if (name=="Sylvan") return "Sylvain";
     if (name=="Giatan") return "Gaitan";
     if (name=="Melchoir") return "Melchior";

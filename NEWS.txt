@@ -16,6 +16,7 @@ The !OpenSceneGraph 2.4 release is the culmination of 9 years of work by the lea
  * New !OpenFlight writer
  * New libcurl based plugin for reading http hosted databases
  * Quicktime based reading of live video streams under Windows and OSX
+ * Better load balancing in database pager
  * Improvements to osgTerrain for support of terrabyte scale whole earth terrain databases
  * Additions to the Shapefile loader with .dbf attribute file, .proj projection file support and loading data as doubles
  * Enhanced intersection functionality including double support for line intersections

@@ -489,7 +489,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         // create bottom skirt vertices
         int r,c;
         r=0;
-        for(c=0;c<numColumns;++c)
+        for(c=0;c<static_cast<int>(numColumns);++c)
         {
             int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
             if (orig_i>=0)
@@ -528,7 +528,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
         // create right skirt vertices
         c=numColumns-1;
-        for(r=0;r<numRows;++r)
+        for(r=0;r<static_cast<int>(numRows);++r)
         {
             int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
             if (orig_i>=0)

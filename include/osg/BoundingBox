@@ -33,7 +33,7 @@ class OSG_EXPORT BoundingBox
     
 #ifdef OSG_USE_DOUBLE_BOUNDINGBOX
         typedef Vec3d vec_type;
-        typedef doulbe value_type;
+        typedef double value_type;
 #else
         typedef Vec3f vec_type;
         typedef float value_type;

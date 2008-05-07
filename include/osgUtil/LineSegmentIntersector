@@ -77,7 +77,7 @@ class OSGUTIL_EXPORT LineSegmentIntersector : public Intersector
         inline const osg::Vec3d& getStart() const { return _start; }
 
         inline void setEnd(const osg::Vec3d& end) { _end = end; }
-        inline const osg::Vec3d& setEnd() const { return _end; }
+        inline const osg::Vec3d& getEnd() const { return _end; }
 
     public:
 

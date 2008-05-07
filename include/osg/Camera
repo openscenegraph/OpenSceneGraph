@@ -329,12 +329,19 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             COLOR_BUFFER15 = COLOR_BUFFER0+15
         };
 
+        /** Attach a buffer with specified OpenGL internal format.*/
         void attach(BufferComponent buffer, GLenum internalFormat);
 
+        /** Attach a Texture to specified buffer component.
+          * The level parameter controls the mip map level of the texture that is attached.
+          * The face parameter controls the face of texture cube map or z level of 3d texture.
+          * The mipMapGeneration flag controls whether mipmap generation should be done for texture.*/
         void attach(BufferComponent buffer, osg::Texture* texture, unsigned int level = 0, unsigned int face=0, bool mipMapGeneration=false);
 
+        /** Attach a Image to specified buffer component.*/
         void attach(BufferComponent buffer, osg::Image* image);
 
+        /** Detach specified buffer component.*/
         void detach(BufferComponent buffer);
         
         struct Attachment

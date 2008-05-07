@@ -265,6 +265,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	                      __void__setUpViewForPanoramicSphericalDisplay__double__double__unsigned_int__osg_Image_P1__C5_osg_Matrixd_R1,
 	                      "Convenience method for spherical display by rendering main scene to as panoramic 2:1 texture and then doing distortion correction to present onto a spherical display. ",
 	                      "");
+	I_Method8(void, setUpViewForWoWVxDisplay, IN, unsigned int, screenNum, IN, unsigned char, wow_content, IN, unsigned char, wow_factor, IN, unsigned char, wow_offset, IN, float, wow_disparity_Zd, IN, float, wow_disparity_vz, IN, float, wow_disparity_M, IN, float, wow_disparity_C,
+	          Properties::NON_VIRTUAL,
+	          __void__setUpViewForWoWVxDisplay__unsigned_int__unsigned_char__unsigned_char__unsigned_char__float__float__float__float,
+	          "Convenience method for autostereoscopic Philips WoWvx display. ",
+	          "");
 	I_Method1(bool, containsCamera, IN, const osg::Camera *, camera,
 	          Properties::NON_VIRTUAL,
 	          __bool__containsCamera__C5_osg_Camera_P1,

@@ -72,9 +72,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	          __void__setEnd__C5_osg_Vec3d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3d &, setEnd,
+	I_Method0(const osg::Vec3d &, getEnd,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3d_R1__setEnd,
+	          __C5_osg_Vec3d_R1__getEnd,
 	          "",
 	          "");
 	I_Method1(osgUtil::Intersector *, clone, IN, osgUtil::IntersectionVisitor &, iv,
@@ -120,7 +120,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)
 	                   "",
 	                   "");
 	I_SimpleProperty(const osg::Vec3d &, End, 
-	                 0, 
+	                 __C5_osg_Vec3d_R1__getEnd, 
 	                 __void__setEnd__C5_osg_Vec3d_R1);
 	I_SimpleProperty(osgUtil::LineSegmentIntersector::Intersection, FirstIntersection, 
 	                 __Intersection__getFirstIntersection, 

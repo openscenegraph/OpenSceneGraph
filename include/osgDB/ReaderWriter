@@ -160,11 +160,11 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
                 enum ReadStatus
                 {
-                    FILE_NOT_HANDLED,
-                    FILE_NOT_FOUND,
-                    FILE_LOADED,
-                    FILE_LOADED_FROM_CACHE,
-                    ERROR_IN_READING_FILE
+                    FILE_NOT_HANDLED, //!< file is not appropriate for this file reader, due to some incompatibility, but *not* a read error
+                    FILE_NOT_FOUND, //!< file could not be found or could not be read
+                    FILE_LOADED, //!< file successfully found, loaded, and converted into osg
+                    FILE_LOADED_FROM_CACHE, //!< file found in cache and returned
+                    ERROR_IN_READING_FILE //!< file found, loaded, but an error was encountered during processing
                 };
 
                 ReadResult(ReadStatus status=FILE_NOT_HANDLED):_status(status) {}

@@ -68,6 +68,9 @@ static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
             case(VisualChooser::SampleBuffers):    traits->sampleBuffers = it->_parameter; break;
         }
     }
+
+    std::cout<<"Set up Traits ( rs.getScreenNum() = "<<rs.getScreenNum()<<" )"<<std::endl;
+
     
     traits->hostName = rs.getHostName();
     traits->displayNum = rs.getDisplayNum();
@@ -112,12 +115,14 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
         else
         {
             osg::GraphicsContext::Traits* newtraits = buildTrait(*rs);
-            
+
+#if 0            
             osg::GraphicsContext::ScreenIdentifier si;
             si.readDISPLAY();
 
             if (si.displayNum>=0) newtraits->displayNum = si.displayNum;
             if (si.screenNum>=0) newtraits->screenNum = si.screenNum;
+#endif
     
             gc = osg::GraphicsContext::createGraphicsContext(newtraits);
             

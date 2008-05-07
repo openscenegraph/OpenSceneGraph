@@ -134,7 +134,7 @@ void Texture3D::computeRequiredTextureDimensions(State& state, const osg::Image&
     inheight = height;
     indepth = depth;
     
-    bool useHardwareMipMapGeneration = false; //!image.isMipmap() && _useHardwareMipMapGeneration && extensions->isGenerateMipMapSupported();
+    bool useHardwareMipMapGeneration = !image.isMipmap() && _useHardwareMipMapGeneration && texExtensions->isGenerateMipMapSupported();
 
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
     {
@@ -327,8 +327,17 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
 
-    if( _min_filter == LINEAR || _min_filter == NEAREST )
+    bool useHardwareMipMapGeneration = !image->isMipmap() && _useHardwareMipMapGeneration && texExtensions->isGenerateMipMapSupported();
+
+    if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
     {
+        bool hardwareMipMapOn = false;
+        if (_min_filter != LINEAR && _min_filter != NEAREST) 
+        {
+            if (useHardwareMipMapGeneration) glTexParameteri(GL_TEXTURE_3D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+            hardwareMipMapOn = true;
+        }
+
         numMipmapLevels = 1;
 
         if (!compressed_image)
@@ -356,7 +365,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
                 image->data());
         }
 
-
+        if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_3D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
     }
     else
     {

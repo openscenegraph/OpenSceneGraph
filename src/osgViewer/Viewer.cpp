@@ -76,7 +76,38 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     while (arguments.read("--window",x,y,width,height)) {}
     
     bool ss3d = false;
-    if ((ss3d=arguments.read("--3d-sd")) || arguments.read("--panoramic-sd"))
+    bool wowvx20 = false;
+    bool wowvx42 = false;
+    if ((wowvx20=arguments.read("--wowvx-20")) || (wowvx42=arguments.read("--wowvx-42")) || arguments.read("--wowvx"))
+    {
+        int wow_content=0x02, wow_factor=0x40, wow_offset=0x80;
+        float wow_Zd, wow_vz, wow_M, wow_C;
+        if (wowvx20){
+            wow_Zd = 0.459813f;
+            wow_vz = 6.180772f;
+            wow_M = -1586.34f;
+            wow_C = 127.5f;
+        }
+        else if (wowvx42){
+            wow_Zd = 0.467481f;
+            wow_vz = 7.655192f;
+            wow_M = -1960.37f;
+            wow_C = 127.5f;
+        }
+
+        while (arguments.read("--wow-content",wow_content)) {}
+        while (arguments.read("--wow-factor",wow_factor)) {}
+        while (arguments.read("--wow-offset",wow_offset)) {}
+        while (arguments.read("--wow-zd",wow_Zd)) {}
+        while (arguments.read("--wow-vz",wow_vz)) {}
+        while (arguments.read("--wow-M",wow_M)) {}
+        while (arguments.read("--wow-C",wow_C)) {}
+            
+        if (screenNum<0) screenNum = 0;
+        
+        setUpViewForWoWVxDisplay( screenNum, wow_content, wow_factor, wow_offset, wow_Zd, wow_vz, wow_M, wow_C );
+    }
+    else if ((ss3d=arguments.read("--3d-sd")) || arguments.read("--panoramic-sd"))
     {
         double radius = 1.0;
         while (arguments.read("--radius",radius)) {}

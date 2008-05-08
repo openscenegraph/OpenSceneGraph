@@ -24,6 +24,7 @@ using namespace osgdae;
 
 daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons,  bool GoogleMode ) : osg::NodeVisitor( TRAVERSE_ALL_CHILDREN ),
                                         dae(dae_),
+                                        rootName(*dae_),
                                         usePolygons (_usePolygons),
                                         m_GoogleMode(GoogleMode)
 {

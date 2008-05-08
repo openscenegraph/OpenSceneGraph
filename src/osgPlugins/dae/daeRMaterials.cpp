@@ -615,43 +615,39 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
     osg::Image *img = NULL;
     if ( dImg->getInit_from() != NULL )
     {
+        // daeURI uri = dImg->getInit_from()->getValue();
         dImg->getInit_from()->getValue().validate();
-
         if ( std::string( dImg->getInit_from()->getValue().getProtocol() ) == std::string( "file" ) )
         {
-            unsigned int bufSize = 1; //for the null char
-            if ( dImg->getInit_from()->getValue().getFilepath() != NULL )
-            {
-               bufSize += strlen( dImg->getInit_from()->getValue().getFilepath() );
-            }
-            if ( dImg->getInit_from()->getValue().getFile() != NULL )
-            {
-               bufSize += strlen( dImg->getInit_from()->getValue().getFile() );
-            }
-            char *path = new char[bufSize+1];
-            if ( !dImg->getInit_from()->getValue().getPath( path, bufSize ) )
-            {
-               osg::notify( osg::WARN ) << "Unable to get path from URI." << std::endl;
-               return NULL;
-            }
-
+            //unsigned int bufSize = 1; //for the null char
+            //bufSize += dImg->getInit_from()->getValue().pathDir().size();
+            //bufSize += dImg->getInit_from()->getValue().pathFile().size();
+           std::string path =  dImg->getInit_from()->getValue().pathDir()+
+                                  dImg->getInit_from()->getValue().pathFile();
+              // remove space encodings
+              //
+              path = cdom::uriToNativePath(path);
+           if(path.empty())
+           {
+              osg::notify( osg::WARN ) << "Unable to get path from URI." << std::endl;
+              return NULL;
+           }
 #ifdef WIN32
             // If the path has a drive specifier or a UNC name then strip the leading /
-            char* filename;
+            const char* filename =path.c_str();
             if ((path[2] == ':') || ((path[1] == '/') && (path[2] == '/')))
-                filename = path+1;
-            else
-                filename = path;
+               ++filename;// = path+1;
+//            else
+//                filename = path;
 #else
-            char* filename = path;
+            const char* filename = path.c_str();
 #endif
-
             img = osgDB::readImageFile( filename );
 
             osg::notify(osg::INFO)<<"  processTexture(..) - readImage("<<filename<<")"<<std::endl;
             
             //Moved this below the osg::notify - Parag, 24/7/2007
-            delete [] path;
+            //delete [] path;
 
             
         }

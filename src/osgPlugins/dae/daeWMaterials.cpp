@@ -99,7 +99,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         osg::Image *osgimg = tex->getImage( 0 );
         domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->createAndPlace( "init_from" ) );
         std::string fileURI = ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(osgDB::findDataFile(osgimg->getFileName()));
-        daeURI dd( fileURI.c_str() );
+       daeURI dd(*dae, fileURI);//fileURI.c_str() );
         imgif->setValue( dd );
         // The document URI should contain the canonical path it was created with
         imgif->getValue().makeRelativeTo(doc->getDocumentURI());

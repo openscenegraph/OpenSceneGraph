@@ -18,7 +18,9 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/include
-    /usr/include
+    /usr/local/include/colladadom
+    /usr/include/
+    /usr/include/colladadom
     /sw/include # Fink
     /opt/local/include # DarwinPorts
     /opt/csw/include # Blastwave
@@ -28,7 +30,7 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
 )
 
 FIND_LIBRARY(COLLADA_LIBRARY 
-    NAMES collada_dom
+    NAMES collada_dom collada14dom
     PATHS
     $ENV{COLLADA_DIR}/lib
     $ENV{COLLADA_DIR}/lib-dbg
@@ -39,7 +41,9 @@ FIND_LIBRARY(COLLADA_LIBRARY
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/lib
+    /usr/local/lib64
     /usr/lib
+    /usr/lib64
     /sw/lib
     /opt/local/lib
     /opt/csw/lib

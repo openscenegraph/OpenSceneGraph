@@ -45,9 +45,9 @@ ELSE (WIN32)
     #
     # ...so what we need is a conditional way to properly SET() the right one.
     IF(COLLADA_USE_STATIC)
-        SET(TARGET_EXTERNAL_LIBRARIES collada_dom collada_dae xml2 pcrecpp)
+        SET(TARGET_EXTERNAL_LIBRARIES collada14dom xml2 pcrecpp)
     ELSE(COLLADA_USE_STATIC)
-        SET(TARGET_EXTERNAL_LIBRARIES collada_dom_shared collada_dae_shared xml2)
+        SET(TARGET_EXTERNAL_LIBRARIES collada14dom xml2)
     ENDIF(COLLADA_USE_STATIC)
 
 ENDIF(WIN32)

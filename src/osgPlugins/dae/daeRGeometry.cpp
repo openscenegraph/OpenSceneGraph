@@ -311,7 +311,8 @@ osg::Node* daeReader::processPolylist( domPolylist *group, SourceMap &sources )
 
     osg::DrawArrayLengths* dal = new osg::DrawArrayLengths( GL_POLYGON );
     
-    domPRef p = (domP*)(daeElement*)domP::_Meta->create(); //I don't condone creating elements like this but I don't care
+    //domPRef p = (domP*)(daeElement*)domP::_Meta->create(); //I don't condone creating elements like this but I don't care
+    domPRef p = (domP*)domP::registerElement(*dae)->create().cast();
     //if it created properly because I never want it as part of the document. Its just a temporary
     //element to trick the importer into loading polylists easier.
     unsigned int maxOffset = 0;

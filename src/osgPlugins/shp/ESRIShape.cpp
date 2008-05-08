@@ -10,6 +10,8 @@
 
 using namespace ESRIShape ;
 
+#define SAFE_DELETE_ARRAY( ptr ) delete[] ptr; ptr = 0L;
+
 template <class T>
 inline void swapBytes(  T &s )
 {
@@ -243,7 +245,7 @@ MultiPoint::MultiPoint( const struct MultiPoint &mpoint ): ShapeObject(ShapeType
 
 MultiPoint::~MultiPoint()
 {
-    delete [] points;
+    delete[] points;
 }
 
 bool MultiPoint::read( int fd )
@@ -251,6 +253,8 @@ bool MultiPoint::read( int fd )
     RecordHeader rh;
     if( rh.read(fd) == false )
         return false;
+    
+    SAFE_DELETE_ARRAY( points );
 
     Integer shapeType;
     if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
@@ -316,6 +320,9 @@ bool PolyLine::read( int fd )
     RecordHeader rh;
     if( rh.read(fd) == false )
         return false;
+
+    SAFE_DELETE_ARRAY( parts );
+    SAFE_DELETE_ARRAY( points );
 
     Integer shapeType;
     if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
@@ -385,6 +392,9 @@ bool Polygon::read( int fd )
     RecordHeader rh;
     if( rh.read(fd) == false )
         return false;
+
+    SAFE_DELETE_ARRAY( parts );
+    SAFE_DELETE_ARRAY( points );
 
     Integer shapeType;
     if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
@@ -501,6 +511,9 @@ bool MultiPointM::read( int fd )
     if( rh.read(fd) == false )
         return false;
 
+    SAFE_DELETE_ARRAY( points );
+    SAFE_DELETE_ARRAY( mArray );
+
     Integer shapeType;
     if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
         return false;
@@ -590,6 +603,10 @@ bool PolyLineM::read( int fd )
     if( rh.read(fd) == false )
         return false;
 
+    SAFE_DELETE_ARRAY( parts );
+    SAFE_DELETE_ARRAY( points );
+    SAFE_DELETE_ARRAY( mArray );
+
     Integer shapeType;
     if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
         return false;
@@ -670,11 +687,23 @@ PolygonM::PolygonM(const PolygonM &p):
     }
 }
 
+PolygonM::~PolygonM()
+{
+    delete[] parts;
+    delete[] points;
+    delete[] mArray;
+};
+
+
 bool PolygonM::read( int fd )
 {
     RecordHeader rh;
     if( rh.read(fd) == false )
         return false;
+
+    SAFE_DELETE_ARRAY( parts );
+    SAFE_DELETE_ARRAY( points );
+    SAFE_DELETE_ARRAY( mArray );
 
     Integer shapeType;
     if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
@@ -820,6 +849,10 @@ bool MultiPointZ::read( int fd )
     if( rh.read(fd) == false )
         return false;
 
+    SAFE_DELETE_ARRAY( points );
+    SAFE_DELETE_ARRAY( zArray );
+    SAFE_DELETE_ARRAY( mArray );
+
     Integer shapeType;
     if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
         return false;
@@ -923,8 +956,7 @@ PolyLineZ::~PolyLineZ()
     delete [] parts;
     delete [] points;
     delete [] zArray;
-    if( mArray != 0L )
-        delete [] mArray;
+    delete [] mArray;
 }
 
 bool PolyLineZ::read( int fd )
@@ -932,6 +964,11 @@ bool PolyLineZ::read( int fd )
     RecordHeader rh;
     if( rh.read(fd) == false )
         return false;
+
+    SAFE_DELETE_ARRAY( parts );
+    SAFE_DELETE_ARRAY( points );
+    SAFE_DELETE_ARRAY( zArray );
+    SAFE_DELETE_ARRAY( mArray );
 
     Integer shapeType;
     if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
@@ -976,7 +1013,7 @@ bool PolyLineZ::read( int fd )
     int Y = X + (15 * numPoints);
     int Z = Y + 16 + (8 * numPoints);
 
-    if( rh.contentLength > Z )
+    if( rh.contentLength != Z )
     { 
         mRange.read(fd);
         mArray = new Double[numPoints];
@@ -996,7 +1033,8 @@ PolygonZ::PolygonZ():
     numParts(0), 
     numPoints(0), 
     parts(0L), 
-    points(0L) ,
+    points(0L),
+    zArray(0L),
     mArray(0L)
 {}
 
@@ -1020,6 +1058,8 @@ PolygonZ::PolygonZ(const PolygonZ &p):
     {
         points[i] = p.points[i];
         zArray[i] = p.zArray[i]; // jcm 
+    // M-Array seems to be missing sometimes
+    if(p.mArray)     
         mArray[i] = p.mArray[i];
     }
 }
@@ -1029,8 +1069,7 @@ PolygonZ::~PolygonZ()
     delete [] parts;
     delete [] points;
     delete [] zArray;
-    if( mArray != 0L )
-        delete [] mArray;
+    delete [] mArray;
 }
 
 bool PolygonZ::read( int fd )
@@ -1038,6 +1077,11 @@ bool PolygonZ::read( int fd )
     RecordHeader rh;
     if( rh.read(fd) == false )
         return false;
+    
+    SAFE_DELETE_ARRAY( parts );
+    SAFE_DELETE_ARRAY( points );
+    SAFE_DELETE_ARRAY( zArray );
+    SAFE_DELETE_ARRAY( mArray );
 
     Integer shapeType;
     if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )
@@ -1082,7 +1126,7 @@ bool PolygonZ::read( int fd )
     int  X = 44 + (4*numParts);
     int  Y = X + (16*numPoints);
     int  Z = Y + 16 + (8*numPoints);
-    if( rh.contentLength > Z )
+    if( rh.contentLength != Z )
     {
         if( mRange.read(fd) == false )
             return false;
@@ -1165,8 +1209,7 @@ MultiPatch::~MultiPatch()
     delete [] partTypes;
     delete [] points;
     delete [] zArray;
-    if( mArray != 0L )
-        delete [] mArray;
+    delete [] mArray;
 }
 
 bool MultiPatch::read( int fd )
@@ -1174,6 +1217,12 @@ bool MultiPatch::read( int fd )
     RecordHeader rh;
     if( rh.read(fd) == false )
         return false;
+
+    SAFE_DELETE_ARRAY( parts );
+    SAFE_DELETE_ARRAY( partTypes );
+    SAFE_DELETE_ARRAY( points );
+    SAFE_DELETE_ARRAY( zArray );
+    SAFE_DELETE_ARRAY( mArray );
 
     Integer shapeType;
     if( readVal<Integer>(fd, shapeType, LittleEndian ) == false )

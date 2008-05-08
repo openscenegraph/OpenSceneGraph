@@ -274,6 +274,8 @@ struct PolygonM : public ShapeObject
 
     PolygonM(const PolygonM &p);
 
+    virtual ~PolygonM();
+
     bool read( int fd );
 };
 

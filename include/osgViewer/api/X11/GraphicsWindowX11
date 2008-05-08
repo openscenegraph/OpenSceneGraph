@@ -169,6 +169,7 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         void getModifierMap(char* keymap) const;
         int getModifierMask() const;
         void syncLocks();
+        void flushKeyEvents();
         
         bool            _valid;
         Display*        _display;

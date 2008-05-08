@@ -993,6 +993,7 @@ void GraphicsWindowX11::checkEvents()
 
             case FocusIn :
                 osg::notify(osg::INFO)<<"FocusIn event received"<<std::endl;
+                flushKeyEvents();
                 break;
 
             case UnmapNotify :
@@ -1038,12 +1039,15 @@ void GraphicsWindowX11::checkEvents()
                 getModifierMap(modMap);
                 syncLocks();
 
+                char keyMap[32];
+                XQueryKeymap(_eventDisplay, keyMap);
+
                 // release normal (non-modifier) keys
                 for (unsigned int key = 8; key < 256; key++)
                 {
                     bool isModifier = keyMapGetKey(modMap, key);
                     if (isModifier) continue;
-                    bool isPressed = keyMapGetKey(ev.xkeymap.key_vector, key);
+                    bool isPressed = keyMapGetKey(keyMap, key);
                     if (!isPressed) forceKey(key, eventTime, false);
                 }
 
@@ -1052,7 +1056,7 @@ void GraphicsWindowX11::checkEvents()
                 {
                     bool isModifier = keyMapGetKey(modMap, key);
                     if (!isModifier) continue;
-                    bool isPressed = keyMapGetKey(ev.xkeymap.key_vector, key);
+                    bool isPressed = keyMapGetKey(keyMap, key);
                     forceKey(key, eventTime, isPressed);
                 }
 
@@ -1061,7 +1065,7 @@ void GraphicsWindowX11::checkEvents()
                 {
                     bool isModifier = keyMapGetKey(modMap, key);
                     if (isModifier) continue;
-                    bool isPressed = keyMapGetKey(ev.xkeymap.key_vector, key);
+                    bool isPressed = keyMapGetKey(keyMap, key);
                     if (isPressed) forceKey(key, eventTime, true);
                 }
                 break;
@@ -1383,6 +1387,13 @@ void GraphicsWindowX11::rescanModifierMapping()
             break;
         }
     }
+}
+
+void GraphicsWindowX11::flushKeyEvents()
+{
+    XEvent e;
+    while (XCheckMaskEvent(_eventDisplay, KeyPressMask|KeyReleaseMask, &e))
+        continue;
 }
 
 // Returns char[32] keymap with bits for every modifier key set.

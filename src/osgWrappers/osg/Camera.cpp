@@ -552,9 +552,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __C5_osg_Object_P1__getRenderingCache,
 	          "Get the const Rendering cache that is used for cached objects associated with rendering of subgraphs. ",
 	          "");
-	I_Method1(void, setIntialDrawCallback, IN, osg::Camera::DrawCallback *, cb,
+	I_Method1(void, setInitialDrawCallback, IN, osg::Camera::DrawCallback *, cb,
 	          Properties::NON_VIRTUAL,
-	          __void__setIntialDrawCallback__DrawCallback_P1,
+	          __void__setInitialDrawCallback__DrawCallback_P1,
 	          "Set the initial draw callback for custom operations to be done before the drawing of the camera's subgraph and pre render stages. ",
 	          "");
 	I_Method0(osg::Camera::DrawCallback *, getInitialDrawCallback,
@@ -681,10 +681,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	                 __void__setGraphicsContext__GraphicsContext_P1);
 	I_SimpleProperty(osg::Camera::DrawCallback *, InitialDrawCallback, 
 	                 __DrawCallback_P1__getInitialDrawCallback, 
-	                 0);
-	I_SimpleProperty(osg::Camera::DrawCallback *, IntialDrawCallback, 
-	                 0, 
-	                 __void__setIntialDrawCallback__DrawCallback_P1);
+	                 __void__setInitialDrawCallback__DrawCallback_P1);
 	I_SimpleProperty(osg::Matrixd, InverseViewMatrix, 
 	                 __Matrixd__getInverseViewMatrix, 
 	                 0);

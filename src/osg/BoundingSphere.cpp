@@ -93,6 +93,8 @@ void BoundingSphere::expandRadiusBy(const Vec3d& v)
 
 void BoundingSphere::expandBy(const BoundingSphere& sh)
 {
+    // ignore operation if incomming BoundingSphere is invalid.
+    if (!sh.valid()) return;
 
     // This sphere is not set so use the inbound sphere
     if (!valid())
@@ -102,7 +104,7 @@ void BoundingSphere::expandBy(const BoundingSphere& sh)
 
         return;
     }
-
+    
     
     // Calculate d == The distance between the sphere centers   
     double d = ( _center - sh.center() ).length();

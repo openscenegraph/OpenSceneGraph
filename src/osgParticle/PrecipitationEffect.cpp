@@ -350,7 +350,7 @@ void PrecipitationEffect::update()
         }
         else _inversePeriodUniform->set(1.0f/_period);
 
-        if (!_particleSizeUniform)
+        if (!_particleColorUniform)
         {
             _particleColorUniform = new osg::Uniform("particleColour", _particleColor);
             _stateset->addUniform(_particleColorUniform.get());

@@ -356,31 +356,79 @@ FltExportVisitor::apply( osg::Geode& node )
 
         ScopedStatePushPop drawableGuard( this, geom->getStateSet() );
 
-        // Write vertex array data out to vertex palette manager
-        if (!isAllMesh( *geom ))
+        // Push and pop subfaces if polygon offset is on.
+        SubfaceHelper subface( *this, getCurrentStateSet() );
+
+        if (atLeastOneFace( *geom ))
+        {
             // If at least one record will be a Face record, then we
-            //   need to write to the vertex pool.
+            //   need to write to the vertex palette.
             _vertexPalette->add( *geom );
 
-        unsigned int jdx;
-        for (jdx=0; jdx < geom->getNumPrimitiveSets(); jdx++)
-        {
-            osg::PrimitiveSet* prim = geom->getPrimitiveSet( jdx );
-            if (prim->getType() == osg::PrimitiveSet::DrawArraysPrimitiveType)
-                handleDrawArrays( dynamic_cast<osg::DrawArrays*>( prim ), *geom, node );
-            else if (prim->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType)
-                handleDrawArrayLengths( dynamic_cast<osg::DrawArrayLengths*>( prim ), *geom, node );
-            else if ( (prim->getType() == osg::PrimitiveSet::DrawElementsUBytePrimitiveType) ||
-                    (prim->getType() == osg::PrimitiveSet::DrawElementsUShortPrimitiveType) ||
-                    (prim->getType() == osg::PrimitiveSet::DrawElementsUIntPrimitiveType) )
-                handleDrawElements( dynamic_cast<osg::DrawElements*>( prim ), *geom, node );
-            else
+            // Iterate over all PrimitiveSets and output Face records.
+            unsigned int jdx;
+            for (jdx=0; jdx < geom->getNumPrimitiveSets(); jdx++)
             {
-                std::string warning( "fltexp: Unknown PrimitiveSet type." );
-                osg::notify( osg::WARN ) << warning << std::endl;
-                _fltOpt->getWriteResult().warn( warning );
-                return;
+                osg::PrimitiveSet* prim = geom->getPrimitiveSet( jdx );
+                if ( isMesh( prim->getMode() ) )
+                    continue;
+
+                if (prim->getType() == osg::PrimitiveSet::DrawArraysPrimitiveType)
+                    handleDrawArrays( dynamic_cast<osg::DrawArrays*>( prim ), *geom, node );
+                else if (prim->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType)
+                    handleDrawArrayLengths( dynamic_cast<osg::DrawArrayLengths*>( prim ), *geom, node );
+                else if ( (prim->getType() == osg::PrimitiveSet::DrawElementsUBytePrimitiveType) ||
+                        (prim->getType() == osg::PrimitiveSet::DrawElementsUShortPrimitiveType) ||
+                        (prim->getType() == osg::PrimitiveSet::DrawElementsUIntPrimitiveType) )
+                    handleDrawElements( dynamic_cast<osg::DrawElements*>( prim ), *geom, node );
+                else
+                {
+                    std::string warning( "fltexp: Unknown PrimitiveSet type." );
+                    osg::notify( osg::WARN ) << warning << std::endl;
+                    _fltOpt->getWriteResult().warn( warning );
+                    return;
+                }
             }
+        }
+
+        if (atLeastOneMesh( *geom ))
+        {
+            // If at least one Mesh record, write out preamble mesh records
+            //   followed by a Mesh Primitive record per PrimitiveSet.
+            writeMesh( node, *geom );
+
+            writeMatrix( node.getUserData() );
+            writeComment( node );
+            writeMultitexture( *geom );
+            writeLocalVertexPool( *geom );
+
+            writePush();
+
+            unsigned int jdx;
+            for (jdx=0; jdx < geom->getNumPrimitiveSets(); jdx++)
+            {
+                osg::PrimitiveSet* prim = geom->getPrimitiveSet( jdx );
+                if ( !isMesh( prim->getMode() ) )
+                    continue;
+
+                if (prim->getType() == osg::PrimitiveSet::DrawArraysPrimitiveType)
+                    handleDrawArrays( dynamic_cast<osg::DrawArrays*>( prim ), *geom, node );
+                else if (prim->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType)
+                    handleDrawArrayLengths( dynamic_cast<osg::DrawArrayLengths*>( prim ), *geom, node );
+                else if ( (prim->getType() == osg::PrimitiveSet::DrawElementsUBytePrimitiveType) ||
+                        (prim->getType() == osg::PrimitiveSet::DrawElementsUShortPrimitiveType) ||
+                        (prim->getType() == osg::PrimitiveSet::DrawElementsUIntPrimitiveType) )
+                    handleDrawElements( dynamic_cast<osg::DrawElements*>( prim ), *geom, node );
+                else
+                {
+                    std::string warning( "fltexp: Unknown PrimitiveSet type." );
+                    osg::notify( osg::WARN ) << warning << std::endl;
+                    _fltOpt->getWriteResult().warn( warning );
+                    return;
+                }
+            }
+
+            writePop();
         }
     }
 

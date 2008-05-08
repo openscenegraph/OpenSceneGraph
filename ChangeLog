@@ -1,3 +1,122 @@
+2008-05-08 14:00 +0000 [r8287]  robert:
+
+	* From Raymond de Vries, "This fix tests the right variable before
+	  it is allocated. Fortunately, until now it tested another
+	  variable (_particleSizeUniform, which is, at that moment, not
+	  allocated as well) and everything went ok. So it does not fix a
+	  crash or so, it is a matter of correct code. Line 353 is changed
+	  from if (!_particleSizeUniform) to if (!_particleColorUniform) "
+
+2008-05-08 13:56 +0000 [r8286]  robert:
+
+	* From Paul Martz, "As I discovered prior to the 2.4 release, the
+	  FLT export geometry backend was using some old turn-on code,
+	  originally written just to enable other development but not
+	  intended for actual release. Sadly, my OSG training commitments
+	  prevented me from fixing this prior to 2.4. In essence, the FLT
+	  exporter was emitting a full set of Mesh records each time it
+	  encountered a PrimitiveSet. Attached is a fix. The code now emits
+	  the Mesh set up records, then iterates over all PrimitiveSets and
+	  emits a Mesh Primitive record per PrimitiveSet. It also loops
+	  over PrimitiveSets twice, first writing Face records according to
+	  the mode, the writing Mesh records (again according to the mode).
+	  The final change included here is support for GL_POINTS as
+	  single-vertex Face records. Billboards are still to come."
+
+2008-05-08 13:46 +0000 [r8285]  robert:
+
+	* Updated wrappers
+
+2008-05-08 13:22 +0000 [r8284]  robert:
+
+	* From Roland Smeenk, "Small typo and implementation fix for
+	  setInitialDrawCallback."
+
+2008-05-08 12:55 +0000 [r8283]  robert:
+
+	* From Philip Lowman, "Attached is a patch to the toplevel
+	  CMakeLists.txt which adds an automated test for
+	  OSG_GLU_TESS_CALLBACK_TRIPLEDOT. This should help ease initial
+	  configuration on OS X systems."
+
+2008-05-08 12:36 +0000 [r8282]  robert:
+
+	* From Garrett Potts and Robert Osfield, changes to build against
+	  Collada DOM 2.x
+
+2008-05-08 09:16 +0000 [r8281]  robert:
+
+	* Updated the doxygen docs to explain the deprecated status of
+	  SceneView
+
+2008-05-07 17:06 +0000 [r8280]  robert:
+
+	* Commented out checking of DISPLAY env var
+
+2008-05-07 14:32 +0000 [r8278-8279]  robert:
+
+	* Updated wrappers
+
+	* From Bob Kuehne, Added doxygen docs clarification of ReadResult
+	  enum values
+
+2008-05-07 14:24 +0000 [r8277]  robert:
+
+	* From Donald Cipperly, "This is a fix to eliminate >> errors in VS
+	  7.1"
+
+2008-05-07 14:17 +0000 [r8276]  robert:
+
+	* From Miguel Escriva, "Attached to this mail you will find some
+	  files to work with the Philips WOWvx displays. It's implemented
+	  in the same way that 3D Spherical Display and Panoramic Spherical
+	  Display. You can test it running: osgviewer --wowvx-20 cow.osg
+	  osgviewer --wowvx-42 cow.osg depending on the size of your
+	  Philips WOWvx display (20" or 42") Other arguments you can use to
+	  control the 3D effect are: --wow-content <value> This value
+	  defines the kind of content that can be: 0: No depth 1: Signage
+	  2: Movie 3: CGI 4: Still --wow-factor <value> Percentage of the
+	  display recommended depth value. Default 64, Range [0-255]
+	  --wow-offset <value> Amount of range behind the screen. Default
+	  128, Range [0-255] 0: Range is shifted in the direction of the
+	  viewer. 128: Range is equally divided in front and behind the
+	  screen. 255: Range is shifted away from the viewer. "
+
+2008-05-07 13:49 +0000 [r8275]  robert:
+
+	* From Terry Welsh, fixed typo of getEnd()
+
+2008-05-07 13:46 +0000 [r8274]  robert:
+
+	* From Jeremy Moles,"Here's a small example I us to test text
+	  rendering in osgWidget; I figured it might be helpful to folks in
+	  OSG who need to do the same. "
+
+2008-05-07 13:42 +0000 [r8273]  robert:
+
+	* From Farshid Lashkari, "I've added hardware mipmap support to
+	  Texture3D."
+
+2008-05-07 11:59 +0000 [r8272]  robert:
+
+	* Added doxygen comments for attach
+
+2008-04-26 11:13 +0000 [r8238]  robert:
+
+	* Updated package numbers for OSG-2.4, OT-2.2.1 release
+
+2008-04-25 13:10 +0000 [r8229]  robert:
+
+	* Update AUTHORS file for 2.4 release
+
+2008-04-25 12:58 +0000 [r8228]  robert:
+
+	* Updated ChangeLog for 2.4 release
+
+2008-04-25 12:40 +0000 [r8227]  robert:
+
+	* Update NEWS and README to 2.4 stable release
+
 2008-04-25 09:46 +0000 [r8225]  robert:
 
 	* Updated Version number for 2.4 stable release

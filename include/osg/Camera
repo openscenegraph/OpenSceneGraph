@@ -449,7 +449,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         };
         
         /** Set the initial draw callback for custom operations to be done before the drawing of the camera's subgraph and pre render stages.*/
-        void setIntialDrawCallback(DrawCallback* cb) { _preDrawCallback = cb; }
+        void setInitialDrawCallback(DrawCallback* cb) { _initialDrawCallback = cb; }
 
         /** Get the initial draw callback.*/
         DrawCallback* getInitialDrawCallback() { return _initialDrawCallback.get(); }

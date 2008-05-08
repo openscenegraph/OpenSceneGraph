@@ -28,8 +28,10 @@
 namespace osgUtil {
 
 /**
- * SceneView is literaly a view of a scene, encapsulating the rendering of the scene.
- * Provides methods for setting up the view and rendering it.
+ * SceneView is deprecated, and is now just kept for backwards compatibility.
+ * It is recommend that you use osgViewer::Viewer/Composite in combination
+ * with osgViewer::GraphicsWindowEmbedded for embedded rendering support as
+ * this provides a greater range of functionality and consistency of API.
 */
 class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
 {

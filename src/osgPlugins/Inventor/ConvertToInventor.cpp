@@ -67,13 +67,13 @@
 #include <Inventor/nodes/SoSphere.h>
 #include <Inventor/nodes/SoTexture2.h>
 #include <Inventor/nodes/SoTextureCoordinate2.h>
-#include <Inventor/nodes/SoTextureCoordinate3.h>
 #include <Inventor/nodes/SoTextureCoordinateEnvironment.h>
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoTriangleStripSet.h>
 #include <Inventor/fields/SoFields.h>
 #ifdef __COIN__
+#include <Inventor/nodes/SoTextureCoordinate3.h>
 #include <Inventor/nodes/SoTransparencyType.h>
 #include <Inventor/VRMLnodes/SoVRMLBillboard.h>
 #endif
@@ -1228,6 +1228,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
                                                startIndex, n);
         }
       } else
+#ifdef __COIN__
       if (ivTexCoords->isOfType(SoTextureCoordinate3::getClassTypeId())) {
         nonIndexedTexCoords = new SoTextureCoordinate3;
         if (ok) {
@@ -1239,6 +1240,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
                                                startIndex, n);
         }
       } else
+#endif  // __COIN__
         nonIndexedTexCoords = ivTexCoords;
 
     // create alternate normals
@@ -1539,10 +1541,13 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
       if (g->getTexCoordArray(0)->getDataSize() <= 2) {
         texCoords = new SoTextureCoordinate2;
         osgArray2ivMField(g->getTexCoordArray(0), ((SoTextureCoordinate2*)texCoords)->point);
-      } else {
+      } 
+#ifdef __COIN__
+      else {
         texCoords = new SoTextureCoordinate3;
         osgArray2ivMField(g->getTexCoordArray(0), ((SoTextureCoordinate3*)texCoords)->point);
       }
+#endif   // __COIN__
     }
     if (texCoords)
       texCoords->ref();

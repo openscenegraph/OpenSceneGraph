@@ -91,7 +91,7 @@ int main( int argc, char **argv )
     while(arguments.read("-l",maxLevels)) {}
     
     std::string fileCache;
-    while(arguments.read("-c",fileCache)) {}
+    while(arguments.read("--file-cache",fileCache) || arguments.read("-c",fileCache)) {}
     
     if (!fileCache.empty())
     {   

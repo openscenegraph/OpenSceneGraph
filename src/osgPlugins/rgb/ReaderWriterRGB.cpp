@@ -168,6 +168,8 @@ static rawImageRec *RawImageOpen(std::istream& fin)
     }
 
     fin.read((char*)raw,12);
+    if (!fin.good())
+        return NULL;
 
     if (raw->swapFlag)
     {
@@ -459,7 +461,7 @@ class ReaderWriterRGB : public osgDB::ReaderWriter
 
             if( (raw = RawImageOpen(fin)) == NULL )
             {
-                return ReadResult::FILE_NOT_HANDLED;
+                return ReadResult::ERROR_IN_READING_FILE;
             }
 
             int s = raw->sizeX;

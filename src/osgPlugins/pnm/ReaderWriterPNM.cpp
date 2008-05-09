@@ -279,7 +279,8 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             int row;
             for (row = 1; row <= 3; row++)
             {
-                fgets(line, 300, fp);
+                if ( fgets(line, 300, fp) == NULL)
+                    break;
 
                 char *cp = line;
                 while (*cp && isspace(*cp))
@@ -326,7 +327,7 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
                 ppmtype < 1 || ppmtype > 6)
             {
                 fclose(fp);
-                return ReadResult::FILE_NOT_HANDLED;
+                return ReadResult::ERROR_IN_READING_FILE;
             }
 
             int pixelFormat = 0;

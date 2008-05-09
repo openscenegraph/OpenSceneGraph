@@ -614,6 +614,9 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
 {
         WriteResult::WriteStatus write_JPEG_file (std::ostream &fout,int image_width,int image_height,JSAMPLE* image_buffer,int quality = 100) const
         {
+            if ( (image_width == 0) || (image_height == 0) )
+                return WriteResult::ERROR_IN_WRITING_FILE;
+
             /* This struct contains the JPEG compression parameters and pointers to
             * working space (which is allocated as needed by the JPEG library).
             * It is possible to have several such structures, representing multiple

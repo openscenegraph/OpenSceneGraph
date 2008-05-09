@@ -299,6 +299,9 @@ class FLTReaderWriter : public ReaderWriter
                 opcode_type opcode = (opcode_type)dataStream.readUInt16();
                 size_type   size   = (size_type)dataStream.readUInt16();
 
+                if (size==0)
+                    return ReadResult::ERROR_IN_READING_FILE;
+
                 // variable length record complete?
                 if (!continuationBuffer.empty() && opcode!=CONTINUATION_OP)
                 {

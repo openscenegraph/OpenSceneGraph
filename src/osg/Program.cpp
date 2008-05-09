@@ -96,7 +96,7 @@ void Program::discardDeletedGlPrograms(unsigned int contextID)
 ///////////////////////////////////////////////////////////////////////////
 
 Program::Program() :
-    _geometryVerticesOut(0), _geometryInputType(GL_TRIANGLES),
+    _geometryVerticesOut(1), _geometryInputType(GL_TRIANGLES),
     _geometryOutputType(GL_TRIANGLE_STRIP)
 {
 }

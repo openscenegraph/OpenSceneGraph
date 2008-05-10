@@ -755,7 +755,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
 
             imageData = simage_jpeg_load(fin,&width_ret,&height_ret,&numComponents_ret);
 
-            if (imageData==NULL) return ReadResult::FILE_NOT_HANDLED;
+            if (imageData==NULL) return ReadResult::ERROR_IN_READING_FILE;
 
             int s = width_ret;
             int t = height_ret;
@@ -811,7 +811,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
-            if(!istream) return ReadResult::FILE_NOT_HANDLED;
+            if(!istream) return ReadResult::ERROR_IN_READING_FILE;
             ReadResult rr = readJPGStream(istream);
             if(rr.validImage()) rr.getImage()->setFileName(file);
             return rr;

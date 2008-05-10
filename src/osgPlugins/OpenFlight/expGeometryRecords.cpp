@@ -24,6 +24,7 @@
 #include <osg/BlendFunc>
 #include <osg/Geometry>
 #include <osg/Geode>
+#include <osg/Billboard>
 #include <osg/io_utils>
 #include <osg/Material>
 #include <osg/Texture2D>
@@ -249,10 +250,18 @@ FltExportVisitor::writeFace( const osg::Geode& geode, const osg::Geometry& geom,
         }
     }
 
-    // Check for blending. We're not a Billboard (TBD?)
-    //   so use either FIXED_NO_ALPHA_BLENDING or FIXED_ALPHA_BLENDING.
+    // Set the appropriate template mode based
+    // on blending or Billboarding.
     TemplateMode templateMode( FIXED_NO_ALPHA_BLENDING );
-    if ( ss->getMode( GL_BLEND ) & osg::StateAttribute::ON )
+    const osg::Billboard* bb = dynamic_cast< const osg::Billboard* >( &geode );
+    if (bb != NULL)
+    {
+        if( bb->getMode() == osg::Billboard::AXIAL_ROT )
+            templateMode = AXIAL_ROTATE_WITH_ALPHA_BLENDING;
+        else
+            templateMode = POINT_ROTATE_WITH_ALPHA_BLENDING;
+    }
+    else if ( ss->getMode( GL_BLEND ) & osg::StateAttribute::ON )
     {
         const osg::BlendFunc* bf = static_cast<const osg::BlendFunc*>(
             ss->getAttribute(osg::StateAttribute::BLENDFUNC) );
@@ -416,10 +425,18 @@ FltExportVisitor::writeMesh( const osg::Geode& geode, const osg::Geometry& geom 
         }
     }
 
-    // Check for blending. We're not a Billboard (TBD?)
-    //   so use either FIXED_NO_ALPHA_BLENDING or FIXED_ALPHA_BLENDING.
+    // Set the appropriate template mode based
+    // on blending or Billboarding.
     TemplateMode templateMode( FIXED_NO_ALPHA_BLENDING );
-    if ( ss->getMode( GL_BLEND ) & osg::StateAttribute::ON )
+    const osg::Billboard* bb = dynamic_cast< const osg::Billboard* >( &geode );
+    if (bb != NULL)
+    {
+        if( bb->getMode() == osg::Billboard::AXIAL_ROT )
+            templateMode = AXIAL_ROTATE_WITH_ALPHA_BLENDING;
+        else
+            templateMode = POINT_ROTATE_WITH_ALPHA_BLENDING;
+    }
+    else if ( ss->getMode( GL_BLEND ) & osg::StateAttribute::ON )
     {
         const osg::BlendFunc* bf = static_cast<const osg::BlendFunc*>(
             ss->getAttribute(osg::StateAttribute::BLENDFUNC) );

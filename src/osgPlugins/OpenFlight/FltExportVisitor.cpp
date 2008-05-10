@@ -28,7 +28,6 @@
 
 #include <osgDB/FileUtils>
 #include <osgDB/WriteFile>
-#include <osg/Billboard>
 #include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/LightSource>
@@ -336,6 +335,10 @@ FltExportVisitor::apply( osg::LightSource& node )
     writePushTraverseWritePop( node );
 }
 
+// Billboards also go through this code. The Geode is passed
+// to writeFace and writeMesh. If those methods successfully cast
+// the Geode to a Billboard, then they set the template mode
+// bit accordingly.
 void
 FltExportVisitor::apply( osg::Geode& node )
 {
@@ -434,21 +437,6 @@ FltExportVisitor::apply( osg::Geode& node )
 
     // Would traverse here if this node could have children.
     //   traverse( (osg::Node&)node );
-}
-
-void
-FltExportVisitor::apply( osg::Billboard& node )
-{
-    _firstNode = false;
-    ScopedStatePushPop guard( this, node.getStateSet() );
-
-    // TBD -- Not yet implemented, but HIGH priority.
-    //   Face record -- HIGH
-    //   Mesh record -- HIGH
-
-    writeMatrix( node.getUserData() );
-    writeComment( node );
-    writePushTraverseWritePop( node );
 }
 
 void

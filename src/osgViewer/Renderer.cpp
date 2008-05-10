@@ -167,7 +167,8 @@ Renderer::Renderer(osg::Camera* camera):
     _conservativeTimeRatio(0.5),
     _camera(camera),
     _done(false),
-    _graphicsThreadDoesCull(true)
+    _graphicsThreadDoesCull(true),
+    _compileOnNextDraw(true)
 {
 
     DEBUG_MESSAGE<<"Render::Render() "<<this<<std::endl;
@@ -251,6 +252,22 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     if (view) _startTick = view->getStartTick();
 }
 
+void Renderer::compile()
+{
+    DEBUG_MESSAGE<<"Renderer::compile()"<<std::endl;
+
+    _compileOnNextDraw = false;
+    
+    osgUtil::SceneView* sceneView = _sceneView[0].get();
+    if (!sceneView || _done) return;
+
+    if (sceneView->getSceneData()) 
+    {
+        osgUtil::GLObjectsVisitor glov;
+        glov.setState(sceneView->getState());
+        sceneView->getSceneData()->accept(glov);
+    }
+}
 
 void Renderer::cull()
 {
@@ -322,8 +339,13 @@ void Renderer::draw()
     osg::GraphicsContext* compileContext = sceneView ? osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID()) : 0;
     osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
 
-    if (sceneView || _done)
+    if (sceneView && !_done)
     {
+        if (_compileOnNextDraw)
+        {
+            compile();
+        }
+    
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
         osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
 
@@ -430,6 +452,11 @@ void Renderer::cull_draw()
 
     osgUtil::SceneView* sceneView = _sceneView[0].get();
     if (!sceneView || _done) return;
+
+    if (_compileOnNextDraw)
+    {
+        compile();
+    }
 
     updateSceneView(sceneView);
 

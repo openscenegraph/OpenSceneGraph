@@ -26,8 +26,6 @@
 
 #include <osgUtil/Optimizer>
 #include <osgUtil/IntersectionVisitor>
-#include <osgUtil/GLObjectsVisitor>
-#include <osgUtil/RenderLeaf>
 
 static osg::ApplicationUsageProxy ViewerBase_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_CONFIG_FILE <filename>","Specify a viewer configuration file to load by default.");
 static osg::ApplicationUsageProxy ViewerBase_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREADING <value>","Set the threading model using by Viewer, <value> can be SingleThreaded, CullDrawThreadPerContext, DrawThreadPerContext or CullThreadPerCameraDrawThreadPerContext.");
@@ -281,7 +279,6 @@ void ViewerBase::startThreading()
     // using multi-threading so make sure that new objects are allocated with thread safe ref/unref
     osg::Referenced::setThreadSafeReferenceCounting(true);
 
-
     Scenes scenes;
     getScenes(scenes);
     for(Scenes::iterator scitr = scenes.begin();
@@ -374,8 +371,6 @@ void ViewerBase::startThreading()
 
         if (affinity) gc->getGraphicsThread()->setProcessorAffinity(processNum % numProcessors);
         threadAffinityMap[gc->getGraphicsThread()] = processNum % numProcessors;
-
-        gc->getGraphicsThread()->add(new osgUtil::GLObjectsOperation());
 
         // add the startRenderingBarrier
         if (_threadingModel==CullDrawThreadPerContext && _startRenderingBarrier.valid()) gc->getGraphicsThread()->add(_startRenderingBarrier.get());

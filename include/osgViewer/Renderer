@@ -66,9 +66,15 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
         void setGraphicsThreadDoesCull(bool flag);
         bool getGraphicsThreadDoesCull() const { return _graphicsThreadDoesCull; }
 
+
         virtual void cull();
         virtual void draw();
         virtual void cull_draw();
+
+        virtual void compile();
+        
+        void setCompileOnNextDraw(bool flag) { _compileOnNextDraw = flag; }
+        bool getCompileOnNextDraw() const { return _compileOnNextDraw; }
 
         virtual void operator () (osg::Object* object);
         
@@ -136,6 +142,7 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
         
         bool                                                _done;
         bool                                                _graphicsThreadDoesCull;
+        bool                                                _compileOnNextDraw;
         
         osg::ref_ptr<osgUtil::SceneView>                    _sceneView[2];
         

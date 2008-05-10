@@ -1634,6 +1634,10 @@ void View::assignSceneDataToCameras()
     {
         _camera->removeChildren(0,_camera->getNumChildren());
         if (sceneData) _camera->addChild(sceneData);
+        
+        Renderer* renderer = dynamic_cast<Renderer*>(_camera->getRenderer());
+        if (renderer) renderer->setCompileOnNextDraw(true);
+
     }
 
     for(unsigned i=0; i<getNumSlaves(); ++i)
@@ -1643,6 +1647,9 @@ void View::assignSceneDataToCameras()
         {
             slave._camera->removeChildren(0,slave._camera->getNumChildren());
             if (sceneData) slave._camera->addChild(sceneData);
+        
+            Renderer* renderer = dynamic_cast<Renderer*>(slave._camera->getRenderer());
+            if (renderer) renderer->setCompileOnNextDraw(true);
         }
     }    
 }

@@ -49,7 +49,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
-            if (options->getPluginData("3D"))
+            if ( (options != NULL) && (options->getPluginData("3D")) )
                 return freeTypeLibrary->getFont3D(fileName,0,getFlags(options));
             else
                 return freeTypeLibrary->getFont(fileName,0,getFlags(options));

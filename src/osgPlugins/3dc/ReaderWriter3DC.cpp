@@ -31,7 +31,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
             
-            std::cout << "try to read file "<<fileName<<std::endl;
+            osg::notify(osg::INFO) << "Reading file "<<fileName<<std::endl;
     
             const int LINE_SIZE = 1024;
             char line[LINE_SIZE];
@@ -54,7 +54,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
             }
             
             
-            std::cout << "num="<<num<<std::endl;
+            osg::notify(osg::INFO) << "num="<<num<<std::endl;
             
             unsigned int targetNumVertices = 10000;
            
@@ -80,7 +80,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
                 if (line[0]=='#')
                 {
                     // comment line
-                    //std::cout <<"Comment: "<<line<<std::endl;
+                    osg::notify(osg::INFO) <<"Comment: "<<line<<std::endl;
                 }
                 else if (strlen(line)>0)
                 {

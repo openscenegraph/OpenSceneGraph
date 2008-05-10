@@ -77,7 +77,6 @@ public:
     virtual void apply( osg::Transform& node );
     virtual void apply( osg::LightSource& node );
     virtual void apply( osg::Geode& node );
-    virtual void apply( osg::Billboard& node );
     virtual void apply( osg::Node& node );
     virtual void apply( osg::ProxyNode& node );
 

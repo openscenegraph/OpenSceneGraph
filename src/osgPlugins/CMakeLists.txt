@@ -161,7 +161,9 @@ IF(ZLIB_FOUND)
     ADD_SUBDIRECTORY(zip)
 ENDIF(ZLIB_FOUND)
 
-
+IF(RSVG_FOUND)
+    ADD_SUBDIRECTORY(svg)
+ENDIF(RSVG_FOUND)
 
 
 ##########to get all the variables of Cmake

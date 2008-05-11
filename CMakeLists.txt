@@ -221,6 +221,9 @@ ELSE(WIN32)
     PKG_CHECK_MODULES(GTKGL gtkglext-x11-1.0)
 ENDIF(WIN32)
 
+PKG_CHECK_MODULES(RSVG librsvg-2.0)
+PKG_CHECK_MODULES(CAIRO cairo)
+
 SET(wxWidgets_USE_LIBS base core gl net)
 FIND_PACKAGE(wxWidgets)
 

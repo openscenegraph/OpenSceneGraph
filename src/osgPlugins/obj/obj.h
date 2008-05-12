@@ -67,6 +67,7 @@ public:
     std::string map_Ka;
     std::string map_Kd;
     std::string map_Ks;
+    std::string map_opacity;
     bool        textureReflection;
     float       alpha;
     float       uScale;

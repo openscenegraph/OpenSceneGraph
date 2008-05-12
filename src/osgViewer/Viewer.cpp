@@ -43,6 +43,21 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     _viewerBase = this;
 
     constructorInit();
+
+    // Add help for command-line options read here
+    arguments.getApplicationUsage()->addCommandLineOption("--SingleThreaded","Select SingleThreaded threading model for viewer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--CullDrawThreadPerContext","Select CullDrawThreadPerContext threading model for viewer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--DrawThreadPerContext","Select DrawThreadPerContext threading model for viewer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--CullThreadPerCameraDrawThreadPerContext","Select CullThreadPerCameraDrawThreadPerContext threading model for viewer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--clear-color <color>","Set the background color of the viewer in the form \"r,g,b[,a]\".");
+    arguments.getApplicationUsage()->addCommandLineOption("--screen <num>","Set the screen to use when multiple screens are present.");
+    arguments.getApplicationUsage()->addCommandLineOption("--window <x y w h>","Set the position (x,y) and size (w,h) of the viewer window.");
+    // FIXME: Uncomment these lines when the options have been documented properly
+    //arguments.getApplicationUsage()->addCommandLineOption("--3d-sd","");
+    //arguments.getApplicationUsage()->addCommandLineOption("--panoramic-sd","");
+    //arguments.getApplicationUsage()->addCommandLineOption("--radius","");
+    //arguments.getApplicationUsage()->addCommandLineOption("--collar","");
+    //arguments.getApplicationUsage()->addCommandLineOption("--im","");
     
     std::string filename;
     bool readConfig = false;

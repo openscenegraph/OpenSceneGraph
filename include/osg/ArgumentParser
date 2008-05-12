@@ -190,6 +190,14 @@ class OSG_EXPORT ArgumentParser
         /** Write error messages to the given ostream, if at or above the given severity. */
         void writeErrorMessages(std::ostream& output,ErrorSeverity sevrity=BENIGN);
 
+        
+        /** This convinience method handles help requests on the command line.
+          * Return the type(s) of help requested. The return value of this
+          * function is suitable for passing into getApplicationUsage()->write().
+          * If ApplicationUsage::NO_HELP is returned then no help commandline option 
+          * was found on the command line. */
+        ApplicationUsage::Type readHelpType();
+
   
   protected:
         

@@ -603,6 +603,13 @@ void ViewerBase::renderingTraversals()
         {
             dp->signalBeginFrame(frameStamp);
         }
+        
+        if (scene->getSceneData())
+        {
+            // fire off a build of the bounding volumes while we 
+            // are still running single threaded.
+            scene->getSceneData()->getBound();
+        }
     }
 
     // osg::notify(osg::NOTICE)<<std::endl<<"Start frame"<<std::endl;

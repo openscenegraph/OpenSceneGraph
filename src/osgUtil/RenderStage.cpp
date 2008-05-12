@@ -340,7 +340,10 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 osg::Camera::BufferComponent buffer = itr->first;
                 osg::Camera::Attachment& attachment = itr->second;
                 
-                fbo->setAttachment(buffer, osg::FrameBufferAttachment(attachment));
+                if (attachment._texture.valid() || attachment._image.valid())
+                    fbo->setAttachment(buffer, osg::FrameBufferAttachment(attachment));
+                else
+                    fbo->setAttachment(buffer, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, attachment._internalFormat)));
                 
                 if (buffer==osg::Camera::DEPTH_BUFFER) depthAttached = true;
                 else if (buffer==osg::Camera::STENCIL_BUFFER) stencilAttached = true;

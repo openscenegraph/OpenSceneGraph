@@ -263,6 +263,10 @@ bool Model::readMTL(std::istream& fin)
                 {
                     material->map_Ks = lastComponent(line+7);
                 }
+                else if (strncmp(line,"map_opacity ",7)==0)
+                {
+                    material->map_opacity = lastComponent(line+7);
+                }
                 else if (strcmp(line,"refl")==0 || strncmp(line,"refl ",5)==0)
                 {
                     material->textureReflection = true;

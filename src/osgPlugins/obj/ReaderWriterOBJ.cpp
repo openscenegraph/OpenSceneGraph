@@ -159,10 +159,56 @@ inline osg::Vec3 ReaderWriterOBJ::transformNormal(const osg::Vec3& vec, const bo
 // register with Registry to instantiate the above reader/writer.
 REGISTER_OSGPLUGIN(obj, ReaderWriterOBJ)
 
+void load_material_texture( obj::Model &model,
+                            obj::Material &material,
+                            osg::StateSet *stateset,
+                            const std::string & filename,
+                            const unsigned int texture_unit  )
+{
+    if (!filename.empty())
+    {
+        osg::ref_ptr< osg::Image > image;
+        if ( !model.getDatabasePath().empty() ) 
+        {
+            // first try with databasr path of parent. 
+            image = osgDB::readImageFile(model.getDatabasePath()+'/'+filename);
+        }
+        
+        if ( !image.valid() )
+        {
+            // if not already set then try the filename as is.
+            image = osgDB::readImageFile(filename);
+        }
+
+        if ( image.valid() )
+        {
+            osg::Texture2D* texture = new osg::Texture2D( image.get() );
+            osg::Texture::WrapMode textureWrapMode = osg::Texture::REPEAT;
+            texture->setWrap(osg::Texture2D::WRAP_R, textureWrapMode);
+            texture->setWrap(osg::Texture2D::WRAP_S, textureWrapMode);
+            texture->setWrap(osg::Texture2D::WRAP_T, textureWrapMode);
+            stateset->setTextureAttributeAndModes( texture_unit, texture,osg::StateAttribute::ON );
+            
+            if ( material.textureReflection )
+            {
+                osg::TexGen* texgen = new osg::TexGen;
+                texgen->setMode(osg::TexGen::SPHERE_MAP);
+                stateset->setTextureAttributeAndModes( texture_unit,texgen,osg::StateAttribute::ON );
+            }
+            
+            if  ( image->isImageTranslucent())
+            {
+                osg::notify(osg::INFO)<<"Found transparent image"<<std::endl;
+                stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+                stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+            }
+        }
+    }
+}
+
+
 void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToStateSetMap) const
 {
-    osg::Texture::WrapMode textureWrapMode = osg::Texture::REPEAT;
-
     if (_fixBlackMaterials)
     {
         // hack to fix Maya exported models that contian all black materials.
@@ -208,7 +254,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
     {
         obj::Material& material = itr->second;
         
-        osg::StateSet* stateset = new osg::StateSet;
+        osg::ref_ptr< osg::StateSet > stateset = new osg::StateSet;
 
         bool isTransparent = false;
 
@@ -238,51 +284,15 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
         }
         
         // handle textures
-        if (!material.map_Kd.empty())
+        enum TextureUnit
         {
-            std::string filename = material.map_Kd;
-            osg::Image* image = 0;
-            if (!model.getDatabasePath().empty()) 
-            {
-                // first try with databasr path of parent. 
-                image = osgDB::readImageFile(model.getDatabasePath()+'/'+filename);
-            }
-            
-            if (!image)
-            {
-                // if not already set then try the filename as is.
-                image = osgDB::readImageFile(filename);
-            }
-            if (image)
-            {
-                osg::Texture2D* texture = new osg::Texture2D(image);
-                texture->setWrap(osg::Texture2D::WRAP_R, textureWrapMode);
-                texture->setWrap(osg::Texture2D::WRAP_S, textureWrapMode);
-                texture->setWrap(osg::Texture2D::WRAP_T, textureWrapMode);
-                stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
-                
-                if (material.textureReflection)
-                {
-                    osg::TexGen* texgen = new osg::TexGen;
-                    texgen->setMode(osg::TexGen::SPHERE_MAP);
-                    stateset->setTextureAttributeAndModes(0,texgen,osg::StateAttribute::ON);
-                }
-                
-                if  (!isTransparent && image->isImageTranslucent())
-                {
-                    osg::notify(osg::INFO)<<"Found transparent image"<<std::endl;
-                    isTransparent = true;
-                }
-            }
-        }
-
-        if (isTransparent)
-        {
-            stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
-            stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-        }
+            TEXTURE_UNIT_KD = 0,
+            TEXTURE_UNIT_OPACITY
+        };
+        load_material_texture( model, material, stateset.get(), material.map_Kd,       TEXTURE_UNIT_KD );
+        load_material_texture( model, material, stateset.get(), material.map_opacity,  TEXTURE_UNIT_OPACITY );
         
-        materialToStateSetMap[material.name] = stateset;
+        materialToStateSetMap[material.name] = stateset.get();
         
     }
 }
@@ -631,7 +641,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
         model.setDatabasePath(osgDB::getFilePath(fileName.c_str()));
         model.readOBJ(fin, local_opt.get());
         
-        // code for checking the nonRotation
+        // code for checking the noRotation
         bool rotate = true;
         if ((options!=NULL) && (options->getOptionString() == "noRotation"))
         {

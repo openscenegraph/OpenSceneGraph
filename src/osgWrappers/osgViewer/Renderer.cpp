@@ -127,6 +127,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Renderer)
 	          __void__cull_draw,
 	          "",
 	          "");
+	I_Method0(void, compile,
+	          Properties::VIRTUAL,
+	          __void__compile,
+	          "",
+	          "");
+	I_Method1(void, setCompileOnNextDraw, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setCompileOnNextDraw__bool,
+	          "",
+	          "");
+	I_Method0(bool, getCompileOnNextDraw,
+	          Properties::NON_VIRTUAL,
+	          __bool__getCompileOnNextDraw,
+	          "",
+	          "");
 	I_Method0(void, release,
 	          Properties::VIRTUAL,
 	          __void__release,
@@ -184,6 +199,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Renderer)
 	                   __void__flushAndCompile__double__osgUtil_SceneView_P1__osgDB_DatabasePager_P1__osg_GraphicsThread_P1,
 	                   "",
 	                   "");
+	I_SimpleProperty(bool, CompileOnNextDraw, 
+	                 __bool__getCompileOnNextDraw, 
+	                 __void__setCompileOnNextDraw__bool);
 	I_SimpleProperty(double, ConservativeTimeRatio, 
 	                 __double__getConservativeTimeRatio, 
 	                 __void__setConservativeTimeRatio__double);

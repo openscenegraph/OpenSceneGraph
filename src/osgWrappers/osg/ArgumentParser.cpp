@@ -220,6 +220,11 @@ BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
 	                      __void__writeErrorMessages__std_ostream_R1__ErrorSeverity,
 	                      "Write error messages to the given ostream, if at or above the given severity. ",
 	                      "");
+	I_Method0(osg::ApplicationUsage::Type, readHelpType,
+	          Properties::NON_VIRTUAL,
+	          __ApplicationUsage_Type__readHelpType,
+	          "This convinience method handles help requests on the command line. ",
+	          "Return the type(s) of help requested. The return value of this function is suitable for passing into getApplicationUsage()->write(). If ApplicationUsage::NO_HELP is returned then no help commandline option was found on the command line. ");
 	I_StaticMethod1(bool, isOption, IN, const char *, str,
 	                __bool__isOption__C5_char_P1_S,
 	                "Return true if the specified string is an option in the form -option or --option. ",

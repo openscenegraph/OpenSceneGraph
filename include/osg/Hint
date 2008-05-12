@@ -41,7 +41,7 @@ public:
         virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new Hint(*this,copyop); }
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Hint *>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "Light"; }
+        virtual const char* className() const { return "Hint"; }
         virtual Type getType() const { return HINT; }
 
         virtual int compare(const StateAttribute& sa) const

@@ -1,3 +1,136 @@
+2008-05-12 11:39 +0000 [r8308]  robert:
+
+	* From Mathias Froehlich, Fixed FrameBufferObject attachement code
+	  to handle cases where no texture or image is attached
+
+2008-05-12 11:01 +0000 [r8307]  robert:
+
+	* Updated version number for 2.5.0 dev release
+
+2008-05-12 10:55 +0000 [r8306]  robert:
+
+	* From Eric Sokolowski and Robert Osfield, moved command line
+	  option usage setup from osgviewer example into
+	  osg::ArgumentParser and osgViewer::Viewer to make them more
+	  universally available.
+
+2008-05-12 10:18 +0000 [r8304-8305]  robert:
+
+	* From Bob Kuehne, "* add easy multiple texture targets support for
+	  obj by refactoring texture load into it's own method. * use new
+	  method from step 1 to load 'map_opacity' textures from .mtl
+	  files"
+
+	* From Mathias Froehlich, fixed typo
+
+2008-05-11 14:26 +0000 [r8303]  robert:
+
+	* Added CARIO_FOUND into svg plugins checks
+
+2008-05-11 14:23 +0000 [r8302]  robert:
+
+	* From Miguel Escriva, Here you will find a SVG Image Reader. It
+	  renders a SVG file as an osg::Image using cairo and rsvg.
+
+2008-05-10 17:25 +0000 [r8300-8301]  robert:
+
+	* From Paul Martz, "This change adds support for osg::Billboards to
+	  the OpenFlight exporter. It might seem odd that the change
+	  actually removes the stub apply(Billboard&) method, but it turns
+	  out Billboards are easily supported in subordinate routines of
+	  the existing apply(Geode&) method with s dynamic_cast, so there's
+	  no need for a separate apply(Billboard&)."
+
+	* From Paul Martz, "Another round of plugin enhancements. 3DC:
+	  Output now uses osg::notify. JPEG: Now returns correct error code
+	  for empty input file. FreeType: Prevent possible crash if Options
+	  is NULL."
+
+2008-05-10 17:04 +0000 [r8299]  robert:
+
+	* Moved compile setup from osgViewer::ViewerBase into
+	  osgViewer::Renderer to avoid threading issues associated with
+	  compile running in a parallel with update/cull on the first
+	  frame. Also added automatic recompile when a new SceneData is
+	  applied to a View.
+
+2008-05-09 17:22 +0000 [r8298]  robert:
+
+	* Added --file-cache command line option to compliment -c
+
+2008-05-09 17:08 +0000 [r8297]  robert:
+
+	* Initial cut of file cache population app
+
+2008-05-09 11:54 +0000 [r8296]  robert:
+
+	* From Art Trevs, set the _geometryVerticesOut to default to 1 as a
+	  workaround for OpenGL driver bug that incorrectly reports a
+	  warning when value is 0.
+
+2008-05-09 11:27 +0000 [r8295]  robert:
+
+	* From Paul Martz, "Attached are some minor plugin fixes. PNM, RGB,
+	  and JPEG would all crash if attempting to read an empty file, and
+	  FLT would go into an infinite loop. All are fixed with this
+	  change. I also fixed some return values for a couple of these,
+	  changing FILE_NOT_HANDLED to ERROR_IN_READING_FILE where
+	  appropriate."
+
+2008-05-09 10:27 +0000 [r8294]  robert:
+
+	* From Jeremy Moles, fixed window resize problem
+
+2008-05-08 17:02 +0000 [r8293]  robert:
+
+	* Added missing check against handling invalid bounding sphere's
+
+2008-05-08 16:48 +0000 [r8291-8292]  robert:
+
+	* From Eric Sokolowsky, "I found one compilation error in OSG 2.4
+	  in the Inventor plugin, where one node (SoTextureCoordinate3) was
+	  assumed to be available in all versions of Inventor but is
+	  actually only available in Coin. The use of the node is now
+	  protected by #ifdef __COIN__ constructs. The attachment is based
+	  on OSG 2.4, not SVN."
+
+	* From Melchior Franz, "In KDE I switch desktops with Super-Tab,
+	  and occasionally I get an excess Tab key report when switching
+	  back to an OSG application (usually FlightGear :-). Although KDE
+	  has consumed the Tab, it's sometimes still in the XKeymapEvent's
+	  key_vector, and followed by a Tab KeyRelease event. Avoid this
+	  artifact by - asking for a "fresh" keymap (via XQueryKeymap()),
+	  rather than using the unreliable(?) XKeymapEvent's key_vector,
+	  and by - flushing all key events on focus-in (to avoid the
+	  KeyRelease) After Super-press, Tab-press, Super-release,
+	  Tab-release (note the wrong release order!) I still get an extra
+	  Tab event. But this is not surprising and not exactly wrong
+	  either. Also it's hard to avoid, as we can't see what happened to
+	  the keyboard before we regained focus. Files changed:
+	  src/osgViewer/GraphicsWindowX11.cpp
+	  include/osgViewer/api/X11/GraphicsWindowX11"
+
+2008-05-08 16:39 +0000 [r8290]  robert:
+
+	* From Jeremy Moles, osgviewerGTK example
+
+2008-05-08 15:17 +0000 [r8289]  robert:
+
+	* From Sebastien Messerschmidt, "attached you'll find a patch for
+	  the shp-plugin. I've spotted huge memory leaks int ShapeParser
+	  and fixed them. Also, there was a missing destructor (PolygonM)
+	  and a missing member initialization (PolygonZ) Would be nice if
+	  someone could test the changes. To release the memory just if no
+	  reading error happened (and therefore the arrays would be valid)
+	  I've added an macro to release and reset the pointers at once.
+	  I'm not using macros myself very often as I don't like them, but
+	  I think it doesn't hurt in this code. "
+
+2008-05-08 15:14 +0000 [r8288]  robert:
+
+	* Updated ChangeLog and osgversion to catch Raymond de Vries name
+	  correctly
+
 2008-05-08 14:00 +0000 [r8287]  robert:
 
 	* From Raymond de Vries, "This fix tests the right variable before

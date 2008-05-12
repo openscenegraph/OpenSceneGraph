@@ -24,9 +24,11 @@ TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osg::ApplicationUsag
 
 BEGIN_ENUM_REFLECTOR(osg::ApplicationUsage::Type)
 	I_DeclaringFile("osg/ApplicationUsage");
+	I_EnumLabel(osg::ApplicationUsage::NO_HELP);
 	I_EnumLabel(osg::ApplicationUsage::COMMAND_LINE_OPTION);
 	I_EnumLabel(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE);
 	I_EnumLabel(osg::ApplicationUsage::KEYBOARD_MOUSE_BINDING);
+	I_EnumLabel(osg::ApplicationUsage::HELP_ALL);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ApplicationUsage)

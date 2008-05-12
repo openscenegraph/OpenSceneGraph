@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.4.0
+OpenSceneGraph Library 2.5.0
 
-307 Contributors:
+309 Contributors:
 
 Firstname Surname
 -----------------
@@ -15,9 +15,9 @@ Geoff Michel
 Stephan Huber
 Farshid Lashkari
 Bob Kuehne
+Eric Sokolowsky
 Ulrich Hertlein
 Martin Lavery
-Eric Sokolowsky
 Mathias Fröhlich
 Tree 
 David Callu
@@ -35,6 +35,7 @@ Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
+Jeremy Moles
 Wojciech Lewandowski
 Olaf Flebbe
 Gideon May
@@ -43,15 +44,15 @@ Romano José Magacho da Silva
 Michael Gronager
 Daniel Sjölie
 Chris Hanson
+Art Tevs
 Per Fahlberg
-Jeremy Moles
 J.P. Delport
 David Spilling
-Art Tevs
 Sherman Wilcox
 Joran Jessurun
 Jason Beverage
 Paul Melis
+Melchior Franz
 Jason Daly
 Frederic Marmond
 David Fries
@@ -62,7 +63,6 @@ Serge Lages
 Rune Schmidt Jensen
 Rainer Oder
 Mike Connell
-Melchior Franz
 Joakim Simonsson
 Carlo Camporesi
 Ben Discoe
@@ -81,8 +81,10 @@ Gordon Tomlinson
 Bryan Thrall
 Brad Colbert
 Vivek Rajan
+Terry Welsh
 Sean Spicer
 Ravi Mathur
+Philip Lowman
 Nikolaus Hanekamp
 Neil Salter
 Mihai Radu
@@ -94,12 +96,11 @@ Corbin Holtz
 Brad Christiansen
 Toshiyuki Takahei
 Thom DeCarlo
-Terry Welsh
 Stephane Lamoliatte
 Simon Julier
 Sebastien Grignard
 Romano Magacho
-Philip Lowman
+Roland Smeenk
 Paul de Repentigny
 Luc Frauciel
 Leandro Motta Barros
@@ -117,7 +118,6 @@ Tony Horrobin
 Tim Moore
 Thibault Genessay
 Sohey Yamamoto
-Roland Smeenk
 Richard Schmidt
 Rafa Gaitan
 Phil Atkin
@@ -131,8 +131,10 @@ Ken Sewell
 Julian Ortiz
 Jeremy Bell
 James French
+Garrett Potts
 Gabor Dorka
 Donn Mielcarek
+Donald Cipperly
 Domenico Mangieri
 Charles Cole
 Blake Williams
@@ -149,10 +151,12 @@ Steve Lunsford
 Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
+Sebastian Messerschmidt
 Riccardo Corsi
 Ralf Kern
 Perry Miller
 Nathan Monteleone
+Miguel Escriva
 Michael Henheffer
 Maya Leonard
 Max Behensky
@@ -168,10 +172,8 @@ Gustavo Wagner
 Gino van den Bergen
 Gerrick Bivins
 George Tarantilis
-Garret Potts
 Fabio Mierlo
 Edgar Ellis
-Donald Cipperly
 David Ergo
 Daniel Trstenjak
 Csaba Halasz
@@ -201,7 +203,6 @@ Sid Byce
 Shuxing Xiao
 Shane Arnott
 Sebastien Kuntz
-Sebastian Messerschimdt
 Rudolf Wiedemann
 Ronny Krueger
 Robert Swain
@@ -209,6 +210,7 @@ Rick Pingry
 Rene Molenaar
 Reinhard Sainitzer
 Rein Kadijk
+Raymond de Vries
 Qing Shen
 Philipp Siemoleit
 Philipp Mächler

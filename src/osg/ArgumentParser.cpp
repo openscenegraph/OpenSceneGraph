@@ -630,3 +630,19 @@ void ArgumentParser::writeErrorMessages(std::ostream& output,ErrorSeverity sever
         }
     }
 }
+
+ApplicationUsage::Type ArgumentParser::readHelpType() 
+{
+    getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
+    getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
+    getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
+    getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
+
+    // if user request help write it out to cout.
+    if (read("--help-all"))             return ApplicationUsage::HELP_ALL;
+    if (read("-h") || read("--help"))   return ApplicationUsage::COMMAND_LINE_OPTION;
+    if (read("--help-env"))             return ApplicationUsage::ENVIRONMENTAL_VARIABLE;
+    if (read("--help-keys"))            return ApplicationUsage::KEYBOARD_MOUSE_BINDING;
+
+    return ApplicationUsage::NO_HELP;
+}

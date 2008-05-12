@@ -43,9 +43,11 @@ class OSG_EXPORT ApplicationUsage : public osg::Referenced
 
         enum Type
         {
+            NO_HELP = 0x0,
             COMMAND_LINE_OPTION = 0x1,
             ENVIRONMENTAL_VARIABLE = 0x2,
-            KEYBOARD_MOUSE_BINDING = 0x4
+            KEYBOARD_MOUSE_BINDING = 0x4,
+            HELP_ALL = KEYBOARD_MOUSE_BINDING|ENVIRONMENTAL_VARIABLE|COMMAND_LINE_OPTION
         };
         
         void addUsageExplanation(Type type,const std::string& option,const std::string& explanation);

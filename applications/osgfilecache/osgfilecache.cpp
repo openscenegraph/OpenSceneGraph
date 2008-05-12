@@ -12,6 +12,10 @@
 #include <osg/Timer>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
+#include <osg/CoordinateSystemNode>
+#include <osg/io_utils>
+
+#include <osgTerrain/TerrainTile>
 
 #include <osgDB/Archive>
 #include <osgDB/ReadFile>
@@ -21,22 +25,84 @@
 #include <iostream>
 #include <algorithm>
 
+#include <signal.h>
+
+static bool s_ExitApplication = false;
+
 class LoadDataVisitor : public osg::NodeVisitor
 {
 public:
+
 
     LoadDataVisitor(unsigned int maxNumLevels=0):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _maxLevels(maxNumLevels),
         _currentLevel(0) {}
         
+    void apply(osg::CoordinateSystemNode& cs)
+    {
+        std::cout<<"CoordinateSystemNode "<<std::endl;
+        
+        if (!s_ExitApplication) traverse(cs);
+    }
+    
+    void apply(osg::Group& group)
+    {
+        osgTerrain::TerrainTile* terrainTile = dynamic_cast<osgTerrain::TerrainTile*>(&group);
+        osgTerrain::Locator* locator = terrainTile ? terrainTile->getLocator() : 0;
+        if (locator)
+        {
+            std::cout<<"    Found terrain locator "<<locator<<std::endl;
+            osg::Vec3d l00(0.0,0.0,0.0);
+            osg::Vec3d l10(1.0,0.0,0.0);
+            osg::Vec3d l11(1.0,1.0,0.0);
+            osg::Vec3d l01(0.0,1.0,0.0);
+            
+            osg::Vec3d w00, w10, w11, w01;
+            
+            locator->convertLocalToModel(l00, w00);
+            locator->convertLocalToModel(l10, w10);
+            locator->convertLocalToModel(l11, w11);
+            locator->convertLocalToModel(l01, w01);
+            
+            if (locator->getEllipsoidModel() &&
+                locator->getCoordinateSystemType()==osgTerrain::Locator::GEOCENTRIC)
+            {
+                convertXYZToLatLongHeight(locator->getEllipsoidModel(), w00);
+                convertXYZToLatLongHeight(locator->getEllipsoidModel(), w10);
+                convertXYZToLatLongHeight(locator->getEllipsoidModel(), w11);
+                convertXYZToLatLongHeight(locator->getEllipsoidModel(), w01);
+            }
+
+            osg::notify(osg::NOTICE)<<"    w00 = "<<w00<<std::endl;
+            osg::notify(osg::NOTICE)<<"    w10 = "<<w10<<std::endl;
+            osg::notify(osg::NOTICE)<<"    w11 = "<<w11<<std::endl;
+            osg::notify(osg::NOTICE)<<"    w01 = "<<w01<<std::endl;
+        }
+        
+        if (!s_ExitApplication) traverse(group);
+    }
+
     void apply(osg::PagedLOD& plod)
     {
         if (_currentLevel>_maxLevels) return;
+        
+        if (s_ExitApplication) return;
     
         ++_currentLevel;
     
         std::cout<<"Found PagedLOD "<<plod.getNumFileNames()<<std::endl;
+        
+        // first compute the bounds of this subgraph
+        for(unsigned int i=0; i<plod.getNumFileNames(); ++i)
+        {
+            if (plod.getFileName(i).empty())
+            {
+                std::cout<<"  search local subgraph"<<std::endl;
+                traverse(plod);
+            }
+        }        
+        
         for(unsigned int i=0; i<plod.getNumFileNames(); ++i)
         {
             std::cout<<"   filename["<<i<<"] "<<plod.getFileName(i)<<std::endl;
@@ -56,7 +122,7 @@ public:
                 
                 osg::ref_ptr<osg::Node> node = osgDB::readNodeFile(filename);
                 
-                if (node.valid()) node->accept(*this);
+                if (!s_ExitApplication && node.valid()) node->accept(*this);
             }
         }
 
@@ -65,13 +131,39 @@ public:
     
 protected:
 
+    void convertXYZToLatLongHeight(osg::EllipsoidModel* em, osg::Vec3d& v)
+    {
+        em->convertXYZToLatLongHeight(v.x(), v.y(), v.z(),
+                                      v.x(), v.y(), v.z());
+                                      
+        v.x() = osg::RadiansToDegrees(v.x());
+        v.y() = osg::RadiansToDegrees(v.y());
+    }
+
     unsigned int _maxLevels;
     unsigned int _currentLevel;
 };
 
+static void signalHandler(int sig)
+{
+    printf("\nCaught signal %d, requesting exit...\n\n",sig);
+    s_ExitApplication = true;
+}
 
 int main( int argc, char **argv )
 {
+#ifndef _WIN32
+    signal(SIGHUP, signalHandler);
+    signal(SIGQUIT, signalHandler);
+    signal(SIGKILL, signalHandler);
+    signal(SIGUSR1, signalHandler);
+    signal(SIGUSR2, signalHandler);
+#endif
+    signal(SIGABRT, signalHandler);
+    signal(SIGINT, signalHandler);
+    signal(SIGTERM, signalHandler);
+
+
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
     
@@ -111,6 +203,11 @@ int main( int argc, char **argv )
     LoadDataVisitor ldv(maxLevels);
     
     loadedModel->accept(ldv);
+
+    if (s_ExitApplication)
+    {
+        std::cout<<"osgfilecache cleanly exited in response to signal."<<std::endl;
+    }
 
     return 0;
 }

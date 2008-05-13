@@ -167,15 +167,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 
 std::string ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(const std::string& FilePath)
 {
-    std::string fileURI = osgDB::convertFileNameToUnixStyle(osgDB::getRealPath(FilePath));
-    // fileURI should now contain a canonical absolute path name with UNIX style component separators
-#if defined(WIN32)  && !defined(__CYGWIN__)
-    // Check for windows drive designator or UNC path
-    if ((fileURI[1] == ':') || ((fileURI[0] == '/') && (fileURI[1] == '/')))
-        fileURI.insert(0, 1, '/');
-#endif
-    fileURI.insert(0, "file://");
-    return fileURI;
+    return cdom::nativePathToUri(FilePath);
 }
 
 

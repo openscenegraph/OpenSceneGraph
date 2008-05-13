@@ -30,20 +30,123 @@
 
 static bool s_ExitApplication = false;
 
+struct Extents
+{
+
+    Extents():
+        _maxLevel(0),
+        _min(DBL_MAX,DBL_MAX),
+        _max(-DBL_MAX,-DBL_MAX) {}
+
+    Extents(unsigned int maxLevel, double minX, double minY, double maxX, double maxY):
+        _maxLevel(maxLevel),
+        _min(minX, minY),
+        _max(maxX, maxY) {}
+    
+    Extents(const Extents& extents):
+        _maxLevel(extents._maxLevel),
+        _min(extents._min),
+        _max(extents._max) {}
+        
+    Extents& operator = (const Extents& rhs)
+    {
+        if (&rhs == this) return *this;
+        
+        _maxLevel = rhs._maxLevel;
+        _min = rhs._min;
+        _max = rhs._max;
+                
+        return *this;
+    }
+
+    bool intersects(unsigned level, osg::Vec2d& in_min, osg::Vec2d& in_max)
+    {
+        osg::notify(osg::INFO)<<"intersects("<<level<<", min="<<in_min<<" max="<<in_max<<")"<<std::endl;
+        osg::notify(osg::INFO)<<"  _maxLevel="<<_maxLevel<<", _min="<<_min<<" _max="<<_max<<std::endl;
+
+        if (level>_maxLevel) return false;
+        
+        osg::Vec2d union_min, union_max;
+
+        // handle mins        
+        if (_min.x()!=DBL_MAX && in_min.x()!=DBL_MAX)
+        {
+            // both _min.x() and in_min.x() are defined so use max of two
+            union_min.x() = _min.x()>in_min.x() ? _min.x() : in_min.x();
+        }
+        else
+        {
+            // one or both _min.x() and in_min.x() aren't defined so use min of two
+            union_min.x() = _min.x()<in_min.x() ? _min.x() : in_min.x();
+        }
+
+        if (_min.y()!=DBL_MAX && in_min.y()!=DBL_MAX)
+        {
+            // both _min.y() and in_min.y() are defined so use max of two
+            union_min.y() = _min.y()>in_min.y() ? _min.y() : in_min.y();
+        }
+        else
+        {
+            // one or both _min.y() and in_min.y() aren't defined so use min of two
+            union_min.y() = _min.y()<in_min.y() ? _min.y() : in_min.y();
+        }
+
+        // handle maxs        
+        if (_max.x()!=-DBL_MAX && in_max.x()!=-DBL_MAX)
+        {
+            // both _max.x() and in_max.x() are defined so use max of two
+            union_max.x() = _max.x()<in_max.x() ? _max.x() : in_max.x();
+        }
+        else
+        {
+            // one or both _max.x() and in_max.x() aren't defined so use max of two
+            union_max.x() = _max.x()>in_max.x() ? _max.x() : in_max.x();
+        }
+
+        if (_max.y()!=-DBL_MAX && in_max.y()!=-DBL_MAX)
+        {
+            // both _max.y() and in_max.y() are defined so use max of two
+            union_max.y() = _max.y()<in_max.y() ? _max.y() : in_max.y();
+        }
+        else
+        {
+            // one or both _max.y() and in_max.y() aren't defined so use max of two
+            union_max.y() = _max.y()>in_max.y() ? _max.y() : in_max.y();
+        }
+
+        bool result = union_min.x()<union_max.x() && union_min.y()<union_max.y() ;
+
+        osg::notify(osg::INFO)<<"  union_min="<<union_min<<" union_max="<<union_max<<" result = "<<result<<std::endl;
+        
+        return result;
+    }
+
+    unsigned int    _maxLevel;
+    osg::Vec2d      _min;
+    osg::Vec2d      _max;
+};
+
 class LoadDataVisitor : public osg::NodeVisitor
 {
 public:
 
 
-    LoadDataVisitor(unsigned int maxNumLevels=0):
+    LoadDataVisitor():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _maxLevels(maxNumLevels),
         _currentLevel(0) {}
         
+    void addExtents(unsigned int maxLevel, double minX, double minY, double maxX, double maxY)
+    {
+        _extentsList.push_back(Extents(maxLevel, minX, minY, maxX, maxY));
+    }
+
+    void addExtents(unsigned int maxLevel)
+    {
+        _extentsList.push_back(Extents(maxLevel, DBL_MAX, DBL_MAX, -DBL_MAX, -DBL_MAX));
+    }
+
     void apply(osg::CoordinateSystemNode& cs)
     {
-        std::cout<<"CoordinateSystemNode "<<std::endl;
-        
         _csnStack.push_back(&cs);
         
         if (!s_ExitApplication) traverse(cs);
@@ -59,7 +162,6 @@ public:
         osgTerrain::Locator* locator = terrainTile ? terrainTile->getLocator() : 0;
         if (locator)
         {
-            std::cout<<"    Found terrain locator "<<locator<<std::endl;
             osg::Vec3d l00(0.0,0.0,0.0);
             osg::Vec3d l10(1.0,0.0,0.0);
             osg::Vec3d l11(1.0,1.0,0.0);
@@ -81,11 +183,6 @@ public:
                 convertXYZToLatLongHeight(locator->getEllipsoidModel(), w01);
             }
 
-            osg::notify(osg::NOTICE)<<"    w00 = "<<w00<<std::endl;
-            osg::notify(osg::NOTICE)<<"    w10 = "<<w10<<std::endl;
-            osg::notify(osg::NOTICE)<<"    w11 = "<<w11<<std::endl;
-            osg::notify(osg::NOTICE)<<"    w01 = "<<w01<<std::endl;
-            
             updateBound(w00);
             updateBound(w10);
             updateBound(w11);
@@ -99,8 +196,6 @@ public:
 
     void apply(osg::Transform& transform)
     {
-        std::cout<<"Found Transform "<<std::endl;
-        
         osg::Matrix matrix;
         if (!_matrixStack.empty()) matrix = _matrixStack.back();
 
@@ -115,15 +210,9 @@ public:
 
     void apply(osg::PagedLOD& plod)
     {
-        std::cout<<"Found PagedLOD "<<plod.getNumFileNames()<<std::endl;
-    
-
-        if (_currentLevel>_maxLevels) return;
-        
         if (s_ExitApplication) return;
     
         ++_currentLevel;
-    
         
         initBound();
         
@@ -132,36 +221,36 @@ public:
         {
             if (plod.getFileName(i).empty())
             {
-                std::cout<<"  search local subgraph"<<std::endl;
                 traverse(plod);
             }
         }
         
-        if (isCulled()) return;
-        
-        for(unsigned int i=0; i<plod.getNumFileNames(); ++i)
+        if (intersects())
         {
-            std::cout<<"   filename["<<i<<"] "<<plod.getFileName(i)<<std::endl;
-            if (!plod.getFileName(i).empty())
+            for(unsigned int i=0; i<plod.getNumFileNames(); ++i)
             {
-                std::string filename;
-                if (!plod.getDatabasePath().empty()) 
+                osg::notify(osg::INFO)<<"   filename["<<i<<"] "<<plod.getFileName(i)<<std::endl;
+                if (!plod.getFileName(i).empty())
                 {
-                    filename = plod.getDatabasePath() + plod.getFileName(i);
+                    std::string filename;
+                    if (!plod.getDatabasePath().empty()) 
+                    {
+                        filename = plod.getDatabasePath() + plod.getFileName(i);
+                    }
+                    else
+                    {
+                        filename = plod.getFileName(i);
+                    }
+
+                    osg::notify(osg::NOTICE)<<"reading "<<filename<<std::endl;
+
+                    osg::ref_ptr<osg::Node> node = osgDB::readNodeFile(filename);
+
+                    if (!s_ExitApplication && node.valid()) node->accept(*this);
                 }
-                else
-                {
-                    filename = plod.getFileName(i);
-                }
-                
-                std::cout<<"   reading "<<filename<<std::endl;
-                
-                osg::ref_ptr<osg::Node> node = osgDB::readNodeFile(filename);
-                
-                if (!s_ExitApplication && node.valid()) node->accept(*this);
             }
         }
-
+        
         --_currentLevel;
     }
     
@@ -227,16 +316,25 @@ protected:
         }
     }
     
-    bool isCulled()
+    bool intersects()
     {
-        std::cout<<"isCulled() _min = "<<_min<<" _max = "<<_max<<std::endl;
+        osg::notify(osg::INFO)<<"intersects() _min = "<<_min<<" _max = "<<_max<<std::endl;
+        for(ExtentsList::iterator itr = _extentsList.begin();
+            itr != _extentsList.end();
+            ++itr)
+        {
+            if (itr->intersects(_currentLevel, _min, _max)) return true;
+        }
+        
         return false;
     }
 
+    typedef std::vector<Extents>                    ExtentsList;
     typedef std::vector<osg::Matrix>                MatrixStack;
     typedef std::vector<osg::CoordinateSystemNode*> CSNStack;
+    
 
-    unsigned int    _maxLevels;
+    ExtentsList     _extentsList;
     unsigned int    _currentLevel;
     MatrixStack     _matrixStack;
     CSNStack        _csnStack;
@@ -272,6 +370,10 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an application for collecting a set of seperate files into a single archive file that can be later read in OSG applications..");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("-l level","Read down to level across the whole database.");
+    arguments.getApplicationUsage()->addCommandLineOption("-e level minX minY maxX maxY","Read down to <level> across the extents minX, minY to maxY, maxY.  Note, for geocentric datase X and Y are longitude and latitude respectively.");
+    arguments.getApplicationUsage()->addCommandLineOption("-c directory","Shorthand for --file-cache directory.");
+    arguments.getApplicationUsage()->addCommandLineOption("--file-cache directory","Set directory as to place cache download files.");
         
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -280,9 +382,20 @@ int main( int argc, char **argv )
         return 1;
     }
     
+    LoadDataVisitor ldv;
+
     unsigned int maxLevels = 0;
-    while(arguments.read("-l",maxLevels)) {}
+    while(arguments.read("-l",maxLevels))
+    {
+        ldv.addExtents(maxLevels);
+    }
     
+    double minX, maxX, minY, maxY;
+    while(arguments.read("-e",maxLevels, minX, minY, maxX, maxY))
+    {
+        ldv.addExtents(maxLevels, minX, minY, maxX, maxY);
+    }
+
     std::string fileCache;
     while(arguments.read("--file-cache",fileCache) || arguments.read("-c",fileCache)) {}
     
@@ -301,7 +414,6 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    LoadDataVisitor ldv(maxLevels);
     
     loadedModel->accept(ldv);
 

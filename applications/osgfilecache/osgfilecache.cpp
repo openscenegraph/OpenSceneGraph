@@ -13,6 +13,7 @@
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 #include <osg/CoordinateSystemNode>
+#include <osg/Geometry>
 #include <osg/io_utils>
 
 #include <osgTerrain/TerrainTile>
@@ -43,11 +44,17 @@ public:
     {
         std::cout<<"CoordinateSystemNode "<<std::endl;
         
+        _csnStack.push_back(&cs);
+        
         if (!s_ExitApplication) traverse(cs);
+
+        _csnStack.pop_back();
     }
     
     void apply(osg::Group& group)
     {
+        if (s_ExitApplication) return;
+    
         osgTerrain::TerrainTile* terrainTile = dynamic_cast<osgTerrain::TerrainTile*>(&group);
         osgTerrain::Locator* locator = terrainTile ? terrainTile->getLocator() : 0;
         if (locator)
@@ -57,14 +64,14 @@ public:
             osg::Vec3d l10(1.0,0.0,0.0);
             osg::Vec3d l11(1.0,1.0,0.0);
             osg::Vec3d l01(0.0,1.0,0.0);
-            
+
             osg::Vec3d w00, w10, w11, w01;
-            
+
             locator->convertLocalToModel(l00, w00);
             locator->convertLocalToModel(l10, w10);
             locator->convertLocalToModel(l11, w11);
             locator->convertLocalToModel(l01, w01);
-            
+
             if (locator->getEllipsoidModel() &&
                 locator->getCoordinateSystemType()==osgTerrain::Locator::GEOCENTRIC)
             {
@@ -78,20 +85,47 @@ public:
             osg::notify(osg::NOTICE)<<"    w10 = "<<w10<<std::endl;
             osg::notify(osg::NOTICE)<<"    w11 = "<<w11<<std::endl;
             osg::notify(osg::NOTICE)<<"    w01 = "<<w01<<std::endl;
+            
+            updateBound(w00);
+            updateBound(w10);
+            updateBound(w11);
+            updateBound(w01);
+
+            return;
         }
         
-        if (!s_ExitApplication) traverse(group);
+        traverse(group);
+    }
+
+    void apply(osg::Transform& transform)
+    {
+        std::cout<<"Found Transform "<<std::endl;
+        
+        osg::Matrix matrix;
+        if (!_matrixStack.empty()) matrix = _matrixStack.back();
+
+        transform.computeLocalToWorldMatrix(matrix,this);
+
+        pushMatrix(matrix);
+
+        traverse(transform);
+
+        popMatrix();
     }
 
     void apply(osg::PagedLOD& plod)
     {
+        std::cout<<"Found PagedLOD "<<plod.getNumFileNames()<<std::endl;
+    
+
         if (_currentLevel>_maxLevels) return;
         
         if (s_ExitApplication) return;
     
         ++_currentLevel;
     
-        std::cout<<"Found PagedLOD "<<plod.getNumFileNames()<<std::endl;
+        
+        initBound();
         
         // first compute the bounds of this subgraph
         for(unsigned int i=0; i<plod.getNumFileNames(); ++i)
@@ -101,7 +135,9 @@ public:
                 std::cout<<"  search local subgraph"<<std::endl;
                 traverse(plod);
             }
-        }        
+        }
+        
+        if (isCulled()) return;
         
         for(unsigned int i=0; i<plod.getNumFileNames(); ++i)
         {
@@ -129,7 +165,24 @@ public:
         --_currentLevel;
     }
     
+    void apply(osg::Geode& geode)
+    {
+        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+        {
+            osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
+            if (geom)
+            {
+                osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom->getVertexArray());
+                if (vertices) updateBound(*vertices);
+            }
+        }
+    }
+    
 protected:
+
+    inline void pushMatrix(osg::Matrix& matrix) { _matrixStack.push_back(matrix); }
+    
+    inline void popMatrix() { _matrixStack.pop_back(); }
 
     void convertXYZToLatLongHeight(osg::EllipsoidModel* em, osg::Vec3d& v)
     {
@@ -139,9 +192,57 @@ protected:
         v.x() = osg::RadiansToDegrees(v.x());
         v.y() = osg::RadiansToDegrees(v.y());
     }
+    
+    void initBound()
+    {
+        _min.set(DBL_MAX, DBL_MAX);
+        _max.set(-DBL_MAX, -DBL_MAX);
+    }
 
-    unsigned int _maxLevels;
-    unsigned int _currentLevel;
+    void updateBound(osg::Vec3d& v)
+    {
+        if (v.x() < _min.x()) _min.x() = v.x();
+        if (v.y() < _min.y()) _min.y() = v.y();
+        if (v.x() > _max.x()) _max.x() = v.x();
+        if (v.y() > _max.y()) _max.y() = v.y();
+    }
+    
+    void updateBound(osg::Vec3Array& vertices)
+    {
+        // set up matrix
+        osg::Matrix matrix;
+        if (!_matrixStack.empty()) matrix = _matrixStack.back();
+        
+        // set up ellipsoid model
+        osg::EllipsoidModel* em = !_csnStack.empty() ?  _csnStack.back()->getEllipsoidModel() : 0;
+        
+        for(osg::Vec3Array::iterator itr = vertices.begin();
+            itr != vertices.end();
+            ++itr)
+        {
+            osg::Vec3d v = osg::Vec3d(*itr) * matrix;
+            if (em) convertXYZToLatLongHeight(em, v);
+
+            updateBound(v);
+        }
+    }
+    
+    bool isCulled()
+    {
+        std::cout<<"isCulled() _min = "<<_min<<" _max = "<<_max<<std::endl;
+        return false;
+    }
+
+    typedef std::vector<osg::Matrix>                MatrixStack;
+    typedef std::vector<osg::CoordinateSystemNode*> CSNStack;
+
+    unsigned int    _maxLevels;
+    unsigned int    _currentLevel;
+    MatrixStack     _matrixStack;
+    CSNStack        _csnStack;
+    
+    osg::Vec2d      _min;
+    osg::Vec2d      _max;
 };
 
 static void signalHandler(int sig)

@@ -129,6 +129,14 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Op
 
     std::string filename;
 
+    while (arguments.read("--file-cache",filename))
+    {
+        std::string str("OSG_FILE_CACHE=");
+        str += filename;
+        
+        putenv(strdup((char*)str.c_str()));
+    }
+    
     while (arguments.read("--image",filename))
     {
         osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), options);

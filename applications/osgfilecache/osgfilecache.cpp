@@ -276,7 +276,7 @@ protected:
     void convertXYZToLatLongHeight(osg::EllipsoidModel* em, osg::Vec3d& v)
     {
         em->convertXYZToLatLongHeight(v.x(), v.y(), v.z(),
-                                      v.x(), v.y(), v.z());
+                                      v.y(), v.x(), v.z());
                                       
         v.x() = osg::RadiansToDegrees(v.x());
         v.y() = osg::RadiansToDegrees(v.y());

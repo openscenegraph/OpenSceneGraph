@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 #include <curl/curl.h>
 #include <curl/types.h>
@@ -26,23 +27,48 @@ class EasyCurl : public osg::Referenced
 {
     public:
     
-        struct StreamPair
+        struct StreamObject
         {
-            StreamPair(std::ostream* stream1, std::ostream* stream2=0):
+            StreamObject(std::ostream* stream1, const std::string& cacheFileName):
                 _stream1(stream1),
-                _stream2(stream2) {}
+                _cacheFileName(cacheFileName)
+            {
+                _foutOpened = false;
+            }
+            
+            void write(const char* ptr, size_t realsize)
+            {
+                if (_stream1) _stream1->write(ptr, realsize);
+                
+                if (!_cacheFileName.empty())
+                {
+                    if (!_foutOpened)
+                    {
+                        osg::notify(osg::INFO)<<"Writing to cache: "<<_cacheFileName<<std::endl;
+                        _fout.open(_cacheFileName.c_str(), std::ios::out | std::ios::binary);
+                        _foutOpened = true;
+                    }
+                    
+                    if (_fout)
+                    {
+                        _fout.write(ptr, realsize);
+                    }
+                }
+            }
         
-            std::ostream* _stream1;
-            std::ostream* _stream2;
+            std::ostream*   _stream1;
+            
+            bool            _foutOpened;
+            std::string     _cacheFileName;
+            std::ofstream   _fout;
         };
     
         static size_t StreamMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
         {
             size_t realsize = size * nmemb;
-            StreamPair* sp = (StreamPair*)data;
+            StreamObject* sp = (StreamObject*)data;
 
-            if (sp->_stream1) sp->_stream1->write((const char*)ptr, realsize);
-            if (sp->_stream2) sp->_stream2->write((const char*)ptr, realsize);
+            sp->write((const char*)ptr, realsize);
 
             return realsize;
         }
@@ -68,7 +94,7 @@ class EasyCurl : public osg::Referenced
         }
 
 
-        osgDB::ReaderWriter::ReadResult read(const std::string& proxyAddress, const std::string& fileName, StreamPair& sp)
+        osgDB::ReaderWriter::ReadResult read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp)
         {
             if(!proxyAddress.empty())
             {
@@ -254,8 +280,15 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                 cacheFileName = cacheFilePath + "/" + 
                                 osgDB::getServerAddress(fileName) + "/" + 
                                 osgDB::getServerFileName(fileName);
+
+                std::string path = osgDB::getFilePath(cacheFileName);
+                
+                if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
+                {
+                    cacheFileName.clear();
+                }
             }
-                                                        
+
             if (!cacheFilePath.empty() && osgDB::fileExists(cacheFileName))
             {
                 osg::notify(osg::INFO) << "Reading cache file " << cacheFileName << std::endl;
@@ -285,14 +318,16 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
 
         
             std::stringstream buffer;
-
-            EasyCurl::StreamPair sp(&buffer);
+            ReadResult curlResult;
             
-            //ReadResult result = _easyCurl.read(proxyAddress, fileName, sp);
-            ReadResult result = getEasyCurl().read(proxyAddress, fileName, sp);
+            EasyCurl::StreamObject sp(&buffer, cacheFileName);
 
-            if (result.status()==ReadResult::FILE_LOADED)
+            //ReadResult result = _easyCurl.read(proxyAddress, fileName, sp);
+            curlResult = getEasyCurl().read(proxyAddress, fileName, sp);
+
+            if (curlResult.status()==ReadResult::FILE_LOADED)
             {
+
                 osg::ref_ptr<Options> local_opt = const_cast<Options*>(options);
                 if (!local_opt) local_opt = new Options;
 
@@ -302,34 +337,11 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
 
                 local_opt->getDatabasePathList().pop_front();
 
-                if (!cacheFilePath.empty() && readResult.validObject())
-                {
-                    osg::notify(osg::INFO)<<"Writing cache file "<<cacheFileName<<std::endl;
-                    
-                    std::string filePath = osgDB::getFilePath(cacheFileName);
-                    if (osgDB::fileExists(filePath) || osgDB::makeDirectory(filePath))
-                    {
-                        switch(objectType)
-                        {
-                        case(OBJECT): osgDB::writeObjectFile( *(readResult.getObject()), cacheFileName ); break;
-                        case(IMAGE): osgDB::writeImageFile( *(readResult.getImage()), cacheFileName ); break;
-                        case(HEIGHTFIELD): osgDB::writeHeightFieldFile( *(readResult.getHeightField()), cacheFileName ); break;
-                        case(NODE): osgDB::writeNodeFile( *(readResult.getNode()), cacheFileName ); break;
-                        default: break;
-                        }
-                    }
-                    else
-                    {
-                        osg::notify(osg::NOTICE)<<"Error: Failed to created directory "<<filePath<<std::endl;
-                    }
-
-                }
-
                 return readResult;
             }
             else
             {
-                return result;
+                return curlResult;
             }
         }
         

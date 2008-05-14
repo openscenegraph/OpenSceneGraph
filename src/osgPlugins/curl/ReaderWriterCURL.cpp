@@ -316,6 +316,11 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                     proxyAddress = std::string(proxyEnvAddress) + ":8080"; //Default
             }
 
+            bool asyncFileRead = options ? options->getAsynchronousFileReadHint() : false;
+            
+            osg::notify(osg::INFO)<<"AsynchronousFileReadHint= "<<asyncFileRead<<std::endl;
+            
+            // if (asyncFileRead) return ReadResult::FILE_REQUESTED;
         
             std::stringstream buffer;
             ReadResult curlResult;

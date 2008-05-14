@@ -1,5 +1,6 @@
 #include <osgDB/DatabasePager>
 #include <osgDB/ReadFile>
+#include <osgDB/FileNameUtils>
 
 #include <osg/Geode>
 #include <osg/Timer>
@@ -419,7 +420,22 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             databaseRequest->_timestampLastRequest = timestamp;
             databaseRequest->_priorityLastRequest = priority;
             databaseRequest->_groupForAddingLoadedSubgraph = group;
-            databaseRequest->_loadOptions = loadOptions;
+
+            if ((Registry::instance()->getOptions()==loadOptions) &&
+                (loadOptions ? !loadOptions->getAsynchronousFileReadHint() : true) &&
+                osgDB::containsServerAddress(fileName))
+            {
+                // we need to enable asynchronous file reading.
+                databaseRequest->_loadOptions = loadOptions ? 
+                        dynamic_cast<osgDB::ReaderWriter::Options*>(loadOptions->clone(osg::CopyOp::SHALLOW_COPY)) :
+                        new osgDB::ReaderWriter::Options;
+
+                databaseRequest->_loadOptions->setAsynchronousFileReadHint(true);
+            }
+            else
+            {
+                databaseRequest->_loadOptions = loadOptions;
+            }
 
             _fileRequestList.push_back(databaseRequest);
 

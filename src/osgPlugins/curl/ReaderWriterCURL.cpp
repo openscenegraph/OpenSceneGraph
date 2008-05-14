@@ -22,35 +22,107 @@
 #include <curl/curl.h>
 #include <curl/types.h>
 
-
-class ReaderWriterCURL : public osgDB::ReaderWriter
+class EasyCurl 
 {
     public:
+    
+        struct StreamPair
+        {
+            StreamPair(std::ostream* stream1, std::ostream* stream2=0):
+                _stream1(stream1),
+                _stream2(stream2) {}
+        
+            std::ostream* _stream1;
+            std::ostream* _stream2;
+        };
     
         static size_t StreamMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
         {
             size_t realsize = size * nmemb;
-            std::ostream* buffer = (std::ostream*)data;
+            StreamPair* sp = (StreamPair*)data;
 
-            buffer->write((const char*)ptr, realsize);
+            if (sp->_stream1) sp->_stream1->write((const char*)ptr, realsize);
+            if (sp->_stream2) sp->_stream2->write((const char*)ptr, realsize);
 
             return realsize;
         }
 
 
-        ReaderWriterCURL()
+        EasyCurl()
         {
             _curl = curl_easy_init();
             
             curl_easy_setopt(_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");            
             curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, StreamMemoryCallback);
         }
-      
-        ~ReaderWriterCURL()
+
+        ~EasyCurl()
         {
             if (_curl) curl_easy_cleanup(_curl);
             
             _curl = 0;
+        }
+
+
+        osgDB::ReaderWriter::ReadResult read(const std::string& proxyAddress, const std::string& fileName, StreamPair& sp)
+        {
+            if(!proxyAddress.empty())
+            {
+                osg::notify(osg::NOTICE)<<"Setting proxy: "<<proxyAddress<<std::endl;
+                curl_easy_setopt(_curl, CURLOPT_PROXY, proxyAddress.c_str()); //Sets proxy address and port on libcurl
+            }
+        
+            curl_easy_setopt(_curl, CURLOPT_URL, fileName.c_str());
+            curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)&sp);
+
+            CURLcode res = curl_easy_perform(_curl);
+
+            curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)0);
+            
+            if (res==0)
+            {
+                long code;
+                if(!proxyAddress.empty())
+                {
+                    curl_easy_getinfo(_curl, CURLINFO_HTTP_CONNECTCODE, &code);
+                }
+                else
+                {
+                    curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &code);                    
+                }
+                
+                if (code>=400)
+                {
+                    osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<", error code = "<<code<<std::endl;
+                    return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
+                }
+                
+                return osgDB::ReaderWriter::ReadResult::FILE_LOADED;
+                
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<" error = "<<curl_easy_strerror(res)<<std::endl;
+                return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
+            }
+        }
+
+    protected:
+
+        CURL* _curl;
+};
+
+
+class ReaderWriterCURL : public osgDB::ReaderWriter
+{
+    public:
+    
+        ReaderWriterCURL()
+        {
+        }
+      
+        ~ReaderWriterCURL()
+        {
         }
 
         virtual const char* className() const { return "HTTP Protocol Model Reader"; }
@@ -163,15 +235,6 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                 fileName = fullFileName;
             }
 
-            osgDB::ReaderWriter *reader = 
-                osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
-                
-            if (!reader)
-            {
-                osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
-                return ReadResult::FILE_NOT_HANDLED;
-            }
-
             //Getting CURL Environment Variables (If found rewrite OSG Options)
             const char* fileCachePath = getenv("OSG_FILE_CACHE");
             if (fileCachePath) //Env Cache Directory
@@ -191,6 +254,15 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                 return result;                
             }
 
+            osgDB::ReaderWriter *reader = 
+                osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
+                
+            if (!reader)
+            {
+                osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
+                return ReadResult::FILE_NOT_HANDLED;
+            }
+
             const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
             if (proxyEnvAddress) //Env Proxy Settings
             {
@@ -202,40 +274,15 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
                     proxyAddress = std::string(proxyEnvAddress) + ":8080"; //Default
             }
 
-            if(!proxyAddress.empty())
-            {
-                osg::notify(osg::NOTICE)<<"Setting proxy: "<<proxyAddress<<std::endl;
-                curl_easy_setopt(_curl, CURLOPT_PROXY, proxyAddress.c_str()); //Sets proxy address and port on libcurl
-            }
-
+        
             std::stringstream buffer;
 
-            curl_easy_setopt(_curl, CURLOPT_URL, fileName.c_str());
-            curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)&buffer);
-
-            CURLcode res = curl_easy_perform(_curl);
+            EasyCurl::StreamPair sp(&buffer);
             
+            ReadResult result = _easyCurl.read(proxyAddress, fileName, sp);
 
-            curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)0);
-        
-            if (res==0)
+            if (result.status()==ReadResult::FILE_LOADED)
             {
-                long code;
-                if(!proxyAddress.empty())
-                {
-                    curl_easy_getinfo(_curl, CURLINFO_HTTP_CONNECTCODE, &code);
-                }
-                else
-                {
-                    curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &code);                    
-                }
-                
-                if (code>=400)
-                {
-                    osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<", error code = "<<code<<std::endl;
-                    return ReadResult::FILE_NOT_FOUND;
-                }
-
                 osg::ref_ptr<Options> local_opt = const_cast<Options*>(options);
                 if (!local_opt) local_opt = new Options;
 
@@ -247,7 +294,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
 
                 if (!cacheFilePath.empty() && readResult.validObject())
                 {
-                    osg::notify(osg::INFO)<<"Writing cache file "<<cacheFileName<<std::endl;
+                    osg::notify(osg::NOTICE)<<"Writing cache file "<<cacheFileName<<std::endl;
                     
                     std::string filePath = osgDB::getFilePath(cacheFileName);
                     if (osgDB::fileExists(filePath) || osgDB::makeDirectory(filePath))
@@ -272,15 +319,13 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<" error = "<<curl_easy_strerror(res)<<std::endl;
-                return ReadResult::FILE_NOT_HANDLED;
+                return result;
             }
         }
         
     protected:
         
-        CURL* _curl;
-        
+        mutable EasyCurl _easyCurl;        
 };
 
 

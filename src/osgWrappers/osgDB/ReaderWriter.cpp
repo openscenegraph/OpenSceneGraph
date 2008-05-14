@@ -273,6 +273,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	          __CacheHintOptions__getObjectCacheHint,
 	          "Get whether the Registry::ObjectCache should be used by default. ",
 	          "");
+	I_Method1(void, setAsynchronousFileReadHint, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setAsynchronousFileReadHint__bool,
+	          "Set Asynchrnous file read hint. ",
+	          "This hint is used by plugins like the libcurl http reader plugin to inform them that they should make an internal file read requests to their background threads to load files, with the plugin returning immediately with a ReadResult::FILE_REQUESTED status. It is assumed that calls will continue to be made to the plugin until the background threads have read or failed to read the request file, at which point the return status which change to FILE_LOADED and the objects will be returned. Note, this facility is particular useful when using DatabasePager in conjunction with internet based databases where file load latency is relatively high. ");
+	I_Method0(bool, getAsynchronousFileReadHint,
+	          Properties::NON_VIRTUAL,
+	          __bool__getAsynchronousFileReadHint,
+	          "Get Asynchrnous file read hint. ",
+	          "");
 	I_Method2(void, setPluginData, IN, const std::string &, s, IN, void *, v,
 	          Properties::NON_VIRTUAL,
 	          __void__setPluginData__C5_std_string_R1__void_P1,
@@ -293,6 +303,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	          __void__removePluginData__C5_std_string_R1,
 	          "Remove a value from the PluginData. ",
 	          "");
+	I_SimpleProperty(bool, AsynchronousFileReadHint, 
+	                 __bool__getAsynchronousFileReadHint, 
+	                 __void__setAsynchronousFileReadHint__bool);
 	I_SimpleProperty(const std::string &, DatabasePath, 
 	                 0, 
 	                 __void__setDatabasePath__C5_std_string_R1);
@@ -318,6 +331,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ReadResult::ReadStatus)
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_LOADED);
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::ERROR_IN_READING_FILE);
+	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_REQUESTED);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)

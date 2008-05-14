@@ -22,7 +22,7 @@
 #include <curl/curl.h>
 #include <curl/types.h>
 
-class EasyCurl 
+class EasyCurl : public osg::Referenced
 {
     public:
     
@@ -50,6 +50,8 @@ class EasyCurl
 
         EasyCurl()
         {
+            osg::notify(osg::INFO)<<"EasyCurl::EasyCurl()"<<std::endl;
+
             _curl = curl_easy_init();
             
             curl_easy_setopt(_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");            
@@ -58,6 +60,8 @@ class EasyCurl
 
         ~EasyCurl()
         {
+            osg::notify(osg::INFO)<<"EasyCurl::~EasyCurl()"<<std::endl;
+
             if (_curl) curl_easy_cleanup(_curl);
             
             _curl = 0;
@@ -109,6 +113,11 @@ class EasyCurl
 
     protected:
 
+        // disallow copying
+        EasyCurl(const EasyCurl& rhs):_curl(rhs._curl) {}
+        EasyCurl& operator = (const EasyCurl&) { return *this; }
+
+        
         CURL* _curl;
 };
 
@@ -279,7 +288,8 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
 
             EasyCurl::StreamPair sp(&buffer);
             
-            ReadResult result = _easyCurl.read(proxyAddress, fileName, sp);
+            //ReadResult result = _easyCurl.read(proxyAddress, fileName, sp);
+            ReadResult result = getEasyCurl().read(proxyAddress, fileName, sp);
 
             if (result.status()==ReadResult::FILE_LOADED)
             {
@@ -294,7 +304,7 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
 
                 if (!cacheFilePath.empty() && readResult.validObject())
                 {
-                    osg::notify(osg::NOTICE)<<"Writing cache file "<<cacheFileName<<std::endl;
+                    osg::notify(osg::INFO)<<"Writing cache file "<<cacheFileName<<std::endl;
                     
                     std::string filePath = osgDB::getFilePath(cacheFileName);
                     if (osgDB::fileExists(filePath) || osgDB::makeDirectory(filePath))
@@ -324,8 +334,21 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
         }
         
     protected:
+    
+        typedef std::map<OpenThreads::Thread*, osg::ref_ptr<EasyCurl> > ThreadCurlMap;
         
-        mutable EasyCurl _easyCurl;        
+        EasyCurl& getEasyCurl() const
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_threadCurlMapMutex);
+
+            osg::ref_ptr<EasyCurl>& ec = _threadCurlMap[OpenThreads::Thread::CurrentThread()];
+            if (!ec) ec = new EasyCurl;
+            
+            return *ec;
+        }
+        
+        mutable OpenThreads::Mutex  _threadCurlMapMutex;
+        mutable ThreadCurlMap       _threadCurlMap;
 };
 
 

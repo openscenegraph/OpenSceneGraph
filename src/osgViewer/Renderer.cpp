@@ -453,12 +453,18 @@ void Renderer::cull_draw()
     osgUtil::SceneView* sceneView = _sceneView[0].get();
     if (!sceneView || _done) return;
 
+    if (_done)
+    {
+        osg::notify(osg::INFO)<<"Render::release() causing cull_draw to exit"<<std::endl;
+        return;
+    }
+    
+    updateSceneView(sceneView);
+
     if (_compileOnNextDraw)
     {
         compile();
     }
-
-    updateSceneView(sceneView);
 
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
     osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
@@ -466,11 +472,6 @@ void Renderer::cull_draw()
     osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID());
     osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
 
-    if (_done)
-    {
-        osg::notify(osg::INFO)<<"Render::release() causing cull_draw to exit"<<std::endl;
-        return;
-    }
 
     // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
 

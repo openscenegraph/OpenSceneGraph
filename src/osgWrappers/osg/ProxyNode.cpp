@@ -16,6 +16,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/ProxyNode>
+#include <osg/Referenced>
 #include <osg/Vec3>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -29,8 +30,6 @@
 TYPE_NAME_ALIAS(osg::BoundingSphere::vec_type, osg::ProxyNode::vec_type)
 
 TYPE_NAME_ALIAS(osg::BoundingSphere::value_type, osg::ProxyNode::value_type)
-
-TYPE_NAME_ALIAS(std::vector< std::string >, osg::ProxyNode::FileNameList)
 
 BEGIN_ENUM_REFLECTOR(osg::ProxyNode::CenterMode)
 	I_DeclaringFile("osg/ProxyNode");
@@ -129,6 +128,16 @@ BEGIN_OBJECT_REFLECTOR(osg::ProxyNode)
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumFileNames,
 	          "",
+	          "");
+	I_Method1(osg::ref_ptr< osg::Referenced > &, getDatabaseRequest, IN, unsigned int, childNo,
+	          Properties::NON_VIRTUAL,
+	          __osg_ref_ptrT1_osg_Referenced__R1__getDatabaseRequest__unsigned_int,
+	          "Return the DatabaseRequest object used by the DatabasePager to keep track of file load requests being carried on behalf of the DatabasePager. ",
+	          "Note, in normal OSG usage you should not set this value yourself, as this will be managed by the osgDB::DatabasePager. ");
+	I_Method1(const osg::ref_ptr< osg::Referenced > &, getDatabaseRequest, IN, unsigned int, childNo,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_ref_ptrT1_osg_Referenced__R1__getDatabaseRequest__unsigned_int,
+	          "Return the const DatabaseRequest object. ",
 	          "");
 	I_Method1(void, setCenterMode, IN, osg::ProxyNode::CenterMode, mode,
 	          Properties::NON_VIRTUAL,

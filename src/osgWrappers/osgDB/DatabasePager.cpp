@@ -10,11 +10,13 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <OpenThreads/Thread>
 #include <osg/FrameStamp>
 #include <osg/GraphicsContext>
 #include <osg/Group>
 #include <osg/Node>
 #include <osg/PagedLOD>
+#include <osg/Referenced>
 #include <osg/State>
 #include <osgDB/DatabasePager>
 #include <osgDB/ReaderWriter>
@@ -54,7 +56,6 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_DeclaringFile("osgDB/DatabasePager");
 	I_BaseType(osg::NodeVisitor::DatabaseRequestHandler);
-	I_BaseType(OpenThreads::Thread);
 	I_Constructor0(____DatabasePager,
 	               "",
 	               "");
@@ -68,30 +69,50 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __DatabasePager_P1__clone,
 	          "Create a shallow copy on the DatabasePager. ",
 	          "");
-	I_Method4(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp,
+	I_Method5(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp, IN, osg::ref_ptr< osg::Referenced > &, databaseRequest,
 	          Properties::VIRTUAL,
-	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_osg_FrameStamp_P1,
+	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_osg_FrameStamp_P1__osg_ref_ptrT1_osg_Referenced__R1,
 	          "Add a request to load a node file to end the the database request list. ",
 	          "");
-	I_Method5(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp, IN, osgDB::ReaderWriter::Options *, loadOptions,
+	I_Method6(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp, IN, osg::ref_ptr< osg::Referenced > &, databaseRequest, IN, osgDB::ReaderWriter::Options *, loadOptions,
 	          Properties::VIRTUAL,
-	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_osg_FrameStamp_P1__ReaderWriter_Options_P1,
+	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_osg_FrameStamp_P1__osg_ref_ptrT1_osg_Referenced__R1__ReaderWriter_Options_P1,
 	          "",
 	          "");
-	I_Method0(void, run,
-	          Properties::VIRTUAL,
-	          __void__run,
-	          "Run does the database paging. ",
+	I_Method1(int, setSchedulePriority, IN, OpenThreads::Thread::ThreadPriority, priority,
+	          Properties::NON_VIRTUAL,
+	          __int__setSchedulePriority__OpenThreads_Thread_ThreadPriority,
+	          "Set the priority of the database pager thread(s). ",
 	          "");
 	I_Method0(int, cancel,
 	          Properties::VIRTUAL,
 	          __int__cancel,
-	          "Cancel the database pager thread. ",
+	          "Cancel the database pager thread(s). ",
+	          "");
+	I_Method0(bool, isRunning,
+	          Properties::VIRTUAL,
+	          __bool__isRunning,
+	          "",
 	          "");
 	I_Method0(void, clear,
 	          Properties::VIRTUAL,
 	          __void__clear,
 	          "Clear all internally cached structures. ",
+	          "");
+	I_Method1(osgDB::DatabasePager::DatabaseThread *, getDatabaseThread, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __DatabaseThread_P1__getDatabaseThread__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osgDB::DatabasePager::DatabaseThread *, getDatabaseThread, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_DatabaseThread_P1__getDatabaseThread__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumDatabaseThreads,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumDatabaseThreads,
+	          "",
 	          "");
 	I_Method1(void, setDatabasePagerThreadPause, IN, bool, pause,
 	          Properties::NON_VIRTUAL,
@@ -301,12 +322,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	                __DatabasePager_P1__create_S,
 	                "create a DatabasePager by cloning DatabasePager::prototype(). ",
 	                "");
-	I_ProtectedMethod0(void, updateDatabasePagerThreadBlock,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__updateDatabasePagerThreadBlock,
-	                   "",
-	                   "");
 	I_ProtectedMethod1(bool, isCompiled, IN, osg::Texture *, texture,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
@@ -353,6 +368,13 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(bool, DatabasePagerThreadPause, 
 	                 __bool__getDatabasePagerThreadPause, 
 	                 __void__setDatabasePagerThreadPause__bool);
+	I_ArrayProperty(osgDB::DatabasePager::DatabaseThread *, DatabaseThread, 
+	                __DatabaseThread_P1__getDatabaseThread__unsigned_int, 
+	                0, 
+	                __unsigned_int__getNumDatabaseThreads, 
+	                0, 
+	                0, 
+	                0);
 	I_SimpleProperty(bool, DeleteRemovedSubgraphsInDatabaseThread, 
 	                 __bool__getDeleteRemovedSubgraphsInDatabaseThread, 
 	                 __void__setDeleteRemovedSubgraphsInDatabaseThread__bool);
@@ -380,9 +402,56 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(double, MinimumTimeToMergeTile, 
 	                 __double__getMinimumTimeToMergeTile, 
 	                 0);
+	I_SimpleProperty(OpenThreads::Thread::ThreadPriority, SchedulePriority, 
+	                 0, 
+	                 __int__setSchedulePriority__OpenThreads_Thread_ThreadPriority);
 	I_SimpleProperty(double, TargetFrameRate, 
 	                 __double__getTargetFrameRate, 
 	                 __void__setTargetFrameRate__double);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DatabaseThread::Mode)
+	I_DeclaringFile("osgDB/DatabasePager");
+	I_EnumLabel(osgDB::DatabasePager::DatabaseThread::HANDLE_ALL_REQUESTS);
+	I_EnumLabel(osgDB::DatabasePager::DatabaseThread::HANDLE_NON_HTTP);
+	I_EnumLabel(osgDB::DatabasePager::DatabaseThread::HANDLE_ONLY_HTTP);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager::DatabaseThread)
+	I_DeclaringFile("osgDB/DatabasePager");
+	I_BaseType(osg::Referenced);
+	I_BaseType(OpenThreads::Thread);
+	I_Constructor3(IN, osgDB::DatabasePager *, pager, IN, osgDB::DatabasePager::DatabaseThread::Mode, mode, IN, const std::string &, name,
+	               ____DatabaseThread__DatabasePager_P1__Mode__C5_std_string_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, const osgDB::DatabasePager::DatabaseThread &, dt, IN, osgDB::DatabasePager *, pager,
+	               ____DatabaseThread__C5_DatabaseThread_R1__DatabasePager_P1,
+	               "",
+	               "");
+	I_Method1(void, setDone, IN, bool, done,
+	          Properties::NON_VIRTUAL,
+	          __void__setDone__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDone,
+	          Properties::NON_VIRTUAL,
+	          __bool__getDone,
+	          "",
+	          "");
+	I_Method0(int, cancel,
+	          Properties::VIRTUAL,
+	          __int__cancel,
+	          "Cancel the thread. ",
+	          "Equivalent to SIGKILL.0 if normal, -1 if errno set, errno code otherwise.  ");
+	I_Method0(void, run,
+	          Properties::VIRTUAL,
+	          __void__run,
+	          "Thread's run method. ",
+	          "Must be implemented by derived classes. This is where the action happens. ");
+	I_SimpleProperty(bool, Done, 
+	                 __bool__getDone, 
+	                 __void__setDone__bool);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::GraphicsContext >)

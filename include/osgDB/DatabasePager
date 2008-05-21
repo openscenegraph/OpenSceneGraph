@@ -37,9 +37,10 @@
 namespace osgDB {
 
 
+
 /** Database paging class which manages the loading of files in a background thread, 
   * and synchronizing of loaded models with the main scene graph.*/
-class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandler, public OpenThreads::Thread
+class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandler
 {
     public :
 
@@ -62,20 +63,62 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         /** Add a request to load a node file to end the the database request list.*/
         virtual void requestNodeFile(const std::string& fileName,osg::Group* group,
-                                     float priority, const osg::FrameStamp* framestamp);
+                                     float priority, const osg::FrameStamp* framestamp,
+                                     osg::ref_ptr<osg::Referenced>& databaseRequest);
 
         virtual void requestNodeFile(const std::string& fileName,osg::Group* group,
                                      float priority, const osg::FrameStamp* framestamp,
+                                     osg::ref_ptr<osg::Referenced>& databaseRequest,
                                      ReaderWriter::Options* loadOptions);
 
-        /** Run does the database paging.*/        
-        virtual void run();
-        
-        /** Cancel the database pager thread.*/        
+        /** Set the priority of the database pager thread(s).*/
+        int setSchedulePriority(OpenThreads::Thread::ThreadPriority priority);
+
+        /** Cancel the database pager thread(s).*/        
         virtual int cancel();
+        
+        virtual bool isRunning() const;
         
         /** Clear all internally cached structures.*/
         virtual void clear();
+        
+        class DatabaseThread : public osg::Referenced, public OpenThreads::Thread
+        {
+        public:
+        
+            enum Mode
+            {
+                HANDLE_ALL_REQUESTS,
+                HANDLE_NON_HTTP,
+                HANDLE_ONLY_HTTP
+            };
+        
+            DatabaseThread(DatabasePager* pager, Mode mode, const std::string& name);
+            
+            DatabaseThread(const DatabaseThread& dt, DatabasePager* pager);
+            
+            void setDone(bool done) { _done = done; }
+            bool getDone() const { return _done; }
+
+            virtual int cancel();
+            
+            virtual void run();
+            
+        protected:
+
+            virtual ~DatabaseThread();
+        
+            bool            _done;
+            DatabasePager*  _pager;
+            Mode            _mode;
+            std::string     _name;
+        };
+
+        DatabaseThread* getDatabaseThread(unsigned int i) { return _databaseThreads[i].get(); }
+        
+        const DatabaseThread* getDatabaseThread(unsigned int i) const { return _databaseThreads[i].get(); }
+
+        unsigned int getNumDatabaseThreads() const { return _databaseThreads.size(); }
         
         /** Set whether the database pager thread should be paused or not.*/
         void setDatabasePagerThreadPause(bool pause);
@@ -232,7 +275,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         virtual void compileAllGLObjects(osg::State& state);
 
         /** Report how many items are in the _fileRequestList queue */
-        unsigned int getFileRequestListSize() const { return _fileRequestList.size(); }
+        unsigned int getFileRequestListSize() const { return _fileRequestQueue._requestList.size() + _httpRequestQueue._requestList.size(); }
 
         /** Report how many items are in the _dataToCompileList queue */
         unsigned int getDataToCompileListSize() const { return _dataToCompileList.size(); }
@@ -263,12 +306,21 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         virtual ~DatabasePager();
 
+        friend class DatabaseThread;
+
 
         friend struct DatabaseRequest;
 
         struct DatabaseRequest : public osg::Referenced
         {
             DatabaseRequest():
+                osg::Referenced(true),
+                _frameNumberFirstRequest(0),
+                _timestampFirstRequest(0.0),
+                _priorityFirstRequest(0.f),
+                _frameNumberLastRequest(0),
+                _timestampLastRequest(0.0),
+                _priorityLastRequest(0.0f),
                 _numOfRequests(0)
             {}
             
@@ -290,9 +342,42 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                 return frameNumber - _frameNumberLastRequest <= 1;
             }
         };
-
-        typedef std::vector< osg::ref_ptr<DatabaseRequest> > DatabaseRequestList;
+        
+        typedef std::vector< osg::ref_ptr<DatabaseThread> > DatabaseThreadList;
+        typedef std::list< osg::ref_ptr<DatabaseRequest> > DatabaseRequestList;
         typedef std::vector<  osg::ref_ptr<osg::Object> > ObjectList;
+
+        struct RequestQueue : public osg::Referenced
+        {
+            RequestQueue(DatabasePager* pager, const std::string& name);
+            
+            void block() { _block->block(); }
+            
+            void release() { _block->release(); }
+            
+            void updateBlock()
+            {
+                _block->set((!_requestList.empty() || !_childrenToDeleteList.empty()) && 
+                             !_pager->_databasePagerThreadPaused);
+            }
+            
+            void clear();
+            
+            void add(DatabaseRequest* databaseRequest);
+            
+            void takeFirst(osg::ref_ptr<DatabaseRequest>& databaseRequest);
+            
+            osg::ref_ptr<osg::RefBlock> _block;
+            
+            DatabasePager*              _pager;
+            std::string                 _name;
+            
+            OpenThreads::Mutex          _requestMutex;
+            DatabaseRequestList         _requestList;
+            
+            OpenThreads::Mutex          _childrenToDeleteListMutex;
+            ObjectList                  _childrenToDeleteList;
+        };
 
         // forward declare inner helper classes
         class FindCompileableGLObjectsVisitor;
@@ -309,15 +394,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         OpenThreads::Mutex              _run_mutex;
         bool                            _startThreadCalled;
-
-        
-        osg::ref_ptr<osg::RefBlock>    _databasePagerThreadBlock;
-
-        inline void updateDatabasePagerThreadBlock()
-        {
-            _databasePagerThreadBlock->set(
-                (!_fileRequestList.empty() || !_childrenToDeleteList.empty()) && !_databasePagerThreadPaused);
-        }
 
         // Helper functions for determining if objects need to be
         // compiled.
@@ -410,12 +486,17 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         bool                            _acceptNewRequests;
         bool                            _databasePagerThreadPaused;
     
+        DatabaseThreadList              _databaseThreads;
+
         int                             _numFramesActive;
         mutable OpenThreads::Mutex      _numFramesActiveMutex;
         int                             _frameNumber;
 
-        DatabaseRequestList             _fileRequestList;
-        mutable OpenThreads::Mutex      _fileRequestListMutex;
+        RequestQueue                    _fileRequestQueue;
+        RequestQueue                    _httpRequestQueue;
+
+        //DatabaseRequestList             _fileRequestList;
+        //mutable OpenThreads::Mutex      _fileRequestListMutex;
         
         DatabaseRequestList             _dataToCompileList;
         mutable OpenThreads::Mutex      _dataToCompileListMutex;
@@ -428,8 +509,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         float                           _valueAnisotropy;
 
         bool                            _deleteRemovedSubgraphsInDatabaseThread;
-        ObjectList                      _childrenToDeleteList;
-        mutable OpenThreads::Mutex      _childrenToDeleteListMutex;
+        //ObjectList                      _childrenToDeleteList;
+        //mutable OpenThreads::Mutex      _childrenToDeleteListMutex;
 
         DatabaseRequestList             _dataToMergeList;
         mutable OpenThreads::Mutex      _dataToMergeListMutex;
@@ -450,7 +531,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         double                          _maximumTimeToMergeTile;
         double                          _totalTimeToMergeTiles;
         unsigned int                    _numTilesMerges;
-        
         
         struct CompileOperation : public osg::GraphicsOperation
         {

@@ -373,10 +373,17 @@ void CompositeViewer::getAllThreads(Threads& threads, bool onlyActive)
         ++sitr)
     {
         Scene* scene = *sitr;
-        if (scene->getDatabasePager() &&
-           (!onlyActive || scene->getDatabasePager()->isRunning())) 
+        osgDB::DatabasePager* dp = scene->getDatabasePager();
+        if (dp)
         {
-            threads.push_back(scene->getDatabasePager());
+            for(unsigned int i=0; i<dp->getNumDatabaseThreads(); ++i)
+            {
+                osgDB::DatabasePager::DatabaseThread* dt = dp->getDatabaseThread(i);
+                if (!onlyActive || dt->isRunning())
+                {
+                    threads.push_back(dt);
+                }
+            }
         }
     }
 }

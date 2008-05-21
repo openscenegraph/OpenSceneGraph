@@ -1,20 +1,20 @@
-/* -*-c++-*- VirtualPlanetBuilder - Copyright (C) 1998-2007 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
  *
- * This application is open source and may be redistributed and/or modified   
- * freely and without restriction, both in commericial and non commericial applications,
- * as long as this copyright notice is maintained.
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
  * 
- * This application is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
 */
-
 
 #include <osgDB/FileUtils>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgDB/Registry>
-#include <osgDB/FileNameUtils>
 
 #include <iostream>
 #include <sstream>
@@ -23,353 +23,298 @@
 #include <curl/curl.h>
 #include <curl/types.h>
 
-class EasyCurl : public osg::Referenced
+#include "ReaderWriterCURL.h"
+
+using namespace osg_curl;
+
+//
+//  StreamObject
+//    
+EasyCurl::StreamObject::StreamObject(std::ostream* stream1, const std::string& cacheFileName):
+    _stream1(stream1),
+    _cacheFileName(cacheFileName)
 {
-    public:
+    _foutOpened = false;
+}
+
+void EasyCurl::StreamObject::write(const char* ptr, size_t realsize)
+{
+    if (_stream1) _stream1->write(ptr, realsize);
+
+    if (!_cacheFileName.empty())
+    {
+        if (!_foutOpened)
+        {
+            osg::notify(osg::INFO)<<"Writing to cache: "<<_cacheFileName<<std::endl;
+            _fout.open(_cacheFileName.c_str(), std::ios::out | std::ios::binary);
+            _foutOpened = true;
+        }
+
+        if (_fout)
+        {
+            _fout.write(ptr, realsize);
+        }
+    }
+}
     
-        struct StreamObject
-        {
-            StreamObject(std::ostream* stream1, const std::string& cacheFileName):
-                _stream1(stream1),
-                _cacheFileName(cacheFileName)
-            {
-                _foutOpened = false;
-            }
-            
-            void write(const char* ptr, size_t realsize)
-            {
-                if (_stream1) _stream1->write(ptr, realsize);
-                
-                if (!_cacheFileName.empty())
-                {
-                    if (!_foutOpened)
-                    {
-                        osg::notify(osg::INFO)<<"Writing to cache: "<<_cacheFileName<<std::endl;
-                        _fout.open(_cacheFileName.c_str(), std::ios::out | std::ios::binary);
-                        _foutOpened = true;
-                    }
-                    
-                    if (_fout)
-                    {
-                        _fout.write(ptr, realsize);
-                    }
-                }
-            }
-        
-            std::ostream*   _stream1;
-            
-            bool            _foutOpened;
-            std::string     _cacheFileName;
-            std::ofstream   _fout;
-        };
-    
-        static size_t StreamMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
-        {
-            size_t realsize = size * nmemb;
-            StreamObject* sp = (StreamObject*)data;
+size_t EasyCurl::StreamMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
+{
+    size_t realsize = size * nmemb;
+    StreamObject* sp = (StreamObject*)data;
 
-            sp->write((const char*)ptr, realsize);
+    sp->write((const char*)ptr, realsize);
 
-            return realsize;
+    return realsize;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  EasyCurl
+//
+EasyCurl::EasyCurl()
+{
+    osg::notify(osg::INFO)<<"EasyCurl::EasyCurl()"<<std::endl;
+
+    _curl = curl_easy_init();
+
+    curl_easy_setopt(_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");            
+    curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, StreamMemoryCallback);
+}
+
+EasyCurl::~EasyCurl()
+{
+    osg::notify(osg::INFO)<<"EasyCurl::~EasyCurl()"<<std::endl;
+
+    if (_curl) curl_easy_cleanup(_curl);
+
+    _curl = 0;
+}
+
+
+osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp)
+{
+    if(!proxyAddress.empty())
+    {
+        osg::notify(osg::NOTICE)<<"Setting proxy: "<<proxyAddress<<std::endl;
+        curl_easy_setopt(_curl, CURLOPT_PROXY, proxyAddress.c_str()); //Sets proxy address and port on libcurl
+    }
+
+    curl_easy_setopt(_curl, CURLOPT_URL, fileName.c_str());
+    curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)&sp);
+
+    CURLcode res = curl_easy_perform(_curl);
+
+    curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)0);
+
+    if (res==0)
+    {
+        long code;
+        if(!proxyAddress.empty())
+        {
+            curl_easy_getinfo(_curl, CURLINFO_HTTP_CONNECTCODE, &code);
+        }
+        else
+        {
+            curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &code);                    
         }
 
-
-        EasyCurl()
+        if (code>=400)
         {
-            osg::notify(osg::INFO)<<"EasyCurl::EasyCurl()"<<std::endl;
-
-            _curl = curl_easy_init();
-            
-            curl_easy_setopt(_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");            
-            curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, StreamMemoryCallback);
+            osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<", error code = "<<code<<std::endl;
+            return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
         }
 
-        ~EasyCurl()
-        {
-            osg::notify(osg::INFO)<<"EasyCurl::~EasyCurl()"<<std::endl;
+        return osgDB::ReaderWriter::ReadResult::FILE_LOADED;
 
-            if (_curl) curl_easy_cleanup(_curl);
-            
-            _curl = 0;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<" error = "<<curl_easy_strerror(res)<<std::endl;
+        return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  ReaderWriterCURL
+//
+
+ReaderWriterCURL::ReaderWriterCURL()
+{
+    //osg::notify(osg::NOTICE)<<"ReaderWriterCURL::ReaderWriterCURL()"<<std::endl;
+}
+
+ReaderWriterCURL::~ReaderWriterCURL()
+{
+    //osg::notify(osg::NOTICE)<<"ReaderWriterCURL::~ReaderWriterCURL()"<<std::endl;
+}
+
+osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType, osgDB::ReaderWriter* rw, std::istream& fin, const osgDB::ReaderWriter::Options *options) const
+{
+    switch(objectType)
+    {
+    case(OBJECT): return rw->readObject(fin,options);
+    case(ARCHIVE): return rw->openArchive(fin,options);
+    case(IMAGE): return rw->readImage(fin,options);
+    case(HEIGHTFIELD): return rw->readHeightField(fin,options);
+    case(NODE): return rw->readNode(fin,options);
+    default: break;
+    }
+    return ReadResult::FILE_NOT_HANDLED;
+}
+
+osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType, const std::string& fullFileName, const osgDB::ReaderWriter::Options *options) const
+{
+
+
+    if (!osgDB::containsServerAddress(fullFileName)) 
+    {
+        if (options && !options->getDatabasePathList().empty())
+        {        
+            if (osgDB::containsServerAddress(options->getDatabasePathList().front()))
+            {
+                std::string newFileName = options->getDatabasePathList().front() + "/" + fullFileName;
+
+                return readFile(objectType, newFileName,options);
+            }
         }
 
+        return ReadResult::FILE_NOT_HANDLED;
+    }
 
-        osgDB::ReaderWriter::ReadResult read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp)
+    osg::notify(osg::INFO)<<"ReaderWriterCURL::readFile("<<fullFileName<<")"<<std::endl;
+
+    std::string cacheFilePath, cacheFileName;
+    std::string proxyAddress, optProxy, optProxyPort;
+
+    if (options)
+    {
+        std::istringstream iss(options->getOptionString());
+        std::string opt;
+        while (iss >> opt) 
         {
-            if(!proxyAddress.empty())
-            {
-                osg::notify(osg::NOTICE)<<"Setting proxy: "<<proxyAddress<<std::endl;
-                curl_easy_setopt(_curl, CURLOPT_PROXY, proxyAddress.c_str()); //Sets proxy address and port on libcurl
-            }
-        
-            curl_easy_setopt(_curl, CURLOPT_URL, fileName.c_str());
-            curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)&sp);
+            int index = opt.find( "=" );
+            if( opt.substr( 0, index ) == "OSG_FILE_CACHE" )
+                cacheFilePath = opt.substr( index+1 ); //Setting Cache Directory by OSG Options
+            else if( opt.substr( 0, index ) == "OSG_CURL_PROXY" )
+                optProxy = opt.substr( index+1 );
+            else if( opt.substr( 0, index ) == "OSG_CURL_PROXYPORT" )
+                optProxyPort = opt.substr( index+1 );
+        }
 
-            CURLcode res = curl_easy_perform(_curl);
-
-            curl_easy_setopt(_curl, CURLOPT_WRITEDATA, (void *)0);
-            
-            if (res==0)
-            {
-                long code;
-                if(!proxyAddress.empty())
-                {
-                    curl_easy_getinfo(_curl, CURLINFO_HTTP_CONNECTCODE, &code);
-                }
-                else
-                {
-                    curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &code);                    
-                }
-                
-                if (code>=400)
-                {
-                    osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<", error code = "<<code<<std::endl;
-                    return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
-                }
-                
-                return osgDB::ReaderWriter::ReadResult::FILE_LOADED;
-                
-            }
+        //Setting Proxy by OSG Options
+        if(!optProxy.empty())
+            if(!optProxyPort.empty())
+                proxyAddress = optProxy + ":" + optProxyPort;
             else
-            {
-                osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<" error = "<<curl_easy_strerror(res)<<std::endl;
-                return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
-            }
+                proxyAddress = optProxy + ":8080"; //Port not found, using default
+    }
+
+    std::string fileName;
+    std::string ext = osgDB::getFileExtension(fullFileName);
+    if (ext=="curl")
+    {
+        fileName = osgDB::getNameLessExtension(fullFileName);
+    }
+    else
+    {
+        fileName = fullFileName;
+    }
+
+    //Getting CURL Environment Variables (If found rewrite OSG Options)
+    const char* fileCachePath = getenv("OSG_FILE_CACHE");
+    if (fileCachePath) //Env Cache Directory
+        cacheFilePath = std::string(fileCachePath);
+
+    if (!cacheFilePath.empty())
+    {
+        cacheFileName = cacheFilePath + "/" + 
+                        osgDB::getServerAddress(fileName) + "/" + 
+                        osgDB::getServerFileName(fileName);
+
+        std::string path = osgDB::getFilePath(cacheFileName);
+
+        if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
+        {
+            cacheFileName.clear();
         }
+    }
 
-    protected:
-
-        // disallow copying
-        EasyCurl(const EasyCurl& rhs):_curl(rhs._curl) {}
-        EasyCurl& operator = (const EasyCurl&) { return *this; }
-
+#if 0
+    if (!cacheFilePath.empty() && osgDB::fileExists(cacheFileName))
+    {
+        osg::notify(osg::NOTICE) << "Reading cache file " << cacheFileName <<", previous path "<<osgDB::getFilePath(fileName)<<std::endl;
+        ReadResult result = osgDB::Registry::instance()->readObject(cacheFileName,options);
         
-        CURL* _curl;
-};
+        return result;                
+    }
+#endif
 
+    osgDB::ReaderWriter *reader = 
+        osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
 
-class ReaderWriterCURL : public osgDB::ReaderWriter
-{
-    public:
+    if (!reader)
+    {
+        osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
+        return ReadResult::FILE_NOT_HANDLED;
+    }
+
+    const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
+    if (proxyEnvAddress) //Env Proxy Settings
+    {
+        const char* proxyEnvPort = getenv("OSG_CURL_PROXYPORT"); //Searching Proxy Port on Env
+
+        if(proxyEnvPort)
+            proxyAddress = std::string(proxyEnvAddress) + ":" + std::string(proxyEnvPort);
+        else
+            proxyAddress = std::string(proxyEnvAddress) + ":8080"; //Default
+    }
     
-        ReaderWriterCURL()
-        {
-        }
-      
-        ~ReaderWriterCURL()
-        {
-        }
+    std::stringstream buffer;
 
-        virtual const char* className() const { return "HTTP Protocol Model Reader"; }
-                                                                                            
-        virtual bool acceptsExtension(const std::string& extension) const
-        {
-            return osgDB::equalCaseInsensitive(extension,"curl");
-        }
+#if 0
+    EasyCurl::StreamObject sp(&buffer, cacheFileName);
+#else
+    EasyCurl::StreamObject sp(&buffer, std::string());
+#endif
 
-        enum ObjectType
-        {
-            OBJECT,
-            ARCHIVE,
-            IMAGE,
-            HEIGHTFIELD,
-            NODE
-        };
-                                                                                            
-        virtual ReadResult openArchive(const std::string& fileName,ArchiveStatus status, unsigned int , const Options* options) const
-        {
-            if (status!=READ) return ReadResult(ReadResult::FILE_NOT_HANDLED);
-            else return readFile(ARCHIVE,fileName,options);
-        }
+    ReadResult curlResult = getEasyCurl().read(proxyAddress, fileName, sp);
 
-        virtual ReadResult readObject(const std::string& fileName, const Options* options) const
-        {
-            return readFile(OBJECT,fileName,options);
-        }
-                                                                                            
-        virtual ReadResult readImage(const std::string& fileName, const Options *options) const
-        {
-            return readFile(IMAGE,fileName,options);
-        }
+    if (curlResult.status()==ReadResult::FILE_LOADED)
+    {
+        osg::ref_ptr<Options> local_opt = const_cast<Options*>(options);
+        if (!local_opt) local_opt = new Options;
 
-        virtual ReadResult readHeightField(const std::string& fileName, const Options *options) const
-        {
-            return readFile(HEIGHTFIELD,fileName,options);
-        }
+        local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
-        virtual ReadResult readNode(const std::string& fileName, const Options *options) const
-        {
-            return readFile(NODE,fileName,options);
-        }
+        ReadResult readResult = readFile(objectType, reader, buffer, local_opt.get() );
 
-        ReadResult readFile(ObjectType objectType, osgDB::ReaderWriter* rw, std::istream& fin, const Options *options) const
+#if 0
+        if (!cacheFileName.empty() && readResult.success())
         {
             switch(objectType)
             {
-            case(OBJECT): return rw->readObject(fin,options);
-            case(ARCHIVE): return rw->openArchive(fin,options);
-            case(IMAGE): return rw->readImage(fin,options);
-            case(HEIGHTFIELD): return rw->readHeightField(fin,options);
-            case(NODE): return rw->readNode(fin,options);
-            default: break;
-            }
-            return ReadResult::FILE_NOT_HANDLED;
-        }
-
-        virtual ReadResult readFile(ObjectType objectType, const std::string& fullFileName, const Options *options) const
-        {
-            std::string cacheFilePath, cacheFileName;
-            std::string proxyAddress, optProxy, optProxyPort;
-
-            if (options)
-            {
-                std::istringstream iss(options->getOptionString());
-                std::string opt;
-                while (iss >> opt) 
-                {
-                    int index = opt.find( "=" );
-                    if( opt.substr( 0, index ) == "OSG_FILE_CACHE" )
-                        cacheFilePath = opt.substr( index+1 ); //Setting Cache Directory by OSG Options
-                    else if( opt.substr( 0, index ) == "OSG_CURL_PROXY" )
-                        optProxy = opt.substr( index+1 );
-                    else if( opt.substr( 0, index ) == "OSG_CURL_PROXYPORT" )
-                        optProxyPort = opt.substr( index+1 );
-                }
-
-                //Setting Proxy by OSG Options
-                if(!optProxy.empty())
-                    if(!optProxyPort.empty())
-                        proxyAddress = optProxy + ":" + optProxyPort;
-                    else
-                        proxyAddress = optProxy + ":8080"; //Port not found, using default
-            }
-
-            if (!osgDB::containsServerAddress(fullFileName)) 
-            {
-                if (options && !(options->getDatabasePathList().empty()))
-                {
-                    if (osgDB::containsServerAddress(options->getDatabasePathList().front()))
-                    {
-                        std::string newFileName = options->getDatabasePathList().front() + "/" + fullFileName;
-                        
-                        return readFile(objectType, newFileName,options);
-                    }
-                }
-
-                return ReadResult::FILE_NOT_HANDLED;
-            }
-
-            std::string fileName;
-            std::string ext = osgDB::getFileExtension(fullFileName);
-            if (ext=="curl")
-            {
-                fileName = osgDB::getNameLessExtension(fullFileName);
-            }
-            else
-            {
-                fileName = fullFileName;
-            }
-
-            //Getting CURL Environment Variables (If found rewrite OSG Options)
-            const char* fileCachePath = getenv("OSG_FILE_CACHE");
-            if (fileCachePath) //Env Cache Directory
-                cacheFilePath = std::string(fileCachePath);
-
-            if (!cacheFilePath.empty())
-            {
-                cacheFileName = cacheFilePath + "/" + 
-                                osgDB::getServerAddress(fileName) + "/" + 
-                                osgDB::getServerFileName(fileName);
-
-                std::string path = osgDB::getFilePath(cacheFileName);
-                
-                if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
-                {
-                    cacheFileName.clear();
-                }
-            }
-
-            if (!cacheFilePath.empty() && osgDB::fileExists(cacheFileName))
-            {
-                osg::notify(osg::INFO) << "Reading cache file " << cacheFileName << std::endl;
-                ReadResult result = osgDB::Registry::instance()->readObject(cacheFileName,options);
-                return result;                
-            }
-
-            osgDB::ReaderWriter *reader = 
-                osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
-                
-            if (!reader)
-            {
-                osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
-                return ReadResult::FILE_NOT_HANDLED;
-            }
-
-            const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
-            if (proxyEnvAddress) //Env Proxy Settings
-            {
-                const char* proxyEnvPort = getenv("OSG_CURL_PROXYPORT"); //Searching Proxy Port on Env
-
-                if(proxyEnvPort)
-                    proxyAddress = std::string(proxyEnvAddress) + ":" + std::string(proxyEnvPort);
-                else
-                    proxyAddress = std::string(proxyEnvAddress) + ":8080"; //Default
-            }
-
-            bool asyncFileRead = options ? options->getAsynchronousFileReadHint() : false;
-            
-            osg::notify(osg::INFO)<<"AsynchronousFileReadHint= "<<asyncFileRead<<std::endl;
-            
-            // if (asyncFileRead) return ReadResult::FILE_REQUESTED;
-        
-            std::stringstream buffer;
-            ReadResult curlResult;
-            
-            EasyCurl::StreamObject sp(&buffer, cacheFileName);
-
-            //ReadResult result = _easyCurl.read(proxyAddress, fileName, sp);
-            curlResult = getEasyCurl().read(proxyAddress, fileName, sp);
-
-            if (curlResult.status()==ReadResult::FILE_LOADED)
-            {
-
-                osg::ref_ptr<Options> local_opt = const_cast<Options*>(options);
-                if (!local_opt) local_opt = new Options;
-
-                local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
-
-                ReadResult readResult = readFile(objectType, reader, buffer, local_opt.get() );
-
-                local_opt->getDatabasePathList().pop_front();
-
-                return readResult;
-            }
-            else
-            {
-                return curlResult;
+                case(NODE): 
+                    osg::notify(osg::NOTICE)<<"Write to cache "<<cacheFileName<<std::endl;
+                    reader->writeNode(*readResult.getNode(), cacheFileName, local_opt.get());
+                    break;
+                default:
+                    osg::notify(osg::NOTICE)<<"Curl plugin write to cache not implemented yet"<<std::endl;
             }
         }
-        
-    protected:
-    
-        typedef std::map<OpenThreads::Thread*, osg::ref_ptr<EasyCurl> > ThreadCurlMap;
-        
-        EasyCurl& getEasyCurl() const
-        {
-            OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_threadCurlMapMutex);
+#endif
 
-            osg::ref_ptr<EasyCurl>& ec = _threadCurlMap[OpenThreads::Thread::CurrentThread()];
-            if (!ec) ec = new EasyCurl;
-            
-            return *ec;
-        }
-        
-        mutable OpenThreads::Mutex  _threadCurlMapMutex;
-        mutable ThreadCurlMap       _threadCurlMap;
-};
+        local_opt->getDatabasePathList().pop_front();
 
-
+        return readResult;
+    }
+    else
+    {
+        return curlResult;
+    }
+}
 
 // now register with Registry to instantiate the above
 // reader/writer.
-REGISTER_OSGPLUGIN(rgb, ReaderWriterCURL)
+REGISTER_OSGPLUGIN(curl, ReaderWriterCURL)

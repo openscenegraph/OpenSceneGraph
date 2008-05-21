@@ -28,7 +28,8 @@ PagedLOD::PerRangeData::PerRangeData(const PerRangeData& prd):
     _filename(prd._filename),
     _priorityOffset(prd._priorityOffset),
     _priorityScale(prd._priorityScale),
-    _timeStamp(prd._timeStamp) {}
+    _timeStamp(prd._timeStamp),
+    _databaseRequest(prd._databaseRequest) {}
 
 PagedLOD::PerRangeData& PagedLOD::PerRangeData::operator = (const PerRangeData& prd)
 {
@@ -37,6 +38,7 @@ PagedLOD::PerRangeData& PagedLOD::PerRangeData::operator = (const PerRangeData& 
     _priorityOffset = prd._priorityOffset;
     _priorityScale = prd._priorityScale;
     _timeStamp = prd._timeStamp;
+    _databaseRequest = prd._databaseRequest;
     return *this;
 }
 
@@ -188,12 +190,12 @@ void PagedLOD::traverse(NodeVisitor& nv)
 
                     if (_databasePath.empty())
                     {
-                        nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
+                        nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp(), _perRangeDataList[numChildren]._databaseRequest);
                     }
                     else
                     {
                         // prepend the databasePath to the child's filename.
-                        nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp());
+                        nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp(), _perRangeDataList[numChildren]._databaseRequest);
                     }
                 }
 

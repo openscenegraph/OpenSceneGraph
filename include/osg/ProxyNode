@@ -46,11 +46,19 @@ class OSG_EXPORT ProxyNode : public Group
         /** Get the database path used to prepend to children's filenames.*/
         inline const std::string& getDatabasePath() const { return _databasePath; }
 
-        typedef std::vector<std::string> FileNameList;
-        
-        void setFileName(unsigned int childNo, const std::string& filename) { expandFileNameListTo(childNo); _filenameList[childNo]=filename; }
-        const std::string& getFileName(unsigned int childNo) const { return _filenameList[childNo]; }
+        void setFileName(unsigned int childNo, const std::string& filename) { expandFileNameListTo(childNo); _filenameList[childNo].first=filename; }
+        const std::string& getFileName(unsigned int childNo) const { return _filenameList[childNo].first; }
         unsigned int getNumFileNames() const { return _filenameList.size(); }
+
+        /** Return the DatabaseRequest object used by the DatabasePager to keep track of file load requests 
+          * being carried on behalf of the DatabasePager.
+          * Note, in normal OSG usage you should not set this value yourself, as this will be managed by 
+          * the osgDB::DatabasePager.*/
+        osg::ref_ptr<osg::Referenced>& getDatabaseRequest(unsigned int childNo) { return _filenameList[childNo].second; }
+        
+        /** Return the const DatabaseRequest object.*/ 
+        const osg::ref_ptr<osg::Referenced>& getDatabaseRequest(unsigned int childNo) const { return _filenameList[childNo].second; }
+
 
         /** Modes which control how the center of object should be determined when computed which child is active.*/
         enum CenterMode
@@ -102,14 +110,17 @@ class OSG_EXPORT ProxyNode : public Group
 
         void expandFileNameListTo(unsigned int pos);
 
-        FileNameList        _filenameList;
-        std::string         _databasePath;
+        typedef std::pair< std::string, osg::ref_ptr<osg::Referenced> >  FileNameDatabaseRequestPair;
+        typedef std::vector<FileNameDatabaseRequestPair>                 FileNameDatabaseRequestList;
+
+        FileNameDatabaseRequestList     _filenameList;
+        std::string                     _databasePath;
         
-        LoadingExternalReferenceMode _loadingExtReference;
+        LoadingExternalReferenceMode    _loadingExtReference;
         
-        CenterMode          _centerMode;
-        vec_type            _userDefinedCenter;
-        value_type          _radius;
+        CenterMode                      _centerMode;
+        vec_type                        _userDefinedCenter;
+        value_type                      _radius;
         
 };
 

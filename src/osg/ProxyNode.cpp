@@ -62,7 +62,7 @@ void ProxyNode::traverse(NodeVisitor& nv)
     {
         for(unsigned int i=_children.size(); i<_filenameList.size(); ++i)
         {
-            nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_filenameList[i], this, 1.0f, nv.getFrameStamp());
+            nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_filenameList[i].first, this, 1.0f, nv.getFrameStamp(), _filenameList[i].second);
         }
     }
     else

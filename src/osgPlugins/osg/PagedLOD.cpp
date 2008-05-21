@@ -28,15 +28,23 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
 
     PagedLOD& lod = static_cast<PagedLOD&>(obj);
     
-    if (lod.getDatabasePath().empty() && fr.getOptions() && !fr.getOptions()->getDatabasePathList().empty())
+    std::string path;
+    if (!fr.read("DatabasePath",path))
     {
-        const std::string& path = fr.getOptions()->getDatabasePathList().front();
-        if (!path.empty()) 
+        lod.setDatabasePath(path);
+    }
+    else
+    {
+        if (lod.getDatabasePath().empty() && fr.getOptions() && !fr.getOptions()->getDatabasePathList().empty())
         {
-            lod.setDatabasePath(path);
-        }
-    } 
-
+            const std::string& path = fr.getOptions()->getDatabasePathList().front();
+            if (!path.empty()) 
+            {
+                lod.setDatabasePath(path);
+            }
+        } 
+    }
+    
     unsigned int num;
     if (fr[0].matchWord("NumChildrenThatCannotBeExpired") && fr[1].getUInt(num))
     {
@@ -105,6 +113,12 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
 bool PagedLOD_writeLocalData(const Object& obj, Output& fw)
 {
     const PagedLOD& lod = static_cast<const PagedLOD&>(obj);
+
+
+    if (!lod.getDatabasePath().empty())
+    {
+        fw.indent() << "DatabasePath "<<lod.getDatabasePath()<<std::endl;
+    }
 
     fw.indent() << "NumChildrenThatCannotBeExpired "<<lod.getNumChildrenThatCannotBeExpired()<<std::endl;
 

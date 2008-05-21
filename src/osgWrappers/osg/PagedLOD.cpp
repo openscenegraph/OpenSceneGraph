@@ -16,6 +16,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/PagedLOD>
+#include <osg/Referenced>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -162,6 +163,16 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	          __unsigned_int__getNumTimeStamps,
 	          "",
 	          "");
+	I_Method1(osg::ref_ptr< osg::Referenced > &, getDatabaseRequest, IN, unsigned int, childNo,
+	          Properties::NON_VIRTUAL,
+	          __osg_ref_ptrT1_osg_Referenced__R1__getDatabaseRequest__unsigned_int,
+	          "Return the DatabaseRequest object used by the DatabasePager to keep track of file load requests being carried on behalf of the DatabasePager. ",
+	          "Note, in normal OSG usage you should not set this value yourself, as this will be managed by the osgDB::DatabasePager. ");
+	I_Method1(const osg::ref_ptr< osg::Referenced > &, getDatabaseRequest, IN, unsigned int, childNo,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_ref_ptrT1_osg_Referenced__R1__getDatabaseRequest__unsigned_int,
+	          "Return the const DatabaseRequest object. ",
+	          "");
 	I_Method1(void, setFrameNumberOfLastTraversal, IN, int, frameNumber,
 	          Properties::NON_VIRTUAL,
 	          __void__setFrameNumberOfLastTraversal__int,
@@ -246,6 +257,7 @@ BEGIN_VALUE_REFLECTOR(osg::PagedLOD::PerRangeData)
 	I_PublicMemberProperty(float, _priorityOffset);
 	I_PublicMemberProperty(float, _priorityScale);
 	I_PublicMemberProperty(double, _timeStamp);
+	I_PublicMemberProperty(osg::ref_ptr< osg::Referenced >, _databaseRequest);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< osg::PagedLOD::PerRangeData >)

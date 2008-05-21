@@ -277,6 +277,8 @@ Registry::~Registry()
 
 void Registry::destruct()
 {
+    // osg::notify(osg::NOTICE)<<"Registry::destruct()"<<std::endl;
+
     // switch off the pager and its associated thread before we clean up 
     // rest of the Registry.
     _databasePager = 0;
@@ -670,6 +672,8 @@ bool Registry::closeLibrary(const std::string& fileName)
 
 void Registry::closeAllLibraries()
 {
+    // osg::notify(osg::NOTICE)<<"Registry::closeAllLibraries()"<<std::endl;
+
     _dlList.clear();
 }
 

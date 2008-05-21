@@ -971,11 +971,21 @@ void Viewer::getAllThreads(Threads& threads, bool onlyActive)
         threads.push_back(*itr);
     }
     
-    if (_scene.valid() && 
-        _scene->getDatabasePager() &&
-       (!onlyActive || _scene->getDatabasePager()->isRunning())) 
+
+    if (_scene.valid())
     {
-        threads.push_back(_scene->getDatabasePager());
+        osgDB::DatabasePager* dp = _scene->getDatabasePager();
+        if (dp)
+        {
+            for(unsigned int i=0; i<dp->getNumDatabaseThreads(); ++i)
+            {
+                osgDB::DatabasePager::DatabaseThread* dt = dp->getDatabaseThread(i);
+                if (!onlyActive || dt->isRunning())
+                {
+                    threads.push_back(dt);
+                }
+            }
+        }
     }
 }
 

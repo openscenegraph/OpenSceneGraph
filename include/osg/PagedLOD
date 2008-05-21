@@ -58,10 +58,11 @@ class OSG_EXPORT PagedLOD : public LOD
             PerRangeData(const PerRangeData& prd);
             PerRangeData& operator = (const PerRangeData& prd);
 
-            std::string _filename;
-            float       _priorityOffset;
-            float       _priorityScale;
-            double      _timeStamp;
+            std::string                     _filename;
+            float                           _priorityOffset;
+            float                           _priorityScale;
+            double                          _timeStamp;
+            osg::ref_ptr<osg::Referenced>   _databaseRequest;
         };
 
         typedef std::vector<PerRangeData> PerRangeDataList;
@@ -83,6 +84,16 @@ class OSG_EXPORT PagedLOD : public LOD
         void setTimeStamp(unsigned int childNo, double timeStamp) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._timeStamp=timeStamp; }
         double getTimeStamp(unsigned int childNo) const { return _perRangeDataList[childNo]._timeStamp; }
         unsigned int getNumTimeStamps() const { return _perRangeDataList.size(); }
+
+
+        /** Return the DatabaseRequest object used by the DatabasePager to keep track of file load requests 
+          * being carried on behalf of the DatabasePager.
+          * Note, in normal OSG usage you should not set this value yourself, as this will be managed by 
+          * the osgDB::DatabasePager.*/
+        osg::ref_ptr<osg::Referenced>& getDatabaseRequest(unsigned int childNo) { return _perRangeDataList[childNo]._databaseRequest; }
+        
+        /** Return the const DatabaseRequest object.*/ 
+        const osg::ref_ptr<osg::Referenced>& getDatabaseRequest(unsigned int childNo) const { return _perRangeDataList[childNo]._databaseRequest; }
 
 
         /** Set the frame number of the last time that this PageLOD node was traversed.

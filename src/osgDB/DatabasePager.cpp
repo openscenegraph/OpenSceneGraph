@@ -901,12 +901,14 @@ DatabasePager* DatabasePager::create()
 
 int DatabasePager::setSchedulePriority(OpenThreads::Thread::ThreadPriority priority)
 {
+    int result = 0;
     for(DatabaseThreadList::iterator dt_itr = _databaseThreads.begin();
         dt_itr != _databaseThreads.end();
         ++dt_itr)
     {
-        (*dt_itr)->setSchedulePriority(priority);
+        result = (*dt_itr)->setSchedulePriority(priority);
     }
+    return result;
 }
 
 bool DatabasePager::isRunning() const

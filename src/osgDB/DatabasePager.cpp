@@ -309,6 +309,19 @@ int DatabasePager::DatabaseThread::cancel()
     {
     
         _done = true;
+        
+        switch(_mode)
+        {
+            case(HANDLE_ALL_REQUESTS):
+                _pager->_fileRequestQueue->release();
+                break;
+            case(HANDLE_NON_HTTP):
+                _pager->_fileRequestQueue->release();
+                break;
+            case(HANDLE_ONLY_HTTP):
+                _pager->_httpRequestQueue->release();
+                break;
+        }
 
         // release the frameBlock and _databasePagerThreadBlock in case its holding up thread cancellation.
         // _databasePagerThreadBlock->release();
@@ -349,20 +362,20 @@ void DatabasePager::DatabaseThread::run()
 
     bool firstTime = true;
     
-    DatabasePager::RequestQueue* read_queue;
-    DatabasePager::RequestQueue* out_queue;
+    osg::ref_ptr<DatabasePager::RequestQueue> read_queue;
+    osg::ref_ptr<DatabasePager::RequestQueue> out_queue;
     
     switch(_mode)
     {
         case(HANDLE_ALL_REQUESTS):
-            read_queue = &(_pager->_fileRequestQueue);
+            read_queue = _pager->_fileRequestQueue;
             break;
         case(HANDLE_NON_HTTP):
-            read_queue = &(_pager->_fileRequestQueue);
-            out_queue = &(_pager->_httpRequestQueue);
+            read_queue = _pager->_fileRequestQueue;
+            out_queue = _pager->_httpRequestQueue;
             break;
         case(HANDLE_ONLY_HTTP):
-            read_queue = &(_pager->_httpRequestQueue);
+            read_queue = _pager->_httpRequestQueue;
             break;
     }
     
@@ -695,9 +708,7 @@ void DatabasePager::DatabaseThread::run()
 //
 //  DatabasePager
 //
-DatabasePager::DatabasePager():
-    _fileRequestQueue(this,"fileRequestQueue"),
-    _httpRequestQueue(this,"httpRequestQueue")
+DatabasePager::DatabasePager()
 {
     //osg::notify(osg::INFO)<<"Constructing DatabasePager()"<<std::endl;
     
@@ -822,6 +833,9 @@ DatabasePager::DatabasePager():
     //if (osgDB::Registry::instance()->getSharedStateManager())
         //osgDB::Registry::instance()->setUseObjectCacheHint(true);
         
+    _fileRequestQueue = new RequestQueue(this,"fileRequestQueue");
+    _httpRequestQueue = new RequestQueue(this,"httpRequestQueue");
+
 #if 0
     _databaseThreads.push_back(new DatabaseThread(this, DatabaseThread::HANDLE_ALL_REQUESTS,"HANDLE_ALL_REQUESTS"));
 #else
@@ -838,9 +852,7 @@ DatabasePager::DatabasePager():
 #endif
 }
 
-DatabasePager::DatabasePager(const DatabasePager& rhs):
-    _fileRequestQueue(this,"fileRequestQueue"),
-    _httpRequestQueue(this,"httpRequestQueue")
+DatabasePager::DatabasePager(const DatabasePager& rhs)
 {
     //osg::notify(osg::INFO)<<"Constructing DatabasePager(const DatabasePager& )"<<std::endl;
     
@@ -868,6 +880,9 @@ DatabasePager::DatabasePager(const DatabasePager& rhs):
     _targetFrameRate = rhs._targetFrameRate;
     _minimumTimeAvailableForGLCompileAndDeletePerFrame = rhs._minimumTimeAvailableForGLCompileAndDeletePerFrame;
     _maximumNumOfObjectsToCompilePerFrame = rhs._maximumNumOfObjectsToCompilePerFrame;
+
+    _fileRequestQueue = new RequestQueue(this,"fileRequestQueue");
+    _httpRequestQueue = new RequestQueue(this,"httpRequestQueue");
 
     for(DatabaseThreadList::const_iterator dt_itr = rhs._databaseThreads.begin();
         dt_itr != rhs._databaseThreads.end();
@@ -935,8 +950,8 @@ int DatabasePager::cancel()
     }
 
     // release the frameBlock and _databasePagerThreadBlock in case its holding up thread cancellation.
-    _fileRequestQueue.release();
-    _httpRequestQueue.release();
+    _fileRequestQueue->release();
+    _httpRequestQueue->release();
 
     for(DatabaseThreadList::iterator dt_itr = _databaseThreads.begin();
         dt_itr != _databaseThreads.end();
@@ -954,8 +969,8 @@ int DatabasePager::cancel()
 
 void DatabasePager::clear()
 {
-    _fileRequestQueue.clear();
-    _httpRequestQueue.clear();
+    _fileRequestQueue->clear();
+    _httpRequestQueue->clear();
         
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileListMutex);
@@ -1045,7 +1060,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
                 databaseRequest->_groupForAddingLoadedSubgraph = group;
                 databaseRequest->_loadOptions = loadOptions;
 
-                _fileRequestQueue.add(databaseRequest);
+                _fileRequestQueue->add(databaseRequest);
             }
             
         }
@@ -1055,7 +1070,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     {
         osg::notify(osg::INFO)<<"In DatabasePager::fileRquest("<<fileName<<")"<<std::endl;
         
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestQueue._requestMutex);
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestQueue->_requestMutex);
         
         if (!databaseRequestRef.valid() || databaseRequestRef->referenceCount()==1)
         {
@@ -1073,9 +1088,9 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             databaseRequest->_groupForAddingLoadedSubgraph = group;
             databaseRequest->_loadOptions = loadOptions;
 
-            _fileRequestQueue._requestList.push_back(databaseRequest.get());
+            _fileRequestQueue->_requestList.push_back(databaseRequest.get());
 
-            _fileRequestQueue.updateBlock();
+            _fileRequestQueue->updateBlock();
         }
         
     }
@@ -1122,8 +1137,8 @@ void DatabasePager::setDatabasePagerThreadPause(bool pause)
     if (_databasePagerThreadPaused == pause) return;
     
     _databasePagerThreadPaused = pause;
-    _fileRequestQueue.updateBlock();
-    _httpRequestQueue.updateBlock();
+    _fileRequestQueue->updateBlock();
+    _httpRequestQueue->updateBlock();
 }
 
 
@@ -1256,15 +1271,15 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
         // pass the objects across to the database pager delete list
         if (_deleteRemovedSubgraphsInDatabaseThread)
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestQueue._childrenToDeleteListMutex);
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestQueue->_childrenToDeleteListMutex);
             for (osg::NodeList::iterator critr = childrenRemoved.begin();
                  critr!=childrenRemoved.end();
                  ++critr)
             {
-                _fileRequestQueue._childrenToDeleteList.push_back(critr->get());
+                _fileRequestQueue->_childrenToDeleteList.push_back(critr->get());
             }
 
-            _fileRequestQueue.updateBlock();
+            _fileRequestQueue->updateBlock();
         }
 
         // osg::notify(osg::NOTICE)<<"   time 2 "<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms "<<std::endl;

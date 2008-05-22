@@ -275,7 +275,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         virtual void compileAllGLObjects(osg::State& state);
 
         /** Report how many items are in the _fileRequestList queue */
-        unsigned int getFileRequestListSize() const { return _fileRequestQueue._requestList.size() + _httpRequestQueue._requestList.size(); }
+        unsigned int getFileRequestListSize() const { return _fileRequestQueue->_requestList.size() + _httpRequestQueue->_requestList.size(); }
 
         /** Report how many items are in the _dataToCompileList queue */
         unsigned int getDataToCompileListSize() const { return _dataToCompileList.size(); }
@@ -492,8 +492,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         mutable OpenThreads::Mutex      _numFramesActiveMutex;
         int                             _frameNumber;
 
-        RequestQueue                    _fileRequestQueue;
-        RequestQueue                    _httpRequestQueue;
+        osg::ref_ptr<RequestQueue>      _fileRequestQueue;
+        osg::ref_ptr<RequestQueue>      _httpRequestQueue;
 
         //DatabaseRequestList             _fileRequestList;
         //mutable OpenThreads::Mutex      _fileRequestListMutex;

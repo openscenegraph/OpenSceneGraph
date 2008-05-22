@@ -10,6 +10,8 @@
 */
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
+
 #include <osgUtil/Optimizer>
 #include <osg/CoordinateSystemNode>
 
@@ -28,13 +30,113 @@
 #include <osgGA/TerrainManipulator>
 
 #include <iostream>
+#include <sstream>
 
 class WindowCaptureCallback : public osg::Camera::DrawCallback
 {
     public:
     
+        struct ContextData : public osg::Referenced
+        {
+        
+            ContextData(osg::GraphicsContext* gc, const std::string& name):
+                _gc(gc),
+                _fileName(name),
+                _pixelFormat(GL_RGB),
+                _type(GL_UNSIGNED_BYTE),
+                _width(0),
+                _height(0),
+                _currentImageIndex(0),
+                _currentPboIndex(0)
+            {
+                getSize(gc, _width, _height);
+                
+                std::cout<<"Window size "<<_width<<", "<<_height<<std::endl;
+            
+                // single buffered image
+                _imageBuffer.push_back(new osg::Image);
+                
+                // double buffer PBO.
+                _pboBuffer.push_back(new osg::PixelBufferObject);
+                _pboBuffer.push_back(new osg::PixelBufferObject);
+            }
+            
+            void getSize(osg::GraphicsContext* gc, int& width, int& height)
+            {
+                if (gc->getTraits())
+                {
+                    width = gc->getTraits()->width;
+                    height = gc->getTraits()->height;
+                }
+            }
+            
+            void read()
+            {
+                std::cout<<"Read to "<<_fileName<<" image "<<_currentImageIndex<<" "<<_currentPboIndex<<std::endl;
+                
+                unsigned int nextImageIndex = (_currentImageIndex+1)%_imageBuffer.size();
+                unsigned int nextPboIndex = (_currentPboIndex+1)%_pboBuffer.size();
+
+                int width=0, height=0;
+                getSize(_gc, width, height);
+                if (width!=_width || _height!=height)
+                {
+                    std::cout<<"   Window resized "<<width<<", "<<height<<std::endl;
+                    _width = width;
+                    _height = height;
+                }
+                
+                osg::Image* image = _imageBuffer[_currentImageIndex].get();
+                
+                image->readPixels(0,0,_width,_height,
+                                  _pixelFormat,_type);
+                                   
+                if (!_fileName.empty())
+                {
+                    osgDB::writeImageFile(*image, _fileName);
+                }
+                
+                _currentImageIndex = nextImageIndex;
+                _currentPboIndex = nextPboIndex;
+
+            }
+        
+            typedef std::vector< osg::ref_ptr<osg::Image> >             ImageBuffer;
+            typedef std::vector< osg::ref_ptr<osg::PixelBufferObject> > PBOBuffer;
+        
+            osg::GraphicsContext*   _gc;
+            std::string             _fileName;
+            
+            GLenum                  _pixelFormat;
+            GLenum                  _type;
+            int                     _width;
+            int                     _height;
+            
+            unsigned int            _currentImageIndex;
+            ImageBuffer             _imageBuffer;
+            
+            unsigned int            _currentPboIndex;
+            PBOBuffer               _pboBuffer;
+        };
+    
         WindowCaptureCallback()
         {
+        }
+
+        ContextData* createContextData(osg::GraphicsContext* gc) const
+        {
+            std::stringstream filename;
+            filename << "test_"<<_contextDataMap.size()<<".jpg";
+            return new ContextData(gc,filename.str());
+        }
+        
+        ContextData* getContextData(osg::GraphicsContext* gc) const
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            osg::ref_ptr<ContextData>& data = _contextDataMap[gc];
+            if (!data) data = createContextData(gc);
+            
+            return data.get();
         }
 
         virtual void operator () (osg::RenderInfo& renderInfo) const
@@ -42,7 +144,15 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             osg::GraphicsContext* gc = renderInfo.getState()->getGraphicsContext();
             osg::notify(osg::NOTICE)<<"Capture screen image "<<gc<<std::endl;
             
+            osg::ref_ptr<ContextData> cd = getContextData(gc);
+            cd->read();
         }
+        
+        typedef std::map<osg::GraphicsContext*, osg::ref_ptr<ContextData> > ContextDataMap;
+        
+        mutable OpenThreads::Mutex  _mutex;
+        mutable ContextDataMap      _contextDataMap;
+        
 };
 
 void addCallbackToViewer(osgViewer::ViewerBase& viewer, WindowCaptureCallback* callback)

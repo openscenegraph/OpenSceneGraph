@@ -29,6 +29,68 @@
 
 #include <iostream>
 
+class WindowCaptureCallback : public osg::Camera::DrawCallback
+{
+    public:
+    
+        WindowCaptureCallback()
+        {
+        }
+
+        virtual void operator () (osg::RenderInfo& renderInfo) const
+        {
+            osg::GraphicsContext* gc = renderInfo.getState()->getGraphicsContext();
+            osg::notify(osg::NOTICE)<<"Capture screen image "<<gc<<std::endl;
+            
+        }
+};
+
+void addCallbackToViewer(osgViewer::ViewerBase& viewer, WindowCaptureCallback* callback)
+{
+    osgViewer::ViewerBase::Windows windows;
+    viewer.getWindows(windows);
+    for(osgViewer::ViewerBase::Windows::iterator itr = windows.begin();
+        itr != windows.end();
+        ++itr)
+    {
+        osgViewer::GraphicsWindow* window = *itr;
+        osg::GraphicsContext::Cameras& cameras = window->getCameras();
+        osg::Camera* lastCamera = 0;
+        for(osg::GraphicsContext::Cameras::iterator cam_itr = cameras.begin();
+            cam_itr != cameras.end();
+            ++cam_itr)
+        {
+            if (lastCamera)
+            {
+                if ((*cam_itr)->getRenderOrder() > (*cam_itr)->getRenderOrder())
+                {
+                    lastCamera = (*cam_itr);
+                }
+                if ((*cam_itr)->getRenderOrder() == lastCamera->getRenderOrder() &&
+                    (*cam_itr)->getRenderOrderNum() >= lastCamera->getRenderOrderNum())
+                {
+                    lastCamera = (*cam_itr);
+                }
+            }
+            else
+            {
+                lastCamera = *cam_itr;
+            }
+        }
+        
+        if (lastCamera)
+        {
+            osg::notify(osg::NOTICE)<<"Last camera "<<lastCamera<<std::endl;
+            
+            lastCamera->setFinalDrawCallback(callback);
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"No camera found"<<std::endl;
+        }
+    }
+}
+
 int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -135,6 +197,8 @@ int main(int argc, char** argv)
     viewer.setSceneData( loadedModel.get() );
 
     viewer.realize();
+    
+    addCallbackToViewer(viewer, new WindowCaptureCallback);
 
     return viewer.run();
 

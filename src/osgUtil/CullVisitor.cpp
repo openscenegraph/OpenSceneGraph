@@ -1294,19 +1294,23 @@ void CullVisitor::apply(osg::Camera& camera)
             // reusing render to texture stage, so need to reset it to empty it from previous frames contents.
             rtts->reset();
         }
-        
+
+        // set up clera masks/values        
+        rtts->setClearDepth(camera.getClearDepth());
+        rtts->setClearAccum(camera.getClearAccum());
+        rtts->setClearStencil(camera.getClearStencil());
+        rtts->setClearMask(camera.getClearMask());
 
 
         // set up the background color and clear mask.
         if (camera.getInheritanceMask() & CLEAR_COLOR)
         {
-            rtts->setClearColor(camera.getClearColor());
+            rtts->setClearColor(previous_stage->getClearColor());
         }
         else
         {
-            rtts->setClearColor(previous_stage->getClearColor());
+            rtts->setClearColor(camera.getClearColor());
         }
-        rtts->setClearMask(camera.getClearMask());
         
         // set the color mask.
         osg::ColorMask* colorMask = camera.getColorMask()!=0 ? camera.getColorMask() : previous_stage->getColorMask();
@@ -1316,6 +1320,7 @@ void CullVisitor::apply(osg::Camera& camera)
         osg::Viewport* viewport = camera.getViewport()!=0 ? camera.getViewport() : previous_stage->getViewport();
         rtts->setViewport( viewport );
         
+
 
         // set up to charge the same PositionalStateContainer is the parent previous stage.
         osg::Matrix inhertiedMVtolocalMV;

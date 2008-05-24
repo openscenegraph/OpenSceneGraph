@@ -50,7 +50,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                 _gc(gc),
                 _mode(mode),
                 _fileName(name),
-                _pixelFormat(GL_RGB),
+                _pixelFormat(GL_BGR),
                 _type(GL_UNSIGNED_BYTE),
                 _width(0),
                 _height(0),
@@ -193,8 +193,10 @@ void WindowCaptureCallback::ContextData::readPixels()
 
     osg::Image* image = _imageBuffer[_currentImageIndex].get();
 
+#if 1
     image->readPixels(0,0,_width,_height,
                       _pixelFormat,_type);
+#endif
 
     if (!_fileName.empty())
     {
@@ -251,7 +253,9 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::BufferObject::Extensions
         ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, pbo);
     }
 
+#if 1
     glReadPixels(0, 0, _width, _height, _pixelFormat, _type, 0);
+#endif
 
     GLubyte* src = (GLubyte*)ext->glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB,
                                               GL_READ_ONLY_ARB);
@@ -314,6 +318,16 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
     }
     
     
+    bool doCopy = copy_pbo!=0;
+    if (copy_pbo==0)
+    {
+        ext->glGenBuffers(1, &copy_pbo);
+        ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, copy_pbo);
+        ext->glBufferData(GL_PIXEL_PACK_BUFFER_ARB, image->getTotalSizeInBytes(), 0, GL_STREAM_READ);
+
+        osg::notify(osg::NOTICE)<<"Generating pbo "<<read_pbo<<std::endl;
+    }
+
     if (read_pbo==0)
     {
         ext->glGenBuffers(1, &read_pbo);
@@ -327,10 +341,11 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
         ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, read_pbo);
     }
 
+#if 1
     glReadPixels(0, 0, _width, _height, _pixelFormat, _type, 0);
+#endif
 
-
-    if (copy_pbo!=0)
+    if (doCopy)
     {
 
         ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, copy_pbo);

@@ -68,9 +68,29 @@
 
 #endif
 
+#ifndef GL_VERSION_1_5
+    #define GL_STREAM_DRAW                    0x88E0
+    #define GL_STREAM_READ                    0x88E1
+    #define GL_STREAM_COPY                    0x88E2
+    #define GL_STATIC_DRAW                    0x88E4
+    #define GL_STATIC_READ                    0x88E5
+    #define GL_STATIC_COPY                    0x88E6
+    #define GL_DYNAMIC_DRAW                   0x88E8
+    #define GL_DYNAMIC_READ                   0x88E9
+    #define GL_DYNAMIC_COPY                   0x88EA
+#endif
+
+#ifndef GL_VERSION_2_1
+    #define GL_PIXEL_PACK_BUFFER              0x88EB
+    #define GL_PIXEL_UNPACK_BUFFER            0x88EC
+    #define GL_PIXEL_PACK_BUFFER_BINDING      0x88ED
+    #define GL_PIXEL_UNPACK_BUFFER_BINDING    0x88EF
+#endif
+
+
 #ifndef GL_ARB_pixel_buffer_object
-    #define GL_PIXEL_PACK_BUFFER_ARB          0x88EB
-    #define GL_PIXEL_UNPACK_BUFFER_ARB        0x88EC
+    #define GL_PIXEL_PACK_BUFFER_ARB            0x88EB
+    #define GL_PIXEL_UNPACK_BUFFER_ARB          0x88EC
     #define GL_PIXEL_PACK_BUFFER_BINDING_ARB    0x88ED
     #define GL_PIXEL_UNPACK_BUFFER_BINDING_ARB  0x88EF
 #endif

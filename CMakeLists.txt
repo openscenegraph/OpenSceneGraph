@@ -211,19 +211,6 @@ FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(GDAL)
 FIND_PACKAGE(CURL)
 
-INCLUDE(FindPkgConfig)
-
-PKG_CHECK_MODULES(GTK gtk+-2.0)
-
-IF(WIN32)
-    PKG_CHECK_MODULES(GTKGL gtkglext-win32-1.0)
-ELSE(WIN32)
-    PKG_CHECK_MODULES(GTKGL gtkglext-x11-1.0)
-ENDIF(WIN32)
-
-PKG_CHECK_MODULES(RSVG librsvg-2.0)
-PKG_CHECK_MODULES(CAIRO cairo)
-
 SET(wxWidgets_USE_LIBS base core gl net)
 FIND_PACKAGE(wxWidgets)
 
@@ -246,6 +233,28 @@ ELSE(DESIRED_QT_VERSION)
     ENDIF(NOT QT4_FOUND)
     
 ENDIF(DESIRED_QT_VERSION)
+
+
+#use pkg-config to find various modues
+FIND_PACKAGE(PkgConfig)
+
+IF(PKG_CONFIG_FOUND)
+
+    INCLUDE(FindPkgConfig)
+
+    PKG_CHECK_MODULES(GTK gtk+-2.0)
+
+    IF(WIN32)
+        PKG_CHECK_MODULES(GTKGL gtkglext-win32-1.0)
+    ELSE(WIN32)
+        PKG_CHECK_MODULES(GTKGL gtkglext-x11-1.0)
+    ENDIF(WIN32)
+
+    PKG_CHECK_MODULES(RSVG librsvg-2.0)
+    PKG_CHECK_MODULES(CAIRO cairo)
+
+ENDIF(PKG_CONFIG_FOUND)
+
 
 #
 # Test to determine if we want the "tripledot" form of the GLU tesselator callback.

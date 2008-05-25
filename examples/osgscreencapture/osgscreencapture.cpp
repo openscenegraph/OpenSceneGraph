@@ -43,12 +43,19 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             DOUBLE_PBO
         };
     
+        enum FramePosition
+        {
+            START_FRAME,
+            END_FRAME
+        };
+    
         struct ContextData : public osg::Referenced
         {
         
-            ContextData(osg::GraphicsContext* gc, Mode mode, const std::string& name):
+            ContextData(osg::GraphicsContext* gc, Mode mode, FramePosition position, const std::string& name):
                 _gc(gc),
                 _mode(mode),
+                _position(position),
                 _fileName(name),
                 _pixelFormat(GL_BGR),
                 _type(GL_UNSIGNED_BYTE),
@@ -125,6 +132,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
         
             osg::GraphicsContext*   _gc;
             Mode                    _mode;
+            FramePosition           _position;
             std::string             _fileName;
             
             GLenum                  _pixelFormat;
@@ -139,16 +147,19 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             PBOBuffer               _pboBuffer;
         };
     
-        WindowCaptureCallback(Mode mode):
-            _mode(mode)
+        WindowCaptureCallback(Mode mode, FramePosition position):
+            _mode(mode),
+            _position(position)
         {
         }
+
+        FramePosition getFramePosition() const { return _position; }
 
         ContextData* createContextData(osg::GraphicsContext* gc) const
         {
             std::stringstream filename;
             filename << "test_"<<_contextDataMap.size()<<".jpg";
-            return new ContextData(gc, _mode, filename.str());
+            return new ContextData(gc, _mode, _position, filename.str());
         }
         
         ContextData* getContextData(osg::GraphicsContext* gc) const
@@ -162,6 +173,15 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
 
         virtual void operator () (osg::RenderInfo& renderInfo) const
         {
+            if (_position==START_FRAME)
+            {
+                glReadBuffer(GL_FRONT);
+            }
+            else
+            {
+                glReadBuffer(GL_BACK);
+            }
+
             osg::GraphicsContext* gc = renderInfo.getState()->getGraphicsContext();
             osg::ref_ptr<ContextData> cd = getContextData(gc);
             cd->read();
@@ -170,6 +190,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
         typedef std::map<osg::GraphicsContext*, osg::ref_ptr<ContextData> > ContextDataMap;
 
         Mode                        _mode;        
+        FramePosition               _position;
         mutable OpenThreads::Mutex  _mutex;
         mutable ContextDataMap      _contextDataMap;
         
@@ -374,46 +395,95 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
 
 void addCallbackToViewer(osgViewer::ViewerBase& viewer, WindowCaptureCallback* callback)
 {
-    osgViewer::ViewerBase::Windows windows;
-    viewer.getWindows(windows);
-    for(osgViewer::ViewerBase::Windows::iterator itr = windows.begin();
-        itr != windows.end();
-        ++itr)
+    
+    if (callback->getFramePosition()==WindowCaptureCallback::START_FRAME)
     {
-        osgViewer::GraphicsWindow* window = *itr;
-        osg::GraphicsContext::Cameras& cameras = window->getCameras();
-        osg::Camera* lastCamera = 0;
-        for(osg::GraphicsContext::Cameras::iterator cam_itr = cameras.begin();
-            cam_itr != cameras.end();
-            ++cam_itr)
+        osgViewer::ViewerBase::Windows windows;
+        viewer.getWindows(windows);
+        for(osgViewer::ViewerBase::Windows::iterator itr = windows.begin();
+            itr != windows.end();
+            ++itr)
         {
-            if (lastCamera)
+            osgViewer::GraphicsWindow* window = *itr;
+            osg::GraphicsContext::Cameras& cameras = window->getCameras();
+            osg::Camera* firstCamera = 0;
+            for(osg::GraphicsContext::Cameras::iterator cam_itr = cameras.begin();
+                cam_itr != cameras.end();
+                ++cam_itr)
             {
-                if ((*cam_itr)->getRenderOrder() > (*cam_itr)->getRenderOrder())
+                if (firstCamera)
                 {
-                    lastCamera = (*cam_itr);
+                    if ((*cam_itr)->getRenderOrder() < firstCamera->getRenderOrder())
+                    {
+                        firstCamera = (*cam_itr);
+                    }
+                    if ((*cam_itr)->getRenderOrder() == firstCamera->getRenderOrder() &&
+                        (*cam_itr)->getRenderOrderNum() < firstCamera->getRenderOrderNum())
+                    {
+                        firstCamera = (*cam_itr);
+                    }
                 }
-                if ((*cam_itr)->getRenderOrder() == lastCamera->getRenderOrder() &&
-                    (*cam_itr)->getRenderOrderNum() >= lastCamera->getRenderOrderNum())
+                else
                 {
-                    lastCamera = (*cam_itr);
+                    firstCamera = *cam_itr;
                 }
+            }
+
+            if (firstCamera)
+            {
+                osg::notify(osg::NOTICE)<<"First camera "<<firstCamera<<std::endl;
+
+                firstCamera->setFinalDrawCallback(callback);
             }
             else
             {
-                lastCamera = *cam_itr;
+                osg::notify(osg::NOTICE)<<"No camera found"<<std::endl;
             }
         }
-        
-        if (lastCamera)
+    }
+    else
+    {    
+        osgViewer::ViewerBase::Windows windows;
+        viewer.getWindows(windows);
+        for(osgViewer::ViewerBase::Windows::iterator itr = windows.begin();
+            itr != windows.end();
+            ++itr)
         {
-            osg::notify(osg::NOTICE)<<"Last camera "<<lastCamera<<std::endl;
-            
-            lastCamera->setFinalDrawCallback(callback);
-        }
-        else
-        {
-            osg::notify(osg::NOTICE)<<"No camera found"<<std::endl;
+            osgViewer::GraphicsWindow* window = *itr;
+            osg::GraphicsContext::Cameras& cameras = window->getCameras();
+            osg::Camera* lastCamera = 0;
+            for(osg::GraphicsContext::Cameras::iterator cam_itr = cameras.begin();
+                cam_itr != cameras.end();
+                ++cam_itr)
+            {
+                if (lastCamera)
+                {
+                    if ((*cam_itr)->getRenderOrder() > lastCamera->getRenderOrder())
+                    {
+                        lastCamera = (*cam_itr);
+                    }
+                    if ((*cam_itr)->getRenderOrder() == lastCamera->getRenderOrder() &&
+                        (*cam_itr)->getRenderOrderNum() >= lastCamera->getRenderOrderNum())
+                    {
+                        lastCamera = (*cam_itr);
+                    }
+                }
+                else
+                {
+                    lastCamera = *cam_itr;
+                }
+            }
+
+            if (lastCamera)
+            {
+                osg::notify(osg::NOTICE)<<"Last camera "<<lastCamera<<std::endl;
+
+                lastCamera->setFinalDrawCallback(callback);
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"No camera found"<<std::endl;
+            }
         }
     }
 }
@@ -426,8 +496,6 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-    arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
-    arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
 
     osgViewer::Viewer viewer(arguments);
 
@@ -498,6 +566,10 @@ int main(int argc, char** argv)
     // add the LOD Scale handler
     viewer.addEventHandler(new osgViewer::LODScaleHandler);
 
+    WindowCaptureCallback::FramePosition position = WindowCaptureCallback::END_FRAME;
+    while (arguments.read("--start-frame")) position = WindowCaptureCallback::START_FRAME;
+    while (arguments.read("--end-frame")) position = WindowCaptureCallback::END_FRAME;
+
     WindowCaptureCallback::Mode mode = WindowCaptureCallback::DOUBLE_PBO;
     while (arguments.read("--no-pbo")) mode = WindowCaptureCallback::READ_PIXELS;
     while (arguments.read("--single-pbo")) mode = WindowCaptureCallback::SINGLE_PBO;
@@ -530,7 +602,7 @@ int main(int argc, char** argv)
 
     viewer.realize();
     
-    addCallbackToViewer(viewer, new WindowCaptureCallback(mode));
+    addCallbackToViewer(viewer, new WindowCaptureCallback(mode, position));
 
     return viewer.run();
 

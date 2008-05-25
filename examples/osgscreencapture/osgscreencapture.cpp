@@ -428,7 +428,7 @@ void addCallbackToViewer(osgViewer::ViewerBase& viewer, WindowCaptureCallback* c
             {
                 osg::notify(osg::NOTICE)<<"First camera "<<firstCamera<<std::endl;
 
-                firstCamera->setFinalDrawCallback(callback);
+                firstCamera->setInitialDrawCallback(callback);
             }
             else
             {

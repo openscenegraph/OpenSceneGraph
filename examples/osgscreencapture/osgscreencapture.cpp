@@ -52,10 +52,10 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
         struct ContextData : public osg::Referenced
         {
         
-            ContextData(osg::GraphicsContext* gc, Mode mode, FramePosition position, const std::string& name):
+            ContextData(osg::GraphicsContext* gc, Mode mode, GLenum readBuffer, const std::string& name):
                 _gc(gc),
                 _mode(mode),
-                _position(position),
+                _readBuffer(readBuffer),
                 _fileName(name),
                 _pixelFormat(GL_BGR),
                 _type(GL_UNSIGNED_BYTE),
@@ -74,7 +74,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                 // double buffer PBO.
                 switch(_mode)
                 {
-                    case(READ_PIXELS): 
+                    case(READ_PIXELS):
                         osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with out PixelBufferObject."<<std::endl;
                         break;
                     case(SINGLE_PBO): 
@@ -132,7 +132,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
         
             osg::GraphicsContext*   _gc;
             Mode                    _mode;
-            FramePosition           _position;
+            GLenum                  _readBuffer;
             std::string             _fileName;
             
             GLenum                  _pixelFormat;
@@ -147,9 +147,10 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             PBOBuffer               _pboBuffer;
         };
     
-        WindowCaptureCallback(Mode mode, FramePosition position):
+        WindowCaptureCallback(Mode mode, FramePosition position, GLenum readBuffer):
             _mode(mode),
-            _position(position)
+            _position(position),
+            _readBuffer(readBuffer)
         {
         }
 
@@ -159,7 +160,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
         {
             std::stringstream filename;
             filename << "test_"<<_contextDataMap.size()<<".jpg";
-            return new ContextData(gc, _mode, _position, filename.str());
+            return new ContextData(gc, _mode, _readBuffer, filename.str());
         }
         
         ContextData* getContextData(osg::GraphicsContext* gc) const
@@ -173,14 +174,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
 
         virtual void operator () (osg::RenderInfo& renderInfo) const
         {
-            if (_position==START_FRAME)
-            {
-                glReadBuffer(GL_FRONT);
-            }
-            else
-            {
-                glReadBuffer(GL_BACK);
-            }
+            glReadBuffer(_readBuffer);
 
             osg::GraphicsContext* gc = renderInfo.getState()->getGraphicsContext();
             osg::ref_ptr<ContextData> cd = getContextData(gc);
@@ -191,6 +185,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
 
         Mode                        _mode;        
         FramePosition               _position;
+        GLenum                      _readBuffer;
         mutable OpenThreads::Mutex  _mutex;
         mutable ContextDataMap      _contextDataMap;
         
@@ -566,14 +561,21 @@ int main(int argc, char** argv)
     // add the LOD Scale handler
     viewer.addEventHandler(new osgViewer::LODScaleHandler);
 
+    GLenum readBuffer = GL_BACK;
     WindowCaptureCallback::FramePosition position = WindowCaptureCallback::END_FRAME;
-    while (arguments.read("--start-frame")) position = WindowCaptureCallback::START_FRAME;
+    WindowCaptureCallback::Mode mode = WindowCaptureCallback::DOUBLE_PBO;
+
+    while (arguments.read("--start-frame")) { position = WindowCaptureCallback::START_FRAME; readBuffer = GL_FRONT; }
     while (arguments.read("--end-frame")) position = WindowCaptureCallback::END_FRAME;
 
-    WindowCaptureCallback::Mode mode = WindowCaptureCallback::DOUBLE_PBO;
+    while (arguments.read("--front")) readBuffer = GL_FRONT;
+    while (arguments.read("--back")) readBuffer = GL_BACK;
+
     while (arguments.read("--no-pbo")) mode = WindowCaptureCallback::READ_PIXELS;
     while (arguments.read("--single-pbo")) mode = WindowCaptureCallback::SINGLE_PBO;
     while (arguments.read("--double-pbo")) mode = WindowCaptureCallback::DOUBLE_PBO;
+
+    
         
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
@@ -602,7 +604,7 @@ int main(int argc, char** argv)
 
     viewer.realize();
     
-    addCallbackToViewer(viewer, new WindowCaptureCallback(mode, position));
+    addCallbackToViewer(viewer, new WindowCaptureCallback(mode, position, readBuffer));
 
     return viewer.run();
 

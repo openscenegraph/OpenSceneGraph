@@ -67,8 +67,16 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             {
                 if (gc->getTraits())
                 {
-                    if (gc->getTraits()->alpha) _pixelFormat = GL_BGRA; 
-                    else _pixelFormat = GL_BGR; 
+                    if (gc->getTraits()->alpha)
+                    {
+                        osg::notify(osg::NOTICE)<<"Select GL_BGRA read back format"<<std::endl;
+                        _pixelFormat = GL_BGRA;
+                    }
+                    else 
+                    {
+                        osg::notify(osg::NOTICE)<<"Select GL_BGR read back format"<<std::endl;
+                        _pixelFormat = GL_BGR; 
+                    }
                 }
             
                 getSize(gc, _width, _height);
@@ -94,7 +102,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                         _pboBuffer.push_back(0); 
                         break;
                     case(TRIPLE_PBO): 
-                        osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with a double buffer PixelBufferObject."<<std::endl;
+                        osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with a triple buffer PixelBufferObject."<<std::endl;
                         _pboBuffer.push_back(0); 
                         _pboBuffer.push_back(0); 
                         _pboBuffer.push_back(0); 

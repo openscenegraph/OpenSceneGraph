@@ -248,8 +248,6 @@ void WindowCaptureCallback::ContextData::updateTimings(osg::Timer_t tick_start,
     _timeForFullCopy += timeForFullCopy;
     _timeForMemCpy += timeForMemCpy;
     
-    _previousFrameTick = tick_afterMemCpy;
-    
     ++_numTimeValuesRecorded;
     
     if (_numTimeValuesRecorded==_reportTimingFrequency)
@@ -257,7 +255,11 @@ void WindowCaptureCallback::ContextData::updateTimings(osg::Timer_t tick_start,
         timeForReadPixels = _timeForReadPixels/double(_numTimeValuesRecorded);
         timeForFullCopy = _timeForFullCopy/double(_numTimeValuesRecorded);
         timeForMemCpy = _timeForMemCpy/double(_numTimeValuesRecorded);
-    
+        
+        double averageFrameTime =  osg::Timer::instance()->delta_s(_previousFrameTick, tick_afterMemCpy)/double(_numTimeValuesRecorded);
+        double fps = 1.0/averageFrameTime;    
+        _previousFrameTick = tick_afterMemCpy;
+
         _timeForReadPixels = 0.0;
         _timeForFullCopy = 0.0;
         _timeForMemCpy = 0.0;
@@ -267,15 +269,18 @@ void WindowCaptureCallback::ContextData::updateTimings(osg::Timer_t tick_start,
         double numMPixels = double(_width * _height) / 1000000.0;
         double numMb = double(dataSize) / (1024*1024);
 
+        int prec = osg::notify(osg::NOTICE).precision(5);
+
         if (timeForMemCpy==0.0)
         {
-            osg::notify(osg::NOTICE)<<"Full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, copy speed = "<<numMb / timeForFullCopy<<" Mb/sec"<<std::endl;
+            osg::notify(osg::NOTICE)<<"fps = "<<fps<<", full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, copy speed = "<<numMb / timeForFullCopy<<" Mb/sec"<<std::endl;
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"Full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, "<<numMb / timeForFullCopy<< " Mb/sec "<<
+            osg::notify(osg::NOTICE)<<"fps = "<<fps<<", full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, "<<numMb / timeForFullCopy<< " Mb/sec "<<
                                       "time for memcpy = "<<timeForMemCpy*1000.0<<"ms  memcpy speed = "<<numMb / timeForMemCpy<<" Mb/sec"<<std::endl;
         }
+        osg::notify(osg::NOTICE).precision(prec);
 
     }
 
@@ -688,8 +693,10 @@ int main(int argc, char** argv)
     
     unsigned int width=1280;
     unsigned int height=1024;
+    bool pbufferOnly = false;
     osg::ref_ptr<osg::GraphicsContext> pbuffer;
-    if (arguments.read("--pbuffer",width,height))
+    if (arguments.read("--pbuffer",width,height) || 
+        (pbufferOnly = arguments.read("--pbuffer-only",width,height)))
     {
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
         traits->x = 0;
@@ -742,14 +749,9 @@ int main(int argc, char** argv)
 
     viewer.setSceneData( loadedModel.get() );
 
-    viewer.realize();
     
     if (pbuffer.valid())
     {
-        viewer.stopThreading();
-        
-        pbuffer->realize();
-    
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
         camera->setGraphicsContext(pbuffer.get());
         camera->setViewport(new osg::Viewport(0,0,width,height));
@@ -758,12 +760,29 @@ int main(int argc, char** argv)
         camera->setReadBuffer(buffer);
         camera->setFinalDrawCallback(new WindowCaptureCallback(mode, position, readBuffer));
 
-        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
-        
-        viewer.startThreading();
+        if (pbufferOnly)
+        {
+            viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
+
+            viewer.realize();
+        }
+        else
+        {
+            viewer.realize();
+
+            viewer.stopThreading();
+
+            pbuffer->realize();
+
+            viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
+
+            viewer.startThreading();
+        }
     }
     else
     {
+        viewer.realize();
+
         addCallbackToViewer(viewer, new WindowCaptureCallback(mode, position, readBuffer));
     }
 

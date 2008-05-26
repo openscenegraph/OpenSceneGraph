@@ -774,10 +774,15 @@ void StateSet::merge(const StateSet& rhs)
         }
     }
 
-    // need to merge rendering hints
-    // but will need to think how best to do this first
-    // RO, Nov. 2001.
-
+    // Merge RenderBin state from rhs into this.
+    // Only do so if this's RenderBinMode is INHERIT.
+    if (getRenderBinMode() == INHERIT_RENDERBIN_DETAILS)
+    {
+        setRenderingHint( rhs.getRenderingHint() );
+        setRenderBinMode( rhs.getRenderBinMode() );
+        setBinNumber( rhs.getBinNumber() );
+        setBinName( rhs.getBinName() );
+    }
 }
 
 

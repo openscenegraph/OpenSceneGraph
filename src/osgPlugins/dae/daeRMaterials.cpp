@@ -672,7 +672,6 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
             osg::Texture::WrapMode wrap;
             switch( sampler->getWrap_s()->getValue() )
             {
-            case FX_SAMPLER_WRAP_COMMON_NONE:
             case FX_SAMPLER_WRAP_COMMON_WRAP:
                 wrap = osg::Texture::REPEAT;
                 break;
@@ -680,8 +679,9 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
                 wrap = osg::Texture::MIRROR;
                 break;
             case FX_SAMPLER_WRAP_COMMON_CLAMP:
-                wrap = osg::Texture::CLAMP;
+                wrap = osg::Texture::CLAMP_TO_EDGE;
                 break;
+            case FX_SAMPLER_WRAP_COMMON_NONE:
             case FX_SAMPLER_WRAP_COMMON_BORDER:
                 wrap = osg::Texture::CLAMP_TO_BORDER;
                 break;
@@ -700,7 +700,6 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
             osg::Texture::WrapMode wrap;
             switch( sampler->getWrap_t()->getValue() )
             {
-            case FX_SAMPLER_WRAP_COMMON_NONE:
             case FX_SAMPLER_WRAP_COMMON_WRAP:
                 wrap = osg::Texture::REPEAT;
                 break;
@@ -708,12 +707,13 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
                 wrap = osg::Texture::MIRROR;
                 break;
             case FX_SAMPLER_WRAP_COMMON_CLAMP:
-                wrap = osg::Texture::CLAMP;
+                wrap = osg::Texture::CLAMP_TO_EDGE;
                 break;
+            case FX_SAMPLER_WRAP_COMMON_NONE:
             case FX_SAMPLER_WRAP_COMMON_BORDER:
                 wrap = osg::Texture::CLAMP_TO_BORDER;
                 break;
-                        default:
+            default:
                 wrap = osg::Texture::CLAMP;
                 break;
             }

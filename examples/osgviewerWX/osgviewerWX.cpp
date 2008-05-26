@@ -68,7 +68,6 @@ bool wxOsgApp::OnInit()
 
     viewer->setSceneData(loadedModel.get());
     viewer->setCameraManipulator(new osgGA::TrackballManipulator);
-
     frame->SetViewer(viewer);
 
     /* Show the frame */
@@ -103,12 +102,21 @@ void MainFrame::OnIdle(wxIdleEvent &event)
 }
 
 BEGIN_EVENT_TABLE(GraphicsWindowWX, wxGLCanvas)
-    EVT_SIZE            (GraphicsWindowWX::OnSize            )
-    EVT_PAINT            (GraphicsWindowWX::OnPaint            )
-    EVT_ERASE_BACKGROUND(GraphicsWindowWX::OnEraseBackground)
-    EVT_KEY_DOWN        (GraphicsWindowWX::OnKeyDown        )
-    EVT_KEY_UP            (GraphicsWindowWX::OnKeyUp            )
-    EVT_MOUSE_EVENTS    (GraphicsWindowWX::OnMouse            )
+    EVT_SIZE                (GraphicsWindowWX::OnSize)
+    EVT_PAINT               (GraphicsWindowWX::OnPaint)
+    EVT_ERASE_BACKGROUND    (GraphicsWindowWX::OnEraseBackground)
+
+    EVT_CHAR                (GraphicsWindowWX::OnChar)
+    EVT_KEY_UP              (GraphicsWindowWX::OnKeyUp)
+
+    EVT_ENTER_WINDOW    (GraphicsWindowWX::OnMouseEnter)
+    EVT_LEFT_DOWN       (GraphicsWindowWX::OnMouseDown)
+    EVT_MIDDLE_DOWN     (GraphicsWindowWX::OnMouseDown)
+    EVT_RIGHT_DOWN      (GraphicsWindowWX::OnMouseDown)
+    EVT_LEFT_UP         (GraphicsWindowWX::OnMouseUp)
+    EVT_MIDDLE_UP       (GraphicsWindowWX::OnMouseUp)
+    EVT_RIGHT_UP        (GraphicsWindowWX::OnMouseUp)
+    EVT_MOTION          (GraphicsWindowWX::OnMouseMotion)
 END_EVENT_TABLE()
 
 GraphicsWindowWX::GraphicsWindowWX(wxWindow *parent, wxWindowID id,
@@ -176,7 +184,7 @@ void GraphicsWindowWX::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
     /* Do nothing, to avoid flashing on MSW */
 }
 
-void GraphicsWindowWX::OnKeyDown(wxKeyEvent &event)
+void GraphicsWindowWX::OnChar(wxKeyEvent &event)
 {
 #if wxUSE_UNICODE
     int key = event.GetUnicodeKey();
@@ -185,8 +193,8 @@ void GraphicsWindowWX::OnKeyDown(wxKeyEvent &event)
 #endif
     getEventQueue()->keyPress(key);
 
-    // propagate event
-    event.Skip();
+    // If this key event is not processed here, we should call
+    // event.Skip() to allow processing to continue.
 }
 
 void GraphicsWindowWX::OnKeyUp(wxKeyEvent &event)
@@ -198,24 +206,33 @@ void GraphicsWindowWX::OnKeyUp(wxKeyEvent &event)
 #endif
     getEventQueue()->keyRelease(key);
 
-    // propagate event
-    event.Skip();
+    // If this key event is not processed here, we should call
+    // event.Skip() to allow processing to continue.
 }
 
-void GraphicsWindowWX::OnMouse(wxMouseEvent& event)
+void GraphicsWindowWX::OnMouseEnter(wxMouseEvent &event)
 {
-    if (event.ButtonDown()) {
-        int button = event.GetButton();
-        getEventQueue()->mouseButtonPress(event.GetX(), event.GetY(), button);
-    }
-    else if (event.ButtonUp()) {
-        int button = event.GetButton();
-        getEventQueue()->mouseButtonRelease(event.GetX(), event.GetY(), button);
-    }
-    else if (event.Dragging()) {
-        getEventQueue()->mouseMotion(event.GetX(), event.GetY());
-    }
+    // Set focus to ourselves, so keyboard events get directed to us
+    SetFocus();
 }
+
+void GraphicsWindowWX::OnMouseDown(wxMouseEvent &event)
+{
+    getEventQueue()->mouseButtonPress(event.GetX(), event.GetY(),
+        event.GetButton());
+}
+
+void GraphicsWindowWX::OnMouseUp(wxMouseEvent &event)
+{
+    getEventQueue()->mouseButtonRelease(event.GetX(), event.GetY(),
+        event.GetButton());
+}
+
+void GraphicsWindowWX::OnMouseMotion(wxMouseEvent &event)
+{
+    getEventQueue()->mouseMotion(event.GetX(), event.GetY());
+}
+
 
 void GraphicsWindowWX::grabFocus()
 {

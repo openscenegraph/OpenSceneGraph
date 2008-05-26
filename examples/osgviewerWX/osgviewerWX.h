@@ -18,15 +18,21 @@ public:
         int *attributes = 0);
 
     ~GraphicsWindowWX();
-    
+
     void init();
 
     void OnPaint(wxPaintEvent& event);
     void OnSize(wxSizeEvent& event);
     void OnEraseBackground(wxEraseEvent& event);
-    void OnKeyDown(wxKeyEvent &event);
+
+    void OnChar(wxKeyEvent &event);
     void OnKeyUp(wxKeyEvent &event);
-    void OnMouse(wxMouseEvent &event);
+
+    void OnMouseEnter(wxMouseEvent &event);
+    void OnMouseDown(wxMouseEvent &event);
+    void OnMouseUp(wxMouseEvent &event);
+    void OnMouseMotion(wxMouseEvent &event);
+
 
     //
     // GraphicsWindow interface
@@ -38,7 +44,7 @@ public:
     bool makeCurrentImplementation();
     void swapBuffersImplementation();
 
-    // note implemented yet...just use dummy implementation to get working.    
+    // not implemented yet...just use dummy implementation to get working.
     virtual bool valid() const { return true; }
     virtual bool realizeImplementation() { return true; }
     virtual bool isRealizedImplementation() const  { return true; }
@@ -54,7 +60,7 @@ private:
 class MainFrame : public wxFrame
 {
 public:
-    MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos, 
+    MainFrame(wxFrame *frame, const wxString& title, const wxPoint& pos,
         const wxSize& size, long style = wxDEFAULT_FRAME_STYLE);
 
     void SetViewer(osgViewer::Viewer *viewer);

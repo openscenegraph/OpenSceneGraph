@@ -11,6 +11,11 @@ ELSE(WIN32)
     ENDIF(APPLE)
 ENDIF(WIN32)
 
+# Works around warnings libraries linked against that don't
+# have absolute paths (e.g. -lpthreads)
+if(COMMAND cmake_policy)
+    cmake_policy(SET CMP0003 NEW)
+endif(COMMAND cmake_policy)
 
 PROJECT(OpenSceneGraph)
 
@@ -101,15 +106,19 @@ INCLUDE_DIRECTORIES(
 
 IF(WIN32)
 
-    # This option is to enable the /MP switch for Visual Studio 2005 and above compilers
-    OPTION(WIN32_USE_MP "Set to ON to build OpenSceneGraph with the /MP option (Visual Studio 2005 and above)." OFF)
-    MARK_AS_ADVANCED(WIN32_USE_MP)
-    IF(WIN32_USE_MP)        
-        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-    ENDIF(WIN32_USE_MP)        
+    IF(MSVC)
+        # This option is to enable the /MP switch for Visual Studio 2005 and above compilers
+        OPTION(WIN32_USE_MP "Set to ON to build OpenSceneGraph with the /MP option (Visual Studio 2005 and above)." OFF)
+        MARK_AS_ADVANCED(WIN32_USE_MP)
+        IF(WIN32_USE_MP)        
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+        ENDIF(WIN32_USE_MP)        
 
-    ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
-    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
+        # More MSVC specific compilation flags
+        ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
+        ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
+    ENDIF(MSVC)
+
     #needed for net plugin
     SET (OSG_SOCKET_LIBS wsock32)
     # Both Cygwin and Msys need -DNOMINMAX ???
@@ -345,7 +354,10 @@ ENDIF(UNIX AND NOT WIN32 AND NOT APPLE)
 IF(NOT DEFINED LIB_POSTFIX)
     SET(LIB_POSTFIX "")
 ENDIF(NOT DEFINED LIB_POSTFIX)
-    
+
+# Here we apparantly do some funky stuff with making the bin/ and lib/
+# folders which is probably needed to work around a very old CMake bug?
+
 #SET(OUTPUT_BINDIR ${PROJECT_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME})
 SET(OUTPUT_BINDIR ${PROJECT_BINARY_DIR}/bin)
 MAKE_DIRECTORY(${OUTPUT_BINDIR})
@@ -353,17 +365,32 @@ IF(MSVC AND NOT MSVC_IDE)
     MAKE_DIRECTORY(${OUTPUT_BINDIR}/${OSG_PLUGINS})
 ENDIF(MSVC AND NOT MSVC_IDE)
 
-SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_BINDIR})
-
 #SET(OUTPUT_LIBDIR ${PROJECT_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME})
 SET(OUTPUT_LIBDIR ${PROJECT_BINARY_DIR}/lib)
 MAKE_DIRECTORY(${OUTPUT_LIBDIR})
 IF(NOT MSVC)
     MAKE_DIRECTORY(${OUTPUT_LIBDIR}/${OSG_PLUGINS})
 ENDIF(NOT MSVC)
-SET(LIBRARY_OUTPUT_PATH ${OUTPUT_LIBDIR})
 
+# On CMake 2.4.x use EXECUTABLE_OUTPUT_PATH and LIBRARY_OUTPUT_PATH and later
+# we work around the DLL placement by use of the PREFIX target property hack
+#
+# On CMake 2.6.x use the newly minted CMAKE_LIBRARY_OUTPUT_DIRECTORY,
+# CMAKE_ARCHIVE_OUTPUT_DIRECTORY & CMAKE_RUNTIME_OUTPUT_DIRECTORY
 
+IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
+    # If CMake >= 2.6.0
+    SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_LIBDIR})
+    SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BINDIR})
+    IF(WIN32)
+        SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_BINDIR})
+    ELSE(WIN32)
+        SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_LIBDIR})
+    ENDIF(WIN32)
+ELSE(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
+    SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_BINDIR})
+    SET(LIBRARY_OUTPUT_PATH ${OUTPUT_LIBDIR})
+ENDIF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
 
 #SET(INSTALL_BINDIR OpenSceneGraph/bin)
 #SET(INSTALL_INCDIR OpenSceneGraph/include)

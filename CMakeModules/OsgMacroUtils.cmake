@@ -21,22 +21,26 @@ MACRO(LINK_WITH_VARIABLES TRGTNAME)
 ENDMACRO(LINK_WITH_VARIABLES TRGTNAME)
 
 MACRO(LINK_INTERNAL TRGTNAME)
-    FOREACH(LINKLIB ${ARGN})
-        IF(MSVC AND OSG_MSVC_VERSIONED_DLL)
-            #when using versioned names, the .dll name differ from .lib name, there is a problem with that:
-            #CMake 2.4.7, at least seem to use PREFIX instead of IMPORT_PREFIX  for computing linkage info to use into projects,
-            # so we full path name to specify linkage, this prevent automatic inferencing of dependencies, so we add explicit depemdencies
-            #to library targets used
-        IF(NOT MSVC_IDE)
-            TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${OUTPUT_LIBDIR}/${LINKLIB}.lib" debug "${OUTPUT_LIBDIR}/${LINKLIB}${CMAKE_DEBUG_POSTFIX}.lib")
-        ELSE(NOT MSVC_IDE)
-            TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${OUTPUT_LIBDIR}/${LINKLIB}" debug "${OUTPUT_LIBDIR}/${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-        ENDIF(NOT MSVC_IDE)
-            ADD_DEPENDENCIES(${TRGTNAME} ${LINKLIB})
-        ELSE(MSVC AND OSG_MSVC_VERSIONED_DLL)
-            TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${LINKLIB}" debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
-        ENDIF(MSVC AND OSG_MSVC_VERSIONED_DLL)
-    ENDFOREACH(LINKLIB)
+    IF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4)
+        TARGET_LINK_LIBRARIES(${TRGTNAME} ${ARGN})
+    ELSE(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4)
+        FOREACH(LINKLIB ${ARGN})
+            IF(MSVC AND OSG_MSVC_VERSIONED_DLL)
+                #when using versioned names, the .dll name differ from .lib name, there is a problem with that:
+                #CMake 2.4.7, at least seem to use PREFIX instead of IMPORT_PREFIX  for computing linkage info to use into projects,
+                # so we full path name to specify linkage, this prevent automatic inferencing of dependencies, so we add explicit depemdencies
+                #to library targets used
+                IF(NOT MSVC_IDE)
+                    TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${OUTPUT_LIBDIR}/${LINKLIB}.lib" debug "${OUTPUT_LIBDIR}/${LINKLIB}${CMAKE_DEBUG_POSTFIX}.lib")
+                ELSE(NOT MSVC_IDE)
+                    TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${OUTPUT_LIBDIR}/${LINKLIB}" debug "${OUTPUT_LIBDIR}/${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
+                ENDIF(NOT MSVC_IDE)
+                ADD_DEPENDENCIES(${TRGTNAME} ${LINKLIB})
+            ELSE(MSVC AND OSG_MSVC_VERSIONED_DLL)
+                TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${LINKLIB}" debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
+            ENDIF(MSVC AND OSG_MSVC_VERSIONED_DLL)
+        ENDFOREACH(LINKLIB)
+    ENDIF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4)
 ENDMACRO(LINK_INTERNAL TRGTNAME)
 
 MACRO(LINK_EXTERNAL TRGTNAME)
@@ -118,7 +122,7 @@ ENDMACRO(SETUP_LINK_LIBRARIES)
 
 MACRO(SETUP_PLUGIN PLUGIN_NAME)
 
-        SET(TARGET_NAME ${PLUGIN_NAME} )
+    SET(TARGET_NAME ${PLUGIN_NAME} )
 
     #MESSAGE("in -->SETUP_PLUGIN<-- ${TARGET_NAME}-->${TARGET_SRC} <--> ${TARGET_H}<--")
 
@@ -131,7 +135,7 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
             SET(TARGET_LABEL "${TARGET_DEFAULT_LABEL_PREFIX} ${TARGET_NAME}")
     ENDIF(NOT TARGET_LABEL)
     
-# here we use the command to generate the library    
+    # here we use the command to generate the library    
 
     IF   (DYNAMIC_OPENSCENEGRAPH)
         ADD_LIBRARY(${TARGET_TARGETNAME} MODULE ${TARGET_SRC} ${TARGET_H})
@@ -143,38 +147,53 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
     IF(NOT MSVC)
         SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES DEBUG_POSTFIX "")
     ELSE(NOT MSVC)
-        IF(OSG_MSVC_VERSIONED_DLL) 
-                       
+        IF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4)
+            IF(NOT MSVC_IDE)
+                SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "${OSG_PLUGINS}/")                     
+            ELSE(NOT MSVC_IDE)
+                SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "../${OSG_PLUGINS}/")
+            ENDIF(NOT MSVC_IDE)
+        ELSE(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4)
+            IF(OSG_MSVC_VERSIONED_DLL) 
+
                 #this is a hack... the build place is set to lib/<debug or release> by LIBARARY_OUTPUT_PATH equal to OUTPUT_LIBDIR
                 #the .lib will be crated in ../ so going straight in lib by the IMPORT_PREFIX property
                 #because we want dll placed in OUTPUT_BINDIR ie the bin folder sibling of lib, we can use ../../bin to go there,
                 #it is hardcoded, we should compute OUTPUT_BINDIR position relative to OUTPUT_LIBDIR ... to be implemented
                 #changing bin to something else breaks this hack
                 #the dll are placed in bin/${OSG_PLUGINS} 
-                
+
                 IF(NOT MSVC_IDE)
                     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "../bin/${OSG_PLUGINS}/")                     
                 ELSE(NOT MSVC_IDE)
                     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "../../bin/${OSG_PLUGINS}/" IMPORT_PREFIX "../")
                 ENDIF(NOT MSVC_IDE)
 
-        ELSE(OSG_MSVC_VERSIONED_DLL)
-            
-            #in standard mode (unversioned) the .lib and .dll are placed in lib/<debug or release>/${OSG_PLUGINS}.
-            #here the PREFIX property has been used, the same result would be accomplidhe by prepending ${OSG_PLUGINS}/ to OUTPUT_NAME target property
-            
-            SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "${OSG_PLUGINS}/")
-        ENDIF(OSG_MSVC_VERSIONED_DLL)
+            ELSE(OSG_MSVC_VERSIONED_DLL)
+
+                #in standard mode (unversioned) the .lib and .dll are placed in lib/<debug or release>/${OSG_PLUGINS}.
+                #here the PREFIX property has been used, the same result would be accomplidhe by prepending ${OSG_PLUGINS}/ to OUTPUT_NAME target property
+
+                SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "${OSG_PLUGINS}/")
+            ENDIF(OSG_MSVC_VERSIONED_DLL)
+        ENDIF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4)
     ENDIF(NOT MSVC)
+
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
  
     SETUP_LINK_LIBRARIES()
 
 #the installation path are differentiated for win32 that install in bib versus other architecture that install in lib${LIB_POSTFIX}/${OSG_PLUGINS}
     IF(WIN32)
-        INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin ARCHIVE DESTINATION lib/${OSG_PLUGINS} LIBRARY DESTINATION bin/${OSG_PLUGINS} )
+        INSTALL(TARGETS ${TARGET_TARGETNAME} 
+            RUNTIME DESTINATION bin
+            ARCHIVE DESTINATION lib/${OSG_PLUGINS}
+            LIBRARY DESTINATION bin/${OSG_PLUGINS} )
     ELSE(WIN32)
-        INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin ARCHIVE DESTINATION lib${LIB_POSTFIX}/${OSG_PLUGINS} LIBRARY DESTINATION lib${LIB_POSTFIX}/${OSG_PLUGINS} )
+        INSTALL(TARGETS ${TARGET_TARGETNAME}
+            RUNTIME DESTINATION bin
+            ARCHIVE DESTINATION lib${LIB_POSTFIX}/${OSG_PLUGINS}
+            LIBRARY DESTINATION lib${LIB_POSTFIX}/${OSG_PLUGINS} )
     ENDIF(WIN32)
 ENDMACRO(SETUP_PLUGIN)
 
@@ -227,12 +246,15 @@ MACRO(SETUP_EXE IS_COMMANDLINE_APP)
         ADD_EXECUTABLE(${TARGET_TARGETNAME} ${PLATFORM_SPECIFIC_CONTROL} ${TARGET_SRC} ${TARGET_H})
         
     ENDIF(${IS_COMMANDLINE_APP})
+
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}")
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME})
+
     IF(MSVC_IDE AND OSG_MSVC_VERSIONED_DLL)
             SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "../")    
     ENDIF(MSVC_IDE AND OSG_MSVC_VERSIONED_DLL)
+
     SETUP_LINK_LIBRARIES()    
 
 ENDMACRO(SETUP_EXE)
@@ -286,12 +308,12 @@ ENDMACRO(SETUP_COMMANDLINE_EXAMPLE)
 
 # Takes two optional arguments -- osg prefix and osg version
 MACRO(HANDLE_MSVC_DLL)
-	#this is a hack... the build place is set to lib/<debug or release> by LIBARARY_OUTPUT_PATH equal to OUTPUT_LIBDIR
-	#the .lib will be crated in ../ so going straight in lib by the IMPORT_PREFIX property
-	#because we want dll placed in OUTPUT_BINDIR ie the bin folder sibling of lib, we can use ../../bin to go there,
-	#it is hardcoded, we should compute OUTPUT_BINDIR position relative to OUTPUT_LIBDIR ... to be implemented
-	#changing bin to something else breaks this hack
-	#the dll are versioned by prefixing the name with osg${OPENSCENEGRAPH_SOVERSION}-
+        #this is a hack... the build place is set to lib/<debug or release> by LIBARARY_OUTPUT_PATH equal to OUTPUT_LIBDIR
+        #the .lib will be crated in ../ so going straight in lib by the IMPORT_PREFIX property
+        #because we want dll placed in OUTPUT_BINDIR ie the bin folder sibling of lib, we can use ../../bin to go there,
+        #it is hardcoded, we should compute OUTPUT_BINDIR position relative to OUTPUT_LIBDIR ... to be implemented
+        #changing bin to something else breaks this hack
+        #the dll are versioned by prefixing the name with osg${OPENSCENEGRAPH_SOVERSION}-
 
         # LIB_PREFIX: use "osg" by default, else whatever we've been given.
         IF(${ARGC} GREATER 0)

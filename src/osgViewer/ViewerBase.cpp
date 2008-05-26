@@ -15,6 +15,7 @@
 #include <string.h>
 
 #include <osgViewer/ViewerBase>
+#include <osgViewer/View>
 #include <osgViewer/Renderer>
 
 #include <osg/io_utils>
@@ -586,6 +587,25 @@ void ViewerBase::frame(double simulationTime)
 
 void ViewerBase::renderingTraversals()
 {
+    bool _outputMasterCameraLocation = false;
+    if (_outputMasterCameraLocation)
+    {
+        Views views;
+        getViews(views);
+
+        for(Views::iterator itr = views.begin();
+            itr != views.end();
+            ++itr)
+        {
+            osgViewer::View* view = *itr;
+            if (view)
+            {
+                const osg::Matrixd& m = view->getCamera()->getInverseViewMatrix();
+                osg::notify(osg::NOTICE)<<"View "<<view<<", Master Camera position("<<m.getTrans()<<"), rotation("<<m.getRotate()<<")"<<std::endl;
+            }
+        }
+    }
+        
     // check to see if windows are still valid
     checkWindowStatus();
 

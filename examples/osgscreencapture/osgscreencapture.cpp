@@ -686,6 +686,36 @@ int main(int argc, char** argv)
     while (arguments.read("--triple-pbo")) mode = WindowCaptureCallback::TRIPLE_PBO;
 
     
+    unsigned int width=1280;
+    unsigned int height=1024;
+    osg::ref_ptr<osg::GraphicsContext> pbuffer;
+    if (arguments.read("--pbuffer",width,height))
+    {
+        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+        traits->x = 0;
+        traits->y = 0;
+        traits->width = width;
+        traits->height = height;
+        traits->red = 8;
+        traits->green = 8;
+        traits->blue = 8;
+        traits->alpha = 8;
+        traits->windowDecoration = false;
+        traits->pbuffer = true;
+        traits->doubleBuffer = true;
+        traits->sharedContext = 0;
+
+        pbuffer = osg::GraphicsContext::createGraphicsContext(traits.get());
+        if (pbuffer.valid())
+        {
+            osg::notify(osg::NOTICE)<<"Pixel buffer has been created successfully."<<std::endl;
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Pixel buffer has not been created successfully."<<std::endl;
+        }
+
+    }
         
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
@@ -714,7 +744,28 @@ int main(int argc, char** argv)
 
     viewer.realize();
     
-    addCallbackToViewer(viewer, new WindowCaptureCallback(mode, position, readBuffer));
+    if (pbuffer.valid())
+    {
+        viewer.stopThreading();
+        
+        pbuffer->realize();
+    
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(pbuffer.get());
+        camera->setViewport(new osg::Viewport(0,0,width,height));
+        GLenum buffer = pbuffer->getTraits()->doubleBuffer ? GL_BACK : GL_FRONT;
+        camera->setDrawBuffer(buffer);
+        camera->setReadBuffer(buffer);
+        camera->setFinalDrawCallback(new WindowCaptureCallback(mode, position, readBuffer));
+
+        viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
+        
+        viewer.startThreading();
+    }
+    else
+    {
+        addCallbackToViewer(viewer, new WindowCaptureCallback(mode, position, readBuffer));
+    }
 
     return viewer.run();
 

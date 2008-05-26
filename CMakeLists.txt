@@ -260,24 +260,36 @@ ENDIF(PKG_CONFIG_FOUND)
 # Test to determine if we want the "tripledot" form of the GLU tesselator callback.
 #
 IF(NOT DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT)
-    INCLUDE(CheckCXXSourceCompiles)
-    SET(CMAKE_REQUIRED_DEFINITIONS -DGLU_TESS_CALLBACK_TRIPLEDOT)
-    SET(CMAKE_REQUIRED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include ${GLUT_INCLUDE_DIR} ${GL_INCLUDE_DIR})
-    SET(CMAKE_REQUIRED_LIBRARIES ${GLUT_LIBRARY} ${GL_LIBRARY})
-    CHECK_CXX_SOURCE_COMPILES(
-    "#include <osg/GL>
-     #include <osg/GLU>
-     static void testcb(GLvoid *, void*) { }
-     int main()
-     {
-        GLUtesselator *t = gluNewTess();
-        gluTessCallback(t, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK) testcb);
-        return 0;
-     }"
-    DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT)
+    IF(WIN32 OR CMAKE_SYSTEM_NAME MATCHES "Linux")
+
+        # Skip the compile check for platforms that never need the variable
+        # form.
+        SET(DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT false)
+
+    ELSE(WIN32 OR CMAKE_SYSTEM_NAME MATCHES "Linux")
+
+        # For other platforms perform the check
+        INCLUDE(CheckCXXSourceCompiles)
+        SET(CMAKE_REQUIRED_DEFINITIONS -DGLU_TESS_CALLBACK_TRIPLEDOT)
+        SET(CMAKE_REQUIRED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include ${GLUT_INCLUDE_DIR} ${GL_INCLUDE_DIR})
+        SET(CMAKE_REQUIRED_LIBRARIES ${GLUT_LIBRARY} ${GL_LIBRARY})
+        CHECK_CXX_SOURCE_COMPILES(
+            "#include <osg/GL>
+            #include <osg/GLU>
+            static void testcb(GLvoid *, void*) { }
+            int main() {
+               GLUtesselator *t = gluNewTess();
+               gluTessCallback(t, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK) testcb);
+               return 0;
+            }"
+            GLU_Tesselator_Needs_Variable_Parameter_Callback_Convention_Failure_Means_No)
+        SET(DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT
+            ${GLU_Tesselator_Needs_Variable_Parameter_Callback_Convention_Failure_Means_No})
+
+    ENDIF(WIN32 OR CMAKE_SYSTEM_NAME MATCHES "Linux")
 ENDIF(NOT DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT)
 
-OPTION(OSG_GLU_TESS_CALLBACK_TRIPLEDOT "Set to ON to build build with (...) version of GLU tesselator callback" ${DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT})
+OPTION(OSG_GLU_TESS_CALLBACK_TRIPLEDOT "Set to ON to build build with variable parameter (...) version of GLU tesselator callback" ${DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT})
 IF(OSG_GLU_TESS_CALLBACK_TRIPLEDOT)
     ADD_DEFINITIONS(-DGLU_TESS_CALLBACK_TRIPLEDOT)
 ENDIF(OSG_GLU_TESS_CALLBACK_TRIPLEDOT)

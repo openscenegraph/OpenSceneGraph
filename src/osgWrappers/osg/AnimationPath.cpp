@@ -100,7 +100,7 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPath)
 	I_Method2(void, insert, IN, double, time, IN, const osg::AnimationPath::ControlPoint &, controlPoint,
 	          Properties::NON_VIRTUAL,
 	          __void__insert__double__C5_ControlPoint_R1,
-	          "",
+	          "Insert a control point into the AnimationPath. ",
 	          "");
 	I_Method0(double, getFirstTime,
 	          Properties::NON_VIRTUAL,
@@ -161,6 +161,11 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPath)
 	          Properties::NON_VIRTUAL,
 	          __void__write__std_ostream_R1,
 	          "Write the animation path to a flat ASCII file stream. ",
+	          "");
+	I_Method2(void, write, IN, osg::AnimationPath::TimeControlPointMap::const_iterator, itr, IN, std::ostream &, out,
+	          Properties::NON_VIRTUAL,
+	          __void__write__TimeControlPointMap_C5_iterator__std_ostream_R1,
+	          "Write the control point to a flat ASCII file stream. ",
 	          "");
 	I_SimpleProperty(double, FirstTime, 
 	                 __double__getFirstTime, 

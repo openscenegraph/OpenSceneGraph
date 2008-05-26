@@ -98,6 +98,12 @@ void AnimationPath::read(std::istream& in)
     }
 }
 
+void AnimationPath::write(TimeControlPointMap::const_iterator itr, std::ostream& fout) const
+{
+    const ControlPoint& cp = itr->second;
+    fout<<itr->first<<" "<<cp.getPosition()<<" "<<cp.getRotation()<<std::endl;
+}
+
 void AnimationPath::write(std::ostream& fout) const
 {
     int prec = fout.precision();
@@ -108,8 +114,7 @@ void AnimationPath::write(std::ostream& fout) const
         tcpmitr!=tcpm.end();
         ++tcpmitr)
     {
-        const ControlPoint& cp = tcpmitr->second;
-        fout<<tcpmitr->first<<" "<<cp.getPosition()<<" "<<cp.getRotation()<<std::endl;
+        write(tcpmitr, fout);
     }
 
     fout.precision(prec);

@@ -414,8 +414,16 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
         if (_currentlyRecording && _delta >= _interval)
         {
             const osg::Matrixd& m = view->getCamera()->getInverseViewMatrix();
-            _animPath->insert(osg::Timer::instance()->delta_s(_animStartTime, time), osg::AnimationPath::ControlPoint(m.getTrans(), m.getRotate()));
+            double animationPathTime = osg::Timer::instance()->delta_s(_animStartTime, time);            
+            _animPath->insert(animationPathTime, osg::AnimationPath::ControlPoint(m.getTrans(), m.getRotate()));
             _delta = 0.0f;
+
+            if (_fout)
+            {
+                _animPath->write(_animPath->getTimeControlPointMap().find(animationPathTime), _fout);
+                _fout.flush();
+            }
+
         }
         else _delta += delta;
         
@@ -437,8 +445,16 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     _currentlyRecording = true;
                     _animStartTime = osg::Timer::instance()->tick();
                     _animPath->clear();
-
-                    osg::notify(osg::NOTICE)<<"Recording camera path."<<std::endl;
+                    
+                    if (!_filename.empty())
+                    {
+                        osg::notify(osg::NOTICE)<<"Recording camera path to file "<<_filename<<std::endl;
+                        _fout.open(_filename.c_str());
+                    }
+                    else
+                    {
+                        osg::notify(osg::NOTICE)<<"Recording camera path."<<std::endl;
+                    }
                 }
 
                 // THe user has requested to STOP recording, write the file!
@@ -447,12 +463,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     _currentlyRecording = false;
                     _delta = 0.0f;
 
-                    // In the future this will need to be written continuously, rather
-                    // than all at once.
-                    std::ofstream out(_filename.c_str());
-                    osg::notify(osg::NOTICE)<<"Writing camera file: "<<_filename<<std::endl;
-                    _animPath->write(out);
-                    out.close();
+                    if (_fout) _fout.close();
                 }
 
                 return true;

@@ -65,6 +65,12 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                 _currentImageIndex(0),
                 _currentPboIndex(0)
             {
+                if (gc->getTraits())
+                {
+                    if (gc->getTraits()->alpha) _pixelFormat = GL_BGRA; 
+                    else _pixelFormat = GL_BGR; 
+                }
+            
                 getSize(gc, _width, _height);
                 
                 std::cout<<"Window size "<<_width<<", "<<_height<<std::endl;
@@ -378,7 +384,7 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
 
         if(src)
         {
-            memcpy(image->data(), src, image->getTotalSizeInBytes());
+            // memcpy(image->data(), src, image->getTotalSizeInBytes());
 
             ext->glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB);
         }

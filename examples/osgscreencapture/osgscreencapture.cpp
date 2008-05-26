@@ -63,8 +63,16 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                 _width(0),
                 _height(0),
                 _currentImageIndex(0),
-                _currentPboIndex(0)
+                _currentPboIndex(0),
+                _reportTimingFrequency(100),
+                _numTimeValuesRecorded(0),
+                _timeForReadPixels(0.0),
+                _timeForFullCopy(0.0),
+                _timeForMemCpy(0.0)
+
             {
+                _previousFrameTick = osg::Timer::instance()->tick();
+
                 if (gc->getTraits())
                 {
                     if (gc->getTraits()->alpha)
@@ -121,6 +129,11 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                 }
             }
             
+            void updateTimings(osg::Timer_t tick_start,
+                               osg::Timer_t tick_afterReadPixels,
+                               osg::Timer_t tick_afterMemCpy,
+                               unsigned int dataSize);
+
             void read()
             {
                 osg::BufferObject::Extensions* ext = osg::BufferObject::getExtensions(_gc->getState()->getContextID(),true);
@@ -166,6 +179,13 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             
             unsigned int            _currentPboIndex;
             PBOBuffer               _pboBuffer;
+
+            unsigned int            _reportTimingFrequency;
+            unsigned int            _numTimeValuesRecorded;
+            double                  _timeForReadPixels;
+            double                  _timeForFullCopy;
+            double                  _timeForMemCpy;
+            osg::Timer_t            _previousFrameTick;
         };
     
         WindowCaptureCallback(Mode mode, FramePosition position, GLenum readBuffer):
@@ -210,7 +230,56 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
         mutable OpenThreads::Mutex  _mutex;
         mutable ContextDataMap      _contextDataMap;
         
+        
 };
+
+void WindowCaptureCallback::ContextData::updateTimings(osg::Timer_t tick_start,
+                                                       osg::Timer_t tick_afterReadPixels,
+                                                       osg::Timer_t tick_afterMemCpy,
+                                                       unsigned int dataSize)
+{
+    if (!_reportTimingFrequency) return;
+
+    double timeForReadPixels = osg::Timer::instance()->delta_s(tick_start, tick_afterReadPixels);
+    double timeForFullCopy = osg::Timer::instance()->delta_s(tick_start, tick_afterMemCpy);
+    double timeForMemCpy = osg::Timer::instance()->delta_s(tick_afterReadPixels, tick_afterMemCpy);
+
+    _timeForReadPixels += timeForReadPixels;
+    _timeForFullCopy += timeForFullCopy;
+    _timeForMemCpy += timeForMemCpy;
+    
+    _previousFrameTick = tick_afterMemCpy;
+    
+    ++_numTimeValuesRecorded;
+    
+    if (_numTimeValuesRecorded==_reportTimingFrequency)
+    {
+        timeForReadPixels = _timeForReadPixels/double(_numTimeValuesRecorded);
+        timeForFullCopy = _timeForFullCopy/double(_numTimeValuesRecorded);
+        timeForMemCpy = _timeForMemCpy/double(_numTimeValuesRecorded);
+    
+        _timeForReadPixels = 0.0;
+        _timeForFullCopy = 0.0;
+        _timeForMemCpy = 0.0;
+
+        _numTimeValuesRecorded = 0;
+
+        double numMPixels = double(_width * _height) / 1000000.0;
+        double numMb = double(dataSize) / (1024*1024);
+
+        if (timeForMemCpy==0.0)
+        {
+            osg::notify(osg::NOTICE)<<"Full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, copy speed = "<<numMb / timeForFullCopy<<" Mb/sec"<<std::endl;
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, "<<numMb / timeForFullCopy<< " Mb/sec "<<
+                                      "time for memcpy = "<<timeForMemCpy*1000.0<<"ms  memcpy speed = "<<numMb / timeForMemCpy<<" Mb/sec"<<std::endl;
+        }
+
+    }
+
+}
 
 void WindowCaptureCallback::ContextData::readPixels()
 {
@@ -230,10 +299,16 @@ void WindowCaptureCallback::ContextData::readPixels()
 
     osg::Image* image = _imageBuffer[_currentImageIndex].get();
 
+    osg::Timer_t tick_start = osg::Timer::instance()->tick();
+
 #if 1
     image->readPixels(0,0,_width,_height,
                       _pixelFormat,_type);
 #endif
+
+    osg::Timer_t tick_afterReadPixels = osg::Timer::instance()->tick();
+
+    updateTimings(tick_start, tick_afterReadPixels, tick_afterReadPixels, image->getTotalSizeInBytes());
 
     if (!_fileName.empty())
     {
@@ -290,26 +365,33 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::BufferObject::Extensions
         ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, pbo);
     }
 
+    osg::Timer_t tick_start = osg::Timer::instance()->tick();
+
 #if 1
     glReadPixels(0, 0, _width, _height, _pixelFormat, _type, 0);
 #endif
 
+    osg::Timer_t tick_afterReadPixels = osg::Timer::instance()->tick();
+
     GLubyte* src = (GLubyte*)ext->glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB,
                                               GL_READ_ONLY_ARB);
-
     if(src)
     {
         memcpy(image->data(), src, image->getTotalSizeInBytes());
-
         ext->glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB);
     }
+
+    ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
+
+    osg::Timer_t tick_afterMemCpy = osg::Timer::instance()->tick();
+
+    updateTimings(tick_start, tick_afterReadPixels, tick_afterMemCpy, image->getTotalSizeInBytes());
 
     if (!_fileName.empty())
     {
         // osgDB::writeImageFile(*image, _fileName);
     }
 
-    ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
     _currentImageIndex = nextImageIndex;
 }
@@ -378,9 +460,13 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
         ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, read_pbo);
     }
 
+    osg::Timer_t tick_start = osg::Timer::instance()->tick();
+
 #if 1
     glReadPixels(0, 0, _width, _height, _pixelFormat, _type, 0);
 #endif
+
+    osg::Timer_t tick_afterReadPixels = osg::Timer::instance()->tick();
 
     if (doCopy)
     {
@@ -389,11 +475,9 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
 
         GLubyte* src = (GLubyte*)ext->glMapBuffer(GL_PIXEL_PACK_BUFFER_ARB,
                                                   GL_READ_ONLY_ARB);
-
         if(src)
         {
-            // memcpy(image->data(), src, image->getTotalSizeInBytes());
-
+            memcpy(image->data(), src, image->getTotalSizeInBytes());
             ext->glUnmapBuffer(GL_PIXEL_PACK_BUFFER_ARB);
         }
 
@@ -404,6 +488,10 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
     }
     
     ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
+
+    osg::Timer_t tick_afterMemCpy = osg::Timer::instance()->tick();
+    
+    updateTimings(tick_start, tick_afterReadPixels, tick_afterMemCpy, image->getTotalSizeInBytes());
 
     _currentImageIndex = nextImageIndex;
     _currentPboIndex = nextPboIndex;

@@ -587,7 +587,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 }
 
                 unsigned int indexBegin = drawArray->getFirst();
-                unsigned int nbVerticesPerPoly=indexEnd/p.size();
+                unsigned int nbVerticesPerPoly=(indexEnd-indexBegin)/p.size();
                 unsigned int indexPolyEnd = indexBegin+nbVerticesPerPoly;
                 for( unsigned int iPoly = 0; iPoly < p.size(); ++iPoly )
                 {

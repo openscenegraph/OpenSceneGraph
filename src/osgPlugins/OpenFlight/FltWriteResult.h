@@ -50,7 +50,7 @@ public:
     void setNumWarnings( int n );
     int getNumWarnings() const;
 
-    typedef std::pair< int, std::string > MessagePair;
+    typedef std::pair< osg::NotifySeverity, std::string > MessagePair;
     typedef std::vector< MessagePair > MessageVector;
 
     void warn( const std::string &ss )

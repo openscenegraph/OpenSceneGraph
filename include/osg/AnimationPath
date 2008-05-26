@@ -116,7 +116,7 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
                 matrix.preMult(osg::Matrixd::rotate(_rotation.inverse()));
                 matrix.preMult(osg::Matrixd::translate(-_position));
             }
-        
+
         protected:
 
             osg::Vec3d _position;
@@ -164,6 +164,7 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
         /** Given a specific time, return the local ControlPoint frame for a point. */
         virtual bool getInterpolatedControlPoint(double time,ControlPoint& controlPoint) const;
         
+        /** Insert a control point into the AnimationPath.*/
         void insert(double time,const ControlPoint& controlPoint);
         
         double getFirstTime() const { if (!_timeControlPointMap.empty()) return _timeControlPointMap.begin()->first; else return 0.0;}
@@ -199,6 +200,9 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
 
         /** Write the animation path to a flat ASCII file stream. */
         void write(std::ostream& out) const;
+
+        /** Write the control point to a flat ASCII file stream. */
+        void write(TimeControlPointMap::const_iterator itr, std::ostream& out) const;
 
     protected:
     

@@ -22,6 +22,8 @@
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/Viewer>
 
+#include <fstream>
+
 namespace osgViewer {
 
 /** Event handler for adding on screen help to Viewers.*/
@@ -241,6 +243,7 @@ public:
 protected:
 
         std::string                                     _filename;
+        std::ofstream                                   _fout;
 
         int                                             _keyEventToggleRecord;
         int                                             _keyEventTogglePlayback;

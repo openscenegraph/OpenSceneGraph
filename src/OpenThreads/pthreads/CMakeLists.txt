@@ -11,15 +11,15 @@ SET(LIB_PUBLIC_HEADERS ${OpenThreads_PUBLIC_HEADERS})
 ADD_LIBRARY(${LIB_NAME}
     ${OPENTHREADS_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
-	PThread.c++
-	PThreadBarrier.c++
-	PThreadBarrierPrivateData.h
-	PThreadCondition.c++
-	PThreadConditionPrivateData.h
-	PThreadMutex.c++
-	PThreadMutexPrivateData.h
-	PThreadPrivateData.h
-	../common/Version.cpp
+    PThread.c++
+    PThreadBarrier.c++
+    PThreadBarrierPrivateData.h
+    PThreadCondition.c++
+    PThreadConditionPrivateData.h
+    PThreadMutex.c++
+    PThreadMutexPrivateData.h
+    PThreadPrivateData.h
+    ../common/Version.cpp
 )
 
 IF(OPENTHREADS_SONAMES)
@@ -27,7 +27,7 @@ IF(OPENTHREADS_SONAMES)
 ENDIF(OPENTHREADS_SONAMES)
 
 SET(CMAKE_REQUIRED_LIBRARIES_SAFE "${CMAKE_REQUIRED_LIBRARIES}")
-SET(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT}")
+SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 CHECK_FUNCTION_EXISTS(pthread_yield HAVE_PTHREAD_YIELD)
 IF(HAVE_PTHREAD_YIELD)
@@ -92,25 +92,25 @@ ENDIF(HAVE_PTHREAD_SETAFFINITY_NP)
 SET(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES_SAFE}")
 
 TARGET_LINK_LIBRARIES(${LIB_NAME}
-	${CMAKE_THREAD_LIBS_INIT}
+    ${CMAKE_THREAD_LIBS_INIT}
 )
 
 # Since we're building different platforms binaries in 
 # their respective directories, we need to set the 
 # link directory so it can find this location.
 LINK_DIRECTORIES(
-	${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 INSTALL(
-	TARGETS OpenThreads
-	ARCHIVE DESTINATION lib${LIB_POSTFIX}
-	LIBRARY DESTINATION lib${LIB_POSTFIX}
-	RUNTIME DESTINATION bin
+    TARGETS OpenThreads
+    ARCHIVE DESTINATION lib${LIB_POSTFIX}
+    LIBRARY DESTINATION lib${LIB_POSTFIX}
+    RUNTIME DESTINATION bin
 )
 INSTALL(
-	FILES ${OpenThreads_PUBLIC_HEADERS}
-	DESTINATION include/OpenThreads
+    FILES ${OpenThreads_PUBLIC_HEADERS}
+    DESTINATION include/OpenThreads
 )
 
 #commented out# INCLUDE(ModuleInstall OPTIONAL)

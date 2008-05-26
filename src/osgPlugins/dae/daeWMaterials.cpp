@@ -126,10 +126,10 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         switch( wrap ) 
         {
         case osg::Texture::CLAMP:
+        case osg::Texture::CLAMP_TO_EDGE:
             wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_CLAMP );
             break;
         case osg::Texture::CLAMP_TO_BORDER:
-        case osg::Texture::CLAMP_TO_EDGE:
             wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_BORDER );
             break;
         case osg::Texture::REPEAT:
@@ -148,10 +148,10 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         switch( wrap ) 
         {
         case osg::Texture::CLAMP:
+        case osg::Texture::CLAMP_TO_EDGE:
             wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_CLAMP );
             break;
         case osg::Texture::CLAMP_TO_BORDER:
-        case osg::Texture::CLAMP_TO_EDGE:
             wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_BORDER );
             break;
         case osg::Texture::REPEAT:

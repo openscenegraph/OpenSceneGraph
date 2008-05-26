@@ -40,7 +40,8 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
         {
             READ_PIXELS,
             SINGLE_PBO,
-            DOUBLE_PBO
+            DOUBLE_PBO,
+            TRIPLE_PBO
         };
     
         enum FramePosition
@@ -57,7 +58,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                 _mode(mode),
                 _readBuffer(readBuffer),
                 _fileName(name),
-                _pixelFormat(GL_BGR),
+                _pixelFormat(GL_BGRA),
                 _type(GL_UNSIGNED_BYTE),
                 _width(0),
                 _height(0),
@@ -83,6 +84,12 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                         break;
                     case(DOUBLE_PBO): 
                         osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with a double buffer PixelBufferObject."<<std::endl;
+                        _pboBuffer.push_back(0); 
+                        _pboBuffer.push_back(0); 
+                        break;
+                    case(TRIPLE_PBO): 
+                        osg::notify(osg::NOTICE)<<"Reading window usig glReadPixels, with a double buffer PixelBufferObject."<<std::endl;
+                        _pboBuffer.push_back(0); 
                         _pboBuffer.push_back(0); 
                         _pboBuffer.push_back(0); 
                         break;
@@ -574,6 +581,7 @@ int main(int argc, char** argv)
     while (arguments.read("--no-pbo")) mode = WindowCaptureCallback::READ_PIXELS;
     while (arguments.read("--single-pbo")) mode = WindowCaptureCallback::SINGLE_PBO;
     while (arguments.read("--double-pbo")) mode = WindowCaptureCallback::DOUBLE_PBO;
+    while (arguments.read("--triple-pbo")) mode = WindowCaptureCallback::TRIPLE_PBO;
 
     
         

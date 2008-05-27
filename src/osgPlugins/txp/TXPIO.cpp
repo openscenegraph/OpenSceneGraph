@@ -36,7 +36,11 @@ bool TXPNode_readLocalData(osg::Object &obj, osgDB::Input &fr)
     if (fr.matchSequence("databaseName %s"))
     {
         txpNode.setArchiveName(fr[1].getStr());
-        txpNode.loadArchive();
+
+        //modified by Brad Anderegg on May-27-08
+        //this function now takes the archive to load as a parameter
+        //passing in NULL will have the same effect as before.
+        txpNode.loadArchive(NULL);
         
         fr += 2;
         itrAdvanced = true;
@@ -49,8 +53,8 @@ bool TXPNode_readLocalData(osg::Object &obj, osgDB::Input &fr)
 class Dump2Osg : public osg::NodeVisitor
 {
 public:
-	Dump2Osg( osgDB::Output &fw ) : osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ), _fw( fw )
-	{}
+    Dump2Osg( osgDB::Output &fw ) : osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ), _fw( fw )
+    {}
 
     virtual void apply(osg::Node& node)
     {
@@ -65,10 +69,10 @@ bool TXPNode_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const txp::TXPNode &txpNode = static_cast<const txp::TXPNode&>(obj);
 
-	if ( !txpNode.getOptions().empty() )
-		fw.indent() << "databaseOptions \"" << txpNode.getOptions() << "\"" << std::endl;
-	if ( !txpNode.getArchiveName().empty() )
-		fw.indent() << "databaseName \"" << txpNode.getArchiveName() << "\"" << std::endl;
+    if ( !txpNode.getOptions().empty() )
+        fw.indent() << "databaseOptions \"" << txpNode.getOptions() << "\"" << std::endl;
+    if ( !txpNode.getArchiveName().empty() )
+        fw.indent() << "databaseName \"" << txpNode.getArchiveName() << "\"" << std::endl;
 
     osg::Group* grp = const_cast<osg::Group*>(txpNode.asGroup());
 

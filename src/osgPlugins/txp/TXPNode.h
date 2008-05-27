@@ -65,14 +65,18 @@ public:
     const std::string& getOptions() const;
     const std::string& getArchiveName() const;
     
-    bool loadArchive();
+    //modified by Brad Anderegg on May-27-08
+    //because the TXPArchives are kept in an std::map and referenced later
+    //we do not want to create a new one, so we pass it in.
+    //If NULL is passed into loadArchive it will do the same thing it used to.
+    bool loadArchive(TXPArchive*);
     
     TXPArchive* getArchive();
 
-	void setArchive( TXPArchive* archive )
-	{
-		_archive = archive;
-	}
+    void setArchive( TXPArchive* archive )
+    {
+        _archive = archive;
+    }
     
     virtual osg::BoundingSphere computeBound() const;
     
@@ -86,18 +90,18 @@ protected:
     // Create a page lod for lod 0 with givin grid location (x,y)
     osg::Node* addPagedLODTile(int x, int y);
     
-    std::string			 _archiveName;
-    std::string			 _options;
+    std::string                     _archiveName;
+    std::string                     _options;
     
-    osg::ref_ptr<TXPArchive>     _archive;
-    osg::ref_ptr<TXPPageManager> _pageManager;
+    osg::ref_ptr<TXPArchive>        _archive;
+    osg::ref_ptr<TXPPageManager>    _pageManager;
     
-    double			 _originX;
-    double			 _originY;
-    osg::BoundingBox		 _extents;
+    double                          _originX;
+    double                          _originY;
+    osg::BoundingBox                _extents;
     
-    std::vector<osg::Node*>	 _nodesToAdd;
-    std::vector<osg::Node*>	 _nodesToRemove;
+    std::vector<osg::Node*>         _nodesToAdd;
+    std::vector<osg::Node*>         _nodesToRemove;
     
 };
 

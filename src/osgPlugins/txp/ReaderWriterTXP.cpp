@@ -49,21 +49,25 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
             txpNode->setOptions(options->getOptionString());
         }
         
-        if (txpNode->loadArchive())
-        {
-            TXPArchive* archive = txpNode->getArchive();
-            if (archive) 
-            {
-                if (options && options->getOptionString().find("loadMaterialsToStateSet")!=std::string::npos)
-                {
-                   archive->SetMaterialAttributesToStateSetVar(true);
-                }
 
-                int id = _archiveId++;
-                archive->setId(id);
-//                txpNode->setArchive(getArchive(id,osgDB::getFilePath(fileName)));
-                getArchive(id,osgDB::getFilePath(fileName));
+        //modified by Brad Anderegg on May-27-08
+        //calling getArchive will create a new TXPArchive if the specified one does not exist
+        //we will set our osgdb loader options on the archive and set the appropriate archive on 
+        //the txpNode.
+        int id = ++_archiveId;
+        TXPArchive* archive = getArchive(id,osgDB::getFilePath(fileName));
+
+        if (archive != NULL)
+        {
+            archive->setId(id);
+
+            if (options && options->getOptionString().find("loadMaterialsToStateSet")!=std::string::npos)
+            {
+               archive->SetMaterialAttributesToStateSetVar(true);
             }
+
+            txpNode->loadArchive(archive);
+            
             return txpNode.get();
         }
         else

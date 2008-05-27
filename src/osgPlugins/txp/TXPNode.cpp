@@ -26,7 +26,7 @@ class RetestCallback : public osg::NodeCallback
 public:
     RetestCallback()
     {
-	timer = osg::Timer::instance(); // get static timer
+        timer = osg::Timer::instance(); // get static timer
         prevTime = 0; // should this be instantiated with current time?
     }
 
@@ -38,7 +38,7 @@ public:
             (n = (osg::Group *) pLOD->getChild(0)) &&
             (n->getNumChildren() == 0))
         {
-	    osg::Timer_t curTime = timer->tick();
+            osg::Timer_t curTime = timer->tick();
             if ((prevTime + 2.0/timer->getSecondsPerTick() ) < curTime)
             {
                 prevTime = curTime;
@@ -64,7 +64,7 @@ _originX(0.0),
 _originY(0.0)
 {
     setNumChildrenRequiringUpdateTraversal(1);
-	setCullingActive(false);
+    setCullingActive(false);
 }
             
 TXPNode::TXPNode(const TXPNode& txpNode,const osg::CopyOp& copyop):
@@ -179,40 +179,32 @@ const std::string& TXPNode::getArchiveName() const
     return _archiveName;
 }
 
-bool TXPNode::loadArchive()
+bool TXPNode::loadArchive(TXPArchive* archive)
 {
-    if (_archive.get())
-    {
-        TXPNodeERROR("loadArchive()") << "archive already open" << std::endl;
-        return false;
-    }
+    //if (_archive.get())
+    //{
+    //    TXPNodeERROR("loadArchive()") << "archive already open" << std::endl;
+    //    return false;
+    //}
 
-    _archive = new TXPArchive;
-    if (_archive->openFile(_archiveName) == false)
-    {
-        TXPNodeERROR("loadArchive()") << "failed to load archive: \"" << _archiveName << "\"" << std::endl;
-        return false;
-    }
 
-    /*
-    if (_archive->loadMaterials() == false)
-    {
-        TXPNodeERROR("loadArchive()") << "failed to load materials from archive: \"" << _archiveName << "\"" << std::endl;
-        return false;
-    }
-
-    if (_archive->loadModels() == false)
-    {
-        TXPNodeERROR("loadArchive()") << "failed to load models from archive: \"" << _archiveName << "\"" << std::endl;
-        return false;
-    }
-
-    if (_archive->loadLightAttributes() == false)
-    {
-        TXPNodeERROR("loadArchive()") << "failed to load light attributes from archive: \"" << _archiveName << "\"" << std::endl;
-        return false;
-    }
-    */
+   //modified by Brad Anderegg on May-27-08
+   //if NULL is passed in we will create a new archive and open the database
+   //otherwise we will use the archive provided which should have already been loaded 
+   //by ReaderWriterTXP::getArchive(). See line 57-77 of ReaderWriterTXP.cpp.
+   if(archive == NULL)
+   {
+       _archive = new TXPArchive;
+       if (_archive->openFile(_archiveName) == false)
+       {
+           TXPNodeERROR("loadArchive()") << "failed to load archive: \"" << _archiveName << "\"" << std::endl;
+           return false;
+       }
+   }
+   else
+   {
+      _archive = archive;
+   } 
 
     _archive->getOrigin(_originX,_originY);
     _archive->getExtents(_extents);

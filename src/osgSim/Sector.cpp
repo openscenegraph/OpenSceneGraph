@@ -230,20 +230,15 @@ DirectionalSector::DirectionalSector(const osg::Vec3& direction,float horizLobeA
 
 void DirectionalSector::computeMatrix()
 {
-   float cR = cos(_rollAngle) ;
-   float sR = sin(_rollAngle) ;
+  double heading = atan2(_direction[0], _direction[1]);
+  double pitch   = atan2(_direction[2], sqrt(_direction[0]*_direction[0] + _direction[1]*_direction[1]));
+  double roll    = _rollAngle;
 
-   // Just for clarity
-   #define D _direction
-   
-   _local_to_LP.set(
-      cR*D[1]+sR*D[0]*D[2],    -cR*D[0]+sR*D[1]*D[2],   -sR*(D[0]*D[0]+D[1]*D[1]),    0.0,
-      D[0],                     D[1],                   D[2],                         0.0,
-      sR*D[1]-cR*D[0]*D[2],    -sR*D[0]-cR*D[1]*D[2],   cR*(D[0]*D[0]+D[1]*D[1]),     0.0,
-      0.0,                     0.0,                     0.0,                          1.0) ;
-
+  _local_to_LP = osg::Matrixd::identity();
+  _local_to_LP.preMult(osg::Matrix::rotate(heading, 0.0, 0.0, -1.0));
+  _local_to_LP.preMult(osg::Matrix::rotate(pitch, 1.0, 0.0, 0.0));
+  _local_to_LP.preMult(osg::Matrix::rotate(roll, 0.0, 1.0, 0.0));
 }
-      
 
 void DirectionalSector::setDirection(const osg::Vec3& direction)
 {

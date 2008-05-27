@@ -125,11 +125,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	          __void__cleanSceneGraph,
 	          "Clean scene graph from any terrain technique specific nodes. ",
 	          "");
-	I_Method0(void, dirty,
-	          Properties::VIRTUAL,
-	          __void__dirty,
-	          "Dirty so that cached data structures will be updated on next use. ",
-	          "");
 	I_Method1(void, setFilterBias, IN, float, filterBias,
 	          Properties::NON_VIRTUAL,
 	          __void__setFilterBias__float,

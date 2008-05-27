@@ -188,6 +188,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	          __bool__getTreatBoundariesToValidDataAsDefaultValue,
 	          "Get whether the TeatBoundariesToValidDataAsDefaultValue hint. ",
 	          "");
+	I_Method1(void, setDirty, IN, bool, dirty,
+	          Properties::NON_VIRTUAL,
+	          __void__setDirty__bool,
+	          "Set the dirty flag on/off. ",
+	          "");
+	I_Method0(bool, getDirty,
+	          Properties::NON_VIRTUAL,
+	          __bool__getDirty,
+	          "return true if the tile is dirty and needs to be updated, ",
+	          "");
 	I_Method0(osg::BoundingSphere, computeBound,
 	          Properties::VIRTUAL,
 	          __osg_BoundingSphere__computeBound,
@@ -200,6 +210,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	                0, 
 	                0, 
 	                0);
+	I_SimpleProperty(bool, Dirty, 
+	                 __bool__getDirty, 
+	                 __void__setDirty__bool);
 	I_SimpleProperty(osgTerrain::Layer *, ElevationLayer, 
 	                 __Layer_P1__getElevationLayer, 
 	                 __void__setElevationLayer__Layer_P1);

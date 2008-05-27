@@ -96,16 +96,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse the terrain subgraph. ",
 	          "");
-	I_Method0(void, dirty,
-	          Properties::VIRTUAL,
-	          __void__dirty,
-	          "Dirty so that cached data structures will be updated on next use. ",
-	          "");
-	I_Method0(bool, isDirty,
-	          Properties::VIRTUAL,
-	          __bool__isDirty,
-	          "Return true if cached data structures need updating. ",
-	          "");
+	I_ProtectedMethod1(void, setDirty, IN, bool, dirty,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setDirty__bool,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgTerrain::TerrainTile *, TerrainTile, 
 	                 __TerrainTile_P1__getTerrainTile, 
 	                 0);

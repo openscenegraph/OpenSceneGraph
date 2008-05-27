@@ -22,6 +22,8 @@
 #include <osg/ApplicationUsage>
 #include <osgText/Text>
 
+#include <osgUtil/Optimizer>
+
 #include "TXPParser.h"
 #include "TXPArchive.h"
 
@@ -150,8 +152,22 @@ osg::Group *TXPParser::parseScene(
     }
     _tileGroups.clear();
 
-    LayerVisitor lv;
-    _root->accept(lv);
+    try
+    {
+       LayerVisitor lv;
+       _root->accept(lv);
+
+       //modified by Brad Anderegg May-27-08
+       //running the optimizer on the terrain fixes some major preformance issues, unfortunately the texture atlas builder seems to get messed up 
+       //on some of the textures (usually around buildings) and the tri stripper seems to occasionally crash and also mess up the indices on certain buildings.
+       osgUtil::Optimizer opt;
+       opt.optimize(_root.get(), (osgUtil::Optimizer::ALL_OPTIMIZATIONS ^ osgUtil::Optimizer::TEXTURE_ATLAS_BUILDER) ^ osgUtil::Optimizer::TRISTRIP_GEOMETRY);
+    }
+    catch (...)
+    {
+       osg::notify(osg::NOTICE) << "txp::TXPParser::parseScene(): exception thrown in the osg::Optimizer" << std::endl;
+    }
+
 
     return _root.get();
 }
@@ -1433,10 +1449,11 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
 
     if (geometry.valid() && top)
     {
-        // added this set use display list off since terrapage will
-        // be creating and deleting these geometry leaves on the fly
-        // so we don't want to be creating short lived display lists either.
-        geometry->setUseDisplayList(false);
+
+       //modifed by Brad Anderegg on May-27-08
+       //using display lists actually increases our framerate by 
+       //a fair amount, on certain laptops it increased by as much as 1000%
+       geometry->setUseDisplayList(true);
 
         geometry->setVertexArray(vertices.get());
         if (normals.valid())

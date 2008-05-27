@@ -23,9 +23,9 @@ TerrainTile::TerrainTile():
     _terrain(0),
     _hasBeenTraversal(false),
     _requiresNormals(true),
-    _treatBoundariesToValidDataAsDefaultValue(false)
+    _treatBoundariesToValidDataAsDefaultValue(false),
+    _dirty(false)
 {
-    //setNumChildrenRequiringUpdateTraversal(1);
     setThreadSafeRefUnref(true);
 }
 
@@ -36,11 +36,13 @@ TerrainTile::TerrainTile(const TerrainTile& terrain,const osg::CopyOp& copyop):
     _elevationLayer(terrain._elevationLayer),
     _colorLayers(terrain._colorLayers),
     _requiresNormals(terrain._requiresNormals),
-    _treatBoundariesToValidDataAsDefaultValue(terrain._treatBoundariesToValidDataAsDefaultValue)
+    _treatBoundariesToValidDataAsDefaultValue(terrain._treatBoundariesToValidDataAsDefaultValue),
+    _dirty(false)
 {
-    //setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
-    
-    if (terrain.getTerrainTechnique()) setTerrainTechnique(dynamic_cast<TerrainTechnique*>(terrain.getTerrainTechnique()->cloneType()));
+    if (terrain.getTerrainTechnique()) 
+    {
+        setTerrainTechnique(dynamic_cast<TerrainTechnique*>(terrain.getTerrainTechnique()->cloneType()));
+    }
 }
 
 TerrainTile::~TerrainTile()
@@ -118,9 +120,11 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
 
 void TerrainTile::init()
 {
-    if (_terrainTechnique.valid() && _terrainTechnique->isDirty())
+    if (_terrainTechnique.valid() && getDirty())
     {
         _terrainTechnique->init();
+        
+        setDirty(false);
     }    
 }
 
@@ -128,13 +132,41 @@ void TerrainTile::setTerrainTechnique(TerrainTechnique* terrainTechnique)
 {
     if (_terrainTechnique == terrainTechnique) return; 
 
-    if (_terrainTechnique.valid()) _terrainTechnique->_terrainTile = 0;
+    int dirtyDelta = _dirty ? -1 : 0;
+
+    if (_terrainTechnique.valid()) 
+    {
+        _terrainTechnique->_terrainTile = 0;
+    }
 
     _terrainTechnique = terrainTechnique;
     
-    if (_terrainTechnique.valid()) _terrainTechnique->_terrainTile = this;
+    if (_terrainTechnique.valid()) 
+    {
+        _terrainTechnique->_terrainTile = this;
+        ++dirtyDelta;        
+    }
     
+    if (dirtyDelta>0) setDirty(true);
+    else if (dirtyDelta<0) setDirty(false);
 }
+
+void TerrainTile::setDirty(bool dirty)
+{
+    if (_dirty==dirty) return;
+
+    _dirty = dirty;
+
+    if (_dirty)
+    {
+        setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
+    }
+    else if (getNumChildrenRequiringUpdateTraversal()>0) 
+    {
+        setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
+    }
+}
+
 
 
 void TerrainTile::setElevationLayer(Layer* layer)

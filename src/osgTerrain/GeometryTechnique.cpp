@@ -101,7 +101,7 @@ void GeometryTechnique::setFilterMatrixAs(FilterType filterType)
 
 void GeometryTechnique::init()
 {
-    // osg::notify(osg::NOTICE)<<"Doing GeometryTechnique::init()"<<std::endl;
+    osg::notify(osg::INFO)<<"Doing GeometryTechnique::init()"<<std::endl;
     
     if (!_terrainTile) return;
 
@@ -119,8 +119,6 @@ void GeometryTechnique::init()
     // smoothGeometry();
 
     if (buffer._transform.valid()) buffer._transform->setThreadSafeRefUnref(true);
-
-    _dirty = false;    
 
     swapBuffers();
 }
@@ -777,7 +775,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
     // if app traversal update the frame count.
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
-        if (_dirty) _terrainTile->init();
+        if (_terrainTile->getDirty()) _terrainTile->init();
 
         osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
         if (uv)
@@ -798,7 +796,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
     }
 
 
-    if (_dirty) 
+    if (_terrainTile->getDirty()) 
     {
         osg::notify(osg::INFO)<<"******* Doing init ***********"<<std::endl;
         _terrainTile->init();
@@ -811,10 +809,5 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
 
 void GeometryTechnique::cleanSceneGraph()
 {
-}
-
-void GeometryTechnique::dirty()
-{
-    TerrainTechnique::dirty();
 }
 

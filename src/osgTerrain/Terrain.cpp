@@ -79,14 +79,7 @@ void Terrain::dirtyRegisteredTiles()
         itr != _terrainTileSet.end();
         ++itr)
     {
-        TerrainTechnique* tt = const_cast<TerrainTile*>(*itr)->getTerrainTechnique();
-    if(tt)
-    {
-        tt->dirty();
-
-            // Force recreation of Geometry
-        // const_cast<TerrainTile*>(*itr)->init();
-    }
+        (const_cast<TerrainTile*>(*itr))->setDirty(true);
     }
 }
 

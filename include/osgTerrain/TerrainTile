@@ -160,6 +160,11 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         /** Get whether the TeatBoundariesToValidDataAsDefaultValue hint.*/
         bool getTreatBoundariesToValidDataAsDefaultValue() const { return _treatBoundariesToValidDataAsDefaultValue; }
 
+        /** Set the dirty flag on/off.*/
+        void setDirty(bool dirty);
+
+        /** return true if the tile is dirty and needs to be updated,*/
+        bool getDirty() const { return _dirty; }
 
         /** Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers.*/
         virtual osg::BoundingSphere computeBound() const;
@@ -168,12 +173,14 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
         virtual ~TerrainTile();
 
+
         typedef std::vector< osg::ref_ptr<Layer> > Layers;
 
         friend class Terrain;
 
         Terrain*                            _terrain;
-
+        
+        bool                                _dirty;
         bool                                _hasBeenTraversal;
         
         TileID                              _tileID;

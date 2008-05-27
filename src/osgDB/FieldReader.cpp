@@ -184,10 +184,19 @@ bool FieldReader::_readField(Field* fieldPtr)
                     return fieldPtr && fieldPtr->getNoCharacters()!=0;
                 }
                 c = ch;
-                if (ch=='\\' && !escape)
+                if (ch=='\\')
                 {
-                    escape = true;
-                    _fin->ignore(1);
+                    if (escape)
+                    {
+                        escape = false;
+                        _fin->get(c);
+                        if (fieldPtr) fieldPtr->addChar(c);
+                    }
+                    else
+                    {                
+                        escape = true;
+                        _fin->ignore(1);
+                    }
                 }
                 else if (ch=='"')
                 {
@@ -237,8 +246,17 @@ bool FieldReader::_readField(Field* fieldPtr)
                 c = ch;
                 if (ch=='\\' && !escape)
                 {
-                    escape = true;
-                    _fin->ignore(1);
+                    if (escape)
+                    {
+                        escape = false;
+                        _fin->get(c);
+                        if (fieldPtr) fieldPtr->addChar(c);
+                    }
+                    else
+                    {                
+                        escape = true;
+                        _fin->ignore(1);
+                    }
                 }
                 else if (ch=='\'')
                 {

@@ -79,6 +79,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __float__getSampleRatio,
 	          "Get the sample ratio hint. ",
 	          "");
+	I_Method1(void, setVerticalScale, IN, float, scale,
+	          Properties::NON_VIRTUAL,
+	          __void__setVerticalScale__float,
+	          "Set the vertical scale hint. ",
+	          "");
+	I_Method0(float, getVerticalScale,
+	          Properties::NON_VIRTUAL,
+	          __float__getVerticalScale,
+	          "Get the vertical scale hint. ",
+	          "");
 	I_Method1(osgTerrain::TerrainTile *, getTile, IN, const osgTerrain::TileID &, tileID,
 	          Properties::NON_VIRTUAL,
 	          __TerrainTile_P1__getTile__C5_TileID_R1,
@@ -89,6 +99,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __C5_TerrainTile_P1__getTile__C5_TileID_R1,
 	          "Get the const TerrainTile for a given TileID. ",
 	          "");
+	I_ProtectedMethod0(void, dirtyRegisteredTiles,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__dirtyRegisteredTiles,
+	                   "",
+	                   "");
 	I_ProtectedMethod1(void, registerTerrainTile, IN, osgTerrain::TerrainTile *, tile,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -104,5 +120,8 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	I_SimpleProperty(float, SampleRatio, 
 	                 __float__getSampleRatio, 
 	                 __void__setSampleRatio__float);
+	I_SimpleProperty(float, VerticalScale, 
+	                 __float__getVerticalScale, 
+	                 __void__setVerticalScale__float);
 END_REFLECTOR
 

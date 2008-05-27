@@ -39,7 +39,7 @@ bool LineStipple_readLocalData(Object& obj, Input& fr)
     }
 
     unsigned int mask = linestipple.getPattern();
-    if (fr[0].matchWord("functionMask") && fr[1].getUInt(mask))
+    if (fr[0].matchWord("pattern") && fr[1].getUInt(mask))
     {
         linestipple.setPattern(mask);
         fr+=2;

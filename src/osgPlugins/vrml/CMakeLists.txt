@@ -11,7 +11,15 @@ ELSE(WIN32)
     SET(TARGET_LIBRARIES_VARS OPENVRML_LIBRARY)
 ENDIF(WIN32)
 
-SET(TARGET_SRC ReaderWriterVRML2.cpp )
+SET(TARGET_SRC 
+  IndexedFaceSet.cpp
+  Primitives.cpp
+  ReaderWriterVRML2.cpp 
+)
+
+SET(TARGET_H
+  ReaderWriterVRML2.h
+)
 
 #### end var setup  ###
 SETUP_PLUGIN(vrml)

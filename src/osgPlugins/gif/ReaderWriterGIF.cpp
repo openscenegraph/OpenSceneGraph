@@ -1,4 +1,5 @@
 #include <osg/Image>
+#include <osg/ImageStream>
 #include <osg/Notify>
 #include <osg/Geode>
 #include <osg/GL>
@@ -6,6 +7,8 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
+
+#include <OpenThreads/Thread>
 
 
 /****************************************************************************
@@ -56,6 +59,204 @@ extern  "C"
 #define ERR_MEM          3
 
 #define MY_GIF_DEBUG 1
+
+// GifImageStream class 
+class GifImageStream : public osg::ImageStream, public OpenThreads::Thread
+{
+public:
+    GifImageStream() 
+        : _length(0), _dataNum(0), _frameNum(0), 
+        _done(false), _currentLength(0), _multiplier(1.0),
+        osg::ImageStream() { _status=PAUSED; }
+    virtual Object* clone() const { return new GifImageStream; }
+    virtual bool isSameKindAs( const Object* obj ) const 
+    { return dynamic_cast<const GifImageStream*>(obj) != NULL; }
+    virtual const char* className() const { return "GifImageStream"; }
+
+    virtual void play() 
+    { 
+        if (!isRunning()) 
+            start();
+        _status=PLAYING; 
+    }
+
+    virtual void pause() { _status=PAUSED; }
+
+    virtual void rewind() { setReferenceTime( 0.0 ); }
+
+    virtual void quit( bool waitForThreadToExit=true ) 
+    {
+        _done = true;
+        if ( waitForThreadToExit )
+        {
+            while( isRunning() )
+                OpenThreads::Thread::YieldCurrentThread();
+            osg::notify(osg::DEBUG_INFO)<<"GifImageStream thread quitted"<<std::endl;
+        }
+    }
+
+    StreamStatus getStatus() { return _status; }
+    virtual double getLength() const { return _length*0.01*_multiplier; }
+
+    // Go to a specific position of stream
+    virtual void setReferenceTime( double time ) 
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+        int i=1;
+        int framePos = static_cast<int>(time*100.0/_multiplier);
+        if ( framePos>=(int)_length )
+            framePos = _length;
+
+        std::vector<FrameData*>::iterator it;
+        for ( it=_dataList.begin(); it!=_dataList.end(); it++,i++ )
+        {
+            framePos -= (*it)->delay;
+            if ( framePos<0 )
+                break;
+        }
+        _dataNum = i-1;
+        _frameNum = (*it)->delay+framePos;
+        setNewImage();
+    }
+    virtual double getReferenceTime() const { return _currentLength*0.01*_multiplier; }
+
+    // Speed up, slow down or back to normal (1.0)
+    virtual void setTimeMultiplier( double m ) 
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        if ( m>0 )
+            _multiplier = m;
+    }
+    virtual double getTimeMultiplier() const { return _multiplier; }
+    
+    // Not used in GIF animation
+    virtual void setVolume(float) {}
+    virtual float getVolume() const { return 0.0f; }
+
+    virtual void run()
+    {
+        _dataIter = _dataList.begin();
+
+        while ( !_done )
+        {
+            if ( _status==PLAYING && (*_dataIter) )
+            {
+                if ( _frameNum>=(*_dataIter)->delay )
+                {
+                    _frameNum = 0;
+                    if ( _dataNum>=_dataList.size()-1 )
+                    {
+                        if ( getLoopingMode()==LOOPING )
+                        {
+                            _dataNum = 0;
+                            _currentLength = 0;
+                        }
+                    }
+                    else
+                        _dataNum++;
+
+                    setNewImage();
+                }
+                else
+                {
+                    _frameNum++;
+                    _currentLength++;
+                }
+
+                OpenThreads::Thread::microSleep(static_cast<int>(10000.0f*_multiplier));
+            }
+            else
+                OpenThreads::Thread::microSleep(150000L);
+        }
+    }
+
+    void addToImageStream( int ss, int tt, int rr, int numComponents, int delayTime, unsigned char* imgData )
+    {
+        if ( isRunning() )
+        {
+            osg::notify(osg::WARN)<<"GifImageStream::addToImageStream: thread is running!"<<std::endl;
+            return;
+        }
+
+        _s = ss;
+        _t = tt;
+        _r = rr;
+        _internalFormat = numComponents;
+        _dataType = GL_UNSIGNED_BYTE;
+
+        _pixelFormat =
+            numComponents == 1 ? GL_LUMINANCE :
+            numComponents == 2 ? GL_LUMINANCE_ALPHA :
+            numComponents == 3 ? GL_RGB :
+            numComponents == 4 ? GL_RGBA : (GLenum)-1;
+
+        if ( _dataList.empty() )
+        {
+            // Set image texture for the first time
+            setImage(_s,_t,_r,_internalFormat,_pixelFormat,_dataType,
+                imgData,osg::Image::NO_DELETE,1);
+        }
+
+        FrameData* newData = new FrameData;
+        newData->delay = delayTime;
+        newData->data = imgData;
+        _dataList.push_back( newData );
+        _length += delayTime;
+    }
+
+protected:
+    typedef struct
+    {
+        unsigned int delay;
+        unsigned char* data;
+    } FrameData;
+
+    void setNewImage()
+    {
+        _dataIter = _dataList.begin()+_dataNum;
+
+        if ( *_dataIter )
+        {
+            unsigned char* image = (*_dataIter)->data;
+            setImage(_s,_t,_r,_internalFormat,_pixelFormat,_dataType,
+                image,osg::Image::NO_DELETE,1);
+            dirty();
+        }
+    }
+
+    virtual ~GifImageStream() 
+    {
+        if( isRunning() )
+            quit( true );
+
+        std::vector<FrameData*>::iterator it;
+        for ( it=_dataList.begin(); it!=_dataList.end(); it++ )
+        {
+            delete (*it)->data;
+            delete (*it);
+        }
+    }
+
+    double _multiplier;
+    unsigned int _currentLength;
+    unsigned int _length;
+
+    unsigned int _frameNum;
+    unsigned int _dataNum;
+    std::vector<FrameData*> _dataList;
+    std::vector<FrameData*>::iterator _dataIter;
+
+    int _s;
+    int _t;
+    int _r;
+    int _internalFormat;
+    unsigned int _pixelFormat;
+    unsigned int _dataType;
+
+    bool _done;
+    OpenThreads::Mutex _mutex;
+};
 
 static int giferror = ERR_NO_ERROR;
 
@@ -116,18 +317,28 @@ int transparent)
         col = *rowdata++;
                                  /* just in case */
         if (col >= colormapsize) col = 0;
-        cmentry = colormap ? &colormap->Colors[col] : NULL;
-        if (cmentry)
+        
+        if ( col == transparent )
         {
-            *ptr++ = cmentry->Red;
-            *ptr++ = cmentry->Green;
-            *ptr++ = cmentry->Blue;
+            // keep pixels of last image if transparent mode is on
+            // this is necessary for GIF animating 
+            ptr += 3;
         }
         else
         {
-            *ptr++ = col;
-            *ptr++ = col;
-            *ptr++ = col;
+            cmentry = colormap ? &colormap->Colors[col] : NULL;
+            if (cmentry)
+            {
+                *ptr++ = cmentry->Red;
+                *ptr++ = cmentry->Green;
+                *ptr++ = cmentry->Blue;
+            }
+            else
+            {
+                *ptr++ = col;
+                *ptr++ = col;
+                *ptr++ = col;
+            }
         }
         *ptr++ = (col == transparent ? 0x00 : 0xff);
     }
@@ -144,13 +355,14 @@ unsigned char *
 simage_gif_load(std::istream& fin,
 int *width_ret,
 int *height_ret,
-int *numComponents_ret)
+int *numComponents_ret,
+GifImageStream** obj)
 {
     int i, j, n, row, col, width, height, extcode;
     unsigned char * rowdata;
     unsigned char * buffer, * ptr;
     unsigned char bg;
-    int transparent;
+    int transparent, delaytime;
     GifRecordType recordtype;
     GifByteType * extension;
     GifFileType * giffile;
@@ -168,6 +380,7 @@ int *numComponents_ret)
     }
 
     transparent = -1;            /* no transparent color by default */
+    delaytime = 8;               /* delay time of a frame  */
 
     n = giffile->SHeight * giffile->SWidth;
     buffer = new unsigned char [n * 4];
@@ -210,6 +423,7 @@ int *numComponents_ret)
     }
 
     /* Scan the content of the GIF file and load the image(s) in: */
+    int gif_num=0;
     do
     {
         if (DGifGetRecordType(giffile, &recordtype) == GIF_ERROR)
@@ -222,6 +436,16 @@ int *numComponents_ret)
         switch (recordtype)
         {
             case IMAGE_DESC_RECORD_TYPE:
+                /* start recording image stream if more than one image found  */
+                gif_num++;
+                if ( gif_num==2 )
+                {
+                    *obj = new GifImageStream;
+                    (*obj)->addToImageStream( giffile->SWidth, giffile->SHeight, 1, 4, delaytime, buffer );
+                    unsigned char* destbuffer = new unsigned char [n * 4];
+                    buffer = (unsigned char*)memcpy( destbuffer, buffer, n*4 );
+                }
+
                 if (DGifGetImageDesc(giffile) == GIF_ERROR)
                 {
                     giferror = ERR_READ;
@@ -229,7 +453,7 @@ int *numComponents_ret)
                     delete [] rowdata;
                     return NULL;
                 }
-                                 /* subimage position in composite image */
+                /* subimage position in composite image */
                 row = giffile->Image.Top;
                 col = giffile->Image.Left;
                 width = giffile->Image.Width;
@@ -277,6 +501,16 @@ int *numComponents_ret)
                         else decode_row(giffile, buffer, rowdata, col, row, width, transparent);
                     }
                 }
+
+                // Record gif image stream 
+                if ( *obj && obj )
+                {
+                    (*obj)->addToImageStream( giffile->SWidth, giffile->SHeight, 1, 4, delaytime, buffer );
+                    unsigned char* destbuffer = new unsigned char [n * 4];
+                    buffer = (unsigned char*)memcpy( destbuffer, buffer, n*4 );
+                }
+
+
                 break;
             case EXTENSION_RECORD_TYPE:
                 /* Skip any extension blocks in file: */
@@ -292,6 +526,8 @@ int *numComponents_ret)
                 {
                     if (extension[0] >= 4 && extension[1] & 0x1) transparent = extension[4];
                     else transparent = -1;
+
+                    delaytime = (extension[3]<<8)+extension[2];    // minimum unit 1/100s, so 8 here means 8/100s 
                 }
                 while (extension != NULL)
                 {
@@ -336,7 +572,8 @@ class ReaderWriterGIF : public osgDB::ReaderWriter
             int height_ret;
             int numComponents_ret;
 
-            imageData = simage_gif_load(fin,&width_ret,&height_ret,&numComponents_ret);
+            GifImageStream* gifStream = NULL;
+            imageData = simage_gif_load( fin,&width_ret,&height_ret,&numComponents_ret, &gifStream );
 
             switch (giferror)
             {
@@ -346,6 +583,13 @@ class ReaderWriterGIF : public osgDB::ReaderWriter
                     return ReadResult("GIF loader: Error reading file");
                 case ERR_MEM:
                     return ReadResult("GIF loader: Out of memory error");
+            }
+
+            // Use GifImageStream to display animate GIFs 
+            if ( gifStream )
+            {
+                osg::notify(osg::DEBUG_INFO)<<"Using GifImageStream ..."<<std::endl;
+                return gifStream;
             }
 
             if (imageData==NULL) return ReadResult::FILE_NOT_HANDLED;

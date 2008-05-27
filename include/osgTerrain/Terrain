@@ -38,11 +38,25 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         
         /** Set the sample ratio hint that TerrainTile should use when building geometry.
           * Defaults to 1.0, which means use all original sample points.*/
-        void setSampleRatio(float ratio) { _sampleRatio  = ratio; }
+        void setSampleRatio(float ratio) 
+        { 
+            _sampleRatio  = ratio;
+            dirtyRegisteredTiles();
+        }
 
         /** Get the sample ratio hint.*/
         float getSampleRatio() const { return _sampleRatio; }
-        
+
+
+        /** Set the vertical scale hint.*/
+        void setVerticalScale(float scale) 
+        { 
+            _verticalScale = scale;
+            dirtyRegisteredTiles();
+        }
+    
+        /** Get the vertical scale hint.*/
+        float getVerticalScale() const { return _verticalScale; }
         
         /** Get the TerrainTile for a given TileID.*/
         TerrainTile* getTile(const TileID& tileID);
@@ -56,6 +70,8 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         
         friend class TerrainTile;
         
+        void dirtyRegisteredTiles();
+
         void registerTerrainTile(TerrainTile* tile);
         void unregisterTerrainTile(TerrainTile* tile);
 
@@ -63,6 +79,7 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         typedef std::set< TerrainTile* >            TerrainTileSet;
 
         float                               _sampleRatio;
+        float                               _verticalScale;
 
         mutable OpenThreads::Mutex          _mutex;
         TerrainTileSet                      _terrainTileSet;

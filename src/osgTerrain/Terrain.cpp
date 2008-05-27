@@ -18,13 +18,15 @@ using namespace osg;
 using namespace osgTerrain;
 
 Terrain::Terrain():
-    _sampleRatio(1.0)
+    _sampleRatio(1.0),
+    _verticalScale(1.0)
 {
 }
 
 Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
     osg::Group(ts,copyop),
-    _sampleRatio(ts._sampleRatio)
+    _sampleRatio(ts._sampleRatio),
+    _verticalScale(ts._verticalScale)
 {
 }
 
@@ -67,6 +69,25 @@ const TerrainTile* Terrain::getTile(const TileID& tileID) const
     if (itr != _terrainTileMap.end()) return 0;
     
     return itr->second;
+}
+
+void Terrain::dirtyRegisteredTiles()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
+    for(TerrainTileSet::iterator itr = _terrainTileSet.begin();
+        itr != _terrainTileSet.end();
+        ++itr)
+    {
+        TerrainTechnique* tt = const_cast<TerrainTile*>(*itr)->getTerrainTechnique();
+    if(tt)
+    {
+        tt->dirty();
+
+            // Force recreation of Geometry
+        // const_cast<TerrainTile*>(*itr)->init();
+    }
+    }
 }
 
 static unsigned int s_maxNumTiles = 0;

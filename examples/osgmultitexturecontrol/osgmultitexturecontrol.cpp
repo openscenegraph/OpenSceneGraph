@@ -181,6 +181,58 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
 };
 
 
+// class to handle events with a pick
+class TerrainHandler : public osgGA::GUIEventHandler {
+public: 
+
+    TerrainHandler(osgTerrain::Terrain* terrain):
+        _terrain(terrain) {}
+    
+    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
+    {
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+            {   
+                if (ea.getKey()=='r')
+                {
+                    _terrain->setSampleRatio(_terrain->getSampleRatio()*0.5);
+                    osg::notify(osg::NOTICE)<<"Sample ratio "<<_terrain->getSampleRatio()<<std::endl;
+                    return true;
+                }
+                else if (ea.getKey()=='R')
+                {
+                    _terrain->setSampleRatio(_terrain->getSampleRatio()/0.5);
+                    osg::notify(osg::NOTICE)<<"Sample ratio "<<_terrain->getSampleRatio()<<std::endl;
+                    return true;
+                }
+                else if (ea.getKey()=='v')
+                {
+                    _terrain->setVerticalScale(_terrain->getVerticalScale()*1.25);
+                    osg::notify(osg::NOTICE)<<"Vertical scale "<<_terrain->getVerticalScale()<<std::endl;
+                    return true;
+                }
+                else if (ea.getKey()=='V')
+                {
+                    _terrain->setVerticalScale(_terrain->getVerticalScale()/1.25);
+                    osg::notify(osg::NOTICE)<<"Vertical scale "<<_terrain->getVerticalScale()<<std::endl;
+                    return true;
+                }
+
+                return false;
+            }    
+            default:
+                return false;
+        }
+    }
+    
+protected:
+
+    ~TerrainHandler() {}
+
+    osg::ref_ptr<osgTerrain::Terrain>  _terrain;
+};
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -188,6 +240,12 @@ int main( int argc, char **argv )
    
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
+    
+    float verticalScale = 1.0f;
+    while(arguments.read("-v",verticalScale)) {}
+    
+    float sampleRatio = 1.0f;
+    while(arguments.read("-r",sampleRatio)) {}
 
 
     // add all the event handlers to the viewer
@@ -259,10 +317,15 @@ int main( int argc, char **argv )
         {
             terrain = new osgTerrain::Terrain;
             terrain->addChild(rootnode);
-            terrain->setSampleRatio(0.25f);
 
             rootnode = terrain;
         }    
+
+        terrain->setSampleRatio(sampleRatio);
+        terrain->setVerticalScale(verticalScale);
+
+        // register our custom handler for adjust Terrain settings        
+        viewer.addEventHandler(new TerrainHandler(terrain));
 
         osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(rootnode);
 

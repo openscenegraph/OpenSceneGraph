@@ -57,10 +57,6 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
 
         virtual void cleanSceneGraph();
 
-        virtual void dirty();
-        
-        
-        
         void setFilterBias(float filterBias);
         float getFilterBias() const { return _filterBias; }
         

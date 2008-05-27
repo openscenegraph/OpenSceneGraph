@@ -51,20 +51,15 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
         /** Traverse the terrain subgraph.*/
         virtual void traverse(osg::NodeVisitor& nv);
 
-        /** Dirty so that cached data structures will be updated on next use.*/
-        virtual void dirty();
-
-        /** Return true if cached data structures need updating.*/
-        virtual bool isDirty() const { return _dirty; }
-
     protected:
+    
+        void setDirty(bool dirty);
 
         virtual ~TerrainTechnique();
         
         friend class osgTerrain::TerrainTile;
 
         TerrainTile*    _terrainTile;
-        bool            _dirty;
 
 };
 

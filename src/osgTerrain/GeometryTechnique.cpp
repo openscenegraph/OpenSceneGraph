@@ -278,7 +278,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     
 
     float minHeight = 0.0;
-    float scaleHeight = 1.0;
+    float scaleHeight = _terrainTile->getTerrain() ? _terrainTile->getTerrain()->getVerticalScale() : 1.0f;
 
     // allocate and assign tex coords
     typedef std::pair< osg::ref_ptr<osg::Vec2Array>, Locator* > TexCoordLocatorPair;
@@ -341,7 +341,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 float value = 0.0f;
                 validValue = elevationLayer->getValidValue(i_equiv,j_equiv, value);
                 // osg::notify(osg::INFO)<<"i="<<i<<" j="<<j<<" z="<<value<<std::endl;
-                ndc.z() = value;
+                ndc.z() = value*scaleHeight;
             }
             
             if (validValue)
@@ -373,7 +373,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
                 if (elevations.valid())
                 {
-                    (*elevations).push_back((ndc.z()-minHeight)*scaleHeight);
+                    (*elevations).push_back(ndc.z());
                 }
 
                 // compute the local normal

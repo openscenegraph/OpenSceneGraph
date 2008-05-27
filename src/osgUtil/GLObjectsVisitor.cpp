@@ -125,6 +125,12 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
                 }
             }
         }
+        else if(_renderInfo.getState()->getLastAppliedProgramObject()){
+                            
+            GL2Extensions* extensions = GL2Extensions::Get(_renderInfo.getState()->getContextID(), true);
+            extensions->glUseProgram(0);
+            _renderInfo.getState()->setLastAppliedProgramObject(0);
+        }
         
     }
 

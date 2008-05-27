@@ -157,7 +157,7 @@ void PixelBufferX11::init()
     }
 
     // Just be paranoid, if we are older than 1.1, we cannot even call glxQueryExtensionString
-    if (1 < major || (1 == major && minor < 1))
+    if (major < 1 || (1 == major && minor < 1))
     {
         osg::notify(osg::NOTICE) << "Error: " << XDisplayName(_traits->displayName().c_str())
                                  << " GLX version " << major << "." << minor << " is too old." << std::endl;

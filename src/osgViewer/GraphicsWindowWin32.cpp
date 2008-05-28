@@ -1657,6 +1657,31 @@ bool GraphicsWindowWin32::makeCurrentImplementation()
         return false;
     }
 
+    // 2008/05/12
+    // Workaround for Bugs in NVidia drivers for windows XP / multithreaded / dualview / multicore CPU
+    // affects GeForce 6x00, 7x00, 8x00 boards (others were not tested) driver versions 174.xx - 175.xx
+    // pre 174.xx had other issues so reverting is not an option (statitistics, fbo)
+    // drivers release 175.16 is the latest currently available 
+    // 
+    // When using OpenGL in threaded app ( main thread sets up context / renderer thread draws using it )
+    // first wglMakeCurrent seems to not work right and screw OpenGL context driver data: 
+    // 1: succesive drawing shows a number of artifacts in TriangleStrips and TriangleFans 
+    // 2: weird behaviour of FramBufferObjects (glGenFramebuffer generates already generated ids ...)
+    // Looks like repeating wglMakeCurrent call fixes all these issues
+    // wglMakeCurrent call can impact performance so I try to minimize number of 
+    // wglMakeCurrent calls by checking current HDC and GL context
+    // and repeat wglMakeCurrent only when they change for current thread
+
+    if( ::wglGetCurrentDC() != _hdc ||
+        ::wglGetCurrentContext() != _hglrc ) 
+    { 
+        if (!::wglMakeCurrent(_hdc, _hglrc))
+        {
+            reportErrorForScreen("GraphicsWindowWin32::makeCurrentImplementation() - Unable to set current OpenGL rendering context", _traits->screenNum, ::GetLastError());
+            return false;
+        }
+    }
+
     if (!::wglMakeCurrent(_hdc, _hglrc))
     {
         reportErrorForScreen("GraphicsWindowWin32::makeCurrentImplementation() - Unable to set current OpenGL rendering context", _traits->screenNum, ::GetLastError());

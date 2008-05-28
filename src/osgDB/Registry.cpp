@@ -39,6 +39,9 @@
     using std::tolower;
 #endif
 
+#ifndef OSG_DEBUG_POSTFIX
+#define OSG_DEBUG_POSTFIX "d"
+#endif
 
 using namespace osg;
 using namespace osgDB;
@@ -603,7 +606,7 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
     return prepend+"mingw_"+"osgdb_"+lowercase_ext+".dll";
 #elif defined(WIN32)
     #ifdef _DEBUG
-        return prepend+"osgdb_"+lowercase_ext+"d.dll";
+        return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX +".dll";
     #else
         return prepend+"osgdb_"+lowercase_ext+".dll";
     #endif
@@ -613,7 +616,12 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
     // why don't we use PLUGIN_EXT from the makefiles here?
     return prepend+"osgdb_"+lowercase_ext+".sl";
 #else
-    return prepend+"osgdb_"+lowercase_ext+".so";
+    #ifdef _DEBUG
+#pragma message(OSG_DEBUG_POSTFIX)
+         return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX + ".so";
+    #else
+         return prepend+"osgdb_"+lowercase_ext+".so";
+    #endif
 #endif
 
 }
@@ -626,7 +634,7 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
     return "lib"+name+".dll";
 #elif defined(WIN32)
     #ifdef _DEBUG
-        return name+"d.dll";
+        return name+OSG_DEBUG_POSTFIX +".dll";
     #else
         return name+".dll";
     #endif
@@ -636,7 +644,11 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
     // why don't we use PLUGIN_EXT from the makefiles here?
     return "lib"+name+".sl";
 #else
-    return "lib"+name+".so";
+    #ifdef _DEBUG
+        return "lib"+name+OSG_DEBUG_POSTFIX +".so";
+    #else
+        return "lib"+name+".so";
+    #endif
 #endif
 }
 

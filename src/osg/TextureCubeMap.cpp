@@ -344,24 +344,21 @@ void TextureCubeMap::copyTexSubImageCubeMap(State& state, int face, int xoffset,
         bool hardwareMipMapOn = false;
         if (needHardwareMipMap)
         {
-            const Texture::Extensions* tex_extensions = Texture::getExtensions(contextID,true);
-            bool generateMipMapSupported = tex_extensions->isGenerateMipMapSupported();
-
-            hardwareMipMapOn = _useHardwareMipMapGeneration && generateMipMapSupported;
+            hardwareMipMapOn = isHardwareMipmapGenerationEnabled(state);
 
             if (!hardwareMipMapOn)
             {
-                // have to swtich off mip mapping
-                notify(NOTICE)<<"Warning: TextureCubeMap::copyTexImage2D(,,,,) switch of mip mapping as hardware support not available."<<std::endl;
+                // have to switch off mip mapping
+                notify(NOTICE)<<"Warning: TextureCubeMap::copyTexImage2D(,,,,) switch off mip mapping as hardware support not available."<<std::endl;
                 _min_filter = LINEAR;
             }
         }
 
-        if (hardwareMipMapOn) glTexParameteri( target, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
+        GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, hardwareMipMapOn);
 
         glCopyTexSubImage2D( target , 0, xoffset, yoffset, x, y, width, height);
 
-        if (hardwareMipMapOn) glTexParameteri( target, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
+        mipmapAfterTexImage(state, mipmapResult);
 
         // inform state that this texture is the current one bound.
         state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);

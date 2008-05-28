@@ -881,7 +881,7 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
     inwidth = width;
     inheight = height;
     
-    bool useHardwareMipMapGeneration = !image.isMipmap() && _useHardwareMipMapGeneration && extensions->isGenerateMipMapSupported();
+    bool useHardwareMipMapGeneration = !image.isMipmap() && isHardwareMipmapGenerationEnabled(state);
 
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
     {
@@ -933,8 +933,6 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
-    
-    bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
 
     // select the internalFormat required for the texture.
     bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
@@ -1035,16 +1033,17 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         pbo = 0;
     }
 
-    bool useHardwareMipMapGeneration = !image->isMipmap() && _useHardwareMipMapGeneration && generateMipMapSupported;
+    bool useHardwareMipMapGeneration = !image->isMipmap() && isHardwareMipmapGenerationEnabled(state);
     
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration)
     {
-        bool hardwareMipMapOn = false;
-        if (_min_filter != LINEAR && _min_filter != NEAREST) 
+
+        if (_min_filter == LINEAR || _min_filter == NEAREST) 
         {
-            if (useHardwareMipMapGeneration) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-            hardwareMipMapOn = true;
+            useHardwareMipMapGeneration = false;
         }
+
+        GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, useHardwareMipMapGeneration);
 
         if ( !compressed_image)
         {
@@ -1070,7 +1069,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                 data-dataMinusOffset+dataPlusOffset);                
         }
 
-        if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
+        mipmapAfterTexImage(state, mipmapResult);
     }
     else
     {
@@ -1219,8 +1218,6 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
-    
-    bool generateMipMapSupported = extensions->isGenerateMipMapSupported();
 
     // select the internalFormat required for the texture.
     bool compressed_image = isCompressedInternalFormat((GLenum)image->getPixelFormat());
@@ -1267,7 +1264,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         
     }    
 
-    bool useHardwareMipMapGeneration = !image->isMipmap() && _useHardwareMipMapGeneration && generateMipMapSupported;
+    bool useHardwareMipMapGeneration = !image->isMipmap() && isHardwareMipmapGenerationEnabled(state);
     
     unsigned char* dataMinusOffset=0;
     unsigned char* dataPlusOffset=0;
@@ -1290,13 +1287,9 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration)
     {
     
-        bool hardwareMipMapOn = false;
-        if (_min_filter != LINEAR && _min_filter != NEAREST) 
-        {
-            if (useHardwareMipMapGeneration) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_TRUE);
-            hardwareMipMapOn = true;
-        }
-        
+        bool hardwareMipMapOn = _min_filter != LINEAR && _min_filter != NEAREST;
+
+        GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, hardwareMipMapOn);
 
         if (!compressed_image)
         {
@@ -1321,7 +1314,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                 data - dataMinusOffset + dataPlusOffset );                
         }
 
-        if (hardwareMipMapOn) glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS,GL_FALSE);
+        mipmapAfterTexImage(state, mipmapResult);
     }
     else
     {
@@ -1405,6 +1398,62 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     }
 }
 
+bool Texture::isHardwareMipmapGenerationEnabled(const State& state) const
+{
+    if (_useHardwareMipMapGeneration)
+    {
+        unsigned int contextID = state.getContextID();
+        const Extensions* extensions = getExtensions(contextID,true);
+
+        if (extensions->isGenerateMipMapSupported())
+        {
+            return true;
+        }
+
+        const FBOExtensions* fbo_ext = FBOExtensions::instance(contextID,true);
+
+        if (fbo_ext->glGenerateMipmapEXT)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bool hardwareMipmapOn) const
+{
+    if (hardwareMipmapOn)
+    {
+        //GL_GENERATE_MIPMAP_SGIS with non-power-of-two textures on NVIDIA hardware
+        //is extremely slow. Use glGenerateMipmapEXT() instead if supported.
+        if (_internalFormatType != SIGNED_INTEGER &&
+            _internalFormatType != UNSIGNED_INTEGER &&
+            FBOExtensions::instance(state.getContextID(), true)->glGenerateMipmapEXT)
+        {
+            return GENERATE_MIPMAP;
+        }
+        else
+        {
+            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+            return GENERATE_MIPMAP_TEX_PARAMETER;
+        }
+    }
+    return GENERATE_MIPMAP_NONE;
+}
+
+void Texture::mipmapAfterTexImage(State& state, GenerateMipmapMode beforeResult) const
+{
+    switch (beforeResult)
+    {
+    case GENERATE_MIPMAP:
+        generateMipmap(state);
+        break;
+    case GENERATE_MIPMAP_TEX_PARAMETER:
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_FALSE);
+        break;
+    }
+}
 
 void Texture::generateMipmap(State& state) const
 {
@@ -1432,6 +1481,9 @@ void Texture::generateMipmap(State& state) const
     if (fbo_ext->glGenerateMipmapEXT)
     {
         textureObject->bind();
+        
+        // osg::notify(osg::NOTICE)<<"Using generate glGenerateMipmap"<<std::endl;
+        
         fbo_ext->glGenerateMipmapEXT(textureObject->_target);
         
         // inform state that this texture is the current one bound.
@@ -1455,7 +1507,12 @@ void Texture::generateMipmap(State& state) const
 
 void Texture::compileGLObjects(State& state) const
 {
+    // osg::Timer_t startTick = osg::Timer::instance()->tick();
+
     apply(state);
+
+    // osg::Timer_t endTick = osg::Timer::instance()->tick();
+    // osg::notify(osg::NOTICE)<<"compile time = "<<osg::Timer::instance()->delta_m(startTick, endTick)<<std::endl;;
 }
 
 void Texture::resizeGLObjectBuffers(unsigned int maxSize)

@@ -719,7 +719,25 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Helper method. Sets texture parameters. */
         void applyTexParameters(GLenum target, State& state) const;
 
-        /** Helper method to generate empty mipmap levels by calling of glGenerateMipmapEXT.
+        /** Returns true if _useHardwareMipMapGeneration is true and either
+          * glGenerateMipmapEXT() or GL_GENERATE_MIPMAP_SGIS are supported. */
+        bool isHardwareMipmapGenerationEnabled(const State& state) const;
+
+        /** Returned by mipmapBeforeTexImage() to indicate what
+          * mipmapAfterTexImage() should do */
+        enum GenerateMipmapMode
+        {
+            GENERATE_MIPMAP_NONE,
+            GENERATE_MIPMAP,
+            GENERATE_MIPMAP_TEX_PARAMETER
+        };
+
+        /** Helper methods to be called before and after calling
+          * gl[Compressed][Copy]Tex[Sub]Image2D to handle generating mipmaps. */
+        GenerateMipmapMode mipmapBeforeTexImage(const State& state, bool hardwareMipmapOn) const;
+        void mipmapAfterTexImage(State& state, GenerateMipmapMode beforeResult) const;
+
+        /** Helper method to generate mipmap levels by calling of glGenerateMipmapEXT.
           * If it is not supported, then call the virtual allocateMipmap() method */
         void generateMipmap(State& state) const;
 

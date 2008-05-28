@@ -32,6 +32,33 @@ typedef struct
     unsigned int Alpha;
 } pngInfo;
 
+class PNGError
+{
+public:
+    PNGError(const char* message)
+    {
+        _message = "PNG lib error : ";
+        _message += message;
+    }
+    friend std::ostream& operator<<(std::ostream& stream, const PNGError& err) 
+    {
+        stream << err._message;
+        return stream;
+    }
+private:
+    std::string _message;
+};
+
+void user_error_fn(png_structp png_ptr, png_const_charp error_msg)
+{
+    throw PNGError(error_msg);
+}
+
+void user_warning_fn(png_structp png_ptr, png_const_charp warning_msg)
+{
+    osg::notify(osg::WARN) << "PNG lib warning : " << warning_msg << std::endl;
+}
+
 void png_read_istream(png_structp png_ptr, png_bytep data, png_size_t length)
 {
     std::istream *stream = (std::istream*)png_get_io_ptr(png_ptr); //Get pointer to istream
@@ -131,137 +158,151 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
 
             png_uint_32 i;
             png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-            info = png_create_info_struct(png);
-            endinfo = png_create_info_struct(png);
+ 
+            // Set custom error handlers
+            png_set_error_fn(png, png_get_error_ptr(png), user_error_fn, user_warning_fn);
 
-            fin.read((char*)header,8);
-            if (fin.gcount() == 8 && png_check_sig(header, 8))
-                png_set_read_fn(png,&fin,png_read_istream); //Use custom read function that will get data from istream
-            else
+            try
             {
-                png_destroy_read_struct(&png, &info, &endinfo);
-                return ReadResult::FILE_NOT_HANDLED;
-            }
-            png_set_sig_bytes(png, 8);
 
-            png_read_info(png, info);
-            png_get_IHDR(png, info, &width, &height, &depth, &color, NULL, NULL, NULL);
+                info = png_create_info_struct(png);
+                endinfo = png_create_info_struct(png);
 
-            if (pinfo != NULL)
-            {
-                pinfo->Width  = width;
-                pinfo->Height = height;
-                pinfo->Depth  = depth;
-            }
-
-            osg::notify(osg::INFO)<<"width="<<width<<" height="<<height<<" depth="<<depth<<std::endl;
-            if ( color == PNG_COLOR_TYPE_RGB) osg::notify(osg::INFO) << "color == PNG_COLOR_TYPE_RGB "<<std::endl;
-            if ( color == PNG_COLOR_TYPE_GRAY) osg::notify(osg::INFO) << "color == PNG_COLOR_TYPE_GRAY "<<std::endl;
-            if ( color == PNG_COLOR_TYPE_GRAY_ALPHA) osg::notify(osg::INFO) << "color ==  PNG_COLOR_TYPE_GRAY_ALPHA"<<std::endl;
-
-            // png default to big endian, so we'll need to swap bytes if on a little endian machine.
-            if (depth>8 && getCpuByteOrder()==osg::LittleEndian)
-                png_set_swap(png);
-
-
-            if (color == PNG_COLOR_TYPE_GRAY || color == PNG_COLOR_TYPE_GRAY_ALPHA)
-            {
-                //png_set_gray_to_rgb(png);
-            }
-
-            if (color&PNG_COLOR_MASK_ALPHA && trans != PNG_ALPHA)
-            {
-                png_set_strip_alpha(png);
-                color &= ~PNG_COLOR_MASK_ALPHA;
-            }
-
-
-
-            //    if (!(PalettedTextures && mipmap >= 0 && trans == PNG_SOLID))
-            //if (color == PNG_COLOR_TYPE_PALETTE)
-            //    png_set_expand(png);
-
-            // In addition to expanding the palette, we also need to check
-            // to expand greyscale and alpha images.  See libpng man page.
-            if (color == PNG_COLOR_TYPE_PALETTE)
-                png_set_palette_to_rgb(png);
-            if (color == PNG_COLOR_TYPE_GRAY && depth < 8)
-                png_set_gray_1_2_4_to_8(png);
-            if (png_get_valid(png, info, PNG_INFO_tRNS))
-                png_set_tRNS_to_alpha(png);
-
-            // Make sure that files of small depth are packed properly.
-            if (depth < 8)
-                png_set_packing(png);
-
-
-            /*--GAMMA--*/
-            //    checkForGammaEnv();
-            double screenGamma = 2.2 / 1.0;
-            if (png_get_gAMA(png, info, &fileGamma))
-                png_set_gamma(png, screenGamma, fileGamma);
-            else
-                png_set_gamma(png, screenGamma, 1.0/2.2);
-
-            png_read_update_info(png, info);
-
-            data = (png_bytep) new unsigned char [png_get_rowbytes(png, info)*height];
-            row_p = new png_bytep [height];
-
-            bool StandardOrientation = true;
-            for (i = 0; i < height; i++)
-            {
-                if (StandardOrientation)
-                    row_p[height - 1 - i] = &data[png_get_rowbytes(png, info)*i];
+                fin.read((char*)header,8);
+                if (fin.gcount() == 8 && png_check_sig(header, 8))
+                    png_set_read_fn(png,&fin,png_read_istream); //Use custom read function that will get data from istream
                 else
-                    row_p[i] = &data[png_get_rowbytes(png, info)*i];
+                {
+                    png_destroy_read_struct(&png, &info, &endinfo);
+                    return ReadResult::FILE_NOT_HANDLED;
+                }
+                png_set_sig_bytes(png, 8);
+
+                png_read_info(png, info);
+                png_get_IHDR(png, info, &width, &height, &depth, &color, NULL, NULL, NULL);
+
+                if (pinfo != NULL)
+                {
+                    pinfo->Width  = width;
+                    pinfo->Height = height;
+                    pinfo->Depth  = depth;
+                }
+
+                osg::notify(osg::INFO)<<"width="<<width<<" height="<<height<<" depth="<<depth<<std::endl;
+                if ( color == PNG_COLOR_TYPE_RGB) osg::notify(osg::INFO) << "color == PNG_COLOR_TYPE_RGB "<<std::endl;
+                if ( color == PNG_COLOR_TYPE_GRAY) osg::notify(osg::INFO) << "color == PNG_COLOR_TYPE_GRAY "<<std::endl;
+                if ( color == PNG_COLOR_TYPE_GRAY_ALPHA) osg::notify(osg::INFO) << "color ==  PNG_COLOR_TYPE_GRAY_ALPHA"<<std::endl;
+
+                // png default to big endian, so we'll need to swap bytes if on a little endian machine.
+                if (depth>8 && getCpuByteOrder()==osg::LittleEndian)
+                    png_set_swap(png);
+
+
+                if (color == PNG_COLOR_TYPE_GRAY || color == PNG_COLOR_TYPE_GRAY_ALPHA)
+                {
+                    //png_set_gray_to_rgb(png);
+                }
+
+                if (color&PNG_COLOR_MASK_ALPHA && trans != PNG_ALPHA)
+                {
+                    png_set_strip_alpha(png);
+                    color &= ~PNG_COLOR_MASK_ALPHA;
+                }
+
+
+
+                //    if (!(PalettedTextures && mipmap >= 0 && trans == PNG_SOLID))
+                //if (color == PNG_COLOR_TYPE_PALETTE)
+                //    png_set_expand(png);
+
+                // In addition to expanding the palette, we also need to check
+                // to expand greyscale and alpha images.  See libpng man page.
+                if (color == PNG_COLOR_TYPE_PALETTE)
+                    png_set_palette_to_rgb(png);
+                if (color == PNG_COLOR_TYPE_GRAY && depth < 8)
+                    png_set_gray_1_2_4_to_8(png);
+                if (png_get_valid(png, info, PNG_INFO_tRNS))
+                    png_set_tRNS_to_alpha(png);
+
+                // Make sure that files of small depth are packed properly.
+                if (depth < 8)
+                    png_set_packing(png);
+
+
+                /*--GAMMA--*/
+                //    checkForGammaEnv();
+                double screenGamma = 2.2 / 1.0;
+                if (png_get_gAMA(png, info, &fileGamma))
+                    png_set_gamma(png, screenGamma, fileGamma);
+                else
+                    png_set_gamma(png, screenGamma, 1.0/2.2);
+
+                png_read_update_info(png, info);
+
+                data = (png_bytep) new unsigned char [png_get_rowbytes(png, info)*height];
+                row_p = new png_bytep [height];
+
+                bool StandardOrientation = true;
+                for (i = 0; i < height; i++)
+                {
+                    if (StandardOrientation)
+                        row_p[height - 1 - i] = &data[png_get_rowbytes(png, info)*i];
+                    else
+                        row_p[i] = &data[png_get_rowbytes(png, info)*i];
+                }
+
+                png_read_image(png, row_p);
+                delete [] row_p;
+                png_read_end(png, endinfo);
+
+                GLenum pixelFormat = 0;
+                GLenum dataType = depth<=8?GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT;
+                switch(color)
+                {
+                  case(PNG_SOLID): pixelFormat = GL_LUMINANCE; break;
+                  case(PNG_ALPHA): pixelFormat = GL_ALPHA; break;
+                  case(PNG_COLOR_TYPE_GRAY): pixelFormat =GL_LUMINANCE ; break;
+                  case(PNG_COLOR_TYPE_GRAY_ALPHA): pixelFormat = GL_LUMINANCE_ALPHA; break;
+                  case(PNG_COLOR_TYPE_RGB): pixelFormat = GL_RGB; break;
+                  case(PNG_COLOR_TYPE_PALETTE): pixelFormat = GL_RGB; break;
+                  case(PNG_COLOR_TYPE_RGB_ALPHA): pixelFormat = GL_RGBA; break;
+                  default: break;                
+                }
+
+                // Some paletted images contain alpha information.  To be
+                // able to give that back to the calling program, we need to
+                // check the number of channels in the image.  However, the
+                // call might not return correct information unless
+                // png_read_end is called first.  See libpng man page.
+                if (pixelFormat == GL_RGB && png_get_channels(png, info) == 4)
+                    pixelFormat = GL_RGBA;
+
+                int internalFormat = pixelFormat;
+
+                png_destroy_read_struct(&png, &info, &endinfo);
+
+                //    delete [] data;
+
+                if (pixelFormat==0) 
+                    return ReadResult::FILE_NOT_HANDLED;
+
+                osg::Image* pOsgImage = new osg::Image();
+
+                pOsgImage->setImage(width, height, 1,
+                    internalFormat,
+                    pixelFormat, 
+                    dataType,
+                    data,
+                    osg::Image::USE_NEW_DELETE);
+
+                return pOsgImage;
             }
-
-            png_read_image(png, row_p);
-            delete [] row_p;
-            png_read_end(png, endinfo);
-
-            GLenum pixelFormat = 0;
-            GLenum dataType = depth<=8?GL_UNSIGNED_BYTE:GL_UNSIGNED_SHORT;
-            switch(color)
+            catch (PNGError& err)
             {
-              case(PNG_SOLID): pixelFormat = GL_LUMINANCE; break;
-              case(PNG_ALPHA): pixelFormat = GL_ALPHA; break;
-              case(PNG_COLOR_TYPE_GRAY): pixelFormat =GL_LUMINANCE ; break;
-              case(PNG_COLOR_TYPE_GRAY_ALPHA): pixelFormat = GL_LUMINANCE_ALPHA; break;
-              case(PNG_COLOR_TYPE_RGB): pixelFormat = GL_RGB; break;
-              case(PNG_COLOR_TYPE_PALETTE): pixelFormat = GL_RGB; break;
-              case(PNG_COLOR_TYPE_RGB_ALPHA): pixelFormat = GL_RGBA; break;
-              default: break;                
+                osg::notify(osg::WARN) << err << std::endl;
+                png_destroy_read_struct(&png, &info, &endinfo);
+                return ReadResult::ERROR_IN_READING_FILE;
             }
-
-            // Some paletted images contain alpha information.  To be
-            // able to give that back to the calling program, we need to
-            // check the number of channels in the image.  However, the
-            // call might not return correct information unless
-            // png_read_end is called first.  See libpng man page.
-            if (pixelFormat == GL_RGB && png_get_channels(png, info) == 4)
-                pixelFormat = GL_RGBA;
-
-            int internalFormat = pixelFormat;
-
-            png_destroy_read_struct(&png, &info, &endinfo);
-
-            //    delete [] data;
-
-            if (pixelFormat==0) 
-                return ReadResult::FILE_NOT_HANDLED;
-
-            osg::Image* pOsgImage = new osg::Image();
-
-            pOsgImage->setImage(width, height, 1,
-                internalFormat,
-                pixelFormat, 
-                dataType,
-                data,
-                osg::Image::USE_NEW_DELETE);
-
-            return pOsgImage;
         }
 
         int getCompressionLevel(const osgDB::ReaderWriter::Options *options) const

@@ -1425,19 +1425,26 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
 {
     if (hardwareMipmapOn)
     {
-        //GL_GENERATE_MIPMAP_SGIS with non-power-of-two textures on NVIDIA hardware
-        //is extremely slow. Use glGenerateMipmapEXT() instead if supported.
-        if (_internalFormatType != SIGNED_INTEGER &&
-            _internalFormatType != UNSIGNED_INTEGER &&
-            FBOExtensions::instance(state.getContextID(), true)->glGenerateMipmapEXT)
+        int width = getTextureWidth();
+        int height = getTextureHeight();
+
+        //quick bithack to determine whether width or height are non-power-of-two
+        if ((width & (width - 1)) || (height & (height - 1)))
         {
-            return GENERATE_MIPMAP;
+            //GL_GENERATE_MIPMAP_SGIS with non-power-of-two textures on NVIDIA hardware
+            //is extremely slow. Use glGenerateMipmapEXT() instead if supported.
+            if (_internalFormatType != SIGNED_INTEGER &&
+                _internalFormatType != UNSIGNED_INTEGER)
+            {
+                if (FBOExtensions::instance(state.getContextID(), true)->glGenerateMipmapEXT)
+                {
+                    return GENERATE_MIPMAP;
+                }
+            }
         }
-        else
-        {
-            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-            return GENERATE_MIPMAP_TEX_PARAMETER;
-        }
+
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+        return GENERATE_MIPMAP_TEX_PARAMETER;
     }
     return GENERATE_MIPMAP_NONE;
 }
@@ -1447,7 +1454,15 @@ void Texture::mipmapAfterTexImage(State& state, GenerateMipmapMode beforeResult)
     switch (beforeResult)
     {
     case GENERATE_MIPMAP:
-        generateMipmap(state);
+        {
+            unsigned int contextID = state.getContextID();
+            TextureObject* textureObject = getTextureObject(contextID);
+            if (textureObject)
+            {
+                osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(contextID, true);
+                fbo_ext->glGenerateMipmapEXT(textureObject->_target);
+            }
+        }
         break;
     case GENERATE_MIPMAP_TEX_PARAMETER:
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_FALSE);
@@ -1481,9 +1496,6 @@ void Texture::generateMipmap(State& state) const
     if (fbo_ext->glGenerateMipmapEXT)
     {
         textureObject->bind();
-        
-        // osg::notify(osg::NOTICE)<<"Using generate glGenerateMipmap"<<std::endl;
-        
         fbo_ext->glGenerateMipmapEXT(textureObject->_target);
         
         // inform state that this texture is the current one bound.
@@ -1507,12 +1519,7 @@ void Texture::generateMipmap(State& state) const
 
 void Texture::compileGLObjects(State& state) const
 {
-    // osg::Timer_t startTick = osg::Timer::instance()->tick();
-
     apply(state);
-
-    // osg::Timer_t endTick = osg::Timer::instance()->tick();
-    // osg::notify(osg::NOTICE)<<"compile time = "<<osg::Timer::instance()->delta_m(startTick, endTick)<<std::endl;;
 }
 
 void Texture::resizeGLObjectBuffers(unsigned int maxSize)

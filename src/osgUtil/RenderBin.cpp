@@ -317,6 +317,8 @@ void RenderBin::copyLeavesFromStateGraphListToRenderLeafList()
 
     _renderLeafList.reserve(totalsize);
     
+    bool detectedNaN = false;
+        
     // first copy all the leaves from the render graphs into the leaf list.
     for(itr=_stateGraphList.begin();
         itr!=_stateGraphList.end();
@@ -326,9 +328,18 @@ void RenderBin::copyLeavesFromStateGraphListToRenderLeafList()
             dw_itr != (*itr)->_leaves.end();
             ++dw_itr)
         {
-            _renderLeafList.push_back(dw_itr->get());
+            if (!osg::isNaN((*dw_itr)->_depth))
+            {
+                _renderLeafList.push_back(dw_itr->get());
+            }
+            else
+            {
+                detectedNaN = true;
+            }
         }
     }
+    
+    osg::notify(osg::NOTICE)<<"Warning: RenderBin::copyLeavesFromStateGraphListToRenderLeafList() detected NaN depth values, database may be corrupted."<<std::endl;
     
     // empty the render graph list to prevent it being drawn along side the render leaf list (see drawImplementation.)
     _stateGraphList.clear();

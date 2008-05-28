@@ -12,8 +12,10 @@
 
 #include <osg/CopyOp>
 #include <osg/Geode>
+#include <osg/Light>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/Vec2>
 #include <osg/Vec2f>
 #include <osgShadow/ParallelSplitShadowMap>
 #include <osgUtil/CullVisitor>
@@ -112,11 +114,6 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
 	          __void__setMoveVCamBehindRCamFactor__double,
 	          "Set the factor for moving the virtual camera behind the real camera. ",
 	          "");
-	I_Method0(void, forceFrontCullFace,
-	          Properties::NON_VIRTUAL,
-	          __void__forceFrontCullFace,
-	          "Force to add a cull face front. ",
-	          "");
 	I_Method1(void, setMinNearDistanceForSplits, IN, double, nd,
 	          Properties::NON_VIRTUAL,
 	          __void__setMinNearDistanceForSplits__double,
@@ -127,12 +124,25 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
 	          __void__useLinearSplit__bool,
 	          "use linear split (default: linear) ",
 	          "");
+	I_Method1(void, setUserLight, IN, osg::Light *, light,
+	          Properties::NON_VIRTUAL,
+	          __void__setUserLight__osg_Light_P1,
+	          "set a user defined light for shadow simulation (sun light, . ",
+	          ".. ) when this light get passed to pssm, the scene's light are no longer collected and simulated. just this user passed light, it needs to be a directional light. ");
+	I_Method1(void, setAmbientBias, IN, const osg::Vec2 &, ambientBias,
+	          Properties::NON_VIRTUAL,
+	          __void__setAmbientBias__C5_osg_Vec2_R1,
+	          "Set the values for the ambient bias the shader will use. ",
+	          "");
 	I_ProtectedMethod2(std::string, generateGLSL_FragmentShader_BaseTex, IN, bool, debug, IN, unsigned int, splitCount,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __std_string__generateGLSL_FragmentShader_BaseTex__bool__unsigned_int,
 	                   "",
 	                   "");
+	I_SimpleProperty(const osg::Vec2 &, AmbientBias, 
+	                 0, 
+	                 __void__setAmbientBias__C5_osg_Vec2_R1);
 	I_SimpleProperty(double, MaxFarDistance, 
 	                 0, 
 	                 __void__setMaxFarDistance__double);
@@ -148,5 +158,8 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
 	I_SimpleProperty(unsigned int, TextureResolution, 
 	                 0, 
 	                 __void__setTextureResolution__unsigned_int);
+	I_SimpleProperty(osg::Light *, UserLight, 
+	                 0, 
+	                 __void__setUserLight__osg_Light_P1);
 END_REFLECTOR
 

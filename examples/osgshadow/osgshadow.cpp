@@ -502,10 +502,8 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--minNearSplit", "ParallelSplitShadowMap shadow map near offset.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--maxFarDist", "ParallelSplitShadowMap max far distance to shadow.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--moveVCamFactor", "ParallelSplitShadowMap move the virtual frustum behind the real camera, (also back ground object can cast shadow).");//ADEGLI
-    arguments.getApplicationUsage()->addCommandLineOption("--NVidia", "ParallelSplitShadowMap set default PolygonOffset for NVidia.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Factor", "ParallelSplitShadowMap set PolygonOffset factor.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Unit", "ParallelSplitShadowMap set PolygonOffset unit.");//ADEGLI
-    arguments.getApplicationUsage()->addCommandLineOption("--CullFaceFront", "ParallelSplitShadowMap add a cull face: front.");//ADEGLI
 
 
     arguments.getApplicationUsage()->addCommandLineOption("-1", "Use test model one.");
@@ -626,20 +624,12 @@ int main(int argc, char** argv)
             }
 
 
-        double polyoffsetfactor = -0.02;
-        double polyoffsetunit = 1.0;
+        
+        double polyoffsetfactor = pssm->getPolygonOffset().x();
+        double polyoffsetunit   = pssm->getPolygonOffset().y();
         while (arguments.read("--PolyOffset-Factor", polyoffsetfactor));
         while (arguments.read("--PolyOffset-Unit", polyoffsetunit));
-        pssm->setPolygonOffset(osg::Vec2(polyoffsetfactor,polyoffsetunit)); //ATI Radeon
-
-        if (arguments.read("--NVidia")){
-            //pssm->setPolygonOffset(osg::Vec2(-0.02,1.0)); //ATI Radeon
-            pssm->setPolygonOffset(osg::Vec2(10.0f,20.0f)); //NVidia
-        }
-
-        if ( arguments.read("--CullFaceFront") ) {
-            pssm->forceFrontCullFace();
-        }
+        pssm->setPolygonOffset(osg::Vec2(polyoffsetfactor,polyoffsetunit)); 
 
         shadowedScene->setShadowTechnique(pssm.get());
     }
@@ -761,7 +751,7 @@ int main(int argc, char** argv)
 
 
     // osgDB::writeNodeFile(*group,"test.osg");
-
+ 
     while (!viewer.done())
     {
         if (updateLightPosition)

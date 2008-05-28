@@ -1847,6 +1847,9 @@ void GraphicsWindowWin32::setCursor( MouseCursor mouseCursor )
 
     _currentCursor = newCursor;
     _traits->useCursor = (_currentCursor != NULL);
+
+    if (_mouseCursor != InheritCursor)
+        ::SetCursor(_currentCursor);
 }
 
 HCURSOR GraphicsWindowWin32::getOrCreateCursor(MouseCursor mouseCursor)

@@ -815,8 +815,16 @@ void CullVisitor::apply(Geode& node)
             }
         }
 
-        if (bb.valid()) addDrawableAndDepth(drawable,&matrix,distance(bb.center(),matrix));
-        else addDrawableAndDepth(drawable,&matrix,0.0f);
+        float depth = bb.valid() ? distance(bb.center(),matrix) : 0.0f;
+        
+        if (osg::isNaN(depth))
+        {
+            osg::notify(osg::NOTICE)<<"CullVisitor::apply(Geode& node) detected NaN,"<<std::endl
+                                    <<"    depth="<<depth<<", center=("<<bb.center()<<"),"<<std::endl
+                                    <<"    matrix="<<matrix<<std::endl;
+        }
+        
+        addDrawableAndDepth(drawable,&matrix,depth);
 
         for(unsigned int i=0;i< numPopStateSetRequired; ++i)
         {
@@ -865,7 +873,7 @@ void CullVisitor::apply(Billboard& node)
 
 
         if (_computeNearFar && drawable->getBound().valid()) updateCalculatedNearFar(*billboard_matrix,*drawable,true);
-        float d = distance(pos,modelview);
+        float depth = distance(pos,modelview);
 /*
         if (_computeNearFar)
         {
@@ -880,7 +888,12 @@ void CullVisitor::apply(Billboard& node)
         StateSet* stateset = drawable->getStateSet();
         if (stateset) pushStateSet(stateset);
         
-        addDrawableAndDepth(drawable,billboard_matrix,d);
+        if (osg::isNaN(depth))
+        {
+            osg::notify(osg::NOTICE)<<"CullVisitor::apply(Geode& node) detected NaN in depth "<<depth<<std::endl;
+        }
+
+        addDrawableAndDepth(drawable,billboard_matrix,depth);
 
         if (stateset) popStateSet();
 

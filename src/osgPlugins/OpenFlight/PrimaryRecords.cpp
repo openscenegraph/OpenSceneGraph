@@ -31,6 +31,10 @@
 #include <osgSim/MultiSwitch>
 #include <osgSim/GeographicLocation>
 #include <osgSim/ObjectRecordData>
+
+#include <osg/Notify>
+#include <osg/io_utils>
+
 #include "Registry.h"
 #include "Document.h"
 #include "RecordInputStream.h"
@@ -385,9 +389,21 @@ protected:
         osg::Vec3 yAxis = zAxis ^ xAxis;
 
         // normalize
-        xAxis.normalize();
-        yAxis.normalize();
-        zAxis.normalize();
+        float length_x = xAxis.normalize();
+        float length_y = yAxis.normalize();
+        float length_z = zAxis.normalize();
+        
+        if ((length_x*length_y*length_z)==0.0f)
+        {
+            osg::notify(osg::NOTICE)<<"Warning: OpenFlight DegreeOfFreedom::readRecord() found erroneous axis definition:"<<std::endl;
+            osg::notify(osg::NOTICE)<<"    localOrigin="<<localOrigin<<std::endl;
+            osg::notify(osg::NOTICE)<<"    pointOnXAxis="<<pointOnXAxis<<std::endl;
+            osg::notify(osg::NOTICE)<<"    pointInXYPlane="<<pointInXYPlane<<std::endl;
+            
+            xAxis.set(1.0f,0.0f,0.0f);
+            yAxis.set(0.0f,1.0f,0.0f);
+            zAxis.set(0.0f,0.0f,1.0f);
+        }
 
         // scale origin
         osg::Vec3 origin = localOrigin * document.unitScale();
@@ -397,6 +413,7 @@ protected:
                                yAxis.x(), yAxis.y(), yAxis.z(), 0.0,
                                zAxis.x(), zAxis.y(), zAxis.z(), 0.0,
                                origin.x(), origin.y(), origin.z(), 1.0);
+
 
         _dof->setInversePutMatrix(inv_putmat);
         _dof->setPutMatrix(osg::Matrix::inverse(inv_putmat));

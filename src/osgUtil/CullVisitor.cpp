@@ -819,12 +819,14 @@ void CullVisitor::apply(Geode& node)
         
         if (osg::isNaN(depth))
         {
-            osg::notify(osg::NOTICE)<<"CullVisitor::apply(Geode& node) detected NaN,"<<std::endl
+            osg::notify(osg::NOTICE)<<"CullVisitor::apply(Geode&) detected NaN,"<<std::endl
                                     <<"    depth="<<depth<<", center=("<<bb.center()<<"),"<<std::endl
                                     <<"    matrix="<<matrix<<std::endl;
         }
-        
-        addDrawableAndDepth(drawable,&matrix,depth);
+        else
+        {        
+            addDrawableAndDepth(drawable,&matrix,depth);
+        }
 
         for(unsigned int i=0;i< numPopStateSetRequired; ++i)
         {
@@ -890,10 +892,14 @@ void CullVisitor::apply(Billboard& node)
         
         if (osg::isNaN(depth))
         {
-            osg::notify(osg::NOTICE)<<"CullVisitor::apply(Geode& node) detected NaN in depth "<<depth<<std::endl;
+            osg::notify(osg::NOTICE)<<"CullVisitor::apply(Billboard&) detected NaN,"<<std::endl
+                                    <<"    depth="<<depth<<", pos=("<<pos<<"),"<<std::endl
+                                    <<"    *billboard_matrix="<<*billboard_matrix<<std::endl;
         }
-
-        addDrawableAndDepth(drawable,billboard_matrix,depth);
+        else
+        {        
+            addDrawableAndDepth(drawable,billboard_matrix,depth);
+        }
 
         if (stateset) popStateSet();
 

@@ -339,7 +339,7 @@ void RenderBin::copyLeavesFromStateGraphListToRenderLeafList()
         }
     }
     
-    osg::notify(osg::NOTICE)<<"Warning: RenderBin::copyLeavesFromStateGraphListToRenderLeafList() detected NaN depth values, database may be corrupted."<<std::endl;
+    if (detectedNaN) osg::notify(osg::NOTICE)<<"Warning: RenderBin::copyLeavesFromStateGraphListToRenderLeafList() detected NaN depth values, database may be corrupted."<<std::endl;
     
     // empty the render graph list to prevent it being drawn along side the render leaf list (see drawImplementation.)
     _stateGraphList.clear();

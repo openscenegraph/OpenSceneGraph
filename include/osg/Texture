@@ -704,6 +704,15 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * unless you're implementing a subload callback. */
         void applyTexImage2D_subload(State& state, GLenum target, const Image* image, GLsizei width, GLsizei height, GLint inInternalFormat, GLsizei numMipmapLevels) const;
 
+        /** Returned by mipmapBeforeTexImage() to indicate what
+          * mipmapAfterTexImage() should do */
+        enum GenerateMipmapMode
+        {
+            GENERATE_MIPMAP_NONE,
+            GENERATE_MIPMAP,
+            GENERATE_MIPMAP_TEX_PARAMETER
+        };
+
     protected :
 
         virtual ~Texture();
@@ -722,15 +731,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Returns true if _useHardwareMipMapGeneration is true and either
           * glGenerateMipmapEXT() or GL_GENERATE_MIPMAP_SGIS are supported. */
         bool isHardwareMipmapGenerationEnabled(const State& state) const;
-
-        /** Returned by mipmapBeforeTexImage() to indicate what
-          * mipmapAfterTexImage() should do */
-        enum GenerateMipmapMode
-        {
-            GENERATE_MIPMAP_NONE,
-            GENERATE_MIPMAP,
-            GENERATE_MIPMAP_TEX_PARAMETER
-        };
 
         /** Helper methods to be called before and after calling
           * gl[Compressed][Copy]Tex[Sub]Image2D to handle generating mipmaps. */

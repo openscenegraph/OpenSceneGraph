@@ -1,3 +1,17 @@
+2008-05-30 21:08 +0000 [r8393]  robert:
+
+	* Added version check on FIND_PACKAGE(PkgConfig) to attempt to fix
+	  build with older versions of CMake
+
+2008-05-30 20:15 +0000 [r8392]  robert:
+
+	* Added applyMaskAction(CLEAR_COLOR) to Camera::setClearColor() to
+	  enable proper inheritance
+
+2008-05-30 17:03 +0000 [r8391]  robert:
+
+	* Updated ChangeLog
+
 2008-05-30 16:53 +0000 [r8390]  robert:
 
 	* From Jean-Sebastien Guay, "This is a fix for the warning we've

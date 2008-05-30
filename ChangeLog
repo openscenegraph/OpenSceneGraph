@@ -1,3 +1,621 @@
+2008-05-30 16:53 +0000 [r8390]  robert:
+
+	* From Jean-Sebastien Guay, "This is a fix for the warning we've
+	  been discussing on osg-users. CMake 2.6.0 allows quotes to be
+	  unescaped in strings in ADD_DEFINITIONS statements, where we had
+	  to escape them before (CMake 2.4.x). Setting CMake policy CMP0005
+	  to OLD removes the warning for 2.6.0, and the quotes are still
+	  escaped, so it still works with 2.4.x. "
+
+2008-05-30 12:59 +0000 [r8389]  robert:
+
+	* From Luc Frauciel, Added support for
+	  osgTerrain::ValidDataOperator. From Robert Osfield, added
+	  versioning to the above.
+
+2008-05-30 11:44 +0000 [r8387-8388]  robert:
+
+	* Updated packgage number for 2.5.1 developer release
+
+	* Fixed cirular reference in DatabaseRequest
+
+2008-05-29 13:54 +0000 [r8386]  robert:
+
+	* Moved enum to public scope and rebuilt wrappers to fix wrapper
+	  build error
+
+2008-05-29 11:45 +0000 [r8385]  robert:
+
+	* Added code to catch erroneous Dof axis settings
+
+2008-05-29 11:13 +0000 [r8384]  robert:
+
+	* Improved the NaN depth detection within CullVisitor and debug
+	  output.
+
+2008-05-29 11:09 +0000 [r8383]  robert:
+
+	* Improved the NaN error detection and reporting.
+
+2008-05-28 17:56 +0000 [r8382]  robert:
+
+	* Added catch for NaN depth values
+
+2008-05-28 16:14 +0000 [r8381]  robert:
+
+	* From Wojiech Lewandowski, Workaround for wglMakeCurrent bug in
+	  NVidia drivers by calling wglMakeCurrent twice. This bug has been
+	  reported to NVidia, confirmed and fixed by NVidia but awaits
+	  verifiaction and release if a driver which fixes this bug.
+
+2008-05-28 14:37 +0000 [r8380]  robert:
+
+	* Updated wrappers
+
+2008-05-28 14:11 +0000 [r8379]  robert:
+
+	* From Adrian Egli, improvements to ParallelSplitShadowMap
+	  implementation
+
+2008-05-28 13:51 +0000 [r8378]  robert:
+
+	* From Thibault Genessay, "The PNG plugin crashes when you try to
+	  read a malformed file (attached is an example). This can happen
+	  in circumstances that are not manageable by the OSG itself (e.g.
+	  3rd party buggy program) but one would expect the plugin to be
+	  able to recover by returning ReadResult::ERROR_IN_READING_FILE.
+	  libpng provides two callbacks for warnings and errors - those are
+	  currently unused. By default, they point to function that call
+	  exit() or something similar (the default error callback never
+	  returns). This patch registers the callbacks using libpng's
+	  mechanisms, makes the warning callback emit an
+	  osg::notify(osg::WARN) message and the error callback throw an
+	  error. The reading process is enclosed in a try...catch block.
+	  Upon error, the memory is freed and
+	  ReadResult::ERROR_IN_READING_FILE is returned. "
+
+2008-05-28 13:45 +0000 [r8377]  robert:
+
+	* From Thibault Genessay, "On Windows, when setting a cursor
+	  through osgViewer::GraphicsWindow::setCursor() the new cursor
+	  type is recorded but not applied until windows sends another
+	  WM_SETCURSOR message. This delays the application of the cursor
+	  to the next mouse event. The attached file fixes this by setting
+	  the new cursor with a call to ::SetCursor() immediately. "
+
+2008-05-28 13:01 +0000 [r8376]  robert:
+
+	* From Michael Platings, "Yes it's definitely a driver problem - I
+	  submitted a bug report to nvidia 6 months ago and the issue is
+	  still "in progress". I've given up waiting for them! Platform -
+	  various Intel Windows XP SP2 PCs with various nvidia cards
+	  including GeForce 8800 GTS and Quadro FX 4500, and various driver
+	  versions including the latest WHQL 175.16. I investigated your
+	  concerns about glGenerateMipmapEXT being slower than
+	  GL_GENERATE_MIPMAP_SGIS, and for power-of-two textures, to my
+	  surprise it is. For a 512*512 texture, glGenerateMipmapEXT takes
+	  on average 10ms, while GL_GENERATE_MIPMAP_SGIS takes on average
+	  6ms. Therefore I have modified the code to only use
+	  glGenerateMipmapEXT if the texture has a non-power-of-two width
+	  or height. I am resubmitting all the files previously submitted
+	  (only "Texture.cpp" has significant changes since my previous
+	  submission, I've also replaced tabs with spaces in "Texture"). "
+
+2008-05-28 12:49 +0000 [r8375]  robert:
+
+	* From Mathieu Marache, first post: "I had the problem that debug
+	  and release version of the plugins had the same name under linux.
+	  These minors modification to Registry and the CMake support files
+	  enable to have both Release and Debug version of the plugins to
+	  coexist and be found by there respective runtimes." follow up
+	  post: "I've gone ahead and added a preprocessor directive with
+	  the editable CMAKE_DEBUG_POSTFIX. I modified Registry.cpp to take
+	  this new preprocessor directive called OSG_DEBUG_POSTFIX while
+	  looking for libraries in Debug mode for the windows (msvc) and
+	  the linux platforms. MinGW, cygwin and Apple are still left out
+	  this proposal." Notes from Robert Osfield, completed the work in
+	  change d entries to use OSG_DEBUG_POSTFIX
+
+2008-05-28 11:58 +0000 [r8374]  robert:
+
+	* Updated wrappers
+
+2008-05-28 11:19 +0000 [r8373]  robert:
+
+	* From Michael Platings, "On nvidia cards mipmap generation for
+	  non-power-of-two textures with GL_GENERATE_MIPMAP_SGIS is very
+	  slow (over half a second for a 720*576 texture). However,
+	  glGenerateMipmapEXT() performs well (16ms for the same texture),
+	  so I have modified the attached files to use
+	  Texture::generateMipmap() if glGenerateMipmapEXT is supported,
+	  instead of enabling & disabling GL_GENERATE_MIPMAP_SGIS." Notes,
+	  from Robert Osfield, I've tested the out of the previous path
+	  using GL_GENERATE_MIPMAP_SGIS and non power of two textures on
+	  NVidia 7800GT and Nvidia linux drivers with the image size
+	  720x576 and only get compile times of 56ms, so the above half
+	  second speed looks to be a driver bug. With Muchael's changes the
+	  cost goes done to less than 5ms, so it's certainly an effective
+	  change, even given that Michael's poor expereiences with
+	  GL_GENERATE_MIP_SGIS do look to be a driver bug.
+
+2008-05-27 20:53 +0000 [r8372]  robert:
+
+	* From Brad Anderegg, "This submission fixes two bugs and helps
+	  some performance problems we have been having with txp databases.
+	  The first bug is that the terrain tiles will page out to a lower
+	  LOD when they are right in front of you. The issue appears to be
+	  with the blacklisting heuristic which forces a tile to LOD 1,
+	  commenting out the usage of blacklisting with the LOD Nodes fixes
+	  our problem. This code change was made to line 29 of
+	  TXPPageLOD.cpp. The second bug we were experiencing is that the
+	  database reader options never make it through to the archive
+	  loader. The use case for us appeared when the FID codes for the
+	  terrain were no longer on the materials. As it turns out the
+	  archive was being created twice, once by TXPNode and once by the
+	  ReaderWriterTXP on getArchive() so the options never actually got
+	  set on the archive that was being loaded. The fix is to first
+	  create the archive by calling getArchive on the ReaderWriterTXP,
+	  which stores it in a map for reference later, and then passing
+	  that archive into the TXPNode for it to set its internal member.
+	  With this code change we only create one archive (not sure what
+	  creating two did) and our options flags get set properly on the
+	  database. The changes made are in TXPNode.h line 72 where the
+	  TXPArchive is now passed in. In the TXPNode.cpp the
+	  loadArchive(TXPArchive*) was changed to have the default behavior
+	  if NULL is passed in, if an archive is passed in then it does not
+	  load it since all the loading is done in the
+	  ReaderWriterTXP::getArchive(). The only other place that
+	  loadArchive is called is in TXPIO.cpp where a modification was
+	  made to pass in NULL which will have the same behavior as it used
+	  to. The last change is the little block of code starting on line
+	  57 of ReaderWriterTXP.cpp, this was changed so that it first
+	  calls getArchive() which caches the archives in a map does some
+	  loading stuff and returns a pointer to it which is then passed in
+	  as a parameter to TXPNode::loadArchive(). The performance changes
+	  were made to TXPParser.cpp line 163 where we use to
+	  osgUtil::Optimizer on the node before passing it off, and on line
+	  1456 we changed the geometry to use display lists. These small
+	  changes actually made drastic performance increases for us, as
+	  much as 1000% on certain laptops. As far as testing goes, we have
+	  tested these changes with at least 5 txp databases on a variety
+	  of different computers including Mac OS and Linux. The base
+	  version used is 2.4."
+
+2008-05-27 17:42 +0000 [r8371]  robert:
+
+	* From Cedric Pinson, "By default it's the normal behaviour, it
+	  means it's "d" extension for debug library and executable. But if
+	  you want to change that you can. The reason is if you want to
+	  build an application that use a library that use openscenegraph
+	  you have to build the full chain in debug or in release. On
+	  windows you have no choice, but on linux you can link with both
+	  version without rebuilding everything ... The patch consist only
+	  to change the line on one line SET(CMAKE_DEBUG_POSTFIX "d") with
+	  SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "add a postfix, usually
+	  d on windows")"
+
+2008-05-27 17:32 +0000 [r8370]  robert:
+
+	* From Lars Nilson, bug fix to Sector::computeMatrix()
+
+2008-05-27 16:32 +0000 [r8369]  robert:
+
+	* Added handling of \ within srings by using \\
+
+2008-05-27 15:42 +0000 [r8368]  robert:
+
+	* Updated wrappers
+
+2008-05-27 15:30 +0000 [r8366-8367]  robert:
+
+	* Reorginized the TerrainTile/TerrainTechnique dirty mechanism so
+	  that TerrainTile now holds the dirty flag and enables/disables
+	  event traversal in response dirty being set/unset. This allows
+	  terrain to be automatically updated in response to Terrain scale
+	  and sample ratio changes.
+
+	* Introduced a TerrainHandler that adjust the sameple ratio and
+	  vertical scale of terrain interactively using the 'r','R' and
+	  'v','V' keys respecitvely.
+
+2008-05-27 13:11 +0000 [r8365]  robert:
+
+	* From John Vidar Larring, "Added vertical scale as a property of
+	  osgTerrain::Terrain. Lets you configure vertical scale when
+	  initializing the terrain model. E.g: osgTerrain::Terrain* terrain
+	  = findTopMostNodeOfType<osgTerrain::Terrain>(model.get()); if
+	  (!terrain) { terrain = new osgTerrain::Terrain;
+	  terrain->addChild(model.get()); terrain->setVerticalScale(2.0f);
+	  model = terrain; } viewerWindow->setSceneData(model.get()); "
+
+2008-05-27 12:07 +0000 [r8363-8364]  robert:
+
+	* Updated version numbers in prep for 2.5.1 release
+
+	* From Gino van den Bergen, "I've refactored the single
+	  ReadedWriterVRML2.cpp into multiple files. The reason for doing
+	  this was to break up the horribly long function
+	  osg::ref_ptr<osg::Node>
+	  ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) The fixes
+	  are: * Added the source's parent directory as search directory
+	  for image files. * The material properties are now set in the
+	  stateset of the Geode rather than the Geometry. This will allow
+	  geometries to be reused with different material properties in
+	  future updates. NB: I planned for a caching scheme in which
+	  multiple occurences of the same primitive (e.g., Cylinders with
+	  radius 0.8 and height 1.2), would use the same Geometry object.
+	  Unfortunately, my planning moved me to other areas, but I might
+	  still finish the caching scheme in a quiet hour. For the time
+	  being I decided it would be a good thing to already submit my
+	  current changes. "
+
+2008-05-27 11:13 +0000 [r8362]  robert:
+
+	* From Mathias Froehlich, "Included a fix for my past pbuffer
+	  change. The version test fo 'need at least glx 1.1' was broken,
+	  even if no implementation had yet a chance to trigger that :)
+	  Attached a fix for that broken test. Based on rev 8358"
+
+2008-05-27 11:07 +0000 [r8361]  robert:
+
+	* From Andrew Bettison, "Problem: the LineStipple pattern when read
+	  from an OSG node file is always 0xFFFF, even though specified
+	  otherwise in the OSG file. Cause: possibly a copy/paste typo in
+	  src/osgPlugins/osg/LineStipple.cc, line 61: if
+	  (fr[0].matchWord("functionMask") && fr[1].getUInt(mask))
+	  Solution: change to: if (fr[0].matchWord("pattern") &&
+	  fr[1].getUInt(mask))"
+
+2008-05-27 11:04 +0000 [r8360]  robert:
+
+	* From Stephane Lamoliatte, "Here is a patch that fix the strange
+	  bug describe on the osg-user group. Finally it seems to not come
+	  from the empty geode. The origin of the problem seems to be the
+	  uniform initialization during the building of the program which
+	  call a glUseProgram. If your scene never display the node that
+	  contains the shader and if there is no other shader on the scene,
+	  this "glUseProgram" is the only one that is called during your
+	  simulation. So, this shader is applied on all the scene. I fix
+	  this bug by switching off the shader (by calling glUseProgram(0)
+	  ) during the compilation of a state which does not contain the
+	  shader. "
+
+2008-05-27 10:50 +0000 [r8359]  robert:
+
+	* From Wang Rui, "I have just done some changes on the classic
+	  osgdb_gif plugin (based on OSG 2.5.0). I wish our developers may
+	  use the newly written GIF reading plugin to attach animate GIF
+	  files as textures now! In my opinion, a GIF is much smaller than
+	  AVI and MOVs, and much more efficient sometimes. Changes
+	  includes: 1. A new GifImageStream class (inherit from
+	  osg::ImageStream and OpenThreads::Thread) have already been added
+	  to implement different operations of a GIF movie, such like
+	  playing, pausing, rewinding, setting time and so on. 2. Some
+	  small changes to decode_row() and gif_read_stream(), which make
+	  the transparency of GIF images correctly. 3. Just a few changes
+	  to the ReaderWriterGIF::readGIFStream() function, which ensure
+	  that animate GIFs are loaded by GifImageStream (and the function
+	  returns GifImageStream objects) and static GIFs unchanged (still
+	  use the old method and returns osg::Image objects!). Attachments
+	  are the cpp file and an animate GIF file for further test. Just
+	  rebuild the osgdb_gif project and use osgviewer or osgmovie to
+	  view it. The plugin has been tested on Windows and Arch Linux."
+
+2008-05-26 22:36 +0000 [r8357-8358]  robert:
+
+	* From Philip Lowman, post 1: "Here is a collection of changes
+	  which should fix issues building the OSG with CMake 2.6.0 (along
+	  with some other changes) CMakeLists.txt: * Set CMP0003 to supress
+	  warning about linking against -lpthread (which is a non-absolute
+	  library location). (CMake 2.6.x fix) * Modified the WIN32_USE_MP
+	  and a couple of other Visual Studio specific flags to be in an
+	  IF(MSVC) block (minor tweak to reduce exposing this stuff on
+	  MinGW builds) * Includes my second set of glu tesselator
+	  autodetection changes that you seemed to want but haven't
+	  committed yet. src/OpenThreads/pthreads/CMakeLists.txt: *
+	  Eliminates warning when compiling on Linux about spaces in link
+	  line (CMake 2.6.x fix) CMakeModules/OsgMacroUtils.cmake: * Tweaks
+	  to make the macros behave properly under CMake 2.6.0 (doesn't
+	  change behavior under CMake 2.4.x)
+	  CMakeModules/Find3rdPartyDependencies.cmake: * Adds the
+	  NO_DEFAULT_PATH option to all of the search options so that
+	  things in C:\Program Files\OpenSceneGraph aren't accidently
+	  picked up during configure time and instead only things in the
+	  "3rdParty" folder are discovered. (general bugfix) " post 2: "Ok,
+	  hold the presses. I just discovered that for some odd reason the
+	  osgdb_* plugins under Linux aren't getting put under the
+	  osgPlugins-2.5.0 folder. Not exactly sure why this broke, the
+	  folder was there, just empty. I'll have to look into it this
+	  evening." post 3: "Fixed, was caused by the switch to
+	  CMAKE_LIBRARY_OUTPUT_DIRECTORY and some code in
+	  osgPlugins/CMakeLists.txt that effectively overrides
+	  LIBRARY_OUTPUT_PATH on non-MSVC compilers to dump the plugins in
+	  the plugins folder. I tweaked it to override
+	  CMAKE_LIBRARY_OUTPUT_DIRECTORY as well. Seems to work fine."
+
+	* From Paul Martz, "When exporting a DrawArrays PrimitiveSet, the
+	  DAE plugin computes an incorrect nbVerticesPerPoly if the first
+	  index is not zero. The issue can be reproduced easily with:
+	  osgconv cessna.osg cessna.dae Examination of the resulting .dae
+	  file reveals several out-of-range tristrip indices; viewing the
+	  .dae file in osgviewer causes a crash when OSG tries to lookup
+	  those indices. Attached resolves this issue."
+
+2008-05-26 21:53 +0000 [r8356]  robert:
+
+	* From Art Tevs, "I've attached a patch for the Texture2DArray
+	  which solves problems of loading image data into the texture
+	  array. So here are a small description: - Solves issues of
+	  loading image data into the texture memory - Print a warning if
+	  images are of different dimensions or have different internal
+	  formats (GL specification requires images to be the same) Patch
+	  is tested and seems to work fine. It shouldn't break any other
+	  functionality. It should go into include/osg and src/osg "
+
+2008-05-26 21:44 +0000 [r8355]  robert:
+
+	* Fixed copyright notice typo
+
+2008-05-26 21:33 +0000 [r8353-8354]  robert:
+
+	* From Paul Martz, "The attached code changes StateSet::merge() so
+	  that it copies RenderBin data such as the rendering hint and
+	  RenderBin details from rhs into "this", only if "this" has
+	  RenderBin mode set to INHERIT. It replaces a comment by you
+	  indicating something along these lines should be done. To me,
+	  this seems like the right thing to do."
+
+	* From Gino, "According to the 1.4.1 COLLADA spec (2nd ed) the
+	  standard behavior for fx_sampler_wrap_common is as follows CLAMP
+	  ->GL_CLAMP_TO_EDGE NONE->GL_CLAMP_TO_BORDER The current 2.5.0
+	  daePlugin assumes the following binding CLAMP ->GL_CLAMP
+	  NONE->GL_REPEAT Notably the GL_CLAMP binding will result in
+	  visible black seams on input files that use otherwise matching
+	  textures. Replacing GL_CLAMP by GL_CLAMP_TO_EDGE solves this
+	  problem. I've updated both the read and write functions. "
+
+2008-05-26 21:18 +0000 [r8352]  robert:
+
+	* From Philip Lowman, "I changed the test name to be a little
+	  easier to understand and defaulted Linux & Windows builds to
+	  false and to skip the compile check as you desired. "
+
+2008-05-26 21:10 +0000 [r8350-8351]  robert:
+
+	* Updated wrappers
+
+	* From Paul Melis, "Here is an update to the osgviewerWX example.
+	  Keyboard events were not always received because the
+	  GraphicsWindowWX wasn't receiving focus. It now receives focus
+	  when the mouse enters the window. * I split the mouse handling
+	  from a monolithic method to separate ones, slightly cleaner than
+	  a whole bunch of if()'s, especially with another case of the
+	  mouse entering the canvas. * I changed the EVT_KEY_DOWN handler
+	  to an EVT_CHAR handler, although that now makes the up and down
+	  handler assymetric. The new down-handler returns translated key
+	  codes, so when you press the S key (without anything else), it
+	  actually returns 's' and not 'S' as the EVT_KEY_DOWN did. This
+	  means that statistics can be called up in the viewer window,
+	  while the example previously only printed a "Stats output:" line
+	  to the console. I'm not truly happy that the up handler returns
+	  _untranslated_ key codes. But solving this completely would
+	  probably mean adding some table that translated from wxWidgets'
+	  untranslated key codes to OSG's internal ones. This might be
+	  interesting to add, as anyone using OSG + wxWidgets in any
+	  serious manner would also have to add this. * I commented out the
+	  evt.Skip()'s in the keyboard handlers as these would only be
+	  necessary if there were some key events that are not handled. But
+	  currently all key events are simply forwarded. * I changed the
+	  handling of a mouse drag to a more general mouse move"
+
+2008-05-26 21:04 +0000 [r8349]  robert:
+
+	* From Colin McDonald, "I had to tighten a declaration in
+	  OpenFlight/FltWriteResult.h, as the Solaris SunStudio 11 compiler
+	  was being picky and wouldn't compile."
+
+2008-05-26 20:46 +0000 [r8348]  robert:
+
+	* Added debug block to output the location of the master camera for
+	  each View in a Viewer.
+
+2008-05-26 17:30 +0000 [r8347]  robert:
+
+	* Added continuous recording of the animation path to the
+	  RecordAnimationPathHandler
+
+2008-05-26 16:25 +0000 [r8346]  robert:
+
+	* Introduce --pbuffer-only width height option, and added fps
+	  reporting to stats output
+
+2008-05-26 15:41 +0000 [r8345]  robert:
+
+	* Added basic --pbuffer width height support
+
+2008-05-26 14:30 +0000 [r8344]  robert:
+
+	* Added better stats reporting
+
+2008-05-26 12:01 +0000 [r8342-8343]  robert:
+
+	* Added feedback of pixel format chosen for read back
+
+	* Added automatic selection of the pixel type according to the
+	  window type
+
+2008-05-26 11:53 +0000 [r8341]  robert:
+
+	* Added option for doing triple buffering, and set the default read
+	  format to GL_RGBA
+
+2008-05-25 22:06 +0000 [r8340]  robert:
+
+	* Switch to using an inital draw callback when use --start-frame
+
+2008-05-25 21:52 +0000 [r8339]  robert:
+
+	* Added option for setting whether the front or back buffer should
+	  be read using --front and --back command line options.
+
+2008-05-25 21:35 +0000 [r8338]  robert:
+
+	* Added option for controlling whether the front buffer is read at
+	  the start of the frame or the back buffer at the end of the
+	  frame.
+
+2008-05-25 11:21 +0000 [r8337]  robert:
+
+	* Added check for pkg-config so that build only use related package
+	  checks when it's supported
+
+2008-05-24 11:05 +0000 [r8336]  robert:
+
+	* Added #define's for PixelBufferObject extensions. Added docs for
+	  Camera::DrawCallback
+
+2008-05-24 09:24 +0000 [r8335]  robert:
+
+	* Added RenderStage::setClear*() methods from Camera::getClear*()
+	  sources
+
+2008-05-24 08:13 +0000 [r8334]  robert:
+
+	* Changed default format to GL_BGR
+
+2008-05-23 16:26 +0000 [r8333]  robert:
+
+	* Added single buffered and double buffered PBO support, and
+	  --no-pbo, --single-pbo and --double-pbo command line parameters
+
+2008-05-22 17:50 +0000 [r8332]  robert:
+
+	* Added basic glReadPixels code
+
+2008-05-22 15:43 +0000 [r8331]  robert:
+
+	* Added camera final callback attachment code.
+
+2008-05-22 13:11 +0000 [r8329-8330]  robert:
+
+	* Fixed name of source file
+
+	* Added new osgscreencapture example folder, implementation to
+	  follow
+
+2008-05-22 12:38 +0000 [r8328]  robert:
+
+	* Reorginaized the DatabaseQueue's to avoid warnings under Windows
+
+2008-05-22 11:21 +0000 [r8327]  robert:
+
+	* Fixed warning by adding in missing return
+
+2008-05-22 08:31 +0000 [r8326]  robert:
+
+	* Checking in missed header
+
+2008-05-21 21:09 +0000 [r8325]  robert:
+
+	* Refactored DatabasePager and related classes to introduce support
+	  for multi-threaded paging, where the Pager manages threads of
+	  reading local and http files via seperate threads. This makes it
+	  possible to smoothly browse large databases where parts of the
+	  data are locally cached while others are on a remote server.
+	  Previously with this type of dataset the pager would stall all
+	  paging while http requests were being served, even when parts of
+	  the models are still loadable virtue of being in the local cache.
+	  Also as part of the refactoring the DatabaseRequest are now
+	  stored in the ProxyNode/PagedLOD nodes to facilitate quite
+	  updating in the cull traversal, with the new code avoiding mutex
+	  locks and searches. Previous on big databases the overhead
+	  involved in make database requests could accumulate to a point
+	  where it'd cause the cull traversal to break frame. The overhead
+	  now is negligable. Finally OSG_FILE_CACHE support has been moved
+	  from the curl plugin into the DatabasePager. Eventually this
+	  functionality will be moved out into osgDB for more general
+	  usage.
+
+2008-05-20 09:28 +0000 [r8324]  robert:
+
+	* Moved the compile to after the updateSceneView
+
+2008-05-14 20:22 +0000 [r8323]  robert:
+
+	* Updated wrappers
+
+2008-05-14 17:03 +0000 [r8322]  robert:
+
+	* Introduced preliminary support for asynchronous file read
+	  requests, ReaderWriter::ReadResult now has a FILE_REQUEST enum.
+	  ReaderWriter::Options now has a s/getAsynchronousFileReadHint()
+	  parameter methods. libcurl based plugin now detects enabing of
+	  the AsynchronousFileReadHint, but as yet does not handle async
+	  requests - handling everything syncronously. DatabasePager now by
+	  default will enable AsynchronousFileReadHint for http based file
+	  requests
+
+2008-05-14 14:59 +0000 [r8321]  robert:
+
+	* Moved the cache file writing into StreamObject so that the cache
+	  file is only created once data is being read.
+
+2008-05-14 13:16 +0000 [r8320]  robert:
+
+	* Introduced a thread safe map which manages a single EasyCurl
+	  object per thread.
+
+2008-05-14 12:47 +0000 [r8319]  robert:
+
+	* Refactor curl usage so that a new EasyCurl class wraps up the
+	  curl handle and reading from curl.
+
+2008-05-13 18:28 +0000 [r8318]  robert:
+
+	* Fixed lat/long ordering
+
+2008-05-13 17:27 +0000 [r8317]  robert:
+
+	* Added support for -e level minX minY maxX maxY extents controls
+
+2008-05-13 14:08 +0000 [r8316]  robert:
+
+	* Added --file-cache directoryname command line option support to
+	  readNodeFiles(ArgumentParser&) to make it easier to specify a
+	  local file cache, in place of the default OSG_FILE_CACHE env var.
+
+2008-05-13 12:36 +0000 [r8315]  robert:
+
+	* Further work on computing of lat/long range of PagedLOD subgraphs
+
+2008-05-13 10:56 +0000 [r8314]  robert:
+
+	* From Steven Thomas, "Subject: Collada fix There was a problem
+	  converting a file to Collada by using osgconv like this: osgconv
+	  file.osg file.dae You would get an error message: I/O error :
+	  Permission denied I/O error : Permission denied error :
+	  xmlNewTextWriterFilename : out of memory! Error:
+	  daeLIBXMLPlugin::write(file://cessna.dae) failed Warning: Error
+	  in writing to "cessna.dae". This was due to some bad URI
+	  processing code in the Collada plugin. The attached file fixes
+	  this by using the Collada DOM's URI processing functions. After
+	  this change the file will convert successfully in the local
+	  directory. "
+
+2008-05-12 16:59 +0000 [r8313]  robert:
+
+	* Added signal handling code, and prelimary lat/long computation
+
+2008-05-12 15:42 +0000 [r8312]  robert:
+
+	* Added missing getBound() method
+
+2008-05-12 12:16 +0000 [r8309-8310]  robert:
+
+	* Update ChangeLog and wrappers for 2.5.0 dev release
+
+	* Updated AUTHORS for 2.5.0 release
+
 2008-05-12 11:39 +0000 [r8308]  robert:
 
 	* From Mathias Froehlich, Fixed FrameBufferObject attachement code

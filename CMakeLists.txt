@@ -11,10 +11,14 @@ ELSE(WIN32)
     ENDIF(APPLE)
 ENDIF(WIN32)
 
-# Works around warnings libraries linked against that don't
-# have absolute paths (e.g. -lpthreads)
 if(COMMAND cmake_policy)
+    # Works around warnings libraries linked against that don't
+    # have absolute paths (e.g. -lpthreads)
     cmake_policy(SET CMP0003 NEW)
+
+    # Works around warnings about escaped quotes in ADD_DEFINITIONS
+    # statements.
+    cmake_policy(SET CMP0005 OLD)
 endif(COMMAND cmake_policy)
 
 PROJECT(OpenSceneGraph)
@@ -61,20 +65,20 @@ ENDIF(USING_OSG_OP_OT_TRIPLE_SET)
 
 
 # Okay, here's the problem: On some platforms, linking against OpenThreads
-# is not enough and explicit linking to the underlying thread library 
+# is not enough and explicit linking to the underlying thread library
 # is also required (e.g. FreeBSD). But OpenThreads may be built with different
-# backends (Pthreads, Sproc, Windows) so we don't know what the underlying 
-# thread library is because some platforms support multiple backends (e.g. 
-# IRIX supports Sproc and Pthreads). Linking all libraries won't work 
+# backends (Pthreads, Sproc, Windows) so we don't know what the underlying
+# thread library is because some platforms support multiple backends (e.g.
+# IRIX supports Sproc and Pthreads). Linking all libraries won't work
 # because the libraries may be incompatible.
-# So the current solution is to attempt best guess linking and exempt certain 
+# So the current solution is to attempt best guess linking and exempt certain
 # cases. With IRIX, we're going to hope explicit linking to the underlying
 # library is not necessary. We currently don't case for pthreads on Windows
 # which might be an issue on things like Cygwin. This may need to be fixed.
 FIND_PACKAGE(Threads)
 IF(CMAKE_SYSTEM MATCHES IRIX)
     # Erase CMAKE_THREAD_LIBS_INIT and hope it works
-    SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")    
+    SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")
 ENDIF(CMAKE_SYSTEM MATCHES IRIX)
 
 # Find OpenGL
@@ -92,13 +96,13 @@ IF(UNIX)
     # Some Unicies need explicit linkage to the Math library or the build fails.
     FIND_LIBRARY(MATH_LIBRARY m)
 ENDIF(UNIX)
-    
+
 # Make the headers visible to everything
 INCLUDE_DIRECTORIES(
     ${OpenSceneGraph_SOURCE_DIR}/include
     ${OPENGL_INCLUDE_DIR}
 )
-    
+
 # Common global definitions
 #ADD_DEFINITIONS(-D)
 # Platform specific definitions
@@ -110,9 +114,9 @@ IF(WIN32)
         # This option is to enable the /MP switch for Visual Studio 2005 and above compilers
         OPTION(WIN32_USE_MP "Set to ON to build OpenSceneGraph with the /MP option (Visual Studio 2005 and above)." OFF)
         MARK_AS_ADVANCED(WIN32_USE_MP)
-        IF(WIN32_USE_MP)        
+        IF(WIN32_USE_MP)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-        ENDIF(WIN32_USE_MP)        
+        ENDIF(WIN32_USE_MP)
 
         # More MSVC specific compilation flags
         ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
@@ -127,12 +131,12 @@ IF(WIN32)
     ENDIF(UNIX)
 ########################################################################################################
 # the foolowing options are MSVC specific,
-# the first OSG_MSVC_VERSIONED_DLL activate a custom build-time layout that should allow to run examples and application 
+# the first OSG_MSVC_VERSIONED_DLL activate a custom build-time layout that should allow to run examples and application
 # fron bin folder without requiring installation step.
 # it also prepend "osg${OPENSCENEGRAPH_SOVERSION}-" to only .dll files, leaving .lib files untouched in lib
-# it also use a hack to get rid of Debug and Release folder in MSVC projects 
+# it also use a hack to get rid of Debug and Release folder in MSVC projects
 # all the .dll and .pdb are in bin and all the .lib and .exp are in lib
-# 
+#
 # the second option disable incremental linking in debug build , that is enabled by default by CMake
 ##########################################################################################################
 
@@ -176,27 +180,27 @@ ENDIF(WIN32)
 
 OPTION(OSG_USE_FLOAT_MATRIX "Set to ON to build OpenSceneGraph with float Matrix instead of double." OFF)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_MATRIX)
-IF(OSG_USE_FLOAT_MATRIX)        
+IF(OSG_USE_FLOAT_MATRIX)
     ADD_DEFINITIONS(-DOSG_USE_FLOAT_MATRIX)
-ENDIF(OSG_USE_FLOAT_MATRIX)        
+ENDIF(OSG_USE_FLOAT_MATRIX)
 
 OPTION(OSG_USE_FLOAT_PLANE "Set to ON to build OpenSceneGraph with float Plane instead of double." OFF)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_PLANE)
-IF(OSG_USE_FLOAT_PLANE)        
+IF(OSG_USE_FLOAT_PLANE)
     ADD_DEFINITIONS(-DOSG_USE_FLOAT_PLANE)
-ENDIF(OSG_USE_FLOAT_PLANE)        
+ENDIF(OSG_USE_FLOAT_PLANE)
 
 OPTION(OSG_USE_FLOAT_BOUNDINGSPHERE "Set to ON to build OpenSceneGraph with float BoundingSphere instead of double." ON)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGSPHERE)
-IF(NOT OSG_USE_FLOAT_BOUNDINGSPHERE)        
+IF(NOT OSG_USE_FLOAT_BOUNDINGSPHERE)
     ADD_DEFINITIONS(-DOSG_USE_DOUBLE_BOUNDINGSPHERE)
-ENDIF(NOT OSG_USE_FLOAT_BOUNDINGSPHERE)        
+ENDIF(NOT OSG_USE_FLOAT_BOUNDINGSPHERE)
 
 OPTION(OSG_USE_FLOAT_BOUNDINGBOX "Set to ON to build OpenSceneGraph with float BoundingBox instead of double." ON)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGBOX)
-IF(NOT OSG_USE_FLOAT_BOUNDINGBOX)      
+IF(NOT OSG_USE_FLOAT_BOUNDINGBOX)
     ADD_DEFINITIONS(-DOSG_USE_DOUBLE_BOUNDINGBOX)
-ENDIF(NOT OSG_USE_FLOAT_BOUNDINGBOX)        
+ENDIF(NOT OSG_USE_FLOAT_BOUNDINGBOX)
 
 ################################################################################
 # 3rd Party Dependency Stuff
@@ -232,15 +236,15 @@ IF  (DESIRED_QT_VERSION)
     ELSE(DESIRED_QT_VERSION MATCHES 4)
       FIND_PACKAGE(Qt3)
     ENDIF(DESIRED_QT_VERSION MATCHES 4)
-    
+
 ELSE(DESIRED_QT_VERSION)
 
     FIND_PACKAGE(Qt4)
-    
+
     IF  (NOT QT4_FOUND)
         FIND_PACKAGE(Qt3)
     ENDIF(NOT QT4_FOUND)
-    
+
 ENDIF(DESIRED_QT_VERSION)
 
 
@@ -306,10 +310,10 @@ ENDIF(OSG_GLU_TESS_CALLBACK_TRIPLEDOT)
 # Platform specific:
 # (We can approach this one of two ways. We can try to FIND everything
 # and simply check if we found the packages before actually building
-# or we can hardcode the cases. The advantage of the former is that 
+# or we can hardcode the cases. The advantage of the former is that
 # packages that are installed on platforms that don't require them
-# will still get built (presuming no compatibility issues). But this 
-# also means modules that are redundant may get built. For example, 
+# will still get built (presuming no compatibility issues). But this
+# also means modules that are redundant may get built. For example,
 # OS X doesn't need GIF, JPEG, PNG, TIFF, etc because it uses QuickTime.
 # Also, it will clutter the CMake menu with "NOT_FOUND".
 # The downside to the latter is that it is harder to build those
@@ -327,8 +331,8 @@ IF(NOT APPLE)
     IF(WIN32)
         FIND_PACKAGE(QuickTime)
     ENDIF(WIN32)
-    
-ELSE(NOT APPLE) 
+
+ELSE(NOT APPLE)
     FIND_PACKAGE(QuickTime)
 ENDIF(NOT APPLE)
 
@@ -453,20 +457,20 @@ IF   (BUILD_OSG_EXAMPLES)
     ADD_SUBDIRECTORY(examples)
 ENDIF(BUILD_OSG_EXAMPLES)
 
-# This is for an advanced option to give aggressive warnings 
+# This is for an advanced option to give aggressive warnings
 # under different compilers. If yours is not implemented, this option
 # will not be made available.
 IF(CMAKE_COMPILER_IS_GNUCXX)
-    # To be complete, we might also do GNUCC flags, 
+    # To be complete, we might also do GNUCC flags,
     # but everything here is C++ code.
     # -Wshadow and -Woverloaded-virtual are also interesting flags, but OSG
     # returns too many hits.
-    # FYI, if we do implement GNUCC, then -Wmissing-prototypes in another 
+    # FYI, if we do implement GNUCC, then -Wmissing-prototypes in another
     # interesting C-specific flag.
     # Also, there is a bug in gcc 4.0. Under C++, -pedantic will create
     # errors instead of warnings for certain issues, including superfluous
     # semicolons and commas, and the use of long long. -fpermissive seems
-    # to be the workaround. 
+    # to be the workaround.
     SET(OSG_AGGRESSIVE_WARNING_FLAGS "-Wall -Wparentheses -Wformat=2 -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -fpermissive")
 ELSE(CMAKE_COMPILER_IS_GNUCXX)
     IF(MSVC)
@@ -474,11 +478,11 @@ ELSE(CMAKE_COMPILER_IS_GNUCXX)
         # And do we need to further subcase this for different versions of VS?
         # CMake variables: MSVC60, MSVC70, MSVC71, MSVC80, CMAKE_COMPILER_2005
         SET(OSG_AGGRESSIVE_WARNING_FLAGS "/Wall /W4")
-        
+
 
     ELSE(MSVC)
         # CMake lacks an elseif, so other non-gcc, non-VS compilers need
-        # to be listed below. If unhandled, OSG_AGGRESSIVE_WARNING_FLAGS should 
+        # to be listed below. If unhandled, OSG_AGGRESSIVE_WARNING_FLAGS should
         # remain unset.
     ENDIF(MSVC)
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
@@ -496,7 +500,7 @@ IF(OSG_AGGRESSIVE_WARNING_FLAGS)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OSG_AGGRESSIVE_WARNING_FLAGS}" CACHE STRING "Flags used by the compiler during all build types." FORCE)
         ENDIF(NOT "${OLD_CMAKE_CXX_FLAGS_WAS_SET}")
     ELSE(OSG_USE_AGGRESSIVE_WARNINGS)
-        # FIXME: This will lose any changes made after OLD_CMAKE_CXX_FLAGS was 
+        # FIXME: This will lose any changes made after OLD_CMAKE_CXX_FLAGS was
         # set. The better way would be to parse the string and remove each
         # option explicitly.
         IF("${OLD_CMAKE_CXX_FLAGS_WAS_SET}")
@@ -506,18 +510,18 @@ IF(OSG_AGGRESSIVE_WARNING_FLAGS)
     ENDIF(OSG_USE_AGGRESSIVE_WARNINGS)
 ENDIF(OSG_AGGRESSIVE_WARNING_FLAGS)
 
-# Set defaults for Universal Binaries. We want 32-bit Intel/PPC on 10.4 
+# Set defaults for Universal Binaries. We want 32-bit Intel/PPC on 10.4
 # and 32/64-bit Intel/PPC on >= 10.5. Anything <= 10.3 doesn't support.
 IF(APPLE)
     # These are just defaults/recommendations, but how we want to build
     # out of the box. But the user needs to be able to change these options.
-    # So we must only set the values the first time CMake is run, or we 
+    # So we must only set the values the first time CMake is run, or we
     # will overwrite any changes the user sets.
     # FORCE is used because the options are not reflected in the UI otherwise.
     # Seems like a good place to add version specific compiler flags too.
     IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-        # This is really fragile, but CMake doesn't provide the OS system 
-        # version information we need. (Darwin versions can be changed 
+        # This is really fragile, but CMake doesn't provide the OS system
+        # version information we need. (Darwin versions can be changed
         # independently of OS X versions.)
         # It does look like CMake handles the CMAKE_OSX_SYSROOT automatically.
         IF(EXISTS /Developer/SDKs/10.5.sdk)
@@ -534,9 +538,9 @@ IF(APPLE)
             ENDIF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
         ENDIF(EXISTS /Developer/SDKs/10.5.sdk)
     ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-    
+
     OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" OFF)
-    
+
 ENDIF(APPLE)
 
 OPTION(BUILD_REF_DOCS "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
@@ -548,7 +552,7 @@ IF(BUILD_REF_DOCS)
 ENDIF(BUILD_REF_DOCS)
 
 # For Doxygen
-#FIXME: I haven't figured out what to do with OSG's multiple doxyfiles 
+#FIXME: I haven't figured out what to do with OSG's multiple doxyfiles
 # and footer.
 INCLUDE(${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL)
 OPTION(BUILD_DOCUMENTATION "Build osg documentation" OFF)
@@ -562,13 +566,13 @@ IF(BUILD_DOCUMENTATION)
     ELSE(BUILD_REF_DOCS_SEARCHENGINE)
         SET(SEARCHENGINE NO)
     ENDIF(BUILD_REF_DOCS_SEARCHENGINE)
-    
+
     IF(BUILD_REF_DOCS_TAGFILE)
         SET(GENERATE_TAGFILE "doc/OpenSceneGraphReferenceDocs/osg.tag")
     ELSE(BUILD_REF_DOCS_TAGFILE)
         SET(GENERATE_TAGFILE "")
     ENDIF(BUILD_REF_DOCS_TAGFILE)
-    
+
     IF(DOT)
         SET(HAVE_DOT YES)
     ELSE(DOT)

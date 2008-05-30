@@ -50,6 +50,11 @@ void Layer::write(DataOutputStream* out)
 
     out->writeUInt(getMinLevel());
     out->writeUInt(getMaxLevel());
+
+    if (out->getVersion() >= VERSION_0027)
+    {
+        writeValidDataOperator(out,getValidDataOperator());
+    }
 }
 
 void Layer::read(DataInputStream* in)
@@ -83,6 +88,10 @@ void Layer::read(DataInputStream* in)
     setMinLevel(in->readUInt());
     setMaxLevel(in->readUInt());
 
+    if (in->getVersion() >= VERSION_0027)
+    {
+        setValidDataOperator(readValidDataOperator(in));
+    }
 }
 
 void LayerHelper::writeLayer(DataOutputStream* out, osgTerrain::Layer* layer)
@@ -195,4 +204,57 @@ osgTerrain::Locator* LayerHelper::readLocator(DataInputStream* in)
     ((ive::Locator*)(locator))->read(in);
     
     return locator;
+}
+
+void Layer::writeValidDataOperator(DataOutputStream* out, osgTerrain::ValidDataOperator* validDataOperator)
+{
+    if (validDataOperator)
+    {
+        out->writeBool(true);
+        osgTerrain::ValidRange* validRange = dynamic_cast<osgTerrain::ValidRange*>(validDataOperator);
+        if (validRange)
+        {
+            out->writeInt(IVEVALIDRANGE);
+            out->writeFloat(validRange->getMinValue());
+            out->writeFloat(validRange->getMaxValue());
+        }
+        else 
+        {    
+            osgTerrain::NoDataValue* noDataValue  = dynamic_cast<osgTerrain::NoDataValue*>(validDataOperator);
+            if (noDataValue)
+            {
+                out->writeInt(IVENODATAVALUE);
+                out->writeFloat(noDataValue->getValue());
+            }
+        }
+    }
+    else
+    {
+        out->writeBool(false);
+    }
+}
+
+osgTerrain::ValidDataOperator* Layer::readValidDataOperator(DataInputStream* in)
+{
+    bool hasOperator = in->readBool();
+    if (!hasOperator) return 0;
+    
+    int id = in->peekInt();
+    if (id==IVEVALIDRANGE)
+    {
+        id = in->readInt();
+        float minValue = in->readFloat();
+        float maxValue = in->readFloat();
+        return new osgTerrain::ValidRange(minValue,maxValue);        
+    }
+    else if (id==IVENODATAVALUE)
+    {
+        id = in->readInt();
+        float value = in->readFloat();
+        return new osgTerrain::NoDataValue(value);
+    }
+    else
+    {
+        return 0;
+    }
 }

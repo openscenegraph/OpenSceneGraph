@@ -130,6 +130,9 @@ namespace ive {
 #define IVEPROXYLAYER                   0x00200007
 #define IVETERRAINTECHNIQUE             0x00200008
 #define IVEGEOMETRYTECHNIQUE            0x00200009
+#define IVEVALIDDATAOPERATOR            0x0020000A
+#define IVEVALIDRANGE                    0x0020000B
+#define IVENODATAVALUE                    0x0020000C
 //#define IVETERRAIN                      0x0020000A
 
 // osgFX classes

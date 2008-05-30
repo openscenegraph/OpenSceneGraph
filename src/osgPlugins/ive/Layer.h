@@ -36,9 +36,13 @@ class LayerHelper
 class Layer : public osgTerrain::Layer, public ReadWrite 
 {
     public:
-	void write(DataOutputStream* out);
-	void read(DataInputStream* in);
+    void write(DataOutputStream* out);
+    void read(DataInputStream* in);
+
+    void writeValidDataOperator(DataOutputStream* out, osgTerrain::ValidDataOperator* validDataOperator);
+    osgTerrain::ValidDataOperator* readValidDataOperator(DataInputStream* in);
 };
+
 
 }
 

@@ -59,6 +59,10 @@ PagedLOD::PagedLOD(const PagedLOD& plod,const CopyOp& copyop):
 {
 }
 
+PagedLOD::~PagedLOD()
+{
+}
+
 void PagedLOD::setDatabasePath(const std::string& path)
 {
     _databasePath = path;

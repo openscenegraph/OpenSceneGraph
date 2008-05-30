@@ -121,7 +121,7 @@ class OSG_EXPORT PagedLOD : public LOD
 
     protected :
     
-        virtual ~PagedLOD() {}
+        virtual ~PagedLOD();
         
         void expandPerRangeDataTo(unsigned int pos);
 

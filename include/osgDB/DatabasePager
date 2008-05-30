@@ -324,17 +324,17 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                 _numOfRequests(0)
             {}
             
-            std::string                 _fileName;
-            int                         _frameNumberFirstRequest;
-            double                      _timestampFirstRequest;
-            float                       _priorityFirstRequest;
-            int                         _frameNumberLastRequest;
-            double                      _timestampLastRequest;
-            float                       _priorityLastRequest;
-            unsigned int                _numOfRequests;
-            osg::ref_ptr<osg::Group>    _groupForAddingLoadedSubgraph;
-            osg::ref_ptr<osg::Node>     _loadedModel;
-            DataToCompileMap            _dataToCompileMap;
+            std::string                         _fileName;
+            int                                 _frameNumberFirstRequest;
+            double                              _timestampFirstRequest;
+            float                               _priorityFirstRequest;
+            int                                 _frameNumberLastRequest;
+            double                              _timestampLastRequest;
+            float                               _priorityLastRequest;
+            unsigned int                        _numOfRequests;
+            osg::observer_ptr<osg::Group>       _groupForAddingLoadedSubgraph;
+            osg::ref_ptr<osg::Node>             _loadedModel;
+            DataToCompileMap                    _dataToCompileMap;
             osg::ref_ptr<ReaderWriter::Options> _loadOptions;
 
             bool isRequestCurrent (int frameNumber) const

@@ -397,7 +397,7 @@ void DatabasePager::DatabaseThread::run()
         //
         // delete any children if required.
         //
-        if (_pager->_deleteRemovedSubgraphsInDatabaseThread)
+        if (_pager->_deleteRemovedSubgraphsInDatabaseThread && !(read_queue->_childrenToDeleteList.empty()))
         {
             ObjectList deleteList;
 
@@ -557,12 +557,22 @@ void DatabasePager::DatabaseThread::run()
                 osg::notify(osg::INFO)<<_name<<": Warning DatabaseRquest no longer required."<<std::endl;
                 databaseRequest->_loadedModel = 0;
             }
+            
+            osg::ref_ptr<osg::Group> groupForAddingLoadedSubgraph = databaseRequest->_groupForAddingLoadedSubgraph.get();
+
+            if (!groupForAddingLoadedSubgraph)
+            {
+                osg::notify(osg::INFO)<<_name<<": Warning parent of loaded subgraph, deleted."<<std::endl;
+                databaseRequest->_loadedModel = 0;
+            }
 
             //osg::notify(osg::NOTICE)<<"     node read in "<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms"<<std::endl;
 
             bool loadedObjectsNeedToBeCompiled = false;
 
-            if (_pager->_doPreCompile && databaseRequest->_loadedModel.valid() && !_pager->_activeGraphicsContexts.empty())
+            if (_pager->_doPreCompile &&
+                databaseRequest->_loadedModel.valid() &&
+                !_pager->_activeGraphicsContexts.empty())
             {
                 // force a compute of the loaded model's bounding volume, so that when the subgraph
                 // merged with the main scene graph and large computeBound() isn't incurred.
@@ -582,7 +592,7 @@ void DatabasePager::DatabaseThread::run()
 
                 // push the soon to be parent on the nodepath of the NodeVisitor so that 
                 // during traversal one can test for where it'll be in the overall scene graph                
-                osg::NodePathList nodePathList = databaseRequest->_groupForAddingLoadedSubgraph->getParentalNodePaths();
+                osg::NodePathList nodePathList = groupForAddingLoadedSubgraph->getParentalNodePaths();
                 if (!nodePathList.empty())
                 {
                     osg::NodePath& nodePath = nodePathList.front();
@@ -594,7 +604,7 @@ void DatabasePager::DatabaseThread::run()
                     }
                 }
 
-                frov.pushOntoNodePath(databaseRequest->_groupForAddingLoadedSubgraph.get());
+                frov.pushOntoNodePath(groupForAddingLoadedSubgraph.get());
 
                 databaseRequest->_loadedModel->accept(frov);
 
@@ -1182,35 +1192,37 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
         
         registerPagedLODs(databaseRequest->_loadedModel.get());
         
-        osg::Group* group = databaseRequest->_groupForAddingLoadedSubgraph.get();
-
-        osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(group);
-        if (plod)
+        osg::ref_ptr<osg::Group> group = databaseRequest->_groupForAddingLoadedSubgraph.get();
+        if (group.valid())
         {
-            plod->setTimeStamp(plod->getNumChildren(),timeStamp);
-            plod->getDatabaseRequest(plod->getNumChildren()) = 0;
-        }
-        else
-        {
-            osg::ProxyNode* proxyNode = dynamic_cast<osg::ProxyNode*>(group);
-            if (proxyNode)
+            osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(group.get());
+            if (plod)
             {
-                proxyNode->getDatabaseRequest(proxyNode->getNumChildren()) = 0;
-            } 
+                plod->setTimeStamp(plod->getNumChildren(),timeStamp);
+                plod->getDatabaseRequest(plod->getNumChildren()) = 0;
+            }
+            else
+            {
+                osg::ProxyNode* proxyNode = dynamic_cast<osg::ProxyNode*>(group.get());
+                if (proxyNode)
+                {
+                    proxyNode->getDatabaseRequest(proxyNode->getNumChildren()) = 0;
+                } 
+            }
+
+            group->addChild(databaseRequest->_loadedModel.get());
+
+            osg::notify(osg::INFO)<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;
+
+            double timeToMerge = timeStamp-databaseRequest->_timestampFirstRequest;
+
+            if (timeToMerge<_minimumTimeToMergeTile) _minimumTimeToMergeTile = timeToMerge;
+            if (timeToMerge>_maximumTimeToMergeTile) _maximumTimeToMergeTile = timeToMerge;
+
+            _totalTimeToMergeTiles += timeToMerge;
+            ++_numTilesMerges;
         }
-        
-        group->addChild(databaseRequest->_loadedModel.get());
-
-        osg::notify(osg::INFO)<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;
-    
-        double timeToMerge = timeStamp-databaseRequest->_timestampFirstRequest;
-
-        if (timeToMerge<_minimumTimeToMergeTile) _minimumTimeToMergeTile = timeToMerge;
-        if (timeToMerge>_maximumTimeToMergeTile) _maximumTimeToMergeTile = timeToMerge;
-        
-        _totalTimeToMergeTiles += timeToMerge;
-        ++_numTilesMerges;
-        
+                
         // reset the loadedModel pointer
         databaseRequest->_loadedModel = 0;
 

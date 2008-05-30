@@ -247,9 +247,12 @@ ELSE(DESIRED_QT_VERSION)
 
 ENDIF(DESIRED_QT_VERSION)
 
-
 #use pkg-config to find various modues
-FIND_PACKAGE(PkgConfig)
+IF   (${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRGREATER 2.4.5)
+
+    FIND_PACKAGE(PkgConfig)
+
+ENDIF(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION}.${CMAKE_PATCH_VERSION} STRGREATER 2.4.5) 
 
 IF(PKG_CONFIG_FOUND)
 
@@ -267,7 +270,6 @@ IF(PKG_CONFIG_FOUND)
     PKG_CHECK_MODULES(CAIRO cairo)
 
 ENDIF(PKG_CONFIG_FOUND)
-
 
 #
 # Test to determine if we want the "tripledot" form of the GLU tesselator callback.

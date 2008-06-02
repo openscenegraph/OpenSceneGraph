@@ -1703,24 +1703,29 @@ bool View::containsCamera(const osg::Camera* camera) const
 const osg::Camera* View::getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const
 {
     const osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
+    const osgViewer::GraphicsWindow* gw = dynamic_cast<const osgViewer::GraphicsWindow*>(eventState->getGraphicsContext());
+
     bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
 
-    // osg::notify(osg::NOTICE)<<"View::getCameraContainingPosition("<<x<<","<<y<<",..,..) view_invert_y="<<view_invert_y<<std::endl;
-   
     double epsilon = 0.5;
 
-    if (_camera->getGraphicsContext() && _camera->getViewport())
+    if (_camera->getGraphicsContext() &&
+        (!gw || _camera->getGraphicsContext()==gw) &&
+        _camera->getViewport())
     {
         const osg::Viewport* viewport = _camera->getViewport();
         
-        double new_x = static_cast<double>(_camera->getGraphicsContext()->getTraits()->width) * (x - eventState->getXmin())/(eventState->getXmax()-eventState->getXmin());
-        double new_y = view_invert_y ?
+        double new_x = x;
+        double new_y = y;
+
+        if (!gw)
+        {
+            new_x = static_cast<double>(_camera->getGraphicsContext()->getTraits()->width) * (x - eventState->getXmin())/(eventState->getXmax()-eventState->getXmin());
+            new_y = view_invert_y ?
                        static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (1.0 - (y- eventState->getYmin())/(eventState->getYmax()-eventState->getYmin())) :
                        static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (y - eventState->getYmin())/(eventState->getYmax()-eventState->getXmin());
+        }
         
-        // osg::notify(osg::NOTICE)<<"  new_x="<<new_x<<","<<new_y<<std::endl;
-
-
         if (viewport && 
             new_x >= (viewport->x()-epsilon) && new_y >= (viewport->y()-epsilon) &&
             new_x < (viewport->x()+viewport->width()-1.0+epsilon) && new_y <= (viewport->y()+viewport->height()-1.0+epsilon) )
@@ -1728,7 +1733,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
             local_x = new_x;
             local_y = new_y;
 
-            // osg::notify(osg::NOTICE)<<"Returning master camera"<<std::endl;
+            osg::notify(osg::INFO)<<"Returning master camera"<<std::endl;
 
             return _camera.get();
         }
@@ -1736,6 +1741,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
 
     osg::Matrix masterCameraVPW = getCamera()->getViewMatrix() * getCamera()->getProjectionMatrix();
     
+    // convert to non dimensional
     x = (x - eventState->getXmin()) * 2.0 / (eventState->getXmax()-eventState->getXmin()) - 1.0;
     y = (y - eventState->getYmin())* 2.0 / (eventState->getYmax()-eventState->getYmin()) - 1.0;
 
@@ -1748,7 +1754,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
             slave._camera->getAllowEventFocus() &&
             slave._camera->getRenderTargetImplementation()==osg::Camera::FRAME_BUFFER)
         {
-            // osg::notify(osg::NOTICE)<<"Testing slave camera "<<slave._camera->getName()<<std::endl;
+            osg::notify(osg::INFO)<<"Testing slave camera "<<slave._camera->getName()<<std::endl;
 
             const osg::Camera* camera = slave._camera.get();
             const osg::Viewport* viewport = camera ? camera->getViewport() : 0;

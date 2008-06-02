@@ -59,6 +59,10 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         bool getUseFixedMouseInputRange() { return _useFixedMouseInputRange; }
 
 
+        /** Set the graphics context associated with this event queue.*/
+        void setGraphicsContext(osg::GraphicsContext* context) { getCurrentEventState()->setGraphicsContext(context); }
+
+
         /** Set the mouse input range.*/
         void setMouseInputRange(float xMin, float yMin, float xMax, float yMax) { getCurrentEventState()->setInputRange(xMin, yMin, xMax, yMax); }
 

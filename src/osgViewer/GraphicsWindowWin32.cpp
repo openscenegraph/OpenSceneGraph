@@ -1011,7 +1011,7 @@ void GraphicsWindowWin32::init()
 {
     if (_initialized) return;
 
-    getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
+    // getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
 
     WindowData *windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
     HWND windowHandle = windowData ? windowData->_hwnd : 0;

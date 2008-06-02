@@ -40,7 +40,7 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
 {
     public:
     
-        GraphicsWindow() { _eventQueue = new osgGA::EventQueue; }
+        GraphicsWindow() { _eventQueue = new osgGA::EventQueue; _eventQueue->setGraphicsContext(this); }
 
         virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindow*>(object)!=0; }
         virtual const char* libraryName() const { return "osgViewer"; }

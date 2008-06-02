@@ -545,7 +545,7 @@ void GraphicsWindowX11::init()
         return;
     }
 
-    getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
+    // getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
 
     WindowData* inheritedWindowData = dynamic_cast<WindowData*>(_traits->inheritedWindowData.get());
     Window windowHandle = inheritedWindowData ? inheritedWindowData->_window : 0;
@@ -903,6 +903,8 @@ void GraphicsWindowX11::checkEvents()
     double eventTime = baseTime;
     double resizeTime = eventTime;
     _timeOfLastCheckEvents = getEventQueue()->getTime();
+    
+    // osg::notify(osg::NOTICE)<<"GraphicsWindowX11::checkEvents() : getEventQueue()->getCurrentEventState()->getGraphicsContext()="<<getEventQueue()->getCurrentEventState()->getGraphicsContext()<<std::endl;
 
     int windowX = _traits->x;
     int windowY = _traits->y;

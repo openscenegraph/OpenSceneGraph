@@ -500,7 +500,7 @@ void GraphicsWindowCarbon::init()
 {
     if (_initialized) return;
 
-    getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
+    // getEventQueue()->setCurrentEventState(osgGA::GUIEventAdapter::getAccumulatedEventState().get());
     
     _lastModifierKeys = 0;
     _windowTitleHeight = 0;

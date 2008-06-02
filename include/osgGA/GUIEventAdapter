@@ -16,6 +16,7 @@
 
 #include <osg/Object>
 #include <osg/Matrix>
+#include <osg/GraphicsContext>
 #include <osgGA/Export>
 
 namespace osgGA{
@@ -290,6 +291,9 @@ public:
         /** deprecated function for getting time of event. */
         double time() const { return _time; }
 
+
+        void setGraphicsContext(osg::GraphicsContext* context) { _context = context; }
+        const osg::GraphicsContext* getGraphicsContext() const { return _context.get(); }
         
 
         /** set window rectangle. */
@@ -429,6 +433,7 @@ public:
         EventType _eventType;
         double _time;
 
+        osg::observer_ptr<osg::GraphicsContext> _context;
         int _windowX;
         int _windowY;
         int _windowWidth;

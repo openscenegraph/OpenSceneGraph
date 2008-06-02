@@ -176,7 +176,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Get the camera which contains the pointer position x,y specified master cameras window/eye coords.
           * Also passes back the local window coords for the graphics context associated with the camera passed back. */
         const osg::Camera* getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const;
-        
+
         /** Compute intersections between a ray through the specified master cameras window/eye coords and a specified node.
           * Note, when a master cameras has slaves and no viewport itself its coordinate frame will be in clip space i.e. -1,-1 to 1,1,
           * while if its has a viewport the coordintates will be relative to its viewport dimensions. 
@@ -186,7 +186,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         
         /** Compute intersections between a ray through the specified master cameras window/eye coords and a specified nodePath's subgraph. */
         bool computeIntersections(float x,float y, osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
-        
+
         
         virtual void requestRedraw();
         virtual void requestContinuousUpdate(bool needed=true);

@@ -626,6 +626,8 @@ void CompositeViewer::eventTraversal()
             {
                 osgGA::GUIEventAdapter* event = itr->get();
                 
+                //osg::notify(osg::NOTICE)<<"event->getGraphicsContext()="<<event->getGraphicsContext()<<std::endl;
+                
                 bool pointerEvent = false;
 
                 float x = event->getX();
@@ -668,15 +670,11 @@ void CompositeViewer::eventTraversal()
                                         // If this camera is not a slave camera
                                         if (camera->getView()->getCamera() == camera)
                                         {
-                                            const osg::GraphicsContext::Traits* traits = gw ? gw->getTraits() : 0;
-                                            if (traits) 
-                                            {
-                                                eventState->setInputRange( 0, 0, traits->width, traits->height);
-                                            }
-                                            else
-                                            {
-                                                eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
-                                            }
+                                            eventState->setGraphicsContext(gw);
+                                            eventState->setInputRange( viewport->x(), viewport->y(), 
+                                                                       viewport->x()+viewport->width(),
+                                                                       viewport->y()+viewport->height());
+
                                         }
                                         else
                                         {
@@ -744,8 +742,6 @@ void CompositeViewer::eventTraversal()
                     event->setButtonMask(eventState->getButtonMask());
                     event->setMouseYOrientation(eventState->getMouseYOrientation());
                 }
-                //osg::notify(osg::NOTICE)<<"   mouse x = "<<event->getX()<<" y="<<event->getY()<<std::endl;
-                // osg::notify(osg::NOTICE)<<"   mouse Xmin = "<<event->getXmin()<<" Ymin="<<event->getYmin()<<" xMax="<<event->getXmax()<<" Ymax="<<event->getYmax()<<std::endl;
             }
 
             for(itr = gw_events.begin();

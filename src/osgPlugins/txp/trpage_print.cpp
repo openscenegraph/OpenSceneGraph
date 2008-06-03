@@ -91,7 +91,7 @@ trpgFilePrintBuffer::~trpgFilePrintBuffer()
 
 // Print out a line of text
 
-bool trpgFilePrintBuffer::prnLine(char *str)
+bool trpgFilePrintBuffer::prnLine(const char *str)
 {
     if (!fp)
         return false;
@@ -655,7 +655,7 @@ bool trpgTransform::Print(trpgPrintBuffer &buf) const
         buf.prnLine(ls);
     }
     sprintf(ls,"name = %s", name ? name : "noname" );    buf.prnLine(ls);
-    
+
     buf.DecreaseIndent(2);
     buf.prnLine();
 
@@ -677,7 +677,7 @@ bool trpgModelRef::Print(trpgPrintBuffer &buf) const
         sprintf(ls,"%f %f %f %f",m[i][0],m[i][1],m[i][2],m[i][3]);
         buf.prnLine(ls);
     }
-    
+
     buf.DecreaseIndent(2);
     buf.prnLine();
 
@@ -864,7 +864,7 @@ bool trpgLightTable::Print(trpgPrintBuffer &buf) const
     buf.DecreaseIndent();
 
     buf.prnLine();
-    
+
     return true;
 }
 
@@ -948,7 +948,7 @@ bool trpgLabel::Print(trpgPrintBuffer &buf) const
     buf.IncreaseIndent();
     for (unsigned int i=0;i<supports.size();i++)
     {
-        sprintf(ls,"%f %f %f",supports[i].x,supports[i].y,supports[i].z); buf.prnLine(ls);    
+        sprintf(ls,"%f %f %f",supports[i].x,supports[i].y,supports[i].z); buf.prnLine(ls);
     }
     buf.DecreaseIndent();
     buf.prnLine();

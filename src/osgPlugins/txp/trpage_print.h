@@ -35,7 +35,7 @@ public:
     virtual bool isValid(void) { return true; }
 
     // The main print function.  Subclasses must fill this in.
-    virtual bool prnLine(char *str=NULL)=0;
+    virtual bool prnLine(const char *str=NULL)=0;
 
     // This increases the current indentation by the amount given (defaults to one)
     virtual void IncreaseIndent(int amount=1);
@@ -61,7 +61,7 @@ TX_EXDECL class TX_CLDECL trpgFilePrintBuffer : public trpgPrintBuffer {
     bool isValid(void) { return valid; };
 
     // For a file printer buffer, this writes a string out to a file
-    bool prnLine(char *str = NULL);
+    bool prnLine(const char *str = NULL);
  protected:
     bool valid;
     bool isMine;
@@ -119,7 +119,7 @@ TX_EXDECL class TX_CLDECL trpgPrintGraphParser : public trpgSceneParser
         trpgPrintGraphParser *parse;
 
     private:
-      
+
         ChildRefList childRefList;
 
 
@@ -128,7 +128,7 @@ TX_EXDECL class TX_CLDECL trpgPrintGraphParser : public trpgSceneParser
     // Fetch the archive associated with this print
     trpgr_Archive *GetArchive() {return archive; };
     trpgrImageHelper *GetImageHelp() {return imageHelp; };
-    
+
  protected:
     bool StartChildren(void *);
     bool EndChildren(void *);
@@ -136,9 +136,9 @@ TX_EXDECL class TX_CLDECL trpgPrintGraphParser : public trpgSceneParser
     trpgPrintBuffer *printBuf;
     trpgr_Archive *archive;
     trpgrImageHelper *imageHelp;
-   
+
     ReadHelper *childRefCB;
-   
+
 };
 
 // Print utitility for while archive

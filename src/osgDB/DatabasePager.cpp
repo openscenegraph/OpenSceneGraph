@@ -272,6 +272,8 @@ void DatabasePager::RequestQueue::takeFirst(osg::ref_ptr<DatabaseRequest>& datab
         _requestList.sort(SortFileRequestFunctor());
         databaseRequest = _requestList.front();
         _requestList.erase(_requestList.begin());
+
+        updateBlock();
     }
 }
 

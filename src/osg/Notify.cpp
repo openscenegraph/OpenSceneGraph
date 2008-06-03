@@ -83,16 +83,20 @@ bool osg::isNotifyEnabled( osg::NotifySeverity severity )
     return severity<=g_NotifyLevel;
 }
 
-#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
-const char* NullStreamName = "nul";
-#else
-const char* NullStreamName = "/dev/null";
-#endif
+class NullStreamBuffer : public std::streambuf
+{
+    private:
+    
+        virtual streamsize xsputn (const char_type*, streamsize n)
+        {
+            return n;
+        }
+};
 
 std::ostream& osg::notify(const osg::NotifySeverity severity)
 {
     // set up global notify null stream for inline notify
-    static std::ofstream s_NotifyNulStream(NullStreamName);
+    static std::ostream s_NotifyNulStream(new NullStreamBuffer());
 
     static bool initialized = false;
     if (!initialized) 

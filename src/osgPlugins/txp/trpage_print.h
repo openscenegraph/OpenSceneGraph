@@ -21,9 +21,9 @@
 #include <stack>
 
 /* Print Buffer for TerraPage.  Subclasses of this object
-	are used to print out to stdout or disk (or whatever).
-	You won't create one of these directly, instead you'll create
-	something which inherits from it.
+    are used to print out to stdout or disk (or whatever).
+    You won't create one of these directly, instead you'll create
+    something which inherits from it.
  */
 TX_EXDECL class TX_CLDECL trpgPrintBuffer
 {
@@ -96,31 +96,31 @@ TX_EXDECL class TX_CLDECL trpgPrintGraphParser : public trpgSceneParser
     class ReadHelper : public trpgr_Callback
     {
     public:
-	// typedef std::vector<const trpgChildRef> ChildRefList;
-	// The const in the template parameter was removed because it causes GCC to
-	// freak out.  I am of the opinion that const doesn't make sense in a template
-	// parameter for std::vector anyway... const prevents you from changing the
-	// value, so what exactly is the point?  How does one add entries to the vector
-	// without giving them a value?  -ADS
-	typedef std::vector<trpgChildRef> ChildRefList;
+    // typedef std::vector<const trpgChildRef> ChildRefList;
+    // The const in the template parameter was removed because it causes GCC to
+    // freak out.  I am of the opinion that const doesn't make sense in a template
+    // parameter for std::vector anyway... const prevents you from changing the
+    // value, so what exactly is the point?  How does one add entries to the vector
+    // without giving them a value?  -ADS
+    typedef std::vector<trpgChildRef> ChildRefList;
 
-	ReadHelper(trpgPrintGraphParser *inPG,trpgPrintBuffer *inBuf): pBuf(inBuf), parse(inPG) {}
-	    ~ReadHelper() { Reset();}
+    ReadHelper(trpgPrintGraphParser *inPG,trpgPrintBuffer *inBuf): pBuf(inBuf), parse(inPG) {}
+        ~ReadHelper() { Reset();}
 
-	    void *Parse(trpgToken,trpgReadBuffer &buf);
-	    void Reset();
-	    // After parsing this will return the number of trpgChildRef node found.
-	    unsigned int GetNbChildrenRef() const;
-	    // This will return the trpgChildRef node associated with the index.
-	    // this will retrun 0 if idx is out of bound
-	    const trpgChildRef* GetChildRef(unsigned int idx) const;
+        void *Parse(trpgToken,trpgReadBuffer &buf);
+        void Reset();
+        // After parsing this will return the number of trpgChildRef node found.
+        unsigned int GetNbChildrenRef() const;
+        // This will return the trpgChildRef node associated with the index.
+        // this will retrun 0 if idx is out of bound
+        const trpgChildRef* GetChildRef(unsigned int idx) const;
     protected:
-	    trpgPrintBuffer *pBuf;
-	    trpgPrintGraphParser *parse;
+        trpgPrintBuffer *pBuf;
+        trpgPrintGraphParser *parse;
 
     private:
       
-	    ChildRefList childRefList;
+        ChildRefList childRefList;
 
 
     };
@@ -128,7 +128,7 @@ TX_EXDECL class TX_CLDECL trpgPrintGraphParser : public trpgSceneParser
     // Fetch the archive associated with this print
     trpgr_Archive *GetArchive() {return archive; };
     trpgrImageHelper *GetImageHelp() {return imageHelp; };
-	
+    
  protected:
     bool StartChildren(void *);
     bool EndChildren(void *);

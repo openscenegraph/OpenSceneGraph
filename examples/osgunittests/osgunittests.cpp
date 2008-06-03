@@ -412,7 +412,49 @@ void testQuat(const osg::Vec3d& quat_scale)
 
 class MyThread : public OpenThreads::Thread {
 public:
-  void run(void) { }
+    void run(void) { }
+};
+
+class NotifyThread : public OpenThreads::Thread {
+public:
+
+    NotifyThread(osg::NotifySeverity level, const std::string& message):
+    _done(false),
+    _level(level),
+    _message(message) {}
+
+    ~NotifyThread()
+    {
+        _done = true;
+        while(isRunning())
+        {
+            OpenThreads::Thread::YieldCurrentThread();
+        }
+    }
+
+    void run(void)
+    {
+        std::cout << "Entering thread ..." <<_message<< std::endl;
+
+        unsigned int count=0;
+
+        while(!_done) 
+        {
+            ++count;
+#if 1
+            osg::notify(_level)<<_message<<this<<"\n";
+#else
+            osg::notify(_level)<<_message<<this<<std::endl;
+#endif
+        }
+
+        std::cout << "Leaving thread ..." <<_message<< " count="<<count<<std::endl;
+    }
+
+    bool                  _done;
+    osg::NotifySeverity   _level;
+    std::string           _message;
+  
 };
 
 void testThreadInitAndExit()
@@ -428,6 +470,25 @@ void testThreadInitAndExit()
     OpenThreads::Thread::microSleep(500000);
     
     std::cout<<"pass    thread start and delete test"<<std::endl<<std::endl;
+
+
+    std::cout<<"******   Running notify thread test   ****** "<<std::endl;
+
+    {
+        NotifyThread thread1(osg::INFO,"thread one:");
+        NotifyThread thread2(osg::INFO,"thread two:");
+        NotifyThread thread3(osg::INFO,"thread three:");
+        NotifyThread thread4(osg::INFO,"thread four:");
+        thread1.startThread();
+        thread2.startThread();
+        thread3.startThread();
+        thread4.startThread();
+
+        // add a sleep to allow the thread start to fall over it its going to.
+        OpenThreads::Thread::microSleep(5000000);
+    }
+
+    std::cout<<"pass    noitfy thread test."<<std::endl<<std::endl;
 }
 
 void testPolytope()

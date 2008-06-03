@@ -34,6 +34,73 @@
 
 #include <iostream>
 
+class KDNode
+{
+    public:
+    
+        typedef short value_type;
+
+        value_type _leftChild;
+        value_type _rightChild;
+};
+
+class KDLeaf : public osg::Referenced
+{
+    public:
+    
+        KDLeaf();
+    
+        typedef unsigned int index_type;
+        typedef std::vector< index_type > Indices;
+
+        Indices _vertexIndices;        
+    
+    protected:
+    
+        virtual ~KDLeaf() {}
+};
+
+class KDTree : public osg::Referenced
+{
+    public:
+    
+        typedef std::vector< unsigned int > AxisStack;
+        typedef std::vector< KDNode > KDNodeList;
+        typedef std::vector< osg::ref_ptr<KDLeaf> > KDLeafList;
+
+        osg::BoundingBox    _bb;
+
+        AxisStack           _axisStack;
+        KDNodeList          _kdNodes;
+        KDLeafList          _kdLeaves; 
+};
+
+class KDTreeTraverser
+{
+    public:
+    
+        void traverse(KDTree& tree, KDNode::value_type nodeIndex)
+        {
+            if (nodeIndex>=0)
+            {        
+                KDNode& node = tree._kdNodes[nodeIndex];
+                traverse(tree,node._leftChild);
+                traverse(tree,node._rightChild);
+            }
+            else 
+            {
+                KDNode::value_type leafIndex = -nodeIndex-1;
+                KDLeaf& leaf = *(tree._kdLeaves[leafIndex]);
+            }
+        }
+
+
+        void traverse(KDTree& tree)
+        {
+            if (!tree._kdNodes.empty()) traverse(tree,0);
+        }
+    
+};
 
 int main(int argc, char **argv)
 {

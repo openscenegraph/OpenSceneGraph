@@ -316,6 +316,8 @@ int Viewer::run()
     {
         setCameraManipulator(new osgGA::TrackballManipulator());
     }
+    
+    setReleaseContextAtEndOfFrameHint(false);
             
     return ViewerBase::run();
 }

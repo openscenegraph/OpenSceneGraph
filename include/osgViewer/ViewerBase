@@ -140,6 +140,18 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         bool getQuitEventSetsDone() const { return _quitEventSetsDone; }
 
 
+        /** Hint to tell the renderingTraversals() method whether to call relaseContext() on the last
+          * context that was made current by the thread calling renderingTraverals().  Note, when 
+          * running multi-threaded viewer no threads will be made current or release current.
+          * Setting this hint to false can enable the frame loop to be lazy about calling makeCurrent
+          * and releaseContext on each new frame, helping performance.  However, if you frame loop
+          * is managing multiple graphics context all from the main frame thread then this hint must
+          * be left on, otherwise the wrong context could be left active, introducing errors in rendering.*/
+        void setReleaseContextAtEndOfFrameHint(bool hint) { _releaseContextAtEndOfFrameHint = hint; }
+        
+        /** Hint to tell the renderingTraversals() method whether to call relaseContext().*/
+        bool getReleaseContextAtEndOfFrameHint() const { return _releaseContextAtEndOfFrameHint; }
+
 
         /** Set the UpdateVisitor. */
         void setUpdateVisitor(osgUtil::UpdateVisitor* updateVisitor) { _updateVisitor = updateVisitor; }
@@ -225,7 +237,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** Get the keyboard and mouse usage of this viewer.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const = 0;
-
+        
     protected:
     
         inline void makeCurrent(osg::GraphicsContext* gc)
@@ -255,6 +267,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         bool                                        _done;
         int                                         _keyEventSetsDone;
         bool                                        _quitEventSetsDone;
+        bool                                        _releaseContextAtEndOfFrameHint;
         
         ThreadingModel                              _threadingModel;
         bool                                        _threadsRunning;

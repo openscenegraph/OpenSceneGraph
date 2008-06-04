@@ -43,6 +43,7 @@ ViewerBase::ViewerBase():
     _done = false;
     _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
     _quitEventSetsDone = true;
+    _releaseContextAtEndOfFrameHint = true;
     _threadingModel = AutomaticSelection;
     _threadsRunning = false;
     _endBarrierPosition = AfterSwapBuffers;
@@ -55,6 +56,7 @@ ViewerBase::ViewerBase(const ViewerBase& base):
     _done = false;
     _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
     _quitEventSetsDone = true;
+    _releaseContextAtEndOfFrameHint = true;
     _threadingModel = AutomaticSelection;
     _threadsRunning = false;
     _endBarrierPosition = AfterSwapBuffers;
@@ -721,8 +723,12 @@ void ViewerBase::renderingTraversals()
         _endDynamicDrawBlock->block();
         // osg::notify(osg::NOTICE)<<"Time waiting "<<osg::Timer::instance()->delta_m(startTick, osg::Timer::instance()->tick())<<std::endl;;
     }
-
-
+    
+    if (_releaseContextAtEndOfFrameHint)
+    {
+        osg::notify(osg::NOTICE)<<"Doing release context"<<std::endl;
+        releaseContext();
+    }
 
     if (getStats() && getStats()->collectStats("update"))
     {

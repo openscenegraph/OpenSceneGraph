@@ -184,6 +184,8 @@ int CompositeViewer::run()
         }
     }
         
+    setReleaseContextAtEndOfFrameHint(false);
+
     return ViewerBase::run();
 }
 

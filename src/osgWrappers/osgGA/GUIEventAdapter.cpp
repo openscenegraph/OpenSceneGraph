@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/GraphicsContext>
 #include <osg/Matrix>
 #include <osg/Object>
 #include <osgGA/GUIEventAdapter>
@@ -296,6 +297,16 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	          __double__time,
 	          "deprecated function for getting time of event. ",
 	          "");
+	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context,
+	          Properties::NON_VIRTUAL,
+	          __void__setGraphicsContext__osg_GraphicsContext_P1,
+	          "",
+	          "");
+	I_Method0(const osg::GraphicsContext *, getGraphicsContext,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_GraphicsContext_P1__getGraphicsContext,
+	          "",
+	          "");
 	I_MethodWithDefaults5(void, setWindowRectangle, IN, int, x, , IN, int, y, , IN, int, width, , IN, int, height, , IN, bool, updateMouseRange, true,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setWindowRectangle__int__int__int__int__bool,
@@ -519,6 +530,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_SimpleProperty(osgGA::GUIEventAdapter::EventType, EventType, 
 	                 __EventType__getEventType, 
 	                 __void__setEventType__EventType);
+	I_SimpleProperty(osg::GraphicsContext *, GraphicsContext, 
+	                 0, 
+	                 __void__setGraphicsContext__osg_GraphicsContext_P1);
 	I_SimpleProperty(bool, Handled, 
 	                 __bool__getHandled, 
 	                 __void__setHandled__bool);

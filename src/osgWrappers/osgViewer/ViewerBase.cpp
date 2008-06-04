@@ -190,6 +190,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	          __bool__getQuitEventSetsDone,
 	          "",
 	          "true if the viewer respond to the QUIT_APPLICATION-event  ");
+	I_Method1(void, setReleaseContextAtEndOfFrameHint, IN, bool, hint,
+	          Properties::NON_VIRTUAL,
+	          __void__setReleaseContextAtEndOfFrameHint__bool,
+	          "Hint to tell the renderingTraversals() method whether to call relaseContext() on the last context that was made current by the thread calling renderingTraverals(). ",
+	          "Note, when running multi-threaded viewer no threads will be made current or release current. Setting this hint to false can enable the frame loop to be lazy about calling makeCurrent and releaseContext on each new frame, helping performance. However, if you frame loop is managing multiple graphics context all from the main frame thread then this hint must be left on, otherwise the wrong context could be left active, introducing errors in rendering. ");
+	I_Method0(bool, getReleaseContextAtEndOfFrameHint,
+	          Properties::NON_VIRTUAL,
+	          __bool__getReleaseContextAtEndOfFrameHint,
+	          "Hint to tell the renderingTraversals() method whether to call relaseContext(). ",
+	          "");
 	I_Method1(void, setUpdateVisitor, IN, osgUtil::UpdateVisitor *, updateVisitor,
 	          Properties::NON_VIRTUAL,
 	          __void__setUpdateVisitor__osgUtil_UpdateVisitor_P1,
@@ -361,6 +371,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	I_SimpleProperty(osg::Operation *, RealizeOperation, 
 	                 __osg_Operation_P1__getRealizeOperation, 
 	                 __void__setRealizeOperation__osg_Operation_P1);
+	I_SimpleProperty(bool, ReleaseContextAtEndOfFrameHint, 
+	                 __bool__getReleaseContextAtEndOfFrameHint, 
+	                 __void__setReleaseContextAtEndOfFrameHint__bool);
 	I_SimpleProperty(osg::Stats *, Stats, 
 	                 __osg_Stats_P1__getStats, 
 	                 __void__setStats__osg_Stats_P1);

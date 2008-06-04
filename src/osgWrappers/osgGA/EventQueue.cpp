@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/GraphicsContext>
 #include <osg/Referenced>
 #include <osg/Timer>
 #include <osgGA/EventQueue>
@@ -67,6 +68,11 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	          Properties::NON_VIRTUAL,
 	          __bool__getUseFixedMouseInputRange,
 	          "Get whether the mouse coordinates should be transformed into a pre defined input range. ",
+	          "");
+	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context,
+	          Properties::NON_VIRTUAL,
+	          __void__setGraphicsContext__osg_GraphicsContext_P1,
+	          "Set the graphics context associated with this event queue. ",
 	          "");
 	I_Method4(void, setMouseInputRange, IN, float, xMin, IN, float, yMin, IN, float, xMax, IN, float, yMax,
 	          Properties::NON_VIRTUAL,
@@ -274,6 +280,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
 	I_SimpleProperty(osgGA::EventQueue::Events &, Events, 
 	                 0, 
 	                 __void__setEvents__Events_R1);
+	I_SimpleProperty(osg::GraphicsContext *, GraphicsContext, 
+	                 0, 
+	                 __void__setGraphicsContext__osg_GraphicsContext_P1);
 	I_SimpleProperty(osg::Timer_t, StartTick, 
 	                 __osg_Timer_t__getStartTick, 
 	                 __void__setStartTick__osg_Timer_t);

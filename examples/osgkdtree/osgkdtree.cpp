@@ -22,6 +22,7 @@
 #include <osg/CoordinateSystemNode>
 #include <osg/Notify>
 #include <osg/io_utils>
+#include <osg/Geometry>
 
 #include <osgDB/ReadFile>
 
@@ -33,6 +34,9 @@
 #include <osgSim/ElevationSlice>
 
 #include <iostream>
+
+namespace osg
+{
 
 class KDNode
 {
@@ -60,47 +64,108 @@ class KDLeaf : public osg::Referenced
         virtual ~KDLeaf() {}
 };
 
-class KDTree : public osg::Referenced
+class KDTree : public osg::Shape
 {
     public:
+    
+    
+        KDTree() {}
+        
+        KDTree(const KDTree& rhs, const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            Shape(rhs,copyop) {}
+
+        META_Shape(osg, KDTree)
     
         typedef std::vector< unsigned int > AxisStack;
         typedef std::vector< KDNode > KDNodeList;
         typedef std::vector< osg::ref_ptr<KDLeaf> > KDLeafList;
 
-        osg::BoundingBox    _bb;
+        osg::observer_ptr<osg::Geometry> _geometry;
 
-        AxisStack           _axisStack;
-        KDNodeList          _kdNodes;
-        KDLeafList          _kdLeaves; 
+        osg::BoundingBox                _bb;
+
+        AxisStack                       _axisStack;
+        KDNodeList                      _kdNodes;
+        KDLeafList                      _kdLeaves; 
 };
 
 class KDTreeTraverser
 {
     public:
     
-        void traverse(KDTree& tree, KDNode::value_type nodeIndex)
+        void traverse(KDTree& tree, KDNode::value_type nodeIndex, unsigned int level)
         {
+            for(unsigned int i=0; i<level; ++i)
+            {
+                osg::notify(osg::NOTICE)<<"  ";
+            }
+            osg::notify(osg::NOTICE)<<"traverse("<<nodeIndex<<", "<< level<<") { "<<std::endl;
+            
             if (nodeIndex>=0)
             {        
                 KDNode& node = tree._kdNodes[nodeIndex];
-                traverse(tree,node._leftChild);
-                traverse(tree,node._rightChild);
+                traverse(tree,node._leftChild,level+1);
+                traverse(tree,node._rightChild,level+1);
             }
             else 
             {
                 KDNode::value_type leafIndex = -nodeIndex-1;
                 KDLeaf& leaf = *(tree._kdLeaves[leafIndex]);
             }
+
+            for(unsigned int i=0; i<level; ++i)
+            {
+                osg::notify(osg::NOTICE)<<"  ";
+            }
+            osg::notify(osg::NOTICE)<<"}"<<std::endl;;
         }
 
 
         void traverse(KDTree& tree)
         {
-            if (!tree._kdNodes.empty()) traverse(tree,0);
+            osg::notify(osg::NOTICE)<<"traverse(tree)"<<std::endl;
+            if (!tree._kdNodes.empty()) traverse(tree,0,0);
         }
     
 };
+
+
+class KDTreeBuilder : public osg::NodeVisitor
+{
+    public:
+    
+        KDTreeBuilder():
+            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+    
+    
+        void apply(osg::Geode& geode)
+        {
+            for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+            {
+                osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
+                if (geom)
+                {
+                    geom->setShape(createKDTree(geom));
+                }   
+            }
+        }
+    
+        KDTree* createKDTree(osg::Geometry* geometry);
+};
+
+
+KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
+{
+    KDTree* kdTree = new KDTree;
+    kdTree->_geometry = geometry;
+    kdTree->_bb = kdTree->_geometry->getBound();
+    
+    osg::notify(osg::NOTICE)<<"osg::KDTreeBuilder::createKDTree()"<<std::endl;
+    
+    return kdTree;
+}    
+
+}
 
 int main(int argc, char **argv)
 {
@@ -114,6 +179,10 @@ int main(int argc, char **argv)
         std::cout<<"No model loaded, please specify a valid model on the command line."<<std::endl;
         return 0;
     }
+    
+    osg::KDTreeBuilder builder;
+    scene->accept(builder);
+    
     
     
     return 0;

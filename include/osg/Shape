@@ -106,6 +106,7 @@ class ShapeVisitor
         ShapeVisitor() {}
         virtual ~ShapeVisitor() {}
 
+        virtual void apply(Shape&) {}
         virtual void apply(Sphere&) {}
         virtual void apply(Box&) {}
         virtual void apply(Cone&) {}
@@ -127,6 +128,7 @@ class ConstShapeVisitor
         ConstShapeVisitor() {}
         virtual ~ConstShapeVisitor() {}
 
+        virtual void apply(const Shape&) {}
         virtual void apply(const Sphere&) {}
         virtual void apply(const Box&) {}
         virtual void apply(const Cone&) {}

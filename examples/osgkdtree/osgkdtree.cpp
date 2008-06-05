@@ -62,7 +62,7 @@ class KDNode
             return *this;
         }
 
-        typedef int value_type;
+        typedef short value_type;
 
         value_type _leftChild;
         value_type _rightChild;
@@ -233,7 +233,8 @@ class KDTreeBuilder : public osg::NodeVisitor
         KDTreeBuilder():
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
             _maxNumLevels(24),
-            _targetNumVerticesPerLeaf(8)            
+            _targetNumVerticesPerLeaf(8),
+            _numVerticesProcessed(0)
         {            
         }
     
@@ -257,14 +258,18 @@ class KDTreeBuilder : public osg::NodeVisitor
         int divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, unsigned int level);
 
         unsigned int _maxNumLevels;
-        unsigned int _targetNumVerticesPerLeaf;        
+        unsigned int _targetNumVerticesPerLeaf;
+        
+        unsigned int _numVerticesProcessed;   
 
 };
 
 
 KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
 {
+#if VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"osg::KDTreeBuilder::createKDTree()"<<std::endl;
+#endif
 
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
     if (!vertices) return 0;
@@ -276,15 +281,20 @@ KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
     
     unsigned int estimatedSize = (unsigned int)(float(vertices->size())/float(_targetNumVerticesPerLeaf)*1.5);
 
+#if VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"kdTree->_kdNodes.reserve()="<<estimatedSize<<std::endl<<std::endl;
+#endif
 
     kdTree->_kdNodes.reserve(estimatedSize);
     kdTree->_kdLeaves.reserve(estimatedSize);
     
     computeDivisions(*kdTree);
 
+
+    _numVerticesProcessed += vertices->size();
+
     // create initial leaf list    
-    osg::ref_ptr<KDLeaf> leaf = new KDLeaf;
+    KDLeaf* leaf = new KDLeaf;
     leaf->_vertexIndices.reserve(vertices->size());
     for(unsigned int i=0; i<vertices->size(); ++i)
     {
@@ -293,11 +303,14 @@ KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
 
     osg::BoundingBox bb = kdTree->_bb;
     
-    int leafNum = kdTree->addLeaf(leaf.get());
+    int leafNum = kdTree->addLeaf(leaf);
     int nodeNum = divide(*kdTree, bb, leafNum, 0);
     
+#if VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"Root nodeNum="<<nodeNum<<std::endl;
+#endif
     
+#if VERBOSE_OUTPUT    
     
     KDTreeTraverser traverser;
     traverser.traverse(*kdTree);
@@ -306,6 +319,7 @@ KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
     osg::notify(osg::NOTICE)<<"Final kdTree->_kdLeaves.size()="<<kdTree->_kdLeaves.size()<<std::endl;
 
     osg::notify(osg::NOTICE)<<"osg::KDTreeBuilder::createKDTree() completed"<<std::endl<<std::endl;
+#endif
 
     return kdTree.release();
 }    
@@ -318,7 +332,9 @@ void KDTreeBuilder::computeDivisions(KDTree& kdTree)
                          kdTree._bb.yMax()-kdTree._bb.yMin(),
                          kdTree._bb.zMax()-kdTree._bb.zMin());
 
+#if VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"computeDivisions("<<_maxNumLevels<<") "<<dimensions<< " { "<<std::endl;
+#endif
 
     kdTree._axisStack.reserve(_maxNumLevels);
  
@@ -337,10 +353,14 @@ void KDTreeBuilder::computeDivisions(KDTree& kdTree)
         kdTree._axisStack.push_back(axis);
         dimensions[axis] /= 2.0f;
 
+#if VERBOSE_OUTPUT    
         osg::notify(osg::NOTICE)<<"  "<<level<<", "<<dimensions<<", "<<axis<<std::endl;
+#endif
     }
 
+#if VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"}"<<std::endl;
+#endif
 }
 
 int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, unsigned int level)
@@ -350,11 +370,15 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
 
     int axis = kdTree._axisStack[level];
 
-    osg::notify(osg::NOTICE)<<"divide("<<nodeIndex<<", "<<level<< "), axis="<<axis<<std::endl;
+#if VERBOSE_OUTPUT    
+    //osg::notify(osg::NOTICE)<<"divide("<<nodeIndex<<", "<<level<< "), axis="<<axis<<std::endl;
+#endif
 
     if (nodeIndex>=0)
     {
+#if VERBOSE_OUTPUT    
         osg::notify(osg::NOTICE)<<"  divide node"<<std::endl;
+#endif
         KDNode& node = kdTree.getNode(nodeIndex);
         return nodeIndex;
     }
@@ -362,7 +386,7 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
     {    
         if (kdTree.getLeaf(nodeIndex)->_vertexIndices.size()<=_targetNumVerticesPerLeaf) return nodeIndex;
     
-        osg::notify(osg::NOTICE)<<"  divide leaf"<<std::endl;
+        //osg::notify(osg::NOTICE)<<"  divide leaf"<<std::endl;
         
         int nodeNum = kdTree.addNode(KDNode());
 
@@ -381,7 +405,7 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
 
             osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(kdTree._geometry->getVertexArray());
 
-            osg::notify(osg::NOTICE)<<"  divide leaf->_vertexIndices.size()="<<leaf->_vertexIndices.size()<<std::endl;
+            //osg::notify(osg::NOTICE)<<"  divide leaf->_vertexIndices.size()="<<leaf->_vertexIndices.size()<<std::endl;
 
             unsigned int estimatedSize = leaf->_vertexIndices.size();
             leftLeaf->_vertexIndices.reserve(estimatedSize);
@@ -397,13 +421,13 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
 
             if (leftLeaf->_vertexIndices.empty())
             {
-                osg::notify(osg::NOTICE)<<"LeftLeaf empty"<<std::endl;
+                //osg::notify(osg::NOTICE)<<"LeftLeaf empty"<<std::endl;
                 kdTree.getNode(nodeNum)._leftChild = 0;
                 kdTree.getNode(nodeNum)._rightChild = kdTree.replaceLeaf(nodeIndex, rightLeaf.get());
             }
             else if (rightLeaf->_vertexIndices.empty())
             {
-                osg::notify(osg::NOTICE)<<"RightLeaf empty"<<std::endl;
+                //osg::notify(osg::NOTICE)<<"RightLeaf empty"<<std::endl;
                 kdTree.getNode(nodeNum)._leftChild = kdTree.replaceLeaf(nodeIndex, leftLeaf.get());
                 kdTree.getNode(nodeNum)._rightChild = 0;
             }
@@ -423,7 +447,7 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
         float restore = bb._max[axis];
         bb._max[axis] = mid;
 
-        osg::notify(osg::NOTICE)<<"  divide leftLeaf "<<kdTree.getNode(nodeNum)._leftChild<<std::endl;
+        //osg::notify(osg::NOTICE)<<"  divide leftLeaf "<<kdTree.getNode(nodeNum)._leftChild<<std::endl;
         int leftChildIndex = divide(kdTree, bb, originalLeftChildIndex, level+1);
 
         bb._max[axis] = restore;
@@ -431,7 +455,7 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
         restore = bb._min[axis];
         bb._min[axis] = mid;
 
-        osg::notify(osg::NOTICE)<<"  divide rightLeaf "<<kdTree.getNode(nodeNum)._rightChild<<std::endl;
+        //osg::notify(osg::NOTICE)<<"  divide rightLeaf "<<kdTree.getNode(nodeNum)._rightChild<<std::endl;
         int rightChildIndex = divide(kdTree, bb, originalRightChildIndex, level+1);
         
         bb._min[axis] = restore;
@@ -459,10 +483,17 @@ int main(int argc, char **argv)
         std::cout<<"No model loaded, please specify a valid model on the command line."<<std::endl;
         return 0;
     }
+
+
+    osg::Timer_t start = osg::Timer::instance()->tick();
     
     osg::KDTreeBuilder builder;
     scene->accept(builder);
     
+    osg::Timer_t end = osg::Timer::instance()->tick();
+    double time = osg::Timer::instance()->delta_s(start,end);
+    osg::notify(osg::NOTICE)<<"Time to build "<<time*1000.0<<"ms "<<builder._numVerticesProcessed<<std::endl;
+    osg::notify(osg::NOTICE)<<"build speed "<<(double(builder._numVerticesProcessed)/time)/1000000.0<<"M vertices per second"<<std::endl;
     
     
     return 0;

@@ -649,6 +649,8 @@ void ViewerBase::renderingTraversals()
     getCameras(cameras);
     
     Contexts::iterator itr;
+    
+    bool doneMakeCurrentInThisThread = false;
 
     // dispatch the the rendering threads
     if (_startRenderingBarrier.valid()) _startRenderingBarrier->block();
@@ -680,7 +682,8 @@ void ViewerBase::renderingTraversals()
     {
         if (_done) return;
         if (!((*itr)->getGraphicsThread()) && (*itr)->valid())
-        { 
+        {
+            doneMakeCurrentInThisThread = true; 
             makeCurrent(*itr);
             (*itr)->runOperations();
         }
@@ -699,6 +702,7 @@ void ViewerBase::renderingTraversals()
 
         if (!((*itr)->getGraphicsThread()) && (*itr)->valid())
         { 
+            doneMakeCurrentInThisThread = true; 
             makeCurrent(*itr);
             (*itr)->swapBuffers();
         }
@@ -724,9 +728,9 @@ void ViewerBase::renderingTraversals()
         // osg::notify(osg::NOTICE)<<"Time waiting "<<osg::Timer::instance()->delta_m(startTick, osg::Timer::instance()->tick())<<std::endl;;
     }
     
-    if (_releaseContextAtEndOfFrameHint)
+    if (_releaseContextAtEndOfFrameHint && doneMakeCurrentInThisThread)
     {
-        osg::notify(osg::NOTICE)<<"Doing release context"<<std::endl;
+        //osg::notify(osg::NOTICE)<<"Doing release context"<<std::endl;
         releaseContext();
     }
 

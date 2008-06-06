@@ -19,8 +19,6 @@
   
 #include <osgDB/ReadFile>
 
-#define _GLIBCXX_DEBUG
-
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
 #include <osg/Timer>
@@ -47,50 +45,10 @@ namespace osg
 typedef int value_type;
 typedef std::vector< value_type >   Indices;
 
-//#define LEAF_OBJECT
 //#define VERBOSE_OUTPUT
 
-#ifdef LEAF_OBJECT
-class KDNode
-{
-    public:
-    
-        KDNode():
-            first(0),
-            second(0) {}
-    
-        KDNode(const KDNode& rhs):
-            first(rhs.first),
-            second(rhs.second) {}
-
-        KDNode& operator = (const KDNode& rhs)
-        {
-            first = rhs.first;
-            second = rhs.second;
-            return *this;
-        }
-
-        value_type first;
-        value_type second;
-};
-
-class KDLeaf : public osg::Referenced
-{
-    public:
-    
-        KDLeaf() {}
-
-        Indices _vertexIndices;        
-    
-    protected:
-    
-        virtual ~KDLeaf() {}
-};
-
-#else
-    typedef std::pair< value_type, value_type> KDNode;
-    typedef std::pair< value_type, value_type> KDLeaf;
-#endif
+typedef std::pair< value_type, value_type> KDNode;
+typedef std::pair< value_type, value_type> KDLeaf;
 
 
 class KDTree : public osg::Shape
@@ -109,39 +67,6 @@ class KDTree : public osg::Shape
         typedef std::vector< unsigned int > AxisStack;
         typedef std::vector< KDNode >       KDNodeList;
 
-#ifdef LEAF_OBJECT
-        typedef std::vector< osg::ref_ptr<KDLeaf> > KDLeafList;
-
-        /// note, leafNum is negative to distinguish from nodeNum
-        int addLeaf(KDLeaf* leaf) { int num = _kdLeaves.size(); _kdLeaves.push_back(leaf); return -(num+1); }
-
-        int replaceLeaf(int leafNum, KDLeaf* leaf)
-        {
-            int num = -leafNum-1; 
-            
-            if (num>_kdLeaves.size()-1)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: replaceChild("<<leafNum<<", leaf), num = "<<num<<" _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
-                return leafNum;
-            }
-            
-            _kdLeaves[num] = leaf; return leafNum;
-        }
-
-        /// note, leafNum is negative to distinguish from nodeNum
-        KDLeaf* getLeaf(int leafNum)
-        {
-            int num = -leafNum-1;
-            if (num<0 || num>_kdLeaves.size()-1)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: getLeaf("<<leafNum<<", num = "<<num<<") _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
-                return 0;
-            }
-
-            return _kdLeaves[num].get();
-        }
-
-#else
         typedef std::vector< KDLeaf > KDLeafList;
 
         /// note, leafNum is negative to distinguish from nodeNum
@@ -171,8 +96,6 @@ class KDTree : public osg::Shape
 
             return _kdLeaves[num];
         }
-#endif        
-        
         
         int addNode(const KDNode& node)
         {
@@ -221,20 +144,13 @@ class KDTreeTraverser
         {
             output(level)<<"leaf("<<level<<") { ";
 
-#ifdef LEAF_OBJECT
-            for(unsigned int i=0; i<leaf._vertexIndices.size(); ++i)
-            {
-                if (i==0) osg::notify(osg::NOTICE)<<leaf._vertexIndices[i];
-                else osg::notify(osg::NOTICE)<<", "<<leaf._vertexIndices[i];                
-            }
-#else
             unsigned int end = leaf.first+leaf.second;
             for(unsigned int i=leaf.first; i<end; ++i)
             {
                 if (i==leaf.first) osg::notify(osg::NOTICE)<<tree._vertexIndices[i];
                 else osg::notify(osg::NOTICE)<<", "<<tree._vertexIndices[i];                
             }
-#endif
+
             osg::notify(osg::NOTICE)<<"}"<<std::endl;;
             
         }
@@ -255,11 +171,9 @@ class KDTreeTraverser
             else 
             {
                 value_type leafIndex = -nodeIndex-1;
-#ifdef LEAF_OBJECT
-                KDLeaf& leaf = *(tree._kdLeaves[leafIndex]);
-#else
+
                 KDLeaf& leaf = tree._kdLeaves[leafIndex];
-#endif
+
                 traverse(tree, leaf, level);
             }
 
@@ -276,11 +190,7 @@ class KDTreeTraverser
             }
             else if (!tree._kdLeaves.empty())
             {
-#ifdef LEAF_OBJECT
-                traverse(tree, *tree._kdLeaves.front(), 0);
-#else
                 traverse(tree, tree._kdLeaves.front(), 0);
-#endif
             }
         }
     
@@ -354,24 +264,13 @@ KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
 
     _numVerticesProcessed += vertices->size();
 
-#ifdef LEAF_OBJECT
-    // create initial leaf list    
-    KDLeaf* leaf = new KDLeaf;
-    leaf->_vertexIndices.reserve(vertices->size());
-    for(unsigned int i=0; i<vertices->size(); ++i)
-    {
-        leaf->_vertexIndices.push_back(i);
-    }
-#else
-
     kdTree->_vertexIndices.reserve(vertices->size());
     for(unsigned int i=0; i<vertices->size(); ++i)
     {
         kdTree->_vertexIndices.push_back(i);
     }
+    
     KDLeaf leaf(0, kdTree->_vertexIndices.size());
-
-#endif
 
     int leafNum = kdTree->addLeaf(leaf);
     osg::BoundingBox bb = kdTree->_bb;
@@ -459,11 +358,8 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
     else
     {    
 
-#ifdef LEAF_OBJECT
-        if (kdTree.getLeaf(nodeIndex)->_vertexIndices.size()<=_targetNumVerticesPerLeaf) return nodeIndex;
-#else
         if (kdTree.getLeaf(nodeIndex).second<=_targetNumVerticesPerLeaf) return nodeIndex;
-#endif    
+
         //osg::notify(osg::NOTICE)<<"  divide leaf"<<std::endl;
         
         int nodeNum = kdTree.addNode(KDNode());
@@ -473,50 +369,6 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
 
         float mid = (original_min+original_max)*0.5f;
 
-#ifdef LEAF_OBJECT
-        {
-            osg::ref_ptr<KDLeaf> leaf = kdTree.getLeaf(nodeIndex);
-
-            // create new node, and add two leaves to it.
-            osg::ref_ptr<KDLeaf> leftLeaf = new KDLeaf;
-            osg::ref_ptr<KDLeaf> rightLeaf = new KDLeaf;
-
-
-            osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(kdTree._geometry->getVertexArray());
-
-            //osg::notify(osg::NOTICE)<<"  divide leaf->_vertexIndices.size()="<<leaf->_vertexIndices.size()<<std::endl;
-
-            unsigned int estimatedSize = leaf->_vertexIndices.size();
-            leftLeaf->_vertexIndices.reserve(estimatedSize);
-            rightLeaf->_vertexIndices.reserve(estimatedSize);
-
-            for(unsigned int i=0; i<leaf->_vertexIndices.size(); ++i)
-            {
-                unsigned int vi = leaf->_vertexIndices[i];
-                osg::Vec3& v = (*vertices)[vi];
-                if (v[axis] <= mid) leftLeaf->_vertexIndices.push_back(vi);
-                else rightLeaf->_vertexIndices.push_back(vi);
-            }
-
-            if (leftLeaf->_vertexIndices.empty())
-            {
-                //osg::notify(osg::NOTICE)<<"LeftLeaf empty"<<std::endl;
-                kdTree.getNode(nodeNum).first = 0;
-                kdTree.getNode(nodeNum).second = kdTree.replaceLeaf(nodeIndex, rightLeaf.get());
-            }
-            else if (rightLeaf->_vertexIndices.empty())
-            {
-                //osg::notify(osg::NOTICE)<<"RightLeaf empty"<<std::endl;
-                kdTree.getNode(nodeNum).first = kdTree.replaceLeaf(nodeIndex, leftLeaf.get());
-                kdTree.getNode(nodeNum).second = 0;
-            }
-            else
-            {
-                kdTree.getNode(nodeNum).first = kdTree.replaceLeaf(nodeIndex, leftLeaf.get());
-                kdTree.getNode(nodeNum).second = kdTree.addLeaf(rightLeaf.get());
-            }
-        }
-#else
         {
             KDLeaf& leaf = kdTree.getLeaf(nodeIndex);
 
@@ -590,7 +442,7 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
                 kdTree.getNode(nodeNum).second = kdTree.addLeaf(rightLeaf);
             }
         }
-#endif
+
         
         int originalLeftChildIndex = kdTree.getNode(nodeNum).first;
         int originalRightChildIndex = kdTree.getNode(nodeNum).second;

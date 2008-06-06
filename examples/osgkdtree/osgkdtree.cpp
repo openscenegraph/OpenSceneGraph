@@ -32,6 +32,7 @@
 
 #include <osgUtil/IntersectionVisitor>
 #include <osgUtil/LineSegmentIntersector>
+#include <osgUtil/UpdateVisitor>
 
 #include <osgSim/LineOfSight>
 #include <osgSim/HeightAboveTerrain>
@@ -483,6 +484,10 @@ int main(int argc, char **argv)
         std::cout<<"No model loaded, please specify a valid model on the command line."<<std::endl;
         return 0;
     }
+
+
+    osgUtil::UpdateVisitor updateVisitor;
+    scene->accept(updateVisitor);
 
 
     osg::Timer_t start = osg::Timer::instance()->tick();

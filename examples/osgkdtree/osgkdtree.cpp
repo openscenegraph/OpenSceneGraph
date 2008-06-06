@@ -44,29 +44,34 @@
 namespace osg
 {
 
+typedef int value_type;
+typedef std::vector< value_type >   Indices;
+
+//#define LEAF_OBJECT
+//#define VERBOSE_OUTPUT
+
+#ifdef LEAF_OBJECT
 class KDNode
 {
     public:
     
         KDNode():
-            _leftChild(0),
-            _rightChild(0) {}
+            first(0),
+            second(0) {}
     
         KDNode(const KDNode& rhs):
-            _leftChild(rhs._leftChild),
-            _rightChild(rhs._rightChild) {}
+            first(rhs.first),
+            second(rhs.second) {}
 
         KDNode& operator = (const KDNode& rhs)
         {
-            _leftChild = rhs._leftChild;
-            _rightChild = rhs._rightChild;
+            first = rhs.first;
+            second = rhs.second;
             return *this;
         }
 
-        typedef short value_type;
-
-        value_type _leftChild;
-        value_type _rightChild;
+        value_type first;
+        value_type second;
 };
 
 class KDLeaf : public osg::Referenced
@@ -74,9 +79,6 @@ class KDLeaf : public osg::Referenced
     public:
     
         KDLeaf() {}
-    
-        typedef unsigned int index_type;
-        typedef std::vector< index_type > Indices;
 
         Indices _vertexIndices;        
     
@@ -84,6 +86,12 @@ class KDLeaf : public osg::Referenced
     
         virtual ~KDLeaf() {}
 };
+
+#else
+    typedef std::pair< value_type, value_type> KDNode;
+    typedef std::pair< value_type, value_type> KDLeaf;
+#endif
+
 
 class KDTree : public osg::Shape
 {
@@ -96,12 +104,14 @@ class KDTree : public osg::Shape
             Shape(rhs,copyop) {}
 
         META_Shape(osg, KDTree)
+        
     
         typedef std::vector< unsigned int > AxisStack;
-        typedef std::vector< KDNode > KDNodeList;
+        typedef std::vector< KDNode >       KDNodeList;
+
+#ifdef LEAF_OBJECT
         typedef std::vector< osg::ref_ptr<KDLeaf> > KDLeafList;
-        
-        
+
         /// note, leafNum is negative to distinguish from nodeNum
         int addLeaf(KDLeaf* leaf) { int num = _kdLeaves.size(); _kdLeaves.push_back(leaf); return -(num+1); }
 
@@ -130,6 +140,39 @@ class KDTree : public osg::Shape
 
             return _kdLeaves[num].get();
         }
+
+#else
+        typedef std::vector< KDLeaf > KDLeafList;
+
+        /// note, leafNum is negative to distinguish from nodeNum
+        int addLeaf(const KDLeaf& leaf) { int num = _kdLeaves.size(); _kdLeaves.push_back(leaf); return -(num+1); }
+
+        int replaceLeaf(int leafNum, const KDLeaf& leaf)
+        {
+            int num = -leafNum-1; 
+            
+            if (num>_kdLeaves.size()-1)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: replaceChild("<<leafNum<<", leaf), num = "<<num<<" _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
+                return leafNum;
+            }
+            
+            _kdLeaves[num] = leaf; return leafNum;
+        }
+
+        /// note, leafNum is negative to distinguish from nodeNum
+        KDLeaf& getLeaf(int leafNum)
+        {
+            int num = -leafNum-1;
+            if (num<0 || num>_kdLeaves.size()-1)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: getLeaf("<<leafNum<<", num = "<<num<<") _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
+            }
+
+            return _kdLeaves[num];
+        }
+#endif        
+        
         
         int addNode(const KDNode& node)
         {
@@ -155,7 +198,8 @@ class KDTree : public osg::Shape
 
         AxisStack                       _axisStack;
         KDNodeList                      _kdNodes;
-        KDLeafList                      _kdLeaves; 
+        KDLeafList                      _kdLeaves;
+        Indices                         _vertexIndices;
 };
 
 class KDTreeTraverser
@@ -173,38 +217,50 @@ class KDTreeTraverser
         }
     
 
-        void traverse(KDLeaf& leaf, unsigned int level)
+        void traverse(KDTree& tree, KDLeaf& leaf, unsigned int level)
         {
             output(level)<<"leaf("<<level<<") { ";
 
+#ifdef LEAF_OBJECT
             for(unsigned int i=0; i<leaf._vertexIndices.size(); ++i)
             {
                 if (i==0) osg::notify(osg::NOTICE)<<leaf._vertexIndices[i];
                 else osg::notify(osg::NOTICE)<<", "<<leaf._vertexIndices[i];                
             }
-
+#else
+            unsigned int end = leaf.first+leaf.second;
+            for(unsigned int i=leaf.first; i<end; ++i)
+            {
+                if (i==leaf.first) osg::notify(osg::NOTICE)<<tree._vertexIndices[i];
+                else osg::notify(osg::NOTICE)<<", "<<tree._vertexIndices[i];                
+            }
+#endif
             osg::notify(osg::NOTICE)<<"}"<<std::endl;;
             
         }
 
-        void traverse(KDTree& tree, KDNode::value_type nodeIndex, unsigned int level)
+        void traverse(KDTree& tree, value_type nodeIndex, unsigned int level)
         {
             output(level)<<"traverse("<<nodeIndex<<", "<< level<<") { "<<std::endl;
             
             if (nodeIndex>=0)
             {        
                 KDNode& node = tree._kdNodes[nodeIndex];
-                if (node._leftChild) traverse(tree,node._leftChild,level+1);
+                if (node.first) traverse(tree,node.first,level+1);
                 else output(level+1)<<"empty left child()"<<std::endl;
                 
-                if (node._rightChild) traverse(tree,node._rightChild,level+1);
+                if (node.second) traverse(tree,node.second,level+1);
                 else output(level+1)<<"empty right child()"<<std::endl;
             }
             else 
             {
-                KDNode::value_type leafIndex = -nodeIndex-1;
+                value_type leafIndex = -nodeIndex-1;
+#ifdef LEAF_OBJECT
                 KDLeaf& leaf = *(tree._kdLeaves[leafIndex]);
-                traverse(leaf, level);
+#else
+                KDLeaf& leaf = tree._kdLeaves[leafIndex];
+#endif
+                traverse(tree, leaf, level);
             }
 
             output(level)<<"}"<<std::endl;;
@@ -220,7 +276,11 @@ class KDTreeTraverser
             }
             else if (!tree._kdLeaves.empty())
             {
-                traverse(*tree._kdLeaves.front(), 0);
+#ifdef LEAF_OBJECT
+                traverse(tree, *tree._kdLeaves.front(), 0);
+#else
+                traverse(tree, tree._kdLeaves.front(), 0);
+#endif
             }
         }
     
@@ -268,7 +328,7 @@ class KDTreeBuilder : public osg::NodeVisitor
 
 KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
 {
-#if VERBOSE_OUTPUT    
+#ifdef VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"osg::KDTreeBuilder::createKDTree()"<<std::endl;
 #endif
 
@@ -282,7 +342,7 @@ KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
     
     unsigned int estimatedSize = (unsigned int)(float(vertices->size())/float(_targetNumVerticesPerLeaf)*1.5);
 
-#if VERBOSE_OUTPUT    
+#ifdef VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"kdTree->_kdNodes.reserve()="<<estimatedSize<<std::endl<<std::endl;
 #endif
 
@@ -294,6 +354,7 @@ KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
 
     _numVerticesProcessed += vertices->size();
 
+#ifdef LEAF_OBJECT
     // create initial leaf list    
     KDLeaf* leaf = new KDLeaf;
     leaf->_vertexIndices.reserve(vertices->size());
@@ -301,17 +362,29 @@ KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
     {
         leaf->_vertexIndices.push_back(i);
     }
+#else
 
-    osg::BoundingBox bb = kdTree->_bb;
-    
+    kdTree->_vertexIndices.reserve(vertices->size());
+    for(unsigned int i=0; i<vertices->size(); ++i)
+    {
+        kdTree->_vertexIndices.push_back(i);
+    }
+    KDLeaf leaf(0, kdTree->_vertexIndices.size());
+
+#endif
+
     int leafNum = kdTree->addLeaf(leaf);
+    osg::BoundingBox bb = kdTree->_bb;
     int nodeNum = divide(*kdTree, bb, leafNum, 0);
+
+
+
     
-#if VERBOSE_OUTPUT    
+#ifdef VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"Root nodeNum="<<nodeNum<<std::endl;
 #endif
     
-#if VERBOSE_OUTPUT    
+#ifdef VERBOSE_OUTPUT    
     
     KDTreeTraverser traverser;
     traverser.traverse(*kdTree);
@@ -333,7 +406,7 @@ void KDTreeBuilder::computeDivisions(KDTree& kdTree)
                          kdTree._bb.yMax()-kdTree._bb.yMin(),
                          kdTree._bb.zMax()-kdTree._bb.zMin());
 
-#if VERBOSE_OUTPUT    
+#ifdef VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"computeDivisions("<<_maxNumLevels<<") "<<dimensions<< " { "<<std::endl;
 #endif
 
@@ -354,12 +427,12 @@ void KDTreeBuilder::computeDivisions(KDTree& kdTree)
         kdTree._axisStack.push_back(axis);
         dimensions[axis] /= 2.0f;
 
-#if VERBOSE_OUTPUT    
+#ifdef VERBOSE_OUTPUT    
         osg::notify(osg::NOTICE)<<"  "<<level<<", "<<dimensions<<", "<<axis<<std::endl;
 #endif
     }
 
-#if VERBOSE_OUTPUT    
+#ifdef VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"}"<<std::endl;
 #endif
 }
@@ -371,13 +444,13 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
 
     int axis = kdTree._axisStack[level];
 
-#if VERBOSE_OUTPUT    
+#ifdef VERBOSE_OUTPUT    
     //osg::notify(osg::NOTICE)<<"divide("<<nodeIndex<<", "<<level<< "), axis="<<axis<<std::endl;
 #endif
 
     if (nodeIndex>=0)
     {
-#if VERBOSE_OUTPUT    
+#ifdef VERBOSE_OUTPUT    
         osg::notify(osg::NOTICE)<<"  divide node"<<std::endl;
 #endif
         KDNode& node = kdTree.getNode(nodeIndex);
@@ -385,8 +458,12 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
     }
     else
     {    
+
+#ifdef LEAF_OBJECT
         if (kdTree.getLeaf(nodeIndex)->_vertexIndices.size()<=_targetNumVerticesPerLeaf) return nodeIndex;
-    
+#else
+        if (kdTree.getLeaf(nodeIndex).second<=_targetNumVerticesPerLeaf) return nodeIndex;
+#endif    
         //osg::notify(osg::NOTICE)<<"  divide leaf"<<std::endl;
         
         int nodeNum = kdTree.addNode(KDNode());
@@ -396,6 +473,7 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
 
         float mid = (original_min+original_max)*0.5f;
 
+#ifdef LEAF_OBJECT
         {
             osg::ref_ptr<KDLeaf> leaf = kdTree.getLeaf(nodeIndex);
 
@@ -423,32 +501,105 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
             if (leftLeaf->_vertexIndices.empty())
             {
                 //osg::notify(osg::NOTICE)<<"LeftLeaf empty"<<std::endl;
-                kdTree.getNode(nodeNum)._leftChild = 0;
-                kdTree.getNode(nodeNum)._rightChild = kdTree.replaceLeaf(nodeIndex, rightLeaf.get());
+                kdTree.getNode(nodeNum).first = 0;
+                kdTree.getNode(nodeNum).second = kdTree.replaceLeaf(nodeIndex, rightLeaf.get());
             }
             else if (rightLeaf->_vertexIndices.empty())
             {
                 //osg::notify(osg::NOTICE)<<"RightLeaf empty"<<std::endl;
-                kdTree.getNode(nodeNum)._leftChild = kdTree.replaceLeaf(nodeIndex, leftLeaf.get());
-                kdTree.getNode(nodeNum)._rightChild = 0;
+                kdTree.getNode(nodeNum).first = kdTree.replaceLeaf(nodeIndex, leftLeaf.get());
+                kdTree.getNode(nodeNum).second = 0;
             }
             else
             {
-                kdTree.getNode(nodeNum)._leftChild = kdTree.replaceLeaf(nodeIndex, leftLeaf.get());
-                kdTree.getNode(nodeNum)._rightChild = kdTree.addLeaf(rightLeaf.get());
+                kdTree.getNode(nodeNum).first = kdTree.replaceLeaf(nodeIndex, leftLeaf.get());
+                kdTree.getNode(nodeNum).second = kdTree.addLeaf(rightLeaf.get());
             }
-
-
         }
+#else
+        {
+            KDLeaf& leaf = kdTree.getLeaf(nodeIndex);
+
+            osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(kdTree._geometry->getVertexArray());
+
+            //osg::notify(osg::NOTICE)<<"  divide leaf->_vertexIndices.size()="<<leaf->_vertexIndices.size()<<std::endl;
+
+            unsigned int estimatedSize = leaf.second;
+
+            int end = leaf.first+leaf.second-1;
+            int left = leaf.first;
+            int right = leaf.first+leaf.second-1;
+            
+            while(left<right)
+            {
+                while(left<right && ((*vertices)[kdTree._vertexIndices[left]])[axis]<=mid) { ++left; }
+                
+                while(left<right && ((*vertices)[kdTree._vertexIndices[right]])[axis]>mid) { --right; }
+
+                if (left<right)
+                {
+                    std::swap(kdTree._vertexIndices[left], kdTree._vertexIndices[right]);
+                    ++left;
+                    --right;
+                }
+            }
+            
+            if (left==right)
+            {
+                if (((*vertices)[kdTree._vertexIndices[left]])[axis]<=mid) ++left;
+                else --right;
+            }
+            
+            KDLeaf leftLeaf(leaf.first, (right-leaf.first)+1);
+            KDLeaf rightLeaf(left, (end-left)+1);
+
+#if 0            
+            osg::notify(osg::NOTICE)<<"In  leaf.first     ="<<leaf.first     <<" leaf.second     ="<<leaf.second<<std::endl;
+            osg::notify(osg::NOTICE)<<"    leftLeaf.first ="<<leftLeaf.first <<" leftLeaf.second ="<<leftLeaf.second<<std::endl;
+            osg::notify(osg::NOTICE)<<"    rightLeaf.first="<<rightLeaf.first<<" rightLeaf.second="<<rightLeaf.second<<std::endl;
+            osg::notify(osg::NOTICE)<<"    left="<<left<<" right="<<right<<std::endl;
+
+            if (leaf.second != (leftLeaf.second +rightLeaf.second))
+            {
+                osg::notify(osg::NOTICE)<<"*** Error in size, leaf.second="<<leaf.second
+                                        <<", leftLeaf.second="<<leftLeaf.second
+                                        <<", rightLeaf.second="<<rightLeaf.second<<std::endl;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"Size OK, leaf.second="<<leaf.second
+                                        <<", leftLeaf.second="<<leftLeaf.second
+                                        <<", rightLeaf.second="<<rightLeaf.second<<std::endl;
+            }
+#endif
+            if (leftLeaf.second<=0)
+            {
+                //osg::notify(osg::NOTICE)<<"LeftLeaf empty"<<std::endl;
+                kdTree.getNode(nodeNum).first = 0;
+                kdTree.getNode(nodeNum).second = kdTree.replaceLeaf(nodeIndex, rightLeaf);
+            }
+            else if (rightLeaf.second<=0)
+            {
+                //osg::notify(osg::NOTICE)<<"RightLeaf empty"<<std::endl;
+                kdTree.getNode(nodeNum).first = kdTree.replaceLeaf(nodeIndex, leftLeaf);
+                kdTree.getNode(nodeNum).second = 0;
+            }
+            else
+            {
+                kdTree.getNode(nodeNum).first = kdTree.replaceLeaf(nodeIndex, leftLeaf);
+                kdTree.getNode(nodeNum).second = kdTree.addLeaf(rightLeaf);
+            }
+        }
+#endif
         
-        int originalLeftChildIndex = kdTree.getNode(nodeNum)._leftChild;
-        int originalRightChildIndex = kdTree.getNode(nodeNum)._rightChild;
+        int originalLeftChildIndex = kdTree.getNode(nodeNum).first;
+        int originalRightChildIndex = kdTree.getNode(nodeNum).second;
 
 
         float restore = bb._max[axis];
         bb._max[axis] = mid;
 
-        //osg::notify(osg::NOTICE)<<"  divide leftLeaf "<<kdTree.getNode(nodeNum)._leftChild<<std::endl;
+        //osg::notify(osg::NOTICE)<<"  divide leftLeaf "<<kdTree.getNode(nodeNum).first<<std::endl;
         int leftChildIndex = divide(kdTree, bb, originalLeftChildIndex, level+1);
 
         bb._max[axis] = restore;
@@ -456,13 +607,13 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
         restore = bb._min[axis];
         bb._min[axis] = mid;
 
-        //osg::notify(osg::NOTICE)<<"  divide rightLeaf "<<kdTree.getNode(nodeNum)._rightChild<<std::endl;
+        //osg::notify(osg::NOTICE)<<"  divide rightLeaf "<<kdTree.getNode(nodeNum).second<<std::endl;
         int rightChildIndex = divide(kdTree, bb, originalRightChildIndex, level+1);
         
         bb._min[axis] = restore;
         
-        kdTree.getNode(nodeNum)._leftChild = leftChildIndex;
-        kdTree.getNode(nodeNum)._rightChild = rightChildIndex; 
+        kdTree.getNode(nodeNum).first = leftChildIndex;
+        kdTree.getNode(nodeNum).second = rightChildIndex; 
         
         return nodeNum;        
     }
@@ -487,7 +638,9 @@ int main(int argc, char **argv)
 
 
     osgUtil::UpdateVisitor updateVisitor;
+    updateVisitor.setFrameStamp(new osg::FrameStamp);
     scene->accept(updateVisitor);
+    scene->getBound();
 
 
     osg::Timer_t start = osg::Timer::instance()->tick();

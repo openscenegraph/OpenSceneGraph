@@ -286,17 +286,17 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         const osg::CollectOccludersVisitor* getCollectOccludersVisitor() const { return _collectOccludersVisitor.get(); }
 
 
-        void setStateGraph(osgUtil::StateGraph* rg) { _rendergraph = rg; }
-        osgUtil::StateGraph* getStateGraph() { return _rendergraph.get(); }
-        const osgUtil::StateGraph* getStateGraph() const { return _rendergraph.get(); }
+        void setStateGraph(osgUtil::StateGraph* rg) { _stateGraph = rg; }
+        osgUtil::StateGraph* getStateGraph() { return _stateGraph.get(); }
+        const osgUtil::StateGraph* getStateGraph() const { return _stateGraph.get(); }
 
-        void setStateGraphLeft(osgUtil::StateGraph* rg) { _rendergraphLeft = rg; }
-        osgUtil::StateGraph* getStateGraphLeft() { return _rendergraphLeft.get(); }
-        const osgUtil::StateGraph* getStateGraphLeft() const { return _rendergraphLeft.get(); }
+        void setStateGraphLeft(osgUtil::StateGraph* rg) { _stateGraphLeft = rg; }
+        osgUtil::StateGraph* getStateGraphLeft() { return _stateGraphLeft.get(); }
+        const osgUtil::StateGraph* getStateGraphLeft() const { return _stateGraphLeft.get(); }
 
-        void setStateGraphRight(osgUtil::StateGraph* rg) { _rendergraphRight = rg; }
-        osgUtil::StateGraph* getStateGraphRight() { return _rendergraphRight.get(); }
-        const osgUtil::StateGraph* getStateGraphRight() const { return _rendergraphRight.get(); }
+        void setStateGraphRight(osgUtil::StateGraph* rg) { _stateGraphRight = rg; }
+        osgUtil::StateGraph* getStateGraphRight() { return _stateGraphRight.get(); }
+        const osgUtil::StateGraph* getStateGraphRight() const { return _stateGraphRight.get(); }
 
 
         void setRenderStage(osgUtil::RenderStage* rs) { _renderStage = rs; }
@@ -488,17 +488,17 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         osg::ref_ptr<osg::NodeVisitor>              _initVisitor;
         osg::ref_ptr<osg::NodeVisitor>              _updateVisitor;
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitor;
-        osg::ref_ptr<osgUtil::StateGraph>           _rendergraph;
+        osg::ref_ptr<osgUtil::StateGraph>           _stateGraph;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStage;
 
         osg::ref_ptr<ComputeStereoMatricesCallback> _computeStereoMatricesCallback;
 
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorLeft;
-        osg::ref_ptr<osgUtil::StateGraph>           _rendergraphLeft;
+        osg::ref_ptr<osgUtil::StateGraph>           _stateGraphLeft;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageLeft;
 
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorRight;
-        osg::ref_ptr<osgUtil::StateGraph>           _rendergraphRight;
+        osg::ref_ptr<osgUtil::StateGraph>           _stateGraphRight;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageRight;
 
         osg::ref_ptr<osg::CollectOccludersVisitor>  _collectOccludersVisitor;

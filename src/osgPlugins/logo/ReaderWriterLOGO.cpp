@@ -98,8 +98,8 @@ class Logos: public osg::Drawable
             {
                 vx = viewport->x();
                 vy = viewport->y();
-                vx = viewport->width();
-                vy = viewport->height();
+                vw = viewport->width();
+                vh = viewport->height();
             }
 
             glMatrixMode( GL_PROJECTION );
@@ -161,6 +161,8 @@ class Logos: public osg::Drawable
             osg::Image *image = osgDB::readImageFile( name.c_str() );
             if( image != NULL )
                 logos[pos].push_back( image ); 
+            else
+                osg::notify(osg::WARN)<< "Logos::addLogo image file not found : " << name << ".\n";
         }
 
         osg::Viewport *getViewport() { return viewport; }
@@ -209,7 +211,14 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
             if (fileName.empty()) 
                 return ReadResult::FILE_NOT_FOUND;
 
-            osg::notify(osg::INFO)<<   "ReaderWriterLOGO::readNode( "<<fileName.c_str()<<" )\n";
+            osg::notify(osg::INFO)<< "ReaderWriterLOGO::readNode( "<<fileName.c_str()<<" )\n";
+
+            std::string filePath = osgDB::getFilePath(fileName);
+            if (!filePath.empty()) {
+                osg::notify(osg::DEBUG_INFO)<< "Adding : " << filePath << " to the file data path\n";
+                osgDB::getDataFilePathList().push_back(filePath);
+            }
+
 
             osg::Geode *geode = new osg::Geode;
 

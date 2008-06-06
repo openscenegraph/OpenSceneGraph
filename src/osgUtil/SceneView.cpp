@@ -228,7 +228,7 @@ void SceneView::setDefaults(unsigned int options)
  
     _renderInfo.setState(new State);
     
-    _rendergraph = new StateGraph;
+    _stateGraph = new StateGraph;
     _renderStage = new RenderStage;
 
 
@@ -256,7 +256,7 @@ void SceneView::setDefaults(unsigned int options)
 
     _cullVisitor = CullVisitor::create();
 
-    _cullVisitor->setStateGraph(_rendergraph.get());
+    _cullVisitor->setStateGraph(_stateGraph.get());
     _cullVisitor->setRenderStage(_renderStage.get());
 
     _globalStateSet->setGlobalDefaults();
@@ -605,10 +605,10 @@ void SceneView::cull()
         osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a default CullVisitor automatically."<< std::endl;
         _cullVisitor = CullVisitor::create();
     }
-    if (!_rendergraph)
+    if (!_stateGraph)
     {
         osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a global default StateGraph automatically."<< std::endl;
-        _rendergraph = new StateGraph;
+        _stateGraph = new StateGraph;
     }
     if (!_renderStage)
     {
@@ -623,7 +623,7 @@ void SceneView::cull()
         {
             // set up the left eye.
             _cullVisitor->setTraversalMask(_cullMaskLeft);
-            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitor.get(),_stateGraph.get(),_renderStage.get());
 
             if (computeNearFar)
             {
@@ -637,7 +637,7 @@ void SceneView::cull()
         {
             // set up the right eye.
             _cullVisitor->setTraversalMask(_cullMaskRight);
-            bool computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+            bool computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitor.get(),_stateGraph.get(),_renderStage.get());
 
             if (computeNearFar)
             {
@@ -651,24 +651,24 @@ void SceneView::cull()
         {
 
             if (!_cullVisitorLeft.valid()) _cullVisitorLeft = dynamic_cast<CullVisitor*>(_cullVisitor->clone());
-            if (!_rendergraphLeft.valid()) _rendergraphLeft = dynamic_cast<StateGraph*>(_rendergraph->cloneType());
+            if (!_stateGraphLeft.valid()) _stateGraphLeft = dynamic_cast<StateGraph*>(_stateGraph->cloneType());
             if (!_renderStageLeft.valid()) _renderStageLeft = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
 
             if (!_cullVisitorRight.valid()) _cullVisitorRight = dynamic_cast<CullVisitor*>(_cullVisitor->clone());
-            if (!_rendergraphRight.valid()) _rendergraphRight = dynamic_cast<StateGraph*>(_rendergraph->cloneType());
+            if (!_stateGraphRight.valid()) _stateGraphRight = dynamic_cast<StateGraph*>(_stateGraph->cloneType());
             if (!_renderStageRight.valid()) _renderStageRight = dynamic_cast<RenderStage*>(_renderStage->clone(osg::CopyOp::DEEP_COPY_ALL));
             
             _cullVisitorLeft->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorLeft->setClampProjectionMatrixCallback(_cullVisitor->getClampProjectionMatrixCallback());
             _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
-            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitorLeft.get(),_rendergraphLeft.get(),_renderStageLeft.get());
+            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitorLeft.get(),_stateGraphLeft.get(),_renderStageLeft.get());
 
 
             // set up the right eye.
             _cullVisitorRight->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorRight->setClampProjectionMatrixCallback(_cullVisitor->getClampProjectionMatrixCallback());
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
-            computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitorRight.get(),_rendergraphRight.get(),_renderStageRight.get());
+            computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitorRight.get(),_stateGraphRight.get(),_renderStageRight.get());
            
             if (computeNearFar)
             {
@@ -684,7 +684,7 @@ void SceneView::cull()
     {
 
         _cullVisitor->setTraversalMask(_cullMask);
-        bool computeNearFar = cullStage(getProjectionMatrix(),getViewMatrix(),_cullVisitor.get(),_rendergraph.get(),_renderStage.get());
+        bool computeNearFar = cullStage(getProjectionMatrix(),getViewMatrix(),_cullVisitor.get(),_stateGraph.get(),_renderStage.get());
 
         if (computeNearFar)
         {

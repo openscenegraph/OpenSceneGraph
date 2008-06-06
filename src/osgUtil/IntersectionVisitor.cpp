@@ -254,7 +254,8 @@ void IntersectionVisitor::apply(osg::PagedLOD& plod)
         {
             highestResChild = _readCallback->readNodeFile( plod.getDatabasePath() + plod.getFileName(plod.getNumFileNames()-1) );
         }
-        else if (plod.getNumChildren()>0)
+        
+        if ( !highestResChild.valid() && plod.getNumChildren()>0)
         {
             highestResChild = plod.getChild( plod.getNumChildren()-1 );
         }

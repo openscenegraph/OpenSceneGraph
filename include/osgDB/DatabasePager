@@ -82,7 +82,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Clear all internally cached structures.*/
         virtual void clear();
         
-        class DatabaseThread : public osg::Referenced, public OpenThreads::Thread
+        class OSGDB_EXPORT DatabaseThread : public osg::Referenced, public OpenThreads::Thread
         {
         public:
         

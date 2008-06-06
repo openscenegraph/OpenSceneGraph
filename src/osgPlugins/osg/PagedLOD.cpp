@@ -29,7 +29,7 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
     PagedLOD& lod = static_cast<PagedLOD&>(obj);
     
     std::string path;
-    if (!fr.read("DatabasePath",path))
+    if (fr.read("DatabasePath",path))
     {
         lod.setDatabasePath(path);
     }

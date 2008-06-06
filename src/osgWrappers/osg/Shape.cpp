@@ -512,6 +512,11 @@ BEGIN_VALUE_REFLECTOR(osg::ConstShapeVisitor)
 	I_Constructor0(____ConstShapeVisitor,
 	               "",
 	               "");
+	I_Method1(void, apply, IN, const osg::Shape &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__C5_Shape_R1,
+	          "",
+	          "");
 	I_Method1(void, apply, IN, const osg::Sphere &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__C5_Sphere_R1,
@@ -1046,6 +1051,11 @@ BEGIN_VALUE_REFLECTOR(osg::ShapeVisitor)
 	I_Constructor0(____ShapeVisitor,
 	               "",
 	               "");
+	I_Method1(void, apply, IN, osg::Shape &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__Shape_R1,
+	          "",
+	          "");
 	I_Method1(void, apply, IN, osg::Sphere &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__Sphere_R1,

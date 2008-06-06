@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.5.1
+OpenSceneGraph Library 2.5.2
 
-314 Contributors:
+315 Contributors:
 
 Firstname Surname
 -----------------
@@ -46,12 +46,13 @@ Michael Gronager
 Daniel Sjölie
 Chris Hanson
 Per Fahlberg
+Paul Melis
 J.P. Delport
 David Spilling
 Sherman Wilcox
-Paul Melis
 Joran Jessurun
 Jason Beverage
+Philip Lowman
 Melchior Franz
 Jason Daly
 Frederic Marmond
@@ -63,13 +64,13 @@ Sondra Iverson
 Serge Lages
 Rune Schmidt Jensen
 Rainer Oder
-Philip Lowman
 Mike Connell
 Michael Platings
 Joakim Simonsson
 Carlo Camporesi
 Ben Discoe
 Andreas Ekstrand
+Stephane Lamoliatte
 Sasa Bistrovic
 Martin Naylor
 Martin Aumueller
@@ -85,15 +86,16 @@ Brad Colbert
 Vivek Rajan
 Thibault Genessay
 Terry Welsh
-Stephane Lamoliatte
 Sean Spicer
 Ravi Mathur
 Nikolaus Hanekamp
 Neil Salter
 Mihai Radu
 Michael Hartman
+Mathieu Marache
 Luc Frauciel
 Laurens Voerman
+Glenn Waldron
 David Guthrie
 Corbin Holtz
 Cedric Pinson
@@ -105,10 +107,8 @@ Sebastien Grignard
 Romano Magacho
 Roland Smeenk
 Paul de Repentigny
-Mathieu Marache
 Leandro Motta Barros
 John Kelso
-Glenn Waldron
 Gino van den Bergen
 Daniel Larimer
 Colin Dunlop
@@ -163,6 +163,7 @@ Maya Leonard
 Max Behensky
 Mathew May
 Martijn Kragtwijk
+Mario Valle
 Kevin Moiule
 Keith Steffen
 Joseph Winston
@@ -241,9 +242,9 @@ Mathia Walker
 Mason Menninger
 Martin Spott
 Martin Amueller
-Mario Valle
 Mario Guimaraes
 Marin Lavery
+Marco Lehmann
 Louis Hamilton
 Lewis Harmon
 Lars Nilson

@@ -1,3 +1,153 @@
+2008-06-06 17:45 +0000 [r8423]  robert:
+
+	* Updated versions for 2.5.2 dev release
+
+2008-06-06 16:45 +0000 [r8422]  robert:
+
+	* From Jean-Sebastien Guay, "The new osgscreencapture example was
+	  being installed to bin instead of to share/OpenSceneGraph/bin,
+	  this is because the CMakeLists.txt used SETUP_APPLICATION instead
+	  of SETUP_EXAMPLE. Corrected CMakeLists.txt attached. "
+
+2008-06-06 16:41 +0000 [r8421]  robert:
+
+	* From Stephane Lamoliatte, "fix to reading of DatabasePath
+	  property"
+
+2008-06-06 16:28 +0000 [r8420]  robert:
+
+	* From Glenn Waldron, "I'm using an IntersectionVisitor with a
+	  PagedLOD database, employing a ReadCallback to allow the
+	  intersector to traverse the paged nodes. I discovered that if the
+	  visitor is unable (for any reason) to load a subtile via the
+	  ReadCallback, the intersection fails. However, I had the
+	  requirement to "fall back" on the lower-resolution parent tile
+	  and settle for that intersection. This was easy to implement
+	  simply by overriding IntersectionVisitor::apply(PagedLOD). My
+	  question is: Are there any opinions on whether this should be the
+	  default behavior? If it makes sense, I will submit the change; if
+	  not, no worries."
+
+2008-06-06 16:25 +0000 [r8419]  robert:
+
+	* From Paul Melis, "Here's an updated include/osgText/Text3D that
+	  forces recomputation of the glyph repr when the character depth
+	  is updated, also when the rendering mode is set. This caused a
+	  Text3D object read from a .osg file to not have the correct
+	  depth."
+
+2008-06-06 14:59 +0000 [r8418]  robert:
+
+	* From Mathieu Marache, "I have made the logo plugin work again (a
+	  simple copy and paste problem) and added the path of the logo
+	  file (if not empty) to the data file path in order to be able to
+	  find images relatively."
+
+2008-06-06 14:10 +0000 [r8417]  robert:
+
+	* Cleaned up implementation to only use simple structure
+
+2008-06-06 13:21 +0000 [r8415-8416]  robert:
+
+	* Renamed _rendergraph to _stateGraph to better reflect its
+	  function
+
+	* Introduce a lower overhead data structure for leaves.
+
+2008-06-06 10:51 +0000 [r8414]  robert:
+
+	* Added update traversal to run prior to doing kdtree build to make
+	  sure that costs in build osgTerrain databases isn't incurred
+	  during the build traversal.
+
+2008-06-06 09:08 +0000 [r8413]  robert:
+
+	* Quitened down the release context message
+
+2008-06-06 08:42 +0000 [r8412]  robert:
+
+	* Added OSGDB_EXPORT
+
+2008-06-05 18:52 +0000 [r8411]  robert:
+
+	* Added timing code
+
+2008-06-05 17:28 +0000 [r8410]  robert:
+
+	* Basic implementation of kdtree generation based on vertices
+
+2008-06-05 13:46 +0000 [r8409]  robert:
+
+	* Added accep(Shape&)
+
+2008-06-04 17:59 +0000 [r8408]  robert:
+
+	* Further work on fleshing out basic classes
+
+2008-06-04 16:53 +0000 [r8407]  robert:
+
+	* Updated wrappers
+
+2008-06-04 16:46 +0000 [r8406]  robert:
+
+	* Added support for optionally calling releaseContext at the end of
+	  each renderinTraversals() to help with cases where uses are
+	  driving multiple contexts from mulitple viewers in a single
+	  threaded frame loop.
+
+2008-06-03 17:29 +0000 [r8405]  robert:
+
+	* Fleshed out some basic kd-tree data structures.
+
+2008-06-03 16:13 +0000 [r8404]  robert:
+
+	* First cut of osgkdtree example, this will be used as a base of
+	  the development of native kdtree support to help speed up
+	  intersection testing.
+
+2008-06-03 15:49 +0000 [r8403]  robert:
+
+	* Added missing updateBlock()
+
+2008-06-03 13:07 +0000 [r8401-8402]  robert:
+
+	* From Mario Valle, fixed warnings
+
+	* Ran merge to get rid of tabs
+
+2008-06-03 11:31 +0000 [r8400]  robert:
+
+	* From Marco Lehmann and Robert Osfield, this fix was implemented
+	  by Robert but is based on suggested fix from Marco for fixing a
+	  crash due to lack of thread safety in std::ofstream("/dev/null");
+	  The fix is to use a custom stream buffer that just discards all
+	  data. The implementation is also twice as fast as the old
+	  /dev/null based approach.
+
+2008-06-03 11:28 +0000 [r8399]  robert:
+
+	* Added unit test to smoke out a thread issue with using
+	  ofstream("/dev/null") inside osg::notify()
+
+2008-06-02 17:34 +0000 [r8398]  robert:
+
+	* Added support for assigning GraphicsContext to individual
+	  GUIEventAdapter events, and use of this within osgViewer::View to
+	  better track the sources of events.
+
+2008-05-31 08:47 +0000 [r8397]  robert:
+
+	* Changed FIND_PACKAGE(PkgConfig) to INCLUDE(FindPkgConfig
+	  OPTIONAL) as per suggestion from Philip Lowman.
+
+2008-05-30 21:23 +0000 [r8395]  robert:
+
+	* Updated authors and version file for 2.5.1 dev release
+
+2008-05-30 21:12 +0000 [r8394]  robert:
+
+	* Updated ChangeLog
+
 2008-05-30 21:08 +0000 [r8393]  robert:
 
 	* Added version check on FIND_PACKAGE(PkgConfig) to attempt to fix

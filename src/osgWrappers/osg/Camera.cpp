@@ -14,6 +14,7 @@
 #include <osg/Camera>
 #include <osg/ColorMask>
 #include <osg/CopyOp>
+#include <osg/CullSettings>
 #include <osg/DisplaySettings>
 #include <osg/GraphicsContext>
 #include <osg/GraphicsThread>
@@ -636,6 +637,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          Properties::VIRTUAL,
 	          __bool__computeWorldToLocalMatrix__Matrix_R1__NodeVisitor_P1,
 	          "Transform method that must be defined to provide generic interface for scene graph traversals. ",
+	          "");
+	I_Method2(void, inheritCullSettings, IN, const osg::CullSettings &, settings, IN, unsigned int, inheritanceMask,
+	          Properties::VIRTUAL,
+	          __void__inheritCullSettings__C5_CullSettings_R1__unsigned_int,
+	          "Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask. ",
 	          "");
 	I_SimpleProperty(bool, AllowEventFocus, 
 	                 __bool__getAllowEventFocus, 

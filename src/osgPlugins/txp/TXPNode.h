@@ -93,6 +93,8 @@ protected:
     std::string                     _archiveName;
     std::string                     _options;
     
+    OpenThreads::Mutex              _mutex;
+    
     osg::ref_ptr<TXPArchive>        _archive;
     osg::ref_ptr<TXPPageManager>    _pageManager;
     

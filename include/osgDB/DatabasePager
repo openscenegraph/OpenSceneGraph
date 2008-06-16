@@ -309,7 +309,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         friend class DatabaseThread;
         friend struct DatabaseRequest;
 
-        class RequestQueue;
+        struct RequestQueue;
 
         struct DatabaseRequest : public osg::Referenced
         {

@@ -90,6 +90,8 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
     {
     case osg::NodeVisitor::CULL_VISITOR:
     {
+
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
                 
         osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(&nv);
         if (cv)
@@ -132,8 +134,12 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
         break;
     }
     case osg::NodeVisitor::UPDATE_VISITOR:
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
         updateSceneGraph();
         break;
+    }
     default:
         break;
     }

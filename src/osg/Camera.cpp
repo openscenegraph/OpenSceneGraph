@@ -341,6 +341,18 @@ bool Camera::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
     return true;
 }
 
+void Camera::inheritCullSettings(const CullSettings& settings, unsigned int inheritanceMask)
+{
+    CullSettings::inheritCullSettings(settings, inheritanceMask);
+    
+    if (inheritanceMask & CLEAR_COLOR) 
+    {
+        //osg::notify(osg::NOTICE)<<"Inheriting slave Camera"<<std::endl;
+        const Camera* camera = dynamic_cast<const Camera*>(&settings);
+        _clearColor = camera->_clearColor;
+    }
+}
+
 void Camera::createCameraThread()
 {
     if (!_cameraThread)

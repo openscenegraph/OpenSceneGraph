@@ -508,6 +508,9 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         /** Transform method that must be defined to provide generic interface for scene graph traversals.*/
         virtual bool computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const;
 
+        /** Inherit the local cull settings variable from specified CullSettings object, according to the inheritance mask.*/
+        virtual void inheritCullSettings(const CullSettings& settings, unsigned int inheritanceMask);
+
     protected :
     
         virtual ~Camera();

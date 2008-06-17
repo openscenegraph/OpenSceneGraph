@@ -1,0 +1,182 @@
+/* -*-c++-*- OpenThreads library, Copyright (C) 2008  The Open Thread Group
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef _OPENTHREADS_ATOMIC_
+#define _OPENTHREADS_ATOMIC_
+
+#include <OpenThreads/Config>
+
+#if defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+# include <windows.h>
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+# include <atomic.h>
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+# include "Mutex"
+# include "ScopedLock"
+#endif
+
+namespace OpenThreads {
+
+/**
+ *  @class Atomic
+ *  @brief  This class provides an atomic increment and decrement operation.
+ */
+class OPENTHREAD_EXPORT_DIRECTIVE Atomic {
+ public:
+    Atomic(unsigned value = 0) : _value(value)
+    { }
+    unsigned operator++()
+    {
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+        return __sync_add_and_fetch(&_value, 1);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+        return __add_and_fetch(&_value, 1);
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+        return atomic_inc_uint_nv(&_value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+        return InterlockedIncrement(&_value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+        ScopedLock<Mutex> lock(_mutex);
+        return ++_value;
+#else
+        return ++_value;
+#endif
+    }
+    unsigned operator--()
+    {
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+        return __sync_sub_and_fetch(&_value, 1);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+        return __sub_and_fetch(&_value, 1);
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+        return atomic_dec_uint_nv(&_value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+        return InterlockedDecrement(&_value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+        ScopedLock<Mutex> lock(_mutex);
+        return --_value;
+#else
+        return --_value;
+#endif
+    }
+    operator unsigned() const
+    {
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+        __sync_synchronize();
+        return _value;
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+        __synchronize(_value);
+        return _value;
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+        membar_consumer(); // Hmm, do we need???
+        return _value;
+#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+        return static_cast<unsigned const volatile &>(_value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+        ScopedLock<Mutex> lock(_mutex);
+        return _value;
+#else
+        return _value;
+#endif
+    }
+    
+ private:
+    Atomic(const Atomic&);
+    Atomic& operator=(const Atomic&);
+    
+#if defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    mutable Mutex _mutex;
+#endif
+#if defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+    __declspec(align(32)) volatile long _value;
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+    volatile uint_t _value;
+#else
+    volatile unsigned _value;
+#endif
+};
+
+/**
+ *  @class AtomicPtr
+ *  @brief  This class provides an atomic pointer assignment using cas operations.
+ */
+template<typename T>
+class OPENTHREAD_EXPORT_DIRECTIVE AtomicPtr {
+public:
+    AtomicPtr(T* ptr = 0) : _ptr(ptr)
+    { }
+    ~AtomicPtr()
+    { _ptr = 0; }
+
+    // assigns a new pointer
+    bool assign(T* ptrNew, const T* const ptrOld)
+    {
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+        return __sync_bool_compare_and_swap(&_ptr, ptrOld, ptrNew);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+        return __compare_and_swap(&_ptr, ptrOld, ptrNew);
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+        return ptrOld == atomic_cas_ptr(&_ptr, ptrOld, ptrNew);
+#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+        return ptrOld == InterlockedCompareExchangePointer(&_ptr, ptrNew, ptrOld);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+        ScopedLock<Mutex> lock(_mutex);
+        if (_ptr != oldPtr)
+            return false;
+        _ptr = ptrNew;
+        return true;
+#else
+        if (_ptr != oldPtr)
+            return false;
+        _ptr = ptrNew;
+        return true;
+#endif
+    }
+
+    T* get() const
+    {
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+        __sync_synchronize();
+        return _ptr;
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+        __synchronize(_ptr);
+        return _ptr;
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+        membar_consumer(); // Hmm, do we need???
+        return _ptr;
+#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+        return _ptr;
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+        ScopedLock<Mutex> lock(_mutex);
+        return _ptr;
+#else
+        return _ptr;
+#endif
+    }
+
+private:
+    AtomicPtr(const AtomicPtr&);
+    AtomicPtr& operator=(const AtomicPtr&);
+
+#if defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    mutable Mutex _mutex;
+#endif
+#if defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+    __declspec(align(32))
+#endif
+    T* volatile _ptr;
+};
+
+}
+
+#endif // _OPENTHREADS_ATOMIC_

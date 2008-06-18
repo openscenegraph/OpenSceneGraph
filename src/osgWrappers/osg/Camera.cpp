@@ -463,16 +463,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __void__attach__BufferComponent__GLenum,
 	          "Attach a buffer with specified OpenGL internal format. ",
 	          "");
-	I_MethodWithDefaults5(void, attach, IN, osg::Camera::BufferComponent, buffer, , IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0, IN, bool, mipMapGeneration, false,
+	I_MethodWithDefaults7(void, attach, IN, osg::Camera::BufferComponent, buffer, , IN, osg::Texture *, texture, , IN, unsigned int, level, 0, IN, unsigned int, face, 0, IN, bool, mipMapGeneration, false, IN, unsigned int, multisampleSamples, 0, IN, unsigned int, multisampleColorSamples, 0,
 	                      Properties::NON_VIRTUAL,
-	                      __void__attach__BufferComponent__osg_Texture_P1__unsigned_int__unsigned_int__bool,
+	                      __void__attach__BufferComponent__osg_Texture_P1__unsigned_int__unsigned_int__bool__unsigned_int__unsigned_int,
 	                      "Attach a Texture to specified buffer component. ",
 	                      "The level parameter controls the mip map level of the texture that is attached. The face parameter controls the face of texture cube map or z level of 3d texture. The mipMapGeneration flag controls whether mipmap generation should be done for texture. ");
-	I_Method2(void, attach, IN, osg::Camera::BufferComponent, buffer, IN, osg::Image *, image,
-	          Properties::NON_VIRTUAL,
-	          __void__attach__BufferComponent__osg_Image_P1,
-	          "Attach a Image to specified buffer component. ",
-	          "");
+	I_MethodWithDefaults4(void, attach, IN, osg::Camera::BufferComponent, buffer, , IN, osg::Image *, image, , IN, unsigned int, multisampleSamples, 0, IN, unsigned int, multisampleColorSamples, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __void__attach__BufferComponent__osg_Image_P1__unsigned_int__unsigned_int,
+	                      "Attach a Image to specified buffer component. ",
+	                      "");
 	I_Method1(void, detach, IN, osg::Camera::BufferComponent, buffer,
 	          Properties::NON_VIRTUAL,
 	          __void__detach__BufferComponent,
@@ -767,6 +767,8 @@ BEGIN_VALUE_REFLECTOR(osg::Camera::Attachment)
 	I_PublicMemberProperty(unsigned int, _level);
 	I_PublicMemberProperty(unsigned int, _face);
 	I_PublicMemberProperty(bool, _mipMapGeneration);
+	I_PublicMemberProperty(unsigned int, _multisampleSamples);
+	I_PublicMemberProperty(unsigned int, _multisampleColorSamples);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Camera::DrawCallback)

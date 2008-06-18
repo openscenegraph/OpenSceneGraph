@@ -236,6 +236,8 @@ public:
         void setKeyEventTogglePlayback(int key) { _keyEventTogglePlayback = key; }
         int getKeyEventTogglePlayback() const { return _keyEventTogglePlayback; }
 
+        void setAutoIncrementFilename( bool autoinc = true ) { _autoinc = autoinc?0:-1; }
+
         virtual void getUsage(osg::ApplicationUsage &usage) const;
 
         bool handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa);
@@ -243,6 +245,7 @@ public:
 protected:
 
         std::string                                     _filename;
+        int                                             _autoinc;
         std::ofstream                                   _fout;
 
         int                                             _keyEventToggleRecord;

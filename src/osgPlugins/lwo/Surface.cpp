@@ -166,7 +166,10 @@ void Surface::generate_stateset(int max_tex_units, bool force_arb_compression, c
             stateset_->setAttributeAndModes(cf.get());
         }
 
-        int unit = 0;
+        std::map< std::string, unsigned int > unitmap;
+        unitmap[ "COLR" ] = 0;
+        unitmap[ "TRAN" ] = 1;
+        unsigned int unit = 0;
         for (Block_map::const_iterator i=blocks_.begin(); i!=blocks_.end(); ++i) {
 
             const Block &block = i->second;
@@ -174,13 +177,21 @@ void Surface::generate_stateset(int max_tex_units, bool force_arb_compression, c
                 continue;
             }
 
-            if (block.get_type() == "IMAP") {
-                if (block.get_channel() == "COLR") {
-                    if (block.get_image_map().clip) {
+            if (block.get_type() == "IMAP")
+            {
+                std::string channel = block.get_channel();
+                if ( ( channel == "COLR" ) ||
+                     ( channel == "TRAN" ) )
+                {
+                    unit = unitmap[ channel ];
+                    if (block.get_image_map().clip)
+                    {
                         std::string image_file = block.get_image_map().clip->get_still_filename();
-                        if (!image_file.empty()) {
+                        if (!image_file.empty())
+                        {
 
-                            if (unit >= max_tex_units && max_tex_units > 0) {
+                            if (unit >= max_tex_units && max_tex_units > 0)
+                            {
                                 osg::notify(osg::WARN) << "Warning: lwosg::Surface: maximum number of texture units (" << max_tex_units << ") has been reached, skipping incoming blocks" << std::endl;
                                 break;
                             }
@@ -196,23 +207,27 @@ void Surface::generate_stateset(int max_tex_units, bool force_arb_compression, c
                             stateset_->setTextureAttributeAndModes(unit, texture.get());
 
                             osg::ref_ptr<osg::TexEnvCombine> tec = new osg::TexEnvCombine;
-                            switch (block.get_opacity_type()) {
+                            switch (block.get_opacity_type())
+                            {
                                 case Block::NORMAL:
+                                {
+                                    float s = block.get_opacity_amount();
+                                    if (unit == 0)
                                     {
-                                        float s = block.get_opacity_amount();
-                                        if (unit == 0) {
-                                            tec->setCombine_RGB(osg::TexEnvCombine::MODULATE);
-                                            osg::Vec3 color(diffuse_, diffuse_, diffuse_);
-                                            color = color * s + base_color_ * (1 - s);
-                                            material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(color, 1-transparency_));
-                                            material->setAmbient(osg::Material::FRONT_AND_BACK, material->getDiffuse(osg::Material::FRONT_AND_BACK));
-                                            material->setColorMode(osg::Material::OFF);
-                                        } else {
-                                            tec->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
-                                            tec->setConstantColor(osg::Vec4(s, s, s, s));
-                                        }
+                                        tec->setCombine_RGB(osg::TexEnvCombine::MODULATE);
+                                        osg::Vec3 color(diffuse_, diffuse_, diffuse_);
+                                        color = color * s + base_color_ * (1 - s);
+                                        material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(color, 1-transparency_));
+                                        material->setAmbient(osg::Material::FRONT_AND_BACK, material->getDiffuse(osg::Material::FRONT_AND_BACK));
+                                        material->setColorMode(osg::Material::OFF);
                                     }
-                                    break;
+                                    else
+                                    {
+                                        tec->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
+                                        tec->setConstantColor(osg::Vec4(s, s, s, s));
+                                    }
+                                }
+                                break;
 
                                 case Block::ADDITIVE:
                                     tec->setCombine_RGB(osg::TexEnvCombine::ADD);
@@ -240,14 +255,17 @@ void Surface::generate_stateset(int max_tex_units, bool force_arb_compression, c
                                     osg::notify(osg::WARN) << "Warning: lwosg::Surface: 'Texture Displacement' blending mode is not supported" << std::endl;
                                     break;
 
-                                default: ;
+                                default:
+                                break;
                             };
 
                             stateset_->setTextureAttributeAndModes(unit, tec.get());
                             ++unit;
                         }
                     }
-                } else {
+                }
+                else
+                {
                     osg::notify(osg::WARN) << "Warning: lwosg::Surface: texture channels of type '" << block.get_channel() << "' are not supported, this block will be ignored" << std::endl;
                 }
             }

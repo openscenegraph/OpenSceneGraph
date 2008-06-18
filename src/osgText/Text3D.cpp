@@ -400,7 +400,24 @@ void Text3D::computeGlyphRepresentation()
 
 
 
+osg::BoundingBox Text3D::computeBound() const
+{
+    osg::BoundingBox  bbox;
 
+    if (_textBB.valid())
+    {
+        for(unsigned int i=0;i<_autoTransformCache.size();++i)
+        {
+            osg::Matrix& matrix = _autoTransformCache[i]._matrix;
+            bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
+//          bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
+            bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
+//          bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
+        }
+    }
+    
+    return bbox;
+}
 
 
 

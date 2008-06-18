@@ -50,6 +50,9 @@ class OSGDB_EXPORT Output : public std::ofstream
         Output& indent();
 
         /** wrap a string with "" quotes and use \" for any internal quotes.*/
+        std::string wrapString(const char* str);
+
+        /** wrap a string with "" quotes and use \" for any internal quotes.*/
         std::string wrapString(const std::string& str);
 
         inline void setIndentStep(int step) { _indentStep = step; }

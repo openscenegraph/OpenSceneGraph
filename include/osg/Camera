@@ -332,14 +332,18 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         /** Attach a buffer with specified OpenGL internal format.*/
         void attach(BufferComponent buffer, GLenum internalFormat);
 
-        /** Attach a Texture to specified buffer component.
-          * The level parameter controls the mip map level of the texture that is attached.
-          * The face parameter controls the face of texture cube map or z level of 3d texture.
+        /** Attach a Texture to specified buffer component. 
+          * The level parameter controls the mip map level of the texture that is attached. 
+          * The face parameter controls the face of texture cube map or z level of 3d texture. 
           * The mipMapGeneration flag controls whether mipmap generation should be done for texture.*/
-        void attach(BufferComponent buffer, osg::Texture* texture, unsigned int level = 0, unsigned int face=0, bool mipMapGeneration=false);
+        void attach(BufferComponent buffer, osg::Texture* texture, unsigned int level = 0, unsigned int face=0, bool mipMapGeneration=false,
+            unsigned int multisampleSamples = 0,
+            unsigned int multisampleColorSamples = 0);
 
         /** Attach a Image to specified buffer component.*/
-        void attach(BufferComponent buffer, osg::Image* image);
+        void attach(BufferComponent buffer, osg::Image* image,
+            unsigned int multisampleSamples = 0,
+            unsigned int multisampleColorSamples = 0);
 
         /** Detach specified buffer component.*/
         void detach(BufferComponent buffer);
@@ -350,7 +354,9 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
                 _internalFormat(GL_NONE),
                 _level(0),
                 _face(0),
-                _mipMapGeneration(false) {}
+                _mipMapGeneration(false),
+                _multisampleSamples(0),
+                _multisampleColorSamples(0) {}
         
             int width() const
             {
@@ -379,6 +385,8 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             unsigned int        _level;
             unsigned int        _face;
             bool                _mipMapGeneration;
+            unsigned int        _multisampleSamples;
+            unsigned int        _multisampleColorSamples;
         };
         
         typedef std::map< BufferComponent, Attachment> BufferAttachmentMap;
@@ -388,8 +396,8 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Get the const BufferAttachmentMap, used to configure frame buffer objects, pbuffers and texture reads.*/
         const BufferAttachmentMap& getBufferAttachmentMap() const { return _bufferAttachmentMap; }
-        
-        
+
+
         /** Create a operation thread for this camera.*/
         void createCameraThread();
 
@@ -442,11 +450,11 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             DrawCallback(const DrawCallback&,const CopyOp&) {}
 
             META_Object(osg,DrawCallback)
-        
-            /** Functor method called by rendering thread. Users will typically override this method to carry tasks such as screen capture.*/
+
+            /** Functor method called by rendering thread. Users will typically override this method to carry tasks such as screen capture.*/ 
             virtual void operator () (osg::RenderInfo& renderInfo) const;
 
-            /** Functor method, provided for backwards compatibility, called by operator() (osg::RenderInfo& renderInfo) method.*/
+            /** Functor method, provided for backwards compatibility, called by operator() (osg::RenderInfo& renderInfo) method.*/ 
             virtual void operator () (const osg::Camera& /*camera*/) const {}
         };
         

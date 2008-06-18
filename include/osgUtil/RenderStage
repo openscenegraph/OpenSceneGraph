@@ -138,11 +138,28 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         void setImageReadPixelDataType(GLenum type) { _imageReadPixelDataType = type; }
         GLenum getImageReadPixelDataType() const { return _imageReadPixelDataType; }
 
-        
+        /** Set a framebuffer object to render into. It is permissible for the
+          * framebuffer object to be multisampled, in which case you should also
+          * set a resolve framebuffer object - see setMultisampleResolveFramebufferObject(). */
         void setFrameBufferObject(osg::FrameBufferObject* fbo) { _fbo = fbo; }
         osg::FrameBufferObject* getFrameBufferObject() { return _fbo.get(); }
         const osg::FrameBufferObject* getFrameBufferObject() const { return _fbo.get(); }
-        
+
+        /** Sets the destination framebuffer object for glBlitFramebufferEXT to
+          * resolve a multisampled framebuffer object after the RenderStage is
+          * drawn. The resolve framebuffer object must not be multisampled. The
+          * resolve framebuffer object is only necessary if the primary framebuffer
+          * object is multisampled, if not then leave it set to null. */
+        void setMultisampleResolveFramebufferObject(osg::FrameBufferObject* fbo);
+        osg::FrameBufferObject* getMultisampleResolveFramebufferObject() { return _resolveFbo.get(); }
+        const osg::FrameBufferObject* getMultisampleResolveFramebufferObject() const { return _resolveFbo.get(); }
+
+        /** Set whether the framebuffer object should be unbound after
+          * rendering. By default this is set to true. Set it to false if the
+          * unbinding is not required. */
+        void setDisableFboAfterRender(bool disable) {_disableFboAfterRender = disable;}
+        bool getDisableFboAfterRender() const {return _disableFboAfterRender;}
+
         void setGraphicsContext(osg::GraphicsContext* context) { _graphicsContext = context; }
         osg::GraphicsContext* getGraphicsContext() { return _graphicsContext.get(); }
         const osg::GraphicsContext* getGraphicsContext() const { return _graphicsContext.get(); }
@@ -247,7 +264,9 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         std::map< osg::Camera::BufferComponent, Attachment> _bufferAttachmentMap;
         
         osg::ref_ptr<osg::FrameBufferObject>    _fbo;
+        osg::ref_ptr<osg::FrameBufferObject>    _resolveFbo;
         osg::ref_ptr<osg::GraphicsContext>      _graphicsContext;
+        bool                                    _disableFboAfterRender;
 
         mutable osg::Matrix                         _inheritedPositionalStateContainerMatrix;
         mutable osg::ref_ptr<PositionalStateContainer>   _inheritedPositionalStateContainer;

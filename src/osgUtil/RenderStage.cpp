@@ -33,7 +33,8 @@ using namespace osgUtil;
 //RegisterRenderBinProxy<RenderStage> s_registerRenderStageProxy;
 
 RenderStage::RenderStage():
-    RenderBin(getDefaultRenderBinSortMode())
+    RenderBin(getDefaultRenderBinSortMode()),
+    _disableFboAfterRender(true)
 {
     // point RenderBin's _stage to this to ensure that references to
     // stage don't go tempted away to any other stage.
@@ -59,7 +60,8 @@ RenderStage::RenderStage():
 }
 
 RenderStage::RenderStage(SortMode mode):
-    RenderBin(mode)
+    RenderBin(mode),
+    _disableFboAfterRender(true)
 {
     // point RenderBin's _stage to this to ensure that references to
     // stage don't go tempted away to any other stage.
@@ -104,7 +106,8 @@ RenderStage::RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop):
         _face(rhs._face),
         _imageReadPixelFormat(rhs._imageReadPixelFormat),
         _imageReadPixelDataType(rhs._imageReadPixelDataType),
-        _renderStageLighting(rhs._renderStageLighting)
+        _renderStageLighting(rhs._renderStageLighting),
+        _disableFboAfterRender(rhs._disableFboAfterRender)
 {
     _stage = this;
 }
@@ -327,10 +330,37 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*(_camera->getDataChangeMutex()));
 
             osg::ref_ptr<osg::FrameBufferObject> fbo = new osg::FrameBufferObject;
-
+            osg::ref_ptr<osg::FrameBufferObject> fbo_multisample;
+            
             bool colorAttached = false;
             bool depthAttached = false;
             bool stencilAttached = false;
+            unsigned samples = 0;
+            unsigned colorSamples = 0;
+
+            if (fbo_ext->isMultisampleSupported())
+            {
+                for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
+                    itr != bufferAttachments.end();
+                    ++itr)
+                {
+                    osg::Camera::Attachment& attachment = itr->second;
+                    samples = maximum(samples, attachment._multisampleSamples);
+                    colorSamples = maximum(samples, attachment._multisampleColorSamples);
+                }
+
+                if (colorSamples > samples)
+                {
+                    osg::notify(WARN) << "Multisample color samples must be less than or "
+                        "equal to samples. Setting color samples equal to samples." << std::endl;
+                    colorSamples = samples;
+                }
+
+                if (samples)
+                {
+                    fbo_multisample = new osg::FrameBufferObject;
+                }
+            }
             
             for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
                 itr != bufferAttachments.end();
@@ -344,6 +374,30 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                     fbo->setAttachment(buffer, osg::FrameBufferAttachment(attachment));
                 else
                     fbo->setAttachment(buffer, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, attachment._internalFormat)));
+
+                if (fbo_multisample.valid())
+                {
+                    GLenum internalFormat = attachment._internalFormat;
+                    if (!internalFormat)
+                    {
+                        switch (buffer)
+                        {
+                        case Camera::DEPTH_BUFFER:
+                            internalFormat = GL_DEPTH_COMPONENT24;
+                            break;
+                        case Camera::STENCIL_BUFFER:
+                            internalFormat = GL_STENCIL_INDEX8_EXT;
+                            break;
+                        default:
+                            internalFormat = GL_RGBA;
+                            break;
+                        }
+                    }
+                    fbo_multisample->setAttachment(buffer,
+                        osg::FrameBufferAttachment(new osg::RenderBuffer(
+                        width, height, internalFormat,
+                        samples, colorSamples)));
+                }
                 
                 if (buffer==osg::Camera::DEPTH_BUFFER) depthAttached = true;
                 else if (buffer==osg::Camera::STENCIL_BUFFER) stencilAttached = true;
@@ -353,11 +407,23 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             if (!depthAttached)
             {                
                 fbo->setAttachment(osg::Camera::DEPTH_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_DEPTH_COMPONENT24)));
+                if (fbo_multisample.valid())
+                {
+                    fbo_multisample->setAttachment(osg::Camera::DEPTH_BUFFER,
+                        osg::FrameBufferAttachment(new osg::RenderBuffer(width,
+                        height, GL_DEPTH_COMPONENT24, samples, colorSamples)));
+                }
             }
 
             if (!colorAttached)
             {                
                 fbo->setAttachment(osg::Camera::COLOR_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_RGB)));
+                if (fbo_multisample.valid())
+                {
+                    fbo_multisample->setAttachment(osg::Camera::COLOR_BUFFER,
+                        osg::FrameBufferAttachment(new osg::RenderBuffer(width,
+                        height, GL_RGB, samples, colorSamples)));
+                }
             }
 
             fbo->apply(state);
@@ -386,6 +452,39 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 setReadBuffer(GL_NONE);
        
                 _fbo = fbo;
+
+                if (fbo_multisample.valid())
+                {
+                    fbo_multisample->apply(state);
+
+                    GLenum status = fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+
+                    if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
+                    {
+                        notify(NOTICE) << "RenderStage::runCameraSetUp(), "
+                            "multisample FBO setup failed, FBO status = 0x"
+                            << std::hex << status << std::endl;
+
+                        fbo->apply(state);
+                        fbo_multisample = 0;
+                        _resolveFbo = 0;
+
+                        // clean up.
+                        double availableTime = 100.0f;
+                        double currentTime = state.getFrameStamp()?state.getFrameStamp()->getReferenceTime():0.0;
+                        osg::RenderBuffer::flushDeletedRenderBuffers(state.getContextID(),currentTime,availableTime);
+                        osg::FrameBufferObject::flushDeletedFrameBufferObjects(state.getContextID(),currentTime,availableTime);
+                    }
+                    else
+                    {
+                        _resolveFbo.swap(_fbo);
+                        _fbo = fbo_multisample;
+                    }
+                }
+                else
+                {
+                    _resolveFbo = 0;
+                }
             }
         }
         
@@ -680,6 +779,27 @@ void RenderStage::copyTexture(osg::RenderInfo& renderInfo)
 
 void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, bool& doCopyTexture)
 {
+    struct SubFunc
+    {
+        static void applyReadFBO(bool& apply_read_fbo,
+            const FrameBufferObject* read_fbo, osg::State& state)
+        {
+            if (read_fbo->isMultisample())
+            {
+                osg::notify(osg::WARN) << "Attempting to read from a"
+                    " multisampled framebuffer object. Set a resolve"
+                    " framebuffer on the RenderStage to fix this." << std::endl;
+            }
+
+            if (apply_read_fbo)
+            {
+                // Bind the monosampled FBO to read from
+                read_fbo->apply(state, FrameBufferObject::READ_FRAMEBUFFER);
+                apply_read_fbo = false;
+            }
+        }
+    };
+
     osg::State& state = *renderInfo.getState();
 
     osg::FBOExtensions* fbo_ext = _fbo.valid() ? osg::FBOExtensions::instance(state.getContextID(),true) : 0;
@@ -722,67 +842,115 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         }
     }
 
+    const FrameBufferObject* read_fbo = _fbo.get();
+    bool apply_read_fbo = false;
+
+    if (fbo_supported && _resolveFbo.valid() && fbo_ext->glBlitFramebufferEXT)
+    {
+        GLbitfield blitMask = 0;
+
+        //find which buffer types should be copied
+        for (FrameBufferObject::AttachmentMap::const_iterator
+            it = _resolveFbo->getAttachmentMap().begin(),
+            end =_resolveFbo->getAttachmentMap().end(); it != end; ++it)
+        {
+            switch (it->first)
+            {
+            case Camera::DEPTH_BUFFER:
+                blitMask |= GL_DEPTH_BUFFER_BIT;
+                break;
+            case Camera::STENCIL_BUFFER:
+                blitMask |= GL_STENCIL_BUFFER_BIT;
+                break;
+            default:
+                blitMask |= GL_COLOR_BUFFER_BIT;
+                break;
+            }
+        }
+
+        // Bind the resolve framebuffer to blit into.
+        _resolveFbo->apply(state, FrameBufferObject::DRAW_FRAMEBUFFER);
+
+        // Blit to the resolve framebuffer.
+        // Note that (with nvidia 175.16 windows drivers at least) if the read
+        // framebuffer is multisampled then the dimension arguments are ignored
+        // and the whole framebuffer is always copied.
+        fbo_ext->glBlitFramebufferEXT(
+            0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+            0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+            blitMask, GL_NEAREST);
+
+        apply_read_fbo = true;
+        read_fbo = _resolveFbo.get();
+
+        using_multiple_render_targets = read_fbo->hasMultipleRenderingTargets();
+    }
+
     // now copy the rendered image to attached texture.
     if (doCopyTexture)
     {
+        SubFunc::applyReadFBO(apply_read_fbo, read_fbo, state);
         copyTexture(renderInfo);
     }
-    
+
     std::map< osg::Camera::BufferComponent, Attachment>::const_iterator itr;
     for(itr = _bufferAttachmentMap.begin();
         itr != _bufferAttachmentMap.end();
         ++itr)
     {
-         if (itr->second._image.valid())
-         {
-             if (using_multiple_render_targets)
-             {
-                 int attachment=itr->first;
-                 if (attachment==osg::Camera::DEPTH_BUFFER || attachment==osg::Camera::STENCIL_BUFFER) {
-                     // assume first buffer rendered to is the one we want
-                     glReadBuffer(_fbo->getMultipleRenderingTargets()[0]);
-                 } else {
-                     glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
-                 }
-             } else {
-                 if (_readBuffer != GL_NONE)
-                 {
-                     glReadBuffer(_readBuffer);
-                 }
-             }
+        if (itr->second._image.valid())
+        {
+            SubFunc::applyReadFBO(apply_read_fbo, read_fbo, state);
 
-             GLenum pixelFormat = itr->second._image->getPixelFormat();
-             if (pixelFormat==0) pixelFormat = _imageReadPixelFormat;
-             if (pixelFormat==0) pixelFormat = GL_RGB;
+            if (using_multiple_render_targets)
+            {
+                int attachment=itr->first;
+                if (attachment==osg::Camera::DEPTH_BUFFER || attachment==osg::Camera::STENCIL_BUFFER) {
+                    // assume first buffer rendered to is the one we want
+                    glReadBuffer(read_fbo->getMultipleRenderingTargets()[0]);
+                } else {
+                    glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
+                }
+            } else {
+                if (_readBuffer != GL_NONE)
+                {
+                    glReadBuffer(_readBuffer);
+                }
+            }
 
-             GLenum dataType = itr->second._image->getDataType();
-              if (dataType==0) dataType =  _imageReadPixelDataType;
-             if (dataType==0) dataType = GL_UNSIGNED_BYTE;       
+            GLenum pixelFormat = itr->second._image->getPixelFormat();
+            if (pixelFormat==0) pixelFormat = _imageReadPixelFormat;
+            if (pixelFormat==0) pixelFormat = GL_RGB;
 
-             itr->second._image->readPixels(static_cast<int>(_viewport->x()),
-                                            static_cast<int>(_viewport->y()),
-                                            static_cast<int>(_viewport->width()),
-                                            static_cast<int>(_viewport->height()), 
-                                            pixelFormat, dataType);
+            GLenum dataType = itr->second._image->getDataType();
+            if (dataType==0) dataType = _imageReadPixelDataType;
+            if (dataType==0) dataType = GL_UNSIGNED_BYTE;       
 
-         }
-     }
-       
-    
+            itr->second._image->readPixels(static_cast<int>(_viewport->x()),
+                                           static_cast<int>(_viewport->y()),
+                                           static_cast<int>(_viewport->width()),
+                                           static_cast<int>(_viewport->height()), 
+                                           pixelFormat, dataType);
+        }
+    }
+
     if (fbo_supported)
     {
-        // switch of the frame buffer object
-        fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        if (getDisableFboAfterRender())
+        {
+            // switch off the frame buffer object
+            fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        }
 
         doCopyTexture = true;
     }
-    
+
     if (fbo_supported && _camera)
     {
         // now generate mipmaps if they are required.
-        const osg::Camera::BufferAttachmentMap& bufferAttachements = _camera->getBufferAttachmentMap();
-        for(osg::Camera::BufferAttachmentMap::const_iterator itr = bufferAttachements.begin();
-            itr != bufferAttachements.end();
+        const osg::Camera::BufferAttachmentMap& bufferAttachments = _camera->getBufferAttachmentMap();
+        for(osg::Camera::BufferAttachmentMap::const_iterator itr = bufferAttachments.begin();
+            itr != bufferAttachments.end();
             ++itr)
         {
             if (itr->second._texture.valid() && itr->second._mipMapGeneration) 
@@ -1142,3 +1310,13 @@ unsigned int RenderStage::computeNumberOfDynamicRenderLeaves() const
     return count;
 }
 
+
+void osgUtil::RenderStage::setMultisampleResolveFramebufferObject(osg::FrameBufferObject* fbo)
+{
+    if (fbo && fbo->isMultisample())
+    {
+        osg::notify(osg::WARN) << "Resolve framebuffer must not be"
+            " multisampled." << std::endl;
+    }
+    _resolveFbo = fbo;
+}

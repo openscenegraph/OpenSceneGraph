@@ -258,17 +258,25 @@ void Camera::attach(BufferComponent buffer, GLenum internalFormat)
     _bufferAttachmentMap[buffer]._internalFormat = internalFormat;
 }
 
-void Camera::attach(BufferComponent buffer, osg::Texture* texture, unsigned int level, unsigned int face, bool mipMapGeneration)
+void Camera::attach(BufferComponent buffer, osg::Texture* texture, unsigned int level, unsigned int face, bool mipMapGeneration,
+                    unsigned int multisampleSamples, 
+                    unsigned int multisampleColorSamples)
 {
     _bufferAttachmentMap[buffer]._texture = texture;
     _bufferAttachmentMap[buffer]._level = level;
     _bufferAttachmentMap[buffer]._face = face;
     _bufferAttachmentMap[buffer]._mipMapGeneration = mipMapGeneration;
+    _bufferAttachmentMap[buffer]._multisampleSamples = multisampleSamples;
+    _bufferAttachmentMap[buffer]._multisampleColorSamples = multisampleColorSamples;
 }
 
-void Camera::attach(BufferComponent buffer, osg::Image* image)
+void Camera::attach(BufferComponent buffer, osg::Image* image,
+                    unsigned int multisampleSamples, 
+                    unsigned int multisampleColorSamples)
 {
     _bufferAttachmentMap[buffer]._image = image;
+    _bufferAttachmentMap[buffer]._multisampleSamples = multisampleSamples;
+    _bufferAttachmentMap[buffer]._multisampleColorSamples = multisampleColorSamples;
 }
 
 void Camera::detach(BufferComponent buffer)

@@ -218,6 +218,7 @@ void Uniform::copyData(const Uniform& rhs)
 {
     // caller must ensure that _type==rhs._type
     _numElements = rhs._numElements;
+    if (rhs._floatArray.valid() || rhs._intArray.valid()) allocateDataArray();
     if( _floatArray.valid() && rhs._floatArray.valid() ) *_floatArray = *rhs._floatArray;
     if( _intArray.valid() && rhs._intArray.valid() )     *_intArray = *rhs._intArray;
     dirty();

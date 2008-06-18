@@ -42,12 +42,9 @@ ShapeAttribute::ShapeAttribute(const char * name, double value) :
 
 ShapeAttribute::ShapeAttribute(const char * name, const char * value) :
     _name(name),
-    _type(STRING)
+    _type(STRING),
+    _string(value ? strdup(value) : 0)
 {
-    std::string str(value);
-    _string = new char[str.size() + 1];
-    memcpy(_string, str.c_str(), str.size());
-    _string[str.size()] = 0;
 }
 
 ShapeAttribute::ShapeAttribute(const ShapeAttribute & sa)
@@ -65,7 +62,7 @@ void ShapeAttribute::free()
 {
     if ((_type == STRING) && (_string)) 
     {
-        delete [] _string; 
+        ::free(_string);
         _string = 0;
     }
 }
@@ -84,10 +81,7 @@ void ShapeAttribute::copy(const ShapeAttribute& sa)
         }
         case STRING:
         {
-            std::string str(sa._string);
-            _string = new char[str.size() + 1];
-            memcpy(_string, str.c_str(), str.size());
-            _string[str.size()] = 0;
+            _string = sa._string ? strdup(sa._string) : 0;
             break;
         }
         case DOUBLE:

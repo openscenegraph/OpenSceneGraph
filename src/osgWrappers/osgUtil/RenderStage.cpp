@@ -250,8 +250,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method1(void, setFrameBufferObject, IN, osg::FrameBufferObject *, fbo,
 	          Properties::NON_VIRTUAL,
 	          __void__setFrameBufferObject__osg_FrameBufferObject_P1,
-	          "",
-	          "");
+	          "Set a framebuffer object to render into. ",
+	          "It is permissible for the framebuffer object to be multisampled, in which case you should also set a resolve framebuffer object - see setMultisampleResolveFramebufferObject(). ");
 	I_Method0(osg::FrameBufferObject *, getFrameBufferObject,
 	          Properties::NON_VIRTUAL,
 	          __osg_FrameBufferObject_P1__getFrameBufferObject,
@@ -260,6 +260,31 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_Method0(const osg::FrameBufferObject *, getFrameBufferObject,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_FrameBufferObject_P1__getFrameBufferObject,
+	          "",
+	          "");
+	I_Method1(void, setMultisampleResolveFramebufferObject, IN, osg::FrameBufferObject *, fbo,
+	          Properties::NON_VIRTUAL,
+	          __void__setMultisampleResolveFramebufferObject__osg_FrameBufferObject_P1,
+	          "Sets the destination framebuffer object for glBlitFramebufferEXT to resolve a multisampled framebuffer object after the RenderStage is drawn. ",
+	          "The resolve framebuffer object must not be multisampled. The resolve framebuffer object is only necessary if the primary framebuffer object is multisampled, if not then leave it set to null. ");
+	I_Method0(osg::FrameBufferObject *, getMultisampleResolveFramebufferObject,
+	          Properties::NON_VIRTUAL,
+	          __osg_FrameBufferObject_P1__getMultisampleResolveFramebufferObject,
+	          "",
+	          "");
+	I_Method0(const osg::FrameBufferObject *, getMultisampleResolveFramebufferObject,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_FrameBufferObject_P1__getMultisampleResolveFramebufferObject,
+	          "",
+	          "");
+	I_Method1(void, setDisableFboAfterRender, IN, bool, disable,
+	          Properties::NON_VIRTUAL,
+	          __void__setDisableFboAfterRender__bool,
+	          "Set whether the framebuffer object should be unbound after rendering. ",
+	          "By default this is set to true. Set it to false if the unbinding is not required. ");
+	I_Method0(bool, getDisableFboAfterRender,
+	          Properties::NON_VIRTUAL,
+	          __bool__getDisableFboAfterRender,
 	          "",
 	          "");
 	I_Method1(void, setGraphicsContext, IN, osg::GraphicsContext *, context,
@@ -406,6 +431,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_SimpleProperty(osg::ColorMask *, ColorMask, 
 	                 __osg_ColorMask_P1__getColorMask, 
 	                 __void__setColorMask__osg_ColorMask_P1);
+	I_SimpleProperty(bool, DisableFboAfterRender, 
+	                 __bool__getDisableFboAfterRender, 
+	                 __void__setDisableFboAfterRender__bool);
 	I_SimpleProperty(GLenum, DrawBuffer, 
 	                 __GLenum__getDrawBuffer, 
 	                 __void__setDrawBuffer__GLenum);
@@ -430,6 +458,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_SimpleProperty(const osg::Matrix &, InheritedPositionalStateContainerMatrix, 
 	                 __C5_osg_Matrix_R1__getInheritedPositionalStateContainerMatrix, 
 	                 __void__setInheritedPositionalStateContainerMatrix__C5_osg_Matrix_R1);
+	I_SimpleProperty(osg::FrameBufferObject *, MultisampleResolveFramebufferObject, 
+	                 __osg_FrameBufferObject_P1__getMultisampleResolveFramebufferObject, 
+	                 __void__setMultisampleResolveFramebufferObject__osg_FrameBufferObject_P1);
 	I_SimpleProperty(osgUtil::PositionalStateContainer *, PositionalStateContainer, 
 	                 __PositionalStateContainer_P1__getPositionalStateContainer, 
 	                 __void__setPositionalStateContainer__PositionalStateContainer_P1);

@@ -18,7 +18,7 @@
 #include <osg/CullFace>
 
 
-osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedFaceSet(openvrml::vrml97_node::indexed_face_set_node *vrml_ifs)
+osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedFaceSet(openvrml::vrml97_node::indexed_face_set_node *vrml_ifs) const
 {
     osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
        

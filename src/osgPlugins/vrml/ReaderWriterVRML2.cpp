@@ -110,7 +110,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &f
     }
 }
 
-osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj)
+osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 {
     std::string name = obj->id();
     static int osgLightNum = 0;  //light

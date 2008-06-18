@@ -126,6 +126,9 @@ public:
 //    // forcefully unloaded.
     friend class Font3D;
 
+    virtual osg::BoundingBox computeBound() const;
+
+
 protected:
 
     virtual ~Text3D() {} 

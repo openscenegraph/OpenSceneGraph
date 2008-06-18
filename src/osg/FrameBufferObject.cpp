@@ -41,7 +41,24 @@ FBOExtensions* FBOExtensions::instance(unsigned contextID, bool createIfNotInita
 #define LOAD_FBO_EXT(name)    setGLExtensionFuncPtr(name, (#name))
 
 FBOExtensions::FBOExtensions(unsigned int contextID)
-:    _supported(false)
+:   _supported(false),
+    glBindRenderbufferEXT(0),
+    glGenRenderbuffersEXT(0),
+    glDeleteRenderbuffersEXT(0),
+    glRenderbufferStorageEXT(0),
+    glRenderbufferStorageMultisampleEXT(0),
+    glRenderbufferStorageMultisampleCoverageNV(0),
+    glBindFramebufferEXT(0),
+    glDeleteFramebuffersEXT(0),
+    glGenFramebuffersEXT(0),
+    glCheckFramebufferStatusEXT(0),
+    glFramebufferTexture1DEXT(0),
+    glFramebufferTexture2DEXT(0),
+    glFramebufferTexture3DEXT(0),
+    glFramebufferTextureLayerEXT(0),
+    glFramebufferRenderbufferEXT(0),
+    glGenerateMipmapEXT(0),
+    glBlitFramebufferEXT(0)
 {
     if (!isGLExtensionSupported(contextID, "GL_EXT_framebuffer_object"))
         return;
@@ -75,6 +92,21 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
         glFramebufferTexture3DEXT != 0 &&
         glFramebufferRenderbufferEXT != 0 &&
         glGenerateMipmapEXT != 0;
+
+    if (!isGLExtensionSupported(contextID, "GL_EXT_framebuffer_blit"))
+        return;
+
+    LOAD_FBO_EXT(glBlitFramebufferEXT);
+
+    if (isGLExtensionSupported(contextID, "GL_EXT_framebuffer_multisample"))
+    {
+        LOAD_FBO_EXT(glRenderbufferStorageMultisampleEXT);
+    }
+
+    if (isGLExtensionSupported(contextID, "GL_NV_framebuffer_multisample_coverage"))
+    {
+        LOAD_FBO_EXT(glRenderbufferStorageMultisampleCoverageNV);
+    }
 }
 
 
@@ -144,15 +176,19 @@ RenderBuffer::RenderBuffer()
 :    Object(),
     _internalFormat(GL_DEPTH_COMPONENT24),
     _width(512),
-    _height(512)
+    _height(512),
+    _samples(0),
+    _colorSamples(0)
 {
 }
 
-RenderBuffer::RenderBuffer(int width, int height, GLenum internalFormat)
+RenderBuffer::RenderBuffer(int width, int height, GLenum internalFormat, int samples, int colorSamples)
 :    Object(),
     _internalFormat(internalFormat),
     _width(width),
-    _height(height)
+    _height(height),
+    _samples(samples),
+    _colorSamples(colorSamples)
 {
 }
 
@@ -160,7 +196,9 @@ RenderBuffer::RenderBuffer(const RenderBuffer &copy, const CopyOp &copyop)
 :    Object(copy, copyop),
     _internalFormat(copy._internalFormat),
     _width(copy._width),
-    _height(copy._height)
+    _height(copy._height),
+    _samples(copy._samples),
+    _colorSamples(copy._colorSamples)
 {
 }
 
@@ -190,7 +228,30 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
     {
         // bind and configure
         ext->glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, objectID);
-        ext->glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, _internalFormat, _width, _height);
+
+        // framebuffer_multisample_coverage specification requires that coverage
+        // samples must be >= color samples.
+        if (_samples < _colorSamples)
+        {
+            notify(WARN) << "Coverage samples must be greater than or equal to color samples."
+                " Setting coverage samples equal to color samples." << std::endl;
+            const_cast<RenderBuffer*>(this)->setSamples(_colorSamples);
+        }
+
+        if (_samples > 0 && ext->isMultisampleCoverageSupported())
+        {
+            ext->glRenderbufferStorageMultisampleCoverageNV(GL_RENDERBUFFER_EXT,
+                _samples, _colorSamples, _internalFormat, _width, _height);
+        }
+        else if (_samples > 0 && ext->isMultisampleSupported())
+        {
+            ext->glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT,
+                _samples, _internalFormat, _width, _height);
+        }
+        else
+        {
+            ext->glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, _internalFormat, _width, _height);
+        }
         dirty = 0;
     }
 
@@ -391,6 +452,16 @@ FrameBufferAttachment &FrameBufferAttachment::operator = (const FrameBufferAttac
     return *this;
 }
 
+bool FrameBufferAttachment::isMultisample() const
+{
+    if (_ximpl->renderbufferTarget.valid())
+    {
+        return _ximpl->renderbufferTarget->getSamples() > 0;
+    }
+
+    return false;
+}
+
 void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &state, const FBOExtensions* ext) const
 {
     unsigned int contextID = state.getContextID();
@@ -422,7 +493,7 @@ void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &
     }
 }
 
-void FrameBufferAttachment::attach(State &state, GLenum attachment_point, const FBOExtensions* ext) const
+void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachment_point, const FBOExtensions* ext) const
 {
     unsigned int contextID = state.getContextID();
 
@@ -444,25 +515,25 @@ void FrameBufferAttachment::attach(State &state, GLenum attachment_point, const 
     {
     default:
     case Pimpl::RENDERBUFFER:
-        ext->glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, attachment_point, GL_RENDERBUFFER_EXT, _ximpl->renderbufferTarget->getObjectID(contextID, ext));
+        ext->glFramebufferRenderbufferEXT(target, attachment_point, GL_RENDERBUFFER_EXT, _ximpl->renderbufferTarget->getObjectID(contextID, ext));
         break;
     case Pimpl::TEXTURE1D:
-        ext->glFramebufferTexture1DEXT(GL_FRAMEBUFFER_EXT, attachment_point, GL_TEXTURE_1D, tobj->_id, _ximpl->level);
+        ext->glFramebufferTexture1DEXT(target, attachment_point, GL_TEXTURE_1D, tobj->_id, _ximpl->level);
         break;
     case Pimpl::TEXTURE2D:
-        ext->glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment_point, GL_TEXTURE_2D, tobj->_id, _ximpl->level);
+        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_2D, tobj->_id, _ximpl->level);
         break;
     case Pimpl::TEXTURE3D:
-        ext->glFramebufferTexture3DEXT(GL_FRAMEBUFFER_EXT, attachment_point, GL_TEXTURE_3D, tobj->_id, _ximpl->level, _ximpl->zoffset);
+        ext->glFramebufferTexture3DEXT(target, attachment_point, GL_TEXTURE_3D, tobj->_id, _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURE2DARRAY:
-        ext->glFramebufferTextureLayerEXT(GL_FRAMEBUFFER_EXT, attachment_point, tobj->_id, _ximpl->level, _ximpl->zoffset);
+        ext->glFramebufferTextureLayerEXT(target, attachment_point, tobj->_id, _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURERECT:
-        ext->glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment_point, GL_TEXTURE_RECTANGLE, tobj->_id, 0);
+        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_RECTANGLE, tobj->_id, 0);
         break;
     case Pimpl::TEXTURECUBE:
-        ext->glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attachment_point, GL_TEXTURE_CUBE_MAP_POSITIVE_X + _ximpl->cubeMapFace, tobj->_id, _ximpl->level);
+        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_CUBE_MAP_POSITIVE_X + _ximpl->cubeMapFace, tobj->_id, _ximpl->level);
         break;
     }
 }
@@ -623,6 +694,11 @@ void FrameBufferObject::updateDrawBuffers()
 
 void FrameBufferObject::apply(State &state) const
 {
+    apply(state, READ_DRAW_FRAMEBUFFER);
+}
+
+void FrameBufferObject::apply(State &state, BindTarget target) const
+{
     unsigned int contextID = state.getContextID();
 
     if (_unsupported[contextID])
@@ -639,7 +715,7 @@ void FrameBufferObject::apply(State &state) const
 
     if (_attachments.empty())
     {
-        ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+        ext->glBindFramebufferEXT(target, 0);
         return;
     }
 
@@ -678,7 +754,7 @@ void FrameBufferObject::apply(State &state) const
     }
     
    
-    ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fboID);
+    ext->glBindFramebufferEXT(target, fboID);
 
     // enable drawing buffers to render the result to fbo
     if (_drawBuffers.size() > 0)
@@ -695,11 +771,24 @@ void FrameBufferObject::apply(State &state) const
         for (AttachmentMap::const_iterator i=_attachments.begin(); i!=_attachments.end(); ++i)
         {
             const FrameBufferAttachment &fa = i->second;
-            fa.attach(state, convertBufferComponentToGLenum(i->first), ext);
+            fa.attach(state, target, convertBufferComponentToGLenum(i->first), ext);
         }        
         dirtyAttachmentList = 0;
     }
 
+}
+
+bool FrameBufferObject::isMultisample() const
+{
+    if (_attachments.size())
+    {
+        // If the FBO is correctly set up then all attachments will be either
+        // multisampled or single sampled. Therefore we can just return the
+        // result of the first attachment.
+        return _attachments.begin()->second.isMultisample();
+    }
+
+    return false;
 }
 
 int FrameBufferObject::compare(const StateAttribute &sa) const

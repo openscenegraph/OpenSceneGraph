@@ -79,6 +79,14 @@
 #define GL_INVALID_FRAMEBUFFER_OPERATION_EXT   0x0506
 #endif
 
+#ifndef GL_EXT_framebuffer_blit
+#define GL_EXT_framebuffer_blit 1
+#define GL_DRAW_FRAMEBUFFER_BINDING_EXT 0x8CA6
+#define GL_READ_FRAMEBUFFER_EXT 0x8CA8
+#define GL_DRAW_FRAMEBUFFER_EXT 0x8CA9
+#define GL_READ_FRAMEBUFFER_BINDING_EXT 0x8CAA
+#endif
+
 #ifndef GL_VERSION_1_4
 #define GL_DEPTH_COMPONENT16              0x81A5
 #define GL_DEPTH_COMPONENT24              0x81A6
@@ -99,6 +107,8 @@ namespace osg
         typedef void APIENTRY TglDeleteRenderbuffersEXT(GLsizei n, const GLuint *renderbuffers);
         typedef void APIENTRY TglGenRenderbuffersEXT(GLsizei, GLuint *);
         typedef void APIENTRY TglRenderbufferStorageEXT(GLenum, GLenum, GLsizei, GLsizei);
+        typedef void APIENTRY TglRenderbufferStorageMultisampleEXT(GLenum, GLsizei, GLenum, GLsizei, GLsizei);
+        typedef void APIENTRY TglRenderbufferStorageMultisampleCoverageNV(GLenum, GLsizei, GLsizei, GLenum, GLsizei, GLsizei);
         typedef void APIENTRY TglBindFramebufferEXT(GLenum, GLuint);
         typedef void APIENTRY TglDeleteFramebuffersEXT(GLsizei n, const GLuint *framebuffers);
         typedef void APIENTRY TglGenFramebuffersEXT(GLsizei, GLuint *);
@@ -109,12 +119,13 @@ namespace osg
         typedef void APIENTRY TglFramebufferTextureLayerEXT(GLenum, GLenum, GLuint, GLint, GLint);
         typedef void APIENTRY TglFramebufferRenderbufferEXT(GLenum, GLenum, GLenum, GLuint);
         typedef void APIENTRY TglGenerateMipmapEXT(GLenum);
-        typedef void APIENTRY TglRenderbufferStorageMultisampleCoverageNV(GLenum, GLuint, GLuint, GLenum, GLuint, GLuint);
-    
+        typedef void APIENTRY TglBlitFramebufferEXT(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
+
         TglBindRenderbufferEXT* glBindRenderbufferEXT;
         TglGenRenderbuffersEXT* glGenRenderbuffersEXT;
         TglDeleteRenderbuffersEXT* glDeleteRenderbuffersEXT; 
         TglRenderbufferStorageEXT* glRenderbufferStorageEXT;
+        TglRenderbufferStorageMultisampleEXT* glRenderbufferStorageMultisampleEXT;
         TglRenderbufferStorageMultisampleCoverageNV* glRenderbufferStorageMultisampleCoverageNV;
         TglBindFramebufferEXT* glBindFramebufferEXT;
         TglDeleteFramebuffersEXT* glDeleteFramebuffersEXT;
@@ -126,10 +137,13 @@ namespace osg
         TglFramebufferTextureLayerEXT* glFramebufferTextureLayerEXT;
         TglFramebufferRenderbufferEXT* glFramebufferRenderbufferEXT;
         TglGenerateMipmapEXT* glGenerateMipmapEXT;
+        TglBlitFramebufferEXT* glBlitFramebufferEXT;
 
         static FBOExtensions* instance(unsigned contextID, bool createIfNotInitalized);
 
         bool isSupported() const { return _supported; }
+        bool isMultisampleSupported() const { return glRenderbufferStorageMultisampleEXT != 0; }
+        bool isMultisampleCoverageSupported() const { return glRenderbufferStorageMultisampleCoverageNV != 0; }
 
     protected:
         FBOExtensions(unsigned int contextID);
@@ -146,7 +160,7 @@ namespace osg
     {
     public:
         RenderBuffer();
-        RenderBuffer(int width, int height, GLenum internalFormat);
+        RenderBuffer(int width, int height, GLenum internalFormat, int samples=0, int colorSamples=0);
         RenderBuffer(const RenderBuffer& copy, const CopyOp& copyop = CopyOp::SHALLOW_COPY);
 
         META_Object(osg, RenderBuffer);
@@ -158,6 +172,10 @@ namespace osg
         inline void setSize(int w, int h);
         inline GLenum getInternalFormat() const;
         inline void setInternalFormat(GLenum format);
+        inline int getSamples() const;
+        inline int getColorSamples() const;
+        inline void setSamples(int samples);
+        inline void setColorSamples(int colorSamples);
 
         GLuint getObjectID(unsigned int contextID, const FBOExtensions *ext) const;
         inline int compare(const RenderBuffer &rb) const;
@@ -185,9 +203,14 @@ namespace osg
     private:
         mutable buffered_value<GLuint> _objectID;
         mutable buffered_value<int> _dirty;
+
         GLenum _internalFormat;
         int _width;
         int _height;
+        // "samples" in the framebuffer_multisample extension is equivalent to
+        // "coverageSamples" in the framebuffer_multisample_coverage extension.
+        int _samples;
+        int _colorSamples;
     };
 
     // INLINE METHODS
@@ -229,6 +252,28 @@ namespace osg
     inline void RenderBuffer::setInternalFormat(GLenum format)
     {
         _internalFormat = format;
+        dirtyAll();
+    }
+
+    inline int RenderBuffer::getSamples() const
+    {
+        return _samples;
+    }
+
+    inline int RenderBuffer::getColorSamples() const
+    {
+        return _colorSamples;
+    }
+
+    inline void RenderBuffer::setSamples(int samples)
+    {
+        _samples = samples;
+        dirtyAll();
+    }
+
+    inline void RenderBuffer::setColorSamples(int colorSamples)
+    {
+        _colorSamples = colorSamples;
         dirtyAll();
     }
 
@@ -278,8 +323,9 @@ namespace osg
 
         FrameBufferAttachment&operator = (const FrameBufferAttachment& copy);        
 
+        bool isMultisample() const;
         void createRequiredTexturesAndApplyGenerateMipMap(State& state, const FBOExtensions* ext) const;
-        void attach(State &state, GLenum attachment_point, const FBOExtensions* ext) const;
+        void attach(State &state, GLenum target, GLenum attachment_point, const FBOExtensions* ext) const;
         int compare(const FrameBufferAttachment &fa) const;
 
     private:
@@ -323,9 +369,21 @@ namespace osg
         inline bool hasMultipleRenderingTargets() const { return !_drawBuffers.empty(); }
         inline const MultipleRenderingTargets& getMultipleRenderingTargets() const { return _drawBuffers; }
 
+        bool isMultisample() const;
+
         int compare(const StateAttribute &sa) const;
         
         void apply(State &state) const;
+
+        enum BindTarget
+        {
+            READ_FRAMEBUFFER = GL_READ_FRAMEBUFFER_EXT,
+            DRAW_FRAMEBUFFER = GL_DRAW_FRAMEBUFFER_EXT,
+            READ_DRAW_FRAMEBUFFER = GL_FRAMEBUFFER_EXT
+        };
+
+        /** Bind the FBO as either the read or draw target, or both. */
+        void apply(State &state, BindTarget target) const;
 
         /** Mark internal FBO for deletion.
           * Deletion requests are queued until they can be executed

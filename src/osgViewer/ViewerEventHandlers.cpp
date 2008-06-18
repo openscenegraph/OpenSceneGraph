@@ -15,8 +15,11 @@
 #include <float.h>
 #include <limits.h>
 
+#include <iomanip>
 #include <fstream>
 #include <sstream>
+
+#include <osgDB/FileNameUtils>
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -368,6 +371,7 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
 
 RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename):
     _filename(filename),
+    _autoinc( -1 ),
     _keyEventToggleRecord('z'),
     _keyEventTogglePlayback('Z'),
     _currentlyRecording(false),
@@ -448,8 +452,17 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     
                     if (!_filename.empty())
                     {
-                        osg::notify(osg::NOTICE)<<"Recording camera path to file "<<_filename<<std::endl;
-                        _fout.open(_filename.c_str());
+                        std::stringstream ss;
+                        ss << osgDB::getNameLessExtension(_filename);
+                        if ( _autoinc != -1 )
+                        {
+                            ss << "_"<<std::setfill( '0' ) << std::setw( 2 ) << _autoinc;
+                            _autoinc++;
+                        }
+                        ss << "."<<osgDB::getFileExtension(_filename);
+                        
+                        osg::notify(osg::NOTICE) << "Recording camera path to file " << ss.str() << std::endl;
+                        _fout.open( ss.str().c_str() );
                     }
                     else
                     {

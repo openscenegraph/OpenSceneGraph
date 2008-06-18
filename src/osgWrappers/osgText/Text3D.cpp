@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/BoundingBox>
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Object>
@@ -143,6 +144,11 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text3D)
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objexts for all graphics contexts. ");
+	I_Method0(osg::BoundingBox, computeBound,
+	          Properties::VIRTUAL,
+	          __osg_BoundingBox__computeBound,
+	          "Compute the bounding box around Drawables's geometry. ",
+	          "");
 	I_ProtectedMethod1(void, renderPerGlyph, IN, osg::State &, state,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

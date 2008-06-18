@@ -177,6 +177,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::RecordCameraPathHandler)
 	          __int__getKeyEventTogglePlayback,
 	          "",
 	          "");
+	I_MethodWithDefaults1(void, setAutoIncrementFilename, IN, bool, autoinc, true,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setAutoIncrementFilename__bool,
+	                      "",
+	                      "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
 	          Properties::VIRTUAL,
 	          __void__getUsage__osg_ApplicationUsage_R1,
@@ -187,6 +192,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::RecordCameraPathHandler)
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Deprecated, Handle events, return true if handled, false otherwise. ",
 	          "");
+	I_SimpleProperty(bool, AutoIncrementFilename, 
+	                 0, 
+	                 __void__setAutoIncrementFilename__bool);
 	I_SimpleProperty(int, KeyEventTogglePlayback, 
 	                 __int__getKeyEventTogglePlayback, 
 	                 __void__setKeyEventTogglePlayback__int);

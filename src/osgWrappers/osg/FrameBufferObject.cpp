@@ -461,6 +461,10 @@ BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
 	                __void__discardDeletedRenderBuffers__unsigned_int_S,
 	                "discard all the cached RenderBuffers which need to be deleted in the OpenGL context related to contextID. ",
 	                "Note, unlike flush no OpenGL calls are made, instead the handles are all removed. this call is useful for when an OpenGL context has been destroyed. ");
+	I_StaticMethod2(int, getMaxSamples, IN, unsigned int, contextID, IN, const osg::FBOExtensions *, ext,
+	                __int__getMaxSamples__unsigned_int__C5_FBOExtensions_P1_S,
+	                "",
+	                "");
 	I_ProtectedMethod0(void, dirtyAll,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

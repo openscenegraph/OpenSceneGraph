@@ -105,6 +105,12 @@ void Output::moveOut()
     if (_indent<0) _indent=0;
 }
 
+std::string Output::wrapString(const char* str)
+{
+    if (!str) return std::string("\"\"");
+    return wrapString(std::string(str));
+}
+
 std::string Output::wrapString(const std::string& str)
 {
     std::string newstring;

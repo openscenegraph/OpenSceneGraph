@@ -87,6 +87,21 @@
 #define GL_READ_FRAMEBUFFER_BINDING_EXT 0x8CAA
 #endif
 
+#ifndef GL_EXT_framebuffer_multisample
+#define GL_EXT_framebuffer_multisample 1
+#define GL_RENDERBUFFER_SAMPLES_EXT                 0x8CAB
+#define GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE_EXT   0x8D56
+#define GL_MAX_SAMPLES_EXT                          0x8D57
+#endif
+
+#ifndef GL_NV_framebuffer_multisample_coverage
+#define GL_NV_framebuffer_multisample_coverage 1
+#define GL_RENDERBUFFER_COVERAGE_SAMPLES_NV     0x8CAB
+#define GL_RENDERBUFFER_COLOR_SAMPLES_NV        0x8E10
+#define GL_MAX_MULTISAMPLE_COVERAGE_MODES_NV    0x8E11
+#define GL_MULTISAMPLE_COVERAGE_MODES_NV        0x8E12
+#endif
+
 #ifndef GL_VERSION_1_4
 #define GL_DEPTH_COMPONENT16              0x81A5
 #define GL_DEPTH_COMPONENT24              0x81A6
@@ -193,6 +208,8 @@ namespace osg
           * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
           * this call is useful for when an OpenGL context has been destroyed. */
         static void discardDeletedRenderBuffers(unsigned int contextID);
+
+        static int getMaxSamples(unsigned int contextID, const FBOExtensions *ext);
 
     protected:
         virtual ~RenderBuffer();

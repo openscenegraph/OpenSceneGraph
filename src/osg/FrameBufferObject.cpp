@@ -210,6 +210,20 @@ RenderBuffer::~RenderBuffer()
     }
 }
 
+int RenderBuffer::getMaxSamples(unsigned int contextID, const FBOExtensions *ext)
+{
+    static osg::buffered_value<GLint> maxSamplesList;
+
+    GLint& maxSamples = maxSamplesList[contextID];
+
+    if (!maxSamples && ext->isMultisampleSupported())
+    {
+        glGetIntegerv(GL_MAX_SAMPLES_EXT, &maxSamples);
+    }
+
+    return maxSamples;
+}
+
 GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ext) const
 {
     GLuint &objectID = _objectID[contextID];
@@ -240,13 +254,18 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
 
         if (_samples > 0 && ext->isMultisampleCoverageSupported())
         {
+            int samples = minimum(_samples, getMaxSamples(contextID, ext));
+            int colorSamples = minimum(_colorSamples, samples);
+
             ext->glRenderbufferStorageMultisampleCoverageNV(GL_RENDERBUFFER_EXT,
-                _samples, _colorSamples, _internalFormat, _width, _height);
+                samples, colorSamples, _internalFormat, _width, _height);
         }
         else if (_samples > 0 && ext->isMultisampleSupported())
         {
+            int samples = minimum(_samples, getMaxSamples(contextID, ext));
+
             ext->glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT,
-                _samples, _internalFormat, _width, _height);
+                samples, _internalFormat, _width, _height);
         }
         else
         {

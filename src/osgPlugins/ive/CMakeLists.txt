@@ -3,8 +3,8 @@
 
 SET(TARGET_SRC
     AlphaFunc.cpp
-    AnimationPath.cpp
     AnimationPathCallback.cpp
+    AnimationPath.cpp
     AutoTransform.cpp
     AzimElevationSector.cpp
     AzimSector.cpp
@@ -18,44 +18,50 @@ SET(TARGET_SRC
     ClipPlane.cpp
     ClusterCullingCallback.cpp
     ColorMask.cpp
+    CompositeLayer.cpp
     ConeSector.cpp
     ConvexPlanarOccluder.cpp
     ConvexPlanarPolygon.cpp
     CoordinateSystemNode.cpp
     CullFace.cpp
-    DOFTransform.cpp
     DataInputStream.cpp
     DataOutputStream.cpp
     Depth.cpp
     DirectionalSector.cpp
+    DOFTransform.cpp
+    Drawable.cpp
     DrawArrayLengths.cpp
     DrawArrays.cpp
     DrawElementsUByte.cpp
     DrawElementsUInt.cpp
     DrawElementsUShort.cpp
-    Drawable.cpp
     ElevationSector.cpp
     EllipsoidModel.cpp
     Exception.cpp
+    Fog.cpp
     FragmentProgram.cpp
     FrontFace.cpp
     Geode.cpp
     Geometry.cpp
     Group.cpp
+    HeightFieldLayer.cpp
     Image.cpp
+    ImageLayer.cpp
     Impostor.cpp
-    LOD.cpp
+    Layer.cpp
     Light.cpp
     LightModel.cpp
     LightPoint.cpp
     LightPointNode.cpp
     LightSource.cpp
     LineWidth.cpp
+    Locator.cpp
+    LOD.cpp
     Material.cpp
     MatrixTransform.cpp
+    Multisample.cpp
     MultiSwitch.cpp
     MultiTextureControl.cpp
-    Multisample.cpp
     Node.cpp
     Object.cpp
     OccluderNode.cpp
@@ -79,24 +85,19 @@ SET(TARGET_SRC
     StateSet.cpp
     Stencil.cpp
     Switch.cpp
-    TexEnv.cpp
+    TerrainTile.cpp
     TexEnvCombine.cpp
+    TexEnv.cpp
     TexGen.cpp
     TexGenNode.cpp
     TexMat.cpp
     Text.cpp
-    Texture.cpp
     Texture1D.cpp
     Texture2D.cpp
     Texture3D.cpp
+    Texture.cpp
     TextureCubeMap.cpp
     TextureRectangle.cpp
-    TerrainTile.cpp
-    Locator.cpp
-    Layer.cpp
-    HeightFieldLayer.cpp
-    ImageLayer.cpp
-    CompositeLayer.cpp
     Transform.cpp
     Uniform.cpp
     VertexProgram.cpp
@@ -105,8 +106,8 @@ SET(TARGET_SRC
 )
 SET(TARGET_H
     AlphaFunc.h
-    AnimationPath.h
     AnimationPathCallback.h
+    AnimationPath.h
     AutoTransform.h
     AzimElevationSector.h
     AzimSector.h
@@ -120,41 +121,47 @@ SET(TARGET_H
     ClipPlane.h
     ClusterCullingCallback.h
     ColorMask.h
+    CompositeLayer.h
     ConeSector.h
     ConvexPlanarOccluder.h
     ConvexPlanarPolygon.h
     CoordinateSystemNode.h
     CullFace.h
-    DOFTransform.h
     DataInputStream.h
     DataOutputStream.h
     DataTypeSize.h
     Depth.h
     DirectionalSector.h
+    DOFTransform.h
+    Drawable.h
     DrawArrayLengths.h
     DrawArrays.h
     DrawElementsUByte.h
     DrawElementsUInt.h
     DrawElementsUShort.h
-    Drawable.h
     ElevationSector.h
     EllipsoidModel.h
     Exception.h
+    Fog.h
     FragmentProgram.h
     FrontFace.h
     Geode.h
     Geometry.h
     Group.h
+    HeightFieldLayer.h
     Image.h
+    ImageLayer.h
     Impostor.h
     IveVersion.h
-    LOD.h
+    Layer.h
     Light.h
     LightModel.h
     LightPoint.h
     LightPointNode.h
     LightSource.h
     LineWidth.h
+    Locator.h
+    LOD.h
     Material.h
     MatrixTransform.h
     MultiSwitch.h
@@ -177,30 +184,25 @@ SET(TARGET_H
     Sequence.h
     ShadeModel.h
     Shader.h
-    Shape.h
     ShapeDrawable.h
+    Shape.h
     StateSet.h
     Stencil.h
     Switch.h
-    TexEnv.h
+    TerrainTile.h
     TexEnvCombine.h
+    TexEnv.h
     TexGen.h
     TexGenNode.h
     TexMat.h
     Text.h
-    Texture.h
     Texture1D.h
     Texture2D.h
     Texture3D.h
     TextureCubeMap.h
+    Texture.h
     TextureRectangle.h
-    TerrainTile.h
     Transform.h
-    Locator.h
-    Layer.h
-    HeightFieldLayer.h
-    ImageLayer.h
-    CompositeLayer.h
     Uniform.h
     VertexProgram.h
     Viewport.h

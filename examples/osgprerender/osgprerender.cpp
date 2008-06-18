@@ -200,7 +200,11 @@ struct MyCameraPostDrawCallback : public osg::Camera::DrawCallback
 };
 
 
-osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsigned tex_height, osg::Camera::RenderTargetImplementation renderImplementation, bool useImage, bool useTextureRectangle, bool useHDR)
+osg::Node* createPreRenderSubGraph(osg::Node* subgraph, 
+                                   unsigned tex_width, unsigned tex_height, 
+                                   osg::Camera::RenderTargetImplementation renderImplementation, 
+                                   bool useImage, bool useTextureRectangle, bool useHDR, 
+                                   unsigned int samples, unsigned int colorSamples)
 {
     if (!subgraph) return 0;
 
@@ -359,7 +363,8 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
             image->allocateImage(tex_width, tex_height, 1, GL_RGBA, GL_FLOAT);
 
             // attach the image so its copied on each frame.
-            camera->attach(osg::Camera::COLOR_BUFFER, image);
+            camera->attach(osg::Camera::COLOR_BUFFER, image,
+                           samples, colorSamples);
             
             camera->setPostDrawCallback(new MyCameraPostDrawCallback(image));
             
@@ -376,7 +381,9 @@ osg::Node* createPreRenderSubGraph(osg::Node* subgraph, unsigned tex_width, unsi
         else
         {
             // attach the texture and use it as the color buffer.
-            camera->attach(osg::Camera::COLOR_BUFFER, texture);
+            camera->attach(osg::Camera::COLOR_BUFFER, texture, 
+                           0, 0, false,
+                           samples, colorSamples);
         }
 
 
@@ -427,8 +434,11 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    unsigned tex_width = 1024;
-    unsigned tex_height = 512;
+    unsigned int tex_width = 1024;
+    unsigned int tex_height = 512;
+    unsigned int samples = 0;
+    unsigned int colorSamples = 0;
+    
     while (arguments.read("--width", tex_width)) {}
     while (arguments.read("--height", tex_height)) {}
 
@@ -439,6 +449,8 @@ int main( int argc, char **argv )
     while (arguments.read("--pbuffer-rtt")) { renderImplementation = osg::Camera::PIXEL_BUFFER_RTT; }
     while (arguments.read("--fb")) { renderImplementation = osg::Camera::FRAME_BUFFER; }
     while (arguments.read("--window")) { renderImplementation = osg::Camera::SEPERATE_WINDOW; }
+    while (arguments.read("--fbo-samples", samples)) {}
+    while (arguments.read("--color-samples", colorSamples)) {}
 
     bool useImage = false;
     while (arguments.read("--image")) { useImage = true; }
@@ -469,7 +481,7 @@ int main( int argc, char **argv )
     loadedModelTransform->setUpdateCallback(nc);
 
     osg::Group* rootNode = new osg::Group();
-    rootNode->addChild(createPreRenderSubGraph(loadedModelTransform,tex_width,tex_height, renderImplementation, useImage, useTextureRectangle, useHDR));
+    rootNode->addChild(createPreRenderSubGraph(loadedModelTransform,tex_width,tex_height, renderImplementation, useImage, useTextureRectangle, useHDR, samples, colorSamples));
 
     // add model to the viewer.
     viewer.setSceneData( rootNode );

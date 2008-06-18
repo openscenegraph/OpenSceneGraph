@@ -135,7 +135,7 @@ const char* Fog_getModeStr(Fog::Mode mode)
 {
     switch(mode)
     {
-        case(Fog::LINEAR): return "NEVER";
+        case(Fog::LINEAR): return "LINEAR";
         case(Fog::EXP): return "EXP";
         case(Fog::EXP2): return "EXP2";
     }

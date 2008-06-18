@@ -51,6 +51,7 @@
 #include "Image.h"
 #include "PointSprite.h"
 #include "Multisample.h"
+#include "Fog.h"
 
 
 #include "Group.h"
@@ -1181,6 +1182,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
         attribute = new osg::Stencil();
         ((ive::Stencil*)(attribute))->read(this);
     }
+    else if(attributeID == IVEFOG){
+        attribute = new osg::Fog();
+        ((ive::Fog*)(attribute))->read(this);
+    }    
     else{
         throw Exception("Unknown StateAttribute in StateSet::read()");
     }

@@ -18,14 +18,19 @@
 
 #include <osg/CullFace>
 
-osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Box(openvrml::vrml97_node::box_node* vrml_box)
+osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Box(openvrml::vrml97_node::box_node* vrml_box) const
 {
-    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
-
     const openvrml::vec3f& size = static_cast<const openvrml::sfvec3f&>(vrml_box->field("size")).value;
                     
     osg::Vec3 halfSize(size[0] * 0.5f, size[1] * 0.5f, size[2] * 0.5f);  
-                    
+
+    BoxLibrary::const_iterator it = m_boxLibrary.find(halfSize);
+    if (it != m_boxLibrary.end())
+    {
+        return (*it).second.get();
+    } 
+  
+    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
     osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
     osg::ref_ptr<osg::Vec2Array> osg_texcoords = new osg::Vec2Array(); 
     osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();  
@@ -88,16 +93,23 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Box(openvrml::vrml97
 
     osg_geom->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
 
+    m_boxLibrary[halfSize] = osg_geom;
+
     return osg_geom.get();
 }
 
 
-osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Sphere(openvrml::vrml97_node::sphere_node* vrml_sphere)
+osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Sphere(openvrml::vrml97_node::sphere_node* vrml_sphere) const
 {
-    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
-    
     float radius = static_cast<const openvrml::sffloat&>(vrml_sphere->field("radius")).value;
-    
+
+    SphereLibrary::const_iterator it = m_sphereLibrary.find(radius);
+    if (it != m_sphereLibrary.end())
+    {
+        return (*it).second.get();
+    }
+
+    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
     osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
     osg::ref_ptr<osg::Vec2Array> osg_texcoords = new osg::Vec2Array(); 
     osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();
@@ -160,17 +172,28 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Sphere(openvrml::vrm
 
     osg_geom->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
 
+    m_sphereLibrary[radius] = osg_geom;
+
     return osg_geom.get();
 }
 
 
-osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cone(openvrml::vrml97_node::cone_node* vrml_cone)
+osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cone(openvrml::vrml97_node::cone_node* vrml_cone) const
 {
-    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
-
     float height = static_cast<const openvrml::sffloat&>(vrml_cone->field("height")).value;
     float radius = static_cast<const openvrml::sffloat&>(vrml_cone->field("bottomRadius")).value;
+    bool bottom = static_cast<const openvrml::sfbool&>(vrml_cone->field("bottom")).value;
+    bool side = static_cast<const openvrml::sfbool&>(vrml_cone->field("side")).value; 
+
+    QuadricKey key(height, radius, bottom, side, false);
+
+    ConeLibrary::const_iterator it = m_coneLibrary.find(key);
+    if (it != m_coneLibrary.end())
+    {
+        return (*it).second.get();
+    }
                  
+    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
     osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
     osg::ref_ptr<osg::Vec2Array> osg_texcoords = new osg::Vec2Array(); 
     osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();
@@ -182,7 +205,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cone(openvrml::vrml9
     float topY = height * 0.5f;
     float bottomY = height * -0.5f;
                    
-    if (static_cast<const openvrml::sfbool&>(vrml_cone->field("side")).value)
+    if (side)
     {
         osg::ref_ptr<osg::DrawArrays> side = new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP);
                             
@@ -226,7 +249,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cone(openvrml::vrml9
         osg_geom->addPrimitiveSet(side.get()); 
     }
 
-    if (static_cast<const openvrml::sfbool&>(vrml_cone->field("bottom")).value)
+    if (bottom)
     {
         osg::ref_ptr<osg::DrawArrays> bottom = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN);
                             
@@ -263,16 +286,28 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cone(openvrml::vrml9
 
     osg_geom->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
 
+    m_coneLibrary[key] = osg_geom;
+
     return osg_geom.get();
 }
 
-osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cylinder(openvrml::vrml97_node::cylinder_node* vrml_cylinder)
+osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cylinder(openvrml::vrml97_node::cylinder_node* vrml_cylinder) const
 {     
-    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
-
     float height = static_cast<const openvrml::sffloat&>(vrml_cylinder->field("height")).value;
     float radius = static_cast<const openvrml::sffloat&>(vrml_cylinder->field("radius")).value;
-                  
+    bool bottom = static_cast<const openvrml::sfbool&>(vrml_cylinder->field("bottom")).value;
+    bool side = static_cast<const openvrml::sfbool&>(vrml_cylinder->field("side")).value;
+    bool top = static_cast<const openvrml::sfbool&>(vrml_cylinder->field("top")).value;
+
+    QuadricKey key(height, radius, bottom, side, top);
+
+    CylinderLibrary::const_iterator it = m_cylinderLibrary.find(key);
+    if (it != m_cylinderLibrary.end())
+    {
+        return (*it).second.get();
+    }
+
+    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();          
     osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
     osg::ref_ptr<osg::Vec2Array> osg_texcoords = new osg::Vec2Array(); 
     osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array();
@@ -285,7 +320,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cylinder(openvrml::v
     float topY = height * 0.5f;
     float bottomY = height * -0.5f;                  
 
-    if (static_cast<const openvrml::sfbool&>(vrml_cylinder->field("side")).value)
+    if (side)
     {
         osg::ref_ptr<osg::DrawArrays> side = new osg::DrawArrays(osg::PrimitiveSet::QUAD_STRIP);
                         
@@ -326,7 +361,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cylinder(openvrml::v
         osg_geom->addPrimitiveSet(side.get());
     }
                      
-    if (static_cast<const openvrml::sfbool&>(vrml_cylinder->field("bottom")).value)
+    if (bottom)
     {
         osg::ref_ptr<osg::DrawArrays> bottom = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN);
                             
@@ -355,7 +390,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cylinder(openvrml::v
         osg_geom->addPrimitiveSet(bottom.get());
     }
 
-    if (static_cast<const openvrml::sfbool&>(vrml_cylinder->field("top")).value)
+    if (top)
     {
         osg::ref_ptr<osg::DrawArrays> top = new osg::DrawArrays(osg::PrimitiveSet::TRIANGLE_FAN);
                             
@@ -390,6 +425,8 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Cylinder(openvrml::v
     osg_geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
 
     osg_geom->getOrCreateStateSet()->setAttributeAndModes(new osg::CullFace(osg::CullFace::BACK));
+
+    m_cylinderLibrary[key] = osg_geom;
 
     return osg_geom.get();
 }

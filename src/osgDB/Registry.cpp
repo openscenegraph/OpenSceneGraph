@@ -236,6 +236,8 @@ Registry::Registry()
     #if defined(USE_QUICKTIME)
         addFileExtensionAlias("mov", "qt");
         addFileExtensionAlias("live", "qt");
+        addFileExtensionAlias("mpg", "qt");
+        addFileExtensionAlias("avi", "qt");
     #endif
 #endif
 

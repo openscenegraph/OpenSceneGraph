@@ -188,7 +188,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                     if (location>=0)
                     {
                         if ((unsigned int)location>=_lastAppliedUniformList.size()) _lastAppliedUniformList.resize(location+1);
-                        const Uniform* lastAppliedUniform = _lastAppliedUniformList[location].first;
+                        const Uniform* lastAppliedUniform = _lastAppliedUniformList[location].first.get();
                         if (lastAppliedUniform != &uniform)
                         {
                             // new attribute
@@ -241,7 +241,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 ActiveVarInfoMap _uniformInfoMap;
                 ActiveVarInfoMap _attribInfoMap;
                 
-                typedef std::pair<const osg::Uniform*, unsigned int> UniformModifiedCountPair;
+                typedef std::pair<osg::ref_ptr<const osg::Uniform>, unsigned int> UniformModifiedCountPair;
                 typedef std::vector<UniformModifiedCountPair> LastAppliedUniformList;
                 mutable LastAppliedUniformList _lastAppliedUniformList;
       

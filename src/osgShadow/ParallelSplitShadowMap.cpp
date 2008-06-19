@@ -53,83 +53,101 @@ using namespace osgShadow;
 #define TEXTURE_RESOLUTION  1024
 
 
-#define LINEAR_SPLIT false
-
-//#define SMOOTH_SHADOW   //experimental
-
-#define ZNEAR_MIN_FROM_LIGHT_SOURCE 2.0
+ 
+ 
+#define ZNEAR_MIN_FROM_LIGHT_SOURCE 5.0 
 #define MOVE_VIRTUAL_CAMERA_BEHIND_REAL_CAMERA_FACTOR 0.0
 
 //#define SHOW_SHADOW_TEXTURE_DEBUG    // DEPTH instead of color for debug information texture display in a rectangle
-
-
 //#define SHADOW_TEXTURE_DEBUG         // COLOR instead of DEPTH
 
 #ifndef SHADOW_TEXTURE_DEBUG
     #define SHADOW_TEXTURE_GLSL
 #endif
  
-
-std::string ParallelSplitShadowMap::generateGLSL_FragmentShader_BaseTex(bool debug, unsigned int splitCount) {
+//////////////////////////////////////////////////////////////////////////
+// FragmentShaderGenerator
+std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_FragmentShader_BaseTex(
+    bool debug, 
+    unsigned int splitCount,
+    double textureRes,
+    bool filtered, 
+    unsigned int nbrSplits,
+    unsigned int textureOffset
+) {
     std::stringstream sstr;
   
     /// base texture
     sstr << "uniform sampler2D baseTexture; "      << std::endl;
-    #ifdef SMOOTH_SHADOW
-        sstr << "uniform sampler2D randomTexture; "  << std::endl;
-    #endif
     sstr << "uniform float enableBaseTexture; "     << std::endl;
     sstr << "uniform vec2 ambientBias;"    << std::endl;
 
-    for (unsigned int i=0;i<_number_of_splits;i++)    {
+    for (unsigned int i=0;i<nbrSplits;i++)    {
         sstr << "uniform sampler2DShadow shadowTexture"    <<    i    <<"; "    << std::endl;
         sstr << "uniform float zShadow"                    <<    i    <<"; "    << std::endl;
     }
+
+
+ 
 
     sstr << "void main(void)"    << std::endl;
     sstr << "{"    << std::endl;
 
 
+    /// select the shadow map : split
+    sstr << "float testZ = gl_FragCoord.z*2.0-1.0;" <<std::endl;
+    sstr << "float map0 = step(testZ, zShadow0);"<< std::endl;//DEBUG
+     for (unsigned int i=1;i<nbrSplits;i++)    {
+        sstr << "float map" << i << "  = step(zShadow"<<i-1<<",testZ)*step(testZ, zShadow"<<i<<");"<< std::endl;//DEBUG
+     }
+
+    if (filtered) { 
+            sstr << "          float fTexelSize="<< (sqrt(2.0) / textureRes ) <<";" << std::endl;
+    }
+    for (unsigned int i=0;i<nbrSplits;i++)    {
+        if (!filtered) { 
+            sstr << "    float shadow"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]).r;"   << std::endl;
+        } else {
+            
+            
+            // filter the shadow (look up)
+            sstr << "    float shadowOrg"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]).r;"   << std::endl;
+            sstr << "    float shadow0"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(-fTexelSize,-fTexelSize,0,0) ).r;"   << std::endl;
+            sstr << "    float shadow1"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(fTexelSize,-fTexelSize,0,0)).r;"   << std::endl;
+            sstr << "    float shadow2"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(fTexelSize,fTexelSize,0,0) ).r;"   << std::endl;
+            sstr << "    float shadow3"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(-fTexelSize,fTexelSize,0,0) ).r;"   << std::endl;
+
+            sstr << "    float shadow02"    <<    i    <<" = (shadow0"    <<    i    <<"+shadow1"    <<    i    <<")*0.5;"<< std::endl;
+            sstr << "    float shadow13"    <<    i    <<" = (shadow1"    <<    i    <<"+shadow3"    <<    i    <<")*0.5;"<< std::endl;
+            sstr << "    float shadowSoft"    <<    i    <<" = (shadow02"    <<    i    <<"+shadow13"    <<    i    <<")*0.5;"<< std::endl;
+            sstr << "    float shadow"    <<    i    <<" = (shadowSoft"    <<    i    <<"+shadowOrg"    <<    i    <<")*0.5;"<< std::endl;
+
+        }
+        sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artefacts
+    }
  
-    if ( debug ) {
-        sstr << "    vec4 coord   = vec4(0,0,0,1);"<<std::endl;
-    } else {
-        sstr << "    vec4 coord   = gl_FragCoord;"<<std::endl;
+        
+    sstr << "    float term0 = (1.0-shadow0)*map0; "    << std::endl;
+    for (unsigned int i=1;i<nbrSplits;i++)    {
+        sstr << "    float term" << i << " = map"<< i << "*(1.0-shadow"<<i<<");"<< std::endl;   
     }
 
-    #ifdef SMOOTH_SHADOW
-        for (unsigned int i=0;i<_number_of_splits;i++)    {
-            sstr << "    float shadow"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+_textureUnitOffset)    <<"]).r;"    << std::endl;
-            sstr << "        vec4 random"    <<    i    <<" = "<<(1.15/(double)_resolution)<<"*coord.z*texture2D(randomTexture,gl_TexCoord["    <<    (i+_textureUnitOffset)    <<"].st); "    << std::endl;
-            sstr << "        float shadow1"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+_textureUnitOffset)    <<"]+random"    <<    i    <<".r*vec4(-1,-1,0,0)).r;"    << std::endl;
-            sstr << "        float shadow2"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+_textureUnitOffset)    <<"]+random"    <<    i    <<".g*vec4(1,-1,0,0)).r;"    << std::endl;
-            sstr << "        float shadow3"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+_textureUnitOffset)    <<"]+random"    <<    i    <<".b*vec4(1,1,0,0)).r;"    << std::endl;
-            sstr << "        float shadow4"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+_textureUnitOffset)    <<"]+random"    <<    i    <<".a*vec4(-1,1,0,0)).r;"    << std::endl;
-            sstr << "        shadow"    <<    i    <<" = shadow"    <<    i    <<" + shadow1"    <<    i    <<" + shadow2"    <<    i    <<" + shadow3"    <<    i    <<" + shadow4"    <<    i    <<";"    << std::endl;
-            sstr << "        shadow"    <<    i    <<" = shadow"    <<    i    <<"*0.2;"    << std::endl;
-        }
-    #else
-        for (unsigned int i=0;i<_number_of_splits;i++)    {
-            sstr << "    float shadow"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+_textureUnitOffset)    <<"]).r;"    << std::endl;
-        }
-    #endif
 
-    sstr << "    float term0 = (1.0-shadow0); "    << std::endl;
-    for (unsigned int i=1;i<_number_of_splits;i++)    {
-        sstr << "    float term" << i << " = (1.0-shadow"<<i<<");"<< std::endl;   
-    }
 
-    // v => SHADOW filter; "    << std::endl;
+    /// build shadow factor value v
     sstr << "    float v = clamp(";
-    for (unsigned int i=0;i<_number_of_splits;i++)    {
-        sstr << "term"    <<    i;
-        if ( i+1 < _number_of_splits ){
+    for (unsigned int i=0;i<nbrSplits;i++)    {
+         sstr << "term"    <<    i;
+        if ( i+1 < nbrSplits ){
             sstr << "+";
         }
     }
     sstr << ",0.0,1.0);"    << std::endl;
 
-    if ( _debug_color_in_GLSL ) {
+
+
+
+    if ( debug ) {
 
 
         sstr << "    float c0=0.0;" << std::endl;
@@ -138,16 +156,33 @@ std::string ParallelSplitShadowMap::generateGLSL_FragmentShader_BaseTex(bool deb
 
         sstr << "    float sumTerm=0.0;" << std::endl;
 
-        for (unsigned int i=0;i<_number_of_splits;i++)    {
+        for (unsigned int i=0;i<nbrSplits;i++)    {
             if ( i < 3 ) sstr << "    c" << i << "=term" << i << ";" << std::endl;
             sstr << "    sumTerm=sumTerm+term" << i << ";" << std::endl;
         }
 
         sstr << "    vec4 color    = gl_Color*( 1.0 - sumTerm ) + (sumTerm)* gl_Color*vec4(c0,(1.0-c0)*c1,(1.0-c0)*(1.0-c1)*c2,1.0); "    << std::endl;
 
+        
+        switch(nbrSplits){
+            case 1: sstr << "    color    =  color*0.75 + vec4(map0,0,0,1.0)*0.25; "    << std::endl;break;
+            case 2: sstr << "    color    =  color*0.75 + vec4(map0,map1,0,1.0)*0.25; "    << std::endl;break;
+            case 3: sstr << "    color    =  color*0.75 + vec4(map0,map1,map2,1.0)*0.25; "    << std::endl; break;
+            case 4: sstr << "    color    =  color*0.75 + vec4(map0+map3,map1+map3,map2,1.0)*0.25; "    << std::endl; break;
+            case 5: sstr << "    color    =  color*0.75 + vec4(map0+map3,map1+map3+map4,map2+map4,1.0)*0.25; "    << std::endl;break;
+            case 6: sstr << "    color    =  color*0.75 + vec4(map0+map3+map5,map1+map3+map4,map2+map4+map5,1.0)*0.25; "    << std::endl;    break;
+            default: break;
+        }
+        
+
     } else {
         sstr << "    vec4 color    = gl_Color; "<< std::endl;
     }
+
+ 
+
+
+
 
 
     sstr << "    vec4 texcolor = texture2D(baseTexture,gl_TexCoord[0].st); "    << std::endl;
@@ -155,18 +190,20 @@ std::string ParallelSplitShadowMap::generateGLSL_FragmentShader_BaseTex(bool deb
 
     sstr << "    float enableBaseTextureFilter = enableBaseTexture*(1.0 - step(texcolor.x+texcolor.y+texcolor.z+texcolor.a,0.0)); "    << std::endl;                                                //18
     sstr << "    vec4 colorTex = color*texcolor;" << std::endl;
-    sstr << "    gl_FragColor = ((color*(ambientBias.x+1.0)*(1.0-enableBaseTextureFilter)) + colorTex*(1.0+ambientBias.x)*enableBaseTextureFilter)*(1.0-ambientBias.y*v); "<< std::endl;
+    sstr << "    gl_FragColor.rgb = (((color*(ambientBias.x+1.0)*(1.0-enableBaseTextureFilter)) + colorTex*(1.0+ambientBias.x)*enableBaseTextureFilter)*(1.0-ambientBias.y*v)).rgb; "<< std::endl;
+    sstr << "    gl_FragColor.a = (color*(1.0-enableBaseTextureFilter) + colorTex*enableBaseTextureFilter).a; "<< std::endl;
 
 
+    
     sstr << "}"<< std::endl;
 
-
-    if ( splitCount == _number_of_splits-1 )    osg::notify(osg::INFO) << std::endl << "ParallelSplitShadowMap: GLSL shader code:" << std::endl << "-------------------------------------------------------------------"  << std::endl << sstr.str() << std::endl;
+    //std::cout << sstr.str() << std::endl;
+    if ( splitCount == nbrSplits-1 )    osg::notify(osg::INFO) << std::endl << "ParallelSplitShadowMap: GLSL shader code:" << std::endl << "-------------------------------------------------------------------"  << std::endl << sstr.str() << std::endl;
 
     return sstr.str();
 }
 
-
+//////////////////////////////////////////////////////////////////////////
 // clamp variables of any type
 template<class Type> inline Type Clamp(Type A, Type Min, Type Max) {
     if(A<Min) return Min;
@@ -177,25 +214,27 @@ template<class Type> inline Type Clamp(Type A, Type Min, Type Max) {
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
 
-
+//////////////////////////////////////////////////////////////////////////
 ParallelSplitShadowMap::ParallelSplitShadowMap(osg::Geode** gr, int icountplanes) :
-_textureUnitOffset(1),
-_debug_color_in_GLSL(false),
-_user_polgyonOffset_set(false),
-_resolution(TEXTURE_RESOLUTION),
-_isSetMaxFarDistance(false),
-_split_min_near_dist(ZNEAR_MIN_FROM_LIGHT_SOURCE),
-_linearSplit(LINEAR_SPLIT),
-_move_vcam_behind_rcam_factor(MOVE_VIRTUAL_CAMERA_BEHIND_REAL_CAMERA_FACTOR),
-_userLight(NULL),
-_ambientBias(0.1,0.3),
-_ambientBiasUniform(NULL)
+    _textureUnitOffset(1),
+    _debug_color_in_GLSL(false),
+    _user_polgyonOffset_set(false),
+    _resolution(TEXTURE_RESOLUTION),
+    _isSetMaxFarDistance(false),
+    _split_min_near_dist(ZNEAR_MIN_FROM_LIGHT_SOURCE),
+    _move_vcam_behind_rcam_factor(MOVE_VIRTUAL_CAMERA_BEHIND_REAL_CAMERA_FACTOR),
+    _userLight(NULL),
+    _ambientBias(0.1,0.3),
+    _ambientBiasUniform(NULL),
+    _GLSL_shadow_filtered(true)
 {
     _displayTexturesGroupingNode = gr;
     _number_of_splits = icountplanes;
 
-    _polgyonOffset.set(0.01f,0.01f);
-}
+    _polgyonOffset.set(1.0f,1.0f);
+    setFragmentShaderGenerator(new FragmentShaderGenerator());
+    setSplitCalculationMode(SPLIT_EXP);
+ }
 
 ParallelSplitShadowMap::ParallelSplitShadowMap(const ParallelSplitShadowMap& copy, const osg::CopyOp& copyop):
 ShadowTechnique(copy,copyop),
@@ -205,13 +244,15 @@ _user_polgyonOffset_set(copy._user_polgyonOffset_set),
 _resolution(copy._resolution),
 _isSetMaxFarDistance(copy._isSetMaxFarDistance),
 _split_min_near_dist(copy._split_min_near_dist),
-_linearSplit(copy._linearSplit),
+_SplitCalcMode(copy._SplitCalcMode),
 _number_of_splits(copy._number_of_splits),
 _polgyonOffset(copy._polgyonOffset),
 _setMaxFarDistance(copy._setMaxFarDistance),
 _move_vcam_behind_rcam_factor(copy._move_vcam_behind_rcam_factor),
 _userLight(copy._userLight),
-_ambientBias(copy._ambientBias)
+_ambientBias(copy._ambientBias),
+_GLSL_shadow_filtered(copy._GLSL_shadow_filtered),
+_FragmentShaderGenerator(copy._FragmentShaderGenerator)
 {
 }
 
@@ -303,24 +344,25 @@ void ParallelSplitShadowMap::init(){
             osg::StateSet* stateset = pssmShadowSplitTexture._camera->getOrCreateStateSet();
 
 
-            pssmShadowSplitTexture._depth = new osg::Depth;
-            stateset->setAttribute(pssmShadowSplitTexture._depth.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-
+ 
             //////////////////////////////////////////////////////////////////////////
             float factor = _polgyonOffset.x();
             float units  = _polgyonOffset.y();
-             osg::ref_ptr<osg::PolygonOffset> polygon_offset = new osg::PolygonOffset;
-             polygon_offset->setFactor(factor);
+            osg::ref_ptr<osg::PolygonOffset> polygon_offset = new osg::PolygonOffset;
+            polygon_offset->setFactor(factor);
             polygon_offset->setUnits(units);
             stateset->setAttribute(polygon_offset.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
             stateset->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
 
 
             //////////////////////////////////////////////////////////////////////////
-            osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
-            cull_face->setMode(osg::CullFace::FRONT);
-            stateset->setAttribute(cull_face.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-            stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+            if ( ! _GLSL_shadow_filtered ) { 
+                // if not glsl filtering enabled then we should force front face culling to reduce the number of shadow artefacts.
+                osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
+                cull_face->setMode(osg::CullFace::FRONT);
+                stateset->setAttribute(cull_face.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+                stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+            }
 
             //////////////////////////////////////////////////////////////////////////
             osg::ShadeModel* shademodel = dynamic_cast<osg::ShadeModel*>(stateset->getAttribute(osg::StateAttribute::SHADEMODEL));
@@ -354,7 +396,15 @@ void ParallelSplitShadowMap::init(){
 
             //////////////////////////////////////////////////////////////////////////
             // GLSL PROGRAMS
-             osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, generateGLSL_FragmentShader_BaseTex(_displayTexturesGroupingNode!=NULL,iCameras).c_str());
+             osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, 
+                     _FragmentShaderGenerator->generateGLSL_FragmentShader_BaseTex(
+                         _debug_color_in_GLSL,
+                         iCameras,
+                         pssmShadowSplitTexture._resolution,
+                         _GLSL_shadow_filtered,
+                         _number_of_splits,
+                         _textureUnitOffset
+                 ).c_str());
             program->addShader(fragment_shader);
 
           
@@ -422,43 +472,6 @@ void ParallelSplitShadowMap::init(){
                 pssmShadowSplitTexture._stateset->setTextureMode(textLoop,GL_TEXTURE_2D,osg::StateAttribute::ON);
                 pssmShadowSplitTexture._stateset->setTextureMode(textLoop,GL_TEXTURE_3D,osg::StateAttribute::OFF);
             }
-
-
-
-            #ifdef SMOOTH_SHADOW
-            {
-                // texture for randomTexture (for smoothing shadow edges)
-                osg::Image* image = new osg::Image;
-                // allocate the image data, noPixels x noPixels x 1 with 4 rgba floats - equivalent to a Vec4!
-                int noPixels = 128;
-                image->allocateImage(noPixels,noPixels,1,GL_RGBA,GL_FLOAT);
-                image->setInternalTextureFormat(GL_RGBA);
-                // fill in the image data.
-                osg::Vec4* dataPtr = (osg::Vec4*)image->data();
-                for (int s=0;s<noPixels;s++) {
-                    for (int t=0;t<noPixels;t++) {
-                        float randr=(rand()/(RAND_MAX+1.0));
-                        float randg=(rand()/(RAND_MAX+1.0));
-                        float randb=(rand()/(RAND_MAX+1.0));
-                        float randa=(rand()/(RAND_MAX+1.0));
-                        (*dataPtr).set(randr,randg,randb,randa);
-                        dataPtr++;
-                    }
-                }
-                // make fake texture
-                osg::Texture2D* texture = new osg::Texture2D;
-                texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
-                texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
-                texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-                texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-                texture->setImage(image);
-                // add fake texture
-                pssmShadowSplitTexture._stateset->setTextureAttribute(_textureUnitOffset+_number_of_splits,texture,osg::StateAttribute::ON);
-                pssmShadowSplitTexture._stateset->setTextureMode(_textureUnitOffset+_number_of_splits,GL_TEXTURE_1D,osg::StateAttribute::OFF);
-                pssmShadowSplitTexture._stateset->setTextureMode(_textureUnitOffset+_number_of_splits,GL_TEXTURE_2D,osg::StateAttribute::ON);
-                pssmShadowSplitTexture._stateset->setTextureMode(_textureUnitOffset+_number_of_splits,GL_TEXTURE_3D,osg::StateAttribute::OFF);
-            }
-            #endif
         #endif
 
 
@@ -591,7 +604,7 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
         // take the user light as light source
         lightpos = _userLight->getPosition();
         lightDirection = _userLight->getDirection();
-        selectLight = _userLight;
+        selectLight = _userLight.get();
     }    
 
     if (selectLight)
@@ -699,14 +712,14 @@ void ParallelSplitShadowMap::cleanSceneGraph(){
 //
 //
 //unit box representing frustum in clip space
-const osg::Vec3f const_pointFarBR(1.0f, -1.0f, 1.0f);
-const osg::Vec3f const_pointNearBR(1.0f, -1.0f, -1.0f);
-const osg::Vec3f const_pointNearTR(1.0f, 1.0f, -1.0f);
 const osg::Vec3f const_pointFarTR(1.0f, 1.0f, 1.0f);
+const osg::Vec3f const_pointFarBR(1.0f, -1.0f, 1.0f);
 const osg::Vec3f const_pointFarTL(-1.0f, 1.0f, 1.0f);
 const osg::Vec3f const_pointFarBL(-1.0f, -1.0f, 1.0f);
-const osg::Vec3f const_pointNearBL(-1.0f, -1.0f, -1.0f);
+const osg::Vec3f const_pointNearTR(1.0f, 1.0f, -1.0f);
+const osg::Vec3f const_pointNearBR(1.0f, -1.0f, -1.0f);
 const osg::Vec3f const_pointNearTL(-1.0f, 1.0f, -1.0f);
+const osg::Vec3f const_pointNearBL(-1.0f, -1.0f, -1.0f);
 //////////////////////////////////////////////////////////////////////////
 
 
@@ -731,7 +744,7 @@ void ParallelSplitShadowMap::calculateFrustumCorners(
         osg::Vec3d camEye,camCenter,camUp;
         pssmShadowSplitTexture._cameraView.getLookAt(camEye,camCenter,camUp);
         osg::Vec3d viewDir = camCenter - camEye;
-        viewDir.normalize();
+        //viewDir.normalize(); //we can assume that viewDir is still normalized in the viewMatrix
         camEye = camEye  - viewDir * _move_vcam_behind_rcam_factor;
         camFar += _move_vcam_behind_rcam_factor * viewDir.length();
         viewMat.makeLookAt(camEye,camCenter,camUp);
@@ -743,7 +756,7 @@ void ParallelSplitShadowMap::calculateFrustumCorners(
         double maxFar = camFar;
         double minNear = camNear;
         double camNearFar_Dist = maxFar - camNear;
-        if ( _linearSplit ) {
+        if ( _SplitCalcMode == SPLIT_LINEAR ) {
             camFar  = camNear + (camNearFar_Dist) * ((double)(pssmShadowSplitTexture._splitID+1))/((double)(_number_of_splits));
             camNear = camNear + (camNearFar_Dist) * ((double)(pssmShadowSplitTexture._splitID))/((double)(_number_of_splits));
         } else {
@@ -768,26 +781,20 @@ void ParallelSplitShadowMap::calculateFrustumCorners(
 
             delete[] pSplitDistances;
         }
-
-        //pssmShadowSplitTexture._depth->setRange((camNear - minNear) / camNearFar_Dist,(camFar  - minNear)/ camNearFar_Dist);
-        pssmShadowSplitTexture._depth->setRange(0.0,1.0);
-        pssmShadowSplitTexture._depth->setFunction(osg::Depth::LEQUAL);
-
-        #ifdef SHADOW_TEXTURE_GLSL
-            float fVal = (float)((camFar-minNear)/camNearFar_Dist);
-            //std::cout << pssmShadowSplitTexture._farDistanceSplit->getName() << " " << fVal <<  std::endl;
-            pssmShadowSplitTexture._farDistanceSplit->set(fVal);
-        #endif
+ 
+         
+         pssmShadowSplitTexture._split_far = camFar;
+ 
+ 
 
         //////////////////////////////////////////////////////////////////////////
         /// TRANSFORM frustum corners (Optimized for Orthogonal)
-        osg::Matrixf invProjViewMat;
 
 
         osg::Matrixf projMat;
         projMat.makePerspective(fovy,aspectRatio,camNear,camFar);
-
         osg::Matrixf projViewMat(viewMat*projMat);
+        osg::Matrixf invProjViewMat;
         invProjViewMat.invert(projViewMat);
 
         //transform frustum vertices to world space
@@ -798,8 +805,7 @@ void ParallelSplitShadowMap::calculateFrustumCorners(
         frustumCorners[4] = const_pointFarTL * invProjViewMat;
         frustumCorners[5] = const_pointFarBL * invProjViewMat;
         frustumCorners[6] = const_pointNearBL* invProjViewMat;
-        frustumCorners[7] = const_pointNearTL* invProjViewMat;
-
+        frustumCorners[7] = const_pointNearTL* invProjViewMat;    
 
         //std::cout << "camFar : "<<pssmShadowSplitTexture._splitID << " / " << camNear << "," << camFar << std::endl;
 }
@@ -813,17 +819,18 @@ void ParallelSplitShadowMap::calculateLightInitalPosition(PSSMShadowSplitTexture
         pssmShadowSplitTexture._frustumSplitCenter +=frustumCorners[i];
     }
     pssmShadowSplitTexture._frustumSplitCenter /= 8.0;
-
-    //
+ 
+    
+     //
     // To avoid edge problems, scale the frustum so
     // that it's at least a few pixels larger
     //
     for(int i=0;i<8;i++)
     {
         // scale by adding offset from center
-        frustumCorners[i]+=(frustumCorners[i]-pssmShadowSplitTexture._frustumSplitCenter)*(0.25);
+        frustumCorners[i]+=(frustumCorners[i]-pssmShadowSplitTexture._frustumSplitCenter)*(0.75);
     }
-
+    
 }
 
 void ParallelSplitShadowMap::calculateLightNearFarFormFrustum(
@@ -843,10 +850,7 @@ void ParallelSplitShadowMap::calculateLightNearFarFormFrustum(
         // update camera position and look at center
         pssmShadowSplitTexture._lightCameraSource = pssmShadowSplitTexture._frustumSplitCenter - pssmShadowSplitTexture._lightDirection*(zFar+_split_min_near_dist);
         pssmShadowSplitTexture._lightCameraTarget = pssmShadowSplitTexture._frustumSplitCenter + pssmShadowSplitTexture._lightDirection*(zFar);
-        // update near - far plane
-        pssmShadowSplitTexture._lightNear = 0.01;
-        pssmShadowSplitTexture._lightFar  = zFar*2.0 + _split_min_near_dist;
-
+ 
         // calculate [zNear,zFar] 
         zFar = (-DBL_MAX);
         double zNear(DBL_MAX);
@@ -856,7 +860,7 @@ void ParallelSplitShadowMap::calculateLightNearFarFormFrustum(
             if ( zNear > dist_z_from_light ) zNear  = dist_z_from_light;
         } 
         // update near - far plane
-        pssmShadowSplitTexture._lightNear = zNear - _split_min_near_dist + 0.01;
+        pssmShadowSplitTexture._lightNear = max(zNear - _split_min_near_dist - 0.01,0.01);
         pssmShadowSplitTexture._lightFar  = zFar;
 }
 
@@ -870,42 +874,52 @@ void ParallelSplitShadowMap::calculateLightViewProjectionFormFrustum(PSSMShadowS
     // calculate the camera's coordinate system
     osg::Vec3d camEye,camCenter,camUp;
     pssmShadowSplitTexture._cameraView.getLookAt(camEye,camCenter,camUp);
+    osg::Vec3d viewDir(camCenter-camEye); 
+    osg::Vec3d camRight(camUp^viewDir);
 
-    osg::Vec3d viewDir(camCenter-camEye);
+    // we force to have normalized vectors (camera's view)
+    camUp.normalize();
     viewDir.normalize();
-
-    osg::Vec3d camLeft(camUp ^ viewDir);
-    camLeft.normalize();
-
-    osg::Vec3d top(pssmShadowSplitTexture._lightDirection ^ camLeft);
-    if(top.length2() < 0.5) top = pssmShadowSplitTexture._lightDirection ^ camUp;
-
-    osg::Vec3d left(top ^ pssmShadowSplitTexture._lightDirection);
-
-
-    // calculate the camera's frustum left,right,bottom,top parameters
-    double maxLeft(-DBL_MAX),maxTop(-DBL_MAX);
-    double minLeft(DBL_MAX),minTop(DBL_MAX);
+    camRight.normalize();
+ 
+    // use quaternion -> numerical more robust
+    osg::Quat qRot;
+    qRot.makeRotate(viewDir,pssmShadowSplitTexture._lightDirection);
+     osg::Vec3d top =  qRot * camUp;
+    osg::Vec3d right = qRot * camRight;
+  
+    // calculate the camera's frustum right,right,bottom,top parameters
+    double maxRight(-DBL_MAX),maxTop(-DBL_MAX);
+    double minRight(DBL_MAX),minTop(DBL_MAX);
 
     for(int i(0); i < 8; i++)
-    {
+    { 
+ 
         osg::Vec3d diffCorner(pssmShadowSplitTexture._lightCameraSource - frustumCorners[i]);
-        double lLeft(diffCorner*left);  
+         double lright(diffCorner*right);  
         double lTop(diffCorner*top); 
 
-        if ( lLeft > maxLeft ) maxLeft  =  lLeft;
+        if ( lright > maxRight ) maxRight  =  lright;
         if ( lTop  > maxTop  ) maxTop   =  lTop;
 
-        if ( lLeft < minLeft ) minLeft  =  lLeft;
+        if ( lright < minRight ) minRight  =  lright;
         if ( lTop  < minTop  ) minTop   =  lTop;
-    }
-
+    } 
 
     // make the camera view matrix
     pssmShadowSplitTexture._camera->setViewMatrixAsLookAt(pssmShadowSplitTexture._lightCameraSource,pssmShadowSplitTexture._lightCameraTarget,top);
 
     // use ortho projection for light (directional light only supported)
-    pssmShadowSplitTexture._camera->setProjectionMatrixAsOrtho(minLeft,maxLeft,minTop,maxTop,pssmShadowSplitTexture._lightNear,pssmShadowSplitTexture._lightFar);
+    pssmShadowSplitTexture._camera->setProjectionMatrixAsOrtho(minRight,maxRight,minTop,maxTop,pssmShadowSplitTexture._lightNear,pssmShadowSplitTexture._lightFar);
+
+
+    #ifdef SHADOW_TEXTURE_GLSL
+        // get user cameras
+        osg::Vec3d vProjCamFraValue = (camEye + viewDir * pssmShadowSplitTexture._split_far) * (pssmShadowSplitTexture._cameraView * pssmShadowSplitTexture._cameraProj);
+         pssmShadowSplitTexture._farDistanceSplit->set((float)vProjCamFraValue.z());
+     #endif
+ 
+
 }
 
 

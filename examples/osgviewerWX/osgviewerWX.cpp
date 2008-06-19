@@ -9,6 +9,11 @@
 #include "wx/wx.h"
 #endif
 
+// For wxCURSOR_BLANK below, but isn't used a.t.m.
+//#ifdef WIN32
+//#include "wx/msw/wx.rc"
+//#endif
+
 #include "osgviewerWX.h"
 
 
@@ -40,16 +45,21 @@ bool wxOsgApp::OnInit()
     // create osg canvas
     //    - initialize
 
-    int *attributes = new int[6];
+    int *attributes = new int[7];
     attributes[0] = int(WX_GL_DOUBLEBUFFER);
     attributes[1] = WX_GL_RGBA;
     attributes[2] = WX_GL_DEPTH_SIZE;
     attributes[3] = 8;
     attributes[4] = WX_GL_STENCIL_SIZE;
     attributes[5] = 8;
+    attributes[6] = 0;
 
-    GraphicsWindowWX* gw = new GraphicsWindowWX(frame, wxID_ANY, wxDefaultPosition,
-                                                wxSize(width, height), wxSUNKEN_BORDER, wxT("osgviewerWX"), attributes);
+    OSGCanvas *canvas = new OSGCanvas(frame, wxID_ANY, wxDefaultPosition,
+        wxSize(width, height), wxSUNKEN_BORDER, wxT("osgviewerWX"), attributes);
+
+    GraphicsWindowWX* gw = new GraphicsWindowWX(canvas);
+
+    canvas->SetGraphicsWindow(gw);
 
     osgViewer::Viewer *viewer = new osgViewer::Viewer;
     viewer->getCamera()->setGraphicsContext(gw);
@@ -101,39 +111,169 @@ void MainFrame::OnIdle(wxIdleEvent &event)
     event.RequestMore();
 }
 
-BEGIN_EVENT_TABLE(GraphicsWindowWX, wxGLCanvas)
-    EVT_SIZE                (GraphicsWindowWX::OnSize)
-    EVT_PAINT               (GraphicsWindowWX::OnPaint)
-    EVT_ERASE_BACKGROUND    (GraphicsWindowWX::OnEraseBackground)
+BEGIN_EVENT_TABLE(OSGCanvas, wxGLCanvas)
+    EVT_SIZE                (OSGCanvas::OnSize)
+    EVT_PAINT               (OSGCanvas::OnPaint)
+    EVT_ERASE_BACKGROUND    (OSGCanvas::OnEraseBackground)
 
-    EVT_CHAR                (GraphicsWindowWX::OnChar)
-    EVT_KEY_UP              (GraphicsWindowWX::OnKeyUp)
+    EVT_CHAR                (OSGCanvas::OnChar)
+    EVT_KEY_UP              (OSGCanvas::OnKeyUp)
 
-    EVT_ENTER_WINDOW    (GraphicsWindowWX::OnMouseEnter)
-    EVT_LEFT_DOWN       (GraphicsWindowWX::OnMouseDown)
-    EVT_MIDDLE_DOWN     (GraphicsWindowWX::OnMouseDown)
-    EVT_RIGHT_DOWN      (GraphicsWindowWX::OnMouseDown)
-    EVT_LEFT_UP         (GraphicsWindowWX::OnMouseUp)
-    EVT_MIDDLE_UP       (GraphicsWindowWX::OnMouseUp)
-    EVT_RIGHT_UP        (GraphicsWindowWX::OnMouseUp)
-    EVT_MOTION          (GraphicsWindowWX::OnMouseMotion)
+    EVT_ENTER_WINDOW        (OSGCanvas::OnMouseEnter)
+    EVT_LEFT_DOWN           (OSGCanvas::OnMouseDown)
+    EVT_MIDDLE_DOWN         (OSGCanvas::OnMouseDown)
+    EVT_RIGHT_DOWN          (OSGCanvas::OnMouseDown)
+    EVT_LEFT_UP             (OSGCanvas::OnMouseUp)
+    EVT_MIDDLE_UP           (OSGCanvas::OnMouseUp)
+    EVT_RIGHT_UP            (OSGCanvas::OnMouseUp)
+    EVT_MOTION              (OSGCanvas::OnMouseMotion)
 END_EVENT_TABLE()
 
-GraphicsWindowWX::GraphicsWindowWX(wxWindow *parent, wxWindowID id,
+OSGCanvas::OSGCanvas(wxWindow *parent, wxWindowID id,
     const wxPoint& pos, const wxSize& size, long style, const wxString& name, int *attributes)
     : wxGLCanvas(parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE, name, attributes)
 {
     // default cursor to standard
     _oldCursor = *wxSTANDARD_CURSOR;
+}
+
+OSGCanvas::~OSGCanvas()
+{
+}
+
+void OSGCanvas::OnPaint( wxPaintEvent& WXUNUSED(event) )
+{
+    /* must always be here */
+    wxPaintDC dc(this);
+}
+
+void OSGCanvas::OnSize(wxSizeEvent& event)
+{
+    // this is also necessary to update the context on some platforms
+    wxGLCanvas::OnSize(event);
+
+    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
+    int width, height;
+    GetClientSize(&width, &height);
+
+    if (_graphics_window.valid())
+    {
+        // update the window dimensions, in case the window has been resized.
+        _graphics_window->getEventQueue()->windowResize(0, 0, width, height);
+        _graphics_window->resized(0,0,width,height);
+    }
+}
+
+void OSGCanvas::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
+{
+    /* Do nothing, to avoid flashing on MSW */
+}
+
+void OSGCanvas::OnChar(wxKeyEvent &event)
+{
+#if wxUSE_UNICODE
+    int key = event.GetUnicodeKey();
+#else
+    int key = event.GetKeyCode();
+#endif
+
+    if (_graphics_window.valid())
+        _graphics_window->getEventQueue()->keyPress(key);
+
+    // If this key event is not processed here, we should call
+    // event.Skip() to allow processing to continue.
+}
+
+void OSGCanvas::OnKeyUp(wxKeyEvent &event)
+{
+#if wxUSE_UNICODE
+    int key = event.GetUnicodeKey();
+#else
+    int key = event.GetKeyCode();
+#endif
+
+    if (_graphics_window.valid())
+        _graphics_window->getEventQueue()->keyRelease(key);
+
+    // If this key event is not processed here, we should call
+    // event.Skip() to allow processing to continue.
+}
+
+void OSGCanvas::OnMouseEnter(wxMouseEvent &event)
+{
+    // Set focus to ourselves, so keyboard events get directed to us
+    SetFocus();
+}
+
+void OSGCanvas::OnMouseDown(wxMouseEvent &event)
+{
+    if (_graphics_window.valid())
+    {
+        _graphics_window->getEventQueue()->mouseButtonPress(event.GetX(), event.GetY(),
+            event.GetButton());
+    }
+}
+
+void OSGCanvas::OnMouseUp(wxMouseEvent &event)
+{
+    if (_graphics_window.valid())
+    {
+        _graphics_window->getEventQueue()->mouseButtonRelease(event.GetX(), event.GetY(),
+            event.GetButton());
+    }
+}
+
+void OSGCanvas::OnMouseMotion(wxMouseEvent &event)
+{
+    if (_graphics_window.valid())
+        _graphics_window->getEventQueue()->mouseMotion(event.GetX(), event.GetY());
+}
+
+void OSGCanvas::UseCursor(bool value)
+{
+    if (value)
+    {
+        // show the old cursor
+        SetCursor(_oldCursor);
+    }
+    else
+    {
+        // remember the old cursor
+        _oldCursor = GetCursor();
+
+        // hide the cursor
+        //    - can't find a way to do this neatly, so create a 1x1, transparent image
+        wxImage image(1,1);
+        image.SetMask(true);
+        image.SetMaskColour(0, 0, 0);
+        wxCursor cursor(image);
+        SetCursor(cursor);
+
+        // On wxGTK, only works as of version 2.7.0
+        // (http://trac.wxwidgets.org/ticket/2946)
+        // SetCursor( wxStockCursor( wxCURSOR_BLANK ) );
+    }
+}
+
+GraphicsWindowWX::GraphicsWindowWX(OSGCanvas *canvas)
+{
+    _canvas = canvas;
 
     _traits = new GraphicsContext::Traits;
+
+    wxPoint pos = _canvas->GetPosition();
+    wxSize  size = _canvas->GetSize();
+
     _traits->x = pos.x;
     _traits->y = pos.y;
     _traits->width = size.x;
     _traits->height = size.y;
 
     init();
+}
 
+GraphicsWindowWX::~GraphicsWindowWX()
+{
 }
 
 void GraphicsWindowWX::init()
@@ -155,129 +295,32 @@ void GraphicsWindowWX::init()
     }
 }
 
-GraphicsWindowWX::~GraphicsWindowWX()
-{
-}
-
-void GraphicsWindowWX::OnPaint( wxPaintEvent& WXUNUSED(event) )
-{
-    /* must always be here */
-    wxPaintDC dc(this);
-}
-
-void GraphicsWindowWX::OnSize(wxSizeEvent& event)
-{
-    // this is also necessary to update the context on some platforms
-    wxGLCanvas::OnSize(event);
-
-    // set GL viewport (not called by wxGLCanvas::OnSize on all platforms...)
-    int width, height;
-    GetClientSize(&width, &height);
-
-    // update the window dimensions, in case the window has been resized.
-    getEventQueue()->windowResize(0, 0, width, height);
-    resized(0,0,width,height);
-}
-
-void GraphicsWindowWX::OnEraseBackground(wxEraseEvent& WXUNUSED(event))
-{
-    /* Do nothing, to avoid flashing on MSW */
-}
-
-void GraphicsWindowWX::OnChar(wxKeyEvent &event)
-{
-#if wxUSE_UNICODE
-    int key = event.GetUnicodeKey();
-#else
-    int key = event.GetKeyCode();
-#endif
-    getEventQueue()->keyPress(key);
-
-    // If this key event is not processed here, we should call
-    // event.Skip() to allow processing to continue.
-}
-
-void GraphicsWindowWX::OnKeyUp(wxKeyEvent &event)
-{
-#if wxUSE_UNICODE
-    int key = event.GetUnicodeKey();
-#else
-    int key = event.GetKeyCode();
-#endif
-    getEventQueue()->keyRelease(key);
-
-    // If this key event is not processed here, we should call
-    // event.Skip() to allow processing to continue.
-}
-
-void GraphicsWindowWX::OnMouseEnter(wxMouseEvent &event)
-{
-    // Set focus to ourselves, so keyboard events get directed to us
-    SetFocus();
-}
-
-void GraphicsWindowWX::OnMouseDown(wxMouseEvent &event)
-{
-    getEventQueue()->mouseButtonPress(event.GetX(), event.GetY(),
-        event.GetButton());
-}
-
-void GraphicsWindowWX::OnMouseUp(wxMouseEvent &event)
-{
-    getEventQueue()->mouseButtonRelease(event.GetX(), event.GetY(),
-        event.GetButton());
-}
-
-void GraphicsWindowWX::OnMouseMotion(wxMouseEvent &event)
-{
-    getEventQueue()->mouseMotion(event.GetX(), event.GetY());
-}
-
-
 void GraphicsWindowWX::grabFocus()
 {
-    // focus this window
-    SetFocus();
+    // focus the canvas
+    _canvas->SetFocus();
 }
 
 void GraphicsWindowWX::grabFocusIfPointerInWindow()
 {
     // focus this window, if the pointer is in the window
     wxPoint pos = wxGetMousePosition();
-    if (this == wxFindWindowAtPoint(pos)) {
-        SetFocus();
-    }
+    if (wxFindWindowAtPoint(pos) == _canvas)
+        _canvas->SetFocus();
 }
 
 void GraphicsWindowWX::useCursor(bool cursorOn)
 {
-    if (cursorOn) {
-
-        // show the old cursor
-        SetCursor(_oldCursor);
-    }
-    else {
-
-        // remember the old cursor
-        _oldCursor = GetCursor();
-
-        // hide the cursor
-        //    - can't find a way to do this neatly, so create a 1x1, transparent image
-        wxImage image(1,1);
-        image.SetMask(true);
-        image.SetMaskColour(0, 0, 0);
-        wxCursor cursor(image);
-        SetCursor(cursor);
-    }
+    _canvas->UseCursor(cursorOn);
 }
 
 bool GraphicsWindowWX::makeCurrentImplementation()
 {
-    SetCurrent();
+    _canvas->SetCurrent();
     return true;
 }
 
 void GraphicsWindowWX::swapBuffersImplementation()
 {
-    SwapBuffers();
+    _canvas->SwapBuffers();
 }

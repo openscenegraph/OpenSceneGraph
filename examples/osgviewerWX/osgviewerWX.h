@@ -8,18 +8,20 @@
 #include <osgViewer/Viewer>
 #include <string>
 
-class GraphicsWindowWX : public wxGLCanvas, public osgViewer::GraphicsWindow
+class GraphicsWindowWX;
+
+class OSGCanvas : public wxGLCanvas
 {
 public:
-    GraphicsWindowWX(wxWindow *parent, wxWindowID id = wxID_ANY,
+    OSGCanvas(wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = 0,
         const wxString& name = wxT("TestGLCanvas"),
         int *attributes = 0);
 
-    ~GraphicsWindowWX();
+    virtual ~OSGCanvas();
 
-    void init();
+    void SetGraphicsWindow(osgViewer::GraphicsWindow *gw)   { _graphics_window = gw; }
 
     void OnPaint(wxPaintEvent& event);
     void OnSize(wxSizeEvent& event);
@@ -33,6 +35,23 @@ public:
     void OnMouseUp(wxMouseEvent &event);
     void OnMouseMotion(wxMouseEvent &event);
 
+    void UseCursor(bool value);
+
+private:
+    DECLARE_EVENT_TABLE()
+
+    osg::ref_ptr<osgViewer::GraphicsWindow> _graphics_window;
+
+    wxCursor _oldCursor;
+};
+
+class GraphicsWindowWX : public osgViewer::GraphicsWindow
+{
+public:
+    GraphicsWindowWX(OSGCanvas *canvas);
+    ~GraphicsWindowWX();
+
+    void init();
 
     //
     // GraphicsWindow interface
@@ -52,9 +71,9 @@ public:
     virtual bool releaseContextImplementation() { return true; }
 
 private:
-    wxCursor _oldCursor;
-
-    DECLARE_EVENT_TABLE()
+    // XXX need to set _canvas to NULL when the canvas is deleted by
+    // its parent. for this, need to add event handler in OSGCanvas
+    OSGCanvas*  _canvas;
 };
 
 class MainFrame : public wxFrame

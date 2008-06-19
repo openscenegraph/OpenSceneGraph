@@ -426,6 +426,16 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	          __C5_std_string_R1__getBinName,
 	          "Get the render bin name. ",
 	          "");
+	I_Method1(void, setNestRenderBins, IN, bool, val,
+	          Properties::NON_VIRTUAL,
+	          __void__setNestRenderBins__bool,
+	          "By default render bins will be nested within each other dependent upon where they are set in the scene graph. ",
+	          "This can be problematic if a transparent render bin is attached to an opaque render bin which is attached to another transparent render bin as these render bins will be sorted separately, giving the wrong draw ordering for back-to-front transparency. Therefore, to prevent render bins being nested, call setNestRenderBins(false). ");
+	I_Method0(bool, getNestRenderBins,
+	          Properties::NON_VIRTUAL,
+	          __bool__getNestRenderBins,
+	          "Get whether associated RenderBin should be nested within parents RenderBin. ",
+	          "");
 	I_Method1(void, setUpdateCallback, IN, osg::StateSet::Callback *, ac,
 	          Properties::NON_VIRTUAL,
 	          __void__setUpdateCallback__Callback_P1,
@@ -623,6 +633,9 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	I_SimpleProperty(osg::StateSet::ModeList &, ModeList, 
 	                 __ModeList_R1__getModeList, 
 	                 __void__setModeList__ModeList_R1);
+	I_SimpleProperty(bool, NestRenderBins, 
+	                 __bool__getNestRenderBins, 
+	                 __void__setNestRenderBins__bool);
 	I_ArrayProperty(osg::Object *, Parent, 
 	                __Object_P1__getParent__unsigned_int, 
 	                0, 

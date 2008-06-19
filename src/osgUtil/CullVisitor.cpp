@@ -140,6 +140,8 @@ void CullVisitor::reset()
     //
     
     CullStack::reset();
+    
+    _renderBinStack.clear();
 
     _numberOfEncloseOverrideRenderBinDetails = 0;
 

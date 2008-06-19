@@ -77,7 +77,7 @@ MaterialPaletteManager::write( DataOutputStream& dos ) const
         dos.writeInt16( (int16) MATERIAL_PALETTE_OP );
         dos.writeInt16( 84 );            // Length - FIXME: hard-code/FLT version?
         dos.writeInt32( m.Index );
-        dos.writeString( std::string( "" ), 12 ); // Name - FIXME: put a 'real' name here?
+        dos.writeString( m.Material->getName(), 12 );
         dos.writeInt32( 0 );             // Flags
         dos.writeFloat32(ambient.r() );
         dos.writeFloat32(ambient.g() );

@@ -14,7 +14,7 @@
 #ifndef OSG_ARRAY
 #define OSG_ARRAY 1
 
-#include <vector>
+#include <osg/MixinVector>
 
 #include <osg/Vec2>
 #include <osg/Vec3>
@@ -171,7 +171,7 @@ class OSG_EXPORT Array : public Object
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
-class TemplateArray : public Array, public std::vector<T>
+class TemplateArray : public Array, public MixinVector<T>
 {
     public:
     
@@ -179,20 +179,20 @@ class TemplateArray : public Array, public std::vector<T>
 
         TemplateArray(const TemplateArray& ta,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Array(ta,copyop),
-            std::vector<T>(ta) {}
+            MixinVector<T>(ta) {}
         
         TemplateArray(unsigned int no) : 
             Array(ARRAYTYPE,DataSize,DataType),
-            std::vector<T>(no) {}
+            MixinVector<T>(no) {}
 
         TemplateArray(unsigned int no,T* ptr) : 
             Array(ARRAYTYPE,DataSize,DataType),
-            std::vector<T>(ptr,ptr+no) {}
+            MixinVector<T>(ptr,ptr+no) {}
 
         template <class InputIterator>
         TemplateArray(InputIterator first,InputIterator last) : 
             Array(ARRAYTYPE,DataSize,DataType),
-            std::vector<T>(first,last) {}        
+            MixinVector<T>(first,last) {}        
 
         TemplateArray& operator = (const TemplateArray& array)
         {
@@ -222,7 +222,7 @@ class TemplateArray : public Array, public std::vector<T>
         /** Frees unused space on this vector - i.e. the difference between size() and max_size() of the underlying vector.*/
         virtual void trim()
         {
-            std::vector<T>( *this ).swap( *this );
+            MixinVector<T>( *this ).swap( *this );
         }
         
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
@@ -257,7 +257,7 @@ class OSG_EXPORT IndexArray : public Array
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
-class TemplateIndexArray : public IndexArray, public std::vector<T>
+class TemplateIndexArray : public IndexArray, public MixinVector<T>
 {
     public:
     
@@ -265,20 +265,20 @@ class TemplateIndexArray : public IndexArray, public std::vector<T>
 
         TemplateIndexArray(const TemplateIndexArray& ta,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             IndexArray(ta,copyop),
-            std::vector<T>(ta) {}
+            MixinVector<T>(ta) {}
         
         TemplateIndexArray(unsigned int no) : 
             IndexArray(ARRAYTYPE,DataSize,DataType),
-            std::vector<T>(no) {}
+            MixinVector<T>(no) {}
 
         TemplateIndexArray(unsigned int no,T* ptr) : 
             IndexArray(ARRAYTYPE,DataSize,DataType),
-            std::vector<T>(ptr,ptr+no) {}
+            MixinVector<T>(ptr,ptr+no) {}
 
         template <class InputIterator>
         TemplateIndexArray(InputIterator first,InputIterator last) : 
             IndexArray(ARRAYTYPE,DataSize,DataType),
-            std::vector<T>(first,last) {}        
+            MixinVector<T>(first,last) {}        
 
         TemplateIndexArray& operator = (const TemplateIndexArray& array)
         {
@@ -308,7 +308,7 @@ class TemplateIndexArray : public IndexArray, public std::vector<T>
         /** Frees unused space on this vector - i.e. the difference between size() and max_size() of the underlying vector.*/
         virtual void trim()
         {
-            std::vector<T>( *this ).swap( *this );
+            MixinVector<T>( *this ).swap( *this );
         }
         
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }

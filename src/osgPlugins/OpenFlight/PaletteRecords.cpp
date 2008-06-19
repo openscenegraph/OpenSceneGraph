@@ -192,6 +192,7 @@ protected:
         float32 alpha = in.readFloat32();
 
         osg::Material* material = new osg::Material;
+        material->setName(name);
         material->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(ambient,alpha));
         material->setDiffuse (osg::Material::FRONT_AND_BACK,osg::Vec4(diffuse,alpha));
         material->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(specular,alpha));

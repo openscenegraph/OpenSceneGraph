@@ -475,7 +475,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         virtual ~SceneView();
 
         /** Do cull traversal of attached scene graph using Cull NodeVisitor. Return true if computeNearFar has been done during the cull traversal.*/
-        virtual bool cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage);
+        virtual bool cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage, osg::Viewport *viewport);
+        
+        void computeLeftEyeViewport(const osg::Viewport *viewport);
+        void computeRightEyeViewport(const osg::Viewport *viewport);
 
         const osg::Matrix computeMVPW() const;
 
@@ -496,10 +499,12 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorLeft;
         osg::ref_ptr<osgUtil::StateGraph>           _stateGraphLeft;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageLeft;
+        osg::ref_ptr<osg::Viewport>                 _viewportLeft;
 
         osg::ref_ptr<osgUtil::CullVisitor>          _cullVisitorRight;
         osg::ref_ptr<osgUtil::StateGraph>           _stateGraphRight;
         osg::ref_ptr<osgUtil::RenderStage>          _renderStageRight;
+        osg::ref_ptr<osg::Viewport>                 _viewportRight;
 
         osg::ref_ptr<osg::CollectOccludersVisitor>  _collectOccludersVisitor;
         

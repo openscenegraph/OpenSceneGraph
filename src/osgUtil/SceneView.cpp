@@ -542,6 +542,107 @@ osg::Matrixd SceneView::computeRightEyeViewImplementation(const osg::Matrixd& vi
                        -es,0.0,0.0,1.0);
 }
 
+void SceneView::computeLeftEyeViewport(const osg::Viewport *viewport)
+{
+    if(!viewport) return;
+
+    if(!_viewportLeft.valid()) _viewportLeft = new osg::Viewport;
+
+    switch(_displaySettings->getStereoMode())
+    {
+
+        case(osg::DisplaySettings::HORIZONTAL_SPLIT):
+        {
+            Viewport::value_type separation = _displaySettings->getSplitStereoHorizontalSeparation();
+
+            if (_displaySettings->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT)
+            {
+                Viewport::value_type left_half_width = (viewport->width()-separation)/2;
+                _viewportLeft->setViewport(viewport->x(),viewport->y(),left_half_width,viewport->height());
+            }
+            else
+            {
+                Viewport::value_type right_half_begin = (viewport->width()+separation)/2;
+                Viewport::value_type right_half_width = viewport->width()-right_half_begin;
+                _viewportLeft->setViewport(viewport->x()+right_half_begin,viewport->y(),right_half_width,viewport->height());
+            }
+        }
+        break;
+
+        case(osg::DisplaySettings::VERTICAL_SPLIT):
+        {
+            Viewport::value_type separation = _displaySettings->getSplitStereoHorizontalSeparation();
+
+            if (_displaySettings->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
+            {
+                Viewport::value_type top_half_begin = (viewport->height()+separation)/2;
+                Viewport::value_type top_half_height = viewport->height()-top_half_begin;
+                _viewportLeft->setViewport(viewport->x(),viewport->y()+top_half_begin,viewport->width(),top_half_height);
+            }
+            else
+            {
+                Viewport::value_type bottom_half_height = (viewport->height()-separation)/2;
+                _viewportLeft->setViewport(viewport->x(),viewport->y(),viewport->width(),bottom_half_height);
+            }
+        }
+        break;
+
+        default:
+            _viewportLeft->setViewport(viewport->x(),viewport->y(),viewport->width(),viewport->height());
+            break;
+    }
+}
+
+void SceneView::computeRightEyeViewport(const osg::Viewport *viewport)
+{
+    if(!viewport) return;
+
+    if(!_viewportRight.valid()) _viewportRight = new osg::Viewport;
+
+    switch(_displaySettings->getStereoMode())
+    {
+        case(osg::DisplaySettings::HORIZONTAL_SPLIT):
+        {
+            Viewport::value_type separation = _displaySettings->getSplitStereoHorizontalSeparation();
+
+            if (_displaySettings->getSplitStereoHorizontalEyeMapping()!=osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT)
+            {
+                Viewport::value_type left_half_width = (viewport->width()-separation)/2;
+                _viewportRight->setViewport(viewport->x(),viewport->y(),left_half_width,viewport->height());
+            }
+            else
+            {
+                Viewport::value_type right_half_begin = (viewport->width()+separation)/2;
+                Viewport::value_type right_half_width = viewport->width()-right_half_begin;
+                _viewportRight->setViewport(viewport->x()+right_half_begin,viewport->y(),right_half_width,viewport->height());
+            }
+        }
+        break;
+
+        case(osg::DisplaySettings::VERTICAL_SPLIT):
+        {
+            Viewport::value_type separation = _displaySettings->getSplitStereoHorizontalSeparation();
+
+            if (_displaySettings->getSplitStereoVerticalEyeMapping()!=osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
+            {
+                Viewport::value_type top_half_begin = (viewport->height()+separation)/2;
+                Viewport::value_type top_half_height = viewport->height()-top_half_begin;
+                _viewportRight->setViewport(viewport->x(),viewport->y()+top_half_begin,viewport->width(),top_half_height);
+            }
+            else
+            {
+                Viewport::value_type bottom_half_height = (viewport->height()-separation)/2;
+                _viewportRight->setViewport(viewport->x(),viewport->y(),viewport->width(),bottom_half_height);
+            }
+        }
+        break;
+
+        default:
+            _viewportRight->setViewport(viewport->x(),viewport->y(),viewport->width(),viewport->height());
+            break;
+    }
+}
+
 void SceneView::inheritCullSettings(const osg::CullSettings& settings, unsigned int inheritanceMask)
 {
     if (_camera.valid() && _camera->getView()) 
@@ -623,7 +724,8 @@ void SceneView::cull()
         {
             // set up the left eye.
             _cullVisitor->setTraversalMask(_cullMaskLeft);
-            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitor.get(),_stateGraph.get(),_renderStage.get());
+            computeLeftEyeViewport(getViewport());
+            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitor.get(),_stateGraph.get(),_renderStage.get(),_viewportLeft.get());
 
             if (computeNearFar)
             {
@@ -637,7 +739,8 @@ void SceneView::cull()
         {
             // set up the right eye.
             _cullVisitor->setTraversalMask(_cullMaskRight);
-            bool computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitor.get(),_stateGraph.get(),_renderStage.get());
+            computeRightEyeViewport(getViewport());
+            bool computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitor.get(),_stateGraph.get(),_renderStage.get(),_viewportRight.get());
 
             if (computeNearFar)
             {
@@ -661,14 +764,16 @@ void SceneView::cull()
             _cullVisitorLeft->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorLeft->setClampProjectionMatrixCallback(_cullVisitor->getClampProjectionMatrixCallback());
             _cullVisitorLeft->setTraversalMask(_cullMaskLeft);
-            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitorLeft.get(),_stateGraphLeft.get(),_renderStageLeft.get());
+            computeLeftEyeViewport(getViewport());
+            bool computeNearFar = cullStage(computeLeftEyeProjection(getProjectionMatrix()),computeLeftEyeView(getViewMatrix()),_cullVisitorLeft.get(),_stateGraphLeft.get(),_renderStageLeft.get(),_viewportLeft.get());
 
 
             // set up the right eye.
             _cullVisitorRight->setDatabaseRequestHandler(_cullVisitor->getDatabaseRequestHandler());
             _cullVisitorRight->setClampProjectionMatrixCallback(_cullVisitor->getClampProjectionMatrixCallback());
             _cullVisitorRight->setTraversalMask(_cullMaskRight);
-            computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitorRight.get(),_stateGraphRight.get(),_renderStageRight.get());
+            computeRightEyeViewport(getViewport());
+            computeNearFar = cullStage(computeRightEyeProjection(getProjectionMatrix()),computeRightEyeView(getViewMatrix()),_cullVisitorRight.get(),_stateGraphRight.get(),_renderStageRight.get(),_viewportRight.get());
            
             if (computeNearFar)
             {
@@ -684,7 +789,7 @@ void SceneView::cull()
     {
 
         _cullVisitor->setTraversalMask(_cullMask);
-        bool computeNearFar = cullStage(getProjectionMatrix(),getViewMatrix(),_cullVisitor.get(),_stateGraph.get(),_renderStage.get());
+        bool computeNearFar = cullStage(getProjectionMatrix(),getViewMatrix(),_cullVisitor.get(),_stateGraph.get(),_renderStage.get(),getViewport());
 
         if (computeNearFar)
         {
@@ -697,10 +802,10 @@ void SceneView::cull()
     
 }
 
-bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage)
+bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage, osg::Viewport *viewport)
 {
 
-    if (!_camera || !getViewport()) return false;
+    if (!_camera || !viewport) return false;
 
     osg::ref_ptr<RefMatrix> proj = new osg::RefMatrix(projection);
     osg::ref_ptr<RefMatrix> mv = new osg::RefMatrix(modelview);
@@ -726,7 +831,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
              _collectOccludersVisitor->setTraversalNumber(_frameStamp->getFrameNumber());
         }
 
-        _collectOccludersVisitor->pushViewport(getViewport());
+        _collectOccludersVisitor->pushViewport(viewport);
         _collectOccludersVisitor->pushProjectionMatrix(proj.get());
         _collectOccludersVisitor->pushModelViewMatrix(mv.get(),osg::Transform::ABSOLUTE_RF);
 
@@ -779,7 +884,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     // achieves a certain amount of frame cohereancy of memory allocation.
     rendergraph->clean();
 
-    renderStage->setViewport(getViewport());
+    renderStage->setViewport(viewport);
     renderStage->setClearColor(_camera->getClearColor());
     renderStage->setClearDepth(_camera->getClearDepth());
     renderStage->setClearAccum(_camera->getClearAccum());
@@ -808,7 +913,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     if (_localStateSet.valid()) cullVisitor->pushStateSet(_localStateSet.get());
 
 
-    cullVisitor->pushViewport(getViewport());
+    cullVisitor->pushViewport(viewport);
     cullVisitor->pushProjectionMatrix(proj.get());
     cullVisitor->pushModelViewMatrix(mv.get(),osg::Transform::ABSOLUTE_RF);
     
@@ -1025,7 +1130,10 @@ void SceneView::draw()
                 _renderStageLeft->setColorMask(cmask);
                 _renderStageRight->setColorMask(cmask);
 
+                _localStateSet->setAttribute(_viewportLeft.get());
                 _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
+
+                _localStateSet->setAttribute(_viewportRight.get());
                 _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
                 double separation = _displaySettings->getSplitStereoHorizontalSeparation();
@@ -1034,37 +1142,17 @@ void SceneView::draw()
                 double right_half_begin = (getViewport()->width()+separation)/2.0;
                 double right_half_width = getViewport()->width()-right_half_begin;
 
-                osg::ref_ptr<osg::Viewport> viewportLeft = new osg::Viewport;
-                viewportLeft->setViewport(getViewport()->x(),getViewport()->y(),left_half_width,getViewport()->height());
-
-                osg::ref_ptr<osg::Viewport> viewportRight = new osg::Viewport;
-                viewportRight->setViewport(getViewport()->x()+right_half_begin,getViewport()->y(),right_half_width,getViewport()->height());
-
                 clearArea(static_cast<int>(getViewport()->x()+left_half_width),
                           static_cast<int>(getViewport()->y()),
                           static_cast<int>(separation),
                           static_cast<int>(getViewport()->height()),_renderStageLeft->getClearColor());
 
-                if (_displaySettings->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT)
-                {
-                    _localStateSet->setAttribute(viewportLeft.get());
-                    _renderStageLeft->setViewport(viewportLeft.get());
-                    _renderStageLeft->draw(_renderInfo,previous);
+             
+                _localStateSet->setAttribute(_viewportLeft.get());
+                _renderStageLeft->draw(_renderInfo,previous);
 
-                    _localStateSet->setAttribute(viewportRight.get());
-                    _renderStageRight->setViewport(viewportRight.get());
-                    _renderStageRight->draw(_renderInfo,previous);
-                }
-                else
-                {
-                    _localStateSet->setAttribute(viewportRight.get());
-                    _renderStageLeft->setViewport(viewportRight.get());
-                    _renderStageLeft->draw(_renderInfo,previous);
-
-                    _localStateSet->setAttribute(viewportLeft.get());
-                    _renderStageRight->setViewport(viewportLeft.get());
-                    _renderStageRight->draw(_renderInfo,previous);
-                }
+                _localStateSet->setAttribute(_viewportRight.get());
+                _renderStageRight->draw(_renderInfo,previous);
 
             }
             break;
@@ -1093,7 +1181,11 @@ void SceneView::draw()
 
                 _renderStageLeft->setColorMask(cmask);
                 _renderStageRight->setColorMask(cmask);
+
+                _localStateSet->setAttribute(_viewportLeft.get());
                 _renderStageLeft->drawPreRenderStages(_renderInfo,previous);
+
+                _localStateSet->setAttribute(_viewportRight.get());
                 _renderStageRight->drawPreRenderStages(_renderInfo,previous);
 
                 double separation = _displaySettings->getSplitStereoVerticalSeparation();
@@ -1102,38 +1194,17 @@ void SceneView::draw()
                 double top_half_begin = (getViewport()->height()+separation)/2.0;
                 double top_half_height = getViewport()->height()-top_half_begin;
 
-                osg::ref_ptr<osg::Viewport> viewportTop = new osg::Viewport;
-                viewportTop->setViewport(getViewport()->x(),getViewport()->y()+top_half_begin,getViewport()->width(),top_half_height);
-
-                osg::ref_ptr<osg::Viewport> viewportBottom = new osg::Viewport;
-                viewportBottom->setViewport(getViewport()->x(),getViewport()->y(),getViewport()->width(),bottom_half_height);
-
                 clearArea(static_cast<int>(getViewport()->x()),
                           static_cast<int>(getViewport()->y()+bottom_half_height),
                           static_cast<int>(getViewport()->width()),
                           static_cast<int>(separation),
                           _renderStageLeft->getClearColor());
 
-                if (_displaySettings->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
-                {
-                    _localStateSet->setAttribute(viewportTop.get());
-                    _renderStageLeft->setViewport(viewportTop.get());
-                    _renderStageLeft->draw(_renderInfo,previous);
+                _localStateSet->setAttribute(_viewportLeft.get());
+                _renderStageLeft->draw(_renderInfo,previous);
 
-                    _localStateSet->setAttribute(viewportBottom.get());
-                    _renderStageRight->setViewport(viewportBottom.get());
-                    _renderStageRight->draw(_renderInfo,previous);
-                }
-                else
-                {
-                    _localStateSet->setAttribute(viewportBottom.get());
-                    _renderStageLeft->setViewport(viewportBottom.get());
-                    _renderStageLeft->draw(_renderInfo,previous);
-
-                    _localStateSet->setAttribute(viewportTop.get());
-                    _renderStageRight->setViewport(viewportTop.get());
-                    _renderStageRight->draw(_renderInfo,previous);
-                }
+                _localStateSet->setAttribute(_viewportRight.get());
+                _renderStageRight->draw(_renderInfo,previous);
             }
             break;
         case(osg::DisplaySettings::RIGHT_EYE):

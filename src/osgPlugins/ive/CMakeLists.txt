@@ -54,6 +54,7 @@ SET(TARGET_SRC
     LightPoint.cpp
     LightPointNode.cpp
     LightSource.cpp
+    LineStipple.cpp
     LineWidth.cpp
     Locator.cpp
     LOD.cpp
@@ -159,6 +160,7 @@ SET(TARGET_H
     LightPoint.h
     LightPointNode.h
     LightSource.h
+    LineStipple.h
     LineWidth.h
     Locator.h
     LOD.h

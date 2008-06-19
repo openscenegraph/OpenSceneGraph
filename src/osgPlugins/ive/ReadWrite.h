@@ -84,6 +84,7 @@ namespace ive {
 #define IVEPOINTSPRITE                  0x00001131
 #define IVEMULTISAMPLE                  0x00001132
 #define IVEFOG                          0x00001133
+#define IVELINESTIPPLE                  0x00001134
 
 // Drawables
 #define IVEDRAWABLE                     0x00001000

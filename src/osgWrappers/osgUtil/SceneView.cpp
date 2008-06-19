@@ -761,12 +761,24 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          __bool__getStats__Statistics_R1,
 	          "Extract stats for current draw list. ",
 	          "");
-	I_ProtectedMethod5(bool, cullStage, IN, const osg::Matrixd &, projection, IN, const osg::Matrixd &, modelview, IN, osgUtil::CullVisitor *, cullVisitor, IN, osgUtil::StateGraph *, rendergraph, IN, osgUtil::RenderStage *, renderStage,
+	I_ProtectedMethod6(bool, cullStage, IN, const osg::Matrixd &, projection, IN, const osg::Matrixd &, modelview, IN, osgUtil::CullVisitor *, cullVisitor, IN, osgUtil::StateGraph *, rendergraph, IN, osgUtil::RenderStage *, renderStage, IN, osg::Viewport *, viewport,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __bool__cullStage__C5_osg_Matrixd_R1__C5_osg_Matrixd_R1__osgUtil_CullVisitor_P1__osgUtil_StateGraph_P1__osgUtil_RenderStage_P1,
+	                   __bool__cullStage__C5_osg_Matrixd_R1__C5_osg_Matrixd_R1__osgUtil_CullVisitor_P1__osgUtil_StateGraph_P1__osgUtil_RenderStage_P1__osg_Viewport_P1,
 	                   "Do cull traversal of attached scene graph using Cull NodeVisitor. ",
 	                   "Return true if computeNearFar has been done during the cull traversal. ");
+	I_ProtectedMethod1(void, computeLeftEyeViewport, IN, const osg::Viewport *, viewport,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__computeLeftEyeViewport__C5_osg_Viewport_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, computeRightEyeViewport, IN, const osg::Viewport *, viewport,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__computeRightEyeViewport__C5_osg_Viewport_P1,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(const osg::Matrix, computeMVPW,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

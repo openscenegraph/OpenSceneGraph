@@ -28,6 +28,12 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osgShadow::ParallelSplitShadowMap::SplitCalcMode)
+	I_DeclaringFile("osgShadow/ParallelSplitShadowMap");
+	I_EnumLabel(osgShadow::ParallelSplitShadowMap::SPLIT_LINEAR);
+	I_EnumLabel(osgShadow::ParallelSplitShadowMap::SPLIT_EXP);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
 	I_DeclaringFile("osgShadow/ParallelSplitShadowMap");
 	I_BaseType(osgShadow::ShadowTechnique);
@@ -119,11 +125,6 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
 	          __void__setMinNearDistanceForSplits__double,
 	          "Set min near distance for splits. ",
 	          "");
-	I_Method1(void, useLinearSplit, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__useLinearSplit__bool,
-	          "use linear split (default: linear) ",
-	          "");
 	I_Method1(void, setUserLight, IN, osg::Light *, light,
 	          Properties::NON_VIRTUAL,
 	          __void__setUserLight__osg_Light_P1,
@@ -134,15 +135,27 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
 	          __void__setAmbientBias__C5_osg_Vec2_R1,
 	          "Set the values for the ambient bias the shader will use. ",
 	          "");
-	I_ProtectedMethod2(std::string, generateGLSL_FragmentShader_BaseTex, IN, bool, debug, IN, unsigned int, splitCount,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __std_string__generateGLSL_FragmentShader_BaseTex__bool__unsigned_int,
-	                   "",
-	                   "");
+	I_Method1(void, setFragmentShaderGenerator, IN, osgShadow::ParallelSplitShadowMap::FragmentShaderGenerator *, fsw,
+	          Properties::NON_VIRTUAL,
+	          __void__setFragmentShaderGenerator__FragmentShaderGenerator_P1,
+	          "set fragment shader generator ",
+	          "");
+	I_MethodWithDefaults1(void, enableShadowGLSLFiltering, IN, bool, filtering, true,
+	                      Properties::NON_VIRTUAL,
+	                      __void__enableShadowGLSLFiltering__bool,
+	                      "enable / disable shadow filtering ",
+	                      "");
+	I_MethodWithDefaults1(void, setSplitCalculationMode, IN, osgShadow::ParallelSplitShadowMap::SplitCalcMode, scm, osgShadow::ParallelSplitShadowMap::SPLIT_EXP,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setSplitCalculationMode__SplitCalcMode,
+	                      "set split calculation mode ",
+	                      "");
 	I_SimpleProperty(const osg::Vec2 &, AmbientBias, 
 	                 0, 
 	                 __void__setAmbientBias__C5_osg_Vec2_R1);
+	I_SimpleProperty(osgShadow::ParallelSplitShadowMap::FragmentShaderGenerator *, FragmentShaderGenerator, 
+	                 0, 
+	                 __void__setFragmentShaderGenerator__FragmentShaderGenerator_P1);
 	I_SimpleProperty(double, MaxFarDistance, 
 	                 0, 
 	                 __void__setMaxFarDistance__double);
@@ -155,11 +168,27 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
 	I_SimpleProperty(const osg::Vec2f &, PolygonOffset, 
 	                 __C5_osg_Vec2f_R1__getPolygonOffset, 
 	                 __void__setPolygonOffset__C5_osg_Vec2f_R1);
+	I_SimpleProperty(osgShadow::ParallelSplitShadowMap::SplitCalcMode, SplitCalculationMode, 
+	                 0, 
+	                 __void__setSplitCalculationMode__SplitCalcMode);
 	I_SimpleProperty(unsigned int, TextureResolution, 
 	                 0, 
 	                 __void__setTextureResolution__unsigned_int);
 	I_SimpleProperty(osg::Light *, UserLight, 
 	                 0, 
 	                 __void__setUserLight__osg_Light_P1);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap::FragmentShaderGenerator)
+	I_DeclaringFile("osgShadow/ParallelSplitShadowMap");
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____FragmentShaderGenerator,
+	               "",
+	               "");
+	I_Method6(std::string, generateGLSL_FragmentShader_BaseTex, IN, bool, debug, IN, unsigned int, splitCount, IN, double, textureRes, IN, bool, filtered, IN, unsigned int, nbrSplits, IN, unsigned int, textureOffset,
+	          Properties::VIRTUAL,
+	          __std_string__generateGLSL_FragmentShader_BaseTex__bool__unsigned_int__double__bool__unsigned_int__unsigned_int,
+	          "generate the GLSL fragement shader ",
+	          "");
 END_REFLECTOR
 

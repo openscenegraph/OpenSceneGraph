@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -103,10 +103,16 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         inline void pushStateSet(const osg::StateSet* ss)
         {
             _currentStateGraph = _currentStateGraph->find_or_insert(ss);
+
             if (_numberOfEncloseOverrideRenderBinDetails==0 && ss->useRenderBinDetails() && !ss->getBinName().empty())
             {
-                _currentRenderBin = _currentRenderBin->find_or_insert(ss->getBinNumber(),ss->getBinName());
+                _renderBinStack.push_back(_currentRenderBin);
+
+                _currentRenderBin = ss->getNestRenderBins() ?
+                    _currentRenderBin->find_or_insert(ss->getBinNumber(),ss->getBinName()) :
+                    _currentRenderBin = _currentRenderBin->getStage()->find_or_insert(ss->getBinNumber(),ss->getBinName());
             }
+
             if (ss->getRenderBinMode()==osg::StateSet::OVERRIDE_RENDERBIN_DETAILS)
             {
                 ++_numberOfEncloseOverrideRenderBinDetails;
@@ -126,9 +132,14 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             }
             if (_numberOfEncloseOverrideRenderBinDetails==0 && ss->useRenderBinDetails() && !ss->getBinName().empty())
             {
-                if (_currentRenderBin->getParent())
+                if (_renderBinStack.empty())
                 {
-                    _currentRenderBin = _currentRenderBin->getParent();
+                    _currentRenderBin = _currentRenderBin->getStage();
+                }
+                else
+                {
+                    _currentRenderBin = _renderBinStack.back();
+                    _renderBinStack.pop_back();
                 }
             }
             _currentStateGraph = _currentStateGraph->_parent;
@@ -289,6 +300,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
         osg::ref_ptr<RenderStage>                                   _rootRenderStage;        
         RenderBin*                                                  _currentRenderBin;
+        std::vector<RenderBin*>                                     _renderBinStack;
 
 
         value_type               _computed_znear;

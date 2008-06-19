@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -363,6 +363,18 @@ class OSG_EXPORT StateSet : public Object
         /** Get the render bin name.*/
         inline const std::string& getBinName() const { return _binName; }
 
+        /** By default render bins will be nested within each other dependent
+          * upon where they are set in the scene graph. This can be problematic
+          * if a transparent render bin is attached to an opaque render bin
+          * which is attached to another transparent render bin as these render
+          * bins will be sorted separately, giving the wrong draw ordering for
+          * back-to-front transparency. Therefore, to prevent render bins being
+          * nested, call setNestRenderBins(false). */
+        inline void setNestRenderBins(bool val) { _nestRenderBins = val; }
+
+        /** Get whether associated RenderBin should be nested within parents RenderBin.*/
+        inline bool getNestRenderBins() const { return _nestRenderBins; }
+
 
         struct Callback : public virtual osg::Object
         {
@@ -487,6 +499,7 @@ class OSG_EXPORT StateSet : public Object
         RenderBinMode                       _binMode;
         int                                 _binNum;
         std::string                         _binName;
+        bool                                _nestRenderBins;
         
         ref_ptr<Callback> _updateCallback;
         unsigned int _numChildrenRequiringUpdateTraversal;

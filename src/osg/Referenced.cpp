@@ -82,8 +82,14 @@ struct DeleteHandlerPointer
 
 typedef std::set<Observer*> ObserverSet;
 
+struct Referenced::ObserverSetData {
+   OpenThreads::Mutex _mutex;
+   ObserverSet _observers;
+};
 
+#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
 static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;
+#endif
 // static std::auto_ptr<DeleteHandler> s_deleteHandler(0);
 static DeleteHandlerPointer s_deleteHandler(0);
 
@@ -91,12 +97,18 @@ static ApplicationUsageProxy Referenced_e0(ApplicationUsage::ENVIRONMENTAL_VARIA
 
 void Referenced::setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting)
 {
+#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     s_useThreadSafeReferenceCounting = enableThreadSafeReferenceCounting;
+#endif
 }
 
 bool Referenced::getThreadSafeReferenceCounting()
 {
+#if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+    return true;
+#else
     return s_useThreadSafeReferenceCounting;
+#endif
 }
 
 
@@ -120,14 +132,21 @@ static int s_numObjects = 0;
 #endif
 
 Referenced::Referenced():
+#if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+    _observerSetDataPtr(0),
+    _refCount(0)
+#else
     _refMutex(0),
     _refCount(0),
     _observers(0)
+#endif
 {
+#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
 #ifndef ENFORCE_THREADSAFE
     if (s_useThreadSafeReferenceCounting)
 #endif
         _refMutex = new OpenThreads::Mutex;
+#endif
         
 #ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
     {
@@ -140,16 +159,21 @@ Referenced::Referenced():
 }
 
 Referenced::Referenced(bool threadSafeRefUnref):
+#if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+    _observerSetDataPtr(0),
+    _refCount(0)
+#else
     _refMutex(0),
     _refCount(0),
     _observers(0)
+#endif
 {
-    // if (!threadSafeRefUnref) osg::notify(osg::NOTICE)<<"Not ThreadSaef "<<std::endl;
-
+#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
 #ifndef ENFORCE_THREADSAFE
     if (threadSafeRefUnref)
 #endif
         _refMutex = new OpenThreads::Mutex;
+#endif
 
 #ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
     {
@@ -161,14 +185,21 @@ Referenced::Referenced(bool threadSafeRefUnref):
 }
 
 Referenced::Referenced(const Referenced&):
+#if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+    _observerSetDataPtr(0),
+    _refCount(0)
+#else
     _refMutex(0),
     _refCount(0),
     _observers(0)
+#endif
 {
+#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
 #ifndef ENFORCE_THREADSAFE
     if (s_useThreadSafeReferenceCounting)
 #endif
         _refMutex = new OpenThreads::Mutex;
+#endif
 
 #ifdef DEBUG_OBJECT_ALLOCATION_DESTRUCTION
     {
@@ -195,6 +226,7 @@ Referenced::~Referenced()
         notify(WARN)<<"         the final reference count was "<<_refCount<<", memory corruption possible."<<std::endl;
     }
 
+#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     if (_observers)
     {
         ObserverSet* os = static_cast<ObserverSet*>(_observers);
@@ -214,10 +246,25 @@ Referenced::~Referenced()
         _refMutex = 0;
         delete tmpMutexPtr;
     }
+#else
+    ObserverSetData* observerSetData = _observerSetDataPtr.get();
+    if (observerSetData)
+    {
+        for(ObserverSet::iterator itr = observerSetData->_observers.begin();
+            itr != observerSetData->_observers.end();
+            ++itr)
+        {
+            (*itr)->objectDeleted(this);
+        }
+        _observerSetDataPtr.assign(0, observerSetData);
+        delete observerSetData;
+    }
+#endif
 }
 
 void Referenced::setThreadSafeRefUnref(bool threadSafe)
 {
+#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     if (threadSafe)
     {
         if (!_refMutex)
@@ -236,11 +283,13 @@ void Referenced::setThreadSafeRefUnref(bool threadSafe)
             delete tmpMutexPtr;
         }
     }
+#endif
 }
 
 
 void Referenced::unref_nodelete() const
 {
+#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
@@ -250,10 +299,24 @@ void Referenced::unref_nodelete() const
     {
         --_refCount;
     }
+#else
+    --_refCount;
+#endif
 }
 
 void Referenced::addObserver(Observer* observer)
 {
+#if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+    ObserverSetData* observerSetData = _observerSetDataPtr.get();
+    while (0 == observerSetData) {
+        ObserverSetData* newObserverSetData = new ObserverSetData;
+        if (!_observerSetDataPtr.assign(newObserverSetData, 0))
+            delete newObserverSetData;
+        observerSetData = _observerSetDataPtr.get();
+    }
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(observerSetData->_mutex);
+    observerSetData->_observers.insert(observer);
+#else
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
@@ -266,10 +329,19 @@ void Referenced::addObserver(Observer* observer)
         if (!_observers) _observers = new ObserverSet;
         if (_observers) static_cast<ObserverSet*>(_observers)->insert(observer);
     }
+#endif
 }
 
 void Referenced::removeObserver(Observer* observer)
 {
+#if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+    ObserverSetData* observerSetData = _observerSetDataPtr.get();
+    if (observerSetData)
+    {
+       OpenThreads::ScopedLock<OpenThreads::Mutex> lock(observerSetData->_mutex); 
+       observerSetData->_observers.erase(observer);
+    }
+#else
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
@@ -280,6 +352,7 @@ void Referenced::removeObserver(Observer* observer)
     {
         if (_observers) static_cast<ObserverSet*>(_observers)->erase(observer);
     }
+#endif
 }
 
 void Referenced::deleteUsingDeleteHandler() const

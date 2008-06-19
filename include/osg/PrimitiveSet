@@ -23,6 +23,7 @@
 #include <osg/Vec2d>
 #include <osg/Vec3d>
 #include <osg/Vec4d>
+#include <osg/MixinVector>
 
 #include <osg/BufferObject>
 
@@ -30,59 +31,10 @@
 
 namespace osg {
 
-// ********************************  HACK  **********************************
-// Following classes are needed by VC++ in order to avoid linking errors due
-// to multiply defined member functions. Classes that would normally derive
-// from std::vector<T> (and that are exported via OSG_EXPORT) should derive 
-// from one of these classes instead.
-//
-// NOTE: to keep the interface consistent and avoid breaking introspection
-//       wrappers, this hack was deliberately made not Microsoft-specific
-//       even though other compilers like GCC actually don't need that.
-//
-// Marco Jez, Dec 2005
-
-class VectorGLsizei: public std::vector<GLsizei>
-{
-    typedef std::vector<value_type> vector_type;
-public:
-    VectorGLsizei(): vector_type() {}
-    VectorGLsizei(const VectorGLsizei &copy): vector_type(copy) {}
-    VectorGLsizei(GLsizei* beg, GLsizei* end): vector_type(beg, end) {}
-    explicit VectorGLsizei(unsigned int n): vector_type(n) {}
-};
-
-class VectorGLubyte: public std::vector<GLubyte>
-{
-    typedef std::vector<value_type> vector_type;
-public:
-    VectorGLubyte(): vector_type() {}
-    VectorGLubyte(const VectorGLubyte &copy): vector_type(copy) {}
-    VectorGLubyte(const GLubyte* beg, const GLubyte* end): vector_type(beg, end) {}
-    explicit VectorGLubyte(unsigned int n): vector_type(n) {}
-};
-
-class VectorGLushort: public std::vector<GLushort>
-{
-    typedef std::vector<value_type> vector_type;
-public:
-    VectorGLushort(): vector_type() {}
-    VectorGLushort(const VectorGLushort &copy): vector_type(copy) {}
-    VectorGLushort(const GLushort* beg, const GLushort* end): vector_type(beg, end) {}
-    explicit VectorGLushort(unsigned int n): vector_type(n) {}
-};
-
-class VectorGLuint: public std::vector<GLuint>
-{
-    typedef std::vector<value_type> vector_type;
-public:
-    VectorGLuint(): vector_type() {}
-    VectorGLuint(const VectorGLuint &copy): vector_type(copy) {}
-    VectorGLuint(const GLuint* beg, const GLuint* end): vector_type(beg, end) {}
-    explicit VectorGLuint(unsigned int n): vector_type(n) {}
-};
-
-// **************************************************************************
+typedef MixinVector<GLsizei> VectorGLsizei;
+typedef MixinVector<GLubyte> VectorGLubyte;
+typedef MixinVector<GLushort> VectorGLushort;
+typedef MixinVector<GLuint> VectorGLuint;
 
 class State;
 

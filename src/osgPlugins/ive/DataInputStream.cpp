@@ -31,6 +31,7 @@
 #include "ShadeModel.h"
 #include "Point.h"
 #include "LineWidth.h"
+#include "LineStipple.h"
 #include "Texture1D.h"
 #include "Texture2D.h"
 #include "Texture3D.h"
@@ -1177,6 +1178,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVEMULTISAMPLE){
         attribute = new osg::Multisample();
         ((ive::Multisample*)(attribute))->read(this);
+    }
+    else if(attributeID == IVELINESTIPPLE){
+        attribute = new osg::LineStipple();
+        ((ive::LineStipple*)(attribute))->read(this);
     }
     else if(attributeID == IVESTENCIL){
         attribute = new osg::Stencil();

@@ -31,7 +31,7 @@ namespace OpenThreads {
  *  @class Atomic
  *  @brief  This class provides an atomic increment and decrement operation.
  */
-class OPENTHREAD_EXPORT_DIRECTIVE Atomic {
+class Atomic {
  public:
     Atomic(unsigned value = 0) : _value(value)
     { }
@@ -91,6 +91,7 @@ class OPENTHREAD_EXPORT_DIRECTIVE Atomic {
     }
     
  private:
+
     Atomic(const Atomic&);
     Atomic& operator=(const Atomic&);
     
@@ -111,7 +112,7 @@ class OPENTHREAD_EXPORT_DIRECTIVE Atomic {
  *  @brief  This class provides an atomic pointer assignment using cas operations.
  */
 template<typename T>
-class OPENTHREAD_EXPORT_DIRECTIVE AtomicPtr {
+class AtomicPtr {
 public:
     AtomicPtr(T* ptr = 0) : _ptr(ptr)
     { }

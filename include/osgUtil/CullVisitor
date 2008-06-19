@@ -110,7 +110,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
 
                 _currentRenderBin = ss->getNestRenderBins() ?
                     _currentRenderBin->find_or_insert(ss->getBinNumber(),ss->getBinName()) :
-                    _currentRenderBin = _currentRenderBin->getStage()->find_or_insert(ss->getBinNumber(),ss->getBinName());
+                    _currentRenderBin->getStage()->find_or_insert(ss->getBinNumber(),ss->getBinName());
             }
 
             if (ss->getRenderBinMode()==osg::StateSet::OVERRIDE_RENDERBIN_DETAILS)

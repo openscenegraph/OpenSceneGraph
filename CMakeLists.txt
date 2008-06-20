@@ -99,6 +99,7 @@ ENDIF(UNIX)
 
 # Make the headers visible to everything
 INCLUDE_DIRECTORIES(
+    ${PROJECT_BINARY_DIR}/include
     ${OpenSceneGraph_SOURCE_DIR}/include
     ${OPENGL_INCLUDE_DIR}
 )

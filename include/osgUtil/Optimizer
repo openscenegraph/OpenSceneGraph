@@ -83,6 +83,7 @@ class OSGUTIL_EXPORT Optimizer
             FLATTEN_BILLBOARDS =        0x2000,
             TEXTURE_ATLAS_BUILDER =     0x4000,
             STATIC_OBJECT_DETECTION =   0x8000,
+            FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS = 0x100,
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |
@@ -92,7 +93,7 @@ class OSGUTIL_EXPORT Optimizer
                                 CHECK_GEOMETRY |
                                 OPTIMIZE_TEXTURE_SETTINGS |
                                 STATIC_OBJECT_DETECTION,
-            ALL_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
+            ALL_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |
                                 COMBINE_ADJACENT_LODS |
@@ -250,7 +251,10 @@ class OSGUTIL_EXPORT Optimizer
 
         /** Flatten Static Transform nodes by applying their transform to the
           * geometry on the leaves of the scene graph, then removing the 
-          * now redundant transforms.*/        
+          * now redundant transforms.  Static transformed Subgraphs that have multiple
+          * parental paths above them are not flattened, if you require this then
+          * the subgraphs have to be duplicated - for this use the 
+          * FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor. */
         class OSGUTIL_EXPORT FlattenStaticTransformsVisitor : public BaseOptimizerVisitor
         {
             public:
@@ -282,6 +286,36 @@ class OSGUTIL_EXPORT Optimizer
                 TransformSet    _transformSet;
         };
 
+        /** FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor is similar to
+          * to FlattenStaticTransformsVisitor in that is desgined to remove static transforms
+          * from the scene graph, pushing down the transforms to the geometry leaves of the scene graph,
+          * but with the difference that any subgraphs that are shared between different transforms
+          * of duplicated and flatten individually.  This results in more static transforms
+          * being removed, but also means that more data is generated, and as a result may
+          * not always be the most appropriate flatten visitor to use.*/  
+        class FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor : public BaseOptimizerVisitor
+        {
+            public:
+
+                FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor(Optimizer* optimizer=0):
+                    BaseOptimizerVisitor(optimizer, FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS) {}
+
+                virtual void reset();
+
+                virtual void apply(osg::Group& group);
+                virtual void apply(osg::Transform& transform);
+                virtual void apply(osg::LOD& lod);
+                virtual void apply(osg::Geode& geode);
+                virtual void apply(osg::Billboard& billboard);
+
+            protected:
+
+                void transformDrawables(osg::Geode& geode);
+                void transformBillboard(osg::Billboard& billboard);
+
+                std::vector<osg::Matrix> _matrixStack;
+
+        };
 
         /** Combine Static Transform nodes that sit above one another.*/        
         class OSGUTIL_EXPORT CombineStaticTransformsVisitor : public BaseOptimizerVisitor

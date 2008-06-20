@@ -23,6 +23,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/BoundingBox
     ${HEADER_PATH}/BoundingSphere
     ${HEADER_PATH}/BoundsChecking
+    ${HEADER_PATH}/buffered_value
     ${HEADER_PATH}/BufferObject
     ${HEADER_PATH}/Camera
     ${HEADER_PATH}/CameraNode
@@ -36,53 +37,56 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ColorMask
     ${HEADER_PATH}/ColorMatrix
     ${HEADER_PATH}/ComputeBoundsVisitor
+    ${HEADER_PATH}/Config
     ${HEADER_PATH}/ConvexPlanarOccluder
     ${HEADER_PATH}/ConvexPlanarPolygon
     ${HEADER_PATH}/CoordinateSystemNode
     ${HEADER_PATH}/CopyOp
     ${HEADER_PATH}/CullFace
+    ${HEADER_PATH}/CullingSet
     ${HEADER_PATH}/CullSettings
     ${HEADER_PATH}/CullStack
-    ${HEADER_PATH}/CullingSet
     ${HEADER_PATH}/DeleteHandler
     ${HEADER_PATH}/Depth
     ${HEADER_PATH}/DisplaySettings
-    ${HEADER_PATH}/DrawPixels
     ${HEADER_PATH}/Drawable
+    ${HEADER_PATH}/DrawPixels
     ${HEADER_PATH}/Endian
     ${HEADER_PATH}/Export
+    ${HEADER_PATH}/fast_back_stack
     ${HEADER_PATH}/Fog
     ${HEADER_PATH}/FragmentProgram
     ${HEADER_PATH}/FrameBufferObject
     ${HEADER_PATH}/FrameStamp
     ${HEADER_PATH}/FrontFace
+    ${HEADER_PATH}/Geode
+    ${HEADER_PATH}/Geometry
     ${HEADER_PATH}/GL
     ${HEADER_PATH}/GL2Extensions
     ${HEADER_PATH}/GLExtensions
     ${HEADER_PATH}/GLObjects
     ${HEADER_PATH}/GLU
-    ${HEADER_PATH}/Geode
-    ${HEADER_PATH}/Geometry
     ${HEADER_PATH}/GraphicsContext
     ${HEADER_PATH}/GraphicsThread
     ${HEADER_PATH}/Group
     ${HEADER_PATH}/Hint
     ${HEADER_PATH}/Image
     ${HEADER_PATH}/ImageStream
-    ${HEADER_PATH}/LOD
+    ${HEADER_PATH}/io_utils
     ${HEADER_PATH}/Light
     ${HEADER_PATH}/LightModel
     ${HEADER_PATH}/LightSource
     ${HEADER_PATH}/LineSegment
     ${HEADER_PATH}/LineStipple
     ${HEADER_PATH}/LineWidth
+    ${HEADER_PATH}/LOD
     ${HEADER_PATH}/LogicOp
     ${HEADER_PATH}/Material
     ${HEADER_PATH}/Math
     ${HEADER_PATH}/Matrix
-    ${HEADER_PATH}/MatrixTransform
     ${HEADER_PATH}/Matrixd
     ${HEADER_PATH}/Matrixf
+    ${HEADER_PATH}/MatrixTransform
     ${HEADER_PATH}/Multisample
     ${HEADER_PATH}/Node
     ${HEADER_PATH}/NodeCallback
@@ -90,6 +94,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/NodeVisitor
     ${HEADER_PATH}/Notify
     ${HEADER_PATH}/Object
+    ${HEADER_PATH}/observer_ptr
     ${HEADER_PATH}/OccluderNode
     ${HEADER_PATH}/OcclusionQueryNode
     ${HEADER_PATH}/OperationThread
@@ -108,6 +113,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ProxyNode
     ${HEADER_PATH}/Quat
     ${HEADER_PATH}/Referenced
+    ${HEADER_PATH}/ref_ptr
     ${HEADER_PATH}/RenderInfo
     ${HEADER_PATH}/Scissor
     ${HEADER_PATH}/Sequence
@@ -138,10 +144,10 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/TextureCubeMap
     ${HEADER_PATH}/TextureRectangle
     ${HEADER_PATH}/Timer
+    ${HEADER_PATH}/TransferFunction
     ${HEADER_PATH}/Transform
     ${HEADER_PATH}/TriangleFunctor
     ${HEADER_PATH}/TriangleIndexFunctor
-    ${HEADER_PATH}/TransferFunction
     ${HEADER_PATH}/Uniform
     ${HEADER_PATH}/Vec2
     ${HEADER_PATH}/Vec2b
@@ -163,11 +169,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/VertexProgram
     ${HEADER_PATH}/View
     ${HEADER_PATH}/Viewport
-    ${HEADER_PATH}/buffered_value
-    ${HEADER_PATH}/fast_back_stack
-    ${HEADER_PATH}/io_utils
-    ${HEADER_PATH}/observer_ptr
-    ${HEADER_PATH}/ref_ptr
 )
 
 ADD_LIBRARY(${LIB_NAME}

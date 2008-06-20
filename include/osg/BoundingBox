@@ -14,6 +14,7 @@
 #ifndef OSG_BOUNDINGBOX
 #define OSG_BOUNDINGBOX 1
 
+#include <osg/Config>
 #include <osg/Export>
 #include <osg/Vec3>
 #include <osg/Vec3d>
@@ -31,12 +32,12 @@ class OSG_EXPORT BoundingBox
 {
     public:
     
-#ifdef OSG_USE_DOUBLE_BOUNDINGBOX
-        typedef Vec3d vec_type;
-        typedef double value_type;
-#else
+#ifdef OSG_USE_FLOAT_BOUNDINGBOX
         typedef Vec3f vec_type;
         typedef float value_type;
+#else
+        typedef Vec3d vec_type;
+        typedef double value_type;
 #endif
 
     

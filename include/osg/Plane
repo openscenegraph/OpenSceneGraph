@@ -14,6 +14,7 @@
 #ifndef OSG_PLANE
 #define OSG_PLANE 1
 
+#include <osg/Config>
 #include <osg/Export>
 #include <osg/Vec3>
 #include <osg/Vec4>

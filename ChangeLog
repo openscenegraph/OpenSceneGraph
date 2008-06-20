@@ -1,3 +1,24 @@
+2008-06-20 15:50 +0000 [r8476-8477]  robert:
+
+	* From Mathias Froehlich, moved optional config variables into
+	  include/osg/Config file that is automatically created by cmake
+	  according to its own settings.
+
+	* Updated ChangeLog
+
+2008-06-20 15:28 +0000 [r8475]  robert:
+
+	* Changed const double* to const Matrix::value_type* to ensure
+	  changes in Matrix type don't break the build
+
+2008-06-20 13:16 +0000 [r8474]  robert:
+
+	* From Terry Welsh, new flatten static transforms visitor that
+	  duplicates subgraphs that are shared beneath differnt static
+	  transforms From Robert Osfield, made a range of changes to
+	  Terry's visitor integrating it into osgUtil::Optimizer and
+	  changing the code to use a style more like the rest of the OSG.
+
 2008-06-20 11:16 +0000 [r8473]  robert:
 
 	* From Mathias Froehlich, made the include of bin directory for

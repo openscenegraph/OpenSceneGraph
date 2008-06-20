@@ -1,3 +1,274 @@
+2008-06-20 11:16 +0000 [r8473]  robert:
+
+	* From Mathias Froehlich, made the include of bin directory for
+	  include/OpenThreads/Config only used when doing out of source
+	  builds
+
+2008-06-20 11:11 +0000 [r8472]  robert:
+
+	* Updated version numbers for dev releases
+
+2008-06-20 10:46 +0000 [r8471]  robert:
+
+	* From Mathias Froehlich, "Fixes a compile of
+	  src/osgSim/ShapeAttribute.cpp on suse 10.2."
+
+2008-06-20 09:46 +0000 [r8470]  robert:
+
+	* From Melchior Franz, fixed typo on variable name
+
+2008-06-20 09:42 +0000 [r8469]  robert:
+
+	* From Mathias Froehlich, add search path to enable out of source
+	  builds to find include/OpenThreads/Config.
+
+2008-06-19 20:42 +0000 [r8468]  robert:
+
+	* Updated wrappers
+
+2008-06-19 20:38 +0000 [r8467]  robert:
+
+	* From Neil Groves, "I have taken the liberty of updating a few
+	  files so that there is no longer any derivation from std::vector.
+	  I have done this by adding a new file osg/MixinVector and by
+	  updating only two others: osg/PrimitiveSet and osg/Array. You
+	  will notice that this actually removes what is acknowledged as a
+	  \u2018hack\u2019 in osg/PrimitiveSet. With the original code I
+	  did manage to find memory leaks with some compiler options on VC
+	  8 and 9, as well as Intel compiler. I determined the leak
+	  existence by instrumenting the destructor code, and by use of a
+	  garbage collector as a leak detector (in a similar manner to the
+	  Firefox project). Hence in contrast to what I said originally, it
+	  is exhibiting symptoms on at least some platforms. Since I am
+	  trying to be a good OSG citizen I got out my editor and started
+	  hacking! I have built and tested on Linux (Ubuntu) with GCC 4.x
+	  and Windows VC 8 SP1. It appears that nothing is broken, and that
+	  I\u2019m using less memory J"
+
+2008-06-19 17:35 +0000 [r8466]  robert:
+
+	* From Mathieu Marache, "submission for inclusion to support mpg
+	  and avi files when using the quicktime plugin on windows"
+
+2008-06-19 17:30 +0000 [r8465]  robert:
+
+	* From Mathias Froehlich, added support for using
+	  OpenThreads::Atomic for thread safe ref/unref.
+
+2008-06-19 14:57 +0000 [r8464]  robert:
+
+	* from Andrew Bettison, LineStipple support for .ive
+
+2008-06-19 14:45 +0000 [r8463]  robert:
+
+	* From Adrian Egli, "Improvements to the PSSM implementation"
+
+2008-06-19 14:35 +0000 [r8462]  robert:
+
+	* From Rudolf Weidemann, "in the OpenFlight format materials can
+	  have editable names. In the OSG OpenFlight plugin these names are
+	  ignored when reading, and empty strings are written. As we need
+	  these names in the OSG scene graph by our application, I changed
+	  the plugin code, so the names are now stored in class
+	  "osg::Material" (derived from "osg::Object") by
+	  material->setName(); (see "PaletteRecords.cpp, line 195) when
+	  reading the file, and written to file by dos.writeString(
+	  m.Material->getName(), 12 ); (see MaterialPaletteManager.cpp,
+	  line 80). As these names otherwise get lost when reading an
+	  OpenFlight file and writing it again e.g. by osgconv example.flt
+	  converted_example.flt these changes make the plugin more
+	  complete. The changes were made to OSG revision 8425, and were
+	  tested by osgconv example.flt converted_example.flt comparing the
+	  material palettes of both files inside Multigen Creator."
+
+2008-06-19 14:29 +0000 [r8461]  robert:
+
+	* From Farshid Lashkari, "I noticed some problems when setting up
+	  CameraNodes that inherit viewport settings in stereo mode. It
+	  seems that the SceneView::cull() method will pass the full size
+	  viewport to the left/right cullvisitors, instead of the modified
+	  stereo viewport. I made quite a few changes to SceneView to fix
+	  the issue. The SceneView::cullStage() method will now receive the
+	  viewport as an argument, instead of using the global viewport.
+	  The SceneView::cull() method will pass the modifed viewport to
+	  cullStage when rendering in stereo. There are 2 new private
+	  methods computeLeftEyeViewport() and computeRightEyeViewport()
+	  that will compute the stereo viewports. I also modified the
+	  draw() function so it applies the correct viewport to the
+	  prerender stages. These changes are only necessary for
+	  horizontal/vertical split stereo."
+
+2008-06-19 14:14 +0000 [r8460]  robert:
+
+	* From Andrew Bettison, "Attached are changes for
+	  src/osgPlugins/ive (version 2.4.0) that implement LineStipple
+	  read/write support for the ive file format."
+
+2008-06-19 13:49 +0000 [r8459]  robert:
+
+	* From Paul Melis, "Here is a reworked version of the osgviewerWX
+	  example. It changes the GraphicsWindowWX to only inherit from
+	  osgViewer::GraphicsWindow and adds a standalone widget, called
+	  OSGCanvas, that derives from wxGLCanvas. This solves a problem
+	  with the GraphicsWindowWX instance being destructed twice (see
+	  "Crash in osgviewerWX" of June 12th on osg-users). At program
+	  exit, the main frame deletes all of its children widgets and
+	  therefore calls GraphicsWindowWX's destructor, bypassing OSG's
+	  reference counting. The GraphicsWindowWX instance is then later
+	  destructed a second time when the reference held by osg::Camera
+	  goes to zero. This bug isn't exposed by the example directly, but
+	  if people are going to use the example as a basis (like the
+	  poster in the mentioned thread) they very likely will run into
+	  this problem. "
+
+2008-06-19 13:28 +0000 [r8458]  robert:
+
+	* Updated wrappers to fix OpenThreads::Atomic build issues.
+
+2008-06-19 12:02 +0000 [r8457]  robert:
+
+	* From Michael Platings, fixed typo error in renderbin assignment
+
+2008-06-19 11:58 +0000 [r8456]  robert:
+
+	* In Program::PerContextProgram changed const Uniform* to
+	  osg::ref_ptr<const Uniform*> to avoid the possibility of a
+	  uniform being deleted and another being created and assigned at
+	  the same address which previously confused the uniform tracking
+	  code and introduced a bug.
+
+2008-06-19 11:09 +0000 [r8455]  robert:
+
+	* From Michael Platings and Robert Osfield, added support for
+	  controlling, via StateSet::setNestedRenderBin(bool) whether the
+	  new RenderBin should be nested with the existing RenderBin, or be
+	  nested with the enclosing RenderStage.
+
+2008-06-18 20:27 +0000 [r8453-8454]  robert:
+
+	* Updated wrappers
+
+	* From Michael Platings, implemented check against max number of
+	  supported samples to ensure that the number of samples is safely
+	  capped to what the hardware is capable of, avoiding GL errors and
+	  graceful fallback
+
+2008-06-18 20:17 +0000 [r8452]  robert:
+
+	* From Liang Aibin: "1. Location:
+	  <OSG_SOURCE_ROOT>\src\osgPlugins\osg\Fog.cpp Reason: ".osg"
+	  writter plugins output incorrected string for osg::Fog's Mode.
+	  How to Fix: Line 138 in Fog.cpp: case(Fog::LINEAR): return
+	  "NERVER"; Change to: case(Fog::LINEAR): return "LINEAR"; 2.
+	  Location: <OSG_SOURCE_ROOT>\src\osgPlugins\ive\ Reason: ".ive"
+	  writter plugins missing to process "osg::Fog". How to Fix: (1).
+	  Line 86 in ReadWrite.h: Add: #define IVEFOG 0x00001133 (2). In
+	  CMakeLists.txt "SET(TARGET_SRC" section Add: Fog.cpp
+	  "SET(TARGET_H" section Add: Fog.h (3). In DataInputStream.cpp
+	  Line 54,Add: #include "Fog.h" Line 1185,Add: else if(attributeID
+	  == IVEFOG){ attribute = new osg::Fog();
+	  ((ive::Fog*)(attribute))->read(this); } (4). In
+	  DataOutputStream.cpp Line 57,Add: #include "Fog.h" Line 832,Add:
+	  // This is a Fog else if(dynamic_cast<const
+	  osg::Fog*>(attribute)){ ((ive::Fog*)(attribute))->write(this); }
+	  (5). Add newly created ive::Fog Object in Fog.h and Fog.cpp. "
+
+2008-06-18 16:46 +0000 [r8450-8451]  robert:
+
+	* Updated wrappers
+
+	* Added a wrapString(const char*) which automatically handles null
+	  strings.
+
+2008-06-18 16:28 +0000 [r8449]  robert:
+
+	* Convert string handling to use strdup and free rather then
+	  awkward new char[] code paths
+
+2008-06-18 14:21 +0000 [r8448]  robert:
+
+	* Added --fbo-samples value and --color-samples value command line
+	  paramters for enabling fbo multisampling
+
+2008-06-18 14:09 +0000 [r8447]  robert:
+
+	* From Michael Platings and Paul Palumbo, multi-sample FBO support
+
+2008-06-18 12:01 +0000 [r8446]  robert:
+
+	* From Jean-Sebastien Guay, "When copying a node that had uniforms
+	  on it, the copy constructor of osg::Uniform would not copy the
+	  array of the original uniform (either _intArray or _floatArray)
+	  because none had been allocated and the copy constructor checks
+	  that *both* this's array and rhs's array are valid. I added a
+	  call to allocateDataArray() if rhs has (at least) one valid
+	  array, which should allocate the right array according to the
+	  type. Since the type was copied from rhs, it should create the
+	  same array as rhs has, so then it should copy the data in the
+	  following lines. "
+
+2008-06-18 11:56 +0000 [r8445]  robert:
+
+	* From Bob Kuehne, "added multi-texture support (alpha/trans
+	  images)"
+
+2008-06-18 11:51 +0000 [r8444]  robert:
+
+	* Updated wrappers
+
+2008-06-18 11:13 +0000 [r8443]  robert:
+
+	* From Bob Kuehne, "this submission extends the
+	  osgViewer::RecordCameraPathHandler to have an optionally-enabled
+	  auto-incrementing filename. default behavior is still the same,
+	  but there's one new method to enable autoincrementing filenames."
+	  From Robert Osfield, modified the above so that the number
+	  increments come after the filename rather than before.
+
+2008-06-18 10:51 +0000 [r8442]  robert:
+
+	* From Gino van den Bergen, "Added support for vrml primitive
+	  caching"
+
+2008-06-18 10:46 +0000 [r8441]  robert:
+
+	* From David Callu, "fixed bounding box bug"
+
+2008-06-17 17:43 +0000 [r8440]  robert:
+
+	* From Mathias Froehlich, OpenThreads::Atomic support
+
+2008-06-16 20:22 +0000 [r8439]  robert:
+
+	* Added overriding of CullSettings::inheritCullSettings() into
+	  osg::Camera to properly inherit the clear colour.
+
+2008-06-16 16:06 +0000 [r8438]  robert:
+
+	* Changed class to struct
+
+2008-06-16 13:20 +0000 [r8437]  robert:
+
+	* Added mutex to serialize access to the trpager
+
+2008-06-16 09:32 +0000 [r8436]  robert:
+
+	* Checking in missing header changes
+
+2008-06-12 16:33 +0000 [r8434]  robert:
+
+	* Refactored the management of the request queues so that the
+	  appropraite mutex is locked when DatabaseRequest objects are
+	  modified
+
+2008-06-06 19:57 +0000 [r8425]  robert:
+
+	* Updated wrappers, authors and readme for 2.5.2 dev release
+
+2008-06-06 19:41 +0000 [r8424]  robert:
+
+	* Updated ChangeLog
+
 2008-06-06 17:45 +0000 [r8423]  robert:
 
 	* Updated versions for 2.5.2 dev release

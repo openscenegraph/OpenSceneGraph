@@ -50,7 +50,7 @@ void Optimizer::reset()
 {
 }
 
-static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELLATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS | TEXTURE_ATLAS_BUILDER | STATIC_OBJECT_DETECTION");
+static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELLATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS | TEXTURE_ATLAS_BUILDER | STATIC_OBJECT_DETECTION");
 
 void Optimizer::optimize(osg::Node* node)
 {
@@ -69,6 +69,9 @@ void Optimizer::optimize(osg::Node* node)
 
         if(str.find("~FLATTEN_STATIC_TRANSFORMS")!=std::string::npos) options ^= FLATTEN_STATIC_TRANSFORMS;
         else if(str.find("FLATTEN_STATIC_TRANSFORMS")!=std::string::npos) options |= FLATTEN_STATIC_TRANSFORMS;
+
+        if(str.find("~FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS")!=std::string::npos) options ^= FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS;
+        else if(str.find("FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS")!=std::string::npos) options |= FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS;
 
         if(str.find("~REMOVE_REDUNDANT_NODES")!=std::string::npos) options ^= REMOVE_REDUNDANT_NODES;
         else if(str.find("REMOVE_REDUNDANT_NODES")!=std::string::npos) options |= REMOVE_REDUNDANT_NODES;
@@ -233,6 +236,16 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         CombineStaticTransformsVisitor cstv(this);
         node->accept(cstv);
         cstv.removeTransforms(node);
+
+    }
+
+    if (options & FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS)
+    {
+        osg::notify(osg::NOTICE)<<"Optimizer::optimize() doing FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS"<<std::endl;
+
+        // no combine any adjacent static transforms.
+        FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor fstdssv(this);
+        node->accept(fstdssv);
 
     }
 
@@ -4244,3 +4257,253 @@ void Optimizer::StaticObjectDetectionVisitor::applyDrawable(osg::Drawable& drawa
     
     drawable.computeDataVariance();
 }
+
+
+
+////////////////////////////////////////////////////////////////////////////
+// FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor
+////////////////////////////////////////////////////////////////////////////
+
+void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::reset()
+{
+    _matrixStack.clear();
+}
+
+void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(osg::Group& group)
+{
+    // only continue if there is a parent
+    const unsigned int nodepathsize = _nodePath.size();
+    if(!_matrixStack.empty() && group.getNumParents() > 1 && nodepathsize > 1)
+    {
+        // copy this Group
+        osg::ref_ptr<osg::Object> new_obj = group.clone(osg::CopyOp::DEEP_COPY_NODES | osg::CopyOp::DEEP_COPY_DRAWABLES | osg::CopyOp::DEEP_COPY_ARRAYS);
+        osg::Group* new_group = dynamic_cast<osg::Group*>(new_obj.get());
+
+        // New Group should only be added to parent through which this Group
+        // was traversed, not to all parents of this Group.
+        osg::Group* parent_group = dynamic_cast<osg::Group*>(_nodePath[nodepathsize-2]);
+        if(parent_group)
+        {
+            parent_group->replaceChild(&group, new_group);
+            // traverse the new Group
+            traverse(*(new_group));
+        }
+        else
+        {
+            osg::notify(osg::NOTICE) << "No parent for this Group" << std::endl;
+        }
+    }
+    else
+    {
+        // traverse original node
+        traverse(group);
+    }
+}
+
+
+void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(osg::Transform& transform)
+{
+    bool pushed = false;
+
+    // only continue if there is a parent and this is a STATIC transform
+    const unsigned int nodepathsize = _nodePath.size();
+    if(transform.getDataVariance() == osg::Object::STATIC && nodepathsize > 1)
+    {
+        osg::Matrix matrix;
+        if(!_matrixStack.empty())
+            matrix = _matrixStack.back();
+        transform.computeLocalToWorldMatrix(matrix, this);
+        _matrixStack.push_back(matrix);
+        pushed = true;
+    
+        // convert this Transform to a Group
+        osg::ref_ptr<osg::Group> group = new osg::Group(dynamic_cast<osg::Group&>(transform),
+            osg::CopyOp::DEEP_COPY_NODES | osg::CopyOp::DEEP_COPY_DRAWABLES | osg::CopyOp::DEEP_COPY_ARRAYS);
+
+        // New Group should only be added to parent through which this Transform
+        // was traversed, not to all parents of this Transform.
+        osg::Group* parent_group = dynamic_cast<osg::Group*>(_nodePath[nodepathsize-2]);
+        if(parent_group)
+        {
+            parent_group->replaceChild(&transform, group.get());
+            // traverse the new Group
+            traverse(*(group.get()));
+        }
+        else
+        {
+            osg::notify(osg::NOTICE) << "No parent for this Group" << std::endl;
+        }
+    }
+    else
+    {
+        // traverse original node
+        traverse(transform);
+    }
+
+    // pop matrix off of stack
+    if(pushed)
+        _matrixStack.pop_back();
+}
+
+
+void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(osg::LOD& lod)
+{
+    const unsigned int nodepathsize = _nodePath.size();
+    if(!_matrixStack.empty() && lod.getNumParents() > 1 && nodepathsize > 1)
+    {
+        osg::ref_ptr<osg::LOD> new_lod = new osg::LOD(lod,
+            osg::CopyOp::DEEP_COPY_NODES | osg::CopyOp::DEEP_COPY_DRAWABLES | osg::CopyOp::DEEP_COPY_ARRAYS);
+
+        // New LOD should only be added to parent through which this LOD
+        // was traversed, not to all parents of this LOD.
+        osg::Group* parent_group = dynamic_cast<osg::Group*>(_nodePath[nodepathsize-2]);
+        if(parent_group)
+        {
+            parent_group->replaceChild(&lod, new_lod.get());
+
+            // move center point
+            if(!_matrixStack.empty())
+                new_lod->setCenter(new_lod->getCenter() * _matrixStack.back());
+
+            // traverse the new Group
+            traverse(*(new_lod.get()));
+        }
+        else
+            osg::notify(osg::NOTICE) << "No parent for this LOD" << std::endl;
+    }
+    else
+    {
+        // move center point
+        if(!_matrixStack.empty())
+            lod.setCenter(lod.getCenter() * _matrixStack.back());
+
+        traverse(lod);
+    }
+}
+
+
+void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(osg::Geode& geode)
+{
+    if(!_matrixStack.empty())
+    {
+        // If there is only one parent, just transform all vertices and normals
+        if(geode.getNumParents() == 1)
+        {
+            transformDrawables(geode);
+        }    
+        else
+        {
+            // Else make a copy and then transform
+            const unsigned int nodepathsize = _nodePath.size();
+            if(nodepathsize > 1)
+            {
+                // convert this Transform to a Group
+                osg::ref_ptr<osg::Geode> new_geode = new osg::Geode(geode,
+                    osg::CopyOp::DEEP_COPY_NODES | osg::CopyOp::DEEP_COPY_DRAWABLES | osg::CopyOp::DEEP_COPY_ARRAYS);
+
+                // New Group should only be added to parent through which this Transform
+                // was traversed, not to all parents of this Transform.
+                osg::Group* parent_group = dynamic_cast<osg::Group*>(_nodePath[nodepathsize-2]);
+                if(parent_group)
+                    parent_group->replaceChild(&geode, new_geode.get());
+                else
+                    osg::notify(osg::NOTICE) << "No parent for this Geode" << std::endl;
+
+                transformDrawables(*(new_geode.get()));
+            }
+        }
+    }
+}
+
+
+void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(osg::Billboard& billboard)
+{
+    if(!_matrixStack.empty())
+    {
+        // If there is only one parent, just transform this Billboard
+        if(billboard.getNumParents() == 1)
+        {
+            transformBillboard(billboard);
+        }
+        else
+        {
+            // Else make a copy and then transform
+            const unsigned int nodepathsize = _nodePath.size();
+            if(nodepathsize > 1)
+            {
+                // convert this Transform to a Group
+                osg::ref_ptr<osg::Billboard> new_billboard = new osg::Billboard(billboard,
+                    osg::CopyOp::DEEP_COPY_NODES | osg::CopyOp::DEEP_COPY_DRAWABLES | osg::CopyOp::DEEP_COPY_ARRAYS);
+
+                // New Billboard should only be added to parent through which this Billboard
+                // was traversed, not to all parents of this Billboard.
+                osg::Group* parent_group = dynamic_cast<osg::Group*>(_nodePath[nodepathsize-2]);
+                if(parent_group)
+                    parent_group->replaceChild(&billboard, new_billboard.get());
+                else
+                    osg::notify(osg::NOTICE) << "No parent for this Billboard" << std::endl;
+
+                transformBillboard(*(new_billboard.get()));
+            }
+        }
+    }
+}
+
+
+void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::transformDrawables(osg::Geode& geode)
+{
+    for(unsigned int i=0; i<geode.getNumDrawables(); i++)
+    {
+        osg::Geometry* geometry = geode.getDrawable(i)->asGeometry();
+        if(geometry)
+        {
+            // transform all geometry
+            osg::Vec3Array* verts = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+            if(verts)
+            {
+                for(unsigned int j=0; j<verts->size(); j++)
+                    (*verts)[j] = (*verts)[j] * _matrixStack.back();
+            }
+            else
+            {
+                osg::Vec4Array* verts = dynamic_cast<osg::Vec4Array*>(geometry->getVertexArray());
+                if(verts)
+                {
+                    for(unsigned int j=0; j<verts->size(); j++)
+                        (*verts)[j] = _matrixStack.back() * (*verts)[j];
+                }
+            }
+            osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
+            if(normals)
+            {
+                for(unsigned int j=0; j<normals->size(); j++)
+                    (*normals)[j] = osg::Matrix::transform3x3((*normals)[j], _matrixStack.back());
+            }
+
+            geometry->dirtyBound();
+            geometry->dirtyDisplayList();
+        }
+    }
+
+    geode.dirtyBound();
+}
+
+
+void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::transformBillboard(osg::Billboard& billboard)
+{
+    osg::Vec3 axis = osg::Matrix::transform3x3(billboard.getAxis(), _matrixStack.back());
+    axis.normalize();
+    billboard.setAxis(axis);
+
+    osg::Vec3 normal = osg::Matrix::transform3x3(billboard.getNormal(), _matrixStack.back());
+    normal.normalize();
+    billboard.setNormal(normal);
+
+    for(unsigned int i=0; i<billboard.getNumDrawables(); i++)
+        billboard.setPosition(i, billboard.getPosition(i) * _matrixStack.back());
+
+    billboard.dirtyBound();
+}
+
+
+

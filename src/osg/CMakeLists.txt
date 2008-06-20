@@ -87,6 +87,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Matrixd
     ${HEADER_PATH}/Matrixf
     ${HEADER_PATH}/MatrixTransform
+    ${HEADER_PATH}/MixinVector
     ${HEADER_PATH}/Multisample
     ${HEADER_PATH}/Node
     ${HEADER_PATH}/NodeCallback

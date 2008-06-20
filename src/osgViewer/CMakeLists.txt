@@ -50,6 +50,13 @@ IF(WIN32)
 ELSE(WIN32)
 
     IF(APPLE)
+        SET(OSG_WINDOWING_SYSTEM "Carbon" CACHE STRING "Windowing system type for graphics window creation, options Carbon or X11.")
+    ELSE(APPLE)
+        SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11")
+    ENDIF(APPLE)
+    
+
+    IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
 
         # FIXME: OS X needs selection mechanism for Cocoa, Carbon, X11
         SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
@@ -61,7 +68,8 @@ ELSE(WIN32)
             PixelBufferCarbon.cpp
         )
 
-    ELSE(APPLE)
+    ELSE(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
+
         # X11 for everybody else
         OPTION(OSGVIEWER_USE_XRANDR "Set to ON to enable Xrandr support for GraphicsWindowX11." OFF)
 
@@ -83,7 +91,7 @@ ELSE(WIN32)
         LINK_LIBRARIES(Xrandr)
         ENDIF(OSGVIEWER_USE_XRANDR)
 
-    ENDIF(APPLE)
+    ENDIF(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
 
 ENDIF(WIN32)
 

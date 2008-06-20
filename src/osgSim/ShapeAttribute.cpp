@@ -12,6 +12,7 @@
 */
 
 #include <memory.h>
+#include <stdlib.h>
 
 #include <osgSim/ShapeAttribute>
 

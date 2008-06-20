@@ -37,7 +37,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ColorMask
     ${HEADER_PATH}/ColorMatrix
     ${HEADER_PATH}/ComputeBoundsVisitor
-    ${HEADER_PATH}/Config
     ${HEADER_PATH}/ConvexPlanarOccluder
     ${HEADER_PATH}/ConvexPlanarPolygon
     ${HEADER_PATH}/CoordinateSystemNode
@@ -170,6 +169,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/VertexProgram
     ${HEADER_PATH}/View
     ${HEADER_PATH}/Viewport
+    ${OPENSCENEGRAPH_CONFIG_HEADER}
 )
 
 ADD_LIBRARY(${LIB_NAME}

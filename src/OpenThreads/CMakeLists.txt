@@ -9,6 +9,18 @@ SET(OPENTHREADS_SOVERSION 11)
 
 SET(OPENTHREADS_VERSION ${OPENTHREADS_MAJOR_VERSION}.${OPENTHREADS_MINOR_VERSION}.${OPENTHREADS_PATCH_VERSION})
 
+INCLUDE(CheckAtomicOps)
+
+################################################################################
+# Set Config file
+
+SET(OPENTHREADS_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/OpenThreads/Config")
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/common/Config.in"
+               "${OPENTHREADS_CONFIG_HEADER}")
+INSTALL_FILES(/include/OpenThreads/ FILES "${OPENTHREADS_CONFIG_HEADER}")
+
+################################################################################
+
 SET(HEADER_PATH ${OpenThreads_SOURCE_DIR}/include/OpenThreads)
 SET(OpenThreads_PUBLIC_HEADERS
     ${HEADER_PATH}/Atomic
@@ -22,6 +34,7 @@ SET(OpenThreads_PUBLIC_HEADERS
     ${HEADER_PATH}/ScopedLock  
     ${HEADER_PATH}/Thread
     ${HEADER_PATH}/Version
+    ${OPENTHREADS_CONFIG_HEADER}
 )
 
 # User Options
@@ -68,13 +81,6 @@ ELSE(WIN32)
         MESSAGE("Sorry, OpenThreads may not support your platform")
     ENDIF(UNIX)
 ENDIF(WIN32)
-
-INCLUDE(CheckAtomicOps)
-
-SET(OPENTHREADS_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/OpenThreads/Config")
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/common/Config.in"
-               "${OPENTHREADS_CONFIG_HEADER}")
-INSTALL_FILES(/include/OpenThreads/ FILES "${OPENTHREADS_CONFIG_HEADER}")
 
 # Make sure everyone can find Config
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/include)

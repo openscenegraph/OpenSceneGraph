@@ -194,6 +194,16 @@ MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGSPHERE)
 OPTION(OSG_USE_FLOAT_BOUNDINGBOX "Set to ON to build OpenSceneGraph with float BoundingBox instead of double." ON)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGBOX)
 
+
+################################################################################
+# Set Config file
+
+SET(OPENSCENEGRAPH_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/osg/Config")
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Config.in"
+               "${OPENSCENEGRAPH_CONFIG_HEADER}")
+INSTALL_FILES(/include/osg/ FILES "${OPENSCENEGRAPH_CONFIG_HEADER}")
+
+
 ################################################################################
 # 3rd Party Dependency Stuff
 IF(WIN32)
@@ -583,11 +593,6 @@ IF(BUILD_DOCUMENTATION)
         ${PROJECT_BINARY_DIR}/doc/doxyfile
     )
 ENDIF(BUILD_DOCUMENTATION)
-
-SET(OPENSCENEGRAPH_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/osg/Config")
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Config.in"
-               "${OPENSCENEGRAPH_CONFIG_HEADER}")
-INSTALL_FILES(/include/osg/ FILES "${OPENSCENEGRAPH_CONFIG_HEADER}")
 
 # This needs to be run very last so other parts of the scripts can take
 # advantage of this.

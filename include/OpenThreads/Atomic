@@ -132,12 +132,12 @@ public:
         return ptrOld == InterlockedCompareExchangePointer(&_ptr, ptrNew, ptrOld);
 #elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
         ScopedLock<Mutex> lock(_mutex);
-        if (_ptr != oldPtr)
+        if (_ptr != ptrOld)
             return false;
         _ptr = ptrNew;
         return true;
 #else
-        if (_ptr != oldPtr)
+        if (_ptr != ptrOld)
             return false;
         _ptr = ptrNew;
         return true;

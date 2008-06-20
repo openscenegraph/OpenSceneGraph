@@ -1943,7 +1943,7 @@ void ConvertToInventor::apply(osg::MatrixTransform& node)
   // Convert matrix
   SoMatrixTransform *ivTransform = new SoMatrixTransform;
   SbMatrix ivMatrix;
-  const double *src = node.getMatrix().ptr();
+  const osg::Matrix::value_type *src = node.getMatrix().ptr();
   float *dest = ivMatrix[0];
   for (int i=0; i<16; i++,dest++,src++)
     *dest = *src;

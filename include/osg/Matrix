@@ -14,6 +14,7 @@
 #ifndef OSG_MATRIX
 #define OSG_MATRIX 1
 
+#include <osg/Config>
 #include <osg/Matrixd>
 #include <osg/Matrixf>
 

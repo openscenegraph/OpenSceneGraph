@@ -53,37 +53,37 @@
 
 namespace osgViewer
 {
-	// Just a forward declaration so I don't need the #include in the header.
-	class Viewer;
-	class GraphicsWindowEmbedded;
+    // Just a forward declaration so I don't need the #include in the header.
+    class Viewer;
+    class GraphicsWindowEmbedded;
 }
 
 // Subclass NSOpenGLView. We could subclass NSView instead, but NSOpenGLView is easy.
 @interface ViewerCocoa : NSOpenGLView
 {
-	// Note: In Objective-C++, if you use objects instead of pointers as
-	// member instance variables, you MUST turn on "Call C++ Default Ctors/Dtors in Objective-C".
-	// -fobjc-call-cxx-cdtors
-	// This option makes sure constructors and destructors are run.
-	// This option is only available for gcc 4.0+ (Mac OS X 10.4+)
+    // Note: In Objective-C++, if you use objects instead of pointers as
+    // member instance variables, you MUST turn on "Call C++ Default Ctors/Dtors in Objective-C".
+    // -fobjc-call-cxx-cdtors
+    // This option makes sure constructors and destructors are run.
+    // This option is only available for gcc 4.0+ (Mac OS X 10.4+)
 
-	// Is SimpleViewer supposed use ref_ptr? (Doesn't look like it to me.)
-	// If so, remember ref_ptr is an object on the stack and the cdtors option must be activated.
-	// We could also make simpleViewer an object instead of a pointer, but again, turn on the option.
-	osgViewer::Viewer* theViewer;
-	osgViewer::GraphicsWindowEmbedded* graphicsWindow;
-		
+    // Is SimpleViewer supposed use ref_ptr? (Doesn't look like it to me.)
+    // If so, remember ref_ptr is an object on the stack and the cdtors option must be activated.
+    // We could also make simpleViewer an object instead of a pointer, but again, turn on the option.
+    osgViewer::Viewer* theViewer;
+    osgViewer::GraphicsWindowEmbedded* graphicsWindow;
+        
 
-	// This timer is used to trigger animation callbacks since everything is event driven.
-	NSTimer* animationTimer;
+    // This timer is used to trigger animation callbacks since everything is event driven.
+    NSTimer* animationTimer;
 
-	// Flags to help track whether ctrl-clicking or option-clicking is being used
-	BOOL isUsingCtrlClick;
-	BOOL isUsingOptionClick;
-	
-	// Flag to track whether the OpenGL multithreading engine is enabled or not
-	BOOL isUsingMultithreadedOpenGLEngine;
-	
+    // Flags to help track whether ctrl-clicking or option-clicking is being used
+    BOOL isUsingCtrlClick;
+    BOOL isUsingOptionClick;
+    
+    // Flag to track whether the OpenGL multithreading engine is enabled or not
+    BOOL isUsingMultithreadedOpenGLEngine;
+    
 }
 
 // My custom static method to create a basic pixel format

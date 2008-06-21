@@ -655,11 +655,12 @@ bool GraphicsWindowX11::createWindow()
     swatt.event_mask =  0;
     unsigned long mask = CWBackPixel | CWBorderPixel | CWEventMask | CWColormap;
 
-    bool overrideRedirect = false;
-    if (overrideRedirect)
+    if (_traits->overrideRedirect)
     {
         swatt.override_redirect = true;
         mask |= CWOverrideRedirect;
+        
+        osg::notify(osg::NOTICE)<<"Setting override redirect"<<std::endl;
     }
 
     _window = XCreateWindow( _display, _parent,

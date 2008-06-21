@@ -69,7 +69,7 @@ static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
         }
     }
 
-    std::cout<<"Set up Traits ( rs.getScreenNum() = "<<rs.getScreenNum()<<" )"<<std::endl;
+    osg::notify(osg::INFO)<<"Set up Traits ( rs.getScreenNum() = "<<rs.getScreenNum()<<" )"<<std::endl;
 
     
     traits->hostName = rs.getHostName();

@@ -92,7 +92,8 @@ class OSG_EXPORT GraphicsContext : public Object
                 useMultiThreadedOpenGLEngine(false),
                 useCursor(true),
                 sharedContext(0),
-                setInheritedWindowPixelFormat(false) {}
+                setInheritedWindowPixelFormat(false),
+                overrideRedirect(false) {}
                             
             // graphics context original and size
             int x;
@@ -145,6 +146,9 @@ class OSG_EXPORT GraphicsContext : public Object
             
             // ask the GraphicsWindow implementation to set the pixel format of an inherited window
             bool setInheritedWindowPixelFormat;
+            
+            // X11 hint whether to override the window managers window size/position redirection
+            bool overrideRedirect;
         };
     
     

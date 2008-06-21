@@ -660,7 +660,7 @@ bool GraphicsWindowX11::createWindow()
         swatt.override_redirect = true;
         mask |= CWOverrideRedirect;
         
-        osg::notify(osg::NOTICE)<<"Setting override redirect"<<std::endl;
+        osg::notify(osg::INFO)<<"Setting override redirect"<<std::endl;
     }
 
     _window = XCreateWindow( _display, _parent,

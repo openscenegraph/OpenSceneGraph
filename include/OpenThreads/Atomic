@@ -99,7 +99,7 @@ class Atomic {
     mutable Mutex _mutex;
 #endif
 #if defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-    __declspec(align(32)) volatile long _value;
+    volatile long _value;
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
     volatile uint_t _value;
 #else
@@ -129,7 +129,7 @@ public:
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
         return ptrOld == atomic_cas_ptr(&_ptr, ptrOld, ptrNew);
 #elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-        return ptrOld == InterlockedCompareExchangePointer(&_ptr, ptrNew, ptrOld);
+        return ptrOld == InterlockedCompareExchangePointer((PVOID volatile*)&_ptr, (PVOID)ptrNew, (PVOID)ptrOld);
 #elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
         ScopedLock<Mutex> lock(_mutex);
         if (_ptr != ptrOld)
@@ -171,9 +171,6 @@ private:
 
 #if defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
     mutable Mutex _mutex;
-#endif
-#if defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-    __declspec(align(32))
 #endif
     T* volatile _ptr;
 };

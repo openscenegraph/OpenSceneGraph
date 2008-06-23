@@ -81,8 +81,9 @@ CHECK_CXX_SOURCE_RUNS("
 
 int main(int, const char**)
 {
-   __declspec(align(32)) volatile long value = 0;
-   __declspec(align(32)) volatile void* ptr = &value;
+   volatile long value = 0;
+   long data = 0;
+   long* volatile ptr = &data;
 
    InterlockedIncrement(&value);
    InterlockedDecrement(&value);
@@ -90,7 +91,7 @@ int main(int, const char**)
    if (0 != InterlockedCompareExchange(&value, 1, 0))
       return EXIT_FAILURE;
 
-   if (ptr != InterlockedCompareExchangePointer(&ptr, ptr, ptr))
+   if (ptr != InterlockedCompareExchangePointer((PVOID volatile*)&ptr, (PVOID)ptr, (PVOID)ptr))
       return EXIT_FAILURE;
 
    return EXIT_SUCCESS;

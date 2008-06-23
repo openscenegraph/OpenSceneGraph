@@ -2372,6 +2372,8 @@
 		D47A07040B83413800E19024 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D47A07150B83417900E19024 /* osgmanipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A07120B83417900E19024 /* osgmanipulator.cpp */; };
 		D47A07240B8341AF00E19024 /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47A06810B833F6E00E19024 /* osgManipulator.framework */; };
+		D47E10A10E0C44C000F6990A /* MixinVector in Headers */ = {isa = PBXBuildFile; fileRef = D47E10A00E0C44C000F6990A /* MixinVector */; settings = {ATTRIBUTES = (Public, ); }; };
+		D47E10A30E0C44FA00F6990A /* Atomic in Headers */ = {isa = PBXBuildFile; fileRef = D47E10A20E0C44FA00F6990A /* Atomic */; settings = {ATTRIBUTES = (Public, ); }; };
 		D48DA40F0D990BD800973C07 /* SceneGraphBuilder in Headers */ = {isa = PBXBuildFile; fileRef = D48DA40E0D990BD800973C07 /* SceneGraphBuilder */; settings = {ATTRIBUTES = (Public, ); }; };
 		D48DA4110D990C2B00973C07 /* ObjectRecordData in Headers */ = {isa = PBXBuildFile; fileRef = D48DA4100D990C2B00973C07 /* ObjectRecordData */; settings = {ATTRIBUTES = (Public, ); }; };
 		D48DA4130D990C6E00973C07 /* SceneGraphBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48DA4120D990C6E00973C07 /* SceneGraphBuilder.cpp */; };
@@ -2412,6 +2414,12 @@
 		D48ED2A40C71D36C00A72121 /* Terrain in Headers */ = {isa = PBXBuildFile; fileRef = D48ED2A30C71D36C00A72121 /* Terrain */; settings = {ATTRIBUTES = (Public, ); }; };
 		D48ED2AA0C71D39700A72121 /* SoftShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48ED2A90C71D39700A72121 /* SoftShadowMap.cpp */; };
 		D48ED2AC0C71D3AD00A72121 /* SoftShadowMap in Headers */ = {isa = PBXBuildFile; fileRef = D48ED2AB0C71D3AD00A72121 /* SoftShadowMap */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4AC4E240E0D21450032DD35 /* Config in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E230E0D21450032DD35 /* Config */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4AC4E260E0D21560032DD35 /* Config in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E250E0D21560032DD35 /* Config */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4AC4E310E0D26320032DD35 /* Fog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AC4E2D0E0D26310032DD35 /* Fog.cpp */; };
+		D4AC4E320E0D26320032DD35 /* Fog.h in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E2E0E0D26320032DD35 /* Fog.h */; };
+		D4AC4E330E0D26320032DD35 /* LineStipple.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AC4E2F0E0D26320032DD35 /* LineStipple.cpp */; };
+		D4AC4E340E0D26320032DD35 /* LineStipple.h in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E300E0D26320032DD35 /* LineStipple.h */; };
 		D4C6F00D0B8308D90052E667 /* CameraNode in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F0090B8308D90052E667 /* CameraNode */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F00E0B8308D90052E667 /* DeleteHandler in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F00A0B8308D90052E667 /* DeleteHandler */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4C6F00F0B8308D90052E667 /* Stats in Headers */ = {isa = PBXBuildFile; fileRef = D4C6F00B0B8308D90052E667 /* Stats */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -6956,7 +6964,7 @@
 		5BC191100C15F4D4002CF5BC /* Hint */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Hint; sourceTree = "<group>"; };
 		5BC191120C15F4FC002CF5BC /* ViewerEventHandlers */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ViewerEventHandlers; sourceTree = "<group>"; };
 		5BC191150C15F59C002CF5BC /* osgcompositeviewer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgcompositeviewer.cpp; path = ../../examples/osgcompositeviewer/osgcompositeviewer.cpp; sourceTree = SOURCE_ROOT; };
-		5BC1912C0C15F6B3002CF5BC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.xml; name = Info.plist; path = ../../examples/osgviewerCocoa/Info.plist; sourceTree = SOURCE_ROOT; };
+		5BC1912C0C15F6B3002CF5BC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../../examples/osgviewerCocoa/Info.plist; sourceTree = SOURCE_ROOT; };
 		5BC1912D0C15F6B3002CF5BC /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ../../examples/osgviewerCocoa/main.m; sourceTree = SOURCE_ROOT; };
 		5BC191350C15F734002CF5BC /* osgviewerGLUT.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgviewerGLUT.cpp; path = ../../examples/osgviewerGLUT/osgviewerGLUT.cpp; sourceTree = SOURCE_ROOT; };
 		5BC191370C15F7AD002CF5BC /* osgviewerSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = osgviewerSDL.cpp; path = ../../examples/osgviewerSDL/osgviewerSDL.cpp; sourceTree = SOURCE_ROOT; };
@@ -7551,6 +7559,8 @@
 		D47A06CE0B83406700E19024 /* TranslatePlaneDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TranslatePlaneDragger.cpp; sourceTree = "<group>"; };
 		D47A070A0B83413800E19024 /* osgmanipulator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgmanipulator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47A07120B83417900E19024 /* osgmanipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = osgmanipulator.cpp; sourceTree = "<group>"; };
+		D47E10A00E0C44C000F6990A /* MixinVector */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MixinVector; sourceTree = "<group>"; };
+		D47E10A20E0C44FA00F6990A /* Atomic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Atomic; sourceTree = "<group>"; };
 		D48DA40E0D990BD800973C07 /* SceneGraphBuilder */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SceneGraphBuilder; sourceTree = "<group>"; };
 		D48DA4100D990C2B00973C07 /* ObjectRecordData */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ObjectRecordData; sourceTree = "<group>"; };
 		D48DA4120D990C6E00973C07 /* SceneGraphBuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneGraphBuilder.cpp; sourceTree = "<group>"; };
@@ -7575,6 +7585,12 @@
 		D48ED2A30C71D36C00A72121 /* Terrain */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Terrain; sourceTree = "<group>"; };
 		D48ED2A90C71D39700A72121 /* SoftShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SoftShadowMap.cpp; sourceTree = "<group>"; };
 		D48ED2AB0C71D3AD00A72121 /* SoftShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SoftShadowMap; sourceTree = "<group>"; };
+		D4AC4E230E0D21450032DD35 /* Config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Config; path = config/OpenThreads/Config; sourceTree = SOURCE_ROOT; };
+		D4AC4E250E0D21560032DD35 /* Config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Config; path = config/osg/Config; sourceTree = SOURCE_ROOT; };
+		D4AC4E2D0E0D26310032DD35 /* Fog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Fog.cpp; sourceTree = "<group>"; };
+		D4AC4E2E0E0D26320032DD35 /* Fog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fog.h; sourceTree = "<group>"; };
+		D4AC4E2F0E0D26320032DD35 /* LineStipple.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LineStipple.cpp; sourceTree = "<group>"; };
+		D4AC4E300E0D26320032DD35 /* LineStipple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineStipple.h; sourceTree = "<group>"; };
 		D4C6F0090B8308D90052E667 /* CameraNode */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = CameraNode; sourceTree = "<group>"; };
 		D4C6F00A0B8308D90052E667 /* DeleteHandler */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = DeleteHandler; sourceTree = "<group>"; };
 		D4C6F00B0B8308D90052E667 /* Stats */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Stats; sourceTree = "<group>"; };
@@ -10389,6 +10405,8 @@
 		0037A03D0C18D97D0089AA1C /* OpenThreads */ = {
 			isa = PBXGroup;
 			children = (
+				D4AC4E230E0D21450032DD35 /* Config */,
+				D47E10A20E0C44FA00F6990A /* Atomic */,
 				0037A03E0C18D97D0089AA1C /* Barrier */,
 				0037A03F0C18D97E0089AA1C /* Block */,
 				0037A0400C18D97E0089AA1C /* Condition */,
@@ -11797,6 +11815,10 @@
 		5BC2F6820C44C99800671A68 /* ive */ = {
 			isa = PBXGroup;
 			children = (
+				D4AC4E2D0E0D26310032DD35 /* Fog.cpp */,
+				D4AC4E2E0E0D26320032DD35 /* Fog.h */,
+				D4AC4E2F0E0D26320032DD35 /* LineStipple.cpp */,
+				D4AC4E300E0D26320032DD35 /* LineStipple.h */,
 				D44F2ADA0DA11E6C009144E7 /* TerrainTile.cpp */,
 				D44F2ADB0DA11E6D009144E7 /* TerrainTile.h */,
 				D4F092790D4BB45F00BB1AC7 /* CompositeLayer.cpp */,
@@ -12192,6 +12214,8 @@
 		BE1181ED05D63C0900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D4AC4E250E0D21560032DD35 /* Config */,
+				D47E10A00E0C44C000F6990A /* MixinVector */,
 				0084FA6E0D341D880021E5C9 /* OcclusionQueryNode */,
 				5BC2F8220C468B3100671A68 /* OperationThread */,
 				5BC2F62E0C441CA100671A68 /* GLObjects */,
@@ -13184,6 +13208,8 @@
 				D4F0928C0D4BB46100BB1AC7 /* Layer.h in Headers */,
 				D4F0928E0D4BB46100BB1AC7 /* Locator.h in Headers */,
 				D44F2ADD0DA11E6D009144E7 /* TerrainTile.h in Headers */,
+				D4AC4E320E0D26320032DD35 /* Fog.h in Headers */,
+				D4AC4E340E0D26320032DD35 /* LineStipple.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13287,6 +13313,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D47E10A30E0C44FA00F6990A /* Atomic in Headers */,
+				D4AC4E240E0D21450032DD35 /* Config in Headers */,
 				AC0CCBC70C9F29CE00BD0077 /* Version in Headers */,
 				0037A0470C18D9810089AA1C /* Barrier in Headers */,
 				0037A0480C18D9810089AA1C /* Block in Headers */,
@@ -14031,6 +14059,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D47E10A10E0C44C000F6990A /* MixinVector in Headers */,
+				D4AC4E260E0D21560032DD35 /* Config in Headers */,
 				0084FA6F0D341D880021E5C9 /* OcclusionQueryNode in Headers */,
 				5BC2F62F0C441CA200671A68 /* GLObjects in Headers */,
 				5BC2F8230C468B3100671A68 /* OperationThread in Headers */,
@@ -19056,6 +19086,8 @@
 				D4F0928B0D4BB46100BB1AC7 /* Layer.cpp in Sources */,
 				D4F0928D0D4BB46100BB1AC7 /* Locator.cpp in Sources */,
 				D44F2ADC0DA11E6D009144E7 /* TerrainTile.cpp in Sources */,
+				D4AC4E310E0D26320032DD35 /* Fog.cpp in Sources */,
+				D4AC4E330E0D26320032DD35 /* LineStipple.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23755,7 +23787,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -27104,7 +27135,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -27539,7 +27569,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -32975,7 +33004,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -33043,7 +33071,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				OPTIMIZATION_CFLAGS = "-O0";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";

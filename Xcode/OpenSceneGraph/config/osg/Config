@@ -1,0 +1,10 @@
+#ifndef OSG_CONFIG
+#define OSG_CONFIG 1
+
+/* #undef OSG_USE_FLOAT_MATRIX */
+/* #undef OSG_USE_FLOAT_PLANE */
+#define OSG_USE_FLOAT_BOUNDINGSPHERE
+#define OSG_USE_FLOAT_BOUNDINGBOX
+/* #undef OSG_ENFORCE_THREADSAFE */
+
+#endif

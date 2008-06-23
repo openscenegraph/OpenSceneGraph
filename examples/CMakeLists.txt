@@ -5,13 +5,13 @@ SET(TARGET_DEFAULT_PREFIX "example_")
 SET(TARGET_DEFAULT_LABEL_PREFIX "Examples")
 
 SET(TARGET_COMMON_LIBRARIES 
-        OpenThreads
-	osg 
-	osgDB 
-	osgUtil
-	osgGA
-	osgViewer 
-	osgText 
+    OpenThreads
+    osg 
+    osgDB 
+    osgUtil
+    osgGA
+    osgViewer 
+    osgText 
 )
 
 IF(DYNAMIC_OPENSCENEGRAPH)
@@ -144,6 +144,10 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ENDIF(BUILD_MFC_EXAMPLE)
 
     ENDIF(WIN32)
+
+    IF   (APPLE)
+        ADD_SUBDIRECTORY(osgviewerCocoa)
+    ENDIF(APPLE)
 
     #ADD_SUBDIRECTORY(osgcegui)
     #to add subject to find socket#ADD_SUBDIRECTORY(osgcluster)

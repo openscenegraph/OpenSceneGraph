@@ -201,7 +201,7 @@ MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGBOX)
 SET(OPENSCENEGRAPH_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/osg/Config")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Config.in"
                "${OPENSCENEGRAPH_CONFIG_HEADER}")
-INSTALL_FILES(/include/osg/ FILES "${OPENSCENEGRAPH_CONFIG_HEADER}")
+# INSTALL_FILES(/include/osg/ FILES "${OPENSCENEGRAPH_CONFIG_HEADER}")
 
 
 ################################################################################

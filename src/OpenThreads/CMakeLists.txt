@@ -17,7 +17,8 @@ INCLUDE(CheckAtomicOps)
 SET(OPENTHREADS_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/OpenThreads/Config")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/common/Config.in"
                "${OPENTHREADS_CONFIG_HEADER}")
-INSTALL_FILES(/include/OpenThreads/ FILES "${OPENTHREADS_CONFIG_HEADER}")
+
+# INSTALL_FILES(/include/OpenThreads/ FILES "${OPENTHREADS_CONFIG_HEADER}")
 
 ################################################################################
 

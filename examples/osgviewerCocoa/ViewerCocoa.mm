@@ -368,7 +368,7 @@ static void Internal_SetAlpha(NSBitmapImageRep *imageRep, unsigned char alpha_va
     
     // The NSOpenGLCPSwapInterval seems to be vsync. If 1, buffers are swapped with vertical refresh.
     // If 0, flushBuffer will execute as soon as possible.
-    long swap_interval = 1 ;
+    const GLint swap_interval = 1 ;
     [[self openGLContext] setValues:&swap_interval forParameter:NSOpenGLCPSwapInterval];
 
 

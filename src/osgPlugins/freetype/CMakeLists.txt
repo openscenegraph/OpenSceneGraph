@@ -6,6 +6,9 @@
   ENDIF(WIN32)
   INCLUDE_DIRECTORIES(${FREETYPE_INCLUDE_DIRS} )
 
+IF(APPLE)
+  SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib")
+ENDIF(APPLE)
 
 SET(TARGET_SRC FreeTypeFont.cpp FreeTypeFont3D.cpp FreeTypeLibrary.cpp ReaderWriterFreeType.cpp )
 SET(TARGET_H FreeTypeFont.h FreeTypeFont3D.h FreeTypeLibrary.h )

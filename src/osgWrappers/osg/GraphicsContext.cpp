@@ -492,6 +492,7 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_PublicMemberProperty(osg::GraphicsContext *, sharedContext);
 	I_PublicMemberProperty(osg::ref_ptr< osg::Referenced >, inheritedWindowData);
 	I_PublicMemberProperty(bool, setInheritedWindowPixelFormat);
+	I_PublicMemberProperty(bool, overrideRedirect);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::WindowingSystemInterface)

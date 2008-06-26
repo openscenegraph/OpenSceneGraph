@@ -86,6 +86,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::FLATTEN_BILLBOARDS);
 	I_EnumLabel(osgUtil::Optimizer::TEXTURE_ATLAS_BUILDER);
 	I_EnumLabel(osgUtil::Optimizer::STATIC_OBJECT_DETECTION);
+	I_EnumLabel(osgUtil::Optimizer::FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS);
 	I_EnumLabel(osgUtil::Optimizer::DEFAULT_OPTIMIZATIONS);
 	I_EnumLabel(osgUtil::Optimizer::ALL_OPTIMIZATIONS);
 END_REFLECTOR
@@ -298,6 +299,58 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenBillboardVisitor)
 	          "",
 	          "");
 	I_PublicMemberProperty(osgUtil::Optimizer::FlattenBillboardVisitor::BillboardNodePathMap, _billboards);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor)
+	I_DeclaringFile("osgUtil/Optimizer");
+	I_BaseType(osgUtil::BaseOptimizerVisitor);
+	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor__Optimizer_P1,
+	                           "",
+	                           "");
+	I_Method0(void, reset,
+	          Properties::VIRTUAL,
+	          __void__reset,
+	          "Method to call to reset visitor. ",
+	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
+	I_Method1(void, apply, IN, osg::Group &, group,
+	          Properties::VIRTUAL,
+	          __void__apply__osg_Group_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Transform &, transform,
+	          Properties::VIRTUAL,
+	          __void__apply__osg_Transform_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::LOD &, lod,
+	          Properties::VIRTUAL,
+	          __void__apply__osg_LOD_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
+	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osg::Billboard &, billboard,
+	          Properties::VIRTUAL,
+	          __void__apply__osg_Billboard_R1,
+	          "",
+	          "");
+	I_ProtectedMethod1(void, transformDrawables, IN, osg::Geode &, geode,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__transformDrawables__osg_Geode_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, transformBillboard, IN, osg::Billboard &, billboard,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__transformBillboard__osg_Billboard_R1,
+	                   "",
+	                   "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsVisitor)

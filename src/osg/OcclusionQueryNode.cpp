@@ -383,7 +383,7 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
         "oagOQ: QG: Querying for: " << _oqnName << std::endl;
 
     ext->glBeginQuery( GL_SAMPLES_PASSED_ARB, tr->_id );
-    Geometry::drawImplementation( renderInfo );
+    osg::Geometry::drawImplementation( renderInfo );
     ext->glEndQuery( GL_SAMPLES_PASSED_ARB );
     tr->_active = true;
 

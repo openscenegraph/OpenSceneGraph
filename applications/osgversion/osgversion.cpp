@@ -230,6 +230,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="") return "";
     if (name=="") return "";
 #endif
+    if (name=="Weidemann") return "Wiedemann";
     if (name=="Martsz") return "Martz";
     if (name=="Matz")  return "Martz";
     if (name=="Froenlich") return "Fröhlich";

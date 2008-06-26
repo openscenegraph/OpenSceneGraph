@@ -213,24 +213,11 @@ unsigned int GraphicsContext::createNewContextID()
     s_contextIDMap[contextID]._numContexts = 1;
     
     osg::notify(osg::INFO)<<"GraphicsContext::createNewContextID() creating contextID="<<contextID<<std::endl;
-    
-#if 1    
-    // always update, consitent with how osgProducer used to work.
-    bool updateContextID = true;
-#else
-    // update if new contextID exceeds only one.
-    bool updateContextID = (contextID+1) > osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts();
-#endif
+    osg::notify(osg::INFO)<<"Updating the MaxNumberOfGraphicsContexts to "<<contextID+1<<std::endl;
 
-    if (updateContextID)
-    {
-        osg::notify(osg::INFO)<<"Updating the MaxNumberOfGraphicsContexts to "<<contextID+1<<std::endl;
-
-        // update the the maximum number of graphics contexts, 
-        // to ensure that texture objects and display buffers are configured to the correct size.
-        osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( contextID + 1 );
-    }
-    
+    // update the the maximum number of graphics contexts, 
+    // to ensure that texture objects and display buffers are configured to the correct size.
+    osg::DisplaySettings::instance()->setMaxNumberOfGraphicsContexts( contextID + 1 );
 
     return contextID;    
 }
@@ -746,15 +733,49 @@ void GraphicsContext::addCamera(osg::Camera* camera)
 
 void GraphicsContext::removeCamera(osg::Camera* camera)
 {
-    for(Cameras::iterator itr = _cameras.begin();
-        itr != _cameras.end();
-        ++itr)
+    Cameras::iterator itr = std::find(_cameras.begin(), _cameras.end(), camera);
+    if (itr != _cameras.end())
     {
-        if (*itr == camera)
+        // find a set of nodes attached the camera that we are removing that isn't
+        // shared by any other cameras on this GraphicsContext
+        typedef std::set<Node*> NodeSet;
+        NodeSet nodes;
+        for(unsigned int i=0; i<camera->getNumChildren(); ++i)
         {
-            _cameras.erase(itr);
-            return;
+            nodes.insert(camera->getChild(i));            
         }
+        
+        for(Cameras::iterator citr = _cameras.begin();
+            citr != _cameras.end();
+            ++citr)
+        {
+            if (citr != itr)
+            {
+                osg::Camera* otherCamera = *citr;
+                for(unsigned int i=0; i<otherCamera->getNumChildren(); ++i)
+                {
+                    NodeSet::iterator nitr = nodes.find(otherCamera->getChild(i));
+                    if (nitr != nodes.end()) nodes.erase(nitr);
+                }
+            }            
+        }
+        
+        // now release the GLobjects associated with these non shared nodes
+        for(NodeSet::iterator nitr = nodes.begin();
+            nitr != nodes.end();
+            ++nitr)
+        {
+            const_cast<osg::Node*>(*nitr)->releaseGLObjects(_state.get());
+        }
+
+        // release the context of the any RenderingCache that the Camera has.
+        if (camera->getRenderingCache())
+        {
+            camera->getRenderingCache()->releaseGLObjects(_state.get());
+        }
+
+        _cameras.erase(itr);
+
     }
 }
 

@@ -153,7 +153,7 @@ bool IntersectorGroup::containsIntersections()
 IntersectionVisitor::IntersectionVisitor(Intersector* intersector, ReadCallback* readCallback)
 {
     // override the default node visitor mode.
-    setTraversalMode(NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
+    setTraversalMode(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
     
     setIntersector(intersector);
     

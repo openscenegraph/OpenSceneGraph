@@ -14,6 +14,7 @@
 #ifndef OSG_CULLSETTINGS
 #define OSG_CULLSETTINGS 1
 
+#include <iosfwd>
 #include <osg/Matrix>
 #include <osg/ClearNode>
 

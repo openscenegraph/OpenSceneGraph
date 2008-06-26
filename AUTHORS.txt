@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.5.2
+OpenSceneGraph Library 2.5.3
 
-315 Contributors:
+318 Contributors:
 
 Firstname Surname
 -----------------
@@ -15,12 +15,12 @@ Geoff Michel
 Stephan Huber
 Farshid Lashkari
 Bob Kuehne
+Mathias Fröhlich
 Eric Sokolowsky
 Ulrich Hertlein
-Mathias Fröhlich
 Martin Lavery
-Tree 
 David Callu
+Tree 
 Luigi Calori
 Trajce Nikolov
 Mike Wittman
@@ -42,30 +42,32 @@ Gideon May
 Don Tidrow
 Art Tevs
 Romano José Magacho da Silva
+Paul Melis
+Michael Platings
 Michael Gronager
 Daniel Sjölie
 Chris Hanson
 Per Fahlberg
-Paul Melis
 J.P. Delport
 David Spilling
 Sherman Wilcox
+Melchior Franz
 Joran Jessurun
 Jason Beverage
+Adrian Egli
 Philip Lowman
-Melchior Franz
 Jason Daly
 Frederic Marmond
 David Fries
 Boris Bralo
-Adrian Egli
 Yefei He
+Terry Welsh
 Sondra Iverson
 Serge Lages
 Rune Schmidt Jensen
 Rainer Oder
 Mike Connell
-Michael Platings
+Mathieu Marache
 Joakim Simonsson
 Carlo Camporesi
 Ben Discoe
@@ -85,17 +87,16 @@ Bryan Thrall
 Brad Colbert
 Vivek Rajan
 Thibault Genessay
-Terry Welsh
 Sean Spicer
 Ravi Mathur
 Nikolaus Hanekamp
 Neil Salter
 Mihai Radu
 Michael Hartman
-Mathieu Marache
 Luc Frauciel
 Laurens Voerman
 Glenn Waldron
+Gino van den Bergen
 David Guthrie
 Corbin Holtz
 Cedric Pinson
@@ -109,7 +110,6 @@ Roland Smeenk
 Paul de Repentigny
 Leandro Motta Barros
 John Kelso
-Gino van den Bergen
 Daniel Larimer
 Colin Dunlop
 Bruce Clay
@@ -124,7 +124,7 @@ Richard Schmidt
 Rafa Gaitan
 Phil Atkin
 Peter Hrenka
-Neil Hughes
+Neil Groves
 Mattias Linde
 Mattias Helsing
 Maria Ten
@@ -140,6 +140,7 @@ Domenico Mangieri
 Charles Cole
 Blake Williams
 Antoine Hue
+Andrew Bettison
 Anders Backman
 Ali Botorabi
 Zach Deedler
@@ -153,6 +154,7 @@ Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
 Sebastian Messerschmidt
+Rudolf Wiedemann
 Riccardo Corsi
 Ralf Kern
 Perry Miller
@@ -207,7 +209,6 @@ Sid Byce
 Shuxing Xiao
 Shane Arnott
 Sebastien Kuntz
-Rudolf Wiedemann
 Ronny Krueger
 Robert Swain
 Rick Pingry
@@ -225,7 +226,9 @@ Panagiotis Papadakos
 Orhun Birsoy
 Ole-Morten Duesund
 Nicolas Brodu
+Neil Hughes
 Nathan Cournia
+Morten Haukness
 Morné Pistorius
 Mirko Viviani
 Mikkel GjÃ¸l
@@ -246,6 +249,7 @@ Mario Guimaraes
 Marin Lavery
 Marco Lehmann
 Louis Hamilton
+Liang Aibin
 Lewis Harmon
 Lars Nilson
 Kristopher Bixler
@@ -309,7 +313,6 @@ Ben van Basten
 Bart Gallet
 Axel Volley
 Andrew Reyonolds
-Andrew Bettison
 Andreas Jochens
 Almalric Alexandre
 Allen Bierbaum

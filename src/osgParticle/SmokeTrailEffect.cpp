@@ -55,6 +55,7 @@ SmokeTrailEffect::SmokeTrailEffect(const osg::Vec3& position, float scale, float
 SmokeTrailEffect::SmokeTrailEffect(const SmokeTrailEffect& copy, const osg::CopyOp& copyop):
     ParticleEffect(copy,copyop)
 {
+    if (_automaticSetup) buildEffect();
 }
 
 void SmokeTrailEffect::setDefaults()

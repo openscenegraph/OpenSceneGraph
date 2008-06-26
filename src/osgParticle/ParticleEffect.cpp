@@ -30,7 +30,6 @@ ParticleEffect::ParticleEffect(const ParticleEffect& copy, const osg::CopyOp& co
     _emitterDuration(copy._emitterDuration),
     _wind(copy._wind)
 {
-    if (_automaticSetup) buildEffect();
 }
 
 void ParticleEffect::setUseLocalParticleSystem(bool local)

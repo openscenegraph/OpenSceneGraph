@@ -54,6 +54,7 @@ SmokeEffect::SmokeEffect(const osg::Vec3& position, float scale, float intensity
 SmokeEffect::SmokeEffect(const SmokeEffect& copy, const osg::CopyOp& copyop):
     ParticleEffect(copy,copyop)
 {
+    if (_automaticSetup) buildEffect();
 }
 
 void SmokeEffect::setDefaults()

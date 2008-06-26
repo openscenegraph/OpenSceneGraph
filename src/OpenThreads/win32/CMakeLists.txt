@@ -9,17 +9,18 @@ SET_SOURCE_FILES_PROPERTIES(${LIB_PUBLIC_HEADERS} PROPERTIES HEADER_FILE_ONLY ON
 ADD_LIBRARY(${LIB_NAME}
     ${OPENTHREADS_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
-	HandleHolder.h
-	Win32BarrierPrivateData.h
-	WIN32Condition.cpp
-	Win32Condition.h
-	Win32ConditionPrivateData.h
-	Win32Mutex.cpp
-	Win32MutexPrivateData.h
-	Win32Thread.cpp
-	Win32ThreadBarrier.cpp
-	Win32ThreadPrivateData.h
-	../common/Version.cpp
+    HandleHolder.h
+    Win32BarrierPrivateData.h
+    WIN32Condition.cpp
+    Win32Condition.h
+    Win32ConditionPrivateData.h
+    Win32Mutex.cpp
+    Win32MutexPrivateData.h
+    Win32Thread.cpp
+    Win32ThreadBarrier.cpp
+    Win32ThreadPrivateData.h
+    ../common/Version.cpp
+    ../common/Atomic.cpp
 )
 
 
@@ -31,22 +32,22 @@ ENDIF(OPENTHREADS_SONAMES)
 # their respective directories, we need to set the 
 # link directory so it can find this location.
 LINK_DIRECTORIES(
-	${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 IF(MSVC AND OSG_MSVC_VERSIONED_DLL)
-	HANDLE_MSVC_DLL(ot ${OPENTHREADS_SOVERSION})
+    HANDLE_MSVC_DLL(ot ${OPENTHREADS_SOVERSION})
 ENDIF(MSVC AND OSG_MSVC_VERSIONED_DLL)
 
 INSTALL(
-	TARGETS OpenThreads
-	ARCHIVE DESTINATION lib
-	LIBRARY DESTINATION lib
-	RUNTIME DESTINATION bin
+    TARGETS OpenThreads
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
 )
 INSTALL(
-	FILES ${OpenThreads_PUBLIC_HEADERS}
-	DESTINATION include/OpenThreads
+    FILES ${OpenThreads_PUBLIC_HEADERS}
+    DESTINATION include/OpenThreads
 )
 
 #commented out# INCLUDE(ModuleInstall OPTIONAL)

@@ -20,12 +20,3 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(OpenThreads::Atomic)
-	I_DeclaringFile("OpenThreads/Atomic");
-	I_ConstructorWithDefaults1(IN, unsigned, value, 0,
-	                           Properties::NON_EXPLICIT,
-	                           ____Atomic__unsigned,
-	                           "",
-	                           "");
-END_REFLECTOR
-

@@ -129,7 +129,7 @@ class OSG_EXPORT Referenced
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
         struct ObserverSetData;
 
-        OpenThreads::AtomicPtr<ObserverSetData> _observerSetDataPtr;
+        OpenThreads::AtomicPtr _observerSetDataPtr;
 
         mutable OpenThreads::Atomic     _refCount;
 #else

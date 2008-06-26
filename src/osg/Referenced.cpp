@@ -247,7 +247,7 @@ Referenced::~Referenced()
         delete tmpMutexPtr;
     }
 #else
-    ObserverSetData* observerSetData = _observerSetDataPtr.get();
+    ObserverSetData* observerSetData = static_cast<ObserverSetData*>(_observerSetDataPtr.get());
     if (observerSetData)
     {
         for(ObserverSet::iterator itr = observerSetData->_observers.begin();
@@ -307,12 +307,12 @@ void Referenced::unref_nodelete() const
 void Referenced::addObserver(Observer* observer)
 {
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    ObserverSetData* observerSetData = _observerSetDataPtr.get();
+    ObserverSetData* observerSetData = static_cast<ObserverSetData*>(_observerSetDataPtr.get());
     while (0 == observerSetData) {
         ObserverSetData* newObserverSetData = new ObserverSetData;
         if (!_observerSetDataPtr.assign(newObserverSetData, 0))
             delete newObserverSetData;
-        observerSetData = _observerSetDataPtr.get();
+        observerSetData = static_cast<ObserverSetData*>(_observerSetDataPtr.get());
     }
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(observerSetData->_mutex);
     observerSetData->_observers.insert(observer);
@@ -335,7 +335,7 @@ void Referenced::addObserver(Observer* observer)
 void Referenced::removeObserver(Observer* observer)
 {
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    ObserverSetData* observerSetData = _observerSetDataPtr.get();
+    ObserverSetData* observerSetData = static_cast<ObserverSetData*>(_observerSetDataPtr.get());
     if (observerSetData)
     {
        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(observerSetData->_mutex); 

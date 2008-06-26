@@ -248,6 +248,72 @@ void IntersectionVisitor::apply(osg::PagedLOD& plod)
 
     if (plod.getNumFileNames()>0)
     {
+#if 1
+        // Identify the range value for the highest res child
+        float targetRangeValue;
+        if( plod.getRangeMode() == osg::LOD::DISTANCE_FROM_EYE_POINT )
+            targetRangeValue = 1e6; // Init high to find min value
+        else
+            targetRangeValue = 0; // Init low to find max value
+            
+        const osg::LOD::RangeList rl = plod.getRangeList();
+        osg::LOD::RangeList::const_iterator rit;
+        for( rit = rl.begin();
+             rit != rl.end();
+             rit++ )
+        {
+            if( plod.getRangeMode() == osg::LOD::DISTANCE_FROM_EYE_POINT )
+            {
+                if( rit->first < targetRangeValue )
+                    targetRangeValue = rit->first;
+            }
+            else
+            {
+                if( rit->first > targetRangeValue )
+                    targetRangeValue = rit->first;
+            }
+        }
+
+        // Perform an intersection test only on children that display
+        // at the maximum resolution.
+        unsigned int childIndex;
+        for( rit = rl.begin(), childIndex = 0;
+             rit != rl.end();
+             rit++, childIndex++ )
+        {
+            if( rit->first != targetRangeValue )
+                // This is not one of the highest res children
+                continue;
+
+            osg::ref_ptr<osg::Node> child( NULL );
+            if( plod.getNumChildren() > childIndex )
+                child = plod.getChild( childIndex );
+
+            if( (!child.valid()) && (_readCallback.valid()) )
+            {
+                // Child is NULL; attempt to load it, if we have a readCallback...
+                unsigned int validIndex( childIndex );
+                if (plod.getNumFileNames() <= childIndex)
+                    validIndex = plod.getNumFileNames()-1;
+
+                child = _readCallback->readNodeFile( plod.getDatabasePath() + plod.getFileName( validIndex ) );
+            }
+
+            if ( !child.valid() && plod.getNumChildren()>0)
+            {
+                // Child is still NULL, so just use the one at the end of the list.
+                child = plod.getChild( plod.getNumChildren()-1 );
+            }
+
+            if (child.valid())
+            {
+                child->accept(*this);
+            }
+        }
+#else    
+        // older code than above block, that assumes that the PagedLOD is ordered correctly
+        // i.e. low res children first, no duplicate ranges.
+        
         osg::ref_ptr<osg::Node> highestResChild;
 
         if (plod.getNumFileNames() != plod.getNumChildren() && _readCallback.valid())
@@ -264,6 +330,7 @@ void IntersectionVisitor::apply(osg::PagedLOD& plod)
         {
             highestResChild->accept(*this);
         }
+#endif
     }
 
     leave();

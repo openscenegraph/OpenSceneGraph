@@ -10,14 +10,6 @@ CHECK_CXX_SOURCE_RUNS("
 
 int main()
 {
-#ifdef __i386__
-   // Bad, gcc behaves dependent on the compilers -march=... flags.
-   // Since the osg::Referenced stuff is code distributed in headers, it is
-   // unclear if we will have this feature available at compile time of the
-   // headers. So just do not use this feature for 32 bit code.
-   // May be we can implement around that limitation at some time..
-   return EXIT_FAILURE;
-#else
    unsigned value = 0;
    void* ptr = &value;
    __sync_add_and_fetch(&value, 1);
@@ -30,12 +22,11 @@ int main()
       return EXIT_FAILURE;
 
    return EXIT_SUCCESS;
-#endif
 }
 " _OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
 
 CHECK_CXX_SOURCE_RUNS("
-#include <cstdlib>
+#include <stdlib.h>
 
 int main(int, const char**)
 {
@@ -44,10 +35,10 @@ int main(int, const char**)
    __add_and_fetch(&value, 1);
    __synchronize(value);
    __sub_and_fetch(&value, 1);
-   if (!__sync_compare_and_swap(&value, 0, 1))
+   if (!__compare_and_swap(&value, 0, 1))
       return EXIT_FAILURE;
    
-   if (!__sync_compare_and_swap(&ptr, ptr, ptr))
+   if (!__compare_and_swap((unsigned long*)&ptr, (unsigned long)ptr, (unsigned long)ptr))
       return EXIT_FAILURE;
 
    return EXIT_SUCCESS;

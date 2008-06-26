@@ -15,14 +15,23 @@
 #define _OPENTHREADS_ATOMIC_
 
 #include <OpenThreads/Config>
+#include <OpenThreads/Exports>
 
-#if defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-# include <windows.h>
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS) && defined(__i386__)
+#define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
+#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+#define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
 # include <atomic.h>
 #elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
 # include "Mutex"
 # include "ScopedLock"
+#endif
+
+#if defined(_OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES)
+#define _OPENTHREADS_ATOMIC_INLINE
+#else
+#define _OPENTHREADS_ATOMIC_INLINE inline
 #endif
 
 namespace OpenThreads {
@@ -31,65 +40,13 @@ namespace OpenThreads {
  *  @class Atomic
  *  @brief  This class provides an atomic increment and decrement operation.
  */
-class Atomic {
+class OPENTHREAD_EXPORT_DIRECTIVE Atomic {
  public:
     Atomic(unsigned value = 0) : _value(value)
     { }
-    unsigned operator++()
-    {
-#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
-        return __sync_add_and_fetch(&_value, 1);
-#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
-        return __add_and_fetch(&_value, 1);
-#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
-        return atomic_inc_uint_nv(&_value);
-#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-        return InterlockedIncrement(&_value);
-#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
-        ScopedLock<Mutex> lock(_mutex);
-        return ++_value;
-#else
-        return ++_value;
-#endif
-    }
-    unsigned operator--()
-    {
-#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
-        return __sync_sub_and_fetch(&_value, 1);
-#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
-        return __sub_and_fetch(&_value, 1);
-#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
-        return atomic_dec_uint_nv(&_value);
-#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-        return InterlockedDecrement(&_value);
-#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
-        ScopedLock<Mutex> lock(_mutex);
-        return --_value;
-#else
-        return --_value;
-#endif
-    }
-    operator unsigned() const
-    {
-#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
-        __sync_synchronize();
-        return _value;
-#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
-        __synchronize(_value);
-        return _value;
-#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
-        membar_consumer(); // Hmm, do we need???
-        return _value;
-#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-        return static_cast<unsigned const volatile &>(_value);
-#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
-        ScopedLock<Mutex> lock(_mutex);
-        return _value;
-#else
-        return _value;
-#endif
-    }
-    
+    _OPENTHREADS_ATOMIC_INLINE unsigned operator++();
+    _OPENTHREADS_ATOMIC_INLINE unsigned operator--();
+    _OPENTHREADS_ATOMIC_INLINE operator unsigned() const;
  private:
 
     Atomic(const Atomic&);
@@ -111,59 +68,16 @@ class Atomic {
  *  @class AtomicPtr
  *  @brief  This class provides an atomic pointer assignment using cas operations.
  */
-template<typename T>
-class AtomicPtr {
+class OPENTHREAD_EXPORT_DIRECTIVE AtomicPtr {
 public:
-    AtomicPtr(T* ptr = 0) : _ptr(ptr)
+    AtomicPtr(void* ptr = 0) : _ptr(ptr)
     { }
     ~AtomicPtr()
     { _ptr = 0; }
 
     // assigns a new pointer
-    bool assign(T* ptrNew, const T* const ptrOld)
-    {
-#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
-        return __sync_bool_compare_and_swap(&_ptr, ptrOld, ptrNew);
-#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
-        return __compare_and_swap(&_ptr, ptrOld, ptrNew);
-#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
-        return ptrOld == atomic_cas_ptr(&_ptr, ptrOld, ptrNew);
-#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-        return ptrOld == InterlockedCompareExchangePointer((PVOID volatile*)&_ptr, (PVOID)ptrNew, (PVOID)ptrOld);
-#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
-        ScopedLock<Mutex> lock(_mutex);
-        if (_ptr != ptrOld)
-            return false;
-        _ptr = ptrNew;
-        return true;
-#else
-        if (_ptr != ptrOld)
-            return false;
-        _ptr = ptrNew;
-        return true;
-#endif
-    }
-
-    T* get() const
-    {
-#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
-        __sync_synchronize();
-        return _ptr;
-#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
-        __synchronize(_ptr);
-        return _ptr;
-#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
-        membar_consumer(); // Hmm, do we need???
-        return _ptr;
-#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-        return _ptr;
-#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
-        ScopedLock<Mutex> lock(_mutex);
-        return _ptr;
-#else
-        return _ptr;
-#endif
-    }
+    _OPENTHREADS_ATOMIC_INLINE bool assign(void* ptrNew, const void* const ptrOld);
+    _OPENTHREADS_ATOMIC_INLINE void* get() const;
 
 private:
     AtomicPtr(const AtomicPtr&);
@@ -172,8 +86,109 @@ private:
 #if defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
     mutable Mutex _mutex;
 #endif
-    T* volatile _ptr;
+    void* volatile _ptr;
 };
+
+#if !defined(_OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES)
+
+_OPENTHREADS_ATOMIC_INLINE unsigned
+Atomic::operator++()
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_add_and_fetch(&_value, 1);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+    return __add_and_fetch(&_value, 1);
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+    return atomic_inc_uint_nv(&_value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    ScopedLock<Mutex> lock(_mutex);
+    return ++_value;
+#else
+    return ++_value;
+#endif
+}
+
+_OPENTHREADS_ATOMIC_INLINE unsigned
+Atomic::operator--()
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_sub_and_fetch(&_value, 1);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+    return __sub_and_fetch(&_value, 1);
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+    return atomic_dec_uint_nv(&_value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    ScopedLock<Mutex> lock(_mutex);
+    return --_value;
+#else
+    return --_value;
+#endif
+}
+
+_OPENTHREADS_ATOMIC_INLINE
+Atomic::operator unsigned() const
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    __sync_synchronize();
+    return _value;
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+    __synchronize();
+    return _value;
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+    membar_consumer(); // Hmm, do we need???
+    return _value;
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    ScopedLock<Mutex> lock(_mutex);
+    return _value;
+#else
+    return _value;
+#endif
+}
+
+_OPENTHREADS_ATOMIC_INLINE bool
+AtomicPtr::assign(void* ptrNew, const void* const ptrOld)
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_bool_compare_and_swap(&_ptr, ptrOld, ptrNew);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+    return __compare_and_swap((unsigned long*)&_ptr, (unsigned long)ptrOld, (unsigned long)ptrNew);
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+    return ptrOld == atomic_cas_ptr(&_ptr, ptrOld, ptrNew);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    ScopedLock<Mutex> lock(_mutex);
+    if (_ptr != ptrOld)
+        return false;
+    _ptr = ptrNew;
+    return true;
+#else
+    if (_ptr != ptrOld)
+        return false;
+    _ptr = ptrNew;
+    return true;
+#endif
+}
+
+_OPENTHREADS_ATOMIC_INLINE void*
+AtomicPtr::get() const
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    __sync_synchronize();
+    return _ptr;
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+    __synchronize();
+    return _ptr;
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+    membar_consumer(); // Hmm, do we need???
+    return _ptr;
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    ScopedLock<Mutex> lock(_mutex);
+    return _ptr;
+#else
+    return _ptr;
+#endif
+}
+
+#endif // !defined(_OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES)
 
 }
 

@@ -58,6 +58,7 @@ FireEffect::FireEffect(const osg::Vec3& position, float scale, float intensity)
 FireEffect::FireEffect(const FireEffect& copy, const osg::CopyOp& copyop):
     ParticleEffect(copy,copyop)
 {
+    if (_automaticSetup) buildEffect();
 }
 
 void FireEffect::setDefaults()

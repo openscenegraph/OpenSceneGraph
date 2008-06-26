@@ -57,6 +57,7 @@ ExplosionDebrisEffect::ExplosionDebrisEffect(const osg::Vec3& position, float sc
 ExplosionDebrisEffect::ExplosionDebrisEffect(const ExplosionDebrisEffect& copy, const osg::CopyOp& copyop):
     ParticleEffect(copy,copyop)
 {
+    if (_automaticSetup) buildEffect();
 }
 
 void ExplosionDebrisEffect::setDefaults()

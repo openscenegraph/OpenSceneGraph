@@ -553,7 +553,10 @@ void Image::allocateImage(int s,int t,int r,
         _pixelFormat = format;
         _dataType = type;
         _packing = packing;
-        _internalTextureFormat = format;
+        
+        // preserve internalTextureFormat if already set, otherwise
+        // use the pixelFormat as the source for the format.
+        if (_internalTextureFormat==0) _internalTextureFormat = format;
     }
     else
     {
@@ -565,7 +568,10 @@ void Image::allocateImage(int s,int t,int r,
         _pixelFormat = 0;
         _dataType = 0;
         _packing = 0;
-        _internalTextureFormat = 0;
+        
+        // commenting out reset of _internalTextureFormat as we are changing
+        // policy so that allocateImage honours previous settings of _internalTextureFormat.
+        //_internalTextureFormat = 0;
     }
     
     dirty();

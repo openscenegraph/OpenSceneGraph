@@ -293,7 +293,7 @@ class OSGUTIL_EXPORT Optimizer
           * of duplicated and flatten individually.  This results in more static transforms
           * being removed, but also means that more data is generated, and as a result may
           * not always be the most appropriate flatten visitor to use.*/  
-        class FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor : public BaseOptimizerVisitor
+        class OSGUTIL_EXPORT FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor : public BaseOptimizerVisitor
         {
             public:
 

@@ -508,9 +508,9 @@ class OSG_EXPORT HeightField : public Shape
         /** Get the const sFloatArray height data.*/
         const osg::FloatArray* getFloatArray() const { return _heights.get(); }
 
-        HeightList& getHeightList() { return *_heights; }
+        HeightList& getHeightList() { return _heights->asVector(); }
 
-        const HeightList& getHeightList() const { return *_heights; }
+        const HeightList& getHeightList() const { return _heights->asVector(); }
 
         /** Set the height of the skirt to render around the edge of HeightField.
           * The skirt is used as a means of disguising edge boundaries between adjacent HeightField, 

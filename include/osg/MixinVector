@@ -24,10 +24,10 @@ namespace osg {
  *
  *  @author Neil Groves
  */
-template<class ValueT, class AllocatorT=std::allocator<ValueT> >
+template<class ValueT>
 class MixinVector
 {
-    typedef typename std::vector<ValueT, AllocatorT> vector_type;
+    typedef typename std::vector<ValueT> vector_type;
 public:
     typedef typename vector_type::allocator_type allocator_type;
     typedef typename vector_type::value_type value_type;
@@ -42,27 +42,18 @@ public:
     typedef typename vector_type::size_type size_type;
     typedef typename vector_type::difference_type difference_type;
 
-    explicit MixinVector(const allocator_type& alloc = allocator_type())
-    : _impl(alloc)
+    explicit MixinVector() : _impl()
     {
     }
-    
+
     explicit MixinVector(size_type initial_size, const value_type& fill_value = value_type())
     : _impl(initial_size, fill_value)
     {
     }
 
-    MixinVector(size_type             initial_size,
-            const value_type&     fill_value,
-            const allocator_type& alloc)
-    : _impl(initial_size, fill_value, alloc)
-    {
-    }
-
     template<class InputIterator>
-    MixinVector(InputIterator first, InputIterator last,
-            const allocator_type& alloc = allocator_type())
-    : _impl(first, last, alloc)
+    MixinVector(InputIterator first, InputIterator last)
+    : _impl(first, last)
     {
     }
 
@@ -89,9 +80,6 @@ public:
     }
 
     virtual ~MixinVector() {}
-
-    operator const vector_type&() const { return _impl; }
-    operator vector_type&() { return _impl; }
 
     void clear() { _impl.clear(); }
     void resize(size_type new_size, const value_type& fill_value = value_type()) { _impl.resize(new_size, fill_value); }
@@ -153,54 +141,54 @@ public:
     vector_type& asVector() { return _impl; }
     const vector_type& asVector() const { return _impl; }
 
-    friend inline bool operator==(const MixinVector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left._impl == right._impl; }
-    friend inline bool operator==(const MixinVector<ValueT, AllocatorT>& left, const std::vector<ValueT, AllocatorT>& right) { return left._impl == right; }
-    friend inline bool operator==(const std::vector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left == right._impl; }
+    friend inline bool operator==(const MixinVector<ValueT>& left, const MixinVector<ValueT>& right) { return left._impl == right._impl; }
+    friend inline bool operator==(const MixinVector<ValueT>& left, const std::vector<ValueT>& right) { return left._impl == right; }
+    friend inline bool operator==(const std::vector<ValueT>& left, const MixinVector<ValueT>& right) { return left == right._impl; }
 
-    friend inline bool operator!=(const MixinVector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left._impl != right._impl; }
-    friend inline bool operator!=(const MixinVector<ValueT, AllocatorT>& left, const std::vector<ValueT, AllocatorT>& right) { return left._impl != right; }
-    friend inline bool operator!=(const std::vector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left != right._impl; }
+    friend inline bool operator!=(const MixinVector<ValueT>& left, const MixinVector<ValueT>& right) { return left._impl != right._impl; }
+    friend inline bool operator!=(const MixinVector<ValueT>& left, const std::vector<ValueT>& right) { return left._impl != right; }
+    friend inline bool operator!=(const std::vector<ValueT>& left, const MixinVector<ValueT>& right) { return left != right._impl; }
 
-    friend inline bool operator<(const MixinVector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left._impl < right._impl; }
-    friend inline bool operator<(const MixinVector<ValueT, AllocatorT>& left, const std::vector<ValueT, AllocatorT>& right) { return left._impl < right; }
-    friend inline bool operator<(const std::vector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left < right._impl; }
+    friend inline bool operator<(const MixinVector<ValueT>& left, const MixinVector<ValueT>& right) { return left._impl < right._impl; }
+    friend inline bool operator<(const MixinVector<ValueT>& left, const std::vector<ValueT>& right) { return left._impl < right; }
+    friend inline bool operator<(const std::vector<ValueT>& left, const MixinVector<ValueT>& right) { return left < right._impl; }
 
-    friend inline bool operator>(const MixinVector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left._impl > right._impl; }
-    friend inline bool operator>(const MixinVector<ValueT, AllocatorT>& left, const std::vector<ValueT, AllocatorT>& right) { return left._impl > right; }
-    friend inline bool operator>(const std::vector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left > right._impl; }
+    friend inline bool operator>(const MixinVector<ValueT>& left, const MixinVector<ValueT>& right) { return left._impl > right._impl; }
+    friend inline bool operator>(const MixinVector<ValueT>& left, const std::vector<ValueT>& right) { return left._impl > right; }
+    friend inline bool operator>(const std::vector<ValueT>& left, const MixinVector<ValueT>& right) { return left > right._impl; }
 
-    friend inline bool operator<=(const MixinVector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left._impl <= right._impl; }
-    friend inline bool operator<=(const MixinVector<ValueT, AllocatorT>& left, const std::vector<ValueT, AllocatorT>& right) { return left._impl <= right; }
-    friend inline bool operator<=(const std::vector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left <= right._impl; }
+    friend inline bool operator<=(const MixinVector<ValueT>& left, const MixinVector<ValueT>& right) { return left._impl <= right._impl; }
+    friend inline bool operator<=(const MixinVector<ValueT>& left, const std::vector<ValueT>& right) { return left._impl <= right; }
+    friend inline bool operator<=(const std::vector<ValueT>& left, const MixinVector<ValueT>& right) { return left <= right._impl; }
 
-    friend inline bool operator>=(const MixinVector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left._impl >= right._impl; }
-    friend inline bool operator>=(const MixinVector<ValueT, AllocatorT>& left, const std::vector<ValueT, AllocatorT>& right) { return left._impl >= right; }
-    friend inline bool operator>=(const std::vector<ValueT, AllocatorT>& left, const MixinVector<ValueT, AllocatorT>& right) { return left >= right._impl; }
+    friend inline bool operator>=(const MixinVector<ValueT>& left, const MixinVector<ValueT>& right) { return left._impl >= right._impl; }
+    friend inline bool operator>=(const MixinVector<ValueT>& left, const std::vector<ValueT>& right) { return left._impl >= right; }
+    friend inline bool operator>=(const std::vector<ValueT>& left, const MixinVector<ValueT>& right) { return left >= right._impl; }
 
 private:
     vector_type _impl;
 };
 
-template<class ValueT, class AllocatorT> inline
+template<class ValueT> inline
 void
-swap(MixinVector<ValueT, AllocatorT>& left,
-     MixinVector<ValueT, AllocatorT>& right)
+swap(MixinVector<ValueT>& left,
+     MixinVector<ValueT>& right)
 {
     std::swap(left.asVector(), right.asVector());
 }
 
-template<class ValueT, class AllocatorT> inline
+template<class ValueT> inline
 void
-swap(MixinVector<ValueT, AllocatorT>& left,
-     std::vector<ValueT, AllocatorT>& right)
+swap(MixinVector<ValueT>& left,
+     std::vector<ValueT>& right)
 {
     std::swap(left.asVector(), right);
 }
 
-template<class ValueT, class AllocatorT> inline
+template<class ValueT> inline
 void
-swap(std::vector<ValueT, AllocatorT>& left,
-     MixinVector<ValueT, AllocatorT>& right)
+swap(std::vector<ValueT>& left,
+     MixinVector<ValueT>& right)
 {
     std::swap(left, right.asVector());
 }

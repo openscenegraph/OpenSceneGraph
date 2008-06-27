@@ -347,7 +347,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         struct RequestQueue : public osg::Referenced
         {
-            typedef std::list< osg::ref_ptr<DatabaseRequest> > RequestList;
+            typedef std::vector< osg::ref_ptr<DatabaseRequest> > RequestList;
 
             void sort();
                                     

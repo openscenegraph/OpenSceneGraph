@@ -90,7 +90,7 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         /**
          * you can overwrite the fragment shader if you like to modify it yourself, own fragment shader can be used
          */
-        class FragmentShaderGenerator : public osg::Referenced {
+        class OSGSHADOW_EXPORT FragmentShaderGenerator : public osg::Referenced {
             public:
                 /** 
                  * generate the GLSL fragement shader 

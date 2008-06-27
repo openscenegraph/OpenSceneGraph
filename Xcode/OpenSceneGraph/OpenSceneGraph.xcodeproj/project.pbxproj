@@ -2281,6 +2281,7 @@
 		D41CA8FC0CAAB10300D6176C /* OBJWriterNodeVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = D41CA8FA0CAAB10200D6176C /* OBJWriterNodeVisitor.h */; };
 		D41CA9000CAAB58F00D6176C /* ParallelSplitShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41CA8FF0CAAB58F00D6176C /* ParallelSplitShadowMap.cpp */; };
 		D41CA9020CAAB5A500D6176C /* ParallelSplitShadowMap in Headers */ = {isa = PBXBuildFile; fileRef = D41CA9010CAAB5A500D6176C /* ParallelSplitShadowMap */; settings = {ATTRIBUTES = (Public, ); }; };
+		D425C82A0E14F49F004E88FE /* Atomic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D425C8290E14F49F004E88FE /* Atomic.cpp */; };
 		D42FE5860B542DD10058A380 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D42FE5870B542DD10058A380 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D42FE5880B542DD10058A380 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -7485,6 +7486,7 @@
 		D41CA8FA0CAAB10200D6176C /* OBJWriterNodeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OBJWriterNodeVisitor.h; sourceTree = "<group>"; };
 		D41CA8FF0CAAB58F00D6176C /* ParallelSplitShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ParallelSplitShadowMap.cpp; sourceTree = "<group>"; };
 		D41CA9010CAAB5A500D6176C /* ParallelSplitShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ParallelSplitShadowMap; sourceTree = "<group>"; };
+		D425C8290E14F49F004E88FE /* Atomic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Atomic.cpp; path = common/Atomic.cpp; sourceTree = "<group>"; };
 		D4456E510D4F674E005E986E /* osgtext3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osgtext3D.cpp; path = ../../examples/osgtext3D/osgtext3D.cpp; sourceTree = SOURCE_ROOT; };
 		D44F2AA70DA11DD2009144E7 /* TerrainTile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TerrainTile; sourceTree = "<group>"; };
 		D44F2AA90DA11DED009144E7 /* TerrainTile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainTile.cpp; path = ../../src/osgTerrain/TerrainTile.cpp; sourceTree = SOURCE_ROOT; };
@@ -10426,6 +10428,7 @@
 			isa = PBXGroup;
 			children = (
 				AC0CCBC90C9F2A2C00BD0077 /* Version.cpp */,
+				D425C8290E14F49F004E88FE /* Atomic.cpp */,
 				0037A0520C18D9CF0089AA1C /* pthreads */,
 			);
 			name = OpenThreads;
@@ -19203,6 +19206,7 @@
 				0037A0A90C18DBE30089AA1C /* PThreadCondition.c++ in Sources */,
 				0037A0AB0C18DBE40089AA1C /* PThreadMutex.c++ in Sources */,
 				AC0CCBCA0C9F2A2D00BD0077 /* Version.cpp in Sources */,
+				D425C82A0E14F49F004E88FE /* Atomic.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

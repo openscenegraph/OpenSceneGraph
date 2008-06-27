@@ -243,7 +243,7 @@ struct DatabasePager::SortFileRequestFunctor
 //
 void DatabasePager::RequestQueue::sort()
 {
-    _requestList.sort(SortFileRequestFunctor());
+    std::sort(_requestList.begin(),_requestList.end(),SortFileRequestFunctor());
 }
 
 

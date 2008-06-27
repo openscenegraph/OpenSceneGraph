@@ -77,6 +77,7 @@ int main(int, const char**)
    long* volatile ptr = &data;
 
    InterlockedIncrement(&value);
+   MemoryBarrier();
    InterlockedDecrement(&value);
 
    if (0 != InterlockedCompareExchange(&value, 1, 0))

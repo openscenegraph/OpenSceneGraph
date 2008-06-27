@@ -85,20 +85,6 @@ RefPtrAdapter<FuncObj> refPtrAdapt(const FuncObj& func)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//  SortFileRequestFunctor
-//
-struct DatabasePager::SortFileRequestFunctor
-{
-    bool operator() (const osg::ref_ptr<DatabasePager::DatabaseRequest>& lhs,const osg::ref_ptr<DatabasePager::DatabaseRequest>& rhs) const
-    {
-        if (lhs->_timestampLastRequest>rhs->_timestampLastRequest) return true;
-        else if (lhs->_timestampLastRequest<rhs->_timestampLastRequest) return false;
-        else return (lhs->_priorityLastRequest>rhs->_priorityLastRequest);
-    }
-};
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
 //  FindCompileableGLObjectsVisitor
 //
 class DatabasePager::FindCompileableGLObjectsVisitor : public osg::NodeVisitor
@@ -238,6 +224,31 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
+//  SortFileRequestFunctor
+//
+struct DatabasePager::SortFileRequestFunctor
+{
+    bool operator() (const osg::ref_ptr<DatabasePager::DatabaseRequest>& lhs,const osg::ref_ptr<DatabasePager::DatabaseRequest>& rhs) const
+    {
+        if (lhs->_timestampLastRequest>rhs->_timestampLastRequest) return true;
+        else if (lhs->_timestampLastRequest<rhs->_timestampLastRequest) return false;
+        else return (lhs->_priorityLastRequest>rhs->_priorityLastRequest);
+    }
+};
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  ReadQueue
+//
+void DatabasePager::RequestQueue::sort()
+{
+    _requestList.sort(SortFileRequestFunctor());
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
 //  ReadQueue
 //
 DatabasePager::ReadQueue::ReadQueue(DatabasePager* pager, const std::string& name):
@@ -279,7 +290,8 @@ void DatabasePager::ReadQueue::takeFirst(osg::ref_ptr<DatabaseRequest>& database
 
     if (!_requestList.empty())
     {
-        _requestList.sort(SortFileRequestFunctor());
+        sort();
+    
         databaseRequest = _requestList.front();
         databaseRequest->_requestQueue = 0;
         _requestList.erase(_requestList.begin());
@@ -659,7 +671,8 @@ void DatabasePager::DatabaseThread::run()
             if (loadedObjectsNeedToBeCompiled)
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_pager->_dataToCompileList->_requestMutex);
-                _pager->_dataToCompileList->_requestList.sort(SortFileRequestFunctor());
+
+                _pager->_dataToCompileList->sort();
 
                 // Prune all the old entries.
                 RequestQueue::RequestList::iterator tooOld

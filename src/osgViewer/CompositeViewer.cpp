@@ -119,6 +119,8 @@ bool CompositeViewer::readConfiguration(const std::string& filename)
 
 void CompositeViewer::addView(osgViewer::View* view)
 {
+    bool alreadyRealized = isRealized();
+    
     bool threadsWereRuinning = _threadsRunning;
     if (threadsWereRuinning) stopThreading();
 
@@ -127,6 +129,33 @@ void CompositeViewer::addView(osgViewer::View* view)
     view->_viewerBase = this;
     
     view->setFrameStamp(_frameStamp.get());
+    
+    if (alreadyRealized)
+    {
+        Contexts contexts;
+        if (view->getCamera()->getGraphicsContext())
+        {
+            contexts.push_back(view->getCamera()->getGraphicsContext());
+        }
+        for(unsigned int i=0; i<view->getNumSlaves(); ++i)
+        {
+            if (view->getSlave(i)._camera->getGraphicsContext())
+            {
+                contexts.push_back(view->getSlave(i)._camera->getGraphicsContext());
+            }
+        }
+
+        for(Contexts::iterator itr = contexts.begin();
+            itr != contexts.end();
+            ++itr)
+        {
+            if (!((*itr)->isRealized()))
+            {
+                (*itr)->realize();
+            }
+        }
+
+    }
     
     if (threadsWereRuinning) startThreading();
 }

@@ -372,6 +372,12 @@ void ViewerBase::startThreading()
     {
         osg::GraphicsContext* gc = (*citr);
         
+        if (!gc->isRealized())
+        {
+            osg::notify(osg::INFO)<<"ViewerBase::startThreading() : Realizng window "<<gc<<std::endl;
+            gc->realize();
+        }
+        
         gc->getState()->setDynamicObjectRenderingCompletedCallback(_endDynamicDrawBlock.get());
 
         // create the a graphics thread for this context

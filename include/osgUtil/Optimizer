@@ -432,8 +432,16 @@ class OSGUTIL_EXPORT Optimizer
             public:
 
                 /// default to traversing all children.
-                StateVisitor(Optimizer* optimizer=0):
-                    BaseOptimizerVisitor(optimizer, SHARE_DUPLICATE_STATE) {}
+                StateVisitor(bool combineDynamicState,
+                             bool combineStaticState,
+                             bool combineUnspecifiedState,
+                             Optimizer* optimizer=0):
+                    BaseOptimizerVisitor(optimizer, SHARE_DUPLICATE_STATE)
+                {
+                    _optimize[osg::Object::DYNAMIC] = combineDynamicState;
+                    _optimize[osg::Object::STATIC] = combineStaticState;
+                    _optimize[osg::Object::UNSPECIFIED] = combineUnspecifiedState;
+                }
 
                 /** empty visitor, make it ready for next traversal.*/        
                 virtual void reset();
@@ -447,10 +455,18 @@ class OSGUTIL_EXPORT Optimizer
             protected:
 
                 void addStateSet(osg::StateSet* stateset,osg::Object* obj);
+                
+                inline bool optimize(osg::Object::DataVariance variance)
+                {
+                    return _optimize[variance];
+                }
 
                 typedef std::set<osg::Object*>              ObjectSet;
                 typedef std::map<osg::StateSet*,ObjectSet>  StateSetMap;
 
+                // note, one element for DYNAMIC, STATIC and UNSPECIFIED
+                bool _optimize[3];
+                
                 StateSetMap _statesets;
 
         };

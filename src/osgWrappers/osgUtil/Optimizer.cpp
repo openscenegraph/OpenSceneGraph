@@ -646,9 +646,8 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
 	I_DeclaringFile("osgUtil/Optimizer");
 	I_BaseType(osgUtil::BaseOptimizerVisitor);
-	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
-	                           Properties::NON_EXPLICIT,
-	                           ____StateVisitor__Optimizer_P1,
+	I_ConstructorWithDefaults4(IN, bool, combineDynamicState, , IN, bool, combineStaticState, , IN, bool, combineUnspecifiedState, , IN, osgUtil::Optimizer *, optimizer, 0,
+	                           ____StateVisitor__bool__bool__bool__Optimizer_P1,
 	                           "default to traversing all children. ",
 	                           "");
 	I_Method0(void, reset,
@@ -675,6 +674,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::StateVisitor)
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__addStateSet__osg_StateSet_P1__osg_Object_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(bool, optimize, IN, osg::Object::DataVariance, variance,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__optimize__osg_Object_DataVariance,
 	                   "",
 	                   "");
 END_REFLECTOR

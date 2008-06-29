@@ -188,7 +188,11 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing SHARE_DUPLICATE_STATE"<<std::endl;
 
-        StateVisitor osv(this);
+        bool combineDynamicState = false;
+        bool combineStaticState = true;
+        bool combineUnspecifiedState = true;
+
+        StateVisitor osv(combineDynamicState, combineStaticState, combineUnspecifiedState, this);
         node->accept(osv);
         osv.optimize();
     }
@@ -203,7 +207,11 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         tav.optimize();
 
         // now merge duplicate state, that may have been introduced by merge textures into texture atlas'
-        StateVisitor osv(this);
+        bool combineDynamicState = false;
+        bool combineStaticState = true;
+        bool combineUnspecifiedState = true;
+
+        StateVisitor osv(combineDynamicState, combineStaticState, combineUnspecifiedState, this);
         node->accept(osv);
         osv.optimize();
     }
@@ -464,7 +472,7 @@ void Optimizer::StateVisitor::optimize()
                 aitr!=attributes.end();
                 ++aitr)
             {
-                if (aitr->second.first->getDataVariance()==osg::Object::STATIC)
+                if (optimize(aitr->second.first->getDataVariance()))
                 {
                     attributeToStateSetMap[aitr->second.first.get()].insert(StateSetUnitPair(sitr->first,NON_TEXTURE_ATTRIBUTE));
                 }
@@ -479,7 +487,7 @@ void Optimizer::StateVisitor::optimize()
                     aitr!=attributes.end();
                     ++aitr)
                 {
-                    if (aitr->second.first->getDataVariance()==osg::Object::STATIC)
+                    if (optimize(aitr->second.first->getDataVariance()))
                     {
                         attributeToStateSetMap[aitr->second.first.get()].insert(StateSetUnitPair(sitr->first,unit));
                     }
@@ -492,7 +500,7 @@ void Optimizer::StateVisitor::optimize()
                 uitr!=uniforms.end();
                 ++uitr)
             {
-                if (uitr->second.first->getDataVariance()==osg::Object::STATIC)
+                if (optimize(uitr->second.first->getDataVariance()))
                 {
                     uniformToStateSetMap[uitr->second.first.get()].insert(sitr->first);
                 }

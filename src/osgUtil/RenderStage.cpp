@@ -842,7 +842,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         }
     }
 
-    const FrameBufferObject* read_fbo = _fbo.get();
+    const FrameBufferObject* read_fbo = fbo_supported ? _fbo.get() : 0;
     bool apply_read_fbo = false;
 
     if (fbo_supported && _resolveFbo.valid() && fbo_ext->glBlitFramebufferEXT)
@@ -889,7 +889,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     // now copy the rendered image to attached texture.
     if (doCopyTexture)
     {
-        SubFunc::applyReadFBO(apply_read_fbo, read_fbo, state);
+        if (read_fbo) SubFunc::applyReadFBO(apply_read_fbo, read_fbo, state);
         copyTexture(renderInfo);
     }
 
@@ -900,7 +900,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     {
         if (itr->second._image.valid())
         {
-            SubFunc::applyReadFBO(apply_read_fbo, read_fbo, state);
+            if (read_fbo) SubFunc::applyReadFBO(apply_read_fbo, read_fbo, state);
 
             if (using_multiple_render_targets)
             {

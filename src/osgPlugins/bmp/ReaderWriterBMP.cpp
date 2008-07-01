@@ -263,7 +263,7 @@ int *numComponents_ret)
                 int npixperbyte=8/inf.Colorbits; // no of pixels per byte
                 for (int ii=0; ii<inf.width/npixperbyte; ii++) {
                     unsigned char mask=0x00; // masked with index to extract colorbits bits
-                    unsigned char byte=imptr[(j*inf.width/npixperbyte)+ii];
+                    unsigned char byte=imptr[(j*doff/npixperbyte)+ii];
                     int jj;
                     for (jj=0; jj<inf.Colorbits; jj++) mask |= (0x80>>jj); // fill N High end bits
                     for (jj=0; jj<npixperbyte; jj++) {

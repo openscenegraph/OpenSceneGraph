@@ -115,14 +115,16 @@ class KDTree : public osg::Shape
         }
 
 
-        osg::observer_ptr<osg::Geometry> _geometry;
+        osg::observer_ptr<osg::Geometry>    _geometry;
 
-        osg::BoundingBox                _bb;
+        osg::BoundingBox                    _bb;
 
-        AxisStack                       _axisStack;
-        KDNodeList                      _kdNodes;
-        KDLeafList                      _kdLeaves;
-        Indices                         _vertexIndices;
+        AxisStack                           _axisStack;
+        KDNodeList                          _kdNodes;
+        KDLeafList                          _kdLeaves;
+
+        osg::ref_ptr<osg::Vec3Array>        _vertices;
+        Indices                             _vertexIndices;
 };
 
 class KDTreeTraverser
@@ -248,7 +250,7 @@ KDTree* KDTreeBuilder::createKDTree(osg::Geometry* geometry)
     osg::ref_ptr<KDTree> kdTree = new KDTree;
     kdTree->_geometry = geometry;
     kdTree->_bb = kdTree->_geometry->getBound();
-    
+    kdTree->_vertices = vertices;
     
     unsigned int estimatedSize = (unsigned int)(float(vertices->size())/float(_targetNumVerticesPerLeaf)*1.5);
 
@@ -372,7 +374,7 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
         {
             KDLeaf& leaf = kdTree.getLeaf(nodeIndex);
 
-            osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(kdTree._geometry->getVertexArray());
+            osg::Vec3Array* vertices = kdTree._vertices.get();
 
             //osg::notify(osg::NOTICE)<<"  divide leaf->_vertexIndices.size()="<<leaf->_vertexIndices.size()<<std::endl;
 

@@ -143,6 +143,9 @@ namespace ive {
 //osgText classes
 #define IVETEXT                         0x10000001
 
+#define IVETEXT3D                       0x10000002
+#define IVEFADETEXT                     0x10000003
+
 class ReadWrite{
 
 public:

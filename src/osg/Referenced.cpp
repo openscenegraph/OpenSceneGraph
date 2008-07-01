@@ -82,10 +82,12 @@ struct DeleteHandlerPointer
 
 typedef std::set<Observer*> ObserverSet;
 
+#if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
 struct Referenced::ObserverSetData {
    OpenThreads::Mutex _mutex;
    ObserverSet _observers;
 };
+#endif
 
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
 static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;

@@ -97,6 +97,9 @@
 #include "HeightFieldLayer.h"
 #include "CompositeLayer.h"
 
+#include "FadeText.h"
+#include "Text3D.h"
+
 #include <osg/Endian>
 #include <osg/Notify>
 #include <osg/io_utils>
@@ -1279,7 +1282,15 @@ osg::Drawable* DataInputStream::readDrawable()
     else if(drawableTypeID == IVETEXT){
         drawable = new osgText::Text();
         ((Text*)(drawable))->read(this);
-    }    
+    }   
+    else if(drawableTypeID == IVEFADETEXT){
+        drawable = new osgText::FadeText();
+        ((FadeText*)(drawable))->read(this);
+    }
+    else if(drawableTypeID == IVETEXT3D){
+        drawable = new osgText::Text3D();
+        ((Text3D*)(drawable))->read(this);
+    }
     else
         throw Exception("Unknown drawable drawableTypeIDentification in Geode::read()");
 

@@ -93,6 +93,8 @@ SET(TARGET_SRC
     TexGenNode.cpp
     TexMat.cpp
     Text.cpp
+    FadeText.cpp
+    Text3D.cpp
     Texture1D.cpp
     Texture2D.cpp
     Texture3D.cpp
@@ -198,6 +200,8 @@ SET(TARGET_H
     TexGenNode.h
     TexMat.h
     Text.h
+    FadeText.h
+    Text3D.h
     Texture1D.h
     Texture2D.h
     Texture3D.h

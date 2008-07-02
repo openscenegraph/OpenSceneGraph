@@ -27,6 +27,12 @@
 BEGIN_ENUM_REFLECTOR(osgDB::SharedStateManager::ShareMode)
 	I_DeclaringFile("osgDB/SharedStateManager");
 	I_EnumLabel(osgDB::SharedStateManager::SHARE_NONE);
+	I_EnumLabel(osgDB::SharedStateManager::SHARE_STATIC_TEXTURES);
+	I_EnumLabel(osgDB::SharedStateManager::SHARE_UNSPECIFIED_TEXTURES);
+	I_EnumLabel(osgDB::SharedStateManager::SHARE_DYNAMIC_TEXTURES);
+	I_EnumLabel(osgDB::SharedStateManager::SHARE_STATIC_STATESETS);
+	I_EnumLabel(osgDB::SharedStateManager::SHARE_UNSPECIFIED_STATESETS);
+	I_EnumLabel(osgDB::SharedStateManager::SHARE_DYNAMIC_STATESETS);
 	I_EnumLabel(osgDB::SharedStateManager::SHARE_TEXTURES);
 	I_EnumLabel(osgDB::SharedStateManager::SHARE_STATESETS);
 	I_EnumLabel(osgDB::SharedStateManager::SHARE_ALL);
@@ -35,9 +41,11 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgDB::SharedStateManager)
 	I_DeclaringFile("osgDB/SharedStateManager");
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor0(____SharedStateManager,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, unsigned int, mode, osgDB::SharedStateManager::SHARE_ALL,
+	                           Properties::NON_EXPLICIT,
+	                           ____SharedStateManager__unsigned_int,
+	                           "",
+	                           "");
 	I_Method1(void, setShareMode, IN, unsigned int, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__setShareMode__unsigned_int,
@@ -73,6 +81,18 @@ BEGIN_OBJECT_REFLECTOR(osgDB::SharedStateManager)
 	          __bool__isShared__osg_StateSet_P1,
 	          "",
 	          "");
+	I_ProtectedMethod1(bool, shareTexture, IN, osg::Object::DataVariance, variance,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__shareTexture__osg_Object_DataVariance,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(bool, shareStateSet, IN, osg::Object::DataVariance, variance,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__shareStateSet__osg_Object_DataVariance,
+	                   "",
+	                   "");
 	I_ProtectedMethod2(void, process, IN, osg::StateSet *, ss, IN, osg::Object *, parent,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

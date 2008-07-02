@@ -33,16 +33,23 @@ namespace osgDB {
 
         enum ShareMode
         {
-            SHARE_NONE      = 0x00,
-            SHARE_TEXTURES  = 0x01,
-            SHARE_STATESETS = 0x02,
+            SHARE_NONE                  = 0,
+            SHARE_STATIC_TEXTURES       = 1<<0,
+            SHARE_UNSPECIFIED_TEXTURES  = 1<<1,
+            SHARE_DYNAMIC_TEXTURES      = 1<<2,
+            SHARE_STATIC_STATESETS      = 1<<3,
+            SHARE_UNSPECIFIED_STATESETS = 1<<4,
+            SHARE_DYNAMIC_STATESETS     = 1<<5,
+            SHARE_TEXTURES  = SHARE_STATIC_TEXTURES | SHARE_UNSPECIFIED_TEXTURES,
+            SHARE_STATESETS = SHARE_STATIC_STATESETS | SHARE_UNSPECIFIED_STATESETS,
             SHARE_ALL       = SHARE_TEXTURES |
                               SHARE_STATESETS
         };
 
-        SharedStateManager();
+        SharedStateManager(unsigned int mode = SHARE_ALL);
 
-        void setShareMode(unsigned int mode) { _shareMode = mode; }
+        void setShareMode(unsigned int mode);
+        
         unsigned int getShareMode() { return _shareMode; }
 
         // Call right after each unload and before Registry cache prune.
@@ -58,6 +65,17 @@ namespace osgDB {
         // seen already?" Safe to call from the pager thread.
         bool isShared(osg::StateSet* stateSet);
     protected:
+
+        inline bool shareTexture(osg::Object::DataVariance variance)
+        {
+            return _shareTexture[variance];
+        }
+
+        inline bool shareStateSet(osg::Object::DataVariance variance)
+        {
+            return _shareStateSet[variance];
+        }
+
 
         void process(osg::StateSet* ss, osg::Object* parent);
         osg::StateAttribute *find(osg::StateAttribute *sa);
@@ -99,8 +117,11 @@ namespace osgDB {
         typedef std::map<osg::StateSet*, StateSetSharePair> StateSetStateSetSharePairMap;
         StateSetStateSetSharePairMap tmpSharedStateSetList;
 
+        unsigned int    _shareMode;
+        bool            _shareTexture[3];
+        bool            _shareStateSet[3];
+
         // Share connection mutex 
-        unsigned int _shareMode;
 
         OpenThreads::Mutex *_mutex;
         // Mutex for doing isShared queries from other threads

@@ -51,8 +51,38 @@ typedef std::vector< value_type >   Indices;
 
 //#define VERBOSE_OUTPUT
 
-typedef std::pair< value_type, value_type> KDNode;
-typedef std::pair< value_type, value_type> KDLeaf;
+struct KDNode
+{
+    KDNode():
+        first(0),
+        second(0) {}
+
+    KDNode(value_type f, value_type s):
+        first(f),
+        second(s) {}
+
+    value_type first;    
+    value_type second;
+    
+    osg::BoundingBox bb;
+};
+
+
+struct KDLeaf
+{
+    KDLeaf():
+        first(0),
+        second(0) {}
+
+    KDLeaf(value_type f, value_type s):
+        first(f),
+        second(s) {}
+
+    value_type first;    
+    value_type second;
+
+    osg::BoundingBox bb;
+};
 
 struct Triangle
 {
@@ -134,6 +164,19 @@ class KDTree : public osg::Shape
                 osg::notify(osg::NOTICE)<<"Warning: getNode("<<nodeNum<<") _kdNodes.size()="<<_kdNodes.size()<<std::endl;
             }
             return _kdNodes[nodeNum];
+        }
+        
+        osg::BoundingBox& getBounindingBox(int nodeNum)
+        {
+            if (nodeNum<0)
+            {
+                int num = -nodeNum-1;
+                return _kdLeaves[num].bb;            
+            }
+            else
+            {
+                return _kdNodes[nodeNum].bb;
+            }
         }
 
 

@@ -299,6 +299,7 @@ int KDTreeBuilder::divide(KDTree& kdTree, osg::BoundingBox& bb, int nodeIndex, u
         kdTree.getNode(nodeNum).first = leftChildIndex;
         kdTree.getNode(nodeNum).second = rightChildIndex; 
         
+        
         return nodeNum;        
     }
 

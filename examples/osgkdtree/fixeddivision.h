@@ -16,6 +16,9 @@
 *  THE SOFTWARE.
 */
 
+#ifndef FIXIEDDIVISION_H
+#define FIXIEDDIVISION_H
+
   
 #include <osgDB/ReadFile>
 
@@ -349,3 +352,5 @@ class KDTreeBuilder : public osg::NodeVisitor
 
 
 }
+
+#endif

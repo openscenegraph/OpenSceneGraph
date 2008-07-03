@@ -342,6 +342,8 @@ FadeText::FadeText(const Text& text,const osg::CopyOp& copyop):
 
 void FadeText::init()
 {
+    setDataVariance(osg::Object::DYNAMIC);
+
     _fadeSpeed = 0.01f;
     setUpdateCallback(new FadeTextUpdateCallback());
 }

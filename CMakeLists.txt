@@ -528,10 +528,10 @@ IF(APPLE)
         # version information we need. (Darwin versions can be changed
         # independently of OS X versions.)
         # It does look like CMake handles the CMAKE_OSX_SYSROOT automatically.
-        IF(EXISTS /Developer/SDKs/10.5.sdk)
+        IF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
             SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-        ELSE(EXISTS /Developer/SDKs/10.5.sdk)
+        ELSE(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
             IF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
                 SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.4 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
@@ -540,7 +540,7 @@ IF(APPLE)
                 # Should break down further to set the -mmacosx-version-min,
                 # but the SDK detection is too unreliable here.
             ENDIF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
-        ENDIF(EXISTS /Developer/SDKs/10.5.sdk)
+        ENDIF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
     ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
 
     OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" OFF)

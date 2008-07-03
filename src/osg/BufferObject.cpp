@@ -578,7 +578,7 @@ void ElementBufferObject::compileBuffer(State& state) const
     eboMemory = extensions->glMapBuffer(_target, GL_WRITE_ONLY_ARB);
 #endif
 
-    unsigned int offset = 0;
+    size_t offset = 0;
     for(BufferEntryDrawElementsPairs::const_iterator itr = _bufferEntryDrawElementsPairs.begin();
         itr != _bufferEntryDrawElementsPairs.end();
         ++itr)

@@ -38,6 +38,7 @@
 #include <osgSim/ElevationSlice>
 
 #include "fixeddivision.h"
+#include "variabledivision.h"
 
 
 int main(int argc, char **argv)
@@ -89,6 +90,22 @@ int main(int argc, char **argv)
     }
     else
     {
+        variabledivision::KDTreeBuilder builder;
+
+        builder._maxNumLevels = maxNumLevels;
+        builder._targetNumTrianglesPerLeaf = targetNumIndicesPerLeaf;
+        builder._processTriangles = processTriangles;
+
+
+        osg::Timer_t start = osg::Timer::instance()->tick();
+
+
+        scene->accept(builder);
+
+        osg::Timer_t end = osg::Timer::instance()->tick();
+        double time = osg::Timer::instance()->delta_s(start,end);
+        osg::notify(osg::NOTICE)<<"Time to build "<<time*1000.0<<"ms "<<builder._numVerticesProcessed<<std::endl;
+        osg::notify(osg::NOTICE)<<"build speed "<<(double(builder._numVerticesProcessed)/time)/1000000.0<<"M vertices per second"<<std::endl;
     }    
     
     return 0;

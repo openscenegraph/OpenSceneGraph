@@ -13,6 +13,7 @@
 
 #include <osg/KdTree>
 #include <osg/Geode>
+#include <osg/io_utils>
 
 using namespace osg;
 
@@ -29,6 +30,7 @@ bool KdTree::build(osg::Geometry* geometry)
 
 bool KdTree::intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections)
 {
+    osg::notify(osg::NOTICE)<<"KdTree::intersect("<<start<<","<<end<<")"<<std::endl;
     return false;
 }
 

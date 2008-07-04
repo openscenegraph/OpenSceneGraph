@@ -139,10 +139,6 @@ class OSG_EXPORT Geometry : public Drawable
         Array* getVertexArray() { return _vertexData.array.get(); }
         const Array* getVertexArray() const  { return _vertexData.array.get(); }
 
-        void setVertexIndices(IndexArray* array);
-        IndexArray* getVertexIndices() { return _vertexData.indices.get(); }
-        const IndexArray* getVertexIndices() const  { return _vertexData.indices.get(); }
-
         void setVertexData(const ArrayData& arrayData);
         ArrayData& getVertexData() { return _vertexData; }
         const ArrayData& getVertexData() const { return _vertexData; }
@@ -154,10 +150,6 @@ class OSG_EXPORT Geometry : public Drawable
         void setNormalArray(Array* array);
         Array* getNormalArray() { return _normalData.array.get(); }
         const Array* getNormalArray() const { return _normalData.array.get(); }
-     
-        void setNormalIndices(IndexArray* array);
-        IndexArray* getNormalIndices() { return _normalData.indices.get(); }
-        const IndexArray* getNormalIndices() const { return _normalData.indices.get(); }
 
         void setNormalData(const ArrayData& arrayData);
         ArrayData& getNormalData() { return _normalData; }
@@ -169,10 +161,6 @@ class OSG_EXPORT Geometry : public Drawable
         void setColorArray(Array* array);
         Array* getColorArray() { return _colorData.array.get(); }
         const Array* getColorArray() const { return _colorData.array.get(); }
-
-        void setColorIndices(IndexArray* array);
-        IndexArray* getColorIndices() { return _colorData.indices.get(); }
-        const IndexArray* getColorIndices() const { return _colorData.indices.get(); }
 
         void setColorData(const ArrayData& arrayData);
         ArrayData& getColorData() { return _colorData; }
@@ -186,10 +174,6 @@ class OSG_EXPORT Geometry : public Drawable
         Array* getSecondaryColorArray() { return _secondaryColorData.array.get(); }
         const Array* getSecondaryColorArray() const { return _secondaryColorData.array.get(); }
 
-        void setSecondaryColorIndices(IndexArray* array);
-        IndexArray* getSecondaryColorIndices() { return _secondaryColorData.indices.get(); }
-        const IndexArray* getSecondaryColorIndices() const { return _secondaryColorData.indices.get(); }
-
         void setSecondaryColorData(const ArrayData& arrayData);
         ArrayData& getSecondaryColorData() { return _secondaryColorData; }
         const ArrayData& getSecondaryColorData() const { return _secondaryColorData; }
@@ -202,10 +186,6 @@ class OSG_EXPORT Geometry : public Drawable
         Array* getFogCoordArray() { return _fogCoordData.array.get(); }
         const Array* getFogCoordArray() const { return _fogCoordData.array.get(); }
 
-        void setFogCoordIndices(IndexArray* array);
-        IndexArray* getFogCoordIndices() { return _fogCoordData.indices.get(); }
-        const IndexArray* getFogCoordIndices() const { return _fogCoordData.indices.get(); }
-
         void setFogCoordData(const ArrayData& arrayData);
         ArrayData& getFogCoordData() { return _fogCoordData; }
         const ArrayData& getFogCoordData() const { return _fogCoordData; }
@@ -214,10 +194,6 @@ class OSG_EXPORT Geometry : public Drawable
         void setTexCoordArray(unsigned int unit,Array*);
         Array* getTexCoordArray(unsigned int unit);
         const Array* getTexCoordArray(unsigned int unit) const;
-        
-        void setTexCoordIndices(unsigned int unit,IndexArray*);
-        IndexArray* getTexCoordIndices(unsigned int unit);
-        const IndexArray* getTexCoordIndices(unsigned int unit) const;
 
         void setTexCoordData(unsigned int index,const ArrayData& arrayData);
         ArrayData& getTexCoordData(unsigned int index);
@@ -232,10 +208,6 @@ class OSG_EXPORT Geometry : public Drawable
         void setVertexAttribArray(unsigned int index,Array* array);
         Array *getVertexAttribArray(unsigned int index);
         const Array *getVertexAttribArray(unsigned int index) const;
-
-        void setVertexAttribIndices(unsigned int index,IndexArray* array);
-        IndexArray* getVertexAttribIndices(unsigned int index);
-        const IndexArray* getVertexAttribIndices(unsigned int index) const;
 
         void setVertexAttribBinding(unsigned int index,AttributeBinding ab);
         AttributeBinding getVertexAttribBinding(unsigned int index) const;
@@ -280,6 +252,45 @@ class OSG_EXPORT Geometry : public Drawable
           * When checking for a valid find value use if ((value=geometry->getPrimitiveSetIndex(primitive))!=geometry.getNumPrimitiveSet())
         */
         unsigned int getPrimitiveSetIndex(const PrimitiveSet* primitiveset) const;
+
+
+
+        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
+        void setVertexIndices(IndexArray* array);
+        IndexArray* getVertexIndices() { return _vertexData.indices.get(); }
+        const IndexArray* getVertexIndices() const  { return _vertexData.indices.get(); }
+     
+        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
+        void setNormalIndices(IndexArray* array);
+        IndexArray* getNormalIndices() { return _normalData.indices.get(); }
+        const IndexArray* getNormalIndices() const { return _normalData.indices.get(); }
+
+        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
+        void setColorIndices(IndexArray* array);
+        IndexArray* getColorIndices() { return _colorData.indices.get(); }
+        const IndexArray* getColorIndices() const { return _colorData.indices.get(); }
+
+        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
+        void setSecondaryColorIndices(IndexArray* array);
+        IndexArray* getSecondaryColorIndices() { return _secondaryColorData.indices.get(); }
+        const IndexArray* getSecondaryColorIndices() const { return _secondaryColorData.indices.get(); }
+
+        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
+        void setFogCoordIndices(IndexArray* array);
+        IndexArray* getFogCoordIndices() { return _fogCoordData.indices.get(); }
+        const IndexArray* getFogCoordIndices() const { return _fogCoordData.indices.get(); }
+
+        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
+        void setTexCoordIndices(unsigned int unit,IndexArray*);
+        IndexArray* getTexCoordIndices(unsigned int unit);
+        const IndexArray* getTexCoordIndices(unsigned int unit) const;
+
+        /** deprecated - forces OpenGL slow path, just kept for backwards compatibility.*/
+        void setVertexAttribIndices(unsigned int index,IndexArray* array);
+        IndexArray* getVertexAttribIndices(unsigned int index);
+        const IndexArray* getVertexAttribIndices(unsigned int index) const;
+
+
 
 
         /** When set to true, ignore the setUseDisplayList() settings, and hints to the drawImplementation 

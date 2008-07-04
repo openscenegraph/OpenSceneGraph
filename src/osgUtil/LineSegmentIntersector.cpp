@@ -18,6 +18,7 @@
 #include <osg/Notify>
 #include <osg/io_utils>
 #include <osg/TriangleFunctor>
+#include <osg/KdTree>
 
 using namespace osgUtil;
 
@@ -286,6 +287,51 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     // reset the clipped range as it can be too close in on the BB, and cause missing due precission issues.
     s = _start;
     e = _end;
+    
+    
+    osg::KdTree* kdTree = dynamic_cast<osg::KdTree*>(drawable->getShape());
+    if (kdTree)
+    {
+        osg::KdTree::LineSegmentIntersections intersections;
+        if (kdTree->intersect(s,e,intersections))
+        {
+            osg::notify(osg::NOTICE)<<"Got KdTree intersections"<<std::endl;
+            for(osg::KdTree::LineSegmentIntersections::iterator itr = intersections.begin();
+                itr != intersections.end();
+                ++itr)
+            {
+                osg::KdTree::LineSegmentIntersection& lsi = const_cast<osg::KdTree::LineSegmentIntersection&>(*itr);
+                
+                // get ratio in s,e range
+                double ratio = lsi.ratio;
+
+                // remap ratio into _start, _end range
+                ratio = ((s-_start).length() + ratio * (e-s).length() )/(_end-_start).length();
+
+                Intersection hit;
+                hit.ratio = lsi.ratio;
+                hit.matrix = iv.getModelMatrix();
+                hit.nodePath = iv.getNodePath();
+                hit.drawable = drawable;
+                hit.primitiveIndex = lsi.primitiveIndex;
+
+                hit.localIntersectionPoint = lsi.intersectionPoint; // s*(1.0f-ratio) + e*ratio;
+                hit.localIntersectionNormal = lsi.intersectionNormal;
+                
+                hit.indexList.swap(lsi.indexList);
+                hit.ratioList.swap(lsi.ratioList);
+
+                insertIntersection(hit);
+
+            }
+        }
+        
+        return;
+    }
+    else
+    {
+        // osg::notify(osg::NOTICE)<<"Not KdTree available"<<std::endl;
+    }
 
     osg::TriangleFunctor<LineSegmentIntersectorUtils::TriangleIntersector> ti;
     ti.set(s,e);

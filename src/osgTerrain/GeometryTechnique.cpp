@@ -642,6 +642,15 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
     //geometry->setUseDisplayList(false);
     geometry->setUseVertexBufferObjects(true);
+    
+    
+    if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::ReaderWriter::Options::BUILD_KDTREES &&
+        osgDB::Registry::instance()->getKdTreeBuilder())
+    {
+        //osg::notify(osg::NOTICE)<<"osgTerrain::GeometryTechnique::build kd tree"<<std::endl;
+        buffer._geode->accept(*(osgDB::Registry::instance()->getKdTreeBuilder()));
+        //osg::notify(osg::NOTICE)<<"after"<<std::endl;
+    }
 }
 
 void GeometryTechnique::applyColorLayers()

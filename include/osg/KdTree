@@ -1,0 +1,149 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_KDTREE
+#define OSG_KDTREE 1
+
+#include <osg/Shape>
+#include <osg/Geometry>
+
+namespace osg
+{
+
+/** Implementation of a kdtree for Geometry leaves, to enable fast intersection tests.*/
+class OSG_EXPORT KdTree : public osg::Shape 
+{
+    public:
+    
+        
+        KdTree() {}
+        
+        KdTree(const KdTree& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            Shape(rhs,copyop) {}
+
+        META_Shape(osg, KdTree)
+        
+        /** Build the kdtree from the specified source geometry object.
+          * retun true on success. */ 
+        virtual bool build(osg::Geometry* geometry);
+        
+        
+        struct LineSegmentIntersection
+        {
+            LineSegmentIntersection():
+                ratio(-1.0),
+                primitiveIndex(0) {}
+
+            bool operator < (const LineSegmentIntersection& rhs) const { return ratio < rhs.ratio; }
+
+            typedef std::vector<unsigned int>   IndexList;
+            typedef std::vector<double>         RatioList;
+
+            double                          ratio;
+            osg::Vec3d                      intersectionPoint;
+            osg::Vec3                       intersectionNormal;
+            IndexList                       indexList;
+            RatioList                       ratioList;
+            unsigned int                    primitiveIndex;
+        };        
+        
+
+        typedef std::multiset<LineSegmentIntersection> LineSegmentIntersections;
+        
+        /** compute the intersection of a line segment and the kdtree, return true if an intersection has been found.*/
+        virtual bool intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections);
+
+
+
+        typedef int value_type;
+        typedef std::vector< value_type >   Indices;
+
+        struct KDNode
+        {
+            KDNode():
+                first(0),
+                second(0) {}
+
+            KDNode(value_type f, value_type s):
+                first(f),
+                second(s) {}
+
+            value_type first;    
+            value_type second;
+
+            osg::BoundingBox bb;
+        };
+
+
+        struct KDLeaf
+        {
+            KDLeaf():
+                first(0),
+                second(0) {}
+
+            KDLeaf(value_type f, value_type s):
+                first(f),
+                second(s) {}
+
+            value_type first;    
+            value_type second;
+
+            osg::BoundingBox bb;
+        };
+
+        struct Triangle
+        {
+            Triangle(unsigned int p1, unsigned int p2, unsigned int p3):
+                _p1(p1), _p2(p2), _p3(p3) {}
+
+            bool operator < (const Triangle& rhs) const
+            {
+                if (_p1<rhs._p1) return true;
+                if (_p1>rhs._p1) return false;
+                if (_p2<rhs._p2) return true;
+                if (_p2>rhs._p2) return false;
+                return _p3<rhs._p3;
+            }
+
+            unsigned int _p1;
+            unsigned int _p2;
+            unsigned int _p3;    
+        };
+
+
+};
+
+class OSG_EXPORT KdTreeBuilder : public osg::NodeVisitor
+{
+    public:
+    
+        KdTreeBuilder();
+    
+        void apply(osg::Geode& geode);
+    
+        osg::ref_ptr<osg::KdTree> _kdTreePrototype;
+        
+        unsigned int _maxNumLevels;
+        unsigned int _targetNumTrianglesPerLeaf;
+        
+        unsigned int _numVerticesProcessed;
+        
+    protected:
+    
+        virtual ~KdTreeBuilder() {}
+        
+};
+
+}
+
+#endif

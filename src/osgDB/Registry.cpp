@@ -158,6 +158,17 @@ Registry::Registry()
     // comment out because it was causing problems under OSX - causing it to crash osgconv when constructing ostream in osg::notify().
     // notify(INFO) << "Constructing osg::Registry"<<std::endl;
 
+    _buildKdTreesHint = ReaderWriter::Options::NO_PREFERENCE;
+    _kdTreeBuilder = new osg::KdTreeBuilder;
+    
+    const char* kdtree_str = getenv("OSG_BUILD_KDTREES");
+    if (kdtree_str)
+    {
+        bool switchOff = (strcmp(kdtree_str, "off")==0 || strcmp(kdtree_str, "OFF")==0 || strcmp(kdtree_str, "Off")==0 );
+        if (switchOff) _buildKdTreesHint = ReaderWriter::Options::DO_NOT_BUILD_KDTREES;
+        else _buildKdTreesHint = ReaderWriter::Options::BUILD_KDTREES;
+    }
+
     _createNodeFromImage = false;
     _openingLibrary = false;
 
@@ -165,6 +176,8 @@ Registry::Registry()
     _archiveExtList.push_back("osga");
     
     initFilePathLists();
+
+
 
     // register file extension alias.
     const char* flt_str = getenv("OSG_OPEN_FLIGHT_PLUGIN");
@@ -388,7 +401,7 @@ void Registry::readCommandLine(osg::ArgumentParser& arguments)
 
     while(arguments.read("-O",value))
     {
-        setOptions(new osgDB::ReaderWriter::Options(value));
+        setOptions(new ReaderWriter::Options(value));
     }
 }
 

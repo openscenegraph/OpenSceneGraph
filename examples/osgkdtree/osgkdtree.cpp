@@ -37,9 +37,12 @@
 #include <osgSim/HeightAboveTerrain>
 #include <osgSim/ElevationSlice>
 
+#include <osgViewer/Viewer>
+
 #include "fixeddivision.h"
 #include "variabledivision.h"
 
+#include <osg/KdTree>
 
 int main(int argc, char **argv)
 {
@@ -54,6 +57,8 @@ int main(int argc, char **argv)
     while (arguments.read("--leaf", targetNumIndicesPerLeaf)) {}
     while (arguments.read("--points")) processTriangles = false;
     while (arguments.read("--triangles")) processTriangles = true;
+    
+    osgDB::Registry::instance()->setBuildKdTreesHint(osgDB::ReaderWriter::Options::BUILD_KDTREES);
     
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
     
@@ -88,7 +93,7 @@ int main(int argc, char **argv)
         osg::notify(osg::NOTICE)<<"Time to build "<<time*1000.0<<"ms "<<builder._numVerticesProcessed<<std::endl;
         osg::notify(osg::NOTICE)<<"build speed "<<(double(builder._numVerticesProcessed)/time)/1000000.0<<"M vertices per second"<<std::endl;
     }
-    else
+    else if (arguments.read("--vd"))
     {
         variabledivision::KDTreeBuilder builder;
 
@@ -106,6 +111,12 @@ int main(int argc, char **argv)
         double time = osg::Timer::instance()->delta_s(start,end);
         osg::notify(osg::NOTICE)<<"Time to build "<<time*1000.0<<"ms "<<builder._numVerticesProcessed<<std::endl;
         osg::notify(osg::NOTICE)<<"build speed "<<(double(builder._numVerticesProcessed)/time)/1000000.0<<"M vertices per second"<<std::endl;
+    }    
+    else
+    {
+        osgViewer::Viewer viewer;
+        viewer.setSceneData(scene.get());
+        return viewer.run();
     }    
     
     return 0;

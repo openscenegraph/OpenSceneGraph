@@ -16,6 +16,7 @@
 
 #include <osg/ref_ptr>
 #include <osg/ArgumentParser>
+#include <osg/KdTree>
 
 #include <osgDB/DynamicLibrary>
 #include <osgDB/ReaderWriter>
@@ -130,7 +131,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         
         bool                 writeObject(const osg::Object& obj,Output& fw);
 
-        
         class ReadFileCallback : public virtual osg::Referenced
         {
         public:
@@ -188,8 +188,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         ReaderWriter::ReadResult readObject(const std::string& fileName,const ReaderWriter::Options* options)
         {
-            if (_readFileCallback.valid()) return _readFileCallback->readObject(fileName,options);
-            else return readObjectImplementation(fileName,options);
+            ReaderWriter::ReadResult result = _readFileCallback.valid() ?
+                    _readFileCallback->readObject(fileName,options) :
+                    readObjectImplementation(fileName,options);
+                    
+            buildKdTreeIfRequired(result, options);
+                    
+            return result;
         }
         ReaderWriter::ReadResult readObjectImplementation(const std::string& fileName,const ReaderWriter::Options* options);
         
@@ -209,8 +214,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         ReaderWriter::ReadResult readNode(const std::string& fileName,const ReaderWriter::Options* options)
         {
-            if (_readFileCallback.valid()) return _readFileCallback->readNode(fileName,options);
-            else return readNodeImplementation(fileName,options);
+            ReaderWriter::ReadResult result = _readFileCallback.valid() ?
+                    _readFileCallback->readNode(fileName,options) :
+                    readNodeImplementation(fileName,options);
+                    
+            buildKdTreeIfRequired(result, options);
+                    
+            return result;
         }
         ReaderWriter::ReadResult readNodeImplementation(const std::string& fileName,const ReaderWriter::Options* options);
 
@@ -301,6 +311,26 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         }
         ReaderWriter::WriteResult writeShaderImplementation(const osg::Shader& obj, const std::string& fileName,const ReaderWriter::Options* options);
         
+
+        inline void buildKdTreeIfRequired(ReaderWriter::ReadResult& result, const ReaderWriter::Options* options)
+        {
+            bool doKdTreeBuilder = (options && options->getBuildKdTreesHint()!=ReaderWriter::Options::NO_PREFERENCE) ?
+                options->getBuildKdTreesHint() == ReaderWriter::Options::BUILD_KDTREES :
+                _buildKdTreesHint == ReaderWriter::Options::BUILD_KDTREES;
+
+            if (doKdTreeBuilder && _kdTreeBuilder.valid() && result.validNode()) 
+            {
+                result.getNode()->accept(*_kdTreeBuilder);
+            }
+        }
+
+
+        void setBuildKdTreesHint(ReaderWriter::Options::BuildKdTreesHint hint) { _buildKdTreesHint = hint; }
+        ReaderWriter::Options::BuildKdTreesHint getBuildKdTreesHint() const { return _buildKdTreesHint; }
+
+        void setKdTreeBuilder(osg::KdTreeBuilder* builder) { _kdTreeBuilder = builder; }
+        osg::KdTreeBuilder* getKdTreeBuilder() { return _kdTreeBuilder.get(); }
+
 
         void setCreateNodeFromImage(bool flag) { _createNodeFromImage = flag; }
         bool getCreateNodeFromImage() const { return _createNodeFromImage; }
@@ -437,7 +467,10 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** get the attached library with specified name.*/
         DynamicLibraryList::iterator getLibraryItr(const std::string& fileName);
 
-        bool _createNodeFromImage;
+        ReaderWriter::Options::BuildKdTreesHint     _buildKdTreesHint;
+        osg::ref_ptr<osg::KdTreeBuilder>            _kdTreeBuilder;
+        
+        bool                                        _createNodeFromImage;
 
         osg::Object*       readObject(DotOsgWrapperMap& dowMap,Input& fr);
 

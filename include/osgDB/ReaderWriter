@@ -86,22 +86,33 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                                           CACHE_OBJECTS |
                                           CACHE_SHADERS
                 };
+                
+                /// range of options of whether to build kdtrees automatically on loading
+                enum BuildKdTreesHint
+                {
+                    NO_PREFERENCE,
+                    DO_NOT_BUILD_KDTREES,
+                    BUILD_KDTREES
+                };
             
 
                 Options():
                     osg::Object(true),
-                    _objectCacheHint(CACHE_ARCHIVES) {}
+                    _objectCacheHint(CACHE_ARCHIVES),
+                    _buildKdTreesHint(NO_PREFERENCE) {}
                     
                 Options(const std::string& str):
                     osg::Object(true),
                     _str(str), 
-                    _objectCacheHint(CACHE_ARCHIVES) {}
+                    _objectCacheHint(CACHE_ARCHIVES),
+                    _buildKdTreesHint(NO_PREFERENCE) {}
                 
                 Options(const Options& options,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
                     osg::Object(options,copyop),
                     _str(options._str),
                     _databasePaths(options._databasePaths),
-                    _objectCacheHint(options._objectCacheHint) {}
+                    _objectCacheHint(options._objectCacheHint),
+                    _buildKdTreesHint(options._buildKdTreesHint) {}
 
                 META_Object(osgDB,Options);
 
@@ -128,6 +139,14 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 CacheHintOptions getObjectCacheHint() const { return _objectCacheHint; }
 
 
+                /** Set whether the KdTrees should be built for geometry in the loader model. */
+                void setBuildKdTreesHint(BuildKdTreesHint hint) { _buildKdTreesHint = hint; }
+
+                /** Get whether the KdTrees should be built for geometry in the loader model. */
+                BuildKdTreesHint getBuildKdTreesHint() const { return _buildKdTreesHint; }
+
+
+
                 /** Sets a plugindata value PluginData with a string */
                 void setPluginData(const std::string& s, void* v) const { _pluginData[s] = v; }
 
@@ -151,6 +170,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 std::string         _str;
                 FilePathList        _databasePaths;
                 CacheHintOptions    _objectCacheHint;
+                BuildKdTreesHint    _buildKdTreesHint;
 
                 typedef std::map<std::string,void*> PluginDataMap;
                 mutable PluginDataMap _pluginData;

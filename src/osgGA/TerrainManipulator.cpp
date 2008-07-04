@@ -16,6 +16,7 @@
 #include <osg/Notify>
 #include <osg/io_utils>
 #include <osgUtil/IntersectVisitor>
+#include <osgUtil/LineSegmentIntersector>
 
 using namespace osg;
 using namespace osgGA;
@@ -219,11 +220,52 @@ void TerrainManipulator::addMouseEvent(const GUIEventAdapter& ea)
     _ga_t0 = &ea;
 }
 
+bool TerrainManipulator::intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection)
+{
+#if 0
+    // need to reintersect with the terrain
+    osgUtil::IntersectVisitor iv;
+    iv.setTraversalMask(_intersectTraversalMask);
+
+    osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
+    segLookVector->set(start,end);
+    iv.addLineSegment(segLookVector.get());
+
+    _node->accept(iv);
+
+    if (iv.hits())
+    {
+        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
+        if (!hitList.empty())
+        {
+            intersection = hitList.front().getWorldIntersectPoint();
+            return true;
+        }
+    }
+    return false;
+#else
+    
+    osg::ref_ptr<osgUtil::LineSegmentIntersector> lsi = new osgUtil::LineSegmentIntersector(start,end);
+
+    osgUtil::IntersectionVisitor iv(lsi.get());
+    iv.setTraversalMask(_intersectTraversalMask);
+    
+    _node->accept(iv);
+    
+    if (lsi->containsIntersections())
+    {
+        intersection = lsi->getIntersections().begin()->getWorldIntersectPoint();
+        return true;
+    }
+    return false;
+#endif
+}
+
 void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
 
-    osg::Vec3 lookVector(- matrix(2,0),-matrix(2,1),-matrix(2,2));
-    osg::Vec3 eye(matrix(3,0),matrix(3,1),matrix(3,2));
+    osg::Vec3d lookVector(- matrix(2,0),-matrix(2,1),-matrix(2,2));
+    osg::Vec3d eye(matrix(3,0),matrix(3,1),matrix(3,2));
 
     osg::notify(INFO)<<"eye point "<<eye<<std::endl;
     osg::notify(INFO)<<"lookVector "<<lookVector<<std::endl;
@@ -238,79 +280,47 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 
 
     // need to reintersect with the terrain
-    osgUtil::IntersectVisitor iv;
-    iv.setTraversalMask(_intersectTraversalMask);
-
     const osg::BoundingSphere& bs = _node->getBound();
     float distance = (eye-bs.center()).length() + _node->getBound().radius();
     osg::Vec3d start_segment = eye;
     osg::Vec3d end_segment = eye + lookVector*distance;
-
-    //CoordinateFrame coordinateFrame = getCoordinateFrame(_center.x(), _center.y(), _center.z());
-    //osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
-
-    osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
-    segLookVector->set(start_segment,end_segment);
-    iv.addLineSegment(segLookVector.get());
-
-    _node->accept(iv);
-
+    
+    osg::Vec3d ip;
     bool hitFound = false;
-    if (iv.hits())
+    if (intersect(start_segment, end_segment, ip))
     {
-        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-        if (!hitList.empty())
-        {
-            notify(INFO) << "Hit terrain ok A"<< std::endl;
-            osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
+        notify(INFO) << "Hit terrain ok A"<< std::endl;
+        _center = ip;
 
-            _center = ip;
+        _distance = (eye-ip).length();
 
-            _distance = (eye-ip).length();
+        osg::Matrix rotation_matrix = osg::Matrixd::translate(0.0,0.0,-_distance)*
+                                      matrix*
+                                      osg::Matrixd::translate(-_center);
 
-            osg::Matrix rotation_matrix = osg::Matrixd::translate(0.0,0.0,-_distance)*
-                                          matrix*
-                                          osg::Matrixd::translate(-_center);
+        _rotation = rotation_matrix.getRotate();
 
-            _rotation = rotation_matrix.getRotate();
-
-            hitFound = true;
-        }
+        hitFound = true;
     }
 
     if (!hitFound)
     {
         CoordinateFrame eyePointCoordFrame = getCoordinateFrame( eye );
 
-        // clear the intersect visitor ready for a new test
-        iv.reset();
-
-        osg::ref_ptr<osg::LineSegment> segDowVector = new osg::LineSegment;
-        segLookVector->set(eye+getUpVector(eyePointCoordFrame)*distance,
-                           eye-getUpVector(eyePointCoordFrame)*distance);
-        iv.addLineSegment(segLookVector.get());
-
-        _node->accept(iv);
-
-        hitFound = false;
-        if (iv.hits())
+        if (intersect(eye+getUpVector(eyePointCoordFrame)*distance,
+                      eye-getUpVector(eyePointCoordFrame)*distance,
+                      ip))
         {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-            if (!hitList.empty())
-            {
-                notify(INFO) << "Hit terrain ok B"<< std::endl;
-                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
+            _center = ip;
 
-                _center = ip;
+            _distance = (eye-ip).length();
 
-                _distance = (eye-ip).length();
+            _rotation.set(0,0,0,1);
 
-                _rotation.set(0,0,0,1);
-
-                hitFound = true;
-            }
+            hitFound = true;
         }
     }
+
 
     CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
     _previousUp = getUpVector(coordinateFrame);
@@ -352,28 +362,14 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
             ++i, endPoint = farPosition)
         {
             // compute the intersection with the scene.
-            osgUtil::IntersectVisitor iv;
-            iv.setTraversalMask(_intersectTraversalMask);
-
-            osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
-            segLookVector->set(eye,endPoint );
-            iv.addLineSegment(segLookVector.get());
-
-            _node->accept(iv);
-
-            if (iv.hits())
+            
+            osg::Vec3d ip;
+            if (intersect(eye, endPoint, ip))
             {
-                osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-                if (!hitList.empty())
-                {
-                    osg::notify(osg::INFO) << "Hit terrain ok C"<< std::endl;
-                    osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
+                _center = ip;
+                _distance = (ip-eye).length();
 
-                    _center = ip;
-                    _distance = (ip-eye).length();
-
-                    hitFound = true;
-                }
+                hitFound = true;
             }
         }
     }
@@ -493,6 +489,8 @@ bool TerrainManipulator::calcMovement()
 
         // need to recompute the intersection point along the look vector.
 
+        bool hitFound = false;
+
         if (_node.valid())
         {
 
@@ -500,33 +498,20 @@ bool TerrainManipulator::calcMovement()
             CoordinateFrame coordinateFrame =  getCoordinateFrame(_center);
 
             // need to reintersect with the terrain
-            osgUtil::IntersectVisitor iv;
-            iv.setTraversalMask(_intersectTraversalMask);
-
             double distance = _node->getBound().radius()*0.1f;
             osg::Vec3d start_segment = _center + getUpVector(coordinateFrame) * distance;
             osg::Vec3d end_segment = start_segment - getUpVector(coordinateFrame) * (2.0f*distance);
 
             osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
 
-            osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
-            segLookVector->set(start_segment,end_segment);
-            iv.addLineSegment(segLookVector.get());
-
-            _node->accept(iv);
-
-            bool hitFound = false;
-            if (iv.hits())
+            osg::Vec3d ip;
+            if (intersect(start_segment,end_segment, ip))
             {
-                osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-                if (!hitList.empty())
-                {
-                    notify(INFO) << "Hit terrain ok"<< std::endl;
-                    osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-                    _center = ip;
+                notify(INFO) << "Hit terrain ok"<< std::endl;
 
-                    hitFound = true;
-                }
+                _center = ip;
+
+                hitFound = true;
             }
 
             if (!hitFound)

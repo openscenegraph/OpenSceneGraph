@@ -85,7 +85,7 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
 
         virtual ~TerrainManipulator();
         
-        bool intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection);
+        bool intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection) const;
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();
@@ -122,7 +122,7 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
         
         osg::Vec3d              _center;
         osg::Quat               _rotation;
-        float                   _distance;
+        double                  _distance;
         osg::Vec3d              _previousUp;
 
 };

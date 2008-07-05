@@ -18,7 +18,7 @@
 #include <stdlib.h>
 
 #include <osgGA/DriveManipulator>
-#include <osgUtil/IntersectVisitor>
+#include <osgUtil/LineSegmentIntersector>
 #include <osg/Notify>
 
 using namespace osg;
@@ -31,9 +31,9 @@ using namespace osgGA;
 // #define INCREMENTAL_PITCH 1
 #define KEYBOARD_PITCH 1
 
-static float getHeightOfDriver()
+static double getHeightOfDriver()
 {
-    float height = 1.5f;
+    double height = 1.5;
     if (getenv("OSG_DRIVE_MANIPULATOR_HEIGHT"))
     {
         height = atof(getenv("OSG_DRIVE_MANIPULATOR_HEIGHT"));
@@ -44,8 +44,8 @@ static float getHeightOfDriver()
 
 DriveManipulator::DriveManipulator()
 {
-    _modelScale = 0.01f;
-    _velocity = 0.0f;
+    _modelScale = 1.0;
+    _velocity = 0.0;
     _height = getHeightOfDriver();
     _buffer = _height*1.3;
     _pitch = 0.0;
@@ -69,9 +69,10 @@ void DriveManipulator::setNode(osg::Node* node)
     if (_node.get())
     {
         const osg::BoundingSphere& boundingSphere=_node->getBound();
+
         _modelScale = boundingSphere._radius;
-        //_height = sqrtf(_modelScale)*0.03f;
-        //_buffer = sqrtf(_modelScale)*0.05f;
+        //_height = sqrtf(_modelScale)*0.03;
+        //_buffer = sqrtf(_modelScale)*0.05;
         
         _height = getHeightOfDriver();
         _buffer = _height*1.3;
@@ -91,6 +92,25 @@ osg::Node* DriveManipulator::getNode()
     return _node.get();
 }
 
+bool DriveManipulator::intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection, osg::Vec3d& normal) const
+{
+    osg::ref_ptr<osgUtil::LineSegmentIntersector> lsi = new osgUtil::LineSegmentIntersector(start,end);
+
+    osgUtil::IntersectionVisitor iv(lsi.get());
+    iv.setTraversalMask(_intersectTraversalMask);
+    
+    _node->accept(iv);
+    
+    if (lsi->containsIntersections())
+    {
+        intersection = lsi->getIntersections().begin()->getWorldIntersectPoint();
+        normal = lsi->getIntersections().begin()->getWorldIntersectNormal();
+        return true;
+    }
+    return false;
+}
+
+
 void DriveManipulator::computeHomePosition()
 {
     if(_node.get())
@@ -106,39 +126,22 @@ void DriveManipulator::computeHomePosition()
         bp -= getUpVector(cf)* _modelScale;
 
         // check to see if any obstruction in front.
-        osgUtil::IntersectVisitor iv;
-        iv.setTraversalMask(_intersectTraversalMask);
-
         bool positionSet = false;
 
-        osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
-        segDown->set(ep,bp);
-        iv.addLineSegment(segDown.get());
-
-        _node->accept(iv);
-
-        if (iv.hits())
+        osg::Vec3d ip, np;
+        if (intersect(ep, bp, ip, np))
         {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segDown.get());
-            if (!hitList.empty())
-            {
-                //                notify(INFO) << "Hit terrain ok"<< std::endl;
-                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-                osg::Vec3d np = hitList.front().getWorldIntersectNormal();
+            osg::Vec3d uv;
+            if (np * getUpVector(cf)>0.0) uv = np;
+            else uv = -np;
 
-                osg::Vec3d uv;
-                if (np * getUpVector(cf)>0.0) uv = np;
-                else uv = -np;
+            ep = ip;
+            ep += getUpVector(cf)*_height;
+            osg::Vec3 lv = uv^osg::Vec3d(1.0,0.0,0.0);
 
-                ep = ip;
-                ep += getUpVector(cf)*_height;
-                osg::Vec3 lv = uv^osg::Vec3d(1.0,0.0,0.0);
+            setHomePosition(ep,ep+lv,uv);
 
-                setHomePosition(ep,ep+lv,uv);
-
-                positionSet = true;
-
-            }
+            positionSet = true;
 
         }
 
@@ -147,33 +150,20 @@ void DriveManipulator::computeHomePosition()
             bp = ep;
             bp += getUpVector(cf)*_modelScale;
 
-            osg::ref_ptr<osg::LineSegment> segUp = new osg::LineSegment;
-            segUp->set(ep,bp);
-            iv.addLineSegment(segUp.get());
 
-            _node->accept(iv);
-
-            if (iv.hits())
+            if (intersect(ep, bp, ip, np))
             {
-                osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segUp.get());
-                if (!hitList.empty())
-                {
-                    //                notify(INFO) << "Hit terrain ok"<< std::endl;
-                    osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-                    osg::Vec3d np = hitList.front().getWorldIntersectNormal();
 
-                    osg::Vec3d uv;
-                    if (np*getUpVector(cf)>0.0) uv = np;
-                    else uv = -np;
+                osg::Vec3d uv;
+                if (np*getUpVector(cf)>0.0) uv = np;
+                else uv = -np;
 
-                    ep = ip;
-                    ep += getUpVector(cf)*_height;
-                    osg::Vec3 lv = uv^osg::Vec3d(1.0,0.0,0.0);
-                    setHomePosition(ep,ep+lv,uv);
+                ep = ip;
+                ep += getUpVector(cf)*_height;
+                osg::Vec3 lv = uv^osg::Vec3d(1.0,0.0,0.0);
+                setHomePosition(ep,ep+lv,uv);
 
-                    positionSet = true;
-
-                }
+                positionSet = true;
 
             }
         }
@@ -213,7 +203,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
 
     us.requestContinuousUpdate(false);
 
-    _velocity = 0.0f;
+    _velocity = 0.0;
 
     osg::Vec3d ep = _eye;
 
@@ -225,39 +215,21 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
     osg::Vec3d bp = ep;
     bp -= getUpVector(cf)*_modelScale;
 
-    // check to see if any obstruction in front.
-    osgUtil::IntersectVisitor iv;
-    iv.setTraversalMask(_intersectTraversalMask);
-
     bool positionSet = false;
-
-    osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
-    segDown->set(ep,bp);
-    iv.addLineSegment(segDown.get());
-
-    _node->accept(iv);
-
-    if (iv.hits())
+    osg::Vec3d ip, np;
+    if (intersect(ep, bp, ip, np))
     {
-        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segDown.get());
-        if (!hitList.empty())
-        {
-            //                notify(INFO) << "Hit terrain ok"<< std::endl;
-            osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-            osg::Vec3d np = hitList.front().getWorldIntersectNormal();
 
-            osg::Vec3d uv;
-            if (np*getUpVector(cf)>0.0) uv = np;
-            else uv = -np;
+        osg::Vec3d uv;
+        if (np*getUpVector(cf)>0.0) uv = np;
+        else uv = -np;
 
-            ep = ip+uv*_height;
-            osg::Vec3d lv = uv^sv;
+        ep = ip+uv*_height;
+        osg::Vec3d lv = uv^sv;
 
-            computePosition(ep,ep+lv,uv);
+        computePosition(ep,ep+lv,uv);
 
-            positionSet = true;
-        }
-
+        positionSet = true;
     }
 
     if (!positionSet)
@@ -265,33 +237,19 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
         bp = ep;
         bp += getUpVector(cf)*_modelScale;
 
-        osg::ref_ptr<osg::LineSegment> segUp = new osg::LineSegment;
-        segUp->set(ep,bp);
-        iv.addLineSegment(segUp.get());
-
-        _node->accept(iv);
-
-        if (iv.hits())
+        if (intersect(ep, bp, ip, np))
         {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segUp.get());
-            if (!hitList.empty())
-            {
-                //                notify(INFO) << "Hit terrain ok"<< std::endl;
-                osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
-                osg::Vec3 np = hitList.front().getWorldIntersectNormal();
 
-                osg::Vec3 uv;
-                if (np*getUpVector(cf)>0.0f) uv = np;
-                else uv = -np;
+            osg::Vec3d uv;
+            if (np*getUpVector(cf)>0.0f) uv = np;
+            else uv = -np;
 
-                ep = ip+uv*_height;
-                osg::Vec3 lv = uv^sv;
+            ep = ip+uv*_height;
+            osg::Vec3 lv = uv^sv;
 
-                computePosition(ep,ep+lv,uv);
+            computePosition(ep,ep+lv,uv);
 
-                positionSet = true;
-            }
-
+            positionSet = true;
         }
     }
 
@@ -472,10 +430,10 @@ void DriveManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& c
     osg::Vec3d u(s^f);
     u.normalize();
     
-    osg::Matrix rotation_matrix(s[0],     u[0],     -f[0],     0.0,
-                                s[1],     u[1],     -f[1],     0.0,
-                                s[2],     u[2],     -f[2],     0.0,
-                                0.0,       0.0,       0.0,     1.0);
+    osg::Matrixd rotation_matrix(s[0],     u[0],     -f[0],     0.0,
+                                 s[1],     u[1],     -f[1],     0.0,
+                                 s[2],     u[2],     -f[2],     0.0,
+                                 0.0,       0.0,       0.0,     1.0);
                    
     _eye = eye;
     _rotation = rotation_matrix.getRotate().inverse();
@@ -492,15 +450,17 @@ bool DriveManipulator::calcMovement()
     if (dt<0.0f)
     {
         notify(INFO) << "warning dt = "<<dt<< std::endl;
-        dt = 0.0f;
+        dt = 0.0;
     }
+    
+    double accelerationFactor = _height*10.0;
 
     switch(_speedMode)
     {
         case(USE_MOUSE_Y_FOR_SPEED):
         {
             double dy = _ga_t0->getYnormalized();
-            _velocity = _modelScale*0.2f*dy;
+            _velocity = _height*dy;
             break;
         }
         case(USE_MOUSE_BUTTONS_FOR_SPEED):
@@ -510,7 +470,7 @@ bool DriveManipulator::calcMovement()
             {
                 // pan model.
 
-                _velocity += dt*_modelScale*0.01;
+                _velocity += dt*accelerationFactor;
 
             }
             else if (buttonMask==GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
@@ -523,7 +483,7 @@ bool DriveManipulator::calcMovement()
             else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
             {
 
-                _velocity -= dt*_modelScale*0.01;
+                _velocity -= dt*accelerationFactor;
 
             }
             break;
@@ -532,7 +492,7 @@ bool DriveManipulator::calcMovement()
 
     osg::CoordinateFrame cf=getCoordinateFrame(_eye);
 
-    osg::Matrix rotation_matrix;
+    osg::Matrixd rotation_matrix;
     rotation_matrix.makeRotate(_rotation);
     
     osg::Vec3d up = osg::Vec3d(0.0,1.0,0.0) * rotation_matrix;
@@ -542,7 +502,7 @@ bool DriveManipulator::calcMovement()
     // rotate the camera.
     double dx = _ga_t0->getXnormalized();
 
-    double yaw = -inDegrees(dx*50.0f*dt);
+    double yaw = -inDegrees(dx*50.0*dt);
 
     
 #ifdef KEYBOARD_PITCH
@@ -580,98 +540,51 @@ bool DriveManipulator::calcMovement()
         else signedBuffer=-_buffer;
 
         // check to see if any obstruction in front.
-        osgUtil::IntersectVisitor iv;
-        iv.setTraversalMask(_intersectTraversalMask);
-    
-        osg::ref_ptr<osg::LineSegment> segForward = new osg::LineSegment;
-        segForward->set(_eye,_eye+lv*(signedBuffer+distanceToMove));
-        iv.addLineSegment(segForward.get());
-
-        _node->accept(iv);
-
-        if (iv.hits())
+        osg::Vec3d ip, np;
+        if (intersect(_eye,_eye+lv*(signedBuffer+distanceToMove), ip, np))
         {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segForward.get());
-            if (!hitList.empty())
-            {
-                //                notify(INFO) << "Hit obstruction"<< std::endl;
-                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-                distanceToMove = (ip-_eye).length()-_buffer;
-                _velocity = 0.0;
-            }
-
+            distanceToMove = (ip-_eye).length()-_buffer;
+            _velocity = 0.0;
         }
 
         // check to see if forward point is correct height above terrain.
-        osg::Vec3d fp = _eye+lv*distanceToMove;
-        osg::Vec3d lfp = fp-up*_height*5;
+        osg::Vec3d fp = _eye + lv*distanceToMove;
+        osg::Vec3d lfp = fp - up*(_height*5.0);
 
-        iv.reset();
 
-        osg::ref_ptr<osg::LineSegment> segNormal = new osg::LineSegment;
-        segNormal->set(fp,lfp);
-        iv.addLineSegment(segNormal.get());
-
-        _node->accept(iv);
-
-        if (iv.hits())
+        if (intersect(fp, lfp, ip, np))
         {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segNormal.get());
-            if (!hitList.empty())
-            {
-                //                notify(INFO) << "Hit terrain ok"<< std::endl;
-                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-                osg::Vec3d np = hitList.front().getWorldIntersectNormal();
+            if (up*np>0.0) up = np;
+            else up = -np;
 
-                if (up*np>0.0) up = np;
-                else up = -np;
+            _eye = ip+up*_height;
 
-                _eye = ip+up*_height;
+            lv = up^sv;
 
-                lv = up^sv;
+            computePosition(_eye,_eye+lv,up);
 
-                computePosition(_eye,_eye+lv,up);
-
-                return true;
-
-            }
+            return true;
 
         }
         
         // no hit on the terrain found therefore resort to a fall under
         // under the influence of gravity.
         osg::Vec3d dp = lfp;
-        dp -= getUpVector(cf)* (2*_modelScale);
+        dp -= getUpVector(cf)* (2.0*_modelScale);
 
-        iv.reset();
-
-        osg::ref_ptr<osg::LineSegment> segFall = new osg::LineSegment;
-        segFall->set(lfp,dp);
-        iv.addLineSegment(segFall.get());
-
-        _node->accept(iv);
-
-        if (iv.hits())
+        if (intersect(lfp, dp, ip, np))
         {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segFall.get());
-            if (!hitList.empty())
-            {
 
-                notify(INFO) << "Hit terrain on decent ok"<< std::endl;
-                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-                osg::Vec3d np = hitList.front().getWorldIntersectNormal();
+            if (up*np>0.0) up = np;
+            else up = -np;
 
-                if (up*np>0.0) up = np;
-                else up = -np;
+            _eye = ip+up*_height;
 
-                _eye = ip+up*_height;
+            lv = up^sv;
 
-                lv = up^sv;
+            computePosition(_eye,_eye+lv,up);
 
-                computePosition(_eye,_eye+lv,up);
-
-                return true;
-            }
+            return true;
         }
 
         // no collision with terrain has been found therefore track horizontally.

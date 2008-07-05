@@ -284,10 +284,15 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     osg::Vec3d s(_start), e(_end);    
     if ( !intersectAndClip( s, e, drawable->getBound() ) ) return;
 
-    // reset the clipped range as it can be too close in on the BB, and cause missing due precission issues.
-    s = _start;
-    e = _end;
-    
+    double epsilon = 1e-8;
+    if ((s-e).length()<epsilon)
+    {    
+        osg::Vec3d delta_e_end = _end - e;
+        osg::Vec3d delta_s_start = _start - s;
+        double scale = 0.001;
+        s += (delta_s_start * scale);
+        e += (delta_e_end * scale);
+    }
     
     osg::KdTree* kdTree = dynamic_cast<osg::KdTree*>(drawable->getShape());
     if (kdTree)
@@ -315,7 +320,11 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                 hit.drawable = drawable;
                 hit.primitiveIndex = lsi.primitiveIndex;
 
-                hit.localIntersectionPoint = lsi.intersectionPoint; // s*(1.0f-ratio) + e*ratio;
+#if 0
+                hit.localIntersectionPoint = lsi.intersectionPoint;
+#else
+                hit.localIntersectionPoint = s*(1.0f-ratio) + e*ratio;
+#endif
                 hit.localIntersectionNormal = lsi.intersectionNormal;
                 
                 hit.indexList.swap(lsi.indexList);
@@ -347,21 +356,25 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
         {
 
             // get ratio in s,e range
-            float ratio = thitr->first;
+            double ratio = thitr->first;
 
             // remap ratio into _start, _end range
-            ratio = ((s-_start).length() + ratio * (e-s).length() )/(_end-_start).length();
+            double remap_ratio = ((s-_start).length() + ratio * (e-s).length() )/(_end-_start).length();
 
             LineSegmentIntersectorUtils::TriangleIntersection& triHit = thitr->second;
 
             Intersection hit;
-            hit.ratio = ratio;
+            hit.ratio = remap_ratio;
             hit.matrix = iv.getModelMatrix();
             hit.nodePath = iv.getNodePath();
             hit.drawable = drawable;
             hit.primitiveIndex = triHit._index;
 
-            hit.localIntersectionPoint = s*(1.0f-ratio) + e*ratio;
+#if 1
+            hit.localIntersectionPoint = _start*(1.0-remap_ratio) + _end*remap_ratio;
+#else        
+            hit.localIntersectionPoint = s*(1.0-ratio) + e*ratio;
+#endif            
             hit.localIntersectionNormal = triHit._normal;
 
             if (geometry)

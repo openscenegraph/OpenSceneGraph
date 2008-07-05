@@ -76,6 +76,8 @@ class OSGGA_EXPORT DriveManipulator : public MatrixManipulator
 
         virtual ~DriveManipulator();
 
+        bool intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection, osg::Vec3d& normal) const;
+
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();
 

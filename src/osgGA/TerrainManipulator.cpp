@@ -73,6 +73,25 @@ osg::Node* TerrainManipulator::getNode()
 }
 
 
+
+bool TerrainManipulator::intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection) const
+{
+    osg::ref_ptr<osgUtil::LineSegmentIntersector> lsi = new osgUtil::LineSegmentIntersector(start,end);
+
+    osgUtil::IntersectionVisitor iv(lsi.get());
+    iv.setTraversalMask(_intersectTraversalMask);
+    
+    _node->accept(iv);
+    
+    if (lsi->containsIntersections())
+    {
+        intersection = lsi->getIntersections().begin()->getWorldIntersectPoint();
+        return true;
+    }
+    return false;
+}
+
+
 void TerrainManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 {
     if (getAutoComputeHomePosition()) computeHomePosition();
@@ -219,48 +238,6 @@ void TerrainManipulator::addMouseEvent(const GUIEventAdapter& ea)
     _ga_t1 = _ga_t0;
     _ga_t0 = &ea;
 }
-
-bool TerrainManipulator::intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection)
-{
-#if 0
-    // need to reintersect with the terrain
-    osgUtil::IntersectVisitor iv;
-    iv.setTraversalMask(_intersectTraversalMask);
-
-    osg::ref_ptr<osg::LineSegment> segLookVector = new osg::LineSegment;
-    segLookVector->set(start,end);
-    iv.addLineSegment(segLookVector.get());
-
-    _node->accept(iv);
-
-    if (iv.hits())
-    {
-        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segLookVector.get());
-        if (!hitList.empty())
-        {
-            intersection = hitList.front().getWorldIntersectPoint();
-            return true;
-        }
-    }
-    return false;
-#else
-    
-    osg::ref_ptr<osgUtil::LineSegmentIntersector> lsi = new osgUtil::LineSegmentIntersector(start,end);
-
-    osgUtil::IntersectionVisitor iv(lsi.get());
-    iv.setTraversalMask(_intersectTraversalMask);
-    
-    _node->accept(iv);
-    
-    if (lsi->containsIntersections())
-    {
-        intersection = lsi->getIntersections().begin()->getWorldIntersectPoint();
-        return true;
-    }
-    return false;
-#endif
-}
-
 void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
 
@@ -294,9 +271,9 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 
         _distance = (eye-ip).length();
 
-        osg::Matrix rotation_matrix = osg::Matrixd::translate(0.0,0.0,-_distance)*
-                                      matrix*
-                                      osg::Matrixd::translate(-_center);
+        osg::Matrixd rotation_matrix = osg::Matrixd::translate(0.0,0.0,-_distance)*
+                                       matrix*
+                                       osg::Matrixd::translate(-_center);
 
         _rotation = rotation_matrix.getRotate();
 
@@ -330,12 +307,12 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
 
 osg::Matrixd TerrainManipulator::getMatrix() const
 {
-    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrix::translate(_center);
+    return osg::Matrixd::translate(0.0,0.0,_distance)*osg::Matrixd::rotate(_rotation)*osg::Matrixd::translate(_center);
 }
 
 osg::Matrixd TerrainManipulator::getInverseMatrix() const
 {
-    return osg::Matrix::translate(-_center)*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
+    return osg::Matrixd::translate(-_center)*osg::Matrixd::rotate(_rotation.inverse())*osg::Matrixd::translate(0.0,0.0,-_distance);
 }
 
 void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d& center,const osg::Vec3d& up)
@@ -343,7 +320,7 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
     if (!_node) return;
 
     // compute rotation matrix
-    osg::Vec3 lv(center-eye);
+    osg::Vec3d lv(center-eye);
     _distance = lv.length();
     _center = center;
 
@@ -353,10 +330,10 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
     {
         bool hitFound = false;
 
-        float distance = lv.length();
-        float maxDistance = distance+2*(eye-_node->getBound().center()).length();
-        osg::Vec3 farPosition = eye+lv*(maxDistance/distance);
-        osg::Vec3 endPoint = center;
+        double distance = lv.length();
+        double maxDistance = distance+2*(eye-_node->getBound().center()).length();
+        osg::Vec3d farPosition = eye+lv*(maxDistance/distance);
+        osg::Vec3d endPoint = center;
         for(int i=0;
             !hitFound && i<2;
             ++i, endPoint = farPosition)
@@ -464,7 +441,7 @@ bool TerrainManipulator::calcMovement()
         // pan model.
         double scale = -0.3f*_distance;
 
-        osg::Matrix rotation_matrix;
+        osg::Matrixd rotation_matrix;
         rotation_matrix.makeRotate(_rotation);
 
 
@@ -571,7 +548,7 @@ void TerrainManipulator::clampOrientation()
 {
     if (_rotationMode==ELEVATION_AZIM)
     {
-        osg::Matrix rotation_matrix;
+        osg::Matrixd rotation_matrix;
         rotation_matrix.makeRotate(_rotation);
 
         osg::Vec3d lookVector = -getUpVector(rotation_matrix);

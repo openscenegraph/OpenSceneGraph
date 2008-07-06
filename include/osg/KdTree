@@ -26,17 +26,28 @@ class OSG_EXPORT KdTree : public osg::Shape
     public:
     
         
-        KdTree() {}
+        KdTree();
         
-        KdTree(const KdTree& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            Shape(rhs,copyop) {}
+        KdTree(const KdTree& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Shape(osg, KdTree)
         
+        struct BuildOptions
+        {
+            BuildOptions():
+                _numVerticesProcessed(0),
+                _targetNumTrianglesPerLeaf(4),
+                _maxNumLevels(24) {}
+                        
+            unsigned int _numVerticesProcessed;
+            unsigned int _targetNumTrianglesPerLeaf;
+            unsigned int _maxNumLevels;
+        };
+        
+        
         /** Build the kdtree from the specified source geometry object.
           * retun true on success. */ 
-        virtual bool build(osg::Geometry* geometry);
-        
+        virtual bool build(BuildOptions& buildOptions, osg::Geometry* geometry);
         
         struct LineSegmentIntersection
         {
@@ -68,13 +79,13 @@ class OSG_EXPORT KdTree : public osg::Shape
         typedef int value_type;
         typedef std::vector< value_type >   Indices;
 
-        struct KDNode
+        struct KdNode
         {
-            KDNode():
+            KdNode():
                 first(0),
                 second(0) {}
 
-            KDNode(value_type f, value_type s):
+            KdNode(value_type f, value_type s):
                 first(f),
                 second(s) {}
 
@@ -85,13 +96,13 @@ class OSG_EXPORT KdTree : public osg::Shape
         };
 
 
-        struct KDLeaf
+        struct KdLeaf
         {
-            KDLeaf():
+            KdLeaf():
                 first(0),
                 second(0) {}
 
-            KDLeaf(value_type f, value_type s):
+            KdLeaf(value_type f, value_type s):
                 first(f),
                 second(s) {}
 
@@ -120,6 +131,93 @@ class OSG_EXPORT KdTree : public osg::Shape
             unsigned int _p3;    
         };
 
+        typedef std::vector< unsigned int > AxisStack;
+        typedef std::vector< KdNode >       KDNodeList;
+        typedef std::vector< KdLeaf > KDLeafList;
+
+        /// note, leafNum is negative to distinguish from nodeNum
+        int addLeaf(const KdLeaf& leaf) { int num = _kdLeaves.size(); _kdLeaves.push_back(leaf); return -(num+1); }
+
+        int replaceLeaf(int leafNum, const KdLeaf& leaf)
+        {
+            int num = -leafNum-1; 
+            
+            if (num>_kdLeaves.size()-1)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: replaceChild("<<leafNum<<", leaf), num = "<<num<<" _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
+                return leafNum;
+            }
+            
+            _kdLeaves[num] = leaf; return leafNum;
+        }
+
+        /// note, leafNum is negative to distinguish from nodeNum
+        KdLeaf& getLeaf(int leafNum)
+        {
+            int num = -leafNum-1;
+            if (num<0 || num>_kdLeaves.size()-1)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: getLeaf("<<leafNum<<", num = "<<num<<") _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
+            }
+
+            return _kdLeaves[num];
+        }
+
+        int addNode(const KdNode& node)
+        {
+            int num = _kdNodes.size(); 
+            _kdNodes.push_back(node); 
+            return num;
+        }
+
+        /// note, nodeNum is positive to distinguish from leftNum
+        KdNode& getNode(int nodeNum)
+        {
+            if (nodeNum<0 || nodeNum>_kdNodes.size()-1)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: getNode("<<nodeNum<<") _kdNodes.size()="<<_kdNodes.size()<<std::endl;
+            }
+            return _kdNodes[nodeNum];
+        }
+        
+        osg::BoundingBox& getBounindingBox(int nodeNum)
+        {
+            if (nodeNum<0)
+            {
+                int num = -nodeNum-1;
+                return _kdLeaves[num].bb;            
+            }
+            else
+            {
+                return _kdNodes[nodeNum].bb;
+            }
+        }
+
+
+        void computeDivisions(BuildOptions& options);
+
+        int divide(BuildOptions& options, osg::BoundingBox& bb, int nodeIndex, unsigned int level);
+
+
+        typedef std::vector< osg::BoundingBox >                 BoundingBoxList;
+        typedef std::vector< Triangle >                         TriangleList;
+        typedef std::vector< osg::Vec3 >                        CenterList;
+
+        osg::observer_ptr<osg::Geometry>    _geometry;
+
+        osg::BoundingBox                    _bb;
+
+        AxisStack                           _axisStack;
+        KDNodeList                          _kdNodes;
+        KDLeafList                          _kdLeaves;
+
+        osg::ref_ptr<osg::Vec3Array>        _vertices;
+        
+        Indices                             _primitiveIndices;
+        
+        BoundingBoxList                     _boundingBoxes;
+        TriangleList                        _triangles;
+        CenterList                          _centers;
 
 };
 
@@ -131,13 +229,10 @@ class OSG_EXPORT KdTreeBuilder : public osg::NodeVisitor
     
         void apply(osg::Geode& geode);
     
+        KdTree::BuildOptions _buildOptions;
+
         osg::ref_ptr<osg::KdTree> _kdTreePrototype;
-        
-        unsigned int _maxNumLevels;
-        unsigned int _targetNumTrianglesPerLeaf;
-        
-        unsigned int _numVerticesProcessed;
-        
+                
     protected:
     
         virtual ~KdTreeBuilder() {}

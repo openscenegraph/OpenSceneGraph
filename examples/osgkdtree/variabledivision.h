@@ -118,7 +118,6 @@ class KDTree : public osg::Shape
     
         typedef std::vector< unsigned int > AxisStack;
         typedef std::vector< KDNode >       KDNodeList;
-
         typedef std::vector< KDLeaf > KDLeafList;
 
         /// note, leafNum is negative to distinguish from nodeNum

@@ -320,7 +320,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
             if (doKdTreeBuilder && _kdTreeBuilder.valid() && result.validNode()) 
             {
-                result.getNode()->accept(*_kdTreeBuilder);
+                osg::ref_ptr<osg::KdTreeBuilder> builder = _kdTreeBuilder->clone();
+                result.getNode()->accept(*builder);
             }
         }
 

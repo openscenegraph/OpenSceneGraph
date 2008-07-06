@@ -1,8 +1,8 @@
 #include <osgDB/DatabasePager>
-#include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/Registry>
 
 #include <osg/Geode>
 #include <osg/Timer>
@@ -367,6 +367,17 @@ int DatabasePager::DatabaseThread::cancel()
 
 }
 
+osg::ref_ptr<osg::Node> DatabasePager::DatabaseThread::dpReadRefNodeFile(const std::string& fileName,const ReaderWriter::Options* options)
+{
+    ReaderWriter::ReadResult rr = Registry::instance()->getReadFileCallback() ?
+            Registry::instance()->getReadFileCallback()->readNode(fileName,options) :
+            Registry::instance()->readNodeImplementation(fileName,options);
+
+    if (rr.validNode()) return rr.getNode();
+    if (rr.error()) osg::notify(osg::WARN) << rr.message() << std::endl;
+    return 0;
+}
+
 void DatabasePager::DatabaseThread::run()
 {
     osg::notify(osg::INFO)<<_name<<": DatabasePager::DatabaseThread::run"<<std::endl;
@@ -541,13 +552,13 @@ void DatabasePager::DatabaseThread::run()
                 // do *not* assume that we only have one DatabasePager, or that reaNodeFile is thread safe...
                 static OpenThreads::Mutex s_serialize_readNodeFile_mutex;
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_serialize_readNodeFile_mutex);
-                databaseRequest->_loadedModel = osgDB::readRefNodeFile(databaseRequest->_fileName,
+                databaseRequest->_loadedModel = dpReadRefNodeFile(databaseRequest->_fileName,
                     databaseRequest->_loadOptions.get());
             }
             else
             {
                 // assume that we only have one DatabasePager, or that readNodeFile is thread safe...
-                databaseRequest->_loadedModel = osgDB::readRefNodeFile(databaseRequest->_fileName,
+                databaseRequest->_loadedModel = dpReadRefNodeFile(databaseRequest->_fileName,
                     databaseRequest->_loadOptions.get());
             }
 

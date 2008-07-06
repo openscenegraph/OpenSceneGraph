@@ -67,8 +67,6 @@ KdTree::KdTree(const KdTree& rhs, const osg::CopyOp& copyop):
 
 bool KdTree::build(BuildOptions& options, osg::Geometry* geometry)
 {
-    osg::notify(osg::NOTICE)<<"KdTree::build("<<geometry<<")"<<std::endl;
-
 #ifdef VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"osg::KDTreeBuilder::createKDTree()"<<std::endl;
 #endif
@@ -315,6 +313,12 @@ KdTreeBuilder::KdTreeBuilder():
     _kdTreePrototype = new osg::KdTree;
 }
 
+KdTreeBuilder::KdTreeBuilder(const KdTreeBuilder& rhs):
+    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+    _kdTreePrototype(rhs._kdTreePrototype),
+    _buildOptions(rhs._buildOptions)
+{
+}
 
 void KdTreeBuilder::apply(osg::Geode& geode)
 {

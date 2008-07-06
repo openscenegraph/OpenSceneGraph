@@ -227,6 +227,10 @@ class OSG_EXPORT KdTreeBuilder : public osg::NodeVisitor
     
         KdTreeBuilder();
     
+        KdTreeBuilder(const KdTreeBuilder& rhs);
+
+        virtual KdTreeBuilder* clone() { return new KdTreeBuilder(*this); }
+
         void apply(osg::Geode& geode);
     
         KdTree::BuildOptions _buildOptions;

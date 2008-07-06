@@ -13,6 +13,7 @@
 #include <osg/ArgumentParser>
 #include <osg/Drawable>
 #include <osg/Image>
+#include <osg/KdTree>
 #include <osg/Node>
 #include <osg/Object>
 #include <osg/Shader>
@@ -330,6 +331,31 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __ReaderWriter_WriteResult__writeShaderImplementation__C5_osg_Shader_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
 	          "",
 	          "");
+	I_Method2(void, buildKdTreeIfRequired, IN, osgDB::ReaderWriter::ReadResult &, result, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::NON_VIRTUAL,
+	          __void__buildKdTreeIfRequired__ReaderWriter_ReadResult_R1__C5_ReaderWriter_Options_P1,
+	          "",
+	          "");
+	I_Method1(void, setBuildKdTreesHint, IN, osgDB::ReaderWriter::Options::BuildKdTreesHint, hint,
+	          Properties::NON_VIRTUAL,
+	          __void__setBuildKdTreesHint__ReaderWriter_Options_BuildKdTreesHint,
+	          "",
+	          "");
+	I_Method0(osgDB::ReaderWriter::Options::BuildKdTreesHint, getBuildKdTreesHint,
+	          Properties::NON_VIRTUAL,
+	          __ReaderWriter_Options_BuildKdTreesHint__getBuildKdTreesHint,
+	          "",
+	          "");
+	I_Method1(void, setKdTreeBuilder, IN, osg::KdTreeBuilder *, builder,
+	          Properties::NON_VIRTUAL,
+	          __void__setKdTreeBuilder__osg_KdTreeBuilder_P1,
+	          "",
+	          "");
+	I_Method0(osg::KdTreeBuilder *, getKdTreeBuilder,
+	          Properties::NON_VIRTUAL,
+	          __osg_KdTreeBuilder_P1__getKdTreeBuilder,
+	          "",
+	          "");
 	I_Method1(void, setCreateNodeFromImage, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
 	          __void__setCreateNodeFromImage__bool,
@@ -528,6 +554,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	                   __ReaderWriter_ReadResult__readImplementation__C5_ReadFunctor_R1__bool,
 	                   "",
 	                   "");
+	I_SimpleProperty(osgDB::ReaderWriter::Options::BuildKdTreesHint, BuildKdTreesHint, 
+	                 __ReaderWriter_Options_BuildKdTreesHint__getBuildKdTreesHint, 
+	                 __void__setBuildKdTreesHint__ReaderWriter_Options_BuildKdTreesHint);
 	I_SimpleProperty(bool, CreateNodeFromImage, 
 	                 __bool__getCreateNodeFromImage, 
 	                 __void__setCreateNodeFromImage__bool);
@@ -537,6 +566,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
 	                 __DatabasePager_P1__getDatabasePager, 
 	                 __void__setDatabasePager__DatabasePager_P1);
+	I_SimpleProperty(osg::KdTreeBuilder *, KdTreeBuilder, 
+	                 __osg_KdTreeBuilder_P1__getKdTreeBuilder, 
+	                 __void__setKdTreeBuilder__osg_KdTreeBuilder_P1);
 	I_SimpleProperty(const osgDB::FilePathList &, LibraryFilePathList, 
 	                 __C5_FilePathList_R1__getLibraryFilePathList, 
 	                 __void__setLibraryFilePathList__C5_FilePathList_R1);

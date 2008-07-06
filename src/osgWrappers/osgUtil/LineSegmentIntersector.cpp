@@ -187,5 +187,3 @@ END_REFLECTOR
 
 STD_SET_REFLECTOR(std::multiset< osgUtil::LineSegmentIntersector::Intersection >)
 
-STD_VECTOR_REFLECTOR(std::vector< double >)
-

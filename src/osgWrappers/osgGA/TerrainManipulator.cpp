@@ -118,6 +118,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");
+	I_ProtectedMethod3(bool, intersect, IN, const osg::Vec3d &, start, IN, const osg::Vec3d &, end, IN, osg::Vec3d &, intersection,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__intersect__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__osg_Vec3d_R1,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(void, flushMouseEventStack,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

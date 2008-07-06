@@ -198,6 +198,13 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::CacheHintOptions)
 	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_ALL);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::BuildKdTreesHint)
+	I_DeclaringFile("osgDB/ReaderWriter");
+	I_EnumLabel(osgDB::ReaderWriter::Options::NO_PREFERENCE);
+	I_EnumLabel(osgDB::ReaderWriter::Options::DO_NOT_BUILD_KDTREES);
+	I_EnumLabel(osgDB::ReaderWriter::Options::BUILD_KDTREES);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	I_DeclaringFile("osgDB/ReaderWriter");
 	I_BaseType(osg::Object);
@@ -273,6 +280,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	          __CacheHintOptions__getObjectCacheHint,
 	          "Get whether the Registry::ObjectCache should be used by default. ",
 	          "");
+	I_Method1(void, setBuildKdTreesHint, IN, osgDB::ReaderWriter::Options::BuildKdTreesHint, hint,
+	          Properties::NON_VIRTUAL,
+	          __void__setBuildKdTreesHint__BuildKdTreesHint,
+	          "Set whether the KdTrees should be built for geometry in the loader model. ",
+	          "");
+	I_Method0(osgDB::ReaderWriter::Options::BuildKdTreesHint, getBuildKdTreesHint,
+	          Properties::NON_VIRTUAL,
+	          __BuildKdTreesHint__getBuildKdTreesHint,
+	          "Get whether the KdTrees should be built for geometry in the loader model. ",
+	          "");
 	I_Method2(void, setPluginData, IN, const std::string &, s, IN, void *, v,
 	          Properties::NON_VIRTUAL,
 	          __void__setPluginData__C5_std_string_R1__void_P1,
@@ -293,6 +310,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	          __void__removePluginData__C5_std_string_R1,
 	          "Remove a value from the PluginData. ",
 	          "");
+	I_SimpleProperty(osgDB::ReaderWriter::Options::BuildKdTreesHint, BuildKdTreesHint, 
+	                 __BuildKdTreesHint__getBuildKdTreesHint, 
+	                 __void__setBuildKdTreesHint__BuildKdTreesHint);
 	I_SimpleProperty(const std::string &, DatabasePath, 
 	                 0, 
 	                 __void__setDatabasePath__C5_std_string_R1);

@@ -25,6 +25,7 @@
 #include <osg/TexEnvCombine>
 #include <osg/Program>
 #include <osg/Math>
+#include <osg/Timer>
 
 using namespace osgTerrain;
 
@@ -231,6 +232,8 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     
     double i_sampleFactor = 1.0;
     double j_sampleFactor = 1.0;
+
+    osg::notify(osg::NOTICE)<<"Sample ratio="<<sampleRatio<<std::endl;
 
     if (sampleRatio!=1.0f)
     {
@@ -647,9 +650,14 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::ReaderWriter::Options::BUILD_KDTREES &&
         osgDB::Registry::instance()->getKdTreeBuilder())
     {
+    
+        
+        osg::Timer_t before = osg::Timer::instance()->tick();
         //osg::notify(osg::NOTICE)<<"osgTerrain::GeometryTechnique::build kd tree"<<std::endl;
-        buffer._geode->accept(*(osgDB::Registry::instance()->getKdTreeBuilder()));
-        //osg::notify(osg::NOTICE)<<"after"<<std::endl;
+        osg::ref_ptr<osg::KdTreeBuilder> builder = osgDB::Registry::instance()->getKdTreeBuilder()->clone();
+        buffer._geode->accept(*builder);
+        osg::Timer_t after = osg::Timer::instance()->tick();
+        osg::notify(osg::NOTICE)<<"KdTree build time "<<osg::Timer::instance()->delta_m(before, after)<<std::endl;
     }
 }
 

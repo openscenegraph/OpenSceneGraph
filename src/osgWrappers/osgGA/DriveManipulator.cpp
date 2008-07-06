@@ -126,6 +126,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::DriveManipulator)
 	          __double__getHeight,
 	          "",
 	          "");
+	I_ProtectedMethod4(bool, intersect, IN, const osg::Vec3d &, start, IN, const osg::Vec3d &, end, IN, osg::Vec3d &, intersection, IN, osg::Vec3d &, normal,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__intersect__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__osg_Vec3d_R1__osg_Vec3d_R1,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(void, flushMouseEventStack,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

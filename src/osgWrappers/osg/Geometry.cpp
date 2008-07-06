@@ -110,21 +110,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __C5_Array_P1__getVertexArray,
 	          "",
 	          "");
-	I_Method1(void, setVertexIndices, IN, osg::IndexArray *, array,
-	          Properties::NON_VIRTUAL,
-	          __void__setVertexIndices__IndexArray_P1,
-	          "",
-	          "");
-	I_Method0(osg::IndexArray *, getVertexIndices,
-	          Properties::NON_VIRTUAL,
-	          __IndexArray_P1__getVertexIndices,
-	          "",
-	          "");
-	I_Method0(const osg::IndexArray *, getVertexIndices,
-	          Properties::NON_VIRTUAL,
-	          __C5_IndexArray_P1__getVertexIndices,
-	          "",
-	          "");
 	I_Method1(void, setVertexData, IN, const osg::Geometry::ArrayData &, arrayData,
 	          Properties::NON_VIRTUAL,
 	          __void__setVertexData__C5_ArrayData_R1,
@@ -163,21 +148,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_Method0(const osg::Array *, getNormalArray,
 	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getNormalArray,
-	          "",
-	          "");
-	I_Method1(void, setNormalIndices, IN, osg::IndexArray *, array,
-	          Properties::NON_VIRTUAL,
-	          __void__setNormalIndices__IndexArray_P1,
-	          "",
-	          "");
-	I_Method0(osg::IndexArray *, getNormalIndices,
-	          Properties::NON_VIRTUAL,
-	          __IndexArray_P1__getNormalIndices,
-	          "",
-	          "");
-	I_Method0(const osg::IndexArray *, getNormalIndices,
-	          Properties::NON_VIRTUAL,
-	          __C5_IndexArray_P1__getNormalIndices,
 	          "",
 	          "");
 	I_Method1(void, setNormalData, IN, const osg::Geometry::ArrayData &, arrayData,
@@ -220,21 +190,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __C5_Array_P1__getColorArray,
 	          "",
 	          "");
-	I_Method1(void, setColorIndices, IN, osg::IndexArray *, array,
-	          Properties::NON_VIRTUAL,
-	          __void__setColorIndices__IndexArray_P1,
-	          "",
-	          "");
-	I_Method0(osg::IndexArray *, getColorIndices,
-	          Properties::NON_VIRTUAL,
-	          __IndexArray_P1__getColorIndices,
-	          "",
-	          "");
-	I_Method0(const osg::IndexArray *, getColorIndices,
-	          Properties::NON_VIRTUAL,
-	          __C5_IndexArray_P1__getColorIndices,
-	          "",
-	          "");
 	I_Method1(void, setColorData, IN, const osg::Geometry::ArrayData &, arrayData,
 	          Properties::NON_VIRTUAL,
 	          __void__setColorData__C5_ArrayData_R1,
@@ -273,21 +228,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_Method0(const osg::Array *, getSecondaryColorArray,
 	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getSecondaryColorArray,
-	          "",
-	          "");
-	I_Method1(void, setSecondaryColorIndices, IN, osg::IndexArray *, array,
-	          Properties::NON_VIRTUAL,
-	          __void__setSecondaryColorIndices__IndexArray_P1,
-	          "",
-	          "");
-	I_Method0(osg::IndexArray *, getSecondaryColorIndices,
-	          Properties::NON_VIRTUAL,
-	          __IndexArray_P1__getSecondaryColorIndices,
-	          "",
-	          "");
-	I_Method0(const osg::IndexArray *, getSecondaryColorIndices,
-	          Properties::NON_VIRTUAL,
-	          __C5_IndexArray_P1__getSecondaryColorIndices,
 	          "",
 	          "");
 	I_Method1(void, setSecondaryColorData, IN, const osg::Geometry::ArrayData &, arrayData,
@@ -330,21 +270,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __C5_Array_P1__getFogCoordArray,
 	          "",
 	          "");
-	I_Method1(void, setFogCoordIndices, IN, osg::IndexArray *, array,
-	          Properties::NON_VIRTUAL,
-	          __void__setFogCoordIndices__IndexArray_P1,
-	          "",
-	          "");
-	I_Method0(osg::IndexArray *, getFogCoordIndices,
-	          Properties::NON_VIRTUAL,
-	          __IndexArray_P1__getFogCoordIndices,
-	          "",
-	          "");
-	I_Method0(const osg::IndexArray *, getFogCoordIndices,
-	          Properties::NON_VIRTUAL,
-	          __C5_IndexArray_P1__getFogCoordIndices,
-	          "",
-	          "");
 	I_Method1(void, setFogCoordData, IN, const osg::Geometry::ArrayData &, arrayData,
 	          Properties::NON_VIRTUAL,
 	          __void__setFogCoordData__C5_ArrayData_R1,
@@ -373,21 +298,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_Method1(const osg::Array *, getTexCoordArray, IN, unsigned int, unit,
 	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getTexCoordArray__unsigned_int,
-	          "",
-	          "");
-	I_Method2(void, setTexCoordIndices, IN, unsigned int, unit, IN, osg::IndexArray *, x,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexCoordIndices__unsigned_int__IndexArray_P1,
-	          "",
-	          "");
-	I_Method1(osg::IndexArray *, getTexCoordIndices, IN, unsigned int, unit,
-	          Properties::NON_VIRTUAL,
-	          __IndexArray_P1__getTexCoordIndices__unsigned_int,
-	          "",
-	          "");
-	I_Method1(const osg::IndexArray *, getTexCoordIndices, IN, unsigned int, unit,
-	          Properties::NON_VIRTUAL,
-	          __C5_IndexArray_P1__getTexCoordIndices__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setTexCoordData, IN, unsigned int, index, IN, const osg::Geometry::ArrayData &, arrayData,
@@ -433,21 +343,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_Method1(const osg::Array *, getVertexAttribArray, IN, unsigned int, index,
 	          Properties::NON_VIRTUAL,
 	          __C5_Array_P1__getVertexAttribArray__unsigned_int,
-	          "",
-	          "");
-	I_Method2(void, setVertexAttribIndices, IN, unsigned int, index, IN, osg::IndexArray *, array,
-	          Properties::NON_VIRTUAL,
-	          __void__setVertexAttribIndices__unsigned_int__IndexArray_P1,
-	          "",
-	          "");
-	I_Method1(osg::IndexArray *, getVertexAttribIndices, IN, unsigned int, index,
-	          Properties::NON_VIRTUAL,
-	          __IndexArray_P1__getVertexAttribIndices__unsigned_int,
-	          "",
-	          "");
-	I_Method1(const osg::IndexArray *, getVertexAttribIndices, IN, unsigned int, index,
-	          Properties::NON_VIRTUAL,
-	          __C5_IndexArray_P1__getVertexAttribIndices__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setVertexAttribBinding, IN, unsigned int, index, IN, osg::Geometry::AttributeBinding, ab,
@@ -555,6 +450,111 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __unsigned_int__getPrimitiveSetIndex__C5_PrimitiveSet_P1,
 	          "Get the index number of a primitive set, return a value between 0 and getNumPrimitiveSet()-1 if found, if not found then return getNumPrimitiveSet(). ",
 	          "When checking for a valid find value use if ((value=geometry->getPrimitiveSetIndex(primitive))!=geometry.getNumPrimitiveSet()) ");
+	I_Method1(void, setVertexIndices, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertexIndices__IndexArray_P1,
+	          "deprecated - forces OpenGL slow path, just kept for backwards compatibility. ",
+	          "");
+	I_Method0(osg::IndexArray *, getVertexIndices,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getVertexIndices,
+	          "",
+	          "");
+	I_Method0(const osg::IndexArray *, getVertexIndices,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getVertexIndices,
+	          "",
+	          "");
+	I_Method1(void, setNormalIndices, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setNormalIndices__IndexArray_P1,
+	          "deprecated - forces OpenGL slow path, just kept for backwards compatibility. ",
+	          "");
+	I_Method0(osg::IndexArray *, getNormalIndices,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getNormalIndices,
+	          "",
+	          "");
+	I_Method0(const osg::IndexArray *, getNormalIndices,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getNormalIndices,
+	          "",
+	          "");
+	I_Method1(void, setColorIndices, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setColorIndices__IndexArray_P1,
+	          "deprecated - forces OpenGL slow path, just kept for backwards compatibility. ",
+	          "");
+	I_Method0(osg::IndexArray *, getColorIndices,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getColorIndices,
+	          "",
+	          "");
+	I_Method0(const osg::IndexArray *, getColorIndices,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getColorIndices,
+	          "",
+	          "");
+	I_Method1(void, setSecondaryColorIndices, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setSecondaryColorIndices__IndexArray_P1,
+	          "deprecated - forces OpenGL slow path, just kept for backwards compatibility. ",
+	          "");
+	I_Method0(osg::IndexArray *, getSecondaryColorIndices,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getSecondaryColorIndices,
+	          "",
+	          "");
+	I_Method0(const osg::IndexArray *, getSecondaryColorIndices,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getSecondaryColorIndices,
+	          "",
+	          "");
+	I_Method1(void, setFogCoordIndices, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setFogCoordIndices__IndexArray_P1,
+	          "deprecated - forces OpenGL slow path, just kept for backwards compatibility. ",
+	          "");
+	I_Method0(osg::IndexArray *, getFogCoordIndices,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getFogCoordIndices,
+	          "",
+	          "");
+	I_Method0(const osg::IndexArray *, getFogCoordIndices,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getFogCoordIndices,
+	          "",
+	          "");
+	I_Method2(void, setTexCoordIndices, IN, unsigned int, unit, IN, osg::IndexArray *, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setTexCoordIndices__unsigned_int__IndexArray_P1,
+	          "deprecated - forces OpenGL slow path, just kept for backwards compatibility. ",
+	          "");
+	I_Method1(osg::IndexArray *, getTexCoordIndices, IN, unsigned int, unit,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getTexCoordIndices__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osg::IndexArray *, getTexCoordIndices, IN, unsigned int, unit,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getTexCoordIndices__unsigned_int,
+	          "",
+	          "");
+	I_Method2(void, setVertexAttribIndices, IN, unsigned int, index, IN, osg::IndexArray *, array,
+	          Properties::NON_VIRTUAL,
+	          __void__setVertexAttribIndices__unsigned_int__IndexArray_P1,
+	          "deprecated - forces OpenGL slow path, just kept for backwards compatibility. ",
+	          "");
+	I_Method1(osg::IndexArray *, getVertexAttribIndices, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
+	          __IndexArray_P1__getVertexAttribIndices__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osg::IndexArray *, getVertexAttribIndices, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
+	          __C5_IndexArray_P1__getVertexAttribIndices__unsigned_int,
+	          "",
+	          "");
 	I_Method1(void, setUseVertexBufferObjects, IN, bool, flag,
 	          Properties::VIRTUAL,
 	          __void__setUseVertexBufferObjects__bool,

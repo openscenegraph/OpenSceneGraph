@@ -54,6 +54,8 @@ static osg::ApplicationUsageProxy Registry_e0(osg::ApplicationUsage::ENVIRONMENT
 static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_LIBRARY_PATH <path>[;path]..","Paths for locating libraries/ plugins");
 #endif
 
+static osg::ApplicationUsageProxy Registry_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_BUILD_KDTREES on/off","Enable/disable the automatic building of KdTrees for each loaded Geometry.");
+
 
 class Registry::AvailableReaderWriterIterator
 {

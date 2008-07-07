@@ -311,20 +311,20 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                 double ratio = lsi.ratio;
 
                 // remap ratio into _start, _end range
-                ratio = ((s-_start).length() + ratio * (e-s).length() )/(_end-_start).length();
+                double remap_ratio = ((s-_start).length() + ratio * (e-s).length() )/(_end-_start).length();
+
 
                 Intersection hit;
-                hit.ratio = lsi.ratio;
+                hit.ratio = remap_ratio;
                 hit.matrix = iv.getModelMatrix();
                 hit.nodePath = iv.getNodePath();
                 hit.drawable = drawable;
                 hit.primitiveIndex = lsi.primitiveIndex;
 
-#if 0
-                hit.localIntersectionPoint = lsi.intersectionPoint;
-#else
-                hit.localIntersectionPoint = s*(1.0f-ratio) + e*ratio;
-#endif
+                hit.localIntersectionPoint = _start*(1.0-remap_ratio) + _end*remap_ratio;
+                
+                osg::notify(osg::NOTICE)<<"KdTree: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
+                
                 hit.localIntersectionNormal = lsi.intersectionNormal;
                 
                 hit.indexList.swap(lsi.indexList);
@@ -370,11 +370,10 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
             hit.drawable = drawable;
             hit.primitiveIndex = triHit._index;
 
-#if 1
             hit.localIntersectionPoint = _start*(1.0-remap_ratio) + _end*remap_ratio;
-#else        
-            hit.localIntersectionPoint = s*(1.0-ratio) + e*ratio;
-#endif            
+
+            // osg::notify(osg::NOTICE)<<"Conventional: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
+
             hit.localIntersectionNormal = triHit._normal;
 
             if (geometry)

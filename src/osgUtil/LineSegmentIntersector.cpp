@@ -19,6 +19,7 @@
 #include <osg/io_utils>
 #include <osg/TriangleFunctor>
 #include <osg/KdTree>
+#include <osg/Timer>
 
 using namespace osgUtil;
 
@@ -294,13 +295,18 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
         e += (delta_e_end * scale);
     }
     
+    osg::Timer_t before_kdTree = osg::Timer::instance()->tick();
+    unsigned int numKdTreeHits = 0;
+    unsigned int numConventionalHits = 0;
+    
     osg::KdTree* kdTree = dynamic_cast<osg::KdTree*>(drawable->getShape());
+    osg::Vec3d kdTreeHit;
     if (kdTree)
     {
         osg::KdTree::LineSegmentIntersections intersections;
         if (kdTree->intersect(s,e,intersections))
         {
-            osg::notify(osg::NOTICE)<<"Got KdTree intersections"<<std::endl;
+            // osg::notify(osg::NOTICE)<<"Got KdTree intersections"<<std::endl;
             for(osg::KdTree::LineSegmentIntersections::iterator itr = intersections.begin();
                 itr != intersections.end();
                 ++itr)
@@ -322,30 +328,35 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                 hit.primitiveIndex = lsi.primitiveIndex;
 
                 hit.localIntersectionPoint = _start*(1.0-remap_ratio) + _end*remap_ratio;
+                kdTreeHit = hit.localIntersectionPoint;
                 
-                osg::notify(osg::NOTICE)<<"KdTree: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
+                // osg::notify(osg::NOTICE)<<"KdTree: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
                 
                 hit.localIntersectionNormal = lsi.intersectionNormal;
                 
                 hit.indexList.swap(lsi.indexList);
                 hit.ratioList.swap(lsi.ratioList);
 
+                ++numKdTreeHits;
                 insertIntersection(hit);
 
             }
         }
         
-        return;
+        // return;
     }
     else
     {
         // osg::notify(osg::NOTICE)<<"Not KdTree available"<<std::endl;
     }
 
+    osg::Timer_t after_kdTree = osg::Timer::instance()->tick();
+
     osg::TriangleFunctor<LineSegmentIntersectorUtils::TriangleIntersector> ti;
     ti.set(s,e);
     drawable->accept(ti);
 
+    osg::Vec3d conventionalHit;
     if (ti._hit)
     {
         osg::Geometry* geometry = drawable->asGeometry();
@@ -371,6 +382,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
             hit.primitiveIndex = triHit._index;
 
             hit.localIntersectionPoint = _start*(1.0-remap_ratio) + _end*remap_ratio;
+            conventionalHit = hit.localIntersectionPoint;
 
             // osg::notify(osg::NOTICE)<<"Conventional: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
 
@@ -401,10 +413,25 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
             }
             
             insertIntersection(hit);
+            ++numConventionalHits;
 
         }
     }
     
+    osg::Timer_t after_conventional = osg::Timer::instance()->tick();
+    
+    double timeKdTree = osg::Timer::instance()->delta_m(before_kdTree, after_kdTree);
+    double timeConventional = osg::Timer::instance()->delta_m(after_kdTree, after_conventional);
+
+#if 1
+    if (kdTree)
+    {
+        osg::notify(osg::NOTICE)<<"KdTree       ("<<kdTreeHit<<") intersections = "<<numKdTreeHits<< " time = "<<timeKdTree<<std::endl;
+        osg::notify(osg::NOTICE)<<"Conventional ("<<conventionalHit<<") intersections = "<<numConventionalHits<< " time = "<<timeConventional<<std::endl;
+        osg::notify(osg::NOTICE)<<"Ratio = "<<timeConventional/timeKdTree<<std::endl;
+        osg::notify(osg::NOTICE)<<std::endl;
+    }
+#endif
 }
 
 void LineSegmentIntersector::reset()

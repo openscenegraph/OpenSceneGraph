@@ -19,7 +19,7 @@
 
 using namespace osg;
 
-//#define VERBOSE_OUTPUT
+// #define VERBOSE_OUTPUT
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -52,6 +52,17 @@ struct TriangleIndicesCollector
     KdTree* _kdTree;
 
 };
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// KdTree
+
+KdTree::BuildOptions::BuildOptions():
+        _numVerticesProcessed(0),
+        _targetNumTrianglesPerLeaf(8),
+        _maxNumLevels(24)
+{
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -117,6 +128,29 @@ bool KdTree::build(BuildOptions& options, osg::Geometry* geometry)
     osg::BoundingBox bb = _bb;
     int nodeNum = divide(options, bb, leafNum, 0);
 
+#if 0    
+    for(KdLeafList::iterator itr = _kdLeaves.begin();
+        itr != _kdLeaves.end();
+        ++itr)
+    {
+        KdLeaf& leaf = *itr;
+        leaf.bb.init();
+        int iend = leaf.first+leaf.second;
+        for(int i=leaf.first; i<iend; ++i)
+        {
+            const Triangle& tri = _triangles[_primitiveIndices[i]];
+            const osg::Vec3& v1 = (*_vertices)[tri._p1];
+            const osg::Vec3& v2 = (*_vertices)[tri._p2];
+            const osg::Vec3& v3 = (*_vertices)[tri._p3];
+            leaf.bb.expandBy(v1);
+            leaf.bb.expandBy(v2);
+            leaf.bb.expandBy(v3);
+        }
+        // osg::notify(osg::NOTICE)<<"leaf.bb.min("<<leaf.bb._min<<") max("<<leaf.bb._max<<")"<<std::endl;
+
+    }
+#endif
+    
 #ifdef VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"Root nodeNum="<<nodeNum<<std::endl;
 #endif
@@ -186,7 +220,25 @@ int KdTree::divide(BuildOptions& options, osg::BoundingBox& bb, int nodeIndex, u
     else
     {    
 
-        if (getLeaf(nodeIndex).second<=options._targetNumTrianglesPerLeaf) return nodeIndex;
+        if (getLeaf(nodeIndex).second<=options._targetNumTrianglesPerLeaf) 
+        {
+            // leaf is done, now compute bound on it.
+            KdLeaf& leaf = getLeaf(nodeIndex);
+            leaf.bb.init();
+            int iend = leaf.first+leaf.second;
+            for(int i=leaf.first; i<iend; ++i)
+            {
+                const Triangle& tri = _triangles[_primitiveIndices[i]];
+                const osg::Vec3& v1 = (*_vertices)[tri._p1];
+                const osg::Vec3& v2 = (*_vertices)[tri._p2];
+                const osg::Vec3& v3 = (*_vertices)[tri._p3];
+                leaf.bb.expandBy(v1);
+                leaf.bb.expandBy(v2);
+                leaf.bb.expandBy(v3);
+            }
+
+            return nodeIndex;
+        }
 
         //osg::notify(osg::NOTICE)<<"  divide leaf"<<std::endl;
         
@@ -291,6 +343,10 @@ int KdTree::divide(BuildOptions& options, osg::BoundingBox& bb, int nodeIndex, u
         
         getNode(nodeNum).first = leftChildIndex;
         getNode(nodeNum).second = rightChildIndex; 
+        
+        getNode(nodeNum).bb.init();
+        if (leftChildIndex!=0) getNode(nodeNum).bb.expandBy(getBoundingBox(leftChildIndex));
+        if (rightChildIndex!=0) getNode(nodeNum).bb.expandBy(getBoundingBox(rightChildIndex));
         
         return nodeNum;
     }
@@ -423,7 +479,7 @@ bool KdTree::intersect(const KdLeaf& leaf, const osg::Vec3& start, const osg::Ve
         
         intersections.insert(intersection);
 
-        osg::notify(osg::NOTICE)<<"  got intersection ("<<in<<") ratio="<<r<<std::endl;
+        // osg::notify(osg::NOTICE)<<"  got intersection ("<<in<<") ratio="<<r<<std::endl;
 
         intersects = true;
     }
@@ -431,16 +487,187 @@ bool KdTree::intersect(const KdLeaf& leaf, const osg::Vec3& start, const osg::Ve
     return intersects;
 }
 
+bool KdTree::intersect(const KdNode& node, const osg::Vec3& start, const osg::Vec3& end, const osg::Vec3& s, const osg::Vec3& e, LineSegmentIntersections& intersections) const
+{
+    //osg::notify(osg::NOTICE)<<"  Intersect "<<&node<<std::endl;
+    //osg::Vec3 ls(start), le(end);
+    osg::Vec3 ls(s), le(e);
+    int numIntersectionsBefore = intersections.size();
+    if (intersectAndClip(ls, le, node.bb))
+    {
+        if (node.first>0) intersect(getNode(node.first), start, end, ls, le, intersections);
+        else if (node.first<0) intersect(getLeaf(node.first), start, end, intersections);
+
+        if (node.second>0) intersect(getNode(node.second), start, end, ls, le, intersections);
+        else if (node.second<0) intersect(getLeaf(node.second), start, end, intersections);
+    }
+    return numIntersectionsBefore != intersections.size();
+}
+
+bool KdTree::intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::BoundingBox& bb) const
+{
+    // compate s and e against the xMin to xMax range of bb.
+    if (s.x()<=e.x())
+    {
+
+        // trivial reject of segment wholely outside.
+        if (e.x()<bb.xMin()) return false;
+        if (s.x()>bb.xMax()) return false;
+
+        if (s.x()<bb.xMin())
+        {
+            // clip s to xMin.
+            s = s+(e-s)*(bb.xMin()-s.x())/(e.x()-s.x());
+        }
+
+        if (e.x()>bb.xMax())
+        {
+            // clip e to xMax.
+            e = s+(e-s)*(bb.xMax()-s.x())/(e.x()-s.x());
+        }
+    }
+    else
+    {
+        if (s.x()<bb.xMin()) return false;
+        if (e.x()>bb.xMax()) return false;
+
+        if (e.x()<bb.xMin())
+        {
+            // clip s to xMin.
+            e = s+(e-s)*(bb.xMin()-s.x())/(e.x()-s.x());
+        }
+
+        if (s.x()>bb.xMax())
+        {
+            // clip e to xMax.
+            s = s+(e-s)*(bb.xMax()-s.x())/(e.x()-s.x());
+        }
+    }
+
+    // compate s and e against the yMin to yMax range of bb.
+    if (s.y()<=e.y())
+    {
+
+        // trivial reject of segment wholely outside.
+        if (e.y()<bb.yMin()) return false;
+        if (s.y()>bb.yMax()) return false;
+
+        if (s.y()<bb.yMin())
+        {
+            // clip s to yMin.
+            s = s+(e-s)*(bb.yMin()-s.y())/(e.y()-s.y());
+        }
+
+        if (e.y()>bb.yMax())
+        {
+            // clip e to yMax.
+            e = s+(e-s)*(bb.yMax()-s.y())/(e.y()-s.y());
+        }
+    }
+    else
+    {
+        if (s.y()<bb.yMin()) return false;
+        if (e.y()>bb.yMax()) return false;
+
+        if (e.y()<bb.yMin())
+        {
+            // clip s to yMin.
+            e = s+(e-s)*(bb.yMin()-s.y())/(e.y()-s.y());
+        }
+
+        if (s.y()>bb.yMax())
+        {
+            // clip e to yMax.
+            s = s+(e-s)*(bb.yMax()-s.y())/(e.y()-s.y());
+        }
+    }
+
+    // compate s and e against the zMin to zMax range of bb.
+    if (s.z()<=e.z())
+    {
+
+        // trivial reject of segment wholely outside.
+        if (e.z()<bb.zMin()) return false;
+        if (s.z()>bb.zMax()) return false;
+
+        if (s.z()<bb.zMin())
+        {
+            // clip s to zMin.
+            s = s+(e-s)*(bb.zMin()-s.z())/(e.z()-s.z());
+        }
+
+        if (e.z()>bb.zMax())
+        {
+            // clip e to zMax.
+            e = s+(e-s)*(bb.zMax()-s.z())/(e.z()-s.z());
+        }
+    }
+    else
+    {
+        if (s.z()<bb.zMin()) return false;
+        if (e.z()>bb.zMax()) return false;
+
+        if (e.z()<bb.zMin())
+        {
+            // clip s to zMin.
+            e = s+(e-s)*(bb.zMin()-s.z())/(e.z()-s.z());
+        }
+
+        if (s.z()>bb.zMax())
+        {
+            // clip e to zMax.
+            s = s+(e-s)*(bb.zMax()-s.z())/(e.z()-s.z());
+        }
+    }
+    
+    // osg::notify(osg::NOTICE)<<"clampped segment "<<s<<" "<<e<<std::endl;
+    
+    // if (s==e) return false;
+
+    return true;    
+}
+
 bool KdTree::intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const
 {
-    // osg::notify(osg::NOTICE)<<"KdTree::intersect("<<start<<","<<end<<")"<<std::endl;
-
+    //osg::notify(osg::NOTICE)<<"KdTree::intersect("<<start<<","<<end<<")"<<std::endl;
     bool intersects = false;
-    for(KdLeafList::const_iterator itr = _kdLeaves.begin();
-        itr != _kdLeaves.end();
-        ++itr)
+    
+    int option = 2;
+    switch(option)
     {
-        if (intersect(*itr, start, end, intersections)) intersects = true;
+        case(0):
+        {
+            for(KdLeafList::const_iterator itr = _kdLeaves.begin();
+                itr != _kdLeaves.end();
+                ++itr)
+            {
+                if (intersect(*itr, start, end, intersections)) intersects = true;
+            }
+            break;
+        }
+
+        case(1):
+        {
+            for(KdLeafList::const_iterator itr = _kdLeaves.begin();
+                itr != _kdLeaves.end();
+                ++itr)
+            {
+                osg::Vec3 s(start), e(end);
+                if (intersectAndClip(s,e,itr->bb))
+                {
+                    if (intersect(*itr, start, end, intersections)) intersects = true;
+                }
+            }
+            break;
+        }
+
+        case(2):
+        {
+            //osg::notify(osg::NOTICE)<<"_kdNodes.size()="<<_kdNodes.size()<<std::endl;
+            osg::Vec3 s(start), e(end);
+            if (intersect(getNode(0), start, end, s,e, intersections)) intersects = true;
+            break;
+        }
     }
 
     return intersects;

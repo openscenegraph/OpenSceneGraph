@@ -34,10 +34,7 @@ class OSG_EXPORT KdTree : public osg::Shape
         
         struct BuildOptions
         {
-            BuildOptions():
-                _numVerticesProcessed(0),
-                _targetNumTrianglesPerLeaf(4),
-                _maxNumLevels(24) {}
+            BuildOptions();
                         
             int _numVerticesProcessed;
             int _targetNumTrianglesPerLeaf;
@@ -163,6 +160,17 @@ class OSG_EXPORT KdTree : public osg::Shape
             return _kdLeaves[num];
         }
 
+        const KdLeaf& getLeaf(int leafNum) const
+        {
+            int num = -leafNum-1;
+            if (num<0 || num>static_cast<int>(_kdLeaves.size())-1)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: getLeaf("<<leafNum<<", num = "<<num<<") _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
+            }
+
+            return _kdLeaves[num];
+        }
+
         int addNode(const KdNode& node)
         {
             int num = _kdNodes.size(); 
@@ -179,8 +187,18 @@ class OSG_EXPORT KdTree : public osg::Shape
             }
             return _kdNodes[nodeNum];
         }
+
+        /// note, nodeNum is positive to distinguish from leftNum
+        const KdNode& getNode(int nodeNum) const
+        {
+            if (nodeNum<0 || nodeNum>static_cast<int>(_kdNodes.size())-1)
+            {
+                osg::notify(osg::NOTICE)<<"Warning: getNode("<<nodeNum<<") _kdNodes.size()="<<_kdNodes.size()<<std::endl;
+            }
+            return _kdNodes[nodeNum];
+        }
         
-        osg::BoundingBox& getBounindingBox(int nodeNum)
+        osg::BoundingBox& getBoundingBox(int nodeNum)
         {
             if (nodeNum<0)
             {
@@ -199,6 +217,8 @@ class OSG_EXPORT KdTree : public osg::Shape
         int divide(BuildOptions& options, osg::BoundingBox& bb, int nodeIndex, unsigned int level);
 
         bool intersect(const KdLeaf& leaf, const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const;
+        bool intersect(const KdNode& node, const osg::Vec3& start, const osg::Vec3& end, const osg::Vec3& s, const osg::Vec3& e, LineSegmentIntersections& intersections) const;
+        bool intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::BoundingBox& bb) const;
 
         typedef std::vector< osg::BoundingBox >                 BoundingBoxList;
         typedef std::vector< Triangle >                         TriangleList;

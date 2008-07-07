@@ -13,8 +13,9 @@
 
 #include <osg/KdTree>
 #include <osg/Geode>
-#include <osg/io_utils>
 #include <osg/TriangleIndexFunctor>
+
+#include <osg/io_utils>
 
 using namespace osg;
 
@@ -291,16 +292,158 @@ int KdTree::divide(BuildOptions& options, osg::BoundingBox& bb, int nodeIndex, u
         getNode(nodeNum).first = leftChildIndex;
         getNode(nodeNum).second = rightChildIndex; 
         
-        
-        return nodeNum;        
+        return nodeNum;
     }
 }
 
-
-bool KdTree::intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections)
+bool KdTree::intersect(const KdLeaf& leaf, const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const
 {
-    osg::notify(osg::NOTICE)<<"KdTree::intersect("<<start<<","<<end<<")"<<std::endl;
-    return false;
+    osg::Vec3 _s = start;
+    osg::Vec3 _d = end - start;
+    float _length = _d.length();
+    _d /= _length;
+
+
+    //osg::notify(osg::NOTICE)<<"KdTree::intersect("<<&leaf<<")"<<std::endl;
+    bool intersects = false;
+    int iend = leaf.first + leaf.second;
+    for(int i=leaf.first; i<iend; ++i)
+    {
+        const Triangle& tri = _triangles[_primitiveIndices[i]];
+        const osg::Vec3& v1 = (*_vertices)[tri._p1];
+        const osg::Vec3& v2 = (*_vertices)[tri._p2];
+        const osg::Vec3& v3 = (*_vertices)[tri._p3];
+        // osg::notify(osg::NOTICE)<<"   tri("<<tri._p1<<","<<tri._p2<<","<<tri._p3<<")"<<std::endl;
+
+        if (v1==v2 || v2==v3 || v1==v3) continue;
+
+        osg::Vec3 v12 = v2-v1;
+        osg::Vec3 n12 = v12^_d;
+        float ds12 = (_s-v1)*n12;
+        float d312 = (v3-v1)*n12;
+        if (d312>=0.0f)
+        {
+            if (ds12<0.0f) continue;
+            if (ds12>d312) continue;
+        }
+        else                     // d312 < 0
+        {
+            if (ds12>0.0f) continue;
+            if (ds12<d312) continue;
+        }
+
+        osg::Vec3 v23 = v3-v2;
+        osg::Vec3 n23 = v23^_d;
+        float ds23 = (_s-v2)*n23;
+        float d123 = (v1-v2)*n23;
+        if (d123>=0.0f)
+        {
+            if (ds23<0.0f) continue;
+            if (ds23>d123) continue;
+        }
+        else                     // d123 < 0
+        {
+            if (ds23>0.0f) continue;
+            if (ds23<d123) continue;
+        }
+
+        osg::Vec3 v31 = v1-v3;
+        osg::Vec3 n31 = v31^_d;
+        float ds31 = (_s-v3)*n31;
+        float d231 = (v2-v3)*n31;
+        if (d231>=0.0f)
+        {
+            if (ds31<0.0f) continue;
+            if (ds31>d231) continue;
+        }
+        else                     // d231 < 0
+        {
+            if (ds31>0.0f) continue;
+            if (ds31<d231) continue;
+        }
+
+
+        float r3;
+        if (ds12==0.0f) r3=0.0f;
+        else if (d312!=0.0f) r3 = ds12/d312;
+        else continue; // the triangle and the line must be parallel intersection.
+
+        float r1;
+        if (ds23==0.0f) r1=0.0f;
+        else if (d123!=0.0f) r1 = ds23/d123;
+        else continue; // the triangle and the line must be parallel intersection.
+
+        float r2;
+        if (ds31==0.0f) r2=0.0f;
+        else if (d231!=0.0f) r2 = ds31/d231;
+        else continue; // the triangle and the line must be parallel intersection.
+
+        float total_r = (r1+r2+r3);
+        if (total_r!=1.0f)
+        {
+            if (total_r==0.0f) continue; // the triangle and the line must be parallel intersection.
+            float inv_total_r = 1.0f/total_r;
+            r1 *= inv_total_r;
+            r2 *= inv_total_r;
+            r3 *= inv_total_r;
+        }
+
+        osg::Vec3 in = v1*r1+v2*r2+v3*r3;
+        if (!in.valid())
+        {
+            osg::notify(osg::WARN)<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
+            osg::notify(osg::WARN)<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
+            osg::notify(osg::WARN)<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
+            continue;
+        }
+
+        float d = (in-_s)*_d;
+
+        if (d<0.0f) continue;
+        if (d>_length) continue;
+
+        osg::Vec3 normal = v12^v23;
+        normal.normalize();
+
+        float r = d/_length;
+
+        LineSegmentIntersection intersection;
+        intersection.ratio = r;
+        intersection.primitiveIndex = _primitiveIndices[i];
+        intersection.intersectionPoint = in;
+        intersection.intersectionNormal = normal;
+
+        intersection.indexList.push_back(tri._p1);
+        intersection.indexList.push_back(tri._p2);
+        intersection.indexList.push_back(tri._p3);
+
+        intersection.ratioList.push_back(r1);
+        intersection.ratioList.push_back(r2);
+        intersection.ratioList.push_back(r3);
+        
+        intersections.insert(intersection);
+
+        osg::notify(osg::NOTICE)<<"  got intersection ("<<in<<") ratio="<<r<<std::endl;
+
+        intersects = true;
+    }
+    
+    return intersects;
+}
+
+bool KdTree::intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const
+{
+    // osg::notify(osg::NOTICE)<<"KdTree::intersect("<<start<<","<<end<<")"<<std::endl;
+
+    bool intersects = false;
+    for(KdLeafList::const_iterator itr = _kdLeaves.begin();
+        itr != _kdLeaves.end();
+        ++itr)
+    {
+        if (intersect(*itr, start, end, intersections)) intersects = true;
+    }
+
+    return intersects;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

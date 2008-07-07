@@ -72,7 +72,7 @@ class OSG_EXPORT KdTree : public osg::Shape
         typedef std::multiset<LineSegmentIntersection> LineSegmentIntersections;
         
         /** compute the intersection of a line segment and the kdtree, return true if an intersection has been found.*/
-        virtual bool intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections);
+        virtual bool intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const;
 
 
 
@@ -132,8 +132,8 @@ class OSG_EXPORT KdTree : public osg::Shape
         };
 
         typedef std::vector< unsigned int > AxisStack;
-        typedef std::vector< KdNode >       KDNodeList;
-        typedef std::vector< KdLeaf > KDLeafList;
+        typedef std::vector< KdNode >       KdNodeList;
+        typedef std::vector< KdLeaf >       KdLeafList;
 
         /// note, leafNum is negative to distinguish from nodeNum
         int addLeaf(const KdLeaf& leaf) { int num = _kdLeaves.size(); _kdLeaves.push_back(leaf); return -(num+1); }
@@ -198,6 +198,7 @@ class OSG_EXPORT KdTree : public osg::Shape
 
         int divide(BuildOptions& options, osg::BoundingBox& bb, int nodeIndex, unsigned int level);
 
+        bool intersect(const KdLeaf& leaf, const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const;
 
         typedef std::vector< osg::BoundingBox >                 BoundingBoxList;
         typedef std::vector< Triangle >                         TriangleList;
@@ -208,8 +209,8 @@ class OSG_EXPORT KdTree : public osg::Shape
         osg::BoundingBox                    _bb;
 
         AxisStack                           _axisStack;
-        KDNodeList                          _kdNodes;
-        KDLeafList                          _kdLeaves;
+        KdNodeList                          _kdNodes;
+        KdLeafList                          _kdLeaves;
 
         osg::ref_ptr<osg::Vec3Array>        _vertices;
         

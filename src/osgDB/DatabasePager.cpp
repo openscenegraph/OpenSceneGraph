@@ -101,6 +101,12 @@ public:
             _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy),
             _drawablePolicy(drawablePolicy), _pager(pager)
     {
+        if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::ReaderWriter::Options::BUILD_KDTREES &&
+            osgDB::Registry::instance()->getKdTreeBuilder())
+        {
+            _kdTreeBuilder = osgDB::Registry::instance()->getKdTreeBuilder()->clone();
+        }
+        
     }
     
     virtual void apply(osg::Node& node)
@@ -120,6 +126,12 @@ public:
         }
 
         traverse(geode);
+        
+        if (_kdTreeBuilder.valid())
+        {
+            geode.accept(*_kdTreeBuilder);
+        }
+        
     }
     
     inline void apply(osg::StateSet* stateset)
@@ -210,15 +222,16 @@ public:
         }
     }
     
-    DatabasePager::DataToCompile&   _dataToCompile;
-    bool                            _changeAutoUnRef;
-    bool                            _valueAutoUnRef;
-    bool                            _changeAnisotropy;
-    float                           _valueAnisotropy;
-    DatabasePager::DrawablePolicy   _drawablePolicy;
-    const DatabasePager*            _pager;
-    std::set<osg::ref_ptr<osg::Texture> > _textureSet;
-    std::set<osg::ref_ptr<osg::Drawable> > _drawableSet;
+    DatabasePager::DataToCompile&           _dataToCompile;
+    bool                                    _changeAutoUnRef;
+    bool                                    _valueAutoUnRef;
+    bool                                    _changeAnisotropy;
+    float                                   _valueAnisotropy;
+    DatabasePager::DrawablePolicy           _drawablePolicy;
+    const DatabasePager*                    _pager;
+    std::set<osg::ref_ptr<osg::Texture> >   _textureSet;
+    std::set<osg::ref_ptr<osg::Drawable> >  _drawableSet;
+    osg::ref_ptr<osg::KdTreeBuilder>        _kdTreeBuilder;
 };
 
 
@@ -606,62 +619,83 @@ void DatabasePager::DatabaseThread::run()
 
             bool loadedObjectsNeedToBeCompiled = false;
 
-            if (_pager->_doPreCompile &&
-                databaseRequest->_loadedModel.valid() &&
-                !_pager->_activeGraphicsContexts.empty())
+            if (databaseRequest->_loadedModel.valid())
             {
-                // force a compute of the loaded model's bounding volume, so that when the subgraph
-                // merged with the main scene graph and large computeBound() isn't incurred.
-                databaseRequest->_loadedModel->getBound();
-
-
-                ActiveGraphicsContexts::iterator itr = _pager->_activeGraphicsContexts.begin();
-
-                DataToCompile& dtc = databaseRequest->_dataToCompileMap[*itr];
-                ++itr;                
-
-                // find all the compileable rendering objects
-                DatabasePager::FindCompileableGLObjectsVisitor frov(dtc, 
-                                                     _pager->_changeAutoUnRef, _pager->_valueAutoUnRef,
-                                                     _pager->_changeAnisotropy, _pager->_valueAnisotropy,
-                                                     _pager->_drawablePolicy, _pager);
-
-                // push the soon to be parent on the nodepath of the NodeVisitor so that 
-                // during traversal one can test for where it'll be in the overall scene graph                
+            
+                osg::NodePath nodePath;
                 osg::NodePathList nodePathList = groupForAddingLoadedSubgraph->getParentalNodePaths();
-                if (!nodePathList.empty())
+                if (!nodePathList.empty()) nodePath = nodePathList.front();
+                nodePath.push_back(groupForAddingLoadedSubgraph.get());
+
+                if (_pager->_doPreCompile &&
+                    !_pager->_activeGraphicsContexts.empty())
                 {
-                    osg::NodePath& nodePath = nodePathList.front();
+                    // force a compute of the loaded model's bounding volume, so that when the subgraph
+                    // merged with the main scene graph and large computeBound() isn't incurred.
+                    databaseRequest->_loadedModel->getBound();
+
+
+                    ActiveGraphicsContexts::iterator itr = _pager->_activeGraphicsContexts.begin();
+
+                    DataToCompile& dtc = databaseRequest->_dataToCompileMap[*itr];
+                    ++itr;                
+
+                    // find all the compileable rendering objects
+                    DatabasePager::FindCompileableGLObjectsVisitor frov(dtc, 
+                                                         _pager->_changeAutoUnRef, _pager->_valueAutoUnRef,
+                                                         _pager->_changeAnisotropy, _pager->_valueAnisotropy,
+                                                         _pager->_drawablePolicy, 
+                                                         _pager);
+
+                    // push the soon to be parent on the nodepath of the NodeVisitor so that 
+                    // during traversal one can test for where it'll be in the overall scene graph                
                     for(osg::NodePath::iterator nitr = nodePath.begin();
                         nitr != nodePath.end();
                         ++nitr)
                     {
                         frov.pushOntoNodePath(*nitr);
                     }
-                }
 
-                frov.pushOntoNodePath(groupForAddingLoadedSubgraph.get());
+                    databaseRequest->_loadedModel->accept(frov);
 
-                databaseRequest->_loadedModel->accept(frov);
-
-                if (!dtc.first.empty() || !dtc.second.empty())
-                {
-                    loadedObjectsNeedToBeCompiled = true;                
-
-                    // copy the objects from the compile list to the other graphics context list.
-                    for(;
-                        itr != _pager->_activeGraphicsContexts.end();
-                        ++itr)
+                    if (!dtc.first.empty() || !dtc.second.empty())
                     {
-                        databaseRequest->_dataToCompileMap[*itr] = dtc;
+                        loadedObjectsNeedToBeCompiled = true;                
+
+                        // copy the objects from the compile list to the other graphics context list.
+                        for(;
+                            itr != _pager->_activeGraphicsContexts.end();
+                            ++itr)
+                        {
+                            databaseRequest->_dataToCompileMap[*itr] = dtc;
+                        }
                     }
                 }
-            }            
+                else
+                {
+                    // check to see if we need to run the KdTreeBuilder
+                    if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::ReaderWriter::Options::BUILD_KDTREES &&
+                        osgDB::Registry::instance()->getKdTreeBuilder())
+                    {
+                        //osg::Timer_t before = osg::Timer::instance()->tick();
+                        //osg::notify(osg::NOTICE)<<"osgTerrain::GeometryTechnique::build kd tree"<<std::endl;
+                        osg::ref_ptr<osg::KdTreeBuilder> builder = osgDB::Registry::instance()->getKdTreeBuilder()->clone();
 
-            // move the databaseRequest from the front of the fileRequest to the end of
-            // dataToCompile or dataToMerge lists.
-            if (databaseRequest->_loadedModel.valid())
-            {
+                        for(osg::NodePath::iterator nitr = nodePath.begin();
+                            nitr != nodePath.end();
+                            ++nitr)
+                        {
+                            builder->pushOntoNodePath(*nitr);
+                        }
+
+                        databaseRequest->_loadedModel->accept(*builder);
+                        //osg::Timer_t after = osg::Timer::instance()->tick();
+                        //osg::notify(osg::NOTICE)<<"KdTree build time "<<osg::Timer::instance()->delta_m(before, after)<<std::endl;
+                    }
+                }
+
+                // move the databaseRequest from the front of the fileRequest to the end of
+                // dataToCompile or dataToMerge lists.
                 if (loadedObjectsNeedToBeCompiled)
                 {
                     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_pager->_dataToCompileList->_requestMutex);

@@ -233,7 +233,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     double i_sampleFactor = 1.0;
     double j_sampleFactor = 1.0;
 
-    osg::notify(osg::NOTICE)<<"Sample ratio="<<sampleRatio<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Sample ratio="<<sampleRatio<<std::endl;
 
     if (sampleRatio!=1.0f)
     {
@@ -652,12 +652,12 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     {
     
         
-        osg::Timer_t before = osg::Timer::instance()->tick();
+        //osg::Timer_t before = osg::Timer::instance()->tick();
         //osg::notify(osg::NOTICE)<<"osgTerrain::GeometryTechnique::build kd tree"<<std::endl;
         osg::ref_ptr<osg::KdTreeBuilder> builder = osgDB::Registry::instance()->getKdTreeBuilder()->clone();
         buffer._geode->accept(*builder);
-        osg::Timer_t after = osg::Timer::instance()->tick();
-        osg::notify(osg::NOTICE)<<"KdTree build time "<<osg::Timer::instance()->delta_m(before, after)<<std::endl;
+        //osg::Timer_t after = osg::Timer::instance()->tick();
+        //osg::notify(osg::NOTICE)<<"KdTree build time "<<osg::Timer::instance()->delta_m(before, after)<<std::endl;
     }
 }
 

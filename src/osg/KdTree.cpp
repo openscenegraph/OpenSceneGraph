@@ -140,8 +140,7 @@ void KdTree::computeDivisions(BuildOptions& options)
 
     _axisStack.reserve(options._maxNumLevels);
  
-    int level = 0;
-    for(unsigned int level=0; level<options._maxNumLevels; ++level)
+    for(int level=0; level<options._maxNumLevels; ++level)
     {
         int axis = 0;
         if (dimensions[0]>=dimensions[1])

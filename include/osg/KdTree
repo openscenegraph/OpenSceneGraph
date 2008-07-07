@@ -39,9 +39,9 @@ class OSG_EXPORT KdTree : public osg::Shape
                 _targetNumTrianglesPerLeaf(4),
                 _maxNumLevels(24) {}
                         
-            unsigned int _numVerticesProcessed;
-            unsigned int _targetNumTrianglesPerLeaf;
-            unsigned int _maxNumLevels;
+            int _numVerticesProcessed;
+            int _targetNumTrianglesPerLeaf;
+            int _maxNumLevels;
         };
         
         
@@ -142,7 +142,7 @@ class OSG_EXPORT KdTree : public osg::Shape
         {
             int num = -leafNum-1; 
             
-            if (num>_kdLeaves.size()-1)
+            if (num>static_cast<int>(_kdLeaves.size())-1)
             {
                 osg::notify(osg::NOTICE)<<"Warning: replaceChild("<<leafNum<<", leaf), num = "<<num<<" _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
                 return leafNum;
@@ -155,7 +155,7 @@ class OSG_EXPORT KdTree : public osg::Shape
         KdLeaf& getLeaf(int leafNum)
         {
             int num = -leafNum-1;
-            if (num<0 || num>_kdLeaves.size()-1)
+            if (num<0 || num>static_cast<int>(_kdLeaves.size())-1)
             {
                 osg::notify(osg::NOTICE)<<"Warning: getLeaf("<<leafNum<<", num = "<<num<<") _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
             }
@@ -173,7 +173,7 @@ class OSG_EXPORT KdTree : public osg::Shape
         /// note, nodeNum is positive to distinguish from leftNum
         KdNode& getNode(int nodeNum)
         {
-            if (nodeNum<0 || nodeNum>_kdNodes.size()-1)
+            if (nodeNum<0 || nodeNum>static_cast<int>(_kdNodes.size())-1)
             {
                 osg::notify(osg::NOTICE)<<"Warning: getNode("<<nodeNum<<") _kdNodes.size()="<<_kdNodes.size()<<std::endl;
             }

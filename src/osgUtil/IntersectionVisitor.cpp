@@ -155,6 +155,8 @@ IntersectionVisitor::IntersectionVisitor(Intersector* intersector, ReadCallback*
     // override the default node visitor mode.
     setTraversalMode(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
     
+    _useKdTreesWhenAvailable = true;
+
     setIntersector(intersector);
     
     setReadCallback(readCallback);

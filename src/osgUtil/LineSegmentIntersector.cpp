@@ -299,8 +299,8 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     unsigned int numKdTreeHits = 0;
     unsigned int numConventionalHits = 0;
     
-    osg::KdTree* kdTree = dynamic_cast<osg::KdTree*>(drawable->getShape());
     osg::Vec3d kdTreeHit;
+    osg::KdTree* kdTree = iv.getUseKdTreeWhenAvailable() ? dynamic_cast<osg::KdTree*>(drawable->getShape()) : 0;
     if (kdTree)
     {
         osg::KdTree::LineSegmentIntersections intersections;
@@ -343,11 +343,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
             }
         }
         
-        // return;
-    }
-    else
-    {
-        // osg::notify(osg::NOTICE)<<"Not KdTree available"<<std::endl;
+        return;
     }
 
     osg::Timer_t after_kdTree = osg::Timer::instance()->tick();
@@ -423,7 +419,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     double timeKdTree = osg::Timer::instance()->delta_m(before_kdTree, after_kdTree);
     double timeConventional = osg::Timer::instance()->delta_m(after_kdTree, after_conventional);
 
-#if 1
+#if 0
     if (kdTree)
     {
         osg::notify(osg::NOTICE)<<"KdTree       ("<<kdTreeHit<<") intersections = "<<numKdTreeHits<< " time = "<<timeKdTree<<std::endl;

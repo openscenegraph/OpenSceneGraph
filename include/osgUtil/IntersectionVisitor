@@ -46,11 +46,12 @@ class Intersector : public osg::Referenced
             _coordinateFrame(cf),
             _disabledCount(0) {}
     
+    
         void setCoordinateFrame(CoordinateFrame cf) { _coordinateFrame = cf; }
         
         CoordinateFrame getCoordinateFrame() const { return _coordinateFrame; }
-    
-
+        
+        
         virtual Intersector* clone(osgUtil::IntersectionVisitor& iv) = 0;
         
         virtual bool enter(const osg::Node& node) = 0;
@@ -72,7 +73,7 @@ class Intersector : public osg::Referenced
     protected:
     
         CoordinateFrame _coordinateFrame;
-        unsigned int _disabledCount;
+        unsigned int    _disabledCount;
 
 };
 
@@ -138,6 +139,7 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
         
         virtual void reset();
 
+
         /** Set the intersector that will be used to intersect with the scene, and to store any hits that occur.*/
         void setIntersector(Intersector* intersector);
         
@@ -146,6 +148,13 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
         /** Get the const intersector that will be used to intersect with the scene, and to store any hits that occur.*/
         const Intersector* getIntersector() const { return _intersectorStack.empty() ? 0 : _intersectorStack.front().get(); }
+
+
+        /** Set whether the intersectors should use KdTrees when they are found on the scene graph.*/
+        void setUseKdTreeWhenAvailable(bool useKdTrees) { _useKdTreesWhenAvailable; }
+        
+        /** Set whether the intersectors should use KdTrees.*/
+        bool getUseKdTreeWhenAvailable() const { return _useKdTreesWhenAvailable; }
 
 
         /** Set the read callback.*/
@@ -201,6 +210,8 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
         typedef std::list< osg::ref_ptr<Intersector> > IntersectorStack;
         IntersectorStack _intersectorStack;
+
+        bool _useKdTreesWhenAvailable;
         
         osg::ref_ptr<ReadCallback> _readCallback;
         

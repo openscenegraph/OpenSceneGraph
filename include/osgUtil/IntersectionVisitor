@@ -151,7 +151,7 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
 
         /** Set whether the intersectors should use KdTrees when they are found on the scene graph.*/
-        void setUseKdTreeWhenAvailable(bool useKdTrees) { _useKdTreesWhenAvailable; }
+        void setUseKdTreeWhenAvailable(bool useKdTrees) { _useKdTreesWhenAvailable = useKdTrees; }
         
         /** Set whether the intersectors should use KdTrees.*/
         bool getUseKdTreeWhenAvailable() const { return _useKdTreesWhenAvailable; }

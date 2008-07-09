@@ -156,6 +156,7 @@ IntersectionVisitor::IntersectionVisitor(Intersector* intersector, ReadCallback*
     setTraversalMode(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
     
     _useKdTreesWhenAvailable = true;
+    _dummyTraversal = false;
 
     setIntersector(intersector);
     

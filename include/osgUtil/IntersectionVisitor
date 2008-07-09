@@ -155,6 +155,9 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
         
         /** Set whether the intersectors should use KdTrees.*/
         bool getUseKdTreeWhenAvailable() const { return _useKdTreesWhenAvailable; }
+        
+        void setDoDummyTraversal(bool dummy) { _dummyTraversal = dummy; }
+        bool getDoDummyTraversal() const { return _dummyTraversal; }
 
 
         /** Set the read callback.*/
@@ -212,6 +215,7 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
         IntersectorStack _intersectorStack;
 
         bool _useKdTreesWhenAvailable;
+        bool _dummyTraversal;
         
         osg::ref_ptr<ReadCallback> _readCallback;
         

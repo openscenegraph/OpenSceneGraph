@@ -1820,7 +1820,45 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
 
     osgUtil::IntersectionVisitor iv(picker.get());
     iv.setTraversalMask(traversalMask);
+    
+    
+#if 1
     const_cast<osg::Camera*>(camera)->accept(iv);
+#else    
+
+    // timing test code paths
+
+    iv.setUseKdTreeWhenAvailable(true);
+    iv.setDoDummyTraversal(true);
+
+    const_cast<osg::Camera*>(camera)->accept(iv);
+
+    osg::Timer_t before = osg::Timer::instance()->tick();
+    const_cast<osg::Camera*>(camera)->accept(iv);
+
+    osg::Timer_t after_dummy = osg::Timer::instance()->tick();
+
+    iv.setDoDummyTraversal(false);
+    const_cast<osg::Camera*>(camera)->accept(iv);
+    osg::Timer_t after_kdTree_2 = osg::Timer::instance()->tick();
+
+    iv.setUseKdTreeWhenAvailable(false);
+    const_cast<osg::Camera*>(camera)->accept(iv);
+    osg::Timer_t after = osg::Timer::instance()->tick();
+    
+    double timeDummy = osg::Timer::instance()->delta_m(before, after_dummy);
+    double timeKdTree = osg::Timer::instance()->delta_m(after_dummy, after_kdTree_2);
+    double timeConventional = osg::Timer::instance()->delta_m(after_kdTree_2, after);
+    
+    osg::notify(osg::NOTICE)<<"Using Dummy                    "<<timeDummy<<std::endl;
+    osg::notify(osg::NOTICE)<<"      KdTrees                  "<<timeKdTree<<std::endl;
+    osg::notify(osg::NOTICE)<<"      KdTrees - Traversal      "<<timeKdTree-timeDummy<<std::endl;
+    osg::notify(osg::NOTICE)<<"      Conventional             "<<timeConventional<<std::endl;
+    osg::notify(osg::NOTICE)<<"      Conventional - Traversal "<<timeConventional-timeDummy<<std::endl;
+    osg::notify(osg::NOTICE)<<"      Delta                    "<<timeConventional/timeKdTree<<std::endl;
+    osg::notify(osg::NOTICE)<<"      Delta sans Traversal     "<<(timeConventional-timeDummy)/(timeKdTree-timeDummy)<<std::endl;
+    osg::notify(osg::NOTICE)<<std::endl;
+#endif    
 
     if (picker->containsIntersections())
     {

@@ -26,6 +26,17 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/CompositeViewer>
 
+#include <osgGA/TerrainManipulator>
+#include <osgGA/StateSetManipulator>
+#include <osgGA/AnimationPathManipulator>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
+#include <osgGA/StateSetManipulator>
+#include <osgGA/AnimationPathManipulator>
+#include <osgGA/TerrainManipulator>
+
 #include <osg/Material>
 #include <osg/Geode>
 #include <osg/BlendFunc>
@@ -70,6 +81,18 @@ bool PickHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapte
         {
             osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
             if (view) pick(view,ea);
+            return false;
+        }    
+        case(osgGA::GUIEventAdapter::KEYDOWN):
+        {
+            if (ea.getKey()=='c')
+            {        
+                osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+                osg::ref_ptr<osgGA::GUIEventAdapter> event = new osgGA::GUIEventAdapter(ea);
+                event->setX((ea.getXmin()+ea.getXmax())*0.5);
+                event->setY((ea.getYmin()+ea.getYmax())*0.5);
+                if (view) pick(view,*event);
+            }
             return false;
         }    
         default:
@@ -254,6 +277,36 @@ int main( int argc, char **argv )
     else
     {
         osgViewer::Viewer viewer;
+
+
+        // add all the camera manipulators
+        {
+            osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+
+            keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+            keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
+            keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
+
+            unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
+            keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
+
+            std::string pathfile;
+            char keyForAnimationPath = '5';
+            while (arguments.read("-p",pathfile))
+            {
+                osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
+                if (apm || !apm->valid()) 
+                {
+                    num = keyswitchManipulator->getNumMatrixManipulators();
+                    keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
+                    ++keyForAnimationPath;
+                }
+            }
+
+            keyswitchManipulator->selectMatrixManipulator(num);
+
+            viewer.setCameraManipulator( keyswitchManipulator.get() );
+        }
 
         // add the handler for doing the picking
         viewer.addEventHandler(new PickHandler(updateText.get()));

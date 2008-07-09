@@ -86,10 +86,10 @@ class OSG_EXPORT KdTree : public osg::Shape
                 first(f),
                 second(s) {}
 
+            osg::BoundingBox bb;
+
             value_type first;    
             value_type second;
-
-            osg::BoundingBox bb;
         };
 
 
@@ -103,10 +103,10 @@ class OSG_EXPORT KdTree : public osg::Shape
                 first(f),
                 second(s) {}
 
+            osg::BoundingBox bb;
+
             value_type first;    
             value_type second;
-
-            osg::BoundingBox bb;
         };
 
         struct Triangle

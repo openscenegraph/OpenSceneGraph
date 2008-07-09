@@ -59,6 +59,26 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	          __C5_Intersector_P1__getIntersector,
 	          "Get the const intersector that will be used to intersect with the scene, and to store any hits that occur. ",
 	          "");
+	I_Method1(void, setUseKdTreeWhenAvailable, IN, bool, useKdTrees,
+	          Properties::NON_VIRTUAL,
+	          __void__setUseKdTreeWhenAvailable__bool,
+	          "Set whether the intersectors should use KdTrees when they are found on the scene graph. ",
+	          "");
+	I_Method0(bool, getUseKdTreeWhenAvailable,
+	          Properties::NON_VIRTUAL,
+	          __bool__getUseKdTreeWhenAvailable,
+	          "Set whether the intersectors should use KdTrees. ",
+	          "");
+	I_Method1(void, setDoDummyTraversal, IN, bool, dummy,
+	          Properties::NON_VIRTUAL,
+	          __void__setDoDummyTraversal__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDoDummyTraversal,
+	          Properties::NON_VIRTUAL,
+	          __bool__getDoDummyTraversal,
+	          "",
+	          "");
 	I_Method1(void, setReadCallback, IN, osgUtil::IntersectionVisitor::ReadCallback *, rc,
 	          Properties::NON_VIRTUAL,
 	          __void__setReadCallback__ReadCallback_P1,
@@ -234,6 +254,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	                   __void__pop_clone,
 	                   "",
 	                   "");
+	I_SimpleProperty(bool, DoDummyTraversal, 
+	                 __bool__getDoDummyTraversal, 
+	                 __void__setDoDummyTraversal__bool);
 	I_SimpleProperty(osgUtil::Intersector *, Intersector, 
 	                 __Intersector_P1__getIntersector, 
 	                 __void__setIntersector__Intersector_P1);
@@ -246,6 +269,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	I_SimpleProperty(osgUtil::IntersectionVisitor::ReadCallback *, ReadCallback, 
 	                 __ReadCallback_P1__getReadCallback, 
 	                 __void__setReadCallback__ReadCallback_P1);
+	I_SimpleProperty(bool, UseKdTreeWhenAvailable, 
+	                 __bool__getUseKdTreeWhenAvailable, 
+	                 __void__setUseKdTreeWhenAvailable__bool);
 	I_SimpleProperty(osg::RefMatrix *, ViewMatrix, 
 	                 __osg_RefMatrix_P1__getViewMatrix, 
 	                 0);

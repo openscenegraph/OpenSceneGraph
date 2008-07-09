@@ -14,6 +14,7 @@
 #include <osg/KdTree>
 #include <osg/Geode>
 #include <osg/TriangleIndexFunctor>
+#include <osg/Timer>
 
 #include <osg/io_utils>
 
@@ -59,8 +60,8 @@ struct TriangleIndicesCollector
 
 KdTree::BuildOptions::BuildOptions():
         _numVerticesProcessed(0),
-        _targetNumTrianglesPerLeaf(8),
-        _maxNumLevels(24)
+        _targetNumTrianglesPerLeaf(4),
+        _maxNumLevels(32)
 {
 }
 
@@ -127,29 +128,6 @@ bool KdTree::build(BuildOptions& options, osg::Geometry* geometry)
 
     osg::BoundingBox bb = _bb;
     int nodeNum = divide(options, bb, leafNum, 0);
-
-#if 0    
-    for(KdLeafList::iterator itr = _kdLeaves.begin();
-        itr != _kdLeaves.end();
-        ++itr)
-    {
-        KdLeaf& leaf = *itr;
-        leaf.bb.init();
-        int iend = leaf.first+leaf.second;
-        for(int i=leaf.first; i<iend; ++i)
-        {
-            const Triangle& tri = _triangles[_primitiveIndices[i]];
-            const osg::Vec3& v1 = (*_vertices)[tri._p1];
-            const osg::Vec3& v2 = (*_vertices)[tri._p2];
-            const osg::Vec3& v3 = (*_vertices)[tri._p3];
-            leaf.bb.expandBy(v1);
-            leaf.bb.expandBy(v2);
-            leaf.bb.expandBy(v3);
-        }
-        // osg::notify(osg::NOTICE)<<"leaf.bb.min("<<leaf.bb._min<<") max("<<leaf.bb._max<<")"<<std::endl;
-
-    }
-#endif
     
 #ifdef VERBOSE_OUTPUT    
     osg::notify(osg::NOTICE)<<"Root nodeNum="<<nodeNum<<std::endl;
@@ -160,7 +138,7 @@ bool KdTree::build(BuildOptions& options, osg::Geometry* geometry)
 //    osg::notify(osg::NOTICE)<<"_kdLeaves.size()="<<_kdLeaves.size()<<"  estimated size = "<<estimatedSize<<std::endl<<std::endl;
 
 
-    return true;
+    return !_kdNodes.empty();
 }
 
 void KdTree::computeDivisions(BuildOptions& options)
@@ -601,7 +579,7 @@ bool KdTree::intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::BoundingBox
             // clip e to zMax.
             e = s+(e-s)*(bb.zMax()-s.z())/(e.z()-s.z());
         }
-    }
+    } 
     else
     {
         if (s.z()<bb.zMin()) return false;
@@ -629,48 +607,8 @@ bool KdTree::intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::BoundingBox
 
 bool KdTree::intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const
 {
-    //osg::notify(osg::NOTICE)<<"KdTree::intersect("<<start<<","<<end<<")"<<std::endl;
-    bool intersects = false;
-    
-    int option = 2;
-    switch(option)
-    {
-        case(0):
-        {
-            for(KdLeafList::const_iterator itr = _kdLeaves.begin();
-                itr != _kdLeaves.end();
-                ++itr)
-            {
-                if (intersect(*itr, start, end, intersections)) intersects = true;
-            }
-            break;
-        }
-
-        case(1):
-        {
-            for(KdLeafList::const_iterator itr = _kdLeaves.begin();
-                itr != _kdLeaves.end();
-                ++itr)
-            {
-                osg::Vec3 s(start), e(end);
-                if (intersectAndClip(s,e,itr->bb))
-                {
-                    if (intersect(*itr, start, end, intersections)) intersects = true;
-                }
-            }
-            break;
-        }
-
-        case(2):
-        {
-            //osg::notify(osg::NOTICE)<<"_kdNodes.size()="<<_kdNodes.size()<<std::endl;
-            osg::Vec3 s(start), e(end);
-            if (intersect(getNode(0), start, end, s,e, intersections)) intersects = true;
-            break;
-        }
-    }
-
-    return intersects;
+    osg::Vec3 s(start), e(end);
+    return intersect(getNode(0), start, end, s,e, intersections);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

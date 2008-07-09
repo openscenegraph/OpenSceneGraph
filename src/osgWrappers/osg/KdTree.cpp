@@ -196,9 +196,9 @@ BEGIN_VALUE_REFLECTOR(osg::KdTree::KdLeaf)
 	               ____KdLeaf__value_type__value_type,
 	               "",
 	               "");
+	I_PublicMemberProperty(osg::BoundingBox, bb);
 	I_PublicMemberProperty(osg::KdTree::value_type, first);
 	I_PublicMemberProperty(osg::KdTree::value_type, second);
-	I_PublicMemberProperty(osg::BoundingBox, bb);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::KdTree::KdNode)
@@ -210,9 +210,9 @@ BEGIN_VALUE_REFLECTOR(osg::KdTree::KdNode)
 	               ____KdNode__value_type__value_type,
 	               "",
 	               "");
+	I_PublicMemberProperty(osg::BoundingBox, bb);
 	I_PublicMemberProperty(osg::KdTree::value_type, first);
 	I_PublicMemberProperty(osg::KdTree::value_type, second);
-	I_PublicMemberProperty(osg::BoundingBox, bb);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::KdTree::LineSegmentIntersection::IndexList)

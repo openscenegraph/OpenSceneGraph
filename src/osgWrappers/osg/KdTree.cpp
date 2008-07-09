@@ -115,6 +115,11 @@ BEGIN_OBJECT_REFLECTOR(osg::KdTree)
 	          __KdLeaf_R1__getLeaf__int,
 	          "note, leafNum is negative to distinguish from nodeNum ",
 	          "");
+	I_Method1(const osg::KdTree::KdLeaf &, getLeaf, IN, int, leafNum,
+	          Properties::NON_VIRTUAL,
+	          __C5_KdLeaf_R1__getLeaf__int,
+	          "",
+	          "");
 	I_Method1(int, addNode, IN, const osg::KdTree::KdNode &, node,
 	          Properties::NON_VIRTUAL,
 	          __int__addNode__C5_KdNode_R1,
@@ -125,9 +130,14 @@ BEGIN_OBJECT_REFLECTOR(osg::KdTree)
 	          __KdNode_R1__getNode__int,
 	          "note, nodeNum is positive to distinguish from leftNum ",
 	          "");
-	I_Method1(osg::BoundingBox &, getBounindingBox, IN, int, nodeNum,
+	I_Method1(const osg::KdTree::KdNode &, getNode, IN, int, nodeNum,
 	          Properties::NON_VIRTUAL,
-	          __osg_BoundingBox_R1__getBounindingBox__int,
+	          __C5_KdNode_R1__getNode__int,
+	          "note, nodeNum is positive to distinguish from leftNum ",
+	          "");
+	I_Method1(osg::BoundingBox &, getBoundingBox, IN, int, nodeNum,
+	          Properties::NON_VIRTUAL,
+	          __osg_BoundingBox_R1__getBoundingBox__int,
 	          "",
 	          "");
 	I_Method1(void, computeDivisions, IN, osg::KdTree::BuildOptions &, options,
@@ -143,6 +153,16 @@ BEGIN_OBJECT_REFLECTOR(osg::KdTree)
 	I_Method4(bool, intersect, IN, const osg::KdTree::KdLeaf &, leaf, IN, const osg::Vec3 &, start, IN, const osg::Vec3 &, end, IN, osg::KdTree::LineSegmentIntersections &, intersections,
 	          Properties::NON_VIRTUAL,
 	          __bool__intersect__C5_KdLeaf_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__LineSegmentIntersections_R1,
+	          "",
+	          "");
+	I_Method6(bool, intersect, IN, const osg::KdTree::KdNode &, node, IN, const osg::Vec3 &, start, IN, const osg::Vec3 &, end, IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e, IN, osg::KdTree::LineSegmentIntersections &, intersections,
+	          Properties::NON_VIRTUAL,
+	          __bool__intersect__C5_KdNode_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__LineSegmentIntersections_R1,
+	          "",
+	          "");
+	I_Method3(bool, intersectAndClip, IN, osg::Vec3 &, s, IN, osg::Vec3 &, e, IN, const osg::BoundingBox &, bb,
+	          Properties::NON_VIRTUAL,
+	          __bool__intersectAndClip__osg_Vec3_R1__osg_Vec3_R1__C5_osg_BoundingBox_R1,
 	          "",
 	          "");
 	I_PublicMemberProperty(osg::observer_ptr< osg::Geometry >, _geometry);

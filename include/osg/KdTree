@@ -91,24 +91,7 @@ class OSG_EXPORT KdTree : public osg::Shape
             value_type first;    
             value_type second;
         };
-
-
-        struct KdLeaf
-        {
-            KdLeaf():
-                first(0),
-                second(0) {}
-
-            KdLeaf(value_type f, value_type s):
-                first(f),
-                second(s) {}
-
-            osg::BoundingBox bb;
-
-            value_type first;    
-            value_type second;
-        };
-
+    
         struct Triangle
         {
             Triangle(unsigned int p1, unsigned int p2, unsigned int p3):
@@ -130,46 +113,6 @@ class OSG_EXPORT KdTree : public osg::Shape
 
         typedef std::vector< unsigned int > AxisStack;
         typedef std::vector< KdNode >       KdNodeList;
-        typedef std::vector< KdLeaf >       KdLeafList;
-
-        /// note, leafNum is negative to distinguish from nodeNum
-        int addLeaf(const KdLeaf& leaf) { int num = _kdLeaves.size(); _kdLeaves.push_back(leaf); return -(num+1); }
-
-        int replaceLeaf(int leafNum, const KdLeaf& leaf)
-        {
-            int num = -leafNum-1; 
-            
-            if (num>static_cast<int>(_kdLeaves.size())-1)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: replaceChild("<<leafNum<<", leaf), num = "<<num<<" _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
-                return leafNum;
-            }
-            
-            _kdLeaves[num] = leaf; return leafNum;
-        }
-
-        /// note, leafNum is negative to distinguish from nodeNum
-        KdLeaf& getLeaf(int leafNum)
-        {
-            int num = -leafNum-1;
-            if (num<0 || num>static_cast<int>(_kdLeaves.size())-1)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: getLeaf("<<leafNum<<", num = "<<num<<") _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
-            }
-
-            return _kdLeaves[num];
-        }
-
-        const KdLeaf& getLeaf(int leafNum) const
-        {
-            int num = -leafNum-1;
-            if (num<0 || num>static_cast<int>(_kdLeaves.size())-1)
-            {
-                osg::notify(osg::NOTICE)<<"Warning: getLeaf("<<leafNum<<", num = "<<num<<") _kdLeaves.size()="<<_kdLeaves.size()<<std::endl;
-            }
-
-            return _kdLeaves[num];
-        }
 
         int addNode(const KdNode& node)
         {
@@ -200,15 +143,7 @@ class OSG_EXPORT KdTree : public osg::Shape
         
         osg::BoundingBox& getBoundingBox(int nodeNum)
         {
-            if (nodeNum<0)
-            {
-                int num = -nodeNum-1;
-                return _kdLeaves[num].bb;            
-            }
-            else
-            {
-                return _kdNodes[nodeNum].bb;
-            }
+            return _kdNodes[nodeNum].bb;
         }
 
 
@@ -216,8 +151,28 @@ class OSG_EXPORT KdTree : public osg::Shape
 
         int divide(BuildOptions& options, osg::BoundingBox& bb, int nodeIndex, unsigned int level);
 
-        bool intersect(const KdLeaf& leaf, const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const;
-        bool intersect(const KdNode& node, const osg::Vec3& start, const osg::Vec3& end, const osg::Vec3& s, const osg::Vec3& e, LineSegmentIntersections& intersections) const;
+        struct RayData
+        {
+            RayData(const osg::Vec3& s, const osg::Vec3& e):
+                _s(s),
+                _e(e)
+            {
+                _d = e - s;
+                _length = _d.length();
+                _inverse_length = 1.0f/_length;
+                _d *= _inverse_length;
+            }
+            
+        
+            osg::Vec3 _s;
+            osg::Vec3 _e;
+            
+            osg::Vec3 _d;
+            float     _length;
+            float     _inverse_length;
+        };
+
+        bool intersect(const KdNode& node, const RayData& rayData, osg::Vec3 s, osg::Vec3 e, LineSegmentIntersections& intersections) const;
         bool intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::BoundingBox& bb) const;
 
         typedef std::vector< osg::BoundingBox >                 BoundingBoxList;
@@ -230,13 +185,11 @@ class OSG_EXPORT KdTree : public osg::Shape
 
         AxisStack                           _axisStack;
         KdNodeList                          _kdNodes;
-        KdLeafList                          _kdLeaves;
 
         osg::ref_ptr<osg::Vec3Array>        _vertices;
         
         Indices                             _primitiveIndices;
         
-        BoundingBoxList                     _boundingBoxes;
         TriangleList                        _triangles;
         CenterList                          _centers;
 

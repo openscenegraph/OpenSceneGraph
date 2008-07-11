@@ -31,6 +31,11 @@
 #include <osgManipulator/Translate2DDragger>
 #include <osgManipulator/TranslateAxisDragger>
 
+#include <osg/ShapeDrawable>
+#include <osg/MatrixTransform>
+#include <osg/Geometry>
+#include <osg/Material>
+
 #include <iostream>
 
 osgManipulator::Dragger* createDragger(const std::string& name)
@@ -78,9 +83,12 @@ osgManipulator::Dragger* createDragger(const std::string& name)
         d->setupDefaultGeometry();
         dragger = d;
     }
+
+    
  
     return dragger;
 }
+
 
 osg::Node* createHUD()
 {
@@ -140,6 +148,104 @@ osg::Node* addDraggerToScene(osg::Node* scene, osgManipulator::CommandManager* c
 
     return root;
 }
+
+osg::Node* createDemoScene(osgManipulator::CommandManager* cmdMgr) {
+ 
+    osg::Group* root = new osg::Group;
+
+    osg::ref_ptr<osg::Geode> geode_1 = new osg::Geode;
+    osg::ref_ptr<osg::MatrixTransform> transform_1 = new osg::MatrixTransform;
+
+    osg::ref_ptr<osg::Geode> geode_2 = new osg::Geode;
+    osg::ref_ptr<osg::MatrixTransform> transform_2 = new osg::MatrixTransform;
+
+    osg::ref_ptr<osg::Geode> geode_3 = new osg::Geode;
+    osg::ref_ptr<osg::MatrixTransform> transform_3 = new osg::MatrixTransform;
+
+    osg::ref_ptr<osg::Geode> geode_4 = new osg::Geode;
+    osg::ref_ptr<osg::MatrixTransform> transform_4 = new osg::MatrixTransform;
+
+    osg::ref_ptr<osg::Geode> geode_5 = new osg::Geode;
+    osg::ref_ptr<osg::MatrixTransform> transform_5 = new osg::MatrixTransform;
+
+    osg::ref_ptr<osg::Geode> geode_6 = new osg::Geode;
+    osg::ref_ptr<osg::MatrixTransform> transform_6 = new osg::MatrixTransform;
+
+    osg::ref_ptr<osg::Geode> geode_7 = new osg::Geode;
+    osg::ref_ptr<osg::MatrixTransform> transform_7 = new osg::MatrixTransform;
+
+ 
+
+
+
+    const float radius = 0.8f;
+    const float height = 1.0f;
+    osg::ref_ptr<osg::TessellationHints> hints = new osg::TessellationHints;
+    hints->setDetailRatio(2.0f);
+    osg::ref_ptr<osg::ShapeDrawable> shape;
+
+    shape = new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f, 0.0f, -2.0f), 10, 10.0f, 0.1f), hints.get());
+    shape->setColor(osg::Vec4(0.5f, 0.5f, 0.7f, 1.0f));
+    geode_1->addDrawable(shape.get());
+
+    shape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f, 0.0f, 0.0f), radius * 2,radius), hints.get());
+    shape->setColor(osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f));
+    geode_2->addDrawable(shape.get());
+
+    shape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(-3.0f, 0.0f, 0.0f), radius,radius), hints.get());
+    shape->setColor(osg::Vec4(0.6f, 0.8f, 0.8f, 1.0f));
+    geode_3->addDrawable(shape.get());
+
+    shape = new osg::ShapeDrawable(new osg::Cone(osg::Vec3(3.0f, 0.0f, 0.0f), 2 * radius,radius), hints.get());
+    shape->setColor(osg::Vec4(0.4f, 0.9f, 0.3f, 1.0f));
+    geode_4->addDrawable(shape.get());
+
+    shape = new osg::ShapeDrawable(new osg::Cone(osg::Vec3(0.0f, -3.0f, 0.0f), radius, height), hints.get());
+    shape->setColor(osg::Vec4(0.2f, 0.5f, 0.7f, 1.0f));
+    geode_5->addDrawable(shape.get());
+
+    shape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f, 3.0f, 0.0f), radius, height), hints.get());
+    shape->setColor(osg::Vec4(1.0f, 0.3f, 0.3f, 1.0f));
+    geode_6->addDrawable(shape.get());
+
+    shape = new osg::ShapeDrawable(new osg::Cone(osg::Vec3(0.0f, 0.0f, 3.0f), 2.0f, 2.0f), hints.get());
+    shape->setColor(osg::Vec4(0.8f, 0.8f, 0.4f, 1.0f));
+    geode_7->addDrawable(shape.get());
+
+
+
+
+
+
+    // material
+    osg::ref_ptr<osg::Material> matirial = new osg::Material;
+    matirial->setColorMode(osg::Material::DIFFUSE);
+    matirial->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0, 0, 0, 1));
+    matirial->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(1, 1, 1, 1));
+    matirial->setShininess(osg::Material::FRONT_AND_BACK, 64.0f);
+    root->getOrCreateStateSet()->setAttributeAndModes(matirial.get(), osg::StateAttribute::ON);
+
+      transform_1.get()->addChild(addDraggerToScene(geode_1.get(),cmdMgr,"TabBoxDragger"));
+    transform_2.get()->addChild(addDraggerToScene(geode_2.get(),cmdMgr,"TabPlaneDragger"));
+    transform_3.get()->addChild(addDraggerToScene(geode_3.get(),cmdMgr,"TabPlaneTrackballDragger"));
+    transform_4.get()->addChild(addDraggerToScene(geode_4.get(),cmdMgr,"TrackballDragger"));
+    transform_5.get()->addChild(addDraggerToScene(geode_5.get(),cmdMgr,"Translate1DDragger"));
+    transform_6.get()->addChild(addDraggerToScene(geode_6.get(),cmdMgr,"Translate2DDragger"));
+    transform_7.get()->addChild(addDraggerToScene(geode_7.get(),cmdMgr,"TranslateAxisDragger"));
+
+    root->addChild(transform_1.get());
+    root->addChild(transform_2.get());
+    root->addChild(transform_3.get());
+    root->addChild(transform_4.get());
+    root->addChild(transform_5.get());
+    root->addChild(transform_6.get());
+    root->addChild(transform_7.get());
+
+ 
+ 
+    return root;
+}
+
 
 class PickModeHandler : public osgGA::GUIEventHandler
 {
@@ -254,7 +360,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--help-keys","Display keyboard & mouse bindings available");
     arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
 
-    arguments.getApplicationUsage()->addCommandLineOption("--dragger <draggername>","Use the specified dragger for manipulation");
+    arguments.getApplicationUsage()->addCommandLineOption("--dragger <draggername>","Use the specified dragger for manipulation [TabPlaneDragger,TabPlaneTrackballDragger,TrackballDragger,Translate1DDragger,Translate2DDragger,TranslateAxisDragger,TabBoxDragger]");
     
 
     // construct the viewer.
@@ -280,12 +386,6 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
-    if (arguments.argc()<=1)
-    {
-        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-        return 1;
-    }
 
     std::string dragger_name = "TabBoxDragger";
     arguments.read("--dragger", dragger_name);
@@ -295,11 +395,17 @@ int main( int argc, char **argv )
     // read the scene from the list of file specified command line args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
+    // create a command manager
+    osg::ref_ptr<osgManipulator::CommandManager> cmdMgr = new osgManipulator::CommandManager;
+
     // if no model has been successfully loaded report failure.
+    bool tragger2Scene(true);
     if (!loadedModel) 
     {
-        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
-        return 1;
+        //std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
+        //return 1;
+        loadedModel = createDemoScene(cmdMgr.get());
+        tragger2Scene=false;
     }
 
     // any option left unread are converted into errors to write out later.
@@ -320,11 +426,13 @@ int main( int argc, char **argv )
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
 
-    osg::ref_ptr<osgManipulator::CommandManager> cmdMgr = new osgManipulator::CommandManager;
     
     // pass the loaded scene graph to the viewer.
-    viewer.setSceneData(addDraggerToScene(loadedModel.get(), cmdMgr.get(), dragger_name));
-
+    if ( tragger2Scene ) {
+        viewer.setSceneData(addDraggerToScene(loadedModel.get(), cmdMgr.get(), dragger_name));
+    } else { 
+        viewer.setSceneData(loadedModel.get());
+    }
     viewer.addEventHandler(new PickModeHandler());
 
     return viewer.run();

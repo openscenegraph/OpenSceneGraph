@@ -689,6 +689,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
 
             TIFF *image;
             int samplesPerPixel;
+            int bitsPerSample;
             uint16 photometric;
 
             image = TIFFClientOpen("outputstream", "w", (thandle_t)&fout,
@@ -728,9 +729,20 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                     break;
             }
 
+            switch(img.getDataType()){
+                case GL_FLOAT:
+                    TIFFSetField(image, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
+                    TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, 1);
+                    bitsPerSample = 32;
+                    break;
+                default:
+                    bitsPerSample = 8;
+                    break;
+            }
+
             TIFFSetField(image, TIFFTAG_IMAGEWIDTH,img.s());
             TIFFSetField(image, TIFFTAG_IMAGELENGTH,img.t());
-            TIFFSetField(image, TIFFTAG_BITSPERSAMPLE,8);
+            TIFFSetField(image, TIFFTAG_BITSPERSAMPLE,bitsPerSample);
             TIFFSetField(image, TIFFTAG_SAMPLESPERPIXEL,samplesPerPixel);
             TIFFSetField(image, TIFFTAG_PHOTOMETRIC, photometric);
             TIFFSetField(image, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS); 

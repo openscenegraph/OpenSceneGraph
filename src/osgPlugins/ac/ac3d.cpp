@@ -244,6 +244,7 @@ static void
 setTranslucent(osg::StateSet* stateSet)
 {
     osg::BlendFunc* blendFunc = new osg::BlendFunc;
+    blendFunc->setDataVariance(osg::Object::STATIC);
     blendFunc->setSource(osg::BlendFunc::SRC_ALPHA);
     blendFunc->setDestination(osg::BlendFunc::ONE_MINUS_SRC_ALPHA);
     stateSet->setAttribute(blendFunc);
@@ -258,7 +259,10 @@ class MaterialData
     MaterialData() :
         mMaterial(new osg::Material),
         mColorArray(new osg::Vec4Array(1))
-    { }
+    {
+        mMaterial->setDataVariance(osg::Object::STATIC);
+        mColorArray->setDataVariance(osg::Object::STATIC);
+    }
 
     void readMaterial(std::istream& stream)
     {
@@ -327,6 +331,7 @@ class TextureData
     bool setTexture(const std::string& name, const osgDB::ReaderWriter::Options* options)
     {
         mTexture2D = new osg::Texture2D;
+        mTexture2D->setDataVariance(osg::Object::STATIC);
         mTexture2D->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
         mTexture2D->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
 
@@ -361,6 +366,7 @@ class TextureData
         if (!valid())
             return;
         osg::TexEnv* texEnv = new osg::TexEnv;
+        texEnv->setDataVariance(osg::Object::STATIC);
         texEnv->setMode(osg::TexEnv::MODULATE);
         stateSet->setTextureAttribute(0, texEnv);
         stateSet->setTextureAttribute(0, mTexture2D.get());
@@ -393,6 +399,7 @@ class FileData
     osg::Light* getNextLight()
     {
         osg::Light* light = new osg::Light;
+        light->setDataVariance(osg::Object::STATIC);
         light->setLightNum(mLightIndex++);
         return light;
     }
@@ -617,7 +624,9 @@ class PrimitiveBin : public osg::Referenced
         _geode(new osg::Geode),
         _vertexSet(vertexSet),
         _flags(flags)
-    { }
+    {
+        _geode->setDataVariance(osg::Object::STATIC);
+    }
 
     virtual bool beginPrimitive(unsigned nRefs) = 0;
     virtual bool vertex(unsigned vertexIndex, const osg::Vec2& texCoord) = 0;
@@ -669,6 +678,9 @@ class LineBin : public PrimitiveBin
         _vertices(new osg::Vec3Array),
         _texCoords(new osg::Vec2Array)
     {
+        _geometry->setDataVariance(osg::Object::STATIC);
+        _vertices->setDataVariance(osg::Object::STATIC);
+        _texCoords->setDataVariance(osg::Object::STATIC);
         _geometry->setVertexArray(_vertices.get());
         _geometry->setTexCoordArray(0, _texCoords.get());
         osg::StateSet* stateSet = _geode->getOrCreateStateSet();
@@ -884,6 +896,7 @@ class SurfaceBin : public PrimitiveBin {
             stateSet->setMode(GL_CULL_FACE, osg::StateAttribute::OFF);
         } else {
             osg::CullFace* cullFace = new osg::CullFace;
+            cullFace->setDataVariance(osg::Object::STATIC);
             cullFace->setMode(osg::CullFace::BACK);
             stateSet->setAttribute(cullFace);
             stateSet->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
@@ -891,6 +904,7 @@ class SurfaceBin : public PrimitiveBin {
 
         // Flat or smooth shading
         osg::ShadeModel* shadeModel = new osg::ShadeModel;
+        shadeModel->setDataVariance(osg::Object::STATIC);
         if (isSmooth())
             shadeModel->setMode(osg::ShadeModel::SMOOTH);
         else
@@ -900,17 +914,21 @@ class SurfaceBin : public PrimitiveBin {
         // Set up the arrays, allways store texture coords, may be we need them later ...
         osg::Geometry* geometry = new osg::Geometry;
         _geode->addDrawable(geometry);
+        geometry->setDataVariance(osg::Object::STATIC);
         geometry->setColorArray(material.getColorArray());
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
         geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
         osg::Vec3Array* normalArray = new osg::Vec3Array;
+        normalArray->setDataVariance(osg::Object::STATIC);
         geometry->setNormalArray(normalArray);
         osg::Vec3Array* vertexArray = new osg::Vec3Array;
+        vertexArray->setDataVariance(osg::Object::STATIC);
         geometry->setVertexArray(vertexArray);
         osg::Vec2Array* texcoordArray = 0;
         if (textureData.valid())
         {
             texcoordArray = new osg::Vec2Array;
+            texcoordArray->setDataVariance(osg::Object::STATIC);
             geometry->setTexCoordArray(0, texcoordArray);
         }
 
@@ -1078,6 +1096,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
     // The vertex pool in this object
     osg::ref_ptr<VertexSet> vertexSet = new VertexSet;
     osg::ref_ptr<osg::Group> group = new osg::Group;
+    group->setDataVariance(osg::Object::STATIC);
     osg::Vec2 textureOffset(0, 0);
     osg::Vec2 textureRepeat(1, 1);
     float creaseAngle = 61;
@@ -1311,7 +1330,8 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                 ac3dLight->setDiffuse(osg::Vec4(0.5f,0.5f,0.5f,1.0f));
                 ac3dLight->setSpecular(osg::Vec4(1.0f,1.0f,0.5f,1.0f));
                 
-                osg::LightSource* ac3dLightSource = new osg::LightSource;    
+                osg::LightSource* ac3dLightSource = new osg::LightSource;
+                ac3dLightSource->setDataVariance(osg::Object::STATIC);
                 ac3dLightSource->setLight(ac3dLight);
                 ac3dLightSource->setLocalStateSetModes(osg::StateAttribute::ON);
                 
@@ -1329,8 +1349,8 @@ osg::Node*
 readFile(std::istream& stream, const osgDB::ReaderWriter::Options* options)
 {
     FileData fileData(options);
-    osg::Matrix idetityTransform;
-    osg::Node* node = readObject(stream, fileData, idetityTransform, TextureData());
+    osg::Matrix identityTransform;
+    osg::Node* node = readObject(stream, fileData, identityTransform, TextureData());
     if (node)
       node->setName("World");
     return node;

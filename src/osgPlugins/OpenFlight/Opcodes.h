@@ -22,8 +22,12 @@
 
 namespace flt {
 
+
+// Note that INVALID_OP = -1 is not an actual opcode defined in the OpenFlight format.
+// The purpose of INVALID_OP is to mark an opcode variable as invalid or uninitialized.
 enum Opcodes
 {
+    INVALID_OP                          = -1,
     UNKNOWN_OP                          = 0,
     HEADER_OP                           = 1,
     GROUP_OP                            = 2,

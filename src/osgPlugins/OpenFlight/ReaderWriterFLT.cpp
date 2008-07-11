@@ -86,7 +86,7 @@ public:
 
 /*!
 
-FLTReaderWriter supports importing and exporting OSG scene grqphs
+FLTReaderWriter supports importing and exporting OSG scene graphs
 from/to OpenFlight files.
 
 <table>
@@ -284,7 +284,7 @@ class FLTReaderWriter : public ReaderWriter
             }
 
             const int RECORD_HEADER_SIZE = 4;
-            opcode_type continuationOpcode = -1;
+            opcode_type continuationOpcode = INVALID_OP;
             std::string continuationBuffer;
 
             while (fin.good() && !document.done())
@@ -299,8 +299,21 @@ class FLTReaderWriter : public ReaderWriter
                 opcode_type opcode = (opcode_type)dataStream.readUInt16();
                 size_type   size   = (size_type)dataStream.readUInt16();
 
+                // If size == 0, an EOF has probably been reached, i.e. there is nothing 
+                // more to read so we must return.
                 if (size==0)
-                    return ReadResult::ERROR_IN_READING_FILE;
+                {
+                    // If a header was read, we return it.
+                    // This allows us handle files with empty hierarchies.
+                    if (document.getHeaderNode())
+                    {
+                        return document.getHeaderNode();
+                    }
+                    else // (no valid header)
+                    {
+                        return ReadResult::ERROR_IN_READING_FILE;
+                    }
+                }
 
                 // variable length record complete?
                 if (!continuationBuffer.empty() && opcode!=CONTINUATION_OP)
@@ -310,7 +323,7 @@ class FLTReaderWriter : public ReaderWriter
                     flt::RecordInputStream recordStream(&sb);
                     recordStream.readRecordBody(continuationOpcode, continuationBuffer.length(), document);
 
-                    continuationOpcode = -1;
+                    continuationOpcode = INVALID_OP;
                     continuationBuffer.clear();
                 }
 

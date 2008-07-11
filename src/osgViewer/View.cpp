@@ -1826,34 +1826,43 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
     const_cast<osg::Camera*>(camera)->accept(iv);
 #else    
 
-    // timing test code paths
+    // timing test code paths for comparing KdTree based intersections vs conventional intersections
 
     iv.setUseKdTreeWhenAvailable(true);
     iv.setDoDummyTraversal(true);
 
     const_cast<osg::Camera*>(camera)->accept(iv);
+    
 
     osg::Timer_t before = osg::Timer::instance()->tick();
     const_cast<osg::Camera*>(camera)->accept(iv);
 
     osg::Timer_t after_dummy = osg::Timer::instance()->tick();
 
+    int intersectsBeforeKdTree = picker->getIntersections().size();
+
     iv.setDoDummyTraversal(false);
     const_cast<osg::Camera*>(camera)->accept(iv);
     osg::Timer_t after_kdTree_2 = osg::Timer::instance()->tick();
+
+    int intersectsBeforeConventional = picker->getIntersections().size();
 
     iv.setUseKdTreeWhenAvailable(false);
     const_cast<osg::Camera*>(camera)->accept(iv);
     osg::Timer_t after = osg::Timer::instance()->tick();
     
+    int intersectsAfterConventional = picker->getIntersections().size();
+
     double timeDummy = osg::Timer::instance()->delta_m(before, after_dummy);
     double timeKdTree = osg::Timer::instance()->delta_m(after_dummy, after_kdTree_2);
     double timeConventional = osg::Timer::instance()->delta_m(after_kdTree_2, after);
     
     osg::notify(osg::NOTICE)<<"Using Dummy                    "<<timeDummy<<std::endl;
-    osg::notify(osg::NOTICE)<<"      KdTrees                  "<<timeKdTree<<std::endl;
+    osg::notify(osg::NOTICE)<<"      KdTrees                  "<<timeKdTree
+                            <<"\tNum intersects = "<<intersectsBeforeConventional-intersectsBeforeKdTree<<std::endl;
     osg::notify(osg::NOTICE)<<"      KdTrees - Traversal      "<<timeKdTree-timeDummy<<std::endl;
-    osg::notify(osg::NOTICE)<<"      Conventional             "<<timeConventional<<std::endl;
+    osg::notify(osg::NOTICE)<<"      Conventional             "<<timeConventional
+                            <<"\tNum intersects = "<<intersectsAfterConventional-intersectsBeforeConventional<<std::endl;
     osg::notify(osg::NOTICE)<<"      Conventional - Traversal "<<timeConventional-timeDummy<<std::endl;
     osg::notify(osg::NOTICE)<<"      Delta                    "<<timeConventional/timeKdTree<<std::endl;
     osg::notify(osg::NOTICE)<<"      Delta sans Traversal     "<<(timeConventional-timeDummy)/(timeKdTree-timeDummy)<<std::endl;

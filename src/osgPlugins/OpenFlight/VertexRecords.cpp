@@ -214,7 +214,7 @@ class VertexCNT : public Record
 RegisterRecordProxy<VertexCNT> g_VertexCNT(VERTEX_CNT_OP);
 
 
-/** Absolut Vertex -
+/** Absolute Vertex -
   * version < 13
   */
 class AbsoluteVertex : public Record

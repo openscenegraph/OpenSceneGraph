@@ -661,7 +661,7 @@ FltExportVisitor::writeLightPoint( const osgSim::LightPointNode* lpn )
         return;
 
     // In OSG, each LightPoint within a LightPointNode  can have different appearance
-    // parameters, but in OpenFlight, a Light Point Record contains a list of homogenous
+    // parameters, but in OpenFlight, a Light Point Record contains a list of homogeneous
     // vertices. To be correct, we'd have to look at all LightPoints in the LightPointNode
     // and spew out multiple FLT records for each group that shared common appearance
     // parameters. Instead, we cheat: We take the first LightPoint and use its appearance
@@ -680,7 +680,7 @@ FltExportVisitor::writeLightPoint( const osgSim::LightPointNode* lpn )
         animPhaseDelay = lp0._blinkSequence->getPhaseShift();
     }
 
-    // Note that true bidirectional light points are currently unsupported (they are inavailable
+    // Note that true bidirectional light points are currently unsupported (they are unavailable
     // in OSG, so we never write them out to FLT as BIDIRECTIONAL.
     int32 directionality( OMNIDIRECTIONAL );
     float32 horizLobe( 360.f );
@@ -734,7 +734,7 @@ FltExportVisitor::writeLightPoint( const osgSim::LightPointNode* lpn )
         _records->writeFloat32( 0.f ); // Directional falloff exponent
         _records->writeFloat32( 0.f ); // Directional ambient intensity
         _records->writeFloat32( animPeriod ); // Animation period in seconds
-        _records->writeFloat32( animPhaseDelay ); // Animation phase delay in secnds
+        _records->writeFloat32( animPhaseDelay ); // Animation phase delay in seconds
         _records->writeFloat32( animEnabled ); // Animation enabled period in seconds
         _records->writeFloat32( 1.f ); // Significance
         _records->writeInt32( 0 ); // Calligraphic draw order

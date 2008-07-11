@@ -59,7 +59,7 @@ bool RecordInputStream::readRecordBody(opcode_type opcode, size_type size, Docum
 
     if (prototype)
     {
-#if 0 // for debuging
+#if 0 // for debugging
         {
             for (int i=0; i<document.level(); i++)
                 cout << "   ";

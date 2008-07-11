@@ -95,7 +95,7 @@ class Document
         void setOptions(const osgDB::ReaderWriter::Options* options) { _options = options; }
         const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 
-        // Current primar record
+        // Current primary record
         void setCurrentPrimaryRecord(PrimaryRecord* record) { _currentPrimaryRecord=record; }
         PrimaryRecord* getCurrentPrimaryRecord() { return _currentPrimaryRecord.get(); }
         const PrimaryRecord* getCurrentPrimaryRecord() const { return _currentPrimaryRecord.get(); }

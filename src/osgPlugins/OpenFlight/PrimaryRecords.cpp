@@ -313,7 +313,7 @@ class DegreeOfFreedom : public PrimaryRecord
     struct Range
     {
         float64 min;            // Minimum value with respect to the local coord system
-        float64 max;            // Maximum value with respect to the local coordsystem
+        float64 max;            // Maximum value with respect to the local coord system
         float64 current;        // Current value with respect to the local coord system
         float64 increment;      // Increment
     };

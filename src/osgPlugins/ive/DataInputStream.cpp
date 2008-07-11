@@ -53,6 +53,7 @@
 #include "PointSprite.h"
 #include "Multisample.h"
 #include "Fog.h"
+#include "Light.h"
 
 
 #include "Group.h"
@@ -1193,6 +1194,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVEFOG){
         attribute = new osg::Fog();
         ((ive::Fog*)(attribute))->read(this);
+    }
+    else if(attributeID == IVELIGHT){
+        attribute = new osg::Light();
+        ((ive::Light*)(attribute))->read(this);
     }    
     else{
         throw Exception("Unknown StateAttribute in StateSet::read()");

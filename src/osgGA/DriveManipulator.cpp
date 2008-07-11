@@ -47,7 +47,7 @@ DriveManipulator::DriveManipulator()
     _modelScale = 1.0;
     _velocity = 0.0;
     _height = getHeightOfDriver();
-    _buffer = _height*1.3;
+    _buffer = _height*2.5;
     _pitch = 0.0;
     //_speedMode = USE_MOUSE_Y_FOR_SPEED;
     _speedMode = USE_MOUSE_BUTTONS_FOR_SPEED;
@@ -75,7 +75,7 @@ void DriveManipulator::setNode(osg::Node* node)
         //_buffer = sqrtf(_modelScale)*0.05;
         
         _height = getHeightOfDriver();
-        _buffer = _height*1.3;
+        _buffer = _height*2.5;
     }
     if (getAutoComputeHomePosition()) computeHomePosition();    
 }
@@ -538,12 +538,20 @@ bool DriveManipulator::calcMovement()
         double signedBuffer;
         if (distanceToMove>=0.0) signedBuffer=_buffer;
         else signedBuffer=-_buffer;
-
+        
         // check to see if any obstruction in front.
         osg::Vec3d ip, np;
         if (intersect(_eye,_eye+lv*(signedBuffer+distanceToMove), ip, np))
         {
-            distanceToMove = (ip-_eye).length()-_buffer;
+            if (distanceToMove>=0.0)
+            {
+                distanceToMove = (ip-_eye).length()-_buffer;
+            }
+            else
+            {
+                distanceToMove = _buffer-(ip-_eye).length();
+            }
+
             _velocity = 0.0;
         }
 

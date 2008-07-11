@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/BoundingBox>
+#include <osg/Array>
 #include <osg/CopyOp>
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -27,23 +27,13 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::multiset< osg::KdTree::LineSegmentIntersection >, osg::KdTree::LineSegmentIntersections)
+TYPE_NAME_ALIAS(std::vector< osg::KdTree::LineSegmentIntersection >, osg::KdTree::LineSegmentIntersections)
 
 TYPE_NAME_ALIAS(int, osg::KdTree::value_type)
 
-TYPE_NAME_ALIAS(std::vector< osg::KdTree::value_type >, osg::KdTree::Indices)
-
-TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::KdTree::AxisStack)
-
 TYPE_NAME_ALIAS(std::vector< osg::KdTree::KdNode >, osg::KdTree::KdNodeList)
 
-TYPE_NAME_ALIAS(std::vector< osg::KdTree::KdLeaf >, osg::KdTree::KdLeafList)
-
-TYPE_NAME_ALIAS(std::vector< osg::BoundingBox >, osg::KdTree::BoundingBoxList)
-
 TYPE_NAME_ALIAS(std::vector< osg::KdTree::Triangle >, osg::KdTree::TriangleList)
-
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::KdTree::CenterList)
 
 BEGIN_OBJECT_REFLECTOR(osg::KdTree)
 	I_DeclaringFile("osg/KdTree");
@@ -100,26 +90,6 @@ BEGIN_OBJECT_REFLECTOR(osg::KdTree)
 	          __bool__intersect__C5_osg_Vec3_R1__C5_osg_Vec3_R1__LineSegmentIntersections_R1,
 	          "compute the intersection of a line segment and the kdtree, return true if an intersection has been found. ",
 	          "");
-	I_Method1(int, addLeaf, IN, const osg::KdTree::KdLeaf &, leaf,
-	          Properties::NON_VIRTUAL,
-	          __int__addLeaf__C5_KdLeaf_R1,
-	          "note, leafNum is negative to distinguish from nodeNum ",
-	          "");
-	I_Method2(int, replaceLeaf, IN, int, leafNum, IN, const osg::KdTree::KdLeaf &, leaf,
-	          Properties::NON_VIRTUAL,
-	          __int__replaceLeaf__int__C5_KdLeaf_R1,
-	          "",
-	          "");
-	I_Method1(osg::KdTree::KdLeaf &, getLeaf, IN, int, leafNum,
-	          Properties::NON_VIRTUAL,
-	          __KdLeaf_R1__getLeaf__int,
-	          "note, leafNum is negative to distinguish from nodeNum ",
-	          "");
-	I_Method1(const osg::KdTree::KdLeaf &, getLeaf, IN, int, leafNum,
-	          Properties::NON_VIRTUAL,
-	          __C5_KdLeaf_R1__getLeaf__int,
-	          "",
-	          "");
 	I_Method1(int, addNode, IN, const osg::KdTree::KdNode &, node,
 	          Properties::NON_VIRTUAL,
 	          __int__addNode__C5_KdNode_R1,
@@ -128,53 +98,67 @@ BEGIN_OBJECT_REFLECTOR(osg::KdTree)
 	I_Method1(osg::KdTree::KdNode &, getNode, IN, int, nodeNum,
 	          Properties::NON_VIRTUAL,
 	          __KdNode_R1__getNode__int,
-	          "note, nodeNum is positive to distinguish from leftNum ",
+	          "",
 	          "");
 	I_Method1(const osg::KdTree::KdNode &, getNode, IN, int, nodeNum,
 	          Properties::NON_VIRTUAL,
 	          __C5_KdNode_R1__getNode__int,
-	          "note, nodeNum is positive to distinguish from leftNum ",
-	          "");
-	I_Method1(osg::BoundingBox &, getBoundingBox, IN, int, nodeNum,
-	          Properties::NON_VIRTUAL,
-	          __osg_BoundingBox_R1__getBoundingBox__int,
 	          "",
 	          "");
-	I_Method1(void, computeDivisions, IN, osg::KdTree::BuildOptions &, options,
+	I_Method0(osg::KdTree::KdNodeList &, getNodes,
 	          Properties::NON_VIRTUAL,
-	          __void__computeDivisions__BuildOptions_R1,
+	          __KdNodeList_R1__getNodes,
 	          "",
 	          "");
-	I_Method4(int, divide, IN, osg::KdTree::BuildOptions &, options, IN, osg::BoundingBox &, bb, IN, int, nodeIndex, IN, unsigned int, level,
+	I_Method0(const osg::KdTree::KdNodeList &, getNodes,
 	          Properties::NON_VIRTUAL,
-	          __int__divide__BuildOptions_R1__osg_BoundingBox_R1__int__unsigned_int,
+	          __C5_KdNodeList_R1__getNodes,
 	          "",
 	          "");
-	I_Method4(bool, intersect, IN, const osg::KdTree::KdLeaf &, leaf, IN, const osg::Vec3 &, start, IN, const osg::Vec3 &, end, IN, osg::KdTree::LineSegmentIntersections &, intersections,
+	I_Method1(void, setVertices, IN, osg::Vec3Array *, vertices,
 	          Properties::NON_VIRTUAL,
-	          __bool__intersect__C5_KdLeaf_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__LineSegmentIntersections_R1,
+	          __void__setVertices__osg_Vec3Array_P1,
 	          "",
 	          "");
-	I_Method6(bool, intersect, IN, const osg::KdTree::KdNode &, node, IN, const osg::Vec3 &, start, IN, const osg::Vec3 &, end, IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e, IN, osg::KdTree::LineSegmentIntersections &, intersections,
+	I_Method0(const osg::Vec3Array *, getVertices,
 	          Properties::NON_VIRTUAL,
-	          __bool__intersect__C5_KdNode_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__LineSegmentIntersections_R1,
+	          __C5_osg_Vec3Array_P1__getVertices,
 	          "",
 	          "");
-	I_Method3(bool, intersectAndClip, IN, osg::Vec3 &, s, IN, osg::Vec3 &, e, IN, const osg::BoundingBox &, bb,
+	I_Method1(unsigned int, addTriangle, IN, const osg::KdTree::Triangle &, tri,
 	          Properties::NON_VIRTUAL,
-	          __bool__intersectAndClip__osg_Vec3_R1__osg_Vec3_R1__C5_osg_BoundingBox_R1,
+	          __unsigned_int__addTriangle__C5_Triangle_R1,
 	          "",
 	          "");
-	I_PublicMemberProperty(osg::observer_ptr< osg::Geometry >, _geometry);
-	I_PublicMemberProperty(osg::BoundingBox, _bb);
-	I_PublicMemberProperty(osg::KdTree::AxisStack, _axisStack);
-	I_PublicMemberProperty(osg::KdTree::KdNodeList, _kdNodes);
-	I_PublicMemberProperty(osg::KdTree::KdLeafList, _kdLeaves);
-	I_PublicMemberProperty(osg::ref_ptr< osg::Vec3Array >, _vertices);
-	I_PublicMemberProperty(osg::KdTree::Indices, _primitiveIndices);
-	I_PublicMemberProperty(osg::KdTree::BoundingBoxList, _boundingBoxes);
-	I_PublicMemberProperty(osg::KdTree::TriangleList, _triangles);
-	I_PublicMemberProperty(osg::KdTree::CenterList, _centers);
+	I_Method1(osg::KdTree::Triangle &, getTriangle, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __Triangle_R1__getTriangle__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osg::KdTree::Triangle &, getTriangle, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_Triangle_R1__getTriangle__unsigned_int,
+	          "",
+	          "");
+	I_Method0(osg::KdTree::TriangleList &, getTriangles,
+	          Properties::NON_VIRTUAL,
+	          __TriangleList_R1__getTriangles,
+	          "",
+	          "");
+	I_Method0(const osg::KdTree::TriangleList &, getTriangles,
+	          Properties::NON_VIRTUAL,
+	          __C5_TriangleList_R1__getTriangles,
+	          "",
+	          "");
+	I_SimpleProperty(osg::KdTree::KdNodeList &, Nodes, 
+	                 __KdNodeList_R1__getNodes, 
+	                 0);
+	I_SimpleProperty(osg::KdTree::TriangleList &, Triangles, 
+	                 __TriangleList_R1__getTriangles, 
+	                 0);
+	I_SimpleProperty(osg::Vec3Array *, Vertices, 
+	                 0, 
+	                 __void__setVertices__osg_Vec3Array_P1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::KdTree::BuildOptions)
@@ -185,20 +169,6 @@ BEGIN_VALUE_REFLECTOR(osg::KdTree::BuildOptions)
 	I_PublicMemberProperty(int, _numVerticesProcessed);
 	I_PublicMemberProperty(int, _targetNumTrianglesPerLeaf);
 	I_PublicMemberProperty(int, _maxNumLevels);
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::KdTree::KdLeaf)
-	I_DeclaringFile("osg/KdTree");
-	I_Constructor0(____KdLeaf,
-	               "",
-	               "");
-	I_Constructor2(IN, osg::KdTree::value_type, f, IN, osg::KdTree::value_type, s,
-	               ____KdLeaf__value_type__value_type,
-	               "",
-	               "");
-	I_PublicMemberProperty(osg::BoundingBox, bb);
-	I_PublicMemberProperty(osg::KdTree::value_type, first);
-	I_PublicMemberProperty(osg::KdTree::value_type, second);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::KdTree::KdNode)
@@ -227,20 +197,27 @@ BEGIN_VALUE_REFLECTOR(osg::KdTree::LineSegmentIntersection)
 	I_PublicMemberProperty(double, ratio);
 	I_PublicMemberProperty(osg::Vec3d, intersectionPoint);
 	I_PublicMemberProperty(osg::Vec3, intersectionNormal);
-	I_PublicMemberProperty(osg::KdTree::LineSegmentIntersection::IndexList, indexList);
-	I_PublicMemberProperty(osg::KdTree::LineSegmentIntersection::RatioList, ratioList);
+	I_PublicMemberProperty(unsigned int, p0);
+	I_PublicMemberProperty(unsigned int, p1);
+	I_PublicMemberProperty(unsigned int, p2);
+	I_PublicMemberProperty(float, r0);
+	I_PublicMemberProperty(float, r1);
+	I_PublicMemberProperty(float, r2);
 	I_PublicMemberProperty(unsigned int, primitiveIndex);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::KdTree::Triangle)
 	I_DeclaringFile("osg/KdTree");
-	I_Constructor3(IN, unsigned int, p1, IN, unsigned int, p2, IN, unsigned int, p3,
+	I_Constructor0(____Triangle,
+	               "",
+	               "");
+	I_Constructor3(IN, unsigned int, ip0, IN, unsigned int, ip1, IN, unsigned int, ip2,
 	               ____Triangle__unsigned_int__unsigned_int__unsigned_int,
 	               "",
 	               "");
-	I_PublicMemberProperty(unsigned int, _p1);
-	I_PublicMemberProperty(unsigned int, _p2);
-	I_PublicMemberProperty(unsigned int, _p3);
+	I_PublicMemberProperty(unsigned int, p0);
+	I_PublicMemberProperty(unsigned int, p1);
+	I_PublicMemberProperty(unsigned int, p2);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::KdTreeBuilder)
@@ -268,17 +245,11 @@ BEGIN_OBJECT_REFLECTOR(osg::KdTreeBuilder)
 	I_PublicMemberProperty(osg::ref_ptr< osg::KdTree >, _kdTreePrototype);
 END_REFLECTOR
 
-STD_SET_REFLECTOR(std::multiset< osg::KdTree::LineSegmentIntersection >)
-
 STD_VECTOR_REFLECTOR(std::vector< double >)
-
-STD_VECTOR_REFLECTOR(std::vector< osg::BoundingBox >)
-
-STD_VECTOR_REFLECTOR(std::vector< osg::KdTree::KdLeaf >)
 
 STD_VECTOR_REFLECTOR(std::vector< osg::KdTree::KdNode >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::KdTree::Triangle >)
+STD_VECTOR_REFLECTOR(std::vector< osg::KdTree::LineSegmentIntersection >)
 
-STD_VECTOR_REFLECTOR(std::vector< osg::KdTree::value_type >)
+STD_VECTOR_REFLECTOR(std::vector< osg::KdTree::Triangle >)
 

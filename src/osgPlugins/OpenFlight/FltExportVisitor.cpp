@@ -102,7 +102,7 @@ FltExportVisitor::FltExportVisitor( DataOutputStream* dos,
     _stateSetStack.push_back( ss );
 
 
-    // Temp file for storing records. Need a temp file because we candon't
+    // Temp file for storing records. Need a temp file because we don't
     // write header and palette until FltExportVisitor completes traversal.
     _recordsTempName = fltOpt->getTempDir() + "/ofw_temp_records";
     _recordsStr.open( _recordsTempName.c_str(), std::ios::out | std::ios::binary );
@@ -147,7 +147,7 @@ FltExportVisitor::apply( osg::Group& node )
     // A Group node could indicate one of many possible records.
     //   Header record -- Don't need to support this here. We always output a header.
     //   Group record -- HIGH
-    //   Child of an LOD node -- HIGH Curently write out a Group record regardless.
+    //   Child of an LOD node -- HIGH Currently write out a Group record regardless.
     //   InstanceDefinition/InstanceReference -- MED --  multiparented Group is an instance
     //   Extension record -- MED
     //   Object record -- MED
@@ -212,7 +212,7 @@ FltExportVisitor::apply( osg::LOD& lodNode )
     _firstNode = false;
     ScopedStatePushPop guard( this, lodNode.getStateSet() );
 
-    // LOD center - same for all chilrden
+    // LOD center - same for all children
     osg::Vec3d center = lodNode.getCenter();
 
     // Iterate children of the LOD and write a separate LOD record for each,
@@ -239,7 +239,7 @@ void
 FltExportVisitor::apply( osg::MatrixTransform& node )
 {
     // Importer reads a Matrix record and inserts a MatrixTransform above
-    //   the corrent node. We need to do the opposite: Write a Matrix record
+    //   the current node. We need to do the opposite: Write a Matrix record
     //   as an ancillary record for each child. We do that by storing the
     //   MatrixTransform in each child's UserData. Each child then checks
     //   UserData and writes a Matrix record if UserData is a MatrixTransform.
@@ -453,7 +453,7 @@ FltExportVisitor::apply( osg::Node& node )
     else
     {
         // Unknown Node. Warn and return.
-        // (Note, if the base class of this Node was a Grouo, then apply(Group&)
+        // (Note, if the base class of this Node was a Group, then apply(Group&)
         //   would export a Group record then continue traversal. Because we are
         //   a Node, there's no way to continue traversal, so just return.)
         std::string warning( "fltexp: Unknown Node in OpenFlight export." );
@@ -486,7 +486,7 @@ FltExportVisitor::complete( const osg::Node& node )
     // Done writing records, close the record data temp file.
     _recordsStr.close();
 
-    // Write OpenFlight file front matter: heqader, vertex palette, etc.
+    // Write OpenFlight file front matter: header, vertex palette, etc.
     writeHeader( node.getName() );
 
     writeColorPalette();

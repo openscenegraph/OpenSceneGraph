@@ -48,7 +48,7 @@ protected:
     {
         uint32 paletteSize = in.readUInt32();
 
-        // Enteries in vertex pool found by offset from start of this record.
+        // Entries in vertex pool found by offset from start of this record.
         const int RECORD_HEADER_SIZE = 4;
         const int OFFSET = RECORD_HEADER_SIZE+sizeof(paletteSize);
 

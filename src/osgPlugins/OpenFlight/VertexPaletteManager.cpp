@@ -177,7 +177,7 @@ VertexPaletteManager::recordType( const osg::Array* v, const osg::Array* c,
 {
     if (t)
     {
-        // Texture coordinstes
+        // Texture coordinates
         if (n)
             return VERTEX_CNT;
         else
@@ -185,7 +185,7 @@ VertexPaletteManager::recordType( const osg::Array* v, const osg::Array* c,
     }
     else
     {
-        // No textue coordinates
+        // No texture coordinates
         if (n)
             return VERTEX_CN;
         else
@@ -354,7 +354,7 @@ VertexPaletteManager::asVec2Array( const osg::Array* in, const unsigned int n )
     }
     default:
     {
-        osg::notify( osg::WARN ) << "fltexp: Unsupported array type in conv ersion to Vec2Array: " << arrayType << std::endl;
+        osg::notify( osg::WARN ) << "fltexp: Unsupported array type in conversion to Vec2Array: " << arrayType << std::endl;
         return NULL;
     }
     }

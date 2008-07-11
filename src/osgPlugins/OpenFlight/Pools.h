@@ -308,7 +308,7 @@ protected:
 
 
 // This object records parent palettes for external record support.
-// When an external record is parsed, this object is instatiated and populated with
+// When an external record is parsed, this object is instantiated and populated with
 // the parent model's palettes, then stored as UserData on the ProxyNode.
 // When the ReadExternalsVisitor hits the ProxyNode, it moves this object
 // into the ReaderWriter Options' UserData before calling osgDB::ReadNode,

@@ -74,7 +74,7 @@ std::string ExportOptions::_tempDirOption( "tempDir" );
 std::string ExportOptions::_lightingOption( "lighting" );
 /** Value: "stripTextureFilePath".
  *  If present in the Options string, the exporter strips the path from
- *  texture file names, and writes only the texure file name to the FLT
+ *  texture file names, and writes only the texture file name to the FLT
  *  Texture Palette. By default, the exporter doesn't strip the path,
  *  and the name written to the Texture Palette is taken directly from
  *  the osg::Image object referenced by the osg::Texture2D StateAttribute.

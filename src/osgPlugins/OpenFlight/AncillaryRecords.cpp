@@ -242,7 +242,7 @@ class UVList : public Record
                         float32    u = in.readFloat32();
                         float32    v = in.readFloat32();
 
-                        // Add texture coodinates to geometry.
+                        // Add texture coordinates to geometry.
                         if (_parent.valid())
                             _parent->addVertexUV(layer,osg::Vec2(u,v));
                     }

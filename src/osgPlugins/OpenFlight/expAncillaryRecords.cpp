@@ -25,7 +25,7 @@ namespace flt
 {
 
 
-/** If the DataOutputStream paraqmeter is NULL, write to the _records
+/** If the DataOutputStream parameter is NULL, write to the _records
     member variable. Otherwise, write to the specified DataOutputStream.
     */
 void
@@ -59,7 +59,7 @@ FltExportVisitor::writeComment( const osg::Node& node, DataOutputStream* dos )
     }
 }
 
-/** If the DataOutputStream paraqmeter is NULL, write to the _records
+/** If the DataOutputStream parameter is NULL, write to the _records
     member variable. Otherwise, write to the specified DataOutputStream.
     */
 void

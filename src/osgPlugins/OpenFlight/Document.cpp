@@ -94,7 +94,7 @@ void Document::popExtension()
     _currentPrimaryRecord=_extensionStack.back().get();
     if (!_currentPrimaryRecord.valid())
     {
-        osg::notify(osg::WARN) << "Can't descide primary in Document::popExtension()." << std::endl;
+        osg::notify(osg::WARN) << "Can't decide primary in Document::popExtension()." << std::endl;
         return;
     }
 

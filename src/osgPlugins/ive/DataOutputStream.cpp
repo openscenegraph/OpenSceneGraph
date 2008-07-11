@@ -56,6 +56,7 @@
 #include "PointSprite.h"
 #include "Multisample.h"
 #include "Fog.h"
+#include "Light.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -834,6 +835,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         // This is a Fog
         else if(dynamic_cast<const osg::Fog*>(attribute)){
             ((ive::Fog*)(attribute))->write(this);
+        }
+        // This is a Light
+        else if(dynamic_cast<const osg::Light*>(attribute)){
+            ((ive::Light*)(attribute))->write(this);
         }
 
         else{

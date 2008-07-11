@@ -301,6 +301,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
     if (kdTree)
     {
         osg::KdTree::LineSegmentIntersections intersections;
+        intersections.reserve(4);
         if (kdTree->intersect(s,e,intersections))
         {
             // osg::notify(osg::NOTICE)<<"Got KdTree intersections"<<std::endl;
@@ -308,7 +309,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                 itr != intersections.end();
                 ++itr)
             {
-                osg::KdTree::LineSegmentIntersection& lsi = const_cast<osg::KdTree::LineSegmentIntersection&>(*itr);
+                osg::KdTree::LineSegmentIntersection& lsi = *(itr);
                 
                 // get ratio in s,e range
                 double ratio = lsi.ratio;
@@ -330,11 +331,27 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                 
                 hit.localIntersectionNormal = lsi.intersectionNormal;
                 
-                hit.indexList.swap(lsi.indexList);
-                hit.ratioList.swap(lsi.ratioList);
+                hit.indexList.reserve(3);
+                hit.ratioList.reserve(3);
+                if (lsi.r0!=0.0f) 
+                {
+                    hit.indexList.push_back(lsi.p0);
+                    hit.ratioList.push_back(lsi.r0);
+                }
+                
+                if (lsi.r1!=0.0f) 
+                {
+                    hit.indexList.push_back(lsi.p1);
+                    hit.ratioList.push_back(lsi.r1);
+                }
+
+                if (lsi.r2!=0.0f) 
+                {
+                    hit.indexList.push_back(lsi.p2);
+                    hit.ratioList.push_back(lsi.r2);
+                }
 
                 insertIntersection(hit);
-
             }
         }
         

@@ -39,10 +39,9 @@
 
 #include <osgViewer/Viewer>
 
-#include "fixeddivision.h"
-#include "variabledivision.h"
-
 #include <osg/KdTree>
+
+#include <iostream>
 
 int main(int argc, char **argv)
 {
@@ -51,12 +50,9 @@ int main(int argc, char **argv)
     
     int maxNumLevels = 16;
     int targetNumIndicesPerLeaf = 16;
-    bool processTriangles = true;
 
     while (arguments.read("--max", maxNumLevels)) {}
     while (arguments.read("--leaf", targetNumIndicesPerLeaf)) {}
-    while (arguments.read("--points")) processTriangles = false;
-    while (arguments.read("--triangles")) processTriangles = true;
     
     osgDB::Registry::instance()->setBuildKdTreesHint(osgDB::ReaderWriter::Options::BUILD_KDTREES);
     
@@ -68,56 +64,7 @@ int main(int argc, char **argv)
         return 0;
     }
 
-
-    osgUtil::UpdateVisitor updateVisitor;
-    updateVisitor.setFrameStamp(new osg::FrameStamp);
-    scene->accept(updateVisitor);
-    scene->getBound();
-
-    if (arguments.read("--fd"))
-    {
-        fixeddivision::KDTreeBuilder builder;
-
-        builder._maxNumLevels = maxNumLevels;
-        builder._targetNumIndicesPerLeaf = targetNumIndicesPerLeaf;
-        builder._processTriangles = processTriangles;
-
-
-        osg::Timer_t start = osg::Timer::instance()->tick();
-
-
-        scene->accept(builder);
-
-        osg::Timer_t end = osg::Timer::instance()->tick();
-        double time = osg::Timer::instance()->delta_s(start,end);
-        osg::notify(osg::NOTICE)<<"Time to build "<<time*1000.0<<"ms "<<builder._numVerticesProcessed<<std::endl;
-        osg::notify(osg::NOTICE)<<"build speed "<<(double(builder._numVerticesProcessed)/time)/1000000.0<<"M vertices per second"<<std::endl;
-    }
-    else if (arguments.read("--vd"))
-    {
-        variabledivision::KDTreeBuilder builder;
-
-        builder._maxNumLevels = maxNumLevels;
-        builder._targetNumTrianglesPerLeaf = targetNumIndicesPerLeaf;
-        builder._processTriangles = processTriangles;
-
-
-        osg::Timer_t start = osg::Timer::instance()->tick();
-
-
-        scene->accept(builder);
-
-        osg::Timer_t end = osg::Timer::instance()->tick();
-        double time = osg::Timer::instance()->delta_s(start,end);
-        osg::notify(osg::NOTICE)<<"Time to build "<<time*1000.0<<"ms "<<builder._numVerticesProcessed<<std::endl;
-        osg::notify(osg::NOTICE)<<"build speed "<<(double(builder._numVerticesProcessed)/time)/1000000.0<<"M vertices per second"<<std::endl;
-    }    
-    else
-    {
-        osgViewer::Viewer viewer;
-        viewer.setSceneData(scene.get());
-        return viewer.run();
-    }    
-    
-    return 0;
+    osgViewer::Viewer viewer;
+    viewer.setSceneData(scene.get());
+    return viewer.run();
 }

@@ -1,12 +1,5 @@
 SET(TARGET_SRC 
-    fixeddivision.cpp
-    variabledivision.cpp
     osgkdtree.cpp
-)
-
-SET(TARGET_H 
-    fixeddivision.h
-    variabledivision.h
 )
 
 

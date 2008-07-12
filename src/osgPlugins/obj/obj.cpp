@@ -155,46 +155,136 @@ bool Model::readMTL(std::istream& fin)
                 {
                     unsigned int fieldsRead = sscanf(line+3,"%f %f %f %f", &r, &g, &b, &a);
 
-                    if (fieldsRead==1)      material->ambient.set(r,0.0f,0.0f,1.0f);
-                    else if (fieldsRead==2) material->ambient.set(r,g,0.0f,1.0f);
-                    else if (fieldsRead==3) material->ambient.set(r,g,b,1.0f);
-                    else if (fieldsRead==4) material->ambient.set(r,g,b,a);
+                    if (fieldsRead==1)
+                    {
+                        material->ambient[ 0 ] = r;
+                    }
+                    else if (fieldsRead==2)
+                    {
+                        material->ambient[ 0 ] = r;
+                        material->ambient[ 1 ] = g;
+                    }
+                    else if (fieldsRead==3)
+                    {
+                        material->ambient[ 0 ] = r;
+                        material->ambient[ 1 ] = g;
+                        material->ambient[ 2 ] = b;
+                    }
+                    else if (fieldsRead==4)
+                    {
+                        material->ambient[ 0 ] = r;
+                        material->ambient[ 1 ] = g;
+                        material->ambient[ 2 ] = b;
+                        material->ambient[ 3 ] = a;
+                    }
                 }
                 else if (strncmp(line,"Kd ",3)==0)
                 {
                     unsigned int fieldsRead = sscanf(line+3,"%f %f %f %f", &r, &g, &b, &a);
 
-                    if (fieldsRead==1)      material->diffuse.set(r,0.0f,0.0f,1.0f);
-                    else if (fieldsRead==2) material->diffuse.set(r,g,0.0f,1.0f);
-                    else if (fieldsRead==3) material->diffuse.set(r,g,b,1.0f);
-                    else if (fieldsRead==4) material->diffuse.set(r,g,b,a);
+                    if (fieldsRead==1)
+                    {
+                        material->diffuse[ 0 ] = r;
+                    }
+                    else if (fieldsRead==2)
+                    {
+                        material->diffuse[ 0 ] = r;
+                        material->diffuse[ 1 ] = g;
+                    }
+                    else if (fieldsRead==3)
+                    {
+                        material->diffuse[ 0 ] = r;
+                        material->diffuse[ 1 ] = g;
+                        material->diffuse[ 2 ] = b;
+                    }
+                    else if (fieldsRead==4)
+                    {
+                        material->diffuse[ 0 ] = r;
+                        material->diffuse[ 1 ] = g;
+                        material->diffuse[ 2 ] = b;
+                        material->diffuse[ 3 ] = a;
+                    }
                 }
                 else if (strncmp(line,"Ks ",3)==0)
                 {
                     unsigned int fieldsRead = sscanf(line+3,"%f %f %f %f", &r, &g, &b, &a);
 
-                    if (fieldsRead==1)      material->specular.set(r,0.0f,0.0f,1.0f);
-                    else if (fieldsRead==2) material->specular.set(r,g,0.0f,1.0f);
-                    else if (fieldsRead==3) material->specular.set(r,g,b,1.0f);
-                    else if (fieldsRead==4) material->specular.set(r,g,b,a);
+                    if (fieldsRead==1)
+                    {
+                        material->specular[ 0 ] = r;
+                    }
+                    else if (fieldsRead==2)
+                    {
+                        material->specular[ 0 ] = r;
+                        material->specular[ 1 ] = g;
+                    }
+                    else if (fieldsRead==3)
+                    {
+                        material->specular[ 0 ] = r;
+                        material->specular[ 1 ] = g;
+                        material->specular[ 2 ] = b;
+                    }
+                    else if (fieldsRead==4)
+                    {
+                        material->specular[ 0 ] = r;
+                        material->specular[ 1 ] = g;
+                        material->specular[ 2 ] = b;
+                        material->specular[ 3 ] = a;
+                    }
                 }
                 else if (strncmp(line,"Ke ",3)==0)
                 {
                     unsigned int fieldsRead = sscanf(line+3,"%f %f %f %f", &r, &g, &b, &a);
 
-                    if (fieldsRead==1)      material->emissive.set(r,0.0f,0.0f,1.0f);
-                    else if (fieldsRead==2) material->emissive.set(r,g,0.0f,1.0f);
-                    else if (fieldsRead==3) material->emissive.set(r,g,b,1.0f);
-                    else if (fieldsRead==4) material->emissive.set(r,g,b,a);
+                    if (fieldsRead==1)
+                    {
+                        material->emissive[ 0 ] = r;
+                    }
+                    else if (fieldsRead==2)
+                    {
+                        material->emissive[ 0 ] = r;
+                        material->emissive[ 1 ] = g;
+                    }
+                    else if (fieldsRead==3)
+                    {
+                        material->emissive[ 0 ] = r;
+                        material->emissive[ 1 ] = g;
+                        material->emissive[ 2 ] = b;
+                    }
+                    else if (fieldsRead==4)
+                    {
+                        material->emissive[ 0 ] = r;
+                        material->emissive[ 1 ] = g;
+                        material->emissive[ 2 ] = b;
+                        material->emissive[ 3 ] = a;
+                    }
                 }
                 else if (strncmp(line,"Tf ",3)==0)
                 {
                     unsigned int fieldsRead = sscanf(line+3,"%f %f %f %f", &r, &g, &b, &a);
 
-                    if (fieldsRead==1)      material->Tf.set(r,0.0f,0.0f,1.0f);
-                    else if (fieldsRead==2) material->Tf.set(r,g,0.0f,1.0f);
-                    else if (fieldsRead==3) material->Tf.set(r,g,b,1.0f);
-                    else if (fieldsRead==4) material->Tf.set(r,g,b,a);
+                    if (fieldsRead==1)
+                    {
+                        material->Tf[ 0 ] = r;
+                    }
+                    else if (fieldsRead==2)
+                    {
+                        material->Tf[ 0 ] = r;
+                        material->Tf[ 1 ] = g;
+                    }
+                    else if (fieldsRead==3)
+                    {
+                        material->Tf[ 0 ] = r;
+                        material->Tf[ 1 ] = g;
+                        material->Tf[ 2 ] = b;
+                    }
+                    else if (fieldsRead==4)
+                    {
+                        material->Tf[ 0 ] = r;
+                        material->Tf[ 1 ] = g;
+                        material->Tf[ 2 ] = b;
+                        material->Tf[ 3 ] = a;
+                    }
                 }
                 else if (strncmp(line,"sharpness ",10)==0)
                 {

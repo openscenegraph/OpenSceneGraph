@@ -122,7 +122,8 @@ protected:
     
     osg::Geometry* convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList, bool& rotate) const;
     
-    osg::Node* convertModelToSceneGraph(obj::Model& model, bool& rotate) const;
+    osg::Node* convertModelToSceneGraph(obj::Model& model, bool& rotate,
+        bool& noTesselateLargePolygons, bool& noTriStripPolygons) const;
 
     inline osg::Vec3 transformVertex(const osg::Vec3& vec, const bool rotate) const ;
     inline osg::Vec3 transformNormal(const osg::Vec3& vec, const bool rotate) const ;
@@ -267,6 +268,8 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
 
             osg_material->setAmbient(osg::Material::FRONT_AND_BACK,material.ambient);
             osg_material->setDiffuse(osg::Material::FRONT_AND_BACK,material.diffuse);
+            osg_material->setEmission(osg::Material::FRONT_AND_BACK,material.emissive);
+
             if (material.illum == 2) {
                 osg_material->setSpecular(osg::Material::FRONT_AND_BACK,material.specular);
             } else {
@@ -276,7 +279,8 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
             
             if (material.ambient[3]!=1.0 ||
                 material.diffuse[3]!=1.0 ||
-                material.specular[3]!=1.0)
+                material.specular[3]!=1.0||
+                material.emissive[3]!=1.0)
             {
                 osg::notify(osg::INFO)<<"Found transparent material"<<std::endl;
                 isTransparent = true;
@@ -292,8 +296,13 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
         load_material_texture( model, material, stateset.get(), material.map_Kd,       TEXTURE_UNIT_KD );
         load_material_texture( model, material, stateset.get(), material.map_opacity,  TEXTURE_UNIT_OPACITY );
         
+        if (isTransparent)
+        {
+            stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+            stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+        }
+
         materialToStateSetMap[material.name] = stateset.get();
-        
     }
 }
 
@@ -550,7 +559,8 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
     return geometry;
 }
 
-osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, bool& rotate) const
+osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model,
+    bool& rotate, bool& noTesselateLargePolygons, bool& noTriStripPolygons) const
 {
 
     if (model.elementStateMap.empty()) return 0;
@@ -579,18 +589,24 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, bool& ro
             geometry->setStateSet(stateset);
         
             // tesseleate any large polygons
-            osgUtil::Tessellator tessellator;
-            tessellator.retessellatePolygons(*geometry);
-
+            if (!noTesselateLargePolygons)
+            {
+                osgUtil::Tessellator tessellator;
+                tessellator.retessellatePolygons(*geometry);
+            }
+            
             // tri strip polygons to improve graphics peformance
-            osgUtil::TriStripVisitor tsv;
-            tsv.stripify(*geometry);
-
+            if (!noTriStripPolygons)
+            {
+                osgUtil::TriStripVisitor tsv;
+                tsv.stripify(*geometry);
+            }
+            
             // if no normals present add them.
             if (!geometry->getNormalArray() || geometry->getNormalArray()->getNumElements()==0)
             {
-                osgUtil::SmoothingVisitor tsv;
-                tsv.smooth(*geometry);
+                osgUtil::SmoothingVisitor sv;
+                sv.smooth(*geometry);
             }
 
 
@@ -641,14 +657,32 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
         model.setDatabasePath(osgDB::getFilePath(fileName.c_str()));
         model.readOBJ(fin, local_opt.get());
         
-        // code for checking the noRotation
+        // code for checking the nonRotation, noTesselateLargePolygons,
+        // and noTriStripPolygons
         bool rotate = true;
-        if ((options!=NULL) && (options->getOptionString() == "noRotation"))
+        bool noTesselateLargePolygons = false;
+        bool noTriStripPolygons = false;
+        
+        if (options!=NULL)
         {
-            rotate = false;
+            if (options->getOptionString() == "noRotation")
+            {
+                rotate = false;
+            }
+            
+            if (options->getOptionString() == "noTesselateLargePolygons")
+            {
+                noTesselateLargePolygons = true;
+            }
+            
+            if (options->getOptionString() == "noTriStripPolygons")
+            {
+                noTesselateLargePolygons = true;
+            }
         }
-
-        osg::Node* node = convertModelToSceneGraph(model,rotate);
+        
+        osg::Node* node = convertModelToSceneGraph(model,rotate,
+            noTesselateLargePolygons,noTriStripPolygons);
         return node;
     }
     
@@ -662,14 +696,32 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, con
         obj::Model model;
         model.readOBJ(fin, options);
         
-        // code for checking the nonRotation
+        // code for checking the nonRotation, noTesselateLargePolygons,
+        // and noTriStripPolygons
         bool rotate = true;
-        if ((options!=NULL) && (options->getOptionString() == "noRotation"))
+        bool noTesselateLargePolygons = false;
+        bool noTriStripPolygons = false;
+        
+        if (options!=NULL)
         {
-            rotate = false;
+            if (options->getOptionString() == "noRotation")
+            {
+                rotate = false;
+            }
+            
+            if (options->getOptionString() == "noTesselateLargePolygons")
+            {
+                noTesselateLargePolygons = true;
+            }
+            
+            if (options->getOptionString() == "noTriStripPolygons")
+            {
+                noTesselateLargePolygons = true;
+            }
         }
-
-        osg::Node* node = convertModelToSceneGraph(model,rotate);
+        
+        osg::Node* node = convertModelToSceneGraph(model,rotate,
+            noTesselateLargePolygons,noTriStripPolygons);
         return node;
     }
     

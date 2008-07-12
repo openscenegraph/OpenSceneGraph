@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.5.3
+OpenSceneGraph Library 2.5.4
 
-318 Contributors:
+321 Contributors:
 
 Firstname Surname
 -----------------
@@ -14,8 +14,8 @@ Brede Johansen
 Geoff Michel
 Stephan Huber
 Farshid Lashkari
-Bob Kuehne
 Mathias Fröhlich
+Bob Kuehne
 Eric Sokolowsky
 Ulrich Hertlein
 Martin Lavery
@@ -26,8 +26,8 @@ Trajce Nikolov
 Mike Wittman
 Jean-Sebastien Guay
 Pavel Moloshtan
-Tom Jolley
 Colin McDonald
+Tom Jolley
 Andy Skinner
 Roger James
 Norman Vine
@@ -50,11 +50,12 @@ Chris Hanson
 Per Fahlberg
 J.P. Delport
 David Spilling
+Adrian Egli
 Sherman Wilcox
 Melchior Franz
 Joran Jessurun
+Joakim Simonsson
 Jason Beverage
-Adrian Egli
 Philip Lowman
 Jason Daly
 Frederic Marmond
@@ -68,7 +69,6 @@ Rune Schmidt Jensen
 Rainer Oder
 Mike Connell
 Mathieu Marache
-Joakim Simonsson
 Carlo Camporesi
 Ben Discoe
 Andreas Ekstrand
@@ -108,6 +108,7 @@ Sebastien Grignard
 Romano Magacho
 Roland Smeenk
 Paul de Repentigny
+Mario Valle
 Leandro Motta Barros
 John Kelso
 Daniel Larimer
@@ -165,7 +166,7 @@ Maya Leonard
 Max Behensky
 Mathew May
 Martijn Kragtwijk
-Mario Valle
+Liang Aibin
 Kevin Moiule
 Keith Steffen
 Joseph Winston
@@ -177,6 +178,7 @@ Gerrick Bivins
 George Tarantilis
 Fabio Mierlo
 Edgar Ellis
+Doug McCorkle
 David Ergo
 Daniel Trstenjak
 Csaba Halasz
@@ -249,7 +251,7 @@ Mario Guimaraes
 Marin Lavery
 Marco Lehmann
 Louis Hamilton
-Liang Aibin
+Lilin Xiong
 Lewis Harmon
 Lars Nilson
 Kristopher Bixler
@@ -290,7 +292,6 @@ Duvan Cope
 Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
-Doug McCorkle
 Dean Iverson
 David Jung
 David Gurhrie
@@ -300,6 +301,7 @@ Cyril Brulebois
 Clay Fowler
 Chuck Sembroski
 Chuck Seberion
+Christophe Loustaunau
 Christian Kaser
 Chris McGlone
 Carlos Garcea
@@ -314,6 +316,7 @@ Bart Gallet
 Axel Volley
 Andrew Reyonolds
 Andreas Jochens
+Andre Normann
 Almalric Alexandre
 Allen Bierbaum
 Alexandre Amalric

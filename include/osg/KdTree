@@ -34,7 +34,7 @@ class OSG_EXPORT KdTree : public osg::Shape
 
         META_Shape(osg, KdTree)
         
-        struct BuildOptions
+        struct OSG_EXPORT BuildOptions
         {
             BuildOptions();
                         

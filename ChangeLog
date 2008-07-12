@@ -1,3 +1,346 @@
+2008-07-12 12:00 +0000 [r8570]  robert:
+
+	* From Doug McCorkle, "Attached is patch that corrects/improves the
+	  following issues with the OBJ loader: 1. Added options to control
+	  wether the osgUtil::Tessellator or osgUtil::TriStripVisitor are
+	  run. By default they still run just as before. 2. Added support
+	  for the Emissive material. The data was being read from the mtl
+	  file but was never being applied to the model. 3. This is the
+	  main bug addressed, when a model is read in with an alpha value
+	  specified like: newmtl Material__8 Ns 24 d 0.33 illum 2 Kd 0.204
+	  0.204 0.204 Ks 0 0 0 Ka 0.153 0.153 0.153 where the alpha value
+	  is d. The loader would then overwrite the alpha value when
+	  reading the diffuse, specular, and ambient colors. I have changed
+	  all the material color readers to only set the values they read
+	  and to use the default colors specified in the constructor of the
+	  obj class. With these changes, the obj reader now handles opacity
+	  correctly if the alpha value is specified before the material
+	  colo"
+
+2008-07-12 11:19 +0000 [r8569]  robert:
+
+	* Cleaned up osgkdtree example
+
+2008-07-11 20:01 +0000 [r8568]  robert:
+
+	* Updated version numbers for dev release
+
+2008-07-11 19:52 +0000 [r8567]  robert:
+
+	* From Adrain Egli, "i added a default scene with 7 different
+	  draggers attached. it's more easy to test the draggers."
+
+2008-07-11 19:43 +0000 [r8566]  robert:
+
+	* From Christophe Loustaunau, "For our application, we need to
+	  write tiff file in floats. I have change a little bit the
+	  readerWritterTiff : It check the data type of the image (
+	  img.getDataType() ) and if it's GL_FLOAT :It save the tiff with
+	  float values. Otherwise it does the same thing as before."
+
+2008-07-11 19:23 +0000 [r8565]  robert:
+
+	* From Liang Aibin, " In lastest svn version of OSG, the .ive
+	  plugin missing osg::Light, it does not process I/O for
+	  osg::Light. Now I have fixed it as follows: 2. In
+	  DataInputStream.cpp, I add support code in
+	  DataInputStream::readStateAttribute for osg::Light. 3. In
+	  DataOutputStream.cpp, I add support code in
+	  DataOutputStream::writeStateAttribute for osg::Light. "
+
+2008-07-11 17:46 +0000 [r8564]  robert:
+
+	* From Joakim Simmonson, "Opcodes.h: * Added INVALID_OP as -1 in
+	  the Opcodes enum. Note that INVALID_OP is not an actual opcode
+	  defined in the OpenFlight format. The purpose of INVALID_OP is to
+	  mark an opcode variable as invalid or uninitialized.
+	  ReaderWriterFLT.cpp: * The header node is returned if it exists,
+	  even if the file does not contain a node hierarchy. The old
+	  behaviour returned a ERROR_IN_READING_FILE error. * Changed
+	  opcodes initialized to -1 to the new enum value INVALID_OP."
+
+2008-07-11 17:41 +0000 [r8563]  robert:
+
+	* From Joakim Simmonsson, fixed various spelling typos in comments
+
+2008-07-11 17:35 +0000 [r8562]  robert:
+
+	* From Mathias Froehlich, "Due to the recent data variance
+	  changes/discussion: Change the ac3d loader that can as such only
+	  deliver static models to set the data variance to static for the
+	  returned model. "
+
+2008-07-11 17:07 +0000 [r8561]  robert:
+
+	* Increased the buffer and fixed the buffer calculation when moving
+	  backwards into objects
+
+2008-07-11 16:51 +0000 [r8557-8560]  robert:
+
+	* Updated KdTree code to refect new cleaned up API
+
+	* Tweaked the KdTree intersection performance testing code block
+
+	* Updated wrappers
+
+	* Moved the building and intersecting of the KdTree into the .cpp,
+	  and cleaned up the header to ready it for wider usage
+
+2008-07-10 15:50 +0000 [r8556]  robert:
+
+	* Streamlined KdTree implementation
+
+2008-07-09 19:43 +0000 [r8552-8555]  robert:
+
+	* Updated wrappers
+
+	* Cleaned up KdTree implementation
+
+	* Reordered KdLeaf/KdNode so that the first element to be accessed
+	  is first in the data structure
+
+	* Introduced code for doing dummy test traversals - used for
+	  benchmarking KdTree code.
+
+2008-07-09 19:28 +0000 [r8550-8551]  robert:
+
+	* Added range of camera manipulators and a center of screen test
+	  intersection that is insticated by pressing 'c' key
+
+	* Introduce a intersecion performance testing code path, #if def'd
+	  out for now.
+
+2008-07-09 12:37 +0000 [r8549]  robert:
+
+	* Updated wrappers
+
+2008-07-08 18:02 +0000 [r8548]  robert:
+
+	* Fixed set method
+
+2008-07-08 17:35 +0000 [r8547]  robert:
+
+	* Added optional control of whether to use KdTrees for
+	  intersections
+
+2008-07-07 20:27 +0000 [r8546]  robert:
+
+	* Implement hierachy culling in KdTree::intersect(..)
+
+2008-07-07 14:27 +0000 [r8545]  robert:
+
+	* Improved the handling of KdTree intersections
+
+2008-07-07 13:21 +0000 [r8544]  robert:
+
+	* Implemented intial KdTree triangle intersection code, but without
+	  culling implemented
+
+2008-07-07 10:46 +0000 [r8543]  robert:
+
+	* Added KdTreeBuilder calls into FindCompileableGLObjectsVisitor,
+	  and an alternative path that explictly calls the KdTreeBuilde
+	  when required in cases when no pre compile of GL objects is
+	  required.
+
+2008-07-07 09:40 +0000 [r8542]  robert:
+
+	* Changed types to avoid warnings under Windows
+
+2008-07-06 18:27 +0000 [r8541]  robert:
+
+	* Changed the DatabasePager so that it bypasses the
+	  Registry::readNode() method and calls readNodeImplementation()
+	  directly to avoid calling the KdTreeBuilder. Updated wrappers.
+
+2008-07-06 12:14 +0000 [r8540]  robert:
+
+	* Moved KdTree build code into osg::KdTree
+
+2008-07-05 17:29 +0000 [r8539]  robert:
+
+	* Added handling of co-incident start and end points.
+
+2008-07-05 16:39 +0000 [r8538]  robert:
+
+	* Ported intersection code to use new
+	  osgUtil::LineSegmentIntersector/IntersectionVisitor.
+
+2008-07-04 19:16 +0000 [r8537]  robert:
+
+	* Converted TerrainManipulator to use osgUtil::InterectionVisitor
+	  rather than the old IntersectVisitor
+
+2008-07-04 17:02 +0000 [r8536]  robert:
+
+	* Added KdTree intersection support into LineSegmentIntersector
+
+2008-07-04 15:57 +0000 [r8535]  robert:
+
+	* Added prelimnary KdTree data structure and automatic kdtree build
+	  support into osgDB::Registry/osgTerrain so that newly created
+	  subgraphs can have KdTree built on all osg::Geometry
+	  automatically on load/creation.
+
+2008-07-04 11:51 +0000 [r8534]  robert:
+
+	* Moved vertex indicies method into a single block with deprecated
+	  doc lines
+
+2008-07-03 17:18 +0000 [r8533]  robert:
+
+	* Introduced bounding boxes to KDLeaf and KDNode structs
+
+2008-07-03 15:49 +0000 [r8532]  robert:
+
+	* Added new data structure + build algorithm that places triangles
+	  into leaves without being shared, but with varying the boundaries
+	  of leaves so that they may overlap.
+
+2008-07-03 15:01 +0000 [r8530-8531]  robert:
+
+	* From Mario Valle, "xed the following warning on Linux 64 bits
+	  Athlon:
+	  /users/mvalle/OSG/OpenSceneGraph/src/osg/BufferObject.cpp: In
+	  member function `virtual void
+	  osg::ElementBufferObject::compileBuffer(osg::State&) const':
+	  /users/mvalle/OSG/OpenSceneGraph/src/osg/BufferObject.cpp:600:
+	  warning: cast to pointer from integer of different size"
+
+	* From Mario Valle, removed extraneous spaces
+
+2008-07-03 11:23 +0000 [r8528-8529]  robert:
+
+	* Added header guards
+
+	* Refactored example so that the example will be able to run
+	  different kdtree data strucutres/algorithms.
+
+2008-07-03 11:07 +0000 [r8527]  robert:
+
+	* From Eric Sokolowsky, "The check for Leopard to build 4-way
+	  binaries by default was broken. Here is an updated CMakeLists.txt
+	  file to fix the problem."
+
+2008-07-03 10:24 +0000 [r8526]  robert:
+
+	* Implement an experiemental triangle kdtree building support
+
+2008-07-03 10:03 +0000 [r8525]  robert:
+
+	* Set the DataVariance on FadeText to DYNAMIC to reflect their
+	  nature
+
+2008-07-02 10:00 +0000 [r8524]  robert:
+
+	* Updated wrappers
+
+2008-07-02 09:25 +0000 [r8523]  robert:
+
+	* Introduced support for UNSCPECIFIED and STATIC DataVariance of
+	  StateSet/Textures
+
+2008-07-01 19:04 +0000 [r8522]  robert:
+
+	* From Colin McDonald, "There is a problem reading bmp files
+	  containing a colour palette, due to an incorrect scan line length
+	  calculation. Attached is a fix, and a little bmp file which
+	  demonstrates the problem."
+
+2008-07-01 18:37 +0000 [r8521]  robert:
+
+	* From Lilin Xiong, "I change ive plugin a little for osgText
+	  inout, so the ive plugin supports backdrop setting, and Text3D,
+	  FadeText inout : 1. in DataInputStream.cpp, add 1286--1293 lines;
+	  2. in Text.cpp, add some code for text's Backdrop setting; 3. in
+	  IveVersion.h, add line 39, increase the VERSION to
+	  VERSION_028(line 41) 4. in ReadWrite.h, add line 146,147 5. add
+	  file FadeText.h, FadeText.cpp, Text3D.h, Text3D.cpp."
+
+2008-07-01 13:56 +0000 [r8520]  robert:
+
+	* Added Vec3Array arrange pointer to avoid dynamic cast
+
+2008-07-01 09:40 +0000 [r8519]  robert:
+
+	* From Mathias Froehlich, "It appears not to be sufficient to set a
+	  cmake variable to get a define in such a config file. Instead set
+	  that variable to 1. Also included a small compile fix, that
+	  appears to be required than ..."
+
+2008-06-30 16:53 +0000 [r8518]  robert:
+
+	* Added guards against FBO not being supported/setup
+
+2008-06-29 13:41 +0000 [r8514]  robert:
+
+	* Updated README date for 2.5.3 dev release
+
+2008-06-29 12:22 +0000 [r8513]  robert:
+
+	* Changed the Optimizer::StateVisitor so that it can individually
+	  decide whether to optimize away duplicate state with dynamic,
+	  static and unspecified DataVarience. By default the code now
+	  optimizes away duplicate state with either static and unspecied
+	  state, previously it was just handling static state.
+
+2008-06-28 16:59 +0000 [r8512]  robert:
+
+	* Added realize of new graphics contexts to handle new views being
+	  added with unrealized windows
+
+2008-06-27 19:40 +0000 [r8511]  robert:
+
+	* Changed back to use an std::vector<> rather than a std::list for
+	  RequestQueue to avoid member template problems under Solaris.
+
+2008-06-27 18:59 +0000 [r8510]  robert:
+
+	* Refactored the sort of the requestQueue so that there is single
+	  code path for doing the sort.
+
+2008-06-27 16:47 +0000 [r8509]  robert:
+
+	* From Mathias Froehlich, "Update to the configure check for msvc
+	  7.1. MemoryBarrier() is used in the implementation, so it should
+	  be checked. This in effect disables the faster atomic ops on msvc
+	  7.1 and older, even if only the MemoryBarrier() call is missing.
+	  But it ensures for the fist cut that it will build everywhere. If
+	  somebody cares for msvc 7.1 enough and has one for testing
+	  installed, he might provide the apropriate defines to guard that
+	  MemoryBarrier() call. I tested that msvc8 32/64bit still passes
+	  the configure tests and compiles. "
+
+2008-06-27 12:44 +0000 [r8508]  robert:
+
+	* Simplified the MixinVector class so that it no longer supports
+	  custom allocators, instead just uses std::vector<>'s default
+	  allocators.
+
+2008-06-27 12:35 +0000 [r8507]  robert:
+
+	* Moved the apply(&) default implementations from the header into
+	  the NodeVisitor.cpp, and changed the casts to use static_cast<>.
+
+2008-06-27 11:47 +0000 [r8506]  shuber:
+
+	* from Stephan Huber: updated XCode project
+
+2008-06-27 10:17 +0000 [r8505]  robert:
+
+	* From Andre Normann, "with version 8504, I am not able to compile
+	  osgwrappers under Windows, because there are some DLL export
+	  macros missing. I fixed it and put the files in the attached zip
+	  file. "
+
+2008-06-26 19:51 +0000 [r8504]  robert:
+
+	* Updated authors and osgversion
+
+2008-06-26 19:47 +0000 [r8503]  robert:
+
+	* Updated ChangeLog
+
 2008-06-26 19:21 +0000 [r8502]  robert:
 
 	* Updated wrappers

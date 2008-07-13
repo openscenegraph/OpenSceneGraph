@@ -81,6 +81,6 @@ VertexProgram.cpp
 Viewport.cpp
 )
 SET(TARGET_H Matrix.h )
-SET(TARGET_ADDED_LIBRARIES osgSim osgFX osgText )
+
 #### end var setup  ###
 SETUP_PLUGIN(osg)

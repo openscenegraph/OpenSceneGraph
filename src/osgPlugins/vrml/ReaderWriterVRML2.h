@@ -72,17 +72,15 @@ class ReaderWriterVRML2
 {
 public:
     ReaderWriterVRML2() 
-    {}
+    {
+        supportsExtension("wrl","VRML format");
+    }
 
     virtual const char* className()
     {
         return "VRML2 Reader/Writer";
     }
 
-    virtual bool acceptsExtension(const std::string& extension)
-    {
-        return osgDB::equalCaseInsensitive(extension, "wrl");
-    }
 
     virtual ReadResult readNode(const std::string&, const osgDB::ReaderWriter::Options *options = NULL) const;
 

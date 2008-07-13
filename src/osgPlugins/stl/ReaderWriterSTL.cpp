@@ -45,16 +45,14 @@
 class ReaderWriterSTL : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterSTL() {}
-
-    virtual const char* className() const {
-        return "STL Reader/Writer";
+    ReaderWriterSTL()
+    {
+        supportsExtension("stl","STL format");
+        supportsExtension("sta","STL format");
     }
 
-    virtual bool acceptsExtension(const std::string& extension) const { 
-        return
-            osgDB::equalCaseInsensitive(extension,"stl") ? true :
-            osgDB::equalCaseInsensitive(extension,"sta") ? true : false;
+    virtual const char* className() const {
+        return "STL Reader";
     }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;

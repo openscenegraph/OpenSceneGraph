@@ -96,7 +96,10 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
 class ReaderWriterSCALE : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterSCALE() { }
+    ReaderWriterSCALE()
+    {
+        supportsExtension(EXTENSION_NAME,"Scale Pseudo loader");
+    }
     
     virtual const char* className() const { return "scaling pseudo-loader"; }
 

@@ -30,11 +30,12 @@ using namespace std;
 class ReaderWriterdxf : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterdxf() { }
-    virtual const char* className() { return "Autodesk DXF Reader"; }
-    virtual bool acceptsExtension(const std::string& extension) const {
-        return osgDB::equalCaseInsensitive(extension,"dxf");
+    ReaderWriterdxf()
+    {
+        supportsExtension("dxf","Autodesk DXF format");
     }
+    
+    virtual const char* className() { return "Autodesk DXF Reader"; }
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
 protected:
 };

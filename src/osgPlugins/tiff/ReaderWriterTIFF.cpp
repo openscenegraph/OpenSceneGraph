@@ -631,6 +631,13 @@ simage_tiff_load(std::istream& fin,
 class ReaderWriterTIFF : public osgDB::ReaderWriter
 {
     public:
+    
+        ReaderWriterTIFF()
+        {
+            supportsExtension("tiff","Tiff image format");
+            supportsExtension("tif","Tiff image format");
+        }
+        
         virtual const char* className() const { return "TIFF Image Reader"; }
         virtual bool acceptsExtension(const std::string& extension) const
         { 

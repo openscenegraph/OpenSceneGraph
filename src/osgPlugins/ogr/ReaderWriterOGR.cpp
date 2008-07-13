@@ -81,13 +81,11 @@ class ReaderWriterOGR : public osgDB::ReaderWriter
 {
 
 public:
-    ReaderWriterOGR() {}
-    virtual const char* className() const { return "OGR file reader"; }
-    virtual bool acceptsExtension(const std::string& extension) const
+    ReaderWriterOGR()
     {
-        return osgDB::equalCaseInsensitive(extension,"ogr") || 
-            osgDB::equalCaseInsensitive(extension,"ogr");
+        supportsExtension("ogr","OGR file reader");
     }
+    virtual const char* className() const { return "OGR file reader"; }
 
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {

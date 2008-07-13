@@ -792,12 +792,13 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
 class ReaderWriterDW : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() const { return "Design Workshop Database Reader"; }
-
-        virtual bool acceptsExtension(const std::string& extension) const
+    
+        ReaderWriterDW()
         {
-            return osgDB::equalCaseInsensitive(extension,"dw");
+            supportsExtension("dw","Designer Workbench model format");
         }
+    
+        virtual const char* className() const { return "Design Workshop Database Reader"; }
 
         virtual ReadResult readNode(const std::string& file,const osgDB::ReaderWriter::Options* options) const
         {

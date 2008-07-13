@@ -27,6 +27,8 @@ REGISTER_OSGPLUGIN(Inventor, ReaderWriterIV)
 
 ReaderWriterIV::ReaderWriterIV()
 {
+    supportsExtension("iv","Inventor format");
+    supportsExtension("wrl","VRML world file");
 }
 
 // Read file and convert to OSG

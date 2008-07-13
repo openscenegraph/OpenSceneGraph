@@ -67,7 +67,10 @@ public:
     GifImageStream() 
         : _length(0), _dataNum(0), _frameNum(0), 
         _done(false), _currentLength(0), _multiplier(1.0),
-        osg::ImageStream() { _status=PAUSED; }
+        osg::ImageStream()
+    {
+        _status=PAUSED;
+    }
     virtual Object* clone() const { return new GifImageStream; }
     virtual bool isSameKindAs( const Object* obj ) const 
     { return dynamic_cast<const GifImageStream*>(obj) != NULL; }
@@ -559,11 +562,13 @@ GifImageStream** obj)
 class ReaderWriterGIF : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() const { return "GIF Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) const
+    
+        ReaderWriterGIF()
         {
-            return osgDB::equalCaseInsensitive(extension,"gif");
+            supportsExtension("gif","GIF Image format");
         }
+    
+        virtual const char* className() const { return "GIF Image Reader"; }
 
         ReadResult readGIFStream(std::istream& fin) const
         {

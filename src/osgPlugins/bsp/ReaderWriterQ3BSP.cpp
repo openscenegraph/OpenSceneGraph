@@ -22,16 +22,14 @@
 class ReaderWriterQ3BSP: public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterQ3BSP() { }
+    ReaderWriterQ3BSP()
+    {
+        supportsExtension("bsp","Quake3 BSP model format");
+    }
 
     virtual const char* className() const
       {
         return "Quake3 BSP Reader";
-      }
-
-    virtual bool acceptsExtension(const std::string& extension) const
-      { 
-        return osgDB::equalCaseInsensitive(extension,"bsp");
       }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;

@@ -10,6 +10,13 @@
 class ReaderWriterGLSL : public osgDB::ReaderWriter
 {
     public:
+    
+        ReaderWriterGLSL()
+        {
+            supportsExtension("gl","OpenGL Shader Language format");
+            supportsExtension("glsl","OpenGL Shader Language format");
+        }
+    
         virtual const char* className() const { return "GLSL Shader Reader"; }
         virtual bool acceptsExtension(const std::string& extension) const
         { 

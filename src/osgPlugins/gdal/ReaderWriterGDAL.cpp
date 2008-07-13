@@ -48,11 +48,13 @@ float Hue_2_RGB( float v1, float v2, float vH )
 class ReaderWriterGDAL : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() const { return "GDAL Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) const
+    
+        ReaderWriterGDAL()
         {
-            return osgDB::equalCaseInsensitive(extension,"gdal") || osgDB::equalCaseInsensitive(extension,"gdal");
+            supportsExtension("gdal","GDAL Image reader");
         }
+        
+        virtual const char* className() const { return "GDAL Image Reader"; }
 
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {

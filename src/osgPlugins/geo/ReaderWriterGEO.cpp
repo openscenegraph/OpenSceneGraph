@@ -2202,6 +2202,13 @@ void geoField::readfile(std::ifstream &fin, const uint id) { // is part of a rec
 class ReaderWriterGEO : public osgDB::ReaderWriter
 {
     public:
+    
+        ReaderWriterGEO()
+        {
+            supportsExtension("gem","CarbonGraphics Geo model format");
+            supportsExtension("geo","CarbonGraphics Geo model format");
+        }
+    
         virtual const char* className() const { return "GEO Reader/Writer"; }
 
         virtual bool acceptsExtension(const std::string& extension) const

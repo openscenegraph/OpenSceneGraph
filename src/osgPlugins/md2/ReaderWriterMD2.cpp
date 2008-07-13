@@ -43,14 +43,13 @@ static osg::Node* load_md2 (const char *filename, const osgDB::ReaderWriter::Opt
 class ReaderWriterMD2 : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterMD2 () { }
+    ReaderWriterMD2 ()
+    {
+        supportsExtension("md2","Quak2 MD format");
+    }
 
     virtual const char* className () const {
         return "Quake MD2 Reader";
-    }
-
-    virtual bool acceptsExtension (const std::string& extension) const {
-        return osgDB::equalCaseInsensitive (extension, "md2") ? true : false;
     }
 
     virtual ReadResult readNode (const std::string& filename, const osgDB::ReaderWriter::Options* options) const;

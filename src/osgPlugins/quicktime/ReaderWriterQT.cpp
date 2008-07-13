@@ -76,7 +76,34 @@ class ReaderWriterQT : public osgDB::ReaderWriter
 public:
     ReaderWriterQT::ReaderWriterQT()
     {
+        supportsExtension("mov","Movie format");
+        supportsExtension("mpg","Movie format");
+        supportsExtension("mpv","Movie format");
+        supportsExtension("mp4","Movie format");
+        supportsExtension("m4v","Movie format");
+        supportsExtension("dv","Movie format");
+        supportsExtension("avi","Movie format");
+        supportsExtension("flv","Movie format");
+        supportsExtension("swf","Movie format");
+
+        supportsExtension("live","Live video streaming");
+
+        #ifdef QT_HANDLE_IMAGES_ALSO
+        supportsExtension("rgb","rgb image format");
+        supportsExtension("rgba","rgba image format");
+        supportsExtension("jpg","jpg image format");
+        supportsExtension("jpeg","jpeg image format");
+        supportsExtension("tif","tif image format");
+        supportsExtension("tiff","tiff image format");
+        supportsExtension("gif","gif image format");
+        supportsExtension("png","png image format");
+        supportsExtension("pict","pict image format");
+        supportsExtension("pct","pct image format");
+        supportsExtension("tga","tga image format");
+        supportsExtension("psd","psd image format");
+        #endif
     }
+
     ReaderWriterQT::~ReaderWriterQT()
     {
     }

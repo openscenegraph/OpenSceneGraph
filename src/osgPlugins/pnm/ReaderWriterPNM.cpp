@@ -247,15 +247,15 @@ template <class T>
 class ReaderWriterPNM : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() const { return "PNM Image Reader/Writer"; }
-        virtual bool acceptsExtension(const std::string& extension) const
+        ReaderWriterPNM()
         {
-            return osgDB::equalCaseInsensitive(extension, "pnm") ||
-                osgDB::equalCaseInsensitive(extension, "ppm") ||
-                osgDB::equalCaseInsensitive(extension, "pgm") ||
-                osgDB::equalCaseInsensitive(extension, "pbm");
+            supportsExtension("pnm","PNM Image format");
+            supportsExtension("ppm","PNM Image format");
+            supportsExtension("pgm","PNM Image format");
+            supportsExtension("pbm","PNM Image format");
         }
-
+        
+        virtual const char* className() const { return "PNM Image Reader/Writer"; }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {

@@ -13,7 +13,10 @@
 class NormalsReader: public osgDB::ReaderWriter
 {
     public:
-        NormalsReader() {}
+        NormalsReader()
+        {
+            supportsExtension("normals","Normals Pseudo loader");
+        }
 
         virtual const char* className() { return "Normals Pseudo Loader"; }
 

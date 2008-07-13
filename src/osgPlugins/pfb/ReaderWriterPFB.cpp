@@ -31,70 +31,6 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
         void initPerformer();
 
         virtual const char* className() const { return "Performer Reader/Writer"; }
-        virtual bool acceptsExtension(const std::string& extension) const
-        { 
-            return 
-                osgDB::equalCaseInsensitive(extension,"3ds")     ? true :
-                osgDB::equalCaseInsensitive(extension,"arcinfo") ? true :
-                osgDB::equalCaseInsensitive(extension,"bin")     ? true :
-                osgDB::equalCaseInsensitive(extension,"bpoly")   ? true :
-                osgDB::equalCaseInsensitive(extension,"bw")      ? true :
-                osgDB::equalCaseInsensitive(extension,"byu")     ? true :
-                osgDB::equalCaseInsensitive(extension,"closest") ? true :
-                osgDB::equalCaseInsensitive(extension,"csb")     ? true :
-                osgDB::equalCaseInsensitive(extension,"ct")      ? true :
-                osgDB::equalCaseInsensitive(extension,"dem")     ? true :
-                osgDB::equalCaseInsensitive(extension,"doublerot") ? true :
-                osgDB::equalCaseInsensitive(extension,"doublescale") ? true :
-                osgDB::equalCaseInsensitive(extension,"doubletrans") ? true :
-                osgDB::equalCaseInsensitive(extension,"dted")    ? true :
-                osgDB::equalCaseInsensitive(extension,"dwb")     ? true :
-                osgDB::equalCaseInsensitive(extension,"dxf")     ? true :
-                osgDB::equalCaseInsensitive(extension,"evt")     ? true :
-                osgDB::equalCaseInsensitive(extension,"flt")     ? true :
-                osgDB::equalCaseInsensitive(extension,"gds")     ? true :
-                osgDB::equalCaseInsensitive(extension,"gfo")     ? true :
-                osgDB::equalCaseInsensitive(extension,"im")      ? true :
-                osgDB::equalCaseInsensitive(extension,"irtp")    ? true :
-                osgDB::equalCaseInsensitive(extension,"iv20")    ? true :
-                osgDB::equalCaseInsensitive(extension,"iv")      ? true :
-                osgDB::equalCaseInsensitive(extension,"lodfix")  ? true :
-                osgDB::equalCaseInsensitive(extension,"lsa")     ? true :
-                osgDB::equalCaseInsensitive(extension,"lsb")     ? true :
-                osgDB::equalCaseInsensitive(extension,"medit")   ? true :
-                osgDB::equalCaseInsensitive(extension,"m")       ? true :
-                osgDB::equalCaseInsensitive(extension,"nff")     ? true :
-                osgDB::equalCaseInsensitive(extension,"obj")     ? true :
-                osgDB::equalCaseInsensitive(extension,"pegg")    ? true :
-                osgDB::equalCaseInsensitive(extension,"pfb")     ? true :
-                osgDB::equalCaseInsensitive(extension,"pfs")     ? true :
-                osgDB::equalCaseInsensitive(extension,"phd")     ? true :
-                osgDB::equalCaseInsensitive(extension,"poly")    ? true :
-                osgDB::equalCaseInsensitive(extension,"post")    ? true :
-                osgDB::equalCaseInsensitive(extension,"proc")    ? true :
-                osgDB::equalCaseInsensitive(extension,"projtex") ? true :
-                osgDB::equalCaseInsensitive(extension,"pts")     ? true :
-                osgDB::equalCaseInsensitive(extension,"rot")     ? true :
-                osgDB::equalCaseInsensitive(extension,"scale")   ? true :
-                osgDB::equalCaseInsensitive(extension,"sgf")     ? true :
-                osgDB::equalCaseInsensitive(extension,"sgo")     ? true :
-                osgDB::equalCaseInsensitive(extension,"so")      ? true :
-                osgDB::equalCaseInsensitive(extension,"spf")     ? true :
-                osgDB::equalCaseInsensitive(extension,"spherepatch3") ? true :
-                osgDB::equalCaseInsensitive(extension,"spherepatch") ? true :
-                osgDB::equalCaseInsensitive(extension,"sphere")  ? true :
-                osgDB::equalCaseInsensitive(extension,"sponge")  ? true :
-                osgDB::equalCaseInsensitive(extension,"star")    ? true :
-                osgDB::equalCaseInsensitive(extension,"stla")    ? true :
-                osgDB::equalCaseInsensitive(extension,"stlb")    ? true :
-                osgDB::equalCaseInsensitive(extension,"substclip") ? true :
-                osgDB::equalCaseInsensitive(extension,"sv")      ? true :
-                osgDB::equalCaseInsensitive(extension,"trans")   ? true :
-                osgDB::equalCaseInsensitive(extension,"tri")     ? true :
-                osgDB::equalCaseInsensitive(extension,"unc")     ? true :
-                osgDB::equalCaseInsensitive(extension,"vct")     ? true :
-                false;
-        }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
@@ -195,6 +131,66 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
 
 ReaderWriterPFB::ReaderWriterPFB()
 {
+    supportsExtension("3ds","");
+    supportsExtension("arcinfo","");
+    supportsExtension("bin","");
+    supportsExtension("bpoly","");
+    supportsExtension("bw","");
+    supportsExtension("byu","");
+    supportsExtension("closest","");
+    supportsExtension("csb","");
+    supportsExtension("ct","");
+    supportsExtension("dem","");
+    supportsExtension("doublerot","");
+    supportsExtension("doublescale","");
+    supportsExtension("doubletrans","");
+    supportsExtension("dted","");
+    supportsExtension("dwb","");
+    supportsExtension("dxf","");
+    supportsExtension("evt","");
+    supportsExtension("flt","");
+    supportsExtension("gds","");
+    supportsExtension("gfo","");
+    supportsExtension("im","");
+    supportsExtension("irtp","");
+    supportsExtension("iv20","");
+    supportsExtension("iv","");
+    supportsExtension("lodfix","");
+    supportsExtension("lsa","");
+    supportsExtension("lsb","");
+    supportsExtension("medit","");
+    supportsExtension("m","");
+    supportsExtension("nff","");
+    supportsExtension("obj","");
+    supportsExtension("pegg","");
+    supportsExtension("pfb","");
+    supportsExtension("pfs","");
+    supportsExtension("phd","");
+    supportsExtension("poly","");
+    supportsExtension("post","");
+    supportsExtension("proc","");
+    supportsExtension("projtex","");
+    supportsExtension("pts","");
+    supportsExtension("rot","");
+    supportsExtension("scale","");
+    supportsExtension("sgf","");
+    supportsExtension("sgo","");
+    supportsExtension("so","");
+    supportsExtension("spf","");
+    supportsExtension("spherepatch3","");
+    supportsExtension("spherepatch","");
+    supportsExtension("sphere","");
+    supportsExtension("sponge","");
+    supportsExtension("star","");
+    supportsExtension("stla","");
+    supportsExtension("stlb","");
+    supportsExtension("substclip","");
+    supportsExtension("sv","");
+    supportsExtension("trans","");
+    supportsExtension("tri","");
+    supportsExtension("unc","");
+    supportsExtension("vct","");
+
     _performerInitialised = false;
     initPerformer();
 }

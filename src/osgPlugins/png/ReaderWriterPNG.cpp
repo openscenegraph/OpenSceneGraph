@@ -80,8 +80,12 @@ void png_flush_ostream(png_structp png_ptr)
 class ReaderWriterPNG : public osgDB::ReaderWriter
 {
     public:
+        ReaderWriterPNG()
+        {
+            supportsExtension("png","PNG Image format");
+        }
+        
         virtual const char* className() const { return "PNG Image Reader/Writer"; }
-        virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"png"); }
 
         WriteResult::WriteStatus writePngStream(std::ostream& fout, const osg::Image& img, int compression_level) const
         {

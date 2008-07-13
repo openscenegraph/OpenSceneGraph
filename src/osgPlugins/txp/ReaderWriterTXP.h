@@ -53,14 +53,15 @@ namespace txp
 class ReaderWriterTXP : public osgDB::ReaderWriter
 {
 public:
+
+    ReaderWriterTXP()
+    {
+        supportsExtension("txp","Terrapage txp format");
+    }
+
     virtual const char* className() const
     {
         return "TXP Reader/Writer";
-    }
-    
-    virtual bool acceptsExtension(const std::string& extension) const
-    {
-        return osgDB::equalCaseInsensitive(extension,"txp");
     }
     
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const

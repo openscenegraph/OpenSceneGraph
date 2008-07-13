@@ -315,8 +315,13 @@ int *numComponents_ret)
 class ReaderWriterBMP : public osgDB::ReaderWriter
 {
     public:
+    
+        ReaderWriterBMP()
+        {
+            supportsExtension("bmp","BMP Image format");
+        }
+    
         virtual const char* className() const { return "BMP Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"bmp"); }
 
         ReadResult readBMPStream(std::istream& fin) const
         {

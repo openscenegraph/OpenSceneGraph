@@ -22,6 +22,7 @@
 #include <osgDB/Export>
 
 #include <deque>
+#include <list>
 #include <iosfwd>
 
 namespace osgDB {
@@ -47,7 +48,19 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
         META_Object(osgDB,ReaderWriter);
 
-        virtual bool acceptsExtension(const std::string& /*extension*/) const { return false; }
+        typedef std::map<std::string, std::string> FormatDescriptionMap;
+
+        /** return which protocols are supported by ReaderWriter. */
+        virtual const FormatDescriptionMap& supportedProtocols() const { return _supportedProtocols; }
+        
+        /** return which list of file extensions supported by ReaderWriter. */
+        virtual const FormatDescriptionMap& supportedExtension() const { return _supportedExtensions; }
+        
+        /** return which list of file extensions supported by ReaderWriter. */
+        virtual const FormatDescriptionMap& supportedOptions() const { return _supportedOptions; }
+
+        /** return true if ReaderWriter accepts specified file extension.*/
+        virtual bool acceptsExtension(const std::string& /*extension*/) const;
 
         /** Options base class used for passing options into plugins to control their operation.*/
         class Options : public osg::Object
@@ -304,6 +317,15 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         virtual WriteResult writeNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
         virtual WriteResult writeShader(const osg::Shader& /*shader*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::FILE_NOT_HANDLED); }
 
+    protected:
+    
+        void supportsProtocol(const std::string& fmt, const std::string& description);
+        void supportsExtension(const std::string& fmt, const std::string& description);
+        void supportsOption(const std::string& fmt, const std::string& description);
+
+        FormatDescriptionMap _supportedProtocols;
+        FormatDescriptionMap _supportedExtensions;
+        FormatDescriptionMap _supportedOptions;
 };
 
 }

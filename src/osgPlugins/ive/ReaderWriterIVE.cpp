@@ -13,6 +13,12 @@ using namespace osgDB;
 class ReaderWriterIVE : public ReaderWriter
 {
     public:
+    
+        ReaderWriterIVE()
+        {
+            supportsExtension("ive","OpenSceneGraph native binary format");
+        }
+    
         virtual const char* className() const { return "IVE Reader/Writer"; }
 
         virtual bool acceptsExtension(const std::string& extension) const

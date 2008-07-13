@@ -113,16 +113,20 @@ std::string osgDB::convertFileNameToNativeStyle(const std::string& fileName)
 
 std::string osgDB::getLowerCaseFileExtension(const std::string& filename)
 {
-    std::string ext = osgDB::getFileExtension(filename);
-    for(std::string::iterator itr=ext.begin();
-        itr!=ext.end();
+    return convertToLowerCase(osgDB::getFileExtension(filename));
+}
+
+std::string osgDB::convertToLowerCase(const std::string& str)
+{
+    std::string lowcase_str(str);
+    for(std::string::iterator itr=lowcase_str.begin();
+        itr!=lowcase_str.end();
         ++itr)
     {
         *itr = tolower(*itr);
     }
-    return ext;
+    return lowcase_str;
 }
-
 
 // strip one level of extension from the filename.
 std::string osgDB::getNameLessExtension(const std::string& fileName)

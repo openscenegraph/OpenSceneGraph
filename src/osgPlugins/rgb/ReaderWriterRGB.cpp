@@ -443,18 +443,19 @@ static void RawImageGetData(rawImageRec *raw, unsigned char **data )
 class ReaderWriterRGB : public osgDB::ReaderWriter
 {
     public:
+    
+        ReaderWriterRGB()
+        {
+            supportsExtension("rgb","rgb image format");
+            supportsExtension("rgba","rgba image format");
+            supportsExtension("sgi","sgi image format");
+            supportsExtension("int","int image format");
+            supportsExtension("inta","inta image format");
+            supportsExtension("bw","bw image format");
+        }
+    
         virtual const char* className() const { return "RGB Image Reader/Writer"; }
         
-        virtual bool acceptsExtension(const std::string& extension) const
-        {
-            return osgDB::equalCaseInsensitive(extension,"rgb") ||
-                osgDB::equalCaseInsensitive(extension,"sgi") ||
-                osgDB::equalCaseInsensitive(extension,"rgba") ||
-                osgDB::equalCaseInsensitive(extension,"int") || 
-                osgDB::equalCaseInsensitive(extension,"inta") ||
-                osgDB::equalCaseInsensitive(extension,"bw");
-        }
-
         ReadResult readRGBStream(std::istream& fin) const
         {
             rawImageRec *raw;

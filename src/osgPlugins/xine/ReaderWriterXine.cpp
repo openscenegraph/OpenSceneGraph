@@ -311,6 +311,15 @@ class ReaderWriterXine : public osgDB::ReaderWriter
 
         ReaderWriterXine()
         {
+            supportsExtension("avi","");
+            supportsExtension("db","");
+            supportsExtension("flv","");
+            supportsExtension("mov","");
+            supportsExtension("mpg","Mpeg movie format");
+            supportsExtension("mpv","Mpeg movie format");
+            supportsExtension("wmv","");
+            supportsExtension("xine","Xine plugin Pseduo plugin");
+        
             _xine = xine_new();
 
             const char* user_home = xine_get_homedir();
@@ -335,18 +344,6 @@ class ReaderWriterXine : public osgDB::ReaderWriter
         }
         
         virtual const char* className() const { return "Xine ImageStream Reader"; }
-
-        virtual bool acceptsExtension(const std::string& extension) const
-        {
-            return osgDB::equalCaseInsensitive(extension,"mpg") ||
-                   osgDB::equalCaseInsensitive(extension,"mpv") || 
-                   osgDB::equalCaseInsensitive(extension,"db") || 
-                   osgDB::equalCaseInsensitive(extension,"flv") || 
-                   osgDB::equalCaseInsensitive(extension,"mov") || 
-                   osgDB::equalCaseInsensitive(extension,"avi") ||
-                   osgDB::equalCaseInsensitive(extension,"wmv") ||
-                   osgDB::equalCaseInsensitive(extension,"xine");
-        }
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {

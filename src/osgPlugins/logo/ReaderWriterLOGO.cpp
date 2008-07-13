@@ -195,12 +195,12 @@ class Logos: public osg::Drawable
 class LOGOReaderWriter : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() const { return "Logo Database Reader/Writer"; }
-
-        virtual bool acceptsExtension(const std::string& extension) const
+        LOGOReaderWriter()
         {
-            return osgDB::equalCaseInsensitive(extension,"logo");
+            supportsExtension("logo","Ascii logo placement format");
         }
+        
+        virtual const char* className() const { return "Logo Database Reader/Writer"; }
 
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {

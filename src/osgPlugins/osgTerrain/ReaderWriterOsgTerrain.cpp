@@ -19,14 +19,11 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
 
         ReaderWriterTerrain()
         {
+            supportsExtension("osgTerrain","OpenSceneGraph terrain extension to .osg ascii format");
+            supportsExtension("terrain","OpenSceneGraph terrain ascii format");
         }
         
         virtual const char* className() const { return "Terrain ReaderWriter"; }
-
-        virtual bool acceptsExtension(const std::string& extension) const
-        {
-            return osgDB::equalCaseInsensitive( extension, "osgTerrain" ) || osgDB::equalCaseInsensitive(extension,"terrain");
-        }
 
         virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* opt) const
         {

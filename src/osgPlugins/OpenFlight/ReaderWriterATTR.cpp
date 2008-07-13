@@ -40,6 +40,11 @@ class ReaderWriterATTR : public osgDB::ReaderWriter
 {
     public:
     
+        ReaderWriterATTR()
+        {
+            supportsExtension("attr","OpenFlight texture attribute format");
+        }
+    
         virtual const char* className() const { return "ATTR Image Attribute Reader/Writer"; }
         
         virtual bool acceptsExtension(const std::string& extension) const

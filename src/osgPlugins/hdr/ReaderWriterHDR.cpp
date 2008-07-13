@@ -47,8 +47,16 @@
 class ReaderWriterHDR : public osgDB::ReaderWriter
 {
 public:
+    ReaderWriterHDR()
+    {
+        supportsExtension("hdr","High Dynamic Range image format");
+        supportsOption("RGBMUL","");
+        supportsOption("RGB8","");
+        supportsOption("RAW","");
+        supportsOption("YFLIP","");
+        supportsOption("NO_YFLIP","");
+    }
     virtual const char* className() { return "HDR Image Reader"; }
-    virtual bool acceptsExtension(const std::string &extension) const { return osgDB::equalCaseInsensitive(extension, "hdr"); }
 
     virtual ReadResult readImage(const std::string &_file, const osgDB::ReaderWriter::Options *_opts) const
     {

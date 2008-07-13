@@ -9,13 +9,12 @@
 class ReaderWriterOSGA : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterOSGA() { }
+    ReaderWriterOSGA()
+    {
+        supportsExtension("osga","OpenSceneGraph Archive format");
+    }
 
     virtual const char* className() const { return "OpenSceneGraph Archive Reader/Writer"; }
-    virtual bool acceptsExtension(const std::string& extension) const
-    {
-        return osgDB::equalCaseInsensitive(extension,"osga");
-    }
 
     virtual ReadResult openArchive(const std::string& file,ArchiveStatus status, unsigned int indexBlockSize = 4096, const Options* options=NULL) const
     {

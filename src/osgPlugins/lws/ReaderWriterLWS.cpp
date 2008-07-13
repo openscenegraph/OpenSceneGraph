@@ -23,7 +23,10 @@
 class ReaderWriterLWS : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterLWS() {}
+    ReaderWriterLWS()
+    {
+        supportsExtension("lws","Lightwave scene format");
+    }
 
     virtual const char* className() const { return "ReaderWriterLWS"; }
 

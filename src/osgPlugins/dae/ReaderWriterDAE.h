@@ -15,14 +15,10 @@ class ReaderWriterDAE : public osgDB::ReaderWriter
 public:
     ReaderWriterDAE()
     {
+        supportsExtension(EXTENSION_NAME,"COLLADA 1.4.x DAE format");
     }
 
     const char* className() const { return "COLLADA 1.4.x DAE reader/writer"; }
-
-    bool acceptsExtension(const std::string& extension) const
-    { 
-        return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
-    }
 
     ReadResult readNode(const std::string&, const Options*) const;
 

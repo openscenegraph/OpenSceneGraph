@@ -91,7 +91,6 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
         ReaderWriter3DS();
 
         virtual const char* className() const { return "3DS Auto Studio Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"3ds"); }
 
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const;
 
@@ -127,6 +126,8 @@ REGISTER_OSGPLUGIN(3ds, ReaderWriter3DS)
 
 ReaderWriter3DS::ReaderWriter3DS()
 {
+    supportsExtension("3ds","3D Studio model format");
+
     setByteOrder();
 
 #if 0

@@ -94,14 +94,12 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
 class ReaderWriterTRANS : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterTRANS() { }
+    ReaderWriterTRANS()
+    {
+        supportsExtension(EXTENSION_NAME,"Translation Psuedo loader.");
+    }
     
     virtual const char* className() const { return "translation pseudo-loader"; }
-
-    virtual bool acceptsExtension(const std::string& extension) const
-    { 
-        return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
-    }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {

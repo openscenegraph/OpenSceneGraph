@@ -612,6 +612,7 @@ int *numComponents_ret)
 
 class ReaderWriterJPEG : public osgDB::ReaderWriter
 {
+    
         WriteResult::WriteStatus write_JPEG_file (std::ostream &fout,int image_width,int image_height,JSAMPLE* image_buffer,int quality = 100) const
         {
             if ( (image_width == 0) || (image_height == 0) )
@@ -740,11 +741,14 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             return 100;
         }
     public:
-        virtual const char* className() const { return "JPEG Image Reader/Writer"; }
-        virtual bool acceptsExtension(const std::string& extension) const
+
+        ReaderWriterJPEG()
         {
-            return osgDB::equalCaseInsensitive(extension,"jpeg") || osgDB::equalCaseInsensitive(extension,"jpg");
+            supportsExtension("jpeg","JPEG image format");
+            supportsExtension("jpg","JPEG image format");
         }
+
+        virtual const char* className() const { return "JPEG Image Reader/Writer"; }
 
         ReadResult readJPGStream(std::istream& fin) const
         {

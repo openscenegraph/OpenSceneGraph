@@ -24,11 +24,13 @@ using namespace osg;
 class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() const { return "OSGTGZ Database Reader/Writer"; }
-        virtual bool acceptsExtension(const std::string& extension) const
+    
+        sgReaderWriterOSGTGZ()
         {
-            return osgDB::equalCaseInsensitive(extension,"osgtgz");
+            supportsExtension("osgtgz","OpenSceneGraph tar gzid'd archive format");
         }
+        
+        virtual const char* className() const { return "OSGTGZ Database Reader/Writer"; }
 
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {

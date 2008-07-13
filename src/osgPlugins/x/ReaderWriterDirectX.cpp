@@ -48,15 +48,13 @@
 class ReaderWriterDirectX : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterDirectX() { }
+    ReaderWriterDirectX()
+    {
+        supportsExtension("x","DirectX scene format");
+    }
 
     virtual const char* className() const {
         return "DirectX Reader/Writer";
-    }
-
-    virtual bool acceptsExtension(const std::string& extension) const
-    { 
-        return osgDB::equalCaseInsensitive(extension,"x");
     }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;

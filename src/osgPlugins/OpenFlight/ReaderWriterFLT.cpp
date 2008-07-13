@@ -120,7 +120,24 @@ class FLTReaderWriter : public ReaderWriter
     public:
         FLTReaderWriter()
           : _implicitPath( "." )
-        {}
+        {
+            supportsExtension("flt","OpenFlight format");
+            
+            supportsOption("clampToEdge","");
+            supportsOption("keepExternalReferences","");
+            supportsOption("preserveFace","");
+            supportsOption("preserveObject","");
+            supportsOption("dofAnimation","");
+            supportsOption("billboardCenter","");
+            supportsOption("noTextureAlphaForTransparancyBinning","");
+            supportsOption("readObjectRecordData","");
+            supportsOption("noUnitsConversion","");
+            supportsOption("convertToFeet","");
+            supportsOption("convertToInches","");
+            supportsOption("convertToMeters","");
+            supportsOption("convertToKilometers","");
+            supportsOption("convertToNauticalMiles","");
+        }
 
         virtual const char* className() const { return "FLT Reader/Writer"; }
 

@@ -72,14 +72,13 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
 class ReaderWriterOsgShadow : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterOsgShadow() { }
+    ReaderWriterOsgShadow()
+    {
+        supportsExtension("osgShadow","OpenSceneGraph osgShadow extension to .osg ascii format");
+        supportsExtension("shadow","OpenSceneGraph osgShadow extension pseudo loader");
+    }
     
     virtual const char* className() const { return "osgShadow pseudo-loader"; }
-
-    virtual bool acceptsExtension(const std::string& extension) const
-    { 
-        return osgDB::equalCaseInsensitive( extension, "osgShadow" ) || osgDB::equalCaseInsensitive( extension, "shadow" ) ;
-    }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {

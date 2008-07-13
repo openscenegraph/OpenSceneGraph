@@ -26,9 +26,9 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
     public:
         virtual const char* className() const { return "TGZ Database Reader/Writer"; }
 
-        virtual bool acceptsExtension(const std::string& extension) const
+        ReaderWriterTGZ()
         {
-            return osgDB::equalCaseInsensitive(extension,"tgz");
+            supportsExtension("tgz","Tar gzip'd archive format");
         }
 
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const

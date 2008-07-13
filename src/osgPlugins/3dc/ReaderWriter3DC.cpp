@@ -15,14 +15,15 @@ using namespace osg;
 class ReaderWriter3DC : public osgDB::ReaderWriter
 {
     public:
+    
+        ReaderWriter3DC()
+        {
+            supportsExtension("3dc","3DC point cloud format");
+            supportsExtension("asc","3DC point cloud format");
+        }
+    
         virtual const char* className() const { return "3DC point cloud reader"; }
         
-        virtual bool acceptsExtension(const std::string& extension) const
-        {
-            return osgDB::equalCaseInsensitive(extension,"3dc") ||
-                   osgDB::equalCaseInsensitive(extension,"asc");
-        }
-
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);

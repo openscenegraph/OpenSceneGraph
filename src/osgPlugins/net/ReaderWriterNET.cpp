@@ -86,7 +86,12 @@
 class NetReader : public osgDB::ReaderWriter
 {
     public:
-        NetReader() {}
+        NetReader()
+        {
+            supportsProtocol("http","HTTP Protocol");
+            supportsExtension("net","Psuedo loader extension for selecting NET plugin");
+            supportsExtension("*","Passes all file loading onto other plugins");
+        }
                                                                                             
         virtual const char* className() const { return "HTTP Protocol Model Reader"; }
                                                                                             

@@ -174,6 +174,9 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
         ReaderWriterJP2()
         {
+            supportsExtension("jp2","Jpeg2000 image format");
+            supportsExtension("jpc","Jpeg2000 image format");
+        
             // little dance here to get around warnings created by jas_image_strtofmt use of char* rather than const char*
             // as a parameted and modern compilers deprecating "jp2" string being treated as char*.
             char* jp2 = strdup("jp2");
@@ -183,12 +186,6 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "RGB Image Reader/Writer"; }
         
-        virtual bool acceptsExtension(const std::string& extension) const
-        {
-            return osgDB::equalCaseInsensitive(extension,"jp2") ||
-                osgDB::equalCaseInsensitive(extension,"jpc");
-        }
-
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             return readImage(file,options);

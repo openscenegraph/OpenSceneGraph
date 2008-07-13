@@ -189,12 +189,13 @@ class ReaderWriterProducerCFG : public osgDB::ReaderWriter
 {
 public:
 
+    ReaderWriterProducerCFG()
+    {
+        supportsExtension("cfg","Producer camera configuration file");
+    }
+
     virtual const char* className() { return "Producer cfg object reader"; }
 
-    virtual bool acceptsExtension(const std::string& extension) const
-    {
-        return osgDB::equalCaseInsensitive(extension, "cfg");
-    }
 
     virtual ReadResult readObject(const std::string& fileName, const Options* options = NULL) const
     {

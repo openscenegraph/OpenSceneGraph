@@ -22,12 +22,13 @@
 class ReaderWriterZIP : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() const { return "ZIP Database Reader/Writer"; }
-
-        virtual bool acceptsExtension(const std::string& extension) const
+    
+        ReaderWriterZIP()
         {
-            return osgDB::equalCaseInsensitive(extension,"zip");
+            supportsExtension("zip","Zip archive format");
         }
+        
+        virtual const char* className() const { return "ZIP Database Reader/Writer"; }
 
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {

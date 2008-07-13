@@ -467,8 +467,13 @@ int headerlen)
 class ReaderWriterTGA : public osgDB::ReaderWriter
 {
     public:
+    
+        ReaderWriterTGA()
+        {
+            supportsExtension("tga","Tga Image format");
+        }
+        
         virtual const char* className() const { return "TGA Image Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"tga"); }
 
         ReadResult readTGAStream(std::istream& fin) const
         {

@@ -23,15 +23,15 @@
 class ReaderWriterOsgViewer : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterOsgViewer() { }
+    ReaderWriterOsgViewer()
+    {
+        supportsExtension("osgviewer","OpenSceneGraph viewer configuration format");
+        supportsExtension("view","OpenSceneGraph viewer configuration format");
+        supportsOption("precision","Set the floating point precision of output");
+        supportsOption("OutputTextureFiles","Output texture image to file");
+    }
     
     virtual const char* className() const { return "osgViewer configuration loader"; }
-
-    virtual bool acceptsExtension(const std::string& extension) const
-    { 
-        return osgDB::equalCaseInsensitive( extension, "osgviewer" ) || osgDB::equalCaseInsensitive( extension, "view" ) ;
-    }
-
 
     void setPrecision(osgDB::Output& fout, const osgDB::ReaderWriter::Options* options) const
     {

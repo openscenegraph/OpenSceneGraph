@@ -23,13 +23,13 @@
 class ReaderWriterTXF : public osgDB::ReaderWriter
 {
     public:
-        virtual const char* className() const { return "TXF Font Reader/Writer"; }
-        
-        virtual bool acceptsExtension(const std::string& extension) const
+        ReaderWriterTXF()
         {
-            return osgDB::equalCaseInsensitive(extension, "txf"); // GLU texture fonts
+            supportsExtension("txf","TXF Font format");
         }
 
+        virtual const char* className() const { return "TXF Font Reader/Writer"; }
+        
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);

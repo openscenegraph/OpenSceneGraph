@@ -52,12 +52,12 @@
 class ReaderWriterOBJ : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterOBJ():_fixBlackMaterials(true) {}
+    ReaderWriterOBJ():_fixBlackMaterials(true)
+    {
+        supportsExtension("obj","Alias Wavefront OBJ format");
+    }
 
     virtual const char* className() const { return "Wavefront OBJ Reader"; }
-    virtual bool acceptsExtension(const std::string& extension) const {
-        return osgDB::equalCaseInsensitive(extension,"obj");
-    }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
 

@@ -918,14 +918,15 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
 class ReaderWriterDDS : public osgDB::ReaderWriter
 {
 public:
+
+    ReaderWriterDDS()
+    {
+        supportsExtension("dds","DDS image format");
+    }
+
     virtual const char* className() const
     { 
         return "DDS Image Reader/Writer"; 
-    }
-
-    virtual bool acceptsExtension(const std::string& extension) const
-    { 
-        return osgDB::equalCaseInsensitive(extension,"dds"); 
     }
 
     virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const

@@ -93,14 +93,12 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
 class ReaderWriterROT : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterROT() { }
+    ReaderWriterROT()
+    {
+        supportsExtension(EXTENSION_NAME,"Rotation pseudo loader");
+    }
     
     virtual const char* className() const { return "rotation pseudo-loader"; }
-
-    virtual bool acceptsExtension(const std::string& extension) const
-    { 
-        return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
-    }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
     {

@@ -19,12 +19,6 @@ class ReaderWriterIV : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension, "iv") ? true : false;
         }
 
-        virtual bool acceptsExtension(const std::string& extension) const
-        {
-            return isInventorExtension(extension) ? true :
-                   osgDB::equalCaseInsensitive(extension, "wrl") ? true : false;
-        }
-        
         virtual ReadResult readNode(const std::string& filename, 
                                     const osgDB::ReaderWriter::Options *) const;
 

@@ -22,98 +22,96 @@
 #include <osgDB/ImageOptions>
 
 extern "C" {
-	#include <librsvg/rsvg.h>
-	#include <librsvg/rsvg-cairo.h>
+        #include <librsvg/rsvg.h>
+        #include <librsvg/rsvg-cairo.h>
 }
 
 class ReaderWriterSVG : public osgDB::ReaderWriter
 {
     public:
-	ReaderWriterSVG()
-	{
-		rsvg_init();
-	}
 
-	virtual const char* className() const { return "SVG Image Reader"; }
-	virtual bool acceptsExtension(const std::string& extension) const
-	{
-		return osgDB::equalCaseInsensitive(extension,"svg");
-	}
+        ReaderWriterSVG()
+        {
+                supportsExtension("svg","Scalar Vector Graphics format");        
+                rsvg_init();
+        }
 
-	virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
-	{
-		return readImage(file, options);
-	}
+        virtual const char* className() const { return "SVG Image Reader"; }
 
-	virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
-	{
-		std::string ext = osgDB::getLowerCaseFileExtension(file);
-		if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+                return readImage(file, options);
+        }
 
-		std::string fileName = osgDB::findDataFile( file, options );
-		if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+                std::string ext = osgDB::getLowerCaseFileExtension(file);
+                if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-		RsvgDimensionData dimensionData;
-		RsvgHandle* handle = rsvg_handle_new_from_file (file.c_str(), NULL);
-		rsvg_handle_get_dimensions( handle, &dimensionData);
+                std::string fileName = osgDB::findDataFile( file, options );
+                if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-		osg::Image *image;
-		if (options)
-		{
-			unsigned int w=0, h=0;
-			std::string op = options->getOptionString();			
-			size_t i = op.find("x");
+                RsvgDimensionData dimensionData;
+                RsvgHandle* handle = rsvg_handle_new_from_file (file.c_str(), NULL);
+                rsvg_handle_get_dimensions( handle, &dimensionData);
 
-			std::stringstream ss1(op.substr(0, i));
-			std::stringstream ss2(op.substr(i+1, op.size()));
-			ss1 >> w;
-			ss1 >> h;
-			if (w==0 || h==0){
-				image = createImage(handle, dimensionData.width, dimensionData.height);
-			}
-			else{
-				image = createImage(handle, w, h);
-			}
-		}
-		else{
-			image = createImage(handle, dimensionData.width, dimensionData.height);
-		}
-		rsvg_handle_free(handle);
-		image->setFileName(file);
-		return image;
-	}
+                osg::Image *image;
+                if (options)
+                {
+                        unsigned int w=0, h=0;
+                        std::string op = options->getOptionString();                        
+                        size_t i = op.find("x");
 
-	osg::Image* createImage(RsvgHandle *handle, unsigned int width, unsigned int height) const
-	{
-		RsvgDimensionData dimensionData;
-		rsvg_handle_get_dimensions( handle, &dimensionData);
-		// If image resollution < 128, cairo produces some artifacts.
-		// I don't know why, but we check the size...
-		if (width < 128) width = 128;
-		if (height < 128) height = 128;
-		width = osg::Image::computeNearestPowerOfTwo(width);
-		height = osg::Image::computeNearestPowerOfTwo(height);
-		osg::Image *image = new osg::Image();
-		image->allocateImage(width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE);
-		image->setPixelFormat(GL_BGRA);
+                        std::stringstream ss1(op.substr(0, i));
+                        std::stringstream ss2(op.substr(i+1, op.size()));
+                        ss1 >> w;
+                        ss1 >> h;
+                        if (w==0 || h==0){
+                                image = createImage(handle, dimensionData.width, dimensionData.height);
+                        }
+                        else{
+                                image = createImage(handle, w, h);
+                        }
+                }
+                else{
+                        image = createImage(handle, dimensionData.width, dimensionData.height);
+                }
+                rsvg_handle_free(handle);
+                image->setFileName(file);
+                return image;
+        }
 
-		cairo_surface_t *cairo_surface = cairo_image_surface_create_for_data(image->data(),
-					CAIRO_FORMAT_ARGB32, width, height, image->getRowSizeInBytes());
-		cairo_t *cr = cairo_create(cairo_surface);
-		cairo_scale(cr,((float)width)/dimensionData.width, ((float)height)/dimensionData.height);
-		rsvg_handle_render_cairo(handle, cr);
-			
-		cairo_destroy(cr);
-		free(cairo_surface);
+        osg::Image* createImage(RsvgHandle *handle, unsigned int width, unsigned int height) const
+        {
+                RsvgDimensionData dimensionData;
+                rsvg_handle_get_dimensions( handle, &dimensionData);
+                // If image resollution < 128, cairo produces some artifacts.
+                // I don't know why, but we check the size...
+                if (width < 128) width = 128;
+                if (height < 128) height = 128;
+                width = osg::Image::computeNearestPowerOfTwo(width);
+                height = osg::Image::computeNearestPowerOfTwo(height);
+                osg::Image *image = new osg::Image();
+                image->allocateImage(width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+                image->setPixelFormat(GL_BGRA);
 
-		image->flipVertical();
-		return image;
-	}
-	protected:
-		virtual ~ReaderWriterSVG()
-		{
-			rsvg_term();
-		}
+                cairo_surface_t *cairo_surface = cairo_image_surface_create_for_data(image->data(),
+                                        CAIRO_FORMAT_ARGB32, width, height, image->getRowSizeInBytes());
+                cairo_t *cr = cairo_create(cairo_surface);
+                cairo_scale(cr,((float)width)/dimensionData.width, ((float)height)/dimensionData.height);
+                rsvg_handle_render_cairo(handle, cr);
+                        
+                cairo_destroy(cr);
+                free(cairo_surface);
+
+                image->flipVertical();
+                return image;
+        }
+    protected:
+        virtual ~ReaderWriterSVG()
+        {
+                rsvg_term();
+        }
 };
 
 // now register with Registry to instantiate the above

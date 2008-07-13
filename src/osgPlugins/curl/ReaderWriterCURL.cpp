@@ -142,7 +142,10 @@ osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, 
 
 ReaderWriterCURL::ReaderWriterCURL()
 {
-    //osg::notify(osg::NOTICE)<<"ReaderWriterCURL::ReaderWriterCURL()"<<std::endl;
+    supportsProtocol("http","Read from http port using libcurl.");
+    supportsExtension("curl","Psuedo file extension, used to select curl plugin.");
+    supportsOption("OSG_CURL_PROXY","Specify the http proxy.");
+    supportsOption("OSG_CURL_PROXYPORT","Specify the http proxy oirt.");
 }
 
 ReaderWriterCURL::~ReaderWriterCURL()
@@ -185,7 +188,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
     osg::notify(osg::INFO)<<"ReaderWriterCURL::readFile("<<fullFileName<<")"<<std::endl;
 
-    std::string cacheFilePath, cacheFileName;
     std::string proxyAddress, optProxy, optProxyPort;
 
     if (options)
@@ -195,9 +197,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
         while (iss >> opt) 
         {
             int index = opt.find( "=" );
-            if( opt.substr( 0, index ) == "OSG_FILE_CACHE" )
-                cacheFilePath = opt.substr( index+1 ); //Setting Cache Directory by OSG Options
-            else if( opt.substr( 0, index ) == "OSG_CURL_PROXY" )
+            if( opt.substr( 0, index ) == "OSG_CURL_PROXY" )
                 optProxy = opt.substr( index+1 );
             else if( opt.substr( 0, index ) == "OSG_CURL_PROXYPORT" )
                 optProxyPort = opt.substr( index+1 );
@@ -222,34 +222,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
         fileName = fullFileName;
     }
 
-    //Getting CURL Environment Variables (If found rewrite OSG Options)
-    const char* fileCachePath = getenv("OSG_FILE_CACHE");
-    if (fileCachePath) //Env Cache Directory
-        cacheFilePath = std::string(fileCachePath);
-
-    if (!cacheFilePath.empty())
-    {
-        cacheFileName = cacheFilePath + "/" + 
-                        osgDB::getServerAddress(fileName) + "/" + 
-                        osgDB::getServerFileName(fileName);
-
-        std::string path = osgDB::getFilePath(cacheFileName);
-
-        if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
-        {
-            cacheFileName.clear();
-        }
-    }
-
-#if 0
-    if (!cacheFilePath.empty() && osgDB::fileExists(cacheFileName))
-    {
-        osg::notify(osg::NOTICE) << "Reading cache file " << cacheFileName <<", previous path "<<osgDB::getFilePath(fileName)<<std::endl;
-        ReadResult result = osgDB::Registry::instance()->readObject(cacheFileName,options);
-        
-        return result;                
-    }
-#endif
 
     osgDB::ReaderWriter *reader = 
         osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
@@ -273,11 +245,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     
     std::stringstream buffer;
 
-#if 0
-    EasyCurl::StreamObject sp(&buffer, cacheFileName);
-#else
     EasyCurl::StreamObject sp(&buffer, std::string());
-#endif
 
     ReadResult curlResult = getEasyCurl().read(proxyAddress, fileName, sp);
 
@@ -289,21 +257,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
         ReadResult readResult = readFile(objectType, reader, buffer, local_opt.get() );
-
-#if 0
-        if (!cacheFileName.empty() && readResult.success())
-        {
-            switch(objectType)
-            {
-                case(NODE): 
-                    osg::notify(osg::NOTICE)<<"Write to cache "<<cacheFileName<<std::endl;
-                    reader->writeNode(*readResult.getNode(), cacheFileName, local_opt.get());
-                    break;
-                default:
-                    osg::notify(osg::NOTICE)<<"Curl plugin write to cache not implemented yet"<<std::endl;
-            }
-        }
-#endif
 
         local_opt->getDatabasePathList().pop_front();
 

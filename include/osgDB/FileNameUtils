@@ -30,6 +30,7 @@ extern OSGDB_EXPORT std::string getStrippedName(const std::string& fileName);
 
 extern OSGDB_EXPORT std::string convertFileNameToWindowsStyle(const std::string& fileName);
 extern OSGDB_EXPORT std::string convertFileNameToUnixStyle(const std::string& fileName);
+extern OSGDB_EXPORT std::string convertToLowerCase(const std::string& fileName);
 
 extern OSGDB_EXPORT bool isFileNameNativeStyle(const std::string& fileName);
 extern OSGDB_EXPORT std::string convertFileNameToNativeStyle(const std::string& fileName);

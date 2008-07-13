@@ -16,12 +16,16 @@ using namespace osgDB;
 class OSGReaderWriter : public ReaderWriter
 {
     public:
-        virtual const char* className() const { return "OSG Reader/Writer"; }
-
-        virtual bool acceptsExtension(const std::string& extension) const
+    
+        OSGReaderWriter()
         {
-            return equalCaseInsensitive(extension,"osg");
+            supportsExtension("osg","OpenSceneGraph Ascii file format");
+            supportsExtension("osgs","Psuedo OpenSceneGraph file loaded, with file encoded in filename string");
+            supportsOption("precision","Set the floating point precision when writing out files");
+            supportsOption("OutputTextureFiles","Write out the texture images to file");
         }
+    
+        virtual const char* className() const { return "OSG Reader/Writer"; }
 
         virtual ReadResult readObject(const std::string& file, const Options* opt) const
         {

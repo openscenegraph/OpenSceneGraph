@@ -68,12 +68,14 @@ class geodeVisitor : public osg::NodeVisitor { // collects geodes from scene sub
 class ReaderWriterAC : public osgDB::ReaderWriter
 {
     public:
+    
+        ReaderWriterAC()
+        {
+            supportsExtension("ac","AC3D Database format");
+        }
+        
         virtual const char* className() const { return "AC3D Database Reader"; }
 
-        virtual bool acceptsExtension(const std::string& extension) const
-        {
-            return osgDB::equalCaseInsensitive(extension,"ac");
-        }
         virtual ReadResult readNode(const std::string& file,const Options* options) const
         {
             std::string ext = osgDB::getFileExtension(file);

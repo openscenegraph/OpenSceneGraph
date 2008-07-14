@@ -28,6 +28,7 @@
 #include <iostream>
 
 #include "OrientationConverter.h"
+#include "PluginQuery.h"
 
 typedef std::vector<std::string> FileNameList;
 
@@ -506,6 +507,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
     arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
+    arguments.getApplicationUsage()->addCommandLineOption("--fmts","List supported file formats");
 
 
     // if user request help write it out to cout.
@@ -521,6 +523,18 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout, osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE);
         return 1;
     }
+    
+    if (arguments.read("--fmts"))
+    {
+        osgDB::FileNameList plugins = osgDB::listAllAvailablePlugins();
+        for(osgDB::FileNameList::iterator itr = plugins.begin();
+            itr != plugins.end();
+            ++itr)
+        {
+            std::cout<<"Plugin "<<*itr<<std::endl;
+        }
+        return 1;
+    }    
     
     if (arguments.argc()<=1)
     {

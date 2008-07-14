@@ -22,6 +22,20 @@ typedef std::list<std::string> FileNameList;
 
 FileNameList listAllAvailablePlugins();
 
+class ReaderWriterInfo : public osg::Referenced
+{
+    public:
+    
+        std::string                         plugin;
+        std::string                         description;
+        ReaderWriter::FormatDescriptionMap  protocols;
+        ReaderWriter::FormatDescriptionMap  extensions;
+        ReaderWriter::FormatDescriptionMap  options;
+};
+
+typedef std::list< osg::ref_ptr<ReaderWriterInfo> > ReaderWriterInfoList;
+
+bool queryPlugin(const std::string& fileName, ReaderWriterInfoList& infoList);
 
 }
 

@@ -507,7 +507,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
     arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
-    arguments.getApplicationUsage()->addCommandLineOption("--fmts","List supported file formats");
+    arguments.getApplicationUsage()->addCommandLineOption("--formats","List supported file formats");
+    arguments.getApplicationUsage()->addCommandLineOption("--plugins","List database olugins");
 
 
     // if user request help write it out to cout.
@@ -524,7 +525,7 @@ int main( int argc, char **argv )
         return 1;
     }
     
-    if (arguments.read("--fmts"))
+    if (arguments.read("--plugins"))
     {
         osgDB::FileNameList plugins = osgDB::listAllAvailablePlugins();
         for(osgDB::FileNameList::iterator itr = plugins.begin();
@@ -533,7 +534,55 @@ int main( int argc, char **argv )
         {
             std::cout<<"Plugin "<<*itr<<std::endl;
         }
-        return 1;
+        return 0;
+    }    
+    
+    if (arguments.read("--formats"))
+    {
+        osgDB::FileNameList plugins = osgDB::listAllAvailablePlugins();
+        for(osgDB::FileNameList::iterator itr = plugins.begin();
+            itr != plugins.end();
+            ++itr)
+        {
+            std::cout<<"Plugin "<<*itr<<std::endl;
+            std::cout<<"{"<<std::endl;
+            osgDB::ReaderWriterInfoList infoList;
+            if (osgDB::queryPlugin(*itr, infoList))
+            {
+                for(osgDB::ReaderWriterInfoList::iterator rwi_itr = infoList.begin();
+                    rwi_itr != infoList.end();
+                    ++rwi_itr)
+                {
+                    osgDB::ReaderWriterInfo& info = *(*rwi_itr);
+                    std::cout<<"    ReaderWriter : "<<info.description<<std::endl;
+                    std::cout<<"    {"<<std::endl;
+
+                    for(osgDB::ReaderWriter::FormatDescriptionMap::iterator fdm_itr = info.protocols.begin();
+                        fdm_itr != info.protocols.end();
+                        ++fdm_itr)
+                    {
+                        std::cout<<"        protocol : "<<fdm_itr->first<<"\t"<<fdm_itr->second<<std::endl;
+                    }
+
+                    for(osgDB::ReaderWriter::FormatDescriptionMap::iterator fdm_itr = info.extensions.begin();
+                        fdm_itr != info.extensions.end();
+                        ++fdm_itr)
+                    {
+                        std::cout<<"        extensions : ."<<fdm_itr->first<<"\t"<<fdm_itr->second<<std::endl;
+                    }
+                    
+                    for(osgDB::ReaderWriter::FormatDescriptionMap::iterator fdm_itr = info.options.begin();
+                        fdm_itr != info.options.end();
+                        ++fdm_itr)
+                    {
+                        std::cout<<"        options : "<<fdm_itr->first<<"\t"<<fdm_itr->second<<std::endl;
+                    }
+                    std::cout<<"    }"<<std::endl;
+                }
+            }
+            std::cout<<"}"<<std::endl<<std::endl;
+        }
+        return 0;
     }    
     
     if (arguments.argc()<=1)

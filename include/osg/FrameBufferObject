@@ -371,18 +371,10 @@ namespace osg
         inline const AttachmentMap& getAttachmentMap() const;
         
 
-        void setAttachment(GLenum attachment_point, const FrameBufferAttachment &attachment);
-        inline const FrameBufferAttachment& getAttachment(GLenum attachment_point) const;
-        inline bool hasAttachment(GLenum attachment_point) const;
-
         void setAttachment(BufferComponent attachment_point, const FrameBufferAttachment &attachment);
         inline const FrameBufferAttachment& getAttachment(BufferComponent attachment_point) const;
         inline bool hasAttachment(BufferComponent attachment_point) const;
-
-        GLenum convertBufferComponentToGLenum(BufferComponent attachment_point) const;
-        BufferComponent convertGLenumToBufferComponent(GLenum attachment_point) const;
         
-
         inline bool hasMultipleRenderingTargets() const { return !_drawBuffers.empty(); }
         inline const MultipleRenderingTargets& getMultipleRenderingTargets() const { return _drawBuffers; }
 
@@ -423,6 +415,8 @@ namespace osg
         
         inline void dirtyAll();
 
+        GLenum convertBufferComponentToGLenum(BufferComponent attachment_point) const;
+
     private:        
         AttachmentMap               _attachments;
 
@@ -442,19 +436,9 @@ namespace osg
         return _attachments;
     }
 
-    inline bool FrameBufferObject::hasAttachment(GLenum attachment_point) const
-    {
-        return hasAttachment(convertGLenumToBufferComponent(attachment_point));
-    }
-        
     inline bool FrameBufferObject::hasAttachment(FrameBufferObject::BufferComponent attachment_point) const
     {
         return _attachments.find(attachment_point) != _attachments.end();
-    }
-
-    inline const FrameBufferAttachment &FrameBufferObject::getAttachment(GLenum attachment_point) const
-    {
-        return getAttachment(convertGLenumToBufferComponent(attachment_point));
     }
 
     inline const FrameBufferAttachment &FrameBufferObject::getAttachment(FrameBufferObject::BufferComponent attachment_point) const

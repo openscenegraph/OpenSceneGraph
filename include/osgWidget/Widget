@@ -59,112 +59,13 @@ public:
 		CM_RELATIVE
 	};		
 
-private:
-	friend class Window;
-
-	// TODO: Because of the current class design, I don't think it's possible to 
-	// have a ref_ptr here. :(
-	Window* _parent;
-
-	unsigned int _index;
-	unsigned int _layer;
-
-	// Padding is the value of pixels of space between whatever the widget is "contianed"
-	// in and the point at which it starts getting placed.
-	point_type _padLeft;
-	point_type _padRight;
-	point_type _padTop;
-	point_type _padBottom;
-
-	// The alignments are used in conjuction when the widget is NOT set to fill.
-	VERTICAL_ALIGNMENT _valign;
-	HORIZONTAL_ALIGNMENT _halign;
-
-	// This flag determines how sizing values are interpretted by setDimensions().
-	COORDINATE_MODE _coordMode;
-
-	// These are the relative values, which are not stored directly in our verts
-	// array but kept around for calculation later.
-	Quad _relCoords;
-
-	// This fill flag determines whether or not the widget will resize itself to fill
-	// all available space.
-	bool _canFill;
-
-	// Set this to false in an implementation to prevent copying.
-	bool _canClone;
-
-	// This variable is only used by the Window object to determine if it's necessary
-	// to call managed().
-	bool _isManaged;
-
-	// This variable is like _isManaged; it is used to store whether the Widget has
-	// been styled yet.
-	bool _isStyled;
-
-	// Set these variables to be the minimum size of a Widget so that it cannot be
-	// resized any smaller than this.
-	point_type _minWidth;
-	point_type _minHeight;
-
-	static osg::ref_ptr<PointArray> _norms;
-
-	WindowManager* _getWindowManager () const;
-	osg::Image*    _getImage         () const;
-
-protected:
-	point_type _calculateZ(unsigned int) const;
-
-	PointArray* _verts() {
-		return dynamic_cast<PointArray*>(getVertexArray());
-	}
-
-	const PointArray* _verts() const {
-		return dynamic_cast<const PointArray*>(getVertexArray());
-	}
-
-	ColorArray* _cols() {
-		return dynamic_cast<ColorArray*>(getColorArray());
-	}
-
-	const ColorArray* _cols() const {
-		return dynamic_cast<const ColorArray*>(getColorArray());
-	}
-	
-	TexCoordArray* _texs() {
-		return dynamic_cast<TexCoordArray*>(getTexCoordArray(0));
-	}
-	
-	const TexCoordArray* _texs() const {
-		return dynamic_cast<const TexCoordArray*>(getTexCoordArray(0));
-	}
-
-	osg::Texture2D* _texture() {
-		return dynamic_cast<osg::Texture2D*>(
-			getStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
-		);
-	}
-
-	const osg::Texture2D* _texture() const {
-		return dynamic_cast<const osg::Texture2D*>(
-			getStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
-		);
-	}
-
-	osg::Image* _image() {
-		return _getImage();
-	}
-
-	const osg::Image* _image() const {
-		return _getImage();
-	}
-
-public:
-	META_Object   (osgWidget, Widget);
-	META_UIObject (Widget);
 
 	Widget (const std::string& = "", point_type = 0.0f, point_type = 0.0f);
 	Widget (const Widget&, const osg::CopyOp&);
+
+	META_Object   (osgWidget, Widget);
+	META_UIObject (Widget);
+
 
 	virtual ~Widget() {
 	}
@@ -479,6 +380,109 @@ public:
 	unsigned int getLayer() const {
 		return _layer;
 	}
+
+protected:
+
+
+
+	point_type _calculateZ(unsigned int) const;
+
+	PointArray* _verts() {
+		return dynamic_cast<PointArray*>(getVertexArray());
+	}
+
+	const PointArray* _verts() const {
+		return dynamic_cast<const PointArray*>(getVertexArray());
+	}
+
+	ColorArray* _cols() {
+		return dynamic_cast<ColorArray*>(getColorArray());
+	}
+
+	const ColorArray* _cols() const {
+		return dynamic_cast<const ColorArray*>(getColorArray());
+	}
+	
+	TexCoordArray* _texs() {
+		return dynamic_cast<TexCoordArray*>(getTexCoordArray(0));
+	}
+	
+	const TexCoordArray* _texs() const {
+		return dynamic_cast<const TexCoordArray*>(getTexCoordArray(0));
+	}
+
+	osg::Texture2D* _texture() {
+		return dynamic_cast<osg::Texture2D*>(
+			getStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
+		);
+	}
+
+	const osg::Texture2D* _texture() const {
+		return dynamic_cast<const osg::Texture2D*>(
+			getStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
+		);
+	}
+
+	osg::Image* _image() {
+		return _getImage();
+	}
+
+	const osg::Image* _image() const {
+		return _getImage();
+	}
+
+	friend class Window;
+
+	// TODO: Because of the current class design, I don't think it's possible to 
+	// have a ref_ptr here. :(
+	Window* _parent;
+
+	unsigned int _index;
+	unsigned int _layer;
+
+	// Padding is the value of pixels of space between whatever the widget is "contianed"
+	// in and the point at which it starts getting placed.
+	point_type _padLeft;
+	point_type _padRight;
+	point_type _padTop;
+	point_type _padBottom;
+
+	// The alignments are used in conjuction when the widget is NOT set to fill.
+	VERTICAL_ALIGNMENT _valign;
+	HORIZONTAL_ALIGNMENT _halign;
+
+	// This flag determines how sizing values are interpretted by setDimensions().
+	COORDINATE_MODE _coordMode;
+
+	// These are the relative values, which are not stored directly in our verts
+	// array but kept around for calculation later.
+	Quad _relCoords;
+
+	// This fill flag determines whether or not the widget will resize itself to fill
+	// all available space.
+	bool _canFill;
+
+	// Set this to false in an implementation to prevent copying.
+	bool _canClone;
+
+	// This variable is only used by the Window object to determine if it's necessary
+	// to call managed().
+	bool _isManaged;
+
+	// This variable is like _isManaged; it is used to store whether the Widget has
+	// been styled yet.
+	bool _isStyled;
+
+	// Set these variables to be the minimum size of a Widget so that it cannot be
+	// resized any smaller than this.
+	point_type _minWidth;
+	point_type _minHeight;
+
+	static osg::ref_ptr<PointArray> _norms;
+
+	WindowManager* _getWindowManager () const;
+	osg::Image*    _getImage         () const;
+
 };
 
 typedef std::list<osg::observer_ptr<Widget> > WidgetList;

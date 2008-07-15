@@ -110,247 +110,6 @@ public:
 		HA_RIGHT
 	};
 
-
-protected:
-	typedef point_type (Widget::*Getter)() const;
-
-	typedef std::less<point_type>    Less;
-	typedef std::greater<point_type> Greater;
-	typedef std::plus<point_type>    Plus;
-
-private:
-	friend class WindowManager;
-
-	// The (optional) Window that this Window is parented inside.
-	Window* _parent;
-
-	// The WindowManger to which this window is attached.
-	WindowManager* _wm;
-
-	// The positional index this Node holds within it's parent WindowManager.
-	unsigned int _index;
-
-	// The X and Y values of the Window (origin).
-	matrix_type _x;
-	matrix_type _y;
-
-	// A pair of values representing the currently calculated Z value and the
-	// depth range for all children to be used during the call to update().
-	matrix_type _z;
-	matrix_type _zRange;
-
-	// This is a special value that can be used to "force" a Window not to be
-	// focusable and instead always exist in the foreground or background.
-	STRATA _strata;
-
-	// A flag determining whether our visible area is the full Window or rather
-	// a portion of the Window.
-	VISIBILITY_MODE _vis;
-
-	// A rotation value in degrees.
-	matrix_type _r;
-
-	// This will also need to adjust geom internally so that picking is correct.
-	matrix_type _s;
-
-	matrix_type _scaleDenom;
-
-	Sizes _width;
-	Sizes _height;
-
-	VERTICAL_ANCHOR   _vAnchor;
-	HORIZONTAL_ANCHOR _hAnchor;
-
-	// Not all windows have widgets that can focus, but if they do this should
-	// be a pointer to it.
-	osg::observer_ptr<Widget> _focused;
-
-	// The "visible" area that will define both the glScissor bounds AND will
-	// be used to make sure our pick is valid. The values herein correspond to
-	// X, Y, W, and H--in that order.
-	Quad _visibleArea;
-
-	// This helper method is used by _compare<>() and _accumulate<>(), so ignore this
-	// function and go see the docs for those instead. This thing is huge and unwieldy
-	// and not to be triffled with! :)
-	template<typename T>
-	point_type _forEachAssignOrApply(
-		Getter get,
-		int    begin,
-		int    end,
-		int    add,
-		bool   assign
-	) const {
-		point_type   val = 0.0f;
-		unsigned int c   = begin;
-
-		ConstIterator e = end > 0 ? _objects.begin() + end : _objects.end() + end;
-
-		// I WARNED YOU! If you try and understand what this does your head will
-		// explode! But let me say a few things: in MSVC you can't add to an iterator
-		// such that the add will cause it to increment past the end of the container.
-		// This appears to be safe in GCC, where it will just return the last 
-		// item therein, but causes an assertion error in other compilers. I'm not
-		// sure if there is a cleaner remedy for this, so what we do for now is keep a
-		// count variable called "c" that makes sure our iterator's opterator+()
-		// method is safe to call.
-		for(
-			ConstIterator i = _objects.begin() + begin;
-			i < e;
-			c += add
-		) {
-			point_type v = 0.0f;
-
-			if(i->valid()) v = (i->get()->*get)();
-			
-			// If you want to assign to val, and NOT add a sequence of them...
-			if(assign) {
-				if(T()(v, val)) val = v;
-			}
-
-			// If you want to accumulate a value INTO val...
-			else val = T()(v, val);
-
-			// Make sure our iterator is safe to increment. Otherwise, set it to
-			// whatever end is.
-			// TODO: This isn't 100% accurate, as it does not YET take into account
-			// our requested end in any way other than implicitly. It should, however,
-			// work okay for now.
-			if((c + add) < _objects.size()) i += add;
-
-			else i = e;
-		}
-
-		return val;
-	}
-
-	void _setWidthAndHeightUnknownSizeError (const std::string&, point_type);
-	void _setWidthAndHeightNotPAError       (const std::string&, point_type);
-	void _setWidthAndHeight                 ();
-	void _removeFromGeode                   (Widget*);
-
-	Widget* _getBackground() const;
-	Window* _getTopmostParent() const;
-
-protected:
-	// This method will return the T'th value returned by applying the Getter member function
-	// pointer to each iterator in the range of iterators defined by offset and add. In
-	// plain language, this helper method will apply some standard Widget::get* function
-	// to a range of objects in the _objects Vector, and will return the T'th of that.
-	// The template T can be any functor accepting two point_type values that return
-	// a bool. For example, this is commonly used with std::less to find the smallest
-	// width in a range of Widgets.
-	template<typename T>
-	point_type _compare(
-		Getter get,
-		int    begin = 0,
-		int    end   = 0,
-		int    add   = 1
-	) const {
-		return _forEachAssignOrApply<T>(get, begin, end, add, true);
-	}
-
-	// This method will return the T'th value accumulated by applying the Getter member
-	// function to each iterator in the range of iterators defined by offset and add (similar
-	// to above). For example, this method can be used to apply std::plus to every
-	// width in a range of Widgets, and return the total.
-	template<typename T>
-	point_type _accumulate(
-		Getter get,
-		int    begin = 0,
-		int    end   = 0,
-		int    add   = 1
-	) const {
-		return _forEachAssignOrApply<T>(get, begin, end, add, false);
-	}
-
-	osg::Geode* _geode() {
-		return dynamic_cast<osg::Geode*>(getChild(0));
-	}
-
-	const osg::Geode* _geode() const {
-		return dynamic_cast<const osg::Geode*>(getChild(0));
-	}
-
-	Widget* _bg() {
-		return _getBackground();
-	}
-
-	const Widget* _bg() const {
-		return _getBackground();
-	}
-
-	osg::Scissor* _scissor() {
-		return dynamic_cast<osg::Scissor*>(
-			getStateSet()->getAttribute(osg::StateAttribute::SCISSOR)
-		);
-	}
-
-	bool _setWidget   (Widget*, int = -1);
-	bool _setVisible  (bool);
-	void _setFocused  (Widget*);
-	void _setStyled   (Widget*);
-	void _setParented (Widget*, bool=false);
-	void _setManaged  (Widget*, bool=false);
-
-	void _positionWidget(Widget*, point_type, point_type);
-
-	// These return the smallest and largest width and height values for the given
-	// range of Widgets.
-	point_type _getMinWidgetWidth  (int = 0, int = 0, int = 1) const;
-	point_type _getMinWidgetHeight (int = 0, int = 0, int = 1) const;
-	point_type _getMaxWidgetWidth  (int = 0, int = 0, int = 1) const;
-	point_type _getMaxWidgetHeight (int = 0, int = 0, int = 1) const;
-
-	// These return the smallest and largest minWidth and minHeight values for
-	// the given range of Widgets.
-	point_type _getMinWidgetMinWidth  (int = 0, int = 0, int = 1) const;
-	point_type _getMinWidgetMinHeight (int = 0, int = 0, int = 1) const;
-	point_type _getMaxWidgetMinWidth  (int = 0, int = 0, int = 1) const;
-	point_type _getMaxWidgetMinHeight (int = 0, int = 0, int = 1) const;
-
-	// These return the smallest and largest width and height total (width + pad)
-	// values for the given range of Widgets.
-	point_type _getMinWidgetWidthTotal  (int = 0, int = 0, int = 1) const;
-	point_type _getMinWidgetHeightTotal (int = 0, int = 0, int = 1) const;
-	point_type _getMaxWidgetWidthTotal  (int = 0, int = 0, int = 1) const;
-	point_type _getMaxWidgetHeightTotal (int = 0, int = 0, int = 1) const;
-
-	// These return the smallest and largest minWidth and minHeight total
-	// (width + pad) values for the given range of Widgets.
-	point_type _getMinWidgetMinWidthTotal  (int = 0, int = 0, int = 1) const;
-	point_type _getMinWidgetMinHeightTotal (int = 0, int = 0, int = 1) const;
-	point_type _getMaxWidgetMinWidthTotal  (int = 0, int = 0, int = 1) const;
-	point_type _getMaxWidgetMinHeightTotal (int = 0, int = 0, int = 1) const;
-
-	// These return the smallest and largest horizontal and vertical padding
-	// values for the given range of Widgets.
-	point_type _getMinWidgetPadHorizontal (int = 0, int = 0, int = 1) const;
-	point_type _getMinWidgetPadVertical   (int = 0, int = 0, int = 1) const;
-	point_type _getMaxWidgetPadHorizontal (int = 0, int = 0, int = 1) const;
-	point_type _getMaxWidgetPadVertical   (int = 0, int = 0, int = 1) const;
-
-	point_type _getNumFill(int = 0, int = 0, int = 1) const;
-
-	// This method is passed the additional values by which width and height should be
-	// modified as calculed by the parent method, Window::resize. Keep in mind that these
-	// values can be negative (indicating a potential "shrink" request) or positive (which
-	// would indicate a "grow" reqeust).
-	virtual void _resizeImplementation(point_type, point_type) = 0;
-
-	// These are made into implementation functions since getting the width or height
-	// of a window can potentially be an expensive operation, and we'll want to cache
-	// results if possible (which is handled transparently by the actualy Window::resize
-	// method). They return a Sizes struct which contains two members: cur (for current)
-	// and min (minimum). It's important that the Window know it's minimum possible
-	// size so that it can ignore invaled requests to resize.
-	//
-	// Default versions using BoundingBox calculations are provided, but some Windows
-	// override this (Table, Box).
-	virtual Sizes _getWidthImplementation  () const;
-	virtual Sizes _getHeightImplementation () const;
-
-public:
 	META_UIObject(Window);
 
 	Window (const std::string& = "");
@@ -627,6 +386,244 @@ public:
 	void attachTabFocusCallback() {
 		addCallback(Callback(&callbackWindowTabFocus, EVENT_KEY_DOWN));
 	}
+
+protected:
+	typedef point_type (Widget::*Getter)() const;
+
+	typedef std::less<point_type>    Less;
+	typedef std::greater<point_type> Greater;
+	typedef std::plus<point_type>    Plus;
+
+	friend class WindowManager;
+
+	// The (optional) Window that this Window is parented inside.
+	Window* _parent;
+
+	// The WindowManger to which this window is attached.
+	WindowManager* _wm;
+
+	// The positional index this Node holds within it's parent WindowManager.
+	unsigned int _index;
+
+	// The X and Y values of the Window (origin).
+	matrix_type _x;
+	matrix_type _y;
+
+	// A pair of values representing the currently calculated Z value and the
+	// depth range for all children to be used during the call to update().
+	matrix_type _z;
+	matrix_type _zRange;
+
+	// This is a special value that can be used to "force" a Window not to be
+	// focusable and instead always exist in the foreground or background.
+	STRATA _strata;
+
+	// A flag determining whether our visible area is the full Window or rather
+	// a portion of the Window.
+	VISIBILITY_MODE _vis;
+
+	// A rotation value in degrees.
+	matrix_type _r;
+
+	// This will also need to adjust geom internally so that picking is correct.
+	matrix_type _s;
+
+	matrix_type _scaleDenom;
+
+	Sizes _width;
+	Sizes _height;
+
+	VERTICAL_ANCHOR   _vAnchor;
+	HORIZONTAL_ANCHOR _hAnchor;
+
+	// Not all windows have widgets that can focus, but if they do this should
+	// be a pointer to it.
+	osg::observer_ptr<Widget> _focused;
+
+	// The "visible" area that will define both the glScissor bounds AND will
+	// be used to make sure our pick is valid. The values herein correspond to
+	// X, Y, W, and H--in that order.
+	Quad _visibleArea;
+
+	// This helper method is used by _compare<>() and _accumulate<>(), so ignore this
+	// function and go see the docs for those instead. This thing is huge and unwieldy
+	// and not to be triffled with! :)
+	template<typename T>
+	point_type _forEachAssignOrApply(
+		Getter get,
+		int    begin,
+		int    end,
+		int    add,
+		bool   assign
+	) const {
+		point_type   val = 0.0f;
+		unsigned int c   = begin;
+
+		ConstIterator e = end > 0 ? _objects.begin() + end : _objects.end() + end;
+
+		// I WARNED YOU! If you try and understand what this does your head will
+		// explode! But let me say a few things: in MSVC you can't add to an iterator
+		// such that the add will cause it to increment past the end of the container.
+		// This appears to be safe in GCC, where it will just return the last 
+		// item therein, but causes an assertion error in other compilers. I'm not
+		// sure if there is a cleaner remedy for this, so what we do for now is keep a
+		// count variable called "c" that makes sure our iterator's opterator+()
+		// method is safe to call.
+		for(
+			ConstIterator i = _objects.begin() + begin;
+			i < e;
+			c += add
+		) {
+			point_type v = 0.0f;
+
+			if(i->valid()) v = (i->get()->*get)();
+			
+			// If you want to assign to val, and NOT add a sequence of them...
+			if(assign) {
+				if(T()(v, val)) val = v;
+			}
+
+			// If you want to accumulate a value INTO val...
+			else val = T()(v, val);
+
+			// Make sure our iterator is safe to increment. Otherwise, set it to
+			// whatever end is.
+			// TODO: This isn't 100% accurate, as it does not YET take into account
+			// our requested end in any way other than implicitly. It should, however,
+			// work okay for now.
+			if((c + add) < _objects.size()) i += add;
+
+			else i = e;
+		}
+
+		return val;
+	}
+
+	void _setWidthAndHeightUnknownSizeError (const std::string&, point_type);
+	void _setWidthAndHeightNotPAError       (const std::string&, point_type);
+	void _setWidthAndHeight                 ();
+	void _removeFromGeode                   (Widget*);
+
+	Widget* _getBackground() const;
+	Window* _getTopmostParent() const;
+
+	// This method will return the T'th value returned by applying the Getter member function
+	// pointer to each iterator in the range of iterators defined by offset and add. In
+	// plain language, this helper method will apply some standard Widget::get* function
+	// to a range of objects in the _objects Vector, and will return the T'th of that.
+	// The template T can be any functor accepting two point_type values that return
+	// a bool. For example, this is commonly used with std::less to find the smallest
+	// width in a range of Widgets.
+	template<typename T>
+	point_type _compare(
+		Getter get,
+		int    begin = 0,
+		int    end   = 0,
+		int    add   = 1
+	) const {
+		return _forEachAssignOrApply<T>(get, begin, end, add, true);
+	}
+
+	// This method will return the T'th value accumulated by applying the Getter member
+	// function to each iterator in the range of iterators defined by offset and add (similar
+	// to above). For example, this method can be used to apply std::plus to every
+	// width in a range of Widgets, and return the total.
+	template<typename T>
+	point_type _accumulate(
+		Getter get,
+		int    begin = 0,
+		int    end   = 0,
+		int    add   = 1
+	) const {
+		return _forEachAssignOrApply<T>(get, begin, end, add, false);
+	}
+
+	osg::Geode* _geode() {
+		return dynamic_cast<osg::Geode*>(getChild(0));
+	}
+
+	const osg::Geode* _geode() const {
+		return dynamic_cast<const osg::Geode*>(getChild(0));
+	}
+
+	Widget* _bg() {
+		return _getBackground();
+	}
+
+	const Widget* _bg() const {
+		return _getBackground();
+	}
+
+	osg::Scissor* _scissor() {
+		return dynamic_cast<osg::Scissor*>(
+			getStateSet()->getAttribute(osg::StateAttribute::SCISSOR)
+		);
+	}
+
+	bool _setWidget   (Widget*, int = -1);
+	bool _setVisible  (bool);
+	void _setFocused  (Widget*);
+	void _setStyled   (Widget*);
+	void _setParented (Widget*, bool=false);
+	void _setManaged  (Widget*, bool=false);
+
+	void _positionWidget(Widget*, point_type, point_type);
+
+	// These return the smallest and largest width and height values for the given
+	// range of Widgets.
+	point_type _getMinWidgetWidth  (int = 0, int = 0, int = 1) const;
+	point_type _getMinWidgetHeight (int = 0, int = 0, int = 1) const;
+	point_type _getMaxWidgetWidth  (int = 0, int = 0, int = 1) const;
+	point_type _getMaxWidgetHeight (int = 0, int = 0, int = 1) const;
+
+	// These return the smallest and largest minWidth and minHeight values for
+	// the given range of Widgets.
+	point_type _getMinWidgetMinWidth  (int = 0, int = 0, int = 1) const;
+	point_type _getMinWidgetMinHeight (int = 0, int = 0, int = 1) const;
+	point_type _getMaxWidgetMinWidth  (int = 0, int = 0, int = 1) const;
+	point_type _getMaxWidgetMinHeight (int = 0, int = 0, int = 1) const;
+
+	// These return the smallest and largest width and height total (width + pad)
+	// values for the given range of Widgets.
+	point_type _getMinWidgetWidthTotal  (int = 0, int = 0, int = 1) const;
+	point_type _getMinWidgetHeightTotal (int = 0, int = 0, int = 1) const;
+	point_type _getMaxWidgetWidthTotal  (int = 0, int = 0, int = 1) const;
+	point_type _getMaxWidgetHeightTotal (int = 0, int = 0, int = 1) const;
+
+	// These return the smallest and largest minWidth and minHeight total
+	// (width + pad) values for the given range of Widgets.
+	point_type _getMinWidgetMinWidthTotal  (int = 0, int = 0, int = 1) const;
+	point_type _getMinWidgetMinHeightTotal (int = 0, int = 0, int = 1) const;
+	point_type _getMaxWidgetMinWidthTotal  (int = 0, int = 0, int = 1) const;
+	point_type _getMaxWidgetMinHeightTotal (int = 0, int = 0, int = 1) const;
+
+	// These return the smallest and largest horizontal and vertical padding
+	// values for the given range of Widgets.
+	point_type _getMinWidgetPadHorizontal (int = 0, int = 0, int = 1) const;
+	point_type _getMinWidgetPadVertical   (int = 0, int = 0, int = 1) const;
+	point_type _getMaxWidgetPadHorizontal (int = 0, int = 0, int = 1) const;
+	point_type _getMaxWidgetPadVertical   (int = 0, int = 0, int = 1) const;
+
+	point_type _getNumFill(int = 0, int = 0, int = 1) const;
+
+	// This method is passed the additional values by which width and height should be
+	// modified as calculed by the parent method, Window::resize. Keep in mind that these
+	// values can be negative (indicating a potential "shrink" request) or positive (which
+	// would indicate a "grow" reqeust).
+	virtual void _resizeImplementation(point_type, point_type) = 0;
+
+	// These are made into implementation functions since getting the width or height
+	// of a window can potentially be an expensive operation, and we'll want to cache
+	// results if possible (which is handled transparently by the actualy Window::resize
+	// method). They return a Sizes struct which contains two members: cur (for current)
+	// and min (minimum). It's important that the Window know it's minimum possible
+	// size so that it can ignore invaled requests to resize.
+	//
+	// Default versions using BoundingBox calculations are provided, but some Windows
+	// override this (Table, Box).
+	virtual Sizes _getWidthImplementation  () const;
+	virtual Sizes _getHeightImplementation () const;
+
 };
 
 typedef Window::WindowList WindowList;

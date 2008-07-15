@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
     
     osgWidget::Frame* frame = osgWidget::Frame::createSimpleFrameWithSingleTexture(
         "frame",
-        "../examples/osgwidgetscrolled/theme-2.png",
+        "osgWidget/theme-2.png",
         64.0f,
         64.0f,
         16.0f,
@@ -101,15 +101,15 @@ int main(int argc, char** argv) {
 
     // This is our Transformers box. :)
     osgWidget::Box*    box  = new osgWidget::Box("images", osgWidget::Box::VERTICAL);
-    osgWidget::Widget* img1 = new osgWidget::Widget("im1", 256.0f, 256.0f);
-    osgWidget::Widget* img2 = new osgWidget::Widget("im2", 256.0f, 256.0f);
-    osgWidget::Widget* img3 = new osgWidget::Widget("im3", 256.0f, 256.0f);
-    osgWidget::Widget* img4 = new osgWidget::Widget("im4", 256.0f, 256.0f);
+    osgWidget::Widget* img1 = new osgWidget::Widget("im1", 512.0f, 512.0f);
+    osgWidget::Widget* img2 = new osgWidget::Widget("im2", 512.0f, 512.0f);
+    osgWidget::Widget* img3 = new osgWidget::Widget("im3", 512.0f, 512.0f);
+    osgWidget::Widget* img4 = new osgWidget::Widget("im4", 512.0f, 512.0f);
 
-    img1->setImage("../examples/osgwidgetscrolled/images/starscream.jpg", true);
-    img2->setImage("../examples/osgwidgetscrolled/images/optimus.jpg", true);
-    img3->setImage("../examples/osgwidgetscrolled/images/megatron.jpg", true);
-    img4->setImage("../examples/osgwidgetscrolled/images/bumblebee.jpg", true);
+    img1->setImage("osgWidget/scrolled1.jpg", true);
+    img2->setImage("osgWidget/scrolled2.jpg", true);
+    img3->setImage("osgWidget/scrolled3.jpg", true);
+    img4->setImage("osgWidget/scrolled4.jpg", true);
 
     img1->setMinimumSize(10.0f, 10.0f);
     img2->setMinimumSize(10.0f, 10.0f);

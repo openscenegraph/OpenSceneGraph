@@ -22,8 +22,7 @@ const char* INFO =
 void setupLabel(osgWidget::Label* label) {
     label->setFontSize(16);
     label->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
-    // label->setFont("fonts/monospace.ttf");
-    label->setFont("fonts/Calibri1.ttf");
+    label->setFont("fonts/Vera.ttf");
     label->setPadding(2.0f);
     label->setHeight(18.0f);
     label->setCanFill(true);

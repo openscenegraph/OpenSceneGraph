@@ -49,7 +49,7 @@ public:
 
             osgWidget::Label* label1 = new osgWidget::Label(ss.str());
 
-            label1->setFont("fonts/monospace.ttf");
+            label1->setFont("fonts/VeraMono.ttf");
             label1->setFontSize(20);
             label1->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
             label1->setColor(0.0f, i / 4.0f, 0.3f, 1.0f);
@@ -73,7 +73,7 @@ public:
 
             osgWidget::Label* label2 = new osgWidget::Label(ss.str());
 
-            label2->setFont("fonts/monospace.ttf");
+            label2->setFont("fonts/Vera.ttf");
             label2->setFontSize(15);
             label2->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
             label2->setColor(0.0f, i / 4.0f, 0.3f, 1.0f);
@@ -93,7 +93,7 @@ public:
 
         osgWidget::Label* label = new osgWidget::Label("label");
 
-        label->setFont("fonts/monospace.ttf");
+        label->setFont("fonts/arial.ttf");
         label->setFontSize(15);
         label->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
         label->setLabel("Drag the window here...");

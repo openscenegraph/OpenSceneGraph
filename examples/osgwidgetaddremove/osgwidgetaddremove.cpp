@@ -13,7 +13,7 @@ class ABCWidget: public osgWidget::Label {
 public:
     ABCWidget(const std::string& label):
     osgWidget::Label("", label) {
-        setFont("fonts/Calibri1.ttf");
+        setFont("fonts/Vera.ttf");
         setFontSize(20);
         setCanFill(true);
         setShadow(0.08f);
@@ -25,7 +25,7 @@ class Button: public osgWidget::Label {
 public:
     Button(const std::string& label):
     osgWidget::Label("", label) {
-        setFont("fonts/Calibri1.ttf");
+        setFont("fonts/Vera.ttf");
         setFontSize(30);
         setColor(0.8f, 0.2f, 0.2f, 0.8f);
         setCanFill(true);

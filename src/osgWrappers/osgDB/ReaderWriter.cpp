@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osgDB::ReaderWriter::FormatDescriptionMap)
+
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ArchiveStatus)
 	I_DeclaringFile("osgDB/ReaderWriter");
 	I_EnumLabel(osgDB::ReaderWriter::READ);
@@ -69,10 +71,25 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method0(const osgDB::ReaderWriter::FormatDescriptionMap &, supportedProtocols,
+	          Properties::VIRTUAL,
+	          __C5_FormatDescriptionMap_R1__supportedProtocols,
+	          "return which protocols are supported by ReaderWriter. ",
+	          "");
+	I_Method0(const osgDB::ReaderWriter::FormatDescriptionMap &, supportedExtensions,
+	          Properties::VIRTUAL,
+	          __C5_FormatDescriptionMap_R1__supportedExtensions,
+	          "return which list of file extensions supported by ReaderWriter. ",
+	          "");
+	I_Method0(const osgDB::ReaderWriter::FormatDescriptionMap &, supportedOptions,
+	          Properties::VIRTUAL,
+	          __C5_FormatDescriptionMap_R1__supportedOptions,
+	          "return which list of file extensions supported by ReaderWriter. ",
+	          "");
 	I_Method1(bool, acceptsExtension, IN, const std::string &, x,
 	          Properties::VIRTUAL,
 	          __bool__acceptsExtension__C5_std_string_R1,
-	          "",
+	          "return true if ReaderWriter accepts specified file extension. ",
 	          "");
 	I_MethodWithDefaults4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, x, , IN, osgDB::ReaderWriter::ArchiveStatus, x, , IN, unsigned, int, 4096, IN, const osgDB::ReaderWriter::Options *, x, NULL,
 	                      Properties::VIRTUAL,
@@ -184,6 +201,24 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	                      __WriteResult__writeShader__C5_osg_Shader_R1__std_ostream_R1__C5_Options_P1,
 	                      "",
 	                      "");
+	I_ProtectedMethod2(void, supportsProtocol, IN, const std::string &, fmt, IN, const std::string &, description,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__supportsProtocol__C5_std_string_R1__C5_std_string_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, supportsExtension, IN, const std::string &, fmt, IN, const std::string &, description,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__supportsExtension__C5_std_string_R1__C5_std_string_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(void, supportsOption, IN, const std::string &, fmt, IN, const std::string &, description,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__supportsOption__C5_std_string_R1__C5_std_string_R1,
+	                   "",
+	                   "");
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::CacheHintOptions)

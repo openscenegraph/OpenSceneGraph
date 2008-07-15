@@ -68,6 +68,8 @@ BEGIN_VALUE_REFLECTOR(osgDB::RegisterDotOsgWrapperProxy)
 	                           "");
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgDB::ReaderWriter > >, osgDB::Registry::ReaderWriterList)
+
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_DeclaringFile("osgDB/Registry");
 	I_BaseType(osg::Referenced);
@@ -140,6 +142,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          Properties::NON_VIRTUAL,
 	          __ReaderWriter_P1__getReaderWriterForExtension__C5_std_string_R1,
 	          "get a reader writer which handles specified extension. ",
+	          "");
+	I_Method0(osgDB::Registry::ReaderWriterList &, getReaderWriterList,
+	          Properties::NON_VIRTUAL,
+	          __ReaderWriterList_R1__getReaderWriterList,
+	          "get list of all registered ReaderWriters. ",
+	          "");
+	I_Method0(const osgDB::Registry::ReaderWriterList &, getReaderWriterList,
+	          Properties::NON_VIRTUAL,
+	          __C5_ReaderWriterList_R1__getReaderWriterList,
+	          "get const list of all registered ReaderWriters. ",
 	          "");
 	I_Method2(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj, IN, osgDB::Input &, fr,
 	          Properties::NON_VIRTUAL,
@@ -578,6 +590,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_SimpleProperty(osgDB::Registry::ReadFileCallback *, ReadFileCallback, 
 	                 __ReadFileCallback_P1__getReadFileCallback, 
 	                 __void__setReadFileCallback__ReadFileCallback_P1);
+	I_SimpleProperty(osgDB::Registry::ReaderWriterList &, ReaderWriterList, 
+	                 __ReaderWriterList_R1__getReaderWriterList, 
+	                 0);
 	I_SimpleProperty(osgDB::SharedStateManager *, SharedStateManager, 
 	                 __SharedStateManager_P1__getSharedStateManager, 
 	                 __void__setSharedStateManager__SharedStateManager_P1);
@@ -680,4 +695,46 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry::WriteFileCallback)
 	          "",
 	          "");
 END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgDB::ReaderWriter >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgDB::ReaderWriter *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgDB::ReaderWriter > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgDB::ReaderWriter *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgDB::ReaderWriter *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgDB::ReaderWriter > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgDB::ReaderWriter *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgDB::ReaderWriter > >)
 

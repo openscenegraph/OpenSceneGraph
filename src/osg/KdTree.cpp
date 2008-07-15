@@ -556,7 +556,7 @@ void IntersectKdTree::intersect(const KdTree::KdNode& node, const osg::Vec3& ls,
             intersection.p2 = tri.p2;
             intersection.r0 = r0;
             intersection.r1 = r1;
-            intersection.r2 = r1;
+            intersection.r2 = r2;
 
 #endif
             // osg::notify(osg::NOTICE)<<"  got intersection ("<<in<<") ratio="<<r<<std::endl;

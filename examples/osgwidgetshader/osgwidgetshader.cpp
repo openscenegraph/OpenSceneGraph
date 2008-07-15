@@ -8,67 +8,67 @@
 const unsigned int MASK_2D = 0xF0000000;
 
 osgWidget::Widget* createWidget(
-	const std::string&       name,
-	osgWidget::color_type    col,
-	osgWidget::Widget::LAYER layer
+    const std::string&       name,
+    osgWidget::color_type    col,
+    osgWidget::Widget::LAYER layer
 ) {
-	osgWidget::Widget* widget = new osgWidget::Widget(name, 200.0f, 200.0f);
+    osgWidget::Widget* widget = new osgWidget::Widget(name, 200.0f, 200.0f);
 
-	widget->setColor(col, col, col, 0.2f);
-	widget->setLayer(layer);
+    widget->setColor(col, col, col, 0.2f);
+    widget->setLayer(layer);
 
-	return widget;
+    return widget;
 }
 
 int main(int argc, char** argv) {
-	osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer;
 
-	osgWidget::WindowManager* wm = new osgWidget::WindowManager(
-		&viewer,
-		1280.0f,
-		1024.0f,
-		MASK_2D
-	);
-	
-	osgWidget::Canvas* canvas = new osgWidget::Canvas("canvas");
+    osgWidget::WindowManager* wm = new osgWidget::WindowManager(
+        &viewer,
+        1280.0f,
+        1024.0f,
+        MASK_2D
+    );
+    
+    osgWidget::Canvas* canvas = new osgWidget::Canvas("canvas");
 
-	canvas->attachMoveCallback();
-	canvas->attachScaleCallback();
+    canvas->attachMoveCallback();
+    canvas->attachScaleCallback();
 
-	canvas->addWidget(
-		createWidget("w1", 0.2f, osgWidget::Widget::LAYER_LOW),
-		0.0f,
-		0.0f
-	);
-	
-	canvas->addWidget(
-		createWidget("w2", 0.4f, osgWidget::Widget::LAYER_MIDDLE),
-		200.0f,
-		0.0f
-	);
+    canvas->addWidget(
+        createWidget("w1", 0.2f, osgWidget::Widget::LAYER_LOW),
+        0.0f,
+        0.0f
+    );
+    
+    canvas->addWidget(
+        createWidget("w2", 0.4f, osgWidget::Widget::LAYER_MIDDLE),
+        200.0f,
+        0.0f
+    );
 
-	canvas->addWidget(
-		createWidget("w3", 0.6f, osgWidget::Widget::LAYER_HIGH),
-		400.0f,
-		0.0f
-	);
+    canvas->addWidget(
+        createWidget("w3", 0.6f, osgWidget::Widget::LAYER_HIGH),
+        400.0f,
+        0.0f
+    );
 
 
-	wm->addChild(canvas);
+    wm->addChild(canvas);
 
-	osg::Program* program = new osg::Program();
+    osg::Program* program = new osg::Program();
 
-	program->addShader(osg::Shader::readShaderFile(
-		osg::Shader::VERTEX,
-		"osgWidget/osgwidgetshader-vert.glsl"
-	));
-	
-	program->addShader(osg::Shader::readShaderFile(
-		osg::Shader::FRAGMENT,
-		"osgWidget/osgwidgetshader-frag.glsl"
-	));
+    program->addShader(osg::Shader::readShaderFile(
+        osg::Shader::VERTEX,
+        "osgWidget/osgwidgetshader-vert.glsl"
+    ));
+    
+    program->addShader(osg::Shader::readShaderFile(
+        osg::Shader::FRAGMENT,
+        "osgWidget/osgwidgetshader-frag.glsl"
+    ));
 
-	canvas->getGeode()->getOrCreateStateSet()->setAttribute(program);
+    canvas->getGeode()->getOrCreateStateSet()->setAttribute(program);
 
-	return osgWidget::createExample(viewer, wm);
+    return osgWidget::createExample(viewer, wm);
 }

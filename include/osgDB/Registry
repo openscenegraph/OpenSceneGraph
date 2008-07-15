@@ -115,8 +115,16 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** close all libraries.*/
         void closeAllLibraries();
 
+        typedef std::vector< osg::ref_ptr<ReaderWriter> > ReaderWriterList;
+
         /** get a reader writer which handles specified extension.*/
         ReaderWriter* getReaderWriterForExtension(const std::string& ext);
+        
+        /** get list of all registered ReaderWriters.*/
+        ReaderWriterList& getReaderWriterList() { return _rwList; }
+
+        /** get const list of all registered ReaderWriters.*/
+        const ReaderWriterList& getReaderWriterList() const { return _rwList; }
  
         osg::Object*         readObjectOfType(const osg::Object& compObj,Input& fr);       
         osg::Object*         readObjectOfType(const basic_type_wrapper &btw, Input& fr);
@@ -450,7 +458,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         virtual ~Registry();
 
-        typedef std::vector< osg::ref_ptr<ReaderWriter> >               ReaderWriterList;
         typedef std::map< std::string, osg::ref_ptr<DotOsgWrapper> >    DotOsgWrapperMap;
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;

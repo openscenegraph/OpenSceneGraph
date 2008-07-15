@@ -39,7 +39,7 @@ ShadowVolume::ShadowVolume():
 {
     // _drawMode = osgShadow::ShadowVolumeGeometry::GEOMETRY;
     
-    osg::notify(osg::NOTICE)<<"Warning: osgShadow::ShadowVolume technique is still in development, with current limitations that make it unsuitable for deployment. Please contact the osg-users for an update of developements."<<std::endl;
+    osg::notify(osg::INFO)<<"Warning: osgShadow::ShadowVolume technique is still in development, with current limitations that make it unsuitable for deployment. Please contact the osg-users for an update of developements."<<std::endl;
 }
 
 ShadowVolume::ShadowVolume(const ShadowVolume& sv, const osg::CopyOp& copyop):

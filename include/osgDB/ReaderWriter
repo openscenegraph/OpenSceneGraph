@@ -54,7 +54,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         virtual const FormatDescriptionMap& supportedProtocols() const { return _supportedProtocols; }
         
         /** return which list of file extensions supported by ReaderWriter. */
-        virtual const FormatDescriptionMap& supportedExtension() const { return _supportedExtensions; }
+        virtual const FormatDescriptionMap& supportedExtensions() const { return _supportedExtensions; }
         
         /** return which list of file extensions supported by ReaderWriter. */
         virtual const FormatDescriptionMap& supportedOptions() const { return _supportedOptions; }

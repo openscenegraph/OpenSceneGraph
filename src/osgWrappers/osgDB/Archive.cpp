@@ -46,7 +46,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Archive)
 	I_Method1(bool, acceptsExtension, IN, const std::string &, x,
 	          Properties::VIRTUAL,
 	          __bool__acceptsExtension__C5_std_string_R1,
-	          "",
+	          "return true if ReaderWriter accepts specified file extension. ",
 	          "");
 	I_Method0(void, close,
 	          Properties::PURE_VIRTUAL,

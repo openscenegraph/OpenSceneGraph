@@ -14,6 +14,6 @@ SET(TARGET_SRC
 
 SET(TARGET_ADDED_LIBRARIES osgWidget )
 #### end var setup  ###
-SETUP_PLUGIN(osgwisget)
+SETUP_PLUGIN(osgwidget)
 
 

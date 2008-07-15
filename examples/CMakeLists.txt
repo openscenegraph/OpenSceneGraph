@@ -149,7 +149,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgviewerCocoa)
     ENDIF(APPLE)
 
-    IF   (BUILD_OSGWIDGET))
+    IF   (BUILD_OSGWIDGET)
         ADD_SUBDIRECTORY(osgwidgetaddremove)
         ADD_SUBDIRECTORY(osgwidgetbox)
         ADD_SUBDIRECTORY(osgwidgetcanvas)
@@ -163,7 +163,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgwidgetstyled)
         ADD_SUBDIRECTORY(osgwidgettable)
         ADD_SUBDIRECTORY(osgwidgetversion)
-        ADD_SUBDIRECTORY(osgwidgetwindow
+        ADD_SUBDIRECTORY(osgwidgetwindow)
     ENDIF(BUILD_OSGWIDGET)
 
 

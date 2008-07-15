@@ -1,0 +1,77 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+// $Id: Input 45 2008-04-23 16:46:11Z cubicool $
+
+#ifndef OSGWIDGET_INPUT
+#define OSGWIDGET_INPUT
+
+#include <osgWidget/Label>
+
+namespace osgWidget {
+
+class OSGWIDGET_EXPORT Input: public Label {
+	point_type _xoff;
+	point_type _yoff;
+
+	unsigned int _index;
+	unsigned int _size;
+	unsigned int _cursorIndex;
+	unsigned int _maxSize;
+
+	std::vector<point_type> _offsets;
+	osg::ref_ptr<Widget>    _cursor;
+
+protected:
+	virtual void _calculateSize(const XYCoord&);
+
+	void _calculateCursorOffsets();
+
+public:
+	Input(const std::string& = "", const std::string& = "", unsigned int = 20);
+
+	virtual void parented   (Window*);
+	virtual void positioned ();
+
+	virtual bool focus   (WindowManager*);
+	virtual bool unfocus (WindowManager*);
+	virtual bool keyUp   (int, int, WindowManager*);
+	virtual bool keyDown (int, int, WindowManager*);
+
+	void setCursor(Widget*);
+
+	void setXOffset(point_type xo) {
+		_xoff = xo;
+	}
+
+	void setYOffset(point_type yo) {
+		_yoff = yo;
+	}
+
+	void setXYOffset(point_type xo, point_type yo) {
+		_xoff = xo;
+		_yoff = yo;
+	}
+
+	osg::Drawable* getCursor() {
+		return _cursor.get();
+	}
+
+	const osg::Drawable* getCursor() const {
+		return _cursor.get();
+	}
+
+	point_type getXOffset() const {
+		return _xoff;
+	}
+
+	point_type getYOffset() const {
+		return _yoff;
+	}
+
+	XYCoord getXYOffset() const {
+		return XYCoord(_xoff, _yoff);
+	}
+};
+
+}
+
+#endif

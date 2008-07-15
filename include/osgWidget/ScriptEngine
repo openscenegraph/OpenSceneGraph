@@ -1,0 +1,29 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+// $Id: ScriptEngine 2 2008-01-24 16:11:26Z cubicool $
+
+#ifndef OSGWIDGET_SCRIPT_ENGINE
+#define OSGWIDGET_SCRIPT_ENGINE
+
+#include <osg/Referenced>
+
+namespace osgWidget {
+
+// An interface for our scripting API so that we can have a unified way to talk to both
+// Lua and Python; perhaps even more! Furthermore, this will allow us to put the
+// entire implementation into a source file...
+class ScriptEngine: public osg::Referenced {
+protected:
+	std::string _err;
+
+public:
+	virtual bool initialize () { return false; }
+	virtual bool close      () { return false; }
+	virtual bool eval       (const std::string&) { return false; }
+	virtual bool runFile    (const std::string&) { return false; }
+
+	virtual const std::string& getLastErrorText() const { return _err; }
+};
+
+}
+
+#endif

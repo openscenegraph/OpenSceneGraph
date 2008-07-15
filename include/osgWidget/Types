@@ -1,0 +1,31 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+// $Id: Types 33 2008-04-04 19:03:12Z cubicool $
+
+#ifndef OSGWIDGET_TYPES
+#define OSGWIDGET_TYPES
+
+#include <numeric>
+#include <osg/Geometry>
+
+namespace osgWidget {
+
+typedef osg::Vec2Array TexCoordArray;
+typedef osg::Vec3Array PointArray;
+typedef osg::Vec4Array ColorArray;
+
+typedef TexCoordArray::value_type TexCoord;
+typedef PointArray::value_type    Point;
+typedef ColorArray::value_type    Color;
+
+typedef TexCoord::value_type texcoord_type;
+typedef Point::value_type    point_type;
+typedef Color::value_type    color_type;
+
+typedef osg::Vec2 XYCoord;
+typedef osg::Vec4 Quad;
+
+typedef osg::Matrix::value_type matrix_type;
+
+}
+
+#endif

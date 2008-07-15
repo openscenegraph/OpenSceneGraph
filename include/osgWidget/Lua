@@ -1,0 +1,31 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+// $Id: Lua 2 2008-01-24 16:11:26Z cubicool $
+
+#ifndef OSGWIDGET_LUA
+#define OSGWIDGET_LUA
+
+#include <osgWidget/WindowManager>
+
+namespace osgWidget {
+
+// Externally defined; does this work in Windows?
+struct LuaEngineData;
+
+// The actual Engine itself. Every attempt is made to export the implemenation into the
+// source file, rather than having it here.
+class OSGWIDGET_EXPORT LuaEngine: public ScriptEngine {
+	LuaEngineData* _data;
+	WindowManager* _wm;
+
+public:
+	LuaEngine(WindowManager* = 0);
+
+	bool initialize ();
+	bool close      ();
+	bool eval       (const std::string&);
+	bool runFile    (const std::string&);
+};
+
+}
+
+#endif

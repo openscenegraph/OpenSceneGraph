@@ -1,0 +1,78 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+// $Id: ViewerEventHandlers 31 2008-04-01 19:36:41Z cubicool $
+
+#ifndef OSGWIDGET_VIEWER_EVENT_HANDLERS
+#define OSGWIDGET_VIEWER_EVENT_HANDLERS
+
+#include <osgGA/GUIEventAdapter>
+#include <osgGA/GUIEventHandler>
+#include <osgWidget/WindowManager>
+
+// NOTE! These are all just examples of some default event handlers--they are not
+// required. You are more than welcome to provide your own even handlers that
+// communicate with a WindowManager using it's public API.
+
+namespace osgWidget {
+
+// This handles the pressing/moving of mouse buttons, etc.
+class OSGWIDGET_EXPORT MouseHandler: public osgGA::GUIEventHandler {
+	osg::ref_ptr<WindowManager> _wm;
+
+	bool _handleMousePush        (float, float, int);
+	bool _handleMouseRelease     (float, float, int);
+	bool _handleMouseDoubleClick (float, float, int);
+	bool _handleMouseDrag        (float, float, int);
+	bool _handleMouseMove        (float, float, int);
+	bool _handleMouseScroll      (float, float, int);
+
+	typedef bool (MouseHandler::*MouseAction)(float, float, int);
+	typedef bool (WindowManager::*MouseEvent)(float, float);
+
+	MouseAction _isMouseEvent (osgGA::GUIEventAdapter::EventType) const;
+	bool        _doMouseEvent (float, float, MouseEvent);
+
+public:
+	MouseHandler(WindowManager*);
+	
+	virtual bool handle(
+		const osgGA::GUIEventAdapter&,
+		osgGA::GUIActionAdapter&,
+		osg::Object*,
+		osg::NodeVisitor*
+	);
+};
+
+// This handles the forwarding of keypress events.
+class OSGWIDGET_EXPORT KeyboardHandler: public osgGA::GUIEventHandler {
+	osg::ref_ptr<WindowManager> _wm;
+
+public:
+	KeyboardHandler(WindowManager*);
+
+	virtual bool handle(
+		const osgGA::GUIEventAdapter&,
+		osgGA::GUIActionAdapter&,
+		osg::Object*,
+		osg::NodeVisitor*
+	);
+};
+
+// This class offers a default kind of handling for resizing.
+class OSGWIDGET_EXPORT ResizeHandler: public osgGA::GUIEventHandler {
+	osg::ref_ptr<WindowManager> _wm;
+	osg::ref_ptr<osg::Camera>   _camera;
+
+public:
+	ResizeHandler(WindowManager*, osg::Camera*);
+
+	virtual bool handle(
+		const osgGA::GUIEventAdapter&,
+		osgGA::GUIActionAdapter&,
+		osg::Object*,
+		osg::NodeVisitor*
+	);
+};
+
+}
+
+#endif

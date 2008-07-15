@@ -149,6 +149,24 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgviewerCocoa)
     ENDIF(APPLE)
 
+    IF   (BUILD_OSGWIDGET))
+        ADD_SUBDIRECTORY(osgwidgetaddremove)
+        ADD_SUBDIRECTORY(osgwidgetbox)
+        ADD_SUBDIRECTORY(osgwidgetcanvas)
+        ADD_SUBDIRECTORY(osgwidgetframe)
+        ADD_SUBDIRECTORY(osgwidgetinput)
+        ADD_SUBDIRECTORY(osgwidgetlabel)
+        ADD_SUBDIRECTORY(osgwidgetmenu)
+        ADD_SUBDIRECTORY(osgwidgetnotebook)
+        ADD_SUBDIRECTORY(osgwidgetscrolled)
+        ADD_SUBDIRECTORY(osgwidgetshader)
+        ADD_SUBDIRECTORY(osgwidgetstyled)
+        ADD_SUBDIRECTORY(osgwidgettable)
+        ADD_SUBDIRECTORY(osgwidgetversion)
+        ADD_SUBDIRECTORY(osgwidgetwindow
+    ENDIF(BUILD_OSGWIDGET)
+
+
     #ADD_SUBDIRECTORY(osgcegui)
     #to add subject to find socket#ADD_SUBDIRECTORY(osgcluster)
 

@@ -25,7 +25,7 @@ const char* LABEL2 =
 osgWidget::Label* createLabel(const std::string& l, unsigned int size=13) {
     osgWidget::Label* label = new osgWidget::Label("", "");
 
-    label->setFont("fonts/arial.ttf");
+    label->setFont("fonts/Vera.ttf");
     label->setFontSize(size);
     label->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
     label->setLabel(l);

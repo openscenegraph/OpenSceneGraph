@@ -17,7 +17,7 @@ const unsigned int MASK_3D = 0x0F000000;
 struct ColorLabel: public osgWidget::Label {
     ColorLabel(const char* label):
     osgWidget::Label("", "") {
-        setFont("fonts/Calibri1.ttf");
+        setFont("fonts/Vera.ttf");
         setFontSize(14);
         setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
         setColor(0.3f, 0.3f, 0.3f, 1.0f);

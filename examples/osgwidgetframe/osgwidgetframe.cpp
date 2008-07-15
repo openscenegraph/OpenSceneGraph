@@ -54,10 +54,10 @@ int main(int argc, char** argv) {
     osgWidget::Widget* t = frame->getBorder(osgWidget::Frame::BORDER_TOP);
     osgWidget::Widget* b = frame->getBorder(osgWidget::Frame::BORDER_BOTTOM);
 
-    l->setImage("../examples/osgwidgetframe/images/border-left.tga", true);
-    r->setImage("../examples/osgwidgetframe/images/border-right.tga", true);
-    t->setImage("../examples/osgwidgetframe/images/border-top.tga", true);
-    b->setImage("../examples/osgwidgetframe/images/border-bottom.tga", true);
+    l->setImage("osgWidget/border-left.tga", true);
+    r->setImage("osgWidget/border-right.tga", true);
+    t->setImage("osgWidget/border-top.tga", true);
+    b->setImage("osgWidget/border-bottom.tga", true);
 
     l->setTexCoordWrapVertical();
     r->setTexCoordWrapVertical();
@@ -69,9 +69,9 @@ int main(int argc, char** argv) {
     osgWidget::Widget* center = new osgWidget::Widget("center", 256.0f, 256.0f);
     osgWidget::Widget* right  = new osgWidget::Widget("right", 512.0f, 256.0f);
 
-    left->setImage("../examples/osgwidgetframe/images/panel-left.tga", true);
-    center->setImage("../examples/osgwidgetframe/images/panel-center.tga", true);
-    right->setImage("../examples/osgwidgetframe/images/panel-right.tga", true);
+    left->setImage  ("osgWidget/panel-left.tga", true);
+    center->setImage("osgWidget/panel-center.tga", true);
+    right->setImage ("osgWidget/panel-right.tga", true);
 
     center->setTexCoordWrapHorizontal();
 

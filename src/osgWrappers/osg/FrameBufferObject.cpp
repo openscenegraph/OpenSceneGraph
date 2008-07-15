@@ -236,21 +236,6 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	          __C5_AttachmentMap_R1__getAttachmentMap,
 	          "",
 	          "");
-	I_Method2(void, setAttachment, IN, GLenum, attachment_point, IN, const osg::FrameBufferAttachment &, attachment,
-	          Properties::NON_VIRTUAL,
-	          __void__setAttachment__GLenum__C5_FrameBufferAttachment_R1,
-	          "",
-	          "");
-	I_Method1(const osg::FrameBufferAttachment &, getAttachment, IN, GLenum, attachment_point,
-	          Properties::NON_VIRTUAL,
-	          __C5_FrameBufferAttachment_R1__getAttachment__GLenum,
-	          "",
-	          "");
-	I_Method1(bool, hasAttachment, IN, GLenum, attachment_point,
-	          Properties::NON_VIRTUAL,
-	          __bool__hasAttachment__GLenum,
-	          "",
-	          "");
 	I_Method2(void, setAttachment, IN, osg::FrameBufferObject::BufferComponent, attachment_point, IN, const osg::FrameBufferAttachment &, attachment,
 	          Properties::NON_VIRTUAL,
 	          __void__setAttachment__BufferComponent__C5_FrameBufferAttachment_R1,
@@ -264,16 +249,6 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	I_Method1(bool, hasAttachment, IN, osg::FrameBufferObject::BufferComponent, attachment_point,
 	          Properties::NON_VIRTUAL,
 	          __bool__hasAttachment__BufferComponent,
-	          "",
-	          "");
-	I_Method1(GLenum, convertBufferComponentToGLenum, IN, osg::FrameBufferObject::BufferComponent, attachment_point,
-	          Properties::NON_VIRTUAL,
-	          __GLenum__convertBufferComponentToGLenum__BufferComponent,
-	          "",
-	          "");
-	I_Method1(osg::FrameBufferObject::BufferComponent, convertGLenumToBufferComponent, IN, GLenum, attachment_point,
-	          Properties::NON_VIRTUAL,
-	          __BufferComponent__convertGLenumToBufferComponent__GLenum,
 	          "",
 	          "");
 	I_Method0(bool, hasMultipleRenderingTargets,
@@ -328,6 +303,12 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__dirtyAll,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(GLenum, convertBufferComponentToGLenum, IN, osg::FrameBufferObject::BufferComponent, attachment_point,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __GLenum__convertBufferComponentToGLenum__BufferComponent,
 	                   "",
 	                   "");
 	I_IndexedProperty(const osg::FrameBufferAttachment &, Attachment, 

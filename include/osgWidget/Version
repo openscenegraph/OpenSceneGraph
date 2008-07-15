@@ -8,15 +8,28 @@
 
 extern "C" {
 
-OSGWIDGET_EXPORT unsigned int osgWidgetGetMajorVersion ();
-OSGWIDGET_EXPORT unsigned int osgWidgetGetMinorVersion ();
-OSGWIDGET_EXPORT unsigned int osgWidgetGetPatchVersion ();
-OSGWIDGET_EXPORT const char*  osgWidgetGetExtraText    ();
-OSGWIDGET_EXPORT const char*  osgWidgetGetVersion      ();
-OSGWIDGET_EXPORT const char*  osgWidgetGetLibraryName  ();
-OSGWIDGET_EXPORT bool         osgWidgetVersionMinimum  (unsigned int, unsigned int, unsigned int);
-OSGWIDGET_EXPORT bool         osgWidgetVersionMaximum  (unsigned int, unsigned int, unsigned int);
-OSGWIDGET_EXPORT bool         osgWidgetVersionRequired (unsigned int, unsigned int, unsigned int);
+/**
+ * osgWidgetGetVersion() returns the library version number.
+ * Numbering convention : OpenSceneGraph-1.0 will return 1.0 from osgWidgetGetVersion.
+ *
+ * This C function can be also used to check for the existence of the OpenSceneGraph
+ * library using autoconf and its m4 macro AC_CHECK_LIB.
+ *
+ * Here is the code to add to your configure.in:
+ \verbatim
+ #
+ # Check for the OpenSceneGraph (OSG) Util library
+ #
+ AC_CHECK_LIB(osg, osgWidgetGetVersion, ,
+    [AC_MSG_ERROR(OpenSceneGraph Util library not found. See http://www.openscenegraph.org)],)
+ \endverbatim
+*/
+extern OSGWIDGET_EXPORT const char* osgWidgetGetVersion();
+
+/**
+ * osgWidgetGetLibraryName() returns the library name in human friendly form.
+ */
+extern OSGWIDGET_EXPORT const char* osgWidgetGetLibraryName();
 
 }
 

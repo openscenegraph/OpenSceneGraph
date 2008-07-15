@@ -123,27 +123,27 @@ class FLTReaderWriter : public ReaderWriter
         {
             supportsExtension("flt","OpenFlight format");
             
-            supportsOption("clampToEdge","IMPORT");
-            supportsOption("keepExternalReferences","IMPORT");
-            supportsOption("preserveFace","IMPORT");
-            supportsOption("preserveObject","IMPORT");
-            supportsOption("dofAnimation","IMPORT");
-            supportsOption("billboardCenter","IMPORT");
-            supportsOption("noTextureAlphaForTransparancyBinning","IMPORT");
-            supportsOption("readObjectRecordData","IMPORT");
-            supportsOption("noUnitsConversion","IMPORT");
-            supportsOption("convertToFeet","IMPORT");
-            supportsOption("convertToInches","IMPORT");
-            supportsOption("convertToMeters","IMPORT");
-            supportsOption("convertToKilometers","IMPORT");
-            supportsOption("convertToNauticalMiles","IMPORT");
+            supportsOption("clampToEdge","Import option");
+            supportsOption("keepExternalReferences","Import option");
+            supportsOption("preserveFace","Import option");
+            supportsOption("preserveObject","Import option");
+            supportsOption("dofAnimation","Import option");
+            supportsOption("billboardCenter","Import option");
+            supportsOption("noTextureAlphaForTransparancyBinning","Import option");
+            supportsOption("readObjectRecordData","Import option");
+            supportsOption("noUnitsConversion","Import option");
+            supportsOption("convertToFeet","Import option");
+            supportsOption("convertToInches","Import option");
+            supportsOption("convertToMeters","Import option");
+            supportsOption("convertToKilometers","Import option");
+            supportsOption("convertToNauticalMiles","Import option");
 
-            supportsOption( "version=<ver>", "EXPORT: Specifies the version of the output OpenFlight file. Supported values include 15.7, 15.8, and 16.1. Default is 16.1. Example: \"version=15.8\"." );
-            supportsOption( "units=<units>", "EXPORT: Specifies the contents of the Units field of the OpenFliht header record. Valid values include INCHES, FEET, METERS, KILOMETERS, and NATICAL_MILES. Default is METERS. Example: \"units=METERS\"." );
-            supportsOption( "validate", "EXPORT: If present in the Options string, the plugin does not write an OpenFlight file. Instead, it returns an indication of the scene graph's suitability for OpenFlight export." );
-            supportsOption( "tempDir=<dir>", "EXPORT: Specifies the directory to use for creation of temporary files. If not specified, the directory is taken from the file name. If the file doesn't contain a path, the current working directory is used. Applications should set this to the name of their app-specific temp directory. If the path contains spaces, use double quotes to ensure correct parsing. Examples: \"tempDir=/tmp\", \"tempDir=\"C:\\My Temp Dir\"." );
-            supportsOption( "lighting=<ON|OFF>", "EXPORT: Specifies a default enable/disable state for lighting, for Nodes in the exported scene graph that don't set it explicitly. By default, the exporter assumes lighting is enabled (GL_LIGHTING ON). Set this to either ON or OFF. Example: \"lighting=OFF\"." );
-            supportsOption( "stripTextureFilePath", "EXPORT: If present in the Options string, the exporter strips the path from texture file names, and writes only the texture file name to the FLT Texture Palette. By default, the exporter doesn't strip the path, and the name written to the Texture Palette is taken directly from the osg::Image object referenced by the osg::Texture2D StateAttribute." );
+            supportsOption( "version=<ver>", "Export option: Specifies the version of the output OpenFlight file. Supported values include 15.7, 15.8, and 16.1. Default is 16.1. Example: \"version=15.8\"." );
+            supportsOption( "units=<units>", "Export option: Specifies the contents of the Units field of the OpenFliht header record. Valid values include INCHES, FEET, METERS, KILOMETERS, and NATICAL_MILES. Default is METERS. Example: \"units=METERS\"." );
+            supportsOption( "validate", "Export option: If present in the Options string, the plugin does not write an OpenFlight file. Instead, it returns an indication of the scene graph's suitability for OpenFlight export." );
+            supportsOption( "tempDir=<dir>", "Export option: Specifies the directory to use for creation of temporary files. If not specified, the directory is taken from the file name. If the file doesn't contain a path, the current working directory is used. Applications should set this to the name of their app-specific temp directory. If the path contains spaces, use double quotes to ensure correct parsing. Examples: \"tempDir=/tmp\", \"tempDir=\"C:\\My Temp Dir\"." );
+            supportsOption( "lighting=<ON|OFF>", "Export option: Specifies a default enable/disable state for lighting, for Nodes in the exported scene graph that don't set it explicitly. By default, the exporter assumes lighting is enabled (GL_LIGHTING ON). Set this to either ON or OFF. Example: \"lighting=OFF\"." );
+            supportsOption( "stripTextureFilePath", "Export option: If present in the Options string, the exporter strips the path from texture file names, and writes only the texture file name to the FLT Texture Palette. By default, the exporter doesn't strip the path, and the name written to the Texture Palette is taken directly from the osg::Image object referenced by the osg::Texture2D StateAttribute." );
         }
 
         virtual const char* className() const { return "FLT Reader/Writer"; }

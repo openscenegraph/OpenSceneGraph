@@ -1,0 +1,59 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+// $Id: Label 59 2008-05-15 20:55:31Z cubicool $
+
+#ifndef OSGWIDGET_LABEL
+#define OSGWIDGET_LABEL
+
+#include <osgText/Text>
+#include <osgWidget/Widget>
+#include <osgWidget/Window>
+
+namespace osgWidget {
+
+class OSGWIDGET_EXPORT Label: public Widget {
+	unsigned int _textIndex;
+
+protected:
+	osg::ref_ptr<osgText::Text> _text;
+
+	virtual void _calculateSize(const XYCoord&);
+
+public:
+	META_Object   (osgWidget, Label);
+	META_UIObject (Label);
+
+	Label (const std::string& = "", const std::string& = "");
+	Label (const Label&, const osg::CopyOp&);
+
+	virtual void parented   (Window*);
+	virtual void unparented (Window*);
+	virtual void managed    (WindowManager*);
+	virtual void positioned ();
+
+	void update       ();
+	void setLabel     (const std::string&);
+	void setFont      (const std::string&);
+	void setFontSize  (unsigned int);
+	void setFontColor (const Color&);
+	void setShadow    (point_type);
+
+	XYCoord getTextSize() const;
+
+	std::string getLabel() const {
+		return _text->getText().createUTF8EncodedString();
+	}
+
+	void setFontColor(point_type r, point_type g, point_type b, point_type a) {
+		setFontColor(Color(r, g, b, a));
+	}
+
+	// For now you only get a const pointer, because we have a highly specific
+	// interface with the osgText library.
+	const osgText::Text* getText() const {
+		return _text.get();
+	}
+};
+
+}
+
+#endif

@@ -1,0 +1,39 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+// $Id: Box 46 2008-04-30 16:11:51Z cubicool $
+
+#ifndef OSGWIDGET_BOX
+#define OSGWIDGET_BOX
+
+#include <osgWidget/Window>
+
+namespace osgWidget {
+
+class OSGWIDGET_EXPORT Box: public Window {
+public:
+	enum BOX_TYPE {
+		VERTICAL,
+		HORIZONTAL
+	};
+
+private:
+	BOX_TYPE     _boxType;
+	bool         _uniform;
+	unsigned int _lastAdd;
+
+protected:
+	virtual void _resizeImplementation(point_type, point_type);
+
+	virtual Sizes _getWidthImplementation  () const;
+	virtual Sizes _getHeightImplementation () const;
+
+public:
+	META_Object   (osgWidget, Box);
+	META_UIObject (Box);
+
+	Box (const std::string& = "", BOX_TYPE = HORIZONTAL, bool = false);
+	Box (const Box&, const osg::CopyOp&);
+};
+
+}
+
+#endif

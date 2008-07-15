@@ -1,0 +1,28 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+// $Id: Python 2 2008-01-24 16:11:26Z cubicool $
+
+#ifndef OSGWIDGET_PYTHON
+#define OSGWIDGET_PYTHON
+
+#include <osgWidget/WindowManager>
+
+namespace osgWidget {
+
+struct PythonEngineData;
+
+class OSGWIDGET_EXPORT PythonEngine: public ScriptEngine {
+	PythonEngineData* _data;
+	WindowManager*    _wm;
+
+public:
+	PythonEngine(WindowManager* = 0);
+
+	bool initialize ();
+	bool close      ();
+	bool eval       (const std::string&);
+	bool runFile    (const std::string&);
+};
+
+}
+
+#endif

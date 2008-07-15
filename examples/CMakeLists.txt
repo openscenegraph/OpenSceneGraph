@@ -162,7 +162,6 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgwidgetshader)
         ADD_SUBDIRECTORY(osgwidgetstyled)
         ADD_SUBDIRECTORY(osgwidgettable)
-        ADD_SUBDIRECTORY(osgwidgetversion)
         ADD_SUBDIRECTORY(osgwidgetwindow)
     ENDIF(BUILD_OSGWIDGET)
 

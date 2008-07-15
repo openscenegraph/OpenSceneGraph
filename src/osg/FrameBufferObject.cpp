@@ -659,11 +659,6 @@ FrameBufferObject::~FrameBufferObject()
     }
 }
 
-void FrameBufferObject::setAttachment(GLenum attachment_point, const FrameBufferAttachment &attachment)
-{
-    setAttachment(convertGLenumToBufferComponent(attachment_point),attachment);
-}
-
 void FrameBufferObject::setAttachment(BufferComponent attachment_point, const FrameBufferAttachment &attachment)
 {
     GLenum gl_attachment = convertBufferComponentToGLenum(attachment_point);
@@ -682,17 +677,6 @@ GLenum FrameBufferObject::convertBufferComponentToGLenum(BufferComponent attachm
         case(Camera::STENCIL_BUFFER): return GL_STENCIL_ATTACHMENT_EXT;
         case(Camera::COLOR_BUFFER): return GL_COLOR_ATTACHMENT0_EXT;
         default: return GLenum(GL_COLOR_ATTACHMENT0_EXT + (attachment_point-Camera::COLOR_BUFFER0));
-    }
-}
-
-FrameBufferObject::BufferComponent FrameBufferObject::convertGLenumToBufferComponent(GLenum attachment_point) const
-{
-    switch(attachment_point)
-    {
-        case(GL_DEPTH_ATTACHMENT_EXT): return Camera::DEPTH_BUFFER;
-        case(GL_STENCIL_ATTACHMENT_EXT): return Camera::STENCIL_BUFFER;
-        case(GL_COLOR_ATTACHMENT0_EXT): return Camera::COLOR_BUFFER;
-        default: return BufferComponent(Camera::COLOR_BUFFER0+(attachment_point-GL_COLOR_ATTACHMENT0_EXT));
     }
 }
 

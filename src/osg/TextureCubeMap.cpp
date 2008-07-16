@@ -227,7 +227,7 @@ void TextureCubeMap::apply(State& state) const
             _textureWidth = _textureHeight = minimum( _textureWidth , _textureHeight );
         }
 
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
+        textureObject = generateTextureObject(
                 contextID,GL_TEXTURE_CUBE_MAP,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
         
         textureObject->bind();
@@ -252,6 +252,8 @@ void TextureCubeMap::apply(State& state) const
 
 
         }
+
+        _textureObjectBuffer[contextID] = textureObject;
 
         if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded())
         {

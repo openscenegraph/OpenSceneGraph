@@ -184,7 +184,7 @@ void Texture2D::apply(State& state) const
         computeRequiredTextureDimensions(state,*image,_textureWidth, _textureHeight, _numMipmapLevels);
         
         
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
+         textureObject = generateTextureObject(
                 contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
         
         textureObject->bind();
@@ -210,6 +210,7 @@ void Texture2D::apply(State& state) const
         // update the modified tag to show that it is upto date.
         getModifiedCount(contextID) = image->getModifiedCount();
 
+        _textureObjectBuffer[contextID] = textureObject;
 
         if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && image->getDataVariance()==STATIC)
         {

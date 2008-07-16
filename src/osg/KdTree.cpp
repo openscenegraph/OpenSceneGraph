@@ -176,7 +176,7 @@ void BuildKdTree::computeDivisions(KdTree::BuildOptions& options)
 
     _axisStack.reserve(options._maxNumLevels);
  
-    for(int level=0; level<options._maxNumLevels; ++level)
+    for(unsigned int level=0; level<options._maxNumLevels; ++level)
     {
         int axis = 0;
         if (dimensions[0]>=dimensions[1])
@@ -205,7 +205,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
     KdTree::KdNode& node = _kdTree.getNode(nodeIndex);
 
     bool needToDivide = level < _axisStack.size() &&
-                        (node.first<0 && node.second>options._targetNumTrianglesPerLeaf);
+                        (node.first<0 && static_cast<unsigned int>(node.second)>options._targetNumTrianglesPerLeaf);
                         
     if (!needToDivide)
     {

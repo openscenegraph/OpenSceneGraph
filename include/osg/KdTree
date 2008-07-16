@@ -38,9 +38,9 @@ class OSG_EXPORT KdTree : public osg::Shape
         {
             BuildOptions();
                         
-            int _numVerticesProcessed;
-            int _targetNumTrianglesPerLeaf;
-            int _maxNumLevels;
+            unsigned int _numVerticesProcessed;
+            unsigned int _targetNumTrianglesPerLeaf;
+            unsigned int _maxNumLevels;
         };
         
         

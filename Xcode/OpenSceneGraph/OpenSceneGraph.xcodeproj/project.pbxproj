@@ -171,6 +171,7 @@
 				D4C6F29B0B8317930052E667 /* PBXTargetDependency */,
 				00A79F930BE69E1100F7C39E /* PBXTargetDependency */,
 				D47A06F70B83412100E19024 /* PBXTargetDependency */,
+				D43AB63D0E2E1EAC00623C77 /* PBXTargetDependency */,
 			);
 			name = osgFrameworks;
 			productName = osgFrameworks;
@@ -2289,6 +2290,59 @@
 		D42FE58A0B542DD10058A380 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		D42FE58B0B542DD10058A380 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D42FE7CF0B56521B0058A380 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		D43AB4EC0E2E01CB00623C77 /* KdTree in Headers */ = {isa = PBXBuildFile; fileRef = D43AB4EB0E2E01CB00623C77 /* KdTree */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB4EE0E2E01DD00623C77 /* KdTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB4ED0E2E01DD00623C77 /* KdTree.cpp */; };
+		D43AB4FA0E2E14F800623C77 /* FadeText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB4F60E2E14F800623C77 /* FadeText.cpp */; };
+		D43AB4FB0E2E14F800623C77 /* FadeText.h in Headers */ = {isa = PBXBuildFile; fileRef = D43AB4F70E2E14F800623C77 /* FadeText.h */; };
+		D43AB4FC0E2E14F800623C77 /* Text3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB4F80E2E14F800623C77 /* Text3D.cpp */; };
+		D43AB4FD0E2E14F800623C77 /* Text3D.h in Headers */ = {isa = PBXBuildFile; fileRef = D43AB4F90E2E14F800623C77 /* Text3D.h */; };
+		D43AB50F0E2E17C800623C77 /* PluginQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB50D0E2E17C800623C77 /* PluginQuery.cpp */; };
+		D43AB5100E2E17C800623C77 /* PluginQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = D43AB50E0E2E17C800623C77 /* PluginQuery.h */; };
+		D43AB5590E2E1D1900623C77 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
+		D43AB55A0E2E1D1900623C77 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
+		D43AB55B0E2E1D1900623C77 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		D43AB55C0E2E1D1900623C77 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		D43AB55D0E2E1D1900623C77 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		D43AB55E0E2E1D1900623C77 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
+		D43AB55F0E2E1D1900623C77 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0037A02D0C18D74C0089AA1C /* OpenThreads.framework */; };
+		D43AB5E30E2E1DD400623C77 /* Box in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5CE0E2E1DD200623C77 /* Box */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5E40E2E1DD400623C77 /* Canvas in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5CF0E2E1DD200623C77 /* Canvas */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5E50E2E1DD400623C77 /* EventInterface in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5D00E2E1DD200623C77 /* EventInterface */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5E60E2E1DD400623C77 /* Export in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5D10E2E1DD200623C77 /* Export */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5E70E2E1DD400623C77 /* Frame in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5D20E2E1DD200623C77 /* Frame */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5E80E2E1DD400623C77 /* Input in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5D30E2E1DD200623C77 /* Input */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5E90E2E1DD400623C77 /* Label in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5D40E2E1DD200623C77 /* Label */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5EA0E2E1DD400623C77 /* Lua in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5D50E2E1DD200623C77 /* Lua */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5EB0E2E1DD400623C77 /* Python in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5D60E2E1DD300623C77 /* Python */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5EC0E2E1DD400623C77 /* ScriptEngine in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5D70E2E1DD300623C77 /* ScriptEngine */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5ED0E2E1DD400623C77 /* StyleInterface in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5D80E2E1DD300623C77 /* StyleInterface */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5EE0E2E1DD400623C77 /* StyleManager in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5D90E2E1DD300623C77 /* StyleManager */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5EF0E2E1DD400623C77 /* Table in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5DA0E2E1DD300623C77 /* Table */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5F00E2E1DD400623C77 /* Types in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5DB0E2E1DD300623C77 /* Types */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5F10E2E1DD400623C77 /* UIObjectParent in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5DC0E2E1DD300623C77 /* UIObjectParent */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5F20E2E1DD400623C77 /* Util in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5DD0E2E1DD300623C77 /* Util */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5F30E2E1DD400623C77 /* Version in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5DE0E2E1DD300623C77 /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5F40E2E1DD400623C77 /* ViewerEventHandlers in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5DF0E2E1DD300623C77 /* ViewerEventHandlers */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5F50E2E1DD400623C77 /* Widget in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5E00E2E1DD300623C77 /* Widget */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5F60E2E1DD400623C77 /* Window in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5E10E2E1DD400623C77 /* Window */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB5F70E2E1DD400623C77 /* WindowManager in Headers */ = {isa = PBXBuildFile; fileRef = D43AB5E20E2E1DD400623C77 /* WindowManager */; settings = {ATTRIBUTES = (Public, ); }; };
+		D43AB60A0E2E1E0000623C77 /* Box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB5FA0E2E1DFF00623C77 /* Box.cpp */; };
+		D43AB60B0E2E1E0000623C77 /* Canvas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB5FB0E2E1DFF00623C77 /* Canvas.cpp */; };
+		D43AB60C0E2E1E0000623C77 /* CMakeLists.txt in Resources */ = {isa = PBXBuildFile; fileRef = D43AB5FC0E2E1DFF00623C77 /* CMakeLists.txt */; };
+		D43AB60D0E2E1E0000623C77 /* Frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB5FD0E2E1DFF00623C77 /* Frame.cpp */; };
+		D43AB60E0E2E1E0000623C77 /* Input.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB5FE0E2E1DFF00623C77 /* Input.cpp */; };
+		D43AB60F0E2E1E0000623C77 /* Label.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB5FF0E2E1DFF00623C77 /* Label.cpp */; };
+		D43AB6100E2E1E0000623C77 /* Lua.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6000E2E1DFF00623C77 /* Lua.cpp */; };
+		D43AB6110E2E1E0000623C77 /* Python.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6010E2E1DFF00623C77 /* Python.cpp */; };
+		D43AB6120E2E1E0000623C77 /* StyleManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6020E2E1DFF00623C77 /* StyleManager.cpp */; };
+		D43AB6130E2E1E0000623C77 /* Table.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6030E2E1DFF00623C77 /* Table.cpp */; };
+		D43AB6140E2E1E0000623C77 /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6040E2E1DFF00623C77 /* Util.cpp */; };
+		D43AB6150E2E1E0000623C77 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6050E2E1E0000623C77 /* Version.cpp */; };
+		D43AB6160E2E1E0000623C77 /* ViewerEventHandlers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6060E2E1E0000623C77 /* ViewerEventHandlers.cpp */; };
+		D43AB6170E2E1E0000623C77 /* Widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6070E2E1E0000623C77 /* Widget.cpp */; };
+		D43AB6180E2E1E0000623C77 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6080E2E1E0000623C77 /* Window.cpp */; };
+		D43AB6190E2E1E0000623C77 /* WindowManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6090E2E1E0000623C77 /* WindowManager.cpp */; };
+		D43AB6400E2E1ED600623C77 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4456E520D4F674E005E986E /* osgtext3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4456E510D4F674E005E986E /* osgtext3D.cpp */; };
 		D44F2AA80DA11DD2009144E7 /* TerrainTile in Resources */ = {isa = PBXBuildFile; fileRef = D44F2AA70DA11DD2009144E7 /* TerrainTile */; };
 		D44F2AAA0DA11DED009144E7 /* TerrainTile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AA90DA11DED009144E7 /* TerrainTile.cpp */; };
@@ -5755,6 +5809,48 @@
 			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
 			remoteInfo = osgViewer;
 		};
+		D43AB5200E2E1D1900623C77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE117FB205D63B3800EB53E5;
+			remoteInfo = osg;
+		};
+		D43AB5220E2E1D1900623C77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11849905D7126100EB53E5;
+			remoteInfo = osgUtil;
+		};
+		D43AB5240E2E1D1900623C77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00557CDF0624A947000A808A;
+			remoteInfo = osgGA;
+		};
+		D43AB5260E2E1D1900623C77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE1188E605D764C400EB53E5;
+			remoteInfo = osgDB;
+		};
+		D43AB5280E2E1D1900623C77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11876905D75C2700EB53E5;
+			remoteInfo = osgText;
+		};
+		D43AB63C0E2E1EAC00623C77 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D43AB51E0E2E1D1900623C77 /* osgWidget */;
+			remoteInfo = osgWidget;
+		};
 		D47A06570B833F6E00E19024 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -7487,6 +7583,53 @@
 		D41CA8FF0CAAB58F00D6176C /* ParallelSplitShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ParallelSplitShadowMap.cpp; sourceTree = "<group>"; };
 		D41CA9010CAAB5A500D6176C /* ParallelSplitShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ParallelSplitShadowMap; sourceTree = "<group>"; };
 		D425C8290E14F49F004E88FE /* Atomic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Atomic.cpp; path = common/Atomic.cpp; sourceTree = "<group>"; };
+		D43AB4EB0E2E01CB00623C77 /* KdTree */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = KdTree; sourceTree = "<group>"; };
+		D43AB4ED0E2E01DD00623C77 /* KdTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KdTree.cpp; sourceTree = "<group>"; };
+		D43AB4F60E2E14F800623C77 /* FadeText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FadeText.cpp; sourceTree = "<group>"; };
+		D43AB4F70E2E14F800623C77 /* FadeText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FadeText.h; sourceTree = "<group>"; };
+		D43AB4F80E2E14F800623C77 /* Text3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Text3D.cpp; sourceTree = "<group>"; };
+		D43AB4F90E2E14F800623C77 /* Text3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Text3D.h; sourceTree = "<group>"; };
+		D43AB50D0E2E17C800623C77 /* PluginQuery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginQuery.cpp; sourceTree = "<group>"; };
+		D43AB50E0E2E17C800623C77 /* PluginQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginQuery.h; sourceTree = "<group>"; };
+		D43AB5640E2E1D1900623C77 /* osgWidget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgWidget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D43AB5750E2E1D1A00623C77 /* osgManipulator-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "osgManipulator-Info copy.plist"; sourceTree = "<group>"; };
+		D43AB5CE0E2E1DD200623C77 /* Box */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Box; sourceTree = "<group>"; };
+		D43AB5CF0E2E1DD200623C77 /* Canvas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Canvas; sourceTree = "<group>"; };
+		D43AB5D00E2E1DD200623C77 /* EventInterface */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = EventInterface; sourceTree = "<group>"; };
+		D43AB5D10E2E1DD200623C77 /* Export */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Export; sourceTree = "<group>"; };
+		D43AB5D20E2E1DD200623C77 /* Frame */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Frame; sourceTree = "<group>"; };
+		D43AB5D30E2E1DD200623C77 /* Input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Input; sourceTree = "<group>"; };
+		D43AB5D40E2E1DD200623C77 /* Label */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Label; sourceTree = "<group>"; };
+		D43AB5D50E2E1DD200623C77 /* Lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Lua; sourceTree = "<group>"; };
+		D43AB5D60E2E1DD300623C77 /* Python */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Python; sourceTree = "<group>"; };
+		D43AB5D70E2E1DD300623C77 /* ScriptEngine */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ScriptEngine; sourceTree = "<group>"; };
+		D43AB5D80E2E1DD300623C77 /* StyleInterface */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = StyleInterface; sourceTree = "<group>"; };
+		D43AB5D90E2E1DD300623C77 /* StyleManager */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = StyleManager; sourceTree = "<group>"; };
+		D43AB5DA0E2E1DD300623C77 /* Table */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Table; sourceTree = "<group>"; };
+		D43AB5DB0E2E1DD300623C77 /* Types */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Types; sourceTree = "<group>"; };
+		D43AB5DC0E2E1DD300623C77 /* UIObjectParent */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = UIObjectParent; sourceTree = "<group>"; };
+		D43AB5DD0E2E1DD300623C77 /* Util */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Util; sourceTree = "<group>"; };
+		D43AB5DE0E2E1DD300623C77 /* Version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Version; sourceTree = "<group>"; };
+		D43AB5DF0E2E1DD300623C77 /* ViewerEventHandlers */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ViewerEventHandlers; sourceTree = "<group>"; };
+		D43AB5E00E2E1DD300623C77 /* Widget */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Widget; sourceTree = "<group>"; };
+		D43AB5E10E2E1DD400623C77 /* Window */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Window; sourceTree = "<group>"; };
+		D43AB5E20E2E1DD400623C77 /* WindowManager */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WindowManager; sourceTree = "<group>"; };
+		D43AB5FA0E2E1DFF00623C77 /* Box.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Box.cpp; sourceTree = "<group>"; };
+		D43AB5FB0E2E1DFF00623C77 /* Canvas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Canvas.cpp; sourceTree = "<group>"; };
+		D43AB5FC0E2E1DFF00623C77 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		D43AB5FD0E2E1DFF00623C77 /* Frame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Frame.cpp; sourceTree = "<group>"; };
+		D43AB5FE0E2E1DFF00623C77 /* Input.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Input.cpp; sourceTree = "<group>"; };
+		D43AB5FF0E2E1DFF00623C77 /* Label.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Label.cpp; sourceTree = "<group>"; };
+		D43AB6000E2E1DFF00623C77 /* Lua.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Lua.cpp; sourceTree = "<group>"; };
+		D43AB6010E2E1DFF00623C77 /* Python.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Python.cpp; sourceTree = "<group>"; };
+		D43AB6020E2E1DFF00623C77 /* StyleManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StyleManager.cpp; sourceTree = "<group>"; };
+		D43AB6030E2E1DFF00623C77 /* Table.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Table.cpp; sourceTree = "<group>"; };
+		D43AB6040E2E1DFF00623C77 /* Util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Util.cpp; sourceTree = "<group>"; };
+		D43AB6050E2E1E0000623C77 /* Version.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Version.cpp; sourceTree = "<group>"; };
+		D43AB6060E2E1E0000623C77 /* ViewerEventHandlers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ViewerEventHandlers.cpp; sourceTree = "<group>"; };
+		D43AB6070E2E1E0000623C77 /* Widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Widget.cpp; sourceTree = "<group>"; };
+		D43AB6080E2E1E0000623C77 /* Window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Window.cpp; sourceTree = "<group>"; };
+		D43AB6090E2E1E0000623C77 /* WindowManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WindowManager.cpp; sourceTree = "<group>"; };
 		D4456E510D4F674E005E986E /* osgtext3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osgtext3D.cpp; path = ../../examples/osgtext3D/osgtext3D.cpp; sourceTree = SOURCE_ROOT; };
 		D44F2AA70DA11DD2009144E7 /* TerrainTile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TerrainTile; sourceTree = "<group>"; };
 		D44F2AA90DA11DED009144E7 /* TerrainTile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainTile.cpp; path = ../../src/osgTerrain/TerrainTile.cpp; sourceTree = SOURCE_ROOT; };
@@ -9394,6 +9537,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D43AB5580E2E1D1900623C77 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43AB5590E2E1D1900623C77 /* osgText.framework in Frameworks */,
+				D43AB55A0E2E1D1900623C77 /* OpenGL.framework in Frameworks */,
+				D43AB55B0E2E1D1900623C77 /* osg.framework in Frameworks */,
+				D43AB55C0E2E1D1900623C77 /* osgUtil.framework in Frameworks */,
+				D43AB55D0E2E1D1900623C77 /* osgDB.framework in Frameworks */,
+				D43AB55E0E2E1D1900623C77 /* osgGA.framework in Frameworks */,
+				D43AB6400E2E1ED600623C77 /* osgViewer.framework in Frameworks */,
+				D43AB55F0E2E1D1900623C77 /* OpenThreads.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D47A06750B833F6E00E19024 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -11173,6 +11331,8 @@
 		00A14C81084E573A000150AD /* osgconv */ = {
 			isa = PBXGroup;
 			children = (
+				D43AB50D0E2E17C800623C77 /* PluginQuery.cpp */,
+				D43AB50E0E2E17C800623C77 /* PluginQuery.h */,
 				00A14C84084E573B000150AD /* OrientationConverter.cpp */,
 				00A14C85084E573C000150AD /* OrientationConverter.h */,
 				00A14C86084E573C000150AD /* osgconv.cpp */,
@@ -11713,6 +11873,7 @@
 				0084FBA60D3425180021E5C9 /* osgdb_osgViewer.so */,
 				0084FBDF0D3426180021E5C9 /* osgdb_osgTerrain.so */,
 				0084FC610D3427B70021E5C9 /* osgdb_cfg.so */,
+				D43AB5640E2E1D1900623C77 /* osgWidget.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -11727,6 +11888,7 @@
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				034768DDFF38A45A11DB9C8B /* Products */,
+				D43AB5750E2E1D1A00623C77 /* osgManipulator-Info copy.plist */,
 			);
 			name = OpenSceneGraph;
 			sourceTree = "<group>";
@@ -11779,6 +11941,7 @@
 				005583980624D257000A808A /* osgFX */,
 				00A14A1E084D51CE000150AD /* osgIntrospection */,
 				00FB210F0B015F4A0052DD79 /* osgViewer */,
+				D43AB5F90E2E1DFE00623C77 /* osgWidget */,
 				D4C6F28F0B83171D0052E667 /* osgShadow */,
 				D47A06B90B83406500E19024 /* osgManipulator */,
 				6320CCFE07845B7C00FE3D2C /* osgTerrain */,
@@ -11818,6 +11981,10 @@
 		5BC2F6820C44C99800671A68 /* ive */ = {
 			isa = PBXGroup;
 			children = (
+				D43AB4F60E2E14F800623C77 /* FadeText.cpp */,
+				D43AB4F70E2E14F800623C77 /* FadeText.h */,
+				D43AB4F80E2E14F800623C77 /* Text3D.cpp */,
+				D43AB4F90E2E14F800623C77 /* Text3D.h */,
 				D4AC4E2D0E0D26310032DD35 /* Fog.cpp */,
 				D4AC4E2E0E0D26320032DD35 /* Fog.h */,
 				D4AC4E2F0E0D26320032DD35 /* LineStipple.cpp */,
@@ -12061,6 +12228,7 @@
 		BE117FB705D63B8900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D43AB4ED0E2E01DD00623C77 /* KdTree.cpp */,
 				D4F092750D4BA9BD00BB1AC7 /* GL2Extensions.cpp */,
 				0084FA700D341D960021E5C9 /* OcclusionQueryNode.cpp */,
 				AC0CCB910C9F201E00BD0077 /* Texture2DArray.cpp */,
@@ -12210,6 +12378,7 @@
 				D4C6F26C0B8316D50052E667 /* osgShadow */,
 				D47A068E0B83404300E19024 /* osgManipulator */,
 				00A79F660BE69CCA00F7C39E /* osgTerrain */,
+				D43AB5CD0E2E1DA200623C77 /* osgWidget */,
 			);
 			name = Include;
 			sourceTree = "<group>";
@@ -12217,6 +12386,7 @@
 		BE1181ED05D63C0900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D43AB4EB0E2E01CB00623C77 /* KdTree */,
 				D4AC4E250E0D21560032DD35 /* Config */,
 				D47E10A00E0C44C000F6990A /* MixinVector */,
 				0084FA6E0D341D880021E5C9 /* OcclusionQueryNode */,
@@ -12560,6 +12730,59 @@
 			path = ../../include/osgDB;
 			sourceTree = "<group>";
 		};
+		D43AB5CD0E2E1DA200623C77 /* osgWidget */ = {
+			isa = PBXGroup;
+			children = (
+				D43AB5CE0E2E1DD200623C77 /* Box */,
+				D43AB5CF0E2E1DD200623C77 /* Canvas */,
+				D43AB5D00E2E1DD200623C77 /* EventInterface */,
+				D43AB5D10E2E1DD200623C77 /* Export */,
+				D43AB5D20E2E1DD200623C77 /* Frame */,
+				D43AB5D30E2E1DD200623C77 /* Input */,
+				D43AB5D40E2E1DD200623C77 /* Label */,
+				D43AB5D50E2E1DD200623C77 /* Lua */,
+				D43AB5D60E2E1DD300623C77 /* Python */,
+				D43AB5D70E2E1DD300623C77 /* ScriptEngine */,
+				D43AB5D80E2E1DD300623C77 /* StyleInterface */,
+				D43AB5D90E2E1DD300623C77 /* StyleManager */,
+				D43AB5DA0E2E1DD300623C77 /* Table */,
+				D43AB5DB0E2E1DD300623C77 /* Types */,
+				D43AB5DC0E2E1DD300623C77 /* UIObjectParent */,
+				D43AB5DD0E2E1DD300623C77 /* Util */,
+				D43AB5DE0E2E1DD300623C77 /* Version */,
+				D43AB5DF0E2E1DD300623C77 /* ViewerEventHandlers */,
+				D43AB5E00E2E1DD300623C77 /* Widget */,
+				D43AB5E10E2E1DD400623C77 /* Window */,
+				D43AB5E20E2E1DD400623C77 /* WindowManager */,
+			);
+			name = osgWidget;
+			path = ../../include/osgWidget;
+			sourceTree = "<group>";
+		};
+		D43AB5F90E2E1DFE00623C77 /* osgWidget */ = {
+			isa = PBXGroup;
+			children = (
+				D43AB5FA0E2E1DFF00623C77 /* Box.cpp */,
+				D43AB5FB0E2E1DFF00623C77 /* Canvas.cpp */,
+				D43AB5FC0E2E1DFF00623C77 /* CMakeLists.txt */,
+				D43AB5FD0E2E1DFF00623C77 /* Frame.cpp */,
+				D43AB5FE0E2E1DFF00623C77 /* Input.cpp */,
+				D43AB5FF0E2E1DFF00623C77 /* Label.cpp */,
+				D43AB6000E2E1DFF00623C77 /* Lua.cpp */,
+				D43AB6010E2E1DFF00623C77 /* Python.cpp */,
+				D43AB6020E2E1DFF00623C77 /* StyleManager.cpp */,
+				D43AB6030E2E1DFF00623C77 /* Table.cpp */,
+				D43AB6040E2E1DFF00623C77 /* Util.cpp */,
+				D43AB6050E2E1E0000623C77 /* Version.cpp */,
+				D43AB6060E2E1E0000623C77 /* ViewerEventHandlers.cpp */,
+				D43AB6070E2E1E0000623C77 /* Widget.cpp */,
+				D43AB6080E2E1E0000623C77 /* Window.cpp */,
+				D43AB6090E2E1E0000623C77 /* WindowManager.cpp */,
+			);
+			name = osgWidget;
+			path = ../../../OpenSceneGraph/src/osgWidget;
+			sourceTree = SOURCE_ROOT;
+		};
 		D47A068E0B83404300E19024 /* osgManipulator */ = {
 			isa = PBXGroup;
 			children = (
@@ -12770,6 +12993,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00A14C8A084E573D000150AD /* OrientationConverter.h in Headers */,
+				D43AB5100E2E17C800623C77 /* PluginQuery.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13213,6 +13437,8 @@
 				D44F2ADD0DA11E6D009144E7 /* TerrainTile.h in Headers */,
 				D4AC4E320E0D26320032DD35 /* Fog.h in Headers */,
 				D4AC4E340E0D26320032DD35 /* LineStipple.h in Headers */,
+				D43AB4FB0E2E14F800623C77 /* FadeText.h in Headers */,
+				D43AB4FD0E2E14F800623C77 /* Text3D.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14062,6 +14288,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D43AB4EC0E2E01CB00623C77 /* KdTree in Headers */,
 				D47E10A10E0C44C000F6990A /* MixinVector in Headers */,
 				D4AC4E260E0D21560032DD35 /* Config in Headers */,
 				0084FA6F0D341D880021E5C9 /* OcclusionQueryNode in Headers */,
@@ -14311,6 +14538,34 @@
 				BE11892E05D7665600EB53E5 /* SharedStateManager in Headers */,
 				BE11892F05D7665600EB53E5 /* Version in Headers */,
 				BE11893005D7665600EB53E5 /* WriteFile in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43AB5290E2E1D1900623C77 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43AB5E30E2E1DD400623C77 /* Box in Headers */,
+				D43AB5E40E2E1DD400623C77 /* Canvas in Headers */,
+				D43AB5E50E2E1DD400623C77 /* EventInterface in Headers */,
+				D43AB5E60E2E1DD400623C77 /* Export in Headers */,
+				D43AB5E70E2E1DD400623C77 /* Frame in Headers */,
+				D43AB5E80E2E1DD400623C77 /* Input in Headers */,
+				D43AB5E90E2E1DD400623C77 /* Label in Headers */,
+				D43AB5EA0E2E1DD400623C77 /* Lua in Headers */,
+				D43AB5EB0E2E1DD400623C77 /* Python in Headers */,
+				D43AB5EC0E2E1DD400623C77 /* ScriptEngine in Headers */,
+				D43AB5ED0E2E1DD400623C77 /* StyleInterface in Headers */,
+				D43AB5EE0E2E1DD400623C77 /* StyleManager in Headers */,
+				D43AB5EF0E2E1DD400623C77 /* Table in Headers */,
+				D43AB5F00E2E1DD400623C77 /* Types in Headers */,
+				D43AB5F10E2E1DD400623C77 /* UIObjectParent in Headers */,
+				D43AB5F20E2E1DD400623C77 /* Util in Headers */,
+				D43AB5F30E2E1DD400623C77 /* Version in Headers */,
+				D43AB5F40E2E1DD400623C77 /* ViewerEventHandlers in Headers */,
+				D43AB5F50E2E1DD400623C77 /* Widget in Headers */,
+				D43AB5F60E2E1DD400623C77 /* Window in Headers */,
+				D43AB5F70E2E1DD400623C77 /* WindowManager in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17317,6 +17572,30 @@
 			productReference = BE1188E705D764C400EB53E5 /* osgDB.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		D43AB51E0E2E1D1900623C77 /* osgWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D43AB5600E2E1D1900623C77 /* Build configuration list for PBXNativeTarget "osgWidget" */;
+			buildPhases = (
+				D43AB5290E2E1D1900623C77 /* Headers */,
+				D43AB5400E2E1D1900623C77 /* Resources */,
+				D43AB5410E2E1D1900623C77 /* Sources */,
+				D43AB5570E2E1D1900623C77 /* Rez */,
+				D43AB5580E2E1D1900623C77 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D43AB51F0E2E1D1900623C77 /* PBXTargetDependency */,
+				D43AB5210E2E1D1900623C77 /* PBXTargetDependency */,
+				D43AB5230E2E1D1900623C77 /* PBXTargetDependency */,
+				D43AB5250E2E1D1900623C77 /* PBXTargetDependency */,
+				D43AB5270E2E1D1900623C77 /* PBXTargetDependency */,
+			);
+			name = osgWidget;
+			productName = osgGA;
+			productReference = D43AB5640E2E1D1900623C77 /* osgWidget.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		D47A06550B833F6E00E19024 /* osgManipulator */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D47A067D0B833F6E00E19024 /* Build configuration list for PBXNativeTarget "osgManipulator" */;
@@ -17433,6 +17712,7 @@
 				D4C6F2320B8316100052E667 /* osgShadow */,
 				6320CD0307845BC300FE3D2C /* osgTerrain */,
 				D47A06550B833F6E00E19024 /* osgManipulator */,
+				D43AB51E0E2E1D1900623C77 /* osgWidget */,
 				005585CE06261D98000A808A /* osgPlugins */,
 				001DFCAB065A901A003310BF /* osgdb_3dc */,
 				001DFD0A065A9455003310BF /* osgdb_ac */,
@@ -18252,6 +18532,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D43AB5400E2E1D1900623C77 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43AB60C0E2E1E0000623C77 /* CMakeLists.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D47A066A0B833F6E00E19024 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -18340,6 +18628,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BE1188E405D764C400EB53E5 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43AB5570E2E1D1900623C77 /* Rez */ = {
 			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -18476,6 +18771,7 @@
 			files = (
 				00A14C89084E573D000150AD /* OrientationConverter.cpp in Sources */,
 				00A14C8B084E573D000150AD /* osgconv.cpp in Sources */,
+				D43AB50F0E2E17C800623C77 /* PluginQuery.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19091,6 +19387,8 @@
 				D44F2ADC0DA11E6D009144E7 /* TerrainTile.cpp in Sources */,
 				D4AC4E310E0D26320032DD35 /* Fog.cpp in Sources */,
 				D4AC4E330E0D26320032DD35 /* LineStipple.cpp in Sources */,
+				D43AB4FA0E2E14F800623C77 /* FadeText.cpp in Sources */,
+				D43AB4FC0E2E14F800623C77 /* Text3D.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20096,6 +20394,7 @@
 				AC0CCB920C9F201E00BD0077 /* Texture2DArray.cpp in Sources */,
 				0084FA710D341D960021E5C9 /* OcclusionQueryNode.cpp in Sources */,
 				D4F092760D4BA9BD00BB1AC7 /* GL2Extensions.cpp in Sources */,
+				D43AB4EE0E2E01DD00623C77 /* KdTree.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20178,6 +20477,28 @@
 				BE11890A05D765CE00EB53E5 /* WriteFile.cpp in Sources */,
 				008F446C06CBF99E00F4220C /* ReaderWriter.cpp in Sources */,
 				00E28145076766DA005AEE61 /* Archive.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43AB5410E2E1D1900623C77 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43AB60A0E2E1E0000623C77 /* Box.cpp in Sources */,
+				D43AB60B0E2E1E0000623C77 /* Canvas.cpp in Sources */,
+				D43AB60D0E2E1E0000623C77 /* Frame.cpp in Sources */,
+				D43AB60E0E2E1E0000623C77 /* Input.cpp in Sources */,
+				D43AB60F0E2E1E0000623C77 /* Label.cpp in Sources */,
+				D43AB6100E2E1E0000623C77 /* Lua.cpp in Sources */,
+				D43AB6110E2E1E0000623C77 /* Python.cpp in Sources */,
+				D43AB6120E2E1E0000623C77 /* StyleManager.cpp in Sources */,
+				D43AB6130E2E1E0000623C77 /* Table.cpp in Sources */,
+				D43AB6140E2E1E0000623C77 /* Util.cpp in Sources */,
+				D43AB6150E2E1E0000623C77 /* Version.cpp in Sources */,
+				D43AB6160E2E1E0000623C77 /* ViewerEventHandlers.cpp in Sources */,
+				D43AB6170E2E1E0000623C77 /* Widget.cpp in Sources */,
+				D43AB6180E2E1E0000623C77 /* Window.cpp in Sources */,
+				D43AB6190E2E1E0000623C77 /* WindowManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22953,6 +23274,36 @@
 			isa = PBXTargetDependency;
 			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
 			targetProxy = D42FE6B00B5561FE0058A380 /* PBXContainerItemProxy */;
+		};
+		D43AB51F0E2E1D1900623C77 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE117FB205D63B3800EB53E5 /* osg */;
+			targetProxy = D43AB5200E2E1D1900623C77 /* PBXContainerItemProxy */;
+		};
+		D43AB5210E2E1D1900623C77 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11849905D7126100EB53E5 /* osgUtil */;
+			targetProxy = D43AB5220E2E1D1900623C77 /* PBXContainerItemProxy */;
+		};
+		D43AB5230E2E1D1900623C77 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00557CDF0624A947000A808A /* osgGA */;
+			targetProxy = D43AB5240E2E1D1900623C77 /* PBXContainerItemProxy */;
+		};
+		D43AB5250E2E1D1900623C77 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE1188E605D764C400EB53E5 /* osgDB */;
+			targetProxy = D43AB5260E2E1D1900623C77 /* PBXContainerItemProxy */;
+		};
+		D43AB5270E2E1D1900623C77 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11876905D75C2700EB53E5 /* osgText */;
+			targetProxy = D43AB5280E2E1D1900623C77 /* PBXContainerItemProxy */;
+		};
+		D43AB63D0E2E1EAC00623C77 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D43AB51E0E2E1D1900623C77 /* osgWidget */;
+			targetProxy = D43AB63C0E2E1EAC00623C77 /* PBXContainerItemProxy */;
 		};
 		D47A06560B833F6E00E19024 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -36139,6 +36490,84 @@
 			};
 			name = Default;
 		};
+		D43AB5610E2E1D1900623C77 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = osgWidget.plist;
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_CFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgWidget;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		D43AB5620E2E1D1900623C77 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "/Users/stephan/Documents/Projekte/cefix/3rdParty/osg.current/Xcode/OpenSceneGraph/osgManipulator-Info copy.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_CFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgManipulator;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		D43AB5630E2E1D1900623C77 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "/Users/stephan/Documents/Projekte/cefix/3rdParty/osg.current/Xcode/OpenSceneGraph/osgManipulator-Info copy.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_CFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgManipulator;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
 		D47A067E0B833F6E00E19024 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -37967,6 +38396,16 @@
 				5BDF58FB0C1FF8C4008DDEC0 /* Development */,
 				5BDF58FC0C1FF8C4008DDEC0 /* Deployment */,
 				5BDF58FD0C1FF8C4008DDEC0 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		D43AB5600E2E1D1900623C77 /* Build configuration list for PBXNativeTarget "osgWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D43AB5610E2E1D1900623C77 /* Development */,
+				D43AB5620E2E1D1900623C77 /* Deployment */,
+				D43AB5630E2E1D1900623C77 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

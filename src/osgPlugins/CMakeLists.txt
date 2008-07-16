@@ -45,7 +45,6 @@ ADD_SUBDIRECTORY(rot)
 ADD_SUBDIRECTORY(scale)
 ADD_SUBDIRECTORY(trans)
 ADD_SUBDIRECTORY(normals)
-ADD_SUBDIRECTORY(net)
 
 ############################################################
 #

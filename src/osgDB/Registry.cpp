@@ -1452,32 +1452,6 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         }
         else
         {
-            ReaderWriter* rw = getReaderWriterForExtension("net");
-            if (rw)
-            {
-                std::string serverName = getServerAddress(readFunctor._filename);
-                std::string serverFile = getServerFileName(readFunctor._filename);
-                osg::notify(osg::INFO)<<"Contains sever address : "<<serverName<<std::endl;
-                osg::notify(osg::INFO)<<"         file name on server : "<<serverFile<<std::endl;
-
-                if (serverName.empty())
-                {
-                    return ReaderWriter::ReadResult("Warning: Server address invalid.");
-                }
-
-                if (serverFile.empty())
-                {
-                    return ReaderWriter::ReadResult("Warning: Server file name invalid.");
-                }
-
-                std::string& filename = const_cast<std::string&>(readFunctor._filename);
-                filename = serverName+':'+serverFile;
-                return readFunctor.doRead(*rw);
-            }
-            else
-            {
-                return  ReaderWriter::ReadResult("Warning: Could not find the .net plugin to read from server.");
-            }
             return  ReaderWriter::ReadResult("Warning: Could not find the .curl plugin to read from server.");
         }
     }

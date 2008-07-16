@@ -43,13 +43,7 @@ void MultiTextureControl::setTextureWeight(unsigned int unit, float weight)
 
 void MultiTextureControl::updateStateSet()
 {
-#if 0
-    osg::StateSet* stateset = getOrCreateStateSet();
-    stateset->clear();
-#else
-    // temporary measure to avoid multi-threaded crash
-    osg::StateSet* stateset = new osg::StateSet;
-#endif
+    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
     
     unsigned int numTextureUnitsOn = 0;
     unsigned int unit;
@@ -151,6 +145,6 @@ void MultiTextureControl::updateStateSet()
         }
     } 
 
-    setStateSet(stateset);
+    setStateSet(stateset.get());
 }
 

@@ -123,7 +123,6 @@ namespace
                 cf->setMode(osg::CullFace::FRONT);
                 ss->setAttributeAndModes(cf.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-                _wf_lw->setWidth(2);
                 ss->setAttributeAndModes(_wf_lw.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
 
                 _wf_mat->setColorMode(osg::Material::OFF);
@@ -239,7 +238,6 @@ namespace
                 cf->setMode(osg::CullFace::FRONT);
                 ss->setAttributeAndModes(cf.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-                _wf_lw->setWidth(2);
                 ss->setAttributeAndModes(_wf_lw.get(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
 
                 _wf_mat->setColorMode(osg::Material::OFF);

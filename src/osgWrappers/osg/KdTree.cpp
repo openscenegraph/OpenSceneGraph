@@ -166,9 +166,9 @@ BEGIN_VALUE_REFLECTOR(osg::KdTree::BuildOptions)
 	I_Constructor0(____BuildOptions,
 	               "",
 	               "");
-	I_PublicMemberProperty(int, _numVerticesProcessed);
-	I_PublicMemberProperty(int, _targetNumTrianglesPerLeaf);
-	I_PublicMemberProperty(int, _maxNumLevels);
+	I_PublicMemberProperty(unsigned int, _numVerticesProcessed);
+	I_PublicMemberProperty(unsigned int, _targetNumTrianglesPerLeaf);
+	I_PublicMemberProperty(unsigned int, _maxNumLevels);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::KdTree::KdNode)

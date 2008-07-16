@@ -1590,11 +1590,6 @@
 		00E281BF07676CB7005AEE61 /* obj.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E281BD07676CB5005AEE61 /* obj.h */; };
 		00E281D507676D1E005AEE61 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		00E281D607676D1E005AEE61 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
-		00E281EE07676DFF005AEE61 /* ReaderWriterNET.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281E907676DF8005AEE61 /* ReaderWriterNET.cpp */; };
-		00E281EF07676DFF005AEE61 /* sockinet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281EA07676DFA005AEE61 /* sockinet.cpp */; };
-		00E281F007676DFF005AEE61 /* sockinet.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E281EB07676DFB005AEE61 /* sockinet.h */; };
-		00E281F107676DFF005AEE61 /* sockstream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281EC07676DFC005AEE61 /* sockstream.cpp */; };
-		00E281F207676DFF005AEE61 /* sockstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E281ED07676DFD005AEE61 /* sockstream.h */; };
 		00E281F507676E33005AEE61 /* NodeCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281F307676E30005AEE61 /* NodeCallback.cpp */; };
 		00E281F607676E33005AEE61 /* TexEnvFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281F407676E32005AEE61 /* TexEnvFilter.cpp */; };
 		00E2820507676E71005AEE61 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -5130,13 +5125,6 @@
 			remoteGlobalIDString = 00A15008084E6ABB000150AD;
 			remoteInfo = osgdb_hdr;
 		};
-		00A150E2084E6B76000150AD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 00E281CE07676D1E005AEE61;
-			remoteInfo = osgdb_net;
-		};
 		00A150E4084E6B76000150AD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -6988,12 +6976,6 @@
 		00E2814907676852005AEE61 /* NodeTrackerManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = NodeTrackerManipulator.cpp; path = ../../src/osgGA/NodeTrackerManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00E281BC07676CB4005AEE61 /* obj.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = obj.cpp; path = ../../src/osgPlugins/obj/obj.cpp; sourceTree = SOURCE_ROOT; };
 		00E281BD07676CB5005AEE61 /* obj.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = obj.h; path = ../../src/osgPlugins/obj/obj.h; sourceTree = SOURCE_ROOT; };
-		00E281D707676D1E005AEE61 /* osgdb_net.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_net.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		00E281E907676DF8005AEE61 /* ReaderWriterNET.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterNET.cpp; path = ../../src/osgPlugins/net/ReaderWriterNET.cpp; sourceTree = SOURCE_ROOT; };
-		00E281EA07676DFA005AEE61 /* sockinet.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = sockinet.cpp; path = ../../src/osgPlugins/net/sockinet.cpp; sourceTree = SOURCE_ROOT; };
-		00E281EB07676DFB005AEE61 /* sockinet.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = sockinet.h; path = ../../src/osgPlugins/net/sockinet.h; sourceTree = SOURCE_ROOT; };
-		00E281EC07676DFC005AEE61 /* sockstream.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = sockstream.cpp; path = ../../src/osgPlugins/net/sockstream.cpp; sourceTree = SOURCE_ROOT; };
-		00E281ED07676DFD005AEE61 /* sockstream.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = sockstream.h; path = ../../src/osgPlugins/net/sockstream.h; sourceTree = SOURCE_ROOT; };
 		00E281F307676E30005AEE61 /* NodeCallback.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = NodeCallback.cpp; path = ../../src/osgPlugins/osg/NodeCallback.cpp; sourceTree = SOURCE_ROOT; };
 		00E281F407676E32005AEE61 /* TexEnvFilter.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TexEnvFilter.cpp; path = ../../src/osgPlugins/osg/TexEnvFilter.cpp; sourceTree = SOURCE_ROOT; };
 		00E2820A07676E71005AEE61 /* osgdb_osga.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_osga.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -10918,7 +10900,6 @@
 				001D0099065AA622003310BF /* lwo */,
 				001D0130065AA83A003310BF /* lws */,
 				001D016C065AA940003310BF /* md2 */,
-				00E281E707676DF6005AEE61 /* net */,
 				0079502C09D363E1003FC8A1 /* normals */,
 				001D018E065AA9AB003310BF /* obj */,
 				006E24050AC0D3B900FBB48F /* OpenFlight */,
@@ -11470,19 +11451,6 @@
 			path = ../../examples/osgviewerCocoa;
 			sourceTree = SOURCE_ROOT;
 		};
-		00E281E707676DF6005AEE61 /* net */ = {
-			isa = PBXGroup;
-			children = (
-				00E281E907676DF8005AEE61 /* ReaderWriterNET.cpp */,
-				00E281EA07676DFA005AEE61 /* sockinet.cpp */,
-				00E281EB07676DFB005AEE61 /* sockinet.h */,
-				00E281EC07676DFC005AEE61 /* sockstream.cpp */,
-				00E281ED07676DFD005AEE61 /* sockstream.h */,
-			);
-			name = net;
-			path = ../../src/osgPlugins/net;
-			sourceTree = SOURCE_ROOT;
-		};
 		00E2820B07676EDB005AEE61 /* osga */ = {
 			isa = PBXGroup;
 			children = (
@@ -11824,7 +11792,6 @@
 				008F450606CC057500F4220C /* osgtessellate.app */,
 				008F451406CC059400F4220C /* osgcatch.app */,
 				008F452206CC05A500F4220C /* osgvolume.app */,
-				00E281D707676D1E005AEE61 /* osgdb_net.so */,
 				00E2820A07676E71005AEE61 /* osgdb_osga.so */,
 				00E2821C07676FEB005AEE61 /* osgdb_stl.so */,
 				00F238EF0767730700528CDD /* osgblendequation.app */,
@@ -14075,15 +14042,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BC1913B0C15F7AE002CF5BC /* SDLMainForMacOSX.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		00E281D007676D1E005AEE61 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00E281F007676DFF005AEE61 /* sockinet.h in Headers */,
-				00E281F207676DFF005AEE61 /* sockstream.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16961,24 +16919,6 @@
 			productReference = 00C59DA90B09343B00E9BCA1 /* osgviewerSDL.app */;
 			productType = "com.apple.product-type.application";
 		};
-		00E281CE07676D1E005AEE61 /* osgdb_net */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0011021108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_net" */;
-			buildPhases = (
-				00E281D007676D1E005AEE61 /* Headers */,
-				00E281D207676D1E005AEE61 /* Sources */,
-				00E281D407676D1E005AEE61 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				00E281CF07676D1E005AEE61 /* PBXTargetDependency */,
-			);
-			name = osgdb_net;
-			productName = osgdb_3dc;
-			productReference = 00E281D707676D1E005AEE61 /* osgdb_net.so */;
-			productType = "com.apple.product-type.library.dynamic";
-		};
 		00E281F707676E71005AEE61 /* osgdb_osga */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0011022908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_osga" */;
@@ -17732,7 +17672,6 @@
 				001D008A065AA5E1003310BF /* osgdb_lwo */,
 				001D0118065AA77F003310BF /* osgdb_lws */,
 				001D0163065AA8DA003310BF /* osgdb_md2 */,
-				00E281CE07676D1E005AEE61 /* osgdb_net */,
 				0079501409D362BF003FC8A1 /* osgdb_normals */,
 				001D017E065AA96C003310BF /* osgdb_obj */,
 				006E23730AC0D11D00FBB48F /* osgdb_OpenFlight */,
@@ -20023,16 +19962,6 @@
 			files = (
 				5BC1913A0C15F7AE002CF5BC /* osgviewerSDL.cpp in Sources */,
 				5BC1913C0C15F7AE002CF5BC /* SDLMainForMacOSX.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		00E281D207676D1E005AEE61 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00E281EE07676DFF005AEE61 /* ReaderWriterNET.cpp in Sources */,
-				00E281EF07676DFF005AEE61 /* sockinet.cpp in Sources */,
-				00E281F107676DFF005AEE61 /* sockstream.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22659,11 +22588,6 @@
 			isa = PBXTargetDependency;
 			target = 00A15008084E6ABB000150AD /* osgdb_hdr */;
 			targetProxy = 00A150E0084E6B76000150AD /* PBXContainerItemProxy */;
-		};
-		00A150E3084E6B76000150AD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 00E281CE07676D1E005AEE61 /* osgdb_net */;
-			targetProxy = 00A150E2084E6B76000150AD /* PBXContainerItemProxy */;
 		};
 		00A150E5084E6B76000150AD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -25673,96 +25597,6 @@
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgdb_md2;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-			};
-			name = Default;
-		};
-		0011021208736A190015C576 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DEBUGGING_SYMBOLS = YES;
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_net;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Development;
-		};
-		0011021308736A190015C576 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEPLOYMENT_POSTPROCESSING = YES;
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_net;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		0011021408736A190015C576 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = "";
-				DYLIB_CURRENT_VERSION = "";
-				EXECUTABLE_EXTENSION = so;
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				INSTALL_PATH = "@executable_path/../PlugIns";
-				LIBRARY_STYLE = BUNDLE;
-				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					OpenThreads,
-				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgdb_net;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
 			};
@@ -37159,16 +36993,6 @@
 				0011020E08736A190015C576 /* Development */,
 				0011020F08736A190015C576 /* Deployment */,
 				0011021008736A190015C576 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		0011021108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_net" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				0011021208736A190015C576 /* Development */,
-				0011021308736A190015C576 /* Deployment */,
-				0011021408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

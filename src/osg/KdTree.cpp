@@ -434,8 +434,12 @@ struct IntersectKdTree
     {
         _d = e - s;
         _length = _d.length();
-        _inverse_length = 1.0f/_length;
+        _inverse_length = _length!=0.0f ? 1.0f/_length : 0.0;
         _d *= _inverse_length;
+        
+        _d_invX = _d.x()!=0.0f ? _d/_d.x() : osg::Vec3(0.0f,0.0f,0.0f);
+        _d_invY = _d.y()!=0.0f ? _d/_d.y() : osg::Vec3(0.0f,0.0f,0.0f);
+        _d_invZ = _d.z()!=0.0f ? _d/_d.z() : osg::Vec3(0.0f,0.0f,0.0f);
     }
 
     void intersect(const KdTree::KdNode& node, const osg::Vec3& s, const osg::Vec3& e) const;
@@ -452,6 +456,10 @@ struct IntersectKdTree
     osg::Vec3 _d;
     float     _length;
     float     _inverse_length;
+    
+    osg::Vec3 _d_invX;
+    osg::Vec3 _d_invY;
+    osg::Vec3 _d_invZ;
 };
 
 
@@ -600,13 +608,13 @@ bool IntersectKdTree::intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::Bo
         if (s.x()<bb.xMin())
         {
             // clip s to xMin.
-            s = s+(e-s)*(bb.xMin()-s.x())/(e.x()-s.x());
+            s = s+_d_invX*(bb.xMin()-s.x());
         }
 
         if (e.x()>bb.xMax())
         {
             // clip e to xMax.
-            e = s+(e-s)*(bb.xMax()-s.x())/(e.x()-s.x());
+            e = s+_d_invX*(bb.xMax()-s.x());
         }
     }
     else
@@ -617,13 +625,13 @@ bool IntersectKdTree::intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::Bo
         if (e.x()<bb.xMin())
         {
             // clip s to xMin.
-            e = s+(e-s)*(bb.xMin()-s.x())/(e.x()-s.x());
+            e = s+_d_invX*(bb.xMin()-s.x());
         }
 
         if (s.x()>bb.xMax())
         {
             // clip e to xMax.
-            s = s+(e-s)*(bb.xMax()-s.x())/(e.x()-s.x());
+            s = s+_d_invX*(bb.xMax()-s.x());
         }
     }
 
@@ -638,13 +646,13 @@ bool IntersectKdTree::intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::Bo
         if (s.y()<bb.yMin())
         {
             // clip s to yMin.
-            s = s+(e-s)*(bb.yMin()-s.y())/(e.y()-s.y());
+            s = s+_d_invY*(bb.yMin()-s.y());
         }
 
         if (e.y()>bb.yMax())
         {
             // clip e to yMax.
-            e = s+(e-s)*(bb.yMax()-s.y())/(e.y()-s.y());
+            e = s+_d_invY*(bb.yMax()-s.y());
         }
     }
     else
@@ -655,13 +663,13 @@ bool IntersectKdTree::intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::Bo
         if (e.y()<bb.yMin())
         {
             // clip s to yMin.
-            e = s+(e-s)*(bb.yMin()-s.y())/(e.y()-s.y());
+            e = s+_d_invY*(bb.yMin()-s.y());
         }
 
         if (s.y()>bb.yMax())
         {
             // clip e to yMax.
-            s = s+(e-s)*(bb.yMax()-s.y())/(e.y()-s.y());
+            s = s+_d_invY*(bb.yMax()-s.y());
         }
     }
 
@@ -676,13 +684,13 @@ bool IntersectKdTree::intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::Bo
         if (s.z()<bb.zMin())
         {
             // clip s to zMin.
-            s = s+(e-s)*(bb.zMin()-s.z())/(e.z()-s.z());
+            s = s+_d_invZ*(bb.zMin()-s.z());
         }
 
         if (e.z()>bb.zMax())
         {
             // clip e to zMax.
-            e = s+(e-s)*(bb.zMax()-s.z())/(e.z()-s.z());
+            e = s+_d_invZ*(bb.zMax()-s.z());
         }
     } 
     else
@@ -693,13 +701,13 @@ bool IntersectKdTree::intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::Bo
         if (e.z()<bb.zMin())
         {
             // clip s to zMin.
-            e = s+(e-s)*(bb.zMin()-s.z())/(e.z()-s.z());
+            e = s+_d_invZ*(bb.zMin()-s.z());
         }
 
         if (s.z()>bb.zMax())
         {
             // clip e to zMax.
-            s = s+(e-s)*(bb.zMax()-s.z())/(e.z()-s.z());
+            s = s+_d_invZ*(bb.zMax()-s.z());
         }
     }
     

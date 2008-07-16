@@ -64,7 +64,7 @@ _styleManager   (new StyleManager()) {
 
 		label->setFontSize(13);
 		label->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
-		label->setFont("fonts/monospace.ttf");
+		label->setFont("fonts/VeraMono.ttf");
 		label->setPadding(5.0f);
 		label->setCanFill(true);
 

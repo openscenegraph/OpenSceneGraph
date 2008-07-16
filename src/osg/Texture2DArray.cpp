@@ -242,7 +242,7 @@ void Texture2DArray::apply(State& state) const
         computeRequiredTextureDimensions(state,*_images[0],_textureWidth, _textureHeight, _numMipmapLevels);
 
         // create texture object
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
+        textureObject = generateTextureObject(
                 contextID,GL_TEXTURE_2D_ARRAY_EXT,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
         
         // bind texture
@@ -271,6 +271,8 @@ void Texture2DArray::apply(State& state) const
         }
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
 
+        _textureObjectBuffer[contextID] = textureObject;
+        
         // no idea what this for ;-)
         if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded())
         {

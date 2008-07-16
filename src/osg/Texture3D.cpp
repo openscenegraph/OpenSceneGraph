@@ -231,7 +231,7 @@ void Texture3D::apply(State& state) const
         // compute the dimensions of the texture.
         computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
 
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_3D);
+        textureObject = generateTextureObject(contextID,GL_TEXTURE_3D);
 
         textureObject->bind();
 
@@ -244,6 +244,8 @@ void Texture3D::apply(State& state) const
 
         // update the modified count to show that it is upto date.
         getModifiedCount(contextID) = _image->getModifiedCount();
+
+        _textureObjectBuffer[contextID] = textureObject;
 
         if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
         {

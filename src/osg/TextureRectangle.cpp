@@ -197,7 +197,7 @@ void TextureRectangle::apply(State& state) const
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex);
 
         // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.        
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_RECTANGLE);
+        textureObject = generateTextureObject(contextID,GL_TEXTURE_RECTANGLE);
         
         textureObject->bind();
 
@@ -206,6 +206,8 @@ void TextureRectangle::apply(State& state) const
         applyTexImage_load(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight);
 
         textureObject->setAllocated(1,_internalFormat,_textureWidth,_textureHeight,1,0);
+        
+        _textureObjectBuffer[contextID] = textureObject;
 
         if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
         {

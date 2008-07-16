@@ -92,92 +92,91 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
         ElevationLayerBlendingCallback(osgFX::MultiTextureControl* mtc, const Elevations& elevations, float animationTime=4.0f):
             _previousFrame(-1),
             _previousTime(0.0),
+            _currentElevation(0.0),
             _mtc(mtc),
             _elevations(elevations),
             _animationTime(animationTime) {}
     
         /** Callback method called by the NodeVisitor when visiting a node.*/
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-        { 
-            if (!nv->getFrameStamp() || _previousFrame==nv->getFrameStamp()->getFrameNumber())
+        {
+            if (nv->getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
             {
-                // we've already updated for this frame so no need to do it again, just traverse children.
-                traverse(node,nv);
-                return;
-            }
-            
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-            
-            float deltaTime = 0.01f;
-            if (_previousFrame!=-1)
-            {
-                deltaTime = float(nv->getFrameStamp()->getReferenceTime() - _previousTime);
-            }
-            
-            _previousTime = nv->getFrameStamp()->getReferenceTime();
-            _previousFrame = nv->getFrameStamp()->getFrameNumber();
 
-            double elevation = nv->getViewPoint().z();
-        
-            osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(node);
-            if (csn) 
-            {
-                osg::EllipsoidModel* em = csn->getEllipsoidModel();
-                if (em)
+                float deltaTime = 0.01f;
+                if (_previousFrame!=-1)
                 {
-                    double X = nv->getViewPoint().x();
-                    double Y = nv->getViewPoint().y();
-                    double Z = nv->getViewPoint().z();
-                    double latitude, longitude;
-                    em->convertXYZToLatLongHeight(X,Y,Z,latitude, longitude, elevation);
+                    deltaTime = float(nv->getFrameStamp()->getReferenceTime() - _previousTime);
+                }
+
+                _previousTime = nv->getFrameStamp()->getReferenceTime();
+                _previousFrame = nv->getFrameStamp()->getFrameNumber();
+
+                if (_mtc.valid() && !_elevations.empty())
+                {
+                    unsigned int index = _mtc->getNumTextureWeights()-1;
+                    for(unsigned int i=0; i<_elevations.size(); ++i)
+                    {
+                        if (_currentElevation>_elevations[i]) 
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    float delta = std::min(deltaTime/_animationTime, 1.0f);
+
+                    for(unsigned int i=0; i<_mtc->getNumTextureWeights(); ++i)
+                    {
+                        float currentValue = _mtc->getTextureWeight(i);
+                        float desiredValue = (i==index) ? 1.0f : 0.0f;
+                        if (desiredValue != currentValue)
+                        {
+                            if (currentValue<desiredValue)
+                            {
+                                desiredValue = std::min(currentValue + delta, desiredValue);
+                            }
+                            else
+                            {
+                                desiredValue = std::max(currentValue - delta, desiredValue);
+                            }
+
+                            _mtc->setTextureWeight(i, desiredValue);
+                        }
+                    }
+
                 }
             }
-        
-            if (_mtc.valid() && !_elevations.empty())
+            else if (nv->getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
             {
-                unsigned int index = _mtc->getNumTextureWeights()-1;
-                for(unsigned int i=0; i<_elevations.size(); ++i)
+                _currentElevation = nv->getViewPoint().z();
+
+                osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(node);
+                if (csn) 
                 {
-                    if (elevation>_elevations[i]) 
+                    osg::EllipsoidModel* em = csn->getEllipsoidModel();
+                    if (em)
                     {
-                        index = i;
-                        break;
+                        double X = nv->getViewPoint().x();
+                        double Y = nv->getViewPoint().y();
+                        double Z = nv->getViewPoint().z();
+                        double latitude, longitude;
+                        em->convertXYZToLatLongHeight(X,Y,Z,latitude, longitude, _currentElevation);
                     }
                 }
-                
-                float delta = std::min(deltaTime/_animationTime, 1.0f);
-                
-                for(unsigned int i=0; i<_mtc->getNumTextureWeights(); ++i)
-                {
-                    float currentValue = _mtc->getTextureWeight(i);
-                    float desiredValue = (i==index) ? 1.0f : 0.0f;
-                    if (desiredValue != currentValue)
-                    {
-                        if (currentValue<desiredValue)
-                        {
-                            desiredValue = std::min(currentValue + delta, desiredValue);
-                        }
-                        else
-                        {
-                            desiredValue = std::max(currentValue - delta, desiredValue);
-                        }
-                    
-                        _mtc->setTextureWeight(i, desiredValue);
-                    }
-                }
-                
+
             }
-        
+
             traverse(node,nv);
         }
 
         int                                             _previousFrame;
         double                                          _previousTime;
         float                                           _animationTime;
+        double                                          _currentElevation;
+        
         osg::observer_ptr<osgFX::MultiTextureControl>   _mtc;
         Elevations                                      _elevations;
-        
-        OpenThreads::Mutex                              _mutex;
 };
 
 
@@ -353,9 +352,12 @@ int main( int argc, char **argv )
         ElevationLayerBlendingCallback* elbc = new ElevationLayerBlendingCallback(mtc, elevations);
 
         // assign to the most appropriate node (the CoordinateSystemNode is best as it provides the elevation on the globe.)
-        if (csn) csn->setCullCallback(elbc);    
-        else if (mtc) mtc->setCullCallback(elbc);
-        else rootnode->setCullCallback(elbc);
+        // note we must assign callback as both an update and cull callback, as update callback to do the update of
+        // the the osgFX::MultiTextureControl node a thread safe way, and as a cull callback to gather the camera
+        // position information.
+        osg::Node* nodeToAssignCallbackTo = csn ? csn : (mtc ? mtc : rootnode);
+        nodeToAssignCallbackTo->setUpdateCallback(elbc);    
+        nodeToAssignCallbackTo->setCullCallback(elbc);    
 
         // add a viewport to the viewer and attach the scene graph.
         viewer.setSceneData( rootnode );

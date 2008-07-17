@@ -119,7 +119,6 @@
 				001D0676065AB60D003310BF /* PBXTargetDependency */,
 				001D0678065AB60D003310BF /* PBXTargetDependency */,
 				001D067A065AB60D003310BF /* PBXTargetDependency */,
-				00A150E3084E6B76000150AD /* PBXTargetDependency */,
 				0079505909D365DD003FC8A1 /* PBXTargetDependency */,
 				001D067C065AB60D003310BF /* PBXTargetDependency */,
 				006E25250AC0EA6300FBB48F /* PBXTargetDependency */,
@@ -1588,8 +1587,6 @@
 		00E2814A07676854005AEE61 /* NodeTrackerManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E2814907676852005AEE61 /* NodeTrackerManipulator.cpp */; };
 		00E281BE07676CB7005AEE61 /* obj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281BC07676CB4005AEE61 /* obj.cpp */; };
 		00E281BF07676CB7005AEE61 /* obj.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E281BD07676CB5005AEE61 /* obj.h */; };
-		00E281D507676D1E005AEE61 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
-		00E281D607676D1E005AEE61 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		00E281F507676E33005AEE61 /* NodeCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281F307676E30005AEE61 /* NodeCallback.cpp */; };
 		00E281F607676E33005AEE61 /* TexEnvFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00E281F407676E32005AEE61 /* TexEnvFilter.cpp */; };
 		00E2820507676E71005AEE61 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -2246,6 +2243,8 @@
 		BE11892E05D7665600EB53E5 /* SharedStateManager in Headers */ = {isa = PBXBuildFile; fileRef = BE11891B05D7665600EB53E5 /* SharedStateManager */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11892F05D7665600EB53E5 /* Version in Headers */ = {isa = PBXBuildFile; fileRef = BE11891C05D7665600EB53E5 /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11893005D7665600EB53E5 /* WriteFile in Headers */ = {isa = PBXBuildFile; fileRef = BE11891D05D7665600EB53E5 /* WriteFile */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4018F4D0E2F6F710086ACFA /* AuthenticationMap in Headers */ = {isa = PBXBuildFile; fileRef = D4018F4C0E2F6F710086ACFA /* AuthenticationMap */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4018F4F0E2F6F880086ACFA /* AuthenticationMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4018F4E0E2F6F880086ACFA /* AuthenticationMap.cpp */; };
 		D40357EB0B511DF900CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D40357F90B511E0B00CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D40357FC0B511E2700CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
@@ -5836,7 +5835,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D43AB51E0E2E1D1900623C77 /* osgWidget */;
+			remoteGlobalIDString = D43AB51E0E2E1D1900623C77;
 			remoteInfo = osgWidget;
 		};
 		D47A06570B833F6E00E19024 /* PBXContainerItemProxy */ = {
@@ -7558,6 +7557,8 @@
 		BE11891B05D7665600EB53E5 /* SharedStateManager */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = SharedStateManager; path = ../../include/osgDB/SharedStateManager; sourceTree = SOURCE_ROOT; };
 		BE11891C05D7665600EB53E5 /* Version */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Version; path = ../../include/osgDB/Version; sourceTree = SOURCE_ROOT; };
 		BE11891D05D7665600EB53E5 /* WriteFile */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = WriteFile; path = ../../include/osgDB/WriteFile; sourceTree = SOURCE_ROOT; };
+		D4018F4C0E2F6F710086ACFA /* AuthenticationMap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AuthenticationMap; sourceTree = "<group>"; };
+		D4018F4E0E2F6F880086ACFA /* AuthenticationMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AuthenticationMap.cpp; path = ../../src/osgDB/AuthenticationMap.cpp; sourceTree = SOURCE_ROOT; };
 		D40359220B512B6500CB9E15 /* GraphicsWindowCarbon.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicsWindowCarbon.cpp; sourceTree = "<group>"; };
 		D40359240B512BF300CB9E15 /* GraphicsWindowCarbon */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = GraphicsWindowCarbon; path = api/Carbon/GraphicsWindowCarbon; sourceTree = "<group>"; };
 		D41CA8F90CAAB10200D6176C /* OBJWriterNodeVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = OBJWriterNodeVisitor.cpp; sourceTree = "<group>"; };
@@ -9134,15 +9135,6 @@
 				00C59DA40B09343B00E9BCA1 /* osgViewer.framework in Frameworks */,
 				00F2DF4F0B8536C400345D8E /* osgText.framework in Frameworks */,
 				5BC191690C15FC1D002CF5BC /* SDL.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		00E281D407676D1E005AEE61 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00E281D507676D1E005AEE61 /* osg.framework in Frameworks */,
-				00E281D607676D1E005AEE61 /* osgDB.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -12647,6 +12639,7 @@
 		BE1188DF05D7641E00EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				D4018F4E0E2F6F880086ACFA /* AuthenticationMap.cpp */,
 				00E28143076766D7005AEE61 /* Archive.cpp */,
 				BE1188E905D765CD00EB53E5 /* DatabasePager.cpp */,
 				BE1188EA05D765CD00EB53E5 /* DotOsgWrapper.cpp */,
@@ -12667,11 +12660,13 @@
 				BE1188F905D765CD00EB53E5 /* WriteFile.cpp */,
 			);
 			name = osgDB;
+			path = ../../src/osgDB;
 			sourceTree = "<group>";
 		};
 		BE1188E005D7646500EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				D4018F4C0E2F6F710086ACFA /* AuthenticationMap */,
 				00E2813F07676626005AEE61 /* Archive */,
 				BE11890B05D7665600EB53E5 /* DatabasePager */,
 				BE11890C05D7665600EB53E5 /* DotOsgWrapper */,
@@ -14476,6 +14471,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4018F4D0E2F6F710086ACFA /* AuthenticationMap in Headers */,
 				00E2814107676629005AEE61 /* Archive in Headers */,
 				BE11891E05D7665600EB53E5 /* DatabasePager in Headers */,
 				BE11891F05D7665600EB53E5 /* DotOsgWrapper in Headers */,
@@ -20406,6 +20402,7 @@
 				BE11890A05D765CE00EB53E5 /* WriteFile.cpp in Sources */,
 				008F446C06CBF99E00F4220C /* ReaderWriter.cpp in Sources */,
 				00E28145076766DA005AEE61 /* Archive.cpp in Sources */,
+				D4018F4F0E2F6F880086ACFA /* AuthenticationMap.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22688,11 +22685,6 @@
 			isa = PBXTargetDependency;
 			target = 00C59D900B09343B00E9BCA1 /* osgviewerSDL */;
 			targetProxy = 00C5AD5B0B0D6B3300E9BCA1 /* PBXContainerItemProxy */;
-		};
-		00E281CF07676D1E005AEE61 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BE1188E605D764C400EB53E5 /* osgDB */;
-			targetProxy = 001DFD06065A932A003310BF /* PBXContainerItemProxy */;
 		};
 		00E281F807676E71005AEE61 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

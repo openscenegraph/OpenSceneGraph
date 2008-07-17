@@ -26,6 +26,7 @@ SET(LIB_COMMON_FILES
     HelpHandler.cpp
     Renderer.cpp
     Scene.cpp
+    ScreenCaptureHandler.cpp
     StatsHandler.cpp
     Version.cpp
     View.cpp

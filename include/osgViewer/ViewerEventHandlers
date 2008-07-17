@@ -290,6 +290,157 @@ class OSGVIEWER_EXPORT LODScaleHandler : public osgGA::GUIEventHandler
         
 };
 
+/** Abstract base class for what to do when a screen capture happens. */
+class OSGVIEWER_EXPORT CaptureOperation : public osg::Referenced
+{
+    public:
+        virtual void operator()(const osg::Image& image, const unsigned int context_id) = 0;
+};
+
+/** Concrete implementation of a CaptureOperation that writes the screen capture to a file. */
+class OSGVIEWER_EXPORT WriteToFileCaptureOperation : public osgViewer::CaptureOperation
+{
+    public:
+        enum SavePolicy
+        {
+            OVERWRITE,
+            SEQUENTIAL_NUMBER
+            // ... any others?
+        };
+
+        WriteToFileCaptureOperation(const std::string& filename, const std::string& extension, SavePolicy savePolicy = OVERWRITE);
+
+        virtual void operator()(const osg::Image& image, const unsigned int context_id);
+
+        void setSavePolicy(SavePolicy savePolicy) { _savePolicy = savePolicy; }
+        SavePolicy getSavePolicy() const { return _savePolicy; }
+
+    protected:
+        const std::string _filename;
+        const std::string _extension;
+
+        SavePolicy _savePolicy;
+
+        std::vector<unsigned int> _contextSaveCounter;
+};
+
+// From osgscreencapture example
+/** Callback which will be added to a viewer's camera to do the actual screen capture. */
+class OSGVIEWER_EXPORT WindowCaptureCallback : public osg::Camera::DrawCallback
+{
+    public:
+
+        enum Mode
+        {
+            READ_PIXELS,
+            SINGLE_PBO,
+            DOUBLE_PBO,
+            TRIPLE_PBO
+        };
+
+        enum FramePosition
+        {
+            START_FRAME,
+            END_FRAME
+        };
+
+        struct ContextData : public osg::Referenced
+        {
+            static unsigned int COUNTER;
+
+            ContextData(osg::GraphicsContext* gc, Mode mode, GLenum readBuffer);
+
+            void getSize(osg::GraphicsContext* gc, int& width, int& height);
+
+            void updateTimings(osg::Timer_t tick_start,
+                               osg::Timer_t tick_afterReadPixels,
+                               osg::Timer_t tick_afterMemCpy,
+                               unsigned int dataSize);
+
+            void read();            
+            void readPixels();
+            void singlePBO(osg::BufferObject::Extensions* ext);
+            void multiPBO(osg::BufferObject::Extensions* ext);
+
+            typedef std::vector< osg::ref_ptr<osg::Image> >             ImageBuffer;
+            typedef std::vector< GLuint > PBOBuffer;
+
+            osg::GraphicsContext*   _gc;
+            unsigned int            _index;
+            Mode                    _mode;
+            GLenum                  _readBuffer;
+
+            GLenum                  _pixelFormat;
+            GLenum                  _type;
+            int                     _width;
+            int                     _height;
+
+            unsigned int            _currentImageIndex;
+            ImageBuffer             _imageBuffer;
+
+            unsigned int            _currentPboIndex;
+            PBOBuffer               _pboBuffer;
+
+            unsigned int            _reportTimingFrequency;
+            unsigned int            _numTimeValuesRecorded;
+            double                  _timeForReadPixels;
+            double                  _timeForFullCopy;
+            double                  _timeForMemCpy;
+            osg::Timer_t            _previousFrameTick;
+
+            osg::ref_ptr<CaptureOperation> _captureOperation;
+        };
+
+        WindowCaptureCallback(Mode mode, FramePosition position, GLenum readBuffer);
+
+        FramePosition getFramePosition() const { return _position; }
+
+        ContextData* createContextData(osg::GraphicsContext* gc) const;
+        ContextData* getContextData(osg::GraphicsContext* gc) const;
+
+        void setCaptureOperation(CaptureOperation* operation);
+        CaptureOperation* getCaptureOperation() { return _contextDataMap.begin()->second->_captureOperation.get(); }
+
+        virtual void operator () (osg::RenderInfo& renderInfo) const;
+
+        typedef std::map<osg::GraphicsContext*, osg::ref_ptr<ContextData> > ContextDataMap;
+
+        Mode                        _mode;        
+        FramePosition               _position;
+        GLenum                      _readBuffer;
+        mutable OpenThreads::Mutex  _mutex;
+        mutable ContextDataMap      _contextDataMap;
+
+};
+
+/** Event handler that will capture the screen on key press. */
+class OSGVIEWER_EXPORT ScreenCaptureHandler : public osgGA::GUIEventHandler
+{
+    public:
+        ScreenCaptureHandler();
+
+        void setKeyEventTakeScreenShot(int key) { _keyEventTakeScreenShot = key; }
+        int getKeyEventTakeScreenShot() const { return _keyEventTakeScreenShot; }
+
+        void setCaptureOperation(CaptureOperation* operation) { _callback->setCaptureOperation(operation); }
+        CaptureOperation* getCaptureOperation() const { return _callback->getCaptureOperation(); }
+
+        // aa will point to an osgViewer::View, so we will take a screenshot
+        // of that view's graphics contexts.
+        bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
+
+    protected:
+        int _keyEventTakeScreenShot;
+        // there could be a key to start taking screenshots every new frame
+
+        osg::ref_ptr<WindowCaptureCallback> _callback;
+
+        void addCallbackToViewer(osgViewer::ViewerBase& viewer);
+};
+
 }
 
 #endif

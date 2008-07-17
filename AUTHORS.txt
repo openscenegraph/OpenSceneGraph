@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.5.4
+OpenSceneGraph Library 2.5.5
 
-321 Contributors:
+322 Contributors:
 
 Firstname Surname
 -----------------
@@ -31,16 +31,16 @@ Tom Jolley
 Andy Skinner
 Roger James
 Norman Vine
+Jeremy Moles
 Alberto Farre
 André Garneau
 Wojciech Lewandowski
 Ruben Lopez
 Randall Hopper
-Jeremy Moles
+Art Tevs
 Olaf Flebbe
 Gideon May
 Don Tidrow
-Art Tevs
 Romano José Magacho da Silva
 Paul Melis
 Michael Platings
@@ -83,6 +83,7 @@ John Shue
 Jan Peciva
 Jan Ciger
 Gordon Tomlinson
+Gino van den Bergen
 Bryan Thrall
 Brad Colbert
 Vivek Rajan
@@ -96,7 +97,6 @@ Michael Hartman
 Luc Frauciel
 Laurens Voerman
 Glenn Waldron
-Gino van den Bergen
 David Guthrie
 Corbin Holtz
 Cedric Pinson
@@ -196,6 +196,7 @@ Volker Walkiewicz
 Vladimir Vukicevic
 Vlad Danciu
 Vincent Vivanloc
+Vincent Bourdier
 Vasily Radostev
 Vaclav Bilek
 Tyge 

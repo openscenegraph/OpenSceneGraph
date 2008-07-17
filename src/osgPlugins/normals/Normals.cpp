@@ -4,6 +4,8 @@ using namespace osg;
 
 Normals::Normals( Node *node, float scale, Mode mode )
 {
+    setName(mode == VertexNormals ? "VertexNormals" : "SurfaceNormals");
+
     MakeNormalsVisitor mnv(scale,mode);
     node->accept( mnv );
 
@@ -108,7 +110,6 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                         n *= _normal_scale;
                         _local_coords->push_back( v );
                         _local_coords->push_back( (v + n));
-
                     }
                     else 
                     {
@@ -124,7 +125,6 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                         normals_index++;
                                     else 
                                         normals_index+=3;
-                                    
                                 }
                                 break;
                             }
@@ -158,8 +158,27 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                 break;
                             }
                             case(PrimitiveSet::QUAD_STRIP):
-                            case(PrimitiveSet::POLYGON):
                                 break;
+
+                            case(PrimitiveSet::POLYGON):
+                            {
+                                DrawArrayLengths* dal = dynamic_cast<DrawArrayLengths*>((*itr).get());
+                                if (dal) {
+                                    for (unsigned int j = 0; j < dal->size(); ++j) {
+                                        unsigned int num_prim = (*dal)[j];
+                                        //notify(WARN) << "j=" << j << " num_prim=" << num_prim << std::endl;
+                                        _processPrimitive(num_prim, coord_index, normals_index, binding);
+                                        coord_index += num_prim;
+                                        if (binding == Geometry::BIND_PER_PRIMITIVE) {
+                                            ++normals_index;
+                                        } else {
+                                            normals_index += num_prim;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+
                             default:
                                 break;
                         }
@@ -193,7 +212,7 @@ void Normals::MakeNormalsVisitor::_processPrimitive(  unsigned int nv,
         }
 
         for( unsigned int i = 0; i < nv; i++ )
-            v += *(coords++) *  _mat;
+            v += *(coords++) * _mat;
         v /= (float)(nv);
 
         n *= _normal_scale;

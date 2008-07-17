@@ -45,29 +45,29 @@ class NormalsReader: public osgDB::ReaderWriter
                 {
                     if( opt == "help" || opt == "HELP" )
                     {
-                        osg::notify( osg::INFO ) << 
-                            "Normals Plugin usage:  <application> [-O options] <model.ext>.normals\n"
-                            "     options: \"scale=<scale>\"                        (default = 1.0)\n"
-                            "              \"mode=<VertexNormals|SurfaceNormals>\"  (default = VertexNormals)" << std::endl;
-
+                        usage();
                     }
                     else
                     {
-                        int index = opt.find( "=" );
-                        if( opt.substr( 0, index ) == "scale" ||
-                            opt.substr( 0, index ) == "SCALE" )
-                        {
-                            scale = atof( opt.substr( index+1 ).c_str() );
-                        }
-                        else if( opt.substr( 0, index ) == "mode" || opt.substr( 0, index ) == "MODE" )
-                        {
-                            std::string modestr = opt.substr(index+1);
-                            if( modestr == "VertexNormals" )
-                                mode = Normals::VertexNormals;
-                            else if( modestr == "SurfaceNormals" )
-                                mode = Normals::SurfaceNormals;
-                            else
-                                mode = Normals::VertexNormals;
+                        size_t index = opt.find( "=" );
+                        if (index == std::string::npos) {
+                            usage();
+                        } else {
+                            std::string key = opt.substr(0, index);
+                            std::string value = opt.substr(index+1);
+                            if( key == "scale" || key == "SCALE" )
+                            {
+                                scale = atof( value.c_str() );
+                            }
+                            else if( key == "mode" || key == "MODE" )
+                            {
+                                if( value == "VertexNormals" )
+                                    mode = Normals::VertexNormals;
+                                else if( value == "SurfaceNormals" )
+                                    mode = Normals::SurfaceNormals;
+                                else
+                                    mode = Normals::VertexNormals;
+                            }
                         }
                     }
                 }
@@ -81,6 +81,10 @@ class NormalsReader: public osgDB::ReaderWriter
                 {
                     osg::ref_ptr<osg::Group> group = new osg::Group;
                     group->addChild( node.get() );
+
+                    const osg::BoundingSphere& bsph = group->getBound();
+                    scale = bsph.radius() * 0.05f * scale; // default is 5% of bounding-sphere radius
+
                     if( mode == Normals::VertexNormals ) 
                         group->addChild( new VertexNormals( node.get(), scale ));
                     else if( mode == Normals::SurfaceNormals )
@@ -90,6 +94,14 @@ class NormalsReader: public osgDB::ReaderWriter
                 }
             }
             return 0L;
+        }
+
+    private:
+        void usage() const {
+            osg::notify( osg::INFO ) << 
+                "Normals Plugin usage:  <application> [-O options] <model.ext>.normals\n"
+                "     options: \"scale=<scale>\"                        (default = 1.0)\n"
+                "              \"mode=<VertexNormals|SurfaceNormals>\"  (default = VertexNormals)" << std::endl;
         }
 };
 

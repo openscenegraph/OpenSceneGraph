@@ -212,7 +212,7 @@ View::Slave * View::findSlaveForCamera(osg::Camera* camera)
     return &(_slaves[i]);
 }
 
-unsigned int View::findSlaveIndexForCamera(osg::Camera* camera)
+unsigned int View::findSlaveIndexForCamera(osg::Camera* camera) const
 {
     if (_camera == camera) return _slaves.size();
 

@@ -98,7 +98,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         };
         
          /** Set the position of the end barrier.
-          * AfterSwapBuffers will may result is slightly higher framerates, by may
+          * AfterSwapBuffers may result in slightly higher framerates, but may
           * lead to inconsistent swapping between different windows.
           * BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers,
           * especially important if you are likely to consistently break frame.*/

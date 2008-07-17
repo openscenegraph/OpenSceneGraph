@@ -17,6 +17,7 @@
 #include <osg/Shader>
 #include <osg/Shape>
 #include <osgDB/Archive>
+#include <osgDB/AuthenticationMap>
 #include <osgDB/ReaderWriter>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -325,6 +326,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	          __BuildKdTreesHint__getBuildKdTreesHint,
 	          "Get whether the KdTrees should be built for geometry in the loader model. ",
 	          "");
+	I_Method1(void, setAuthenticationMap, IN, osgDB::AuthenticationMap *, authenticationMap,
+	          Properties::NON_VIRTUAL,
+	          __void__setAuthenticationMap__AuthenticationMap_P1,
+	          "Set the password map to be used by plugins when access files from secure locations. ",
+	          "");
+	I_Method0(const osgDB::AuthenticationMap *, getAuthenticationMap,
+	          Properties::NON_VIRTUAL,
+	          __C5_AuthenticationMap_P1__getAuthenticationMap,
+	          "Get the password map to be used by plugins when access files from secure locations. ",
+	          "");
 	I_Method2(void, setPluginData, IN, const std::string &, s, IN, void *, v,
 	          Properties::NON_VIRTUAL,
 	          __void__setPluginData__C5_std_string_R1__void_P1,
@@ -345,6 +356,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	          __void__removePluginData__C5_std_string_R1,
 	          "Remove a value from the PluginData. ",
 	          "");
+	I_SimpleProperty(osgDB::AuthenticationMap *, AuthenticationMap, 
+	                 0, 
+	                 __void__setAuthenticationMap__AuthenticationMap_P1);
 	I_SimpleProperty(osgDB::ReaderWriter::Options::BuildKdTreesHint, BuildKdTreesHint, 
 	                 __BuildKdTreesHint__getBuildKdTreesHint, 
 	                 __void__setBuildKdTreesHint__BuildKdTreesHint);

@@ -1,3 +1,205 @@
+2008-07-17 13:23 +0000 [r8622]  shuber:
+
+	* From Stephan Huber: updated XCode project
+
+2008-07-17 12:26 +0000 [r8621]  robert:
+
+	* Updated wrappers
+
+2008-07-17 12:13 +0000 [r8620]  robert:
+
+	* Moved AuthenticalMap/AuthenticationDetails out in their own files
+
+2008-07-17 11:55 +0000 [r8619]  robert:
+
+	* Added osgDB::AuthenticationMap/Details to osgDB and curl plugin
+	  to add the ability to authenticate http transfers
+
+2008-07-16 19:07 +0000 [r8617]  robert:
+
+	* Removed net plugin for Xcode projects
+
+2008-07-16 16:19 +0000 [r8614-8615]  robert:
+
+	* Moved .net plugin out into Deprecated section of osg svn
+	  repostitory
+
+	* Fixed path to font
+
+2008-07-16 16:05 +0000 [r8612-8613]  robert:
+
+	* Set the default setting of LineWidth to 2.0 to ensure that old
+	  default behavior is maintained.
+
+	* From Vincent Bourdier, removed line with setWidth(2.0) as this
+	  code prevents user settings of line with.
+
+2008-07-16 15:58 +0000 [r8610-8611]  robert:
+
+	* Cleaned up the updateStateSet code
+
+	* Refactored the MultiTextureControl node callback so that the
+	  update is now done as an update callback, with the elevation
+	  aquired via a cull callback
+
+2008-07-16 13:29 +0000 [r8608]  robert:
+
+	* Updated wrappers
+
+2008-07-16 13:26 +0000 [r8606-8607]  robert:
+
+	* Changed int's to unsigned int's to avoid warnings
+
+	* Moved the _textureObjectBuffer assignment to after the imagery
+	  has been download to avoid crashes under multi-threaded compile
+	  of texture objects (was causing a crash with 3D Textures, but is
+	  something that would happen with other Texture types as well.)
+
+2008-07-16 12:53 +0000 [r8605]  shuber:
+
+	* From Stephan Huber: updated XCode-project, included
+	  osgWidget-Framework
+
+2008-07-16 11:40 +0000 [r8604]  robert:
+
+	* Removed a division by precomputing the associated values
+
+2008-07-15 22:30 +0000 [r8602]  robert:
+
+	* From Jeremy Moles, Updated file references to reflect new data in
+	  OpenSceneGraph-Data
+
+2008-07-15 22:13 +0000 [r8601]  robert:
+
+	* Added osgWidget wrappers
+
+2008-07-15 22:03 +0000 [r8600]  robert:
+
+	* Converted tabs to four spaces
+
+2008-07-15 21:28 +0000 [r8599]  robert:
+
+	* Fixed typo
+
+2008-07-15 20:30 +0000 [r8598]  robert:
+
+	* Moved the private sections int protected to allow subclasses
+	  acces to all methods/members. Moved public section to top of the
+	  class definition to make it more consistent with the rest of the
+	  OSG.
+
+2008-07-15 19:42 +0000 [r8597]  robert:
+
+	* Fixed name of lib
+
+2008-07-15 19:28 +0000 [r8592-8596]  robert:
+
+	* Changed IMPORT to "Import option", and "EXPORT:" to "Export
+	  option:" in supportsOptions() docs make it a little more friendly
+	  and understandable
+
+	* From Paul Martz, "Here's documentation for the export options of
+	  the FLT plugin. I also labeled the import options as such."
+
+	* Updated version number to 2.5.5 in prep for dev release
+
+	* Changed the version setup code to be consistent with the rest of
+	  the OSG
+
+	* Removed now redundent example
+
+2008-07-15 19:02 +0000 [r8591]  robert:
+
+	* From Gino van den Bergen, "The VRML plugin in the current 2.5.4
+	  release will not compile under VC8.0 when the project file is
+	  generated using CMake 2.6. The attached CMakeLists.txt will fix
+	  this problem. The file replaces the CMakeLists.txt file in
+	  src/osgPlugins/vrml. NB: It is assumed that the antlr and regex
+	  libs are located in $(OPENVRML_DIR)/lib. "
+
+2008-07-15 18:53 +0000 [r8590]  robert:
+
+	* From Jean-Sebastian Guay, "Here are the CMakeLists.txt files for
+	  the osgWidget examples, changed to use SETUP_EXAMPLE like the
+	  other examples."
+
+2008-07-15 18:12 +0000 [r8589]  robert:
+
+	* Fixed typo
+
+2008-07-15 17:21 +0000 [r8588]  robert:
+
+	* From Jeremy Moles, import of the osgWidget NodeKit, sourced from
+	  the original http://osgwidget.googlecode.com/svn/trunk Notes from
+	  Robert Osfield, I've merged osgWidget trunk, and added/changed
+	  CMakeLists.txt file to make it suitable for inclusion in the core
+	  OSG, and moved imagery/scripts/shaders out into
+	  OpenSceneGraph-Data
+
+2008-07-15 14:24 +0000 [r8585-8586]  robert:
+
+	* Updated wrappers
+
+	* From Art Trevs, Removed GLeunm version setAttachment() to avoid
+	  ambigiuity with whether to enable MRT.
+
+2008-07-15 14:15 +0000 [r8584]  robert:
+
+	* Renamed Archive::ArchiveStatus to ReaderWriter::ArchiveStatus
+
+2008-07-15 10:45 +0000 [r8583]  robert:
+
+	* Updated wrappers
+
+2008-07-15 09:55 +0000 [r8582]  robert:
+
+	* Missing check-ins
+
+2008-07-14 20:22 +0000 [r8581]  robert:
+
+	* Added --plugins and --formats query support into osgconv to help
+	  with querying the available plugins and the file
+	  formats/protocols they support
+
+2008-07-14 20:11 +0000 [r8580]  robert:
+
+	* Added missing ac3d supportsExtensions() constructor
+
+2008-07-14 08:48 +0000 [r8579]  robert:
+
+	* Added initial cut at plugin query code
+
+2008-07-13 22:18 +0000 [r8578]  robert:
+
+	* Converted plugins to use the new
+	  supportsExtension()/supportsOptions/supportsProtocl() methods to
+	  help enable better querying of supported features
+
+2008-07-13 15:24 +0000 [r8577]  robert:
+
+	* Added new ReaderWriter methods for recording what protocols,
+	  extensions and options are support by ReaderWriters
+
+2008-07-13 12:34 +0000 [r8576]  robert:
+
+	* From Paul Martz, removed uneccessary libraries from link line
+
+2008-07-12 17:44 +0000 [r8574]  robert:
+
+	* Updated date for 2.5.4 release
+
+2008-07-12 17:30 +0000 [r8573]  robert:
+
+	* Added an OSG_EXPORT
+
+2008-07-12 16:11 +0000 [r8572]  robert:
+
+	* Updated Authors for dev release
+
+2008-07-12 15:29 +0000 [r8571]  robert:
+
+	* Updated ChangeLog for dev release
+
 2008-07-12 12:00 +0000 [r8570]  robert:
 
 	* From Doug McCorkle, "Attached is patch that corrects/improves the

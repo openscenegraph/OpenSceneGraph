@@ -139,7 +139,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	          Properties::NON_VIRTUAL,
 	          __void__setEndBarrierPosition__BarrierPosition,
 	          "Set the position of the end barrier. ",
-	          "AfterSwapBuffers will may result is slightly higher framerates, by may lead to inconsistent swapping between different windows. BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers, especially important if you are likely to consistently break frame. ");
+	          "AfterSwapBuffers may result in slightly higher framerates, but may lead to inconsistent swapping between different windows. BeforeSwapBuffers may lead to slightly lower framerate, but improve consistency in timing of swap buffers, especially important if you are likely to consistently break frame. ");
 	I_Method0(osgViewer::ViewerBase::BarrierPosition, getEndBarrierPosition,
 	          Properties::NON_VIRTUAL,
 	          __BarrierPosition__getEndBarrierPosition,

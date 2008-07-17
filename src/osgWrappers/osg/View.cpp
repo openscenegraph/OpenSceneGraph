@@ -134,7 +134,7 @@ BEGIN_OBJECT_REFLECTOR(osg::View)
 	                      __bool__addSlave__osg_Camera_P1__bool,
 	                      "",
 	                      "");
-	I_MethodWithDefaults4(bool, addSlave, IN, osg::Camera *, camera, , IN, const osg::Matrix &, projectionOffset, , IN, const osg::Matrix &, viewOffse, , IN, bool, useMastersSceneData, true,
+	I_MethodWithDefaults4(bool, addSlave, IN, osg::Camera *, camera, , IN, const osg::Matrix &, projectionOffset, , IN, const osg::Matrix &, viewOffset, , IN, bool, useMastersSceneData, true,
 	                      Properties::NON_VIRTUAL,
 	                      __bool__addSlave__osg_Camera_P1__C5_osg_Matrix_R1__C5_osg_Matrix_R1__bool,
 	                      "",

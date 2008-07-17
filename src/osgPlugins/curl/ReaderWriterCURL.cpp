@@ -75,6 +75,8 @@ size_t EasyCurl::StreamMemoryCallback(void *ptr, size_t size, size_t nmemb, void
 EasyCurl::EasyCurl()
 {
     osg::notify(osg::INFO)<<"EasyCurl::EasyCurl()"<<std::endl;
+    
+    _previousHttpAuthentication = 0;
 
     _curl = curl_easy_init();
 
@@ -92,12 +94,53 @@ EasyCurl::~EasyCurl()
 }
 
 
-osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp)
+osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp, const osgDB::ReaderWriter::Options *options)
 {
+    const osgDB::AuthenticationMap* authenticationMap = (options && options->getAuthenticationMap()) ? 
+            options->getAuthenticationMap() :
+            osgDB::Registry::instance()->getAuthenticationMap();
+
     if(!proxyAddress.empty())
     {
-        osg::notify(osg::NOTICE)<<"Setting proxy: "<<proxyAddress<<std::endl;
+        osg::notify(osg::INFO)<<"Setting proxy: "<<proxyAddress<<std::endl;
         curl_easy_setopt(_curl, CURLOPT_PROXY, proxyAddress.c_str()); //Sets proxy address and port on libcurl
+    }
+
+    const osgDB::AuthenticationDetails* details = authenticationMap ?
+        authenticationMap->getAuthenticationDetails(fileName) :
+        0;
+
+    // configure/reset authentication if required.        
+    if (details)
+    {
+        const std::string colon(":");
+        std::string password(details->username + colon + details->password);
+        curl_easy_setopt(_curl, CURLOPT_USERPWD, password.c_str());
+        _previousPassword = password;
+
+        // use for https.
+        // curl_easy_setopt(_curl, CURLOPT_KEYPASSWD, password.c_str());
+
+        if (details->httpAuthentication != _previousHttpAuthentication)
+        { 
+            curl_easy_setopt(_curl, CURLOPT_HTTPAUTH, details->httpAuthentication); 
+            _previousHttpAuthentication = details->httpAuthentication;
+        }
+    }
+    else
+    {
+        if (!_previousPassword.empty())
+        {
+            curl_easy_setopt(_curl, CURLOPT_USERPWD, 0);
+            _previousPassword.clear();
+        }
+    
+        // need to reset if previously set.
+        if (_previousHttpAuthentication!=0)
+        {
+            curl_easy_setopt(_curl, CURLOPT_HTTPAUTH, 0); 
+            _previousHttpAuthentication = 0;
+        }
     }
 
     curl_easy_setopt(_curl, CURLOPT_URL, fileName.c_str());
@@ -248,12 +291,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
     EasyCurl::StreamObject sp(&buffer, std::string());
 
-    ReadResult curlResult = getEasyCurl().read(proxyAddress, fileName, sp);
+    ReadResult curlResult = getEasyCurl().read(proxyAddress, fileName, sp, options);
 
     if (curlResult.status()==ReadResult::FILE_LOADED)
     {
-        osg::ref_ptr<Options> local_opt = const_cast<Options*>(options);
-        if (!local_opt) local_opt = new Options;
+        osg::ref_ptr<Options> local_opt = options ? 
+            static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : 
+            new Options;
 
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 

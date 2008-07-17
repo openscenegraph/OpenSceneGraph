@@ -334,16 +334,29 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         }
 
 
+        /** Set whether the KdTrees should be built for geometry in the loader model. */
         void setBuildKdTreesHint(ReaderWriter::Options::BuildKdTreesHint hint) { _buildKdTreesHint = hint; }
+
+        /** Get whether the KdTrees should be built for geometry in the loader model. */
         ReaderWriter::Options::BuildKdTreesHint getBuildKdTreesHint() const { return _buildKdTreesHint; }
 
+        /** Set the KdTreeBuilder visitor that is used to build KdTree on loaded models.*/
         void setKdTreeBuilder(osg::KdTreeBuilder* builder) { _kdTreeBuilder = builder; }
+
+        /** Get the KdTreeBuilder visitor that is used to build KdTree on loaded models.*/
         osg::KdTreeBuilder* getKdTreeBuilder() { return _kdTreeBuilder.get(); }
+
+
+        /** Set the password map to be used by plugins when access files from secure locations.*/
+        void setAuthenticationMap(AuthenticationMap* authenticationMap) { _authenticationMap = authenticationMap; }
+
+        /** Get the password map to be used by plugins when access files from secure locations.*/
+        const AuthenticationMap* getAuthenticationMap() const { return _authenticationMap.get(); }
 
 
         void setCreateNodeFromImage(bool flag) { _createNodeFromImage = flag; }
         bool getCreateNodeFromImage() const { return _createNodeFromImage; }
-
+        
 
         void setOptions(ReaderWriter::Options* opt) { _options = opt; }
         ReaderWriter::Options* getOptions() { return _options.get(); }
@@ -477,6 +490,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         ReaderWriter::Options::BuildKdTreesHint     _buildKdTreesHint;
         osg::ref_ptr<osg::KdTreeBuilder>            _kdTreeBuilder;
+        
+        osg::ref_ptr<AuthenticationMap>             _authenticationMap;
         
         bool                                        _createNodeFromImage;
 

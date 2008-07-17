@@ -47,8 +47,9 @@ class ReaderWriterSTL : public osgDB::ReaderWriter
 public:
     ReaderWriterSTL()
     {
-        supportsExtension("stl","STL format");
-        supportsExtension("sta","STL format");
+        supportsExtension("stl","STL binary format");
+        supportsExtension("sta","STL ASCII format");
+        supportsOption("smooth", "run SmoothingVisitor");
     }
 
     virtual const char* className() const {
@@ -119,9 +120,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
 
     // determine ASCII vs. binary mode
     FILE* fp = fopen(fileName.c_str(), "rb");
-
     if (!fp) {
-        return ReadResult::FILE_NOT_HANDLED;
+        return ReadResult::FILE_NOT_FOUND;
     }
 
     ReaderObject readerObject;
@@ -130,7 +130,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     StlHeader header;
     if (fread((void*) &header, sizeof(header), 1, fp) != 1) {
         fclose(fp);
-        return ReadResult::FILE_NOT_HANDLED;
+        return ReadResult::ERROR_IN_READING_FILE;
     }
     bool isBinary = false;
 
@@ -146,7 +146,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     {
         osg::notify(osg::FATAL) << "ReaderWriterSTL::readNode: Unable to stat '" << fileName << "'" << std::endl;
         fclose(fp);
-        return ReadResult::FILE_NOT_HANDLED;
+        return ReadResult::ERROR_IN_READING_FILE;
     }
 
     if (stb.st_size == expectLen)
@@ -163,7 +163,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     else {
         osg::notify(osg::FATAL) << "ReaderWriterSTL::readNode(" << fileName.c_str() << ") unable to determine file format" << std::endl;
         fclose(fp);
-        return ReadResult::FILE_NOT_HANDLED;
+        return ReadResult::ERROR_IN_READING_FILE;
     }
 
     if (!isBinary) 
@@ -204,15 +204,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
     
-    bool doSmoothing = false;
-    
-    if (options && (options->getOptionString() == "smooth"))
-    {
-        doSmoothing = true;
-    } 
-    
-    if (doSmoothing)
-    {
+    if (options && (options->getOptionString() == "smooth")) {
         osgUtil::SmoothingVisitor smooter;
         geode->accept(smooter);
     }

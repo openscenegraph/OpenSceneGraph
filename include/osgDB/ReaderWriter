@@ -32,6 +32,54 @@ class Archive;
 /** list of directories to search through which searching for files. */
 typedef std::deque<std::string> FilePathList;
 
+class AuthenticationDetails : public osg::Referenced
+{
+public:
+
+    /** Http authentication techniques, see libcurl docs for details on names and associated functionality.*/ 
+    enum HttpAuthentication
+    {
+        BASIC           = 1<<0,
+        DIGEST          = 1<<1,
+        NTLM            = 1<<2,
+        GSSNegotiate    = 1<<2,
+        ANY             = ~0,
+        ANYSAFE         = ~BASIC
+    };
+
+    AuthenticationDetails(const std::string& u, const std::string& p, HttpAuthentication auth=BASIC):
+        username(u),
+        password(p),
+        httpAuthentication(auth) {}
+
+    std::string         username;
+    std::string         password;
+    HttpAuthentication  httpAuthentication;
+
+protected:
+    virtual ~AuthenticationDetails() {}
+};
+
+class OSGDB_EXPORT AuthenticationMap : public osg::Referenced
+{
+    public:
+    
+        AuthenticationMap() {}
+        
+
+        virtual void addAuthenticationDetails(const std::string& path, AuthenticationDetails* details);
+
+        virtual const AuthenticationDetails* getAuthenticationDetails(const std::string& path) const;
+        
+    protected:
+    
+        virtual ~AuthenticationMap() {}
+        
+        typedef std::map<std::string, osg::ref_ptr<AuthenticationDetails> > AuthenticationDetailsMap;
+        AuthenticationDetailsMap _authenticationMap;
+        
+};
+
 /** pure virtual base class for reading and writing of non native formats. */
 class OSGDB_EXPORT ReaderWriter : public osg::Object
 {
@@ -159,6 +207,12 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 BuildKdTreesHint getBuildKdTreesHint() const { return _buildKdTreesHint; }
 
 
+                /** Set the password map to be used by plugins when access files from secure locations.*/
+                void setAuthenticationMap(AuthenticationMap* authenticationMap) { _authenticationMap = authenticationMap; }
+
+                /** Get the password map to be used by plugins when access files from secure locations.*/
+                const AuthenticationMap* getAuthenticationMap() const { return _authenticationMap.get(); }
+
 
                 /** Sets a plugindata value PluginData with a string */
                 void setPluginData(const std::string& s, void* v) const { _pluginData[s] = v; }
@@ -180,10 +234,11 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
                 virtual ~Options() {}
 
-                std::string         _str;
-                FilePathList        _databasePaths;
-                CacheHintOptions    _objectCacheHint;
-                BuildKdTreesHint    _buildKdTreesHint;
+                std::string                     _str;
+                FilePathList                    _databasePaths;
+                CacheHintOptions                _objectCacheHint;
+                BuildKdTreesHint                _buildKdTreesHint;
+                osg::ref_ptr<AuthenticationMap> _authenticationMap;
 
                 typedef std::map<std::string,void*> PluginDataMap;
                 mutable PluginDataMap _pluginData;
@@ -247,6 +302,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 ReadStatus                  _status;
                 std::string                 _message;
                 osg::ref_ptr<osg::Object>   _object;
+
         };
 
         class WriteResult

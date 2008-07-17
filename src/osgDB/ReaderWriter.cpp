@@ -15,7 +15,42 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/Archive>
 
+#include <map>
+
 using namespace osgDB;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  PasswordMap
+//
+
+void AuthenticationMap::addAuthenticationDetails(const std::string& path, AuthenticationDetails* details)
+{
+   _authenticationMap[path] = details;
+}
+
+const AuthenticationDetails* AuthenticationMap::getAuthenticationDetails(const std::string& path) const
+{
+    // see if the full filename has its own authentication details
+    AuthenticationDetailsMap::const_iterator itr = _authenticationMap.find(path);
+    if (itr != _authenticationMap.end()) return itr->second.get();
+
+    // now look to see if the paths to the file have their own authentication details
+    std::string basePath = osgDB::getFilePath(path);
+    while(!basePath.empty())
+    {
+        itr = _authenticationMap.find(basePath);
+        if (itr != _authenticationMap.end()) return itr->second.get();
+        
+        basePath = osgDB::getFilePath(basePath);
+    }
+    return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  ReaderWriter
+//
 
 osg::Object* ReaderWriter::ReadResult::getObject() { return _object.get(); }
 osg::Image* ReaderWriter::ReadResult::getImage() { return dynamic_cast<osg::Image*>(_object.get()); }

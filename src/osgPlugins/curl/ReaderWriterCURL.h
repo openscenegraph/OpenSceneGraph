@@ -50,7 +50,7 @@ class EasyCurl : public osg::Referenced
 
         EasyCurl();
 
-        osgDB::ReaderWriter::ReadResult read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp);
+        osgDB::ReaderWriter::ReadResult read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp, const osgDB::ReaderWriter::Options *options);
 
     protected:
 
@@ -62,6 +62,9 @@ class EasyCurl : public osg::Referenced
 
         
         CURL* _curl;
+        
+        std::string     _previousPassword;
+        long            _previousHttpAuthentication;
 };
 
 

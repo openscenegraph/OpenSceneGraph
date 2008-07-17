@@ -9,6 +9,7 @@ SET(LIB_NAME osgDB)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Archive
+    ${HEADER_PATH}/AuthenticationMap
     ${HEADER_PATH}/DatabasePager
     ${HEADER_PATH}/DotOsgWrapper
     ${HEADER_PATH}/DynamicLibrary
@@ -35,6 +36,7 @@ ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
     Archive.cpp
+    AuthenticationMap.cpp
     DatabasePager.cpp
     DotOsgWrapper.cpp
     DynamicLibrary.cpp

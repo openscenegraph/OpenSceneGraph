@@ -22,6 +22,7 @@
 #include <osg/StateAttribute>
 #include <osg/Uniform>
 #include <osgDB/Archive>
+#include <osgDB/AuthenticationMap>
 #include <osgDB/DatabasePager>
 #include <osgDB/DotOsgWrapper>
 #include <osgDB/DynamicLibrary>
@@ -351,22 +352,32 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_Method1(void, setBuildKdTreesHint, IN, osgDB::ReaderWriter::Options::BuildKdTreesHint, hint,
 	          Properties::NON_VIRTUAL,
 	          __void__setBuildKdTreesHint__ReaderWriter_Options_BuildKdTreesHint,
-	          "",
+	          "Set whether the KdTrees should be built for geometry in the loader model. ",
 	          "");
 	I_Method0(osgDB::ReaderWriter::Options::BuildKdTreesHint, getBuildKdTreesHint,
 	          Properties::NON_VIRTUAL,
 	          __ReaderWriter_Options_BuildKdTreesHint__getBuildKdTreesHint,
-	          "",
+	          "Get whether the KdTrees should be built for geometry in the loader model. ",
 	          "");
 	I_Method1(void, setKdTreeBuilder, IN, osg::KdTreeBuilder *, builder,
 	          Properties::NON_VIRTUAL,
 	          __void__setKdTreeBuilder__osg_KdTreeBuilder_P1,
-	          "",
+	          "Set the KdTreeBuilder visitor that is used to build KdTree on loaded models. ",
 	          "");
 	I_Method0(osg::KdTreeBuilder *, getKdTreeBuilder,
 	          Properties::NON_VIRTUAL,
 	          __osg_KdTreeBuilder_P1__getKdTreeBuilder,
-	          "",
+	          "Get the KdTreeBuilder visitor that is used to build KdTree on loaded models. ",
+	          "");
+	I_Method1(void, setAuthenticationMap, IN, osgDB::AuthenticationMap *, authenticationMap,
+	          Properties::NON_VIRTUAL,
+	          __void__setAuthenticationMap__AuthenticationMap_P1,
+	          "Set the password map to be used by plugins when access files from secure locations. ",
+	          "");
+	I_Method0(const osgDB::AuthenticationMap *, getAuthenticationMap,
+	          Properties::NON_VIRTUAL,
+	          __C5_AuthenticationMap_P1__getAuthenticationMap,
+	          "Get the password map to be used by plugins when access files from secure locations. ",
 	          "");
 	I_Method1(void, setCreateNodeFromImage, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
@@ -566,6 +577,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	                   __ReaderWriter_ReadResult__readImplementation__C5_ReadFunctor_R1__bool,
 	                   "",
 	                   "");
+	I_SimpleProperty(osgDB::AuthenticationMap *, AuthenticationMap, 
+	                 0, 
+	                 __void__setAuthenticationMap__AuthenticationMap_P1);
 	I_SimpleProperty(osgDB::ReaderWriter::Options::BuildKdTreesHint, BuildKdTreesHint, 
 	                 __ReaderWriter_Options_BuildKdTreesHint__getBuildKdTreesHint, 
 	                 __void__setBuildKdTreesHint__ReaderWriter_Options_BuildKdTreesHint);

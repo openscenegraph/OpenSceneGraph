@@ -60,6 +60,7 @@ LINK_INTERNAL(${LIB_NAME}
     osgDB
     osg
     OpenThreads
+    osgGA
 )
 LINK_CORELIB_DEFAULT(${LIB_NAME})
 

@@ -56,11 +56,6 @@ class OSGUTIL_EXPORT TriStripVisitor : public BaseOptimizerVisitor
             _cacheSize = size;
         }
         
-        inline unsigned int getCacheSize()
-        {
-            return _cacheSize;
-        }
-
         inline unsigned int getCacheSize() const
         {
             return _cacheSize;
@@ -71,11 +66,6 @@ class OSGUTIL_EXPORT TriStripVisitor : public BaseOptimizerVisitor
             _minStripSize = size;
         }
         
-        inline unsigned int getMinStripSize()
-        {
-            return _minStripSize;
-        }
-
         inline unsigned int getMinStripSize() const
         {
             return _minStripSize;

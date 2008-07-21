@@ -35,6 +35,7 @@ ImagePager::ImageThread::~ImageThread()
 
 int ImagePager::ImageThread::cancel()
 {
+    return OpenThreads::Thread::cancel();
 }
 
 void ImagePager::ImageThread::run()

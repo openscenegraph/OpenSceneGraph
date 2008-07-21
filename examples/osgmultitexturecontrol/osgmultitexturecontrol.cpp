@@ -236,6 +236,9 @@ int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
+    arguments.getApplicationUsage()->addCommandLineOption("-v","Set the terrain vertical scale.");
+    arguments.getApplicationUsage()->addCommandLineOption("-r","Set the terrain sample ratio.");
+    arguments.getApplicationUsage()->addCommandLineOption("--login <url> <username> <password>","Provide authentication information for http file access.");
    
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
@@ -246,6 +249,18 @@ int main( int argc, char **argv )
     float sampleRatio = 1.0f;
     while(arguments.read("-r",sampleRatio)) {}
 
+    std::string url, username, password;
+    while(arguments.read("--login",url, username, password))
+    {
+        if (!osgDB::Registry::instance()->getAuthenticationMap())
+        {
+            osgDB::Registry::instance()->setAuthenticationMap(new osgDB::AuthenticationMap);
+            osgDB::Registry::instance()->getAuthenticationMap()->addAuthenticationDetails(
+                url,
+                new osgDB::AuthenticationDetails(username, password)
+            );
+        }
+    }
 
     // add all the event handlers to the viewer
     {
@@ -363,6 +378,8 @@ int main( int argc, char **argv )
         viewer.setSceneData( rootnode );
     }
     
+
+
     // create the windows and run the threads.
     viewer.realize();
 

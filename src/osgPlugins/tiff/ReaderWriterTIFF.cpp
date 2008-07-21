@@ -499,7 +499,6 @@ simage_tiff_load(std::istream& fin,
     osg::notify(osg::INFO)<<"bytesperpixel="<<bytesperpixel<<std::endl;
     
     buffer = new unsigned char [w*h*format];
-    for(unsigned char* ptr=buffer;ptr<buffer+w*h*format;++ptr) *ptr = 0;
 
     if (!buffer)
     {
@@ -507,6 +506,9 @@ simage_tiff_load(std::istream& fin,
         TIFFClose(in);
         return NULL;
     }
+
+    // initialize memory
+    for(unsigned char* ptr=buffer;ptr<buffer+w*h*format;++ptr) *ptr = 0;
 
     width = w;
     height = h;

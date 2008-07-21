@@ -20,6 +20,7 @@
 #include <osg/Timer>
 #include <osg/View>
 #include <osgDB/DatabasePager>
+#include <osgDB/ImagePager>
 #include <osgGA/EventQueue>
 #include <osgGA/GUIEventHandler>
 #include <osgGA/MatrixManipulator>
@@ -144,6 +145,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          Properties::NON_VIRTUAL,
 	          __C5_osgDB_DatabasePager_P1__getDatabasePager,
 	          "Get the const View's database pager. ",
+	          "");
+	I_Method1(void, setImagePager, IN, osgDB::ImagePager *, ip,
+	          Properties::NON_VIRTUAL,
+	          __void__setImagePager__osgDB_ImagePager_P1,
+	          "Set the View's image pager. ",
+	          "");
+	I_Method0(osgDB::ImagePager *, getImagePager,
+	          Properties::NON_VIRTUAL,
+	          __osgDB_ImagePager_P1__getImagePager,
+	          "Get the View's image pager. ",
+	          "");
+	I_Method0(const osgDB::ImagePager *, getImagePager,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgDB_ImagePager_P1__getImagePager,
+	          "Get the const View's image pager. ",
 	          "");
 	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
 	          Properties::NON_VIRTUAL,
@@ -345,6 +361,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	I_SimpleProperty(float, FusionDistanceValue, 
 	                 __float__getFusionDistanceValue, 
 	                 0);
+	I_SimpleProperty(osgDB::ImagePager *, ImagePager, 
+	                 __osgDB_ImagePager_P1__getImagePager, 
+	                 __void__setImagePager__osgDB_ImagePager_P1);
 	I_SimpleProperty(osgViewer::Scene *, Scene, 
 	                 __Scene_P1__getScene, 
 	                 0);

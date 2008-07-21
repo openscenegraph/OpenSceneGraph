@@ -56,11 +56,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::TriStripVisitor)
 	          __unsigned_int__getCacheSize,
 	          "",
 	          "");
-	I_Method0(const unsigned int, getCacheSize,
-	          Properties::NON_VIRTUAL,
-	          __C5_unsigned_int__getCacheSize,
-	          "",
-	          "");
 	I_Method1(void, setMinStripSize, IN, unsigned int, size,
 	          Properties::NON_VIRTUAL,
 	          __void__setMinStripSize__unsigned_int,
@@ -69,11 +64,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::TriStripVisitor)
 	I_Method0(unsigned int, getMinStripSize,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getMinStripSize,
-	          "",
-	          "");
-	I_Method0(const unsigned int, getMinStripSize,
-	          Properties::NON_VIRTUAL,
-	          __C5_unsigned_int__getMinStripSize,
 	          "",
 	          "");
 	I_Method1(void, setGenerateFourPointPrimitivesQuads, IN, bool, flag,

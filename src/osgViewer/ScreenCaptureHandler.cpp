@@ -21,42 +21,103 @@
 namespace osgViewer
 {
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  WindowCaptureCallback
+//
 
-WriteToFileCaptureOperation::WriteToFileCaptureOperation(const std::string& filename, 
-                                                         const std::string& extension,
-                                                         SavePolicy savePolicy)
-    : _filename(filename), _extension(extension), _savePolicy(savePolicy)
+// From osgscreencapture example
+/** Callback which will be added to a viewer's camera to do the actual screen capture. */
+class WindowCaptureCallback : public osg::Camera::DrawCallback
 {
-}
+    public:
 
-void WriteToFileCaptureOperation::operator () (const osg::Image& image, const unsigned int context_id)
-{
-    if (_savePolicy == SEQUENTIAL_NUMBER)
-    {
-        if (_contextSaveCounter.size() <= context_id)
+        enum Mode
         {
-            _contextSaveCounter.resize(context_id + 1);
-            _contextSaveCounter[context_id] = 0;
-        }
-    }
+            READ_PIXELS,
+            SINGLE_PBO,
+            DOUBLE_PBO,
+            TRIPLE_PBO
+        };
 
-    std::stringstream filename;
-    filename << _filename << "_" << context_id;
+        enum FramePosition
+        {
+            START_FRAME,
+            END_FRAME
+        };
 
-    if (_savePolicy == SEQUENTIAL_NUMBER)
-        filename << "_" << _contextSaveCounter[context_id];
+        WindowCaptureCallback(Mode mode, FramePosition position, GLenum readBuffer);
 
-    filename << "." << _extension;
+        FramePosition getFramePosition() const { return _position; }
 
-    osgDB::writeImageFile(image, filename.str());
+        void setCaptureOperation(ScreenCaptureHandler::CaptureOperation* operation);
+        ScreenCaptureHandler::CaptureOperation* getCaptureOperation() { return _contextDataMap.begin()->second->_captureOperation.get(); }
 
-    osg::notify(osg::INFO)<<"ScreenCaptureHandler: Taking a screenshot, saved as '"<<filename.str()<<"'"<<std::endl;
+        virtual void operator () (osg::RenderInfo& renderInfo) const;
 
-    if (_savePolicy == SEQUENTIAL_NUMBER)
-    {
-        _contextSaveCounter[context_id]++;
-    }
-}
+        struct OSGVIEWER_EXPORT ContextData : public osg::Referenced
+        {
+            static unsigned int COUNTER;
+
+            ContextData(osg::GraphicsContext* gc, Mode mode, GLenum readBuffer);
+
+            void getSize(osg::GraphicsContext* gc, int& width, int& height);
+
+            void updateTimings(osg::Timer_t tick_start,
+                               osg::Timer_t tick_afterReadPixels,
+                               osg::Timer_t tick_afterMemCpy,
+                               osg::Timer_t tick_afterCaptureOperation,
+                               unsigned int dataSize);
+
+            void read();            
+            void readPixels();
+            void singlePBO(osg::BufferObject::Extensions* ext);
+            void multiPBO(osg::BufferObject::Extensions* ext);
+
+            typedef std::vector< osg::ref_ptr<osg::Image> >             ImageBuffer;
+            typedef std::vector< GLuint > PBOBuffer;
+
+            osg::GraphicsContext*   _gc;
+            unsigned int            _index;
+            Mode                    _mode;
+            GLenum                  _readBuffer;
+
+            GLenum                  _pixelFormat;
+            GLenum                  _type;
+            int                     _width;
+            int                     _height;
+
+            unsigned int            _currentImageIndex;
+            ImageBuffer             _imageBuffer;
+
+            unsigned int            _currentPboIndex;
+            PBOBuffer               _pboBuffer;
+
+            unsigned int            _reportTimingFrequency;
+            unsigned int            _numTimeValuesRecorded;
+            double                  _timeForReadPixels;
+            double                  _timeForMemCpy;
+            double                  _timeForCaptureOperation;
+            double                  _timeForFullCopy;
+            double                  _timeForFullCopyAndOperation;
+            osg::Timer_t            _previousFrameTick;
+
+            osg::ref_ptr<ScreenCaptureHandler::CaptureOperation> _captureOperation;
+        };
+
+        typedef std::map<osg::GraphicsContext*, osg::ref_ptr<ContextData> > ContextDataMap;
+
+        ContextData* createContextData(osg::GraphicsContext* gc) const;
+        ContextData* getContextData(osg::GraphicsContext* gc) const;
+
+        Mode                        _mode;        
+        FramePosition               _position;
+        GLenum                      _readBuffer;
+        mutable OpenThreads::Mutex  _mutex;
+        mutable ContextDataMap      _contextDataMap;
+
+        osg::ref_ptr<ScreenCaptureHandler::CaptureOperation> _defaultCaptureOperation;
+};
 
 
 unsigned int WindowCaptureCallback::ContextData::COUNTER = 0;
@@ -411,7 +472,7 @@ WindowCaptureCallback::ContextData* WindowCaptureCallback::getContextData(osg::G
     return data.get();
 }
 
-void WindowCaptureCallback::setCaptureOperation(CaptureOperation* operation)
+void WindowCaptureCallback::setCaptureOperation(ScreenCaptureHandler::CaptureOperation* operation)
 {
     _defaultCaptureOperation = operation;
 
@@ -449,6 +510,52 @@ void WindowCaptureCallback::operator () (osg::RenderInfo& renderInfo) const
 }
 
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  ScreenCaptureHandler::WriteToFile
+//
+ScreenCaptureHandler::WriteToFile::WriteToFile(const std::string& filename, 
+                                                         const std::string& extension,
+                                                         SavePolicy savePolicy)
+    : _filename(filename), _extension(extension), _savePolicy(savePolicy)
+{
+}
+
+void ScreenCaptureHandler::WriteToFile::operator () (const osg::Image& image, const unsigned int context_id)
+{
+    if (_savePolicy == SEQUENTIAL_NUMBER)
+    {
+        if (_contextSaveCounter.size() <= context_id)
+        {
+            _contextSaveCounter.resize(context_id + 1);
+            _contextSaveCounter[context_id] = 0;
+        }
+    }
+
+    std::stringstream filename;
+    filename << _filename << "_" << context_id;
+
+    if (_savePolicy == SEQUENTIAL_NUMBER)
+        filename << "_" << _contextSaveCounter[context_id];
+
+    filename << "." << _extension;
+
+    osgDB::writeImageFile(image, filename.str());
+
+    osg::notify(osg::INFO)<<"ScreenCaptureHandler: Taking a screenshot, saved as '"<<filename.str()<<"'"<<std::endl;
+
+    if (_savePolicy == SEQUENTIAL_NUMBER)
+    {
+        _contextSaveCounter[context_id]++;
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  ScreenCaptureHandler
+//
 ScreenCaptureHandler::ScreenCaptureHandler(CaptureOperation* defaultOperation)
     : _keyEventTakeScreenShot('c'),
       _callback(new WindowCaptureCallback(
@@ -461,8 +568,19 @@ ScreenCaptureHandler::ScreenCaptureHandler(CaptureOperation* defaultOperation)
     if (defaultOperation)
         setCaptureOperation(defaultOperation);
     else
-        setCaptureOperation(new WriteToFileCaptureOperation("screen_shot", "jpg"));
+        setCaptureOperation(new WriteToFile("screen_shot", "jpg"));
 }
+
+void ScreenCaptureHandler::setCaptureOperation(CaptureOperation* operation)
+{
+    static_cast<WindowCaptureCallback*>(_callback.get())->setCaptureOperation(operation);
+}
+
+ScreenCaptureHandler::CaptureOperation* ScreenCaptureHandler::getCaptureOperation() const
+{
+    return static_cast<WindowCaptureCallback*>(_callback.get())->getCaptureOperation();
+}
+
 
 void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
 {
@@ -472,8 +590,9 @@ void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
     // handler has been initialized, but stats are not displayed. In that 
     // case, there is a post render camera on the viewer, but its node mask
     // is zero, so the callback added to that camera would never be called.
+    WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
 
-    if (_callback->getFramePosition() == WindowCaptureCallback::START_FRAME)
+    if (callback->getFramePosition() == WindowCaptureCallback::START_FRAME)
     {
         osgViewer::ViewerBase::Windows windows;
         viewer.getWindows(windows);

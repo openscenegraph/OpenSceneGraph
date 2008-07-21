@@ -128,7 +128,7 @@ void Surface::compile(const lwo2::FORM::SURF *surf, const Clip_map &clips)
     }
 }
 
-void Surface::generate_stateset(int max_tex_units, bool force_arb_compression, const osgDB::ReaderWriter::Options* db_options) const
+void Surface::generate_stateset(unsigned int max_tex_units, bool force_arb_compression, const osgDB::ReaderWriter::Options* db_options) const
 {
     if (!stateset_.valid()) {
 

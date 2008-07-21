@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/FrameStamp>
 #include <osg/Image>
 #include <osg/ImageStream>
 #include <osg/Object>
@@ -147,9 +148,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	          __float__getVolume,
 	          "",
 	          "");
-	I_Method0(void, update,
+	I_Method1(void, update, IN, osg::FrameStamp *, fs,
 	          Properties::VIRTUAL,
-	          __void__update,
+	          __void__update__osg_FrameStamp_P1,
 	          "",
 	          "");
 	I_ProtectedMethod0(void, applyLoopingMode,

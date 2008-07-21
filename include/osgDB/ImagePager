@@ -1,0 +1,94 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGDB_IMAGEPAGER
+#define OSGDB_IMAGEPAGER 1
+
+#include <osg/Image>
+
+#include <OpenThreads/Thread>
+#include <OpenThreads/Mutex>
+
+#include <osgDB/ReaderWriter>
+
+namespace osgDB
+{
+
+class OSGDB_EXPORT ImagePager : public osg::Referenced
+{
+    public:
+    
+        ImagePager();
+                
+        struct ImageRequest : public osg::Referenced
+        {
+            ImageRequest():
+                osg::Referenced(true) {}
+            
+            std::string                         _fileName;
+            osg::ref_ptr<ReaderWriter::Options> _loadOptions;
+        
+        
+            osg::ref_ptr<osg::Object>           _objectToAttachTo;    
+            osg::ref_ptr<osg::Image>            _loadedImage;
+            
+        };
+        
+        class OSGDB_EXPORT ImageThread : public osg::Referenced, public OpenThreads::Thread
+        {
+        public:
+        
+            enum Mode
+            {
+                HANDLE_ALL_REQUESTS,
+                HANDLE_NON_HTTP,
+                HANDLE_ONLY_HTTP
+            };
+        
+            ImageThread(ImagePager* pager, Mode mode, const std::string& name);
+            
+            ImageThread(const ImageThread& dt, ImagePager* pager);
+            
+            void setDone(bool done) { _done = done; }
+            bool getDone() const { return _done; }
+
+            virtual int cancel();
+            
+            virtual void run();
+            
+        protected:
+
+            virtual ~ImageThread();
+        
+            bool            _done;
+            ImagePager*     _pager;
+            Mode            _mode;
+            std::string     _name;
+        };
+
+        /** Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
+        bool requiresUpdateSceneGraph() const;
+        
+        /** Merge the changes to the scene graph. */
+        virtual void updateSceneGraph(double currentFrameTime);
+
+    public:
+    
+        virtual ~ImagePager();
+};
+
+
+}
+
+#endif
+

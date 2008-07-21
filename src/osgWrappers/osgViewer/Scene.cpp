@@ -12,6 +12,7 @@
 
 #include <osg/Node>
 #include <osgDB/DatabasePager>
+#include <osgDB/ImagePager>
 #include <osgViewer/Scene>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -55,6 +56,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	          __C5_osgDB_DatabasePager_P1__getDatabasePager,
 	          "",
 	          "");
+	I_Method1(void, setImagePager, IN, osgDB::ImagePager *, ip,
+	          Properties::NON_VIRTUAL,
+	          __void__setImagePager__osgDB_ImagePager_P1,
+	          "",
+	          "");
+	I_Method0(osgDB::ImagePager *, getImagePager,
+	          Properties::NON_VIRTUAL,
+	          __osgDB_ImagePager_P1__getImagePager,
+	          "",
+	          "");
+	I_Method0(const osgDB::ImagePager *, getImagePager,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgDB_ImagePager_P1__getImagePager,
+	          "",
+	          "");
 	I_StaticMethod1(osgViewer::Scene *, getScene, IN, osg::Node *, node,
 	                __Scene_P1__getScene__osg_Node_P1_S,
 	                "Get the Scene object that has the specified node assigned to it. ",
@@ -65,6 +81,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
 	                 __osgDB_DatabasePager_P1__getDatabasePager, 
 	                 __void__setDatabasePager__osgDB_DatabasePager_P1);
+	I_SimpleProperty(osgDB::ImagePager *, ImagePager, 
+	                 __osgDB_ImagePager_P1__getImagePager, 
+	                 __void__setImagePager__osgDB_ImagePager_P1);
 	I_SimpleProperty(osg::Node *, SceneData, 
 	                 __osg_Node_P1__getSceneData, 
 	                 __void__setSceneData__osg_Node_P1);

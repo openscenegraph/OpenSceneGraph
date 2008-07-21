@@ -24,6 +24,7 @@ Scene::Scene():
     osg::Referenced(true)
 {
     setDatabasePager(osgDB::DatabasePager::create());
+    setImagePager(new osgDB::ImagePager);
     
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_sceneCacheMutex);
     s_sceneCache.push_back(this);
@@ -69,6 +70,11 @@ const osg::Node* Scene::getSceneData() const
 void Scene::setDatabasePager(osgDB::DatabasePager* dp)
 {
     _databasePager = dp;
+}
+
+void Scene::setImagePager(osgDB::ImagePager* ip)
+{
+    _imagePager = ip;
 }
 
 

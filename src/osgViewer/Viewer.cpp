@@ -891,6 +891,12 @@ void Viewer::updateTraversal()
         _scene->getDatabasePager()->updateSceneGraph(_frameStamp->getReferenceTime());
     }
 
+    if (_scene->getImagePager())
+    {    
+        // synchronize changes required by the DatabasePager thread to the scene graph
+        _scene->getImagePager()->updateSceneGraph(_frameStamp->getReferenceTime());
+    }
+
     if (_updateOperations.valid())
     {
         _updateOperations->runOperations(this);

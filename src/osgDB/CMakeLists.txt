@@ -20,6 +20,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/FileNameUtils
     ${HEADER_PATH}/FileUtils
     ${HEADER_PATH}/ImageOptions
+    ${HEADER_PATH}/ImagePager
     ${HEADER_PATH}/Input
     ${HEADER_PATH}/Output
     ${HEADER_PATH}/ParameterOutput
@@ -46,6 +47,7 @@ ADD_LIBRARY(${LIB_NAME}
     FileNameUtils.cpp
     FileUtils.cpp
     ImageOptions.cpp
+    ImagePager.cpp
     Input.cpp
     Output.cpp
     ReadFile.cpp

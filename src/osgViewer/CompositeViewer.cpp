@@ -972,6 +972,12 @@ void CompositeViewer::updateTraversal()
             scene->getDatabasePager()->updateSceneGraph(_frameStamp->getReferenceTime());
         }
 
+        if (scene->getImagePager())
+        {    
+            // synchronize changes required by the DatabasePager thread to the scene graph
+            scene->getImagePager()->updateSceneGraph(_frameStamp->getReferenceTime());
+        }
+
     }
 
     if (_updateOperations.valid())

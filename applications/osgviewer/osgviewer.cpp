@@ -39,6 +39,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
     arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
+    arguments.getApplicationUsage()->addCommandLineOption("--login <url> <username> <password>","Provide authentication information for http file access.");
 
     osgViewer::Viewer viewer(arguments);
 
@@ -60,6 +61,19 @@ int main(int argc, char** argv)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
+    }
+
+    std::string url, username, password;
+    while(arguments.read("--login",url, username, password))
+    {
+        if (!osgDB::Registry::instance()->getAuthenticationMap())
+        {
+            osgDB::Registry::instance()->setAuthenticationMap(new osgDB::AuthenticationMap);
+            osgDB::Registry::instance()->getAuthenticationMap()->addAuthenticationDetails(
+                url,
+                new osgDB::AuthenticationDetails(username, password)
+            );
+        }
     }
 
     // set up the camera manipulators.

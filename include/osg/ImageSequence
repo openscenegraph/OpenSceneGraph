@@ -58,19 +58,23 @@ class OSG_EXPORT ImageSequence : public ImageStream
 
         void addImage(osg::Image* image, double duration = 0.040);
 
-        virtual void update(osg::FrameStamp* fs);
+        virtual void update(const osg::FrameStamp* fs);
 
     protected:
 
         virtual ~ImageSequence() {}
         
-        double              _referenceTime;
-        double              _timeMultiplier;
+        void setImageToChild(const osg::Image* image);
+
+        double                          _referenceTime;
+        double                          _timeMultiplier;
         
-        
-        OpenThreads::Mutex          _mutex;
-        FileNameDurationSequence    _fileNameDurationSequence;
-        ImageDurationSequence       _imageDuationSequence;
+        OpenThreads::Mutex              _mutex;
+        FileNameDurationSequence        _fileNameDurationSequence;
+        ImageDurationSequence           _imageDuationSequence;
+
+        ImageDurationSequence::iterator _imageIterator;
+        double                          _imageIteratorTime;
         
         
 };

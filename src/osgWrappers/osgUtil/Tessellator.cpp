@@ -53,9 +53,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	          __void__setBoundaryOnly__C5_bool,
 	          "Set and get tessellation request boundary only on/off. ",
 	          "");
-	I_Method0(const bool, getBoundaryOnly,
+	I_Method0(bool, getBoundaryOnly,
 	          Properties::NON_VIRTUAL,
-	          __C5_bool__getBoundaryOnly,
+	          __bool__getBoundaryOnly,
 	          "",
 	          "");
 	I_Method1(void, setWindingType, IN, const osgUtil::Tessellator::WindingType, wt,
@@ -63,9 +63,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	          __void__setWindingType__C5_WindingType,
 	          "Set and get tessellation windong rule. ",
 	          "");
-	I_Method0(const osgUtil::Tessellator::WindingType, getWindingType,
+	I_Method0(osgUtil::Tessellator::WindingType, getWindingType,
 	          Properties::NON_VIRTUAL,
-	          __C5_WindingType__getWindingType,
+	          __WindingType__getWindingType,
 	          "",
 	          "");
 	I_Method1(void, setTessellationType, IN, const osgUtil::Tessellator::TessellationType, tt,
@@ -73,9 +73,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	          __void__setTessellationType__C5_TessellationType,
 	          "Set and get tessellation type. ",
 	          "");
-	I_Method0(const osgUtil::Tessellator::TessellationType, getTessellationType,
+	I_Method0(osgUtil::Tessellator::TessellationType, getTessellationType,
 	          Properties::NON_VIRTUAL,
-	          __C5_TessellationType__getTessellationType,
+	          __TessellationType__getTessellationType,
 	          "",
 	          "");
 	I_Method1(void, retessellatePolygons, IN, osg::Geometry &, cxgeom,
@@ -183,9 +183,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	                   __void__error__GLenum,
 	                   "",
 	                   "");
-	I_SimpleProperty(const bool, BoundaryOnly, 
-	                 __C5_bool__getBoundaryOnly, 
-	                 __void__setBoundaryOnly__C5_bool);
+	I_SimpleProperty(bool, BoundaryOnly, 
+	                 __bool__getBoundaryOnly, 
+	                 0);
 	I_SimpleProperty(osg::Geometry::PrimitiveSetList, Contours, 
 	                 __osg_Geometry_PrimitiveSetList__getContours, 
 	                 0);
@@ -195,12 +195,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	I_SimpleProperty(const osg::Vec3, TessellationNormal, 
 	                 0, 
 	                 __void__setTessellationNormal__C5_osg_Vec3);
-	I_SimpleProperty(const osgUtil::Tessellator::TessellationType, TessellationType, 
-	                 __C5_TessellationType__getTessellationType, 
-	                 __void__setTessellationType__C5_TessellationType);
-	I_SimpleProperty(const osgUtil::Tessellator::WindingType, WindingType, 
-	                 __C5_WindingType__getWindingType, 
-	                 __void__setWindingType__C5_WindingType);
+	I_SimpleProperty(osgUtil::Tessellator::TessellationType, TessellationType, 
+	                 __TessellationType__getTessellationType, 
+	                 0);
+	I_SimpleProperty(osgUtil::Tessellator::WindingType, WindingType, 
+	                 __WindingType__getWindingType, 
+	                 0);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tessellator::Prim::VecList)

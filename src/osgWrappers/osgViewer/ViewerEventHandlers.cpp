@@ -11,12 +11,8 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/ApplicationUsage>
-#include <osg/BufferObject>
 #include <osg/Camera>
-#include <osg/GraphicsContext>
 #include <osg/Image>
-#include <osg/RenderInfo>
-#include <osg/Timer>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgViewer/ViewerEventHandlers>
@@ -28,14 +24,6 @@
 #ifdef OUT
 #undef OUT
 #endif
-
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::CaptureOperation)
-	I_DeclaringFile("osgViewer/ViewerEventHandlers");
-	I_BaseType(osg::Referenced);
-	I_Constructor0(____CaptureOperation,
-	               "",
-	               "");
-END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
@@ -219,9 +207,11 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
-	I_Constructor0(____ScreenCaptureHandler,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, osgViewer::ScreenCaptureHandler::CaptureOperation *, defaultOperation, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____ScreenCaptureHandler__CaptureOperation_P1,
+	                           "",
+	                           "");
 	I_Method1(void, setKeyEventTakeScreenShot, IN, int, key,
 	          Properties::NON_VIRTUAL,
 	          __void__setKeyEventTakeScreenShot__int,
@@ -232,12 +222,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler)
 	          __int__getKeyEventTakeScreenShot,
 	          "",
 	          "");
-	I_Method1(void, setCaptureOperation, IN, osgViewer::CaptureOperation *, operation,
+	I_Method1(void, setCaptureOperation, IN, osgViewer::ScreenCaptureHandler::CaptureOperation *, operation,
 	          Properties::NON_VIRTUAL,
 	          __void__setCaptureOperation__CaptureOperation_P1,
 	          "",
 	          "");
-	I_Method0(osgViewer::CaptureOperation *, getCaptureOperation,
+	I_Method0(osgViewer::ScreenCaptureHandler::CaptureOperation *, getCaptureOperation,
 	          Properties::NON_VIRTUAL,
 	          __CaptureOperation_P1__getCaptureOperation,
 	          "",
@@ -258,12 +248,48 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler)
 	                   __void__addCallbackToViewer__osgViewer_ViewerBase_R1,
 	                   "",
 	                   "");
-	I_SimpleProperty(osgViewer::CaptureOperation *, CaptureOperation, 
+	I_SimpleProperty(osgViewer::ScreenCaptureHandler::CaptureOperation *, CaptureOperation, 
 	                 __CaptureOperation_P1__getCaptureOperation, 
 	                 __void__setCaptureOperation__CaptureOperation_P1);
 	I_SimpleProperty(int, KeyEventTakeScreenShot, 
 	                 __int__getKeyEventTakeScreenShot, 
 	                 __void__setKeyEventTakeScreenShot__int);
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler::CaptureOperation)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____CaptureOperation,
+	               "",
+	               "");
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osgViewer::ScreenCaptureHandler::WriteToFile::SavePolicy)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
+	I_EnumLabel(osgViewer::ScreenCaptureHandler::WriteToFile::OVERWRITE);
+	I_EnumLabel(osgViewer::ScreenCaptureHandler::WriteToFile::SEQUENTIAL_NUMBER);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler::WriteToFile)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
+	I_BaseType(osgViewer::ScreenCaptureHandler::CaptureOperation);
+	I_ConstructorWithDefaults3(IN, const std::string &, filename, , IN, const std::string &, extension, , IN, osgViewer::ScreenCaptureHandler::WriteToFile::SavePolicy, savePolicy, osgViewer::ScreenCaptureHandler::WriteToFile::OVERWRITE,
+	                           ____WriteToFile__C5_std_string_R1__C5_std_string_R1__SavePolicy,
+	                           "",
+	                           "");
+	I_Method1(void, setSavePolicy, IN, osgViewer::ScreenCaptureHandler::WriteToFile::SavePolicy, savePolicy,
+	          Properties::NON_VIRTUAL,
+	          __void__setSavePolicy__SavePolicy,
+	          "",
+	          "");
+	I_Method0(osgViewer::ScreenCaptureHandler::WriteToFile::SavePolicy, getSavePolicy,
+	          Properties::NON_VIRTUAL,
+	          __SavePolicy__getSavePolicy,
+	          "",
+	          "");
+	I_SimpleProperty(osgViewer::ScreenCaptureHandler::WriteToFile::SavePolicy, SavePolicy, 
+	                 __SavePolicy__getSavePolicy, 
+	                 __void__setSavePolicy__SavePolicy);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgViewer::StatsHandler::StatsType)
@@ -456,129 +482,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ThreadingHandler)
 	                 __void__setKeyEventChangeThreadingModel__int);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::map< osg::GraphicsContext * COMMA  osg::ref_ptr< osgViewer::WindowCaptureCallback::ContextData > >, osgViewer::WindowCaptureCallback::ContextDataMap)
-
-BEGIN_ENUM_REFLECTOR(osgViewer::WindowCaptureCallback::Mode)
-	I_DeclaringFile("osgViewer/ViewerEventHandlers");
-	I_EnumLabel(osgViewer::WindowCaptureCallback::READ_PIXELS);
-	I_EnumLabel(osgViewer::WindowCaptureCallback::SINGLE_PBO);
-	I_EnumLabel(osgViewer::WindowCaptureCallback::DOUBLE_PBO);
-	I_EnumLabel(osgViewer::WindowCaptureCallback::TRIPLE_PBO);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osgViewer::WindowCaptureCallback::FramePosition)
-	I_DeclaringFile("osgViewer/ViewerEventHandlers");
-	I_EnumLabel(osgViewer::WindowCaptureCallback::START_FRAME);
-	I_EnumLabel(osgViewer::WindowCaptureCallback::END_FRAME);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgViewer::WindowCaptureCallback)
-	I_DeclaringFile("osgViewer/ViewerEventHandlers");
-	I_BaseType(osg::Camera::DrawCallback);
-	I_Constructor3(IN, osgViewer::WindowCaptureCallback::Mode, mode, IN, osgViewer::WindowCaptureCallback::FramePosition, position, IN, GLenum, readBuffer,
-	               ____WindowCaptureCallback__Mode__FramePosition__GLenum,
-	               "",
-	               "");
-	I_Method0(osgViewer::WindowCaptureCallback::FramePosition, getFramePosition,
-	          Properties::NON_VIRTUAL,
-	          __FramePosition__getFramePosition,
-	          "",
-	          "");
-	I_Method1(osgViewer::WindowCaptureCallback::ContextData *, createContextData, IN, osg::GraphicsContext *, gc,
-	          Properties::NON_VIRTUAL,
-	          __ContextData_P1__createContextData__osg_GraphicsContext_P1,
-	          "",
-	          "");
-	I_Method1(osgViewer::WindowCaptureCallback::ContextData *, getContextData, IN, osg::GraphicsContext *, gc,
-	          Properties::NON_VIRTUAL,
-	          __ContextData_P1__getContextData__osg_GraphicsContext_P1,
-	          "",
-	          "");
-	I_Method1(void, setCaptureOperation, IN, osgViewer::CaptureOperation *, operation,
-	          Properties::NON_VIRTUAL,
-	          __void__setCaptureOperation__CaptureOperation_P1,
-	          "",
-	          "");
-	I_Method0(osgViewer::CaptureOperation *, getCaptureOperation,
-	          Properties::NON_VIRTUAL,
-	          __CaptureOperation_P1__getCaptureOperation,
-	          "",
-	          "");
-	I_SimpleProperty(osgViewer::CaptureOperation *, CaptureOperation, 
-	                 __CaptureOperation_P1__getCaptureOperation, 
-	                 __void__setCaptureOperation__CaptureOperation_P1);
-	I_SimpleProperty(osgViewer::WindowCaptureCallback::FramePosition, FramePosition, 
-	                 __FramePosition__getFramePosition, 
-	                 0);
-	I_PublicMemberProperty(osgViewer::WindowCaptureCallback::Mode, _mode);
-	I_PublicMemberProperty(osgViewer::WindowCaptureCallback::FramePosition, _position);
-	I_PublicMemberProperty(GLenum, _readBuffer);
-	I_PublicMemberProperty(OpenThreads::Mutex, _mutex);
-	I_PublicMemberProperty(osgViewer::WindowCaptureCallback::ContextDataMap, _contextDataMap);
-END_REFLECTOR
-
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Image > >, osgViewer::WindowCaptureCallback::ContextData::ImageBuffer)
-
-TYPE_NAME_ALIAS(std::vector< GLuint >, osgViewer::WindowCaptureCallback::ContextData::PBOBuffer)
-
-BEGIN_OBJECT_REFLECTOR(osgViewer::WindowCaptureCallback::ContextData)
-	I_DeclaringFile("osgViewer/ViewerEventHandlers");
-	I_BaseType(osg::Referenced);
-	I_Constructor3(IN, osg::GraphicsContext *, gc, IN, osgViewer::WindowCaptureCallback::Mode, mode, IN, GLenum, readBuffer,
-	               ____ContextData__osg_GraphicsContext_P1__Mode__GLenum,
-	               "",
-	               "");
-	I_Method3(void, getSize, IN, osg::GraphicsContext *, gc, IN, int &, width, IN, int &, height,
-	          Properties::NON_VIRTUAL,
-	          __void__getSize__osg_GraphicsContext_P1__int_R1__int_R1,
-	          "",
-	          "");
-	I_Method4(void, updateTimings, IN, osg::Timer_t, tick_start, IN, osg::Timer_t, tick_afterReadPixels, IN, osg::Timer_t, tick_afterMemCpy, IN, unsigned int, dataSize,
-	          Properties::NON_VIRTUAL,
-	          __void__updateTimings__osg_Timer_t__osg_Timer_t__osg_Timer_t__unsigned_int,
-	          "",
-	          "");
-	I_Method0(void, read,
-	          Properties::NON_VIRTUAL,
-	          __void__read,
-	          "",
-	          "");
-	I_Method0(void, readPixels,
-	          Properties::NON_VIRTUAL,
-	          __void__readPixels,
-	          "",
-	          "");
-	I_Method1(void, singlePBO, IN, osg::BufferObject::Extensions *, ext,
-	          Properties::NON_VIRTUAL,
-	          __void__singlePBO__osg_BufferObject_Extensions_P1,
-	          "",
-	          "");
-	I_Method1(void, multiPBO, IN, osg::BufferObject::Extensions *, ext,
-	          Properties::NON_VIRTUAL,
-	          __void__multiPBO__osg_BufferObject_Extensions_P1,
-	          "",
-	          "");
-	I_PublicMemberProperty(osg::GraphicsContext *, _gc);
-	I_PublicMemberProperty(unsigned int, _index);
-	I_PublicMemberProperty(osgViewer::WindowCaptureCallback::Mode, _mode);
-	I_PublicMemberProperty(GLenum, _readBuffer);
-	I_PublicMemberProperty(GLenum, _pixelFormat);
-	I_PublicMemberProperty(GLenum, _type);
-	I_PublicMemberProperty(int, _width);
-	I_PublicMemberProperty(int, _height);
-	I_PublicMemberProperty(unsigned int, _currentImageIndex);
-	I_PublicMemberProperty(osgViewer::WindowCaptureCallback::ContextData::ImageBuffer, _imageBuffer);
-	I_PublicMemberProperty(unsigned int, _currentPboIndex);
-	I_PublicMemberProperty(osgViewer::WindowCaptureCallback::ContextData::PBOBuffer, _pboBuffer);
-	I_PublicMemberProperty(unsigned int, _reportTimingFrequency);
-	I_PublicMemberProperty(unsigned int, _numTimeValuesRecorded);
-	I_PublicMemberProperty(double, _timeForReadPixels);
-	I_PublicMemberProperty(double, _timeForFullCopy);
-	I_PublicMemberProperty(double, _timeForMemCpy);
-	I_PublicMemberProperty(osg::Timer_t, _previousFrameTick);
-	I_PublicMemberProperty(osg::ref_ptr< osgViewer::CaptureOperation >, _captureOperation);
-END_REFLECTOR
-
 BEGIN_OBJECT_REFLECTOR(osgViewer::WindowSizeHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
@@ -679,76 +582,4 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::WindowSizeHandler)
 	                 __bool__getToggleFullscreen, 
 	                 __void__setToggleFullscreen__bool);
 END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osgViewer::WriteToFileCaptureOperation::SavePolicy)
-	I_DeclaringFile("osgViewer/ViewerEventHandlers");
-	I_EnumLabel(osgViewer::WriteToFileCaptureOperation::OVERWRITE);
-	I_EnumLabel(osgViewer::WriteToFileCaptureOperation::SEQUENTIAL_NUMBER);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgViewer::WriteToFileCaptureOperation)
-	I_DeclaringFile("osgViewer/ViewerEventHandlers");
-	I_BaseType(osgViewer::CaptureOperation);
-	I_ConstructorWithDefaults3(IN, const std::string &, filename, , IN, const std::string &, extension, , IN, osgViewer::WriteToFileCaptureOperation::SavePolicy, savePolicy, osgViewer::WriteToFileCaptureOperation::OVERWRITE,
-	                           ____WriteToFileCaptureOperation__C5_std_string_R1__C5_std_string_R1__SavePolicy,
-	                           "",
-	                           "");
-	I_Method1(void, setSavePolicy, IN, osgViewer::WriteToFileCaptureOperation::SavePolicy, savePolicy,
-	          Properties::NON_VIRTUAL,
-	          __void__setSavePolicy__SavePolicy,
-	          "",
-	          "");
-	I_Method0(osgViewer::WriteToFileCaptureOperation::SavePolicy, getSavePolicy,
-	          Properties::NON_VIRTUAL,
-	          __SavePolicy__getSavePolicy,
-	          "",
-	          "");
-	I_SimpleProperty(osgViewer::WriteToFileCaptureOperation::SavePolicy, SavePolicy, 
-	                 __SavePolicy__getSavePolicy, 
-	                 __void__setSavePolicy__SavePolicy);
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgViewer::WindowCaptureCallback::ContextData >)
-	I_DeclaringFile("osg/ref_ptr");
-	I_Constructor0(____ref_ptr,
-	               "",
-	               "");
-	I_Constructor1(IN, osgViewer::WindowCaptureCallback::ContextData *, ptr,
-	               Properties::NON_EXPLICIT,
-	               ____ref_ptr__T_P1,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::ref_ptr< osgViewer::WindowCaptureCallback::ContextData > &, rp,
-	               Properties::NON_EXPLICIT,
-	               ____ref_ptr__C5_ref_ptr_R1,
-	               "",
-	               "");
-	I_Method0(osgViewer::WindowCaptureCallback::ContextData *, get,
-	          Properties::NON_VIRTUAL,
-	          __T_P1__get,
-	          "",
-	          "");
-	I_Method0(bool, valid,
-	          Properties::NON_VIRTUAL,
-	          __bool__valid,
-	          "",
-	          "");
-	I_Method0(osgViewer::WindowCaptureCallback::ContextData *, release,
-	          Properties::NON_VIRTUAL,
-	          __T_P1__release,
-	          "",
-	          "");
-	I_Method1(void, swap, IN, osg::ref_ptr< osgViewer::WindowCaptureCallback::ContextData > &, rp,
-	          Properties::NON_VIRTUAL,
-	          __void__swap__ref_ptr_R1,
-	          "",
-	          "");
-	I_SimpleProperty(osgViewer::WindowCaptureCallback::ContextData *, , 
-	                 __T_P1__get, 
-	                 0);
-END_REFLECTOR
-
-STD_MAP_REFLECTOR(std::map< osg::GraphicsContext * COMMA  osg::ref_ptr< osgViewer::WindowCaptureCallback::ContextData > >)
-
-STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Image > >)
 

@@ -352,16 +352,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __C5_PixelBufferObject_P1__getPixelBufferObject,
 	          "Get the const PixelBufferObject. ",
 	          "");
-	I_Method1(void, setCallUpdateInDraw, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setCallUpdateInDraw__bool,
-	          "",
-	          "");
-	I_Method0(bool, getCallUpdateInDraw,
-	          Properties::NON_VIRTUAL,
-	          __bool__getCallUpdateInDraw,
-	          "",
-	          "");
 	I_Method1(void, update, IN, const osg::FrameStamp *, fs,
 	          Properties::VIRTUAL,
 	          __void__update__C5_osg_FrameStamp_P1,
@@ -410,9 +400,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_SimpleProperty(osg::Image::AllocationMode, AllocationMode, 
 	                 __AllocationMode__getAllocationMode, 
 	                 __void__setAllocationMode__AllocationMode);
-	I_SimpleProperty(bool, CallUpdateInDraw, 
-	                 __bool__getCallUpdateInDraw, 
-	                 __void__setCallUpdateInDraw__bool);
 	I_SimpleProperty(GLenum, DataType, 
 	                 __GLenum__getDataType, 
 	                 __void__setDataType__GLenum);

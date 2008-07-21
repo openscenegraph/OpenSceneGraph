@@ -374,6 +374,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __void__setAuthenticationMap__AuthenticationMap_P1,
 	          "Set the password map to be used by plugins when access files from secure locations. ",
 	          "");
+	I_Method0(osgDB::AuthenticationMap *, getAuthenticationMap,
+	          Properties::NON_VIRTUAL,
+	          __AuthenticationMap_P1__getAuthenticationMap,
+	          "Get the password map to be used by plugins when access files from secure locations. ",
+	          "");
 	I_Method0(const osgDB::AuthenticationMap *, getAuthenticationMap,
 	          Properties::NON_VIRTUAL,
 	          __C5_AuthenticationMap_P1__getAuthenticationMap,
@@ -578,7 +583,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	                   "",
 	                   "");
 	I_SimpleProperty(osgDB::AuthenticationMap *, AuthenticationMap, 
-	                 0, 
+	                 __AuthenticationMap_P1__getAuthenticationMap, 
 	                 __void__setAuthenticationMap__AuthenticationMap_P1);
 	I_SimpleProperty(osgDB::ReaderWriter::Options::BuildKdTreesHint, BuildKdTreesHint, 
 	                 __ReaderWriter_Options_BuildKdTreesHint__getBuildKdTreesHint, 

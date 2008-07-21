@@ -123,7 +123,7 @@ int main(int argc, char** argv)
     // add the LOD Scale handler
     viewer.addEventHandler(new osgViewer::LODScaleHandler);
 
-    // add the LOD Scale handler
+    // add the screen capture handler
     viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
 
     // load the data

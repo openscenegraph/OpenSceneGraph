@@ -50,7 +50,7 @@ void WriteToFileCaptureOperation::operator () (const osg::Image& image, const un
 
     osgDB::writeImageFile(image, filename.str());
 
-    osg::notify(osg::INFO)<<"Taking a screenshot, saved as '"<<filename.str()<<"'"<<std::endl;
+    osg::notify(osg::INFO)<<"ScreenCaptureHandler: Taking a screenshot, saved as '"<<filename.str()<<"'"<<std::endl;
 
     if (_savePolicy == SEQUENTIAL_NUMBER)
     {
@@ -87,12 +87,12 @@ WindowCaptureCallback::ContextData::ContextData(osg::GraphicsContext* gc, Mode m
     {
         if (gc->getTraits()->alpha)
         {
-            osg::notify(level)<<"Select GL_RGBA read back format"<<std::endl;
+            osg::notify(level)<<"ScreenCaptureHandler: Selected GL_RGBA read back format"<<std::endl;
             _pixelFormat = GL_RGBA;
         }
         else 
         {
-            osg::notify(level)<<"Select GL_RGB read back format"<<std::endl;
+            osg::notify(level)<<"ScreenCaptureHandler: Selected GL_RGB read back format"<<std::endl;
             _pixelFormat = GL_RGB; 
         }
     }
@@ -108,19 +108,19 @@ WindowCaptureCallback::ContextData::ContextData(osg::GraphicsContext* gc, Mode m
     switch(_mode)
     {
         case(READ_PIXELS):
-            osg::notify(level)<<"Reading window using glReadPixels, without PixelBufferObject."<<std::endl;
+            osg::notify(level)<<"ScreenCaptureHandler: Reading window using glReadPixels, without PixelBufferObject."<<std::endl;
             break;
         case(SINGLE_PBO): 
-            osg::notify(level)<<"Reading window using glReadPixels, with a single PixelBufferObject."<<std::endl;
+            osg::notify(level)<<"ScreenCaptureHandler: Reading window using glReadPixels, with a single PixelBufferObject."<<std::endl;
             _pboBuffer.push_back(0); 
             break;
         case(DOUBLE_PBO): 
-            osg::notify(level)<<"Reading window using glReadPixels, with a double buffer PixelBufferObject."<<std::endl;
+            osg::notify(level)<<"ScreenCaptureHandler: Reading window using glReadPixels, with a double buffer PixelBufferObject."<<std::endl;
             _pboBuffer.push_back(0); 
             _pboBuffer.push_back(0); 
             break;
         case(TRIPLE_PBO): 
-            osg::notify(level)<<"Reading window using glReadPixels, with a triple buffer PixelBufferObject."<<std::endl;
+            osg::notify(level)<<"ScreenCaptureHandler: Reading window using glReadPixels, with a triple buffer PixelBufferObject."<<std::endl;
             _pboBuffer.push_back(0); 
             _pboBuffer.push_back(0); 
             _pboBuffer.push_back(0); 
@@ -142,58 +142,15 @@ void WindowCaptureCallback::ContextData::getSize(osg::GraphicsContext* gc, int& 
 void WindowCaptureCallback::ContextData::updateTimings(osg::Timer_t tick_start,
                                                        osg::Timer_t tick_afterReadPixels,
                                                        osg::Timer_t tick_afterMemCpy,
+                                                       osg::Timer_t tick_afterCaptureOperation,
                                                        unsigned int dataSize)
 {
-/*
-    if (!_reportTimingFrequency) return;
-
-    double timeForReadPixels = osg::Timer::instance()->delta_s(tick_start, tick_afterReadPixels);
-    double timeForFullCopy = osg::Timer::instance()->delta_s(tick_start, tick_afterMemCpy);
-    double timeForMemCpy = osg::Timer::instance()->delta_s(tick_afterReadPixels, tick_afterMemCpy);
-
-    _timeForReadPixels += timeForReadPixels;
-    _timeForFullCopy += timeForFullCopy;
-    _timeForMemCpy += timeForMemCpy;
-    
-    ++_numTimeValuesRecorded;
-    
-    if (_numTimeValuesRecorded==_reportTimingFrequency)
-    {
-        timeForReadPixels = _timeForReadPixels/double(_numTimeValuesRecorded);
-        timeForFullCopy = _timeForFullCopy/double(_numTimeValuesRecorded);
-        timeForMemCpy = _timeForMemCpy/double(_numTimeValuesRecorded);
-        
-        double averageFrameTime =  osg::Timer::instance()->delta_s(_previousFrameTick, tick_afterMemCpy)/double(_numTimeValuesRecorded);
-        double fps = 1.0/averageFrameTime;    
-        _previousFrameTick = tick_afterMemCpy;
-
-        _timeForReadPixels = 0.0;
-        _timeForFullCopy = 0.0;
-        _timeForMemCpy = 0.0;
-
-        _numTimeValuesRecorded = 0;
-
-        double numMPixels = double(_width * _height) / 1000000.0;
-        double numMb = double(dataSize) / (1024*1024);
-
-        int prec = osg::notify(osg::NOTICE).precision(5);
-
-        if (timeForMemCpy==0.0)
-        {
-            osg::notify(osg::NOTICE)<<"fps = "<<fps<<", full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, copy speed = "<<numMb / timeForFullCopy<<" Mb/sec"<<std::endl;
-        }
-        else
-        {
-            osg::notify(osg::NOTICE)<<"fps = "<<fps<<", full frame copy = "<<timeForFullCopy*1000.0f<<"ms rate = "<<numMPixels / timeForFullCopy<<" Mpixel/sec, "<<numMb / timeForFullCopy<< " Mb/sec "<<
-                                      "time for memcpy = "<<timeForMemCpy*1000.0<<"ms  memcpy speed = "<<numMb / timeForMemCpy<<" Mb/sec"<<std::endl;
-        }
-        osg::notify(osg::NOTICE).precision(prec);
-
-    }
-*/
     _timeForReadPixels = osg::Timer::instance()->delta_s(tick_start, tick_afterReadPixels);
-    _timeForFullCopy = osg::Timer::instance()->delta_s(tick_start, tick_afterMemCpy);
     _timeForMemCpy = osg::Timer::instance()->delta_s(tick_afterReadPixels, tick_afterMemCpy);
+    _timeForCaptureOperation = osg::Timer::instance()->delta_s(tick_afterMemCpy, tick_afterCaptureOperation);
+
+    _timeForFullCopy = osg::Timer::instance()->delta_s(tick_start, tick_afterMemCpy);
+    _timeForFullCopyAndOperation = osg::Timer::instance()->delta_s(tick_start, tick_afterCaptureOperation);
 }
 
 void WindowCaptureCallback::ContextData::read()
@@ -220,8 +177,6 @@ void WindowCaptureCallback::ContextData::read()
 
 void WindowCaptureCallback::ContextData::readPixels()
 {
-    // std::cout<<"readPixels("<<_fileName<<" image "<<_currentImageIndex<<" "<<_currentPboIndex<<std::endl;
-
     unsigned int nextImageIndex = (_currentImageIndex+1)%_imageBuffer.size();
     unsigned int nextPboIndex = _pboBuffer.empty() ? 0 : (_currentPboIndex+1)%_pboBuffer.size();
 
@@ -245,12 +200,13 @@ void WindowCaptureCallback::ContextData::readPixels()
 
     osg::Timer_t tick_afterReadPixels = osg::Timer::instance()->tick();
 
-    updateTimings(tick_start, tick_afterReadPixels, tick_afterReadPixels, image->getTotalSizeInBytes());
-
     if (_captureOperation.valid())
     {
         (*_captureOperation)(*image, _index);
     }
+
+    osg::Timer_t tick_afterCaptureOperation = osg::Timer::instance()->tick();
+    updateTimings(tick_start, tick_afterReadPixels, tick_afterReadPixels, tick_afterCaptureOperation, image->getTotalSizeInBytes());
 
     _currentImageIndex = nextImageIndex;
     _currentPboIndex = nextPboIndex;
@@ -258,8 +214,6 @@ void WindowCaptureCallback::ContextData::readPixels()
 
 void WindowCaptureCallback::ContextData::singlePBO(osg::BufferObject::Extensions* ext)
 {
-    // std::cout<<"singelPBO(  "<<_fileName<<" image "<<_currentImageIndex<<" "<<_currentPboIndex<<std::endl;
-
     unsigned int nextImageIndex = (_currentImageIndex+1)%_imageBuffer.size();
 
     int width=0, height=0;
@@ -277,12 +231,12 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::BufferObject::Extensions
     if (image->s() != _width || 
         image->t() != _height)
     {
-        //osg::notify(osg::NOTICE)<<"Allocating image "<<std::endl;
+        //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: Allocating image "<<std::endl;
         image->allocateImage(_width, _height, 1, _pixelFormat, _type);
         
         if (pbo!=0)
         {
-            //osg::notify(osg::NOTICE)<<"deleting pbo "<<pbo<<std::endl;
+            //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: deleting pbo "<<pbo<<std::endl;
             ext->glDeleteBuffers (1, &pbo);
             pbo = 0;
         }
@@ -295,7 +249,7 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::BufferObject::Extensions
         ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, pbo);
         ext->glBufferData(GL_PIXEL_PACK_BUFFER_ARB, image->getTotalSizeInBytes(), 0, GL_STREAM_READ);
 
-        //osg::notify(osg::NOTICE)<<"Generating pbo "<<pbo<<std::endl;
+        //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: Generating pbo "<<pbo<<std::endl;
     }
     else
     {
@@ -322,20 +276,19 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::BufferObject::Extensions
 
     osg::Timer_t tick_afterMemCpy = osg::Timer::instance()->tick();
 
-    updateTimings(tick_start, tick_afterReadPixels, tick_afterMemCpy, image->getTotalSizeInBytes());
-
     if (_captureOperation.valid())
     {
         (*_captureOperation)(*image, _index);
     }
 
+    osg::Timer_t tick_afterCaptureOperation = osg::Timer::instance()->tick();
+    updateTimings(tick_start, tick_afterReadPixels, tick_afterMemCpy, tick_afterCaptureOperation, image->getTotalSizeInBytes());
 
     _currentImageIndex = nextImageIndex;
 }
 
 void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions* ext)
 {
-    // std::cout<<"multiPBO(  "<<_fileName<<" image "<<_currentImageIndex<<" "<<_currentPboIndex<<std::endl;
     unsigned int nextImageIndex = (_currentImageIndex+1)%_imageBuffer.size();
     unsigned int nextPboIndex = (_currentPboIndex+1)%_pboBuffer.size();
 
@@ -355,19 +308,19 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
     if (image->s() != _width || 
         image->t() != _height)
     {
-        //osg::notify(osg::NOTICE)<<"Allocating image "<<std::endl;
+        //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: Allocating image "<<std::endl;
         image->allocateImage(_width, _height, 1, _pixelFormat, _type);
         
         if (read_pbo!=0)
         {
-            //osg::notify(osg::NOTICE)<<"deleting pbo "<<read_pbo<<std::endl;
+            //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: deleting pbo "<<read_pbo<<std::endl;
             ext->glDeleteBuffers (1, &read_pbo);
             read_pbo = 0;
         }
 
         if (copy_pbo!=0)
         {
-            //osg::notify(osg::NOTICE)<<"deleting pbo "<<copy_pbo<<std::endl;
+            //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: deleting pbo "<<copy_pbo<<std::endl;
             ext->glDeleteBuffers (1, &copy_pbo);
             copy_pbo = 0;
         }
@@ -381,7 +334,7 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
         ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, copy_pbo);
         ext->glBufferData(GL_PIXEL_PACK_BUFFER_ARB, image->getTotalSizeInBytes(), 0, GL_STREAM_READ);
 
-        //osg::notify(osg::NOTICE)<<"Generating pbo "<<read_pbo<<std::endl;
+        //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: Generating pbo "<<read_pbo<<std::endl;
     }
 
     if (read_pbo==0)
@@ -390,7 +343,7 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
         ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, read_pbo);
         ext->glBufferData(GL_PIXEL_PACK_BUFFER_ARB, image->getTotalSizeInBytes(), 0, GL_STREAM_READ);
 
-        //osg::notify(osg::NOTICE)<<"Generating pbo "<<read_pbo<<std::endl;
+        //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: Generating pbo "<<read_pbo<<std::endl;
     }
     else
     {
@@ -428,7 +381,7 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::BufferObject::Extensions*
 
     osg::Timer_t tick_afterMemCpy = osg::Timer::instance()->tick();
     
-    updateTimings(tick_start, tick_afterReadPixels, tick_afterMemCpy, image->getTotalSizeInBytes());
+    updateTimings(tick_start, tick_afterReadPixels, tick_afterMemCpy, tick_afterMemCpy, image->getTotalSizeInBytes());
 
     _currentImageIndex = nextImageIndex;
     _currentPboIndex = nextPboIndex;
@@ -444,10 +397,8 @@ WindowCaptureCallback::WindowCaptureCallback(Mode mode, FramePosition position, 
 
 WindowCaptureCallback::ContextData* WindowCaptureCallback::createContextData(osg::GraphicsContext* gc) const
 {
-    std::stringstream filename;
-    filename << "screen_shot_"<<_contextDataMap.size();
     WindowCaptureCallback::ContextData* cd = new WindowCaptureCallback::ContextData(gc, _mode, _readBuffer);
-    cd->_captureOperation = new WriteToFileCaptureOperation(filename.str(), "jpg", WriteToFileCaptureOperation::SEQUENTIAL_NUMBER);
+    cd->_captureOperation = _defaultCaptureOperation;
     return cd;
 }
 
@@ -462,6 +413,8 @@ WindowCaptureCallback::ContextData* WindowCaptureCallback::getContextData(osg::G
 
 void WindowCaptureCallback::setCaptureOperation(CaptureOperation* operation)
 {
+    _defaultCaptureOperation = operation;
+
     // Set the capture operation for each ContextData.
     for (ContextDataMap::iterator it = _contextDataMap.begin(); it != _contextDataMap.end(); ++it)
     {
@@ -486,14 +439,17 @@ void WindowCaptureCallback::operator () (osg::RenderInfo& renderInfo) const
         renderInfo.getCurrentCamera()->setFinalDrawCallback(0);
 
     int prec = osg::notify(osg::INFO).precision(5);
-    osg::notify(osg::INFO)<<"Took a screenshot in " << (cd->_timeForFullCopy*1000.0f) << "ms" << std::endl;
+    osg::notify(osg::INFO) << "ScreenCaptureHandler: "
+                           << "copy="      << (cd->_timeForFullCopy*1000.0f)             << "ms, "
+                           << "operation=" << (cd->_timeForCaptureOperation*1000.0f)     << "ms, "
+                           << "total="     << (cd->_timeForFullCopyAndOperation*1000.0f) << std::endl;
     osg::notify(osg::INFO).precision(prec);
 
     cd->_timeForFullCopy = 0;
 }
 
 
-ScreenCaptureHandler::ScreenCaptureHandler()
+ScreenCaptureHandler::ScreenCaptureHandler(CaptureOperation* defaultOperation)
     : _keyEventTakeScreenShot('c'),
       _callback(new WindowCaptureCallback(
                                           WindowCaptureCallback::READ_PIXELS, 
@@ -502,6 +458,10 @@ ScreenCaptureHandler::ScreenCaptureHandler()
 //                                          WindowCaptureCallback::TRIPLE_PBO, 
                                           WindowCaptureCallback::END_FRAME, GL_BACK))
 {
+    if (defaultOperation)
+        setCaptureOperation(defaultOperation);
+    else
+        setCaptureOperation(new WriteToFileCaptureOperation("screen_shot", "jpg"));
 }
 
 void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
@@ -551,13 +511,13 @@ void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
 
             if (firstCamera)
             {
-                //osg::notify(osg::NOTICE)<<"First camera "<<firstCamera<<std::endl;
+                //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: First camera "<<firstCamera<<std::endl;
 
                 firstCamera->setInitialDrawCallback(_callback.get());
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"No camera found"<<std::endl;
+                osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: No camera found"<<std::endl;
             }
         }
     }
@@ -599,13 +559,13 @@ void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
 
             if (lastCamera)
             {
-                //osg::notify(osg::NOTICE)<<"Last camera "<<lastCamera<<std::endl;
+                //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: Last camera "<<lastCamera<<std::endl;
 
                 lastCamera->setFinalDrawCallback(_callback.get());
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"No camera found"<<std::endl;
+                osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: No camera found"<<std::endl;
             }
         }
     }

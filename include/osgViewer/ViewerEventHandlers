@@ -355,6 +355,7 @@ class OSGVIEWER_EXPORT WindowCaptureCallback : public osg::Camera::DrawCallback
             void updateTimings(osg::Timer_t tick_start,
                                osg::Timer_t tick_afterReadPixels,
                                osg::Timer_t tick_afterMemCpy,
+                               osg::Timer_t tick_afterCaptureOperation,
                                unsigned int dataSize);
 
             void read();            
@@ -384,8 +385,10 @@ class OSGVIEWER_EXPORT WindowCaptureCallback : public osg::Camera::DrawCallback
             unsigned int            _reportTimingFrequency;
             unsigned int            _numTimeValuesRecorded;
             double                  _timeForReadPixels;
-            double                  _timeForFullCopy;
             double                  _timeForMemCpy;
+            double                  _timeForCaptureOperation;
+            double                  _timeForFullCopy;
+            double                  _timeForFullCopyAndOperation;
             osg::Timer_t            _previousFrameTick;
 
             osg::ref_ptr<CaptureOperation> _captureOperation;
@@ -411,13 +414,14 @@ class OSGVIEWER_EXPORT WindowCaptureCallback : public osg::Camera::DrawCallback
         mutable OpenThreads::Mutex  _mutex;
         mutable ContextDataMap      _contextDataMap;
 
+        osg::ref_ptr<CaptureOperation> _defaultCaptureOperation;
 };
 
 /** Event handler that will capture the screen on key press. */
 class OSGVIEWER_EXPORT ScreenCaptureHandler : public osgGA::GUIEventHandler
 {
     public:
-        ScreenCaptureHandler();
+        ScreenCaptureHandler(CaptureOperation* defaultOperation = 0);
 
         void setKeyEventTakeScreenShot(int key) { _keyEventTakeScreenShot = key; }
         int getKeyEventTakeScreenShot() const { return _keyEventTakeScreenShot; }

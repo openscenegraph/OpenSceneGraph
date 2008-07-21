@@ -17,7 +17,7 @@
 #include <OpenThreads/Mutex>
 #include <osg/ImageStream>
 
-#include <map>
+#include <list>
 
 namespace osg {
 
@@ -48,14 +48,15 @@ class OSG_EXPORT ImageSequence : public ImageStream
         virtual double getTimeMultiplier() const { return _timeMultiplier; }
 
 
-        typedef std::map<double, std::string> FileNameSequence;
-        
-        typedef std::pair<double, osg::ref_ptr<osg::Image> > TimeImagePair;
-        typedef std::vector<TimeImagePair> TimeImageSequence;
+        typedef std::pair<osg::ref_ptr<osg::Image>, double> ImageDurationPair;
+        typedef std::pair<std::string, double>              FileNameDurationPair;
 
-        void addImageFile(double time, std::string& fileName);
+        typedef std::list<ImageDurationPair>                ImageDurationSequence;
+        typedef std::list<FileNameDurationPair>             FileNameDurationSequence;
 
-        void addImage(double time, osg::Image* image);
+        void addImageFile(const std::string& fileName, double duration = 0.040);
+
+        void addImage(osg::Image* image, double duration = 0.040);
 
         virtual void update(osg::FrameStamp* fs);
 
@@ -67,9 +68,9 @@ class OSG_EXPORT ImageSequence : public ImageStream
         double              _timeMultiplier;
         
         
-        OpenThreads::Mutex  _mutex;
-        FileNameSequence    _timeFileNameSequence;
-        TimeImageSequence   _timeImageSequence;
+        OpenThreads::Mutex          _mutex;
+        FileNameDurationSequence    _fileNameDurationSequence;
+        ImageDurationSequence       _imageDuationSequence;
         
         
 };

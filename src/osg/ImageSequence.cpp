@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <OpenThreads/ScopedLock>
 #include <osg/ImageSequence>
 
 using namespace osg;
@@ -33,17 +34,19 @@ int ImageSequence::compare(const Image& rhs) const
     return ImageStream::compare(rhs);
 }
 
-void ImageSequence::addImageFile(double time, std::string& fileName)
+void ImageSequence::addImageFile(const std::string& fileName, double duration)
 {
-    _timeFileNameSequence[time] = fileName;
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    _fileNameDurationSequence.push_back(FileNameDurationPair(fileName, duration));
 }
 
-void ImageSequence::addImage(double time, osg::Image* image)
+void ImageSequence::addImage(osg::Image* image, double duration)
 {
-    _timeImageSequence.push_back(TimeImagePair(time,image));
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    _imageDuationSequence.push_back(ImageDurationPair(image, duration));
 }
 
 void ImageSequence::update(osg::FrameStamp* fs)
 {
-    
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 }

@@ -1,0 +1,79 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_IMAGESEQUENCE
+#define OSG_IMAGESEQUENCE 1
+
+#include <OpenThreads/Mutex>
+#include <osg/ImageStream>
+
+#include <map>
+
+namespace osg {
+
+/**
+  * Image Buffer class.
+*/
+class OSG_EXPORT ImageSequence : public ImageStream
+{
+    public:
+        ImageSequence();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
+        ImageSequence(const ImageSequence& ImageSequence,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        virtual Object* cloneType() const { return new ImageSequence(); }
+        virtual Object* clone(const CopyOp& copyop) const { return new ImageSequence(*this,copyop); }
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const ImageSequence*>(obj)!=0; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "ImageSequence"; }
+
+        /** Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
+        virtual int compare(const Image& rhs) const;
+
+        virtual void setReferenceTime(double t) { _referenceTime = t; }
+        virtual double getReferenceTime() const { return _referenceTime; }
+                
+        virtual void setTimeMultiplier(double tm) { _timeMultiplier = tm; }
+        virtual double getTimeMultiplier() const { return _timeMultiplier; }
+
+
+        typedef std::map<double, std::string> FileNameSequence;
+        
+        typedef std::pair<double, osg::ref_ptr<osg::Image> > TimeImagePair;
+        typedef std::vector<TimeImagePair> TimeImageSequence;
+
+        void addImageFile(double time, std::string& fileName);
+
+        void addImage(double time, osg::Image* image);
+
+        virtual void update(osg::FrameStamp* fs);
+
+    protected:
+
+        virtual ~ImageSequence() {}
+        
+        double              _referenceTime;
+        double              _timeMultiplier;
+        
+        
+        OpenThreads::Mutex  _mutex;
+        FileNameSequence    _timeFileNameSequence;
+        TimeImageSequence   _timeImageSequence;
+        
+        
+};
+
+} // namespace
+
+#endif

@@ -15,6 +15,7 @@
 #define OSG_IMAGESTREAM 1
 
 #include <osg/Image>
+#include <osg/FrameStamp>
 
 namespace osg {
 
@@ -78,7 +79,7 @@ class OSG_EXPORT ImageStream : public Image
         virtual void setVolume(float) {}
         virtual float getVolume() const { return 0.0f; }
         
-        virtual void update() {}
+        virtual void update(osg::FrameStamp* fs) {}
 
     protected:
         virtual void applyLoopingMode() {}

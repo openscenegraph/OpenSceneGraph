@@ -30,6 +30,10 @@ Record::Record()
 {
 }
 
+Record::~Record()
+{
+}
+
 void Record::read(RecordInputStream& in, Document& document)
 {
     _parent = document.getCurrentPrimaryRecord();

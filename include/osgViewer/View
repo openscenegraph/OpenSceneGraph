@@ -71,6 +71,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Get the const View's scene graph.*/
         const osg::Node* getSceneData() const { return _scene.valid() ? _scene->getSceneData() : 0; }
 
+
         /** Set the View's database pager.*/
         void setDatabasePager(osgDB::DatabasePager* dp);
 
@@ -79,6 +80,17 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         /** Get the const View's database pager.*/
         const osgDB::DatabasePager* getDatabasePager() const;
+
+
+        /** Set the View's image pager.*/
+        void setImagePager(osgDB::ImagePager* ip);
+
+        /** Get the View's image pager.*/
+        osgDB::ImagePager* getImagePager();
+
+        /** Get the const View's image pager.*/
+        const osgDB::ImagePager* getImagePager() const;
+
 
         /* Set the EventQueue that View uses to integrate external non window related events.*/
         void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }

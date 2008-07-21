@@ -17,6 +17,7 @@
 #include <osgGA/GUIEventHandler>
 #include <osgGA/EventVisitor>
 #include <osgDB/DatabasePager>
+#include <osgDB/ImagePager>
 
 #include <osgViewer/Export>
 
@@ -33,9 +34,16 @@ class OSGVIEWER_EXPORT Scene : public osg::Referenced
         osg::Node* getSceneData();
         const osg::Node* getSceneData() const;
 
+
         void setDatabasePager(osgDB::DatabasePager* dp);
         osgDB::DatabasePager* getDatabasePager() { return _databasePager.get(); }
         const osgDB::DatabasePager* getDatabasePager() const { return _databasePager.get(); }
+
+
+        void setImagePager(osgDB::ImagePager* ip);
+        osgDB::ImagePager* getImagePager() { return _imagePager.get(); }
+        const osgDB::ImagePager* getImagePager() const { return _imagePager.get(); }
+
 
         /** Get the Scene object that has the specified node assigned to it.
           * return 0 if no Scene has yet been assigned the specified node.*/
@@ -55,6 +63,7 @@ class OSGVIEWER_EXPORT Scene : public osg::Referenced
         osg::ref_ptr<osg::Node>             _sceneData;
 
         osg::ref_ptr<osgDB::DatabasePager>  _databasePager;
+        osg::ref_ptr<osgDB::ImagePager>     _imagePager;
 };
 
 

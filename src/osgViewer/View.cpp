@@ -298,6 +298,22 @@ const osgDB::DatabasePager* View::getDatabasePager() const
 }
 
 
+void View::setImagePager(osgDB::ImagePager* dp)
+{
+    _scene->setImagePager(dp);
+}
+
+osgDB::ImagePager* View::getImagePager()
+{
+    return _scene->getImagePager();
+}
+
+const osgDB::ImagePager* View::getImagePager() const
+{
+    return _scene->getImagePager();
+}
+
+
 void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
 {
     _cameraManipulator = manipulator;

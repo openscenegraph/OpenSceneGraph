@@ -70,6 +70,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Group
     ${HEADER_PATH}/Hint
     ${HEADER_PATH}/Image
+    ${HEADER_PATH}/ImageSequence
     ${HEADER_PATH}/ImageStream
     ${HEADER_PATH}/io_utils
     ${HEADER_PATH}/KdTree
@@ -228,6 +229,7 @@ ADD_LIBRARY(${LIB_NAME}
     Group.cpp
     Hint.cpp
     Image.cpp
+    ImageSequence.cpp
     ImageStream.cpp
     KdTree.cpp
     LOD.cpp

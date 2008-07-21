@@ -53,6 +53,9 @@
 
 namespace osg {
 
+// forward declare
+class NodeVisitor;
+
 /** Image class for encapsulating the storage texture image data. */
 class OSG_EXPORT Image : public Object
 {
@@ -295,7 +298,7 @@ class OSG_EXPORT Image : public Object
         /** Get the const PixelBufferObject.*/ 
         const PixelBufferObject* getPixelBufferObject() const { return _bufferObject.get(); }
        
-        virtual void update(const osg::FrameStamp* fs) {}
+        virtual void update(NodeVisitor* nv) {}
         
     protected :
 

@@ -22,6 +22,7 @@
 #include <osgViewer/View>
 
 #include <osgDB/DatabasePager>
+#include <osgDB/ImagePager>
 
 #include <osg/io_utils>
 
@@ -237,8 +238,12 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     }
 
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
+
     osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
     sceneView->getCullVisitor()->setDatabaseRequestHandler(databasePager);
+
+    osgDB::ImagePager* imagePager = view ? view->getImagePager() : 0;
+    sceneView->getCullVisitor()->setImageRequestHandler(imagePager);
     
     sceneView->setFrameStamp(view ? view->getFrameStamp() : state->getFrameStamp());
     

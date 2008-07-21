@@ -16,6 +16,7 @@
 
 #include <OpenThreads/Mutex>
 #include <osg/ImageStream>
+#include <osg/StateAttribute>
 
 #include <list>
 
@@ -30,7 +31,7 @@ class OSG_EXPORT ImageSequence : public ImageStream
         ImageSequence();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
-        ImageSequence(const ImageSequence& ImageSequence,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+        ImageSequence(const ImageSequence& ImageSequence, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         virtual Object* cloneType() const { return new ImageSequence(); }
         virtual Object* clone(const CopyOp& copyop) const { return new ImageSequence(*this,copyop); }
@@ -47,18 +48,25 @@ class OSG_EXPORT ImageSequence : public ImageStream
         virtual void setTimeMultiplier(double tm) { _timeMultiplier = tm; }
         virtual double getTimeMultiplier() const { return _timeMultiplier; }
 
+        typedef std::list< osg::ref_ptr<osg::Image> >   Images;
+        typedef std::list< std::string >                FileNames;
 
-        typedef std::pair<osg::ref_ptr<osg::Image>, double> ImageDurationPair;
-        typedef std::pair<std::string, double>              FileNameDurationPair;
+        void setDuration(double duration) { _duration = duration; }
+        double getDuration() const { return _duration; }
 
-        typedef std::list<ImageDurationPair>                ImageDurationSequence;
-        typedef std::list<FileNameDurationPair>             FileNameDurationSequence;
+        void setPruneOldImages(bool prune) { _pruneOldImages = prune; }
+        bool getPruneOldImages() const { return _pruneOldImages; }
 
-        void addImageFile(const std::string& fileName, double duration = 0.040);
+        void addImageFile(const std::string& fileName);
 
-        void addImage(osg::Image* image, double duration = 0.040);
+        void addImage(osg::Image* image);
 
-        virtual void update(const osg::FrameStamp* fs);
+        virtual void update(NodeVisitor* nv);
+
+        struct OSG_EXPORT UpdateCallback : public osg::StateAttribute::Callback
+        {
+            virtual void operator () (osg::StateAttribute* attr, osg::NodeVisitor* nv);
+        };
 
     protected:
 
@@ -70,10 +78,15 @@ class OSG_EXPORT ImageSequence : public ImageStream
         double                          _timeMultiplier;
         
         OpenThreads::Mutex              _mutex;
-        FileNameDurationSequence        _fileNameDurationSequence;
-        ImageDurationSequence           _imageDuationSequence;
+        FileNames                       _fileNames;
+        
+        double                          _duration;
+        bool                            _pruneOldImages;
+        
+        double                          _imageHeadTime;
+        Images                          _images;
 
-        ImageDurationSequence::iterator _imageIterator;
+        Images::iterator                _imageIterator;
         double                          _imageIteratorTime;
         
         

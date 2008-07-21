@@ -882,6 +882,7 @@ void Viewer::updateTraversal()
 
     if (getSceneData())
     {
+        _updateVisitor->setImageRequestHandler(_scene->getImagePager());
         getSceneData()->accept(*_updateVisitor);
     }
     

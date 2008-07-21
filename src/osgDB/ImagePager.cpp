@@ -54,6 +54,11 @@ ImagePager::~ImagePager()
 {
 }
 
+void ImagePager::requestNodeFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp, osg::ref_ptr<osg::Referenced>& imageRequest)
+{
+    osg::notify(osg::NOTICE)<<"ImagePager::requestNodeFile("<<fileName<<")"<<std::endl;
+}
+
 bool ImagePager::requiresUpdateSceneGraph() const
 {
     //osg::notify(osg::NOTICE)<<"ImagePager::requiresUpdateSceneGraph()"<<std::endl;

@@ -31,23 +31,8 @@
 #include <iostream>
 
 //
-// A simple demo demonstrating different texturing modes, 
-// including using of texture extensions.
+// A simple demo demonstrating how to set on an animated texture using an osg::ImageSequence
 //
-
-struct ImageUpdateCallback : public osg::StateAttribute::Callback
-{
-    /** do customized update code.*/
-    virtual void operator () (osg::StateAttribute* attr, osg::NodeVisitor* nv)
-    {
-        const osg::FrameStamp* fs = nv!=0 ? nv->getFrameStamp() : 0;
-        osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(attr);
-        if (texture2D && texture2D->getImage() && fs)
-        {
-            texture2D->getImage()->update(fs);
-        }
-    }
-};
 
 osg::StateSet* createState()
 {
@@ -58,11 +43,11 @@ osg::StateSet* createState()
     osg::ref_ptr<osg::Image> image_3 = osgDB::readImageFile("Images/skymap.jpg");
 
     osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
-    imageSequence->addImage(image_0.get(), 0.25);
-    imageSequence->addImage(image_1.get(), 0.25);
-    imageSequence->addImage(image_2.get(), 0.25);
-    imageSequence->addImage(image_3.get(), 0.25);
-
+    imageSequence->addImage(image_0.get());
+    imageSequence->addImage(image_1.get());
+    imageSequence->addImage(image_2.get());
+    imageSequence->addImage(image_3.get());
+    
     osg::Texture2D* texture = new osg::Texture2D;
     texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
@@ -71,7 +56,7 @@ osg::StateSet* createState()
     texture->setImage(imageSequence.get());
     //texture->setTextureSize(512,512);
     
-    texture->setUpdateCallback(new ImageUpdateCallback);
+    texture->setUpdateCallback(new osg::ImageSequence::UpdateCallback);
 
     // create the StateSet to store the texture data
     osg::StateSet* stateset = new osg::StateSet;

@@ -15,6 +15,7 @@
 #define OSGDB_IMAGEPAGER 1
 
 #include <osg/Image>
+#include <osg/NodeVisitor>
 
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
@@ -24,7 +25,7 @@
 namespace osgDB
 {
 
-class OSGDB_EXPORT ImagePager : public osg::Referenced
+class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
 {
     public:
     
@@ -33,12 +34,12 @@ class OSGDB_EXPORT ImagePager : public osg::Referenced
         struct ImageRequest : public osg::Referenced
         {
             ImageRequest():
-                osg::Referenced(true) {}
+                osg::Referenced(true),
+                _timeToMergeBy(0.0) {}
             
+            double                              _timeToMergeBy;
             std::string                         _fileName;
             osg::ref_ptr<ReaderWriter::Options> _loadOptions;
-        
-        
             osg::ref_ptr<osg::Object>           _objectToAttachTo;    
             osg::ref_ptr<osg::Image>            _loadedImage;
             
@@ -76,8 +77,10 @@ class OSGDB_EXPORT ImagePager : public osg::Referenced
             std::string     _name;
         };
 
+        virtual void requestNodeFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp, osg::ref_ptr<osg::Referenced>& imageRequest);
+
         /** Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
-        bool requiresUpdateSceneGraph() const;
+        virtual bool requiresUpdateSceneGraph() const;
         
         /** Merge the changes to the scene graph. */
         virtual void updateSceneGraph(double currentFrameTime);

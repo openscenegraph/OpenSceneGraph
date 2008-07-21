@@ -35,45 +35,19 @@
 // including using of texture extensions.
 //
 
-
-typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
-
-
-class MyGraphicsContext {
-    public:
-        MyGraphicsContext()
+struct ImageUpdateCallback : public osg::StateAttribute::Callback
+{
+    /** do customized update code.*/
+    virtual void operator () (osg::StateAttribute* attr, osg::NodeVisitor* nv)
+    {
+        const osg::FrameStamp* fs = nv!=0 ? nv->getFrameStamp() : 0;
+        osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(attr);
+        if (texture2D && texture2D->getImage() && fs)
         {
-            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-            traits->x = 0;
-            traits->y = 0;
-            traits->width = 1;
-            traits->height = 1;
-            traits->windowDecoration = false;
-            traits->doubleBuffer = false;
-            traits->sharedContext = 0;
-            traits->pbuffer = true;
-
-            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-
-            if (!_gc)
-            {
-                traits->pbuffer = false;
-                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-            }
-
-            if (_gc.valid()) 
-            {
-                _gc->realize();
-                _gc->makeCurrent();
-            }
+            texture2D->getImage()->update(fs);
         }
-        
-        bool valid() const { return _gc.valid() && _gc->isRealized(); }
-        
-    private:
-        osg::ref_ptr<osg::GraphicsContext> _gc;
+    }
 };
-
 
 osg::StateSet* createState()
 {
@@ -89,22 +63,19 @@ osg::StateSet* createState()
     imageSequence->addImage(image_2.get(), 0.25);
     imageSequence->addImage(image_3.get(), 0.25);
 
-    imageSequence->setImage(image_0->s(),image_0->t(),image_0->r(),
-                  image_0->getInternalTextureFormat(),
-                  image_0->getPixelFormat(),image_0->getDataType(),
-                  image_0->data(),
-                  osg::Image::NO_DELETE,
-                  image_0->getPacking());
-
     osg::Texture2D* texture = new osg::Texture2D;
     texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
     texture->setWrap(osg::Texture2D::WRAP_R,osg::Texture2D::REPEAT);
     texture->setResizeNonPowerOfTwoHint(false);
     texture->setImage(imageSequence.get());
+    //texture->setTextureSize(512,512);
+    
+    texture->setUpdateCallback(new ImageUpdateCallback);
 
     // create the StateSet to store the texture data
     osg::StateSet* stateset = new osg::StateSet;
+
     stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
 
     return stateset;

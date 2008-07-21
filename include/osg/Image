@@ -18,6 +18,7 @@
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/FrameStamp>
 
 #include <string>
 #include <vector>
@@ -293,6 +294,8 @@ class OSG_EXPORT Image : public Object
 
         /** Get the const PixelBufferObject.*/ 
         const PixelBufferObject* getPixelBufferObject() const { return _bufferObject.get(); }
+       
+        virtual void update(const osg::FrameStamp* fs) {}
         
     protected :
 

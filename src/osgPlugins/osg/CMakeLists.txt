@@ -29,6 +29,7 @@ Geode.cpp
 Geometry.cpp
 Group.cpp
 Image.cpp
+ImageSequence.cpp
 LOD.cpp
 Light.cpp
 LightModel.cpp

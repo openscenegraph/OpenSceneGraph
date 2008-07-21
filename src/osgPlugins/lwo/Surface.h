@@ -46,7 +46,7 @@ namespace lwosg
 
         osg::Group *apply(osg::Geometry *geo, const VertexMap_map *texture_maps, const VertexMap_map *rgb_maps, const VertexMap_map *rgba_maps, int max_tex_units, bool use_osgfx, bool force_arb_compression, const VertexMap_binding_map &texmap_bindings, const osgDB::ReaderWriter::Options *db_options) const;
 
-        void generate_stateset(int max_tex_units, bool force_arb_compression, const osgDB::ReaderWriter::Options* options) const;
+        void generate_stateset(unsigned int max_tex_units, bool force_arb_compression, const osgDB::ReaderWriter::Options* options) const;
 
         inline const std::string &get_name() const { return name_; }
         inline void set_name(const std::string &n) { name_ = n; }

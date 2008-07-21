@@ -963,6 +963,8 @@ void CompositeViewer::updateTraversal()
         Scene* scene = *sitr;
         if (scene->getSceneData())
         {
+            _updateVisitor->setImageRequestHandler(scene->getImagePager());
+            
             scene->getSceneData()->accept(*_updateVisitor);
         }
 

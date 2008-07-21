@@ -15,24 +15,44 @@
 #include <osg/ImageSequence>
 #include <osg/Notify>
 #include <osg/Camera>
+#include <osg/NodeVisitor>
+#include <osg/Texture2D>
 
 #include <math.h>
 
 using namespace osg;
 
+void ImageSequence::UpdateCallback::operator () (osg::StateAttribute* attr, osg::NodeVisitor* nv)
+{
+    const osg::FrameStamp* fs = nv!=0 ? nv->getFrameStamp() : 0;
+    osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(attr);
+    if (texture2D && texture2D->getImage() && fs)
+    {
+        texture2D->getImage()->update(nv);
+    }
+}
+
 ImageSequence::ImageSequence()
 {
     _referenceTime = DBL_MAX;
-    _imageIteratorTime = DBL_MAX;
     _timeMultiplier = 1.0;
-    _imageIterator = _imageDuationSequence.end();
+
+    _duration = 1.0;
+    _pruneOldImages = false;
+
+    _imageIteratorTime = DBL_MAX;
+    _imageIterator = _images.end();
 }
 
 ImageSequence::ImageSequence(const ImageSequence& is,const CopyOp& copyop):
     osg::ImageStream(is,copyop),
     _referenceTime(is._referenceTime),
-    _timeMultiplier(is._timeMultiplier)
+    _timeMultiplier(is._timeMultiplier),
+    _duration(is._duration),
+    _pruneOldImages(is._pruneOldImages)
 {
+    _imageIteratorTime = DBL_MAX;
+    _imageIterator = _images.end();
 }
 
 int ImageSequence::compare(const Image& rhs) const
@@ -40,32 +60,29 @@ int ImageSequence::compare(const Image& rhs) const
     return ImageStream::compare(rhs);
 }
 
-void ImageSequence::addImageFile(const std::string& fileName, double duration)
+void ImageSequence::addImageFile(const std::string& fileName)
 {
-    if (duration<0.01) duration = 0.01;
-
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    _fileNameDurationSequence.push_back(FileNameDurationPair(fileName, duration));
+    _fileNames.push_back(fileName);
 }
 
-void ImageSequence::addImage(osg::Image* image, double duration)
+void ImageSequence::addImage(osg::Image* image)
 {
-    if (duration<0.01) duration = 0.01;
-
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    _imageDuationSequence.push_back(ImageDurationPair(image, duration));
+    _images.push_back(image);
 
-    if (_imageIterator==_imageDuationSequence.end())
+    if (_imageIterator==_images.end())
     {
-        _imageIterator = _imageDuationSequence.begin();
+        _imageIterator = _images.begin();
         _imageIteratorTime = _referenceTime;
-        setImageToChild(_imageIterator->first.get());
+        setImageToChild(_imageIterator->get());
     }
-
 }
 
 void ImageSequence::setImageToChild(const osg::Image* image)
 {
+    // osg::notify(osg::NOTICE)<<"setImageToChild("<<image<<")"<<std::endl;
+
     setImage(image->s(),image->t(),image->r(),
              image->getInternalTextureFormat(),
              image->getPixelFormat(),image->getDataType(),
@@ -74,10 +91,14 @@ void ImageSequence::setImageToChild(const osg::Image* image)
              image->getPacking());
 }
 
-void ImageSequence::update(const osg::FrameStamp* fs)
+void ImageSequence::update(osg::NodeVisitor* nv)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    // osg::notify(osg::NOTICE)<<"ImageSequence::update("<<fs<<")"<<std::endl;
+    
+    osg::NodeVisitor::ImageRequestHandler* irh = nv->getImageRequestHandler();
+    const osg::FrameStamp* fs = nv->getFrameStamp();
+
+    // osg::notify(osg::NOTICE)<<"ImageSequence::update("<<fs<<", "<<irh<<")"<<std::endl;
 
     if (_referenceTime == DBL_MAX)
     {
@@ -90,33 +111,38 @@ void ImageSequence::update(const osg::FrameStamp* fs)
     }
     
     double time = (fs->getSimulationTime() - _referenceTime)*_timeMultiplier;
+    double delta = _fileNames.empty() ?
+            _duration / _images.size() : 
+            _duration / _fileNames.size();
+            
+    Images::iterator previous_imageIterator = _imageIterator;
     
     // osg::notify(osg::NOTICE)<<"time = "<<time<<std::endl;
 
-    if (_imageIterator!=_imageDuationSequence.end())
+    if (_imageIterator!=_images.end())
     {
         // osg::notify(osg::NOTICE)<<"   _imageIteratorTime = "<<_imageIteratorTime<<std::endl;
-        while(time > (_imageIteratorTime + _imageIterator->second))
+        while(time > (_imageIteratorTime + delta))
         {
-            _imageIteratorTime += _imageIterator->second;
+            _imageIteratorTime += delta;
             // osg::notify(osg::NOTICE)<<"   _imageIteratorTime = "<<_imageIteratorTime<<std::endl;
             ++_imageIterator;
             
-            if (_imageIterator ==_imageDuationSequence.end())
+            if (_imageIterator ==_images.end())
             {
                 // return iterator to begining of set.            
-                _imageIterator = _imageDuationSequence.begin();
+                _imageIterator = _images.begin();
             }
         }
     }
     
-    if (_imageIterator==_imageDuationSequence.end())
+    if (_imageIterator==_images.end())
     {
-        _imageIterator = _imageDuationSequence.begin();
+        _imageIterator = _images.begin();
     }
     
-    if (_imageIterator!=_imageDuationSequence.end())
+    if (_imageIterator!=_images.end() && previous_imageIterator != _imageIterator)
     {
-        setImageToChild(_imageIterator->first.get());
+        setImageToChild(_imageIterator->get());
     }
 }

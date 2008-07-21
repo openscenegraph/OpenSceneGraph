@@ -60,15 +60,15 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
 
         /** Set and get tessellation request boundary only on/off */
         void setBoundaryOnly (const bool tt) { _boundaryOnly=tt;}
-        inline const bool getBoundaryOnly ( ) { return _boundaryOnly;}
+        inline bool getBoundaryOnly ( ) { return _boundaryOnly;}
 
         /** Set and get tessellation windong rule */
         void setWindingType (const WindingType wt) { _wtype=wt;}
-        inline const WindingType getWindingType ( ) { return _wtype;}
+        inline WindingType getWindingType ( ) { return _wtype;}
 
         /** Set and get tessellation type */
         void setTessellationType (const TessellationType tt) { _ttype=tt;}
-        inline const TessellationType getTessellationType ( ) { return _ttype;}
+        inline TessellationType getTessellationType ( ) { return _ttype;}
 
         /** Change the contours lists of the geometry into tessellated primitives (the
           * list of primitives in the original geometry is stored in the Tessellator for

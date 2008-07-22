@@ -30,15 +30,17 @@ RegisterDotOsgWrapperProxy g_TextureCubeMapProxy
         {\
             if (fr[2].matchWord("ImageSequence") || fr[2].matchWord("Image")) \
             { \
+                fr += 2;\
                 osg::Image* image = fr.readImage(); \
                 if (image) texture.setImage(osg::TextureCubeMap::FACE,image); \
-                \
+                iteratorAdvanced = true; \
+                matched = true;\
             } \
             else if (fr[2].isString())\
             { \
                 Image* image = fr.readImage(fr[2].getStr());\
                 if (image) texture.setImage(osg::TextureCubeMap::FACE,image);\
-                fr += 2;\
+                fr += 3;\
                 iteratorAdvanced = true; \
                 matched = true;\
             }\
@@ -73,6 +75,7 @@ bool TextureCubeMap_readLocalData(Object& obj, Input& fr)
             const osg::ImageSequence* is = dynamic_cast<const osg::ImageSequence*>(image); \
             if (is) \
             { \
+                fw.indent() << "image "<<#FACE<<std::endl; \
                 fw.writeObject(*is); \
             } \
             else \

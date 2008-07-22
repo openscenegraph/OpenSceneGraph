@@ -26,7 +26,7 @@ void ImageSequence::UpdateCallback::operator () (osg::StateAttribute* attr, osg:
 {
     osg::Texture* texture = attr ? attr->asTexture() : 0;
     
-    //osg::notify(osg::NOTICE)<<"ImageSequence::UpdateCallback::"<<texture<<std::endl;
+    // osg::notify(osg::NOTICE)<<"ImageSequence::UpdateCallback::"<<texture<<std::endl;
     if (texture)
     {
         for(unsigned int i=0; i<texture->getNumImages(); ++i)

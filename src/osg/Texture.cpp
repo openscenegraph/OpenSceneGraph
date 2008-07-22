@@ -42,7 +42,7 @@ using namespace osg;
 #define GL_STORAGE_SHARED_APPLE           0x85BF
 #endif
 
-// #define DO_TIMING
+//#define DO_TIMING
 
 ApplicationUsageProxy Texture_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_TEXTURE_SIZE","Set the maximum size of textures.");
 
@@ -1015,11 +1015,15 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         
     }    
 
+    bool mipmappingRequired = _min_filter != LINEAR && _min_filter != NEAREST;
+    bool useHardwareMipMapGeneration = mipmappingRequired && (!image->isMipmap() && isHardwareMipmapGenerationEnabled(state));
+    bool useGluBuildMipMaps = mipmappingRequired && (!useHardwareMipMapGeneration && !image->isMipmap());
+
     unsigned char* dataMinusOffset = 0;
     unsigned char* dataPlusOffset = 0;
 
     const PixelBufferObject* pbo = image->getPixelBufferObject();
-    if (pbo && pbo->isPBOSupported(contextID) && !needImageRescale)
+    if (pbo && pbo->isPBOSupported(contextID) && !needImageRescale && !useGluBuildMipMaps)
     {
         state.bindPixelBufferObject(pbo);
         dataMinusOffset = data;
@@ -1033,15 +1037,8 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         pbo = 0;
     }
 
-    bool useHardwareMipMapGeneration = !image->isMipmap() && isHardwareMipmapGenerationEnabled(state);
-    
-    if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration)
+    if( !mipmappingRequired || useHardwareMipMapGeneration)
     {
-
-        if (_min_filter == LINEAR || _min_filter == NEAREST) 
-        {
-            useHardwareMipMapGeneration = false;
-        }
 
         GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, useHardwareMipMapGeneration);
 
@@ -1136,7 +1133,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                 gluBuild2DMipmaps( target, _internalFormat,
                     inwidth,inheight,
                     (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
-                    data -dataMinusOffset+dataPlusOffset);
+                    data);
 
                 int width  = image->s();
                 int height = image->t();
@@ -1264,13 +1261,16 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         
     }    
 
-    bool useHardwareMipMapGeneration = !image->isMipmap() && isHardwareMipmapGenerationEnabled(state);
-    
-    unsigned char* dataMinusOffset=0;
-    unsigned char* dataPlusOffset=0;
 
+    bool mipmappingRequired = _min_filter != LINEAR && _min_filter != NEAREST;
+    bool useHardwareMipMapGeneration = mipmappingRequired && (!image->isMipmap() && isHardwareMipmapGenerationEnabled(state));
+    bool useGluBuildMipMaps = mipmappingRequired && (!useHardwareMipMapGeneration && !image->isMipmap());
+
+    unsigned char* dataMinusOffset = 0;
+    unsigned char* dataPlusOffset = 0;
+    
     const PixelBufferObject* pbo = image->getPixelBufferObject();
-    if (pbo && pbo->isPBOSupported(contextID) && !needImageRescale)
+    if (pbo && pbo->isPBOSupported(contextID) && !needImageRescale && !useGluBuildMipMaps)
     {
         state.bindPixelBufferObject(pbo);
         dataMinusOffset = data;
@@ -1284,12 +1284,10 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         pbo = 0;
     }
 
-    if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration)
+    if( !mipmappingRequired || useHardwareMipMapGeneration)
     {
-    
-        bool hardwareMipMapOn = _min_filter != LINEAR && _min_filter != NEAREST;
 
-        GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, hardwareMipMapOn);
+        GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, useHardwareMipMapGeneration);
 
         if (!compressed_image)
         {

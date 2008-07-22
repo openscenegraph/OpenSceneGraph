@@ -136,6 +136,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __C5_char_P1__className,
 	          "Return the name of the attribute's class type. ",
 	          "");
+	I_Method0(osg::Texture *, asTexture,
+	          Properties::VIRTUAL,
+	          __Texture_P1__asTexture,
+	          "Fast alternative to dynamic_cast<> for determining if state attribute is a Texture. ",
+	          "");
+	I_Method0(const osg::Texture *, asTexture,
+	          Properties::VIRTUAL,
+	          __C5_Texture_P1__asTexture,
+	          "Fast alternative to dynamic_cast<> for determining if state attribute is a Texture. ",
+	          "");
 	I_Method0(osg::StateAttribute::Type, getType,
 	          Properties::VIRTUAL,
 	          __Type__getType,

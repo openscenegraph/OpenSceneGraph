@@ -42,11 +42,15 @@ ImageSequence::ImageSequence()
     _timeMultiplier = 1.0;
 
     _duration = 1.0;
+    _preLoadTime = 1.0;
     _timePerImage = 1.0;
     _pruneOldImages = false;
 
-    _imageIteratorTime = DBL_MAX;
+    _fileNamesIterator = _fileNames.end();
+    _fileNamesIteratorTime = DBL_MAX;
+
     _imageIterator = _images.end();
+    _imageIteratorTime = DBL_MAX;
 }
 
 ImageSequence::ImageSequence(const ImageSequence& is,const CopyOp& copyop):
@@ -54,8 +58,13 @@ ImageSequence::ImageSequence(const ImageSequence& is,const CopyOp& copyop):
     _referenceTime(is._referenceTime),
     _timeMultiplier(is._timeMultiplier),
     _duration(is._duration),
+    _timePerImage(is._timePerImage),
+    _preLoadTime(is._preLoadTime),
     _pruneOldImages(is._pruneOldImages)
 {
+    _fileNamesIterator = _fileNames.end();
+    _fileNamesIteratorTime = DBL_MAX;
+
     _imageIteratorTime = DBL_MAX;
     _imageIterator = _images.end();
 }
@@ -83,6 +92,12 @@ void ImageSequence::addImageFile(const std::string& fileName)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     _fileNames.push_back(fileName);
     computeTimePerImage();
+    
+    if (_fileNamesIterator==_fileNames.end())
+    {
+        _fileNamesIterator = _fileNames.begin();
+        _fileNamesIteratorTime = _referenceTime;
+    }
 }
 
 void ImageSequence::addImage(osg::Image* image)
@@ -125,45 +140,84 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         _referenceTime = fs->getSimulationTime();
     }
     
+    if (_fileNamesIteratorTime == DBL_MAX)
+    {
+        _fileNamesIteratorTime = _referenceTime;
+    }
+    
     if (_imageIteratorTime == DBL_MAX)
     {
         _imageIteratorTime = _referenceTime;
     }
     
     double time = (fs->getSimulationTime() - _referenceTime)*_timeMultiplier;
+    double preLoadTime = (time+_preLoadTime)*_timeMultiplier;
             
     Images::iterator previous_imageIterator = _imageIterator;
     
     // osg::notify(osg::NOTICE)<<"time = "<<time<<std::endl;
 
-    if (_imageIterator!=_images.end())
     {
-        // osg::notify(osg::NOTICE)<<"   _imageIteratorTime = "<<_imageIteratorTime<<std::endl;
-        while(time > (_imageIteratorTime + _timePerImage))
+        //
+        // Advance imageIterator
+        //
+        if (_fileNamesIterator!=_fileNames.end())
         {
-            _imageIteratorTime += _timePerImage;
-            // osg::notify(osg::NOTICE)<<"   _imageIteratorTime = "<<_imageIteratorTime<<std::endl;
-            ++_imageIterator;
-            
-            if (_imageIterator ==_images.end())
+            // osg::notify(osg::NOTICE)<<"   _fileNamesIteratorTime = "<<_fileNamesIteratorTime<<std::endl;
+            while(preLoadTime > (_fileNamesIteratorTime + _timePerImage))
             {
+                _fileNamesIteratorTime += _timePerImage;
+                osg::notify(osg::NOTICE)<<"   _fileNamesIteratorTime = "<<_fileNamesIteratorTime<<std::endl;
+                osg::notify(osg::NOTICE)<<"   need to preLoad = "<<*_fileNamesIterator<<std::endl;
+                ++_fileNamesIterator;
 
-                if (_pruneOldImages)
+                if (_fileNamesIterator ==_fileNames.end())
                 {
-                    _images.erase(previous_imageIterator, _imageIterator);
+                    // return iterator to begining of set.            
+                    _fileNamesIterator = _fileNames.begin();
                 }
-
-                // return iterator to begining of set.            
-                _imageIterator = _images.begin();
             }
         }
+
+        if (_fileNamesIterator==_fileNames.end())
+        {
+            _fileNamesIterator = _fileNames.begin();
+        }
     }
-    
-    if (_imageIterator==_images.end())
+        
     {
-        _imageIterator = _images.begin();
+        //
+        // Advance imageIterator
+        //
+        if (_imageIterator!=_images.end())
+        {
+            // osg::notify(osg::NOTICE)<<"   _imageIteratorTime = "<<_imageIteratorTime<<std::endl;
+            while(time > (_imageIteratorTime + _timePerImage))
+            {
+                _imageIteratorTime += _timePerImage;
+                // osg::notify(osg::NOTICE)<<"   _imageIteratorTime = "<<_imageIteratorTime<<std::endl;
+                ++_imageIterator;
+
+                if (_imageIterator ==_images.end())
+                {
+
+                    if (_pruneOldImages)
+                    {
+                        _images.erase(previous_imageIterator, _imageIterator);
+                    }
+
+                    // return iterator to begining of set.            
+                    _imageIterator = _images.begin();
+                }
+            }
+        }
+
+        if (_imageIterator==_images.end())
+        {
+            _imageIterator = _images.begin();
+        }
     }
-    
+        
     if (_imageIterator!=_images.end() && previous_imageIterator != _imageIterator)
     {
         if (_pruneOldImages)

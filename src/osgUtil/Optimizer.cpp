@@ -29,6 +29,7 @@
 #include <osg/Texture>
 #include <osg/PagedLOD>
 #include <osg/ProxyNode>
+#include <osg/ImageStream>
 #include <osg/Timer>
 #include <osg/TexMat>
 #include <osg/io_utils>
@@ -2909,7 +2910,17 @@ void Optimizer::TextureVisitor::apply(osg::Texture& texture)
 {
     if (_changeAutoUnRef)
     {
-        texture.setUnRefImageDataAfterApply(_valueAutoUnRef);
+        unsigned numImageStreams = 0;
+        for (unsigned int i=0; i<texture.getNumImages(); ++i)
+        {
+            osg::ImageStream* is = dynamic_cast<osg::ImageStream*>(texture.getImage(i));
+            if (is) ++numImageStreams;
+        }
+        
+        if (numImageStreams==0)
+        {
+            texture.setUnRefImageDataAfterApply(_valueAutoUnRef);
+        }
     }
     
     if (_changeClientImageStorage)

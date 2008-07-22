@@ -428,11 +428,14 @@ int main(int argc, char** argv)
 
             if (image)
             {
+                osg::notify(osg::NOTICE)<<"image->s()"<<image->s()<<" image-t()="<<image->t()<<std::endl;
+            
                 geode->addDrawable(myCreateTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle, xyPlane, flip));
         
                 bottomright = pos + osg::Vec3(static_cast<float>(image->s()),static_cast<float>(image->t()),0.0f);
 
-                pos.y() += image->t()*1.5f;
+                if (xyPlane) pos.y() += image->t()*1.05f;
+                else pos.z() += image->t()*1.05f;
             }
             else
             {

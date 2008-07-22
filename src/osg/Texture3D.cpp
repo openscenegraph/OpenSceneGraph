@@ -13,6 +13,7 @@
 #include <osg/GLExtensions>
 #include <osg/Texture3D>
 #include <osg/State>
+#include <osg/ImageSequence>
 #include <osg/GLU>
 #include <osg/Notify>
 
@@ -96,12 +97,26 @@ int Texture3D::compare(const StateAttribute& sa) const
 
 void Texture3D::setImage(Image* image)
 {
+    if (_image == image) return;
+
+    if (dynamic_cast<osg::ImageSequence*>(_image.get()))
+    {
+        setUpdateCallback(0);
+        setDataVariance(osg::Object::STATIC);
+    }
+
     // delete old texture objects.
     dirtyTextureObject();
 
     _modifiedCount.setAllElementsTo(0);
 
     _image = image;
+    
+    if (dynamic_cast<osg::ImageSequence*>(_image.get()))
+    {
+        setUpdateCallback(new ImageSequence::UpdateCallback());
+        setDataVariance(osg::Object::DYNAMIC);
+    }
 }
 
 void Texture3D::computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& inwidth, GLsizei& inheight,GLsizei& indepth, GLsizei& numMipmapLevels) const
@@ -195,6 +210,8 @@ void Texture3D::apply(State& state) const
         }
         else if (_image.get() && getModifiedCount(contextID) != _image->getModifiedCount())
         {
+           computeRequiredTextureDimensions(state,*_image,_textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
+
             applyTexImage3D(GL_TEXTURE_3D,_image.get(),state, _textureWidth, _textureHeight, _textureDepth,_numMipmapLevels);
 
             // update the modified count to show that it is upto date.
@@ -344,13 +361,14 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 
         if (!compressed_image)
         {
-            // notify(WARN)<<"glTexImage3D"<<std::endl;
+            notify(WARN)<<"glTexImage3D '"<<image->getFileName()<<"' data="<<(void*)image->data()<<std::endl;
             extensions->glTexImage3D( target, 0, _internalFormat,
                                       inwidth, inheight, indepth,
                                       _borderWidth,
                                       (GLenum)image->getPixelFormat(),
                                       (GLenum)image->getDataType(),
                                       image->data() );
+            notify(WARN)<<"done glTexImage3D"<<std::endl;
         }
         else if (extensions->isCompressedTexImage3DSupported())
         {

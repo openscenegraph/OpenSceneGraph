@@ -58,8 +58,15 @@ class OSG_EXPORT ImageSequence : public ImageStream
         bool getPruneOldImages() const { return _pruneOldImages; }
 
         void addImageFile(const std::string& fileName);
+        
+        FileNames& getFileNames() { return _fileNames; }
+        const FileNames& getFileNames() const { return _fileNames; }
 
         void addImage(osg::Image* image);
+        
+        Images& getImages() { return _images; }
+        const Images& getImages() const { return _images; }
+        
 
         virtual void update(NodeVisitor* nv);
 

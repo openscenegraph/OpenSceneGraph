@@ -282,10 +282,16 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Texture *>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "Texture"; }
+
+        /** Fast alternative to dynamic_cast<> for determining if state attribute is a Texture.*/
+        virtual Texture* asTexture() { return this; }
+        
+        /** Fast alternative to dynamic_cast<> for determining if state attribute is a Texture.*/
+        virtual const Texture* asTexture() const { return this; }
+
         virtual Type getType() const { return TEXTURE; }
 
         virtual bool isTextureAttribute() const { return true; }
-
 
         virtual GLenum getTextureTarget() const = 0;
 

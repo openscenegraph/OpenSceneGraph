@@ -35,6 +35,7 @@ namespace osg {
 class NodeVisitor;
 class State;
 class StateSet;
+class Texture;
 
 /** META_StateAttribute macro define the standard clone, isSameKindAs,
   * className and getType methods.
@@ -208,6 +209,14 @@ class OSG_EXPORT StateAttribute : public Object
 
         /** Return the name of the attribute's class type.*/
         virtual const char* className() const { return "StateAttribute"; }
+        
+        
+        /** Fast alternative to dynamic_cast<> for determining if state attribute is a Texture.*/
+        virtual Texture* asTexture() { return 0; }
+        
+        /** Fast alternative to dynamic_cast<> for determining if state attribute is a Texture.*/
+        virtual const Texture* asTexture() const { return 0; }
+
         
         /** Return the Type identifier of the attribute's class type.*/
         virtual Type getType() const = 0;

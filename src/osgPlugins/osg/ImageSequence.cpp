@@ -84,7 +84,7 @@ bool ImageSequence_writeLocalData(const Object& obj, Output& fw)
             itr != names.end();
             ++itr)
         {
-            fw.indent()<<*itr<<std::endl;
+            fw.indent()<<fw.wrapString(*itr)<<std::endl;
         }
         
         fw.moveOut();
@@ -100,7 +100,7 @@ bool ImageSequence_writeLocalData(const Object& obj, Output& fw)
             itr != images.end();
             ++itr)
         {
-            if (!(*itr)->getFileName().empty()) fw.indent()<<(*itr)->getFileName()<<std::endl;
+            if (!(*itr)->getFileName().empty()) fw.indent()<<fw.wrapString((*itr)->getFileName())<<std::endl;
         }
         
         fw.moveOut();

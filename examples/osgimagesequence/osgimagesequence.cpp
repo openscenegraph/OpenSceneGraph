@@ -19,12 +19,16 @@
 #include <osg/Node>
 #include <osg/Geometry>
 #include <osg/Notify>
+#include <osg/Texture1D>
 #include <osg/Texture2D>
+#include <osg/Texture3D>
+#include <osg/TextureRectangle>
 #include <osg/ImageSequence>
 #include <osg/Geode>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osgViewer/Viewer>
 
@@ -36,27 +40,37 @@
 
 osg::StateSet* createState()
 {
-    // read 4 2d images
-    osg::ref_ptr<osg::Image> image_0 = osgDB::readImageFile("Images/lz.rgb");
-    osg::ref_ptr<osg::Image> image_1 = osgDB::readImageFile("Images/reflect.rgb");
-    osg::ref_ptr<osg::Image> image_2 = osgDB::readImageFile("Images/tank.rgb");
-    osg::ref_ptr<osg::Image> image_3 = osgDB::readImageFile("Images/skymap.jpg");
-
     osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
-    imageSequence->addImage(image_0.get());
-    imageSequence->addImage(image_1.get());
-    imageSequence->addImage(image_2.get());
-    imageSequence->addImage(image_3.get());
-    
+
+    imageSequence->setDuration(2.0);
+    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posx.png"));
+    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negx.png"));
+    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posy.png"));
+    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negy.png"));
+    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posz.png"));
+    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negz.png"));
+
+#if 1
     osg::Texture2D* texture = new osg::Texture2D;
-    texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-    texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
-    texture->setWrap(osg::Texture2D::WRAP_R,osg::Texture2D::REPEAT);
+    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    texture->setWrap(osg::Texture::WRAP_R,osg::Texture::REPEAT);
     texture->setResizeNonPowerOfTwoHint(false);
     texture->setImage(imageSequence.get());
     //texture->setTextureSize(512,512);
     
-    texture->setUpdateCallback(new osg::ImageSequence::UpdateCallback);
+    //texture->setUpdateCallback(new osg::ImageSequence::UpdateCallback);
+#else    
+    osg::TextureRectangle* texture = new osg::TextureRectangle;
+    texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+    texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+    texture->setWrap(osg::Texture::WRAP_R,osg::Texture::REPEAT);
+    // texture->setResizeNonPowerOfTwoHint(false);
+    texture->setImage(imageSequence.get());
+    //texture->setTextureSize(512,512);
+    
+    //texture->setUpdateCallback(new osg::ImageSequence::UpdateCallback);
+#endif
 
     // create the StateSet to store the texture data
     osg::StateSet* stateset = new osg::StateSet;
@@ -80,13 +94,17 @@ osg::Node* createModel()
 }
 
 
-int main(int , char **)
+int main(int argc, char **argv)
 {
+    osg::ArgumentParser arguments(&argc,argv);
+
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // create a model from the images and pass it to the viewer.
     viewer.setSceneData(createModel());
+
+    //osgDB::writeNodeFile(*viewer.getSceneData(),"test.osg");
 
     return viewer.run();
 }

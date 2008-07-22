@@ -15,6 +15,7 @@
 #include <osg/Image>
 #include <osg/State>
 #include <osg/TextureCubeMap>
+#include <osg/ImageSequence>
 #include <osg/Notify>
 
 #include <osg/GLU>
@@ -128,8 +129,40 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
 
 void TextureCubeMap::setImage( unsigned int face, Image* image)
 {
+    if (_images[face] == image) return;
+
+    unsigned numImageSequencesBefore = 0;
+    for (unsigned int i=0; i<getNumImages(); ++i)
+    {
+        osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(_images[i].get());
+        if (is) ++numImageSequencesBefore;
+    }
+
     _images[face] = image;
     _modifiedCount[face].setAllElementsTo(0);
+
+
+    // find out if we need to reset the update callback to handle the animation of ImageSequence
+    unsigned numImageSequencesAfter = 0;
+    for (unsigned int i=0; i<getNumImages(); ++i)
+    {
+        osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(_images[i].get());
+        if (is) ++numImageSequencesAfter;
+    }
+
+    if (numImageSequencesBefore>0)
+    {
+        if (numImageSequencesAfter==0)
+        {
+            setUpdateCallback(0);
+            setDataVariance(osg::Object::STATIC);
+        }
+    }
+    else if (numImageSequencesAfter>0)
+    {
+        setUpdateCallback(new ImageSequence::UpdateCallback());
+        setDataVariance(osg::Object::DYNAMIC);
+    }
 }
 
 Image* TextureCubeMap::getImage(unsigned int face)

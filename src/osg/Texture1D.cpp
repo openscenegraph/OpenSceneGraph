@@ -12,6 +12,7 @@
 */
 #include <osg/GLExtensions>
 #include <osg/Texture1D>
+#include <osg/ImageSequence>
 #include <osg/State>
 #include <osg/GLU>
 
@@ -87,12 +88,25 @@ int Texture1D::compare(const StateAttribute& sa) const
 
 void Texture1D::setImage(Image* image)
 {
+    if (_image == image) return;
+
+    if (dynamic_cast<osg::ImageSequence*>(_image.get()))
+    {
+        setUpdateCallback(0);
+        setDataVariance(osg::Object::STATIC);
+    }
+
     // delete old texture objects.
     dirtyTextureObject();
 
     _image = image;
     _modifiedCount.setAllElementsTo(0);
-
+    
+    if (dynamic_cast<osg::ImageSequence*>(_image.get()))
+    {
+        setUpdateCallback(new ImageSequence::UpdateCallback());
+        setDataVariance(osg::Object::DYNAMIC);
+    }
 }
 
 

@@ -13,6 +13,7 @@
 
 #include <osg/GLExtensions>
 #include <osg/Texture2D>
+#include <osg/ImageSequence>
 #include <osg/State>
 #include <osg/Notify>
 #include <osg/GLU>
@@ -108,8 +109,22 @@ int Texture2D::compare(const StateAttribute& sa) const
 
 void Texture2D::setImage(Image* image)
 {
+    if (_image == image) return;
+
+    if (dynamic_cast<osg::ImageSequence*>(_image.get()))
+    {
+        setUpdateCallback(0);
+        setDataVariance(osg::Object::STATIC);
+    }
+
     _image = image;
     _modifiedCount.setAllElementsTo(0);
+    
+    if (dynamic_cast<osg::ImageSequence*>(_image.get()))
+    {
+        setUpdateCallback(new ImageSequence::UpdateCallback());
+        setDataVariance(osg::Object::DYNAMIC);
+    }
 }
 
 

@@ -24,11 +24,15 @@ using namespace osg;
 
 void ImageSequence::UpdateCallback::operator () (osg::StateAttribute* attr, osg::NodeVisitor* nv)
 {
-    const osg::FrameStamp* fs = nv!=0 ? nv->getFrameStamp() : 0;
-    osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(attr);
-    if (texture2D && texture2D->getImage() && fs)
+    osg::Texture* texture = attr ? attr->asTexture() : 0;
+    
+    //osg::notify(osg::NOTICE)<<"ImageSequence::UpdateCallback::"<<texture<<std::endl;
+    if (texture)
     {
-        texture2D->getImage()->update(nv);
+        for(unsigned int i=0; i<texture->getNumImages(); ++i)
+        {
+            texture->getImage(i)->update(nv);
+        }
     }
 }
 

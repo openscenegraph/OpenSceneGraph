@@ -13,6 +13,7 @@
 
 #include <osg/GLExtensions>
 #include <osg/TextureRectangle>
+#include <osg/ImageSequence>
 #include <osg/State>
 #include <osg/GLU>
 #include <osg/Notify>
@@ -123,10 +124,24 @@ int TextureRectangle::compare(const StateAttribute& sa) const
 
 void TextureRectangle::setImage(Image* image)
 {
+    if (_image == image) return;
+
+    if (dynamic_cast<osg::ImageSequence*>(_image.get()))
+    {
+        setUpdateCallback(0);
+        setDataVariance(osg::Object::STATIC);
+    }
+
     // delete old texture objects.
     dirtyTextureObject();
 
     _image = image;
+    
+    if (dynamic_cast<osg::ImageSequence*>(_image.get()))
+    {
+        setUpdateCallback(new ImageSequence::UpdateCallback());
+        setDataVariance(osg::Object::DYNAMIC);
+    }
 }
 
 

@@ -104,7 +104,11 @@ int main(int argc, char **argv)
     // create a model from the images and pass it to the viewer.
     viewer.setSceneData(createModel());
 
-    //osgDB::writeNodeFile(*viewer.getSceneData(),"test.osg");
+    std::string filename;
+    if (arguments.read("-o",filename))
+    {
+        osgDB::writeNodeFile(*viewer.getSceneData(),filename);
+    }
 
     return viewer.run();
 }

@@ -27,6 +27,14 @@ bool ImageSequence_readLocalData(Object& obj, Input& fr)
 
     ImageSequence& is = static_cast<ImageSequence&>(obj);
 
+    unsigned int numFilesToPreLoad = 1;
+
+    double duration;
+    if (fr.read("Duration", duration))
+    {
+        is.setDuration(duration);
+    }
+    
     if (fr.matchSequence("FileNames {"))
     {
         fr += 2;
@@ -36,12 +44,13 @@ bool ImageSequence_readLocalData(Object& obj, Input& fr)
         {
             if (fr[0].getStr())
             {
-#if 1
                 is.addImageFile(fr[0].getStr());
-#else                           
-                osg::ref_ptr<osg::Image> image = fr.readImage(fr[0].getStr());
-                if (image.valid()) is.addImage(image.get());
-#endif
+
+                if (is.getImages().size() < numFilesToPreLoad)
+                {
+                    osg::ref_ptr<osg::Image> image = fr.readImage(fr[0].getStr());
+                    if (image.valid()) is.addImage(image.get());
+                }
             }
             ++fr;
         }
@@ -73,6 +82,8 @@ bool ImageSequence_writeLocalData(const Object& obj, Output& fw)
 
     // no current image writing code here 
     // as it is all handled by osg::Registry::writeImage() via plugins.
+    
+    fw.indent()<<"Duration "<<is.getDuration()<<std::endl;
     
     if (!is.getFileNames().empty())
     {

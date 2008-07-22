@@ -351,8 +351,8 @@ bool WindowManager::setFocused(Window* window) {
 	Vector bg;
 	Vector fg;
 
-	for(ConstIterator i = begin(); i != end(); i++) if(i->valid()) {
-		Window* w = i->get();
+	for(ConstIterator it = begin(); it != end(); it++) if(it->valid()) {
+		Window* w = it->get();
 
 		if(w->getStrata() == Window::STRATA_FOREGROUND) fg.push_back(w);
 

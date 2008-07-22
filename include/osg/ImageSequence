@@ -53,6 +53,9 @@ class OSG_EXPORT ImageSequence : public ImageStream
 
         void setDuration(double duration);
         double getDuration() const { return _duration; }
+        
+        void setPreLoadTime(double preLoadTime) { _preLoadTime = preLoadTime; }
+        double getPreLoadTime() const { return _preLoadTime; }
 
         void setPruneOldImages(bool prune) { _pruneOldImages = prune; }
         bool getPruneOldImages() const { return _pruneOldImages; }
@@ -85,22 +88,23 @@ class OSG_EXPORT ImageSequence : public ImageStream
 
         double                          _referenceTime;
         double                          _timeMultiplier;
-        
-        OpenThreads::Mutex              _mutex;
-        FileNames                       _fileNames;
-        
+
         double                          _duration;
+        double                          _preLoadTime;
+        
         bool                            _pruneOldImages;
 
         double                          _timePerImage;
-        
+
+        OpenThreads::Mutex              _mutex;
+        FileNames                       _fileNames;
+        FileNames::iterator             _fileNamesIterator;
+        double                          _fileNamesIteratorTime;
+
         double                          _imageHeadTime;
         Images                          _images;
-
         Images::iterator                _imageIterator;
         double                          _imageIteratorTime;
-        
-        
 };
 
 } // namespace

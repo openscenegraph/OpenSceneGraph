@@ -51,7 +51,7 @@ class OSG_EXPORT ImageSequence : public ImageStream
         typedef std::list< osg::ref_ptr<osg::Image> >   Images;
         typedef std::list< std::string >                FileNames;
 
-        void setDuration(double duration) { _duration = duration; }
+        void setDuration(double duration);
         double getDuration() const { return _duration; }
 
         void setPruneOldImages(bool prune) { _pruneOldImages = prune; }
@@ -80,6 +80,8 @@ class OSG_EXPORT ImageSequence : public ImageStream
         virtual ~ImageSequence() {}
         
         void setImageToChild(const osg::Image* image);
+        
+        void computeTimePerImage();
 
         double                          _referenceTime;
         double                          _timeMultiplier;
@@ -89,6 +91,8 @@ class OSG_EXPORT ImageSequence : public ImageStream
         
         double                          _duration;
         bool                            _pruneOldImages;
+
+        double                          _timePerImage;
         
         double                          _imageHeadTime;
         Images                          _images;

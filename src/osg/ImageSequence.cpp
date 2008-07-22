@@ -42,6 +42,7 @@ ImageSequence::ImageSequence()
     _timeMultiplier = 1.0;
 
     _duration = 1.0;
+    _timePerImage = 1.0;
     _pruneOldImages = false;
 
     _imageIteratorTime = DBL_MAX;
@@ -64,16 +65,31 @@ int ImageSequence::compare(const Image& rhs) const
     return ImageStream::compare(rhs);
 }
 
+void ImageSequence::setDuration(double duration)
+{
+    _duration = duration;
+    computeTimePerImage();
+}
+
+void ImageSequence::computeTimePerImage()
+{
+    if (!_fileNames.empty()) _timePerImage = _duration / double(_fileNames.size());
+    else if (!_images.empty()) _timePerImage = _duration / double(_images.size());
+    else _timePerImage = _duration;
+}
+
 void ImageSequence::addImageFile(const std::string& fileName)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     _fileNames.push_back(fileName);
+    computeTimePerImage();
 }
 
 void ImageSequence::addImage(osg::Image* image)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     _images.push_back(image);
+    computeTimePerImage();
 
     if (_imageIterator==_images.end())
     {
@@ -115,9 +131,6 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     }
     
     double time = (fs->getSimulationTime() - _referenceTime)*_timeMultiplier;
-    double delta = _fileNames.empty() ?
-            _duration / _images.size() : 
-            _duration / _fileNames.size();
             
     Images::iterator previous_imageIterator = _imageIterator;
     
@@ -126,14 +139,20 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     if (_imageIterator!=_images.end())
     {
         // osg::notify(osg::NOTICE)<<"   _imageIteratorTime = "<<_imageIteratorTime<<std::endl;
-        while(time > (_imageIteratorTime + delta))
+        while(time > (_imageIteratorTime + _timePerImage))
         {
-            _imageIteratorTime += delta;
+            _imageIteratorTime += _timePerImage;
             // osg::notify(osg::NOTICE)<<"   _imageIteratorTime = "<<_imageIteratorTime<<std::endl;
             ++_imageIterator;
             
             if (_imageIterator ==_images.end())
             {
+
+                if (_pruneOldImages)
+                {
+                    _images.erase(previous_imageIterator, _imageIterator);
+                }
+
                 // return iterator to begining of set.            
                 _imageIterator = _images.begin();
             }
@@ -147,6 +166,11 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     
     if (_imageIterator!=_images.end() && previous_imageIterator != _imageIterator)
     {
+        if (_pruneOldImages)
+        {
+            _images.erase(previous_imageIterator, _imageIterator);
+        }
+    
         setImageToChild(_imageIterator->get());
     }
 }

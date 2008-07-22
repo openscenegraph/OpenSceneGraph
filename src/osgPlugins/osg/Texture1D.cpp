@@ -1,4 +1,5 @@
 #include "osg/Texture1D"
+#include "osg/ImageSequence"
 
 #include "osgDB/Registry"
 #include "osgDB/Input"
@@ -54,6 +55,12 @@ bool Texture1D_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
+    if (fr[0].matchWord("ImageSequence") || fr[0].matchWord("Image"))
+    {
+        osg::Image* image = fr.readImage();
+        if (image) texture.setImage(image);
+    }
+
     return iteratorAdvanced;
 }
 
@@ -64,19 +71,27 @@ bool Texture1D_writeLocalData(const Object& obj, Output& fw)
 
     if (texture.getImage())
     {
-        std::string fileName = texture.getImage()->getFileName();
-        if (fw.getOutputTextureFiles())
+        const osg::ImageSequence* is = dynamic_cast<const osg::ImageSequence*>(texture.getImage());
+        if (is)
         {
-            if (fileName.empty())
-            {
-                fileName = fw.getTextureFileNameForOutput();
-            }
-            osgDB::writeImageFile(*texture.getImage(), fileName);
+            fw.writeObject(*is);
         }
-        
-        if (!fileName.empty())
-        {    
-            fw.indent() << "file "<<fw.wrapString(fw.getFileNameForOutput(fileName))<< std::endl;
+        else
+        {
+            std::string fileName = texture.getImage()->getFileName();
+            if (fw.getOutputTextureFiles())
+            {
+                if (fileName.empty())
+                {
+                    fileName = fw.getTextureFileNameForOutput();
+                }
+                osgDB::writeImageFile(*texture.getImage(), fileName);
+            }
+
+            if (!fileName.empty())
+            {    
+                fw.indent() << "file "<<fw.wrapString(fw.getFileNameForOutput(fileName))<< std::endl;
+            }
         }
     }
 

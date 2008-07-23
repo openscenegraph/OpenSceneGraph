@@ -33,8 +33,58 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         ImagePager();
           
           
+
+
+        class OSGDB_EXPORT ImageThread : public osg::Referenced, public OpenThreads::Thread
+        {
+        public:
+        
+            enum Mode
+            {
+                HANDLE_ALL_REQUESTS,
+                HANDLE_NON_HTTP,
+                HANDLE_ONLY_HTTP
+            };
+        
+            ImageThread(ImagePager* pager, Mode mode, const std::string& name);
+            
+            ImageThread(const ImageThread& dt, ImagePager* pager);
+            
+            void setDone(bool done) { _done = done; }
+            bool getDone() const { return _done; }
+
+            virtual int cancel();
+            
+            virtual void run();
+            
+        protected:
+
+            virtual ~ImageThread();
+        
+            bool            _done;
+            Mode            _mode;
+            ImagePager*     _pager;
+            std::string     _name;
+        };
+
+        virtual void requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp);
+
+        /** Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
+        virtual bool requiresUpdateSceneGraph() const;
+        
+        /** Merge the changes to the scene graph. */
+        virtual void updateSceneGraph(double currentFrameTime);
+        
+        int cancel();
+
+    protected:
+    
+        virtual ~ImagePager();
         // forward declare  
         struct RequestQueue;
+        
+        struct SortFileRequestFunctor;
+        friend struct SortFileRequestFunctor;
               
         struct ImageRequest : public osg::Referenced
         {
@@ -86,53 +136,6 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
             ImagePager*                 _pager;
             std::string                 _name;
         };
-
-
-        class OSGDB_EXPORT ImageThread : public osg::Referenced, public OpenThreads::Thread
-        {
-        public:
-        
-            enum Mode
-            {
-                HANDLE_ALL_REQUESTS,
-                HANDLE_NON_HTTP,
-                HANDLE_ONLY_HTTP
-            };
-        
-            ImageThread(ImagePager* pager, Mode mode, const std::string& name);
-            
-            ImageThread(const ImageThread& dt, ImagePager* pager);
-            
-            void setDone(bool done) { _done = done; }
-            bool getDone() const { return _done; }
-
-            virtual int cancel();
-            
-            virtual void run();
-            
-        protected:
-
-            virtual ~ImageThread();
-        
-            bool            _done;
-            Mode            _mode;
-            ImagePager*     _pager;
-            std::string     _name;
-        };
-
-        virtual void requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp);
-
-        /** Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
-        virtual bool requiresUpdateSceneGraph() const;
-        
-        /** Merge the changes to the scene graph. */
-        virtual void updateSceneGraph(double currentFrameTime);
-        
-        int cancel();
-
-    public:
-    
-        virtual ~ImagePager();
         
         OpenThreads::Mutex          _run_mutex;
         bool                        _startThreadCalled;

@@ -16,8 +16,9 @@
 
 #include <osg/Image>
 #include <osg/NodeVisitor>
+#include <osg/observer_ptr>
+#include <osg/OperationThread>
 
-#include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
 
 #include <osgDB/ReaderWriter>
@@ -30,7 +31,11 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
     public:
     
         ImagePager();
-                
+          
+          
+        // forward declare  
+        struct RequestQueue;
+              
         struct ImageRequest : public osg::Referenced
         {
             ImageRequest():
@@ -40,11 +45,49 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
             double                              _timeToMergeBy;
             std::string                         _fileName;
             osg::ref_ptr<ReaderWriter::Options> _loadOptions;
-            osg::ref_ptr<osg::Object>           _objectToAttachTo;    
+            osg::observer_ptr<osg::Object>      _objectToAttachTo;
             osg::ref_ptr<osg::Image>            _loadedImage;
-            
+            RequestQueue*                       _requestQueue;
+           
         };
         
+        struct RequestQueue : public osg::Referenced
+        {
+            typedef std::vector< osg::ref_ptr<ImageRequest> > RequestList;
+
+            void sort();
+                                    
+            RequestList         _requestList;
+            OpenThreads::Mutex  _requestMutex;
+        };
+
+        
+        struct ReadQueue : public RequestQueue
+        {
+            ReadQueue(ImagePager* pager, const std::string& name);
+            
+            void block() { _block->block(); }
+            
+            void release() { _block->release(); }
+            
+            void updateBlock()
+            {
+                _block->set((!_requestList.empty() || !_pager->_databasePagerThreadPaused));
+            }
+            
+            void clear();
+            
+            void add(ImageRequest* imageRequest);
+            
+            void takeFirst(osg::ref_ptr<ImageRequest>& databaseRequest);
+            
+            osg::ref_ptr<osg::RefBlock> _block;
+            
+            ImagePager*                 _pager;
+            std::string                 _name;
+        };
+
+
         class OSGDB_EXPORT ImageThread : public osg::Referenced, public OpenThreads::Thread
         {
         public:
@@ -72,22 +115,34 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
             virtual ~ImageThread();
         
             bool            _done;
-            ImagePager*     _pager;
             Mode            _mode;
+            ImagePager*     _pager;
             std::string     _name;
         };
 
-        virtual void requestNodeFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp, osg::ref_ptr<osg::Referenced>& imageRequest);
+        virtual void requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp);
 
         /** Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
         virtual bool requiresUpdateSceneGraph() const;
         
         /** Merge the changes to the scene graph. */
         virtual void updateSceneGraph(double currentFrameTime);
+        
+        int cancel();
 
     public:
     
         virtual ~ImagePager();
+        
+        OpenThreads::Mutex          _run_mutex;
+        bool                        _startThreadCalled;
+
+        bool                        _done;
+        bool                        _databasePagerThreadPaused;
+        
+        osg::ref_ptr<ReadQueue>     _readQueue;
+        osg::ref_ptr<ImageThread>   _imageThread;
+        
 };
 
 

@@ -105,6 +105,7 @@ class OSG_EXPORT ImageSequence : public ImageStream
         Images                          _images;
         Images::iterator                _imageIterator;
         double                          _imageIteratorTime;
+
 };
 
 } // namespace

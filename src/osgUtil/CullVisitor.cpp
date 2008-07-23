@@ -1344,10 +1344,10 @@ void CullVisitor::apply(osg::Camera& camera)
 
 
         // set up to charge the same PositionalStateContainer is the parent previous stage.
-        osg::Matrix inhertiedMVtolocalMV;
-        inhertiedMVtolocalMV.invert(originalModelView);
-        inhertiedMVtolocalMV.postMult(*getModelViewMatrix());
-        rtts->setInheritedPositionalStateContainerMatrix(inhertiedMVtolocalMV);
+        osg::Matrix inheritedMVtolocalMV;
+        inheritedMVtolocalMV.invert(originalModelView);
+        inheritedMVtolocalMV.postMult(*getModelViewMatrix());
+        rtts->setInheritedPositionalStateContainerMatrix(inheritedMVtolocalMV);
         rtts->setInheritedPositionalStateContainer(previous_stage->getPositionalStateContainer());
 
         // record the render bin, to be restored after creation

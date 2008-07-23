@@ -24,7 +24,7 @@ using namespace osgDB;
 //
 //  SortFileRequestFunctor
 //
-struct SortFileRequestFunctor
+struct ImagePager::SortFileRequestFunctor
 {
     bool operator() (const osg::ref_ptr<ImagePager::ImageRequest>& lhs,const osg::ref_ptr<ImagePager::ImageRequest>& rhs) const
     {

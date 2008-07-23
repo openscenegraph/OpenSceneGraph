@@ -239,6 +239,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::OverlayNode)
 	                   __void__updateMainSubgraphStateSet,
 	                   "",
 	                   "");
+
 	I_SimpleProperty(bool, ContinuousUpdate, 
 	                 __bool__getContinuousUpdate, 
 	                 __void__setContinuousUpdate__bool);

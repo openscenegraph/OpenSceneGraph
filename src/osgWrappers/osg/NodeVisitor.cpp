@@ -416,9 +416,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::NodeVisitor::ImageRequestHandler)
 	I_Constructor0(____ImageRequestHandler,
 	               "",
 	               "");
-	I_Method5(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Object *, attachmentPoint, IN, double, timeToMergeBy, IN, const osg::FrameStamp *, framestamp, IN, osg::ref_ptr< osg::Referenced > &, imageRequest,
+	I_Method4(void, requestImageFile, IN, const std::string &, fileName, IN, osg::Object *, attachmentPoint, IN, double, timeToMergeBy, IN, const osg::FrameStamp *, framestamp,
 	          Properties::PURE_VIRTUAL,
-	          __void__requestNodeFile__C5_std_string_R1__osg_Object_P1__double__C5_FrameStamp_P1__osg_ref_ptrT1_osg_Referenced__R1,
+	          __void__requestImageFile__C5_std_string_R1__osg_Object_P1__double__C5_FrameStamp_P1,
 	          "",
 	          "");
 END_REFLECTOR

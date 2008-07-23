@@ -44,7 +44,7 @@ ImageSequence::ImageSequence()
     _duration = 1.0;
     _preLoadTime = 1.0;
     _timePerImage = 1.0;
-    _pruneOldImages = false;
+    _pruneOldImages = true;
 
     _fileNamesIterator = _fileNames.end();
     _fileNamesIteratorTime = DBL_MAX;
@@ -153,10 +153,12 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     double time = (fs->getSimulationTime() - _referenceTime)*_timeMultiplier;
     double preLoadTime = (time+_preLoadTime)*_timeMultiplier;
             
+    FileNames::iterator previous_fileNamesIterator = _fileNamesIterator;
     Images::iterator previous_imageIterator = _imageIterator;
     
     // osg::notify(osg::NOTICE)<<"time = "<<time<<std::endl;
 
+    if (irh)
     {
         //
         // Advance imageIterator
@@ -171,11 +173,16 @@ void ImageSequence::update(osg::NodeVisitor* nv)
                 osg::notify(osg::NOTICE)<<"   need to preLoad = "<<*_fileNamesIterator<<std::endl;
                 ++_fileNamesIterator;
 
+                if (previous_fileNamesIterator==_fileNamesIterator) break;
+
                 if (_fileNamesIterator ==_fileNames.end())
                 {
                     // return iterator to begining of set.            
                     _fileNamesIterator = _fileNames.begin();
                 }
+
+                irh->requestImageFile(*_fileNamesIterator, this, _fileNamesIteratorTime, fs);
+
             }
         }
 
@@ -186,6 +193,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     }
         
     {
+    
         //
         // Advance imageIterator
         //
@@ -204,6 +212,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
                     if (_pruneOldImages)
                     {
                         _images.erase(previous_imageIterator, _imageIterator);
+                        previous_imageIterator = _images.begin();
                     }
 
                     // return iterator to begining of set.            

@@ -284,7 +284,7 @@ struct ClearQueriesCallback : public osg::Camera::DrawCallback
     {
         if (!_rqcb)
         {
-            osg::notify( osg::FATAL ) << "oagOQ: CQCB: Invalid RQCB." << std::endl;
+            osg::notify( osg::FATAL ) << "osgOQ: CQCB: Invalid RQCB." << std::endl;
             return;
         }
         _rqcb->reset();
@@ -365,7 +365,7 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
         RetrieveQueriesCallback* >( cam->getPostDrawCallback() );
     if (!rqcb)
     {
-        osg::notify( osg::FATAL ) << "oagOQ: QG: Invalid RQCB." << std::endl;
+        osg::notify( osg::FATAL ) << "osgOQ: QG: Invalid RQCB." << std::endl;
         return;
     }
     rqcb->add( tr );
@@ -380,7 +380,7 @@ QueryGeometry::drawImplementation( osg::RenderInfo& renderInfo ) const
     }
 
     osg::notify( osg::DEBUG_INFO ) <<
-        "oagOQ: QG: Querying for: " << _oqnName << std::endl;
+        "osgOQ: QG: Querying for: " << _oqnName << std::endl;
 
     ext->glBeginQuery( GL_SAMPLES_PASSED_ARB, tr->_id );
     osg::Geometry::drawImplementation( renderInfo );

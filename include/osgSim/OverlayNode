@@ -160,9 +160,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         
         osg::Camera::RenderTargetImplementation _renderTargetImpl;
 
-    private:
-        
-        struct OverlayData
+        struct OverlayData : public osg::Referenced
         {
 
             void setThreadSafeRefUnref(bool threadSafe);
@@ -183,12 +181,12 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
             osg::ref_ptr<osg::Uniform>      _lightingEnabled;
         };
         
-        typedef std::map<osgUtil::CullVisitor*, OverlayData> OverlayDataMap;
+        typedef std::map<osgUtil::CullVisitor*, osg::ref_ptr<OverlayData> > OverlayDataMap;
         
         OpenThreads::Mutex              _overlayDataMapMutex;
         OverlayDataMap                  _overlayDataMap;
         
-        OverlayData& getOverlayData(osgUtil::CullVisitor* cv);
+        OverlayNode::OverlayData* getOverlayData(osgUtil::CullVisitor* cv);
         
 };
 

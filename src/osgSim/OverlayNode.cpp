@@ -874,7 +874,7 @@ void OverlayNode::setThreadSafeRefUnref(bool threadSafe)
         itr != _overlayDataMap.end();
         ++itr)
     {
-        itr->second.setThreadSafeRefUnref(threadSafe);
+        itr->second->setThreadSafeRefUnref(threadSafe);
     }
 }
 
@@ -888,7 +888,7 @@ void OverlayNode::resizeGLObjectBuffers(unsigned int maxSize)
         itr != _overlayDataMap.end();
         ++itr)
     {
-        itr->second.resizeGLObjectBuffers(maxSize);
+        itr->second->resizeGLObjectBuffers(maxSize);
     }
 }
 
@@ -902,7 +902,7 @@ void OverlayNode::releaseGLObjects(osg::State* state) const
         itr != _overlayDataMap.end();
         ++itr)
     {
-        itr->second.releaseGLObjects(state);
+        itr->second->releaseGLObjects(state);
     }
 }
 
@@ -924,19 +924,21 @@ void OverlayNode::setRenderTargetImplementation(osg::Camera::RenderTargetImpleme
     init();
 }
 
-OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
+OverlayNode::OverlayData* OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_overlayDataMapMutex);
     OverlayDataMap::iterator itr = _overlayDataMap.find(cv);
-    if (itr != _overlayDataMap.end()) return itr->second;
+    if (itr != _overlayDataMap.end()) return itr->second.get();
     
-    OverlayData& overlayData = _overlayDataMap[cv];
+    _overlayDataMap[cv] = new OverlayData;
+    
+    OverlayData* overlayData = _overlayDataMap[cv].get();
     
     
     unsigned int tex_width = _textureSizeHint;
     unsigned int tex_height = _textureSizeHint;
     
-    if (!overlayData._texture) 
+    if (!overlayData->_texture) 
     { 
         // osg::notify(osg::NOTICE)<<"   setting up texture"<<std::endl;
 
@@ -952,55 +954,55 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
 #else
         texture->setBorderColor(osg::Vec4(1.0,0.0,0.0,0.5));
 #endif
-        overlayData._texture = texture;
+        overlayData->_texture = texture;
     }   
 
     // set up the render to texture camera.
-    if (!overlayData._camera || overlayData._camera->getRenderTargetImplementation() != _renderTargetImpl)
+    if (!overlayData->_camera || overlayData->_camera->getRenderTargetImplementation() != _renderTargetImpl)
     {
         // osg::notify(osg::NOTICE)<<"   setting up camera"<<std::endl;
 
         // create the camera
-        overlayData._camera = new osg::Camera;
+        overlayData->_camera = new osg::Camera;
          
-        overlayData._camera->setClearColor(_overlayClearColor);
+        overlayData->_camera->setClearColor(_overlayClearColor);
 
-        overlayData._camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
+        overlayData->_camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
 
         // set viewport
-        overlayData._camera->setViewport(0,0,tex_width,tex_height);
+        overlayData->_camera->setViewport(0,0,tex_width,tex_height);
         
-        overlayData._camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
+        overlayData->_camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
 
         // set the camera to render before the main camera.
-        overlayData._camera->setRenderOrder(osg::Camera::PRE_RENDER);
+        overlayData->_camera->setRenderOrder(osg::Camera::PRE_RENDER);
 
         // tell the camera to use OpenGL frame buffer object where supported.
-        overlayData._camera->setRenderTargetImplementation(_renderTargetImpl);
+        overlayData->_camera->setRenderTargetImplementation(_renderTargetImpl);
 
         // attach the texture and use it as the color buffer.
-        overlayData._camera->attach(osg::Camera::COLOR_BUFFER, overlayData._texture.get());
+        overlayData->_camera->attach(osg::Camera::COLOR_BUFFER, overlayData->_texture.get());
         
-        if (_overlaySubgraph.valid()) overlayData._camera->addChild(_overlaySubgraph.get());
+        if (_overlaySubgraph.valid()) overlayData->_camera->addChild(_overlaySubgraph.get());
     }
 
-    if (!overlayData._texgenNode)
+    if (!overlayData->_texgenNode)
     {
-        overlayData._texgenNode = new osg::TexGenNode;
-        overlayData._texgenNode->setTextureUnit(_textureUnit);
+        overlayData->_texgenNode = new osg::TexGenNode;
+        overlayData->_texgenNode->setTextureUnit(_textureUnit);
     }
 
-    if (!overlayData._y0) overlayData._y0 = new osg::Uniform("y0",0.0f);
-    if (!overlayData._lightingEnabled) overlayData._lightingEnabled = new osg::Uniform("lightingEnabled",true);
+    if (!overlayData->_y0) overlayData->_y0 = new osg::Uniform("y0",0.0f);
+    if (!overlayData->_lightingEnabled) overlayData->_lightingEnabled = new osg::Uniform("lightingEnabled",true);
 
-    if (!overlayData._overlayStateSet) 
+    if (!overlayData->_overlayStateSet) 
     {
-        overlayData._overlayStateSet = new osg::StateSet;
-        overlayData._overlayStateSet->addUniform(overlayData._y0.get());
-        overlayData._overlayStateSet->addUniform(overlayData._lightingEnabled.get());
+        overlayData->_overlayStateSet = new osg::StateSet;
+        overlayData->_overlayStateSet->addUniform(overlayData->_y0.get());
+        overlayData->_overlayStateSet->addUniform(overlayData->_lightingEnabled.get());
 
         osg::Program* program = new osg::Program;
-        overlayData._overlayStateSet->setAttribute(program);
+        overlayData->_overlayStateSet->setAttribute(program);
 
         // get shaders from source
         std::string vertexShaderFile = osgDB::findDataFile("shaders/overlay_perspective_rtt.vert");
@@ -1089,15 +1091,15 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
         
     }
 
-    if (!overlayData._mainSubgraphProgram)
+    if (!overlayData->_mainSubgraphProgram)
     {
-        overlayData._mainSubgraphProgram = new osg::Program;
+        overlayData->_mainSubgraphProgram = new osg::Program;
 
         // get shaders from source
         std::string fragmentShaderFile = osgDB::findDataFile("shaders/overlay_perspective_main.frag");
         if (!fragmentShaderFile.empty())
         {
-            overlayData._mainSubgraphProgram->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
+            overlayData->_mainSubgraphProgram->addShader(osg::Shader::readShaderFile(osg::Shader::FRAGMENT, fragmentShaderFile));
         }
         else
         {
@@ -1130,27 +1132,27 @@ OverlayNode::OverlayData& OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
                 "} \n";
 
             osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
-            overlayData._mainSubgraphProgram->addShader(fragment_shader);
+            overlayData->_mainSubgraphProgram->addShader(fragment_shader);
         }
     }
 
-    if (!overlayData._mainSubgraphStateSet) 
+    if (!overlayData->_mainSubgraphStateSet) 
     {
-        overlayData._mainSubgraphStateSet = new osg::StateSet;
+        overlayData->_mainSubgraphStateSet = new osg::StateSet;
 
-        overlayData._mainSubgraphStateSet->addUniform(overlayData._y0.get());
-        overlayData._mainSubgraphStateSet->addUniform(new osg::Uniform("texture_0",0));
-        overlayData._mainSubgraphStateSet->addUniform(new osg::Uniform("texture_1",1));
+        overlayData->_mainSubgraphStateSet->addUniform(overlayData->_y0.get());
+        overlayData->_mainSubgraphStateSet->addUniform(new osg::Uniform("texture_0",0));
+        overlayData->_mainSubgraphStateSet->addUniform(new osg::Uniform("texture_1",1));
 
-        overlayData._mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, overlayData._texture.get(), osg::StateAttribute::ON);
-        overlayData._mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);
-        overlayData._mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_T, osg::StateAttribute::ON);
-        overlayData._mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_R, osg::StateAttribute::ON);
-        overlayData._mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_Q, osg::StateAttribute::ON);
+        overlayData->_mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, overlayData->_texture.get(), osg::StateAttribute::ON);
+        overlayData->_mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);
+        overlayData->_mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_T, osg::StateAttribute::ON);
+        overlayData->_mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_R, osg::StateAttribute::ON);
+        overlayData->_mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_Q, osg::StateAttribute::ON);
 
         if (_texEnvMode!=GL_NONE) 
         {
-            overlayData._mainSubgraphStateSet->setTextureAttribute(_textureUnit, new osg::TexEnv((osg::TexEnv::Mode)_texEnvMode));
+            overlayData->_mainSubgraphStateSet->setTextureAttribute(_textureUnit, new osg::TexEnv((osg::TexEnv::Mode)_texEnvMode));
         }
     }
 
@@ -1209,7 +1211,7 @@ void OverlayNode::traverse(osg::NodeVisitor& nv)
 
 void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv)
 {
-    OverlayData& overlayData = getOverlayData(0);
+    OverlayData& overlayData = *getOverlayData(0);
     osg::Camera* camera = overlayData._camera.get();
 
     if (nv.getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
@@ -1368,7 +1370,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         return;
     }
     
-    OverlayData& overlayData = getOverlayData(cv);
+    OverlayData& overlayData = *getOverlayData(cv);
     osg::Camera* camera = overlayData._camera.get();
 
     if (_overlaySubgraph.valid()) 
@@ -1789,7 +1791,7 @@ void OverlayNode::setOverlaySubgraph(osg::Node* node)
         itr != _overlayDataMap.end();
         ++itr)
     {
-        osg::Camera* camera = itr->second._camera.get();
+        osg::Camera* camera = itr->second->_camera.get();
         if (camera)
         {
             camera->removeChildren(0, camera->getNumChildren());
@@ -1833,8 +1835,8 @@ void OverlayNode::setOverlayTextureSizeHint(unsigned int size)
         itr != _overlayDataMap.end();
         ++itr)
     {
-        if (itr->second._texture.valid()) itr->second._texture->setTextureSize(_textureSizeHint, _textureSizeHint);
-        if (itr->second._camera.valid()) itr->second._camera->setViewport(0,0,_textureSizeHint,_textureSizeHint);
+        if (itr->second->_texture.valid()) itr->second->_texture->setTextureSize(_textureSizeHint, _textureSizeHint);
+        if (itr->second->_camera.valid()) itr->second->_camera->setViewport(0,0,_textureSizeHint,_textureSizeHint);
     }
 
     //_texture->dirtyTextureObject();
@@ -1848,14 +1850,14 @@ void OverlayNode::updateMainSubgraphStateSet()
         itr != _overlayDataMap.end();
         ++itr)
     {
-        osg::TexGenNode* texgenNode = itr->second._texgenNode.get();
+        osg::TexGenNode* texgenNode = itr->second->_texgenNode.get();
         if (texgenNode) texgenNode->setTextureUnit(_textureUnit);
 
-        osg::StateSet* mainSubgraphStateSet = itr->second._mainSubgraphStateSet.get();
+        osg::StateSet* mainSubgraphStateSet = itr->second->_mainSubgraphStateSet.get();
         if (mainSubgraphStateSet)  
         {
             mainSubgraphStateSet->clear();
-            mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, itr->second._texture.get(), osg::StateAttribute::ON);
+            mainSubgraphStateSet->setTextureAttributeAndModes(_textureUnit, itr->second->_texture.get(), osg::StateAttribute::ON);
             mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_S, osg::StateAttribute::ON);
             mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_T, osg::StateAttribute::ON);
             mainSubgraphStateSet->setTextureMode(_textureUnit, GL_TEXTURE_GEN_R, osg::StateAttribute::ON);

@@ -52,7 +52,7 @@ class ReaderWriterSVG : public osgDB::ReaderWriter
                 if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
                 RsvgDimensionData dimensionData;
-                RsvgHandle* handle = rsvg_handle_new_from_file (file.c_str(), NULL);
+                RsvgHandle* handle = rsvg_handle_new_from_file (fileName.c_str(), NULL);
                 rsvg_handle_get_dimensions( handle, &dimensionData);
 
                 osg::Image *image;

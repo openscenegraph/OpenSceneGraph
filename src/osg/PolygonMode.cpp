@@ -16,10 +16,17 @@
 
 using namespace osg;
 
-PolygonMode::PolygonMode()
+PolygonMode::PolygonMode():
+    _modeFront(FILL),
+    _modeBack(FILL)
 {
-    _modeFront = FILL;
-    _modeBack = FILL;
+}
+
+PolygonMode::PolygonMode(Face face,Mode mode):
+    _modeFront(FILL),
+    _modeBack(FILL)
+{
+    setMode(face,mode);
 }
 
 

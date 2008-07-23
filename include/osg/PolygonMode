@@ -39,7 +39,7 @@ class OSG_EXPORT PolygonMode : public StateAttribute
 
         PolygonMode();
 
-        PolygonMode(Face face,Mode mode) { setMode(face,mode); }
+        PolygonMode(Face face,Mode mode);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         PolygonMode(const PolygonMode& pm,const CopyOp& copyop=CopyOp::SHALLOW_COPY):

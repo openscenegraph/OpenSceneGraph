@@ -55,6 +55,9 @@ public:
     ReaderWriterOBJ():_fixBlackMaterials(true)
     {
         supportsExtension("obj","Alias Wavefront OBJ format");
+        supportsOption("noRotation","Do not do the default rotate about X axis");
+        supportsOption("noTesselateLargePolygons","Do not do the default tesselation of large polygons");
+        supportsOption("noTriStripPolygons","Do not do the default tri stripping of polygons");
     }
 
     virtual const char* className() const { return "Wavefront OBJ Reader"; }

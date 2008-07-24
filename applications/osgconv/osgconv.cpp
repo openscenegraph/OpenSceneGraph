@@ -537,6 +537,21 @@ int main( int argc, char **argv )
         return 0;
     }    
     
+    std::string plugin;
+    if (arguments.read("--plugin", plugin))
+    {
+        osgDB::outputPluginDetails(std::cout, plugin);
+        return 0;
+    }    
+    
+    std::string ext;
+    if (arguments.read("--format", ext))
+    {
+        plugin = osgDB::Registry::instance()->createLibraryNameForExtension(ext);
+        osgDB::outputPluginDetails(std::cout, plugin);
+        return 0;
+    }    
+    
     if (arguments.read("--formats"))
     {
         osgDB::FileNameList plugins = osgDB::listAllAvailablePlugins();
@@ -544,43 +559,7 @@ int main( int argc, char **argv )
             itr != plugins.end();
             ++itr)
         {
-            std::cout<<"Plugin "<<*itr<<std::endl;
-            std::cout<<"{"<<std::endl;
-            osgDB::ReaderWriterInfoList infoList;
-            if (osgDB::queryPlugin(*itr, infoList))
-            {
-                for(osgDB::ReaderWriterInfoList::iterator rwi_itr = infoList.begin();
-                    rwi_itr != infoList.end();
-                    ++rwi_itr)
-                {
-                    osgDB::ReaderWriterInfo& info = *(*rwi_itr);
-                    std::cout<<"    ReaderWriter : "<<info.description<<std::endl;
-                    std::cout<<"    {"<<std::endl;
-
-                    for(osgDB::ReaderWriter::FormatDescriptionMap::iterator fdm_itr = info.protocols.begin();
-                        fdm_itr != info.protocols.end();
-                        ++fdm_itr)
-                    {
-                        std::cout<<"        protocol : "<<fdm_itr->first<<"\t"<<fdm_itr->second<<std::endl;
-                    }
-
-                    for(osgDB::ReaderWriter::FormatDescriptionMap::iterator fdm_itr = info.extensions.begin();
-                        fdm_itr != info.extensions.end();
-                        ++fdm_itr)
-                    {
-                        std::cout<<"        extensions : ."<<fdm_itr->first<<"\t"<<fdm_itr->second<<std::endl;
-                    }
-                    
-                    for(osgDB::ReaderWriter::FormatDescriptionMap::iterator fdm_itr = info.options.begin();
-                        fdm_itr != info.options.end();
-                        ++fdm_itr)
-                    {
-                        std::cout<<"        options : "<<fdm_itr->first<<"\t"<<fdm_itr->second<<std::endl;
-                    }
-                    std::cout<<"    }"<<std::endl;
-                }
-            }
-            std::cout<<"}"<<std::endl<<std::endl;
+            osgDB::outputPluginDetails(std::cout,*itr);
         }
         return 0;
     }    
@@ -603,7 +582,6 @@ int main( int argc, char **argv )
         osgDB::Registry::instance()->setOptions(options);
     }
 
-    std::string ext;
     while (arguments.read("-e",ext))
     {
         std::string libName = osgDB::Registry::instance()->createLibraryNameForExtension(ext);

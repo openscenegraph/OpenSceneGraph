@@ -172,6 +172,16 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             return _rootRenderStage.get();
         }
 
+        inline RenderStage* getCurrentRenderStage()
+        {
+            return _currentRenderBin->getStage();
+        }
+
+        inline osg::Camera* getCurrentCamera()
+        {
+            return getCurrentRenderStage()->getCamera();
+        }
+
         inline RenderBin* getCurrentRenderBin()
         {
             return _currentRenderBin;

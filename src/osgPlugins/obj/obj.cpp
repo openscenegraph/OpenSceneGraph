@@ -12,7 +12,9 @@
 */
 
 #include <iostream>
+#include <sstream>
 #include <fstream>
+#include <string>
 #include <stdio.h>
 
 #include "obj.h"
@@ -23,6 +25,13 @@
 #include <osgDB/FileNameUtils>
 
 using namespace obj;
+
+std::string strip( const std::string& ss )
+{
+    std::string result;
+    result.assign( ss.begin() + ss.find_first_not_of( ' ' ), ss.begin() + 1 + ss.find_last_not_of( ' ' ) );
+    return( result );
+}
 
 bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
 {
@@ -347,15 +356,18 @@ bool Model::readMTL(std::istream& fin)
                 }
                 else if (strncmp(line,"map_Kd ",7)==0)
                 {
-                    material->map_Kd = lastComponent(line+7);
+                    material->map_Kd = strip(line+7);
+                    osg::notify(osg::INFO)<< "map_Kd:\'" << material->map_Kd << "\'" << std::endl;
                 }
                 else if (strncmp(line,"map_Ks ",7)==0)
                 {
-                    material->map_Ks = lastComponent(line+7);
+                    material->map_Ks = strip(line+7);
+                    osg::notify(osg::INFO)<< "map_Ks:\'" << material->map_Kd << "\'" << std::endl;
                 }
                 else if (strncmp(line,"map_opacity ",7)==0)
                 {
-                    material->map_opacity = lastComponent(line+7);
+                    material->map_opacity = strip(line+7);
+                    osg::notify(osg::INFO)<< "map_opacity:\'" << material->map_Kd << "\'" << std::endl;
                 }
                 else if (strcmp(line,"refl")==0 || strncmp(line,"refl ",5)==0)
                 {

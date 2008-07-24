@@ -37,6 +37,8 @@ typedef std::list< osg::ref_ptr<ReaderWriterInfo> > ReaderWriterInfoList;
 
 bool queryPlugin(const std::string& fileName, ReaderWriterInfoList& infoList);
 
+bool outputPluginDetails(std::ostream& out, const std::string& fileName);
+
 }
 
 #endif

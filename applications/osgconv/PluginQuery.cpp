@@ -69,3 +69,79 @@ bool osgDB::queryPlugin(const std::string& fileName, ReaderWriterInfoList& infoL
         return false;
     }
 }
+
+static std::string padwithspaces(const std::string& str, unsigned int padLength)
+{
+    std::string newStr(str);
+    while(newStr.length()<padLength) newStr.push_back(' ');
+    return newStr;
+}
+
+bool osgDB::outputPluginDetails(std::ostream& out, const std::string& fileName)
+{
+    
+
+    out<<"Plugin "<<fileName<<std::endl;
+    out<<"{"<<std::endl;
+    osgDB::ReaderWriterInfoList infoList;
+    if (osgDB::queryPlugin(fileName, infoList))
+    {
+        for(osgDB::ReaderWriterInfoList::iterator rwi_itr = infoList.begin();
+            rwi_itr != infoList.end();
+            ++rwi_itr)
+        {
+            osgDB::ReaderWriterInfo& info = *(*rwi_itr);
+            out<<"    ReaderWriter : "<<info.description<<std::endl;
+            out<<"    {"<<std::endl;
+
+            unsigned int longestOptionLength = 0;
+            osgDB::ReaderWriter::FormatDescriptionMap::iterator fdm_itr;
+            for(fdm_itr = info.protocols.begin();
+                fdm_itr != info.protocols.end();
+                ++fdm_itr)
+            {
+                if (fdm_itr->first.length()>longestOptionLength) longestOptionLength = fdm_itr->first.length();
+            }
+
+            for(fdm_itr = info.extensions.begin();
+                fdm_itr != info.extensions.end();
+                ++fdm_itr)
+            {
+                if (fdm_itr->first.length()>longestOptionLength) longestOptionLength = fdm_itr->first.length();
+            }
+
+            for(fdm_itr = info.options.begin();
+                fdm_itr != info.options.end();
+                ++fdm_itr)
+            {
+                if (fdm_itr->first.length()>longestOptionLength) longestOptionLength = fdm_itr->first.length();
+            }
+
+            unsigned int padLength = longestOptionLength+4;
+
+            for(fdm_itr = info.protocols.begin();
+                fdm_itr != info.protocols.end();
+                ++fdm_itr)
+            {
+                out<<"        protocol   : "<<padwithspaces(fdm_itr->first, padLength)<<fdm_itr->second<<std::endl;
+            }
+
+            for(fdm_itr = info.extensions.begin();
+                fdm_itr != info.extensions.end();
+                ++fdm_itr)
+            {
+                out<<"        extensions : ."<<padwithspaces(fdm_itr->first, padLength-1)<<fdm_itr->second<<std::endl;
+            }
+
+            for(fdm_itr = info.options.begin();
+                fdm_itr != info.options.end();
+                ++fdm_itr)
+            {
+                out<<"        options    : "<<padwithspaces(fdm_itr->first, padLength)<<fdm_itr->second<<std::endl;
+            }
+            out<<"    }"<<std::endl;
+        }
+    }
+    out<<"}"<<std::endl<<std::endl;
+}
+

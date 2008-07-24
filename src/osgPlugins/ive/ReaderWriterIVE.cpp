@@ -17,6 +17,14 @@ class ReaderWriterIVE : public ReaderWriter
         ReaderWriterIVE()
         {
             supportsExtension("ive","OpenSceneGraph native binary format");
+
+            supportsOption("noTexturesInIVEFile","Export option");
+            supportsOption("includeImageFileInIVEFile","Export option");
+            supportsOption("compressImageData","Export option");
+            supportsOption("inlineExternalReferencesInIVEFile","Export option");
+            supportsOption("noWriteExternalReferenceFiles","Export option");
+            supportsOption("useOriginalExternalReferences","Export option");
+            supportsOption("noLoadExternalReferenceFiles","Import option");
         }
     
         virtual const char* className() const { return "IVE Reader/Writer"; }

@@ -208,6 +208,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	          __RenderStage_P1__getRenderStage,
 	          "",
 	          "");
+	I_Method0(osgUtil::RenderStage *, getCurrentRenderStage,
+	          Properties::NON_VIRTUAL,
+	          __RenderStage_P1__getCurrentRenderStage,
+	          "",
+	          "");
+	I_Method0(osg::Camera *, getCurrentCamera,
+	          Properties::NON_VIRTUAL,
+	          __osg_Camera_P1__getCurrentCamera,
+	          "",
+	          "");
 	I_Method0(osgUtil::RenderBin *, getCurrentRenderBin,
 	          Properties::NON_VIRTUAL,
 	          __RenderBin_P1__getCurrentRenderBin,
@@ -360,9 +370,15 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::CullVisitor)
 	I_SimpleProperty(osgUtil::CullVisitor::value_type, CalculatedNearPlane, 
 	                 __value_type__getCalculatedNearPlane, 
 	                 0);
+	I_SimpleProperty(osg::Camera *, CurrentCamera, 
+	                 __osg_Camera_P1__getCurrentCamera, 
+	                 0);
 	I_SimpleProperty(osgUtil::RenderBin *, CurrentRenderBin, 
 	                 __RenderBin_P1__getCurrentRenderBin, 
 	                 __void__setCurrentRenderBin__RenderBin_P1);
+	I_SimpleProperty(osgUtil::RenderStage *, CurrentRenderStage, 
+	                 __RenderStage_P1__getCurrentRenderStage, 
+	                 0);
 	I_SimpleProperty(osgUtil::StateGraph *, CurrentStateGraph, 
 	                 __StateGraph_P1__getCurrentStateGraph, 
 	                 0);

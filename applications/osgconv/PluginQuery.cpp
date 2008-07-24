@@ -79,13 +79,12 @@ static std::string padwithspaces(const std::string& str, unsigned int padLength)
 
 bool osgDB::outputPluginDetails(std::ostream& out, const std::string& fileName)
 {
-    
-
-    out<<"Plugin "<<fileName<<std::endl;
-    out<<"{"<<std::endl;
     osgDB::ReaderWriterInfoList infoList;
     if (osgDB::queryPlugin(fileName, infoList))
     {
+        out<<"Plugin "<<fileName<<std::endl;
+        out<<"{"<<std::endl;
+
         for(osgDB::ReaderWriterInfoList::iterator rwi_itr = infoList.begin();
             rwi_itr != infoList.end();
             ++rwi_itr)
@@ -141,7 +140,11 @@ bool osgDB::outputPluginDetails(std::ostream& out, const std::string& fileName)
             }
             out<<"    }"<<std::endl;
         }
+        out<<"}"<<std::endl<<std::endl;
     }
-    out<<"}"<<std::endl<<std::endl;
+    else
+    {
+        out<<"Plugin "<<fileName<<" not found."<<std::endl;
+    }
 }
 

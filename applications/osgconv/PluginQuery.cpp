@@ -141,10 +141,12 @@ bool osgDB::outputPluginDetails(std::ostream& out, const std::string& fileName)
             out<<"    }"<<std::endl;
         }
         out<<"}"<<std::endl<<std::endl;
+        return true;
     }
     else
     {
         out<<"Plugin "<<fileName<<" not found."<<std::endl;
+        return false;
     }
 }
 

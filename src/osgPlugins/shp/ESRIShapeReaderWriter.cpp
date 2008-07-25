@@ -15,7 +15,11 @@
 class ESRIShapeReaderWriter : public osgDB::ReaderWriter
 {
     public:
-        ESRIShapeReaderWriter() {}
+        ESRIShapeReaderWriter()
+        {
+            supportsExtension("shp","Geospatial Shape file format");
+            supportsOption("double","Read x,y,z data as double an stored as geometry in osg::Vec3dArray's.");
+        }
 
         virtual const char* className() { return "ESRI Shape ReaderWriter"; }
         

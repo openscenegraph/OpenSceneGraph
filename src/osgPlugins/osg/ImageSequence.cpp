@@ -29,6 +29,24 @@ bool ImageSequence_readLocalData(Object& obj, Input& fr)
 
     unsigned int numFilesToPreLoad = 1;
 
+
+    std::string modeStr;
+    if (fr.read("Mode",modeStr))
+    {
+        if (modeStr=="PRE_LOAD_ALL_IMAGES") 
+        {
+            is.setMode(osg::ImageSequence::PRE_LOAD_ALL_IMAGES);
+        }
+        else if (modeStr=="PAGE_AND_RETAIN_IMAGES")
+        {
+            is.setMode(osg::ImageSequence::PAGE_AND_RETAIN_IMAGES);
+        }
+        else if (modeStr=="PAGE_AND_DISCARD_USED_IMAGES")
+        {
+            is.setMode(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES);
+        }
+    }
+    
     double duration;
     if (fr.read("Duration", duration))
     {
@@ -45,12 +63,6 @@ bool ImageSequence_readLocalData(Object& obj, Input& fr)
             if (fr[0].getStr())
             {
                 is.addImageFile(fr[0].getStr());
-
-                if (is.getImages().size() < numFilesToPreLoad)
-                {
-                    osg::ref_ptr<osg::Image> image = fr.readImage(fr[0].getStr());
-                    if (image.valid()) is.addImage(image.get());
-                }
             }
             ++fr;
         }
@@ -82,7 +94,20 @@ bool ImageSequence_writeLocalData(const Object& obj, Output& fw)
 
     // no current image writing code here 
     // as it is all handled by osg::Registry::writeImage() via plugins.
-    
+
+    switch(is.getMode())
+    {    
+        case(osg::ImageSequence::PRE_LOAD_ALL_IMAGES): 
+            fw.indent()<<"Mode PRE_LOAD_ALL_IMAGES"<<std::endl; 
+            break;
+        case(osg::ImageSequence::PAGE_AND_RETAIN_IMAGES):
+            fw.indent()<<"Mode PAGE_AND_RETAIN_IMAGES"<<std::endl; 
+            break;
+        case(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES):
+            fw.indent()<<"Mode PAGE_AND_DISCARD_USED_IMAGES"<<std::endl; 
+            break;
+    }
+
     fw.indent()<<"Duration "<<is.getDuration()<<std::endl;
     
     if (!is.getFileNames().empty())

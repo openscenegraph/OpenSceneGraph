@@ -72,6 +72,11 @@ int ImageSequence::compare(const Image& rhs) const
     return ImageStream::compare(rhs);
 }
 
+void ImageSequence::setMode(Mode mode)
+{
+    _mode = mode;
+}
+
 void ImageSequence::setDuration(double duration)
 {
     _duration = duration;

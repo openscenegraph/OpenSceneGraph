@@ -27,7 +27,7 @@
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Image > >, osg::ImageSequence::Images)
 
-TYPE_NAME_ALIAS(std::vector< std::string >, osg::ImageSequence::FileNames)
+TYPE_NAME_ALIAS(std::list< std::string >, osg::ImageSequence::FileNames)
 
 BEGIN_ENUM_REFLECTOR(osg::ImageSequence::Mode)
 	I_DeclaringFile("osg/ImageSequence");
@@ -233,5 +233,5 @@ END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Image > >)
 
-STD_VECTOR_REFLECTOR(std::vector< std::string >)
+STD_LIST_REFLECTOR(std::list< std::string >)
 

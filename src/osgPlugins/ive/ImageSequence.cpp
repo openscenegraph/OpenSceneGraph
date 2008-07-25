@@ -32,6 +32,29 @@ void ImageSequence::write(DataOutputStream* out)
     else
         throw Exception("ImageSequence::write(): Could not cast this osg::ImageSequence to an osg::Object.");
     // Write ImageSequence's properties.
+    
+    
+    out->writeInt(getMode());
+    out->writeDouble(getDuration());
+
+    out->writeUInt(getFileNames().size());
+    for(FileNames::iterator itr = getFileNames().begin();
+        itr != getFileNames().end();
+        ++itr)
+    {
+        out->writeString(*itr);
+    }
+
+    if (getFileNames().empty())
+    {
+        out->writeUInt(getImages().size());
+        for(Images::iterator itr = getImages().begin();
+            itr != getImages().end();
+            ++itr)
+        {
+            out->writeImage(itr->get());
+        }
+    }
 
 }
 
@@ -51,6 +74,27 @@ void ImageSequence::read(DataInputStream* in)
             throw Exception("ImageSequence::read(): Could not cast this osg::ImageSequence to an osg::Object.");
         // Read ImageSequence's properties.
 
+
+        setMode((osg::ImageSequence::Mode)(in->readInt()));
+        setDuration(in->readDouble());
+        
+        unsigned int numFileNames = in->readUInt();
+        if (numFileNames>0)
+        {
+            for(unsigned int i=0; i<numFileNames; ++i)
+            {
+                addImageFile(in->readString());
+            }
+        }
+        else
+        {
+            unsigned int numImages = in->readUInt();
+            for(unsigned int i=0; i<numImages; ++i)
+            {
+                addImage(in->readImage());
+            }
+        }
+        
     }
     else{
         throw Exception("ImageSequence::read(): Expected ImageSequence identification.");

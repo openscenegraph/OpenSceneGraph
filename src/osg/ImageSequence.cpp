@@ -214,9 +214,12 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         {
             if (_fileNames.size()>_images.size())
             {
-                for(unsigned int i=_images.size(); i<_fileNames.size(); ++i)
+                FileNames::iterator itr = _fileNames.begin();
+                for(unsigned int i=0;i<_images.size();++i) ++itr;
+
+                for(; itr!=_fileNames.end(); ++itr)
                 {
-                    osg::Image* image = irh->readImageFile(_fileNames[i]);
+                    osg::Image* image = irh->readImageFile(*itr);
                     _images.push_back(image);
                 }
             }
@@ -246,7 +249,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         //
         if (_fileNamesIterator!=_fileNames.end())
         {
-            // osg::notify(osg::NOTICE)<<"   _fileNamesIteratorTime = "<<_fileNamesIteratorTime<<std::endl;
+            //osg::notify(osg::NOTICE)<<"   _fileNamesIteratorTime = "<<_fileNamesIteratorTime<<" "<<_timePerImage<<std::endl;
             while(preLoadTime > (_fileNamesIteratorTime + _timePerImage))
             {
                 _fileNamesIteratorTime += _timePerImage;

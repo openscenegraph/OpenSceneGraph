@@ -13,8 +13,13 @@
 #define PLUGINQUERY_H
 
 #include <osgDB/Export>
+#include <osgDB/ReaderWriter>
+
+#include <osg/Referenced>
+#include <osg/ref_ptr>
 
 #include <list>
+#include <string>
 
 namespace osgDB
 {
@@ -26,12 +31,18 @@ FileNameList OSGDB_EXPORT listAllAvailablePlugins();
 class ReaderWriterInfo : public osg::Referenced
 {
     public:
+        
+        ReaderWriterInfo() {}
     
         std::string                         plugin;
         std::string                         description;
         ReaderWriter::FormatDescriptionMap  protocols;
         ReaderWriter::FormatDescriptionMap  extensions;
         ReaderWriter::FormatDescriptionMap  options;
+
+    protected:
+        
+        virtual ~ReaderWriterInfo() {}
 };
 
 typedef std::list< osg::ref_ptr<ReaderWriterInfo> > ReaderWriterInfoList;

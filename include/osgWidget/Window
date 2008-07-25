@@ -88,18 +88,18 @@ class OSGWIDGET_EXPORT Window:
         // These correspond to special regions honored by the WindowManager. Most Windows
         // will want to be NONE, unless they need to exist in the foreground or background
         // for some reason.
-        enum STRATA {
+        enum Strata {
             STRATA_NONE,
             STRATA_BACKGROUND,
             STRATA_FOREGROUND
         };
 
         // If you only want to display a portion of a Window (such as when it is embedded),
-        // you will need to set the VISIBILITY_MODE to WM_PARTIAL. Otherwise, the entire
+        // you will need to set the VisibilityMode to WM_PARTIAL. Otherwise, the entire
         // Window is visible by default. The final enum, VM_ENTIRE, says that no Scissoring
         // should take place at all, and is useful in cases where you want to properly 
         // scale or rotate Windows.
-        enum VISIBILITY_MODE {
+        enum VisibilityMode {
             VM_FULL,
             VM_PARTIAL,
             VM_ENTIRE
@@ -109,14 +109,14 @@ class OSGWIDGET_EXPORT Window:
         // call to Window::update() that allow us to position a Window somewhere relative
         // to the WindowManger's viewable area. However, unlike the ALIGNMENT enums, these
         // are totally optional (whereas a Widget must always have some ALIGNMENT value set.
-        enum VERTICAL_ANCHOR {
+        enum VerticalAnchor {
             VA_NONE,
             VA_CENTER,
             VA_TOP,
             VA_BOTTOM
         };
 
-        enum HORIZONTAL_ANCHOR {
+        enum HorizontalAnchor {
             HA_NONE,
             HA_CENTER,
             HA_LEFT,
@@ -256,11 +256,11 @@ class OSGWIDGET_EXPORT Window:
             return _height.min;
         }
 
-        VERTICAL_ANCHOR getAnchorVertical() const {
+        VerticalAnchor getAnchorVertical() const {
             return _vAnchor;
         }
 
-        HORIZONTAL_ANCHOR getAnchorHorizontal() const {
+        HorizontalAnchor getAnchorHorizontal() const {
             return _hAnchor;
         }
 
@@ -280,7 +280,7 @@ class OSGWIDGET_EXPORT Window:
             return _zRange;
         }
 
-        STRATA getStrata() const {
+        Strata getStrata() const {
             return _strata;
         }
 
@@ -288,7 +288,7 @@ class OSGWIDGET_EXPORT Window:
             return _visibleArea;
         }
 
-        VISIBILITY_MODE getVisibilityMode() const {
+        VisibilityMode getVisibilityMode() const {
             return _vis;
         }
 
@@ -343,19 +343,19 @@ class OSGWIDGET_EXPORT Window:
             _scaleDenom = sd;
         }
 
-        void setAnchorVertical(VERTICAL_ANCHOR va) {
+        void setAnchorVertical(VerticalAnchor va) {
             _vAnchor = va;
         }
 
-        void setAnchorHorizontal(HORIZONTAL_ANCHOR ha) {
+        void setAnchorHorizontal(HorizontalAnchor ha) {
             _hAnchor = ha;
         }
 
-        void setStrata(STRATA s) {
+        void setStrata(Strata s) {
             _strata = s;
         }
 
-        void setVisibilityMode(VISIBILITY_MODE v) {
+        void setVisibilityMode(VisibilityMode v) {
             _vis = v;
         }
 
@@ -429,11 +429,11 @@ class OSGWIDGET_EXPORT Window:
 
         // This is a special value that can be used to "force" a Window not to be
         // focusable and instead always exist in the foreground or background.
-        STRATA _strata;
+        Strata _strata;
 
         // A flag determining whether our visible area is the full Window or rather
         // a portion of the Window.
-        VISIBILITY_MODE _vis;
+        VisibilityMode _vis;
 
         // A rotation value in degrees.
         matrix_type _r;
@@ -446,8 +446,8 @@ class OSGWIDGET_EXPORT Window:
         Sizes _width;
         Sizes _height;
 
-        VERTICAL_ANCHOR   _vAnchor;
-        HORIZONTAL_ANCHOR _hAnchor;
+        VerticalAnchor   _vAnchor;
+        HorizontalAnchor _hAnchor;
 
         // Not all windows have widgets that can focus, but if they do this should
         // be a pointer to it.

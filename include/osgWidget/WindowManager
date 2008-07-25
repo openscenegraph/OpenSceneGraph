@@ -39,7 +39,7 @@ typedef osgUtil::LineSegmentIntersector::Intersections Intersections;
 // and performs keyboard input on the currently focused Window->Widget.
 class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<Window> {
     public:
-        enum WM_FLAGS {
+        enum WmFlags {
             WM_USE_LUA      = 0x00000001,
             WM_USE_PYTHON   = 0x00000002,
             WM_PICK_DEBUG   = 0x00000004,
@@ -47,7 +47,7 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             WM_NO_BETA_WARN = 0x00000010
         };
 
-        enum POINTER_DIRECTION {
+        enum PointerDirection {
             PD_NONE  = 0x00000000,
             PD_LEFT  = 0x00000001,
             PD_RIGHT = 0x00000002,
@@ -55,7 +55,7 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             PD_DOWN  = 0x00000008
         };
 
-        enum POINTER_FOCUS_MODE {
+        enum PointerFocusMode {
             PFM_FOCUS   = 0x00000000,
             PFM_UNFOCUS = 0x00000001,
             PFM_SLOPPY  = 0x00000002
@@ -157,15 +157,15 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             return _styleManager.get();
         }
 
-        POINTER_DIRECTION getPointerVerticalDirection() const {
+        PointerDirection getPointerVerticalDirection() const {
             return _lastVertical;
         }
 
-        POINTER_DIRECTION getPointerHorizontalDirection() const {
+        PointerDirection getPointerHorizontalDirection() const {
             return _lastHorizontal;
         }
 
-        POINTER_FOCUS_MODE getPointerFocusMode() const {
+        PointerFocusMode getPointerFocusMode() const {
             return _focusMode;
         }
 
@@ -225,7 +225,7 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             _scrolling = sm;
         }
 
-        void setPointerFocusMode(POINTER_FOCUS_MODE pfm) {
+        void setPointerFocusMode(PointerFocusMode pfm) {
             _focusMode = pfm;
         }
 
@@ -295,9 +295,9 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
         float              _lastY;
         EventInterface*    _lastEvent;
         EventInterface*    _lastPush;
-        POINTER_DIRECTION  _lastVertical;
-        POINTER_DIRECTION  _lastHorizontal;
-        POINTER_FOCUS_MODE _focusMode;
+        PointerDirection   _lastVertical;
+        PointerDirection   _lastHorizontal;
+        PointerFocusMode   _focusMode;
         bool               _leftDown;
         bool               _middleDown;
         bool               _rightDown;

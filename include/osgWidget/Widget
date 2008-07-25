@@ -35,7 +35,7 @@ class WindowManager;
 // or relative).
 class OSGWIDGET_EXPORT Widget: public osg::Geometry, public EventInterface, public StyleInterface {
 public:
-        enum POINT {
+        enum Corner {
             LOWER_LEFT  = 0,
             LOWER_RIGHT = 1,
             UPPER_RIGHT = 2,
@@ -44,10 +44,10 @@ public:
             LR          = LOWER_RIGHT,
             UR          = UPPER_RIGHT,
             UL          = UPPER_LEFT,
-            ALL_POINTS  = 4
+            ALL_CORNERS  = 4
         };
 
-        enum LAYER {
+        enum Layer {
             LAYER_TOP    = 20,
             LAYER_HIGH   = 15,
             LAYER_MIDDLE = 10,
@@ -55,19 +55,19 @@ public:
             LAYER_BG     = 0
         };
 
-        enum VERTICAL_ALIGNMENT {
+        enum VerticalAlignment {
             VA_CENTER,
             VA_TOP,
             VA_BOTTOM
         };
 
-        enum HORIZONTAL_ALIGNMENT {
+        enum HorizontalAlignment {
             HA_CENTER,
             HA_LEFT,
             HA_RIGHT
         };
 
-        enum COORDINATE_MODE {
+        enum CoordinateMode {
             CM_ABSOLUTE,
             CM_RELATIVE
         };        
@@ -116,9 +116,9 @@ public:
         );
 
         void setPadding  (point_type);
-        void setColor    (color_type, color_type, color_type, color_type, POINT = ALL_POINTS);
-        void addColor    (color_type, color_type, color_type, color_type, POINT = ALL_POINTS);
-        void setTexCoord (texcoord_type, texcoord_type, POINT = ALL_POINTS);
+        void setColor    (color_type, color_type, color_type, color_type, Corner = ALL_CORNERS);
+        void addColor    (color_type, color_type, color_type, color_type, Corner = ALL_CORNERS);
+        void setTexCoord (texcoord_type, texcoord_type, Corner = ALL_CORNERS);
 
         // These are additional texture coordinate setting methods.
         // This method will use a given origin as the LOWER_LEFT point and texture the
@@ -147,11 +147,11 @@ public:
         point_type getPadHorizontal () const;
         point_type getPadVertical   () const;
 
-        const Point&    getPoint    (POINT = ALL_POINTS) const;
-        const Color&    getColor    (POINT = ALL_POINTS) const;
-        const TexCoord& getTexCoord (POINT = ALL_POINTS) const;
+        const Point&    getPoint    (Corner = ALL_CORNERS) const;
+        const Color&    getColor    (Corner = ALL_CORNERS) const;
+        const TexCoord& getTexCoord (Corner = ALL_CORNERS) const;
 
-        POINT   convertPoint      (POINT) const;
+        Corner  convertCorner     (Corner) const;
         Color   getImageColorAtXY (point_type x, point_type y) const;
         XYCoord localXY           (double, double) const;
 
@@ -206,11 +206,11 @@ public:
             setSize(xy.x(), xy.y());
         }
 
-        void setColor(const Color& col, POINT p = ALL_POINTS) {
+        void setColor(const Color& col, Corner p = ALL_CORNERS) {
             setColor(col.r(), col.g(), col.b(), col.a(), p);
         }
 
-        void setTexCoord(const XYCoord& xy, POINT p = ALL_POINTS) {
+        void setTexCoord(const XYCoord& xy, Corner p = ALL_CORNERS) {
             setTexCoord(xy.x(), xy.y(), p);
         }
 
@@ -218,7 +218,7 @@ public:
             setTexCoordRegion(xy.x(), xy.y(), w, h);
         }
 
-        void addColor(const Color& col, POINT p = ALL_POINTS) {
+        void addColor(const Color& col, Corner p = ALL_CORNERS) {
             addColor(col.r(), col.g(), col.b(), col.a(), p);
         }
 
@@ -240,7 +240,7 @@ public:
         }
 
         // TODO: Refine this...
-        void setLayer(LAYER l, unsigned int offset = 0) {
+        void setLayer(Layer l, unsigned int offset = 0) {
             _layer = l + offset;
         }
 
@@ -260,15 +260,15 @@ public:
             _padBottom = p;
         }
 
-        void setAlignHorizontal(HORIZONTAL_ALIGNMENT h) {
+        void setAlignHorizontal(HorizontalAlignment h) {
             _halign = h;
         }
 
-        void setAlignVertical(VERTICAL_ALIGNMENT v) {
+        void setAlignVertical(VerticalAlignment v) {
             _valign = v;
         }
 
-        void setCoordinateMode(COORDINATE_MODE cm) {
+        void setCoordinateMode(CoordinateMode cm) {
             _coordMode = cm;
         }
 
@@ -340,15 +340,15 @@ public:
             return _padBottom;
         }
 
-        HORIZONTAL_ALIGNMENT getAlignHorizontal() const {
+        HorizontalAlignment getAlignHorizontal() const {
             return _halign;
         }
 
-        VERTICAL_ALIGNMENT getAlignVertical() const {
+        VerticalAlignment getAlignVertical() const {
             return _valign;
         }
 
-        COORDINATE_MODE getCoordinateMode() const {
+        CoordinateMode getCoordinateMode() const {
             return _coordMode;
         }
 
@@ -461,11 +461,11 @@ public:
         point_type _padBottom;
 
         // The alignments are used in conjuction when the widget is NOT set to fill.
-        VERTICAL_ALIGNMENT _valign;
-        HORIZONTAL_ALIGNMENT _halign;
+        VerticalAlignment _valign;
+        HorizontalAlignment _halign;
 
         // This flag determines how sizing values are interpretted by setDimensions().
-        COORDINATE_MODE _coordMode;
+        CoordinateMode _coordMode;
 
         // These are the relative values, which are not stored directly in our verts
         // array but kept around for calculation later.

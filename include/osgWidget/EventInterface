@@ -29,7 +29,7 @@ class WindowManager;
 class Window;
 class Widget;
 
-enum EVENT_TYPE
+enum EventType
 {
     EVENT_NONE          = 0x0000,
     EVENT_FOCUS         = 0x0001,
@@ -48,7 +48,7 @@ enum EVENT_TYPE
 
 // Helpful wrapper around using the raw types, since it often doesn't make sense to
 // use some without the others.
-enum EVENT_MASK
+enum EventMask
 {
     EVENT_MASK_FOCUS        = EVENT_FOCUS | EVENT_UNFOCUS,
     EVENT_MASK_MOUSE_MOVE   = EVENT_MOUSE_ENTER | EVENT_MOUSE_OVER | EVENT_MOUSE_LEAVE,
@@ -60,13 +60,13 @@ enum EVENT_MASK
 class OSGWIDGET_EXPORT Event
 {
     public:
-        EVENT_TYPE type;
+        EventType type;
         double     x;
         double     y;
         int        key;
         int        keyMask;
 
-        Event(WindowManager* wm, EVENT_TYPE _type = EVENT_NONE):
+        Event(WindowManager* wm, EventType _type = EVENT_NONE):
         _wm     (wm),
         _window (0),
         _widget (0),
@@ -78,13 +78,13 @@ class OSGWIDGET_EXPORT Event
         keyMask (-1) {
         }
 
-        Event& makeType(EVENT_TYPE _type) {
+        Event& makeType(EventType _type) {
             if(_type != EVENT_NONE) type = _type;
 
             return *this;
         }
 
-        Event& makeMouse(double _x, double _y, EVENT_TYPE _type = EVENT_NONE) {
+        Event& makeMouse(double _x, double _y, EventType _type = EVENT_NONE) {
             x = _x;
             y = _y;
 
@@ -93,7 +93,7 @@ class OSGWIDGET_EXPORT Event
             return *this;
         }
 
-        Event& makeKey(int _key, int _keyMask, EVENT_TYPE _type = EVENT_NONE) {
+        Event& makeKey(int _key, int _keyMask, EventType _type = EVENT_NONE) {
             key     = _key;
             keyMask = _keyMask;
 
@@ -208,7 +208,7 @@ class OSGWIDGET_EXPORT Callback
     public:
         // Creates a Callback that is bound to a member function.
         template<typename T>
-        Callback(bool (T::*function)(Event&), T* obj, EVENT_TYPE type, void* data=0):
+        Callback(bool (T::*function)(Event&), T* obj, EventType type, void* data=0):
         _type     (type),
         _data     (data),
         _callback (new ObjectCallback<T>(function, obj)) {
@@ -216,7 +216,7 @@ class OSGWIDGET_EXPORT Callback
 
         // Creates a Callback that is bound to a functor pointer.
         template<typename T>
-        Callback(T* functor, EVENT_TYPE type, void* data=0):
+        Callback(T* functor, EventType type, void* data=0):
         _type     (type),
         _data     (data),
         _callback (new FunctionCallback<T>(functor)) {
@@ -226,7 +226,7 @@ class OSGWIDGET_EXPORT Callback
             return (*_callback)(ev);
         }
 
-        EVENT_TYPE getType() const {
+        EventType getType() const {
             return _type;
         }
 
@@ -238,7 +238,7 @@ class OSGWIDGET_EXPORT Callback
             return _data;
         }
     protected:
-        EVENT_TYPE _type;
+        EventType _type;
         void*      _data;
 
         // We use a ref_ptr here so that we don't have to worry about memory.

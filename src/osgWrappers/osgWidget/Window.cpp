@@ -29,21 +29,21 @@
 
 TYPE_NAME_ALIAS(std::list< osg::observer_ptr< osgWidget::Window > >, osgWidget::Window::WindowList)
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Window::STRATA)
+BEGIN_ENUM_REFLECTOR(osgWidget::Window::Strata)
 	I_DeclaringFile("osgWidget/Window");
 	I_EnumLabel(osgWidget::Window::STRATA_NONE);
 	I_EnumLabel(osgWidget::Window::STRATA_BACKGROUND);
 	I_EnumLabel(osgWidget::Window::STRATA_FOREGROUND);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Window::VISIBILITY_MODE)
+BEGIN_ENUM_REFLECTOR(osgWidget::Window::VisibilityMode)
 	I_DeclaringFile("osgWidget/Window");
 	I_EnumLabel(osgWidget::Window::VM_FULL);
 	I_EnumLabel(osgWidget::Window::VM_PARTIAL);
 	I_EnumLabel(osgWidget::Window::VM_ENTIRE);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Window::VERTICAL_ANCHOR)
+BEGIN_ENUM_REFLECTOR(osgWidget::Window::VerticalAnchor)
 	I_DeclaringFile("osgWidget/Window");
 	I_EnumLabel(osgWidget::Window::VA_NONE);
 	I_EnumLabel(osgWidget::Window::VA_CENTER);
@@ -51,7 +51,7 @@ BEGIN_ENUM_REFLECTOR(osgWidget::Window::VERTICAL_ANCHOR)
 	I_EnumLabel(osgWidget::Window::VA_BOTTOM);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Window::HORIZONTAL_ANCHOR)
+BEGIN_ENUM_REFLECTOR(osgWidget::Window::HorizontalAnchor)
 	I_DeclaringFile("osgWidget/Window");
 	I_EnumLabel(osgWidget::Window::HA_NONE);
 	I_EnumLabel(osgWidget::Window::HA_CENTER);
@@ -319,14 +319,14 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	          __point_type__getMinHeight,
 	          "",
 	          "");
-	I_Method0(osgWidget::Window::VERTICAL_ANCHOR, getAnchorVertical,
+	I_Method0(osgWidget::Window::VerticalAnchor, getAnchorVertical,
 	          Properties::NON_VIRTUAL,
-	          __VERTICAL_ANCHOR__getAnchorVertical,
+	          __VerticalAnchor__getAnchorVertical,
 	          "",
 	          "");
-	I_Method0(osgWidget::Window::HORIZONTAL_ANCHOR, getAnchorHorizontal,
+	I_Method0(osgWidget::Window::HorizontalAnchor, getAnchorHorizontal,
 	          Properties::NON_VIRTUAL,
-	          __HORIZONTAL_ANCHOR__getAnchorHorizontal,
+	          __HorizontalAnchor__getAnchorHorizontal,
 	          "",
 	          "");
 	I_Method0(osgWidget::XYCoord, getOrigin,
@@ -349,9 +349,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	          __matrix_type__getZRange,
 	          "",
 	          "");
-	I_Method0(osgWidget::Window::STRATA, getStrata,
+	I_Method0(osgWidget::Window::Strata, getStrata,
 	          Properties::NON_VIRTUAL,
-	          __STRATA__getStrata,
+	          __Strata__getStrata,
 	          "",
 	          "");
 	I_Method0(const osgWidget::Quad &, getVisibleArea,
@@ -359,9 +359,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	          __C5_Quad_R1__getVisibleArea,
 	          "",
 	          "");
-	I_Method0(osgWidget::Window::VISIBILITY_MODE, getVisibilityMode,
+	I_Method0(osgWidget::Window::VisibilityMode, getVisibilityMode,
 	          Properties::NON_VIRTUAL,
-	          __VISIBILITY_MODE__getVisibilityMode,
+	          __VisibilityMode__getVisibilityMode,
 	          "",
 	          "");
 	I_Method0(osgWidget::Point, getPosition,
@@ -424,24 +424,24 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	          __void__setScaleDenominator__matrix_type,
 	          "",
 	          "");
-	I_Method1(void, setAnchorVertical, IN, osgWidget::Window::VERTICAL_ANCHOR, va,
+	I_Method1(void, setAnchorVertical, IN, osgWidget::Window::VerticalAnchor, va,
 	          Properties::NON_VIRTUAL,
-	          __void__setAnchorVertical__VERTICAL_ANCHOR,
+	          __void__setAnchorVertical__VerticalAnchor,
 	          "",
 	          "");
-	I_Method1(void, setAnchorHorizontal, IN, osgWidget::Window::HORIZONTAL_ANCHOR, ha,
+	I_Method1(void, setAnchorHorizontal, IN, osgWidget::Window::HorizontalAnchor, ha,
 	          Properties::NON_VIRTUAL,
-	          __void__setAnchorHorizontal__HORIZONTAL_ANCHOR,
+	          __void__setAnchorHorizontal__HorizontalAnchor,
 	          "",
 	          "");
-	I_Method1(void, setStrata, IN, osgWidget::Window::STRATA, s,
+	I_Method1(void, setStrata, IN, osgWidget::Window::Strata, s,
 	          Properties::NON_VIRTUAL,
-	          __void__setStrata__STRATA,
+	          __void__setStrata__Strata,
 	          "",
 	          "");
-	I_Method1(void, setVisibilityMode, IN, osgWidget::Window::VISIBILITY_MODE, v,
+	I_Method1(void, setVisibilityMode, IN, osgWidget::Window::VisibilityMode, v,
 	          Properties::NON_VIRTUAL,
-	          __void__setVisibilityMode__VISIBILITY_MODE,
+	          __void__setVisibilityMode__VisibilityMode,
 	          "",
 	          "");
 	I_Method1(void, addX, IN, osgWidget::matrix_type, x,
@@ -749,12 +749,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	I_SimpleProperty(osgWidget::XYCoord, AbsoluteOrigin, 
 	                 __XYCoord__getAbsoluteOrigin, 
 	                 0);
-	I_SimpleProperty(osgWidget::Window::HORIZONTAL_ANCHOR, AnchorHorizontal, 
-	                 __HORIZONTAL_ANCHOR__getAnchorHorizontal, 
-	                 __void__setAnchorHorizontal__HORIZONTAL_ANCHOR);
-	I_SimpleProperty(osgWidget::Window::VERTICAL_ANCHOR, AnchorVertical, 
-	                 __VERTICAL_ANCHOR__getAnchorVertical, 
-	                 __void__setAnchorVertical__VERTICAL_ANCHOR);
+	I_SimpleProperty(osgWidget::Window::HorizontalAnchor, AnchorHorizontal, 
+	                 __HorizontalAnchor__getAnchorHorizontal, 
+	                 __void__setAnchorHorizontal__HorizontalAnchor);
+	I_SimpleProperty(osgWidget::Window::VerticalAnchor, AnchorVertical, 
+	                 __VerticalAnchor__getAnchorVertical, 
+	                 __void__setAnchorVertical__VerticalAnchor);
 	I_SimpleProperty(osgWidget::Widget *, Background, 
 	                 __Widget_P1__getBackground, 
 	                 0);
@@ -800,15 +800,15 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	I_SimpleProperty(osgWidget::XYCoord, Size, 
 	                 __XYCoord__getSize, 
 	                 0);
-	I_SimpleProperty(osgWidget::Window::STRATA, Strata, 
-	                 __STRATA__getStrata, 
-	                 __void__setStrata__STRATA);
+	I_SimpleProperty(osgWidget::Window::Strata, Strata, 
+	                 __Strata__getStrata, 
+	                 __void__setStrata__Strata);
 	I_SimpleProperty(osgWidget::Window *, TopmostParent, 
 	                 __Window_P1__getTopmostParent, 
 	                 0);
-	I_SimpleProperty(osgWidget::Window::VISIBILITY_MODE, VisibilityMode, 
-	                 __VISIBILITY_MODE__getVisibilityMode, 
-	                 __void__setVisibilityMode__VISIBILITY_MODE);
+	I_SimpleProperty(osgWidget::Window::VisibilityMode, VisibilityMode, 
+	                 __VisibilityMode__getVisibilityMode, 
+	                 __void__setVisibilityMode__VisibilityMode);
 	I_SimpleProperty(const osgWidget::Quad &, VisibleArea, 
 	                 __C5_Quad_R1__getVisibleArea, 
 	                 0);

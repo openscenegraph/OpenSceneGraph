@@ -57,10 +57,10 @@ class OSGWIDGET_EXPORT Style: public osg::Object
             return _style;
         }
 
-        static Widget::LAYER                strToLayer     (const std::string&);
-        static Widget::VERTICAL_ALIGNMENT   strToVAlign    (const std::string&);
-        static Widget::HORIZONTAL_ALIGNMENT strToHAlign    (const std::string&);
-        static Widget::COORDINATE_MODE      strToCoordMode (const std::string&);
+        static Widget::Layer                strToLayer     (const std::string&);
+        static Widget::VerticalAlignment    strToVAlign    (const std::string&);
+        static Widget::HorizontalAlignment  strToHAlign    (const std::string&);
+        static Widget::CoordinateMode       strToCoordMode (const std::string&);
         static bool                         strToFill      (const std::string&);
 
     protected:

@@ -119,20 +119,20 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Style)
 	          __C5_std_string_R1__getStyle,
 	          "",
 	          "");
-	I_StaticMethod1(osgWidget::Widget::LAYER, strToLayer, IN, const std::string &, x,
-	                __Widget_LAYER__strToLayer__C5_std_string_R1_S,
+	I_StaticMethod1(osgWidget::Widget::Layer, strToLayer, IN, const std::string &, x,
+	                __Widget_Layer__strToLayer__C5_std_string_R1_S,
 	                "",
 	                "");
-	I_StaticMethod1(osgWidget::Widget::VERTICAL_ALIGNMENT, strToVAlign, IN, const std::string &, x,
-	                __Widget_VERTICAL_ALIGNMENT__strToVAlign__C5_std_string_R1_S,
+	I_StaticMethod1(osgWidget::Widget::VerticalAlignment, strToVAlign, IN, const std::string &, x,
+	                __Widget_VerticalAlignment__strToVAlign__C5_std_string_R1_S,
 	                "",
 	                "");
-	I_StaticMethod1(osgWidget::Widget::HORIZONTAL_ALIGNMENT, strToHAlign, IN, const std::string &, x,
-	                __Widget_HORIZONTAL_ALIGNMENT__strToHAlign__C5_std_string_R1_S,
+	I_StaticMethod1(osgWidget::Widget::HorizontalAlignment, strToHAlign, IN, const std::string &, x,
+	                __Widget_HorizontalAlignment__strToHAlign__C5_std_string_R1_S,
 	                "",
 	                "");
-	I_StaticMethod1(osgWidget::Widget::COORDINATE_MODE, strToCoordMode, IN, const std::string &, x,
-	                __Widget_COORDINATE_MODE__strToCoordMode__C5_std_string_R1_S,
+	I_StaticMethod1(osgWidget::Widget::CoordinateMode, strToCoordMode, IN, const std::string &, x,
+	                __Widget_CoordinateMode__strToCoordMode__C5_std_string_R1_S,
 	                "",
 	                "");
 	I_StaticMethod1(bool, strToFill, IN, const std::string &, x,

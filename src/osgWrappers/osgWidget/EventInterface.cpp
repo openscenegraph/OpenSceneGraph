@@ -28,9 +28,9 @@ BEGIN_VALUE_REFLECTOR(osgWidget::Callback)
 	I_Constructor0(____Callback,
 	               "",
 	               "");
-	I_Method0(osgWidget::EVENT_TYPE, getType,
+	I_Method0(osgWidget::EventType, getType,
 	          Properties::NON_VIRTUAL,
-	          __EVENT_TYPE__getType,
+	          __EventType__getType,
 	          "",
 	          "");
 	I_Method0(void *, getData,
@@ -46,8 +46,8 @@ BEGIN_VALUE_REFLECTOR(osgWidget::Callback)
 	I_SimpleProperty(void *, Data, 
 	                 __void_P1__getData, 
 	                 0);
-	I_SimpleProperty(osgWidget::EVENT_TYPE, Type, 
-	                 __EVENT_TYPE__getType, 
+	I_SimpleProperty(osgWidget::EventType, Type, 
+	                 __EventType__getType, 
 	                 0);
 END_REFLECTOR
 
@@ -61,23 +61,23 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgWidget::Event)
 	I_DeclaringFile("osgWidget/EventInterface");
-	I_ConstructorWithDefaults2(IN, osgWidget::WindowManager *, wm, , IN, osgWidget::EVENT_TYPE, _type, osgWidget::EVENT_NONE,
-	                           ____Event__WindowManager_P1__EVENT_TYPE,
+	I_ConstructorWithDefaults2(IN, osgWidget::WindowManager *, wm, , IN, osgWidget::EventType, _type, osgWidget::EVENT_NONE,
+	                           ____Event__WindowManager_P1__EventType,
 	                           "",
 	                           "");
-	I_Method1(osgWidget::Event &, makeType, IN, osgWidget::EVENT_TYPE, _type,
+	I_Method1(osgWidget::Event &, makeType, IN, osgWidget::EventType, _type,
 	          Properties::NON_VIRTUAL,
-	          __Event_R1__makeType__EVENT_TYPE,
+	          __Event_R1__makeType__EventType,
 	          "",
 	          "");
-	I_MethodWithDefaults3(osgWidget::Event &, makeMouse, IN, double, _x, , IN, double, _y, , IN, osgWidget::EVENT_TYPE, _type, osgWidget::EVENT_NONE,
+	I_MethodWithDefaults3(osgWidget::Event &, makeMouse, IN, double, _x, , IN, double, _y, , IN, osgWidget::EventType, _type, osgWidget::EVENT_NONE,
 	                      Properties::NON_VIRTUAL,
-	                      __Event_R1__makeMouse__double__double__EVENT_TYPE,
+	                      __Event_R1__makeMouse__double__double__EventType,
 	                      "",
 	                      "");
-	I_MethodWithDefaults3(osgWidget::Event &, makeKey, IN, int, _key, , IN, int, _keyMask, , IN, osgWidget::EVENT_TYPE, _type, osgWidget::EVENT_NONE,
+	I_MethodWithDefaults3(osgWidget::Event &, makeKey, IN, int, _key, , IN, int, _keyMask, , IN, osgWidget::EventType, _type, osgWidget::EVENT_NONE,
 	                      Properties::NON_VIRTUAL,
-	                      __Event_R1__makeKey__int__int__EVENT_TYPE,
+	                      __Event_R1__makeKey__int__int__EventType,
 	                      "",
 	                      "");
 	I_Method0(osgWidget::WindowManager *, getWindowManager,
@@ -137,7 +137,7 @@ BEGIN_VALUE_REFLECTOR(osgWidget::Event)
 	I_SimpleProperty(osgWidget::WindowManager *, WindowManager, 
 	                 __WindowManager_P1__getWindowManager, 
 	                 0);
-	I_PublicMemberProperty(osgWidget::EVENT_TYPE, type);
+	I_PublicMemberProperty(osgWidget::EventType, type);
 	I_PublicMemberProperty(double, x);
 	I_PublicMemberProperty(double, y);
 	I_PublicMemberProperty(int, key);
@@ -304,7 +304,7 @@ BEGIN_VALUE_REFLECTOR(osgWidget::EventInterface)
 	                 __void__setEventMask__unsigned_int);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::EVENT_TYPE)
+BEGIN_ENUM_REFLECTOR(osgWidget::EventType)
 	I_DeclaringFile("osgWidget/EventInterface");
 	I_EnumLabel(osgWidget::EVENT_NONE);
 	I_EnumLabel(osgWidget::EVENT_FOCUS);
@@ -321,7 +321,7 @@ BEGIN_ENUM_REFLECTOR(osgWidget::EVENT_TYPE)
 	I_EnumLabel(osgWidget::EVENT_ALL);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::EVENT_MASK)
+BEGIN_ENUM_REFLECTOR(osgWidget::EventMask)
 	I_DeclaringFile("osgWidget/EventInterface");
 	I_EnumLabel(osgWidget::EVENT_MASK_FOCUS);
 	I_EnumLabel(osgWidget::EVENT_MASK_MOUSE_MOVE);

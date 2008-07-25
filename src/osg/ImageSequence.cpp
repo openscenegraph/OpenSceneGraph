@@ -240,7 +240,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 
     // osg::notify(osg::NOTICE)<<"time = "<<time<<std::endl;
 
-    if (irh)
+    if (irh && _images.size()<_fileNames.size())
     {
         double preLoadTime = (time+irh->getPreLoadTime())*_timeMultiplier;
 

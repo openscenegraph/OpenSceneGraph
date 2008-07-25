@@ -3,12 +3,10 @@
 
 SET(TARGET_SRC
     OrientationConverter.cpp 
-    PluginQuery.cpp
     osgconv.cpp
 )
 SET(TARGET_H
     OrientationConverter.h
-    PluginQuery.h
 )
 
 #### end var setup  ###

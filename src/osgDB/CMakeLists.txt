@@ -24,6 +24,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Input
     ${HEADER_PATH}/Output
     ${HEADER_PATH}/ParameterOutput
+    ${HEADER_PATH}/PluginQuery
     ${HEADER_PATH}/ReaderWriter
     ${HEADER_PATH}/ReadFile
     ${HEADER_PATH}/Registry
@@ -50,8 +51,9 @@ ADD_LIBRARY(${LIB_NAME}
     ImagePager.cpp
     Input.cpp
     Output.cpp
-    ReadFile.cpp
+    PluginQuery.cpp
     ReaderWriter.cpp
+    ReadFile.cpp
     Registry.cpp
     SharedStateManager.cpp
     Version.cpp

@@ -163,7 +163,7 @@ inline osg::Vec3 ReaderWriterOBJ::transformNormal(const osg::Vec3& vec, const bo
 // register with Registry to instantiate the above reader/writer.
 REGISTER_OSGPLUGIN(obj, ReaderWriterOBJ)
 
-void load_material_texture( obj::Model &model,
+static void load_material_texture( obj::Model &model,
                             obj::Material &material,
                             osg::StateSet *stateset,
                             const std::string & filename,
@@ -174,7 +174,7 @@ void load_material_texture( obj::Model &model,
         osg::ref_ptr< osg::Image > image;
         if ( !model.getDatabasePath().empty() ) 
         {
-            // first try with databasr path of parent. 
+            // first try with database path of parent. 
             image = osgDB::readImageFile(model.getDatabasePath()+'/'+filename);
         }
         
@@ -207,6 +207,26 @@ void load_material_texture( obj::Model &model,
                 stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
             }
         }
+    }
+
+    if (material.uScale != 1.0f || material.vScale != 1.0f ||
+            material.uOffset != 0.0f || material.vOffset != 0.0f)
+    {
+        osg::Matrix mat;
+        if (material.uScale != 1.0f || material.vScale != 1.0f)
+        {
+            osg::notify(osg::DEBUG_INFO) << "Obj TexMat scale=" << material.uScale << "," << material.vScale << std::endl;
+            mat *= osg::Matrix::scale(material.uScale, material.vScale, 1.0);
+        }
+        if (material.uOffset != 0.0f || material.vOffset != 0.0f)
+        {
+            osg::notify(osg::DEBUG_INFO) << "Obj TexMat offset=" << material.uOffset << "," << material.uOffset << std::endl;
+            mat *= osg::Matrix::translate(material.uOffset, material.vOffset, 0.0);
+        }
+
+        osg::TexMat* texmat = new osg::TexMat;
+        texmat->setMatrix(mat);
+        stateset->setTextureAttributeAndModes( texture_unit,texmat,osg::StateAttribute::ON );
     }
 }
 

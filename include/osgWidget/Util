@@ -18,33 +18,38 @@ namespace osgWidget {
 
 // These are NOT OSGWIDGET_EXPORT'd; these are internal only!
 
-inline std::ostream& _notify(osg::NotifySeverity ns = osg::INFO) {
-	std::ostream& n = osg::notify(ns);
-	
-	return n << "osgWidget: ";
+inline std::ostream& _notify(osg::NotifySeverity ns = osg::INFO)
+{
+    std::ostream& n = osg::notify(ns);
+    
+    return n << "osgWidget: ";
 }
 
-inline std::ostream& warn() {
-	return _notify(osg::WARN);
+inline std::ostream& warn()
+{
+    return _notify(osg::WARN);
 }
 
-inline std::ostream& info() {
-	return _notify();
+inline std::ostream& info()
+{
+    return _notify();
 }
 
-inline std::string lowerCase(const std::string& str) {
-	std::string s = str;
+inline std::string lowerCase(const std::string& str)
+{
+    std::string s = str;
 
-	// TODO: Why can't I specify std::tolower?
-	std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+    // TODO: Why can't I specify std::tolower?
+    std::transform(s.begin(), s.end(), s.begin(), ::tolower);
 
-	return s;
+    return s;
 }
 
 // TODO: Is this totally ghetto or what?
 template <typename T>
-inline bool hasDecimal(T v) {
-	return (v - static_cast<T>(static_cast<long>(v))) > 0.0f;
+inline bool hasDecimal(T v)
+{
+    return (v - static_cast<T>(static_cast<long>(v))) > 0.0f;
 }
 
 class WindowManager;
@@ -66,10 +71,10 @@ OSGWIDGET_EXPORT int createExample(osgViewer::Viewer&, WindowManager*, osg::Node
 // view for looking at your 2D scene.
 // TODO: Fix this!
 OSGWIDGET_EXPORT int createCompositeExample(
-	osgViewer::CompositeViewer&,
-	osgViewer::View*,
-	WindowManager*,
-	osg::Node* = 0
+    osgViewer::CompositeViewer&,
+    osgViewer::View*,
+    WindowManager*,
+    osg::Node* = 0
 );
 
 OSGWIDGET_EXPORT bool writeWindowManagerNode(WindowManager*);

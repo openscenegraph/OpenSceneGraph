@@ -15,62 +15,73 @@
 namespace osgWidget {
 
 // This handles the pressing/moving of mouse buttons, etc.
-class OSGWIDGET_EXPORT MouseHandler: public osgGA::GUIEventHandler {
-	osg::ref_ptr<WindowManager> _wm;
+class OSGWIDGET_EXPORT MouseHandler: public osgGA::GUIEventHandler
+{
+    public:
+        MouseHandler(WindowManager*);
 
-	bool _handleMousePush        (float, float, int);
-	bool _handleMouseRelease     (float, float, int);
-	bool _handleMouseDoubleClick (float, float, int);
-	bool _handleMouseDrag        (float, float, int);
-	bool _handleMouseMove        (float, float, int);
-	bool _handleMouseScroll      (float, float, int);
+        virtual bool handle(
+            const osgGA::GUIEventAdapter&,
+            osgGA::GUIActionAdapter&,
+            osg::Object*,
+            osg::NodeVisitor*
+        );
 
-	typedef bool (MouseHandler::*MouseAction)(float, float, int);
-	typedef bool (WindowManager::*MouseEvent)(float, float);
+    protected:
 
-	MouseAction _isMouseEvent (osgGA::GUIEventAdapter::EventType) const;
-	bool        _doMouseEvent (float, float, MouseEvent);
+        osg::ref_ptr<WindowManager> _wm;
 
-public:
-	MouseHandler(WindowManager*);
-	
-	virtual bool handle(
-		const osgGA::GUIEventAdapter&,
-		osgGA::GUIActionAdapter&,
-		osg::Object*,
-		osg::NodeVisitor*
-	);
+        bool _handleMousePush        (float, float, int);
+        bool _handleMouseRelease     (float, float, int);
+        bool _handleMouseDoubleClick (float, float, int);
+        bool _handleMouseDrag        (float, float, int);
+        bool _handleMouseMove        (float, float, int);
+        bool _handleMouseScroll      (float, float, int);
+
+        typedef bool (MouseHandler::*MouseAction)(float, float, int);
+        typedef bool (WindowManager::*MouseEvent)(float, float);
+
+        MouseAction _isMouseEvent (osgGA::GUIEventAdapter::EventType) const;
+        bool        _doMouseEvent (float, float, MouseEvent);
+
 };
 
 // This handles the forwarding of keypress events.
-class OSGWIDGET_EXPORT KeyboardHandler: public osgGA::GUIEventHandler {
-	osg::ref_ptr<WindowManager> _wm;
+class OSGWIDGET_EXPORT KeyboardHandler: public osgGA::GUIEventHandler 
+{
+    public:
+        KeyboardHandler(WindowManager*);
 
-public:
-	KeyboardHandler(WindowManager*);
+        virtual bool handle(
+            const osgGA::GUIEventAdapter&,
+            osgGA::GUIActionAdapter&,
+            osg::Object*,
+            osg::NodeVisitor*
+        );
 
-	virtual bool handle(
-		const osgGA::GUIEventAdapter&,
-		osgGA::GUIActionAdapter&,
-		osg::Object*,
-		osg::NodeVisitor*
-	);
+    protected:
+        osg::ref_ptr<WindowManager> _wm;
+
 };
 
 // This class offers a default kind of handling for resizing.
-class OSGWIDGET_EXPORT ResizeHandler: public osgGA::GUIEventHandler {
-	osg::ref_ptr<WindowManager> _wm;
-	osg::ref_ptr<osg::Camera>   _camera;
+class OSGWIDGET_EXPORT ResizeHandler: public osgGA::GUIEventHandler
+{
+    public:
+        ResizeHandler(WindowManager*, osg::Camera*);
 
-public:
-	ResizeHandler(WindowManager*, osg::Camera*);
+        virtual bool handle(
+            const osgGA::GUIEventAdapter&,
+            osgGA::GUIActionAdapter&,
+            osg::Object*,
+            osg::NodeVisitor*
+        );
 
-	virtual bool handle(
-		const osgGA::GUIEventAdapter&,
-		osgGA::GUIActionAdapter&,
-		osg::Object*,
-		osg::NodeVisitor*
-	);
+    protected:
+    
+        osg::ref_ptr<WindowManager> _wm;
+        osg::ref_ptr<osg::Camera>   _camera;
+
 };
 
 }

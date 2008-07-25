@@ -8,30 +8,21 @@ namespace osgWidget {
 
 #include <osgWidget/Export>
 
-class OSGWIDGET_EXPORT StyleInterface {
-private:
-	std::string _style;
+class OSGWIDGET_EXPORT StyleInterface
+{
+    public:
+        StyleInterface(): _style("") {}
 
-public:
-	StyleInterface():
-	_style("") {
-	}
+        StyleInterface(const StyleInterface& si): _style(si._style) {}
 
-	StyleInterface(const StyleInterface& si):
-	_style(si._style) {
-	}
+        void setStyle(const std::string& style) { _style = style; }
 
-	void setStyle(const std::string& style) {
-		_style = style;
-	}
+        std::string& getStyle() { return _style; }
 
-	std::string& getStyle() {
-		return _style;
-	}
+        const std::string& getStyle() const { return _style; }
+    private:
+        std::string _style;
 
-	const std::string& getStyle() const {
-		return _style;
-	}
 };
 
 }

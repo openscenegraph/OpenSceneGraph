@@ -8,54 +8,58 @@
 
 namespace osgWidget {
 
-class OSGWIDGET_EXPORT Table: public Window {
-	unsigned int _rows;
-	unsigned int _cols;
-	unsigned int _lastRowAdd;
-	unsigned int _lastColAdd;
+class OSGWIDGET_EXPORT Table: public Window
+{
+    public:
 
-public:
-	typedef std::vector<point_type> CellSizes;
+        typedef std::vector<point_type> CellSizes;
 
-protected:
-	unsigned int _calculateIndex(unsigned int, unsigned int) const;
+        META_Object   (osgWidget, Table);
+        META_UIObject (Table);
 
-	void _getRows    (CellSizes&, Getter) const;
-	void _getColumns (CellSizes&, Getter) const;
+        Table (const std::string& = "", unsigned int = 0, unsigned int = 0);
+        Table (const Table&, const osg::CopyOp&);
 
-	virtual void _resizeImplementation(point_type, point_type);
+        virtual bool addWidget (Widget*);
+        virtual bool addWidget (Widget*, unsigned int, unsigned int);
 
-	virtual Sizes _getWidthImplementation  () const;
-	virtual Sizes _getHeightImplementation () const;
+        void getRowHeights      (CellSizes&) const;
+        void getRowMinHeights   (CellSizes&) const;
+        void getColumnWidths    (CellSizes&) const;
+        void getColumnMinWidths (CellSizes&) const;
 
-public:
-	META_Object   (osgWidget, Table);
-	META_UIObject (Table);
+        void addHeightToRow   (unsigned int, point_type);
+        void addWidthToColumn (unsigned int, point_type);
 
-	Table (const std::string& = "", unsigned int = 0, unsigned int = 0);
-	Table (const Table&, const osg::CopyOp&);
+        bool isRowVerticallyFillable      (unsigned int) const;
+        bool isColumnHorizontallyFillable (unsigned int) const;
 
-	virtual bool addWidget (Widget*);
-	virtual bool addWidget (Widget*, unsigned int, unsigned int);
+        Widget* getByRowCol(unsigned int row, unsigned int col)
+        {
+            return getObjects()[_calculateIndex(row, col)].get();
+        }
 
-	void getRowHeights      (CellSizes&) const;
-	void getRowMinHeights   (CellSizes&) const;
-	void getColumnWidths    (CellSizes&) const;
-	void getColumnMinWidths (CellSizes&) const;
+        const Widget* getByRowCol(unsigned int row, unsigned int col) const
+        {
+            return getObjects()[_calculateIndex(row, col)].get();
+        }
 
-	void addHeightToRow   (unsigned int, point_type);
-	void addWidthToColumn (unsigned int, point_type);
+    protected:
+    
+        unsigned int _rows;
+        unsigned int _cols;
+        unsigned int _lastRowAdd;
+        unsigned int _lastColAdd;
 
-	bool isRowVerticallyFillable      (unsigned int) const;
-	bool isColumnHorizontallyFillable (unsigned int) const;
+        unsigned int _calculateIndex(unsigned int, unsigned int) const;
 
-	Widget* getByRowCol(unsigned int row, unsigned int col) {
-		return getObjects()[_calculateIndex(row, col)].get();
-	}
+        void _getRows    (CellSizes&, Getter) const;
+        void _getColumns (CellSizes&, Getter) const;
 
-	const Widget* getByRowCol(unsigned int row, unsigned int col) const {
-		return getObjects()[_calculateIndex(row, col)].get();
-	}
+        virtual void _resizeImplementation(point_type, point_type);
+
+        virtual Sizes _getWidthImplementation  () const;
+        virtual Sizes _getHeightImplementation () const;
 };
 
 }

@@ -11,16 +11,18 @@ namespace osgWidget {
 struct PythonEngineData;
 
 class OSGWIDGET_EXPORT PythonEngine: public ScriptEngine {
-	PythonEngineData* _data;
-	WindowManager*    _wm;
+    public:
+        PythonEngine(WindowManager* = 0);
 
-public:
-	PythonEngine(WindowManager* = 0);
+        bool initialize ();
+        bool close      ();
+        bool eval       (const std::string&);
+        bool runFile    (const std::string&);
 
-	bool initialize ();
-	bool close      ();
-	bool eval       (const std::string&);
-	bool runFile    (const std::string&);
+    protected:
+
+        PythonEngineData* _data;
+        WindowManager*    _wm;
 };
 
 }

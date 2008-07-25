@@ -13,17 +13,20 @@ struct LuaEngineData;
 
 // The actual Engine itself. Every attempt is made to export the implemenation into the
 // source file, rather than having it here.
-class OSGWIDGET_EXPORT LuaEngine: public ScriptEngine {
-	LuaEngineData* _data;
-	WindowManager* _wm;
+class OSGWIDGET_EXPORT LuaEngine: public ScriptEngine
+{
+    public:
+        LuaEngine(WindowManager* = 0);
 
-public:
-	LuaEngine(WindowManager* = 0);
+        bool initialize ();
+        bool close      ();
+        bool eval       (const std::string&);
+        bool runFile    (const std::string&);
 
-	bool initialize ();
-	bool close      ();
-	bool eval       (const std::string&);
-	bool runFile    (const std::string&);
+    protected:
+
+        LuaEngineData* _data;
+        WindowManager* _wm;
 };
 
 }

@@ -103,10 +103,54 @@ void ImageSequence::addImageFile(const std::string& fileName)
 void ImageSequence::addImage(osg::Image* image)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    _images.push_back(image);
-    computeTimePerImage();
 
-    if (_imageIterator==_images.end())
+    if (!_filesRequested.empty())
+    {
+        // follows is a mechanism that ensures that requested images
+        // get merged in the correct time order.
+        if (_filesRequested.front().first != image->getFileName())
+        {
+            for(FileNameImageList::iterator itr = _filesRequested.begin();
+                itr != _filesRequested.end();
+                ++itr)
+            {
+                if (itr->first == image->getFileName())
+                {
+                    osg::notify(osg::NOTICE)<<"inserting image into waiting stake : "<<image->getFileName()<<std::endl;
+                    itr->second = image;
+                    return;
+                }
+            }
+            // osg::notify(osg::NOTICE)<<"image not expected : "<<image->getFileName()<<std::endl;
+            _images.push_back(image);
+        }
+        else
+        {
+            // osg::notify(osg::NOTICE)<<"merging image in order expected : "<<image->getFileName()<<std::endl;
+            _images.push_back(image);
+
+            _filesRequested.pop_front();
+            
+            FileNameImageList::iterator itr;
+            for(itr = _filesRequested.begin();
+                itr != _filesRequested.end() && itr->second.valid();
+                ++itr)
+            {
+                // osg::notify(osg::NOTICE)<<"   merging previously loaded, but out of order file : "<<itr->first<<std::endl;
+                _images.push_back(itr->second);
+            }
+            
+            _filesRequested.erase(_filesRequested.begin(), itr);
+        }
+    }
+    else
+    {
+        _images.push_back(image);
+    }
+
+    computeTimePerImage();
+    
+    if (data()==0)
     {
         _imageIterator = _images.begin();
         _imageIteratorTime = _referenceTime;
@@ -169,8 +213,8 @@ void ImageSequence::update(osg::NodeVisitor* nv)
             while(preLoadTime > (_fileNamesIteratorTime + _timePerImage))
             {
                 _fileNamesIteratorTime += _timePerImage;
-                osg::notify(osg::NOTICE)<<"   _fileNamesIteratorTime = "<<_fileNamesIteratorTime<<std::endl;
-                osg::notify(osg::NOTICE)<<"   need to preLoad = "<<*_fileNamesIterator<<std::endl;
+                //osg::notify(osg::NOTICE)<<"   _fileNamesIteratorTime = "<<_fileNamesIteratorTime<<std::endl;
+                //osg::notify(osg::NOTICE)<<"   need to preLoad = "<<*_fileNamesIterator<<std::endl;
                 ++_fileNamesIterator;
 
                 if (previous_fileNamesIterator==_fileNamesIterator) break;
@@ -181,6 +225,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
                     _fileNamesIterator = _fileNames.begin();
                 }
 
+                _filesRequested.push_back(FileNameImagePair(*_fileNamesIterator,0));
                 irh->requestImageFile(*_fileNamesIterator, this, _fileNamesIteratorTime, fs);
 
             }

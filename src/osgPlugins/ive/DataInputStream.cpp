@@ -50,6 +50,7 @@
 #include "Viewport.h"
 #include "Scissor.h"
 #include "Image.h"
+#include "ImageSequence.h"
 #include "PointSprite.h"
 #include "Multisample.h"
 #include "Fog.h"
@@ -954,6 +955,31 @@ osg::Image* DataInputStream::readImage(std::string filename)
     if (_verboseOutput) std::cout<<"read/writeImage() ["<<image<<"]"<<std::endl;
     
     return image;
+}
+
+osg::Image* DataInputStream::readImage()
+{
+    if ( getVersion() >= VERSION_0029 )
+    {
+        int id = peekInt();
+        if(id == IVEIMAGESEQUENCE)
+        {
+            osg::ImageSequence* image = new osg::ImageSequence();
+            ((ive::ImageSequence*)image)->read(this);
+            return image;
+        }
+        else
+        {
+            readInt();
+            IncludeImageMode includeImg = (IncludeImageMode)readChar();
+            return readImage(includeImg);
+        }
+    }
+    else
+    {
+        IncludeImageMode includeImg = (IncludeImageMode)readChar();
+        return readImage(includeImg);
+    }
 }
 
 osg::Image* DataInputStream::readImage(IncludeImageMode mode)

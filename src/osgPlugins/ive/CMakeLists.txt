@@ -46,6 +46,7 @@ SET(TARGET_SRC
     Group.cpp
     HeightFieldLayer.cpp
     Image.cpp
+    ImageSequence.cpp
     ImageLayer.cpp
     Impostor.cpp
     Layer.cpp
@@ -153,6 +154,7 @@ SET(TARGET_H
     Group.h
     HeightFieldLayer.h
     Image.h
+    ImageSequence.h
     ImageLayer.h
     Impostor.h
     IveVersion.h

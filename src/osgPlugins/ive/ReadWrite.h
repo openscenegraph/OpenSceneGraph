@@ -38,6 +38,7 @@ namespace ive {
 #define IVECAMERAVIEW                   0x00000029
 #define IVEAUTOTRANSFORM                0x00000030
 #define IVEOCCLUSIONQUERYNODE           0x00000031
+#define IVEIMAGESEQUENCE                0x00000032
 
 // Node callbacks
 #define IVENODECALLBACK                 0x00000050

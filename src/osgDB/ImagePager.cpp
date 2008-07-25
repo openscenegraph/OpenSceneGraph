@@ -199,16 +199,14 @@ void ImagePager::ImageThread::run()
                 }
                 else
                 {
-                    osg::Texture* texture = dynamic_cast<osg::Texture*>(imageRequest->_objectToAttachTo.get());
-                    if (texture)
-                    {
-                        texture->setImage(0, image.get());
-                    }
+                    imageRequest->_loadedImage = image;
+
+                    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_pager->_completedQueue->_requestMutex);
+                    _pager->_completedQueue->_requestList.push_back(imageRequest);
                 }
             }
 
         }
-
         else
         {
             OpenThreads::Thread::YieldCurrentThread();
@@ -242,7 +240,10 @@ ImagePager::ImagePager():
     _databasePagerThreadPaused = false;
     
     _readQueue = new ReadQueue(this,"Image Queue");
-    _imageThread = new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread");
+    _completedQueue = new RequestQueue;
+    _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 1"));
+    _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 2"));
+    _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 3"));
 }
 
 ImagePager::~ImagePager()
@@ -254,12 +255,22 @@ int ImagePager::cancel()
 {
     int result = 0;
 
-    _imageThread->setDone(true);
+    for(ImageThreads::iterator itr = _imageThreads.begin();
+        itr != _imageThreads.end();
+        ++itr)
+    {
+        (*itr)->setDone(true);
+    }
 
     // release the frameBlock and _databasePagerThreadBlock in case its holding up thread cancellation.
     _readQueue->release();
 
-    _imageThread->cancel();
+    for(ImageThreads::iterator itr = _imageThreads.begin();
+        itr != _imageThreads.end();
+        ++itr)
+    {
+        (*itr)->cancel();
+    }
 
     _done = true;
     _startThreadCalled = false;
@@ -289,7 +300,13 @@ void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attac
         {
             _startThreadCalled = true;
             _done = false;
-            _imageThread->startThread();
+            
+            for(ImageThreads::iterator itr = _imageThreads.begin();
+                itr != _imageThreads.end();
+                ++itr)
+            {
+                (*itr)->startThread();
+            }
             
         }
     }
@@ -298,11 +315,29 @@ void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attac
 bool ImagePager::requiresUpdateSceneGraph() const
 {
     //osg::notify(osg::NOTICE)<<"ImagePager::requiresUpdateSceneGraph()"<<std::endl;
-    return false;
+    return !(_completedQueue->_requestList.empty());
 }
 
 void ImagePager::updateSceneGraph(double currentFrameTime)
 {
-    //osg::notify(osg::NOTICE)<<"ImagePager::updateSceneGraph(double currentFrameTime)"<<std::endl;
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_completedQueue->_requestMutex);
+
+    for(RequestQueue::RequestList::iterator itr = _completedQueue->_requestList.begin();
+        itr != _completedQueue->_requestList.end();
+        ++itr)
+    {
+        ImageRequest* imageRequest = itr->get();
+        osg::Texture* texture = dynamic_cast<osg::Texture*>(imageRequest->_objectToAttachTo.get());
+        if (texture)
+        {
+            texture->setImage(0, imageRequest->_loadedImage.get());
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"ImagePager::updateSceneGraph() : error, image request attachment type not handled yet."<<std::endl;
+        }
+    }
+    
+    _completedQueue->_requestList.clear();
 }
 

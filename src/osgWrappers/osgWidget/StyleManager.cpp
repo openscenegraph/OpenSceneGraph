@@ -139,6 +139,12 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Style)
 	                __bool__strToFill__C5_std_string_R1_S,
 	                "",
 	                "");
+	I_ProtectedMethod2(bool, _match, IN, const char *, seq, IN, osgWidget::Reader, r,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool___match__C5_char_P1__Reader,
+	                   "",
+	                   "");
 	I_SimpleProperty(const std::string &, Style, 
 	                 __C5_std_string_R1__getStyle, 
 	                 __void__setStyle__C5_std_string_R1);

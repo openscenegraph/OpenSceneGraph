@@ -26,11 +26,74 @@
 
 using namespace obj;
 
-std::string strip( const std::string& ss )
+static std::string strip( const std::string& ss )
 {
     std::string result;
     result.assign( ss.begin() + ss.find_first_not_of( ' ' ), ss.begin() + 1 + ss.find_last_not_of( ' ' ) );
     return( result );
+}
+
+/*
+ * parse a subset of texture options, following
+ * http://local.wasp.uwa.edu.au/~pbourke/dataformats/mtl/
+ */
+static std::string parseTexture( const std::string& ss, Material& mat)
+{
+    std::string s(ss);
+    for (;;)
+    {
+        if (s[0] != '-')
+            break;
+ 
+        int n;
+        if (s[1] == 's' || s[1] == 'o')
+        {
+            float x, y, z;
+            if (sscanf(s.c_str(), "%*s %f %f %f%n", &x, &y, &z, &n) != 3)
+            {
+                break;
+            }
+
+            if (s[1] == 's')
+            {
+                // texture scale
+                mat.uScale = x;
+                mat.vScale = y;
+            }
+            else if (s[1] == 'o')
+            {
+                // texture offset
+                mat.uOffset = x;
+                mat.vOffset = y;
+            }
+        }
+        else if (s[1] == 'm' && s[2] == 'm')
+        {
+            // texture color offset and gain
+            float base, gain;
+            if (sscanf(s.c_str(), "%*s %f %f%n", &base, &gain, &n) != 2)
+            {
+                break;
+            }
+            // UNUSED
+        }
+        else if (s[1] == 'b' && s[2] == 'm')
+        {
+            // blend multiplier
+            float mult;
+            if (sscanf(s.c_str(), "%*s %f%n", &mult, &n) != 2)
+            {
+                break;
+            }
+            // UNUSED
+        }
+        else
+            break;
+
+        s = strip(s.substr(n));
+    }
+
+    return s;
 }
 
 bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
@@ -141,6 +204,7 @@ bool Model::readMTL(std::istream& fin)
     float r = 1.0f, g = 1.0f, b = 1.0f, a = 1.0f;
 
     Material* material = 0;// &(materialMap[""]);
+    std::string filename;
 
     while (fin)
     {
@@ -351,23 +415,19 @@ bool Model::readMTL(std::istream& fin)
                 }
                 else if (strncmp(line,"map_Ka ",7)==0)
                 {
-                    std::string filename(line+7);
-                    material->map_Ka = filename;
+                    material->map_Ka = parseTexture(strip(line+7), *material);
                 }
                 else if (strncmp(line,"map_Kd ",7)==0)
                 {
-                    material->map_Kd = strip(line+7);
-                    osg::notify(osg::INFO)<< "map_Kd:\'" << material->map_Kd << "\'" << std::endl;
+                    material->map_Kd = parseTexture(strip(line+7), *material);
                 }
                 else if (strncmp(line,"map_Ks ",7)==0)
                 {
-                    material->map_Ks = strip(line+7);
-                    osg::notify(osg::INFO)<< "map_Ks:\'" << material->map_Kd << "\'" << std::endl;
+                    material->map_Ks = parseTexture(strip(line+7), *material);
                 }
                 else if (strncmp(line,"map_opacity ",7)==0)
                 {
-                    material->map_opacity = strip(line+7);
-                    osg::notify(osg::INFO)<< "map_opacity:\'" << material->map_Kd << "\'" << std::endl;
+                    material->map_opacity = parseTexture(strip(line+7), *material);
                 }
                 else if (strcmp(line,"refl")==0 || strncmp(line,"refl ",5)==0)
                 {

@@ -8,21 +8,23 @@
 class ReaderWriterFreeType : public osgDB::ReaderWriter
 {
     public:
+        ReaderWriterFreeType()
+        {
+            supportsExtension("ttf","true type font format");
+            supportsExtension("ttc","true type format");
+            supportsExtension("pfb","type1 binary format");
+            supportsExtension("pfa","type2 ascii format");
+            supportsExtension("cid","Postscript CID-Fonts format");
+            supportsExtension("cff","OpenType format");
+            supportsExtension("cef","OpenType format");
+            supportsExtension("fon","Windows bitmap fonts format");
+            supportsExtension("fnt","Windows bitmap fonts format");
+
+            supportsOption("monochrome","Select monochrome font.");
+        }
+        
         virtual const char* className() const { return "FreeType Font Reader/Writer"; }
         
-        virtual bool acceptsExtension(const std::string& extension) const
-        {
-            return osgDB::equalCaseInsensitive(extension,"ttf") ||  // true type
-                   osgDB::equalCaseInsensitive(extension,"ttc") ||  // true type
-                   osgDB::equalCaseInsensitive(extension,"pfb") ||  // type1 binary
-                   osgDB::equalCaseInsensitive(extension,"pfa") ||  // type2 ascii
-                   osgDB::equalCaseInsensitive(extension,"cid") ||  // Postscript CID-Fonts
-                   osgDB::equalCaseInsensitive(extension,"cff") ||  // OpenType
-                   osgDB::equalCaseInsensitive(extension,"cef") ||  // OpenType
-                   osgDB::equalCaseInsensitive(extension,"fon") ||  // Windows bitmap fonts
-                   osgDB::equalCaseInsensitive(extension,"fnt");    // Windows bitmap fonts
-        }
-
         static unsigned int getFlags(const osgDB::ReaderWriter::Options* options)
         {
             unsigned int flags = 0;

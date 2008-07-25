@@ -236,7 +236,8 @@ bool Style::applyStyle(Frame::Border*, Reader r) {
 	return false;
 }
 
-Widget::LAYER Style::strToLayer(const std::string& layer) {
+Widget::Layer Style::strToLayer(const std::string& layer)
+{
 	std::string l = lowerCase(layer);
 
 	if(l == "top") return Widget::LAYER_TOP;
@@ -256,7 +257,7 @@ Widget::LAYER Style::strToLayer(const std::string& layer) {
 	}
 }
 
-Widget::VERTICAL_ALIGNMENT Style::strToVAlign(const std::string& valign) {
+Widget::VerticalAlignment Style::strToVAlign(const std::string& valign) {
 	std::string va = lowerCase(valign);
 
 	if(va == "center") return Widget::VA_CENTER;
@@ -272,7 +273,7 @@ Widget::VERTICAL_ALIGNMENT Style::strToVAlign(const std::string& valign) {
 	}
 }
 
-Widget::HORIZONTAL_ALIGNMENT Style::strToHAlign(const std::string& halign) {
+Widget::HorizontalAlignment Style::strToHAlign(const std::string& halign) {
 	std::string ha = lowerCase(halign);
 
 	if(ha == "center") return Widget::HA_CENTER;
@@ -288,7 +289,7 @@ Widget::HORIZONTAL_ALIGNMENT Style::strToHAlign(const std::string& halign) {
 	}
 }
 
-Widget::COORDINATE_MODE Style::strToCoordMode(const std::string& coordmode) {
+Widget::CoordinateMode Style::strToCoordMode(const std::string& coordmode) {
 	std::string cm = lowerCase(coordmode);
 
 	if(cm == "absolute") return Widget::CM_ABSOLUTE;

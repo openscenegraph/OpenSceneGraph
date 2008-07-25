@@ -8,19 +8,21 @@
 
 namespace osgWidget {
 
-class OSGWIDGET_EXPORT Canvas: public Window {
-protected:
-	virtual void _resizeImplementation(point_type, point_type);
+class OSGWIDGET_EXPORT Canvas: public Window
+{
+    public:
+        META_Object   (osgWidget, Canvas);
+        META_UIObject (Canvas);
 
-public:
-	META_Object   (osgWidget, Canvas);
-	META_UIObject (Canvas);
+        Canvas (const std::string& = "");
+        Canvas (const Canvas&, const osg::CopyOp&);
 
-	Canvas (const std::string& = "");
-	Canvas (const Canvas&, const osg::CopyOp&);
+        // This would conflict with the normal addWidget if there were default values. :(
+        virtual bool addWidget(Widget*, point_type, point_type);
 
-	// This would conflict with the normal addWidget if there were default values. :(
-	virtual bool addWidget(Widget*, point_type, point_type);
+    protected:
+        virtual void _resizeImplementation(point_type, point_type);
+
 };
 
 }

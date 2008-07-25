@@ -8,152 +8,153 @@
 
 namespace osgWidget {
 
-class OSGWIDGET_EXPORT Frame: public Table {
-public:
-	enum CORNER {
-		CORNER_LOWER_LEFT,
-		CORNER_LOWER_RIGHT,
-		CORNER_UPPER_LEFT,
-		CORNER_UPPER_RIGHT
-	};
+class OSGWIDGET_EXPORT Frame: public Table
+{
+    public:
+    
+        enum CORNER
+        {
+            CORNER_LOWER_LEFT,
+            CORNER_LOWER_RIGHT,
+            CORNER_UPPER_LEFT,
+            CORNER_UPPER_RIGHT
+        };
 
-	enum BORDER {
-		BORDER_LEFT,
-		BORDER_RIGHT,
-		BORDER_TOP,
-		BORDER_BOTTOM
-	};
+        enum BORDER 
+        {
+            BORDER_LEFT,
+            BORDER_RIGHT,
+            BORDER_TOP,
+            BORDER_BOTTOM
+        };
 
-protected:
-	Widget* _getCorner (CORNER) const;
-	Widget* _getBorder (BORDER) const;
+        static std::string cornerToString (CORNER);
+        static std::string borderToString (BORDER);
 
-public:
-	static std::string cornerToString (CORNER);
-	static std::string borderToString (BORDER);
+        class OSGWIDGET_EXPORT Corner: public Widget
+        {
+        public:
+            META_Object   (osgWidget, Corner);
+            META_UIObject (Corner);
 
-	class OSGWIDGET_EXPORT Corner: public Widget {
-		CORNER _corner;
+            Corner (CORNER = CORNER_LOWER_LEFT, point_type = 0.0f, point_type = 0.0f);
+            Corner (const Corner&, const osg::CopyOp&);
 
-	public:
-		META_Object   (osgWidget, Corner);
-		META_UIObject (Corner);
+            bool mouseDrag(double, double, WindowManager*);
 
-		Corner (CORNER = CORNER_LOWER_LEFT, point_type = 0.0f, point_type = 0.0f);
-		Corner (const Corner&, const osg::CopyOp&);
+            CORNER getCorner() const {
+                return _corner;
+            }
 
-		bool mouseDrag(double, double, WindowManager*);
+            void setCorner(CORNER corner) {
+                _corner = corner;
+            }
 
-		CORNER getCorner() const {
-			return _corner;
-		}
+            void setCornerAndName(CORNER corner) {
+                _corner = corner;
+                _name   = cornerToString(corner);
+            }
+            
+        protected:
+            CORNER _corner;
+        };
 
-		void setCorner(CORNER corner) {
-			_corner = corner;
-		}
+        class OSGWIDGET_EXPORT Border: public Widget
+        {
+        public:
+            META_Object   (osgWidget, Border);
+            META_UIObject (Border);
 
-		void setCornerAndName(CORNER corner) {
-			_corner = corner;
-			_name   = cornerToString(corner);
-		}
-	};
-	
-	class OSGWIDGET_EXPORT Border: public Widget {
-		BORDER _border;
+            Border (BORDER = BORDER_LEFT, point_type = 0.0f, point_type = 0.0f);
+            Border (const Border&, const osg::CopyOp&);
 
-	public:
-		META_Object   (osgWidget, Border);
-		META_UIObject (Border);
+            bool mouseDrag(double, double, WindowManager*);
 
-		Border (BORDER = BORDER_LEFT, point_type = 0.0f, point_type = 0.0f);
-		Border (const Border&, const osg::CopyOp&);
+            BORDER getBorder() const {
+                return _border;
+            }
 
-		bool mouseDrag(double, double, WindowManager*);
+            void setBorder(BORDER border) {
+                _border = border;
+            }
 
-		BORDER getBorder() const {
-			return _border;
-		}
+            void setBorderAndName(BORDER border) {
+                _border = border;
+                _name   = borderToString(border);
+            }
+            
+        protected:
+        
+            BORDER _border;
 
-		void setBorder(BORDER border) {
-			_border = border;
-		}
+        };
 
-		void setBorderAndName(BORDER border) {
-			_border = border;
-			_name   = borderToString(border);
-		}
-	};
+        META_Object   (osgWidget, Frame);
+        META_UIObject (Frame);
 
-	META_Object   (osgWidget, Frame);
-	META_UIObject (Frame);
+        Frame (const std::string& = "");
+        Frame (const Frame&, const osg::CopyOp&);
 
-	Frame (const std::string& = "");
-	Frame (const Frame&, const osg::CopyOp&);
+        virtual void managed(WindowManager*);
 
-	virtual void managed(WindowManager*);
+        static Frame* createSimpleFrame(
+            const std::string&,
+            point_type,
+            point_type,
+            point_type,
+            point_type,
+            Frame* = 0
+        );
 
-	static Frame* createSimpleFrame(
-		const std::string&,
-		point_type,
-		point_type,
-		point_type,
-		point_type,
-		Frame* = 0
-	);
+        static Frame* createSimpleFrameWithSingleTexture(
+            const std::string&,
+            const std::string&,
+            point_type,
+            point_type,
+            point_type,
+            point_type,
+            point_type,
+            point_type,
+            Frame* = 0
+        );
 
-	static Frame* createSimpleFrameWithSingleTexture(
-		const std::string&,
-		const std::string&,
-		point_type,
-		point_type,
-		point_type,
-		point_type,
-		point_type,
-		point_type,
-		Frame* = 0
-	);
+        void createSimpleFrame(point_type cw, point_type ch, point_type w, point_type h)
+        {
+            createSimpleFrame(_name, cw, ch, w, h, this);
+        }
 
-	void createSimpleFrame(point_type cw, point_type ch, point_type w, point_type h) {
-		createSimpleFrame(_name, cw, ch, w, h, this);
-	}
+        void createSimpleFrameWithSingleTexture(
+            const std::string& tex,
+            point_type tw,
+            point_type th,
+            point_type cw,
+            point_type ch,
+            point_type w,
+            point_type h
+        )
+        {
+            createSimpleFrameWithSingleTexture(_name, tex, tw, th, cw, ch, w, h, this);
+        }
 
-	void createSimpleFrameWithSingleTexture(
-		const std::string& tex,
-		point_type tw,
-		point_type th,
-		point_type cw,
-		point_type ch,
-		point_type w,
-		point_type h
-	) {
-		createSimpleFrameWithSingleTexture(_name, tex, tw, th, cw, ch, w, h, this);
-	}
+        bool setWindow(Window*);
 
-	bool setWindow(Window*);
+        EmbeddedWindow* getEmbeddedWindow() { return dynamic_cast<EmbeddedWindow*>(getByRowCol(1, 1)); }
 
-	EmbeddedWindow* getEmbeddedWindow() {
-		return dynamic_cast<EmbeddedWindow*>(getByRowCol(1, 1));
-	}
+        const EmbeddedWindow* getEmbeddedWindow() const { return dynamic_cast<const EmbeddedWindow*>(getByRowCol(1, 1)); }
 
-	const EmbeddedWindow* getEmbeddedWindow() const {
-		return dynamic_cast<const EmbeddedWindow*>(getByRowCol(1, 1));
-	}
+        Corner* getCorner(CORNER c) { return dynamic_cast<Corner*>(_getCorner(c)); }
 
-	Corner* getCorner(CORNER c) {
-		return dynamic_cast<Corner*>(_getCorner(c));
-	}
+        const Corner* getCorner(CORNER c) const { return dynamic_cast<const Corner*>(_getCorner(c)); }
 
-	const Corner* getCorner(CORNER c) const {
-		return dynamic_cast<const Corner*>(_getCorner(c));
-	}
+        Border* getBorder(BORDER b) { return dynamic_cast<Border*>(_getBorder(b)); }
 
-	Border* getBorder(BORDER b) {
-		return dynamic_cast<Border*>(_getBorder(b));
-	}
+        const Border* getBorder(BORDER b) const { return dynamic_cast<const Border*>(_getBorder(b)); }
 
-	const Border* getBorder(BORDER b) const {
-		return dynamic_cast<const Border*>(_getBorder(b));
-	}
+    protected:
+    
+        Widget* _getCorner (CORNER) const;
+        Widget* _getBorder (BORDER) const;
+
 };
 
 }

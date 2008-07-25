@@ -25,332 +25,333 @@ typedef osgUtil::LineSegmentIntersector::Intersections Intersections;
 // A WindowManager performs pointer interaction with the topmost (highest Z) Widget,
 // and performs keyboard input on the currently focused Window->Widget.
 class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<Window> {
-public:
-	enum WM_FLAGS {
-		WM_USE_LUA      = 0x00000001,
-		WM_USE_PYTHON   = 0x00000002,
-		WM_PICK_DEBUG   = 0x00000004,
-		WM_NO_INVERT_Y  = 0x00000008,
-		WM_NO_BETA_WARN = 0x00000010
-	};
+    public:
+        enum WM_FLAGS {
+            WM_USE_LUA      = 0x00000001,
+            WM_USE_PYTHON   = 0x00000002,
+            WM_PICK_DEBUG   = 0x00000004,
+            WM_NO_INVERT_Y  = 0x00000008,
+            WM_NO_BETA_WARN = 0x00000010
+        };
 
-	enum POINTER_DIRECTION {
-		PD_NONE  = 0x00000000,
-		PD_LEFT  = 0x00000001,
-		PD_RIGHT = 0x00000002,
-		PD_UP    = 0x00000004,
-		PD_DOWN  = 0x00000008
-	};
+        enum POINTER_DIRECTION {
+            PD_NONE  = 0x00000000,
+            PD_LEFT  = 0x00000001,
+            PD_RIGHT = 0x00000002,
+            PD_UP    = 0x00000004,
+            PD_DOWN  = 0x00000008
+        };
 
-	enum POINTER_FOCUS_MODE {
-		PFM_FOCUS   = 0x00000000,
-		PFM_UNFOCUS = 0x00000001,
-		PFM_SLOPPY  = 0x00000002
-	};
+        enum POINTER_FOCUS_MODE {
+            PFM_FOCUS   = 0x00000000,
+            PFM_UNFOCUS = 0x00000001,
+            PFM_SLOPPY  = 0x00000002
+        };
 
-private:
-	// A functor used to sort the Windows by their Z component in descending order.
-	struct WindowZCompare: public std::binary_function<ptr_type, ptr_type, bool> {
-		bool operator()(const ptr_type& x, const ptr_type& y) {
-			return x.get()->getZ() > y.get()->getZ();
-		}
-	};
+    public:
+        META_Object(osgWidget, WindowManager);
 
-	point_type         _width;
-	point_type         _height;
-	point_type         _zNear;
-	point_type         _zFar;
-	matrix_type        _numForeground;
-	matrix_type        _numBackground;
-	unsigned int       _flags;
-	unsigned int       _nodeMask;
-	osgViewer::View*   _view;
-	float              _lastX;
-	float              _lastY;
-	EventInterface*    _lastEvent;
-	EventInterface*    _lastPush;
-	POINTER_DIRECTION  _lastVertical;
-	POINTER_DIRECTION  _lastHorizontal;
-	POINTER_FOCUS_MODE _focusMode;
-	bool               _leftDown;
-	bool               _middleDown;
-	bool               _rightDown;
+        WindowManager(
+            osgViewer::View* = 0,
+            point_type       = 0.0f,
+            point_type       = 0.0f,
+            unsigned int     = 0,
+            unsigned int     = 0
+        );
 
-	osgGA::GUIEventAdapter::ScrollingMotion _scrolling;
+        WindowManager(const WindowManager&, const osg::CopyOp&);
 
-	osg::ref_ptr<ScriptEngine> _lua;
-	osg::ref_ptr<ScriptEngine> _python;
-	osg::ref_ptr<StyleManager> _styleManager;
+        virtual ~WindowManager();
 
-	osg::observer_ptr<Widget> _widget;
-	osg::observer_ptr<Window> _focused;
-	osg::observer_ptr<Window> _pickWindow;
+        // A static method that will set both the _widget and _window data of an Event
+        // reference from a passed-in Interface.
+        static void setEventFromInterface(Event&, EventInterface*);
 
-	void childInserted (unsigned int);
-	void childRemoved  (unsigned int, unsigned int);
+        // A static template method that will iterate over a container and return a
+        // properly formed EventInterface*.
+        template<typename T>
+        static EventInterface* getFirstEventInterface(T&, Event&);
 
-	bool _handleMousePushed   (float, float, bool&);
-	bool _handleMouseReleased (float, float, bool&);
-	bool _haneldMouseScrolled (float, float, bool = false);
-	void _getPointerXYDiff    (float&, float&);
-	void _updatePickWindow    (const WidgetList*, point_type, point_type);
+        bool pickAtXY         (float, float, WidgetList&);
+        bool setFocused       (Window*);
+        void setPointerXY     (float, float);
+        void setStyleManager  (StyleManager*);
+        void resizeAllWindows (bool = true);
 
-public:
-	META_Object(osgWidget, WindowManager);
+        // Methods all called by the ViewerEventHandlers::MouseHandler object, or
+        // by some customer caller of your own. Examples of this to come...
+        bool pointerMove (float, float);
+        bool pointerDrag (float, float);
+        bool mouseScroll (float, float);
 
-	WindowManager(
-		osgViewer::View* = 0,
-		point_type       = 0.0f,
-		point_type       = 0.0f,
-		unsigned int     = 0,
-		unsigned int     = 0
-	);
+        osg::Camera* createParentOrthoCamera();
 
-	WindowManager(const WindowManager&, const osg::CopyOp&);
+        unsigned int getNodeMask() const {
+            return _nodeMask;
+        }
 
-	virtual ~WindowManager();
+        point_type getWidth() const {
+            return _width;
+        }
 
-	// A static method that will set both the _widget and _window data of an Event
-	// reference from a passed-in Interface.
-	static void setEventFromInterface(Event&, EventInterface*);
+        point_type getHeight() const {
+            return _height;
+        }
 
-	// A static template method that will iterate over a container and return a
-	// properly formed EventInterface*.
-	template<typename T>
-	static EventInterface* getFirstEventInterface(T&, Event&);
+        bool isUsingLua() const {
+            return (_flags & WM_USE_LUA) != 0;
+        }
 
-	bool pickAtXY         (float, float, WidgetList&);
-	bool setFocused       (Window*);
-	void setPointerXY     (float, float);
-	void setStyleManager  (StyleManager*);
-	void resizeAllWindows (bool = true);
+        bool isUsingPython() const {
+            return (_flags & WM_USE_PYTHON) != 0;
+        }
 
-	// Methods all called by the ViewerEventHandlers::MouseHandler object, or
-	// by some customer caller of your own. Examples of this to come...
-	bool pointerMove (float, float);
-	bool pointerDrag (float, float);
-	bool mouseScroll (float, float);
+        bool isInvertedY() const {
+            return (_flags & WM_NO_INVERT_Y) == 0;
+        }
 
-	osg::Camera* createParentOrthoCamera();
+        int getMouseKeysDown() const {
+            int flag = 0;
 
-	unsigned int getNodeMask() const {
-		return _nodeMask;
-	}
+            flag |= _leftDown ? osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON : 0;
+            flag |= _middleDown ? osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON: 0;
+            flag |= _rightDown ? osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON : 0;
 
-	point_type getWidth() const {
-		return _width;
-	}
+            return flag;
+        }
 
-	point_type getHeight() const {
-		return _height;
-	}
+        ScriptEngine* getLuaEngine() {
+            return _lua.get();
+        }
 
-	bool isUsingLua() const {
-		return (_flags & WM_USE_LUA) != 0;
-	}
+        const ScriptEngine* getLuaEngine() const {
+            return _lua.get();
+        }
 
-	bool isUsingPython() const {
-		return (_flags & WM_USE_PYTHON) != 0;
-	}
+        ScriptEngine* getPythonEngine() {
+            return _python.get();
+        }
 
-	bool isInvertedY() const {
-		return (_flags & WM_NO_INVERT_Y) == 0;
-	}
+        const ScriptEngine* getPythonEngine() const {
+            return _python.get();
+        }
 
-	int getMouseKeysDown() const {
-		int flag = 0;
+        StyleManager* getStyleManager() {
+            return _styleManager.get();
+        }
 
-		flag |= _leftDown ? osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON : 0;
-		flag |= _middleDown ? osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON: 0;
-		flag |= _rightDown ? osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON : 0;
+        const StyleManager* getStyleManager() const {
+            return _styleManager.get();
+        }
 
-		return flag;
-	}
+        POINTER_DIRECTION getPointerVerticalDirection() const {
+            return _lastVertical;
+        }
 
-	ScriptEngine* getLuaEngine() {
-		return _lua.get();
-	}
+        POINTER_DIRECTION getPointerHorizontalDirection() const {
+            return _lastHorizontal;
+        }
 
-	const ScriptEngine* getLuaEngine() const {
-		return _lua.get();
-	}
+        POINTER_FOCUS_MODE getPointerFocusMode() const {
+            return _focusMode;
+        }
 
-	ScriptEngine* getPythonEngine() {
-		return _python.get();
-	}
+        int getPointerDirectionVector() const {
+            return _lastVertical | _lastHorizontal;
+        }
 
-	const ScriptEngine* getPythonEngine() const {
-		return _python.get();
-	}
+        bool isPointerMovingUp() const {
+            return _lastVertical == PD_UP;
+        }
 
-	StyleManager* getStyleManager() {
-		return _styleManager.get();
-	}
+        bool isPointerMovingDown() const {
+            return _lastVertical == PD_DOWN;
+        }
 
-	const StyleManager* getStyleManager() const {
-		return _styleManager.get();
-	}
+        bool isPointerMovingLeft() const {
+            return _lastHorizontal == PD_LEFT;
+        }
 
-	POINTER_DIRECTION getPointerVerticalDirection() const {
-		return _lastVertical;
-	}
+        bool isPointerMovingRight() const {
+            return _lastHorizontal == PD_RIGHT;
+        }
 
-	POINTER_DIRECTION getPointerHorizontalDirection() const {
-		return _lastHorizontal;
-	}
+        bool isPointerMovingVertically() const {
+            return _lastVertical != PD_NONE;
+        }
 
-	POINTER_FOCUS_MODE getPointerFocusMode() const {
-		return _focusMode;
-	}
+        bool isPointerMovingHorizontally() const {
+            return _lastHorizontal != PD_NONE;
+        }
 
-	int getPointerDirectionVector() const {
-		return _lastVertical | _lastHorizontal;
-	}
+        bool isLeftMouseButtonDown() const {
+            return _leftDown;
+        }
 
-	bool isPointerMovingUp() const {
-		return _lastVertical == PD_UP;
-	}
+        bool isMiddleMouseButtonDown() const {
+            return _middleDown;
+        }
 
-	bool isPointerMovingDown() const {
-		return _lastVertical == PD_DOWN;
-	}
+        bool isRightMouseButtonDown() const {
+            return _rightDown;
+        }
 
-	bool isPointerMovingLeft() const {
-		return _lastHorizontal == PD_LEFT;
-	}
+        bool isMouseScrollingUp() const {
+            return _scrolling == osgGA::GUIEventAdapter::SCROLL_UP;
+        }
 
-	bool isPointerMovingRight() const {
-		return _lastHorizontal == PD_RIGHT;
-	}
-	
-	bool isPointerMovingVertically() const {
-		return _lastVertical != PD_NONE;
-	}
+        bool isMouseScrollingDown() const {
+            return _scrolling == osgGA::GUIEventAdapter::SCROLL_DOWN;
+        }
 
-	bool isPointerMovingHorizontally() const {
-		return _lastHorizontal != PD_NONE;
-	}
+        bool setFocusedByName(const std::string& name) {
+            return setFocused(getByName(name));
+        }
 
-	bool isLeftMouseButtonDown() const {
-		return _leftDown;
-	}
+        void setScrollingMotion(osgGA::GUIEventAdapter::ScrollingMotion sm) {
+            _scrolling = sm;
+        }
 
-	bool isMiddleMouseButtonDown() const {
-		return _middleDown;
-	}
+        void setPointerFocusMode(POINTER_FOCUS_MODE pfm) {
+            _focusMode = pfm;
+        }
 
-	bool isRightMouseButtonDown() const {
-		return _rightDown;
-	}
+        void setWidth(point_type w) {
+            _width = w;
+        }
 
-	bool isMouseScrollingUp() const {
-		return _scrolling == osgGA::GUIEventAdapter::SCROLL_UP;
-	}
+        void setHeight(point_type h) {
+            _height = h;
+        }
 
-	bool isMouseScrollingDown() const {
-		return _scrolling == osgGA::GUIEventAdapter::SCROLL_DOWN;
-	}
+        void setSize(point_type w, point_type h) {
+            _width  = w;
+            _height = h;
+        }
 
-	bool setFocusedByName(const std::string& name) {
-		return setFocused(getByName(name));
-	}
+        // Wrappers around the real calls. These only pertains to mouse buttons, 
+        // particularly 3-button mice, although there are other more generic
+        // "pointer" API methods.
+        bool mousePushedLeft(float x, float y) {
+            return _handleMousePushed(x, y, _leftDown);
+        }
 
-	void setScrollingMotion(osgGA::GUIEventAdapter::ScrollingMotion sm) {
-		_scrolling = sm;
-	}
+        bool mousePushedMiddle(float x, float y) {
+            return _handleMousePushed(x, y, _middleDown);
+        }
 
-	void setPointerFocusMode(POINTER_FOCUS_MODE pfm) {
-		_focusMode = pfm;
-	}
+        bool mousePushedRight(float x, float y) {
+            return _handleMousePushed(x, y, _rightDown);
+        }
 
-	void setWidth(point_type w) {
-		_width = w;
-	}
+        bool mouseReleasedLeft(float x, float y) {
+            return _handleMouseReleased(x, y, _leftDown);
+        }
 
-	void setHeight(point_type h) {
-		_height = h;
-	}
+        bool mouseReleasedMiddle(float x, float y) {
+            return _handleMouseReleased(x, y, _middleDown);
+        }
 
-	void setSize(point_type w, point_type h) {
-		_width  = w;
-		_height = h;
-	}
+        bool mouseReleasedRight(float x, float y) {
+            return _handleMouseReleased(x, y, _rightDown);
+        }
 
-	// Wrappers around the real calls. These only pertains to mouse buttons, 
-	// particularly 3-button mice, although there are other more generic
-	// "pointer" API methods.
-	bool mousePushedLeft(float x, float y) {
-		return _handleMousePushed(x, y, _leftDown);
-	}
+        // Keyboards wrappers, as above; takes the key and key's mask code, which
+        // can be compared to osgGA::GUIEventAdapter::{KeySymbol,KeyModMask}.
+        bool keyDown (int, int);
+        bool keyUp   (int, int);
 
-	bool mousePushedMiddle(float x, float y) {
-		return _handleMousePushed(x, y, _middleDown);
-	}
+    private:
+        // A functor used to sort the Windows by their Z component in descending order.
+        struct WindowZCompare: public std::binary_function<ptr_type, ptr_type, bool> {
+            bool operator()(const ptr_type& x, const ptr_type& y) {
+                return x.get()->getZ() > y.get()->getZ();
+            }
+        };
 
-	bool mousePushedRight(float x, float y) {
-		return _handleMousePushed(x, y, _rightDown);
-	}
+        point_type         _width;
+        point_type         _height;
+        point_type         _zNear;
+        point_type         _zFar;
+        matrix_type        _numForeground;
+        matrix_type        _numBackground;
+        unsigned int       _flags;
+        unsigned int       _nodeMask;
+        osgViewer::View*   _view;
+        float              _lastX;
+        float              _lastY;
+        EventInterface*    _lastEvent;
+        EventInterface*    _lastPush;
+        POINTER_DIRECTION  _lastVertical;
+        POINTER_DIRECTION  _lastHorizontal;
+        POINTER_FOCUS_MODE _focusMode;
+        bool               _leftDown;
+        bool               _middleDown;
+        bool               _rightDown;
 
-	bool mouseReleasedLeft(float x, float y) {
-		return _handleMouseReleased(x, y, _leftDown);
-	}
+        osgGA::GUIEventAdapter::ScrollingMotion _scrolling;
 
-	bool mouseReleasedMiddle(float x, float y) {
-		return _handleMouseReleased(x, y, _middleDown);
-	}
+        osg::ref_ptr<ScriptEngine> _lua;
+        osg::ref_ptr<ScriptEngine> _python;
+        osg::ref_ptr<StyleManager> _styleManager;
 
-	bool mouseReleasedRight(float x, float y) {
-		return _handleMouseReleased(x, y, _rightDown);
-	}
-	
-	// Keyboards wrappers, as above; takes the key and key's mask code, which
-	// can be compared to osgGA::GUIEventAdapter::{KeySymbol,KeyModMask}.
-	bool keyDown (int, int);
-	bool keyUp   (int, int);
+        osg::observer_ptr<Widget> _widget;
+        osg::observer_ptr<Window> _focused;
+        osg::observer_ptr<Window> _pickWindow;
+
+        void childInserted (unsigned int);
+        void childRemoved  (unsigned int, unsigned int);
+
+        bool _handleMousePushed   (float, float, bool&);
+        bool _handleMouseReleased (float, float, bool&);
+        bool _haneldMouseScrolled (float, float, bool = false);
+        void _getPointerXYDiff    (float&, float&);
+        void _updatePickWindow    (const WidgetList*, point_type, point_type);
+
 };
 
 // We use a template here because the container could be a list or a vector; or something
 // else that supports iteration!
 template<typename T>
 EventInterface* WindowManager::getFirstEventInterface(T& container, Event& ev) {
-	if(!container.size()) return 0;
+    if(!container.size()) return 0;
 
-	// See if we can find a Widget that responds to this event...
-	for(typename T::iterator i = container.begin(); i != container.end(); i++) {
-		Widget* widget = i->get();
+    // See if we can find a Widget that responds to this event...
+    for(typename T::iterator i = container.begin(); i != container.end(); i++) {
+        Widget* widget = i->get();
 
-		// If so, set the _widget/_window members and return it.
-		if(widget->getEventMask() & ev.type) {
-			ev._window = widget->getParent();
-			ev._widget = widget;
+        // If so, set the _widget/_window members and return it.
+        if(widget->getEventMask() & ev.type) {
+            ev._window = widget->getParent();
+            ev._widget = widget;
 
-			return widget;
-		}
-	}
+            return widget;
+        }
+    }
 
-	// If we can't find a Widget that will accept this event, try and recurse all
-	// of the parent Windows and find one that can.
-	WindowList windowList;
+    // If we can't find a Widget that will accept this event, try and recurse all
+    // of the parent Windows and find one that can.
+    WindowList windowList;
 
-	Window* parent = container.back()->getParent();
+    Window* parent = container.back()->getParent();
 
-	if(parent) {
-		parent->getParentList(windowList);
+    if(parent) {
+        parent->getParentList(windowList);
 
-		// A WindowList from getParentList includes the Window the method was called
-		// on, and the entire tree of parentage. 
-		for(WindowList::iterator i = windowList.begin(); i != windowList.end(); i++) {
-			Window* window = i->get();
+        // A WindowList from getParentList includes the Window the method was called
+        // on, and the entire tree of parentage. 
+        for(WindowList::iterator i = windowList.begin(); i != windowList.end(); i++) {
+            Window* window = i->get();
 
-			if(window->getEventMask() & ev.type) {
-				ev._window = window;
+            if(window->getEventMask() & ev.type) {
+                ev._window = window;
 
-				return window;
-			}
-		}
-	}
+                return window;
+            }
+        }
+    }
 
-	return 0;
+    return 0;
 }
 
 }

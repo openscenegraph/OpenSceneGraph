@@ -8,68 +8,69 @@
 
 namespace osgWidget {
 
-class OSGWIDGET_EXPORT Input: public Label {
-	point_type _xoff;
-	point_type _yoff;
+class OSGWIDGET_EXPORT Input: public Label
+{
+    public:
+        Input(const std::string& = "", const std::string& = "", unsigned int = 20);
 
-	unsigned int _index;
-	unsigned int _size;
-	unsigned int _cursorIndex;
-	unsigned int _maxSize;
+        virtual void parented   (Window*);
+        virtual void positioned ();
 
-	std::vector<point_type> _offsets;
-	osg::ref_ptr<Widget>    _cursor;
+        virtual bool focus   (WindowManager*);
+        virtual bool unfocus (WindowManager*);
+        virtual bool keyUp   (int, int, WindowManager*);
+        virtual bool keyDown (int, int, WindowManager*);
 
-protected:
-	virtual void _calculateSize(const XYCoord&);
+        void setCursor(Widget*);
 
-	void _calculateCursorOffsets();
+        void setXOffset(point_type xo) {
+            _xoff = xo;
+        }
 
-public:
-	Input(const std::string& = "", const std::string& = "", unsigned int = 20);
+        void setYOffset(point_type yo) {
+            _yoff = yo;
+        }
 
-	virtual void parented   (Window*);
-	virtual void positioned ();
+        void setXYOffset(point_type xo, point_type yo) {
+            _xoff = xo;
+            _yoff = yo;
+        }
 
-	virtual bool focus   (WindowManager*);
-	virtual bool unfocus (WindowManager*);
-	virtual bool keyUp   (int, int, WindowManager*);
-	virtual bool keyDown (int, int, WindowManager*);
+        osg::Drawable* getCursor() {
+            return _cursor.get();
+        }
 
-	void setCursor(Widget*);
+        const osg::Drawable* getCursor() const {
+            return _cursor.get();
+        }
 
-	void setXOffset(point_type xo) {
-		_xoff = xo;
-	}
+        point_type getXOffset() const {
+            return _xoff;
+        }
 
-	void setYOffset(point_type yo) {
-		_yoff = yo;
-	}
+        point_type getYOffset() const {
+            return _yoff;
+        }
 
-	void setXYOffset(point_type xo, point_type yo) {
-		_xoff = xo;
-		_yoff = yo;
-	}
+        XYCoord getXYOffset() const {
+            return XYCoord(_xoff, _yoff);
+        }
 
-	osg::Drawable* getCursor() {
-		return _cursor.get();
-	}
+    protected:
+        virtual void _calculateSize(const XYCoord&);
 
-	const osg::Drawable* getCursor() const {
-		return _cursor.get();
-	}
+        void _calculateCursorOffsets();
 
-	point_type getXOffset() const {
-		return _xoff;
-	}
+        point_type _xoff;
+        point_type _yoff;
 
-	point_type getYOffset() const {
-		return _yoff;
-	}
+        unsigned int _index;
+        unsigned int _size;
+        unsigned int _cursorIndex;
+        unsigned int _maxSize;
 
-	XYCoord getXYOffset() const {
-		return XYCoord(_xoff, _yoff);
-	}
+        std::vector<point_type> _offsets;
+        osg::ref_ptr<Widget>    _cursor;
 };
 
 }

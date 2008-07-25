@@ -8,30 +8,33 @@
 
 namespace osgWidget {
 
-class OSGWIDGET_EXPORT Box: public Window {
-public:
-	enum BOX_TYPE {
-		VERTICAL,
-		HORIZONTAL
-	};
+class OSGWIDGET_EXPORT Box: public Window
+{
+    public:
+        enum BOX_TYPE {
+            VERTICAL,
+            HORIZONTAL
+        };
 
-private:
-	BOX_TYPE     _boxType;
-	bool         _uniform;
-	unsigned int _lastAdd;
+        META_Object   (osgWidget, Box);
+        META_UIObject (Box);
 
-protected:
-	virtual void _resizeImplementation(point_type, point_type);
+        Box (const std::string& = "", BOX_TYPE = HORIZONTAL, bool = false);
+        Box (const Box&, const osg::CopyOp&);
 
-	virtual Sizes _getWidthImplementation  () const;
-	virtual Sizes _getHeightImplementation () const;
+    protected:
 
-public:
-	META_Object   (osgWidget, Box);
-	META_UIObject (Box);
+        virtual void _resizeImplementation(point_type, point_type);
 
-	Box (const std::string& = "", BOX_TYPE = HORIZONTAL, bool = false);
-	Box (const Box&, const osg::CopyOp&);
+        virtual Sizes _getWidthImplementation  () const;
+        virtual Sizes _getHeightImplementation () const;
+
+    private:
+
+        BOX_TYPE     _boxType;
+        bool         _uniform;
+        unsigned int _lastAdd;
+
 };
 
 }

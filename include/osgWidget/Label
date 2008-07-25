@@ -10,48 +10,45 @@
 
 namespace osgWidget {
 
-class OSGWIDGET_EXPORT Label: public Widget {
-	unsigned int _textIndex;
+class OSGWIDGET_EXPORT Label: public Widget
+{
+    public:
 
-protected:
-	osg::ref_ptr<osgText::Text> _text;
+        META_Object   (osgWidget, Label);
+        META_UIObject (Label);
 
-	virtual void _calculateSize(const XYCoord&);
+        Label (const std::string& = "", const std::string& = "");
+        Label (const Label&, const osg::CopyOp&);
 
-public:
-	META_Object   (osgWidget, Label);
-	META_UIObject (Label);
+        virtual void parented   (Window*);
+        virtual void unparented (Window*);
+        virtual void managed    (WindowManager*);
+        virtual void positioned ();
 
-	Label (const std::string& = "", const std::string& = "");
-	Label (const Label&, const osg::CopyOp&);
+        void update       ();
+        void setLabel     (const std::string&);
+        void setFont      (const std::string&);
+        void setFontSize  (unsigned int);
+        void setFontColor (const Color&);
+        void setShadow    (point_type);
 
-	virtual void parented   (Window*);
-	virtual void unparented (Window*);
-	virtual void managed    (WindowManager*);
-	virtual void positioned ();
+        XYCoord getTextSize() const;
 
-	void update       ();
-	void setLabel     (const std::string&);
-	void setFont      (const std::string&);
-	void setFontSize  (unsigned int);
-	void setFontColor (const Color&);
-	void setShadow    (point_type);
+        std::string getLabel() const { return _text->getText().createUTF8EncodedString(); }
 
-	XYCoord getTextSize() const;
+        void setFontColor(point_type r, point_type g, point_type b, point_type a) { setFontColor(Color(r, g, b, a)); }
 
-	std::string getLabel() const {
-		return _text->getText().createUTF8EncodedString();
-	}
+        // For now you only get a const pointer, because we have a highly specific
+        // interface with the osgText library.
+        const osgText::Text* getText() const { return _text.get(); }
 
-	void setFontColor(point_type r, point_type g, point_type b, point_type a) {
-		setFontColor(Color(r, g, b, a));
-	}
+    protected:
 
-	// For now you only get a const pointer, because we have a highly specific
-	// interface with the osgText library.
-	const osgText::Text* getText() const {
-		return _text.get();
-	}
+        osg::ref_ptr<osgText::Text> _text;
+        unsigned int _textIndex;
+
+        virtual void _calculateSize(const XYCoord&);
+
 };
 
 }

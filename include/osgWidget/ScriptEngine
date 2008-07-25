@@ -11,17 +11,18 @@ namespace osgWidget {
 // An interface for our scripting API so that we can have a unified way to talk to both
 // Lua and Python; perhaps even more! Furthermore, this will allow us to put the
 // entire implementation into a source file...
-class ScriptEngine: public osg::Referenced {
-protected:
-	std::string _err;
+class ScriptEngine: public osg::Referenced
+{
+    public:
+        virtual bool initialize () { return false; }
+        virtual bool close      () { return false; }
+        virtual bool eval       (const std::string&) { return false; }
+        virtual bool runFile    (const std::string&) { return false; }
 
-public:
-	virtual bool initialize () { return false; }
-	virtual bool close      () { return false; }
-	virtual bool eval       (const std::string&) { return false; }
-	virtual bool runFile    (const std::string&) { return false; }
+        virtual const std::string& getLastErrorText() const { return _err; }
+    protected:
+        std::string _err;
 
-	virtual const std::string& getLastErrorText() const { return _err; }
 };
 
 }

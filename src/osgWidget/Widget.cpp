@@ -211,43 +211,43 @@ void Widget::setDimensions(point_type x, point_type y, point_type w, point_type 
 	(*verts)[UL].set(x,     y + h, z);
 }
 
-void Widget::setColor(color_type r, color_type g, color_type b, color_type a, POINT p) {
+void Widget::setColor(color_type r, color_type g, color_type b, color_type a, Corner p) {
 	ColorArray* cols = _cols();
 
-	if(p == ALL_POINTS) {
+	if(p == ALL_CORNERS) {
 		(*cols)[LL].set(r, g, b, a);
 		(*cols)[LR].set(r, g, b, a);
 		(*cols)[UR].set(r, g, b, a);
 		(*cols)[UL].set(r, g, b, a);
 	}
 
-	else (*cols)[convertPoint(p)].set(r, g, b, a);
+	else (*cols)[convertCorner(p)].set(r, g, b, a);
 }
 
-void Widget::addColor(color_type r, color_type g, color_type b, color_type a, POINT p) {
+void Widget::addColor(color_type r, color_type g, color_type b, color_type a, Corner p) {
 	ColorArray* cols = _cols();
 	
-	if(p == ALL_POINTS) {
+	if(p == ALL_CORNERS) {
 		(*cols)[LL] += Color(r, g, b, a);
 		(*cols)[LR] += Color(r, g, b, a);
 		(*cols)[UR] += Color(r, g, b, a);
 		(*cols)[UL] += Color(r, g, b, a);
 	}
 
-	else (*cols)[convertPoint(p)] += Color(r, g, b, a);
+	else (*cols)[convertCorner(p)] += Color(r, g, b, a);
 }
 
-void Widget::setTexCoord(texcoord_type tx, texcoord_type ty, POINT p) {
+void Widget::setTexCoord(texcoord_type tx, texcoord_type ty, Corner p) {
 	TexCoordArray* texs = _texs();
 
-	if(p == ALL_POINTS) {
+	if(p == ALL_CORNERS) {
 		(*texs)[LL].set(tx, ty);
 		(*texs)[LR].set(tx, ty);
 		(*texs)[UR].set(tx, ty);
 		(*texs)[UL].set(tx, ty);
 	}
 
-	else (*texs)[convertPoint(p)].set(tx, ty);
+	else (*texs)[convertCorner(p)].set(tx, ty);
 }
 
 void Widget::setTexCoordRegion(point_type x, point_type y, point_type w, point_type h) {
@@ -446,33 +446,33 @@ point_type Widget::getPadVertical() const {
 	return _padTop + _padBottom;
 }
 
-const Point& Widget::getPoint(POINT p) const {
-	POINT point = p;
+const Point& Widget::getPoint(Corner p) const {
+	Corner point = p;
 
-	if(p == ALL_POINTS) point = UPPER_LEFT;
+	if(p == ALL_CORNERS) point = UPPER_LEFT;
 
-	return (*_verts())[convertPoint(point)];
+	return (*_verts())[convertCorner(point)];
 }
 
-const Color& Widget::getColor(POINT p) const {
-	POINT point = p;
+const Color& Widget::getColor(Corner p) const {
+	Corner point = p;
 
-	if(p == ALL_POINTS) point = UPPER_LEFT;
+	if(p == ALL_CORNERS) point = UPPER_LEFT;
 
-	return (*_cols())[convertPoint(point)];
+	return (*_cols())[convertCorner(point)];
 }
 
-const TexCoord& Widget::getTexCoord(POINT p) const {
-	POINT point = p;
+const TexCoord& Widget::getTexCoord(Corner p) const {
+	Corner point = p;
 
-	if(p == ALL_POINTS) point = UPPER_LEFT;
+	if(p == ALL_CORNERS) point = UPPER_LEFT;
 
-	return (*_texs())[convertPoint(point)];
+	return (*_texs())[convertCorner(point)];
 }
 
 // This converts our points back and forth depding on whether or not we're in an
 // inverted-Y WindowManager.
-Widget::POINT Widget::convertPoint(POINT p) const {
+Widget::Corner Widget::convertCorner(Corner p) const {
 	const WindowManager* wm = getWindowManager();
 
 	if(!wm || !wm->isInvertedY()) return p;

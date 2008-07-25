@@ -91,6 +91,7 @@ public:
 
     osg::Image* readImage(std::string s);
     osg::Image* readImage(IncludeImageMode mode);
+    osg::Image* readImage();
     osg::StateSet* readStateSet();
     osg::StateAttribute* readStateAttribute();
     osg::Uniform* readUniform();

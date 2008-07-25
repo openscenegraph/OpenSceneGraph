@@ -94,6 +94,7 @@ public:
     void writeShape(const osg::Shape* sa);
     void writeNode(const osg::Node* sa);
     void writeImage(IncludeImageMode mode, osg::Image *image);
+    void writeImage(osg::Image *image);
 
     void writeLayer(const osgTerrain::Layer* layer);
     void writeLocator(const osgTerrain::Locator* locator);

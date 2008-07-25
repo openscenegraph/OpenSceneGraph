@@ -105,6 +105,11 @@ class OSG_EXPORT ImageSequence : public ImageStream
         Images                          _images;
         Images::iterator                _imageIterator;
         double                          _imageIteratorTime;
+        
+        typedef std::pair< std::string, osg::ref_ptr<osg::Image> >  FileNameImagePair;
+        typedef std::list< FileNameImagePair >  FileNameImageList;
+        
+        FileNameImageList               _filesRequested;
 
 };
 

@@ -67,6 +67,14 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
             std::string     _name;
         };
 
+
+        ImageThread* getImageThread(unsigned int i) { return _imageThreads[i].get(); }
+        
+        const ImageThread* getImageThread(unsigned int i) const { return _imageThreads[i].get(); }
+
+        unsigned int getNumImageThreads() const { return _imageThreads.size(); }
+        
+
         virtual void requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp);
 
         /** Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
@@ -144,8 +152,11 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         bool                        _databasePagerThreadPaused;
         
         osg::ref_ptr<ReadQueue>     _readQueue;
-        osg::ref_ptr<ImageThread>   _imageThread;
         
+        typedef std::vector< osg::ref_ptr<ImageThread> > ImageThreads;
+        ImageThreads                _imageThreads;
+        
+        osg::ref_ptr<RequestQueue>  _completedQueue;
 };
 
 

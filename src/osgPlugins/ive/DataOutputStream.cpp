@@ -53,6 +53,7 @@
 #include "Viewport.h"
 #include "Scissor.h"
 #include "Image.h"
+#include "ImageSequence.h"
 #include "PointSprite.h"
 #include "Multisample.h"
 #include "Fog.h"
@@ -1091,6 +1092,29 @@ void DataOutputStream::writeNode(const osg::Node* node)
             throw Exception("Unknown node in Group::write()");
 
         if (_verboseOutput) std::cout<<"read/writeNode() ["<<id<<"]"<<std::endl;
+    }
+}
+
+void DataOutputStream::writeImage(osg::Image *image)
+{
+    if ( getVersion() >= VERSION_0029)
+    {
+        osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(image);
+        if (is)
+        {
+            ((ive::ImageSequence*)(is))->write(this);
+        }
+        else
+        {
+            writeInt(IVEIMAGE);
+            writeChar(getIncludeImageMode());
+            writeImage(getIncludeImageMode(),image);
+        }
+    }
+    else
+    {
+        writeChar(getIncludeImageMode());
+        writeImage(getIncludeImageMode(),image);
     }
 }
 

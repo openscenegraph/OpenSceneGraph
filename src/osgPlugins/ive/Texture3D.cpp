@@ -33,10 +33,7 @@ void Texture3D::write(DataOutputStream* out){
     // Write image.
 
     // Should we include images date in stream
-    IncludeImageMode includeImg = out->getIncludeImageMode();
-    out->writeChar(includeImg);
-
-    out->writeImage(includeImg,getImage());
+    out->writeImage(getImage());
 }
 
 void Texture3D::read(DataInputStream* in){
@@ -55,9 +52,7 @@ void Texture3D::read(DataInputStream* in){
         // Read image.
         
         // Should we read image data from stream
-        IncludeImageMode includeImg = (IncludeImageMode)in->readChar();
-
-        osg::Image *image = in->readImage(includeImg);
+        osg::Image *image = in->readImage();
         if(image) {
             setImage(image);
         }

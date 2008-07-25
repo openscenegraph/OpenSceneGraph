@@ -38,16 +38,28 @@ void TextureCubeMap::write(DataOutputStream* out){
     // Write number of mipmap levels
     out->writeInt(getNumMipmapLevels());
 
-    // Should we include images date in stream
-    IncludeImageMode includeImg = out->getIncludeImageMode();
-    out->writeChar(includeImg);
+    if (out->getVersion() >= VERSION_0029)
+    {
+        out->writeImage(getImage(osg::TextureCubeMap::POSITIVE_X));
+        out->writeImage(getImage(osg::TextureCubeMap::NEGATIVE_X));
+        out->writeImage(getImage(osg::TextureCubeMap::POSITIVE_Y));
+        out->writeImage(getImage(osg::TextureCubeMap::NEGATIVE_Y));
+        out->writeImage(getImage(osg::TextureCubeMap::POSITIVE_Z));
+        out->writeImage(getImage(osg::TextureCubeMap::NEGATIVE_Z));
+    }
+    else
+    {
+        // Should we include images date in stream
+        IncludeImageMode includeImg = out->getIncludeImageMode();
+        out->writeChar(includeImg);
 
-    out->writeImage(includeImg,getImage(osg::TextureCubeMap::POSITIVE_X));
-    out->writeImage(includeImg,getImage(osg::TextureCubeMap::NEGATIVE_X));
-    out->writeImage(includeImg,getImage(osg::TextureCubeMap::POSITIVE_Y));
-    out->writeImage(includeImg,getImage(osg::TextureCubeMap::NEGATIVE_Y));
-    out->writeImage(includeImg,getImage(osg::TextureCubeMap::POSITIVE_Z));
-    out->writeImage(includeImg,getImage(osg::TextureCubeMap::NEGATIVE_Z));
+        out->writeImage(includeImg,getImage(osg::TextureCubeMap::POSITIVE_X));
+        out->writeImage(includeImg,getImage(osg::TextureCubeMap::NEGATIVE_X));
+        out->writeImage(includeImg,getImage(osg::TextureCubeMap::POSITIVE_Y));
+        out->writeImage(includeImg,getImage(osg::TextureCubeMap::NEGATIVE_Y));
+        out->writeImage(includeImg,getImage(osg::TextureCubeMap::POSITIVE_Z));
+        out->writeImage(includeImg,getImage(osg::TextureCubeMap::NEGATIVE_Z));
+    }
 }
 
 void TextureCubeMap::read(DataInputStream* in)
@@ -74,15 +86,27 @@ void TextureCubeMap::read(DataInputStream* in)
         // Read number of mipmap levels
         setNumMipmapLevels((unsigned int)in->readInt());
 
-        // Should we read image data from stream
-        IncludeImageMode includeImg = (IncludeImageMode)in->readChar();
+        if (in->getVersion() >= VERSION_0029)
+        {
+            setImage(osg::TextureCubeMap::POSITIVE_X,in->readImage());
+            setImage(osg::TextureCubeMap::NEGATIVE_X,in->readImage());
+            setImage(osg::TextureCubeMap::POSITIVE_Y,in->readImage());
+            setImage(osg::TextureCubeMap::NEGATIVE_Y,in->readImage());
+            setImage(osg::TextureCubeMap::POSITIVE_Z,in->readImage());
+            setImage(osg::TextureCubeMap::NEGATIVE_Z,in->readImage());
+        }
+        else
+        {
+            // Should we read image data from stream
+            IncludeImageMode includeImg = (IncludeImageMode)in->readChar();
 
-        setImage(osg::TextureCubeMap::POSITIVE_X,in->readImage(includeImg));
-        setImage(osg::TextureCubeMap::NEGATIVE_X,in->readImage(includeImg));
-        setImage(osg::TextureCubeMap::POSITIVE_Y,in->readImage(includeImg));
-        setImage(osg::TextureCubeMap::NEGATIVE_Y,in->readImage(includeImg));
-        setImage(osg::TextureCubeMap::POSITIVE_Z,in->readImage(includeImg));
-        setImage(osg::TextureCubeMap::NEGATIVE_Z,in->readImage(includeImg));
+            setImage(osg::TextureCubeMap::POSITIVE_X,in->readImage(includeImg));
+            setImage(osg::TextureCubeMap::NEGATIVE_X,in->readImage(includeImg));
+            setImage(osg::TextureCubeMap::POSITIVE_Y,in->readImage(includeImg));
+            setImage(osg::TextureCubeMap::NEGATIVE_Y,in->readImage(includeImg));
+            setImage(osg::TextureCubeMap::POSITIVE_Z,in->readImage(includeImg));
+            setImage(osg::TextureCubeMap::NEGATIVE_Z,in->readImage(includeImg));
+        }
         
     }
     else{

@@ -487,3 +487,5 @@ STD_VECTOR_REFLECTOR(std::vector< osg::Matrix >)
 
 STD_VECTOR_REFLECTOR(std::vector< osg::NodePath >)
 
+STD_VECTOR_REFLECTOR(std::vector< std::string >)
+

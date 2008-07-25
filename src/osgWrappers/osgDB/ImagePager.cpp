@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/FrameStamp>
+#include <osg/Image>
 #include <osg/Object>
 #include <osgDB/ImagePager>
 
@@ -28,6 +29,36 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ImagePager)
 	I_Constructor0(____ImagePager,
 	               "",
 	               "");
+	I_Method1(osgDB::ImagePager::ImageThread *, getImageThread, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __ImageThread_P1__getImageThread__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osgDB::ImagePager::ImageThread *, getImageThread, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_ImageThread_P1__getImageThread__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumImageThreads,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumImageThreads,
+	          "",
+	          "");
+	I_Method1(void, setPreLoadTime, IN, double, preLoadTime,
+	          Properties::NON_VIRTUAL,
+	          __void__setPreLoadTime__double,
+	          "",
+	          "");
+	I_Method0(double, getPreLoadTime,
+	          Properties::VIRTUAL,
+	          __double__getPreLoadTime,
+	          "",
+	          "");
+	I_Method1(osg::Image *, readImageFile, IN, const std::string &, fileName,
+	          Properties::VIRTUAL,
+	          __osg_Image_P1__readImageFile__C5_std_string_R1,
+	          "",
+	          "");
 	I_Method4(void, requestImageFile, IN, const std::string &, fileName, IN, osg::Object *, attachmentPoint, IN, double, timeToMergeBy, IN, const osg::FrameStamp *, framestamp,
 	          Properties::VIRTUAL,
 	          __void__requestImageFile__C5_std_string_R1__osg_Object_P1__double__C5_osg_FrameStamp_P1,
@@ -48,6 +79,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ImagePager)
 	          __int__cancel,
 	          "",
 	          "");
+	I_ArrayProperty(osgDB::ImagePager::ImageThread *, ImageThread, 
+	                __ImageThread_P1__getImageThread__unsigned_int, 
+	                0, 
+	                __unsigned_int__getNumImageThreads, 
+	                0, 
+	                0, 
+	                0);
+	I_SimpleProperty(double, PreLoadTime, 
+	                 __double__getPreLoadTime, 
+	                 __void__setPreLoadTime__double);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ImagePager::ImageThread::Mode)

@@ -32,9 +32,6 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
     
         ImagePager();
           
-          
-
-
         class OSGDB_EXPORT ImageThread : public osg::Referenced, public OpenThreads::Thread
         {
         public:
@@ -75,7 +72,13 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         unsigned int getNumImageThreads() const { return _imageThreads.size(); }
         
 
+        void setPreLoadTime(double preLoadTime) { _preLoadTime=preLoadTime; }
+        virtual double getPreLoadTime() const { return _preLoadTime; }
+
+        virtual osg::Image* readImageFile(const std::string& fileName);
+
         virtual void requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp);
+
 
         /** Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
         virtual bool requiresUpdateSceneGraph() const;
@@ -157,6 +160,8 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         ImageThreads                _imageThreads;
         
         osg::ref_ptr<RequestQueue>  _completedQueue;
+        
+        double                      _preLoadTime;
 };
 
 

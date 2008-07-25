@@ -19,6 +19,7 @@
 #include <osg/FrameStamp>
 #include <osg/Geode>
 #include <osg/Group>
+#include <osg/Image>
 #include <osg/LOD>
 #include <osg/LightSource>
 #include <osg/MatrixTransform>
@@ -416,11 +417,24 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::NodeVisitor::ImageRequestHandler)
 	I_Constructor0(____ImageRequestHandler,
 	               "",
 	               "");
+	I_Method0(double, getPreLoadTime,
+	          Properties::PURE_VIRTUAL,
+	          __double__getPreLoadTime,
+	          "",
+	          "");
+	I_Method1(osg::Image *, readImageFile, IN, const std::string &, fileName,
+	          Properties::PURE_VIRTUAL,
+	          __osg_Image_P1__readImageFile__C5_std_string_R1,
+	          "",
+	          "");
 	I_Method4(void, requestImageFile, IN, const std::string &, fileName, IN, osg::Object *, attachmentPoint, IN, double, timeToMergeBy, IN, const osg::FrameStamp *, framestamp,
 	          Properties::PURE_VIRTUAL,
 	          __void__requestImageFile__C5_std_string_R1__osg_Object_P1__double__C5_FrameStamp_P1,
 	          "",
 	          "");
+	I_SimpleProperty(double, PreLoadTime, 
+	                 __double__getPreLoadTime, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Referenced >)

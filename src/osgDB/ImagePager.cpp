@@ -244,6 +244,9 @@ ImagePager::ImagePager():
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 1"));
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 2"));
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 3"));
+
+    // 100ms
+    _preLoadTime = 0.1;
 }
 
 ImagePager::~ImagePager()
@@ -277,6 +280,11 @@ int ImagePager::cancel()
 
     //std::cout<<"DatabasePager::~DatabasePager() stopped running"<<std::endl;
     return result;
+}
+
+osg::Image* ImagePager::readImageFile(const std::string& fileName)
+{
+    return osgDB::readImageFile(fileName);
 }
 
 void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp)

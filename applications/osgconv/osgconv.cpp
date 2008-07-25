@@ -17,6 +17,7 @@
 #include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReaderWriter>
+#include <osgDB/PluginQuery>
 
 #include <osgUtil/Optimizer>
 #include <osgUtil/Simplifier>
@@ -28,7 +29,6 @@
 #include <iostream>
 
 #include "OrientationConverter.h"
-#include "PluginQuery.h"
 
 typedef std::vector<std::string> FileNameList;
 

@@ -12,7 +12,7 @@
 #include <osgDB/FileUtils>
 #include <osg/Version>
 
-#include "PluginQuery.h"
+#include <osgDB/PluginQuery>
 
 using namespace osgDB;
 
@@ -43,6 +43,18 @@ FileNameList osgDB::listAllAvailablePlugins()
 
 bool osgDB::queryPlugin(const std::string& fileName, ReaderWriterInfoList& infoList)
 {
+    typedef std::set<const ReaderWriter*> ReaderWriterSet;
+    ReaderWriterSet previouslyLoadedReaderWriters;
+
+    const Registry::ReaderWriterList& rwList = osgDB::Registry::instance()->getReaderWriterList();
+    for(Registry::ReaderWriterList::const_iterator itr = rwList.begin();
+        itr != rwList.end();
+        ++itr)
+    {
+        const ReaderWriter* rw = itr->get();
+        previouslyLoadedReaderWriters.insert(rw);
+    }
+
     if (osgDB::Registry::instance()->loadLibrary(fileName))
     {
         const Registry::ReaderWriterList& rwList = osgDB::Registry::instance()->getReaderWriterList();
@@ -51,14 +63,18 @@ bool osgDB::queryPlugin(const std::string& fileName, ReaderWriterInfoList& infoL
             ++itr)
         {
             const ReaderWriter* rw = itr->get();
-            osg::ref_ptr<ReaderWriterInfo> rwi = new ReaderWriterInfo;
-            rwi->plugin = fileName;
-            rwi->description = rw->className();
-            rwi->protocols = rw->supportedProtocols();
-            rwi->extensions = rw->supportedExtensions();
-            rwi->options = rw->supportedOptions();
             
-            infoList.push_back(rwi.get());
+            if (previouslyLoadedReaderWriters.count(rw)==0)
+            {
+                osg::ref_ptr<ReaderWriterInfo> rwi = new ReaderWriterInfo;
+                rwi->plugin = fileName;
+                rwi->description = rw->className();
+                rwi->protocols = rw->supportedProtocols();
+                rwi->extensions = rw->supportedExtensions();
+                rwi->options = rw->supportedOptions();
+
+                infoList.push_back(rwi.get());
+            }
         }
 
         osgDB::Registry::instance()->closeLibrary(fileName);

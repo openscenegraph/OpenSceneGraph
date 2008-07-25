@@ -41,10 +41,9 @@ ImageSequence::ImageSequence()
     _referenceTime = DBL_MAX;
     _timeMultiplier = 1.0;
 
+    _mode = PRE_LOAD_ALL_IMAGES;
     _duration = 1.0;
-    _preLoadTime = 1.0;
     _timePerImage = 1.0;
-    _pruneOldImages = true;
 
     _fileNamesIterator = _fileNames.end();
     _fileNamesIteratorTime = DBL_MAX;
@@ -57,10 +56,9 @@ ImageSequence::ImageSequence(const ImageSequence& is,const CopyOp& copyop):
     osg::ImageStream(is,copyop),
     _referenceTime(is._referenceTime),
     _timeMultiplier(is._timeMultiplier),
+    _mode(is._mode),
     _duration(is._duration),
-    _timePerImage(is._timePerImage),
-    _preLoadTime(is._preLoadTime),
-    _pruneOldImages(is._pruneOldImages)
+    _timePerImage(is._timePerImage)
 {
     _fileNamesIterator = _fileNames.end();
     _fileNamesIteratorTime = DBL_MAX;
@@ -162,6 +160,8 @@ void ImageSequence::setImageToChild(const osg::Image* image)
 {
     // osg::notify(osg::NOTICE)<<"setImageToChild("<<image<<")"<<std::endl;
 
+    if (image==0) return;
+
     setImage(image->s(),image->t(),image->r(),
              image->getInternalTextureFormat(),
              image->getPixelFormat(),image->getDataType(),
@@ -195,15 +195,47 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     }
     
     double time = (fs->getSimulationTime() - _referenceTime)*_timeMultiplier;
-    double preLoadTime = (time+_preLoadTime)*_timeMultiplier;
             
     FileNames::iterator previous_fileNamesIterator = _fileNamesIterator;
     Images::iterator previous_imageIterator = _imageIterator;
     
+    bool pruneOldImages = false;
+    
+    bool looping = getLoopingMode()==LOOPING;
+
+    switch(_mode)
+    {
+        case(PRE_LOAD_ALL_IMAGES):
+        {
+            if (_fileNames.size()>_images.size())
+            {
+                for(unsigned int i=_images.size(); i<_fileNames.size(); ++i)
+                {
+                    osg::Image* image = irh->readImageFile(_fileNames[i]);
+                    _images.push_back(image);
+                }
+            }
+        
+            irh = 0;
+            break;
+        }
+        case(PAGE_AND_RETAIN_IMAGES):
+        {
+            break;
+        }
+        case(PAGE_AND_DISCARD_USED_IMAGES):
+        {
+            pruneOldImages = true;
+            break;
+        }
+    }
+
     // osg::notify(osg::NOTICE)<<"time = "<<time<<std::endl;
 
     if (irh)
     {
+        double preLoadTime = (time+irh->getPreLoadTime())*_timeMultiplier;
+
         //
         // Advance imageIterator
         //
@@ -254,7 +286,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
                 if (_imageIterator ==_images.end())
                 {
 
-                    if (_pruneOldImages)
+                    if (pruneOldImages)
                     {
                         _images.erase(previous_imageIterator, _imageIterator);
                         previous_imageIterator = _images.begin();
@@ -274,7 +306,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         
     if (_imageIterator!=_images.end() && previous_imageIterator != _imageIterator)
     {
-        if (_pruneOldImages)
+        if (pruneOldImages)
         {
             _images.erase(previous_imageIterator, _imageIterator);
         }

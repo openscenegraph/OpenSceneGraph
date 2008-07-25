@@ -291,6 +291,10 @@ class OSG_EXPORT NodeVisitor : public virtual Referenced
         
             ImageRequestHandler():
                 Referenced(true) {}
+
+            virtual double getPreLoadTime() const = 0;
+            
+            virtual osg::Image* readImageFile(const std::string& fileName) = 0;
         
             virtual void requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const FrameStamp* framestamp) = 0;
             

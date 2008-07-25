@@ -27,7 +27,14 @@
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Image > >, osg::ImageSequence::Images)
 
-TYPE_NAME_ALIAS(std::list< std::string >, osg::ImageSequence::FileNames)
+TYPE_NAME_ALIAS(std::vector< std::string >, osg::ImageSequence::FileNames)
+
+BEGIN_ENUM_REFLECTOR(osg::ImageSequence::Mode)
+	I_DeclaringFile("osg/ImageSequence");
+	I_EnumLabel(osg::ImageSequence::PRE_LOAD_ALL_IMAGES);
+	I_EnumLabel(osg::ImageSequence::PAGE_AND_RETAIN_IMAGES);
+	I_EnumLabel(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES);
+END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	I_DeclaringFile("osg/ImageSequence");
@@ -89,6 +96,16 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	          __double__getTimeMultiplier,
 	          "",
 	          "");
+	I_Method1(void, setMode, IN, osg::ImageSequence::Mode, mode,
+	          Properties::NON_VIRTUAL,
+	          __void__setMode__Mode,
+	          "",
+	          "");
+	I_Method0(osg::ImageSequence::Mode, getMode,
+	          Properties::NON_VIRTUAL,
+	          __Mode__getMode,
+	          "",
+	          "");
 	I_Method1(void, setDuration, IN, double, duration,
 	          Properties::NON_VIRTUAL,
 	          __void__setDuration__double,
@@ -97,26 +114,6 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	I_Method0(double, getDuration,
 	          Properties::NON_VIRTUAL,
 	          __double__getDuration,
-	          "",
-	          "");
-	I_Method1(void, setPreLoadTime, IN, double, preLoadTime,
-	          Properties::NON_VIRTUAL,
-	          __void__setPreLoadTime__double,
-	          "",
-	          "");
-	I_Method0(double, getPreLoadTime,
-	          Properties::NON_VIRTUAL,
-	          __double__getPreLoadTime,
-	          "",
-	          "");
-	I_Method1(void, setPruneOldImages, IN, bool, prune,
-	          Properties::NON_VIRTUAL,
-	          __void__setPruneOldImages__bool,
-	          "",
-	          "");
-	I_Method0(bool, getPruneOldImages,
-	          Properties::NON_VIRTUAL,
-	          __bool__getPruneOldImages,
 	          "",
 	          "");
 	I_Method1(void, addImageFile, IN, const std::string &, fileName,
@@ -175,12 +172,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	I_SimpleProperty(osg::ImageSequence::Images &, Images, 
 	                 __Images_R1__getImages, 
 	                 0);
-	I_SimpleProperty(double, PreLoadTime, 
-	                 __double__getPreLoadTime, 
-	                 __void__setPreLoadTime__double);
-	I_SimpleProperty(bool, PruneOldImages, 
-	                 __bool__getPruneOldImages, 
-	                 __void__setPruneOldImages__bool);
+	I_SimpleProperty(osg::ImageSequence::Mode, Mode, 
+	                 __Mode__getMode, 
+	                 __void__setMode__Mode);
 	I_SimpleProperty(double, ReferenceTime, 
 	                 __double__getReferenceTime, 
 	                 __void__setReferenceTime__double);
@@ -239,5 +233,5 @@ END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Image > >)
 
-STD_LIST_REFLECTOR(std::list< std::string >)
+STD_VECTOR_REFLECTOR(std::vector< std::string >)
 

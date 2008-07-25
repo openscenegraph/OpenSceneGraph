@@ -49,16 +49,20 @@ class OSG_EXPORT ImageSequence : public ImageStream
         virtual double getTimeMultiplier() const { return _timeMultiplier; }
 
         typedef std::list< osg::ref_ptr<osg::Image> >   Images;
-        typedef std::list< std::string >                FileNames;
+        typedef std::vector< std::string >              FileNames;
+        
+        enum Mode
+        {
+            PRE_LOAD_ALL_IMAGES,
+            PAGE_AND_RETAIN_IMAGES,
+            PAGE_AND_DISCARD_USED_IMAGES
+        };
+        
+        void setMode(Mode mode);
+        Mode getMode() const { return _mode; }
 
         void setDuration(double duration);
         double getDuration() const { return _duration; }
-        
-        void setPreLoadTime(double preLoadTime) { _preLoadTime = preLoadTime; }
-        double getPreLoadTime() const { return _preLoadTime; }
-
-        void setPruneOldImages(bool prune) { _pruneOldImages = prune; }
-        bool getPruneOldImages() const { return _pruneOldImages; }
 
         void addImageFile(const std::string& fileName);
         
@@ -89,10 +93,8 @@ class OSG_EXPORT ImageSequence : public ImageStream
         double                          _referenceTime;
         double                          _timeMultiplier;
 
+        Mode                            _mode;
         double                          _duration;
-        double                          _preLoadTime;
-        
-        bool                            _pruneOldImages;
 
         double                          _timePerImage;
 

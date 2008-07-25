@@ -1,3 +1,323 @@
+2008-07-25 20:50 +0000 [r8692-8694]  robert:
+
+	* Updated wrappers
+
+	* Renamed enums in osgWidget from ALLCAPITALS to normal OSG
+	  conventional of AllCapital
+
+	* Added PluginQuery function to wrappers
+
+2008-07-25 20:04 +0000 [r8691]  robert:
+
+	* Added OSGPL Copyright notices
+
+2008-07-25 19:57 +0000 [r8690]  robert:
+
+	* Restructured classes to better fit with style of the rest of the
+	  OSG.
+
+2008-07-25 19:53 +0000 [r8689]  robert:
+
+	* Added include to help wrapper building
+
+2008-07-25 18:44 +0000 [r8688]  robert:
+
+	* Improved handling of PAGE_AND_RETAIN_IMAGES
+
+2008-07-25 17:42 +0000 [r8687]  robert:
+
+	* Reverted back to using std::list<std::String>
+
+2008-07-25 16:23 +0000 [r8686]  robert:
+
+	* Added Mode support
+
+2008-07-25 16:11 +0000 [r8685]  robert:
+
+	* Updated wrappers, and further refined the ImageSequence API
+
+2008-07-25 15:45 +0000 [r8684]  robert:
+
+	* From Ulrich Hertlein, "as I hinted at on osg-users in the "obj
+	  loader: map_* only reads last component" thread, this submission
+	  broke material/texture loading for some files I have that specify
+	  texture matrix scaling. The following link shows a very
+	  comprehensive list of .mtl file options:
+	  http://local.wasp.uwa.edu.au/~pbourke/dataformats/mtl/ Attached
+	  is a patch that should fix spacey filenames and optional texture
+	  scale/offset. I have tested it with files I have that I modified
+	  to contain spaces in the texture filenames."
+
+2008-07-25 15:38 +0000 [r8683]  shuber:
+
+	* From Stephan Huber: updated XCode-project
+
+2008-07-25 13:45 +0000 [r8682]  robert:
+
+	* Added ImageSequence to .ive plugin, added support for multiple
+	  ImageThreads in osgDB::ImagePager
+
+2008-07-25 10:18 +0000 [r8680-8681]  robert:
+
+	* Moved PluginQuery from osgconv into osgDB
+
+	* Added extension docs
+
+2008-07-25 09:46 +0000 [r8679]  robert:
+
+	* Added option docs
+
+2008-07-24 17:38 +0000 [r8678]  robert:
+
+	* Added missing returns
+
+2008-07-24 13:25 +0000 [r8677]  robert:
+
+	* From Paul Martz, "Not sure about the descriptions, so I left
+	  those blank. But at least "osgconv --formats" will display the
+	  .ive options now."
+
+2008-07-24 12:48 +0000 [r8675-8676]  robert:
+
+	* Updated wrappers
+
+	* Added getCurrentCamera/getCurrentRenderStage methods
+
+2008-07-24 12:18 +0000 [r8674]  robert:
+
+	* Added a getCurrentRenderStage() and getCurrentCamera()
+	  convninience methods, and converted the
+	  CullVisitor::apply(OcclusionQueryNode&) implementation to use the
+	  new getCurrentCamera method.
+
+2008-07-24 12:06 +0000 [r8673]  robert:
+
+	* Improved the feedback for when a plugin isn't available.
+
+2008-07-24 12:01 +0000 [r8671-8672]  robert:
+
+	* Added supportOptions() entry docs
+
+	* Added --format extname and --plugin pluginname extensions, and
+	  improved formating
+
+2008-07-24 11:22 +0000 [r8670]  robert:
+
+	* From Bob Kuehne, "fix for filenames that have spaces within their
+	  name." Note form Robert, changed std::cout to
+	  osg::notify(osg::INFO)
+
+2008-07-23 22:19 +0000 [r8668-8669]  robert:
+
+	* Updated wrappers
+
+	* Refactored OverlayData so that its possible to subclass
+	  OverlayNode/OverlayData.
+
+2008-07-23 21:52 +0000 [r8666-8667]  robert:
+
+	* Added wrappers
+
+	* Moved helper classes into Protected section
+
+2008-07-23 21:25 +0000 [r8665]  robert:
+
+	* From Paul Martz, typo fixes
+
+2008-07-23 19:06 +0000 [r8663-8664]  robert:
+
+	* Applied filename fix suggested by Andrew Bettison.
+
+	* Implemented ImagePager internals
+
+2008-07-23 15:42 +0000 [r8662]  robert:
+
+	* Fixed unitialized variable
+
+2008-07-22 20:20 +0000 [r8661]  robert:
+
+	* Further work on ImageSequence
+
+2008-07-22 16:44 +0000 [r8660]  robert:
+
+	* Added support for pruning old images, recording the Duration in
+	  the .osg file, and -o filename output support in
+	  osgimagesequence.
+
+2008-07-22 15:58 +0000 [r8659]  robert:
+
+	* Improved position when multiple videos are provided
+
+2008-07-22 15:21 +0000 [r8658]  robert:
+
+	* Updated wrappers
+
+2008-07-22 14:47 +0000 [r8657]  robert:
+
+	* Fixed handling of TextureCubeMap's with
+	  mipmapped/ImageSequence/PBO's.
+
+2008-07-22 12:40 +0000 [r8656]  robert:
+
+	* Added ImageSequence IO support in Texture classes
+
+2008-07-22 12:28 +0000 [r8655]  robert:
+
+	* Added support for ImageSequence to all Texture classes
+
+2008-07-22 10:13 +0000 [r8654]  robert:
+
+	* Disabled the setting of Texture::setUnrefImageOnApply(true) when
+	  the imagery is an ImageStream.
+
+2008-07-22 09:02 +0000 [r8653]  robert:
+
+	* From Mario Valle, "The attached osgWidget source solves three
+	  compilation warnings on VC 7.1 on WindowsXP (OSG 2.5.5). BTW the
+	  construct is absolutely legal C++, but VC 7.1 has a different
+	  idea..."
+
+2008-07-21 23:42 +0000 [r8652]  robert:
+
+	* Moved osgViewer::ScreenCaptureHandler's WindowCaptureCallback
+	  from head into .cpp to clean up headers and avoid wrapper build
+	  issues. Updated wrappers
+
+2008-07-21 22:38 +0000 [r8651]  robert:
+
+	* Removed the reducent non const get methods
+
+2008-07-21 21:28 +0000 [r8650]  robert:
+
+	* From Jean-Sebastien Guay, "Changes attached so that the
+	  CaptureOperation is passed in the constructor of the
+	  ScreenCaptureHandler (default 0 = default CaptureOperation). This
+	  way, you can do: viewer.addEventHandler(new
+	  osgViewer::ScreenCaptureHandler( new
+	  osgViewer::WriteToFileCaptureOperation("filename", "jpg"))); and
+	  the filename will be what you want. The
+	  WriteToFileCaptureOperation will add the context ID and the file
+	  number (if in SEQUENTIAL_NUMBER mode) to the file name. (The
+	  attached also clarifies some notify messages, and corrects the
+	  comment when adding the handler in osgviewer.cpp) I also
+	  remembered, the current architecture could allow a different
+	  CaptureOperation for each context, but currently the API only
+	  allows setting one CaptureOperation for all contexts. This could
+	  be improved if need be. "
+
+2008-07-21 21:20 +0000 [r8649]  robert:
+
+	* From Ruth Lang, "using osg version 2.5.5 and compiling my program
+	  under OpenSUSE 11.0 with gcc (version 4.3.1) I got the following
+	  error message in include/osgUtil/TriStripVisitor and Tessellator
+	  error: type qualifiers ignored on function return type The errors
+	  belong all to a INLINE function definition. Find attached my
+	  modified version."
+
+2008-07-21 21:17 +0000 [r8648]  robert:
+
+	* From Mario Valle, signed/unsgined warning fix
+
+2008-07-21 21:00 +0000 [r8647]  robert:
+
+	* Further work on osg::ImageSequence/osgDB::ImagePager
+
+2008-07-21 20:44 +0000 [r8646]  robert:
+
+	* Upated version number for dev release
+
+2008-07-21 19:23 +0000 [r8645]  robert:
+
+	* Moved the ~Record body into the .cpp to avoid a MipsPro compile
+	  error (due to a compiler bug)
+
+2008-07-21 17:45 +0000 [r8644]  robert:
+
+	* Added call to OpenThreads::Thread::cancel();
+
+2008-07-21 17:39 +0000 [r8643]  robert:
+
+	* Updated wrappers
+
+2008-07-21 17:28 +0000 [r8641-8642]  robert:
+
+	* Added basic image sequencing
+
+	* Added non const getAuthenticationMap().
+
+2008-07-21 16:17 +0000 [r8640]  robert:
+
+	* Moved the if (!buffer) check to infront of the memory
+	  initialization
+
+2008-07-21 15:05 +0000 [r8638-8639]  robert:
+
+	* Added --login <url> <username> <password> http authentication.
+
+	* Added --login url username password http authentication option
+
+2008-07-21 10:57 +0000 [r8637]  robert:
+
+	* Initial cut of osgimagesequence example
+
+2008-07-21 10:48 +0000 [r8636]  shuber:
+
+	* From Stephan Huber: updated XCode-project
+
+2008-07-21 10:10 +0000 [r8635]  robert:
+
+	* Added ImagePager first cut, and updated wrappers
+
+2008-07-21 09:55 +0000 [r8634]  robert:
+
+	* Added first cut of ImageStream IO wrapper
+
+2008-07-21 09:47 +0000 [r8632-8633]  robert:
+
+	* First cut of osgDB::ImagePager for updating osg::ImageSequence
+
+	* First cut of osg::ImageSequence class
+
+2008-07-18 21:17 +0000 [r8631]  robert:
+
+	* From Adrain Elgi, added osgGA to link list
+
+2008-07-18 11:39 +0000 [r8630]  robert:
+
+	* Introduce a custom atof function that always assumes data comes
+	  in form 10.10 with the full stop used as a decimal place.
+
+2008-07-17 16:12 +0000 [r8629]  robert:
+
+	* From Jean-Sebastien Guay and Robert Osfiled,
+	  osgViewer::ScreenCaptureHandler for taking screenshots
+
+2008-07-17 14:25 +0000 [r8627]  robert:
+
+	* Updated version and AUTHORS.txt for 2.5.5 release
+
+2008-07-17 14:18 +0000 [r8626]  robert:
+
+	* Updated ChangeLog for 2.5.5 release
+
+2008-07-17 14:13 +0000 [r8625]  robert:
+
+	* Updated wrappers
+
+2008-07-17 13:51 +0000 [r8624]  robert:
+
+	* From Ulrich Hertlein, "attached are some minor tweaks: - fixed
+	  typos in osgViewer/ViewerBase - const-ness in include/osg/View
+	  findSlaveIndexForCamera - supported options for STL reader, fixed
+	  return values to reflect proper errors - supported options for
+	  DirectX reader, fixed return values - normals pseudo-loader:
+	  scaling normals to a const (but variable) fraction of the
+	  bounding sphere radius "
+
+2008-07-17 13:32 +0000 [r8623]  robert:
+
+	* Updated ChangeLog
+
 2008-07-17 13:23 +0000 [r8622]  shuber:
 
 	* From Stephan Huber: updated XCode project

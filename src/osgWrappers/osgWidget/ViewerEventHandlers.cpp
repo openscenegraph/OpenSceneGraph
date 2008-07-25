@@ -54,6 +54,54 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::MouseHandler)
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1__osg_Object_P1__osg_NodeVisitor_P1,
 	          "Handle events, return true if handled, false otherwise. ",
 	          "");
+	I_ProtectedMethod3(bool, _handleMousePush, IN, float, x, IN, float, x, IN, int, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool___handleMousePush__float__float__int,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, _handleMouseRelease, IN, float, x, IN, float, x, IN, int, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool___handleMouseRelease__float__float__int,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, _handleMouseDoubleClick, IN, float, x, IN, float, x, IN, int, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool___handleMouseDoubleClick__float__float__int,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, _handleMouseDrag, IN, float, x, IN, float, x, IN, int, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool___handleMouseDrag__float__float__int,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, _handleMouseMove, IN, float, x, IN, float, x, IN, int, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool___handleMouseMove__float__float__int,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, _handleMouseScroll, IN, float, x, IN, float, x, IN, int, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool___handleMouseScroll__float__float__int,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(MouseAction, _isMouseEvent, IN, osgGA::GUIEventAdapter::EventType, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __MouseAction___isMouseEvent__osgGA_GUIEventAdapter_EventType,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, _doMouseEvent, IN, float, x, IN, float, x, IN, MouseEvent, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool___doMouseEvent__float__float__MouseEvent,
+	                   "",
+	                   "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgWidget::ResizeHandler)

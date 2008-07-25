@@ -92,6 +92,7 @@
 				008F453F06CC079900F4220C /* PBXTargetDependency */,
 				00EF502906CB1775008ACEFF /* PBXTargetDependency */,
 				D4646E8E0E349898000EF4FB /* PBXTargetDependency */,
+				D48F110E0E3A20D600DAAB64 /* PBXTargetDependency */,
 			);
 			name = Examples;
 			productName = Examples;
@@ -2280,8 +2281,6 @@
 		D43AB4FB0E2E14F800623C77 /* FadeText.h in Headers */ = {isa = PBXBuildFile; fileRef = D43AB4F70E2E14F800623C77 /* FadeText.h */; };
 		D43AB4FC0E2E14F800623C77 /* Text3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB4F80E2E14F800623C77 /* Text3D.cpp */; };
 		D43AB4FD0E2E14F800623C77 /* Text3D.h in Headers */ = {isa = PBXBuildFile; fileRef = D43AB4F90E2E14F800623C77 /* Text3D.h */; };
-		D43AB50F0E2E17C800623C77 /* PluginQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB50D0E2E17C800623C77 /* PluginQuery.cpp */; };
-		D43AB5100E2E17C800623C77 /* PluginQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = D43AB50E0E2E17C800623C77 /* PluginQuery.h */; };
 		D43AB5590E2E1D1900623C77 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
 		D43AB55A0E2E1D1900623C77 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		D43AB55B0E2E1D1900623C77 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -2461,6 +2460,18 @@
 		D48ED2A40C71D36C00A72121 /* Terrain in Headers */ = {isa = PBXBuildFile; fileRef = D48ED2A30C71D36C00A72121 /* Terrain */; settings = {ATTRIBUTES = (Public, ); }; };
 		D48ED2AA0C71D39700A72121 /* SoftShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48ED2A90C71D39700A72121 /* SoftShadowMap.cpp */; };
 		D48ED2AC0C71D3AD00A72121 /* SoftShadowMap in Headers */ = {isa = PBXBuildFile; fileRef = D48ED2AB0C71D3AD00A72121 /* SoftShadowMap */; settings = {ATTRIBUTES = (Public, ); }; };
+		D48F0FEE0E3A198500DAAB64 /* PluginQuery in Headers */ = {isa = PBXBuildFile; fileRef = D48F0FED0E3A198500DAAB64 /* PluginQuery */; settings = {ATTRIBUTES = (Public, ); }; };
+		D48F0FF00E3A199700DAAB64 /* PluginQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48F0FEF0E3A199700DAAB64 /* PluginQuery.cpp */; };
+		D48F101F0E3A1A4E00DAAB64 /* ImageSequence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48F101D0E3A1A4D00DAAB64 /* ImageSequence.cpp */; };
+		D48F10200E3A1A4E00DAAB64 /* ImageSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = D48F101E0E3A1A4E00DAAB64 /* ImageSequence.h */; };
+		D48F106A0E3A1FD600DAAB64 /* osgWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgWidget.framework */; };
+		D48F106B0E3A1FD600DAAB64 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		D48F106C0E3A1FD600DAAB64 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		D48F106D0E3A1FD600DAAB64 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		D48F106E0E3A1FD600DAAB64 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
+		D48F106F0E3A1FD600DAAB64 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		D48F10700E3A1FD600DAAB64 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
+		D48F10E00E3A206300DAAB64 /* osgimagesequence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48F10DF0E3A206300DAAB64 /* osgimagesequence.cpp */; };
 		D4AC4E240E0D21450032DD35 /* Config in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E230E0D21450032DD35 /* Config */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4AC4E260E0D21560032DD35 /* Config in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E250E0D21560032DD35 /* Config */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4AC4E310E0D26320032DD35 /* Fog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AC4E2D0E0D26310032DD35 /* Fog.cpp */; };
@@ -5832,7 +5843,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D4646D260E34932C000EF4FB /* osgwidgetmenu */;
+			remoteGlobalIDString = D4646D260E34932C000EF4FB;
 			remoteInfo = osgwidgetmenu;
 		};
 		D47A06570B833F6E00E19024 /* PBXContainerItemProxy */ = {
@@ -5918,6 +5929,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
 			remoteInfo = osgViewer;
+		};
+		D48F10620E3A1FD600DAAB64 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
+			remoteInfo = osgViewer;
+		};
+		D48F110D0E3A20D600DAAB64 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D48F10600E3A1FD600DAAB64 /* osgimagesequence */;
+			remoteInfo = osgimagesequence;
 		};
 		D4C6F0370B830A3D0052E667 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -7639,7 +7664,6 @@
 		D454D47D0DB4F70E0042E209 /* QTImportExport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QTImportExport.cpp; sourceTree = "<group>"; };
 		D454D47E0DB4F70E0042E209 /* QTImportExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTImportExport.h; sourceTree = "<group>"; };
 		D4646D380E34932C000EF4FB /* osgwidgetmenu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgwidgetmenu.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D4646D4A0E34932C000EF4FB /* osgwindows-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "osgwindows-Info copy.plist"; sourceTree = "<group>"; };
 		D4646D8A0E3493C5000EF4FB /* osgwidgetmenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osgwidgetmenu.cpp; path = ../../examples/osgwidgetmenu/osgwidgetmenu.cpp; sourceTree = SOURCE_ROOT; };
 		D47A06810B833F6E00E19024 /* osgManipulator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgManipulator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D47A068F0B83404400E19024 /* AntiSquish */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = AntiSquish; sourceTree = "<group>"; };
@@ -7711,6 +7735,12 @@
 		D48ED2A30C71D36C00A72121 /* Terrain */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Terrain; sourceTree = "<group>"; };
 		D48ED2A90C71D39700A72121 /* SoftShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SoftShadowMap.cpp; sourceTree = "<group>"; };
 		D48ED2AB0C71D3AD00A72121 /* SoftShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = SoftShadowMap; sourceTree = "<group>"; };
+		D48F0FED0E3A198500DAAB64 /* PluginQuery */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PluginQuery; sourceTree = "<group>"; };
+		D48F0FEF0E3A199700DAAB64 /* PluginQuery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginQuery.cpp; sourceTree = "<group>"; };
+		D48F101D0E3A1A4D00DAAB64 /* ImageSequence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageSequence.cpp; sourceTree = "<group>"; };
+		D48F101E0E3A1A4E00DAAB64 /* ImageSequence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageSequence.h; sourceTree = "<group>"; };
+		D48F10750E3A1FD600DAAB64 /* osgimagesequence.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgimagesequence.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D48F10DF0E3A206300DAAB64 /* osgimagesequence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osgimagesequence.cpp; path = ../../examples/osgimagesequence/osgimagesequence.cpp; sourceTree = SOURCE_ROOT; };
 		D4AC4E230E0D21450032DD35 /* Config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Config; path = config/OpenThreads/Config; sourceTree = SOURCE_ROOT; };
 		D4AC4E250E0D21560032DD35 /* Config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Config; path = config/osg/Config; sourceTree = SOURCE_ROOT; };
 		D4AC4E2D0E0D26310032DD35 /* Fog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Fog.cpp; sourceTree = "<group>"; };
@@ -9554,6 +9584,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D48F10690E3A1FD600DAAB64 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D48F106A0E3A1FD600DAAB64 /* osgWidget.framework in Frameworks */,
+				D48F106B0E3A1FD600DAAB64 /* osgViewer.framework in Frameworks */,
+				D48F106C0E3A1FD600DAAB64 /* osg.framework in Frameworks */,
+				D48F106D0E3A1FD600DAAB64 /* osgDB.framework in Frameworks */,
+				D48F106E0E3A1FD600DAAB64 /* osgText.framework in Frameworks */,
+				D48F106F0E3A1FD600DAAB64 /* osgUtil.framework in Frameworks */,
+				D48F10700E3A1FD600DAAB64 /* osgGA.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4C6F2550B8316100052E667 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -10331,6 +10375,7 @@
 		001D06AC065AB6E2003310BF /* Examples */ = {
 			isa = PBXGroup;
 			children = (
+				D48F10DE0E3A204400DAAB64 /* osgimagesequence */,
 				D4D8CE0D0E348FFD00FA6EB4 /* osgwidgetmenu */,
 				0007B92506C182AA00C884E1 /* osganimate */,
 				0007B98206C1922C00C884E1 /* osgautotransform */,
@@ -11836,6 +11881,7 @@
 				0084FC610D3427B70021E5C9 /* osgdb_cfg.so */,
 				D43AB5640E2E1D1900623C77 /* osgWidget.framework */,
 				D4646D380E34932C000EF4FB /* osgwidgetmenu.app */,
+				D48F10750E3A1FD600DAAB64 /* osgimagesequence.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -11850,7 +11896,6 @@
 				089C1665FE841158C02AAC07 /* Resources */,
 				0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */,
 				034768DDFF38A45A11DB9C8B /* Products */,
-				D4646D4A0E34932C000EF4FB /* osgwindows-Info copy.plist */,
 			);
 			name = OpenSceneGraph;
 			sourceTree = "<group>";
@@ -11943,6 +11988,8 @@
 		5BC2F6820C44C99800671A68 /* ive */ = {
 			isa = PBXGroup;
 			children = (
+				D48F101D0E3A1A4D00DAAB64 /* ImageSequence.cpp */,
+				D48F101E0E3A1A4E00DAAB64 /* ImageSequence.h */,
 				D43AB4F60E2E14F800623C77 /* FadeText.cpp */,
 				D43AB4F70E2E14F800623C77 /* FadeText.h */,
 				D43AB4F80E2E14F800623C77 /* Text3D.cpp */,
@@ -12644,6 +12691,7 @@
 		BE1188DF05D7641E00EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				D48F0FEF0E3A199700DAAB64 /* PluginQuery.cpp */,
 				D4D8CF090E3491D200FA6EB4 /* ImagePager.cpp */,
 				D4018F4E0E2F6F880086ACFA /* AuthenticationMap.cpp */,
 				00E28143076766D7005AEE61 /* Archive.cpp */,
@@ -12672,6 +12720,7 @@
 		BE1188E005D7646500EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				D48F0FED0E3A198500DAAB64 /* PluginQuery */,
 				D4D8CF070E3491C800FA6EB4 /* ImagePager */,
 				D4018F4C0E2F6F710086ACFA /* AuthenticationMap */,
 				00E2813F07676626005AEE61 /* Archive */,
@@ -12828,6 +12877,14 @@
 			name = osgshadow;
 			sourceTree = "<group>";
 		};
+		D48F10DE0E3A204400DAAB64 /* osgimagesequence */ = {
+			isa = PBXGroup;
+			children = (
+				D48F10DF0E3A206300DAAB64 /* osgimagesequence.cpp */,
+			);
+			name = osgimagesequence;
+			sourceTree = "<group>";
+		};
 		D4C6F26C0B8316D50052E667 /* osgShadow */ = {
 			isa = PBXGroup;
 			children = (
@@ -12970,7 +13027,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				00A14C8A084E573D000150AD /* OrientationConverter.h in Headers */,
-				D43AB5100E2E17C800623C77 /* PluginQuery.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -13416,6 +13472,7 @@
 				D4AC4E340E0D26320032DD35 /* LineStipple.h in Headers */,
 				D43AB4FB0E2E14F800623C77 /* FadeText.h in Headers */,
 				D43AB4FD0E2E14F800623C77 /* Text3D.h in Headers */,
+				D48F10200E3A1A4E00DAAB64 /* ImageSequence.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14480,6 +14537,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D48F0FEE0E3A198500DAAB64 /* PluginQuery in Headers */,
 				D4D8CF080E3491C800FA6EB4 /* ImagePager in Headers */,
 				D4018F4D0E2F6F710086ACFA /* AuthenticationMap in Headers */,
 				00E2814107676629005AEE61 /* Archive in Headers */,
@@ -14570,6 +14628,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		D47A06F90B83413800E19024 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D48F10650E3A1FD600DAAB64 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -17591,6 +17656,25 @@
 			productReference = D47A070A0B83413800E19024 /* osgmanipulator.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D48F10600E3A1FD600DAAB64 /* osgimagesequence */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D48F10710E3A1FD600DAAB64 /* Build configuration list for PBXNativeTarget "osgimagesequence" */;
+			buildPhases = (
+				D48F10650E3A1FD600DAAB64 /* Headers */,
+				D48F10660E3A1FD600DAAB64 /* Resources */,
+				D48F10670E3A1FD600DAAB64 /* Sources */,
+				D48F10690E3A1FD600DAAB64 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D48F10610E3A1FD600DAAB64 /* PBXTargetDependency */,
+			);
+			name = osgimagesequence;
+			productName = osgtext;
+			productReference = D48F10750E3A1FD600DAAB64 /* osgimagesequence.app */;
+			productType = "com.apple.product-type.application";
+		};
 		D4C6F2320B8316100052E667 /* osgShadow */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D4C6F25D0B8316100052E667 /* Build configuration list for PBXNativeTarget "osgShadow" */;
@@ -17800,6 +17884,7 @@
 				00C59D900B09343B00E9BCA1 /* osgviewerSDL */,
 				00388FE90CFEF64D00A7B938 /* osgstaticviewer */,
 				D4646D260E34932C000EF4FB /* osgwidgetmenu */,
+				D48F10600E3A1FD600DAAB64 /* osgimagesequence */,
 			);
 		};
 /* End PBXProject section */
@@ -18504,6 +18589,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D48F10660E3A1FD600DAAB64 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4C6F2490B8316100052E667 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -18721,7 +18813,6 @@
 			files = (
 				00A14C89084E573D000150AD /* OrientationConverter.cpp in Sources */,
 				00A14C8B084E573D000150AD /* osgconv.cpp in Sources */,
-				D43AB50F0E2E17C800623C77 /* PluginQuery.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19340,6 +19431,7 @@
 				D4AC4E330E0D26320032DD35 /* LineStipple.cpp in Sources */,
 				D43AB4FA0E2E14F800623C77 /* FadeText.cpp in Sources */,
 				D43AB4FC0E2E14F800623C77 /* Text3D.cpp in Sources */,
+				D48F101F0E3A1A4E00DAAB64 /* ImageSequence.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20415,6 +20507,7 @@
 				00E28145076766DA005AEE61 /* Archive.cpp in Sources */,
 				D4018F4F0E2F6F880086ACFA /* AuthenticationMap.cpp in Sources */,
 				D4D8CF0A0E3491D200FA6EB4 /* ImagePager.cpp in Sources */,
+				D48F0FF00E3A199700DAAB64 /* PluginQuery.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20481,6 +20574,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				D47A07150B83417900E19024 /* osgmanipulator.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D48F10670E3A1FD600DAAB64 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D48F10E00E3A206300DAAB64 /* osgimagesequence.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -23295,6 +23396,16 @@
 			isa = PBXTargetDependency;
 			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
 			targetProxy = D48EC7670B4FBDF8000E05A4 /* PBXContainerItemProxy */;
+		};
+		D48F10610E3A1FD600DAAB64 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			targetProxy = D48F10620E3A1FD600DAAB64 /* PBXContainerItemProxy */;
+		};
+		D48F110E0E3A20D600DAAB64 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D48F10600E3A1FD600DAAB64 /* osgimagesequence */;
+			targetProxy = D48F110D0E3A20D600DAAB64 /* PBXContainerItemProxy */;
 		};
 		D4C6F0380B830A3D0052E667 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -36380,7 +36491,7 @@
 					OpenThreads,
 				);
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgwindows;
+				PRODUCT_NAME = osgwidgetmenu;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
@@ -36406,7 +36517,7 @@
 					OpenThreads,
 				);
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgwindows;
+				PRODUCT_NAME = osgwidgetmenu;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
 			};
@@ -36573,6 +36684,94 @@
 				);
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgshadow;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
+		D48F10720E3A1FD600DAAB64 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = "osgimagesequence-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgimagesequence;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Development;
+		};
+		D48F10730E3A1FD600DAAB64 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = "osgimagesequence-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgimagesequence;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		D48F10740E3A1FD600DAAB64 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_CGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_FILE = "osgimagesequence-Info.plist";
+				INSTALL_PATH = "$(USER_APPS_DIR)";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgimagesequence;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
 			};
@@ -38260,6 +38459,16 @@
 				D47A07070B83413800E19024 /* Development */,
 				D47A07080B83413800E19024 /* Deployment */,
 				D47A07090B83413800E19024 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		D48F10710E3A1FD600DAAB64 /* Build configuration list for PBXNativeTarget "osgimagesequence" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D48F10720E3A1FD600DAAB64 /* Development */,
+				D48F10730E3A1FD600DAAB64 /* Deployment */,
+				D48F10740E3A1FD600DAAB64 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

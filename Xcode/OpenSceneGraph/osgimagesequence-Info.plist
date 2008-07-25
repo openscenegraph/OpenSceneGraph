@@ -5,11 +5,11 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>osgwidgetmenu</string>
+	<string>osgimagesequence</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>org.OpenSceneGraph.osgwidgetmenu</string>
+	<string>org.OpenSceneGraph.osgimagesequence</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>

@@ -212,7 +212,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::NullWidget)
 	          "");
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Widget::POINT)
+BEGIN_ENUM_REFLECTOR(osgWidget::Widget::Corner)
 	I_DeclaringFile("osgWidget/Widget");
 	I_EnumLabel(osgWidget::Widget::LOWER_LEFT);
 	I_EnumLabel(osgWidget::Widget::LOWER_RIGHT);
@@ -222,10 +222,10 @@ BEGIN_ENUM_REFLECTOR(osgWidget::Widget::POINT)
 	I_EnumLabel(osgWidget::Widget::LR);
 	I_EnumLabel(osgWidget::Widget::UR);
 	I_EnumLabel(osgWidget::Widget::UL);
-	I_EnumLabel(osgWidget::Widget::ALL_POINTS);
+	I_EnumLabel(osgWidget::Widget::ALL_CORNERS);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Widget::LAYER)
+BEGIN_ENUM_REFLECTOR(osgWidget::Widget::Layer)
 	I_DeclaringFile("osgWidget/Widget");
 	I_EnumLabel(osgWidget::Widget::LAYER_TOP);
 	I_EnumLabel(osgWidget::Widget::LAYER_HIGH);
@@ -234,21 +234,21 @@ BEGIN_ENUM_REFLECTOR(osgWidget::Widget::LAYER)
 	I_EnumLabel(osgWidget::Widget::LAYER_BG);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Widget::VERTICAL_ALIGNMENT)
+BEGIN_ENUM_REFLECTOR(osgWidget::Widget::VerticalAlignment)
 	I_DeclaringFile("osgWidget/Widget");
 	I_EnumLabel(osgWidget::Widget::VA_CENTER);
 	I_EnumLabel(osgWidget::Widget::VA_TOP);
 	I_EnumLabel(osgWidget::Widget::VA_BOTTOM);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Widget::HORIZONTAL_ALIGNMENT)
+BEGIN_ENUM_REFLECTOR(osgWidget::Widget::HorizontalAlignment)
 	I_DeclaringFile("osgWidget/Widget");
 	I_EnumLabel(osgWidget::Widget::HA_CENTER);
 	I_EnumLabel(osgWidget::Widget::HA_LEFT);
 	I_EnumLabel(osgWidget::Widget::HA_RIGHT);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Widget::COORDINATE_MODE)
+BEGIN_ENUM_REFLECTOR(osgWidget::Widget::CoordinateMode)
 	I_DeclaringFile("osgWidget/Widget");
 	I_EnumLabel(osgWidget::Widget::CM_ABSOLUTE);
 	I_EnumLabel(osgWidget::Widget::CM_RELATIVE);
@@ -332,19 +332,19 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __void__setPadding__point_type,
 	          "",
 	          "");
-	I_MethodWithDefaults5(void, setColor, IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::Widget::POINT, x, osgWidget::Widget::ALL_POINTS,
+	I_MethodWithDefaults5(void, setColor, IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::Widget::Corner, x, osgWidget::Widget::ALL_CORNERS,
 	                      Properties::NON_VIRTUAL,
-	                      __void__setColor__color_type__color_type__color_type__color_type__POINT,
+	                      __void__setColor__color_type__color_type__color_type__color_type__Corner,
 	                      "",
 	                      "");
-	I_MethodWithDefaults5(void, addColor, IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::Widget::POINT, x, osgWidget::Widget::ALL_POINTS,
+	I_MethodWithDefaults5(void, addColor, IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::color_type, x, , IN, osgWidget::Widget::Corner, x, osgWidget::Widget::ALL_CORNERS,
 	                      Properties::NON_VIRTUAL,
-	                      __void__addColor__color_type__color_type__color_type__color_type__POINT,
+	                      __void__addColor__color_type__color_type__color_type__color_type__Corner,
 	                      "",
 	                      "");
-	I_MethodWithDefaults3(void, setTexCoord, IN, osgWidget::texcoord_type, x, , IN, osgWidget::texcoord_type, x, , IN, osgWidget::Widget::POINT, x, osgWidget::Widget::ALL_POINTS,
+	I_MethodWithDefaults3(void, setTexCoord, IN, osgWidget::texcoord_type, x, , IN, osgWidget::texcoord_type, x, , IN, osgWidget::Widget::Corner, x, osgWidget::Widget::ALL_CORNERS,
 	                      Properties::NON_VIRTUAL,
-	                      __void__setTexCoord__texcoord_type__texcoord_type__POINT,
+	                      __void__setTexCoord__texcoord_type__texcoord_type__Corner,
 	                      "",
 	                      "");
 	I_Method4(void, setTexCoordRegion, IN, osgWidget::point_type, x, IN, osgWidget::point_type, x, IN, osgWidget::point_type, x, IN, osgWidget::point_type, x,
@@ -437,24 +437,24 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __point_type__getPadVertical,
 	          "",
 	          "");
-	I_MethodWithDefaults1(const osgWidget::Point &, getPoint, IN, osgWidget::Widget::POINT, x, osgWidget::Widget::ALL_POINTS,
+	I_MethodWithDefaults1(const osgWidget::Point &, getPoint, IN, osgWidget::Widget::Corner, x, osgWidget::Widget::ALL_CORNERS,
 	                      Properties::NON_VIRTUAL,
-	                      __C5_Point_R1__getPoint__POINT,
+	                      __C5_Point_R1__getPoint__Corner,
 	                      "",
 	                      "");
-	I_MethodWithDefaults1(const osgWidget::Color &, getColor, IN, osgWidget::Widget::POINT, x, osgWidget::Widget::ALL_POINTS,
+	I_MethodWithDefaults1(const osgWidget::Color &, getColor, IN, osgWidget::Widget::Corner, x, osgWidget::Widget::ALL_CORNERS,
 	                      Properties::NON_VIRTUAL,
-	                      __C5_Color_R1__getColor__POINT,
+	                      __C5_Color_R1__getColor__Corner,
 	                      "",
 	                      "");
-	I_MethodWithDefaults1(const osgWidget::TexCoord &, getTexCoord, IN, osgWidget::Widget::POINT, x, osgWidget::Widget::ALL_POINTS,
+	I_MethodWithDefaults1(const osgWidget::TexCoord &, getTexCoord, IN, osgWidget::Widget::Corner, x, osgWidget::Widget::ALL_CORNERS,
 	                      Properties::NON_VIRTUAL,
-	                      __C5_TexCoord_R1__getTexCoord__POINT,
+	                      __C5_TexCoord_R1__getTexCoord__Corner,
 	                      "",
 	                      "");
-	I_Method1(osgWidget::Widget::POINT, convertPoint, IN, osgWidget::Widget::POINT, x,
+	I_Method1(osgWidget::Widget::Corner, convertCorner, IN, osgWidget::Widget::Corner, x,
 	          Properties::NON_VIRTUAL,
-	          __POINT__convertPoint__POINT,
+	          __Corner__convertCorner__Corner,
 	          "",
 	          "");
 	I_Method2(osgWidget::Color, getImageColorAtXY, IN, osgWidget::point_type, x, IN, osgWidget::point_type, y,
@@ -532,14 +532,14 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __void__setSize__C5_XYCoord_R1,
 	          "",
 	          "");
-	I_MethodWithDefaults2(void, setColor, IN, const osgWidget::Color &, col, , IN, osgWidget::Widget::POINT, p, osgWidget::Widget::ALL_POINTS,
+	I_MethodWithDefaults2(void, setColor, IN, const osgWidget::Color &, col, , IN, osgWidget::Widget::Corner, p, osgWidget::Widget::ALL_CORNERS,
 	                      Properties::NON_VIRTUAL,
-	                      __void__setColor__C5_Color_R1__POINT,
+	                      __void__setColor__C5_Color_R1__Corner,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(void, setTexCoord, IN, const osgWidget::XYCoord &, xy, , IN, osgWidget::Widget::POINT, p, osgWidget::Widget::ALL_POINTS,
+	I_MethodWithDefaults2(void, setTexCoord, IN, const osgWidget::XYCoord &, xy, , IN, osgWidget::Widget::Corner, p, osgWidget::Widget::ALL_CORNERS,
 	                      Properties::NON_VIRTUAL,
-	                      __void__setTexCoord__C5_XYCoord_R1__POINT,
+	                      __void__setTexCoord__C5_XYCoord_R1__Corner,
 	                      "",
 	                      "");
 	I_Method3(void, setTexCoordRegion, IN, const osgWidget::XYCoord &, xy, IN, osgWidget::point_type, w, IN, osgWidget::point_type, h,
@@ -547,9 +547,9 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __void__setTexCoordRegion__C5_XYCoord_R1__point_type__point_type,
 	          "",
 	          "");
-	I_MethodWithDefaults2(void, addColor, IN, const osgWidget::Color &, col, , IN, osgWidget::Widget::POINT, p, osgWidget::Widget::ALL_POINTS,
+	I_MethodWithDefaults2(void, addColor, IN, const osgWidget::Color &, col, , IN, osgWidget::Widget::Corner, p, osgWidget::Widget::ALL_CORNERS,
 	                      Properties::NON_VIRTUAL,
-	                      __void__addColor__C5_Color_R1__POINT,
+	                      __void__addColor__C5_Color_R1__Corner,
 	                      "",
 	                      "");
 	I_Method1(void, addOrigin, IN, const osgWidget::XYCoord &, xy,
@@ -572,9 +572,9 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __void__setMinimumSize__C5_XYCoord_R1,
 	          "",
 	          "");
-	I_MethodWithDefaults2(void, setLayer, IN, osgWidget::Widget::LAYER, l, , IN, unsigned int, offset, 0,
+	I_MethodWithDefaults2(void, setLayer, IN, osgWidget::Widget::Layer, l, , IN, unsigned int, offset, 0,
 	                      Properties::NON_VIRTUAL,
-	                      __void__setLayer__LAYER__unsigned_int,
+	                      __void__setLayer__Layer__unsigned_int,
 	                      "",
 	                      "");
 	I_Method1(void, setPadLeft, IN, osgWidget::point_type, p,
@@ -597,19 +597,19 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __void__setPadBottom__point_type,
 	          "",
 	          "");
-	I_Method1(void, setAlignHorizontal, IN, osgWidget::Widget::HORIZONTAL_ALIGNMENT, h,
+	I_Method1(void, setAlignHorizontal, IN, osgWidget::Widget::HorizontalAlignment, h,
 	          Properties::NON_VIRTUAL,
-	          __void__setAlignHorizontal__HORIZONTAL_ALIGNMENT,
+	          __void__setAlignHorizontal__HorizontalAlignment,
 	          "",
 	          "");
-	I_Method1(void, setAlignVertical, IN, osgWidget::Widget::VERTICAL_ALIGNMENT, v,
+	I_Method1(void, setAlignVertical, IN, osgWidget::Widget::VerticalAlignment, v,
 	          Properties::NON_VIRTUAL,
-	          __void__setAlignVertical__VERTICAL_ALIGNMENT,
+	          __void__setAlignVertical__VerticalAlignment,
 	          "",
 	          "");
-	I_Method1(void, setCoordinateMode, IN, osgWidget::Widget::COORDINATE_MODE, cm,
+	I_Method1(void, setCoordinateMode, IN, osgWidget::Widget::CoordinateMode, cm,
 	          Properties::NON_VIRTUAL,
-	          __void__setCoordinateMode__COORDINATE_MODE,
+	          __void__setCoordinateMode__CoordinateMode,
 	          "",
 	          "");
 	I_Method1(void, setCanFill, IN, bool, f,
@@ -697,19 +697,19 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __point_type__getPadBottom,
 	          "",
 	          "");
-	I_Method0(osgWidget::Widget::HORIZONTAL_ALIGNMENT, getAlignHorizontal,
+	I_Method0(osgWidget::Widget::HorizontalAlignment, getAlignHorizontal,
 	          Properties::NON_VIRTUAL,
-	          __HORIZONTAL_ALIGNMENT__getAlignHorizontal,
+	          __HorizontalAlignment__getAlignHorizontal,
 	          "",
 	          "");
-	I_Method0(osgWidget::Widget::VERTICAL_ALIGNMENT, getAlignVertical,
+	I_Method0(osgWidget::Widget::VerticalAlignment, getAlignVertical,
 	          Properties::NON_VIRTUAL,
-	          __VERTICAL_ALIGNMENT__getAlignVertical,
+	          __VerticalAlignment__getAlignVertical,
 	          "",
 	          "");
-	I_Method0(osgWidget::Widget::COORDINATE_MODE, getCoordinateMode,
+	I_Method0(osgWidget::Widget::CoordinateMode, getCoordinateMode,
 	          Properties::NON_VIRTUAL,
-	          __COORDINATE_MODE__getCoordinateMode,
+	          __CoordinateMode__getCoordinateMode,
 	          "",
 	          "");
 	I_Method0(bool, canFill,
@@ -840,21 +840,21 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	                   __osg_Image_P1___getImage,
 	                   "",
 	                   "");
-	I_SimpleProperty(osgWidget::Widget::HORIZONTAL_ALIGNMENT, AlignHorizontal, 
-	                 __HORIZONTAL_ALIGNMENT__getAlignHorizontal, 
-	                 __void__setAlignHorizontal__HORIZONTAL_ALIGNMENT);
-	I_SimpleProperty(osgWidget::Widget::VERTICAL_ALIGNMENT, AlignVertical, 
-	                 __VERTICAL_ALIGNMENT__getAlignVertical, 
-	                 __void__setAlignVertical__VERTICAL_ALIGNMENT);
+	I_SimpleProperty(osgWidget::Widget::HorizontalAlignment, AlignHorizontal, 
+	                 __HorizontalAlignment__getAlignHorizontal, 
+	                 __void__setAlignHorizontal__HorizontalAlignment);
+	I_SimpleProperty(osgWidget::Widget::VerticalAlignment, AlignVertical, 
+	                 __VerticalAlignment__getAlignVertical, 
+	                 __void__setAlignVertical__VerticalAlignment);
 	I_SimpleProperty(bool, CanClone, 
 	                 0, 
 	                 __void__setCanClone__bool);
 	I_SimpleProperty(bool, CanFill, 
 	                 0, 
 	                 __void__setCanFill__bool);
-	I_SimpleProperty(osgWidget::Widget::COORDINATE_MODE, CoordinateMode, 
-	                 __COORDINATE_MODE__getCoordinateMode, 
-	                 __void__setCoordinateMode__COORDINATE_MODE);
+	I_SimpleProperty(osgWidget::Widget::CoordinateMode, CoordinateMode, 
+	                 __CoordinateMode__getCoordinateMode, 
+	                 __void__setCoordinateMode__CoordinateMode);
 	I_SimpleProperty(osgWidget::Quad, Dimensions, 
 	                 __Quad__getDimensions, 
 	                 0);

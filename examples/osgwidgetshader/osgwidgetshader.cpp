@@ -11,7 +11,7 @@ const unsigned int MASK_2D = 0xF0000000;
 osgWidget::Widget* createWidget(
     const std::string&       name,
     osgWidget::color_type    col,
-    osgWidget::Widget::LAYER layer
+    osgWidget::Widget::Layer layer
 ) {
     osgWidget::Widget* widget = new osgWidget::Widget(name, 200.0f, 200.0f);
 

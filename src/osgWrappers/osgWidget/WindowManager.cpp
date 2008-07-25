@@ -31,7 +31,7 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::WM_FLAGS)
+BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::WmFlags)
 	I_DeclaringFile("osgWidget/WindowManager");
 	I_EnumLabel(osgWidget::WindowManager::WM_USE_LUA);
 	I_EnumLabel(osgWidget::WindowManager::WM_USE_PYTHON);
@@ -40,7 +40,7 @@ BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::WM_FLAGS)
 	I_EnumLabel(osgWidget::WindowManager::WM_NO_BETA_WARN);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::POINTER_DIRECTION)
+BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::PointerDirection)
 	I_DeclaringFile("osgWidget/WindowManager");
 	I_EnumLabel(osgWidget::WindowManager::PD_NONE);
 	I_EnumLabel(osgWidget::WindowManager::PD_LEFT);
@@ -49,7 +49,7 @@ BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::POINTER_DIRECTION)
 	I_EnumLabel(osgWidget::WindowManager::PD_DOWN);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::POINTER_FOCUS_MODE)
+BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::PointerFocusMode)
 	I_DeclaringFile("osgWidget/WindowManager");
 	I_EnumLabel(osgWidget::WindowManager::PFM_FOCUS);
 	I_EnumLabel(osgWidget::WindowManager::PFM_UNFOCUS);
@@ -203,19 +203,19 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::WindowManager)
 	          __C5_StyleManager_P1__getStyleManager,
 	          "",
 	          "");
-	I_Method0(osgWidget::WindowManager::POINTER_DIRECTION, getPointerVerticalDirection,
+	I_Method0(osgWidget::WindowManager::PointerDirection, getPointerVerticalDirection,
 	          Properties::NON_VIRTUAL,
-	          __POINTER_DIRECTION__getPointerVerticalDirection,
+	          __PointerDirection__getPointerVerticalDirection,
 	          "",
 	          "");
-	I_Method0(osgWidget::WindowManager::POINTER_DIRECTION, getPointerHorizontalDirection,
+	I_Method0(osgWidget::WindowManager::PointerDirection, getPointerHorizontalDirection,
 	          Properties::NON_VIRTUAL,
-	          __POINTER_DIRECTION__getPointerHorizontalDirection,
+	          __PointerDirection__getPointerHorizontalDirection,
 	          "",
 	          "");
-	I_Method0(osgWidget::WindowManager::POINTER_FOCUS_MODE, getPointerFocusMode,
+	I_Method0(osgWidget::WindowManager::PointerFocusMode, getPointerFocusMode,
 	          Properties::NON_VIRTUAL,
-	          __POINTER_FOCUS_MODE__getPointerFocusMode,
+	          __PointerFocusMode__getPointerFocusMode,
 	          "",
 	          "");
 	I_Method0(int, getPointerDirectionVector,
@@ -288,9 +288,9 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::WindowManager)
 	          __void__setScrollingMotion__osgGA_GUIEventAdapter_ScrollingMotion,
 	          "",
 	          "");
-	I_Method1(void, setPointerFocusMode, IN, osgWidget::WindowManager::POINTER_FOCUS_MODE, pfm,
+	I_Method1(void, setPointerFocusMode, IN, osgWidget::WindowManager::PointerFocusMode, pfm,
 	          Properties::NON_VIRTUAL,
-	          __void__setPointerFocusMode__POINTER_FOCUS_MODE,
+	          __void__setPointerFocusMode__PointerFocusMode,
 	          "",
 	          "");
 	I_Method1(void, setWidth, IN, osgWidget::point_type, w,
@@ -373,14 +373,14 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::WindowManager)
 	I_SimpleProperty(int, PointerDirectionVector, 
 	                 __int__getPointerDirectionVector, 
 	                 0);
-	I_SimpleProperty(osgWidget::WindowManager::POINTER_FOCUS_MODE, PointerFocusMode, 
-	                 __POINTER_FOCUS_MODE__getPointerFocusMode, 
-	                 __void__setPointerFocusMode__POINTER_FOCUS_MODE);
-	I_SimpleProperty(osgWidget::WindowManager::POINTER_DIRECTION, PointerHorizontalDirection, 
-	                 __POINTER_DIRECTION__getPointerHorizontalDirection, 
+	I_SimpleProperty(osgWidget::WindowManager::PointerFocusMode, PointerFocusMode, 
+	                 __PointerFocusMode__getPointerFocusMode, 
+	                 __void__setPointerFocusMode__PointerFocusMode);
+	I_SimpleProperty(osgWidget::WindowManager::PointerDirection, PointerHorizontalDirection, 
+	                 __PointerDirection__getPointerHorizontalDirection, 
 	                 0);
-	I_SimpleProperty(osgWidget::WindowManager::POINTER_DIRECTION, PointerVerticalDirection, 
-	                 __POINTER_DIRECTION__getPointerVerticalDirection, 
+	I_SimpleProperty(osgWidget::WindowManager::PointerDirection, PointerVerticalDirection, 
+	                 __PointerDirection__getPointerVerticalDirection, 
 	                 0);
 	I_SimpleProperty(osgWidget::ScriptEngine *, PythonEngine, 
 	                 __ScriptEngine_P1__getPythonEngine, 

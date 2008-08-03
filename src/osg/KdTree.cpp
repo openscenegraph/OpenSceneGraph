@@ -226,6 +226,10 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
                 node.bb.expandBy(v1);
                 node.bb.expandBy(v2);
                 
+            }
+
+            if (node.bb.valid())
+            {
                 float epsilon = 1e-6;
                 node.bb._min.x() -= epsilon;
                 node.bb._min.y() -= epsilon;
@@ -234,7 +238,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
                 node.bb._max.y() += epsilon;
                 node.bb._max.z() += epsilon;
             }
-
+            
 #ifdef VERBOSE_OUTPUT    
             if (!node.bb.valid())
             {

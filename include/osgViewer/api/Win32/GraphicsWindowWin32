@@ -174,8 +174,14 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         bool            _destroying;
 
         MouseCursor     _mouseCursor;
+
+        /// Persist which mouse cursor was used before switching to the resize cursors.
+        MouseCursor     _appMouseCursor;
         
         std::map<MouseCursor,HCURSOR> _mouseCursorMap;
+
+        std::map<int, bool> _keyMap;
+
 };
 
 }

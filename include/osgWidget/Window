@@ -29,13 +29,13 @@ namespace osgWidget {
 
 // These are helper callbacks you can attach to Windows that will make them moveable,
 // rotatable, and scalable respectively.
-bool callbackWindowMove   (Event&);
-bool callbackWindowRotate (Event&);
-bool callbackWindowScale  (Event&);
+bool OSGWIDGET_EXPORT callbackWindowMove   (Event&);
+bool OSGWIDGET_EXPORT callbackWindowRotate (Event&);
+bool OSGWIDGET_EXPORT callbackWindowScale  (Event&);
 
 // These are helper callbacks you can attach to Windows to that will make various
 // keyboard events behave as you might imagine.
-bool callbackWindowTabFocus(Event&);
+bool OSGWIDGET_EXPORT callbackWindowTabFocus(Event&);
 
 class OSGWIDGET_EXPORT Window:
     public osg::MatrixTransform,

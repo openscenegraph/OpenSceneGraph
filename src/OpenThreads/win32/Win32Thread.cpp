@@ -19,6 +19,7 @@
 #include <string>
 #include <iostream>
 #include <process.h>
+#include <stdlib.h>
 
 #if defined(_MSC_VER) && (_MSC_VER < 1300)
 #ifdef __SGI_STL

@@ -80,7 +80,7 @@ bool setGLExtensionFuncPtr(T& t, const char* str1)
     if (data)
     {
         memcpy(&t, &data, sizeof(T));
-        return false;        
+        return true;        
     }
     else
     {
@@ -96,7 +96,7 @@ bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2)
     if (data)
     {
         memcpy(&t, &data, sizeof(T));
-        return false;        
+        return true;        
     }
     else
     {

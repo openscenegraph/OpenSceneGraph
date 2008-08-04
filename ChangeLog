@@ -1,3 +1,79 @@
+2008-08-04 12:48 +0000 [r8717]  robert:
+
+	* Merged multi-threaded crash fix to PrecipitationEffect, using
+	  "svn merge -r 8715:8716
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk ."
+
+2008-08-04 12:39 +0000 [r8715]  robert:
+
+	* Merged from svn/trunk the removal of debugging info
+
+2008-08-04 09:07 +0000 [r8713]  robert:
+
+	* Merged LineSegment and Quicktime fixes from svn/trunk, using :
+	  merge -r 8709:8712
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk .
+
+2008-08-03 17:02 +0000 [r8709]  robert:
+
+	* Merged KdTree update from svn trunk using "svn merge -r 8706:8707
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk ."
+
+2008-07-31 17:47 +0000 [r8706]  paulmartz:
+
+	* From Jean-Sebastien Guay. Fix for stuck keys problem when viewer
+	  loses focus. Equivalent to Melchior Franz's fix for the same
+	  issue in GraphicsWindowX11. When the application loses focus, all
+	  currently pressed keys are released. When it regains focus, keys
+	  are queried to see which are currently pressed and keydown
+	  messages are sent for those. Also, from Daniel Olivier. Fix for
+	  windows based on GraphicsWindowWin32 not switching to the resize
+	  mouse cursors when the mouse goes close to window borders.
+
+2008-07-31 14:43 +0000 [r8705]  paulmartz:
+
+	* From Philip Lowman. #define WIN32_WINNT 0x400, consistent with
+	  other code in OpenThreads. Resolves a compile warning on mingw.
+
+2008-07-30 15:45 +0000 [r8704]  paulmartz:
+
+	* From Philip Lowman: The osgWidget/Window header file is missing a
+	  few export (declspec) declarations on some namespace functions. I
+	  noticed because MinGW is failing to link the osgwidgetbox
+	  example.
+
+2008-07-30 15:37 +0000 [r8703]  paulmartz:
+
+	* From Philip Lowman: Add #include <stdlib.h> for mingw build.
+
+2008-07-30 15:10 +0000 [r8702]  paulmartz:
+
+	* From Glenn Waldron: Just downgrading a notify message in
+	  SpatializeGroupsVisitor ... one-line change.
+
+2008-07-30 15:03 +0000 [r8701]  paulmartz:
+
+	* From Glenn Waldron: The enum value for
+	  osgUtil::OptimizerOptions::FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS
+	  is set to 0x100, but it should probably be 0x10000. (From Paul
+	  Martz: changed enums to use "1 << n"-style values.)
+
+2008-07-25 21:16 +0000 [r8698-8699]  robert:
+
+	* Made 2.6 branch
+
+	* Release OpenSceneGraph-2.6.0-rc1
+
+2008-07-25 21:09 +0000 [r8697]  robert:
+
+	* Updated ChangeLog and AUTHORS.txt file for relese candidate
+
+2008-07-25 21:01 +0000 [r8695-8696]  robert:
+
+	* Updated version numbers to 2.6.0
+
+	* Updated REAME and NEWS for 2.6 branch
+
 2008-07-25 20:50 +0000 [r8692-8694]  robert:
 
 	* Updated wrappers

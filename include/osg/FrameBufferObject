@@ -94,6 +94,12 @@
 #define GL_MAX_SAMPLES_EXT                          0x8D57
 #endif
 
+#ifndef GL_MAX_SAMPLES_EXT
+// Workaround for Centos 5 and other distros that define
+// GL_EXT_framebuffer_multisample but not GL_MAX_SAMPLES_EXT
+#define GL_MAX_SAMPLES_EXT 0x8D57
+#endif
+
 #ifndef GL_NV_framebuffer_multisample_coverage
 #define GL_NV_framebuffer_multisample_coverage 1
 #define GL_RENDERBUFFER_COVERAGE_SAMPLES_NV     0x8CAB

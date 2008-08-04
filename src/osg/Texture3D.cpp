@@ -361,14 +361,12 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 
         if (!compressed_image)
         {
-            notify(WARN)<<"glTexImage3D '"<<image->getFileName()<<"' data="<<(void*)image->data()<<std::endl;
             extensions->glTexImage3D( target, 0, _internalFormat,
                                       inwidth, inheight, indepth,
                                       _borderWidth,
                                       (GLenum)image->getPixelFormat(),
                                       (GLenum)image->getDataType(),
                                       image->data() );
-            notify(WARN)<<"done glTexImage3D"<<std::endl;
         }
         else if (extensions->isCompressedTexImage3DSupported())
         {

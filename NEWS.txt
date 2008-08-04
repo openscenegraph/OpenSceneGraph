@@ -3,19 +3,34 @@ OSG News
 
 = !OpenSceneGraph 2.6 release adds osgWidget library, KdTree intersections, Anti-aliased FBOsand much more. =
 
-PERTHSHIRE, Scotland - 25th July 2008 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.6, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.6 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - 5th August 2008 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.6, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.6 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
 The !OpenSceneGraph 2.6 release is the culmination of 9 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs. 
 
 === Updates include: ===
 
- * New osgWidget library (still in beta status)
- * New KdTree support, with automatic building of KdTrees and intersections with them for high performance intersection testing
- * New Anti-aliased FrameBufferObject support
- * Improved precision of intersections and camera manipulation
- * Improved Alias Wavefront .obj support
- * A wide range of build and bug fixes
+    * New osgWidget library for scene graph based graphics user interface elements (beta release).
+    * KdTree support, with automatic KdTree generation on load and use of KdTree during line intersections which massively improves intersection speeds.
+    * Precision improvements to line intersections, provide accurate whole earth intersection.
+    * OpenGL Multi-sample FrameBufferObject support.
+    * New osg::ImageSequence class for doing texture animation of a series of image files.
+    * New database optimizer that is able to remove static transforms by duplicating shared geometries.
+    * Use glGenerateMipmap to speed up mipmap generation in now power of two textures.
+    * New osgViewer::ScreenCaptureHandler for adding screen shot support to osgViewer applications.
+    * New osgscreencapture example that demonstrates use of double buffer PixelBufferObject's for streaming of imagery from the screen.
+    * New utility application osgfilecache which can be used to populate the local cache for given lat/long ranges and levels.
+    * Rewritten DatabasePager that now supports multiple database reading threads, including handling of http request via a separate reading threads that vastly improves the speed of updates when handling http hosted databases that have already partially been downloaded to local file cache.
+    * Support for a file cache for locally caching paged database hosted over http.
+    * New osgconv --format <fmt>, --formats and --plugins command line options for listing available plugins and the file formats/options they support.
+    * Performance improvements in handling TerraPage.
+    * Animated GIF support.
+    * New SVG image loader.
+    * Improvements to the .obj loader to support are wider range of .obj files and material properties.
+    * Support for COLLADA DOM 2.x
+    * Support for Philips WOWvx 3D auto-stereoscopic displays
+    * Support for CMake 2.6
+    * A wide range of build and bug fixes 
   
 === Downloads and Licensing ===
 !OpenSceneGraph is open-source so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [http://www.openscenegraph.org/projects/osg/wiki/Downloads Downloads] section of the openscenegraph.org website.
@@ -37,7 +52,7 @@ The !OpenSceneGraph Quick Start Guide is now available in Chinese as well as Eng
 === Community support and contributions ===
 The diverse and growing community of over 1900 developers is centred around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists. 
 
-The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointFour 306 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base. 
+The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointFour 323 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base. 
 
 ----
 

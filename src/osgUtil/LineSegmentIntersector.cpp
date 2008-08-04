@@ -287,16 +287,6 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 
     if (iv.getDoDummyTraversal()) return;
 
-    double epsilon = 1e-8;
-    if ((s-e).length()<epsilon)
-    {    
-        osg::Vec3d delta_e_end = _end - e;
-        osg::Vec3d delta_s_start = _start - s;
-        double scale = 0.001;
-        s += (delta_s_start * scale);
-        e += (delta_e_end * scale);
-    }
-    
     osg::KdTree* kdTree = iv.getUseKdTreeWhenAvailable() ? dynamic_cast<osg::KdTree*>(drawable->getShape()) : 0;
     if (kdTree)
     {
@@ -460,43 +450,56 @@ bool LineSegmentIntersector::intersects(const osg::BoundingSphere& bs)
     return true;
 }
 
-bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const osg::BoundingBox& bb)
+bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const osg::BoundingBox& bbInput)
 {
+    osg::Vec3d bb_min(bbInput._min);
+    osg::Vec3d bb_max(bbInput._max);
+
+#if 1
+    double epsilon = 1e-4;
+    bb_min.x() -= epsilon;
+    bb_min.y() -= epsilon;
+    bb_min.z() -= epsilon;
+    bb_max.x() += epsilon;
+    bb_max.y() += epsilon;
+    bb_max.z() += epsilon;
+#endif
+
     // compate s and e against the xMin to xMax range of bb.
     if (s.x()<=e.x())
     {
 
         // trivial reject of segment wholely outside.
-        if (e.x()<bb.xMin()) return false;
-        if (s.x()>bb.xMax()) return false;
+        if (e.x()<bb_min.x()) return false;
+        if (s.x()>bb_max.x()) return false;
 
-        if (s.x()<bb.xMin())
+        if (s.x()<bb_min.x())
         {
             // clip s to xMin.
-            s = s+(e-s)*(bb.xMin()-s.x())/(e.x()-s.x());
+            s = s+(e-s)*(bb_min.x()-s.x())/(e.x()-s.x());
         }
 
-        if (e.x()>bb.xMax())
+        if (e.x()>bb_max.x())
         {
             // clip e to xMax.
-            e = s+(e-s)*(bb.xMax()-s.x())/(e.x()-s.x());
+            e = s+(e-s)*(bb_max.x()-s.x())/(e.x()-s.x());
         }
     }
     else
     {
-        if (s.x()<bb.xMin()) return false;
-        if (e.x()>bb.xMax()) return false;
+        if (s.x()<bb_min.x()) return false;
+        if (e.x()>bb_max.x()) return false;
 
-        if (e.x()<bb.xMin())
+        if (e.x()<bb_min.x())
         {
             // clip s to xMin.
-            e = s+(e-s)*(bb.xMin()-s.x())/(e.x()-s.x());
+            e = s+(e-s)*(bb_min.x()-s.x())/(e.x()-s.x());
         }
 
-        if (s.x()>bb.xMax())
+        if (s.x()>bb_max.x())
         {
             // clip e to xMax.
-            s = s+(e-s)*(bb.xMax()-s.x())/(e.x()-s.x());
+            s = s+(e-s)*(bb_max.x()-s.x())/(e.x()-s.x());
         }
     }
 
@@ -505,36 +508,36 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
     {
 
         // trivial reject of segment wholely outside.
-        if (e.y()<bb.yMin()) return false;
-        if (s.y()>bb.yMax()) return false;
+        if (e.y()<bb_min.y()) return false;
+        if (s.y()>bb_max.y()) return false;
 
-        if (s.y()<bb.yMin())
+        if (s.y()<bb_min.y())
         {
             // clip s to yMin.
-            s = s+(e-s)*(bb.yMin()-s.y())/(e.y()-s.y());
+            s = s+(e-s)*(bb_min.y()-s.y())/(e.y()-s.y());
         }
 
-        if (e.y()>bb.yMax())
+        if (e.y()>bb_max.y())
         {
             // clip e to yMax.
-            e = s+(e-s)*(bb.yMax()-s.y())/(e.y()-s.y());
+            e = s+(e-s)*(bb_max.y()-s.y())/(e.y()-s.y());
         }
     }
     else
     {
-        if (s.y()<bb.yMin()) return false;
-        if (e.y()>bb.yMax()) return false;
+        if (s.y()<bb_min.y()) return false;
+        if (e.y()>bb_max.y()) return false;
 
-        if (e.y()<bb.yMin())
+        if (e.y()<bb_min.y())
         {
             // clip s to yMin.
-            e = s+(e-s)*(bb.yMin()-s.y())/(e.y()-s.y());
+            e = s+(e-s)*(bb_min.y()-s.y())/(e.y()-s.y());
         }
 
-        if (s.y()>bb.yMax())
+        if (s.y()>bb_max.y())
         {
             // clip e to yMax.
-            s = s+(e-s)*(bb.yMax()-s.y())/(e.y()-s.y());
+            s = s+(e-s)*(bb_max.y()-s.y())/(e.y()-s.y());
         }
     }
 
@@ -543,36 +546,36 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
     {
 
         // trivial reject of segment wholely outside.
-        if (e.z()<bb.zMin()) return false;
-        if (s.z()>bb.zMax()) return false;
+        if (e.z()<bb_min.z()) return false;
+        if (s.z()>bb_max.z()) return false;
 
-        if (s.z()<bb.zMin())
+        if (s.z()<bb_min.z())
         {
             // clip s to zMin.
-            s = s+(e-s)*(bb.zMin()-s.z())/(e.z()-s.z());
+            s = s+(e-s)*(bb_min.z()-s.z())/(e.z()-s.z());
         }
 
-        if (e.z()>bb.zMax())
+        if (e.z()>bb_max.z())
         {
             // clip e to zMax.
-            e = s+(e-s)*(bb.zMax()-s.z())/(e.z()-s.z());
+            e = s+(e-s)*(bb_max.z()-s.z())/(e.z()-s.z());
         }
     }
     else
     {
-        if (s.z()<bb.zMin()) return false;
-        if (e.z()>bb.zMax()) return false;
+        if (s.z()<bb_min.z()) return false;
+        if (e.z()>bb_max.z()) return false;
 
-        if (e.z()<bb.zMin())
+        if (e.z()<bb_min.z())
         {
             // clip s to zMin.
-            e = s+(e-s)*(bb.zMin()-s.z())/(e.z()-s.z());
+            e = s+(e-s)*(bb_min.z()-s.z())/(e.z()-s.z());
         }
 
-        if (s.z()>bb.zMax())
+        if (s.z()>bb_max.z())
         {
             // clip e to zMax.
-            s = s+(e-s)*(bb.zMax()-s.z())/(e.z()-s.z());
+            s = s+(e-s)*(bb_max.z()-s.z())/(e.z()-s.z());
         }
     }
     

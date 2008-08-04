@@ -1,3 +1,9 @@
+2008-08-04 14:04 +0000 [r8719]  robert:
+
+	* merged Philip Pulman's Centos 5 compile fix from trunk using :
+	  svn merge -r 8717:8718
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk .
+
 2008-08-04 12:48 +0000 [r8717]  robert:
 
 	* Merged multi-threaded crash fix to PrecipitationEffect, using

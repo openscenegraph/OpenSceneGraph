@@ -475,22 +475,34 @@ bool TerrainManipulator::calcMovement()
             CoordinateFrame coordinateFrame =  getCoordinateFrame(_center);
 
             // need to reintersect with the terrain
-            double distance = _node->getBound().radius()*0.1f;
-            osg::Vec3d start_segment = _center + getUpVector(coordinateFrame) * distance;
-            osg::Vec3d end_segment = start_segment - getUpVector(coordinateFrame) * (2.0f*distance);
-
-            osg::notify(INFO)<<"start="<<start_segment<<"\tend="<<end_segment<<"\tupVector="<<getUpVector(coordinateFrame)<<std::endl;
-
-            osg::Vec3d ip;
-            if (intersect(start_segment,end_segment, ip))
+            double distance = _node->getBound().radius()*0.25f;
+            
+            osg::Vec3d ip1;
+            osg::Vec3d ip2;
+            bool hit_ip1 = intersect(_center, _center + getUpVector(coordinateFrame) * distance, ip1);
+            bool hit_ip2 = intersect(_center, _center - getUpVector(coordinateFrame) * distance, ip2);
+            if (hit_ip1)
             {
-                notify(INFO) << "Hit terrain ok"<< std::endl;
-
-                _center = ip;
-
+                if (hit_ip2)
+                {
+                    _center = (_center-ip1).length2() < (_center-ip2).length2() ?
+                                ip1 :
+                                ip2;
+                                
+                    hitFound = true;
+                }
+                else
+                {
+                    _center = ip1;
+                    hitFound = true;
+                }
+            }
+            else if (hit_ip2)
+            {
+                _center = ip2;
                 hitFound = true;
             }
-
+            
             if (!hitFound)
             {
                 // ??

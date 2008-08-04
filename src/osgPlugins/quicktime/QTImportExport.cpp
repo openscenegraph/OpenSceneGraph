@@ -247,10 +247,11 @@ Handle getPtrDataRef(unsigned char *data, unsigned int size, const std::string &
  
      // Convert From CString in filename to a PascalString in pstr
      if (filename.length() > 255) {
-         CopyCStringToPascal(filename.c_str(), pstr);
          //hmm...not good, pascal string limit is 255!
          //do some error handling maybe?!
+         throw QTImportExportException(0, "filename length limit exceeded");
      }
+     CopyCStringToPascal(filename.c_str(), pstr);
  
     // Add filename extension
      /*err = */PtrToHand(pstr, &fileNameHandle, filename.length() + 1);
@@ -282,7 +283,7 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
     ImageDescriptionHandle desc = 0;
     int depth = 32;
     unsigned int xsize, ysize;
-    unsigned char* imageData;
+    unsigned char* imageData = 0;
     
     // Data Handle for file data ( & load data from file )
     Handle dataRef = getPtrDataRef(data, sizeData, fileTypeHint);
@@ -359,7 +360,7 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
         DisposeHandle(reinterpret_cast<char **>(desc));
         DisposeHandle(dataRef);
     } 
-    catch (QTImportExportException e) 
+    catch (QTImportExportException& e) 
     {
         setError(e.what());
         
@@ -383,9 +384,9 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
     
 
     
+    unsigned int bytesPerPixel = depth / 8;
     unsigned int glpixelFormat;
-            
-    switch(depth >> 3) {
+    switch(bytesPerPixel) {
         case 3 :
             glpixelFormat = GL_RGB;
             break;
@@ -393,20 +394,20 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
             glpixelFormat = GL_RGBA;
             break;
         default :
-            delete imageData;
+            delete[] imageData;
             setError("unknown pixelformat");
             return NULL;
             break;
     }
     
-    unsigned char* swizzled = pepareBufferForOSG(imageData, depth >> 3, xsize, ysize);
+    unsigned char* swizzled = pepareBufferForOSG(imageData, bytesPerPixel, xsize, ysize);
     
     delete[] imageData;
  
     osg::Image* image = new osg::Image();
     image->setFileName(fileTypeHint.c_str());
     image->setImage(xsize,ysize,1,
-        depth >> 3,
+        bytesPerPixel,
         glpixelFormat,
         GL_UNSIGNED_BYTE,
         swizzled,
@@ -510,7 +511,7 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
     }
     
     
-    catch (QTImportExportException e) 
+    catch (QTImportExportException& e) 
     {
         setError(e.what());
         

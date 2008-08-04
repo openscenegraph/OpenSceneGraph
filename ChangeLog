@@ -1,3 +1,58 @@
+2008-08-04 14:01 +0000 [r8718]  robert:
+
+	* From Philip Lowman, workaround of Centos 5's missing definition
+	  of GL_MAX_SAMPLES_EXT.
+
+2008-08-04 12:47 +0000 [r8716]  robert:
+
+	* Moved initial drawable setup to within the mutex locked section
+	  to avoid multi-threaded crash on startup.
+
+2008-08-04 12:27 +0000 [r8714]  robert:
+
+	* Removed debug info
+
+2008-08-04 09:05 +0000 [r8712]  robert:
+
+	* From Ulrich Hertlien, "attached is a patch to
+	  src/osgPlugins/quicktime/QTImportExport.cpp that fixes loading
+	  images using the quicktime loader. Also fixes some minor bugs
+	  like uninitialized variables and incorrect deletes. I'm a bit
+	  puzzled why this didn't pop up for more people as it's quite
+	  severe: basically the filename was never set!""
+
+2008-08-04 08:45 +0000 [r8711]  robert:
+
+	* Added a small epsilon expansion of the bounding box being
+	  clipped/intersected against, to avoid numberic errors causing
+	  problems.
+
+2008-08-03 20:35 +0000 [r8710]  robert:
+
+	* Improved the terrain intersection code so that it produces more
+	  stable terrain movements.
+
+2008-08-03 16:57 +0000 [r8708]  robert:
+
+	* merged 2.6 branch changes back into trunk using : svn merge -r
+	  8699:8706
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/branches/OpenSceneGraph-2.6
+	  .
+
+2008-08-03 16:48 +0000 [r8707]  robert:
+
+	* Moved bb expansion out of loop.
+
+2008-07-25 21:09 +0000 [r8697]  robert:
+
+	* Updated ChangeLog and AUTHORS.txt file for relese candidate
+
+2008-07-25 21:01 +0000 [r8695-8696]  robert:
+
+	* Updated version numbers to 2.6.0
+
+	* Updated REAME and NEWS for 2.6 branch
+
 2008-07-25 20:50 +0000 [r8692-8694]  robert:
 
 	* Updated wrappers

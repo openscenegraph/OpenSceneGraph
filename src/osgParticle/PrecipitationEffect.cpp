@@ -244,27 +244,27 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             precipitationDrawableSet = &(_viewDrawableMap[viewIndentifier]);
-        }
                 
-        if (!precipitationDrawableSet->_quadPrecipitationDrawable)
-        {
-            precipitationDrawableSet->_quadPrecipitationDrawable = new PrecipitationDrawable;
-            precipitationDrawableSet->_quadPrecipitationDrawable->setRequiresPreviousMatrix(true);
-            precipitationDrawableSet->_quadPrecipitationDrawable->setGeometry(_quadGeometry.get());
-            precipitationDrawableSet->_quadPrecipitationDrawable->setStateSet(_quadStateSet.get());
-            precipitationDrawableSet->_quadPrecipitationDrawable->setDrawType(GL_QUADS);
-            
-            precipitationDrawableSet->_linePrecipitationDrawable = new PrecipitationDrawable;
-            precipitationDrawableSet->_linePrecipitationDrawable->setRequiresPreviousMatrix(true);
-            precipitationDrawableSet->_linePrecipitationDrawable->setGeometry(_lineGeometry.get());
-            precipitationDrawableSet->_linePrecipitationDrawable->setStateSet(_lineStateSet.get());
-            precipitationDrawableSet->_linePrecipitationDrawable->setDrawType(GL_LINES);
+            if (!precipitationDrawableSet->_quadPrecipitationDrawable)
+            {
+                precipitationDrawableSet->_quadPrecipitationDrawable = new PrecipitationDrawable;
+                precipitationDrawableSet->_quadPrecipitationDrawable->setRequiresPreviousMatrix(true);
+                precipitationDrawableSet->_quadPrecipitationDrawable->setGeometry(_quadGeometry.get());
+                precipitationDrawableSet->_quadPrecipitationDrawable->setStateSet(_quadStateSet.get());
+                precipitationDrawableSet->_quadPrecipitationDrawable->setDrawType(GL_QUADS);
 
-            precipitationDrawableSet->_pointPrecipitationDrawable = new PrecipitationDrawable;
-            precipitationDrawableSet->_pointPrecipitationDrawable->setRequiresPreviousMatrix(false);
-            precipitationDrawableSet->_pointPrecipitationDrawable->setGeometry(_pointGeometry.get());
-            precipitationDrawableSet->_pointPrecipitationDrawable->setStateSet(_pointStateSet.get());
-            precipitationDrawableSet->_pointPrecipitationDrawable->setDrawType(GL_POINTS);
+                precipitationDrawableSet->_linePrecipitationDrawable = new PrecipitationDrawable;
+                precipitationDrawableSet->_linePrecipitationDrawable->setRequiresPreviousMatrix(true);
+                precipitationDrawableSet->_linePrecipitationDrawable->setGeometry(_lineGeometry.get());
+                precipitationDrawableSet->_linePrecipitationDrawable->setStateSet(_lineStateSet.get());
+                precipitationDrawableSet->_linePrecipitationDrawable->setDrawType(GL_LINES);
+
+                precipitationDrawableSet->_pointPrecipitationDrawable = new PrecipitationDrawable;
+                precipitationDrawableSet->_pointPrecipitationDrawable->setRequiresPreviousMatrix(false);
+                precipitationDrawableSet->_pointPrecipitationDrawable->setGeometry(_pointGeometry.get());
+                precipitationDrawableSet->_pointPrecipitationDrawable->setStateSet(_pointStateSet.get());
+                precipitationDrawableSet->_pointPrecipitationDrawable->setDrawType(GL_POINTS);
+            }
         }
         
         cull(*precipitationDrawableSet, cv);

@@ -219,6 +219,8 @@ bool validName(const std::string& first)
     if (first=="LightPointNode") return false;
     if (first=="GeometryTechnique") return false;
     if (first=="GeoemtryTechnique") return false;
+    if (first=="KdTree") return false;
+    if (first=="LineSegment") return false;
     return true;
 }
 

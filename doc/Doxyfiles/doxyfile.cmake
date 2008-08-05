@@ -398,6 +398,7 @@ INPUT                  = ${OpenSceneGraph_SOURCE_DIR}/include/osg \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgIntrospection \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgParticle \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgViewer \
+                         ${OpenSceneGraph_SOURCE_DIR}/include/osgWidget \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgManipulator \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgShadow \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgSim \

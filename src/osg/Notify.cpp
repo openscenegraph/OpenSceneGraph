@@ -93,10 +93,22 @@ class NullStreamBuffer : public std::streambuf
         }
 };
 
+struct NullStream : public std::ostream
+{
+    NullStream():
+        std::ostream(new NullStreamBuffer) {}
+        
+    virtual ~NullStream()
+    {
+        delete rdbuf();
+        rdbuf(0);
+    }
+};
+
 std::ostream& osg::notify(const osg::NotifySeverity severity)
 {
     // set up global notify null stream for inline notify
-    static std::ostream s_NotifyNulStream(new NullStreamBuffer());
+    static NullStream s_NotifyNulStream;
 
     static bool initialized = false;
     if (!initialized) 

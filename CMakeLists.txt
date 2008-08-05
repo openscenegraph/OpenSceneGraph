@@ -529,7 +529,11 @@ IF(APPLE)
         # independently of OS X versions.)
         # It does look like CMake handles the CMAKE_OSX_SYSROOT automatically.
         IF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
-            SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+            # 64-bit compiles are not supported with Carbon. We should enable 
+            # 64-bit compilation by default once osgviewer has been 
+            # rewritten with Cocoa.
+            #SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+            SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
         ELSE(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
             IF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)

@@ -41,7 +41,7 @@
 
 \namespace osgShadow
 
-The osgShadow is a NodeKit library that extends the core scene graph to add support for a range of shadow techniques.
+The osgShadow library is a NodeKit that extends the core scene graph to add support for a range of shadow techniques.
 */
 
 #endif

@@ -41,7 +41,7 @@
 
 \namespace osgText
 
-The osgText is a NodeKit library that extends the core scene graph to support high quality text.
+The osgText library is a NodeKit that extends the core scene graph to support high quality text.
 */
 
 #endif

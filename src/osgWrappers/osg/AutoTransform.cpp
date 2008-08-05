@@ -179,14 +179,14 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	          __bool__getAutoScaleToScreen,
 	          "",
 	          "");
-	I_Method1(void, setAutoScaleTransistionWidthRatio, IN, float, ratio,
+	I_Method1(void, setAutoScaleTransitionWidthRatio, IN, float, ratio,
 	          Properties::NON_VIRTUAL,
-	          __void__setAutoScaleTransistionWidthRatio__float,
+	          __void__setAutoScaleTransitionWidthRatio__float,
 	          "",
 	          "");
-	I_Method0(float, getAutoScaleTransistionWidthRatio,
+	I_Method0(float, getAutoScaleTransitionWidthRatio,
 	          Properties::NON_VIRTUAL,
-	          __float__getAutoScaleTransistionWidthRatio,
+	          __float__getAutoScaleTransitionWidthRatio,
 	          "",
 	          "");
 	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv,
@@ -216,9 +216,9 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	I_SimpleProperty(bool, AutoScaleToScreen, 
 	                 __bool__getAutoScaleToScreen, 
 	                 __void__setAutoScaleToScreen__bool);
-	I_SimpleProperty(float, AutoScaleTransistionWidthRatio, 
-	                 __float__getAutoScaleTransistionWidthRatio, 
-	                 __void__setAutoScaleTransistionWidthRatio__float);
+	I_SimpleProperty(float, AutoScaleTransitionWidthRatio, 
+	                 __float__getAutoScaleTransitionWidthRatio, 
+	                 __void__setAutoScaleTransitionWidthRatio__float);
 	I_SimpleProperty(float, AutoUpdateEyeMovementTolerance, 
 	                 __float__getAutoUpdateEyeMovementTolerance, 
 	                 __void__setAutoUpdateEyeMovementTolerance__float);

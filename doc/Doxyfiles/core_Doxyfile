@@ -398,6 +398,7 @@ INPUT                  = $(OSGHOME)/include/osg \
                          $(OSGHOME)/include/osgIntrospection \
                          $(OSGHOME)/include/osgParticle \
                          $(OSGHOME)/include/osgViewer \
+                         $(OSGHOME)/include/osgWidget \
                          $(OSGHOME)/include/osgManipulator \
                          $(OSGHOME)/include/osgShadow \
                          $(OSGHOME)/include/osgSim \

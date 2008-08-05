@@ -15,7 +15,7 @@ subscribe to our public mailing list:
 
 Robert Osfield.
 Project Lead.
-25th July 2008.
+5th August 2008.
 
 --
 
@@ -66,9 +66,82 @@ system should help guide you through the process:
 
 Under OSX you can either use the CMake build system above, or use the 
 Xcode projects that you will find in the OpenSceneGraph/Xcode 
-directory.
+directory. See release notes on OSX CMake build below.
 
 For further details on compilation, installation and platform-specific 
 information read "Getting Started" guide:
 
     http://www.openscenegraph.org/projects/osg/wiki/Support/GettingStarted
+   
+   
+-- Release notes on OSX build, by Eric Sokolowsky, August 5, 2008
+
+There are several ways to compile OpenSceneGraph under OSX.  The
+recommended way is to use CMake 2.6 to generate Xcode projects, then use
+Xcode to build the library. The default project will be able to build
+Debug or Release libraries, examples, and sample applications. Here are
+some key settings to consider when using CMake:
+
+BUILD_OSG_EXAMPLES - By default this is turned off. Turn this setting on
+to compile many great example programs.
+
+CMAKE_OSX_ARCHITECTURES - Xcode can create applications, executables,
+libraries, and frameworks that can be run on more than one architecture.
+Use this setting to indicate the architectures on which to build OSG.
+Possibilities include ppc, ppc64, i386, and x86_64. Building OSG using
+either of the 64-bit options (ppc64 and x86_64) has its own caveats
+below.
+
+OSG_BUILD_APPLICATION_BUNDLES - Normally only executable binaries are
+created for the examples and sample applications. Turn this option on if
+you want to create real OSX .app bundles. There are caveats to creating
+.app bundles, see below.
+
+OSG_WINDOWING_SYSTEM - You have the choice to use Carbon or X11 when
+building applications on OSX. Under Leopard and later, X11 applications,
+when started, will automatically launch X11 when needed. However,
+full-screen X11 applications will still show the menu bar at the top of
+the screen. Since many parts of the Carbon user interface are not
+64-bit, X11 is the only supported option for OSX applications compiled
+for ppc64 or x86_64.
+
+There is an Xcode directory in the base of the OSG software
+distribution, but its future is limited, and will be discontinued once
+the CMake project generator completely implements its functionality.
+
+
+APPLICATION BUNDLES (.app bundles)
+
+The example programs when built as application bundles only contain the
+executable file. They do not contain the dependent libraries as would a
+normal bundle, so they are not generally portable to other machines.
+They also do not know where to find plugins. An environmental variable
+OSG_LIBRARY_PATH may be set to point to the location where the plugin
+.so files are located. OSG_FILE_PATH may be set to point to the location
+where data files are located. Setting OSG_FILE_PATH to the
+OpenSceneGraph-Data directory is very useful when testing OSG by running
+the example programs.
+
+Many of the example programs use command-line arguments. When
+double-clicking on an application (or using the equivalent "open"
+command on the command line) only those examples and applications that
+do not require command-line arguments will successfully run. The
+executable file within the .app bundle can be run from the command-line
+if command-line arguments are needed.
+
+
+64-BIT APPLICATION SUPPORT
+
+OpenSceneGraph will not compile successfully when OSG_WINDOWING_SYSTEM is
+Carbon and either x86_64 or ppc64 is selected under CMAKE_OSX_ARCHITECTURES,
+as Carbon is a 32bit only API. A version of the osgviewer library written in
+Cocoa is needed. However, OSG may be compiled under 64-bits if the X11
+windowing system is selected. However, Two parts of the OSG default
+distribution will not work with 64-bit X11: the osgviewerWX example
+program and the osgdb_qt (Quicktime) plugin. These must be removed from
+the Xcode project after Cmake generates it in order to compile with
+64-bit architectures. The lack of the latter means that images such as
+jpeg, tiff, png, and gif will not work, nor will animations dependent on
+Quicktime. A new ImageIO-based plugin is being developed to handle the
+still images, and a QTKit plugin will need to be developed to handle
+animations.

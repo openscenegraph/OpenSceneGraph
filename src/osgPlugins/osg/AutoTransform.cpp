@@ -140,7 +140,8 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
 
-    if (fr.matchSequence("autoScaleTransistionWidthRatio %f"))
+    if (fr.matchSequence("autoScaleTransistionWidthRatio %f") || 
+        fr.matchSequence("autoScaleTransitionWidthRatio %f"))
     {
         float ratio;
         fr[1].getFloat(ratio);

@@ -145,7 +145,7 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr)
         float ratio;
         fr[1].getFloat(ratio);
         
-        transform.setAutoScaleTransistionWidthRatio(ratio);
+        transform.setAutoScaleTransitionWidthRatio(ratio);
 
         fr += 2;
         iteratorAdvanced = true;
@@ -181,9 +181,9 @@ bool AutoTransform_writeLocalData(const Object& obj, Output& fw)
 
     fw.indent()<<"autoScaleToScreen "<<(transform.getAutoScaleToScreen()?"TRUE":"FALSE")<<std::endl;
     
-    if (transform.getAutoScaleTransistionWidthRatio()!=0.25) 
+    if (transform.getAutoScaleTransitionWidthRatio()!=0.25) 
     {
-            fw.indent()<<"autoScaleTransistionWidthRatio "<<transform.getAutoScaleTransistionWidthRatio()<<std::endl;
+            fw.indent()<<"autoScaleTransitionWidthRatio "<<transform.getAutoScaleTransitionWidthRatio()<<std::endl;
     }
     
     return true;

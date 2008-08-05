@@ -1,6 +1,6 @@
 OpenSceneGraph Library 2.6.0
 
-323 Contributors:
+324 Contributors:
 
 Firstname Surname
 -----------------
@@ -21,8 +21,8 @@ Ulrich Hertlein
 Martin Lavery
 David Callu
 Tree 
-Luigi Calori
 Jean-Sebastien Guay
+Luigi Calori
 Trajce Nikolov
 Mike Wittman
 Pavel Moloshtan
@@ -42,17 +42,17 @@ Olaf Flebbe
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
+Philip Lowman
 Paul Melis
 Michael Platings
 Michael Gronager
 Daniel Sjölie
 Chris Hanson
 Adrian Egli
+Sherman Wilcox
 Per Fahlberg
 J.P. Delport
 David Spilling
-Sherman Wilcox
-Philip Lowman
 Melchior Franz
 Joran Jessurun
 Joakim Simonsson
@@ -69,6 +69,7 @@ Rune Schmidt Jensen
 Rainer Oder
 Mike Connell
 Mathieu Marache
+Glenn Waldron
 Carlo Camporesi
 Ben Discoe
 Andreas Ekstrand
@@ -97,7 +98,6 @@ Mihai Radu
 Michael Hartman
 Luc Frauciel
 Laurens Voerman
-Glenn Waldron
 David Guthrie
 Corbin Holtz
 Cedric Pinson
@@ -298,6 +298,7 @@ Dean Iverson
 David Jung
 David Gurhrie
 Daniel Stien
+Daniel Olivier
 Dan Minor
 Cyril Brulebois
 Clay Fowler

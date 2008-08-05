@@ -41,7 +41,7 @@ void AutoTransform::write(DataOutputStream* out){
     {
         out->writeFloat(getMinimumScale());
         out->writeFloat(getMaximumScale());
-        out->writeFloat(getAutoScaleTransistionWidthRatio());
+        out->writeFloat(getAutoScaleTransitionWidthRatio());
     }
 
     out->writeQuat(getRotation());
@@ -76,7 +76,7 @@ void AutoTransform::read(DataInputStream* in){
         {
             setMinimumScale(in->readFloat());
             setMaximumScale(in->readFloat());
-            setAutoScaleTransistionWidthRatio(in->readFloat());
+            setAutoScaleTransitionWidthRatio(in->readFloat());
         }
 
         setRotation(in->readQuat());

@@ -1,3 +1,46 @@
+2008-08-05 10:31 +0000 [r8733]  robert:
+
+	* Updated wrappers
+
+2008-08-05 10:23 +0000 [r8732]  robert:
+
+	* Updated SO version number to reflect typo fixes changing the API
+
+2008-08-05 10:20 +0000 [r8731]  robert:
+
+	* Added support for both the old autoScaleTransistionWidthRatio
+	  (note typo) and newly fixed autoScaleTransitionWidthRatio in the
+	  .osg parsing
+
+2008-08-05 09:58 +0000 [r8730]  paulmelis:
+
+	* - Fixes for two spelling mistakes
+
+2008-08-04 20:50 +0000 [r8729]  robert:
+
+	* Added -losgWidget to lib list, change merged in from svn trunk,
+	  using : svn merge -r 8727:8728
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk .
+
+2008-08-04 17:10 +0000 [r8727]  robert:
+
+	* From Sherman Wilcox, "Minor change to bool
+	  setGLExtensionFuncPtr(T& t, const char* str1) and
+	  setGLExtensionFuncPtr(T& t, const char* str1, const char* str2) -
+	  functions returned false even on success." Note, merged from
+	  svn/trunk using: svn merge -r 8725:8726
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk .
+
+2008-08-04 15:30 +0000 [r8724]  robert:
+
+	* Updated ChangeLog for 2.6.0-rc2
+
+2008-08-04 15:21 +0000 [r8723]  robert:
+
+	* Updated NEWS and AUTHORS for 2.6.0-rc2 from osg trunk, using "svn
+	  merge -r 8719:8722
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk ."
+
 2008-08-04 14:04 +0000 [r8719]  robert:
 
 	* merged Philip Pulman's Centos 5 compile fix from trunk using :

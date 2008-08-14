@@ -70,7 +70,7 @@ class Intersector : public osg::Referenced
         
         inline void decrementDisabledCount() { if (_disabledCount>0) --_disabledCount; }
 
-    protected:
+   protected:
     
         CoordinateFrame _coordinateFrame;
         unsigned int    _disabledCount;
@@ -170,26 +170,59 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
         const ReadCallback* getReadCallback() const { return _readCallback.get(); }
         
         
-        void pushWindowMatrix(osg::RefMatrix* matrix) { _windowStack.push_back(matrix); }
-        void pushWindowMatrix(osg::Viewport* viewport) { _windowStack.push_back(new osg::RefMatrix( viewport->computeWindowMatrix()) ); }
-        void popWindowMatrix() { _windowStack.pop_back(); }
+        void pushWindowMatrix(osg::RefMatrix* matrix) { _windowStack.push_back(matrix); _eyePointDirty = true; }
+        void pushWindowMatrix(osg::Viewport* viewport) { _windowStack.push_back(new osg::RefMatrix( viewport->computeWindowMatrix()) ); _eyePointDirty = true; }
+        void popWindowMatrix() { _windowStack.pop_back(); _eyePointDirty = true; }
         osg::RefMatrix* getWindowMatrix() { return _windowStack.empty() ? 0 :  _windowStack.back().get(); }
         const osg::RefMatrix* getWindowMatrix() const { return _windowStack.empty() ? 0 :  _windowStack.back().get(); }
 
-        void pushProjectionMatrix(osg::RefMatrix* matrix) { _projectionStack.push_back(matrix); }
-        void popProjectionMatrix() { _projectionStack.pop_back(); }
+        void pushProjectionMatrix(osg::RefMatrix* matrix) { _projectionStack.push_back(matrix); _eyePointDirty = true; }
+        void popProjectionMatrix() { _projectionStack.pop_back(); _eyePointDirty = true; }
         osg::RefMatrix* getProjectionMatrix() { return _projectionStack.empty() ? 0 :  _projectionStack.back().get(); }
         const osg::RefMatrix* getProjectionMatrix() const { return _projectionStack.empty() ? 0 :  _projectionStack.back().get(); }
 
-        void pushViewMatrix(osg::RefMatrix* matrix) { _viewStack.push_back(matrix); }
-        void popViewMatrix() { _viewStack.pop_back(); }
+        void pushViewMatrix(osg::RefMatrix* matrix) { _viewStack.push_back(matrix); _eyePointDirty = true; }
+        void popViewMatrix() { _viewStack.pop_back(); _eyePointDirty = true; }
         osg::RefMatrix* getViewMatrix() { return _viewStack.empty() ? 0 :  _viewStack.back().get(); }
         const osg::RefMatrix* getViewMatrix() const { return _viewStack.empty() ? 0 :  _viewStack.back().get(); }
 
-        void pushModelMatrix(osg::RefMatrix* matrix) { _modelStack.push_back(matrix); }
-        void popModelMatrix() { _modelStack.pop_back(); } 
+        void pushModelMatrix(osg::RefMatrix* matrix) { _modelStack.push_back(matrix); _eyePointDirty = true; }
+        void popModelMatrix() { _modelStack.pop_back(); _eyePointDirty = true; } 
         osg::RefMatrix* getModelMatrix() { return _modelStack.empty() ? 0 :  _modelStack.back().get(); }
         const osg::RefMatrix* getModelMatrix() const { return _modelStack.empty() ? 0 :  _modelStack.back().get(); }
+
+
+        /** Set the reference eye point that is used for nodes that require an eye point to position themselves, such as billboards.*/
+        void setReferenceEyePoint(const osg::Vec3& ep) { _referenceEyePoint = ep; _eyePointDirty = true; }
+
+        /** Get the reference eye point.*/
+        const osg::Vec3& getReferenceEyePoint() const { return _referenceEyePoint; }
+        
+        /** Set the coordinate frame of the reference eye point.*/
+        void setReferenceEyePointCoordinateFrame(Intersector::CoordinateFrame cf) { _referenceEyePointCoordinateFrame = cf; }
+
+        /** Get the coordinate frame of the reference eye point.*/
+        Intersector::CoordinateFrame getReferenceEyePointCoordinateFrame() const { return _referenceEyePointCoordinateFrame; }
+        
+
+        /** Get the eye point in the local coordinate frame a given traversal point.*/
+        virtual osg::Vec3 getEyePoint() const;
+
+        enum LODSelectionMode
+        {
+            USE_HIGHEST_LEVEL_OF_DETAIL,
+            USE_EYE_POINT_FOR_LOD_LEVEL_SELECTION
+        };
+        
+        /** Set the LOD selection scheme.*/
+        void setLODSelectionMode(LODSelectionMode mode) { _lodSelectionMode = mode; }
+
+        /** Get the LOD selection scheme.*/
+        LODSelectionMode getLODSelectionMode() const { return _lodSelectionMode; }
+
+         /** Get the distance from a point to the eye point, distance value in local coordinate system.
+          * This is calculated using the pseudo-EyePoint (above) when doing LOD calculcations. */
+        virtual float getDistanceToEyePoint(const osg::Vec3& pos, bool withLODScale) const;
 
     public:
 
@@ -225,6 +258,12 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
         MatrixStack _viewStack;
         MatrixStack _modelStack;
 
+        osg::Vec3                       _referenceEyePoint;
+        Intersector::CoordinateFrame    _referenceEyePointCoordinateFrame;
+        LODSelectionMode                _lodSelectionMode;
+
+        mutable bool                    _eyePointDirty;
+        mutable osg::Vec3               _eyePoint;
 };
 
 }

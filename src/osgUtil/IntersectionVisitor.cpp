@@ -13,6 +13,7 @@
 
 
 #include <osgUtil/IntersectionVisitor>
+#include <osgUtil/LineSegmentIntersector>
 
 #include <osg/PagedLOD>
 #include <osg/Transform>
@@ -157,6 +158,21 @@ IntersectionVisitor::IntersectionVisitor(Intersector* intersector, ReadCallback*
     
     _useKdTreesWhenAvailable = true;
     _dummyTraversal = false;
+    
+    _lodSelectionMode = USE_HIGHEST_LEVEL_OF_DETAIL;
+    _eyePointDirty = true;
+    
+    LineSegmentIntersector* ls = dynamic_cast<LineSegmentIntersector*>(intersector);
+    if (ls) 
+    {
+        setReferenceEyePoint(ls->getStart());
+        setReferenceEyePointCoordinateFrame(ls->getCoordinateFrame());
+    }
+    else
+    {
+        setReferenceEyePoint(osg::Vec3(0.0f,0.0f,0.0f));
+        setReferenceEyePointCoordinateFrame(Intersector::VIEW);
+    }
 
     setIntersector(intersector);
     
@@ -227,10 +243,39 @@ void IntersectionVisitor::apply(osg::Billboard& billboard)
 {
     if (!enter(billboard)) return;
 
+#if 1
+    // IntersectVisitor doesn't have getEyeLocal(), can we use NodeVisitor::getEyePoint()?
+    osg::Vec3 eye_local = getEyePoint();
+
+    for(unsigned int i = 0; i < billboard.getNumDrawables(); i++ )
+    {
+        const osg::Vec3& pos = billboard.getPosition(i);
+        osg::ref_ptr<osg::RefMatrix> billboard_matrix = _modelStack.empty() ? 
+            new osg::RefMatrix :
+            new osg::RefMatrix(*_modelStack.back());
+
+        billboard.computeMatrix(*billboard_matrix,eye_local,pos);
+        
+        pushModelMatrix(billboard_matrix.get());
+
+        // now push an new intersector clone transform to the new local coordinates
+        push_clone();
+
+        intersect( billboard.getDrawable(i) );
+
+        // now push an new intersector clone transform to the new local coordinates
+        pop_clone();
+
+        popModelMatrix();
+
+    }
+#else
+
     for(unsigned int i=0; i<billboard.getNumDrawables(); ++i)
     {
         intersect( billboard.getDrawable(i) );
     }
+#endif
 
     leave();
 }
@@ -412,4 +457,52 @@ void IntersectionVisitor::apply(osg::Camera& camera)
     if (camera.getViewport()) popWindowMatrix();
 
     // leave();
+}
+
+osg::Vec3 IntersectionVisitor::getEyePoint() const
+{
+    if (!_eyePointDirty) return _eyePoint;
+
+    osg::Matrix matrix;
+    switch (_referenceEyePointCoordinateFrame)
+    {
+        case(Intersector::WINDOW): 
+            if (getWindowMatrix()) matrix.preMult( *getWindowMatrix() );
+            if (getProjectionMatrix()) matrix.preMult( *getProjectionMatrix() );
+            if (getViewMatrix()) matrix.preMult( *getViewMatrix() );
+            if (getModelMatrix()) matrix.preMult( *getModelMatrix() );
+            break;
+        case(Intersector::PROJECTION): 
+            if (getProjectionMatrix()) matrix.preMult( *getProjectionMatrix() );
+            if (getViewMatrix()) matrix.preMult( *getViewMatrix() );
+            if (getModelMatrix()) matrix.preMult( *getModelMatrix() );
+            break;
+        case(Intersector::VIEW): 
+            if (getViewMatrix()) matrix.preMult( *getViewMatrix() );
+            if (getModelMatrix()) matrix.preMult( *getModelMatrix() );
+            break;
+        case(Intersector::MODEL):
+            if (getModelMatrix()) matrix = *getModelMatrix();
+            break;
+    }
+
+    osg::Matrix inverse;
+    inverse.invert(matrix);
+
+    _eyePoint = _referenceEyePoint * inverse;
+    _eyePointDirty = false;
+    
+    return _eyePoint;
+}
+
+float IntersectionVisitor::getDistanceToEyePoint(const osg::Vec3& pos, bool /*withLODScale*/) const
+{
+    if (_lodSelectionMode==USE_EYE_POINT_FOR_LOD_LEVEL_SELECTION)
+    {
+        return (pos-getEyePoint()).length();
+    }
+    else
+    {
+        return 0.0f;
+    }
 }

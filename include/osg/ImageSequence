@@ -51,6 +51,12 @@ class OSG_EXPORT ImageSequence : public ImageStream
         typedef std::list< osg::ref_ptr<osg::Image> >   Images;
         typedef std::list< std::string >                FileNames;
         
+        virtual void play();
+
+        virtual void pause();
+
+        virtual void rewind();
+        
         enum Mode
         {
             PRE_LOAD_ALL_IMAGES,
@@ -63,6 +69,9 @@ class OSG_EXPORT ImageSequence : public ImageStream
 
         void setDuration(double duration);
         double getDuration() const { return _duration; }
+
+        virtual double getLength() const { return getDuration(); }
+        
 
         void addImageFile(const std::string& fileName);
         

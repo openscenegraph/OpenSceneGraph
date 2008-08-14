@@ -72,6 +72,21 @@ int ImageSequence::compare(const Image& rhs) const
     return ImageStream::compare(rhs);
 }
 
+void ImageSequence::play()
+{
+    _status=PLAYING;
+}
+
+void ImageSequence::pause()
+{
+    _status=PAUSED;
+}
+
+void ImageSequence::rewind()
+{
+    _status=REWINDING;
+}
+
 void ImageSequence::setMode(Mode mode)
 {
     _mode = mode;
@@ -200,6 +215,8 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     }
     
     double time = (fs->getSimulationTime() - _referenceTime)*_timeMultiplier;
+    
+    if (_status==PAUSED || _status==INVALID) time = _imageIteratorTime;
             
     FileNames::iterator previous_fileNamesIterator = _fileNamesIterator;
     Images::iterator previous_imageIterator = _imageIterator;
@@ -262,7 +279,8 @@ void ImageSequence::update(osg::NodeVisitor* nv)
                 if (_fileNamesIterator ==_fileNames.end())
                 {
                     // return iterator to begining of set.            
-                    _fileNamesIterator = _fileNames.begin();
+                    if (looping) _fileNamesIterator = _fileNames.begin();
+                    else break;                    
                 }
 
                 _filesRequested.push_back(FileNameImagePair(*_fileNamesIterator,0));
@@ -271,7 +289,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
             }
         }
 
-        if (_fileNamesIterator==_fileNames.end())
+        if (looping && _fileNamesIterator==_fileNames.end())
         {
             _fileNamesIterator = _fileNames.begin();
         }
@@ -300,13 +318,20 @@ void ImageSequence::update(osg::NodeVisitor* nv)
                         previous_imageIterator = _images.begin();
                     }
 
-                    // return iterator to begining of set.            
-                    _imageIterator = _images.begin();
+                    if (looping)
+                    {
+                        // return iterator to begining of set.            
+                        _imageIterator = _images.begin();
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
         }
 
-        if (_imageIterator==_images.end())
+        if (looping && _imageIterator==_images.end())
         {
             _imageIterator = _images.begin();
         }

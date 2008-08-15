@@ -51,6 +51,8 @@ class OSG_EXPORT ImageSequence : public ImageStream
         typedef std::list< osg::ref_ptr<osg::Image> >   Images;
         typedef std::list< std::string >                FileNames;
         
+        virtual void seek(double time);
+
         virtual void play();
 
         virtual void pause();
@@ -112,15 +114,18 @@ class OSG_EXPORT ImageSequence : public ImageStream
         FileNames::iterator             _fileNamesIterator;
         double                          _fileNamesIteratorTime;
 
-        double                          _imageHeadTime;
         Images                          _images;
-        Images::iterator                _imageIterator;
-        double                          _imageIteratorTime;
         
         typedef std::pair< std::string, osg::ref_ptr<osg::Image> >  FileNameImagePair;
         typedef std::list< FileNameImagePair >  FileNameImageList;
-        
         FileNameImageList               _filesRequested;
+                
+        Images::iterator                _imageIterator;
+        double                          _imageIteratorTime;
+        
+        bool                            _seekTimeSet;
+        double                          _seekTime;
+        
 
 };
 

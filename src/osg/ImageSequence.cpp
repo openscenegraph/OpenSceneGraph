@@ -49,7 +49,10 @@ ImageSequence::ImageSequence()
     _fileNamesIteratorTime = DBL_MAX;
 
     _imageIterator = _images.end();
-    _imageIteratorTime = DBL_MAX;
+    _imageIteratorTime = 0.0;
+    
+    _seekTime = 0.0;
+    _seekTimeSet = false;
 }
 
 ImageSequence::ImageSequence(const ImageSequence& is,const CopyOp& copyop):
@@ -63,13 +66,22 @@ ImageSequence::ImageSequence(const ImageSequence& is,const CopyOp& copyop):
     _fileNamesIterator = _fileNames.end();
     _fileNamesIteratorTime = DBL_MAX;
 
-    _imageIteratorTime = DBL_MAX;
+    _imageIteratorTime = 0.0;
     _imageIterator = _images.end();
+
+    _seekTime = is._seekTime;
+    _seekTimeSet = is._seekTimeSet;
 }
 
 int ImageSequence::compare(const Image& rhs) const
 {
     return ImageStream::compare(rhs);
+}
+
+void ImageSequence::seek(double time)
+{
+    _seekTime = time;
+    _seekTimeSet = true;
 }
 
 void ImageSequence::play()
@@ -84,7 +96,7 @@ void ImageSequence::pause()
 
 void ImageSequence::rewind()
 {
-    _status=REWINDING;
+    seek(0.0f);
 }
 
 void ImageSequence::setMode(Mode mode)
@@ -171,7 +183,7 @@ void ImageSequence::addImage(osg::Image* image)
     if (data()==0)
     {
         _imageIterator = _images.begin();
-        _imageIteratorTime = _referenceTime;
+        _imageIteratorTime = 0.0;
         setImageToChild(_imageIterator->get());
     }
 }
@@ -209,22 +221,29 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         _fileNamesIteratorTime = _referenceTime;
     }
     
-    if (_imageIteratorTime == DBL_MAX)
-    {
-        _imageIteratorTime = _referenceTime;
-    }
-    
+    bool looping = getLoopingMode()==LOOPING;
     double time = (fs->getSimulationTime() - _referenceTime)*_timeMultiplier;
     
-    if (_status==PAUSED || _status==INVALID) time = _imageIteratorTime;
+    if (_seekTimeSet || _status==PAUSED || _status==INVALID)
+    {
+        time = _seekTime;        
+        _referenceTime =  fs->getSimulationTime() - time/_timeMultiplier;
+    }
+    
+    if (time>_duration)
+    {
+        time -= floor(time/_duration)*_duration;
+    }
             
+    _seekTime = time;
+    _seekTimeSet = false;
+
     FileNames::iterator previous_fileNamesIterator = _fileNamesIterator;
     Images::iterator previous_imageIterator = _imageIterator;
     
     bool pruneOldImages = false;
     
-    bool looping = getLoopingMode()==LOOPING;
-
+    
     switch(_mode)
     {
         case(PRE_LOAD_ALL_IMAGES):
@@ -295,11 +314,19 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         }
     }
         
+
+
     {
-    
         //
         // Advance imageIterator
         //
+
+        if (time<_imageIteratorTime)
+        {
+            _imageIterator = _images.begin();
+            _imageIteratorTime = 0.0;
+        }
+
         if (_imageIterator!=_images.end())
         {
             // osg::notify(osg::NOTICE)<<"   _imageIteratorTime = "<<_imageIteratorTime<<std::endl;

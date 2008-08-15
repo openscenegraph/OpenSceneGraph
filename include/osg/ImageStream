@@ -46,6 +46,8 @@ class OSG_EXPORT ImageStream : public Image
             REWINDING
         };
         
+        virtual void seek(double /*time*/) {}
+
         virtual void play() { _status=PLAYING; }
 
         virtual void pause() { _status=PAUSED; }

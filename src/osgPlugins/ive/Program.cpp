@@ -29,6 +29,13 @@ void Program::write(DataOutputStream* out){
     }
     else
         throw Exception("Program::write(): Could not cast this osg::Program to an osg::Object.");
+        
+    if ( out->getVersion() >= VERSION_0030 )
+    {
+        out->writeInt(getParameter(GL_GEOMETRY_VERTICES_OUT_EXT));
+        out->writeInt(getParameter(GL_GEOMETRY_INPUT_TYPE_EXT));
+        out->writeInt(getParameter(GL_GEOMETRY_OUTPUT_TYPE_EXT));
+    }
 
     const AttribBindingList& abl = getAttribBindingList();
     out->writeUInt(abl.size());
@@ -69,6 +76,13 @@ void Program::read(DataInputStream* in)
     else
     {
         throw Exception("Program::read(): Expected Program identification.");
+    }
+
+    if ( in->getVersion() >= VERSION_0030 )
+    {
+        setParameter(GL_GEOMETRY_VERTICES_OUT_EXT, in->readInt());
+        setParameter(GL_GEOMETRY_INPUT_TYPE_EXT, in->readInt());
+        setParameter(GL_GEOMETRY_OUTPUT_TYPE_EXT, in->readInt());
     }
 
     // reading in shaders.

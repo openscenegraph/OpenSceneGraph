@@ -44,7 +44,7 @@ class MovieEventHandler : public osgGA::GUIEventHandler
 {
 public:
 
-    MovieEventHandler():_trackMouse(false),playToggle_(true) {}
+    MovieEventHandler():_trackMouse(false),_playToggle(true) {}
     
     void setMouseTracking(bool track) { _trackMouse = track; }
     bool getMouseTracking() const { return _trackMouse; }
@@ -113,7 +113,7 @@ protected:
     };
 
 
-    bool            playToggle_;
+    bool            _playToggle;
     bool            _trackMouse;
     ImageStreamList _imageStreamList;
     
@@ -208,8 +208,8 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     itr!=_imageStreamList.end();
                     ++itr)
                 {
-                    playToggle_ = !playToggle_;
-                    if ( playToggle_ )
+                    _playToggle = !_playToggle;
+                    if ( _playToggle )
                     {
                         // playing, so pause
                         std::cout<<"Play"<<std::endl;

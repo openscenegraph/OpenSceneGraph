@@ -42,11 +42,11 @@ ImageSequence::ImageSequence()
     _timeMultiplier = 1.0;
 
     _mode = PRE_LOAD_ALL_IMAGES;
-    _duration = 1.0;
+    _length = 1.0;
     _timePerImage = 1.0;
 
     _fileNamesIterator = _fileNames.end();
-    _fileNamesIteratorTime = DBL_MAX;
+    _fileNamesIteratorTime = 0.0;
 
     _imageIterator = _images.end();
     _imageIteratorTime = 0.0;
@@ -60,14 +60,14 @@ ImageSequence::ImageSequence(const ImageSequence& is,const CopyOp& copyop):
     _referenceTime(is._referenceTime),
     _timeMultiplier(is._timeMultiplier),
     _mode(is._mode),
-    _duration(is._duration),
+    _length(is._length),
     _timePerImage(is._timePerImage)
 {
     _fileNamesIterator = _fileNames.end();
-    _fileNamesIteratorTime = DBL_MAX;
+    _fileNamesIteratorTime = 0.0;
 
-    _imageIteratorTime = 0.0;
     _imageIterator = _images.end();
+    _imageIteratorTime = 0.0;
 
     _seekTime = is._seekTime;
     _seekTimeSet = is._seekTimeSet;
@@ -104,17 +104,17 @@ void ImageSequence::setMode(Mode mode)
     _mode = mode;
 }
 
-void ImageSequence::setDuration(double duration)
+void ImageSequence::setLength(double length)
 {
-    _duration = duration;
+    _length = length;
     computeTimePerImage();
 }
 
 void ImageSequence::computeTimePerImage()
 {
-    if (!_fileNames.empty()) _timePerImage = _duration / double(_fileNames.size());
-    else if (!_images.empty()) _timePerImage = _duration / double(_images.size());
-    else _timePerImage = _duration;
+    if (!_fileNames.empty()) _timePerImage = _length / double(_fileNames.size());
+    else if (!_images.empty()) _timePerImage = _length / double(_images.size());
+    else _timePerImage = _length;
 }
 
 void ImageSequence::addImageFile(const std::string& fileName)
@@ -216,11 +216,6 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         _referenceTime = fs->getSimulationTime();
     }
     
-    if (_fileNamesIteratorTime == DBL_MAX)
-    {
-        _fileNamesIteratorTime = _referenceTime;
-    }
-    
     bool looping = getLoopingMode()==LOOPING;
     double time = (fs->getSimulationTime() - _referenceTime)*_timeMultiplier;
     
@@ -230,9 +225,9 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         _referenceTime =  fs->getSimulationTime() - time/_timeMultiplier;
     }
     
-    if (time>_duration)
+    if (time>_length)
     {
-        time -= floor(time/_duration)*_duration;
+        time -= floor(time/_length)*_length;
     }
             
     _seekTime = time;
@@ -278,13 +273,41 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 
     if (irh && _images.size()<_fileNames.size())
     {
-        double preLoadTime = (time+irh->getPreLoadTime())*_timeMultiplier;
+        double preLoadTime = time + osg::minimum(irh->getPreLoadTime()*_timeMultiplier, _length);
+        
+        if (preLoadTime>=_length)
+        {
+            //
+            // Advance fileNameIterator to end and wrap around
+            //
+            for(; 
+                _fileNamesIterator != _fileNames.end();
+                ++_fileNamesIterator)
+            {
+                _fileNamesIteratorTime += _timePerImage;
+                
+                double effectTime = fs->getSimulationTime() + (preLoadTime - _fileNamesIteratorTime);
+                _filesRequested.push_back(FileNameImagePair(*_fileNamesIterator,0));
+                irh->requestImageFile(*_fileNamesIterator, this, effectTime, fs);
+                
+            }
+            
+            preLoadTime -= _length;
 
-        //
-        // Advance imageIterator
-        //
+            if (looping)
+            {
+                _fileNamesIterator = _fileNames.begin();
+                _fileNamesIteratorTime = 0.0;
+            }
+        }
+        
+
         if (_fileNamesIterator!=_fileNames.end())
         {
+            //
+            // Advance fileNameIterator to encmpass preLoadTime
+            //
+
             //osg::notify(osg::NOTICE)<<"   _fileNamesIteratorTime = "<<_fileNamesIteratorTime<<" "<<_timePerImage<<std::endl;
             while(preLoadTime > (_fileNamesIteratorTime + _timePerImage))
             {
@@ -302,15 +325,16 @@ void ImageSequence::update(osg::NodeVisitor* nv)
                     else break;                    
                 }
 
+                double effectTime = fs->getSimulationTime() + (preLoadTime - _fileNamesIteratorTime);
                 _filesRequested.push_back(FileNameImagePair(*_fileNamesIterator,0));
-                irh->requestImageFile(*_fileNamesIterator, this, _fileNamesIteratorTime, fs);
-
+                irh->requestImageFile(*_fileNamesIterator, this, effectTime, fs);
             }
         }
 
         if (looping && _fileNamesIterator==_fileNames.end())
         {
             _fileNamesIterator = _fileNames.begin();
+            _fileNamesIteratorTime = 0.0;
         }
     }
         

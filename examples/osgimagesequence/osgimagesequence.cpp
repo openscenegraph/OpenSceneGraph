@@ -45,7 +45,7 @@ osg::StateSet* createState()
 {
     osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
 
-    imageSequence->setDuration(2.0);
+    imageSequence->setLength(4.0);
     imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posx.png"));
     imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negx.png"));
     imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posy.png"));

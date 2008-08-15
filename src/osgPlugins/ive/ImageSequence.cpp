@@ -35,7 +35,7 @@ void ImageSequence::write(DataOutputStream* out)
     
     
     out->writeInt(getMode());
-    out->writeDouble(getDuration());
+    out->writeDouble(getLength());
 
     out->writeUInt(getFileNames().size());
     for(FileNames::iterator itr = getFileNames().begin();
@@ -76,7 +76,7 @@ void ImageSequence::read(DataInputStream* in)
 
 
         setMode((osg::ImageSequence::Mode)(in->readInt()));
-        setDuration(in->readDouble());
+        setLength(in->readDouble());
         
         unsigned int numFileNames = in->readUInt();
         if (numFileNames>0)

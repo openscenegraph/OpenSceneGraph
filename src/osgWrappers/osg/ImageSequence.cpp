@@ -126,14 +126,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	          __Mode__getMode,
 	          "",
 	          "");
-	I_Method1(void, setDuration, IN, double, duration,
+	I_Method1(void, setLength, IN, double, length,
 	          Properties::NON_VIRTUAL,
-	          __void__setDuration__double,
-	          "",
-	          "");
-	I_Method0(double, getDuration,
-	          Properties::NON_VIRTUAL,
-	          __double__getDuration,
+	          __void__setLength__double,
 	          "",
 	          "");
 	I_Method0(double, getLength,
@@ -188,9 +183,6 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	                   __void__computeTimePerImage,
 	                   "",
 	                   "");
-	I_SimpleProperty(double, Duration, 
-	                 __double__getDuration, 
-	                 __void__setDuration__double);
 	I_SimpleProperty(osg::ImageSequence::FileNames &, FileNames, 
 	                 __FileNames_R1__getFileNames, 
 	                 0);
@@ -199,7 +191,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	                 0);
 	I_SimpleProperty(double, Length, 
 	                 __double__getLength, 
-	                 0);
+	                 __void__setLength__double);
 	I_SimpleProperty(osg::ImageSequence::Mode, Mode, 
 	                 __Mode__getMode, 
 	                 __void__setMode__Mode);

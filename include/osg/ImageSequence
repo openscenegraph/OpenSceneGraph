@@ -69,10 +69,8 @@ class OSG_EXPORT ImageSequence : public ImageStream
         void setMode(Mode mode);
         Mode getMode() const { return _mode; }
 
-        void setDuration(double duration);
-        double getDuration() const { return _duration; }
-
-        virtual double getLength() const { return getDuration(); }
+        void setLength(double length);
+        virtual double getLength() const { return _length; }
         
 
         void addImageFile(const std::string& fileName);
@@ -105,7 +103,7 @@ class OSG_EXPORT ImageSequence : public ImageStream
         double                          _timeMultiplier;
 
         Mode                            _mode;
-        double                          _duration;
+        double                          _length;
 
         double                          _timePerImage;
 

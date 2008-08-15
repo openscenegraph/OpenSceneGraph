@@ -2374,3 +2374,13 @@ extern "C" void graphicswindow_Win32(void)
 {
     osg::GraphicsContext::setWindowingSystemInterface(osgViewer::Win32WindowingSystem::getInterface());
 }
+
+
+void GraphicsWindowWin32::raiseWindow()
+{
+
+    SetWindowPos(_hwnd, HWND_TOPMOST, _traits->x, _traits->y, _traits->width, _traits->height, SWP_NOMOVE|SWP_NOSIZE);
+    SetWindowPos(_hwnd, HWND_NOTOPMOST, _traits->x, _traits->y, _traits->width, _traits->height, SWP_NOMOVE|SWP_NOSIZE);
+
+}
+

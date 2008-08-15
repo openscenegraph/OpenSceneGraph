@@ -96,6 +96,26 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	          __double__getTimeMultiplier,
 	          "",
 	          "");
+	I_Method1(void, seek, IN, double, time,
+	          Properties::VIRTUAL,
+	          __void__seek__double,
+	          "",
+	          "");
+	I_Method0(void, play,
+	          Properties::VIRTUAL,
+	          __void__play,
+	          "",
+	          "");
+	I_Method0(void, pause,
+	          Properties::VIRTUAL,
+	          __void__pause,
+	          "",
+	          "");
+	I_Method0(void, rewind,
+	          Properties::VIRTUAL,
+	          __void__rewind,
+	          "",
+	          "");
 	I_Method1(void, setMode, IN, osg::ImageSequence::Mode, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__setMode__Mode,
@@ -114,6 +134,11 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	I_Method0(double, getDuration,
 	          Properties::NON_VIRTUAL,
 	          __double__getDuration,
+	          "",
+	          "");
+	I_Method0(double, getLength,
+	          Properties::VIRTUAL,
+	          __double__getLength,
 	          "",
 	          "");
 	I_Method1(void, addImageFile, IN, const std::string &, fileName,
@@ -171,6 +196,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	                 0);
 	I_SimpleProperty(osg::ImageSequence::Images &, Images, 
 	                 __Images_R1__getImages, 
+	                 0);
+	I_SimpleProperty(double, Length, 
+	                 __double__getLength, 
 	                 0);
 	I_SimpleProperty(osg::ImageSequence::Mode, Mode, 
 	                 __Mode__getMode, 

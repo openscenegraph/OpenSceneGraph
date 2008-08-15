@@ -77,6 +77,11 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	          __int__compare__C5_Image_R1,
 	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
+	I_Method1(void, seek, IN, double, x,
+	          Properties::VIRTUAL,
+	          __void__seek__double,
+	          "",
+	          "");
 	I_Method0(void, play,
 	          Properties::VIRTUAL,
 	          __void__play,

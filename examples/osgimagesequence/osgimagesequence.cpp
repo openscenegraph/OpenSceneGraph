@@ -225,7 +225,6 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 {
                     std::cout<<"Restart"<<std::endl;
                     (*itr)->rewind();
-                    (*itr)->play();
                 }
                 return true;
             }

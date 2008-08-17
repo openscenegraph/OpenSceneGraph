@@ -45,6 +45,7 @@ static osg::ApplicationUsageProxy DatabasePager_e2(osg::ApplicationUsage::ENVIRO
 static osg::ApplicationUsageProxy DatabasePager_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_DRAWABLE <mode>","Set the drawable policy for setting of loaded drawable to specified type.  mode can be one of DoNotModify, DisplayList, VBO or VertexArrays>.");
 static osg::ApplicationUsageProxy DatabasePager_e4(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_PRIORITY <mode>", "Set the thread priority to DEFAULT, MIN, LOW, NOMINAL, HIGH or MAX.");
 static osg::ApplicationUsageProxy DatabasePager_e7(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EXPIRY_DELAY <float> ","Set the length of time a PagedLOD child is kept in memory, without being used, before its tagged as expired, and ear marked to deletion.");
+static osg::ApplicationUsageProxy DatabasePager_e8(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EXPIRY_FRAMES <int> ","Set number of frames a PagedLOD child is kept in memory, without being used, before its tagged as expired, and ear marked to deletion.");
 // Convert function objects that take pointer args into functions that a
 // reference to an osg::ref_ptr. This is quite useful for doing STL
 // operations on lists of ref_ptr. This code assumes that a function
@@ -901,6 +902,13 @@ DatabasePager::DatabasePager()
         osg::notify(osg::NOTICE)<<"Expiry delay = "<<_expiryDelay<<std::endl;
     }
 
+    _expiryFrames = 1; // Last frame will not be expired
+    if( (ptr = getenv("OSG_EXPIRY_FRAMES")) != 0)
+    {
+        _expiryFrames = atoi(ptr);
+        osg::notify(osg::NOTICE)<<"Expiry frames = "<<_expiryFrames<<std::endl;
+    }
+
     _doPreCompile = true;
     if( (ptr = getenv("OSG_DO_PRE_COMPILE")) != 0)
     {
@@ -977,6 +985,7 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     _deleteRemovedSubgraphsInDatabaseThread = rhs._deleteRemovedSubgraphsInDatabaseThread;
     
     _expiryDelay = rhs._expiryDelay;
+    _expiryFrames = rhs._expiryFrames;
     _doPreCompile = rhs._doPreCompile;
     _targetFrameRate = rhs._targetFrameRate;
     _minimumTimeAvailableForGLCompileAndDeletePerFrame = rhs._minimumTimeAvailableForGLCompileAndDeletePerFrame;
@@ -1287,8 +1296,10 @@ bool DatabasePager::requiresUpdateSceneGraph() const
 }
  
 
-void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
+void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
 {
+    double timeStamp = frameStamp.getReferenceTime();
+    int frameNumber = frameStamp.getFrameNumber();
 
     // osg::Timer_t before = osg::Timer::instance()->tick();
 
@@ -1321,7 +1332,8 @@ void DatabasePager::addLoadedDataToSceneGraph(double timeStamp)
             osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(group.get());
             if (plod)
             {
-                plod->setTimeStamp(plod->getNumChildren(),timeStamp);
+                plod->setTimeStamp(plod->getNumChildren(), timeStamp);
+                plod->setFrameNumber(plod->getNumChildren(), frameNumber);
                 plod->getDatabaseRequest(plod->getNumChildren()) = 0;
             }
             else
@@ -1375,11 +1387,12 @@ public:
     std::string _marker;
 };
 
-void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
+void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp &frameStamp)
 {
 //    osg::notify(osg::NOTICE)<<"DatabasePager::new_removeExpiredSubgraphs()"<<std::endl;
 
-    double expiryTime = currentFrameTime - _expiryDelay;
+    double expiryTime = frameStamp.getReferenceTime() - _expiryDelay;
+    int expiryFrame = frameStamp.getFrameNumber() - _expiryFrames;
 
     osg::NodeList childrenRemoved;
     
@@ -1388,7 +1401,7 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
         ++itr)
     {
         osg::PagedLOD* plod = itr->get();
-        plod->removeExpiredChildren(expiryTime,childrenRemoved);
+        plod->removeExpiredChildren(expiryTime, expiryFrame, childrenRemoved);
     }
     
     if (!childrenRemoved.empty())
@@ -1445,7 +1458,7 @@ void DatabasePager::removeExpiredSubgraphs(double currentFrameTime)
         osgDB::Registry::instance()->getSharedStateManager()->prune();
 
     // update the Registry object cache.
-    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExternalReferences(currentFrameTime);
+    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExternalReferences(frameStamp.getReferenceTime());
     osgDB::Registry::instance()->removeExpiredObjectsInCache(expiryTime);
 
 

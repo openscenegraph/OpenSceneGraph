@@ -18,6 +18,7 @@
 #include <osg/NodeVisitor>
 #include <osg/observer_ptr>
 #include <osg/OperationThread>
+#include <osg/FrameStamp>
 
 #include <OpenThreads/Mutex>
 
@@ -84,7 +85,7 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         virtual bool requiresUpdateSceneGraph() const;
         
         /** Merge the changes to the scene graph. */
-        virtual void updateSceneGraph(double currentFrameTime);
+        virtual void updateSceneGraph(const osg::FrameStamp &frameStamp);
         
         int cancel();
 

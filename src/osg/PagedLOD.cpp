@@ -22,13 +22,15 @@ using namespace osg;
 PagedLOD::PerRangeData::PerRangeData():
     _priorityOffset(0.0f),
     _priorityScale(1.0f),
-    _timeStamp(0.0f) {}
+    _timeStamp(0.0f),
+    _frameNumber(0) {}
 
 PagedLOD::PerRangeData::PerRangeData(const PerRangeData& prd):
     _filename(prd._filename),
     _priorityOffset(prd._priorityOffset),
     _priorityScale(prd._priorityScale),
     _timeStamp(prd._timeStamp),
+    _frameNumber(prd._frameNumber),
     _databaseRequest(prd._databaseRequest) {}
 
 PagedLOD::PerRangeData& PagedLOD::PerRangeData::operator = (const PerRangeData& prd)
@@ -38,6 +40,7 @@ PagedLOD::PerRangeData& PagedLOD::PerRangeData::operator = (const PerRangeData& 
     _priorityOffset = prd._priorityOffset;
     _priorityScale = prd._priorityScale;
     _timeStamp = prd._timeStamp;
+    _frameNumber = prd._frameNumber;
     _databaseRequest = prd._databaseRequest;
     return *this;
 }
@@ -114,6 +117,7 @@ void PagedLOD::traverse(NodeVisitor& nv)
     if (nv.getFrameStamp()) setFrameNumberOfLastTraversal(nv.getFrameStamp()->getFrameNumber());
 
     double timeStamp = nv.getFrameStamp()?nv.getFrameStamp()->getReferenceTime():0.0;
+    int frameNumber = nv.getFrameStamp()?nv.getFrameStamp()->getFrameNumber():0;
     bool updateTimeStamp = nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR;
 
     switch(nv.getTraversalMode())
@@ -154,7 +158,11 @@ void PagedLOD::traverse(NodeVisitor& nv)
                 {
                     if (i<_children.size())
                     {
-                        if (updateTimeStamp) _perRangeDataList[i]._timeStamp=timeStamp;
+                        if (updateTimeStamp)
+                        {
+                            _perRangeDataList[i]._timeStamp=timeStamp;
+                            _perRangeDataList[i]._frameNumber=frameNumber;
+                        }
 
                         _children[i]->accept(nv);
                         lastChildTraversed = (int)i;
@@ -173,7 +181,11 @@ void PagedLOD::traverse(NodeVisitor& nv)
                 // select the last valid child.
                 if (numChildren>0 && ((int)numChildren-1)!=lastChildTraversed)
                 {
-                    if (updateTimeStamp) _perRangeDataList[numChildren-1]._timeStamp=timeStamp;
+                    if (updateTimeStamp)
+                    {
+                        _perRangeDataList[numChildren-1]._timeStamp=timeStamp;
+                        _perRangeDataList[numChildren-1]._frameNumber=frameNumber;
+                    }
                     _children[numChildren-1]->accept(nv);
                 }
 
@@ -261,12 +273,14 @@ bool PagedLOD::removeChildren( unsigned int pos,unsigned int numChildrenToRemove
     return Group::removeChildren(pos,numChildrenToRemove);
 }
 
-bool PagedLOD::removeExpiredChildren(double expiryTime,NodeList& removedChildren)
+bool PagedLOD::removeExpiredChildren(double expiryTime, int expiryFrame, NodeList& removedChildren)
 {
     if (_children.size()>_numChildrenThatCannotBeExpired)
     {
-        if (!_perRangeDataList[_children.size()-1]._filename.empty() && _perRangeDataList[_children.size()-1]._timeStamp<expiryTime)
-        {
+        if (!_perRangeDataList[_children.size()-1]._filename.empty() &&
+            _perRangeDataList[_children.size()-1]._timeStamp<expiryTime &&
+            _perRangeDataList[_children.size()-1]._frameNumber<expiryFrame)
+        {            
             osg::Node* nodeToRemove = _children[_children.size()-1].get();
             removedChildren.push_back(nodeToRemove);
             return Group::removeChildren(_children.size()-1,1);

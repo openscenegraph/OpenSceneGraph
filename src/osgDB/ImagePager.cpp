@@ -326,7 +326,7 @@ bool ImagePager::requiresUpdateSceneGraph() const
     return !(_completedQueue->_requestList.empty());
 }
 
-void ImagePager::updateSceneGraph(double currentFrameTime)
+void ImagePager::updateSceneGraph(const osg::FrameStamp &frameStamp)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_completedQueue->_requestMutex);
 

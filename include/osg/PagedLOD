@@ -62,6 +62,7 @@ class OSG_EXPORT PagedLOD : public LOD
             float                           _priorityOffset;
             float                           _priorityScale;
             double                          _timeStamp;
+            int                             _frameNumber;
             osg::ref_ptr<osg::Referenced>   _databaseRequest;
         };
 
@@ -84,6 +85,10 @@ class OSG_EXPORT PagedLOD : public LOD
         void setTimeStamp(unsigned int childNo, double timeStamp) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._timeStamp=timeStamp; }
         double getTimeStamp(unsigned int childNo) const { return _perRangeDataList[childNo]._timeStamp; }
         unsigned int getNumTimeStamps() const { return _perRangeDataList.size(); }
+
+        void setFrameNumber(unsigned int childNo, int frameNumber) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._frameNumber=frameNumber; }
+        double getFrameNumber(unsigned int childNo) const { return _perRangeDataList[childNo]._frameNumber; }
+        unsigned int getNumFrameNumbers() const { return _perRangeDataList.size(); }
 
 
         /** Return the DatabaseRequest object used by the DatabasePager to keep track of file load requests 
@@ -111,13 +116,11 @@ class OSG_EXPORT PagedLOD : public LOD
         /** Get the number of children that the PagedLOD must keep around, even if they are older than their expiry time.*/
         unsigned int getNumChildrenThatCannotBeExpired() const { return _numChildrenThatCannotBeExpired; }
 
-        /** Remove the children from the PagedLOD which haven't been visited since specified expiry time.
+        /** Remove the children from the PagedLOD which haven't been visited since specified expiry time and expiry frame number.
           * The removed children are added to the removeChildren list passed into the method,
           * this allows the children to be deleted later at the caller's discretion.
           * Return true if children are removed, false otherwise. */
-        virtual bool removeExpiredChildren(double expiryTime,NodeList& removedChildren);
-        
-        
+        virtual bool removeExpiredChildren(double expiryTime, int expiryFrame, NodeList& removedChildren);
 
     protected :
     

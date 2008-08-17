@@ -19,6 +19,7 @@
 #include <osg/PagedLOD>
 #include <osg/Drawable>
 #include <osg/GraphicsThread>
+#include <osg/FrameStamp>
 
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
@@ -207,6 +208,14 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * before being removed.*/
         double getExpiryDelay() const { return _expiryDelay; }
 
+        /** Set the number of frames that a subgraph will be kept without being visited in the cull traversal
+          * before being removed.*/
+        void setExpiryFrames(int expiryFrames) { _expiryFrames = expiryFrames; }
+        
+        /** Get the number of frames that a subgraph will be kept without being visited in the cull traversal
+          * before being removed.*/
+        int getExpiryFrames() const { return _expiryFrames; }
+
         /** Set whether the removed subgraphs should be deleted in the database thread or not.*/
         void setDeleteRemovedSubgraphsInDatabaseThread(bool flag) { _deleteRemovedSubgraphsInDatabaseThread = flag; }
         
@@ -247,12 +256,12 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         /** Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph.
           * Note, must only be called from single thread update phase. */
-        virtual void updateSceneGraph(double currentFrameTime)
+        virtual void updateSceneGraph(const osg::FrameStamp &frameStamp)
         {
-            removeExpiredSubgraphs(currentFrameTime);
-            addLoadedDataToSceneGraph(currentFrameTime);
+            removeExpiredSubgraphs(frameStamp);
+            addLoadedDataToSceneGraph(frameStamp);
         }
-        
+                
         /** Turn the compilation of rendering objects for specified graphics context on (true) or off(false). */
         void setCompileGLObjectsForContextID(unsigned int contextID, bool on);
         
@@ -487,10 +496,10 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Iterate through the active PagedLOD nodes children removing 
           * children which havn't been visited since specified expiryTime.
           * note, should be only be called from the update thread. */
-        virtual void removeExpiredSubgraphs(double currentFrameTime);
+        virtual void removeExpiredSubgraphs(const osg::FrameStamp &frameStamp);
 
         /** Add the loaded data to the scene graph.*/
-        void addLoadedDataToSceneGraph(double currentFrameTime);
+        void addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp);
 
 
         bool                            _done;
@@ -523,6 +532,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         PagedLODList                    _pagedLODList;
         
         double                          _expiryDelay;
+        int                             _expiryFrames;
 
         ActiveGraphicsContexts          _activeGraphicsContexts;
         // CompileGraphicsContexts         _compileGraphicsContexts;

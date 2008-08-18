@@ -1,3 +1,4 @@
+#include <osg/Notify>
 #include <osg/Version>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
@@ -34,6 +35,8 @@ NamePair NameDonBurns("Don","Burns");
 bool validName(const std::string& first)
 {
     if (first=="de") return true;
+    if (first=="den") return true;
+    if (first=="van") return true;
 
 
     if (first.empty()) return false;
@@ -221,6 +224,8 @@ bool validName(const std::string& first)
     if (first=="GeoemtryTechnique") return false;
     if (first=="KdTree") return false;
     if (first=="LineSegment") return false;
+    if (first=="Canvas") return false;
+    if (first=="OpenSceneGraph-2") return false;
     return true;
 }
 
@@ -232,70 +237,92 @@ std::string typoCorrection(const std::string& name)
     if (name=="") return "";
     if (name=="") return "";
 #endif
-    if (name=="Weidemann") return "Wiedemann";
-    if (name=="Martsz") return "Martz";
-    if (name=="Matz")  return "Martz";
-    if (name=="Froenlich") return "Fröhlich";
-    if (name=="Froechlich") return "Fröhlich";
-    if (name=="Froelich") return "Fröhlich";    
-    if (name=="Fruciel") return "Frauciel";
-    if (name=="Hebelin") return "Herbelin";
-    if (name=="Jea-Sebastien") return "Jean-Sebastien";
-    if (name=="Jean-Sebastian") return "Jean-Sebastien";
-    if (name=="Robet") return "Robert";
-    if (name=="MornÃ©") return "Morné";
+    if (name=="Aderian")  return "Adrian";
     if (name=="Adndre") return "Andre";
-    if (name=="Mellis") return "Melis";
-    if (name=="Rajce") return "Trajce";
-    if (name=="Trastenjak") return "Trstenjak";
+    if (name=="Adrain") return "Adrian";
+    if (name=="Andew") return "Andrew";
+    if (name=="AndrÃ©") return "André";
+    if (name=="Antione") return "Antoine";
+    if (name=="Antonoine") return "Antoine";
+    if (name=="Atr")  return "Art";
     if (name=="Baverage") return "Beverage";
     if (name=="Bistroviae") return "Bistrovic";
+    if (name=="Callue")  return "Callu";
     if (name=="Christaiansen") return "Christiansen";
     if (name=="Cobin") return "Corbin";
+    if (name=="Comporesi") return "Camporesi";
     if (name=="Connel") return "Connell";
+    if (name=="Cullu") return "Callu";
+    if (name=="Daneil") return "Daniel";
     if (name=="Daust") return "Daoust";
-    if (name=="Lugi") return "Luigi";
     if (name=="Daved") return "David";
-    if (name=="Fred") return "Frederic";
     if (name=="Drederic") return "Frederic";
+    if (name=="Eileman") return "Eilemann";
+    if (name=="Elgi") return "Egli";
+    if (name=="Fred") return "Frederic";
     if (name=="Fredrick") return "Frederic";
     if (name=="Fredric") return "Frederic";
+    if (name=="Froechlich") return "Fröhlich";
+    if (name=="Froehlich") return "Fröhlich";
+    if (name=="Froelich") return "Fröhlich";    
+    if (name=="Froenlich") return "Fröhlich";
+    if (name=="FrÃ¶hlich") return "Fröhlich";
+    if (name=="Fruciel") return "Frauciel";
+    if (name=="GarcÃ­a") return "Garcea";
     if (name=="Garrat") return "Garrett";
+    if (name=="Garret") return "Garrett";
     if (name=="Geof") return "Geoff";
+    if (name=="Giatan") return "Gaitan";
     if (name=="Gronenger") return "Gronager";
     if (name=="Gronger") return "Gronager";
+    if (name=="Hebelin") return "Herbelin";
     if (name=="Heirtlein") return "Hertlein";
     if (name=="Heirtlein") return "Hertlein";
     if (name=="Heirtlein") return "Hertlein";
     if (name=="Hertlien") return "Hertlein";
-    if (name=="Narache") return "Marache";
     if (name=="Hi") return "He";
     if (name=="Hooper") return "Hopper";
     if (name=="Inverson") return "Iverson";
     if (name=="Iversion") return "Iverson";
-    if (name=="Jeoen") return "Joran";
+    if (name=="Jean-Sebastian") return "Jean-Sebastien";
+    if (name=="Jea-Sebastien") return "Jean-Sebastien";
     if (name=="Johhansen") return "Johansen";
     if (name=="Johnansen") return "Johansen";
     if (name=="Johnasen") return "Johansen";
     if (name=="Jolly") return "Jolley";
     if (name=="Jose") return "José";
+    if (name=="JosÃ©") return "José";
     if (name=="Joson") return "Jason";
     if (name=="J") return "José";
     if (name=="Keuhne") return "Kuehne";
     if (name=="Kheune") return "Kuehne";
+    if (name=="Larshkari") return "Lashkari";
     if (name=="Lashakari") return "Lashkari";
     if (name=="Lashari") return "Lashkari";
     if (name=="Lasharki") return "Lashkari";
     if (name=="Laskari") return "Lashkari";
+    if (name=="Leandowski" || name=="Lawandowski")  return "Lewandowski";
+    if (name=="Lugi") return "Luigi";
+    if (name=="Machler") return "Mächler";
     if (name=="Macro") return "Marco";
+    if (name=="Maechler") return "Mächler";
+    if (name=="Mahai")  return "Mihai";
     if (name=="Mammond") return "Marmond";
     if (name=="March") return "Marco";
+    if (name=="Martsz") return "Martz";
     if (name=="Marz") return "Martz";
+    if (name=="Matz")  return "Martz";
+    if (name=="Melchoir") return "Melchior";
+    if (name=="Mellis") return "Melis";
+    if (name=="Messerschimdt") return "Messerschmidt";
     if (name=="Micheal") return "Michael";
+    if (name=="Mihair")  return "Mihai";
     if (name=="Molishtan") return "Moloshtan";
     if (name=="Molishtan") return "Moloshtan";
     if (name=="Moloshton") return "Moloshtan";
+    if (name=="MornÃ©") return "Morné";
     if (name=="Moule") return "Moiule";
+    if (name=="Narache") return "Marache";
     if (name=="Nicklov") return "Nikolov";
     if (name=="Nickolov") return "Nikolov";
     if (name=="Olad") return "Olaf";
@@ -303,64 +330,57 @@ std::string typoCorrection(const std::string& name)
     if (name=="Oritz") return "Ortiz";
     if (name=="Osfied") return "Osfield";
     if (name=="Pail") return "Paul";
+    if (name=="Rajce") return "Trajce";
     if (name=="Randal") return "Randall";
+    if (name=="Robet") return "Robert";
     if (name=="Rodger") return "Roger";
     if (name=="Sewel") return "Sewell";
+    if (name=="Simmonson") return "Simonsson";
+    if (name=="Simmonsson") return "Simonsson";
     if (name=="Sjolie") return "Sjölie";
+    if (name=="SjÃ¶lie") return "Sjölie";
+    if (name=="Skinnder") return "Skinner";
     if (name=="Sokolosky") return "Sokolowsky";
+    if (name=="Sokolowki") return "Sokolowsky";
     if (name=="Sokolowski") return "Sokolowsky";
     if (name=="Sokolsky") return "Sokolowsky";
+    if (name=="Sokolwsky") return "Sokolowsky";
     if (name=="Sonda") return "Sondra";
     if (name=="Stansilav") return "Stanislav";
     if (name=="Stefan") return "Stephan";
     if (name=="Stell") return "Steel";
+    if (name=="Sylvan") return "Sylvain";
     if (name=="Takeahei") return "Takahei";
     if (name=="Takehei") return "Takahei";
     if (name=="Tarantilils") return "Tarantilis";
+    if (name=="Trastenjak") return "Trstenjak";
     if (name=="Vines") return "Vine";
+    if (name=="Waldrom")  return "Waldron";
+    if (name=="Weidemann") return "Wiedemann";
     if (name=="Wieblen") return "Weiblen";
+    if (name=="Wojiech" || name=="Wojchiech")  return "Wojciech";
     if (name=="Xennon") return "Hanson";
     if (name=="Yefrei") return "Yefei";
     if (name=="Yfei") return "Yefei";
-    if (name=="Antonoine") return "Antoine";
-    if (name=="Antione") return "Antoine";
-    if (name=="Andew") return "Andrew";
-    if (name=="Daneil") return "Daniel";
-    if (name=="AndrÃ©") return "André";
-    if (name=="GarcÃ­a") return "Garcea";
-    if (name=="SjÃ¶lie") return "Sjölie";
-    if (name=="JosÃ©") return "José";
-    if (name=="FrÃ¶hlich") return "Fröhlich";
-    if (name=="Froehlich") return "Fröhlich";
-    if (name=="Eileman") return "Eilemann";
-    if (name=="Skinnder") return "Skinner";
-    if (name=="Mihair")  return "Mihai";
-    if (name=="Mahai")  return "Mihai";
-    if (name=="Wojiech" || name=="Wojchiech")  return "Wojciech";
-    if (name=="Leandowski" || name=="Lawandowski")  return "Lewandowski";
-    if (name=="Aderian")  return "Adrian";
-    if (name=="Callue")  return "Callu";
-    if (name=="Waldrom")  return "Waldron";
-    if (name=="Atr")  return "Art";
-    if (name=="Sylvan") return "Sylvain";
-    if (name=="Giatan") return "Gaitan";
-    if (name=="Melchoir") return "Melchior";
-    if (name=="Simmonsson") return "Simonsson";
-    if (name=="Simmonson") return "Simonsson";
-    if (name=="Sokolwsky") return "Sokolowsky";
-    if (name=="Cullu") return "Callu";
-    if (name=="Comporesi") return "Camporesi";
-    if (name=="Machler") return "Mächler";
-    if (name=="Maechler") return "Mächler";
-    if (name=="Messerschimdt") return "Messerschmidt";
-    if (name=="Garret") return "Garrett";
-    if (name=="Adrain") return "Adrian";
-    if (name=="Elgi") return "Egli";
+    if (name=="Frashid") return "Farshid";
+    
     return name;
 }
 
 void nameCorrection(NamePair& name)
 {
+    if (name.first=="Erik" && name.second=="van")
+    {
+        name.first = "Erik";
+        name.second = "den Dekker";
+    }
+    
+    if (name.first=="Jeoen" && name.second=="den")
+    {
+        name.first = "Jeoen";
+        name.second = "den Dekker";
+    }
+    
     if (name.first=="John" && name.second=="Vidar")
     {
         name.first = "John";
@@ -398,7 +418,7 @@ void nameCorrection(NamePair& name)
         name.first = "Donald";
         name.second = "Cipperly";
     }
-    if (name.first=="Gino" && name.second=="")
+    if (name.first=="Gino" && name.second=="van")
     {
         name.first = "Gino";
         name.second = "van den Bergen";
@@ -541,6 +561,8 @@ void lastValidCharacter(const std::string& name, unsigned int& last)
 NamePair createName(const std::string& first, const std::string& second)
 {
     if (first.empty()) return EmptyNamePair;
+    
+    // osg::notify(osg::NOTICE)<<"first = "<<first<<" second = "<<second<<std::endl;
     
     unsigned int last = first.size();
     lastValidCharacter(first, last);

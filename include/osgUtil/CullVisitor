@@ -57,7 +57,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         /// Copy constructor that does a shallow copy.
         CullVisitor(const CullVisitor&);
 
-        /** Create a shallow copy of the CullVisitor, used by CullVisitor::create() to clone the prototype..*/
+        /** Create a shallow copy of the CullVisitor, used by CullVisitor::create() to clone the prototype. */
         virtual CullVisitor* clone() const { return new CullVisitor(*this); }
 
         /** get the prototype singleton used by CullVisitor::create().*/

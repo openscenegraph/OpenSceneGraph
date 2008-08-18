@@ -163,6 +163,21 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	          __unsigned_int__getNumTimeStamps,
 	          "",
 	          "");
+	I_Method2(void, setFrameNumber, IN, unsigned int, childNo, IN, int, frameNumber,
+	          Properties::NON_VIRTUAL,
+	          __void__setFrameNumber__unsigned_int__int,
+	          "",
+	          "");
+	I_Method1(double, getFrameNumber, IN, unsigned int, childNo,
+	          Properties::NON_VIRTUAL,
+	          __double__getFrameNumber__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumFrameNumbers,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumFrameNumbers,
+	          "",
+	          "");
 	I_Method1(osg::ref_ptr< osg::Referenced > &, getDatabaseRequest, IN, unsigned int, childNo,
 	          Properties::NON_VIRTUAL,
 	          __osg_ref_ptrT1_osg_Referenced__R1__getDatabaseRequest__unsigned_int,
@@ -193,10 +208,10 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	          __unsigned_int__getNumChildrenThatCannotBeExpired,
 	          "Get the number of children that the PagedLOD must keep around, even if they are older than their expiry time. ",
 	          "");
-	I_Method2(bool, removeExpiredChildren, IN, double, expiryTime, IN, osg::NodeList &, removedChildren,
+	I_Method3(bool, removeExpiredChildren, IN, double, expiryTime, IN, int, expiryFrame, IN, osg::NodeList &, removedChildren,
 	          Properties::VIRTUAL,
-	          __bool__removeExpiredChildren__double__NodeList_R1,
-	          "Remove the children from the PagedLOD which haven't been visited since specified expiry time. ",
+	          __bool__removeExpiredChildren__double__int__NodeList_R1,
+	          "Remove the children from the PagedLOD which haven't been visited since specified expiry time and expiry frame number. ",
 	          "The removed children are added to the removeChildren list passed into the method, this allows the children to be deleted later at the caller's discretion. Return true if children are removed, false otherwise. ");
 	I_ProtectedMethod1(void, expandPerRangeDataTo, IN, unsigned int, pos,
 	                   Properties::NON_VIRTUAL,
@@ -211,6 +226,13 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	                __C5_std_string_R1__getFileName__unsigned_int, 
 	                __void__setFileName__unsigned_int__C5_std_string_R1, 
 	                __unsigned_int__getNumFileNames, 
+	                0, 
+	                0, 
+	                0);
+	I_ArrayProperty(double, FrameNumber, 
+	                __double__getFrameNumber__unsigned_int, 
+	                0, 
+	                __unsigned_int__getNumFrameNumbers, 
 	                0, 
 	                0, 
 	                0);
@@ -257,6 +279,7 @@ BEGIN_VALUE_REFLECTOR(osg::PagedLOD::PerRangeData)
 	I_PublicMemberProperty(float, _priorityOffset);
 	I_PublicMemberProperty(float, _priorityScale);
 	I_PublicMemberProperty(double, _timeStamp);
+	I_PublicMemberProperty(int, _frameNumber);
 	I_PublicMemberProperty(osg::ref_ptr< osg::Referenced >, _databaseRequest);
 END_REFLECTOR
 

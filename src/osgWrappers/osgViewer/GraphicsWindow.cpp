@@ -131,6 +131,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__grabFocusIfPointerInWindow,
 	          "Get focus on if the pointer is in this window. ",
 	          "");
+	I_Method0(void, raiseWindow,
+	          Properties::VIRTUAL,
+	          __void__raiseWindow,
+	          "Raise the window to the top. ",
+	          "");
 	I_Method1(void, setWindowName, IN, const std::string &, x,
 	          Properties::VIRTUAL,
 	          __void__setWindowName__C5_std_string_R1,
@@ -304,6 +309,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
 	          Properties::VIRTUAL,
 	          __void__grabFocusIfPointerInWindow,
 	          "Get focus on if the pointer is in this window. ",
+	          "");
+	I_Method0(void, raiseWindow,
+	          Properties::VIRTUAL,
+	          __void__raiseWindow,
+	          "Raise the window to the top. ",
 	          "");
 END_REFLECTOR
 

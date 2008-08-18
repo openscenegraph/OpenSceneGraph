@@ -218,6 +218,11 @@ bool Style::applyStyle(Window* window, Reader r) {
     return true;
 }
 
+bool Style::applyStyle(Canvas* label, Reader r) {
+    return false;
+}
+
+
 bool Style::applyStyle(Window::EmbeddedWindow*, Reader r) {
     return false;
 }
@@ -353,6 +358,12 @@ bool StyleManager::_applyStyleToObject(osg::Object* obj, const std::string& styl
         style,
         c
     );
+    else if(!std::string("Canvas").compare(c)) return _coerceAndApply<Canvas>(
+        obj,
+        style,
+        c
+    );
+
 
     else warn()
         << "StyleManager does not support coercion of objects of type "

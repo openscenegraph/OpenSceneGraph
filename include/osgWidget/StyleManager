@@ -22,6 +22,7 @@
 #include <osgWidget/Box>
 #include <osgWidget/Frame>
 #include <osgWidget/Input>
+#include <osgWidget/Canvas>
 
 namespace osgWidget {
 
@@ -44,6 +45,9 @@ class OSGWIDGET_EXPORT Style: public osg::Object
         virtual bool applyStyle (Box*, Reader);
         virtual bool applyStyle (Frame::Corner*, Reader);
         virtual bool applyStyle (Frame::Border*, Reader);
+        virtual bool applyStyle (Canvas*, Reader);
+
+
 
         void setStyle(const std::string& style) {
             _style = style;
@@ -104,7 +108,8 @@ class OSGWIDGET_EXPORT StyleManager: public osg::Object
         Styles _styles;
 
         template<typename T>
-        bool _applySpecificStyle(T* t, const std::string& style) {
+        bool _applySpecificStyle(T* t, const std::string& style)
+        {
             osgDB::FieldReaderIterator r;
 
             std::istringstream input(_styles[style]->getStyle());
@@ -113,7 +118,15 @@ class OSGWIDGET_EXPORT StyleManager: public osg::Object
 
             bool inc = false;
 
-            while(!r.eof()) if(_styles[style]->applyStyle(t, r)) inc = true;
+            while(!r.eof()) 
+            {
+                if(_styles[style]->applyStyle(t, r)) 
+                    inc = true;
+                else
+                    r.advanceOverCurrentFieldOrBlock();
+            }
+
+
 
             return inc;
         }

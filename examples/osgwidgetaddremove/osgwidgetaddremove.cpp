@@ -65,13 +65,13 @@ public:
         // Take special note here! Not only do the Button objects have their
         // own overridden methods for changing the color, but they have attached
         // callbacks for doing the work with local data.
-        getByName("Widget_1")->addCallback(osgWidget::Callback(
+        getByName("Widget_1")->addCallback(new osgWidget::Callback(
             &AddRemove::handlePressAdd,
             this,
             osgWidget::EVENT_MOUSE_PUSH
         ));
 
-        getByName("Widget_2")->addCallback(osgWidget::Callback(
+        getByName("Widget_2")->addCallback(new osgWidget::Callback(
             &AddRemove::handlePressRemove,
             this,
             osgWidget::EVENT_MOUSE_PUSH

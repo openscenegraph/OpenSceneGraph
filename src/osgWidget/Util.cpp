@@ -8,9 +8,9 @@
 #include <osgDB/FileUtils>
 #include <osgDB/WriteFile>
 #include <osgViewer/ViewerEventHandlers>
-#include <osgWidget/Util>
 #include <osgWidget/ViewerEventHandlers>
-#include <osgWidget/WindowManager>
+#include <osgWidget/Box>
+#include <osgWidget/Label>
 
 namespace osgWidget {
 
@@ -67,6 +67,9 @@ osg::Camera* createInvertedYOrthoCamera(matrix_type width, matrix_type height) {
 	camera->setProjectionMatrix(createInvertedYOrthoProjectionMatrix(width, height));
 	
 	return camera;
+}
+
+void _helpDialog() {
 }
 
 osg::Group* _createExampleCommon(osgViewer::View* view, WindowManager* wm, osg::Node* node) {

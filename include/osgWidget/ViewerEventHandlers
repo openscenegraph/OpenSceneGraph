@@ -81,7 +81,7 @@ class OSGWIDGET_EXPORT KeyboardHandler: public osgGA::GUIEventHandler
 class OSGWIDGET_EXPORT ResizeHandler: public osgGA::GUIEventHandler
 {
     public:
-        ResizeHandler(WindowManager*, osg::Camera*);
+        ResizeHandler(WindowManager*, osg::Camera*, bool=true);
 
         virtual bool handle(
             const osgGA::GUIEventAdapter&,
@@ -94,6 +94,8 @@ class OSGWIDGET_EXPORT ResizeHandler: public osgGA::GUIEventHandler
     
         osg::ref_ptr<WindowManager> _wm;
         osg::ref_ptr<osg::Camera>   _camera;
+
+	bool _adjustOrtho;
 
 };
 

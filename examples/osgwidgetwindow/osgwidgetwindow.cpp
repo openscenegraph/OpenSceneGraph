@@ -45,6 +45,19 @@ struct Object {
 	}
 };
 
+// This is the more "traditional" method of creating a callback.
+struct CallbackObject: public osgWidget::Callback {
+	CallbackObject(osgWidget::EventType evType):
+	osgWidget::Callback(evType) {
+	}
+
+	virtual bool operator()(osgWidget::Event& ev) {
+		std::cout << "here" << std::endl;
+		
+		return false;
+	}
+};
+
 int main(int argc, char** argv) {
 	osgViewer::Viewer viewer;
 	
@@ -81,13 +94,17 @@ int main(int argc, char** argv) {
 
 	static std::string data = "lol ur face!";
 
-	box->addCallback(osgWidget::Callback(&windowClicked, osgWidget::EVENT_MOUSE_PUSH, &data));
-	box->addCallback(osgWidget::Callback(&windowScrolled, osgWidget::EVENT_MOUSE_SCROLL));
+	/*
+	box->addCallback(new osgWidget::Callback(&windowClicked, osgWidget::EVENT_MOUSE_PUSH, &data));
+	box->addCallback(new osgWidget::Callback(&windowScrolled, osgWidget::EVENT_MOUSE_SCROLL));
 	box->addCallback(osgWidget::Callback(
 		&Object::windowClicked,
 		&obj,
 		osgWidget::EVENT_MOUSE_PUSH
 	));
+	*/
+
+	box->addCallback(new CallbackObject(osgWidget::EVENT_MOUSE_PUSH));
 
 	// Create some of our "testing" Widgets; included are two Widget subclasses I made
 	// during testing which I've kept around for testing purposes. You'll notice

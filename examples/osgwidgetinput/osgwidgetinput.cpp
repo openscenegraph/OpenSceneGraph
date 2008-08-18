@@ -137,7 +137,7 @@ int main(int argc, char** argv) {
     inputs.push_back(y);
     inputs.push_back(z);
 
-    table->addCallback(osgWidget::Callback(&info, osgWidget::EVENT_MOUSE_PUSH));
+    table->addCallback(new osgWidget::Callback(&info, osgWidget::EVENT_MOUSE_PUSH));
 
     lbox1->addWidget(createLabel(INFO));
     lbox2->addWidget(new Button("Add To Scene...", inputs));
@@ -145,7 +145,7 @@ int main(int argc, char** argv) {
     box->addWidget(lbox1->embed());
     box->addWidget(table->embed());
     box->addWidget(lbox2->embed());
-    box->addCallback(osgWidget::Callback(&info, osgWidget::EVENT_MOUSE_PUSH));
+    box->addCallback(new osgWidget::Callback(&info, osgWidget::EVENT_MOUSE_PUSH));
 
     frame->setWindow(box);
     frame->getEmbeddedWindow()->setSize(box->getWidth(), box->getHeight());

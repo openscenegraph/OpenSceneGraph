@@ -385,19 +385,19 @@ class OSGWIDGET_EXPORT Window:
         }
 
         void attachMoveCallback() {
-            addCallback(Callback(&callbackWindowMove, EVENT_MOUSE_DRAG));
+            addCallback(new Callback(&callbackWindowMove, EVENT_MOUSE_DRAG));
         }
 
         void attachRotateCallback() {
-            addCallback(Callback(&callbackWindowRotate, EVENT_MOUSE_DRAG));
+            addCallback(new Callback(&callbackWindowRotate, EVENT_MOUSE_DRAG));
         }
 
         void attachScaleCallback() {
-            addCallback(Callback(&callbackWindowScale, EVENT_MOUSE_DRAG));
+            addCallback(new Callback(&callbackWindowScale, EVENT_MOUSE_DRAG));
         }
 
         void attachTabFocusCallback() {
-            addCallback(Callback(&callbackWindowTabFocus, EVENT_KEY_DOWN));
+            addCallback(new Callback(&callbackWindowTabFocus, EVENT_KEY_DOWN));
         }
 
     protected:

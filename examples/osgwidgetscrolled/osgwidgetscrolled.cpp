@@ -125,8 +125,8 @@ int main(int argc, char** argv) {
     frame->getEmbeddedWindow()->setWindow(box);
     frame->getEmbeddedWindow()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
     frame->resize(300.0f, 300.0f);
-    frame->addCallback(osgWidget::Callback(&scrollWindow, osgWidget::EVENT_MOUSE_SCROLL));
-    frame->addCallback(osgWidget::Callback(&changeTheme, osgWidget::EVENT_KEY_DOWN));
+    frame->addCallback(new osgWidget::Callback(&scrollWindow, osgWidget::EVENT_MOUSE_SCROLL));
+    frame->addCallback(new osgWidget::Callback(&changeTheme, osgWidget::EVENT_KEY_DOWN));
 
     wm->addChild(frame);
 

@@ -11,6 +11,8 @@ Label::Label(const std::string& name, const std::string& label):
 Widget     (name, 0, 0),
 _textIndex (0),
 _text      (new osgText::Text()) {
+	_text->setCharacterSize(12.0f);
+	_text->setFontResolution(12, 12);
 	_text->setText(label);
 	_text->setAlignment(osgText::Text::LEFT_BOTTOM);
 	_text->setDataVariance(osg::Object::DYNAMIC);
@@ -27,6 +29,8 @@ _text      (new osgText::Text()) {
 	// osgText::Text, I will need to calculate the center myself.
 
 	setColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+	_calculateSize(getTextSize());
 }
 
 Label::Label(const Label& label, const osg::CopyOp& co):

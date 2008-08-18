@@ -47,11 +47,11 @@ osgWidget::Widget* createWidget(
 	osgWidget::Widget* widget = new osgWidget::Widget(name, 200.0f, 200.0f);
 
 	widget->setEventMask(osgWidget::EVENT_ALL);
-	widget->addCallback(osgWidget::Callback(&colorWidgetEnter, osgWidget::EVENT_MOUSE_PUSH));
-	widget->addCallback(osgWidget::Callback(&colorWidgetLeave, osgWidget::EVENT_MOUSE_RELEASE));
-	widget->addCallback(osgWidget::Callback(&colorWidgetEnter, osgWidget::EVENT_MOUSE_ENTER));
-	widget->addCallback(osgWidget::Callback(&colorWidgetLeave, osgWidget::EVENT_MOUSE_LEAVE));
-	widget->addCallback(osgWidget::Callback(&widgetMouseOver, osgWidget::EVENT_MOUSE_OVER));
+	widget->addCallback(new osgWidget::Callback(&colorWidgetEnter, osgWidget::EVENT_MOUSE_PUSH));
+	widget->addCallback(new osgWidget::Callback(&colorWidgetLeave, osgWidget::EVENT_MOUSE_RELEASE));
+	widget->addCallback(new osgWidget::Callback(&colorWidgetEnter, osgWidget::EVENT_MOUSE_ENTER));
+	widget->addCallback(new osgWidget::Callback(&colorWidgetLeave, osgWidget::EVENT_MOUSE_LEAVE));
+	widget->addCallback(new osgWidget::Callback(&widgetMouseOver, osgWidget::EVENT_MOUSE_OVER));
 	widget->setColor(col, col, col, 0.5f);
 	widget->setLayer(layer);
 	
@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
 	
 	osgWidget::Canvas* canvas = new osgWidget::Canvas("canvas");
 
-	canvas->addCallback(osgWidget::Callback(&windowMouseOver, osgWidget::EVENT_MOUSE_OVER));
+	canvas->addCallback(new osgWidget::Callback(&windowMouseOver, osgWidget::EVENT_MOUSE_OVER));
 	canvas->attachMoveCallback();
 	canvas->attachRotateCallback();
 	canvas->attachScaleCallback();

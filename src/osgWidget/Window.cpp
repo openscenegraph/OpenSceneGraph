@@ -69,8 +69,9 @@ void Window::EmbeddedWindow::parented(Window* parent) {
 	;
 }
 
-void Window::EmbeddedWindow::unparented(Window*) {
+void Window::EmbeddedWindow::unparented(Window* window) {
 	// TODO: Figure out what's necessary here...
+	if(_parent) _parent->removeChild(_window.get());
 }
 
 void Window::EmbeddedWindow::managed(WindowManager* wm) {
@@ -526,9 +527,9 @@ void Window::_setParented(Widget* widget, bool setUnparented) {
 	}
 
 	else {
-		widget->_parent = 0;
-
 		widget->unparented(this);
+
+		widget->_parent = 0;
 	}
 }
 

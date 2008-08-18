@@ -157,9 +157,10 @@ bool KeyboardHandler::handle(
 	return false;
 }
 
-ResizeHandler::ResizeHandler(WindowManager* wm, osg::Camera* camera):
-_wm     (wm),
-_camera (camera) {
+ResizeHandler::ResizeHandler(WindowManager* wm, osg::Camera* camera, bool adjustOrtho):
+_wm          (wm),
+_camera      (camera),
+_adjustOrtho (adjustOrtho) {
 }
 
 bool ResizeHandler::handle(
@@ -175,11 +176,13 @@ bool ResizeHandler::handle(
 	osg::Matrix::value_type w = gea.getWindowWidth();
 	osg::Matrix::value_type h = gea.getWindowHeight();
 
-	if(_wm->isInvertedY()) _camera->setProjectionMatrix(
-		createInvertedYOrthoProjectionMatrix(w, h)
-	);
+	if(_adjustOrtho) {
+		if(_wm->isInvertedY()) _camera->setProjectionMatrix(
+			createInvertedYOrthoProjectionMatrix(w, h)
+		);
 
-	else _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0f, w, 0.0f, h));
+		else _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0f, w, 0.0f, h));
+	}
 	
 	_wm->setSize(w, h);
 	_wm->resizeAllWindows();

@@ -84,7 +84,7 @@ public:
             _windows->addWidget(label2, 0.0f, 0.0f);
 
             label1->setEventMask(osgWidget::EVENT_MOUSE_PUSH);
-            label1->addCallback(osgWidget::Callback(
+            label1->addCallback(new osgWidget::Callback(
                 &Notebook::callbackTabPressed,
                 this,
                 osgWidget::EVENT_MOUSE_PUSH

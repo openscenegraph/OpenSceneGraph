@@ -32,6 +32,8 @@
 #include <osg/Material>
 #include <osg/PrimitiveSet>
 #include <osg/Endian>
+#include <osg/BlendFunc>
+#include <osg/BlendEquation>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -745,7 +747,7 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
                        osg::Texture::InternalFormatMode internalFormatMode,
                        float /*xSize*/, float /*ySize*/, float /*zSize*/,
                        float /*xMultiplier*/, float /*yMultiplier*/, float /*zMultiplier*/,
-                       unsigned int /*numSlices*/=500, float /*sliceEnd*/=1.0f, float alphaFuncValue=0.02f)
+                       unsigned int /*numSlices*/=500, float /*sliceEnd*/=1.0f, float alphaFuncValue=0.02f, bool maximumIntensityProjection = false)
 {
     osg::Geode* geode = new osg::Geode;
     osg::StateSet* stateset = geode->getOrCreateStateSet();
@@ -863,6 +865,12 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
 
     stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
 
+    if (maximumIntensityProjection)
+    {
+        stateset->setAttribute(new osg::BlendFunc(osg::BlendFunc::ONE, osg::BlendFunc::ONE));
+        stateset->setAttribute(new osg::BlendEquation(osg::BlendEquation::RGBA_MAX));
+    }
+
     {
         osg::Geometry* geom = new osg::Geometry;
 
@@ -943,7 +951,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
                        osg::Texture::InternalFormatMode internalFormatMode,
                        float xSize, float ySize, float zSize,
                        float xMultiplier, float yMultiplier, float zMultiplier,
-                       unsigned int numSlices=500, float sliceEnd=1.0f, float alphaFuncValue=0.02f)
+                       unsigned int numSlices=500, float sliceEnd=1.0f, float alphaFuncValue=0.02f, bool maximumIntensityProjection = false)
 {
     bool two_pass = normalmap_3d.valid() && (image_3d->getPixelFormat()==GL_RGB || image_3d->getPixelFormat()==GL_RGBA);
 
@@ -1021,6 +1029,12 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
     osg::Material* material = new osg::Material;
     material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     stateset->setAttributeAndModes(material);
+    
+    if (maximumIntensityProjection)
+    {
+        stateset->setAttribute(new osg::BlendFunc(osg::BlendFunc::ONE, osg::BlendFunc::ONE));
+        stateset->setAttribute(new osg::BlendEquation(osg::BlendEquation::RGBA_MAX));
+    }
     
     osg::Vec3 lightDirection(1.0f,-1.0f,1.0f);
     lightDirection.normalize();
@@ -1434,6 +1448,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-s <numSlices>","Number of slices to create.");
     arguments.getApplicationUsage()->addCommandLineOption("--images [filenames]","Specify a stack of 2d images to build the 3d volume from.");
     arguments.getApplicationUsage()->addCommandLineOption("--shader","Use OpenGL Shading Language.");
+    arguments.getApplicationUsage()->addCommandLineOption("--mip","Use Maximum Intensity Projection (MIP) filtering.");
     arguments.getApplicationUsage()->addCommandLineOption("--xSize <size>","Relative width of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--ySize <size>","Relative length of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--zSize <size>","Relative height of rendered brick.");
@@ -1482,6 +1497,9 @@ int main( int argc, char **argv )
 
     bool createNormalMap = false;
     while (arguments.read("-n")) createNormalMap=true;
+    
+    bool maximumIntensityProjection = false;
+    while(arguments.read("--mip")) maximumIntensityProjection = true;
 
     float xSize=1.0f, ySize=1.0f, zSize=1.0f;
     while (arguments.read("--xSize",xSize)) {}
@@ -1598,7 +1616,7 @@ int main( int argc, char **argv )
                                internalFormatMode,
                                xSize, ySize, zSize,
                                xMultiplier, yMultiplier, zMultiplier,
-                               numSlices, sliceEnd, alphaFunc);
+                               numSlices, sliceEnd, alphaFunc, maximumIntensityProjection);
     }
     else
     {
@@ -1606,7 +1624,7 @@ int main( int argc, char **argv )
                                internalFormatMode,
                                xSize, ySize, zSize,
                                xMultiplier, yMultiplier, zMultiplier,
-                               numSlices, sliceEnd, alphaFunc);
+                               numSlices, sliceEnd, alphaFunc, maximumIntensityProjection);
     }
     
     if (!outputFile.empty())

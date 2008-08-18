@@ -14,19 +14,19 @@ Window(canvas, co) {
 }
 
 void Canvas::_resizeImplementation(point_type w, point_type h) {
-	// A Canvas has no layout, so it doesn't really know how to honor a resize
-	// request. :) The best I could do here is store the differences and add them
-	// later to the calls to getWidth/getHeight.
+    // A Canvas has no layout, so it doesn't really know how to honor a resize
+    // request. :) The best I could do here is store the differences and add them
+    // later to the calls to getWidth/getHeight.
 }
 
 bool Canvas::addWidget(Widget* widget, point_type x, point_type y) {
-	if(Window::addWidget(widget)) {
-		widget->setOrigin(x, y);
+    if(Window::addWidget(widget)) {
+        widget->setOrigin(x, y);
 
-		return true;
-	}
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 }

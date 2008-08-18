@@ -10,6 +10,7 @@ SET(TARGET_SRC
     AzimSector.cpp
     Billboard.cpp
     BlendColor.cpp
+    BlendEquation.cpp
     BlendFunc.cpp
     BlinkSequence.cpp
     Camera.cpp

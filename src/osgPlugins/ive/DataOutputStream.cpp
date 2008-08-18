@@ -22,6 +22,7 @@
 #include "BlendColor.h"
 #include "Stencil.h"
 #include "BlendFunc.h"
+#include "BlendEquation.h"
 #include "Material.h"
 #include "CullFace.h"
 #include "ColorMask.h"
@@ -722,6 +723,9 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         }
         else if(dynamic_cast<const osg::BlendFunc*>(attribute)){
             ((ive::BlendFunc*)(attribute))->write(this);
+        }
+        else if(dynamic_cast<const osg::BlendEquation*>(attribute)){
+            ((ive::BlendEquation*)(attribute))->write(this);
         }
         else if(dynamic_cast<const osg::Depth*>(attribute)){
             ((ive::Depth*)(attribute))->write(this);

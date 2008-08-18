@@ -21,6 +21,7 @@
 #include "BlendColor.h"
 #include "Stencil.h"
 #include "BlendFunc.h"
+#include "BlendEquation.h"
 #include "Depth.h"
 #include "Material.h"
 #include "CullFace.h"
@@ -1096,6 +1097,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
             attributeID == IVEBLENDFUNCSEPARATE){
         attribute = new osg::BlendFunc();
         ((ive::BlendFunc*)(attribute))->read(this);
+    }
+    else if(attributeID == IVEBLENDEQUATION){
+        attribute = new osg::BlendEquation();
+        ((ive::BlendEquation*)(attribute))->read(this);
     }
     else if(attributeID == IVEDEPTH){
         attribute = new osg::Depth();

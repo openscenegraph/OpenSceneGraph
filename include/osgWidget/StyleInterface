@@ -17,9 +17,9 @@
 #ifndef OSGWIDGET_STYLE_INTERFACE
 #define OSGWIDGET_STYLE_INTERFACE
 
-namespace osgWidget {
-
 #include <osgWidget/Export>
+
+namespace osgWidget {
 
 class OSGWIDGET_EXPORT StyleInterface
 {

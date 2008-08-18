@@ -204,6 +204,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __double__getExpiryDelay,
 	          "Get the amount of time that a subgraph will be kept without being visited in the cull traversal before being removed. ",
 	          "");
+	I_Method1(void, setExpiryFrames, IN, int, expiryFrames,
+	          Properties::NON_VIRTUAL,
+	          __void__setExpiryFrames__int,
+	          "Set the number of frames that a subgraph will be kept without being visited in the cull traversal before being removed. ",
+	          "");
+	I_Method0(int, getExpiryFrames,
+	          Properties::NON_VIRTUAL,
+	          __int__getExpiryFrames,
+	          "Get the number of frames that a subgraph will be kept without being visited in the cull traversal before being removed. ",
+	          "");
 	I_Method1(void, setDeleteRemovedSubgraphsInDatabaseThread, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
 	          __void__setDeleteRemovedSubgraphsInDatabaseThread__bool,
@@ -249,9 +259,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __bool__requiresUpdateSceneGraph,
 	          "Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). ",
 	          "");
-	I_Method1(void, updateSceneGraph, IN, double, currentFrameTime,
+	I_Method1(void, updateSceneGraph, IN, const osg::FrameStamp &, frameStamp,
 	          Properties::VIRTUAL,
-	          __void__updateSceneGraph__double,
+	          __void__updateSceneGraph__C5_osg_FrameStamp_R1,
 	          "Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph. ",
 	          "Note, must only be called from single thread update phase. ");
 	I_Method2(void, setCompileGLObjectsForContextID, IN, unsigned int, contextID, IN, bool, on,
@@ -340,16 +350,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	                   __bool__isCompiled__C5_osg_Drawable_P1,
 	                   "",
 	                   "");
-	I_ProtectedMethod1(void, removeExpiredSubgraphs, IN, double, currentFrameTime,
+	I_ProtectedMethod1(void, removeExpiredSubgraphs, IN, const osg::FrameStamp &, frameStamp,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__removeExpiredSubgraphs__double,
+	                   __void__removeExpiredSubgraphs__C5_osg_FrameStamp_R1,
 	                   "Iterate through the active PagedLOD nodes children removing children which havn't been visited since specified expiryTime. ",
 	                   "note, should be only be called from the update thread. ");
-	I_ProtectedMethod1(void, addLoadedDataToSceneGraph, IN, double, currentFrameTime,
+	I_ProtectedMethod1(void, addLoadedDataToSceneGraph, IN, const osg::FrameStamp &, frameStamp,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__addLoadedDataToSceneGraph__double,
+	                   __void__addLoadedDataToSceneGraph__C5_osg_FrameStamp_R1,
 	                   "Add the loaded data to the scene graph. ",
 	                   "");
 	I_SimpleProperty(bool, AcceptNewDatabaseRequests, 
@@ -387,6 +397,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(double, ExpiryDelay, 
 	                 __double__getExpiryDelay, 
 	                 __void__setExpiryDelay__double);
+	I_SimpleProperty(int, ExpiryFrames, 
+	                 __int__getExpiryFrames, 
+	                 __void__setExpiryFrames__int);
 	I_SimpleProperty(unsigned int, FileRequestListSize, 
 	                 __unsigned_int__getFileRequestListSize, 
 	                 0);

@@ -123,7 +123,6 @@ class TessellationHints : public Object
  *  render <tt>Shape</tt>s easily (perhaps for test or debugging purposes) than
  *  as the right way to render basic shapes in some efficiency-critical section
  *  of code.
- *  @todo \c ShapeDrawable currently doesn't render <tt>InfinitePlane</tt>s.
  */
 class OSG_EXPORT ShapeDrawable : public Drawable
 {

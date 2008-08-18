@@ -1,3 +1,233 @@
+2008-08-18 11:48 +0000 [r8771]  robert:
+
+	* Updated wrappers
+
+2008-08-18 11:21 +0000 [r8770]  robert:
+
+	* From Sergey Leontyev, "1. In StyleManager when applying styles to
+	  a Label element the code below runs in a infinite loop. The
+	  reason for this is that nothing increments the Reader "r" in the
+	  case when applying a style to label, so I advance the reader when
+	  no match was found. ( To replicate the error apply style to any
+	  label) replaced this: while(!r.eof())
+	  if(_styles[style]->applyStyle(t, r)) inc = true; with this:
+	  while(!r.eof()) { if(_styles[style]->applyStyle(t, r)) inc =
+	  true; else r.advanceOverCurrentFieldOrBlock(); } I tested it and
+	  it works well for me, I did not find any problems with it. 2.
+	  Added style support for Canvas element, event though there is no
+	  styles to apply yet. It is usefull for someone who inherits from
+	  Canvas class to develop another element. If applyStyle(Canvas)
+	  does not exist there is no way to apply style to the element that
+	  inherited from Canvas element. Added virtual bool
+	  applyStyle(Canvas). and in added call to apply style if the
+	  Object is of type Canvas:
+	  StyleManager::_applyStyleToObject(osg::Object* obj, const
+	  std::string& style) { ... else
+	  if(!std::string("Canvas").compare(c)) return
+	  _coerceAndApply<Canvas>(obj,style,c); "
+
+2008-08-18 11:17 +0000 [r8769]  robert:
+
+	* Ran fixtabs to enforce four space tabs
+
+2008-08-18 11:00 +0000 [r8768]  robert:
+
+	* From Erik van Dekker, "I made several modifications: * The cause
+	  of my errors was that my OSG source directory path contains
+	  spaces. To fix this issue I wrapped all paths with quotes, as
+	  stated in doxygen documentation. * I also received some warning
+	  messages about deprecated doxygen settings, which I fixed by
+	  updating the doxygen file, i.e. running \u2018doxygen \u2013u
+	  doxygen.cmake\u2018. By running this command deprecated doxygen
+	  options are removed, some option comments have changed and quite
+	  some options have been added (I kept their default settings
+	  unless mentioned). * I was surprised to find that the doxygen
+	  OUTPUT_DIRECTORY was set to
+	  \u201c${OpenSceneGraph_SOURCE_DIR}/doc\u201d, which does not seem
+	  appropriate for out of source builds; I changed this to
+	  \u201c${OpenSceneGraph_BINARY_DIR}/doc\u201d. (On the other hand,
+	  maybe a cmake selectable option should be given to the user?) *
+	  Fixed two warnings I received about unexpected
+	  end-of-list-markers in \u2018osg\AnimationPath and
+	  \u2018osgUtil\CullVisitor due to excess trailing points in
+	  comments. * Fixed a warning in osgWidget\StyleInterface due to an
+	  #include directive (strangely) placed inside a namespace. * Fixed
+	  a warning in osg\Camera due to the META_Object macro that
+	  confused doxygen. Adding a semi-colon fixed this. * Removed
+	  auto_Mainpage from the INCLUDE option, because I am positive that
+	  this file does not belong there; It never generated useful
+	  documentation anyway. * I added the OSG version number
+	  environment variable to the PROJECT_NUMBER option so that the
+	  version number is now shown on the main page of generated
+	  documentation (e.g. index.html). * Changed option FULL_PATH_NAMES
+	  to YES, but made sure STRIP_FROM_PATH stripped the absolute path
+	  until the include dir. This fixed an issue that created mangled
+	  names for identical filenames in different directories. E.g.
+	  osg/Export and osgDB/Export are now correctly named. * Changed
+	  option SHOW_DIRECTORIES to yes, which is a case of preference I
+	  guess. "
+
+2008-08-18 10:47 +0000 [r8767]  robert:
+
+	* Removed todo entry
+
+2008-08-17 16:52 +0000 [r8766]  robert:
+
+	* From Maceij Krol, "I have implement frame based expiration of
+	  PagedLOD children. New attribute DatabasePager::_expiryFrames
+	  sets number of frames a PagedLOD child is kept in memory. The
+	  attribute is set with DatabasePager::setExpiryFrames method or
+	  OSG_EXPIRY_FRAMES environmental variable. New attribute
+	  PagedLOD::PerRangeData::_ frameNumber contains frame number of
+	  last cull traversal. Children of PagedLOD are expired when time
+	  _AND_ number of frames since last cull traversal exceed
+	  OSG_EXPIRY_DELAY _AND_ OSG_EXPIRY_FRAMES respectively. By default
+	  OSG_EXPIRY_FRAMES = 1 which means that nodes from last
+	  cull/rendering traversal will not be expired even if last cull
+	  time exceeds OSG_EXPIRY_DELAY. Setting OSG_EXPIRY_FRAMES = 0
+	  revokes previous behaviour of PagedLOD. Setting OSG_EXPIRY_FRAMES
+	  > 0 fixes problems of children reloading in lazy rendering
+	  applications. Required behaviour is achieved by manipulating
+	  OSG_EXPIRY_DELAY and OSG_EXPIRY_FRAMES together. Two interface
+	  changes are made: DatabasePager::updateSceneGraph(double
+	  currentFrameTime) is replaced by
+	  DatabasePager::updateSceneGraph(const osg::FrameStamp
+	  &frameStamp). The previous method is in #if 0 clause in the
+	  header file. Robert, decide if You want to include it.
+	  PagedLOD::removeExpiredChildren(double expiryTime, NodeList
+	  &removedChildren) is deprecated (warning is printed), when
+	  subclassing use PagedLOD::removeExpiredChildren(double
+	  expiryTime, int expiryFrame, NodeList &removedChildren) instead.
+	  "
+
+2008-08-17 16:45 +0000 [r8765]  robert:
+
+	* From Jason Beverage, "I've got a few machines that OSG
+	  incorrectly believes support FRAME_BUFFER_OBJECTS so I am
+	  manually trying to set the renderTargetImplementation to
+	  PIXEL_BUFFER or PIXEL_BUFFER_RTT. I noticed that this call wasn't
+	  setting the camera's overlay data properly because the
+	  setRenderTargetImplementation simply calls init() which only does
+	  anything for OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY. Any
+	  subsequent calls to getOverlayData will simply return the cached
+	  OverlayData instead of setting it up. My fix updates the camera's
+	  render target implementation for all OverlayData objects in the
+	  OverlayDataMap."
+
+2008-08-15 17:35 +0000 [r8763-8764]  robert:
+
+	* From Paul Palumbo, "Fixes a typo in coverage antialiasing code...
+	  Without this fix, get incorrect antialiasing results. "
+
+	* From Jutta Sauer, "We added a raise window method to
+	  GraphicsWindow. And added two implementations for Win32 and X11.
+	  "
+
+2008-08-15 17:26 +0000 [r8761-8762]  robert:
+
+	* Updated version numbers in prep for next dev release
+
+	* From Frashid Larshkari, "I modified the vertical/horizontal
+	  interlace stereo modes so that they use the osg::State::applyMode
+	  for enabling/disabling certain while rendering the stencil mask.
+	  Previously some of these calls were overriding the scene graph
+	  states because the global state was not aware of this change. "
+
+2008-08-15 17:18 +0000 [r8760]  robert:
+
+	* Added support for geometry shader attributes
+
+2008-08-15 16:43 +0000 [r8759]  robert:
+
+	* From Stephane Lamoliatte, "I added the osg::Program parameters
+	  support for the osg plug'in. Now we could correctly configure
+	  geometry shaders in osg files." Notes from Robert Osfield,
+	  renamed the names of the parameters to be less GL centric and
+	  more human readable.
+
+2008-08-15 16:21 +0000 [r8758]  robert:
+
+	* Changed osg::ImageSequence::set/getDuration to set/getLength() to
+	  be in keeping with the osg::ImageStream's getLength().
+
+2008-08-15 13:07 +0000 [r8756-8757]  robert:
+
+	* Fixed the name of _playToggle
+
+	* Updated wrappers
+
+2008-08-15 12:45 +0000 [r8755]  robert:
+
+	* Further work on osg::ImageSequence, improving pause
+	  functionality, and introducing new seek(double time) method
+
+2008-08-14 16:29 +0000 [r8753-8754]  robert:
+
+	* Added initial looping and pause play support
+
+	* Added event handler to toggling looping and play/pause
+
+2008-08-14 14:22 +0000 [r8752]  robert:
+
+	* Implemented a reference eye point and associated methods in
+	  support of intersecting billboards
+
+2008-08-05 20:05 +0000 [r8747-8748]  robert:
+
+	* From Eric Sokolowski, added OSX release notes to READEME
+
+	* Added osgWidget to doc building
+
+2008-08-05 19:17 +0000 [r8744]  robert:
+
+	* Improved the doxygen docs over the various namespaces
+
+2008-08-05 16:05 +0000 [r8742]  robert:
+
+	* From Eric Sokolowki, disabled default build of 64bit under OSX to
+	  prevent build problems
+
+2008-08-05 15:27 +0000 [r8739]  robert:
+
+	* Merged from OpenSceneGraph-2.6 branch
+
+2008-08-05 15:11 +0000 [r8738]  robert:
+
+	* Added NullStream class that automatically creates and delete the
+	  NullStreamBuffer, thus fixing a memory leak
+
+2008-08-05 15:06 +0000 [r8737]  robert:
+
+	* From Eric Sokolowski, "Fixed the build of the osgViewer library
+	  to get GL/glx.h from the right place, when building on OSX with
+	  X11"
+
+2008-08-05 11:17 +0000 [r8734]  robert:
+
+	* Merged changes to OpenSceneGraph-2.6 into trunk using : svn merge
+	  -r 8729:8734
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/branches/OpenSceneGraph-2.6
+	  .
+
+2008-08-04 20:48 +0000 [r8728]  robert:
+
+	* Added -losgWidget to the list of libs
+
+2008-08-04 17:08 +0000 [r8726]  robert:
+
+	* From Sherman Wilcox, "Minor change to bool
+	  setGLExtensionFuncPtr(T& t, const char* str1) and
+	  setGLExtensionFuncPtr(T& t, const char* str1, const char* str2) -
+	  functions returned false even on success."
+
+2008-08-04 15:09 +0000 [r8720-8722]  robert:
+
+	* Updated AUTHORS file
+
+	* Updated ChangeLog
+
+	* Updated news for 2.6.0 release rc2
+
 2008-08-04 14:01 +0000 [r8718]  robert:
 
 	* From Philip Lowman, workaround of Centos 5's missing definition

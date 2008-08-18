@@ -13,7 +13,7 @@ const char* osgWidgetGetVersion()
 
 const char* osgWidgetGetLibraryName()
 {
-	return "OpenSceneGraph Widget Library";
+    return "OpenSceneGraph Widget Library";
 }
 
 }

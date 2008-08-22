@@ -47,6 +47,8 @@
 
 #include <osgViewer/Viewer>
 
+#include <osg/io_utils>
+
 #include <iostream>
 
 
@@ -631,7 +633,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
 
     float halfSize = size*0.5f;
     float y = halfSize;
-    float dy =-size*1.4/(float)(numSlices-1)*sliceEnd;
+    float dy =-size/(float)(numSlices-1)*sliceEnd;
 
     //y = -halfSize;
     //dy *= 0.5;
@@ -710,7 +712,7 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
                 case(osgGA::GUIEventAdapter::MOVE):
                 case(osgGA::GUIEventAdapter::DRAG):
                 {
-                    float v = ea.getY()*0.5f+0.5f;
+                    float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
                     osg::Uniform* uniform = 0;
                     if (_updateTransparency && (uniform = stateset->getUniform("transparency"))) uniform->set(v);
                     if (_updateAlphaCutOff && (uniform = stateset->getUniform("alphaCutOff"))) uniform->set(v);
@@ -745,7 +747,7 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
 
 osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& /*normalmap_3d*/,
                        osg::Texture::InternalFormatMode internalFormatMode,
-                       float /*xSize*/, float /*ySize*/, float /*zSize*/,
+                       float xSize, float ySize, float zSize,
                        float /*xMultiplier*/, float /*yMultiplier*/, float /*zMultiplier*/,
                        unsigned int /*numSlices*/=500, float /*sliceEnd*/=1.0f, float alphaFuncValue=0.02f, bool maximumIntensityProjection = false)
 {
@@ -761,6 +763,7 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     // gluBuild3DMipsmaps doesn't do a very good job of handled the
     // imbalanced dimensions of the 256x256x4 texture.
     osg::Texture3D* texture3D = new osg::Texture3D;
+    texture3D->setResizeNonPowerOfTwoHint(false);
     texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
     texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
     texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
@@ -844,7 +847,8 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
             "            }\n"
             "            texcoord += deltaTexCoord; \n"
             "        }\n"
-            "    if (gl_FragColor.w>1.0) gl_FragColor.w = 1.0; \n"
+            "        if (gl_FragColor.w>1.0) gl_FragColor.w = 1.0; \n"
+            "        if (gl_FragColor.w==0.0) discard;\n"
             "}\n";
 
         osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
@@ -875,16 +879,27 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
         osg::Geometry* geom = new osg::Geometry;
 
         osg::Vec3Array* coords = new osg::Vec3Array(8);
+#if 0
         (*coords)[0].set(0,0,0);
-        (*coords)[1].set(1,0,0);
-        (*coords)[2].set(1,1,0);
-        (*coords)[3].set(0,1,0);
-        (*coords)[4].set(0,0,1);
-        (*coords)[5].set(1,0,1);
-        (*coords)[6].set(1,1,1);
-        (*coords)[7].set(0,1,1);
+        (*coords)[1].set(xSize,0,0);
+        (*coords)[2].set(xSize,ySize,0);
+        (*coords)[3].set(0,ySize,0);
+        (*coords)[4].set(0,0,zSize);
+        (*coords)[5].set(xSize,0,zSize);
+        (*coords)[6].set(ySize,ySize,zSize);
+        (*coords)[7].set(0,ySize,zSize);
         geom->setVertexArray(coords);
-
+#else
+        (*coords)[0].set(0,0,0);
+        (*coords)[1].set(1.0,0,0);
+        (*coords)[2].set(1.0, 1.0,0);
+        (*coords)[3].set(0,1.0,0);
+        (*coords)[4].set(0,0,1.0);
+        (*coords)[5].set(1.0,0,1.0);
+        (*coords)[6].set(1.0,1.0,1.0);
+        (*coords)[7].set(0,1.0,1.0);
+        geom->setVertexArray(coords);
+#endif
         osg::Vec3Array* tcoords = new osg::Vec3Array(8);
         (*tcoords)[0].set(0,0,0);
         (*tcoords)[1].set(1,0,0);
@@ -955,14 +970,20 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
 {
     bool two_pass = normalmap_3d.valid() && (image_3d->getPixelFormat()==GL_RGB || image_3d->getPixelFormat()==GL_RGBA);
 
+    osg::BoundingBox bb(-xSize*0.5f,-ySize*0.5f,-zSize*0.5f,xSize*0.5f,ySize*0.5f,zSize*0.5f);
+
+    float maxAxis = xSize;
+    if (ySize > maxAxis) maxAxis = ySize;
+    if (zSize > maxAxis) maxAxis = zSize;
+
     osg::Group* group = new osg::Group;
     
     osg::TexGenNode* texgenNode_0 = new osg::TexGenNode;
     texgenNode_0->setTextureUnit(0);
     texgenNode_0->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::S, osg::Plane(xMultiplier,0.0f,0.0f,0.5f));
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::T, osg::Plane(0.0f,yMultiplier,0.0f,0.5f));
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,zMultiplier,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::S, osg::Plane(xMultiplier/xSize,0.0f,0.0f,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::T, osg::Plane(0.0f,yMultiplier/ySize,0.0f,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,zMultiplier/zSize,0.5f));
     
     if (two_pass)
     {
@@ -982,10 +1003,10 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
         group->addChild(texgenNode_0);
     }
 
-    osg::BoundingBox bb(-xSize*0.5f,-ySize*0.5f,-zSize*0.5f,xSize*0.5f,ySize*0.5f,zSize*0.5f);
+    float cubeSize = sqrtf(xSize*xSize+ySize*ySize+zSize*zSize);
 
     osg::ClipNode* clipnode = new osg::ClipNode;
-    clipnode->addChild(createCube(1.0f,1.0f, numSlices,sliceEnd));
+    clipnode->addChild(createCube(cubeSize,1.0f, numSlices,sliceEnd));
     clipnode->createClipBox(bb);
 
     {
@@ -1081,6 +1102,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
 
             // set up color texture
             osg::Texture3D* texture3D = new osg::Texture3D;
+            texture3D->setResizeNonPowerOfTwoHint(false);
             texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
             texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
             texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
@@ -1111,6 +1133,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
         {
             osg::ref_ptr<osg::Image> normalmap_3d = createNormalMapTexture(image_3d.get());
             osg::Texture3D* bump_texture3D = new osg::Texture3D;
+            bump_texture3D->setResizeNonPowerOfTwoHint(false);
             bump_texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
             bump_texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
             bump_texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
@@ -1153,6 +1176,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
         // gluBuild3DMipsmaps doesn't do a very good job of handled the
         // imbalanced dimensions of the 256x256x4 texture.
         osg::Texture3D* texture3D = new osg::Texture3D;
+        texture3D->setResizeNonPowerOfTwoHint(false);
         texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
         texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
         texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
@@ -1605,6 +1629,15 @@ int main( int argc, char **argv )
     
     osg::ref_ptr<osg::Image> normalmap_3d = createNormalMap ? createNormalMapTexture(image_3d.get()) : 0;
 
+
+    osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(image_3d->getUserData());
+    if (matrix)
+    {
+        osg::notify(osg::NOTICE)<<"Image has Matrix = "<<*matrix<<std::endl;
+        xSize = image_3d->s() * (*matrix)(0,0);
+        ySize = image_3d->t() * (*matrix)(1,1);
+        zSize = image_3d->r() * (*matrix)(2,2);
+    }
 
 
     // create a model from the images.

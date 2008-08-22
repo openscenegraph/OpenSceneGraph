@@ -755,7 +755,11 @@ bool KdTree::build(BuildOptions& options, osg::Geometry* geometry)
 
 bool KdTree::intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const
 {
-    if (_kdNodes.empty()) return false;
+    if (_kdNodes.empty()) 
+    {
+        osg::notify(osg::NOTICE)<<"Warning: _kdTree is empty"<<std::endl;
+        return false;
+    }
 
     int numIntersectionsBefore = intersections.size();
 

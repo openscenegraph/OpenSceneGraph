@@ -102,6 +102,15 @@ ENDIF(CURL_FOUND)
 
 ############################################################
 #
+# 3D Image plugins
+#
+IF(ITK_FOUND)
+    ADD_SUBDIRECTORY(dicom)
+ENDIF(ITK_FOUND)
+
+
+############################################################
+#
 #  3rd party 3d plugins
 #
 

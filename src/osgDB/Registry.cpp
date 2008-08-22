@@ -211,6 +211,9 @@ Registry::Registry()
     addFileExtensionAlias("ivz",   "gz");
     addFileExtensionAlias("ozg",   "gz");
     
+    addFileExtensionAlias("dcm",   "dicom");
+    addFileExtensionAlias("dic",   "dicom");
+
 #if defined(DARWIN_QUICKTIME)
     addFileExtensionAlias("jpg",  "qt");
     addFileExtensionAlias("jpe",  "qt");

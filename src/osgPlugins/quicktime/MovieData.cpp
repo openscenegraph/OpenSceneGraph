@@ -23,10 +23,14 @@ MovieData::MovieData() : _pointer(NULL), _movie(NULL), _gw(NULL), _fError(false)
 
 
 MovieData::~MovieData()
-{
+{  
     if (_pointer) free(_pointer);
     if (_gw) DisposeGWorld(_gw);
-    if (_movie) DisposeMovie(_movie);
+
+    if (_movie) {
+        CloseMovieFile(_resref);
+        DisposeMovie(_movie);
+    }
 }
     
    
@@ -41,7 +45,7 @@ void MovieData::load(osg::Image* image, std::string afilename, float startTime)
 
     osg::notify(osg::INFO) << "MovieData :: opening movie '" << filename << "'" << std::endl;
     
-    OSStatus err = MakeMovieFromPath(filename.c_str(),&_movie);
+    OSStatus err = MakeMovieFromPath(filename.c_str(), &_movie, _resref);
     if (err !=0) {
         _fError = true;
         osg::notify(osg::FATAL) << " MovieData :: MakeMovieFromPath failed with err " << err << std::endl;

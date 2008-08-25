@@ -333,6 +333,28 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
         stateset.setRenderBinDetails(binNumber,binName,rbmode);
     }
 
+    static ref_ptr<StateSet::Callback> s_callback = new osg::StateSet::Callback;
+    while (fr.matchSequence("UpdateCallback {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+        StateSet::Callback* callback = dynamic_cast<StateSet::Callback*>(fr.readObjectOfType(*s_callback));
+        if (callback) {
+            stateset.setUpdateCallback(callback);
+        }
+        iteratorAdvanced = true;
+    }
+
+    while (fr.matchSequence("EventCallback {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+        StateSet::Callback* callback = dynamic_cast<StateSet::Callback*>(fr.readObjectOfType(*s_callback));
+        if (callback) {
+            stateset.setEventCallback(callback);
+        }
+        iteratorAdvanced = true;
+    }
 
     bool readingMode = true;
     StateAttribute::GLModeValue value;
@@ -598,6 +620,24 @@ bool StateSet_writeLocalData(const Object& obj, Output& fw)
         
         fw.moveOut();
         fw.indent()<<"}"<< std::endl;
+    }
+    
+    if (stateset.getUpdateCallback())
+    {
+        fw.indent() << "UpdateCallback {" << std::endl;
+        fw.moveIn();
+        fw.writeObject(*stateset.getUpdateCallback());
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
+    }
+
+    if (stateset.getEventCallback())
+    {
+        fw.indent() << "EventCallback {" << std::endl;
+        fw.moveIn();
+        fw.writeObject(*stateset.getEventCallback());
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
     }
 
     return true;

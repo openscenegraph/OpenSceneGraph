@@ -87,6 +87,12 @@
 #include "VisibilityGroup.h"
 
 #include "MultiTextureControl.h"
+#include "Effect.h"
+#include "AnisotropicLighting.h"
+#include "BumpMapping.h"
+#include "Cartoon.h"
+#include "Scribe.h"
+#include "SpecularHighlights.h"
 
 #include "Geometry.h"
 #include "ShapeDrawable.h"
@@ -1514,6 +1520,28 @@ osg::Node* DataInputStream::readNode()
         node = new osgFX::MultiTextureControl();
         ((ive::MultiTextureControl*)(node))->read(this);
     }
+
+    else if(nodeTypeID== IVEANISOTROPICLIGHTING){
+        node = new osgFX::AnisotropicLighting();
+        ((ive::AnisotropicLighting*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEBUMPMAPPING){
+        node = new osgFX::BumpMapping();
+        ((ive::BumpMapping*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVECARTOON){
+        node = new osgFX::Cartoon();
+        ((ive::Cartoon*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVESCRIBE){
+        node = new osgFX::Scribe();
+        ((ive::Scribe*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVESPECULARHIGHLIGHTS){
+        node = new osgFX::SpecularHighlights();
+        ((ive::SpecularHighlights*)(node))->read(this);
+    }
+
     else if(nodeTypeID== IVETERRAINTILE){
         node = new osgTerrain::TerrainTile();
         ((ive::TerrainTile*)(node))->read(this);

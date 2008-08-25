@@ -87,6 +87,12 @@
 #include "VisibilityGroup.h"
 
 #include "MultiTextureControl.h"
+#include "Effect.h"
+#include "AnisotropicLighting.h"
+#include "BumpMapping.h"
+#include "Cartoon.h"
+#include "Scribe.h"
+#include "SpecularHighlights.h"
 
 #include "Geometry.h"
 #include "ShapeDrawable.h"
@@ -1077,6 +1083,24 @@ void DataOutputStream::writeNode(const osg::Node* node)
         else if(dynamic_cast<const osgFX::MultiTextureControl*>(node)){
             ((ive::MultiTextureControl*)(node))->write(this);
         }
+
+
+        else if(dynamic_cast<const osgFX::AnisotropicLighting*>(node)){
+            ((ive::AnisotropicLighting*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osgFX::BumpMapping*>(node)){
+            ((ive::BumpMapping*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osgFX::Cartoon*>(node)){
+            ((ive::Cartoon*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osgFX::Scribe*>(node)){
+            ((ive::Scribe*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osgFX::SpecularHighlights*>(node)){
+            ((ive::SpecularHighlights*)(node))->write(this);
+        }
+
         else if(dynamic_cast<const osgTerrain::TerrainTile*>(node)){
             ((ive::TerrainTile*)(node))->write(this);
         }

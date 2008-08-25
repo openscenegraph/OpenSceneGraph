@@ -19,13 +19,14 @@ using namespace osg;
 ClipNode::ClipNode():
     _value(StateAttribute::ON)
 {
-    _stateset = new StateSet;
+    setStateSet(new StateSet);
 }
 
 ClipNode::ClipNode(const ClipNode& cn, const CopyOp& copyop):
     Group(cn,copyop),
     _value(cn._value)
 {
+    setStateSet(new StateSet);
     for(ClipPlaneList::const_iterator itr=cn._planes.begin();
         itr!=cn._planes.end();
         ++itr)
@@ -136,7 +137,8 @@ void ClipNode::setStateSetModes(StateSet& stateset,StateAttribute::GLModeValue v
 void ClipNode::setLocalStateSetModes(StateAttribute::GLModeValue value)
 {
     _value = value;
-    if (!_stateset) _stateset = new StateSet;
+    if (!_stateset) setStateSet(new StateSet);
+
     setStateSetModes(*_stateset,value);
 }
 

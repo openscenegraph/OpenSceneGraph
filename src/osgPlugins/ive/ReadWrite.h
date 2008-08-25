@@ -141,6 +141,12 @@ namespace ive {
 
 // osgFX classes
 #define IVEMULTITEXTURECONTROL          0x01000001
+#define IVEEFFECT                       0x01000002
+#define IVEANISOTROPICLIGHTING          0x01000003
+#define IVEBUMPMAPPING                  0x01000004
+#define IVECARTOON                      0x01000005
+#define IVESCRIBE                       0x01000006
+#define IVESPECULARHIGHLIGHTS           0x01000007
 
 //osgText classes
 #define IVETEXT                         0x10000001

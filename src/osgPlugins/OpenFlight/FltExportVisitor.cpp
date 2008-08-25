@@ -280,11 +280,11 @@ FltExportVisitor::apply( osg::PositionAttitudeTransform& node )
     _firstNode = false;
     ScopedStatePushPop guard( this, node.getStateSet() );
 
-    osg::ref_ptr<osg::RefMatrix> m = new osg::RefMatrix;
-
-    const osg::Vec3d& trans = node.getPosition();
-    const osg::Quat& rot = node.getAttitude();
-    m->set(osg::Matrix::translate(trans) * osg::Matrix::rotate(rot) );
+    osg::ref_ptr<osg::RefMatrix> m = new osg::RefMatrix(
+        osg::Matrix::translate( -node.getPivotPoint() ) *
+        osg::Matrix::scale( node.getScale() ) *
+        osg::Matrix::rotate( node.getAttitude() ) *
+        osg::Matrix::translate( node.getPosition() ) );
 
     std::vector< osg::Referenced* > saveUserDataList;
     unsigned int idx;

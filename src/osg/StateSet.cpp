@@ -1714,20 +1714,15 @@ void StateSet::setEventCallback(Callback* ac)
 
     _eventCallback = ac;
     
-    osg::notify(osg::NOTICE)<<"StateSet::setEventCallback("<<ac<<")"<<std::endl;
-    
     if (delta!=0 && _numChildrenRequiringEventTraversal==0)
     {
         for(ParentList::iterator itr=_parents.begin();
             itr!=_parents.end();
             ++itr)
         {
-            osg::notify(osg::NOTICE)<<" updating parent("<<*itr<<")"<<std::endl;
-
             osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(*itr);
             if (drawable) 
             {
-                osg::notify(osg::NOTICE)<<" parent is a drawable("<<*itr<<")"<<std::endl;
                 //drawable->setNumChildrenRequiringUpdateTraversal(drawable->getNumChildrenRequiringUpdateTraversal()+delta);
             }
             else 
@@ -1735,7 +1730,6 @@ void StateSet::setEventCallback(Callback* ac)
                 osg::Node* node = dynamic_cast<osg::Node*>(*itr);
                 if (node) 
                 {
-                    osg::notify(osg::NOTICE)<<" parent is a node("<<*itr<<")"<<std::endl;
                     node->setNumChildrenRequiringEventTraversal(node->getNumChildrenRequiringEventTraversal()+delta);
                 }
             }

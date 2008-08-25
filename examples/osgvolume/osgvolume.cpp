@@ -1488,6 +1488,33 @@ void doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, osg::Ve
     }
 }
 
+class TestSupportOperation: public osg::GraphicsOperation
+{
+public:
+
+    TestSupportOperation():
+        osg::GraphicsOperation("TestSupportOperation",false),
+        supported(true),
+        errorMessage(),
+        maximumTextureSize(256) {}
+
+    virtual void operator () (osg::GraphicsContext* gc)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
+
+        glGetIntegerv( GL_MAX_3D_TEXTURE_SIZE, &maximumTextureSize );
+        
+        osg::notify(osg::NOTICE)<<"Max texture size="<<maximumTextureSize<<std::endl;
+    }
+        
+    OpenThreads::Mutex  mutex;
+    bool                supported;
+    std::string         errorMessage;
+    GLint               maximumTextureSize;
+};
+
+
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -1566,10 +1593,15 @@ int main( int argc, char **argv )
     while (arguments.read("--yMultiplier",yMultiplier)) {}
     while (arguments.read("--zMultiplier",zMultiplier)) {}
 
+    osg::ref_ptr<TestSupportOperation> testSupportOperation = new TestSupportOperation;
+    viewer.setRealizeOperation(testSupportOperation.get());
+    
+    viewer.realize();
+
+    int maximumTextureSize = testSupportOperation->maximumTextureSize;
     int s_maximumTextureSize = 256;
     int t_maximumTextureSize = 256;
     int r_maximumTextureSize = 256;
-    int maximumTextureSize = 256;
     while(arguments.read("--maxTextureSize",maximumTextureSize))
     {
         s_maximumTextureSize = maximumTextureSize;

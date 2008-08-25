@@ -20,19 +20,21 @@ using namespace std;
     class QuicktimeInitializer : public osg::Referenced {
         public:
             QuicktimeInitializer() :osg::Referenced() {
-                static bool s_fQuicktimeInited = 0;
-                if (!s_fQuicktimeInited) {
-                    #ifndef __APPLE__
-                        InitializeQTML(0);
-                    #endif
-                    OSErr err = EnterMovies();
-                    if (err!=0)
-                       osg::notify(osg::FATAL) << "Error while initializing quicktime: " << err << endl; 
-                    else
-                       osg::notify(osg::DEBUG_INFO) << "Quicktime initialized successfully"  << endl;
-                    registerQTReader();
-                    s_fQuicktimeInited = true;
-                }
+               
+                 #ifndef __APPLE__
+                     InitializeQTML(0);
+                 #endif
+                 OSErr err = EnterMovies();
+                 if (err!=0)
+                    osg::notify(osg::FATAL) << "Error while initializing quicktime: " << err << endl; 
+                 else
+                    osg::notify(osg::DEBUG_INFO) << "Quicktime initialized successfully"  << endl;
+
+                 static bool registered = false;
+
+                 if (!registered){
+                  registerQTReader();                  
+                 }                 
             }
             
             ~QuicktimeInitializer() {
@@ -72,8 +74,12 @@ using namespace std;
     void initQuicktime(bool erase) {
 
         static osg::ref_ptr<QuicktimeInitializer> s_qt_init = new QuicktimeInitializer();
-        if (erase)
+        if (erase) {
             s_qt_init = NULL;
+        } else if (!s_qt_init.valid())
+        {
+            s_qt_init = new QuicktimeInitializer();
+        }
     }
 
     
@@ -113,10 +119,9 @@ using namespace std;
     // ---------------------------------------------------------------------------
     // MakeMovieFromPath
     // ---------------------------------------------------------------------------
-    OSStatus MakeMovieFromPath(const char* path, Movie* movie) {
+    OSStatus MakeMovieFromPath(const char* path, Movie* movie, short& resref) {
         OSStatus err;
         FSSpec   spec;
-        short    resref;
 #ifdef __APPLE__
         MakeFSSpecFromPath(path, &spec);
 #else

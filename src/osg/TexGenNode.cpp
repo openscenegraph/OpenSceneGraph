@@ -22,7 +22,7 @@ TexGenNode::TexGenNode():
     
     _textureUnit = 0;
     _value = StateAttribute::ON;
-    _stateset = new StateSet;
+    setStateSet(new StateSet);
     _texgen = new TexGen;
 }
 
@@ -33,6 +33,7 @@ TexGenNode::TexGenNode(const TexGenNode& cn, const CopyOp& copyop):
     _texgen(static_cast<TexGen*>(copyop(cn._texgen.get()))),
     _referenceFrame(cn._referenceFrame)
 {
+    setStateSet(new StateSet);
 }
 
 TexGenNode::TexGenNode(TexGen *texgen):
@@ -43,7 +44,7 @@ TexGenNode::TexGenNode(TexGen *texgen):
 
     _textureUnit = 0;
     _value = StateAttribute::ON;
-    _stateset = new StateSet;
+    setStateSet(new StateSet);
     _texgen = texgen;
 }
 

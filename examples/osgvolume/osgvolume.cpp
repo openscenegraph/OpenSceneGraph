@@ -1495,7 +1495,7 @@ int main( int argc, char **argv )
 //    arguments.getApplicationUsage()->addCommandLineOption("--raw <sizeX> <sizeY> <sizeZ> <numberBytesPerComponent> <numberOfComponents> <endian> <filename>","read a raw image data");
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -1620,7 +1620,11 @@ int main( int argc, char **argv )
         }
     }
     
-    if (!image_3d) return 0;
+    if (!image_3d) 
+    {
+        std::cout<<"No model loaded, please specify and volumetric image file on the command line."<<std::endl;
+        return 1;
+    }
     
     if (colourSpaceOperation!=NO_COLOUR_SPACE_OPERATION)
     {

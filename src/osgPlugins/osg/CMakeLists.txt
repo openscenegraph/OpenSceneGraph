@@ -61,6 +61,7 @@ ShadeModel.cpp
 Shader.cpp
 Shape.cpp
 ShapeDrawable.cpp
+StateAttribute.cpp
 StateSet.cpp
 Stencil.cpp
 Switch.cpp

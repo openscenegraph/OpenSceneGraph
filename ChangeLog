@@ -1,3 +1,83 @@
+2008-08-25 15:20 +0000 [r8792]  robert:
+
+	* From Michael Guerrero, Fixed crash that occurred when openning an
+	  new movie file after all previous movie ImageStream had been
+	  closed. Also add a missing close of the movie file.
+
+2008-08-25 15:03 +0000 [r8791]  robert:
+
+	* From Paul Martz, "This change fixes a problem with PAT nodes
+	  during FLT export." Note, Paul Martz has merged this patch into
+	  OpenSceneGraph-2.6.
+
+2008-08-25 14:59 +0000 [r8790]  robert:
+
+	* From Guillaume Chouvenc, "I have added the file
+	  StateAttribute.cpp in src/osgPlugins/osg to support the reading
+	  and writing of StateAttribute Callback in osg files. "
+
+2008-08-25 14:54 +0000 [r8789]  robert:
+
+	* From Guillaume Chouvenc, "I have modified Uniform.cpp and
+	  StateSet.cpp in src/osgPlugins/osg to support the reading and
+	  writing of Uniform Callback and StateSet Callback in osg files."
+
+2008-08-25 11:37 +0000 [r8788]  robert:
+
+	* Added testing of max texture size using a realize operation
+
+2008-08-25 10:38 +0000 [r8786-8787]  robert:
+
+	* Added support for event handler for non shader path, enable alpha
+	  func
+
+	* Removed debug info
+
+2008-08-25 10:20 +0000 [r8785]  robert:
+
+	* Moved _stateset = new StateSet instances to setStateSet(new
+	  StateSet) to make sure the wiring up of the StateSet parents is
+	  done consistently
+
+2008-08-25 09:53 +0000 [r8784]  robert:
+
+	* Added command line arguments to Viewer constructor, and added
+	  meaningful error message when no 3d image is provided
+
+2008-08-22 16:39 +0000 [r8780-8782]  robert:
+
+	* Introduced initial cut of a dicom loader, which uses ITK to do
+	  the loading.
+
+	* Added warning message
+
+	* Added support for reading the image transform from UserData in
+	  the form of a Matrix.
+
+2008-08-19 17:41 +0000 [r8779]  robert:
+
+	* Added checked against an empty _kdNodes list before commensing
+	  with intersection
+
+2008-08-18 15:08 +0000 [r8776-8777]  robert:
+
+	* Added --mip command line option which enables Maximum Intensity
+	  Projection filtering
+
+	* Added .ive support for BlendEquation
+
+2008-08-18 14:49 +0000 [r8775]  robert:
+
+	* Added BlendEquation .osg support
+
+2008-08-18 12:39 +0000 [r8773]  robert:
+
+	* Updated AUTHORS file for 2.7.0 release
+
+2008-08-18 11:55 +0000 [r8772]  robert:
+
+	* Updated ChangeLog for 2.7.0 release
+
 2008-08-18 11:48 +0000 [r8771]  robert:
 
 	* Updated wrappers

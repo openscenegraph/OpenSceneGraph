@@ -672,7 +672,8 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
 {
     public:
     
-        FollowMouseCallback()
+        FollowMouseCallback(bool shader = false):
+            _shader(shader)
         {
             _updateTransparency = false;
             _updateAlphaCutOff = false;
@@ -713,10 +714,34 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
                 case(osgGA::GUIEventAdapter::DRAG):
                 {
                     float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
-                    osg::Uniform* uniform = 0;
-                    if (_updateTransparency && (uniform = stateset->getUniform("transparency"))) uniform->set(v);
-                    if (_updateAlphaCutOff && (uniform = stateset->getUniform("alphaCutOff"))) uniform->set(v);
-                    if (_updateSampleDensity && (uniform = stateset->getUniform("sampleDensity"))) uniform->set(powf(v,5));
+                    if (_shader)
+                    {
+                        osg::Uniform* uniform = 0;
+                        if (_updateTransparency && (uniform = stateset->getUniform("transparency"))) uniform->set(v);
+                        if (_updateAlphaCutOff && (uniform = stateset->getUniform("alphaCutOff"))) uniform->set(v);
+                        if (_updateSampleDensity && (uniform = stateset->getUniform("sampleDensity"))) uniform->set(powf(v,5));
+                    }
+                    else
+                    {                    
+                        if (_updateAlphaCutOff)
+                        {
+                            osg::AlphaFunc* alphaFunc = dynamic_cast<osg::AlphaFunc*>(stateset->getAttribute(osg::StateAttribute::ALPHAFUNC));
+                            if (alphaFunc) 
+                            {
+                                alphaFunc->setReferenceValue(v);
+                            }
+                        }
+                        
+                        if (_updateTransparency)
+                        {
+                            osg::Material* material = dynamic_cast<osg::Material*>(stateset->getAttribute(osg::StateAttribute::MATERIAL));
+                            if (material)
+                            {
+                                material->setAlpha(osg::Material::FRONT_AND_BACK,v);
+                            }
+                        }
+                    }
+
                     break;
                 }
                 case(osgGA::GUIEventAdapter::KEYDOWN):
@@ -739,6 +764,7 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
             return false;
         }
         
+        bool _shader;
         bool _updateTransparency;
         bool _updateAlphaCutOff;
         bool _updateSampleDensity;
@@ -754,7 +780,7 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     osg::Geode* geode = new osg::Geode;
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     
-    stateset->setEventCallback(new FollowMouseCallback);
+    stateset->setEventCallback(new FollowMouseCallback(true));
     
     stateset->setMode(GL_ALPHA_TEST,osg::StateAttribute::ON);
 
@@ -1043,9 +1069,11 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
 
     osg::StateSet* stateset = texgenNode_0->getOrCreateStateSet();
 
+    stateset->setEventCallback(new FollowMouseCallback(false));
+ 
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::ON);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-    stateset->setAttribute(new osg::AlphaFunc(osg::AlphaFunc::GREATER,alphaFuncValue));
+    stateset->setAttributeAndModes(new osg::AlphaFunc(osg::AlphaFunc::GREATER,alphaFuncValue), osg::StateAttribute::ON);
     
     osg::Material* material = new osg::Material;
     material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(1.0f,1.0f,1.0f,1.0f));
@@ -1085,6 +1113,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
             tec->setSource0_RGB(osg::TexEnvCombine::CONSTANT);
             tec->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
             tec->setSource1_RGB(osg::TexEnvCombine::TEXTURE);
+
             tec->setOperand1_RGB(osg::TexEnvCombine::SRC_COLOR);
 
             tec->setCombine_Alpha(osg::TexEnvCombine::REPLACE);
@@ -1496,6 +1525,8 @@ int main( int argc, char **argv )
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
+
+    viewer.getCamera()->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))

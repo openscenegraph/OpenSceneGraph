@@ -1,3 +1,63 @@
+2008-08-26 12:05 +0000 [r8799]  robert:
+
+	* Added wrapper build target for generating the osgWrappers
+
+2008-08-26 09:39 +0000 [r8798]  robert:
+
+	* Added provisional block in computePositions()
+
+2008-08-26 08:41 +0000 [r8797]  robert:
+
+	* From Ulrich Hertlein, attached is a small fix for a mismatched
+	  function signature
+
+2008-08-25 16:44 +0000 [r8795-8796]  robert:
+
+	* Updated version number for 2.7.1 release, and added
+	  OSG_FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL Cmake option
+	  that enables the occlusion query workaround for an OpenGL driver
+	  crash
+
+	* From Doug McCorkle, via Paul Martz who writes : "Summary: Some
+	  platforms/configurations cause application crashes if the
+	  occlusion query result is not ready for retrieval when the app
+	  tries to retrieve it. This fix adds an application-level wait
+	  loop to ensure the result is ready for retrieval. This code is
+	  not compiled by default; add "-D
+	  FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL" to get this code.
+	  Full, gory details, to the best of my recollection: The
+	  conditions under which we encountered this issue are as follows:
+	  64-bit processor, Mac/Linux OS, multiple NVIDIA GPUs, multiple
+	  concurrent draw threads, VRJuggler/SceneView-based viewer, and a
+	  scene graph containing OcclusionQueryNodes. Todd wrote a small
+	  test program that produces an almost instant crash in this
+	  environment. We verified the crash does not occur in a similar
+	  environment with a 32-bit processor, but we have not yet tested
+	  on Windows and have not yet tested with osgViewer. The OpenGL
+	  spec states clearly that, if an occlusion query result is not yet
+	  ready, an app can go ahead and attempt to retrieve it, and OpenGL
+	  will simply block until the result is ready. Indeed, this is how
+	  OcclusionQueryNode is written, and this has worked fine on
+	  several platforms and configurations until Todd's test program.
+	  By trial and error and dumb luck, we were able to workaround the
+	  crash by inserting a wait loop that forces the app to only
+	  retrieve the query after OpenGL says it is available. As this
+	  should not be required (OpenGL should do this implicitly, and
+	  more efficiently), the wait loop code is not compiled by default.
+	  Developers requiring this work around must explicitly add "-D
+	  FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL" to the compile
+	  options to include the wait loop."
+
+2008-08-25 15:57 +0000 [r8794]  robert:
+
+	* From Liang Aibin, added support for : osgFX::Effect
+	  osgFX::AnisotropicLighting osgFX::BumpMapping osgFX::Cartoon
+	  osgFX::Scribe osgFX::SpecularHighlights.
+
+2008-08-25 15:37 +0000 [r8793]  robert:
+
+	* From Liang Aibin, removed redundent spaces
+
 2008-08-25 15:20 +0000 [r8792]  robert:
 
 	* From Michael Guerrero, Fixed crash that occurred when openning an

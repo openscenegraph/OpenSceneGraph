@@ -204,6 +204,7 @@ void TextBase::setAutoRotateToScreen(bool autoRotateToScreen)
     if (_autoRotateToScreen==autoRotateToScreen) return;
     
     _autoRotateToScreen = autoRotateToScreen;
+    computePositions();
 }
 
 
@@ -235,14 +236,20 @@ osg::BoundingBox TextBase::computeBound() const
             if (_autoTransformCache[i]._traversalNumber<0 && (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen))
             {
                 // _autoTransformCache is not valid so don't take it into accoumt when compute bounding volume.
+#if 0
+                // so fallback to estimating the bounding box size by assuming a scale of 1
+                // but might cause problems due to small feature culling...
+                osg::Matrix matrix;
+                matrix.makeTranslate(_position);
+                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
+                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
+#endif
             }
             else
             {            
                 osg::Matrix& matrix = _autoTransformCache[i]._matrix;
                 bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
-//                bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
                 bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
-//                bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
             }
         }
     }

@@ -46,6 +46,7 @@
 #include <osgUtil/CullVisitor>
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osg/io_utils>
 
@@ -777,7 +778,12 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
                        float /*xMultiplier*/, float /*yMultiplier*/, float /*zMultiplier*/,
                        unsigned int /*numSlices*/=500, float /*sliceEnd*/=1.0f, float alphaFuncValue=0.02f, bool maximumIntensityProjection = false)
 {
+
+    osg::Group* root = new osg::Group;
+    
     osg::Geode* geode = new osg::Geode;
+    root->addChild(geode);
+    
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     
     stateset->setEventCallback(new FollowMouseCallback(true));
@@ -822,14 +828,21 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     else
     {
         char vertexShaderSource[] = 
-            "varying vec3 texcoord;\n"
-            "varying vec3 cameraPos;\n"
+            "varying vec4 cameraPos;\n"
+            "varying vec4 vertexPos;\n"
+            "varying mat4 texgen;\n"
             "\n"
             "void main(void)\n"
             "{\n"
-            "        texcoord = gl_MultiTexCoord0.xyz;\n"
-            "        gl_Position     = ftransform();\n"
-            "        cameraPos=vec4(gl_ModelViewMatrixInverse*vec4(0,0,0,1)).xyz;\n"
+            "        gl_Position = ftransform();\n"
+            "\n"
+            "        cameraPos = gl_ModelViewMatrixInverse*vec4(0,0,0,1);\n"
+            "        vertexPos = gl_Vertex;\n"
+            "\n"
+            "        texgen = mat4(gl_ObjectPlaneS[0], \n"
+            "                      gl_ObjectPlaneT[0],\n"
+            "                      gl_ObjectPlaneR[0],\n"
+            "                      gl_ObjectPlaneQ[0]);\n"
             "}\n";
 
         osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
@@ -853,28 +866,87 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
             "uniform float transparency;\n"
             "uniform float alphaCutOff;\n"
             "\n"
-            "varying vec3 cameraPos;\n"
-            "varying vec3 texcoord;\n"
+            "varying vec4 cameraPos;\n"
+            "varying vec4 vertexPos;\n"
+            "varying mat4 texgen;\n"
             "\n"
             "void main(void)\n"
             "{ \n"
-            "        vec3 deltaTexCoord=normalize(cameraPos-texcoord.xyz)*sampleDensity;\n"
-            "        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); \n"
-            "        while (texcoord.x>=0.0 && texcoord.x<=1.0 &&\n"
-            "               texcoord.y>=0.0 && texcoord.y<=1.0 &&\n"
-            "               texcoord.z>=0.0 && texcoord.z<=1.0)\n"
+            "    vec3 t0 = (texgen * vertexPos).xyz;\n"
+            "    vec3 te = (texgen * cameraPos).xyz;\n"
+            "\n"
+            "    if (te.x>=0.0 && te.x<=1.0 &&\n"
+            "        te.y>=0.0 && te.y<=1.0 &&\n"
+            "        te.z>=0.0 && te.z<=1.0)\n"
+            "    {\n"
+            "        // do nothing... te inside volume\n"
+            "    }\n"
+            "    else\n"
+            "    {\n"
+            "        if (te.x<0.0)\n"
             "        {\n"
-            "            vec4 color = texture3D( baseTexture, texcoord);\n"
-            "            float r = color[3]*transparency;\n"
-            "            if (r>alphaCutOff)\n"
-            "            {\n"
-            "                gl_FragColor.xyz = gl_FragColor.xyz*(1.0-r)+color.xyz*r;\n"
-            "                gl_FragColor.w += r;\n"
-            "            }\n"
-            "            texcoord += deltaTexCoord; \n"
+            "            float r = -te.x / (t0.x-te.x);\n"
+            "            te = te + (t0-te)*r;\n"
             "        }\n"
-            "        if (gl_FragColor.w>1.0) gl_FragColor.w = 1.0; \n"
-            "        if (gl_FragColor.w==0.0) discard;\n"
+            "\n"
+            "        if (te.x>1.0)\n"
+            "        {\n"
+            "            float r = (1.0-te.x) / (t0.x-te.x);\n"
+            "            te = te + (t0-te)*r;\n"
+            "        }\n"
+            "\n"
+            "        if (te.y<0.0)\n"
+            "        {\n"
+            "            float r = -te.y / (t0.y-te.y);\n"
+            "            te = te + (t0-te)*r;\n"
+            "        }\n"
+            "\n"
+            "        if (te.y>1.0)\n"
+            "        {\n"
+            "            float r = (1.0-te.y) / (t0.y-te.y);\n"
+            "            te = te + (t0-te)*r;\n"
+            "        }\n"
+            "\n"
+            "        if (te.z<0.0)\n"
+            "        {\n"
+            "            float r = -te.z / (t0.z-te.z);\n"
+            "            te = te + (t0-te)*r;\n"
+            "        }\n"
+            "\n"
+            "        if (te.z>1.0)\n"
+            "        {\n"
+            "            float r = (1.0-te.z) / (t0.z-te.z);\n"
+            "            te = te + (t0-te)*r;\n"
+            "        }\n"
+            "    }\n"
+            "\n"
+            "    const int max_iteratrions = 256;\n"
+            "    int num_iterations = length(te-t0)/sampleDensity;\n"
+            "    if (num_iterations>max_iteratrions) \n"
+            "    {\n"
+            "        num_iterations = max_iteratrions;\n"
+            "    }\n"
+            "\n"
+            "    vec3 deltaTexCoord=(te-t0)/float(num_iterations-1);\n"
+            "    vec3 texcoord = t0;\n"
+            "\n"
+            "    gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); \n"
+            "    while(num_iterations>0)\n"
+            "    {\n"
+            "        vec4 color = texture3D( baseTexture, texcoord);\n"
+            "        float r = color[3]*transparency;\n"
+            "        if (r>alphaCutOff)\n"
+            "        {\n"
+            "            gl_FragColor.xyz = gl_FragColor.xyz*(1.0-r)+color.xyz*r;\n"
+            "            gl_FragColor.w += r;\n"
+            "        }\n"
+            "        texcoord += deltaTexCoord; \n"
+            "\n"
+            "        --num_iterations;\n"
+            "    }\n"
+            "\n"
+            "    if (gl_FragColor.w>1.0) gl_FragColor.w = 1.0; \n"
+            "    if (gl_FragColor.w==0.0) discard;\n"
             "}\n";
 
         osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
@@ -895,17 +967,19 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
 
     stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
 
-    if (maximumIntensityProjection)
-    {
-        stateset->setAttribute(new osg::BlendFunc(osg::BlendFunc::ONE, osg::BlendFunc::ONE));
-        stateset->setAttribute(new osg::BlendEquation(osg::BlendEquation::RGBA_MAX));
-    }
+    osg::TexGen* texgen = new osg::TexGen;
+    texgen->setMode(osg::TexGen::OBJECT_LINEAR);
+    texgen->setPlane(osg::TexGen::S, osg::Plane(1.0f/xSize,0.0f,0.0f,0.0f));
+    texgen->setPlane(osg::TexGen::T, osg::Plane(0.0f,1.0f/ySize,0.0f,0.0f));
+    texgen->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,1.0f/zSize,0.0f));
+    texgen->setPlane(osg::TexGen::Q, osg::Plane(0.0f,0.0f,0.0f,1.0f));
+    
+    stateset->setTextureAttributeAndModes(0, texgen, osg::StateAttribute::ON);
 
     {
         osg::Geometry* geom = new osg::Geometry;
 
         osg::Vec3Array* coords = new osg::Vec3Array(8);
-#if 0
         (*coords)[0].set(0,0,0);
         (*coords)[1].set(xSize,0,0);
         (*coords)[2].set(xSize,ySize,0);
@@ -915,27 +989,6 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
         (*coords)[6].set(ySize,ySize,zSize);
         (*coords)[7].set(0,ySize,zSize);
         geom->setVertexArray(coords);
-#else
-        (*coords)[0].set(0,0,0);
-        (*coords)[1].set(1.0,0,0);
-        (*coords)[2].set(1.0, 1.0,0);
-        (*coords)[3].set(0,1.0,0);
-        (*coords)[4].set(0,0,1.0);
-        (*coords)[5].set(1.0,0,1.0);
-        (*coords)[6].set(1.0,1.0,1.0);
-        (*coords)[7].set(0,1.0,1.0);
-        geom->setVertexArray(coords);
-#endif
-        osg::Vec3Array* tcoords = new osg::Vec3Array(8);
-        (*tcoords)[0].set(0,0,0);
-        (*tcoords)[1].set(1,0,0);
-        (*tcoords)[2].set(1,1,0);
-        (*tcoords)[3].set(0,1,0);
-        (*tcoords)[4].set(0,0,1);
-        (*tcoords)[5].set(1,0,1);
-        (*tcoords)[6].set(1,1,1);
-        (*tcoords)[7].set(0,1,1);
-        geom->setTexCoordArray(0,tcoords);
 
         osg::Vec4Array* colours = new osg::Vec4Array(1);
         (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
@@ -984,8 +1037,7 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
         geode->addDrawable(geom);
 
     } 
-
-    return geode;
+    return root;
 }
 
 osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& normalmap_3d,
@@ -1552,6 +1604,12 @@ int main( int argc, char **argv )
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
+
+    // add the window size toggle handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+        
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
 
     viewer.getCamera()->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 

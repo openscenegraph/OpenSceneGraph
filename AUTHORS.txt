@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.7.0
+OpenSceneGraph Library 2.7.1
 
-328 Contributors:
+330 Contributors:
 
 Firstname Surname
 -----------------
@@ -109,6 +109,7 @@ Sebastien Grignard
 Romano Magacho
 Roland Smeenk
 Paul de Repentigny
+Liang Aibin
 Leandro Motta Barros
 John Kelso
 Daniel Larimer
@@ -135,6 +136,7 @@ Jeremy Bell
 James French
 Garrett Potts
 Gabor Dorka
+Doug McCorkle
 Donn Mielcarek
 Donald Cipperly
 Domenico Mangieri
@@ -174,11 +176,11 @@ John Aughey
 Johan Nouvel
 Igor Kravtchenko
 Gustavo Wagner
+Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
 Fabio Mierlo
 Edgar Ellis
-Doug McCorkle
 David Ergo
 Daniel Trstenjak
 Csaba Halasz
@@ -242,6 +244,7 @@ Mike Garrity
 Michael Polak
 Michael Morrison
 Michael Logan
+Michael Guerrero
 Max Rhiener
 Mauricio Hofmam
 Matthew May

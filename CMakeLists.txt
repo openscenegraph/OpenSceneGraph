@@ -575,6 +575,16 @@ ADD_CUSTOM_TARGET(wrappers
 )
 
 
+#
+# Provide target for generating ChangeLog
+#
+SET(SVN2LOG ~/bin/svn2log.py)
+SET(GENERATELOGS svn log -v --xml | python ${SVN2LOG} -L -H)
+
+ADD_CUSTOM_TARGET(ChangeLog
+    COMMAND ${GENERATELOGS}
+)
+
 OPTION(BUILD_REF_DOCS "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
 
 IF(BUILD_REF_DOCS)

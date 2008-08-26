@@ -36,7 +36,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             supportsExtension("dic","dicom image format");
             supportsExtension("dcm","dicom image format");
             supportsExtension("dicom","dicom image format");
-            supportsExtension("*","dicom image format");
+            // supportsExtension("*","dicom image format");
         }
         
         template<typename T>

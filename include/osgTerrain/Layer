@@ -418,6 +418,51 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
 
 };
 
+
+
+class OSGTERRAIN_EXPORT SwitchLayer : public Layer
+{
+    public:
+
+        SwitchLayer();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        SwitchLayer(const SwitchLayer& switchLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgTerrain, SwitchLayer);
+
+        void clear();
+        
+        void setActiveLayer(unsigned int i) { _activeLayer = i; }
+        unsigned int getActiveLayer() const { return _activeLayer; }
+
+        void setFileName(unsigned int i, const std::string& filename) { _layers[i].first = filename; if (_layers[i].second.valid()) _layers[i].second->setFileName(filename); }
+        const std::string& getFileName(unsigned int i) const { return _layers[i].second.valid() ? _layers[i].second->getFileName() : _layers[i].first; }
+
+        void setLayer(unsigned int i, Layer* layer) { _layers[i].second = layer; }
+        Layer* getLayer(unsigned int i) { return _layers[i].second.get(); }
+        const Layer* getLayer(unsigned int i) const { return _layers[i].second.get(); }
+
+        void addLayer(const std::string& filename) { _layers.push_back(FileNameLayerPair(filename,0)); }
+        
+        void addLayer(Layer* layer) { _layers.push_back(FileNameLayerPair(layer->getFileName(),layer)); }
+
+        void removeLayer(unsigned int i) { _layers.erase(_layers.begin()+i); }
+        
+        unsigned int getNumLayers() const { return _layers.size(); }
+
+    protected:
+
+        virtual ~SwitchLayer() {}
+        
+        typedef std::pair< std::string, osg::ref_ptr<Layer> > FileNameLayerPair;
+        
+        typedef std::vector< FileNameLayerPair > Layers;
+        
+        unsigned int _activeLayer;
+        Layers _layers;
+};
+
 }
 
 #endif

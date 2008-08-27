@@ -19,6 +19,7 @@
 #include "ImageLayer.h"
 #include "HeightFieldLayer.h"
 #include "CompositeLayer.h"
+#include "SwitchLayer.h"
 
 #include <osgDB/ReadFile>
 
@@ -108,6 +109,10 @@ void LayerHelper::writeLayer(DataOutputStream* out, osgTerrain::Layer* layer)
         {
             ((ive::ImageLayer*)(layer))->write(out);
         }
+        else if (dynamic_cast<osgTerrain::SwitchLayer*>(layer))
+        {
+            ((ive::SwitchLayer*)(layer))->write(out);
+        }
         else if (dynamic_cast<osgTerrain::CompositeLayer*>(layer))
         {
             ((ive::CompositeLayer*)(layer))->write(out);
@@ -148,6 +153,12 @@ osgTerrain::Layer* LayerHelper::readLayer(DataInputStream* in)
     {
         osgTerrain::ImageLayer* layer = new osgTerrain::ImageLayer;
         ((ive::ImageLayer*)(layer))->read(in);
+        return layer;
+    }
+    else if (id==IVESWITCHLAYER)
+    {
+        osgTerrain::SwitchLayer* layer = new osgTerrain::SwitchLayer;
+        ((ive::SwitchLayer*)(layer))->read(in);
         return layer;
     }
     else if (id==IVECOMPOSITELAYER)

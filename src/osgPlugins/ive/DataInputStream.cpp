@@ -105,6 +105,7 @@
 #include "ImageLayer.h"
 #include "HeightFieldLayer.h"
 #include "CompositeLayer.h"
+#include "SwitchLayer.h"
 
 #include "FadeText.h"
 #include "Text3D.h"
@@ -1584,6 +1585,11 @@ osgTerrain::Layer* DataInputStream::readLayer()
     {
         layer = new osgTerrain::ImageLayer;
         ((ive::ImageLayer*)(layer))->read(this);
+    }
+    else if (layerid==IVESWITCHLAYER)
+    {
+        layer = new osgTerrain::SwitchLayer;
+        ((ive::SwitchLayer*)(layer))->read(this);
     }
     else if (layerid==IVECOMPOSITELAYER)
     {

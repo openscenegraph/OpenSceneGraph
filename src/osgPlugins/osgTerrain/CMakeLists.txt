@@ -6,6 +6,7 @@ SET(TARGET_SRC
     ImageLayer.cpp
     HeightFieldLayer.cpp
     CompositeLayer.cpp
+    SwitchLayer.cpp
     Layer.cpp
     TerrainTile.cpp
     GeometryTechnique.cpp

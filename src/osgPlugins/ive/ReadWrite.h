@@ -135,8 +135,9 @@ namespace ive {
 #define IVETERRAINTECHNIQUE             0x00200008
 #define IVEGEOMETRYTECHNIQUE            0x00200009
 #define IVEVALIDDATAOPERATOR            0x0020000A
-#define IVEVALIDRANGE                    0x0020000B
-#define IVENODATAVALUE                    0x0020000C
+#define IVEVALIDRANGE                   0x0020000B
+#define IVENODATAVALUE                  0x0020000C
+#define IVESWITCHLAYER                  0x0020000D
 //#define IVETERRAIN                      0x0020000A
 
 // osgFX classes

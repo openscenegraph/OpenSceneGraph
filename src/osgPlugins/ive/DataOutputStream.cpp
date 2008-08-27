@@ -106,6 +106,7 @@
 #include "ImageLayer.h"
 #include "HeightFieldLayer.h"
 #include "CompositeLayer.h"
+#include "SwitchLayer.h"
 
 #include <osg/Notify>
 #include <osg/io_utils>
@@ -1288,6 +1289,10 @@ void DataOutputStream::writeLayer(const osgTerrain::Layer* layer)
         else if (dynamic_cast<const osgTerrain::ImageLayer*>(layer))
         {
             ((ive::ImageLayer*)(layer))->write(this);
+        }
+        else if (dynamic_cast<const osgTerrain::SwitchLayer*>(layer))
+        {
+            ((ive::SwitchLayer*)(layer))->write(this);
         }
         else if (dynamic_cast<const osgTerrain::CompositeLayer*>(layer))
         {

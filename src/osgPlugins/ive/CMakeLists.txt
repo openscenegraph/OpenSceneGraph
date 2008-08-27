@@ -20,6 +20,7 @@ SET(TARGET_SRC
     ClusterCullingCallback.cpp
     ColorMask.cpp
     CompositeLayer.cpp
+    SwitchLayer.cpp
     ConeSector.cpp
     ConvexPlanarOccluder.cpp
     ConvexPlanarPolygon.cpp
@@ -133,6 +134,7 @@ SET(TARGET_H
     ClusterCullingCallback.h
     ColorMask.h
     CompositeLayer.h
+    SwitchLayer.h
     ConeSector.h
     ConvexPlanarOccluder.h
     ConvexPlanarPolygon.h

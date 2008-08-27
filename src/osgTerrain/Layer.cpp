@@ -566,3 +566,25 @@ osg::BoundingSphere ProxyLayer::computeBound(bool treatAsElevationLayer) const
     else return osg::BoundingSphere();
 }
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// SwitchLayer
+//
+SwitchLayer::SwitchLayer():
+    _activeLayer(0)
+{
+}
+
+SwitchLayer::SwitchLayer(const SwitchLayer& switchLayer,const osg::CopyOp& copyop):
+    Layer(switchLayer,copyop),
+    _activeLayer(0)
+{
+}
+
+
+void SwitchLayer::clear()
+{
+    _layers.clear();
+}
+

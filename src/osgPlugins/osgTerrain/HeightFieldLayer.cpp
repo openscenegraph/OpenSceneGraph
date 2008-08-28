@@ -33,12 +33,19 @@ bool HeightFieldLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     
     if (fr.matchSequence("file %w") || fr.matchSequence("file %s"))
     {
-        osg::ref_ptr<osg::HeightField> hf = osgDB::readHeightFieldFile(fr[1].getStr());
-        if (hf.valid())
+        std::string setname;
+        std::string filename;
+        osgTerrain::extractSetNameAndFileName(fr[1].getStr(),setname, filename);
+        if (!filename.empty())
         {
-            layer.setHeightField(hf.get());
+            osg::ref_ptr<osg::HeightField> hf = osgDB::readHeightFieldFile(filename);
+            if (hf.valid())
+            {
+                layer.setName(setname);
+                layer.setFileName(filename);
+                layer.setHeightField(hf.get());                
+            }
         }
-
         fr += 2;
         itrAdvanced = true;
     }
@@ -61,7 +68,8 @@ bool HeightFieldLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     
     if (!layer.getFileName().empty())
     {
-        fw.indent()<<"file "<<layer.getFileName()<<std::endl;
+        std::string str = osgTerrain::createCompondSetNameAndFileName(layer.getName(), layer.getFileName());
+        fw.indent()<<"file "<< str << std::endl;
     }
     else
     {

@@ -13,7 +13,7 @@
 
 #include "Exception.h"
 #include "SwitchLayer.h"
-#include "Layer.h"
+#include "CompositeLayer.h"
 
 using namespace ive;
 
@@ -23,31 +23,14 @@ void SwitchLayer::write(DataOutputStream* out)
     out->writeInt(IVESWITCHLAYER);
 
     // If the osg class is inherited by any other class we should also write this to file.
-    osgTerrain::Layer*  layer = dynamic_cast<osgTerrain::Layer*>(this);
+    osgTerrain::CompositeLayer*  layer = dynamic_cast<osgTerrain::CompositeLayer*>(this);
     if  (layer)
-        ((ive::Layer*)(layer))->write(out);
+        ((ive::CompositeLayer*)(layer))->write(out);
     else
         throw Exception("SwitchLayer::write(): Could not cast this osgLayer::SwitchLayer to an osgTerrain::Layer.");
 
 
-    out->writeUInt(getActiveLayer());
-
-    LayerHelper helper;
-
-    out->writeUInt(getNumLayers());
-    for(unsigned int i=0; i<getNumLayers(); ++i)
-    {
-        if(getLayer(i))
-        {
-            out->writeBool(true);
-            helper.writeLayer(out, getLayer(i));
-        }
-        else
-        {
-            out->writeBool(false);
-            out->writeString(getFileName(i));
-        }
-    }
+    out->writeInt(getActiveLayer());
 }
 
 void SwitchLayer::read(DataInputStream* in)
@@ -61,28 +44,11 @@ void SwitchLayer::read(DataInputStream* in)
     id = in->readInt();
 
     // If the osg class is inherited by any other class we should also read this from file.
-    osgTerrain::Layer*  layer = dynamic_cast<osgTerrain::Layer*>(this);
+    osgTerrain::CompositeLayer*  layer = dynamic_cast<osgTerrain::CompositeLayer*>(this);
     if (layer)
-        ((ive::Layer*)(layer))->read(in);
+        ((ive::CompositeLayer*)(layer))->read(in);
     else
         throw Exception("SwitchLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
 
-
-    setActiveLayer(in->readUInt());
-
-    LayerHelper helper;
-
-    unsigned int numLayers = in->readUInt();
-    for(unsigned int i=0; i<numLayers; ++i)
-    {
-        bool readInlineLayer = in->readBool();
-        if (readInlineLayer)
-        {
-            addLayer(helper.readLayer(in));
-        }
-        else
-        {
-            addLayer(in->readString());
-        }
-    }
+    setActiveLayer(in->readInt());
 }

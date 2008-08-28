@@ -33,12 +33,20 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     
     if (fr.matchSequence("file %w") || fr.matchSequence("file %s"))
     {
-        osg::ref_ptr<osg::Image> image = osgDB::readImageFile(fr[1].getStr());
-        if (image.valid())
+        std::string setname;
+        std::string filename;
+        osgTerrain::extractSetNameAndFileName(fr[1].getStr(),setname, filename);
+        if (!filename.empty())
         {
-            layer.setImage(image.get());
+            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
+            if (image.valid())
+            {
+                layer.setName(setname);
+                layer.setFileName(filename);
+                layer.setImage(image.get());
+            }
         }
-
+        
         fr += 2;
         itrAdvanced = true;
     }
@@ -53,7 +61,8 @@ bool ImageLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     
     if (!layer.getFileName().empty())
     {
-        fw.indent()<<"file "<<layer.getFileName()<<std::endl;
+        std::string str = osgTerrain::createCompondSetNameAndFileName(layer.getName(), layer.getFileName());
+        fw.indent()<<"file "<< str << std::endl;
     }
 
     return true;

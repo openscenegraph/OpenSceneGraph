@@ -42,7 +42,7 @@ void CompositeLayer::write(DataOutputStream* out)
         else
         {
             out->writeBool(false);
-            out->writeString(getFileName(i));
+            out->writeString(getCompoundName(i));
         }
     }
 }

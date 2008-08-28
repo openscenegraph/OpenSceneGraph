@@ -33,7 +33,7 @@ osgDB::RegisterDotOsgWrapperProxy SwitchLayer_Proxy
 (
     new osgTerrain::SwitchLayer,
     "SwitchLayer",
-    "Object SwitchLayer Layer",
+    "Object SwitchLayer CompositeLayer Layer",
     SwitchLayer_readLocalData,
     SwitchLayer_writeLocalData
 );
@@ -43,78 +43,13 @@ bool SwitchLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osgTerrain::SwitchLayer& layer = static_cast<osgTerrain::SwitchLayer&>(obj);
 
     bool itrAdvanced = false;
-    
-    osg::ref_ptr<osgTerrain::Locator> locator = 0;
 
-    unsigned int i;
-    if (fr.read("ActiveLayer",i)) layer.setActiveLayer(i);
-
-    do
+    int i;
+    if (fr.read("ActiveLayer",i)) 
     {
-        itrAdvanced = false;
-
-        osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
-        locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
-        if (readObject.valid()) itrAdvanced = true;
-
-        unsigned int minLevel=0;
-        if (fr.read("MinLevel",minLevel))
-        {
-            itrAdvanced = true;
-        }
-
-        unsigned int maxLevel = MAXIMUM_NUMBER_OF_LEVELS;
-        if (fr.read("MaxLevel",maxLevel))
-        {
-            itrAdvanced = true;
-        }
-
-        if (fr.matchSequence("file %s") || fr.matchSequence("file %w") )
-        {
-            layer.addLayer(fr[1].getStr());
-            fr += 2;
-
-            itrAdvanced = true;
-        }
-        else if (fr.matchSequence("ProxyLayer %s") || fr.matchSequence("ProxyLayer %w"))
-        {
-            osgTerrain::ProxyLayer* proxyLayer = new osgTerrain::ProxyLayer;
-            proxyLayer->setFileName(fr[1].getStr());
-
-            if (locator.valid()) proxyLayer->setLocator(locator.get());
-            if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
-            if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
-
-            layer.addLayer(proxyLayer);
-
-            fr += 2;
-
-            itrAdvanced = true;
-        }
-        else
-        {
-            osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Layer>());
-            osgTerrain::Layer* readLayer = dynamic_cast<osgTerrain::Layer*>(readObject.get());
-            if (readLayer)
-            {
-                if (locator.valid())
-                {
-                    readLayer->setLocator(locator.get());
-                    locator = 0;
-                }
-
-                if (minLevel!=0) readLayer->setMinLevel(minLevel);
-                if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) readLayer->setMaxLevel(maxLevel);
-
-                layer.addLayer(readLayer);
-            }
-
-            if (readObject.valid()) itrAdvanced = true;
-        }
-        
-    } while (itrAdvanced);
-        
-    if (locator.valid()) layer.setLocator(locator.get());
+        layer.setActiveLayer(i);
+        itrAdvanced = true;
+    };
 
     return itrAdvanced;
 }
@@ -124,47 +59,6 @@ bool SwitchLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     const osgTerrain::SwitchLayer& layer = static_cast<const osgTerrain::SwitchLayer&>(obj);
 
     fw.indent()<<"ActiveLayer "<<layer.getActiveLayer()<<std::endl;
-
-    for(unsigned int i=0; i<layer.getNumLayers();++i)
-    {
-        if (layer.getLayer(i))
-        {
-            const osgTerrain::ProxyLayer* proxyLayer = dynamic_cast<const osgTerrain::ProxyLayer*>(layer.getLayer(i));
-            if (proxyLayer)
-            {
-                if (!proxyLayer->getFileName().empty())
-                {
-                    const osgTerrain::Locator* locator = proxyLayer->getLocator();
-                    if (locator && !locator->getDefinedInFile())
-                    {
-                        fw.writeObject(*locator);
-                    }
-                    
-                    if (proxyLayer->getMinLevel()!=0)
-                    {
-                        fw.indent()<<"MinLevel "<<proxyLayer->getMinLevel()<<std::endl;
-                    } 
-
-                    if (proxyLayer->getMaxLevel()!=MAXIMUM_NUMBER_OF_LEVELS)
-                    {
-                        fw.indent()<<"MaxLevel "<<proxyLayer->getMaxLevel()<<std::endl;
-                    } 
-                
-                    fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
-                }
-            }
-            else
-            {     
-                fw.writeObject(*(layer.getLayer(i)));
-            }
-        }
-        else if (!layer.getFileName(i).empty())
-        {
-            fw.indent()<<"file "<<layer.getFileName(i)<<std::endl;
-        }
-    }
-
-
 
     return true;
 }

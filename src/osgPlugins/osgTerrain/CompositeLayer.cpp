@@ -75,15 +75,23 @@ bool CompositeLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
         }
         else if (fr.matchSequence("ProxyLayer %s") || fr.matchSequence("ProxyLayer %w"))
         {
-            osgTerrain::ProxyLayer* proxyLayer = new osgTerrain::ProxyLayer;
-            proxyLayer->setFileName(fr[1].getStr());
+            std::string setname;
+            std::string filename;
+            osgTerrain::extractSetNameAndFileName(fr[1].getStr(),setname, filename);
+            if (!filename.empty())
+            {
+                osgTerrain::ProxyLayer* proxyLayer = new osgTerrain::ProxyLayer;
+                proxyLayer->setFileName(filename);
+                proxyLayer->setName(setname);
 
-            if (locator.valid()) proxyLayer->setLocator(locator.get());
-            if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
-            if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
+                if (locator.valid()) proxyLayer->setLocator(locator.get());
+                if (minLevel!=0) proxyLayer->setMinLevel(minLevel);
+                if (maxLevel!=MAXIMUM_NUMBER_OF_LEVELS) proxyLayer->setMaxLevel(maxLevel);
+                
 
-            layer.addLayer(proxyLayer);
-
+                layer.addLayer(proxyLayer);
+            }
+            
             fr += 2;
 
             itrAdvanced = true;
@@ -145,7 +153,7 @@ bool CompositeLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
                         fw.indent()<<"MaxLevel "<<proxyLayer->getMaxLevel()<<std::endl;
                     } 
                 
-                    fw.indent()<<"ProxyLayer "<<proxyLayer->getFileName()<<std::endl;
+                    fw.indent()<<"ProxyLayer "<<proxyLayer->getCompoundName()<<std::endl;
                 }
             }
             else
@@ -155,7 +163,7 @@ bool CompositeLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
         }
         else if (!layer.getFileName(i).empty())
         {
-            fw.indent()<<"file "<<layer.getFileName(i)<<std::endl;
+            fw.indent()<<"file "<<layer.getCompoundName(i)<<std::endl;
         }
     }
 

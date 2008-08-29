@@ -627,6 +627,11 @@ void CompositeLayer::addLayer(const std::string& compoundname)
     _layers.push_back(CompoundNameLayer(setname,filename,0));
 }
 
+void CompositeLayer::addLayer(const std::string& setname, const std::string& filename)
+{
+    _layers.push_back(CompoundNameLayer(setname,filename,0));
+}
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // SwitchLayer

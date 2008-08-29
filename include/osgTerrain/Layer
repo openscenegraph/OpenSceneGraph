@@ -416,6 +416,7 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
         const Layer* getLayer(unsigned int i) const { return _layers[i].layer.get(); }
 
         void addLayer(const std::string& compoundname);
+        void addLayer(const std::string& setname, const std::string& filename);
         
         void addLayer(Layer* layer) { _layers.push_back(CompoundNameLayer(layer->getName(),layer->getFileName(),layer)); }
 

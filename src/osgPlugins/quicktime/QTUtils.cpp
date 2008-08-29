@@ -33,7 +33,8 @@ using namespace std;
                  static bool registered = false;
 
                  if (!registered){
-                  registerQTReader();                  
+                     registerQTReader(); 
+                     registered = true;    
                  }                 
             }
             

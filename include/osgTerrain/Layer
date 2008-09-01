@@ -28,10 +28,10 @@ namespace osgTerrain {
 
 /** Extact the setname and filename from a compound string in the from set:setname:filename".
   * Returns a setname of "" when non set:setname: entry is present.*/
-void extractSetNameAndFileName(const std::string& compoundstring, std::string& setname, std::string& filename);
+extern OSGTERRAIN_EXPORT void extractSetNameAndFileName(const std::string& compoundstring, std::string& setname, std::string& filename);
 
 /** Create a compound string in the form set:setname:filename, or just filename if setname is "".*/
-std::string createCompondSetNameAndFileName(const std::string& setname, const std::string& filename);
+extern OSGTERRAIN_EXPORT std::string createCompondSetNameAndFileName(const std::string& setname, const std::string& filename);
 
 class OSGTERRAIN_EXPORT Layer : public osg::Object
 {

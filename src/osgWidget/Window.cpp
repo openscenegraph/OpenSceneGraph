@@ -221,16 +221,16 @@ bool Window::resize(point_type width, point_type height) {
 
     // Second, we determine if there is a difference between what the size currently
     // is and what the user has requested.
-    point_type diffWidth  = width > 0.0f ? width - _width.cur : 0.0f;
-    point_type diffHeight = height > 0.0f ? height - _height.cur : 0.0f;
+    point_type diffWidth  = width > 0.0f ? width - _width.current : 0.0f;
+    point_type diffHeight = height > 0.0f ? height - _height.current : 0.0f;
 
     return resizeAdd(diffWidth, diffHeight);
 }
 
 bool Window::resizeAdd(point_type diffWidth, point_type diffHeight) {
     if(
-        _width.cur + diffWidth < _width.min ||
-        _height.cur + diffHeight < _height.min
+        _width.current + diffWidth < _width.minimum ||
+        _height.current + diffHeight < _height.minimum
     ) {
         warn()
             << "Window [" << _name << "] can't call resizeAdd() with the "
@@ -254,7 +254,7 @@ bool Window::resizeAdd(point_type diffWidth, point_type diffHeight) {
 
     Widget* bg = _bg();
 
-    bg->setSize(_width.cur, _height.cur);
+    bg->setSize(_width.current, _height.current);
     bg->dirtyBound();
     bg->positioned();
 
@@ -311,11 +311,11 @@ void Window::update() {
     if((_vAnchor != VA_NONE || _hAnchor != HA_NONE) && !_parent && _wm) {
         if(_vAnchor == VA_TOP) y = 0.0f;
         else if(_vAnchor == VA_CENTER) y = osg::round(_wm->getHeight() / 2.0f);
-        else if(_vAnchor == VA_BOTTOM) y = _wm->getHeight() - _height.cur;
+        else if(_vAnchor == VA_BOTTOM) y = _wm->getHeight() - _height.current;
 
         if(_hAnchor == HA_LEFT) x = 0.0f;
         else if(_hAnchor == HA_CENTER) x = osg::round(_wm->getWidth() / 2.0f);
-        else if(_hAnchor == HA_RIGHT) x = _wm->getWidth() - _width.cur + _visibleArea[2];
+        else if(_hAnchor == HA_RIGHT) x = _wm->getWidth() - _width.current + _visibleArea[2];
 
         xy.set(x, y);
     }
@@ -336,8 +336,8 @@ void Window::update() {
     if(_wm) {
         int x   = static_cast<int>(xy.x());
         int y   = static_cast<int>(xy.y());
-        int w   = static_cast<int>(_width.cur);
-        int h   = static_cast<int>(_height.cur);
+        int w   = static_cast<int>(_width.current);
+        int h   = static_cast<int>(_height.current);
         int wmh = static_cast<int>(_wm->getHeight());
         int nx  = x;
         int ny  = y;
@@ -390,21 +390,21 @@ void Window::_setWidthAndHeight() {
     _width  = _getWidthImplementation();
     _height = _getHeightImplementation();
 
-    if(_width.cur < 0.0f) _setWidthAndHeightUnknownSizeError("current width", _width.cur);
+    if(_width.current < 0.0f) _setWidthAndHeightUnknownSizeError("current width", _width.current);
 
-    if(_width.min < 0.0f) _setWidthAndHeightUnknownSizeError("minimum width", _width.min);
+    if(_width.minimum < 0.0f) _setWidthAndHeightUnknownSizeError("minimum width", _width.minimum);
 
-    if(_height.cur < 0.0f) _setWidthAndHeightUnknownSizeError("current height", _height.cur);
+    if(_height.current < 0.0f) _setWidthAndHeightUnknownSizeError("current height", _height.current);
 
-    if(_height.min < 0.0f) _setWidthAndHeightUnknownSizeError("minimum height", _height.min);
+    if(_height.minimum < 0.0f) _setWidthAndHeightUnknownSizeError("minimum height", _height.minimum);
 
-    if(hasDecimal(_width.cur)) _setWidthAndHeightNotPAError("current width", _width.cur);
+    if(hasDecimal(_width.current)) _setWidthAndHeightNotPAError("current width", _width.current);
     
-    if(hasDecimal(_width.min)) _setWidthAndHeightNotPAError("minimum width", _width.min);
+    if(hasDecimal(_width.minimum)) _setWidthAndHeightNotPAError("minimum width", _width.minimum);
     
-    if(hasDecimal(_height.cur)) _setWidthAndHeightNotPAError("current height", _height.cur);
+    if(hasDecimal(_height.current)) _setWidthAndHeightNotPAError("current height", _height.current);
     
-    if(hasDecimal(_height.min)) _setWidthAndHeightNotPAError("minimum height", _height.min);
+    if(hasDecimal(_height.minimum)) _setWidthAndHeightNotPAError("minimum height", _height.minimum);
 }
 
 void Window::_removeFromGeode(Widget* widget) {

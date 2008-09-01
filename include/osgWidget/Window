@@ -46,14 +46,14 @@ class OSGWIDGET_EXPORT Window:
     public:
         typedef std::list<osg::observer_ptr<Window> > WindowList;
 
-        struct Sizes {
-            point_type cur;
-            point_type min;
+        struct Sizes
+        {
+            point_type current;
+            point_type minimum;
 
             Sizes(point_type c = -1.0f, point_type m = -1.0f):
-            cur(c),
-            min(m) {
-            }
+            current(c),
+            minimum(m) {}
         };
 
         // TODO: This is a class that puts (embeds) the Window inside of a Widget
@@ -241,19 +241,19 @@ class OSGWIDGET_EXPORT Window:
         }
 
         point_type getWidth() const {
-            return _width.cur;
+            return _width.current;
         }
 
         point_type getHeight() const {
-            return _height.cur;
+            return _height.current;
         }
 
         point_type getMinWidth() const {
-            return _width.min;
+            return _width.minimum;
         }
 
         point_type getMinHeight() const {
-            return _height.min;
+            return _height.minimum;
         }
 
         VerticalAnchor getAnchorVertical() const {
@@ -269,11 +269,11 @@ class OSGWIDGET_EXPORT Window:
         }
 
         XYCoord getSize() const {
-            return XYCoord(_width.cur, _height.cur);
+            return XYCoord(_width.current, _height.current);
         }
 
         XYCoord getMinSize() const {
-            return XYCoord(_width.min, _height.min);
+            return XYCoord(_width.minimum, _height.minimum);
         }
 
         matrix_type getZRange() const {

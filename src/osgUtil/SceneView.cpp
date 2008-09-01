@@ -571,7 +571,7 @@ void SceneView::computeLeftEyeViewport(const osg::Viewport *viewport)
 
         case(osg::DisplaySettings::VERTICAL_SPLIT):
         {
-            Viewport::value_type separation = _displaySettings->getSplitStereoHorizontalSeparation();
+            Viewport::value_type separation = _displaySettings->getSplitStereoVerticalSeparation();
 
             if (_displaySettings->getSplitStereoVerticalEyeMapping()==osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
             {
@@ -621,7 +621,7 @@ void SceneView::computeRightEyeViewport(const osg::Viewport *viewport)
 
         case(osg::DisplaySettings::VERTICAL_SPLIT):
         {
-            Viewport::value_type separation = _displaySettings->getSplitStereoHorizontalSeparation();
+            Viewport::value_type separation = _displaySettings->getSplitStereoVerticalSeparation();
 
             if (_displaySettings->getSplitStereoVerticalEyeMapping()!=osg::DisplaySettings::LEFT_EYE_TOP_VIEWPORT)
             {

@@ -16,6 +16,10 @@
 
 #include <osg/Texture>
 
+#ifndef GL_MAX_3D_TEXTURE_SIZE
+#define GL_MAX_3D_TEXTURE_SIZE 0x8073
+#endif
+
 namespace osg {
 
 /** Encapsulates OpenGl 2D texture functionality. Doesn't support cube maps,

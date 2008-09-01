@@ -87,6 +87,7 @@
 #include "VisibilityGroup.h"
 
 #include "MultiTextureControl.h"
+#include "ShapeAttributeList.h"
 #include "Effect.h"
 #include "AnisotropicLighting.h"
 #include "BumpMapping.h"
@@ -1654,4 +1655,36 @@ osgTerrain::Locator* DataInputStream::readLocator()
 
     return locator;
 }
+
+osg::Object* DataInputStream::readObject()
+{
+    int id = readInt();
+    if (id<0) return 0;
+    
+    if (id==IVENODE)
+    {
+        return readNode();        
+    }
+    else if (id==IVESTATESET)
+    {
+        return readStateSet();
+    }
+    else if (id==IVESTATEATTRIBUTE)
+    {
+        return readStateAttribute();
+    }
+    else if (id==IVEDRAWABLE)
+    {
+        return readDrawable();
+    }
+    else if (id==IVESHAPEATTRIBUTELIST)
+    {
+        osgSim::ShapeAttributeList* sal = new osgSim::ShapeAttributeList;
+        ((ive::ShapeAttributeList*)sal)->read(this);
+        return sal;
+    }
+    
+    return 0;
+}
+
 

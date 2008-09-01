@@ -86,6 +86,7 @@ SET(TARGET_SRC
     Shader.cpp
     Shape.cpp
     ShapeDrawable.cpp
+    ShapeAttributeList.cpp
     StateSet.cpp
     Stencil.cpp
     Switch.cpp
@@ -201,6 +202,7 @@ SET(TARGET_H
     Shader.h
     ShapeDrawable.h
     Shape.h
+    ShapeAttributeList.h
     StateSet.h
     Stencil.h
     Switch.h

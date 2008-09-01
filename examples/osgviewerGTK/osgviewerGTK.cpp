@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include <iostream>
 #include <string>
 #include <osg/Stats>
@@ -50,9 +52,9 @@ class ExampleOSGGTKDrawingArea : public OSGGTKDrawingArea {
             GTK_LABEL(gtk_bin_get_child(GTK_BIN(widget)))
         );
 
-        if(not std::strncmp(text, "Close", 5)) gtk_main_quit();
+        if(not strncmp(text, "Close", 5)) gtk_main_quit();
     
-        else if(not std::strncmp(text, "Open File", 9)) {
+        else if(not strncmp(text, "Open File", 9)) {
             GtkWidget* of = gtk_file_chooser_dialog_new(
                 "Please select an OSG file...",
                 GTK_WINDOW(gtk_widget_get_toplevel(getWidget())),

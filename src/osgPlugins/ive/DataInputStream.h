@@ -101,6 +101,8 @@ public:
     osg::Node* readNode();
     osgTerrain::Layer* readLayer();
     osgTerrain::Locator* readLocator();
+    
+    osg::Object* readObject();
 
     // Set and get if must be generated external reference ive files
     void setLoadExternalReferenceFiles(bool b) {_loadExternalReferenceFiles=b;};

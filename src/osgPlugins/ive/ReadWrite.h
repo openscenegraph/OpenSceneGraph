@@ -119,10 +119,9 @@ namespace ive {
 #define IVELIGHTPOINT                   0x00100006
 #define IVELIGHTPOINTNODE               0x00100007
 #define IVEMULTISWITCH                  0x00100008
-
-
 #define IVEVISIBILITYGROUP              0x00100009
 #define IVEDIRECTIONALSECTOR            0x0010000A
+#define IVESHAPEATTRIBUTELIST           0X0010000B
 
 // osgTerrain classes
 #define IVETERRAINTILE                  0x00200001

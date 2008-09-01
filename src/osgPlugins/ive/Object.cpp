@@ -35,6 +35,20 @@ void Object::write(DataOutputStream* out)
         case(osg::Object::DYNAMIC): out->writeChar((char)1); break;
         case(osg::Object::UNSPECIFIED): out->writeChar((char)2); break;
     }
+    
+    if ( out->getVersion() >= VERSION_0031)
+    {
+        const osg::Object* object = dynamic_cast<const osg::Object*>(getUserData());
+        if (object) 
+        {
+            out->writeBool(true);
+            out->writeObject(object);
+        }
+        else 
+        {
+            out->writeBool(false);
+        }
+    }
 }
 
 void Object::read(DataInputStream* in){
@@ -58,6 +72,16 @@ void Object::read(DataInputStream* in){
             case 1: setDataVariance(osg::Object::DYNAMIC);break;
             case 2: setDataVariance(osg::Object::UNSPECIFIED);break;
         }
+
+        if ( in->getVersion() >= VERSION_0031)
+        {
+            bool hasUserData = in->readBool();
+            if (hasUserData)
+            {
+                setUserData(in->readObject());
+            }
+        }
+
     }
     else{
         throw Exception("Object::read(): Expected Object identification");

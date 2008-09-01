@@ -87,6 +87,7 @@
 #include "VisibilityGroup.h"
 
 #include "MultiTextureControl.h"
+#include "ShapeAttributeList.h"
 #include "Effect.h"
 #include "AnisotropicLighting.h"
 #include "BumpMapping.h"
@@ -1352,4 +1353,50 @@ void DataOutputStream::writeLocator(const osgTerrain::Locator* locator)
         if (_verboseOutput) std::cout<<"read/writeLocator() ["<<id<<"]"<<std::endl;
 
     }
+}
+
+void DataOutputStream::writeObject(const osg::Object* object)
+{
+    const osg::Node* node = dynamic_cast<const osg::Node*>(object);
+    if (node) 
+    {
+        writeInt(IVENODE);
+        writeNode(node);
+        return;
+    }
+
+    const osg::StateSet* stateset = dynamic_cast<const osg::StateSet*>(object);
+    if (stateset) 
+    {
+        writeInt(IVESTATESET);
+        writeStateSet(stateset);
+        return;
+    }
+
+    const osg::StateAttribute* sa = dynamic_cast<const osg::StateAttribute*>(object);
+    if (sa) 
+    {
+        writeInt(IVESTATEATTRIBUTE);
+        writeStateAttribute(sa);
+        return;
+    }
+
+    const osg::Drawable* drawable = dynamic_cast<const osg::Drawable*>(object);
+    if (drawable) 
+    {
+        writeInt(IVEDRAWABLE);
+        writeDrawable(drawable);
+        return;
+    }
+
+    const osgSim::ShapeAttributeList* sal = dynamic_cast<const osgSim::ShapeAttributeList*>(object);
+    if (sal) 
+    {
+        writeInt(IVESHAPEATTRIBUTELIST);
+        ((ive::ShapeAttributeList*)sal)->write(this);
+        return;
+    }
+
+    // fallback, osg::Object type not supported, so can't write out
+    writeInt(-1);
 }

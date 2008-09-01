@@ -71,6 +71,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	          __void__clear,
 	          "",
 	          "");
+	I_Method2(void, setSetName, IN, unsigned int, i, IN, const std::string &, setname,
+	          Properties::NON_VIRTUAL,
+	          __void__setSetName__unsigned_int__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(const std::string &, getSetName, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getSetName__unsigned_int,
+	          "",
+	          "");
 	I_Method2(void, setFileName, IN, unsigned int, i, IN, const std::string &, filename,
 	          Properties::NON_VIRTUAL,
 	          __void__setFileName__unsigned_int__C5_std_string_R1,
@@ -79,6 +89,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	I_Method1(const std::string &, getFileName, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getFileName__unsigned_int,
+	          "",
+	          "");
+	I_Method2(void, setCompoundName, IN, unsigned int, i, IN, const std::string &, compoundname,
+	          Properties::NON_VIRTUAL,
+	          __void__setCompoundName__unsigned_int__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(std::string, getCompoundName, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __std_string__getCompoundName__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setLayer, IN, unsigned int, i, IN, osgTerrain::Layer *, layer,
@@ -96,9 +116,14 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	          __C5_Layer_P1__getLayer__unsigned_int,
 	          "",
 	          "");
-	I_Method1(void, addLayer, IN, const std::string &, filename,
+	I_Method1(void, addLayer, IN, const std::string &, compoundname,
 	          Properties::NON_VIRTUAL,
 	          __void__addLayer__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method2(void, addLayer, IN, const std::string &, setname, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
+	          __void__addLayer__C5_std_string_R1__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(void, addLayer, IN, osgTerrain::Layer *, layer,
@@ -116,6 +141,10 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	          __unsigned_int__getNumLayers,
 	          "",
 	          "");
+	I_IndexedProperty(std::string, CompoundName, 
+	                  __std_string__getCompoundName__unsigned_int, 
+	                  __void__setCompoundName__unsigned_int__C5_std_string_R1, 
+	                  0);
 	I_IndexedProperty(const std::string &, FileName, 
 	                  __C5_std_string_R1__getFileName__unsigned_int, 
 	                  __void__setFileName__unsigned_int__C5_std_string_R1, 
@@ -127,6 +156,10 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	                __void__addLayer__Layer_P1, 
 	                0, 
 	                __void__removeLayer__unsigned_int);
+	I_IndexedProperty(const std::string &, SetName, 
+	                  __C5_std_string_R1__getSetName__unsigned_int, 
+	                  __void__setSetName__unsigned_int__C5_std_string_R1, 
+	                  0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::ContourLayer)
@@ -549,6 +582,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __C5_std_string_R1__getFileName,
 	          "Get the file name of the layer. ",
 	          "");
+	I_Method0(std::string, getCompoundName,
+	          Properties::NON_VIRTUAL,
+	          __std_string__getCompoundName,
+	          "Return the compound name of the layer in the form set::name::filename string. ",
+	          "");
 	I_Method1(void, setLocator, IN, osgTerrain::Locator *, locator,
 	          Properties::NON_VIRTUAL,
 	          __void__setLocator__Locator_P1,
@@ -714,6 +752,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __osg_BoundingSphere__computeBound__bool,
 	          "",
 	          "");
+	I_SimpleProperty(std::string, CompoundName, 
+	                 __std_string__getCompoundName, 
+	                 0);
 	I_SimpleProperty(const osg::Vec4 &, DefaultValue, 
 	                 __C5_osg_Vec4_R1__getDefaultValue, 
 	                 __void__setDefaultValue__C5_osg_Vec4_R1);
@@ -871,7 +912,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::SwitchLayer)
 	I_DeclaringFile("osgTerrain/Layer");
-	I_BaseType(osgTerrain::Layer);
+	I_BaseType(osgTerrain::CompositeLayer);
 	I_Constructor0(____SwitchLayer,
 	               "",
 	               "");
@@ -909,74 +950,18 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::SwitchLayer)
 	          __void__clear,
 	          "",
 	          "");
-	I_Method1(void, setActiveLayer, IN, unsigned int, i,
+	I_Method1(void, setActiveLayer, IN, int, i,
 	          Properties::NON_VIRTUAL,
-	          __void__setActiveLayer__unsigned_int,
+	          __void__setActiveLayer__int,
 	          "",
 	          "");
-	I_Method0(unsigned int, getActiveLayer,
+	I_Method0(int, getActiveLayer,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getActiveLayer,
+	          __int__getActiveLayer,
 	          "",
 	          "");
-	I_Method2(void, setFileName, IN, unsigned int, i, IN, const std::string &, filename,
-	          Properties::NON_VIRTUAL,
-	          __void__setFileName__unsigned_int__C5_std_string_R1,
-	          "",
-	          "");
-	I_Method1(const std::string &, getFileName, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __C5_std_string_R1__getFileName__unsigned_int,
-	          "",
-	          "");
-	I_Method2(void, setLayer, IN, unsigned int, i, IN, osgTerrain::Layer *, layer,
-	          Properties::NON_VIRTUAL,
-	          __void__setLayer__unsigned_int__Layer_P1,
-	          "",
-	          "");
-	I_Method1(osgTerrain::Layer *, getLayer, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __Layer_P1__getLayer__unsigned_int,
-	          "",
-	          "");
-	I_Method1(const osgTerrain::Layer *, getLayer, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __C5_Layer_P1__getLayer__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, addLayer, IN, const std::string &, filename,
-	          Properties::NON_VIRTUAL,
-	          __void__addLayer__C5_std_string_R1,
-	          "",
-	          "");
-	I_Method1(void, addLayer, IN, osgTerrain::Layer *, layer,
-	          Properties::NON_VIRTUAL,
-	          __void__addLayer__Layer_P1,
-	          "",
-	          "");
-	I_Method1(void, removeLayer, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __void__removeLayer__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getNumLayers,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getNumLayers,
-	          "",
-	          "");
-	I_SimpleProperty(unsigned int, ActiveLayer, 
-	                 __unsigned_int__getActiveLayer, 
-	                 __void__setActiveLayer__unsigned_int);
-	I_IndexedProperty(const std::string &, FileName, 
-	                  __C5_std_string_R1__getFileName__unsigned_int, 
-	                  __void__setFileName__unsigned_int__C5_std_string_R1, 
-	                  0);
-	I_ArrayProperty(osgTerrain::Layer *, Layer, 
-	                __Layer_P1__getLayer__unsigned_int, 
-	                __void__setLayer__unsigned_int__Layer_P1, 
-	                __unsigned_int__getNumLayers, 
-	                __void__addLayer__Layer_P1, 
-	                0, 
-	                __void__removeLayer__unsigned_int);
+	I_SimpleProperty(int, ActiveLayer, 
+	                 __int__getActiveLayer, 
+	                 __void__setActiveLayer__int);
 END_REFLECTOR
 

@@ -62,6 +62,11 @@ BEGIN_VALUE_REFLECTOR(osgSim::ShapeAttribute)
 	          __C5_std_string_R1__getName,
 	          "",
 	          "");
+	I_Method1(void, setName, IN, const std::string &, name,
+	          Properties::NON_VIRTUAL,
+	          __void__setName__C5_std_string_R1,
+	          "",
+	          "");
 	I_Method0(const osgSim::ShapeAttribute::Type, getType,
 	          Properties::NON_VIRTUAL,
 	          __C5_Type__getType,
@@ -82,6 +87,21 @@ BEGIN_VALUE_REFLECTOR(osgSim::ShapeAttribute)
 	          __C5_char_P1__getString,
 	          "",
 	          "");
+	I_Method1(void, setValue, IN, int, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setValue__int,
+	          "",
+	          "");
+	I_Method1(void, setValue, IN, double, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setValue__double,
+	          "",
+	          "");
+	I_Method1(void, setValue, IN, const char *, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setValue__C5_char_P1,
+	          "",
+	          "");
 	I_Method1(int, compare, IN, const osgSim::ShapeAttribute &, sa,
 	          Properties::NON_VIRTUAL,
 	          __int__compare__C5_osgSim_ShapeAttribute_R1,
@@ -95,13 +115,16 @@ BEGIN_VALUE_REFLECTOR(osgSim::ShapeAttribute)
 	                 0);
 	I_SimpleProperty(const std::string &, Name, 
 	                 __C5_std_string_R1__getName, 
-	                 0);
+	                 __void__setName__C5_std_string_R1);
 	I_SimpleProperty(const char *, String, 
 	                 __C5_char_P1__getString, 
 	                 0);
 	I_SimpleProperty(const osgSim::ShapeAttribute::Type, Type, 
 	                 __C5_Type__getType, 
 	                 0);
+	I_SimpleProperty(double, Value, 
+	                 0, 
+	                 __void__setValue__double);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgSim::ShapeAttributeList)

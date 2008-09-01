@@ -924,8 +924,8 @@ BEGIN_VALUE_REFLECTOR(osgWidget::Window::Sizes)
 	                           ____Sizes__point_type__point_type,
 	                           "",
 	                           "");
-	I_PublicMemberProperty(osgWidget::point_type, cur);
-	I_PublicMemberProperty(osgWidget::point_type, min);
+	I_PublicMemberProperty(osgWidget::point_type, current);
+	I_PublicMemberProperty(osgWidget::point_type, minimum);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(osgWidget::Window::WindowList, osgWidget::WindowList)

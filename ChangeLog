@@ -1,3 +1,103 @@
+2008-09-01 15:29 +0000 [r8821-8822]  robert:
+
+	* Replaced uint with unsigned int
+
+	* Introduced a OSG_MAINTAINER section of cmake build to help
+	  support making tags and branches
+
+2008-09-01 14:05 +0000 [r8818-8819]  robert:
+
+	* Updated wrappers
+
+	* Changed curr and min to current and minimum respectively, to
+	  avoid compile problems under Windows
+
+2008-09-01 12:40 +0000 [r8816-8817]  robert:
+
+	* Implemented support for ShapeAttributeList, used John Vidar
+	  Larring's initial submission as a base, but implementing the user
+	  data functionality in a different way to facilitate more flexible
+	  user data support
+
+	* From John Vidar Larring, initial cut of .ive support for
+	  ShapeAttributeList user data
+
+2008-09-01 11:09 +0000 [r8815]  robert:
+
+	* Updated version for 2.7.2 dev release
+
+2008-09-01 10:49 +0000 [r8812-8814]  robert:
+
+	* Updated wrappers
+
+	* Added call to free in setValue methods to prevent potential
+	  memory leak
+
+	* From Mathias Froehilch,"Current include/osgSim/ShapeAttribute
+	  also misses string.h include because of strdup. Attached is the
+	  changed file."
+
+2008-09-01 10:22 +0000 [r8811]  robert:
+
+	* From He Sicong, "I found a bug here in VERTICAL_SPLIT stereo
+	  type: The vertical separation not actually displayed as it is
+	  set. So some display the up and down stereo images style will not
+	  be correct. Someone may forget to change the "Horizontal" to
+	  "Vertical" after copying and pasting the code from above
+	  HORIZONTAL_SPLIT code segment. I've attached the file. By
+	  replacing the incorrect "Horizontal" to "Vertical", the bug is
+	  gone. "
+
+2008-09-01 10:19 +0000 [r8810]  robert:
+
+	* Removed std:: from in front of strcmp and added a string.h
+
+2008-09-01 10:06 +0000 [r8809]  robert:
+
+	* From Wojciech Lewandowski, "Most recent changes to
+	  CameraPathEventHandler change path writing method. Now control
+	  points are written on the fly. But default stream precision is
+	  not adjusted as it used to and remains set to 6 digits (at least
+	  with VS 2008) so larger coordinates like positions on Earth
+	  Ellipsoid loose lots of fidelity. This patch fixes this issue. "
+
+2008-09-01 09:57 +0000 [r8808]  robert:
+
+	* Build fixes for Windows
+
+2008-08-29 09:28 +0000 [r8806-8807]  robert:
+
+	* Added CompositeLayer::addLayer(setname,filename) convinience
+	  function
+
+	* From Michael Guerrero, "I've attached the files with the new
+	  addition of the "registered = true" flag set."
+
+2008-08-28 16:15 +0000 [r8805]  robert:
+
+	* Introduce the concept of layer set name, using the
+	  osg::Object::s/getName() to store the setname, and using a
+	  compound string (set:setname:filename) in place of standard
+	  filename when reading and writing files.
+
+2008-08-28 09:43 +0000 [r8804]  robert:
+
+	* Converted AutoTransform to use doubles.
+
+2008-08-27 10:13 +0000 [r8803]  robert:
+
+	* Introduced SwitchLayer which will form the basis of provided
+	  support for varients
+
+2008-08-26 17:40 +0000 [r8802]  robert:
+
+	* Improved the GLSL implementation.
+
+2008-08-26 12:55 +0000 [r8800]  robert:
+
+	* Added ChangeLog target for updating the ChangeLog, and updated
+	  the ChangeLog and AUTHORS files
+
 2008-08-26 12:05 +0000 [r8799]  robert:
 
 	* Added wrapper build target for generating the osgWrappers

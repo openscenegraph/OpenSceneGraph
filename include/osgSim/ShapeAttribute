@@ -61,9 +61,9 @@ class OSGSIM_EXPORT ShapeAttribute
         double getDouble() const { return _double; }
         const char * getString() const { return _string; }
        
-        void setValue(int value) {_type = INTEGER; _integer = value; }
-        void setValue(double value) {_type = DOUBLE; _double = value; }
-        void setValue(const char * value) {_type = STRING; _string = (value ? strdup(value) : 0); }
+        void setValue(int value) { free(); _type = INTEGER; _integer = value; }
+        void setValue(double value) { free(); _type = DOUBLE; _double = value; }
+        void setValue(const char * value) { free(); _type = STRING; _string = (value ? strdup(value) : 0); }
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         int compare(const osgSim::ShapeAttribute& sa) const;

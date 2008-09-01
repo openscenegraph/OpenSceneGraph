@@ -28,6 +28,10 @@ SET(OPENSCENEGRAPH_MINOR_VERSION 7)
 SET(OPENSCENEGRAPH_PATCH_VERSION 2)
 SET(OPENSCENEGRAPH_SOVERSION 46)
 
+# set to 0 when not a release candidate, non zero means that any generated 
+# svn tags will be treated as release candidates of given number
+SET(OPENSCENEGRAPH_RELEASE_CANDIDATE 0)
+
 SET(OPENSCENEGRAPH_VERSION ${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION}.${OPENSCENEGRAPH_PATCH_VERSION})
 
 SET(OSG_PLUGINS osgPlugins-${OPENSCENEGRAPH_VERSION})
@@ -80,6 +84,64 @@ IF(CMAKE_SYSTEM MATCHES IRIX)
     # Erase CMAKE_THREAD_LIBS_INIT and hope it works
     SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")
 ENDIF(CMAKE_SYSTEM MATCHES IRIX)
+
+OPTION(OSG_MAINTAINER "Enable OpenSceneGraph maintainer build methods, such as making svn branches, tags, updating ChangeLog." OFF)
+IF (OSG_MAINTAINER)
+
+    SET(OPENSCENEGRAPH_SVN "trunk")
+    #SET(OPENSCENEGRAPH_SVN "branches")
+    SET(OPENSCENEGRAPH_BRANCH OpenSceneGraph-${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION})
+
+    #
+    # Provide target for tagging a release
+    #
+    SET(SVNCOMMAND svn)
+    SET(SVNTRUNKDIR     http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk)
+    SET(SVNTAGDIR       http://www.openscenegraph.org/svn/osg/OpenSceneGraph/tags)
+    SET(SVNBRANCHDIR    http://www.openscenegraph.org/svn/osg/OpenSceneGraph/branch)
+
+    IF   (OPENSCENEGRAPH_SVN STREQUAL "trunk")
+        SET(SVNSOURCEDIR ${SVNTRUNKDIR})
+    ELSE (OPENSCENEGRAPH_SVN STREQUAL "trunk")
+        SET(SVNSOURCEDIR ${SVNBRANCH_DIR}/${OPENSCENEGRAPH_BRANCH})
+    ENDIF(OPENSCENEGRAPH_SVN STREQUAL "trunk")
+
+
+    IF   (OPENSCENEGRAPH_RELEASE_CANDIDATE EQUAL 0)
+        SET(RELEASE_NAME OpenSceneGraph-${OPENSCENEGRAPH_VERSION})
+    ELSE (OPENSCENEGRAPH_RELEASE_CANDIDATE EQUAL 0)
+        SET(RELEASE_NAME OpenSceneGraph-${OPENSCENEGRAPH_VERSION}-rc${OPENSCENEGRAPH_RELEASE_CANDIDATE})
+    ENDIF(OPENSCENEGRAPH_RELEASE_CANDIDATE EQUAL 0)
+
+
+    ADD_CUSTOM_TARGET(tag-test
+        COMMAND echo ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNTAGDIR}/${RELEASE_NAME} -m "Release ${RELEASE_NAME}"
+    )
+
+    ADD_CUSTOM_TARGET(tag-run
+        COMMAND ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNTAGDIR}/${RELEASE_NAME} -m "Release ${RELEASE_NAME}"
+    )
+
+    ADD_CUSTOM_TARGET(branch-test
+        COMMAND echo ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNBRANCHDIR}/${OPENSCENEGRAPH_BRANCH} -m "Branch ${OPENSCENEGRAPH_BRANCH}"
+    )
+
+    ADD_CUSTOM_TARGET(branch-run
+        COMMAND ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNBRANCHDIR}/${OPENSCENEGRAPH_BRANCH} -m "Branch ${OPENSCENEGRAPH_BRANCH}"
+    )
+
+    #
+    # Provide target for generating ChangeLog
+    #
+    SET(SVN2LOG ~/bin/svn2log.py)
+    SET(GENERATELOGS svn log -v --xml | python ${SVN2LOG} -L -H)
+
+    ADD_CUSTOM_TARGET(ChangeLog
+        COMMAND ${GENERATELOGS}
+    )
+    
+ENDIF(OSG_MAINTAINER)
+
 
 # Find OpenGL
 FIND_PACKAGE(OpenGL)
@@ -574,16 +636,6 @@ ADD_CUSTOM_TARGET(wrappers
     COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/genwrapper.conf -l ${OpenSceneGraph_SOURCE_DIR}
 )
 
-
-#
-# Provide target for generating ChangeLog
-#
-SET(SVN2LOG ~/bin/svn2log.py)
-SET(GENERATELOGS svn log -v --xml | python ${SVN2LOG} -L -H)
-
-ADD_CUSTOM_TARGET(ChangeLog
-    COMMAND ${GENERATELOGS}
-)
 
 OPTION(BUILD_REF_DOCS "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
 

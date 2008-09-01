@@ -46,12 +46,12 @@ void ShapeAttributeList::read(DataInputStream* in)
         // Read ShapeAttributeList's properties
 
         // Read size of the list
-        uint count = in->readUInt();
+        unsigned int count = in->readUInt();
         
         resize(count);
 
         // Read elements of the list
-        for (uint i=0; i < count; i++)
+        for (unsigned int i=0; i < count; i++)
         {
             read(in, (*this)[i]);
         }

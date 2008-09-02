@@ -243,6 +243,7 @@ Registry::Registry()
     #if defined(USE_XINE)
         addFileExtensionAlias("mov",  "xine");
         addFileExtensionAlias("mpg",  "xine");
+        addFileExtensionAlias("ogv",  "xine");
         addFileExtensionAlias("mpv",  "xine");
         addFileExtensionAlias("dv",   "xine");
         addFileExtensionAlias("avi",  "xine");

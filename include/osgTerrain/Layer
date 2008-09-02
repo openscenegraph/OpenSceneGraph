@@ -44,6 +44,9 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         
         META_Object(osgTerrain, Layer);
         
+        void setSetName(const std::string& setname) { setName(setname); }
+        const std::string& getSetName() const { return getName(); }
+
         /** Set the file name of the data associated with this layer. */
         virtual void setFileName(const std::string& filename) { _filename = filename; }
 
@@ -400,6 +403,9 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
         META_Object(osgTerrain, CompositeLayer);
 
         void clear();
+
+        void setSetName(const std::string& setname) { setName(setname); }
+        const std::string& getSetName() const { return getName(); }
 
         void setSetName(unsigned int i, const std::string& setname) { _layers[i].setname = setname; if (_layers[i].layer.valid()) _layers[i].layer->setName(setname); }
         const std::string& getSetName(unsigned int i) const { return _layers[i].layer.valid() ? _layers[i].layer->getName() : _layers[i].setname; }

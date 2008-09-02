@@ -11,9 +11,6 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Canvas 66 2008-07-14 21:54:09Z cubicool $
-
 #ifndef OSGWIDGET_CANVAS
 #define OSGWIDGET_CANVAS
 

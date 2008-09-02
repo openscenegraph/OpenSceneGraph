@@ -11,9 +11,6 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Input 45 2008-04-23 16:46:11Z cubicool $
-
 #ifndef OSGWIDGET_INPUT
 #define OSGWIDGET_INPUT
 

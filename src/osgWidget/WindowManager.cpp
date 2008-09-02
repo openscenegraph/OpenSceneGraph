@@ -300,8 +300,9 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
 			// Make sure that our window is valid, and that our pick is within the
 			// "visible area" of the Window.
 			if(
-				(!win || win->getVisibilityMode() == Window::VM_PARTIAL) &&
-				!win->isPointerXYWithinVisible(x, y)
+				!win || 
+				(win->getVisibilityMode() == Window::VM_PARTIAL &&
+				!win->isPointerXYWithinVisible(x, y))
 			) continue;
 
 			// Set our activeWin, so that we know when we've got all the Widgets

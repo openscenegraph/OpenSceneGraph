@@ -11,9 +11,6 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: ScriptEngine 2 2008-01-24 16:11:26Z cubicool $
-
 #ifndef OSGWIDGET_SCRIPT_ENGINE
 #define OSGWIDGET_SCRIPT_ENGINE
 

@@ -11,9 +11,6 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Frame 59 2008-05-15 20:55:31Z cubicool $
-
 #ifndef OSGWIDGET_FRAME
 #define OSGWIDGET_FRAME
 

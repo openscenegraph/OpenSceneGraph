@@ -1,3 +1,5 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+
 #include <osgDB/FileUtils>
 #include <osgWidget/Lua>
 #include <osgWidget/Box>

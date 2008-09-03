@@ -69,9 +69,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ImagePager)
 	          __bool__requiresUpdateSceneGraph,
 	          "Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). ",
 	          "");
-	I_Method1(void, updateSceneGraph, IN, double, currentFrameTime,
+	I_Method1(void, updateSceneGraph, IN, const osg::FrameStamp &, frameStamp,
 	          Properties::VIRTUAL,
-	          __void__updateSceneGraph__double,
+	          __void__updateSceneGraph__C5_osg_FrameStamp_R1,
 	          "Merge the changes to the scene graph. ",
 	          "");
 	I_Method0(int, cancel,

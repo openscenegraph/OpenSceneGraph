@@ -47,10 +47,10 @@ bool ImageSequence_readLocalData(Object& obj, Input& fr)
         }
     }
     
-    double duration;
-    if (fr.read("Duration", duration))
+    double length;
+    if (fr.read("Duration", length) || fr.read("Length", length) )
     {
-        is.setDuration(duration);
+        is.setLength(length);
     }
     
     if (fr.matchSequence("FileNames {"))
@@ -108,7 +108,7 @@ bool ImageSequence_writeLocalData(const Object& obj, Output& fw)
             break;
     }
 
-    fw.indent()<<"Duration "<<is.getDuration()<<std::endl;
+    fw.indent()<<"Length "<<is.getLength()<<std::endl;
     
     if (!is.getFileNames().empty())
     {

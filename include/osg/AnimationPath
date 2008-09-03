@@ -135,7 +135,7 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
             return true;
         }
 
-        /** Given a specific time, return the transformation matrix for a point..*/
+        /** Given a specific time, return the transformation matrix for a point. */
         bool getMatrix(double time,Matrixd& matrix) const
         {
             ControlPoint cp;

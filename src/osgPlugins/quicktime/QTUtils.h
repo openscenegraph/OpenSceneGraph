@@ -64,7 +64,7 @@
      OSStatus MakeFSSpecFromPath(const char* path, FSSpec* spec);
     
     /** opens a movie from a path */
-      OSStatus MakeMovieFromPath(const char* path, Movie* movie);
+      OSStatus MakeMovieFromPath(const char* path, Movie* movie, short& resref);
 
 
 #endif

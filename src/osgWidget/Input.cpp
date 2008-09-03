@@ -1,3 +1,5 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+
 #include <osg/io_utils>
 #include <osgWidget/WindowManager>
 #include <osgWidget/Input>
@@ -165,7 +167,7 @@ bool Input::keyDown(int key, int mask, WindowManager*) {
     getParent()->resize();
     */
 
-    warn() << "Input is disabled until some changes can be made to osgText (09/02/2008)..." << std::endl;
+    warn() << "Input is under development." << std::endl;
 
     return false;
 }

@@ -13,6 +13,7 @@
 #include <osg/CopyOp>
 #include <osg/Object>
 #include <osgWidget/Box>
+#include <osgWidget/Canvas>
 #include <osgWidget/Frame>
 #include <osgWidget/Input>
 #include <osgWidget/Label>
@@ -102,6 +103,11 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Style)
 	I_Method2(bool, applyStyle, IN, osgWidget::Frame::Border *, x, IN, osgWidget::Reader, x,
 	          Properties::VIRTUAL,
 	          __bool__applyStyle__Frame_Border_P1__Reader,
+	          "",
+	          "");
+	I_Method2(bool, applyStyle, IN, osgWidget::Canvas *, x, IN, osgWidget::Reader, x,
+	          Properties::VIRTUAL,
+	          __bool__applyStyle__Canvas_P1__Reader,
 	          "",
 	          "");
 	I_Method1(void, setStyle, IN, const std::string &, style,

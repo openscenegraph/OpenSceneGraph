@@ -1,3 +1,5 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+
 // Python.h needs to be included before anything else.
 #ifdef OSGWIDGET_USEPYTHON
 #include <Python.h>

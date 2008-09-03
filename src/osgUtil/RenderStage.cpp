@@ -346,7 +346,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 {
                     osg::Camera::Attachment& attachment = itr->second;
                     samples = maximum(samples, attachment._multisampleSamples);
-                    colorSamples = maximum(samples, attachment._multisampleColorSamples);
+                    colorSamples = maximum(colorSamples, attachment._multisampleColorSamples);
                 }
 
                 if (colorSamples > samples)

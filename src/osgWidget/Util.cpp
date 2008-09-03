@@ -1,3 +1,5 @@
+// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
+
 #include <osg/io_utils>
 
 #include <osgGA/TrackballManipulator>
@@ -5,9 +7,9 @@
 #include <osgDB/FileUtils>
 #include <osgDB/WriteFile>
 #include <osgViewer/ViewerEventHandlers>
+#include <osgWidget/Util>
 #include <osgWidget/ViewerEventHandlers>
-#include <osgWidget/Box>
-#include <osgWidget/Label>
+#include <osgWidget/WindowManager>
 
 namespace osgWidget {
 
@@ -64,9 +66,6 @@ osg::Camera* createInvertedYOrthoCamera(matrix_type width, matrix_type height) {
     camera->setProjectionMatrix(createInvertedYOrthoProjectionMatrix(width, height));
     
     return camera;
-}
-
-void _helpDialog() {
 }
 
 osg::Group* _createExampleCommon(osgViewer::View* view, WindowManager* wm, osg::Node* node) {

@@ -24,9 +24,13 @@ endif(COMMAND cmake_policy)
 PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 2)
-SET(OPENSCENEGRAPH_MINOR_VERSION 6)
-SET(OPENSCENEGRAPH_PATCH_VERSION 0)
-SET(OPENSCENEGRAPH_SOVERSION 43)
+SET(OPENSCENEGRAPH_MINOR_VERSION 7)
+SET(OPENSCENEGRAPH_PATCH_VERSION 2)
+SET(OPENSCENEGRAPH_SOVERSION 46)
+
+# set to 0 when not a release candidate, non zero means that any generated 
+# svn tags will be treated as release candidates of given number
+SET(OPENSCENEGRAPH_RELEASE_CANDIDATE 0)
 
 SET(OPENSCENEGRAPH_VERSION ${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION}.${OPENSCENEGRAPH_PATCH_VERSION})
 
@@ -80,6 +84,64 @@ IF(CMAKE_SYSTEM MATCHES IRIX)
     # Erase CMAKE_THREAD_LIBS_INIT and hope it works
     SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")
 ENDIF(CMAKE_SYSTEM MATCHES IRIX)
+
+OPTION(OSG_MAINTAINER "Enable OpenSceneGraph maintainer build methods, such as making svn branches, tags, updating ChangeLog." OFF)
+IF (OSG_MAINTAINER)
+
+    SET(OPENSCENEGRAPH_SVN "trunk")
+    #SET(OPENSCENEGRAPH_SVN "branches")
+    SET(OPENSCENEGRAPH_BRANCH OpenSceneGraph-${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION})
+
+    #
+    # Provide target for tagging a release
+    #
+    SET(SVNCOMMAND svn)
+    SET(SVNTRUNKDIR     http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk)
+    SET(SVNTAGDIR       http://www.openscenegraph.org/svn/osg/OpenSceneGraph/tags)
+    SET(SVNBRANCHDIR    http://www.openscenegraph.org/svn/osg/OpenSceneGraph/branch)
+
+    IF   (OPENSCENEGRAPH_SVN STREQUAL "trunk")
+        SET(SVNSOURCEDIR ${SVNTRUNKDIR})
+    ELSE (OPENSCENEGRAPH_SVN STREQUAL "trunk")
+        SET(SVNSOURCEDIR ${SVNBRANCH_DIR}/${OPENSCENEGRAPH_BRANCH})
+    ENDIF(OPENSCENEGRAPH_SVN STREQUAL "trunk")
+
+
+    IF   (OPENSCENEGRAPH_RELEASE_CANDIDATE EQUAL 0)
+        SET(RELEASE_NAME OpenSceneGraph-${OPENSCENEGRAPH_VERSION})
+    ELSE (OPENSCENEGRAPH_RELEASE_CANDIDATE EQUAL 0)
+        SET(RELEASE_NAME OpenSceneGraph-${OPENSCENEGRAPH_VERSION}-rc${OPENSCENEGRAPH_RELEASE_CANDIDATE})
+    ENDIF(OPENSCENEGRAPH_RELEASE_CANDIDATE EQUAL 0)
+
+
+    ADD_CUSTOM_TARGET(tag-test
+        COMMAND echo ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNTAGDIR}/${RELEASE_NAME} -m "Release ${RELEASE_NAME}"
+    )
+
+    ADD_CUSTOM_TARGET(tag-run
+        COMMAND ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNTAGDIR}/${RELEASE_NAME} -m "Release ${RELEASE_NAME}"
+    )
+
+    ADD_CUSTOM_TARGET(branch-test
+        COMMAND echo ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNBRANCHDIR}/${OPENSCENEGRAPH_BRANCH} -m "Branch ${OPENSCENEGRAPH_BRANCH}"
+    )
+
+    ADD_CUSTOM_TARGET(branch-run
+        COMMAND ${SVNCOMMAND} copy ${SVNSOURCEDIR} ${SVNBRANCHDIR}/${OPENSCENEGRAPH_BRANCH} -m "Branch ${OPENSCENEGRAPH_BRANCH}"
+    )
+
+    #
+    # Provide target for generating ChangeLog
+    #
+    SET(SVN2LOG ~/bin/svn2log.py)
+    SET(GENERATELOGS svn log -v --xml | python ${SVN2LOG} -L -H)
+
+    ADD_CUSTOM_TARGET(ChangeLog
+        COMMAND ${GENERATELOGS}
+    )
+    
+ENDIF(OSG_MAINTAINER)
+
 
 # Find OpenGL
 FIND_PACKAGE(OpenGL)
@@ -225,6 +287,7 @@ FIND_PACKAGE(Performer)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(GDAL)
 FIND_PACKAGE(CURL)
+FIND_PACKAGE(ITK)
 
 SET(wxWidgets_USE_LIBS base core gl net)
 FIND_PACKAGE(wxWidgets)
@@ -269,6 +332,17 @@ IF(PKG_CONFIG_FOUND)
 
 ENDIF(PKG_CONFIG_FOUND)
 
+
+#
+# Enable workaround for OpenGL driver crash with occlusion query
+#
+OPTION(OSG_FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL "Set to ON to build OcclussionQueryNode with a workaround for multi-threaded OpenGL driver occlussion query crash. " OFF)
+IF(OSG_FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL)
+    ADD_DEFINITIONS(-DFORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL)
+ENDIF(OSG_FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL)
+
+
+
 #
 # Test to determine if we want the "tripledot" form of the GLU tesselator callback.
 #
@@ -302,7 +376,7 @@ IF(NOT DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT)
     ENDIF(WIN32 OR CMAKE_SYSTEM_NAME MATCHES "Linux")
 ENDIF(NOT DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT)
 
-OPTION(OSG_GLU_TESS_CALLBACK_TRIPLEDOT "Set to ON to build build with variable parameter (...) version of GLU tesselator callback" ${DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT})
+OPTION(OSG_GLU_TESS_CALLBACK_TRIPLEDOT "Set to ON to build with variable parameter (...) version of GLU tesselator callback" ${DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT})
 IF(OSG_GLU_TESS_CALLBACK_TRIPLEDOT)
     ADD_DEFINITIONS(-DGLU_TESS_CALLBACK_TRIPLEDOT)
 ENDIF(OSG_GLU_TESS_CALLBACK_TRIPLEDOT)
@@ -529,7 +603,11 @@ IF(APPLE)
         # independently of OS X versions.)
         # It does look like CMake handles the CMAKE_OSX_SYSROOT automatically.
         IF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
-            SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+            # 64-bit compiles are not supported with Carbon. We should enable 
+            # 64-bit compilation by default once osgviewer has been 
+            # rewritten with Cocoa.
+            #SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+            SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
         ELSE(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
             IF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
@@ -546,6 +624,18 @@ IF(APPLE)
     OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" OFF)
 
 ENDIF(APPLE)
+
+
+#
+# Provide target for generating wrappers
+#
+SET(GENWRAPPER genwrapper)
+
+ADD_CUSTOM_TARGET(wrappers
+    COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/genwrapper.conf -t ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/Doxyfile.template -d ${OpenSceneGraph_SOURCE_DIR} | doxygen -
+    COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/genwrapper.conf -l ${OpenSceneGraph_SOURCE_DIR}
+)
+
 
 OPTION(BUILD_REF_DOCS "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
 

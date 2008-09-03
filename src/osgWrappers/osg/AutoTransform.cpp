@@ -17,7 +17,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/Quat>
-#include <osg/Vec3>
+#include <osg/Vec3d>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -84,14 +84,14 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	          __C5_AutoTransform_P1__asAutoTransform,
 	          "",
 	          "");
-	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos,
+	I_Method1(void, setPosition, IN, const osg::Vec3d &, pos,
 	          Properties::NON_VIRTUAL,
-	          __void__setPosition__C5_Vec3_R1,
+	          __void__setPosition__C5_Vec3d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getPosition,
+	I_Method0(const osg::Vec3d &, getPosition,
 	          Properties::NON_VIRTUAL,
-	          __C5_Vec3_R1__getPosition,
+	          __C5_Vec3d_R1__getPosition,
 	          "",
 	          "");
 	I_Method1(void, setRotation, IN, const osg::Quat &, quat,
@@ -104,49 +104,49 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	          __C5_Quat_R1__getRotation,
 	          "",
 	          "");
-	I_Method1(void, setScale, IN, float, scale,
+	I_Method1(void, setScale, IN, double, scale,
 	          Properties::NON_VIRTUAL,
-	          __void__setScale__float,
+	          __void__setScale__double,
 	          "",
 	          "");
-	I_Method1(void, setScale, IN, const osg::Vec3 &, scale,
+	I_Method1(void, setScale, IN, const osg::Vec3d &, scale,
 	          Properties::NON_VIRTUAL,
-	          __void__setScale__C5_Vec3_R1,
+	          __void__setScale__C5_Vec3d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getScale,
+	I_Method0(const osg::Vec3d &, getScale,
 	          Properties::NON_VIRTUAL,
-	          __C5_Vec3_R1__getScale,
+	          __C5_Vec3d_R1__getScale,
 	          "",
 	          "");
-	I_Method1(void, setMinimumScale, IN, float, minimumScale,
+	I_Method1(void, setMinimumScale, IN, double, minimumScale,
 	          Properties::NON_VIRTUAL,
-	          __void__setMinimumScale__float,
+	          __void__setMinimumScale__double,
 	          "",
 	          "");
-	I_Method0(float, getMinimumScale,
+	I_Method0(double, getMinimumScale,
 	          Properties::NON_VIRTUAL,
-	          __float__getMinimumScale,
+	          __double__getMinimumScale,
 	          "",
 	          "");
-	I_Method1(void, setMaximumScale, IN, float, maximumScale,
+	I_Method1(void, setMaximumScale, IN, double, maximumScale,
 	          Properties::NON_VIRTUAL,
-	          __void__setMaximumScale__float,
+	          __void__setMaximumScale__double,
 	          "",
 	          "");
-	I_Method0(float, getMaximumScale,
+	I_Method0(double, getMaximumScale,
 	          Properties::NON_VIRTUAL,
-	          __float__getMaximumScale,
+	          __double__getMaximumScale,
 	          "",
 	          "");
-	I_Method1(void, setPivotPoint, IN, const osg::Vec3 &, pivot,
+	I_Method1(void, setPivotPoint, IN, const osg::Vec3d &, pivot,
 	          Properties::NON_VIRTUAL,
-	          __void__setPivotPoint__C5_Vec3_R1,
+	          __void__setPivotPoint__C5_Vec3d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getPivotPoint,
+	I_Method0(const osg::Vec3d &, getPivotPoint,
 	          Properties::NON_VIRTUAL,
-	          __C5_Vec3_R1__getPivotPoint,
+	          __C5_Vec3d_R1__getPivotPoint,
 	          "",
 	          "");
 	I_Method1(void, setAutoUpdateEyeMovementTolerance, IN, float, tolerance,
@@ -179,14 +179,14 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	          __bool__getAutoScaleToScreen,
 	          "",
 	          "");
-	I_Method1(void, setAutoScaleTransistionWidthRatio, IN, float, ratio,
+	I_Method1(void, setAutoScaleTransitionWidthRatio, IN, float, ratio,
 	          Properties::NON_VIRTUAL,
-	          __void__setAutoScaleTransistionWidthRatio__float,
+	          __void__setAutoScaleTransitionWidthRatio__float,
 	          "",
 	          "");
-	I_Method0(float, getAutoScaleTransistionWidthRatio,
+	I_Method0(float, getAutoScaleTransitionWidthRatio,
 	          Properties::NON_VIRTUAL,
-	          __float__getAutoScaleTransistionWidthRatio,
+	          __float__getAutoScaleTransitionWidthRatio,
 	          "",
 	          "");
 	I_Method2(bool, computeLocalToWorldMatrix, IN, osg::Matrix &, matrix, IN, osg::NodeVisitor *, nv,
@@ -216,29 +216,29 @@ BEGIN_OBJECT_REFLECTOR(osg::AutoTransform)
 	I_SimpleProperty(bool, AutoScaleToScreen, 
 	                 __bool__getAutoScaleToScreen, 
 	                 __void__setAutoScaleToScreen__bool);
-	I_SimpleProperty(float, AutoScaleTransistionWidthRatio, 
-	                 __float__getAutoScaleTransistionWidthRatio, 
-	                 __void__setAutoScaleTransistionWidthRatio__float);
+	I_SimpleProperty(float, AutoScaleTransitionWidthRatio, 
+	                 __float__getAutoScaleTransitionWidthRatio, 
+	                 __void__setAutoScaleTransitionWidthRatio__float);
 	I_SimpleProperty(float, AutoUpdateEyeMovementTolerance, 
 	                 __float__getAutoUpdateEyeMovementTolerance, 
 	                 __void__setAutoUpdateEyeMovementTolerance__float);
-	I_SimpleProperty(float, MaximumScale, 
-	                 __float__getMaximumScale, 
-	                 __void__setMaximumScale__float);
-	I_SimpleProperty(float, MinimumScale, 
-	                 __float__getMinimumScale, 
-	                 __void__setMinimumScale__float);
-	I_SimpleProperty(const osg::Vec3 &, PivotPoint, 
-	                 __C5_Vec3_R1__getPivotPoint, 
-	                 __void__setPivotPoint__C5_Vec3_R1);
-	I_SimpleProperty(const osg::Vec3 &, Position, 
-	                 __C5_Vec3_R1__getPosition, 
-	                 __void__setPosition__C5_Vec3_R1);
+	I_SimpleProperty(double, MaximumScale, 
+	                 __double__getMaximumScale, 
+	                 __void__setMaximumScale__double);
+	I_SimpleProperty(double, MinimumScale, 
+	                 __double__getMinimumScale, 
+	                 __void__setMinimumScale__double);
+	I_SimpleProperty(const osg::Vec3d &, PivotPoint, 
+	                 __C5_Vec3d_R1__getPivotPoint, 
+	                 __void__setPivotPoint__C5_Vec3d_R1);
+	I_SimpleProperty(const osg::Vec3d &, Position, 
+	                 __C5_Vec3d_R1__getPosition, 
+	                 __void__setPosition__C5_Vec3d_R1);
 	I_SimpleProperty(const osg::Quat &, Rotation, 
 	                 __C5_Quat_R1__getRotation, 
 	                 __void__setRotation__C5_Quat_R1);
-	I_SimpleProperty(const osg::Vec3 &, Scale, 
-	                 __C5_Vec3_R1__getScale, 
-	                 __void__setScale__C5_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3d &, Scale, 
+	                 __C5_Vec3d_R1__getScale, 
+	                 __void__setScale__C5_Vec3d_R1);
 END_REFLECTOR
 

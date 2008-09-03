@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,7 +29,7 @@ class OSG_EXPORT AutoTransform : public Transform
     public :
         AutoTransform();
 
-        AutoTransform(const AutoTransform& pat,const CopyOp& copyop=CopyOp::SHALLOW_COPY);            
+        AutoTransform(const AutoTransform& pat,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         virtual osg::Object* cloneType() const { return new AutoTransform (); }
         virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new AutoTransform (*this,copyop); }
@@ -42,27 +42,27 @@ class OSG_EXPORT AutoTransform : public Transform
         virtual AutoTransform* asAutoTransform() { return this; }
         virtual const AutoTransform* asAutoTransform() const { return this; }
 
-        inline void setPosition(const Vec3& pos) { _position = pos; _matrixDirty=true; dirtyBound(); }
-        inline const Vec3& getPosition() const { return _position; }
+        inline void setPosition(const Vec3d& pos) { _position = pos; _matrixDirty=true; dirtyBound(); }
+        inline const Vec3d& getPosition() const { return _position; }
 
 
         inline void setRotation(const Quat& quat) { _rotation = quat; _matrixDirty=true; dirtyBound(); }
         inline const Quat& getRotation() const { return _rotation; }
-        
-        inline void setScale(float scale) { setScale(osg::Vec3(scale,scale,scale)); }
 
-        void setScale(const Vec3& scale);
-        inline const Vec3& getScale() const { return _scale; }
-        
-        void setMinimumScale(float minimumScale) { _minimumScale = minimumScale; }
-        float getMinimumScale() const { return _minimumScale; }
+        inline void setScale(double scale) { setScale(osg::Vec3(scale,scale,scale)); }
 
-        void setMaximumScale(float maximumScale) { _maximumScale = maximumScale; }
-        float getMaximumScale() const { return _maximumScale; }
+        void setScale(const Vec3d& scale);
+        inline const Vec3d& getScale() const { return _scale; }
 
-        inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; _matrixDirty=true; dirtyBound(); }
-        inline const Vec3& getPivotPoint() const { return _pivotPoint; }
-        
+        void setMinimumScale(double minimumScale) { _minimumScale = minimumScale; }
+        double getMinimumScale() const { return _minimumScale; }
+
+        void setMaximumScale(double maximumScale) { _maximumScale = maximumScale; }
+        double getMaximumScale() const { return _maximumScale; }
+
+        inline void setPivotPoint(const Vec3d& pivot) { _pivotPoint = pivot; _matrixDirty=true; dirtyBound(); }
+        inline const Vec3d& getPivotPoint() const { return _pivotPoint; }
+
 
         void setAutoUpdateEyeMovementTolerance(float tolerance) { _autoUpdateEyeMovementTolerance = tolerance; }
         float getAutoUpdateEyeMovementTolerance() const { return _autoUpdateEyeMovementTolerance; }
@@ -74,7 +74,7 @@ class OSG_EXPORT AutoTransform : public Transform
             ROTATE_TO_SCREEN,
             ROTATE_TO_CAMERA
         };
-        
+
         void setAutoRotateMode(AutoRotateMode mode) { _autoRotateMode = mode; _firstTimeToInitEyePoint = true; }
 
         AutoRotateMode getAutoRotateMode() const { return _autoRotateMode; }
@@ -83,8 +83,8 @@ class OSG_EXPORT AutoTransform : public Transform
 
         bool getAutoScaleToScreen() const { return _autoScaleToScreen; }
 
-        void setAutoScaleTransistionWidthRatio(float ratio) { _autoScaleTransitionWidthRatio = ratio; }
-        float getAutoScaleTransistionWidthRatio() const { return _autoScaleTransitionWidthRatio; }
+        void setAutoScaleTransitionWidthRatio(float ratio) { _autoScaleTransitionWidthRatio = ratio; }
+        float getAutoScaleTransitionWidthRatio() const { return _autoScaleTransitionWidthRatio; }
 
 
         virtual bool computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor* nv) const;
@@ -95,35 +95,35 @@ class OSG_EXPORT AutoTransform : public Transform
 
 
     protected :
-            
+
         virtual ~AutoTransform() {}
 
-        Vec3                            _position;
-        Vec3                            _pivotPoint;
-        float                           _autoUpdateEyeMovementTolerance;
+        Vec3d                           _position;
+        Vec3d                           _pivotPoint;
+        double                          _autoUpdateEyeMovementTolerance;
 
         AutoRotateMode                  _autoRotateMode;
 
         bool                            _autoScaleToScreen;
-        
+
         mutable Quat                    _rotation;
-        mutable Vec3                    _scale;
+        mutable Vec3d                   _scale;
         mutable bool                    _firstTimeToInitEyePoint;
         mutable osg::Vec3               _previousEyePoint;
         mutable osg::Vec3               _previousLocalUp;
         mutable Viewport::value_type    _previousWidth;
-        mutable Viewport::value_type    _previousHeight;        
-        mutable osg::Matrix             _previousProjection;
-        mutable osg::Vec3               _previousPosition;
-        
-        float                           _minimumScale;
-        float                           _maximumScale;
-        float                           _autoScaleTransitionWidthRatio;
+        mutable Viewport::value_type    _previousHeight;
+        mutable osg::Matrixd            _previousProjection;
+        mutable osg::Vec3d              _previousPosition;
+
+        double                          _minimumScale;
+        double                          _maximumScale;
+        double                          _autoScaleTransitionWidthRatio;
 
         void computeMatrix() const;
 
-        mutable bool        _matrixDirty;
-        mutable osg::Matrix _cachedMatrix;
+        mutable bool                    _matrixDirty;
+        mutable osg::Matrixd            _cachedMatrix;
 };
 
 }

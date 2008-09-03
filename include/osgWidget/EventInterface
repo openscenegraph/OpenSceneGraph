@@ -64,15 +64,15 @@ class OSGWIDGET_EXPORT Event
         int        keyMask;
 
         Event(WindowManager* wm, EventType _type = EVENT_NONE):
-        _wm     (wm),
-        _window (0),
-        _widget (0),
-        _data   (0),
         type    (_type),
         x       (0.0f),
         y       (0.0f),
         key     (-1),
-        keyMask (-1) {
+        keyMask (-1),
+        _wm     (wm),
+        _window (0),
+        _widget (0),
+        _data   (0) {
         }
 
         Event& makeType(EventType _type) {

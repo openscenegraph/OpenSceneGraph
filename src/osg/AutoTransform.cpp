@@ -18,14 +18,14 @@
 using namespace osg;
 
 AutoTransform::AutoTransform():
-    _autoUpdateEyeMovementTolerance(0.0f),
+    _autoUpdateEyeMovementTolerance(0.0),
     _autoRotateMode(NO_ROTATION),
     _autoScaleToScreen(false),
-    _scale(1.0f,1.0f,1.0f),
+    _scale(1.0,1.0,1.0),
     _firstTimeToInitEyePoint(true),
-    _minimumScale(0.0f),
-    _maximumScale(FLT_MAX),
-    _autoScaleTransitionWidthRatio(0.25f),
+    _minimumScale(0.0),
+    _maximumScale(DBL_MAX),
+    _autoScaleTransitionWidthRatio(0.25),
     _matrixDirty(true)
 {
 //    setNumChildrenRequiringUpdateTraversal(1);
@@ -49,7 +49,7 @@ AutoTransform::AutoTransform(const AutoTransform& pat,const CopyOp& copyop):
 //    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
 }
 
-void AutoTransform::setScale(const Vec3& scale)
+void AutoTransform::setScale(const Vec3d& scale)
 {
     _scale = scale; 
     if (_scale.x()<_minimumScale) _scale.x() = _minimumScale;
@@ -87,14 +87,14 @@ bool AutoTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
     {
         matrix.postMult(osg::Matrix::translate(-_position)*
                         osg::Matrix::rotate(_rotation.inverse())*
-                        osg::Matrix::scale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.z())*
+                        osg::Matrix::scale(1.0/_scale.x(),1.0/_scale.y(),1.0/_scale.z())*
                         osg::Matrix::translate(_pivotPoint));
     }
     else // absolute
     {
         matrix = osg::Matrix::translate(-_position)*
                  osg::Matrix::rotate(_rotation.inverse())*
-                 osg::Matrix::scale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.z())*
+                 osg::Matrix::scale(1.0/_scale.x(),1.0/_scale.y(),1.0/_scale.z())*
                  osg::Matrix::translate(_pivotPoint);
     }
     return true;
@@ -138,21 +138,21 @@ void AutoTransform::accept(NodeVisitor& nv)
                     height = viewport->height();
                 }
 
-                osg::Vec3 eyePoint = cs->getEyeLocal(); 
-                osg::Vec3 localUp = cs->getUpLocal(); 
-                osg::Vec3 position = getPosition();
+                osg::Vec3d eyePoint = cs->getEyeLocal(); 
+                osg::Vec3d localUp = cs->getUpLocal(); 
+                osg::Vec3d position = getPosition();
 
                 const osg::Matrix& projection = *(cs->getProjectionMatrix());
 
                 bool doUpdate = _firstTimeToInitEyePoint;
                 if (!_firstTimeToInitEyePoint)
                 {
-                    osg::Vec3 dv = _previousEyePoint-eyePoint;
+                    osg::Vec3d dv = _previousEyePoint-eyePoint;
                     if (dv.length2()>getAutoUpdateEyeMovementTolerance()*(eyePoint-getPosition()).length2())
                     {
                         doUpdate = true;
                     }
-                    osg::Vec3 dupv = _previousLocalUp-localUp;
+                    osg::Vec3d dupv = _previousLocalUp-localUp;
                     // rotating the camera only affects ROTATE_TO_*
                     if (_autoRotateMode &&
                         dupv.length2()>getAutoUpdateEyeMovementTolerance())
@@ -179,35 +179,35 @@ void AutoTransform::accept(NodeVisitor& nv)
 
                     if (getAutoScaleToScreen())
                     {
-                        float size = 1.0f/cs->pixelSize(getPosition(),0.48f);
+                        double size = 1.0/cs->pixelSize(getPosition(),0.48);
 
-                        if (_autoScaleTransitionWidthRatio>0.0f)
+                        if (_autoScaleTransitionWidthRatio>0.0)
                         { 
-                            if (_minimumScale>0.0f)
+                            if (_minimumScale>0.0)
                             {
-                                float j = _minimumScale;
-                                float i = (_maximumScale<FLT_MAX) ? 
+                                double j = _minimumScale;
+                                double i = (_maximumScale<DBL_MAX) ? 
                                             _minimumScale+(_maximumScale-_minimumScale)*_autoScaleTransitionWidthRatio :
-                                            _minimumScale*(1.0f+_autoScaleTransitionWidthRatio);
-                                float c = 1.0f/(4.0f*(i-j));
-                                float b = 1.0f - 2.0f*c*i;
-                                float a = j + b*b / (4.0f*c);
-                                float k = -b / (2.0f*c);
+                                            _minimumScale*(1.0+_autoScaleTransitionWidthRatio);
+                                double c = 1.0/(4.0*(i-j));
+                                double b = 1.0 - 2.0*c*i;
+                                double a = j + b*b / (4.0*c);
+                                double k = -b / (2.0*c);
 
                                 if (size<k) size = _minimumScale;
                                 else if (size<i) size = a + b*size + c*(size*size);
                             }
 
-                            if (_maximumScale<FLT_MAX)
+                            if (_maximumScale<DBL_MAX)
                             {
-                                float n = _maximumScale;
-                                float m = (_minimumScale>0.0) ?
+                                double n = _maximumScale;
+                                double m = (_minimumScale>0.0) ?
                                             _maximumScale+(_minimumScale-_maximumScale)*_autoScaleTransitionWidthRatio :
-                                            _maximumScale*(1.0f-_autoScaleTransitionWidthRatio);
-                                float c = 1.0f / (4.0f*(m-n));
-                                float b = 1.0f - 2.0f*c*m;
-                                float a = n + b*b/(4.0f*c);
-                                float p = -b / (2.0f*c);
+                                            _maximumScale*(1.0-_autoScaleTransitionWidthRatio);
+                                double c = 1.0 / (4.0*(m-n));
+                                double b = 1.0 - 2.0*c*m;
+                                double a = n + b*b/(4.0*c);
+                                double p = -b / (2.0*c);
 
                                 if (size>p) size = _maximumScale;
                                 else if (size>m) size = a + b*size + c*(size*size);
@@ -230,9 +230,9 @@ void AutoTransform::accept(NodeVisitor& nv)
                     }
                     else if (_autoRotateMode==ROTATE_TO_CAMERA)
                     {
-                        osg::Vec3 PosToEye = _position - eyePoint;
+                        osg::Vec3d PosToEye = _position - eyePoint;
                         osg::Matrix lookto = osg::Matrix::lookAt(
-                            osg::Vec3(0,0,0), PosToEye, localUp);
+                            osg::Vec3d(0,0,0), PosToEye, localUp);
                         Quat q;
                         q.set(osg::Matrix::inverse(lookto));
                         setRotation(q);

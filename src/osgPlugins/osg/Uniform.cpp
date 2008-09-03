@@ -196,6 +196,29 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
     }
 #endif //]
 
+    static ref_ptr<Uniform::Callback> s_callback = new osg::Uniform::Callback;
+    while (fr.matchSequence("UpdateCallback {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+        Uniform::Callback* callback = dynamic_cast<Uniform::Callback*>(fr.readObjectOfType(*s_callback));
+        if (callback) {
+            uniform.setUpdateCallback(callback);
+        }
+        iteratorAdvanced = true;
+    }
+
+    while (fr.matchSequence("EventCallback {"))
+    {
+        int entry = fr[0].getNoNestedBrackets();
+        fr += 2;
+        Uniform::Callback* callback = dynamic_cast<Uniform::Callback*>(fr.readObjectOfType(*s_callback));
+        if (callback) {
+            uniform.setEventCallback(callback);
+        }
+        iteratorAdvanced = true;
+    }
+
     return iteratorAdvanced;
 }
 
@@ -210,5 +233,24 @@ bool Uniform_writeLocalData(const Object& obj,Output& fw)
 
     if( uniform.getFloatArray() ) Array_writeLocalData( *uniform.getFloatArray(), fw );
     if( uniform.getIntArray() )   Array_writeLocalData( *uniform.getIntArray(), fw );
+
+    if (uniform.getUpdateCallback())
+    {
+        fw.indent() << "UpdateCallback {" << std::endl;
+        fw.moveIn();
+        fw.writeObject(*uniform.getUpdateCallback());
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
+    }
+
+    if (uniform.getEventCallback())
+    {
+        fw.indent() << "EventCallback {" << std::endl;
+        fw.moveIn();
+        fw.writeObject(*uniform.getEventCallback());
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
+    }
+
     return true;
 }

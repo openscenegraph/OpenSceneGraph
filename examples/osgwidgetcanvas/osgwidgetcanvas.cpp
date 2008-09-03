@@ -12,7 +12,7 @@ bool colorWidgetEnter(osgWidget::Event& event) {
 
 	// osgWidget::warn() << "WIDGET mouseEnter " << event.getWidget()->getName() << std::endl;
 	
-	return true;
+	return false;
 }
 
 bool colorWidgetLeave(osgWidget::Event& event) {

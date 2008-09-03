@@ -72,6 +72,7 @@ namespace ive {
 #define IVESTENCIL                      0x00000131
 #define IVESTENCILTWOSIDED              0x00000132
 #define IVECOLORMASK                    0x00000133
+#define IVEBLENDEQUATION                0x00000134
 #define IVELIGHTMODEL                   0x00001121
 #define IVECLIPPLANE                    0x00001122
 #define IVEFRONTFACE                    0x00001123
@@ -118,10 +119,9 @@ namespace ive {
 #define IVELIGHTPOINT                   0x00100006
 #define IVELIGHTPOINTNODE               0x00100007
 #define IVEMULTISWITCH                  0x00100008
-
-
 #define IVEVISIBILITYGROUP              0x00100009
 #define IVEDIRECTIONALSECTOR            0x0010000A
+#define IVESHAPEATTRIBUTELIST           0X0010000B
 
 // osgTerrain classes
 #define IVETERRAINTILE                  0x00200001
@@ -134,12 +134,19 @@ namespace ive {
 #define IVETERRAINTECHNIQUE             0x00200008
 #define IVEGEOMETRYTECHNIQUE            0x00200009
 #define IVEVALIDDATAOPERATOR            0x0020000A
-#define IVEVALIDRANGE                    0x0020000B
-#define IVENODATAVALUE                    0x0020000C
+#define IVEVALIDRANGE                   0x0020000B
+#define IVENODATAVALUE                  0x0020000C
+#define IVESWITCHLAYER                  0x0020000D
 //#define IVETERRAIN                      0x0020000A
 
 // osgFX classes
 #define IVEMULTITEXTURECONTROL          0x01000001
+#define IVEEFFECT                       0x01000002
+#define IVEANISOTROPICLIGHTING          0x01000003
+#define IVEBUMPMAPPING                  0x01000004
+#define IVECARTOON                      0x01000005
+#define IVESCRIBE                       0x01000006
+#define IVESPECULARHIGHLIGHTS           0x01000007
 
 //osgText classes
 #define IVETEXT                         0x10000001

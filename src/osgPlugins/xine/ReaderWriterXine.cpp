@@ -313,6 +313,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
         {
             supportsExtension("avi","");
             supportsExtension("db","");
+            supportsExtension("ogv","");
             supportsExtension("flv","");
             supportsExtension("mov","");
             supportsExtension("mpg","Mpeg movie format");
@@ -353,8 +354,8 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             std::string fileName;
             if (ext=="xine")
             {
-                fileName = osgDB::getNameLessExtension(file);
-                osg::notify(osg::NOTICE)<<"Xine stipped filename = "<<fileName;
+                fileName = osgDB::findDataFile( osgDB::getNameLessExtension(file), options);
+                osg::notify(osg::INFO)<<"Xine stipped filename = "<<fileName<<std::endl;
             }
             else
             {

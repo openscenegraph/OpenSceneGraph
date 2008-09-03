@@ -26,6 +26,13 @@ namespace osgTerrain {
 
 #define MAXIMUM_NUMBER_OF_LEVELS 30
 
+/** Extact the setname and filename from a compound string in the from set:setname:filename".
+  * Returns a setname of "" when non set:setname: entry is present.*/
+extern OSGTERRAIN_EXPORT void extractSetNameAndFileName(const std::string& compoundstring, std::string& setname, std::string& filename);
+
+/** Create a compound string in the form set:setname:filename, or just filename if setname is "".*/
+extern OSGTERRAIN_EXPORT std::string createCompondSetNameAndFileName(const std::string& setname, const std::string& filename);
+
 class OSGTERRAIN_EXPORT Layer : public osg::Object
 {
     public:
@@ -37,12 +44,17 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         
         META_Object(osgTerrain, Layer);
         
+        void setSetName(const std::string& setname) { setName(setname); }
+        const std::string& getSetName() const { return getName(); }
+
         /** Set the file name of the data associated with this layer. */
         virtual void setFileName(const std::string& filename) { _filename = filename; }
 
         /** Get the file name of the layer. */
         virtual const std::string& getFileName() const { return _filename; }
-        
+
+        /** Return the compound name of the layer in the form set::name::filename string.*/
+        std::string getCompoundName() const { return createCompondSetNameAndFileName(getName(), getFileName()); }
 
         void setLocator(Locator* locator) { _locator = locator; }
         Locator* getLocator() { return _locator.get(); }
@@ -331,45 +343,6 @@ class OSGTERRAIN_EXPORT HeightFieldLayer : public Layer
 };
 
 
-class OSGTERRAIN_EXPORT CompositeLayer : public Layer
-{
-    public:
-
-        CompositeLayer();
-
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        CompositeLayer(const CompositeLayer& compositeLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
-        META_Object(osgTerrain, CompositeLayer);
-
-        void clear();
-
-        void setFileName(unsigned int i, const std::string& filename) { _layers[i].first = filename; if (_layers[i].second.valid()) _layers[i].second->setFileName(filename); }
-        const std::string& getFileName(unsigned int i) const { return _layers[i].second.valid() ? _layers[i].second->getFileName() : _layers[i].first; }
-
-        void setLayer(unsigned int i, Layer* layer) { _layers[i].second = layer; }
-        Layer* getLayer(unsigned int i) { return _layers[i].second.get(); }
-        const Layer* getLayer(unsigned int i) const { return _layers[i].second.get(); }
-
-        void addLayer(const std::string& filename) { _layers.push_back(FileNameLayerPair(filename,0)); }
-        
-        void addLayer(Layer* layer) { _layers.push_back(FileNameLayerPair(layer->getFileName(),layer)); }
-
-        void removeLayer(unsigned int i) { _layers.erase(_layers.begin()+i); }
-        
-        unsigned int getNumLayers() const { return _layers.size(); }
-
-    protected:
-
-        virtual ~CompositeLayer() {}
-        
-        typedef std::pair< std::string, osg::ref_ptr<Layer> > FileNameLayerPair;
-        
-        typedef std::vector< FileNameLayerPair > Layers;
-        
-        Layers _layers;
-};
-
 class OSGTERRAIN_EXPORT ProxyLayer : public Layer
 {
     public:
@@ -417,6 +390,109 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
 
 
 };
+
+class OSGTERRAIN_EXPORT CompositeLayer : public Layer
+{
+    public:
+
+        CompositeLayer();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        CompositeLayer(const CompositeLayer& compositeLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgTerrain, CompositeLayer);
+
+        void clear();
+
+        void setSetName(const std::string& setname) { setName(setname); }
+        const std::string& getSetName() const { return getName(); }
+
+        void setSetName(unsigned int i, const std::string& setname) { _layers[i].setname = setname; if (_layers[i].layer.valid()) _layers[i].layer->setName(setname); }
+        const std::string& getSetName(unsigned int i) const { return _layers[i].layer.valid() ? _layers[i].layer->getName() : _layers[i].setname; }
+
+        void setFileName(unsigned int i, const std::string& filename) { _layers[i].filename = filename; if (_layers[i].layer.valid()) _layers[i].layer->setFileName(filename); }
+        const std::string& getFileName(unsigned int i) const { return _layers[i].layer.valid() ? _layers[i].layer->getFileName() : _layers[i].filename; }
+
+        void setCompoundName(unsigned int i, const std::string& compoundname);
+        std::string getCompoundName(unsigned int i) const;
+
+
+        void setLayer(unsigned int i, Layer* layer) { _layers[i].layer = layer; }
+        Layer* getLayer(unsigned int i) { return _layers[i].layer.get(); }
+        const Layer* getLayer(unsigned int i) const { return _layers[i].layer.get(); }
+
+        void addLayer(const std::string& compoundname);
+        void addLayer(const std::string& setname, const std::string& filename);
+        
+        void addLayer(Layer* layer) { _layers.push_back(CompoundNameLayer(layer->getName(),layer->getFileName(),layer)); }
+
+        void removeLayer(unsigned int i) { _layers.erase(_layers.begin()+i); }
+        
+        unsigned int getNumLayers() const { return _layers.size(); }
+
+    protected:
+
+        virtual ~CompositeLayer() {}
+
+        struct CompoundNameLayer
+        {
+            CompoundNameLayer() {}
+        
+            CompoundNameLayer(const CompoundNameLayer& cnl):
+                setname(cnl.setname),
+                filename(cnl.filename),
+                layer(cnl.layer) {}
+
+            CompoundNameLayer(const std::string& sn, const std::string& fn, Layer* l):
+                setname(sn),
+                filename(fn),
+                layer(l) {}
+
+            CompoundNameLayer& operator = (const CompoundNameLayer& cnl)
+            {
+                if (&cnl==this) return *this;
+                
+                setname = cnl.setname;
+                filename = cnl.filename;
+                layer = cnl.layer;
+                return *this;
+            }
+
+            std::string         setname;
+            std::string         filename;
+            osg::ref_ptr<Layer> layer;
+        };
+        
+        typedef std::vector< CompoundNameLayer > Layers;
+        
+        Layers _layers;
+};
+
+
+class OSGTERRAIN_EXPORT SwitchLayer : public CompositeLayer
+{
+    public:
+
+        SwitchLayer();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        SwitchLayer(const SwitchLayer& switchLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgTerrain, SwitchLayer);
+
+        void clear();
+        
+        void setActiveLayer(int i) { _activeLayer = i; }
+        int getActiveLayer() const { return _activeLayer; }
+
+    protected:
+
+        virtual ~SwitchLayer() {}
+        
+        int _activeLayer;
+};
+
+
 
 }
 

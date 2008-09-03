@@ -16,6 +16,42 @@
 
 using namespace osgTerrain;
 
+void osgTerrain::extractSetNameAndFileName(const std::string& compoundstring, std::string& setname, std::string& filename)
+{
+    std::string::size_type setcolonpos = compoundstring.find("set:");
+    if (setcolonpos==std::string::npos)
+    {
+        setname = "";
+        filename = compoundstring;
+        return;
+    }
+    
+    if (compoundstring.size()==4)
+    {
+        setname = "";
+        filename = "";
+        return;
+    }
+    
+    std::string::size_type secondcolonpos = compoundstring.find_first_of(':', setcolonpos+4);
+    if (secondcolonpos==std::string::npos)
+    {
+        setname = compoundstring.substr(setcolonpos+4,std::string::npos);
+        filename = "";
+        return;
+    }
+
+    setname = compoundstring.substr(setcolonpos+4,secondcolonpos-setcolonpos-4);
+    filename = compoundstring.substr(secondcolonpos+1, std::string::npos);
+}
+
+std::string osgTerrain::createCompondSetNameAndFileName(const std::string& setname, const std::string& filename)
+{
+    if (setname.empty()) return filename;
+    return std::string("set:")+setname+std::string(":")+filename;
+}
+
+
 Layer::Layer():
     _minLevel(0),
     _maxLevel(MAXIMUM_NUMBER_OF_LEVELS),
@@ -456,26 +492,6 @@ unsigned int HeightFieldLayer::getModifiedCount() const
     return _modifiedCount;
 }
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// CompositeLayer
-//
-CompositeLayer::CompositeLayer()
-{
-}
-
-CompositeLayer::CompositeLayer(const CompositeLayer& compositeLayer,const osg::CopyOp& copyop):
-    Layer(compositeLayer,copyop)
-{
-}
-
-
-void CompositeLayer::clear()
-{
-    _layers.clear();
-}
-
 /////////////////////////////////////////////////////////////////////////////
 //
 // ProxyLayer
@@ -566,3 +582,67 @@ osg::BoundingSphere ProxyLayer::computeBound(bool treatAsElevationLayer) const
     else return osg::BoundingSphere();
 }
 
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// CompositeLayer
+//
+CompositeLayer::CompositeLayer()
+{
+}
+
+CompositeLayer::CompositeLayer(const CompositeLayer& compositeLayer,const osg::CopyOp& copyop):
+    Layer(compositeLayer,copyop)
+{
+}
+
+
+void CompositeLayer::clear()
+{
+    _layers.clear();
+}
+
+void CompositeLayer::setCompoundName(unsigned int i, const std::string& compoundname)
+{
+    std::string setname;
+    std::string filename;
+    extractSetNameAndFileName(compoundname, setname, filename);
+    
+    _layers[i].setname = setname;
+    _layers[i].filename = filename;
+}
+
+std::string CompositeLayer::getCompoundName(unsigned int i) const
+{
+    return createCompondSetNameAndFileName(_layers[i].setname, _layers[i].filename);
+}
+
+void CompositeLayer::addLayer(const std::string& compoundname)
+{
+    std::string setname;
+    std::string filename;
+    extractSetNameAndFileName(compoundname, setname, filename);
+
+    _layers.push_back(CompoundNameLayer(setname,filename,0));
+}
+
+void CompositeLayer::addLayer(const std::string& setname, const std::string& filename)
+{
+    _layers.push_back(CompoundNameLayer(setname,filename,0));
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// SwitchLayer
+//
+SwitchLayer::SwitchLayer():
+    _activeLayer(-1)
+{
+}
+
+SwitchLayer::SwitchLayer(const SwitchLayer& switchLayer,const osg::CopyOp& copyop):
+    CompositeLayer(switchLayer,copyop),
+    _activeLayer(-1)
+{
+}

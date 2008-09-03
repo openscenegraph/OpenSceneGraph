@@ -27,4 +27,11 @@
     #  define OSGMANIPULATOR_EXPORT
 #endif
 
+/**
+
+\namespace osgManipulator
+
+The osgManipulator library is a NodeKit that extends the core scene graph to support 3D interactive manipulators.
+*/
+
 #endif

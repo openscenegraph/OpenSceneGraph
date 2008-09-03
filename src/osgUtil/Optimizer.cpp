@@ -2770,7 +2770,7 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Geode* geode, unsigned int 
     bool yAxis = (bb.yMax()-bb.yMin())>divide_distance;
     bool zAxis = (bb.zMax()-bb.zMin())>divide_distance;
 
-    osg::notify(osg::NOTICE)<<"INFO "<<geode->className()<<"  num drawables = "<<geode->getNumDrawables()<<"  xAxis="<<xAxis<<"  yAxis="<<yAxis<<"   zAxis="<<zAxis<<std::endl;
+    osg::notify(osg::INFO)<<"INFO "<<geode->className()<<"  num drawables = "<<geode->getNumDrawables()<<"  xAxis="<<xAxis<<"  yAxis="<<yAxis<<"   zAxis="<<zAxis<<std::endl;
     
     if (!xAxis && !yAxis && !zAxis)
     {

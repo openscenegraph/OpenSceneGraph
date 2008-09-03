@@ -477,7 +477,7 @@ class Win32KeyboardMap
             KeyMap::const_iterator map = _keymap.find(key);
             return map==_keymap.end() ? key : map->second;
         }
-      
+
     protected:
 
         typedef std::map<int, int> KeyMap;
@@ -977,7 +977,8 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
   _ownsWindow(true),
   _closeWindow(false),
   _destroyWindow(false),
-  _destroying(false)
+  _destroying(false),
+  _appMouseCursor(LeftArrowCursor)
 {
     _traits = traits;
     if (_traits->useCursor) setCursor(LeftArrowCursor);
@@ -1866,6 +1867,16 @@ void GraphicsWindowWin32::useCursor( bool cursorOn )
 
 void GraphicsWindowWin32::setCursor( MouseCursor mouseCursor )
 {
+    if (mouseCursor != LeftRightCursor && 
+        mouseCursor != UpDownCursor && 
+        mouseCursor != TopLeftCorner && 
+        mouseCursor != TopRightCorner && 
+        mouseCursor != BottomLeftCorner && 
+        mouseCursor != BottomRightCorner)
+    {
+        _appMouseCursor = mouseCursor;
+    }
+
     _mouseCursor = mouseCursor;
     HCURSOR newCursor = getOrCreateCursor( mouseCursor);
     if (newCursor == _currentCursor) return;
@@ -2183,6 +2194,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 int keySymbol = 0;
                 unsigned int modifierMask = 0;
                 adaptKey(wParam, lParam, keySymbol, modifierMask);
+                _keyMap[keySymbol] = true;
                 //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
                 getEventQueue()->keyPress(keySymbol, eventTime);
             }
@@ -2197,6 +2209,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 int keySymbol = 0;
                 unsigned int modifierMask = 0;
                 adaptKey(wParam, lParam, keySymbol, modifierMask);
+                _keyMap[keySymbol] = false;
                 //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
                 getEventQueue()->keyRelease(keySymbol, eventTime);
             }
@@ -2214,6 +2227,77 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 else
                     ::SetCursor(NULL);
                 return TRUE;
+            }
+            break;
+
+        ///////////////////
+        case WM_SETFOCUS :
+        ///////////////////
+
+            // Check keys and send a message if the key is pressed when the 
+            // focus comes back to the window.
+            // I don't really like this hard-coded loop, but the key codes
+            // (VK_* constants) seem to go from 0x08 to 0xFE so it should be
+            // ok. See winuser.h for the key codes.
+            for (unsigned int i = 0x08; i < 0xFF; i++)
+            {
+                if ((::GetAsyncKeyState(i) & 0x8000) != 0)
+                    ::SendMessage(hwnd, WM_KEYDOWN, i, 0);
+            }
+            break;
+
+        ///////////////////
+        case WM_KILLFOCUS :
+        ///////////////////
+
+            // Release all keys that were pressed when the window lost focus.
+            for (std::map<int, bool>::iterator key = _keyMap.begin();
+                 key != _keyMap.end(); ++key)
+            {
+                if (key->second)
+                {
+                    getEventQueue()->keyRelease(key->first);
+                    key->second = false;
+                }
+            }
+            break;
+
+        ///////////////////
+        case WM_NCHITTEST :
+        ///////////////////
+            {
+                LONG_PTR result = _windowProcedure==0 ? ::DefWindowProc(hwnd, uMsg, wParam, lParam) :
+                                                        ::CallWindowProc(_windowProcedure, hwnd, uMsg, wParam, lParam);
+
+                switch(result)
+                {
+                case HTLEFT:
+                case HTRIGHT:
+                    setCursor(LeftRightCursor);
+                    break;
+                case HTTOP:
+                case HTBOTTOM:
+                    setCursor(UpDownCursor);
+                    break;
+                case HTTOPLEFT:
+                    setCursor(TopLeftCorner);
+                    break;
+                case HTTOPRIGHT:
+                    setCursor(TopRightCorner);
+                    break;
+                case HTBOTTOMLEFT:
+                    setCursor(BottomLeftCorner);
+                    break;
+                case HTBOTTOMRIGHT:
+                case HTGROWBOX:
+                    setCursor(BottomRightCorner);
+                    break;
+                default:
+                    if (_traits->useCursor && _appMouseCursor != InheritCursor)
+                        setCursor(LeftArrowCursor);
+                    break;
+                }
+                return result;
             }
             break;
 
@@ -2290,3 +2374,13 @@ extern "C" void graphicswindow_Win32(void)
 {
     osg::GraphicsContext::setWindowingSystemInterface(osgViewer::Win32WindowingSystem::getInterface());
 }
+
+
+void GraphicsWindowWin32::raiseWindow()
+{
+
+    SetWindowPos(_hwnd, HWND_TOPMOST, _traits->x, _traits->y, _traits->width, _traits->height, SWP_NOMOVE|SWP_NOSIZE);
+    SetWindowPos(_hwnd, HWND_NOTOPMOST, _traits->x, _traits->y, _traits->width, _traits->height, SWP_NOMOVE|SWP_NOSIZE);
+
+}
+

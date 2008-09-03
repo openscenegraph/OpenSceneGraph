@@ -89,6 +89,9 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         /** Get focus on if the pointer is in this window.*/
         virtual void grabFocusIfPointerInWindow() { osg::notify(osg::NOTICE)<<"GraphicsWindow::grabFocusIfPointerInWindow(..) not implemented."<<std::endl; }
 
+        /** Raise the window to the top.*/
+        virtual void raiseWindow() { osg::notify(osg::NOTICE)<<"GraphicsWindow::raiseWindow(..) not implemented."<<std::endl; }
+
         /** Mouse cursor types, the same ones already present with ancient glut ... */
         enum MouseCursor {
             InheritCursor,
@@ -241,6 +244,7 @@ class GraphicsWindowEmbedded : public GraphicsWindow
         virtual void swapBuffersImplementation() {}
         virtual void grabFocus() {}
         virtual void grabFocusIfPointerInWindow() {}
+        virtual void raiseWindow() {}
 };
 
 struct GraphicsWindowFunctionProxy

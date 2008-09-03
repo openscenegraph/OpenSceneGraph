@@ -39,9 +39,9 @@
 
 /**
 
-\namespace osgWidet
+\namespace osgWidget
 
-The osgWidget is a NodeKit library that extends the core scene graph to support 3D widget set.
+The osgWidget library is a NodeKit that extends the core scene graph to support 3D GUI widget set.
 */
 
 #endif

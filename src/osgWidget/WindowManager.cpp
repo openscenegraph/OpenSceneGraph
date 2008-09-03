@@ -15,11 +15,11 @@
 namespace osgWidget {
 
 WindowManager::WindowManager(
-	osgViewer::View* view,
-	point_type       width,
-	point_type       height,
-	unsigned int     nodeMask,
-	unsigned int     flags
+    osgViewer::View* view,
+    point_type       width,
+    point_type       height,
+    unsigned int     nodeMask,
+    unsigned int     flags
 ):
 _width          (width),
 _height         (height),
@@ -42,65 +42,65 @@ _middleDown     (false),
 _rightDown      (false),
 _scrolling      (osgGA::GUIEventAdapter::SCROLL_NONE),
 _styleManager   (new StyleManager()) {
-	_name = generateRandomName("WindowManager");
+    _name = generateRandomName("WindowManager");
 
-	if(_flags & WM_USE_LUA) {
-		_lua = new LuaEngine(this);
+    if(_flags & WM_USE_LUA) {
+        _lua = new LuaEngine(this);
 
-		if(!_lua->initialize()) warn() << "Error creating LuaEngine." << std::endl;
-	}
+        if(!_lua->initialize()) warn() << "Error creating LuaEngine." << std::endl;
+    }
 
-	if(_flags & WM_USE_PYTHON) {
-		_python = new PythonEngine(this);
+    if(_flags & WM_USE_PYTHON) {
+        _python = new PythonEngine(this);
 
-		if(!_python->initialize()) warn() << "Error creating PythonEngine." << std::endl;
-	}
+        if(!_python->initialize()) warn() << "Error creating PythonEngine." << std::endl;
+    }
 
-	// Setup our picking debug (is debug the right word here?) Window...
-	if(_flags & WM_PICK_DEBUG) {
-		_pickWindow = new Box("PickWindow", Box::VERTICAL);
-		
-		Label* label = new Label("PickLabel");
+    // Setup our picking debug (is debug the right word here?) Window...
+    if(_flags & WM_PICK_DEBUG) {
+        _pickWindow = new Box("PickWindow", Box::VERTICAL);
+        
+        Label* label = new Label("PickLabel");
 
-		label->setFontSize(13);
-		label->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
-		label->setFont("fonts/VeraMono.ttf");
-		label->setPadding(5.0f);
-		label->setCanFill(true);
+        label->setFontSize(13);
+        label->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
+        label->setFont("fonts/VeraMono.ttf");
+        label->setPadding(5.0f);
+        label->setCanFill(true);
 
-		_pickWindow->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.85f);
-		_pickWindow->addWidget(label);
-		_pickWindow->setNodeMask(~_nodeMask);
-		_pickWindow->removeEventMask(EVENT_MASK_FOCUS);
-		_pickWindow->setStrata(Window::STRATA_FOREGROUND);
+        _pickWindow->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.85f);
+        _pickWindow->addWidget(label);
+        _pickWindow->setNodeMask(~_nodeMask);
+        _pickWindow->removeEventMask(EVENT_MASK_FOCUS);
+        _pickWindow->setStrata(Window::STRATA_FOREGROUND);
 
-		addChild(_pickWindow.get());
+        addChild(_pickWindow.get());
 
-		_updatePickWindow(0, 0, 0);
-	}
+        _updatePickWindow(0, 0, 0);
+    }
 
-	if(!(_flags & WM_NO_BETA_WARN)) {
-		Box*   box   = new Box("BetaWarningBox", Box::VERTICAL);
-		Label* label = new Label("BetaWarning");
+    if(!(_flags & WM_NO_BETA_WARN)) {
+        Box*   box   = new Box("BetaWarningBox", Box::VERTICAL);
+        Label* label = new Label("BetaWarning");
 
-		label->setFontSize(15);
-		label->setFontColor(0.0f, 0.0f, 1.0f, 1.0f);
-		label->setFont("fonts/arial.ttf");
-		label->setPadding(5.0f);
-		label->setCanFill(true);
-		label->setLabel("This is BETA software! Please see: http://osgwidget.googlecode.com");
+        label->setFontSize(15);
+        label->setFontColor(0.0f, 0.0f, 1.0f, 1.0f);
+        label->setFont("fonts/arial.ttf");
+        label->setPadding(5.0f);
+        label->setCanFill(true);
+        label->setLabel("This is BETA software; please be patient...");
 
-		box->getBackground()->setColor(1.0f, 0.7f, 0.0f, 1.0f);
-		box->addWidget(label);
-		box->setNodeMask(~_nodeMask);
-		box->removeEventMask(EVENT_MASK_FOCUS);
-		box->setStrata(Window::STRATA_BACKGROUND);
-		box->setOrigin(0.0f, 0.0f);
+        box->getBackground()->setColor(1.0f, 0.7f, 0.0f, 1.0f);
+        box->addWidget(label);
+        box->setNodeMask(~_nodeMask);
+        box->removeEventMask(EVENT_MASK_FOCUS);
+        box->setStrata(Window::STRATA_BACKGROUND);
+        box->setOrigin(0.0f, 0.0f);
 
-		addChild(box);
-		
-		box->resizePercent(100.0f, 0.0f);
-	}
+        addChild(box);
+        
+        box->resizePercent(100.0f, 0.0f);
+    }
 }
 
 WindowManager::WindowManager(const WindowManager& wm, const osg::CopyOp& co):
@@ -108,481 +108,480 @@ osg::Switch(wm, co) {
 }
 
 WindowManager::~WindowManager() {
-	if(_flags & WM_USE_LUA) _lua->close();
-	
-	if(_flags & WM_USE_PYTHON) _python->close();
+    if(_flags & WM_USE_LUA) _lua->close();
+    
+    if(_flags & WM_USE_PYTHON) _python->close();
 }
 
 void WindowManager::setEventFromInterface(Event& ev, EventInterface* ei) {
-	Widget* widget = dynamic_cast<Widget*>(ei);
-	Window* window = dynamic_cast<Window*>(ei);
+    Widget* widget = dynamic_cast<Widget*>(ei);
+    Window* window = dynamic_cast<Window*>(ei);
 
-	if(widget) {
-		ev._window = widget->getParent();
-		ev._widget = widget;
-	}
+    if(widget) {
+        ev._window = widget->getParent();
+        ev._widget = widget;
+    }
 
-	else if(window) ev._window = window;
+    else if(window) ev._window = window;
 }
 
 bool WindowManager::_handleMousePushed(float x, float y, bool& down) {
-	down = true;
+    down = true;
 
-	Event ev(this, EVENT_MOUSE_PUSH);
+    Event ev(this, EVENT_MOUSE_PUSH);
 
-	WidgetList widgetList;
+    WidgetList widgetList;
 
-	if(!pickAtXY(x, y, widgetList)) return false;
+    if(!pickAtXY(x, y, widgetList)) return false;
 
-	ev.makeMouse(x, y);
+    ev.makeMouse(x, y);
 
-	_lastPush = getFirstEventInterface(widgetList, ev);
+    _lastPush = getFirstEventInterface(widgetList, ev);
 
-	if(!_lastPush) return false;
+    if(!_lastPush) return false;
 
-	bool handled = _lastPush->callMethodAndCallbacks(ev);
+    bool handled = _lastPush->callMethodAndCallbacks(ev);
 
-	if(_focusMode != PFM_SLOPPY) {
-		if(ev._window) {
-			Window* topmostWindow = ev._window->getTopmostParent();
+    if(_focusMode != PFM_SLOPPY) {
+        if(ev._window) {
+            Window* topmostWindow = ev._window->getTopmostParent();
 
-			setFocused(topmostWindow);
-			
-			if(ev._widget) topmostWindow->setFocused(ev._widget);
-		}
+            setFocused(topmostWindow);
+            
+            if(ev._widget) topmostWindow->setFocused(ev._widget);
+        }
 
-		// If the user wants to be able to "unfocus" the last Window.
-		else if(_focusMode == PFM_UNFOCUS) setFocused(0);
-	}
+        // If the user wants to be able to "unfocus" the last Window.
+        else if(_focusMode == PFM_UNFOCUS) setFocused(0);
+    }
 
-	return handled;
+    return handled;
 }
 
 bool WindowManager::_handleMouseReleased(float x, float y, bool& down) {
-	down = false;
+    down = false;
 
-	// If were were in a drag state, reset our boolean flag.
-	// if(_lastDrag) _lastDrag = 0;
+    // If were were in a drag state, reset our boolean flag.
+    // if(_lastDrag) _lastDrag = 0;
 
-	if(!_lastPush) return false;
+    if(!_lastPush) return false;
 
-	// By design, we can only release an EventInterface we previously pressed.
-	// Whether or not we're ON the EventInterface when the release occurs isn't important.
-	Event ev(this, EVENT_MOUSE_RELEASE);
+    // By design, we can only release an EventInterface we previously pressed.
+    // Whether or not we're ON the EventInterface when the release occurs isn't important.
+    Event ev(this, EVENT_MOUSE_RELEASE);
 
-	setEventFromInterface(ev, _lastPush);
+    setEventFromInterface(ev, _lastPush);
 
-	bool handled = _lastPush->callMethodAndCallbacks(ev);
+    bool handled = _lastPush->callMethodAndCallbacks(ev);
 
-	_lastPush = 0;
+    _lastPush = 0;
 
-	return handled;
+    return handled;
 }
 
 void WindowManager::_getPointerXYDiff(float& x, float& y) {
-	x -= _lastX;
+    x -= _lastX;
 
-	if(isInvertedY()) y = -(y - _lastY);
+    if(isInvertedY()) y = -(y - _lastY);
 
-	else y -= _lastY;
+    else y -= _lastY;
 }
 
 void WindowManager::_updatePickWindow(const WidgetList* wl, point_type x, point_type y) {
-	Label* label = dynamic_cast<Label*>(_pickWindow->getByName("PickLabel"));
+    Label* label = dynamic_cast<Label*>(_pickWindow->getByName("PickLabel"));
 
-	if(!wl) {
-		setValue(0, false);
+    if(!wl) {
+        setValue(0, false);
 
-		return;
-	}
+        return;
+    }
 
-	setValue(0, true);
+    setValue(0, true);
 
-	std::stringstream ss;
+    std::stringstream ss;
 
-	point_type xdiff = x;
-	point_type ydiff = y;
+    point_type xdiff = x;
+    point_type ydiff = y;
 
-	_getPointerXYDiff(xdiff, ydiff);
+    _getPointerXYDiff(xdiff, ydiff);
 
-	ss
-		<< "At XY Coords: " << x << ", " << _height - y
-		<< " ( diff " << xdiff << ", " << ydiff << " )"
-		<< std::endl
-	;
+    ss
+        << "At XY Coords: " << x << ", " << _height - y
+        << " ( diff " << xdiff << ", " << ydiff << " )"
+        << std::endl
+    ;
 
-	const Window* parent = wl->back()->getParent();
+    const Window* parent = wl->back()->getParent();
 
-	ss
-		<< "Window: " << parent->getName()
-		<< " ( xyz " << parent->getPosition() << " )"
-		<< " { zRange " << parent->getZRange() << " }"
-		<< " < size " << parent->getSize() << " >"
-		<< " EventMask: " << std::hex << parent->getEventMask()
-		<< std::endl
-	;
+    ss
+        << "Window: " << parent->getName()
+        << " ( xyz " << parent->getPosition() << " )"
+        << " { zRange " << parent->getZRange() << " }"
+        << " < size " << parent->getSize() << " >"
+        << " EventMask: " << std::hex << parent->getEventMask()
+        << std::endl
+    ;
 
-	for(WidgetList::const_iterator i = wl->begin(); i != wl->end(); i++) {
-		Widget* widget = i->get();
+    for(WidgetList::const_iterator i = wl->begin(); i != wl->end(); i++) {
+        Widget* widget = i->get();
 
-		ss
-			<< "   - " << widget->getName()
-			<< " ( xyz " << widget->getPosition() << " )"
-			<< " [ XYZ " << widget->getPosition() * parent->getMatrix()
-			<< " ] < size " << widget->getSize() << " >"
-			<< " EventMask: " << std::hex << widget->getEventMask()
-			<< std::endl
-		;
-	}
+        ss
+            << "   - " << widget->getName()
+            << " ( xyz " << widget->getPosition() << " )"
+            << " [ XYZ " << widget->getPosition() * parent->getMatrix()
+            << " ] < size " << widget->getSize() << " >"
+            << " EventMask: " << std::hex << widget->getEventMask()
+            << std::endl
+        ;
+    }
 
-	label->setLabel(ss.str());
+    label->setLabel(ss.str());
 
-	XYCoord size = label->getTextSize();
+    XYCoord size = label->getTextSize();
 
-	_pickWindow->resize(size.x() + 10.0f, size.y() + 10.0f);
-	_pickWindow->setOrigin(5.0f, _height - _pickWindow->getHeight() - 5.0f);
-	_pickWindow->update();
+    _pickWindow->resize(size.x() + 10.0f, size.y() + 10.0f);
+    _pickWindow->setOrigin(5.0f, _height - _pickWindow->getHeight() - 5.0f);
+    _pickWindow->update();
 }
 
 void WindowManager::childInserted(unsigned int i) {
-	Window* window = dynamic_cast<Window*>(getChild(i));
+    Window* window = dynamic_cast<Window*>(getChild(i));
 
-	if(!window) return;
+    if(!window) return;
 
-	_objects.push_back(window);
+    _objects.push_back(window);
 
-	window->_index = i;
+    window->_index = i;
 
-	setFocused(window);
+    setFocused(window);
 
-	window->setNodeMask(_nodeMask);
-	window->managed(this);
+    window->setNodeMask(_nodeMask);
+    window->managed(this);
 
-	for(Window::Iterator w = window->begin(); w != window->end(); w++) if(w->valid()) {
-		_styleManager->applyStyles(w->get());
-	}
+    for(Window::Iterator w = window->begin(); w != window->end(); w++) if(w->valid()) {
+        _styleManager->applyStyles(w->get());
+    }
 
-	_styleManager->applyStyles(window);
+    _styleManager->applyStyles(window);
 }
-	
+    
 void WindowManager::childRemoved(unsigned int start, unsigned int end) {
-	while(start < end) {
-		Window* window = getByIndex(start);
+    while(start < end) {
+        Window* window = getByIndex(start);
 
-		if(!window) continue;
+        if(!window) continue;
 
-		if(_remove(window)) {
-			window->_index = -1;
+        if(_remove(window)) {
+            window->_index = -1;
 
-			window->unmanaged(this);
-		}
+            window->unmanaged(this);
+        }
 
-		start++;
-	}
+        start++;
+    }
 }
 
 // This method performs intersection testing at the given XY coords, and returns true if
 // any intersections were found. It will break after processing the first pickable Window
 // it finds.
 bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
-	Intersections intr;
+    Intersections intr;
 
-	if(_view->computeIntersections(x, y, intr, _nodeMask)) {
-		// Get the first Window at the XY coordinates; if you want a Window to be
-		// non-pickable, set the NodeMask to something else.
-		Window* activeWin = 0;
+    if(_view->computeIntersections(x, y, intr, _nodeMask)) {
+        // Get the first Window at the XY coordinates; if you want a Window to be
+        // non-pickable, set the NodeMask to something else.
+        Window* activeWin = 0;
 
-		// Iterate over every picked result and create a list of Widgets that belong
-		// to that Window.
-		for(Intersections::iterator i = intr.begin(); i != intr.end(); i++) {
-			Window* win = dynamic_cast<Window*>(i->nodePath.back()->getParent(0));
+        // Iterate over every picked result and create a list of Widgets that belong
+        // to that Window.
+        for(Intersections::iterator i = intr.begin(); i != intr.end(); i++) {
+            Window* win = dynamic_cast<Window*>(i->nodePath.back()->getParent(0));
 
-			// Make sure that our window is valid, and that our pick is within the
-			// "visible area" of the Window.
-			if(
-				!win || 
-				(win->getVisibilityMode() == Window::VM_PARTIAL &&
-				!win->isPointerXYWithinVisible(x, y))
-			) continue;
+            // Make sure that our window is valid, and that our pick is within the
+            // "visible area" of the Window.
+            if(
+                (!win || win->getVisibilityMode() == Window::VM_PARTIAL) &&
+                !win->isPointerXYWithinVisible(x, y)
+            ) continue;
 
-			// Set our activeWin, so that we know when we've got all the Widgets
-			// that belong to it.
-			if(!activeWin) activeWin = win;
+            // Set our activeWin, so that we know when we've got all the Widgets
+            // that belong to it.
+            if(!activeWin) activeWin = win;
 
-			// If we've found a new Widnow, break out!
-			else if(activeWin != win) break;
+            // If we've found a new Widnow, break out!
+            else if(activeWin != win) break;
 
-			Widget* widget = dynamic_cast<Widget*>(i->drawable.get());
+            Widget* widget = dynamic_cast<Widget*>(i->drawable.get());
 
-			if(!widget) continue;
+            if(!widget) continue;
 
-			// We need to return a list of every Widget that was picked, so
-			// that the handler can operate on it accordingly.
-			else wl.push_back(widget);
-		}
+            // We need to return a list of every Widget that was picked, so
+            // that the handler can operate on it accordingly.
+            else wl.push_back(widget);
+        }
 
-		if(wl.size()) {
-			// Potentially VERY expensive; only to be used for debugging. :)
-			if(_flags & WM_PICK_DEBUG) _updatePickWindow(&wl, x, y);
+        if(wl.size()) {
+            // Potentially VERY expensive; only to be used for debugging. :)
+            if(_flags & WM_PICK_DEBUG) _updatePickWindow(&wl, x, y);
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 
-	if(_flags & WM_PICK_DEBUG) _updatePickWindow(0, x, y);
-	
-	return false;
+    if(_flags & WM_PICK_DEBUG) _updatePickWindow(0, x, y);
+    
+    return false;
 }
 
 bool WindowManager::setFocused(Window* window) {
-	Event ev(this);
+    Event ev(this);
 
-	ev._window = window;
-	
-	// Inform the previously focused Window that it is going to be unfocused.
-	if(_focused.valid()) _focused->callMethodAndCallbacks(ev.makeType(EVENT_UNFOCUS));
+    ev._window = window;
+    
+    // Inform the previously focused Window that it is going to be unfocused.
+    if(_focused.valid()) _focused->callMethodAndCallbacks(ev.makeType(EVENT_UNFOCUS));
 
-	_focused = window;
+    _focused = window;
 
-	if(!window || !window->canFocus()) return false;
+    if(!window || !window->canFocus()) return false;
 
-	// Build a vector of every Window that is focusable, in the foreground, and in the
-	// background. All these Windows are handled differently.
-	Vector focusable;
-	Vector bg;
-	Vector fg;
+    // Build a vector of every Window that is focusable, in the foreground, and in the
+    // background. All these Windows are handled differently.
+    Vector focusable;
+    Vector bg;
+    Vector fg;
 
-	for(ConstIterator it = begin(); it != end(); it++) if(it->valid()) {
-		Window* w = it->get();
+    for(ConstIterator it = begin(); it != end(); it++) if(it->valid()) {
+        Window* w = it->get();
 
-		if(w->getStrata() == Window::STRATA_FOREGROUND) fg.push_back(w);
+        if(w->getStrata() == Window::STRATA_FOREGROUND) fg.push_back(w);
 
-		else if(w->getStrata() == Window::STRATA_BACKGROUND) bg.push_back(w);
-		
-		else focusable.push_back(w);
-	}
+        else if(w->getStrata() == Window::STRATA_BACKGROUND) bg.push_back(w);
+        
+        else focusable.push_back(w);
+    }
 
-	// After this call to sort, the internal objects will be arranged such that the
-	// previously focused window is the first, followed by all other Windows in
-	// descending order.
-	std::sort(focusable.begin(), focusable.end(), WindowZCompare());
+    // After this call to sort, the internal objects will be arranged such that the
+    // previously focused window is the first, followed by all other Windows in
+    // descending order.
+    std::sort(focusable.begin(), focusable.end(), WindowZCompare());
 
-	// This is the depth range for each Window. Each Window object must be informed of
-	// the Z space allocated to it so that it can properly arrange it's children. We
-	// add 2 additional Windows here for anything that should appear in the background
-	// and foreground areas.
-	matrix_type zRange = (_zNear - _zFar) / (focusable.size() + 2.0f);
+    // This is the depth range for each Window. Each Window object must be informed of
+    // the Z space allocated to it so that it can properly arrange it's children. We
+    // add 2 additional Windows here for anything that should appear in the background
+    // and foreground areas.
+    matrix_type zRange = (_zNear - _zFar) / (focusable.size() + 2.0f);
 
-	// Our offset for the following for() loop.
-	unsigned int i = 3;
+    // Our offset for the following for() loop.
+    unsigned int i = 3;
 
-	// Handle all of our focusable Windows.
-	for(Iterator w = focusable.begin(); w != focusable.end(); w++) {
-		Window* win = w->get();
+    // Handle all of our focusable Windows.
+    for(Iterator w = focusable.begin(); w != focusable.end(); w++) {
+        Window* win = w->get();
 
-		// Set our newly focused Window as the topmost element.
-		if(*w == window) win->_z = -zRange * 2.0f;
+        // Set our newly focused Window as the topmost element.
+        if(*w == window) win->_z = -zRange * 2.0f;
 
-		// Set the current Z of the remaining Windows and set their zRange so that
-		// they can update their own children.
-		else {
-			win->_z = -zRange * i;
+        // Set the current Z of the remaining Windows and set their zRange so that
+        // they can update their own children.
+        else {
+            win->_z = -zRange * i;
 
-			i++;
-		}
-	}
+            i++;
+        }
+    }
 
-	// Handled our special BACKGROUND Windows.
-	for(Iterator w = bg.begin(); w != bg.end(); w++) w->get()->_z = -zRange * i;
-	
-	// Handle our special FOREGOUND Windows.
-	for(Iterator w = fg.begin(); w != fg.end(); w++) w->get()->_z = -zRange;
-	
-	// Update every window, regardless.
-	for(Iterator w = begin(); w != end(); w++) {
-		Window* win = w->get();
-		
-		win->_zRange = zRange;
+    // Handled our special BACKGROUND Windows.
+    for(Iterator w = bg.begin(); w != bg.end(); w++) w->get()->_z = -zRange * i;
+    
+    // Handle our special FOREGOUND Windows.
+    for(Iterator w = fg.begin(); w != fg.end(); w++) w->get()->_z = -zRange;
+    
+    // Update every window, regardless.
+    for(Iterator w = begin(); w != end(); w++) {
+        Window* win = w->get();
+        
+        win->_zRange = zRange;
 
-		win->update();
-	}
+        win->update();
+    }
 
-	_focused->callMethodAndCallbacks(ev.makeType(EVENT_FOCUS));
+    _focused->callMethodAndCallbacks(ev.makeType(EVENT_FOCUS));
 
-	return true;
+    return true;
 }
 
 void WindowManager::setPointerXY(float x, float y) {
-	float xdiff = x;
-	float ydiff = y;
+    float xdiff = x;
+    float ydiff = y;
 
-	_getPointerXYDiff(xdiff, ydiff);
+    _getPointerXYDiff(xdiff, ydiff);
 
-	// If ydiff isn't NEAR 0 (floating point booleans aren't 100% reliable, but that
-	// doesn't matter in our case), assume we have either up or down movement.
-	if(ydiff != 0.0f) _lastVertical = ydiff > 0.0f ? PD_UP : PD_DOWN;
-		
-	else _lastVertical = PD_NONE;
+    // If ydiff isn't NEAR 0 (floating point booleans aren't 100% reliable, but that
+    // doesn't matter in our case), assume we have either up or down movement.
+    if(ydiff != 0.0f) _lastVertical = ydiff > 0.0f ? PD_UP : PD_DOWN;
+        
+    else _lastVertical = PD_NONE;
 
-	// If xdiff isn't 0, assume we have either left or right movement.
-	if(xdiff != 0.0f) _lastHorizontal = xdiff > 0.0f ? PD_RIGHT : PD_LEFT;
+    // If xdiff isn't 0, assume we have either left or right movement.
+    if(xdiff != 0.0f) _lastHorizontal = xdiff > 0.0f ? PD_RIGHT : PD_LEFT;
 
-	else _lastHorizontal = PD_NONE;
+    else _lastHorizontal = PD_NONE;
 
-	_lastX = x;
-	_lastY = y;
+    _lastX = x;
+    _lastY = y;
 }
 
 void WindowManager::setStyleManager(StyleManager* sm) {
-	_styleManager = sm;
+    _styleManager = sm;
 
-	for(Iterator i = begin(); i != end(); i++) if(i->valid()) {
-		Window* window = i->get();
+    for(Iterator i = begin(); i != end(); i++) if(i->valid()) {
+        Window* window = i->get();
 
-		for(Window::Iterator w = window->begin(); w != window->end(); w++) {
-			if(!w->valid()) continue;
+        for(Window::Iterator w = window->begin(); w != window->end(); w++) {
+            if(!w->valid()) continue;
 
-			_styleManager->applyStyles(w->get());
-		}
+            _styleManager->applyStyles(w->get());
+        }
 
-		_styleManager->applyStyles(window);
-	}
+        _styleManager->applyStyles(window);
+    }
 }
 
 void WindowManager::resizeAllWindows(bool visible) {
-	for(Iterator i = begin(); i != end(); i++) if(i->valid()) {
-		if(visible && !getValue(i->get()->_index)) continue;
-		
-		i->get()->resize();
-	}
+    for(Iterator i = begin(); i != end(); i++) if(i->valid()) {
+        if(visible && !getValue(i->get()->_index)) continue;
+        
+        i->get()->resize();
+    }
 }
 
 // This is called by a ViewerEventHandler/MouseHandler (or whatever) as the pointer moves
 // around and intersects with objects. It also resets our state data (_widget, _leftDown,
 // etc.) The return value of this method is mostly useless.
 bool WindowManager::pointerMove(float x, float y) {
-	WidgetList wl;
-	Event      ev(this);
+    WidgetList wl;
+    Event      ev(this);
 
-	if(!pickAtXY(x, y, wl)) {
-		if(_lastEvent) {
-			setEventFromInterface(ev.makeMouse(x, y, EVENT_MOUSE_LEAVE), _lastEvent);
+    if(!pickAtXY(x, y, wl)) {
+        if(_lastEvent) {
+            setEventFromInterface(ev.makeMouse(x, y, EVENT_MOUSE_LEAVE), _lastEvent);
 
-			_lastEvent->callMethodAndCallbacks(ev);
-		}
+            _lastEvent->callMethodAndCallbacks(ev);
+        }
 
-		if(_focusMode == PFM_SLOPPY) setFocused(0);
+        if(_focusMode == PFM_SLOPPY) setFocused(0);
 
-		_lastEvent  = 0;
-		_leftDown   = 0;
-		_middleDown = 0;
-		_rightDown  = 0;
+        _lastEvent  = 0;
+        _leftDown   = 0;
+        _middleDown = 0;
+        _rightDown  = 0;
 
-		return false;
-	}
+        return false;
+    }
 
-	EventInterface* ei = getFirstEventInterface(wl, ev.makeMouse(x, y, EVENT_MOUSE_OVER));
+    EventInterface* ei = getFirstEventInterface(wl, ev.makeMouse(x, y, EVENT_MOUSE_OVER));
 
-	if(!ei) return false;
+    if(!ei) return false;
 
-	if(_lastEvent != ei) {
-		if(_lastEvent) {
-			Event evLeave(this);
+    if(_lastEvent != ei) {
+        if(_lastEvent) {
+            Event evLeave(this);
 
-			evLeave.makeMouse(x, y, EVENT_MOUSE_LEAVE);
-			
-			setEventFromInterface(evLeave, _lastEvent);
+            evLeave.makeMouse(x, y, EVENT_MOUSE_LEAVE);
+            
+            setEventFromInterface(evLeave, _lastEvent);
 
-			_lastEvent->callMethodAndCallbacks(evLeave);
-		}
+            _lastEvent->callMethodAndCallbacks(evLeave);
+        }
 
-		_lastEvent = ei;
+        _lastEvent = ei;
 
-		if(_focusMode == PFM_SLOPPY && ev._window) setFocused(ev._window);
+        if(_focusMode == PFM_SLOPPY && ev._window) setFocused(ev._window);
 
-		_lastEvent->callMethodAndCallbacks(ev.makeMouse(x, y, EVENT_MOUSE_ENTER));
-	}
+        _lastEvent->callMethodAndCallbacks(ev.makeMouse(x, y, EVENT_MOUSE_ENTER));
+    }
 
-	ei->callMethodAndCallbacks(ev.makeMouse(x, y, EVENT_MOUSE_OVER));
+    ei->callMethodAndCallbacks(ev.makeMouse(x, y, EVENT_MOUSE_OVER));
 
-	return true;
+    return true;
 }
 
 bool WindowManager::pointerDrag(float x, float y) {
-	WidgetList widgetList;
-	Event      ev(this);
+    WidgetList widgetList;
+    Event      ev(this);
 
-	float xdiff = x;
-	float ydiff = y;
+    float xdiff = x;
+    float ydiff = y;
 
-	_getPointerXYDiff(xdiff, ydiff);
+    _getPointerXYDiff(xdiff, ydiff);
 
-	ev.makeMouse(xdiff, ydiff, EVENT_MOUSE_DRAG);
+    ev.makeMouse(xdiff, ydiff, EVENT_MOUSE_DRAG);
 
-	// If we're still in the drag state...
-	if(_lastPush) {
-		setEventFromInterface(ev, _lastPush);
+    // If we're still in the drag state...
+    if(_lastPush) {
+        setEventFromInterface(ev, _lastPush);
 
-		return _lastPush->callMethodAndCallbacks(ev);
-	}
+        return _lastPush->callMethodAndCallbacks(ev);
+    }
 
-	return false;
+    return false;
 }
 
 bool WindowManager::mouseScroll(float x, float y) {
-	WidgetList wl;
+    WidgetList wl;
 
-	if(!pickAtXY(x, y, wl)) return false;
+    if(!pickAtXY(x, y, wl)) return false;
 
-	Event ev(this, EVENT_MOUSE_SCROLL);
+    Event ev(this, EVENT_MOUSE_SCROLL);
 
-	EventInterface* ei = getFirstEventInterface(wl, ev);
+    EventInterface* ei = getFirstEventInterface(wl, ev);
 
-	if(!ei) return false;
+    if(!ei) return false;
 
-	return ei->callMethodAndCallbacks(ev);
+    return ei->callMethodAndCallbacks(ev);
 }
 
 // Keypresses only go the focused Window.
 bool WindowManager::keyDown(int key, int mask) {
-	if(_focused.valid()) {
-		Event ev(this, EVENT_KEY_DOWN);
+    if(_focused.valid()) {
+        Event ev(this, EVENT_KEY_DOWN);
 
-		ev.makeKey(key, mask);
+        ev.makeKey(key, mask);
 
-		Widget* focusedWidget = _focused->getFocused();
+        Widget* focusedWidget = _focused->getFocused();
 
-		ev._window = _focused.get();
-		ev._widget = focusedWidget;
+        ev._window = _focused.get();
+        ev._widget = focusedWidget;
 
-		bool handled = false;
+        bool handled = false;
 
-		if(focusedWidget) handled = focusedWidget->callMethodAndCallbacks(ev);
+        if(focusedWidget) handled = focusedWidget->callMethodAndCallbacks(ev);
 
-		if(!handled) return _focused->callMethodAndCallbacks(ev);
+        if(!handled) return _focused->callMethodAndCallbacks(ev);
 
-		else return true;
-	}
+        else return true;
+    }
 
-	return false;
+    return false;
 }
 
 bool WindowManager::keyUp(int key, int mask) {
-	return true;
+    return true;
 }
 
 // A convenience wrapper for creating a proper orthographic camera using the current
 // width and height.
 osg::Camera* WindowManager::createParentOrthoCamera() {
-	osg::Camera* camera = 0;
+    osg::Camera* camera = 0;
 
-	if(isInvertedY()) camera = createInvertedYOrthoCamera(_width, _height);
+    if(isInvertedY()) camera = createInvertedYOrthoCamera(_width, _height);
 
-	else camera = createOrthoCamera(_width, _height);
+    else camera = createOrthoCamera(_width, _height);
 
-	camera->addChild(this);
+    camera->addChild(this);
 
-	return camera;
+    return camera;
 }
 
 }

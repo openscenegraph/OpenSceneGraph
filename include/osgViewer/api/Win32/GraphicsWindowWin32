@@ -79,6 +79,9 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         /** Override from GUIActionAdapter.*/
         virtual void requestWarpPointer(float x,float y);
 
+        /** Raise specified window */
+        virtual void raiseWindow();
+
         /** Set the name of the window */
         virtual void setWindowName(const std::string& /*name*/);
         
@@ -174,8 +177,14 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         bool            _destroying;
 
         MouseCursor     _mouseCursor;
+
+        /// Persist which mouse cursor was used before switching to the resize cursors.
+        MouseCursor     _appMouseCursor;
         
         std::map<MouseCursor,HCURSOR> _mouseCursorMap;
+
+        std::map<int, bool> _keyMap;
+
 };
 
 }

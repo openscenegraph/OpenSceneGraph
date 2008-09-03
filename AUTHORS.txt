@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.6.0
+OpenSceneGraph Library 2.7.1
 
-323 Contributors:
+330 Contributors:
 
 Firstname Surname
 -----------------
@@ -48,21 +48,22 @@ Michael Gronager
 Daniel Sjölie
 Chris Hanson
 Adrian Egli
+Sherman Wilcox
 Per Fahlberg
+Jason Beverage
 J.P. Delport
 David Spilling
-Sherman Wilcox
-Melchior Franz
-Joran Jessurun
-Joakim Simonsson
-Jason Beverage
 Philip Lowman
+Melchior Franz
+Joakim Simonsson
+Joran Jessurun
 Jason Daly
 Frederic Marmond
 David Fries
 Boris Bralo
 Yefei He
 Terry Welsh
+Stephane Lamoliatte
 Sondra Iverson
 Serge Lages
 Rune Schmidt Jensen
@@ -72,7 +73,6 @@ Mathieu Marache
 Carlo Camporesi
 Ben Discoe
 Andreas Ekstrand
-Stephane Lamoliatte
 Sasa Bistrovic
 Martin Naylor
 Martin Aumueller
@@ -109,6 +109,7 @@ Sebastien Grignard
 Romano Magacho
 Roland Smeenk
 Paul de Repentigny
+Liang Aibin
 Leandro Motta Barros
 John Kelso
 Daniel Larimer
@@ -135,6 +136,7 @@ Jeremy Bell
 James French
 Garrett Potts
 Gabor Dorka
+Doug McCorkle
 Donn Mielcarek
 Donald Cipperly
 Domenico Mangieri
@@ -174,11 +176,11 @@ John Aughey
 Johan Nouvel
 Igor Kravtchenko
 Gustavo Wagner
+Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
 Fabio Mierlo
 Edgar Ellis
-Doug McCorkle
 David Ergo
 Daniel Trstenjak
 Csaba Halasz
@@ -211,6 +213,7 @@ Steven Thomas
 Sid Byce
 Shuxing Xiao
 Shane Arnott
+Sergey Leontyev
 Sebastien Kuntz
 Ruth Lang
 Ronny Krueger
@@ -223,6 +226,7 @@ Raymond de Vries
 Qing Shen
 Philipp Siemoleit
 Philipp Mächler
+Paul Palumbo
 Paul Obermeier
 Paul Fredrikson
 Parag Chaudhur
@@ -240,6 +244,7 @@ Mike Garrity
 Michael Polak
 Michael Morrison
 Michael Logan
+Michael Guerrero
 Max Rhiener
 Mauricio Hofmam
 Matthew May
@@ -252,6 +257,7 @@ Martin Amueller
 Mario Guimaraes
 Marin Lavery
 Marco Lehmann
+Maceij Krol
 Louis Hamilton
 Lilin Xiong
 Lewis Harmon
@@ -259,6 +265,7 @@ Lars Nilson
 Kristopher Bixler
 Karsten Weiss
 Karl Heijdenberg
+Jutta Sauer
 Josh Portway
 John Vidar Larring
 John Tan
@@ -266,6 +273,7 @@ John Grant
 John Donovan
 John Davis
 Joan Abadie
+Jeoen den Dekker
 Jean-Christophe Lombardo
 Jay Zuckerman
 Jason Howlett
@@ -281,12 +289,12 @@ George Papagiannakis
 Gary Quinn
 Galen Faidley
 Frederic Bouvier
-Frashid Lashkari
 Frank Warmerdam
 Frank Lindeman
 Frank Lichtenheld
 Ferdinand Cornelissen
 Fabien Dachicourt
+Erik den Dekker
 Emmanuel Roche
 Edmond Gheury
 Ed Ralston

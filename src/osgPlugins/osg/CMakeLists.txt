@@ -8,6 +8,7 @@ AutoTransform.cpp
 Billboard.cpp
 BlendColor.cpp
 BlendFunc.cpp
+BlendEquation.cpp
 Camera.cpp
 CameraView.cpp
 ClearNode.cpp
@@ -60,6 +61,7 @@ ShadeModel.cpp
 Shader.cpp
 Shape.cpp
 ShapeDrawable.cpp
+StateAttribute.cpp
 StateSet.cpp
 Stencil.cpp
 Switch.cpp

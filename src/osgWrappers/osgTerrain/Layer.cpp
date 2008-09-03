@@ -71,6 +71,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	          __void__clear,
 	          "",
 	          "");
+	I_Method2(void, setSetName, IN, unsigned int, i, IN, const std::string &, setname,
+	          Properties::NON_VIRTUAL,
+	          __void__setSetName__unsigned_int__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(const std::string &, getSetName, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getSetName__unsigned_int,
+	          "",
+	          "");
 	I_Method2(void, setFileName, IN, unsigned int, i, IN, const std::string &, filename,
 	          Properties::NON_VIRTUAL,
 	          __void__setFileName__unsigned_int__C5_std_string_R1,
@@ -79,6 +89,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	I_Method1(const std::string &, getFileName, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getFileName__unsigned_int,
+	          "",
+	          "");
+	I_Method2(void, setCompoundName, IN, unsigned int, i, IN, const std::string &, compoundname,
+	          Properties::NON_VIRTUAL,
+	          __void__setCompoundName__unsigned_int__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(std::string, getCompoundName, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __std_string__getCompoundName__unsigned_int,
 	          "",
 	          "");
 	I_Method2(void, setLayer, IN, unsigned int, i, IN, osgTerrain::Layer *, layer,
@@ -96,9 +116,14 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	          __C5_Layer_P1__getLayer__unsigned_int,
 	          "",
 	          "");
-	I_Method1(void, addLayer, IN, const std::string &, filename,
+	I_Method1(void, addLayer, IN, const std::string &, compoundname,
 	          Properties::NON_VIRTUAL,
 	          __void__addLayer__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method2(void, addLayer, IN, const std::string &, setname, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
+	          __void__addLayer__C5_std_string_R1__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method1(void, addLayer, IN, osgTerrain::Layer *, layer,
@@ -116,6 +141,10 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	          __unsigned_int__getNumLayers,
 	          "",
 	          "");
+	I_IndexedProperty(std::string, CompoundName, 
+	                  __std_string__getCompoundName__unsigned_int, 
+	                  __void__setCompoundName__unsigned_int__C5_std_string_R1, 
+	                  0);
 	I_IndexedProperty(const std::string &, FileName, 
 	                  __C5_std_string_R1__getFileName__unsigned_int, 
 	                  __void__setFileName__unsigned_int__C5_std_string_R1, 
@@ -127,6 +156,10 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	                __void__addLayer__Layer_P1, 
 	                0, 
 	                __void__removeLayer__unsigned_int);
+	I_IndexedProperty(const std::string &, SetName, 
+	                  __C5_std_string_R1__getSetName__unsigned_int, 
+	                  __void__setSetName__unsigned_int__C5_std_string_R1, 
+	                  0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::ContourLayer)
@@ -549,6 +582,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __C5_std_string_R1__getFileName,
 	          "Get the file name of the layer. ",
 	          "");
+	I_Method0(std::string, getCompoundName,
+	          Properties::NON_VIRTUAL,
+	          __std_string__getCompoundName,
+	          "Return the compound name of the layer in the form set::name::filename string. ",
+	          "");
 	I_Method1(void, setLocator, IN, osgTerrain::Locator *, locator,
 	          Properties::NON_VIRTUAL,
 	          __void__setLocator__Locator_P1,
@@ -714,6 +752,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __osg_BoundingSphere__computeBound__bool,
 	          "",
 	          "");
+	I_SimpleProperty(std::string, CompoundName, 
+	                 __std_string__getCompoundName, 
+	                 0);
 	I_SimpleProperty(const osg::Vec4 &, DefaultValue, 
 	                 __C5_osg_Vec4_R1__getDefaultValue, 
 	                 __void__setDefaultValue__C5_osg_Vec4_R1);
@@ -867,5 +908,60 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	I_SimpleProperty(unsigned int, ModifiedCount, 
 	                 __unsigned_int__getModifiedCount, 
 	                 __void__setModifiedCount__unsigned_int);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgTerrain::SwitchLayer)
+	I_DeclaringFile("osgTerrain/Layer");
+	I_BaseType(osgTerrain::CompositeLayer);
+	I_Constructor0(____SwitchLayer,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgTerrain::SwitchLayer &, switchLayer, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____SwitchLayer__C5_SwitchLayer_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(void, clear,
+	          Properties::NON_VIRTUAL,
+	          __void__clear,
+	          "",
+	          "");
+	I_Method1(void, setActiveLayer, IN, int, i,
+	          Properties::NON_VIRTUAL,
+	          __void__setActiveLayer__int,
+	          "",
+	          "");
+	I_Method0(int, getActiveLayer,
+	          Properties::NON_VIRTUAL,
+	          __int__getActiveLayer,
+	          "",
+	          "");
+	I_SimpleProperty(int, ActiveLayer, 
+	                 __int__getActiveLayer, 
+	                 __void__setActiveLayer__int);
 END_REFLECTOR
 

@@ -98,7 +98,8 @@ public:
 
     void writeLayer(const osgTerrain::Layer* layer);
     void writeLocator(const osgTerrain::Locator* locator);
-
+    
+    void writeObject(const osg::Object* object);
 
     void setWriteDirectory(const std::string& directoryName) { _writeDirectory = directoryName; }
     const std::string& getWriteDirectory() const { return _writeDirectory; }

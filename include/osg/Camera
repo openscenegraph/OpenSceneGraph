@@ -449,7 +449,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
             DrawCallback(const DrawCallback&,const CopyOp&) {}
 
-            META_Object(osg,DrawCallback)
+            META_Object(osg, DrawCallback);
 
             /** Functor method called by rendering thread. Users will typically override this method to carry tasks such as screen capture.*/ 
             virtual void operator () (osg::RenderInfo& renderInfo) const;

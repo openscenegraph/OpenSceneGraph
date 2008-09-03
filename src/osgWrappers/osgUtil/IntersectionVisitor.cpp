@@ -21,6 +21,7 @@
 #include <osg/PagedLOD>
 #include <osg/Projection>
 #include <osg/Transform>
+#include <osg/Vec3>
 #include <osg/Viewport>
 #include <osgUtil/IntersectionVisitor>
 
@@ -31,6 +32,12 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+BEGIN_ENUM_REFLECTOR(osgUtil::IntersectionVisitor::LODSelectionMode)
+	I_DeclaringFile("osgUtil/IntersectionVisitor");
+	I_EnumLabel(osgUtil::IntersectionVisitor::USE_HIGHEST_LEVEL_OF_DETAIL);
+	I_EnumLabel(osgUtil::IntersectionVisitor::USE_EYE_POINT_FOR_LOD_LEVEL_SELECTION);
+END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	I_DeclaringFile("osgUtil/IntersectionVisitor");
@@ -179,6 +186,46 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	          __C5_osg_RefMatrix_P1__getModelMatrix,
 	          "",
 	          "");
+	I_Method1(void, setReferenceEyePoint, IN, const osg::Vec3 &, ep,
+	          Properties::NON_VIRTUAL,
+	          __void__setReferenceEyePoint__C5_osg_Vec3_R1,
+	          "Set the reference eye point that is used for nodes that require an eye point to position themselves, such as billboards. ",
+	          "");
+	I_Method0(const osg::Vec3 &, getReferenceEyePoint,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3_R1__getReferenceEyePoint,
+	          "Get the reference eye point. ",
+	          "");
+	I_Method1(void, setReferenceEyePointCoordinateFrame, IN, osgUtil::Intersector::CoordinateFrame, cf,
+	          Properties::NON_VIRTUAL,
+	          __void__setReferenceEyePointCoordinateFrame__Intersector_CoordinateFrame,
+	          "Set the coordinate frame of the reference eye point. ",
+	          "");
+	I_Method0(osgUtil::Intersector::CoordinateFrame, getReferenceEyePointCoordinateFrame,
+	          Properties::NON_VIRTUAL,
+	          __Intersector_CoordinateFrame__getReferenceEyePointCoordinateFrame,
+	          "Get the coordinate frame of the reference eye point. ",
+	          "");
+	I_Method0(osg::Vec3, getEyePoint,
+	          Properties::VIRTUAL,
+	          __osg_Vec3__getEyePoint,
+	          "Get the eye point in the local coordinate frame a given traversal point. ",
+	          "");
+	I_Method1(void, setLODSelectionMode, IN, osgUtil::IntersectionVisitor::LODSelectionMode, mode,
+	          Properties::NON_VIRTUAL,
+	          __void__setLODSelectionMode__LODSelectionMode,
+	          "Set the LOD selection scheme. ",
+	          "");
+	I_Method0(osgUtil::IntersectionVisitor::LODSelectionMode, getLODSelectionMode,
+	          Properties::NON_VIRTUAL,
+	          __LODSelectionMode__getLODSelectionMode,
+	          "Get the LOD selection scheme. ",
+	          "");
+	I_Method2(float, getDistanceToEyePoint, IN, const osg::Vec3 &, pos, IN, bool, withLODScale,
+	          Properties::VIRTUAL,
+	          __float__getDistanceToEyePoint__C5_osg_Vec3_R1__bool,
+	          "Get the distance from a point to the eye point, distance value in local coordinate system. ",
+	          "This is calculated using the pseudo-EyePoint (above) when doing LOD calculcations. ");
 	I_Method1(void, apply, IN, osg::Node &, node,
 	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
@@ -257,9 +304,15 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	I_SimpleProperty(bool, DoDummyTraversal, 
 	                 __bool__getDoDummyTraversal, 
 	                 __void__setDoDummyTraversal__bool);
+	I_SimpleProperty(osg::Vec3, EyePoint, 
+	                 __osg_Vec3__getEyePoint, 
+	                 0);
 	I_SimpleProperty(osgUtil::Intersector *, Intersector, 
 	                 __Intersector_P1__getIntersector, 
 	                 __void__setIntersector__Intersector_P1);
+	I_SimpleProperty(osgUtil::IntersectionVisitor::LODSelectionMode, LODSelectionMode, 
+	                 __LODSelectionMode__getLODSelectionMode, 
+	                 __void__setLODSelectionMode__LODSelectionMode);
 	I_SimpleProperty(osg::RefMatrix *, ModelMatrix, 
 	                 __osg_RefMatrix_P1__getModelMatrix, 
 	                 0);
@@ -269,6 +322,12 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectionVisitor)
 	I_SimpleProperty(osgUtil::IntersectionVisitor::ReadCallback *, ReadCallback, 
 	                 __ReadCallback_P1__getReadCallback, 
 	                 __void__setReadCallback__ReadCallback_P1);
+	I_SimpleProperty(const osg::Vec3 &, ReferenceEyePoint, 
+	                 __C5_osg_Vec3_R1__getReferenceEyePoint, 
+	                 __void__setReferenceEyePoint__C5_osg_Vec3_R1);
+	I_SimpleProperty(osgUtil::Intersector::CoordinateFrame, ReferenceEyePointCoordinateFrame, 
+	                 __Intersector_CoordinateFrame__getReferenceEyePointCoordinateFrame, 
+	                 __void__setReferenceEyePointCoordinateFrame__Intersector_CoordinateFrame);
 	I_SimpleProperty(bool, UseKdTreeWhenAvailable, 
 	                 __bool__getUseKdTreeWhenAvailable, 
 	                 __void__setUseKdTreeWhenAvailable__bool);

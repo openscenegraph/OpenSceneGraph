@@ -211,6 +211,9 @@ Registry::Registry()
     addFileExtensionAlias("ivz",   "gz");
     addFileExtensionAlias("ozg",   "gz");
     
+    addFileExtensionAlias("dcm",   "dicom");
+    addFileExtensionAlias("dic",   "dicom");
+
 #if defined(DARWIN_QUICKTIME)
     addFileExtensionAlias("jpg",  "qt");
     addFileExtensionAlias("jpe",  "qt");
@@ -240,6 +243,7 @@ Registry::Registry()
     #if defined(USE_XINE)
         addFileExtensionAlias("mov",  "xine");
         addFileExtensionAlias("mpg",  "xine");
+        addFileExtensionAlias("ogv",  "xine");
         addFileExtensionAlias("mpv",  "xine");
         addFileExtensionAlias("dv",   "xine");
         addFileExtensionAlias("avi",  "xine");

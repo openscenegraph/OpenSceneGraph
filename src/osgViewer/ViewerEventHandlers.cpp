@@ -463,6 +463,9 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                         
                         osg::notify(osg::NOTICE) << "Recording camera path to file " << ss.str() << std::endl;
                         _fout.open( ss.str().c_str() );
+
+                        // make sure doubles are not trucated by default stream precision = 6
+                        _fout.precision( 15 );
                     }
                     else
                     {

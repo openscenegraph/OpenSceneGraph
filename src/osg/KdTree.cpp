@@ -226,6 +226,10 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
                 node.bb.expandBy(v1);
                 node.bb.expandBy(v2);
                 
+            }
+
+            if (node.bb.valid())
+            {
                 float epsilon = 1e-6;
                 node.bb._min.x() -= epsilon;
                 node.bb._min.y() -= epsilon;
@@ -234,7 +238,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
                 node.bb._max.y() += epsilon;
                 node.bb._max.z() += epsilon;
             }
-
+            
 #ifdef VERBOSE_OUTPUT    
             if (!node.bb.valid())
             {
@@ -751,6 +755,12 @@ bool KdTree::build(BuildOptions& options, osg::Geometry* geometry)
 
 bool KdTree::intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const
 {
+    if (_kdNodes.empty()) 
+    {
+        osg::notify(osg::NOTICE)<<"Warning: _kdTree is empty"<<std::endl;
+        return false;
+    }
+
     int numIntersectionsBefore = intersections.size();
 
     IntersectKdTree intersector(*_vertices,

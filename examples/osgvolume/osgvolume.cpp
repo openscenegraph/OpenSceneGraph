@@ -32,6 +32,8 @@
 #include <osg/Material>
 #include <osg/PrimitiveSet>
 #include <osg/Endian>
+#include <osg/BlendFunc>
+#include <osg/BlendEquation>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -44,6 +46,9 @@
 #include <osgUtil/CullVisitor>
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
+
+#include <osg/io_utils>
 
 #include <iostream>
 
@@ -629,7 +634,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
 
     float halfSize = size*0.5f;
     float y = halfSize;
-    float dy =-size*1.4/(float)(numSlices-1)*sliceEnd;
+    float dy =-size/(float)(numSlices-1)*sliceEnd;
 
     //y = -halfSize;
     //dy *= 0.5;
@@ -668,7 +673,8 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
 {
     public:
     
-        FollowMouseCallback()
+        FollowMouseCallback(bool shader = false):
+            _shader(shader)
         {
             _updateTransparency = false;
             _updateAlphaCutOff = false;
@@ -708,11 +714,35 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
                 case(osgGA::GUIEventAdapter::MOVE):
                 case(osgGA::GUIEventAdapter::DRAG):
                 {
-                    float v = ea.getY()*0.5f+0.5f;
-                    osg::Uniform* uniform = 0;
-                    if (_updateTransparency && (uniform = stateset->getUniform("transparency"))) uniform->set(v);
-                    if (_updateAlphaCutOff && (uniform = stateset->getUniform("alphaCutOff"))) uniform->set(v);
-                    if (_updateSampleDensity && (uniform = stateset->getUniform("sampleDensity"))) uniform->set(powf(v,5));
+                    float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
+                    if (_shader)
+                    {
+                        osg::Uniform* uniform = 0;
+                        if (_updateTransparency && (uniform = stateset->getUniform("transparency"))) uniform->set(v);
+                        if (_updateAlphaCutOff && (uniform = stateset->getUniform("alphaCutOff"))) uniform->set(v);
+                        if (_updateSampleDensity && (uniform = stateset->getUniform("sampleDensity"))) uniform->set(powf(v,5));
+                    }
+                    else
+                    {                    
+                        if (_updateAlphaCutOff)
+                        {
+                            osg::AlphaFunc* alphaFunc = dynamic_cast<osg::AlphaFunc*>(stateset->getAttribute(osg::StateAttribute::ALPHAFUNC));
+                            if (alphaFunc) 
+                            {
+                                alphaFunc->setReferenceValue(v);
+                            }
+                        }
+                        
+                        if (_updateTransparency)
+                        {
+                            osg::Material* material = dynamic_cast<osg::Material*>(stateset->getAttribute(osg::StateAttribute::MATERIAL));
+                            if (material)
+                            {
+                                material->setAlpha(osg::Material::FRONT_AND_BACK,v);
+                            }
+                        }
+                    }
+
                     break;
                 }
                 case(osgGA::GUIEventAdapter::KEYDOWN):
@@ -735,6 +765,7 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
             return false;
         }
         
+        bool _shader;
         bool _updateTransparency;
         bool _updateAlphaCutOff;
         bool _updateSampleDensity;
@@ -743,14 +774,19 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
 
 osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& /*normalmap_3d*/,
                        osg::Texture::InternalFormatMode internalFormatMode,
-                       float /*xSize*/, float /*ySize*/, float /*zSize*/,
+                       float xSize, float ySize, float zSize,
                        float /*xMultiplier*/, float /*yMultiplier*/, float /*zMultiplier*/,
-                       unsigned int /*numSlices*/=500, float /*sliceEnd*/=1.0f, float alphaFuncValue=0.02f)
+                       unsigned int /*numSlices*/=500, float /*sliceEnd*/=1.0f, float alphaFuncValue=0.02f, bool maximumIntensityProjection = false)
 {
+
+    osg::Group* root = new osg::Group;
+    
     osg::Geode* geode = new osg::Geode;
+    root->addChild(geode);
+    
     osg::StateSet* stateset = geode->getOrCreateStateSet();
     
-    stateset->setEventCallback(new FollowMouseCallback);
+    stateset->setEventCallback(new FollowMouseCallback(true));
     
     stateset->setMode(GL_ALPHA_TEST,osg::StateAttribute::ON);
 
@@ -759,6 +795,7 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     // gluBuild3DMipsmaps doesn't do a very good job of handled the
     // imbalanced dimensions of the 256x256x4 texture.
     osg::Texture3D* texture3D = new osg::Texture3D;
+    texture3D->setResizeNonPowerOfTwoHint(false);
     texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
     texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
     texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
@@ -791,14 +828,21 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     else
     {
         char vertexShaderSource[] = 
-            "varying vec3 texcoord;\n"
-            "varying vec3 cameraPos;\n"
+            "varying vec4 cameraPos;\n"
+            "varying vec4 vertexPos;\n"
+            "varying mat4 texgen;\n"
             "\n"
             "void main(void)\n"
             "{\n"
-            "        texcoord = gl_MultiTexCoord0.xyz;\n"
-            "        gl_Position     = ftransform();\n"
-            "        cameraPos=vec4(gl_ModelViewMatrixInverse*vec4(0,0,0,1)).xyz;\n"
+            "        gl_Position = ftransform();\n"
+            "\n"
+            "        cameraPos = gl_ModelViewMatrixInverse*vec4(0,0,0,1);\n"
+            "        vertexPos = gl_Vertex;\n"
+            "\n"
+            "        texgen = mat4(gl_ObjectPlaneS[0], \n"
+            "                      gl_ObjectPlaneT[0],\n"
+            "                      gl_ObjectPlaneR[0],\n"
+            "                      gl_ObjectPlaneQ[0]);\n"
             "}\n";
 
         osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, vertexShaderSource);
@@ -822,27 +866,87 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
             "uniform float transparency;\n"
             "uniform float alphaCutOff;\n"
             "\n"
-            "varying vec3 cameraPos;\n"
-            "varying vec3 texcoord;\n"
+            "varying vec4 cameraPos;\n"
+            "varying vec4 vertexPos;\n"
+            "varying mat4 texgen;\n"
             "\n"
             "void main(void)\n"
             "{ \n"
-            "        vec3 deltaTexCoord=normalize(cameraPos-texcoord.xyz)*sampleDensity;\n"
-            "        gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); \n"
-            "        while (texcoord.x>=0.0 && texcoord.x<=1.0 &&\n"
-            "               texcoord.y>=0.0 && texcoord.y<=1.0 &&\n"
-            "               texcoord.z>=0.0 && texcoord.z<=1.0)\n"
+            "    vec3 t0 = (texgen * vertexPos).xyz;\n"
+            "    vec3 te = (texgen * cameraPos).xyz;\n"
+            "\n"
+            "    if (te.x>=0.0 && te.x<=1.0 &&\n"
+            "        te.y>=0.0 && te.y<=1.0 &&\n"
+            "        te.z>=0.0 && te.z<=1.0)\n"
+            "    {\n"
+            "        // do nothing... te inside volume\n"
+            "    }\n"
+            "    else\n"
+            "    {\n"
+            "        if (te.x<0.0)\n"
             "        {\n"
-            "            vec4 color = texture3D( baseTexture, texcoord);\n"
-            "            float r = color[3]*transparency;\n"
-            "            if (r>alphaCutOff)\n"
-            "            {\n"
-            "                gl_FragColor.xyz = gl_FragColor.xyz*(1.0-r)+color.xyz*r;\n"
-            "                gl_FragColor.w += r;\n"
-            "            }\n"
-            "            texcoord += deltaTexCoord; \n"
+            "            float r = -te.x / (t0.x-te.x);\n"
+            "            te = te + (t0-te)*r;\n"
             "        }\n"
+            "\n"
+            "        if (te.x>1.0)\n"
+            "        {\n"
+            "            float r = (1.0-te.x) / (t0.x-te.x);\n"
+            "            te = te + (t0-te)*r;\n"
+            "        }\n"
+            "\n"
+            "        if (te.y<0.0)\n"
+            "        {\n"
+            "            float r = -te.y / (t0.y-te.y);\n"
+            "            te = te + (t0-te)*r;\n"
+            "        }\n"
+            "\n"
+            "        if (te.y>1.0)\n"
+            "        {\n"
+            "            float r = (1.0-te.y) / (t0.y-te.y);\n"
+            "            te = te + (t0-te)*r;\n"
+            "        }\n"
+            "\n"
+            "        if (te.z<0.0)\n"
+            "        {\n"
+            "            float r = -te.z / (t0.z-te.z);\n"
+            "            te = te + (t0-te)*r;\n"
+            "        }\n"
+            "\n"
+            "        if (te.z>1.0)\n"
+            "        {\n"
+            "            float r = (1.0-te.z) / (t0.z-te.z);\n"
+            "            te = te + (t0-te)*r;\n"
+            "        }\n"
+            "    }\n"
+            "\n"
+            "    const int max_iteratrions = 256;\n"
+            "    int num_iterations = length(te-t0)/sampleDensity;\n"
+            "    if (num_iterations>max_iteratrions) \n"
+            "    {\n"
+            "        num_iterations = max_iteratrions;\n"
+            "    }\n"
+            "\n"
+            "    vec3 deltaTexCoord=(te-t0)/float(num_iterations-1);\n"
+            "    vec3 texcoord = t0;\n"
+            "\n"
+            "    gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); \n"
+            "    while(num_iterations>0)\n"
+            "    {\n"
+            "        vec4 color = texture3D( baseTexture, texcoord);\n"
+            "        float r = color[3]*transparency;\n"
+            "        if (r>alphaCutOff)\n"
+            "        {\n"
+            "            gl_FragColor.xyz = gl_FragColor.xyz*(1.0-r)+color.xyz*r;\n"
+            "            gl_FragColor.w += r;\n"
+            "        }\n"
+            "        texcoord += deltaTexCoord; \n"
+            "\n"
+            "        --num_iterations;\n"
+            "    }\n"
+            "\n"
             "    if (gl_FragColor.w>1.0) gl_FragColor.w = 1.0; \n"
+            "    if (gl_FragColor.w==0.0) discard;\n"
             "}\n";
 
         osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
@@ -863,30 +967,28 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
 
     stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
 
+    osg::TexGen* texgen = new osg::TexGen;
+    texgen->setMode(osg::TexGen::OBJECT_LINEAR);
+    texgen->setPlane(osg::TexGen::S, osg::Plane(1.0f/xSize,0.0f,0.0f,0.0f));
+    texgen->setPlane(osg::TexGen::T, osg::Plane(0.0f,1.0f/ySize,0.0f,0.0f));
+    texgen->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,1.0f/zSize,0.0f));
+    texgen->setPlane(osg::TexGen::Q, osg::Plane(0.0f,0.0f,0.0f,1.0f));
+    
+    stateset->setTextureAttributeAndModes(0, texgen, osg::StateAttribute::ON);
+
     {
         osg::Geometry* geom = new osg::Geometry;
 
         osg::Vec3Array* coords = new osg::Vec3Array(8);
         (*coords)[0].set(0,0,0);
-        (*coords)[1].set(1,0,0);
-        (*coords)[2].set(1,1,0);
-        (*coords)[3].set(0,1,0);
-        (*coords)[4].set(0,0,1);
-        (*coords)[5].set(1,0,1);
-        (*coords)[6].set(1,1,1);
-        (*coords)[7].set(0,1,1);
+        (*coords)[1].set(xSize,0,0);
+        (*coords)[2].set(xSize,ySize,0);
+        (*coords)[3].set(0,ySize,0);
+        (*coords)[4].set(0,0,zSize);
+        (*coords)[5].set(xSize,0,zSize);
+        (*coords)[6].set(ySize,ySize,zSize);
+        (*coords)[7].set(0,ySize,zSize);
         geom->setVertexArray(coords);
-
-        osg::Vec3Array* tcoords = new osg::Vec3Array(8);
-        (*tcoords)[0].set(0,0,0);
-        (*tcoords)[1].set(1,0,0);
-        (*tcoords)[2].set(1,1,0);
-        (*tcoords)[3].set(0,1,0);
-        (*tcoords)[4].set(0,0,1);
-        (*tcoords)[5].set(1,0,1);
-        (*tcoords)[6].set(1,1,1);
-        (*tcoords)[7].set(0,1,1);
-        geom->setTexCoordArray(0,tcoords);
 
         osg::Vec4Array* colours = new osg::Vec4Array(1);
         (*colours)[0].set(1.0f,1.0f,1.0,1.0f);
@@ -935,26 +1037,31 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
         geode->addDrawable(geom);
 
     } 
-
-    return geode;
+    return root;
 }
 
 osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& normalmap_3d,
                        osg::Texture::InternalFormatMode internalFormatMode,
                        float xSize, float ySize, float zSize,
                        float xMultiplier, float yMultiplier, float zMultiplier,
-                       unsigned int numSlices=500, float sliceEnd=1.0f, float alphaFuncValue=0.02f)
+                       unsigned int numSlices=500, float sliceEnd=1.0f, float alphaFuncValue=0.02f, bool maximumIntensityProjection = false)
 {
     bool two_pass = normalmap_3d.valid() && (image_3d->getPixelFormat()==GL_RGB || image_3d->getPixelFormat()==GL_RGBA);
+
+    osg::BoundingBox bb(-xSize*0.5f,-ySize*0.5f,-zSize*0.5f,xSize*0.5f,ySize*0.5f,zSize*0.5f);
+
+    float maxAxis = xSize;
+    if (ySize > maxAxis) maxAxis = ySize;
+    if (zSize > maxAxis) maxAxis = zSize;
 
     osg::Group* group = new osg::Group;
     
     osg::TexGenNode* texgenNode_0 = new osg::TexGenNode;
     texgenNode_0->setTextureUnit(0);
     texgenNode_0->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::S, osg::Plane(xMultiplier,0.0f,0.0f,0.5f));
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::T, osg::Plane(0.0f,yMultiplier,0.0f,0.5f));
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,zMultiplier,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::S, osg::Plane(xMultiplier/xSize,0.0f,0.0f,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::T, osg::Plane(0.0f,yMultiplier/ySize,0.0f,0.5f));
+    texgenNode_0->getTexGen()->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,zMultiplier/zSize,0.5f));
     
     if (two_pass)
     {
@@ -974,10 +1081,10 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
         group->addChild(texgenNode_0);
     }
 
-    osg::BoundingBox bb(-xSize*0.5f,-ySize*0.5f,-zSize*0.5f,xSize*0.5f,ySize*0.5f,zSize*0.5f);
+    float cubeSize = sqrtf(xSize*xSize+ySize*ySize+zSize*zSize);
 
     osg::ClipNode* clipnode = new osg::ClipNode;
-    clipnode->addChild(createCube(1.0f,1.0f, numSlices,sliceEnd));
+    clipnode->addChild(createCube(cubeSize,1.0f, numSlices,sliceEnd));
     clipnode->createClipBox(bb);
 
     {
@@ -1014,13 +1121,21 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
 
     osg::StateSet* stateset = texgenNode_0->getOrCreateStateSet();
 
+    stateset->setEventCallback(new FollowMouseCallback(false));
+ 
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::ON);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-    stateset->setAttribute(new osg::AlphaFunc(osg::AlphaFunc::GREATER,alphaFuncValue));
+    stateset->setAttributeAndModes(new osg::AlphaFunc(osg::AlphaFunc::GREATER,alphaFuncValue), osg::StateAttribute::ON);
     
     osg::Material* material = new osg::Material;
     material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     stateset->setAttributeAndModes(material);
+    
+    if (maximumIntensityProjection)
+    {
+        stateset->setAttribute(new osg::BlendFunc(osg::BlendFunc::ONE, osg::BlendFunc::ONE));
+        stateset->setAttribute(new osg::BlendEquation(osg::BlendEquation::RGBA_MAX));
+    }
     
     osg::Vec3 lightDirection(1.0f,-1.0f,1.0f);
     lightDirection.normalize();
@@ -1050,6 +1165,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
             tec->setSource0_RGB(osg::TexEnvCombine::CONSTANT);
             tec->setOperand0_RGB(osg::TexEnvCombine::SRC_COLOR);
             tec->setSource1_RGB(osg::TexEnvCombine::TEXTURE);
+
             tec->setOperand1_RGB(osg::TexEnvCombine::SRC_COLOR);
 
             tec->setCombine_Alpha(osg::TexEnvCombine::REPLACE);
@@ -1067,6 +1183,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
 
             // set up color texture
             osg::Texture3D* texture3D = new osg::Texture3D;
+            texture3D->setResizeNonPowerOfTwoHint(false);
             texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
             texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
             texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
@@ -1097,6 +1214,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
         {
             osg::ref_ptr<osg::Image> normalmap_3d = createNormalMapTexture(image_3d.get());
             osg::Texture3D* bump_texture3D = new osg::Texture3D;
+            bump_texture3D->setResizeNonPowerOfTwoHint(false);
             bump_texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
             bump_texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
             bump_texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
@@ -1139,6 +1257,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Ima
         // gluBuild3DMipsmaps doesn't do a very good job of handled the
         // imbalanced dimensions of the 256x256x4 texture.
         osg::Texture3D* texture3D = new osg::Texture3D;
+        texture3D->setResizeNonPowerOfTwoHint(false);
         texture3D->setFilter(osg::Texture3D::MIN_FILTER,osg::Texture3D::LINEAR);
         texture3D->setFilter(osg::Texture3D::MAG_FILTER,osg::Texture3D::LINEAR);
         texture3D->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP);
@@ -1421,6 +1540,33 @@ void doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, osg::Ve
     }
 }
 
+class TestSupportOperation: public osg::GraphicsOperation
+{
+public:
+
+    TestSupportOperation():
+        osg::GraphicsOperation("TestSupportOperation",false),
+        supported(true),
+        errorMessage(),
+        maximumTextureSize(256) {}
+
+    virtual void operator () (osg::GraphicsContext* gc)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(mutex);
+
+        glGetIntegerv( GL_MAX_3D_TEXTURE_SIZE, &maximumTextureSize );
+        
+        osg::notify(osg::NOTICE)<<"Max texture size="<<maximumTextureSize<<std::endl;
+    }
+        
+    OpenThreads::Mutex  mutex;
+    bool                supported;
+    std::string         errorMessage;
+    GLint               maximumTextureSize;
+};
+
+
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -1434,6 +1580,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-s <numSlices>","Number of slices to create.");
     arguments.getApplicationUsage()->addCommandLineOption("--images [filenames]","Specify a stack of 2d images to build the 3d volume from.");
     arguments.getApplicationUsage()->addCommandLineOption("--shader","Use OpenGL Shading Language.");
+    arguments.getApplicationUsage()->addCommandLineOption("--mip","Use Maximum Intensity Projection (MIP) filtering.");
     arguments.getApplicationUsage()->addCommandLineOption("--xSize <size>","Relative width of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--ySize <size>","Relative length of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--zSize <size>","Relative height of rendered brick.");
@@ -1456,7 +1603,15 @@ int main( int argc, char **argv )
 //    arguments.getApplicationUsage()->addCommandLineOption("--raw <sizeX> <sizeY> <sizeZ> <numberBytesPerComponent> <numberOfComponents> <endian> <filename>","read a raw image data");
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
+
+    // add the window size toggle handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+        
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+
+    viewer.getCamera()->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
@@ -1482,6 +1637,9 @@ int main( int argc, char **argv )
 
     bool createNormalMap = false;
     while (arguments.read("-n")) createNormalMap=true;
+    
+    bool maximumIntensityProjection = false;
+    while(arguments.read("--mip")) maximumIntensityProjection = true;
 
     float xSize=1.0f, ySize=1.0f, zSize=1.0f;
     while (arguments.read("--xSize",xSize)) {}
@@ -1493,10 +1651,15 @@ int main( int argc, char **argv )
     while (arguments.read("--yMultiplier",yMultiplier)) {}
     while (arguments.read("--zMultiplier",zMultiplier)) {}
 
+    osg::ref_ptr<TestSupportOperation> testSupportOperation = new TestSupportOperation;
+    viewer.setRealizeOperation(testSupportOperation.get());
+    
+    viewer.realize();
+
+    int maximumTextureSize = testSupportOperation->maximumTextureSize;
     int s_maximumTextureSize = 256;
     int t_maximumTextureSize = 256;
     int r_maximumTextureSize = 256;
-    int maximumTextureSize = 256;
     while(arguments.read("--maxTextureSize",maximumTextureSize))
     {
         s_maximumTextureSize = maximumTextureSize;
@@ -1578,7 +1741,11 @@ int main( int argc, char **argv )
         }
     }
     
-    if (!image_3d) return 0;
+    if (!image_3d) 
+    {
+        std::cout<<"No model loaded, please specify and volumetric image file on the command line."<<std::endl;
+        return 1;
+    }
     
     if (colourSpaceOperation!=NO_COLOUR_SPACE_OPERATION)
     {
@@ -1587,6 +1754,15 @@ int main( int argc, char **argv )
     
     osg::ref_ptr<osg::Image> normalmap_3d = createNormalMap ? createNormalMapTexture(image_3d.get()) : 0;
 
+
+    osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(image_3d->getUserData());
+    if (matrix)
+    {
+        osg::notify(osg::NOTICE)<<"Image has Matrix = "<<*matrix<<std::endl;
+        xSize = image_3d->s() * (*matrix)(0,0);
+        ySize = image_3d->t() * (*matrix)(1,1);
+        zSize = image_3d->r() * (*matrix)(2,2);
+    }
 
 
     // create a model from the images.
@@ -1598,7 +1774,7 @@ int main( int argc, char **argv )
                                internalFormatMode,
                                xSize, ySize, zSize,
                                xMultiplier, yMultiplier, zMultiplier,
-                               numSlices, sliceEnd, alphaFunc);
+                               numSlices, sliceEnd, alphaFunc, maximumIntensityProjection);
     }
     else
     {
@@ -1606,7 +1782,7 @@ int main( int argc, char **argv )
                                internalFormatMode,
                                xSize, ySize, zSize,
                                xMultiplier, yMultiplier, zMultiplier,
-                               numSlices, sliceEnd, alphaFunc);
+                               numSlices, sliceEnd, alphaFunc, maximumIntensityProjection);
     }
     
     if (!outputFile.empty())

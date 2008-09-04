@@ -231,7 +231,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     }
             
     _seekTime = time;
-    _seekTimeSet = false;
+//    _seekTimeSet = false;
 
     FileNames::iterator previous_fileNamesIterator = _fileNamesIterator;
     Images::iterator previous_imageIterator = _imageIterator;
@@ -345,7 +345,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         // Advance imageIterator
         //
 
-        if (time<_imageIteratorTime)
+        if ((looping || _seekTimeSet) && time<_imageIteratorTime)
         {
             _imageIterator = _images.begin();
             _imageIteratorTime = 0.0;
@@ -397,4 +397,5 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     
         setImageToChild(_imageIterator->get());
     }
+    _seekTimeSet = false;
 }

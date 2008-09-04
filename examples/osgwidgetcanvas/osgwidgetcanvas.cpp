@@ -7,6 +7,7 @@
 
 const unsigned int MASK_2D = 0xF0000000;
 
+/*
 bool colorWidgetEnter(osgWidget::Event& event) {
 	event.getWidget()->addColor(0.5f, 0.2f, 0.3f, 0.0f);
 
@@ -112,6 +113,29 @@ int main(int argc, char** argv) {
 	canvas->resize();
 
 	// Finally, add the whole thing to the WindowManager.
+	wm->addChild(canvas);
+
+	return osgWidget::createExample(viewer, wm);
+}
+*/
+
+int main(int argc, char** argv) {
+	osgViewer::Viewer viewer;
+
+	osgWidget::WindowManager* wm = new osgWidget::WindowManager(
+		&viewer,
+		1280.0f,
+		1024.0f,
+		MASK_2D,
+		osgWidget::WindowManager::WM_PICK_DEBUG
+	);
+	
+	osgWidget::Canvas* canvas = new osgWidget::Canvas("canvas");
+
+	canvas->addWidget(new osgWidget::Widget("spacer", 2.0f, 300.0f), 1280.0f, 0.0f);
+
+	canvas->setOrigin(0.0f, 300.0f);
+
 	wm->addChild(canvas);
 
 	return osgWidget::createExample(viewer, wm);

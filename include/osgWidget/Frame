@@ -22,7 +22,7 @@ class OSGWIDGET_EXPORT Frame: public Table
 {
     public:
     
-        enum CORNER
+        enum CornerType
         {
             CORNER_LOWER_LEFT,
             CORNER_LOWER_RIGHT,
@@ -30,7 +30,7 @@ class OSGWIDGET_EXPORT Frame: public Table
             CORNER_UPPER_RIGHT
         };
 
-        enum BORDER 
+        enum BorderType
         {
             BORDER_LEFT,
             BORDER_RIGHT,
@@ -38,8 +38,8 @@ class OSGWIDGET_EXPORT Frame: public Table
             BORDER_BOTTOM
         };
 
-        static std::string cornerToString (CORNER);
-        static std::string borderToString (BORDER);
+        static std::string cornerTypeToString (CornerType);
+        static std::string borderTypeToString (BorderType);
 
         class OSGWIDGET_EXPORT Corner: public Widget
         {
@@ -47,26 +47,26 @@ class OSGWIDGET_EXPORT Frame: public Table
             META_Object   (osgWidget, Corner);
             META_UIObject (Corner);
 
-            Corner (CORNER = CORNER_LOWER_LEFT, point_type = 0.0f, point_type = 0.0f);
+            Corner (CornerType = CORNER_LOWER_LEFT, point_type = 0.0f, point_type = 0.0f);
             Corner (const Corner&, const osg::CopyOp&);
 
             bool mouseDrag(double, double, WindowManager*);
 
-            CORNER getCorner() const {
+            CornerType getCornerType() const {
                 return _corner;
             }
 
-            void setCorner(CORNER corner) {
+            void setCornerType(CornerType corner) {
                 _corner = corner;
             }
 
-            void setCornerAndName(CORNER corner) {
+            void setCornerTypeAndName(CornerType corner) {
                 _corner = corner;
-                _name   = cornerToString(corner);
+                _name   = cornerTypeToString(corner);
             }
             
         protected:
-            CORNER _corner;
+            CornerType _corner;
         };
 
         class OSGWIDGET_EXPORT Border: public Widget
@@ -75,27 +75,27 @@ class OSGWIDGET_EXPORT Frame: public Table
             META_Object   (osgWidget, Border);
             META_UIObject (Border);
 
-            Border (BORDER = BORDER_LEFT, point_type = 0.0f, point_type = 0.0f);
+            Border (BorderType = BORDER_LEFT, point_type = 0.0f, point_type = 0.0f);
             Border (const Border&, const osg::CopyOp&);
 
             bool mouseDrag(double, double, WindowManager*);
 
-            BORDER getBorder() const {
+            BorderType getBorderType() const {
                 return _border;
             }
 
-            void setBorder(BORDER border) {
+            void setBorderType(BorderType border) {
                 _border = border;
             }
 
-            void setBorderAndName(BORDER border) {
+            void setBorderTypeAndName(BorderType border) {
                 _border = border;
-                _name   = borderToString(border);
+                _name   = borderTypeToString(border);
             }
             
         protected:
         
-            BORDER _border;
+            BorderType _border;
 
         };
 
@@ -152,18 +152,18 @@ class OSGWIDGET_EXPORT Frame: public Table
 
         const EmbeddedWindow* getEmbeddedWindow() const { return dynamic_cast<const EmbeddedWindow*>(getByRowCol(1, 1)); }
 
-        Corner* getCorner(CORNER c) { return dynamic_cast<Corner*>(_getCorner(c)); }
+        Corner* getCorner(CornerType c) { return dynamic_cast<Corner*>(_getCorner(c)); }
 
-        const Corner* getCorner(CORNER c) const { return dynamic_cast<const Corner*>(_getCorner(c)); }
+        const Corner* getCorner(CornerType c) const { return dynamic_cast<const Corner*>(_getCorner(c)); }
 
-        Border* getBorder(BORDER b) { return dynamic_cast<Border*>(_getBorder(b)); }
+        Border* getBorder(BorderType b) { return dynamic_cast<Border*>(_getBorder(b)); }
 
-        const Border* getBorder(BORDER b) const { return dynamic_cast<const Border*>(_getBorder(b)); }
+        const Border* getBorder(BorderType b) const { return dynamic_cast<const Border*>(_getBorder(b)); }
 
     protected:
     
-        Widget* _getCorner (CORNER) const;
-        Widget* _getBorder (BORDER) const;
+        Widget* _getCorner (CornerType) const;
+        Widget* _getBorder (BorderType) const;
 
 };
 

@@ -6,7 +6,7 @@
 
 namespace osgWidget {
 
-std::string Frame::cornerToString(CORNER c) {
+std::string Frame::cornerTypeToString(CornerType c) {
     if(c == CORNER_LOWER_LEFT) return "CornerLowerLeft";
 
     else if(c == CORNER_LOWER_RIGHT) return "CornerLowerRight";
@@ -16,7 +16,7 @@ std::string Frame::cornerToString(CORNER c) {
     else return "CornerUpperLeft";
 }
 
-std::string Frame::borderToString(BORDER b) {
+std::string Frame::borderTypeToString(BorderType b) {
     if(b == BORDER_LEFT) return "BorderLeft";
 
     else if(b == BORDER_RIGHT) return "BorderRight";
@@ -26,8 +26,8 @@ std::string Frame::borderToString(BORDER b) {
     else return "BorderBottom";
 }
 
-Frame::Corner::Corner(CORNER corner, point_type width, point_type height):
-Widget  (cornerToString(corner), width, height),
+Frame::Corner::Corner(CornerType corner, point_type width, point_type height):
+Widget  (cornerTypeToString(corner), width, height),
 _corner (corner) {
     setEventMask(EVENT_MASK_MOUSE_DRAG);
 }
@@ -81,8 +81,8 @@ bool Frame::Corner::mouseDrag(double x, double y, WindowManager* wm) {
     return true;
 }
 
-Frame::Border::Border(BORDER border, point_type width, point_type height):
-Widget  (borderToString(border), width, height),
+Frame::Border::Border(BorderType border, point_type width, point_type height):
+Widget  (borderTypeToString(border), width, height),
 _border (border) {
     setCanFill(true);
     setEventMask(EVENT_MASK_MOUSE_DRAG);
@@ -128,12 +128,12 @@ Frame::Frame(const Frame& frame, const osg::CopyOp& co):
 Table(frame, co) {
 }
 
-Widget* Frame::_getCorner(CORNER c) const {
-    return const_cast<Widget*>(getByName(cornerToString(c)));
+Widget* Frame::_getCorner(CornerType c) const {
+    return const_cast<Widget*>(getByName(cornerTypeToString(c)));
 }
 
-Widget* Frame::_getBorder(BORDER b) const {
-    return const_cast<Widget*>(getByName(borderToString(b)));
+Widget* Frame::_getBorder(BorderType b) const {
+    return const_cast<Widget*>(getByName(borderTypeToString(b)));
 }
 
 void Frame::managed(WindowManager* wm) {
@@ -159,12 +159,12 @@ void Frame::managed(WindowManager* wm) {
         return;
     }
 
-    ll->setCornerAndName(CORNER_UPPER_LEFT);
-    lr->setCornerAndName(CORNER_UPPER_RIGHT);
-    ul->setCornerAndName(CORNER_LOWER_LEFT);
-    ur->setCornerAndName(CORNER_LOWER_RIGHT);
-    t->setBorderAndName(BORDER_BOTTOM);
-    b->setBorderAndName(BORDER_TOP);
+    ll->setCornerTypeAndName(CORNER_UPPER_LEFT);
+    lr->setCornerTypeAndName(CORNER_UPPER_RIGHT);
+    ul->setCornerTypeAndName(CORNER_LOWER_LEFT);
+    ur->setCornerTypeAndName(CORNER_LOWER_RIGHT);
+    t->setBorderTypeAndName(BORDER_BOTTOM);
+    b->setBorderTypeAndName(BORDER_TOP);
 }
 
 bool Frame::setWindow(Window* window) {

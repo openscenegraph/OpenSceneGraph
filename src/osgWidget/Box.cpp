@@ -4,7 +4,7 @@
 
 namespace osgWidget {
 
-Box::Box(const std::string& name, BOX_TYPE bt, bool uniform):
+Box::Box(const std::string& name, BoxType bt, bool uniform):
 Window   (name),
 _boxType (bt),
 _uniform (uniform),

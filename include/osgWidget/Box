@@ -21,7 +21,7 @@ namespace osgWidget {
 class OSGWIDGET_EXPORT Box: public Window
 {
     public:
-        enum BOX_TYPE {
+        enum BoxType {
             VERTICAL,
             HORIZONTAL
         };
@@ -29,7 +29,7 @@ class OSGWIDGET_EXPORT Box: public Window
         META_Object   (osgWidget, Box);
         META_UIObject (Box);
 
-        Box (const std::string& = "", BOX_TYPE = HORIZONTAL, bool = false);
+        Box (const std::string& = "", BoxType = HORIZONTAL, bool = false);
         Box (const Box&, const osg::CopyOp&);
 
     protected:
@@ -41,7 +41,7 @@ class OSGWIDGET_EXPORT Box: public Window
 
     private:
 
-        BOX_TYPE     _boxType;
+        BoxType      _boxType;
         bool         _uniform;
         unsigned int _lastAdd;
 

@@ -74,7 +74,8 @@ class OSGWIDGET_EXPORT Window:
             virtual void unmanaged  (WindowManager*);
             virtual void positioned ();
 
-            bool setWindow(Window*);
+            bool setWindow            (Window*);
+            void updateSizeFromWindow ();
 
             Window* getWindow() {
                 return _window.get();
@@ -160,7 +161,7 @@ class OSGWIDGET_EXPORT Window:
         XYCoord getAbsoluteOrigin () const;
 
         // This method wraps the current Window in a EmbeddedWindow object and returns it.
-        EmbeddedWindow* embed();
+        EmbeddedWindow* embed(const std::string& = "");
 
         Widget* getFocused() {
             return _focused.get();

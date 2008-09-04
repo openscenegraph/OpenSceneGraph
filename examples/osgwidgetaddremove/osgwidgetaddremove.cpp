@@ -94,7 +94,6 @@ public:
         ss << "a random widget " << num;
 
         _win1->addWidget(new ABCWidget(ss.str()));
-        _win1->resize();
 
         num++;
 
@@ -110,7 +109,6 @@ public:
         osgWidget::Widget* w = _win1->getObjects()[v.size() - 1].get();
 
         _win1->removeWidget(w);
-        _win1->resize();
 
         return true;
     }

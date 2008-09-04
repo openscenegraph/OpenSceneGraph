@@ -70,6 +70,8 @@ void Window::EmbeddedWindow::parented(Window* parent) {
 }
 
 void Window::EmbeddedWindow::unparented(Window*) {
+    _window->_parent = 0;
+
     if(_parent) _parent->removeChild(_window.get());
 }
 
@@ -109,7 +111,6 @@ bool Window::EmbeddedWindow::setWindow(Window* win) {
         return false;
     }
 
-    // TODO: I need to handle there already being a Window here.
     _window = win;
 
     _window->resize();
@@ -124,21 +125,27 @@ bool Window::EmbeddedWindow::setWindow(Window* win) {
     return true;
 }
 
+void Window::EmbeddedWindow::updateSizeFromWindow() {
+    setSize(_window->getSize());
+
+    if(_parent) _parent->resize();
+}
+
 Window::Window(const std::string& name):
-_parent      (0),
-_wm          (0),
-_index       (0),
-_x           (0.0f),
-_y           (0.0f),
-_z           (0.0f),
-_zRange      (0.0f),
-_strata      (STRATA_NONE),
-_vis         (VM_FULL),
-_r           (0.0f),
-_s           (1.0f),
-_scaleDenom  (100.0f),
-_vAnchor     (VA_NONE),
-_hAnchor     (HA_NONE) {
+_parent     (0),
+_wm         (0),
+_index      (0),
+_x          (0.0f),
+_y          (0.0f),
+_z          (0.0f),
+_zRange     (0.0f),
+_strata     (STRATA_NONE),
+_vis        (VM_FULL),
+_r          (0.0f),
+_s          (1.0f),
+_scaleDenom (100.0f),
+_vAnchor    (VA_NONE),
+_hAnchor    (HA_NONE) {
     _name = name.size() ? name : generateRandomName("Window");
 
     // TODO: Fix the "bg" name.
@@ -746,8 +753,12 @@ XYCoord Window::getAbsoluteOrigin() const {
     return xy;
 }
 
-Window::EmbeddedWindow* Window::embed() {
-    EmbeddedWindow* ew = new EmbeddedWindow(_name + "Embedded", getWidth(), getHeight());
+Window::EmbeddedWindow* Window::embed(const std::string& newName) {
+    EmbeddedWindow* ew = new EmbeddedWindow(
+        newName.size() > 0 ? newName : _name + "Embedded",
+        getWidth(),
+        getHeight()
+    );
 
     ew->setWindow(this);
     ew->setSize(getWidth(), getHeight());

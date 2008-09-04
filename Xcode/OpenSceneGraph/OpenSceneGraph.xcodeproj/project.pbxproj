@@ -2588,6 +2588,25 @@
 		D4F0928D0D4BB46100BB1AC7 /* Locator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F092810D4BB46000BB1AC7 /* Locator.cpp */; };
 		D4F0928E0D4BB46100BB1AC7 /* Locator.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F092820D4BB46000BB1AC7 /* Locator.h */; };
 		D4F092AD0D4BB47A00BB1AC7 /* osgTerrain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6320CD4307845BC300FE3D2C /* osgTerrain.framework */; };
+		D4F8659E0E7019EE0070271C /* AnisotropicLighting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F8658C0E7019EC0070271C /* AnisotropicLighting.cpp */; };
+		D4F8659F0E7019EE0070271C /* AnisotropicLighting.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F8658D0E7019EC0070271C /* AnisotropicLighting.h */; };
+		D4F865A00E7019EE0070271C /* BlendEquation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F8658E0E7019ED0070271C /* BlendEquation.cpp */; };
+		D4F865A10E7019EE0070271C /* BlendEquation.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F8658F0E7019ED0070271C /* BlendEquation.h */; };
+		D4F865A20E7019EE0070271C /* BumpMapping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F865900E7019ED0070271C /* BumpMapping.cpp */; };
+		D4F865A30E7019EE0070271C /* BumpMapping.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F865910E7019ED0070271C /* BumpMapping.h */; };
+		D4F865A40E7019EE0070271C /* Cartoon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F865920E7019ED0070271C /* Cartoon.cpp */; };
+		D4F865A50E7019EE0070271C /* Cartoon.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F865930E7019ED0070271C /* Cartoon.h */; };
+		D4F865A60E7019EE0070271C /* Effect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F865940E7019ED0070271C /* Effect.cpp */; };
+		D4F865A70E7019EE0070271C /* Effect.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F865950E7019ED0070271C /* Effect.h */; };
+		D4F865A80E7019EE0070271C /* Scribe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F865960E7019ED0070271C /* Scribe.cpp */; };
+		D4F865A90E7019EE0070271C /* Scribe.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F865970E7019ED0070271C /* Scribe.h */; };
+		D4F865AA0E7019EE0070271C /* ShapeAttributeList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F865980E7019ED0070271C /* ShapeAttributeList.cpp */; };
+		D4F865AB0E7019EE0070271C /* ShapeAttributeList.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F865990E7019ED0070271C /* ShapeAttributeList.h */; };
+		D4F865AC0E7019EE0070271C /* SpecularHighlights.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F8659A0E7019ED0070271C /* SpecularHighlights.cpp */; };
+		D4F865AD0E7019EE0070271C /* SpecularHighlights.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F8659B0E7019EE0070271C /* SpecularHighlights.h */; };
+		D4F865AE0E7019EE0070271C /* SwitchLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F8659C0E7019EE0070271C /* SwitchLayer.cpp */; };
+		D4F865AF0E7019EE0070271C /* SwitchLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F8659D0E7019EE0070271C /* SwitchLayer.h */; };
+		D4F865E30E701D1D0070271C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -5941,7 +5960,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D48F10600E3A1FD600DAAB64 /* osgimagesequence */;
+			remoteGlobalIDString = D48F10600E3A1FD600DAAB64;
 			remoteInfo = osgimagesequence;
 		};
 		D4C6F0370B830A3D0052E667 /* PBXContainerItemProxy */ = {
@@ -7805,6 +7824,24 @@
 		D4F092800D4BB46000BB1AC7 /* Layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layer.h; sourceTree = "<group>"; };
 		D4F092810D4BB46000BB1AC7 /* Locator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Locator.cpp; sourceTree = "<group>"; };
 		D4F092820D4BB46000BB1AC7 /* Locator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Locator.h; sourceTree = "<group>"; };
+		D4F8658C0E7019EC0070271C /* AnisotropicLighting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnisotropicLighting.cpp; sourceTree = "<group>"; };
+		D4F8658D0E7019EC0070271C /* AnisotropicLighting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnisotropicLighting.h; sourceTree = "<group>"; };
+		D4F8658E0E7019ED0070271C /* BlendEquation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlendEquation.cpp; sourceTree = "<group>"; };
+		D4F8658F0E7019ED0070271C /* BlendEquation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlendEquation.h; sourceTree = "<group>"; };
+		D4F865900E7019ED0070271C /* BumpMapping.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BumpMapping.cpp; sourceTree = "<group>"; };
+		D4F865910E7019ED0070271C /* BumpMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BumpMapping.h; sourceTree = "<group>"; };
+		D4F865920E7019ED0070271C /* Cartoon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cartoon.cpp; sourceTree = "<group>"; };
+		D4F865930E7019ED0070271C /* Cartoon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cartoon.h; sourceTree = "<group>"; };
+		D4F865940E7019ED0070271C /* Effect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Effect.cpp; sourceTree = "<group>"; };
+		D4F865950E7019ED0070271C /* Effect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Effect.h; sourceTree = "<group>"; };
+		D4F865960E7019ED0070271C /* Scribe.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Scribe.cpp; sourceTree = "<group>"; };
+		D4F865970E7019ED0070271C /* Scribe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scribe.h; sourceTree = "<group>"; };
+		D4F865980E7019ED0070271C /* ShapeAttributeList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeAttributeList.cpp; sourceTree = "<group>"; };
+		D4F865990E7019ED0070271C /* ShapeAttributeList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeAttributeList.h; sourceTree = "<group>"; };
+		D4F8659A0E7019ED0070271C /* SpecularHighlights.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SpecularHighlights.cpp; sourceTree = "<group>"; };
+		D4F8659B0E7019EE0070271C /* SpecularHighlights.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecularHighlights.h; sourceTree = "<group>"; };
+		D4F8659C0E7019EE0070271C /* SwitchLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SwitchLayer.cpp; sourceTree = "<group>"; };
+		D4F8659D0E7019EE0070271C /* SwitchLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchLayer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -8979,6 +9016,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4F865E30E701D1D0070271C /* OpenGL.framework in Frameworks */,
 				D4DFC4880B57D6C2005CBCD2 /* osgViewer.framework in Frameworks */,
 				008F451C06CC05A500F4220C /* osg.framework in Frameworks */,
 				008F451D06CC05A500F4220C /* osgDB.framework in Frameworks */,
@@ -11988,6 +12026,24 @@
 		5BC2F6820C44C99800671A68 /* ive */ = {
 			isa = PBXGroup;
 			children = (
+				D4F8658C0E7019EC0070271C /* AnisotropicLighting.cpp */,
+				D4F8658D0E7019EC0070271C /* AnisotropicLighting.h */,
+				D4F8658E0E7019ED0070271C /* BlendEquation.cpp */,
+				D4F8658F0E7019ED0070271C /* BlendEquation.h */,
+				D4F865900E7019ED0070271C /* BumpMapping.cpp */,
+				D4F865910E7019ED0070271C /* BumpMapping.h */,
+				D4F865920E7019ED0070271C /* Cartoon.cpp */,
+				D4F865930E7019ED0070271C /* Cartoon.h */,
+				D4F865940E7019ED0070271C /* Effect.cpp */,
+				D4F865950E7019ED0070271C /* Effect.h */,
+				D4F865960E7019ED0070271C /* Scribe.cpp */,
+				D4F865970E7019ED0070271C /* Scribe.h */,
+				D4F865980E7019ED0070271C /* ShapeAttributeList.cpp */,
+				D4F865990E7019ED0070271C /* ShapeAttributeList.h */,
+				D4F8659A0E7019ED0070271C /* SpecularHighlights.cpp */,
+				D4F8659B0E7019EE0070271C /* SpecularHighlights.h */,
+				D4F8659C0E7019EE0070271C /* SwitchLayer.cpp */,
+				D4F8659D0E7019EE0070271C /* SwitchLayer.h */,
 				D48F101D0E3A1A4D00DAAB64 /* ImageSequence.cpp */,
 				D48F101E0E3A1A4E00DAAB64 /* ImageSequence.h */,
 				D43AB4F60E2E14F800623C77 /* FadeText.cpp */,
@@ -12798,7 +12854,7 @@
 				D43AB6090E2E1E0000623C77 /* WindowManager.cpp */,
 			);
 			name = osgWidget;
-			path = ../../../OpenSceneGraph/src/osgWidget;
+			path = ../../src/osgWidget;
 			sourceTree = SOURCE_ROOT;
 		};
 		D47A068E0B83404300E19024 /* osgManipulator */ = {
@@ -13473,6 +13529,15 @@
 				D43AB4FB0E2E14F800623C77 /* FadeText.h in Headers */,
 				D43AB4FD0E2E14F800623C77 /* Text3D.h in Headers */,
 				D48F10200E3A1A4E00DAAB64 /* ImageSequence.h in Headers */,
+				D4F8659F0E7019EE0070271C /* AnisotropicLighting.h in Headers */,
+				D4F865A10E7019EE0070271C /* BlendEquation.h in Headers */,
+				D4F865A30E7019EE0070271C /* BumpMapping.h in Headers */,
+				D4F865A50E7019EE0070271C /* Cartoon.h in Headers */,
+				D4F865A70E7019EE0070271C /* Effect.h in Headers */,
+				D4F865A90E7019EE0070271C /* Scribe.h in Headers */,
+				D4F865AB0E7019EE0070271C /* ShapeAttributeList.h in Headers */,
+				D4F865AD0E7019EE0070271C /* SpecularHighlights.h in Headers */,
+				D4F865AF0E7019EE0070271C /* SwitchLayer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19432,6 +19497,15 @@
 				D43AB4FA0E2E14F800623C77 /* FadeText.cpp in Sources */,
 				D43AB4FC0E2E14F800623C77 /* Text3D.cpp in Sources */,
 				D48F101F0E3A1A4E00DAAB64 /* ImageSequence.cpp in Sources */,
+				D4F8659E0E7019EE0070271C /* AnisotropicLighting.cpp in Sources */,
+				D4F865A00E7019EE0070271C /* BlendEquation.cpp in Sources */,
+				D4F865A20E7019EE0070271C /* BumpMapping.cpp in Sources */,
+				D4F865A40E7019EE0070271C /* Cartoon.cpp in Sources */,
+				D4F865A60E7019EE0070271C /* Effect.cpp in Sources */,
+				D4F865A80E7019EE0070271C /* Scribe.cpp in Sources */,
+				D4F865AA0E7019EE0070271C /* ShapeAttributeList.cpp in Sources */,
+				D4F865AC0E7019EE0070271C /* SpecularHighlights.cpp in Sources */,
+				D4F865AE0E7019EE0070271C /* SwitchLayer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

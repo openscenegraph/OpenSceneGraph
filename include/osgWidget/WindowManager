@@ -91,6 +91,9 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
         void setStyleManager  (StyleManager*);
         void resizeAllWindows (bool = true);
 
+	XYCoord windowXY (double, double) const;
+	XYCoord localXY  (double, double) const;
+
         // Methods all called by the ViewerEventHandlers::MouseHandler object, or
         // by some customer caller of your own. Examples of this to come...
         bool pointerMove (float, float);
@@ -242,6 +245,11 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             _height = h;
         }
 
+        void setWindowSize(point_type w, point_type h) {
+	    _windowWidth  = w;
+	    _windowHeight = h;
+	}
+
         // Wrappers around the real calls. These only pertains to mouse buttons, 
         // particularly 3-button mice, although there are other more generic
         // "pointer" API methods.
@@ -284,6 +292,8 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
 
         point_type         _width;
         point_type         _height;
+	point_type         _windowWidth;
+	point_type         _windowHeight;
         point_type         _zNear;
         point_type         _zFar;
         matrix_type        _numForeground;

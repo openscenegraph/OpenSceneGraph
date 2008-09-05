@@ -181,9 +181,11 @@ bool ResizeHandler::handle(
         );
 
         else _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0f, w, 0.0f, h));
+
+	_wm->setSize(w, h);
     }
     
-    _wm->setSize(w, h);
+    _wm->setWindowSize(w, h);
     _wm->resizeAllWindows();
 
     return true;

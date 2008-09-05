@@ -23,6 +23,8 @@ WindowManager::WindowManager(
 ):
 _width          (width),
 _height         (height),
+_windowWidth    (width),
+_windowHeight   (height),
 _zNear          (0.0f),
 _zFar           (-1.0f),
 _numForeground  (0.0f),
@@ -454,6 +456,16 @@ void WindowManager::resizeAllWindows(bool visible) {
         
         i->get()->resize();
     }
+}
+
+// Returns the application window coordinates of the WindowManager XY position.
+XYCoord WindowManager::windowXY(double x, double y) const {
+    return XYCoord((_windowWidth / _width) * x, (_windowHeight / _height) * y);
+}
+
+// Returns the WindowManager coordinates of the application window XY position.
+XYCoord WindowManager::localXY(double x, double y) const {
+    return XYCoord((_width / _windowWidth) * x, (_height / _windowHeight) * y);
 }
 
 // This is called by a ViewerEventHandler/MouseHandler (or whatever) as the pointer moves

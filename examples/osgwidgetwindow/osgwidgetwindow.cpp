@@ -162,16 +162,6 @@ int main(int argc, char** argv) {
 	// creation.
 	// std::cout << *box << std::endl << *boxCopy << std::endl;
 
-	// Add our event handler; is this better as a MatrixManipulator? Add a few other
-	// helpful ViewerEventHandlers.
-	viewer.addEventHandler(new osgWidget::MouseHandler(wm));
-	viewer.addEventHandler(new osgWidget::KeyboardHandler(wm));
-	viewer.addEventHandler(new osgViewer::StatsHandler());
-	viewer.addEventHandler(new osgViewer::WindowSizeHandler());
-	viewer.addEventHandler(new osgGA::StateSetManipulator(
-		viewer.getCamera()->getOrCreateStateSet()
-	));
-
 	// Setup our OSG objects for our scene; note the use of the utility function
 	// createOrthoCamera, which is just a helper for setting up a proper viewing area.
 	// An alternative (and a MUCH easier alternative at that!) is to
@@ -181,6 +171,17 @@ int main(int argc, char** argv) {
 	osg::Group*  group  = new osg::Group();
 	osg::Camera* camera = osgWidget::createInvertedYOrthoCamera(1280.0f, 1024.0f);
 	osg::Node*   model  = osgDB::readNodeFile("cow.osg");
+
+	// Add our event handler; is this better as a MatrixManipulator? Add a few other
+	// helpful ViewerEventHandlers.
+	viewer.addEventHandler(new osgWidget::MouseHandler(wm));
+	viewer.addEventHandler(new osgWidget::KeyboardHandler(wm));
+	viewer.addEventHandler(new osgWidget::ResizeHandler(wm, camera, false));
+	viewer.addEventHandler(new osgViewer::StatsHandler());
+	viewer.addEventHandler(new osgViewer::WindowSizeHandler());
+	viewer.addEventHandler(new osgGA::StateSetManipulator(
+		viewer.getCamera()->getOrCreateStateSet()
+	));
 
 	// Set our first non-UI node to be something other than the mask we created our
 	// WindowManager with to avoid picking.

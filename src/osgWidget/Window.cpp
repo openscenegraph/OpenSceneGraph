@@ -372,7 +372,10 @@ void Window::update() {
             nh = wmh;
         }
 
-        _scissor()->setScissor(nx, ny, nw, nh);
+        XYCoord sOrigin = _wm->windowXY(nx, ny);
+        XYCoord sSize   = _wm->windowXY(nw, nh);
+
+        _scissor()->setScissor(sOrigin.x(), sOrigin.y(), sSize.x(), sSize.y());
     }
 }
 

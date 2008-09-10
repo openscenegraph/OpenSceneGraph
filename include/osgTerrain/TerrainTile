@@ -17,6 +17,8 @@
 #include <osg/Group>
 #include <osg/CoordinateSystemNode>
 
+#include <osgDB/ReaderWriter>
+
 #include <osgTerrain/TerrainTechnique>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
@@ -145,8 +147,8 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
         /** Get the number of colour layers.*/
         unsigned int getNumColorLayers() const { return _colorLayers.size(); }
-
-
+        
+        
         /** Set hint to whether the TerrainTechnique should create per vertex normals for lighting purposes.*/
         void setRequiresNormals(bool flag) { _requiresNormals = flag; }
 
@@ -168,6 +170,16 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
         /** Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers.*/
         virtual osg::BoundingSphere computeBound() const;
+
+        /** Callback for post processing loaded TerrainTile, and for filling in missing elements such as external external imagery.*/
+        struct TileLoadedCallback : public osg::Referenced
+        {
+            virtual bool deferExternalLayerLoading() const = 0;
+            virtual void loaded(osgTerrain::TerrainTile* tile, const osgDB::ReaderWriter::Options* options) const = 0;
+        };
+        
+        static void setTileLoadedCallback(TileLoadedCallback* lc);
+        static osg::ref_ptr<TileLoadedCallback>& getTileLoadedCallback();
 
     protected:
 

@@ -267,6 +267,9 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
     }
 
 
+    if (osgTerrain::TerrainTile::getTileLoadedCallback().valid()) 
+        osgTerrain::TerrainTile::getTileLoadedCallback()->loaded(&terrainTile, fr.getOptions());
+
     return itrAdvanced;
 }
 

@@ -13,6 +13,8 @@
 #include <osgDB/Output>
 #include <osgDB/ParameterOutput>
 
+#include <osgTerrain/TerrainTile>
+
 bool ImageLayer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ImageLayer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
@@ -36,11 +38,18 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
         std::string filename = fr[1].getStr();
         if (!filename.empty())
         {
-            osg::ref_ptr<osg::Image> image = fr.readImage(filename.c_str());
-            if (image.valid())
+            bool deferExternalLayerLoading = osgTerrain::TerrainTile::getTileLoadedCallback().valid() ? 
+                osgTerrain::TerrainTile::getTileLoadedCallback()->deferExternalLayerLoading() : false;
+
+            layer.setFileName(filename);
+
+            if (!deferExternalLayerLoading)
             {
-                layer.setFileName(filename);
-                layer.setImage(image.get());
+                osg::ref_ptr<osg::Image> image = fr.readImage(filename.c_str());
+                if (image.valid())
+                {
+                    layer.setImage(image.get());
+                }
             }
         }
         

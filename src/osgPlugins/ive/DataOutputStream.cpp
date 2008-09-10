@@ -1169,7 +1169,6 @@ void DataOutputStream::writeImage(osg::Image *image)
 
 void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
 {
-    osg::notify(osg::NOTICE)<<"DataOutputStream::writeImage("<<mode<<" image->getFileName()="<<image->getFileName()<<std::endl;
     switch(mode) {
         case IMAGE_INCLUDE_DATA:
             // Include image data in stream

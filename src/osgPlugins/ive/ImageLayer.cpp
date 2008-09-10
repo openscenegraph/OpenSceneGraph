@@ -32,7 +32,7 @@ void ImageLayer::write(DataOutputStream* out)
         throw Exception("ImageLayer::write(): Could not cast this osgLayer::ImageLayer to an osgTerrain::Layer.");
 
 
-    IncludeImageMode imMode = out->getIncludeImageMode();
+    IncludeImageMode imMode = out->getIncludeImageMode(getImage());
 
     if (getFileName().empty() && imMode==IMAGE_REFERENCE_FILE) imMode = IMAGE_INCLUDE_DATA;
 

@@ -35,7 +35,12 @@ void Image::write(DataOutputStream* out)
 
     // Write name
     out->writeString(getFileName());
- 
+
+    if ( out->getVersion() >= VERSION_0031)
+    {
+        out->writeInt((int)getWriteHint());
+    }        
+
     // Write width, height, depth of image.
     out->writeInt(s());
     out->writeInt(t());
@@ -90,6 +95,11 @@ void Image::read(DataInputStream* in)
 
         // Read name
         setFileName(in->readString());
+        
+        if ( in->getVersion() >= VERSION_0031)
+        {
+            setWriteHint((osg::Image::WriteHint)in->readInt());
+        }        
 
         // Read width, height, depth of image.
         int is=in->readInt();

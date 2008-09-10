@@ -1125,8 +1125,27 @@ void DataOutputStream::writeNode(const osg::Node* node)
     }
 }
 
+IncludeImageMode DataOutputStream::getIncludeImageMode(const osg::Image* image) const
+{
+    if (image)
+    {
+        if (image->getWriteHint()==osg::Image::STORE_INLINE) 
+        {
+            return IMAGE_INCLUDE_DATA;
+        }
+        else if (image->getWriteHint()==osg::Image::EXTERNAL_FILE) 
+        {
+            return IMAGE_REFERENCE_FILE;
+        }
+    }
+    return getIncludeImageMode();
+}
+
+
 void DataOutputStream::writeImage(osg::Image *image)
 {
+    IncludeImageMode mode = getIncludeImageMode(image);
+    
     if ( getVersion() >= VERSION_0029)
     {
         osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(image);
@@ -1137,19 +1156,20 @@ void DataOutputStream::writeImage(osg::Image *image)
         else
         {
             writeInt(IVEIMAGE);
-            writeChar(getIncludeImageMode());
-            writeImage(getIncludeImageMode(),image);
+            writeChar(mode);
+            writeImage(mode,image);
         }
     }
     else
     {
-        writeChar(getIncludeImageMode());
-        writeImage(getIncludeImageMode(),image);
+        writeChar(mode);
+        writeImage(mode,image);
     }
 }
 
 void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
 {
+    osg::notify(osg::NOTICE)<<"DataOutputStream::writeImage("<<mode<<" image->getFileName()="<<image->getFileName()<<std::endl;
     switch(mode) {
         case IMAGE_INCLUDE_DATA:
             // Include image data in stream

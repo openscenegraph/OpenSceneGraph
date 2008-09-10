@@ -79,6 +79,15 @@ class OSG_EXPORT Image : public Object
         void setFileName(const std::string& fileName);
         inline const std::string& getFileName() const { return _fileName; }
         
+        enum WriteHint {
+            NO_PREFERENCE,
+            STORE_INLINE,
+            EXTERNAL_FILE
+        };
+        
+        void setWriteHint(WriteHint writeHint) { _writeHint = writeHint; }
+        WriteHint getWriteHint() const { return _writeHint; }
+        
         enum AllocationMode {
             NO_DELETE,
             USE_NEW_DELETE,
@@ -307,6 +316,8 @@ class OSG_EXPORT Image : public Object
         Image& operator = (const Image&) { return *this; }
 
         std::string _fileName;
+        WriteHint   _writeHint;
+
 
         Origin _origin;
 

@@ -50,7 +50,7 @@ void TextureCubeMap::write(DataOutputStream* out){
     else
     {
         // Should we include images date in stream
-        IncludeImageMode includeImg = out->getIncludeImageMode();
+        IncludeImageMode includeImg = out->getIncludeImageMode(getImage(osg::TextureCubeMap::POSITIVE_X));
         out->writeChar(includeImg);
 
         out->writeImage(includeImg,getImage(osg::TextureCubeMap::POSITIVE_X));

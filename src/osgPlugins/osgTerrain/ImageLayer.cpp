@@ -38,7 +38,7 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
         osgTerrain::extractSetNameAndFileName(fr[1].getStr(),setname, filename);
         if (!filename.empty())
         {
-            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
+            osg::ref_ptr<osg::Image> image = fr.readImage(filename.c_str());
             if (image.valid())
             {
                 layer.setName(setname);

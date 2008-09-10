@@ -19,6 +19,17 @@
 using namespace osg;
 using namespace osgTerrain;
 
+void TerrainTile::setTileLoadedCallback(TerrainTile::TileLoadedCallback* lc)
+{
+    getTileLoadedCallback() = lc;
+}
+
+osg::ref_ptr<TerrainTile::TileLoadedCallback>& TerrainTile::getTileLoadedCallback()
+{
+    static osg::ref_ptr<TileLoadedCallback> s_TileLoadedCallback;
+    return s_TileLoadedCallback;
+}
+
 TerrainTile::TerrainTile():
     _terrain(0),
     _hasBeenTraversal(false),

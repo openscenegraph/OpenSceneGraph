@@ -66,7 +66,7 @@ void TerrainTile::write(DataOutputStream* out)
     }
         
     writeTerrainTechnique(out, getTerrainTechnique());
-
+    
 }
 
 void TerrainTile::read(DataInputStream* in)
@@ -119,6 +119,8 @@ void TerrainTile::read(DataInputStream* in)
         
     setTerrainTechnique(readTerrainTechnique(in));
 
+    if (osgTerrain::TerrainTile::getTileLoadedCallback().valid()) 
+        osgTerrain::TerrainTile::getTileLoadedCallback()->loaded(this, in->getOptions());
 }
 
 void TerrainTile::writeTerrainTechnique(DataOutputStream* out, osgTerrain::TerrainTechnique* technique)

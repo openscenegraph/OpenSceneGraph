@@ -39,6 +39,7 @@
 #include <osgGA/TerrainManipulator>
 
 #include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Viewer>
@@ -232,6 +233,24 @@ protected:
     osg::ref_ptr<osgTerrain::Terrain>  _terrain;
 };
 
+
+struct CustomTileLoadedCallback : public osgTerrain::TerrainTile::TileLoadedCallback
+{
+    CustomTileLoadedCallback()
+    {
+    }
+
+    virtual bool deferExternalLayerLoading() const
+    {
+        return true;
+    }
+
+    virtual void loaded(osgTerrain::TerrainTile* tile, const osgDB::ReaderWriter::Options* options) const
+    {
+        osg::notify(osg::NOTICE)<<"Need to decide what to do here guys"<<std::endl;
+    }
+};
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -239,6 +258,10 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-v","Set the terrain vertical scale.");
     arguments.getApplicationUsage()->addCommandLineOption("-r","Set the terrain sample ratio.");
     arguments.getApplicationUsage()->addCommandLineOption("--login <url> <username> <password>","Provide authentication information for http file access.");
+   
+   
+    // set the tile loaded callback to load the optional imagery
+    osgTerrain::TerrainTile::setTileLoadedCallback(new CustomTileLoadedCallback());
    
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);

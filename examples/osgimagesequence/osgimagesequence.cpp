@@ -52,6 +52,9 @@ osg::StateSet* createState()
     imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negy.png"));
     imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posz.png"));
     imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negz.png"));
+    
+    // start the image sequence playing
+    imageSequence->play();
 
 #if 1
     osg::Texture2D* texture = new osg::Texture2D;

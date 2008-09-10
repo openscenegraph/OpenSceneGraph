@@ -107,6 +107,7 @@ public:
     // Set and get include image data in stream
     void setIncludeImageMode(IncludeImageMode mode) {_includeImageMode=mode;};
     IncludeImageMode getIncludeImageMode() const {return _includeImageMode;};
+    IncludeImageMode getIncludeImageMode(const osg::Image* image) const;
 
     // Set and get include external references in stream
     void setIncludeExternalReferences(bool b) {_includeExternalReferences=b;};

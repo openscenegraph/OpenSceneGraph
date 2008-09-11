@@ -429,9 +429,9 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
         std::string getCompoundName(unsigned int i) const;
 
 
-        void setLayer(unsigned int i, Layer* layer) { _layers[i].layer = layer; }
-        Layer* getLayer(unsigned int i) { return _layers[i].layer.get(); }
-        const Layer* getLayer(unsigned int i) const { return _layers[i].layer.get(); }
+        void setLayer(unsigned int i, Layer* layer) { if (i>=_layers.size()) _layers.resize(i+1); _layers[i].layer = layer; }
+        Layer* getLayer(unsigned int i) { return i<_layers.size() ? _layers[i].layer.get() : 0; }
+        const Layer* getLayer(unsigned int i) const { return i<_layers.size() ? _layers[i].layer.get() : 0; }
 
         void addLayer(const std::string& compoundname);
         void addLayer(const std::string& setname, const std::string& filename);

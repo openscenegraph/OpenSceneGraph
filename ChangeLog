@@ -1,3 +1,82 @@
+2008-09-11 16:01 +0000 [r8847]  robert:
+
+	* Updated wrappers
+
+2008-09-11 14:28 +0000 [r8845-8846]  robert:
+
+	* Refinements to SwitchLayer and WhiteListTileLoadedCallback
+
+	* Added support for SwitchLayer into GeometryTechnique
+
+2008-09-11 13:21 +0000 [r8844]  robert:
+
+	* Introduced osgTerrain::WhiteListTileLoadedCallback for the
+	  management of options terrain layers
+
+2008-09-11 10:40 +0000 [r8843]  robert:
+
+	* First cut of WhiteListTileLoadedCallback
+
+2008-09-11 09:26 +0000 [r8842]  robert:
+
+	* Changed the createGeodeFromImage code to use the non power of two
+	  extension, and disabled mipmapping
+
+2008-09-11 09:05 +0000 [r8841]  robert:
+
+	* Added support for reading source image file names from the
+	  command line.
+
+2008-09-10 18:11 +0000 [r8840]  robert:
+
+	* Introduced TerrainTile::TileLoadedCallback
+
+2008-09-10 16:17 +0000 [r8839]  robert:
+
+	* Removed unneccessary compound name usage
+
+2008-09-10 11:38 +0000 [r8838]  robert:
+
+	* Removed debugging output
+
+2008-09-10 11:28 +0000 [r8834-8837]  robert:
+
+	* Changed the image reading so that it leverages the
+	  osgDB::Input::readImage() method to ensure that it picks up on
+	  any local paths set on the Input object.
+
+	* Changed the path management so that the node path is prepended on
+	  the database path list, rather than replacing it.
+
+	* Added playing of the imagesequence on creation of the
+	  imagesequence
+
+	* Added osg::Image::set/getWriteHint() that allows images
+	  themselves to control how they are written to disk, either inline
+	  or as an external file. Added support for this in the .ive
+	  plugin. Default of WriteHint is NO_PREFERNCE, in which case it's
+	  up to the reader/writer to decide.
+
+2008-09-04 17:30 +0000 [r8832]  robert:
+
+	* Fix for when looping is is disabled
+
+2008-09-04 14:23 +0000 [r8830]  shuber:
+
+	* From Stephan Huber: updated XCode-project
+
+2008-09-02 16:13 +0000 [r8828]  robert:
+
+	* Added acceptance of .ogv extensions in xine-lib plugin
+
+2008-09-02 12:55 +0000 [r8826]  robert:
+
+	* Added setSetName/getSetName() methods
+
+2008-09-01 16:28 +0000 [r8825]  robert:
+
+	* Update ChangeLog
+
 2008-09-01 15:29 +0000 [r8821-8822]  robert:
 
 	* Replaced uint with unsigned int

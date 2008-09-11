@@ -134,9 +134,10 @@ IF (OSG_MAINTAINER)
     # Provide target for generating ChangeLog
     #
     SET(SVN2LOG ~/bin/svn2log.py)
-    SET(GENERATELOGS svn log -v --xml | python ${SVN2LOG} -L -H)
+    SET(GENERATELOGS ${SVNCOMMAND} log -v --xml | python ${SVN2LOG} -L -H)
 
     ADD_CUSTOM_TARGET(ChangeLog
+        COMMAND ${SVNCOMMAND} update
         COMMAND ${GENERATELOGS}
     )
     

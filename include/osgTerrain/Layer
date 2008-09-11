@@ -354,6 +354,18 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
         
         META_Object(osgTerrain, ProxyLayer);
         
+        /** Return image associated with layer if supported. */        
+        virtual osg::Image* getImage()
+        {
+            return _implementation.valid() ? _implementation->getImage() : 0;
+        }
+
+        /** Return const image associated with layer if supported. */
+        virtual const osg::Image* getImage() const
+        {
+            return _implementation.valid() ? _implementation->getImage() : 0;
+        }
+
         /** Set the implementation layer that does the actual work.*/
         void setImplementation(Layer* layer) { _implementation = layer; }
         
@@ -484,6 +496,22 @@ class OSGTERRAIN_EXPORT SwitchLayer : public CompositeLayer
         
         void setActiveLayer(int i) { _activeLayer = i; }
         int getActiveLayer() const { return _activeLayer; }
+
+        /** Return image associated with layer if supported. */        
+        virtual osg::Image* getImage()
+        {
+            if (_activeLayer < 0) return 0;            
+            if (_activeLayer >= static_cast<int>(getNumLayers())) return 0;
+            return _layers[_activeLayer].layer->getImage();            
+        }
+
+        /** Return const image associated with layer if supported. */
+        virtual const osg::Image* getImage() const
+        {
+            if (_activeLayer < 0) return 0;            
+            if (_activeLayer >= static_cast<int>(getNumLayers())) return 0;
+            return _layers[_activeLayer].layer->getImage();            
+        }
 
     protected:
 

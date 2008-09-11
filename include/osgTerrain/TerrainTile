@@ -208,6 +208,45 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         bool                                _treatBoundariesToValidDataAsDefaultValue;
 };
 
+/** Helper callback for managing optional sets of layers, that loading of is deffered to this callback,
+  * with this callback working out which layers to load, and how to create fallback versions of the layers.
+*/
+class OSGTERRAIN_EXPORT WhiteListTileLoadedCallback : public TerrainTile::TileLoadedCallback
+{
+    public:
+
+        WhiteListTileLoadedCallback();
+
+        void allow(const std::string& setname) { _setWhiteList.insert(setname); }
+        
+        void setMinimumNumOfLayers(unsigned int numLayers) { _minumumNumberOfLayers = numLayers; }
+        unsigned int getMinimumNumOfLayers() const { return _minumumNumberOfLayers; }
+
+        void setReplaceSwitchLayer(bool replaceSwitchLayer) { _replaceSwitchLayer = replaceSwitchLayer; }
+        bool getReplaceSwitchLayer() const { return _replaceSwitchLayer; }
+
+        void setAllowAll(bool allowAll) { _allowAll = allowAll; }
+        bool getAllowAll() const { return _allowAll; }
+
+        bool layerAcceptable(const std::string& setname) const;
+        bool readImageLayer(osgTerrain::ImageLayer* imageLayer, const osgDB::ReaderWriter::Options* options) const;
+
+        virtual bool deferExternalLayerLoading() const;
+
+        virtual void loaded(osgTerrain::TerrainTile* tile, const osgDB::ReaderWriter::Options* options) const;
+    
+    protected:
+
+        virtual ~WhiteListTileLoadedCallback();
+    
+        typedef std::set<std::string> SetWhiteList;
+        SetWhiteList    _setWhiteList;
+        unsigned int    _minumumNumberOfLayers;
+        bool            _replaceSwitchLayer;
+        bool            _allowAll;
+
+};
+
 }
 
 #endif

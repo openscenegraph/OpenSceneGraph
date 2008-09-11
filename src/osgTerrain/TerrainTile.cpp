@@ -16,9 +16,16 @@
 
 #include <osg/ClusterCullingCallback>
 
+#include <osgDB/ReadFile>
+
+
 using namespace osg;
 using namespace osgTerrain;
 
+/////////////////////////////////////////////////////////////////////////////////
+//
+// TerrainTile
+//
 void TerrainTile::setTileLoadedCallback(TerrainTile::TileLoadedCallback* lc)
 {
     getTileLoadedCallback() = lc;
@@ -211,4 +218,213 @@ osg::BoundingSphere TerrainTile::computeBound() const
     }
     
     return bs;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//
+// WhiteListTileLoadedCallback
+//
+WhiteListTileLoadedCallback::WhiteListTileLoadedCallback()
+{
+    _minumumNumberOfLayers = 0;
+    _replaceSwitchLayer = true;
+    _allowAll = false;
+}
+
+WhiteListTileLoadedCallback::~WhiteListTileLoadedCallback()
+{
+}
+
+bool WhiteListTileLoadedCallback::layerAcceptable(const std::string& setname) const
+{
+    if (_allowAll) return true;
+
+    if (setname.empty()) return true;
+
+    return _setWhiteList.count(setname)!=0;
+}
+
+bool WhiteListTileLoadedCallback::readImageLayer(osgTerrain::ImageLayer* imageLayer, const osgDB::ReaderWriter::Options* options) const
+{
+   if (!imageLayer->getImage() && 
+        !imageLayer->getFileName().empty())
+    {
+        if (layerAcceptable(imageLayer->getSetName()))
+        {
+            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageLayer->getFileName(), options);
+            imageLayer->setImage(image.get());
+        }
+    }
+    return imageLayer->getImage()!=0;
+}
+
+bool WhiteListTileLoadedCallback::deferExternalLayerLoading() const
+{
+    return true;
+}
+
+void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const osgDB::ReaderWriter::Options* options) const
+{
+
+    // read any external layers
+    for(unsigned int i=0; i<tile->getNumColorLayers(); ++i)
+    {
+        osgTerrain::Layer* layer = tile->getColorLayer(i);
+        osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
+        if (imageLayer)
+        {
+            readImageLayer(imageLayer, options);
+            continue;
+        }
+
+        osgTerrain::SwitchLayer* switchLayer = dynamic_cast<osgTerrain::SwitchLayer*>(layer);
+        if (switchLayer)
+        {
+            for(unsigned int si=0; si<switchLayer->getNumLayers(); ++si)
+            {
+                osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
+                if (imageLayer)
+                {
+                    if (readImageLayer(imageLayer, options))
+                    {                        
+                        // replace SwitchLayer by 
+                        if (_replaceSwitchLayer) tile->setColorLayer(i, imageLayer);
+                        else if (switchLayer->getActiveLayer()<0) switchLayer->setActiveLayer(si);
+
+                        continue;
+                    }
+                }
+            }
+            continue;
+        }
+
+        osgTerrain::CompositeLayer* compositeLayer = dynamic_cast<osgTerrain::CompositeLayer*>(layer);
+        if (compositeLayer)
+        {
+            for(unsigned int ci=0; ci<compositeLayer->getNumLayers(); ++ci)
+            {
+                osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(compositeLayer->getLayer(ci));
+                if (imageLayer)
+                {
+                    readImageLayer(imageLayer, options);
+                }
+            }
+            continue;
+        }
+    }
+
+    // assign colour layers over missing layers
+    osgTerrain::Layer* validLayer = 0;
+    for(unsigned int i=0; i<tile->getNumColorLayers(); ++i)
+    {
+        osgTerrain::Layer* layer = tile->getColorLayer(i);
+        osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
+        if (imageLayer)
+        {
+            if (imageLayer->getImage()!=0)
+            {
+                validLayer = imageLayer;
+            }
+            continue;
+        }
+
+        osgTerrain::SwitchLayer* switchLayer = dynamic_cast<osgTerrain::SwitchLayer*>(layer);
+        if (switchLayer)
+        {
+            for(unsigned int si=0; si<switchLayer->getNumLayers(); ++si)
+            {
+                osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
+                if (imageLayer && imageLayer->getImage()!=0)
+                {
+                    validLayer = imageLayer;
+                }
+            }
+            continue;
+        }
+
+        osgTerrain::CompositeLayer* compositeLayer = dynamic_cast<osgTerrain::CompositeLayer*>(layer);
+        if (compositeLayer)
+        {
+            for(unsigned int ci=0; ci<compositeLayer->getNumLayers(); ++ci)
+            {
+                osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(ci));
+                if (imageLayer && imageLayer->getImage()!=0)
+                {
+                    validLayer = imageLayer;
+                }
+            }
+            continue;
+        }
+    }
+
+    if (validLayer)
+    {
+        // fill in any missing layers
+        for(unsigned int i=0; i<tile->getNumColorLayers(); ++i)
+        {
+            osgTerrain::Layer* layer = tile->getColorLayer(i);
+            osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
+            if (imageLayer)
+            {
+                if (imageLayer->getImage()==0)
+                {
+                    tile->setColorLayer(i, validLayer);
+                    break;
+                }
+                continue;
+            }
+
+            osgTerrain::SwitchLayer* switchLayer = dynamic_cast<osgTerrain::SwitchLayer*>(layer);
+            if (switchLayer)
+            {
+                for(unsigned int si=0; si<switchLayer->getNumLayers(); ++si)
+                {
+                    osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
+                    if (imageLayer && imageLayer->getImage()==0)
+                    {
+                        if (_replaceSwitchLayer) tile->setColorLayer(i, imageLayer);
+                        else
+                        {
+                            switchLayer->setLayer(si, validLayer);
+                            if (switchLayer->getActiveLayer()<0) switchLayer->setActiveLayer(si);
+                        }
+                        break;
+                    }
+                }
+                if (switchLayer->getNumLayers()==0)
+                {
+                    if (_replaceSwitchLayer) tile->setColorLayer(i, validLayer);
+                    else
+                    {
+                        switchLayer->setLayer(0, validLayer);
+                        switchLayer->setActiveLayer(0);
+                    }
+                }
+            }
+
+            osgTerrain::CompositeLayer* compositeLayer = dynamic_cast<osgTerrain::CompositeLayer*>(layer);
+            if (compositeLayer)
+            {
+                for(unsigned int ci=0; ci<compositeLayer->getNumLayers(); ++ci)
+                {
+                    osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(ci));
+                    if (imageLayer && imageLayer->getImage()==0)
+                    {
+                        tile->setColorLayer(i, validLayer);
+                        break;
+                    }
+                }
+                continue;
+            }
+        }
+
+        if (_minumumNumberOfLayers>tile->getNumColorLayers())
+        {
+            for(unsigned int i=tile->getNumColorLayers(); i<_minumumNumberOfLayers; ++i)
+            {
+                tile->setColorLayer(i, validLayer);
+            }
+        }
+
+    }
 }

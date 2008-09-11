@@ -233,192 +233,6 @@ protected:
     osg::ref_ptr<osgTerrain::Terrain>  _terrain;
 };
 
-
-struct WhiteListTileLoadedCallback : public osgTerrain::TerrainTile::TileLoadedCallback
-{
-    WhiteListTileLoadedCallback()
-    {
-    }
-    
-    void allow(const std::string& setname) { _setWhiteList.insert(setname); }
-    
-    typedef std::set<std::string> SetWhiteList;
-    SetWhiteList _setWhiteList;
-
-    bool layerAcceptable(const std::string& setname) const
-    {
-        if (setname.empty()) return true;
-        
-        return _setWhiteList.count(setname)!=0;
-    }
-
-    bool readImageLayer(osgTerrain::ImageLayer* imageLayer, const osgDB::ReaderWriter::Options* options) const
-    {
-       if (!imageLayer->getImage() && 
-            !imageLayer->getFileName().empty())
-        {
-            if (layerAcceptable(imageLayer->getSetName()))
-            {
-                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageLayer->getFileName(), options);
-                std::cout<<"ok readingImageLayer("<<imageLayer->getSetName()<<","<<imageLayer->getFileName()<<" success="<<image->valid()<<std::endl;
-                imageLayer->setImage(image.get());
-            }
-            else
-            {
-                std::cout<<"disallowed readingImageLayer("<<imageLayer->getSetName()<<","<<imageLayer->getFileName()<<std::endl;
-            }
-        }
-        return imageLayer->getImage()!=0;
-    }
-
-    virtual bool deferExternalLayerLoading() const
-    {
-        return true;
-    }
-
-    virtual void loaded(osgTerrain::TerrainTile* tile, const osgDB::ReaderWriter::Options* options) const
-    {
-
-        // read any external layers
-        for(unsigned int i=0; i<tile->getNumColorLayers(); ++i)
-        {
-            osgTerrain::Layer* layer = tile->getColorLayer(i);
-            osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
-            if (imageLayer)
-            {
-                readImageLayer(imageLayer, options);
-                continue;
-            }
-
-            osgTerrain::SwitchLayer* switchLayer = dynamic_cast<osgTerrain::SwitchLayer*>(layer);
-            if (switchLayer)
-            {
-                for(unsigned int si=0; si<switchLayer->getNumLayers(); ++si)
-                {
-                    osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
-                    if (imageLayer)
-                    {
-                        if (readImageLayer(imageLayer, options))
-                        {                        
-                            // replace SwitchLayer by 
-                            tile->setColorLayer(i, imageLayer);
-                            continue;
-                        }
-                    }
-                }
-                continue;
-            }
-
-            osgTerrain::CompositeLayer* compositeLayer = dynamic_cast<osgTerrain::CompositeLayer*>(layer);
-            if (compositeLayer)
-            {
-                for(unsigned int ci=0; ci<compositeLayer->getNumLayers(); ++ci)
-                {
-                    osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(compositeLayer->getLayer(ci));
-                    if (imageLayer)
-                    {
-                        readImageLayer(imageLayer, options);
-                    }
-                }
-                continue;
-            }
-        }
-
-        // assign colour layers over missing layers
-        osgTerrain::Layer* validLayer = 0;
-        for(unsigned int i=0; i<tile->getNumColorLayers(); ++i)
-        {
-            osgTerrain::Layer* layer = tile->getColorLayer(i);
-            osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
-            if (imageLayer)
-            {
-                if (imageLayer->getImage()!=0)
-                {
-                    validLayer = imageLayer;
-                }
-                continue;
-            }
-
-            osgTerrain::SwitchLayer* switchLayer = dynamic_cast<osgTerrain::SwitchLayer*>(layer);
-            if (switchLayer)
-            {
-                for(unsigned int si=0; si<switchLayer->getNumLayers(); ++si)
-                {
-                    osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
-                    if (imageLayer && imageLayer->getImage()!=0)
-                    {
-                        validLayer = imageLayer;
-                    }
-                }
-                continue;
-            }
-
-            osgTerrain::CompositeLayer* compositeLayer = dynamic_cast<osgTerrain::CompositeLayer*>(layer);
-            if (compositeLayer)
-            {
-                for(unsigned int ci=0; ci<compositeLayer->getNumLayers(); ++ci)
-                {
-                    osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(ci));
-                    if (imageLayer && imageLayer->getImage()!=0)
-                    {
-                        validLayer = imageLayer;
-                    }
-                }
-                continue;
-            }
-        }
-
-        if (validLayer)
-        {
-            // fill in any missing layers
-            for(unsigned int i=0; i<tile->getNumColorLayers(); ++i)
-            {
-                osgTerrain::Layer* layer = tile->getColorLayer(i);
-                osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(layer);
-                if (imageLayer)
-                {
-                    if (imageLayer->getImage()==0)
-                    {
-                        tile->setColorLayer(i, validLayer);
-                        break;
-                    }
-                    continue;
-                }
-
-                osgTerrain::SwitchLayer* switchLayer = dynamic_cast<osgTerrain::SwitchLayer*>(layer);
-                if (switchLayer)
-                {
-                    for(unsigned int si=0; si<switchLayer->getNumLayers(); ++si)
-                    {
-                        osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(si));
-                        if (imageLayer && imageLayer->getImage()==0)
-                        {
-                            tile->setColorLayer(i, validLayer);
-                            break;
-                        }
-                    }
-                    continue;
-                }
-
-                osgTerrain::CompositeLayer* compositeLayer = dynamic_cast<osgTerrain::CompositeLayer*>(layer);
-                if (compositeLayer)
-                {
-                    for(unsigned int ci=0; ci<compositeLayer->getNumLayers(); ++ci)
-                    {
-                        osgTerrain::ImageLayer* imageLayer = dynamic_cast<osgTerrain::ImageLayer*>(switchLayer->getLayer(ci));
-                        if (imageLayer && imageLayer->getImage()==0)
-                        {
-                            tile->setColorLayer(i, validLayer);
-                            break;
-                        }
-                    }
-                    continue;
-                }
-            }
-        }
-    }
-};
-
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -427,25 +241,34 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-r","Set the terrain sample ratio.");
     arguments.getApplicationUsage()->addCommandLineOption("--login <url> <username> <password>","Provide authentication information for http file access.");
    
-   
+    // construct the viewer.
+    osgViewer::Viewer viewer(arguments);
+
+
     // set the tile loaded callback to load the optional imagery
-    osg::ref_ptr<WhiteListTileLoadedCallback> whiteList = new WhiteListTileLoadedCallback;
+    osg::ref_ptr<osgTerrain::WhiteListTileLoadedCallback> whiteList = new osgTerrain::WhiteListTileLoadedCallback;
     std::string setname;
     while(arguments.read("--allow",setname))
     {
         whiteList->allow(setname);
     }
+    while(arguments.read("--allow-all"))
+    {
+        whiteList->setAllowAll(true);
+    }
     osgTerrain::TerrainTile::setTileLoadedCallback(whiteList.get());
-   
-    // construct the viewer.
-    osgViewer::Viewer viewer(arguments);
-    
+
+
+    // obtain the vertical scale
     float verticalScale = 1.0f;
     while(arguments.read("-v",verticalScale)) {}
     
+    // obtain the sample ratio
     float sampleRatio = 1.0f;
     while(arguments.read("-r",sampleRatio)) {}
 
+
+    // set up any authentication.
     std::string url, username, password;
     while(arguments.read("--login",url, username, password))
     {
@@ -545,6 +368,13 @@ int main( int argc, char **argv )
         if (mtc)
         {
             numLayers = mtc->getNumTextureWeights();
+
+            // switch on just the first texture layer.
+            mtc->setTextureWeight(0,1.0f);
+            for(unsigned int i=1; i<numLayers; ++i)
+            {
+                mtc->setTextureWeight(i,0.0f);
+            }
         }
 
         if (numLayers<2)

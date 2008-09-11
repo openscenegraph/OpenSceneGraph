@@ -643,6 +643,6 @@ SwitchLayer::SwitchLayer():
 
 SwitchLayer::SwitchLayer(const SwitchLayer& switchLayer,const osg::CopyOp& copyop):
     CompositeLayer(switchLayer,copyop),
-    _activeLayer(-1)
+    _activeLayer(switchLayer._activeLayer)
 {
 }

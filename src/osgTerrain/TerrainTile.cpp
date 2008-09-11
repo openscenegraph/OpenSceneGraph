@@ -220,6 +220,7 @@ osg::BoundingSphere TerrainTile::computeBound() const
     return bs;
 }
 
+
 /////////////////////////////////////////////////////////////////////////////////
 //
 // WhiteListTileLoadedCallback
@@ -227,7 +228,7 @@ osg::BoundingSphere TerrainTile::computeBound() const
 WhiteListTileLoadedCallback::WhiteListTileLoadedCallback()
 {
     _minumumNumberOfLayers = 0;
-    _replaceSwitchLayer = true;
+    _replaceSwitchLayer = false;
     _allowAll = false;
 }
 

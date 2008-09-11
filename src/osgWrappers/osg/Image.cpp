@@ -29,6 +29,13 @@
 
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::Image::MipmapDataType)
 
+BEGIN_ENUM_REFLECTOR(osg::Image::WriteHint)
+	I_DeclaringFile("osg/Image");
+	I_EnumLabel(osg::Image::NO_PREFERENCE);
+	I_EnumLabel(osg::Image::STORE_INLINE);
+	I_EnumLabel(osg::Image::EXTERNAL_FILE);
+END_REFLECTOR
+
 BEGIN_ENUM_REFLECTOR(osg::Image::AllocationMode)
 	I_DeclaringFile("osg/Image");
 	I_EnumLabel(osg::Image::NO_DELETE);
@@ -90,6 +97,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_Method0(const std::string &, getFileName,
 	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getFileName,
+	          "",
+	          "");
+	I_Method1(void, setWriteHint, IN, osg::Image::WriteHint, writeHint,
+	          Properties::NON_VIRTUAL,
+	          __void__setWriteHint__WriteHint,
+	          "",
+	          "");
+	I_Method0(osg::Image::WriteHint, getWriteHint,
+	          Properties::NON_VIRTUAL,
+	          __WriteHint__getWriteHint,
 	          "",
 	          "");
 	I_Method1(void, setAllocationMode, IN, osg::Image::AllocationMode, mode,
@@ -442,6 +459,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_SimpleProperty(unsigned int, TotalSizeInBytesIncludingMipmaps, 
 	                 __unsigned_int__getTotalSizeInBytesIncludingMipmaps, 
 	                 0);
+	I_SimpleProperty(osg::Image::WriteHint, WriteHint, 
+	                 __WriteHint__getWriteHint, 
+	                 __void__setWriteHint__WriteHint);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< unsigned int >)

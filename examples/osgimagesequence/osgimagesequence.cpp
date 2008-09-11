@@ -41,18 +41,33 @@
 // A simple demo demonstrating how to set on an animated texture using an osg::ImageSequence
 //
 
-osg::StateSet* createState()
+osg::StateSet* createState(osg::ArgumentParser& arguments)
 {
     osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
-
-    imageSequence->setLength(4.0);
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posx.png"));
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negx.png"));
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posy.png"));
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negy.png"));
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posz.png"));
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negz.png"));
     
+    if (arguments.argc()>1)
+    {
+        for(unsigned int i=1; i<arguments.argc(); ++i)
+        {
+            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(arguments[i]);
+            if (image.valid())
+            {
+                imageSequence->addImage(image.get());
+            }
+        }
+        imageSequence->setLength(float(imageSequence->getImages().size())*0.1f);
+    }
+    else
+    {
+        imageSequence->setLength(4.0);
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posx.png"));
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negx.png"));
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posy.png"));
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negy.png"));
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posz.png"));
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negz.png"));
+    }
+        
     // start the image sequence playing
     imageSequence->play();
 
@@ -86,14 +101,14 @@ osg::StateSet* createState()
     return stateset;
 }
 
-osg::Node* createModel()
+osg::Node* createModel(osg::ArgumentParser& arguments)
 {
 
     // create the geometry of the model, just a simple 2d quad right now.    
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(osg::createTexturedQuadGeometry(osg::Vec3(0.0f,0.0f,0.0), osg::Vec3(1.0f,0.0f,0.0), osg::Vec3(0.0f,0.0f,1.0f)));
 
-    geode->setStateSet(createState());
+    geode->setStateSet(createState(arguments));
     
     return geode;
 
@@ -276,8 +291,11 @@ int main(int argc, char **argv)
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
+    std::string filename;
+    arguments.read("-o",filename);
+
     // create a model from the images and pass it to the viewer.
-    viewer.setSceneData(createModel());
+    viewer.setSceneData(createModel(arguments));
 
     // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
     MovieEventHandler* meh = new MovieEventHandler();
@@ -285,8 +303,7 @@ int main(int argc, char **argv)
     viewer.addEventHandler( meh );
 
 
-    std::string filename;
-    if (arguments.read("-o",filename))
+    if (!filename.empty())
     {
         osgDB::writeNodeFile(*viewer.getSceneData(),filename);
     }

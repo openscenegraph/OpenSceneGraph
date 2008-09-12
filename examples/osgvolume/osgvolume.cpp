@@ -34,6 +34,7 @@
 #include <osg/Endian>
 #include <osg/BlendFunc>
 #include <osg/BlendEquation>
+#include <osg/TransferFunction>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -420,7 +421,8 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow,
             unsigned int numComponentsDesired, 
             int s_maximumTextureSize,
             int t_maximumTextureSize,
-            int r_maximumTextureSize )
+            int r_maximumTextureSize,
+            bool resizeToPowerOfTwo)
 {
     int max_s = 0;
     int max_t = 0;
@@ -475,19 +477,27 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow,
     if (desiredPixelFormat==0) return 0;
     
     // compute nearest powers of two for each axis.
+    
     int s_nearestPowerOfTwo = 1;
-    while(s_nearestPowerOfTwo<max_s && s_nearestPowerOfTwo<s_maximumTextureSize) s_nearestPowerOfTwo*=2;
-
     int t_nearestPowerOfTwo = 1;
-    while(t_nearestPowerOfTwo<max_t && t_nearestPowerOfTwo<t_maximumTextureSize) t_nearestPowerOfTwo*=2;
-
     int r_nearestPowerOfTwo = 1;
-    while(r_nearestPowerOfTwo<total_r && r_nearestPowerOfTwo<r_maximumTextureSize) r_nearestPowerOfTwo*=2;
 
+    if (resizeToPowerOfTwo)
+    {
+        while(s_nearestPowerOfTwo<max_s && s_nearestPowerOfTwo<s_maximumTextureSize) s_nearestPowerOfTwo*=2;
+        while(t_nearestPowerOfTwo<max_t && t_nearestPowerOfTwo<t_maximumTextureSize) t_nearestPowerOfTwo*=2;
+        while(r_nearestPowerOfTwo<total_r && r_nearestPowerOfTwo<r_maximumTextureSize) r_nearestPowerOfTwo*=2;
 
-    osg::notify(osg::NOTICE)<<"max image width = "<<max_s<<"  nearest power of two = "<<s_nearestPowerOfTwo<<std::endl;
-    osg::notify(osg::NOTICE)<<"max image height = "<<max_t<<"  nearest power of two = "<<t_nearestPowerOfTwo<<std::endl;
-    osg::notify(osg::NOTICE)<<"max image depth = "<<total_r<<"  nearest power of two = "<<r_nearestPowerOfTwo<<std::endl;
+        osg::notify(osg::NOTICE)<<"max image width = "<<max_s<<"  nearest power of two = "<<s_nearestPowerOfTwo<<std::endl;
+        osg::notify(osg::NOTICE)<<"max image height = "<<max_t<<"  nearest power of two = "<<t_nearestPowerOfTwo<<std::endl;
+        osg::notify(osg::NOTICE)<<"max image depth = "<<total_r<<"  nearest power of two = "<<r_nearestPowerOfTwo<<std::endl;
+    }
+    else
+    {
+        s_nearestPowerOfTwo = max_s;
+        t_nearestPowerOfTwo = max_t;
+        r_nearestPowerOfTwo = total_r;
+    }
     
     // now allocate the 3d texture;
     osg::ref_ptr<osg::Image> image_3d = new osg::Image;
@@ -828,6 +838,7 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     else
     {
         char vertexShaderSource[] = 
+            "#version 110\n"
             "varying vec4 cameraPos;\n"
             "varying vec4 vertexPos;\n"
             "varying mat4 texgen;\n"
@@ -920,33 +931,34 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
             "        }\n"
             "    }\n"
             "\n"
-            "    const int max_iteratrions = 256;\n"
-            "    int num_iterations = length(te-t0)/sampleDensity;\n"
+            "    const float max_iteratrions = 256.0;\n"
+            "    float num_iterations = length(te-t0)/sampleDensity;\n"
             "    if (num_iterations>max_iteratrions) \n"
             "    {\n"
             "        num_iterations = max_iteratrions;\n"
             "    }\n"
             "\n"
-            "    vec3 deltaTexCoord=(te-t0)/float(num_iterations-1);\n"
+            "    vec3 deltaTexCoord=(te-t0)/float(num_iterations-1.0);\n"
             "    vec3 texcoord = t0;\n"
             "\n"
-            "    gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0); \n"
-            "    while(num_iterations>0)\n"
+            "    vec4 fragColor = vec4(0.0, 0.0, 0.0, 0.0); \n"
+            "    while(num_iterations>0.0)\n"
             "    {\n"
             "        vec4 color = texture3D( baseTexture, texcoord);\n"
             "        float r = color[3]*transparency;\n"
             "        if (r>alphaCutOff)\n"
             "        {\n"
-            "            gl_FragColor.xyz = gl_FragColor.xyz*(1.0-r)+color.xyz*r;\n"
-            "            gl_FragColor.w += r;\n"
+            "            fragColor.xyz = fragColor.xyz*(1.0-r)+color.xyz*r;\n"
+            "            fragColor.w += r;\n"
             "        }\n"
             "        texcoord += deltaTexCoord; \n"
             "\n"
             "        --num_iterations;\n"
             "    }\n"
             "\n"
-            "    if (gl_FragColor.w>1.0) gl_FragColor.w = 1.0; \n"
-            "    if (gl_FragColor.w==0.0) discard;\n"
+            "    if (fragColor.w>1.0) fragColor.w = 1.0; \n"
+            "    if (fragColor.w==0.0) discard;\n"
+            "    gl_FragColor = fragColor;\n"
             "}\n";
 
         osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource);
@@ -1040,7 +1052,8 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
     return root;
 }
 
-osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<osg::Image>& normalmap_3d,
+osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, 
+                       osg::ref_ptr<osg::Image>& normalmap_3d,
                        osg::Texture::InternalFormatMode internalFormatMode,
                        float xSize, float ySize, float zSize,
                        float xMultiplier, float yMultiplier, float zMultiplier,
@@ -1540,6 +1553,95 @@ void doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, osg::Ve
     }
 }
 
+
+struct ApplyTransferFunctionOperator
+{
+    ApplyTransferFunctionOperator(osg::TransferFunction1D* tf, unsigned char* data):
+        _tf(tf),
+        _data(data) {}
+        
+    inline void luminance(float l) const
+    {
+        osg::Vec4 c = _tf->getInterpolatedValue(l);
+        //std::cout<<"l = "<<l<<" c="<<c<<std::endl;
+        *(_data++) = (unsigned char)(c[0]*255.0f + 0.5f);
+        *(_data++) = (unsigned char)(c[1]*255.0f + 0.5f);
+        *(_data++) = (unsigned char)(c[2]*255.0f + 0.5f);
+        *(_data++) = (unsigned char)(c[3]*255.0f + 0.5f);
+    }
+     
+    inline void alpha(float a) const
+    {
+        luminance(a);
+    } 
+    
+    inline void luminance_alpha(float l,float a) const
+    { 
+        luminance(l);
+    }
+     
+    inline void rgb(float r,float g,float b) const
+    {
+        luminance((r+g+b)*0.3333333);
+    }
+    
+    inline void rgba(float r,float g,float b,float a) const
+    {
+        luminance(a);
+    }
+    
+    mutable osg::ref_ptr<osg::TransferFunction1D> _tf;
+    mutable unsigned char* _data;
+};
+
+osg::Image* applyTransferFunction(osg::Image* image, osg::TransferFunction1D* transferFunction)
+{
+    std::cout<<"Applying transfer function"<<std::endl;
+    osg::Image* output_image = new osg::Image;
+    output_image->allocateImage(image->s(),image->t(), image->r(), GL_RGBA, GL_UNSIGNED_BYTE);
+    
+    readImage(image,ApplyTransferFunctionOperator(transferFunction, output_image->data())); 
+    
+    return output_image;
+}
+
+osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename)
+{
+    std::string foundFile = osgDB::findDataFile(filename);
+    if (foundFile.empty()) 
+    {
+        std::cout<<"Error: could not find transfer function file : "<<filename<<std::endl;
+        return 0;
+    }
+    
+    std::cout<<"Reading transfer function "<<filename<<std::endl;
+
+    osg::TransferFunction1D::ValueMap valueMap;
+    std::ifstream fin(foundFile.c_str());
+    while(fin)
+    {
+        float value, red, green, blue, alpha;
+        fin >> value >> red >> green >> blue >> alpha;
+        if (fin) 
+        {
+            std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
+            valueMap[value] = osg::Vec4(red,green,blue,alpha);
+        }
+    }
+    
+    if (valueMap.empty())
+    {
+        std::cout<<"Error: No values read from transfer function file: "<<filename<<std::endl;
+        return 0;
+    }
+    
+    osg::TransferFunction1D* tf = new osg::TransferFunction1D;
+    tf->assign(valueMap, true);
+    
+    return tf;
+}
+
+
 class TestSupportOperation: public osg::GraphicsOperation
 {
 public:
@@ -1624,6 +1726,14 @@ int main( int argc, char **argv )
     while (arguments.read("-o",outputFile)) {}
 
 
+
+    osg::ref_ptr<osg::TransferFunction1D> transferFunction;
+    std::string tranferFunctionFile;
+    while (arguments.read("--tf",tranferFunctionFile))
+    {
+        transferFunction = readTransferFunctionFile(tranferFunctionFile);
+    }
+
     unsigned int numSlices=500;
     while (arguments.read("-s",numSlices)) {}
     
@@ -1657,9 +1767,9 @@ int main( int argc, char **argv )
     viewer.realize();
 
     int maximumTextureSize = testSupportOperation->maximumTextureSize;
-    int s_maximumTextureSize = 256;
-    int t_maximumTextureSize = 256;
-    int r_maximumTextureSize = 256;
+    int s_maximumTextureSize = maximumTextureSize;
+    int t_maximumTextureSize = maximumTextureSize;
+    int r_maximumTextureSize = maximumTextureSize;
     while(arguments.read("--maxTextureSize",maximumTextureSize))
     {
         s_maximumTextureSize = maximumTextureSize;
@@ -1685,6 +1795,7 @@ int main( int argc, char **argv )
     while(arguments.read("--modulate-alpha-by-colour", colourModulate.x(),colourModulate.y(),colourModulate.z(),colourModulate.w() )) { colourSpaceOperation = MODULATE_ALPHA_BY_COLOUR; }
     while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = REPLACE_ALPHA_WITH_LUMINACE; }
         
+    bool resizeToPowerOfTwo = false;
     
     unsigned int numComponentsDesired = 0; 
     while(arguments.read("--num-components", numComponentsDesired)) {}
@@ -1717,7 +1828,7 @@ int main( int argc, char **argv )
         
         // pack the textures into a single texture.
         ProcessRow processRow;
-        image_3d = createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize);
+        image_3d = createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo);
     }
 
 
@@ -1750,6 +1861,11 @@ int main( int argc, char **argv )
     if (colourSpaceOperation!=NO_COLOUR_SPACE_OPERATION)
     {
         doColourSpaceConversion(colourSpaceOperation, image_3d.get(), colourModulate);
+    }
+    
+    if (transferFunction.valid())
+    {
+        image_3d = applyTransferFunction(image_3d.get(), transferFunction.get());
     }
     
     osg::ref_ptr<osg::Image> normalmap_3d = createNormalMap ? createNormalMapTexture(image_3d.get()) : 0;

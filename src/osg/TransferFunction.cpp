@@ -13,6 +13,10 @@
 
 #include <osg/TransferFunction>
 
+#include <osg/Notify>
+#include <osg/io_utils>
+
+
 using namespace osg;
 
 ///////////////////////////////////////////////////////////////////////
@@ -59,3 +63,77 @@ void TransferFunction1D::clear(const osg::Vec4& color)
         *itr = color;
     }
 }
+
+
+void TransferFunction1D::assign(const ValueMap& vcm, bool updateMinMaxRange)
+{
+    if (vcm.empty()) return;
+    
+    if (updateMinMaxRange)
+    {
+        _minimum = vcm.begin()->first;
+        _maximum = vcm.rbegin()->first;
+    }
+    
+    if (_colors.empty()) allocate(1024);
+    
+    
+    float multiplier = float(_colors.size()-1)/(_maximum - _minimum);
+    
+    if (vcm.size()==1)
+    {
+        osg::Vec4 color = vcm.begin()->second;
+        if (_minimum == _maximum)
+        {
+            clear(color);
+        }
+        else
+        {
+            float iPos = (vcm.begin()->first - _minimum)*multiplier;
+            if (iPos>=0.0f || iPos<float(_colors.size()))
+            {
+                float iFloor = floorf(iPos);
+                unsigned int i = (unsigned int)(iFloor);
+                _colors[i] = color;
+            }
+        }
+        return;
+    }
+    
+    ValueMap::const_iterator lower_itr = vcm.begin();
+    ValueMap::const_iterator upper_itr = lower_itr;
+    ++upper_itr;
+    
+    for(;
+        upper_itr != vcm.end();
+        ++upper_itr)
+    {
+        float lower_v = lower_itr->first;
+        const osg::Vec4& lower_c = lower_itr->second;
+        float upper_v = upper_itr->first;
+        const osg::Vec4& upper_c = upper_itr->second;
+        
+        float lower_iPos = (lower_v - _minimum)*multiplier; 
+        float upper_iPos = (upper_v - _minimum)*multiplier;
+
+        float start_iPos = ceilf(lower_iPos);
+        if (start_iPos<0.0f) start_iPos=0.0f;
+        if (start_iPos>float(_colors.size()-1)) break;
+        
+        float end_iPos = floorf(upper_iPos);
+        if (end_iPos<0.0f) continue;
+        if (end_iPos>float(_colors.size()-1)) end_iPos=_colors.size()-1;
+
+        Vec4 delta_c = (upper_c-lower_c)/(upper_iPos-lower_iPos);
+        unsigned int i=static_cast<unsigned int>(start_iPos);
+        for(float iPos=start_iPos;
+            iPos<=end_iPos; 
+            ++iPos, ++i)
+        {
+            _colors[i] = lower_c + delta_c*(iPos-lower_v);
+        }
+        
+        lower_itr = upper_itr;      
+    }
+}
+

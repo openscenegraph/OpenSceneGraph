@@ -17,6 +17,8 @@
 #include <osg/Texture>
 #include <osg/Shader>
 
+#include <map>
+
 namespace osg {
 
 
@@ -76,6 +78,25 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
 
         void setValue(unsigned int i, const osg::Vec4& color) { _colors[i] = color; if (_image.valid()) _image->dirty(); }
         const osg::Vec4& getValue(unsigned int i) const { return _colors[i]; }
+
+        osg::Vec4 getInterpolatedValue(float v) const
+        {
+            float iPos = (v-_minimum)*float(_colors.size()-1)/(_maximum-_minimum);
+            if (iPos<0.0) return _colors[0];
+            if (iPos>float(_colors.size()-1)) return _colors[_colors.size()-1];
+            
+            unsigned int iLower = (unsigned int)(iPos);
+            unsigned int iUpper = iLower+1;
+            if (iUpper>=_colors.size()) return _colors[iLower];
+            
+            float r = iPos-floorf(iLower);
+            const osg::Vec4& cLower = _colors[iLower];
+            const osg::Vec4& cUpper = _colors[iUpper];
+            return cLower + (cUpper-cLower)*r;
+        }
+        
+        typedef std::map<float, osg::Vec4> ValueMap;
+        void assign(const ValueMap& vcm, bool updateMinMaxRange);
 
     protected:
     

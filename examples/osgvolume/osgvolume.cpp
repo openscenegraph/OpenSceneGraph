@@ -51,6 +51,7 @@
 
 #include <osg/io_utils>
 
+#include <algorithm>
 #include <iostream>
 
 
@@ -1847,8 +1848,55 @@ int main( int argc, char **argv )
     {
         if (!arguments.isOption(pos))
         {
-            // not an option so assume string is a filename.
-            image_3d = osgDB::readImageFile( arguments[pos]);
+            std::string filename = arguments[pos];
+            
+            osgDB::FileType fileType = osgDB::fileType(filename);
+            if (fileType == osgDB::FILE_NOT_FOUND)
+            {
+                filename = osgDB::findDataFile(filename);
+                fileType = osgDB::fileType(filename);
+            }
+            
+            if (fileType == osgDB::DIRECTORY)
+            {
+                osgDB::DirectoryContents contents = osgDB::getDirectoryContents(filename);
+                
+                std::sort(contents.begin(), contents.end());
+                
+                ImageList imageList;
+                for(osgDB::DirectoryContents::iterator itr = contents.begin();
+                    itr != contents.end();
+                    ++itr)
+                {
+                    std::string localFile = filename + "/" + *itr;
+                    std::cout<<"contents = "<<localFile<<std::endl;
+                    if (osgDB::fileType(localFile) == osgDB::REGULAR_FILE)
+                    {
+                        // not an option so assume string is a filename.
+                        osg::Image *image = osgDB::readImageFile(localFile);
+                        if(image)
+                        {
+                            imageList.push_back(image);
+                        }
+                    }
+                }
+
+                // pack the textures into a single texture.
+                ProcessRow processRow;
+                image_3d = createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo);
+
+            }
+            else if (fileType == osgDB::REGULAR_FILE)
+            {
+                // not an option so assume string is a filename.
+                image_3d = osgDB::readImageFile( filename );
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"Error: could not find file: "<<filename<<std::endl;
+                return 1;
+            }
+            
         }
     }
     

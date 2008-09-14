@@ -3171,6 +3171,61 @@ void Geometry::copyToAndOptimize(Geometry& target)
     }
 }
 
+bool Geometry::containsSharedArrays() const
+{
+    unsigned int numSharedArrays = 0;
+    
+    if (getVertexArray() && getVertexArray()->referenceCount()>1) ++numSharedArrays;
+    if (getNormalArray() && getNormalArray()->referenceCount()>1) ++numSharedArrays;
+    if (getColorArray() && getColorArray()->referenceCount()>1) ++numSharedArrays;
+    if (getSecondaryColorArray() && getSecondaryColorArray()->referenceCount()>1) ++numSharedArrays;
+    if (getFogCoordArray() && getFogCoordArray()->referenceCount()>1) ++numSharedArrays;
+
+    for(unsigned int ti=0;ti<getNumTexCoordArrays();++ti)
+    {
+        if (getTexCoordArray(ti) && getTexCoordArray(ti)->referenceCount()>1) ++numSharedArrays;
+    }
+    
+    for(unsigned int vi=0;vi<_vertexAttribList.size();++vi)
+    {
+        const ArrayData& arrayData = _vertexAttribList[vi];
+        if (arrayData.array.valid() && arrayData.array->referenceCount()>1) ++numSharedArrays;
+    }
+    return numSharedArrays!=0;
+}
+
+void Geometry::duplicateSharedArrays()
+{
+    #define DUPLICATE_IF_REQUIRED(A) \
+        if (get##A() && get##A()->referenceCount()>1) \
+        { \
+            set##A(dynamic_cast<osg::Array*>(get##A()->clone(osg::CopyOp::DEEP_COPY_ARRAYS))); \
+        }
+
+    DUPLICATE_IF_REQUIRED(VertexArray)
+    DUPLICATE_IF_REQUIRED(NormalArray)
+    DUPLICATE_IF_REQUIRED(ColorArray)
+    DUPLICATE_IF_REQUIRED(SecondaryColorArray)
+    DUPLICATE_IF_REQUIRED(FogCoordArray)
+
+    for(unsigned int ti=0;ti<getNumTexCoordArrays();++ti)
+    {
+        if (getTexCoordArray(ti) && getTexCoordArray(ti)->referenceCount()>1)
+        {
+            setTexCoordArray(ti, dynamic_cast<osg::Array*>(getTexCoordArray(ti)->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));
+        }
+    }
+    
+    for(unsigned int vi=0;vi<_vertexAttribList.size();++vi)
+    {
+        ArrayData& arrayData = _vertexAttribList[vi];
+        if (arrayData.array.valid() && arrayData.array->referenceCount()>1)
+        {
+            arrayData.array = dynamic_cast<osg::Array*>(arrayData.array->clone(osg::CopyOp::DEEP_COPY_ARRAYS));
+        }
+    }
+}
+
 void Geometry::computeInternalOptimizedGeometry()
 {
     if (suitableForOptimization())

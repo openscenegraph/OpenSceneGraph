@@ -344,6 +344,12 @@ class OSG_EXPORT Geometry : public Drawable
 
         void copyToAndOptimize(Geometry& target);
 
+
+        bool containsSharedArrays() const;
+        
+        void duplicateSharedArrays();
+        
+
         void computeInternalOptimizedGeometry();
 
         void removeInternalOptimizedGeometry() { _internalOptimizedGeometry = 0; }

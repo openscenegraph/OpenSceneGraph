@@ -1413,6 +1413,14 @@ void EdgeCollapse::setGeometry(osg::Geometry* geometry, const Simplifier::IndexL
         osg::notify(osg::INFO)<<"EdgeCollapse::setGeometry(..): Removing attribute indices"<<std::endl;
         _geometry->copyToAndOptimize(*_geometry);
     }
+    
+    // check to see if vertex attributes indices exists, if so expand them to remove them
+    if (_geometry->containsSharedArrays())
+    {
+        // removing coord indices
+        osg::notify(osg::INFO)<<"EdgeCollapse::setGeometry(..): Duplicate shared arrays"<<std::endl;
+        _geometry->duplicateSharedArrays();
+    }
 
     unsigned int numVertices = geometry->getVertexArray()->getNumElements();
         

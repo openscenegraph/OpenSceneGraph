@@ -491,8 +491,6 @@ class OSGTERRAIN_EXPORT SwitchLayer : public CompositeLayer
         SwitchLayer(const SwitchLayer& switchLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
         META_Object(osgTerrain, SwitchLayer);
-
-        void clear();
         
         void setActiveLayer(int i) { _activeLayer = i; }
         int getActiveLayer() const { return _activeLayer; }

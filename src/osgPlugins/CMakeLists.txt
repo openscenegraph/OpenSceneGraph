@@ -104,9 +104,9 @@ ENDIF(CURL_FOUND)
 #
 # 3D Image plugins
 #
-IF(ITK_FOUND)
+IF   (ITK_FOUND OR DCMTK_FOUND)
     ADD_SUBDIRECTORY(dicom)
-ENDIF(ITK_FOUND)
+ENDIF(ITK_FOUND OR DCMTK_FOUND)
 
 
 ############################################################

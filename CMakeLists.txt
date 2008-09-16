@@ -269,6 +269,17 @@ IF(PKG_CONFIG_FOUND)
 
 ENDIF(PKG_CONFIG_FOUND)
 
+
+#
+# Enable workaround for OpenGL driver crash with occlusion query
+#
+OPTION(OSG_FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL "Set to ON to build OcclussionQueryNode with a workaround for multi-threaded OpenGL driver occlussion query crash. " OFF)
+IF(OSG_FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL)
+    ADD_DEFINITIONS(-DFORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL)
+ENDIF(OSG_FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL)
+
+
+
 #
 # Test to determine if we want the "tripledot" form of the GLU tesselator callback.
 #

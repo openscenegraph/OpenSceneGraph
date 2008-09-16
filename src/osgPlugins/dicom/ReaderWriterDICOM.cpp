@@ -291,14 +291,13 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             }
 
 
-                            osg::notify(osg::NOTICE)<<"dicomImage->getWidth() = "<<dcmImage->getWidth()<<std::endl;
-                            osg::notify(osg::NOTICE)<<"dicomImage->getHeight() = "<<dcmImage->getHeight()<<std::endl;
-                            osg::notify(osg::NOTICE)<<"dicomImage->getFrameCount() = "<<dcmImage->getFrameCount()<<std::endl;
+                            osg::notify(osg::NOTICE)<<"dcmImage->getWidth() = "<<dcmImage->getWidth()<<std::endl;
+                            osg::notify(osg::NOTICE)<<"dcmImage->getHeight() = "<<dcmImage->getHeight()<<std::endl;
+                            osg::notify(osg::NOTICE)<<"dcmImage->getFrameCount() = "<<dcmImage->getFrameCount()<<std::endl;
                             osg::notify(osg::NOTICE)<<"pixelData->getCount() = "<<pixelData->getCount()<<std::endl;
                             osg::notify(osg::NOTICE)<<"pixelFormat = ";
 
                             dataType = GL_UNSIGNED_BYTE;
-                            unsigned int pixelSize = 0;
                             pixelRep = pixelData->getRepresentation();
                             switch(pixelRep)
                             {
@@ -363,7 +362,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             image->setFileName(fileName.c_str());
                             image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), files.size() * dcmImage->getFrameCount(),
                                                  pixelFormat, dataType);
-                                                 
                         }
                         
                         if (pixelData->getPlanes()==numPlanes &&
@@ -375,7 +373,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                                                            static_cast<unsigned int>(dcmImage->getFrameCount())); 
                             unsigned int numPixels = dcmImage->getWidth() * dcmImage->getHeight() * numFramesToCopy;
                             unsigned int dataSize = numPixels * pixelSize;
-                            memcpy(image->data(imageNum), pixelData->getData(), dataSize);
+                            memcpy(image->data(0,0,imageNum), pixelData->getData(), dataSize);
+                            
                             imageNum += numFramesToCopy;
                         }
                     }

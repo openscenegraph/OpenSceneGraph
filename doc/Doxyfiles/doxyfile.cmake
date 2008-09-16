@@ -557,6 +557,7 @@ INPUT                  = "${OpenSceneGraph_SOURCE_DIR}/include/osg" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgText" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgUtil" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgViewer" \
+                         "${OpenSceneGraph_SOURCE_DIR}/include/osgVolume" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgWidget"
 
 # This tag can be used to specify the character encoding of the source files 

@@ -123,16 +123,18 @@ SET(OSGWRAPPER_LIB_LIST
     OpenThreads
     osg
     osgDB
-    osgUtil
-    osgGA
-    osgText
-    osgParticle
     osgFX
-    osgSim
+    osgGA
     osgManipulator
+    osgParticle
     osgShadow
+    osgSim
     osgTerrain
+    osgText
+    osgUtil
     osgViewer
+    osgVolume
+    osgWidget
 )
 
 

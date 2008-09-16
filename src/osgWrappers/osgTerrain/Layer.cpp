@@ -980,11 +980,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::SwitchLayer)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method0(void, clear,
-	          Properties::NON_VIRTUAL,
-	          __void__clear,
-	          "",
-	          "");
 	I_Method1(void, setActiveLayer, IN, int, i,
 	          Properties::NON_VIRTUAL,
 	          __void__setActiveLayer__int,

@@ -922,6 +922,12 @@ void OverlayNode::setRenderTargetImplementation(osg::Camera::RenderTargetImpleme
     _renderTargetImpl = impl;
 
     init();
+    for(OverlayDataMap::const_iterator itr = _overlayDataMap.begin();
+      itr != _overlayDataMap.end();
+      ++itr)
+    {
+      itr->second->_camera->setRenderTargetImplementation(_renderTargetImpl);
+    }
 }
 
 OverlayNode::OverlayData* OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)

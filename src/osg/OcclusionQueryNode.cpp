@@ -232,6 +232,19 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
             osg::notify( osg::DEBUG_INFO ) <<
                 "osgOQ: RQCB: Retrieving..." << std::endl;
 
+#ifdef FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL
+
+            // Should not need to do this, but is required on some platforms to
+            // work aroung issues in the device driver. For example, without this
+            // code, we've seen crashes on 64-bit Mac/Linux NVIDIA systems doing
+            // multithreaded, multipipe rendering (as in a CAVE).
+            GLint ready( 0 );
+            while( !ready )
+            {
+                ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT_AVAILABLE, &ready );
+            };
+#endif
+
             ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT, &(tr->_numPixels) );
             if (tr->_numPixels < 0)
                 osg::notify( osg::WARN ) << "osgOQ: RQCB: " <<

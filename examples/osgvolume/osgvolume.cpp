@@ -54,6 +54,7 @@
 #include <algorithm>
 #include <iostream>
 
+#include <osgVolume/ImageUtils>
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
@@ -68,105 +69,6 @@ typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 // };
 
 
-template <typename T, class O>    
-void _readRow(unsigned int num, GLenum pixelFormat, T* data,float scale, const O& operation)
-{
-    switch(pixelFormat)
-    {
-        case(GL_LUMINANCE):         { for(unsigned int i=0;i<num;++i) { float l = float(*data++)*scale; operation.luminance(l); } }  break;
-        case(GL_ALPHA):             { for(unsigned int i=0;i<num;++i) { float a = float(*data++)*scale; operation.alpha(a); } }  break;
-        case(GL_LUMINANCE_ALPHA):   { for(unsigned int i=0;i<num;++i) { float l = float(*data++)*scale; float a = float(*data++)*scale; operation.luminance_alpha(l,a); } }  break;
-        case(GL_RGB):               { for(unsigned int i=0;i<num;++i) { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; operation.rgb(r,g,b); } }  break;
-        case(GL_RGBA):              { for(unsigned int i=0;i<num;++i) { float r = float(*data++)*scale; float g = float(*data++)*scale; float b = float(*data++)*scale; float a = float(*data++)*scale; operation.rgba(r,g,b,a); } }  break;
-        case(GL_BGR):               { for(unsigned int i=0;i<num;++i) { float b = float(*data++)*scale; float g = float(*data++)*scale; float r = float(*data++)*scale; operation.rgb(r,g,b); } }  break;
-        case(GL_BGRA):              { for(unsigned int i=0;i<num;++i) { float b = float(*data++)*scale; float g = float(*data++)*scale; float r = float(*data++)*scale; float a = float(*data++)*scale; operation.rgba(r,g,b,a); } }  break;
-    }
-}
-
-template <class O>    
-void readRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned char* data, const O& operation)
-{
-    switch(dataType)
-    {
-        case(GL_BYTE):              _readRow(num,pixelFormat, (char*)data,            1.0f/128.0f,        operation); break;
-        case(GL_UNSIGNED_BYTE):     _readRow(num,pixelFormat, (unsigned char*)data,   1.0f/255.0f,        operation); break;
-        case(GL_SHORT):             _readRow(num,pixelFormat, (short*) data,          1.0f/32768.0f,      operation); break;
-        case(GL_UNSIGNED_SHORT):    _readRow(num,pixelFormat, (unsigned short*)data,  1.0f/65535.0f,      operation); break;
-        case(GL_INT):               _readRow(num,pixelFormat, (int*) data,            1.0f/2147483648.0f, operation); break;
-        case(GL_UNSIGNED_INT):      _readRow(num,pixelFormat, (unsigned int*) data,   1.0f/4294967295.0f, operation); break;
-        case(GL_FLOAT):             _readRow(num,pixelFormat, (float*) data,          1.0f,               operation); break;
-    }
-}
-
-template <class O>    
-void readImage(osg::Image* image, const O& operation)
-{
-    if (!image) return;
-    
-    for(int r=0;r<image->r();++r)
-    {
-        for(int t=0;t<image->t();++t)
-        {
-            readRow(image->s(), image->getPixelFormat(), image->getDataType(), image->data(0,t,r), operation);
-        }
-    }
-}
-
-//  example ModifyOperator
-// struct ModifyOperator
-// {
-//     inline void luminance(float& l) const {} 
-//     inline void alpha(float& a) const {} 
-//     inline void luminance_alpha(float& l,float& a) const {} 
-//     inline void rgb(float& r,float& g,float& b) const {}
-//     inline void rgba(float& r,float& g,float& b,float& a) const {}
-// };
-
-
-template <typename T, class M>    
-void _modifyRow(unsigned int num, GLenum pixelFormat, T* data,float scale, const M& operation)
-{
-    float inv_scale = 1.0f/scale;
-    switch(pixelFormat)
-    {
-        case(GL_LUMINANCE):         { for(unsigned int i=0;i<num;++i) { float l = float(*data)*scale; operation.luminance(l); *data++ = T(l*inv_scale); } }  break;
-        case(GL_ALPHA):             { for(unsigned int i=0;i<num;++i) { float a = float(*data)*scale; operation.alpha(a); *data++ = T(a*inv_scale); } }  break;
-        case(GL_LUMINANCE_ALPHA):   { for(unsigned int i=0;i<num;++i) { float l = float(*data)*scale; float a = float(*(data+1))*scale; operation.luminance_alpha(l,a); *data++ = T(l*inv_scale); *data++ = T(a*inv_scale); } }  break;
-        case(GL_RGB):               { for(unsigned int i=0;i<num;++i) { float r = float(*data)*scale; float g = float(*(data+1))*scale; float b = float(*(data+2))*scale; operation.rgb(r,g,b); *data++ = T(r*inv_scale); *data++ = T(g*inv_scale); *data++ = T(b*inv_scale); } }  break;
-        case(GL_RGBA):              { for(unsigned int i=0;i<num;++i) { float r = float(*data)*scale; float g = float(*(data+1))*scale; float b = float(*(data+2))*scale; float a = float(*(data+3))*scale; operation.rgba(r,g,b,a); *data++ = T(r*inv_scale); *data++ = T(g*inv_scale); *data++ = T(g*inv_scale); *data++ = T(a*inv_scale); } }  break;
-        case(GL_BGR):               { for(unsigned int i=0;i<num;++i) { float b = float(*data)*scale; float g = float(*(data+1))*scale; float r = float(*(data+2))*scale; operation.rgb(r,g,b); *data++ = T(b*inv_scale); *data++ = T(g*inv_scale); *data++ = T(r*inv_scale); } }  break;
-        case(GL_BGRA):              { for(unsigned int i=0;i<num;++i) { float b = float(*data)*scale; float g = float(*(data+1))*scale; float r = float(*(data+2))*scale; float a = float(*(data+3))*scale; operation.rgba(r,g,b,a); *data++ = T(g*inv_scale); *data++ = T(b*inv_scale); *data++ = T(r*inv_scale); *data++ = T(a*inv_scale); } }  break;
-    }
-}
-
-template <class M>    
-void modifyRow(unsigned int num, GLenum pixelFormat, GLenum dataType, unsigned char* data, const M& operation)
-{
-    switch(dataType)
-    {
-        case(GL_BYTE):              _modifyRow(num,pixelFormat, (char*)data,            1.0f/128.0f,        operation); break;
-        case(GL_UNSIGNED_BYTE):     _modifyRow(num,pixelFormat, (unsigned char*)data,   1.0f/255.0f,        operation); break;
-        case(GL_SHORT):             _modifyRow(num,pixelFormat, (short*) data,          1.0f/32768.0f,      operation); break;
-        case(GL_UNSIGNED_SHORT):    _modifyRow(num,pixelFormat, (unsigned short*)data,  1.0f/65535.0f,      operation); break;
-        case(GL_INT):               _modifyRow(num,pixelFormat, (int*) data,            1.0f/2147483648.0f, operation); break;
-        case(GL_UNSIGNED_INT):      _modifyRow(num,pixelFormat, (unsigned int*) data,   1.0f/4294967295.0f, operation); break;
-        case(GL_FLOAT):             _modifyRow(num,pixelFormat, (float*) data,          1.0f,               operation); break;
-    }
-}
-
-template <class M>    
-void modifyImage(osg::Image* image, const M& operation)
-{
-    if (!image) return;
-    
-    for(int r=0;r<image->r();++r)
-    {
-        for(int t=0;t<image->t();++t)
-        {
-            modifyRow(image->s(), image->getPixelFormat(), image->getDataType(), image->data(0,t,r), operation);
-        }
-    }
-}
 
 struct PassThroughTransformFunction
 {
@@ -934,7 +836,7 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, osg::ref_ptr<os
             "        }\n"
             "    }\n"
             "\n"
-            "    const float max_iteratrions = 256.0;\n"
+            "    const float max_iteratrions = 2048.0;\n"
             "    float num_iterations = length(te-t0)/sampleDensity;\n"
             "    if (num_iterations>max_iteratrions) \n"
             "    {\n"
@@ -1304,27 +1206,6 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d,
     return group;
 }
 
-struct FindRangeOperator
-{
-    FindRangeOperator():
-        _rmin(FLT_MAX),
-        _rmax(-FLT_MAX),
-        _gmin(FLT_MAX),
-        _gmax(-FLT_MAX),
-        _bmin(FLT_MAX),
-        _bmax(-FLT_MAX),
-        _amin(FLT_MAX),
-        _amax(-FLT_MAX) {}
-        
-    mutable float _rmin, _rmax, _gmin, _gmax, _bmin, _bmax, _amin, _amax;
-
-    inline void luminance(float l) const { rgb(l,l,l); } 
-    inline void alpha(float a) const { _amin = osg::minimum(a,_amin); _amax = osg::maximum(a,_amax); } 
-    inline void luminance_alpha(float l,float a) const { rgb(l,l,l); alpha(a); } 
-    inline void rgb(float r,float g,float b) const { _rmin = osg::minimum(r,_rmin); _rmax = osg::maximum(r,_rmax); _gmin = osg::minimum(g,_gmin); _gmax = osg::maximum(g,_gmax); _bmin = osg::minimum(b,_bmin); _bmax = osg::maximum(b,_bmax);  }
-    inline void rgba(float r,float g,float b,float a) const { rgb(r,g,b); alpha(a); }
-};
- 
 struct ScaleOperator
 {
     ScaleOperator():_scale(1.0f) {}
@@ -1444,9 +1325,9 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
     // normalise texture
     {
         // compute range of values
-        FindRangeOperator rangeOp;    
-        readImage(image.get(), rangeOp);
-        modifyImage(image.get(),ScaleOperator(1.0f/rangeOp._rmax)); 
+        osg::Vec4 minValue, maxValue;
+        osgVolume::computeMinMax(image.get(), minValue, maxValue);
+        osgVolume::modifyImage(image.get(),ScaleOperator(1.0f/maxValue.r())); 
     }
     
     
@@ -1471,12 +1352,12 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
                 writeOp._pos = 0;
             
                 // read the pixels into readOp's _colour array
-                readRow(sizeS, pixelFormat, dataType, image->data(0,t,r), readOp);
+                osgVolume::readRow(sizeS, pixelFormat, dataType, image->data(0,t,r), readOp);
                                 
                 // pass readOp's _colour array contents over to writeOp (note this is just a pointer swap).
                 writeOp._colours.swap(readOp._colours);
                 
-                modifyRow(sizeS, pixelFormat, GL_UNSIGNED_BYTE, new_image->data(0,t,r), writeOp);
+                osgVolume::modifyRow(sizeS, pixelFormat, GL_UNSIGNED_BYTE, new_image->data(0,t,r), writeOp);
 
                 // return readOp's _colour array contents back to its rightful owner.
                 writeOp._colours.swap(readOp._colours);
@@ -1541,15 +1422,15 @@ void doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, osg::Ve
     {
         case (MODULATE_ALPHA_BY_LUMINANCE):
             std::cout<<"doing conversion MODULATE_ALPHA_BY_LUMINANCE"<<std::endl;
-            modifyImage(image,ModulateAlphaByLuminanceOperator()); 
+            osgVolume::modifyImage(image,ModulateAlphaByLuminanceOperator()); 
             break;
         case (MODULATE_ALPHA_BY_COLOUR):
             std::cout<<"doing conversion MODULATE_ALPHA_BY_COLOUR"<<std::endl;
-            modifyImage(image,ModulateAlphaByColourOperator(colour)); 
+            osgVolume::modifyImage(image,ModulateAlphaByColourOperator(colour)); 
             break;
         case (REPLACE_ALPHA_WITH_LUMINACE):
             std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINACE"<<std::endl;
-            modifyImage(image,ReplaceAlphaWithLuminanceOperator()); 
+            osgVolume::modifyImage(image,ReplaceAlphaWithLuminanceOperator()); 
             break;
         default:
             break;
@@ -1603,7 +1484,8 @@ osg::Image* applyTransferFunction(osg::Image* image, osg::TransferFunction1D* tr
     osg::Image* output_image = new osg::Image;
     output_image->allocateImage(image->s(),image->t(), image->r(), GL_RGBA, GL_UNSIGNED_BYTE);
     
-    readImage(image,ApplyTransferFunctionOperator(transferFunction, output_image->data())); 
+    ApplyTransferFunctionOperator op(transferFunction, output_image->data());
+    osgVolume::readImage(image,op); 
     
     return output_image;
 }
@@ -1912,6 +1794,51 @@ int main( int argc, char **argv )
         std::cout<<"No model loaded, please specify and volumetric image file on the command line."<<std::endl;
         return 1;
     }
+
+    osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(image_3d->getUserData());
+    if (matrix)
+    {
+        osg::notify(osg::NOTICE)<<"Image has Matrix = "<<*matrix<<std::endl;
+        xSize = image_3d->s() * (*matrix)(0,0);
+        ySize = image_3d->t() * (*matrix)(1,1);
+        zSize = image_3d->r() * (*matrix)(2,2);
+    }
+
+
+    osg::Vec4 minValue, maxValue;
+    if (osgVolume::computeMinMax(image_3d.get(), minValue, maxValue));
+    {
+        osg::notify(osg::NOTICE)<<"Min value "<<minValue<<std::endl;
+        osg::notify(osg::NOTICE)<<"Max value "<<maxValue<<std::endl;
+
+        float minComponent = minValue[0];
+        minComponent = osg::minimum(minComponent,minValue[1]);
+        minComponent = osg::minimum(minComponent,minValue[2]);
+        minComponent = osg::minimum(minComponent,minValue[3]);
+
+        float maxComponent = maxValue[0];
+        maxComponent = osg::maximum(maxComponent,maxValue[1]);
+        maxComponent = osg::maximum(maxComponent,maxValue[2]);
+        maxComponent = osg::maximum(maxComponent,maxValue[3]);
+
+        float scale = 0.99f/(maxComponent-minComponent);
+        float offset = -minComponent * scale;
+
+        osgVolume::offsetAndScaleImage(image_3d.get(), 
+            osg::Vec4(offset, offset, offset, offset),
+            osg::Vec4(scale, scale, scale, scale));
+
+    }
+
+#if 0
+    osg::Vec4 newMinValue, newMaxValue;
+    if (osgVolume::computeMinMax(image_3d.get(), newMinValue, newMaxValue));
+    {
+        osg::notify(osg::NOTICE)<<"After min value "<<newMinValue<<std::endl;
+        osg::notify(osg::NOTICE)<<"After max value "<<newMaxValue<<std::endl;
+
+    }
+#endif
     
     if (colourSpaceOperation!=NO_COLOUR_SPACE_OPERATION)
     {
@@ -1926,16 +1853,7 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::Image> normalmap_3d = createNormalMap ? createNormalMapTexture(image_3d.get()) : 0;
 
 
-    osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(image_3d->getUserData());
-    if (matrix)
-    {
-        osg::notify(osg::NOTICE)<<"Image has Matrix = "<<*matrix<<std::endl;
-        xSize = image_3d->s() * (*matrix)(0,0);
-        ySize = image_3d->t() * (*matrix)(1,1);
-        zSize = image_3d->r() * (*matrix)(2,2);
-    }
-
-
+    
     // create a model from the images.
     osg::Node* rootNode = 0;
     

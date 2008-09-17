@@ -206,6 +206,10 @@ class FunctionCallback: public CallbackInterface
 class OSGWIDGET_EXPORT Callback
 {
     public:
+    
+        Callback():_type(EVENT_NONE),_data(0) {}
+        Callback(const Callback& rhs):_type(rhs._type),_data(rhs._data),_callback(rhs._callback) {}
+    
         // Creates a Callback that is bound to a member function.
         template<typename T>
         Callback(bool (T::*function)(Event&), T* obj, EventType type, void* data=0):

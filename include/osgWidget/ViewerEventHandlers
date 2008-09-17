@@ -40,6 +40,10 @@ class OSGWIDGET_EXPORT MouseHandler: public osgGA::GUIEventHandler
             osg::NodeVisitor*
         );
 
+
+        typedef bool (MouseHandler::*MouseAction)(float, float, int);
+        typedef bool (WindowManager::*MouseEvent)(float, float);
+
     protected:
 
         osg::ref_ptr<WindowManager> _wm;
@@ -50,9 +54,6 @@ class OSGWIDGET_EXPORT MouseHandler: public osgGA::GUIEventHandler
         bool _handleMouseDrag        (float, float, int);
         bool _handleMouseMove        (float, float, int);
         bool _handleMouseScroll      (float, float, int);
-
-        typedef bool (MouseHandler::*MouseAction)(float, float, int);
-        typedef bool (WindowManager::*MouseEvent)(float, float);
 
         MouseAction _isMouseEvent (osgGA::GUIEventAdapter::EventType) const;
         bool        _doMouseEvent (float, float, MouseEvent);

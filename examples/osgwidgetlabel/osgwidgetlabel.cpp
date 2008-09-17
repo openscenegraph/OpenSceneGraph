@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
     label5->setAlignVertical(osgWidget::Widget::VA_BOTTOM);
 
     // Test our label copy construction...
-    osgWidget::Label* label6 = label5->cloneAs("label6");
+    osgWidget::Label* label6 = osg::clone(label5,"label6");
 
     label6->setLabel("abcdefghijklmnopqrs");
 
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     // vbox->setAnchorHorizontal(osgWidget::Window::HA_RIGHT);
 
     // Test our label-in-window copy construction...
-    osgWidget::Box* clonedBox = box->cloneAs("HBOX-new");
+    osgWidget::Box* clonedBox = osg::clone(box,"HBOX-new");
     
     clonedBox->getBackground()->setColor(0.0f, 1.0f, 0.0f, 0.5f);
 

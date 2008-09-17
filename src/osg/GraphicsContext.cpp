@@ -667,7 +667,7 @@ struct CameraRenderOrderSortOp
     {
         if (lhs->getRenderOrder()<rhs->getRenderOrder()) return true;
         if (rhs->getRenderOrder()<lhs->getRenderOrder()) return false;
-        return lhs->getRenderOrderNum()<lhs->getRenderOrderNum();
+        return lhs->getRenderOrderNum()<rhs->getRenderOrderNum();
     }
 };
 

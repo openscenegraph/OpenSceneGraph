@@ -84,6 +84,8 @@ public:
     ReaderWriterOGR()
     {
         supportsExtension("ogr","OGR file reader");
+        supportsOption("useRandomColorByFeature", "Assign a random color to each feature.");
+        supportsOption("addGroupPerFeature", "Places each feature in a seperate group.");
     }
     virtual const char* className() const { return "OGR file reader"; }
 
@@ -112,17 +114,22 @@ public:
             return 0;
 
         bool useRandomColorByFeature = false;
+        bool addGroupPerFeature = false;
         if (options) 
         {
-            if (options->getOptionString() == "UseRandomColorByFeature")
+            if (options->getOptionString().find("UseRandomColorByFeature") != std::string::npos)
                 useRandomColorByFeature = true;
+            if (options->getOptionString().find("useRandomColorByFeature") != std::string::npos)
+                useRandomColorByFeature = true;
+            if (options->getOptionString().find("addGroupPerFeature") != std::string::npos)
+                addGroupPerFeature = true;
         }
 
         osg::Group* group = new osg::Group;
 
         for (int i = 0; i < file->GetLayerCount(); i++) 
         {
-            osg::Group* node = readLayer(file->GetLayer(i), file->GetName(), useRandomColorByFeature);
+            osg::Group* node = readLayer(file->GetLayer(i), file->GetName(), useRandomColorByFeature, addGroupPerFeature);
             if (node)
                 group->addChild( node );
         }
@@ -130,7 +137,7 @@ public:
         return group;
     }
 
-    osg::Group* readLayer(OGRLayer* ogrLayer, const std::string& name, bool useRandomColorByFeature) const
+    osg::Group* readLayer(OGRLayer* ogrLayer, const std::string& name, bool useRandomColorByFeature, bool addGroupPerFeature) const
     {
         if (!ogrLayer)
             return 0;
@@ -142,9 +149,21 @@ public:
         OGRFeature* ogrFeature = NULL;
         while ((ogrFeature = ogrLayer->GetNextFeature()) != NULL) 
         {
+
             osg::Geode* feature = readFeature(ogrFeature, useRandomColorByFeature);
             if (feature)
-                layer->addChild(feature);
+            {
+                if (addGroupPerFeature)
+                {
+                    osg::Group* featureGroup = new osg::Group;
+                    featureGroup->addChild(feature);
+                    layer->addChild(featureGroup);
+                }
+                else
+                {
+                    layer->addChild(feature);
+                }
+            }
             OGRFeature::DestroyFeature( ogrFeature );
         }
         return layer;

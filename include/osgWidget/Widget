@@ -77,8 +77,6 @@ public:
         Widget (const Widget&, const osg::CopyOp&);
 
         META_Object   (osgWidget, Widget);
-        META_UIObject (Widget);
-
 
         virtual ~Widget() {
         }

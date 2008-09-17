@@ -17,17 +17,10 @@
 #ifndef OSGWIDGET_UI_OBJECT_PARENT
 #define OSGWIDGET_UI_OBEJCT_PARENT
 
-namespace osgWidget {
+#include <osg/Object>
+#include <osg/observer_ptr>
 
-#define META_UIObject(name) \
-    name * cloneAs(\
-        const std::string& newName, \
-        const osg::CopyOp& co = osg::CopyOp::DEEP_COPY_ALL \
-    ) const { \
-        name * obj = dynamic_cast<name *>(this->clone(co)); \
-        obj->setName(newName); \
-        return obj; \
-    }
+namespace osgWidget {
 
 template <typename T>
 class UIObjectParent

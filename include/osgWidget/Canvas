@@ -25,7 +25,6 @@ class OSGWIDGET_EXPORT Canvas: public Window
 {
     public:
         META_Object   (osgWidget, Canvas);
-        META_UIObject (Canvas);
 
         Canvas (const std::string& = "");
         Canvas (const Canvas&, const osg::CopyOp&);

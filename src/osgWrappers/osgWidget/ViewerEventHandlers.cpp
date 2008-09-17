@@ -41,6 +41,10 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::KeyboardHandler)
 	          "");
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(bool(osgWidget::MouseHandler::*), osgWidget::MouseHandler::MouseAction)
+
+TYPE_NAME_ALIAS(bool(osgWidget::WindowManager::*), osgWidget::MouseHandler::MouseEvent)
+
 BEGIN_OBJECT_REFLECTOR(osgWidget::MouseHandler)
 	I_DeclaringFile("osgWidget/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
@@ -90,13 +94,13 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::MouseHandler)
 	                   __bool___handleMouseScroll__float__float__int,
 	                   "",
 	                   "");
-	I_ProtectedMethod1(MouseAction, _isMouseEvent, IN, osgGA::GUIEventAdapter::EventType, x,
+	I_ProtectedMethod1(osgWidget::MouseHandler::MouseAction, _isMouseEvent, IN, osgGA::GUIEventAdapter::EventType, x,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
 	                   __MouseAction___isMouseEvent__osgGA_GUIEventAdapter_EventType,
 	                   "",
 	                   "");
-	I_ProtectedMethod3(bool, _doMouseEvent, IN, float, x, IN, float, x, IN, MouseEvent, x,
+	I_ProtectedMethod3(bool, _doMouseEvent, IN, float, x, IN, float, x, IN, osgWidget::MouseHandler::MouseEvent, x,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __bool___doMouseEvent__float__float__MouseEvent,

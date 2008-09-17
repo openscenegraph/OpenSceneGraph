@@ -52,11 +52,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Canvas)
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
-	I_Method1(, META_UIObject, IN, osgWidget::Canvas, x,
-	          Properties::NON_VIRTUAL,
-	          ____META_UIObject__Canvas,
-	          "",
-	          "");
 	I_ConstructorWithDefaults1(IN, const std::string &, x, "",
 	                           Properties::NON_EXPLICIT,
 	                           ____Canvas__C5_std_string_R1,

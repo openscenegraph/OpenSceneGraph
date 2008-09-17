@@ -59,7 +59,6 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgWidget::WindowManager)
 	I_DeclaringFile("osgWidget/WindowManager");
 	I_BaseType(osg::Switch);
-	I_BaseType(osgWidget::UIObjectParent);
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,

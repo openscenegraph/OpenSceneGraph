@@ -622,7 +622,11 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
 #endif
 
 #if defined(__CYGWIN__)
-    return prepend+"cygwin_"+"osgdb_"+lowercase_ext+".dll";
+    #ifdef _DEBUG
+        return prepend+"cygwin_"+"osgdb_"+lowercase_ext+OSG_DEBUG_POSTFIX+".dll";
+    #else
+        return prepend+"cygwin_"+"osgdb_"+lowercase_ext+".dll";
+    #endif
 #elif defined(__MINGW32__)
     return prepend+"mingw_"+"osgdb_"+lowercase_ext+".dll";
 #elif defined(WIN32)

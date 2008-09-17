@@ -102,28 +102,46 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
      }
 
     if (filtered) {
-            sstr << "          float fTexelSize="<< (sqrt(2.0) / textureRes ) <<";" << std::endl;
+            sstr << "          float fTexelSize="<< (1.41 / textureRes ) <<";" << std::endl;
+            sstr << "          float fZOffSet  = -0.0015;" << std::endl;
+
     }
     for (unsigned int i=0;i<nbrSplits;i++)    {
         if (!filtered) {
             sstr << "    float shadow"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]).r;"   << std::endl;
-        } else {
+            sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artefacts
+      } else {
 
 
-            // filter the shadow (look up)
-            sstr << "    float shadowOrg"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]).r;"   << std::endl;
-            sstr << "    float shadow0"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(-fTexelSize,-fTexelSize,0,0) ).r;"   << std::endl;
-            sstr << "    float shadow1"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(fTexelSize,-fTexelSize,0,0)).r;"   << std::endl;
-            sstr << "    float shadow2"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(fTexelSize,fTexelSize,0,0) ).r;"   << std::endl;
-            sstr << "    float shadow3"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(-fTexelSize,fTexelSize,0,0) ).r;"   << std::endl;
+            // filter the shadow (look up) 3x3 
+            //
+            // 1 0 1
+            // 0 2 0 
+            // 1 0 1 
+            //
+            // / 6
 
-            sstr << "    float shadow02"    <<    i    <<" = (shadow0"    <<    i    <<"+shadow1"    <<    i    <<")*0.5;"<< std::endl;
-            sstr << "    float shadow13"    <<    i    <<" = (shadow1"    <<    i    <<"+shadow3"    <<    i    <<")*0.5;"<< std::endl;
-            sstr << "    float shadowSoft"    <<    i    <<" = (shadow02"    <<    i    <<"+shadow13"    <<    i    <<")*0.5;"<< std::endl;
-            sstr << "    float shadow"    <<    i    <<" = (shadowSoft"    <<    i    <<"+shadowOrg"    <<    i    <<")*0.5;"<< std::endl;
+            sstr << "    float shadowOrg"    <<    i    <<" = shadow2DProj( shadowTexture"  <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(0.0,0.0,fZOffSet,0.0) ).r;"   << std::endl;
+            sstr << "    float shadow0"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(-fTexelSize,-fTexelSize,fZOffSet,0.0) ).r;"   << std::endl;
+            sstr << "    float shadow1"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4( fTexelSize,-fTexelSize,fZOffSet,0.0) ).r;"   << std::endl;
+            sstr << "    float shadow2"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4( fTexelSize, fTexelSize,fZOffSet,0.0) ).r;"   << std::endl;
+            sstr << "    float shadow3"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(-fTexelSize, fTexelSize,fZOffSet,0.0) ).r;"   << std::endl;
 
+            sstr << "    float shadow"    <<    i    <<" = ( 2.0*shadowOrg"    <<    i    
+                                                     <<" + shadow0"    <<    i  
+                                                     <<" + shadow1"    <<    i  
+                                                     <<" + shadow2"    <<    i  
+                                                     <<" + shadow3"    <<    i  
+                                                     << ")/6.0;"<< std::endl;
+            
+            sstr << " shadow"    <<    i    <<" = shadow"    <<    i    <<" * step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artefacts
+
+            //sstr << "    float shadow02"    <<    i    <<" = (shadow0"    <<    i    <<"+shadow2"    <<    i    <<")*0.5;"<< std::endl;
+            //sstr << "    float shadow13"    <<    i    <<" = (shadow1"    <<    i    <<"+shadow3"    <<    i    <<")*0.5;"<< std::endl;
+            //sstr << "    float shadowSoft"    <<    i    <<" = (shadow02"    <<    i    <<"+shadow13"    <<    i    <<")*0.5;"<< std::endl;
+            //sstr << "    float shadow"    <<    i    <<" = (shadowSoft"    <<    i    <<"+shadowOrg"    <<    i    <<")*0.5;"<< std::endl;
+            //sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artefacts
         }
-        sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artefacts
     }
 
 
@@ -289,8 +307,8 @@ void ParallelSplitShadowMap::init(){
             #else
                 pssmShadowSplitTexture._texture->setInternalFormat(GL_RGBA);
             #endif
-            pssmShadowSplitTexture._texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-            pssmShadowSplitTexture._texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+            pssmShadowSplitTexture._texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::NEAREST);
+            pssmShadowSplitTexture._texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);
             pssmShadowSplitTexture._texture->setBorderColor(osg::Vec4(1.0,1.0,1.0,1.0));
             pssmShadowSplitTexture._texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::CLAMP_TO_BORDER);
             pssmShadowSplitTexture._texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::CLAMP_TO_BORDER);

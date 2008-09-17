@@ -15,7 +15,7 @@
 using namespace osg;
 
 PositionAttitudeTransform::PositionAttitudeTransform():
-    _scale(1.0f,1.0f,1.0f)
+    _scale(1.0,1.0,1.0)
 {
 }
 
@@ -23,17 +23,17 @@ bool PositionAttitudeTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVis
 {
     if (_referenceFrame==RELATIVE_RF)
     {
-        matrix.preMult(osg::Matrix::translate(-_pivotPoint)*
-                       osg::Matrix::scale(_scale)*
-                       osg::Matrix::rotate(_attitude)*
-                       osg::Matrix::translate(_position));
+        matrix.preMultTranslate(_position);
+        matrix.preMultRotate(_attitude);
+        matrix.preMultScale(_scale);
+        matrix.preMultTranslate(-_pivotPoint);
     }
     else // absolute
     {
-        matrix = osg::Matrix::translate(-_pivotPoint)*
-                 osg::Matrix::scale(_scale)*
-                 osg::Matrix::rotate(_attitude)*
-                 osg::Matrix::translate(_position);
+        matrix.makeRotate(_attitude);
+        matrix.postMultTranslate(_position);
+        matrix.preMultScale(_scale);
+        matrix.preMultTranslate(-_pivotPoint);
     }
     return true;
 }
@@ -41,19 +41,22 @@ bool PositionAttitudeTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVis
 
 bool PositionAttitudeTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 {
+    if (_scale.x() == 0.0 || _scale.y() == 0.0 || _scale.z() == 0.0)
+        return false;
+
     if (_referenceFrame==RELATIVE_RF)
     {
-        matrix.postMult(osg::Matrix::translate(-_position)*
-                        osg::Matrix::rotate(_attitude.inverse())*
-                        osg::Matrix::scale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.z())*
-                        osg::Matrix::translate(_pivotPoint));
+        matrix.postMultTranslate(-_position);
+        matrix.postMultRotate(_attitude.inverse());
+        matrix.postMultScale(Vec3d(1.0/_scale.x(), 1.0/_scale.y(), 1.0/_scale.z()));
+        matrix.postMultTranslate(_pivotPoint);
     }
     else // absolute
     {
-        matrix = osg::Matrix::translate(-_position)*
-                 osg::Matrix::rotate(_attitude.inverse())*
-                 osg::Matrix::scale(1.0f/_scale.x(),1.0f/_scale.y(),1.0f/_scale.z())*
-                 osg::Matrix::translate(_pivotPoint);
+        matrix.makeRotate(_attitude.inverse());
+        matrix.preMultTranslate(-_position);
+        matrix.postMultScale(Vec3d(1.0/_scale.x(), 1.0/_scale.y(), 1.0/_scale.z()));
+        matrix.postMultTranslate(_pivotPoint);
     }
     return true;
 }

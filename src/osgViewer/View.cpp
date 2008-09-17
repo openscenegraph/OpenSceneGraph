@@ -96,7 +96,7 @@ public:
                 x = osg::Matrixd::transform3x3(x,coordinateFrame);
                 y = osg::Matrixd::transform3x3(y,coordinateFrame);
                 z = osg::Matrixd::transform3x3(z,coordinateFrame);
-                coordinateFrame.preMult(osg::Matrixd::scale(1.0/x.length(),1.0/y.length(),1.0/z.length()));
+                coordinateFrame.preMultScale(osg::Vec3d(1.0/x.length(),1.0/y.length(),1.0/z.length()));
 
                 // reapply the position.
                 coordinateFrame.setTrans(pos);

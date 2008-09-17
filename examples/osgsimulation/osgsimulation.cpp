@@ -146,7 +146,7 @@ public:
 
                     //osg::Matrixd matrix;
                     ellipsoid->computeLocalToWorldTransformFromLatLongHeight(_latitude,_longitude,_height,matrix);
-                    matrix.preMult(osg::Matrix::rotate(_rotation));
+                    matrix.preMultRotate(_rotation);
                     
                     mt->setMatrix(matrix);
                 }

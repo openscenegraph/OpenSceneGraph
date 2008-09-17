@@ -174,27 +174,12 @@ public:
 private:
   void rotate(float x, float y)
   {
-    osg::Matrixd baseMatrix = _modelGroupTransform->getMatrix();
+    osg::Matrix baseMatrix = _modelGroupTransform->getMatrix();
     
-    osg::Matrixd preTransMatrix;
-    osg::Matrixd postTransMatrix;
-    osg::Matrixd rotMatrixX;
-    osg::Matrixd rotMatrixZ;
-    
-    preTransMatrix.makeTranslate(_rotCenter);
-    postTransMatrix.makeTranslate(-_rotCenter);
-
-    rotMatrixZ.makeRotate((x - _prevX) * 3., osg::Vec3d(0.0, 0.0,1.0));
-    
-    baseMatrix.preMult(preTransMatrix);
-    baseMatrix.preMult(rotMatrixZ);
-    baseMatrix.preMult(postTransMatrix);
-
-    rotMatrixX.makeRotate(-(y - _prevY) * 3., (baseMatrix * osg::Vec3d(1.0, 0.0,0.0)));
-    
-    baseMatrix.preMult(preTransMatrix);
-    baseMatrix.preMult(rotMatrixX);
-    baseMatrix.preMult(postTransMatrix);
+    baseMatrix.preMultTranslate(_rotCenter);
+    baseMatrix.preMultRotate(osg::Quat((x - _prevX) * 3, osg::Vec3d(0.0, 0.0, 1.0)));
+    baseMatrix.preMultRotate(osg::Quat(-(y - _prevY) * 3, (baseMatrix * osg::Vec3d(1.0, 0.0, 0.0))));
+    baseMatrix.preMultTranslate(-_rotCenter);
     
     _modelGroupTransform->setMatrix(baseMatrix);
 

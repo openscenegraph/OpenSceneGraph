@@ -116,15 +116,12 @@ osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& fl
     //
     if (_usePivot)
     {
-        osg::Matrix tmpPivot;
-        tmpPivot.setTrans(-_pivot);
-        unsquished.postMult(tmpPivot);
+        unsquished.postMultTranslate(-_pivot);
 
         osg::Matrix tmps, invtmps;
         so.get(tmps);
-        invtmps = osg::Matrix::inverse(tmps);
-        if (invtmps.isNaN())
-       	{
+        if (!invtmps.invert(tmps))
+        {
             flag = false;
             return osg::Matrix::identity();
         }
@@ -132,49 +129,50 @@ osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& fl
         //SO^
         unsquished.postMult(invtmps);
         //S
-        unsquished.postMult(osg::Matrix::scale(s[0], s[1], s[2]));
+        unsquished.postMultScale(s);
         //SO
         unsquished.postMult(tmps);
-        tmpPivot.makeIdentity();
-        osg::Matrix tmpr;
-        r.get(tmpr);
         //R
-        unsquished.postMult(tmpr);
+        unsquished.postMultRotate(r);
         //T
-        unsquished.postMult(osg::Matrix::translate(t[0],t[1],t[2]));
+        unsquished.postMultTranslate(t);
 
         osg::Matrix invltw;
-        invltw = osg::Matrix::inverse(LTW);
-        if (invltw.isNaN())
-       	{
-            flag =false;
+        if (!invltw.invert(LTW))
+        {
+            flag = false;
             return osg::Matrix::identity();
         }
         // LTW^
         unsquished.postMult( invltw );
 
         // Position
-        tmpPivot.makeIdentity();
         if (_usePosition)
-            tmpPivot.setTrans(_position);
+            unsquished.postMult(_position);
         else
-            tmpPivot.setTrans(_pivot);
-
-        unsquished.postMult(tmpPivot); 
+            unsquished.postMult(_pivot);
     }
     else
     {
         osg::Matrix tmps, invtmps;
         so.get(tmps);
-        invtmps = osg::Matrix::inverse(tmps);
+        if (!invtmps.invert(tmps))
+        {
+            flag = false;
+            return osg::Matrix::identity();
+        }
         unsquished.postMult(invtmps);
-        unsquished.postMult(osg::Matrix::scale(s[0], s[1], s[2]));
+        unsquished.postMultScale(s);
         unsquished.postMult(tmps);
-        osg::Matrix tmpr;
-        r.get(tmpr);
-        unsquished.postMult(tmpr);
-        unsquished.postMult(osg::Matrix::translate(t[0],t[1],t[2]));
-        unsquished.postMult( osg::Matrix::inverse(LTW) );
+        unsquished.postMultRotate(r);
+        unsquished.postMultTranslate(t);
+        osg::Matrix invltw;
+        if (!invltw.invert(LTW))
+        {
+            flag = false;
+            return osg::Matrix::identity();
+        }
+        unsquished.postMult( invltw );
     }
 
     if (unsquished.isNaN())

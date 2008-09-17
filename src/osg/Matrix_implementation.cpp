@@ -18,6 +18,7 @@
 
 #include <osg/GL>
 
+#include <limits>
 #include <stdlib.h>
 
 using namespace osg;
@@ -62,56 +63,71 @@ void Matrix_implementation::set( value_type a00, value_type a01, value_type a02,
 #define QZ  q._v[2]
 #define QW  q._v[3]
 
-void Matrix_implementation::setRotate(const Quat& q_in)
+void Matrix_implementation::setRotate(const Quat& q)
 {
-    Quat q(q_in);
     double length2 = q.length2();
-    if (length2!=1.0 && length2!=0)
+    if (fabs(length2) <= std::numeric_limits<double>::min())
     {
-        // normalize quat if required.
-        q /= sqrt(length2);
+        _mat[0][0] = 0.0; _mat[1][0] = 0.0; _mat[2][0] = 0.0;
+        _mat[0][1] = 0.0; _mat[1][1] = 0.0; _mat[2][1] = 0.0;
+        _mat[0][2] = 0.0; _mat[1][2] = 0.0; _mat[2][2] = 0.0;
     }
-
-    // Source: Gamasutra, Rotating Objects Using Quaternions
-    //
-    //http://www.gamasutra.com/features/19980703/quaternions_01.htm
-
-    double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
-
-    // calculate coefficients
-    x2 = QX + QX;
-    y2 = QY + QY;
-    z2 = QZ + QZ;
-
-    xx = QX * x2;
-    xy = QX * y2;
-    xz = QX * z2;
-
-    yy = QY * y2;
-    yz = QY * z2;
-    zz = QZ * z2;
-
-    wx = QW * x2;
-    wy = QW * y2;
-    wz = QW * z2;
-
-    // Note.  Gamasutra gets the matrix assignments inverted, resulting
-    // in left-handed rotations, which is contrary to OpenGL and OSG's 
-    // methodology.  The matrix assignment has been altered in the next
-    // few lines of code to do the right thing.
-    // Don Burns - Oct 13, 2001
-    _mat[0][0] = 1.0 - (yy + zz);
-    _mat[1][0] = xy - wz;
-    _mat[2][0] = xz + wy;
-
-
-    _mat[0][1] = xy + wz;
-    _mat[1][1] = 1.0 - (xx + zz);
-    _mat[2][1] = yz - wx;
-
-    _mat[0][2] = xz - wy;
-    _mat[1][2] = yz + wx;
-    _mat[2][2] = 1.0 - (xx + yy);
+    else
+    {
+        double rlength2;
+        // normalize quat if required.
+        // We can avoid the expensive sqrt in this case since all 'coefficients' below are products of two q components.
+        // That is a square of a square root, so it is possible to avoid that
+        if (length2 != 1.0)
+        {
+            rlength2 = 2.0/length2;
+        }
+        else
+        {
+            rlength2 = 2.0;
+        }
+        
+        // Source: Gamasutra, Rotating Objects Using Quaternions
+        //
+        //http://www.gamasutra.com/features/19980703/quaternions_01.htm
+        
+        double wx, wy, wz, xx, yy, yz, xy, xz, zz, x2, y2, z2;
+        
+        // calculate coefficients
+        x2 = rlength2*QX;
+        y2 = rlength2*QY;
+        z2 = rlength2*QZ;
+        
+        xx = QX * x2;
+        xy = QX * y2;
+        xz = QX * z2;
+        
+        yy = QY * y2;
+        yz = QY * z2;
+        zz = QZ * z2;
+        
+        wx = QW * x2;
+        wy = QW * y2;
+        wz = QW * z2;
+        
+        // Note.  Gamasutra gets the matrix assignments inverted, resulting
+        // in left-handed rotations, which is contrary to OpenGL and OSG's 
+        // methodology.  The matrix assignment has been altered in the next
+        // few lines of code to do the right thing.
+        // Don Burns - Oct 13, 2001
+        _mat[0][0] = 1.0 - (yy + zz);
+        _mat[1][0] = xy - wz;
+        _mat[2][0] = xz + wy;
+        
+        
+        _mat[0][1] = xy + wz;
+        _mat[1][1] = 1.0 - (xx + zz);
+        _mat[2][1] = yz - wx;
+        
+        _mat[0][2] = xz - wy;
+        _mat[1][2] = yz + wx;
+        _mat[2][2] = 1.0 - (xx + yy);
+    }
 
 #if 0
     _mat[0][3] = 0.0;
@@ -903,7 +919,7 @@ void Matrix_implementation::makeLookAt(const Vec3d& eye,const Vec3d& center,cons
         s[2],     u[2],     -f[2],     0.0,
         0.0,     0.0,     0.0,      1.0);
 
-    preMult(Matrix_implementation::translate(-eye));
+    preMultTranslate(-eye);
 }
 
 

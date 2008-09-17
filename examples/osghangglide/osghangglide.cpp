@@ -54,7 +54,7 @@ public:
         if (cv)
         {
             osg::Vec3 eyePointLocal = cv->getEyeLocal();
-            matrix.preMult(osg::Matrix::translate(eyePointLocal.x(),eyePointLocal.y(),0.0f));
+            matrix.preMultTranslate(osg::Vec3(eyePointLocal.x(),eyePointLocal.y(),0.0f));
         }
         return true;
     }
@@ -68,7 +68,7 @@ public:
         if (cv)
         {
             osg::Vec3 eyePointLocal = cv->getEyeLocal();
-            matrix.postMult(osg::Matrix::translate(-eyePointLocal.x(),-eyePointLocal.y(),0.0f));
+            matrix.postMultTranslate(osg::Vec3(-eyePointLocal.x(),-eyePointLocal.y(),0.0f));
         }
         return true;
     }

@@ -234,10 +234,9 @@ void DirectionalSector::computeMatrix()
   double pitch   = atan2(_direction[2], sqrt(_direction[0]*_direction[0] + _direction[1]*_direction[1]));
   double roll    = _rollAngle;
 
-  _local_to_LP = osg::Matrixd::identity();
-  _local_to_LP.preMult(osg::Matrix::rotate(heading, 0.0, 0.0, -1.0));
-  _local_to_LP.preMult(osg::Matrix::rotate(pitch, 1.0, 0.0, 0.0));
-  _local_to_LP.preMult(osg::Matrix::rotate(roll, 0.0, 1.0, 0.0));
+  _local_to_LP.setRotate(osg::Quat(heading, 0.0, 0.0, -1.0));
+  _local_to_LP.preMultRotate(osg::Quat(pitch, 1.0, 0.0, 0.0));
+  _local_to_LP.preMultRotate(osg::Quat(roll, 0.0, 1.0, 0.0));
 }
 
 void DirectionalSector::setDirection(const osg::Vec3& direction)

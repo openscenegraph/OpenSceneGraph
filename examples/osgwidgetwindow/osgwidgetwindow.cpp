@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
 	// Now, lets clone our existing box and create a new copy of of it, also adding that
 	// to the WindowManager. This demonstrates the usages of OSG's ->clone() support,
 	// though that is abstracted by our META_UIObject macro.
-	osgWidget::Window* boxCopy = box->cloneAs("newBox");
+	osgWidget::Window* boxCopy = osg::clone(box,"newBox");
 
 	// Move our copy to make it visible.
 	boxCopy->setOrigin(0.0f, 125.0f);

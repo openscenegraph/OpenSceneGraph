@@ -63,7 +63,6 @@ class OSGWIDGET_EXPORT Window:
 
         public:
             META_Object   (osgWidget::Window, EmbeddedWindow);
-            META_UIObject (EmbeddedWindow);
 
             EmbeddedWindow (const std::string& = "", point_type = 0.0f, point_type = 0.0f);
             EmbeddedWindow (const EmbeddedWindow&, const osg::CopyOp&);
@@ -123,8 +122,6 @@ class OSGWIDGET_EXPORT Window:
             HA_LEFT,
             HA_RIGHT
         };
-
-        META_UIObject(Window);
 
         Window (const std::string& = "");
         Window (const Window&, const osg::CopyOp&);
@@ -401,8 +398,9 @@ class OSGWIDGET_EXPORT Window:
             addCallback(new Callback(&callbackWindowTabFocus, EVENT_KEY_DOWN));
         }
 
-    protected:
         typedef point_type (Widget::*Getter)() const;
+        
+    protected:
 
         typedef std::less<point_type>    Less;
         typedef std::greater<point_type> Greater;

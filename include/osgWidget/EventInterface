@@ -203,6 +203,9 @@ class FunctionCallback: public CallbackInterface
 class OSGWIDGET_EXPORT Callback: public osg::Referenced
 {
     public:
+        Callback(): _type(EVENT_NONE), _data(0), _callback(0) {}
+        Callback(const Callback& rhs): osg::Referenced(rhs), _type(rhs._type), _data(rhs._data), _callback(rhs._callback) {}
+
         // The more traditional style of OSG Callbacks.
         Callback(EventType type, void* data=0):
         _type     (type),

@@ -45,7 +45,6 @@ class OSGWIDGET_EXPORT Frame: public Table
         {
         public:
             META_Object   (osgWidget, Corner);
-            META_UIObject (Corner);
 
             Corner (CornerType = CORNER_LOWER_LEFT, point_type = 0.0f, point_type = 0.0f);
             Corner (const Corner&, const osg::CopyOp&);
@@ -73,7 +72,6 @@ class OSGWIDGET_EXPORT Frame: public Table
         {
         public:
             META_Object   (osgWidget, Border);
-            META_UIObject (Border);
 
             Border (BorderType = BORDER_LEFT, point_type = 0.0f, point_type = 0.0f);
             Border (const Border&, const osg::CopyOp&);
@@ -100,7 +98,6 @@ class OSGWIDGET_EXPORT Frame: public Table
         };
 
         META_Object   (osgWidget, Frame);
-        META_UIObject (Frame);
 
         Frame (const std::string& = "");
         Frame (const Frame&, const osg::CopyOp&);

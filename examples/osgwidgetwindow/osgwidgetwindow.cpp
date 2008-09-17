@@ -77,6 +77,7 @@ int main(int argc, char** argv) {
 		1024.0f,
 		MASK_2D,
 		osgWidget::WindowManager::WM_USE_LUA |
+		osgWidget::WindowManager::WM_NO_INVERT_Y |
 		osgWidget::WindowManager::WM_USE_PYTHON |
 		osgWidget::WindowManager::WM_PICK_DEBUG |
 		osgWidget::WindowManager::WM_NO_BETA_WARN
@@ -141,7 +142,7 @@ int main(int argc, char** argv) {
 	// Now, lets clone our existing box and create a new copy of of it, also adding that
 	// to the WindowManager. This demonstrates the usages of OSG's ->clone() support,
 	// though that is abstracted by our META_UIObject macro.
-	osgWidget::Window* boxCopy = box->cloneAs("newBox");
+	osgWidget::Window* boxCopy = osg::clone(box,"newBox");
 
 	// Move our copy to make it visible.
 	boxCopy->setOrigin(0.0f, 125.0f);
@@ -169,7 +170,8 @@ int main(int argc, char** argv) {
 	// which will wrap the calls to createOrthoCamera and addChild for us! Check out
 	// some of the other examples to see this in action...
 	osg::Group*  group  = new osg::Group();
-	osg::Camera* camera = osgWidget::createInvertedYOrthoCamera(1280.0f, 1024.0f);
+	//osg::Camera* camera = osgWidget::createInvertedYOrthoCamera(1280.0f, 1024.0f);
+	osg::Camera* camera = osgWidget::createOrthoCamera(1280.0f, 1024.0f);
 	osg::Node*   model  = osgDB::readNodeFile("cow.osg");
 
 	// Add our event handler; is this better as a MatrixManipulator? Add a few other

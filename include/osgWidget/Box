@@ -27,7 +27,6 @@ class OSGWIDGET_EXPORT Box: public Window
         };
 
         META_Object   (osgWidget, Box);
-        META_UIObject (Box);
 
         Box (const std::string& = "", BoxType = HORIZONTAL, bool = false);
         Box (const Box&, const osg::CopyOp&);

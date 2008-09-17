@@ -25,7 +25,6 @@ class OSGWIDGET_EXPORT Label: public Widget
     public:
 
         META_Object   (osgWidget, Label);
-        META_UIObject (Label);
 
         Label (const std::string& = "", const std::string& = "");
         Label (const Label&, const osg::CopyOp&);

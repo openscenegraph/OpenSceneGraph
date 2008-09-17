@@ -28,7 +28,6 @@ class OSGWIDGET_EXPORT Table: public Window
         typedef std::vector<point_type> CellSizes;
 
         META_Object   (osgWidget, Table);
-        META_UIObject (Table);
 
         Table (const std::string& = "", unsigned int = 0, unsigned int = 0);
         Table (const Table&, const osg::CopyOp&);

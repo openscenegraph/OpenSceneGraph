@@ -1067,7 +1067,7 @@ void SceneView::draw()
                 if (!leftColorMask)
                 {
                     leftColorMask = new osg::ColorMask();
-                    _renderStageRight->setColorMask(leftColorMask);
+                    _renderStageLeft->setColorMask(leftColorMask);
                 }
                 
                 // red
@@ -1084,7 +1084,7 @@ void SceneView::draw()
                 
 
                 // ensure that right eye color planes are active.
-                osg::ColorMask* rightColorMask = _renderStageLeft->getColorMask();
+                osg::ColorMask* rightColorMask = _renderStageRight->getColorMask();
                 if (!rightColorMask)
                 {
                     rightColorMask = new osg::ColorMask();
@@ -1098,7 +1098,6 @@ void SceneView::draw()
                 // rightColorMask->setMask(false,false,true,true);
 
                 _localStateSet->setAttribute(rightColorMask);
-                _renderStageRight->setColorMask(rightColorMask);
 
                 // draw right eye.
                 _renderStageRight->draw(_renderInfo,previous);

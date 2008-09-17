@@ -25,13 +25,13 @@ bool CameraView::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 {
     if (_referenceFrame==RELATIVE_RF)
     {
-        matrix.preMult(osg::Matrix::rotate(_attitude)*
-                       osg::Matrix::translate(_position));
+        matrix.preMultTranslate(_position);
+        matrix.preMultRotate(_attitude);
     }
     else // absolute
     {
-        matrix = osg::Matrix::rotate(_attitude)*
-                 osg::Matrix::translate(_position);
+        matrix.makeRotate(_attitude);
+        matrix.postMultTranslate(_position);
     }
     return true;
 }
@@ -41,13 +41,13 @@ bool CameraView::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 {
     if (_referenceFrame==RELATIVE_RF)
     {
-        matrix.postMult(osg::Matrix::translate(-_position)*
-                        osg::Matrix::rotate(_attitude.inverse()));
+        matrix.postMultTranslate(-_position);
+        matrix.postMultRotate(_attitude.inverse());
     }
     else // absolute
     {
-        matrix = osg::Matrix::translate(-_position)*
-                 osg::Matrix::rotate(_attitude.inverse());
+        matrix.makeRotate(_attitude.inverse());
+        matrix.preMultTranslate(-_position);
     }
     return true;
 }

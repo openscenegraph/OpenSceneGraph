@@ -67,11 +67,10 @@ class MyBillboardTransform : public osg::PositionAttitudeTransform
 
             }
 
-
-            matrix.preMult(osg::Matrix::translate(-_pivotPoint)*
-                           osg::Matrix::rotate(_attitude)*
-                           osg::Matrix::rotate(billboardRotation)*
-                           osg::Matrix::translate(_position));
+            matrix.preMultTranslate(_position);
+            matrix.preMultRotate(billboardRotation);
+            matrix.preMultRotate(_attitude);
+            matrix.preMultTranslate(_pivotPoint);
             return true;
         }
 

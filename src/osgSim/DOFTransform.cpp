@@ -132,7 +132,7 @@ bool DOFTransform::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisito
 
 
     //and scale:
-    current.preMult(osg::Matrix::scale(getCurrentScale()));
+    current.preMultScale(getCurrentScale());
 
     l2w.postMult(current);
 
@@ -201,7 +201,7 @@ bool DOFTransform::computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisito
     }
 
     //and scale:
-    current.postMult(osg::Matrix::scale(1./getCurrentScale()[0], 1./getCurrentScale()[1], 1./getCurrentScale()[2]));
+    current.postMultScale(osg::Vec3d(1./getCurrentScale()[0], 1./getCurrentScale()[1], 1./getCurrentScale()[2]));
 
     w2l.postMult(current);
 

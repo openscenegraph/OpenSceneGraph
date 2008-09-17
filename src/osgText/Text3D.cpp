@@ -457,22 +457,11 @@ void Text3D::computePositions(unsigned int contextID) const
 
     
     float scale = _font->getScale();
-    osg::Matrix scaleMatrix = osg::Matrix::scale(scale * _characterHeight, 
-                                                 scale * _characterHeight / _characterAspectRatio, 
-                                                 _characterDepth);
-    if (!_rotation.zeroRotation())
-    {
-        matrix.makeTranslate(-_offset);
-        matrix.postMult(scaleMatrix);
-        matrix.postMult(osg::Matrix::rotate(_rotation));
-        matrix.postMult(osg::Matrix::translate(_position));
-    }
-    else
-    {
-        matrix.makeTranslate(-_offset);
-        matrix.postMult(scaleMatrix);
-        matrix.postMult(osg::Matrix::translate(_position));
-    }
+    osg::Vec3 scaleVec(scale * _characterHeight, scale * _characterHeight / _characterAspectRatio, _characterDepth);
+    matrix.makeTranslate(-_offset);
+    matrix.postMultScale(scaleVec);
+    matrix.postMultRotate(_rotation);
+    matrix.postMultTranslate(_position);
 
     
     _normal = osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),matrix);

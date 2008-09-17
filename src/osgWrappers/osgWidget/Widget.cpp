@@ -292,11 +292,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(, META_UIObject, IN, osgWidget::Widget, x,
-	          Properties::NON_VIRTUAL,
-	          ____META_UIObject__Widget,
-	          "",
-	          "");
 	I_Method1(void, parented, IN, osgWidget::Window *, x,
 	          Properties::VIRTUAL,
 	          __void__parented__Window_P1,

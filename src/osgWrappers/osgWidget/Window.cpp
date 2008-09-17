@@ -29,6 +29,8 @@
 
 TYPE_NAME_ALIAS(std::list< osg::observer_ptr< osgWidget::Window > >, osgWidget::Window::WindowList)
 
+TYPE_NAME_ALIAS(osgWidget::point_type(osgWidget::Widget::*), osgWidget::Window::Getter)
+
 BEGIN_ENUM_REFLECTOR(osgWidget::Window::Strata)
 	I_DeclaringFile("osgWidget/Window");
 	I_EnumLabel(osgWidget::Window::STRATA_NONE);
@@ -62,14 +64,8 @@ END_REFLECTOR
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	I_DeclaringFile("osgWidget/Window");
 	I_BaseType(osg::MatrixTransform);
-	I_BaseType(osgWidget::UIObjectParent);
 	I_BaseType(osgWidget::EventInterface);
 	I_BaseType(osgWidget::StyleInterface);
-	I_Method1(, META_UIObject, IN, osgWidget::Window, x,
-	          Properties::NON_VIRTUAL,
-	          ____META_UIObject__Window,
-	          "",
-	          "");
 	I_ConstructorWithDefaults1(IN, const std::string &, x, "",
 	                           Properties::NON_EXPLICIT,
 	                           ____Window__C5_std_string_R1,
@@ -860,11 +856,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Window::EmbeddedWindow)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(, META_UIObject, IN, osgWidget::Window::EmbeddedWindow, x,
-	          Properties::NON_VIRTUAL,
-	          ____META_UIObject__EmbeddedWindow,
-	          "",
-	          "");
 	I_ConstructorWithDefaults3(IN, const std::string &, x, "", IN, osgWidget::point_type, x, 0.0f, IN, osgWidget::point_type, x, 0.0f,
 	                           ____EmbeddedWindow__C5_std_string_R1__point_type__point_type,
 	                           "",

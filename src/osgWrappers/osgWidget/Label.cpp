@@ -54,11 +54,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Label)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(, META_UIObject, IN, osgWidget::Label, x,
-	          Properties::NON_VIRTUAL,
-	          ____META_UIObject__Label,
-	          "",
-	          "");
 	I_ConstructorWithDefaults2(IN, const std::string &, x, "", IN, const std::string &, x, "",
 	                           ____Label__C5_std_string_R1__C5_std_string_R1,
 	                           "",

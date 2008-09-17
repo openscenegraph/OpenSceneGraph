@@ -2,6 +2,7 @@
 #
 
 #  DCMTK_INCLUDE_DIR   - Directories to include to use DCMTK
+#  DCMTK_ROOT_INCLUDE_DIR - root directory of DCMTK related include directories
 #  DCMTK_LIBRARIES     - Files to link against to use DCMTK
 #  DCMTK_FOUND         - If false, don't try to use DCMTK
 #  DCMTK_DIR           - (optional) Source directory for DCMTK
@@ -12,13 +13,22 @@
 # the source.
 #
 # Written for VXL by Amitha Perera.
-# 
+# Modified by Robert Osfied to enable support for install placements of DCMTK 3.5.4 versions onwards
+
+FIND_PATH( DCMTK_ROOT_INCLUDE_DIR dcmtk/config/osconfig.h
+    ${DCMTK_DIR}/config/include 
+    ${DCMTK_DIR}/include
+    /usr/local/include/
+    /usr/include/
+    /usr/local/dicom/include/
+)
 
 FIND_PATH( DCMTK_config_INCLUDE_DIR osconfig.h
     ${DCMTK_DIR}/config/include 
     ${DCMTK_DIR}/include
     /usr/local/include/dcmtk/config
     /usr/include/dcmtk/config
+    /usr/local/dicom/include/dcmtk/config
 )
 
 FIND_PATH( DCMTK_ofstd_INCLUDE_DIR ofstdinc.h
@@ -26,6 +36,7 @@ FIND_PATH( DCMTK_ofstd_INCLUDE_DIR ofstdinc.h
     ${DCMTK_DIR}/include/ofstd
     /usr/local/include/dcmtk/ofstd
     /usr/include/dcmtk/ofstd
+    /usr/local/dicom/include/dcmtk/ofstd
 )
 
 FIND_LIBRARY( DCMTK_ofstd_LIBRARY ofstd
@@ -39,6 +50,7 @@ FIND_LIBRARY( DCMTK_ofstd_LIBRARY ofstd
     /usr/lib64
     /usr/local/lib
     /usr/lib
+    /usr/local/dicom/lib
 )
 
 
@@ -47,6 +59,7 @@ FIND_PATH( DCMTK_dcmdata_INCLUDE_DIR dctypes.h
     ${DCMTK_DIR}/include/dcmdata
     /usr/local/include/dcmtk/dcmdata
     /usr/include/dcmtk/dcmdata
+    /usr/local/dicom/include/dcmtk/dcmdata
 )
 
 FIND_LIBRARY( DCMTK_dcmdata_LIBRARY dcmdata
@@ -60,6 +73,7 @@ FIND_LIBRARY( DCMTK_dcmdata_LIBRARY dcmdata
     /usr/lib64
     /usr/local/lib
     /usr/lib
+    /usr/local/dicom/lib
 )
 
 
@@ -68,6 +82,7 @@ FIND_PATH( DCMTK_dcmimgle_INCLUDE_DIR dcmimage.h
     ${DCMTK_DIR}/include/dcmimgle
     /usr/local/include/dcmtk/dcmimgle
     /usr/include/dcmtk/dcmimgle
+    /usr/local/dicom/include/dcmtk/dcmimgle
 )
 
 FIND_LIBRARY( DCMTK_dcmimgle_LIBRARY dcmimgle
@@ -81,6 +96,7 @@ FIND_LIBRARY( DCMTK_dcmimgle_LIBRARY dcmimgle
     /usr/lib64
     /usr/local/lib
     /usr/lib
+    /usr/local/dicom/lib
 )
 
 FIND_LIBRARY(DCMTK_imagedb_LIBRARY imagedb 
@@ -91,6 +107,7 @@ FIND_LIBRARY(DCMTK_imagedb_LIBRARY imagedb
     /usr/lib64
     /usr/local/lib
     /usr/lib
+    /usr/local/dicom/lib
 )
 
 FIND_LIBRARY(DCMTK_dcmnet_LIBRARY dcmnet 
@@ -101,6 +118,7 @@ FIND_LIBRARY(DCMTK_dcmnet_LIBRARY dcmnet
     /usr/lib64
     /usr/local/lib
     /usr/lib
+    /usr/local/dicom/lib
 )
 
 

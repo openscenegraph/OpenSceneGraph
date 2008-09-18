@@ -372,7 +372,7 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPathCallback)
 	          "",
 	          "");
 	I_Method0(void, reset,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__reset,
 	          "",
 	          "");
@@ -387,7 +387,7 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPathCallback)
 	          "",
 	          "");
 	I_Method0(double, getAnimationTime,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __double__getAnimationTime,
 	          "Get the animation time that is used to specify the position along the AnimationPath. ",
 	          "Animation time is computed from the formula: ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier. ");

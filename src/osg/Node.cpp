@@ -28,7 +28,7 @@ namespace osg
     class CollectParentPaths : public NodeVisitor
     {
     public:
-        CollectParentPaths(osg::Node* haltTraversalAtNode=0) : 
+        CollectParentPaths(const osg::Node* haltTraversalAtNode=0) : 
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS),
             _haltTraversalAtNode(haltTraversalAtNode)
         {
@@ -46,7 +46,7 @@ namespace osg
             }
        }
 
-        Node*           _haltTraversalAtNode;
+        const Node*     _haltTraversalAtNode;
         NodePath        _nodePath;
         NodePathList    _nodePaths;
     };
@@ -191,7 +191,7 @@ NodePathList Node::getParentalNodePaths(osg::Node* haltTraversalAtNode) const
     return cpp._nodePaths;
 }
 
-MatrixList Node::getWorldMatrices(osg::Node* haltTraversalAtNode) const
+MatrixList Node::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
 {
     CollectParentPaths cpp(haltTraversalAtNode);
     const_cast<Node*>(this)->accept(cpp);

@@ -250,6 +250,19 @@ Drawable::~Drawable()
     dirtyDisplayList();
 }
 
+osg::MatrixList Drawable::getWorldMatrices(const osg::Node* haltTraversalAtNode) const
+{
+    osg::MatrixList matrices;
+    for(ParentList::const_iterator itr = _parents.begin();
+        itr != _parents.end();
+        ++itr)
+    {
+        osg::MatrixList localMatrices = (*itr)->getWorldMatrices(haltTraversalAtNode);
+        matrices.insert(matrices.end(), localMatrices.begin(), localMatrices.end());
+    }
+    return matrices;
+}
+
 void Drawable::computeDataVariance()
 {
     if (getDataVariance() != UNSPECIFIED) return;

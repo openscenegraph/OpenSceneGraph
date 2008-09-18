@@ -135,9 +135,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	                      __NodePathList__getParentalNodePaths__osg_Node_P1,
 	                      "Get the list of node paths parent paths. ",
 	                      "The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. ");
-	I_MethodWithDefaults1(osg::MatrixList, getWorldMatrices, IN, osg::Node *, haltTraversalAtNode, 0,
+	I_MethodWithDefaults1(osg::MatrixList, getWorldMatrices, IN, const osg::Node *, haltTraversalAtNode, 0,
 	                      Properties::NON_VIRTUAL,
-	                      __MatrixList__getWorldMatrices__osg_Node_P1,
+	                      __MatrixList__getWorldMatrices__C5_osg_Node_P1,
 	                      "Get the list of matrices that transform this node from local coordinates to world coordinates. ",
 	                      "The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. ");
 	I_Method1(void, setUpdateCallback, IN, osg::NodeCallback *, nc,

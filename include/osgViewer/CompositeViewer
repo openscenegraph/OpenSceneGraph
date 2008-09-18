@@ -95,8 +95,6 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
         
         virtual void getContexts(Contexts& contexts, bool onlyValid=true);
 
-        virtual void getWindows(Windows& windows, bool onlyValid=true);
-
         virtual void getAllThreads(Threads& threads, bool onlyActive=true);
 
         virtual void getOperationThreads(OperationThreads& threads, bool onlyActive=true);

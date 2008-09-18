@@ -296,7 +296,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	                      "",
 	                      "");
 	I_MethodWithDefaults2(void, getWindows, IN, osgViewer::ViewerBase::Windows &, windows, , IN, bool, onlyValid, true,
-	                      Properties::PURE_VIRTUAL,
+	                      Properties::VIRTUAL,
 	                      __void__getWindows__Windows_R1__bool,
 	                      "",
 	                      "");

@@ -11,12 +11,8 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
-#include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/Vec2>
-#include <osg/Vec2s>
 #include <osgShadow/SoftShadowMap>
-#include <osgUtil/CullVisitor>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -28,7 +24,7 @@
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::SoftShadowMap)
 	I_DeclaringFile("osgShadow/SoftShadowMap");
-	I_BaseType(osgShadow::ShadowTechnique);
+	I_BaseType(osgShadow::ShadowMap);
 	I_Constructor0(____SoftShadowMap,
 	               "",
 	               "");
@@ -61,114 +57,75 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::SoftShadowMap)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(void, setTextureUnit, IN, unsigned int, unit,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureUnit__unsigned_int,
-	          "Set the texture unit that the shadow texture will be applied on. ",
-	          "");
-	I_Method0(unsigned int, getTextureUnit,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getTextureUnit,
-	          "Get the texture unit that the shadow texture will be applied on. ",
-	          "");
-	I_Method1(void, setAmbientBias, IN, const osg::Vec2 &, ambientBias,
-	          Properties::NON_VIRTUAL,
-	          __void__setAmbientBias__C5_osg_Vec2_R1,
-	          "Set the values for the ambient bias the shader will use. ",
-	          "");
-	I_Method2(void, setTextureSize, IN, int, width, IN, int, height,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureSize__int__int,
-	          "Set the resolution of the rendertarget texture used for shadow generation. ",
-	          "");
-	I_Method1(void, setTextureSize, IN, const osg::Vec2s &, x,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureSize__C5_osg_Vec2s_R1,
-	          "Set the resolution of the rendertarget texture used for shadow generation. ",
-	          "");
-	I_Method0(const osg::Vec2s &, getTextureSize,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec2s_R1__getTextureSize,
-	          "Get the resolution of the rendertarget texture used for shadow generation. ",
-	          "");
-	I_Method1(void, setBias, IN, float, bias,
-	          Properties::NON_VIRTUAL,
-	          __void__setBias__float,
-	          "Add a small bias to the z-value when calculating the MVPT matrix, this can reduce shadow acne problem. ",
-	          "Suitable values are 0-0.005 Default is 0. ");
-	I_Method0(float, getBias,
-	          Properties::NON_VIRTUAL,
-	          __float__getBias,
-	          "Return the bias value set used when calculating the MVPT matrix. ",
-	          "");
-	I_Method1(void, setSoftnessWidth, IN, const float, softnesswidth,
+	I_Method1(void, setSoftnessWidth, IN, const float, softnessWidth,
 	          Properties::NON_VIRTUAL,
 	          __void__setSoftnessWidth__C5_float,
 	          "Set the values for width of the soft penumbra the shader will use. ",
 	          "Zero is for hard shadow (no penumbra). 0.01 is already very soft penumbra. Default is 0.005. ");
-	I_Method1(void, setJitteringScale, IN, const float, jitteringscale,
+	I_Method0(float, getSoftnessWidth,
+	          Properties::NON_VIRTUAL,
+	          __float__getSoftnessWidth,
+	          "Get the value used for width of the soft penumbra in the shader. ",
+	          "");
+	I_Method1(void, setJitteringScale, IN, const float, jitteringScale,
 	          Properties::NON_VIRTUAL,
 	          __void__setJitteringScale__C5_float,
 	          "Set the values for jittering scale the shader will use. ",
 	          "Zero is no jittering (i.e. see the banding in penumbra) High values (>64) cause 'pixelization' of the penumbra. Usually but not necessarily power of two number. Default is 32. ");
-	I_Method0(const osg::Vec2 &, getAmbientBias,
+	I_Method0(float, getJitteringScale,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec2_R1__getAmbientBias,
-	          "Get the values that are used for the ambient bias in the shader. ",
-	          "");
-	I_Method0(const float, getSoftnessWidth,
-	          Properties::NON_VIRTUAL,
-	          __C5_float__getSoftnessWidth,
-	          "Get the value used for width of the soft penumbra in the shader. ",
-	          "");
-	I_Method0(const float, getJitteringScale,
-	          Properties::NON_VIRTUAL,
-	          __C5_float__getJitteringScale,
+	          __float__getJitteringScale,
 	          "Get the value used for jittering scale in the shader. ",
 	          "");
-	I_Method0(void, init,
-	          Properties::VIRTUAL,
-	          __void__init,
-	          "initialize the ShadowedScene and local cached data structures. ",
+	I_Method1(void, setJitterTextureUnit, IN, unsigned int, jitterTextureUnit,
+	          Properties::NON_VIRTUAL,
+	          __void__setJitterTextureUnit__unsigned_int,
+	          "Set the texture unit that the jitter texture will be applied on. ",
 	          "");
-	I_Method1(void, update, IN, osg::NodeVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__update__osg_NodeVisitor_R1,
-	          "run the update traversal of the ShadowedScene and update any loca chached data structures. ",
+	I_Method0(unsigned int, getJitterTextureUnit,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getJitterTextureUnit,
+	          "Get the texture unit that the jitter texture will be applied on. ",
 	          "");
-	I_Method1(void, cull, IN, osgUtil::CullVisitor &, cv,
-	          Properties::VIRTUAL,
-	          __void__cull__osgUtil_CullVisitor_R1,
-	          "run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique. ",
+	I_Method1(void, setBias, IN, float, bias,
+	          Properties::NON_VIRTUAL,
+	          __void__setBias__float,
+	          "Add a small bias to the z-value, this can reduce shadow acne problem. ",
+	          "This is the same as calling setPolygonOffset(osg::Vec2(bias,0)); Suitable values are 0-0.005 Default is 0. ");
+	I_Method0(float, getBias,
+	          Properties::NON_VIRTUAL,
+	          __float__getBias,
+	          "Return the bias value. ",
 	          "");
-	I_Method0(void, cleanSceneGraph,
-	          Properties::VIRTUAL,
-	          __void__cleanSceneGraph,
-	          "Clean scene graph from any shadow technique specific nodes, state and drawables. ",
-	          "");
-	I_ProtectedMethod1(void, initJittering, IN, osg::StateSet *, x,
+	I_ProtectedMethod0(void, createUniforms,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__createUniforms,
+	                   "Create the managed Uniforms. ",
+	                   "");
+	I_ProtectedMethod0(void, createShaders,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__createShaders,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, initJittering, IN, osg::StateSet *, ss,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__initJittering__osg_StateSet_P1,
 	                   "",
 	                   "");
-	I_SimpleProperty(const osg::Vec2 &, AmbientBias, 
-	                 __C5_osg_Vec2_R1__getAmbientBias, 
-	                 __void__setAmbientBias__C5_osg_Vec2_R1);
 	I_SimpleProperty(float, Bias, 
 	                 __float__getBias, 
 	                 __void__setBias__float);
-	I_SimpleProperty(const float, JitteringScale, 
-	                 __C5_float__getJitteringScale, 
-	                 __void__setJitteringScale__C5_float);
-	I_SimpleProperty(const float, SoftnessWidth, 
-	                 __C5_float__getSoftnessWidth, 
-	                 __void__setSoftnessWidth__C5_float);
-	I_SimpleProperty(const osg::Vec2s &, TextureSize, 
-	                 __C5_osg_Vec2s_R1__getTextureSize, 
-	                 __void__setTextureSize__C5_osg_Vec2s_R1);
-	I_SimpleProperty(unsigned int, TextureUnit, 
-	                 __unsigned_int__getTextureUnit, 
-	                 __void__setTextureUnit__unsigned_int);
+	I_SimpleProperty(unsigned int, JitterTextureUnit, 
+	                 __unsigned_int__getJitterTextureUnit, 
+	                 __void__setJitterTextureUnit__unsigned_int);
+	I_SimpleProperty(float, JitteringScale, 
+	                 __float__getJitteringScale, 
+	                 0);
+	I_SimpleProperty(float, SoftnessWidth, 
+	                 __float__getSoftnessWidth, 
+	                 0);
 END_REFLECTOR
 

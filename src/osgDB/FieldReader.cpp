@@ -12,6 +12,7 @@
 */
 #include <osgDB/Field>
 #include <osgDB/FieldReader>
+#include <stdio.h>
 
 using namespace osgDB;
 

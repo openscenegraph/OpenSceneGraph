@@ -33,6 +33,7 @@
 #include <osgViewer/Viewer>
 
 #include <iostream>
+#include <stdio.h>
 
 //
 // Below is relatively straight forward example of use OpenGL multiple render targets extension

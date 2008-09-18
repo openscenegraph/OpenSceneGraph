@@ -29,6 +29,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ReadFile
     ${HEADER_PATH}/Registry
     ${HEADER_PATH}/SharedStateManager
+    ${HEADER_PATH}/Serializer
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/WriteFile
 )

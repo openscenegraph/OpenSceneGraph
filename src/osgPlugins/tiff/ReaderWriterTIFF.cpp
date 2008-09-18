@@ -260,7 +260,6 @@ checkcmap(int n, uint16* r, uint16* g, uint16* b)
     return (8);
 }
 
-
 static void
 invert_row(unsigned char *ptr, unsigned char *data, int n, int invert, uint16 bitspersample)
 {
@@ -273,7 +272,7 @@ invert_row(unsigned char *ptr, unsigned char *data, int n, int invert, uint16 bi
             else *ptr++ = *data++;
         }
     }
-    else
+    else if (bitspersample == 16)
     {
         unsigned short *ptr1 = (unsigned short *)ptr;
         unsigned short *data1 = (unsigned short *)data;
@@ -281,6 +280,17 @@ invert_row(unsigned char *ptr, unsigned char *data, int n, int invert, uint16 bi
         while (n--)
         {
             if (invert) *ptr1++ = 65535 - *data1++;
+            else *ptr1++ = *data1++;
+        }
+    }
+    else if (bitspersample == 32)
+    {
+        float *ptr1 = (float *)ptr;
+        float *data1 = (float *)data;
+        
+        while (n--)
+        {
+            if (invert) *ptr1++ = 1.0 - *data1++;
             else *ptr1++ = *data1++;
         }
     }
@@ -302,46 +312,99 @@ unsigned short *rmap, unsigned short *gmap, unsigned short *bmap)
     }
 }
 
-
-static void
-copy_row(unsigned char *ptr, unsigned char *data, int n, int numSamples)
-{
-    // osg::notify(osg::NOTICE)<<"Copy row"<<std::endl;
-    while (n--)
-    {
-        for(int i=0;i<numSamples;++i)
-        {
-            *ptr++ = *data++;
-        }
-    }
-}
-
-
 static void interleave_row(unsigned char *ptr,
                            unsigned char *red, unsigned char *green, unsigned char *blue,
-                           int n, int numSamples)
+                           int n, int numSamples, uint16 bitspersample)
 {
     // osg::notify(osg::NOTICE)<<"Interleave row RGB"<<std::endl;
-    while (n--)
+    if (bitspersample == 8)
     {
-        *ptr++ = *red++;
-        *ptr++ = *green++;
-        *ptr++ = *blue++;
-        if (numSamples==4) *ptr++ = 255;
+        while (n--)
+        {
+            *ptr++ = *red++;
+            *ptr++ = *green++;
+            *ptr++ = *blue++;
+            if (numSamples==4) *ptr++ = 255;
+        }
+    }
+    else if (bitspersample == 16)
+    {
+        unsigned short *ptr1 = (unsigned short *)ptr;
+        unsigned short *red1 = (unsigned short *)red;
+        unsigned short *green1 = (unsigned short *)green;
+        unsigned short *blue1 = (unsigned short *)blue;
+        
+        while (n--)
+        {
+            *ptr1++ = *red1++;
+            *ptr1++ = *green1++;
+            *ptr1++ = *blue1++;
+            if (numSamples==4) *ptr1++ = 65535;
+        }
+    }
+    else if (bitspersample == 32)
+    {
+        float *ptr1 = (float *)ptr;
+        float *red1 = (float *)red;
+        float *green1 = (float *)green;
+        float *blue1 = (float *)blue;
+        
+        while (n--)
+        {
+            *ptr1++ = *red1++;
+            *ptr1++ = *green1++;
+            *ptr1++ = *blue1++;
+            if (numSamples==4) *ptr1++ = 1.0f;
+        }
     }
 }
 
 static void interleave_row(unsigned char *ptr,
                            unsigned char *red, unsigned char *green, unsigned char *blue, unsigned char *alpha,
-                           int n, int numSamples)
+                           int n, int numSamples, uint16 bitspersample)
 {
     // osg::notify(osg::NOTICE)<<"Interleave row RGBA"<<std::endl;
-    while (n--)
+    if (bitspersample == 8)
     {
-        *ptr++ = *red++;
-        *ptr++ = *green++;
-        *ptr++ = *blue++;
-        if (numSamples==4) *ptr++ = *alpha++;
+        while (n--)
+        {
+            *ptr++ = *red++;
+            *ptr++ = *green++;
+            *ptr++ = *blue++;
+            if (numSamples==4) *ptr++ = *alpha++;
+        }
+    }
+    else if (bitspersample == 16)
+    {
+        unsigned short *ptr1 = (unsigned short *)ptr;
+        unsigned short *red1 = (unsigned short *)red;
+        unsigned short *green1 = (unsigned short *)green;
+        unsigned short *blue1 = (unsigned short *)blue;
+        unsigned short *alpha1 = (unsigned short *)alpha;
+        
+        while (n--)
+        {
+            *ptr1++ = *red1++;
+            *ptr1++ = *green1++;
+            *ptr1++ = *blue1++;
+            if (numSamples==4) *ptr1++ = *alpha1++;
+        }
+    }
+    else if (bitspersample == 32)
+    {
+        float *ptr1 = (float *)ptr;
+        float *red1 = (float *)red;
+        float *green1 = (float *)green;
+        float *blue1 = (float *)blue;
+        float *alpha1 = (float *)alpha;
+        
+        while (n--)
+        {
+            *ptr1++ = *red1++;
+            *ptr1++ = *green1++;
+            *ptr1++ = *blue1++;
+            if (numSamples==4) *ptr1++ = *alpha1++;
+        }
     }
 }
 
@@ -412,7 +475,7 @@ simage_tiff_load(std::istream& fin,
             photometric != PHOTOMETRIC_MINISWHITE &&
             photometric != PHOTOMETRIC_MINISBLACK)
         {
-            osg::notify(osg::DEBUG_INFO) << "Bad photometric; can only handle Grayscale, RGB and Palette images" << std::endl;
+            osg::notify(osg::NOTICE) << "Photometric type "<<photometric<<" not handled; can only handle Grayscale, RGB and Palette images" << std::endl;
             TIFFClose(in);
             tifferror = ERR_UNSUPPORTED;
             return NULL;
@@ -447,9 +510,9 @@ simage_tiff_load(std::istream& fin,
 
     if (TIFFGetField(in, TIFFTAG_BITSPERSAMPLE, &bitspersample) == 1)
     {
-         if (bitspersample != 8 && bitspersample != 16)
+         if (bitspersample != 8 && bitspersample != 16 && bitspersample != 32)
         {
-            osg::notify(osg::DEBUG_INFO) << "can only handle 8 and 16 bit samples" << std::endl;
+            osg::notify(osg::NOTICE) << "can only handle 8, 16 and 32 bit samples" << std::endl;
             TIFFClose(in);
             tifferror = ERR_UNSUPPORTED;
             return NULL;
@@ -577,7 +640,7 @@ simage_tiff_load(std::istream& fin,
                     tifferror = ERR_READ;
                     break;
                 }
-                copy_row(currPtr, inbuf, w,samplesperpixel);
+                memcpy(currPtr, inbuf, format*w);
                 currPtr -= format*w;
             }
             break;
@@ -597,8 +660,8 @@ simage_tiff_load(std::istream& fin,
                 }
                 if (!tifferror)
                 {
-                    if (format==3) interleave_row(currPtr, inbuf, inbuf+rowsize, inbuf+2*rowsize, w, format);
-                    else if (format==4) interleave_row(currPtr, inbuf, inbuf+rowsize, inbuf+2*rowsize, inbuf+3*rowsize, w, format);
+                    if (format==3) interleave_row(currPtr, inbuf, inbuf+rowsize, inbuf+2*rowsize, w, format, bitspersample);
+                    else if (format==4) interleave_row(currPtr, inbuf, inbuf+rowsize, inbuf+2*rowsize, inbuf+3*rowsize, w, format, bitspersample);
                     currPtr -= format*w;
                 }
             }
@@ -678,7 +741,11 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                 numComponents_ret == 3 ? GL_RGB :
                 numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
 
-            unsigned int dataType = bitspersample_ret==8 ? GL_UNSIGNED_BYTE : GL_UNSIGNED_SHORT;
+
+            unsigned int dataType = 
+                bitspersample_ret == 8 ? GL_UNSIGNED_BYTE : 
+                bitspersample_ret == 16 ? GL_UNSIGNED_SHORT :
+                bitspersample_ret == 32 ? GL_FLOAT : (GLenum)-1;
 
             osg::Image* pOsgImage = new osg::Image;
             pOsgImage->setImage(s,t,r,

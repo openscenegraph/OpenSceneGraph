@@ -25,19 +25,30 @@ void osgParticle::ModularEmitter::emit(double dt)
 {
     ConnectedParticleSystem* cps = dynamic_cast<ConnectedParticleSystem*>(getParticleSystem());
 
+    osg::Matrix worldToPs;
+    osg::MatrixList worldMats = getParticleSystem()->getWorldMatrices();
+    if (!worldMats.empty())
+    {
+        const osg::Matrix psToWorld = worldMats[0];
+        worldToPs = osg::Matrix::inverse(psToWorld);
+    }
+
     if (getReferenceFrame() == RELATIVE_RF)
     {
         const osg::Matrix& ltw = getLocalToWorldMatrix();
         const osg::Matrix& previous_ltw = getPreviousLocalToWorldMatrix();
+        const osg::Matrix emitterToPs = ltw * worldToPs;
+        const osg::Matrix prevEmitterToPs = previous_ltw * worldToPs;
 
         int n = _counter->numParticlesToCreate(dt);
 
         if (_numParticleToCreateMovementCompensationRatio>0.0f)
         {
             // compute the distance moved between frames
-            const osg::Vec3 controlPosition = _placer->getControlPosition();
-            osg::Vec3 previousPosition = controlPosition * previous_ltw;
-            osg::Vec3 currentPosition = controlPosition * ltw;
+            const osg::Vec3d controlPosition
+                = osg::Vec3d(_placer->getControlPosition());
+            osg::Vec3d previousPosition = controlPosition * previous_ltw;
+            osg::Vec3d currentPosition = controlPosition * ltw;
             float distance = (currentPosition-previousPosition).length();
 
             float size = getUseDefaultTemplate() ? 
@@ -59,9 +70,9 @@ void osgParticle::ModularEmitter::emit(double dt)
                 _placer->place(P);
                 _shooter->shoot(P);
                 
-                // now need to transform the position and velocity because we having a moving model.
+                // Now need to transform the position and velocity because we having a moving model.
                 float r = ((float)rand()/(float)RAND_MAX);
-                P->transformPositionVelocity(ltw, previous_ltw, r);
+                P->transformPositionVelocity(emitterToPs, prevEmitterToPs, r);
                 //P->transformPositionVelocity(ltw);
                 
                 if (cps) P->setUpTexCoordsAsPartOfConnectedParticleSystem(cps);
@@ -82,7 +93,10 @@ void osgParticle::ModularEmitter::emit(double dt)
             if (P)
             {
                 _placer->place(P);
+                P->setPosition(P->getPosition() * worldToPs);
                 _shooter->shoot(P);
+                P->setVelocity(osg::Matrix::transform3x3(P->getVelocity(),
+                                                         worldToPs));
 
                 if (cps) P->setUpTexCoordsAsPartOfConnectedParticleSystem(cps);
             }

@@ -1140,7 +1140,13 @@ bool GraphicsWindowWin32::setWindow( HWND handle )
         //
         // Create the OpenGL rendering context associated with this window
         //
-
+        if (!setPixelFormat())
+        {
+            reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to set the inherited window pixel format", _traits->screenNum, ::GetLastError());
+            _hdc  = 0;
+            _hwnd = 0;
+            return false;
+        }
         _hglrc = ::wglCreateContext(_hdc);
         if (_hglrc==0)
         {

@@ -155,13 +155,13 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowMap)
 	          "",
 	          "");
 	I_ProtectedMethod0(void, createUniforms,
-	                   Properties::NON_VIRTUAL,
+	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__createUniforms,
 	                   "Create the managed Uniforms. ",
 	                   "");
 	I_ProtectedMethod0(void, createShaders,
-	                   Properties::NON_VIRTUAL,
+	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__createShaders,
 	                   "",

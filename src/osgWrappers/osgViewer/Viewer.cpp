@@ -167,11 +167,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	                      __void__getContexts__Contexts_R1__bool,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(void, getWindows, IN, osgViewer::ViewerBase::Windows &, windows, , IN, bool, onlyValid, true,
-	                      Properties::VIRTUAL,
-	                      __void__getWindows__Windows_R1__bool,
-	                      "",
-	                      "");
 	I_MethodWithDefaults2(void, getAllThreads, IN, osgViewer::ViewerBase::Threads &, threads, , IN, bool, onlyActive, true,
 	                      Properties::VIRTUAL,
 	                      __void__getAllThreads__Threads_R1__bool,

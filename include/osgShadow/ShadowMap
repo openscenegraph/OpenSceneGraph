@@ -91,9 +91,9 @@ class OSGSHADOW_EXPORT ShadowMap : public ShadowTechnique
         virtual ~ShadowMap(void) {};
 
         /** Create the managed Uniforms */
-        void createUniforms();
+        virtual void createUniforms();
 
-        void createShaders();
+        virtual void createShaders();
 
         osg::ref_ptr<osg::Camera>       _camera;
         osg::ref_ptr<osg::TexGen>       _texgen;

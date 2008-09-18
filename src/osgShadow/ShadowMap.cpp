@@ -94,7 +94,8 @@ ShadowTechnique(copy,copyop),
     _baseTextureUnit(copy._baseTextureUnit),
     _shadowTextureUnit(copy._shadowTextureUnit),
     _ambientBias(copy._ambientBias),
-    _textureSize(copy._textureSize)
+    _textureSize(copy._textureSize),
+    _polyOffset(copy._polyOffset)
 {
 }
 

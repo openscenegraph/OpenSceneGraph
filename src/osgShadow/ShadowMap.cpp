@@ -400,11 +400,11 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
 
         //std::cout<<"----- VxOSG::ShadowMap selectLight spot cutoff "<<selectLight->getSpotCutoff()<<std::endl;
 
-        if(selectLight->getSpotCutoff() < 180.0f)   // spotlight, then we don't need the bounding box
+        float fov = selectLight->getSpotCutoff() * 2;
+        if(fov < 180.0f)   // spotlight, then we don't need the bounding box
         {
             osg::Vec3 position(lightpos.x(), lightpos.y(), lightpos.z());
-            float spotAngle = selectLight->getSpotCutoff();
-            _camera->setProjectionMatrixAsPerspective(spotAngle, 1.0, 0.1, 1000.0);
+            _camera->setProjectionMatrixAsPerspective(fov, 1.0, 0.1, 1000.0);
             _camera->setViewMatrixAsLookAt(position,position+lightDir,osg::Vec3(0.0f,1.0f,0.0f));
         }
         else

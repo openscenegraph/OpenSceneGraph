@@ -276,7 +276,7 @@ class OSG_EXPORT AnimationPathCallback : public NodeCallback
         double getTimeMultiplier() const { return _timeMultiplier; }
 
 
-        void reset();
+        virtual void reset();
 
         void setPause(bool pause);
         bool getPause() const { return _pause; }
@@ -284,7 +284,7 @@ class OSG_EXPORT AnimationPathCallback : public NodeCallback
         /** Get the animation time that is used to specify the position along
           * the AnimationPath. Animation time is computed from the formula:
           *   ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier.*/
-        double getAnimationTime() const;
+        virtual double getAnimationTime() const;
 
         /** Implements the callback. */
         virtual void operator()(Node* node, NodeVisitor* nv);

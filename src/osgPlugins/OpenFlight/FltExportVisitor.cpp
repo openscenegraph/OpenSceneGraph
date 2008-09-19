@@ -256,22 +256,24 @@ FltExportVisitor::apply( osg::MatrixTransform& node )
             (*m) *= *rm;
     }
 
-    std::vector< osg::Referenced* > saveUserDataList;
+    typedef std::vector< osg::ref_ptr< osg::Referenced > > UserDataList;
+    
+    UserDataList saveUserDataList( node.getNumChildren() );
+
     unsigned int idx;
-    for( idx=0; idx<node.getNumChildren(); idx++ )
+    for( idx=0; idx<node.getNumChildren(); ++idx )
     {
-        saveUserDataList.push_back( node.getChild( idx )->getUserData() );
+        saveUserDataList[ idx ] = node.getChild( idx )->getUserData();
         node.getChild( idx )->setUserData( m.get() );
     }
 
     traverse( (osg::Node&)node );
 
     // Restore saved UserData.
-    unsigned int nd = node.getNumChildren();
-    while (nd--)
-        node.getChild( nd )->setUserData(
-            saveUserDataList[ nd ] );
-
+    for( idx=0; idx< node.getNumChildren(); ++idx )
+    {
+      node.getChild( idx )->setUserData( saveUserDataList[ idx ].get() );
+    }
 }
 
 void
@@ -286,21 +288,23 @@ FltExportVisitor::apply( osg::PositionAttitudeTransform& node )
         osg::Matrix::rotate( node.getAttitude() ) *
         osg::Matrix::translate( node.getPosition() ) );
 
-    std::vector< osg::Referenced* > saveUserDataList;
+    typedef std::vector< osg::ref_ptr< osg::Referenced > > UserDataList;
+    UserDataList saveUserDataList( node.getNumChildren() );
+
     unsigned int idx;
-    for( idx=0; idx<node.getNumChildren(); idx++ )
+    for( idx=0; idx<node.getNumChildren(); ++idx )
     {
-        saveUserDataList.push_back( node.getChild( idx )->getUserData() );
+        saveUserDataList[ idx ] = node.getChild( idx )->getUserData();
         node.getChild( idx )->setUserData( m.get() );
     }
 
     traverse( (osg::Node&)node );
 
     // Restore saved UserData.
-    unsigned int nd = node.getNumChildren();
-    while (nd--)
-        node.getChild( nd )->setUserData(
-            saveUserDataList[ nd ] );
+    for( idx=0; idx<node.getNumChildren(); ++idx )
+    {
+        node.getChild( idx )->setUserData( saveUserDataList[ idx ].get() );
+    }
 
 }
 

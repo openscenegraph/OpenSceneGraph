@@ -32,37 +32,37 @@ class TileID
     public:
     
         TileID():
-            layer(-1),
+            level(-1),
             x(-1),
             y(-1) {}
 
-        TileID(int in_layer, int in_x, int in_y):
-            layer(in_layer),
+        TileID(int in_level, int in_x, int in_y):
+            level(in_level),
             x(in_x),
             y(in_y) {}
             
         bool operator == (const TileID& rhs) const        
         {
-            return (layer==rhs.layer) && (x==rhs.x) && (y==rhs.y);
+            return (level==rhs.level) && (x==rhs.x) && (y==rhs.y);
         }
 
         bool operator != (const TileID& rhs) const        
         {
-            return (layer!=rhs.layer) || (x!=rhs.x) || (y!=rhs.y);
+            return (level!=rhs.level) || (x!=rhs.x) || (y!=rhs.y);
         }
 
         bool operator < (const TileID& rhs) const
         {
-            if (layer<rhs.layer) return true;
-            if (layer>rhs.layer) return false;
+            if (level<rhs.level) return true;
+            if (level>rhs.level) return false;
             if (x<rhs.x) return true;
             if (x>rhs.x) return false;
             return y<rhs.y;
         }
         
-        bool valid() const { return layer>=0; }
+        bool valid() const { return level>=0; }
 
-        int layer;
+        int level;
         int x;
         int y;
 };

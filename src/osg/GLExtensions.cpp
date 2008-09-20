@@ -44,6 +44,8 @@ float osg::getGLVersionNumber()
 {
     // needs to be extended to do proper things with subversions like 1.5.1, etc.
     char *versionstring   = (char*) glGetString( GL_VERSION );
+    if (!versionstring) return 0.0;
+
     std::string vs( versionstring );
     return( atof( vs.substr( 0, vs.find( " " ) ).c_str() ) );
 }

@@ -268,7 +268,7 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::TileID)
 	I_Constructor0(____TileID,
 	               "",
 	               "");
-	I_Constructor3(IN, int, in_layer, IN, int, in_x, IN, int, in_y,
+	I_Constructor3(IN, int, in_level, IN, int, in_x, IN, int, in_y,
 	               ____TileID__int__int__int,
 	               "",
 	               "");
@@ -277,7 +277,7 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::TileID)
 	          __bool__valid,
 	          "",
 	          "");
-	I_PublicMemberProperty(int, layer);
+	I_PublicMemberProperty(int, level);
 	I_PublicMemberProperty(int, x);
 	I_PublicMemberProperty(int, y);
 END_REFLECTOR

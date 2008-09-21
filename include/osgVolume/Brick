@@ -1,0 +1,158 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVOLUME_BRICK
+#define OSGVOLUME_BRICK 1
+
+#include <osg/Group>
+#include <osg/Image>
+
+#include <osgDB/ReaderWriter>
+
+#include <osgVolume/VolumeTechnique>
+
+namespace osgVolume {
+
+class Volume;
+
+class BrickID
+{
+    public:
+    
+        BrickID():
+            level(-1),
+            x(-1),
+            y(-1) {}
+
+        BrickID(int in_level, int in_x, int in_y):
+            level(in_level),
+            x(in_x),
+            y(in_y) {}
+            
+        bool operator == (const BrickID& rhs) const        
+        {
+            return (level==rhs.level) && (x==rhs.x) && (y==rhs.y);
+        }
+
+        bool operator != (const BrickID& rhs) const        
+        {
+            return (level!=rhs.level) || (x!=rhs.x) || (y!=rhs.y);
+        }
+
+        bool operator < (const BrickID& rhs) const
+        {
+            if (level<rhs.level) return true;
+            if (level>rhs.level) return false;
+            if (x<rhs.x) return true;
+            if (x>rhs.x) return false;
+            return y<rhs.y;
+        }
+        
+        bool valid() const { return level>=0; }
+
+        int level;
+        int x;
+        int y;
+        int z;
+};
+
+
+/** Terrain provides a framework for loosely coupling height field data with height rendering algorithms.
+  * This allows TerrainTechnique's to be plugged in at runtime.*/
+class OSGVOLUME_EXPORT Brick : public osg::Group
+{
+    public:
+
+        Brick();
+        
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Brick(const Brick&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Node(osgVolume, Brick);
+
+        virtual void traverse(osg::NodeVisitor& nv);
+
+        /** Call init on any attached TerrainTechnique.*/
+        void init();
+
+
+        /** Set the Volume that this Volume tile is a member of.*/
+        void setVolume(Volume* ts);
+
+        /** Get the Volume that this Volume tile is a member of.*/
+        Volume* getVolume() { return _volume; }
+
+        /** Get the const Volume that this Volume tile is a member of.*/
+        const Volume* getVolume() const { return _volume; }
+
+        
+        /** Set the BrickID (layer, x,y) of the Brick.
+          * The BrickID is used so it can be located by its neighbours 
+          * via the enclosing Terrain node that manages a map of BrickID to TerraiTiles.*/
+        void setBrickID(const BrickID& brickID);
+        
+        /** Get the BrickID (layer, x,y) of the Brick.*/
+        const BrickID& getBrickID() const { return _brickID; }
+        
+        
+        void setLocator(osg::RefMatrix* locator) { _locator = locator; }
+        osg::RefMatrix* getLocator() { return _locator.get(); }
+        const osg::RefMatrix* getLocator() const { return _locator.get(); }
+
+
+        void setImage(osg::Image* image) { _image = image; }
+        osg::Image* getImage() { return _image.get(); }
+        const osg::Image* getImage() const { return _image.get(); }
+
+
+        /** Set the VolumeTechnique*/
+        void setVolumeTechnique(VolumeTechnique* VolumeTechnique);
+
+        /** Get the VolumeTechnique*/
+        VolumeTechnique* getVolumeTechnique() { return _volumeTechnique.get(); }
+        
+        /** Get the const VolumeTechnique*/
+        const VolumeTechnique* getVolumeTechnique() const { return _volumeTechnique.get(); }
+
+
+        /** Set the dirty flag on/off.*/
+        void setDirty(bool dirty);
+
+        /** return true if the tile is dirty and needs to be updated,*/
+        bool getDirty() const { return _dirty; }
+
+
+        virtual osg::BoundingSphere computeBound() const;
+
+    protected:
+
+        virtual ~Brick();
+
+        friend class Volume;
+
+        Volume*                             _volume;
+        
+        bool                                _dirty;
+        bool                                _hasBeenTraversal;
+        
+        BrickID                             _brickID;
+
+        osg::ref_ptr<VolumeTechnique>       _volumeTechnique;
+
+        osg::ref_ptr<osg::RefMatrix>        _locator;        
+        osg::ref_ptr<osg::Image>            _image;
+};
+
+}
+
+#endif

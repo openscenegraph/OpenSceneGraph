@@ -13,6 +13,8 @@
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
 
+#include <osgVolume/Volume>
+#include <osgVolume/Brick>
 
 #ifdef  USE_DCMTK
     #define HAVE_CONFIG_H
@@ -94,6 +96,46 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         {
             return readImage(file, options);
         }
+
+        virtual ReadResult readNode(std::istream& fin,const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            return readImage(fin, options);
+        }
+
+        virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const
+        {
+            ReadResult result = readImage(file, options);
+            if (!result.validImage()) return result;
+            
+            osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
+
+            osg::ref_ptr<osgVolume::Brick> brick = new osgVolume::Brick;
+            brick->setVolume(volume.get());
+            brick->setImage(result.getImage());
+
+            // get matrix providing size of texels (in mm)
+            osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(result.getImage()->getUserData());
+        
+            if (matrix)
+            {
+            
+            
+                // scale up to provide scale of complete brick
+                osg::Vec3d scale(osg::Vec3(result.getImage()->s(),result.getImage()->t(), result.getImage()->r()));
+                matrix->postMultScale(scale);
+
+                brick->setLocator(matrix);
+                
+                result.getImage()->setUserData(0);
+                
+                osg::notify(osg::NOTICE)<<"Locator "<<*matrix<<std::endl;
+            }
+            
+            volume->addChild(brick.get());
+                        
+            return volume.release();
+        }
+
 
         virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options*) const
         {
@@ -275,19 +317,23 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             OFCondition status = fileformat.loadFile((*itr).c_str());
                             if(!status.good()) return ReadResult::ERROR_IN_READING_FILE;
 
-                            // get the dimension of the dicom image
-                            OFString spacingString;
-                            if(fileformat.getDataset()->findAndGetOFString(DCM_PixelSpacing, spacingString).good())
+                            double pixelSize_y = 1.0;
+                            if (fileformat.getDataset()->findAndGetFloat64(DCM_PixelSpacing, pixelSize_y,0).good())
                             {
-                                float xy_spacing = atof(spacingString.c_str());
-                                (*matrix)(0,0) = xy_spacing;
-                                (*matrix)(1,1) = xy_spacing * dcmImage->getWidthHeightRatio();
+                                (*matrix)(1,1) = pixelSize_y;
+                            }
+
+                            double pixelSize_x = 1.0;
+                            if (fileformat.getDataset()->findAndGetFloat64(DCM_PixelSpacing, pixelSize_x,1).good())
+                            {
+                                (*matrix)(0,0) = pixelSize_x;
                             }
 
                             // Get slice thickness
-                            if(fileformat.getDataset()->findAndGetOFString(DCM_SliceThickness, spacingString).good())
+                            double sliceThickness = 1.0;
+                            if (fileformat.getDataset()->findAndGetFloat64(DCM_SliceThickness, sliceThickness).good())
                             {
-                                (*matrix)(2,2) = atof(spacingString.c_str());
+                                (*matrix)(2,2) = sliceThickness;
                             }
 
 
@@ -359,6 +405,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             }
 
                             image = new osg::Image;
+                            image->setUserData(matrix.get());
                             image->setFileName(fileName.c_str());
                             image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), files.size() * dcmImage->getFrameCount(),
                                                  pixelFormat, dataType);

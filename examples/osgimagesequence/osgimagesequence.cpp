@@ -45,22 +45,67 @@
 osg::StateSet* createState(osg::ArgumentParser& arguments)
 {
     osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
+
+    bool preLoad = true;
+        
+    while (arguments.read("--page-and-discard"))
+    {
+        imageSequence->setMode(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES);
+        preLoad = false;
+    }
+    
+    while (arguments.read("--page-and-retain"))
+    {
+        imageSequence->setMode(osg::ImageSequence::PAGE_AND_RETAIN_IMAGES);
+        preLoad = false;
+    }
+    
+    while (arguments.read("--preload"))
+    {
+        imageSequence->setMode(osg::ImageSequence::PRE_LOAD_ALL_IMAGES);
+        preLoad = true;
+    }
+    
+    double length = -1.0;
+    while (arguments.read("--length",length)) {}
     
     if (arguments.argc()>1)
     {
         for(unsigned int i=1; i<arguments.argc(); ++i)
         {
-            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(arguments[i]);
-            if (image.valid())
+            if (preLoad)
             {
-                imageSequence->addImage(image.get());
+                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(arguments[i]);
+                if (image.valid())
+                {
+                    imageSequence->addImage(image.get());
+                }
+            }
+            else
+            {
+                imageSequence->addImageFile(arguments[i]);
             }
         }
-        imageSequence->setLength(float(imageSequence->getImages().size())*0.1f);
+        
+        if (length>0.0)
+        {
+            imageSequence->setLength(length);
+        }
+        else
+        {
+            imageSequence->setLength(float(imageSequence->getImages().size())*0.1f);
+        }
     }
     else
     {
-        imageSequence->setLength(4.0);
+        if (length>0.0)
+        {
+            imageSequence->setLength(length);
+        }
+        else
+        {
+            imageSequence->setLength(4.0);
+        }
         imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posx.png"));
         imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negx.png"));
         imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posy.png"));

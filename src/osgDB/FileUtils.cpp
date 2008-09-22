@@ -367,8 +367,9 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
 static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
 {
 #ifdef OSG_DEFAULT_LIBRARY_PATH
+
     // Append the install prefix path to the library search path if configured
-    filepath.push_back(OSG_DEFAULT_LIBRARY_PATH);
+    filepath.push_back(ADDQUOTES(OSG_DEFAULT_LIBRARY_PATH));
 #endif
 }
 

@@ -22,6 +22,7 @@ namespace osgDB {
 
 extern OSGDB_EXPORT std::string getFilePath(const std::string& filename);
 extern OSGDB_EXPORT std::string getFileExtension(const std::string& filename);
+extern OSGDB_EXPORT std::string getFileExtensionIncludingDot(const std::string& filename);
 extern OSGDB_EXPORT std::string getLowerCaseFileExtension(const std::string& filename);
 extern OSGDB_EXPORT std::string getSimpleFileName(const std::string& fileName);
 extern OSGDB_EXPORT std::string getNameLessExtension(const std::string& fileName);

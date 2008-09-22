@@ -66,6 +66,13 @@ std::string osgDB::getFileExtension(const std::string& fileName)
     return std::string(fileName.begin()+dot+1,fileName.end());
 }
 
+std::string osgDB::getFileExtensionIncludingDot(const std::string& fileName)
+{
+    std::string::size_type dot = fileName.find_last_of('.');
+    if (dot==std::string::npos) return std::string("");
+    return std::string(fileName.begin()+dot,fileName.end());
+}
+
 std::string osgDB::convertFileNameToWindowsStyle(const std::string& fileName)
 {
     std::string new_fileName(fileName);

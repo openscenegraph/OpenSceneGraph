@@ -146,7 +146,7 @@ void ImageSequence::addImage(osg::Image* image)
             {
                 if (itr->first == image->getFileName())
                 {
-                    osg::notify(osg::NOTICE)<<"inserting image into waiting stake : "<<image->getFileName()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"inserting image into waiting queue : "<<image->getFileName()<<std::endl;
                     itr->second = image;
                     return;
                 }

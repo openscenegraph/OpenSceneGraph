@@ -10,6 +10,7 @@
 */
 
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 #include <osg/Version>
 
 #include <osgDB/PluginQuery>
@@ -19,6 +20,7 @@ using namespace osgDB;
 FileNameList osgDB::listAllAvailablePlugins()
 {
     FileNameList pluginFiles;
+    std::string validExtension = ADDQUOTES(OSG_PLUGIN_EXTENSION);
 
     std::string pluginDirectoryName = std::string("osgPlugins-")+std::string(osgGetVersion());
     std::string fullPath = osgDB::findLibraryFile(pluginDirectoryName);
@@ -30,10 +32,16 @@ FileNameList osgDB::listAllAvailablePlugins()
             ++itr)
         {
             std::string::size_type pos = itr->find("osgdb_");
-            if (pos!=std::string::npos)
+            if (pos==std::string::npos)
             {
-                pluginFiles.push_back(fullPath + std::string("/")+*itr);
+                continue;
             }
+            std::string ext = getFileExtensionIncludingDot(*itr);
+            if (ext != validExtension)
+            {
+                continue;
+            }
+            pluginFiles.push_back(fullPath + std::string("/")+*itr);
         }
     }
     

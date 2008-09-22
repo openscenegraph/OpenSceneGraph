@@ -39,8 +39,10 @@
     using std::tolower;
 #endif
 
-#ifndef OSG_DEBUG_POSTFIX
-#define OSG_DEBUG_POSTFIX "d"
+#ifdef OSG_DEBUG_POSTFIX
+    #define OSG_DEBUG_POSTFIX_WITH_QUOTES ADDQUOTES(OSG_DEBUG_POSTFIX)
+#else
+    #define OSG_DEBUG_POSTFIX_WITH_QUOTES "d"
 #endif
 
 using namespace osg;
@@ -623,7 +625,7 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
 
 #if defined(__CYGWIN__)
     #ifdef _DEBUG
-        return prepend+"cygwin_"+"osgdb_"+lowercase_ext+OSG_DEBUG_POSTFIX+".dll";
+        return prepend+"cygwin_"+"osgdb_"+lowercase_ext+OSG_DEBUG_POSTFIX_WITH_QUOTES+".dll";
     #else
         return prepend+"cygwin_"+"osgdb_"+lowercase_ext+".dll";
     #endif
@@ -631,7 +633,7 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
     return prepend+"mingw_"+"osgdb_"+lowercase_ext+".dll";
 #elif defined(WIN32)
     #ifdef _DEBUG
-        return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX +".dll";
+        return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX_WITH_QUOTES +".dll";
     #else
         return prepend+"osgdb_"+lowercase_ext+".dll";
     #endif
@@ -642,8 +644,8 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
     return prepend+"osgdb_"+lowercase_ext+".sl";
 #else
     #ifdef _DEBUG
-#pragma message(OSG_DEBUG_POSTFIX)
-         return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX + ".so";
+#pragma message(OSG_DEBUG_POSTFIX_WITH_QUOTES)
+         return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX_WITH_QUOTES + ".so";
     #else
          return prepend+"osgdb_"+lowercase_ext+".so";
     #endif
@@ -659,7 +661,7 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
     return "lib"+name+".dll";
 #elif defined(WIN32)
     #ifdef _DEBUG
-        return name+OSG_DEBUG_POSTFIX +".dll";
+        return name+OSG_DEBUG_POSTFIX_WITH_QUOTES +".dll";
     #else
         return name+".dll";
     #endif
@@ -670,7 +672,7 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
     return "lib"+name+".sl";
 #else
     #ifdef _DEBUG
-        return "lib"+name+OSG_DEBUG_POSTFIX +".so";
+        return "lib"+name+OSG_DEBUG_POSTFIX_WITH_QUOTES +".so";
     #else
         return "lib"+name+".so";
     #endif

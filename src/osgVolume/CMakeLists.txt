@@ -30,6 +30,7 @@ ADD_LIBRARY(${LIB_NAME}
 
 SET(TARGET_LIBRARIES_VARS FREETYPE_LIBRARY )
 LINK_INTERNAL(${LIB_NAME}     
+    osgUtil
     osgDB
     osg
     OpenThreads

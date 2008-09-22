@@ -1689,6 +1689,62 @@ int main( int argc, char **argv )
     while(arguments.read("--shader")) { useShader = true; }
 
     osg::ref_ptr<osg::Image> image_3d;
+    
+    std::string vh_filename;
+    while (arguments.read("--vh", vh_filename)) 
+    {
+        std::string raw_filename, transfer_filename;
+	int xdim(0), ydim(0), zdim(0);
+
+        std::ifstream header(vh_filename.c_str());
+        if (header)
+        {
+            header >> raw_filename >> transfer_filename >> xdim >> ydim >> zdim >> xSize >> ySize >> zSize;
+        }
+        
+        if (xdim*ydim*zdim==0)
+        {
+            std::cout<<"Error in reading volume header "<<vh_filename<<std::endl;
+            return 1;
+        }
+        
+        if (!raw_filename.empty())
+        {
+            image_3d = readRaw(xdim, ydim, zdim, 1, 1, "little", raw_filename);
+        }
+        
+        if (!transfer_filename.empty())
+        {
+            std::ifstream fin(transfer_filename.c_str());
+            if (fin)
+            {
+                osg::TransferFunction1D::ValueMap valueMap;
+                float value = 0.0;
+                while(fin && value<1.0)
+                {
+                    float red, green, blue, alpha;
+                    fin >> red >> green >> blue >> alpha;
+                    if (fin) 
+                    {
+                        std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
+                        valueMap[value] = osg::Vec4(red/255.0+0.5,green/255.0+0.5,blue/255.0+0.5,alpha/255.0+0.5);
+                    }
+                    value += 1/255.0;
+                }
+
+                if (valueMap.empty())
+                {
+                    std::cout<<"Error: No values read from transfer function file: "<<transfer_filename<<std::endl;
+                    return 0;
+                }
+
+                transferFunction = new osg::TransferFunction1D;
+                transferFunction->assign(valueMap, true);
+            }
+        }
+
+    }
+    
 
     int sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents;
     std::string endian, raw_filename;

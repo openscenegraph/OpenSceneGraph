@@ -25,6 +25,9 @@ namespace osg {
 // forward declare
 class State;
 
+#define _ADDQUOTES(def) #def
+#define ADDQUOTES(def) _ADDQUOTES(def)
+
 /** META_Object macro define the standard clone, isSameKindAs and className methods.
   * Use when subclassing from Object to make it more convenient to define 
   * the standard pure virtual clone, isSameKindAs and className methods 

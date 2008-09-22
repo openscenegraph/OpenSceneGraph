@@ -31,6 +31,7 @@
 #include <osgDB/WriteFile>
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <iostream>
 
@@ -302,6 +303,7 @@ int main(int argc, char **argv)
     meh->set( viewer.getSceneData() );
     viewer.addEventHandler( meh );
 
+    viewer.addEventHandler( new osgViewer::StatsHandler());
 
     if (!filename.empty())
     {

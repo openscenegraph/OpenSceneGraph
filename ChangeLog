@@ -1,3 +1,21 @@
+The following changes (and svn revision numbers) were included in the 2.6.1 release.
+
+8765 - Fix to OverlayNode from Jason Beverage.
+8775,8776 - BlendEquation support in .osg/.ive
+8791 - Fix to FLT exporter to properly export PositionAttitudeTransform nodes.
+8795 - Change OcclusionQueryNode to workaround an OpenGL implementation issue on NVIDIA devices with Linux drivers. The workaround is to wait (in a loop) until the query result is ready before we retrieve it. This workaround can be enabled in cmake but is disabled by default.
+8799, 8800 - cmake targets for wrappers and changelog
+8804 - Change AutoTransform interface to use doubles; osgTerrain wrapper modification for Layer.cpp.
+8821 - cmake 'maintainer' enhancements for tags.
+8853 - Fix to osgUtil::Simplifier to handle shared vertex arrays correctly. Changes the Geometry interface, so forces a recompile.
+8888 - Fix for uninitialized "strip texture path" option in OpenFlight exporter.
+8900 - Fix for FLT plugin user data handling.
+Bump OSG version number from 2.6.0 to 2.6.1.
+
+
+
+The following changes were included in the 2.6 release.
+
 2008-08-05 10:31 +0000 [r8733]  robert:
 
 	* Updated wrappers

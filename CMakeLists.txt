@@ -562,6 +562,28 @@ IF(APPLE)
 
 ENDIF(APPLE)
 
+
+#
+# Provide target for generating wrappers
+#
+SET(GENWRAPPER genwrapper)
+
+ADD_CUSTOM_TARGET(wrappers
+    COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/genwrapper.conf -t ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/Doxyfile.template -d ${OpenSceneGraph_SOURCE_DIR} | doxygen -
+    COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/genwrapper.conf -l ${OpenSceneGraph_SOURCE_DIR}
+)
+
+
+#
+# Provide target for generating ChangeLog
+#
+SET(SVN2LOG ~/bin/svn2log.py)
+SET(GENERATELOGS svn log -v --xml | python ${SVN2LOG} -L -H)
+
+ADD_CUSTOM_TARGET(ChangeLog
+    COMMAND ${GENERATELOGS}
+)
+
 OPTION(BUILD_REF_DOCS "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
 
 IF(BUILD_REF_DOCS)

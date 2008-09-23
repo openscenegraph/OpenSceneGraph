@@ -62,8 +62,9 @@ static osg::ApplicationUsageProxy Registry_e2(osg::ApplicationUsage::ENVIRONMENT
 class Registry::AvailableReaderWriterIterator
 {
 public:
-    AvailableReaderWriterIterator(Registry::ReaderWriterList& rwList):
-        _rwList(rwList) {}
+    AvailableReaderWriterIterator(Registry::ReaderWriterList& rwList, OpenThreads::ReentrantMutex& pluginMutex):
+        _rwList(rwList),
+        _pluginMutex(pluginMutex) {}
 
 
     ReaderWriter& operator * () { return *get(); }
@@ -80,10 +81,13 @@ public:
 protected:
 
     Registry::ReaderWriterList&     _rwList;
+    OpenThreads::ReentrantMutex&    _pluginMutex;
+    
     std::set<ReaderWriter*>         _rwUsed;
 
     ReaderWriter* get() 
     {
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
         Registry::ReaderWriterList::iterator itr=_rwList.begin();
         for(;itr!=_rwList.end();++itr)
         {
@@ -517,6 +521,8 @@ void Registry::addReaderWriter(ReaderWriter* rw)
 
     // notify(INFO) << "osg::Registry::addReaderWriter("<<rw->className()<<")"<< std::endl;
 
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+
     _rwList.push_back(rw);
 
 }
@@ -527,6 +533,8 @@ void Registry::removeReaderWriter(ReaderWriter* rw)
     if (rw==0L) return;
 
 //    notify(INFO) << "osg::Registry::removeReaderWriter();"<< std::endl;
+
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
 
     ReaderWriterList::iterator rwitr = std::find(_rwList.begin(),_rwList.end(),rw);
     if (rwitr!=_rwList.end())
@@ -681,12 +689,14 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
 
 bool Registry::loadLibrary(const std::string& fileName)
 {
-    DynamicLibrary* dl = getLibrary(fileName);
-    if (dl) return false;
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+
+    DynamicLibraryList::iterator ditr = getLibraryItr(fileName);
+    if (ditr!=_dlList.end()) return true;
 
     _openingLibrary=true;
 
-    dl = DynamicLibrary::loadLibrary(fileName);
+    DynamicLibrary* dl = DynamicLibrary::loadLibrary(fileName);
     _openingLibrary=false;
 
     if (dl)
@@ -700,6 +710,7 @@ bool Registry::loadLibrary(const std::string& fileName)
 
 bool Registry::closeLibrary(const std::string& fileName)
 {
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
     DynamicLibraryList::iterator ditr = getLibraryItr(fileName);
     if (ditr!=_dlList.end())
     {
@@ -712,7 +723,7 @@ bool Registry::closeLibrary(const std::string& fileName)
 void Registry::closeAllLibraries()
 {
     // osg::notify(osg::NOTICE)<<"Registry::closeAllLibraries()"<<std::endl;
-
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
     _dlList.clear();
 }
 
@@ -728,6 +739,7 @@ Registry::DynamicLibraryList::iterator Registry::getLibraryItr(const std::string
 
 DynamicLibrary* Registry::getLibrary(const std::string& fileName)
 {
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
     DynamicLibraryList::iterator ditr = getLibraryItr(fileName);
     if (ditr!=_dlList.end()) return ditr->get();
     else return NULL;
@@ -738,6 +750,8 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
     // record the existing reader writer.
     std::set<ReaderWriter*> rwOriginal;
 
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+
     // first attemt one of the installed loaders
     for(ReaderWriterList::iterator itr=_rwList.begin();
         itr!=_rwList.end();
@@ -746,7 +760,7 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
         rwOriginal.insert(itr->get());
         if((*itr)->acceptsExtension(ext)) return (*itr).get();
     }
-
+    
     // now look for a plug-in to load the file.
     std::string libraryName = createLibraryNameForExtension(ext);
     notify(INFO) << "Now checking for plug-in "<<libraryName<< std::endl;
@@ -1471,7 +1485,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    AvailableReaderWriterIterator itr(_rwList);
+    AvailableReaderWriterIterator itr(_rwList, _pluginMutex);
     for(;itr.valid();++itr)
     {
         ReaderWriter::ReadResult rr = readFunctor.doRead(*itr);
@@ -1661,7 +1675,7 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    AvailableReaderWriterIterator itr(_rwList);
+    AvailableReaderWriterIterator itr(_rwList, _pluginMutex);
     for(;itr.valid();++itr)
     {
         ReaderWriter::WriteResult rr = itr->writeObject(obj,fileName,options);
@@ -1714,7 +1728,7 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    AvailableReaderWriterIterator itr(_rwList);
+    AvailableReaderWriterIterator itr(_rwList, _pluginMutex);
     for(;itr.valid();++itr)
     {
         ReaderWriter::WriteResult rr = itr->writeImage(image,fileName,options);
@@ -1768,7 +1782,7 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    AvailableReaderWriterIterator itr(_rwList);
+    AvailableReaderWriterIterator itr(_rwList, _pluginMutex);
     for(;itr.valid();++itr)
     {
         ReaderWriter::WriteResult rr = itr->writeHeightField(HeightField,fileName,options);
@@ -1822,7 +1836,7 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
     Results results;
 
     // first attempt to write the file from existing ReaderWriter's
-    AvailableReaderWriterIterator itr(_rwList);
+    AvailableReaderWriterIterator itr(_rwList, _pluginMutex);
     for(;itr.valid();++itr)
     {
         ReaderWriter::WriteResult rr = itr->writeNode(node,fileName,options);
@@ -1878,7 +1892,7 @@ ReaderWriter::WriteResult Registry::writeShaderImplementation(const Shader& shad
     Results results;
 
     // first attempt to load the file from existing ReaderWriter's
-    AvailableReaderWriterIterator itr(_rwList);
+    AvailableReaderWriterIterator itr(_rwList, _pluginMutex);
     for(;itr.valid();++itr)
     {
         ReaderWriter::WriteResult rr = itr->writeShader(shader,fileName,options);

@@ -8,6 +8,7 @@ AutoTransform.cpp
 Billboard.cpp
 BlendColor.cpp
 BlendFunc.cpp
+BlendEquation.cpp
 Camera.cpp
 CameraView.cpp
 ClearNode.cpp

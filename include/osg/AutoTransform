@@ -42,26 +42,26 @@ class OSG_EXPORT AutoTransform : public Transform
         virtual AutoTransform* asAutoTransform() { return this; }
         virtual const AutoTransform* asAutoTransform() const { return this; }
 
-        inline void setPosition(const Vec3& pos) { _position = pos; _matrixDirty=true; dirtyBound(); }
-        inline const Vec3& getPosition() const { return _position; }
+        inline void setPosition(const Vec3d& pos) { _position = pos; _matrixDirty=true; dirtyBound(); }
+        inline const Vec3d& getPosition() const { return _position; }
 
 
         inline void setRotation(const Quat& quat) { _rotation = quat; _matrixDirty=true; dirtyBound(); }
         inline const Quat& getRotation() const { return _rotation; }
 
-        inline void setScale(float scale) { setScale(osg::Vec3(scale,scale,scale)); }
+        inline void setScale(double scale) { setScale(osg::Vec3(scale,scale,scale)); }
 
-        void setScale(const Vec3& scale);
-        inline const Vec3& getScale() const { return _scale; }
+        void setScale(const Vec3d& scale);
+        inline const Vec3d& getScale() const { return _scale; }
 
-        void setMinimumScale(float minimumScale) { _minimumScale = minimumScale; }
-        float getMinimumScale() const { return _minimumScale; }
+        void setMinimumScale(double minimumScale) { _minimumScale = minimumScale; }
+        double getMinimumScale() const { return _minimumScale; }
 
-        void setMaximumScale(float maximumScale) { _maximumScale = maximumScale; }
-        float getMaximumScale() const { return _maximumScale; }
+        void setMaximumScale(double maximumScale) { _maximumScale = maximumScale; }
+        double getMaximumScale() const { return _maximumScale; }
 
-        inline void setPivotPoint(const Vec3& pivot) { _pivotPoint = pivot; _matrixDirty=true; dirtyBound(); }
-        inline const Vec3& getPivotPoint() const { return _pivotPoint; }
+        inline void setPivotPoint(const Vec3d& pivot) { _pivotPoint = pivot; _matrixDirty=true; dirtyBound(); }
+        inline const Vec3d& getPivotPoint() const { return _pivotPoint; }
 
 
         void setAutoUpdateEyeMovementTolerance(float tolerance) { _autoUpdateEyeMovementTolerance = tolerance; }
@@ -98,32 +98,32 @@ class OSG_EXPORT AutoTransform : public Transform
 
         virtual ~AutoTransform() {}
 
-        Vec3                            _position;
-        Vec3                            _pivotPoint;
-        float                           _autoUpdateEyeMovementTolerance;
+        Vec3d                           _position;
+        Vec3d                           _pivotPoint;
+        double                          _autoUpdateEyeMovementTolerance;
 
         AutoRotateMode                  _autoRotateMode;
 
         bool                            _autoScaleToScreen;
 
         mutable Quat                    _rotation;
-        mutable Vec3                    _scale;
+        mutable Vec3d                   _scale;
         mutable bool                    _firstTimeToInitEyePoint;
         mutable osg::Vec3               _previousEyePoint;
         mutable osg::Vec3               _previousLocalUp;
         mutable Viewport::value_type    _previousWidth;
         mutable Viewport::value_type    _previousHeight;
-        mutable osg::Matrix             _previousProjection;
-        mutable osg::Vec3               _previousPosition;
+        mutable osg::Matrixd            _previousProjection;
+        mutable osg::Vec3d              _previousPosition;
 
-        float                           _minimumScale;
-        float                           _maximumScale;
-        float                           _autoScaleTransitionWidthRatio;
+        double                          _minimumScale;
+        double                          _maximumScale;
+        double                          _autoScaleTransitionWidthRatio;
 
         void computeMatrix() const;
 
-        mutable bool        _matrixDirty;
-        mutable osg::Matrix _cachedMatrix;
+        mutable bool                    _matrixDirty;
+        mutable osg::Matrixd            _cachedMatrix;
 };
 
 }

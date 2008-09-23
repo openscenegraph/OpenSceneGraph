@@ -21,6 +21,8 @@
 #ifndef MULTITHREADEDREAD_H
 #define MULTITHREADEDREAD_H 1
 
-extern void runMultiThreadReadTests(int numThreads);
+#include <osg/ArgumentParser>
+
+extern void runMultiThreadReadTests(int numThreads, osg::ArgumentParser& arguments);
 
 #endif

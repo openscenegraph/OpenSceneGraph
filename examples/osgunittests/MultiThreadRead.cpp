@@ -18,7 +18,10 @@
 
 #include <osg/Referenced>
 #include <osgDB/ReadFile>
+#include <osgDB/Registry>
+
 #include <OpenThreads/Thread>
+#include <OpenThreads/ScopedLock>
 
 struct OSG_EXPORT RefBarrier : public osg::Referenced, public OpenThreads::Barrier
 {
@@ -104,11 +107,75 @@ public:
     osg::ref_ptr<RefBarrier>    _endBarrier;
 };
 
-void runMultiThreadReadTests(int numThreads)
+
+
+class SerializerReadFileCallback : public osgDB::Registry::ReadFileCallback
+{
+public:
+
+    virtual osgDB::ReaderWriter::ReadResult openArchive(const std::string& filename,osgDB::ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, const osgDB::ReaderWriter::Options* useObjectCache)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        return osgDB::Registry::instance()->openArchiveImplementation(filename, status, indexBlockSizeHint, useObjectCache);
+    }
+
+    virtual osgDB::ReaderWriter::ReadResult readObject(const std::string& filename, const osgDB::ReaderWriter::Options* options)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        return osgDB::Registry::instance()->readObjectImplementation(filename,options);
+    }
+
+    virtual osgDB::ReaderWriter::ReadResult readImage(const std::string& filename, const osgDB::ReaderWriter::Options* options)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        return osgDB::Registry::instance()->readImageImplementation(filename,options);
+    }
+
+    virtual osgDB::ReaderWriter::ReadResult readHeightField(const std::string& filename, const osgDB::ReaderWriter::Options* options)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        return osgDB::Registry::instance()->readHeightFieldImplementation(filename,options);
+    }
+
+    virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& filename, const osgDB::ReaderWriter::Options* options)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        return osgDB::Registry::instance()->readNodeImplementation(filename,options);
+    }
+
+    virtual osgDB::ReaderWriter::ReadResult readShader(const std::string& filename, const osgDB::ReaderWriter::Options* options)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        return osgDB::Registry::instance()->readShaderImplementation(filename,options);
+    }
+
+protected:
+       virtual ~SerializerReadFileCallback() {}
+       
+       OpenThreads::Mutex _mutex;
+};
+
+
+
+void runMultiThreadReadTests(int numThreads, osg::ArgumentParser& arguments)
 {
 #if VERBOSE                
     osg::notify(osg::NOTICE)<<"runMultiThreadReadTests() -- running"<<std::endl;
 #endif
+
+
+    if (arguments.read("preload"))
+    {    
+        osgDB::Registry::instance()->loadLibrary(osgDB::Registry::instance()->createLibraryNameForExtension("osg"));
+        osgDB::Registry::instance()->loadLibrary(osgDB::Registry::instance()->createLibraryNameForExtension("rgb"));
+        osgDB::Registry::instance()->loadLibrary(osgDB::Registry::instance()->createLibraryNameForExtension("jpeg"));
+        osgDB::Registry::instance()->loadLibrary(osgDB::Registry::instance()->createLibraryNameForExtension("ive"));
+    }
+
+    if (arguments.read("serialize"))
+    {
+        osgDB::Registry::instance()->setReadFileCallback(new SerializerReadFileCallback());
+    }
 
     osg::ref_ptr<RefBarrier> startBarrier = new RefBarrier(numThreads+1);
     osg::ref_ptr<RefBarrier> endBarrier = new RefBarrier(numThreads+1);

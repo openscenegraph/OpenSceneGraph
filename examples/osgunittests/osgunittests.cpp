@@ -628,7 +628,7 @@ int main( int argc, char** argv )
 
     if (numReadThreads>0)
     {
-        runMultiThreadReadTests(numReadThreads);
+        runMultiThreadReadTests(numReadThreads, arguments);
         return 0;
     }
 

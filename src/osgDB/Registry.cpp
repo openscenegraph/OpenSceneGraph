@@ -238,6 +238,7 @@ Registry::Registry()
     addFileExtensionAlias("dv",   "qt");
     addFileExtensionAlias("mp4",  "qt");
     addFileExtensionAlias("m4v",  "qt");
+    addFileExtensionAlias("3gp",  "qt");
     // Add QuickTime live support for OSX
     addFileExtensionAlias("live", "qt");
 #else

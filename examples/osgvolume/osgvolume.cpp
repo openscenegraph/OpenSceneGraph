@@ -1720,14 +1720,15 @@ int main( int argc, char **argv )
             {
                 osg::TransferFunction1D::ValueMap valueMap;
                 float value = 0.0;
-                while(fin && value<1.0)
+                while(fin && value<=1.0)
                 {
                     float red, green, blue, alpha;
                     fin >> red >> green >> blue >> alpha;
                     if (fin) 
                     {
-                        std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
-                        valueMap[value] = osg::Vec4(red/255.0+0.5,green/255.0+0.5,blue/255.0+0.5,alpha/255.0+0.5);
+                        valueMap[value] = osg::Vec4(red/255.0f,green/255.0f,blue/255.0f,alpha/255.0f);
+                        std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")";
+                        std::cout<<"  ("<<valueMap[value]<<")"<<std::endl;
                     }
                     value += 1/255.0;
                 }

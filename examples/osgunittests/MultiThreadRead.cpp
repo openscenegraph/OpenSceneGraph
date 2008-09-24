@@ -23,7 +23,7 @@
 #include <OpenThreads/Thread>
 #include <OpenThreads/ScopedLock>
 
-struct OSG_EXPORT RefBarrier : public osg::Referenced, public OpenThreads::Barrier
+struct RefBarrier : public osg::Referenced, public OpenThreads::Barrier
 {
     RefBarrier(int numThreads):
         OpenThreads::Barrier(numThreads) {}

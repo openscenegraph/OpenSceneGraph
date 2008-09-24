@@ -85,6 +85,7 @@ public:
         supportsExtension("avi","Movie format");
         supportsExtension("flv","Movie format");
         supportsExtension("swf","Movie format");
+        supportsExtension("3gp","Mobile movie format");
 
         supportsExtension("live","Live video streaming");
 
@@ -121,7 +122,8 @@ public:
          osgDB::equalCaseInsensitive(extension,"dv")  ||
          osgDB::equalCaseInsensitive(extension,"avi") ||
          osgDB::equalCaseInsensitive(extension,"flv") ||
-         osgDB::equalCaseInsensitive(extension,"swf");
+         osgDB::equalCaseInsensitive(extension,"swf") ||
+         osgDB::equalCaseInsensitive(extension,"3gp");
    }
 
    virtual bool acceptsLiveExtension(const std::string& extension) const

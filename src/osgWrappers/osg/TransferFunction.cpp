@@ -11,8 +11,6 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Image>
-#include <osg/Shader>
-#include <osg/Texture>
 #include <osg/TransferFunction>
 #include <osg/Vec4>
 
@@ -40,34 +38,8 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction)
 	          __C5_osg_Image_P1__getImage,
 	          "",
 	          "");
-	I_Method0(osg::Texture *, getTexture,
-	          Properties::NON_VIRTUAL,
-	          __osg_Texture_P1__getTexture,
-	          "",
-	          "");
-	I_Method0(const osg::Texture *, getTexture,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Texture_P1__getTexture,
-	          "",
-	          "");
-	I_Method0(osg::Shader *, getShader,
-	          Properties::NON_VIRTUAL,
-	          __osg_Shader_P1__getShader,
-	          "",
-	          "");
-	I_Method0(const osg::Shader *, getShader,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Shader_P1__getShader,
-	          "",
-	          "");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __osg_Image_P1__getImage, 
-	                 0);
-	I_SimpleProperty(osg::Shader *, Shader, 
-	                 __osg_Shader_P1__getShader, 
-	                 0);
-	I_SimpleProperty(osg::Texture *, Texture, 
-	                 __osg_Texture_P1__getTexture, 
 	                 0);
 END_REFLECTOR
 

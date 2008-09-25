@@ -14,14 +14,12 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
         ReaderWriterGLSL()
         {
             supportsExtension("gl","OpenGL Shader Language format");
+            supportsExtension("frag","OpenGL Shader Language format");
+            supportsExtension("vert","OpenGL Shader Language format");
             supportsExtension("glsl","OpenGL Shader Language format");
         }
     
         virtual const char* className() const { return "GLSL Shader Reader"; }
-        virtual bool acceptsExtension(const std::string& extension) const
-        { 
-            return osgDB::equalCaseInsensitive(extension,"glsl") || osgDB::equalCaseInsensitive(extension,"gl");
-        }
 
         virtual ReadResult readShader(std::istream& fin,const Options* options) const
         {

@@ -220,6 +220,10 @@ Registry::Registry()
     addFileExtensionAlias("dcm",   "dicom");
     addFileExtensionAlias("dic",   "dicom");
 
+    addFileExtensionAlias("gl",   "glsl");
+    addFileExtensionAlias("vert",   "glsl");
+    addFileExtensionAlias("frag",   "glsl");
+
 #if defined(DARWIN_QUICKTIME)
     addFileExtensionAlias("jpg",  "qt");
     addFileExtensionAlias("jpe",  "qt");

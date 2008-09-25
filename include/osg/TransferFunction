@@ -36,12 +36,6 @@ class OSG_EXPORT TransferFunction : public osg::Referenced
         osg::Image* getImage() { return _image.get(); }
         const osg::Image* getImage() const { return _image.get(); }
         
-        osg::Texture* getTexture() { return _texture.get(); }
-        const osg::Texture* getTexture() const { return _texture.get(); }
-        
-        osg::Shader* getShader() { return _shader.get(); }
-        const osg::Shader* getShader() const { return _shader.get(); }
-        
     protected:
     
         virtual ~TransferFunction();
@@ -50,9 +44,6 @@ class OSG_EXPORT TransferFunction : public osg::Referenced
 
         Colors                      _colors;
         osg::ref_ptr<osg::Image>    _image;
-        osg::ref_ptr<osg::Texture>  _texture;
-        osg::ref_ptr<osg::Shader>   _shader;
-
 };
 
 /** 1D variant of TransferFunction. */

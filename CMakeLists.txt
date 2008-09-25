@@ -703,6 +703,19 @@ IF(BUILD_DOCUMENTATION)
     )
 ENDIF(BUILD_DOCUMENTATION)
 
+OPTION(BUILD_DASHBOARD_REPORTS "Set to ON to activate reporting of OpenSceneGraph builds here http://www.cdash.org/CDashPublic/index.php?project=OpenSceneGraph" OFF)
+IF(BUILD_DASHBOARD_REPORTS)
+# The following are required to uses Dart and the Cdash dashboard
+# viewable here : http://www.cdash.org/CDashPublic/index.php?project=OpenSceneGraph
+    INCLUDE(Dart)
+    set(CTEST_PROJECT_NAME "OpenSceneGraph")
+    set(CTEST_NIGHTLY_START_TIME "00:00:00 CET")
+    set(CTEST_DROP_METHOD "http")
+    set(CTEST_DROP_SITE "www.cdash.org")
+    set(CTEST_DROP_LOCATION "/CDashPublic/submit.php?project=OpenSceneGraph")
+    set(CTEST_DROP_SITE_CDASH TRUE)
+ENDIF(BUILD_DASHBOARD_REPORTS)
+
 # This needs to be run very last so other parts of the scripts can take
 # advantage of this.
 IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
@@ -719,4 +732,3 @@ CONFIGURE_FILE(
   IMMEDIATE @ONLY)
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
-

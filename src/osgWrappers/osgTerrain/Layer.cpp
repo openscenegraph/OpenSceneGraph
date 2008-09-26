@@ -46,7 +46,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -146,7 +146,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ContourLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -231,7 +231,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ContourLayer)
 	          __void__dirty,
 	          "increment the modified count. ",
 	          "\" ");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	I_Method1(void, setModifiedCount, IN, unsigned int, int,
 	          Properties::VIRTUAL,
 	          __void__setModifiedCount__unsigned_int,
 	          "Set the modified count value. ",
@@ -269,7 +269,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -354,7 +354,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	          __void__dirty,
 	          "increment the modified count. ",
 	          "\" ");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	I_Method1(void, setModifiedCount, IN, unsigned int, int,
 	          Properties::VIRTUAL,
 	          __void__setModifiedCount__unsigned_int,
 	          "Set the modified count value. ",
@@ -392,7 +392,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -477,7 +477,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	          __void__dirty,
 	          "increment the modified count. ",
 	          "\" ");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	I_Method1(void, setModifiedCount, IN, unsigned int, int,
 	          Properties::VIRTUAL,
 	          __void__setModifiedCount__unsigned_int,
 	          "Set the modified count value. ",
@@ -519,7 +519,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -758,7 +758,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -843,7 +843,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	          __void__dirty,
 	          "increment the modified count. ",
 	          "\" ");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	I_Method1(void, setModifiedCount, IN, unsigned int, int,
 	          Properties::VIRTUAL,
 	          __void__setModifiedCount__unsigned_int,
 	          "Set the modified count value. ",
@@ -867,116 +867,5 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	I_SimpleProperty(unsigned int, ModifiedCount, 
 	                 __unsigned_int__getModifiedCount, 
 	                 __void__setModifiedCount__unsigned_int);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgTerrain::SwitchLayer)
-	I_DeclaringFile("osgTerrain/Layer");
-	I_BaseType(osgTerrain::Layer);
-	I_Constructor0(____SwitchLayer,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osgTerrain::SwitchLayer &, switchLayer, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____SwitchLayer__C5_SwitchLayer_R1__C5_osg_CopyOp_R1,
-	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
-	I_Method0(void, clear,
-	          Properties::NON_VIRTUAL,
-	          __void__clear,
-	          "",
-	          "");
-	I_Method1(void, setActiveLayer, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __void__setActiveLayer__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getActiveLayer,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getActiveLayer,
-	          "",
-	          "");
-	I_Method2(void, setFileName, IN, unsigned int, i, IN, const std::string &, filename,
-	          Properties::NON_VIRTUAL,
-	          __void__setFileName__unsigned_int__C5_std_string_R1,
-	          "",
-	          "");
-	I_Method1(const std::string &, getFileName, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __C5_std_string_R1__getFileName__unsigned_int,
-	          "",
-	          "");
-	I_Method2(void, setLayer, IN, unsigned int, i, IN, osgTerrain::Layer *, layer,
-	          Properties::NON_VIRTUAL,
-	          __void__setLayer__unsigned_int__Layer_P1,
-	          "",
-	          "");
-	I_Method1(osgTerrain::Layer *, getLayer, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __Layer_P1__getLayer__unsigned_int,
-	          "",
-	          "");
-	I_Method1(const osgTerrain::Layer *, getLayer, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __C5_Layer_P1__getLayer__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, addLayer, IN, const std::string &, filename,
-	          Properties::NON_VIRTUAL,
-	          __void__addLayer__C5_std_string_R1,
-	          "",
-	          "");
-	I_Method1(void, addLayer, IN, osgTerrain::Layer *, layer,
-	          Properties::NON_VIRTUAL,
-	          __void__addLayer__Layer_P1,
-	          "",
-	          "");
-	I_Method1(void, removeLayer, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __void__removeLayer__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getNumLayers,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getNumLayers,
-	          "",
-	          "");
-	I_SimpleProperty(unsigned int, ActiveLayer, 
-	                 __unsigned_int__getActiveLayer, 
-	                 __void__setActiveLayer__unsigned_int);
-	I_IndexedProperty(const std::string &, FileName, 
-	                  __C5_std_string_R1__getFileName__unsigned_int, 
-	                  __void__setFileName__unsigned_int__C5_std_string_R1, 
-	                  0);
-	I_ArrayProperty(osgTerrain::Layer *, Layer, 
-	                __Layer_P1__getLayer__unsigned_int, 
-	                __void__setLayer__unsigned_int__Layer_P1, 
-	                __unsigned_int__getNumLayers, 
-	                __void__addLayer__Layer_P1, 
-	                0, 
-	                __void__removeLayer__unsigned_int);
 END_REFLECTOR
 

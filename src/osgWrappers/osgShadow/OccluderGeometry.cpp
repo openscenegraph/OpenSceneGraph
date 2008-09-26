@@ -48,7 +48,7 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -162,16 +162,16 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::OccluderGeometry)
 	                 __void__setBoundingPolytope__C5_osg_Polytope_R1);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::ShadowVolumeGeometry::Vec3List)
-
-TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::ShadowVolumeGeometry::UIntList)
-
 BEGIN_ENUM_REFLECTOR(osgShadow::ShadowVolumeGeometry::DrawMode)
 	I_DeclaringFile("osgShadow/OccluderGeometry");
 	I_EnumLabel(osgShadow::ShadowVolumeGeometry::GEOMETRY);
 	I_EnumLabel(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_PASS);
 	I_EnumLabel(osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::ShadowVolumeGeometry::Vec3List)
+
+TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::ShadowVolumeGeometry::UIntList)
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolumeGeometry)
 	I_DeclaringFile("osgShadow/OccluderGeometry");
@@ -188,7 +188,7 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolumeGeometry)
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

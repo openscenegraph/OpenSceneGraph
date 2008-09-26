@@ -25,16 +25,16 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Image > >, osg::ImageSequence::Images)
-
-TYPE_NAME_ALIAS(std::list< std::string >, osg::ImageSequence::FileNames)
-
 BEGIN_ENUM_REFLECTOR(osg::ImageSequence::Mode)
 	I_DeclaringFile("osg/ImageSequence");
 	I_EnumLabel(osg::ImageSequence::PRE_LOAD_ALL_IMAGES);
 	I_EnumLabel(osg::ImageSequence::PAGE_AND_RETAIN_IMAGES);
 	I_EnumLabel(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Image > >, osg::ImageSequence::Images)
+
+TYPE_NAME_ALIAS(std::list< std::string >, osg::ImageSequence::FileNames)
 
 BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	I_DeclaringFile("osg/ImageSequence");
@@ -51,7 +51,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

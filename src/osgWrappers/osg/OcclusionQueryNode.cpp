@@ -72,7 +72,7 @@ BEGIN_OBJECT_REFLECTOR(osg::OcclusionQueryNode)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
 	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",

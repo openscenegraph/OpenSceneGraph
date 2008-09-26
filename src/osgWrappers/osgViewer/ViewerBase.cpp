@@ -28,20 +28,6 @@
 
 #include <osgViewer/View>
 	
-TYPE_NAME_ALIAS(std::vector< osg::Camera * >, osgViewer::ViewerBase::Cameras)
-
-TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::ViewerBase::Contexts)
-
-TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::ViewerBase::Windows)
-
-TYPE_NAME_ALIAS(std::vector< OpenThreads::Thread * >, osgViewer::ViewerBase::Threads)
-
-TYPE_NAME_ALIAS(std::vector< osg::OperationThread * >, osgViewer::ViewerBase::OperationThreads)
-
-TYPE_NAME_ALIAS(std::vector< osgViewer::Scene * >, osgViewer::ViewerBase::Scenes)
-
-TYPE_NAME_ALIAS(std::vector< osgViewer::View * >, osgViewer::ViewerBase::Views)
-
 BEGIN_ENUM_REFLECTOR(osgViewer::ViewerBase::ThreadingModel)
 	I_DeclaringFile("osgViewer/ViewerBase");
 	I_EnumLabel(osgViewer::ViewerBase::SingleThreaded);
@@ -58,6 +44,20 @@ BEGIN_ENUM_REFLECTOR(osgViewer::ViewerBase::BarrierPosition)
 	I_EnumLabel(osgViewer::ViewerBase::BeforeSwapBuffers);
 	I_EnumLabel(osgViewer::ViewerBase::AfterSwapBuffers);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osg::Camera * >, osgViewer::ViewerBase::Cameras)
+
+TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::ViewerBase::Contexts)
+
+TYPE_NAME_ALIAS(std::vector< osgViewer::GraphicsWindow * >, osgViewer::ViewerBase::Windows)
+
+TYPE_NAME_ALIAS(std::vector< OpenThreads::Thread * >, osgViewer::ViewerBase::Threads)
+
+TYPE_NAME_ALIAS(std::vector< osg::OperationThread * >, osgViewer::ViewerBase::OperationThreads)
+
+TYPE_NAME_ALIAS(std::vector< osgViewer::Scene * >, osgViewer::ViewerBase::Scenes)
+
+TYPE_NAME_ALIAS(std::vector< osgViewer::View * >, osgViewer::ViewerBase::Views)
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	I_DeclaringFile("osgViewer/ViewerBase");
@@ -188,8 +188,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	I_Method0(bool, getQuitEventSetsDone,
 	          Properties::NON_VIRTUAL,
 	          __bool__getQuitEventSetsDone,
-	          "",
-	          "true if the viewer respond to the QUIT_APPLICATION-event  ");
+	          "true if the viewer respond to the QUIT_APPLICATION-event  ",
+	          "");
 	I_Method1(void, setReleaseContextAtEndOfFrameHint, IN, bool, hint,
 	          Properties::NON_VIRTUAL,
 	          __void__setReleaseContextAtEndOfFrameHint__bool,

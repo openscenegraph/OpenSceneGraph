@@ -60,7 +60,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect)
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, x,
 	          Properties::VIRTUAL,
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
@@ -316,7 +316,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect::PrecipitationDrawable)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

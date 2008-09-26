@@ -45,7 +45,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendColor)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
@@ -75,7 +75,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendColor)
 	          __int__compare__C5_StateAttribute_R1,
 	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x,
 	          Properties::VIRTUAL,
 	          __bool__getModeUsage__StateAttribute_ModeUsage_R1,
 	          "Return the modes associated with this StateAttribute. ",
@@ -95,7 +95,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendColor)
 	          __C5_osg_Vec4_R1__getConstantColor,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osg::State &, state,
+	I_Method1(void, apply, IN, osg::State &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",

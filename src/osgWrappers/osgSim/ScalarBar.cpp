@@ -40,7 +40,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ScalarBar)
 	I_ConstructorWithDefaults7(IN, int, numColors, , IN, int, numLabels, , IN, osgSim::ScalarsToColors *, stc, , IN, const std::string &, title, , IN, osgSim::ScalarBar::Orientation, orientation, osgSim::ScalarBar::HORIZONTAL, IN, float, aspectRatio, 0.25, IN, osgSim::ScalarBar::ScalarPrinter *, sp, new osgSim::ScalarBar::ScalarPrinter,
 	                           ____ScalarBar__int__int__ScalarsToColors_P1__C5_std_string_R1__Orientation__float__ScalarPrinter_P1,
 	                           "Construct a ScalarBar with the supplied parameters. ",
-	                           " param numColors Specify the number of colors in the scalar bar. Color interpolation occurs where necessary.  numLabels Specify the number of labels in the scalar bar.  stc The ScalarsToColors defining the range of scalars and the colors they map to.  title The title to be used when displaying the ScalarBar. Specify \"\" for no title.  orientation The orientation of the ScalarBar.  param aspectRatio The aspect ration (y/x) for the displayed bar. Bear in mind you may want to change this if you change the orientation.  sp A ScalarPrinter object for the ScalarBar. For every displayed ScalarBar label, the scalar value will be passed to the ScalarPrinter object to turn it into a string. Users may override the default ScalarPrinter object to map scalars to whatever strings they wish.  see Orientation.  see ScalarPrinter ");
+	                           " param numColors Specify the number of colors in the scalar bar. Color interpolation occurs where necessary.  numLabels Specify the number of labels in the scalar bar.  stc The ScalarsToColors defining the range of scalars and the colors they map to.  title The title to be used when displaying the ScalarBar. Specify \"\" for no title.  orientation The orientation of the ScalarBar.   param aspectRatio The aspect ration (y/x) for the displayed bar. Bear in mind you may want to change this if you change the orientation.  sp A ScalarPrinter object for the ScalarBar. For every displayed ScalarBar label, the scalar value will be passed to the ScalarPrinter object to turn it into a string. Users may override the default ScalarPrinter object to map scalars to whatever strings they wish.   see Orientation.  see ScalarPrinter ");
 	I_Constructor2(IN, const osgSim::ScalarBar &, rhs, IN, const osg::CopyOp &, co,
 	               ____ScalarBar__C5_ScalarBar_R1__C5_osg_CopyOp_R1,
 	               "Copy constructor. ",
@@ -159,7 +159,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ScalarBar)
 	          Properties::NON_VIRTUAL,
 	          __void__setScalarPrinter__ScalarPrinter_P1,
 	          "Set a ScalarPrinter object for the ScalarBar. ",
-	          "For every displayed ScalarBar label, the scalar value will be passed to the ScalarPrinter object to turn it into a string. Users may override the default ScalarPrinter object to map scalars to whatever strings they wish.ScalarPrinter  ");
+	          "For every displayed ScalarBar label, the scalar value will be passed to the ScalarPrinter object to turn it into a string. Users may override the default ScalarPrinter object to map scalars to whatever strings they wish. ScalarPrinter  ");
 	I_Method0(const osgSim::ScalarBar::ScalarPrinter *, getScalarPrinter,
 	          Properties::NON_VIRTUAL,
 	          __C5_ScalarPrinter_P1__getScalarPrinter,

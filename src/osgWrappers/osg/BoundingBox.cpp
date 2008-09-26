@@ -21,9 +21,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osg::Vec3f, osg::BoundingBox::vec_type)
+TYPE_NAME_ALIAS(osg::Vec3d, osg::BoundingBox::vec_type)
 
-TYPE_NAME_ALIAS(float, osg::BoundingBox::value_type)
+TYPE_NAME_ALIAS(double, osg::BoundingBox::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::BoundingBox)
 	I_DeclaringFile("osg/BoundingBox");

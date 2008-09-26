@@ -28,14 +28,14 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< double COMMA  osg::AnimationPath::ControlPoint >, osg::AnimationPath::TimeControlPointMap)
-
 BEGIN_ENUM_REFLECTOR(osg::AnimationPath::LoopMode)
 	I_DeclaringFile("osg/AnimationPath");
 	I_EnumLabel(osg::AnimationPath::SWING);
 	I_EnumLabel(osg::AnimationPath::LOOP);
 	I_EnumLabel(osg::AnimationPath::NO_LOOPING);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::map< double COMMA  osg::AnimationPath::ControlPoint >, osg::AnimationPath::TimeControlPointMap)
 
 BEGIN_OBJECT_REFLECTOR(osg::AnimationPath)
 	I_DeclaringFile("osg/AnimationPath");
@@ -52,7 +52,7 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPath)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -288,7 +288,7 @@ BEGIN_OBJECT_REFLECTOR(osg::AnimationPathCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

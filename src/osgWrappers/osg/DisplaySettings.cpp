@@ -57,6 +57,10 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_DeclaringFile("osg/DisplaySettings");
 	I_BaseType(osg::Referenced);
+	I_StaticMethod0(osg::DisplaySettings *, instance,
+	                __DisplaySettings_P1__instance_S,
+	                "Maintain a DisplaySettings singleton for objects to query at runtime. ",
+	                "");
 	I_Constructor0(____DisplaySettings,
 	               "",
 	               "");
@@ -350,10 +354,6 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	          __bool__getSerializeDrawDispatch,
 	          "",
 	          "");
-	I_StaticMethod0(osg::DisplaySettings *, instance,
-	                __DisplaySettings_P1__instance_S,
-	                "Maintain a DisplaySettings singleton for objects to query at runtime. ",
-	                "");
 	I_SimpleProperty(bool, AccumBuffer, 
 	                 __bool__getAccumBuffer, 
 	                 0);

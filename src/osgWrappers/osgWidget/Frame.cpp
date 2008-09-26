@@ -44,6 +44,22 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgWidget::Frame)
 	I_DeclaringFile("osgWidget/Frame");
 	I_BaseType(osgWidget::Table);
+	I_StaticMethod1(std::string, cornerToString, IN, osgWidget::Frame::CORNER, x,
+	                __std_string__cornerToString__CORNER_S,
+	                "",
+	                "");
+	I_StaticMethod1(std::string, borderToString, IN, osgWidget::Frame::BORDER, x,
+	                __std_string__borderToString__BORDER_S,
+	                "",
+	                "");
+	I_StaticMethodWithDefaults6(osgWidget::Frame *, createSimpleFrame, IN, const std::string &, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::Frame *, x, 0,
+	                            __Frame_P1__createSimpleFrame__C5_std_string_R1__point_type__point_type__point_type__point_type__Frame_P1_S,
+	                            "",
+	                            "");
+	I_StaticMethodWithDefaults9(osgWidget::Frame *, createSimpleFrameWithSingleTexture, IN, const std::string &, x, , IN, const std::string &, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::Frame *, x, 0,
+	                            __Frame_P1__createSimpleFrameWithSingleTexture__C5_std_string_R1__C5_std_string_R1__point_type__point_type__point_type__point_type__point_type__point_type__Frame_P1_S,
+	                            "",
+	                            "");
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
@@ -133,22 +149,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame)
 	          __C5_Border_P1__getBorder__BORDER,
 	          "",
 	          "");
-	I_StaticMethod1(std::string, cornerToString, IN, osgWidget::Frame::CORNER, x,
-	                __std_string__cornerToString__CORNER_S,
-	                "",
-	                "");
-	I_StaticMethod1(std::string, borderToString, IN, osgWidget::Frame::BORDER, x,
-	                __std_string__borderToString__BORDER_S,
-	                "",
-	                "");
-	I_StaticMethodWithDefaults6(osgWidget::Frame *, createSimpleFrame, IN, const std::string &, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::Frame *, x, 0,
-	                            __Frame_P1__createSimpleFrame__C5_std_string_R1__point_type__point_type__point_type__point_type__Frame_P1_S,
-	                            "",
-	                            "");
-	I_StaticMethodWithDefaults9(osgWidget::Frame *, createSimpleFrameWithSingleTexture, IN, const std::string &, x, , IN, const std::string &, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::Frame *, x, 0,
-	                            __Frame_P1__createSimpleFrameWithSingleTexture__C5_std_string_R1__C5_std_string_R1__point_type__point_type__point_type__point_type__point_type__point_type__Frame_P1_S,
-	                            "",
-	                            "");
 	I_ProtectedMethod1(osgWidget::Widget *, _getCorner, IN, osgWidget::Frame::CORNER, x,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
@@ -177,7 +177,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Border)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -246,7 +246,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Corner)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

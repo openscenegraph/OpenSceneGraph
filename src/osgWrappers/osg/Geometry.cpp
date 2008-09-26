@@ -28,14 +28,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Geometry::ArrayData >, osg::Geometry::ArrayDataList)
-
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::PrimitiveSet > >, osg::Geometry::PrimitiveSetList)
-
-TYPE_NAME_ALIAS(std::vector< osg::Array * >, osg::Geometry::ArrayList)
-
-TYPE_NAME_ALIAS(std::vector< osg::DrawElements * >, osg::Geometry::DrawElementsList)
-
 BEGIN_ENUM_REFLECTOR(osg::Geometry::AttributeBinding)
 	I_DeclaringFile("osg/Geometry");
 	I_EnumLabel(osg::Geometry::BIND_OFF);
@@ -44,6 +36,14 @@ BEGIN_ENUM_REFLECTOR(osg::Geometry::AttributeBinding)
 	I_EnumLabel(osg::Geometry::BIND_PER_PRIMITIVE);
 	I_EnumLabel(osg::Geometry::BIND_PER_VERTEX);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osg::Geometry::ArrayData >, osg::Geometry::ArrayDataList)
+
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::PrimitiveSet > >, osg::Geometry::PrimitiveSetList)
+
+TYPE_NAME_ALIAS(std::vector< osg::Array * >, osg::Geometry::ArrayList)
+
+TYPE_NAME_ALIAS(std::vector< osg::DrawElements * >, osg::Geometry::DrawElementsList)
 
 BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_DeclaringFile("osg/Geometry");
@@ -60,7 +60,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -633,6 +633,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	I_Method1(void, copyToAndOptimize, IN, osg::Geometry &, target,
 	          Properties::NON_VIRTUAL,
 	          __void__copyToAndOptimize__Geometry_R1,
+	          "",
+	          "");
+	I_Method0(bool, containsSharedArrays,
+	          Properties::NON_VIRTUAL,
+	          __bool__containsSharedArrays,
+	          "",
+	          "");
+	I_Method0(void, duplicateSharedArrays,
+	          Properties::NON_VIRTUAL,
+	          __void__duplicateSharedArrays,
 	          "",
 	          "");
 	I_Method0(void, computeInternalOptimizedGeometry,

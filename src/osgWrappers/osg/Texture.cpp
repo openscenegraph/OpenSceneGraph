@@ -27,10 +27,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Texture::TextureObject > >, osg::Texture::TextureObjectList)
-
-TYPE_NAME_ALIAS(osg::buffered_object< osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap)
-
 BEGIN_ENUM_REFLECTOR(osg::Texture::WrapParameter)
 	I_DeclaringFile("osg/Texture");
 	I_EnumLabel(osg::Texture::WRAP_S);
@@ -101,6 +97,10 @@ BEGIN_ENUM_REFLECTOR(osg::Texture::GenerateMipmapMode)
 	I_EnumLabel(osg::Texture::GENERATE_MIPMAP_TEX_PARAMETER);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Texture::TextureObject > >, osg::Texture::TextureObjectList)
+
+TYPE_NAME_ALIAS(osg::buffered_object< osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap)
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_DeclaringFile("osg/Texture");
 	I_BaseType(osg::StateAttribute);
@@ -116,7 +116,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::PURE_VIRTUAL,
 	          __osg_Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
@@ -161,7 +161,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __GLenum__getTextureTarget,
 	          "",
 	          "");
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x,
 	          Properties::VIRTUAL,
 	          __bool__getModeUsage__StateAttribute_ModeUsage_R1,
 	          "Return the modes associated with this StateAttribute. ",

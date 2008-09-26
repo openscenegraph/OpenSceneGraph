@@ -876,6 +876,9 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
         texture3D->setImage(image_3d.get());
 
         stateset->setTextureAttributeAndModes(0,texture3D,osg::StateAttribute::ON);
+
+        osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
+        stateset->addUniform(baseTextureSampler);
     }
     
 
@@ -943,7 +946,7 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
             texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
             stateset->setTextureAttributeAndModes(0,texture1D,osg::StateAttribute::ON);
 
-            osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume-tf-iso.frag");
+            osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_tf_iso.frag");
             if (fragmentShader)
             {
                 program->addShader(fragmentShader);
@@ -1056,6 +1059,7 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
     }
     else
     {    
+
         osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume.frag");
         if (fragmentShader)
         {
@@ -1067,8 +1071,6 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
             program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_frag));
         }
     }
-    osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
-    stateset->addUniform(baseTextureSampler);
 
     osg::Uniform* sampleDensity = new osg::Uniform("sampleDensity", 0.01f);
     stateset->addUniform(sampleDensity);

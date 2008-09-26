@@ -692,12 +692,12 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
 #endif
 }
 
-bool Registry::loadLibrary(const std::string& fileName)
+Registry::LoadStatus Registry::loadLibrary(const std::string& fileName)
 {
     OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
 
     DynamicLibraryList::iterator ditr = getLibraryItr(fileName);
-    if (ditr!=_dlList.end()) return true;
+    if (ditr!=_dlList.end()) return PREVIOUSLY_LOADED;
 
     _openingLibrary=true;
 
@@ -707,9 +707,9 @@ bool Registry::loadLibrary(const std::string& fileName)
     if (dl)
     {
         _dlList.push_back(dl);
-        return true;
+        return LOADED;
     }
-    return false;
+    return NOT_LOADED;
 }
 
 
@@ -769,7 +769,7 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
     // now look for a plug-in to load the file.
     std::string libraryName = createLibraryNameForExtension(ext);
     notify(INFO) << "Now checking for plug-in "<<libraryName<< std::endl;
-    if (loadLibrary(libraryName))
+    if (loadLibrary(libraryName)==LOADED)
     {
         for(ReaderWriterList::iterator itr=_rwList.begin();
             itr!=_rwList.end();
@@ -837,11 +837,11 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
 
             // first try the standard nodekit library.
             std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
-            if (loadLibrary(nodeKitLibraryName)) return readObjectOfType(btw,fr);
+            if (loadLibrary(nodeKitLibraryName)==LOADED) return readObjectOfType(btw,fr);
             
             // otherwise try the osgdb_ plugin library.
             std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
-            if (loadLibrary(pluginLibraryName)) return readObjectOfType(btw,fr);
+            if (loadLibrary(pluginLibraryName)==LOADED) return readObjectOfType(btw,fr);
         }
     }
     else if (fr[1].isOpenBracket())
@@ -902,16 +902,16 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
 
                         // first try the standard nodekit library.
                         std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
-                        if (loadLibrary(nodeKitLibraryName)) 
+                        if (loadLibrary(nodeKitLibraryName)==LOADED) 
                         {
                             mitr = _objectWrapperMap.find(*aitr);
                         }
 
-                        if (mitr==_objectWrapperMap.end())
+                        if (mitr==_objectWrapperMap.end()==LOADED)
                         {
                             // otherwise try the osgdb_ plugin library.
                             std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
-                            if (loadLibrary(pluginLibraryName))
+                            if (loadLibrary(pluginLibraryName)==LOADED)
                             {
                                 mitr = _objectWrapperMap.find(*aitr);
                             }
@@ -964,11 +964,11 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
 
             // first try the standard nodekit library.
             std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
-            if (loadLibrary(nodeKitLibraryName)) return readObject(dowMap,fr);
+            if (loadLibrary(nodeKitLibraryName)==LOADED) return readObject(dowMap,fr);
             
             // otherwise try the osgdb_ plugin library.
             std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
-            if (loadLibrary(pluginLibraryName)) return readObject(dowMap,fr);
+            if (loadLibrary(pluginLibraryName)==LOADED) return readObject(dowMap,fr);
         }
     }
     else if (fr[1].isOpenBracket())
@@ -1024,7 +1024,7 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
 
                         // first try the standard nodekit library.
                         std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
-                        if (loadLibrary(nodeKitLibraryName)) 
+                        if (loadLibrary(nodeKitLibraryName)==LOADED) 
                         {
                             mitr = _objectWrapperMap.find(*aitr);
                         }
@@ -1033,7 +1033,7 @@ osg::Object* Registry::readObject(DotOsgWrapperMap& dowMap,Input& fr)
                         {
                             // otherwise try the osgdb_ plugin library.
                             std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
-                            if (loadLibrary(pluginLibraryName))
+                            if (loadLibrary(pluginLibraryName)==LOADED)
                             {
                                 mitr = _objectWrapperMap.find(*aitr);
                             }
@@ -1253,11 +1253,11 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
     {
         // first try the standard nodekit library.
         std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
-        if (loadLibrary(nodeKitLibraryName)) return writeObject(obj,fw);
+        if (loadLibrary(nodeKitLibraryName)==LOADED) return writeObject(obj,fw);
 
         // otherwise try the osgdb_ plugin library.
         std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
-        if (loadLibrary(pluginLibraryName)) return writeObject(obj,fw);
+        if (loadLibrary(pluginLibraryName)==LOADED) return writeObject(obj,fw);
 
         // otherwise try simple class name
         if (itr == _classNameWrapperMap.end()) 
@@ -1323,7 +1323,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
 
                     // first try the standard nodekit library.
                     std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
-                    if (loadLibrary(nodeKitLibraryName)) 
+                    if (loadLibrary(nodeKitLibraryName)==LOADED) 
                     {
                         mitr = _objectWrapperMap.find(*aitr);
                     }
@@ -1332,7 +1332,7 @@ bool Registry::writeObject(const osg::Object& obj,Output& fw)
                     {
                         // otherwise try the osgdb_ plugin library.
                         std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
-                        if (loadLibrary(pluginLibraryName))
+                        if (loadLibrary(pluginLibraryName)==LOADED)
                         {
                             mitr = _objectWrapperMap.find(*aitr);
                         }
@@ -1540,7 +1540,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
 
     // now look for a plug-in to load the file.
     std::string libraryName = createLibraryNameForFile(readFunctor._filename);
-    if (loadLibrary(libraryName))
+    if (loadLibrary(libraryName)!=NOT_LOADED)
     {
         for(;itr.valid();++itr)
         {
@@ -1690,7 +1690,7 @@ ReaderWriter::WriteResult Registry::writeObjectImplementation(const Object& obj,
 
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
-    if (loadLibrary(libraryName))
+    if (loadLibrary(libraryName)==LOADED)
     {
         for(;itr.valid();++itr)
         {
@@ -1745,7 +1745,7 @@ ReaderWriter::WriteResult Registry::writeImageImplementation(const Image& image,
 
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
-    if (loadLibrary(libraryName))
+    if (loadLibrary(libraryName)==LOADED)
     {
         for(;itr.valid();++itr)
         {
@@ -1799,7 +1799,7 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
 
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
-    if (loadLibrary(libraryName))
+    if (loadLibrary(libraryName)==LOADED)
     {
         for(;itr.valid();++itr)
         {
@@ -1855,7 +1855,7 @@ ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,con
     std::string libraryName = createLibraryNameForFile(fileName);
 
 
-    if (loadLibrary(libraryName))
+    if (loadLibrary(libraryName)==LOADED)
     {
         for(;itr.valid();++itr)
         {
@@ -1909,7 +1909,7 @@ ReaderWriter::WriteResult Registry::writeShaderImplementation(const Shader& shad
 
     // now look for a plug-in to save the file.
     std::string libraryName = createLibraryNameForFile(fileName);
-    if (loadLibrary(libraryName))
+    if (loadLibrary(libraryName)==LOADED)
     {
         for(;itr.valid();++itr)
         {

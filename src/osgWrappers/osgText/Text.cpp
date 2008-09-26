@@ -28,8 +28,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >, osgText::Text::TextureGlyphQuadMap)
-
 BEGIN_ENUM_REFLECTOR(osgText::Text::BackdropType)
 	I_DeclaringFile("osgText/Text");
 	I_EnumLabel(osgText::Text::DROP_SHADOW_BOTTOM_RIGHT);
@@ -59,6 +57,8 @@ BEGIN_ENUM_REFLECTOR(osgText::Text::ColorGradientMode)
 	I_EnumLabel(osgText::Text::OVERALL);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::map< osg::ref_ptr< osgText::Font::GlyphTexture > COMMA  osgText::Text::GlyphQuads >, osgText::Text::TextureGlyphQuadMap)
+
 BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	I_DeclaringFile("osgText/Text");
 	I_BaseType(osgText::TextBase);
@@ -74,7 +74,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

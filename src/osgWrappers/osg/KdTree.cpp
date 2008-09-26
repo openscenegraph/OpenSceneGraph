@@ -50,7 +50,7 @@ BEGIN_OBJECT_REFLECTOR(osg::KdTree)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
@@ -70,12 +70,12 @@ BEGIN_OBJECT_REFLECTOR(osg::KdTree)
 	          __C5_char_P1__className,
 	          "return the name of the attribute's class type. ",
 	          "");
-	I_Method1(void, accept, IN, osg::ShapeVisitor &, sv,
+	I_Method1(void, accept, IN, osg::ShapeVisitor &, x,
 	          Properties::VIRTUAL,
 	          __void__accept__osg_ShapeVisitor_R1,
 	          "accept a non const shape visitor which can be used on non const shape objects. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, csv,
+	I_Method1(void, accept, IN, osg::ConstShapeVisitor &, x,
 	          Properties::VIRTUAL,
 	          __void__accept__osg_ConstShapeVisitor_R1,
 	          "accept a const shape visitor which can be used on const shape objects. ",

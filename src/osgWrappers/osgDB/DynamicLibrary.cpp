@@ -27,6 +27,10 @@ TYPE_NAME_ALIAS(void *, osgDB::DynamicLibrary::PROC_ADDRESS)
 BEGIN_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
 	I_DeclaringFile("osgDB/DynamicLibrary");
 	I_BaseType(osg::Referenced);
+	I_StaticMethod1(osgDB::DynamicLibrary *, loadLibrary, IN, const std::string &, libraryName,
+	                __DynamicLibrary_P1__loadLibrary__C5_std_string_R1_S,
+	                "returns a pointer to a DynamicLibrary object on successfully opening of library returns NULL on failure. ",
+	                "");
 	I_Method0(const std::string &, getName,
 	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getName,
@@ -47,10 +51,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DynamicLibrary)
 	          __PROC_ADDRESS__getProcAddress__C5_std_string_R1,
 	          "return address of function located in library. ",
 	          "");
-	I_StaticMethod1(osgDB::DynamicLibrary *, loadLibrary, IN, const std::string &, libraryName,
-	                __DynamicLibrary_P1__loadLibrary__C5_std_string_R1_S,
-	                "returns a pointer to a DynamicLibrary object on successfully opening of library returns NULL on failure. ",
-	                "");
 	I_ProtectedConstructor0(____DynamicLibrary,
 	                        "disallow default constructor. ",
 	                        "");

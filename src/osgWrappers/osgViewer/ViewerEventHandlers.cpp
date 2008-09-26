@@ -73,7 +73,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	          __C5_osg_Camera_P1__getCamera,
 	          "",
 	          "");
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Deprecated, Handle events, return true if handled, false otherwise. ",
@@ -132,7 +132,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::LODScaleHandler)
 	          __int__getKeyEventDecreaseLODScale,
 	          "",
 	          "");
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Deprecated, Handle events, return true if handled, false otherwise. ",
@@ -183,12 +183,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::RecordCameraPathHandler)
 	                      __void__setAutoIncrementFilename__bool,
 	                      "",
 	                      "");
-	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, x,
 	          Properties::VIRTUAL,
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Deprecated, Handle events, return true if handled, false otherwise. ",
@@ -232,7 +232,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler)
 	          __CaptureOperation_P1__getCaptureOperation,
 	          "",
 	          "");
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Deprecated, Handle events, return true if handled, false otherwise. ",
@@ -346,7 +346,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	          __C5_osg_Camera_P1__getCamera,
 	          "",
 	          "");
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Deprecated, Handle events, return true if handled, false otherwise. ",
@@ -463,7 +463,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ThreadingHandler)
 	          __bool__getChangeEndBarrierPosition,
 	          "",
 	          "");
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Deprecated, Handle events, return true if handled, false otherwise. ",
@@ -543,7 +543,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::WindowSizeHandler)
 	          __bool__getChangeWindowedResolution,
 	          "",
 	          "");
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Deprecated, Handle events, return true if handled, false otherwise. ",

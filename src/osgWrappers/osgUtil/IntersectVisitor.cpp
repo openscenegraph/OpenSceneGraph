@@ -188,15 +188,15 @@ BEGIN_VALUE_REFLECTOR(osgUtil::Hit)
 	I_PublicMemberProperty(osg::Vec3, _intersectNormal);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osgUtil::Hit >, osgUtil::IntersectVisitor::HitList)
-
-TYPE_NAME_ALIAS(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >, osgUtil::IntersectVisitor::LineSegmentHitListMap)
-
 BEGIN_ENUM_REFLECTOR(osgUtil::IntersectVisitor::LODSelectionMode)
 	I_DeclaringFile("osgUtil/IntersectVisitor");
 	I_EnumLabel(osgUtil::IntersectVisitor::USE_HIGHEST_LEVEL_OF_DETAIL);
 	I_EnumLabel(osgUtil::IntersectVisitor::USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osgUtil::Hit >, osgUtil::IntersectVisitor::HitList)
+
+TYPE_NAME_ALIAS(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >, osgUtil::IntersectVisitor::LineSegmentHitListMap)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::IntersectVisitor)
 	I_DeclaringFile("osgUtil/IntersectVisitor");

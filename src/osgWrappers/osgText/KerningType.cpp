@@ -20,14 +20,14 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::pair< unsigned int COMMA  unsigned int >, osgText::FontResolution)
-
 BEGIN_ENUM_REFLECTOR(osgText::KerningType)
 	I_DeclaringFile("osgText/KerningType");
 	I_EnumLabel(osgText::KERNING_DEFAULT);
 	I_EnumLabel(osgText::KERNING_UNFITTED);
 	I_EnumLabel(osgText::KERNING_NONE);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::pair< unsigned int COMMA  unsigned int >, osgText::FontResolution)
 
 STD_PAIR_REFLECTOR(std::pair< unsigned int COMMA  unsigned int >)
 

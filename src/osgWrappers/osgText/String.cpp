@@ -20,8 +20,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osgText::VectorUInt, osgText::String::vector_type)
-
 BEGIN_ENUM_REFLECTOR(osgText::String::Encoding)
 	I_DeclaringFile("osgText/String");
 	I_EnumLabel(osgText::String::ENCODING_UNDEFINED);
@@ -35,6 +33,8 @@ BEGIN_ENUM_REFLECTOR(osgText::String::Encoding)
 	I_EnumLabel(osgText::String::ENCODING_UTF32_LE);
 	I_EnumLabel(osgText::String::ENCODING_SIGNATURE);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(osgText::VectorUInt, osgText::String::vector_type)
 
 BEGIN_OBJECT_REFLECTOR(osgText::String)
 	I_DeclaringFile("osgText/String");

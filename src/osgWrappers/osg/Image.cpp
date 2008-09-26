@@ -27,8 +27,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::Image::MipmapDataType)
-
 BEGIN_ENUM_REFLECTOR(osg::Image::AllocationMode)
 	I_DeclaringFile("osg/Image");
 	I_EnumLabel(osg::Image::NO_DELETE);
@@ -41,6 +39,8 @@ BEGIN_ENUM_REFLECTOR(osg::Image::Origin)
 	I_EnumLabel(osg::Image::BOTTOM_LEFT);
 	I_EnumLabel(osg::Image::TOP_LEFT);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::Image::MipmapDataType)
 
 BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_DeclaringFile("osg/Image");
@@ -57,7 +57,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

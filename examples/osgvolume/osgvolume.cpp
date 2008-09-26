@@ -923,12 +923,24 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
 
         osg::Texture3D* normalMap = new osg::Texture3D;
         normalMap->setImage(normalmap_3d);    
+        normalMap->setResizeNonPowerOfTwoHint(false);
+        normalMap->setInternalFormatMode(internalFormatMode);
+        normalMap->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
+        normalMap->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+        normalMap->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
+        normalMap->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
+        normalMap->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
+
         stateset->setTextureAttributeAndModes(1,normalMap,osg::StateAttribute::ON);
 
         if (tf)
         {
             osg::Texture1D* texture1D = new osg::Texture1D;
             texture1D->setImage(tf->getImage());    
+            texture1D->setResizeNonPowerOfTwoHint(false);
+            texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
+            texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+            texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
             stateset->setTextureAttributeAndModes(0,texture1D,osg::StateAttribute::ON);
 
             osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume-tf-iso.frag");
@@ -969,12 +981,24 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
 
         osg::Texture3D* normalMap = new osg::Texture3D;
         normalMap->setImage(normalmap_3d);    
+        normalMap->setResizeNonPowerOfTwoHint(false);
+        normalMap->setInternalFormatMode(internalFormatMode);
+        normalMap->setFilter(osg::Texture3D::MIN_FILTER, osg::Texture::LINEAR);
+        normalMap->setFilter(osg::Texture3D::MAG_FILTER, osg::Texture::LINEAR);
+        normalMap->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP_TO_EDGE);
+        normalMap->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP_TO_EDGE);
+        normalMap->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP_TO_EDGE);
+
         stateset->setTextureAttributeAndModes(1,normalMap,osg::StateAttribute::ON);
 
         if (tf)
         {
             osg::Texture1D* texture1D = new osg::Texture1D;
             texture1D->setImage(tf->getImage());    
+            texture1D->setResizeNonPowerOfTwoHint(false);
+            texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
+            texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+            texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
             stateset->setTextureAttributeAndModes(0,texture1D,osg::StateAttribute::ON);
 
             osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume-tf-n.frag");
@@ -1009,7 +1033,14 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
     {
         osg::Texture1D* texture1D = new osg::Texture1D;
         texture1D->setImage(tf->getImage());    
+        texture1D->setResizeNonPowerOfTwoHint(false);
+        texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
+        texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+        texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
         stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
+
+        osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
+        stateset->addUniform(tfTextureSampler);
 
         osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume-tf.frag");
         if (fragmentShader)
@@ -1021,9 +1052,6 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
             #include "volume_tf_frag.cpp"
             program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_frag));
         }
-
-        osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
-        stateset->addUniform(tfTextureSampler);
 
     }
     else

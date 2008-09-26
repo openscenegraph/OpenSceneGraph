@@ -523,6 +523,7 @@ int main( int argc, char** argv )
     arguments.getApplicationUsage()->addCommandLineOption("sizeof","Display sizeof tests.");
     arguments.getApplicationUsage()->addCommandLineOption("matrix","Display qualified tests.");
     arguments.getApplicationUsage()->addCommandLineOption("performance","Display qualified tests.");
+    arguments.getApplicationUsage()->addCommandLineOption("read-threads <numthreads>","Run multi-thread reading test.");
  
 
     if (arguments.argc()<=1)

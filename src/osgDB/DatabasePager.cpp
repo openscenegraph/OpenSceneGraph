@@ -200,6 +200,8 @@ public:
     {
         if (_drawableSet.count(drawable))
             return;
+
+        _drawableSet.insert(drawable);
         
         apply(drawable->getStateSet());
         
@@ -229,7 +231,7 @@ public:
         //
         // XXX This "compiles" VBOs too, but compilation doesn't do
         // anything for VBOs, does it?
-        if (drawable->getUseDisplayList() && _pager->isCompiled(drawable))
+        if (drawable->getUseDisplayList() && !_pager->isCompiled(drawable))
         {
             // osg::notify(osg::NOTICE)<<"  Found compilable drawable"<<std::endl;
             _dataToCompile.second.push_back(drawable);

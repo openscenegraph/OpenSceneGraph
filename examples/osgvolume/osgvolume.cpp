@@ -59,6 +59,14 @@
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
+enum ShadingModel
+{
+    Standard,
+    Light,
+    Isosurface,
+    MaximumIntensityProjection
+};
+
 //  example ReadOperator
 // struct ReadOperator
 // {
@@ -802,13 +810,14 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
 
 };
 
-osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d, 
+osg::Node* createShaderModel(ShadingModel shadingModel,
+                       osg::ref_ptr<osg::Image>& image_3d, 
                        osg::Image* normalmap_3d,
                        osg::TransferFunction1D* tf,
                        osg::Texture::InternalFormatMode internalFormatMode,
                        float xSize, float ySize, float zSize,
                        float /*xMultiplier*/, float /*yMultiplier*/, float /*zMultiplier*/,
-                       unsigned int /*numSlices*/=500, float /*sliceEnd*/=1.0f, float alphaFuncValue=0.02f, bool maximumIntensityProjection = false)
+                       unsigned int /*numSlices*/=500, float /*sliceEnd*/=1.0f, float alphaFuncValue=0.02f)
 {
     osg::Texture::FilterMode minFilter = osg::Texture::LINEAR;
     osg::Texture::FilterMode magFilter = osg::Texture::LINEAR;
@@ -840,7 +849,6 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d,
         #include "volume_vert.cpp"
         program->addShader(new osg::Shader(osg::Shader::VERTEX, volume_vert));
     }
-    
 
     if (!(normalmap_3d && tf))
     {
@@ -871,7 +879,88 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d,
     }
     
 
-    if (normalmap_3d)
+    if (shadingModel==MaximumIntensityProjection)
+    {
+        if (tf)
+        {
+            osg::Texture1D* texture1D = new osg::Texture1D;
+            texture1D->setImage(tf->getImage());    
+            stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
+
+            osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_tf_mip.frag");
+            if (fragmentShader)
+            {
+                program->addShader(fragmentShader);
+            }
+            else
+            {
+                #include "volume_tf_mip_frag.cpp"
+                program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_mip_frag));
+            }
+
+            osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
+            stateset->addUniform(tfTextureSampler);
+
+        }
+        else
+        {    
+            osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_mip.frag");
+            if (fragmentShader)
+            {
+                program->addShader(fragmentShader);
+            }
+            else
+            {
+                #include "volume_mip_frag.cpp"
+                program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_mip_frag));
+            }
+        }
+    }
+    else if (shadingModel==Isosurface)
+    {
+        osg::Uniform* normalMapSampler = new osg::Uniform("normalMap",1);
+        stateset->addUniform(normalMapSampler);
+
+        osg::Texture3D* normalMap = new osg::Texture3D;
+        normalMap->setImage(normalmap_3d);    
+        stateset->setTextureAttributeAndModes(1,normalMap,osg::StateAttribute::ON);
+
+        if (tf)
+        {
+            osg::Texture1D* texture1D = new osg::Texture1D;
+            texture1D->setImage(tf->getImage());    
+            stateset->setTextureAttributeAndModes(0,texture1D,osg::StateAttribute::ON);
+
+            osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume-tf-iso.frag");
+            if (fragmentShader)
+            {
+                program->addShader(fragmentShader);
+            }
+            else
+            {
+                #include "volume_tf_iso_frag.cpp"
+                program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_iso_frag));
+            }
+
+            osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",0);
+            stateset->addUniform(tfTextureSampler);
+
+        }
+        else
+        {    
+            osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_iso.frag");
+            if (fragmentShader)
+            {
+                program->addShader(fragmentShader);
+            }
+            else
+            {
+                #include "volume_iso_frag.cpp"
+                program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_iso_frag));
+            }
+        }
+    }
+    else if (normalmap_3d)
     {
         osg::notify(osg::NOTICE)<<"Setting up normalmapping shader"<<std::endl;
 
@@ -1037,7 +1126,8 @@ osg::Node* createShaderModel(osg::ref_ptr<osg::Image>& image_3d,
     return root;
 }
 
-osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d, 
+osg::Node* createModel(ShadingModel shadeModel,
+                       osg::ref_ptr<osg::Image>& image_3d, 
                        osg::ref_ptr<osg::Image>& normalmap_3d,
                        osg::Texture::InternalFormatMode internalFormatMode,
                        float xSize, float ySize, float zSize,
@@ -1133,7 +1223,7 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d,
     material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     stateset->setAttributeAndModes(material);
     
-    if (maximumIntensityProjection)
+    if (shadeModel==MaximumIntensityProjection)
     {
         stateset->setAttribute(new osg::BlendFunc(osg::BlendFunc::ONE, osg::BlendFunc::ONE));
         stateset->setAttribute(new osg::BlendEquation(osg::BlendEquation::RGBA_MAX));
@@ -1214,7 +1304,6 @@ osg::Node* createModel(osg::ref_ptr<osg::Image>& image_3d,
         }
         else
         {
-            osg::ref_ptr<osg::Image> normalmap_3d = createNormalMapTexture(image_3d.get());
             osg::Texture3D* bump_texture3D = new osg::Texture3D;
             bump_texture3D->setResizeNonPowerOfTwoHint(false);
             bump_texture3D->setFilter(osg::Texture3D::MIN_FILTER,minFilter);
@@ -1714,11 +1803,24 @@ int main( int argc, char **argv )
     while (arguments.read("--alphaFunc",alphaFunc)) {}
 
 
-    bool createNormalMap = false;
-    while (arguments.read("-n")) createNormalMap=true;
+    
+    ShadingModel shadingModel = Standard;
     
     bool maximumIntensityProjection = false;
-    while(arguments.read("--mip")) maximumIntensityProjection = true;
+    while(arguments.read("--mip")) shadingModel =  MaximumIntensityProjection;
+
+    bool createNormalMap = false;
+    while (arguments.read("-n")) 
+    {
+        shadingModel = Light;
+        createNormalMap=true;
+    }
+
+    while (arguments.read("--isosurface")) 
+    {
+        shadingModel = Isosurface;
+        createNormalMap=true;
+    }
 
     float xSize=1.0f, ySize=1.0f, zSize=1.0f;
     while (arguments.read("--xSize",xSize)) {}
@@ -2009,20 +2111,22 @@ int main( int argc, char **argv )
     
     if (useShader)
     {
-        rootNode = createShaderModel(image_3d, normalmap_3d.get(), 
+        rootNode = createShaderModel(shadingModel, 
+                               image_3d, normalmap_3d.get(), 
                                (gpuTransferFunction ? transferFunction.get() : 0),
                                internalFormatMode,
                                xSize, ySize, zSize,
                                xMultiplier, yMultiplier, zMultiplier,
-                               numSlices, sliceEnd, alphaFunc, maximumIntensityProjection);
+                               numSlices, sliceEnd, alphaFunc);
     }
     else
     {
-        rootNode = createModel(image_3d, normalmap_3d, 
+        rootNode = createModel(shadingModel,
+                               image_3d, normalmap_3d, 
                                internalFormatMode,
                                xSize, ySize, zSize,
                                xMultiplier, yMultiplier, zMultiplier,
-                               numSlices, sliceEnd, alphaFunc, maximumIntensityProjection);
+                               numSlices, sliceEnd, alphaFunc);
     }
     
     if (!outputFile.empty())

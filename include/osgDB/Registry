@@ -108,8 +108,15 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** create the platform specific library name associated with nodekit library name.*/
         std::string createLibraryNameForNodeKit(const std::string& name);
 
+
+        enum LoadStatus {
+            NOT_LOADED = 0,
+            PREVIOUSLY_LOADED,
+            LOADED
+        };
+
         /** find the library in the OSG_LIBRARY_PATH and load it.*/
-        bool loadLibrary(const std::string& fileName);
+        LoadStatus loadLibrary(const std::string& fileName);
         
         /** close the attached library with specified name.*/
         bool closeLibrary(const std::string& fileName);

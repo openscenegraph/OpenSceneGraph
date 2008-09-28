@@ -921,20 +921,6 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
     }
     else if (shadingModel==Isosurface)
     {
-        osg::Uniform* normalMapSampler = new osg::Uniform("normalMap",1);
-        stateset->addUniform(normalMapSampler);
-
-        osg::Texture3D* normalMap = new osg::Texture3D;
-        normalMap->setImage(normalmap_3d);    
-        normalMap->setResizeNonPowerOfTwoHint(false);
-        normalMap->setInternalFormatMode(internalFormatMode);
-        normalMap->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
-        normalMap->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
-        normalMap->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
-        normalMap->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
-        normalMap->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
-
-        stateset->setTextureAttributeAndModes(1,normalMap,osg::StateAttribute::ON);
 
         if (tf)
         {
@@ -944,7 +930,10 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
             texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
             texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
             texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
-            stateset->setTextureAttributeAndModes(0,texture1D,osg::StateAttribute::ON);
+            stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
+
+            osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
+            stateset->addUniform(tfTextureSampler);
 
             osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_tf_iso.frag");
             if (fragmentShader)
@@ -956,10 +945,6 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
                 #include "volume_tf_iso_frag.cpp"
                 program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_iso_frag));
             }
-
-            osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",0);
-            stateset->addUniform(tfTextureSampler);
-
         }
         else
         {    
@@ -1769,7 +1754,10 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-n","Create normal map for per voxel lighting.");
     arguments.getApplicationUsage()->addCommandLineOption("-s <numSlices>","Number of slices to create.");
     arguments.getApplicationUsage()->addCommandLineOption("--images [filenames]","Specify a stack of 2d images to build the 3d volume from.");
-    arguments.getApplicationUsage()->addCommandLineOption("--shader","Use OpenGL Shading Language.");
+    arguments.getApplicationUsage()->addCommandLineOption("--shader","Use OpenGL Shading Language. (default)");
+    arguments.getApplicationUsage()->addCommandLineOption("--no-shader","Disable use of OpenGL Shading Language.");
+    arguments.getApplicationUsage()->addCommandLineOption("--gpu-tf","Aply the transfer function on the GPU. (default)");
+    arguments.getApplicationUsage()->addCommandLineOption("--cpu-tf","Apply the transfer function on the CPU.");
     arguments.getApplicationUsage()->addCommandLineOption("--mip","Use Maximum Intensity Projection (MIP) filtering.");
     arguments.getApplicationUsage()->addCommandLineOption("--xSize <size>","Relative width of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--ySize <size>","Relative length of rendered brick.");
@@ -1849,7 +1837,6 @@ int main( int argc, char **argv )
     while (arguments.read("--isosurface")) 
     {
         shadingModel = Isosurface;
-        createNormalMap=true;
     }
 
     float xSize=1.0f, ySize=1.0f, zSize=1.0f;
@@ -1901,11 +1888,13 @@ int main( int argc, char **argv )
     unsigned int numComponentsDesired = 0; 
     while(arguments.read("--num-components", numComponentsDesired)) {}
 
-    bool useShader = false; 
+    bool useShader = true; 
     while(arguments.read("--shader")) { useShader = true; }
+    while(arguments.read("--no-shader")) { useShader = true; }
 
-    bool gpuTransferFunction = false; 
+    bool gpuTransferFunction = true; 
     while(arguments.read("--gpu-tf")) { gpuTransferFunction = true; }
+    while(arguments.read("--cpu-tf")) { gpuTransferFunction = false; }
 
     osg::ref_ptr<osg::Image> image_3d;
     

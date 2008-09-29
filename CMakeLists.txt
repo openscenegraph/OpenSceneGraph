@@ -708,12 +708,6 @@ IF(BUILD_DASHBOARD_REPORTS)
 # The following are required to uses Dart and the Cdash dashboard
 # viewable here : http://www.cdash.org/CDashPublic/index.php?project=OpenSceneGraph
     INCLUDE(Dart)
-    set(CTEST_PROJECT_NAME "OpenSceneGraph")
-    set(CTEST_NIGHTLY_START_TIME "00:00:00 CET")
-    set(CTEST_DROP_METHOD "http")
-    set(CTEST_DROP_SITE "www.cdash.org")
-    set(CTEST_DROP_LOCATION "/CDashPublic/submit.php?project=OpenSceneGraph")
-    set(CTEST_DROP_SITE_CDASH TRUE)
 ENDIF(BUILD_DASHBOARD_REPORTS)
 
 # This needs to be run very last so other parts of the scripts can take

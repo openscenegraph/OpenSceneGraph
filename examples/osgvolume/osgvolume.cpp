@@ -760,7 +760,7 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
                         if (_updateSampleDensity && (uniform = stateset->getUniform("sampleDensity"))) 
                         {
                             float value = powf(v,5);
-                            osg::notify(osg::NOTICE)<<"sampleDensity = "<<value<<std::endl;
+                            osg::notify(osg::INFO)<<"sampleDensity = "<<value<<std::endl;
                             uniform->set(value);
                         }
                     }
@@ -1061,7 +1061,7 @@ osg::Node* createShaderModel(ShadingModel shadingModel,
         }
     }
 
-    osg::Uniform* sampleDensity = new osg::Uniform("sampleDensity", 0.01f);
+    osg::Uniform* sampleDensity = new osg::Uniform("sampleDensity", 0.005f);
     stateset->addUniform(sampleDensity);
 
     osg::Uniform* transpancy = new osg::Uniform("transparency",0.5f);
@@ -1794,7 +1794,10 @@ int main( int argc, char **argv )
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
 
         keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
-        keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
+        
+        osgGA::FlightManipulator* flightManipulator = new osgGA::FlightManipulator();
+        flightManipulator->setYawControlMode(osgGA::FlightManipulator::NO_AUTOMATIC_YAW);
+        keyswitchManipulator->addMatrixManipulator( '2', "Flight", flightManipulator );
 
         viewer.setCameraManipulator( keyswitchManipulator.get() );
     }
@@ -2082,6 +2085,7 @@ int main( int argc, char **argv )
     ySize = (*sizeItr)->t();
     zSize = (*sizeItr)->r();
     ++sizeItr;
+
     for(;sizeItr != images.end(); ++sizeItr)
     {
         if ((*sizeItr)->s() != xSize || 
@@ -2094,18 +2098,16 @@ int main( int argc, char **argv )
     }
 
 
-#if 0
-    osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(image_3d->getUserData());
+#if 1
+    osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(images.front()->getUserData());
     if (matrix)
     {
         osg::notify(osg::NOTICE)<<"Image has Matrix = "<<*matrix<<std::endl;
-        xSize = image_3d->s() * (*matrix)(0,0);
-        ySize = image_3d->t() * (*matrix)(1,1);
-        zSize = image_3d->r() * (*matrix)(2,2);
+        xSize = xSize * (*matrix)(0,0);
+        ySize = ySize * (*matrix)(1,1);
+        zSize = zSize * (*matrix)(2,2);
     }
-#else
 #endif
-
 
     osg::Vec4 minValue, maxValue;
     bool computeMinMax = false;
@@ -2113,6 +2115,13 @@ int main( int argc, char **argv )
         itr != images.end();
         ++itr)
     {
+#if 0    
+        osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>((*itr)->getUserData());
+        if (matrix)
+        {
+            std::cout<<"matrix = "<<*matrix<<std::endl;
+        }
+#endif
         if (osgVolume::computeMinMax(itr->get(), minValue, maxValue)) computeMinMax = true;
     }
     

@@ -239,10 +239,12 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
             // code, we've seen crashes on 64-bit Mac/Linux NVIDIA systems doing
             // multithreaded, multipipe rendering (as in a CAVE).
             GLint ready( 0 );
+            ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT_AVAILABLE, &ready );
             while( !ready )
             {
+                OpenThreads::Thread::microSleep( 5 );
                 ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT_AVAILABLE, &ready );
-            };
+            }
 #endif
 
             ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT, &(tr->_numPixels) );

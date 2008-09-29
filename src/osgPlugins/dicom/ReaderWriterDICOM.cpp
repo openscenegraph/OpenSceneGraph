@@ -236,7 +236,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 ++itr)
             {
                 std::string localFile = path + "/" + *itr;
-                std::cout<<"contents = "<<localFile<<std::endl;
+                osg::notify(osg::INFO)<<"contents = "<<localFile<<std::endl;
                 if (osgDB::getLowerCaseFileExtension(localFile)=="dcm" &&
                     osgDB::fileType(localFile) == osgDB::REGULAR_FILE)
                 {
@@ -296,13 +296,155 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             GLenum pixelFormat = 0;
             GLenum dataType = 0;
             unsigned int pixelSize = 0;
-            bool invertOrigiantion = true;
-                        
+            bool invertOrigiantion = false;
+            
+            typedef std::list<FileInfo> FileInfoList;
+            FileInfoList fileInfoList;
+
+            typedef std::map<double, FileInfo> DistanceFileInfoMap;
+            typedef std::map<osg::Vec3d, DistanceFileInfoMap> OrientationFileInfoMap;
+            OrientationFileInfoMap orientationFileInfoMap;
+
             for(Files::iterator itr = files.begin();
                 itr != files.end();
                 ++itr)
             {
-                std::auto_ptr<DicomImage> dcmImage(new DicomImage((*itr).c_str()));
+                DcmFileFormat fileformat;
+                OFCondition status = fileformat.loadFile((*itr).c_str());
+                if(!status.good()) return ReadResult::ERROR_IN_READING_FILE;
+                
+                FileInfo fileInfo;
+                fileInfo.filename = *itr;
+
+                double pixelSize_y = 1.0;
+                if (fileformat.getDataset()->findAndGetFloat64(DCM_PixelSpacing, pixelSize_y,0).good())
+                {
+                    fileInfo.matrix(1,1) = pixelSize_y;
+                }
+
+                double pixelSize_x = 1.0;
+                if (fileformat.getDataset()->findAndGetFloat64(DCM_PixelSpacing, pixelSize_x,1).good())
+                {
+                    fileInfo.matrix(0,0) = pixelSize_x;
+                }
+
+                // Get slice thickness
+                double sliceThickness = 1.0;
+                if (fileformat.getDataset()->findAndGetFloat64(DCM_SliceThickness, sliceThickness).good())
+                {
+                    fileInfo.matrix(2,2) = sliceThickness;
+                }
+
+                double imagePositionPatient[3] = {0, 0, 0};
+
+                // patient position
+                for(int i=0; i<3; ++i)
+                {
+		    if (fileformat.getDataset()->findAndGetFloat64(DCM_ImagePositionPatient, imagePositionPatient[i],i).good())
+                    {
+                        osg::notify(osg::INFO)<<"Read DCM_ImagePositionPatient["<<i<<"], "<<imagePositionPatient[i]<<std::endl;
+                    }
+                    else
+                    {
+                        osg::notify(osg::INFO)<<"Have not read DCM_ImagePositionPatient["<<i<<"]"<<std::endl;
+                    }
+                }
+                
+                fileInfo.matrix.setTrans(imagePositionPatient[0],imagePositionPatient[1],imagePositionPatient[2]);
+
+	        double imageOrientationPatient[6] = { 1.0, 0.0, 0.0,
+		                                      0.0, -1.0, 0.0 };
+                for(int i=0; i<6; ++i)
+                {
+		    if (fileformat.getDataset()->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationPatient[i],i).good())
+                    {
+                        osg::notify(osg::INFO)<<"Read imageOrientationPatient["<<i<<"], "<<imageOrientationPatient[i]<<std::endl;
+                    }
+                    else
+                    {
+                        osg::notify(osg::INFO)<<"Have not read imageOrientationPatient["<<i<<"]"<<std::endl;
+                    }
+                }
+                
+                osg::Vec3d dirX(imageOrientationPatient[0],imageOrientationPatient[1],imageOrientationPatient[2]);
+                osg::Vec3d dirY(imageOrientationPatient[3],imageOrientationPatient[4],imageOrientationPatient[5]);
+                osg::Vec3d dirZ = dirX ^ dirY;
+                dirZ.normalize();
+                
+                dirX *= pixelSize_x;
+                dirY *= pixelSize_y;
+                
+                fileInfo.matrix(0,0) = dirX[0];
+                fileInfo.matrix(1,0) = dirX[1];
+                fileInfo.matrix(2,0) = dirX[2];
+                
+                fileInfo.matrix(0,1) = dirY[0];
+                fileInfo.matrix(1,1) = dirY[1];
+                fileInfo.matrix(2,1) = dirY[2];
+                
+                fileInfo.matrix(0,2) = dirZ[0];
+                fileInfo.matrix(1,2) = dirZ[1];
+                fileInfo.matrix(2,2) = dirZ[2];
+                
+                fileInfo.distance = dirZ * (osg::Vec3d(0.0,0.0,0.0)*fileInfo.matrix);
+
+                osg::notify(osg::INFO)<<"dirX = "<<dirX<<std::endl;
+                osg::notify(osg::INFO)<<"dirY = "<<dirY<<std::endl;
+                osg::notify(osg::INFO)<<"dirZ = "<<dirZ<<std::endl;
+                osg::notify(osg::INFO)<<"matrix = "<<fileInfo.matrix<<std::endl;
+                osg::notify(osg::INFO)<<"pos = "<<osg::Vec3d(0.0,0.0,0.0)*fileInfo.matrix<<std::endl;
+                osg::notify(osg::INFO)<<"dist = "<<fileInfo.distance<<std::endl;
+                osg::notify(osg::INFO)<<std::endl;
+
+                (orientationFileInfoMap[dirZ])[fileInfo.distance] = fileInfo;
+
+            }
+
+            if (orientationFileInfoMap.empty()) return 0;
+            
+            typedef std::map<double, FileInfo> DistanceFileInfoMap;
+            typedef std::map<osg::Vec3d, DistanceFileInfoMap> OrientationFileInfoMap;
+            for(OrientationFileInfoMap::iterator itr = orientationFileInfoMap.begin();
+                itr != orientationFileInfoMap.end();
+                ++itr)
+            {
+                osg::notify(osg::INFO)<<"Orientation = "<<itr->first<<std::endl;
+                DistanceFileInfoMap& dfim = itr->second;
+                for(DistanceFileInfoMap::iterator ditr = dfim.begin();
+                    ditr != dfim.end();
+                    ++ditr)
+                {
+                    FileInfo& fileInfo = ditr->second;
+                    osg::notify(osg::INFO)<<"   d = "<<fileInfo.distance<<" "<<fileInfo.filename<<std::endl;
+                }
+            }
+            
+
+            DistanceFileInfoMap& dfim = orientationFileInfoMap.begin()->second;
+            if (dfim.empty()) return 0;
+
+            for(DistanceFileInfoMap::iterator ditr = dfim.begin();
+                ditr != dfim.end();
+                ++ditr)
+            {
+                FileInfo& fileInfo = ditr->second;
+                fileInfoList.push_back(fileInfo);
+                osg::notify(osg::INFO)<<"   d = "<<fileInfo.distance<<" "<<fileInfo.filename<<std::endl;
+            }
+            
+            
+            double totalDistance = dfim.rbegin()->first - dfim.begin()->first;
+            double averageThickness = dfim.size()<=1 ? 1.0 : totalDistance / double(dfim.size()-1);
+            
+            osg::notify(osg::INFO)<<"Average thickness "<<averageThickness<<std::endl;
+
+
+            for(FileInfoList::iterator itr =  fileInfoList.begin();
+                itr !=  fileInfoList.end();
+                ++itr)
+            {
+                FileInfo& fileInfo = *itr;
+                std::auto_ptr<DicomImage> dcmImage(new DicomImage(fileInfo.filename.c_str()));
                 if (dcmImage.get())
                 {
                     if (dcmImage->getStatus()==EIS_Normal)
@@ -313,60 +455,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
                         if (!image)
                         {
-                            // read dicom file format to extra spacing info
-                            DcmFileFormat fileformat;
-                            OFCondition status = fileformat.loadFile((*itr).c_str());
-                            if(!status.good()) return ReadResult::ERROR_IN_READING_FILE;
-
-                            double pixelSize_y = 1.0;
-                            if (fileformat.getDataset()->findAndGetFloat64(DCM_PixelSpacing, pixelSize_y,0).good())
-                            {
-                                (*matrix)(1,1) = pixelSize_y;
-                            }
-
-                            double pixelSize_x = 1.0;
-                            if (fileformat.getDataset()->findAndGetFloat64(DCM_PixelSpacing, pixelSize_x,1).good())
-                            {
-                                (*matrix)(0,0) = pixelSize_x;
-                            }
-
-                            // Get slice thickness
-                            double sliceThickness = 1.0;
-                            if (fileformat.getDataset()->findAndGetFloat64(DCM_SliceThickness, sliceThickness).good())
-                            {
-                                (*matrix)(2,2) = sliceThickness;
-                            }
-
-                double imagePositionPatient[3] = {0};
-
-                // patient position
-                for(int i=0; i<3; ++i)
-                {
-		    if (fileformat.getDataset()->findAndGetFloat64(DCM_ImagePositionPatient, imagePositionPatient[i],i).good())
-                    {
-                        osg::notify(osg::NOTICE)<<"Read DCM_ImagePositionPatient["<<i<<"], "<<imagePositionPatient[i]<<std::endl;
-                    }
-                    else
-                    {
-                        osg::notify(osg::NOTICE)<<"Have not read DCM_ImagePositionPatient["<<i<<"]"<<std::endl;
-                    }
-                }
-                                
-	        double imageOrientationPatient[6] = { 1.0, 0.0, 0.0,
-		                                      0.0, -1.0, 0.0 };
-                for(int i=0; i<6; ++i)
-                {
-		    if (fileformat.getDataset()->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationPatient[i],i).good())
-                    {
-                        osg::notify(osg::NOTICE)<<"Read imageOrientationPatient["<<i<<"], "<<imageOrientationPatient[i]<<std::endl;
-                    }
-                    else
-                    {
-                        osg::notify(osg::NOTICE)<<"Have not read imageOrientationPatient["<<i<<"]"<<std::endl;
-                    }
-                }
-
-
                             osg::notify(osg::NOTICE)<<"dcmImage->getWidth() = "<<dcmImage->getWidth()<<std::endl;
                             osg::notify(osg::NOTICE)<<"dcmImage->getHeight() = "<<dcmImage->getHeight()<<std::endl;
                             osg::notify(osg::NOTICE)<<"dcmImage->getFrameCount() = "<<dcmImage->getFrameCount()<<std::endl;
@@ -434,11 +522,24 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                                     break;
                             }
 
+                            (*matrix)(0,0) = fileInfo.matrix(0,0);
+                            (*matrix)(1,0) = fileInfo.matrix(1,0);
+                            (*matrix)(2,0) = fileInfo.matrix(2,0);
+                            (*matrix)(0,1) = fileInfo.matrix(0,1);
+                            (*matrix)(1,1) = fileInfo.matrix(1,1);
+                            (*matrix)(2,1) = fileInfo.matrix(2,1);
+                            (*matrix)(0,2) = fileInfo.matrix(0,2) * averageThickness;
+                            (*matrix)(1,2) = fileInfo.matrix(1,2) * averageThickness;
+                            (*matrix)(2,2) = fileInfo.matrix(2,2) * averageThickness;
+                            
                             image = new osg::Image;
                             image->setUserData(matrix.get());
                             image->setFileName(fileName.c_str());
                             image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), files.size() * dcmImage->getFrameCount(),
                                                  pixelFormat, dataType);
+                                                 
+                                                 
+                            osg::notify(osg::NOTICE)<<"Image dimensions = "<<image->s()<<", "<<image->t()<<", "<<image->r()<<std::endl;
                         }
                         
                         if (pixelData->getPlanes()==numPlanes &&
@@ -480,6 +581,42 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             return image.get();
         }
 #endif
+
+        struct FileInfo
+        {
+            FileInfo():
+                numX(0),
+                numY(0),
+                numSlices(0),
+                distance(0.0) {}
+
+            FileInfo(const FileInfo& rhs):
+                filename(rhs.filename),
+                matrix(rhs.matrix),
+                numX(rhs.numX),
+                numY(rhs.numY),
+                numSlices(rhs.numSlices),
+                distance(distance) {}
+
+            FileInfo& operator = (const FileInfo& rhs)
+            {
+                if (&rhs == this) return *this;
+                
+                filename = rhs.filename;
+                matrix = rhs.matrix;
+                numX = rhs.numX;
+                numY = rhs.numY;
+                numSlices = rhs.numSlices;
+                distance = rhs.distance;
+            }
+
+            std::string filename;
+            osg::Matrixd matrix;
+            unsigned int numX;
+            unsigned int numY;
+            unsigned int numSlices;            
+            double  distance;
+        };
 
 };
 

@@ -296,6 +296,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             GLenum pixelFormat = 0;
             GLenum dataType = 0;
             unsigned int pixelSize = 0;
+            bool invertOrigiantion = true;
                         
             for(Files::iterator itr = files.begin();
                 itr != files.end();
@@ -335,6 +336,35 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             {
                                 (*matrix)(2,2) = sliceThickness;
                             }
+
+                double imagePositionPatient[3] = {0};
+
+                // patient position
+                for(int i=0; i<3; ++i)
+                {
+		    if (fileformat.getDataset()->findAndGetFloat64(DCM_ImagePositionPatient, imagePositionPatient[i],i).good())
+                    {
+                        osg::notify(osg::NOTICE)<<"Read DCM_ImagePositionPatient["<<i<<"], "<<imagePositionPatient[i]<<std::endl;
+                    }
+                    else
+                    {
+                        osg::notify(osg::NOTICE)<<"Have not read DCM_ImagePositionPatient["<<i<<"]"<<std::endl;
+                    }
+                }
+                                
+	        double imageOrientationPatient[6] = { 1.0, 0.0, 0.0,
+		                                      0.0, -1.0, 0.0 };
+                for(int i=0; i<6; ++i)
+                {
+		    if (fileformat.getDataset()->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationPatient[i],i).good())
+                    {
+                        osg::notify(osg::NOTICE)<<"Read imageOrientationPatient["<<i<<"], "<<imageOrientationPatient[i]<<std::endl;
+                    }
+                    else
+                    {
+                        osg::notify(osg::NOTICE)<<"Have not read imageOrientationPatient["<<i<<"]"<<std::endl;
+                    }
+                }
 
 
                             osg::notify(osg::NOTICE)<<"dcmImage->getWidth() = "<<dcmImage->getWidth()<<std::endl;
@@ -420,7 +450,15 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                                                            static_cast<unsigned int>(dcmImage->getFrameCount())); 
                             unsigned int numPixels = dcmImage->getWidth() * dcmImage->getHeight() * numFramesToCopy;
                             unsigned int dataSize = numPixels * pixelSize;
-                            memcpy(image->data(0,0,imageNum), pixelData->getData(), dataSize);
+                            
+                            if (invertOrigiantion)
+                            {
+                                memcpy(image->data(0,0,image->r()-imageNum-1), pixelData->getData(), dataSize);
+                            }
+                            else
+                            {
+                                memcpy(image->data(0,0,imageNum), pixelData->getData(), dataSize);
+                            }
                             
                             imageNum += numFramesToCopy;
                         }

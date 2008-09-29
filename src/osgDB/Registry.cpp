@@ -776,7 +776,9 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
             ++itr)
         {
             if (rwOriginal.find(itr->get())==rwOriginal.end())
-          if((*itr)->acceptsExtension(ext)) return (*itr).get();
+            {
+                if((*itr)->acceptsExtension(ext)) return (*itr).get();
+            }
         }
     }
 
@@ -832,7 +834,6 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
             // we have a composite name so now strip off the library name
             // are try to load it, and then retry the readObject to see
             // if we can recognize the objects.
-        
             std::string libraryName = std::string(token,0,posDoubleColon);
 
             // first try the standard nodekit library.
@@ -846,7 +847,6 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
     }
     else if (fr[1].isOpenBracket())
     {
-    
         DotOsgWrapper* wrapper = itr->second.get();
         const osg::Object* proto = wrapper->getPrototype();
         if (proto==NULL)
@@ -893,30 +893,26 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
                     std::string::size_type posDoubleColon = token.rfind("::");
                     if (posDoubleColon != std::string::npos)
                     {
-
                         // we have a composite name so now strip off the library name
-                        // are try to load it, and then retry the find to see
+                        // and try to load it, and then retry the find to see
                         // if we can recognize the objects.
-
                         std::string libraryName = std::string(token,0,posDoubleColon);
 
                         // first try the standard nodekit library.
                         std::string nodeKitLibraryName = createLibraryNameForNodeKit(libraryName);
-                        if (loadLibrary(nodeKitLibraryName)==LOADED) 
+                        if (loadLibrary(nodeKitLibraryName)==LOADED)
                         {
                             mitr = _objectWrapperMap.find(*aitr);
-                        }
-
-                        if (mitr==_objectWrapperMap.end()==LOADED)
-                        {
-                            // otherwise try the osgdb_ plugin library.
-                            std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
-                            if (loadLibrary(pluginLibraryName)==LOADED)
+                            if (mitr==_objectWrapperMap.end())
                             {
-                                mitr = _objectWrapperMap.find(*aitr);
+                                // otherwise try the osgdb_ plugin library.
+                                std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
+                                if (loadLibrary(pluginLibraryName)==LOADED)
+                                {
+                                    mitr = _objectWrapperMap.find(*aitr);
+                                }
                             }
                         }
-
                     }
                 }
 

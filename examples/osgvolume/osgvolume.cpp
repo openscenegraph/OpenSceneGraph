@@ -21,6 +21,7 @@
 #include <osg/Notify>
 #include <osg/Texture3D>
 #include <osg/Texture1D>
+#include <osg/ImageSequence>
 #include <osg/TexGen>
 #include <osg/Geode>
 #include <osg/Billboard>
@@ -44,6 +45,9 @@
 #include <osgDB/FileNameUtils>
 
 #include <osgGA/EventVisitor>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
 
 #include <osgUtil/CullVisitor>
 
@@ -1786,6 +1790,15 @@ int main( int argc, char **argv )
     // add the window size toggle handler
     viewer.addEventHandler(new osgViewer::WindowSizeHandler);
         
+    {
+        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+
+        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
+
+        viewer.setCameraManipulator( keyswitchManipulator.get() );
+    }
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
@@ -1896,8 +1909,10 @@ int main( int argc, char **argv )
     while(arguments.read("--gpu-tf")) { gpuTransferFunction = true; }
     while(arguments.read("--cpu-tf")) { gpuTransferFunction = false; }
 
-    osg::ref_ptr<osg::Image> image_3d;
-    
+    typedef std::list< osg::ref_ptr<osg::Image> > Images;
+    Images images;
+
+
     std::string vh_filename;
     while (arguments.read("--vh", vh_filename)) 
     {
@@ -1918,7 +1933,7 @@ int main( int argc, char **argv )
         
         if (!raw_filename.empty())
         {
-            image_3d = readRaw(xdim, ydim, zdim, 1, 1, "little", raw_filename);
+            images.push_back(readRaw(xdim, ydim, zdim, 1, 1, "little", raw_filename));
         }
         
         if (!transfer_filename.empty())
@@ -1959,7 +1974,7 @@ int main( int argc, char **argv )
     std::string endian, raw_filename;
     while (arguments.read("--raw", sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents, endian, raw_filename)) 
     {
-        image_3d = readRaw(sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents, endian, raw_filename);
+        images.push_back(readRaw(sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents, endian, raw_filename));
     }
 
     while (arguments.read("--images")) 
@@ -1978,7 +1993,7 @@ int main( int argc, char **argv )
         
         // pack the textures into a single texture.
         ProcessRow processRow;
-        image_3d = createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo);
+        images.push_back(createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo));
     }
 
 
@@ -1991,16 +2006,17 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
+    
 
     // assume remaining arguments are file names of textures.
-    for(int pos=1;pos<arguments.argc() && !image_3d;++pos)
+    for(int pos=1;pos<arguments.argc();++pos)
     {
         if (!arguments.isOption(pos))
         {
             std::string filename = arguments[pos];
             if (osgDB::getLowerCaseFileExtension(filename)=="dicom")
             {
-                image_3d = osgDB::readImageFile( filename );
+                images.push_back(osgDB::readImageFile( filename ));
             }
             else
             {
@@ -2037,13 +2053,13 @@ int main( int argc, char **argv )
 
                     // pack the textures into a single texture.
                     ProcessRow processRow;
-                    image_3d = createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo);
+                    images.push_back(createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo));
 
                 }
                 else if (fileType == osgDB::REGULAR_FILE)
                 {
                     // not an option so assume string is a filename.
-                    image_3d = osgDB::readImageFile( filename );
+                    images.push_back(osgDB::readImageFile( filename ));
                 }
                 else
                 {
@@ -2054,11 +2070,29 @@ int main( int argc, char **argv )
         }
     }
     
-    if (!image_3d) 
+    if (images.empty()) 
     {
         std::cout<<"No model loaded, please specify and volumetric image file on the command line."<<std::endl;
         return 1;
     }
+
+
+    Images::iterator sizeItr = images.begin();
+    xSize = (*sizeItr)->s();
+    ySize = (*sizeItr)->t();
+    zSize = (*sizeItr)->r();
+    ++sizeItr;
+    for(;sizeItr != images.end(); ++sizeItr)
+    {
+        if ((*sizeItr)->s() != xSize || 
+            (*sizeItr)->t() != ySize ||
+            (*sizeItr)->r() != zSize)
+        {
+            std::cout<<"Images in sequence are not of the same dimensions."<<std::endl;
+            return 1;
+        }
+    }
+
 
 #if 0
     osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(image_3d->getUserData());
@@ -2070,14 +2104,20 @@ int main( int argc, char **argv )
         zSize = image_3d->r() * (*matrix)(2,2);
     }
 #else
-        xSize = image_3d->s();
-        ySize = image_3d->t();
-        zSize = image_3d->r();
 #endif
 
 
     osg::Vec4 minValue, maxValue;
-    if (osgVolume::computeMinMax(image_3d.get(), minValue, maxValue));
+    bool computeMinMax = false;
+    for(Images::iterator itr = images.begin();
+        itr != images.end();
+        ++itr)
+    {
+        if (osgVolume::computeMinMax(itr->get(), minValue, maxValue)) computeMinMax = true;
+    }
+    
+    
+    if (computeMinMax)
     {
         osg::notify(osg::NOTICE)<<"Min value "<<minValue<<std::endl;
         osg::notify(osg::NOTICE)<<"Max value "<<maxValue<<std::endl;
@@ -2095,36 +2135,81 @@ int main( int argc, char **argv )
         float scale = 0.99f/(maxComponent-minComponent);
         float offset = -minComponent * scale;
 
-        osgVolume::offsetAndScaleImage(image_3d.get(), 
-            osg::Vec4(offset, offset, offset, offset),
-            osg::Vec4(scale, scale, scale, scale));
 
+        for(Images::iterator itr = images.begin();
+            itr != images.end();
+            ++itr)
+        {        
+            osgVolume::offsetAndScaleImage(itr->get(), 
+                osg::Vec4(offset, offset, offset, offset),
+                osg::Vec4(scale, scale, scale, scale));
+        }
     }
 
-#if 0
-    osg::Vec4 newMinValue, newMaxValue;
-    if (osgVolume::computeMinMax(image_3d.get(), newMinValue, newMaxValue));
-    {
-        osg::notify(osg::NOTICE)<<"After min value "<<newMinValue<<std::endl;
-        osg::notify(osg::NOTICE)<<"After max value "<<newMaxValue<<std::endl;
-
-    }
-#endif
     
     if (colourSpaceOperation!=NO_COLOUR_SPACE_OPERATION)
     {
-        doColourSpaceConversion(colourSpaceOperation, image_3d.get(), colourModulate);
+        for(Images::iterator itr = images.begin();
+            itr != images.end();
+            ++itr)
+        {        
+            doColourSpaceConversion(colourSpaceOperation, itr->get(), colourModulate);
+        }
     }
     
     if (!gpuTransferFunction && transferFunction.valid())
     {
-        image_3d = applyTransferFunction(image_3d.get(), transferFunction.get());
+        for(Images::iterator itr = images.begin();
+            itr != images.end();
+            ++itr)
+        {        
+            *itr = applyTransferFunction(itr->get(), transferFunction.get());
+        }
     }
     
-    osg::ref_ptr<osg::Image> normalmap_3d = createNormalMap ? createNormalMapTexture(image_3d.get()) : 0;
+    osg::ref_ptr<osg::Image> image_3d = 0;
 
-
+    if (images.size()==1)
+    {
+        osg::notify(osg::NOTICE)<<"Single image "<<images.size()<<" volumes."<<std::endl;
+        image_3d = images.front();
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"Creating sequence of "<<images.size()<<" volumes."<<std::endl;
     
+        osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
+        image_3d = imageSequence.get();
+        for(Images::iterator itr = images.begin();
+            itr != images.end();
+            ++itr)
+        {        
+            imageSequence->addImage(itr->get());
+        }
+        imageSequence->play();
+    }
+    
+    osg::ref_ptr<osg::Image> normalmap_3d = 0;
+    if (createNormalMap)
+    {
+        if (images.size()==1)
+        {
+            normalmap_3d = createNormalMapTexture(images.front().get());
+        }
+        else
+        {
+            osg::ref_ptr<osg::ImageSequence> normalmapSequence = new osg::ImageSequence;
+            normalmap_3d = normalmapSequence.get();
+            for(Images::iterator itr = images.begin();
+                itr != images.end();
+                ++itr)
+            {        
+                normalmapSequence->addImage(createNormalMapTexture(itr->get()));
+            }
+            normalmapSequence->play();
+        }
+    }
+
     // create a model from the images.
     osg::Node* rootNode = 0;
     

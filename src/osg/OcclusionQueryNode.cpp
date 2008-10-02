@@ -35,6 +35,8 @@
 #include <map>
 #include <vector>
 
+#include <OpenThreads/Thread>
+
 
 typedef osg::buffered_value< osg::ref_ptr< osg::Drawable::Extensions > > OcclusionQueryBufferedExtensions;
 static OcclusionQueryBufferedExtensions s_OQ_bufferedExtensions;
@@ -238,13 +240,15 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
             // work aroung issues in the device driver. For example, without this
             // code, we've seen crashes on 64-bit Mac/Linux NVIDIA systems doing
             // multithreaded, multipipe rendering (as in a CAVE).
+            // Tried with ATI and verified this workaround is not needed; the
+            //   problem is specific to NVIDIA.
             GLint ready( 0 );
-            ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT_AVAILABLE, &ready );
             while( !ready )
             {
+                // Apparently, must actually sleep here to avoid issues w/ NVIDIA Quadro.
                 OpenThreads::Thread::microSleep( 5 );
                 ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT_AVAILABLE, &ready );
-            }
+            };
 #endif
 
             ext->glGetQueryObjectiv( tr->_id, GL_QUERY_RESULT, &(tr->_numPixels) );

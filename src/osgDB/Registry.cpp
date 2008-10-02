@@ -217,6 +217,9 @@ Registry::Registry()
     addFileExtensionAlias("ivz",   "gz");
     addFileExtensionAlias("ozg",   "gz");
     
+    addFileExtensionAlias("mag",   "dicom");
+    addFileExtensionAlias("ph",   "dicom");
+    addFileExtensionAlias("ima",   "dicom");
     addFileExtensionAlias("dcm",   "dicom");
     addFileExtensionAlias("dic",   "dicom");
 

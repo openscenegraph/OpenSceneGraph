@@ -119,5 +119,152 @@ bool osgVolume::offsetAndScaleImage(osg::Image* image, const osg::Vec4& offset, 
     return true;
 }
 
+template<typename SRC, typename DEST>
+void _copyRowAndScale(const SRC* src, DEST* dest, int num, float scale)
+{
+    if (scale==1.0)
+    {
+        for(int i=0; i<num; ++i)
+        {
+            *dest = DEST(*src);
+            ++dest; ++src;
+        }
+    }
+    else
+    {
+        for(int i=0; i<num; ++i)
+        {
+            *dest = DEST(float(*src)*scale);
+            ++dest; ++src;
+        }
+    }
+}
 
+template<typename DEST>
+void _copyRowAndScale(const unsigned char* src, GLenum srcDataType, DEST* dest, int num, float scale)
+{
+    switch(srcDataType)
+    {
+        case(GL_BYTE):              _copyRowAndScale((char*)src, dest, num, scale); break;
+        case(GL_UNSIGNED_BYTE):     _copyRowAndScale((unsigned char*)src, dest, num, scale); break;
+        case(GL_SHORT):             _copyRowAndScale((short*)src, dest, num, scale); break;
+        case(GL_UNSIGNED_SHORT):    _copyRowAndScale((unsigned short*)src, dest, num, scale); break;
+        case(GL_INT):               _copyRowAndScale((int*)src, dest, num, scale); break;
+        case(GL_UNSIGNED_INT):      _copyRowAndScale((unsigned int*)src, dest, num, scale); break;
+        case(GL_FLOAT):             _copyRowAndScale((float*)src, dest, num, scale); break;
+    }
+}
+
+void _copyRowAndScale(const unsigned char* src, GLenum srcDataType, unsigned char* dest, GLenum dstDataType, int num, float scale)
+{
+    switch(dstDataType)
+    {
+        case(GL_BYTE):              _copyRowAndScale(src, srcDataType, (char*)dest, num, scale); break;
+        case(GL_UNSIGNED_BYTE):     _copyRowAndScale(src, srcDataType, (unsigned char*)dest, num, scale); break;
+        case(GL_SHORT):             _copyRowAndScale(src, srcDataType, (short*)dest, num, scale); break;
+        case(GL_UNSIGNED_SHORT):    _copyRowAndScale(src, srcDataType, (unsigned short*)dest, num, scale); break;
+        case(GL_INT):               _copyRowAndScale(src, srcDataType, (int*)dest, num, scale); break;
+        case(GL_UNSIGNED_INT):      _copyRowAndScale(src, srcDataType, (unsigned int*)dest, num, scale); break;
+        case(GL_FLOAT):             _copyRowAndScale(src, srcDataType, (float*)dest, num, scale); break;
+    }
+}
+
+bool osgVolume::copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int width, int height, int depth,
+                          osg::Image* destImage, int dest_s, int dest_t, int dest_r, bool doRescale)
+{
+    if ((src_s+width) > (dest_s + destImage->s()))
+    {
+        osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+        osg::notify(osg::NOTICE)<<"   input width too large."<<std::endl;
+        return false;
+    }
+
+    if ((src_t+height) > (dest_t + destImage->t()))
+    {
+        osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+        osg::notify(osg::NOTICE)<<"   input height too large."<<std::endl;
+        return false;
+    }
+
+    if ((src_r+depth) > (dest_r + destImage->r()))
+    {
+        osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+        osg::notify(osg::NOTICE)<<"   input depth too large."<<std::endl;
+        return false;
+    }
+
+    float scale = 1.0f;
+    if (doRescale && srcImage->getDataType() != destImage->getDataType())
+    {
+        switch(srcImage->getDataType())
+        {
+            case(GL_BYTE):              scale = 1.0f/128.0f ; break;
+            case(GL_UNSIGNED_BYTE):     scale = 1.0f/255.0f; break;
+            case(GL_SHORT):             scale = 1.0f/32768.0f; break;
+            case(GL_UNSIGNED_SHORT):    scale = 1.0f/65535.0f; break;
+            case(GL_INT):               scale = 1.0f/2147483648.0f; break;
+            case(GL_UNSIGNED_INT):      scale = 1.0f/4294967295.0f; break;
+            case(GL_FLOAT):             scale = 1.0f; break;
+        }
+        switch(destImage->getDataType())
+        {
+            case(GL_BYTE):              scale *= 128.0f ; break;
+            case(GL_UNSIGNED_BYTE):     scale *= 255.0f; break;
+            case(GL_SHORT):             scale *= 32768.0f; break;
+            case(GL_UNSIGNED_SHORT):    scale *= 65535.0f; break;
+            case(GL_INT):               scale *= 2147483648.0f; break;
+            case(GL_UNSIGNED_INT):      scale *= 4294967295.0f; break;
+            case(GL_FLOAT):             scale *= 1.0f; break;
+        }
+    }
+
+    if (srcImage->getPixelFormat() == destImage->getPixelFormat())
+    {
+        //osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        //osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+
+        if (srcImage->getDataType() == destImage->getDataType() && !doRescale)
+        {
+            //osg::notify(osg::NOTICE)<<"   Compatible pixelFormat and dataType."<<std::endl;
+            for(int slice = 0; slice<depth; ++slice)
+            {
+                for(int row = 0; row<height; ++row)
+                {
+                    const unsigned char* srcData = srcImage->data(src_s, src_t+row, src_r+slice);
+                    unsigned char* destData = destImage->data(dest_s, dest_t+row, dest_r+slice);
+                    memcpy(destData, srcData, (width*destImage->getPixelSizeInBits())/8);
+                }
+            }
+            return true;
+        }
+        else
+        {
+            //osg::notify(osg::NOTICE)<<"   Compatible pixelFormat and incompatible dataType."<<std::endl;
+            for(int slice = 0; slice<depth; ++slice)
+            {
+                for(int row = 0; row<height; ++row)
+                {
+                    const unsigned char* srcData = srcImage->data(src_s, src_t+row, src_r+slice);
+                    unsigned char* destData = destImage->data(dest_s, dest_t+row, dest_r+slice);
+                    unsigned int numComponents = osg::Image::computeNumComponents(destImage->getPixelFormat());
+                    
+                    _copyRowAndScale(srcData, srcImage->getDataType(), destData, destImage->getDataType(), (width*numComponents), scale);
+                }
+            }
+            
+            return true;
+        }
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+        osg::notify(osg::NOTICE)<<"   Incompatible pixelFormat and dataType."<<std::endl;
+        return false;
+    }
+
+}
 

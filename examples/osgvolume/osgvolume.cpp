@@ -37,6 +37,7 @@
 #include <osg/BlendFunc>
 #include <osg/BlendEquation>
 #include <osg/TransferFunction>
+#include <osg/MatrixTransform>
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
@@ -2019,7 +2020,12 @@ int main( int argc, char **argv )
             std::string filename = arguments[pos];
             if (osgDB::getLowerCaseFileExtension(filename)=="dicom")
             {
-                images.push_back(osgDB::readImageFile( filename ));
+                // not an option so assume string is a filename.
+                osg::Image *image = osgDB::readImageFile(filename);
+                if(image)
+                {
+                    images.push_back(image);
+                }
             }
             else
             {
@@ -2032,32 +2038,11 @@ int main( int argc, char **argv )
 
                 if (fileType == osgDB::DIRECTORY)
                 {
-                    osgDB::DirectoryContents contents = osgDB::getDirectoryContents(filename);
-
-                    std::sort(contents.begin(), contents.end());
-
-                    ImageList imageList;
-                    for(osgDB::DirectoryContents::iterator itr = contents.begin();
-                        itr != contents.end();
-                        ++itr)
+                   osg::Image *image = osgDB::readImageFile(filename+".dicom");
+                    if(image)
                     {
-                        std::string localFile = filename + "/" + *itr;
-                        std::cout<<"contents = "<<localFile<<std::endl;
-                        if (osgDB::fileType(localFile) == osgDB::REGULAR_FILE)
-                        {
-                            // not an option so assume string is a filename.
-                            osg::Image *image = osgDB::readImageFile(localFile);
-                            if(image)
-                            {
-                                imageList.push_back(image);
-                            }
-                        }
-                    }
-
-                    // pack the textures into a single texture.
-                    ProcessRow processRow;
-                    images.push_back(createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo));
-
+                        images.push_back(image);
+                    } 
                 }
                 else if (fileType == osgDB::REGULAR_FILE)
                 {
@@ -2098,8 +2083,8 @@ int main( int argc, char **argv )
     }
 
 
-#if 1
     osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(images.front()->getUserData());
+#if 0
     if (matrix)
     {
         osg::notify(osg::NOTICE)<<"Image has Matrix = "<<*matrix<<std::endl;
@@ -2109,22 +2094,31 @@ int main( int argc, char **argv )
     }
 #endif
 
-    osg::Vec4 minValue, maxValue;
+    osg::Vec4 minValue(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
+    osg::Vec4 maxValue(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX);
     bool computeMinMax = false;
     for(Images::iterator itr = images.begin();
         itr != images.end();
         ++itr)
     {
-#if 0    
-        osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>((*itr)->getUserData());
-        if (matrix)
+        osg::Vec4 localMinValue, localMaxValue;
+        if (osgVolume::computeMinMax(itr->get(), localMinValue, localMaxValue))
         {
-            std::cout<<"matrix = "<<*matrix<<std::endl;
+            if (localMinValue.r()<minValue.r()) minValue.r() = localMinValue.r();
+            if (localMinValue.g()<minValue.g()) minValue.g() = localMinValue.g();
+            if (localMinValue.b()<minValue.b()) minValue.b() = localMinValue.b();
+            if (localMinValue.a()<minValue.a()) minValue.a() = localMinValue.a();
+
+            if (localMaxValue.r()>maxValue.r()) maxValue.r() = localMaxValue.r();
+            if (localMaxValue.g()>maxValue.g()) maxValue.g() = localMaxValue.g();
+            if (localMaxValue.b()>maxValue.b()) maxValue.b() = localMaxValue.b();
+            if (localMaxValue.a()>maxValue.a()) maxValue.a() = localMaxValue.a();
+
+            osg::notify(osg::NOTICE)<<"  ("<<localMinValue<<") ("<<localMaxValue<<") "<<(*itr)->getFileName()<<std::endl;
+
+            computeMinMax = true;
         }
-#endif
-        if (osgVolume::computeMinMax(itr->get(), minValue, maxValue)) computeMinMax = true;
     }
-    
     
     if (computeMinMax)
     {
@@ -2188,6 +2182,7 @@ int main( int argc, char **argv )
         osg::notify(osg::NOTICE)<<"Creating sequence of "<<images.size()<<" volumes."<<std::endl;
     
         osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
+        imageSequence->setLength(10.0);
         image_3d = imageSequence.get();
         for(Images::iterator itr = images.begin();
             itr != images.end();
@@ -2240,6 +2235,15 @@ int main( int argc, char **argv )
                                xSize, ySize, zSize,
                                xMultiplier, yMultiplier, zMultiplier,
                                numSlices, sliceEnd, alphaFunc);
+    }
+    
+    if (matrix && rootNode)
+    {
+        osg::MatrixTransform* mt = new osg::MatrixTransform;
+        mt->setMatrix(*matrix);
+        mt->addChild(rootNode);
+        
+        rootNode = mt;
     }
     
     if (!outputFile.empty())

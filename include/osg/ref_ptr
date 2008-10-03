@@ -55,6 +55,10 @@ class ref_ptr
             return *this;
         }
 
+#ifdef OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION
+        // implicit output conversion
+        operator T*() const { return _ptr; }
+#else
         // comparison operators for ref_ptr.
         bool operator == (const ref_ptr& rp) const { return (_ptr==rp._ptr); }
         bool operator == (const T* ptr) const { return (_ptr==ptr); }
@@ -65,7 +69,8 @@ class ref_ptr
         friend bool operator != (const T* ptr, const ref_ptr& rp) { return (ptr!=rp._ptr); }
  
         bool operator < (const ref_ptr& rp) const { return (_ptr<rp._ptr); }
-
+#endif
+        
         T& operator*() const { return *_ptr; }
         T* operator->() const { return _ptr; }
         T* get() const { return _ptr; }

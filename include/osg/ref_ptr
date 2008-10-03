@@ -14,6 +14,8 @@
 #ifndef OSG_REF_PTR
 #define OSG_REF_PTR 1
 
+#include <osg/Config>
+
 namespace osg {
 
 /** Smart pointer for handling referenced counted objects.*/

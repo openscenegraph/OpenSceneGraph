@@ -17,7 +17,6 @@
 #include <osg/FrameStamp>
 #include <osg/Object>
 #include <osg/Timer>
-#include <osgGA/EventQueue>
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/View>
 #include <osgViewer/ViewerBase>
@@ -141,21 +140,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __osg_FrameStamp_P1__getViewerFrameStamp,
 	          "",
 	          "");
-	I_Method1(void, setEventQueue, IN, osgGA::EventQueue *, eventQueue,
-	          Properties::NON_VIRTUAL,
-	          __void__setEventQueue__osgGA_EventQueue_P1,
-	          "",
-	          "");
-	I_Method0(osgGA::EventQueue *, getEventQueue,
-	          Properties::NON_VIRTUAL,
-	          __osgGA_EventQueue_P1__getEventQueue,
-	          "",
-	          "");
-	I_Method0(const osgGA::EventQueue *, getEventQueue,
-	          Properties::NON_VIRTUAL,
-	          __C5_osgGA_EventQueue_P1__getEventQueue,
-	          "",
-	          "");
 	I_Method0(int, run,
 	          Properties::VIRTUAL,
 	          __int__run,
@@ -251,9 +235,6 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_SimpleProperty(osg::Camera *, CameraWithFocus, 
 	                 __osg_Camera_P1__getCameraWithFocus, 
 	                 __void__setCameraWithFocus__osg_Camera_P1);
-	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
-	                 __osgGA_EventQueue_P1__getEventQueue, 
-	                 __void__setEventQueue__osgGA_EventQueue_P1);
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 __osg_FrameStamp_P1__getFrameStamp, 
 	                 0);

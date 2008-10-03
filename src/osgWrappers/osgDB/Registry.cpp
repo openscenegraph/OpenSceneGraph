@@ -71,6 +71,13 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgDB::ReaderWriter > >, osgDB::Registry::ReaderWriterList)
 
+BEGIN_ENUM_REFLECTOR(osgDB::Registry::LoadStatus)
+	I_DeclaringFile("osgDB/Registry");
+	I_EnumLabel(osgDB::Registry::NOT_LOADED);
+	I_EnumLabel(osgDB::Registry::PREVIOUSLY_LOADED);
+	I_EnumLabel(osgDB::Registry::LOADED);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_DeclaringFile("osgDB/Registry");
 	I_BaseType(osg::Referenced);
@@ -124,9 +131,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __std_string__createLibraryNameForNodeKit__C5_std_string_R1,
 	          "create the platform specific library name associated with nodekit library name. ",
 	          "");
-	I_Method1(bool, loadLibrary, IN, const std::string &, fileName,
+	I_Method1(osgDB::Registry::LoadStatus, loadLibrary, IN, const std::string &, fileName,
 	          Properties::NON_VIRTUAL,
-	          __bool__loadLibrary__C5_std_string_R1,
+	          __LoadStatus__loadLibrary__C5_std_string_R1,
 	          "find the library in the OSG_LIBRARY_PATH and load it. ",
 	          "");
 	I_Method1(bool, closeLibrary, IN, const std::string &, fileName,

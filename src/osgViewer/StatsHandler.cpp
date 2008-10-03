@@ -11,16 +11,22 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <sstream>
+#include <iomanip>
 #include <stdio.h>
+
+#include <osg/io_utils>
 
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Renderer>
 
 #include <osg/PolygonMode>
 #include <osg/Geometry>
+#include <osgUtil/Statistics>
 
 namespace osgViewer
 {
+
 
 StatsHandler::StatsHandler():
     _keyEventTogglesOnScreenStats('s'),
@@ -30,7 +36,8 @@ StatsHandler::StatsHandler():
     _threadingModel(ViewerBase::SingleThreaded),
     _frameRateChildNum(0),
     _viewerChildNum(0),
-    _sceneChildNum(0),
+    _cameraSceneChildNum(0),
+    _viewerSceneChildNum(0),
     _numBlocks(8),
     _blockMultiplier(10000.0)
 {
@@ -135,14 +142,18 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                             _switch->setValue(_viewerChildNum, true);
                             break;
                         }
-#if 0
-                        case(SCENE_STATS):
+                        case(CAMERA_SCENE_STATS):
                         {
-                            _switch->setValue(_sceneChildNum, true);
                             _camera->setNodeMask(0xffffffff);
+                            _switch->setValue(_cameraSceneChildNum, true);
                             break;
                         }
-#endif
+                        case(VIEWER_SCENE_STATS):
+                        {
+                            _camera->setNodeMask(0xffffffff);
+                            _switch->setValue(_viewerSceneChildNum, true);
+                            break;
+                        }
                         default:
                             break;
                     }
@@ -256,9 +267,10 @@ void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
     _initialized = true;
 }
 
-struct TextDrawCallback : public virtual osg::Drawable::DrawCallback
+// Drawcallback to draw averaged attribute
+struct AveragedValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
 {
-    TextDrawCallback(osg::Stats* stats, const std::string& name, int frameDelta, bool averageInInverseSpace, double multiplier):
+    AveragedValueTextDrawCallback(osg::Stats* stats, const std::string& name, int frameDelta, bool averageInInverseSpace, double multiplier):
         _stats(stats),
         _attributeName(name),
         _frameDelta(frameDelta),
@@ -290,17 +302,204 @@ struct TextDrawCallback : public virtual osg::Drawable::DrawCallback
                 text->setText("");
             }
         }
-        
         text->drawImplementation(renderInfo);
     }
 
-    osg::ref_ptr<osg::Stats>     _stats;
+    osg::ref_ptr<osg::Stats>    _stats;
     std::string                 _attributeName;
     int                         _frameDelta;
     bool                        _averageInInverseSpace;
     double                      _multiplier;
     mutable char                _tmpText[128];
     mutable osg::Timer_t        _tickLastUpdated;
+};
+
+struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallback
+{
+    CameraSceneStatsTextDrawCallback(osg::Camera* camera, int cameraNumber):
+        _camera(camera),
+        _tickLastUpdated(0), 
+        _cameraNumber(cameraNumber)
+    {
+
+        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::POINTS, &stream[0]));
+        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::LINES, &stream[1]));
+        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::LINE_STRIP, &stream[2]));
+        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::LINE_LOOP, &stream[3]));
+        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::TRIANGLES, &stream[4]));
+        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::TRIANGLE_STRIP, &stream[5]));
+        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::TRIANGLE_FAN, &stream[6]));
+        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::QUADS, &stream[7]));
+        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::QUAD_STRIP, &stream[8]));
+        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::POLYGON, &stream[9]));
+    }
+
+    /** do customized draw code.*/
+    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
+    {
+        osgText::Text* text = (osgText::Text*)drawable;
+
+        osg::Timer_t tick = osg::Timer::instance()->tick();
+        double delta = osg::Timer::instance()->delta_m(_tickLastUpdated, tick);
+
+        if (delta > 100) // update every 100ms
+        {
+            _tickLastUpdated = tick;
+            std::ostringstream viewStr;
+            viewStr.clear();
+
+            osgUtil::Statistics stats;
+            osgViewer::Renderer* renderer = dynamic_cast<osgViewer::Renderer*>(_camera->getRenderer());
+            
+            if (renderer)
+            {
+                renderer->getSceneView(0)->getStats(stats);
+
+                viewStr.setf(std::ios::left,std::ios::adjustfield);
+                viewStr.width(14);
+
+                viewStr << std::setw(1) << _cameraNumber  << ": ";
+                // Camera name
+                if (_camera->getName().empty())
+                    viewStr << std::endl;
+                else
+                    viewStr << _camera->getName() << std::endl;
+
+                viewStr << std::setw(7) << stats._vertexCount << std::endl;
+                viewStr << std::setw(7) << stats.numDrawables << std::endl;
+                viewStr << std::setw(7) << stats.nlights << std::endl;
+                viewStr << std::setw(7) << stats.nbins << std::endl;
+                viewStr << std::setw(7) << stats.depth << std::endl;
+                viewStr << std::setw(7) << stats.nummat << std::endl;
+                viewStr << std::setw(7) << stats.nimpostor << std::endl;
+
+                // Initialize primitive streams 
+                PrimitiveModeStreamMap::const_iterator iter;
+                iter = _primitiveModeStreamMap.begin();
+                for(iter = _primitiveModeStreamMap.begin(); iter != _primitiveModeStreamMap.end(); ++iter)
+                {
+                    iter->second->str("0");
+                }
+
+                // Write collected primitive values
+                osgUtil::Statistics::PrimitiveCountMap::iterator primitiveItr;
+                for(primitiveItr  = stats.GetPrimitivesBegin(); primitiveItr != stats.GetPrimitivesEnd(); ++primitiveItr)
+                {
+                    PrimitiveModeStreamMap::const_iterator strItr = _primitiveModeStreamMap.find((*primitiveItr).first);
+                    if (strItr != _primitiveModeStreamMap.end())
+                    {
+                        *(strItr->second) <<  (*primitiveItr).second;
+                    }
+                }
+                
+                // Concatenate all streams
+                for(iter = _primitiveModeStreamMap.begin(); iter != _primitiveModeStreamMap.end(); ++iter)
+                {
+                    viewStr << iter->second->str() << std::endl;
+                }
+
+                text->setText(viewStr.str());
+            }
+        }
+        text->drawImplementation(renderInfo);
+    }
+
+    std::ostringstream stream[10];
+    typedef std::map<GLenum, std::ostringstream*> PrimitiveModeStreamMap;
+    PrimitiveModeStreamMap        _primitiveModeStreamMap;
+    osg::ref_ptr<osg::Camera>    _camera;
+    mutable osg::Timer_t        _tickLastUpdated;
+    int                            _cameraNumber;
+};
+
+
+struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallback
+{
+    ViewSceneStatsTextDrawCallback(osgViewer::View* view, int viewNumber):
+        _view(view),
+        _tickLastUpdated(0),
+        _viewNumber(viewNumber)
+    {
+    }
+
+    /** do customized draw code.*/
+    virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
+    {
+        osgText::Text* text = (osgText::Text*)drawable;
+
+        osg::Timer_t tick = osg::Timer::instance()->tick();
+        double delta = osg::Timer::instance()->delta_m(_tickLastUpdated, tick);
+
+        if (delta > 200) // update every 100ms
+        {
+            _tickLastUpdated = tick;
+            osg::ref_ptr<osg::Node> sceneRoot;
+
+            if (_view != NULL)
+            {
+                sceneRoot = _view->getScene()->getSceneData();
+                osgUtil::StatsVisitor statsVisitor;
+                sceneRoot->accept(statsVisitor);
+
+                std::ostringstream viewStr;
+                viewStr.clear();
+                viewStr.setf(std::ios::left,std::ios::adjustfield);
+                viewStr.width(20);
+                
+                viewStr << std::setw(1) << _viewNumber  << ": ";
+                // View name
+                if (_view->getName().empty())
+                    viewStr << std::endl;
+                else
+                    viewStr << _view->getName() << std::endl;
+
+                viewStr << std::endl;
+
+                unsigned int unique_primitives = 0;
+                osgUtil::Statistics::PrimitiveCountMap::iterator pcmitr;
+                for(pcmitr = statsVisitor._uniqueStats.GetPrimitivesBegin();
+                    pcmitr != statsVisitor._uniqueStats.GetPrimitivesEnd();
+                    ++pcmitr)
+                {
+                    unique_primitives += pcmitr->second;
+                }
+
+                unsigned int instanced_primitives = 0;
+                for(pcmitr = statsVisitor._instancedStats.GetPrimitivesBegin();
+                    pcmitr != statsVisitor._instancedStats.GetPrimitivesEnd();
+                    ++pcmitr)
+                {
+                    instanced_primitives += pcmitr->second;
+                }
+
+                viewStr << std::setw(10) << statsVisitor._statesetSet.size()       << std::setw(10) << statsVisitor._numInstancedStateSet << std::endl;
+                viewStr << std::setw(10) << statsVisitor._groupSet.size()          << std::setw(10) << statsVisitor._numInstancedGroup << std::endl;
+                viewStr << std::setw(10) << statsVisitor._transformSet.size()      << std::setw(10) << statsVisitor._numInstancedTransform << std::endl;
+                viewStr << std::setw(10) << statsVisitor._lodSet.size()            << std::setw(10) << statsVisitor._numInstancedLOD << std::endl;
+                viewStr << std::setw(10) << statsVisitor._switchSet.size()         << std::setw(10) << statsVisitor._numInstancedSwitch << std::endl;
+                viewStr << std::setw(10) << statsVisitor._geodeSet.size()          << std::setw(10) << statsVisitor._numInstancedGeode << std::endl;
+                viewStr << std::setw(10) << statsVisitor._drawableSet.size()       << std::setw(10) << statsVisitor._numInstancedDrawable << std::endl;
+                viewStr << std::setw(10) << statsVisitor._geometrySet.size()       << std::setw(10) << statsVisitor._numInstancedGeometry << std::endl;
+                viewStr << std::setw(10) << statsVisitor._uniqueStats._vertexCount << std::setw(10) << statsVisitor._instancedStats._vertexCount << std::endl;
+                viewStr << std::setw(10) << unique_primitives                        << std::setw(10) << instanced_primitives << std::endl;
+
+                text->setText(viewStr.str());
+            }
+            else 
+            {
+                osg::notify(osg::WARN)<<std::endl<<"No valid view to collect scene stats from"<<std::endl;
+                
+                text->setText("");
+            }
+        }
+        text->drawImplementation(renderInfo);
+    }
+
+    // Using a ref_ptr causes a crash during cleanup
+    //osg::ref_ptr<osgViewer::View>     _view;
+    osgViewer::View*        _view;
+    mutable osg::Timer_t    _tickLastUpdated;
+    int                        _viewNumber;
 };
 
 struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
@@ -357,6 +556,40 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
     int                         _frameDelta;
     int                         _numFrames;
 };
+
+osg::Geometry* StatsHandler::createBackgroundRectangle(const osg::Vec3& pos, const float width, const float height, osg::Vec4& color)
+{
+    osg::StateSet *ss = new osg::StateSet;
+  
+    osg::Geometry* geometry = new osg::Geometry;
+  
+    geometry->setUseDisplayList(false);
+    geometry->setStateSet(ss);
+
+    osg::Vec3Array* vertices = new osg::Vec3Array;
+    geometry->setVertexArray(vertices);
+  
+    vertices->push_back(osg::Vec3(pos.x(), pos.y(), 0));
+    vertices->push_back(osg::Vec3(pos.x(), pos.y()-height,0));
+    vertices->push_back(osg::Vec3(pos.x()+width, pos.y()-height,0));
+    vertices->push_back(osg::Vec3(pos.x()+width, pos.y(),0));
+  
+    osg::Vec4Array* colors = new osg::Vec4Array;
+    colors->push_back(color);
+    geometry->setColorArray(colors);
+    geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+  
+    osg::DrawElementsUInt *base =  new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS,0);
+    base->push_back(0);
+    base->push_back(1);
+    base->push_back(2);
+    base->push_back(3);
+
+    geometry->addPrimitiveSet(base);
+
+    return geometry;
+}
+
 
 osg::Geometry* StatsHandler::createGeometry(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks)
 {
@@ -437,12 +670,20 @@ struct FrameMarkerDrawCallback : public virtual osg::Drawable::DrawCallback
 struct PagerCallback : public virtual osg::NodeCallback
 {
 
-    PagerCallback(osgDB::DatabasePager* dp, osgText::Text* minValue, osgText::Text* maxValue, osgText::Text* averageValue, double multiplier):
+    PagerCallback(    osgDB::DatabasePager* dp, 
+                    osgText::Text* minValue, 
+                    osgText::Text* maxValue, 
+                    osgText::Text* averageValue, 
+                    osgText::Text* filerequestlist, 
+                    osgText::Text* compilelist, 
+                    double multiplier):
         _dp(dp),
         _minValue(minValue),
         _maxValue(maxValue),
         _averageValue(averageValue),
-        _multiplier(multiplier)
+        _multiplier(multiplier),
+        _filerequestlist(filerequestlist),
+        _compilelist(compilelist)
     {
     }
 
@@ -482,6 +723,12 @@ struct PagerCallback : public virtual osg::NodeCallback
             {
                 _maxValue->setText("");
             }
+
+            sprintf(_tmpText,"%4d", _dp->getFileRequestListSize());
+            _filerequestlist->setText(_tmpText);
+
+            sprintf(_tmpText,"%4d", _dp->getDataToCompileListSize());
+            _compilelist->setText(_tmpText);
         }
 
         traverse(node,nv);
@@ -492,6 +739,8 @@ struct PagerCallback : public virtual osg::NodeCallback
     osg::ref_ptr<osgText::Text> _minValue;
     osg::ref_ptr<osgText::Text> _maxValue;
     osg::ref_ptr<osgText::Text> _averageValue;
+    osg::ref_ptr<osgText::Text> _filerequestlist;
+    osg::ref_ptr<osgText::Text> _compilelist;
     double _multiplier;
     char                _tmpText[128];
     osg::Timer_t        _tickLastUpdated;
@@ -639,11 +888,17 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         frameRateValue->setPosition(pos);
         frameRateValue->setText("0.0");
 
-        frameRateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Frame rate",-1, true, 1.0));
+        frameRateValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getStats(),"Frame rate",-1, true, 1.0));
 
         pos.y() -= characterSize*1.5f;
-
+  
     }
+
+    osg::Vec4 backgroundColor(0.0, 0.0, 0.0f, 0.3);
+    osg::Vec4 staticTextColor(1.0, 1.0, 0.0f, 1.0);
+    osg::Vec4 dynamicTextColor(1.0, 1.0, 1.0f, 1.0);
+    float backgroundMargin = 5;
+    float backgroundSpacing = 3;
 
 
     // viewer stats
@@ -672,8 +927,12 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             pos.y() -= characterSize*1.5f;
         }
         
-
         float topOfViewerStats = pos.y() + characterSize;
+
+        geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
+                                                        70 * characterSize + 2 * backgroundMargin, 
+                                                        (3 + 4.5 * cameras.size()) * characterSize + 2 * backgroundMargin,
+                                                        backgroundColor));
 
         {
             pos.x() = leftPos;
@@ -698,7 +957,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             eventValue->setPosition(pos);
             eventValue->setText("0.0");
 
-            eventValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Event traversal time taken",-1, false, 1000.0));
+            eventValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getStats(),"Event traversal time taken",-1, false, 1000.0));
 
             pos.x() = startBlocks;
             osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdateAlpha, _numBlocks);
@@ -731,7 +990,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             updateValue->setPosition(pos);
             updateValue->setText("0.0");
 
-            updateValue->setDrawCallback(new TextDrawCallback(viewer->getStats(),"Update traversal time taken",-1, false, 1000.0));
+            updateValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getStats(),"Update traversal time taken",-1, false, 1000.0));
 
             pos.x() = startBlocks;
             osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdateAlpha, _numBlocks);
@@ -743,15 +1002,13 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         pos.x() = leftPos;
 
-
         // add camera stats
         for(ViewerBase::Cameras::iterator citr = cameras.begin();
             citr != cameras.end();
             ++citr)
         {
-            group->addChild(createCameraStats(font, pos, startBlocks, acquireGPUStats, characterSize, viewer->getStats(), *citr));
+            group->addChild(createCameraTimeStats(font, pos, startBlocks, acquireGPUStats, characterSize, viewer->getStats(), *citr));
         }
-
 
         // add frame ticks
         {
@@ -772,7 +1029,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             geode->addDrawable(frameMarkers);
         }
 
-
+        // Databasepager stats
         ViewerBase::Scenes scenes;
         viewer->getScenes(scenes);
         for(ViewerBase::Scenes::iterator itr = scenes.begin();
@@ -783,9 +1040,14 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             osgDB::DatabasePager* dp = scene->getDatabasePager();
             if (dp && dp->isRunning())
             {
-                pos.y() -= characterSize*1.5f;
+                pos.y() -= (characterSize + backgroundSpacing + 2 * backgroundMargin);
 
                 pos.x() = leftPos;
+
+                geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
+                                                                70 * characterSize + 2 * backgroundMargin, 
+                                                                characterSize + 2 * backgroundMargin,
+                                                                backgroundColor));
 
                 osg::ref_ptr<osgText::Text> averageLabel = new osgText::Text;
                 geode->addDrawable( averageLabel.get() );
@@ -832,7 +1094,6 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
                 pos.x() = minValue->getBound().xMax() + 2.0f*characterSize;
 
-
                 osg::ref_ptr<osgText::Text> maxLabel = new osgText::Text;
                 geode->addDrawable( maxLabel.get() );
 
@@ -853,40 +1114,211 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 maxValue->setPosition(pos);
                 maxValue->setText("1000");
 
+                pos.x() = maxValue->getBound().xMax();
+
+                osg::ref_ptr<osgText::Text> requestsLabel = new osgText::Text;
+                geode->addDrawable( requestsLabel.get() );
+
+                requestsLabel->setColor(colorDP);
+                requestsLabel->setFont(font);
+                requestsLabel->setCharacterSize(characterSize);
+                requestsLabel->setPosition(pos);
+                requestsLabel->setText("requests: ");
+
+                pos.x() = requestsLabel->getBound().xMax();
+
+                osg::ref_ptr<osgText::Text> requestList = new osgText::Text;
+                geode->addDrawable( requestList.get() );
+
+                requestList->setColor(colorDP);
+                requestList->setFont(font);
+                requestList->setCharacterSize(characterSize);
+                requestList->setPosition(pos);
+                requestList->setText("0");
+
+                pos.x() = requestList->getBound().xMax() + 2.0f*characterSize;;
+
+                osg::ref_ptr<osgText::Text> compileLabel = new osgText::Text;
+                geode->addDrawable( compileLabel.get() );
+
+                compileLabel->setColor(colorDP);
+                compileLabel->setFont(font);
+                compileLabel->setCharacterSize(characterSize);
+                compileLabel->setPosition(pos);
+                compileLabel->setText("tocompile: ");
+
+                pos.x() = compileLabel->getBound().xMax();
+                
+                osg::ref_ptr<osgText::Text> compileList = new osgText::Text;
+                geode->addDrawable( compileList.get() );
+
+                compileList->setColor(colorDP);
+                compileList->setFont(font);
+                compileList->setCharacterSize(characterSize);
+                compileList->setPosition(pos);
+                compileList->setText("0");
+
                 pos.x() = maxLabel->getBound().xMax();
 
-                geode->setCullCallback(new PagerCallback(dp, minValue.get(), maxValue.get(), averageValue.get(), 1000.0));
+                geode->setCullCallback(new PagerCallback(dp, minValue.get(), maxValue.get(), averageValue.get(), requestList.get(), compileList.get(), 1000.0));
             }
 
             pos.x() = leftPos;
         }
     }
-#if 0
-    // scene stats
+
+    // Camera scene stats
     {
-        pos.x() = leftPos;
+        pos.y() -= (characterSize + backgroundSpacing + 2 * backgroundMargin);
+
+        osg::Group* group = new osg::Group;
+        _cameraSceneChildNum = _switch->getNumChildren();
+        _switch->addChild(group, false);
 
         osg::Geode* geode = new osg::Geode();
+        geode->setCullingActive(false);
+        group->addChild(geode);
+        geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
+                                                        7 * characterSize + 2 * backgroundMargin, 
+                                                        18 * characterSize + 2 * backgroundMargin,
+                                                        backgroundColor));
 
+        // Camera scene & primitive stats static text
+        osg::ref_ptr<osgText::Text> camStaticText = new osgText::Text;
+        geode->addDrawable( camStaticText.get() );  
+        camStaticText->setColor(staticTextColor);
+        camStaticText->setFont(font);
+        camStaticText->setCharacterSize(characterSize);
+        camStaticText->setPosition(pos);
+
+        std::ostringstream viewStr;
+        viewStr.clear();
+        viewStr.setf(std::ios::left,std::ios::adjustfield);
+        viewStr.width(14);
+        viewStr << "Camera" << std::endl;
+        viewStr << "Vertices" << std::endl;
+        viewStr << "Drawables" << std::endl;
+        viewStr << "Lights" << std::endl;
+        viewStr << "Bins" << std::endl;
+        viewStr << "Depth" << std::endl;
+        viewStr << "Matrices" << std::endl;
+        viewStr << "Imposters" << std::endl;
+        viewStr << "Points" << std::endl;
+        viewStr << "Lines" << std::endl;
+        viewStr << "Line strips" << std::endl;
+        viewStr << "Line loops" << std::endl;
+        viewStr << "Triangles" << std::endl;
+        viewStr << "Triangle strips" << std::endl;
+        viewStr << "Triangle fans" << std::endl;
+        viewStr << "Quads" << std::endl;
+        viewStr << "Quad strips" << std::endl;
+        viewStr << "Polygons" << std::endl;  
+        viewStr.setf(std::ios::right,std::ios::adjustfield);
+        camStaticText->setText(viewStr.str());
+
+        // Move camera block to the right
+        pos.x() += 7 * characterSize + 2 * backgroundMargin + backgroundSpacing; 
+
+        // add camera scene stats
+        int cameraCounter = 0;
+        for(ViewerBase::Cameras::iterator citr = cameras.begin(); citr != cameras.end(); ++citr)
         {
+            geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
+                                                            5 * characterSize + 2 * backgroundMargin, 
+                                                            18 * characterSize + 2 * backgroundMargin,
+                                                            backgroundColor));
+
+            // Camera scene stats
+            osg::ref_ptr<osgText::Text> camStatsText = new osgText::Text;
+            geode->addDrawable( camStatsText.get() );  
+            
+            camStatsText->setColor(dynamicTextColor);
+            camStatsText->setFont(font);
+            camStatsText->setCharacterSize(characterSize);
+            camStatsText->setPosition(pos);
+            camStatsText->setText("");
+            camStatsText->setDrawCallback(new CameraSceneStatsTextDrawCallback(*citr, cameraCounter));
+
+            // Move camera block to the right
+            pos.x() +=  5 * characterSize + 2 * backgroundMargin + backgroundSpacing; 
+            cameraCounter++;
+        }
+    }
+
+    // Viewer scene stats
+    {
+        osg::Group* group = new osg::Group;
+        _viewerSceneChildNum = _switch->getNumChildren();
+        _switch->addChild(group, false);
+
+        osg::Geode* geode = new osg::Geode();
+        geode->setCullingActive(false);
+        group->addChild(geode);
+
+        geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
+                                                        5 * characterSize + 2 * backgroundMargin, 
+                                                        12 * characterSize + 2 * backgroundMargin,
+                                                        backgroundColor));
+
+        // View scene stats static text
+        osg::ref_ptr<osgText::Text> camStaticText = new osgText::Text;
+        geode->addDrawable( camStaticText.get() );  
+        camStaticText->setColor(staticTextColor);
+        camStaticText->setFont(font);
+        camStaticText->setCharacterSize(characterSize);
+        camStaticText->setPosition(pos);
+
+        std::ostringstream viewStr;
+        viewStr.clear();
+        viewStr.setf(std::ios::left,std::ios::adjustfield);
+        viewStr.width(14);
+        viewStr << "View" << std::endl;
+        viewStr << std::endl;
+        viewStr << "Stateset" << std::endl;
+        viewStr << "Group" << std::endl;
+        viewStr << "Transform" << std::endl;
+        viewStr << "LOD" << std::endl;
+        viewStr << "Switch" << std::endl;
+        viewStr << "Geode" << std::endl;
+        viewStr << "Drawable" << std::endl;
+        viewStr << "Geometry" << std::endl;
+        viewStr << "Vertices" << std::endl;
+        viewStr << "Primitives" << std::endl;
+        viewStr.setf(std::ios::right,std::ios::adjustfield);
+        camStaticText->setText(viewStr.str());
+
+        // Move camera block to the right
+        pos.x() += 5 * characterSize + 2 * backgroundMargin + backgroundSpacing; 
+
+        std::vector<osgViewer::View*> views;
+        viewer->getViews(views);
+
+        std::vector<osgViewer::View*>::iterator it;
+        int viewCounter = 0;
+        for (it = views.begin(); it != views.end(); ++it)
+        {
+            geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
+                                                            6 * characterSize + 2 * backgroundMargin, 
+                                                            12 * characterSize + 2 * backgroundMargin,
+                                                            backgroundColor));
+
+            // Text for scene statistics
             osgText::Text* text = new  osgText::Text;
             geode->addDrawable( text );
-
+  
+            text->setColor(dynamicTextColor);
             text->setFont(font);
             text->setCharacterSize(characterSize);
             text->setPosition(pos);
-            text->setText("Scene Stats to do...");
+            text->setDrawCallback(new ViewSceneStatsTextDrawCallback(*it, viewCounter));
 
-            pos.y() -= characterSize*1.5f;
-        }    
-
-        _sceneChildNum = _switch->getNumChildren();
-        _switch->addChild(geode, false);
+            pos.x() += 6 * characterSize + 2 * backgroundMargin + backgroundSpacing; 
+            viewCounter++;
+        }
     }
-#endif    
 }
 
-osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool acquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera)
+osg::Node* StatsHandler::createCameraTimeStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool acquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera)
 {
     osg::Stats* stats = camera->getStats();
     if (!stats) return 0;
@@ -928,7 +1360,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
         cullValue->setPosition(pos);
         cullValue->setText("0.0");
 
-        cullValue->setDrawCallback(new TextDrawCallback(stats,"Cull traversal time taken",-1, false, 1000.0));
+        cullValue->setDrawCallback(new AveragedValueTextDrawCallback(stats,"Cull traversal time taken",-1, false, 1000.0));
 
         pos.x() = startBlocks;
         osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorCullAlpha, _numBlocks);
@@ -961,7 +1393,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
         drawValue->setPosition(pos);
         drawValue->setText("0.0");
 
-        drawValue->setDrawCallback(new TextDrawCallback(stats,"Draw traversal time taken",-1, false, 1000.0));
+        drawValue->setDrawCallback(new AveragedValueTextDrawCallback(stats,"Draw traversal time taken",-1, false, 1000.0));
 
 
         pos.x() = startBlocks;
@@ -996,7 +1428,7 @@ osg::Node* StatsHandler::createCameraStats(const std::string& font, osg::Vec3& p
         gpuValue->setPosition(pos);
         gpuValue->setText("0.0");
 
-        gpuValue->setDrawCallback(new TextDrawCallback(stats,"GPU draw time taken",-1, false, 1000.0));
+        gpuValue->setDrawCallback(new AveragedValueTextDrawCallback(stats,"GPU draw time taken",-1, false, 1000.0));
 
         pos.x() = startBlocks;
         osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorGPUAlpha, _numBlocks);

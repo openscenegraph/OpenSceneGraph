@@ -80,7 +80,9 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
             NO_STATS = 0,
             FRAME_RATE = 1,
             VIEWER_STATS = 2,
-            LAST = 3
+            CAMERA_SCENE_STATS = 3,
+            VIEWER_SCENE_STATS = 4,
+            LAST = 5
         };
         
         void setKeyEventTogglesOnScreenStats(int key) { _keyEventTogglesOnScreenStats = key; }
@@ -105,13 +107,15 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 
         void setUpHUDCamera(osgViewer::ViewerBase* viewer);
 
+        osg::Geometry* createBackgroundRectangle(const osg::Vec3& pos, const float width, const float height, osg::Vec4& color);
+
         osg::Geometry* createGeometry(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks);
 
         osg::Geometry* createFrameMarkers(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks);
 
         osg::Geometry* createTick(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numTicks);
-
-        osg::Node* createCameraStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool aquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera);
+        
+        osg::Node* createCameraTimeStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool acquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera);
 
         void setUpScene(osgViewer::ViewerBase* viewer);
         
@@ -132,10 +136,12 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 
         unsigned int                        _frameRateChildNum;
         unsigned int                        _viewerChildNum;
-        unsigned int                        _sceneChildNum;
+        unsigned int                        _cameraSceneChildNum;
+        unsigned int                        _viewerSceneChildNum;
         unsigned int                        _numBlocks;
         double                              _blockMultiplier;
     
+ 
 };
 
 /** Event handler allowing to change the screen resolution (in windowed mode) and toggle between fullscreen and windowed mode. */

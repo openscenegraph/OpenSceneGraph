@@ -297,6 +297,8 @@ BEGIN_ENUM_REFLECTOR(osgViewer::StatsHandler::StatsType)
 	I_EnumLabel(osgViewer::StatsHandler::NO_STATS);
 	I_EnumLabel(osgViewer::StatsHandler::FRAME_RATE);
 	I_EnumLabel(osgViewer::StatsHandler::VIEWER_STATS);
+	I_EnumLabel(osgViewer::StatsHandler::CAMERA_SCENE_STATS);
+	I_EnumLabel(osgViewer::StatsHandler::VIEWER_SCENE_STATS);
 	I_EnumLabel(osgViewer::StatsHandler::LAST);
 END_REFLECTOR
 
@@ -362,6 +364,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	                   __void__setUpHUDCamera__osgViewer_ViewerBase_P1,
 	                   "",
 	                   "");
+	I_ProtectedMethod4(osg::Geometry *, createBackgroundRectangle, IN, const osg::Vec3 &, pos, IN, const float, width, IN, const float, height, IN, osg::Vec4 &, color,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Geometry_P1__createBackgroundRectangle__C5_osg_Vec3_R1__C5_float__C5_float__osg_Vec4_R1,
+	                   "",
+	                   "");
 	I_ProtectedMethod4(osg::Geometry *, createGeometry, IN, const osg::Vec3 &, pos, IN, float, height, IN, const osg::Vec4 &, colour, IN, unsigned int, numBlocks,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -380,10 +388,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	                   __osg_Geometry_P1__createTick__C5_osg_Vec3_R1__float__C5_osg_Vec4_R1__unsigned_int,
 	                   "",
 	                   "");
-	I_ProtectedMethod7(osg::Node *, createCameraStats, IN, const std::string &, font, IN, osg::Vec3 &, pos, IN, float, startBlocks, IN, bool, aquireGPUStats, IN, float, characterSize, IN, osg::Stats *, viewerStats, IN, osg::Camera *, camera,
+	I_ProtectedMethod7(osg::Node *, createCameraTimeStats, IN, const std::string &, font, IN, osg::Vec3 &, pos, IN, float, startBlocks, IN, bool, acquireGPUStats, IN, float, characterSize, IN, osg::Stats *, viewerStats, IN, osg::Camera *, camera,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __osg_Node_P1__createCameraStats__C5_std_string_R1__osg_Vec3_R1__float__bool__float__osg_Stats_P1__osg_Camera_P1,
+	                   __osg_Node_P1__createCameraTimeStats__C5_std_string_R1__osg_Vec3_R1__float__bool__float__osg_Stats_P1__osg_Camera_P1,
 	                   "",
 	                   "");
 	I_ProtectedMethod1(void, setUpScene, IN, osgViewer::ViewerBase *, viewer,

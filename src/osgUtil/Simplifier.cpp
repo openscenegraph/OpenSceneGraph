@@ -228,7 +228,7 @@ public:
                 return false;
             }
 
-            osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint : computeInterpolatedPoint(edge,0.5f);
+            osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint.get() : computeInterpolatedPoint(edge,0.5f);
             return (collapseEdge(edge,pNew.get()));
         }
         osg::notify(osg::INFO)<<"collapseMinimumErrorEdge() return false due to _edgeSet.empty()"<<std::endl;
@@ -248,7 +248,7 @@ public:
                 return false;
             }
 
-            osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint : computeInterpolatedPoint(edge,0.5f);
+            osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint.get() : computeInterpolatedPoint(edge,0.5f);
             return (divideEdge(edge,pNew.get()));
         }
         osg::notify(osg::INFO)<<"divideLongestEdge() return false due to _edgeSet.empty()"<<std::endl;

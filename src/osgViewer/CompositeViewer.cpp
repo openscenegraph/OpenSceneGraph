@@ -795,17 +795,6 @@ void CompositeViewer::eventTraversal()
         view->getEventQueue()->takeEvents(viewEventsMap[view]);
     }
     
-#if 0
-    _eventQueue->getCurrentEventState()->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
-    _eventQueue->getCurrentEventState()->setX(eventState->getX());
-    _eventQueue->getCurrentEventState()->setY(eventState->getY());
-    _eventQueue->getCurrentEventState()->setButtonMask(eventState->getButtonMask());
-    _eventQueue->getCurrentEventState()->setMouseYOrientation(eventState->getMouseYOrientation());
-
-    _eventQueue->frame( getFrameStamp()->getReferenceTime() );
-    _eventQueue->takeEvents(events);
-#endif
-
 
     // osg::notify(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
     

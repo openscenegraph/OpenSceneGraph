@@ -340,6 +340,15 @@ IF(PKG_CONFIG_FOUND)
 
 ENDIF(PKG_CONFIG_FOUND)
 
+#
+# Enable workaround for OpenGL driver crash with occlusion query
+#
+OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
+IF(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION)
+    ADD_DEFINITIONS(-DOSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION)
+ENDIF(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION)
+
+
 
 #
 # Enable workaround for OpenGL driver crash with occlusion query

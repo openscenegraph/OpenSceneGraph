@@ -203,7 +203,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowTechnique
         typedef std::map< osg::ref_ptr< osgUtil::CullVisitor >,
                           osg::ref_ptr< ViewData > > ViewDataMap;
 
-        ViewDataMap	                                   _viewDataMap;
+        ViewDataMap                                       _viewDataMap;
 
 
         /**

@@ -117,8 +117,8 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
 
             typedef std::map< std::string, PolytopeGeometry > PolytopeGeometryMap;
 
-            osg::Vec2s								  _hudSize;
-            osg::Vec2s								  _hudOrigin;
+            osg::Vec2s                                  _hudSize;
+            osg::Vec2s                                  _hudOrigin;
             osg::Vec2s                                _viewportSize;
             osg::Vec2s                                _viewportOrigin;
             osg::Vec2s                                _orthoSize;
@@ -126,7 +126,7 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
 
             bool                                     *_doDebugDrawPtr;
 
-            PolytopeGeometryMap					      _polytopeGeometryMap;
+            PolytopeGeometryMap                          _polytopeGeometryMap;
             osg::ref_ptr< osg::Geode >                _geode[2];
             osg::ref_ptr< osg::MatrixTransform >      _transform[2];
 
@@ -134,9 +134,9 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
             std::map< std::string, osg::Polytope >    _polytopeMap;
             std::map< std::string, osg::BoundingBox > _boundingBoxMap;
 
-            osg::ref_ptr<osg::Camera>                 _cameraDebugHUD;			
+            osg::ref_ptr<osg::Camera>                 _cameraDebugHUD;            
 
-            bool getDebugDraw()	{ return *_doDebugDrawPtr; }
+            bool getDebugDraw()    { return *_doDebugDrawPtr; }
 
             virtual void init( ThisClass * st, osgUtil::CullVisitor * cv );
 

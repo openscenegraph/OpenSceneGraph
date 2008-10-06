@@ -139,7 +139,7 @@ class OSGSHADOW_EXPORT StandardShadowMap : public DebugShadowMap
         osg::ref_ptr< osg::Light >    _light;
         float                         _polygonOffsetFactor;
         float                         _polygonOffsetUnits;
-        osg::Vec2s					  _textureSize;
+        osg::Vec2s                      _textureSize;
         unsigned int                  _baseTextureUnit;
         unsigned int                  _shadowTextureUnit;
         unsigned int                  _baseTextureCoordIndex;

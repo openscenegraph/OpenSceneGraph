@@ -54,9 +54,9 @@ class OSGSHADOW_EXPORT ProjectionShadowMap : public MinimalBoundsBaseClass
 
         struct ViewData: public BaseClass::ViewData, 
                          public ShadowProjectionAlgorithmClass
-        {	
+        {    
     #if 0
-            virtual void init( ThisClass * st, osgUtil::CullVisitor * cv );			
+            virtual void init( ThisClass * st, osgUtil::CullVisitor * cv );            
             {
                 BaseClass::ViewData::init( st, cv ); 
             }

@@ -117,7 +117,7 @@ osg::BoundingBox MinimalShadowMap::ViewData::computeShadowReceivingCoarseBounds(
 void MinimalShadowMap::ViewData::aimShadowCastingCamera
  ( const osg::Light *light, const osg::Vec4 &lightPos,
    const osg::Vec3 &lightDir, const osg::Vec3 &lightUp )
-{	
+{    
     osg::BoundingBox bb = computeScenePolytopeBounds();
     if( !bb.valid() ) { // empty scene or looking at the sky - substitute something
         bb.expandBy( osg::BoundingSphere( _cv->getEyePoint(), 1 ) );
@@ -175,8 +175,8 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
 
     // projection was trimmed above, need to recompute mvp
     if( bb.valid() && *_minLightMarginPtr > 0 ) {
-        //		bb._max += osg::Vec3( 1, 1, 1 );
-        //		bb._min -= osg::Vec3( 1, 1, 1 );
+        //        bb._max += osg::Vec3( 1, 1, 1 );
+        //        bb._min -= osg::Vec3( 1, 1, 1 );
 
         osg::Matrix transform = osg::Matrix::inverse( mvp );
 
@@ -219,7 +219,7 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
         trimProjection( cameraShadow->getProjectionMatrix(), bb, 1|2|4|8|16|32 );
 
     ///// Debuging stuff //////////////////////////////////////////////////////////
-    setDebugPolytope( "scene", _sceneReceivingShadowPolytope, osg::Vec4(0,1,0,1) );	
+    setDebugPolytope( "scene", _sceneReceivingShadowPolytope, osg::Vec4(0,1,0,1) );    
 
 
 #if PRINT_SHADOW_TEXEL_TO_PIXEL_ERROR
@@ -260,7 +260,7 @@ void MinimalShadowMap::ViewData::cullShadowReceivingScene( )
     if( 0 < *_maxFarPlanePtr )
         clampProjection( _clampedProjection, 0.f, *_maxFarPlanePtr );
 
-    // Give derived classes chance to initialize _sceneReceivingShadowPolytope 	
+    // Give derived classes chance to initialize _sceneReceivingShadowPolytope     
     osg::BoundingBox bb = computeShadowReceivingCoarseBounds( );
     if( bb.valid() )
         _sceneReceivingShadowPolytope.setToBoundingBox( bb );
@@ -301,7 +301,7 @@ void MinimalShadowMap::ViewData::cutScenePolytope
         osg::Polytope polytope;
         polytope.setToBoundingBox( bb );
         polytope.transformProvidingInverse( inverse );
-        _sceneReceivingShadowPolytope.cut( polytope );	    
+        _sceneReceivingShadowPolytope.cut( polytope );        
         _sceneReceivingShadowPolytope.getPoints
                                 ( _sceneReceivingShadowPolytopePoints );
     } else
@@ -445,7 +445,7 @@ void MinimalShadowMap::ViewData::clampProjection
         if( perspective )
             projection.makeFrustum( l, r, b, t, n, f );
         else
-            projection.makeOrtho( l, r, b, t, n, f );		 			
+            projection.makeOrtho( l, r, b, t, n, f );                     
     }
 }
 

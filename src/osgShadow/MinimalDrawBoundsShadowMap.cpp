@@ -47,7 +47,7 @@ MinimalDrawBoundsShadowMap::~MinimalDrawBoundsShadowMap()
 }
 
 void MinimalDrawBoundsShadowMap::ViewData::cullShadowReceivingScene( )
-{	
+{    
     BaseClass::ViewData::cullShadowReceivingScene( );
     ThisClass::ViewData::cullBoundAnalysisScene( );
 }
@@ -59,7 +59,7 @@ void MinimalDrawBoundsShadowMap::ViewData::cullBoundAnalysisScene( )
     _boundAnalysisCamera->setProjectionMatrix( _clampedProjection );
 
     osg::Matrix::value_type l,r,b,t,n,f;
-    _boundAnalysisCamera->getProjectionMatrixAsFrustum( l,r,b,t,n,f );	
+    _boundAnalysisCamera->getProjectionMatrixAsFrustum( l,r,b,t,n,f );    
 
     _mainCamera = _cv->getRenderStage()->getCamera();
 
@@ -82,7 +82,7 @@ void MinimalDrawBoundsShadowMap::ViewData::cullBoundAnalysisScene( )
 
 void MinimalDrawBoundsShadowMap::ViewData::createDebugHUD( )
 {
-//	_hudSize[0] *= 2;
+//    _hudSize[0] *= 2;
     _viewportSize[0] *= 2;
     _orthoSize[0] *= 2;
 
@@ -119,10 +119,10 @@ osg::BoundingBox MinimalDrawBoundsShadowMap::ViewData::scanImage
 {
     osg::BoundingBox bb, bbProj;
 
-    int components = osg::Image::computeNumComponents( image->getPixelFormat() );	
+    int components = osg::Image::computeNumComponents( image->getPixelFormat() );    
 
     if( image->getDataType() == GL_FLOAT ) {
-        float scale = 255.f / 254.f;	
+        float scale = 255.f / 254.f;    
         float * pf = (float *)image->data();
         for( int y = 0; y < image->t(); y++ ) {
             float fY = ( 0.5f + y ) / image->t();
@@ -208,8 +208,8 @@ void MinimalDrawBoundsShadowMap::ViewData::performBoundAnalysis( const osg::Came
     if( getDebugDraw() ) { 
         ConvexPolyhedron p;
         p.setToBoundingBox( bb );
-	    p.transform( *_modellingSpaceToWorldPtr, 
-		         osg::Matrix::inverse( *_modellingSpaceToWorldPtr ) );
+        p.transform( *_modellingSpaceToWorldPtr, 
+                 osg::Matrix::inverse( *_modellingSpaceToWorldPtr ) );
 
         setDebugPolytope( "scan", p,
                       osg::Vec4( 0,0,0,1 ), osg::Vec4( 0,0,0,0.1 ) );
@@ -250,7 +250,7 @@ void MinimalDrawBoundsShadowMap::ViewData::recordShadowMapParams( )
     std::set< osg::ref_ptr< osg::RefMatrix > > projections;
     
     MinimalShadowMap::GetRenderLeaves( , rll );
-    for( unsigned i =0; i < rll.size(); i++ ) {		
+    for( unsigned i =0; i < rll.size(); i++ ) {        
         if( rll[i]->_projection.get() != _projection.get() ) {
             osg::RefMatrix * projection = rll[i]->_projection.get();
             projections.insert( rll[i]->_projection ); 
@@ -286,7 +286,7 @@ void MinimalDrawBoundsShadowMap::ViewData::init
                                         _boundAnalysisSize[1], 1,
                                         GL_DEPTH_COMPONENT, GL_FLOAT );
 
-    _boundAnalysisTexture->setInternalFormat(GL_DEPTH_COMPONENT);	
+    _boundAnalysisTexture->setInternalFormat(GL_DEPTH_COMPONENT);    
 //    _boundAnalysisTexture->setShadowComparison(true);
     _boundAnalysisTexture->setShadowTextureMode(osg::Texture2D::LUMINANCE);
 
@@ -330,7 +330,7 @@ void MinimalDrawBoundsShadowMap::ViewData::init
     _boundAnalysisCamera->setName( "AnalysisCamera" );
 
     _boundAnalysisCamera->setCullCallback( new BaseClass::CameraCullCallback(st) );
-//	_boundAnalysisCamera->setPreDrawCallback( _camera->getPreDrawCallback() );
+//    _boundAnalysisCamera->setPreDrawCallback( _camera->getPreDrawCallback() );
     _boundAnalysisCamera->setPostDrawCallback( new CameraPostDrawCallback(this) );
 
     _boundAnalysisCamera->setClearColor( osg::Vec4(1,1,1,1) );
@@ -355,8 +355,8 @@ void MinimalDrawBoundsShadowMap::ViewData::init
     stateset->setAttributeAndModes
         ( new osg::Depth( osg::Depth::LESS, 0.0, 254.f/255.f ), OVERRIDE_ON );
 
-//	stateset->setAttributeAndModes
-//		( new osg::AlphaFunc( osg::AlphaFunc::EQUAL, 1.f ), OVERRIDE_ON );
+//    stateset->setAttributeAndModes
+//        ( new osg::AlphaFunc( osg::AlphaFunc::EQUAL, 1.f ), OVERRIDE_ON );
 
     stateset->setRenderBinDetails( 0, "RenderBin",
                             osg::StateSet::OVERRIDE_RENDERBIN_DETAILS );
@@ -373,7 +373,7 @@ void MinimalDrawBoundsShadowMap::ViewData::init
         " gl_FragColor = vec4( gl_FragCoord.z,                               \n"
         "                      1.-gl_FragCoord.z,                            \n"
         "                      1.,                                           \n"
-        "					   texture2D( texture, gl_TexCoord[0].xy ).a );  \n"
+        "                       texture2D( texture, gl_TexCoord[0].xy ).a );  \n"
 #endif
         "}                                                                   \n"
     ) ); // program->addShader Fragment
@@ -395,7 +395,7 @@ void MinimalDrawBoundsShadowMap::ViewData::init
 
     stateset->setMode( GL_BLEND, OVERRIDE_OFF );
 #else
-//	_boundAnalysisCamera->attach(osg::Camera::COLOR_BUFFER, _boundAnalysisTexture.get());
+//    _boundAnalysisCamera->attach(osg::Camera::COLOR_BUFFER, _boundAnalysisTexture.get());
     _boundAnalysisCamera->attach(osg::Camera::COLOR_BUFFER, _boundAnalysisImage.get());
 
     stateset->setAttributeAndModes

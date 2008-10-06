@@ -1245,7 +1245,7 @@ void ConvexPolyhedron::cut(const osg::Plane& plane, const std::string& name)
         if( plane.ptr()[0] ) == itr->plane.ptr()[0] &&
             plane.ptr()[1] ) == itr->plane.ptr()[1] &&
             plane.ptr()[2] ) == itr->plane.ptr()[2] &&
-#else	// check plane using less precise float values
+#else    // check plane using less precise float values
         if( float( plane.ptr()[0] ) == float( itr->plane.ptr()[0] ) &&
             float( plane.ptr()[1] ) == float( itr->plane.ptr()[1] ) &&
             float( plane.ptr()[2] ) == float( itr->plane.ptr()[2] ) &&

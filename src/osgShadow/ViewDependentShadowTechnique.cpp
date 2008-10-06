@@ -43,10 +43,10 @@ void ViewDependentShadowTechnique::traverse(osg::NodeVisitor& nv)
 }
 
 void ViewDependentShadowTechnique::dirty()
-{	
+{    
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_viewDataMapMutex);
 
-    osgShadow::ShadowTechnique::_dirty = true;	
+    osgShadow::ShadowTechnique::_dirty = true;    
 
     for( ViewDataMap::iterator mitr = _viewDataMap.begin();
          mitr != _viewDataMap.end();
@@ -94,20 +94,20 @@ void ViewDependentShadowTechnique::cleanSceneGraph()
 
 ViewDependentShadowTechnique::ViewData *
 ViewDependentShadowTechnique::getViewDependentData( osgUtil::CullVisitor * cv )
-{	
+{    
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_viewDataMapMutex);
     return _viewDataMap[ cv ].get();
 }
 
 void ViewDependentShadowTechnique::setViewDependentData
     ( osgUtil::CullVisitor * cv, ViewData * data )
-{	
+{    
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_viewDataMapMutex);
     _viewDataMap[ cv ] = data;
 }
 
-void ViewDependentShadowTechnique::ViewData::dirty( bool flag )	
-{	
+void ViewDependentShadowTechnique::ViewData::dirty( bool flag )    
+{    
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     _dirty = flag;
 }
@@ -120,8 +120,8 @@ void ViewDependentShadowTechnique::ViewData::init
     dirty( false );
 }
 
-void ViewDependentShadowTechnique::ViewData::cull( void )	
-{	
+void ViewDependentShadowTechnique::ViewData::cull( void )    
+{    
 
 }
 

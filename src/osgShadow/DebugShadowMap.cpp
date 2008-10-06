@@ -64,7 +64,7 @@ DebugShadowMap::DebugShadowMap():
         "{                                                                       \n"
         "    float f = texture2D( texture, vec3( gl_TexCoord[0].xy, 1.0).xy ).r; \n"
         "    gl_FragColor =  vec4( 0.0, 1.0 - f,  0.5 - f, 0.5 );                \n"
-        "}                                                                       \n"  		
+        "}                                                                       \n"          
 #else 
         "uniform sampler2D texture;                                              \n"
         "                                                                        \n"
@@ -136,7 +136,7 @@ bool DebugShadowMap::ViewData::DebugBoundingBox
     ( const osg::BoundingBox & bb, const char * name )
 {
     bool result = false;
-#if defined( _DEBUG	) || defined( DEBUG )
+#if defined( _DEBUG    ) || defined( DEBUG )
     if( !name ) name = "";
 
     osg::BoundingBox & bb_prev = _boundingBoxMap[ std::string( name ) ];
@@ -161,7 +161,7 @@ bool DebugShadowMap::ViewData::DebugPolytope
 ( const osg::Polytope & p, const char * name )
 {
     bool result = false;
-#if defined( _DEBUG	) || defined( DEBUG )
+#if defined( _DEBUG    ) || defined( DEBUG )
     if( !name ) name = "";
 
     osg::Polytope & p_prev = _polytopeMap[ std::string( name ) ];
@@ -199,7 +199,7 @@ bool DebugShadowMap::ViewData::DebugMatrix
     ( const osg::Matrix & m, const char * name )
 {
     bool result = false;
-#if defined( _DEBUG	) || defined( DEBUG )
+#if defined( _DEBUG    ) || defined( DEBUG )
     if( !name ) name = "";
 
     osg::Matrix & m_prev = _matrixMap[ std::string( name ) ];
@@ -276,7 +276,7 @@ void DebugShadowMap::ViewData::updateDebugGeometry
     
     const osg::Camera *camera[2] = { viewCam, shadowCam };
 
-    osg::Matrix	
+    osg::Matrix    
         transform[ num ] = 
             { viewCam->getViewMatrix() * 
                 // use near far clamped projection ( precomputed in cullDebugGeometry )
@@ -321,7 +321,7 @@ void DebugShadowMap::ViewData::updateDebugGeometry
         for( int i = 0; i < num ; i++ )
         {
 
-            ConvexPolyhedron cp( pg._polytope );		
+            ConvexPolyhedron cp( pg._polytope );        
             cp.cut( frustum[i] );
             cp.transform( transform[i], inverse[i] );
 
@@ -455,7 +455,7 @@ void DebugShadowMap::ViewData::createDebugHUD( )
         if( _orthoSize[1] <= 0 ) _orthoSize[1] = _viewportSize[1];
     }
 
-    { // Initialize hud camera	
+    { // Initialize hud camera    
         osg::Camera * camera = _cameraDebugHUD.get();
         camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
         camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);

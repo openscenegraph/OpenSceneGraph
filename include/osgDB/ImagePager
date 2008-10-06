@@ -78,7 +78,7 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
 
         virtual osg::Image* readImageFile(const std::string& fileName);
 
-        virtual void requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp);
+        virtual void requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp* framestamp);
 
 
         /** Return true if there are pending updates to the scene graph that require a call to updateSceneGraph(double). */
@@ -102,12 +102,14 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
         {
             ImageRequest():
                 osg::Referenced(true),
-                _timeToMergeBy(0.0) {}
+                _timeToMergeBy(0.0),
+                _attachmentIndex(-1) {}
             
             double                              _timeToMergeBy;
             std::string                         _fileName;
             osg::ref_ptr<ReaderWriter::Options> _loadOptions;
-            osg::observer_ptr<osg::Object>      _objectToAttachTo;
+            osg::observer_ptr<osg::Object>      _attachmentPoint;
+            int                                 _attachmentIndex;
             osg::ref_ptr<osg::Image>            _loadedImage;
             RequestQueue*                       _requestQueue;
            

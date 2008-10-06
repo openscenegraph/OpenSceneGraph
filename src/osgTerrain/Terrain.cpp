@@ -56,7 +56,7 @@ TerrainTile* Terrain::getTile(const TileID& tileID)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     TerrainTileMap::iterator itr = _terrainTileMap.find(tileID);
-    if (itr != _terrainTileMap.end()) return 0;
+    if (itr == _terrainTileMap.end()) return 0;
     
     return itr->second;
 }
@@ -66,7 +66,7 @@ const TerrainTile* Terrain::getTile(const TileID& tileID) const
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     TerrainTileMap::const_iterator itr = _terrainTileMap.find(tileID);
-    if (itr != _terrainTileMap.end()) return 0;
+    if (itr == _terrainTileMap.end()) return 0;
     
     return itr->second;
 }

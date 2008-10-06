@@ -93,7 +93,10 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
         }
         else
         {
-            imageSequence->setLength(float(imageSequence->getImages().size())*0.1f);
+            unsigned int maxNum = osg::maximum(imageSequence->getFileNames().size(),
+                                               imageSequence->getImages().size());
+                                               
+            imageSequence->setLength(float(maxNum)*0.1f);
         }
     }
     else
@@ -125,18 +128,13 @@ osg::StateSet* createState(osg::ArgumentParser& arguments)
     texture->setResizeNonPowerOfTwoHint(false);
     texture->setImage(imageSequence.get());
     //texture->setTextureSize(512,512);
-    
-    //texture->setUpdateCallback(new osg::ImageSequence::UpdateCallback);
 #else    
     osg::TextureRectangle* texture = new osg::TextureRectangle;
     texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
     texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
     texture->setWrap(osg::Texture::WRAP_R,osg::Texture::REPEAT);
-    // texture->setResizeNonPowerOfTwoHint(false);
     texture->setImage(imageSequence.get());
     //texture->setTextureSize(512,512);
-    
-    //texture->setUpdateCallback(new osg::ImageSequence::UpdateCallback);
 #endif
 
     // create the StateSet to store the texture data

@@ -65,7 +65,14 @@ class OSG_EXPORT ImageStream : public Image
             LOOPING
         };
         
-        void setLoopingMode(LoopingMode mode) { _loopingMode = mode; applyLoopingMode(); }
+        void setLoopingMode(LoopingMode mode)
+        {
+            if (_loopingMode == mode) return;
+            
+            _loopingMode = mode;
+            applyLoopingMode();
+        }
+        
         LoopingMode getLoopingMode() const { return _loopingMode; }
 
 

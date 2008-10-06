@@ -19,6 +19,7 @@
 #include <osg/StateAttribute>
 
 #include <list>
+#include <set>
 
 namespace osg {
 
@@ -48,8 +49,8 @@ class OSG_EXPORT ImageSequence : public ImageStream
         virtual void setTimeMultiplier(double tm) { _timeMultiplier = tm; }
         virtual double getTimeMultiplier() const { return _timeMultiplier; }
 
-        typedef std::list< osg::ref_ptr<osg::Image> >   Images;
-        typedef std::list< std::string >                FileNames;
+        typedef std::vector< osg::ref_ptr<osg::Image> >   Images;
+        typedef std::vector< std::string >                FileNames;
         
         virtual void seek(double time);
 
@@ -75,11 +76,29 @@ class OSG_EXPORT ImageSequence : public ImageStream
 
         void addImageFile(const std::string& fileName);
         
+        void setImageFile(unsigned int pos, const std::string& fileName);
+        std::string getImageFile(unsigned int pos) const;
+        
+        unsigned int getNumImageFiles() const { return _fileNames.size(); }
+
         FileNames& getFileNames() { return _fileNames; }
         const FileNames& getFileNames() const { return _fileNames; }
 
         void addImage(osg::Image* image);
         
+        void setImage(int s,int t,int r,
+                      GLint internalTextureformat,
+                      GLenum pixelFormat,GLenum type,
+                      unsigned char* data,
+                      AllocationMode mode,
+                      int packing=1) { Image::setImage(s,t,r,internalTextureformat, pixelFormat, type, data, mode, packing); }
+
+        void setImage(unsigned int pos, osg::Image* image);
+        Image* getImage(unsigned int pos);
+        const Image* getImage(unsigned int pos) const;
+        
+        unsigned int getNumImages() const { return _images.size(); }
+
         Images& getImages() { return _images; }
         const Images& getImages() const { return _images; }
         
@@ -95,9 +114,14 @@ class OSG_EXPORT ImageSequence : public ImageStream
 
         virtual ~ImageSequence() {}
         
+        virtual void applyLoopingMode();
+
         void setImageToChild(const osg::Image* image);
         
         void computeTimePerImage();
+
+        int imageIndex(double time);
+
 
         double                          _referenceTime;
         double                          _timeMultiplier;
@@ -107,22 +131,20 @@ class OSG_EXPORT ImageSequence : public ImageStream
 
         double                          _timePerImage;
 
-        OpenThreads::Mutex              _mutex;
+        mutable OpenThreads::Mutex      _mutex;
         FileNames                       _fileNames;
-        FileNames::iterator             _fileNamesIterator;
-        double                          _fileNamesIteratorTime;
 
         Images                          _images;
         
-        typedef std::pair< std::string, osg::ref_ptr<osg::Image> >  FileNameImagePair;
-        typedef std::list< FileNameImagePair >  FileNameImageList;
-        FileNameImageList               _filesRequested;
+        typedef std::set< std::string > FilesRequested;
+        FilesRequested                  _filesRequested;
+        
+        int                             _previousAppliedImageIndex;
                 
-        Images::iterator                _imageIterator;
-        double                          _imageIteratorTime;
         
         bool                            _seekTimeSet;
         double                          _seekTime;
+        
         
 
 };

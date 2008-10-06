@@ -52,6 +52,8 @@ void Locator::setTransformAsExtents(double minX, double minY, double maxX, doubl
                    0.0,       maxY-minY, 0.0, 0.0,
                    0.0,       0.0,       1.0, 0.0,
                    minX,      minY,      0.0, 1.0); 
+
+    _inverse.invert(_transform);
 }
 
 bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight)

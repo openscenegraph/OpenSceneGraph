@@ -129,7 +129,7 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
                 osg::BoundingBox(-1,-1,-1,1,1,1) );
 
             osg::BoundingBox computeScenePolytopeBounds
-                ( const osg::Matrix & m = *(osg::Matrix*)(NULL) );	
+                ( const osg::Matrix & m = *(osg::Matrix*)(NULL) );    
 
             // Utility methods for adjusting projection matrices
 

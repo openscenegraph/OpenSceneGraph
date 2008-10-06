@@ -99,7 +99,7 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
             */
             osg::ref_ptr< osg::Camera >    _camera;
 
-            osg::Matrix                    _viewProjection;
+            osg::Matrixd                   _viewProjection;
             osg::Camera *                  _viewCamera;
 
             // Debug hud variables

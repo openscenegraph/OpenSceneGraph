@@ -103,10 +103,10 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
             float                            *_maxFarPlanePtr;
             float                            *_minLightMarginPtr;
 
-            ConvexPolyhedron                       _sceneReceivingShadowPolytope;
+            ConvexPolyhedron                 _sceneReceivingShadowPolytope;
             std::vector< osg::Vec3d >        _sceneReceivingShadowPolytopePoints;
 
-            osg::Matrix                      _clampedProjection;
+            osg::Matrixd                     _clampedProjection;
 
             virtual void init( ThisClass * st, osgUtil::CullVisitor * cv );
 
@@ -137,15 +137,15 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
             // is remapped to whole clip space (-1..1,-1..1,-1..1).
             // Bit mask can be used to limit remaping to selected bounds only.
             static void trimProjection
-                ( osg::Matrix & projection, osg::BoundingBox subrange,
+                ( osg::Matrixd & projection, osg::BoundingBox subrange,
                 unsigned int trimMask = (1|2|4|8|16|32)
                 /*1=left|2=right|4=bottom|8=top|16=near|32=far*/);
 
             static void clampProjection
-                ( osg::Matrix & projection, float n = 0, float f = FLT_MAX );
+                ( osg::Matrixd & projection, float n = 0, float f = FLT_MAX );
 
             static void extendProjection
-                ( osg::Matrix & projection, osg::Viewport * viewport, const osg::Vec2& margin );
+                ( osg::Matrixd & projection, osg::Viewport * viewport, const osg::Vec2& margin );
         };
 
         META_ViewDependentShadowTechniqueData( ThisClass, ThisClass::ViewData )

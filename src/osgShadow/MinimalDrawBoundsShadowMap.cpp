@@ -58,7 +58,7 @@ void MinimalDrawBoundsShadowMap::ViewData::cullBoundAnalysisScene( )
     _boundAnalysisCamera->setViewMatrix( *_cv->getModelViewMatrix() );
     _boundAnalysisCamera->setProjectionMatrix( _clampedProjection );
 
-    osg::Matrix::value_type l,r,b,t,n,f;
+    osg::Matrixd::value_type l,r,b,t,n,f;
     _boundAnalysisCamera->getProjectionMatrixAsFrustum( l,r,b,t,n,f );    
 
     _mainCamera = _cv->getRenderStage()->getCamera();

@@ -663,8 +663,8 @@ void StandardShadowMap::ViewData::aimShadowCastingCamera(
                                         const osg::Vec3 &lightUpVector 
                                         /* by default = osg::Vec3( 0, 1 0 )*/ )
 {
-    osg::Matrix & view = _camera->getViewMatrix();
-    osg::Matrix & projection = _camera->getProjectionMatrix();
+    osg::Matrixd & view = _camera->getViewMatrix();
+    osg::Matrixd & projection = _camera->getProjectionMatrix();
 
     osg::Vec3 up = lightUpVector;
     if( up.length2() <= 0 )  up.set( 0,1,0 );

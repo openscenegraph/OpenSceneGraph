@@ -59,9 +59,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ImagePager)
 	          __osg_Image_P1__readImageFile__C5_std_string_R1,
 	          "",
 	          "");
-	I_Method4(void, requestImageFile, IN, const std::string &, fileName, IN, osg::Object *, attachmentPoint, IN, double, timeToMergeBy, IN, const osg::FrameStamp *, framestamp,
+	I_Method5(void, requestImageFile, IN, const std::string &, fileName, IN, osg::Object *, attachmentPoint, IN, int, attachmentIndex, IN, double, timeToMergeBy, IN, const osg::FrameStamp *, framestamp,
 	          Properties::VIRTUAL,
-	          __void__requestImageFile__C5_std_string_R1__osg_Object_P1__double__C5_osg_FrameStamp_P1,
+	          __void__requestImageFile__C5_std_string_R1__osg_Object_P1__int__double__C5_osg_FrameStamp_P1,
 	          "",
 	          "");
 	I_Method0(bool, requiresUpdateSceneGraph,

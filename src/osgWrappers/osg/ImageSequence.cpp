@@ -25,9 +25,9 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Image > >, osg::ImageSequence::Images)
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Image > >, osg::ImageSequence::Images)
 
-TYPE_NAME_ALIAS(std::list< std::string >, osg::ImageSequence::FileNames)
+TYPE_NAME_ALIAS(std::vector< std::string >, osg::ImageSequence::FileNames)
 
 BEGIN_ENUM_REFLECTOR(osg::ImageSequence::Mode)
 	I_DeclaringFile("osg/ImageSequence");
@@ -141,6 +141,21 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	          __void__addImageFile__C5_std_string_R1,
 	          "",
 	          "");
+	I_Method2(void, setImageFile, IN, unsigned int, pos, IN, const std::string &, fileName,
+	          Properties::NON_VIRTUAL,
+	          __void__setImageFile__unsigned_int__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(std::string, getImageFile, IN, unsigned int, pos,
+	          Properties::NON_VIRTUAL,
+	          __std_string__getImageFile__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumImageFiles,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumImageFiles,
+	          "",
+	          "");
 	I_Method0(osg::ImageSequence::FileNames &, getFileNames,
 	          Properties::NON_VIRTUAL,
 	          __FileNames_R1__getFileNames,
@@ -154,6 +169,31 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	I_Method1(void, addImage, IN, osg::Image *, image,
 	          Properties::NON_VIRTUAL,
 	          __void__addImage__osg_Image_P1,
+	          "",
+	          "");
+	I_MethodWithDefaults9(void, setImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLint, internalTextureformat, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, unsigned char *, data, , IN, osg::Image::AllocationMode, mode, , IN, int, packing, 1,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setImage__int__int__int__GLint__GLenum__GLenum__unsigned_char_P1__AllocationMode__int,
+	                      "",
+	                      "");
+	I_Method2(void, setImage, IN, unsigned int, pos, IN, osg::Image *, image,
+	          Properties::NON_VIRTUAL,
+	          __void__setImage__unsigned_int__osg_Image_P1,
+	          "",
+	          "");
+	I_Method1(osg::Image *, getImage, IN, unsigned int, pos,
+	          Properties::NON_VIRTUAL,
+	          __Image_P1__getImage__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osg::Image *, getImage, IN, unsigned int, pos,
+	          Properties::NON_VIRTUAL,
+	          __C5_Image_P1__getImage__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumImages,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumImages,
 	          "",
 	          "");
 	I_Method0(osg::ImageSequence::Images &, getImages,
@@ -171,6 +211,12 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	          __void__update__NodeVisitor_P1,
 	          "",
 	          "");
+	I_ProtectedMethod0(void, applyLoopingMode,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__applyLoopingMode,
+	                   "",
+	                   "");
 	I_ProtectedMethod1(void, setImageToChild, IN, const osg::Image *, image,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -183,9 +229,29 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	                   __void__computeTimePerImage,
 	                   "",
 	                   "");
+	I_ProtectedMethod1(int, imageIndex, IN, double, time,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __int__imageIndex__double,
+	                   "",
+	                   "");
 	I_SimpleProperty(osg::ImageSequence::FileNames &, FileNames, 
 	                 __FileNames_R1__getFileNames, 
 	                 0);
+	I_ArrayProperty(osg::Image *, Image, 
+	                __Image_P1__getImage__unsigned_int, 
+	                __void__setImage__unsigned_int__osg_Image_P1, 
+	                __unsigned_int__getNumImages, 
+	                __void__addImage__osg_Image_P1, 
+	                0, 
+	                0);
+	I_ArrayProperty(std::string, ImageFile, 
+	                __std_string__getImageFile__unsigned_int, 
+	                __void__setImageFile__unsigned_int__C5_std_string_R1, 
+	                __unsigned_int__getNumImageFiles, 
+	                0, 
+	                0, 
+	                0);
 	I_SimpleProperty(osg::ImageSequence::Images &, Images, 
 	                 __Images_R1__getImages, 
 	                 0);
@@ -251,7 +317,7 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Image >)
 	                 0);
 END_REFLECTOR
 
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Image > >)
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::Image > >)
 
-STD_LIST_REFLECTOR(std::list< std::string >)
+STD_VECTOR_REFLECTOR(std::vector< std::string >)
 

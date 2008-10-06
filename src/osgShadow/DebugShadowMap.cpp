@@ -356,11 +356,11 @@ void DebugShadowMap::ViewData::cullDebugGeometry( )
 
             _cv->computeNearPlane();
         
-            double n = _cv->getCalculatedNearPlane();
-            double f = _cv->getCalculatedFarPlane();
+            osgUtil::CullVisitor::value_type n = _cv->getCalculatedNearPlane();
+            osgUtil::CullVisitor::value_type f = _cv->getCalculatedFarPlane();
 
             if( n < f )
-                _cv->clampProjectionMatrix(_viewProjection, n, f );
+                _cv->clampProjectionMatrix( _viewProjection, n, f );
         }
     }
     

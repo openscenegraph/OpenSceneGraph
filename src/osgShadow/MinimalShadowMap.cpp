@@ -248,11 +248,11 @@ void MinimalShadowMap::ViewData::cullShadowReceivingScene( )
 
         _cv->computeNearPlane();
         
-        double n = _cv->getCalculatedNearPlane();
-        double f = _cv->getCalculatedFarPlane();
+        osgUtil::CullVisitor::value_type n = _cv->getCalculatedNearPlane();
+        osgUtil::CullVisitor::value_type f = _cv->getCalculatedFarPlane();
 
         if( n < f )
-            _cv->clampProjectionMatrix(_clampedProjection, n, f );
+            _cv->clampProjectionMatrix( _clampedProjection, n, f );
     } 
 
     // Aditionally clamp far plane if shadows are don't need to be cast as 
@@ -328,7 +328,7 @@ osg::BoundingBox
 // Utility methods for adjusting projection matrices
 
 void MinimalShadowMap::ViewData::trimProjection
-    ( osg::Matrix & projectionMatrix, osg::BoundingBox bb, unsigned int trimMask )
+    ( osg::Matrixd & projectionMatrix, osg::BoundingBox bb, unsigned int trimMask )
 {
 #if 1
     if( !bb.valid() || !( trimMask & (1|2|4|8|16|32) ) ) return;
@@ -415,7 +415,7 @@ void MinimalShadowMap::ViewData::trimProjection
 }
 
 void MinimalShadowMap::ViewData::clampProjection
-                    ( osg::Matrix & projection, float new_near, float new_far )
+                    ( osg::Matrixd & projection, float new_near, float new_far )
 {
     double r, l, t, b, n, f;
     bool perspective = projection.getFrustum( l, r, b, t, n, f );
@@ -457,7 +457,7 @@ void MinimalShadowMap::ViewData::clampProjection
 // Method computes such new projection which maintains perpective/world ratio
 
 void MinimalShadowMap::ViewData::extendProjection
-    ( osg::Matrix & projection, osg::Viewport * viewport, const osg::Vec2& margin )
+    ( osg::Matrixd & projection, osg::Viewport * viewport, const osg::Vec2& margin )
 {
   double l,r,b,t,n,f;
 

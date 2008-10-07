@@ -23,7 +23,6 @@
 #include <osg/Geode>
 #include <osg/Group>
 #include <osg/Notify>
-#include <osg/LineSegment>
 #include <osg/io_utils>
 
 #include <osgDB/Registry>
@@ -35,7 +34,6 @@
 #include <osgGA/DriveManipulator>
 
 #include <osgUtil/Optimizer>
-#include <osgUtil/IntersectVisitor>
 
 #include <osg/OccluderNode>
 #include <osg/Geometry>

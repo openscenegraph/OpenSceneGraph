@@ -12,6 +12,7 @@
 */
 
 #include <float.h>
+#include <string.h>
 #include <osg/Math>
 #include <osg/Notify>
 #include <osgVolume/ImageUtils>

@@ -62,7 +62,7 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
             EMPTY_BOX,
             BOUNDING_SPHERE,
             BOUNDING_BOX,
-            DEFAULT_ACCURACY = BOUNDING_BOX,
+            DEFAULT_ACCURACY = BOUNDING_BOX
         };
 
         void  setShadowReceivingCoarseBoundAccuracy

@@ -204,7 +204,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         // as this will be our special light point drawable.
         osgUtil::StateGraph::LeafList::iterator litr;
         for(litr = rg->_leaves.begin();
-            litr != rg->_leaves.end() && (*litr)->_drawable!=drawable;
+            litr != rg->_leaves.end() && (*litr)->_drawable.get()!=drawable;
             ++litr)
         {}
         

@@ -169,6 +169,30 @@ void scene::addQuads(const std::string & l, unsigned short color, std::vector<Ve
 }    
 
 
+void scene::addText(const std::string & l, unsigned short color, Vec3d & point, osgText::Text *text) 
+{
+    dxfLayer* layer = _layerTable->findOrCreateLayer(l);
+    if (layer->getFrozen()) return;
+    sceneLayer* ly = findOrCreateSceneLayer(l);
+
+    // Apply the scene settings to the text size and rotation
+
+    Vec3d pscene(addVertex(point));
+    Vec3d xvec = addVertex( point + (text->getRotation() * X_AXIS) ) - pscene;
+    Vec3d yvec = addVertex( point + (text->getRotation() * Y_AXIS) ) - pscene;
+    text->setCharacterSize( text->getCharacterHeight()*yvec.length(), text->getCharacterAspectRatio()*yvec.length()/xvec.length() );
+
+    Matrix qm = _r * _m;
+    Vec3d t, s;
+    Quat ro, so;
+    qm.decompose( t, ro, s, so );
+    text->setRotation( text->getRotation() * ro );
+    
+    sceneLayer::textInfo ti( correctedColorIndex(l,color), pscene, text );
+    ly->_textList.push_back(ti);
+}
+
+
 unsigned short 
 scene::correctedColorIndex(const std::string & l, unsigned short color)
 {

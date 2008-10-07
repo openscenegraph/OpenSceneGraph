@@ -25,6 +25,7 @@
 #include <osg/Geometry>
 #include <osg/Geode>
 #include <osg/Vec3d>
+#include <osgText/Text>
 #include <osgUtil/SmoothingVisitor>
 
 class dxfLayerTable;
@@ -105,12 +106,12 @@ osg::Geometry* createQuadGeometry( osg::Vec3Array* vertices, osg::Vec3Array* nor
 }
 
 static inline 
-osg::Geode* createModel(const std::string & name, osg::Geometry* geom)
+osg::Geode* createModel(const std::string & name, osg::Drawable* drawable)
 {
-    osg::Geode* geom_geode = new osg::Geode;
-    geom_geode->addDrawable(geom);
-    geom_geode->setName(name);
-    return geom_geode;
+    osg::Geode* geode = new osg::Geode;
+    geode->addDrawable(drawable);
+    geode->setName(name);
+    return geode;
 }
 
 
@@ -145,6 +146,7 @@ public:
         osgLines(root, b);
         osgTriangles(root, b);
         osgQuads(root, b);
+        osgText(root, b);
     }
     MapVListList    _linestrips;
     MapVList        _lines;
@@ -152,7 +154,19 @@ public:
     MapVList        _trinorms;
     MapVList        _quads;
     MapVList        _quadnorms;
+    
+    struct textInfo
+    {
+        textInfo(short int color, osg::Vec3 point, osgText::Text *text) :
+            _color(color), _point(point), _text(text) {};
+        short int _color;
+        osg::Vec3d _point;
+        osg::ref_ptr<osgText::Text> _text;
+    };
 
+    typedef std::vector<textInfo> TextList;    
+    TextList _textList;
+    
 protected:
     std::string        _name;
 
@@ -236,6 +250,19 @@ protected:
             }
         }
     }
+    void osgText(osg::Group* root, bounds &b)
+    {
+        if (_textList.size()) {
+            for (TextList::iterator titr = _textList.begin();
+                    titr != _textList.end(); ++titr) {
+                titr->_text->setColor(getColor(titr->_color));
+                osg::Vec3d v1=titr->_point;
+                osg::Vec3 v2(v1.x() - b._min.x(), v1.y() - b._min.y(), v1.z() - b._min.z());
+                titr->_text->setPosition(v2);
+                root->addChild(createModel(_name, titr->_text.get()));
+            }
+        }
+    }
 };
 
 
@@ -292,6 +319,8 @@ public:
     void addLineLoop(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices);
     void addTriangles(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices, bool inverted=false);
     void addQuads(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices, bool inverted=false);
+    void addText(const std::string & l, unsigned short color, osg::Vec3d & point, osgText::Text *text);
+
     osg::Group* scene2osg()
     {
         osg::Group* root = NULL;

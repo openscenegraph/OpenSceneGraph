@@ -1006,9 +1006,13 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     osg::Vec4 colorFRAlpha(1.0f,1.0f,1.0f,0.5f);
     osg::Vec4 colorUpdate( 0.0f,1.0f,0.0f,1.0f);
     osg::Vec4 colorUpdateAlpha( 0.0f,1.0f,0.0f,0.5f);
+    osg::Vec4 colorEvent(0.0f, 1.0f, 0.5f, 1.0f);
     osg::Vec4 colorEventAlpha(0.0f, 1.0f, 0.5f, 0.5f);
+    osg::Vec4 colorCull( 0.0f,1.0f,1.0f,1.0f);
     osg::Vec4 colorCullAlpha( 0.0f,1.0f,1.0f,0.5f);
+    osg::Vec4 colorDraw( 1.0f,1.0f,0.0f,1.0f);
     osg::Vec4 colorDrawAlpha( 1.0f,1.0f,0.0f,0.5f);
+    osg::Vec4 colorGPU( 1.0f,0.5f,0.0f,1.0f);
     osg::Vec4 colorGPUAlpha( 1.0f,0.5f,0.0f,0.5f);
 
     osg::Vec4 colorDP( 1.0f,1.0f,0.5f,1.0f);
@@ -1193,17 +1197,17 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             StatsGraph* statsGraph = new StatsGraph(pos, width, height);
             group->addChild(statsGraph);
 
-            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorFRAlpha, 100, "Frame rate");
-            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorEventAlpha, 0.016, "Event traversal time taken");
-            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorUpdateAlpha, 0.016, "Update traversal time taken");
+            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorFR, 100, "Frame rate");
+            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorEvent, 0.016, "Event traversal time taken");
+            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorUpdate, 0.016, "Update traversal time taken");
             
             for(ViewerBase::Cameras::iterator citr = cameras.begin();
                 citr != cameras.end();
                 ++citr)
             {
-                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorCullAlpha, 0.016, "Cull traversal time taken");
-                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorDrawAlpha, 0.016, "Draw traversal time taken");
-                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorGPUAlpha, 0.016, "GPU draw time taken");
+                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorCull, 0.016, "Cull traversal time taken");
+                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorDraw, 0.016, "Draw traversal time taken");
+                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorGPU, 0.016, "GPU draw time taken");
             }
 
             geode->addDrawable(createBackgroundRectangle( pos + osg::Vec3(-backgroundMargin, backgroundMargin, 0),

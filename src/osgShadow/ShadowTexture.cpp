@@ -207,7 +207,7 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
             lightDir.normalize();
 
             // set the position far away along the light direction
-            osg::Vec3 position = bb.center() + lightDir * bb.radius() * 10.0;
+            osg::Vec3 position = bb.center() + lightDir * bb.radius() * 2.0;
 
             float centerDistance = (position-bb.center()).length();
 

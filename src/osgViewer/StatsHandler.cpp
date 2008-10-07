@@ -17,6 +17,8 @@
 
 #include <osg/io_utils>
 
+#include <osg/MatrixTransform>
+
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Renderer>
 
@@ -591,6 +593,151 @@ osg::Geometry* StatsHandler::createBackgroundRectangle(const osg::Vec3& pos, con
 }
 
 
+struct StatsGraph : public osg::MatrixTransform
+{
+    StatsGraph(osg::Vec3 pos, float width, float height)
+        : _pos(pos), _width(width), _height(height),
+          _statsGraphGeode(new osg::Geode)
+    {
+        _pos -= osg::Vec3(0, height, 0.1);
+        this->setMatrix(osg::Matrix::translate(_pos));
+        this->addChild(_statsGraphGeode.get());
+    }
+
+    void addStatGraph(osg::Stats* viewerStats, osg::Stats* stats, const osg::Vec4& color, float max, const std::string& nameBegin, const std::string& nameEnd = "")
+    {
+        _statsGraphGeode->addDrawable(new Graph(_width, _height, viewerStats, stats, color, max, nameBegin, nameEnd));
+    }
+
+    osg::Vec3           _pos;
+    float               _width;
+    float               _height;
+
+    osg::ref_ptr<osg::Geode> _statsGraphGeode;
+
+protected:
+    struct Graph : public osg::Geometry
+    {
+        Graph(float width, float height, osg::Stats* viewerStats, osg::Stats* stats, 
+              const osg::Vec4& color, float max, const std::string& nameBegin, const std::string& nameEnd = "")
+        {
+            this->setUseDisplayList(false);
+
+            this->setVertexArray(new osg::Vec3Array);
+
+            osg::Vec4Array* colors = new osg::Vec4Array;
+            colors->push_back(color);
+            this->setColorArray(colors);
+            this->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+            this->setDrawCallback(new GraphUpdateCallback(width, height, viewerStats, stats, max, nameBegin, nameEnd));
+        }
+    };
+
+    struct GraphUpdateCallback : public osg::Drawable::DrawCallback
+    {
+        GraphUpdateCallback(float width, float height, osg::Stats* viewerStats, osg::Stats* stats, 
+                            float max, const std::string& nameBegin, const std::string& nameEnd = "")
+            : _width((unsigned int)width), _height((unsigned int)height), _curX(0),
+              _viewerStats(viewerStats), _stats(stats), _max(max), _nameBegin(nameBegin), _nameEnd(nameEnd)
+        {
+        }
+
+        virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
+        {
+            osg::Geometry* geometry = const_cast<osg::Geometry*>(drawable->asGeometry());
+            if (!geometry) return;
+            osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+            if (!vertices) return;
+
+            int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+
+            // Get stats
+            double value;
+            if (_nameEnd.empty())
+            {
+                if (!_stats->getAveragedAttribute( _nameBegin, value, true ))
+                {
+                    value = 0.0;
+                }
+            }
+            else
+            {
+                double beginValue, endValue;
+                if (_stats->getAttribute( frameNumber, _nameBegin, beginValue) &&
+                    _stats->getAttribute( frameNumber, _nameEnd, endValue) )
+                {
+                    value = endValue - beginValue;
+                }
+                else
+                {
+                    value = 0.0;
+                }
+            }
+
+            // Add new vertex for this frame.
+            value = osg::clampTo(value, 0.0, double(_max));
+            vertices->push_back(osg::Vec3(float(_curX), float(_height) / _max * value, 0));
+
+            // One vertex per pixel in X.
+            if (vertices->size() > _width)
+            {
+                unsigned int excedent = vertices->size() - _width;
+                vertices->erase(vertices->begin(), vertices->begin() + excedent);
+
+                // Make the graph scroll when there is enough data. 
+                // Note: We check the frame number so that even if we have 
+                // many graphs, the transform is translated only once per 
+                // frame.
+                static const float increment = -1.0;
+                if (GraphUpdateCallback::_frameNumber != frameNumber)
+                {
+                    // We know the exact layout of this part of the scene 
+                    // graph, so this is OK...
+                    osg::MatrixTransform* transform = 
+                        geometry->getParent(0)->getParent(0)->asTransform()->asMatrixTransform();
+                    if (transform)
+                    {
+                        transform->setMatrix(transform->getMatrix() * osg::Matrix::translate(osg::Vec3(increment, 0, 0)));
+                    }
+                }
+            }
+            else
+            {
+                // Create primitive set if none exists.
+                if (geometry->getNumPrimitiveSets() == 0)
+                    geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, 0));
+
+                // Update primitive set.
+                osg::DrawArrays* drawArrays = dynamic_cast<osg::DrawArrays*>(geometry->getPrimitiveSet(0));
+                if (!drawArrays) return;
+                drawArrays->setFirst(0);
+                drawArrays->setCount(vertices->size());
+            }
+
+            _curX++;
+            GraphUpdateCallback::_frameNumber = frameNumber;
+
+            geometry->dirtyBound();
+
+            drawable->drawImplementation(renderInfo);
+        }
+
+        const unsigned int      _width;
+        const unsigned int      _height;
+        mutable unsigned int    _curX;
+        osg::Stats*             _viewerStats;
+        osg::Stats*             _stats;
+        const float             _max;
+        const std::string       _nameBegin;
+        const std::string       _nameEnd;
+        static int              _frameNumber;
+    };
+};
+
+int StatsGraph::GraphUpdateCallback::_frameNumber = 0;
+
+
 osg::Geometry* StatsHandler::createGeometry(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks)
 {
     osg::Geometry* geometry = new osg::Geometry;
@@ -856,8 +1003,13 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     osg::Vec3 pos(leftPos,1000.0f,0.0f);
 
     osg::Vec4 colorFR(1.0f,1.0f,1.0f,1.0f);
+    osg::Vec4 colorFRAlpha(1.0f,1.0f,1.0f,0.5f);
     osg::Vec4 colorUpdate( 0.0f,1.0f,0.0f,1.0f);
     osg::Vec4 colorUpdateAlpha( 0.0f,1.0f,0.0f,0.5f);
+    osg::Vec4 colorEventAlpha(0.0f, 1.0f, 0.5f, 0.5f);
+    osg::Vec4 colorCullAlpha( 0.0f,1.0f,1.0f,0.5f);
+    osg::Vec4 colorDrawAlpha( 1.0f,1.0f,0.0f,0.5f);
+    osg::Vec4 colorGPUAlpha( 1.0f,0.5f,0.0f,0.5f);
 
     osg::Vec4 colorDP( 1.0f,1.0f,0.5f,1.0f);
 
@@ -930,9 +1082,9 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         float topOfViewerStats = pos.y() + characterSize;
 
         geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
-                                                        70 * characterSize + 2 * backgroundMargin, 
+                                                        _camera->getViewport()->width() - 2 * backgroundMargin, 
                                                         (3 + 4.5 * cameras.size()) * characterSize + 2 * backgroundMargin,
-                                                        backgroundColor));
+                                                      backgroundColor) );
 
         {
             pos.x() = leftPos;
@@ -1027,6 +1179,40 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             osg::Geometry* frameMarkers = createFrameMarkers(pos, height, colourTicks, _numBlocks + 1);
             frameMarkers->setDrawCallback(new FrameMarkerDrawCallback(this, startBlocks, viewer->getStats(), 0, _numBlocks + 1));
             geode->addDrawable(frameMarkers);
+
+            pos.x() = leftPos;
+        }
+
+        // Stats line graph
+        {
+            pos.y() -= (backgroundSpacing + 2 * backgroundMargin);
+            float width = _camera->getViewport()->width() - 4 * backgroundMargin;
+            float height = 5 * characterSize;
+
+            // Create a stats graph and add any stats we want to track with it.
+            StatsGraph* statsGraph = new StatsGraph(pos, width, height);
+            group->addChild(statsGraph);
+
+            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorFRAlpha, 100, "Frame rate");
+            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorEventAlpha, 0.016, "Event traversal time taken");
+            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorUpdateAlpha, 0.016, "Update traversal time taken");
+            
+            for(ViewerBase::Cameras::iterator citr = cameras.begin();
+                citr != cameras.end();
+                ++citr)
+            {
+                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorCullAlpha, 0.016, "Cull traversal time taken");
+                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorDrawAlpha, 0.016, "Draw traversal time taken");
+                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorGPUAlpha, 0.016, "GPU draw time taken");
+            }
+
+            geode->addDrawable(createBackgroundRectangle( pos + osg::Vec3(-backgroundMargin, backgroundMargin, 0),
+                                                          width + 2 * backgroundMargin,
+                                                          height + 2 * backgroundMargin,
+                                                          backgroundColor) );
+
+            pos.x() = leftPos;
+            pos.y() -= height + 2 * backgroundMargin;
         }
 
         // Databasepager stats
@@ -1040,12 +1226,10 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             osgDB::DatabasePager* dp = scene->getDatabasePager();
             if (dp && dp->isRunning())
             {
-                pos.y() -= (characterSize + backgroundSpacing + 2 * backgroundMargin);
-
-                pos.x() = leftPos;
+                pos.y() -= (characterSize + backgroundSpacing);
 
                 geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
-                                                                70 * characterSize + 2 * backgroundMargin, 
+                                                                _camera->getViewport()->width() - 2 * backgroundMargin, 
                                                                 characterSize + 2 * backgroundMargin,
                                                                 backgroundColor));
 

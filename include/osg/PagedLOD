@@ -63,6 +63,7 @@ class OSG_EXPORT PagedLOD : public LOD
             float                           _priorityScale;
             double                          _timeStamp;
             int                             _frameNumber;
+            int                             _frameNumberOfLastReleaseGLObjects;
             osg::ref_ptr<osg::Referenced>   _databaseRequest;
         };
 
@@ -122,6 +123,10 @@ class OSG_EXPORT PagedLOD : public LOD
           * Return true if children are removed, false otherwise. */
         virtual bool removeExpiredChildren(double expiryTime, int expiryFrame, NodeList& removedChildren);
 
+        /** Release the GL Objects of the children from the PagedLOD which haven't been visited since specified expiry time and expiry frame number.
+          * Return true if any children have release called upon them, false otherwise. */
+        virtual bool releaseGLObjectsOnExpiredChildren(double releaseTime, int releaseFrame);
+        
     protected :
     
         virtual ~PagedLOD();

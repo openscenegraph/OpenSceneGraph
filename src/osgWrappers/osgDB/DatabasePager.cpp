@@ -214,6 +214,26 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __int__getExpiryFrames,
 	          "Get the number of frames that a subgraph will be kept without being visited in the cull traversal before being removed. ",
 	          "");
+	I_Method1(void, setReleaseDelay, IN, double, releaseDelay,
+	          Properties::NON_VIRTUAL,
+	          __void__setReleaseDelay__double,
+	          "Set the amount of time that a subgraph's OpenGL objects will be kept without being visited in the cull traversal before being released. ",
+	          "");
+	I_Method0(double, getReleaseDelay,
+	          Properties::NON_VIRTUAL,
+	          __double__getReleaseDelay,
+	          "Get the amount of time that a subgraph's OpenGL objects will be kept without being visited in the cull traversal before being released. ",
+	          "");
+	I_Method1(void, setReleaseFrames, IN, int, releaseFrames,
+	          Properties::NON_VIRTUAL,
+	          __void__setReleaseFrames__int,
+	          "Set the number of frames that a subgraph's OpenGL objects will be kept without being visited in the cull traversal before being released. ",
+	          "");
+	I_Method0(int, getReleaseFrames,
+	          Properties::NON_VIRTUAL,
+	          __int__getReleaseFrames,
+	          "Get the number of frames that a subgraph's OpenGL objects will be kept without being visited in the cull traversal before being released. ",
+	          "");
 	I_Method1(void, setDeleteRemovedSubgraphsInDatabaseThread, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
 	          __void__setDeleteRemovedSubgraphsInDatabaseThread__bool,
@@ -415,6 +435,12 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(double, MinimumTimeToMergeTile, 
 	                 __double__getMinimumTimeToMergeTile, 
 	                 0);
+	I_SimpleProperty(double, ReleaseDelay, 
+	                 __double__getReleaseDelay, 
+	                 __void__setReleaseDelay__double);
+	I_SimpleProperty(int, ReleaseFrames, 
+	                 __int__getReleaseFrames, 
+	                 __void__setReleaseFrames__int);
 	I_SimpleProperty(OpenThreads::Thread::ThreadPriority, SchedulePriority, 
 	                 0, 
 	                 __int__setSchedulePriority__OpenThreads_Thread_ThreadPriority);

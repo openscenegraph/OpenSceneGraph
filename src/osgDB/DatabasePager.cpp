@@ -46,6 +46,8 @@ static osg::ApplicationUsageProxy DatabasePager_e3(osg::ApplicationUsage::ENVIRO
 static osg::ApplicationUsageProxy DatabasePager_e4(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_PRIORITY <mode>", "Set the thread priority to DEFAULT, MIN, LOW, NOMINAL, HIGH or MAX.");
 static osg::ApplicationUsageProxy DatabasePager_e7(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EXPIRY_DELAY <float> ","Set the length of time a PagedLOD child is kept in memory, without being used, before its tagged as expired, and ear marked to deletion.");
 static osg::ApplicationUsageProxy DatabasePager_e8(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EXPIRY_FRAMES <int> ","Set number of frames a PagedLOD child is kept in memory, without being used, before its tagged as expired, and ear marked to deletion.");
+static osg::ApplicationUsageProxy DatabasePager_e9(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_RELEASE_DELAY <float> ","Set the length of time a PagedLOD child's OpenGL objects are kept in memory, without being used, before be released (setting to OFF disables this feature.)");
+static osg::ApplicationUsageProxy DatabasePager_e10(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_RELEASE_FRAMES <int> ","Set number of frames a PagedLOD child's OpenGL objects are kept in memory, without being used, before be released.");
 // Convert function objects that take pointer args into functions that a
 // reference to an osg::ref_ptr. This is quite useful for doing STL
 // operations on lists of ref_ptr. This code assumes that a function
@@ -880,8 +882,6 @@ DatabasePager::DatabasePager()
         } 
     }
 
-    _changeAutoUnRef = true;
-    _valueAutoUnRef = true;
     _changeAnisotropy = false;
     _valueAnisotropy = 1.0f;
 
@@ -909,6 +909,31 @@ DatabasePager::DatabasePager()
     {
         _expiryFrames = atoi(ptr);
         osg::notify(osg::NOTICE)<<"Expiry frames = "<<_expiryFrames<<std::endl;
+    }
+
+    if( (ptr = getenv("OSG_RELEASE_DELAY")) != 0)
+    {
+        if (strcmp(ptr,"OFF")==0 || strcmp(ptr,"Off")==0  || strcmp(ptr,"off")==0)
+        {
+            setReleaseDelay(DBL_MAX);
+        }
+        else
+        {
+            setReleaseDelay(atof(ptr));
+        }
+            
+        osg::notify(osg::NOTICE)<<"Release delay = "<<_releaseDelay<<std::endl;
+    }
+    else
+    {
+        setReleaseDelay(DBL_MAX);
+    }
+
+    _releaseFrames = 1; // Last frame will not be release
+    if( (ptr = getenv("OSG_RELEASE_FRAMES")) != 0)
+    {
+        _releaseFrames = atoi(ptr);
+        osg::notify(osg::NOTICE)<<"Release frames = "<<_releaseFrames<<std::endl;
     }
 
     _doPreCompile = true;
@@ -988,6 +1013,10 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     
     _expiryDelay = rhs._expiryDelay;
     _expiryFrames = rhs._expiryFrames;
+
+    _releaseDelay = rhs._releaseDelay;
+    _releaseFrames = rhs._releaseFrames;
+
     _doPreCompile = rhs._doPreCompile;
     _targetFrameRate = rhs._targetFrameRate;
     _minimumTimeAvailableForGLCompileAndDeletePerFrame = rhs._minimumTimeAvailableForGLCompileAndDeletePerFrame;
@@ -1027,6 +1056,23 @@ DatabasePager* DatabasePager::create()
     return DatabasePager::prototype().valid() ? 
            DatabasePager::prototype()->clone() :
            new DatabasePager; 
+}
+
+void DatabasePager::setReleaseDelay(double releaseDelay)
+{
+    _releaseDelay = releaseDelay;
+
+    if (_releaseDelay==DBL_MAX)
+    {
+        _changeAutoUnRef = true;
+        _valueAutoUnRef = true;
+    }
+    else
+    {
+        // when GLObject release is used make sure Images aren't unref'd as they may be needed later.
+        _changeAutoUnRef = true;
+        _valueAutoUnRef = false;
+    }
 }
 
 int DatabasePager::setSchedulePriority(OpenThreads::Thread::ThreadPriority priority)
@@ -1393,8 +1439,13 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp &frameStamp)
 {
 //    osg::notify(osg::NOTICE)<<"DatabasePager::new_removeExpiredSubgraphs()"<<std::endl;
 
+    
+
     double expiryTime = frameStamp.getReferenceTime() - _expiryDelay;
     int expiryFrame = frameStamp.getFrameNumber() - _expiryFrames;
+
+    double releaseTime = frameStamp.getReferenceTime() - _releaseDelay;
+    int releaseFrame = frameStamp.getFrameNumber() - _releaseFrames;
 
     osg::NodeList childrenRemoved;
     
@@ -1403,6 +1454,13 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp &frameStamp)
         ++itr)
     {
         osg::PagedLOD* plod = itr->get();
+        
+        
+        if (_releaseDelay!=DBL_MAX && plod->releaseGLObjectsOnExpiredChildren(releaseTime, releaseFrame))
+        {
+            osg::notify(osg::INFO)<<"DatabasePager::removeExpiredSubgraphs(), releasing gl objects"<<std::endl;
+        }
+        
         plod->removeExpiredChildren(expiryTime, expiryFrame, childrenRemoved);
     }
     

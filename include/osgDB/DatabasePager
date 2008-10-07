@@ -216,6 +216,24 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * before being removed.*/
         int getExpiryFrames() const { return _expiryFrames; }
 
+
+        /** Set the amount of time that a subgraph's OpenGL objects will be kept without being visited in the cull traversal
+          * before being released.*/
+        void setReleaseDelay(double releaseDelay);
+        
+        /** Get the amount of time that a subgraph's OpenGL objects will be kept without being visited in the cull traversal
+          * before being released.*/
+        double getReleaseDelay() const { return _releaseDelay; }
+
+        /** Set the number of frames that a subgraph's OpenGL objects will be kept without being visited in the cull traversal
+          * before being released.*/
+        void setReleaseFrames(int releaseFrames) { _releaseFrames = releaseFrames; }
+        
+        /** Get the number of frames that a subgraph's OpenGL objects will be kept without being visited in the cull traversal
+          * before being released.*/
+        int getReleaseFrames() const { return _releaseFrames; }
+
+
         /** Set whether the removed subgraphs should be deleted in the database thread or not.*/
         void setDeleteRemovedSubgraphsInDatabaseThread(bool flag) { _deleteRemovedSubgraphsInDatabaseThread = flag; }
         
@@ -533,6 +551,9 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         double                          _expiryDelay;
         int                             _expiryFrames;
+
+        double                          _releaseDelay;
+        int                             _releaseFrames;
 
         ActiveGraphicsContexts          _activeGraphicsContexts;
         // CompileGraphicsContexts         _compileGraphicsContexts;

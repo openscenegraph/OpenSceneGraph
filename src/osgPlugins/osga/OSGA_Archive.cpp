@@ -561,7 +561,7 @@ bool OSGA_Archive::addFileReference(pos_type position, size_type size, const std
 
     // get an IndexBlock with space available if possible
     unsigned int blockSize = 4096;
-    osg::ref_ptr<IndexBlock> indexBlock = _indexBlockList.empty() ? 0 : _indexBlockList.back();
+    osg::ref_ptr<IndexBlock> indexBlock = _indexBlockList.empty() ? 0 : _indexBlockList.back().get();
     osg::ref_ptr<IndexBlock> previousBlock = indexBlock;
     if (indexBlock.valid())
     {

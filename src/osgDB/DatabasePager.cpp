@@ -1630,7 +1630,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileList->_requestMutex);
         
             // advance to the next entry to compile if one is available.
-            databaseRequest = _dataToCompileList->_requestList.empty() ? 0 : _dataToCompileList->_requestList.front();
+            databaseRequest = _dataToCompileList->_requestList.empty() ? 0 : _dataToCompileList->_requestList.front().get();
         };
 
         unsigned int numObjectsCompiled = 0;

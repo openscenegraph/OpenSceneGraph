@@ -23,7 +23,8 @@ PagedLOD::PerRangeData::PerRangeData():
     _priorityOffset(0.0f),
     _priorityScale(1.0f),
     _timeStamp(0.0f),
-    _frameNumber(0) {}
+    _frameNumber(0),
+    _frameNumberOfLastReleaseGLObjects(0) {}
 
 PagedLOD::PerRangeData::PerRangeData(const PerRangeData& prd):
     _filename(prd._filename),
@@ -31,6 +32,7 @@ PagedLOD::PerRangeData::PerRangeData(const PerRangeData& prd):
     _priorityScale(prd._priorityScale),
     _timeStamp(prd._timeStamp),
     _frameNumber(prd._frameNumber),
+    _frameNumberOfLastReleaseGLObjects(prd._frameNumberOfLastReleaseGLObjects),
     _databaseRequest(prd._databaseRequest) {}
 
 PagedLOD::PerRangeData& PagedLOD::PerRangeData::operator = (const PerRangeData& prd)
@@ -41,6 +43,7 @@ PagedLOD::PerRangeData& PagedLOD::PerRangeData::operator = (const PerRangeData& 
     _priorityScale = prd._priorityScale;
     _timeStamp = prd._timeStamp;
     _frameNumber = prd._frameNumber;
+    _frameNumberOfLastReleaseGLObjects = prd._frameNumberOfLastReleaseGLObjects;
     _databaseRequest = prd._databaseRequest;
     return *this;
 }
@@ -287,4 +290,24 @@ bool PagedLOD::removeExpiredChildren(double expiryTime, int expiryFrame, NodeLis
         }
     }
     return false;
+}
+
+bool PagedLOD::releaseGLObjectsOnExpiredChildren(double releaseTime, int releaseFrame)
+{
+    unsigned int numChildrenReleased = 0;
+
+    unsigned int numChildren = osg::minimum(_perRangeDataList.size(), _children.size());
+    for(unsigned int i=_numChildrenThatCannotBeExpired; i<numChildren; ++i)
+    {
+        if (_perRangeDataList[i]._frameNumberOfLastReleaseGLObjects != _perRangeDataList[i]._frameNumber &&
+            _perRangeDataList[i]._timeStamp<releaseTime &&
+            _perRangeDataList[i]._frameNumber<releaseFrame)
+        {
+            _perRangeDataList[i]._frameNumberOfLastReleaseGLObjects = _perRangeDataList[i]._frameNumber;
+            
+            _children[i]->releaseGLObjects();
+            ++numChildrenReleased;
+        }
+    }
+    return numChildrenReleased>0;
 }

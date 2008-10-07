@@ -1664,6 +1664,14 @@ bool GraphicsWindowWin32::makeCurrentImplementation()
         return false;
     }
 
+    // 2008/10/03
+    // Few days ago NVidia released WHQL certified drivers ver 178.13. 
+    // These drivers (as well as former beta ver 177.92) were free from the bug described below. 
+    // So it looks like its high time to undef the workaround.
+    // If you happen to still use earlier drivers and have problems consider changing to new ones or 
+    // activate OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND macro def through CMake advanced vars.
+#ifdef OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND
+
     // 2008/05/12
     // Workaround for Bugs in NVidia drivers for windows XP / multithreaded / dualview / multicore CPU
     // affects GeForce 6x00, 7x00, 8x00 boards (others were not tested) driver versions 174.xx - 175.xx
@@ -1688,6 +1696,7 @@ bool GraphicsWindowWin32::makeCurrentImplementation()
             return false;
         }
     }
+#endif
 
     if (!::wglMakeCurrent(_hdc, _hglrc))
     {

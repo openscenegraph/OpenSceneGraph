@@ -24,6 +24,7 @@
 #include <osg/Vec3d>
 #include <osg/Node>
 #include <osg/Matrixd>
+#include <osgText/Text>
 
 #include "dxfBlock.h"
 
@@ -248,6 +249,40 @@ protected:
     osg::Vec3d        _scale;
     osg::Vec3d        _point;
     osg::Vec3d        _ocs;
+};
+
+class dxfText : public dxfBasicEntity
+{
+public:
+    dxfText() :
+        _string(""),
+        _point1(0,0,0),
+        _point2(0,0,0),
+        _height(1),
+        _xscale(1),
+        _rotation(0),
+        _flags(0),
+        _hjustify(0),
+        _vjustify(0),
+        _ocs(0,0,1) {}
+
+    virtual ~dxfText() {}
+    virtual dxfBasicEntity*        create() { return new dxfText; }
+    virtual const char*            name() { return "TEXT"; }
+    virtual void                   assign(dxfFile* dxf, codeValue& cv);
+    virtual void                   drawScene(scene* sc);
+
+protected:
+    std::string       _string;    // 1
+    osg::Vec3d        _point1;    // 10,20,30
+    osg::Vec3d        _point2;    // 11,21,31
+    osg::Vec3d        _ocs;       // 210,220,230
+    double            _height;    // 40
+    double            _xscale;    // 41
+    double            _rotation;  // 50
+    int               _flags;     // 71
+    int               _hjustify;  // 72
+    int               _vjustify;  // 73
 };
 
 class dxfEntity : public osg::Referenced

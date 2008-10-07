@@ -29,6 +29,7 @@ RegisterEntityProxy<dxfVertex> g_dxfVertex;
 RegisterEntityProxy<dxfPolyline> g_dxfPolyline;
 RegisterEntityProxy<dxfLWPolyline> g_dxfLWPolyline;
 RegisterEntityProxy<dxfInsert> g_dxfInsert;
+RegisterEntityProxy<dxfText> g_dxfText;
 
 void 
 dxfBasicEntity::assign(dxfFile* , codeValue& cv)
@@ -732,7 +733,7 @@ dxfInsert::drawScene(scene* sc)
     // (with the files I have, the results are equal to Voloview,
     // and better than Deep Exploration and Lightwave).
     
-    // sanity check (useful when no block remains after all SOLIDS, TEXT, ... have been filtered out)
+    // sanity check (useful when no block remains after all unsupported entities have been filtered out)
     if (!_block)
         return;
 
@@ -769,6 +770,147 @@ dxfInsert::drawScene(scene* sc)
     sc->popMatrix(); // back
     sc->blockOffset(Vec3d(0,0,0));
 
+}
+
+void 
+dxfText::assign(dxfFile* dxf, codeValue& cv)
+{
+    switch (cv._groupCode) {
+        case 1:
+            _string = cv._string;
+            break;
+        case 10:
+            _point1.x() = cv._double;
+            break;
+        case 20:
+            _point1.y() = cv._double;
+            break;
+        case 30:
+            _point1.z() = cv._double;
+            break;
+        case 11:
+            _point2.x() = cv._double;
+            break;
+        case 21:
+            _point2.y() = cv._double;
+            break;
+        case 31:
+            _point2.z() = cv._double;
+            break;
+        case 40:
+            _height = cv._double;
+            break;
+        case 41:
+            _xscale = cv._double;
+            break;
+        case 50:
+            _rotation = cv._double;
+            break;
+        case 71:
+            _flags = cv._int;
+            break;
+        case 72:
+            _hjustify = cv._int;
+            break;
+        case 73:
+            _vjustify = cv._int;
+            break;
+        case 210:
+            _ocs.x() = cv._double;
+            break;
+        case 220:
+            _ocs.y() = cv._double;
+            break;
+        case 230:
+            _ocs.z() = cv._double;
+            break;
+        default:
+            dxfBasicEntity::assign(dxf, cv);
+            break;
+    }
+}
+
+
+void
+dxfText::drawScene(scene* sc)
+{
+    osgText::Text::AlignmentType align;
+
+    Matrixd m;
+    getOCSMatrix(_ocs, m);
+    sc->ocs(m);
+
+    ref_ptr<osgText::Text> _text = new osgText::Text;
+    _text->setText(_string);
+
+    _text->setCharacterSize( _height, 1.0/_xscale );
+    _text->setFont("arial.ttf");
+      
+    Quat qr( DegreesToRadians(_rotation), Z_AXIS );
+    
+    if ( _flags & 2 ) qr = Quat( PI, Y_AXIS ) * qr;
+    if ( _flags & 4 ) qr = Quat( PI, X_AXIS ) * qr;
+    
+    _text->setAxisAlignment(osgText::Text::USER_DEFINED_ROTATION);
+    _text->setRotation(qr);
+   
+    if ( _hjustify != 0 || _vjustify !=0 ) _point1 = _point2;
+    
+    switch (_vjustify) {
+    case 3:
+        switch (_hjustify) {
+        case 2:
+            align = osgText::Text::RIGHT_TOP;
+            break;
+        case 1:
+            align = osgText::Text::CENTER_TOP;
+            break;
+        default:
+            align = osgText::Text::LEFT_TOP;
+        }
+        break;
+    case 2:
+        switch (_hjustify) {
+        case 2:
+            align = osgText::Text::RIGHT_CENTER;
+            break;
+        case 1:
+            align = osgText::Text::CENTER_CENTER;
+            break;
+        default:
+            align = osgText::Text::LEFT_CENTER;
+        }
+        break;
+    case 1:
+        switch (_hjustify) {
+        case 2:
+            align = osgText::Text::RIGHT_BOTTOM;
+            break;
+        case 1:
+            align = osgText::Text::CENTER_BOTTOM;
+            break;
+        default:
+            align = osgText::Text::LEFT_BOTTOM;
+        }
+        break;
+    default:
+        switch (_hjustify) {
+        case 2:
+            align = osgText::Text::RIGHT_BOTTOM_BASE_LINE;
+            break;
+        case 1:
+            align = osgText::Text::CENTER_BOTTOM_BASE_LINE;
+            break;
+        default:
+            align = osgText::Text::LEFT_BOTTOM_BASE_LINE;
+        }
+        break;
+    }
+    
+    _text->setAlignment(align);
+    
+    sc->addText(getLayer(), _color, _point1, _text.get());
+    sc->ocs_clear();
 }
 
 

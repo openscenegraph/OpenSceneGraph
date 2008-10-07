@@ -36,7 +36,8 @@
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 
-#include <osgUtil/IntersectVisitor>
+#include <osgUtil/LineSegmentIntersector>
+#include <osgUtil/IntersectionVisitor>
 #include <osgUtil/SmoothingVisitor>
 
 #include <osgText/Text>
@@ -508,22 +509,22 @@ void ForestTechniqueManager::createTreeList(osg::Node* terrain,const osg::Vec3& 
         
         if (terrain)
         {
-            osgUtil::IntersectVisitor iv;
-            osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
+            osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector = 
+                new osgUtil::LineSegmentIntersector(tree->_position,tree->_position+osg::Vec3(0.0f,0.0f,size.z()));
 
-            segDown->set(tree->_position,tree->_position+osg::Vec3(0.0f,0.0f,size.z()));
-            iv.addLineSegment(segDown.get());
+            osgUtil::IntersectionVisitor iv(intersector.get());
             
             terrain->accept(iv);
 
-            if (iv.hits())
+            if (intersector->containsIntersections())
             {
-                osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segDown.get());
-                if (!hitList.empty())
+                osgUtil::LineSegmentIntersector::Intersections& intersections = intersector->getIntersections();
+                for(osgUtil::LineSegmentIntersector::Intersections::iterator itr = intersections.begin();
+                    itr != intersections.end();
+                    ++itr)
                 {
-                    osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
-                    osg::Vec3 np = hitList.front().getWorldIntersectNormal();
-                    tree->_position = ip;
+                    const osgUtil::LineSegmentIntersector::Intersection& intersection = *itr;
+                    tree->_position = intersection.getWorldIntersectPoint();
                 }
             }
         }

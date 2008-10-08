@@ -78,6 +78,8 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
             ViewData( void ): _boundAnalysisSize( 64, 64 ) {}
         };
 
+        friend struct ViewData;
+
         META_ViewDependentShadowTechniqueData( ThisClass, ThisClass::ViewData )
 
 

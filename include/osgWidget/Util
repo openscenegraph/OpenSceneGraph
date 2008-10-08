@@ -17,7 +17,7 @@
 #ifndef OSGWIDGET_UTIL
 #define OSGWIDGET_UTIL
 
-#include <cctype>
+#include <ctype.h>
 #include <algorithm>
 #include <sstream>
 #include <osg/Camera>

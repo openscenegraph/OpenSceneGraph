@@ -15,12 +15,14 @@
 */
 
 #include<osgShadow/ConvexPolyhedron>
-#include<cassert>
-#include<deque>
-#include<algorithm>
 #include<osg/Group>
 #include<osg/Geode>
 #include<osgDB/WriteFile>
+
+#include<cassert>
+#include<deque>
+#include<algorithm>
+
 
 using namespace osgShadow;
 
@@ -591,8 +593,7 @@ void ConvexPolyhedron::transformClip(const osg::Matrix& matrix, const osg::Matri
         }
 #endif
 
-        face.vertices.insert( face.vertices.begin(),
-            vertices.begin(), vertices.end() );
+        std::copy(vertices.begin(), vertices.end(), std::back_inserter(face.vertices));
 
         face.plane.set( vertices[0], vertices[1], vertices[2] );
 
@@ -734,8 +735,9 @@ bool ConvexPolyhedron::mergeFaces
 
 #if 1 // Resulting plane will be the same as face0
         face.plane = face0.plane;
-        face.vertices.insert( face.vertices.begin(),
-            vertices.begin(), vertices.end() );
+
+        std::copy(vertices.begin(), vertices.end(), std::back_inserter(face.vertices));
+
 #else // Compute resulting plane as average of faces (not a good idea)
         osg::Vec3d normal = face0.plane.getNormal() + face1.plane.getNormal();
         normal.normalize();
@@ -1485,8 +1487,8 @@ void ConvexPolyhedron::cut(const osg::Plane& plane, const std::string& name)
         }
 #endif
 
-        face.vertices.insert( face.vertices.begin(),
-            vertices.begin(), vertices.end() );
+        std::copy(vertices.begin(), vertices.end(), std::back_inserter(face.vertices));
+
         _faces.push_back(face);
 
         // Last vertex is duplicated - remove one instance

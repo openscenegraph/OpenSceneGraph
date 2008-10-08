@@ -26,6 +26,13 @@ Texture1D::Texture1D():
 {
 }
 
+Texture1D::Texture1D(osg::Image* image):
+            _textureWidth(0),
+            _numMipmapLevels(0)
+{
+    setImage(image);
+}
+
 Texture1D::Texture1D(const Texture1D& text,const CopyOp& copyop):
             Texture(text,copyop),
             _image(copyop(text._image.get())),

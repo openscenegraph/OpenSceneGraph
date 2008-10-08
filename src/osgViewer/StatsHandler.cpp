@@ -324,16 +324,16 @@ struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCall
         _cameraNumber(cameraNumber)
     {
 
-        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::POINTS, &stream[0]));
-        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::LINES, &stream[1]));
-        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::LINE_STRIP, &stream[2]));
-        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::LINE_LOOP, &stream[3]));
-        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::TRIANGLES, &stream[4]));
-        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::TRIANGLE_STRIP, &stream[5]));
-        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::TRIANGLE_FAN, &stream[6]));
-        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::QUADS, &stream[7]));
-        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::QUAD_STRIP, &stream[8]));
-        _primitiveModeStreamMap.insert(std::make_pair(osg::PrimitiveSet::POLYGON, &stream[9]));
+        _primitiveModeStreamMap[osg::PrimitiveSet::POINTS] = &stream[0];
+        _primitiveModeStreamMap[osg::PrimitiveSet::LINES] = &stream[1];
+        _primitiveModeStreamMap[osg::PrimitiveSet::LINE_STRIP] = &stream[2];
+        _primitiveModeStreamMap[osg::PrimitiveSet::LINE_LOOP] = &stream[3];
+        _primitiveModeStreamMap[osg::PrimitiveSet::TRIANGLES] = &stream[4];
+        _primitiveModeStreamMap[osg::PrimitiveSet::TRIANGLE_STRIP] = &stream[5];
+        _primitiveModeStreamMap[osg::PrimitiveSet::TRIANGLE_FAN] = &stream[6];
+        _primitiveModeStreamMap[osg::PrimitiveSet::QUADS] = &stream[7];
+        _primitiveModeStreamMap[osg::PrimitiveSet::QUAD_STRIP] = &stream[8];
+        _primitiveModeStreamMap[osg::PrimitiveSet::POLYGON] = &stream[9];
     }
 
     /** do customized draw code.*/

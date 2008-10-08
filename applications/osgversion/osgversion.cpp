@@ -259,11 +259,13 @@ std::string typoCorrection(const std::string& name)
     if (name=="Drederic") return "Frederic";
     if (name=="Eileman") return "Eilemann";
     if (name=="Elgi") return "Egli";
+    if (name=="Frashid") return "Farshid";
     if (name=="Fred") return "Frederic";
     if (name=="Fredrick") return "Frederic";
     if (name=="Fredric") return "Frederic";
     if (name=="Froechlich") return "Fröhlich";
     if (name=="Froehlich") return "Fröhlich";
+    if (name=="Froehilch") return "Fröhlich";
     if (name=="Froelich") return "Fröhlich";    
     if (name=="Froenlich") return "Fröhlich";
     if (name=="FrÃ¶hlich") return "Fröhlich";
@@ -285,6 +287,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Inverson") return "Iverson";
     if (name=="Iversion") return "Iverson";
     if (name=="Jean-Sebastian") return "Jean-Sebastien";
+    if (name=="Jean-Sebastirn") return "Jean-Sebastien";
     if (name=="Jea-Sebastien") return "Jean-Sebastien";
     if (name=="Johhansen") return "Johansen";
     if (name=="Johnansen") return "Johansen";
@@ -302,6 +305,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Lasharki") return "Lashkari";
     if (name=="Laskari") return "Lashkari";
     if (name=="Leandowski" || name=="Lawandowski")  return "Lewandowski";
+    if (name=="Lweandowski")  return "Lewandowski";
     if (name=="Lugi") return "Luigi";
     if (name=="Machler") return "Mächler";
     if (name=="Macro") return "Marco";
@@ -362,7 +366,6 @@ std::string typoCorrection(const std::string& name)
     if (name=="Xennon") return "Hanson";
     if (name=="Yefrei") return "Yefei";
     if (name=="Yfei") return "Yefei";
-    if (name=="Frashid") return "Farshid";
     
     return name;
 }
@@ -375,6 +378,12 @@ void nameCorrection(NamePair& name)
         name.second = "den Dekker";
     }
     
+    if (name.first=="Erik" && name.second=="den")
+    {
+        name.first = "Erik";
+        name.second = "den Dekker";
+    }
+    
     if (name.first=="Jeoen" && name.second=="den")
     {
         name.first = "Jeoen";
@@ -382,6 +391,12 @@ void nameCorrection(NamePair& name)
     }
     
     if (name.first=="John" && name.second=="Vidar")
+    {
+        name.first = "John";
+        name.second = "Vidar Larring";
+    }
+
+    if (name.first=="John" && name.second=="Vida")
     {
         name.first = "John";
         name.second = "Vidar Larring";

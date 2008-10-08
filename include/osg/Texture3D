@@ -32,6 +32,8 @@ class OSG_EXPORT Texture3D : public Texture
         
         Texture3D();
 
+        Texture3D(Image* image);
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Texture3D(const Texture3D& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
         

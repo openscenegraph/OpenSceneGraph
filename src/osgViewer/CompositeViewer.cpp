@@ -276,38 +276,36 @@ void CompositeViewer::getContexts(Contexts& contexts, bool onlyValid)
     typedef std::set<osg::GraphicsContext*> ContextSet;
     ContextSet contextSet;
 
+    contexts.clear();
+
     for(RefViews::iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)
     {
         osgViewer::View* view = vitr->get();
-        if (view->getCamera() && 
-            view->getCamera()->getGraphicsContext() && 
-            (view->getCamera()->getGraphicsContext()->valid() || !onlyValid))
+        osg::GraphicsContext* gc = view->getCamera() ? view->getCamera()->getGraphicsContext() : 0;
+        if (gc && (gc->valid() || !onlyValid))
         {
-            contextSet.insert(view->getCamera()->getGraphicsContext());
+            if (contextSet.count(gc)==0)
+            {
+                contextSet.insert(gc);
+                contexts.push_back(gc);
+            }
         }
 
         for(unsigned int i=0; i<view->getNumSlaves(); ++i)
         {
             View::Slave& slave = view->getSlave(i);
-            if (slave._camera.valid() && 
-                slave._camera->getGraphicsContext() && 
-                (slave._camera->getGraphicsContext()->valid() || !onlyValid))
+            osg::GraphicsContext* sgc = slave._camera.valid() ? slave._camera->getGraphicsContext() : 0;
+            if (sgc && (sgc->valid() || !onlyValid))
             {
-                contextSet.insert(slave._camera->getGraphicsContext());
+                if (contextSet.count(sgc)==0)
+                {
+                    contextSet.insert(sgc);
+                    contexts.push_back(sgc);
+                }
             }
         }
-    }
-    
-    contexts.clear();
-    contexts.reserve(contextSet.size());
-
-    for(ContextSet::iterator itr = contextSet.begin();
-        itr != contextSet.end();
-        ++itr)
-    {
-        contexts.push_back(const_cast<osg::GraphicsContext*>(*itr));
     }
 }
 
@@ -334,22 +332,6 @@ void CompositeViewer::getCameras(Cameras& cameras, bool onlyActive)
     }
 }
  
-void CompositeViewer::getWindows(Windows& windows, bool onlyValid)
-{
-    windows.clear();
-
-    Contexts contexts;
-    getContexts(contexts, onlyValid);
-    
-    for(Contexts::iterator itr = contexts.begin();
-        itr != contexts.end();
-        ++itr)
-    {
-        osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(*itr);
-        if (gw) windows.push_back(gw);
-    }
-}
-
 void CompositeViewer::getScenes(Scenes& scenes, bool onlyValid)
 {
     typedef std::set<osgViewer::Scene*> SceneSet;
@@ -362,15 +344,12 @@ void CompositeViewer::getScenes(Scenes& scenes, bool onlyValid)
         osgViewer::View* view = vitr->get();
         if (view->getScene() && (!onlyValid || view->getScene()->getSceneData()))
         {
-            sceneSet.insert(view->getScene());
+            if (sceneSet.count(view->getScene())==0)
+            {
+                sceneSet.insert(view->getScene());
+                scenes.push_back(view->getScene());
+            }
         }
-    }
-
-    for(SceneSet::iterator sitr = sceneSet.begin();
-        sitr != sceneSet.end();
-        ++sitr)
-    {
-        scenes.push_back(const_cast<osgViewer::Scene*>(*sitr));
     }
 }
 
@@ -816,17 +795,6 @@ void CompositeViewer::eventTraversal()
         view->getEventQueue()->takeEvents(viewEventsMap[view]);
     }
     
-#if 0
-    _eventQueue->getCurrentEventState()->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
-    _eventQueue->getCurrentEventState()->setX(eventState->getX());
-    _eventQueue->getCurrentEventState()->setY(eventState->getY());
-    _eventQueue->getCurrentEventState()->setButtonMask(eventState->getButtonMask());
-    _eventQueue->getCurrentEventState()->setMouseYOrientation(eventState->getMouseYOrientation());
-
-    _eventQueue->frame( getFrameStamp()->getReferenceTime() );
-    _eventQueue->takeEvents(events);
-#endif
-
 
     // osg::notify(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
     

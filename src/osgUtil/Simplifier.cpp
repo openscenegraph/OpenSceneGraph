@@ -228,7 +228,7 @@ public:
                 return false;
             }
 
-            osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint : computeInterpolatedPoint(edge,0.5f);
+            osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint.get() : computeInterpolatedPoint(edge,0.5f);
             return (collapseEdge(edge,pNew.get()));
         }
         osg::notify(osg::INFO)<<"collapseMinimumErrorEdge() return false due to _edgeSet.empty()"<<std::endl;
@@ -248,7 +248,7 @@ public:
                 return false;
             }
 
-            osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint : computeInterpolatedPoint(edge,0.5f);
+            osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint.get() : computeInterpolatedPoint(edge,0.5f);
             return (divideEdge(edge,pNew.get()));
         }
         osg::notify(osg::INFO)<<"divideLongestEdge() return false due to _edgeSet.empty()"<<std::endl;
@@ -1412,6 +1412,14 @@ void EdgeCollapse::setGeometry(osg::Geometry* geometry, const Simplifier::IndexL
         // removing coord indices
         osg::notify(osg::INFO)<<"EdgeCollapse::setGeometry(..): Removing attribute indices"<<std::endl;
         _geometry->copyToAndOptimize(*_geometry);
+    }
+    
+    // check to see if vertex attributes indices exists, if so expand them to remove them
+    if (_geometry->containsSharedArrays())
+    {
+        // removing coord indices
+        osg::notify(osg::INFO)<<"EdgeCollapse::setGeometry(..): Duplicate shared arrays"<<std::endl;
+        _geometry->duplicateSharedArrays();
     }
 
     unsigned int numVertices = geometry->getVertexArray()->getNumElements();

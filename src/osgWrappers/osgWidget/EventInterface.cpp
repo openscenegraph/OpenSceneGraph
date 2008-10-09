@@ -28,6 +28,11 @@ BEGIN_VALUE_REFLECTOR(osgWidget::Callback)
 	I_Constructor0(____Callback,
 	               "",
 	               "");
+	I_Constructor1(IN, const osgWidget::Callback &, rhs,
+	               Properties::NON_EXPLICIT,
+	               ____Callback__C5_Callback_R1,
+	               "",
+	               "");
 	I_Method0(osgWidget::EventType, getType,
 	          Properties::NON_VIRTUAL,
 	          __EventType__getType,

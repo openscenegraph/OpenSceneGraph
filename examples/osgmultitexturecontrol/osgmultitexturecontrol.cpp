@@ -39,6 +39,7 @@
 #include <osgGA/TerrainManipulator>
 
 #include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTile>
 
 #include <osgViewer/ViewerEventHandlers>
 #include <osgViewer/Viewer>
@@ -242,13 +243,32 @@ int main( int argc, char **argv )
    
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
-    
+
+
+    // set the tile loaded callback to load the optional imagery
+    osg::ref_ptr<osgTerrain::WhiteListTileLoadedCallback> whiteList = new osgTerrain::WhiteListTileLoadedCallback;
+    std::string setname;
+    while(arguments.read("--allow",setname))
+    {
+        whiteList->allow(setname);
+    }
+    while(arguments.read("--allow-all"))
+    {
+        whiteList->setAllowAll(true);
+    }
+    osgTerrain::TerrainTile::setTileLoadedCallback(whiteList.get());
+
+
+    // obtain the vertical scale
     float verticalScale = 1.0f;
     while(arguments.read("-v",verticalScale)) {}
     
+    // obtain the sample ratio
     float sampleRatio = 1.0f;
     while(arguments.read("-r",sampleRatio)) {}
 
+
+    // set up any authentication.
     std::string url, username, password;
     while(arguments.read("--login",url, username, password))
     {
@@ -348,6 +368,13 @@ int main( int argc, char **argv )
         if (mtc)
         {
             numLayers = mtc->getNumTextureWeights();
+
+            // switch on just the first texture layer.
+            mtc->setTextureWeight(0,1.0f);
+            for(unsigned int i=1; i<numLayers; ++i)
+            {
+                mtc->setTextureWeight(i,0.0f);
+            }
         }
 
         if (numLayers<2)

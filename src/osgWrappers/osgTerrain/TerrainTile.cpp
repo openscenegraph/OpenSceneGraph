@@ -14,6 +14,7 @@
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osgDB/ReaderWriter>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
 #include <osgTerrain/Terrain>
@@ -203,6 +204,14 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers. ",
 	          "");
+	I_StaticMethod1(void, setTileLoadedCallback, IN, osgTerrain::TerrainTile::TileLoadedCallback *, lc,
+	                __void__setTileLoadedCallback__TileLoadedCallback_P1_S,
+	                "",
+	                "");
+	I_StaticMethod0(osg::ref_ptr< osgTerrain::TerrainTile::TileLoadedCallback > &, getTileLoadedCallback,
+	                __osg_ref_ptrT1_TileLoadedCallback__R1__getTileLoadedCallback_S,
+	                "",
+	                "");
 	I_ArrayProperty(osgTerrain::Layer *, ColorLayer, 
 	                __Layer_P1__getColorLayer__unsigned_int, 
 	                __void__setColorLayer__unsigned_int__Layer_P1, 
@@ -236,12 +245,30 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	                 __void__setTreatBoundariesToValidDataAsDefaultValue__bool);
 END_REFLECTOR
 
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgTerrain::TerrainTile::TileLoadedCallback)
+	I_DeclaringFile("osgTerrain/TerrainTile");
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____TileLoadedCallback,
+	               "",
+	               "");
+	I_Method0(bool, deferExternalLayerLoading,
+	          Properties::PURE_VIRTUAL,
+	          __bool__deferExternalLayerLoading,
+	          "",
+	          "");
+	I_Method2(void, loaded, IN, osgTerrain::TerrainTile *, tile, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::PURE_VIRTUAL,
+	          __void__loaded__osgTerrain_TerrainTile_P1__C5_osgDB_ReaderWriter_Options_P1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgTerrain::TileID)
 	I_DeclaringFile("osgTerrain/TerrainTile");
 	I_Constructor0(____TileID,
 	               "",
 	               "");
-	I_Constructor3(IN, int, in_layer, IN, int, in_x, IN, int, in_y,
+	I_Constructor3(IN, int, in_level, IN, int, in_x, IN, int, in_y,
 	               ____TileID__int__int__int,
 	               "",
 	               "");
@@ -250,8 +277,120 @@ BEGIN_VALUE_REFLECTOR(osgTerrain::TileID)
 	          __bool__valid,
 	          "",
 	          "");
-	I_PublicMemberProperty(int, layer);
+	I_PublicMemberProperty(int, level);
 	I_PublicMemberProperty(int, x);
 	I_PublicMemberProperty(int, y);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgTerrain::WhiteListTileLoadedCallback)
+	I_DeclaringFile("osgTerrain/TerrainTile");
+	I_BaseType(osgTerrain::TerrainTile::TileLoadedCallback);
+	I_Constructor0(____WhiteListTileLoadedCallback,
+	               "",
+	               "");
+	I_Method1(void, allow, IN, const std::string &, setname,
+	          Properties::NON_VIRTUAL,
+	          __void__allow__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(void, setMinimumNumOfLayers, IN, unsigned int, numLayers,
+	          Properties::NON_VIRTUAL,
+	          __void__setMinimumNumOfLayers__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMinimumNumOfLayers,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMinimumNumOfLayers,
+	          "",
+	          "");
+	I_Method1(void, setReplaceSwitchLayer, IN, bool, replaceSwitchLayer,
+	          Properties::NON_VIRTUAL,
+	          __void__setReplaceSwitchLayer__bool,
+	          "",
+	          "");
+	I_Method0(bool, getReplaceSwitchLayer,
+	          Properties::NON_VIRTUAL,
+	          __bool__getReplaceSwitchLayer,
+	          "",
+	          "");
+	I_Method1(void, setAllowAll, IN, bool, allowAll,
+	          Properties::NON_VIRTUAL,
+	          __void__setAllowAll__bool,
+	          "",
+	          "");
+	I_Method0(bool, getAllowAll,
+	          Properties::NON_VIRTUAL,
+	          __bool__getAllowAll,
+	          "",
+	          "");
+	I_Method1(bool, layerAcceptable, IN, const std::string &, setname,
+	          Properties::NON_VIRTUAL,
+	          __bool__layerAcceptable__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method2(bool, readImageLayer, IN, osgTerrain::ImageLayer *, imageLayer, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::NON_VIRTUAL,
+	          __bool__readImageLayer__osgTerrain_ImageLayer_P1__C5_osgDB_ReaderWriter_Options_P1,
+	          "",
+	          "");
+	I_Method0(bool, deferExternalLayerLoading,
+	          Properties::VIRTUAL,
+	          __bool__deferExternalLayerLoading,
+	          "",
+	          "");
+	I_Method2(void, loaded, IN, osgTerrain::TerrainTile *, tile, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::VIRTUAL,
+	          __void__loaded__osgTerrain_TerrainTile_P1__C5_osgDB_ReaderWriter_Options_P1,
+	          "",
+	          "");
+	I_SimpleProperty(bool, AllowAll, 
+	                 __bool__getAllowAll, 
+	                 __void__setAllowAll__bool);
+	I_SimpleProperty(unsigned int, MinimumNumOfLayers, 
+	                 __unsigned_int__getMinimumNumOfLayers, 
+	                 __void__setMinimumNumOfLayers__unsigned_int);
+	I_SimpleProperty(bool, ReplaceSwitchLayer, 
+	                 __bool__getReplaceSwitchLayer, 
+	                 __void__setReplaceSwitchLayer__bool);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgTerrain::TerrainTile::TileLoadedCallback >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgTerrain::TerrainTile::TileLoadedCallback *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgTerrain::TerrainTile::TileLoadedCallback > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgTerrain::TerrainTile::TileLoadedCallback *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgTerrain::TerrainTile::TileLoadedCallback *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgTerrain::TerrainTile::TileLoadedCallback > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgTerrain::TerrainTile::TileLoadedCallback *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 

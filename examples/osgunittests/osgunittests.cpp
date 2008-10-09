@@ -29,6 +29,7 @@
 
 #include "UnitTestFramework.h"
 #include "performance.h"
+#include "MultiThreadRead.h"
 
 #include <iostream>
 
@@ -522,6 +523,7 @@ int main( int argc, char** argv )
     arguments.getApplicationUsage()->addCommandLineOption("sizeof","Display sizeof tests.");
     arguments.getApplicationUsage()->addCommandLineOption("matrix","Display qualified tests.");
     arguments.getApplicationUsage()->addCommandLineOption("performance","Display qualified tests.");
+    arguments.getApplicationUsage()->addCommandLineOption("read-threads <numthreads>","Run multi-thread reading test.");
  
 
     if (arguments.argc()<=1)
@@ -541,6 +543,9 @@ int main( int argc, char** argv )
 
     bool printQuatTest = false; 
     while (arguments.read("quat")) printQuatTest = true;
+
+    int numReadThreads = 0; 
+    while (arguments.read("read-threads", numReadThreads)) {}
 
     bool printPolytopeTest = false; 
     while (arguments.read("polytope")) printPolytopeTest = true;
@@ -621,6 +626,13 @@ int main( int argc, char** argv )
         
         runPerformanceTests();
     }
+
+    if (numReadThreads>0)
+    {
+        runMultiThreadReadTests(numReadThreads, arguments);
+        return 0;
+    }
+
 
     if (printPolytopeTest)
     {

@@ -20,36 +20,36 @@
 #include <osg/Node>
 #include <osg/Matrix>
 
-    /**
-      \class osgGA::UFOManipulator
-      \brief A UFO manipulator driven with keybindings.
+/**
+  \class osgGA::UFOManipulator
+  \brief A UFO manipulator driven with keybindings.
 
-      The UFOManipulator is better suited for applications that employ 
-      architectural walk-throughs, or situations where the eyepoint motion
-      model must move slowly, deliberately and well controlled.  
+  The UFOManipulator is better suited for applications that employ 
+  architectural walk-throughs, or situations where the eyepoint motion
+  model must move slowly, deliberately and well controlled.  
 
-      The UFO Manipulator allows the following movements with the listed
-      Key combinations:
-        \param UpArrow          Acceleration forward.
-        \param DownArrow        Acceleration backward (or deceleration forward).
-        \param LeftArrow        Rotate view and direction of travel to the left.
-        \param RightArrow       Rotate view and direction of travel to the right.
-        \param SpaceBar         Brake.  Gradually decelerates linear and rotational movement.
-        \param Shift/UpArrow    Accelerate up.
-        \param Shift/DownArrow  Accelerate down.
-        \param Shift/LeftArrow  Accelerate (linearly) left.
-        \param Shift/RightArrow Accelerate (linearly) right.
-        \param Shift/SpaceBar   Instant brake.  Immediately stop all linear and rotational movement.
+  The UFO Manipulator allows the following movements with the listed
+  Key combinations:
+    \param UpArrow          Acceleration forward.
+    \param DownArrow        Acceleration backward (or deceleration forward).
+    \param LeftArrow        Rotate view and direction of travel to the left.
+    \param RightArrow       Rotate view and direction of travel to the right.
+    \param SpaceBar         Brake.  Gradually decelerates linear and rotational movement.
+    \param Shift/UpArrow    Accelerate up.
+    \param Shift/DownArrow  Accelerate down.
+    \param Shift/LeftArrow  Accelerate (linearly) left.
+    \param Shift/RightArrow Accelerate (linearly) right.
+    \param Shift/SpaceBar   Instant brake.  Immediately stop all linear and rotational movement.
 
-    When the Shift key is released, up, down, linear left and/or linear right movement is decelerated.
+When the Shift key is released, up, down, linear left and/or linear right movement is decelerated.
 
-        \param Ctrl/UpArrow     Rotate view (but not direction of travel) up.
-        \param Ctrl/DownArrow   Rotate view (but not direction of travel) down.
-        \param Ctrl/LeftArrow   Rotate view (but not direction of travel) left.
-        \param Ctrl/RightArrow  Rotate view (but not direction of travel) right.
-        \param Ctrl/Return      Straightens out the view offset.
+    \param Ctrl/UpArrow     Rotate view (but not direction of travel) up.
+    \param Ctrl/DownArrow   Rotate view (but not direction of travel) down.
+    \param Ctrl/LeftArrow   Rotate view (but not direction of travel) left.
+    \param Ctrl/RightArrow  Rotate view (but not direction of travel) right.
+    \param Ctrl/Return      Straightens out the view offset.
 
-    */
+*/
 
 namespace osgGA {
 
@@ -129,6 +129,11 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
 
 
     protected:
+
+        virtual ~UFOManipulator();
+
+        bool intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection) const;
+
         osg::ref_ptr<osg::Node> _node;
         float       _viewAngle;
         osg::Matrixd _matrix;

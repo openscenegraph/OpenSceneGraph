@@ -62,7 +62,7 @@ void ImagePager::ReadQueue::clear()
         citr != _requestList.end();
         ++citr)
     {
-        (*citr)->_objectToAttachTo = 0;
+        (*citr)->_attachmentPoint = 0;
         (*citr)->_requestQueue = 0;
     }
 
@@ -162,7 +162,7 @@ int ImagePager::ImageThread::cancel()
 
 void ImagePager::ImageThread::run()
 {
-    osg::notify(osg::NOTICE)<<"ImagePager::ImageThread::run()"<<std::endl;
+    osg::notify(osg::INFO)<<"ImagePager::ImageThread::run() "<<this<<std::endl;
     bool firstTime = true;
 
     osg::ref_ptr<ImagePager::ReadQueue> read_queue;
@@ -192,10 +192,17 @@ void ImagePager::ImageThread::run()
             osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageRequest->_fileName);
             if (image.valid())
             {
-                osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(imageRequest->_objectToAttachTo.get());
+                osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(imageRequest->_attachmentPoint.get());
                 if (is)
                 {
-                    is->addImage(image.get());
+                    if (imageRequest->_attachmentIndex >= 0)
+                    {
+                        is->setImage(imageRequest->_attachmentIndex, image.get());
+                    }
+                    else
+                    {
+                        is->addImage(image.get());
+                    }
                 }
                 else
                 {
@@ -225,7 +232,7 @@ void ImagePager::ImageThread::run()
 
     } while (!testCancel() && !_done);
 
-    osg::notify(osg::NOTICE)<<"ImagePager::ImageThread::done()"<<std::endl;
+    osg::notify(osg::INFO)<<"ImagePager::ImageThread::done()"<<std::endl;
 
 }
 
@@ -242,11 +249,11 @@ ImagePager::ImagePager():
     _readQueue = new ReadQueue(this,"Image Queue");
     _completedQueue = new RequestQueue;
     _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 1"));
-    _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 2"));
-    _imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 3"));
+    //_imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 2"));
+    //_imageThreads.push_back(new ImageThread(this, ImageThread::HANDLE_ALL_REQUESTS, "Image Thread 3"));
 
-    // 100ms
-    _preLoadTime = 0.1;
+    // 1 second
+    _preLoadTime = 1.0;
 }
 
 ImagePager::~ImagePager()
@@ -287,15 +294,15 @@ osg::Image* ImagePager::readImageFile(const std::string& fileName)
     return osgDB::readImageFile(fileName);
 }
 
-void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, double timeToMergeBy, const osg::FrameStamp* framestamp)
+void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp* framestamp)
 {
-    // osg::notify(osg::NOTICE)<<"ImagePager::requestNodeFile("<<fileName<<")"<<std::endl;
-    
+    osg::notify(osg::INFO)<<"ImagePager::requestNodeFile("<<fileName<<")"<<std::endl;
 
     osg::ref_ptr<ImageRequest> request = new ImageRequest;
     request->_timeToMergeBy = timeToMergeBy;
     request->_fileName = fileName;
-    request->_objectToAttachTo = attachmentPoint;
+    request->_attachmentPoint = attachmentPoint;
+    request->_attachmentIndex = attachmentIndex;
     request->_requestQueue = _readQueue.get();
    
     _readQueue->add(request.get());
@@ -335,10 +342,11 @@ void ImagePager::updateSceneGraph(const osg::FrameStamp &frameStamp)
         ++itr)
     {
         ImageRequest* imageRequest = itr->get();
-        osg::Texture* texture = dynamic_cast<osg::Texture*>(imageRequest->_objectToAttachTo.get());
+        osg::Texture* texture = dynamic_cast<osg::Texture*>(imageRequest->_attachmentPoint.get());
         if (texture)
         {
-            texture->setImage(0, imageRequest->_loadedImage.get());
+            int attachmentIndex = imageRequest->_attachmentIndex > 0 ? imageRequest->_attachmentIndex : 0;
+            texture->setImage(attachmentIndex, imageRequest->_loadedImage.get());
         }
         else
         {

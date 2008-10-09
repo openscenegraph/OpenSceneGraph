@@ -185,6 +185,10 @@ inline void Referenced::unref() const
     }
 }
 
+// intrusive_ptr_add_ref and intrusive_ptr_release allow
+// use of osg Referenced classes with boost::intrusive_ptr
+inline void intrusive_ptr_add_ref(Referenced* p) { p->ref(); }
+inline void intrusive_ptr_release(Referenced* p) { p->unref(); }
 
 #else 
 

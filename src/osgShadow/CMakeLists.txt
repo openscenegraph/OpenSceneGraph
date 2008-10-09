@@ -18,6 +18,16 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/SoftShadowMap
     ${HEADER_PATH}/ParallelSplitShadowMap
     ${HEADER_PATH}/Version
+
+    ${HEADER_PATH}/ConvexPolyhedron
+    ${HEADER_PATH}/DebugShadowMap
+    ${HEADER_PATH}/LightSpacePerspectiveShadowMap
+    ${HEADER_PATH}/MinimalCullBoundsShadowMap
+    ${HEADER_PATH}/MinimalDrawBoundsShadowMap
+    ${HEADER_PATH}/MinimalShadowMap
+    ${HEADER_PATH}/ProjectionShadowMap
+    ${HEADER_PATH}/StandardShadowMap
+    ${HEADER_PATH}/ViewDependentShadowTechnique
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
@@ -33,6 +43,14 @@ ADD_LIBRARY(${LIB_NAME}
     SoftShadowMap.cpp
     ParallelSplitShadowMap.cpp
     Version.cpp
+    ConvexPolyhedron.cpp
+    DebugShadowMap.cpp
+    LightSpacePerspectiveShadowMap.cpp
+    MinimalCullBoundsShadowMap.cpp
+    MinimalDrawBoundsShadowMap.cpp
+    MinimalShadowMap.cpp
+    StandardShadowMap.cpp
+    ViewDependentShadowTechnique.cpp
 )
 
 LINK_INTERNAL(${LIB_NAME}     

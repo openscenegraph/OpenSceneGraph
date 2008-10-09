@@ -39,7 +39,6 @@
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 
-#include <osgUtil/IntersectVisitor>
 #include <osgUtil/SmoothingVisitor>
 
 #include <osgText/Text>

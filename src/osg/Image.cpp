@@ -38,6 +38,7 @@ Image::Image()
     setDataVariance(STATIC); 
 
     _fileName               = "";
+    _writeHint              = NO_PREFERENCE;
     _origin                 = BOTTOM_LEFT;
     _s = _t = _r            = 0;
     _internalTextureFormat  = 0;
@@ -54,6 +55,7 @@ Image::Image()
 Image::Image(const Image& image,const CopyOp& copyop):
     Object(image,copyop),
     _fileName(image._fileName),
+    _writeHint(image._writeHint),
     _origin(image._origin),
     _s(image._s), _t(image._t), _r(image._r),
     _internalTextureFormat(image._internalTextureFormat),
@@ -1208,6 +1210,9 @@ Geode* osg::createGeodeForImage(osg::Image* image)
 }
 
 
+#include <osg/TextureRectangle> 
+
+
 Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
 {
     if (image)
@@ -1219,7 +1224,22 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
             float x = y*(s/t);
 
             // set up the texture.
+
+#if 0
+            osg::TextureRectangle* texture = new osg::TextureRectangle;
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+            texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+            //texture->setResizeNonPowerOfTwoHint(false);
+            float texcoord_x = image->s();
+            float texcoord_y = image->t();
+#else
             osg::Texture2D* texture = new osg::Texture2D;
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+            texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
+            texture->setResizeNonPowerOfTwoHint(false);
+            float texcoord_x = 1.0f;
+            float texcoord_y = 1.0f;
+#endif
             texture->setImage(image);
 
             // set up the drawstate.
@@ -1240,10 +1260,10 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
             geom->setVertexArray(coords);
 
             Vec2Array* tcoords = new Vec2Array(4);
-            (*tcoords)[0].set(0.0f,1.0f);
-            (*tcoords)[1].set(0.0f,0.0f);
-            (*tcoords)[2].set(1.0f,0.0f);
-            (*tcoords)[3].set(1.0f,1.0f);
+            (*tcoords)[0].set(0.0f*texcoord_x,1.0f*texcoord_y);
+            (*tcoords)[1].set(0.0f*texcoord_x,0.0f*texcoord_y);
+            (*tcoords)[2].set(1.0f*texcoord_x,0.0f*texcoord_y);
+            (*tcoords)[3].set(1.0f*texcoord_x,1.0f*texcoord_y);
             geom->setTexCoordArray(0,tcoords);
 
             osg::Vec4Array* colours = new osg::Vec4Array(1);

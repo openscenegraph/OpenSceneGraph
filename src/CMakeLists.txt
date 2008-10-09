@@ -12,6 +12,7 @@ FOREACH( mylibfolder
         osgParticle
         osgShadow
         osgTerrain
+        osgVolume
         osgViewer
     )
 

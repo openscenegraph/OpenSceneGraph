@@ -45,7 +45,7 @@ class OSGReaderWriter : public ReaderWriter
 
             // code for setting up the database path so that internally referenced file are searched for on relative paths. 
             osg::ref_ptr<Options> local_opt = opt ? static_cast<Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
-            local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+            local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
             std::ifstream fin(fileName.c_str());
             if (fin)
@@ -106,7 +106,7 @@ class OSGReaderWriter : public ReaderWriter
 
             // code for setting up the database path so that internally referenced file are searched for on relative paths. 
             osg::ref_ptr<Options> local_opt = opt ? static_cast<Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
-            local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+            local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
             std::ifstream fin(fileName.c_str());
             if (fin)

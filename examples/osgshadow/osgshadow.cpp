@@ -41,17 +41,22 @@
 #include <osgShadow/ShadowMap>
 #include <osgShadow/SoftShadowMap>
 #include <osgShadow/ParallelSplitShadowMap>
+#include <osgShadow/LightSpacePerspectiveShadowMap>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
 #include <iostream>
 
-// for the grid data..
-#include "../osghangglide/terrain_coords.h"
 
-const int ReceivesShadowTraversalMask = 0x1;
-const int CastsShadowTraversalMask = 0x2;
+// for the grid data..
+#include "terrain_coords.h"
+// for the model number four - island scene
+#include "IslandScene.h"
+
+
+static int ReceivesShadowTraversalMask = 0x1;
+static int CastsShadowTraversalMask = 0x2;
 
 namespace ModelOne
 {
@@ -471,6 +476,10 @@ osg::Node* createTestModel(osg::ArgumentParser& arguments)
     {
         return ModelTwo::createModel(arguments);
     }
+    else if (arguments.read("-4"))
+    {
+        return ModelFour::createModel(arguments);
+    }
     else /*if (arguments.read("-3"))*/
     {
         return ModelThree::createModel(arguments);
@@ -490,11 +499,15 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--positionalLight", "Use a positional light.");
     arguments.getApplicationUsage()->addCommandLineOption("--directionalLight", "Use a direction light.");
     arguments.getApplicationUsage()->addCommandLineOption("--noUpdate", "Disable the updating the of light source.");
+
+    arguments.getApplicationUsage()->addCommandLineOption("--castsShadowMask", "Override default castsShadowMask (default - 0x2)");
+    arguments.getApplicationUsage()->addCommandLineOption("--receivesShadowMask", "Override default receivesShadowMask (default - 0x1)");
+
     arguments.getApplicationUsage()->addCommandLineOption("--base", "Add a base geometry to test shadows.");
     arguments.getApplicationUsage()->addCommandLineOption("--sv", "Select ShadowVolume implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--ssm", "Select SoftShadowMap implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--sm", "Select ShadowMap implementation.");
-//    arguments.getApplicationUsage()->addCommandLineOption("--pssm", "Select ParallelSplitShadowMap implementation.");
+
     arguments.getApplicationUsage()->addCommandLineOption("--pssm", "Select ParallelSplitShadowMap implementation.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--mapcount", "ParallelSplitShadowMap texture count.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--mapres", "ParallelSplitShadowMap texture resolution.");//ADEGLI
@@ -505,10 +518,19 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Factor", "ParallelSplitShadowMap set PolygonOffset factor.");//ADEGLI
     arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Unit", "ParallelSplitShadowMap set PolygonOffset unit.");//ADEGLI
 
+    arguments.getApplicationUsage()->addCommandLineOption("--lispsm", "Select LightSpacePerspectiveShadowMap implementation.");
+    arguments.getApplicationUsage()->addCommandLineOption("--ViewBounds", "LiSPSM optimize shadow for view frustum (weakest option)");
+    arguments.getApplicationUsage()->addCommandLineOption("--CullBounds", "LiSPSM optimize shadow for bounds of culled objects in view frustum (better option).");
+    arguments.getApplicationUsage()->addCommandLineOption("--DrawBounds", "LiSPSM optimize shadow for bounds of predrawn pixels in view frustum (best & default).");
+    arguments.getApplicationUsage()->addCommandLineOption("--mapres", "LiSPSM texture resolution.");
+    arguments.getApplicationUsage()->addCommandLineOption("--maxFarDist", "LiSPSM max far distance to shadow.");
+    arguments.getApplicationUsage()->addCommandLineOption("--moveVCamFactor", "LiSPSM move the virtual frustum behind the real camera, (also back ground object can cast shadow).");
+    arguments.getApplicationUsage()->addCommandLineOption("--minLightMargin", "LiSPSM the same as --moveVCamFactor.");
 
     arguments.getApplicationUsage()->addCommandLineOption("-1", "Use test model one.");
     arguments.getApplicationUsage()->addCommandLineOption("-2", "Use test model two.");
-    arguments.getApplicationUsage()->addCommandLineOption("-3", "Use test model three.");
+    arguments.getApplicationUsage()->addCommandLineOption("-3", "Use test model three (default).");
+    arguments.getApplicationUsage()->addCommandLineOption("-4", "Use test model four - island scene.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-sided", "Use two-sided stencil extension for shadow volumes.");
     arguments.getApplicationUsage()->addCommandLineOption("--two-pass", "Use two-pass stencil for shadow volumes.");
 
@@ -525,6 +547,9 @@ int main(int argc, char** argv)
     bool postionalLight = true;
     while (arguments.read("--positionalLight")) postionalLight = true;
     while (arguments.read("--directionalLight")) postionalLight = false;
+
+    while (arguments.read("--castsShadowMask", CastsShadowTraversalMask ));
+    while (arguments.read("--receivesShadowMask", ReceivesShadowTraversalMask ));
 
     bool updateLightPosition = true;
     while (arguments.read("--noUpdate")) updateLightPosition = false;
@@ -638,6 +663,46 @@ int main(int argc, char** argv)
         osg::ref_ptr<osgShadow::SoftShadowMap> sm = new osgShadow::SoftShadowMap;
         shadowedScene->setShadowTechnique(sm.get());
     }
+    else if ( arguments.read("--lispsm") )
+    {
+        osg::ref_ptr<osgShadow::MinimalShadowMap> sm = NULL;
+
+        if( arguments.read( "--ViewBounds" ) )
+            sm = new osgShadow::LightSpacePerspectiveShadowMapVB;
+        else if( arguments.read( "--CullBounds" ) )
+            sm = new osgShadow::LightSpacePerspectiveShadowMapCB;
+        else // if( arguments.read( "--DrawBounds" ) ) // default
+            sm = new osgShadow::LightSpacePerspectiveShadowMapDB;
+
+        shadowedScene->setShadowTechnique( sm.get() );
+
+        if( sm.valid() ) 
+        {
+            while( arguments.read("--debugHUD") )           
+                sm->setDebugDraw( true );
+
+            float minLightMargin = 10.f;
+            float maxFarPlane = 0;
+            unsigned int texSize = 1024;
+            unsigned int baseTexUnit = 0;
+            unsigned int shadowTexUnit = 1;
+
+            while ( arguments.read("--moveVCamFactor", minLightMargin ) );
+            while ( arguments.read("--minLightMargin", minLightMargin ) );
+            while ( arguments.read("--maxFarDist", maxFarPlane ) );
+            while ( arguments.read("--mapres", texSize ));
+            while ( arguments.read("--baseTextureUnit", baseTexUnit) );
+            while ( arguments.read("--shadowTextureUnit", shadowTexUnit) );
+
+            sm->setMinLightMargin( minLightMargin );
+            sm->setMaxFarPlane( maxFarPlane );
+            sm->setTextureSize( osg::Vec2s( texSize, texSize ) );
+            sm->setShadowTextureCoordIndex( shadowTexUnit );
+            sm->setShadowTextureUnit( shadowTexUnit );
+            sm->setBaseTextureCoordIndex( baseTexUnit );
+            sm->setBaseTextureUnit( baseTexUnit );
+        } 
+    }
     else /* if (arguments.read("--sm")) */
     {
         osg::ref_ptr<osgShadow::ShadowMap> sm = new osgShadow::ShadowMap;
@@ -646,7 +711,7 @@ int main(int argc, char** argv)
         int mapres = 1024;
         while (arguments.read("--mapres", mapres))
             sm->setTextureSize(osg::Vec2s(mapres,mapres));
-   }
+    }
 
     osg::ref_ptr<osg::Node> model = osgDB::readNodeFiles(arguments);
     if (model.valid())
@@ -709,7 +774,8 @@ int main(int argc, char** argv)
         ls->getLight()->setSpotCutoff(25.0f);
 
         //set the LightSource, only for checking, there is only 1 light in the scene
-        dynamic_cast<osgShadow::ShadowMap*>(shadowedScene->getShadowTechnique())->setLight(ls.get());
+        osgShadow::ShadowMap* shadowMap = dynamic_cast<osgShadow::ShadowMap*>(shadowedScene->getShadowTechnique());
+        if( shadowMap ) shadowMap->setLight(ls.get());
     }
 
     if ( arguments.read("--coloured-light"))
@@ -740,13 +806,15 @@ int main(int argc, char** argv)
         if (windows.empty()) return 1;
 
         osgShadow::ShadowMap* sm = dynamic_cast<osgShadow::ShadowMap*>(shadowedScene->getShadowTechnique());
-        osg::ref_ptr<osg::Camera> hudCamera = sm->makeDebugHUD();
+        if( sm ) { 
+            osg::ref_ptr<osg::Camera> hudCamera = sm->makeDebugHUD();
 
-        // set up cameras to rendering on the first window available.
-        hudCamera->setGraphicsContext(windows[0]);
-        hudCamera->setViewport(0,0,windows[0]->getTraits()->width, windows[0]->getTraits()->height);
+            // set up cameras to rendering on the first window available.
+            hudCamera->setGraphicsContext(windows[0]);
+            hudCamera->setViewport(0,0,windows[0]->getTraits()->width, windows[0]->getTraits()->height);
 
-        viewer.addSlave(hudCamera.get(), false);
+            viewer.addSlave(hudCamera.get(), false);
+        }
     }
 
 
@@ -754,9 +822,34 @@ int main(int argc, char** argv)
  
     while (!viewer.done())
     {
+        {
+            osgShadow::MinimalShadowMap * msm = dynamic_cast<osgShadow::MinimalShadowMap*>( shadowedScene->getShadowTechnique() );
+   
+            if( msm ) {
+
+                // If scene decorated by CoordinateSystemNode try to find localToWorld 
+                // and set modellingSpaceToWorld matrix to optimize scene bounds computation
+
+                osg::NodePath np = viewer.getCoordinateSystemNodePath();
+                if( !np.empty() ) {
+                    osg::CoordinateSystemNode * csn = 
+                        dynamic_cast<osg::CoordinateSystemNode *>( np.back() );
+
+                    if( csn ) {
+                        osg::Vec3d pos = 
+                            viewer.getCameraManipulator()->getMatrix().getTrans();
+
+                        msm->setModellingSpaceToWorldTransform
+                            ( csn->computeLocalCoordinateFrame( pos ) );
+                    }
+                }
+            }        
+        }
+
         if (updateLightPosition)
         {
             float t = viewer.getFrameStamp()->getSimulationTime();
+
             if (postionalLight)
             {
                 lightpos.set(bb.center().x()+sinf(t)*bb.radius(), bb.center().y() + cosf(t)*bb.radius(), bb.zMax() + bb.radius()*3.0f  ,1.0f);

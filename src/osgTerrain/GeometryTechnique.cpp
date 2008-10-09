@@ -298,10 +298,26 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             }
             else
             {
+
+                Locator* locator = colorLayer->getLocator();
+                if (!locator)
+                {            
+                    osgTerrain::SwitchLayer* switchLayer = dynamic_cast<osgTerrain::SwitchLayer*>(colorLayer);
+                    if (switchLayer)
+                    {
+                        if (switchLayer->getActiveLayer()>=0 &&
+                            switchLayer->getActiveLayer()<switchLayer->getNumLayers() &&
+                            switchLayer->getLayer(switchLayer->getActiveLayer()))
+                        {
+                            locator = switchLayer->getLayer(switchLayer->getActiveLayer())->getLocator();
+                        }
+                    }
+                }            
+            
                 TexCoordLocatorPair& tclp = layerToTexCoordMap[colorLayer];
                 tclp.first = new osg::Vec2Array;
                 tclp.first->reserve(numVertices);
-                tclp.second = colorLayer->getLocator() ? colorLayer->getLocator() : masterLocator;
+                tclp.second = locator ? locator : masterLocator;
                 geometry->setTexCoordArray(layerNum, tclp.first.get());
             }
         }
@@ -672,6 +688,18 @@ void GeometryTechnique::applyColorLayers()
     {
         osgTerrain::Layer* colorLayer = _terrainTile->getColorLayer(layerNum);
         if (!colorLayer) continue;
+
+        osgTerrain::SwitchLayer* switchLayer = dynamic_cast<osgTerrain::SwitchLayer*>(colorLayer);
+        if (switchLayer)
+        {
+            if (switchLayer->getActiveLayer()<0 || switchLayer->getActiveLayer()>=switchLayer->getNumLayers())
+            {
+                continue;
+            }
+            
+            colorLayer = switchLayer->getLayer(switchLayer->getActiveLayer());
+            if (!colorLayer) continue;
+        }
 
         osg::Image* image = colorLayer->getImage();
         if (!image) continue;

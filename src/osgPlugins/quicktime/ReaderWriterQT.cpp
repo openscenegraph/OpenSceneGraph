@@ -85,12 +85,11 @@ public:
         supportsExtension("avi","Movie format");
         supportsExtension("flv","Movie format");
         supportsExtension("swf","Movie format");
+        supportsExtension("3gp","Mobile movie format");
 
         supportsExtension("live","Live video streaming");
 
         #ifdef QT_HANDLE_IMAGES_ALSO
-        supportsExtension("rgb","rgb image format");
-        supportsExtension("rgba","rgba image format");
         supportsExtension("jpg","jpg image format");
         supportsExtension("jpeg","jpeg image format");
         supportsExtension("tif","tif image format");
@@ -121,7 +120,8 @@ public:
          osgDB::equalCaseInsensitive(extension,"dv")  ||
          osgDB::equalCaseInsensitive(extension,"avi") ||
          osgDB::equalCaseInsensitive(extension,"flv") ||
-         osgDB::equalCaseInsensitive(extension,"swf");
+         osgDB::equalCaseInsensitive(extension,"swf") ||
+         osgDB::equalCaseInsensitive(extension,"3gp");
    }
 
    virtual bool acceptsLiveExtension(const std::string& extension) const
@@ -136,8 +136,6 @@ public:
       return
 
          #ifdef QT_HANDLE_IMAGES_ALSO
-         osgDB::equalCaseInsensitive(extension,"rgb") ||
-         osgDB::equalCaseInsensitive(extension,"rgba") ||
          osgDB::equalCaseInsensitive(extension,"jpg") || 
          osgDB::equalCaseInsensitive(extension,"jpeg") ||
          osgDB::equalCaseInsensitive(extension,"tif") ||               
@@ -350,9 +348,7 @@ public:
         extmap.insert(std::pair<std::string, OSType>("gif",  kQTFileTypeGIF));
         extmap.insert(std::pair<std::string, OSType>("psd",  kQTFileTypePhotoShop));
         extmap.insert(std::pair<std::string, OSType>("sgi",  kQTFileTypeSGIImage));
-        extmap.insert(std::pair<std::string, OSType>("rgb",  kQTFileTypeSGIImage));
-        extmap.insert(std::pair<std::string, OSType>("rgba", kQTFileTypeSGIImage));
-
+        
         std::map<std::string, OSType>::iterator cur = extmap.find(ext);
 
         // can not handle this type of file, perhaps a movie?

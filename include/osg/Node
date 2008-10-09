@@ -134,7 +134,7 @@ class OSG_EXPORT Node : public Object
 
         /** Get the list of matrices that transform this node from local coordinates to world coordinates.
           * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
-        MatrixList getWorldMatrices(osg::Node* haltTraversalAtNode=0) const;
+        MatrixList getWorldMatrices(const osg::Node* haltTraversalAtNode=0) const;
         
 
         /** Set update node callback, called during update traversal. */

@@ -341,7 +341,7 @@ Font::Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode
 
 void Font::setThreadSafeRefUnref(bool threadSafe)
 {
-    Object::setThreadSafeRefUnref(threadSafe);
+   osg::Object::setThreadSafeRefUnref(threadSafe);
     
     if (_texenv.valid()) _texenv->setThreadSafeRefUnref(threadSafe);
     if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);

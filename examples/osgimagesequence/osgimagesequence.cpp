@@ -31,6 +31,7 @@
 #include <osgDB/WriteFile>
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <iostream>
 
@@ -41,17 +42,83 @@
 // A simple demo demonstrating how to set on an animated texture using an osg::ImageSequence
 //
 
-osg::StateSet* createState()
+osg::StateSet* createState(osg::ArgumentParser& arguments)
 {
     osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
 
-    imageSequence->setLength(4.0);
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posx.png"));
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negx.png"));
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posy.png"));
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negy.png"));
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posz.png"));
-    imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negz.png"));
+    bool preLoad = true;
+        
+    while (arguments.read("--page-and-discard"))
+    {
+        imageSequence->setMode(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES);
+        preLoad = false;
+    }
+    
+    while (arguments.read("--page-and-retain"))
+    {
+        imageSequence->setMode(osg::ImageSequence::PAGE_AND_RETAIN_IMAGES);
+        preLoad = false;
+    }
+    
+    while (arguments.read("--preload"))
+    {
+        imageSequence->setMode(osg::ImageSequence::PRE_LOAD_ALL_IMAGES);
+        preLoad = true;
+    }
+    
+    double length = -1.0;
+    while (arguments.read("--length",length)) {}
+    
+    if (arguments.argc()>1)
+    {
+        for(unsigned int i=1; i<arguments.argc(); ++i)
+        {
+            if (preLoad)
+            {
+                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(arguments[i]);
+                if (image.valid())
+                {
+                    imageSequence->addImage(image.get());
+                }
+            }
+            else
+            {
+                imageSequence->addImageFile(arguments[i]);
+            }
+        }
+        
+        if (length>0.0)
+        {
+            imageSequence->setLength(length);
+        }
+        else
+        {
+            unsigned int maxNum = osg::maximum(imageSequence->getFileNames().size(),
+                                               imageSequence->getImages().size());
+                                               
+            imageSequence->setLength(float(maxNum)*0.1f);
+        }
+    }
+    else
+    {
+        if (length>0.0)
+        {
+            imageSequence->setLength(length);
+        }
+        else
+        {
+            imageSequence->setLength(4.0);
+        }
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posx.png"));
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negx.png"));
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posy.png"));
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negy.png"));
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/posz.png"));
+        imageSequence->addImage(osgDB::readImageFile("Cubemap_axis/negz.png"));
+    }
+        
+    // start the image sequence playing
+    imageSequence->play();
 
 #if 1
     osg::Texture2D* texture = new osg::Texture2D;
@@ -61,18 +128,13 @@ osg::StateSet* createState()
     texture->setResizeNonPowerOfTwoHint(false);
     texture->setImage(imageSequence.get());
     //texture->setTextureSize(512,512);
-    
-    //texture->setUpdateCallback(new osg::ImageSequence::UpdateCallback);
 #else    
     osg::TextureRectangle* texture = new osg::TextureRectangle;
     texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
     texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
     texture->setWrap(osg::Texture::WRAP_R,osg::Texture::REPEAT);
-    // texture->setResizeNonPowerOfTwoHint(false);
     texture->setImage(imageSequence.get());
     //texture->setTextureSize(512,512);
-    
-    //texture->setUpdateCallback(new osg::ImageSequence::UpdateCallback);
 #endif
 
     // create the StateSet to store the texture data
@@ -83,14 +145,14 @@ osg::StateSet* createState()
     return stateset;
 }
 
-osg::Node* createModel()
+osg::Node* createModel(osg::ArgumentParser& arguments)
 {
 
     // create the geometry of the model, just a simple 2d quad right now.    
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(osg::createTexturedQuadGeometry(osg::Vec3(0.0f,0.0f,0.0), osg::Vec3(1.0f,0.0f,0.0), osg::Vec3(0.0f,0.0f,1.0f)));
 
-    geode->setStateSet(createState());
+    geode->setStateSet(createState(arguments));
     
     return geode;
 
@@ -273,17 +335,20 @@ int main(int argc, char **argv)
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
+    std::string filename;
+    arguments.read("-o",filename);
+
     // create a model from the images and pass it to the viewer.
-    viewer.setSceneData(createModel());
+    viewer.setSceneData(createModel(arguments));
 
     // pass the model to the MovieEventHandler so it can pick out ImageStream's to manipulate.
     MovieEventHandler* meh = new MovieEventHandler();
     meh->set( viewer.getSceneData() );
     viewer.addEventHandler( meh );
 
+    viewer.addEventHandler( new osgViewer::StatsHandler());
 
-    std::string filename;
-    if (arguments.read("-o",filename))
+    if (!filename.empty())
     {
         osgDB::writeNodeFile(*viewer.getSceneData(),filename);
     }

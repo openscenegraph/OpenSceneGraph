@@ -54,11 +54,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Table)
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
-	I_Method1(, META_UIObject, IN, osgWidget::Table, x,
-	          Properties::NON_VIRTUAL,
-	          ____META_UIObject__Table,
-	          "",
-	          "");
 	I_ConstructorWithDefaults3(IN, const std::string &, x, "", IN, unsigned, int, 0, IN, unsigned, int, 0,
 	                           ____Table__C5_std_string_R1__unsigned__unsigned,
 	                           "",
@@ -133,13 +128,13 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Table)
 	                   __unsigned_int___calculateIndex__unsigned__unsigned,
 	                   "",
 	                   "");
-	I_ProtectedMethod2(void, _getRows, IN, osgWidget::Table::CellSizes &, x, IN, Getter, x,
+	I_ProtectedMethod2(void, _getRows, IN, osgWidget::Table::CellSizes &, x, IN, osgWidget::Window::Getter, x,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
 	                   __void___getRows__CellSizes_R1__Getter,
 	                   "",
 	                   "");
-	I_ProtectedMethod2(void, _getColumns, IN, osgWidget::Table::CellSizes &, x, IN, Getter, x,
+	I_ProtectedMethod2(void, _getColumns, IN, osgWidget::Table::CellSizes &, x, IN, osgWidget::Window::Getter, x,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
 	                   __void___getColumns__CellSizes_R1__Getter,

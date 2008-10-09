@@ -91,30 +91,30 @@ class OSG_EXPORT AnimationPath : public virtual osg::Object
 
             inline void getMatrix(Matrixf& matrix) const
             {
-                matrix.makeScale(_scale);
-                matrix.postMult(osg::Matrixf::rotate(_rotation));
-                matrix.postMult(osg::Matrixf::translate(_position));
+                matrix.makeRotate(_rotation);
+                matrix.preMultScale(_scale);
+                matrix.postMultTranslate(_position);
             }
 
             inline void getMatrix(Matrixd& matrix) const
             {
-                matrix.makeScale(_scale);
-                matrix.postMult(osg::Matrixd::rotate(_rotation));
-                matrix.postMult(osg::Matrixd::translate(_position));
+                matrix.makeRotate(_rotation);
+                matrix.preMultScale(_scale);
+                matrix.postMultTranslate(_position);
             }
 
             inline void getInverse(Matrixf& matrix) const
             {
-                matrix.makeScale(1.0/_scale.x(),1.0/_scale.y(),1.0/_scale.z());
-                matrix.preMult(osg::Matrixf::rotate(_rotation.inverse()));
-                matrix.preMult(osg::Matrixf::translate(-_position));
+                matrix.makeRotate(_rotation.inverse());
+                matrix.postMultScale(osg::Vec3d(1.0/_scale.x(),1.0/_scale.y(),1.0/_scale.z()));
+                matrix.preMultTranslate(-_position);
             }
 
             inline void getInverse(Matrixd& matrix) const
             {
-                matrix.makeScale(1.0/_scale.x(),1.0/_scale.y(),1.0/_scale.z());
-                matrix.preMult(osg::Matrixd::rotate(_rotation.inverse()));
-                matrix.preMult(osg::Matrixd::translate(-_position));
+                matrix.makeRotate(_rotation.inverse());
+                matrix.postMultScale(osg::Vec3d(1.0/_scale.x(),1.0/_scale.y(),1.0/_scale.z()));
+                matrix.preMultTranslate(-_position);
             }
 
         protected:
@@ -276,7 +276,7 @@ class OSG_EXPORT AnimationPathCallback : public NodeCallback
         double getTimeMultiplier() const { return _timeMultiplier; }
 
 
-        void reset();
+        virtual void reset();
 
         void setPause(bool pause);
         bool getPause() const { return _pause; }
@@ -284,7 +284,7 @@ class OSG_EXPORT AnimationPathCallback : public NodeCallback
         /** Get the animation time that is used to specify the position along
           * the AnimationPath. Animation time is computed from the formula:
           *   ((_latestTime-_firstTime)-_timeOffset)*_timeMultiplier.*/
-        double getAnimationTime() const;
+        virtual double getAnimationTime() const;
 
         /** Implements the callback. */
         virtual void operator()(Node* node, NodeVisitor* nv);

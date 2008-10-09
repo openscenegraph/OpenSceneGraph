@@ -354,6 +354,18 @@ class OSGTERRAIN_EXPORT ProxyLayer : public Layer
         
         META_Object(osgTerrain, ProxyLayer);
         
+        /** Return image associated with layer if supported. */        
+        virtual osg::Image* getImage()
+        {
+            return _implementation.valid() ? _implementation->getImage() : 0;
+        }
+
+        /** Return const image associated with layer if supported. */
+        virtual const osg::Image* getImage() const
+        {
+            return _implementation.valid() ? _implementation->getImage() : 0;
+        }
+
         /** Set the implementation layer that does the actual work.*/
         void setImplementation(Layer* layer) { _implementation = layer; }
         
@@ -417,9 +429,9 @@ class OSGTERRAIN_EXPORT CompositeLayer : public Layer
         std::string getCompoundName(unsigned int i) const;
 
 
-        void setLayer(unsigned int i, Layer* layer) { _layers[i].layer = layer; }
-        Layer* getLayer(unsigned int i) { return _layers[i].layer.get(); }
-        const Layer* getLayer(unsigned int i) const { return _layers[i].layer.get(); }
+        void setLayer(unsigned int i, Layer* layer) { if (i>=_layers.size()) _layers.resize(i+1); _layers[i].layer = layer; }
+        Layer* getLayer(unsigned int i) { return i<_layers.size() ? _layers[i].layer.get() : 0; }
+        const Layer* getLayer(unsigned int i) const { return i<_layers.size() ? _layers[i].layer.get() : 0; }
 
         void addLayer(const std::string& compoundname);
         void addLayer(const std::string& setname, const std::string& filename);
@@ -479,11 +491,25 @@ class OSGTERRAIN_EXPORT SwitchLayer : public CompositeLayer
         SwitchLayer(const SwitchLayer& switchLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
         META_Object(osgTerrain, SwitchLayer);
-
-        void clear();
         
         void setActiveLayer(int i) { _activeLayer = i; }
         int getActiveLayer() const { return _activeLayer; }
+
+        /** Return image associated with layer if supported. */        
+        virtual osg::Image* getImage()
+        {
+            if (_activeLayer < 0) return 0;            
+            if (_activeLayer >= static_cast<int>(getNumLayers())) return 0;
+            return _layers[_activeLayer].layer->getImage();            
+        }
+
+        /** Return const image associated with layer if supported. */
+        virtual const osg::Image* getImage() const
+        {
+            if (_activeLayer < 0) return 0;            
+            if (_activeLayer >= static_cast<int>(getNumLayers())) return 0;
+            return _layers[_activeLayer].layer->getImage();            
+        }
 
     protected:
 

@@ -344,7 +344,7 @@ int OperationThread::cancel()
 #endif
             // commenting out debug info as it was cashing crash on exit, presumable
             // due to osg::notify or std::cout destructing earlier than this destructor.
-            osg::notify(osg::INFO)<<"   Waiting for OperationThread to cancel "<<this<<std::endl;
+            osg::notify(osg::DEBUG_INFO)<<"   Waiting for OperationThread to cancel "<<this<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
     }

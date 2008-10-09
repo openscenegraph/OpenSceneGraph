@@ -66,10 +66,6 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
         virtual osg::FrameStamp* getViewerFrameStamp() { return getFrameStamp(); }
         
 
-        void setEventQueue(osgGA::EventQueue* eventQueue) { _eventQueue = eventQueue; }
-        osgGA::EventQueue* getEventQueue() { return _eventQueue.get(); }
-        const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
-
         /** Execute a main frame loop.
           * Equivalent to while (!viewer.done()) viewer.frame();
           * Also calls realize() if the viewer is not already realized,
@@ -94,8 +90,6 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
         virtual void getCameras(Cameras& cameras, bool onlyActive=true);
         
         virtual void getContexts(Contexts& contexts, bool onlyValid=true);
-
-        virtual void getWindows(Windows& windows, bool onlyValid=true);
 
         virtual void getAllThreads(Threads& threads, bool onlyActive=true);
 
@@ -126,7 +120,6 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
         osg::observer_ptr<osg::Camera>      _cameraWithFocus;
         osg::observer_ptr<osgViewer::View>  _viewWithFocus;
         
-        osg::ref_ptr<osgGA::EventQueue>     _eventQueue;
 };
 
 

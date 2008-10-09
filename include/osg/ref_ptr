@@ -14,6 +14,8 @@
 #ifndef OSG_REF_PTR
 #define OSG_REF_PTR 1
 
+#include <osg/Config>
+
 namespace osg {
 
 /** Smart pointer for handling referenced counted objects.*/
@@ -26,19 +28,19 @@ class ref_ptr
         ref_ptr() : _ptr(0) {}
         ref_ptr(T* ptr) : _ptr(ptr) { if (_ptr) _ptr->ref(); }
         ref_ptr(const ref_ptr& rp) : _ptr(rp._ptr) { if (_ptr) _ptr->ref(); }
+        template<class Other> ref_ptr(const ref_ptr<Other>& rp) : _ptr(rp._ptr) { if (_ptr) _ptr->ref(); }
 
         ~ref_ptr() { if (_ptr) _ptr->unref();  _ptr = 0; }
 
         ref_ptr& operator = (const ref_ptr& rp)
         {
-            if (_ptr==rp._ptr) return *this;
-            T* tmp_ptr = _ptr;
-            _ptr = rp._ptr;
-            if (_ptr) _ptr->ref();
-            // unref second to prevent any deletion of any object which might
-            // be referenced by the other object. i.e rp is child of the
-            // original _ptr.
-            if (tmp_ptr) tmp_ptr->unref();
+            assign(rp);
+            return *this;
+        }
+
+        template<class Other> ref_ptr& operator = (const ref_ptr<Other>& rp)
+        {
+            assign(rp);
             return *this;
         }
 
@@ -55,6 +57,10 @@ class ref_ptr
             return *this;
         }
 
+#ifdef OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION
+        // implicit output conversion
+        operator T*() const { return _ptr; }
+#else
         // comparison operators for ref_ptr.
         bool operator == (const ref_ptr& rp) const { return (_ptr==rp._ptr); }
         bool operator == (const T* ptr) const { return (_ptr==ptr); }
@@ -65,7 +71,8 @@ class ref_ptr
         friend bool operator != (const T* ptr, const ref_ptr& rp) { return (ptr!=rp._ptr); }
  
         bool operator < (const ref_ptr& rp) const { return (_ptr<rp._ptr); }
-
+#endif
+        
         T& operator*() const { return *_ptr; }
         T* operator->() const { return _ptr; }
         T* get() const { return _ptr; }
@@ -78,6 +85,21 @@ class ref_ptr
         void swap(ref_ptr& rp) { T* tmp=_ptr; _ptr=rp._ptr; rp._ptr=tmp; }
 
     private:
+
+        template<class Other> void assign(const ref_ptr<Other>& rp)
+        {
+            if (_ptr==rp._ptr) return;
+            T* tmp_ptr = _ptr;
+            _ptr = rp._ptr;
+            if (_ptr) _ptr->ref();
+            // unref second to prevent any deletion of any object which might
+            // be referenced by the other object. i.e rp is child of the
+            // original _ptr.
+            if (tmp_ptr) tmp_ptr->unref();
+        }
+
+        template<class Other> friend class ref_ptr;
+
         T* _ptr;
 };
 

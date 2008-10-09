@@ -11,8 +11,6 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Image>
-#include <osg/Shader>
-#include <osg/Texture>
 #include <osg/TransferFunction>
 #include <osg/Vec4>
 
@@ -40,36 +38,12 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction)
 	          __C5_osg_Image_P1__getImage,
 	          "",
 	          "");
-	I_Method0(osg::Texture *, getTexture,
-	          Properties::NON_VIRTUAL,
-	          __osg_Texture_P1__getTexture,
-	          "",
-	          "");
-	I_Method0(const osg::Texture *, getTexture,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Texture_P1__getTexture,
-	          "",
-	          "");
-	I_Method0(osg::Shader *, getShader,
-	          Properties::NON_VIRTUAL,
-	          __osg_Shader_P1__getShader,
-	          "",
-	          "");
-	I_Method0(const osg::Shader *, getShader,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Shader_P1__getShader,
-	          "",
-	          "");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __osg_Image_P1__getImage, 
 	                 0);
-	I_SimpleProperty(osg::Shader *, Shader, 
-	                 __osg_Shader_P1__getShader, 
-	                 0);
-	I_SimpleProperty(osg::Texture *, Texture, 
-	                 __osg_Texture_P1__getTexture, 
-	                 0);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::map< float COMMA  osg::Vec4 >, osg::TransferFunction1D::ValueMap)
 
 BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)
 	I_DeclaringFile("osg/TransferFunction");
@@ -127,6 +101,16 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)
 	          __C5_osg_Vec4_R1__getValue__unsigned_int,
 	          "",
 	          "");
+	I_Method1(osg::Vec4, getInterpolatedValue, IN, float, v,
+	          Properties::NON_VIRTUAL,
+	          __osg_Vec4__getInterpolatedValue__float,
+	          "",
+	          "");
+	I_Method2(void, assign, IN, const osg::TransferFunction1D::ValueMap &, vcm, IN, bool, updateMinMaxRange,
+	          Properties::NON_VIRTUAL,
+	          __void__assign__C5_ValueMap_R1__bool,
+	          "",
+	          "");
 	I_SimpleProperty(float, Maximum, 
 	                 __float__getMaximum, 
 	                 __void__setMaximum__float);
@@ -141,4 +125,6 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)
 	                  __void__setValue__unsigned_int__C5_osg_Vec4_R1, 
 	                  0);
 END_REFLECTOR
+
+STD_MAP_REFLECTOR(std::map< float COMMA  osg::Vec4 >)
 

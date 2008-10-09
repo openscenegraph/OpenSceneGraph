@@ -374,6 +374,56 @@ BEGIN_VALUE_REFLECTOR(osg::Matrixf)
 	          __void__postMult__C5_Matrixf_R1,
 	          "",
 	          "");
+	I_Method1(void, preMultTranslate, IN, const osg::Vec3d &, v,
+	          Properties::NON_VIRTUAL,
+	          __void__preMultTranslate__C5_Vec3d_R1,
+	          "Optimized version of preMult(translate(v));. ",
+	          "");
+	I_Method1(void, preMultTranslate, IN, const osg::Vec3f &, v,
+	          Properties::NON_VIRTUAL,
+	          __void__preMultTranslate__C5_Vec3f_R1,
+	          "",
+	          "");
+	I_Method1(void, postMultTranslate, IN, const osg::Vec3d &, v,
+	          Properties::NON_VIRTUAL,
+	          __void__postMultTranslate__C5_Vec3d_R1,
+	          "Optimized version of postMult(translate(v));. ",
+	          "");
+	I_Method1(void, postMultTranslate, IN, const osg::Vec3f &, v,
+	          Properties::NON_VIRTUAL,
+	          __void__postMultTranslate__C5_Vec3f_R1,
+	          "",
+	          "");
+	I_Method1(void, preMultScale, IN, const osg::Vec3d &, v,
+	          Properties::NON_VIRTUAL,
+	          __void__preMultScale__C5_Vec3d_R1,
+	          "Optimized version of preMult(scale(v));. ",
+	          "");
+	I_Method1(void, preMultScale, IN, const osg::Vec3f &, v,
+	          Properties::NON_VIRTUAL,
+	          __void__preMultScale__C5_Vec3f_R1,
+	          "",
+	          "");
+	I_Method1(void, postMultScale, IN, const osg::Vec3d &, v,
+	          Properties::NON_VIRTUAL,
+	          __void__postMultScale__C5_Vec3d_R1,
+	          "Optimized version of postMult(scale(v));. ",
+	          "");
+	I_Method1(void, postMultScale, IN, const osg::Vec3f &, v,
+	          Properties::NON_VIRTUAL,
+	          __void__postMultScale__C5_Vec3f_R1,
+	          "",
+	          "");
+	I_Method1(void, preMultRotate, IN, const osg::Quat &, q,
+	          Properties::NON_VIRTUAL,
+	          __void__preMultRotate__C5_Quat_R1,
+	          "Optimized version of preMult(rotate(q));. ",
+	          "");
+	I_Method1(void, postMultRotate, IN, const osg::Quat &, q,
+	          Properties::NON_VIRTUAL,
+	          __void__postMultRotate__C5_Quat_R1,
+	          "Optimized version of postMult(rotate(q));. ",
+	          "");
 	I_StaticMethod0(osg::Matrixf, identity,
 	                __Matrixf__identity_S,
 	                "",

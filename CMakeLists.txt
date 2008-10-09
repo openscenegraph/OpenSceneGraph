@@ -19,14 +19,20 @@ if(COMMAND cmake_policy)
     # Works around warnings about escaped quotes in ADD_DEFINITIONS
     # statements.
     cmake_policy(SET CMP0005 NEW)
+
+    # cmake-2.6.1 introduces policy cmp0008 decide how to treat full path libraries that do not appear to be valid library file names
+    # quote from cvslog "Such libraries worked by accident in the VS IDE and Xcode generators in CMake 2.4 and below."
+    if(POLICY CMP0008)
+        cmake_policy(SET CMP0008 OLD)
+    endif(POLICY CMP0008)
 endif(COMMAND cmake_policy)
 
 PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 2)
 SET(OPENSCENEGRAPH_MINOR_VERSION 7)
-SET(OPENSCENEGRAPH_PATCH_VERSION 2)
-SET(OPENSCENEGRAPH_SOVERSION 46)
+SET(OPENSCENEGRAPH_PATCH_VERSION 3)
+SET(OPENSCENEGRAPH_SOVERSION 47)
 
 # set to 0 when not a release candidate, non zero means that any generated 
 # svn tags will be treated as release candidates of given number
@@ -134,9 +140,10 @@ IF (OSG_MAINTAINER)
     # Provide target for generating ChangeLog
     #
     SET(SVN2LOG ~/bin/svn2log.py)
-    SET(GENERATELOGS svn log -v --xml | python ${SVN2LOG} -L -H)
+    SET(GENERATELOGS ${SVNCOMMAND} log -v --xml | python ${SVN2LOG} -L -H)
 
     ADD_CUSTOM_TARGET(ChangeLog
+        COMMAND ${SVNCOMMAND} update
         COMMAND ${GENERATELOGS}
     )
     
@@ -256,6 +263,7 @@ MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGSPHERE)
 OPTION(OSG_USE_FLOAT_BOUNDINGBOX "Set to ON to build OpenSceneGraph with float BoundingBox instead of double." ON)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGBOX)
 
+OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
 
 ################################################################################
 # Set Config file
@@ -288,6 +296,7 @@ FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(GDAL)
 FIND_PACKAGE(CURL)
 FIND_PACKAGE(ITK)
+FIND_PACKAGE(OurDCMTK)
 
 SET(wxWidgets_USE_LIBS base core gl net)
 FIND_PACKAGE(wxWidgets)
@@ -333,13 +342,7 @@ IF(PKG_CONFIG_FOUND)
 ENDIF(PKG_CONFIG_FOUND)
 
 
-#
-# Enable workaround for OpenGL driver crash with occlusion query
-#
-OPTION(OSG_FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL "Set to ON to build OcclussionQueryNode with a workaround for multi-threaded OpenGL driver occlussion query crash. " OFF)
-IF(OSG_FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL)
-    ADD_DEFINITIONS(-DFORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL)
-ENDIF(OSG_FORCE_QUERY_RESULT_AVAILABLE_BEFORE_RETRIEVAL)
+
 
 
 
@@ -422,17 +425,19 @@ ENDIF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
 # Installation stuff
 
 SET(CMAKE_DEBUG_POSTFIX "d" CACHE STRING "add a postfix, usually d on windows")
-IF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4)
-  ADD_DEFINITIONS(-DOSG_DEBUG_POSTFIX="${CMAKE_DEBUG_POSTFIX}")
-ELSE(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4)
-  ADD_DEFINITIONS(-DOSG_DEBUG_POSTFIX='\"${CMAKE_DEBUG_POSTFIX}\"')
-ENDIF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4)
+ADD_DEFINITIONS(-DOSG_DEBUG_POSTFIX=${CMAKE_DEBUG_POSTFIX})
+
 IF(UNIX AND NOT WIN32 AND NOT APPLE)
   IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
     ADD_DEFINITIONS("-D_DEBUG")
   ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
 ENDIF(UNIX AND NOT WIN32 AND NOT APPLE)
 
+IF(CYGWIN)
+  IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    ADD_DEFINITIONS("-D_DEBUG")
+  ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
+ENDIF(CYGWIN)
 
 IF(UNIX AND NOT WIN32 AND NOT APPLE)
   IF(CMAKE_SIZEOF_VOID_P MATCHES "8")
@@ -517,6 +522,11 @@ IF   (DYNAMIC_OPENSCENEGRAPH)
     SET(OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC "SHARED")
 ELSE (DYNAMIC_OPENSCENEGRAPH)
     SET(OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC "STATIC")
+ENDIF(DYNAMIC_OPENSCENEGRAPH)
+
+# Add a default plugin search path component
+IF   (DYNAMIC_OPENSCENEGRAPH)
+  ADD_DEFINITIONS(-DOSG_DEFAULT_LIBRARY_PATH=${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}/${OSG_PLUGINS})
 ENDIF(DYNAMIC_OPENSCENEGRAPH)
 
 INCLUDE(OsgMacroUtils)
@@ -688,6 +698,13 @@ IF(BUILD_DOCUMENTATION)
     )
 ENDIF(BUILD_DOCUMENTATION)
 
+OPTION(BUILD_DASHBOARD_REPORTS "Set to ON to activate reporting of OpenSceneGraph builds here http://www.cdash.org/CDashPublic/index.php?project=OpenSceneGraph" OFF)
+IF(BUILD_DASHBOARD_REPORTS)
+# The following are required to uses Dart and the Cdash dashboard
+# viewable here : http://www.cdash.org/CDashPublic/index.php?project=OpenSceneGraph
+    INCLUDE(Dart)
+ENDIF(BUILD_DASHBOARD_REPORTS)
+
 # This needs to be run very last so other parts of the scripts can take
 # advantage of this.
 IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
@@ -704,4 +721,3 @@ CONFIGURE_FILE(
   IMMEDIATE @ONLY)
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
-

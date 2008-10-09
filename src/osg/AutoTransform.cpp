@@ -83,19 +83,22 @@ bool AutoTransform::computeLocalToWorldMatrix(Matrix& matrix,NodeVisitor*) const
 
 bool AutoTransform::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 {
+    if (_scale.x() == 0.0 || _scale.y() == 0.0 || _scale.z() == 0.0)
+        return false;
+
     if (_referenceFrame==RELATIVE_RF)
     {
-        matrix.postMult(osg::Matrix::translate(-_position)*
-                        osg::Matrix::rotate(_rotation.inverse())*
-                        osg::Matrix::scale(1.0/_scale.x(),1.0/_scale.y(),1.0/_scale.z())*
-                        osg::Matrix::translate(_pivotPoint));
+        matrix.postMultTranslate(-_position);
+        matrix.postMultRotate(_rotation.inverse());
+        matrix.postMultScale(Vec3d(1.0/_scale.x(), 1.0/_scale.y(), 1.0/_scale.z()));
+        matrix.postMultTranslate(_pivotPoint);
     }
     else // absolute
     {
-        matrix = osg::Matrix::translate(-_position)*
-                 osg::Matrix::rotate(_rotation.inverse())*
-                 osg::Matrix::scale(1.0/_scale.x(),1.0/_scale.y(),1.0/_scale.z())*
-                 osg::Matrix::translate(_pivotPoint);
+        matrix.makeRotate(_rotation.inverse());
+        matrix.preMultTranslate(-_position);
+        matrix.postMultScale(Vec3d(1.0/_scale.x(), 1.0/_scale.y(), 1.0/_scale.z()));
+        matrix.postMultTranslate(_pivotPoint);
     }
     return true;
 }
@@ -104,10 +107,10 @@ void AutoTransform::computeMatrix() const
 {
     if (!_matrixDirty) return;
     
-    _cachedMatrix.set(osg::Matrix::translate(-_pivotPoint)*
-                      osg::Matrix::scale(_scale)*
-                      osg::Matrix::rotate(_rotation)*
-                      osg::Matrix::translate(_position));
+    _cachedMatrix.makeRotate(_rotation);
+    _cachedMatrix.postMultTranslate(_position);
+    _cachedMatrix.preMultScale(_scale);
+    _cachedMatrix.preMultTranslate(-_pivotPoint);
     
     _matrixDirty = false;
 }

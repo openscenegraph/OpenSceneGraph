@@ -105,7 +105,9 @@ ExportOptions::ExportOptions( const osgDB::ReaderWriter::Options* opt )
   : _version( VERSION_16_1 ),
     _units( METERS ),
     _validate( false ),
-    _lightingDefault( true )
+    _lightingDefault( true ),
+    _stripTextureFilePath( false )
+    
 {
     if (opt)
     {

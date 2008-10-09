@@ -17,6 +17,8 @@
 #include <osg/Group>
 #include <osg/CoordinateSystemNode>
 
+#include <osgDB/ReaderWriter>
+
 #include <osgTerrain/TerrainTechnique>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
@@ -30,37 +32,37 @@ class TileID
     public:
     
         TileID():
-            layer(-1),
+            level(-1),
             x(-1),
             y(-1) {}
 
-        TileID(int in_layer, int in_x, int in_y):
-            layer(in_layer),
+        TileID(int in_level, int in_x, int in_y):
+            level(in_level),
             x(in_x),
             y(in_y) {}
             
         bool operator == (const TileID& rhs) const        
         {
-            return (layer==rhs.layer) && (x==rhs.x) && (y==rhs.y);
+            return (level==rhs.level) && (x==rhs.x) && (y==rhs.y);
         }
 
         bool operator != (const TileID& rhs) const        
         {
-            return (layer!=rhs.layer) || (x!=rhs.x) || (y!=rhs.y);
+            return (level!=rhs.level) || (x!=rhs.x) || (y!=rhs.y);
         }
 
         bool operator < (const TileID& rhs) const
         {
-            if (layer<rhs.layer) return true;
-            if (layer>rhs.layer) return false;
+            if (level<rhs.level) return true;
+            if (level>rhs.level) return false;
             if (x<rhs.x) return true;
             if (x>rhs.x) return false;
             return y<rhs.y;
         }
         
-        bool valid() const { return layer>=0; }
+        bool valid() const { return level>=0; }
 
-        int layer;
+        int level;
         int x;
         int y;
 };
@@ -145,8 +147,8 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
         /** Get the number of colour layers.*/
         unsigned int getNumColorLayers() const { return _colorLayers.size(); }
-
-
+        
+        
         /** Set hint to whether the TerrainTechnique should create per vertex normals for lighting purposes.*/
         void setRequiresNormals(bool flag) { _requiresNormals = flag; }
 
@@ -168,6 +170,16 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
         /** Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers.*/
         virtual osg::BoundingSphere computeBound() const;
+
+        /** Callback for post processing loaded TerrainTile, and for filling in missing elements such as external external imagery.*/
+        struct TileLoadedCallback : public osg::Referenced
+        {
+            virtual bool deferExternalLayerLoading() const = 0;
+            virtual void loaded(osgTerrain::TerrainTile* tile, const osgDB::ReaderWriter::Options* options) const = 0;
+        };
+        
+        static void setTileLoadedCallback(TileLoadedCallback* lc);
+        static osg::ref_ptr<TileLoadedCallback>& getTileLoadedCallback();
 
     protected:
 
@@ -194,6 +206,45 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         
         bool                                _requiresNormals;
         bool                                _treatBoundariesToValidDataAsDefaultValue;
+};
+
+/** Helper callback for managing optional sets of layers, that loading of is deffered to this callback,
+  * with this callback working out which layers to load, and how to create fallback versions of the layers.
+*/
+class OSGTERRAIN_EXPORT WhiteListTileLoadedCallback : public TerrainTile::TileLoadedCallback
+{
+    public:
+
+        WhiteListTileLoadedCallback();
+
+        void allow(const std::string& setname) { _setWhiteList.insert(setname); }
+        
+        void setMinimumNumOfLayers(unsigned int numLayers) { _minumumNumberOfLayers = numLayers; }
+        unsigned int getMinimumNumOfLayers() const { return _minumumNumberOfLayers; }
+
+        void setReplaceSwitchLayer(bool replaceSwitchLayer) { _replaceSwitchLayer = replaceSwitchLayer; }
+        bool getReplaceSwitchLayer() const { return _replaceSwitchLayer; }
+
+        void setAllowAll(bool allowAll) { _allowAll = allowAll; }
+        bool getAllowAll() const { return _allowAll; }
+
+        bool layerAcceptable(const std::string& setname) const;
+        bool readImageLayer(osgTerrain::ImageLayer* imageLayer, const osgDB::ReaderWriter::Options* options) const;
+
+        virtual bool deferExternalLayerLoading() const;
+
+        virtual void loaded(osgTerrain::TerrainTile* tile, const osgDB::ReaderWriter::Options* options) const;
+    
+    protected:
+
+        virtual ~WhiteListTileLoadedCallback();
+    
+        typedef std::set<std::string> SetWhiteList;
+        SetWhiteList    _setWhiteList;
+        unsigned int    _minumumNumberOfLayers;
+        bool            _replaceSwitchLayer;
+        bool            _allowAll;
+
 };
 
 }

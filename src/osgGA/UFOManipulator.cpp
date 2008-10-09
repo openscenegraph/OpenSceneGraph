@@ -1,5 +1,20 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+/* Written by Don Burns */
+
 #include <osgGA/UFOManipulator>
-#include <osgUtil/IntersectVisitor>
+#include <osgUtil/LineSegmentIntersector>
 
 #include <osg/io_utils>
 
@@ -40,6 +55,27 @@ UFOManipulator::UFOManipulator():
 
     _direction.set( 0,1,0);
     _stop();
+}
+
+UFOManipulator::~UFOManipulator()
+{
+}
+
+bool UFOManipulator::intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection) const
+{
+    osg::ref_ptr<osgUtil::LineSegmentIntersector> lsi = new osgUtil::LineSegmentIntersector(start,end);
+
+    osgUtil::IntersectionVisitor iv(lsi.get());
+    iv.setTraversalMask(_intersectTraversalMask);
+    
+    _node->accept(iv);
+    
+    if (lsi->containsIntersections())
+    {
+        intersection = lsi->getIntersections().begin()->getWorldIntersectPoint();
+        return true;
+    }
+    return false;
 }
 
 void UFOManipulator::setNode( osg::Node *node )
@@ -115,12 +151,10 @@ void UFOManipulator::computeHomePosition()
        * Find the ground - Assumption: The ground is the hit of an intersection
        * from a line segment extending from above to below the database at its 
        * horizontal center, that intersects the database closest to zero. */
-    osgUtil::IntersectVisitor iv;
-    iv.setTraversalMask(_intersectTraversalMask);
 
     osg::CoordinateFrame cf( getCoordinateFrame(bs.center()) ); // not sure what position to use here
     osg::Vec3d upVec( getUpVector(cf) );
-    osg::ref_ptr<osg::LineSegment> seg = new osg::LineSegment;
+
     osg::Vec3 A = bs.center() + (upVec*(bs.radius()*2));
     osg::Vec3 B = bs.center() + (-upVec*(bs.radius()*2));
 
@@ -129,22 +163,12 @@ void UFOManipulator::computeHomePosition()
         return;
     }
 
-    /*
-    seg->set( bs.center() + (upVec*(bs.radius()*2)), 
-              bs.center() + (-upVec*(bs.radius()*2)) );
-              */
-    seg->set( A, B );
-
-    iv.addLineSegment( seg.get() );
-    _node->accept(iv);
-
     // start with it high
     double ground = bs.radius() * 3;
 
-    if (iv.hits())
+    osg::Vec3d ip;
+    if (intersect(A, B, ip))
     {
-        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(seg.get());
-        osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
         double d = ip.length();
         if( d < ground )
             ground = d;
@@ -510,57 +534,39 @@ void UFOManipulator::_adjustPosition()
     if( !_node.valid() )
         return;
 
-    osgUtil::IntersectVisitor iv;
-    iv.setTraversalMask(_intersectTraversalMask);
-
     // Forward line segment at 3 times our intersect distance
-    osg::ref_ptr<osg::LineSegment> segForward = new osg::LineSegment;
-    segForward->set(_position, _position + (_direction * (_minDistanceInFront * 3.0)) );
-    iv.addLineSegment( segForward.get() );
 
 
-    // Down line segment at 3 times our intersect distance
+    typedef std::vector<osg::Vec3d> Intersections;
+    Intersections intersections;
+
+    // Check intersects infront.
+    osg::Vec3d ip;
+    if (intersect(_position, 
+                  _position + (_direction * (_minDistanceInFront * 3.0)),
+                  ip ))
+    {
+        double d = (ip - _position).length();
+
+        if( d < _minDistanceInFront )
+        {
+            _position = ip + (_direction * -_minDistanceInFront);
+            _stop();
+        }
+    }
+    
+    // Check intersects below.
     osg::CoordinateFrame cf( getCoordinateFrame(_position) );
     osg::Vec3d upVec( getUpVector(cf) );
-    osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
-    segDown->set(   _position, 
-                    _position - upVec*_minHeightAboveGround*3);
-    iv.addLineSegment( segDown.get() );
 
-    _node->accept(iv);
-
-    if (iv.hits())
+    if (intersect(_position, 
+                  _position - upVec*_minHeightAboveGround*3, 
+                  ip ))
     {
-        // Check intersects infront.
-        {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segForward.get());
-            if (!hitList.empty())
-            {
-                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
+        double d = (ip - _position).length();
 
-                double d = (ip - _position).length();
-            
-                if( d < _minDistanceInFront )
-                {
-                    _position = ip + (_direction * -_minDistanceInFront);
-                    _stop();
-                }
-            }
-        }
-
-        // Check intersects below.
-        {
-            osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segDown.get());
-            if (!hitList.empty())
-            {
-                osg::Vec3d ip = hitList.front().getWorldIntersectPoint();
-                double d = (ip - _position).length();
-            
-                if( d < _minHeightAboveGround )
-                  _position = ip + (upVec * _minHeightAboveGround);
-            }
-        }
-
+        if( d < _minHeightAboveGround )
+          _position = ip + (upVec * _minHeightAboveGround);
     }
 }
 

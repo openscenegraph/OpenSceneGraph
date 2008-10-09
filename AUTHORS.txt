@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.7.1
+OpenSceneGraph Library 2.7.3
 
-330 Contributors:
+340 Contributors:
 
 Firstname Surname
 -----------------
@@ -12,32 +12,33 @@ Mike Weiblen
 Eric Wing
 Brede Johansen
 Stephan Huber
+Mathias Fröhlich
 Geoff Michel
 Farshid Lashkari
 Bob Kuehne
-Mathias Fröhlich
 Eric Sokolowsky
 Ulrich Hertlein
 Martin Lavery
+Jean-Sebastien Guay
 David Callu
 Tree 
 Luigi Calori
-Jean-Sebastien Guay
 Trajce Nikolov
 Mike Wittman
-Pavel Moloshtan
 Colin McDonald
+Wojciech Lewandowski
+Pavel Moloshtan
 Tom Jolley
-Andy Skinner
 Roger James
+Andy Skinner
 Norman Vine
 Jeremy Moles
 Alberto Farre
 André Garneau
-Wojciech Lewandowski
 Ruben Lopez
 Randall Hopper
 Art Tevs
+Adrian Egli
 Olaf Flebbe
 Gideon May
 Don Tidrow
@@ -45,12 +46,12 @@ Romano José Magacho da Silva
 Paul Melis
 Michael Platings
 Michael Gronager
+Jason Beverage
 Daniel Sjölie
 Chris Hanson
-Adrian Egli
 Sherman Wilcox
 Per Fahlberg
-Jason Beverage
+Mathieu Marache
 J.P. Delport
 David Spilling
 Philip Lowman
@@ -69,11 +70,12 @@ Serge Lages
 Rune Schmidt Jensen
 Rainer Oder
 Mike Connell
-Mathieu Marache
 Carlo Camporesi
+Bryan Thrall
 Ben Discoe
 Andreas Ekstrand
 Sasa Bistrovic
+Neil Groves
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
@@ -84,12 +86,13 @@ John Shue
 Jan Peciva
 Jan Ciger
 Gordon Tomlinson
+Glenn Waldron
 Gino van den Bergen
-Bryan Thrall
 Brad Colbert
 Vivek Rajan
 Thibault Genessay
 Sean Spicer
+Roland Smeenk
 Ravi Mathur
 Nikolaus Hanekamp
 Neil Salter
@@ -97,49 +100,52 @@ Mihai Radu
 Michael Hartman
 Luc Frauciel
 Laurens Voerman
-Glenn Waldron
 David Guthrie
 Corbin Holtz
 Cedric Pinson
 Brad Christiansen
+Alberto Luaces
 Toshiyuki Takahei
+Tim Moore
 Thom DeCarlo
 Simon Julier
 Sebastien Grignard
 Romano Magacho
-Roland Smeenk
+Richard Schmidt
 Paul de Repentigny
+Mattias Helsing
 Liang Aibin
 Leandro Motta Barros
 John Kelso
 Daniel Larimer
 Colin Dunlop
 Bruce Clay
-Alberto Luaces
 Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
 Tony Horrobin
-Tim Moore
+Tatsuhiro Nishioka
 Sohey Yamamoto
-Richard Schmidt
+Riccardo Corsi
+Ralf Habacker
 Rafa Gaitan
 Phil Atkin
 Peter Hrenka
-Neil Groves
 Mattias Linde
-Mattias Helsing
 Maria Ten
 Ken Sewell
 Julian Ortiz
+John Vidar Larring
 Jeremy Bell
 James French
 Garrett Potts
 Gabor Dorka
+Fabio Mierlo
 Doug McCorkle
 Donn Mielcarek
 Donald Cipperly
 Domenico Mangieri
+Chris Denham
 Charles Cole
 Blake Williams
 Antoine Hue
@@ -158,32 +164,33 @@ Stephan Eilemann
 Stanislav Blinov
 Sebastian Messerschmidt
 Rudolf Wiedemann
-Riccardo Corsi
 Ralf Kern
 Perry Miller
 Nathan Monteleone
 Miguel Escriva
 Michael Henheffer
+Michael Guerrero
 Maya Leonard
-Max Behensky
+Max Bandazian
 Mathew May
 Martijn Kragtwijk
-Liang Aibin
 Kevin Moiule
 Keith Steffen
 Joseph Winston
 John Aughey
 Johan Nouvel
 Igor Kravtchenko
+He Sicong
 Gustavo Wagner
 Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
-Fabio Mierlo
+Erik den Dekker
 Edgar Ellis
 David Ergo
 Daniel Trstenjak
 Csaba Halasz
+Christophe Loustaunau
 Brad Anderegg
 Andrew Sampson
 Andrew Lorino
@@ -207,7 +214,6 @@ Tomas Hnilica
 Tino Schwarze
 Thom Carlo
 Tery Welsh
-Tatsuhiro Nishioka
 Tanguy Fautré
 Steven Thomas
 Sid Byce
@@ -218,6 +224,7 @@ Sebastien Kuntz
 Ruth Lang
 Ronny Krueger
 Robert Swain
+Rob Bloemkool
 Rick Pingry
 Rene Molenaar
 Reinhard Sainitzer
@@ -244,8 +251,8 @@ Mike Garrity
 Michael Polak
 Michael Morrison
 Michael Logan
-Michael Guerrero
 Max Rhiener
+Max Behensky
 Mauricio Hofmam
 Matthew May
 Matt Green
@@ -259,6 +266,7 @@ Marin Lavery
 Marco Lehmann
 Maceij Krol
 Louis Hamilton
+Lionel Lagarde
 Lilin Xiong
 Lewis Harmon
 Lars Nilson
@@ -267,11 +275,11 @@ Karsten Weiss
 Karl Heijdenberg
 Jutta Sauer
 Josh Portway
-John Vidar Larring
 John Tan
 John Grant
 John Donovan
 John Davis
+John Argentieri
 Joan Abadie
 Jeoen den Dekker
 Jean-Christophe Lombardo
@@ -280,7 +288,6 @@ Jason Howlett
 Jason Ballenger
 J.E. Hoffmann
 Henrique Bucher
-He Sicong
 Hautio Jari
 Guillaume Millet
 Graeme Harkness
@@ -294,7 +301,7 @@ Frank Lindeman
 Frank Lichtenheld
 Ferdinand Cornelissen
 Fabien Dachicourt
-Erik den Dekker
+Ewe Woessner
 Emmanuel Roche
 Edmond Gheury
 Ed Ralston
@@ -311,7 +318,7 @@ Cyril Brulebois
 Clay Fowler
 Chuck Sembroski
 Chuck Seberion
-Christophe Loustaunau
+Christopher Blaesius
 Christian Kaser
 Chris McGlone
 Carlos Garcea
@@ -320,6 +327,7 @@ Brian Keener
 Brandon Hamm
 Bora Utka
 Blasius Czink
+Bill Prendergast
 Benoit Laniel
 Ben van Basten
 Bart Gallet
@@ -334,4 +342,5 @@ Alberto Jaspe
 Alan Purvis
 Alan Ott
 Alan Harris
+Alan Dickinson
 Adam Richard

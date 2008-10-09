@@ -635,6 +635,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __void__copyToAndOptimize__Geometry_R1,
 	          "",
 	          "");
+	I_Method0(bool, containsSharedArrays,
+	          Properties::NON_VIRTUAL,
+	          __bool__containsSharedArrays,
+	          "",
+	          "");
+	I_Method0(void, duplicateSharedArrays,
+	          Properties::NON_VIRTUAL,
+	          __void__duplicateSharedArrays,
+	          "",
+	          "");
 	I_Method0(void, computeInternalOptimizedGeometry,
 	          Properties::NON_VIRTUAL,
 	          __void__computeInternalOptimizedGeometry,

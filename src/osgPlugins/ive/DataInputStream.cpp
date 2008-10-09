@@ -1007,7 +1007,7 @@ osg::Image* DataInputStream::readImage(IncludeImageMode mode)
             // Only read image name from stream.
             {
                 std::string filename = readString();
-                if(filename.compare("")!=0){
+                if(!filename.empty()){
                     return readImage(filename);
                 }
             }

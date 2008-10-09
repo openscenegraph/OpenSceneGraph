@@ -303,6 +303,7 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
                                            0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
                                     
         osg::Texture2D* texture = new osg::Texture2D(image);
+        texture->setResizeNonPowerOfTwoHint(false);
         texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
         texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
         texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
@@ -383,7 +384,7 @@ int main(int argc, char** argv)
             "uniform samplerRect movie_texture;\n"
             "void main(void)\n"
             "{\n"
-            "    vec4 texture_color = textureRect(movie_texture, gl_TexCoord[0]); \n"
+            "    vec4 texture_color = textureRect(movie_texture, gl_TexCoord[0].st); \n"
             "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
             "    gl_FragColor = texture_color;\n"
             "}\n"
@@ -394,7 +395,7 @@ int main(int argc, char** argv)
             "uniform sampler2D movie_texture;\n"
             "void main(void)\n"
             "{\n"
-            "    vec4 texture_color = texture2D(movie_texture, gl_TexCoord[0]); \n"
+            "    vec4 texture_color = texture2D(movie_texture, gl_TexCoord[0].st); \n"
             "    if (all(lessThanEqual(texture_color,cutoff_color))) discard; \n"
             "    gl_FragColor = texture_color;\n"
             "}\n"

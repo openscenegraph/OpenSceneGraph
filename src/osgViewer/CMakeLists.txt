@@ -7,6 +7,7 @@ ELSE (DYNAMIC_OPENSCENEGRAPH)
 ENDIF(DYNAMIC_OPENSCENEGRAPH)
 
 SET(LIB_NAME osgViewer)
+
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CompositeViewer
@@ -38,6 +39,18 @@ SET(LIB_COMMON_FILES
 SET(LIB_EXTRA_LIBS)
 
 IF(WIN32)
+
+    #
+    # Enable workaround for OpenGL driver issues when used in multithreaded/multiscreen with NVidia drivers on Windows XP 
+    # For example: osgviewer dumptruck.osg was showing total garbage (screen looked like shattered, splashed hedgehog) 
+    # There were also serious issues with render to texture cameras.
+    # Workaround repeats makeCurrentContext call as it was found that this causes the problems to dissapear.
+    #
+    OPTION(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND "Set to ON if you have NVidia board and drivers earlier than 177.92 ver" ON)
+    MARK_AS_ADVANCED(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
+    IF(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
+        ADD_DEFINITIONS(-DOSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
+    ENDIF(OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
 
     SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
         ${HEADER_PATH}/api/Win32/GraphicsWindowWin32

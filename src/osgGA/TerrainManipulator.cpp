@@ -15,7 +15,6 @@
 #include <osg/Quat>
 #include <osg/Notify>
 #include <osg/io_utils>
-#include <osgUtil/IntersectVisitor>
 #include <osgUtil/LineSegmentIntersector>
 
 using namespace osg;

@@ -29,7 +29,7 @@ void PagedLOD::write(DataOutputStream* out)
         static_cast<ive::Node*>(node)->write(out);
     }
     else
-        throw Exception("PagedLOD::write(): Could not cast this osg::PagedLOD to an osg::LOD.");
+        throw Exception("PagedLOD::write(): Could not cast this osg::PagedLOD to an osg::Node.");
 
     out->writeString(getDatabasePath());
     out->writeFloat(getRadius());
@@ -117,7 +117,7 @@ void PagedLOD::read(DataInputStream* in)
             ((ive::Node*)(node))->read(in);
         }
         else
-            throw Exception("Group::read(): Could not cast this osg::Group to an osg::Node.");
+            throw Exception("PagedLOD::read(): Could not cast this osg::PagedLOD to an osg::Node.");
 
 
         if ( in->getVersion() >= VERSION_0006 )

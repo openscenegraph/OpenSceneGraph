@@ -1067,7 +1067,7 @@ void SceneView::draw()
                 if (!leftColorMask)
                 {
                     leftColorMask = new osg::ColorMask();
-                    _renderStageRight->setColorMask(leftColorMask);
+                    _renderStageLeft->setColorMask(leftColorMask);
                 }
                 
                 // red
@@ -1084,7 +1084,7 @@ void SceneView::draw()
                 
 
                 // ensure that right eye color planes are active.
-                osg::ColorMask* rightColorMask = _renderStageLeft->getColorMask();
+                osg::ColorMask* rightColorMask = _renderStageRight->getColorMask();
                 if (!rightColorMask)
                 {
                     rightColorMask = new osg::ColorMask();
@@ -1098,7 +1098,6 @@ void SceneView::draw()
                 // rightColorMask->setMask(false,false,true,true);
 
                 _localStateSet->setAttribute(rightColorMask);
-                _renderStageRight->setColorMask(rightColorMask);
 
                 // draw right eye.
                 _renderStageRight->draw(_renderInfo,previous);
@@ -1522,11 +1521,8 @@ void SceneView::draw()
 
     if (state->getCheckForGLErrors()!=osg::State::NEVER_CHECK_GL_ERRORS)
     {
-        GLenum errorNo = glGetError();
-        if (errorNo!=GL_NO_ERROR)
+        if (state->checkGLErrors("end of SceneView::draw()"))
         {
-            osg::notify(WARN)<<"Warning: detected OpenGL error '"<<gluErrorString(errorNo)<<"'"<< std::endl;
-
             // go into debug mode of OGL error in a fine grained way to help
             // track down OpenGL errors.
             state->setCheckForGLErrors(osg::State::ONCE_PER_ATTRIBUTE);

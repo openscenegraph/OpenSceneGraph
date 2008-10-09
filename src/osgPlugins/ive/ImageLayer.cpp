@@ -15,6 +15,8 @@
 #include "ImageLayer.h"
 #include "Layer.h"
 
+#include <osgTerrain/TerrainTile>
+
 #include <osgDB/ReadFile>
 
 using namespace ive;
@@ -32,7 +34,7 @@ void ImageLayer::write(DataOutputStream* out)
         throw Exception("ImageLayer::write(): Could not cast this osgLayer::ImageLayer to an osgTerrain::Layer.");
 
 
-    IncludeImageMode imMode = out->getIncludeImageMode();
+    IncludeImageMode imMode = out->getIncludeImageMode(getImage());
 
     if (getFileName().empty() && imMode==IMAGE_REFERENCE_FILE) imMode = IMAGE_INCLUDE_DATA;
 
@@ -59,8 +61,18 @@ void ImageLayer::read(DataInputStream* in)
         throw Exception("ImageLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
 
 
+    bool deferExternalLayerLoading = osgTerrain::TerrainTile::getTileLoadedCallback().valid() ? 
+        osgTerrain::TerrainTile::getTileLoadedCallback()->deferExternalLayerLoading() : false;
+
     // Should we read image data from stream
     IncludeImageMode includeImg = (IncludeImageMode)in->readChar();
-    setImage(in->readImage(includeImg));
-
+    
+    if (includeImg==IMAGE_REFERENCE_FILE && deferExternalLayerLoading)
+    {
+        setFileName(in->readString());
+    }
+    else
+    {
+        setImage(in->readImage(includeImg));
+    }
 }

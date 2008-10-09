@@ -213,6 +213,11 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	          __bool__removeExpiredChildren__double__int__NodeList_R1,
 	          "Remove the children from the PagedLOD which haven't been visited since specified expiry time and expiry frame number. ",
 	          "The removed children are added to the removeChildren list passed into the method, this allows the children to be deleted later at the caller's discretion. Return true if children are removed, false otherwise. ");
+	I_Method2(bool, releaseGLObjectsOnExpiredChildren, IN, double, releaseTime, IN, int, releaseFrame,
+	          Properties::VIRTUAL,
+	          __bool__releaseGLObjectsOnExpiredChildren__double__int,
+	          "Release the GL Objects of the children from the PagedLOD which haven't been visited since specified expiry time and expiry frame number. ",
+	          "Return true if any children have release called upon them, false otherwise. ");
 	I_ProtectedMethod1(void, expandPerRangeDataTo, IN, unsigned int, pos,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -280,6 +285,7 @@ BEGIN_VALUE_REFLECTOR(osg::PagedLOD::PerRangeData)
 	I_PublicMemberProperty(float, _priorityScale);
 	I_PublicMemberProperty(double, _timeStamp);
 	I_PublicMemberProperty(int, _frameNumber);
+	I_PublicMemberProperty(int, _frameNumberOfLastReleaseGLObjects);
 	I_PublicMemberProperty(osg::ref_ptr< osg::Referenced >, _databaseRequest);
 END_REFLECTOR
 

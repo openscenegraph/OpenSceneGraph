@@ -217,7 +217,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         virtual void getContexts(Contexts& contexts, bool onlyValid=true) = 0;
 
         typedef std::vector<osgViewer::GraphicsWindow*> Windows;
-        virtual void getWindows(Windows& windows, bool onlyValid=true) = 0;
+        virtual void getWindows(Windows& windows, bool onlyValid=true);
 
         typedef std::vector<OpenThreads::Thread*> Threads;
         virtual void getAllThreads(Threads& threads, bool onlyActive=true) = 0;

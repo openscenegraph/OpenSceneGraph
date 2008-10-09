@@ -88,8 +88,6 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
         
         virtual void getContexts(Contexts& contexts, bool onlyValid=true);
 
-        virtual void getWindows(Windows& windows, bool onlyValid=true);
-
         virtual void getAllThreads(Threads& threads, bool onlyActive=true);
 
         virtual void getOperationThreads(OperationThreads& threads, bool onlyActive=true);

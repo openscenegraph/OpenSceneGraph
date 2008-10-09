@@ -27,7 +27,6 @@
 #include <osg/Geometry>
 
 #include <osgUtil/SmoothingVisitor>
-#include <osgUtil/IntersectVisitor>
 
 #include <osgDB/ReadFile>
 
@@ -317,26 +316,20 @@ osg::Group* createOverlay(const osg::Vec3& center, float radius)
 
 osg::Vec3 computeTerrainIntersection(osg::Node* subgraph,float x,float y)
 {
-    osgUtil::IntersectVisitor iv;
-    osg::ref_ptr<osg::LineSegment> segDown = new osg::LineSegment;
-
     const osg::BoundingSphere& bs = subgraph->getBound();
     float zMax = bs.center().z()+bs.radius();
     float zMin = bs.center().z()-bs.radius();
     
-    segDown->set(osg::Vec3(x,y,zMin),osg::Vec3(x,y,zMax));
-    iv.addLineSegment(segDown.get());
+    osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector = 
+        new osgUtil::LineSegmentIntersector(osg::Vec3(x,y,zMin),osg::Vec3(x,y,zMax));
+
+    osgUtil::IntersectionVisitor iv(intersector.get());
 
     subgraph->accept(iv);
 
-    if (iv.hits())
+    if (intersector->containsIntersections())
     {
-        osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(segDown.get());
-        if (!hitList.empty())
-        {
-            osg::Vec3 ip = hitList.front().getWorldIntersectPoint();
-            return  ip;
-        }
+        return intersector->getFirstIntersection().getWorldIntersectPoint();
     }
 
     return osg::Vec3(x,y,0.0f);

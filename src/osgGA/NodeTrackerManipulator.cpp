@@ -15,7 +15,6 @@
 #include <osg/Quat>
 #include <osg/Notify>
 #include <osg/Transform>
-#include <osgUtil/IntersectVisitor>
 
 using namespace osg;
 using namespace osgGA;

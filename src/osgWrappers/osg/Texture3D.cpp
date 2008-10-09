@@ -31,6 +31,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D)
 	I_Constructor0(____Texture3D,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::Image *, image,
+	               Properties::NON_EXPLICIT,
+	               ____Texture3D__Image_P1,
+	               "",
+	               "");
 	I_ConstructorWithDefaults2(IN, const osg::Texture3D &, text, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____Texture3D__C5_Texture3D_R1__C5_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",

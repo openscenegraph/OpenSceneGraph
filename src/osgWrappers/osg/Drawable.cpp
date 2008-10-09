@@ -128,6 +128,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	          __unsigned_int__getNumParents,
 	          "Get the number of parents of node. ",
 	          "the number of parents of this node.  ");
+	I_MethodWithDefaults1(osg::MatrixList, getWorldMatrices, IN, const osg::Node *, haltTraversalAtNode, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __MatrixList__getWorldMatrices__C5_osg_Node_P1,
+	                      "Get the list of matrices that transform this node from local coordinates to world coordinates. ",
+	                      "The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. ");
 	I_Method1(void, setStateSet, IN, osg::StateSet *, stateset,
 	          Properties::NON_VIRTUAL,
 	          __void__setStateSet__StateSet_P1,

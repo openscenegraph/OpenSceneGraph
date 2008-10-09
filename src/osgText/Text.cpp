@@ -640,15 +640,14 @@ void Text::computePositions(unsigned int contextID) const
             atc._modelview.setTrans(trans);
         }
 
-        if (!_rotation.zeroRotation() )
-        {
-            matrix.postMult(osg::Matrix::rotate(_rotation));
-        }
+        matrix.postMultRotate(_rotation);
 
         if (_characterSizeMode!=OBJECT_COORDS)
         {
 
-            osg::Matrix M(rotate_matrix*osg::Matrix::translate(_position)*atc._modelview);
+            osg::Matrix M(rotate_matrix);
+            M.postMultTranslate(_position);
+            M.postMult(atc._modelview);
             osg::Matrix& P = atc._projection;
             
             // compute the pixel size vector.
@@ -693,12 +692,12 @@ void Text::computePositions(unsigned int contextID) const
 
                 if (P10<0)
                    scale_font_vert=-scale_font_vert;
-                matrix.postMult(osg::Matrix::scale(scale_font_hori, scale_font_vert,1.0f));
+                matrix.postMultScale(osg::Vec3f(scale_font_hori, scale_font_vert,1.0f));
             }
             else if (pixelSizeVert>getFontHeight())
             {
                 float scale_font = getFontHeight()/pixelSizeVert;
-                matrix.postMult(osg::Matrix::scale(scale_font, scale_font,1.0f));
+                matrix.postMultScale(osg::Vec3f(scale_font, scale_font,1.0f));
             }
 
         }
@@ -708,13 +707,13 @@ void Text::computePositions(unsigned int contextID) const
             matrix.postMult(rotate_matrix);
         }
 
-        matrix.postMult(osg::Matrix::translate(_position));
+        matrix.postMultTranslate(_position);
     }
     else if (!_rotation.zeroRotation())
     {
-        matrix.makeTranslate(-_offset);
-        matrix.postMult(osg::Matrix::rotate(_rotation));
-        matrix.postMult(osg::Matrix::translate(_position));
+        matrix.makeRotate(_rotation);
+        matrix.preMultTranslate(-_offset);
+        matrix.postMultTranslate(_position);
     }
     else
     {

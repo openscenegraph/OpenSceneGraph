@@ -33,7 +33,7 @@ void TerrainTile::write(DataOutputStream* out)
 
     if (out->getVersion() >= VERSION_0026)
     {
-        out->writeInt(getTileID().layer);
+        out->writeInt(getTileID().level);
         out->writeInt(getTileID().x);
         out->writeInt(getTileID().y);
     }
@@ -66,7 +66,7 @@ void TerrainTile::write(DataOutputStream* out)
     }
         
     writeTerrainTechnique(out, getTerrainTechnique());
-
+    
 }
 
 void TerrainTile::read(DataInputStream* in)
@@ -86,10 +86,10 @@ void TerrainTile::read(DataInputStream* in)
 
     if (in->getVersion() >= VERSION_0026)
     {
-        int layer = in->readInt();
+        int level = in->readInt();
         int x = in->readInt();
         int y = in->readInt();
-        setTileID(osgTerrain::TileID(layer,x,y));
+        setTileID(osgTerrain::TileID(level,x,y));
     }
 
     if (in->getVersion() >= VERSION_0023)
@@ -119,6 +119,8 @@ void TerrainTile::read(DataInputStream* in)
         
     setTerrainTechnique(readTerrainTechnique(in));
 
+    if (osgTerrain::TerrainTile::getTileLoadedCallback().valid()) 
+        osgTerrain::TerrainTile::getTileLoadedCallback()->loaded(this, in->getOptions());
 }
 
 void TerrainTile::writeTerrainTechnique(DataOutputStream* out, osgTerrain::TerrainTechnique* technique)

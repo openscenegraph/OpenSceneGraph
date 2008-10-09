@@ -1,0 +1,40 @@
+
+IF   (DYNAMIC_OPENSCENEGRAPH)
+    ADD_DEFINITIONS(-DOSGVOLUME_LIBRARY)
+ELSE (DYNAMIC_OPENSCENEGRAPH)
+    ADD_DEFINITIONS(-DOSG_LIBRARY_STATIC)
+ENDIF(DYNAMIC_OPENSCENEGRAPH)
+
+SET(LIB_NAME osgVolume)
+SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
+SET(LIB_PUBLIC_HEADERS
+    ${HEADER_PATH}/Export
+    ${HEADER_PATH}/ImageUtils
+    ${HEADER_PATH}/Version
+    ${HEADER_PATH}/Volume
+    ${HEADER_PATH}/VolumeTechnique
+    ${HEADER_PATH}/Brick
+)
+
+# FIXME: For OS X, need flag for Framework or dylib
+ADD_LIBRARY(${LIB_NAME}
+    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
+    ${LIB_PUBLIC_HEADERS}
+    ImageUtils.cpp
+    Version.cpp
+    Brick.cpp
+    VolumeTechnique.cpp
+    Volume.cpp
+)
+
+
+SET(TARGET_LIBRARIES_VARS FREETYPE_LIBRARY )
+LINK_INTERNAL(${LIB_NAME}     
+    osgUtil
+    osgDB
+    osg
+    OpenThreads
+)
+LINK_CORELIB_DEFAULT(${LIB_NAME})
+
+INCLUDE(ModuleInstall OPTIONAL)

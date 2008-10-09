@@ -69,11 +69,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame)
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
-	I_Method1(, META_UIObject, IN, osgWidget::Frame, x,
-	          Properties::NON_VIRTUAL,
-	          ____META_UIObject__Frame,
-	          "",
-	          "");
 	I_ConstructorWithDefaults1(IN, const std::string &, x, "",
 	                           Properties::NON_EXPLICIT,
 	                           ____Frame__C5_std_string_R1,
@@ -197,11 +192,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Border)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(, META_UIObject, IN, osgWidget::Frame::Border, x,
-	          Properties::NON_VIRTUAL,
-	          ____META_UIObject__Border,
-	          "",
-	          "");
 	I_ConstructorWithDefaults3(IN, osgWidget::Frame::BORDER, x, osgWidget::Frame::BORDER_LEFT, IN, osgWidget::point_type, x, 0.0f, IN, osgWidget::point_type, x, 0.0f,
 	                           ____Border__BORDER__point_type__point_type,
 	                           "",
@@ -266,11 +256,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Corner)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(, META_UIObject, IN, osgWidget::Frame::Corner, x,
-	          Properties::NON_VIRTUAL,
-	          ____META_UIObject__Corner,
-	          "",
-	          "");
 	I_ConstructorWithDefaults3(IN, osgWidget::Frame::CORNER, x, osgWidget::Frame::CORNER_LOWER_LEFT, IN, osgWidget::point_type, x, 0.0f, IN, osgWidget::point_type, x, 0.0f,
 	                           ____Corner__CORNER__point_type__point_type,
 	                           "",

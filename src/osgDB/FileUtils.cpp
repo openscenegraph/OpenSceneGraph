@@ -364,6 +364,15 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
     return "";
 }
 
+static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
+{
+#ifdef OSG_DEFAULT_LIBRARY_PATH
+
+    // Append the install prefix path to the library search path if configured
+    filepath.push_back(ADDQUOTES(OSG_DEFAULT_LIBRARY_PATH));
+#endif
+}
+
 #if defined(WIN32) && !defined(__CYGWIN__)
     #include <io.h>
     #include <direct.h>
@@ -450,6 +459,8 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             convertStringPathIntoFilePathList(ptr,filepath);
         }
         #endif
+
+        appendInstallationLibraryFilePaths(filepath);
     }
 
 
@@ -463,8 +474,9 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             convertStringPathIntoFilePathList(ptr,filepath);
         }
 
-        convertStringPathIntoFilePathList("/usr/bin/:/usr/local/bin/",filepath);
+        appendInstallationLibraryFilePaths(filepath);
 
+        convertStringPathIntoFilePathList("/usr/bin/:/usr/local/bin/",filepath);
     }
     
 #elif defined(WIN32)
@@ -554,6 +566,8 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             // when a DLL is found, so I see no point in removing duplicates.
             convertStringPathIntoFilePathList(ptr, filepath);
         }
+
+        appendInstallationLibraryFilePaths(filepath);
     }
     
 #elif defined(__APPLE__)
@@ -692,6 +706,8 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             convertStringPathIntoFilePathList(ptr, filepath);
         }
 
+        appendInstallationLibraryFilePaths(filepath);
+
         // Since this is currently the only Objective-C code in the
         // library, we need an autoreleasepool for obj-c memory management.
         // If more Obj-C is added, we might move this pool to another 
@@ -761,6 +777,8 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         {
             convertStringPathIntoFilePathList(ptr, filepath);
         }
+
+        appendInstallationLibraryFilePaths(filepath);
 
         const std::string OSG_PLUGIN_PATH("/OpenSceneGraph/PlugIns");
         CFURLRef  url;
@@ -865,6 +883,8 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         {
             convertStringPathIntoFilePathList(ptr, filepath);
         }
+
+        appendInstallationLibraryFilePaths(filepath);
     }
     #endif
     
@@ -879,6 +899,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
             convertStringPathIntoFilePathList(ptr,filepath);
         }
 
+        appendInstallationLibraryFilePaths(filepath);
 
 #if defined(__ia64__) || defined(__x86_64__)
         convertStringPathIntoFilePathList("/usr/lib/:/usr/lib64/:/usr/local/lib/:/usr/local/lib64/",filepath);

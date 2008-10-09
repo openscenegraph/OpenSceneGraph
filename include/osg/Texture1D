@@ -30,6 +30,8 @@ class OSG_EXPORT Texture1D : public Texture
         
         Texture1D();
 
+        Texture1D(Image* image);
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Texture1D(const Texture1D& text,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
         

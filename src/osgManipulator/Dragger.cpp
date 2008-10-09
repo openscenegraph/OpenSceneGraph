@@ -42,6 +42,7 @@ bool PointerInfo::projectWindowXYIntoObject(const osg::Vec2& windowCoord, osg::V
 Dragger::Dragger() : _commandManager(0)
 {
     _parentDragger = this;
+    getOrCreateStateSet()->setDataVariance(osg::Object::DYNAMIC);
 }
 
 Dragger::~Dragger()
@@ -142,6 +143,7 @@ void osgManipulator::setMaterialColor(const osg::Vec4& color, osg::Node& node)
     if (! mat)
     {
         mat = new osg::Material;
+        mat->setDataVariance(osg::Object::DYNAMIC);
         node.getOrCreateStateSet()->setAttribute(mat);
     }
     mat->setDiffuse(osg::Material::FRONT_AND_BACK, color);

@@ -6,6 +6,7 @@ SET(TARGET_SRC
     IO_LightPoint.cpp
     IO_LightPointNode.cpp
     IO_MultiSwitch.cpp
+    IO_OverlayNode.cpp
     IO_Sector.cpp
     IO_VisibilityGroup.cpp
     IO_ObjectRecordData.cpp

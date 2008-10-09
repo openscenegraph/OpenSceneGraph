@@ -71,6 +71,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	          __void__clear,
 	          "",
 	          "");
+	I_Method1(void, setSetName, IN, const std::string &, setname,
+	          Properties::NON_VIRTUAL,
+	          __void__setSetName__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method0(const std::string &, getSetName,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getSetName,
+	          "",
+	          "");
 	I_Method2(void, setSetName, IN, unsigned int, i, IN, const std::string &, setname,
 	          Properties::NON_VIRTUAL,
 	          __void__setSetName__unsigned_int__C5_std_string_R1,
@@ -156,10 +166,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	                __void__addLayer__Layer_P1, 
 	                0, 
 	                __void__removeLayer__unsigned_int);
-	I_IndexedProperty(const std::string &, SetName, 
-	                  __C5_std_string_R1__getSetName__unsigned_int, 
-	                  __void__setSetName__unsigned_int__C5_std_string_R1, 
-	                  0);
+	I_SimpleProperty(const std::string &, SetName, 
+	                 __C5_std_string_R1__getSetName, 
+	                 __void__setSetName__C5_std_string_R1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::ContourLayer)
@@ -572,6 +581,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setSetName, IN, const std::string &, setname,
+	          Properties::NON_VIRTUAL,
+	          __void__setSetName__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method0(const std::string &, getSetName,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getSetName,
+	          "",
+	          "");
 	I_Method1(void, setFileName, IN, const std::string &, filename,
 	          Properties::VIRTUAL,
 	          __void__setFileName__C5_std_string_R1,
@@ -779,6 +798,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_SimpleProperty(unsigned, ModifiedCount, 
 	                 0, 
 	                 __void__setModifiedCount__unsigned);
+	I_SimpleProperty(const std::string &, SetName, 
+	                 __C5_std_string_R1__getSetName, 
+	                 __void__setSetName__C5_std_string_R1);
 	I_SimpleProperty(osgTerrain::ValidDataOperator *, ValidDataOperator, 
 	                 __ValidDataOperator_P1__getValidDataOperator, 
 	                 __void__setValidDataOperator__ValidDataOperator_P1);
@@ -819,6 +841,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method0(osg::Image *, getImage,
+	          Properties::VIRTUAL,
+	          __osg_Image_P1__getImage,
+	          "Return image associated with layer if supported. ",
+	          "");
+	I_Method0(const osg::Image *, getImage,
+	          Properties::VIRTUAL,
+	          __C5_osg_Image_P1__getImage,
+	          "Return const image associated with layer if supported. ",
+	          "");
 	I_Method1(void, setImplementation, IN, osgTerrain::Layer *, layer,
 	          Properties::NON_VIRTUAL,
 	          __void__setImplementation__Layer_P1,
@@ -902,6 +934,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	I_SimpleProperty(const std::string &, FileName, 
 	                 __C5_std_string_R1__getFileName, 
 	                 __void__setFileName__C5_std_string_R1);
+	I_SimpleProperty(osg::Image *, Image, 
+	                 __osg_Image_P1__getImage, 
+	                 0);
 	I_SimpleProperty(osgTerrain::Layer *, Implementation, 
 	                 __Layer_P1__getImplementation, 
 	                 __void__setImplementation__Layer_P1);
@@ -945,11 +980,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::SwitchLayer)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method0(void, clear,
-	          Properties::NON_VIRTUAL,
-	          __void__clear,
-	          "",
-	          "");
 	I_Method1(void, setActiveLayer, IN, int, i,
 	          Properties::NON_VIRTUAL,
 	          __void__setActiveLayer__int,
@@ -960,8 +990,21 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::SwitchLayer)
 	          __int__getActiveLayer,
 	          "",
 	          "");
+	I_Method0(osg::Image *, getImage,
+	          Properties::VIRTUAL,
+	          __osg_Image_P1__getImage,
+	          "Return image associated with layer if supported. ",
+	          "");
+	I_Method0(const osg::Image *, getImage,
+	          Properties::VIRTUAL,
+	          __C5_osg_Image_P1__getImage,
+	          "Return const image associated with layer if supported. ",
+	          "");
 	I_SimpleProperty(int, ActiveLayer, 
 	                 __int__getActiveLayer, 
 	                 __void__setActiveLayer__int);
+	I_SimpleProperty(osg::Image *, Image, 
+	                 __osg_Image_P1__getImage, 
+	                 0);
 END_REFLECTOR
 

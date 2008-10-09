@@ -86,7 +86,7 @@ void SceneGraphBuilder::MultMatrixd(const GLdouble* m)
 void SceneGraphBuilder::Translated(GLdouble x, GLdouble y, GLdouble z)
 {
     if (_matrixStack.empty()) _matrixStack.push_back(osg::Matrixd());
-    _matrixStack.back().preMult(osg::Matrixd::translate(x,y,z));
+    _matrixStack.back().preMultTranslate(osg::Vec3d(x,y,z));
 
     matrixChanged();
 }
@@ -94,7 +94,7 @@ void SceneGraphBuilder::Translated(GLdouble x, GLdouble y, GLdouble z)
 void SceneGraphBuilder::Scaled(GLdouble x, GLdouble y, GLdouble z)
 {
     if (_matrixStack.empty()) _matrixStack.push_back(osg::Matrixd());
-    _matrixStack.back().preMult(osg::Matrixd::scale(x,y,z));
+    _matrixStack.back().preMultScale(osg::Vec3d(x,y,z));
 
     matrixChanged();
 }
@@ -102,7 +102,7 @@ void SceneGraphBuilder::Scaled(GLdouble x, GLdouble y, GLdouble z)
 void SceneGraphBuilder::Rotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z)
 {
     if (_matrixStack.empty()) _matrixStack.push_back(osg::Matrixd());
-    _matrixStack.back().preMult(osg::Matrixd::rotate(osg::inDegrees(angle),x,y,z));
+    _matrixStack.back().preMultRotate(osg::Quat(osg::inDegrees(angle),osg::Vec3d(x,y,z)));
 
     matrixChanged();
 }

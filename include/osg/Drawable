@@ -156,6 +156,9 @@ class OSG_EXPORT Drawable : public Object
          */
         inline unsigned int getNumParents() const { return _parents.size(); }
 
+        /** Get the list of matrices that transform this node from local coordinates to world coordinates.
+          * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
+        MatrixList getWorldMatrices(const osg::Node* haltTraversalAtNode=0) const;
 
 
         /** Set the StateSet attached to the Drawable.

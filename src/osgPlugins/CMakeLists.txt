@@ -100,6 +100,10 @@ IF(CURL_FOUND)
     ADD_SUBDIRECTORY(curl)
 ENDIF(CURL_FOUND)
 
+IF(ZLIB_FOUND)
+    ADD_SUBDIRECTORY(gz)
+ENDIF(ZLIB_FOUND)
+
 ############################################################
 #
 # 3D Image plugins

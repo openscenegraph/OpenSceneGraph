@@ -1,7 +1,6 @@
 SET(TARGET_SRC 
   GameOfLifePass.cpp
   osggameoflife.cpp
-  gameoflife_frag.cpp
 )
 
 SET(TARGET_H

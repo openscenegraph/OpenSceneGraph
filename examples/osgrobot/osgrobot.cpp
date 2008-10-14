@@ -151,40 +151,40 @@ public:
                 switch (ea.getKey())
                 {
                 case 'q':
-                    rotate(M_PIl/180, joint1); 
+                    rotate(osg::PI/180, joint1); 
                     return true;
                 case 'a':
-                    rotate(-M_PIl/180, joint1); 
+                    rotate(-osg::PI/180, joint1); 
                     return true;
                 case 'w':
-                    rotate(M_PIl/180, joint2); 
+                    rotate(osg::PI/180, joint2); 
                     return true;
                 case 's':
-                    rotate(-M_PIl/180, joint2); 
+                    rotate(-osg::PI/180, joint2); 
                     return true;
                 case 'e':
-                    rotate(M_PIl/180, joint3); 
+                    rotate(osg::PI/180, joint3); 
                     return true;
                 case 'd':
-                    rotate(-M_PIl/180, joint3); 
+                    rotate(-osg::PI/180, joint3); 
                     return true;
                 case 'r':
-                    rotate(M_PIl/180, joint4); 
+                    rotate(osg::PI/180, joint4); 
                     return true;
                 case 'f':
-                    rotate(-M_PIl/180, joint4); 
+                    rotate(-osg::PI/180, joint4); 
                     return true;
                 case 't':
-                    rotate(M_PIl/180, joint5); 
+                    rotate(osg::PI/180, joint5); 
                     return true;
                 case 'g':
-                    rotate(-M_PIl/180, joint5); 
+                    rotate(-osg::PI/180, joint5); 
                     return true;
                 case 'y':
-                    rotate(M_PIl/180, joint6); 
+                    rotate(osg::PI/180, joint6); 
                     return true;
                 case 'h':
-                    rotate(-M_PIl/180, joint6); 
+                    rotate(-osg::PI/180, joint6); 
                     return true;
                 }
             }
@@ -250,7 +250,7 @@ osg::MatrixTransform* buildJoint2(osg::MatrixTransform* previousJoint)
     double radius = 4.45633;
     osg::MatrixTransform* xTransform = new osg::MatrixTransform();
     previousJoint->addChild(xTransform);
-    osg::Matrix xRot = osg::Matrix::rotate(M_PI_2, 1.0, 0.0, 0.0);
+    osg::Matrix xRot = osg::Matrix::rotate(osg::PI_2, 1.0, 0.0, 0.0);
     xTransform->setMatrix(xRot);
     osg::Geode* joint = new osg::Geode();
     joint->addDrawable(new osg::ShapeDrawable(new osg::Capsule(osg::Vec3(0.0f,0.0f,height/2),radius,height),hints));
@@ -258,7 +258,7 @@ osg::MatrixTransform* buildJoint2(osg::MatrixTransform* previousJoint)
 
     osg::MatrixTransform* zTransform = new osg::MatrixTransform();
     osg::Matrix zTrans = osg::Matrix::translate( 0.0, 0.0, height);
-    osg::Matrix zRot = osg::Matrix::rotate(M_PI_2+jointAngle2, 0.0,0.0,1.0);
+    osg::Matrix zRot = osg::Matrix::rotate(osg::PI_2+jointAngle2, 0.0,0.0,1.0);
     zTransform->setMatrix(zTrans*zRot);
     xTransform->addChild(zTransform);
     return zTransform;
@@ -274,7 +274,7 @@ osg::MatrixTransform* buildTube2(osg::MatrixTransform* previousJoint)
     double radius = 4.45633;
     osg::MatrixTransform* xTransform = new osg::MatrixTransform();
     previousJoint->addChild(xTransform);
-    osg::Matrix xRot = osg::Matrix::rotate(M_PI_2, 1.0,0.0,0.0);
+    osg::Matrix xRot = osg::Matrix::rotate(osg::PI_2, 1.0,0.0,0.0);
     xTransform->setMatrix(xRot);
     osg::Geode* tube3 = new osg::Geode();
     xTransform->addChild(tube3);
@@ -294,7 +294,7 @@ osg::MatrixTransform* buildJoint3(osg::MatrixTransform* previousJoint)
     osg::Geode* joint = new osg::Geode();
     osg::MatrixTransform* xTransform = new osg::MatrixTransform();
     previousJoint->addChild(xTransform);
-    osg::Matrix xRot = osg::Matrix::rotate(-M_PI_2, 1.0, 0.0, 0.0);
+    osg::Matrix xRot = osg::Matrix::rotate(-osg::PI_2, 1.0, 0.0, 0.0);
     xTransform->setMatrix(xRot);
     if (showAxis)
     {
@@ -331,11 +331,11 @@ osg::MatrixTransform* buildJoint4(osg::MatrixTransform* previousJoint)
     }
     previousJoint->addChild(xTransform);
     xTransform->addChild(tube4);
-    osg::Matrix xRot= osg::Matrix::rotate(M_PI_2, 1,0,0);
+    osg::Matrix xRot= osg::Matrix::rotate(osg::PI_2, 1,0,0);
     xTransform->setMatrix(xRot);
     height = 7.5;
     osg::Matrix zTrans = osg::Matrix::translate(0,0,17.5);
-    osg::Matrix zRot = osg::Matrix::rotate(jointAngle4-M_PI_2, 0,0,1);
+    osg::Matrix zRot = osg::Matrix::rotate(jointAngle4-osg::PI_2, 0,0,1);
 
     osg::MatrixTransform* zTransform = new osg::MatrixTransform();
     zTransform->setMatrix(zTrans*zRot);
@@ -372,7 +372,7 @@ osg::MatrixTransform* buildJoint5(osg::MatrixTransform* previousJoint)
     joint->addDrawable(shape);
     osg::MatrixTransform* xTransform = new osg::MatrixTransform();
     previousJoint->addChild(xTransform);
-    osg::Matrix xRot= osg::Matrix::rotate(-M_PI_2, 1.0,0,0);
+    osg::Matrix xRot= osg::Matrix::rotate(-osg::PI_2, 1.0,0,0);
     xTransform->setMatrix(xRot);
     xTransform->addChild(joint);
     if (showAxis)
@@ -395,7 +395,7 @@ osg::MatrixTransform* buildJoint6(osg::MatrixTransform* previousJoint)
     osg::Geode* joint = new osg::Geode();
     joint->addDrawable(new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f,0.0f,height/2),radius,height),hints));
     osg::MatrixTransform* xTransform = new osg::MatrixTransform();
-    osg::Matrix xRot= osg::Matrix::rotate(M_PI_2, 1.0, 0.0, 0.0);
+    osg::Matrix xRot= osg::Matrix::rotate(osg::PI_2, 1.0, 0.0, 0.0);
     xTransform->setMatrix(xRot);
     xTransform->addChild(joint);
     previousJoint->addChild(xTransform);
@@ -452,7 +452,7 @@ void createAxis(osg::Transform* previousJoint)
     osg::MatrixTransform* mt = new osg::MatrixTransform();
     previousJoint->addChild(mt);
 
-    osg::Matrix xMatrix = osg::Matrix::rotate(-M_PI_2, 0.0, 1.0, 0.0);
+    osg::Matrix xMatrix = osg::Matrix::rotate(-osg::PI_2, 0.0, 1.0, 0.0);
     mt->setMatrix(xMatrix);
 
 
@@ -465,7 +465,7 @@ void createAxis(osg::Transform* previousJoint)
 
     osg::MatrixTransform *yMt = new osg::MatrixTransform();
     previousJoint->addChild(yMt);
-    osg::Matrix yMatrix = osg::Matrix::rotate(M_PI_2, 1.0, 0.0, 0.0);
+    osg::Matrix yMatrix = osg::Matrix::rotate(osg::PI_2, 1.0, 0.0, 0.0);
     yMt->setMatrix(yMatrix);
 
     osg::ShapeDrawable *yShape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f,0.0f,height/2),radius,height),hints);

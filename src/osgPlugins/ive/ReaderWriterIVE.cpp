@@ -78,8 +78,7 @@ class ReaderWriterIVE : public ReaderWriter
         virtual ReadResult readImage(std::istream& fin, const Options* options) const
         {
             try{
-                ive::DataInputStream in(&fin);
-                in.setOptions(options);
+                ive::DataInputStream in(&fin, options);
                 return in.readImage(ive::IMAGE_INCLUDE_DATA);
             }
             catch(ive::Exception e)
@@ -93,8 +92,7 @@ class ReaderWriterIVE : public ReaderWriter
         {
             try{
                 // Create datainputstream.
-                ive::DataInputStream in(&fin);
-                in.setOptions(options);
+                ive::DataInputStream in(&fin, options);
 
                 return in.readNode();
             }
@@ -162,8 +160,7 @@ class ReaderWriterIVE : public ReaderWriter
         {
             try
             {
-                ive::DataOutputStream out(&fout);
-                out.setOptions(options);
+                ive::DataOutputStream out(&fout, options);
                 out.writeImage(ive::IMAGE_INCLUDE_DATA, const_cast<osg::Image*>(&image));
                 if (fout.fail()) return WriteResult::ERROR_IN_WRITING_FILE;
                 return WriteResult::FILE_SAVED;
@@ -179,9 +176,7 @@ class ReaderWriterIVE : public ReaderWriter
         {
             try
             {
-                ive::DataOutputStream out(&fout);
-
-                out.setOptions(options);
+                ive::DataOutputStream out(&fout, options);
 
                 out.writeNode(const_cast<osg::Node*>(&node));
 

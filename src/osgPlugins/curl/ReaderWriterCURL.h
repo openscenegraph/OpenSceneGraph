@@ -123,6 +123,8 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
             return *ec;
         }
 
+        bool read(std::istream& fin, std::string& destination) const;
+
     protected:
     
         typedef std::map< OpenThreads::Thread*, osg::ref_ptr<EasyCurl> >    ThreadCurlMap;

@@ -119,9 +119,19 @@
 using namespace ive;
 
 
-void DataOutputStream::setOptions(const osgDB::ReaderWriter::Options* options)
+DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWriter::Options* options)
 {
+    _verboseOutput = false;
+
+    _includeImageMode = IMAGE_INCLUDE_DATA;
+
+    _includeExternalReferences     = false;
+    _writeExternalReferenceFiles   = false;
+    _useOriginalExternalReferences = true;
+
     _options = options;
+
+    _compressionLevel = 0;
 
     if (_options.get())
     {
@@ -142,28 +152,117 @@ void DataOutputStream::setOptions(const osgDB::ReaderWriter::Options* options)
 
         setUseOriginalExternalReferences(_options->getOptionString().find("useOriginalExternalReferences")!=std::string::npos);
         osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setUseOriginalExternalReferences()=" << getUseOriginalExternalReferences() << std::endl;
+
+        _compressionLevel =  (_options->getOptionString().find("compressed")!=std::string::npos) ? 1 : 0;
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream._compressionLevel=" << _compressionLevel << std::endl;
+    }
+
+    #ifndef USE_ZLIB
+    if (_compressionLevel>0)
+    {
+        osg::notify(osg::NOTICE) << "Compression not supported in this .ive version." << std::endl;
+        _compressionLevel = 0;
+    }
+    #endif
+
+    _output_ostream = _ostream = ostream;
+
+    if(!_ostream)
+        throw Exception("DataOutputStream::DataOutputStream(): null pointer exception in argument.");
+
+    writeUInt(ENDIAN_TYPE) ;
+    writeUInt(getVersion());
+    
+    writeInt(_compressionLevel);
+
+    if (_compressionLevel>0)
+    {
+    
+        _ostream = &_compressionStream;        
     }
 }
 
-DataOutputStream::DataOutputStream(std::ostream * ostream)
+DataOutputStream::~DataOutputStream()
 {
-    _verboseOutput = false;
+    if (_compressionLevel>0)
+    { 
+        _ostream = _output_ostream;
 
-    _includeImageMode = IMAGE_INCLUDE_DATA;
-
-    _includeExternalReferences     = false;
-    _writeExternalReferenceFiles   = false;
-    _useOriginalExternalReferences = true;
-
-
-    _ostream = ostream;
-    if(!_ostream)
-        throw Exception("DataOutputStream::DataOutputStream(): null pointer exception in argument.");
-    writeUInt(ENDIAN_TYPE) ;
-    writeUInt(getVersion());
+        std::string compressionString(_compressionStream.str());
+        writeUInt(compressionString.size());
+        
+        compress(*_output_ostream, compressionString);
+    }
 }
 
-DataOutputStream::~DataOutputStream(){}
+#ifdef USE_ZLIB
+
+#include <zlib.h>
+
+#define CHUNK 16384
+bool DataOutputStream::compress(std::ostream& fout, const std::string& source) const
+{
+    int ret, flush = Z_FINISH;
+    unsigned have;
+    z_stream strm;
+    unsigned char out[CHUNK];
+    
+    int level = 6;
+    int stategy = Z_DEFAULT_STRATEGY; // looks to be the best for .osg/.ive files
+    //int stategy = Z_FILTERED;
+    //int stategy = Z_HUFFMAN_ONLY;
+    //int stategy = Z_RLE;
+
+    /* allocate deflate state */
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    ret = deflateInit2(&strm, 
+                       level,
+                       Z_DEFLATED,
+                       15+16, // +16 to use gzip encoding
+                       8, // default
+                       stategy);
+    if (ret != Z_OK)
+    return false;
+
+    strm.avail_in = source.size();
+    strm.next_in = (Bytef*)(&(*source.begin()));
+
+    /* run deflate() on input until output buffer not full, finish
+       compression if all of source has been read in */
+    do {
+        strm.avail_out = CHUNK;
+        strm.next_out = out;
+        ret = deflate(&strm, flush);    /* no bad return value */
+
+        if (ret == Z_STREAM_ERROR)
+        {
+            osg::notify(osg::NOTICE)<<"Z_STREAM_ERROR"<<std::endl;
+            return false;
+        }
+
+        have = CHUNK - strm.avail_out;
+
+        if (have>0) fout.write((const char*)out, have);
+        
+        if (fout.fail())
+        {
+            (void)deflateEnd(&strm);
+            return false;
+        }
+    } while (strm.avail_out == 0);
+
+    /* clean up and return */
+    (void)deflateEnd(&strm);
+    return true;
+}
+#else
+bool DataOutputStream::compress(std::ostream& fout, const std::string& source) const
+{
+    return false;
+}
+#endif
 
 void DataOutputStream::writeBool(bool b)
 {

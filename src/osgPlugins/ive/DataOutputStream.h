@@ -5,6 +5,8 @@
 
 #include <iostream>        // for ofstream
 #include <string>
+#include <sstream>
+
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -30,10 +32,9 @@ namespace ive {
 class DataOutputStream{
 
 public:
-    DataOutputStream(std::ostream* ostream);
+    DataOutputStream(std::ostream* ostream, const osgDB::ReaderWriter::Options* options);
     ~DataOutputStream();
 
-    void setOptions(const osgDB::ReaderWriter::Options* options);
     const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 
     unsigned int getVersion() { return VERSION; }
@@ -123,9 +124,15 @@ public:
 
     bool                _verboseOutput;
 
+    bool compress(std::ostream& fout, const std::string& source) const;
+
 private:
 
     std::ostream* _ostream;
+    std::ostream* _output_ostream;
+    
+    std::stringstream _compressionStream;
+    int _compressionLevel;
 
      // Container to map stateset uniques to their respective stateset.
     typedef std::map<const osg::StateSet*,int>          StateSetMap;

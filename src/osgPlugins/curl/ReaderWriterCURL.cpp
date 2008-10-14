@@ -27,6 +27,7 @@
 
 using namespace osg_curl;
 
+
 //
 //  StreamObject
 //    
@@ -260,15 +261,46 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     if (ext=="curl")
     {
         fileName = osgDB::getNameLessExtension(fullFileName);
+        ext = osgDB::getFileExtension(fileName);
     }
     else
     {
         fileName = fullFileName;
     }
+    
+    bool uncompress = false;
+    
+    if (ext=="gz" || ext=="osgz" || ext=="ivez")
+    {
+        osg::notify(osg::NOTICE)<<"Compressed file type "<<ext<<std::endl;
+        
+        #ifndef USE_ZLIB
+            // don't have zlib so can't compile compressed formats
+            return ReadResult::FILE_NOT_HANDLED;
+        #endif
+        
+        uncompress = true;
+        
+        if (ext=="gz")
+        {
+            ext = osgDB::getFileExtension(fileName);
+            fileName = osgDB::getNameLessExtension(fileName);
+        } 
+        else if (ext=="osgz")
+        {
+            ext = "osg";
+        }
+        else if (ext=="ivez")
+        {
+            ext = "ive";
+        }
+
+        osg::notify(osg::NOTICE)<<"  assuming file type "<<ext<<std::endl;
+    }
 
 
     osgDB::ReaderWriter *reader = 
-        osgDB::Registry::instance()->getReaderWriterForExtension( osgDB::getFileExtension(fileName));
+        osgDB::Registry::instance()->getReaderWriterForExtension( ext );
 
     if (!reader)
     {
@@ -295,12 +327,24 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
     if (curlResult.status()==ReadResult::FILE_LOADED)
     {
+
         osg::ref_ptr<Options> local_opt = options ? 
             static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : 
             new Options;
 
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
+        if (uncompress)
+        {
+            std::string uncompressed;
+            if (!read(buffer, uncompressed))
+            {
+                return ReadResult::FILE_NOT_HANDLED;
+            }
+            
+            buffer.str(uncompressed);
+        }
+        
         ReadResult readResult = readFile(objectType, reader, buffer, local_opt.get() );
 
         local_opt->getDatabasePathList().pop_front();
@@ -312,6 +356,79 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
         return curlResult;
     }
 }
+
+#ifdef USE_ZLIB
+
+#include <zlib.h>
+
+bool ReaderWriterCURL::read(std::istream& fin, std::string& destination) const
+{
+    #define CHUNK 16384
+
+    int ret;
+    unsigned have;
+    z_stream strm;
+    unsigned char in[CHUNK];
+    unsigned char out[CHUNK];
+
+    /* allocate inflate state */
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    strm.avail_in = 0;
+    strm.next_in = Z_NULL;
+    ret = inflateInit2(&strm,
+                       15 + 32 // autodected zlib or gzip header
+                       );
+    if (ret != Z_OK)
+        return ret;
+
+    /* decompress until deflate stream ends or end of file */
+    do {
+
+        strm.avail_in = fin.readsome((char*)in, CHUNK);
+
+        if (fin.fail())
+        {
+            (void)inflateEnd(&strm);
+            return false;
+        }
+        if (strm.avail_in == 0)
+            break;
+        strm.next_in = in;
+
+        /* run inflate() on input until output buffer not full */
+        do {
+            strm.avail_out = CHUNK;
+            strm.next_out = out;
+            ret = inflate(&strm, Z_NO_FLUSH);
+
+            switch (ret) {
+            case Z_NEED_DICT:
+            case Z_DATA_ERROR:
+            case Z_MEM_ERROR:
+                (void)inflateEnd(&strm);
+                return false;
+            }
+            have = CHUNK - strm.avail_out;
+
+            destination.append((char*)out, have);
+            
+        } while (strm.avail_out == 0);
+
+        /* done when inflate() says it's done */
+    } while (ret != Z_STREAM_END);
+
+    /* clean up and return */
+    (void)inflateEnd(&strm);
+    return ret == Z_STREAM_END ? true : false;
+}
+#else
+bool ReaderWriterCURL::read(std::istream& fin, std::string& destination) const
+{
+    return false;
+}
+#endif
 
 // now register with Registry to instantiate the above
 // reader/writer.

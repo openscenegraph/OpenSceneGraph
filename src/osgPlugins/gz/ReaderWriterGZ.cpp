@@ -257,8 +257,6 @@ bool ReaderWriterGZ::read(std::istream& fin, std::string& destination) const
     /* decompress until deflate stream ends or end of file */
     do {
 
-        osg::notify(osg::NOTICE)<<"Doing readsome"<<std::endl;
-
         strm.avail_in = fin.readsome((char*)in, CHUNK);
 
         if (fin.fail())

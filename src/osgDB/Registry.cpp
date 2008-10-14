@@ -23,6 +23,7 @@
 #include <osg/Geode>
 #include <osg/ApplicationUsage>
 #include <osg/Version>
+#include <osg/Timer>
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
@@ -1829,8 +1830,21 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
 
 ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fileName,const ReaderWriter::Options* options)
 {
+#if 0
+
+    osg::Timer_t startTick = osg::Timer::instance()->tick();
+    ReaderWriter::ReadResult result = readImplementation(ReadNodeFunctor(fileName, options),
+                              options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_NODES)!=0: false);
+    osg::Timer_t endTick = osg::Timer::instance()->tick();
+    osg::notify(osg::NOTICE)<<"time to load "<<fileName<<" "<<osg::Timer::instance()->delta_m(startTick, endTick)<<"ms"<<std::endl;
+    return result;
+
+#else
+
     return readImplementation(ReadNodeFunctor(fileName, options),
                               options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_NODES)!=0: false);
+                              
+#endif
 }
 
 ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,const std::string& fileName,const ReaderWriter::Options* options)

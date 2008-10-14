@@ -27,11 +27,16 @@ StateAttribute::StateAttribute()
 
 void StateAttribute::addParent(osg::StateSet* object)
 {
+    osg::notify(osg::INFO)<<"Adding parent"<<getRefMutex()<<std::endl;
+    OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
+    
     _parents.push_back(object);
 }
 
 void StateAttribute::removeParent(osg::StateSet* object)
 {
+    OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
+    
     ParentList::iterator pitr = std::find(_parents.begin(),_parents.end(),object);
     if (pitr!=_parents.end()) _parents.erase(pitr);
 }

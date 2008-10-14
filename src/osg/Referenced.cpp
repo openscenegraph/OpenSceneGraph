@@ -79,6 +79,12 @@ struct DeleteHandlerPointer
     DeleteHandler* _ptr;
 };
 
+OpenThreads::Mutex* Referenced::getGlobalReferencedMutex()
+{
+    return 0;
+//    static OpenThreads::Mutex s_ReferencedGlobalMutext;
+//    return &s_ReferencedGlobalMutext;
+}
 
 typedef std::set<Observer*> ObserverSet;
 

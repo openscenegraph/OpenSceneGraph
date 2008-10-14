@@ -70,10 +70,13 @@ class OSG_EXPORT Referenced
 
         /** Get the mutex used to ensure thread safety of ref()/unref(). */
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-        OpenThreads::Mutex* getRefMutex() const { return 0; }
+        OpenThreads::Mutex* getRefMutex() const { return getGlobalReferencedMutex(); }
 #else
         OpenThreads::Mutex* getRefMutex() const { return _refMutex; }
 #endif
+
+        /** Get the optional global Referenced mutex, this can be shared between all osg::Referenced.*/
+        static OpenThreads::Mutex* getGlobalReferencedMutex();
 
         /** Increment the reference count by one, indicating that 
             this object has another pointer which is referencing it.*/

@@ -163,10 +163,32 @@ osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, 
             curl_easy_getinfo(_curl, CURLINFO_RESPONSE_CODE, &code);                    
         }
 
-        if (code>=400)
+        //If the code is greater than 400, there was an error
+        if (code >= 400)
         {
-            osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<", error code = "<<code<<std::endl;
-            return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
+            osgDB::ReaderWriter::ReadResult::ReadStatus status;
+
+            //Distinguish between a client error and a server error
+            if (code < 500)
+            {
+                //A 400 level error indicates a client error
+                status = osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
+            }
+            else
+            {
+                //A 500 level error indicates a server error
+                status = osgDB::ReaderWriter::ReadResult::ERROR_IN_READING_FILE;
+            }
+
+            osgDB::ReaderWriter::ReadResult rr(status);
+
+            //Add the error code to the ReadResult
+            std::stringstream message;
+            message << "error code = " << code;
+
+            rr.message() = message.str();
+
+            return rr;
         }
 
         return osgDB::ReaderWriter::ReadResult::FILE_LOADED;

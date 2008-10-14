@@ -1,5 +1,5 @@
 #---------------------------------------------------
-# OSG CMAKE SUPPORT 
+# OSG CMAKE SUPPORT
 # (C) by Michael Wagner, mtw@shared-reality.com 2005
 # (C) Eric Wing, Luigi Calori and Robert Osfield 2006-2007
 #---------------------------------------------------
@@ -22,10 +22,10 @@ ENDIF(MSVC80)
 
 SET(TARGET_DEFAULT_PREFIX "osgdb_")
 SET(TARGET_DEFAULT_LABEL_PREFIX "Plugins")
-SET(TARGET_COMMON_LIBRARIES 
+SET(TARGET_COMMON_LIBRARIES
     OpenThreads
-    osg 
-    osgDB 
+    osg
+    osgDB
     osgUtil
 )
 
@@ -75,15 +75,16 @@ ADD_SUBDIRECTORY(pnm)
 ADD_SUBDIRECTORY(dds)
 ADD_SUBDIRECTORY(tga)
 ADD_SUBDIRECTORY(hdr)
+ADD_SUBDIRECTORY(dot)
 
 IF(JPEG_FOUND)
     ADD_SUBDIRECTORY(jpeg)
 ENDIF(JPEG_FOUND)
 IF(JASPER_FOUND)
-    ADD_SUBDIRECTORY(jp2) 
+    ADD_SUBDIRECTORY(jp2)
 ENDIF(JASPER_FOUND)
 IF(GIFLIB_FOUND)
-    ADD_SUBDIRECTORY(gif) 
+    ADD_SUBDIRECTORY(gif)
 ENDIF(GIFLIB_FOUND)
 IF(PNG_FOUND)
     ADD_SUBDIRECTORY(png)
@@ -168,7 +169,7 @@ IF(QUICKTIME_FOUND)
 ENDIF(QUICKTIME_FOUND)
 
 IF(FREETYPE_FOUND)
-    ADD_SUBDIRECTORY(freetype) 
+    ADD_SUBDIRECTORY(freetype)
 ENDIF(FREETYPE_FOUND)
 IF(ZLIB_FOUND)
     ADD_SUBDIRECTORY(zip)
@@ -191,4 +192,4 @@ ENDIF(BUILD_OSGWIDGET)
 #    )
 #ENDFOREACH(myvar)
 
-    
+

@@ -43,5 +43,28 @@ template <class M> class ReverseScopedLock
         ~ReverseScopedLock(){m_lock.lock();}
 };
 
+
+template <class M> class ScopedPointerLock
+{
+    private:
+        M* m_lock;
+        ScopedPointerLock(const ScopedPointerLock&); // prevent copy
+        ScopedPointerLock& operator=(const ScopedPointerLock&); // prevent assign
+    public:
+        explicit ScopedPointerLock(M* m):m_lock(m) { if (m_lock) m_lock->lock();}
+        ~ScopedPointerLock(){ if (m_lock) m_lock->unlock();}
+};
+
+template <class M> class ReverseScopedPointerLock
+{
+    private:
+        M* m_lock;
+        ReverseScopedPointerLock(const ReverseScopedPointerLock&); // prevent copy
+        ReverseScopedPointerLock& operator=(const ReverseScopedPointerLock&); // prevent assign
+    public:
+        explicit ReverseScopedPointerLock(M* m):m_lock(m) { if (m_lock) m_lock->unlock();}
+        ~ReverseScopedPointerLock(){ if (m_lock) m_lock->lock();}
+};
+
 }
 #endif

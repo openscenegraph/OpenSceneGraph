@@ -210,7 +210,7 @@ void UFOManipulator::home(double)
     _directionRotationRate = 0.0;
 
     _inverseMatrix.makeLookAt( _homeEye, _homeCenter, _homeUp );
-    _matrix.invert( _matrix );
+    _matrix.invert( _inverseMatrix );
 
     _offset.makeIdentity();
 

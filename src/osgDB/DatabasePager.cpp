@@ -398,17 +398,6 @@ int DatabasePager::DatabaseThread::cancel()
 
 }
 
-osg::ref_ptr<osg::Node> DatabasePager::DatabaseThread::dpReadRefNodeFile(const std::string& fileName,const ReaderWriter::Options* options)
-{
-    ReaderWriter::ReadResult rr = Registry::instance()->getReadFileCallback() ?
-            Registry::instance()->getReadFileCallback()->readNode(fileName,options) :
-            Registry::instance()->readNodeImplementation(fileName,options);
-
-    if (rr.validNode()) return rr.getNode();
-    if (rr.error()) osg::notify(osg::WARN) << rr.message() << std::endl;
-    return 0;
-}
-
 void DatabasePager::DatabaseThread::run()
 {
     osg::notify(osg::INFO)<<_name<<": DatabasePager::DatabaseThread::run"<<std::endl;
@@ -447,11 +436,7 @@ void DatabasePager::DatabaseThread::run()
     }
     
     //Getting CURL Environment Variables (If found rewrite OSG Options)
-    std::string cacheFilePath;
-    const char* fileCachePath = getenv("OSG_FILE_CACHE");
-    if (fileCachePath) //Env Cache Directory
-        cacheFilePath = std::string(fileCachePath);
-
+    osg::ref_ptr<FileCache> fileCache = osgDB::Registry::instance()->getFileCache();
 
     do
     {
@@ -480,6 +465,8 @@ void DatabasePager::DatabaseThread::run()
         //
         osg::ref_ptr<DatabaseRequest> databaseRequest;
         read_queue->takeFirst(databaseRequest);
+
+        bool readFromFileCache = false;
                 
         if (databaseRequest.valid())
         {
@@ -494,57 +481,24 @@ void DatabasePager::DatabaseThread::run()
                         // do nothing as this thread can handle the load
                         if (osgDB::containsServerAddress(databaseRequest->_fileName))
                         {
-                            std::string cacheFileName;
-                            if (!cacheFilePath.empty())
+                            if (fileCache.valid() && fileCache->existsInCache(databaseRequest->_fileName))
                             {
-                                cacheFileName = cacheFilePath + "/" + 
-                                                osgDB::getServerAddress(databaseRequest->_fileName) + "/" + 
-                                                osgDB::getServerFileName(databaseRequest->_fileName);
-
-                                std::string path = osgDB::getFilePath(cacheFileName);
-
-                                if (!osgDB::fileExists(path))
-                                {
-                                    cacheFileName.clear();
-                                }
-                            }
-
-                            if (!cacheFilePath.empty() && osgDB::fileExists(cacheFileName))
-                            {
-                                osg::notify(osg::INFO)<<_name<<": Reading cache file " << cacheFileName <<", previous path "<<osgDB::getFilePath(databaseRequest->_fileName)<<std::endl;
-                                databaseRequest->_fileName = cacheFileName;
+                                readFromFileCache = true;
                             }
                         }
-
                         break;
                         
                     case(HANDLE_NON_HTTP):
                         // check the cache first
                         if (osgDB::containsServerAddress(databaseRequest->_fileName))
                         {
-                            std::string cacheFileName;
-                            if (!cacheFilePath.empty())
+                            if (fileCache.valid() && fileCache->existsInCache(databaseRequest->_fileName))
                             {
-                                cacheFileName = cacheFilePath + "/" + 
-                                                osgDB::getServerAddress(databaseRequest->_fileName) + "/" + 
-                                                osgDB::getServerFileName(databaseRequest->_fileName);
-
-                                std::string path = osgDB::getFilePath(cacheFileName);
-
-                                if (!osgDB::fileExists(path))
-                                {
-                                    cacheFileName.clear();
-                                }
-                            }
-
-                            if (!cacheFilePath.empty() && osgDB::fileExists(cacheFileName))
-                            {
-                                osg::notify(osg::INFO)<<_name<<": Reading cache file " << cacheFileName <<", previous path "<<osgDB::getFilePath(databaseRequest->_fileName)<<std::endl;
-                                databaseRequest->_fileName = cacheFileName;
+                                readFromFileCache = true;
                             }
                             else
                             {
-                                osg::notify(osg::INFO)<<_name<<": Passing http requests over "<<databaseRequest->_fileName<<"  cacheFileName="<<cacheFileName<<std::endl;
+                                osg::notify(osg::INFO)<<_name<<": Passing http requests over "<<databaseRequest->_fileName<<std::endl;
                                 out_queue->add(databaseRequest.get());
                                 databaseRequest = 0;
                             }
@@ -577,46 +531,20 @@ void DatabasePager::DatabaseThread::run()
             //osg::Timer_t before = osg::Timer::instance()->tick();
 
 
-            bool serialize_readNodeFile = false;
-            if (serialize_readNodeFile)
-            {
-                // do *not* assume that we only have one DatabasePager, or that reaNodeFile is thread safe...
-                static OpenThreads::Mutex s_serialize_readNodeFile_mutex;
-                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_serialize_readNodeFile_mutex);
-                databaseRequest->_loadedModel = dpReadRefNodeFile(databaseRequest->_fileName,
-                    databaseRequest->_loadOptions.get());
-            }
-            else
-            {
-                // assume that we only have one DatabasePager, or that readNodeFile is thread safe...
-                databaseRequest->_loadedModel = dpReadRefNodeFile(databaseRequest->_fileName,
-                    databaseRequest->_loadOptions.get());
-            }
+            // assume that readNode is thread safe...
+            ReaderWriter::ReadResult rr = readFromFileCache ?
+                        fileCache->readNode(databaseRequest->_fileName, databaseRequest->_loadOptions.get(), false) :
+                        Registry::instance()->readNode(databaseRequest->_fileName, databaseRequest->_loadOptions.get(), false);
+
+            if (rr.validNode()) databaseRequest->_loadedModel = rr.getNode();
+            if (rr.error()) osg::notify(osg::WARN) << rr.message() << std::endl;
 
             if (databaseRequest->_loadedModel.valid() &&
                 osgDB::containsServerAddress(databaseRequest->_fileName) &&
-                !cacheFilePath.empty())
+                fileCache.valid() &&
+                !readFromFileCache)
             {
-                std::string cacheFileName = cacheFilePath + "/" + 
-                                    osgDB::getServerAddress(databaseRequest->_fileName) + "/" + 
-                                    osgDB::getServerFileName(databaseRequest->_fileName);
-
-                std::string path = osgDB::getFilePath(cacheFileName);
-
-                if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
-                {
-                    cacheFileName.clear();
-                }
-
-                if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
-                {
-                    osg::notify(osg::NOTICE)<<_name<<": Warning, file already in cache file, shouldn't have needed to be reloaded.  cache file=" << cacheFileName <<", previous path "<<osgDB::getFilePath(databaseRequest->_fileName)<<std::endl;
-                }
-                else
-                {
-                    osg::notify(osg::INFO)<<_name<<": Write to cache "<<cacheFileName<<std::endl;
-                    osgDB::writeNodeFile(*(databaseRequest->_loadedModel), cacheFileName, databaseRequest->_loadOptions.get());
-                }
+                fileCache->writeNode(*(databaseRequest->_loadedModel), databaseRequest->_fileName, databaseRequest->_loadOptions.get());
             }
 
             if ((_pager->_frameNumber-databaseRequest->_frameNumberLastRequest)>1)

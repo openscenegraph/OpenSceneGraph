@@ -22,6 +22,8 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgDB/FileUtils>
+#include <osgDB/FileCache>
+#include <osgDB/FileNameUtils>
 
 #include <iostream>
 #include <algorithm>
@@ -134,6 +136,8 @@ public:
     LoadDataVisitor():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _currentLevel(0) {}
+
+    void setFileCache(osgDB::FileCache* fileCache) { _fileCache = fileCache; }
         
     void addExtents(unsigned int maxLevel, double minX, double minY, double maxX, double maxY)
     {
@@ -242,9 +246,8 @@ public:
                         filename = plod.getFileName(i);
                     }
 
-                    osg::notify(osg::NOTICE)<<"reading "<<filename<<std::endl;
 
-                    osg::ref_ptr<osg::Node> node = osgDB::readNodeFile(filename);
+                    osg::ref_ptr<osg::Node> node = readNodeFileAndWriteToCache(filename);
 
                     if (!s_ExitApplication && node.valid()) node->accept(*this);
                 }
@@ -264,6 +267,37 @@ public:
                 osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom->getVertexArray());
                 if (vertices) updateBound(*vertices);
             }
+        }
+    }
+    
+    osg::Node* readNodeFileAndWriteToCache(const std::string& filename)
+    {
+        
+        if (_fileCache.valid() && osgDB::containsServerAddress(filename))
+        {
+            if (_fileCache->existsInCache(filename))
+            {
+                osg::notify(osg::NOTICE)<<"reading from FileCache: "<<filename<<std::endl;
+                return _fileCache->readNode(filename, osgDB::Registry::instance()->getOptions()).takeNode();
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"reading : "<<filename<<std::endl;
+
+                osg::Node* node = osgDB::readNodeFile(filename);
+                if (node)
+                {
+                    osg::notify(osg::NOTICE)<<"write to FileCache : "<<filename<<std::endl;
+
+                    _fileCache->writeNode(*node, filename, osgDB::Registry::instance()->getOptions());
+                }
+                return node;
+            }
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"reading : "<<filename<<std::endl;
+            return osgDB::readNodeFile(filename);
         }
     }
     
@@ -332,7 +366,8 @@ protected:
     typedef std::vector<Extents>                    ExtentsList;
     typedef std::vector<osg::Matrix>                MatrixStack;
     typedef std::vector<osg::CoordinateSystemNode*> CSNStack;
-    
+
+    osg::ref_ptr<osgDB::FileCache>  _fileCache;
 
     ExtentsList     _extentsList;
     unsigned int    _currentLevel;
@@ -384,6 +419,26 @@ int main( int argc, char **argv )
     
     LoadDataVisitor ldv;
 
+    std::string fileCachePath;
+    while(arguments.read("--file-cache",fileCachePath) || arguments.read("-c",fileCachePath)) {}
+    
+    if (fileCachePath.empty())
+    {   
+        const char* env_fileCachePath = getenv("OSG_FILE_CACHE");
+        if (env_fileCachePath)
+        {
+            fileCachePath = env_fileCachePath;
+        }
+    }
+
+    if (fileCachePath.empty())
+    {
+        std::cout<<"No path to the file cache defined, please set OSG_FILE_PATH env var, or use --file-cache <directory> to set a suitable directory for the file cache."<<std::endl;
+        return 1;
+    }
+    
+    ldv.setFileCache(new osgDB::FileCache(fileCachePath));
+
     unsigned int maxLevels = 0;
     while(arguments.read("-l",maxLevels))
     {
@@ -396,18 +451,24 @@ int main( int argc, char **argv )
         ldv.addExtents(maxLevels, minX, minY, maxX, maxY);
     }
 
-    std::string fileCache;
-    while(arguments.read("--file-cache",fileCache) || arguments.read("-c",fileCache)) {}
     
-    if (!fileCache.empty())
-    {   
-        std::string str("OSG_FILE_CACHE=");
-        str += fileCache;
-        
-        putenv(strdup((char*)str.c_str()));
+    std::string filename;
+    for(int i=1; i<arguments.argc(); ++i)
+    {
+        if (!arguments.isOption(i))
+        {
+            filename = arguments[i];
+            break;
+        }
     }
-
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    
+    if (filename.empty()) 
+    {
+        std::cout<<"No file to load specified."<<std::endl;
+        return 1;
+    }
+    
+    osg::ref_ptr<osg::Node> loadedModel = ldv.readNodeFileAndWriteToCache(filename);
     if (!loadedModel)
     {
         std::cout<<"No data loaded, please specify a database to load"<<std::endl;

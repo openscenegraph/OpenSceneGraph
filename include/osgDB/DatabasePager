@@ -105,8 +105,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             
             virtual void run();
             
-            osg::ref_ptr<osg::Node> dpReadRefNodeFile(const std::string& fileName,const ReaderWriter::Options* options);
-
         protected:
 
             virtual ~DatabaseThread();

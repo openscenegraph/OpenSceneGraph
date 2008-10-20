@@ -17,6 +17,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Field
     ${HEADER_PATH}/FieldReader
     ${HEADER_PATH}/FieldReaderIterator
+    ${HEADER_PATH}/FileCache
     ${HEADER_PATH}/FileNameUtils
     ${HEADER_PATH}/FileUtils
     ${HEADER_PATH}/ImageOptions
@@ -28,8 +29,8 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ReaderWriter
     ${HEADER_PATH}/ReadFile
     ${HEADER_PATH}/Registry
-    ${HEADER_PATH}/SharedStateManager
     ${HEADER_PATH}/Serializer
+    ${HEADER_PATH}/SharedStateManager
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/WriteFile
 )
@@ -46,6 +47,7 @@ ADD_LIBRARY(${LIB_NAME}
     Field.cpp
     FieldReader.cpp
     FieldReaderIterator.cpp
+    FileCache.cpp
     FileNameUtils.cpp
     FileUtils.cpp
     ImageOptions.cpp

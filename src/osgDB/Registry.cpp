@@ -178,6 +178,12 @@ Registry::Registry()
         else _buildKdTreesHint = ReaderWriter::Options::BUILD_KDTREES;
     }
 
+    const char* fileCachePath = getenv("OSG_FILE_CACHE");
+    if (fileCachePath)
+    {
+        _fileCache = new FileCache(fileCachePath);    
+    }
+
     _createNodeFromImage = false;
     _openingLibrary = false;
 
@@ -324,6 +330,10 @@ void Registry::destruct()
 
     // clean up the SharedStateManager 
     _sharedStateManager = 0;
+    
+
+    // clean up the FileCache
+    _fileCache = 0;
     
 
     // object cache clear needed here to prevent crash in unref() of

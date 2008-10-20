@@ -617,6 +617,8 @@ void Image::readPixels(int x,int y,int width,int height,
 
 void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable, GLenum type)
 {
+    // osg::notify(osg::NOTICE)<<"Image::readImageFromCurrentTexture()"<<std::endl;
+
     const osg::Texture::Extensions* extensions = osg::Texture::getExtensions(contextID,true);
     const osg::Texture3D::Extensions* extensions3D = osg::Texture3D::getExtensions(contextID,true);
     const osg::Texture2DArray::Extensions* extensions2DArray = osg::Texture2DArray::getExtensions(contextID,true);
@@ -655,6 +657,7 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
             glGetTexLevelParameteriv(textureMode, numMipMaps, GL_TEXTURE_WIDTH, &width);
             glGetTexLevelParameteriv(textureMode, numMipMaps, GL_TEXTURE_HEIGHT, &height);
             glGetTexLevelParameteriv(textureMode, numMipMaps, GL_TEXTURE_DEPTH, &depth);
+            // osg::notify(osg::NOTICE)<<"   numMipMaps="<<numMipMaps<<" width="<<width<<" height="<<height<<" depth="<<depth<<std::endl;
             if (width==0 || height==0 || depth==0) break;
         }
     }
@@ -662,6 +665,8 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     {
         numMipMaps = 1;
     }
+    
+    // osg::notify(osg::NOTICE)<<"Image::readImageFromCurrentTexture() : numMipMaps = "<<numMipMaps<<std::endl;
 
         
     GLint compressed = 0;

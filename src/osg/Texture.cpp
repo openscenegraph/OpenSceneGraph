@@ -906,6 +906,9 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
             height >>= 1;
         }    
     }
+    
+    // osg::notify(osg::NOTICE)<<"Texture::computeRequiredTextureDimensions() image.s() "<<image.s()<<" image.t()="<<image.t()<<" width="<<width<<" height="<<height<<" numMipmapLevels="<<numMipmapLevels<<std::endl; 
+    // osg::notify(osg::NOTICE)<<"  _resizeNonPowerOfTwoHint="<<_resizeNonPowerOfTwoHint<<" extensions->isNonPowerOfTwoTextureSupported(_min_filter)="<<extensions->isNonPowerOfTwoTextureSupported(_min_filter) <<std::endl; 
 }
 
 bool Texture::areAllTextureObjectsLoaded() const
@@ -977,6 +980,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     
     unsigned char* data = (unsigned char*)image->data();
  
+    // osg::notify(osg::NOTICE)<<"inwidth="<<inwidth<<" inheight="<<inheight<<" image->getFileName()"<<image->getFileName()<<std::endl;
 
     bool needImageRescale = inwidth!=image->s() || inheight!=image->t();
     if (needImageRescale)

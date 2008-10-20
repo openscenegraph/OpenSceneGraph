@@ -15,6 +15,8 @@
 
 bool Layer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Layer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
+bool Layer_matchFilterStr(const char* str, osg::Texture::FilterMode& filter);
+const char* Layer_getFilterStr(osg::Texture::FilterMode filter);
 
 osgDB::RegisterDotOsgWrapperProxy Layer_Proxy
 (
@@ -35,23 +37,19 @@ bool Layer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
     if (locator) layer.setLocator(locator);
     
-    if (fr[0].matchWord("Filter"))
+    osg::Texture::FilterMode filter;
+    if (fr[0].matchWord("MinFilter") && Layer_matchFilterStr(fr[1].getStr(),filter))
     {
-        unsigned int layerNum = 0;
-        if (fr.matchSequence("Filter %i"))
-        {
-            fr[1].getUInt(layerNum);
-            fr += 2;
-        }
-        else
-        {
-            ++fr;
-        }
+        layer.setMinFilter(filter);
+        fr+=2;
+        itrAdvanced = true;
+    }
 
-        if (fr[0].matchWord("NEAREST")) layer.setFilter(osgTerrain::Layer::NEAREST);
-        else if (fr[0].matchWord("LINEAR")) layer.setFilter(osgTerrain::Layer::LINEAR);
-
-        ++fr;
+    if ((fr[0].matchWord("Filter") || fr[0].matchWord("MagFilter")) &&
+        Layer_matchFilterStr(fr[1].getStr(),filter))
+    {
+        layer.setMagFilter(filter);
+        fr+=2;
         itrAdvanced = true;
     }
 
@@ -82,17 +80,8 @@ bool Layer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
         fw.writeObject(*layer.getLocator());
     }
     
-    if (layer.getFilter()!=osgTerrain::Layer::LINEAR)
-    {
-        if (layer.getFilter()==osgTerrain::Layer::LINEAR)
-        {
-            fw.indent()<<"Filter LINEAER"<<std::endl;
-        }
-        else
-        {
-            fw.indent()<<"Filter NEAREST"<<std::endl;
-        }
-    }
+    fw.indent()<<"MinFilter "<<Layer_getFilterStr(layer.getMinFilter())<<std::endl;
+    fw.indent()<<"MagFilter "<<Layer_getFilterStr(layer.getMagFilter())<<std::endl;
 
     if (layer.getMinLevel()!=0)
     {
@@ -106,3 +95,32 @@ bool Layer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 
     return true;
 }
+
+bool Layer_matchFilterStr(const char* str, osg::Texture::FilterMode& filter)
+{
+    if (strcmp(str,"NEAREST")==0) filter = osg::Texture::NEAREST;
+    else if (strcmp(str,"LINEAR")==0) filter = osg::Texture::LINEAR;
+    else if (strcmp(str,"NEAREST_MIPMAP_NEAREST")==0) filter = osg::Texture::NEAREST_MIPMAP_NEAREST;
+    else if (strcmp(str,"LINEAR_MIPMAP_NEAREST")==0) filter = osg::Texture::LINEAR_MIPMAP_NEAREST;
+    else if (strcmp(str,"NEAREST_MIPMAP_LINEAR")==0) filter = osg::Texture::NEAREST_MIPMAP_LINEAR;
+    else if (strcmp(str,"LINEAR_MIPMAP_LINEAR")==0) filter = osg::Texture::LINEAR_MIPMAP_LINEAR;
+    else if (strcmp(str,"ANISOTROPIC")==0) filter = osg::Texture::LINEAR;
+    else return false;
+    return true;
+}
+
+
+const char* Layer_getFilterStr(osg::Texture::FilterMode filter)
+{
+    switch(filter)
+    {
+        case(osg::Texture::NEAREST): return "NEAREST";
+        case(osg::Texture::LINEAR): return "LINEAR";
+        case(osg::Texture::NEAREST_MIPMAP_NEAREST): return "NEAREST_MIPMAP_NEAREST";
+        case(osg::Texture::LINEAR_MIPMAP_NEAREST): return "LINEAR_MIPMAP_NEAREST";
+        case(osg::Texture::NEAREST_MIPMAP_LINEAR): return "NEAREST_MIPMAP_LINEAR";
+        case(osg::Texture::LINEAR_MIPMAP_LINEAR): return "LINEAR_MIPMAP_LINEAR";
+    }
+    return "";
+}
+

@@ -646,7 +646,7 @@ int main(int argc, char** argv)
 
     std::string filterName;
 
-    osgTerrain::Layer::Filter filter = osgTerrain::Layer::LINEAR;
+    osg::Texture::FilterMode filter = osg::Texture::LINEAR;
 
     bool readParameter = false;
     float minValue, maxValue;
@@ -705,7 +705,7 @@ int main(int argc, char** argv)
                 
                 hfl->setLocator(locator.get());
                 hfl->setValidDataOperator(validDataOperator.get());
-                hfl->setFilter(filter);
+                hfl->setMagFilter(filter);
                 
                 if (offset!=0.0f || scale!=1.0f)
                 {
@@ -740,7 +740,7 @@ int main(int argc, char** argv)
                 imageLayer->setImage(image.get());
                 imageLayer->setLocator(locator.get());
                 imageLayer->setValidDataOperator(validDataOperator.get());
-                imageLayer->setFilter(filter);
+                imageLayer->setMagFilter(filter);
                 
                 if (offset!=0.0f || scale!=1.0f)
                 {
@@ -775,7 +775,7 @@ int main(int argc, char** argv)
                 imageLayer->setImage(image.get());
                 imageLayer->setLocator(locator.get());
                 imageLayer->setValidDataOperator(validDataOperator.get());
-                imageLayer->setFilter(filter);
+                imageLayer->setMagFilter(filter);
                 
                 if (offset!=0.0f || scale!=1.0f)
                 {
@@ -805,11 +805,11 @@ int main(int argc, char** argv)
             if (filterName=="NEAREST")
             {
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
-                filter = osgTerrain::Layer::NEAREST;
+                filter = osg::Texture::NEAREST;
             }
             else if (filterName=="LINEAR") 
             {
-                filter = osgTerrain::Layer::LINEAR;
+                filter = osg::Texture::LINEAR;
                 osg::notify(osg::NOTICE)<<"--filter "<<filterName<<std::endl;
             }
             else
@@ -819,7 +819,7 @@ int main(int argc, char** argv)
 
             if (terrainTile->getColorLayer(layerNum))
             {
-                terrainTile->getColorLayer(layerNum)->setFilter(filter);
+                terrainTile->getColorLayer(layerNum)->setMagFilter(filter);
             }
             
         }

@@ -74,6 +74,7 @@ public:
     osg::UShortArray* readUShortArray();
     osg::UIntArray* readUIntArray();
     osg::Vec4ubArray* readVec4ubArray();
+    bool readPackedFloatArray(osg::FloatArray* floatArray);
     osg::FloatArray* readFloatArray();
     osg::Vec2Array* readVec2Array();
     osg::Vec3Array* readVec3Array();
@@ -106,6 +107,7 @@ public:
     // Set and get if must be generated external reference ive files
     void setLoadExternalReferenceFiles(bool b) {_loadExternalReferenceFiles=b;};
     bool getLoadExternalReferenceFiles() {return _loadExternalReferenceFiles;};
+
 
     typedef std::map<std::string, osg::ref_ptr<osg::Image> >    ImageMap;
     typedef std::map<int,osg::ref_ptr<osg::StateSet> >          StateSetMap;

@@ -717,14 +717,16 @@ void GeometryTechnique::applyColorLayers()
                 texture2D->setImage(image);
                 texture2D->setMaxAnisotropy(16.0f);
                 texture2D->setResizeNonPowerOfTwoHint(false);
-                texture2D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);
-                texture2D->setFilter(osg::Texture::MAG_FILTER, colorLayer->getFilter()==Layer::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
+
+                texture2D->setFilter(osg::Texture::MIN_FILTER, colorLayer->getMinFilter());
+                texture2D->setFilter(osg::Texture::MAG_FILTER, colorLayer->getMagFilter());
+                
                 texture2D->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
                 texture2D->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
 
                 layerToTextureMap[colorLayer] = texture2D;
 
-                // osg::notify(osg::NOTICE)<<"Creating new ImageLayer texture "<<layerNum<<std::endl;
+                // osg::notify(osg::NOTICE)<<"Creating new ImageLayer texture "<<layerNum<<" image->s()="<<image->s()<<"  image->t()="<<image->t()<<std::endl;
 
             }
             else
@@ -746,7 +748,7 @@ void GeometryTechnique::applyColorLayers()
                 texture1D->setImage(image);
                 texture1D->setResizeNonPowerOfTwoHint(false);
                 texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::NEAREST);
-                texture1D->setFilter(osg::Texture::MAG_FILTER, colorLayer->getFilter()==Layer::LINEAR ? osg::Texture::LINEAR :  osg::Texture::NEAREST);
+                texture1D->setFilter(osg::Texture::MAG_FILTER, colorLayer->getMagFilter());
 
                 layerToTextureMap[colorLayer] = texture1D;
             }

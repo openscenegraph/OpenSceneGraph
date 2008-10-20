@@ -77,17 +77,20 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         void setDefaultValue(const osg::Vec4& value) { _defaultValue = value; }
         const osg::Vec4& getDefaultValue() const { return _defaultValue; }
         
-        enum Filter
-        {
-            NEAREST,
-            LINEAR
-        };
 
-        /** Set the texture filter to use when do texture associated with this layer.*/
-        void setFilter(Filter filter) { _filter = filter; }
+        /** Set the minification texture filter to use when do texture associated with this layer.*/
+        void setMinFilter(osg::Texture::FilterMode filter) { _minFilter = filter; }
 
-        /** Get the texture filter to use when do texture associated with this layer.*/
-        Filter getFilter() const { return _filter; }
+        /** Get the minification texture filter to use when do texture associated with this layer.*/
+        osg::Texture::FilterMode getMinFilter() const { return _minFilter; }
+
+
+        /** Set the magniification texture filter to use when do texture associated with this layer.*/
+        void setMagFilter(osg::Texture::FilterMode filter) { _magFilter = filter; }
+
+        /** Get the magnification texture filter to use when do texture associated with this layer.*/
+        osg::Texture::FilterMode getMagFilter() const { return _magFilter; }
+
 
 
         /** Return image associated with layer if supported. */        
@@ -209,7 +212,8 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         unsigned int                    _maxLevel;
         osg::ref_ptr<ValidDataOperator> _validDataOperator;
         osg::Vec4                       _defaultValue;
-        Filter                          _filter;
+        osg::Texture::FilterMode        _minFilter;
+        osg::Texture::FilterMode        _magFilter;
 
 };
 

@@ -24,6 +24,7 @@ class ReaderWriterIVE : public ReaderWriter
             supportsOption("inlineExternalReferencesInIVEFile","Export option");
             supportsOption("noWriteExternalReferenceFiles","Export option");
             supportsOption("useOriginalExternalReferences","Export option");
+            supportsOption("TerrainMaximumErrorToSizeRatio=value","Export option that controls error matric used to determine terrain HieghtField storage precision.");
             supportsOption("noLoadExternalReferenceFiles","Import option");
         }
     

@@ -10,9 +10,14 @@ Label::Label(const std::string& name, const std::string& label):
 Widget     (name, 0, 0),
 _text      (new osgText::Text()), 
 _textIndex (0) {
-    _text->setText(label);
     _text->setAlignment(osgText::Text::LEFT_BOTTOM);
     _text->setDataVariance(osg::Object::DYNAMIC);
+
+    if(label.size()) {
+        _text->setText(label);
+
+        _calculateSize(getTextSize());
+    }
 
     // TODO: Make a patch for this!
     // If you're wondering why we don't use this let me explain...
@@ -30,7 +35,7 @@ _textIndex (0) {
 
 Label::Label(const Label& label, const osg::CopyOp& co):
 Widget     (label, co),
-_textIndex (label._textIndex) {
+_textIndex (0) { //label._textIndex) {
     _text = new osgText::Text(*label._text, co);
 }
 
@@ -57,33 +62,15 @@ void Label::unparented(Window* parent) {
     _textIndex = 0;
 }
 
-void Label::managed(WindowManager* wm) {
-    if(wm->isInvertedY()) {
-        // We rotate along our X axis, so we need to make sure and translate the
-        // text later to preserve centering.
-        _text->setAxisAlignment(osgText::Text::USER_DEFINED_ROTATION);
-        _text->setRotation(osg::Quat(
-            osg::DegreesToRadians(180.0f),
-            osg::Vec3(1.0f, 0.0f, 0.0f)
-        ));
-    }
-}
-
 void Label::positioned() {
     XYCoord    size = getTextSize();
     point_type x    = osg::round(((getWidth() - size.x()) / 2.0f) + getX());
-    point_type y    = 0.0f;
-
-    if(getWindowManager() && getWindowManager()->isInvertedY()) y =
-        osg::round(((getHeight() - size.y()) / 2.0f) + getY() + size.y())
-    ;
-
-    else y = osg::round(((getHeight() - size.y()) / 2.0f) + getY());
+    point_type y    = osg::round(((getHeight() - size.y()) / 2.0f) + getY());
     
     // These values are permisable with CENTER_CENTER mode is active.
     // point_type x  = round(getX() + (getWidth() / 2.0f));
     // point_type y  = round(getY() + (getHeight() / 2.0f));
-    
+
     /*
     warn() << "Label widget size : " << getWidth() << " x " << getHeight() << std::endl;
     warn() << "Label widget tsize: " << getWidthTotal() << " x " << getHeightTotal() << std::endl;
@@ -93,6 +80,8 @@ void Label::positioned() {
     warn() << "------------------------------------" << std::endl;
     */
 
+    // warn() << "z for " << _name << ": " << _calculateZ(getLayer() + 1) << std::endl;
+    
     _text->setPosition(osg::Vec3(x, y, _calculateZ(getLayer() + 1)));
 }
 

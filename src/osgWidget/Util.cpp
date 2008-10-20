@@ -35,14 +35,6 @@ std::string generateRandomName(const std::string& base) {
     return ss.str();
 }
 
-osg::Matrix createInvertedYOrthoProjectionMatrix(matrix_type width, matrix_type height) {
-    osg::Matrix m = osg::Matrix::ortho2D(0.0f, width, 0.0f, height);
-    osg::Matrix s = osg::Matrix::scale(1.0f, -1.0f, 1.0f);
-    osg::Matrix t = osg::Matrix::translate(0.0f, -height, 0.0f);
-
-    return t * s * m;
-}
-
 osg::Camera* createOrthoCamera(matrix_type width, matrix_type height) {
     osg::Camera* camera = new osg::Camera();
 
@@ -56,14 +48,6 @@ osg::Camera* createOrthoCamera(matrix_type width, matrix_type height) {
     camera->setViewMatrix(osg::Matrix::identity());
     camera->setClearMask(GL_DEPTH_BUFFER_BIT);
     camera->setRenderOrder(osg::Camera::POST_RENDER);
-    
-    return camera;
-}
-
-osg::Camera* createInvertedYOrthoCamera(matrix_type width, matrix_type height) {
-    osg::Camera* camera = createOrthoCamera(width, height);
-
-    camera->setProjectionMatrix(createInvertedYOrthoProjectionMatrix(width, height));
     
     return camera;
 }
@@ -88,6 +72,7 @@ osg::Group* _createExampleCommon(osgViewer::View* view, WindowManager* wm, osg::
     view->addEventHandler(new osgWidget::MouseHandler(wm));
     view->addEventHandler(new osgWidget::KeyboardHandler(wm));
     view->addEventHandler(new osgWidget::ResizeHandler(wm, camera));
+    view->addEventHandler(new osgWidget::CameraSwitchHandler(wm, camera));
     view->addEventHandler(new osgViewer::StatsHandler());
     view->addEventHandler(new osgViewer::WindowSizeHandler());
     view->addEventHandler(new osgGA::StateSetManipulator(

@@ -45,9 +45,9 @@ void Input::_calculateSize(const XYCoord& size) {
     point_type width  = size.x() + _cursor->getWidth();
     point_type height = _cursor->getHeight();
 
-    if(width > getWidth()) setWidth(osg::round(width));
+    // if(width > getWidth()) setWidth(osg::round(width));
 
-    if(height > getHeight()) setHeight(osg::round(height));
+    // if(height > getHeight()) setHeight(osg::round(height));
 }
 
 void Input::_calculateCursorOffsets() {
@@ -58,24 +58,18 @@ void Input::_calculateCursorOffsets() {
     
     const osgText::Text::GlyphQuads& gq = tgqmi->second;
 
-    point_type accum = 0.0f;
+    osg::Vec3 pos = _text->getPosition();
 
-    std::ostream& os = warn() << "_offsets[ ";
-    
     for(unsigned int i = 0; i < _maxSize; i++) {
-        osg::Vec2 ul = gq.getCoords()[0 + (i * 4)];
-        osg::Vec2 ll = gq.getCoords()[1 + (i * 4)];
-        osg::Vec2 lr = gq.getCoords()[2 + (i * 4)];
-        osg::Vec2 ur = gq.getCoords()[3 + (i * 4)];
+        osg::Vec3 ul = gq.getTransformedCoords(0)[0 + (i * 4)];
+        osg::Vec3 ll = gq.getTransformedCoords(0)[1 + (i * 4)];
+        osg::Vec3 lr = gq.getTransformedCoords(0)[2 + (i * 4)];
+        osg::Vec3 ur = gq.getTransformedCoords(0)[3 + (i * 4)];
         
-        accum += osg::round(lr.x() - ll.x());
-
-        _offsets[i] = accum;
-
-        os << _offsets[i] << " (" << static_cast<char>(_text->getText()[i]) << ") ";
+        _offsets[i] = lr.x() - pos.x();
+ 
+        // warn() << "vb: " << gq.getGlyphs()[i]->getHorizontalBearing() << std::endl;
     }
-
-    os << "]" << std::endl;
 }
 
 bool Input::focus(WindowManager*) {
@@ -111,7 +105,7 @@ void Input::positioned() {
     ;
 
     point_type x = getX() + _xoff;
-    point_type y = getY() + th + _yoff;
+    point_type y = getY() + _yoff;
 
     // XYCoord size = getTextSize();
 
@@ -128,7 +122,6 @@ bool Input::keyUp(int key, int mask, WindowManager*) {
 }
 
 bool Input::keyDown(int key, int mask, WindowManager*) {
-    /*
     osgText::String& s = _text->getText();
 
     if(key == osgGA::GUIEventAdapter::KEY_BackSpace) {
@@ -165,11 +158,30 @@ bool Input::keyDown(int key, int mask, WindowManager*) {
     _calculateSize(getTextSize());
 
     getParent()->resize();
-    */
-
-    warn() << "Input is under development." << std::endl;
 
     return false;
 }
 
+void Input::setCursor(Widget*) {
 }
+
+unsigned int Input::calculateBestYOffset(const std::string& s) {
+    const osgText::FontResolution fr(_text->getCharacterHeight(), _text->getCharacterHeight());
+
+    osgText::String utf(s);
+
+    unsigned int descent = 0;
+
+    for(osgText::String::iterator i = utf.begin(); i != utf.end(); i++) {
+        osgText::Font*        font  = const_cast<osgText::Font*>(_text->getFont());
+        osgText::Font::Glyph* glyph = font->getGlyph(fr, *i);
+        unsigned int          d     = abs(glyph->getHorizontalBearing().y());
+
+        if(d > descent) descent = d;
+    }
+
+    return descent;
+}
+
+}
+

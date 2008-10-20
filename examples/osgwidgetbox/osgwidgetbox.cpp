@@ -87,8 +87,7 @@ int main(int argc, char** argv) {
 		1280.0f,
 		1024.0f,
 		MASK_2D,
-		osgWidget::WindowManager::WM_PICK_DEBUG |
-		osgWidget::WindowManager::WM_NO_INVERT_Y
+		osgWidget::WindowManager::WM_PICK_DEBUG
 	);
 	
 	wm->setPointerFocusMode(osgWidget::WindowManager::PFM_SLOPPY);

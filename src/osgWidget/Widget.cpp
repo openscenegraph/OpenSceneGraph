@@ -4,7 +4,6 @@
 #include <osg/io_utils>
 #include <osg/Math>
 #include <osg/BlendFunc>
-#include <osg/TexMat>
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 #include <osgWidget/WindowManager>
@@ -115,19 +114,6 @@ osg::Image* Widget::_getImage() const {
     return 0;
 }
 
-void Widget::managed(WindowManager* wm) {
-    if(!wm->isInvertedY()) return;
-
-    osg::Matrix s = osg::Matrix::scale(1.0f, -1.0f, 1.0f);
-    osg::Matrix t = osg::Matrix::translate(0.0f, -1.0, 0.0f);
-
-    getOrCreateStateSet()->setTextureAttributeAndModes(
-        0,
-        new osg::TexMat(t * s),
-        osg::StateAttribute::ON
-    );
-}
-
 void Widget::setDimensions(point_type x, point_type y, point_type w, point_type h, point_type z) {
     if(w != -1.0f && w < _minWidth) {
         warn()
@@ -221,7 +207,7 @@ void Widget::setColor(color_type r, color_type g, color_type b, color_type a, Co
         (*cols)[UL].set(r, g, b, a);
     }
 
-    else (*cols)[convertCorner(p)].set(r, g, b, a);
+    else (*cols)[p].set(r, g, b, a);
 }
 
 void Widget::addColor(color_type r, color_type g, color_type b, color_type a, Corner p) {
@@ -234,7 +220,7 @@ void Widget::addColor(color_type r, color_type g, color_type b, color_type a, Co
         (*cols)[UL] += Color(r, g, b, a);
     }
 
-    else (*cols)[convertCorner(p)] += Color(r, g, b, a);
+    else (*cols)[p] += Color(r, g, b, a);
 }
 
 void Widget::setTexCoord(texcoord_type tx, texcoord_type ty, Corner p) {
@@ -247,7 +233,7 @@ void Widget::setTexCoord(texcoord_type tx, texcoord_type ty, Corner p) {
         (*texs)[UL].set(tx, ty);
     }
 
-    else (*texs)[convertCorner(p)].set(tx, ty);
+    else (*texs)[p].set(tx, ty);
 }
 
 void Widget::setTexCoordRegion(point_type x, point_type y, point_type w, point_type h) {
@@ -263,22 +249,22 @@ void Widget::setTexCoordRegion(point_type x, point_type y, point_type w, point_t
     // Set the LOWER_LEFT point.
     XYCoord t(x / tw, y / tw);
 
-    (*texs)[UL] = t;
+    (*texs)[LL] = t;
     
     // Set the LOWER_RIGHT point.
     t += XYCoord(w / tw, 0.0f);
 
-    (*texs)[UR] = t;
+    (*texs)[LR] = t;
 
     // Set the UPPER_RIGHT point.
     t += XYCoord(0.0f, h / th);
 
-    (*texs)[LR] = t;
+    (*texs)[UR] = t;
 
     // Set the UPPER_LEFT point.
     t += XYCoord(-(w / tw), 0.0f);
 
-    (*texs)[LL] = t;
+    (*texs)[UL] = t;
 }
 
 void Widget::setTexCoordWrapHorizontal() {
@@ -451,7 +437,7 @@ const Point& Widget::getPoint(Corner p) const {
 
     if(p == ALL_CORNERS) point = UPPER_LEFT;
 
-    return (*_verts())[convertCorner(point)];
+    return (*_verts())[point];
 }
 
 const Color& Widget::getColor(Corner p) const {
@@ -459,7 +445,7 @@ const Color& Widget::getColor(Corner p) const {
 
     if(p == ALL_CORNERS) point = UPPER_LEFT;
 
-    return (*_cols())[convertCorner(point)];
+    return (*_cols())[point];
 }
 
 const TexCoord& Widget::getTexCoord(Corner p) const {
@@ -467,25 +453,7 @@ const TexCoord& Widget::getTexCoord(Corner p) const {
 
     if(p == ALL_CORNERS) point = UPPER_LEFT;
 
-    return (*_texs())[convertCorner(point)];
-}
-
-// This converts our points back and forth depding on whether or not we're in an
-// inverted-Y WindowManager.
-Widget::Corner Widget::convertCorner(Corner p) const {
-    const WindowManager* wm = getWindowManager();
-
-    if(!wm || !wm->isInvertedY()) return p;
-    
-    if(p == UPPER_LEFT) return LOWER_LEFT;
-
-    else if(p == UPPER_RIGHT) return LOWER_RIGHT;
-
-    else if(p == LOWER_LEFT) return UPPER_LEFT;
-
-    else if(p == LOWER_RIGHT) return UPPER_RIGHT;
-
-    else return p;
+    return (*_texs())[point];
 }
 
 Color Widget::getImageColorAtXY(point_type x, point_type y) const {

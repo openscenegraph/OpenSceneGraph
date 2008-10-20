@@ -31,7 +31,6 @@ class OSGWIDGET_EXPORT Label: public Widget
 
         virtual void parented   (Window*);
         virtual void unparented (Window*);
-        virtual void managed    (WindowManager*);
         virtual void positioned ();
 
         void update       ();

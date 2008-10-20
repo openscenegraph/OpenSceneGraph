@@ -44,7 +44,7 @@ public:
             LR          = LOWER_RIGHT,
             UR          = UPPER_RIGHT,
             UL          = UPPER_LEFT,
-            ALL_CORNERS  = 4
+            ALL_CORNERS = 4
         };
 
         enum Layer {
@@ -94,7 +94,8 @@ public:
         // WindowManager object. The base managed method (WHICH YOU MUST REMEMBER
         // TO CALL IN YOUR DERIVED METHODS!) sets the TexMat properly depending
         // on what coordinate system you're using.
-        virtual void managed(WindowManager*);
+        virtual void managed(WindowManager*) {
+        }
 
         virtual void unmanaged(WindowManager*) {
         }
@@ -149,7 +150,6 @@ public:
         const Color&    getColor    (Corner = ALL_CORNERS) const;
         const TexCoord& getTexCoord (Corner = ALL_CORNERS) const;
 
-        Corner  convertCorner     (Corner) const;
         Color   getImageColorAtXY (point_type x, point_type y) const;
         XYCoord localXY           (double, double) const;
 
@@ -214,6 +214,14 @@ public:
 
         void setTexCoordRegion(const XYCoord& xy, point_type w, point_type h) {
             setTexCoordRegion(xy.x(), xy.y(), w, h);
+        }
+
+        void setTexCoordRegion(point_type x, point_type y, const XYCoord& wh) {
+            setTexCoordRegion(x, y, wh.x(), wh.y());
+        }
+
+        void setTexCoordRegion(const XYCoord& xy, const XYCoord& wh) {
+            setTexCoordRegion(xy.x(), xy.y(), wh.x(), wh.y());
         }
 
         void addColor(const Color& col, Corner p = ALL_CORNERS) {

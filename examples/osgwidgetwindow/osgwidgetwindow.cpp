@@ -77,7 +77,6 @@ int main(int argc, char** argv) {
 		1024.0f,
 		MASK_2D,
 		osgWidget::WindowManager::WM_USE_LUA |
-		osgWidget::WindowManager::WM_NO_INVERT_Y |
 		osgWidget::WindowManager::WM_USE_PYTHON |
 		osgWidget::WindowManager::WM_PICK_DEBUG |
 		osgWidget::WindowManager::WM_NO_BETA_WARN
@@ -178,7 +177,7 @@ int main(int argc, char** argv) {
 	// helpful ViewerEventHandlers.
 	viewer.addEventHandler(new osgWidget::MouseHandler(wm));
 	viewer.addEventHandler(new osgWidget::KeyboardHandler(wm));
-	viewer.addEventHandler(new osgWidget::ResizeHandler(wm, camera, false));
+	viewer.addEventHandler(new osgWidget::ResizeHandler(wm, camera));
 	viewer.addEventHandler(new osgViewer::StatsHandler());
 	viewer.addEventHandler(new osgViewer::WindowSizeHandler());
 	viewer.addEventHandler(new osgGA::StateSetManipulator(

@@ -25,8 +25,6 @@ _width          (width),
 _height         (height),
 _windowWidth    (width),
 _windowHeight   (height),
-_zNear          (0.0f),
-_zFar           (-1.0f),
 _numForeground  (0.0f),
 _numBackground  (0.0f),
 _flags          (flags),
@@ -183,10 +181,7 @@ bool WindowManager::_handleMouseReleased(float x, float y, bool& down) {
 
 void WindowManager::_getPointerXYDiff(float& x, float& y) {
     x -= _lastX;
-
-    if(isInvertedY()) y = -(y - _lastY);
-
-    else y -= _lastY;
+    y -= _lastY;
 }
 
 void WindowManager::_updatePickWindow(const WidgetList* wl, point_type x, point_type y) {
@@ -372,7 +367,7 @@ bool WindowManager::setFocused(Window* window) {
     // the Z space allocated to it so that it can properly arrange it's children. We
     // add 2 additional Windows here for anything that should appear in the background
     // and foreground areas.
-    matrix_type zRange = (_zNear - _zFar) / (focusable.size() + 2.0f);
+    matrix_type zRange = 1.0f / (focusable.size() + 2.0f);
 
     // Our offset for the following for() loop.
     unsigned int i = 3;
@@ -585,11 +580,7 @@ bool WindowManager::keyUp(int key, int mask) {
 // A convenience wrapper for creating a proper orthographic camera using the current
 // width and height.
 osg::Camera* WindowManager::createParentOrthoCamera() {
-    osg::Camera* camera = 0;
-
-    if(isInvertedY()) camera = createInvertedYOrthoCamera(_width, _height);
-
-    else camera = createOrthoCamera(_width, _height);
+    osg::Camera* camera = createOrthoCamera(_width, _height);
 
     camera->addChild(this);
 

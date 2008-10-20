@@ -71,10 +71,7 @@ class WindowManager;
 
 OSGWIDGET_EXPORT std::string  getFilePath        (const std::string&);
 OSGWIDGET_EXPORT std::string  generateRandomName (const std::string&);
-
-OSGWIDGET_EXPORT osg::Matrix  createInvertedYOrthoProjectionMatrix (matrix_type, matrix_type);
-OSGWIDGET_EXPORT osg::Camera* createOrthoCamera                    (matrix_type, matrix_type);
-OSGWIDGET_EXPORT osg::Camera* createInvertedYOrthoCamera           (matrix_type, matrix_type);
+OSGWIDGET_EXPORT osg::Camera* createOrthoCamera  (matrix_type, matrix_type);
 
 // This function sets up our basic example framework, and optionally sets some root
 // scene data.

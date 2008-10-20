@@ -47,8 +47,7 @@ int main(int argc, char** argv) {
         1280.0f,
         1024.0f,
         MASK_2D,
-        osgWidget::WindowManager::WM_PICK_DEBUG |
-        osgWidget::WindowManager::WM_NO_INVERT_Y
+        osgWidget::WindowManager::WM_PICK_DEBUG
     );
     
     osgWidget::Box*   box    = new osgWidget::Box("HBOX", osgWidget::Box::HORIZONTAL);
@@ -64,7 +63,9 @@ int main(int argc, char** argv) {
     label2->addSize(21.0f, 22.0f);
 
     label1->setColor(1.0f, 0.5f, 0.0f, 0.0f);
-    label2->setColor(1.0f, 0.5f, 0.0f, 0.0f);
+    label2->setColor(1.0f, 0.5f, 0.0f, 0.5f);
+
+    label2->setImage("Images/Brick-Norman-Brown.TGA", true);
 
     box->addWidget(label1);
     box->addWidget(label2);
@@ -85,11 +86,11 @@ int main(int argc, char** argv) {
     label4->setColor(0.0f, 0.0f, 0.5f, 0.5f);
     label5->setColor(0.0f, 0.0f, 0.5f, 0.5f);
     
-    label5->setAlignHorizontal(osgWidget::Widget::HA_LEFT);
-    label5->setAlignVertical(osgWidget::Widget::VA_BOTTOM);
+    //label5->setAlignHorizontal(osgWidget::Widget::HA_LEFT);
+    //label5->setAlignVertical(osgWidget::Widget::VA_BOTTOM);
 
     // Test our label copy construction...
-    osgWidget::Label* label6 = osg::clone(label5,"label6");
+    osgWidget::Label* label6 = osg::clone(label5, "label6", osg::CopyOp::DEEP_COPY_ALL);
 
     label6->setLabel("abcdefghijklmnopqrs");
 
@@ -108,7 +109,7 @@ int main(int argc, char** argv) {
     // vbox->setAnchorHorizontal(osgWidget::Window::HA_RIGHT);
 
     // Test our label-in-window copy construction...
-    osgWidget::Box* clonedBox = osg::clone(box,"HBOX-new");
+    osgWidget::Box* clonedBox = osg::clone(box, "HBOX-new", osg::CopyOp::DEEP_COPY_ALL);
     
     clonedBox->getBackground()->setColor(0.0f, 1.0f, 0.0f, 0.5f);
 

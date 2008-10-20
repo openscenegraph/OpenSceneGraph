@@ -70,9 +70,11 @@ void Window::EmbeddedWindow::parented(Window* parent) {
 }
 
 void Window::EmbeddedWindow::unparented(Window*) {
-    _window->_parent = 0;
+    if(_window.valid()) {
+        _window->_parent = 0;
 
-    if(_parent) _parent->removeChild(_window.get());
+        if(_parent) _parent->removeChild(_window.get());
+    }
 }
 
 void Window::EmbeddedWindow::managed(WindowManager* wm) {
@@ -341,41 +343,26 @@ void Window::update() {
 
     // We can't do proper scissoring until we have access to our parent WindowManager.
     if(_wm) {
-        int x   = static_cast<int>(xy.x());
-        int y   = static_cast<int>(xy.y());
-        int w   = static_cast<int>(_width.current);
-        int h   = static_cast<int>(_height.current);
-        int wmh = static_cast<int>(_wm->getHeight());
-        int nx  = x;
-        int ny  = y;
-        int nw  = w;
-        int nh  = h;
-
-        // This sets the Scissor area to the full size of the Window.
-        if(_vis == VM_FULL && _wm->isInvertedY()) ny = wmh - h - y;
+        int sx = static_cast<int>(xy.x());
+        int sy = static_cast<int>(xy.y());
+        int sw = static_cast<int>(_width.current);
+        int sh = static_cast<int>(_height.current);
 
         // This sets the Scissor area to some offset defined by the user.
-        else if(_vis == VM_PARTIAL) {
-            if(_wm->isInvertedY()) ny = wmh - y - static_cast<int>(_visibleArea[3]);
-
-            // else ny = static_cast<int>(_visibleArea[3]);
-
-            nw = static_cast<int>(_visibleArea[2]);
-            nh = static_cast<int>(_visibleArea[3]);
+        if(_vis == VM_PARTIAL) {
+            sw = static_cast<int>(_visibleArea[2]);
+            sh = static_cast<int>(_visibleArea[3]);
         }
 
         // Otherwise, use the size of the WindowManager itself.
-        else {
-            nx = 0;
-            ny = 0;
-            nw = static_cast<int>(_wm->getWidth());
-            nh = wmh;
+        else if(_vis == VM_ENTIRE) {
+            sx = 0;
+            sy = 0;
+            sw = static_cast<int>(_wm->getWidth());
+            sh = static_cast<int>(_wm->getHeight());
         }
 
-        XYCoord sOrigin = _wm->windowXY(nx, ny);
-        XYCoord sSize   = _wm->windowXY(nw, nh);
-
-        _scissor()->setScissor(sOrigin.x(), sOrigin.y(), sSize.x(), sSize.y());
+        _scissor()->setScissor(sx, sy, sw, sh);
     }
 }
 
@@ -649,6 +636,7 @@ void Window::addVisibleArea(int x, int y, int w, int h) {
     _visibleArea[3] += h;
 }
 
+// The topmost Window always has this method called, instead of the embedded window directly.
 bool Window::setFocused(const Widget* widget) {
     // TODO: I've turned on the warn() here, but perhaps I shouldn't? I need to define
     // the conditions under which it's okay to call setFocus() with a NULL widget.
@@ -660,7 +648,28 @@ bool Window::setFocused(const Widget* widget) {
 
     ConstIterator i = std::find(begin(), end(), widget);
 
+    bool found = false;
+
     if(i == end()) {
+        // We couldn't find the widget in the toplevel, so lets see if one of our
+        // EmbeddedWindow objects has it.
+        WindowList wl;
+
+        getEmbeddedList(wl);
+
+        for(WindowList::iterator w = wl.begin(); w != wl.end(); w++) {
+            ConstIterator ii = std::find(w->get()->begin(), w->get()->end(), widget);
+            
+            if(ii != w->get()->end()) {
+                found = true;
+                i     = ii;
+            }
+        }
+    }
+
+    else found = true;
+
+    if(!found) {
         warn()
             << "Window [" << _name
             << "] couldn't find the Widget [" << widget->getName()
@@ -676,9 +685,31 @@ bool Window::setFocused(const Widget* widget) {
 }
 
 bool Window::setFocused(const std::string& name) {
-    Widget* w = getByName(name);
+    Widget* w1 = getByName(name);
 
-    if(!w) {
+    bool found = false;
+
+    if(!w1) {
+        // Just like above, we couldn't find the widget in the toplevel, so lets see if
+        // one of our EmbeddedWindow objects has it. The difference here is that we
+        // search by name.
+        WindowList wl;
+
+        getEmbeddedList(wl);
+
+        for(WindowList::iterator w = wl.begin(); w != wl.end(); w++) {
+            Widget* w2 = w->get()->getByName(name);
+
+            if(w2) {
+                found = true;
+                w1    = w2;
+            }
+        }
+    }
+
+    else found = true;
+
+    if(!found) {
         warn()
             << "Window [" << _name
             << "] couldn't find a Widget named [" << name
@@ -688,7 +719,7 @@ bool Window::setFocused(const std::string& name) {
         return false;
     }
 
-    _setFocused(w);
+    _setFocused(w1);
     
     return true;
 }
@@ -733,8 +764,6 @@ XYCoord Window::localXY(double absx, double absy) const {
     XYCoord xy = getAbsoluteOrigin();
     double  x  = absx - xy.x();
     double  y  = absy - xy.y();
-
-    if(_wm && _wm->isInvertedY()) y = (_wm->getHeight() - absy) - xy.y();
 
     return XYCoord(x + _visibleArea[0], y + _visibleArea[1]);
 }
@@ -793,7 +822,11 @@ bool Window::getEmbeddedList(WindowList& wl) const {
 
         if(!ew || !ew->getWindow()) continue;
 
-        wl.push_back(ew->getWindow());
+        else {
+            wl.push_back(ew->getWindow());
+
+            ew->getWindow()->getEmbeddedList(wl);
+        }
     }
 
     return wl.size() != 0;

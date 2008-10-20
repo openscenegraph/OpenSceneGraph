@@ -44,12 +44,13 @@ class OSGWIDGET_EXPORT Frame: public Table
         class OSGWIDGET_EXPORT Corner: public Widget
         {
         public:
-            META_Object   (osgWidget, Corner);
+            META_Object(osgWidget, Corner);
 
             Corner (CornerType = CORNER_LOWER_LEFT, point_type = 0.0f, point_type = 0.0f);
             Corner (const Corner&, const osg::CopyOp&);
 
-            bool mouseDrag(double, double, WindowManager*);
+            virtual void positioned ();
+            virtual bool mouseDrag  (double, double, WindowManager*);
 
             CornerType getCornerType() const {
                 return _corner;
@@ -71,12 +72,133 @@ class OSGWIDGET_EXPORT Frame: public Table
         class OSGWIDGET_EXPORT Border: public Widget
         {
         public:
+            META_Object(osgWidget, Border);
+
+            Border (BorderType = BORDER_LEFT, point_type = 0.0f, point_type = 0.0f);
+            Border (const Border&, const osg::CopyOp&);
+
+            virtual void positioned ();
+            virtual bool mouseDrag  (double, double, WindowManager*);
+
+            BorderType getBorderType() const {
+                return _border;
+            }
+
+            void setBorderType(BorderType border) {
+                _border = border;
+            }
+
+            void setBorderTypeAndName(BorderType border) {
+                _border = border;
+                _name   = borderTypeToString(border);
+            }
+            
+        protected:
+        
+            BorderType _border;
+
+        };
+
+        META_Object(osgWidget, Frame);
+
+        Frame (const std::string& = "");
+        Frame (const Frame&, const osg::CopyOp&);
+
+        static Frame* createSimpleFrame(
+            const std::string&,
+            point_type,
+            point_type,
+            point_type,
+            point_type,
+            Frame* = 0
+        );
+
+        static Frame* createSimpleFrameWithSingleTexture(
+            const std::string&,
+            osg::Image*,
+            point_type,
+            point_type,
+            Frame* = 0
+        );
+
+        void createSimpleFrame(point_type cw, point_type ch, point_type w, point_type h)
+        {
+            createSimpleFrame(_name, cw, ch, w, h, this);
+        }
+
+        void createSimpleFrameWithSingleTexture(
+            osg::Image* image,
+            point_type  w,
+            point_type  h
+        )
+        {
+            createSimpleFrameWithSingleTexture(_name, image, w, h, this);
+        }
+
+        bool setWindow(Window*);
+
+        EmbeddedWindow* getEmbeddedWindow() { return dynamic_cast<EmbeddedWindow*>(getByRowCol(1, 1)); }
+
+        const EmbeddedWindow* getEmbeddedWindow() const { return dynamic_cast<const EmbeddedWindow*>(getByRowCol(1, 1)); }
+
+        Corner* getCorner(CornerType c) { return dynamic_cast<Corner*>(_getCorner(c)); }
+
+        const Corner* getCorner(CornerType c) const { return dynamic_cast<const Corner*>(_getCorner(c)); }
+
+        Border* getBorder(BorderType b) { return dynamic_cast<Border*>(_getBorder(b)); }
+
+        const Border* getBorder(BorderType b) const { return dynamic_cast<const Border*>(_getBorder(b)); }
+
+    protected:
+    
+        Widget* _getCorner (CornerType) const;
+        Widget* _getBorder (BorderType) const;
+
+};
+
+/*
+class OSGWIDGET_EXPORT TexturedFrame: public Frame
+{
+    public:
+    
+        class OSGWIDGET_EXPORT TexturedCorner: public Frame::Corner
+        {
+        public:
+            META_Object(osgWidget, TexturedCorner);
+
+            Corner (CornerType = CORNER_LOWER_LEFT, point_type = 0.0f, point_type = 0.0f);
+            Corner (const Corner&, const osg::CopyOp&);
+
+            virtual void positioned ();
+            virtual bool mouseDrag  (double, double, WindowManager*);
+
+            CornerType getCornerType() const {
+                return _corner;
+            }
+
+            void setCornerType(CornerType corner) {
+                _corner = corner;
+            }
+
+            void setCornerTypeAndName(CornerType corner) {
+                _corner = corner;
+                _name   = cornerTypeToString(corner);
+            }
+            
+        protected:
+            CornerType _corner;
+        };
+
+        class OSGWIDGET_EXPORT TexturedBorder: public Frame::Border
+        {
+        public:
             META_Object   (osgWidget, Border);
 
             Border (BorderType = BORDER_LEFT, point_type = 0.0f, point_type = 0.0f);
             Border (const Border&, const osg::CopyOp&);
 
-            bool mouseDrag(double, double, WindowManager*);
+            virtual void positioned ();
+            virtual bool mouseDrag  (double, double, WindowManager*);
 
             BorderType getBorderType() const {
                 return _border;
@@ -103,66 +225,8 @@ class OSGWIDGET_EXPORT Frame: public Table
         Frame (const Frame&, const osg::CopyOp&);
 
         virtual void managed(WindowManager*);
-
-        static Frame* createSimpleFrame(
-            const std::string&,
-            point_type,
-            point_type,
-            point_type,
-            point_type,
-            Frame* = 0
-        );
-
-        static Frame* createSimpleFrameWithSingleTexture(
-            const std::string&,
-            const std::string&,
-            point_type,
-            point_type,
-            point_type,
-            point_type,
-            point_type,
-            point_type,
-            Frame* = 0
-        );
-
-        void createSimpleFrame(point_type cw, point_type ch, point_type w, point_type h)
-        {
-            createSimpleFrame(_name, cw, ch, w, h, this);
-        }
-
-        void createSimpleFrameWithSingleTexture(
-            const std::string& tex,
-            point_type tw,
-            point_type th,
-            point_type cw,
-            point_type ch,
-            point_type w,
-            point_type h
-        )
-        {
-            createSimpleFrameWithSingleTexture(_name, tex, tw, th, cw, ch, w, h, this);
-        }
-
-        bool setWindow(Window*);
-
-        EmbeddedWindow* getEmbeddedWindow() { return dynamic_cast<EmbeddedWindow*>(getByRowCol(1, 1)); }
-
-        const EmbeddedWindow* getEmbeddedWindow() const { return dynamic_cast<const EmbeddedWindow*>(getByRowCol(1, 1)); }
-
-        Corner* getCorner(CornerType c) { return dynamic_cast<Corner*>(_getCorner(c)); }
-
-        const Corner* getCorner(CornerType c) const { return dynamic_cast<const Corner*>(_getCorner(c)); }
-
-        Border* getBorder(BorderType b) { return dynamic_cast<Border*>(_getBorder(b)); }
-
-        const Border* getBorder(BorderType b) const { return dynamic_cast<const Border*>(_getBorder(b)); }
-
-    protected:
-    
-        Widget* _getCorner (CornerType) const;
-        Widget* _getBorder (BorderType) const;
-
 };
+*/
 
 }
 

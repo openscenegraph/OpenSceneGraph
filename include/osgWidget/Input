@@ -18,9 +18,15 @@
 
 namespace osgWidget {
 
+// This is a string of values we use to try and determine the best Y
+// descent value (yoffset); you're welcome to use what works best for
+// your font.
+const std::string DESCENT_STRING("qpl");
+
 class OSGWIDGET_EXPORT Input: public Label
 {
     public:
+
         Input(const std::string& = "", const std::string& = "", unsigned int = 20);
 
         virtual void parented   (Window*);
@@ -31,7 +37,8 @@ class OSGWIDGET_EXPORT Input: public Label
         virtual bool keyUp   (int, int, WindowManager*);
         virtual bool keyDown (int, int, WindowManager*);
 
-        void setCursor(Widget*);
+        void         setCursor            (Widget*);
+        unsigned int calculateBestYOffset (const std::string& = DESCENT_STRING);
 
         void setXOffset(point_type xo) {
             _xoff = xo;

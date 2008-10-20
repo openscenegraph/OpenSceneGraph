@@ -15,7 +15,7 @@
 // $Id: UIObjectParent 55 2008-05-12 19:14:42Z cubicool $
 
 #ifndef OSGWIDGET_UI_OBJECT_PARENT
-#define OSGWIDGET_UI_OBEJCT_PARENT
+#define OSGWIDGET_UI_OBJECT_PARENT
 
 #include <osg/Object>
 #include <osg/observer_ptr>
@@ -26,6 +26,7 @@ template <typename T>
 class UIObjectParent
 {
     public:
+
         typedef T                               object_type;
         typedef osg::observer_ptr<object_type>  ptr_type;
         typedef std::vector<ptr_type>           Vector;

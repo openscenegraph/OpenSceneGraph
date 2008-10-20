@@ -18,16 +18,25 @@
 
 namespace osgWidget {
 
+//! The Box object is a Window subclass that can be configured to uniformly (or
+//! non-uniformly) position it's children either vertically or horizontally. It
+//! is the most basic Window implementation, though there is some difficulty when
+//! positioning children such that each child object ends up pixel-aligned. 
 class OSGWIDGET_EXPORT Box: public Window
 {
     public:
+
+        //! An enum corresponding to the type of Box alignment.
         enum BoxType {
             VERTICAL,
             HORIZONTAL
         };
 
-        META_Object   (osgWidget, Box);
-
+        META_Object(osgWidget, Box);
+        
+        //! The main constructor; takes the string name, the BoxType orientation, and a
+        //! boolean indicating whether or not all of the Box regions should be uniformly
+        //! sized.
         Box (const std::string& = "", BoxType = HORIZONTAL, bool = false);
         Box (const Box&, const osg::CopyOp&);
 
@@ -43,7 +52,6 @@ class OSGWIDGET_EXPORT Box: public Window
         BoxType      _boxType;
         bool         _uniform;
         unsigned int _lastAdd;
-
 };
 
 }

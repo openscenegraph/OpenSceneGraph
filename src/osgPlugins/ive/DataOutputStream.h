@@ -71,6 +71,9 @@ public:
     void writeVec2b(const osg::Vec2b& v);    
     void writeVec3b(const osg::Vec3b& v);    
     void writeVec4b(const osg::Vec4b& v);    
+    
+    void writePackedFloatArray(const osg::FloatArray* a, float maxError);
+    
     void writeFloatArray(const osg::FloatArray* a);
     void writeVec2Array(const osg::Vec2Array* a);
     void writeVec3Array(const osg::Vec3Array* a);
@@ -122,6 +125,10 @@ public:
     void setUseOriginalExternalReferences(bool b) {_useOriginalExternalReferences=b;};
     bool getUseOriginalExternalReferences() const {return _useOriginalExternalReferences;};
 
+    void setTerrainMaximumErrorToSizeRatio(double ratio) { _maximumErrorToSizeRatio = ratio; }
+    double getTerrainMaximumErrorToSizeRatio() const { return _maximumErrorToSizeRatio; }
+
+
     bool                _verboseOutput;
 
     bool compress(std::ostream& fout, const std::string& source) const;
@@ -159,6 +166,7 @@ private:
     bool                _includeExternalReferences;
     bool                _writeExternalReferenceFiles;
     bool                _useOriginalExternalReferences;
+    double              _maximumErrorToSizeRatio;
 
     IncludeImageMode    _includeImageMode;
     

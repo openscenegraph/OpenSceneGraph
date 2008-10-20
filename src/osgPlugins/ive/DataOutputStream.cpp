@@ -128,6 +128,7 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
     _includeExternalReferences     = false;
     _writeExternalReferenceFiles   = false;
     _useOriginalExternalReferences = true;
+    _maximumErrorToSizeRatio       = 0.001;
 
     _options = options;
 
@@ -135,26 +136,50 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
 
     if (_options.get())
     {
-        if(_options->getOptionString().find("noTexturesInIVEFile")!=std::string::npos) {
+        std::string optionsString = _options->getOptionString();
+    
+        if(optionsString.find("noTexturesInIVEFile")!=std::string::npos) {
             setIncludeImageMode(IMAGE_REFERENCE_FILE);
-        } else if(_options->getOptionString().find("includeImageFileInIVEFile")!=std::string::npos) {
+        } else if(optionsString.find("includeImageFileInIVEFile")!=std::string::npos) {
             setIncludeImageMode(IMAGE_INCLUDE_FILE);
-        } else if(_options->getOptionString().find("compressImageData")!=std::string::npos) {
+        } else if(optionsString.find("compressImageData")!=std::string::npos) {
             setIncludeImageMode(IMAGE_COMPRESS_DATA);
         }
         osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeImageMode()=" << getIncludeImageMode() << std::endl;
 
-        setIncludeExternalReferences(_options->getOptionString().find("inlineExternalReferencesInIVEFile")!=std::string::npos);
+        setIncludeExternalReferences(optionsString.find("inlineExternalReferencesInIVEFile")!=std::string::npos);
         osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeExternalReferences()=" << getIncludeExternalReferences() << std::endl;
 
-        setWriteExternalReferenceFiles(_options->getOptionString().find("noWriteExternalReferenceFiles")==std::string::npos);
+        setWriteExternalReferenceFiles(optionsString.find("noWriteExternalReferenceFiles")==std::string::npos);
         osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setWriteExternalReferenceFiles()=" << getWriteExternalReferenceFiles() << std::endl;
 
-        setUseOriginalExternalReferences(_options->getOptionString().find("useOriginalExternalReferences")!=std::string::npos);
+        setUseOriginalExternalReferences(optionsString.find("useOriginalExternalReferences")!=std::string::npos);
         osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setUseOriginalExternalReferences()=" << getUseOriginalExternalReferences() << std::endl;
 
-        _compressionLevel =  (_options->getOptionString().find("compressed")!=std::string::npos) ? 1 : 0;
+        _compressionLevel =  (optionsString.find("compressed")!=std::string::npos) ? 1 : 0;
         osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream._compressionLevel=" << _compressionLevel << std::endl;
+
+        std::string::size_type terrainErrorPos = optionsString.find("TerrainMaximumErrorToSizeRatio=");
+        if (terrainErrorPos!=std::string::npos)
+        {
+            std::string::size_type endOfToken = optionsString.find_first_of('=', terrainErrorPos);
+            std::string::size_type endOfNumber = optionsString.find_first_of(' ', endOfToken);
+            std::string::size_type numOfCharInNumber = (endOfNumber != std::string::npos) ? 
+                    endOfNumber-endOfToken-1 :
+                    optionsString.size()-endOfToken-1;
+
+            if (numOfCharInNumber>0)
+            {
+                std::string numberString = optionsString.substr(endOfToken+1, numOfCharInNumber);
+                _maximumErrorToSizeRatio = atof(numberString.c_str());
+                
+                osg::notify(osg::DEBUG_INFO)<<"TerrainMaximumErrorToSizeRatio = "<<_maximumErrorToSizeRatio<<std::endl;
+            }
+            else
+            {
+                osg::notify(osg::DEBUG_INFO)<<"Error no value to TerrainMaximumErrorToSizeRatio assigned"<<std::endl;
+            }
+        }
     }
 
     #ifndef USE_ZLIB
@@ -591,6 +616,117 @@ void DataOutputStream::writeVec4ubArray(const osg::Vec4ubArray* a)
 
     if (_verboseOutput) std::cout<<"read/writeVec4ubArray() ["<<size<<"]"<<std::endl;
 }
+
+void DataOutputStream::writePackedFloatArray(const osg::FloatArray* a, float maxError)
+{
+    int size = a->getNumElements();
+    writeInt(size);
+    if (size==0) return;
+    
+    float minValue = (*a)[0];
+    float maxValue = minValue;    
+    for(int i=1; i<size; ++i)
+    {
+        if ((*a)[i]<minValue) minValue = (*a)[i];
+        if ((*a)[i]>maxValue) maxValue = (*a)[i];
+    }
+    
+    if (minValue==maxValue)
+    {
+        osg::notify(osg::DEBUG_INFO)<<"Writing out "<<size<<" same values "<<minValue<<std::endl;
+
+        writeBool(true);
+        writeFloat(minValue);
+        return;
+    }
+
+    writeBool(false);
+    
+    int packingSize = 4;
+    if (maxError>0.0f)
+    {
+    
+        float byteError = 0.0f;
+        float byteMultiplier = 255.0f/(maxValue-minValue);
+        float byteInvMultiplier = 1.0f/byteMultiplier;
+
+        float shortError = 0.0f;
+        float shortMultiplier = 65535.0f/(maxValue-minValue);
+        float shortInvMultiplier = 1.0f/shortMultiplier;
+
+        float max_error_byte = 0.0f;
+        float max_error_short = 0.0f;
+
+        for(int i=0; i<size; ++i)
+        {
+            float value = (*a)[i];
+            unsigned char byteValue = (unsigned char)((value-minValue)*byteMultiplier);
+            unsigned short shortValue = (unsigned short)((value-minValue)*shortMultiplier);
+            float value_byte = minValue + float(byteValue)*byteInvMultiplier;
+            float value_short = minValue + float(shortValue)*shortInvMultiplier;
+
+            float error_byte = fabsf(value_byte - value);
+            float error_short = fabsf(value_short - value);
+
+            if (error_byte>max_error_byte) max_error_byte = error_byte;
+            if (error_short>max_error_short) max_error_short = error_short;
+        }
+
+        osg::notify(osg::DEBUG_INFO)<<"maxError "<<maxError<<std::endl;
+        osg::notify(osg::DEBUG_INFO)<<"Values to write "<<size<<" max_error_byte = "<<max_error_byte<<" max_error_short="<<max_error_short<<std::endl;
+
+
+        if (max_error_byte < maxError) packingSize = 1;
+        else if (max_error_short < maxError) packingSize = 2;
+
+        osg::notify(osg::DEBUG_INFO)<<"packingSize "<<packingSize<<std::endl;
+
+    }
+
+    if (packingSize==1)
+    {
+        writeInt(1);
+        
+        writeFloat(minValue);
+        writeFloat(maxValue);
+        
+        float byteMultiplier = 255.0f/(maxValue-minValue);
+
+        for(int i=0; i<size; ++i)
+        {
+            unsigned char currentValue = (unsigned char)(((*a)[i]-minValue)*byteMultiplier);
+            writeUChar(currentValue);
+        }
+    }
+    else if (packingSize==2)
+    {
+        writeInt(2);
+
+        writeFloat(minValue);
+        writeFloat(maxValue);
+        
+        float shortMultiplier = 65535.0f/(maxValue-minValue);
+
+        for(int i=0; i<size; ++i)
+        {
+            unsigned short currentValue = (unsigned short)(((*a)[i]-minValue)*shortMultiplier);
+            writeUShort(currentValue);
+        }
+    }
+    else
+    {            
+        writeInt(4);
+
+        for(int i=0; i<size; ++i)
+        {
+            writeFloat((*a)[i]);
+        }
+        
+    }
+
+    if (_verboseOutput) std::cout<<"read/writePackedFloatArray() ["<<size<<"]"<<std::endl;
+}
+
 
 void DataOutputStream::writeFloatArray(const osg::FloatArray* a)
 {

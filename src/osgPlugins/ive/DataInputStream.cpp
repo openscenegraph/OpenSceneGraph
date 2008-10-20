@@ -701,6 +701,76 @@ osg::Vec4ubArray* DataInputStream::readVec4ubArray()
     return a;
 }
 
+bool DataInputStream::readPackedFloatArray(osg::FloatArray* a)
+{
+    int size = readInt();
+
+    a->resize(size);        
+
+    if (size == 0)
+        return true;
+
+    if (readBool())
+    {
+        float value = readFloat();
+        
+        for(int i=0; i<size; ++i)
+        {
+            (*a)[i] = value;
+        }
+    }
+    else
+    {
+        int packingSize = readInt();
+        
+        if (packingSize==1)
+        {
+            float minValue = readFloat();
+            float maxValue = readFloat();
+
+            float byteMultiplier = 255.0f/(maxValue-minValue);
+            float byteInvMultiplier = 1.0f/byteMultiplier;
+
+            for(int i=0; i<size; ++i)
+            {
+                unsigned char byte_value = readUChar();
+                float value = minValue + float(byte_value)*byteInvMultiplier;
+                (*a)[i] = value;
+            }
+        }
+        else if (packingSize==2)
+        {
+            float minValue = readFloat();
+            float maxValue = readFloat();
+
+            float shortMultiplier = 65535.0f/(maxValue-minValue);
+            float shortInvMultiplier = 1.0f/shortMultiplier;
+
+            for(int i=0; i<size; ++i)
+            {
+                unsigned short short_value = readUShort();
+                float value = minValue + float(short_value)*shortInvMultiplier;
+                (*a)[i] = value;
+            }
+        }
+        else
+        {
+            for(int i=0; i<size; ++i)
+            {
+                (*a)[i] = readFloat();
+            }
+        }        
+    }
+    
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readFloatArray(): Failed to read float array.");
+
+    if (_verboseOutput) std::cout<<"read/writeFloatArray() ["<<size<<"]"<<std::endl;
+
+    return true;
+}
+
+
 osg::FloatArray* DataInputStream::readFloatArray()
 {
     int size = readInt();

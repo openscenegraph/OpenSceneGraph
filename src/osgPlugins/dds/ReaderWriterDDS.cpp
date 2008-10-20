@@ -596,11 +596,11 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         float power2_s = logf((float)s)/logf((float)2);
         float power2_t = logf((float)t)/logf((float)2);
 
-        osg::notify(osg::INFO) << "ReadDDSFile info : ddsd.dwMipMapCount = "<<ddsd.dwMipMapCount<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile info : s = "<<s<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile info : t = "<<t<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile info : power2_s="<<power2_s<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile info : power2_t="<<power2_t<<std::endl;
+        osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : ddsd.dwMipMapCount = "<<ddsd.dwMipMapCount<<std::endl;
+        osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : s = "<<s<<std::endl;
+        osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : t = "<<t<<std::endl;
+        osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : power2_s="<<power2_s<<std::endl;
+        osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : power2_t="<<power2_t<<std::endl;
 
         mipmaps.resize((unsigned int)osg::maximum(power2_s,power2_t),0);
 
@@ -654,7 +654,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     if (mipmaps.size()>0)  osgImage->setMipmapLevels(mipmaps);
     unsigned int size = osgImage->getTotalSizeInBytesIncludingMipmaps();
 
-    osg::notify(osg::INFO) << "ReadDDSFile info : size = " << size << std::endl;
+    osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : size = " << size << std::endl;
     
     if(size <= 0)
     {
@@ -874,6 +874,12 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         SD_flags   |= DDSD_MIPMAPCOUNT;
         CAPS_flags |= DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
         ddsd.dwMipMapCount = img->getNumMipmapLevels();
+        
+        osg::notify(osg::NOTICE)<<"writing out with mipmaps ddsd.dwMipMapCount"<<ddsd.dwMipMapCount<<std::endl;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"no mipmaps to write out."<<std::endl;
     }
 
 

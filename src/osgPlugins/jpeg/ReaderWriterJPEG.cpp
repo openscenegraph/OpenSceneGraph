@@ -56,6 +56,9 @@ extern "C"
 #include <assert.h>
 #include <stdlib.h>
 
+namespace osgDBJPEG
+{
+
 #define ERR_NO_ERROR 0
 #define ERR_OPEN     1
 #define ERR_MEM      2
@@ -608,7 +611,7 @@ int *numComponents_ret)
     }
     return buffer;
 }
-
+} // namespace osgDBJPEG
 
 class ReaderWriterJPEG : public osgDB::ReaderWriter
 {
@@ -662,8 +665,9 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             {
                 return WriteResult::ERROR_IN_WRITING_FILE;
             }*/
+    
             //jpeg_stdio_dest(&cinfo, outfile);
-            jpeg_stream_dest(&cinfo, &fout);
+            osgDBJPEG::jpeg_stream_dest(&cinfo, &fout);
 
             /* Step 3: set parameters for compression */
 
@@ -757,7 +761,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             int height_ret;
             int numComponents_ret;
 
-            imageData = simage_jpeg_load(fin,&width_ret,&height_ret,&numComponents_ret);
+            imageData = osgDBJPEG::simage_jpeg_load(fin,&width_ret,&height_ret,&numComponents_ret);
 
             if (imageData==NULL) return ReadResult::ERROR_IN_READING_FILE;
 

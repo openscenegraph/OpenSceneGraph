@@ -488,11 +488,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager::DatabaseThread)
 	          __void__run,
 	          "Thread's run method. ",
 	          "Must be implemented by derived classes. This is where the action happens. ");
-	I_Method2(osg::ref_ptr< osg::Node >, dpReadRefNodeFile, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::NON_VIRTUAL,
-	          __osg_ref_ptrT1_osg_Node___dpReadRefNodeFile__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
 	I_SimpleProperty(bool, Done, 
 	                 __bool__getDone, 
 	                 __void__setDone__bool);

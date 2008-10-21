@@ -132,7 +132,7 @@ void UFOManipulator::setByInverseMatrix( const osg::Matrixd &invmat)
 
 osg::Matrixd UFOManipulator::getMatrix() const
 {
-    return (_offset * _matrix);
+    return (osg::Matrix::inverse(_offset) * _matrix);
 }
 
 osg::Matrixd UFOManipulator::getInverseMatrix() const 

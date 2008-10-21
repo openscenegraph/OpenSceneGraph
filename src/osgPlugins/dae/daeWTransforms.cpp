@@ -105,7 +105,7 @@ void daeWriter::apply( osg::PositionAttitudeTransform &node )
         rot->getValue().append( axis.x() );
         rot->getValue().append( axis.y() );
         rot->getValue().append( axis.z() );
-        rot->getValue().append( angle );
+        rot->getValue().append( osg::RadiansToDegrees(angle) );
     }
 
     if ( pos.x() != 0 || pos.y() != 0 || pos.z() != 0 )

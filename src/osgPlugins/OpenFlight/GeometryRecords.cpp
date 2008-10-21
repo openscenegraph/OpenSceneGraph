@@ -392,12 +392,18 @@ protected:
             stateset->setRenderBinDetails(document.subfaceLevel(),"RenderBin");
         }
 
+#if 0
+// note from Robert Osfield, this "optimization" breaks multi-textured datasets that mix single texture 
+// and mulit-texture geometries as the Multitexture parsing can come after the below code, and accidentally 
+// polute the non multi-texture geometries StateSet.
+
         // A simple share stateset optimization.
         static osg::ref_ptr<osg::StateSet> lastStateset;
         if (lastStateset.valid() && (stateset->compare(*lastStateset,false)==0))
             stateset = lastStateset;
         else
             lastStateset = stateset;
+#endif
 
         _geode->setStateSet(stateset.get());
 
@@ -955,12 +961,18 @@ protected:
             stateset->setRenderBinDetails(document.subfaceLevel(),"RenderBin");
         }
 
+#if 0
+// note from Robert Osfield, this "optimization" breaks multi-textured datasets that mix single texture 
+// and mulit-texture geometries as the Multitexture parsing can come after the below code, and accidentally 
+// polute the non multi-texture geometries StateSet.
+
         // A simple share stateset optimization.
         static osg::ref_ptr<osg::StateSet> lastStateset;
         if (lastStateset.valid() && (stateset->compare(*lastStateset,false)==0))
             stateset = lastStateset;
         else
             lastStateset = stateset;
+#endif
 
         _geode->setStateSet(stateset.get());
 

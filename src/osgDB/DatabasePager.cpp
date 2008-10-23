@@ -856,6 +856,7 @@ DatabasePager::DatabasePager()
     {
         setReleaseDelay(DBL_MAX);
     }
+    
 
     _releaseFrames = 1; // Last frame will not be release
     if( (ptr = getenv("OSG_RELEASE_FRAMES")) != 0)
@@ -863,6 +864,17 @@ DatabasePager::DatabasePager()
         _releaseFrames = atoi(ptr);
         osg::notify(osg::NOTICE)<<"Release frames = "<<_releaseFrames<<std::endl;
     }
+
+
+    _maximumNumberOfPageLOD = 0;
+    if( (ptr = getenv("OSG_MAX_PAGEDLOD")) != 0)
+    {
+        _maximumNumberOfPageLOD = atoi(ptr);
+        osg::notify(osg::NOTICE)<<"_maximumNumberOfPageLOD = "<<_maximumNumberOfPageLOD<<std::endl;
+    }
+
+
+
 
     _doPreCompile = true;
     if( (ptr = getenv("OSG_DO_PRE_COMPILE")) != 0)
@@ -944,6 +956,8 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
 
     _releaseDelay = rhs._releaseDelay;
     _releaseFrames = rhs._releaseFrames;
+
+    _maximumNumberOfPageLOD = rhs._maximumNumberOfPageLOD;
 
     _doPreCompile = rhs._doPreCompile;
     _targetFrameRate = rhs._targetFrameRate;
@@ -1086,7 +1100,8 @@ void DatabasePager::clear()
     }
 
     // note, no need to use a mutex as the list is only accessed from the update thread.
-    _pagedLODList.clear();
+    _activePagedLODList.clear();
+    _inactivePagedLODList.clear();
 
     // ??
     // _activeGraphicsContexts
@@ -1300,7 +1315,7 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
             osgDB::Registry::instance()->getSharedStateManager()->share(databaseRequest->_loadedModel.get());
 
         
-        registerPagedLODs(databaseRequest->_loadedModel.get());
+        registerPagedLODs(databaseRequest->_loadedModel.get(), frameStamp.getFrameNumber());
         
         osg::ref_ptr<osg::Group> group = databaseRequest->_groupForAddingLoadedSubgraph.get();
         if (group.valid())
@@ -1349,25 +1364,302 @@ class DatabasePager::MarkPagedLODsVisitor : public osg::NodeVisitor
 public:
     MarkPagedLODsVisitor(const std::string& marker):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _marker(marker)
+        _marker(marker),
+        _numPagedLODsMarked(0)
     {
     }
 
     virtual void apply(osg::PagedLOD& plod)
     {
-        plod.setName(_marker);
+        if (plod.getName()!=_marker)
+        {
+            ++_numPagedLODsMarked;
+            plod.setName(_marker);
     
-        traverse(plod);
+            traverse(plod);
+        }
     }
     
     std::string _marker;
+    unsigned int _numPagedLODsMarked;
 };
 
-void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp &frameStamp)
+void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
+{
+    if (_maximumNumberOfPageLOD>0)
+    {
+        capped_removeExpiredSubgraphs(frameStamp);
+    }
+    else
+    {
+        expiry_removeExpiredSubgraphs(frameStamp);
+    }
+}
+
+void DatabasePager::capped_removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
+{
+    static double s_total_iter_stage_a = 0.0;
+    static double s_total_time_stage_a = 0.0;
+    static double s_total_max_stage_a = 0.0;
+    
+    static double s_total_iter_stage_b = 0.0;
+    static double s_total_time_stage_b = 0.0;
+    static double s_total_max_stage_b = 0.0;
+
+    static double s_total_iter_stage_c = 0.0;
+    static double s_total_time_stage_c = 0.0;
+    static double s_total_max_stage_c = 0.0;
+
+    osg::Timer_t startTick = osg::Timer::instance()->tick();
+
+
+#if 1
+
+    unsigned int numPagedLODs = _activePagedLODList.size() + _inactivePagedLODList.size();
+    
+
+    PagedLODList::iterator itr = _activePagedLODList.begin();
+    for(PagedLODList::iterator itr = _activePagedLODList.begin();
+        itr != _activePagedLODList.end();
+        )
+    {
+        osg::PagedLOD* plod = itr->get();
+        
+        int delta = frameStamp.getFrameNumber() - plod->getFrameNumberOfLastTraversal();
+        if (delta>1)
+        {
+            if (_releaseDelay!=DBL_MAX)
+            {
+                plod->releaseGLObjects();
+                osg::notify(osg::INFO)<<"DatabasePager::removeExpiredSubgraphs(), releasing gl objects"<<std::endl;
+            }
+
+            _inactivePagedLODList.push_back(plod);
+            
+            itr = _activePagedLODList.erase(itr);
+        }
+        else
+        {
+            ++itr;
+        }
+    }
+
+    for(PagedLODList::iterator itr = _inactivePagedLODList.begin();
+        itr != _inactivePagedLODList.end();
+        )
+    {
+        osg::PagedLOD* plod = itr->get();
+        
+        int delta = frameStamp.getFrameNumber() - plod->getFrameNumberOfLastTraversal();
+        if (delta>1)
+        {
+            ++itr;
+        }
+        else
+        {
+            _activePagedLODList.push_back(plod);
+            
+            itr = _inactivePagedLODList.erase(itr);
+        }
+    }
+
+    unsigned int inactivePLOD = _inactivePagedLODList.size();
+    unsigned int activePLOD = _activePagedLODList.size();
+
+    PagedLODList& pagedLODList = _inactivePagedLODList;
+    
+#else
+
+    unsigned int inactivePLOD = 0;
+    unsigned int activePLOD = 0;
+
+    // iterate through the PagedLOD list moving all newly traversed nodes to end of list
+    // leaving inactive ones in place, so they in effect shuffle to the front, with the least
+    // recently traversed placed at the front
+    unsigned int numPagedLODs = _activePagedLODList.size();
+    PagedLODList::iterator itr = _activePagedLODList.begin();
+    for(unsigned int numIterations = 0;
+        numIterations < numPagedLODs;
+        ++numIterations)
+    {
+        osg::PagedLOD* plod = itr->get();
+        
+        int delta = frameStamp.getFrameNumber() - plod->getFrameNumberOfLastTraversal();
+        if (delta>1)
+        {
+            ++inactivePLOD;
+            ++itr;
+        }
+        else
+        {
+            ++activePLOD;
+        
+            _activePagedLODList.push_back(plod);
+            
+            itr = _activePagedLODList.erase(itr);
+        }
+    }
+
+    PagedLODList& pagedLODList = _activePagedLODList;
+#endif    
+
+    osg::Timer_t end_a_Tick = osg::Timer::instance()->tick();
+    double time_a = osg::Timer::instance()->delta_m(startTick,end_a_Tick);
+
+    s_total_iter_stage_a += 1.0;
+    s_total_time_stage_a += time_a;
+    if (s_total_max_stage_a<time_a) s_total_max_stage_a = time_a;
+    
+
+    if (numPagedLODs <= _maximumNumberOfPageLOD)
+    {
+        // nothing to do
+        return;
+    }
+    
+    int numToPrune = numPagedLODs - _maximumNumberOfPageLOD;
+    if (numToPrune > inactivePLOD)
+    {
+        numToPrune = inactivePLOD;
+    }
+
+    osg::NodeList childrenRemoved;
+    
+    double expiryTime = frameStamp.getReferenceTime() - 0.1;
+    int expiryFrame = frameStamp.getFrameNumber() - 1;
+
+    MarkPagedLODsVisitor markerVistor("NeedToRemove");
+
+
+    for(PagedLODList::iterator itr = pagedLODList.begin();
+        itr!=pagedLODList.end() && markerVistor._numPagedLODsMarked<numToPrune;
+        ++itr)
+    {
+        osg::PagedLOD* plod = itr->get();
+
+        osg::NodeList localChildrenRemoved;
+        plod->removeExpiredChildren(expiryTime, expiryFrame, localChildrenRemoved);
+        if (!localChildrenRemoved.empty())
+        {
+            for(osg::NodeList::iterator critr = localChildrenRemoved.begin();
+                critr!=localChildrenRemoved.end();
+                ++critr)
+            {
+                (*critr)->accept(markerVistor);
+            }
+            
+            std::copy(localChildrenRemoved.begin(),localChildrenRemoved.end(),std::back_inserter(childrenRemoved));
+        }
+    }
+    
+    osg::Timer_t end_b_Tick = osg::Timer::instance()->tick();
+    double time_b = osg::Timer::instance()->delta_m(end_a_Tick,end_b_Tick);
+
+    s_total_iter_stage_b += 1.0;
+    s_total_time_stage_b += time_b;
+    if (s_total_max_stage_b<time_b) s_total_max_stage_b = time_b;
+
+    bool updateBlock = false;
+
+
+    if (!childrenRemoved.empty())
+    { 
+        // pass the objects across to the database pager delete list
+        if (_deleteRemovedSubgraphsInDatabaseThread)
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestQueue->_childrenToDeleteListMutex);
+            for (osg::NodeList::iterator critr = childrenRemoved.begin();
+                 critr!=childrenRemoved.end();
+                 ++critr)
+            {
+                _fileRequestQueue->_childrenToDeleteList.push_back(critr->get());
+            }
+            
+            updateBlock = true;
+
+        }
+
+        unsigned int numRemoved = 0;
+        unsigned int numToRemove = markerVistor._numPagedLODsMarked;
+        
+        
+        // osg::notify(osg::NOTICE)<<"Children to remove "<<childrenRemoved.size()<<" numToRemove="<<numToRemove<<std::endl;
+
+        // osg::notify(osg::NOTICE)<<"   time 2 "<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms "<<std::endl;
+        int numSkipped = 0;
+        for(PagedLODList::iterator itr = pagedLODList.begin();
+            itr!=pagedLODList.end() && numRemoved<numToRemove;
+            )
+        {
+            osg::PagedLOD* plod = itr->get();
+            if (plod && plod->getName() != markerVistor._marker)
+            {
+                ++itr;
+                
+                ++numSkipped;
+                
+                //osg::notify(osg::NOTICE)<<"skipping"<<std::endl;
+            }
+            else
+            {
+                //osg::notify(osg::NOTICE)<<"removing"<<std::endl;
+
+                ++numRemoved;
+
+                PagedLODList::iterator itr_to_erase = itr;
+                ++itr;
+
+                _activePagedLODList.erase(itr_to_erase);
+            }
+        }
+
+        // osg::notify(osg::NOTICE)<<"Number of PagedLODs skipped="<<numSkipped<<" removed "<<numRemoved<<std::endl;
+
+
+        childrenRemoved.clear();
+
+
+        if (updateBlock)
+        {
+            _fileRequestQueue->updateBlock();
+        }
+    }
+    
+    osg::Timer_t end_c_Tick = osg::Timer::instance()->tick();
+    double time_c = osg::Timer::instance()->delta_m(end_b_Tick,end_c_Tick);
+
+    s_total_iter_stage_c += 1.0;
+    s_total_time_stage_c += time_c;
+    if (s_total_max_stage_c<time_c) s_total_max_stage_c = time_c;
+
+
+    osg::Timer_t endTick = osg::Timer::instance()->tick();
+
+
+
+    osg::notify(osg::INFO)<<"active="<<_activePagedLODList.size()<<" inactive="<<_inactivePagedLODList.size()<<" overall = "<<osg::Timer::instance()->delta_m(startTick,end_c_Tick)<<
+                              " A="<<time_a<<" avg="<<s_total_time_stage_a/s_total_iter_stage_a<<" max = "<<s_total_max_stage_a<<
+                              " B="<<time_b<<" avg="<<s_total_time_stage_b/s_total_iter_stage_b<<" max = "<<s_total_max_stage_b<<
+                              " C="<<time_c<<" avg="<<s_total_time_stage_c/s_total_iter_stage_c<<" max = "<<s_total_max_stage_c<<std::endl;
+
+    
+    if (osgDB::Registry::instance()->getSharedStateManager()) 
+        osgDB::Registry::instance()->getSharedStateManager()->prune();
+
+    // update the Registry object cache.
+    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExternalReferences(frameStamp.getReferenceTime());
+    osgDB::Registry::instance()->removeExpiredObjectsInCache(expiryTime);
+}
+
+void DatabasePager::expiry_removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
 {
 //    osg::notify(osg::NOTICE)<<"DatabasePager::new_removeExpiredSubgraphs()"<<std::endl;
 
+    static double s_total_iter = 0.0;
+    static double s_total_time = 0.0;
+    static double s_total_max = 0.0;
     
+    osg::Timer_t startTick = osg::Timer::instance()->tick();
 
     double expiryTime = frameStamp.getReferenceTime() - _expiryDelay;
     int expiryFrame = frameStamp.getFrameNumber() - _expiryFrames;
@@ -1377,8 +1669,8 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp &frameStamp)
 
     osg::NodeList childrenRemoved;
     
-    for(PagedLODList::iterator itr = _pagedLODList.begin();
-        itr!=_pagedLODList.end();
+    for(PagedLODList::iterator itr = _activePagedLODList.begin();
+        itr!=_activePagedLODList.end();
         ++itr)
     {
         osg::PagedLOD* plod = itr->get();
@@ -1419,8 +1711,8 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp &frameStamp)
         }
 
         // osg::notify(osg::NOTICE)<<"   time 2 "<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms "<<std::endl;
-        for(PagedLODList::iterator itr = _pagedLODList.begin();
-            itr!=_pagedLODList.end();
+        for(PagedLODList::iterator itr = _activePagedLODList.begin();
+            itr!=_activePagedLODList.end();
             )
         {
             osg::PagedLOD* plod = itr->get();
@@ -1433,15 +1725,26 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp &frameStamp)
                 PagedLODList::iterator itr_to_erase = itr;
                 ++itr;
 
-                _pagedLODList.erase(itr_to_erase);            
+                _activePagedLODList.erase(itr_to_erase);            
             }
         }
 
         childrenRemoved.clear();
 
+
     }
 
-    
+    osg::Timer_t endTick = osg::Timer::instance()->tick();
+    double time = osg::Timer::instance()->delta_m(startTick,endTick);
+
+    s_total_iter += 1.0;
+    s_total_time += time;
+    if (s_total_max<time) s_total_max = time;
+
+    osg::notify(osg::NOTICE)<<"_activePagedLODList.size()="<<_activePagedLODList.size()<<" overall = "<<time<<
+                              " avg="<<s_total_time/s_total_iter<<" max = "<<s_total_max<<std::endl;
+     
+   
     if (osgDB::Registry::instance()->getSharedStateManager()) 
         osgDB::Registry::instance()->getSharedStateManager()->prune();
 
@@ -1456,27 +1759,31 @@ class DatabasePager::FindPagedLODsVisitor : public osg::NodeVisitor
 {
 public:
 
-    FindPagedLODsVisitor(DatabasePager::PagedLODList& pagedLODList):
+    FindPagedLODsVisitor(DatabasePager::PagedLODList& pagedLODList, int frameNumber):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _pagedLODList(pagedLODList)
+        _activePagedLODList(pagedLODList),
+        _frameNumber(frameNumber)
     {
     }
     
     virtual void apply(osg::PagedLOD& plod)
     {
-        _pagedLODList.push_back(&plod);
+        plod.setFrameNumberOfLastTraversal(_frameNumber);
+        
+        _activePagedLODList.push_back(&plod);
     
         traverse(plod);
     }
     
-    DatabasePager::PagedLODList& _pagedLODList;
+    DatabasePager::PagedLODList& _activePagedLODList;
+    int _frameNumber;
 };
 
-void DatabasePager::registerPagedLODs(osg::Node* subgraph)
+void DatabasePager::registerPagedLODs(osg::Node* subgraph, int frameNumber)
 {
     if (!subgraph) return;
     
-    FindPagedLODsVisitor fplv(_pagedLODList);
+    FindPagedLODsVisitor fplv(_activePagedLODList, frameNumber);
     subgraph->accept(fplv);
 }
 

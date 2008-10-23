@@ -148,7 +148,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Find all PagedLOD nodes in a subgraph and register them with 
           * the DatabasePager so it can keep track of expired nodes.
           * note, should be only be called from the update thread. */
-        virtual void registerPagedLODs(osg::Node* subgraph);
+        virtual void registerPagedLODs(osg::Node* subgraph, int frameNumber = 0);
 
         /** Set whether the database pager should pre compile OpenGL objects before allowing
           * them to be merged into the scene graph.
@@ -272,7 +272,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         /** Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph.
           * Note, must only be called from single thread update phase. */
-        virtual void updateSceneGraph(const osg::FrameStamp &frameStamp)
+        virtual void updateSceneGraph(const osg::FrameStamp& frameStamp)
         {
             removeExpiredSubgraphs(frameStamp);
             addLoadedDataToSceneGraph(frameStamp);
@@ -514,6 +514,12 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * note, should be only be called from the update thread. */
         virtual void removeExpiredSubgraphs(const osg::FrameStamp &frameStamp);
 
+        /** Old expiry delay based removeExpiredSubgraphs. */
+        virtual void expiry_removeExpiredSubgraphs(const osg::FrameStamp &frameStamp);
+
+        /** New capped based removeExpiredSubgraphs. */
+        virtual void capped_removeExpiredSubgraphs(const osg::FrameStamp &frameStamp);
+
         /** Add the loaded data to the scene graph.*/
         void addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp);
 
@@ -545,8 +551,11 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         osg::ref_ptr<RequestQueue>      _dataToMergeList;
         
-        PagedLODList                    _pagedLODList;
+        PagedLODList                    _activePagedLODList;
+        PagedLODList                    _inactivePagedLODList;
         
+        unsigned int                    _maximumNumberOfPageLOD;
+
         double                          _expiryDelay;
         int                             _expiryFrames;
 

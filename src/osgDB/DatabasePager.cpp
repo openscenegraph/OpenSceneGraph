@@ -1741,7 +1741,7 @@ void DatabasePager::expiry_removeExpiredSubgraphs(const osg::FrameStamp& frameSt
     s_total_time += time;
     if (s_total_max<time) s_total_max = time;
 
-    osg::notify(osg::NOTICE)<<"_activePagedLODList.size()="<<_activePagedLODList.size()<<" overall = "<<time<<
+    osg::notify(osg::INFO)<<"_activePagedLODList.size()="<<_activePagedLODList.size()<<" overall = "<<time<<
                               " avg="<<s_total_time/s_total_iter<<" max = "<<s_total_max<<std::endl;
      
    

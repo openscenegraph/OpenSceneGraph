@@ -15,7 +15,7 @@ osgDB::RegisterDotOsgWrapperProxy  ModularProgram_Proxy
 (
     new osgParticle::ModularProgram,
     "ModularProgram",
-    "Object Node ParticleProcessor Program ModularProgram",
+    "Object Node ParticleProcessor osgParticle::Program ModularProgram",
     ModularProgram_readLocalData,
     ModularProgram_writeLocalData
 );

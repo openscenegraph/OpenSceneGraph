@@ -11,8 +11,8 @@ bool  IOProgram_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 osgDB::RegisterDotOsgWrapperProxy  g_IOProgramProxy
 (
     0,
-    "Program",
-    "Object Node ParticleProcessor Program",
+    "osgParicle::Program",
+    "Object Node ParticleProcessor osgParicle::Program",
     IOProgram_readLocalData,
     IOProgram_writeLocalData
 );

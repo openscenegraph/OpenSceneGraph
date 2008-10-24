@@ -56,6 +56,8 @@ _styleManager   (new StyleManager()) {
         if(!_python->initialize()) warn() << "Error creating PythonEngine." << std::endl;
     }
 
+    if(_flags & WM_USE_RENDERBINS) getOrCreateStateSet()->setMode(GL_DEPTH_TEST, false);
+
     // Setup our picking debug (is debug the right word here?) Window...
     if(_flags & WM_PICK_DEBUG) {
         _pickWindow = new Box("PickWindow", Box::VERTICAL);
@@ -77,29 +79,6 @@ _styleManager   (new StyleManager()) {
         addChild(_pickWindow.get());
 
         _updatePickWindow(0, 0, 0);
-    }
-
-    if(!(_flags & WM_NO_BETA_WARN)) {
-        Box*   box   = new Box("BetaWarningBox", Box::VERTICAL);
-        Label* label = new Label("BetaWarning");
-
-        label->setFontSize(15);
-        label->setFontColor(0.0f, 0.0f, 1.0f, 1.0f);
-        label->setFont("fonts/arial.ttf");
-        label->setPadding(5.0f);
-        label->setCanFill(true);
-        label->setLabel("This is BETA software; please be patient...");
-
-        box->getBackground()->setColor(1.0f, 0.7f, 0.0f, 1.0f);
-        box->addWidget(label);
-        box->setNodeMask(~_nodeMask);
-        box->removeEventMask(EVENT_MASK_FOCUS);
-        box->setStrata(Window::STRATA_BACKGROUND);
-        box->setOrigin(0.0f, 0.0f);
-
-        addChild(box);
-        
-        box->resizePercent(100.0f, 0.0f);
     }
 }
 
@@ -297,9 +276,11 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
             // Make sure that our window is valid, and that our pick is within the
             // "visible area" of the Window.
             if(
-                (!win || win->getVisibilityMode() == Window::VM_PARTIAL) &&
-                !win->isPointerXYWithinVisible(x, y)
-            ) continue;
+                !win ||
+                (win->getVisibilityMode() == Window::VM_PARTIAL && !win->isPointerXYWithinVisible(x, y))
+            ) {
+                continue;
+            }
 
             // Set our activeWin, so that we know when we've got all the Widgets
             // that belong to it.

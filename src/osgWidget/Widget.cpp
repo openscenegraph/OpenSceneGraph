@@ -191,6 +191,17 @@ void Widget::setDimensions(point_type x, point_type y, point_type w, point_type 
         }
     }
 
+    const WindowManager* wm = _getWindowManager();
+
+    if(wm && wm->isUsingRenderBins()) {
+        getOrCreateStateSet()->setRenderBinDetails(
+            static_cast<int>(z * OSGWIDGET_RENDERBIN_MOD),
+            "RenderBin"
+        );
+
+        z = 0.0f;
+    }
+
     (*verts)[LL].set(x,     y,     z);
     (*verts)[LR].set(x + w, y,     z);
     (*verts)[UR].set(x + w, y + h, z);

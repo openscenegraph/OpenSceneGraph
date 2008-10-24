@@ -35,7 +35,7 @@ _textIndex (0) {
 
 Label::Label(const Label& label, const osg::CopyOp& co):
 Widget     (label, co),
-_textIndex (0) { //label._textIndex) {
+_textIndex (label._textIndex) {
     _text = new osgText::Text(*label._text, co);
 }
 
@@ -66,7 +66,8 @@ void Label::positioned() {
     XYCoord    size = getTextSize();
     point_type x    = osg::round(((getWidth() - size.x()) / 2.0f) + getX());
     point_type y    = osg::round(((getHeight() - size.y()) / 2.0f) + getY());
-    
+    point_type z    = _calculateZ(getLayer() + 1);
+
     // These values are permisable with CENTER_CENTER mode is active.
     // point_type x  = round(getX() + (getWidth() / 2.0f));
     // point_type y  = round(getY() + (getHeight() / 2.0f));
@@ -80,9 +81,18 @@ void Label::positioned() {
     warn() << "------------------------------------" << std::endl;
     */
 
-    // warn() << "z for " << _name << ": " << _calculateZ(getLayer() + 1) << std::endl;
-    
-    _text->setPosition(osg::Vec3(x, y, _calculateZ(getLayer() + 1)));
+    const WindowManager* wm = _getWindowManager();
+
+    if(wm && wm->isUsingRenderBins()) {
+        _text->getOrCreateStateSet()->setRenderBinDetails(
+            static_cast<int>(z * OSGWIDGET_RENDERBIN_MOD),
+            "RenderBin"
+        );
+
+        z = 0.0f;
+    }
+
+    _text->setPosition(osg::Vec3(x, y, z));
 }
 
 void Label::setLabel(const std::string& label) {

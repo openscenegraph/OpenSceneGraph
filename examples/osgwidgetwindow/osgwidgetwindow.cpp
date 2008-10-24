@@ -78,8 +78,7 @@ int main(int argc, char** argv) {
 		MASK_2D,
 		osgWidget::WindowManager::WM_USE_LUA |
 		osgWidget::WindowManager::WM_USE_PYTHON |
-		osgWidget::WindowManager::WM_PICK_DEBUG |
-		osgWidget::WindowManager::WM_NO_BETA_WARN
+		osgWidget::WindowManager::WM_PICK_DEBUG
 	);
 
 	// An actual osgWidget::Window is pure virtual, so we've got to use the osgWidget::Box
@@ -141,7 +140,7 @@ int main(int argc, char** argv) {
 	// Now, lets clone our existing box and create a new copy of of it, also adding that
 	// to the WindowManager. This demonstrates the usages of OSG's ->clone() support,
 	// though that is abstracted by our META_UIObject macro.
-	osgWidget::Window* boxCopy = osg::clone(box,"newBox");
+	osgWidget::Window* boxCopy = osg::clone(box, "newBox", osg::CopyOp::DEEP_COPY_ALL);
 
 	// Move our copy to make it visible.
 	boxCopy->setOrigin(0.0f, 125.0f);
@@ -169,7 +168,6 @@ int main(int argc, char** argv) {
 	// which will wrap the calls to createOrthoCamera and addChild for us! Check out
 	// some of the other examples to see this in action...
 	osg::Group*  group  = new osg::Group();
-	//osg::Camera* camera = osgWidget::createInvertedYOrthoCamera(1280.0f, 1024.0f);
 	osg::Camera* camera = osgWidget::createOrthoCamera(1280.0f, 1024.0f);
 	osg::Node*   model  = osgDB::readNodeFile("cow.osg");
 
@@ -178,6 +176,7 @@ int main(int argc, char** argv) {
 	viewer.addEventHandler(new osgWidget::MouseHandler(wm));
 	viewer.addEventHandler(new osgWidget::KeyboardHandler(wm));
 	viewer.addEventHandler(new osgWidget::ResizeHandler(wm, camera));
+	viewer.addEventHandler(new osgWidget::CameraSwitchHandler(wm, camera));
 	viewer.addEventHandler(new osgViewer::StatsHandler());
 	viewer.addEventHandler(new osgViewer::WindowSizeHandler());
 	viewer.addEventHandler(new osgGA::StateSetManipulator(

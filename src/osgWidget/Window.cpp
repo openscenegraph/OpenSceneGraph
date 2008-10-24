@@ -328,21 +328,21 @@ void Window::update() {
 
         xy.set(x, y);
     }
-
-    // Update the Window itself, setting it's matrix according to translate, rotate, and
-    // scale values.
-    osg::Matrix r = osg::Matrix::rotate(
-        osg::DegreesToRadians(_r),
-        osg::Vec3d(0.0f, 0.0f, 1.0f)
-    );
     
-    osg::Matrix s = osg::Matrix::scale(_s, _s, 1.0f);
-    osg::Matrix t = osg::Matrix::translate(x - _visibleArea[0], y - _visibleArea[1], _z);
+    matrix_type z = _z;
 
-    setMatrix(r * s * t);
-
-    // We can't do proper scissoring until we have access to our parent WindowManager.
+    // We can't do proper scissoring until we have access to our parent WindowManager, and
+    // we need to determine the sorting method we want to use.
     if(_wm) {
+        if(_wm->isUsingRenderBins()) {
+            getOrCreateStateSet()->setRenderBinDetails(
+                static_cast<int>(_z * OSGWIDGET_RENDERBIN_MOD),
+                "RenderBin"
+            );
+
+            z = 0.0f;
+        }
+
         int sx = static_cast<int>(xy.x());
         int sy = static_cast<int>(xy.y());
         int sw = static_cast<int>(_width.current);
@@ -364,6 +364,18 @@ void Window::update() {
 
         _scissor()->setScissor(sx, sy, sw, sh);
     }
+
+    // Update the Window itself, setting it's matrix according to translate, rotate, and
+    // scale values.
+    osg::Matrix r = osg::Matrix::rotate(
+        osg::DegreesToRadians(_r),
+        osg::Vec3d(0.0f, 0.0f, 1.0f)
+    );
+
+    osg::Matrix s = osg::Matrix::scale(_s, _s, 1.0f);
+    osg::Matrix t = osg::Matrix::translate(x - _visibleArea[0], y - _visibleArea[1], z);
+
+    setMatrix(r * s * t);
 }
 
 void Window::_setWidthAndHeightUnknownSizeError(const std::string& size, point_type val) {

@@ -75,19 +75,8 @@ OSGWIDGET_EXPORT osg::Camera* createOrthoCamera  (matrix_type, matrix_type);
 
 // This function sets up our basic example framework, and optionally sets some root
 // scene data.
-OSGWIDGET_EXPORT int createExample(osgViewer::Viewer&, WindowManager*, osg::Node* = 0);
-
-// This function works like the above routine, except creates an additional "outside"
-// view for looking at your 2D scene.
-// TODO: Fix this!
-OSGWIDGET_EXPORT int createCompositeExample(
-    osgViewer::CompositeViewer&,
-    osgViewer::View*,
-    WindowManager*,
-    osg::Node* = 0
-);
-
-OSGWIDGET_EXPORT bool writeWindowManagerNode(WindowManager*);
+OSGWIDGET_EXPORT int  createExample          (osgViewer::Viewer&, WindowManager*, osg::Node* = 0);
+OSGWIDGET_EXPORT bool writeWindowManagerNode (WindowManager*);
 
 }
 

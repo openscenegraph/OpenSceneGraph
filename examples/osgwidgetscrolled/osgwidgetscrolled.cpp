@@ -92,8 +92,8 @@ int main(int argc, char** argv) {
     osgWidget::Frame* frame = osgWidget::Frame::createSimpleFrameWithSingleTexture(
         "frame",
         osgDB::readImageFile("osgWidget/frame-theme.png"),
-        100.0f,
-        100.0f
+        40.0f,
+        40.0f
     );
 
     frame->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.0f);

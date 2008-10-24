@@ -78,12 +78,10 @@ osgWidget::Box* createBox(const std::string& name, osgWidget::Box::BoxType bt) {
 }
 
 int main(int argc, char** argv) {
-	osgViewer::CompositeViewer viewer;
-
-	osgViewer::View* view = new osgViewer::View();
+	osgViewer::Viewer viewer;
 
 	osgWidget::WindowManager* wm = new osgWidget::WindowManager(
-		view,
+		&viewer,
 		1280.0f,
 		1024.0f,
 		MASK_2D,
@@ -117,5 +115,5 @@ int main(int argc, char** argv) {
 
 	model->setNodeMask(MASK_3D);
 
-	return osgWidget::createCompositeExample(viewer, view, wm, model);
+	return osgWidget::createExample(viewer, wm, model);
 }

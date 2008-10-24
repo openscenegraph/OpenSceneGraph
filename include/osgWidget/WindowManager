@@ -40,10 +40,10 @@ typedef osgUtil::LineSegmentIntersector::Intersections Intersections;
 class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<Window> {
     public:
         enum WmFlags {
-            WM_USE_LUA      = 0x00000001,
-            WM_USE_PYTHON   = 0x00000002,
-            WM_PICK_DEBUG   = 0x00000004,
-            WM_NO_BETA_WARN = 0x00000008
+            WM_USE_LUA        = 0x00000001,
+            WM_USE_PYTHON     = 0x00000002,
+            WM_USE_RENDERBINS = 0x00000004,
+            WM_PICK_DEBUG     = 0x00000008
         };
 
         enum PointerDirection {
@@ -90,8 +90,8 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
         void setStyleManager  (StyleManager*);
         void resizeAllWindows (bool = true);
 
-	XYCoord windowXY (double, double) const;
-	XYCoord localXY  (double, double) const;
+        XYCoord windowXY (double, double) const;
+        XYCoord localXY  (double, double) const;
 
         // Methods all called by the ViewerEventHandlers::MouseHandler object, or
         // by some customer caller of your own. Examples of this to come...
@@ -119,6 +119,10 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
 
         bool isUsingPython() const {
             return (_flags & WM_USE_PYTHON) != 0;
+        }
+
+        bool isUsingRenderBins() const {
+            return (_flags & WM_USE_RENDERBINS) != 0;
         }
 
         int getMouseKeysDown() const {
@@ -241,9 +245,9 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
         }
 
         void setWindowSize(point_type w, point_type h) {
-	    _windowWidth  = w;
-	    _windowHeight = h;
-	}
+            _windowWidth  = w;
+            _windowHeight = h;
+        }
 
         // Wrappers around the real calls. These only pertains to mouse buttons, 
         // particularly 3-button mice, although there are other more generic
@@ -285,10 +289,22 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             }
         };
 
+        /*
+        // A functor used to sort the Windows by their BinNum component in descending order.
+        struct WindowBinNumberCompare: public std::binary_function<ptr_type, ptr_type, bool> {
+            bool operator()(const ptr_type& x, const ptr_type& y) {
+                return
+                    x.get()->getOrCreateStateSet()->getBinNumber() >
+                    y.get()->getOrCreateStateSet()->getBinNumber()
+                ;
+            }
+        };
+        */
+
         point_type         _width;
         point_type         _height;
-	point_type         _windowWidth;
-	point_type         _windowHeight;
+        point_type         _windowWidth;
+        point_type         _windowHeight;
         matrix_type        _numForeground;
         matrix_type        _numBackground;
         unsigned int       _flags;

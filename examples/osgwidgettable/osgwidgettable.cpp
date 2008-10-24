@@ -56,7 +56,8 @@ int main(int argc, char** argv) {
 	// textual name, such as "MainGUIParent" or something.
 	table->getByName("0, 0")->setAlignHorizontal(osgWidget::Widget::HA_LEFT);
 	table->getByName("0, 0")->setAlignVertical(osgWidget::Widget::VA_BOTTOM);
-	table->getByName("0, 0")->setPadding(10.0f);
+	table->getByName("0, 0")->setPadLeft(50.0f);
+	table->getByName("0, 0")->setPadTop(3.0f);
 	
 	// Change the colors a bit to differentiate this row from the others.
 	table->getByName("2, 0")->setColor(1.0f, 0.0f, 0.0f, 1.0f, osgWidget::Widget::LOWER_LEFT);

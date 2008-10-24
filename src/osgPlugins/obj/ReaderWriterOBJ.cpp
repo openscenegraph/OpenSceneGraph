@@ -700,7 +700,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
             
             if (options->getOptionString() == "noTriStripPolygons")
             {
-                noTesselateLargePolygons = true;
+                noTriStripPolygons = true;
             }
         }
         

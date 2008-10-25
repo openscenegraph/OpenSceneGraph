@@ -7,6 +7,7 @@
 #include <osg/Texture2D>
 #include <osg/Light>
 #include <Inventor/actions/SoCallbackAction.h>
+#include <Inventor/SbLinear.h>
 #include <vector>
 #include <stack>
 
@@ -49,6 +50,12 @@ class ConvertFromInventor
         ///\param node The current VRMLImageTexture node
         static SoCallbackAction::Response preVRMLImageTexture(void* data,
                                  SoCallbackAction* action, const SoNode* node);
+        static SoCallbackAction::Response preVRMLAppearance(void* data,
+                                 SoCallbackAction* action, const SoNode* node);
+        static SoCallbackAction::Response postVRMLAppearance(void* data,
+                                 SoCallbackAction* action, const SoNode* node);
+        static SoCallbackAction::Response preInfo(void* data,
+                                 SoCallbackAction* action, const SoNode* node);
 
         static void addTriangleCB(void* data, SoCallbackAction* action,
                               const SoPrimitiveVertex *v0,
@@ -61,7 +68,11 @@ class ConvertFromInventor
                                const SoPrimitiveVertex *v0);
 
     private:
+        SbString transformInfoName;
+        SbName appearanceName;
+        bool inAppearanceWithNoTexture;
 
+        void addMatrixTransform(const std::string& name, SbVec3f axis, float angle, SbVec3f center, SbVec3f trans, SbVec3f scale);
         void addVertex(SoCallbackAction* action, const SoPrimitiveVertex* v, 
                        int index);
 
@@ -112,6 +123,8 @@ class ConvertFromInventor
         std::stack<LightList> lightStack;
 
         osg::ref_ptr<osg::MatrixTransform> _root;///<The root node;
+
+        osg::ref_ptr<osg::Group> lightGroup;
 };
 
 #endif

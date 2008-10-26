@@ -84,8 +84,7 @@ class ReaderWriterIVE : public ReaderWriter
             }
             catch(ive::Exception e)
             {
-                osg::notify(osg::NOTICE)<<"Error reading image: "<<e.getError()<<std::endl;
-                return ReadResult::FILE_NOT_HANDLED;
+                return e.getError();
             }
         }
         
@@ -99,8 +98,7 @@ class ReaderWriterIVE : public ReaderWriter
             }
             catch(ive::Exception e)
             {
-                osg::notify(osg::NOTICE)<<"Error reading file: "<< e.getError()<<std::endl;
-                return ReadResult::FILE_NOT_HANDLED;
+                return e.getError();
             }
         }
 

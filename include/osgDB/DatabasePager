@@ -114,6 +114,10 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             Mode            _mode;
             std::string     _name;
         };
+        
+        void setUpThreads(unsigned int totalNumThreads=2, unsigned int numHttpThreads=1);
+
+        unsigned int addDatabaseThread(DatabaseThread::Mode mode, const std::string& name);
 
         DatabaseThread* getDatabaseThread(unsigned int i) { return _databaseThreads[i].get(); }
         

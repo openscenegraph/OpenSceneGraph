@@ -183,6 +183,18 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         
         void setSerializeDrawDispatch(bool serializeDrawDispatch) { _serializeDrawDispatch = serializeDrawDispatch; }
         bool getSerializeDrawDispatch() const { return _serializeDrawDispatch; }
+        
+        /** Set the hint for the total number of threads in the DatbasePager set up, inclusive of the number of http dedicated threads.*/
+        void setNumOfDatabaseThreadsHint(unsigned int numThreads) { _numDatabaseThreadsHint = numThreads; }
+
+        /** Get the hint for total number of threads in the DatbasePager set up, inclusive of the number of http dedicated threads.*/
+        unsigned int getNumOfDatabaseThreadsHint() const { return _numDatabaseThreadsHint; }
+
+        /** Set the hint for number of threads in the DatbasePager to dedicate to reading http requests.*/
+        void setNumOfHttpDatabaseThreadsHint(unsigned int numThreads) { _numDatabaseThreadsHint = numThreads; }
+
+        /** Get the hint for number of threads in the DatbasePager dedicated to reading http requests.*/
+        unsigned int getNumOfHttpDatabaseThreadsHint() const { return _numHttpDatabaseThreadsHint; }
 
     protected:
     
@@ -219,6 +231,9 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         
         bool                            _compileContextsHint;
         bool                            _serializeDrawDispatch;
+
+        unsigned int                    _numDatabaseThreadsHint;
+        unsigned int                    _numHttpDatabaseThreadsHint;
 
 };
 

@@ -74,6 +74,9 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     
     _compileContextsHint = vs._compileContextsHint;
     _serializeDrawDispatch = vs._serializeDrawDispatch;
+    
+    _numDatabaseThreadsHint = vs._numDatabaseThreadsHint;
+    _numHttpDatabaseThreadsHint = vs._numHttpDatabaseThreadsHint;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)
@@ -92,6 +95,9 @@ void DisplaySettings::merge(const DisplaySettings& vs)
 
     if (vs._compileContextsHint) _compileContextsHint = vs._compileContextsHint;
     if (vs._serializeDrawDispatch) _serializeDrawDispatch = vs._serializeDrawDispatch;
+
+    if (vs._numDatabaseThreadsHint>_numDatabaseThreadsHint) _numDatabaseThreadsHint = vs._numDatabaseThreadsHint;
+    if (vs._numHttpDatabaseThreadsHint>_numHttpDatabaseThreadsHint) _numHttpDatabaseThreadsHint = vs._numHttpDatabaseThreadsHint;
 }
 
 void DisplaySettings::setDefaults()
@@ -133,6 +139,9 @@ void DisplaySettings::setDefaults()
     
     _compileContextsHint = false;
     _serializeDrawDispatch = true;
+
+    _numDatabaseThreadsHint = 2;
+    _numHttpDatabaseThreadsHint = 1;
 }
 
 void DisplaySettings::setMaxNumberOfGraphicsContexts(unsigned int num)
@@ -169,6 +178,8 @@ static ApplicationUsageProxy DisplaySetting_e11(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e12(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_NUMBER_OF_GRAPHICS_CONTEXTS <int>","maximum number of graphics contexts to be used with applications.");
 static ApplicationUsageProxy DisplaySetting_e13(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_COMPIlE_CONTEXTS <mode>","OFF | ON Enable/disable the use a backgrouind compile contexts and threads.");
 static ApplicationUsageProxy DisplaySetting_e14(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SERIALIZE_DRAW_DISPATCH <mode>","OFF | ON Enable/disable the use a muetx to serialize the draw dispatch when there are multiple graphics threads.");
+static ApplicationUsageProxy DisplaySetting_e15(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_NUM_DATABASE_THREADS <int>","Set the hint for the total number of threads to set up in the DatabasePager.");
+static ApplicationUsageProxy DisplaySetting_e16(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_NUM_HTTP_DATABASE_THREADS <int>","Set the hint for the total number of threads dedicated to http requests to set up in the DatabasePager.");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -351,7 +362,15 @@ void DisplaySettings::readEnvironmentalVariables()
         }
     }
 
-    
+    if( (ptr = getenv("OSG_NUM_DATABASE_THREADS")) != 0)
+    {
+        _numDatabaseThreadsHint = atoi(ptr);
+    }
+
+    if( (ptr = getenv("OSG_NUM_HTTP_DATABASE_THREADS")) != 0)
+    {
+        _numHttpDatabaseThreadsHint = atoi(ptr);
+    }
 }
 
 void DisplaySettings::readCommandLine(ArgumentParser& arguments)
@@ -435,4 +454,6 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         else if (str=="OFF") _serializeDrawDispatch = false;
     }
 
+    while(arguments.read("--num-db-threads",_numDatabaseThreadsHint)) {}
+    while(arguments.read("--num-http-threads",_numHttpDatabaseThreadsHint)) {}
 }

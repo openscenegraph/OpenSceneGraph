@@ -44,10 +44,43 @@ class Comment : public Record
         virtual void readRecord(RecordInputStream& in, Document& /*document*/)
         {
             std::streamsize size = in.getRecordSize();
-            std::string comment = in.readString(size-4);
+            std::string commentfield = in.readString(size-4);
 
             if (_parent.valid())
-                _parent->setComment(comment);
+            {
+#if 0            
+                _parent->setComment(commentfield);
+#else
+                unsigned int front_of_line = 0;
+                unsigned int end_of_line = 0;
+                while (end_of_line<commentfield.size())
+                {
+                    if (commentfield[end_of_line]=='\r')
+                    {
+                        _parent->setComment( std::string( commentfield, front_of_line, end_of_line-front_of_line) );
+
+                        if (end_of_line+1<commentfield.size() &&
+                            commentfield[end_of_line+1]=='\n') ++end_of_line;
+
+                        ++end_of_line;
+                        front_of_line = end_of_line;
+                    }
+                    else if (commentfield[end_of_line]=='\n')
+                    {
+                        _parent->setComment( std::string( commentfield, front_of_line, end_of_line-front_of_line) );
+                        ++end_of_line;
+                        front_of_line = end_of_line;
+                    }
+                    else ++end_of_line;
+                }
+                if (front_of_line<end_of_line)
+                {
+                    _parent->setComment( std::string( commentfield, front_of_line, end_of_line-front_of_line) );
+                }
+
+            }
+#endif
+
         }
 };
 

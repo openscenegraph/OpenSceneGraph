@@ -23,6 +23,9 @@
 #define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
 # include <atomic.h>
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+# include <libkern/OSAtomic.h>
+# define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
 #elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
 # include "Mutex"
 # include "ScopedLock"
@@ -46,6 +49,10 @@ class OPENTHREAD_EXPORT_DIRECTIVE Atomic {
     { }
     _OPENTHREADS_ATOMIC_INLINE unsigned operator++();
     _OPENTHREADS_ATOMIC_INLINE unsigned operator--();
+    _OPENTHREADS_ATOMIC_INLINE unsigned AND(unsigned value);
+    _OPENTHREADS_ATOMIC_INLINE unsigned OR(unsigned value);
+    _OPENTHREADS_ATOMIC_INLINE unsigned XOR(unsigned value);
+    _OPENTHREADS_ATOMIC_INLINE unsigned exchange(unsigned value = 0);
     _OPENTHREADS_ATOMIC_INLINE operator unsigned() const;
  private:
 
@@ -57,6 +64,8 @@ class OPENTHREAD_EXPORT_DIRECTIVE Atomic {
 #endif
 #if defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
     volatile long _value;
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+    volatile int32_t _value;
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
     volatile uint_t _value;
 #else
@@ -122,6 +131,84 @@ Atomic::operator--()
     return --_value;
 #else
     return --_value;
+#endif
+}
+
+_OPENTHREADS_ATOMIC_INLINE unsigned
+Atomic::AND(unsigned value)
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_fetch_and_and(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+    return __and_and_fetch(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+    return atomic_and_uint_nv(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    ScopedLock<Mutex> lock(_mutex);
+    _value &= value;
+    return _value;
+#else
+    _value &= value;
+    return _value;
+#endif
+}
+
+_OPENTHREADS_ATOMIC_INLINE unsigned
+Atomic::OR(unsigned value)
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_fetch_and_or(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+    return __or_and_fetch(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+    return atomic_or_uint_nv(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    ScopedLock<Mutex> lock(_mutex);
+    _value |= value; 
+    return _value;
+#else
+    _value |= value;
+    return _value;
+#endif
+}
+
+_OPENTHREADS_ATOMIC_INLINE unsigned
+Atomic::XOR(unsigned value)
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_fetch_and_xor(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+    return __xor_and_fetch(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+    return atomic_xor_uint_nv(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    ScopedLock<Mutex> lock(_mutex);
+    _value ^= value;
+    return _value;
+#else
+    _value ^= value;
+    return _value;
+#endif
+}
+
+_OPENTHREADS_ATOMIC_INLINE unsigned
+Atomic::exchange(unsigned value)
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_lock_test_and_set(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
+    return __compare_and_swap(&_value, _value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
+    return atomic_cas_uint(&_value, _value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
+    ScopedLock<Mutex> lock(_mutex);
+    unsigned oldval = _value;
+    _value = value;
+    return oldval;
+#else
+    unsigned oldval = _value;
+    _value = value;
+    return oldval;
 #endif
 }
 

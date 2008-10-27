@@ -11,6 +11,15 @@ SET(OPENTHREADS_VERSION ${OPENTHREADS_MAJOR_VERSION}.${OPENTHREADS_MINOR_VERSION
 
 INCLUDE(CheckAtomicOps)
 
+# User Options
+OPTION(DYNAMIC_OPENTHREADS "Set to ON to build OpenThreads for dynamic linking.  Use OFF for static." ON)
+IF (DYNAMIC_OPENTHREADS)
+    SET(OPENTHREADS_USER_DEFINED_DYNAMIC_OR_STATIC "SHARED")
+ELSE (DYNAMIC_OPENTHREADS)
+    SET(OPENTHREADS_USER_DEFINED_DYNAMIC_OR_STATIC "STATIC")
+    SET(OT_LIBRARY_STATIC 1)
+ENDIF (DYNAMIC_OPENTHREADS)
+
 ################################################################################
 # Set Config file
 
@@ -37,14 +46,6 @@ SET(OpenThreads_PUBLIC_HEADERS
     ${HEADER_PATH}/Version
     ${OPENTHREADS_CONFIG_HEADER}
 )
-
-# User Options
-OPTION(DYNAMIC_OPENTHREADS "Set to ON to build OpenThreads for dynamic linking.  Use OFF for static." ON)
-IF   (DYNAMIC_OPENTHREADS)
-    SET(OPENTHREADS_USER_DEFINED_DYNAMIC_OR_STATIC "SHARED")
-ELSE (DYNAMIC_OPENTHREADS)
-    SET(OPENTHREADS_USER_DEFINED_DYNAMIC_OR_STATIC "STATIC")
-ENDIF(DYNAMIC_OPENTHREADS)
 
 # Use our modified version of FindThreads.cmake which has Sproc hacks.
 FIND_PACKAGE(Threads)

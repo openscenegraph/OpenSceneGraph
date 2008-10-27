@@ -232,6 +232,7 @@ void StatsHandler::reset()
 {
     _initialized = false;
     _camera->setGraphicsContext(0);
+    _camera->removeChildren( 0, _camera->getNumChildren() );
 }
 
 void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)

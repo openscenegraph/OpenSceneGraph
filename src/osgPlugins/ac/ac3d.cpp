@@ -327,7 +327,7 @@ class TextureData
   public:
     TextureData() :
         mTranslucent(false),
-        mRepeat(false)
+        mRepeat(true)
     {
     }
 
@@ -1177,11 +1177,13 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
             }
         
             textureData = fileData.toTextureData(texname);
-            textureData.setRepeat(false);
         }
         else if (token == "texrep") {
             stream >> textureRepeat[0] >> textureRepeat[1];
-            textureData.setRepeat(true);
+//             if (textureRepeat[0] == 0.0f && textureRepeat[1] == 0.0f)
+//                 textureData.setRepeat(false);
+//             else
+//                 textureData.setRepeat(true);
         }
         else if (token == "texoff") {
             stream >> textureOffset[0] >> textureOffset[1];

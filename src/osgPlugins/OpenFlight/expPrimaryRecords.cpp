@@ -420,7 +420,8 @@ FltExportVisitor::writeExternalReference( const osg::ProxyNode& proxy )
                           SHADER_PALETTE_OVERRIDE ;
 
     // Selectively turn off overrides for resources we don't need
-    const ParentPools* pp = static_cast<const ParentPools*>(proxy.getUserData() );
+    const ParentPools* pp = dynamic_cast<const ParentPools*>(proxy.getUserData() );
+    
     if (pp && pp->getColorPool() )
       flags &= ~COLOR_PALETTE_OVERRIDE;
 

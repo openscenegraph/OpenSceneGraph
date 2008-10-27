@@ -14,7 +14,11 @@
 #include <OpenThreads/Atomic>
 
 #if defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-# include <windows.h>
+#include <windows.h>
+#include <intrin.h>
+#pragma intrinsic(_InterlockedAnd)
+#pragma intrinsic(_InterlockedOr)
+#pragma intrinsic(_InterlockedXor)
 #endif
 
 namespace OpenThreads {
@@ -40,6 +44,8 @@ Atomic::operator++()
     return __sync_add_and_fetch(&_value, 1);
 #elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
     return InterlockedIncrement(&_value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+    return OSAtomicIncrement32(&_value);
 #else
 # error This implementation should happen inline in the include file
 #endif
@@ -52,10 +58,70 @@ Atomic::operator--()
     return __sync_sub_and_fetch(&_value, 1);
 #elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
     return InterlockedDecrement(&_value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+    return OSAtomicDecrement32(&_value);
 #else
 # error This implementation should happen inline in the include file
 #endif
 }
+
+unsigned
+Atomic::AND(unsigned value)
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_fetch_and_and(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+    return _InterlockedAnd(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+    return OSAtomicAnd32((uint32_t)value, (uint32_t *)&_value);
+#else
+# error This implementation should happen inline in the include file
+#endif
+}
+
+unsigned
+Atomic::OR(unsigned value)
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_fetch_and_or(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+    return _InterlockedOr(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+    return OSAtomicOr32((uint32_t)value, (uint32_t *)&_value);
+#else
+# error This implementation should happen inline in the include file
+#endif
+}
+
+unsigned
+Atomic::XOR(unsigned value)
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_fetch_and_xor(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+    return _InterlockedXor(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+    return OSAtomicXor32((uint32_t)value, (uint32_t *)&_value);
+#else
+# error This implementation should happen inline in the include file
+#endif
+}
+
+
+unsigned
+Atomic::exchange(unsigned value)
+{
+#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS)
+    return __sync_lock_test_and_set(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
+    return InterlockedExchange(&_value, value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+    return OSAtomicCompareAndSwap32(_value, value, &_value);
+#else
+# error This implementation should happen inline in the include file
+#endif
+}
+
 
 Atomic::operator unsigned() const
 {
@@ -65,6 +131,9 @@ Atomic::operator unsigned() const
 #elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
     MemoryBarrier();
     return static_cast<unsigned const volatile &>(_value);
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+    OSMemoryBarrier();
+    return static_cast<unsigned const volatile>(_value);
 #else
 # error This implementation should happen inline in the include file
 #endif
@@ -77,6 +146,8 @@ AtomicPtr::assign(void* ptrNew, const void* const ptrOld)
     return __sync_bool_compare_and_swap(&_ptr, ptrOld, ptrNew);
 #elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
     return ptrOld == InterlockedCompareExchangePointer((PVOID volatile*)&_ptr, (PVOID)ptrNew, (PVOID)ptrOld);
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+    return OSAtomicCompareAndSwapPtr((void *)ptrOld, (void *)ptrNew, (void* volatile *)&_ptr);
 #else
 # error This implementation should happen inline in the include file
 #endif
@@ -90,6 +161,9 @@ AtomicPtr::get() const
     return _ptr;
 #elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
     MemoryBarrier();
+    return _ptr;
+#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+    OSMemoryBarrier();
     return _ptr;
 #else
 # error This implementation should happen inline in the include file

@@ -44,6 +44,7 @@ public:
 
     Win32ConditionPrivateData ()
         :waiters_(0), 
+         was_broadcast_(0),
          sema_(CreateSemaphore(NULL,0,0x7fffffff,NULL)),
          waiters_done_(CreateEvent(NULL,FALSE,FALSE,NULL))
     {
@@ -69,7 +70,7 @@ public:
             // Wake up all the waiters.
             ReleaseSemaphore(sema_.get(),waiters_,NULL);
 
-			cooperativeWait(waiters_done_.get(), INFINITE);
+            cooperativeWait(waiters_done_.get(), INFINITE);
 
             //end of broadcasting
             was_broadcast_ = 0;
@@ -104,23 +105,23 @@ public:
 
         // wait in timeslices, giving testCancel() a change to
         // exit the thread if requested.
-		try {
-			DWORD dwResult = 	cooperativeWait(sema_.get(), timeout_ms);
-		    if(dwResult != WAIT_OBJECT_0)
-				result = (int)dwResult;
-		}
-		catch(...){
-			// thread is canceled in cooperative wait , do cleanup
-		    InterlockedDecrement(&waiters_);
-			long w = InterlockedGet(&waiters_);
-			int last_waiter = was_broadcast_ && w == 0;
+        try {
+              DWORD dwResult = cooperativeWait(sema_.get(), timeout_ms);
+            if(dwResult != WAIT_OBJECT_0)
+                result = (int)dwResult;
+        }
+        catch(...){
+            // thread is canceled in cooperative wait , do cleanup
+            InterlockedDecrement(&waiters_);
+            long w = InterlockedGet(&waiters_);
+            int last_waiter = was_broadcast_ && w == 0;
 
-			if (last_waiter)  SetEvent(waiters_done_.get());
-			// rethrow
-			throw;
-		}
+            if (last_waiter)  SetEvent(waiters_done_.get());
+            // rethrow
+            throw;
+        }
 
-		
+        
         // We're ready to return, so there's one less waiter.
         InterlockedDecrement(&waiters_);
         long w = InterlockedGet(&waiters_);

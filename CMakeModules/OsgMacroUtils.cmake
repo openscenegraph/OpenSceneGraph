@@ -337,18 +337,20 @@ MACRO(HANDLE_MSVC_DLL)
     
         IF(NOT MSVC_IDE) 
             SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES PREFIX "../bin/${LIB_PREFIX}${LIB_SOVERSION}-")
-            SET(NEW_LIB_NAME "${OUTPUT_BINDIR}/${LIB_PREFIX}${LIB_SOVERSION}-${LIB_NAME}")
-            ADD_CUSTOM_COMMAND(
-                TARGET ${LIB_NAME}
-                POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy "${NEW_LIB_NAME}.lib"  "${OUTPUT_LIBDIR}/${LIB_NAME}.lib"
-                COMMAND ${CMAKE_COMMAND} -E copy "${NEW_LIB_NAME}.exp"  "${OUTPUT_LIBDIR}/${LIB_NAME}.exp"
-                COMMAND ${CMAKE_COMMAND} -E remove "${NEW_LIB_NAME}.lib"
-                COMMAND ${CMAKE_COMMAND} -E remove "${NEW_LIB_NAME}.exp"
-                )
-        ELSE(NOT MSVC_IDE)
+            IF (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4) 
+                SET(NEW_LIB_NAME "${OUTPUT_BINDIR}/${LIB_PREFIX}${LIB_SOVERSION}-${LIB_NAME}")
+                ADD_CUSTOM_COMMAND(
+                    TARGET ${LIB_NAME}
+                    POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy "${NEW_LIB_NAME}.lib"  "${OUTPUT_LIBDIR}/${LIB_NAME}.lib"
+                    COMMAND ${CMAKE_COMMAND} -E copy "${NEW_LIB_NAME}.exp"  "${OUTPUT_LIBDIR}/${LIB_NAME}.exp"
+                    COMMAND ${CMAKE_COMMAND} -E remove "${NEW_LIB_NAME}.lib"
+                    COMMAND ${CMAKE_COMMAND} -E remove "${NEW_LIB_NAME}.exp"
+                    )
+            ENDIF (${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4) 
+        ELSE(NOT MSVC_IDE) 
             SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES PREFIX "../../bin/${LIB_PREFIX}${LIB_SOVERSION}-" IMPORT_PREFIX "../")
-        ENDIF(NOT MSVC_IDE)
+        ENDIF(NOT MSVC_IDE) 
 
 #     SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES PREFIX "../../bin/osg${OPENSCENEGRAPH_SOVERSION}-")
 #     SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES IMPORT_PREFIX "../")

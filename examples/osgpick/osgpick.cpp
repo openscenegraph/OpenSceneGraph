@@ -252,8 +252,9 @@ int main( int argc, char **argv )
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
 
-    if (!scene)
+    if (!scene && arguments.read("--relative-camera-scene"))
     {
+        // Create a test scene with a camera that has a relative reference frame.
         osg::Group* group = new osg::Group();
 
         osg::Geode* sphere = new osg::Geode();
@@ -267,7 +268,7 @@ int main( int argc, char **argv )
         osg::Camera* camera = new osg::Camera();
         camera->setRenderOrder(osg::Camera::POST_RENDER);
         camera->setClearMask(GL_DEPTH_BUFFER_BIT);
-        //camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+        camera->setReferenceFrame(osg::Transform::RELATIVE_RF);
 
         group->addChild(sphere);
         group->addChild(camera);

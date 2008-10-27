@@ -484,7 +484,6 @@ void Texture3D::allocateMipmap(State& state) const
     if (textureObject && _textureWidth != 0 && _textureHeight != 0 && _textureDepth != 0)
     {
         const Extensions* extensions = getExtensions(contextID,true);
-        const Texture::Extensions* texExtensions = Texture::getExtensions(contextID,true);
     
         // bind texture
         textureObject->bind();

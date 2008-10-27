@@ -1470,7 +1470,7 @@ public:
     }
     
     std::string _marker;
-    unsigned int _numPagedLODsMarked;
+    int _numPagedLODsMarked;
 };
 
 void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
@@ -1550,8 +1550,7 @@ void DatabasePager::capped_removeExpiredSubgraphs(const osg::FrameStamp& frameSt
         }
     }
 
-    unsigned int inactivePLOD = _inactivePagedLODList.size();
-    unsigned int activePLOD = _activePagedLODList.size();
+    int inactivePLOD = _inactivePagedLODList.size();
 
     PagedLODList& pagedLODList = _inactivePagedLODList;
     
@@ -1632,8 +1631,8 @@ void DatabasePager::capped_removeExpiredSubgraphs(const osg::FrameStamp& frameSt
 
         }
 
-        unsigned int numRemoved = 0;
-        unsigned int numToRemove = markerVistor._numPagedLODsMarked;
+        int numRemoved = 0;
+        int numToRemove = markerVistor._numPagedLODsMarked;
         
         
         // osg::notify(osg::NOTICE)<<"Children to remove "<<childrenRemoved.size()<<" numToRemove="<<numToRemove<<std::endl;
@@ -1684,10 +1683,6 @@ void DatabasePager::capped_removeExpiredSubgraphs(const osg::FrameStamp& frameSt
     s_total_iter_stage_c += 1.0;
     s_total_time_stage_c += time_c;
     if (s_total_max_stage_c<time_c) s_total_max_stage_c = time_c;
-
-
-    osg::Timer_t endTick = osg::Timer::instance()->tick();
-
 
 
     osg::notify(osg::INFO)<<"active="<<_activePagedLODList.size()<<" inactive="<<_inactivePagedLODList.size()<<" overall = "<<osg::Timer::instance()->delta_m(startTick,end_c_Tick)<<

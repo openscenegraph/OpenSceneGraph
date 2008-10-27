@@ -600,7 +600,7 @@ const osg::Light* StandardShadowMap::ViewData::selectLight
     osgUtil::PositionalStateContainer::AttrMatrixList& aml = 
         rs->getPositionalStateContainer()->getAttrMatrixList();
 
-    osg::RefMatrix* matrix;
+    osg::RefMatrix* matrix = 0;
 
     for(osgUtil::PositionalStateContainer::AttrMatrixList::iterator itr = aml.begin();
         itr != aml.end();

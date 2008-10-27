@@ -1470,7 +1470,6 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
         _functor.begin(GL_QUAD_STRIP);
 
             float angle = 0.0f;
-            float texCoord = 0.0f;
 
             for(unsigned int topi=0;
                 topi<numSegments;
@@ -1609,7 +1608,6 @@ void PrimitiveShapeVisitor::apply(const Cone& cone)
 
     float topz=cone.getHeight()+cone.getBaseOffset();
     float topr=0.0f;
-    float topv=1.0f;
     float basez=topz-hDelta;
     float baser=rDelta;
     float angle;
@@ -1758,14 +1756,6 @@ void PrimitiveShapeVisitor::apply(const Capsule& capsule)
         if (numSegments < MIN_NUM_SEGMENTS)
             numSegments = MIN_NUM_SEGMENTS;
     }
-
-    float angleDelta = 2.0f*osg::PI/(float)numSegments;
-
-    float r = capsule.getRadius();
-    float h = capsule.getHeight();
-
-    float basez = -h*0.5f;
-    float topz = h*0.5f;
 
     // capsule body
     createCylinderBody(numSegments, capsule.getRadius(), capsule.getHeight(), matrix);

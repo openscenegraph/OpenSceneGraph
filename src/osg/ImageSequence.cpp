@@ -211,7 +211,7 @@ int ImageSequence::imageIndex(double time)
 
     if (time<0.0) return 0;
     int index = int(time/_timePerImage);
-    if (index>=_images.size()) return _images.size()-1;
+    if (index>=int(_images.size())) return int(_images.size())-1;
     return index;
 }
 
@@ -296,9 +296,9 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     int index = int(time/_timePerImage);
     // osg::notify(osg::NOTICE)<<"time= "<<time<<" _timePerImage="<<_timePerImage<<" index="<<index<<" _length="<<_length<<std::endl;
 
-    if (index>=_images.size()) index = _images.size()-1;
+    if (index>=int(_images.size())) index = int(_images.size())-1;
 
-    if (index>=0 && index<_images.size())
+    if (index>=0 && index<int(_images.size()))
     {
 
         if (pruneOldImages)
@@ -316,7 +316,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
             if (_previousAppliedImageIndex!=index)
             {
                 if (_previousAppliedImageIndex >= 0 && 
-                    _previousAppliedImageIndex<_images.size() && 
+                    _previousAppliedImageIndex<int(_images.size()) && 
                     pruneOldImages)
                 {
                     _images[_previousAppliedImageIndex] = 0;
@@ -336,19 +336,19 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         double preLoadTime = time + osg::minimum(irh->getPreLoadTime()*_timeMultiplier, _length);
         
         int startLoadIndex = int(time/_timePerImage);
-        if (startLoadIndex>=_images.size()) startLoadIndex = _images.size()-1;
+        if (startLoadIndex>=int(_images.size())) startLoadIndex = int(_images.size())-1;
         if (startLoadIndex<0) startLoadIndex = 0;
 
         int endLoadIndex = int(preLoadTime/_timePerImage);
-        if (endLoadIndex>=_fileNames.size()) 
+        if (endLoadIndex>=int(_fileNames.size())) 
         {
             if (looping)
             {
-                endLoadIndex -= _fileNames.size();
+                endLoadIndex -= int(_fileNames.size());
             }
             else
             {
-                endLoadIndex = _fileNames.size()-1;
+                endLoadIndex = int(_fileNames.size())-1;
             }
         }
         if (endLoadIndex<0) endLoadIndex = 0;
@@ -357,9 +357,9 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         
         if (endLoadIndex<startLoadIndex)
         {
-            for(int i=startLoadIndex; i<_fileNames.size(); ++i)
+            for(int i=startLoadIndex; i<int(_fileNames.size()); ++i)
             {
-                if ((i>=_images.size() || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
+                if ((i>=int(_images.size()) || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
                 {
                     _filesRequested.insert(_fileNames[i]);
                     irh->requestImageFile(_fileNames[i], this, i, requestTime, fs);
@@ -369,7 +369,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
 
             for(int i=0; i<=endLoadIndex; ++i)
             {
-                if ((i>=_images.size() || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
+                if ((i>=int(_images.size()) || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
                 {
                     _filesRequested.insert(_fileNames[i]);
                     irh->requestImageFile(_fileNames[i], this, i, requestTime, fs);
@@ -381,7 +381,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         {
             for(int i=startLoadIndex; i<=endLoadIndex; ++i)
             {
-                if ((i>=_images.size() || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
+                if ((i>=int(_images.size()) || !_images[i]) && _filesRequested.count(_fileNames[i])==0)
                 {
                     _filesRequested.insert(_fileNames[i]);
                     irh->requestImageFile(_fileNames[i], this, i, requestTime, fs);

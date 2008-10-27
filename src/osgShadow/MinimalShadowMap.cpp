@@ -26,8 +26,8 @@ using namespace osgShadow;
 
 MinimalShadowMap::MinimalShadowMap(): 
     BaseClass(), 
-    _minLightMargin( 0 ),
     _maxFarPlane( FLT_MAX ),
+    _minLightMargin( 0 ),
     _shadowReceivingCoarseBoundAccuracy( BOUNDING_BOX )
 {
     

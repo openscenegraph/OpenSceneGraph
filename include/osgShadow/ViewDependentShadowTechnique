@@ -179,6 +179,11 @@ class OSGSHADOW_EXPORT ViewDependentShadowTechnique
             */
             OpenThreads::Mutex                                _mutex;
 
+            /**
+            Dirty flag tells this instance to update its resources 
+            */
+            bool                                              _dirty;
+
             /** 
             View's CullVisitor associated with this ViewData instance 
             */
@@ -189,10 +194,6 @@ class OSGSHADOW_EXPORT ViewDependentShadowTechnique
             */
             osg::observer_ptr< ViewDependentShadowTechnique > _st;
 
-            /**
-            Dirty flag tells this instance to update its resources 
-            */
-            bool                                              _dirty;
         };
 
         /** 

@@ -169,7 +169,6 @@ namespace osg
     protected:
         FBOExtensions(unsigned int contextID);
 
-    private:        
         bool _supported;
     };
 

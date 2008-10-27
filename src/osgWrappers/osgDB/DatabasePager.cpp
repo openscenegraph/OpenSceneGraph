@@ -99,9 +99,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __void__clear,
 	          "Clear all internally cached structures. ",
 	          "");
-	I_MethodWithDefaults2(void, setUpsThreads, IN, unsigned int, totalNumThreads, 2, IN, unsigned int, numHttpThreads, 1,
+	I_MethodWithDefaults2(void, setUpThreads, IN, unsigned int, totalNumThreads, 2, IN, unsigned int, numHttpThreads, 1,
 	                      Properties::NON_VIRTUAL,
-	                      __void__setUpsThreads__unsigned_int__unsigned_int,
+	                      __void__setUpThreads__unsigned_int__unsigned_int,
 	                      "",
 	                      "");
 	I_Method2(unsigned int, addDatabaseThread, IN, osgDB::DatabasePager::DatabaseThread::Mode, mode, IN, const std::string &, name,

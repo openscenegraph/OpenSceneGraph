@@ -368,14 +368,14 @@ Texture::Texture():
             _borderColor(0.0, 0.0, 0.0, 0.0),
             _borderWidth(0),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
+            _internalFormatType(NORMALIZED),
             _internalFormat(0),
             _sourceFormat(0),
             _sourceType(0),
             _use_shadow_comparison(false),
             _shadow_compare_func(LEQUAL),
             _shadow_texture_mode(LUMINANCE),
-            _shadow_ambient(0),
-            _internalFormatType(NORMALIZED)
+            _shadow_ambient(0)
 {
 }
 
@@ -394,14 +394,14 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _borderColor(text._borderColor),
             _borderWidth(text._borderWidth),
             _internalFormatMode(text._internalFormatMode),
+            _internalFormatType(text._internalFormatType),
             _internalFormat(text._internalFormat),
             _sourceFormat(text._sourceFormat),
             _sourceType(text._sourceType),
             _use_shadow_comparison(text._use_shadow_comparison),
             _shadow_compare_func(text._shadow_compare_func),
             _shadow_texture_mode(text._shadow_texture_mode),
-            _shadow_ambient(text._shadow_ambient),
-            _internalFormatType(text._internalFormatType)
+            _shadow_ambient(text._shadow_ambient)
 {
 }
 
@@ -1468,6 +1468,8 @@ void Texture::mipmapAfterTexImage(State& state, GenerateMipmapMode beforeResult)
         break;
     case GENERATE_MIPMAP_TEX_PARAMETER:
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_FALSE);
+        break;
+    case GENERATE_MIPMAP_NONE:
         break;
     }
 }

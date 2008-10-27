@@ -106,8 +106,8 @@ RenderStage::RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop):
         _face(rhs._face),
         _imageReadPixelFormat(rhs._imageReadPixelFormat),
         _imageReadPixelDataType(rhs._imageReadPixelDataType),
-        _renderStageLighting(rhs._renderStageLighting),
-        _disableFboAfterRender(rhs._disableFboAfterRender)
+        _disableFboAfterRender(rhs._disableFboAfterRender),
+        _renderStageLighting(rhs._renderStageLighting)
 {
     _stage = this;
 }

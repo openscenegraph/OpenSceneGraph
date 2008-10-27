@@ -761,7 +761,7 @@ bool KdTree::intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegment
         return false;
     }
 
-    int numIntersectionsBefore = intersections.size();
+    unsigned int numIntersectionsBefore = intersections.size();
 
     IntersectKdTree intersector(*_vertices,
                                 _kdNodes,
@@ -785,8 +785,8 @@ KdTreeBuilder::KdTreeBuilder():
 
 KdTreeBuilder::KdTreeBuilder(const KdTreeBuilder& rhs):
     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-    _kdTreePrototype(rhs._kdTreePrototype),
-    _buildOptions(rhs._buildOptions)
+    _buildOptions(rhs._buildOptions),
+    _kdTreePrototype(rhs._kdTreePrototype)
 {
 }
 

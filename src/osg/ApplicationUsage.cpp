@@ -44,6 +44,8 @@ void ApplicationUsage::addUsageExplanation(Type type,const std::string& option,c
         case(KEYBOARD_MOUSE_BINDING):
             addKeyboardMouseBinding(option,explanation);
             break;
+        default:
+            break;
     }
 }
 

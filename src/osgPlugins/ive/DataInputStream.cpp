@@ -179,7 +179,11 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
             
             std::string data;
             data.reserve(maxSize);
-            uncompress(*istream, data);
+            
+            if (!uncompress(*istream, data))
+            {
+                throw Exception("Error in uncompressing .ive");
+            }
             
             _istream = new std::stringstream(data);
             _owns_istream = true;
@@ -221,19 +225,21 @@ bool DataInputStream::uncompress(std::istream& fin, std::string& destination) co
                        15 + 32 // autodected zlib or gzip header
                        );
     if (ret != Z_OK)
+    {
+        osg::notify(osg::INFO)<<"failed to init"<<std::endl;
         return ret;
-
+    }
+    
     /* decompress until deflate stream ends or end of file */
     do {
-        strm.avail_in = fin.readsome((char*)in, CHUNK);
-
-        if (fin.fail())
-        {
-            (void)inflateEnd(&strm);
-            return false;
-        }
+        //strm.avail_in = fin.readsome((char*)in, CHUNK);
+        fin.read((char *)in, CHUNK);
+        strm.avail_in = fin.gcount();
+        
         if (strm.avail_in == 0)
+        {
             break;
+        }
         strm.next_in = in;
 
         /* run inflate() on input until output buffer not full */
@@ -260,6 +266,7 @@ bool DataInputStream::uncompress(std::istream& fin, std::string& destination) co
 
     /* clean up and return */
     (void)inflateEnd(&strm);
+    
     return ret == Z_STREAM_END ? true : false;
 }
 #else

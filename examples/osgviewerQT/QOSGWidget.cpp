@@ -23,7 +23,8 @@
     #include <QtGui/QKeyEvent>
     #include <QtGui/QApplication>
     #include <QtOpenGL/QGLWidget>
-    
+    #include <QtGui/QtGui>
+    #include <QtGui/QWidget>
     using Qt::WindowFlags;
 
 #else
@@ -71,12 +72,13 @@ typedef osgViewer::GraphicsWindowX11::WindowData WindowData;
 #include <osgDB/ReadFile>
 
 #include <iostream>
+#include <sstream>
 
 class QOSGWidget : public QWidget
 {
     public:
 
-        QOSGWidget( QWidget * parent = 0, const char * name = 0, WindowFlags f = 0 );
+        QOSGWidget( QWidget * parent = 0, const char * name = 0, WindowFlags f = 0, bool overrideTraits = false);
 
         virtual ~QOSGWidget() {}
 
@@ -99,13 +101,14 @@ class QOSGWidget : public QWidget
         virtual void mouseMoveEvent( QMouseEvent* event );
 
         osg::ref_ptr<osgViewer::GraphicsWindow> _gw;
+    bool _overrideTraits;
 };
 
-QOSGWidget::QOSGWidget( QWidget * parent, const char * name, WindowFlags f):
+QOSGWidget::QOSGWidget( QWidget * parent, const char * name, WindowFlags f, bool overrideTraits):
 #if USE_QT4
-    QWidget(parent, f)
+    QWidget(parent, f), _overrideTraits (overrideTraits)
 #else
-    QWidget(parent, name, f)
+    QWidget(parent, name, f), _overrideTraits (overrideTraits)
 #endif
 {
     createContext();
@@ -114,6 +117,7 @@ QOSGWidget::QOSGWidget( QWidget * parent, const char * name, WindowFlags f):
 #if USE_QT4
     setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
+    setFocusPolicy(Qt::ClickFocus);
 #else
     setBackgroundMode(Qt::NoBackground);
 #endif    
@@ -158,6 +162,16 @@ void QOSGWidget::createContext()
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
     _gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
+
+    // get around dearanged traits on X11 (MTCompositeViewer only)
+    if (_overrideTraits)
+    {
+        traits->x = x();
+        traits->y = y();
+        traits->width = width();
+        traits->height = height();
+    }
+
 }
 void QOSGWidget::destroyEvent(bool destroyWindow, bool destroySubWindows)
 {   
@@ -301,6 +315,38 @@ class CompositeViewerQOSG : public osgViewer::CompositeViewer, public QOSGWidget
 };
 
 
+
+#if USE_QT4
+// we use this wrapper for CompositeViewer ONLY because of the timer
+// NOTE: this is a workaround because we're not using QT's moc precompiler here.
+//
+class QViewerTimer : public QWidget
+{
+
+    public:
+
+        QViewerTimer (QWidget * parent = 0, WindowFlags f = 0):
+            QWidget (parent, f)
+    {
+        _viewer = new osgViewer::CompositeViewer ();
+        _viewer->setThreadingModel(osgViewer::CompositeViewer::DrawThreadPerContext);
+        connect(&_timer, SIGNAL(timeout()), this, SLOT(repaint()));
+        _timer.start(10);
+    }
+
+    ~QViewerTimer ()
+    {
+        _timer.stop ();
+    }
+
+        virtual void paintEvent (QPaintEvent * event) { _viewer->frame(); }
+
+        osg::ref_ptr <osgViewer::CompositeViewer> _viewer;
+        QTimer _timer;
+
+};
+#endif
+
 void setupManipulatorAndHandler(osgViewer::View & viewer, osg::ArgumentParser & arguments)
 {
     // set up the camera manipulators.
@@ -317,13 +363,13 @@ void setupManipulatorAndHandler(osgViewer::View & viewer, osg::ArgumentParser & 
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    
+
     // add the thread model handler
     viewer.addEventHandler(new osgViewer::ThreadingHandler);
 
     // add the window size toggle handler
     viewer.addEventHandler(new osgViewer::WindowSizeHandler);
-        
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
@@ -342,13 +388,12 @@ int mainQOSGWidget(QApplication& a, osg::ArgumentParser& arguments)
     }
 
     std::cout<<"Using QOSGWidget - QWidget + osgViewer creating the graphics context."<<std::endl;
-    
-    
+
     if (arguments.read("--CompositeViewer"))
     {
         osg::ref_ptr<CompositeViewerQOSG> viewerWindow(new CompositeViewerQOSG);
         viewerWindow->setGeometry(0,0,640,480);
-        
+
         unsigned int width = viewerWindow->width();
         unsigned int height = viewerWindow->height();
 
@@ -382,20 +427,81 @@ int mainQOSGWidget(QApplication& a, osg::ArgumentParser& arguments)
 
         return a.exec();
     }
+#if USE_QT4
+    else if (arguments.read("--MTCompositeViewer"))
+    {
+
+        std::cout <<" + using standard CompositeViewer with seperate contexts (Multithreaded mode / EXPERIMENTAL !)" <<std::endl;
+
+        int nbCowsX = 3;
+        int nbCowsY = 2;
+        int size = 300;
+        unsigned int width = nbCowsX * size;
+        unsigned int height = nbCowsY * size;
+
+        QGridLayout *uiLayout = new QGridLayout ();
+        QWidget *wy = new QWidget ();
+
+        // the timer holds an instance of osgViewer::CompositeViewer
+        // NOTE: this is a workaround since we're not using QT's moc precompiler here..
+        QViewerTimer *ctimer = new QViewerTimer ();
+
+        for (int x=0;x<nbCowsX; x++)
+            for (int y=0;y<nbCowsY; y++)
+            {
+
+                // embed the QOSGWidget into QGroupBox to demonstrate that we
+                // really use QT's Widgets
+                //
+                std::stringstream widgetname; widgetname << "View (" << x << "," << y << ")";
+                QGroupBox *w= new QGroupBox (QString (widgetname.str ().c_str ()), wy);
+                QGridLayout *tmpl = new QGridLayout ();
+                QOSGWidget *gw = new QOSGWidget (w, 0, 0, true);
+                tmpl->addWidget (gw);
+                w->setLayout(tmpl);
+                uiLayout->addWidget (w, y, x);
+
+                // setup views as usual
+                osgViewer::View* view = new osgViewer::View;
+                view->getCamera()->setGraphicsContext(gw->getGraphicsWindow ());
+                view->getCamera()->setProjectionMatrixAsPerspective
+                    (30.0f, static_cast<double>(width*2)/static_cast<double>(height), 1.0, 1000.0);
+                view->getCamera()->setViewport(new osg::Viewport(0,0,size,size));
+                view->addEventHandler(new osgViewer::StatsHandler);
+                view->setCameraManipulator(new osgGA::TrackballManipulator);
+                view->setSceneData(loadedModel.get ());
+                ctimer->_viewer->addView(view);
+            }
+
+        //uiLayout->addWidget (ctimer);
+        wy->setLayout (uiLayout);
+        wy->resize (width, height);
+        wy->show ();
+
+        // we need the timer to be visible for repaints
+        // NOTE: this is a workaround since we're not using QT's moc precompiler here..
+        ctimer->resize (1,1);
+        ctimer->show ();
+
+        a.connect( &a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()) );
+
+        return a.exec();
+    }
+#endif
     else
     {
         osg::ref_ptr<ViewerQOSG> viewerWindow(new ViewerQOSG);
         viewerWindow->setGeometry(0,0,640,480);
-        
+
         viewerWindow->setCameraManipulator(new osgGA::TrackballManipulator);
         viewerWindow->setSceneData(loadedModel.get());
 
         viewerWindow->show();
 
         setupManipulatorAndHandler(*viewerWindow.get(), arguments);
-        
+
         a.connect( &a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()) );
-    
+
         return a.exec();
     }
 }

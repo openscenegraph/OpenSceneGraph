@@ -68,7 +68,12 @@ int main(int, const char**)
 
 CHECK_CXX_SOURCE_RUNS("
 #include <windows.h>
+#include <intrin.h>
 #include <cstdlib>
+
+#pragma intrinsic(_InterlockedAnd)
+#pragma intrinsic(_InterlockedOr)
+#pragma intrinsic(_InterlockedXor)
 
 int main(int, const char**)
 {

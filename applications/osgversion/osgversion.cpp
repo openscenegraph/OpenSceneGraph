@@ -245,7 +245,11 @@ std::string typoCorrection(const std::string& name)
     if (name=="Antione") return "Antoine";
     if (name=="Antonoine") return "Antoine";
     if (name=="Atr")  return "Art";
+    if (name=="Osfeld")  return "Osfield";
+    if (name=="Rucard")  return "Richard";
     if (name=="Baverage") return "Beverage";
+    if (name=="Lagrade") return "Lagarde";
+    if (name=="Lucas") return "Luaces";
     if (name=="Bistroviae") return "Bistrovic";
     if (name=="Callue")  return "Callu";
     if (name=="Christaiansen") return "Christiansen";

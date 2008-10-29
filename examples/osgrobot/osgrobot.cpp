@@ -224,12 +224,6 @@ osg::MatrixTransform* buildJoint1(osg::MatrixTransform* previousJoint)
     float height = 45.0f;
     osg::Geode* joint = new osg::Geode();
     xTransform->addChild(joint);
-
-    //The cylinder's barycenter is the point of rotation.
-    //For this project, the x and y axis of rotation needs to be at the start of the cylinder and the
-    //axis of rotation about the z axis needs to be at the center of the cylinder.
-    //  this is where height/2 is used -- to offset x and y axis barycenter.
-    // note: we did not use -height/2
     joint->addDrawable(new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f,0.0f,height/2),radius,height),hints));
 
     osg::MatrixTransform *zTransform = new osg::MatrixTransform();
@@ -296,16 +290,13 @@ osg::MatrixTransform* buildJoint3(osg::MatrixTransform* previousJoint)
     previousJoint->addChild(xTransform);
     osg::Matrix xRot = osg::Matrix::rotate(-osg::PI_2, 1.0, 0.0, 0.0);
     xTransform->setMatrix(xRot);
-    if (showAxis)
-    {
-        createAxis(xTransform);
-    }
+
 
     osg::MatrixTransform* zCheat = new osg::MatrixTransform();
     osg::Matrix zTransCheat = osg::Matrix::translate(0.0,0.0,-height);
     zCheat->setMatrix(zTransCheat);
     xTransform->addChild(zCheat);
-
+    
     osg::ShapeDrawable *shape = new osg::ShapeDrawable(new osg::Capsule(osg::Vec3(0.0f,0.0f,height/2),radius,height),hints);
     joint->addDrawable(shape);
     zCheat->addChild(joint);
@@ -315,9 +306,12 @@ osg::MatrixTransform* buildJoint3(osg::MatrixTransform* previousJoint)
     osg::Matrix zRot = osg::Matrix::rotate((float)jointAngle3, 0.0f, 0.0f, 1.0f);
     osg::Matrix zTrans = osg::Matrix::translate(0,0,0);
     zTransform->setMatrix(zTrans*zRot);
+    if (showAxis)
+    {
+        createAxis(zTransform);
+    }
     return zTransform;
 }
-
 osg::MatrixTransform* buildJoint4(osg::MatrixTransform* previousJoint)
 {
     double height = 17.5;
@@ -325,10 +319,10 @@ osg::MatrixTransform* buildJoint4(osg::MatrixTransform* previousJoint)
     osg::Geode* tube4 = new osg::Geode();
     tube4->addDrawable(new osg::ShapeDrawable(new osg::Capsule(osg::Vec3(0.0f,0.0f,height/2),radius,height),hints));
     osg::MatrixTransform* xTransform = new osg::MatrixTransform();
-    if (showAxis)
-    {
-        createAxis(xTransform);
-    }
+    //if (showAxis)
+    //{
+        //createAxis(xTransform);
+    //}
     previousJoint->addChild(xTransform);
     xTransform->addChild(tube4);
     osg::Matrix xRot= osg::Matrix::rotate(osg::PI_2, 1,0,0);
@@ -343,8 +337,13 @@ osg::MatrixTransform* buildJoint4(osg::MatrixTransform* previousJoint)
     return zTransform;
 }
 
+
 osg::MatrixTransform* buildTube5(osg::MatrixTransform* previousJoint)
 {
+    if (showAxis)
+    {
+        createAxis(previousJoint);
+    }
     double height = 7.5;
     double radius = 2.86479;
 
@@ -426,7 +425,7 @@ osg::MatrixTransform* buildEndEffector()
 
 void createAxis(osg::Transform* previousJoint)
 {
-    double height = 10.0;
+    double height = 12.0;
     double radius = .5;
 
     osg::MatrixTransform* zmt = new osg::MatrixTransform();
@@ -452,7 +451,7 @@ void createAxis(osg::Transform* previousJoint)
     osg::MatrixTransform* mt = new osg::MatrixTransform();
     previousJoint->addChild(mt);
 
-    osg::Matrix xMatrix = osg::Matrix::rotate(-osg::PI_2, 0.0, 1.0, 0.0);
+    osg::Matrix xMatrix = osg::Matrix::rotate(-M_PI_2, 0.0, 1.0, 0.0);
     mt->setMatrix(xMatrix);
 
 
@@ -465,7 +464,7 @@ void createAxis(osg::Transform* previousJoint)
 
     osg::MatrixTransform *yMt = new osg::MatrixTransform();
     previousJoint->addChild(yMt);
-    osg::Matrix yMatrix = osg::Matrix::rotate(osg::PI_2, 1.0, 0.0, 0.0);
+    osg::Matrix yMatrix = osg::Matrix::rotate(M_PI_2, 1.0, 0.0, 0.0);
     yMt->setMatrix(yMatrix);
 
     osg::ShapeDrawable *yShape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f,0.0f,height/2),radius,height),hints);
@@ -478,7 +477,7 @@ void createAxis(osg::Transform* previousJoint)
 int main(int, char **)
 {
     hints->setDetailRatio(0.5f);
-    showAxis = false;
+    showAxis = true;
     jointAngle1=0.0;
     jointAngle2=0.0;
     jointAngle3=0.0;
@@ -486,7 +485,6 @@ int main(int, char **)
     jointAngle5=0.0;
     jointAngle6=0.0;
     EndEffector=1.0;
-
     osgViewer::Viewer viewer;
     viewer.addEventHandler(new KeyboardEventHandler());
 

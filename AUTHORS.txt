@@ -121,6 +121,7 @@ John Kelso
 Daniel Larimer
 Colin Dunlop
 Bruce Clay
+Blasius Czink
 Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
@@ -147,7 +148,6 @@ Donn Mielcarek
 Donald Cipperly
 Domenico Mangieri
 Charles Cole
-Blasius Czink
 Blake Williams
 Antoine Hue
 Andrew Bettison

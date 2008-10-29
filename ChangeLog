@@ -1,3 +1,22 @@
+2008-10-29 11:51 +0000 [r9077]  robert:
+
+	* From Blasius Czink, "changed the CHECK_CXX_SOURCE_RUNS macro
+	  slightly to avoid the compile problems due to bugged "intrin.h".
+	  In such a case the mutex fallback will be used (see attached
+	  file)."
+
+2008-10-29 11:15 +0000 [r9076]  robert:
+
+	* Warning fixes
+
+2008-10-29 11:09 +0000 [r9075]  robert:
+
+	* Added missing implementations
+
+2008-10-29 10:56 +0000 [r9074]  robert:
+
+	* Updated ChangeLog and AUTHORS.txt for 2.7.4 release
+
 2008-10-29 10:38 +0000 [r9073]  robert:
 
 	* Updated wrappers

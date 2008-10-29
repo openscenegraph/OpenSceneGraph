@@ -173,4 +173,9 @@ bool Input::keyDown(int key, int mask, WindowManager*) {
     return false;
 }
 
+void Input::setCursor(Widget*)
+{
+    warn() << "Input::setCursor(Widget*) not implemented yet."<<std::endl;
+}
+
 }

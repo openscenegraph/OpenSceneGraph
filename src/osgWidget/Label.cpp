@@ -97,6 +97,11 @@ void Label::positioned() {
     _text->setPosition(osg::Vec3(x, y, _calculateZ(getLayer() + 1)));
 }
 
+void Label::update()
+{
+    warn() << "Label::update() not implemented yet."<<std::endl;
+}
+
 void Label::setLabel(const std::string& label) {
     _text->setText(label);
 

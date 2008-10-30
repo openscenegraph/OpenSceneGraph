@@ -23,7 +23,6 @@
 #include <osg/Uniform>
 #include <osgDB/Archive>
 #include <osgDB/AuthenticationMap>
-#include <osgDB/DatabasePager>
 #include <osgDB/DotOsgWrapper>
 #include <osgDB/DynamicLibrary>
 #include <osgDB/FileCache>
@@ -542,21 +541,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __DynamicLibrary_P1__getLibrary__C5_std_string_R1,
 	          "get the attached library with specified name. ",
 	          "");
-	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, databasePager,
-	          Properties::NON_VIRTUAL,
-	          __void__setDatabasePager__DatabasePager_P1,
-	          "Set the DatabasePager. ",
-	          "");
-	I_Method0(osgDB::DatabasePager *, getOrCreateDatabasePager,
-	          Properties::NON_VIRTUAL,
-	          __DatabasePager_P1__getOrCreateDatabasePager,
-	          "Get the DatabasePager, creating one if one is not already created. ",
-	          "");
-	I_Method0(osgDB::DatabasePager *, getDatabasePager,
-	          Properties::NON_VIRTUAL,
-	          __DatabasePager_P1__getDatabasePager,
-	          "Get the DatabasePager. ",
-	          "Return 0 if no DatabasePager has been assigned. ");
 	I_Method1(void, setSharedStateManager, IN, osgDB::SharedStateManager *, SharedStateManager,
 	          Properties::NON_VIRTUAL,
 	          __void__setSharedStateManager__SharedStateManager_P1,
@@ -617,9 +601,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_SimpleProperty(const osgDB::FilePathList &, DataFilePathList, 
 	                 __C5_FilePathList_R1__getDataFilePathList, 
 	                 __void__setDataFilePathList__C5_FilePathList_R1);
-	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
-	                 __DatabasePager_P1__getDatabasePager, 
-	                 __void__setDatabasePager__DatabasePager_P1);
 	I_SimpleProperty(osgDB::FileCache *, FileCache, 
 	                 __FileCache_P1__getFileCache, 
 	                 __void__setFileCache__FileCache_P1);

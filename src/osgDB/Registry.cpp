@@ -324,10 +324,6 @@ void Registry::destruct()
 {
     // osg::notify(osg::NOTICE)<<"Registry::destruct()"<<std::endl;
 
-    // switch off the pager and its associated thread before we clean up 
-    // rest of the Registry.
-    _databasePager = 0;
-
     // clean up the SharedStateManager 
     _sharedStateManager = 0;
     
@@ -2070,13 +2066,6 @@ void Registry::releaseGLObjects(osg::State* state)
         osg::Object* object = itr->second.first.get();
         object->releaseGLObjects(state);
     }
-}
-
-DatabasePager* Registry::getOrCreateDatabasePager()
-{
-    if (!_databasePager) _databasePager = new DatabasePager;
-    
-    return _databasePager.get();
 }
 
 SharedStateManager* Registry::getOrCreateSharedStateManager()

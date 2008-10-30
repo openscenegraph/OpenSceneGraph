@@ -7,7 +7,6 @@
 
 const unsigned int MASK_2D = 0xF0000000;
 
-/*
 bool colorWidgetEnter(osgWidget::Event& event) {
 	event.getWidget()->addColor(0.5f, 0.2f, 0.3f, 0.0f);
 
@@ -117,8 +116,8 @@ int main(int argc, char** argv) {
 
 	return osgWidget::createExample(viewer, wm);
 }
-*/
 
+/*
 int main(int argc, char** argv) {
 	osgViewer::Viewer viewer;
 
@@ -140,3 +139,4 @@ int main(int argc, char** argv) {
 
 	return osgWidget::createExample(viewer, wm);
 }
+*/

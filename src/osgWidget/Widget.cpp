@@ -194,10 +194,7 @@ void Widget::setDimensions(point_type x, point_type y, point_type w, point_type 
     const WindowManager* wm = _getWindowManager();
 
     if(wm && wm->isUsingRenderBins()) {
-        getOrCreateStateSet()->setRenderBinDetails(
-            static_cast<int>(z * OSGWIDGET_RENDERBIN_MOD),
-            "RenderBin"
-        );
+        getOrCreateStateSet()->setRenderBinDetails(static_cast<int>(z), "RenderBin");
 
         z = 0.0f;
     }
@@ -245,6 +242,14 @@ void Widget::setTexCoord(texcoord_type tx, texcoord_type ty, Corner p) {
     }
 
     else (*texs)[p].set(tx, ty);
+}
+
+// TODO: We chop off any offset here if you use TOP; we need to do the same
+// for BG, etc.
+void Widget::setLayer(Layer layer, unsigned int offset) {
+    if(layer == LAYER_TOP) offset = 0;
+
+    _layer = layer + offset;
 }
 
 void Widget::setTexCoordRegion(point_type x, point_type y, point_type w, point_type h) {

@@ -289,7 +289,6 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             }
         };
 
-        /*
         // A functor used to sort the Windows by their BinNum component in descending order.
         struct WindowBinNumberCompare: public std::binary_function<ptr_type, ptr_type, bool> {
             bool operator()(const ptr_type& x, const ptr_type& y) {
@@ -299,7 +298,6 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
                 ;
             }
         };
-        */
 
         point_type         _width;
         point_type         _height;

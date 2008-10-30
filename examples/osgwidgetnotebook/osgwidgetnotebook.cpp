@@ -125,8 +125,8 @@ int main(int argc, char** argv) {
         &viewer,
         1280.0f,
         720.0f,
-        MASK_2D //
-        // osgWidget::WindowManager::WM_PICK_DEBUG
+        MASK_2D,
+        osgWidget::WindowManager::WM_USE_RENDERBINS
     );
 
     Notebook* notebook1 = new Notebook("notebook1");

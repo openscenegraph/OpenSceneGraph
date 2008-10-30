@@ -48,10 +48,10 @@ public:
         };
 
         enum Layer {
-            LAYER_TOP    = 20,
-            LAYER_HIGH   = 15,
-            LAYER_MIDDLE = 10,
-            LAYER_LOW    = 5,
+            LAYER_TOP    = 100,
+            LAYER_HIGH   = 75,
+            LAYER_MIDDLE = 50,
+            LAYER_LOW    = 25,
             LAYER_BG     = 0
         };
 
@@ -118,6 +118,7 @@ public:
         void setColor    (color_type, color_type, color_type, color_type, Corner = ALL_CORNERS);
         void addColor    (color_type, color_type, color_type, color_type, Corner = ALL_CORNERS);
         void setTexCoord (texcoord_type, texcoord_type, Corner = ALL_CORNERS);
+        void setLayer    (Layer l, unsigned int offset = 0);
 
         // These are additional texture coordinate setting methods.
         // This method will use a given origin as the LOWER_LEFT point and texture the
@@ -243,11 +244,6 @@ public:
 
         void setMinimumSize(const XYCoord& xy) {
             setMinimumSize(xy.x(), xy.y());
-        }
-
-        // TODO: Refine this...
-        void setLayer(Layer l, unsigned int offset = 0) {
-            _layer = l + offset;
         }
 
         void setPadLeft(point_type p) {

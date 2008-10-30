@@ -99,6 +99,8 @@ void Window::EmbeddedWindow::positioned() {
     // If the widget is fillable, ask the internal Window to resize itself.
     // Whether or not the Window honors this reqest will be up to it.
     _window->setOrigin(x, y);
+    _window->setZ(_calculateZ(getLayer() + 1));
+    _window->setZRange(_calculateZ(LAYER_TOP - (getLayer() + 1)));
     _window->setVisibleArea(0, 0, static_cast<int>(w), static_cast<int>(h));
     _window->resize(w, h);
 }
@@ -295,22 +297,11 @@ bool Window::resizePercent(point_type width, point_type height) {
 }
 
 void Window::update() {
-    // Update all embedded children; the zRange values continue to decrease in precision
-    // as you add more and more embedded Windows.
     WindowList wl;
 
     getEmbeddedList(wl);
 
-    // Each child Window gets half the zRange of it's parent Window. This means the more
-    // you embed Windows into other Windows, the less depth precision you're going to have.
-    for(WindowList::iterator w = wl.begin(); w != wl.end(); w++) {    
-        Window* win = w->get();
-
-        win->_z      = _zRange / 2.0f;
-        win->_zRange = _zRange / 2.0f;
-
-        win->update();
-    }
+    for(WindowList::iterator w = wl.begin(); w != wl.end(); w++) w->get()->update();
 
     matrix_type x  = _x;
     matrix_type y  = _y;
@@ -336,7 +327,7 @@ void Window::update() {
     if(_wm) {
         if(_wm->isUsingRenderBins()) {
             getOrCreateStateSet()->setRenderBinDetails(
-                static_cast<int>(_z * OSGWIDGET_RENDERBIN_MOD),
+                static_cast<int>((1.0f - fabs(_z)) * OSGWIDGET_RENDERBIN_MOD),
                 "RenderBin"
             );
 
@@ -797,7 +788,11 @@ XYCoord Window::getAbsoluteOrigin() const {
     return xy;
 }
 
-Window::EmbeddedWindow* Window::embed(const std::string& newName) {
+Window::EmbeddedWindow* Window::embed(
+    const std::string& newName,
+    Widget::Layer      layer,
+    unsigned int       layerOffset
+) {
     EmbeddedWindow* ew = new EmbeddedWindow(
         newName.size() > 0 ? newName : _name + "Embedded",
         getWidth(),
@@ -808,6 +803,7 @@ Window::EmbeddedWindow* Window::embed(const std::string& newName) {
     ew->setSize(getWidth(), getHeight());
     ew->setMinimumSize(getMinWidth(), getMinHeight());
     ew->setCanFill(true);
+    ew->setLayer(layer, layerOffset);
 
     return ew;
 }

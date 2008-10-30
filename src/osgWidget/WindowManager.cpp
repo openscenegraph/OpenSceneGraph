@@ -311,6 +311,49 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
     return false;
 }
 
+/*
+bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
+    Intersections intr;
+
+    if(!_view->computeIntersections(x, y, intr, _nodeMask)) return false;
+
+    typedef std::vector<osg::observer_ptr<Window> > WindowVector;
+
+    WindowVector windows;
+
+    Window* activeWin = 0;
+
+    for(Intersections::iterator i = intr.begin(); i != intr.end(); i++) {
+        Window* win = dynamic_cast<Window*>(i->nodePath.back()->getParent(0));
+
+        if(
+            !win ||
+            (win->getVisibilityMode() == Window::VM_PARTIAL && !win->isPointerXYWithinVisible(x, y))
+        ) {
+            continue;
+        }
+
+        if(activeWin != win) {
+            activeWin = win;
+
+            windows.push_back(win);
+        }
+    }
+
+    if(!windows.size()) return false;
+
+    std::sort(windows.begin(), windows.end(), WindowBinNumberCompare());
+
+    for(WindowVector::iterator i = windows.begin(); i != windows.end(); i++) {
+        warn() << "- " << i->get()->getName() << " " << i->get()->getOrCreateStateSet()->getBinNumber() << std::endl;
+    }
+        
+    warn() << std::endl;
+
+    return false;
+}
+*/
+
 bool WindowManager::setFocused(Window* window) {
     Event ev(this);
 

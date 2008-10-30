@@ -158,7 +158,11 @@ class OSGWIDGET_EXPORT Window:
         XYCoord getAbsoluteOrigin () const;
 
         // This method wraps the current Window in a EmbeddedWindow object and returns it.
-        EmbeddedWindow* embed(const std::string& = "");
+        EmbeddedWindow* embed(
+            const std::string& = "",
+            Widget::Layer      = Widget::LAYER_MIDDLE,
+            unsigned int       = 0
+        );
 
         Widget* getFocused() {
             return _focused.get();
@@ -312,6 +316,14 @@ class OSGWIDGET_EXPORT Window:
 
         void setY(matrix_type y) {
             _y = y;
+        }
+
+        void setZ(matrix_type z) {
+            _z = z;
+        }
+
+        void setZRange(matrix_type zRange) {
+            _zRange = zRange;
         }
 
         void setPosition(matrix_type x, matrix_type y, matrix_type z) {

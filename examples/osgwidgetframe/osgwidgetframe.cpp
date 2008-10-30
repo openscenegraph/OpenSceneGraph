@@ -69,9 +69,9 @@ int main(int argc, char** argv) {
     osgWidget::Widget* center = new osgWidget::Widget("center", 256.0f, 256.0f);
     osgWidget::Widget* right  = new osgWidget::Widget("right", 512.0f, 256.0f);
 
-    left->setImage  ("osgWidget/panel-left.tga", true);
+    left->setImage("osgWidget/panel-left.tga", true);
     center->setImage("osgWidget/panel-center.tga", true);
-    right->setImage ("osgWidget/panel-right.tga", true);
+    right->setImage("osgWidget/panel-right.tga", true);
 
     center->setTexCoordWrapHorizontal();
 

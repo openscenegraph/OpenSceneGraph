@@ -466,17 +466,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** get the attached library with specified name.*/
         DynamicLibrary*              getLibrary(const std::string& fileName);
-        
-        /** Set the DatabasePager.*/
-        void setDatabasePager(DatabasePager* databasePager) { _databasePager = databasePager; }
 
-        /** Get the DatabasePager, creating one if one is not already created.*/
-        DatabasePager* getOrCreateDatabasePager();
-        
-        /** Get the DatabasePager. Return 0 if no DatabasePager has been assigned.*/
-        DatabasePager* getDatabasePager() { return _databasePager.get(); }
-
-        
         /** Set the SharedStateManager.*/
         void setSharedStateManager(SharedStateManager* SharedStateManager) { _sharedStateManager = SharedStateManager; }
 
@@ -609,7 +599,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         ArchiveExtensionList                    _archiveExtList;
         
-        osg::ref_ptr<DatabasePager>             _databasePager;
         osg::ref_ptr<SharedStateManager>        _sharedStateManager;
 
 };

@@ -43,6 +43,8 @@
 #include <osgText/Text>
 
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
+
 #include <osgGA/StateSetManipulator>
 
 #include <iostream>
@@ -1100,6 +1102,9 @@ int main( int argc, char **argv )
     
     osg::ref_ptr<ForestTechniqueManager> ttm = new ForestTechniqueManager;
     
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+
     viewer.addEventHandler(new TechniqueEventHandler(ttm.get()));
     viewer.addEventHandler(new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()));
 

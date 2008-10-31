@@ -169,8 +169,17 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgwidgetwindow)
     ENDIF(BUILD_OSGWIDGET)
 
+    IF   (GLUT_FOUND)
+        ADD_SUBDIRECTORY(osgviewerGLUT)
+    ENDIF(GLUT_FOUND)
+
+    IF   (LIBVNCSERVER_FOUND)
+        ADD_SUBDIRECTORY(osgvnc)
+    ENDIF(LIBVNCSERVER_FOUND)
+
 
     #ADD_SUBDIRECTORY(osgcegui)
+
     #to add subject to find socket#ADD_SUBDIRECTORY(osgcluster)
 
 ELSE(DYNAMIC_OPENSCENEGRAPH)

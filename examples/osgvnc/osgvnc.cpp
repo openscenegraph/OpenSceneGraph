@@ -14,7 +14,118 @@ extern "C" {
 #include <rfb/rfbclient.h>
 }
 
-static rfbBool resizeImage(rfbClient* client) 
+class VncImage : public osg::Image
+{
+    public:
+    
+        VncImage();
+
+        bool connect(int* argc, char** argv);
+        
+        void close();
+
+        static rfbBool resizeImage(rfbClient* client);
+        
+        static void updateImage(rfbClient* client,int x,int y,int w,int h);
+        
+    protected:
+    
+        virtual ~VncImage();
+
+        class RfbThread : public osg::Referenced, public OpenThreads::Thread
+        {
+        public:
+
+            RfbThread(rfbClient* client):
+                _client(client),
+                _done(false) {}
+
+            virtual ~RfbThread()
+            {
+                _done = true;
+                cancel();
+                while(isRunning()) 
+                {
+                    OpenThreads::Thread::YieldCurrentThread();
+                }
+            }
+
+            virtual void run()
+            {
+                do
+                {
+                    int i=WaitForMessage(_client,500);
+                    if(i<0)
+                        return;
+                    if(i)
+                        if(!HandleRFBServerMessage(_client))
+                        return;
+
+                } while (!_done && !testCancel());
+            }
+
+            rfbClient*  _client;
+            bool        _done;
+
+        };
+
+    public:
+
+        rfbClient* _client;
+
+        osg::ref_ptr<RfbThread> _rfbThread;
+      
+};
+
+VncImage::VncImage()
+{
+    // setPixelBufferObject(new osg::PixelBufferObject(this);
+
+}
+
+VncImage::~VncImage()
+{
+    close();
+}
+
+bool VncImage::connect(int* argc, char** argv)
+{
+    if (_client) close();
+
+    _client = rfbGetClient(8,3,4);
+    _client->canHandleNewFBSize = TRUE;
+    _client->MallocFrameBuffer = resizeImage;
+    _client->GotFrameBufferUpdate = updateImage;
+    _client->HandleKeyboardLedState = 0;
+    _client->HandleTextChat = 0;
+
+    rfbClientSetClientData(_client, 0, this);
+    
+    if (rfbInitClient(_client,argc,argv))
+    {
+        _rfbThread = new RfbThread(_client);
+        _rfbThread->startThread();
+    }
+}
+
+void VncImage::close()
+{
+    if (_rfbThread.valid())
+    {
+        // stop the client thread
+        _rfbThread = 0;
+    }
+
+    if (_client)
+    {
+        // close the client
+        rfbClientCleanup(_client);
+        _client = 0;
+    }
+}
+
+
+rfbBool VncImage::resizeImage(rfbClient* client) 
 {
     osg::Image* image = (osg::Image*)(rfbClientGetClientData(client, 0));
     
@@ -31,7 +142,7 @@ static rfbBool resizeImage(rfbClient* client)
     return TRUE;
 }
 
-static void updateImage(rfbClient* client,int x,int y,int w,int h)
+void VncImage::updateImage(rfbClient* client,int x,int y,int w,int h)
 {
     osg::Image* image = (osg::Image*)(rfbClientGetClientData(client, 0));
     image->dirty();
@@ -169,60 +280,14 @@ bool RfbEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAd
     return false;
 }
 
-class RfbThread : public OpenThreads::Thread
-{
-public:
-    
-    RfbThread(rfbClient* client):
-        _client(client),
-        _done(false) {}
-    
-    virtual ~RfbThread()
-    {
-        _done = true;
-        cancel();
-        while(isRunning()) 
-        {
-            OpenThreads::Thread::YieldCurrentThread();
-        }
-    }
-
-    virtual void run()
-    {
-        do
-        {
-            int i=WaitForMessage(_client,500);
-            if(i<0)
-                return;
-            if(i)
-                if(!HandleRFBServerMessage(_client))
-                return;
-                
-        } while (!_done && !testCancel());
-    }
-    
-    rfbClient*  _client;
-    bool        _done;
-    
-};
-
 int main(int argc,char** argv)
 {
-    osg::ref_ptr<osg::Image> image = new osg::Image;
-    // image->setPixelBufferObject(new osg::PixelBufferObject(image.get()));
+    osg::ref_ptr<VncImage> image = new VncImage;
 
-    /* 16-bit: client=rfbGetClient(5,3,2); */
-    rfbClient* client=rfbGetClient(8,3,4);
-    client->canHandleNewFBSize = TRUE;
-    client->MallocFrameBuffer = resizeImage;
-    client->GotFrameBufferUpdate = updateImage;
-    client->HandleKeyboardLedState = 0;
-    client->HandleTextChat = 0;
-
-    rfbClientSetClientData(client, 0, image.get());
-
-    if(!rfbInitClient(client,&argc,argv))
+    if (image->connect(&argc,argv))
+    {
         return 1;
+    }
 
     osg::ArgumentParser arguments(&argc, argv);
     osgViewer::Viewer viewer;
@@ -254,15 +319,10 @@ int main(int argc,char** argv)
     viewer.setSceneData(geode);
 
     viewer.addEventHandler(new osgViewer::StatsHandler);
-    viewer.addEventHandler(new RfbEventHandler(client));
-    
-    RfbThread rfbThread(client);
-    rfbThread.startThread();
+    viewer.addEventHandler(new RfbEventHandler(image->_client));
     
     viewer.setKeyEventSetsDone(0);
 
     return viewer.run();
-
-    // rfbClientCleanup(cl);
 }
 

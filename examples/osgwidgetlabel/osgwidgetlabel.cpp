@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
         1280.0f,
         1024.0f,
         MASK_2D,
-        osgWidget::WindowManager::WM_USE_RENDERBINS |
+        // osgWidget::WindowManager::WM_USE_RENDERBINS |
         osgWidget::WindowManager::WM_PICK_DEBUG
     );
     

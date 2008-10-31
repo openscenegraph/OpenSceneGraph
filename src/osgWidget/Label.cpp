@@ -40,7 +40,7 @@ _textIndex (label._textIndex) {
 }
 
 void Label::_calculateSize(const XYCoord& size) {
-    if(size.x() && size.y()) setMinimumSize(size.x(), size.y());
+    // if(size.x() && size.y()) setMinimumSize(size.x(), size.y());
 
     if(getWidth() < size.x()) setWidth(size.x());
     
@@ -49,8 +49,15 @@ void Label::_calculateSize(const XYCoord& size) {
 
 // TODO: This will almost certainly get out of sync. :(
 void Label::parented(Window* parent) {
-    // If we've been cloned, use the index of the old text Drawable.
-    if(_textIndex) parent->getGeode()->setDrawable(_textIndex, _text.get());
+    osg::Geode* geode = parent->getGeode();
+
+    // If we've been cloned, use the index of the old text Drawable if it's already there.
+    // However, we have a problem here: imagine a Label gets cloned AFTER being added to
+    // a Window; it'll have a _textIndex, but that _textIndex won't apply to the
+    // currently cloned object. In this case, we'll need to check to be SURE.
+    osgText::Text* text = dynamic_cast<osgText::Text*>(geode->getDrawable(_textIndex));
+    
+    if(text) parent->getGeode()->setDrawable(_textIndex, _text.get());
 
     // Otherwise, add it as new.
     else _textIndex = parent->addDrawableAndGetIndex(_text.get());

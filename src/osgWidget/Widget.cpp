@@ -33,8 +33,8 @@ _canFill   (false),
 _canClone  (true),
 _isManaged (false),
 _isStyled  (false),
-_minWidth  (w),
-_minHeight (h) {
+_minWidth  (0.0f),
+_minHeight (0.0f) {
     _name = name.size() ? name : generateRandomName("Widget");
 
     if(!_norms.valid()) {

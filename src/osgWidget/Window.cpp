@@ -212,7 +212,14 @@ _visibleArea    (window._visibleArea) {
     for(unsigned int i = 1; i < geode->getNumDrawables(); i++) {
         Widget* widget = dynamic_cast<Widget*>(geode->getDrawable(i));
 
-        if(!widget || !widget->canClone()) continue;
+        if(!widget) continue;
+
+        // TODO: Properly test this...
+        if(!widget->canClone()) {
+            // geode->removeDrawable(widget);
+
+            continue;
+        }
 
         _setParented(widget);
 
@@ -801,7 +808,6 @@ Window::EmbeddedWindow* Window::embed(
 
     ew->setWindow(this);
     ew->setSize(getWidth(), getHeight());
-    ew->setMinimumSize(getMinWidth(), getMinHeight());
     ew->setCanFill(true);
     ew->setLayer(layer, layerOffset);
 

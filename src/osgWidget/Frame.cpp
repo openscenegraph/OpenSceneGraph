@@ -7,7 +7,8 @@
 
 namespace osgWidget {
 
-std::string Frame::cornerTypeToString(CornerType c) {
+std::string Frame::cornerTypeToString(CornerType c)
+{
     if(c == CORNER_LOWER_LEFT) return "CornerLowerLeft";
 
     else if(c == CORNER_LOWER_RIGHT) return "CornerLowerRight";
@@ -17,7 +18,8 @@ std::string Frame::cornerTypeToString(CornerType c) {
     else return "CornerUpperLeft";
 }
 
-std::string Frame::borderTypeToString(BorderType b) {
+std::string Frame::borderTypeToString(BorderType b)
+{
     if(b == BORDER_LEFT) return "BorderLeft";
 
     else if(b == BORDER_RIGHT) return "BorderRight";
@@ -29,22 +31,22 @@ std::string Frame::borderTypeToString(BorderType b) {
 
 Frame::Corner::Corner(CornerType corner, point_type width, point_type height):
 Widget  (cornerTypeToString(corner), width, height),
-_corner (corner) {
+_corner (corner)
+{
     setEventMask(EVENT_MASK_MOUSE_DRAG);
 }
 
 Frame::Corner::Corner(const Corner& corner, const osg::CopyOp& co):
 Widget  (corner, co),
-_corner (corner._corner) {
+_corner (corner._corner)
+{
 }
 
-void Frame::Corner::positioned() {
-}
+bool Frame::Corner::mouseDrag(double x, double y, WindowManager* wm)
+{
+    Frame* parent = dynamic_cast<Frame*>(getParent());
 
-bool Frame::Corner::mouseDrag(double x, double y, WindowManager* wm) {
-    Window* parent = getParent();
-
-    if(!parent) return false;
+    if(!parent || !parent->canResize()) return false;
 
     if(_corner == CORNER_UPPER_LEFT) {
         if(parent->resizeAdd(-x, y)) parent->addX(x);
@@ -67,20 +69,27 @@ bool Frame::Corner::mouseDrag(double x, double y, WindowManager* wm) {
 
 Frame::Border::Border(BorderType border, point_type width, point_type height):
 Widget  (borderTypeToString(border), width, height),
-_border (border) {
+_border (border)
+{
     setCanFill(true);
     setEventMask(EVENT_MASK_MOUSE_DRAG);
 }
 
 Frame::Border::Border(const Border& border, const osg::CopyOp& co):
 Widget  (border, co),
-_border (border._border) {
+_border (border._border) 
+{
 }
 
-void Frame::Border::positioned() {
+void Frame::Border::positioned()
+{
     osg::Image* image = _image();
 
     if(!image) return;
+
+    Frame* parent = dynamic_cast<Frame*>(getParent());
+
+    if(!parent || !parent->canTexture()) return;
 
     point_type w = image->s() / 8.0f;
     point_type h = getHeight();
@@ -113,21 +122,26 @@ void Frame::Border::positioned() {
     }
 }
 
-bool Frame::Border::mouseDrag(double x, double y, WindowManager* wm) {
-    Window* parent = getParent();
-
+bool Frame::Border::mouseDrag(double x, double y, WindowManager* wm)
+{
+    Frame* parent = dynamic_cast<Frame*>(getParent());
+    
     if(!parent) return false;
 
-    if(_border == BORDER_LEFT) {
-        if(parent->resizeAdd(-x, 0.0f)) parent->addX(x);
-    }
-
-    else if(_border == BORDER_RIGHT) parent->resizeAdd(x, 0.0f);
-
-    else if(_border == BORDER_TOP) parent->addOrigin(x, y);
+    if(_border == BORDER_TOP && parent->canMove()) parent->addOrigin(x, y);
 
     else {
-        if(parent->resizeAdd(0.0f, -y)) parent->addY(y);
+        if(!parent->canResize()) return false;
+
+        if(_border == BORDER_LEFT) {
+            if(parent->resizeAdd(-x, 0.0f)) parent->addX(x);
+        }
+
+        else if(_border == BORDER_RIGHT) parent->resizeAdd(x, 0.0f);
+
+        else {
+            if(parent->resizeAdd(0.0f, -y)) parent->addY(y);
+        }
     }
 
     parent->update();
@@ -135,23 +149,29 @@ bool Frame::Border::mouseDrag(double x, double y, WindowManager* wm) {
     return true;
 }
 
-Frame::Frame(const std::string& name):
-Table(name, 3, 3) {
+Frame::Frame(const std::string& name, unsigned int flags):
+Table  (name, 3, 3),
+_flags (flags)
+{
 }
 
 Frame::Frame(const Frame& frame, const osg::CopyOp& co):
-Table(frame, co) {
+Table(frame, co)
+{
 }
 
-Widget* Frame::_getCorner(CornerType c) const {
+Widget* Frame::_getCorner(CornerType c) const
+{
     return const_cast<Widget*>(getByName(cornerTypeToString(c)));
 }
 
-Widget* Frame::_getBorder(BorderType b) const {
+Widget* Frame::_getBorder(BorderType b) const
+{
     return const_cast<Widget*>(getByName(borderTypeToString(b)));
 }
 
-bool Frame::setWindow(Window* window) {
+bool Frame::setWindow(Window* window)
+{
     if(!window) return false;
 
     EmbeddedWindow* ew = getEmbeddedWindow();
@@ -274,6 +294,20 @@ Frame* Frame::createSimpleFrameWithSingleTexture(
     // frame->getEmbeddedWindow()->setTexCoordRegion(cw, ch, tw - (cw * 2.0f), th - (ch * 2.0f));
 
     return frame;
+}
+
+bool Frame::resizeFrame(point_type w, point_type h) {
+    Border* left   = getBorder(BORDER_LEFT);
+    Border* right  = getBorder(BORDER_RIGHT);
+    Border* top    = getBorder(BORDER_TOP);
+    Border* bottom = getBorder(BORDER_BOTTOM);
+
+    if(!left || !right || !top || !bottom) return false;
+
+    return resize(
+        left->getWidth() + right->getWidth() + w,
+        top->getHeight() + bottom->getHeight() + h
+    ); 
 }
 
 }

@@ -18,6 +18,41 @@
 
 namespace osgWidget {
 
+/*
+Lets take a moment and explain how Frame texturing works. When you create a Frame, you use
+a specially designed texture that is "chopped" up horizontally by the Frame code into 8 equal
+regions. Each region is then textured to a corresponding portion of the Frame, in the
+following order:
+
+        +---+---+---+---+---+---+---+---+
+        | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+        +---+---+---+---+---+---+---+---+
+
+        1. Upper-Left corner.
+        2. Top border (rotated 90 degrees CCW).
+        3. Upper-Right corner.
+        4. Left border.
+        5. Right border.
+        6. Bottom-Left corner.
+        7. Bottom border (rotated 90 degrees CCW).
+        8. Bottom-Right corner.
+
+Now, these should be pretty self-explanatory if you visualize a frame as a 3x3 "table"
+(which is exactly what it is), but note how regions 2 and 7 are rotated counter-clockwise.
+We do this for a VERY important reason: we want to enable texture repeat on the border
+regions, so that when the frame is resized the borders cleanly paint the texture over
+the entire are (and don't stretch it). However, it is impossible in OpenGL to repeat a
+sub-region of a texture without including either the vertical or horizontal bounds, so the
+artist is required to rotate the region during their rendering so that our code can properly
+rotate it back internally and have it repeat in the desired way.
+
+This method of texturing a Frame object is inspired by World of Warcraft "edge files", and it
+is both efficient and easy-to-use--once you understand the basics. If you're still confused,
+take a look at this URL, or any of the example themes:
+
+        http://www.wowwiki.com/EdgeFiles
+*/
+
 class OSGWIDGET_EXPORT Frame: public Table
 {
     public:
@@ -38,6 +73,13 @@ class OSGWIDGET_EXPORT Frame: public Table
             BORDER_BOTTOM
         };
 
+        enum FrameOptions
+        {
+            FRAME_RESIZE  = 1,
+            FRAME_MOVE    = 2,
+            FRAME_TEXTURE = 4
+        };
+
         static std::string cornerTypeToString (CornerType);
         static std::string borderTypeToString (BorderType);
 
@@ -49,23 +91,26 @@ class OSGWIDGET_EXPORT Frame: public Table
             Corner (CornerType = CORNER_LOWER_LEFT, point_type = 0.0f, point_type = 0.0f);
             Corner (const Corner&, const osg::CopyOp&);
 
-            virtual void positioned ();
-            virtual bool mouseDrag  (double, double, WindowManager*);
+            virtual bool mouseDrag(double, double, WindowManager*);
 
-            CornerType getCornerType() const {
+            CornerType getCornerType() const
+            {
                 return _corner;
             }
 
-            void setCornerType(CornerType corner) {
+            void setCornerType(CornerType corner)
+            {
                 _corner = corner;
             }
 
-            void setCornerTypeAndName(CornerType corner) {
+            void setCornerTypeAndName(CornerType corner)
+            {
                 _corner = corner;
                 _name   = cornerTypeToString(corner);
             }
             
         protected:
+
             CornerType _corner;
         };
 
@@ -80,15 +125,18 @@ class OSGWIDGET_EXPORT Frame: public Table
             virtual void positioned ();
             virtual bool mouseDrag  (double, double, WindowManager*);
 
-            BorderType getBorderType() const {
+            BorderType getBorderType() const
+            {
                 return _border;
             }
 
-            void setBorderType(BorderType border) {
+            void setBorderType(BorderType border)
+            {
                 _border = border;
             }
 
-            void setBorderTypeAndName(BorderType border) {
+            void setBorderTypeAndName(BorderType border)
+            {
                 _border = border;
                 _name   = borderTypeToString(border);
             }
@@ -96,12 +144,11 @@ class OSGWIDGET_EXPORT Frame: public Table
         protected:
         
             BorderType _border;
-
         };
 
         META_Object(osgWidget, Frame);
 
-        Frame (const std::string& = "");
+        Frame (const std::string& = "", unsigned int = 0);
         Frame (const Frame&, const osg::CopyOp&);
 
         static Frame* createSimpleFrame(
@@ -149,84 +196,42 @@ class OSGWIDGET_EXPORT Frame: public Table
 
         const Border* getBorder(BorderType b) const { return dynamic_cast<const Border*>(_getBorder(b)); }
 
+        // This method resizes the internal EmbeddedWindow object and then properly resizes
+        // the reset of the Frame based on the sizes of the Corners, Borders, etc.
+        bool resizeFrame(point_type, point_type);
+
+        unsigned int getFlags() const
+        {
+            return _flags;
+        }
+
+        void setFlags(unsigned int flags)
+        {
+            _flags = flags;
+        }
+
+        bool canResize() const
+        {
+            return (_flags & FRAME_RESIZE) != 0;
+        }
+
+        bool canMove() const
+        {
+            return (_flags & FRAME_MOVE) != 0;
+        }
+
+        bool canTexture() const
+        {
+            return (_flags & FRAME_TEXTURE) != 0;
+        }
+
     protected:
     
         Widget* _getCorner (CornerType) const;
         Widget* _getBorder (BorderType) const;
 
+        unsigned int _flags;
 };
-
-/*
-class OSGWIDGET_EXPORT TexturedFrame: public Frame
-{
-    public:
-    
-        class OSGWIDGET_EXPORT TexturedCorner: public Frame::Corner
-        {
-        public:
-            META_Object(osgWidget, TexturedCorner);
-
-            Corner (CornerType = CORNER_LOWER_LEFT, point_type = 0.0f, point_type = 0.0f);
-            Corner (const Corner&, const osg::CopyOp&);
-
-            virtual void positioned ();
-            virtual bool mouseDrag  (double, double, WindowManager*);
-
-            CornerType getCornerType() const {
-                return _corner;
-            }
-
-            void setCornerType(CornerType corner) {
-                _corner = corner;
-            }
-
-            void setCornerTypeAndName(CornerType corner) {
-                _corner = corner;
-                _name   = cornerTypeToString(corner);
-            }
-            
-        protected:
-            CornerType _corner;
-        };
-
-        class OSGWIDGET_EXPORT TexturedBorder: public Frame::Border
-        {
-        public:
-            META_Object   (osgWidget, Border);
-
-            Border (BorderType = BORDER_LEFT, point_type = 0.0f, point_type = 0.0f);
-            Border (const Border&, const osg::CopyOp&);
-
-            virtual void positioned ();
-            virtual bool mouseDrag  (double, double, WindowManager*);
-
-            BorderType getBorderType() const {
-                return _border;
-            }
-
-            void setBorderType(BorderType border) {
-                _border = border;
-            }
-
-            void setBorderTypeAndName(BorderType border) {
-                _border = border;
-                _name   = borderTypeToString(border);
-            }
-            
-        protected:
-        
-            BorderType _border;
-
-        };
-
-        META_Object   (osgWidget, Frame);
-
-        Frame (const std::string& = "");
-        Frame (const Frame&, const osg::CopyOp&);
-
-        virtual void managed(WindowManager*);
-};
-*/
 
 }
 

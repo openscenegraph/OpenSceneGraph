@@ -1,0 +1,240 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_TIMELINE_H
+#define OSGANIMATION_TIMELINE_H
+
+#include <osg/Object>
+#include <map>
+#include <vector>
+#include <cmath>
+#include <iostream>
+
+namespace osgAnimation
+{
+
+    class Timeline;
+    class TimelineCallback : public virtual osg::Object
+    {
+    public:
+
+        TimelineCallback(){}
+        TimelineCallback(const TimelineCallback& nc,const osg::CopyOp&) {}
+        
+        META_Object(osgAnimation,TimelineCallback);
+        
+        virtual void operator()(Timeline* timeline)
+        { 
+        }
+
+    };
+
+    class RunTimeline : public TimelineCallback
+    {
+    protected:
+        osg::ref_ptr<Timeline> _tm;
+    public:
+        RunTimeline(Timeline* tm) : _tm(tm) {}
+        virtual void operator()(Timeline* timeline);
+    };
+
+
+    class Timeline : public osg::Object
+    {
+    protected:
+        osg::ref_ptr<TimelineCallback> _newframe;
+
+        typedef std::map<unsigned int, osg::ref_ptr<TimelineCallback> > Frames;
+        typedef std::vector<osg::ref_ptr<Timeline> > TimelineList;
+
+
+        Frames _frames;
+        TimelineList _children;
+
+        double _lastUpdate;
+        double _speed;
+        unsigned int _currentFrame;
+        unsigned int _fps;
+        unsigned int _numberFrame;
+        unsigned int _previousFrameEvaluated;
+        bool _loop;
+        bool _initFirstFrame;
+
+        enum State
+        {
+            Play,
+            Stop,
+        };
+        
+        State _state;
+
+    public:
+        META_Object(osgAnimation, Timeline);
+        Timeline()
+        {
+            _lastUpdate = 0;
+            _currentFrame = 0;
+            _numberFrame = 25;
+            _fps = 25;
+            _speed = 1.0;
+            _loop = false;
+            _state = Stop;
+            _initFirstFrame = false;
+            _previousFrameEvaluated = 0; 
+        }
+
+        Timeline(const Timeline& nc,const osg::CopyOp&) {}
+
+        virtual void setNewFrameCallback(TimelineCallback* frame)
+        {
+            _newframe = frame;
+        }
+
+        virtual void addChild(Timeline* tl)
+        {
+            _children.push_back(tl);
+        }
+
+        virtual void play()
+        {
+            _state = Play;
+        }
+
+        virtual void gotoFrame(unsigned int frame)
+        {
+            _currentFrame = frame;
+        }
+        virtual void setNumFrames(unsigned int numFrames)
+        {
+            _numberFrame = numFrames;
+        }
+
+        virtual void stop()
+        {
+            _state = Stop;
+        }
+
+
+        void updateChildren(double currentTime)
+        {
+            for (unsigned int i = 0; i < _children.size(); i++)
+            {
+                _children[i]->update(currentTime);
+            }
+        }
+
+        void setFrameEvent(unsigned int frame, TimelineCallback* event)
+        {
+            _frames[frame] = event;
+        }
+
+        unsigned int getNumFrames()
+        {
+            return _numberFrame;
+        }
+
+        unsigned int getCurrentFrame()
+        {
+            return _currentFrame;
+        }
+
+        double getCurrentTime()
+        {
+            return _currentFrame * 1.0 / _fps;
+        }
+
+        double getDuration()
+        {
+            return _numberFrame * 1.0 / _fps;
+        }
+
+        State getStatus() const
+        {
+            return _state;
+        }
+
+
+        virtual void nextFrame()
+        {
+            _currentFrame++;
+            if (_currentFrame > _numberFrame - 1)
+            { 
+                if (_loop)
+                    _currentFrame = _currentFrame % _numberFrame;
+                else
+                    _currentFrame = _numberFrame - 1;
+            }
+        }
+
+        virtual void prevFrame()
+        {
+            if (!_currentFrame)
+            {
+                if (_loop)
+                    _currentFrame = _numberFrame - 1;
+            }
+            else
+                _currentFrame--;
+        }
+
+        virtual void evaluate(unsigned int frame)
+        {
+            if (frame != _previousFrameEvaluated)
+                if (_newframe.valid())
+                    (*_newframe)(this);
+
+            // check if we have something to do for this frame
+            Frames::iterator it = _frames.find(frame);
+            if (it != _frames.end() && it->second.valid())
+            {
+                (*it->second.get())(this);
+            }
+            _previousFrameEvaluated = frame;
+        }
+
+        virtual void update(double simulationTime)
+        {
+            // first time we call update we generate one frame
+            if (!_initFirstFrame)
+            {
+                _lastUpdate = simulationTime;
+                _initFirstFrame = true;
+                evaluate(_currentFrame);
+                updateChildren(_lastUpdate);
+            }
+
+            // find the number of frame pass since the last update
+            double delta = (simulationTime - _lastUpdate);
+            double nbframes = delta * _fps * _speed;
+            unsigned int nb = static_cast<unsigned int>(floor(nbframes));
+
+            for (unsigned int i = 0; i < nb; i++)
+            {
+                if (_state == Play)
+                    nextFrame();
+                std::cout << "simulationTime " << simulationTime << " frame " << _currentFrame << std::endl;
+                evaluate(_currentFrame);
+                updateChildren(_lastUpdate + (1 + i) * 1.0 /_fps );
+            }
+            if (nb)
+            {
+                _lastUpdate += ((double)nb) / _fps;
+            }
+            updateChildren(simulationTime);
+        }
+    };
+
+}
+
+#endif

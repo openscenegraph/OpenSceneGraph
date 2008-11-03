@@ -1,0 +1,43 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_SKELETON_H
+#define OSGANIMATION_SKELETON_H
+
+#include <osg/MatrixTransform>
+#include <osgAnimation/Bone>
+
+namespace osgAnimation 
+{
+
+    class Skeleton : public Bone
+    {
+    public:
+        META_Node(osgAnimation, Skeleton);
+
+        struct UpdateCallback : public osg::NodeCallback
+        {
+            virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
+        };
+
+        Skeleton(const Skeleton& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : Bone(b,copyop) {}
+        Skeleton();
+
+        void computeBindMatrix() { _invBindInSkeletonSpace = osg::Matrix::inverse(_bindInBoneSpace); }
+
+    };
+
+}
+
+#endif

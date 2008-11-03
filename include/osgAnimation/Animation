@@ -1,0 +1,87 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_ANIMATION_H
+#define OSGANIMATION_ANIMATION_H
+
+#include <osg/Object>
+#include <osgAnimation/Channel>
+#include <osg/ref_ptr>
+#include <vector>
+#include <map>
+
+namespace osgAnimation
+{
+
+    class Animation : public osg::Object
+    {
+    public:
+        META_Object(osgAnimation, Animation)
+
+        Animation() : _duration(0), _ratio(1), _weight(0), _startTime(0), _playmode(LOOP) {}
+        Animation(const osgAnimation::Animation& anim, const osg::CopyOp&);
+
+        enum PlayMode
+        {
+            ONCE,
+            STAY,
+            LOOP,
+            PPONG
+        };
+
+        // addChannel insert the channel and call the computeDuration function
+        void addChannel (Channel* pChannel);
+
+        // return the channels list, if you change data inside becareful to call 
+        // computeDuration if needed
+        ChannelList& getChannels();
+        const ChannelList& getChannels() const;
+
+        float getDuration() const;
+        void computeDuration();
+
+        float getRatio() const;
+        void setRatio (float ratio);
+
+        float getWeight() const;
+        void setWeight (float weight);
+
+        bool update (float time);
+        void resetTargets();
+
+        void setPlaymode (PlayMode mode) { _playmode = mode; }
+        void setStartTime(float time)  { _startTime = time;}
+        float getStartTime() const { return _startTime;}
+
+    protected:
+
+        ~Animation() {}
+  
+        std::string _name;
+        float _duration;
+        float _ratio;
+        float _weight;
+        float _startTime;
+        PlayMode _playmode;
+        ChannelList _channels;
+
+    };
+
+    typedef std::vector<osg::ref_ptr<osgAnimation::Animation> > AnimationList;
+    typedef std::map<std::string, osg::ref_ptr<osgAnimation::Animation> > AnimationMap;
+
+
+}
+
+#endif

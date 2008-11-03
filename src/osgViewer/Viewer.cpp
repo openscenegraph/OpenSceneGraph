@@ -804,26 +804,6 @@ void Viewer::eventTraversal()
         
     if (_done) return;
 
-    for(osgGA::EventQueue::Events::iterator itr = events.begin();
-        itr != events.end();
-        ++itr)
-    {
-        osgGA::GUIEventAdapter* event = itr->get();
-
-        for(EventHandlers::iterator hitr = _eventHandlers.begin();
-            hitr != _eventHandlers.end();
-            ++hitr)
-        {
-            (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this, 0, 0);
-        }
-
-        if (_cameraManipulator.valid())
-        {
-            _cameraManipulator->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this);
-        }
-        
-    }
-
     if (_eventVisitor.valid() && getSceneData())
     {
         _eventVisitor->setFrameStamp(getFrameStamp());
@@ -858,6 +838,33 @@ void Viewer::eventTraversal()
         }
     }
 
+
+    for(osgGA::EventQueue::Events::iterator itr = events.begin();
+        itr != events.end();
+        ++itr)
+    {
+        osgGA::GUIEventAdapter* event = itr->get();
+
+        for(EventHandlers::iterator hitr = _eventHandlers.begin();
+            hitr != _eventHandlers.end();
+            ++hitr)
+        {
+            (*hitr)->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this, 0, 0);
+        }
+        
+    }
+
+    for(osgGA::EventQueue::Events::iterator itr = events.begin();
+        itr != events.end();
+        ++itr)
+    {
+        osgGA::GUIEventAdapter* event = itr->get();
+        if (_cameraManipulator.valid())
+        {
+            _cameraManipulator->handleWithCheckAgainstIgnoreHandledEventsMask( *event, *this);
+        }
+    }
+    
     if (getStats() && getStats()->collectStats("event"))
     {
         double endEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());

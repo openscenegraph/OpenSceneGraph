@@ -309,6 +309,14 @@ class OSG_EXPORT Image : public Object
        
         virtual void update(NodeVisitor* nv) {}
         
+
+        /** method for sending pointer events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.*/
+        virtual void sendPointerEvent(int x, int y, int buttonMask) {};
+
+        /** method for sending key events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.*/
+        virtual void sendKeyEvent(int key, bool keyDown) {};
+
+
     protected :
 
         virtual ~Image();

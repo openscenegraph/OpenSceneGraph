@@ -1981,10 +1981,12 @@ int main( int argc, char **argv )
         images.push_back(readRaw(sizeX, sizeY, sizeZ, numberBytesPerComponent, numberOfComponents, endian, raw_filename));
     }
 
-    while (arguments.read("--images")) 
+    int images_pos = arguments.find("--images");
+    if (images_pos>=0)
     {
         ImageList imageList;
-        for(int pos=1;pos<arguments.argc() && !arguments.isOption(pos);++pos)
+        int pos=images_pos+1;
+        for(;pos<arguments.argc() && !arguments.isOption(pos);++pos)
         {
             // not an option so assume string is a filename.
             osg::Image *image = osgDB::readImageFile( arguments[pos]);
@@ -1994,6 +1996,8 @@ int main( int argc, char **argv )
                 imageList.push_back(image);
             }
         }
+        
+        arguments.remove(images_pos, pos-images_pos);
         
         // pack the textures into a single texture.
         ProcessRow processRow;

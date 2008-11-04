@@ -39,6 +39,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <memory>
+
 class ReaderWriterDICOM : public osgDB::ReaderWriter
 {
     public:

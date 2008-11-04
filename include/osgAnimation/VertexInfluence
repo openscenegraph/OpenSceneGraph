@@ -16,6 +16,7 @@
 #define OSGANIMATION_VERTEX_INFLUENCES_H
 
 #include <osg/Object>
+#include <osgAnimation/Export>
 #include <map>
 #include <vector>
 #include <string>
@@ -26,7 +27,7 @@ namespace osgAnimation
     // first is vertex index, and second the weight, the
     typedef std::pair<int, float> VertexIndexWeight;
     typedef std::vector<VertexIndexWeight> VertexList;
-    class VertexInfluence : public VertexList
+    class OSGANIMATION_EXPORT VertexInfluence : public VertexList
     {
     public:
         const std::string& getName() const { return _name;}

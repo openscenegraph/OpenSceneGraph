@@ -16,6 +16,7 @@
 #define OSGANIMATION_ANIMATION_H
 
 #include <osg/Object>
+#include <osgAnimation/Export>
 #include <osgAnimation/Channel>
 #include <osg/ref_ptr>
 #include <vector>
@@ -24,7 +25,7 @@
 namespace osgAnimation
 {
 
-    class Animation : public osg::Object
+    class OSGANIMATION_EXPORT Animation : public osg::Object
     {
     public:
         META_Object(osgAnimation, Animation)

@@ -22,13 +22,14 @@
 #include <osg/Vec2>
 #include <osg/Vec4>
 #include <osg/Referenced>
+#include <osgAnimation/Export>
 
 namespace osgAnimation 
 {
 
     class Channel;
 
-    class Target : public osg::Referenced
+    class OSGANIMATION_EXPORT Target : public osg::Referenced
     {
     public:
             

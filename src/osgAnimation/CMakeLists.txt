@@ -10,6 +10,7 @@ SET(LIB_NAME osgAnimation)
 
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
+	${HEADER_PATH}/Export
 	${HEADER_PATH}/Bone
 	${HEADER_PATH}/Skeleton
 	${HEADER_PATH}/Channel

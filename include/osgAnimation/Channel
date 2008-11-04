@@ -15,6 +15,7 @@
 #ifndef OSGANIMATION_CHANNEL_H
 #define OSGANIMATION_CHANNEL_H
 
+#include <osgAnimation/Export>
 #include <osgAnimation/Sampler>
 #include <osgAnimation/Target>
 #include <osgAnimation/Assert>
@@ -24,7 +25,7 @@
 namespace osgAnimation
 {
 
-    class Channel : public osg::Referenced
+    class OSGANIMATION_EXPORT Channel : public osg::Referenced
     {
     public:
 

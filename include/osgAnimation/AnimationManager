@@ -17,11 +17,12 @@
 
 #include <osg/Group>
 #include <osgAnimation/Animation>
+#include <osgAnimation/Export>
 
 namespace osgAnimation
 {
 
-    class AnimationManager : public osg::Group
+    class OSGANIMATION_EXPORT AnimationManager : public osg::Group
     {
     public:
 

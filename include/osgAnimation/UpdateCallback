@@ -19,11 +19,12 @@
 #include <osg/NodeCallback>
 #include <osg/observer_ptr>
 #include <osgAnimation/AnimationManager>
+#include <osgAnimation/Export>
 
 namespace osgAnimation 
 {
 
-    class AnimationUpdateCallback : public osg::NodeCallback
+    class OSGANIMATION_EXPORT AnimationUpdateCallback : public osg::NodeCallback
     {
     protected:
         osg::observer_ptr<osgAnimation::AnimationManager> _manager;
@@ -39,7 +40,7 @@ namespace osgAnimation
     };
   
 
-    class UpdateTransform : public AnimationUpdateCallback
+    class OSGANIMATION_EXPORT UpdateTransform : public AnimationUpdateCallback
     {
     protected:
         osg::ref_ptr<osgAnimation::Vec3Target> _euler;

@@ -19,7 +19,7 @@
  * @return One of the following values:
  *         \li a pointer to the core keyframe
  *         \li \b 0 if an error happened
- * Autors
+ * Authors
  *         Igor Kravchenko
  *         Cedric Pinson <mornifle@plopbyte.net>
  *****************************************************************************/
@@ -28,7 +28,6 @@
 #ifndef OSGANIMATION_PACKED_H
 #define OSGANIMATION_PACKED_H
 
-#include <stdint.h>
 #include <float.h>
 #include <vector>
 #include <osg/Vec3>
@@ -40,6 +39,7 @@ namespace osgAnimation
 
     struct Vec3Packed
     {
+        typedef unsigned int uint32_t;
         uint32_t m32bits;
         Vec3Packed(uint32_t val): m32bits(val) {}
         Vec3Packed(): m32bits(0) {}
@@ -57,10 +57,10 @@ namespace osgAnimation
     
         void compress(const osg::Vec3f& src, const osg::Vec3f& min, const osg::Vec3f& scaleInv) 
         {
-            int32_t srci[3];
-            srci[0] = osg::minimum(static_cast<int32_t>(((src[0] - min[0] )*scaleInv[0])), 2047);
-            srci[1] = osg::minimum(static_cast<int32_t>(((src[1] - min[1] )*scaleInv[1])), 2047);
-            srci[2] = osg::minimum(static_cast<int32_t>(((src[2] - min[2] )*scaleInv[2])), 1023);
+            uint32_t srci[3];
+            srci[0] = osg::minimum(static_cast<uint32_t>(((src[0] - min[0] )*scaleInv[0])), uint32_t(2047));
+            srci[1] = osg::minimum(static_cast<uint32_t>(((src[1] - min[1] )*scaleInv[1])), uint32_t(2047));
+            srci[2] = osg::minimum(static_cast<uint32_t>(((src[2] - min[2] )*scaleInv[2])), uint32_t(1023));
             m32bits = srci[0] + (srci[1] << 11) + (srci[2] << 22);
         }
     };

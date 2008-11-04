@@ -15,6 +15,7 @@
 #ifndef OSGANIMATION_RIGGEOMETRY_H
 #define OSGANIMATION_RIGGEOMETRY_H
 
+#include <osgAnimation/Export>
 #include <osgAnimation/Skinning>
 #include <osgAnimation/Skeleton>
 #include <osg/Geometry>
@@ -22,7 +23,7 @@
 namespace osgAnimation 
 {
 
-    class RigGeometry : public osg::Geometry
+    class OSGANIMATION_EXPORT RigGeometry : public osg::Geometry
     {
     public:
 

@@ -17,11 +17,12 @@
 
 #include <osg/MatrixTransform>
 #include <osgAnimation/Bone>
+#include <osgAnimation/Export>
 
 namespace osgAnimation 
 {
 
-    class Skeleton : public Bone
+    class OSGANIMATION_EXPORT Skeleton : public Bone
     {
     public:
         META_Node(osgAnimation, Skeleton);

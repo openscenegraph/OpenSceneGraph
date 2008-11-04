@@ -23,6 +23,7 @@
 #include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/io_utils>
+#include <osgAnimation/Export>
 #include <osgAnimation/Target>
 #include <osgAnimation/Sampler>
 #include <osgAnimation/Channel>
@@ -59,7 +60,7 @@ namespace osgAnimation
 
     // A bone can't have more than one parent Bone, so sharing a part of Bone's hierarchy
     // has not sense. You can share the entire hierarchie but not only a part of
-    class Bone : public osg::Transform
+    class OSGANIMATION_EXPORT Bone : public osg::Transform
     {
     public:
         typedef osg::ref_ptr<Bone> PointerType;

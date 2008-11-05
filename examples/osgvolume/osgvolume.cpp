@@ -1570,7 +1570,8 @@ enum ColourSpaceOperation
     NO_COLOUR_SPACE_OPERATION,
     MODULATE_ALPHA_BY_LUMINANCE,
     MODULATE_ALPHA_BY_COLOUR,
-    REPLACE_ALPHA_WITH_LUMINACE
+    REPLACE_ALPHA_WITH_LUMINANACE,
+    REPLACE_RGB_WITH_LUMINANCE
 };
 
 struct ModulateAlphaByLuminanceOperator
@@ -1609,24 +1610,39 @@ struct ReplaceAlphaWithLuminanceOperator
     inline void rgba(float& r,float& g,float& b,float& a) const { float l = (r+g+b)*0.3333333; a = l; }
 };
 
-void doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, osg::Vec4& colour)
+osg::Image* doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, osg::Vec4& colour)
 {
     switch(op)
     {
         case (MODULATE_ALPHA_BY_LUMINANCE):
+        {
             std::cout<<"doing conversion MODULATE_ALPHA_BY_LUMINANCE"<<std::endl;
             osgVolume::modifyImage(image,ModulateAlphaByLuminanceOperator()); 
-            break;
+            return image;
+        }
         case (MODULATE_ALPHA_BY_COLOUR):
+        {
             std::cout<<"doing conversion MODULATE_ALPHA_BY_COLOUR"<<std::endl;
             osgVolume::modifyImage(image,ModulateAlphaByColourOperator(colour)); 
-            break;
-        case (REPLACE_ALPHA_WITH_LUMINACE):
-            std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINACE"<<std::endl;
+            return image;
+        }
+        case (REPLACE_ALPHA_WITH_LUMINANACE):
+        {
+            std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINANACE"<<std::endl;
             osgVolume::modifyImage(image,ReplaceAlphaWithLuminanceOperator()); 
-            break;
+            return image;
+        }
+        case (REPLACE_RGB_WITH_LUMINANCE):
+        {
+            std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINANACE"<<std::endl;
+            osg::Image* newImage = new osg::Image;
+            newImage->allocateImage(image->s(), image->t(), image->r(), GL_LUMINANCE, image->getDataType());
+            osgVolume::copyImage(image, 0, 0, 0, image->s(), image->t(), image->r(),
+                                 newImage, 0, 0, 0, false);
+            return newImage;
+        }
         default:
-            break;
+            return image;
     }
 }
 
@@ -1898,7 +1914,8 @@ int main( int argc, char **argv )
     osg::Vec4 colourModulate(0.25f,0.25f,0.25f,0.25f);
     while(arguments.read("--modulate-alpha-by-luminance")) { colourSpaceOperation = MODULATE_ALPHA_BY_LUMINANCE; }
     while(arguments.read("--modulate-alpha-by-colour", colourModulate.x(),colourModulate.y(),colourModulate.z(),colourModulate.w() )) { colourSpaceOperation = MODULATE_ALPHA_BY_COLOUR; }
-    while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = REPLACE_ALPHA_WITH_LUMINACE; }
+    while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = REPLACE_ALPHA_WITH_LUMINANACE; }
+    while(arguments.read("--replace-rgb-with-luminance")) { colourSpaceOperation = REPLACE_RGB_WITH_LUMINANCE; }
         
     bool resizeToPowerOfTwo = false;
     
@@ -2160,7 +2177,7 @@ int main( int argc, char **argv )
             itr != images.end();
             ++itr)
         {        
-            doColourSpaceConversion(colourSpaceOperation, itr->get(), colourModulate);
+            (*itr) = doColourSpaceConversion(colourSpaceOperation, itr->get(), colourModulate);
         }
     }
     

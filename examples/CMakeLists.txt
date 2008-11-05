@@ -168,6 +168,11 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgwidgetwindow)
     ENDIF(BUILD_OSGWIDGET)
 
+    IF   (BUILD_OSGANIMATION)
+        ADD_SUBDIRECTORY(osganimationnode)
+        ADD_SUBDIRECTORY(osganimationskinning)
+        ADD_SUBDIRECTORY(osganimationsolid)
+    ENDIF   (BUILD_OSGANIMATION)
 
     #ADD_SUBDIRECTORY(osgcegui)
     #to add subject to find socket#ADD_SUBDIRECTORY(osgcluster)

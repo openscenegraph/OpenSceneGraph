@@ -170,6 +170,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
 
     IF   (BUILD_OSGANIMATION)
         ADD_SUBDIRECTORY(osganimationnode)
+        ADD_SUBDIRECTORY(osganimationmakepath)
         ADD_SUBDIRECTORY(osganimationskinning)
         ADD_SUBDIRECTORY(osganimationsolid)
         ADD_SUBDIRECTORY(osganimationviewer)

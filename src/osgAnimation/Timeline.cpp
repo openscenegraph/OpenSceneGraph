@@ -16,7 +16,7 @@
 
 using namespace osgAnimation;
 
-void RunTimeline::RunTimeline::operator()(Timeline* timeline)
+void RunTimeline::operator()(Timeline* timeline)
 {
     timeline->addChild(_tm.get());
     _tm->play();

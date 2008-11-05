@@ -98,7 +98,7 @@ int main (int argc, char* argv[])
 
     osgAnimation::Vec3LinearChannel* channelAnimation2 = new osgAnimation::Vec3LinearChannel;
     channelAnimation2->setTargetName("AnimatedCallback");
-    channelAnimation2->setName("rotation");
+    channelAnimation2->setName("euler");
     channelAnimation2->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(0, osg::Vec3(0,0,0)));
     channelAnimation2->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(1.5, osg::Vec3(2*osg::PI,0,0)));
     osgAnimation::Animation* anim2 = new osgAnimation::Animation;
@@ -109,9 +109,6 @@ int main (int argc, char* argv[])
     // We register all animation inside the scheduler
     mng->registerAnimation(anim1);
     mng->registerAnimation(anim2);
-
-    // let's start !
-    mng->initTimer();
 
     mng->playAnimation(anim1);
     mng->playAnimation(anim2);

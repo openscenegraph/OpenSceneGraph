@@ -220,7 +220,6 @@ int main (int argc, char* argv[])
     manager->buildTargetReference();
   
     // let's start !
-    manager->initTimer();
     manager->playAnimation(anim);
 
     // we will use local data from the skeleton

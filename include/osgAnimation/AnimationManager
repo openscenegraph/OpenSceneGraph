@@ -18,6 +18,7 @@
 #include <osg/Group>
 #include <osgAnimation/Animation>
 #include <osgAnimation/Export>
+#include <osg/FrameStamp>
 
 namespace osgAnimation
 {
@@ -35,8 +36,9 @@ namespace osgAnimation
                 if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
                 {
                     AnimationManager* b = dynamic_cast<AnimationManager*>(node);
-                    if (b) {
-                        if (b->needToLink()) 
+                    if (b) 
+                    {
+                        if (b->needToLink())
                         {
                             /** manager need to link, it means that an animation has been added
                                 so we need to relink all item animated with all animations.
@@ -47,7 +49,8 @@ namespace osgAnimation
                             */
                             b->link();
                         }
-                        b->update();
+                        const osg::FrameStamp* fs = nv->getFrameStamp();
+                        b->update(fs->getSimulationTime());
                     }
                 }
                 traverse(node,nv);
@@ -61,9 +64,7 @@ namespace osgAnimation
             osg::Group(b,copyop) {}
         virtual ~AnimationManager();
 
-        void initTimer();
-        void update ();
-        void update (float time);
+        void update (double time);
         void buildTargetReference();
         void registerAnimation (Animation* pAnimation);
         void playAnimation (Animation* pAnimation, float weight = 1.0);
@@ -87,7 +88,7 @@ namespace osgAnimation
         bool _needToLink;
 
         // clock
-        float _lastUpdate;
+        double _lastUpdate;
     };
 
 }

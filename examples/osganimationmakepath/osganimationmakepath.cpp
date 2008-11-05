@@ -1,22 +1,19 @@
-/* -*-c++-*- 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
-
-Authors:
-
-	Jeremy Moles  <jeremy@emperorlinux.com>
-	Cedric Pinson <mornifle@plopbyte.net>
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+ *
+ *  Authors:
+ *   Jeremy Moles  <jeremy@emperorlinux.com>
+ *   Cedric Pinson <mornifle@plopbyte.net>
 */
 
 #include <iostream>
@@ -29,16 +26,16 @@ Authors:
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 #include <osgGA/TrackballManipulator>
-#include <osgATK/Sampler>
+#include <osgAnimation/Sampler>
 
   class AnimtkUpdateCallback : public osg::NodeCallback
   {
   public:
-      META_Object(osgATK, AnimtkUpdateCallback);
+      META_Object(osgAnimation, AnimtkUpdateCallback);
 
       AnimtkUpdateCallback() 
       {
-          _sampler = new osgATK::Vec3CubicBezierSampler;
+          _sampler = new osgAnimation::Vec3CubicBezierSampler;
           _playing = false;
           _lastUpdate = 0;
       }
@@ -87,7 +84,7 @@ Authors:
       void start() { _startTime = osg::Timer::instance()->tick(); _currentTime = _startTime; _playing = true;}
       void stop() { _currentTime = _startTime; _playing = false;}
 
-      osg::ref_ptr<osgATK::Vec3CubicBezierSampler> _sampler;
+      osg::ref_ptr<osgAnimation::Vec3CubicBezierSampler> _sampler;
       osg::Timer_t _startTime;
       osg::Timer_t _currentTime;
       bool _playing;
@@ -98,11 +95,11 @@ Authors:
 class AnimtkStateSetUpdateCallback : public osg::StateSet::Callback
 {
 public:
-    META_Object(osgATK, AnimtkStateSetUpdateCallback);
+    META_Object(osgAnimation, AnimtkStateSetUpdateCallback);
 
     AnimtkStateSetUpdateCallback() 
     {
-        _sampler = new osgATK::Vec4LinearSampler;
+        _sampler = new osgAnimation::Vec4LinearSampler;
         _playing = false;
         _lastUpdate = 0;
     }
@@ -149,7 +146,7 @@ public:
     void start() { _startTime = osg::Timer::instance()->tick(); _currentTime = _startTime; _playing = true;}
     void stop() { _currentTime = _startTime; _playing = false;}
 
-    osg::ref_ptr<osgATK::Vec4LinearSampler> _sampler;
+    osg::ref_ptr<osgAnimation::Vec4LinearSampler> _sampler;
     osg::Timer_t _startTime;
     osg::Timer_t _currentTime;
     bool _playing;
@@ -242,13 +239,13 @@ osg::StateSet* setupStateSet()
     st->setMode(GL_BLEND, true);
 	
     AnimtkStateSetUpdateCallback* callback = new AnimtkStateSetUpdateCallback();
-    osgATK::Vec4KeyframeContainer* keys = callback->_sampler->getOrCreateKeyframeContainer();
-    keys->push_back(osgATK::Vec4Keyframe(0, osg::Vec4(1,0,0,1)));
-    keys->push_back(osgATK::Vec4Keyframe(2, osg::Vec4(0.,1,0,1)));
-    keys->push_back(osgATK::Vec4Keyframe(4, osg::Vec4(0,0,1,1)));
-    keys->push_back(osgATK::Vec4Keyframe(6, osg::Vec4(0,0,1,1)));
-    keys->push_back(osgATK::Vec4Keyframe(8, osg::Vec4(0,1,0,1)));
-    keys->push_back(osgATK::Vec4Keyframe(10, osg::Vec4(1,0,0,1)));
+    osgAnimation::Vec4KeyframeContainer* keys = callback->_sampler->getOrCreateKeyframeContainer();
+    keys->push_back(osgAnimation::Vec4Keyframe(0, osg::Vec4(1,0,0,1)));
+    keys->push_back(osgAnimation::Vec4Keyframe(2, osg::Vec4(0.,1,0,1)));
+    keys->push_back(osgAnimation::Vec4Keyframe(4, osg::Vec4(0,0,1,1)));
+    keys->push_back(osgAnimation::Vec4Keyframe(6, osg::Vec4(0,0,1,1)));
+    keys->push_back(osgAnimation::Vec4Keyframe(8, osg::Vec4(0,1,0,1)));
+    keys->push_back(osgAnimation::Vec4Keyframe(10, osg::Vec4(1,0,0,1)));
     callback->start();
     st->setUpdateCallback(callback);
 	
@@ -267,33 +264,33 @@ osg::MatrixTransform* setupAnimtkNode(osg::Geode* staticGeode)
 
     osg::MatrixTransform* node = new osg::MatrixTransform();
     AnimtkUpdateCallback* callback = new MakePathDistanceCallback(staticGeode);
-    osgATK::Vec3CubicBezierKeyframeContainer* keys = callback->_sampler->getOrCreateKeyframeContainer();
+    osgAnimation::Vec3CubicBezierKeyframeContainer* keys = callback->_sampler->getOrCreateKeyframeContainer();
 
-    keys->push_back(osgATK::Vec3CubicBezierKeyframe(0, osgATK::Vec3CubicBezier(
+    keys->push_back(osgAnimation::Vec3CubicBezierKeyframe(0, osgAnimation::Vec3CubicBezier(
                                                         v[0],
                                                         v[0] + (v[0] - v[3]),
                                                         v[1] - (v[1] - v[0])
                                                         )));
 
-    keys->push_back(osgATK::Vec3CubicBezierKeyframe(2, osgATK::Vec3CubicBezier(
+    keys->push_back(osgAnimation::Vec3CubicBezierKeyframe(2, osgAnimation::Vec3CubicBezier(
                                                         v[1],
                                                         v[1] + (v[1] - v[0]),
                                                         v[2] - (v[2] - v[1])
                                                         )));
 
-    keys->push_back(osgATK::Vec3CubicBezierKeyframe(4, osgATK::Vec3CubicBezier(
+    keys->push_back(osgAnimation::Vec3CubicBezierKeyframe(4, osgAnimation::Vec3CubicBezier(
                                                         v[2],
                                                         v[2] + (v[2] - v[1]),
                                                         v[3] - (v[3] - v[2])
                                                         )));
 
-    keys->push_back(osgATK::Vec3CubicBezierKeyframe(6, osgATK::Vec3CubicBezier(
+    keys->push_back(osgAnimation::Vec3CubicBezierKeyframe(6, osgAnimation::Vec3CubicBezier(
                                                         v[3],
                                                         v[3] + (v[3] - v[2]),
                                                         v[4] - (v[4] - v[3])
                                                         )));
 
-    keys->push_back(osgATK::Vec3CubicBezierKeyframe(8, osgATK::Vec3CubicBezier(
+    keys->push_back(osgAnimation::Vec3CubicBezierKeyframe(8, osgAnimation::Vec3CubicBezier(
                                                         v[4],
                                                         v[4] + (v[4] - v[3]),
                                                         v[0] - (v[0] - v[4])

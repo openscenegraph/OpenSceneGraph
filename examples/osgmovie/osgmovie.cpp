@@ -39,7 +39,6 @@
 
 #include <iostream>
 
-osg::ImageStream* s_imageStream = 0;
 class MovieEventHandler : public osgGA::GUIEventHandler
 {
 public:
@@ -105,7 +104,6 @@ protected:
             if (imagestream)
             {
                 _imageStreamList.push_back(imagestream); 
-                s_imageStream = imagestream;
             }
         }
         

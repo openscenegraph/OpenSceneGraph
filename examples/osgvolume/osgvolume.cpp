@@ -1796,9 +1796,13 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt1","Enable the usage of S3TC DXT1 compressed textures.");
     arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt3","Enable the usage of S3TC DXT3 compressed textures.");
     arguments.getApplicationUsage()->addCommandLineOption("--compressed-dxt5","Enable the usage of S3TC DXT5 compressed textures.");
-    arguments.getApplicationUsage()->addCommandLineOption("--modulate-alpha-by-luminance","For each pixel multiple the alpha value by the luminance.");
-    arguments.getApplicationUsage()->addCommandLineOption("--replace-alpha-with-luminance","For each pixel mSet the alpha value to the luminance.");
+    arguments.getApplicationUsage()->addCommandLineOption("--modulate-alpha-by-luminance","For each pixel multiply the alpha value by the luminance.");
+    arguments.getApplicationUsage()->addCommandLineOption("--replace-alpha-with-luminance","For each pixel set the alpha value to the luminance.");
+    arguments.getApplicationUsage()->addCommandLineOption("--replace-rgb-with-luminance","For each rgb pixel convert to the luminance.");
     arguments.getApplicationUsage()->addCommandLineOption("--num-components <num>","Set the number of components to in he target image.");
+    arguments.getApplicationUsage()->addCommandLineOption("--no-rescale","Disable the rescaling of the pixel data to 0.0 to 1.0 range");
+    arguments.getApplicationUsage()->addCommandLineOption("--rescale","Enable the rescale of the pixel data to 0.0 to 1.0 range (default).");
+    arguments.getApplicationUsage()->addCommandLineOption("--shift-min-to-zero","Shift the pixel data so min value is 0.0.");
 //    arguments.getApplicationUsage()->addCommandLineOption("--raw <sizeX> <sizeY> <sizeZ> <numberBytesPerComponent> <numberOfComponents> <endian> <filename>","read a raw image data");
 
     // construct the viewer.
@@ -1916,6 +1920,20 @@ int main( int argc, char **argv )
     while(arguments.read("--modulate-alpha-by-colour", colourModulate.x(),colourModulate.y(),colourModulate.z(),colourModulate.w() )) { colourSpaceOperation = MODULATE_ALPHA_BY_COLOUR; }
     while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = REPLACE_ALPHA_WITH_LUMINANACE; }
     while(arguments.read("--replace-rgb-with-luminance")) { colourSpaceOperation = REPLACE_RGB_WITH_LUMINANCE; }
+
+
+    enum RescaleOperation
+    {
+        NO_RESCALE,
+        RESCALE_TO_ZERO_TO_ONE_RANGE,
+        SHIFT_MIN_TO_ZERO
+    };
+    
+    RescaleOperation rescaleOperation = RESCALE_TO_ZERO_TO_ONE_RANGE;
+    while(arguments.read("--no-rescale")) rescaleOperation = NO_RESCALE;
+    while(arguments.read("--rescale")) rescaleOperation = RESCALE_TO_ZERO_TO_ONE_RANGE;
+    while(arguments.read("--shift-min-to-zero")) rescaleOperation = SHIFT_MIN_TO_ZERO;
+
         
     bool resizeToPowerOfTwo = false;
     
@@ -2156,18 +2174,44 @@ int main( int argc, char **argv )
         maxComponent = osg::maximum(maxComponent,maxValue[2]);
         maxComponent = osg::maximum(maxComponent,maxValue[3]);
 
-        float scale = 0.99f/(maxComponent-minComponent);
-        float offset = -minComponent * scale;
 
+        switch(rescaleOperation)
+        {
+            case(NO_RESCALE):
+                break;
 
-        for(Images::iterator itr = images.begin();
-            itr != images.end();
-            ++itr)
-        {        
-            osgVolume::offsetAndScaleImage(itr->get(), 
-                osg::Vec4(offset, offset, offset, offset),
-                osg::Vec4(scale, scale, scale, scale));
-        }
+            case(RESCALE_TO_ZERO_TO_ONE_RANGE):
+            {
+                float scale = 0.99f/(maxComponent-minComponent);
+                float offset = -minComponent * scale;
+
+                for(Images::iterator itr = images.begin();
+                    itr != images.end();
+                    ++itr)
+                {        
+                    osgVolume::offsetAndScaleImage(itr->get(), 
+                        osg::Vec4(offset, offset, offset, offset),
+                        osg::Vec4(scale, scale, scale, scale));
+                }
+                break;
+            }
+            case(SHIFT_MIN_TO_ZERO):
+            {
+                float offset = -minComponent;
+
+                for(Images::iterator itr = images.begin();
+                    itr != images.end();
+                    ++itr)
+                {        
+                    osgVolume::offsetAndScaleImage(itr->get(), 
+                        osg::Vec4(offset, offset, offset, offset),
+                        osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
+                }
+                break;
+            }
+                break;
+        };
+
     }
 
     

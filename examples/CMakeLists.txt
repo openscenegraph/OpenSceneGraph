@@ -172,6 +172,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osganimationnode)
         ADD_SUBDIRECTORY(osganimationskinning)
         ADD_SUBDIRECTORY(osganimationsolid)
+        ADD_SUBDIRECTORY(osganimationviewer)
     ENDIF   (BUILD_OSGANIMATION)
 
     #ADD_SUBDIRECTORY(osgcegui)

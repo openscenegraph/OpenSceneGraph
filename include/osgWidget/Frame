@@ -77,7 +77,8 @@ class OSGWIDGET_EXPORT Frame: public Table
         {
             FRAME_RESIZE  = 1,
             FRAME_MOVE    = 2,
-            FRAME_TEXTURE = 4
+            FRAME_TEXTURE = 4,
+            FRAME_ALL     = FRAME_RESIZE | FRAME_MOVE | FRAME_TEXTURE
         };
 
         static std::string cornerTypeToString (CornerType);
@@ -157,7 +158,8 @@ class OSGWIDGET_EXPORT Frame: public Table
             point_type,
             point_type,
             point_type,
-            Frame* = 0
+            unsigned int = 0,
+            Frame*       = 0
         );
 
         static Frame* createSimpleFrameWithSingleTexture(
@@ -165,12 +167,13 @@ class OSGWIDGET_EXPORT Frame: public Table
             osg::Image*,
             point_type,
             point_type,
-            Frame* = 0
+            unsigned int = 0,
+            Frame*       = 0
         );
 
         void createSimpleFrame(point_type cw, point_type ch, point_type w, point_type h)
         {
-            createSimpleFrame(_name, cw, ch, w, h, this);
+            createSimpleFrame(_name, cw, ch, w, h, 0, this);
         }
 
         void createSimpleFrameWithSingleTexture(
@@ -179,7 +182,7 @@ class OSGWIDGET_EXPORT Frame: public Table
             point_type  h
         )
         {
-            createSimpleFrameWithSingleTexture(_name, image, w, h, this);
+            createSimpleFrameWithSingleTexture(_name, image, w, h, 0, this);
         }
 
         bool setWindow(Window*);

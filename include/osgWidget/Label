@@ -33,7 +33,6 @@ class OSGWIDGET_EXPORT Label: public Widget
         virtual void unparented (Window*);
         virtual void positioned ();
 
-        void update       ();
         void setLabel     (const std::string&);
         void setFont      (const std::string&);
         void setFontSize  (unsigned int);

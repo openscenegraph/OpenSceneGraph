@@ -189,13 +189,14 @@ Frame* Frame::createSimpleFrame(
     point_type         ch,
     point_type         w,
     point_type         h,
+    unsigned int       flags,
     Frame*             exFrame
 ) {
     Frame* frame = 0;
     
     // Use an "existing frame" if we have it (for example, if you've in inherited from
     // Frame and want to use this stuff.
-    if(!exFrame) frame = new Frame(name);
+    if(!exFrame) frame = new Frame(name, flags);
 
     else frame = exFrame;
     
@@ -259,6 +260,7 @@ Frame* Frame::createSimpleFrameWithSingleTexture(
     osg::Image*        image,
     point_type         width,
     point_type         height,
+    unsigned int       flags,
     Frame*             exFrame
 ) {
     Frame* frame = 0;
@@ -267,9 +269,9 @@ Frame* Frame::createSimpleFrameWithSingleTexture(
     double h = image->t();
 
     // The same as above...
-    if(!exFrame) frame = createSimpleFrame(name, w, h, width, height);
+    if(!exFrame) frame = createSimpleFrame(name, w, h, width, height, flags);
 
-    else frame = createSimpleFrame(name, w, h, width, height, exFrame);
+    else frame = createSimpleFrame(name, w, h, width, height, 0, exFrame);
 
     for(unsigned int i = 0; i < 9; i++) frame->getObjects()[i]->setImage(image);
 

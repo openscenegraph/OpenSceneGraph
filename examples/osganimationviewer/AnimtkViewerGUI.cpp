@@ -209,6 +209,7 @@ AnimtkViewerGUI::AnimtkViewerGUI(osgViewer::View* view, float w, float h, unsign
 
     _labelBox->setAnchorHorizontal(osgWidget::Window::HA_LEFT);
     _labelBox->setY(74.0f);
+    _labelBox->setVisibilityMode(osgWidget::Window::VM_ENTIRE);
 
     _listBox->setOrigin(getWidth(), 74.0f);
 

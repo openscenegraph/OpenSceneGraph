@@ -93,7 +93,8 @@ int main(int argc, char** argv) {
         "frame",
         osgDB::readImageFile("osgWidget/frame-theme.png"),
         40.0f,
-        40.0f
+        40.0f,
+	osgWidget::Frame::FRAME_ALL
     );
 
     frame->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.0f);

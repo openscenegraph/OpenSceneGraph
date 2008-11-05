@@ -113,7 +113,7 @@ namespace osgAnimation
         };
 
 
-        class UpdateBone : public AnimationUpdateCallback
+        class OSGANIMATION_EXPORT UpdateBone : public AnimationUpdateCallback
         {
         public:
             osg::ref_ptr<osgAnimation::Vec3Target> _position;

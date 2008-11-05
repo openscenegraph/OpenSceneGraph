@@ -109,7 +109,8 @@ int main(int argc, char** argv)
     viewer.addEventHandler(new osgWidget::KeyboardHandler(gui));
     viewer.addEventHandler(new osgWidget::ResizeHandler(gui, camera));
     viewer.setSceneData(group.get());
-    viewer.setUpViewInWindow(0, 0, WIDTH, HEIGHT);
+
+    viewer.setUpViewInWindow(40, 40, WIDTH, HEIGHT);
 
     return viewer.run();
 }

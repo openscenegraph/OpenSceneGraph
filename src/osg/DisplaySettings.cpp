@@ -401,7 +401,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     }
 
     int pos;
-    while ((pos=arguments.find("--stereo"))!=0)
+    while ((pos=arguments.find("--stereo"))>0)
     {
         if (arguments.match(pos+1,"ANAGLYPHIC"))            { arguments.remove(pos,2); _stereo = true;_stereoMode = ANAGLYPHIC; }
         else if (arguments.match(pos+1,"QUAD_BUFFER"))      { arguments.remove(pos,2); _stereo = true;_stereoMode = QUAD_BUFFER; }

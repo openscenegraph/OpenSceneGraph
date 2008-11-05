@@ -230,7 +230,7 @@ int ArgumentParser::find(const std::string& str) const
             return pos;
         }
     }
-    return 0;
+    return -1;
 }
 
 bool ArgumentParser::match(int pos, const std::string& str) const

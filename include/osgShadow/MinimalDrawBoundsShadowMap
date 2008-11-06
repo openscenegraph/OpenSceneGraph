@@ -46,7 +46,7 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
         /** Classic protected OSG destructor */
         virtual ~MinimalDrawBoundsShadowMap(void);
 
-        struct ViewData: public BaseClass::ViewData
+        struct OSGSHADOW_EXPORT ViewData: public BaseClass::ViewData
         {
             osg::ref_ptr< osg::RefMatrix >       _projection;
             osg::Vec2s                           _boundAnalysisSize;

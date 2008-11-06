@@ -145,7 +145,7 @@ class OSGSHADOW_EXPORT StandardShadowMap : public DebugShadowMap
         unsigned int                  _baseTextureCoordIndex;
         unsigned int                  _shadowTextureCoordIndex;
 
-        struct ViewData: public BaseClass::ViewData
+        struct OSGSHADOW_EXPORT ViewData: public BaseClass::ViewData
         {
             osg::ref_ptr< osg::Light > *  _lightPtr;
             unsigned int               *  _baseTextureUnitPtr;

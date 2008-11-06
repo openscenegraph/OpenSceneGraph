@@ -86,7 +86,7 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
 
         osg::ref_ptr< osg::Shader > _depthColorFragmentShader;
 
-        struct ViewData: public BaseClass::ViewData
+        struct OSGSHADOW_EXPORT ViewData: public BaseClass::ViewData
         {
             /** 
             Texture used as ShadowMap - initialized by derived classes. 

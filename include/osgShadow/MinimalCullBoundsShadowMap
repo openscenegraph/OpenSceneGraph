@@ -45,7 +45,7 @@ class OSGSHADOW_EXPORT MinimalCullBoundsShadowMap
         /** Classic protected OSG destructor */
         virtual ~MinimalCullBoundsShadowMap(void);
 
-        struct ViewData: public MinimalShadowMap::ViewData
+        struct OSGSHADOW_EXPORT ViewData: public MinimalShadowMap::ViewData
         {
             virtual void init( ThisClass * st, osgUtil::CullVisitor * cv );
 

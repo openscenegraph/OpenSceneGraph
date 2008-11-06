@@ -97,7 +97,7 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
         float                              _minLightMargin; 
         ShadowReceivingCoarseBoundAccuracy _shadowReceivingCoarseBoundAccuracy;
 
-        struct ViewData: public BaseClass::ViewData
+        struct OSGSHADOW_EXPORT ViewData: public BaseClass::ViewData
         {
             osg::Matrix                      *_modellingSpaceToWorldPtr;
             float                            *_maxFarPlanePtr;

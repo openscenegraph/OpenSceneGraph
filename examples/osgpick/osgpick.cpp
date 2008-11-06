@@ -269,9 +269,13 @@ int main( int argc, char **argv )
         camera->setRenderOrder(osg::Camera::POST_RENDER);
         camera->setClearMask(GL_DEPTH_BUFFER_BIT);
         camera->setReferenceFrame(osg::Transform::RELATIVE_RF);
+        camera->setViewMatrix(osg::Matrix::translate(-2, 0, 0));
+
+        osg::MatrixTransform* xform = new osg::MatrixTransform(osg::Matrix::translate(1, 1, 1));
+        xform->addChild(camera);
 
         group->addChild(sphere);
-        group->addChild(camera);
+        group->addChild(xform);
         camera->addChild(cube);
 
         scene = group;

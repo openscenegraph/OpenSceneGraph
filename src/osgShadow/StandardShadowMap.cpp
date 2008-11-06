@@ -23,7 +23,8 @@
 #include <osg/CullFace>
 #include <osg/AlphaFunc>
 #include <osg/Point>
-#include <sstream>
+
+#include <stdio.h>
 
 using namespace osgShadow;
 
@@ -343,8 +344,8 @@ void StandardShadowMap::updateTextureCoordIndices
         // its not elegant to mix stdio & stl strings 
         // but in this context I do an exception for cleaner code
 
-        std::sprintf( acFrom, expressions[i], fromTextureCoordIndex );
-        std::sprintf( acTo, expressions[i], toTextureCoordIndex );
+        sprintf( acFrom, expressions[i], fromTextureCoordIndex );
+        sprintf( acTo, expressions[i], toTextureCoordIndex );
 
         std::string from( acFrom ), to( acTo );
 

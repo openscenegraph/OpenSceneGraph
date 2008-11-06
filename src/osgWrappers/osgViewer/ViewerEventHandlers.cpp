@@ -13,6 +13,8 @@
 #include <osg/ApplicationUsage>
 #include <osg/Camera>
 #include <osg/Image>
+#include <osg/NodeVisitor>
+#include <osg/Object>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgViewer/ViewerEventHandlers>
@@ -104,6 +106,27 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	I_SimpleProperty(int, KeyEventTogglesOnScreenHelp, 
 	                 __int__getKeyEventTogglesOnScreenHelp, 
 	                 __void__setKeyEventTogglesOnScreenHelp__int);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgViewer::InteractiveImageHandler)
+	I_DeclaringFile("osgViewer/ViewerEventHandlers");
+	I_BaseType(osgGA::GUIEventHandler);
+	I_Constructor1(IN, osg::Image *, image,
+	               Properties::NON_EXPLICIT,
+	               ____InteractiveImageHandler__osg_Image_P1,
+	               "",
+	               "");
+	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa, IN, osg::Object *, x, IN, osg::NodeVisitor *, nv,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1__osg_Object_P1__osg_NodeVisitor_P1,
+	          "Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_ProtectedMethod5(bool, mousePosition, IN, osgViewer::View *, view, IN, osg::NodeVisitor *, nv, IN, const osgGA::GUIEventAdapter &, ea, IN, int &, x, IN, int &, y,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__mousePosition__osgViewer_View_P1__osg_NodeVisitor_P1__C5_osgGA_GUIEventAdapter_R1__int_R1__int_R1,
+	                   "",
+	                   "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::LODScaleHandler)

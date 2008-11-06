@@ -374,6 +374,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __void__update__NodeVisitor_P1,
 	          "",
 	          "");
+	I_Method3(void, sendPointerEvent, IN, int, x, IN, int, y, IN, int, buttonMask,
+	          Properties::VIRTUAL,
+	          __void__sendPointerEvent__int__int__int,
+	          "method for sending pointer events to images that are acting as front ends to interactive surfaces such as a vnc or browser window. ",
+	          "");
+	I_Method2(void, sendKeyEvent, IN, int, key, IN, bool, keyDown,
+	          Properties::VIRTUAL,
+	          __void__sendKeyEvent__int__bool,
+	          "method for sending key events to images that are acting as front ends to interactive surfaces such as a vnc or browser window. ",
+	          "");
 	I_StaticMethod1(bool, isPackedType, IN, GLenum, type,
 	                __bool__isPackedType__GLenum_S,
 	                "",

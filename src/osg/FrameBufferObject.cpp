@@ -575,12 +575,22 @@ int FrameBufferAttachment::compare(const FrameBufferAttachment &fa) const
     return 0;
 }
 
-RenderBuffer* FrameBufferAttachment::getRenderBuffer() const
+RenderBuffer* FrameBufferAttachment::getRenderBuffer()
 {
     return _ximpl->renderbufferTarget.get();
 }
 
-Texture* FrameBufferAttachment::getTexture() const
+Texture* FrameBufferAttachment::getTexture()
+{
+    return _ximpl->textureTarget.get();
+}
+
+const RenderBuffer* FrameBufferAttachment::getRenderBuffer() const
+{
+    return _ximpl->renderbufferTarget.get();
+}
+
+const Texture* FrameBufferAttachment::getTexture() const
 {
     return _ximpl->textureTarget.get();
 }

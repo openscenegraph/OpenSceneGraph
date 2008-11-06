@@ -838,6 +838,8 @@ void CompositeViewer::eventTraversal()
             ++veitr)
         {
             View* view = veitr->first;
+            _eventVisitor->setActionAdapter(view);
+            
             if (view->getSceneData())
             {            
                 for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
@@ -877,7 +879,6 @@ void CompositeViewer::eventTraversal()
         ++veitr)
     {
         View* view = veitr->first;
-        _eventVisitor->setActionAdapter(view);
         
         for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
             itr != veitr->second.end();
@@ -899,7 +900,6 @@ void CompositeViewer::eventTraversal()
         ++veitr)
     {
         View* view = veitr->first;
-        _eventVisitor->setActionAdapter(view);
         
         for(osgGA::EventQueue::Events::iterator itr = veitr->second.begin();
             itr != veitr->second.end();

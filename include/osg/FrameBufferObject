@@ -350,6 +350,13 @@ namespace osg
         void attach(State &state, GLenum target, GLenum attachment_point, const FBOExtensions* ext) const;
         int compare(const FrameBufferAttachment &fa) const;
 
+        RenderBuffer* getRenderBuffer() const;
+        Texture* getTexture() const;
+        int getCubeMapFace() const;
+        int getTextureLevel() const;
+        int getTexture3DZOffset() const;
+        int getTextureArrayLayer() const;
+
     private:
         // use the Pimpl idiom to avoid dependency from
         // all Texture* headers

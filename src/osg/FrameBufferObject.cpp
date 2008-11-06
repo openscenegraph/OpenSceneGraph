@@ -575,6 +575,36 @@ int FrameBufferAttachment::compare(const FrameBufferAttachment &fa) const
     return 0;
 }
 
+RenderBuffer* FrameBufferAttachment::getRenderBuffer() const
+{
+    return _ximpl->renderbufferTarget.get();
+}
+
+Texture* FrameBufferAttachment::getTexture() const
+{
+    return _ximpl->textureTarget.get();
+}
+
+int FrameBufferAttachment::getCubeMapFace() const
+{
+    return _ximpl->cubeMapFace;
+}
+
+int FrameBufferAttachment::getTextureLevel() const
+{
+    return _ximpl->level;
+}
+
+int FrameBufferAttachment::getTexture3DZOffset() const
+{
+    return _ximpl->zoffset;
+}
+
+int FrameBufferAttachment::getTextureArrayLayer() const
+{
+    return _ximpl->zoffset;
+}
+
 /**************************************************************************
  * FrameBufferObject
  **************************************************************************/

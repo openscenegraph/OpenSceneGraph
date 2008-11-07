@@ -28,6 +28,7 @@
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
+#include <osgDB/fstream>
 #include <osgDB/Archive>
 
 #include <algorithm>
@@ -574,7 +575,7 @@ bool Registry::readPluginAliasConfigurationFile( const std::string& file )
         return false;
     }
 
-    std::ifstream ifs;
+    osgDB::ifstream ifs;
     ifs.open( fileName.c_str() );
     if (!ifs.good())
     {

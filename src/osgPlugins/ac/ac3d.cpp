@@ -33,6 +33,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 
 #include "Exception.h"
 #include "Geode.h"
@@ -89,7 +90,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             // allocate per file data and start reading
-            std::ifstream fin;
+            osgDB::ifstream fin;
             fin.open(fileName.c_str(), std::ios::in);
             if (!fin.is_open()) return ReadResult::FILE_NOT_FOUND;
 
@@ -124,7 +125,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
             std::vector<unsigned int>iNumMaterials;
             const_cast<osg::Node&>(node).accept(vs); // this parses the tree to streamd Geodes
             std::vector<const osg::Geode *> glist=vs.getGeodes();
-            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             // Write out the file header
             std::vector<const osg::Geode *>::iterator itr;
             fout << "AC3Db" << std::endl;

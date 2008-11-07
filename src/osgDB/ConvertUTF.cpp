@@ -1,0 +1,90 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 2008 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#include <osgDB/ConvertUTF>
+#include <osg/Notify>
+
+#if defined(WIN32) && !defined(__CYGWIN__)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
+namespace osgDB
+{
+
+std::string convertUTF16toUTF8(const wchar_t* source, unsigned sourceLength)
+{
+#if defined(WIN32) && !defined(__CYGWIN__)
+    if (sourceLength == 0)
+    {
+        return std::string();
+    }
+
+    int destLen = WideCharToMultiByte(CP_UTF8, 0, source, sourceLength, 0, 0, 0, 0);
+    if (destLen <= 0)
+    {
+        osg::notify(osg::WARN) << "Cannot convert UTF-16 string to UTF-8." << std::endl;
+        return std::string();
+    }
+
+    std::string sDest(destLen, '\0');
+    destLen = WideCharToMultiByte(CP_UTF8, 0, source, sourceLength, &sDest[0], destLen, 0, 0);
+
+    if (destLen <= 0)
+    {
+        osg::notify(osg::WARN) << "Cannot convert UTF-16 string to UTF-8." << std::endl;
+        return std::string();
+    }
+
+    return sDest;
+#else
+    //TODO: Implement for other platforms
+    osg::notify(osg::WARN) << "ConvertUTF16toUTF8 not implemented." << std::endl;
+    return std::string();
+#endif
+}
+
+std::wstring convertUTF8toUTF16(const char* source, unsigned sourceLength)
+{
+#if defined(WIN32) && !defined(__CYGWIN__)
+    if (sourceLength == 0)
+    {
+        return std::wstring();
+    }
+
+    int destLen = MultiByteToWideChar(CP_UTF8, 0, source, sourceLength, 0, 0);
+    if (destLen <= 0)
+    {
+        osg::notify(osg::WARN) << "Cannot convert UTF-8 string to UTF-16." << std::endl;
+        return std::wstring();
+    }
+
+    std::wstring sDest(destLen, L'\0');
+    destLen = MultiByteToWideChar(CP_UTF8, 0, source, sourceLength, &sDest[0], destLen);
+
+    if (destLen <= 0)
+    {
+        osg::notify(osg::WARN) << "Cannot convert UTF-8 string to UTF-16." << std::endl;
+        return std::wstring();
+    }
+
+    return sDest;
+#else
+    //TODO: Implement for other platforms
+    osg::notify(osg::WARN) << "ConvertUTF8toUTF16 not implemented." << std::endl;
+    return std::wstring();
+#endif
+}
+
+}
+

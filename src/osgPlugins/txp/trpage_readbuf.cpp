@@ -12,6 +12,9 @@
    Tel: (520) 323-7990
    ************************
    */
+
+#include <osgDB/FileUtils>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -465,7 +468,7 @@ void trpgrAppFile::Init(trpgEndian inNess,const char *fileName)
     ness = inNess;
     cpuNess = trpg_cpu_byte_order();
 
-    if (!(fp = fopen(fileName,"rb")))
+    if (!(fp = osgDB::fopen(fileName,"rb")))
         return;
 
     valid = true;

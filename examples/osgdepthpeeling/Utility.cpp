@@ -9,18 +9,18 @@
 
 #include <assert.h>
 #include <iostream>
-#include <fstream>
 #include <stdio.h>
 #include <osg/Geometry>
 #include <osg/Geode>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 
 bool Utility::readFile(const char* fName, std::string& s)
 {
   std::string foundFile = osgDB::findDataFile(fName);
   if (foundFile.empty()) return false;
   
-  std::ifstream is;//(fName);
+  osgDB::ifstream is;//(fName);
   is.open(foundFile.c_str());
   if (is.fail())
     {
@@ -73,7 +73,7 @@ double Utility::getNoise(unsigned x, unsigned y, unsigned random)
   int n = x + y * 57 + random * 131;
   n = (n<<13) ^ n;
   double noise = (1.0f - ( (n * (n * n * 15731 + 789221) +
-			    1376312589)&0x7fffffff)* 0.000000000931322574615478515625f);
+                1376312589)&0x7fffffff)* 0.000000000931322574615478515625f);
   return noise;
 }
 
@@ -86,13 +86,13 @@ double Utility::smoothNoise(unsigned width, unsigned height, unsigned x, unsigne
     return noise[x + y*width];
   
   double corners = (noise[x-1 + (y-1) *width]
-		    +noise[x+1 + (y-1)*width]
-		    +noise[x-1 + (y+1) * width]
-		    +noise[x+1 + (y+1) * width]) / 16.0;
+            +noise[x+1 + (y-1)*width]
+            +noise[x-1 + (y+1) * width]
+            +noise[x+1 + (y+1) * width]) / 16.0;
   double sides   = (noise[x-1 + y*width]  
-		    +noise[x+1 + y*width]  
-		    +noise[x + (y-1)*width]  
-		    +noise[x + (y+1)*width]) / 8.0;
+            +noise[x+1 + y*width]  
+            +noise[x + (y-1)*width]  
+            +noise[x + (y+1)*width]) / 8.0;
   double center  =  noise[x + y*width] / 4.0;
   
   return corners + sides + center;

@@ -21,7 +21,7 @@
 #include "DataOutputStream.h"
 #include "ExportOptions.h"
 #include <osg/Array>
-#include <fstream>
+#include <osgDB/fstream>
 #include <map>
 
 namespace osg {
@@ -96,7 +96,7 @@ protected:
     typedef std::map< const osg::Array*, ArrayInfo > ArrayMap;
     ArrayMap _arrayMap;
 
-    mutable std::ofstream _verticesStr;
+    mutable osgDB::ofstream _verticesStr;
     DataOutputStream* _vertices;
     std::string _verticesTempName;
 

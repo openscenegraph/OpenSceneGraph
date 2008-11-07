@@ -3,13 +3,13 @@
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileNameUtils>
+#include <osgDB/fstream>
 
 #include <iostream>
-#include <fstream>
 
 void writeShader(osg::Shader* shader, const std::string& cppFileName, const std::string& variableName)
 {
-    std::ofstream fout(cppFileName.c_str());
+    osgDB::ofstream fout(cppFileName.c_str());
     if (!fout)
     {
         std::cout<<"Error: could not open file `"<<cppFileName<<"` for writing."<<std::endl;

@@ -67,7 +67,7 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    std::ifstream fin;
+    osgDB::ifstream fin;
     fin.imbue(std::locale::classic());
     fin.open(fileName.c_str(), std::ios::in | std::ios::binary);
 
@@ -209,7 +209,7 @@ ReaderWriterATTR::writeObject(const osg::Object& object, const std::string& file
         return WriteResult::FILE_NOT_HANDLED;
     }
 
-    std::ofstream fOut;
+    osgDB::ofstream fOut;
     fOut.open( fileName.c_str(), std::ios::out | std::ios::binary );
 
     if ( fOut.fail())

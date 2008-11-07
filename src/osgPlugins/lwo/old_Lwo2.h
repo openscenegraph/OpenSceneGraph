@@ -29,7 +29,6 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <fstream>
 
 #include <osg/Referenced>
 #include <osg/Vec2>
@@ -37,6 +36,8 @@
 #include <osg/Geometry>
 #include <osg/Group>
 #include <osg/Notify>
+
+#include <osgDB/fstream>
 
 using namespace osg;
 using namespace std;
@@ -64,7 +65,7 @@ class Lwo2
   Lwo2Layer* _current_layer;
   vector< string > _tags;
   vector< string > _images;
-  ifstream _fin;
+  osgDB::ifstream _fin;
 
   unsigned char _read_char();
   unsigned short _read_short();

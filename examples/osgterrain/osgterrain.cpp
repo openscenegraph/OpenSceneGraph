@@ -30,6 +30,7 @@
 
 
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 #include <osgDB/ReadFile>
 
 #include <osgUtil/GLObjectsVisitor>
@@ -120,7 +121,7 @@ public:
     
     bool readMasterFile(Files& files) const
     {
-        std::ifstream fin(_filename.c_str());
+        osgDB::ifstream fin(_filename.c_str());
         if (fin)
         {
             osgDB::Input fr;

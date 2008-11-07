@@ -35,6 +35,7 @@
 #include <math.h>
 
 #include <osg/Notify>
+#include <osgDB/fstream>
 
 using namespace DX;
 using namespace std;
@@ -63,7 +64,7 @@ bool Object::load(const char* filename)
     if (!filename)
         return false;
 
-    ifstream fin(filename);
+    osgDB::ifstream fin(filename);
     if (fin.bad()) {
         osg::notify(osg::WARN) << "Object::load: Unable to open: " << filename << endl;
         return false;

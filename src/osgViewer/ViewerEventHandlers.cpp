@@ -16,7 +16,6 @@
 #include <limits.h>
 
 #include <iomanip>
-#include <fstream>
 #include <sstream>
 
 #include <osgDB/FileNameUtils>
@@ -506,7 +505,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
 
                     // In the future this will need to be written continuously, rather
                     // than all at once.
-                    std::ofstream out(_filename.c_str());
+                    osgDB::ofstream out(_filename.c_str());
                     osg::notify(osg::NOTICE)<<"Writing camera file: "<<_filename<<std::endl;
                     _animPath->write(out);
                     out.close();

@@ -183,7 +183,7 @@ class FLTReaderWriter : public ReaderWriter
 
             // read file
             {
-                std::ifstream istream;
+                osgDB::ifstream istream;
                 istream.imbue(std::locale::classic());
                 istream.open(fileName.c_str(), std::ios::in | std::ios::binary);
 
@@ -441,7 +441,7 @@ class FLTReaderWriter : public ReaderWriter
             if (!filePath.empty())
                 _implicitPath = filePath;
 
-            std::ofstream fOut;
+            osgDB::ofstream fOut;
             fOut.open( fileName.c_str(), std::ios::out | std::ios::binary );
             if ( fOut.fail())
             {

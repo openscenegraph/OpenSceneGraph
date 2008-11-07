@@ -17,6 +17,7 @@
 */
 
 #include <osgViewer/Viewer>
+#include <osgDB/fstream>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgUtil/Optimizer>
@@ -499,7 +500,7 @@ int main( int argc, char **argv )
     FileList fileList;
     // extract the filenames from the a file, one filename per line.
     while (arguments.read("-files",filename)) {
-        std::ifstream is(filename.c_str());
+        osgDB::ifstream is(filename.c_str());
         if (is) {
                 std::string line;
                 while (std::getline(is,line,'\n')) fileList.push_back(line);

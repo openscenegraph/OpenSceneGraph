@@ -1,5 +1,6 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 #include <osgDB/Registry>
 
 #include <osgTerrain/Locator>
@@ -80,7 +81,7 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
                 std::string projFileName(osgDB::getNameLessExtension(fileName) + ".prj");
                 if (osgDB::fileExists(projFileName))
                 {
-                    std::ifstream fin(projFileName.c_str());
+                    osgDB::ifstream fin(projFileName.c_str());
                     if (fin)
                     {
                         std::string projstring;

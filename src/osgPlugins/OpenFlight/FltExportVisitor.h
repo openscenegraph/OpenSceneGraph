@@ -20,7 +20,7 @@
 #include <osg/NodeVisitor>
 #include "ExportOptions.h"
 #include "Types.h"
-#include <fstream>
+#include <osgDB/fstream>
 #include <set>
 #include <memory>
 
@@ -168,7 +168,7 @@ private:
 
     // _records is a temp file for most records. After the Header and palette
     // records are written to _dos, _records is copied onto _dos.
-    std::ofstream _recordsStr;
+    osgDB::ofstream _recordsStr;
     DataOutputStream* _records;
     std::string _recordsTempName;
 

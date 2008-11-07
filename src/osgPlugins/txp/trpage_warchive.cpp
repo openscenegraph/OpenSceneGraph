@@ -13,6 +13,8 @@
    ************************
    */
 
+#include <osgDB/FileUtils>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -410,7 +412,7 @@ bool trpgwArchive::OpenFile(const char *in_dir,const char *name)
 
     sprintf(filename,"%s" PATHSEPERATOR "%s",dir,name);
 
-    if (!(fp = fopen(filename,"wb")))
+    if (!(fp = osgDB::fopen(filename,"wb")))
         return false;
 
     return true;
@@ -831,7 +833,7 @@ bool trpgwArchive::WriteTile(unsigned int x,unsigned int y,unsigned int lod, flo
         char filename[1024];
         // Note: Windows specific
         sprintf(filename,"%s" PATHSEPERATOR "tile_%d_%d_%d.tpt",dir,x,y,lod);
-        if (!(tfp = fopen(filename,"wb")))
+        if (!(tfp = osgDB::fopen(filename,"wb")))
             return false;
 
         // Write the header first

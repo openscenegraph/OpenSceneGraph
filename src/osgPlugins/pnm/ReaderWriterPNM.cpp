@@ -8,6 +8,7 @@
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 
 #include <stdio.h>
 
@@ -273,7 +274,7 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             int max_value = 0;
 
             // Open file.
-            fp = fopen(fileName.c_str(), "rb");
+            fp = osgDB::fopen(fileName.c_str(), "rb");
 
             // Read header items.
             int row;
@@ -476,7 +477,7 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             // only support rgb images right now.
             if (image.getPixelFormat()!=GL_RGB || image.getDataType()!=GL_UNSIGNED_BYTE) return WriteResult("Error image pixel format not supported by pnm writer.");
 
-            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
             return writeImage(image,fout,options);

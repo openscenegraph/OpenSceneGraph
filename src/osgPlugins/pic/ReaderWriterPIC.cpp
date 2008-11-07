@@ -108,7 +108,7 @@ int *numComponents_ret)
     unsigned char palette[256][3];
     unsigned char * tmpbuf, * buffer, * ptr;
 
-    FILE *fp = fopen(filename, "rb");
+    FILE *fp = osgDB::fopen(filename, "rb");
     if (!fp) return NULL;
 
     picerror = ERROR_NO_ERROR;

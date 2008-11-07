@@ -1,6 +1,6 @@
 #include <osgGA/AnimationPathManipulator>
 
-#include <fstream>
+#include <osgDB/fstream>
 
 using namespace osgGA;
 
@@ -29,7 +29,7 @@ AnimationPathManipulator::AnimationPathManipulator( const std::string& filename 
     _isPaused = false;
 
 
-    std::ifstream in(filename.c_str());
+    osgDB::ifstream in(filename.c_str());
 
     if (!in)
     {

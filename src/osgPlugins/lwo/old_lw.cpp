@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <osgDB/FileUtils>
+
 #define MK_ID(a,b,c,d) ((((guint32)(a))<<24)| \
             (((guint32)(b))<<16)| \
             (((guint32)(c))<< 8)| \
@@ -326,7 +328,7 @@ static void read_pnts(FILE *f, gint nbytes, lwObject *lwo)
 
 gint lw_is_lwobject(const char *lw_file)
 {
-  FILE *f = fopen(lw_file, "rb");
+  FILE *f = osgDB::fopen(lw_file, "rb");
   if (f) {
     gint32 form = read_long(f);
     gint32 nlen = read_long(f);
@@ -348,7 +350,7 @@ lwObject *lw_object_read(const char *lw_file, std::ostream& output)
   gint32 read_bytes = 0;
 
   /* open file */
-  f = fopen(lw_file, "rb");
+  f = osgDB::fopen(lw_file, "rb");
   if (f == NULL) {
     output << "can't open file "<<lw_file<<std::endl;
     return NULL;

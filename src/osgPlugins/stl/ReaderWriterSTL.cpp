@@ -119,7 +119,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     osg::notify(osg::INFO) << "ReaderWriterSTL::readNode(" << fileName.c_str() << ")\n";
 
     // determine ASCII vs. binary mode
-    FILE* fp = fopen(fileName.c_str(), "rb");
+    FILE* fp = osgDB::fopen(fileName.c_str(), "rb");
     if (!fp) {
         return ReadResult::FILE_NOT_FOUND;
     }
@@ -169,7 +169,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     if (!isBinary) 
     {
         fclose(fp);
-        fp = fopen(fileName.c_str(), "r");
+        fp = osgDB::fopen(fileName.c_str(), "r");
     }
 
     // read

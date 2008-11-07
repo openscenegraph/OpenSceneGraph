@@ -158,7 +158,7 @@ VertexPaletteManager::write( DataOutputStream& dos ) const
     // Open that temp file again, this time for reading.
     //   Then copy to dos.
     char buf;
-    std::ifstream vertIn;
+    osgDB::ifstream vertIn;
     vertIn.open( _verticesTempName.c_str(), std::ios::in | std::ios::binary );
     while (!vertIn.eof() )
     {

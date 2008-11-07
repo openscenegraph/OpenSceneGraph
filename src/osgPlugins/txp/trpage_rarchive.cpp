@@ -13,6 +13,8 @@
    ************************
    */
 
+#include <osgDB/FileUtils>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -64,7 +66,7 @@ bool trpgr_Archive::OpenFile(const char *name)
 
     CloseFile();
 
-    if (!(fp = fopen(file,"rb")))
+    if (!(fp = osgDB::fopen(file,"rb")))
         return false;
 
     // Look for a magic # and endianness
@@ -138,7 +140,7 @@ bool trpgr_Archive::ReadSubArchive(int row, int col, trpgEndian cpuNess)
     //open the block archive
     // the block archive will be in the base dir + \\cols\\row\\archive.txp
     sprintf(blockpath,"%s%s%d%s%d%sarchive.txp",dir,PATHSEPERATOR,col,PATHSEPERATOR,row,PATHSEPERATOR);
-    FILE *bfp = fopen(blockpath,"rb");
+    FILE *bfp = osgDB::fopen(blockpath,"rb");
     if(!bfp) {
         return false;
     }
@@ -383,7 +385,7 @@ bool trpgr_Archive::ReadExternalTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuf
     // Open the file and read the contents
     FILE *fp= 0;
     try {
-        if (!(fp = fopen(filename,"rb")))  {
+        if (!(fp = osgDB::fopen(filename,"rb")))  {
 
             throw 1;
         }

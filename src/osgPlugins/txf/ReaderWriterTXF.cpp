@@ -11,10 +11,9 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <fstream>
-
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 #include <osgDB/Registry>
 #include <osg/Notify>
 
@@ -38,7 +37,7 @@ class ReaderWriterTXF : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile(file, options);
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            std::ifstream stream;
+            osgDB::ifstream stream;
             stream.open(fileName.c_str(), std::ios::in | std::ios::binary);
             if (!stream.is_open()) return ReadResult::FILE_NOT_FOUND;
 

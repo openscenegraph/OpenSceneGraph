@@ -8,13 +8,13 @@
 #include <osg/BoundingBox>
 #include <osg/BoundingSphere>
 
+#include <osgDB/fstream>
 
 #include <OpenThreads/Version>
 
 #include <set>
 #include <vector>
 #include <iostream>
-#include <fstream>
 
 // the majority of the application is dedicated to building the
 // current contribitors list by parsing the ChangeLog, it just takes
@@ -676,7 +676,7 @@ bool submissionsSequence(const Words& words, unsigned int& i)
 
 void readContributors(NameMap& names, const std::string& file)
 {
-    std::ifstream fin(file.c_str());
+    osgDB::ifstream fin(file.c_str());
     
     Words words;
     while(fin)

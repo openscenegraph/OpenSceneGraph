@@ -13,7 +13,6 @@
 
 #include <iostream>
 #include <sstream>
-#include <fstream>
 #include <string>
 #include <stdio.h>
 
@@ -23,6 +22,7 @@
 
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
+#include <osgDB/fstream>
 
 using namespace obj;
 
@@ -597,7 +597,7 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
                 osg::notify(osg::INFO) << "--" << fullPathFileName << "--" << std::endl;
                 if (!fullPathFileName.empty())
                 {
-                    std::ifstream mfin( fullPathFileName.c_str() );
+                    osgDB::ifstream mfin( fullPathFileName.c_str() );
                     if (mfin)
                     {
                         readMTL(mfin);

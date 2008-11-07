@@ -828,7 +828,7 @@ class ReaderWriterDW : public osgDB::ReaderWriter
 
             FILE *fp;
 
-            if( (fp = fopen( fileName.c_str(), "r" )) == (FILE *)0L )
+            if( (fp = osgDB::fopen( fileName.c_str(), "r" )) == (FILE *)0L )
             {
                 return std::string("Unable to open file \""+fileName+"\"");
             }

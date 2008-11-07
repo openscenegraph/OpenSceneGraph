@@ -5,6 +5,7 @@
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 #include <osgDB/Registry>
 
 using namespace osg;
@@ -51,7 +52,7 @@ class ReaderWriterIVE : public ReaderWriter
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
-            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             return readImage(istream, local_opt.get());
         }
         
@@ -67,7 +68,7 @@ class ReaderWriterIVE : public ReaderWriter
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
             
-            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             return readNode(istream,local_opt.get());
         }
         
@@ -121,7 +122,7 @@ class ReaderWriterIVE : public ReaderWriter
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             if(local_opt->getDatabasePathList().empty())
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
-            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
             WriteResult result = writeImage(image, fout, local_opt.get());
             fout.close();
@@ -138,7 +139,7 @@ class ReaderWriterIVE : public ReaderWriter
             if(local_opt->getDatabasePathList().empty())
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
-            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
     
             WriteResult result = writeNode(node, fout, local_opt.get());

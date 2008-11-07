@@ -27,10 +27,11 @@
 #include <osg/Timer>
 #include <osg/Notify>
 
+#include <osgDB/fstream>
+
 #include <string>
 #include <vector>
 #include <list>
-#include <fstream>
 
 /**
 
@@ -119,7 +120,7 @@ private:
 
         TraceLevel    _traceLevel;
         std::ostream*    _outputStreamPtr;
-        std::ofstream    _nullStream;
+        osgDB::ofstream  _nullStream;
     };
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

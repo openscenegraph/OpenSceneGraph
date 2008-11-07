@@ -22,7 +22,7 @@
 #include <osgViewer/GraphicsWindow>
 #include <osgViewer/Viewer>
 
-#include <fstream>
+#include <osgDB/fstream>
 
 namespace osgViewer {
 
@@ -252,7 +252,7 @@ protected:
 
         std::string                                     _filename;
         int                                             _autoinc;
-        std::ofstream                                   _fout;
+        osgDB::ofstream                                 _fout;
 
         int                                             _keyEventToggleRecord;
         int                                             _keyEventTogglePlayback;

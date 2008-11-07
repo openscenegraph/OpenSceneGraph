@@ -172,7 +172,7 @@ bool PythonEngine::runFile(const std::string& filePath) {
         return false;
     }
 
-    FILE*     f = fopen(filePath.c_str(), "r");
+    FILE*     f = osgDB::fopen(filePath.c_str(), "r");
     PyObject* r = PyRun_File(f, filePath.c_str(), Py_file_input, _data->main, _data->main);
 
     fclose(f);

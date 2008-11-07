@@ -37,6 +37,8 @@
 #include <dmalloc.h>
 #endif
 
+#include <osgDB/FileUtils>
+
 
 /*!
  * \defgroup file Files
@@ -68,7 +70,7 @@ lib3ds_file_load(const char *filename)
   FILE *f;
   Lib3dsFile *file;
 
-  f=fopen(filename, "rb");
+  f=osgDB::fopen(filename, "rb");
   if (!f) {
     return(0);
   }
@@ -106,7 +108,7 @@ lib3ds_file_save(Lib3dsFile *file, const char *filename)
 {
   FILE *f;
 
-  f=fopen(filename, "wb");
+  f=osgDB::fopen(filename, "wb");
   if (!f) {
     return(LIB3DS_FALSE);
   }

@@ -13,6 +13,8 @@
    ************************
    */
 
+#include <osgDB/FileUtils>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -75,7 +77,7 @@ trpgFilePrintBuffer::trpgFilePrintBuffer(FILE *inFp)
 trpgFilePrintBuffer::trpgFilePrintBuffer(char *file)
 {
     isMine = true;
-    fp = fopen(file,"w");
+    fp = osgDB::fopen(file,"w");
     valid = fp != NULL;
 }
 

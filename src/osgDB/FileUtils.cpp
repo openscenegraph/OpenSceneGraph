@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// currently this impl is for _all_ platforms, execpt as defined.
+// currently this impl is for _all_ platforms, except as defined.
 // the mac version will change soon to reflect the path scheme under osx, but
 // for now, the above include is commented out, and the below code takes precedence.
 
@@ -64,6 +64,8 @@
 #  define S_ISDIR(mode)    (mode&__S_IFDIR)
 #endif
 
+#include <osg/Config>
+#include <osgDB/ConvertUTF>
 #include <osg/Notify>
 
 #include <osgDB/FileUtils>
@@ -73,7 +75,33 @@
 #include <errno.h>
 #include <stack>
 
+namespace osgDB
+{
+#ifdef OSG_USE_UTF8_FILENAME
+#define OSGDB_STRING_TO_FILENAME(s) osgDB::convertUTF8toUTF16(s)
+#define OSGDB_FILENAME_TO_STRING(s) osgDB::convertUTF16toUTF8(s)
+#define OSGDB_FILENAME_TEXT(x) L ## x
+#define OSGDB_WINDOWS_FUNCT(x) x ## W
+typedef wchar_t filenamechar;
+typedef std::wstring filenamestring;
+#else
+#define OSGDB_STRING_TO_FILENAME(s) s
+#define OSGDB_FILENAME_TO_STRING(s) s
+#define OSGDB_FILENAME_TEXT(x) x
+#define OSGDB_WINDOWS_FUNCT(x) x ## A
+typedef char filenamechar;
+typedef std::string filenamestring;
+#endif
+}
 
+FILE* osgDB::fopen(const char* filename, const char* mode)
+{
+#ifdef OSG_USE_UTF8_FILENAME
+    return ::_wfopen(convertUTF8toUTF16(filename).c_str(), convertUTF8toUTF16(mode).c_str());
+#else
+    return ::fopen(filename, mode);
+#endif
+}
 
 bool osgDB::makeDirectory( const std::string &path )
 {
@@ -84,7 +112,11 @@ bool osgDB::makeDirectory( const std::string &path )
     }
     
     struct stat64 stbuf;
+#ifdef OSG_USE_UTF8_FILENAME
+    if( _wstat64( OSGDB_STRING_TO_FILENAME(path).c_str(), &stbuf ) == 0 )
+#else
     if( stat64( path.c_str(), &stbuf ) == 0 )
+#endif
     {
         if( S_ISDIR(stbuf.st_mode))
             return true;
@@ -103,7 +135,11 @@ bool osgDB::makeDirectory( const std::string &path )
         if( dir.empty() )
             break;
  
+#ifdef OSG_USE_UTF8_FILENAME
+        if( _wstat64( OSGDB_STRING_TO_FILENAME(dir).c_str(), &stbuf ) < 0 )
+#else
         if( stat64( dir.c_str(), &stbuf ) < 0 )
+#endif
         {
             switch( errno )
             {
@@ -132,7 +168,11 @@ bool osgDB::makeDirectory( const std::string &path )
             }
         #endif
 
+#ifdef OSG_USE_UTF8_FILENAME
+        if ( _wmkdir(OSGDB_STRING_TO_FILENAME(dir).c_str())< 0 )
+#else
         if( mkdir( dir.c_str(), 0755 )< 0 )
+#endif
         {
             osg::notify(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
             return false;
@@ -174,13 +214,21 @@ void osgDB::convertStringPathIntoFilePathList(const std::string& paths,FilePathL
 
 bool osgDB::fileExists(const std::string& filename)
 {
+#ifdef OSG_USE_UTF8_FILENAME
+    return _waccess( OSGDB_STRING_TO_FILENAME(filename).c_str(), F_OK ) == 0;
+#else
     return access( filename.c_str(), F_OK ) == 0;
+#endif
 }
 
 osgDB::FileType osgDB::fileType(const std::string& filename)
 {
     struct stat64 fileStat;
-    if ( stat64(filename.c_str(), &fileStat) != 0 ) 
+#ifdef OSG_USE_UTF8_FILENAME
+    if ( _wstat64(OSGDB_STRING_TO_FILENAME(filename).c_str(), &fileStat) != 0 )
+#else
+    if ( stat64(filename.c_str(), &fileStat) != 0 )
+#endif
     {
         return FILE_NOT_FOUND;
     } // end if
@@ -381,15 +429,15 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
     {
         osgDB::DirectoryContents contents;
 
-        WIN32_FIND_DATA data;
-        HANDLE handle = FindFirstFile((dirName + "\\*").c_str(), &data);
+        OSGDB_WINDOWS_FUNCT(WIN32_FIND_DATA) data;
+        HANDLE handle = OSGDB_WINDOWS_FUNCT(FindFirstFile)((OSGDB_STRING_TO_FILENAME(dirName) + OSGDB_FILENAME_TEXT("\\*")).c_str(), &data);
         if (handle != INVALID_HANDLE_VALUE)
         {
             do
             {
-                contents.push_back(data.cFileName);
+                contents.push_back(OSGDB_FILENAME_TO_STRING(data.cFileName));
             }
-            while (FindNextFile(handle, &data) != 0);
+            while (OSGDB_WINDOWS_FUNCT(FindNextFile)(handle, &data) != 0);
 
             FindClose(handle);
         }
@@ -497,14 +545,14 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
         //   1. The directory from which the application loaded.
         DWORD retval = 0;
         const DWORD size = MAX_PATH;
-        char path[size];
-        retval = GetModuleFileName(NULL, path, size);
+        filenamechar path[size];
+        retval = OSGDB_WINDOWS_FUNCT(GetModuleFileName)(NULL, path, size);
         if (retval != 0 && retval < size)
         {
-            std::string pathstr(path);
-            std::string executableDir(pathstr, 0, 
-                                      pathstr.find_last_of("\\/"));
-            convertStringPathIntoFilePathList(executableDir, filepath);
+            filenamestring pathstr(path);
+            filenamestring executableDir(pathstr, 0, 
+                                      pathstr.find_last_of(OSGDB_FILENAME_TEXT("\\/")));
+            convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(executableDir), filepath);
         }
         else
         {
@@ -514,11 +562,12 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
 
         //   2. The system directory. Use the GetSystemDirectory function to 
         //      get the path of this directory.
-        char systemDir[(UINT)size];
-        retval = GetSystemDirectory(systemDir, (UINT)size);
+        filenamechar systemDir[(UINT)size];
+        retval = OSGDB_WINDOWS_FUNCT(GetSystemDirectory)(systemDir, (UINT)size);
+
         if (retval != 0 && retval < size)
         {
-            convertStringPathIntoFilePathList(std::string(systemDir), 
+            convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(systemDir), 
                                               filepath);
         }
         else
@@ -533,13 +582,13 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
         //      the path of this directory, but it is searched.
         //   4. The Windows directory. Use the GetWindowsDirectory function to 
         //      get the path of this directory.
-        char windowsDir[(UINT)size];
-        retval = GetWindowsDirectory(windowsDir, (UINT)size);
+        filenamechar windowsDir[(UINT)size];
+        retval = OSGDB_WINDOWS_FUNCT(GetWindowsDirectory)(windowsDir, (UINT)size);
         if (retval != 0 && retval < size)
         {
-            convertStringPathIntoFilePathList(std::string(windowsDir) + 
+            convertStringPathIntoFilePathList(std::string(OSGDB_FILENAME_TO_STRING(windowsDir)) + 
                                               "\\System", filepath);
-            convertStringPathIntoFilePathList(std::string(windowsDir), 
+            convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(windowsDir), 
                                               filepath);
         }
         else
@@ -557,14 +606,18 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
         //   6. The directories that are listed in the PATH environment 
         //      variable. Note that this does not include the per-application 
         //      path specified by the App Paths registry key.
-        char* ptr;
-        if ((ptr = getenv( "PATH" )))
+        filenamechar* ptr;
+#ifdef OSG_USE_UTF8_FILENAME
+        if (ptr = _wgetenv(OSGDB_FILENAME_TEXT("PATH")))
+#else
+        if (ptr = getenv("PATH"))
+#endif
         {
             // Note that on any sane Windows system, some of the paths above
             // will also be on the PATH (the values gotten in systemDir and
             // windowsDir), but the DLL search goes sequentially and stops
             // when a DLL is found, so I see no point in removing duplicates.
-            convertStringPathIntoFilePathList(ptr, filepath);
+            convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(ptr), filepath);
         }
 
         appendInstallationLibraryFilePaths(filepath);

@@ -34,6 +34,7 @@
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 
 #include <stdio.h>
 #include <assert.h>
@@ -189,7 +190,7 @@ public:
         std::string ext = osgDB::getFileExtension(file);
         if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-        std::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
+        osgDB::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
         return writeImage(image,fout,options);

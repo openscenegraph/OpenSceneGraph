@@ -1447,7 +1447,7 @@ struct WriteRowOperator
 
 osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent, int numberOfComponents, const std::string& endian, const std::string& raw_filename)
 {
-    std::ifstream fin(raw_filename.c_str(), std::ifstream::binary);
+    osgDB::ifstream fin(raw_filename.c_str(), std::ifstream::binary);
     if (!fin) return 0;
 
     GLenum pixelFormat;
@@ -1711,7 +1711,7 @@ osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename)
     std::cout<<"Reading transfer function "<<filename<<std::endl;
 
     osg::TransferFunction1D::ValueMap valueMap;
-    std::ifstream fin(foundFile.c_str());
+    osgDB::ifstream fin(foundFile.c_str());
     while(fin)
     {
         float value, red, green, blue, alpha;
@@ -1958,7 +1958,7 @@ int main( int argc, char **argv )
         std::string raw_filename, transfer_filename;
 	int xdim(0), ydim(0), zdim(0);
 
-        std::ifstream header(vh_filename.c_str());
+        osgDB::ifstream header(vh_filename.c_str());
         if (header)
         {
             header >> raw_filename >> transfer_filename >> xdim >> ydim >> zdim >> xSize >> ySize >> zSize;
@@ -1977,7 +1977,7 @@ int main( int argc, char **argv )
         
         if (!transfer_filename.empty())
         {
-            std::ifstream fin(transfer_filename.c_str());
+            osgDB::ifstream fin(transfer_filename.c_str());
             if (fin)
             {
                 osg::TransferFunction1D::ValueMap valueMap;

@@ -6,6 +6,7 @@
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 #include <osgDB/Registry>
 #include <osgDB/Input>
 #include <osgDB/Output>
@@ -47,7 +48,7 @@ class OSGReaderWriter : public ReaderWriter
             osg::ref_ptr<Options> local_opt = opt ? static_cast<Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
-            std::ifstream fin(fileName.c_str());
+            osgDB::ifstream fin(fileName.c_str());
             if (fin)
             {
                 return readObject(fin, local_opt.get());
@@ -108,7 +109,7 @@ class OSGReaderWriter : public ReaderWriter
             osg::ref_ptr<Options> local_opt = opt ? static_cast<Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
-            std::ifstream fin(fileName.c_str());
+            osgDB::ifstream fin(fileName.c_str());
             if (fin)
             {
                 return readNode(fin, local_opt.get());

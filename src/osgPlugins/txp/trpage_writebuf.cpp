@@ -13,6 +13,8 @@
    ************************
    */
 
+#include <osgDB/FileUtils>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -342,12 +344,12 @@ void trpgwAppFile::Init(trpgEndian inNess,const char *fileName,bool reuse)
     cpuNess = trpg_cpu_byte_order();
 
     if (reuse==false) {
-        if (!(fp = fopen(fileName,"wb")))
+        if (!(fp = osgDB::fopen(fileName,"wb")))
             return;
         lengthSoFar = 0;
         valid = true;
     } else {
-        if (!(fp = fopen(fileName,"ab")))
+        if (!(fp = osgDB::fopen(fileName,"ab")))
             return;
         // ftell is still zero, dammit.  Arg.
         fseek(fp,0,SEEK_END);

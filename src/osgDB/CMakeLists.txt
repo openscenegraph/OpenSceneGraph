@@ -10,6 +10,7 @@ SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Archive
     ${HEADER_PATH}/AuthenticationMap
+    ${HEADER_PATH}/ConvertUTF
     ${HEADER_PATH}/DatabasePager
     ${HEADER_PATH}/DotOsgWrapper
     ${HEADER_PATH}/DynamicLibrary
@@ -20,6 +21,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/FileCache
     ${HEADER_PATH}/FileNameUtils
     ${HEADER_PATH}/FileUtils
+    ${HEADER_PATH}/fstream
     ${HEADER_PATH}/ImageOptions
     ${HEADER_PATH}/ImagePager
     ${HEADER_PATH}/Input
@@ -41,6 +43,7 @@ ADD_LIBRARY(${LIB_NAME}
     ${LIB_PUBLIC_HEADERS}
     Archive.cpp
     AuthenticationMap.cpp
+    ConvertUTF.cpp
     DatabasePager.cpp
     DotOsgWrapper.cpp
     DynamicLibrary.cpp
@@ -50,6 +53,7 @@ ADD_LIBRARY(${LIB_NAME}
     FileCache.cpp
     FileNameUtils.cpp
     FileUtils.cpp
+    fstream.cpp
     ImageOptions.cpp
     ImagePager.cpp
     Input.cpp

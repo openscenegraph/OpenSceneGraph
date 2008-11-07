@@ -112,8 +112,8 @@
 #include <osg/Notify>
 #include <osg/io_utils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 
-#include <fstream>
 #include <sstream>
 
 using namespace ive;
@@ -1424,7 +1424,7 @@ void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
             // Include image file in stream
             if(image && !(image->getFileName().empty())) {
                 std::string fullPath = osgDB::findDataFile(image->getFileName(),_options.get());
-                std::ifstream infile(fullPath.c_str(), std::ios::in | std::ios::binary);
+                osgDB::ifstream infile(fullPath.c_str(), std::ios::in | std::ios::binary);
                 if(infile) {
 
                     //Write filename

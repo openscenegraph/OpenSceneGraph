@@ -66,7 +66,7 @@ public:
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
         // code for setting up the database path so that internally referenced file are searched for on relative paths. 
-        std::ifstream fin(fileName.c_str());
+        osgDB::ifstream fin(fileName.c_str());
         if (fin)
         {
             return readObject(fin, options);

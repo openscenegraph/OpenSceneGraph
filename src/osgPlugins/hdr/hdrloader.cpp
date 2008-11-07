@@ -32,6 +32,8 @@
 #include <memory.h>
 #include <stdio.h>
 
+#include <osgDB/FileUtils>
+
 typedef unsigned char RGBE[4];
 #define R            0
 #define G            1
@@ -49,7 +51,7 @@ static bool oldDecrunch(RGBE *scanline, int len, FILE *file);
 bool HDRLoader::isHDRFile(const char *_fileName)
 {
     FILE *file;
-    file = fopen(_fileName, "rb");
+    file = osgDB::fopen(_fileName, "rb");
     if (!file)
         return false;
 
@@ -69,7 +71,7 @@ bool HDRLoader::load(const char *_fileName, const bool _rawRGBE, HDRLoaderResult
     char str[200];
     FILE *file;
 
-    file = fopen(_fileName, "rb");
+    file = osgDB::fopen(_fileName, "rb");
     if (!file)
         return false;
 

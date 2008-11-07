@@ -92,6 +92,9 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         /** Set Window decoration.*/
         virtual bool setWindowDecorationImplementation(bool flag);
 
+        // Override from GUIActionAdapter
+        virtual void requestWarpPointer( float x, float y);
+
         /** Get focus.*/
         virtual void grabFocus();
         

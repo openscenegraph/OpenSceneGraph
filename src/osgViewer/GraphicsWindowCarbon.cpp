@@ -1259,6 +1259,24 @@ void GraphicsWindowCarbon::setWindowName (const std::string& name)
     }
 }
 
+void GraphicsWindowCarbon::requestWarpPointer(float x,float y)
+{
+
+    OSXCarbonWindowingSystemInterface* wsi = dynamic_cast<OSXCarbonWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    if (wsi == NULL) {
+        osg::notify(osg::WARN) << "GraphicsWindowCarbon::useCursor :: could not get OSXCarbonWindowingSystemInterface" << std::endl;
+        return;
+    }
+
+    CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
+
+    CGPoint point;
+    point.x = x;
+    point.y = y;
+    CGDisplayMoveCursorToPoint(displayId, point);
+
+    getEventQueue()->mouseWarped(x,y);
+}
 
 
 void GraphicsWindowCarbon::transformMouseXY(float& x, float& y)

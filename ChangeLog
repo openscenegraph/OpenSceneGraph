@@ -1,3 +1,20 @@
+2008-11-07 17:40 +0000 [r9131]  robert:
+
+	* From Csaba Halasz, fix for hang when running in
+	  CullThreadPerCameraDrawThreadPerContext threading model.
+
+2008-11-07 17:23 +0000 [r9130]  robert:
+
+	* Fixed typo
+
+2008-11-07 17:07 +0000 [r9129]  robert:
+
+	* Fixed build under gcc 4.3.2
+
+2008-11-07 16:26 +0000 [r9128]  robert:
+
+	* Updated ChangeLog and version number for 2.7.5 release
+
 2008-11-07 16:14 +0000 [r9127]  robert:
 
 	* Removed fstream for wrapper due to problems with wrapping.

@@ -1,3 +1,186 @@
+2008-11-07 16:14 +0000 [r9127]  robert:
+
+	* Removed fstream for wrapper due to problems with wrapping.
+
+2008-11-07 16:03 +0000 [r9126]  robert:
+
+	* Removed due to problems with build
+
+2008-11-07 15:38 +0000 [r9125]  robert:
+
+	* Updated wrappers
+
+2008-11-07 15:08 +0000 [r9124]  robert:
+
+	* From Michael Platings, Converted std::fstream/ifstream/ofstream
+	  to osgDB::fstream/ifstream/ofstream and fopen to osgDB::fopen to
+	  facilitate support for wide character filenames using UT8
+	  encoding.
+
+2008-11-07 15:01 +0000 [r9123]  robert:
+
+	* Converted tabs to four spaces
+
+2008-11-07 13:18 +0000 [r9122]  robert:
+
+	* From Tim Moore, removed redundent forward declartion of
+	  BoundingBox and BoundingSphere
+
+2008-11-07 10:23 +0000 [r9120]  robert:
+
+	* From Martins Innus, "Here is a fix to add requestWarpPointer for
+	  OS X. It seems to work for me, I just took what osgProducer had.
+	  These are updated files to 2.7.3"
+
+2008-11-06 16:48 +0000 [r9118]  robert:
+
+	* Changed to using stdio.h.
+
+2008-11-06 14:56 +0000 [r9117]  robert:
+
+	* Updated wrappers
+
+2008-11-06 14:46 +0000 [r9116]  robert:
+
+	* Fixed constness of getTexture/getRenderBuffer() const and added
+	  non cost version.
+
+2008-11-06 14:29 +0000 [r9115]  robert:
+
+	* From Michael Platings, "I've added functions to get the texture,
+	  renderbuffer and other properties from a FrameBufferAttachment."
+
+2008-11-06 14:17 +0000 [r9114]  robert:
+
+	* From Kyle Centers, removed redundent check to
+	  _currentContext.valid().
+
+2008-11-06 14:04 +0000 [r9113]  robert:
+
+	* From Csaba Halasz, adding missing export directives
+
+2008-11-06 13:57 +0000 [r9112]  robert:
+
+	* From Thomas Wedner, "use osgViewer::CompositeViewer with several
+	  views. All views share parts of their scene graphs. Within these
+	  common part some nodes have event handlers which use the action
+	  adapter argument to the event handler to determinate which view
+	  received the event. Here is the problem,
+	  osgViewer::CompositeViewer::eventTraversal sets the action
+	  adapter field in the EventVisitor always to the last view which
+	  received an event, instead of using the view which actually
+	  received the event, so determination of the correct view does not
+	  work. I looked at the code a bit, and moved the code for setting
+	  the action adapter to a IMO better place"
+
+2008-11-06 13:40 +0000 [r9109-9111]  robert:
+
+	* From Ulrich Hertleinm "cmake 2.6 is having trouble on Mac OS X
+	  because example/CMakeLists.txt addes subdirectory osgviewerGLUT
+	  twice. I took the liberty to remove the second occurrence. "
+
+	* Fixed IntersectionVisitor::accept(Camera) handling of relative
+	  Cameras.
+
+	* From Chris Denham, added transform to cube to test picking fixes
+
+2008-11-05 16:06 +0000 [r9106]  robert:
+
+	* Removed redundent static ImageStream pointer
+
+2008-11-05 15:59 +0000 [r9105]  robert:
+
+	* Added --no-rescale, --rescale (default) and --shift-min-to-zero
+	  command line options for controlling how the pixel data is
+	  managed.
+
+2008-11-05 15:04 +0000 [r9102-9103]  robert:
+
+	* Added --replace-rgb-with-luminance option
+
+	* Added support for different pixel formats and datatypes in
+	  copyImage() method
+
+2008-11-05 11:56 +0000 [r9100]  robert:
+
+	* Fixed return value of ArgumentParser::find() for when the search
+	  string is not found, the correct value is now -1.
+
+2008-11-05 10:29 +0000 [r9098-9099]  robert:
+
+	* Added extra data types info to debug message
+
+	* Added Thread::Init() to CurrentThread
+
+2008-11-04 16:31 +0000 [r9096]  robert:
+
+	* Compiled fix for gcc 4.3.2
+
+2008-11-04 12:57 +0000 [r9095]  robert:
+
+	* Fixed --images commandline parsing
+
+2008-11-03 16:55 +0000 [r9092]  robert:
+
+	* Added GPL copyright notice
+
+2008-11-03 16:31 +0000 [r9091]  robert:
+
+	* Added handling of texture matrices and texture rectangles in
+	  InteractiveImageHandler
+
+2008-11-03 15:58 +0000 [r9089-9090]  robert:
+
+	* Refactored osgvnc example to utilise the new vnc plugin
+
+	* Added vnc plugin.
+
+2008-11-03 15:08 +0000 [r9088]  robert:
+
+	* Added sendPointerEvent and sendKeyEvent virtual methods to
+	  osg::Image to facilitate the subclassing of Image providing
+	  interactive behaviours so as used in the vnc interactive VncImage
+	  class. osgViewer::InteractiveImageHandler provides an event
+	  handler that convertes osgGA mouse and keyboard events into the
+	  coordinate frame of an image based on ray intersection with
+	  geometry in the associated subgraph. Changed the ordering of
+	  events processing in Viewer and CompositeViewer to allow scene
+	  graph event handlers to take precidence over viewer event
+	  handlers and camera manipulators
+
+2008-11-03 15:03 +0000 [r9087]  robert:
+
+	* Changed version number to 2.7.5 in prep for dev release
+
+2008-11-03 10:17 +0000 [r9086]  robert:
+
+	* Changed Tiff plugin to link to TIFF_LIBRARIES to handle case
+	  where JPEG and ZLIB are dependencies.
+
+2008-10-31 16:48 +0000 [r9084]  robert:
+
+	* Wrapped up the various client streaming methods + thread into
+	  VncImage classes.
+
+2008-10-31 13:59 +0000 [r9083]  robert:
+
+	* Implemented keyboard and mouse dispatch from vnc client to vnc
+	  server.
+
+2008-10-31 12:03 +0000 [r9082]  robert:
+
+	* Added very basic osgvnc example that uses the LibVNCServer client
+	  libries for implementing a vnc client as an osg::Image with the
+	  vnc data stream going to it.
+
+2008-10-30 13:05 +0000 [r9080]  robert:
+
+	* Removed renduent osgDB::Registry DatabasePager methods
+
+2008-10-29 12:04 +0000 [r9078]  robert:
+
+	* Updated ChangeLog, AUTHORS.txt and README.txt for 2.4.7 release
+
 2008-10-29 11:51 +0000 [r9077]  robert:
 
 	* From Blasius Czink, "changed the CHECK_CXX_SOURCE_RUNS macro

@@ -282,6 +282,8 @@ std::string typoCorrection(const std::string& name)
     if (name=="Gronenger") return "Gronager";
     if (name=="Gronger") return "Gronager";
     if (name=="Hebelin") return "Herbelin";
+    if (name=="Wedner") return "Weidner";
+    if (name=="Hertleinm") return "Hertlein";
     if (name=="Heirtlein") return "Hertlein";
     if (name=="Heirtlein") return "Hertlein";
     if (name=="Heirtlein") return "Hertlein";

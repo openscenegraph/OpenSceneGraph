@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.7.4
+OpenSceneGraph Library 2.7.5
 
-346 Contributors:
+349 Contributors:
 
 Firstname Surname
 -----------------
@@ -37,6 +37,7 @@ Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
+Michael Platings
 Art Tevs
 Adrian Egli
 Paul Melis
@@ -46,7 +47,6 @@ Gideon May
 Don Tidrow
 Romano José Magacho da Silva
 Per Fahlberg
-Michael Platings
 Michael Gronager
 Mathieu Marache
 J.P. Delport
@@ -57,11 +57,11 @@ David Spilling
 Philip Lowman
 Melchior Franz
 Joakim Simonsson
+Chris Denham
 Joran Jessurun
 Jason Daly
 Frederic Marmond
 David Fries
-Chris Denham
 Boris Bralo
 Yefei He
 Terry Welsh
@@ -92,6 +92,7 @@ Glenn Waldron
 Gino van den Bergen
 Brad Colbert
 Vivek Rajan
+Tim Moore
 Thibault Genessay
 Sean Spicer
 Roland Smeenk
@@ -107,7 +108,6 @@ Corbin Holtz
 Cedric Pinson
 Brad Christiansen
 Toshiyuki Takahei
-Tim Moore
 Thom DeCarlo
 Simon Julier
 Sebastien Grignard
@@ -147,6 +147,7 @@ Doug McCorkle
 Donn Mielcarek
 Donald Cipperly
 Domenico Mangieri
+Csaba Halasz
 Charles Cole
 Blake Williams
 Antoine Hue
@@ -192,7 +193,6 @@ Erik den Dekker
 Edgar Ellis
 David Ergo
 Daniel Trstenjak
-Csaba Halasz
 Christophe Loustaunau
 Brad Anderegg
 Andrew Sampson
@@ -215,6 +215,7 @@ Tyge
 Troy Yee
 Tomas Hnilica
 Tino Schwarze
+Thomas Weidner
 Thom Carlo
 Tery Welsh
 Tanguy Fautré
@@ -264,6 +265,7 @@ Matt Green
 Matt Burke
 Mathia Walker
 Mason Menninger
+Martins Innus
 Martin Spott
 Martin Amueller
 Mario Guimaraes
@@ -275,6 +277,7 @@ Louis Hamilton
 Lilin Xiong
 Lewis Harmon
 Lars Nilson
+Kyle Centers
 Kristopher Bixler
 Katharina Plugge
 Karsten Weiss

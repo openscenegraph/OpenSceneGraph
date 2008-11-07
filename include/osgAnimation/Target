@@ -54,13 +54,15 @@ namespace osgAnimation
         TemplateTarget() {}
         TemplateTarget(const T& v) { setValue(v); }
 
-        void update(float weight, const T& val) 
-        { 
-            // it should be out of this scope for performance
+        void update(float weight, const T& val)
+        {
             if (!_weight)
-                _target = val * weight; 
+                _target = val * weight;
             else
+            {
+                weight = (1.0 - _weight) * weight;
                 _target += val * weight;
+            }
             addWeight(weight);
         }
         const T& getValue() const { return _target;}
@@ -68,7 +70,7 @@ namespace osgAnimation
         void normalize() 
         {
             float weightSummed = getWeight();
-            if (fabs(weightSummed) < 1e-3 || fabs(weightSummed-1) < 1e-3)
+            if (fabs(weightSummed) < 1e-4 || fabs(weightSummed-1) < 1e-4)
                 return;
             (_target) /= weightSummed;
         }
@@ -92,11 +94,13 @@ namespace osgAnimation
         const osg::Quat& getValue() const { return _target;}
         void update(float weight, const osg::Quat& val) 
         { 
-            // it should be out of this scope for performance
             if (!_weight)
-                _target = val * weight; 
+                _target = val * weight;
             else
+            {
+                weight = (1.0 - _weight) * weight;
                 _target += val * weight;
+            }
             addWeight(weight);
         }
 
@@ -104,7 +108,7 @@ namespace osgAnimation
         void normalize() 
         {
             float weightSummed = getWeight();
-            if (weightSummed > 1e-2) // do nothing if 0
+            if (fabs(weightSummed) < 1e-4 || fabs(weightSummed-1) < 1e-4)
                 (_target) /= weightSummed;
         }
 

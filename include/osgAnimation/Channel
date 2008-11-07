@@ -80,9 +80,11 @@ namespace osgAnimation
         virtual ~TemplateChannel() {}
         virtual void update(float time) 
         {
+            // skip if weight == 0
+            if (_weight < 1e-4)
+                return;
             typename SamplerType::UsingType value;
             _sampler->getValueAt(time, value);
-            OSGANIMATION_ASSERT(_weight);
             _target->update(_weight, value);
         }
         virtual void reset() { _target->reset(); }

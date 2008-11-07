@@ -67,7 +67,7 @@ namespace osgAnimation
         void update (double time);
         void buildTargetReference();
         void registerAnimation (Animation* pAnimation);
-        void playAnimation (Animation* pAnimation, float weight = 1.0);
+        void playAnimation (Animation* pAnimation, int priority = 0, float weight = 1.0);
         bool stopAnimation (Animation* pAnimation);
 
         bool findAnimation (Animation* pAnimation);
@@ -80,10 +80,11 @@ namespace osgAnimation
 
         void stopAll();
     
-
     protected:
-        AnimationList _listAnimation;
-        AnimationList _listAnimPlaying;
+        typedef std::map<int, AnimationList > AnimationLayers;
+
+        AnimationList _animations;
+        AnimationLayers _animationsPlaying;
         TargetSet _targets;
         bool _needToLink;
 

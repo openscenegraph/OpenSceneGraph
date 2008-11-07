@@ -24,7 +24,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Vec3Packed
 	${HEADER_PATH}/AnimationManager
 	${HEADER_PATH}/UpdateCallback
-	${HEADER_PATH}/NodeVisitor
+	${HEADER_PATH}/LinkVisitor
 	${HEADER_PATH}/VertexInfluence
 	${HEADER_PATH}/EaseMotion
 	${HEADER_PATH}/Assert

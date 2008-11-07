@@ -13,7 +13,7 @@
 */
 
 #include <osgAnimation/AnimationManager>
-#include <osgAnimation/NodeVisitor>
+#include <osgAnimation/LinkVisitor>
 #include <osgAnimation/Assert>
 
 using namespace osgAnimation;
@@ -24,8 +24,14 @@ AnimationManager::~AnimationManager() {}
 
 void AnimationManager::stopAll()
 {
-    while (!_listAnimPlaying.empty())
-        stopAnimation((*_listAnimPlaying.begin()).get());
+    // loop over all playing animation
+    for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim ) 
+    {
+        AnimationList& list = iterAnim->second;
+        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+            (*it)->resetTargets();
+    }
+    _animationsPlaying.clear();
 }
 
 AnimationManager::AnimationManager()
@@ -38,12 +44,12 @@ AnimationManager::AnimationManager()
 osgAnimation::AnimationMap AnimationManager::getAnimationMap() const
 {
     osgAnimation::AnimationMap map;
-    for (AnimationList::const_iterator it = _listAnimation.begin(); it != _listAnimation.end(); it++)
+    for (AnimationList::const_iterator it = _animations.begin(); it != _animations.end(); it++)
         map[(*it)->getName()] = *it;
     return map;
 }
 
-void AnimationManager::playAnimation(Animation* pAnimation, float weight)
+void AnimationManager::playAnimation(Animation* pAnimation, int priority, float weight)
 {
     bool r = findAnimation(pAnimation);
     OSGANIMATION_ASSERT(r && "This animation is not registered");
@@ -51,20 +57,24 @@ void AnimationManager::playAnimation(Animation* pAnimation, float weight)
     if ( isPlaying(pAnimation) )
         stopAnimation(pAnimation);
   
-    _listAnimPlaying.push_back(pAnimation); 
+    _animationsPlaying[priority].push_back(pAnimation);
     pAnimation->setStartTime(_lastUpdate);
-    pAnimation->setWeight(weight);  
+    pAnimation->setWeight(weight);
 }
 
 bool AnimationManager::stopAnimation(Animation* pAnimation)
 {
-    // search though the list and remove animation
-    for( AnimationList::iterator iterAnim = _listAnimPlaying.begin(); iterAnim != _listAnimPlaying.end(); ++iterAnim ) {
-        if( (*iterAnim) == pAnimation ) {
-            (*iterAnim)->resetTargets();
-            _listAnimPlaying.erase(iterAnim);
-            return true;
-        }
+    // search though the layer and remove animation
+    for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim ) 
+    {
+        AnimationList& list = iterAnim->second;
+        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+            if( (*it) == pAnimation )
+            {
+                (*it)->resetTargets();
+                list.erase(it);
+                return true;
+            }
     }
     return false;
 }
@@ -73,7 +83,8 @@ bool AnimationManager::stopAnimation(Animation* pAnimation)
 void AnimationManager::buildTargetReference()
 {
     _targets.clear();
-    for( AnimationList::iterator iterAnim = _listAnimation.begin(); iterAnim != _listAnimation.end(); ++iterAnim ) {
+    for( AnimationList::iterator iterAnim = _animations.begin(); iterAnim != _animations.end(); ++iterAnim ) 
+    {
         for (ChannelList::iterator it = (*iterAnim)->getChannels().begin();
              it != (*iterAnim)->getChannels().end();
              it++)
@@ -90,17 +101,25 @@ void AnimationManager::update (double time)
     for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
         (*it).get()->reset();
 
-    // update all target
-    std::vector<int> toremove;
-    for( int i = 0; i < (int)_listAnimPlaying.size(); i++ )
-        if (! _listAnimPlaying[i]->update(time))
-            toremove.push_back(i);
 
-    // erase finished animation
-    while (!toremove.empty())
+    // update from high priority to low priority
+    for( AnimationLayers::reverse_iterator iterAnim = _animationsPlaying.rbegin(); iterAnim != _animationsPlaying.rend(); ++iterAnim )
     {
-        _listAnimPlaying.erase(_listAnimPlaying.begin() + toremove.back());
-        toremove.pop_back();
+        // update all animation
+        std::vector<int> toremove;
+        AnimationList& list = iterAnim->second;
+        for (int i = 0; i < list.size(); i++)
+        {
+            if (! list[i]->update(time))
+                toremove.push_back(i);
+        }
+
+        // remove finished animation
+        while (!toremove.empty())
+        {
+            list.erase(list.begin() + toremove.back());
+            toremove.pop_back();
+        }
     }
 
     for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
@@ -110,7 +129,7 @@ void AnimationManager::update (double time)
 void AnimationManager::registerAnimation (Animation* pAnimation)
 {
     _needToLink = true;
-    _listAnimation.push_back(pAnimation);
+    _animations.push_back(pAnimation);
     buildTargetReference();
 }
 
@@ -120,7 +139,7 @@ bool AnimationManager::needToLink() const { return _needToLink; }
 
 void AnimationManager::link()
 {
-    LinkVisitor linker(_listAnimation);
+    LinkVisitor linker(_animations);
     accept(linker);
     _needToLink = false;
     buildTargetReference();
@@ -128,7 +147,7 @@ void AnimationManager::link()
 
 bool AnimationManager::findAnimation(Animation* pAnimation) 
 {
-    for( AnimationList::const_iterator iterAnim = _listAnimation.begin(); iterAnim != _listAnimation.end(); ++iterAnim ) 
+    for( AnimationList::const_iterator iterAnim = _animations.begin(); iterAnim != _animations.end(); ++iterAnim ) 
     {
         if ( (*iterAnim) == pAnimation )
             return true;
@@ -136,22 +155,28 @@ bool AnimationManager::findAnimation(Animation* pAnimation)
     return false;
 }
 
+
 bool AnimationManager::isPlaying(Animation* pAnimation) 
 {
-    for( AnimationList::const_iterator iterAnim = _listAnimPlaying.begin(); iterAnim != _listAnimPlaying.end(); ++iterAnim ) 
+    for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
-        if ( (*iterAnim) == pAnimation )
-            return true;
+        AnimationList& list = iterAnim->second;
+        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+            if ( (*it) == pAnimation )
+                return true;
     }
     return false;
 }
 
 bool AnimationManager::isPlaying(const std::string& name)
 {
-    for( AnimationList::const_iterator iterAnim = _listAnimPlaying.begin(); iterAnim != _listAnimPlaying.end(); ++iterAnim ) 
+    // loop over all playing animation
+    for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
-        if ( (*iterAnim)->getName() == name )
-            return true;
+        AnimationList& list = iterAnim->second;
+        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+            if ( (*it)->getName() == name )
+                return true;
     }
     return false;
 }

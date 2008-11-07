@@ -38,10 +38,10 @@ trpgr_Archive::trpgr_Archive()
 trpgr_Archive::~trpgr_Archive()
 {
     if (fp)
-	fclose(fp);
+        fclose(fp);
     fp = NULL;
     if (tileCache)
-	delete tileCache;
+        delete tileCache;
 }
 
 int32 trpgr_Archive::GetHeaderData(char *dataPtr, int length, FILE *filehandle)
@@ -65,30 +65,30 @@ bool trpgr_Archive::OpenFile(const char *name)
     CloseFile();
 
     if (!(fp = fopen(file,"rb")))
-	return false;
+        return false;
 
     // Look for a magic # and endianness
     int32 magic;
     if (fread(&magic,sizeof(int32),1,fp) != 1)
-	return false;
+        return false;
 
     headerRead = false;
 
     // Figure out the endianness from the magic number
     trpgEndian cpuNess = trpg_cpu_byte_order();
     if (magic == GetMagicNumber()) {
-	ness = cpuNess;
-	return true;
+        ness = cpuNess;
+        return true;
     }
     if (trpg_byteswap_int(magic) == GetMagicNumber()) {
-	if (cpuNess == LittleEndian)
-	    ness = BigEndian;
-	else
-	    ness = LittleEndian;
-	return true;
+        if (cpuNess == LittleEndian)
+            ness = BigEndian;
+        else
+            ness = LittleEndian;
+        return true;
     }
     if (magic != GetMagicNumber())
-	return false;
+        return false;
 
     // Not one of our files
     return false;
@@ -106,7 +106,7 @@ trpgrImageHelper* trpgr_Archive::GetNewRImageHelper(trpgEndian ness,char *dir,co
     int majorVer,minorVer;
     GetHeader()->GetVersion(majorVer,minorVer);
     if((majorVer >= TRPG_NOMERGE_VERSION_MAJOR) && (minorVer>=TRPG_NOMERGE_VERSION_MINOR)) {
-	separateGeo = true;
+        separateGeo = true;
     }
     return new trpgrImageHelper(ness,dir,matTable,texTable,separateGeo);
 }
@@ -116,10 +116,10 @@ trpgrImageHelper* trpgr_Archive::GetNewRImageHelper(trpgEndian ness,char *dir,co
 void trpgr_Archive::CloseFile()
 {
     if (fp)
-	fclose(fp);
+        fclose(fp);
     fp = NULL;
     if (tileCache)
-	delete tileCache;
+        delete tileCache;
     tileCache = NULL;
 }
 
@@ -140,53 +140,53 @@ bool trpgr_Archive::ReadSubArchive(int row, int col, trpgEndian cpuNess)
     sprintf(blockpath,"%s%s%d%s%d%sarchive.txp",dir,PATHSEPERATOR,col,PATHSEPERATOR,row,PATHSEPERATOR);
     FILE *bfp = fopen(blockpath,"rb");
     if(!bfp) {
-	return false;
+        return false;
     }
     // Look for a magic # and endianness
     int32 bmagic;
     if (fread(&bmagic,sizeof(int32),1,bfp) != 1)
-	return false;
+        return false;
     // The block archive will always be the same endianness as the master
     if ( (bmagic != GetMagicNumber()) && (trpg_byteswap_int(bmagic) != GetMagicNumber()) )
-	return false;
+        return false;
     
     int32 bheaderSize=0;
     if (fread(&bheaderSize,sizeof(int32),1,bfp) != 1) 
-	return false;
+        return false;
     if (ness != cpuNess)
-	bheaderSize = trpg_byteswap_int(bheaderSize);
+        bheaderSize = trpg_byteswap_int(bheaderSize);
     int bheadLen = bheaderSize;
     if (bheadLen < 0)  
-	return false;
+        return false;
 
     // Read in the header whole
     trpgMemReadBuffer bbuf(ness);
     bbuf.SetLength(bheadLen);
     char *bdata = bbuf.GetDataPtr();
     if ((ret = GetHeaderData(bdata,bheadLen,bfp)) != bheadLen)  
-	return false;
-    //keep track of where this came from in the master table.	
+        return false;
+    //keep track of where this came from in the master table.        
     tileTable.SetCurrentBlock(row,col,true);
     texTable.SetCurrentBlock(row,col);
     
     bparser.AddCallback(TRPGHEADER,&blockHeader);
     bparser.AddCallback(TRPGMATTABLE,&materialTable);    // Went back to oldest style for 2.0
     //if(!headerHasTexTable) {
-    bparser.AddCallback(TRPGTEXTABLE2,&texTable);	    // Added for 2.0
+    bparser.AddCallback(TRPGTEXTABLE2,&texTable);            // Added for 2.0
     //}
     bparser.AddCallback(TRPGMODELTABLE,&modelTable);
-    bparser.AddCallback(TRPGLIGHTTABLE,&lightTable);		// Added for 2.0
-    bparser.AddCallback(TRPGRANGETABLE,&rangeTable);		// Added for 2.0
-    bparser.AddCallback(TRPG_TEXT_STYLE_TABLE,&textStyleTable);		// Added for 2.1
-    bparser.AddCallback(TRPG_SUPPORT_STYLE_TABLE,&supportStyleTable);	
-    bparser.AddCallback(TRPG_LABEL_PROPERTY_TABLE,&labelPropertyTable);	
+    bparser.AddCallback(TRPGLIGHTTABLE,&lightTable);                // Added for 2.0
+    bparser.AddCallback(TRPGRANGETABLE,&rangeTable);                // Added for 2.0
+    bparser.AddCallback(TRPG_TEXT_STYLE_TABLE,&textStyleTable);                // Added for 2.1
+    bparser.AddCallback(TRPG_SUPPORT_STYLE_TABLE,&supportStyleTable);        
+    bparser.AddCallback(TRPG_LABEL_PROPERTY_TABLE,&labelPropertyTable);        
     // Don't read the tile table for v1.0 archives
     // It's only really used for 2.0 archives
     bparser.AddCallback(TRPGTILETABLE2,&tileTable);
 
     // Parse the buffer
     if (!bparser.Parse(bbuf))
-	return false;
+        return false;
     //close the block archive
     fclose(bfp);
 
@@ -207,7 +207,7 @@ bool trpgr_Archive::ReadHeader(bool readAllBlocks)
     int ret;
 
     if (!fp || headerRead)
-	return false;
+        return false;
 
     headerRead = true;
 
@@ -215,19 +215,19 @@ bool trpgr_Archive::ReadHeader(bool readAllBlocks)
     trpgEndian cpuNess = trpg_cpu_byte_order();
     int32 headerSize;
     if (fread(&headerSize,sizeof(int32),1,fp) != 1) 
-	return false;
+        return false;
     if (ness != cpuNess)
-	headerSize = trpg_byteswap_int(headerSize);
+        headerSize = trpg_byteswap_int(headerSize);
     int headLen = headerSize;
     if (headLen < 0)  
-	return false;
+        return false;
 
     // Read in the header whole
     trpgMemReadBuffer buf(ness);
     buf.SetLength(headLen);
     char *data = buf.GetDataPtr();
     if ((ret = GetHeaderData(data,headLen,fp)) != headLen)  
-	return false;
+        return false;
 
     // Set up a parser
     // Catch the tables we need for the archive
@@ -238,52 +238,52 @@ bool trpgr_Archive::ReadHeader(bool readAllBlocks)
     parser.AddCallback(TRPGMATTABLE,&materialTable);    // Went back to oldest style for 2.0
     parser.AddCallback(TRPGMATTABLE2,&oldMatTable);     // Added 11-14-98 (1.0 material table)
     parser.AddCallback(TRPGTEXTABLE,&oldTexTable);
-    parser.AddCallback(TRPGTEXTABLE2,&texTable);	    // Added for 2.0
+    parser.AddCallback(TRPGTEXTABLE2,&texTable);            // Added for 2.0
     parser.AddCallback(TRPGMODELTABLE,&modelTable);
-    parser.AddCallback(TRPGLIGHTTABLE,&lightTable);		// Added for 2.0
-    parser.AddCallback(TRPGRANGETABLE,&rangeTable);		// Added for 2.0
-    parser.AddCallback(TRPG_TEXT_STYLE_TABLE,&textStyleTable);		// Added for 2.1
-    parser.AddCallback(TRPG_SUPPORT_STYLE_TABLE,&supportStyleTable);	
-    parser.AddCallback(TRPG_LABEL_PROPERTY_TABLE,&labelPropertyTable);	
+    parser.AddCallback(TRPGLIGHTTABLE,&lightTable);                // Added for 2.0
+    parser.AddCallback(TRPGRANGETABLE,&rangeTable);                // Added for 2.0
+    parser.AddCallback(TRPG_TEXT_STYLE_TABLE,&textStyleTable);                // Added for 2.1
+    parser.AddCallback(TRPG_SUPPORT_STYLE_TABLE,&supportStyleTable);        
+    parser.AddCallback(TRPG_LABEL_PROPERTY_TABLE,&labelPropertyTable);        
     // Don't read the tile table for v1.0 archives
     // It's only really used for 2.0 archives
     parser.AddCallback(TRPGTILETABLE2,&tileTable);
 
     // Parse the buffer
     if (!parser.Parse(buf))
-	return false;
+        return false;
 
     if(header.GetIsMaster()) 
     {
-	// bool firstBlock = true;
-	bool headerHasTexTable = false;
-	//if the master has textures, we want to use them instead of the tables in the
-	//block archives
-	int numTex = 0;
-	texTable.GetNumTextures(numTex);
-	if(numTex)
-	    headerHasTexTable = true;
-	// int numTiles = 0;
-	//tileTable.
-	int totalrows,totalcols;
-	trpg2dPoint mhdr_swExtents;
-	trpg2dPoint mhdr_neExtents;
-	trpg3dPoint mhdr_Origin;
-	// integrate header information from the block header.
-	header.GetExtents(mhdr_swExtents,mhdr_neExtents);
-	header.GetOrigin(mhdr_Origin);
-	header.GetBlocks(totalrows,totalcols);
-	if(readAllBlocks) {
-	    for(int row=0;row<totalrows;row++) {
-		for(int col=0;col<totalcols;col++) {
-		    // Read each block -- Warning, this can take a while!!!
-		    ReadSubArchive( row, col, cpuNess);
-		}
-	    }
-	}
-	else {
-	    ReadSubArchive( 0, 0, cpuNess);//Get the first archive!
-	}
+        // bool firstBlock = true;
+        bool headerHasTexTable = false;
+        //if the master has textures, we want to use them instead of the tables in the
+        //block archives
+        int numTex = 0;
+        texTable.GetNumTextures(numTex);
+        if(numTex)
+            headerHasTexTable = true;
+        // int numTiles = 0;
+        //tileTable.
+        int totalrows,totalcols;
+        trpg2dPoint mhdr_swExtents;
+        trpg2dPoint mhdr_neExtents;
+        trpg3dPoint mhdr_Origin;
+        // integrate header information from the block header.
+        header.GetExtents(mhdr_swExtents,mhdr_neExtents);
+        header.GetOrigin(mhdr_Origin);
+        header.GetBlocks(totalrows,totalcols);
+        if(readAllBlocks) {
+            for(int row=0;row<totalrows;row++) {
+                for(int col=0;col<totalcols;col++) {
+                    // Read each block -- Warning, this can take a while!!!
+                    ReadSubArchive( row, col, cpuNess);
+                }
+            }
+        }
+        else {
+            ReadSubArchive( 0, 0, cpuNess);//Get the first archive!
+        }
 
     }
     tileTable.SetCurrentBlock(-1,-1,false);
@@ -292,18 +292,18 @@ bool trpgr_Archive::ReadHeader(bool readAllBlocks)
     // If we see an older style material table, convert it to the new style
     // This isn't terribly memory efficient, but it does work
     if (oldMatTable.isValid())
-	materialTable = oldMatTable;
+        materialTable = oldMatTable;
     if (oldTexTable.isValid())
-	texTable = oldTexTable;
+        texTable = oldTexTable;
 
     // Set up a tile cache, if needed
     trpgTileTable::TileMode tileMode;
     tileTable.GetMode(tileMode);
     if (tileMode == trpgTileTable::Local) {
-	if (tileCache)  delete tileCache;
-	char fullBase[1024];
-	sprintf(fullBase,"%s" PATHSEPERATOR "tileFile",dir);
-	tileCache = GetNewRAppFileCache(fullBase,"tpf");
+        if (tileCache)  delete tileCache;
+        char fullBase[1024];
+        sprintf(fullBase,"%s" PATHSEPERATOR "tileFile",dir);
+        tileCache = GetNewRAppFileCache(fullBase,"tpf");
     }
 
     valid = true;
@@ -318,46 +318,46 @@ bool trpgr_Archive::ReadHeader(bool readAllBlocks)
 bool trpgr_Archive::ReadTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuffer &buf)
 {
     if (!isValid()) 
-	return false;
+        return false;
 
     // Reality check the address
     int32 numLods;
     header.GetNumLods(numLods);
     if (static_cast<int>(lod) >= numLods) 
-	return false;
+        return false;
     trpg2iPoint lodSize;
     header.GetLodSize(lod,lodSize);
     if (static_cast<int>(x) >= lodSize.x || static_cast<int>(y) >= lodSize.y) 
-	return false;
+        return false;
 
     trpgTileTable::TileMode tileMode;
     tileTable.GetMode(tileMode);
 
     bool status = true;
     if (tileMode == trpgTileTable::External || tileMode == trpgTileTable::ExternalSaved) {
-	status = ReadExternalTile(x, y, lod, buf);
-	
+        status = ReadExternalTile(x, y, lod, buf);
+        
     } else {
-	// Local tile.  Figure out where it is (which file)
-	int majorVersion, minorVersion;
-	header.GetVersion(majorVersion, minorVersion);
-	if(majorVersion == 2 && minorVersion >=1)
-	{
-	    // Version 2.1
-	    // Tile table contains only lod 0 tiles
-	    if(lod != 0)
-		status = false;
-	}
+        // Local tile.  Figure out where it is (which file)
+        int majorVersion, minorVersion;
+        header.GetVersion(majorVersion, minorVersion);
+        if(majorVersion == 2 && minorVersion >=1)
+        {
+            // Version 2.1
+            // Tile table contains only lod 0 tiles
+            if(lod != 0)
+                status = false;
+        }
 
-	if(status)
-	{
-	    trpgwAppAddress addr;
-	    float zmin,zmax;
-	    status = tileTable.GetTile(x,y,lod,addr,zmin,zmax);
+        if(status)
+        {
+            trpgwAppAddress addr;
+            float zmin,zmax;
+            status = tileTable.GetTile(x,y,lod,addr,zmin,zmax);
 
-	    if(status)
-		status = ReadTile(addr, buf);
-	}
+            if(status)
+                status = ReadTile(addr, buf);
+        }
     }
 
     return status;
@@ -370,42 +370,42 @@ bool trpgr_Archive::ReadExternalTile(uint32 x,uint32 y,uint32 lod,trpgMemReadBuf
     int majorVer,minorVer;
     header.GetVersion(majorVer,minorVer);
     if((majorVer >= TRPG_NOMERGE_VERSION_MAJOR) && (minorVer >= TRPG_NOMERGE_VERSION_MINOR)) {
-	int blockx,blocky;
-	unsigned int denom = (1 << lod); // this should work up to lod 31
-	blockx = x/denom;
-	blocky = y/denom;
-	sprintf(filename,"%s" PATHSEPERATOR "%d" PATHSEPERATOR "%d" PATHSEPERATOR "tile_%d_%d_%d.tpt",
-		dir,blockx,blocky,x,y,lod);
+        int blockx,blocky;
+        unsigned int denom = (1 << lod); // this should work up to lod 31
+        blockx = x/denom;
+        blocky = y/denom;
+        sprintf(filename,"%s" PATHSEPERATOR "%d" PATHSEPERATOR "%d" PATHSEPERATOR "tile_%d_%d_%d.tpt",
+                dir,blockx,blocky,x,y,lod);
     }
     else {
-	sprintf(filename,"%s" PATHSEPERATOR "tile_%d_%d_%d.tpt",dir,x,y,lod);
+        sprintf(filename,"%s" PATHSEPERATOR "tile_%d_%d_%d.tpt",dir,x,y,lod);
     }
     // Open the file and read the contents
     FILE *fp= 0;
     try {
-	if (!(fp = fopen(filename,"rb")))  {
+        if (!(fp = fopen(filename,"rb")))  {
 
-	    throw 1;
-	}
-	// Find the file end
-	if (fseek(fp,0,SEEK_END))  
-	    throw 1;
-	// Note: This means tile is capped at 2 gigs
-	long pos = ftell(fp);
-	if (fseek(fp,0,SEEK_SET)) 
-	    throw 1;
-	// Now we know the size.  Read the whole file
-	buf.SetLength(pos);
-	char *data = buf.GetDataPtr();
-	if (fread(data,pos,1,fp) != 1) 
-	    throw 1;
-	fclose(fp); 
-	fp = NULL;
+            throw 1;
+        }
+        // Find the file end
+        if (fseek(fp,0,SEEK_END))  
+            throw 1;
+        // Note: This means tile is capped at 2 gigs
+        long pos = ftell(fp);
+        if (fseek(fp,0,SEEK_SET)) 
+            throw 1;
+        // Now we know the size.  Read the whole file
+        buf.SetLength(pos);
+        char *data = buf.GetDataPtr();
+        if (fread(data,pos,1,fp) != 1) 
+            throw 1;
+        fclose(fp); 
+        fp = NULL;
     }
     catch (...) {
-	if (fp)
-	    fclose(fp);
-	return false;
+        if (fp)
+            fclose(fp);
+        return false;
     }
 
     return true;
@@ -415,13 +415,13 @@ bool trpgr_Archive::ReadTile(const trpgwAppAddress& addr, trpgMemReadBuffer &buf
     // Fetch the appendable file from the cache
     trpgrAppFile *tf = tileCache->GetFile(ness,addr.file,addr.col,addr.row);
     if (!tf)  
-	return false;
+        return false;
 
     // Fetch the tile
     if (!tf->Read(&buf,addr.offset))
-	return false;
+        return false;
     else
-	return true;
+        return true;
 }
 
 // Get methods
@@ -474,13 +474,13 @@ trpgEndian trpgr_Archive::GetEndian() const
 bool trpgr_Archive::trpgGetTileMBR(uint32 x,uint32 y,uint32 lod,trpg3dPoint &ll,trpg3dPoint &ur) const
 {
     if (!header.isValid())
-	return false;
+        return false;
     int32 numLod;
     header.GetNumLods(numLod);
     trpg2iPoint maxXY;
     header.GetLodSize(lod,maxXY);
     if (static_cast<int>(x) >= maxXY.x || static_cast<int>(y)>= maxXY.y)
-	return false;
+        return false;
 
     trpg3dPoint origin;
     header.GetOrigin(origin);
@@ -507,13 +507,13 @@ bool trpgr_Archive::trpgGetTileMBR(uint32 x,uint32 y,uint32 lod,trpg3dPoint &ll,
    */
 
 trpgrImageHelper::trpgrImageHelper(trpgEndian inNess,char *inDir,
-				   const trpgMatTable &inMatTable,const trpgTexTable &inTexTable,bool separateGeoTyp)
+                                   const trpgMatTable &inMatTable,const trpgTexTable &inTexTable,bool separateGeoTyp)
 {
     Init(inNess,inDir,inMatTable,inTexTable,separateGeoTyp);
 }
 
 void trpgrImageHelper::Init(trpgEndian inNess,char *inDir,
-			    const trpgMatTable &inMatTable,const trpgTexTable &inTexTable,bool separateGeoTyp)
+                            const trpgMatTable &inMatTable,const trpgTexTable &inTexTable,bool separateGeoTyp)
 {
     ness = inNess;
     strcpy(dir,inDir);
@@ -527,24 +527,24 @@ void trpgrImageHelper::Init(trpgEndian inNess,char *inDir,
     sprintf(fullBase,"%s" PATHSEPERATOR "texFile",dir);
     texCache = GetNewRAppFileCache(fullBase,"txf");
     if(separateGeoTyp) {
-	sprintf(fullBase,"%s" PATHSEPERATOR "geotypFile",dir);
-	geotypCache = GetNewRAppFileCache(fullBase,"txf");
+        sprintf(fullBase,"%s" PATHSEPERATOR "geotypFile",dir);
+        geotypCache = GetNewRAppFileCache(fullBase,"txf");
     }
     else {
-	geotypCache = texCache;
+        geotypCache = texCache;
     }
-	
+        
 }
 
 trpgrImageHelper::~trpgrImageHelper()
 {
     if (texCache) {
-	delete texCache;
-	texCache = NULL;
+        delete texCache;
+        texCache = NULL;
     }
     if(separateGeoTyp && geotypCache) {
-	delete geotypCache;
-	geotypCache = NULL;
+        delete geotypCache;
+        geotypCache = NULL;
     }
 }
 
@@ -559,16 +559,16 @@ bool trpgrImageHelper::GetLocalGL(const trpgTexture *tex,char *data,int32 size)
     trpgTexture::ImageMode mode;
     tex->GetImageMode(mode);
     if (mode != trpgTexture::Local)
-	return false;
+        return false;
 
     // Fetch data data
     trpgwAppAddress addr;
     tex->GetImageAddr(addr);
     trpgrAppFile *af = geotypCache->GetFile(ness,addr.file,addr.col,addr.row);
     if (!af)
-	return false;
+        return false;
     if (!af->Read(data,addr.offset,0,size))
-	return false;
+        return false;
 
     return true;
 }
@@ -576,37 +576,37 @@ bool trpgrImageHelper::GetLocalGL(const trpgTexture *tex,char *data,int32 size)
 bool trpgrImageHelper::GetMipLevelLocalGL(int miplevel, const trpgTexture *tex,char *data,int32 dataSize)
 {
     if ( miplevel >= tex->CalcNumMipmaps() || miplevel < 0 )
-	return false;
+        return false;
 
     // Make sure the texture is Local
     trpgTexture::ImageMode mode;
     tex->GetImageMode(mode);
     if (mode != trpgTexture::Local)
-	return false;
+        return false;
 
     // Fetch data data
     trpgwAppAddress addr;
     tex->GetImageAddr(addr);
     trpgrAppFile *af = texCache->GetFile(ness,addr.file,addr.col,addr.row);
     if (!af)
-	return false;
+        return false;
 
     int level_offset = (const_cast<trpgTexture*>(tex))->MipLevelOffset(miplevel);
     if (!af->Read(data,addr.offset,level_offset,dataSize))
-	return false;
+        return false;
 
     return true;
 }
 
 
 bool trpgrImageHelper::GetImageInfoForLocalMat(const trpgLocalMaterial *locMat,
-					       const trpgMaterial **retMat,const trpgTexture **retTex,int &totSize)
+                                               const trpgMaterial **retMat,const trpgTexture **retTex,int &totSize)
 {
     return GetNthImageInfoForLocalMat(locMat, 0, retMat, retTex, totSize);
 }
 
 bool trpgrImageHelper::GetNthImageInfoForLocalMat(const trpgLocalMaterial *locMat, int index,
-						  const trpgMaterial **retMat,const trpgTexture **retTex,int &totSize)
+                                                  const trpgMaterial **retMat,const trpgTexture **retTex,int &totSize)
 {
     // Get the base material for the Local Material
     int32 matSubTable,matID;
@@ -616,22 +616,22 @@ bool trpgrImageHelper::GetNthImageInfoForLocalMat(const trpgLocalMaterial *locMa
     // or overhaul this in some other fashion.
     int numTables;
     if (!matTable->GetNumTable(numTables)) 
-	return false;
+        return false;
     if (index>=numTables) 
-	return false;
+        return false;
     if (index>0) matSubTable=index; // otherwise, leave it alone - could be nonzero
     const trpgMaterial *mat = matTable->GetMaterialRef(matSubTable,matID);
     if (!mat)  
-	return false;
+        return false;
 
     // Now get the texture (always the first one)
     trpgTextureEnv texEnv;
     int32 texID;
     if (!mat->GetTexture(0,texID,texEnv)) 
-	return false;
+        return false;
     const trpgTexture *tex = texTable->GetTextureRef(texID);
     if (!tex)  
-	return false;
+        return false;
 
     totSize = tex->CalcTotalSize();
 
@@ -648,13 +648,13 @@ bool trpgrImageHelper::GetImageForLocalMat(const trpgLocalMaterial *locMat,char 
 bool trpgrImageHelper::GetNthImageForLocalMat(const trpgLocalMaterial *locMat,int index, char *data,int dataSize)
 {
     if (!locMat->isValid()) 
-	return false;
+        return false;
 
     const trpgMaterial *mat;
     const trpgTexture *tex;
     int totSize;
     if (!GetNthImageInfoForLocalMat(locMat,index,&mat,&tex,totSize))
-	return false;
+        return false;
 
     // Determine the type
     trpgTexture::ImageMode imageMode;
@@ -662,23 +662,23 @@ bool trpgrImageHelper::GetNthImageForLocalMat(const trpgLocalMaterial *locMat,in
     switch (imageMode) {
     case trpgTexture::Template:
     {
-	// Read the image data out of the Local image (in an archive somewhere)
-	trpgwAppAddress addr;
-	if (!locMat->GetNthAddr(index,addr)) return false;
-	trpgrAppFile *af = texCache->GetFile(ness,addr.file,addr.col,addr.row);
-	if (!af)  
-	    return false;
-	if (!af->Read(data,addr.offset,0,dataSize))
-	    return false;
+        // Read the image data out of the Local image (in an archive somewhere)
+        trpgwAppAddress addr;
+        if (!locMat->GetNthAddr(index,addr)) return false;
+        trpgrAppFile *af = texCache->GetFile(ness,addr.file,addr.col,addr.row);
+        if (!af)  
+            return false;
+        if (!af->Read(data,addr.offset,0,dataSize))
+            return false;
     }
     break;
     case trpgTexture::Global:
-	// Note: Not dealing with Global textures yet
-	return false;
-	break;
+        // Note: Not dealing with Global textures yet
+        return false;
+        break;
     default:
-	// This is not a valid Local Material
-	return false;
+        // This is not a valid Local Material
+        return false;
     };
 
     return true;
@@ -698,10 +698,10 @@ bool trpgrImageHelper::GetNthImageMipLevelForLocalMat(int miplevel, const trpgLo
     const trpgTexture *tex;
     int totSize;
     if (!GetNthImageInfoForLocalMat(locMat,index,&mat,&tex,totSize))
-	return false;
+        return false;
 
     if ( miplevel >= tex->CalcNumMipmaps() || miplevel < 0 )
-	return false;
+        return false;
 
     // Determine the type
     trpgTexture::ImageMode imageMode;
@@ -709,24 +709,24 @@ bool trpgrImageHelper::GetNthImageMipLevelForLocalMat(int miplevel, const trpgLo
     switch (imageMode) {
     case trpgTexture::Template:
     {
-	// Read the image data out of the Local image (in an archive somewhere)
-	trpgwAppAddress addr;
-	if (!locMat->GetNthAddr(index,addr)) return false;
-	trpgrAppFile *af = texCache->GetFile(ness,addr.file,addr.col,addr.row);
-	if (!af)  return false;
+        // Read the image data out of the Local image (in an archive somewhere)
+        trpgwAppAddress addr;
+        if (!locMat->GetNthAddr(index,addr)) return false;
+        trpgrAppFile *af = texCache->GetFile(ness,addr.file,addr.col,addr.row);
+        if (!af)  return false;
 
-	int level_offset = (const_cast<trpgTexture*>(tex))->MipLevelOffset(miplevel);
-	if (!af->Read(data,addr.offset,level_offset,dataSize))
-	    return false;
+        int level_offset = (const_cast<trpgTexture*>(tex))->MipLevelOffset(miplevel);
+        if (!af->Read(data,addr.offset,level_offset,dataSize))
+            return false;
     }
     break;
     case trpgTexture::Global:
-	// Note: Not dealing with Global textures yet
-	return false;
-	break;
+        // Note: Not dealing with Global textures yet
+        return false;
+        break;
     default:
-	// This is not a valid Local Material
-	return false;
+        // This is not a valid Local Material
+        return false;
     };
 
     return true;
@@ -740,7 +740,7 @@ bool trpgrImageHelper::GetImagePath(const trpgTexture *tex,char *fullPath,int pa
     nameLen = strlen(name);
 
     if (static_cast<int>(strlen(dir)) + nameLen + 2 > pathLen)
-	return false;
+        return false;
 
     sprintf(fullPath,"%s" PATHSEPERATOR "%s",dir,name);
 

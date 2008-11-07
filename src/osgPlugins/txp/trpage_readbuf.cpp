@@ -18,15 +18,15 @@
 #include <math.h>
 
 /* trpage_readbuf.cpp
-	Methods for the trpgReadBuffer and trpgMemReadBuffer classes.
-	trpgReadBuffer is a virtual base class with a few utility functions.
-	It's used as generic interface for reading data out of.
-	trpgMemReadBuffer is a subclass of that which implements methods for
-	 reading out of a chunk of memory.  Data is read off of disk and then
-	 dumped into a read buffer for parsing.
-	If you wanted to read directly from disk, for example, you could 
-	 implement a trpgDiskReadBuffer as a subclass of trpgReadBuffer.
-	 */
+    Methods for the trpgReadBuffer and trpgMemReadBuffer classes.
+    trpgReadBuffer is a virtual base class with a few utility functions.
+    It's used as generic interface for reading data out of.
+    trpgMemReadBuffer is a subclass of that which implements methods for
+     reading out of a chunk of memory.  Data is read off of disk and then
+     dumped into a read buffer for parsing.
+    If you wanted to read directly from disk, for example, you could 
+     implement a trpgDiskReadBuffer as a subclass of trpgReadBuffer.
+*/
 
 #include <trpage_io.h>
 #include <trpage_swap.h>
@@ -43,9 +43,9 @@ bool trpgReadBuffer::Get(int32 &ret)
 
     if (!GetData((char *)&val,sizeof(int32)))  return false;
     if (ness != cpuNess)
-	ret = trpg_byteswap_int(val);
+        ret = trpg_byteswap_int(val);
     else
-	ret = val;
+        ret = val;
 
     return true;
 }
@@ -54,11 +54,11 @@ bool trpgReadBuffer::Get(int64 &ret)
     int64 val;
 
     if (!GetData((char *)&val,sizeof(int64)))  return false;
-	// trpg_byteswap_llong is defined to be 64 bit
+        // trpg_byteswap_llong is defined to be 64 bit
     if (ness != cpuNess)
-		ret = trpg_byteswap_llong(val);
+        ret = trpg_byteswap_llong(val);
     else
-	ret = val;
+        ret = val;
 
     return true;
 }
@@ -87,7 +87,7 @@ bool trpgReadBuffer::Get(std::string &str)
     if (!Get(len)) return false;
 
     if (len < 0)
-	return false;
+        return false;
     // Note: Should fix this
     char *tmpStr = new char[len+1];
 
@@ -105,10 +105,10 @@ bool trpgReadBuffer::Get(float32 &ret)
 
     if (!GetData(cval,sizeof(float32)))  return false;
     try {
-	if (ness == cpuNess)
-	    memcpy(&ret,cval,4);
-	else
-	    ret = trpg_byteswap_4bytes_to_float(cval);
+        if (ness == cpuNess)
+            memcpy(&ret,cval,4);
+        else
+            ret = trpg_byteswap_4bytes_to_float(cval);
     }
     catch (...) {
     }
@@ -121,10 +121,10 @@ bool trpgReadBuffer::Get(float64 &ret)
 
     if (!GetData(cval,sizeof(float64)))  return false;
     try {
-	if (ness == cpuNess)
-	    memcpy(&ret,cval,8);
-	else
-	    ret = trpg_byteswap_8bytes_to_double(cval);
+        if (ness == cpuNess)
+            memcpy(&ret,cval,8);
+        else
+            ret = trpg_byteswap_8bytes_to_double(cval);
     }
     catch (...) {
     }
@@ -162,9 +162,9 @@ bool trpgReadBuffer::Get(trpgDiskRef &ret)
 
     if (!GetData((char *)&val,sizeof(trpgDiskRef)))  return false;
     if (ness == cpuNess)
-	ret = val;
+        ret = val;
     else
-	ret = trpg_byteswap_llong(val);
+        ret = trpg_byteswap_llong(val);
 
     return true;
 }
@@ -176,9 +176,9 @@ bool trpgReadBuffer::Get(trpgToken &ret)
 
     if (!GetData((char *)&val,sizeof(trpgToken)))  return false;
     if (ness == cpuNess)
-	ret = val;
+        ret = val;
     else
-	ret = trpg_byteswap_short(val);
+        ret = trpg_byteswap_short(val);
 
     return true;
 }
@@ -187,13 +187,13 @@ bool trpgReadBuffer::Get(trpgToken &ret)
 bool trpgReadBuffer::GetArray(int len,float32 **arr)
 {
     if (!GetDataRef((char **)arr,sizeof(float32)*len))
-	return false;
+        return false;
     // Byteswap in place if necessary
     if (ness != cpuNess) {
-	char *ptr;
-	int pos;
-	for (pos=0,ptr = (char *)*arr;pos<len;pos++,ptr+=4)
-	    trpg_swap_four(ptr,ptr);
+        char *ptr;
+        int pos;
+        for (pos=0,ptr = (char *)*arr;pos<len;pos++,ptr+=4)
+            trpg_swap_four(ptr,ptr);
     }
 
     return true;
@@ -201,39 +201,39 @@ bool trpgReadBuffer::GetArray(int len,float32 **arr)
 bool trpgReadBuffer::GetArray(int len,float64 **arr)
 {
     if (!GetDataRef((char **)arr,sizeof(float64)*len))
-	return false;
+        return false;
     // Byteswap in place if necessary
     if (ness != cpuNess) {
-	char *ptr;
-	int pos;
-	for (pos=0,ptr = (char *)*arr;pos<len;pos++,ptr+=8)
-	    trpg_swap_eight(ptr,ptr);
+        char *ptr;
+        int pos;
+        for (pos=0,ptr = (char *)*arr;pos<len;pos++,ptr+=8)
+            trpg_swap_eight(ptr,ptr);
     }
     return true;
 }
 bool trpgReadBuffer::GetArray(int len,int32 **arr)
 {
     if (!GetDataRef((char **)arr,sizeof(int32)*len))
-	return false;
+        return false;
     // Byteswap in place if necessary
     if (ness != cpuNess) {
-	char *ptr;
-	int pos;
-	for (pos=0,ptr = (char *)*arr;pos<len;pos++,ptr+=4)
-	    trpg_swap_four(ptr,ptr);
+        char *ptr;
+        int pos;
+        for (pos=0,ptr = (char *)*arr;pos<len;pos++,ptr+=4)
+            trpg_swap_four(ptr,ptr);
     }
     return true;
 }
 bool trpgReadBuffer::GetArray(int len,trpgColor **arr)
 {
     if (!GetDataRef((char **)arr,sizeof(trpgColor)*len))
-	return false;
+        return false;
     // Byteswap in place if necessary
     if (ness != cpuNess) {
-	char *ptr;
-	int pos;
-	for (pos=0,ptr = (char *)*arr;pos<len;pos++,ptr+=8)
-	    trpg_swap_four(ptr,ptr);
+        char *ptr;
+        int pos;
+        for (pos=0,ptr = (char *)*arr;pos<len;pos++,ptr+=8)
+            trpg_swap_four(ptr,ptr);
     }
     return true;
 }
@@ -246,25 +246,25 @@ bool trpgReadBuffer::GetArray(int len,char **arr)
 bool trpgReadBuffer::Get(trpg2iPoint &pt)
 {
     if (!Get(pt.x) || !Get(pt.y))
-	return false;
+        return false;
     return true;
 }
 bool trpgReadBuffer::Get(trpg2dPoint &pt)
 {
     if (!Get(pt.x) || !Get(pt.y))
-	return false;
+        return false;
     return true;
 }
 bool trpgReadBuffer::Get(trpg3dPoint &pt)
 {
     if (!Get(pt.x) || !Get(pt.y) || !Get(pt.z))
-	return false;
+        return false;
     return true;
 }
 bool trpgReadBuffer::Get(trpgColor &color)
 {
     if (!Get(color.red) || !Get(color.green) || !Get(color.blue))
-	return false;
+        return false;
     return true;
 }
 
@@ -272,7 +272,7 @@ bool trpgReadBuffer::Get(trpgColor &color)
 bool trpgReadBuffer::GetToken(trpgToken &tok,int32 &len)
 {
     if (!Get(tok) || !Get(len))
-	return false;
+        return false;
 
     return true;
 }
@@ -296,7 +296,7 @@ void trpgReadBuffer::PopLimit()
     int len = limits.size();
 
     if (len > 0)
-	limits.resize(len-1);
+        limits.resize(len-1);
 }
 
 // Skip To Limit
@@ -307,10 +307,10 @@ bool trpgReadBuffer::SkipToLimit()
     int len=0;
 
     if (limits.size() != 0)
-	len = limits[limits.size()-1];
+        len = limits[limits.size()-1];
 
     if (len > 0)
-	return Skip(len);
+        return Skip(len);
 
     return true;
 }
@@ -320,8 +320,8 @@ bool trpgReadBuffer::SkipToLimit()
 bool trpgReadBuffer::TestLimit(int len)
 {
     for (unsigned int i=0;i<limits.size();i++)
-	if (len > limits[i])
-	    return false;
+        if (len > limits[i])
+            return false;
 
     return true;
 }
@@ -331,7 +331,7 @@ bool trpgReadBuffer::TestLimit(int len)
 void trpgReadBuffer::UpdateLimits(int len)
 {
     for (unsigned int i=0;i<limits.size();i++)
-	limits[i] -= len;
+        limits[i] -= len;
 }
 
 /* *************************
@@ -348,7 +348,7 @@ trpgMemReadBuffer::trpgMemReadBuffer(trpgEndian in_ness)
 trpgMemReadBuffer::~trpgMemReadBuffer()
 {
     if (data)
-	delete [] data;
+        delete [] data;
 }
 
 // Empty check
@@ -357,11 +357,11 @@ bool trpgMemReadBuffer::isEmpty()
     if (!data)  return true;
 
     if (pos >= len)
-	return true;
+        return true;
 
     // Also test the limits
     for (unsigned int i=0;i<limits.size();i++)
-	if (limits[i] == 0)  return true;
+        if (limits[i] == 0)  return true;
 
     return false;
 }
@@ -371,10 +371,10 @@ bool trpgMemReadBuffer::isEmpty()
 void trpgMemReadBuffer::SetLength(int newLen)
 {
     if (newLen > totLen) {
-	if (data)
-	    delete [] data;
-	data = new char[newLen];
-	totLen = newLen;
+        if (data)
+            delete [] data;
+        data = new char[newLen];
+        totLen = newLen;
     }
     len = newLen;
     pos = 0;
@@ -392,7 +392,7 @@ char *trpgMemReadBuffer::GetDataPtr()
 bool trpgMemReadBuffer::GetData(char *ret,int rlen)
 {
     if (rlen < 0)
-	return false;
+        return false;
 
     // Test against limits imposed from without
     if (!TestLimit(rlen))  throw 1;
@@ -435,10 +435,10 @@ bool trpgMemReadBuffer::GetDataRef(char **ret,int rlen)
 bool trpgMemReadBuffer::Skip(int rlen)
 {
     if (rlen == 0)
-	return true;
+        return true;
 
     if (rlen < 0)
-	return false;
+        return false;
 
     // Test against limits
     if (!TestLimit(rlen))  return false;
@@ -466,7 +466,7 @@ void trpgrAppFile::Init(trpgEndian inNess,const char *fileName)
     cpuNess = trpg_cpu_byte_order();
 
     if (!(fp = fopen(fileName,"rb")))
-	return;
+        return;
 
     valid = true;
 }
@@ -474,7 +474,7 @@ void trpgrAppFile::Init(trpgEndian inNess,const char *fileName)
 trpgrAppFile::~trpgrAppFile()
 {
     if (fp)
-	fclose(fp);
+        fclose(fp);
 
     valid = false;
 }
@@ -492,34 +492,34 @@ bool trpgrAppFile::Read(trpgMemReadBuffer *buf,int32 offset)
 
     // Seek to the right location
     if (fseek(fp,offset,SEEK_SET))
-	return false;
+        return false;
 
     // Read a length
     int32 len;
     if (fread(&len,sizeof(int32),1,fp) != 1) {
-	valid = false;
-	return false;
+        valid = false;
+        return false;
     }
 
     // Byteswap if necessary
     if (ness != cpuNess)
-	len = trpg_byteswap_int(len);
+        len = trpg_byteswap_int(len);
 
     if (len < 0) {
-	valid = false;
-	return false;
+        valid = false;
+        return false;
     }
 
     buf->SetLength(len);
     char *data = buf->GetDataPtr();
     if (!data) {
-	valid = false;
-	return false;
+        valid = false;
+        return false;
     }
 
-	if (fread(data,sizeof(char),len,fp) != (uint32)len) {
-	valid = false;
-	return false;
+        if (fread(data,sizeof(char),len,fp) != (uint32)len) {
+        valid = false;
+        return false;
     }
 
     return true;
@@ -537,41 +537,41 @@ bool trpgrAppFile::Read(char *data,int32 baseOffset,int32 objOffset,int32 dataSi
     // Seek to the right place
     int result;
     if ((result = fseek(fp,baseOffset,SEEK_SET))) {
-	valid = false;
-	return false;
+        valid = false;
+        return false;
     }
 
     // Read the total object length
     int32 len;
     if (fread(&len,sizeof(int32),1,fp) != 1) {
-	valid = false;
-	return false;
+        valid = false;
+        return false;
     }
 
     // Byteswap if necessary
     if (ness != cpuNess)
-	len = trpg_byteswap_int(len);
+        len = trpg_byteswap_int(len);
 
     if (len < 0) {
-	valid = false;
-	return false;
+        valid = false;
+        return false;
     }
 
     // It's all right to read less than the whole data block
     if (objOffset+dataSize > len)
-	return false;
+        return false;
 
     // Skip to the object offset
     if (fseek(fp,objOffset,SEEK_CUR)) {
-	valid = false;
-	return false;
+        valid = false;
+        return false;
     }
 
     // Read the raw data
     // Note: What about byte swapping?
-	if (fread(data,sizeof(char),dataSize,fp) != (uint32)dataSize) {
-	valid = false;
-	return false;
+        if (fread(data,sizeof(char),dataSize,fp) != (uint32)dataSize) {
+        valid = false;
+        return false;
     }
 
     return true;
@@ -601,10 +601,10 @@ trpgrAppFileCache::~trpgrAppFileCache()
 {
     unsigned int len = files.size();
     for (unsigned int i=0;i<len;i++) {
-	if (files[i].afile) {
-	    delete files[i].afile;
-	    files[i].afile = NULL;
-	}
+        if (files[i].afile) {
+            delete files[i].afile;
+            files[i].afile = NULL;
+        }
     }
 }
 
@@ -626,69 +626,69 @@ trpgrAppFile *trpgrAppFileCache::GetFile(trpgEndian ness,int id,int col,int row)
     int foundID = -1;
     unsigned int i;
     for (i=0;i<files.size();i++) {
-	if ((files[i].id == id)&&
-	    (files[i].col == col) &&
-	    (files[i].row == row)) {
-	    foundID = i;
-	    break;
-	}
+        if ((files[i].id == id)&&
+            (files[i].col == col) &&
+            (files[i].row == row)) {
+            foundID = i;
+            break;
+        }
     }
 
     // Found it in cache, just return
     if (foundID != -1) {
-	OpenFile &of = files[foundID];
+        OpenFile &of = files[foundID];
 
-	if (of.afile->isValid())
-	{
-	    of.lastUsed = timeCount;
-	    return of.afile;
-	}
-	else
-	{
-	    if (of.afile)
-		delete of.afile;
-	    of.afile = NULL;
-	}
+        if (of.afile->isValid())
+        {
+            of.lastUsed = timeCount;
+            return of.afile;
+        }
+        else
+        {
+            if (of.afile)
+                delete of.afile;
+            of.afile = NULL;
+        }
     }
 
     // Didn't find it.  Need to reclaim one
     // Look for the oldest used
     int oldTime=-1,oldID=-1;
     for (i=0;i<files.size();i++) {
-	OpenFile &of = files[i];
-	if (!of.afile || (oldTime == -1) || (of.lastUsed < oldTime)) {
-	    oldID = i;
-	    oldTime = of.lastUsed;
-	    if (!of.afile)
-		break;
-	}
+        OpenFile &of = files[i];
+        if (!of.afile || (oldTime == -1) || (of.lastUsed < oldTime)) {
+            oldID = i;
+            oldTime = of.lastUsed;
+            if (!of.afile)
+                break;
+        }
     }
 
 
     // Reclaim this one
     OpenFile &of = files[oldID];
     if (of.afile)
-	delete of.afile;
+        delete of.afile;
     char fileName[1024];
     if(col==-1) {
-	sprintf(fileName,"%s_%d.%s",baseName,id,ext);
+        sprintf(fileName,"%s_%d.%s",baseName,id,ext);
     }
     else {
-	char dir[1024];
-	char filebase[1024];
-	//this is very ugly, but it avoids radical API changes
-	// find the last PATHSEPERATOR in the baseName string
-	int len = strlen(baseName);
-	while(--len > 0) {
-	    if(baseName[len]==PATHSEPERATOR[0]) {
-		strcpy(filebase,&baseName[len+1]);
-		strcpy(dir,baseName);
-		dir[len]='\0';
-		break;
-	    }
-	}
-	sprintf(fileName,"%s" PATHSEPERATOR "%d" PATHSEPERATOR "%d" PATHSEPERATOR "%s_%d.%s",
-		dir,col,row,filebase,id,ext);
+        char dir[1024];
+        char filebase[1024];
+        //this is very ugly, but it avoids radical API changes
+        // find the last PATHSEPERATOR in the baseName string
+        int len = strlen(baseName);
+        while(--len > 0) {
+            if(baseName[len]==PATHSEPERATOR[0]) {
+                strcpy(filebase,&baseName[len+1]);
+                strcpy(dir,baseName);
+                dir[len]='\0';
+                break;
+            }
+        }
+        sprintf(fileName,"%s" PATHSEPERATOR "%d" PATHSEPERATOR "%d" PATHSEPERATOR "%s_%d.%s",
+                dir,col,row,filebase,id,ext);
     }
     of.afile = GetNewRAppFile(ness,fileName);
     of.id = id;

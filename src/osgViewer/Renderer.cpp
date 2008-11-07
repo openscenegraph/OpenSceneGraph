@@ -120,18 +120,18 @@ void OpenGLQuerySupport::initialize(osg::State* state)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //
-//  TheadSafeQueue
+//  ThreadSafeQueue
 
-Renderer::TheadSafeQueue::TheadSafeQueue()
+Renderer::ThreadSafeQueue::ThreadSafeQueue()
 {
     _block.set(false);
 }
 
-Renderer::TheadSafeQueue::~TheadSafeQueue()
+Renderer::ThreadSafeQueue::~ThreadSafeQueue()
 {
 }
 
-osgUtil::SceneView* Renderer::TheadSafeQueue::takeFront()
+osgUtil::SceneView* Renderer::ThreadSafeQueue::takeFront()
 {
     if (_queue.empty()) _block.block();
 
@@ -146,7 +146,7 @@ osgUtil::SceneView* Renderer::TheadSafeQueue::takeFront()
     return front;
 }
 
-void Renderer::TheadSafeQueue::add(osgUtil::SceneView* sv)
+void Renderer::ThreadSafeQueue::add(osgUtil::SceneView* sv)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     _queue.push_back(sv);

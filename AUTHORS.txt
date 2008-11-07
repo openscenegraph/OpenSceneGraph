@@ -119,6 +119,7 @@ Liang Aibin
 Leandro Motta Barros
 John Kelso
 Daniel Larimer
+Csaba Halasz
 Colin Dunlop
 Bruce Clay
 Blasius Czink
@@ -147,7 +148,6 @@ Doug McCorkle
 Donn Mielcarek
 Donald Cipperly
 Domenico Mangieri
-Csaba Halasz
 Charles Cole
 Blake Williams
 Antoine Hue

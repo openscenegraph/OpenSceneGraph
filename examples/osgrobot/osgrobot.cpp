@@ -451,7 +451,7 @@ void createAxis(osg::Transform* previousJoint)
     osg::MatrixTransform* mt = new osg::MatrixTransform();
     previousJoint->addChild(mt);
 
-    osg::Matrix xMatrix = osg::Matrix::rotate(-M_PI_2, 0.0, 1.0, 0.0);
+    osg::Matrix xMatrix = osg::Matrix::rotate(-osg::PI_2, 0.0, 1.0, 0.0);
     mt->setMatrix(xMatrix);
 
 
@@ -464,7 +464,7 @@ void createAxis(osg::Transform* previousJoint)
 
     osg::MatrixTransform *yMt = new osg::MatrixTransform();
     previousJoint->addChild(yMt);
-    osg::Matrix yMatrix = osg::Matrix::rotate(M_PI_2, 1.0, 0.0, 0.0);
+    osg::Matrix yMatrix = osg::Matrix::rotate(osg::PI_2, 1.0, 0.0, 0.0);
     yMt->setMatrix(yMatrix);
 
     osg::ShapeDrawable *yShape = new osg::ShapeDrawable(new osg::Cylinder(osg::Vec3(0.0f,0.0f,height/2),radius,height),hints);

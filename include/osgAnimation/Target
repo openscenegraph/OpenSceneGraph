@@ -108,8 +108,9 @@ namespace osgAnimation
         void normalize() 
         {
             float weightSummed = getWeight();
-            if (fabs(weightSummed) < 1e-4 || fabs(weightSummed-1) < 1e-4)
-                (_target) /= weightSummed;
+            if (fabs(weightSummed) < 1e-4 || fabs(weightSummed-1.0) < 1e-4)
+                return;
+            (_target) /= weightSummed;
         }
 
         void setValue(const osg::Quat& value) { _target = value;}

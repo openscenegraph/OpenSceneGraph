@@ -38,6 +38,7 @@
 
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -482,6 +483,8 @@ int main( int argc, char **argv )
 
     osg::Group* rootNode = new osg::Group();
     rootNode->addChild(createPreRenderSubGraph(loadedModelTransform,tex_width,tex_height, renderImplementation, useImage, useTextureRectangle, useHDR, samples, colorSamples));
+
+    osgDB::writeNodeFile(*rootNode, "test.ive");
 
     // add model to the viewer.
     viewer.setSceneData( rootNode );

@@ -317,25 +317,26 @@ bool Camera_writeLocalData(const Object& obj, Output& fw)
 
 bool Camera_matchBufferComponentStr(const char* str,Camera::BufferComponent& buffer)
 {
-    if      (strcmp(str,"DEPTH_BUFFER")==0)             buffer = osg::Camera::DEPTH_BUFFER;
-    else if (strcmp(str,"STENCIL_BUFFER")==0)           buffer = osg::Camera::STENCIL_BUFFER;
-    else if (strcmp(str,"COLOR_BUFFER")==0)             buffer = osg::Camera::COLOR_BUFFER;
-    else if (strcmp(str,"COLOR_BUFFER0")==0)            buffer = osg::Camera::COLOR_BUFFER0;
-    else if (strcmp(str,"COLOR_BUFFER1")==0)            buffer = osg::Camera::COLOR_BUFFER1;
-    else if (strcmp(str,"COLOR_BUFFER2")==0)            buffer = osg::Camera::COLOR_BUFFER2;
-    else if (strcmp(str,"COLOR_BUFFER3")==0)            buffer = osg::Camera::COLOR_BUFFER3;
-    else if (strcmp(str,"COLOR_BUFFER4")==0)            buffer = osg::Camera::COLOR_BUFFER4;
-    else if (strcmp(str,"COLOR_BUFFER5")==0)            buffer = osg::Camera::COLOR_BUFFER5;
-    else if (strcmp(str,"COLOR_BUFFER6")==0)            buffer = osg::Camera::COLOR_BUFFER6;
-    else if (strcmp(str,"COLOR_BUFFER7")==0)            buffer = osg::Camera::COLOR_BUFFER7;
-    else if (strcmp(str,"COLOR_BUFFER8")==0)            buffer = osg::Camera::COLOR_BUFFER8;
-    else if (strcmp(str,"COLOR_BUFFER9")==0)            buffer = osg::Camera::COLOR_BUFFER9;
-    else if (strcmp(str,"COLOR_BUFFER10")==0)           buffer = osg::Camera::COLOR_BUFFER10;
-    else if (strcmp(str,"COLOR_BUFFER11")==0)           buffer = osg::Camera::COLOR_BUFFER11;
-    else if (strcmp(str,"COLOR_BUFFER12")==0)           buffer = osg::Camera::COLOR_BUFFER12;
-    else if (strcmp(str,"COLOR_BUFFER13")==0)           buffer = osg::Camera::COLOR_BUFFER13;
-    else if (strcmp(str,"COLOR_BUFFER14")==0)           buffer = osg::Camera::COLOR_BUFFER14;
-    else if (strcmp(str,"COLOR_BUFFER15")==0)           buffer = osg::Camera::COLOR_BUFFER15;
+    if      (strcmp(str,"DEPTH_BUFFER")==0)                 buffer = osg::Camera::DEPTH_BUFFER;
+    else if (strcmp(str,"STENCIL_BUFFER")==0)               buffer = osg::Camera::STENCIL_BUFFER;
+    else if (strcmp(str,"PACKED_DEPTH_STENCIL_BUFFER")==0)  buffer = osg::Camera::PACKED_DEPTH_STENCIL_BUFFER;
+    else if (strcmp(str,"COLOR_BUFFER")==0)                 buffer = osg::Camera::COLOR_BUFFER;
+    else if (strcmp(str,"COLOR_BUFFER0")==0)                buffer = osg::Camera::COLOR_BUFFER0;
+    else if (strcmp(str,"COLOR_BUFFER1")==0)                buffer = osg::Camera::COLOR_BUFFER1;
+    else if (strcmp(str,"COLOR_BUFFER2")==0)                buffer = osg::Camera::COLOR_BUFFER2;
+    else if (strcmp(str,"COLOR_BUFFER3")==0)                buffer = osg::Camera::COLOR_BUFFER3;
+    else if (strcmp(str,"COLOR_BUFFER4")==0)                buffer = osg::Camera::COLOR_BUFFER4;
+    else if (strcmp(str,"COLOR_BUFFER5")==0)                buffer = osg::Camera::COLOR_BUFFER5;
+    else if (strcmp(str,"COLOR_BUFFER6")==0)                buffer = osg::Camera::COLOR_BUFFER6;
+    else if (strcmp(str,"COLOR_BUFFER7")==0)                buffer = osg::Camera::COLOR_BUFFER7;
+    else if (strcmp(str,"COLOR_BUFFER8")==0)                buffer = osg::Camera::COLOR_BUFFER8;
+    else if (strcmp(str,"COLOR_BUFFER9")==0)                buffer = osg::Camera::COLOR_BUFFER9;
+    else if (strcmp(str,"COLOR_BUFFER10")==0)               buffer = osg::Camera::COLOR_BUFFER10;
+    else if (strcmp(str,"COLOR_BUFFER11")==0)               buffer = osg::Camera::COLOR_BUFFER11;
+    else if (strcmp(str,"COLOR_BUFFER12")==0)               buffer = osg::Camera::COLOR_BUFFER12;
+    else if (strcmp(str,"COLOR_BUFFER13")==0)               buffer = osg::Camera::COLOR_BUFFER13;
+    else if (strcmp(str,"COLOR_BUFFER14")==0)               buffer = osg::Camera::COLOR_BUFFER14;
+    else if (strcmp(str,"COLOR_BUFFER15")==0)               buffer = osg::Camera::COLOR_BUFFER15;
     else return false;
     return true;
 }
@@ -343,26 +344,27 @@ const char* Camera_getBufferComponentStr(Camera::BufferComponent buffer)
 {
     switch(buffer)
     {
-        case (osg::Camera::DEPTH_BUFFER)             : return "DEPTH_BUFFER";
-        case (osg::Camera::STENCIL_BUFFER)           : return "STENCIL_BUFFER";
-        case (osg::Camera::COLOR_BUFFER)             : return "COLOR_BUFFER";
-        case (osg::Camera::COLOR_BUFFER0)            : return "COLOR_BUFFER0";
-        case (osg::Camera::COLOR_BUFFER1)            : return "COLOR_BUFFER1";
-        case (osg::Camera::COLOR_BUFFER2)            : return "COLOR_BUFFER2";
-        case (osg::Camera::COLOR_BUFFER3)            : return "COLOR_BUFFER3";
-        case (osg::Camera::COLOR_BUFFER4)            : return "COLOR_BUFFER4";
-        case (osg::Camera::COLOR_BUFFER5)            : return "COLOR_BUFFER5";
-        case (osg::Camera::COLOR_BUFFER6)            : return "COLOR_BUFFER6";
-        case (osg::Camera::COLOR_BUFFER7)            : return "COLOR_BUFFER7";
-        case (osg::Camera::COLOR_BUFFER8)            : return "COLOR_BUFFER8";
-        case (osg::Camera::COLOR_BUFFER9)            : return "COLOR_BUFFER9";
-        case (osg::Camera::COLOR_BUFFER10)           : return "COLOR_BUFFER10";
-        case (osg::Camera::COLOR_BUFFER11)           : return "COLOR_BUFFER11";
-        case (osg::Camera::COLOR_BUFFER12)           : return "COLOR_BUFFER12";
-        case (osg::Camera::COLOR_BUFFER13)           : return "COLOR_BUFFER13";
-        case (osg::Camera::COLOR_BUFFER14)           : return "COLOR_BUFFER14";
-        case (osg::Camera::COLOR_BUFFER15)           : return "COLOR_BUFFER15";
-        default                                      : return "UnknownBufferComponent";
+        case (osg::Camera::DEPTH_BUFFER)                : return "DEPTH_BUFFER";
+        case (osg::Camera::STENCIL_BUFFER)              : return "STENCIL_BUFFER";
+        case (osg::Camera::PACKED_DEPTH_STENCIL_BUFFER) : return "PACKED_DEPTH_STENCIL_BUFFER";
+        case (osg::Camera::COLOR_BUFFER)                : return "COLOR_BUFFER";
+        case (osg::Camera::COLOR_BUFFER0)               : return "COLOR_BUFFER0";
+        case (osg::Camera::COLOR_BUFFER1)               : return "COLOR_BUFFER1";
+        case (osg::Camera::COLOR_BUFFER2)               : return "COLOR_BUFFER2";
+        case (osg::Camera::COLOR_BUFFER3)               : return "COLOR_BUFFER3";
+        case (osg::Camera::COLOR_BUFFER4)               : return "COLOR_BUFFER4";
+        case (osg::Camera::COLOR_BUFFER5)               : return "COLOR_BUFFER5";
+        case (osg::Camera::COLOR_BUFFER6)               : return "COLOR_BUFFER6";
+        case (osg::Camera::COLOR_BUFFER7)               : return "COLOR_BUFFER7";
+        case (osg::Camera::COLOR_BUFFER8)               : return "COLOR_BUFFER8";
+        case (osg::Camera::COLOR_BUFFER9)               : return "COLOR_BUFFER9";
+        case (osg::Camera::COLOR_BUFFER10)              : return "COLOR_BUFFER10";
+        case (osg::Camera::COLOR_BUFFER11)              : return "COLOR_BUFFER11";
+        case (osg::Camera::COLOR_BUFFER12)              : return "COLOR_BUFFER12";
+        case (osg::Camera::COLOR_BUFFER13)              : return "COLOR_BUFFER13";
+        case (osg::Camera::COLOR_BUFFER14)              : return "COLOR_BUFFER14";
+        case (osg::Camera::COLOR_BUFFER15)              : return "COLOR_BUFFER15";
+        default                                         : return "UnknownBufferComponent";
     }
 }
 

@@ -58,7 +58,8 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
     glFramebufferRenderbufferEXT(0),
     glGenerateMipmapEXT(0),
     glBlitFramebufferEXT(0),
-    _supported(false)
+    _supported(false),
+    _packed_depth_stencil_supported(false)
 {
     if (!isGLExtensionSupported(contextID, "GL_EXT_framebuffer_object"))
         return;
@@ -106,6 +107,11 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
     if (isGLExtensionSupported(contextID, "GL_NV_framebuffer_multisample_coverage"))
     {
         LOAD_FBO_EXT(glRenderbufferStorageMultisampleCoverageNV);
+    }
+
+    if (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil"))
+    {
+        _packed_depth_stencil_supported = true;
     }
 }
 
@@ -811,7 +817,26 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
         for (AttachmentMap::const_iterator i=_attachments.begin(); i!=_attachments.end(); ++i)
         {
             const FrameBufferAttachment &fa = i->second;
-            fa.attach(state, target, convertBufferComponentToGLenum(i->first), ext);
+            switch(i->first)
+            {
+                case(Camera::PACKED_DEPTH_STENCIL_BUFFER):
+                    if (ext->isPackedDepthStencilSupported())
+                    {
+                        fa.attach(state, target, GL_DEPTH_ATTACHMENT_EXT, ext);
+                        fa.attach(state, target, GL_STENCIL_ATTACHMENT_EXT, ext);
+                    }
+                    else
+                    {
+                        notify(WARN) << 
+                            "Warning: FrameBufferObject: could not attach PACKED_DEPTH_STENCIL_BUFFER, "
+                            "EXT_packed_depth_stencil is not supported !" << std::endl;
+                    }
+                    break;
+
+                default:
+                    fa.attach(state, target, convertBufferComponentToGLenum(i->first), ext);
+                    break;
+            }
         }        
         dirtyAttachmentList = 0;
     }

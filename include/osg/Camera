@@ -310,6 +310,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         {
             DEPTH_BUFFER,
             STENCIL_BUFFER,
+            PACKED_DEPTH_STENCIL_BUFFER,
             COLOR_BUFFER,
             COLOR_BUFFER0,
             COLOR_BUFFER1 = COLOR_BUFFER0+1,

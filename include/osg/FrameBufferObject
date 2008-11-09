@@ -114,6 +114,14 @@
 #define GL_DEPTH_COMPONENT32              0x81A7
 #endif
 
+#ifndef GL_EXT_packed_depth_stencil
+#define GL_EXT_packed_depth_stencil 1
+#define GL_DEPTH_STENCIL_EXT 0x84F9
+#define GL_UNSIGNED_INT_24_8_EXT 0x84FA
+#define GL_DEPTH24_STENCIL8_EXT 0x88F0
+#define GL_TEXTURE_STENCIL_SIZE_EXT 0x88F1
+#endif
+
 namespace osg
 {
 
@@ -165,11 +173,13 @@ namespace osg
         bool isSupported() const { return _supported; }
         bool isMultisampleSupported() const { return glRenderbufferStorageMultisampleEXT != 0; }
         bool isMultisampleCoverageSupported() const { return glRenderbufferStorageMultisampleCoverageNV != 0; }
+        bool isPackedDepthStencilSupported() const { return _packed_depth_stencil_supported; }
 
     protected:
         FBOExtensions(unsigned int contextID);
 
         bool _supported;
+        bool _packed_depth_stencil_supported;
     };
 
 /**************************************************************************

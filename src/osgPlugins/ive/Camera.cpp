@@ -143,7 +143,18 @@ void Camera::read(DataInputStream* in)
         unsigned int numAttachments = in->readUInt();
         for(unsigned int i=0; i<numAttachments; ++i)
         {
-            Attachment& attachment = _bufferAttachmentMap[(BufferComponent)in->readInt()];
+            int buffer_component = in->readInt();
+            if (in->getVersion() < VERSION_0036 )
+            {
+                // prior to VERSION_0036, there was no PACKED_DEPTH_STENCIL_BUFFER so we have to 
+                // bump up the value of one to make sure it maps to the original location.
+                if (buffer_component >= PACKED_DEPTH_STENCIL_BUFFER)
+                {
+                    ++buffer_component;
+                }
+            }
+
+            Attachment& attachment = _bufferAttachmentMap[BufferComponent(buffer_component)];
             attachment._internalFormat = (GLenum)in->readUInt();
             
             if (in->readBool())

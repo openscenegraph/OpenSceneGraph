@@ -121,6 +121,13 @@ public:
         writePop();
     }
 
+    void writePushTraverseChildWritePop(osg::Node& node)
+    {
+        writePush();
+        node.accept(*this);
+        writePop();
+    }
+
     // Geometry records
     void writeFace( const osg::Geode& geode, const osg::Geometry& geom, GLenum mode );
     void writeMesh( const osg::Geode& geode, const osg::Geometry& geom );

@@ -230,7 +230,7 @@ FltExportVisitor::apply( osg::LOD& lodNode )
         writeComment( lodNode );
 
         // Traverse each child of the LOD
-        writePushTraverseWritePop( *lodChild );
+        writePushTraverseChildWritePop( *lodChild );
     }
 
 }

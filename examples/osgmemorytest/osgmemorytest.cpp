@@ -21,6 +21,7 @@
 #include <osg/Texture1D>
 #include <osg/Texture2D>
 #include <osg/Texture3D>
+#include <osg/Geometry>
 
 #include <osgViewer/Viewer>
 
@@ -34,7 +35,7 @@ class MemoryTest : public osg::Referenced
 class GLObject : public osg::Referenced
 {
     public:
-        virtual void apply(osg::State& state) = 0;
+        virtual void apply(osg::RenderInfo& renderInfo) = 0;
 };
 
 class GLMemoryTest : public MemoryTest
@@ -100,11 +101,11 @@ class StateAttributeObject : public GLObject
     
         StateAttributeObject(osg::StateAttribute* sa): _attribute(sa) {}
         
-        void apply(osg::State& state)
+        void apply(osg::RenderInfo& renderInfo)
         {
-            _attribute->apply(state);
+            _attribute->apply(*renderInfo.getState());
             
-            if (state.checkGLErrors(_attribute.get()))
+            if (renderInfo.getState()->checkGLErrors(_attribute.get()))
             {
                 throw "OpenGL error";
             }
@@ -120,7 +121,7 @@ class TextureTest : public GLMemoryTest
 {
     public:
 
-        TextureTest(int width=1, int height=1, int depth=1):
+        TextureTest(int width=256, int height=256, int depth=1):
             _width(width),
             _height(height),
             _depth(depth) {}
@@ -175,9 +176,10 @@ class TextureTest : public GLMemoryTest
         int     _depth;
 };
 
+
 /////////////////////////////////////////////////////////////////////////
 //
-// Texture test
+// FrameBufferObject test
 class FboTest : public GLMemoryTest
 {
     public:
@@ -205,6 +207,107 @@ class FboTest : public GLMemoryTest
         int     _depth;
 };
 
+
+
+////////////////////////////////////////////////////////////////////////
+//
+// Wrap Drawable
+class DrawableObject : public GLObject
+{
+    public:
+    
+        DrawableObject(osg::Drawable* drawable): _drawable(drawable) {}
+        
+        void apply(osg::RenderInfo& renderInfo)
+        {
+            _drawable->draw(renderInfo);
+            
+            if (renderInfo.getState()->checkGLErrors("Drawable"))
+            {
+                throw "OpenGL error";
+            }
+        }
+        
+        osg::ref_ptr<osg::Drawable> _drawable;
+};
+
+/////////////////////////////////////////////////////////////////////////
+//
+// Geometry test
+class GeometryTest : public GLMemoryTest
+{
+    public:
+    
+        enum GLObjectType
+        {
+            VERTEX_ARRAY,
+            DISPLAY_LIST,
+            VERTEX_BUFFER_OBJECT
+        };
+    
+
+        GeometryTest(GLObjectType type, int width=64, int height=64):
+            _glObjectType(type),
+            _width(width),
+            _height(height) {}
+        
+        virtual GLObject* allocate()
+        {
+            unsigned int numVertices = _width * _height;
+            osg::Vec3Array* vertices = new osg::Vec3Array(numVertices);
+            for(unsigned int j=0; j<_height; ++j)
+            {
+                for(unsigned i=0; i<_width; ++i)
+                {
+                    (*vertices)[i+j*_width].set(float(i),float(j),0.0f);
+                }
+            }
+
+            unsigned int numIndices = (_width-1) * (_height-1) * 4;
+            osg::DrawElementsUShort* quads = new osg::DrawElementsUShort(GL_QUADS);
+            quads->reserve(numIndices);
+            for(unsigned int j=0; j<_height-1; ++j)
+            {
+                for(unsigned i=0; i<_width-1; ++i)
+                {
+                    quads->push_back(i   + j*_width);
+                    quads->push_back(i+1 + j*_width);
+                    quads->push_back(i+1 + (j+1)*_width);
+                    quads->push_back(i   + (j+1)*_width);
+                }
+            }
+            
+            osg::Geometry* geometry = new osg::Geometry;
+            geometry->setVertexArray(vertices);
+            geometry->addPrimitiveSet(quads);
+            
+            switch(_glObjectType)
+            {
+                case(VERTEX_ARRAY):
+                    geometry->setUseDisplayList(false);
+                    geometry->setUseVertexBufferObjects(false);
+                    break;
+                case(DISPLAY_LIST):
+                    geometry->setUseDisplayList(true);
+                    geometry->setUseVertexBufferObjects(false);
+                    break;
+                case(VERTEX_BUFFER_OBJECT):
+                    geometry->setUseDisplayList(false);
+                    geometry->setUseVertexBufferObjects(true);
+                    break;
+            }
+
+            return new DrawableObject(geometry);
+        }
+        
+
+    protected:
+    
+        GLObjectType    _glObjectType;
+        int             _width;
+        int             _height;
+};
+
 int main( int argc, char **argv )
 {
     osg::ArgumentParser arguments(&argc,argv);
@@ -226,6 +329,15 @@ int main( int argc, char **argv )
     while(arguments.read("--fbo",width,height,depth)) { tests.push_back(new FboTest(width,height,depth)); }
     while(arguments.read("--fbo",width,height)) { tests.push_back(new FboTest(width,height,2)); }
     while(arguments.read("--fbo")) { tests.push_back(new FboTest(1024,1024,2)); }
+
+    while(arguments.read("--geometry",width,height)) { tests.push_back(new GeometryTest(GeometryTest::DISPLAY_LIST,width,height)); }
+    while(arguments.read("--geometry")) { tests.push_back(new GeometryTest(GeometryTest::DISPLAY_LIST,64,64)); }
+
+    while(arguments.read("--geometry-vbo",width,height)) { tests.push_back(new GeometryTest(GeometryTest::VERTEX_BUFFER_OBJECT,width,height)); }
+    while(arguments.read("--geometry-vbo")) { tests.push_back(new GeometryTest(GeometryTest::VERTEX_BUFFER_OBJECT,64,64)); }
+
+    while(arguments.read("--geometry-va",width,height)) { tests.push_back(new GeometryTest(GeometryTest::VERTEX_ARRAY,width,height)); }
+    while(arguments.read("--geometry-va")) { tests.push_back(new GeometryTest(GeometryTest::VERTEX_ARRAY,64,64)); }
 
     unsigned int sleepTime = 0;
     while(arguments.read("--delay",sleepTime)) {}
@@ -293,6 +405,9 @@ int main( int argc, char **argv )
 
                     context->makeCurrent();
                     
+                    osg::RenderInfo renderInfo;
+                    renderInfo.setState(context->getState());
+                    
                     for(GLObjects::iterator gitr = glObjects.begin();
                         gitr != glObjects.end();
                         ++gitr)
@@ -301,7 +416,7 @@ int main( int argc, char **argv )
 
                         printf("%i ",numGLObjectsApplied);fflush(stdout);
 
-                        (*gitr)->apply(*(context->getState()));
+                        (*gitr)->apply(renderInfo);
                         ++numGLObjectsApplied;
                     }
                     

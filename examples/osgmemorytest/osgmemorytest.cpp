@@ -26,6 +26,7 @@
 #include <osgViewer/Viewer>
 
 #include <stdio.h>
+#include <iostream>
 
 class MemoryTest : public osg::Referenced
 {
@@ -312,32 +313,73 @@ int main( int argc, char **argv )
 {
     osg::ArgumentParser arguments(&argc,argv);
     
-    typedef std::list< osg::ref_ptr<MemoryTest> > Tests;
-    Tests tests;
+    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" tests OpenGL and Windowing memory scalability..");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","List command line options.");
+    arguments.getApplicationUsage()->addCommandLineOption("--pbuffer <width> <height>","Create a pixel buffer of specified dimensions.");
+    arguments.getApplicationUsage()->addCommandLineOption("--pbuffer","Create a 512x512 pixel buffer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--window <width> <height>","Create a graphics window of specified dimensions.");
+    arguments.getApplicationUsage()->addCommandLineOption("--window","Create a 512x512 graphics window.");
+    arguments.getApplicationUsage()->addCommandLineOption("--delay <micoseconds>","Set a delay in microseconds before all OpenGL object operations.");
+    arguments.getApplicationUsage()->addCommandLineOption("--texture <width> <height> <depth>","Allocate a 3D texture of specified dimensions.");
+    arguments.getApplicationUsage()->addCommandLineOption("--texture <width> <height>","Allocate a 2D texture of specified dimensions.");
+    arguments.getApplicationUsage()->addCommandLineOption("--texture <width>","Allocate a 1D texture of specified dimensions.");
+    arguments.getApplicationUsage()->addCommandLineOption("--geometry <width> <height>","Allocate a osg::Geometry representing a grid of specified size, using OpenGL Dislay Lists.");
+    arguments.getApplicationUsage()->addCommandLineOption("--geometry-va <width> <height>","Allocate a osg::Geometry representing a grid of specified size, using Vertex Arrays.");
+    arguments.getApplicationUsage()->addCommandLineOption("--geometry-vbo <width> <height>","Allocate a osg::Geometry representing a grid of specified size, using Vertex Buffer Objects.");
+    arguments.getApplicationUsage()->addCommandLineOption("--fbo <width> <height>","Allocate a FrameBufferObject of specified dimensions.");
+    arguments.getApplicationUsage()->addCommandLineOption("-c <num>","Set the number of contexts to create of each type specified.");
+    arguments.getApplicationUsage()->addCommandLineOption("-g <num>","Set the number of GL objects to create of each type specified.");
+
+    if (arguments.read("-h") || arguments.read("--help"))
+    {
+        arguments.getApplicationUsage()->write(std::cout, osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        return 1;
+    }
+    
+    // report any errors if they have occurred when parsing the program arguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
+    
+    if (arguments.argc()<=1)
+    {
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        return 1;
+    }
+
+
+    typedef std::list< osg::ref_ptr<GLMemoryTest> > GLMemoryTests;
+    typedef std::list< osg::ref_ptr<ContextTest> > ContextTests;
+
+    ContextTests contextTests;
+    GLMemoryTests glMemoryTests;
     
     int width, height, depth;
-    while(arguments.read("--pbuffer",width,height)) { tests.push_back(new ContextTest(width, height, true)); }
-    while(arguments.read("--pbuffer")) { tests.push_back(new ContextTest(512, 512, true)); }
+    while(arguments.read("--pbuffer",width,height)) { contextTests.push_back(new ContextTest(width, height, true)); }
+    while(arguments.read("--pbuffer")) { contextTests.push_back(new ContextTest(512, 512, true)); }
 
-    while(arguments.read("--window",width,height)) { tests.push_back(new ContextTest(width, height, false)); }
-    while(arguments.read("--window")) { tests.push_back(new ContextTest(512,512, false)); }
+    while(arguments.read("--window",width,height)) { contextTests.push_back(new ContextTest(width, height, false)); }
+    while(arguments.read("--window")) { contextTests.push_back(new ContextTest(512,512, false)); }
 
-    while(arguments.read("--texture",width,height,depth)) { tests.push_back(new TextureTest(width,height,depth)); }
-    while(arguments.read("--texture",width,height)) { tests.push_back(new TextureTest(width,height,1)); }
-    while(arguments.read("--texture",width)) { tests.push_back(new TextureTest(width,1,1)); }
+    while(arguments.read("--texture",width,height,depth)) { glMemoryTests.push_back(new TextureTest(width,height,depth)); }
+    while(arguments.read("--texture",width,height)) { glMemoryTests.push_back(new TextureTest(width,height,1)); }
+    while(arguments.read("--texture",width)) { glMemoryTests.push_back(new TextureTest(width,1,1)); }
 
-    while(arguments.read("--fbo",width,height,depth)) { tests.push_back(new FboTest(width,height,depth)); }
-    while(arguments.read("--fbo",width,height)) { tests.push_back(new FboTest(width,height,2)); }
-    while(arguments.read("--fbo")) { tests.push_back(new FboTest(1024,1024,2)); }
+    while(arguments.read("--fbo",width,height,depth)) { glMemoryTests.push_back(new FboTest(width,height,depth)); }
+    while(arguments.read("--fbo",width,height)) { glMemoryTests.push_back(new FboTest(width,height,2)); }
+    while(arguments.read("--fbo")) { glMemoryTests.push_back(new FboTest(1024,1024,2)); }
 
-    while(arguments.read("--geometry",width,height)) { tests.push_back(new GeometryTest(GeometryTest::DISPLAY_LIST,width,height)); }
-    while(arguments.read("--geometry")) { tests.push_back(new GeometryTest(GeometryTest::DISPLAY_LIST,64,64)); }
+    while(arguments.read("--geometry",width,height)) { glMemoryTests.push_back(new GeometryTest(GeometryTest::DISPLAY_LIST,width,height)); }
+    while(arguments.read("--geometry")) { glMemoryTests.push_back(new GeometryTest(GeometryTest::DISPLAY_LIST,64,64)); }
 
-    while(arguments.read("--geometry-vbo",width,height)) { tests.push_back(new GeometryTest(GeometryTest::VERTEX_BUFFER_OBJECT,width,height)); }
-    while(arguments.read("--geometry-vbo")) { tests.push_back(new GeometryTest(GeometryTest::VERTEX_BUFFER_OBJECT,64,64)); }
+    while(arguments.read("--geometry-vbo",width,height)) { glMemoryTests.push_back(new GeometryTest(GeometryTest::VERTEX_BUFFER_OBJECT,width,height)); }
+    while(arguments.read("--geometry-vbo")) { glMemoryTests.push_back(new GeometryTest(GeometryTest::VERTEX_BUFFER_OBJECT,64,64)); }
 
-    while(arguments.read("--geometry-va",width,height)) { tests.push_back(new GeometryTest(GeometryTest::VERTEX_ARRAY,width,height)); }
-    while(arguments.read("--geometry-va")) { tests.push_back(new GeometryTest(GeometryTest::VERTEX_ARRAY,64,64)); }
+    while(arguments.read("--geometry-va",width,height)) { glMemoryTests.push_back(new GeometryTest(GeometryTest::VERTEX_ARRAY,width,height)); }
+    while(arguments.read("--geometry-va")) { glMemoryTests.push_back(new GeometryTest(GeometryTest::VERTEX_ARRAY,64,64)); }
 
     unsigned int sleepTime = 0;
     while(arguments.read("--delay",sleepTime)) {}
@@ -348,28 +390,17 @@ int main( int argc, char **argv )
     int maxNumGLIterations = 1000;
     while(arguments.read("-g",maxNumGLIterations)) {}
 
-    typedef std::list< osg::ref_ptr<GLMemoryTest> > GLMemoryTests;
-    typedef std::list< osg::ref_ptr<ContextTest> > ContextTests;
 
-    
-    ContextTests contextTests;
-    GLMemoryTests glMemoryTests;
-    
-    for(Tests::iterator itr = tests.begin();
-        itr != tests.end();
-        ++itr)
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
+
+    // report any errors if they have occurred when parsing the program arguments.
+    if (arguments.errors())
     {
-        MemoryTest* test = itr->get();
-        if (dynamic_cast<GLMemoryTest*>(test)!=0)
-        {
-            glMemoryTests.push_back(dynamic_cast<GLMemoryTest*>(test));
-        }
-        else if (dynamic_cast<ContextTest*>(test)!=0)
-        {
-            contextTests.push_back(dynamic_cast<ContextTest*>(test));
-        }
+        arguments.writeErrorMessages(std::cout);
+        return 1;
     }
-
+    
     typedef std::list< osg::ref_ptr<osg::GraphicsContext> > Contexts;
     typedef std::list< osg::ref_ptr<GLObject> > GLObjects;
     Contexts allocatedContexts;

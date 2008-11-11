@@ -23,6 +23,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/CubicBezier
 	${HEADER_PATH}/Vec3Packed
 	${HEADER_PATH}/AnimationManager
+	${HEADER_PATH}/AnimationManagerBase
 	${HEADER_PATH}/UpdateCallback
 	${HEADER_PATH}/LinkVisitor
 	${HEADER_PATH}/VertexInfluence
@@ -41,6 +42,7 @@ ADD_LIBRARY(${LIB_NAME}
     Bone.cpp
     RigGeometry.cpp
     AnimationManager.cpp
+    AnimationManagerBase.cpp
     Skeleton.cpp
     VertexInfluence.cpp
     UpdateCallback.cpp

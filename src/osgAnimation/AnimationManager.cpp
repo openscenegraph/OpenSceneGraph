@@ -37,18 +37,7 @@ void AnimationManager::stopAll()
 AnimationManager::AnimationManager()
 {
     _lastUpdate = 0; 
-    setUpdateCallback(new UpdateCallback); 
-    _needToLink = false; 
 }
-
-osgAnimation::AnimationMap AnimationManager::getAnimationMap() const
-{
-    osgAnimation::AnimationMap map;
-    for (AnimationList::const_iterator it = _animations.begin(); it != _animations.end(); it++)
-        map[(*it)->getName()] = *it;
-    return map;
-}
-
 void AnimationManager::playAnimation(Animation* pAnimation, int priority, float weight)
 {
     bool r = findAnimation(pAnimation);
@@ -79,18 +68,6 @@ bool AnimationManager::stopAnimation(Animation* pAnimation)
     return false;
 }
 
-
-void AnimationManager::buildTargetReference()
-{
-    _targets.clear();
-    for( AnimationList::iterator iterAnim = _animations.begin(); iterAnim != _animations.end(); ++iterAnim ) 
-    {
-        for (ChannelList::iterator it = (*iterAnim)->getChannels().begin();
-             it != (*iterAnim)->getChannels().end();
-             it++)
-            _targets.insert((*it)->getTarget());
-    }
-}
 
 void AnimationManager::update (double time)
 {
@@ -126,24 +103,6 @@ void AnimationManager::update (double time)
         (*it).get()->normalize();
 }
 
-void AnimationManager::registerAnimation (Animation* pAnimation)
-{
-    _needToLink = true;
-    _animations.push_back(pAnimation);
-    buildTargetReference();
-}
-
-bool AnimationManager::needToLink() const { return _needToLink; }
-
-
-
-void AnimationManager::link()
-{
-    LinkVisitor linker(_animations);
-    accept(linker);
-    _needToLink = false;
-    buildTargetReference();
-}
 
 bool AnimationManager::findAnimation(Animation* pAnimation) 
 {

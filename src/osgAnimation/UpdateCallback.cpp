@@ -18,7 +18,7 @@
 
 using namespace osgAnimation;
 
-osgAnimation::AnimationManager* AnimationUpdateCallback::getAnimationManager() { return _manager.get(); }
+osgAnimation::AnimationManagerBase* AnimationUpdateCallback::getAnimationManager() { return _manager.get(); }
 
 AnimationUpdateCallback::AnimationUpdateCallback(const AnimationUpdateCallback& apc,const osg::CopyOp& copyop):
     osg::NodeCallback(apc, copyop),
@@ -29,7 +29,7 @@ int AnimationUpdateCallback::link(osgAnimation::Animation* animation)
     int nbLinks = 0;
     for (osgAnimation::ChannelList::iterator it = animation->getChannels().begin();
          it != animation->getChannels().end();
-         it++) 
+         it++)
     {
         std::string targetName = (*it)->getTargetName();
         if (targetName == getName()) 
@@ -41,9 +41,9 @@ int AnimationUpdateCallback::link(osgAnimation::Animation* animation)
     return nbLinks;
 }
     
-void AnimationUpdateCallback::updateLink() 
+void AnimationUpdateCallback::updateLink()
 {
-    if (_manager.valid()) 
+    if (_manager.valid())
     {
         if (needLink()) 
         {

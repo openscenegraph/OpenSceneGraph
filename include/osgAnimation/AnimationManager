@@ -16,77 +16,39 @@
 #define OSGANIMATION_ANIMATION_MANAGER_H
 
 #include <osg/Group>
-#include <osgAnimation/Animation>
+#include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/Export>
 #include <osg/FrameStamp>
 
 namespace osgAnimation
 {
 
-    class OSGANIMATION_EXPORT AnimationManager : public osg::Group
+    class OSGANIMATION_EXPORT AnimationManager : public AnimationManagerBase
     {
     public:
-
-        typedef std::set<osg::ref_ptr<Target> > TargetSet;
-        struct UpdateCallback : public osg::NodeCallback
-        {
-            /** Callback method called by the NodeVisitor when visiting a node.*/
-            virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-            { 
-                if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
-                {
-                    AnimationManager* b = dynamic_cast<AnimationManager*>(node);
-                    if (b) 
-                    {
-                        if (b->needToLink())
-                        {
-                            /** manager need to link, it means that an animation has been added
-                                so we need to relink all item animated with all animations.
-                                We apply the linker visitor on the manager node to affect
-                                all its children.
-                                But it should not be done here, it should be done in the
-                                update of AnimationManager
-                            */
-                            b->link();
-                        }
-                        const osg::FrameStamp* fs = nv->getFrameStamp();
-                        b->update(fs->getSimulationTime());
-                    }
-                }
-                traverse(node,nv);
-            }
-        };
 
         META_Node(osgAnimation, AnimationManager);
   
         AnimationManager();
         AnimationManager(const AnimationManager& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : 
-            osg::Group(b,copyop) {}
+            AnimationManagerBase(b,copyop) {}
         virtual ~AnimationManager();
 
         void update (double time);
-        void buildTargetReference();
-        void registerAnimation (Animation* pAnimation);
+
         void playAnimation (Animation* pAnimation, int priority = 0, float weight = 1.0);
         bool stopAnimation (Animation* pAnimation);
 
         bool findAnimation (Animation* pAnimation);
         bool isPlaying (Animation* pAnimation);
         bool isPlaying (const std::string& animationName);
-        void link();
-
-        AnimationMap getAnimationMap() const;
-        bool needToLink() const;
 
         void stopAll();
     
     protected:
         typedef std::map<int, AnimationList > AnimationLayers;
 
-        AnimationList _animations;
         AnimationLayers _animationsPlaying;
-        TargetSet _targets;
-        bool _needToLink;
 
         // clock
         double _lastUpdate;

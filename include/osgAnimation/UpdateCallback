@@ -18,7 +18,7 @@
 #include <osg/Vec3>
 #include <osg/NodeCallback>
 #include <osg/observer_ptr>
-#include <osgAnimation/AnimationManager>
+#include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/Export>
 
 namespace osgAnimation 
@@ -27,12 +27,12 @@ namespace osgAnimation
     class OSGANIMATION_EXPORT AnimationUpdateCallback : public osg::NodeCallback
     {
     protected:
-        osg::observer_ptr<osgAnimation::AnimationManager> _manager;
+        osg::observer_ptr<osgAnimation::AnimationManagerBase> _manager;
 
     public:
         AnimationUpdateCallback(const std::string& name = "") { setName(name); }
         AnimationUpdateCallback(const AnimationUpdateCallback& apc,const osg::CopyOp& copyop);
-        osgAnimation::AnimationManager* getAnimationManager();
+        osgAnimation::AnimationManagerBase* getAnimationManager();
         virtual bool needLink() const = 0;
         virtual bool link(osgAnimation::Channel* channel) = 0;
         virtual int link(osgAnimation::Animation* animation);

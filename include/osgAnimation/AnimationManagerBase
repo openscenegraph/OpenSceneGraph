@@ -1,0 +1,98 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_ANIMATIONMANAGERBASE_H
+#define OSGANIMATION_ANIMATIONMANAGERBASE_H
+
+#include <osgAnimation/Animation>
+#include <osgAnimation/Export>
+#include <osg/FrameStamp>
+#include <osg/Group>
+
+namespace osgAnimation
+{
+
+    class OSGANIMATION_EXPORT AnimationManagerBase : public osg::Group
+    {
+    public:
+        typedef std::set<osg::ref_ptr<Target> > TargetSet;
+        struct UpdateCallback : public osg::NodeCallback
+        {
+            /** Callback method called by the NodeVisitor when visiting a node.*/
+            virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+            { 
+                if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
+                {
+                    AnimationManagerBase* b = dynamic_cast<AnimationManagerBase*>(node);
+                    if (b) 
+                    {
+                        if (b->needToLink())
+                        {
+                            /** manager need to link, it means that an animation has been added
+                                so we need to relink all item animated with all animations.
+                                We apply the linker visitor on the manager node to affect
+                                all its children.
+                                But it should not be done here, it should be done in the
+                                update of AnimationManager
+                            */
+                            b->link();
+                        }
+                        const osg::FrameStamp* fs = nv->getFrameStamp();
+                        b->update(fs->getSimulationTime());
+                    }
+                }
+                traverse(node,nv);
+            }
+        };
+
+        AnimationManagerBase();
+        AnimationManagerBase(const AnimationManagerBase& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : 
+            osg::Group(b,copyop) 
+        {
+            _animations = b._animations;
+            _targets = b._targets;
+            _needToLink = b._needToLink;
+        }
+        virtual ~AnimationManagerBase();
+
+        virtual void update (double time) = 0;
+        virtual void buildTargetReference();
+        virtual void registerAnimation (Animation* animation);
+        virtual void link();
+        virtual bool needToLink() const;
+        const AnimationList& getAnimationList() const { return _animations;}
+        AnimationMap getAnimationMap() const;
+
+        void clearTargets()
+        {
+            for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
+                (*it).get()->reset();
+        }
+        void normalizeTargets()
+        {
+            for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
+                (*it).get()->normalize();
+        }
+
+
+    protected:
+
+        AnimationList _animations;
+        TargetSet _targets;
+        bool _needToLink;
+
+    };
+
+}
+#endif

@@ -169,6 +169,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ENDIF(BUILD_OSGWIDGET)
 
     IF   (BUILD_OSGANIMATION)
+        ADD_SUBDIRECTORY(osganimationtimeline)
         ADD_SUBDIRECTORY(osganimationnode)
         ADD_SUBDIRECTORY(osganimationmakepath)
         ADD_SUBDIRECTORY(osganimationskinning)

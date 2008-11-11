@@ -101,13 +101,13 @@ namespace osgAnimation
 
         struct FindNearestParentAnimationManager : public osg::NodeVisitor
         {
-            osg::ref_ptr<osgAnimation::AnimationManager> _manager;
+            osg::ref_ptr<osgAnimation::AnimationManagerBase> _manager;
             FindNearestParentAnimationManager() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
             void apply(osg::Group& node) 
             {
                 if (_manager.valid())
                     return;
-                _manager = dynamic_cast<osgAnimation::AnimationManager*>(&node);
+                _manager = dynamic_cast<osgAnimation::AnimationManagerBase*>(&node);
                 traverse(node);
             }
         };
@@ -204,7 +204,10 @@ namespace osgAnimation
                         b->getParents()[0]->accept(finder);
 
                         if (!finder._manager.valid())
+                        {
+                            osg::notify(osg::WARN) << "Warning can't update Bone, path to parent AnimationManagerBase not found" << std::endl;
                             return;
+                        }
 
                         _manager = finder._manager.get();
                     }

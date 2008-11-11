@@ -545,6 +545,13 @@ IF   (BUILD_OSG_EXAMPLES)
     ADD_SUBDIRECTORY(examples)
 ENDIF(BUILD_OSG_EXAMPLES)
 
+# OSG Animation test
+OPTION(BUILD_OSG_ANIMATIONTEST "Enable to build OSG Animation test" OFF)
+IF   (BUILD_OSG_ANIMATIONTEST)
+    ADD_SUBDIRECTORY(test)
+ENDIF(BUILD_OSG_ANIMATIONTEST)
+
+
 # This is for an advanced option to give aggressive warnings
 # under different compilers. If yours is not implemented, this option
 # will not be made available.

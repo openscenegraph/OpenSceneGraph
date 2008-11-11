@@ -19,48 +19,154 @@
 #include <map>
 #include <vector>
 #include <cmath>
-#include <iostream>
+#include <osg/Notify>
+#include <osg/Group>
+#include <osgAnimation/Animation>
+#include <osgAnimation/AnimationManagerBase>
 
 namespace osgAnimation
 {
 
-    class Timeline;
-    class TimelineCallback : public virtual osg::Object
+    class Action : public virtual osg::Object
     {
     public:
 
-        TimelineCallback(){}
-        TimelineCallback(const TimelineCallback& nc,const osg::CopyOp&) {}
+        class Callback : public virtual osg::Object
+        {
+        public:
+            Callback(){}
+            Callback(const Callback& nc,const osg::CopyOp&) {}
+
+            META_Object(osgAnimation,Callback);
         
-        META_Object(osgAnimation,TimelineCallback);
-        
-        virtual void operator()(Timeline* timeline)
-        { 
+            virtual void operator()(Action* action) {}
+            void addNestedCallback(Callback* callback) 
+            { 
+                if (_nested.valid())
+                    _nested->addNestedCallback(callback);
+                else
+                    _nested = callback;
+            }
+
+        protected:
+            osg::ref_ptr<Callback> _nested;
+        };
+
+
+        typedef std::map<unsigned int, osg::ref_ptr<Callback> > FrameCallback;
+
+        META_Object(osgAnimation, Action);
+        Action()
+        {
+            _numberFrame = 25;
+            _fps = 25;
+            _speed = 1.0;
+            _loop = 1;
+        }
+        Action(const Action& nc,const osg::CopyOp&) {}
+
+        void setCallback(double when, Callback* callback)
+        {
+            setCallback(static_cast<unsigned int>(floor(when*_fps)), callback);
         }
 
+        void setCallback(unsigned int frame, Callback* callback)
+        {
+            if (_framesCallback[frame].valid())
+                _framesCallback[frame]->addNestedCallback(callback);
+            else
+                _framesCallback[frame] = callback;
+        }
+        Callback* getCallback(unsigned int frame)
+        {
+            if (_framesCallback.find(frame) == _framesCallback.end())
+                return 0;
+            return _framesCallback[frame].get();
+        }
+
+        void setNumFrames(unsigned int numFrames) { _numberFrame = numFrames;}
+        void setDuration(double duration) { _numberFrame = static_cast<unsigned int>(floor(duration * _fps)); }
+
+        unsigned int getNumFrames() const { return _numberFrame;}
+        double getDuration() const { return _numberFrame * 1.0 / _fps; }
+
+        // 0 means infini else it's the number of loop
+        virtual void setLoop(int nb) { _loop = nb; }
+        virtual unsigned int getLoop() const { return _loop;}
+
+        // get the number of loop, the frame relative to loop.
+        // return true if in range, and false if out of range.
+        bool evaluateFrame(unsigned int frame, unsigned int& resultframe, unsigned int& nbloop )
+        {
+            nbloop = frame / getNumFrames();
+            resultframe = frame;
+
+            if (frame > getNumFrames()-1)
+            {
+                if (!getLoop())
+                    resultframe = frame % getNumFrames();
+                else
+                {
+                    if (nbloop >= getLoop())
+                        return false;
+                    else
+                        resultframe = frame % getNumFrames();
+                }
+            }
+            return true;
+        }
+
+        virtual void evaluate(unsigned int frame)
+        {
+            unsigned int frameInAction;
+            unsigned int loopDone;
+            if (!evaluateFrame(frame, frameInAction, loopDone))
+                osg::notify(osg::DEBUG_INFO) << getName() << " Action frame " << frameInAction  << " finished" << std::endl;
+            else
+                osg::notify(osg::DEBUG_INFO) << getName() << " Action frame " << frame  << " relative to loop " << frameInAction  << " no loop " << loopDone<< std::endl;
+        }
+
+        virtual void evaluateCallback(unsigned int frame)
+        {
+            unsigned int frameInAction;
+            unsigned int loopDone;
+            if (!evaluateFrame(frame, frameInAction, loopDone))
+                return;
+
+            frame = frameInAction;
+            if (_framesCallback.find(frame) != _framesCallback.end())
+            {
+                std::cout << getName() << " evaluate callback " << _framesCallback[frame]->getName() << " at " << frame << std::endl;
+                (*_framesCallback[frame])(this);
+            }
+        }
+
+    protected:
+        FrameCallback _framesCallback;
+
+        double _speed;
+        unsigned int _fps;
+        unsigned int _numberFrame;
+        unsigned int _loop;
+
+        enum State
+        {
+            Play,
+            Stop,
+        };
+        
+        State _state;
     };
 
-    class RunTimeline : public TimelineCallback
+
+    class Timeline : public virtual osg::Object
     {
     protected:
-        osg::ref_ptr<Timeline> _tm;
-    public:
-        RunTimeline(Timeline* tm) : _tm(tm) {}
-        virtual void operator()(Timeline* timeline);
-    };
+        typedef std::pair<unsigned int, osg::ref_ptr<Action> > FrameAction;
+        typedef std::vector<FrameAction> ActionList;
+        typedef std::map<int, ActionList> ActionLayers;
 
-
-    class Timeline : public osg::Object
-    {
-    protected:
-        osg::ref_ptr<TimelineCallback> _newframe;
-
-        typedef std::map<unsigned int, osg::ref_ptr<TimelineCallback> > Frames;
-        typedef std::vector<osg::ref_ptr<Timeline> > TimelineList;
-
-
-        Frames _frames;
-        TimelineList _children;
+        ActionLayers _actions;
 
         double _lastUpdate;
         double _speed;
@@ -79,128 +185,177 @@ namespace osgAnimation
         
         State _state;
 
+        // to manage pending operation
+        bool _evaluating;
+
+        struct Command
+        {
+            Command():_priority(0) {}
+            Command(int priority, const FrameAction& action) : _priority(priority), _action(action) {}
+            int _priority;
+            FrameAction _action;
+        };
+
+        typedef std::vector<Command> CommandList;
+        CommandList _addActionOperations;
+        ActionList _removeActionOperations;
+
+        void setEvaluating(bool state) { _evaluating = state;}
+        void processPendingOperation()
+        {
+            // process all pending add action operation
+            while( !_addActionOperations.empty())
+            {
+                internalAddAction(_addActionOperations.back()._priority, _addActionOperations.back()._action);
+                _addActionOperations.pop_back();
+            }
+
+            // process all pending remove action operation
+            while( !_removeActionOperations.empty())
+            {
+                internalRemoveAction(_removeActionOperations.back().second);
+                _removeActionOperations.pop_back();
+            }
+        }
+
+        void internalRemoveAction(Action* action)
+        {
+            for (ActionLayers::iterator it = _actions.begin(); it != _actions.end(); it++)
+            {
+                ActionList& fa = it->second;
+                for (int i = 0; i < fa.size(); i++)
+                    if (fa[i].second.get() == action)
+                    {
+                        fa.erase(fa.begin() + i);
+                        return;
+                    }
+            }
+        }
+        void internalAddAction(int priority, const FrameAction& ftl)
+        {
+            _actions[priority].push_back(ftl);
+        }
+        
     public:
+
         META_Object(osgAnimation, Timeline);
+
         Timeline()
         {
             _lastUpdate = 0;
             _currentFrame = 0;
-            _numberFrame = 25;
             _fps = 25;
             _speed = 1.0;
-            _loop = false;
             _state = Stop;
             _initFirstFrame = false;
-            _previousFrameEvaluated = 0; 
+            _previousFrameEvaluated = 0;
+            _evaluating = 0;
+            _numberFrame = -1; // something like infinity
+            setName("Timeline");
         }
-
         Timeline(const Timeline& nc,const osg::CopyOp&) {}
-
-        virtual void setNewFrameCallback(TimelineCallback* frame)
+        State getStatus() const { return _state; }
+        const ActionList& getActionLayer(int i)
         {
-            _newframe = frame;
+            return _actions[i];
         }
+        unsigned int getCurrentFrame() const { return _currentFrame;}
+        double getCurrentTime() const { return _currentFrame * 1.0 / _fps;}
 
-        virtual void addChild(Timeline* tl)
-        {
-            _children.push_back(tl);
-        }
+        void play() { _state = Play; }
+        void gotoFrame(unsigned int frame) { _currentFrame = frame; }
+        void stop() { _state = Stop; }
+        bool getEvaluating() const { return _evaluating;}
 
-        virtual void play()
+        bool isActive(Action* activeAction)
         {
-            _state = Play;
-        }
-
-        virtual void gotoFrame(unsigned int frame)
-        {
-            _currentFrame = frame;
-        }
-        virtual void setNumFrames(unsigned int numFrames)
-        {
-            _numberFrame = numFrames;
-        }
-
-        virtual void stop()
-        {
-            _state = Stop;
-        }
-
-
-        void updateChildren(double currentTime)
-        {
-            for (unsigned int i = 0; i < _children.size(); i++)
+            // update from high priority to low priority
+            for( ActionLayers::iterator iterAnim = _actions.begin(); iterAnim != _actions.end(); ++iterAnim )
             {
-                _children[i]->update(currentTime);
+                // update all animation
+                ActionList& list = iterAnim->second;
+                for (unsigned int i = 0; i < list.size(); i++)
+                {
+                    Action* action = list[i].second.get();
+                    if (action == activeAction) 
+                    {
+                        unsigned int firstFrame = list[i].first;
+                        // check if current frame of timeline hit an action interval
+                        if (_currentFrame >= firstFrame && 
+                            _currentFrame < (firstFrame + action->getNumFrames()) )
+                            return true;
+                    }
+                }
             }
+            return false;
         }
 
-        void setFrameEvent(unsigned int frame, TimelineCallback* event)
+        void removeAction(Action* action)
         {
-            _frames[frame] = event;
-        }
-
-        unsigned int getNumFrames()
-        {
-            return _numberFrame;
-        }
-
-        unsigned int getCurrentFrame()
-        {
-            return _currentFrame;
-        }
-
-        double getCurrentTime()
-        {
-            return _currentFrame * 1.0 / _fps;
-        }
-
-        double getDuration()
-        {
-            return _numberFrame * 1.0 / _fps;
-        }
-
-        State getStatus() const
-        {
-            return _state;
-        }
-
-
-        virtual void nextFrame()
-        {
-            _currentFrame++;
-            if (_currentFrame > _numberFrame - 1)
-            { 
-                if (_loop)
-                    _currentFrame = _currentFrame % _numberFrame;
-                else
-                    _currentFrame = _numberFrame - 1;
-            }
-        }
-
-        virtual void prevFrame()
-        {
-            if (!_currentFrame)
-            {
-                if (_loop)
-                    _currentFrame = _numberFrame - 1;
-            }
+            if (getEvaluating())
+                _removeActionOperations.push_back(FrameAction(0, action));
             else
-                _currentFrame--;
+                internalRemoveAction(action);
+        }
+
+        virtual void addActionAt(unsigned int frame, Action* action, int priority = 0)
+        {
+            if (getEvaluating())
+                _addActionOperations.push_back(Command(priority,FrameAction(frame, action)));
+            else
+                internalAddAction(priority, FrameAction(frame, action));
+        }
+        virtual void addActionAt(double t, Action* action, int priority = 0)
+        {
+            unsigned int frame = static_cast<unsigned int>(floor(t * _fps));
+            addActionAt(frame, action, priority);
         }
 
         virtual void evaluate(unsigned int frame)
         {
-            if (frame != _previousFrameEvaluated)
-                if (_newframe.valid())
-                    (*_newframe)(this);
+            setEvaluating(true);
+            osg::notify(osg::DEBUG_INFO) << getName() << " evaluate frame " << _currentFrame << std::endl;
 
-            // check if we have something to do for this frame
-            Frames::iterator it = _frames.find(frame);
-            if (it != _frames.end() && it->second.valid())
+            // update from high priority to low priority
+            for( ActionLayers::reverse_iterator iterAnim = _actions.rbegin(); iterAnim != _actions.rend(); ++iterAnim )
             {
-                (*it->second.get())(this);
+                // update all animation
+                ActionList& list = iterAnim->second;
+                for (unsigned int i = 0; i < list.size(); i++)
+                {
+                    unsigned int firstFrame = list[i].first;
+                    Action* action = list[i].second.get();
+                    // check if current frame of timeline hit an action interval
+                    if (frame >= firstFrame && 
+                        frame < (firstFrame + action->getNumFrames()) )
+                        action->evaluate(frame - firstFrame);
+                }
             }
+            setEvaluating(false);
+
+            // evaluate callback after updating all animation
+            evaluateCallback(frame);
             _previousFrameEvaluated = frame;
+        }
+
+        virtual void evaluateCallback(unsigned int frame)
+        {
+            // update from high priority to low priority
+            for( ActionLayers::reverse_iterator iterAnim = _actions.rbegin(); iterAnim != _actions.rend(); ++iterAnim )
+            {
+                // update all animation
+                ActionList& list = iterAnim->second;
+                for (unsigned int i = 0; i < list.size(); i++)
+                {
+                    unsigned int firstFrame = list[i].first;
+                    Action* action = list[i].second.get();
+                    // check if current frame of timeline hit an action interval
+                    if (frame >= firstFrame && 
+                        frame < (firstFrame + action->getNumFrames()) )
+                        action->evaluateCallback(frame - firstFrame);
+                }
+            }
+            processPendingOperation();
         }
 
         virtual void update(double simulationTime)
@@ -211,7 +366,6 @@ namespace osgAnimation
                 _lastUpdate = simulationTime;
                 _initFirstFrame = true;
                 evaluate(_currentFrame);
-                updateChildren(_lastUpdate);
             }
 
             // find the number of frame pass since the last update
@@ -222,18 +376,187 @@ namespace osgAnimation
             for (unsigned int i = 0; i < nb; i++)
             {
                 if (_state == Play)
-                    nextFrame();
-                std::cout << "simulationTime " << simulationTime << " frame " << _currentFrame << std::endl;
+                    _currentFrame++;
                 evaluate(_currentFrame);
-                updateChildren(_lastUpdate + (1 + i) * 1.0 /_fps );
             }
             if (nb)
             {
                 _lastUpdate += ((double)nb) / _fps;
             }
-            updateChildren(simulationTime);
         }
     };
+
+
+
+    // blend in from 0 to weight in duration
+    class BlendIn : public Action
+    {
+        double _weight;
+        osg::ref_ptr<Animation> _animation;
+
+    public:
+        BlendIn(Animation* animation, double duration, double weight)
+        {
+            _animation = animation;
+            _weight = weight;
+            float d = duration * _fps;
+            setNumFrames(static_cast<unsigned int>(floor(d)) + 1);
+            setName("BlendIn");
+        }
+        double getWeight() const { return _weight;}
+        virtual void evaluate(unsigned int frame)
+        {
+            Action::evaluate(frame);
+            // frame + 1 because the start is 0 and we want to start the blend in at the first
+            // frame.
+            double ratio = ( (frame+1) * 1.0 / (getNumFrames()) );
+            double w = _weight;
+            if (frame < getNumFrames() -1 ) // the last frame we set the target weight the user asked
+                w = _weight * ratio;
+            _animation->setWeight(w);
+        }
+    };
+
+    // blend in from 0 to weight in duration
+    class BlendOut : public Action
+    {
+        double _weight;
+        osg::ref_ptr<Animation> _animation;
+    public:
+        BlendOut(Animation* animation, double duration)
+        {
+            _animation = animation;
+            float d = duration * _fps;
+            setNumFrames(static_cast<unsigned int>(floor(d) + 1));
+            _weight = 1.0;
+            setName("BlendOut");
+        }
+        double getWeight() const { return _weight;}
+        virtual void evaluate(unsigned int frame)
+        {
+            Action::evaluate(frame);
+            // frame + 1 because the start is 0 and we want to start the blend in at the first
+            // frame.
+            double ratio = ( (frame+1) * 1.0 / (getNumFrames()) );
+            double w = 0.0;
+            if (frame < getNumFrames() -1 ) // the last frame we set the target weight the user asked
+                w = _weight * (1.0-ratio);
+            _animation->setWeight(w);
+        }
+    };
+
+
+    class ActionAnimation : public Action
+    {
+    public:
+        ActionAnimation(Animation* animation) : _animation(animation) 
+        {
+            setDuration(animation->getDuration()); 
+            setName(animation->getName());
+        }
+        virtual void evaluate(unsigned int frame) 
+        {
+            Action::evaluate(frame);
+            _animation->update(frame * 1.0/_fps); 
+        }
+        Animation* getAnimation() { return _animation.get(); }
+    protected:
+        osg::ref_ptr<Animation> _animation;
+    };
+
+
+    // encapsulate animation with blend in blend out for classic usage
+    class StripAnimation : public Action
+    {
+    protected:
+        typedef std::pair<unsigned int, osg::ref_ptr<Action> > FrameAction;
+
+    public:
+        StripAnimation(Animation* animation, double blendInDuration, double blendOutDuration, double blendInWeightTarget = 1.0  )
+        {
+            _blendIn = new BlendIn(animation, blendInDuration, blendInWeightTarget);
+            _animation = new ActionAnimation(animation);
+            unsigned int start = static_cast<unsigned int>(floor((_animation->getDuration() - blendOutDuration) * _fps));
+            _blendOut = FrameAction(start, new BlendOut(animation, blendOutDuration));
+            setName(animation->getName() + "_Strip");
+            _blendIn->setName(_animation->getName() + "_" + _blendIn->getName());
+            _blendOut.second->setName(_animation->getName() + "_" + _blendOut.second->getName());
+            setDuration(animation->getDuration());
+        }
+
+        ActionAnimation* getActionAnimation() { return _animation.get(); }
+        BlendIn* getBlendIn() { return _blendIn.get(); }
+        BlendOut* getBlendOut() { return dynamic_cast<BlendOut*>(_blendOut.second.get()); }
+        const ActionAnimation* getActionAnimation() const { return _animation.get(); }
+        const BlendIn* getBlendIn() const { return _blendIn.get(); }
+        const BlendOut* getBlendOut() const { return dynamic_cast<BlendOut*>(_blendOut.second.get()); }
+
+        unsigned int getLoop() const { return _animation->getLoop(); }
+        void setLoop(unsigned int loop)
+        {
+            _animation->setLoop(loop);
+            if (!loop)
+                setDuration(-1);
+            else
+                setDuration(loop * _animation->getDuration());
+
+            // duration changed re evaluate the blendout duration
+            unsigned int start = static_cast<unsigned int>(floor((getDuration() - _blendOut.second->getDuration()) * _fps));
+            _blendOut = FrameAction(start, _blendOut.second);
+        }
+
+        virtual void evaluate(unsigned int frame)
+        {
+            if (frame > getNumFrames() - 1)
+                return;
+
+            Action::evaluate(frame);
+            if (frame < _blendIn->getNumFrames())
+                _blendIn->evaluate(frame);
+            if (frame >= _blendOut.first)
+                _blendOut.second->evaluate(frame - _blendOut.first);
+            _animation->evaluate(frame);
+        }
+
+    protected:
+        osg::ref_ptr<BlendIn> _blendIn;
+        FrameAction _blendOut;
+        osg::ref_ptr<ActionAnimation> _animation;
+    };
+
+
+    class RunAction : public Action::Callback
+    {
+    protected:
+        osg::ref_ptr<Action> _action;
+        osg::ref_ptr<Timeline> _tm;
+        
+    public:
+        RunAction(Timeline* tm, Action* a) : _tm(tm), _action(a) {}
+        virtual void operator()(Action* action)
+        {
+            _tm->addActionAt(_tm->getCurrentFrame(), _action.get()); // warning we are trsversing the vector
+        }
+    };
+
+
+
+    class AnimationManagerTimeline : public AnimationManagerBase
+    {
+    protected:
+        osg::ref_ptr<Timeline> _timeline;
+
+    public:
+        META_Node(osgAnimation, AnimationManagerTimeline);
+        AnimationManagerTimeline();
+        AnimationManagerTimeline(const AnimationManagerBase& manager);
+        AnimationManagerTimeline(const AnimationManagerTimeline& nc,const osg::CopyOp&) {}
+
+        Timeline* getTimeline() { return _timeline.get(); }
+        void update(double time);
+
+    };
+
 
 }
 

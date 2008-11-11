@@ -316,10 +316,10 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" tests OpenGL and Windowing memory scalability..");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","List command line options.");
-    arguments.getApplicationUsage()->addCommandLineOption("--pbuffer <width> <height>","Create a pixel buffer of specified dimensions.");
     arguments.getApplicationUsage()->addCommandLineOption("--pbuffer","Create a 512x512 pixel buffer.");
-    arguments.getApplicationUsage()->addCommandLineOption("--window <width> <height>","Create a graphics window of specified dimensions.");
+    arguments.getApplicationUsage()->addCommandLineOption("--pbuffer <width> <height>","Create a pixel buffer of specified dimensions.");
     arguments.getApplicationUsage()->addCommandLineOption("--window","Create a 512x512 graphics window.");
+    arguments.getApplicationUsage()->addCommandLineOption("--window <width> <height>","Create a graphics window of specified dimensions.");
     arguments.getApplicationUsage()->addCommandLineOption("--delay <micoseconds>","Set a delay in microseconds before all OpenGL object operations.");
     arguments.getApplicationUsage()->addCommandLineOption("--texture <width> <height> <depth>","Allocate a 3D texture of specified dimensions.");
     arguments.getApplicationUsage()->addCommandLineOption("--texture <width> <height>","Allocate a 2D texture of specified dimensions.");
@@ -336,14 +336,7 @@ int main( int argc, char **argv )
         arguments.getApplicationUsage()->write(std::cout, osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
-    
-    // report any errors if they have occurred when parsing the program arguments.
-    if (arguments.errors())
-    {
-        arguments.writeErrorMessages(std::cout);
-        return 1;
-    }
-    
+
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
@@ -390,7 +383,7 @@ int main( int argc, char **argv )
     int maxNumGLIterations = 1000;
     while(arguments.read("-g",maxNumGLIterations)) {}
 
-
+#if 0
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
@@ -400,11 +393,27 @@ int main( int argc, char **argv )
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
+#endif
     
     typedef std::list< osg::ref_ptr<osg::GraphicsContext> > Contexts;
     typedef std::list< osg::ref_ptr<GLObject> > GLObjects;
     Contexts allocatedContexts;
     GLObjects glObjects;
+    
+    if (contextTests.empty())
+    {
+        if (glMemoryTests.empty())
+        {
+            std::cout<<"Not tests specified, please specify test using the command line options below."<<std::endl<<std::endl;
+        
+            arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
+            return 1;            
+        }
+        else
+        {
+            contextTests.push_back(new ContextTest(512,512, false));
+        }
+    }
 
     osg::Timer_t startTick = osg::Timer::instance()->tick();
 

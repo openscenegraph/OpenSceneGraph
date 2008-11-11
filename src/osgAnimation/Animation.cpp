@@ -19,7 +19,7 @@ using namespace osgAnimation;
 Animation::Animation(const osgAnimation::Animation& anim, const osg::CopyOp& c)
 {
     _duration = anim._duration;
-    _ratio = anim._ratio;
+    _originalDuration = anim._originalDuration;
     _weight = anim._weight;
     _startTime = anim._startTime;
     _playmode = anim._playmode;
@@ -29,13 +29,16 @@ Animation::Animation(const osgAnimation::Animation& anim, const osg::CopyOp& c)
 void Animation::addChannel(Channel* pChannel)
 {
     _channels.push_back(pChannel);
-    computeDuration();
+    if (!_duration)
+        computeDuration();
+    else
+        _originalDuration = computeDurationFromChannels();
 }
 
-void Animation::computeDuration() 
+double Animation::computeDurationFromChannels() const
 {
-    float tmin = 1e5;
-    float tmax = -1e5;
+    double tmin = 1e5;
+    double tmax = -1e5;
     ChannelList::const_iterator chan;
     for( chan=_channels.begin(); chan!=_channels.end(); chan++ )
     {
@@ -46,7 +49,13 @@ void Animation::computeDuration()
         if (max > tmax)
             tmax = max;
     }
-    _duration = tmax-tmin;
+    return tmax-tmin;
+}
+
+void Animation::computeDuration()
+{
+    _duration = computeDurationFromChannels();
+    _originalDuration = _duration;
 }
 
 osgAnimation::ChannelList& Animation::getChannels()
@@ -59,19 +68,16 @@ const osgAnimation::ChannelList& Animation::getChannels() const
     return _channels;
 }
 
+
+void Animation::setDuration(double duration)
+{
+    _originalDuration = computeDurationFromChannels();
+    _duration = duration;
+}
+
 float Animation::getDuration() const
 {
     return _duration;
-}
-
-float Animation::getRatio() const
-{
-    return _ratio;
-}
-
-void Animation::setRatio(float ratio)
-{
-    _ratio = ratio;
 }
 
 float Animation::getWeight () const
@@ -86,7 +92,12 @@ void Animation::setWeight (float weight)
 
 bool Animation::update (float time)
 {
-    float t = (time - _startTime) * _ratio;
+    if (!_duration) // if not initialized then do it
+        computeDuration();
+
+    double ratio = _originalDuration / _duration;
+
+    float t = (time - _startTime) * ratio;
     switch (_playmode) 
     {
     case ONCE:

@@ -30,7 +30,7 @@ namespace osgAnimation
     public:
         META_Object(osgAnimation, Animation)
 
-        Animation() : _duration(0), _ratio(1), _weight(0), _startTime(0), _playmode(LOOP) {}
+        Animation() : _duration(0), _weight(0), _startTime(0), _playmode(LOOP) {}
         Animation(const osgAnimation::Animation& anim, const osg::CopyOp&);
 
         enum PlayMode
@@ -44,19 +44,32 @@ namespace osgAnimation
         // addChannel insert the channel and call the computeDuration function
         void addChannel (Channel* pChannel);
 
-        // return the channels list, if you change data inside becareful to call 
-        // computeDuration if needed
+        /** Those accessors let you add and remove channels
+         *  if you modify something that can change the duration
+         *  you are supposed to call computeDuration or setDuration
+         */            
         ChannelList& getChannels();
         const ChannelList& getChannels() const;
 
-        float getDuration() const;
+        /** Change the duration of animation
+         *  then evaluate the animation in the range 0-duration
+         *  it stretch the animation in time.
+         *  see computeDuration too
+         */
+        void setDuration(double duration);
+
+
+        /** Compute duration from channel and keyframes
+         *  if the duration is not specified you should
+         *  call this method before using it
+         */
         void computeDuration();
 
-        float getRatio() const;
-        void setRatio (float ratio);
+        float getDuration() const;
 
-        float getWeight() const;
+
         void setWeight (float weight);
+        float getWeight() const;
 
         bool update (float time);
         void resetTargets();
@@ -67,11 +80,13 @@ namespace osgAnimation
 
     protected:
 
+        double computeDurationFromChannels() const;
+
         ~Animation() {}
   
         std::string _name;
-        float _duration;
-        float _ratio;
+        double _duration;
+        double _originalDuration;
         float _weight;
         float _startTime;
         PlayMode _playmode;

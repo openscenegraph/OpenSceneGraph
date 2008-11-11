@@ -70,8 +70,9 @@ struct ExampleTimelineUsage : public osgGA::GUIEventHandler
         _scratchHead = new osgAnimation::StripAnimation(map["Idle_Head_Scratch.02"].get(),0.2,0.3);
         _scratchHead->setLoop(1); // one time
 
+        map["Idle_Nose_Scratch.01"]->setDuration(10.0); // set this animation duration to 10 seconds
         _scratchNose = new osgAnimation::StripAnimation(map["Idle_Nose_Scratch.01"].get(),0.2,0.3);
-        _scratchHead->setLoop(1); // one time
+        _scratchNose->setLoop(1); // one time
 
         // add the main loop at priority 0 at time 0.
         

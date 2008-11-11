@@ -223,7 +223,7 @@ namespace osgAnimation
             for (ActionLayers::iterator it = _actions.begin(); it != _actions.end(); it++)
             {
                 ActionList& fa = it->second;
-                for (int i = 0; i < fa.size(); i++)
+                for (unsigned int i = 0; i < fa.size(); i++)
                     if (fa[i].second.get() == action)
                     {
                         fa.erase(fa.begin() + i);
@@ -528,8 +528,8 @@ namespace osgAnimation
     class RunAction : public Action::Callback
     {
     protected:
-        osg::ref_ptr<Action> _action;
         osg::ref_ptr<Timeline> _tm;
+        osg::ref_ptr<Action> _action;
         
     public:
         RunAction(Timeline* tm, Action* a) : _tm(tm), _action(a) {}

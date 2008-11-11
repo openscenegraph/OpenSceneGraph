@@ -85,7 +85,7 @@ void AnimationManager::update (double time)
         // update all animation
         std::vector<int> toremove;
         AnimationList& list = iterAnim->second;
-        for (int i = 0; i < list.size(); i++)
+        for (unsigned int i = 0; i < list.size(); i++)
         {
             if (! list[i]->update(time))
                 toremove.push_back(i);

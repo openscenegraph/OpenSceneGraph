@@ -417,6 +417,10 @@ int main( int argc, char **argv )
 
     osg::Timer_t startTick = osg::Timer::instance()->tick();
 
+
+    // use printf's below as C++'s ostream classes use more memory and are more likely to fail when everything
+    // goes wrong with memory allocations.
+    
     int numContextIterations = 0;
     int numGLObjectIterations = 0;
     int numGLObjectsApplied = 0;

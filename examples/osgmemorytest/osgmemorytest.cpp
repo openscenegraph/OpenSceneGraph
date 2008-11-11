@@ -24,6 +24,8 @@
 
 #include <osgViewer/Viewer>
 
+#include <stdio.h>
+
 class MemoryTest : public osg::Referenced
 {
     public:
@@ -225,6 +227,9 @@ int main( int argc, char **argv )
     while(arguments.read("--fbo",width,height)) { tests.push_back(new FboTest(width,height,2)); }
     while(arguments.read("--fbo")) { tests.push_back(new FboTest(1024,1024,2)); }
 
+    unsigned int sleepTime = 0;
+    while(arguments.read("--delay",sleepTime)) {}
+
     int maxNumContextIterations = 1;
     while(arguments.read("-c",maxNumContextIterations)) {}
 
@@ -292,27 +297,32 @@ int main( int argc, char **argv )
                         gitr != glObjects.end();
                         ++gitr)
                     {
+                        if (sleepTime>0) OpenThreads::Thread::microSleep( sleepTime );
+
+                        printf("%i ",numGLObjectsApplied);fflush(stdout);
+
                         (*gitr)->apply(*(context->getState()));
                         ++numGLObjectsApplied;
                     }
                     
                     context->releaseContext();
+                    printf("\n\n"); fflush(stdout);
                 }
             }
         }
     }
     catch(const char* errorString)
     {
-        printf("Exception caught, contexts completed = %i, gl objects successfully applied =%i, error = %s\n",numContextIterations, numGLObjectsApplied, errorString);
+        printf("\nException caught, contexts completed = %i, gl objects successfully applied =%i, error = %s\n\n",numContextIterations, numGLObjectsApplied, errorString);
         return 1;
     }
     catch(...)
     {
-        printf("Exception caught, contexts completed = %i, gl objects successfully applied =%i\n",numContextIterations, numGLObjectsApplied);
+        printf("\nException caught, contexts completed = %i, gl objects successfully applied =%i\n\n",numContextIterations, numGLObjectsApplied);
         return 1;
     }
 
-    printf("Successful completion, contexts created = %i, gl objects applied =%i\n",numContextIterations, numGLObjectsApplied);
+    printf("\nSuccessful completion, contexts created = %i, gl objects applied =%i\n\n",numContextIterations, numGLObjectsApplied);
     
     return 0;
 }

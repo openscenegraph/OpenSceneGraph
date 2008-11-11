@@ -375,6 +375,8 @@ int main( int argc, char **argv )
     Contexts allocatedContexts;
     GLObjects glObjects;
 
+    osg::Timer_t startTick = osg::Timer::instance()->tick();
+
     int numContextIterations = 0;
     int numGLObjectIterations = 0;
     int numGLObjectsApplied = 0;
@@ -428,16 +430,20 @@ int main( int argc, char **argv )
     }
     catch(const char* errorString)
     {
-        printf("\nException caught, contexts completed = %i, gl objects successfully applied =%i, error = %s\n\n",numContextIterations, numGLObjectsApplied, errorString);
+        printf("\nException caught, contexts completed = %i, gl objects successfully applied = %i, error = %s\n\n",numContextIterations, numGLObjectsApplied, errorString);
         return 1;
     }
     catch(...)
     {
-        printf("\nException caught, contexts completed = %i, gl objects successfully applied =%i\n\n",numContextIterations, numGLObjectsApplied);
+        printf("\nException caught, contexts completed = %i, gl objects successfully applied = %i\n\n",numContextIterations, numGLObjectsApplied);
         return 1;
     }
 
-    printf("\nSuccessful completion, contexts created = %i, gl objects applied =%i\n\n",numContextIterations, numGLObjectsApplied);
+    osg::Timer_t endTick = osg::Timer::instance()->tick();
+
+    printf("\nSuccessful completion, contexts created = %i, gl objects applied = %i\n",numContextIterations, numGLObjectsApplied);
+    printf("Duration = %f seconds.\n\n",osg::Timer::instance()->delta_s(startTick, endTick));
     
+
     return 0;
 }

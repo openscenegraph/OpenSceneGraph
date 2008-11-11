@@ -439,7 +439,7 @@ int main( int argc, char **argv )
         
         for(;numContextIterations<maxNumContextIterations; ++numContextIterations)
         {
-            printf("iteration %i\n",numContextIterations);
+            printf("GraphicsContext %i\n",numContextIterations);
             for(ContextTests::iterator itr = contextTests.begin();
                 itr != contextTests.end();
                 ++itr)
@@ -467,6 +467,7 @@ int main( int argc, char **argv )
                     }
                     
                     context->releaseContext();
+                    
                     printf("\n\n"); fflush(stdout);
                 }
             }

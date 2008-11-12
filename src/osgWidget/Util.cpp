@@ -55,12 +55,14 @@ osg::Camera* createOrthoCamera(matrix_type width, matrix_type height) {
 int createExample(osgViewer::Viewer& viewer, WindowManager* wm, osg::Node* node) {
     if(!wm) return 1;
 
+    /*
     viewer.setUpViewInWindow(
         0,
         0,
         static_cast<int>(wm->getWidth()),
         static_cast<int>(wm->getHeight())
     );
+    */
 
     osg::Group*  group  = new osg::Group();
     osg::Camera* camera = wm->createParentOrthoCamera();

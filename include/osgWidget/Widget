@@ -129,8 +129,8 @@ public:
         void setTexCoordWrapHorizontal ();
         void setTexCoordWrapVertical   ();
 
-        bool setImage (osg::Image*, bool=false);
-        bool setImage (const std::string&, bool=false);
+        bool setImage (osg::Image*, bool=false, bool=false);
+        bool setImage (const std::string&, bool=false, bool=false);
 
         void addX      (point_type);
         void addY      (point_type);
@@ -397,8 +397,6 @@ public:
         }
 
     protected:
-
-
 
         point_type _calculateZ(unsigned int) const;
 

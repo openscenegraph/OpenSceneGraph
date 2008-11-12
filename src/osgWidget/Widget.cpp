@@ -3,7 +3,7 @@
 
 #include <osg/io_utils>
 #include <osg/Math>
-#include <osg/BlendFunc>
+#include <osg/TextureRectangle>
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 #include <osgWidget/WindowManager>
@@ -313,15 +313,21 @@ XYCoord Widget::localXY(double _x, double _y) const {
     return _parent->localXY(_x, _y) - getOrigin();
 }
 
-bool Widget::setImage(osg::Image* image, bool setTexCoords) {
+bool Widget::setImage(osg::Image* image, bool setTexCoords, bool useTextRect) {
     if(!image) {
         warn() << "Widget [" << _name << "] cannot use a NULL image." << std::endl;
 
         return false;
     }
 
-    osg::Texture2D* texture = new osg::Texture2D();
+    osg::Texture* texture = 0;
     
+    if(useTextRect) texture = new osg::TextureRectangle();
+    
+    else texture = new osg::Texture2D();
+    
+    if(!texture) return false;
+
     texture->setDataVariance(osg::Object::DYNAMIC);
     texture->setImage(0, image);
 
@@ -332,16 +338,25 @@ bool Widget::setImage(osg::Image* image, bool setTexCoords) {
     );
 
     if(setTexCoords) {
-        setTexCoord(0.0f, 0.0f, LOWER_LEFT);
-        setTexCoord(1.0f, 0.0f, LOWER_RIGHT);
-        setTexCoord(1.0f, 1.0f, UPPER_RIGHT);
-        setTexCoord(0.0f, 1.0f, UPPER_LEFT);
+        if(useTextRect) {
+            setTexCoord(0.0f, 0.0f, LOWER_LEFT);
+            setTexCoord(image->s(), 0.0f, LOWER_RIGHT);
+            setTexCoord(image->s(), image->t(), UPPER_RIGHT);
+            setTexCoord(0.0f, image->t(), UPPER_LEFT);
+        }
+
+        else {
+            setTexCoord(0.0f, 0.0f, LOWER_LEFT);
+            setTexCoord(1.0f, 0.0f, LOWER_RIGHT);
+            setTexCoord(1.0f, 1.0f, UPPER_RIGHT);
+            setTexCoord(0.0f, 1.0f, UPPER_LEFT);
+        }
     }
 
     return true;
 }
 
-bool Widget::setImage(const std::string& filePath, bool setTexCoords) {
+bool Widget::setImage(const std::string& filePath, bool setTexCoords, bool useTextRect) {
     if(!osgDB::findDataFile(filePath).size()) {
         warn()
             << "Widget [" << _name
@@ -352,7 +367,7 @@ bool Widget::setImage(const std::string& filePath, bool setTexCoords) {
         return false;
     }
 
-    return setImage(osgDB::readImageFile(filePath), setTexCoords);
+    return setImage(osgDB::readImageFile(filePath), setTexCoords, useTextRect);
 }
 
 void Widget::setPadding(point_type pad) {

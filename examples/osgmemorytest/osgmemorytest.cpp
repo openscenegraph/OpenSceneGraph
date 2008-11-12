@@ -17,13 +17,15 @@
 */
 
 #include <osg/Notify>
+#include <osg/Timer>
 #include <osg/ArgumentParser>
 #include <osg/Texture1D>
 #include <osg/Texture2D>
 #include <osg/Texture3D>
 #include <osg/Geometry>
+#include <osg/FrameBufferObject>
 
-#include <osgViewer/Viewer>
+#include <osgViewer/Version>
 
 #include <stdio.h>
 #include <iostream>
@@ -79,6 +81,8 @@ class ContextTest : public MemoryTest
             }
             else
             {
+                std::cerr<<"Error: Unable to create graphis context, problem with running osgViewer-"<<osgViewerGetVersion()<<", cannot create windows/pbuffers."<<std::endl;
+                
                 if (_pbuffer) throw "Failed to create PixelBuffer";
                 else  throw "Failed to create GraphicsWindow";
             }
@@ -416,7 +420,6 @@ int main( int argc, char **argv )
     }
 
     osg::Timer_t startTick = osg::Timer::instance()->tick();
-
 
     // use printf's below as C++'s ostream classes use more memory and are more likely to fail when everything
     // goes wrong with memory allocations.

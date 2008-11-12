@@ -78,6 +78,7 @@ BEGIN_ENUM_REFLECTOR(osg::Camera::BufferComponent)
 	I_DeclaringFile("osg/Camera");
 	I_EnumLabel(osg::Camera::DEPTH_BUFFER);
 	I_EnumLabel(osg::Camera::STENCIL_BUFFER);
+	I_EnumLabel(osg::Camera::PACKED_DEPTH_STENCIL_BUFFER);
 	I_EnumLabel(osg::Camera::COLOR_BUFFER);
 	I_EnumLabel(osg::Camera::COLOR_BUFFER0);
 	I_EnumLabel(osg::Camera::COLOR_BUFFER1);

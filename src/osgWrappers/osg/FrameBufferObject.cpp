@@ -84,6 +84,11 @@ BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
 	          __bool__isMultisampleCoverageSupported,
 	          "",
 	          "");
+	I_Method0(bool, isPackedDepthStencilSupported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isPackedDepthStencilSupported,
+	          "",
+	          "");
 	I_StaticMethod2(osg::FBOExtensions *, instance, IN, unsigned, contextID, IN, bool, createIfNotInitalized,
 	                __FBOExtensions_P1__instance__unsigned__bool_S,
 	                "",

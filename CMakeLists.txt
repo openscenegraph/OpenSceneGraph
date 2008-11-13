@@ -344,6 +344,7 @@ IF(PKG_CONFIG_FOUND)
     PKG_CHECK_MODULES(RSVG librsvg-2.0)
     PKG_CHECK_MODULES(CAIRO cairo)
     PKG_CHECK_MODULES(POPPLER poppler-glib)
+    PKG_CHECK_MODULES(XUL xulrunner-xpcom xulrunner-nspr xulrunner-nss xulrunner-plugin xulrunner-js)
 
 ENDIF(PKG_CONFIG_FOUND)
 

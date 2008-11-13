@@ -31,8 +31,8 @@ PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 2)
 SET(OPENSCENEGRAPH_MINOR_VERSION 7)
-SET(OPENSCENEGRAPH_PATCH_VERSION 3)
-SET(OPENSCENEGRAPH_SOVERSION 47)
+SET(OPENSCENEGRAPH_PATCH_VERSION 5)
+SET(OPENSCENEGRAPH_SOVERSION 50)
 
 # set to 0 when not a release candidate, non zero means that any generated 
 # svn tags will be treated as release candidates of given number
@@ -263,6 +263,9 @@ MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGSPHERE)
 OPTION(OSG_USE_FLOAT_BOUNDINGBOX "Set to ON to build OpenSceneGraph with float BoundingBox instead of double." ON)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGBOX)
 
+OPTION(OSG_USE_UTF8_FILENAME "Set to ON to use a UTF8 locale for filenames instead of the default locale." OFF)
+MARK_AS_ADVANCED(OSG_USE_UTF8_FILENAME)
+
 OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
 
 ################################################################################
@@ -295,7 +298,9 @@ FIND_PACKAGE(Performer)
 FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(GDAL)
 FIND_PACKAGE(CURL)
+FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(ITK)
+FIND_PACKAGE(LibVNCServer)
 FIND_PACKAGE(OurDCMTK)
 
 SET(wxWidgets_USE_LIBS base core gl net)

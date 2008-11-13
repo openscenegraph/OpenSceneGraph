@@ -148,7 +148,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowTechnique
         Techniques based on ViewDependentShadowTechnique will usually define
         similar struct and derive it from ViewData to contain their specufic resources.
         */
-        struct ViewData: public osg::Referenced
+        struct OSGSHADOW_EXPORT ViewData: public osg::Referenced
         {
             /**
             Method called upon ViewData instance to initialize internal variables
@@ -179,6 +179,11 @@ class OSGSHADOW_EXPORT ViewDependentShadowTechnique
             */
             OpenThreads::Mutex                                _mutex;
 
+            /**
+            Dirty flag tells this instance to update its resources 
+            */
+            bool                                              _dirty;
+
             /** 
             View's CullVisitor associated with this ViewData instance 
             */
@@ -189,10 +194,6 @@ class OSGSHADOW_EXPORT ViewDependentShadowTechnique
             */
             osg::observer_ptr< ViewDependentShadowTechnique > _st;
 
-            /**
-            Dirty flag tells this instance to update its resources 
-            */
-            bool                                              _dirty;
         };
 
         /** 

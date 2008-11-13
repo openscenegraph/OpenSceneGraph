@@ -15,6 +15,7 @@
 #include <osg/Image>
 #include <osg/Object>
 #include <osg/Shape>
+#include <osg/Texture>
 #include <osg/TransferFunction>
 #include <osg/Vec2>
 #include <osg/Vec3>
@@ -540,12 +541,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	                 __void__setModifiedCount__unsigned_int);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgTerrain::Layer::Filter)
-	I_DeclaringFile("osgTerrain/Layer");
-	I_EnumLabel(osgTerrain::Layer::NEAREST);
-	I_EnumLabel(osgTerrain::Layer::LINEAR);
-END_REFLECTOR
-
 BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_DeclaringFile("osgTerrain/Layer");
 	I_BaseType(osg::Object);
@@ -676,15 +671,25 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __C5_osg_Vec4_R1__getDefaultValue,
 	          "",
 	          "");
-	I_Method1(void, setFilter, IN, osgTerrain::Layer::Filter, filter,
+	I_Method1(void, setMinFilter, IN, osg::Texture::FilterMode, filter,
 	          Properties::NON_VIRTUAL,
-	          __void__setFilter__Filter,
-	          "Set the texture filter to use when do texture associated with this layer. ",
+	          __void__setMinFilter__osg_Texture_FilterMode,
+	          "Set the minification texture filter to use when do texture associated with this layer. ",
 	          "");
-	I_Method0(osgTerrain::Layer::Filter, getFilter,
+	I_Method0(osg::Texture::FilterMode, getMinFilter,
 	          Properties::NON_VIRTUAL,
-	          __Filter__getFilter,
-	          "Get the texture filter to use when do texture associated with this layer. ",
+	          __osg_Texture_FilterMode__getMinFilter,
+	          "Get the minification texture filter to use when do texture associated with this layer. ",
+	          "");
+	I_Method1(void, setMagFilter, IN, osg::Texture::FilterMode, filter,
+	          Properties::NON_VIRTUAL,
+	          __void__setMagFilter__osg_Texture_FilterMode,
+	          "Set the magniification texture filter to use when do texture associated with this layer. ",
+	          "");
+	I_Method0(osg::Texture::FilterMode, getMagFilter,
+	          Properties::NON_VIRTUAL,
+	          __osg_Texture_FilterMode__getMagFilter,
+	          "Get the magnification texture filter to use when do texture associated with this layer. ",
 	          "");
 	I_Method0(osg::Image *, getImage,
 	          Properties::VIRTUAL,
@@ -780,18 +785,21 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	I_SimpleProperty(const std::string &, FileName, 
 	                 __C5_std_string_R1__getFileName, 
 	                 __void__setFileName__C5_std_string_R1);
-	I_SimpleProperty(osgTerrain::Layer::Filter, Filter, 
-	                 __Filter__getFilter, 
-	                 __void__setFilter__Filter);
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __osg_Image_P1__getImage, 
 	                 0);
 	I_SimpleProperty(osgTerrain::Locator *, Locator, 
 	                 __Locator_P1__getLocator, 
 	                 __void__setLocator__Locator_P1);
+	I_SimpleProperty(osg::Texture::FilterMode, MagFilter, 
+	                 __osg_Texture_FilterMode__getMagFilter, 
+	                 __void__setMagFilter__osg_Texture_FilterMode);
 	I_SimpleProperty(unsigned int, MaxLevel, 
 	                 __unsigned_int__getMaxLevel, 
 	                 __void__setMaxLevel__unsigned_int);
+	I_SimpleProperty(osg::Texture::FilterMode, MinFilter, 
+	                 __osg_Texture_FilterMode__getMinFilter, 
+	                 __void__setMinFilter__osg_Texture_FilterMode);
 	I_SimpleProperty(unsigned int, MinLevel, 
 	                 __unsigned_int__getMinLevel, 
 	                 __void__setMinLevel__unsigned_int);

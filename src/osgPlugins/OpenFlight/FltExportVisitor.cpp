@@ -230,7 +230,7 @@ FltExportVisitor::apply( osg::LOD& lodNode )
         writeComment( lodNode );
 
         // Traverse each child of the LOD
-        writePushTraverseWritePop( *lodChild );
+        writePushTraverseChildWritePop( *lodChild );
     }
 
 }
@@ -505,7 +505,7 @@ FltExportVisitor::complete( const osg::Node& node )
     // Copy record data temp file into final OpenFlight file.
     // Yee-uck. TBD need better stream copy routine.
     char buf;
-    std::ifstream recIn;
+    osgDB::ifstream recIn;
     recIn.open( _recordsTempName.c_str(), std::ios::in | std::ios::binary );
     while (!recIn.eof() )
     {

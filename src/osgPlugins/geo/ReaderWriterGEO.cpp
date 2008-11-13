@@ -33,6 +33,7 @@
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -397,7 +398,7 @@ class ReaderGEO
         osgDB::ReaderWriter::ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options)
         {
 
-            std::ifstream fin(fileName.c_str(), std::ios::binary | std::ios::in );
+            osgDB::ifstream fin(fileName.c_str(), std::ios::binary | std::ios::in );
             if (fin.is_open() )
             { // read the input file.
                 // code for setting up the database path so that internally referenced file are searched for on relative paths. 

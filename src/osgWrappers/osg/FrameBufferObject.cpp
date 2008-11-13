@@ -16,6 +16,7 @@
 #include <osg/Object>
 #include <osg/State>
 #include <osg/StateAttribute>
+#include <osg/Texture>
 #include <osg/Texture1D>
 #include <osg/Texture2D>
 #include <osg/Texture2DArray>
@@ -81,6 +82,11 @@ BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
 	I_Method0(bool, isMultisampleCoverageSupported,
 	          Properties::NON_VIRTUAL,
 	          __bool__isMultisampleCoverageSupported,
+	          "",
+	          "");
+	I_Method0(bool, isPackedDepthStencilSupported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isPackedDepthStencilSupported,
 	          "",
 	          "");
 	I_StaticMethod2(osg::FBOExtensions *, instance, IN, unsigned, contextID, IN, bool, createIfNotInitalized,
@@ -176,6 +182,64 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	          __int__compare__C5_FrameBufferAttachment_R1,
 	          "",
 	          "");
+	I_Method0(osg::RenderBuffer *, getRenderBuffer,
+	          Properties::NON_VIRTUAL,
+	          __RenderBuffer_P1__getRenderBuffer,
+	          "",
+	          "");
+	I_Method0(const osg::RenderBuffer *, getRenderBuffer,
+	          Properties::NON_VIRTUAL,
+	          __C5_RenderBuffer_P1__getRenderBuffer,
+	          "",
+	          "");
+	I_Method0(osg::Texture *, getTexture,
+	          Properties::NON_VIRTUAL,
+	          __Texture_P1__getTexture,
+	          "",
+	          "");
+	I_Method0(const osg::Texture *, getTexture,
+	          Properties::NON_VIRTUAL,
+	          __C5_Texture_P1__getTexture,
+	          "",
+	          "");
+	I_Method0(int, getCubeMapFace,
+	          Properties::NON_VIRTUAL,
+	          __int__getCubeMapFace,
+	          "",
+	          "");
+	I_Method0(int, getTextureLevel,
+	          Properties::NON_VIRTUAL,
+	          __int__getTextureLevel,
+	          "",
+	          "");
+	I_Method0(int, getTexture3DZOffset,
+	          Properties::NON_VIRTUAL,
+	          __int__getTexture3DZOffset,
+	          "",
+	          "");
+	I_Method0(int, getTextureArrayLayer,
+	          Properties::NON_VIRTUAL,
+	          __int__getTextureArrayLayer,
+	          "",
+	          "");
+	I_SimpleProperty(int, CubeMapFace, 
+	                 __int__getCubeMapFace, 
+	                 0);
+	I_SimpleProperty(osg::RenderBuffer *, RenderBuffer, 
+	                 __RenderBuffer_P1__getRenderBuffer, 
+	                 0);
+	I_SimpleProperty(osg::Texture *, Texture, 
+	                 __Texture_P1__getTexture, 
+	                 0);
+	I_SimpleProperty(int, Texture3DZOffset, 
+	                 __int__getTexture3DZOffset, 
+	                 0);
+	I_SimpleProperty(int, TextureArrayLayer, 
+	                 __int__getTextureArrayLayer, 
+	                 0);
+	I_SimpleProperty(int, TextureLevel, 
+	                 __int__getTextureLevel, 
+	                 0);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::FrameBufferAttachment >, osg::FrameBufferObject::AttachmentMap)

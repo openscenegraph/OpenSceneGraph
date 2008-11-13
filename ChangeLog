@@ -1,3 +1,601 @@
+2008-11-07 17:40 +0000 [r9131]  robert:
+
+	* From Csaba Halasz, fix for hang when running in
+	  CullThreadPerCameraDrawThreadPerContext threading model.
+
+2008-11-07 17:23 +0000 [r9130]  robert:
+
+	* Fixed typo
+
+2008-11-07 17:07 +0000 [r9129]  robert:
+
+	* Fixed build under gcc 4.3.2
+
+2008-11-07 16:26 +0000 [r9128]  robert:
+
+	* Updated ChangeLog and version number for 2.7.5 release
+
+2008-11-07 16:14 +0000 [r9127]  robert:
+
+	* Removed fstream for wrapper due to problems with wrapping.
+
+2008-11-07 16:03 +0000 [r9126]  robert:
+
+	* Removed due to problems with build
+
+2008-11-07 15:38 +0000 [r9125]  robert:
+
+	* Updated wrappers
+
+2008-11-07 15:08 +0000 [r9124]  robert:
+
+	* From Michael Platings, Converted std::fstream/ifstream/ofstream
+	  to osgDB::fstream/ifstream/ofstream and fopen to osgDB::fopen to
+	  facilitate support for wide character filenames using UT8
+	  encoding.
+
+2008-11-07 15:01 +0000 [r9123]  robert:
+
+	* Converted tabs to four spaces
+
+2008-11-07 13:18 +0000 [r9122]  robert:
+
+	* From Tim Moore, removed redundent forward declartion of
+	  BoundingBox and BoundingSphere
+
+2008-11-07 10:23 +0000 [r9120]  robert:
+
+	* From Martins Innus, "Here is a fix to add requestWarpPointer for
+	  OS X. It seems to work for me, I just took what osgProducer had.
+	  These are updated files to 2.7.3"
+
+2008-11-06 16:48 +0000 [r9118]  robert:
+
+	* Changed to using stdio.h.
+
+2008-11-06 14:56 +0000 [r9117]  robert:
+
+	* Updated wrappers
+
+2008-11-06 14:46 +0000 [r9116]  robert:
+
+	* Fixed constness of getTexture/getRenderBuffer() const and added
+	  non cost version.
+
+2008-11-06 14:29 +0000 [r9115]  robert:
+
+	* From Michael Platings, "I've added functions to get the texture,
+	  renderbuffer and other properties from a FrameBufferAttachment."
+
+2008-11-06 14:17 +0000 [r9114]  robert:
+
+	* From Kyle Centers, removed redundent check to
+	  _currentContext.valid().
+
+2008-11-06 14:04 +0000 [r9113]  robert:
+
+	* From Csaba Halasz, adding missing export directives
+
+2008-11-06 13:57 +0000 [r9112]  robert:
+
+	* From Thomas Wedner, "use osgViewer::CompositeViewer with several
+	  views. All views share parts of their scene graphs. Within these
+	  common part some nodes have event handlers which use the action
+	  adapter argument to the event handler to determinate which view
+	  received the event. Here is the problem,
+	  osgViewer::CompositeViewer::eventTraversal sets the action
+	  adapter field in the EventVisitor always to the last view which
+	  received an event, instead of using the view which actually
+	  received the event, so determination of the correct view does not
+	  work. I looked at the code a bit, and moved the code for setting
+	  the action adapter to a IMO better place"
+
+2008-11-06 13:40 +0000 [r9109-9111]  robert:
+
+	* From Ulrich Hertleinm "cmake 2.6 is having trouble on Mac OS X
+	  because example/CMakeLists.txt addes subdirectory osgviewerGLUT
+	  twice. I took the liberty to remove the second occurrence. "
+
+	* Fixed IntersectionVisitor::accept(Camera) handling of relative
+	  Cameras.
+
+	* From Chris Denham, added transform to cube to test picking fixes
+
+2008-11-05 16:06 +0000 [r9106]  robert:
+
+	* Removed redundent static ImageStream pointer
+
+2008-11-05 15:59 +0000 [r9105]  robert:
+
+	* Added --no-rescale, --rescale (default) and --shift-min-to-zero
+	  command line options for controlling how the pixel data is
+	  managed.
+
+2008-11-05 15:04 +0000 [r9102-9103]  robert:
+
+	* Added --replace-rgb-with-luminance option
+
+	* Added support for different pixel formats and datatypes in
+	  copyImage() method
+
+2008-11-05 11:56 +0000 [r9100]  robert:
+
+	* Fixed return value of ArgumentParser::find() for when the search
+	  string is not found, the correct value is now -1.
+
+2008-11-05 10:29 +0000 [r9098-9099]  robert:
+
+	* Added extra data types info to debug message
+
+	* Added Thread::Init() to CurrentThread
+
+2008-11-04 16:31 +0000 [r9096]  robert:
+
+	* Compiled fix for gcc 4.3.2
+
+2008-11-04 12:57 +0000 [r9095]  robert:
+
+	* Fixed --images commandline parsing
+
+2008-11-03 16:55 +0000 [r9092]  robert:
+
+	* Added GPL copyright notice
+
+2008-11-03 16:31 +0000 [r9091]  robert:
+
+	* Added handling of texture matrices and texture rectangles in
+	  InteractiveImageHandler
+
+2008-11-03 15:58 +0000 [r9089-9090]  robert:
+
+	* Refactored osgvnc example to utilise the new vnc plugin
+
+	* Added vnc plugin.
+
+2008-11-03 15:08 +0000 [r9088]  robert:
+
+	* Added sendPointerEvent and sendKeyEvent virtual methods to
+	  osg::Image to facilitate the subclassing of Image providing
+	  interactive behaviours so as used in the vnc interactive VncImage
+	  class. osgViewer::InteractiveImageHandler provides an event
+	  handler that convertes osgGA mouse and keyboard events into the
+	  coordinate frame of an image based on ray intersection with
+	  geometry in the associated subgraph. Changed the ordering of
+	  events processing in Viewer and CompositeViewer to allow scene
+	  graph event handlers to take precidence over viewer event
+	  handlers and camera manipulators
+
+2008-11-03 15:03 +0000 [r9087]  robert:
+
+	* Changed version number to 2.7.5 in prep for dev release
+
+2008-11-03 10:17 +0000 [r9086]  robert:
+
+	* Changed Tiff plugin to link to TIFF_LIBRARIES to handle case
+	  where JPEG and ZLIB are dependencies.
+
+2008-10-31 16:48 +0000 [r9084]  robert:
+
+	* Wrapped up the various client streaming methods + thread into
+	  VncImage classes.
+
+2008-10-31 13:59 +0000 [r9083]  robert:
+
+	* Implemented keyboard and mouse dispatch from vnc client to vnc
+	  server.
+
+2008-10-31 12:03 +0000 [r9082]  robert:
+
+	* Added very basic osgvnc example that uses the LibVNCServer client
+	  libries for implementing a vnc client as an osg::Image with the
+	  vnc data stream going to it.
+
+2008-10-30 13:05 +0000 [r9080]  robert:
+
+	* Removed renduent osgDB::Registry DatabasePager methods
+
+2008-10-29 12:04 +0000 [r9078]  robert:
+
+	* Updated ChangeLog, AUTHORS.txt and README.txt for 2.4.7 release
+
+2008-10-29 11:51 +0000 [r9077]  robert:
+
+	* From Blasius Czink, "changed the CHECK_CXX_SOURCE_RUNS macro
+	  slightly to avoid the compile problems due to bugged "intrin.h".
+	  In such a case the mutex fallback will be used (see attached
+	  file)."
+
+2008-10-29 11:15 +0000 [r9076]  robert:
+
+	* Warning fixes
+
+2008-10-29 11:09 +0000 [r9075]  robert:
+
+	* Added missing implementations
+
+2008-10-29 10:56 +0000 [r9074]  robert:
+
+	* Updated ChangeLog and AUTHORS.txt for 2.7.4 release
+
+2008-10-29 10:38 +0000 [r9073]  robert:
+
+	* Updated wrappers
+
+2008-10-29 10:25 +0000 [r9072]  robert:
+
+	* From Lukas Diduch, added a multithread compsite viewer path,
+	  accessible using: osgviewerQT --MTCompositeViewer --QOSGWidget
+	  cow.osg
+
+2008-10-29 10:12 +0000 [r9071]  robert:
+
+	* From James Moliere, fixed display of axis
+
+2008-10-28 17:28 +0000 [r9070]  robert:
+
+	* From Lionel Lagrade, "I've replaced readsome by read+gcount."
+	  From Robert Osfeld, added throw on uncompress error.
+
+2008-10-27 19:59 +0000 [r9069]  robert:
+
+	* From Chris Denham, changed nested Camera intersection test so
+	  that it requires the command line --relative-camera-scene to
+	  enable it
+
+2008-10-27 17:42 +0000 [r9068]  robert:
+
+	* Added --help-env docs for OSG_MAX_PAGEDLOD
+
+2008-10-27 17:11 +0000 [r9066-9067]  robert:
+
+	* Merged in comment split code from the old flt plugin so that FLT
+	  comments string with returns in them are put into separate
+	  description entries.
+
+	* From Wojciech Lewandowski, "I am sending a really minor fix for
+	  StatsHandler::reset method. We dynamically add and remove slave
+	  cameras in our application. StatsHandler does not automatically
+	  adapt to this situation, and we call StatsHandler::reset to force
+	  it to update number of cameras and their graphs. Unfortunately,
+	  if stats were already drawn, reset would not remove former graph
+	  drawables and they would remain frozen below new stats. This
+	  update fixes it. "
+
+2008-10-27 16:16 +0000 [r9065]  robert:
+
+	* From Chris Denham, default scene that tests the use of in scene
+	  graph Camera which has a RELATIVE_RF ReferenceFrame.
+
+2008-10-27 16:06 +0000 [r9064]  robert:
+
+	* From Chris Denham, fixed support of in scene graph osg::Camera's
+	  with ReferenceFrame of RELATIVE_RF.
+
+2008-10-27 15:26 +0000 [r9063]  robert:
+
+	* From Katharina Plugge, "I found a bug in the OpenFlight-Plugin.
+	  When exporting to OpenFlight it could happen that palettes of an
+	  external reference like the texture palette are set wrong,
+	  because they are overwritten by parent settings (userData), which
+	  actually do not refer to palette entries respectively ParentPools
+	  (happens for example if a Transform is parent of a ProxyNode).
+	  The static cast from userData to ParentPools should therefore be
+	  a dynamic cast. --------------------------- function
+	  FltExportVisitor::writeExternalReference( const osg::ProxyNode&
+	  proxy ): Line 423 in file expPrimaryRecords.cpp has to be changed
+	  from const ParentPools* pp = static_cast<const
+	  ParentPools*>(proxy.getUserData() ); to const ParentPools* pp =
+	  dynamic_cast<const ParentPools*>(proxy.getUserData() ); "
+
+2008-10-27 13:09 +0000 [r9062]  robert:
+
+	* Various warning fixes
+
+2008-10-27 11:49 +0000 [r9061]  robert:
+
+	* Updated wrappers
+
+2008-10-27 11:08 +0000 [r9060]  robert:
+
+	* From Mathias Froehlich, "This change is a result of a recent
+	  thread on osg-users. The semantic change that went into the ac
+	  loader with the past patch was incorrect wrt the document
+	  describing the behaviour of ac files and inconsistent with what
+	  ac3d itself displays for that files. This attached change reverts
+	  the behaviour to the original one. The infrastructure to change
+	  this is left in place. The change is based on rev 9045."
+
+2008-10-27 10:42 +0000 [r9058-9059]  robert:
+
+	* From Blasius Czink, "Among other things I added support for
+	  atomic operations on BSD-like systems and additional methods (for
+	  "and", "or", "xor"). " and a later post the same osg-submissions
+	  thread: "it's been a while since I have made the changes but I
+	  think it was due to problems with static builds of OpenThreads on
+	  windows. I was using OpenThreads in a
+	  communication/synchronisation library (without OpenSceneGraph).
+	  It seems I forgot to post a small change in the CMakeLists file
+	  of OpenThreads. If a user turns DYNAMIC_OPENTHREADS to OFF
+	  (static build) OT_LIBRARY_STATIC will be defined in the Config.
+	  Without these changes a windows user will always end up with a
+	  "__declspec(dllexport)" or "__declspec(dllimport)" which is a
+	  problem for static builds." And another post from Blasius on this
+	  topic: "I tested with VS2005 and VS2008. For 32 bit everything
+	  works as expected. For x64 and VS2008 I could successfully do the
+	  cmake-configure and then the compilation but I had occasional
+	  crashes of cmTryCompileExec.exe (during the cmake-configure
+	  phase) which seems to be a cmake bug. With VS2005 and 64bit cmake
+	  does not set _OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED although
+	  the interlocked functionality should be there. If I place the
+	  source snippet from the CHECK_CXX_SOURCE_RUNS macro to a separate
+	  sourcefile I can compile and run the resulting executable
+	  successfully. Forcing OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED
+	  (on VS2005/x64) reveals a bug in "intrin.h" which seems to be
+	  fixed in VS2008 but not in VS2005. In case anyone is interested
+	  the lines: __MACHINEI(unsigned char
+	  _interlockedbittestandset(long *a, long b)) __MACHINEI(unsigned
+	  char _interlockedbittestandreset(long *a, long b))
+	  __MACHINEX64(unsigned char _interlockedbittestandset64(__int64
+	  *a, __int64 b)) __MACHINEX64(unsigned char
+	  _interlockedbittestandreset64(__int64 *a, __int64 b)) should be
+	  changed to: __MACHINEI(unsigned char
+	  _interlockedbittestandset(long volatile *a, long b))
+	  __MACHINEI(unsigned char _interlockedbittestandreset(long
+	  volatile *a, long b)) __MACHINEX64(unsigned char
+	  _interlockedbittestandset64(__int64 volatile *a, __int64 b))
+	  __MACHINEX64(unsigned char _interlockedbittestandreset64(__int64
+	  volatile *a, __int64 b)) The worst thing that can happen is that
+	  interlocked funtionality is not detected during cmake-configure
+	  and the mutex fallback is used. Which reminds me another small
+	  glitch in the Atomic header so I attached a corrected version.
+	  Why is the OT_LIBRARY_STATIC added to the config file? It is not
+	  needed anywhere. OT_LIBRARY_STATIC is needed if you are doing
+	  static-builds on Windows. See my previous post on that. "
+
+	* Fixed positioning of wings
+
+2008-10-27 09:48 +0000 [r9057]  robert:
+
+	* From Mathieu Marache, "I came across a bug when building
+	  OpenSceneGraph with MSVC_VERSIONED_DLL, NMake makefiles and CMake
+	  2.6.2. The compilation fails because it tries to copy
+	  ot11-OpenThreads.lib to OpenThreads.lib which is valid for the
+	  2.4.x era of CMake but not anymore in 2.6.x era. The provided
+	  file from the CMakeModules directory adds a tests on the CMake
+	  version and corrects this. Works for me now."
+
+2008-10-27 09:44 +0000 [r9056]  robert:
+
+	* From Alberto Lucas, fixed typo
+
+2008-10-26 22:22 +0000 [r9054-9055]  robert:
+
+	* Improved the support for no pre compile, and configuring the
+	  number of threads in the DatabasePager.
+
+	* Improved the error reporting
+
+2008-10-25 13:17 +0000 [r9053]  robert:
+
+	* From Jim Vaughan, - Matrix transform nodes were stripped out, and
+	  the vertices and normals of each node were transposed by the
+	  modelling matrix. My change preserves the matrix transform nodes,
+	  so that models can still be articulated by changing the matrices.
+	  - Lights were copied from the COIN scenegraph to the OSG
+	  scenegraph, but they were not associated with a LightSource node.
+	  My change for this creates a Group and adds a LightSource for
+	  each Light. - If VRML textures have names, the name is now copied
+	  to -- Form Robert Osfild, changed SbString to std::string usage M
+	  Inventor/ConvertFromInventor.h M Inventor/ConvertFromInventor.cpp
+
+2008-10-24 11:38 +0000 [r9051]  robert:
+
+	* From Alberto Luaces, "it seems a copy-paste error is present on
+	  the OBJ loader when parsing the options given by the user.
+	  "noTesselateLargePolygons" is being activated instead of
+	  "noTriStripPolygons". I'm attaching the fixed file."
+
+2008-10-24 10:02 +0000 [r9050]  robert:
+
+	* Fixed typo
+
+2008-10-24 09:59 +0000 [r9049]  robert:
+
+	* Add osgParticle:: qualifiers in front of Program entries to avoid
+	  issues when combining osg::Program and osgParticle::Program in a
+	  single app
+
+2008-10-24 09:49 +0000 [r9048]  robert:
+
+	* Changed timing stats to osg::INFO level
+
+2008-10-24 08:09 +0000 [r9047]  robert:
+
+	* Removed debugging test.
+
+2008-10-23 16:33 +0000 [r9046]  robert:
+
+	* Introduced new method of management the number of PagedLOD
+	  active, by using a capping the number of PagedLOD to a sepcified
+	  maximum, with pruning of inactive PagedLOD when the total number
+	  of inactive and active PagedLOD goes above the maximum. To enable
+	  the mode set the env var OSG_MAX_PAGEDLOD to a value something
+	  like 1000.
+
+2008-10-21 16:39 +0000 [r9045]  robert:
+
+	* From Panagiotis Koutsourakis, "We are using Open Scene Graph for
+	  an application and we need COLLADA support. While testing the
+	  pluggin we found a small bug and we are submitting a patch. The
+	  first attachment is a small program that creates a scene with two
+	  pyramids, transformed by two instances of
+	  osg::PositionAttitudeTransform. One of them is rotated 90 degrees
+	  in the X axis, and the scene is exported both in the native OSG
+	  (.osg) and COLLADA (.dae) formats. In the first case the rotated
+	  pyramid is displayed correctly whereas in the second the pyramid
+	  seems not to be rotated. In the COLLADA 1.4.1 specification
+	  (found at http://www.khronos.org/collada/) it is specified that
+	  "The <rotate> element contains a list of four floating-point
+	  values [...] followed by an angle in degrees" but the plugin
+	  seems to write the value in radians. The problem seems to be in
+	  the method daeWriter::apply() that seems to be writing the angle
+	  value in radians to the COLLADA file. The patch can be found in
+	  the second attachment and is simply a call to RadiansToDegrees
+	  wrapped around the angle. "
+
+2008-10-21 16:32 +0000 [r9043-9044]  robert:
+
+	* From Wojciech Lewandowski, "I made a minor tweak in
+	  StandardShadowMap.cpp. As agreed with J-S I have added
+	  AlphaFunc/AlphaTest to shadow camera stateset to make sure
+	  transparent objects will not cast blocky solid shadows."
+
+	* From Chris Denham, "However, just spotted another inconsistency
+	  between UFOManipulator::getMatrix() and
+	  UFOManipulator::getInverseMatrix() It assumes that
+	  inverse(_inverseMatrix * _offset) = _offset * _matrix This is
+	  only true when _offset=identity, so I think it should be
+	  inverse(_offset) * _matrix This inconsistency can cause problems
+	  when switching from UFO to other manipulators, because the
+	  UFO:Manipulator::getMatrix function is not necessarily returning
+	  a correct inverse of the currently set ModelViewTransform. It was
+	  tempting to change the name of the _offset member to
+	  _inverseOffset, or to maintain both variables, but in the end
+	  went for the minimal change."
+
+2008-10-21 16:27 +0000 [r9042]  robert:
+
+	* From Per Fahlberg, "I ran into a problem when using another
+	  library that implemented the same functions as the osg jpeg
+	  plugin, i guess they both originated from the same example code
+	  :) As a solution I added a namespace in ReaderWriterJPEG.cpp
+	  around the functions. "
+
+2008-10-21 15:51 +0000 [r9041]  robert:
+
+	* #if'd out an premature StateSet optimization that was causing
+	  problems with datasets that mixed multi-texture coord geometry
+	  with single texture coord geometries in a single scene graph.
+
+2008-10-21 09:50 +0000 [r9040]  robert:
+
+	* Updated wrappers
+
+2008-10-20 16:24 +0000 [r9038]  robert:
+
+	* Introduce osgDB::FileCache, and updated osgfilecache and
+	  DatabasePager to use it.
+
+2008-10-20 08:43 +0000 [r9037]  robert:
+
+	* Introduced support for controlling mipmapping of
+	  osgTerrain::ImageLayer and compression of
+	  osgTerrain::HeightFieldLayer.
+
+2008-10-17 09:16 +0000 [r9036]  robert:
+
+	* From Paul Melis, fixed typo
+
+2008-10-15 10:07 +0000 [r9034]  robert:
+
+	* From Chris Denham, "I noticed that UFOManipulator _matrix and
+	  _inverseMatrix may be inconsistently set due to typo in
+	  UFOManipulator::home(). I assume the intention is that _matrix
+	  and _inverseMatrix are kept consistent, so corrected file
+	  attached. ///////////// OSG 2.6 //////////////////
+	  _inverseMatrix.makeLookAt( _homeEye, _homeCenter, _homeUp );
+	  _matrix.invert( _matrix ); ///////////// after typo correction
+	  ///////////////// _inverseMatrix.makeLookAt( _homeEye,
+	  _homeCenter, _homeUp ); _matrix.invert( _inverseMatrix );
+	  ///////////////////////////////////////"
+
+2008-10-14 17:20 +0000 [r9033]  robert:
+
+	* Changed erroneous ZLIB_INCLUDE_DIRS to ZLIB_INCLUDE_DIR
+
+2008-10-14 16:57 +0000 [r9032]  robert:
+
+	* From Jason Beverage, "Here is a small change to the CURL plugin
+	  to distinguish between a 400 level error and a 500 level error.
+	  If a 400 level error occurs, a FILE_NOT_FOUND ReadResult is
+	  appropriate. If a 500 level error occurs (such a 503, Service
+	  unavailable), the application might want to try to load the file
+	  again in a few seconds/minutes. This submission returns
+	  ERROR_IN_READING_FILE if a 500 level error occurs so that clients
+	  can easily distinguish between the errors. The actual error code
+	  is also added to the "message" of the ReadResult so if a client
+	  needs more information, they can just parse the message to
+	  retrieve the error code."
+
+2008-10-14 16:44 +0000 [r9031]  robert:
+
+	* Converted M_PI* usage across to osg::PI
+
+2008-10-14 16:35 +0000 [r9030]  robert:
+
+	* From Ricard Schmidt, dot writer plugin.
+
+2008-10-14 15:24 +0000 [r9029]  robert:
+
+	* From James Moliere, " The code below is to show how a heirarchy
+	  of objects can be made within a scenegraph. In other words, how
+	  there can be a parent/child relationship between objects such
+	  that when a parent is rotated or translated, the children move is
+	  respect to it's parent movement. A robotic arm is used in this
+	  example because this is what I'm using OSG for."
+
+2008-10-14 15:10 +0000 [r9028]  robert:
+
+	* Removed geomoflife_frag.cpp experiement from CMakeList.txt file
+
+2008-10-14 14:58 +0000 [r9026]  robert:
+
+	* From J.P Delport, game of life example that demonstrates ping
+	  pong render to texture rendering
+
+2008-10-14 14:37 +0000 [r9024-9025]  robert:
+
+	* Added zlib support to curl and ive plugins
+
+	* Added debug timing code
+
+2008-10-14 14:27 +0000 [r9022-9023]  robert:
+
+	* Added a Refrenced::getGlobalReferencedMutex, and
+	  OpenThreads::ScopedPointerLock() and use of this in
+	  add/removeParent() codes to avoid threading problems when using
+	  atomic ref counting.
+
+	* UPdated version numbers
+
+2008-10-10 12:01 +0000 [r9021]  robert:
+
+	* Moved compress/uncompress code across to using gzip compatible
+	  methods
+
+2008-10-09 18:46 +0000 [r9020]  robert:
+
+	* Added initial cut of gz compress/uncompress plugin
+
+2008-10-09 17:02 +0000 [r9019]  robert:
+
+	* Initial cut of zlib based compress/uncompress plugin
+
+2008-10-09 13:16 +0000 [r9017]  shuber:
+
+	* From Stephan Huber: updated XCode-project, added osgVolume-lib
+
+2008-10-09 08:52 +0000 [r9016]  robert:
+
+	* Fixed the frame rate reporting so that it handles the case when
+	  animation is slowed or speeded up
+
+2008-10-08 13:19 +0000 [r9013-9014]  robert:
+
+	* Updated date
+
+	* Updated ChangeLog and AUTHORS.txt for 2.7.3 dev release
+
 2008-10-08 12:54 +0000 [r9012]  robert:
 
 	* Updated wrappers

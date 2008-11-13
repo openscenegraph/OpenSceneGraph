@@ -368,14 +368,14 @@ Texture::Texture():
             _borderColor(0.0, 0.0, 0.0, 0.0),
             _borderWidth(0),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
+            _internalFormatType(NORMALIZED),
             _internalFormat(0),
             _sourceFormat(0),
             _sourceType(0),
             _use_shadow_comparison(false),
             _shadow_compare_func(LEQUAL),
             _shadow_texture_mode(LUMINANCE),
-            _shadow_ambient(0),
-            _internalFormatType(NORMALIZED)
+            _shadow_ambient(0)
 {
 }
 
@@ -394,14 +394,14 @@ Texture::Texture(const Texture& text,const CopyOp& copyop):
             _borderColor(text._borderColor),
             _borderWidth(text._borderWidth),
             _internalFormatMode(text._internalFormatMode),
+            _internalFormatType(text._internalFormatType),
             _internalFormat(text._internalFormat),
             _sourceFormat(text._sourceFormat),
             _sourceType(text._sourceType),
             _use_shadow_comparison(text._use_shadow_comparison),
             _shadow_compare_func(text._shadow_compare_func),
             _shadow_texture_mode(text._shadow_texture_mode),
-            _shadow_ambient(text._shadow_ambient),
-            _internalFormatType(text._internalFormatType)
+            _shadow_ambient(text._shadow_ambient)
 {
 }
 
@@ -906,6 +906,9 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
             height >>= 1;
         }    
     }
+    
+    // osg::notify(osg::NOTICE)<<"Texture::computeRequiredTextureDimensions() image.s() "<<image.s()<<" image.t()="<<image.t()<<" width="<<width<<" height="<<height<<" numMipmapLevels="<<numMipmapLevels<<std::endl; 
+    // osg::notify(osg::NOTICE)<<"  _resizeNonPowerOfTwoHint="<<_resizeNonPowerOfTwoHint<<" extensions->isNonPowerOfTwoTextureSupported(_min_filter)="<<extensions->isNonPowerOfTwoTextureSupported(_min_filter) <<std::endl; 
 }
 
 bool Texture::areAllTextureObjectsLoaded() const
@@ -977,6 +980,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     
     unsigned char* data = (unsigned char*)image->data();
  
+    // osg::notify(osg::NOTICE)<<"inwidth="<<inwidth<<" inheight="<<inheight<<" image->getFileName()"<<image->getFileName()<<std::endl;
 
     bool needImageRescale = inwidth!=image->s() || inheight!=image->t();
     if (needImageRescale)
@@ -1464,6 +1468,8 @@ void Texture::mipmapAfterTexImage(State& state, GenerateMipmapMode beforeResult)
         break;
     case GENERATE_MIPMAP_TEX_PARAMETER:
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_FALSE);
+        break;
+    case GENERATE_MIPMAP_NONE:
         break;
     }
 }

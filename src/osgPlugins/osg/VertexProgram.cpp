@@ -6,6 +6,7 @@
 #include "osgDB/Registry"
 #include "osgDB/Input"
 #include "osgDB/Output"
+#include "osgDB/fstream"
 
 #include "Matrix.h"
 
@@ -85,7 +86,7 @@ bool VertexProgram_readLocalData(Object& obj, Input& fr)
         fr+=2;
         iteratorAdvanced = true;
 
-        ifstream vfstream( filename.c_str() );
+        osgDB::ifstream vfstream( filename.c_str() );
 
         if( vfstream )
         {

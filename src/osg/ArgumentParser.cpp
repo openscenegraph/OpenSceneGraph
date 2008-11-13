@@ -230,7 +230,7 @@ int ArgumentParser::find(const std::string& str) const
             return pos;
         }
     }
-    return 0;
+    return -1;
 }
 
 bool ArgumentParser::match(int pos, const std::string& str) const
@@ -614,7 +614,7 @@ void ArgumentParser::reportRemainingOptionsAsUnrecognized(ErrorSeverity severity
         // if an option and havn't been previous querried for report as unrecognized.
         if (isOption(pos) && options.find(_argv[pos])==options.end()) 
         {
-            reportError(getApplicationName() +": unrecognized option "+_argv[pos],severity);
+            reportError(std::string("unrecognized option ")+std::string(_argv[pos]),severity);
         }
     }
 }

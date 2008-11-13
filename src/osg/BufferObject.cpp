@@ -30,9 +30,9 @@ using namespace osg;
 
 // static cache of deleted buffer object lists which can only
 // by completely deleted once the appropriate OpenGL context
-// is set.  Used osg::BufferObject::deleteDisplayList(..) and flushDeletedBufferObjects(..) below.
-typedef std::multimap<unsigned int,GLuint> DisplayListMap;
-typedef osg::buffered_object<DisplayListMap> DeletedBufferObjectCache;
+// is set.  Used osg::BufferObject::deleteBufferObject(..) and flushDeletedBufferObjects(..) below.
+typedef std::multimap<unsigned int,GLuint> BufferObjectMap;
+typedef osg::buffered_object<BufferObjectMap> DeletedBufferObjectCache;
 
 static OpenThreads::Mutex s_mutex_deletedBufferObjectCache;
 static DeletedBufferObjectCache s_deletedBufferObjectCache;
@@ -44,7 +44,7 @@ void BufferObject::deleteBufferObject(unsigned int contextID,GLuint globj)
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedBufferObjectCache);
 
         // insert the globj into the cache for the appropriate context.
-        s_deletedBufferObjectCache[contextID].insert(DisplayListMap::value_type(0,globj));
+        s_deletedBufferObjectCache[contextID].insert(BufferObjectMap::value_type(0,globj));
     }
 }
 
@@ -65,9 +65,9 @@ void BufferObject::flushDeletedBufferObjects(unsigned int contextID,double /*cur
 
         unsigned int noDeleted = 0;
 
-        DisplayListMap& dll = s_deletedBufferObjectCache[contextID];
+        BufferObjectMap& dll = s_deletedBufferObjectCache[contextID];
 
-        DisplayListMap::iterator ditr=dll.begin();
+        BufferObjectMap::iterator ditr=dll.begin();
         for(;
             ditr!=dll.end() && elapsedTime<availableTime;
             ++ditr)
@@ -78,7 +78,7 @@ void BufferObject::flushDeletedBufferObjects(unsigned int contextID,double /*cur
         }
         if (ditr!=dll.begin()) dll.erase(dll.begin(),ditr);
 
-        if (noDeleted!=0) notify(osg::INFO)<<"Number VBOs deleted = "<<noDeleted<<std::endl;
+        // if (noDeleted!=0) notify(osg::NOTICE)<<"Number VBOs deleted = "<<noDeleted<<" BO's left"<<dll.size()<<std::endl;
     }
 
     availableTime -= elapsedTime;
@@ -87,7 +87,7 @@ void BufferObject::flushDeletedBufferObjects(unsigned int contextID,double /*cur
 void BufferObject::discardDeletedBufferObjects(unsigned int contextID)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedBufferObjectCache);
-    DisplayListMap& dll = s_deletedBufferObjectCache[contextID];
+    BufferObjectMap& dll = s_deletedBufferObjectCache[contextID];
     dll.clear();
 }
 

@@ -20,7 +20,7 @@
 #include <osg/NodeVisitor>
 #include "ExportOptions.h"
 #include "Types.h"
-#include <fstream>
+#include <osgDB/fstream>
 #include <set>
 #include <memory>
 
@@ -121,6 +121,13 @@ public:
         writePop();
     }
 
+    void writePushTraverseChildWritePop(osg::Node& node)
+    {
+        writePush();
+        node.accept(*this);
+        writePop();
+    }
+
     // Geometry records
     void writeFace( const osg::Geode& geode, const osg::Geometry& geom, GLenum mode );
     void writeMesh( const osg::Geode& geode, const osg::Geometry& geom );
@@ -168,7 +175,7 @@ private:
 
     // _records is a temp file for most records. After the Header and palette
     // records are written to _dos, _records is copied onto _dos.
-    std::ofstream _recordsStr;
+    osgDB::ofstream _recordsStr;
     DataOutputStream* _records;
     std::string _recordsTempName;
 

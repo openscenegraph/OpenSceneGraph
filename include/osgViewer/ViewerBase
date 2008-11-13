@@ -251,7 +251,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         
         inline void releaseContext()
         {
-            if (_currentContext.valid() && _currentContext->valid())
+            if (_currentContext.valid())
             {
                 _currentContext->releaseContext();
             }

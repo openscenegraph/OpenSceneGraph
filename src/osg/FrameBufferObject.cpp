@@ -41,8 +41,7 @@ FBOExtensions* FBOExtensions::instance(unsigned contextID, bool createIfNotInita
 #define LOAD_FBO_EXT(name)    setGLExtensionFuncPtr(name, (#name))
 
 FBOExtensions::FBOExtensions(unsigned int contextID)
-:   _supported(false),
-    glBindRenderbufferEXT(0),
+:   glBindRenderbufferEXT(0),
     glGenRenderbuffersEXT(0),
     glDeleteRenderbuffersEXT(0),
     glRenderbufferStorageEXT(0),
@@ -58,7 +57,9 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
     glFramebufferTextureLayerEXT(0),
     glFramebufferRenderbufferEXT(0),
     glGenerateMipmapEXT(0),
-    glBlitFramebufferEXT(0)
+    glBlitFramebufferEXT(0),
+    _supported(false),
+    _packed_depth_stencil_supported(false)
 {
     if (!isGLExtensionSupported(contextID, "GL_EXT_framebuffer_object"))
         return;
@@ -106,6 +107,11 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
     if (isGLExtensionSupported(contextID, "GL_NV_framebuffer_multisample_coverage"))
     {
         LOAD_FBO_EXT(glRenderbufferStorageMultisampleCoverageNV);
+    }
+
+    if (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil"))
+    {
+        _packed_depth_stencil_supported = true;
     }
 }
 
@@ -575,6 +581,46 @@ int FrameBufferAttachment::compare(const FrameBufferAttachment &fa) const
     return 0;
 }
 
+RenderBuffer* FrameBufferAttachment::getRenderBuffer()
+{
+    return _ximpl->renderbufferTarget.get();
+}
+
+Texture* FrameBufferAttachment::getTexture()
+{
+    return _ximpl->textureTarget.get();
+}
+
+const RenderBuffer* FrameBufferAttachment::getRenderBuffer() const
+{
+    return _ximpl->renderbufferTarget.get();
+}
+
+const Texture* FrameBufferAttachment::getTexture() const
+{
+    return _ximpl->textureTarget.get();
+}
+
+int FrameBufferAttachment::getCubeMapFace() const
+{
+    return _ximpl->cubeMapFace;
+}
+
+int FrameBufferAttachment::getTextureLevel() const
+{
+    return _ximpl->level;
+}
+
+int FrameBufferAttachment::getTexture3DZOffset() const
+{
+    return _ximpl->zoffset;
+}
+
+int FrameBufferAttachment::getTextureArrayLayer() const
+{
+    return _ximpl->zoffset;
+}
+
 /**************************************************************************
  * FrameBufferObject
  **************************************************************************/
@@ -661,7 +707,6 @@ FrameBufferObject::~FrameBufferObject()
 
 void FrameBufferObject::setAttachment(BufferComponent attachment_point, const FrameBufferAttachment &attachment)
 {
-    GLenum gl_attachment = convertBufferComponentToGLenum(attachment_point);
     _attachments[attachment_point] = attachment;
 
     updateDrawBuffers();
@@ -687,8 +732,6 @@ void FrameBufferObject::updateDrawBuffers()
     // create textures and mipmaps before we bind the frame buffer object
     for (AttachmentMap::const_iterator i=_attachments.begin(); i!=_attachments.end(); ++i)
     {
-        const FrameBufferAttachment &fa = i->second;
-
         // setup draw buffers based on the attachment definition
         if (i->first >= Camera::COLOR_BUFFER0 && i->first <= Camera::COLOR_BUFFER15)
             _drawBuffers.push_back(convertBufferComponentToGLenum(i->first));
@@ -774,7 +817,26 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
         for (AttachmentMap::const_iterator i=_attachments.begin(); i!=_attachments.end(); ++i)
         {
             const FrameBufferAttachment &fa = i->second;
-            fa.attach(state, target, convertBufferComponentToGLenum(i->first), ext);
+            switch(i->first)
+            {
+                case(Camera::PACKED_DEPTH_STENCIL_BUFFER):
+                    if (ext->isPackedDepthStencilSupported())
+                    {
+                        fa.attach(state, target, GL_DEPTH_ATTACHMENT_EXT, ext);
+                        fa.attach(state, target, GL_STENCIL_ATTACHMENT_EXT, ext);
+                    }
+                    else
+                    {
+                        notify(WARN) << 
+                            "Warning: FrameBufferObject: could not attach PACKED_DEPTH_STENCIL_BUFFER, "
+                            "EXT_packed_depth_stencil is not supported !" << std::endl;
+                    }
+                    break;
+
+                default:
+                    fa.attach(state, target, convertBufferComponentToGLenum(i->first), ext);
+                    break;
+            }
         }        
         dirtyAttachmentList = 0;
     }

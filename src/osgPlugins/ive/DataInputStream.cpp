@@ -123,18 +123,7 @@
 using namespace ive;
 using namespace std;
 
-void DataInputStream::setOptions(const osgDB::ReaderWriter::Options* options)
-{
-    _options = options;
-
-    if (_options.get())
-    {
-        setLoadExternalReferenceFiles(_options->getOptionString().find("noLoadExternalReferenceFiles")==std::string::npos);
-        osg::notify(osg::DEBUG_INFO) << "ive::DataInputStream.setLoadExternalReferenceFiles()=" << getLoadExternalReferenceFiles() << std::endl;
-    }
-}
-
-DataInputStream::DataInputStream(std::istream* istream)
+DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWriter::Options* options)
 {
     unsigned int endianType ;
 
@@ -143,9 +132,18 @@ DataInputStream::DataInputStream(std::istream* istream)
     _verboseOutput = false;
 
     _istream = istream;
+    _owns_istream = false;
     _peeking = false;
     _peekValue = 0;
     _byteswap = 0;
+
+    _options = options;
+
+    if (_options.get())
+    {
+        setLoadExternalReferenceFiles(_options->getOptionString().find("noLoadExternalReferenceFiles")==std::string::npos);
+        osg::notify(osg::DEBUG_INFO) << "ive::DataInputStream.setLoadExternalReferenceFiles()=" << getLoadExternalReferenceFiles() << std::endl;
+    }
 
     if(!istream){
         throw Exception("DataInputStream::DataInputStream(): null pointer exception in argument.");
@@ -168,10 +166,115 @@ DataInputStream::DataInputStream(std::istream* istream)
     if(_version>VERSION){
         throw Exception("DataInputStream::DataInputStream(): The version found in the file is newer than this library can handle.");
     }
-
+    
+    if (_version>=VERSION_0033)
+    {
+        int compressionLevel = readInt();
+        
+        if (compressionLevel>0)
+        {
+            osg::notify(osg::INFO)<<"compressed ive stream"<<std::endl;
+            
+            unsigned int maxSize = readUInt();
+            
+            std::string data;
+            data.reserve(maxSize);
+            
+            if (!uncompress(*istream, data))
+            {
+                throw Exception("Error in uncompressing .ive");
+            }
+            
+            _istream = new std::stringstream(data);
+            _owns_istream = true;
+        }
+        else
+        {
+            osg::notify(osg::INFO)<<"uncompressed ive stream"<<std::endl;
+        }
+    }
 }
 
-DataInputStream::~DataInputStream(){}
+DataInputStream::~DataInputStream()
+{
+    if (_owns_istream) delete _istream;
+}
+
+#ifdef USE_ZLIB
+
+#include <zlib.h>
+
+bool DataInputStream::uncompress(std::istream& fin, std::string& destination) const
+{
+    //#define CHUNK 16384
+    #define CHUNK 32768
+
+    int ret;
+    unsigned have;
+    z_stream strm;
+    unsigned char in[CHUNK];
+    unsigned char out[CHUNK];
+    
+    /* allocate inflate state */
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    strm.avail_in = 0;
+    strm.next_in = Z_NULL;
+    ret = inflateInit2(&strm,
+                       15 + 32 // autodected zlib or gzip header
+                       );
+    if (ret != Z_OK)
+    {
+        osg::notify(osg::INFO)<<"failed to init"<<std::endl;
+        return ret;
+    }
+    
+    /* decompress until deflate stream ends or end of file */
+    do {
+        //strm.avail_in = fin.readsome((char*)in, CHUNK);
+        fin.read((char *)in, CHUNK);
+        strm.avail_in = fin.gcount();
+        
+        if (strm.avail_in == 0)
+        {
+            break;
+        }
+        strm.next_in = in;
+
+        /* run inflate() on input until output buffer not full */
+        do {
+            strm.avail_out = CHUNK;
+            strm.next_out = out;
+            ret = inflate(&strm, Z_NO_FLUSH);
+
+            switch (ret) {
+            case Z_NEED_DICT:
+            case Z_DATA_ERROR:
+            case Z_MEM_ERROR:
+                (void)inflateEnd(&strm);
+                return false;
+            }
+            have = CHUNK - strm.avail_out;
+
+            destination.append((char*)out, have);
+            
+        } while (strm.avail_out == 0);
+
+        /* done when inflate() says it's done */
+    } while (ret != Z_STREAM_END);
+
+    /* clean up and return */
+    (void)inflateEnd(&strm);
+    
+    return ret == Z_STREAM_END ? true : false;
+}
+#else
+bool DataInputStream::uncompress(std::istream& fin, std::string& destination) const
+{
+    return false;
+}
+#endif
 
 bool DataInputStream::readBool(){
     char c;
@@ -604,6 +707,76 @@ osg::Vec4ubArray* DataInputStream::readVec4ubArray()
 
     return a;
 }
+
+bool DataInputStream::readPackedFloatArray(osg::FloatArray* a)
+{
+    int size = readInt();
+
+    a->resize(size);        
+
+    if (size == 0)
+        return true;
+
+    if (readBool())
+    {
+        float value = readFloat();
+        
+        for(int i=0; i<size; ++i)
+        {
+            (*a)[i] = value;
+        }
+    }
+    else
+    {
+        int packingSize = readInt();
+        
+        if (packingSize==1)
+        {
+            float minValue = readFloat();
+            float maxValue = readFloat();
+
+            float byteMultiplier = 255.0f/(maxValue-minValue);
+            float byteInvMultiplier = 1.0f/byteMultiplier;
+
+            for(int i=0; i<size; ++i)
+            {
+                unsigned char byte_value = readUChar();
+                float value = minValue + float(byte_value)*byteInvMultiplier;
+                (*a)[i] = value;
+            }
+        }
+        else if (packingSize==2)
+        {
+            float minValue = readFloat();
+            float maxValue = readFloat();
+
+            float shortMultiplier = 65535.0f/(maxValue-minValue);
+            float shortInvMultiplier = 1.0f/shortMultiplier;
+
+            for(int i=0; i<size; ++i)
+            {
+                unsigned short short_value = readUShort();
+                float value = minValue + float(short_value)*shortInvMultiplier;
+                (*a)[i] = value;
+            }
+        }
+        else
+        {
+            for(int i=0; i<size; ++i)
+            {
+                (*a)[i] = readFloat();
+            }
+        }        
+    }
+    
+    if (_istream->rdstate() & _istream->failbit)
+        throw Exception("DataInputStream::readFloatArray(): Failed to read float array.");
+
+    if (_verboseOutput) std::cout<<"read/writeFloatArray() ["<<size<<"]"<<std::endl;
+
+    return true;
+}
+
 
 osg::FloatArray* DataInputStream::readFloatArray()
 {

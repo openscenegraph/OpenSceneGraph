@@ -36,10 +36,9 @@ namespace ive{
 class DataInputStream{
 
 public:
-    DataInputStream(std::istream* istream);
+    DataInputStream(std::istream* istream, const osgDB::ReaderWriter::Options* options);
     ~DataInputStream();
 
-    void setOptions(const osgDB::ReaderWriter::Options* options);
     const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 
     inline unsigned int getVersion() const { return _version; }
@@ -75,6 +74,7 @@ public:
     osg::UShortArray* readUShortArray();
     osg::UIntArray* readUIntArray();
     osg::Vec4ubArray* readVec4ubArray();
+    bool readPackedFloatArray(osg::FloatArray* floatArray);
     osg::FloatArray* readFloatArray();
     osg::Vec2Array* readVec2Array();
     osg::Vec3Array* readVec3Array();
@@ -108,6 +108,7 @@ public:
     void setLoadExternalReferenceFiles(bool b) {_loadExternalReferenceFiles=b;};
     bool getLoadExternalReferenceFiles() {return _loadExternalReferenceFiles;};
 
+
     typedef std::map<std::string, osg::ref_ptr<osg::Image> >    ImageMap;
     typedef std::map<int,osg::ref_ptr<osg::StateSet> >          StateSetMap;
     typedef std::map<int,osg::ref_ptr<osg::StateAttribute> >    StateAttributeMap;
@@ -123,7 +124,12 @@ public:
     std::istream*       _istream;
     int                 _byteswap;
 
+    bool                _owns_istream;
+
+    bool uncompress(std::istream& fin, std::string& destination) const;
+
 private:
+
 
     int                 _version;
     bool                _peeking;
@@ -142,6 +148,7 @@ private:
     bool _loadExternalReferenceFiles;
         
     osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
+    
    
 };
 

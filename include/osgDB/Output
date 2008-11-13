@@ -17,16 +17,16 @@
 #include <osg/Object>
 
 #include <osgDB/ReaderWriter>
+#include <osgDB/fstream>
 
 #include <string>
 #include <map>
-#include <fstream>
 
 namespace osgDB {
 
 /** ofstream wrapper class for adding support for indenting.
     Used in output of .osg ASCII files to improve their readability.*/
-class OSGDB_EXPORT Output : public std::ofstream
+class OSGDB_EXPORT Output : public osgDB::ofstream
 {
     public:
 

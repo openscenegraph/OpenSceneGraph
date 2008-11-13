@@ -39,6 +39,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <memory>
+
 class ReaderWriterDICOM : public osgDB::ReaderWriter
 {
     public:
@@ -615,7 +617,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                                                  pixelFormat, dataType);
                                                  
                                                  
-                            notice()<<"Image dimensions = "<<image->s()<<", "<<image->t()<<", "<<image->r()<<std::endl;
+                            notice()<<"Image dimensions = "<<image->s()<<", "<<image->t()<<", "<<image->r()<<" pixelFormat=0x"<<std::hex<<pixelFormat<<" dataType=0x"<<std::hex<<dataType<<std::endl;
                         }
                         else if (pixelData->getPlanes()>numPlanes || pixelData->getRepresentation()>pixelRep)
                         {

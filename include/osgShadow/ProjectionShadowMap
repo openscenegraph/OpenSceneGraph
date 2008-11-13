@@ -52,7 +52,7 @@ class OSGSHADOW_EXPORT ProjectionShadowMap : public MinimalBoundsBaseClass
         {
         }
 
-        struct ViewData: public BaseClass::ViewData, 
+        struct OSGSHADOW_EXPORT ViewData: public BaseClass::ViewData, 
                          public ShadowProjectionAlgorithmClass
         {    
     #if 0

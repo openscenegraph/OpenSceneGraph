@@ -16,6 +16,7 @@
 #include <osgDB/FileUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
+#include <osgDB/fstream>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgSim/Sector>
@@ -23,7 +24,6 @@
 #include <osgSim/LightPointNode>
 #include <osgSim/BlinkSequence>
 #include <iostream>
-#include <fstream>
 
 #if defined(linux)
 #  include <unistd.h>
@@ -599,7 +599,7 @@ bool TXPArchive::loadTextStyles()
     std::map< std::string, std::string > fontmap;
 
     std::string fmapfname = std::string(getDir())+"\\fontmap.txt";
-    std::ifstream fmapfile;
+    osgDB::ifstream fmapfile;
     fmapfile.open(fmapfname.c_str(),std::ios::in);
 
     if (fmapfile.is_open())

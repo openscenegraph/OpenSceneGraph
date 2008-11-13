@@ -674,14 +674,14 @@ void ViewerBase::renderingTraversals()
     
     bool doneMakeCurrentInThisThread = false;
 
-    // dispatch the the rendering threads
-    if (_startRenderingBarrier.valid()) _startRenderingBarrier->block();
-
     if (_endDynamicDrawBlock.valid())
     {
         _endDynamicDrawBlock->reset();
     }
     
+    // dispatch the rendering threads
+    if (_startRenderingBarrier.valid()) _startRenderingBarrier->block();
+
     // reset any double buffer graphics objects
     for(Cameras::iterator camItr = cameras.begin();
         camItr != cameras.end();

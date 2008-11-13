@@ -13,6 +13,8 @@
    ************************
    */
 
+#include <osgDB/FileUtils>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -410,7 +412,7 @@ bool trpgwArchive::OpenFile(const char *in_dir,const char *name)
 
     sprintf(filename,"%s" PATHSEPERATOR "%s",dir,name);
 
-    if (!(fp = fopen(filename,"wb")))
+    if (!(fp = osgDB::fopen(filename,"wb")))
         return false;
 
     return true;
@@ -534,7 +536,7 @@ bool trpgwArchive::CheckpointHeader()
                     header.GetLodSize(i,lodSize);
                     tileTable.SetNumTiles(lodSize.x,lodSize.y,i);
                 }
-			   
+                           
             }
             firstHeaderWrite = false;
         }
@@ -554,7 +556,7 @@ bool trpgwArchive::CheckpointHeader()
             }
 
             tf.tiles.clear();
-	         
+                 
          
         }
     }
@@ -607,8 +609,8 @@ bool trpgwArchive::CheckpointHeader()
                     return false;
                 }
             }
-		
-			
+                
+                        
             if(!modelTable.Write(buf) )
             {
                 strcpy(errMess, "Error writing model table");
@@ -683,7 +685,7 @@ bool trpgwArchive::CheckpointHeader()
                 }
             }
         }
-	break;
+        break;
     }
 
     // Write the disk header
@@ -787,7 +789,7 @@ bool trpgwArchive::IncrementTileFile()
 bool trpgwArchive::DesignateTileFile(int id)
 {
     if (tileMode != TileLocal)
-	return false;
+        return false;
 
     // Close the current tile file
     if (tileFile) {
@@ -800,7 +802,7 @@ bool trpgwArchive::DesignateTileFile(int id)
     sprintf(filename,"%s" PATHSEPERATOR "tileFile_%d.tpf",dir,id);
     tileFile = GetNewWAppFile(ness,filename);
     if (!tileFile->isValid())
-	return false;
+        return false;
 
     // Add another TileFiles entry
     tileFiles.resize(tileFiles.size()+1);
@@ -831,11 +833,11 @@ bool trpgwArchive::WriteTile(unsigned int x,unsigned int y,unsigned int lod, flo
         char filename[1024];
         // Note: Windows specific
         sprintf(filename,"%s" PATHSEPERATOR "tile_%d_%d_%d.tpt",dir,x,y,lod);
-        if (!(tfp = fopen(filename,"wb")))
+        if (!(tfp = osgDB::fopen(filename,"wb")))
             return false;
 
         // Write the header first
-		unsigned int len;
+                unsigned int len;
         const char *data;
         if (head) {
             data = head->getData();
@@ -1053,52 +1055,52 @@ void trpgwGeomHelper::EndPolygon()
     break;
     }
 
-	ResetPolygon();
+        ResetPolygon();
 }
 
 // Clean out the polygon arrays
 void trpgwGeomHelper::ResetPolygon()
 {
-	tmpTex.resize(0);
-	matPoly.resize(0);
-	polyTex.resize(0);
-	polyNorm.resize(0);
-	polyVert.resize(0);
+        tmpTex.resize(0);
+        matPoly.resize(0);
+        polyTex.resize(0);
+        polyNorm.resize(0);
+        polyVert.resize(0);
 }
 
 // Set the current color
 // Note: Required
 void trpgwGeomHelper::SetColor(trpgColor& /*col*/)
 {
-//	tmpColor = col;
+//        tmpColor = col;
 }
 
 // Set the current texture coord
 // Note: Required
 void trpgwGeomHelper::SetTexCoord(trpg2dPoint &pt)
 {
-	tmpTex.resize(0);
-	tmpTex.push_back(pt);
+        tmpTex.resize(0);
+        tmpTex.push_back(pt);
 }
 
 void trpgwGeomHelper::AddTexCoord(trpg2dPoint &pt)
 {
-	tmpTex.push_back(pt);
+        tmpTex.push_back(pt);
 }
 
 // Set the current normal
 // Note: required
 void trpgwGeomHelper::SetNormal(trpg3dPoint &pt)
 {
-	tmpNorm = pt;
+        tmpNorm = pt;
 }
 
 // Set the current material
 // Note: required
 void trpgwGeomHelper::SetMaterial(int32 imat)
 {
-	matPoly.resize(0);
-	matPoly.push_back(imat);
+        matPoly.resize(0);
+        matPoly.push_back(imat);
 }
 
 void trpgwGeomHelper::AddMaterial(int32 imat)
@@ -1208,9 +1210,9 @@ void trpgwGeomHelper::FlushGeom()
    It will produce valid output, but not particularly optimized.
 */
 #define ADDVERT(dest,vt) {                                      \
-	dest.AddVertex((trpgGeometry::DataType)dtype,vt.v);     \
-	dest.AddNormal((trpgGeometry::DataType)dtype,vt.n);     \
-	dest.AddTexCoord((trpgGeometry::DataType)dtype,vt.tex); \
+        dest.AddVertex((trpgGeometry::DataType)dtype,vt.v);     \
+        dest.AddNormal((trpgGeometry::DataType)dtype,vt.n);     \
+        dest.AddTexCoord((trpgGeometry::DataType)dtype,vt.tex); \
     }
 class optVert {
 public:
@@ -1493,20 +1495,20 @@ trpgwAppFile * trpgwImageHelper::IncrementTextureFile(bool geotyp)
 {
     char filename[1024];
     trpgwAppFile *thefile = texFile;
-	
+        
     if(geotyp && separateGeoTypical) {
         thefile = geotypFile;
-		sprintf(filename,"%s" PATHSEPERATOR "geotypFile_%d.txf",dir,static_cast<int>(geotypFileIDs.size()));
+                sprintf(filename,"%s" PATHSEPERATOR "geotypFile_%d.txf",dir,static_cast<int>(geotypFileIDs.size()));
     }
     else {
-		sprintf(filename,"%s" PATHSEPERATOR "texFile_%d.txf",dir,static_cast<int>(texFileIDs.size()));
+                sprintf(filename,"%s" PATHSEPERATOR "texFile_%d.txf",dir,static_cast<int>(texFileIDs.size()));
     }
 
     // Closes the current texture file
     if (thefile)  delete thefile;
     thefile = NULL;
 
-    // Open the next one	
+    // Open the next one        
     thefile = GetNewWAppFile(ness,filename,true);
     if (!thefile->isValid())
         return NULL;
@@ -1555,7 +1557,7 @@ bool trpgwImageHelper::DesignateTextureFile(int id)
         return false;
     geotypFileIDs.push_back(id);
 
-	
+        
     return true;
 }
 
@@ -1580,7 +1582,7 @@ bool trpgwImageHelper::WriteToArchive(const trpgTexture &tex,char *data,trpgwApp
         if (! (thefile=IncrementTextureFile(geotyp && separateGeoTypical)))
             return false;
     }
-	
+        
     while (maxTexFileLen > 0 && thefile->GetLengthWritten() > maxTexFileLen) {
         if (!(thefile=IncrementTextureFile(geotyp && separateGeoTypical)))
             return false;

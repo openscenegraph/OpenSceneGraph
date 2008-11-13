@@ -23,10 +23,12 @@
 #include <osg/Geode>
 #include <osg/ApplicationUsage>
 #include <osg/Version>
+#include <osg/Timer>
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
+#include <osgDB/fstream>
 #include <osgDB/Archive>
 
 #include <algorithm>
@@ -177,6 +179,12 @@ Registry::Registry()
         else _buildKdTreesHint = ReaderWriter::Options::BUILD_KDTREES;
     }
 
+    const char* fileCachePath = getenv("OSG_FILE_CACHE");
+    if (fileCachePath)
+    {
+        _fileCache = new FileCache(fileCachePath);    
+    }
+
     _createNodeFromImage = false;
     _openingLibrary = false;
 
@@ -317,12 +325,12 @@ void Registry::destruct()
 {
     // osg::notify(osg::NOTICE)<<"Registry::destruct()"<<std::endl;
 
-    // switch off the pager and its associated thread before we clean up 
-    // rest of the Registry.
-    _databasePager = 0;
-
     // clean up the SharedStateManager 
     _sharedStateManager = 0;
+    
+
+    // clean up the FileCache
+    _fileCache = 0;
     
 
     // object cache clear needed here to prevent crash in unref() of
@@ -567,7 +575,7 @@ bool Registry::readPluginAliasConfigurationFile( const std::string& file )
         return false;
     }
 
-    std::ifstream ifs;
+    osgDB::ifstream ifs;
     ifs.open( fileName.c_str() );
     if (!ifs.good())
     {
@@ -1829,8 +1837,21 @@ ReaderWriter::WriteResult Registry::writeHeightFieldImplementation(const HeightF
 
 ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fileName,const ReaderWriter::Options* options)
 {
+#if 0
+
+    osg::Timer_t startTick = osg::Timer::instance()->tick();
+    ReaderWriter::ReadResult result = readImplementation(ReadNodeFunctor(fileName, options),
+                              options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_NODES)!=0: false);
+    osg::Timer_t endTick = osg::Timer::instance()->tick();
+    osg::notify(osg::NOTICE)<<"time to load "<<fileName<<" "<<osg::Timer::instance()->delta_m(startTick, endTick)<<"ms"<<std::endl;
+    return result;
+
+#else
+
     return readImplementation(ReadNodeFunctor(fileName, options),
                               options ? (options->getObjectCacheHint()&ReaderWriter::Options::CACHE_NODES)!=0: false);
+                              
+#endif
 }
 
 ReaderWriter::WriteResult Registry::writeNodeImplementation(const Node& node,const std::string& fileName,const ReaderWriter::Options* options)
@@ -2046,13 +2067,6 @@ void Registry::releaseGLObjects(osg::State* state)
         osg::Object* object = itr->second.first.get();
         object->releaseGLObjects(state);
     }
-}
-
-DatabasePager* Registry::getOrCreateDatabasePager()
-{
-    if (!_databasePager) _databasePager = new DatabasePager;
-    
-    return _databasePager.get();
 }
 
 SharedStateManager* Registry::getOrCreateSharedStateManager()

@@ -4,6 +4,7 @@
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 #include <osgDB/Registry>
 
 #include <iostream>
@@ -37,7 +38,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
             const int LINE_SIZE = 1024;
             char line[LINE_SIZE];
             
-            std::ifstream fin(fileName.c_str());
+            osgDB::ifstream fin(fileName.c_str());
             
             unsigned int num = 0;
             while (fin)
@@ -74,7 +75,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
             
             fin.close();
             
-            std::ifstream fin2(fileName.c_str());
+            osgDB::ifstream fin2(fileName.c_str());
             while (fin2)
             {
                 fin2.getline(line,LINE_SIZE);

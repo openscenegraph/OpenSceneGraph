@@ -230,7 +230,7 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
             Logos::RelativePosition pos = Logos::LowerRight;
 
             FILE *fp;
-            if( (fp = fopen( fileName.c_str(), "r")) == NULL )
+            if( (fp = osgDB::fopen( fileName.c_str(), "r")) == NULL )
                 return NULL;
             while( !feof(fp))
             {

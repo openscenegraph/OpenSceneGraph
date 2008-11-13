@@ -21,7 +21,6 @@
 #include <iostream>
 #include <list>
 #include <string>
-#include <fstream>
 #include <sstream>
 
 #include <osg/Geode>
@@ -48,6 +47,7 @@
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 
 int runApp(std::string xapp);
 
@@ -249,7 +249,7 @@ void readConfFile(const char* confFile)                                         
     }
     
 
-    std::ifstream in(fileName.c_str());
+    osgDB::ifstream in(fileName.c_str());
     if (!in)
     {
         osg::notify(osg::INFO) << "File " << fileName << " can not be opened!" << std::endl;

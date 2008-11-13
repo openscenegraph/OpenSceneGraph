@@ -5,6 +5,8 @@
 
 #include <iostream>        // for ofstream
 #include <string>
+#include <sstream>
+
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -30,10 +32,9 @@ namespace ive {
 class DataOutputStream{
 
 public:
-    DataOutputStream(std::ostream* ostream);
+    DataOutputStream(std::ostream* ostream, const osgDB::ReaderWriter::Options* options);
     ~DataOutputStream();
 
-    void setOptions(const osgDB::ReaderWriter::Options* options);
     const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 
     unsigned int getVersion() { return VERSION; }
@@ -70,6 +71,9 @@ public:
     void writeVec2b(const osg::Vec2b& v);    
     void writeVec3b(const osg::Vec3b& v);    
     void writeVec4b(const osg::Vec4b& v);    
+    
+    void writePackedFloatArray(const osg::FloatArray* a, float maxError);
+    
     void writeFloatArray(const osg::FloatArray* a);
     void writeVec2Array(const osg::Vec2Array* a);
     void writeVec3Array(const osg::Vec3Array* a);
@@ -121,11 +125,21 @@ public:
     void setUseOriginalExternalReferences(bool b) {_useOriginalExternalReferences=b;};
     bool getUseOriginalExternalReferences() const {return _useOriginalExternalReferences;};
 
+    void setTerrainMaximumErrorToSizeRatio(double ratio) { _maximumErrorToSizeRatio = ratio; }
+    double getTerrainMaximumErrorToSizeRatio() const { return _maximumErrorToSizeRatio; }
+
+
     bool                _verboseOutput;
+
+    bool compress(std::ostream& fout, const std::string& source) const;
 
 private:
 
     std::ostream* _ostream;
+    std::ostream* _output_ostream;
+    
+    std::stringstream _compressionStream;
+    int _compressionLevel;
 
      // Container to map stateset uniques to their respective stateset.
     typedef std::map<const osg::StateSet*,int>          StateSetMap;
@@ -152,6 +166,7 @@ private:
     bool                _includeExternalReferences;
     bool                _writeExternalReferenceFiles;
     bool                _useOriginalExternalReferences;
+    double              _maximumErrorToSizeRatio;
 
     IncludeImageMode    _includeImageMode;
     

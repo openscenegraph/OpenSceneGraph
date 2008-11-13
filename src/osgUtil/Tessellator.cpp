@@ -600,56 +600,6 @@ void Tessellator::reduceArray(osg::Array * cold, const unsigned int nnu)
     }
 }
 
-static unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
-{
-
-    unsigned int totalNumberOfPrimitives = 0;
-    
-    for(Geometry::PrimitiveSetList::const_iterator itr=geom.getPrimitiveSetList().begin();
-        itr!=geom.getPrimitiveSetList().end();
-        ++itr)
-    {
-        const PrimitiveSet* primitiveset = itr->get();
-        GLenum mode=primitiveset->getMode();
-
-        unsigned int primLength;
-        switch(mode)
-        {
-            case(GL_POINTS):    primLength=1; break;
-            case(GL_LINES):     primLength=2; break;
-            case(GL_TRIANGLES): primLength=3; break;
-            case(GL_QUADS):     primLength=4; break;
-            default:            primLength=0; break; // compute later when =0.
-        }
-
-        // draw primitives by the more flexible "slow" path,
-        // sending OpenGL glBegin/glVertex.../glEnd().
-        switch(primitiveset->getType())
-        {
-            case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
-            {
-
-                const DrawArrayLengths* drawArrayLengths = static_cast<const DrawArrayLengths*>(primitiveset);
-                for(DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
-                    primItr!=drawArrayLengths->end();
-                    ++primItr)
-                {
-                    if (primLength==0) totalNumberOfPrimitives += 1;
-                    else totalNumberOfPrimitives += *primItr/primLength; // Dec 2003 - increment not set
-                }
-                break;
-            }
-            default:
-            {
-                if (primLength==0) totalNumberOfPrimitives += 1;
-                else totalNumberOfPrimitives += primitiveset->getNumIndices()/primLength;
-            }
-        }
-    }
-
-    return totalNumberOfPrimitives;
-}
-//
 void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int originalIndex)
 {
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());

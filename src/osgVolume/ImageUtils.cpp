@@ -170,6 +170,35 @@ void _copyRowAndScale(const unsigned char* src, GLenum srcDataType, unsigned cha
     }
 }
 
+struct RecordRowOperator
+{
+    RecordRowOperator(unsigned int num):_colours(num),_pos(0) {}
+
+    mutable std::vector<osg::Vec4>  _colours;
+    mutable unsigned int            _pos;
+    
+    inline void luminance(float l) const { rgba(l,l,l,1.0f); } 
+    inline void alpha(float a) const { rgba(1.0f,1.0f,1.0f,a); } 
+    inline void luminance_alpha(float l,float a) const { rgba(l,l,l,a);  } 
+    inline void rgb(float r,float g,float b) const { rgba(r,g,b,1.0f); }
+    inline void rgba(float r,float g,float b,float a) const { _colours[_pos++].set(r,g,b,a); }
+};
+
+struct WriteRowOperator
+{
+    WriteRowOperator():_pos(0) {}
+    WriteRowOperator(unsigned int num):_colours(num),_pos(0) {}
+
+    std::vector<osg::Vec4>  _colours;
+    mutable unsigned int    _pos;
+    
+    inline void luminance(float& l) const { l = _colours[_pos++].r(); } 
+    inline void alpha(float& a) const { a = _colours[_pos++].a(); } 
+    inline void luminance_alpha(float& l,float& a) const { l = _colours[_pos].r(); a = _colours[_pos++].a(); } 
+    inline void rgb(float& r,float& g,float& b) const { r = _colours[_pos].r(); g = _colours[_pos].g(); b = _colours[_pos].b(); }
+    inline void rgba(float& r,float& g,float& b,float& a) const {  r = _colours[_pos].r(); g = _colours[_pos].g(); b = _colours[_pos].b(); a = _colours[_pos++].a(); }
+};
+
 bool osgVolume::copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int width, int height, int depth,
                           osg::Image* destImage, int dest_s, int dest_t, int dest_r, bool doRescale)
 {
@@ -263,7 +292,32 @@ bool osgVolume::copyImage(const osg::Image* srcImage, int src_s, int src_t, int 
     {
         osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
         osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
-        osg::notify(osg::NOTICE)<<"   Incompatible pixelFormat and dataType."<<std::endl;
+                
+        RecordRowOperator readOp(width);
+        WriteRowOperator writeOp;
+
+        for(int slice = 0; slice<depth; ++slice)
+        {
+            for(int row = 0; row<height; ++row)
+            {
+
+                // reset the indices to beginning
+                readOp._pos = 0;
+                writeOp._pos = 0;
+            
+                // read the pixels into readOp's _colour array
+                osgVolume::readRow(width, srcImage->getPixelFormat(), srcImage->getDataType(), srcImage->data(src_s,src_t+row,src_r+slice), readOp);
+                                
+                // pass readOp's _colour array contents over to writeOp (note this is just a pointer swap).
+                writeOp._colours.swap(readOp._colours);
+                
+                osgVolume::modifyRow(width, destImage->getPixelFormat(), destImage->getDataType(), destImage->data(dest_s, dest_t+row,dest_r+slice), writeOp);
+
+                // return readOp's _colour array contents back to its rightful owner.
+                writeOp._colours.swap(readOp._colours);
+            }
+        }
+        
         return false;
     }
 

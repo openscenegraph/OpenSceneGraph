@@ -8,13 +8,13 @@
 #include <osg/BoundingBox>
 #include <osg/BoundingSphere>
 
+#include <osgDB/fstream>
 
 #include <OpenThreads/Version>
 
 #include <set>
 #include <vector>
 #include <iostream>
-#include <fstream>
 
 // the majority of the application is dedicated to building the
 // current contribitors list by parsing the ChangeLog, it just takes
@@ -245,7 +245,11 @@ std::string typoCorrection(const std::string& name)
     if (name=="Antione") return "Antoine";
     if (name=="Antonoine") return "Antoine";
     if (name=="Atr")  return "Art";
+    if (name=="Osfeld")  return "Osfield";
+    if (name=="Rucard")  return "Richard";
     if (name=="Baverage") return "Beverage";
+    if (name=="Lagrade") return "Lagarde";
+    if (name=="Lucas") return "Luaces";
     if (name=="Bistroviae") return "Bistrovic";
     if (name=="Callue")  return "Callu";
     if (name=="Christaiansen") return "Christiansen";
@@ -278,6 +282,8 @@ std::string typoCorrection(const std::string& name)
     if (name=="Gronenger") return "Gronager";
     if (name=="Gronger") return "Gronager";
     if (name=="Hebelin") return "Herbelin";
+    if (name=="Wedner") return "Weidner";
+    if (name=="Hertleinm") return "Hertlein";
     if (name=="Heirtlein") return "Hertlein";
     if (name=="Heirtlein") return "Hertlein";
     if (name=="Heirtlein") return "Hertlein";
@@ -672,7 +678,7 @@ bool submissionsSequence(const Words& words, unsigned int& i)
 
 void readContributors(NameMap& names, const std::string& file)
 {
-    std::ifstream fin(file.c_str());
+    osgDB::ifstream fin(file.c_str());
     
     Words words;
     while(fin)

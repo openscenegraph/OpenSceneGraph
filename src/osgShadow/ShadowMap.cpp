@@ -83,9 +83,9 @@ static const char fragmentShaderSource_debugHUD[] =
 ShadowMap::ShadowMap():
     _baseTextureUnit(0),
     _shadowTextureUnit(1),
+    _polyOffset(1.0,1.0),
     _ambientBias(0.5f,0.5f),
-    _textureSize(1024,1024),
-    _polyOffset(1.0,1.0)
+    _textureSize(1024,1024)
 {
 }
 
@@ -93,9 +93,9 @@ ShadowMap::ShadowMap(const ShadowMap& copy, const osg::CopyOp& copyop):
 ShadowTechnique(copy,copyop),
     _baseTextureUnit(copy._baseTextureUnit),
     _shadowTextureUnit(copy._shadowTextureUnit),
+    _polyOffset(copy._polyOffset),
     _ambientBias(copy._ambientBias),
-    _textureSize(copy._textureSize),
-    _polyOffset(copy._polyOffset)
+    _textureSize(copy._textureSize)
 {
 }
 
@@ -546,8 +546,8 @@ public:
         }
     }
 
-    unsigned                       _stage;
     osg::ref_ptr< osg::Texture2D > _texture;
+    unsigned                       _stage;
 };
 ////////////////////////////////////////////////////////////////////////////////
 osg::ref_ptr<osg::Camera> ShadowMap::makeDebugHUD()

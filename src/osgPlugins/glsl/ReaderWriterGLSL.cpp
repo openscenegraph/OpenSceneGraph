@@ -5,6 +5,7 @@
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 
 
 class ReaderWriterGLSL : public osgDB::ReaderWriter
@@ -58,7 +59,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             if(!istream) return ReadResult::FILE_NOT_HANDLED;
             ReadResult rr = readShader(istream, options);
             if(rr.validShader()) rr.getShader()->setFileName(file);
@@ -82,7 +83,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
             return writeShader(shader, fout);

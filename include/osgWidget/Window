@@ -140,7 +140,8 @@ class OSGWIDGET_EXPORT Window:
 
         // This method wraps our Geode's addDrawable() method and returns the index of
         // the newly-added Drawable.
-        unsigned int addDrawableAndGetIndex(osg::Drawable*);
+        unsigned int addDrawableAndGetIndex (osg::Drawable*);
+        unsigned int addChildAndGetIndex    (osg::Node*);
 
         bool isVisible         () const;
         bool isXYWithinVisible (float, float) const;

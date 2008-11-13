@@ -45,6 +45,7 @@
 #include <osg/MatrixTransform>
 #include <osg/Camera>
 #include <osg/io_utils>
+#include <osg/ShapeDrawable>
 
 #include <osgText/Text>
 
@@ -107,8 +108,17 @@ void PickHandler::pick(osgViewer::View* view, const osgGA::GUIEventAdapter& ea)
     std::string gdlist="";
     float x = ea.getX();
     float y = ea.getY();
+#if 0
+    osg::ref_ptr< osgUtil::LineSegmentIntersector > picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, x, y);
+    osgUtil::IntersectionVisitor iv(picker.get());
+    view->getCamera()->accept(iv);
+    if (picker->containsIntersections())
+    {
+        intersections = picker->getIntersections();
+#else
     if (view->computeIntersections(x,y,intersections))
     {
+#endif
         for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
             hitr != intersections.end();
             ++hitr)
@@ -241,7 +251,36 @@ int main( int argc, char **argv )
 
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
-     
+
+    if (!scene && arguments.read("--relative-camera-scene"))
+    {
+        // Create a test scene with a camera that has a relative reference frame.
+        osg::Group* group = new osg::Group();
+
+        osg::Geode* sphere = new osg::Geode();
+        sphere->setName("Sphere");
+        sphere->addDrawable(new osg::ShapeDrawable(new osg::Sphere()));
+
+        osg::Geode* cube = new osg::Geode();
+        cube->setName("Cube");
+        cube->addDrawable(new osg::ShapeDrawable(new osg::Box()));
+
+        osg::Camera* camera = new osg::Camera();
+        camera->setRenderOrder(osg::Camera::POST_RENDER);
+        camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+        camera->setReferenceFrame(osg::Transform::RELATIVE_RF);
+        camera->setViewMatrix(osg::Matrix::translate(-2, 0, 0));
+
+        osg::MatrixTransform* xform = new osg::MatrixTransform(osg::Matrix::translate(1, 1, 1));
+        xform->addChild(camera);
+
+        group->addChild(sphere);
+        group->addChild(xform);
+        camera->addChild(cube);
+
+        scene = group;
+    }
+
     // if not loaded assume no arguments passed in, try use default mode instead.
     if (!scene) scene = osgDB::readNodeFile("fountain.osg");
 
@@ -313,7 +352,7 @@ int main( int argc, char **argv )
 
         // set the scene to render
         viewer.setSceneData(group.get());
-
+    
         return viewer.run();
     }
 

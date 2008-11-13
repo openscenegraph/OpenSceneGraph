@@ -231,8 +231,6 @@ class CameraConfig : public osg::Referenced
 
         unsigned int getNumberOfScreens();
 
-        static bool fileExists(const std::string& );
-
         osg::Matrix::value_type  _offset_matrix[16];
         osg::Matrix::value_type _offset_shearx, _offset_sheary;
 

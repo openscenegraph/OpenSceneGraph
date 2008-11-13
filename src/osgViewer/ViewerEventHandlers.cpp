@@ -16,10 +16,14 @@
 #include <limits.h>
 
 #include <iomanip>
-#include <fstream>
 #include <sstream>
 
 #include <osgDB/FileNameUtils>
+
+#include <osg/Geometry>
+#include <osg/TexMat>
+#include <osg/TextureRectangle>
+#include <osg/io_utils>
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -501,7 +505,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
 
                     // In the future this will need to be written continuously, rather
                     // than all at once.
-                    std::ofstream out(_filename.c_str());
+                    osgDB::ofstream out(_filename.c_str());
                     osg::notify(osg::NOTICE)<<"Writing camera file: "<<_filename<<std::endl;
                     _animPath->write(out);
                     out.close();
@@ -601,5 +605,130 @@ void LODScaleHandler::getUsage(osg::ApplicationUsage& usage) const
     }
 }
 
+
+bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const
+{
+    osgUtil::LineSegmentIntersector::Intersections intersections;
+    bool foundIntersection = view==0 ? false :
+        (nv==0 ? view->computeIntersections(ea.getX(), ea.getY(), intersections) :
+                 view->computeIntersections(ea.getX(), ea.getY(), nv->getNodePath(), intersections));
+
+    if (foundIntersection)
+    {
+
+        osg::Vec2 tc(0.5f,0.5f);
+
+        // use the nearest intersection                 
+        const osgUtil::LineSegmentIntersector::Intersection& intersection = *(intersections.begin());
+        osg::Drawable* drawable = intersection.drawable.get();
+        osg::Geometry* geometry = drawable ? drawable->asGeometry() : 0;
+        osg::Vec3Array* vertices = geometry ? dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray()) : 0;
+        if (vertices)
+        {
+            // get the vertex indices.
+            const osgUtil::LineSegmentIntersector::Intersection::IndexList& indices = intersection.indexList;
+            const osgUtil::LineSegmentIntersector::Intersection::RatioList& ratios = intersection.ratioList;
+
+            if (indices.size()==3 && ratios.size()==3)
+            {
+                unsigned int i1 = indices[0];
+                unsigned int i2 = indices[1];
+                unsigned int i3 = indices[2];
+
+                float r1 = ratios[0];
+                float r2 = ratios[1];
+                float r3 = ratios[2];
+
+                osg::Array* texcoords = (geometry->getNumTexCoordArrays()>0) ? geometry->getTexCoordArray(0) : 0;
+                osg::Vec2Array* texcoords_Vec2Array = dynamic_cast<osg::Vec2Array*>(texcoords);
+                if (texcoords_Vec2Array)
+                {
+                    // we have tex coord array so now we can compute the final tex coord at the point of intersection.                                
+                    osg::Vec2 tc1 = (*texcoords_Vec2Array)[i1];
+                    osg::Vec2 tc2 = (*texcoords_Vec2Array)[i2];
+                    osg::Vec2 tc3 = (*texcoords_Vec2Array)[i3];
+                    tc = tc1*r1 + tc2*r2 + tc3*r3;
+                }
+            }
+        }
+
+        osg::TexMat* activeTexMat = 0;
+        osg::Texture* activeTexture = 0;
+        
+        if (geometry->getStateSet())
+        {
+            osg::TexMat* texMat = dynamic_cast<osg::TexMat*>(geometry->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXMAT));
+            if (texMat) activeTexMat = texMat;
+
+            osg::Texture* texture = dynamic_cast<osg::Texture*>(geometry->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
+            if (texture) activeTexture = texture;
+        }
+
+        if (activeTexMat)
+        {
+            osg::Vec4 tc_transformed = osg::Vec4(tc.x(), tc.y(), 0.0f,0.0f) * activeTexMat->getMatrix();
+            tc.x() = tc_transformed.x();
+            tc.y() = tc_transformed.y();
+        }
+
+        if (dynamic_cast<osg::TextureRectangle*>(activeTexture))
+        {
+            x = int( tc.x() );
+            y = int( tc.y() );
+        }
+        else
+        {
+            x = int( float(_image->s()) * tc.x() );
+            y = int( float(_image->t()) * tc.y() );
+        }
+
+
+        return true;
+    }
+    
+    return false;
+}
+
+
+bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv)
+{
+    if (ea.getHandled()) return false;
+
+    switch(ea.getEventType())
+    {
+        case(osgGA::GUIEventAdapter::MOVE):
+        case(osgGA::GUIEventAdapter::DRAG):
+        case(osgGA::GUIEventAdapter::PUSH):
+        case(osgGA::GUIEventAdapter::RELEASE):
+        {
+            osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+            int x,y;
+            if (mousePosition(view, nv, ea, x, y))
+            {
+                _image->sendPointerEvent(x, y, ea.getButtonMask());
+                return true;
+            }
+            break;
+        }
+        case(osgGA::GUIEventAdapter::KEYDOWN):
+        case(osgGA::GUIEventAdapter::KEYUP):
+        {
+            osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+            int x,y;
+            bool sendKeyEvent = mousePosition(view, nv, ea, x, y);
+        
+            if (sendKeyEvent)
+            {
+                _image->sendKeyEvent(ea.getKey(), ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN);
+
+                return true;
+            }          
+        }
+
+        default:
+            return false;
+    }
+    return false;
+}
 
 }

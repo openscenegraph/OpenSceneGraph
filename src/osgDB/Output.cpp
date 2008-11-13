@@ -29,7 +29,7 @@ Output::Output()
     init();
 }
 
-Output::Output(const char* name) : ofstream(name)
+Output::Output(const char* name) : osgDB::ofstream(name)
 {
     init();
     _filename = name;
@@ -70,7 +70,7 @@ void Output::setOptions(const ReaderWriter::Options* options)
 void Output::open(const char *name)
 {
     init();
-    ofstream::open(name);
+    osgDB::ofstream::open(name);
     _filename = name;
 }
 

@@ -221,9 +221,10 @@
 #define SUPPORT_CPP 1
 #endif
 
+#include <osgDB/fstream>
+
 #include <string.h>
 #include <stdio.h>
-#include <fstream>
 #include <string>
 
 #include "FlexLexer.h"
@@ -2283,7 +2284,7 @@ bool CameraConfig::parseFile( const std::string &file )
     else
 #endif
     {
-        std::ifstream ifs(fileName.c_str());
+        osgDB::ifstream ifs(fileName.c_str());
         flexer = new yyFlexLexer(&ifs);
         cfg = this;
         retval = ConfigParser_parse() == 0 ? true : false;

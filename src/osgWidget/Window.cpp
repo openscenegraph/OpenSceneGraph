@@ -913,6 +913,12 @@ unsigned int Window::addDrawableAndGetIndex(osg::Drawable* drawable) {
     return 0;
 }
 
+unsigned int Window::addChildAndGetIndex(osg::Node* node) {
+    if(addChild(node)) return getChildIndex(node);
+
+    return 0;
+}
+
 // All of the subsequent functions are very boring and uninteresting, although hopefully
 // self-explanatory. They simply wrap calls to _compare<>() with the proper templates, and
 // forward the optional iteration ranges...

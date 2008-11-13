@@ -20,6 +20,7 @@
 #include <deque>
 #include <string>
 
+#include <stdio.h>
 
 namespace osgDB {
 
@@ -35,6 +36,10 @@ enum FileType
     REGULAR_FILE,
     DIRECTORY
 };
+
+// Overload of the standard fopen function. If OSG_USE_UTF8_FILENAME is defined,
+// filename will be expanded from UTF8 to UTF16 and _wfopen will be called.
+extern OSGDB_EXPORT FILE* fopen(const char* filename, const char* mode);
 
 // Make a new directory.  Returns true if directory exists or was created.
 extern OSGDB_EXPORT bool makeDirectory( const std::string &directoryPath );

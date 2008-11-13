@@ -21,10 +21,10 @@
 #include <osg/GLU>
 #include <osg/Notify>
 #include <osgDB/ReadFile>
+#include <osgDB/fstream>
 
 #include <osg/GraphicsContext>
 
-#include <fstream>
 #include <iostream>
 
 
@@ -78,7 +78,7 @@ PhotoArchive::PhotoArchive(const std::string& filename)
 
 bool PhotoArchive::readPhotoIndex(const std::string& filename)
 {
-    std::ifstream in(filename.c_str());
+    osgDB::ifstream in(filename.c_str());
     
     char* fileIndentifier = new char [FILE_IDENTIFER.size()];
     in.read(fileIndentifier,FILE_IDENTIFER.size());
@@ -124,7 +124,7 @@ osg::Image* PhotoArchive::readImage(const std::string& filename,
                  target_t <= photoHeader.thumbnail_t &&
                  photoHeader.thumbnail_position != 0)
             {
-                std::ifstream in(_archiveFileName.c_str(),std::ios::in | std::ios::binary);
+                osgDB::ifstream in(_archiveFileName.c_str(),std::ios::in | std::ios::binary);
                 
                 // find image
                 in.seekg(photoHeader.thumbnail_position);
@@ -150,7 +150,7 @@ osg::Image* PhotoArchive::readImage(const std::string& filename,
                  photoHeader.fullsize_t &&
                  photoHeader.fullsize_position != 0)
             {
-                std::ifstream in(_archiveFileName.c_str(),std::ios::in | std::ios::binary);
+                osgDB::ifstream in(_archiveFileName.c_str(),std::ios::in | std::ios::binary);
                 
                 // find image
                 in.seekg(photoHeader.fullsize_position);
@@ -211,7 +211,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
     MyGraphicsContext context;
 
     // open up the archive for writing to    
-    std::ofstream out(filename.c_str(), std::ios::out | std::ios::binary);
+    osgDB::ofstream out(filename.c_str(), std::ios::out | std::ios::binary);
 
     // write out file indentifier.
     out.write(FILE_IDENTIFER.c_str(),FILE_IDENTIFER.size());

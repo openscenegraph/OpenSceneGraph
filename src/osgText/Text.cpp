@@ -29,7 +29,7 @@
 using namespace osg;
 using namespace osgText;
 
-#define TREES_CODE_FOR_MAKING_SPACES_EDITABLE
+//#define TREES_CODE_FOR_MAKING_SPACES_EDITABLE
 
 Text::Text():
     _color(1.0f,1.0f,1.0f,1.0f),

@@ -5,6 +5,7 @@
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 #include <osgDB/Registry>
 
 using namespace osg;
@@ -24,6 +25,7 @@ class ReaderWriterIVE : public ReaderWriter
             supportsOption("inlineExternalReferencesInIVEFile","Export option");
             supportsOption("noWriteExternalReferenceFiles","Export option");
             supportsOption("useOriginalExternalReferences","Export option");
+            supportsOption("TerrainMaximumErrorToSizeRatio=value","Export option that controls error matric used to determine terrain HieghtField storage precision.");
             supportsOption("noLoadExternalReferenceFiles","Import option");
         }
     
@@ -50,7 +52,7 @@ class ReaderWriterIVE : public ReaderWriter
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
-            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             return readImage(istream, local_opt.get());
         }
         
@@ -66,7 +68,7 @@ class ReaderWriterIVE : public ReaderWriter
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
             
-            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             return readNode(istream,local_opt.get());
         }
         
@@ -78,14 +80,12 @@ class ReaderWriterIVE : public ReaderWriter
         virtual ReadResult readImage(std::istream& fin, const Options* options) const
         {
             try{
-                ive::DataInputStream in(&fin);
-                in.setOptions(options);
+                ive::DataInputStream in(&fin, options);
                 return in.readImage(ive::IMAGE_INCLUDE_DATA);
             }
             catch(ive::Exception e)
             {
-                osg::notify(osg::NOTICE)<<"Error reading image: "<<e.getError()<<std::endl;
-                return ReadResult::FILE_NOT_HANDLED;
+                return e.getError();
             }
         }
         
@@ -93,15 +93,13 @@ class ReaderWriterIVE : public ReaderWriter
         {
             try{
                 // Create datainputstream.
-                ive::DataInputStream in(&fin);
-                in.setOptions(options);
+                ive::DataInputStream in(&fin, options);
 
                 return in.readNode();
             }
             catch(ive::Exception e)
             {
-                osg::notify(osg::NOTICE)<<"Error reading file: "<< e.getError()<<std::endl;
-                return ReadResult::FILE_NOT_HANDLED;
+                return e.getError();
             }
         }
 
@@ -124,7 +122,7 @@ class ReaderWriterIVE : public ReaderWriter
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             if(local_opt->getDatabasePathList().empty())
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
-            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
             WriteResult result = writeImage(image, fout, local_opt.get());
             fout.close();
@@ -141,7 +139,7 @@ class ReaderWriterIVE : public ReaderWriter
             if(local_opt->getDatabasePathList().empty())
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
-            std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
     
             WriteResult result = writeNode(node, fout, local_opt.get());
@@ -162,8 +160,7 @@ class ReaderWriterIVE : public ReaderWriter
         {
             try
             {
-                ive::DataOutputStream out(&fout);
-                out.setOptions(options);
+                ive::DataOutputStream out(&fout, options);
                 out.writeImage(ive::IMAGE_INCLUDE_DATA, const_cast<osg::Image*>(&image));
                 if (fout.fail()) return WriteResult::ERROR_IN_WRITING_FILE;
                 return WriteResult::FILE_SAVED;
@@ -179,9 +176,7 @@ class ReaderWriterIVE : public ReaderWriter
         {
             try
             {
-                ive::DataOutputStream out(&fout);
-
-                out.setOptions(options);
+                ive::DataOutputStream out(&fout, options);
 
                 out.writeNode(const_cast<osg::Node*>(&node));
 

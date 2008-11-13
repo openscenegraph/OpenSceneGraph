@@ -24,6 +24,7 @@
 #include <osgDB/ReaderWriter>
 #include <osgDB/DotOsgWrapper>
 #include <osgDB/DatabasePager>
+#include <osgDB/FileCache>
 
 #include <vector>
 #include <map>
@@ -203,13 +204,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         }
         ReaderWriter::ReadResult openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, const ReaderWriter::Options* options);
 
-        ReaderWriter::ReadResult readObject(const std::string& fileName,const ReaderWriter::Options* options)
+        ReaderWriter::ReadResult readObject(const std::string& fileName,const ReaderWriter::Options* options, bool buildKdTreeIfRequired=true)
         {
             ReaderWriter::ReadResult result = _readFileCallback.valid() ?
                     _readFileCallback->readObject(fileName,options) :
                     readObjectImplementation(fileName,options);
                     
-            buildKdTreeIfRequired(result, options);
+            if (buildKdTreeIfRequired) _buildKdTreeIfRequired(result, options);
                     
             return result;
         }
@@ -229,13 +230,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         }
         ReaderWriter::ReadResult readHeightFieldImplementation(const std::string& fileName,const ReaderWriter::Options* options);
 
-        ReaderWriter::ReadResult readNode(const std::string& fileName,const ReaderWriter::Options* options)
+        ReaderWriter::ReadResult readNode(const std::string& fileName,const ReaderWriter::Options* options, bool buildKdTreeIfRequired=true)
         {
             ReaderWriter::ReadResult result = _readFileCallback.valid() ?
                     _readFileCallback->readNode(fileName,options) :
                     readNodeImplementation(fileName,options);
                     
-            buildKdTreeIfRequired(result, options);
+            if (buildKdTreeIfRequired) _buildKdTreeIfRequired(result, options);
                     
             return result;
         }
@@ -329,7 +330,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         ReaderWriter::WriteResult writeShaderImplementation(const osg::Shader& obj, const std::string& fileName,const ReaderWriter::Options* options);
         
 
-        inline void buildKdTreeIfRequired(ReaderWriter::ReadResult& result, const ReaderWriter::Options* options)
+        inline void _buildKdTreeIfRequired(ReaderWriter::ReadResult& result, const ReaderWriter::Options* options)
         {
             bool doKdTreeBuilder = (options && options->getBuildKdTreesHint()!=ReaderWriter::Options::NO_PREFERENCE) ?
                 options->getBuildKdTreesHint() == ReaderWriter::Options::BUILD_KDTREES :
@@ -354,6 +355,15 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** Get the KdTreeBuilder visitor that is used to build KdTree on loaded models.*/
         osg::KdTreeBuilder* getKdTreeBuilder() { return _kdTreeBuilder.get(); }
+
+        /** Set the FileCache that is used to manage local storage of files downloaded from the internet.*/
+        void setFileCache(FileCache* fileCache) { _fileCache = fileCache; }
+
+        /** Get the FileCache that is used to manage local storage of files downloaded from the internet.*/
+        FileCache* getFileCache() { return _fileCache.get(); }
+
+        /** Get the const FileCache that is used to manage local storage of files downloaded from the internet.*/
+        const FileCache* getFileCache() const { return _fileCache.get(); }
 
 
         /** Set the password map to be used by plugins when access files from secure locations.*/
@@ -456,17 +466,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** get the attached library with specified name.*/
         DynamicLibrary*              getLibrary(const std::string& fileName);
-        
-        /** Set the DatabasePager.*/
-        void setDatabasePager(DatabasePager* databasePager) { _databasePager = databasePager; }
 
-        /** Get the DatabasePager, creating one if one is not already created.*/
-        DatabasePager* getOrCreateDatabasePager();
-        
-        /** Get the DatabasePager. Return 0 if no DatabasePager has been assigned.*/
-        DatabasePager* getDatabasePager() { return _databasePager.get(); }
-
-        
         /** Set the SharedStateManager.*/
         void setSharedStateManager(SharedStateManager* SharedStateManager) { _sharedStateManager = SharedStateManager; }
 
@@ -502,6 +502,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         ReaderWriter::Options::BuildKdTreesHint     _buildKdTreesHint;
         osg::ref_ptr<osg::KdTreeBuilder>            _kdTreeBuilder;
+        
+        osg::ref_ptr<FileCache>                     _fileCache;
         
         osg::ref_ptr<AuthenticationMap>             _authenticationMap;
         
@@ -597,7 +599,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         ArchiveExtensionList                    _archiveExtList;
         
-        osg::ref_ptr<DatabasePager>             _databasePager;
         osg::ref_ptr<SharedStateManager>        _sharedStateManager;
 
 };

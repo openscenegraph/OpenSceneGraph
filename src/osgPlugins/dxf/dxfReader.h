@@ -17,12 +17,13 @@
 #ifndef DXF_READER
 #define DXF_READER 1
 
-#include <fstream>
 #include <string>
 #include <sstream>
 
 #include <osg/Referenced>
 #include <osg/ref_ptr>
+
+#include <osgDB/fstream>
 
 class codeValue;
 
@@ -86,7 +87,7 @@ protected:
 };
 
 /// dxfReader. gets you through the dxf file, one group code/value pair at a time.
-/// just instanciate, openFile(), then loop while(nextGroupCode())
+/// just instantiate, openFile(), then loop while(nextGroupCode())
 class dxfReader : public osg::Referenced
 {
 public:
@@ -95,7 +96,7 @@ public:
     bool    openFile(std::string fileName);
     bool    nextGroupCode(codeValue& cv);
 protected:
-    std::ifstream                _ifs;
+    osgDB::ifstream                _ifs;
     osg::ref_ptr<readerBase>    _reader;
 };
 

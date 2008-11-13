@@ -23,9 +23,9 @@
 #include <osg/Uniform>
 #include <osgDB/Archive>
 #include <osgDB/AuthenticationMap>
-#include <osgDB/DatabasePager>
 #include <osgDB/DotOsgWrapper>
 #include <osgDB/DynamicLibrary>
+#include <osgDB/FileCache>
 #include <osgDB/Input>
 #include <osgDB/Output>
 #include <osgDB/ReaderWriter>
@@ -236,11 +236,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __ReaderWriter_ReadResult__openArchiveImplementation__C5_std_string_R1__ReaderWriter_ArchiveStatus__unsigned_int__C5_ReaderWriter_Options_P1,
 	          "",
 	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__readObject__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, fileName, , IN, const osgDB::ReaderWriter::Options *, options, , IN, bool, buildKdTreeIfRequired, true,
+	                      Properties::NON_VIRTUAL,
+	                      __ReaderWriter_ReadResult__readObject__C5_std_string_R1__C5_ReaderWriter_Options_P1__bool,
+	                      "",
+	                      "");
 	I_Method2(osgDB::ReaderWriter::ReadResult, readObjectImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
 	          Properties::NON_VIRTUAL,
 	          __ReaderWriter_ReadResult__readObjectImplementation__C5_std_string_R1__C5_ReaderWriter_Options_P1,
@@ -266,11 +266,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __ReaderWriter_ReadResult__readHeightFieldImplementation__C5_std_string_R1__C5_ReaderWriter_Options_P1,
 	          "",
 	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__readNode__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
+	I_MethodWithDefaults3(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, fileName, , IN, const osgDB::ReaderWriter::Options *, options, , IN, bool, buildKdTreeIfRequired, true,
+	                      Properties::NON_VIRTUAL,
+	                      __ReaderWriter_ReadResult__readNode__C5_std_string_R1__C5_ReaderWriter_Options_P1__bool,
+	                      "",
+	                      "");
 	I_Method2(osgDB::ReaderWriter::ReadResult, readNodeImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
 	          Properties::NON_VIRTUAL,
 	          __ReaderWriter_ReadResult__readNodeImplementation__C5_std_string_R1__C5_ReaderWriter_Options_P1,
@@ -351,9 +351,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __ReaderWriter_WriteResult__writeShaderImplementation__C5_osg_Shader_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
 	          "",
 	          "");
-	I_Method2(void, buildKdTreeIfRequired, IN, osgDB::ReaderWriter::ReadResult &, result, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method2(void, _buildKdTreeIfRequired, IN, osgDB::ReaderWriter::ReadResult &, result, IN, const osgDB::ReaderWriter::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __void__buildKdTreeIfRequired__ReaderWriter_ReadResult_R1__C5_ReaderWriter_Options_P1,
+	          __void___buildKdTreeIfRequired__ReaderWriter_ReadResult_R1__C5_ReaderWriter_Options_P1,
 	          "",
 	          "");
 	I_Method1(void, setBuildKdTreesHint, IN, osgDB::ReaderWriter::Options::BuildKdTreesHint, hint,
@@ -375,6 +375,21 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          Properties::NON_VIRTUAL,
 	          __osg_KdTreeBuilder_P1__getKdTreeBuilder,
 	          "Get the KdTreeBuilder visitor that is used to build KdTree on loaded models. ",
+	          "");
+	I_Method1(void, setFileCache, IN, osgDB::FileCache *, fileCache,
+	          Properties::NON_VIRTUAL,
+	          __void__setFileCache__FileCache_P1,
+	          "Set the FileCache that is used to manage local storage of files downloaded from the internet. ",
+	          "");
+	I_Method0(osgDB::FileCache *, getFileCache,
+	          Properties::NON_VIRTUAL,
+	          __FileCache_P1__getFileCache,
+	          "Get the FileCache that is used to manage local storage of files downloaded from the internet. ",
+	          "");
+	I_Method0(const osgDB::FileCache *, getFileCache,
+	          Properties::NON_VIRTUAL,
+	          __C5_FileCache_P1__getFileCache,
+	          "Get the const FileCache that is used to manage local storage of files downloaded from the internet. ",
 	          "");
 	I_Method1(void, setAuthenticationMap, IN, osgDB::AuthenticationMap *, authenticationMap,
 	          Properties::NON_VIRTUAL,
@@ -526,21 +541,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __DynamicLibrary_P1__getLibrary__C5_std_string_R1,
 	          "get the attached library with specified name. ",
 	          "");
-	I_Method1(void, setDatabasePager, IN, osgDB::DatabasePager *, databasePager,
-	          Properties::NON_VIRTUAL,
-	          __void__setDatabasePager__DatabasePager_P1,
-	          "Set the DatabasePager. ",
-	          "");
-	I_Method0(osgDB::DatabasePager *, getOrCreateDatabasePager,
-	          Properties::NON_VIRTUAL,
-	          __DatabasePager_P1__getOrCreateDatabasePager,
-	          "Get the DatabasePager, creating one if one is not already created. ",
-	          "");
-	I_Method0(osgDB::DatabasePager *, getDatabasePager,
-	          Properties::NON_VIRTUAL,
-	          __DatabasePager_P1__getDatabasePager,
-	          "Get the DatabasePager. ",
-	          "Return 0 if no DatabasePager has been assigned. ");
 	I_Method1(void, setSharedStateManager, IN, osgDB::SharedStateManager *, SharedStateManager,
 	          Properties::NON_VIRTUAL,
 	          __void__setSharedStateManager__SharedStateManager_P1,
@@ -601,9 +601,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_SimpleProperty(const osgDB::FilePathList &, DataFilePathList, 
 	                 __C5_FilePathList_R1__getDataFilePathList, 
 	                 __void__setDataFilePathList__C5_FilePathList_R1);
-	I_SimpleProperty(osgDB::DatabasePager *, DatabasePager, 
-	                 __DatabasePager_P1__getDatabasePager, 
-	                 __void__setDatabasePager__DatabasePager_P1);
+	I_SimpleProperty(osgDB::FileCache *, FileCache, 
+	                 __FileCache_P1__getFileCache, 
+	                 __void__setFileCache__FileCache_P1);
 	I_SimpleProperty(osg::KdTreeBuilder *, KdTreeBuilder, 
 	                 __osg_KdTreeBuilder_P1__getKdTreeBuilder, 
 	                 __void__setKdTreeBuilder__osg_KdTreeBuilder_P1);

@@ -421,6 +421,7 @@ Thread::~Thread()
 
 Thread *Thread::CurrentThread()
 {
+    if(!s_isInitialized) Thread::Init();
 
     Thread *thread =
 	static_cast<Thread *>(pthread_getspecific(PThreadPrivateData::s_tls_key));

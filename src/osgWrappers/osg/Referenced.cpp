@@ -83,6 +83,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	          __void__removeObserver__Observer_P1,
 	          "Add a Observer that is observing this object, notify the Observer when this object gets deleted. ",
 	          "");
+	I_StaticMethod0(OpenThreads::Mutex *, getGlobalReferencedMutex,
+	                __OpenThreads_Mutex_P1__getGlobalReferencedMutex_S,
+	                "Get the optional global Referenced mutex, this can be shared between all osg::Referenced. ",
+	                "");
 	I_StaticMethod1(void, setThreadSafeReferenceCounting, IN, bool, enableThreadSafeReferenceCounting,
 	                __void__setThreadSafeReferenceCounting__bool_S,
 	                "Set whether reference counting should be use a mutex to create thread reference counting. ",

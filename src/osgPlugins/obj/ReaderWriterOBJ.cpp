@@ -38,6 +38,7 @@
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
+#include <osgDB/fstream>
 
 #include <osgUtil/TriStripVisitor>
 #include <osgUtil/SmoothingVisitor>
@@ -80,14 +81,14 @@ public:
         if (!acceptsExtension(osgDB::getFileExtension(fileName)))
             return WriteResult(WriteResult::FILE_NOT_HANDLED); 
             
-        std::ofstream f(fileName.c_str());
+        osgDB::ofstream f(fileName.c_str());
         std::string materialFile = osgDB::getNameLessExtension(fileName) + ".mtl";
         OBJWriterNodeVisitor nv(f, osgDB::getSimpleFileName(materialFile));
         
         // we must cast away constness
         (const_cast<osg::Node*>(&node))->accept(nv);
         
-        std::ofstream mf(materialFile.c_str());
+        osgDB::ofstream mf(materialFile.c_str());
         nv.writeMaterials(mf);
          
         return WriteResult(WriteResult::FILE_SAVED); 
@@ -668,7 +669,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
     
     
-    std::ifstream fin(fileName.c_str());
+    osgDB::ifstream fin(fileName.c_str());
     if (fin)
     {
     
@@ -700,7 +701,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
             
             if (options->getOptionString() == "noTriStripPolygons")
             {
-                noTesselateLargePolygons = true;
+                noTriStripPolygons = true;
             }
         }
         
@@ -739,7 +740,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, con
             
             if (options->getOptionString() == "noTriStripPolygons")
             {
-                noTesselateLargePolygons = true;
+                noTriStripPolygons = true;
             }
         }
         

@@ -352,7 +352,7 @@ void Texture2DArray::apply(State& state) const
     }
 }
 
-void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GLsizei inwidth, GLsizei inheight, GLsizei indepth, GLenum inInternalFormat, GLsizei& numMipmapLevels) const
+void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GLsizei inwidth, GLsizei inheight, GLsizei indepth, GLint inInternalFormat, GLsizei& numMipmapLevels) const
 {
     // if we don't have a valid image we can't create a texture!
     if (!imagesValid())
@@ -387,7 +387,9 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
         image->ensureValidSizeForTexturing(extensions->max2DSize());
 
     // image size or format has changed, this is not allowed, hence return
-    if (image->s()!=inwidth || image->t()!=inheight || image->getInternalTextureFormat()!=inInternalFormat ) 
+    if (image->s()!=inwidth || 
+        image->t()!=inheight || 
+        image->getInternalTextureFormat()!=inInternalFormat ) 
     {
         notify(WARN)<<"Warning: Texture2DArray::applyTexImage2DArray_subload(..) given image do have wrong dimension or internal format."<<std::endl;
         return;        

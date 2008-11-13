@@ -18,7 +18,7 @@ osgDB::RegisterDotOsgWrapperProxy  FluidProgram_Proxy
 (
     new osgParticle::FluidProgram,
     "FluidProgram",
-    "Object Node ParticleProcessor Program FluidProgram",
+    "Object Node ParticleProcessor osgParticle::Program FluidProgram",
     FluidProgram_readLocalData,
     FluidProgram_writeLocalData
 );

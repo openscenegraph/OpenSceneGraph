@@ -21,8 +21,10 @@
 #include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/CullFace>
+#include <osg/AlphaFunc>
 #include <osg/Point>
-#include <sstream>
+
+#include <stdio.h>
 
 using namespace osgShadow;
 
@@ -342,8 +344,8 @@ void StandardShadowMap::updateTextureCoordIndices
         // its not elegant to mix stdio & stl strings 
         // but in this context I do an exception for cleaner code
 
-        std::sprintf( acFrom, expressions[i], fromTextureCoordIndex );
-        std::sprintf( acTo, expressions[i], toTextureCoordIndex );
+        sprintf( acFrom, expressions[i], fromTextureCoordIndex );
+        sprintf( acTo, expressions[i], toTextureCoordIndex );
 
         std::string from( acFrom ), to( acTo );
 
@@ -526,6 +528,12 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
         stateset->setRenderBinDetails( 0, "RenderBin", 
                             osg::StateSet::OVERRIDE_RENDERBIN_DETAILS );
 
+        // Assure that AlphaTest/AlphaRef works when redirecting all drawables to single bin.
+        // If AlphaFunc/AlphaTest is off - transparent objects will cast solid blocky shadows.
+        // No override to allow users change this policy in the model if really want solid shadows.
+        stateset->setAttributeAndModes
+            ( new osg::AlphaFunc( osg::AlphaFunc::GREATER, 0 ), osg::StateAttribute::ON );
+
         // agressive optimization
         stateset->setAttributeAndModes
             ( new osg::ColorMask( false, false, false, false ),
@@ -554,11 +562,6 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
             ( GL_LIGHTING, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF );
         stateset->setMode
             ( GL_BLEND, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF );
-
-#if 0
-        stateset->setMode
-            ( GL_ALPHA_TEST, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF );
-#endif    
 
 #if 0 // fixed pipeline seems faster (at least on my 7800)
         program->addShader( new osg::Shader( osg::Shader::FRAGMENT,
@@ -598,7 +601,7 @@ const osg::Light* StandardShadowMap::ViewData::selectLight
     osgUtil::PositionalStateContainer::AttrMatrixList& aml = 
         rs->getPositionalStateContainer()->getAttrMatrixList();
 
-    osg::RefMatrix* matrix;
+    osg::RefMatrix* matrix = 0;
 
     for(osgUtil::PositionalStateContainer::AttrMatrixList::iterator itr = aml.begin();
         itr != aml.end();

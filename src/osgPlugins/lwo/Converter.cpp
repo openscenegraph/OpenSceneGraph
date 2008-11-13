@@ -15,10 +15,9 @@
 #include <osg/LightModel>
 
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 
 #include "lwo2parser.h"
-
-#include <fstream>
 
 using namespace lwosg;
 
@@ -268,7 +267,7 @@ osg::Group *Converter::convert(const std::string &filename)
     std::string file = osgDB::findDataFile(filename, db_options_.get());
     if (file.empty()) return 0;
 
-    std::ifstream ifs(file.c_str(), std::ios_base::in | std::ios_base::binary);
+    osgDB::ifstream ifs(file.c_str(), std::ios_base::in | std::ios_base::binary);
     if (!ifs.is_open()) return 0;
 
     std::vector<char> buffer;

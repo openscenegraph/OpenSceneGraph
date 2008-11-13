@@ -14,10 +14,10 @@
 
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
+#include <osgDB/fstream>
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 
-#include <fstream>
 #include <sstream>
 
 using namespace lwosg;
@@ -92,7 +92,7 @@ osg::Group *SceneLoader::load(const std::string &filename, const osgDB::ReaderWr
         fname = filename;
     }
 
-    std::ifstream ifs(fname.c_str());
+    osgDB::ifstream ifs(fname.c_str());
     if (!ifs.is_open()) return 0;
 
     clear();

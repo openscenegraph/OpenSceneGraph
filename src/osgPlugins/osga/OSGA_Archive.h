@@ -95,7 +95,7 @@ class OSGA_Archive : public osgDB::Archive
   
         mutable OpenThreads::ReentrantMutex _serializerMutex;
 
-    	class IndexBlock;
+        class IndexBlock;
         friend class IndexBlock;
 
         class IndexBlock : public osg::Referenced
@@ -177,7 +177,7 @@ class OSGA_Archive : public osgDB::Archive
             const osgDB::ReaderWriter::Options* _options;
         };
         
-	protected:
+    protected:
         struct ReadObjectFunctor;
         struct ReadImageFunctor;
         struct ReadHeightFieldFunctor;
@@ -204,8 +204,8 @@ class OSGA_Archive : public osgDB::Archive
         static float        s_currentSupportedVersion;
         float               _version;
         ArchiveStatus       _status;
-        std::ifstream       _input;
-        std::fstream        _output;
+        osgDB::ifstream     _input;
+        osgDB::fstream      _output;
         
         std::string         _masterFileName;
         IndexBlockList      _indexBlockList;

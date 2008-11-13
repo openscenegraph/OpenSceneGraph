@@ -184,11 +184,11 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         osg::ref_ptr<osg::Light> _userLight;
         osg::ref_ptr<FragmentShaderGenerator> _FragmentShaderGenerator;
 
-        bool _GLSL_shadow_filtered;
-        SplitCalcMode _SplitCalcMode;
+        bool            _GLSL_shadow_filtered;
+        SplitCalcMode   _SplitCalcMode;
 
-        osg::Uniform*      _ambientBiasUniform;
-        osg::Vec2d  _ambientBias;
+        osg::Uniform*   _ambientBiasUniform;
+        osg::Vec2d      _ambientBias;
 
 };
 }

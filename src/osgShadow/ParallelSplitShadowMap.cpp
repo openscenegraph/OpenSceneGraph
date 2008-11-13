@@ -242,9 +242,9 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(osg::Geode** gr, int icountplanes
     _split_min_near_dist(ZNEAR_MIN_FROM_LIGHT_SOURCE),
     _move_vcam_behind_rcam_factor(MOVE_VIRTUAL_CAMERA_BEHIND_REAL_CAMERA_FACTOR),
     _userLight(NULL),
-    _ambientBias(0.1,0.3),
+    _GLSL_shadow_filtered(true),
     _ambientBiasUniform(NULL),
-    _GLSL_shadow_filtered(true)
+    _ambientBias(0.1,0.3)
 {
     _displayTexturesGroupingNode = gr;
     _number_of_splits = icountplanes;
@@ -255,22 +255,23 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(osg::Geode** gr, int icountplanes
 }
 
 ParallelSplitShadowMap::ParallelSplitShadowMap(const ParallelSplitShadowMap& copy, const osg::CopyOp& copyop):
-ShadowTechnique(copy,copyop),
-_textureUnitOffset(copy._textureUnitOffset),
-_debug_color_in_GLSL(copy._debug_color_in_GLSL),
-_user_polgyonOffset_set(copy._user_polgyonOffset_set),
-_resolution(copy._resolution),
-_isSetMaxFarDistance(copy._isSetMaxFarDistance),
-_split_min_near_dist(copy._split_min_near_dist),
-_SplitCalcMode(copy._SplitCalcMode),
-_number_of_splits(copy._number_of_splits),
-_polgyonOffset(copy._polgyonOffset),
-_setMaxFarDistance(copy._setMaxFarDistance),
-_move_vcam_behind_rcam_factor(copy._move_vcam_behind_rcam_factor),
-_userLight(copy._userLight),
-_ambientBias(copy._ambientBias),
-_GLSL_shadow_filtered(copy._GLSL_shadow_filtered),
-_FragmentShaderGenerator(copy._FragmentShaderGenerator)
+    ShadowTechnique(copy,copyop),
+    _textureUnitOffset(copy._textureUnitOffset),
+    _number_of_splits(copy._number_of_splits),
+    _debug_color_in_GLSL(copy._debug_color_in_GLSL),
+    _polgyonOffset(copy._polgyonOffset),
+    _user_polgyonOffset_set(copy._user_polgyonOffset_set),
+    _resolution(copy._resolution),
+    _setMaxFarDistance(copy._setMaxFarDistance),
+    _isSetMaxFarDistance(copy._isSetMaxFarDistance),
+    _split_min_near_dist(copy._split_min_near_dist),
+    _move_vcam_behind_rcam_factor(copy._move_vcam_behind_rcam_factor),
+    _userLight(copy._userLight),
+    _FragmentShaderGenerator(copy._FragmentShaderGenerator),
+    _GLSL_shadow_filtered(copy._GLSL_shadow_filtered),
+    _SplitCalcMode(copy._SplitCalcMode),
+    _ambientBiasUniform(NULL),
+    _ambientBias(copy._ambientBias)
 {
 }
 
@@ -529,7 +530,7 @@ void ParallelSplitShadowMap::init(){
 #else
                 pssmShadowSplitTexture._debug_camera->attach(osg::Camera::COLOR_BUFFER, pssmShadowSplitTexture._debug_texture.get());
 #endif
-                osg::StateSet* stateset = pssmShadowSplitTexture._debug_camera->getOrCreateStateSet();
+                // osg::StateSet* stateset = pssmShadowSplitTexture._debug_camera->getOrCreateStateSet();
 
                 pssmShadowSplitTexture._debug_stateset = new osg::StateSet;
                 pssmShadowSplitTexture._debug_stateset->setTextureAttributeAndModes(pssmShadowSplitTexture._debug_textureUnit,pssmShadowSplitTexture._debug_texture.get(),osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
@@ -631,7 +632,7 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
     {
 
         // do traversal of shadow receiving scene which does need to be decorated by the shadow map
-        unsigned int iMaxSplit = _PSSMShadowSplitTextureMap.size();
+        //unsigned int iMaxSplit = _PSSMShadowSplitTextureMap.size();
 
         for (PSSMShadowSplitTextureMap::iterator it=_PSSMShadowSplitTextureMap.begin();it!=_PSSMShadowSplitTextureMap.end();it++)
         {
@@ -774,7 +775,7 @@ void ParallelSplitShadowMap::calculateFrustumCorners(
         //////////////////////////////////////////////////////////////////////////
         /// CALCULATE SPLIT
         double maxFar = camFar;
-        double minNear = camNear;
+        // double minNear = camNear;
         double camNearFar_Dist = maxFar - camNear;
         if ( _SplitCalcMode == SPLIT_LINEAR ) {
             camFar  = camNear + (camNearFar_Dist) * ((double)(pssmShadowSplitTexture._splitID+1))/((double)(_number_of_splits));

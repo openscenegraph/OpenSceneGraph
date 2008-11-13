@@ -55,7 +55,8 @@ std::string osgTerrain::createCompondSetNameAndFileName(const std::string& setna
 Layer::Layer():
     _minLevel(0),
     _maxLevel(MAXIMUM_NUMBER_OF_LEVELS),
-    _filter(LINEAR)
+    _minFilter(osg::Texture::LINEAR_MIPMAP_LINEAR),
+    _magFilter(osg::Texture::LINEAR)
 {
 }
 
@@ -64,7 +65,8 @@ Layer::Layer(const Layer& layer,const osg::CopyOp& copyop):
     _filename(layer._filename),
     _minLevel(layer._minLevel),
     _maxLevel(layer._maxLevel),
-    _filter(layer._filter)
+    _minFilter(layer._minFilter),
+    _magFilter(layer._magFilter)
 {
 }
 
@@ -305,7 +307,8 @@ unsigned int ImageLayer::getModifiedCount() const
 ContourLayer::ContourLayer(osg::TransferFunction1D* tf):
     _tf(tf)
 {
-    _filter = NEAREST;
+    _minFilter = osg::Texture::NEAREST;
+    _magFilter = osg::Texture::NEAREST;
 }
 
 ContourLayer::ContourLayer(const ContourLayer& contourLayer,const osg::CopyOp& copyop):

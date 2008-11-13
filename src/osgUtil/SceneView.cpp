@@ -1138,8 +1138,6 @@ void SceneView::draw()
                 double separation = _displaySettings->getSplitStereoHorizontalSeparation();
 
                 double  left_half_width = (getViewport()->width()-separation)/2.0;
-                double right_half_begin = (getViewport()->width()+separation)/2.0;
-                double right_half_width = getViewport()->width()-right_half_begin;
 
                 clearArea(static_cast<int>(getViewport()->x()+left_half_width),
                           static_cast<int>(getViewport()->y()),
@@ -1190,8 +1188,6 @@ void SceneView::draw()
                 double separation = _displaySettings->getSplitStereoVerticalSeparation();
 
                 double bottom_half_height = (getViewport()->height()-separation)/2.0;
-                double top_half_begin = (getViewport()->height()+separation)/2.0;
-                double top_half_height = getViewport()->height()-top_half_begin;
 
                 clearArea(static_cast<int>(getViewport()->x()),
                           static_cast<int>(getViewport()->y()+bottom_half_height),

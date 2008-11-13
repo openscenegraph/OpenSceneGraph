@@ -350,6 +350,26 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	          __bool__getSerializeDrawDispatch,
 	          "",
 	          "");
+	I_Method1(void, setNumOfDatabaseThreadsHint, IN, unsigned int, numThreads,
+	          Properties::NON_VIRTUAL,
+	          __void__setNumOfDatabaseThreadsHint__unsigned_int,
+	          "Set the hint for the total number of threads in the DatbasePager set up, inclusive of the number of http dedicated threads. ",
+	          "");
+	I_Method0(unsigned int, getNumOfDatabaseThreadsHint,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumOfDatabaseThreadsHint,
+	          "Get the hint for total number of threads in the DatbasePager set up, inclusive of the number of http dedicated threads. ",
+	          "");
+	I_Method1(void, setNumOfHttpDatabaseThreadsHint, IN, unsigned int, numThreads,
+	          Properties::NON_VIRTUAL,
+	          __void__setNumOfHttpDatabaseThreadsHint__unsigned_int,
+	          "Set the hint for number of threads in the DatbasePager to dedicate to reading http requests. ",
+	          "");
+	I_Method0(unsigned int, getNumOfHttpDatabaseThreadsHint,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumOfHttpDatabaseThreadsHint,
+	          "Get the hint for number of threads in the DatbasePager dedicated to reading http requests. ",
+	          "");
 	I_StaticMethod0(osg::DisplaySettings *, instance,
 	                __DisplaySettings_P1__instance_S,
 	                "Maintain a DisplaySettings singleton for objects to query at runtime. ",
@@ -405,6 +425,12 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_SimpleProperty(unsigned int, NumMultiSamples, 
 	                 0, 
 	                 __void__setNumMultiSamples__unsigned_int);
+	I_SimpleProperty(unsigned int, NumOfDatabaseThreadsHint, 
+	                 0, 
+	                 __void__setNumOfDatabaseThreadsHint__unsigned_int);
+	I_SimpleProperty(unsigned int, NumOfHttpDatabaseThreadsHint, 
+	                 0, 
+	                 __void__setNumOfHttpDatabaseThreadsHint__unsigned_int);
 	I_SimpleProperty(bool, RGB, 
 	                 __bool__getRGB, 
 	                 __void__setRGB__bool);

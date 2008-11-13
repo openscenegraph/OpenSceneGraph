@@ -99,6 +99,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __void__clear,
 	          "Clear all internally cached structures. ",
 	          "");
+	I_MethodWithDefaults2(void, setUpThreads, IN, unsigned int, totalNumThreads, 2, IN, unsigned int, numHttpThreads, 1,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setUpThreads__unsigned_int__unsigned_int,
+	                      "",
+	                      "");
+	I_Method2(unsigned int, addDatabaseThread, IN, osgDB::DatabasePager::DatabaseThread::Mode, mode, IN, const std::string &, name,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__addDatabaseThread__DatabaseThread_Mode__C5_std_string_R1,
+	          "",
+	          "");
 	I_Method1(osgDB::DatabasePager::DatabaseThread *, getDatabaseThread, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
 	          __DatabaseThread_P1__getDatabaseThread__unsigned_int,
@@ -149,11 +159,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __void__signalEndFrame,
 	          "Signal the database thread that the update, cull and draw dispatch has completed. ",
 	          "Note, this is called by the application so that the database pager can go to wake back up now the main rendering threads are iddle waiting for the next frame. ");
-	I_Method1(void, registerPagedLODs, IN, osg::Node *, subgraph,
-	          Properties::VIRTUAL,
-	          __void__registerPagedLODs__osg_Node_P1,
-	          "Find all PagedLOD nodes in a subgraph and register them with the DatabasePager so it can keep track of expired nodes. ",
-	          "note, should be only be called from the update thread. ");
+	I_MethodWithDefaults2(void, registerPagedLODs, IN, osg::Node *, subgraph, , IN, int, frameNumber, 0,
+	                      Properties::VIRTUAL,
+	                      __void__registerPagedLODs__osg_Node_P1__int,
+	                      "Find all PagedLOD nodes in a subgraph and register them with the DatabasePager so it can keep track of expired nodes. ",
+	                      "note, should be only be called from the update thread. ");
 	I_Method1(void, setDoPreCompile, IN, bool, flag,
 	          Properties::NON_VIRTUAL,
 	          __void__setDoPreCompile__bool,
@@ -376,6 +386,18 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	                   __void__removeExpiredSubgraphs__C5_osg_FrameStamp_R1,
 	                   "Iterate through the active PagedLOD nodes children removing children which havn't been visited since specified expiryTime. ",
 	                   "note, should be only be called from the update thread. ");
+	I_ProtectedMethod1(void, expiry_removeExpiredSubgraphs, IN, const osg::FrameStamp &, frameStamp,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__expiry_removeExpiredSubgraphs__C5_osg_FrameStamp_R1,
+	                   "Old expiry delay based removeExpiredSubgraphs. ",
+	                   "");
+	I_ProtectedMethod1(void, capped_removeExpiredSubgraphs, IN, const osg::FrameStamp &, frameStamp,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__capped_removeExpiredSubgraphs__C5_osg_FrameStamp_R1,
+	                   "New capped based removeExpiredSubgraphs. ",
+	                   "");
 	I_ProtectedMethod1(void, addLoadedDataToSceneGraph, IN, const osg::FrameStamp &, frameStamp,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -488,11 +510,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager::DatabaseThread)
 	          __void__run,
 	          "Thread's run method. ",
 	          "Must be implemented by derived classes. This is where the action happens. ");
-	I_Method2(osg::ref_ptr< osg::Node >, dpReadRefNodeFile, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::NON_VIRTUAL,
-	          __osg_ref_ptrT1_osg_Node___dpReadRefNodeFile__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
 	I_SimpleProperty(bool, Done, 
 	                 __bool__getDone, 
 	                 __void__setDone__bool);

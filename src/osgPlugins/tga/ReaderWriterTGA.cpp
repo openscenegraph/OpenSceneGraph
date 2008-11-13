@@ -6,6 +6,7 @@
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 
 #include <stdio.h>
 #include <assert.h>
@@ -535,7 +536,7 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+            osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             if(!istream) return ReadResult::FILE_NOT_HANDLED;
             ReadResult rr = readTGAStream(istream);
             if(rr.validImage()) rr.getImage()->setFileName(file);

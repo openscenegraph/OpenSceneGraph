@@ -23,6 +23,7 @@
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/fstream>
 
 #include <iomanip>
 #include <stdio.h>
@@ -596,11 +597,11 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         float power2_s = logf((float)s)/logf((float)2);
         float power2_t = logf((float)t)/logf((float)2);
 
-        osg::notify(osg::INFO) << "ReadDDSFile info : ddsd.dwMipMapCount = "<<ddsd.dwMipMapCount<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile info : s = "<<s<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile info : t = "<<t<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile info : power2_s="<<power2_s<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile info : power2_t="<<power2_t<<std::endl;
+        osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : ddsd.dwMipMapCount = "<<ddsd.dwMipMapCount<<std::endl;
+        osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : s = "<<s<<std::endl;
+        osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : t = "<<t<<std::endl;
+        osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : power2_s="<<power2_s<<std::endl;
+        osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : power2_t="<<power2_t<<std::endl;
 
         mipmaps.resize((unsigned int)osg::maximum(power2_s,power2_t),0);
 
@@ -654,7 +655,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     if (mipmaps.size()>0)  osgImage->setMipmapLevels(mipmaps);
     unsigned int size = osgImage->getTotalSizeInBytesIncludingMipmaps();
 
-    osg::notify(osg::INFO) << "ReadDDSFile info : size = " << size << std::endl;
+    osg::notify(osg::NOTICE) << "ReadDDSFile NOTICE : size = " << size << std::endl;
     
     if(size <= 0)
     {
@@ -874,6 +875,12 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         SD_flags   |= DDSD_MIPMAPCOUNT;
         CAPS_flags |= DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
         ddsd.dwMipMapCount = img->getNumMipmapLevels();
+        
+        osg::notify(osg::NOTICE)<<"writing out with mipmaps ddsd.dwMipMapCount"<<ddsd.dwMipMapCount<<std::endl;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"no mipmaps to write out."<<std::endl;
     }
 
 
@@ -948,7 +955,7 @@ public:
     
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
         
-        std::ifstream stream(fileName.c_str(), std::ios::in | std::ios::binary);
+        osgDB::ifstream stream(fileName.c_str(), std::ios::in | std::ios::binary);
         if(!stream) return ReadResult::FILE_NOT_HANDLED;
         ReadResult rr = readImage(stream, options);
         if(rr.validImage()) rr.getImage()->setFileName(file);
@@ -990,7 +997,7 @@ public:
         std::string ext = osgDB::getFileExtension(file);
         if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-        std::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
+        osgDB::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
         return writeImage(image,fout,options);

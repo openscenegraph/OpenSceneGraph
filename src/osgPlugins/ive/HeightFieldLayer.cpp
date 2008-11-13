@@ -16,6 +16,7 @@
 #include "Layer.h"
 
 #include <osgDB/ReadFile>
+#include <osg/io_utils>
 
 using namespace ive;
 
@@ -34,9 +35,45 @@ void HeightFieldLayer::write(DataOutputStream* out)
 
     if (getFileName().empty() && getHeightField())
     {
+        osg::HeightField* hf = getHeightField();
+    
         // using inline heightfield
         out->writeBool(true);        
-        out->writeShape(getHeightField());
+        if (out->getVersion()>=VERSION_0035)
+        {
+            // Write HeightField's properties.
+            out->writeUInt(hf->getNumColumns());
+            out->writeUInt(hf->getNumRows());
+            out->writeVec3(hf->getOrigin());
+            out->writeFloat(hf->getXInterval());
+            out->writeFloat(hf->getYInterval());
+            out->writeQuat(hf->getRotation());
+            out->writeFloat(hf->getSkirtHeight());
+            out->writeUInt(hf->getBorderWidth());
+
+            int packingSize = 1;
+
+            float maxError = 0.0f;
+            
+            if (getLocator())
+            {
+                osg::Vec3d world_origin, world_corner;
+                
+                getLocator()->convertLocalToModel(osg::Vec3d(0.0,0.0,0.0), world_origin);
+                getLocator()->convertLocalToModel(osg::Vec3d(1.0,1.0,0.0), world_corner);
+                
+                double distance = (world_origin-world_corner).length();
+                
+                maxError = distance * out->getTerrainMaximumErrorToSizeRatio();
+            }
+
+            out->writePackedFloatArray(hf->getFloatArray(), maxError);
+        }
+        else
+        {
+            out->writeShape(getHeightField());
+        }    
+
     }
     else
     {
@@ -69,8 +106,39 @@ void HeightFieldLayer::read(DataInputStream* in)
     
     if (useInlineHeightField)
     {
-        osg::Shape* shape = in->readShape();
-        setHeightField(dynamic_cast<osg::HeightField*>(shape));
+    
+        if (in->getVersion()>=VERSION_0035)
+        {
+            osg::HeightField* hf = new osg::HeightField;
+            
+            // Read HeightField's properties
+            //setColor(in->readVec4());
+            unsigned int col = in->readUInt();
+            unsigned int row = in->readUInt();        
+            hf->allocate(col,row);
+
+            hf->setOrigin(in->readVec3());
+            hf->setXInterval(in->readFloat());
+            hf->setYInterval(in->readFloat());
+            hf->setRotation(in->readQuat());
+
+            hf->setSkirtHeight(in->readFloat());
+            hf->setBorderWidth(in->readUInt());
+
+            if (in->getVersion()>=VERSION_0035)
+            {
+                in->readPackedFloatArray(hf->getFloatArray());
+            }
+            
+            setHeightField(hf);
+
+        }
+        else
+        {
+            osg::Shape* shape = in->readShape();
+            setHeightField(dynamic_cast<osg::HeightField*>(shape));
+        }    
+
     }
     else
     {

@@ -121,7 +121,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          Properties::NON_VIRTUAL,
 	          __void__setClearMask__GLbitfield,
 	          "Set the clear mask used in glClear(. ",
-	          ".). Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. ");
+	          ".). Defaults to 0 - so no clear is done by default by the GraphicsContext, instead the Camera's attached the GraphicsContext will do the clear. GraphicsContext::setClearMask() is useful for when the Camera's Viewports don't conver the whole context, so the context will fill in the gaps. ");
 	I_Method0(GLbitfield, getClearMask,
 	          Properties::NON_VIRTUAL,
 	          __GLbitfield__getClearMask,

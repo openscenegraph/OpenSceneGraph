@@ -350,9 +350,6 @@ ENDIF(PKG_CONFIG_FOUND)
 
 
 
-
-
-
 #
 # Test to determine if we want the "tripledot" form of the GLU tesselator callback.
 #

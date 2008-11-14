@@ -191,6 +191,11 @@ IF(WIN32)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
         ENDIF(WIN32_USE_MP)
 
+        # turn off various warnings
+        foreach(warning 4244 4251 4267 4275 4290 4786 4305 4996)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd${warning}")
+        endforeach(warning)
+
         # More MSVC specific compilation flags
         ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
         ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)

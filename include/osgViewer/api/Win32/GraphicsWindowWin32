@@ -185,6 +185,7 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
 
         std::map<int, bool> _keyMap;
 
+        bool   _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues;
 };
 
 }

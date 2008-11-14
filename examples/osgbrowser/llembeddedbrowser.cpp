@@ -38,11 +38,11 @@
 
 // Windows specific switches
 #ifdef WIN32
-	// appears to be required by LibXUL/Mozilla code to avoid crashes in debug versions of their code (undef'd at end of this file)
-	#ifdef _DEBUG
-		#define DEBUG 1
-	#endif
-#endif	// WIN32
+    // appears to be required by LibXUL/Mozilla code to avoid crashes in debug versions of their code (undef'd at end of this file)
+    #ifdef _DEBUG
+        #define DEBUG 1
+    #endif
+#endif    // WIN32
 
 #include <iostream>
 
@@ -50,9 +50,9 @@
 #include "llembeddedbrowserwindow.h"
 
 #ifdef WIN32
-	#pragma warning( disable : 4265 )	// "class has virtual functions, but destructor is not virtual"
-	#pragma warning( disable : 4291 )	// (no matching operator delete found; memory will not be freed if initialization throws an exception)
-#endif	// WIN32
+    #pragma warning( disable : 4265 )    // "class has virtual functions, but destructor is not virtual"
+    #pragma warning( disable : 4291 )    // (no matching operator delete found; memory will not be freed if initialization throws an exception)
+#endif    // WIN32
 
 #include "nsBuildID.h"
 #include "nsICacheService.h"
@@ -75,8 +75,8 @@ LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;
 ////////////////////////////////////////////////////////////////////////////////
 //
 LLEmbeddedBrowser::LLEmbeddedBrowser() :
-	mErrorNum( 0 ),
-	mNativeWindowHandle( 0 )
+    mErrorNum( 0 ),
+    mNativeWindowHandle( 0 )
 {
 }
 
@@ -95,267 +95,281 @@ LLEmbeddedBrowser* LLEmbeddedBrowser::getInstance()
         sInstance = new LLEmbeddedBrowser;
     };
 
-	return sInstance;
+    return sInstance;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 void LLEmbeddedBrowser::setLastError( int errorNumIn )
 {
-	mErrorNum = errorNumIn;
+    mErrorNum = errorNumIn;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 void LLEmbeddedBrowser::clearLastError()
 {
-	mErrorNum = 0x0000;
+    mErrorNum = 0x0000;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 int LLEmbeddedBrowser::getLastError()
 {
-	return mErrorNum;
+    return mErrorNum;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 std::string LLEmbeddedBrowser::getGREVersion()
 {
-	// take the string directly from Mozilla
-	return std::string( GRE_BUILD_ID );
+    // take the string directly from Mozilla
+    return std::string( GRE_BUILD_ID );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLEmbeddedBrowser::init( std::string applicationDir,
-								std::string componentDir,
-									std::string profileDir,
-										void* nativeWindowHandleIn )
+                              std::string componentDir,
+                              std::string profileDir,
+                              void* nativeWindowHandleIn )
 {
-	mNativeWindowHandle = nativeWindowHandleIn;
+    mNativeWindowHandle = nativeWindowHandleIn;
+
+    std::cout<<"applicationDir "<<applicationDir<<std::endl;
+    std::cout<<"componentDir "<<componentDir<<std::endl;
+    std::cout<<"profileDir "<<profileDir<<std::endl;
 
     NS_ConvertUTF8toUTF16 applicationDirUTF16(applicationDir.c_str());
     NS_ConvertUTF8toUTF16 componentDirUTF16(componentDir.c_str());
-	NS_ConvertUTF8toUTF16 profileDirUTF16(profileDir.c_str());
+    NS_ConvertUTF8toUTF16 profileDirUTF16(profileDir.c_str());
 
-	nsCOMPtr< nsILocalFile > applicationDirNative;
-	nsresult result = NS_NewLocalFile( applicationDirUTF16, PR_FALSE, getter_AddRefs( applicationDirNative ) );
-	if ( NS_FAILED( result ) )
-	{
-		setLastError( 0x1000 );
-		return false;
-	};
+    nsCOMPtr< nsILocalFile > applicationDirNative;
+    nsresult result = NS_NewLocalFile( applicationDirUTF16, PR_FALSE, getter_AddRefs( applicationDirNative ) );
+    if ( NS_FAILED( result ) )
+    {
+        std::cout<<"NS_NewLocalFile failed"<<std::endl;
+        
+        setLastError( 0x1000 );
+        return false;
+    };
 
-	nsCOMPtr< nsILocalFile > componentDirNative;
-	result = NS_NewLocalFile( componentDirUTF16 , PR_FALSE, getter_AddRefs( componentDirNative ) );
-	if ( NS_FAILED( result ) )
-	{
-		setLastError( 0x1001 );
-		return false;
-	};
+    nsCOMPtr< nsILocalFile > componentDirNative;
+    result = NS_NewLocalFile( componentDirUTF16 , PR_FALSE, getter_AddRefs( componentDirNative ) );
+    if ( NS_FAILED( result ) )
+    {
+        std::cout<<"NS_NewLocalFile failed 2"<<std::endl;
 
-	result = XRE_InitEmbedding( componentDirNative, applicationDirNative, nsnull, nsnull, 0 );
-	if ( NS_FAILED( result ) )
-	{
-		setLastError( 0x1002 );
-		return false;
-	};
+        setLastError( 0x1001 );
+        return false;
+    };
 
-	nsCOMPtr< nsILocalFile > profileDirNative;
-	result = NS_NewLocalFile( profileDirUTF16 , PR_TRUE, getter_AddRefs( profileDirNative ) );
-	if ( NS_FAILED( result ) )
-	{
-		setLastError( 0x1007 );
-		return false;
-	};
+    result = XRE_InitEmbedding( componentDirNative, applicationDirNative, nsnull, nsnull, 0 );
+    if ( NS_FAILED( result ) )
+    {
+                std::cout<<"XRE_InitEmbedding failed"<<std::endl;
+
+        setLastError( 0x1002 );
+        return false;
+    };
+
+    std::cout<<"XRE_InitEmbedding succeeded"<<std::endl;
+
+    nsCOMPtr< nsILocalFile > profileDirNative;
+    result = NS_NewLocalFile( profileDirUTF16 , PR_TRUE, getter_AddRefs( profileDirNative ) );
+    if ( NS_FAILED( result ) )
+    {
+        setLastError( 0x1007 );
+        return false;
+    };
 #if 0        
-	nsCOMPtr< nsProfileDirServiceProvider > locProvider;
-	NS_NewProfileDirServiceProvider( PR_TRUE, getter_AddRefs( locProvider ) );
-	if ( ! locProvider )
-	{
-		setLastError( 0x1003 );
-		XRE_TermEmbedding();
-		return PR_FALSE;
-	};
-	result = locProvider->Register();
-	if ( NS_FAILED( result ) )
-	{
-		setLastError( 0x1004 );
-		XRE_TermEmbedding();
-		return PR_FALSE;
-	};
+    nsCOMPtr< nsProfileDirServiceProvider > locProvider;
+    NS_NewProfileDirServiceProvider( PR_TRUE, getter_AddRefs( locProvider ) );
+    if ( ! locProvider )
+    {
+        setLastError( 0x1003 );
+        XRE_TermEmbedding();
+        return PR_FALSE;
+    };
+    result = locProvider->Register();
+    if ( NS_FAILED( result ) )
+    {
+        setLastError( 0x1004 );
+        XRE_TermEmbedding();
+        return PR_FALSE;
+    };
 
-	result = locProvider->SetProfileDir( profileDirNative );
-	if ( NS_FAILED( result ) )
-	{
-		setLastError( 0x1005 );
-		XRE_TermEmbedding();
-		return PR_FALSE;
-	};
+    result = locProvider->SetProfileDir( profileDirNative );
+    if ( NS_FAILED( result ) )
+    {
+        setLastError( 0x1005 );
+        XRE_TermEmbedding();
+        return PR_FALSE;
+    };
 #endif
 
-	nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
-	if ( pref )
-	{
-		pref->SetBoolPref( "security.warn_entering_secure", PR_FALSE );
-		pref->SetBoolPref( "security.warn_entering_weak", PR_FALSE );
-		pref->SetBoolPref( "security.warn_leaving_secure", PR_FALSE );
-		pref->SetBoolPref( "security.warn_submit_insecure", PR_FALSE );
-		pref->SetBoolPref( "network.protocol-handler.warn-external-default", PR_FALSE );
-	}
-	else
-	{
-		setLastError( 0x1006 );
-	};
+    nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
+    if ( pref )
+    {
+        pref->SetBoolPref( "security.warn_entering_secure", PR_FALSE );
+        pref->SetBoolPref( "security.warn_entering_weak", PR_FALSE );
+        pref->SetBoolPref( "security.warn_leaving_secure", PR_FALSE );
+        pref->SetBoolPref( "security.warn_submit_insecure", PR_FALSE );
+        pref->SetBoolPref( "network.protocol-handler.warn-external-default", PR_FALSE );
+    }
+    else
+    {
+        setLastError( 0x1006 );
+    };
 
-	// disable proxy by default
-	enableProxy( false, "", 0 );
+    // disable proxy by default
+    enableProxy( false, "", 0 );
 
     // Originally from Linux version but seems to help other platforms too
-	nsresult rv;
-	nsCOMPtr<nsIAppShell> appShell;
-	NS_DEFINE_CID(kAppShellCID, NS_APPSHELL_CID);
-	appShell = do_CreateInstance(kAppShellCID, &rv);
-	if (!appShell)
-	{
-		setLastError( 0x1008 );
-		return PR_FALSE;
-	}
-	sAppShell = appShell.get();
-	NS_ADDREF(sAppShell);
-	sAppShell->Create(0, nsnull);
-	sAppShell->Spinup();
+    nsresult rv;
+    nsCOMPtr<nsIAppShell> appShell;
+    NS_DEFINE_CID(kAppShellCID, NS_APPSHELL_CID);
+    appShell = do_CreateInstance(kAppShellCID, &rv);
+    if (!appShell)
+    {
+        setLastError( 0x1008 );
+        return PR_FALSE;
+    }
+    sAppShell = appShell.get();
+    NS_ADDREF(sAppShell);
+    sAppShell->Create(0, nsnull);
+    sAppShell->Spinup();
 
-	clearLastError();
+    clearLastError();
 
-	return true;
+    std::cout<<"LLEmbeddedBrowser::init() succeeded"<<std::endl;
+
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLEmbeddedBrowser::reset()
 {
-	XRE_TermEmbedding();
+    XRE_TermEmbedding();
 
-	return true;
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLEmbeddedBrowser::clearCache()
 {
-	nsCOMPtr< nsICacheService > cacheService = do_GetService( NS_CACHESERVICE_CONTRACTID );
-	if (! cacheService)
-		return false;
+    nsCOMPtr< nsICacheService > cacheService = do_GetService( NS_CACHESERVICE_CONTRACTID );
+    if (! cacheService)
+        return false;
 
-	cacheService->EvictEntries( nsICache::STORE_ANYWHERE );
+    cacheService->EvictEntries( nsICache::STORE_ANYWHERE );
 
-	return true;
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLEmbeddedBrowser::enableProxy( bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn )
 {
-	nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
-	if ( pref )
-	{
-		if ( proxyEnabledIn )
-			pref->SetIntPref( "network.proxy.type", 1 );
-		else
-			pref->SetIntPref( "network.proxy.type", 0 );
+    nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
+    if ( pref )
+    {
+        if ( proxyEnabledIn )
+            pref->SetIntPref( "network.proxy.type", 1 );
+        else
+            pref->SetIntPref( "network.proxy.type", 0 );
 
-		pref->SetCharPref( "network.proxy.ssl", proxyHostNameIn.c_str() );
-		pref->SetIntPref( "network.proxy.ssl_port", proxyPortIn );
+        pref->SetCharPref( "network.proxy.ssl", proxyHostNameIn.c_str() );
+        pref->SetIntPref( "network.proxy.ssl_port", proxyPortIn );
 
-		pref->SetCharPref( "network.proxy.ftp", proxyHostNameIn.c_str() );
-		pref->SetIntPref( "network.proxy.ftp_port", proxyPortIn );
+        pref->SetCharPref( "network.proxy.ftp", proxyHostNameIn.c_str() );
+        pref->SetIntPref( "network.proxy.ftp_port", proxyPortIn );
 
-		pref->SetCharPref( "network.proxy.gopher", proxyHostNameIn.c_str() );
-		pref->SetIntPref( "network.proxy.gopher_port", proxyPortIn );
+        pref->SetCharPref( "network.proxy.gopher", proxyHostNameIn.c_str() );
+        pref->SetIntPref( "network.proxy.gopher_port", proxyPortIn );
 
-		pref->SetCharPref( "network.proxy.http", proxyHostNameIn.c_str() );
-		pref->SetIntPref( "network.proxy.http_port", proxyPortIn );
+        pref->SetCharPref( "network.proxy.http", proxyHostNameIn.c_str() );
+        pref->SetIntPref( "network.proxy.http_port", proxyPortIn );
 
-		pref->SetBoolPref( "network.proxy.share_proxy_settings", true );
+        pref->SetBoolPref( "network.proxy.share_proxy_settings", true );
 
-		return true;
-	};
+        return true;
+    };
 
-	return false;
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLEmbeddedBrowser::enableCookies( bool enabledIn )
 {
-	nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
-	if ( pref )
-	{
-		if ( enabledIn )
-			pref->SetIntPref( "network.cookie.cookieBehavior", 0 );
-		else
-			pref->SetIntPref( "network.cookie.cookieBehavior", 2 );
+    nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
+    if ( pref )
+    {
+        if ( enabledIn )
+            pref->SetIntPref( "network.cookie.cookieBehavior", 0 );
+        else
+            pref->SetIntPref( "network.cookie.cookieBehavior", 2 );
 
-		return true;
-	}
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLEmbeddedBrowser::clearAllCookies()
 {
-	nsCOMPtr< nsICookieManager > cookieManager = do_GetService( NS_COOKIEMANAGER_CONTRACTID );
-	if ( ! cookieManager )
-		return false;
+    nsCOMPtr< nsICookieManager > cookieManager = do_GetService( NS_COOKIEMANAGER_CONTRACTID );
+    if ( ! cookieManager )
+        return false;
 
-	cookieManager->RemoveAll();
+    cookieManager->RemoveAll();
 
-	return true;
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 bool LLEmbeddedBrowser::enablePlugins( bool enabledIn )
 {
-	nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
-	if ( pref )
-	{
-		if ( enabledIn )
-		{
-			pref->SetBoolPref( "plugin.scan.plid.all", PR_TRUE );
-			pref->SetBoolPref( "xpinstall-enabled", PR_TRUE );
-		}
-		else
-		{
-			pref->SetBoolPref( "plugin.scan.plid.all", PR_FALSE );
-			pref->SetBoolPref( "xpinstall-enabled", PR_FALSE );
-			pref->SetBoolPref( "plugin.scan.4xPluginFolder", PR_FALSE );
-			pref->SetCharPref( "plugin.scan.Quicktime", "20.0" );
-			pref->SetCharPref( "plugin.scan.Acrobat", "99.0" );
-			pref->SetCharPref( "plugin.scan.SunJRE", "99.0" );
-			pref->SetCharPref( "plugin.scan.WindowsMediaPlayer", "99.0" );
-		};
+    nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
+    if ( pref )
+    {
+        if ( enabledIn )
+        {
+            pref->SetBoolPref( "plugin.scan.plid.all", PR_TRUE );
+            pref->SetBoolPref( "xpinstall-enabled", PR_TRUE );
+        }
+        else
+        {
+            pref->SetBoolPref( "plugin.scan.plid.all", PR_FALSE );
+            pref->SetBoolPref( "xpinstall-enabled", PR_FALSE );
+            pref->SetBoolPref( "plugin.scan.4xPluginFolder", PR_FALSE );
+            pref->SetCharPref( "plugin.scan.Quicktime", "20.0" );
+            pref->SetCharPref( "plugin.scan.Acrobat", "99.0" );
+            pref->SetCharPref( "plugin.scan.SunJRE", "99.0" );
+            pref->SetCharPref( "plugin.scan.WindowsMediaPlayer", "99.0" );
+        };
 
-		return true;
-	};
+        return true;
+    };
 
-	return false;
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 void LLEmbeddedBrowser::setBrowserAgentId( std::string idIn )
 {
-	nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
-	if ( pref )
-	{
-		pref->SetCharPref( "general.useragent.extra.* ", idIn.c_str() );
-	};
+    nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
+    if ( pref )
+    {
+        pref->SetCharPref( "general.useragent.extra.* ", idIn.c_str() );
+    };
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -364,43 +378,45 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow( int browserWidt
 {
     nsCOMPtr< nsIWebBrowserChrome > chrome;
 
-	LLEmbeddedBrowserWindow* newWin = new LLEmbeddedBrowserWindow();
-	if ( ! newWin )
-	{
-		return 0;
-	};
+    LLEmbeddedBrowserWindow* newWin = new LLEmbeddedBrowserWindow();
+    if ( ! newWin )
+    {
+            std::cout<<"createBrowserWindow !newNew"<<std::endl;
+            return 0;
+    };
 
-	nsIWebBrowserChrome** aNewWindow = getter_AddRefs( chrome );
+    nsIWebBrowserChrome** aNewWindow = getter_AddRefs( chrome );
 
-	CallQueryInterface( NS_STATIC_CAST( nsIWebBrowserChrome*, newWin ), aNewWindow );
+    CallQueryInterface( NS_STATIC_CAST( nsIWebBrowserChrome*, newWin ), aNewWindow );
 
-	NS_ADDREF( *aNewWindow );
+    NS_ADDREF( *aNewWindow );
 
-	newWin->SetChromeFlags( nsIWebBrowserChrome::CHROME_ALL );
+    newWin->SetChromeFlags( nsIWebBrowserChrome::CHROME_ALL );
 
-	nsCOMPtr< nsIWebBrowser > newBrowser;
+    nsCOMPtr< nsIWebBrowser > newBrowser;
 
-	newWin->createBrowser( mNativeWindowHandle, browserWidthIn, browserHeightIn, getter_AddRefs( newBrowser ) );
-	if ( ! newBrowser )
-	{
-		return 0;
-	};
+    newWin->createBrowser( mNativeWindowHandle, browserWidthIn, browserHeightIn, getter_AddRefs( newBrowser ) );
+    if ( ! newBrowser )
+    {
+        std::cout<<"createBrowserWindow !newBrowser"<<std::endl;
+        return 0;
+    };
 
     if ( newWin && chrome )
     {
-		newWin->setParent( this );
+        newWin->setParent( this );
         nsCOMPtr< nsIWebBrowser > newBrowser;
         chrome->GetWebBrowser( getter_AddRefs( newBrowser ) );
         nsCOMPtr< nsIWebNavigation > webNav( do_QueryInterface ( newBrowser ) );
-		webNav->LoadURI( NS_ConvertUTF8toUTF16( "about:blank" ).get(), nsIWebNavigation::LOAD_FLAGS_NONE, nsnull, nsnull, nsnull );
+        webNav->LoadURI( NS_ConvertUTF8toUTF16( "about:blank" ).get(), nsIWebNavigation::LOAD_FLAGS_NONE, nsnull, nsnull, nsnull );
 
-		clearLastError();
+        clearLastError();
 
-		return newWin;
+        return newWin;
     };
 
-	setLastError( 0x2001 );
-	return 0;
+    setLastError( 0x2001 );
+    return 0;
 };
 
 
@@ -408,44 +424,44 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow( int browserWidt
 //
 bool LLEmbeddedBrowser::destroyBrowserWindow( LLEmbeddedBrowserWindow* browserWindowIn )
 {
-	nsCOMPtr< nsIWebBrowser > webBrowser;
-	nsCOMPtr< nsIWebNavigation > webNavigation;
+    nsCOMPtr< nsIWebBrowser > webBrowser;
+    nsCOMPtr< nsIWebNavigation > webNavigation;
 
-	browserWindowIn->GetWebBrowser( getter_AddRefs( webBrowser ) );
-	webNavigation = do_QueryInterface( webBrowser );
-	if ( webNavigation )
-	{
-		webNavigation->Stop( nsIWebNavigation::STOP_ALL );
-	};
+    browserWindowIn->GetWebBrowser( getter_AddRefs( webBrowser ) );
+    webNavigation = do_QueryInterface( webBrowser );
+    if ( webNavigation )
+    {
+        webNavigation->Stop( nsIWebNavigation::STOP_ALL );
+    };
 
-	nsCOMPtr< nsIWebBrowser > browser = nsnull;
-	browserWindowIn->GetWebBrowser( getter_AddRefs( browser ) );
-	nsCOMPtr< nsIBaseWindow > browserAsWin = do_QueryInterface( browser );
-	if ( browserAsWin )
-	{
-		browserAsWin->Destroy();
-	};
+    nsCOMPtr< nsIWebBrowser > browser = nsnull;
+    browserWindowIn->GetWebBrowser( getter_AddRefs( browser ) );
+    nsCOMPtr< nsIBaseWindow > browserAsWin = do_QueryInterface( browser );
+    if ( browserAsWin )
+    {
+        browserAsWin->Destroy();
+    };
 
 
-	browserWindowIn->SetWebBrowser( nsnull );
+    browserWindowIn->SetWebBrowser( nsnull );
 
-	NS_RELEASE( browserWindowIn );
+    NS_RELEASE( browserWindowIn );
 
-	delete browserWindowIn;
+    delete browserWindowIn;
 
-	clearLastError();
+    clearLastError();
 
-	return true;
+    return true;
 }
 
 // Windows specific switches
 #ifdef WIN32
-	#pragma warning( 3 : 4291 ) // (no matching operator delete found; memory will not be freed if initialization throws an exception)
-	#pragma warning( 3 : 4265 )	// "class has virtual functions, but destructor is not virtual"
+    #pragma warning( 3 : 4291 ) // (no matching operator delete found; memory will not be freed if initialization throws an exception)
+    #pragma warning( 3 : 4265 )    // "class has virtual functions, but destructor is not virtual"
 
-	// #define required by this file for LibXUL/Mozilla code to avoid crashes in their debug code
-	#ifdef _DEBUG
-		#undef DEBUG
-	#endif
+    // #define required by this file for LibXUL/Mozilla code to avoid crashes in their debug code
+    #ifdef _DEBUG
+        #undef DEBUG
+    #endif
 
-#endif	// WIN32
+#endif    // WIN32

@@ -137,7 +137,9 @@ class LLEmbeddedBrowserWindow :
 	public nsIWebBrowserChrome,
 	public nsIWebProgressListener,
 	public nsIURIContentListener,
+#ifdef SUPPORTS_WEAK_REFENCE
 	public nsSupportsWeakReference,
+#endif
 	public nsIDOMEventListener
 #ifdef NS_DECL_NSITOOLKITOBSERVER     
         ,public nsIToolkitObserver
@@ -156,6 +158,7 @@ class LLEmbeddedBrowserWindow :
 #ifdef NS_DECL_NSITOOLKITOBSERVER     
 		NS_DECL_NSITOOLKITOBSERVER
 #endif
+
 		// housekeeping
 		nsresult createBrowser( void* nativeWindowHandleIn, PRInt32 widthIn, PRInt32 heightIn, nsIWebBrowser** aBrowser );
 		void setParent( LLEmbeddedBrowser* parentIn ) { mParent = parentIn; };

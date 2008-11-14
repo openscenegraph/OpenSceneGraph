@@ -157,6 +157,8 @@ nsresult LLEmbeddedBrowserWindow::createBrowser( void* nativeWindowHandleIn, PRI
 	mWebBrowser = do_CreateInstance( NS_WEBBROWSER_CONTRACTID, &rv );
 	if ( ! mWebBrowser )
 	{
+                std::cout<<"createBrowser ! mWebBrowser at start"<<std::endl;
+        
 		return NS_ERROR_FAILURE;
 	}
 
@@ -185,6 +187,7 @@ nsresult LLEmbeddedBrowserWindow::createBrowser( void* nativeWindowHandleIn, PRI
 	mWebNav = do_QueryInterface( mWebBrowser, &result );
 	if ( NS_FAILED( result ) || ! mWebNav )
 	{
+                std::cout<<"createBrowser ! do_QueryInterface"<<std::endl;
 		return NS_ERROR_FAILURE;
 	};
 
@@ -197,6 +200,8 @@ nsresult LLEmbeddedBrowserWindow::createBrowser( void* nativeWindowHandleIn, PRI
 
 		return NS_OK;
     };
+
+    std::cout<<"createBrowser ! mWebBrowser"<<std::endl;
 
     return NS_ERROR_FAILURE;
 }
@@ -214,7 +219,9 @@ NS_INTERFACE_MAP_BEGIN( LLEmbeddedBrowserWindow )
 	NS_INTERFACE_MAP_ENTRY( nsIWebBrowserChrome )
 	NS_INTERFACE_MAP_ENTRY( nsIWebProgressListener )
 	NS_INTERFACE_MAP_ENTRY( nsIURIContentListener )
+#ifdef SUPPORTS_WEAK_REFENCE
 	NS_INTERFACE_MAP_ENTRY( nsISupportsWeakReference )
+#endif
 #ifdef NS_DECL_NSITOOLKITOBSERVER     
 	NS_INTERFACE_MAP_ENTRY( nsIToolkitObserver )
 #endif
@@ -583,25 +590,34 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnSecurityChange( nsIWebProgress* aWebPro
 //       need to make this work with arbitrary rects (i.e. the dirty rect)
 unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthIn, int heightIn )
 {
+        std::cout<<"grabWindow("<<xIn<<", "<<yIn<<", "<<widthIn<<", "<<heightIn<<")"<<std::endl;
+
 	// sanity check
 	if ( ! mWebBrowser )
 		return 0;
 
+        std::cout<<"grabWindow() A"<<std::endl;
+
 	// only grab the window if it's enabled
 	if ( ! mEnabled )
 		return false;
+
+        std::cout<<"grabWindow() B"<<std::endl;
 
 	// get the docshell
 	nsCOMPtr< nsIDocShell > docShell = do_GetInterface( mWebBrowser );
 	if ( ! docShell )
 		return PR_FALSE;
 
+        std::cout<<"grabWindow() C"<<std::endl;
 
 	// get pres context
 	nsCOMPtr< nsPresContext > presContext;
 	nsresult result = docShell->GetPresContext( getter_AddRefs( presContext ) );
 	if ( NS_FAILED( result ) || ( ! presContext ) )
 		return PR_FALSE;
+
+        std::cout<<"grabWindow() D"<<std::endl;
 
 	// get view manager
 	nsIViewManager* viewManager = presContext->GetViewManager();
@@ -622,6 +638,8 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
 	if ( rect.IsEmpty() )
 		return 0;
 
+        std::cout<<"grabWindow() E"<<std::endl;
+
 	float p2t = presContext->PixelsToTwips();
 	rect.width = NSIntPixelsToTwips( widthIn, p2t );
 	rect.height = NSIntPixelsToTwips( heightIn, p2t );
@@ -632,11 +650,15 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
 	if ( NS_FAILED( result ) )
 		return 0;
 
+        std::cout<<"grabWindow() F"<<std::endl;
+
 	// retrieve the surface we rendered to
 	nsIDrawingSurface* surface = nsnull;
 	context->GetDrawingSurface( &surface );
 	if ( ! surface )
 		return 0;
+
+        std::cout<<"grabWindow() G"<<std::endl;
 
 	// lock the surface and retrieve a pointer to the rendered data and current row span
 	PRUint8* data;
@@ -646,12 +668,16 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
 	if ( NS_FAILED ( result ) )
 		return 0;
 
+        std::cout<<"grabWindow() H "<< mBrowserRowSpan * mBrowserHeight<<std::endl;
+
 	// save row span - it *can* change during the life of the app
 	mBrowserDepth = rowLen / mBrowserWidth;
 
 	// create memory buffer here so it can be deleted and recreated elsewhere
 	if ( ! mPageBuffer )
 		mPageBuffer = new unsigned char[ mBrowserRowSpan * mBrowserHeight ];
+
+        std::cout<<"grabWindow() I "<<mBrowserRowSpan<<","<<mBrowserHeight<<" "<<(void*)mPageBuffer<<std::endl;
 
 	// save the pixels and optionally invert them 
 	// (it's useful the SL client to get bitmaps that are inverted compared

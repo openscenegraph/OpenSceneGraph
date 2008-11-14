@@ -20,6 +20,13 @@
 #include <string>
 #include <string.h>
 
+#ifdef __CYGWIN__
+namespace std
+{
+typedef basic_string<wchar_t> wstring;
+}
+#endif
+
 namespace osgDB
 {
 

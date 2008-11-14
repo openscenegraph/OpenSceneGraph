@@ -78,9 +78,9 @@ LLMozLib::~LLMozLib()
 bool LLMozLib::init( std::string applicationDir, std::string componentDir, std::string profileDir, void* nativeWindowHandleIn )
 {
 	return LLEmbeddedBrowser::getInstance()->init( applicationDir,
-														componentDir,
-															profileDir,
-																nativeWindowHandleIn );
+                                                       componentDir,
+                                                       profileDir,
+                                                       nativeWindowHandleIn );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -408,8 +408,11 @@ const unsigned char* LLMozLib::getBrowserWindowPixels( int browserWindowIdIn )
 	LLEmbeddedBrowserWindow* browserWindow = getBrowserWindowFromWindowId( browserWindowIdIn );
 	if ( browserWindow )
 	{
+                std::cout<<"Returning  browserWindow->getPageBuffer() "<<std::endl;
 		return browserWindow->getPageBuffer();
 	};
+        
+        std::cout<<"No browserWindow"<<std::endl;
 
 	return 0;
 }

@@ -47,32 +47,32 @@ class LLEmbeddedBrowserWindowObserver;
 
 class LLEmbeddedBrowser
 {
-	public:
-		LLEmbeddedBrowser();
-		virtual ~LLEmbeddedBrowser();
+    public:
+        LLEmbeddedBrowser();
+        virtual ~LLEmbeddedBrowser();
 
-		static LLEmbeddedBrowser* getInstance();
+        static LLEmbeddedBrowser* getInstance();
 
-		bool init( std::string applicationDir, std::string componentDir, std::string profileDir, void* nativeWindowHandleIn );
-		bool reset();
-		bool clearCache();
-		bool enableProxy( bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn );
-		bool enableCookies( bool enabledIn );
-		bool clearAllCookies();
-		bool enablePlugins( bool enabledIn );
-		std::string getGREVersion();
-		void setBrowserAgentId( std::string idIn );
-		LLEmbeddedBrowserWindow* createBrowserWindow( int browserWidthIn, int browserHeightIn );
-		bool destroyBrowserWindow( LLEmbeddedBrowserWindow* browserWindowIn );
-		void setLastError( int errorNumIn );
-		void clearLastError();
-		int getLastError();
+        bool init( std::string applicationDir, std::string componentDir, std::string profileDir, void* nativeWindowHandleIn );
+        bool reset();
+        bool clearCache();
+        bool enableProxy( bool proxyEnabledIn, std::string proxyHostNameIn, int proxyPortIn );
+        bool enableCookies( bool enabledIn );
+        bool clearAllCookies();
+        bool enablePlugins( bool enabledIn );
+        std::string getGREVersion();
+        void setBrowserAgentId( std::string idIn );
+        LLEmbeddedBrowserWindow* createBrowserWindow( int browserWidthIn, int browserHeightIn );
+        bool destroyBrowserWindow( LLEmbeddedBrowserWindow* browserWindowIn );
+        void setLastError( int errorNumIn );
+        void clearLastError();
+        int getLastError();
 
-	private:
-		static LLEmbeddedBrowser* sInstance;
-		void* mNativeWindowHandle;
-		int mErrorNum;
+    private:
+        static LLEmbeddedBrowser* sInstance;
+        void* mNativeWindowHandle;
+        int mErrorNum;
 };
 
-#endif	// LLEMBEDDEDBROWSER_H
+#endif    // LLEMBEDDEDBROWSER_H
 

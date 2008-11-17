@@ -2,6 +2,7 @@ SET(TARGET_SRC
     llembeddedbrowser.cpp
     llembeddedbrowserwindow.cpp
     llmozlib2.cpp
+    nsProfileDirServiceProvider.cpp
     osgbrowser.cpp
 )
 
@@ -9,6 +10,9 @@ SET(TARGET_H
     llembeddedbrowser.h
     llembeddedbrowserwindow.h
     llmozlib2.h
+    nsProfileDirServiceProvider.h
+    nsProfileLock.h
+    nsProfileStringTypes.h
 )
 
 ADD_DEFINITIONS(-DMOZILLA_INTERNAL_API)
@@ -35,6 +39,12 @@ INCLUDE_DIRECTORIES( ${GLUT_INCLUDE_DIR}
     /usr/include/xulrunner/profdirserviceprovider 
     /usr/include/xulrunner/nkcache 
     /usr/include/xulrunner/xulapp
+    /usr/include/xulrunner/profile 
+    /usr/include/xulrunner/appshell
+    /usr/include/xulrunner/xpcom_obsolete
+    /usr/include/xulrunner/intl
+    /usr/include/xulrunner/windowwatcher
+    /usr/include/xulrunner/xpconnect
 )
 LINK_DIRECTORIES( ${XUL_LIB_DIRS})
 SET(TARGET_EXTERNAL_LIBRARIES ${XUL_LIBRARIES} ${GLUT_glut_LIBRARY})

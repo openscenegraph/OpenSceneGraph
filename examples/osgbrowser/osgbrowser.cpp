@@ -74,6 +74,7 @@ class testGL :
 			mNeedsUpdate( true ),						// flag to indicate if browser texture needs an update 
 			mBrowserWindowId( 0 ),
 			mAppWindowName( "testGL" ),					
+			//mHomeUrl( "http://www.google.com" )			
 			mHomeUrl( "http://www.google.com" )			
 		{
 			std::cout << "LLMozLib version: " << LLMozLib::getInstance()->getVersion() << std::endl;
@@ -174,20 +175,7 @@ class testGL :
 			glutPostRedisplay();
 		};
 
-		////////////////////////////////////////////////////////////////////////////////
-		//
-		void idle()
-		{
-                    //std::cout<<"idle()"<<std::endl;
-                
-			// onPageChanged event sets this
-			// if ( mNeedsUpdate )
-				// grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
-				LLMozLib::getInstance()->grabBrowserWindow( mBrowserWindowId );
-
-			// lots of updates for smooth motion
-			glutPostRedisplay();
-		};
+		void idle();
 
 		////////////////////////////////////////////////////////////////////////////////
 		//
@@ -206,17 +194,20 @@ class testGL :
 			// valid window ?
 			if ( mBrowserWindowId )
 			{
+                                static int count = 0;
+                                count++;
+                        
 				// needs to be updated?
-				if ( mNeedsUpdate )
+				if ( mNeedsUpdate && (count%1)==0)
 				{
 					// grab the page
-                                        std::cout<<"mNeedsUpdate = true"<<std::endl;
+                                        // std::cout<<"mNeedsUpdate = true"<<std::endl;
 
 					const unsigned char* pixels = LLMozLib::getInstance()->getBrowserWindowPixels( mBrowserWindowId );
 					if ( pixels )
 					{
                                         
-                                            std::cout<<"Texture subload "<<LLMozLib::getInstance()->getBrowserRowSpan( mBrowserWindowId ) / LLMozLib::getInstance()->getBrowserDepth( mBrowserWindowId )<<", "<<mBrowserWindowHeight<<std::endl;
+                                            //std::cout<<"Texture subload "<<LLMozLib::getInstance()->getBrowserRowSpan( mBrowserWindowId ) / LLMozLib::getInstance()->getBrowserDepth( mBrowserWindowId )<<", "<<mBrowserWindowHeight<<std::endl;
                                         
 						// write them into the texture
 						glTexSubImage2D( GL_TEXTURE_2D, 0,
@@ -234,7 +225,7 @@ class testGL :
                                         }
 
 					// flag as already updated
-					// mNeedsUpdate = false;
+					//mNeedsUpdate = false;
 				};
 			};
 
@@ -251,16 +242,16 @@ class testGL :
 			glColor3f( 1.0f, 1.0f, 1.0f );
 			glBegin( GL_QUADS );
 				glTexCoord2f( 1.0f, 0.0f ); 
-				glVertex2d( mAppWindowWidth*0.8, 0 );
+				glVertex2d( mAppWindowWidth, 0 );
 
 				glTexCoord2f( 0.0f, 0.0f ); 
 				glVertex2d( 0, 0 );
 
 				glTexCoord2f( 0.0f, 1.0f ); 
-				glVertex2d( 0, mAppWindowHeight*0.8 );
+				glVertex2d( 0, mAppWindowHeight );
 
 				glTexCoord2f( 1.0f, 1.0f ); 
-				glVertex2d( mAppWindowWidth*0.8, mAppWindowHeight*0.8 );
+				glVertex2d( mAppWindowWidth, mAppWindowHeight );
 			glEnd();
 
 			glMatrixMode( GL_TEXTURE );
@@ -318,14 +309,6 @@ class testGL :
 		//
 		void keyboard( unsigned char keyIn, int xIn, int yIn )
 		{
-                    if (keyIn=='a')
-                    {
-			// go to the "home page"
-			LLMozLib::getInstance()->navigateTo( mBrowserWindowId, "http://www.linuxtoday.org" );
-                        
-                        std::cout<<"new browse to"<<std::endl;
-                    }
-
 			// ESC key exits
 			if ( keyIn == 27 )
 			{
@@ -335,7 +318,8 @@ class testGL :
 			};
 
 			// send event to LLMozLib
-			LLMozLib::getInstance()->keyPress( mBrowserWindowId, keyIn );
+                        if (keyIn<32) LLMozLib::getInstance()->keyPress( mBrowserWindowId, keyIn );
+                        else LLMozLib::getInstance()->unicodeInput( mBrowserWindowId, keyIn );
 		};
 
 		////////////////////////////////////////////////////////////////////////////////
@@ -432,6 +416,23 @@ testGL* theApp;
 ////////////////////////////////////////////////////////////////////////////////
 //
 #ifdef _WINDOWS
+
+////////////////////////////////////////////////////////////////////////////////
+//
+void idle()
+{
+   //std::cout<<"idle()"<<std::endl;
+
+	// onPageChanged event sets this
+	// if ( mNeedsUpdate )
+		// grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
+		LLMozLib::getInstance()->grabBrowserWindow( mBrowserWindowId );
+
+	// lots of updates for smooth motion
+	glutPostRedisplay();
+};
+
+
 void* testGL::getNativeWindowHandle()
 {
     // My implementation of the embedded browser needs a native window handle
@@ -442,18 +443,49 @@ void* testGL::getNativeWindowHandle()
 
 #include <gtk/gtk.h>
 
+////////////////////////////////////////////////////////////////////////////////
+//
+void testGL::idle()
+{
+    // pump the GTK+Gecko event queue for a (limited) while.  this should
+    // be done so that the Gecko event queue doesn't starve, and done
+    // *here* so that mNeedsUpdate[] can be populated by callbacks
+    // from Gecko.
+    gtk_main_iteration_do(0);
+    for (int iter=0; iter<10; ++iter)
+    if (gtk_events_pending())
+	    gtk_main_iteration();
+
+
+   //std::cout<<"idle()"<<std::endl;
+
+	// onPageChanged event sets this
+	// if ( mNeedsUpdate )
+		// grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
+		LLMozLib::getInstance()->grabBrowserWindow( mBrowserWindowId );
+
+	// lots of updates for smooth motion
+	glutPostRedisplay();
+};
+
+
 void* testGL::getNativeWindowHandle()
 {
-    gtk_disable_setlocale();
-    gtk_init(NULL, NULL);
+	gtk_disable_setlocale();
+	gtk_init(NULL, NULL);
 
-    GtkWidget *win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_widget_realize(win);
-    gtk_window_set_title(GTK_WINDOW(win), "Raw gecko window");
+	GtkWidget *win = gtk_window_new(GTK_WINDOW_POPUP);
+	// Why a layout widget?  A MozContainer would be ideal, but
+	// it involves exposing Mozilla headers to mozlib-using apps.
+	// A layout widget with a GtkWindow parent has the desired
+	// properties of being plain GTK, having a window, and being
+	// derived from a GtkContainer.
+	GtkWidget *rtnw = gtk_layout_new(NULL, NULL);
+	gtk_container_add(GTK_CONTAINER(win), rtnw);
+	gtk_widget_realize(rtnw);
+	GTK_WIDGET_UNSET_FLAGS(GTK_WIDGET(rtnw), GTK_NO_WINDOW);
 
-    GTK_WIDGET_UNSET_FLAGS(GTK_WIDGET(win), GTK_NO_WINDOW);
-
-    return win;
+	return rtnw;
 };
 #endif
 

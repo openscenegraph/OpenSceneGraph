@@ -136,10 +136,6 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
 {
     mNativeWindowHandle = nativeWindowHandleIn;
 
-    std::cout<<"applicationDir "<<applicationDir<<std::endl;
-    std::cout<<"componentDir "<<componentDir<<std::endl;
-    std::cout<<"profileDir "<<profileDir<<std::endl;
-
     NS_ConvertUTF8toUTF16 applicationDirUTF16(applicationDir.c_str());
     NS_ConvertUTF8toUTF16 componentDirUTF16(componentDir.c_str());
     NS_ConvertUTF8toUTF16 profileDirUTF16(profileDir.c_str());
@@ -148,8 +144,6 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
     nsresult result = NS_NewLocalFile( applicationDirUTF16, PR_FALSE, getter_AddRefs( applicationDirNative ) );
     if ( NS_FAILED( result ) )
     {
-        std::cout<<"NS_NewLocalFile failed"<<std::endl;
-        
         setLastError( 0x1000 );
         return false;
     };
@@ -158,8 +152,6 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
     result = NS_NewLocalFile( componentDirUTF16 , PR_FALSE, getter_AddRefs( componentDirNative ) );
     if ( NS_FAILED( result ) )
     {
-        std::cout<<"NS_NewLocalFile failed 2"<<std::endl;
-
         setLastError( 0x1001 );
         return false;
     };
@@ -167,13 +159,9 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
     result = XRE_InitEmbedding( componentDirNative, applicationDirNative, nsnull, nsnull, 0 );
     if ( NS_FAILED( result ) )
     {
-                std::cout<<"XRE_InitEmbedding failed"<<std::endl;
-
         setLastError( 0x1002 );
         return false;
     };
-
-    std::cout<<"XRE_InitEmbedding succeeded"<<std::endl;
 
     nsCOMPtr< nsILocalFile > profileDirNative;
     result = NS_NewLocalFile( profileDirUTF16 , PR_TRUE, getter_AddRefs( profileDirNative ) );
@@ -182,7 +170,6 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
         setLastError( 0x1007 );
         return false;
     };
-#if 0        
     nsCOMPtr< nsProfileDirServiceProvider > locProvider;
     NS_NewProfileDirServiceProvider( PR_TRUE, getter_AddRefs( locProvider ) );
     if ( ! locProvider )
@@ -191,6 +178,7 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
         XRE_TermEmbedding();
         return PR_FALSE;
     };
+
     result = locProvider->Register();
     if ( NS_FAILED( result ) )
     {
@@ -206,7 +194,6 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
         XRE_TermEmbedding();
         return PR_FALSE;
     };
-#endif
 
     nsCOMPtr<nsIPref> pref = do_CreateInstance( NS_PREF_CONTRACTID );
     if ( pref )
@@ -241,8 +228,6 @@ bool LLEmbeddedBrowser::init( std::string applicationDir,
     sAppShell->Spinup();
 
     clearLastError();
-
-    std::cout<<"LLEmbeddedBrowser::init() succeeded"<<std::endl;
 
     return true;
 }
@@ -381,8 +366,7 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow( int browserWidt
     LLEmbeddedBrowserWindow* newWin = new LLEmbeddedBrowserWindow();
     if ( ! newWin )
     {
-            std::cout<<"createBrowserWindow !newNew"<<std::endl;
-            return 0;
+        return 0;
     };
 
     nsIWebBrowserChrome** aNewWindow = getter_AddRefs( chrome );
@@ -398,7 +382,6 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow( int browserWidt
     newWin->createBrowser( mNativeWindowHandle, browserWidthIn, browserHeightIn, getter_AddRefs( newBrowser ) );
     if ( ! newBrowser )
     {
-        std::cout<<"createBrowserWindow !newBrowser"<<std::endl;
         return 0;
     };
 

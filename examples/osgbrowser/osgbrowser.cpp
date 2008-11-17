@@ -17,13 +17,69 @@
 
 class UBrowserImage;
 
+//////////////////////////////////////////////////////////////////////////
+//
+// UBrowserThread interface
+//
+class UBrowserThread : public OpenThreads::Thread, public osg::Referenced
+{
+    public:
+    
+        
+        static osg::ref_ptr<UBrowserThread>& instance();
+
+        void init(const std::string& application);
+
+        virtual void run();
+        
+        void* getNativeWindowHandle();
+
+        void registerUBrowserImage(UBrowserImage* image)
+        {
+            _ubrowserImageList.push_back(image);
+        }
+
+        void unregisterUBrowserImage(UBrowserImage* image)
+        {
+            UBrowserImageList::iterator itr = std::find(_ubrowserImageList.begin(), _ubrowserImageList.end(), image);
+            if (itr != _ubrowserImageList.end()) _ubrowserImageList.erase(itr);
+        }
+
+        void sendKeyEvent(UBrowserImage* image, int key, bool keyDown);
+        void sendPointerEvent(UBrowserImage* image, int x, int y, int buttonMask);
+
+    protected:
+    
+        UBrowserThread();
+
+        virtual ~UBrowserThread();
+
+        void setUpKeyMap();
+        int convertToXULKey(int key) const;
+
+        bool        _initialized;
+        bool        _done;
+
+        std::string _application;
+        void*       _nativeWindowHandle;
+        
+        typedef std::list< UBrowserImage* > UBrowserImageList;
+        UBrowserImageList   _ubrowserImageList;
+        
+        typedef     std::map<int, int> KeyMap;
+        KeyMap      _keyMap;
+
+        int         _previousButtonMask;
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// UBrowser  interface
 class UBrowserImage : public osg::Image, public LLEmbeddedBrowserWindowObserver
 {
     public:
     
-        UBrowserImage(const std::string& appWindowName,int width, int height);
-        
-
+        UBrowserImage(int width, int height);
 
         virtual void sendPointerEvent(int x, int y, int buttonMask);
 
@@ -84,38 +140,52 @@ class UBrowserImage : public osg::Image, public LLEmbeddedBrowserWindowObserver
 
         void update();
 
-        void* getNativeWindowHandle();
+        int getBrowserWindowId() const { return _browserWindowId; }
 
     protected:
 
         virtual ~UBrowserImage();
         
-        void setUpKeyMap();
-        
-        int convertToXULKey(int key) const;
-
         int         _browserWindowId;
-        void*       _nativeWindowHandle;
         
-        int         _previousButtonMask;
         bool        _needsUpdate;
-        
-        typedef     std::map<int, int> KeyMap;
-        KeyMap      _keyMap;
 };
 
-
-
-UBrowserImage::UBrowserImage(const std::string& appWindowName,int width, int height):
-    _nativeWindowHandle(0),
-    _browserWindowId(0),
-    _previousButtonMask(0),
-    _needsUpdate(true)
+//////////////////////////////////////////////////////////////////////////
+//
+// UBrowserThread implementation
+//
+UBrowserThread::UBrowserThread():
+    _initialized(false),
+    _done(false),
+    _previousButtonMask(0)
 {
-    setUpKeyMap();
+}
+
+UBrowserThread::~UBrowserThread()
+{
+    _done = true;
+    cancel();
+    while(isRunning()) 
+    {
+        OpenThreads::Thread::YieldCurrentThread();
+    }
+}
+
+osg::ref_ptr<UBrowserThread>& UBrowserThread::instance()
+{
+    static osg::ref_ptr<UBrowserThread> s_ubrowserThread = new UBrowserThread;
+    return s_ubrowserThread;
+}
+
+void UBrowserThread::init(const std::string& application)
+{
+    if (_initialized) return;
+
+    _application = application;
     
     // create a single browser window and set things up.
-    std::string applicationDir = osgDB::getFilePath(appWindowName);
+    std::string applicationDir = osgDB::getFilePath(_application);
     if (applicationDir.empty()) applicationDir = osgDB::getRealPath(".");                        
     else applicationDir = osgDB::getRealPath(applicationDir);
 
@@ -123,104 +193,16 @@ UBrowserImage::UBrowserImage(const std::string& appWindowName,int width, int hei
     std::string profileDir = applicationDir + "/" + "testGL_profile";
     LLMozLib::getInstance()->init( applicationDir, componentDir, profileDir, getNativeWindowHandle() );
 
-    _browserWindowId = LLMozLib::getInstance()->createBrowserWindow( width, height );
-
-    // tell LLMozLib about the size of the browser window
-    LLMozLib::getInstance()->setSize( _browserWindowId, width, height );
-
-    // observer events that LLMozLib emits
-    LLMozLib::getInstance()->addObserver( _browserWindowId, this );
-
     // append details to agent string
-    LLMozLib::getInstance()->setBrowserAgentId( appWindowName );
+    LLMozLib::getInstance()->setBrowserAgentId( _application );
 
-    // don't flip bitmap
-    LLMozLib::getInstance()->flipWindow( _browserWindowId, false );
-
-    LLMozLib::getInstance()->setBackgroundColor( _browserWindowId, 0, 255, 0);
-
-    navigateTo("http://www.google.com");
-
-    GLint internalFormat = LLMozLib::getInstance()->getBrowserDepth( _browserWindowId ) == 3 ? GL_RGB : GL_RGBA;
-    GLenum pixelFormat = LLMozLib::getInstance()->getBrowserDepth( _browserWindowId ) == 3 ? GL_BGR_EXT : GL_BGRA_EXT;
-
-    setImage(width,height,1, internalFormat, pixelFormat, GL_UNSIGNED_BYTE, 
-             (unsigned char*)LLMozLib::getInstance()->getBrowserWindowPixels( _browserWindowId ),
-             osg::Image::NO_DELETE);
-             
-    setDataVariance(osg::Object::DYNAMIC);
-    setOrigin(osg::Image::TOP_LEFT);
-}
-
-UBrowserImage::~UBrowserImage()
-{
-}
-
-void UBrowserImage::sendPointerEvent(int x, int y, int buttonMask)
-{
-    int deltaButton = (buttonMask&1) - (_previousButtonMask&1);
-    _previousButtonMask = buttonMask;
+    _initialized = true;
     
-    if (deltaButton>0)
-    {
-        // send event to LLMozLib
-        LLMozLib::getInstance()->mouseDown( _browserWindowId, x, y );
-    }
-    else if (deltaButton<0)
-    {
-        // send event to LLMozLib
-        LLMozLib::getInstance()->mouseUp( _browserWindowId, x, y );
-
-        // this seems better than sending focus on mouse down (still need to improve this)
-        LLMozLib::getInstance()->focusBrowser( _browserWindowId, true );
-    } else
-    {
-        // send event to LLMozLib
-        LLMozLib::getInstance()->mouseMove( _browserWindowId, x, y );
-    }
-}
-
-void UBrowserImage::sendKeyEvent(int key, bool keyDown)
-{
-    if (!keyDown) return;
-
-    KeyMap::const_iterator itr = _keyMap.find(key);    
-    if (_keyMap.find(key)==_keyMap.end()) LLMozLib::getInstance()->unicodeInput( _browserWindowId, key );
-    else LLMozLib::getInstance()->keyPress( _browserWindowId, itr->second );
-}
-
-void UBrowserImage::navigateTo(const std::string& url)
-{
-    // go to the "home page"
-    LLMozLib::getInstance()->navigateTo( _browserWindowId, url );
-}
-
-
-void UBrowserImage::update()
-{
-    //if ( _needsUpdate )
-    {
-        // grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
-        LLMozLib::getInstance()->grabBrowserWindow( _browserWindowId );
-
-        int width = LLMozLib::getInstance()->getBrowserRowSpan( _browserWindowId ) / LLMozLib::getInstance()->getBrowserDepth( _browserWindowId );
-        int height = LLMozLib::getInstance()->getBrowserHeight( _browserWindowId );
-        
-        GLint internalFormat = LLMozLib::getInstance()->getBrowserDepth( _browserWindowId ) == 3 ? GL_RGB : GL_RGBA;
-        GLenum pixelFormat = LLMozLib::getInstance()->getBrowserDepth( _browserWindowId ) == 3 ? GL_BGR_EXT : GL_BGRA_EXT;
-
-        setImage(width,height,1, internalFormat, pixelFormat, GL_UNSIGNED_BYTE, 
-                 (unsigned char*)LLMozLib::getInstance()->getBrowserWindowPixels( _browserWindowId ),
-                 osg::Image::NO_DELETE);
-                 
-        // osg::notify(osg::NOTICE)<<"Image updated "<<(void*)data()<<", "<<s()<<","<<t()<<std::endl;
-
-        // _needsUpdate = false;
-    }
+    // startThread();
 }
 
 #ifdef _WINDOWS
-void* UBrowserImage::getNativeWindowHandle()
+void* UBrowserThread::getNativeWindowHandle()
 {
     if (_nativeWindowHandle) return _nativeWindowHandle;
     
@@ -235,7 +217,7 @@ void* UBrowserImage::getNativeWindowHandle()
 
 #include <gtk/gtk.h>
 
-void* UBrowserImage::getNativeWindowHandle()
+void* UBrowserThread::getNativeWindowHandle()
 {
     if (_nativeWindowHandle) return _nativeWindowHandle;
 
@@ -259,7 +241,49 @@ void* UBrowserImage::getNativeWindowHandle()
 }
 #endif
 
-void UBrowserImage::setUpKeyMap()
+void UBrowserThread::run()
+{
+    do
+    {
+    
+        //osg::notify(osg::NOTICE)<<"UBrowserThread::run()"<<std::endl;
+    
+        if (_ubrowserImageList.empty())
+        {
+            OpenThreads::Thread::YieldCurrentThread();
+            continue;
+        }
+        
+    
+#ifndef _WINDOWS
+        // pump the GTK+Gecko event queue for a (limited) while.  this should
+        // be done so that the Gecko event queue doesn't starve, and done
+        // *here* so that mNeedsUpdate[] can be populated by callbacks
+        // from Gecko.
+        gtk_main_iteration_do(0);
+        for (int iter=0; iter<10; ++iter)
+        {
+            if (gtk_events_pending())
+                gtk_main_iteration();
+        }
+#endif
+
+
+        for(UBrowserImageList::iterator itr = _ubrowserImageList.begin();
+            itr != _ubrowserImageList.end();
+            ++itr)
+        {
+            osg::ref_ptr<UBrowserImage> browser = *(itr);
+            if (browser.valid())
+            {
+                browser->update();
+            }
+        }
+
+    } while (!_done && !testCancel());
+}
+
+void UBrowserThread::setUpKeyMap()
 {
     _keyMap[osgGA::GUIEventAdapter::KEY_BackSpace] = nsIDOMKeyEvent::DOM_VK_BACK_SPACE;
     _keyMap[osgGA::GUIEventAdapter::KEY_Tab] = nsIDOMKeyEvent::DOM_VK_TAB;
@@ -368,12 +392,126 @@ void UBrowserImage::setUpKeyMap()
     _keyMap[osgGA::GUIEventAdapter::KEY_Caps_Lock] = nsIDOMKeyEvent::DOM_VK_CAPS_LOCK;
 }
 
-int UBrowserImage::convertToXULKey(int key) const
+int UBrowserThread::convertToXULKey(int key) const
 {
     KeyMap::const_iterator itr = _keyMap.find(key);    
     if (_keyMap.find(key)==_keyMap.end()) return key;
     else return itr->second;
     
+}
+
+void UBrowserThread::sendPointerEvent(UBrowserImage* image, int x, int y, int buttonMask)
+{
+    int deltaButton = (buttonMask&1) - (_previousButtonMask&1);
+    _previousButtonMask = buttonMask;
+    
+    int _browserWindowId = image->getBrowserWindowId();
+
+    if (deltaButton>0)
+    {
+        // send event to LLMozLib
+        LLMozLib::getInstance()->mouseDown( _browserWindowId, x, y );
+    }
+    else if (deltaButton<0)
+    {
+        // send event to LLMozLib
+        LLMozLib::getInstance()->mouseUp( _browserWindowId, x, y );
+
+        // this seems better than sending focus on mouse down (still need to improve this)
+        LLMozLib::getInstance()->focusBrowser( _browserWindowId, true );
+    } else
+    {
+        // send event to LLMozLib
+        LLMozLib::getInstance()->mouseMove( _browserWindowId, x, y );
+    }
+}
+
+void UBrowserThread::sendKeyEvent(UBrowserImage* image, int key, bool keyDown)
+{
+    if (!keyDown) return;
+
+    int _browserWindowId = image->getBrowserWindowId();
+
+    KeyMap::const_iterator itr = _keyMap.find(key);    
+    if (_keyMap.find(key)==_keyMap.end()) LLMozLib::getInstance()->unicodeInput( _browserWindowId, key );
+    else LLMozLib::getInstance()->keyPress( _browserWindowId, itr->second );
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////
+//
+// UBrowser  implementation
+
+UBrowserImage::UBrowserImage(int width, int height):
+    _browserWindowId(0),
+    _needsUpdate(true)
+{
+    _browserWindowId = LLMozLib::getInstance()->createBrowserWindow( width, height );
+
+    // tell LLMozLib about the size of the browser window
+    LLMozLib::getInstance()->setSize( _browserWindowId, width, height );
+
+    // observer events that LLMozLib emits
+    LLMozLib::getInstance()->addObserver( _browserWindowId, this );
+
+    // don't flip bitmap
+    LLMozLib::getInstance()->flipWindow( _browserWindowId, false );
+
+    LLMozLib::getInstance()->setBackgroundColor( _browserWindowId, 0, 255, 0);
+
+    GLint internalFormat = LLMozLib::getInstance()->getBrowserDepth( _browserWindowId ) == 3 ? GL_RGB : GL_RGBA;
+    GLenum pixelFormat = LLMozLib::getInstance()->getBrowserDepth( _browserWindowId ) == 3 ? GL_BGR_EXT : GL_BGRA_EXT;
+
+    setImage(width,height,1, internalFormat, pixelFormat, GL_UNSIGNED_BYTE, 
+             (unsigned char*)LLMozLib::getInstance()->getBrowserWindowPixels( _browserWindowId ),
+             osg::Image::NO_DELETE);
+             
+    setDataVariance(osg::Object::DYNAMIC);
+    setOrigin(osg::Image::TOP_LEFT);
+}
+
+UBrowserImage::~UBrowserImage()
+{
+}
+
+void UBrowserImage::sendPointerEvent(int x, int y, int buttonMask)
+{
+    UBrowserThread::instance()->sendPointerEvent(this, x, y, buttonMask);
+}
+
+void UBrowserImage::sendKeyEvent(int key, bool keyDown)
+{
+    UBrowserThread::instance()->sendKeyEvent(this, key, keyDown);
+}
+
+void UBrowserImage::navigateTo(const std::string& url)
+{
+    // go to the "home page"
+    LLMozLib::getInstance()->navigateTo( _browserWindowId, url );
+}
+
+
+void UBrowserImage::update()
+{
+    //if ( _needsUpdate )
+    {
+        // grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
+        LLMozLib::getInstance()->grabBrowserWindow( _browserWindowId );
+
+        int width = LLMozLib::getInstance()->getBrowserRowSpan( _browserWindowId ) / LLMozLib::getInstance()->getBrowserDepth( _browserWindowId );
+        int height = LLMozLib::getInstance()->getBrowserHeight( _browserWindowId );
+        
+        GLint internalFormat = LLMozLib::getInstance()->getBrowserDepth( _browserWindowId ) == 3 ? GL_RGB : GL_RGBA;
+        GLenum pixelFormat = LLMozLib::getInstance()->getBrowserDepth( _browserWindowId ) == 3 ? GL_BGR_EXT : GL_BGRA_EXT;
+
+        setImage(width,height,1, internalFormat, pixelFormat, GL_UNSIGNED_BYTE, 
+                 (unsigned char*)LLMozLib::getInstance()->getBrowserWindowPixels( _browserWindowId ),
+                 osg::Image::NO_DELETE);
+                 
+        // osg::notify(osg::NOTICE)<<"Image updated "<<(void*)data()<<", "<<s()<<","<<t()<<std::endl;
+
+        // _needsUpdate = false;
+    }
 }
 
 osg::Node* createInteractiveQuad(const osg::Vec3& origin, osg::Vec3& widthAxis, osg::Vec3& heightAxis, 
@@ -406,6 +544,8 @@ osg::Node* createInteractiveQuad(const osg::Vec3& origin, osg::Vec3& widthAxis, 
 int main( int argc, char* argv[] )
 {
     osg::ArgumentParser arguments(&argc, argv);
+    
+    UBrowserThread::instance()->init(arguments[0]);
 
     osgViewer::Viewer viewer(arguments);
 
@@ -416,7 +556,7 @@ int main( int argc, char* argv[] )
     {
         if (!arguments.isOption(i))
         {
-            osg::ref_ptr<UBrowserImage> browserImage= new UBrowserImage(arguments[0], 768, 1024);
+            osg::ref_ptr<UBrowserImage> browserImage= new UBrowserImage(768, 1024);
             browserImage->navigateTo(arguments[i]);
             images.push_back(browserImage.get());
         }

@@ -196,6 +196,8 @@ void UBrowserThread::init(const std::string& application)
     // append details to agent string
     LLMozLib::getInstance()->setBrowserAgentId( _application );
 
+    setUpKeyMap();
+
     _initialized = true;
     
     // startThread();

@@ -95,6 +95,9 @@ class UBrowserImage : public osg::Image, public LLEmbeddedBrowserWindowObserver
     
         UBrowserImage(const std::string& homeURL, int width, int height);
 
+
+        const std::string& getHomeURL() const { return _homeURL; }
+
         virtual void sendPointerEvent(int x, int y, int buttonMask);
 
         virtual void sendKeyEvent(int key, bool keyDown);
@@ -152,8 +155,7 @@ class UBrowserImage : public osg::Image, public LLEmbeddedBrowserWindowObserver
             osg::notify(osg::NOTICE) << "Event: clicked on link to " << eventIn.getStringValue() << std::endl;
         };
 
-        void update();
-
+        void setBrowserWindowId(int id) { _browserWindowId = id; }
         int getBrowserWindowId() const { return _browserWindowId; }
 
     protected:
@@ -270,11 +272,11 @@ struct UpdateOperation : public osg::Operation
     {
         UBrowserManager* ubrowserManager = dynamic_cast<UBrowserManager*>(object);
 
-        osg::notify(osg::NOTICE)<<"Update"<<std::endl;
+        // osg::notify(osg::NOTICE)<<"Update"<<std::endl;
 
         if (ubrowserManager->_ubrowserImageList.empty())
         {
-            osg::notify(osg::NOTICE)<<"Nothing to do"<<std::endl;
+            // osg::notify(osg::NOTICE)<<"Nothing to do"<<std::endl;
 
             OpenThreads::Thread::YieldCurrentThread();
             return;
@@ -307,11 +309,64 @@ struct UpdateOperation : public osg::Operation
             itr != images.end();
             ++itr)
         {
-            if (itr->valid()) (*itr)->update();
+            update(itr->get());
         }
         
-        osg::notify(osg::NOTICE)<<"complted Update"<<std::endl;
+        // osg::notify(osg::NOTICE)<<"complted Update"<<std::endl;
 
+    }
+    
+    void update(UBrowserImage* image)
+    {
+        if (!image) return;
+    
+    
+        int id = image->getBrowserWindowId();
+
+        if (id==0)
+        {
+            int width = image->s();
+            int height = image->t();
+
+            osg::notify(osg::NOTICE)<<"Contructing browser window for first time, width = "<<width<<" height = "<<height<<std::endl;
+
+            id = LLMozLib::getInstance()->createBrowserWindow( width, height );
+            
+            image->setBrowserWindowId(id);
+
+            // tell LLMozLib about the size of the browser window
+            LLMozLib::getInstance()->setSize( id, width, height );
+
+            // observer events that LLMozLib emits
+            LLMozLib::getInstance()->addObserver( id, image );
+
+            // don't flip bitmap
+            LLMozLib::getInstance()->flipWindow( id, false );
+
+            LLMozLib::getInstance()->setBackgroundColor( id, 0, 255, 0);
+
+            LLMozLib::getInstance()->navigateTo( id, image->getHomeURL() );
+
+        }
+
+
+        //if ( _needsUpdate )
+        {
+            // grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
+            LLMozLib::getInstance()->grabBrowserWindow( id );
+
+            int width = LLMozLib::getInstance()->getBrowserRowSpan( id ) / LLMozLib::getInstance()->getBrowserDepth( id );
+            int height = LLMozLib::getInstance()->getBrowserHeight( id );
+
+            GLint internalFormat = LLMozLib::getInstance()->getBrowserDepth( id ) == 3 ? GL_RGB : GL_RGBA;
+            GLenum pixelFormat = LLMozLib::getInstance()->getBrowserDepth( id ) == 3 ? GL_BGR_EXT : GL_BGRA_EXT;
+
+            image->setImage(width,height,1, internalFormat, pixelFormat, GL_UNSIGNED_BYTE, 
+                     (unsigned char*)LLMozLib::getInstance()->getBrowserWindowPixels( id ),
+                     osg::Image::NO_DELETE);
+
+            // _needsUpdate = false;
+        }
     }
 };
 
@@ -612,54 +667,6 @@ void UBrowserImage::navigateTo(const std::string& url)
 }
 
 
-void UBrowserImage::update()
-{
-    if (_browserWindowId==0)
-    {
-        int width = s();
-        int height = t();
-        
-        osg::notify(osg::NOTICE)<<"width = "<<width<<" height = "<<height<<std::endl;
-    
-        _browserWindowId = LLMozLib::getInstance()->createBrowserWindow( width, height );
-
-        // tell LLMozLib about the size of the browser window
-        LLMozLib::getInstance()->setSize( _browserWindowId, width, height );
-
-        // observer events that LLMozLib emits
-        LLMozLib::getInstance()->addObserver( _browserWindowId, this );
-
-        // don't flip bitmap
-        LLMozLib::getInstance()->flipWindow( _browserWindowId, false );
-
-        LLMozLib::getInstance()->setBackgroundColor( _browserWindowId, 0, 255, 0);
-        
-        LLMozLib::getInstance()->navigateTo( _browserWindowId, _homeURL );
-
-    }
-
-
-    //if ( _needsUpdate )
-    {
-        // grab a page but don't reset 'needs update' flag until we've written it to the texture in display()
-        LLMozLib::getInstance()->grabBrowserWindow( _browserWindowId );
-
-        int width = LLMozLib::getInstance()->getBrowserRowSpan( _browserWindowId ) / LLMozLib::getInstance()->getBrowserDepth( _browserWindowId );
-        int height = LLMozLib::getInstance()->getBrowserHeight( _browserWindowId );
-        
-        GLint internalFormat = LLMozLib::getInstance()->getBrowserDepth( _browserWindowId ) == 3 ? GL_RGB : GL_RGBA;
-        GLenum pixelFormat = LLMozLib::getInstance()->getBrowserDepth( _browserWindowId ) == 3 ? GL_BGR_EXT : GL_BGRA_EXT;
-
-        setImage(width,height,1, internalFormat, pixelFormat, GL_UNSIGNED_BYTE, 
-                 (unsigned char*)LLMozLib::getInstance()->getBrowserWindowPixels( _browserWindowId ),
-                 osg::Image::NO_DELETE);
-                 
-        osg::notify(osg::NOTICE)<<"Image updated "<<(void*)data()<<", "<<s()<<","<<t()<<std::endl;
-
-        // _needsUpdate = false;
-    }
-}
-
 osg::Node* createInteractiveQuad(const osg::Vec3& origin, osg::Vec3& widthAxis, osg::Vec3& heightAxis, 
                                  osg::Image* image)
 {
@@ -704,8 +711,7 @@ int main( int argc, char* argv[] )
     {
         if (!arguments.isOption(i))
         {
-            osg::ref_ptr<UBrowserImage> browserImage= new UBrowserImage(arguments[i], 768, 1024);
-            images.push_back(browserImage.get());
+            images.push_back(new UBrowserImage(arguments[i], 768, 1024));
         }
     }
 

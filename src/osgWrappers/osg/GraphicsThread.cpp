@@ -34,8 +34,8 @@ BEGIN_OBJECT_REFLECTOR(osg::BarrierOperation)
 	I_DeclaringFile("osg/GraphicsThread");
 	I_BaseType(osg::Operation);
 	I_BaseType(OpenThreads::Barrier);
-	I_ConstructorWithDefaults2(IN, int, numThreads, , IN, osg::BarrierOperation::PreBlockOp, op, osg::BarrierOperation::NO_OPERATION,
-	                           ____BarrierOperation__int__PreBlockOp,
+	I_ConstructorWithDefaults3(IN, int, numThreads, , IN, osg::BarrierOperation::PreBlockOp, op, osg::BarrierOperation::NO_OPERATION, IN, bool, keep, true,
+	                           ____BarrierOperation__int__PreBlockOp__bool,
 	                           "",
 	                           "");
 	I_Method0(void, release,

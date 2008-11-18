@@ -64,8 +64,8 @@ struct OSG_EXPORT BarrierOperation : public Operation, public OpenThreads::Barri
         GL_FINISH
     };
 
-    BarrierOperation(int numThreads, PreBlockOp op=NO_OPERATION):
-        Operation("Barrier", true),
+    BarrierOperation(int numThreads, PreBlockOp op=NO_OPERATION, bool keep=true):
+        Operation("Barrier", keep),
         OpenThreads::Barrier(numThreads),
         _preBlockOp(op) {}
 

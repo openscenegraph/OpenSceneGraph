@@ -307,6 +307,7 @@ FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(ITK)
 FIND_PACKAGE(LibVNCServer)
 FIND_PACKAGE(OurDCMTK)
+FIND_PACKAGE(XUL)
 
 SET(wxWidgets_USE_LIBS base core gl net)
 FIND_PACKAGE(wxWidgets)
@@ -349,11 +350,8 @@ IF(PKG_CONFIG_FOUND)
     PKG_CHECK_MODULES(RSVG librsvg-2.0)
     PKG_CHECK_MODULES(CAIRO cairo)
     PKG_CHECK_MODULES(POPPLER poppler-glib)
-    PKG_CHECK_MODULES(XUL xulrunner-xpcom xulrunner-nspr xulrunner-nss xulrunner-plugin xulrunner-js)
 
 ENDIF(PKG_CONFIG_FOUND)
-
-
 
 
 

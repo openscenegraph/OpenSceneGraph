@@ -1096,8 +1096,6 @@ PRBool LLEmbeddedBrowserWindow::sendMozillaKeyboardEvent( PRUint32 uni_char, PRU
     keyEvent.refPoint.y = 0;
     keyEvent.flags = 0;
     
-    std::cout<<"Sending key envent "<<uni_char<<", "<<ns_vk_code<<std::endl;
-
     nsEventStatus status;
     nsresult result = viewManager->DispatchEvent( &keyEvent, &status );
     if ( NS_FAILED( result ) )

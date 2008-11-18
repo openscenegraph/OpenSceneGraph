@@ -18,6 +18,16 @@
 
 class UBrowserImage;
 
+#ifdef _WINDOWS
+    #include <windows.h>
+#elif defined(__APPLE__)
+    #include <Carbon/Carbon.h>
+#else
+    extern "C" {
+    #include <gtk/gtk.h>
+    }
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 //
 // UBrowserManager interface
@@ -110,6 +120,7 @@ class UBrowserImage : public osg::Image, public LLEmbeddedBrowserWindowObserver
         void onPageChanged( const EventType& eventIn )
         {
             // flag that an update is required - page grab happens in idle() so we don't stall
+            osg::notify(osg::NOTICE) << "Event: onPageChanged " << eventIn.getEventUri() << std::endl;
             _needsUpdate = true;
         };
 
@@ -195,7 +206,7 @@ osg::ref_ptr<UBrowserManager>& UBrowserManager::instance()
     return s_UBrowserManager;
 }
 
-#ifdef _WINDOWS
+#if defined(_WINDOWS)
 void* UBrowserManager::getNativeWindowHandle()
 {
     if (_nativeWindowHandle) return _nativeWindowHandle;
@@ -207,10 +218,28 @@ void* UBrowserManager::getNativeWindowHandle()
     return _nativeWindowHandle;
 }
 
+#elif defined(__APPLE__)
+void* UBrowserManager::getNativeWindowHandle()
+{
+    if (_nativeWindowHandle) return _nativeWindowHandle;
+
+    // Create a window just for this purpose.
+    Rect window_rect = {100, 100, 200, 200};
+
+    _nativeWindowHandle = (void*) NewCWindow(
+        NULL,
+        &window_rect,
+        "\p",
+        false,                // Create the window invisible.
+        zoomDocProc,        // Window with a grow box and a zoom box
+        kLastWindowOfClass,        // create it behind other windows
+        false,                    // no close box
+        0);
+    }
+    
+    return _nativeWindowHandle;
+}
 #else
-
-#include <gtk/gtk.h>
-
 void* UBrowserManager::getNativeWindowHandle()
 {
     if (_nativeWindowHandle) return _nativeWindowHandle;
@@ -257,8 +286,6 @@ struct InitOperation : public osg::Operation
 
         // append details to agent string
         LLMozLib::getInstance()->setBrowserAgentId( ubrowserManager->getApplication() );
-
-        osg::notify(osg::NOTICE)<<"Done init"<<std::endl;
     }
 
 };
@@ -282,7 +309,7 @@ struct UpdateOperation : public osg::Operation
             return;
         }
             
-    #ifndef _WINDOWS
+    #if !defined(_WINDOWS) && !defined(__APPLE__)
         // pump the GTK+Gecko event queue for a (limited) while.  this should
         // be done so that the Gecko event queue doesn't starve, and done
         // *here* so that mNeedsUpdate[] can be populated by callbacks
@@ -328,7 +355,7 @@ struct UpdateOperation : public osg::Operation
             int width = image->s();
             int height = image->t();
 
-            osg::notify(osg::NOTICE)<<"Contructing browser window for first time, width = "<<width<<" height = "<<height<<std::endl;
+            osg::notify(osg::INFO)<<"Constructing browser window for first time, width = "<<width<<" height = "<<height<<std::endl;
 
             id = LLMozLib::getInstance()->createBrowserWindow( width, height );
             
@@ -342,8 +369,6 @@ struct UpdateOperation : public osg::Operation
 
             // don't flip bitmap
             LLMozLib::getInstance()->flipWindow( id, false );
-
-            LLMozLib::getInstance()->setBackgroundColor( id, 0, 255, 0);
 
             LLMozLib::getInstance()->navigateTo( id, image->getHomeURL() );
 
@@ -525,8 +550,6 @@ struct PointerEventOperation : public osg::Operation
 
     virtual void operator () (osg::Object* object)
     {
-        osg::notify(osg::NOTICE)<<"PointerEventOperation "<<std::endl;
-        
         int id = _image->getBrowserWindowId();
 
         // send event to LLMozLib
@@ -574,8 +597,6 @@ struct KeyEventOperation : public osg::Operation
 
     virtual void operator () (osg::Object* object)
     {
-        osg::notify(osg::NOTICE)<<"KeyEventOperation "<<std::endl;
-        
         int id = _image->getBrowserWindowId();
         if (_isUnicode) LLMozLib::getInstance()->unicodeInput( id, _key );
         else LLMozLib::getInstance()->keyPress( id, _key );
@@ -606,8 +627,6 @@ struct NavigateToOperation : public osg::Operation
 
     virtual void operator () (osg::Object* object)
     {
-        osg::notify(osg::NOTICE)<<"KeyEventOperation "<<std::endl;
-        
         int id = _image->getBrowserWindowId();
         LLMozLib::getInstance()->navigateTo( id, _url );
     }
@@ -699,8 +718,6 @@ int main( int argc, char* argv[] )
     osg::ArgumentParser arguments(&argc, argv);
     
     UBrowserManager::instance()->init(arguments[0]);
-    
-    osg::notify(osg::NOTICE)<<"After init"<<std::endl;
 
     osgViewer::Viewer viewer(arguments);
 

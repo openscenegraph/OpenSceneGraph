@@ -3,5 +3,6 @@
 
 SET(TARGET_SRC osgwidgetmenu.cpp )
 SET(TARGET_ADDED_LIBRARIES osgWidget )
+
 #### end var setup  ###
 SETUP_EXAMPLE(osgwidgetmenu)

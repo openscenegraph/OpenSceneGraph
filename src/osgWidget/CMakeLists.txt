@@ -9,6 +9,7 @@ SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/Box
+    ${HEADER_PATH}/Browser
     ${HEADER_PATH}/Canvas
     ${HEADER_PATH}/EventInterface
     ${HEADER_PATH}/Frame
@@ -35,6 +36,7 @@ ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
     Box.cpp
+    Browser.cpp
     Canvas.cpp
     CMakeLists.txt
     Frame.cpp

@@ -149,6 +149,7 @@ class OSGWIDGET_EXPORT Window:
         void addVisibleArea    (int = 0, int = 0, int = 0, int = 0);
         bool setFocused        (const Widget*);
         bool setFocused        (const std::string&);
+        bool grabFocus         ();
         bool setFirstFocusable ();
         bool setNextFocusable  ();
         bool getFocusList      (WidgetList&) const;
@@ -340,6 +341,10 @@ class OSGWIDGET_EXPORT Window:
         void setOrigin(matrix_type x, matrix_type y) {
             _x = x;
             _y = y;
+        }
+
+        void setOrigin(const XYCoord& xy) {
+                setOrigin(xy.x(), xy.y());
         }
 
         void setRotate(matrix_type r) {

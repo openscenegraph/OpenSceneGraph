@@ -157,7 +157,7 @@ _hAnchor    (HA_NONE) {
     Widget*     bg    = new Widget(name + "bg", 0.0f, 0.0f);
 
     bg->setLayer(Widget::LAYER_BG);
-    bg->setColor(0.0f, 0.0f, 0.0f, 0.5f);
+    bg->setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
     _setParented(bg);
 
@@ -732,6 +732,12 @@ bool Window::setFocused(const std::string& name) {
     _setFocused(w1);
     
     return true;
+}
+
+bool Window::grabFocus() {
+    if(!_wm) return false;
+
+    return _wm->setFocused(this);
 }
 
 bool Window::setFirstFocusable() {

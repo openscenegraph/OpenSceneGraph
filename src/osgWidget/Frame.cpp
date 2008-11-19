@@ -33,13 +33,20 @@ Frame::Corner::Corner(CornerType corner, point_type width, point_type height):
 Widget  (cornerTypeToString(corner), width, height),
 _corner (corner)
 {
-    setEventMask(EVENT_MASK_MOUSE_DRAG);
 }
 
 Frame::Corner::Corner(const Corner& corner, const osg::CopyOp& co):
 Widget  (corner, co),
 _corner (corner._corner)
 {
+}
+
+void Frame::Corner::parented(Window* window) {
+    Frame* parent = dynamic_cast<Frame*>(getParent());
+
+    if(!parent) return;
+
+    if(parent->canResize()) setEventMask(EVENT_MASK_MOUSE_DRAG);
 }
 
 bool Frame::Corner::mouseDrag(double x, double y, WindowManager* wm)
@@ -72,13 +79,20 @@ Widget  (borderTypeToString(border), width, height),
 _border (border)
 {
     setCanFill(true);
-    setEventMask(EVENT_MASK_MOUSE_DRAG);
 }
 
 Frame::Border::Border(const Border& border, const osg::CopyOp& co):
 Widget  (border, co),
 _border (border._border) 
 {
+}
+
+void Frame::Border::parented(Window* window) {
+    Frame* parent = dynamic_cast<Frame*>(getParent());
+
+    if(!parent) return;
+
+    if(parent->canResize()) setEventMask(EVENT_MASK_MOUSE_DRAG);
 }
 
 void Frame::Border::positioned()

@@ -3,7 +3,10 @@ SET(TARGET_SRC
     llembeddedbrowserwindow.cpp
     llmozlib2.cpp
     nsProfileDirServiceProvider.cpp
+    Browser.cpp
+    UBrowser.cpp
     osgbrowser.cpp
+    ReaderWriterUBrowser.cpp
 )
 
 SET(TARGET_H
@@ -13,6 +16,8 @@ SET(TARGET_H
     nsProfileDirServiceProvider.h
     nsProfileLock.h
     nsProfileStringTypes.h
+    Browser.h
+    UBrowser.h
 )
 
 ADD_DEFINITIONS(-DMOZILLA_INTERNAL_API)
@@ -56,6 +61,7 @@ ELSE(WIN32 OR APPLE)
 
 ENDIF(WIN32 OR APPLE)
 
+ADD_DEFINITIONS(-DXUL_DIR=${XUL_DIR})
 
 #### end var setup  ###
 SETUP_EXAMPLE(osgbrowser)

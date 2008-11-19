@@ -14,7 +14,7 @@
 #ifndef UBROWSER_H
 #define UBROWSER_H
 
-#include "Browser.h"
+#include <osgWidget/Browser>
 
 #include <osg/OperationThread>
 

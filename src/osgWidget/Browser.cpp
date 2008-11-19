@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include "Browser.h"
+#include <osgWidget/Browser>
 
 #include <osg/Notify>
 

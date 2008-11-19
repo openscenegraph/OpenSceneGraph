@@ -138,9 +138,7 @@ struct InitOperation : public osg::Operation
         if (applicationDir.empty()) applicationDir = osgDB::getRealPath(".");                        
         else applicationDir = osgDB::getRealPath(applicationDir);
         
-        osg::notify(osg::NOTICE)<<"XUL_DIR = "<<#XUL_DIR<<std::endl;
-
-        std::string componentDir = "/usr/lib/xulrunner";
+        std::string componentDir = ADDQUOTES(XUL_DIR);
         std::string profileDir = applicationDir + "/" + ".profile";
         LLMozLib::getInstance()->init( applicationDir, componentDir, profileDir, ubrowserManager->getNativeWindowHandle() );
 

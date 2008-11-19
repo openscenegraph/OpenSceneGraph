@@ -102,6 +102,34 @@ FIND_PATH(MOZJS_INCLUDE_DIR jsapi.h
     /usr/freeware/include
 )
 
+FIND_PATH(XUL_DIR 
+    NAMES components/appshell.xpt
+    PATHS
+    $ENV{OSG_DIR}/lib
+    $ENV{OSG_DIR}
+    $ENV{OSGDIR}/lib
+    $ENV{OSGDIR}
+    $ENV{OSG_ROOT}/lib
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/lib/xulrunner
+    /usr/local/lib
+    /usr/lib/xulrunner
+    /usr/lib
+    /sw/lib/xulrunner
+    /sw/lib
+    /opt/local/lib/xulrunner
+    /opt/local/lib
+    /opt/csw/lib/xulrunner
+    /opt/csw/lib
+    /opt/lib/xulrunner
+    /opt/lib
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+    /usr/freeware/lib64/xulrunner
+    /usr/freeware/lib64
+)
+
+
 MACRO(FIND_XUL_LIBRARY MYLIBRARY MYLIBRARYNAME)
 
     FIND_LIBRARY(${MYLIBRARY}

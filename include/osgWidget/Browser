@@ -30,9 +30,12 @@ class BrowserManager : public osg::Object
         
         virtual void init(const std::string& application);
 
+        void setApplication(const std::string& application) { _application = application; }
+        const std::string& getApplication() const { return _application; }
+
         virtual BrowserImage* createBrowserImage(const std::string& url);
         virtual BrowserImage* createBrowserImage(const std::string& url, int width, int height);
-
+        
     protected:
 
         BrowserManager();

@@ -59,7 +59,7 @@ ELSE(WIN32 OR APPLE)
 
 ENDIF(WIN32 OR APPLE)
 
-SET(TARGET_ADDED_LIBRARIES osgWidget )
+SET(TARGET_ADDED_LIBRARIES osgWidget osgViewer)
 
 #### end var setup  ###
 SETUP_PLUGIN(gecko)

@@ -15,6 +15,8 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
 
+#include <osgViewer/ViewerEventHandlers>
+
 #include "UBrowser.h"
 
 class ReaderWriterUBrowser : public osgDB::ReaderWriter
@@ -62,11 +64,53 @@ class ReaderWriterUBrowser : public osgDB::ReaderWriter
 
             if (!_initialized)
             {
+                if (osgWidget::BrowserManager::instance()->getApplication().empty())
+                {
+                    osgWidget::BrowserManager::instance()->setApplication(osg::DisplaySettings::instance()->getApplication());
+                }
+            
                 osgWidget::BrowserManager::instance()->init(osgWidget::BrowserManager::instance()->getApplication());
             }
 
             
             return osgWidget::BrowserManager::instance()->createBrowserImage(osgDB::getNameLessExtension(file));
+        }
+
+        
+        virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        {
+            osgDB::ReaderWriter::ReadResult result = readImage(fileName, options);
+            if (!result.validImage()) return result;
+            
+            osg::Image* image = result.getImage();
+            
+            bool xyPlane = false;
+            bool flip = image->getOrigin()==osg::Image::TOP_LEFT;
+            osg::Vec3 origin = osg::Vec3(0.0f,0.0f,0.0f);
+            float width = 1.0;
+            float height = float(image->t())/float(image->s());
+            osg::Vec3 widthAxis = osg::Vec3(width,0.0f,0.0f);
+            osg::Vec3 heightAxis = xyPlane ? osg::Vec3(0.0f,height,0.0f) : osg::Vec3(0.0f,0.0f,height);
+
+            osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(origin, widthAxis, heightAxis,
+                                               0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
+
+            osg::Texture2D* texture = new osg::Texture2D(image);
+            texture->setResizeNonPowerOfTwoHint(false);
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+            texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
+            texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
+
+            pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
+                        texture,
+                        osg::StateAttribute::ON);
+
+            pictureQuad->setEventCallback(new osgViewer::InteractiveImageHandler(image));
+
+            osg::Geode* geode = new osg::Geode;
+            geode->addDrawable(pictureQuad);
+
+            return geode;
         }
 
         bool _initialized;

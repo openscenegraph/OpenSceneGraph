@@ -105,6 +105,15 @@ IF(ZLIB_FOUND)
     ADD_SUBDIRECTORY(gz)
 ENDIF(ZLIB_FOUND)
 
+IF(XUL_FOUND)
+    IF  (WIN32 OR APPLE OR GTK_FOUND)
+        ADD_SUBDIRECTORY(gecko)
+    ENDIF(WIN32 OR APPLE OR GTK_FOUND)
+ENDIF(XUL_FOUND)
+
+
+
+
 ############################################################
 #
 # 3D Image plugins

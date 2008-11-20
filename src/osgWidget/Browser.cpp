@@ -20,7 +20,7 @@ using namespace osgWidget;
 
 osg::ref_ptr<BrowserManager>& BrowserManager::instance()
 {
-    static osg::ref_ptr<BrowserManager> s_BrowserManager;
+    static osg::ref_ptr<BrowserManager> s_BrowserManager = new BrowserManager;
     return s_BrowserManager;
 }
 

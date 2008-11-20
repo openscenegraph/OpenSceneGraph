@@ -12,11 +12,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 
-#include <nsGUIEvent.h>
-
-#include "llmozlib2.h"
-
-#include "UBrowser.h"
+#include <osgWidget/Browser>
 
 
 osg::Node* createInteractiveQuad(const osg::Vec3& origin, osg::Vec3& widthAxis, osg::Vec3& heightAxis, 
@@ -45,7 +41,6 @@ osg::Node* createInteractiveQuad(const osg::Vec3& origin, osg::Vec3& widthAxis, 
     return geode;
 }
 
-
 int main( int argc, char* argv[] )
 {
     osg::ArgumentParser arguments(&argc, argv);
@@ -61,7 +56,7 @@ int main( int argc, char* argv[] )
     {
         if (!arguments.isOption(i))
         {
-            std::string url_browser = std::string(arguments[i])+std::string(".browser");
+            std::string url_browser = std::string(arguments[i])+std::string(".gecko");
             osg::ref_ptr<osg::Image> image = osgDB::readImageFile(url_browser);
             if (image.valid()) images.push_back(image.get());
         }

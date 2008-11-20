@@ -860,6 +860,7 @@ ConvertFromInventor::preGroup(void* data, SoCallbackAction* action,
     osg::notify(osg::INFO) << "preGroup()    " 
               << node->getTypeId().getName().getString() << std::endl;
 #endif
+
     ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
 
     // Create a new Group or LOD and add it to the stack
@@ -871,22 +872,28 @@ ConvertFromInventor::preGroup(void* data, SoCallbackAction* action,
         group = new osg::Group;
     }
 
+
     thisPtr->groupStack.top()->addChild(group.get());
     thisPtr->groupStack.push(group.get());
     
-    // handle transform nodes
-    if (node->isOfType(SoTransform::getClassTypeId())) {
-        SoTransform* t = (SoTransform*)node;
-        SbVec3f axis, center, trans, scale;
-        float angle;
+    // SoTransform nodes are not the parent of the nodes they apply to
+    // But are in the same separator as them 
+    SoChildList *kids = node->getChildren();
+    for (int i=0; i<kids->getLength(); i++) {
+        SoNode* kid = (SoNode*)kids->get(i);
+        if (kid->isOfType(SoTransform::getClassTypeId())) {
+            SoTransform* t = (SoTransform*)kid;
+            SbVec3f axis, center, trans, scale;
+            float angle;
 
-        center = t->center.getValue();
-        t->rotation.getValue(axis, angle);
-        trans = t->translation.getValue();
-        scale = t->scaleFactor.getValue();
-        std::string name = t->getName().getString();
+            center = t->center.getValue();
+            t->rotation.getValue(axis, angle);
+            trans = t->translation.getValue();
+            scale = t->scaleFactor.getValue();
+            std::string name = t->getName().getString();
 
-        thisPtr->addMatrixTransform(name, axis, angle, center, trans, scale);
+            thisPtr->addMatrixTransform(name, axis, angle, center, trans, scale);
+        }
     }
 #ifdef __COIN__
     if (node->isOfType(SoVRMLTransform::getClassTypeId())) {

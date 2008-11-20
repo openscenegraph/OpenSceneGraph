@@ -77,6 +77,8 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     
     _numDatabaseThreadsHint = vs._numDatabaseThreadsHint;
     _numHttpDatabaseThreadsHint = vs._numHttpDatabaseThreadsHint;
+    
+    _application = vs._application;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)
@@ -98,6 +100,8 @@ void DisplaySettings::merge(const DisplaySettings& vs)
 
     if (vs._numDatabaseThreadsHint>_numDatabaseThreadsHint) _numDatabaseThreadsHint = vs._numDatabaseThreadsHint;
     if (vs._numHttpDatabaseThreadsHint>_numHttpDatabaseThreadsHint) _numHttpDatabaseThreadsHint = vs._numHttpDatabaseThreadsHint;
+
+    if (_application.empty()) _application = vs._application;
 }
 
 void DisplaySettings::setDefaults()
@@ -375,6 +379,7 @@ void DisplaySettings::readEnvironmentalVariables()
 
 void DisplaySettings::readCommandLine(ArgumentParser& arguments)
 {
+    if (_application.empty()) _application = arguments[0];
 
     // report the usage options.
     if (arguments.getApplicationUsage())

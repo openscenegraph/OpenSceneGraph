@@ -195,6 +195,9 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         /** Get the hint for number of threads in the DatbasePager dedicated to reading http requests.*/
         unsigned int getNumOfHttpDatabaseThreadsHint() const { return _numHttpDatabaseThreadsHint; }
+        
+        void setApplication(const std::string& application) { _application = application; }
+        const std::string& getApplication() { return _application; }
 
     protected:
     
@@ -234,6 +237,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         unsigned int                    _numDatabaseThreadsHint;
         unsigned int                    _numHttpDatabaseThreadsHint;
+        
+        std::string                     _application;
 
 };
 

@@ -22,7 +22,7 @@ namespace osgWidget {
 
 class BrowserImage;
 
-class BrowserManager : public osg::Object
+class OSGWIDGET_EXPORT BrowserManager : public osg::Object
 {
     public:
     
@@ -48,12 +48,17 @@ class BrowserManager : public osg::Object
 };
 
 
-class BrowserImage : public osg::Image
+class OSGWIDGET_EXPORT BrowserImage : public osg::Image
 {
     public:
     
+        BrowserImage();
+    
         virtual void navigateTo(const std::string& url) = 0;
-        
+
+    protected:
+    
+        virtual ~BrowserImage();  
     
 };
 

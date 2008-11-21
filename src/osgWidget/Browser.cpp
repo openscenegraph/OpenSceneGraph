@@ -49,3 +49,11 @@ BrowserImage* BrowserManager::createBrowserImage(const std::string& url, int wid
     osg::notify(osg::NOTICE)<<"Cannot created browser"<<std::endl;
     return 0;
 }
+
+BrowserImage::BrowserImage()
+{
+}
+
+BrowserImage::~BrowserImage()
+{
+}

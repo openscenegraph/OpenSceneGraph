@@ -124,7 +124,8 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                     _str(options._str),
                     _databasePaths(options._databasePaths),
                     _objectCacheHint(options._objectCacheHint),
-                    _buildKdTreesHint(options._buildKdTreesHint) {}
+                    _buildKdTreesHint(options._buildKdTreesHint),
+                    _pluginData(options._pluginData){}
 
                 META_Object(osgDB,Options);
 

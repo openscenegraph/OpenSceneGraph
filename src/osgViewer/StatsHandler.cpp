@@ -436,11 +436,10 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
         if (delta > 200) // update every 100ms
         {
             _tickLastUpdated = tick;
-            osg::ref_ptr<osg::Node> sceneRoot;
+            osg::ref_ptr<osg::Node> sceneRoot = _view ? _view->getScene()->getSceneData() : 0;
 
-            if (_view != NULL)
+            if (sceneRoot.valid())
             {
-                sceneRoot = _view->getScene()->getSceneData();
                 osgUtil::StatsVisitor statsVisitor;
                 sceneRoot->accept(statsVisitor);
 

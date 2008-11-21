@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Vec3>
+#include <osg/Vec3d>
 #include <osg/Vec4>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
@@ -31,8 +31,8 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Translate1DDragger)
 	I_Constructor0(____Translate1DDragger,
 	               "",
 	               "");
-	I_Constructor2(IN, const osg::Vec3 &, s, IN, const osg::Vec3 &, e,
-	               ____Translate1DDragger__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	I_Constructor2(IN, const osg::Vec3d &, s, IN, const osg::Vec3d &, e,
+	               ____Translate1DDragger__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
 	               "",
 	               "");
 	I_Method3(bool, handle, IN, const osgManipulator::PointerInfo &, pi, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,

@@ -14,8 +14,9 @@
 #include <osg/Matrix>
 #include <osg/Plane>
 #include <osg/Quat>
-#include <osg/Vec2>
+#include <osg/Vec2d>
 #include <osg/Vec3>
+#include <osg/Vec3d>
 #include <osgManipulator/Command>
 #include <osgManipulator/Constraint>
 #include <osgManipulator/Selection>
@@ -178,44 +179,44 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
-	I_Method1(void, setScale, IN, float, s,
+	I_Method1(void, setScale, IN, double, s,
 	          Properties::NON_VIRTUAL,
-	          __void__setScale__float,
+	          __void__setScale__double,
 	          "",
 	          "");
-	I_Method0(float, getScale,
+	I_Method0(double, getScale,
 	          Properties::NON_VIRTUAL,
-	          __float__getScale,
+	          __double__getScale,
 	          "",
 	          "");
-	I_Method1(void, setScaleCenter, IN, float, center,
+	I_Method1(void, setScaleCenter, IN, double, center,
 	          Properties::NON_VIRTUAL,
-	          __void__setScaleCenter__float,
+	          __void__setScaleCenter__double,
 	          "",
 	          "");
-	I_Method0(float, getScaleCenter,
+	I_Method0(double, getScaleCenter,
 	          Properties::NON_VIRTUAL,
-	          __float__getScaleCenter,
+	          __double__getScaleCenter,
 	          "",
 	          "");
-	I_Method1(void, setReferencePoint, IN, float, rp,
+	I_Method1(void, setReferencePoint, IN, double, rp,
 	          Properties::NON_VIRTUAL,
-	          __void__setReferencePoint__float,
+	          __void__setReferencePoint__double,
 	          "ReferencePoint is used only for snapping. ",
 	          "");
-	I_Method0(float, getReferencePoint,
+	I_Method0(double, getReferencePoint,
 	          Properties::NON_VIRTUAL,
-	          __float__getReferencePoint,
+	          __double__getReferencePoint,
 	          "",
 	          "");
-	I_Method1(void, setMinScale, IN, float, min,
+	I_Method1(void, setMinScale, IN, double, min,
 	          Properties::NON_VIRTUAL,
-	          __void__setMinScale__float,
+	          __void__setMinScale__double,
 	          "",
 	          "");
-	I_Method0(float, getMinScale,
+	I_Method0(double, getMinScale,
 	          Properties::NON_VIRTUAL,
-	          __float__getMinScale,
+	          __double__getMinScale,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
@@ -223,21 +224,21 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
 	          __osg_Matrix__getMotionMatrix,
 	          "Gets the matrix for transforming the Selection. ",
 	          "This matrix is in the command's coordinate systems. ");
-	I_SimpleProperty(float, MinScale, 
-	                 __float__getMinScale, 
-	                 __void__setMinScale__float);
+	I_SimpleProperty(double, MinScale, 
+	                 __double__getMinScale, 
+	                 __void__setMinScale__double);
 	I_SimpleProperty(osg::Matrix, MotionMatrix, 
 	                 __osg_Matrix__getMotionMatrix, 
 	                 0);
-	I_SimpleProperty(float, ReferencePoint, 
-	                 __float__getReferencePoint, 
-	                 __void__setReferencePoint__float);
-	I_SimpleProperty(float, Scale, 
-	                 __float__getScale, 
-	                 __void__setScale__float);
-	I_SimpleProperty(float, ScaleCenter, 
-	                 __float__getScaleCenter, 
-	                 __void__setScaleCenter__float);
+	I_SimpleProperty(double, ReferencePoint, 
+	                 __double__getReferencePoint, 
+	                 __void__setReferencePoint__double);
+	I_SimpleProperty(double, Scale, 
+	                 __double__getScale, 
+	                 __void__setScale__double);
+	I_SimpleProperty(double, ScaleCenter, 
+	                 __double__getScaleCenter, 
+	                 __void__setScaleCenter__double);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
@@ -261,44 +262,44 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
-	I_Method1(void, setScale, IN, const osg::Vec2 &, s,
+	I_Method1(void, setScale, IN, const osg::Vec2d &, s,
 	          Properties::NON_VIRTUAL,
-	          __void__setScale__C5_osg_Vec2_R1,
+	          __void__setScale__C5_osg_Vec2d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec2 &, getScale,
+	I_Method0(const osg::Vec2d &, getScale,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec2_R1__getScale,
+	          __C5_osg_Vec2d_R1__getScale,
 	          "",
 	          "");
-	I_Method1(void, setScaleCenter, IN, const osg::Vec2 &, center,
+	I_Method1(void, setScaleCenter, IN, const osg::Vec2d &, center,
 	          Properties::NON_VIRTUAL,
-	          __void__setScaleCenter__C5_osg_Vec2_R1,
+	          __void__setScaleCenter__C5_osg_Vec2d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec2 &, getScaleCenter,
+	I_Method0(const osg::Vec2d &, getScaleCenter,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec2_R1__getScaleCenter,
+	          __C5_osg_Vec2d_R1__getScaleCenter,
 	          "",
 	          "");
-	I_Method1(void, setReferencePoint, IN, const osg::Vec2 &, rp,
+	I_Method1(void, setReferencePoint, IN, const osg::Vec2d &, rp,
 	          Properties::NON_VIRTUAL,
-	          __void__setReferencePoint__C5_osg_Vec2_R1,
+	          __void__setReferencePoint__C5_osg_Vec2d_R1,
 	          "ReferencePoint is used only for snapping. ",
 	          "");
-	I_Method0(const osg::Vec2 &, getReferencePoint,
+	I_Method0(const osg::Vec2d &, getReferencePoint,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec2_R1__getReferencePoint,
+	          __C5_osg_Vec2d_R1__getReferencePoint,
 	          "",
 	          "");
-	I_Method1(void, setMinScale, IN, const osg::Vec2 &, min,
+	I_Method1(void, setMinScale, IN, const osg::Vec2d &, min,
 	          Properties::NON_VIRTUAL,
-	          __void__setMinScale__C5_osg_Vec2_R1,
+	          __void__setMinScale__C5_osg_Vec2d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec2 &, getMinScale,
+	I_Method0(const osg::Vec2d &, getMinScale,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec2_R1__getMinScale,
+	          __C5_osg_Vec2d_R1__getMinScale,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
@@ -306,21 +307,21 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
 	          __osg_Matrix__getMotionMatrix,
 	          "Gets the matrix for transforming the Selection. ",
 	          "This matrix is in the command's coordinate systems. ");
-	I_SimpleProperty(const osg::Vec2 &, MinScale, 
-	                 __C5_osg_Vec2_R1__getMinScale, 
-	                 __void__setMinScale__C5_osg_Vec2_R1);
+	I_SimpleProperty(const osg::Vec2d &, MinScale, 
+	                 __C5_osg_Vec2d_R1__getMinScale, 
+	                 __void__setMinScale__C5_osg_Vec2d_R1);
 	I_SimpleProperty(osg::Matrix, MotionMatrix, 
 	                 __osg_Matrix__getMotionMatrix, 
 	                 0);
-	I_SimpleProperty(const osg::Vec2 &, ReferencePoint, 
-	                 __C5_osg_Vec2_R1__getReferencePoint, 
-	                 __void__setReferencePoint__C5_osg_Vec2_R1);
-	I_SimpleProperty(const osg::Vec2 &, Scale, 
-	                 __C5_osg_Vec2_R1__getScale, 
-	                 __void__setScale__C5_osg_Vec2_R1);
-	I_SimpleProperty(const osg::Vec2 &, ScaleCenter, 
-	                 __C5_osg_Vec2_R1__getScaleCenter, 
-	                 __void__setScaleCenter__C5_osg_Vec2_R1);
+	I_SimpleProperty(const osg::Vec2d &, ReferencePoint, 
+	                 __C5_osg_Vec2d_R1__getReferencePoint, 
+	                 __void__setReferencePoint__C5_osg_Vec2d_R1);
+	I_SimpleProperty(const osg::Vec2d &, Scale, 
+	                 __C5_osg_Vec2d_R1__getScale, 
+	                 __void__setScale__C5_osg_Vec2d_R1);
+	I_SimpleProperty(const osg::Vec2d &, ScaleCenter, 
+	                 __C5_osg_Vec2d_R1__getScaleCenter, 
+	                 __void__setScaleCenter__C5_osg_Vec2d_R1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
@@ -344,24 +345,24 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
 	          __void__applyConstraint__C5_Constraint_P1,
 	          "Apply a constraint to the command. ",
 	          "");
-	I_Method1(void, setScale, IN, float, s,
+	I_Method1(void, setScale, IN, double, s,
 	          Properties::NON_VIRTUAL,
-	          __void__setScale__float,
+	          __void__setScale__double,
 	          "",
 	          "");
-	I_Method0(float, getScale,
+	I_Method0(double, getScale,
 	          Properties::NON_VIRTUAL,
-	          __float__getScale,
+	          __double__getScale,
 	          "",
 	          "");
-	I_Method1(void, setScaleCenter, IN, const osg::Vec3 &, center,
+	I_Method1(void, setScaleCenter, IN, const osg::Vec3d &, center,
 	          Properties::NON_VIRTUAL,
-	          __void__setScaleCenter__C5_osg_Vec3_R1,
+	          __void__setScaleCenter__C5_osg_Vec3d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getScaleCenter,
+	I_Method0(const osg::Vec3d &, getScaleCenter,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getScaleCenter,
+	          __C5_osg_Vec3d_R1__getScaleCenter,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
@@ -372,12 +373,12 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
 	I_SimpleProperty(osg::Matrix, MotionMatrix, 
 	                 __osg_Matrix__getMotionMatrix, 
 	                 0);
-	I_SimpleProperty(float, Scale, 
-	                 __float__getScale, 
-	                 __void__setScale__float);
-	I_SimpleProperty(const osg::Vec3 &, ScaleCenter, 
-	                 __C5_osg_Vec3_R1__getScaleCenter, 
-	                 __void__setScaleCenter__C5_osg_Vec3_R1);
+	I_SimpleProperty(double, Scale, 
+	                 __double__getScale, 
+	                 __void__setScale__double);
+	I_SimpleProperty(const osg::Vec3d &, ScaleCenter, 
+	                 __C5_osg_Vec3d_R1__getScaleCenter, 
+	                 __void__setScaleCenter__C5_osg_Vec3d_R1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
@@ -425,9 +426,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	          __void__setTranslation__C5_osg_Vec3_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getTranslation,
+	I_Method0(const osg::Vec3d &, getTranslation,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getTranslation,
+	          __C5_osg_Vec3d_R1__getTranslation,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
@@ -444,9 +445,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	I_SimpleProperty(osg::Matrix, MotionMatrix, 
 	                 __osg_Matrix__getMotionMatrix, 
 	                 0);
-	I_SimpleProperty(const osg::Vec3 &, Translation, 
-	                 __C5_osg_Vec3_R1__getTranslation, 
-	                 __void__setTranslation__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3d &, Translation, 
+	                 __C5_osg_Vec3d_R1__getTranslation, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInPlaneCommand)
@@ -485,24 +486,24 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInPlaneCommand)
 	          __C5_osg_Plane_R1__getPlane,
 	          "",
 	          "");
-	I_Method1(void, setTranslation, IN, const osg::Vec3 &, t,
+	I_Method1(void, setTranslation, IN, const osg::Vec3d &, t,
 	          Properties::NON_VIRTUAL,
-	          __void__setTranslation__C5_osg_Vec3_R1,
+	          __void__setTranslation__C5_osg_Vec3d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getTranslation,
+	I_Method0(const osg::Vec3d &, getTranslation,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getTranslation,
+	          __C5_osg_Vec3d_R1__getTranslation,
 	          "",
 	          "");
-	I_Method1(void, setReferencePoint, IN, const osg::Vec3 &, rp,
+	I_Method1(void, setReferencePoint, IN, const osg::Vec3d &, rp,
 	          Properties::NON_VIRTUAL,
-	          __void__setReferencePoint__C5_osg_Vec3_R1,
+	          __void__setReferencePoint__C5_osg_Vec3d_R1,
 	          "ReferencePoint is used only for snapping. ",
 	          "");
-	I_Method0(const osg::Vec3 &, getReferencePoint,
+	I_Method0(const osg::Vec3d &, getReferencePoint,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getReferencePoint,
+	          __C5_osg_Vec3d_R1__getReferencePoint,
 	          "",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
@@ -516,11 +517,11 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInPlaneCommand)
 	I_SimpleProperty(const osg::Plane &, Plane, 
 	                 __C5_osg_Plane_R1__getPlane, 
 	                 __void__setPlane__C5_osg_Plane_R1);
-	I_SimpleProperty(const osg::Vec3 &, ReferencePoint, 
-	                 __C5_osg_Vec3_R1__getReferencePoint, 
-	                 __void__setReferencePoint__C5_osg_Vec3_R1);
-	I_SimpleProperty(const osg::Vec3 &, Translation, 
-	                 __C5_osg_Vec3_R1__getTranslation, 
-	                 __void__setTranslation__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3d &, ReferencePoint, 
+	                 __C5_osg_Vec3d_R1__getReferencePoint, 
+	                 __void__setReferencePoint__C5_osg_Vec3d_R1);
+	I_SimpleProperty(const osg::Vec3d &, Translation, 
+	                 __C5_osg_Vec3d_R1__getTranslation, 
+	                 __void__setTranslation__C5_osg_Vec3d_R1);
 END_REFLECTOR
 

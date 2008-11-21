@@ -43,7 +43,7 @@ class OSGMANIPULATOR_EXPORT Translate1DDragger : public Dragger
         inline const osg::Vec4 getColor() const { return _color; }
 
         /** Set/Get pick color for dragger. Pick color is color of the dragger when picked. 
-	    It gives a visual feedback to show that the dragger has been picked. */
+            It gives a visual feedback to show that the dragger has been picked. */
         inline void setPickColor(const osg::Vec4& color) { _pickColor = color; }
         inline const osg::Vec4 getPickColor() const { return _pickColor; }
 

@@ -117,7 +117,7 @@ void createCornerScaleDraggerGeometry(Scale2DDragger* cornerScaleDragger, osg::N
 }
 
 void createEdgeScaleDraggerGeometry(Scale1DDragger* horzEdgeScaleDragger, Scale1DDragger* vertEdgeScaleDragger,
-	                            osg::Node* handleNode, float handleScaleFactor)
+                                    osg::Node* handleNode, float handleScaleFactor)
 {
     // Create a left box.
     {

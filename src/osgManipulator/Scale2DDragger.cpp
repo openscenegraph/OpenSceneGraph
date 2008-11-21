@@ -164,7 +164,7 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
                 cmd->setStage(MotionCommand::FINISH);
                 cmd->setReferencePoint(_referencePoint);
                 cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
-	    	
+                    
                 // Dispatch command.
                 if (_commandManager)
                 {
@@ -174,7 +174,7 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
 
                 // Reset color.
                 setMaterialColor(_color,*this);
-		
+                
                 aa.requestRedraw();
 
                 return true;

@@ -66,27 +66,27 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystemUpdater)
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
 	I_Method1(bool, addParticleSystem, IN, osgParticle::ParticleSystem *, ps,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__addParticleSystem__ParticleSystem_P1,
 	          "Add a particle system to the list. ",
 	          "");
 	I_Method1(bool, removeParticleSystem, IN, osgParticle::ParticleSystem *, ps,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__removeParticleSystem__ParticleSystem_P1,
 	          "Remove a particle system from the list (by pointer). ",
 	          "");
 	I_MethodWithDefaults2(bool, removeParticleSystem, IN, unsigned int, i, , IN, unsigned int, numParticleSystemsToRemove, 1,
-	                      Properties::NON_VIRTUAL,
+	                      Properties::VIRTUAL,
 	                      __bool__removeParticleSystem__unsigned_int__unsigned_int,
 	                      "Remove a particle system(s) from the list (by index). ",
 	                      "");
 	I_Method2(bool, replaceParticleSystem, IN, osgParticle::ParticleSystem *, origPS, IN, osgParticle::ParticleSystem *, newPS,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__replaceParticleSystem__ParticleSystem_P1__ParticleSystem_P1,
 	          "Replace ParticleSystem with another ParticleSystem. ",
 	          "");
 	I_Method2(bool, setParticleSystem, IN, unsigned int, i, IN, osgParticle::ParticleSystem *, ps,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__setParticleSystem__unsigned_int__ParticleSystem_P1,
 	          "set a particle system by index. ",
 	          "");

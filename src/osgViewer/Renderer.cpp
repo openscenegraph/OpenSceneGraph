@@ -177,7 +177,6 @@ Renderer::Renderer(osg::Camera* camera):
     _sceneView[0] = new osgUtil::SceneView;
     _sceneView[1] = new osgUtil::SceneView;
 
-    unsigned int sceneViewOptions = osgUtil::SceneView::HEADLIGHT;
 
     osg::Camera* masterCamera = _camera->getView() ? _camera->getView()->getCamera() : camera;
     osg::StateSet* stateset = masterCamera->getOrCreateStateSet();
@@ -185,6 +184,17 @@ Renderer::Renderer(osg::Camera* camera):
 
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
                                ((view && view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance());
+
+    unsigned int sceneViewOptions = osgUtil::SceneView::HEADLIGHT;
+    if (view)
+    {
+        switch(view->getLightingMode())
+        {
+            case(osg::View::NO_LIGHT): sceneViewOptions = 0; break;
+            case(osg::View::SKY_LIGHT): sceneViewOptions = osgUtil::SceneView::SKY_LIGHT; break;
+            case(osg::View::HEADLIGHT): sceneViewOptions = osgUtil::SceneView::HEADLIGHT; break;
+        }
+    }
 
     _sceneView[0]->setGlobalStateSet(stateset);
     _sceneView[1]->setGlobalStateSet(stateset);

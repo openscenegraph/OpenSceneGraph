@@ -62,9 +62,6 @@ _minHeight (0.0f) {
 
     setDimensions(0.0f, 0.0f, w, h);
     setColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-    getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
-    getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 }
 
 Widget::Widget(const Widget& widget, const osg::CopyOp& co):
@@ -107,7 +104,7 @@ WindowManager* Widget::_getWindowManager() const {
 }
 
 osg::Image* Widget::_getImage() const {
-    const osg::Texture2D* texture = _texture();
+    const osg::Texture* texture = _texture();
 
     if(texture) return const_cast<osg::Image*>(texture->getImage(0));
 
@@ -284,8 +281,8 @@ void Widget::setTexCoordRegion(point_type x, point_type y, point_type w, point_t
 }
 
 void Widget::setTexCoordWrapHorizontal() {
-    osg::Image*     image   = _image();
-    osg::Texture2D* texture = _texture();
+    osg::Image*   image   = _image();
+    osg::Texture* texture = _texture();
 
     if(!image || !texture || image->s() == 0.0f) return;
 
@@ -296,8 +293,8 @@ void Widget::setTexCoordWrapHorizontal() {
 }
 
 void Widget::setTexCoordWrapVertical() {
-    osg::Image*     image   = _image();
-    osg::Texture2D* texture = _texture();
+    osg::Image*   image   = _image();
+    osg::Texture* texture = _texture();
 
     if(!image || !texture || image->t() == 0.0f) return;
     
@@ -328,8 +325,27 @@ bool Widget::setImage(osg::Image* image, bool setTexCoords, bool useTextRect) {
     
     if(!texture) return false;
 
-    texture->setDataVariance(osg::Object::DYNAMIC);
     texture->setImage(0, image);
+
+    return setTexture(texture, setTexCoords, useTextRect);
+}
+
+bool Widget::setImage(const std::string& filePath, bool setTexCoords, bool useTextRect) {
+    if(!osgDB::findDataFile(filePath).size()) {
+        warn()
+            << "Widget [" << _name
+            << "] cannot find file " << filePath
+            << " to set as it's Image." << std::endl
+        ;
+
+        return false;
+    }
+
+    return setImage(osgDB::readImageFile(filePath), setTexCoords, useTextRect);
+}
+
+bool Widget::setTexture(osg::Texture* texture, bool setTexCoords, bool useTextRect) {
+    if(!texture) return false;
 
     getOrCreateStateSet()->setTextureAttributeAndModes(
         0,
@@ -339,6 +355,8 @@ bool Widget::setImage(osg::Image* image, bool setTexCoords, bool useTextRect) {
 
     if(setTexCoords) {
         if(useTextRect) {
+             osg::Image* image = texture->getImage(0);
+
             setTexCoord(0.0f, 0.0f, LOWER_LEFT);
             setTexCoord(image->s(), 0.0f, LOWER_RIGHT);
             setTexCoord(image->s(), image->t(), UPPER_RIGHT);
@@ -354,20 +372,6 @@ bool Widget::setImage(osg::Image* image, bool setTexCoords, bool useTextRect) {
     }
 
     return true;
-}
-
-bool Widget::setImage(const std::string& filePath, bool setTexCoords, bool useTextRect) {
-    if(!osgDB::findDataFile(filePath).size()) {
-        warn()
-            << "Widget [" << _name
-            << "] cannot find file " << filePath
-            << " to set as it's Image." << std::endl
-        ;
-
-        return false;
-    }
-
-    return setImage(osgDB::readImageFile(filePath), setTexCoords, useTextRect);
 }
 
 void Widget::setPadding(point_type pad) {

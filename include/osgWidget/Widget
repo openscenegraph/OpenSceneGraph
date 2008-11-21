@@ -129,8 +129,9 @@ public:
         void setTexCoordWrapHorizontal ();
         void setTexCoordWrapVertical   ();
 
-        bool setImage (osg::Image*, bool=false, bool=false);
-        bool setImage (const std::string&, bool=false, bool=false);
+        bool setImage   (osg::Image*, bool = false, bool = false);
+        bool setImage   (const std::string&, bool = false, bool = false);
+        bool setTexture (osg::Texture*, bool = false, bool = false);
 
         void addX      (point_type);
         void addY      (point_type);
@@ -424,15 +425,23 @@ public:
             return dynamic_cast<const TexCoordArray*>(getTexCoordArray(0));
         }
 
-        osg::Texture2D* _texture() {
+        osg::Texture* _texture() {
+            osg::StateSet* ss = getStateSet();
+
+            if(!ss) return 0;
+
             return dynamic_cast<osg::Texture2D*>(
-                getStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
+                ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
             );
         }
 
-        const osg::Texture2D* _texture() const {
+        const osg::Texture* _texture() const {
+            const osg::StateSet* ss = getStateSet();
+
+            if(!ss) return 0;
+
             return dynamic_cast<const osg::Texture2D*>(
-                getStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
+                ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
             );
         }
 

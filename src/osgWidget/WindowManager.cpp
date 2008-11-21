@@ -80,6 +80,12 @@ _styleManager   (new StyleManager()) {
 
         _updatePickWindow(0, 0, 0);
     }
+
+    getOrCreateStateSet()->setMode(
+        GL_BLEND,
+        osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE
+    );
+    getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 }
 
 WindowManager::WindowManager(const WindowManager& wm, const osg::CopyOp& co):

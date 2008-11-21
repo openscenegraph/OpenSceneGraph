@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <stdio.h>
 
@@ -22,7 +23,6 @@
 
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
-#include <osgDB/fstream>
 
 using namespace obj;
 
@@ -37,8 +37,9 @@ static std::string strip( const std::string& ss )
  * parse a subset of texture options, following
  * http://local.wasp.uwa.edu.au/~pbourke/dataformats/mtl/
  */
-static std::string parseTexture( const std::string& ss, Material& mat)
+static Material::Map parseTextureMap( const std::string& ss, Material::Map::TextureMapType type)
 {
+    Material::Map map;
     std::string s(ss);
     for (;;)
     {
@@ -57,17 +58,17 @@ static std::string parseTexture( const std::string& ss, Material& mat)
             if (s[1] == 's')
             {
                 // texture scale
-                mat.uScale = x;
-                mat.vScale = y;
+                map.uScale = x;
+                map.vScale = y;
             }
             else if (s[1] == 'o')
             {
                 // texture offset
-                mat.uOffset = x;
-                mat.vOffset = y;
+                map.uOffset = x;
+                map.vOffset = y;
             }
         }
-        else if (s[1] == 'm' && s[2] == 'm')
+        else if (s.compare(1,2,"mm")==0)
         {
             // texture color offset and gain
             float base, gain;
@@ -77,7 +78,7 @@ static std::string parseTexture( const std::string& ss, Material& mat)
             }
             // UNUSED
         }
-        else if (s[1] == 'b' && s[2] == 'm')
+        else if (s.compare(1,2,"bm")==0)
         {
             // blend multiplier
             float mult;
@@ -87,13 +88,26 @@ static std::string parseTexture( const std::string& ss, Material& mat)
             }
             // UNUSED
         }
+        else if (s.compare(1,5,"clamp")==0)
+        {
+            osg::notify(osg::NOTICE)<<"Got Clamp\n";
+            char c[4];
+            if (sscanf(s.c_str(), "%*s %3s%n", c, &n) != 1)
+            {
+                break;
+            }
+            if(strncmp(c,"on",2)==0) map.clamp = true;
+            else map.clamp = false;    // default behavioud
+        }
         else
             break;
 
         s = strip(s.substr(n));
     }
 
-    return s;
+    map.name = s;
+    map.type = type;
+    return map;
 }
 
 bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
@@ -415,23 +429,58 @@ bool Model::readMTL(std::istream& fin)
                 }
                 else if (strncmp(line,"map_Ka ",7)==0)
                 {
-                    material->map_Ka = parseTexture(strip(line+7), *material);
+                    material->maps.push_back(parseTextureMap(strip(line+7),Material::Map::AMBIENT));
                 }
+                // diffuse map
                 else if (strncmp(line,"map_Kd ",7)==0)
                 {
-                    material->map_Kd = parseTexture(strip(line+7), *material);
+                    material->maps.push_back(parseTextureMap(strip(line+7),Material::Map::DIFFUSE));
                 }
+                // specular colour/level map
                 else if (strncmp(line,"map_Ks ",7)==0)
                 {
-                    material->map_Ks = parseTexture(strip(line+7), *material);
+                     material->maps.push_back(parseTextureMap(strip(line+7),Material::Map::SPECULAR));
                 }
-                else if (strncmp(line,"map_opacity ",12)==0)
+                // map_opacity doesn't exist in the spec, but was already in the plugin
+                // so leave it or plugin will break for some users
+                else if (strncmp(line,"map_opacity ",12)==0) 
                 {
-                    material->map_opacity = parseTexture(strip(line+12), *material);
+                    material->maps.push_back(parseTextureMap(strip(line+12),Material::Map::OPACITY));
                 }
-                else if (strcmp(line,"refl")==0 || strncmp(line,"refl ",5)==0)
+                // proper dissolve/opacity map
+                else if (strncmp(line,"map_d ",6)==0)
                 {
-                    material->textureReflection = true;
+                    material->maps.push_back(parseTextureMap(strip(line+6),Material::Map::OPACITY));
+                }
+                // specular exponent map
+                else if (strncmp(line,"map_Ns ",7)==0)
+                {
+                    material->maps.push_back(parseTextureMap(strip(line+7),Material::Map::SPECULAR_EXPONENT));
+                }
+                // modelling tools and convertors variously produce bump, map_bump, and map_Bump so parse them all
+                else if (strncmp(line,"bump ",5)==0)
+                {
+                    material->maps.push_back(parseTextureMap(strip(line+5),Material::Map::BUMP));
+                }
+                else if (strncmp(line,"map_bump ",9)==0)
+                {
+                    material->maps.push_back(parseTextureMap(strip(line+9),Material::Map::BUMP));
+                }
+                else if (strncmp(line,"map_Bump ",9)==0)
+                {
+                    material->maps.push_back(parseTextureMap(strip(line+9),Material::Map::BUMP));
+                }
+                // displacement map
+                else if (strncmp(line,"disp ",5)==0)
+                {
+                    material->maps.push_back(parseTextureMap(strip(line+5),Material::Map::DISPLACEMENT));
+                }
+                // reflection map (the original code had the possibility of a blank "refl" line
+                // which isn't correct according to the spec, so this bit might break for some
+                // modelling packages...
+                else if (strncmp(line,"refl ",5)==0)
+                {
+                    material->maps.push_back(parseTextureMap(strip(line+5),Material::Map::REFLECTION));
                 }
                 else
                 {

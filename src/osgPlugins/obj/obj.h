@@ -44,12 +44,8 @@ public:
         Tf(0.0f,0.0f,0.0f,1.0f),
         Ni(0),
         Ns(0),
-        textureReflection(false),
-        alpha(1.0f),
-        uScale(1.0f),
-        vScale(1.0f),
-        uOffset(0.0f),
-        vOffset(0.0f) {}
+        // textureReflection(false),
+        alpha(1.0f) {}
     
     std::string name;
     
@@ -58,22 +54,61 @@ public:
     osg::Vec4   specular;
     osg::Vec4   emissive;
     float       sharpness;
-    int         illum;
+    int         illum;            // read but not implemented (would need specific shaders or state manipulation)
     
     osg::Vec4   Tf;
     int         Ni;
     int         Ns; // shininess 0..1000
 
-    std::string map_Ka;
-    std::string map_Kd;
-    std::string map_Ks;
-    std::string map_opacity;
-    bool        textureReflection;
+    // bool        textureReflection;
     float       alpha;
-    float       uScale;
-    float       vScale;
-    float       uOffset;
-    float       vOffset;
+
+    class Map
+    {
+        // -o and -s (offset and scale) options supported for the maps
+        // -clamp <on|off> is supported
+        // -blendu, -blendv, -imfchan, not supported
+        // -mm <base> <gain> is parsed but not actually used
+        // -bm <bump_multiplier> is parsed but not used
+    public:
+        enum TextureMapType {
+            DIFFUSE=0,
+            OPACITY,
+            AMBIENT,
+            SPECULAR,
+            SPECULAR_EXPONENT,
+            BUMP,
+            DISPLACEMENT,
+            REFLECTION,        // read of a reflection map will also apply spherical texgen coordinates
+            UNKNOWN            // UNKNOWN has to be the last
+        };
+        Map():
+            type(UNKNOWN),
+            name(""),
+            uScale(1.0f),
+            vScale(1.0f),
+            uOffset(0.0f),
+            vOffset(0.0f),
+            clamp(false) {}
+
+
+        TextureMapType type;
+        std::string name;
+
+        // Texture scale and offset, used for creating the texture matrix.
+        // Reader only picks u and v from -s u v w, although all u v and w all need to be specified!
+        // e.g. "map_Kd -s u v w <name>" is OK but "map_Kd -s u v <name>" is not, even though tex is only 2D
+        float       uScale;
+        float       vScale;
+        float       uOffset;
+        float       vOffset;
+
+        // According to the spec, if clamping is off (default), the effect is a texture repeat
+        // if clamping is on, then the effect is a decal texture; i.e. the border is transparent
+        bool        clamp;
+    };
+
+    std::vector<Map> maps;
 
 protected:
 };

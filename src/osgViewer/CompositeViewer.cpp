@@ -705,6 +705,20 @@ void CompositeViewer::eventTraversal()
                                                 masterCameraVPW *= viewport->computeWindowMatrix();
                                             }
                                         }
+
+                                        // If this camera is not a slave camera
+                                        if (camera->getView()->getCamera() == camera)
+                                        {
+                                            eventState->setGraphicsContext(gw);
+                                            eventState->setInputRange( viewport->x(), viewport->y(), 
+                                                                       viewport->x()+viewport->width(),
+                                                                       viewport->y()+viewport->height());
+
+                                        }
+                                        else
+                                        {
+                                            eventState->setInputRange(-1.0, -1.0, 1.0, 1.0);
+                                        }
                                     }
                                 }
                             }

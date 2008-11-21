@@ -138,7 +138,7 @@ class OSGMANIPULATOR_EXPORT TranslateInLineCommand : public MotionCommand
         inline const osg::LineSegment::vec_type& getLineEnd() const { return _line->end(); }
 
         inline void setTranslation(const osg::Vec3& t) { _translation = t; }
-        inline const osg::Vec3& getTranslation() const { return _translation; }
+        inline const osg::Vec3d& getTranslation() const { return _translation; }
 
         virtual osg::Matrix getMotionMatrix() const 
         {
@@ -151,7 +151,7 @@ class OSGMANIPULATOR_EXPORT TranslateInLineCommand : public MotionCommand
 
     private:
         osg::ref_ptr<osg::LineSegment>  _line;
-        osg::Vec3                       _translation;
+        osg::Vec3d                      _translation;
 };
 
 /**
@@ -172,12 +172,12 @@ class OSGMANIPULATOR_EXPORT TranslateInPlaneCommand : public MotionCommand
         inline void setPlane(const osg::Plane& plane) { _plane = plane; }
         inline const osg::Plane& getPlane() const { return _plane; }
 
-        inline void setTranslation(const osg::Vec3& t) { _translation = t; }
-        inline const osg::Vec3& getTranslation() const { return _translation; }
+        inline void setTranslation(const osg::Vec3d& t) { _translation = t; }
+        inline const osg::Vec3d& getTranslation() const { return _translation; }
 
         /** ReferencePoint is used only for snapping. */
-        inline void setReferencePoint(const osg::Vec3& rp) { _referencePoint = rp; }
-        inline const osg::Vec3& getReferencePoint() const { return _referencePoint; }
+        inline void setReferencePoint(const osg::Vec3d& rp) { _referencePoint = rp; }
+        inline const osg::Vec3d& getReferencePoint() const { return _referencePoint; }
 
         virtual osg::Matrix getMotionMatrix() const 
         {
@@ -190,8 +190,8 @@ class OSGMANIPULATOR_EXPORT TranslateInPlaneCommand : public MotionCommand
 
     private:
         osg::Plane _plane;
-        osg::Vec3  _translation;
-        osg::Vec3  _referencePoint;
+        osg::Vec3d _translation;
+        osg::Vec3d _referencePoint;
 };
 
 /**
@@ -207,18 +207,18 @@ class OSGMANIPULATOR_EXPORT Scale1DCommand : public MotionCommand
         virtual bool unexecute();
         virtual void applyConstraint(const Constraint*);
 
-        inline void setScale(float s) { _scale = s; }
-        inline float getScale() const { return _scale; }
+        inline void setScale(double s) { _scale = s; }
+        inline double getScale() const { return _scale; }
 
-        inline void  setScaleCenter(float center) { _scaleCenter = center; }
-        inline float getScaleCenter() const       { return _scaleCenter; }
+        inline void  setScaleCenter(double center) { _scaleCenter = center; }
+        inline double getScaleCenter() const       { return _scaleCenter; }
 
         /** ReferencePoint is used only for snapping. */
-        inline void  setReferencePoint(float rp) { _referencePoint = rp; }
-        inline float getReferencePoint() const   { return _referencePoint; }
+        inline void  setReferencePoint(double rp) { _referencePoint = rp; }
+        inline double getReferencePoint() const   { return _referencePoint; }
 
-        inline void  setMinScale(float min) { _minScale = min; }
-        inline float getMinScale() const    { return _minScale; }
+        inline void  setMinScale(double min) { _minScale = min; }
+        inline double getMinScale() const    { return _minScale; }
 
         virtual osg::Matrix getMotionMatrix() const 
         {
@@ -232,10 +232,10 @@ class OSGMANIPULATOR_EXPORT Scale1DCommand : public MotionCommand
         virtual ~Scale1DCommand();
 
     private:
-        float     _scale;
-        float     _scaleCenter;
-        float     _referencePoint;
-        float     _minScale;
+        double     _scale;
+        double     _scaleCenter;
+        double     _referencePoint;
+        double     _minScale;
 };
 
 /**
@@ -251,18 +251,18 @@ class OSGMANIPULATOR_EXPORT Scale2DCommand : public MotionCommand
         virtual bool unexecute();
         virtual void applyConstraint(const Constraint*);
 
-        inline void setScale(const osg::Vec2& s) { _scale = s; }
-        inline const osg::Vec2& getScale() const { return _scale; }
+        inline void setScale(const osg::Vec2d& s) { _scale = s; }
+        inline const osg::Vec2d& getScale() const { return _scale; }
 
-        inline void setScaleCenter(const osg::Vec2& center) { _scaleCenter = center; }
-        inline const osg::Vec2& getScaleCenter() const { return _scaleCenter; }
+        inline void setScaleCenter(const osg::Vec2d& center) { _scaleCenter = center; }
+        inline const osg::Vec2d& getScaleCenter() const { return _scaleCenter; }
 
         /** ReferencePoint is used only for snapping. */
-        inline void  setReferencePoint(const osg::Vec2& rp) { _referencePoint = rp; }
-        inline const osg::Vec2& getReferencePoint() const   { return _referencePoint; }
+        inline void  setReferencePoint(const osg::Vec2d& rp) { _referencePoint = rp; }
+        inline const osg::Vec2d& getReferencePoint() const   { return _referencePoint; }
 
-        inline void             setMinScale(const osg::Vec2& min) { _minScale = min; }
-        inline const osg::Vec2& getMinScale() const               { return _minScale; }
+        inline void             setMinScale(const osg::Vec2d& min) { _minScale = min; }
+        inline const osg::Vec2d& getMinScale() const               { return _minScale; }
 
         virtual osg::Matrix getMotionMatrix() const 
         {
@@ -276,10 +276,10 @@ class OSGMANIPULATOR_EXPORT Scale2DCommand : public MotionCommand
         virtual ~Scale2DCommand();
 
     private:
-        osg::Vec2   _scale;
-        osg::Vec2   _scaleCenter;
-        osg::Vec2   _referencePoint;
-        osg::Vec2   _minScale;
+        osg::Vec2d   _scale;
+        osg::Vec2d   _scaleCenter;
+        osg::Vec2d   _referencePoint;
+        osg::Vec2d   _minScale;
 };
 
 /**
@@ -295,11 +295,11 @@ class OSGMANIPULATOR_EXPORT ScaleUniformCommand : public MotionCommand
         virtual bool unexecute();
         virtual void applyConstraint(const Constraint*);
 
-        inline void setScale(float s) { _scale = s; }
-        inline float getScale() const { return _scale; }
+        inline void setScale(double s) { _scale = s; }
+        inline double getScale() const { return _scale; }
 
-        inline void setScaleCenter(const osg::Vec3& center) { _scaleCenter = center; }
-        inline const osg::Vec3& getScaleCenter() const { return _scaleCenter; }
+        inline void setScaleCenter(const osg::Vec3d& center) { _scaleCenter = center; }
+        inline const osg::Vec3d& getScaleCenter() const { return _scaleCenter; }
 
         virtual osg::Matrix getMotionMatrix() const 
         {
@@ -313,8 +313,8 @@ class OSGMANIPULATOR_EXPORT ScaleUniformCommand : public MotionCommand
         virtual ~ScaleUniformCommand();
 
     private:
-        float     _scale;
-        osg::Vec3 _scaleCenter;
+        double     _scale;
+        osg::Vec3d _scaleCenter;
 };
 
 /**

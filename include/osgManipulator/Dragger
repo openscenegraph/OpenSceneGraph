@@ -59,23 +59,23 @@ class OSGMANIPULATOR_EXPORT PointerInfo
             if (!completed()) ++_hitIter;
         }
 
-        typedef std::pair<osg::NodePath, osg::Vec3> NodePathIntersectionPair;
+        typedef std::pair<osg::NodePath, osg::Vec3d> NodePathIntersectionPair;
         typedef std::list< NodePathIntersectionPair> IntersectionList;
 
 
-        osg::Vec3 getLocalIntersectPoint() const { return _hitIter->second; }
+        osg::Vec3d getLocalIntersectPoint() const { return _hitIter->second; }
 
 
         
-        void setNearFarPoints (osg::Vec3 nearPoint, osg::Vec3 farPoint) {
+        void setNearFarPoints (osg::Vec3d nearPoint, osg::Vec3d farPoint) {
             _nearPoint = nearPoint;
             _farPoint=farPoint;
             _eyeDir = farPoint - nearPoint;
         }
         
-        const osg::Vec3& getEyeDir() const {return _eyeDir;}
+        const osg::Vec3d& getEyeDir() const {return _eyeDir;}
         
-        void getNearFarPoints( osg::Vec3& nearPoint, osg::Vec3& farPoint) const {
+        void getNearFarPoints( osg::Vec3d& nearPoint, osg::Vec3d& farPoint) const {
             nearPoint = _nearPoint;
             farPoint = _farPoint;
         }
@@ -90,7 +90,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
                 _MVPW = camera->getViewMatrix() * camera->getProjectionMatrix();
                 if (camera->getViewport()) _MVPW.postMult(camera->getViewport()->computeWindowMatrix());
                 _inverseMVPW.invert(_MVPW);
-                osg::Vec3 eye, center, up;
+                osg::Vec3d eye, center, up;
                 camera->getViewMatrix().getLookAt(eye, center, up);
                 _eyeDir = eye - center;
 
@@ -99,12 +99,12 @@ class OSGMANIPULATOR_EXPORT PointerInfo
             {
                 _MVPW.makeIdentity();
                 _inverseMVPW.makeIdentity();
-                _eyeDir = osg::Vec3(0,0,1);
+                _eyeDir = osg::Vec3d(0,0,1);
             }
 
         }
 
-        void addIntersection(const osg::NodePath& nodePath, const osg::Vec3& intersectionPoint)
+        void addIntersection(const osg::NodePath& nodePath, const osg::Vec3d& intersectionPoint)
         {
             bool needToResetHitIter = _hitList.empty();
             _hitList.push_back(NodePathIntersectionPair(nodePath, intersectionPoint));
@@ -113,10 +113,10 @@ class OSGMANIPULATOR_EXPORT PointerInfo
 
         void setMousePosition(float pixel_x, float pixel_y)
         {   
-            projectWindowXYIntoObject(osg::Vec2(pixel_x, pixel_y), _nearPoint, _farPoint);
+            projectWindowXYIntoObject(osg::Vec2d(pixel_x, pixel_y), _nearPoint, _farPoint);
         }
     protected:
-        bool projectWindowXYIntoObject(const osg::Vec2& windowCoord, osg::Vec3& nearPoint, osg::Vec3& farPoint) const;
+        bool projectWindowXYIntoObject(const osg::Vec2d& windowCoord, osg::Vec3d& nearPoint, osg::Vec3d& farPoint) const;
 
     public:
         IntersectionList _hitList;
@@ -124,8 +124,8 @@ class OSGMANIPULATOR_EXPORT PointerInfo
 
     protected:
        
-        osg::Vec3 _nearPoint,_farPoint;
-        osg::Vec3 _eyeDir;
+        osg::Vec3d _nearPoint,_farPoint;
+        osg::Vec3d _eyeDir;
 
         osg::Matrix _MVPW;
         osg::Matrix _inverseMVPW;

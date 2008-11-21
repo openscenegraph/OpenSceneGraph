@@ -58,7 +58,7 @@ bool RotateCylinderDragger::handle(const PointerInfo& pointer, const osgGA::GUIE
                 else
                     _projector->setFront(false);
 
-                osg::Vec3 projectedPoint;
+                osg::Vec3d projectedPoint;
                 if (_projector->project(pointer, projectedPoint))
                 {
                     // Generate the motion command.
@@ -92,11 +92,11 @@ bool RotateCylinderDragger::handle(const PointerInfo& pointer, const osgGA::GUIE
                 osg::Matrix localToWorld = osg::Matrix(_prevRotation) * _startLocalToWorld;
                 _projector->setLocalToWorld(localToWorld);
 
-                osg::Vec3 projectedPoint;
+                osg::Vec3d projectedPoint;
                 if (_projector->project(pointer, projectedPoint))
                 {
-                    osg::Vec3 prevProjectedPoint = _prevWorldProjPt * _projector->getWorldToLocal();
-                    osg::Quat deltaRotation = _projector->getRotation(prevProjectedPoint, _prevPtOnCylinder,
+                    osg::Vec3d prevProjectedPoint = _prevWorldProjPt * _projector->getWorldToLocal();
+                    osg::Quat  deltaRotation = _projector->getRotation(prevProjectedPoint, _prevPtOnCylinder,
                                                                       projectedPoint, _projector->isProjectionOnCylinder());
                     osg::Quat rotation = deltaRotation * _prevRotation;
 

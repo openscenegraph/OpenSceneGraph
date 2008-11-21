@@ -148,7 +148,7 @@ void TranslateInPlaneCommand::applyConstraint(const Constraint* constraint)
 // Scale 1D command.
 //
 
-Scale1DCommand::Scale1DCommand() : _scale(1.0f)
+Scale1DCommand::Scale1DCommand() : _scale(1.0)
 {
 }
 
@@ -237,7 +237,7 @@ void Scale2DCommand::applyConstraint(const Constraint* constraint)
 // Scale uniform command.
 //
 
-ScaleUniformCommand::ScaleUniformCommand() : _scale(1.0f)
+ScaleUniformCommand::ScaleUniformCommand() : _scale(1.0)
 {
 }
 

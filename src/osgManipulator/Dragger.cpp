@@ -18,9 +18,9 @@
 using namespace osgManipulator;
 
 PointerInfo::PointerInfo():
-    _nearPoint(osg::Vec3()),
-    _farPoint(osg::Vec3()),
-    _eyeDir(osg::Vec3(0,0,1))
+    _nearPoint(osg::Vec3d()),
+    _farPoint(osg::Vec3d()),
+    _eyeDir(osg::Vec3d(0,0,1))
 {
     _hitIter = _hitList.begin();
 }
@@ -31,10 +31,10 @@ bool PointerInfo::contains(const osg::Node* node) const
     else return false;
 }
 
-bool PointerInfo::projectWindowXYIntoObject(const osg::Vec2& windowCoord, osg::Vec3& nearPoint, osg::Vec3& farPoint) const
+bool PointerInfo::projectWindowXYIntoObject(const osg::Vec2d& windowCoord, osg::Vec3d& nearPoint, osg::Vec3d& farPoint) const
 {
-    nearPoint = osg::Vec3(windowCoord.x(),windowCoord.y(),0.0f)*_inverseMVPW;
-    farPoint = osg::Vec3(windowCoord.x(),windowCoord.y(),1.0f)*_inverseMVPW;
+    nearPoint = osg::Vec3d(windowCoord.x(),windowCoord.y(),0.0)*_inverseMVPW;
+    farPoint = osg::Vec3d(windowCoord.x(),windowCoord.y(),1.0)*_inverseMVPW;
 
     return true;
 }

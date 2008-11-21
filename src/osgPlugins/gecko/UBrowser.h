@@ -19,6 +19,7 @@
 #include <osg/OperationThread>
 
 #include <list>
+#include <algorithm>
 
 #include <nsGUIEvent.h>
 #include "llmozlib2.h"

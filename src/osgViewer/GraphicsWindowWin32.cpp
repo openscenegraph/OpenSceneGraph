@@ -886,7 +886,7 @@ bool Win32WindowingSystem::setScreenRefreshRate( const osg::GraphicsContext::Scr
     deviceMode.dmFields           = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY;
     deviceMode.dmPelsWidth        = width;
     deviceMode.dmPelsHeight       = height;
-    deviceMode.dmDisplayFrequency = refreshRate;
+    deviceMode.dmDisplayFrequency = (DWORD)refreshRate;
     
     return changeScreenSettings(si, displayDevice, deviceMode);
 }
@@ -1756,7 +1756,7 @@ void GraphicsWindowWin32::checkEvents()
     if (!_realized) return;
 
     MSG msg;
-    while (::PeekMessage(&msg, _hwnd, NULL, NULL, PM_REMOVE))
+    while (::PeekMessage(&msg, _hwnd, 0, 0, PM_REMOVE))
     {
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
@@ -1830,14 +1830,15 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
 #else
     // MIKEC: NEW CODE
     POINT pt;
-    pt.x=x;
-    pt.y=y;
+    pt.x = (LONG)x;
+    pt.y = (LONG)y;
+
     // convert point in client area coordinates to screen coordinates
-    if (!::ClientToScreen(_hwnd,&pt))
+    if (!::ClientToScreen(_hwnd, &pt))
     {
         reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to convert cursor position to screen coordinates", _traits->screenNum, ::GetLastError());
     }
-    if (!::SetCursorPos(pt.x,pt.y))
+    if (!::SetCursorPos(pt.x, pt.y))
     {
         reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to set cursor position", _traits->screenNum, ::GetLastError());
         return;

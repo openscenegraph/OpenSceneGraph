@@ -227,7 +227,7 @@ bool DataInputStream::uncompress(std::istream& fin, std::string& destination) co
     if (ret != Z_OK)
     {
         osg::notify(osg::INFO)<<"failed to init"<<std::endl;
-        return ret;
+        return ret != 0;
     }
     
     /* decompress until deflate stream ends or end of file */

@@ -12,7 +12,7 @@
 
 #include <osg/Camera>
 #include <osg/Node>
-#include <osg/Vec3>
+#include <osg/Vec3d>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgManipulator/CommandManager>
@@ -174,7 +174,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	                 __void__setParentDragger__Dragger_P1);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::pair< osg::NodePath COMMA  osg::Vec3 >, osgManipulator::PointerInfo::NodePathIntersectionPair)
+TYPE_NAME_ALIAS(std::pair< osg::NodePath COMMA  osg::Vec3d >, osgManipulator::PointerInfo::NodePathIntersectionPair)
 
 TYPE_NAME_ALIAS(std::list< osgManipulator::PointerInfo::NodePathIntersectionPair >, osgManipulator::PointerInfo::IntersectionList)
 
@@ -203,24 +203,24 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	          __void__next,
 	          "",
 	          "");
-	I_Method0(osg::Vec3, getLocalIntersectPoint,
+	I_Method0(osg::Vec3d, getLocalIntersectPoint,
 	          Properties::NON_VIRTUAL,
-	          __osg_Vec3__getLocalIntersectPoint,
+	          __osg_Vec3d__getLocalIntersectPoint,
 	          "",
 	          "");
-	I_Method2(void, setNearFarPoints, IN, osg::Vec3, nearPoint, IN, osg::Vec3, farPoint,
+	I_Method2(void, setNearFarPoints, IN, osg::Vec3d, nearPoint, IN, osg::Vec3d, farPoint,
 	          Properties::NON_VIRTUAL,
-	          __void__setNearFarPoints__osg_Vec3__osg_Vec3,
+	          __void__setNearFarPoints__osg_Vec3d__osg_Vec3d,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getEyeDir,
+	I_Method0(const osg::Vec3d &, getEyeDir,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getEyeDir,
+	          __C5_osg_Vec3d_R1__getEyeDir,
 	          "",
 	          "");
-	I_Method2(void, getNearFarPoints, IN, osg::Vec3 &, nearPoint, IN, osg::Vec3 &, farPoint,
+	I_Method2(void, getNearFarPoints, IN, osg::Vec3d &, nearPoint, IN, osg::Vec3d &, farPoint,
 	          Properties::NON_VIRTUAL,
-	          __void__getNearFarPoints__osg_Vec3_R1__osg_Vec3_R1,
+	          __void__getNearFarPoints__osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",
 	          "");
 	I_Method1(bool, contains, IN, const osg::Node *, node,
@@ -233,9 +233,9 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	          __void__setCamera__osg_Camera_P1,
 	          "",
 	          "");
-	I_Method2(void, addIntersection, IN, const osg::NodePath &, nodePath, IN, const osg::Vec3 &, intersectionPoint,
+	I_Method2(void, addIntersection, IN, const osg::NodePath &, nodePath, IN, const osg::Vec3d &, intersectionPoint,
 	          Properties::NON_VIRTUAL,
-	          __void__addIntersection__C5_osg_NodePath_R1__C5_osg_Vec3_R1,
+	          __void__addIntersection__C5_osg_NodePath_R1__C5_osg_Vec3d_R1,
 	          "",
 	          "");
 	I_Method2(void, setMousePosition, IN, float, pixel_x, IN, float, pixel_y,
@@ -243,20 +243,20 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	          __void__setMousePosition__float__float,
 	          "",
 	          "");
-	I_ProtectedMethod3(bool, projectWindowXYIntoObject, IN, const osg::Vec2 &, windowCoord, IN, osg::Vec3 &, nearPoint, IN, osg::Vec3 &, farPoint,
+	I_ProtectedMethod3(bool, projectWindowXYIntoObject, IN, const osg::Vec2d &, windowCoord, IN, osg::Vec3d &, nearPoint, IN, osg::Vec3d &, farPoint,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __bool__projectWindowXYIntoObject__C5_osg_Vec2_R1__osg_Vec3_R1__osg_Vec3_R1,
+	                   __bool__projectWindowXYIntoObject__C5_osg_Vec2d_R1__osg_Vec3d_R1__osg_Vec3d_R1,
 	                   "",
 	                   "");
 	I_SimpleProperty(osg::Camera *, Camera, 
 	                 0, 
 	                 __void__setCamera__osg_Camera_P1);
-	I_SimpleProperty(const osg::Vec3 &, EyeDir, 
-	                 __C5_osg_Vec3_R1__getEyeDir, 
+	I_SimpleProperty(const osg::Vec3d &, EyeDir, 
+	                 __C5_osg_Vec3d_R1__getEyeDir, 
 	                 0);
-	I_SimpleProperty(osg::Vec3, LocalIntersectPoint, 
-	                 __osg_Vec3__getLocalIntersectPoint, 
+	I_SimpleProperty(osg::Vec3d, LocalIntersectPoint, 
+	                 __osg_Vec3d__getLocalIntersectPoint, 
 	                 0);
 	I_PublicMemberProperty(osgManipulator::PointerInfo::IntersectionList, _hitList);
 END_REFLECTOR
@@ -303,7 +303,7 @@ END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osgManipulator::PointerInfo::NodePathIntersectionPair >)
 
-STD_PAIR_REFLECTOR(std::pair< osg::NodePath COMMA  osg::Vec3 >)
+STD_PAIR_REFLECTOR(std::pair< osg::NodePath COMMA  osg::Vec3d >)
 
 STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgManipulator::Dragger > >)
 

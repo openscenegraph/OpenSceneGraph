@@ -49,14 +49,14 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	          __void__setupDefaultGeometry,
 	          "Setup default geometry for dragger. ",
 	          "");
-	I_Method1(void, setMinScale, IN, float, min,
+	I_Method1(void, setMinScale, IN, double, min,
 	          Properties::NON_VIRTUAL,
-	          __void__setMinScale__float,
+	          __void__setMinScale__double,
 	          "Set/Get min scale for dragger. ",
 	          "");
-	I_Method0(float, getMinScale,
+	I_Method0(double, getMinScale,
 	          Properties::NON_VIRTUAL,
-	          __float__getMinScale,
+	          __double__getMinScale,
 	          "",
 	          "");
 	I_Method1(void, setColor, IN, const osg::Vec4 &, color,
@@ -99,24 +99,24 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	          __osg_Node_P1__getRightHandleNode,
 	          "",
 	          "");
-	I_Method1(void, setLeftHandlePosition, IN, float, pos,
+	I_Method1(void, setLeftHandlePosition, IN, double, pos,
 	          Properties::NON_VIRTUAL,
-	          __void__setLeftHandlePosition__float,
+	          __void__setLeftHandlePosition__double,
 	          "Set left/right handle position. ",
 	          "");
-	I_Method0(float, getLeftHandlePosition,
+	I_Method0(double, getLeftHandlePosition,
 	          Properties::NON_VIRTUAL,
-	          __float__getLeftHandlePosition,
+	          __double__getLeftHandlePosition,
 	          "",
 	          "");
-	I_Method1(void, setRightHandlePosition, IN, float, pos,
+	I_Method1(void, setRightHandlePosition, IN, double, pos,
 	          Properties::NON_VIRTUAL,
-	          __void__setRightHandlePosition__float,
+	          __void__setRightHandlePosition__double,
 	          "",
 	          "");
-	I_Method0(float, getRightHandlePosition,
+	I_Method0(double, getRightHandlePosition,
 	          Properties::NON_VIRTUAL,
-	          __float__getRightHandlePosition,
+	          __double__getRightHandlePosition,
 	          "",
 	          "");
 	I_SimpleProperty(const osg::Vec4 &, Color, 
@@ -125,20 +125,20 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	I_SimpleProperty(osg::Node &, LeftHandleNode, 
 	                 0, 
 	                 __void__setLeftHandleNode__osg_Node_R1);
-	I_SimpleProperty(float, LeftHandlePosition, 
-	                 __float__getLeftHandlePosition, 
-	                 __void__setLeftHandlePosition__float);
-	I_SimpleProperty(float, MinScale, 
-	                 __float__getMinScale, 
-	                 __void__setMinScale__float);
+	I_SimpleProperty(double, LeftHandlePosition, 
+	                 __double__getLeftHandlePosition, 
+	                 __void__setLeftHandlePosition__double);
+	I_SimpleProperty(double, MinScale, 
+	                 __double__getMinScale, 
+	                 __void__setMinScale__double);
 	I_SimpleProperty(const osg::Vec4 &, PickColor, 
 	                 0, 
 	                 __void__setPickColor__C5_osg_Vec4_R1);
 	I_SimpleProperty(osg::Node &, RightHandleNode, 
 	                 0, 
 	                 __void__setRightHandleNode__osg_Node_R1);
-	I_SimpleProperty(float, RightHandlePosition, 
-	                 __float__getRightHandlePosition, 
-	                 __void__setRightHandlePosition__float);
+	I_SimpleProperty(double, RightHandlePosition, 
+	                 __double__getRightHandlePosition, 
+	                 __void__setRightHandlePosition__double);
 END_REFLECTOR
 

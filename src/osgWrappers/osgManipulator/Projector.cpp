@@ -15,7 +15,7 @@
 #include <osg/Plane>
 #include <osg/Quat>
 #include <osg/Shape>
-#include <osg/Vec3>
+#include <osg/Vec3d>
 #include <osgManipulator/Dragger>
 #include <osgManipulator/Projector>
 
@@ -38,9 +38,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderPlaneProjector)
 	               ____CylinderPlaneProjector__osg_Cylinder_P1,
 	               "",
 	               "");
-	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3 &, projectedPoint,
+	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3d &, projectedPoint,
 	          Properties::VIRTUAL,
-	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
+	          __bool__project__C5_PointerInfo_R1__osg_Vec3d_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given plane. ",
 	          "Returns true on successful projection. ");
 	I_Method0(bool, isProjectionOnCylinder,
@@ -48,9 +48,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderPlaneProjector)
 	          __bool__isProjectionOnCylinder,
 	          "Returns true if the previous projection was on the cylinder and false if the projection was on the plane. ",
 	          "");
-	I_Method4(osg::Quat, getRotation, IN, const osg::Vec3 &, p1, IN, bool, p1OnCyl, IN, const osg::Vec3 &, p2, IN, bool, p2OnCyl,
+	I_Method4(osg::Quat, getRotation, IN, const osg::Vec3d &, p1, IN, bool, p1OnCyl, IN, const osg::Vec3d &, p2, IN, bool, p2OnCyl,
 	          Properties::NON_VIRTUAL,
-	          __osg_Quat__getRotation__C5_osg_Vec3_R1__bool__C5_osg_Vec3_R1__bool,
+	          __osg_Quat__getRotation__C5_osg_Vec3d_R1__bool__C5_osg_Vec3d_R1__bool,
 	          "",
 	          "");
 END_REFLECTOR
@@ -76,9 +76,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderProjector)
 	          __C5_osg_Cylinder_P1__getCylinder,
 	          "",
 	          "");
-	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3 &, projectedPoint,
+	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3d &, projectedPoint,
 	          Properties::VIRTUAL,
-	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
+	          __bool__project__C5_PointerInfo_R1__osg_Vec3d_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given plane. ",
 	          "Returns true on successful projection. ");
 	I_Method2(bool, isPointInFront, IN, const osgManipulator::PointerInfo &, pi, IN, const osg::Matrix &, localToWorld,
@@ -134,9 +134,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::LineProjector)
 	          __osg_LineSegment_vec_type_R1__getLineEnd,
 	          "",
 	          "");
-	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3 &, projectedPoint,
+	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3d &, projectedPoint,
 	          Properties::VIRTUAL,
-	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
+	          __bool__project__C5_PointerInfo_R1__osg_Vec3d_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given line. ",
 	          "Returns true on successful projection. ");
 	I_SimpleProperty(osg::LineSegment::vec_type &, LineEnd, 
@@ -168,9 +168,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::PlaneProjector)
 	          __C5_osg_Plane_R1__getPlane,
 	          "",
 	          "");
-	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3 &, projectedPoint,
+	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3d &, projectedPoint,
 	          Properties::VIRTUAL,
-	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
+	          __bool__project__C5_PointerInfo_R1__osg_Vec3d_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given plane. ",
 	          "Returns true on successful projection. ");
 	I_SimpleProperty(const osg::Plane &, Plane, 
@@ -184,9 +184,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::Projector)
 	I_Constructor0(____Projector,
 	               "",
 	               "");
-	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3 &, projectedPoint,
+	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3d &, projectedPoint,
 	          Properties::PURE_VIRTUAL,
-	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
+	          __bool__project__C5_PointerInfo_R1__osg_Vec3d_R1,
 	          "Calculates the object/world coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto some shape or geometry (implemented in derived classes). ",
 	          "SceneView in used for i projecting window coordinates into object coordinates and vice versa. Returns true on successful projection. ");
 	I_Method1(void, setLocalToWorld, IN, const osg::Matrix &, localToWorld,
@@ -223,9 +223,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::SpherePlaneProjector)
 	               ____SpherePlaneProjector__osg_Sphere_P1,
 	               "",
 	               "");
-	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3 &, projectedPoint,
+	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3d &, projectedPoint,
 	          Properties::VIRTUAL,
-	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
+	          __bool__project__C5_PointerInfo_R1__osg_Vec3d_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given sphere. ",
 	          "Returns true on successful projection. ");
 	I_Method0(bool, isProjectionOnSphere,
@@ -233,9 +233,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::SpherePlaneProjector)
 	          __bool__isProjectionOnSphere,
 	          "Returns true if the previous projection was on the sphere and false if the projection was on the plane. ",
 	          "");
-	I_MethodWithDefaults5(osg::Quat, getRotation, IN, const osg::Vec3 &, p1, , IN, bool, p1OnSphere, , IN, const osg::Vec3 &, p2, , IN, bool, p2OnSphere, , IN, float, radialFactor, 0.0f,
+	I_MethodWithDefaults5(osg::Quat, getRotation, IN, const osg::Vec3d &, p1, , IN, bool, p1OnSphere, , IN, const osg::Vec3d &, p2, , IN, bool, p2OnSphere, , IN, float, radialFactor, 0.0f,
 	                      Properties::NON_VIRTUAL,
-	                      __osg_Quat__getRotation__C5_osg_Vec3_R1__bool__C5_osg_Vec3_R1__bool__float,
+	                      __osg_Quat__getRotation__C5_osg_Vec3d_R1__bool__C5_osg_Vec3d_R1__bool__float,
 	                      "",
 	                      "");
 END_REFLECTOR
@@ -261,9 +261,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::SphereProjector)
 	          __C5_osg_Sphere_P1__getSphere,
 	          "",
 	          "");
-	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3 &, projectedPoint,
+	I_Method2(bool, project, IN, const osgManipulator::PointerInfo &, pi, IN, osg::Vec3d &, projectedPoint,
 	          Properties::VIRTUAL,
-	          __bool__project__C5_PointerInfo_R1__osg_Vec3_R1,
+	          __bool__project__C5_PointerInfo_R1__osg_Vec3d_R1,
 	          "Calculates the object coordinates (projectedPoint) of a window coordinate (pointToProject) when projected onto the given sphere. ",
 	          "Returns true on successful projection. ");
 	I_Method2(bool, isPointInFront, IN, const osgManipulator::PointerInfo &, pi, IN, const osg::Matrix &, localToWorld,

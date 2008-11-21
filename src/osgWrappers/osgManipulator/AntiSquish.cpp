@@ -13,7 +13,7 @@
 #include <osg/CopyOp>
 #include <osg/Matrix>
 #include <osg/Object>
-#include <osg/Vec3>
+#include <osg/Vec3d>
 #include <osgManipulator/AntiSquish>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -30,13 +30,13 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::AntiSquish)
 	I_Constructor0(____AntiSquish,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::Vec3 &, pivot,
+	I_Constructor1(IN, const osg::Vec3d &, pivot,
 	               Properties::NON_EXPLICIT,
-	               ____AntiSquish__C5_osg_Vec3_R1,
+	               ____AntiSquish__C5_osg_Vec3d_R1,
 	               "",
 	               "");
-	I_Constructor2(IN, const osg::Vec3 &, pivot, IN, const osg::Vec3 &, position,
-	               ____AntiSquish__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	I_Constructor2(IN, const osg::Vec3d &, pivot, IN, const osg::Vec3d &, position,
+	               ____AntiSquish__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
 	               "",
 	               "");
 	I_ConstructorWithDefaults2(IN, const osgManipulator::AntiSquish &, pat, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
@@ -58,24 +58,24 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::AntiSquish)
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "return true if this and obj are of the same kind of object. ",
 	          "");
-	I_Method1(void, setPivot, IN, const osg::Vec3 &, pvt,
+	I_Method1(void, setPivot, IN, const osg::Vec3d &, pvt,
 	          Properties::NON_VIRTUAL,
-	          __void__setPivot__C5_osg_Vec3_R1,
+	          __void__setPivot__C5_osg_Vec3d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getPivot,
+	I_Method0(const osg::Vec3d &, getPivot,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getPivot,
+	          __C5_osg_Vec3d_R1__getPivot,
 	          "",
 	          "");
-	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos,
+	I_Method1(void, setPosition, IN, const osg::Vec3d &, pos,
 	          Properties::NON_VIRTUAL,
-	          __void__setPosition__C5_osg_Vec3_R1,
+	          __void__setPosition__C5_osg_Vec3d_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getPosition,
+	I_Method0(const osg::Vec3d &, getPosition,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec3_R1__getPosition,
+	          __C5_osg_Vec3d_R1__getPosition,
 	          "",
 	          "");
 	I_Method2(osg::Matrix, computeUnSquishedMatrix, IN, const osg::Matrix &, x, IN, bool &, flag,
@@ -83,11 +83,11 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::AntiSquish)
 	          __osg_Matrix__computeUnSquishedMatrix__C5_osg_Matrix_R1__bool_R1,
 	          "",
 	          "");
-	I_SimpleProperty(const osg::Vec3 &, Pivot, 
-	                 __C5_osg_Vec3_R1__getPivot, 
-	                 __void__setPivot__C5_osg_Vec3_R1);
-	I_SimpleProperty(const osg::Vec3 &, Position, 
-	                 __C5_osg_Vec3_R1__getPosition, 
-	                 __void__setPosition__C5_osg_Vec3_R1);
+	I_SimpleProperty(const osg::Vec3d &, Pivot, 
+	                 __C5_osg_Vec3d_R1__getPivot, 
+	                 __void__setPivot__C5_osg_Vec3d_R1);
+	I_SimpleProperty(const osg::Vec3d &, Position, 
+	                 __C5_osg_Vec3d_R1__getPosition, 
+	                 __void__setPosition__C5_osg_Vec3d_R1);
 END_REFLECTOR
 

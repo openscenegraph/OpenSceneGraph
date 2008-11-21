@@ -30,7 +30,7 @@ Translate1DDragger::Translate1DDragger() : Dragger(), _checkForNodeInNodePath(tr
     setPickColor(osg::Vec4(1.0f, 1.0f, 0.0f, 1.0f));
 }
        
-Translate1DDragger::Translate1DDragger(const osg::Vec3& s, const osg::Vec3& e) : Dragger(), _checkForNodeInNodePath(true)
+Translate1DDragger::Translate1DDragger(const osg::Vec3d& s, const osg::Vec3d& e) : Dragger(), _checkForNodeInNodePath(true)
 {
     _projector = new LineProjector(s,e);
     setColor(osg::Vec4(0.0f, 1.0f, 0.0f, 1.0f));
@@ -86,7 +86,7 @@ bool Translate1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
         // Pick move.
         case (osgGA::GUIEventAdapter::DRAG):
             {
-                osg::Vec3 projectedPoint;
+                osg::Vec3d projectedPoint;
                 if (_projector->project(pointer, projectedPoint))
                 {
                     // Generate the motion command.
@@ -111,7 +111,7 @@ bool Translate1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
         // Pick finish.
         case (osgGA::GUIEventAdapter::RELEASE):
             {
-                osg::Vec3 projectedPoint;
+                osg::Vec3d projectedPoint;
                 if (_projector->project(pointer, projectedPoint))
                 {
                     osg::ref_ptr<TranslateInLineCommand> cmd = new TranslateInLineCommand(_projector->getLineStart(),

@@ -55,7 +55,7 @@ class OSGMANIPULATOR_EXPORT RotateSphereDragger : public Dragger
 
         osg::ref_ptr<SpherePlaneProjector> _projector;
 
-        osg::Vec3   _prevWorldProjPt;
+        osg::Vec3d  _prevWorldProjPt;
         bool        _prevPtOnSphere;
         osg::Matrix _startLocalToWorld, _startWorldToLocal;
         osg::Quat   _prevRotation;

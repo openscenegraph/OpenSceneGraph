@@ -34,8 +34,8 @@ class OSGMANIPULATOR_EXPORT AntiSquish: public osg::MatrixTransform
 {
     public :
         AntiSquish();
-        AntiSquish(const osg::Vec3& pivot);
-        AntiSquish(const osg::Vec3& pivot, const osg::Vec3& position);
+        AntiSquish(const osg::Vec3d& pivot);
+        AntiSquish(const osg::Vec3d& pivot, const osg::Vec3d& position);
         AntiSquish(const AntiSquish& pat, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         virtual osg::Object* cloneType() const { return new AntiSquish(); }
@@ -44,23 +44,23 @@ class OSGMANIPULATOR_EXPORT AntiSquish: public osg::MatrixTransform
 
         virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const AntiSquish *>(obj)!=NULL; }
 
-        void setPivot(const osg::Vec3& pvt)
+        void setPivot(const osg::Vec3d& pvt)
                {
             _pivot = pvt;
             _usePivot = true; 
             _dirty = true;
         }
 
-        const osg::Vec3& getPivot() { return _pivot; }
+        const osg::Vec3d& getPivot() { return _pivot; }
 
-        void setPosition(const osg::Vec3& pos)
+        void setPosition(const osg::Vec3d& pos)
                {
             _position = pos;
             _usePosition = true; 
             _dirty = true;
         }
 
-        const osg::Vec3& getPosition() { return _position; }
+        const osg::Vec3d& getPosition() { return _position; }
                     
         virtual ~AntiSquish();
 
@@ -70,10 +70,10 @@ class OSGMANIPULATOR_EXPORT AntiSquish: public osg::MatrixTransform
 
         osg::NodeCallback* _asqCallback;
 
-        osg::Vec3 _pivot;
+        osg::Vec3d _pivot;
         bool _usePivot;
 
-        osg::Vec3 _position;
+        osg::Vec3d _position;
         bool _usePosition;
 
         bool _dirty;

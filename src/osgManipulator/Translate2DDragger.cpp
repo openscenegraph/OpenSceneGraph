@@ -87,7 +87,7 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
         // Pick move.
         case (osgGA::GUIEventAdapter::DRAG):
             {
-                osg::Vec3 projectedPoint;
+                osg::Vec3d projectedPoint;
                 if (_projector->project(pointer, projectedPoint))
                 {
                     // Generate the motion command.

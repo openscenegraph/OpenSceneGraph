@@ -54,13 +54,13 @@ AntiSquish::AntiSquish() : _usePivot(true), _usePosition(false)
     setUpdateCallback(_asqCallback);
 }
 
-AntiSquish::AntiSquish(const osg::Vec3& pivot) : _pivot(pivot), _usePivot(true), _usePosition(false)
+AntiSquish::AntiSquish(const osg::Vec3d& pivot) : _pivot(pivot), _usePivot(true), _usePosition(false)
 {
     _asqCallback = new AntiSquishCallback(this);
     setUpdateCallback(_asqCallback);
 }
 
-AntiSquish::AntiSquish(const osg::Vec3& pivot, const osg::Vec3& pos)
+AntiSquish::AntiSquish(const osg::Vec3d& pivot, const osg::Vec3d& pos)
     : _pivot(pivot), _usePivot(true), _position(pos), _usePosition(true)
 {
     _asqCallback = new AntiSquishCallback(this);

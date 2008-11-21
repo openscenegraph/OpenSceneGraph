@@ -26,11 +26,11 @@ using namespace osgManipulator;
 namespace
 {
 
-float computeScale(const osg::Vec3& startProjectedPoint,
-                   const osg::Vec3& projectedPoint, float scaleCenter)
+double computeScale(const osg::Vec3d& startProjectedPoint,
+                   const osg::Vec3d& projectedPoint, double scaleCenter)
 {
-    float denom = startProjectedPoint[0] - scaleCenter;
-    float scale = denom ? (projectedPoint[0] - scaleCenter)/denom : 1.0;
+    double denom = startProjectedPoint[0] - scaleCenter;
+    double scale = denom ? (projectedPoint[0] - scaleCenter)/denom : 1.0;
     return scale;
 }
 
@@ -38,7 +38,7 @@ float computeScale(const osg::Vec3& startProjectedPoint,
 
 Scale1DDragger::Scale1DDragger(ScaleMode scaleMode) : Dragger(), _minScale(0.001), _scaleMode(scaleMode)
 {
-    _projector = new LineProjector(osg::Vec3(-0.5f,0.0f,0.0f),osg::Vec3(0.5f,0.0f,0.0f));
+    _projector = new LineProjector(osg::Vec3d(-0.5,0.0,0.0),osg::Vec3d(0.5,0.0,0.0));
     setColor(osg::Vec4(0.0f, 1.0f, 0.0f, 1.0f));
     setPickColor(osg::Vec4(1.0f, 1.0f, 0.0f, 1.0f));
 }
@@ -65,7 +65,7 @@ bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
 
                 if (_projector->project(pointer, _startProjectedPoint))
                 {
-                    _scaleCenter = 0.0f;
+                    _scaleCenter = 0.0;
                     if (_scaleMode == SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT)
                     {
                         if ( pointer.contains(_leftHandleNode.get()) )
@@ -97,18 +97,18 @@ bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
         // Pick move.
         case (osgGA::GUIEventAdapter::DRAG):
             {
-                osg::Vec3 projectedPoint;
+                osg::Vec3d projectedPoint;
                 if (_projector->project(pointer, projectedPoint))
                 {
                     // Generate the motion command.
                     osg::ref_ptr<Scale1DCommand> cmd = new Scale1DCommand();
 
                     // Compute scale.
-                    float scale = computeScale(_startProjectedPoint,projectedPoint,_scaleCenter);
+                    double scale = computeScale(_startProjectedPoint,projectedPoint,_scaleCenter);
                     if (scale < getMinScale()) scale = getMinScale();
 
                     // Snap the referencePoint to the line start or line end depending on which is closer.
-                    float referencePoint = _startProjectedPoint[0];
+                    double referencePoint = _startProjectedPoint[0];
                     if (fabs(_projector->getLineStart()[0] - referencePoint) <
                         fabs(_projector->getLineEnd()[0]   - referencePoint))
                         referencePoint = _projector->getLineStart()[0];

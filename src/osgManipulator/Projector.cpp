@@ -20,7 +20,7 @@ namespace
 {
 
 bool computeClosestPoints(const osg::LineSegment& l1, const osg::LineSegment& l2,
-                          osg::Vec3& p1, osg::Vec3& p2)
+                          osg::Vec3d& p1, osg::Vec3d& p2)
 {
     // Computes the closest points (p1 and p2 on line l1 and l2 respectively) between the two lines
     // An explanation of the algorithm can be found at
@@ -31,19 +31,19 @@ bool computeClosestPoints(const osg::LineSegment& l1, const osg::LineSegment& l2
 
     osg::LineSegment::vec_type w0 = l1.start() - l2.start();
 
-    float a = u * u;
-    float b = u * v;
-    float c = v * v;
-    float d = u * w0;
-    float e = v * w0;
+    double a = u * u;
+    double b = u * v;
+    double c = v * v;
+    double d = u * w0;
+    double e = v * w0;
 
-    float denominator = a*c - b*b;
+    double denominator = a*c - b*b;
 
     // Test if lines are parallel
     if (denominator == 0.0) return false;
 
-    float sc = (b*e - c*d)/denominator;
-    float tc = (a*e - b*d)/denominator;
+    double sc = (b*e - c*d)/denominator;
+    double tc = (a*e - b*d)/denominator;
 
     p1 = l1.start() + u * sc;
     p2 = l2.start() + v * tc;
@@ -51,27 +51,27 @@ bool computeClosestPoints(const osg::LineSegment& l1, const osg::LineSegment& l2
     return true;
 }
 
-bool computeClosestPointOnLine(const osg::Vec3& lineStart, const osg::Vec3& lineEnd,
-                               const osg::Vec3& fromPoint, osg::Vec3& closestPoint)
+bool computeClosestPointOnLine(const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd,
+                               const osg::Vec3d& fromPoint, osg::Vec3d& closestPoint)
 {
-    osg::Vec3 v = lineEnd - lineStart;
-    osg::Vec3 w = fromPoint - lineStart;
+    osg::Vec3d v = lineEnd - lineStart;
+    osg::Vec3d w = fromPoint - lineStart;
 
-    float c1 = w * v;
-    float c2 = v * v;
+    double c1 = w * v;
+    double c2 = v * v;
 
-    float almostZero = 0.000001;
+    double almostZero = 0.000001;
     if (c2 < almostZero) return false;
 
-    float b = c1 / c2;
+    double b = c1 / c2;
     closestPoint = lineStart + v * b;
 
     return true;
 }
 
-bool getPlaneLineIntersection(const osg::Vec4& plane, 
-                              const osg::Vec3& lineStart, const osg::Vec3& lineEnd, 
-                              osg::Vec3& isect)
+bool getPlaneLineIntersection(const osg::Vec4d& plane, 
+                              const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd, 
+                              osg::Vec3d& isect)
 {
     const double deltaX = lineEnd.x() - lineStart.x();
     const double deltaY = lineEnd.y() - lineStart.y();
@@ -90,46 +90,46 @@ bool getPlaneLineIntersection(const osg::Vec4& plane,
 }
 
 bool getSphereLineIntersection(const osg::Sphere& sphere, 
-                               const osg::Vec3& lineStart, const osg::Vec3& lineEnd, 
-                               osg::Vec3& frontISect, osg::Vec3& backISect)
+                               const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd, 
+                               osg::Vec3d& frontISect, osg::Vec3d& backISect)
 {
-    osg::Vec3 lineDirection = lineEnd - lineStart;
+    osg::Vec3d lineDirection = lineEnd - lineStart;
     lineDirection.normalize();
 
-    osg::Vec3 v = lineStart - sphere.getCenter();
-    float B = 2.0f * (lineDirection * v);
-    float C = v * v - sphere.getRadius() * sphere.getRadius();
+    osg::Vec3d v = lineStart - sphere.getCenter();
+    double B = 2.0f * (lineDirection * v);
+    double C = v * v - sphere.getRadius() * sphere.getRadius();
     
-    float discriminant = B * B - 4.0f * C;
+    double discriminant = B * B - 4.0f * C;
 
     if (discriminant < 0.0f) // Line and sphere don't intersect.
         return false;
 
-    float discriminantSqroot = sqrtf(discriminant);
-    float t0 = (-B - discriminantSqroot) * 0.5f;
+    double discriminantSqroot = sqrtf(discriminant);
+    double t0 = (-B - discriminantSqroot) * 0.5f;
     frontISect = lineStart + lineDirection * t0;
 
-    float t1 = (-B + discriminantSqroot) * 0.5f;
+    double t1 = (-B + discriminantSqroot) * 0.5f;
     backISect = lineStart + lineDirection * t1;
 
     return true;
 }
 
-bool getUnitCylinderLineIntersection(const osg::Vec3& lineStart, const osg::Vec3& lineEnd, 
-                                     osg::Vec3& isectFront, osg::Vec3& isectBack)
+bool getUnitCylinderLineIntersection(const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd, 
+                                     osg::Vec3d& isectFront, osg::Vec3d& isectBack)
 {
-    osg::Vec3 dir = lineEnd - lineStart;
+    osg::Vec3d dir = lineEnd - lineStart;
     dir.normalize();
 
-    float a = dir[0] * dir[0] + dir[1] * dir[1];
-    float b = 2.0f * (lineStart[0] * dir[0] + lineStart[1] * dir[1]);
-    float c = lineStart[0] * lineStart[0] + lineStart[1] * lineStart[1] - 1;
+    double a = dir[0] * dir[0] + dir[1] * dir[1];
+    double b = 2.0f * (lineStart[0] * dir[0] + lineStart[1] * dir[1]);
+    double c = lineStart[0] * lineStart[0] + lineStart[1] * lineStart[1] - 1;
 
-    float d = b*b - 4*a*c;
+    double d = b*b - 4*a*c;
     if (d < 0.0f) return false;
 
-    float dSqroot = sqrtf(d);
-    float t0, t1;
+    double dSqroot = sqrtf(d);
+    double t0, t1;
     if (b > 0.0f)
     {
         t0 = -(2.0f * c) / (dSqroot + b);
@@ -147,22 +147,22 @@ bool getUnitCylinderLineIntersection(const osg::Vec3& lineStart, const osg::Vec3
 }
 
 bool getCylinderLineIntersection(const osg::Cylinder& cylinder,
-                                 const osg::Vec3& lineStart, const osg::Vec3& lineEnd, 
-                                 osg::Vec3& isectFront, osg::Vec3& isectBack)
+                                 const osg::Vec3d& lineStart, const osg::Vec3d& lineEnd, 
+                                 osg::Vec3d& isectFront, osg::Vec3d& isectBack)
 {
     // Compute matrix transformation that takes the cylinder to a unit cylinder with Z-axis as it's axis and
     // (0,0,0) as it's center.
-    float oneOverRadius = 1.0f / cylinder.getRadius();
+    double oneOverRadius = 1.0f / cylinder.getRadius();
     osg::Matrix toUnitCylInZ = osg::Matrix::translate(-cylinder.getCenter())
                                * osg::Matrix::scale(oneOverRadius, oneOverRadius, oneOverRadius)
                                * osg::Matrix(cylinder.getRotation().inverse());
                                
     // Transform the lineStart and lineEnd into the unit cylinder space.
-    osg::Vec3 unitCylLineStart = lineStart * toUnitCylInZ;
-    osg::Vec3 unitCylLineEnd   = lineEnd * toUnitCylInZ;
+    osg::Vec3d unitCylLineStart = lineStart * toUnitCylInZ;
+    osg::Vec3d unitCylLineEnd   = lineEnd * toUnitCylInZ;
 
     // Intersect line with unit cylinder.
-    osg::Vec3 unitCylIsectFront, unitCylIsectBack;
+    osg::Vec3d unitCylIsectFront, unitCylIsectBack;
     if (! getUnitCylinderLineIntersection(unitCylLineStart, unitCylLineEnd, unitCylIsectFront, unitCylIsectBack))
         return false;    
 
@@ -174,19 +174,19 @@ bool getCylinderLineIntersection(const osg::Cylinder& cylinder,
     return true;
 }
 
-osg::Vec3 getLocalEyeDirection(const osg::Vec3& eyeDir, const osg::Matrix& localToWorld)
+osg::Vec3d getLocalEyeDirection(const osg::Vec3d& eyeDir, const osg::Matrix& localToWorld)
 {
     // To take a normal from world to local you need to transform it by the transpose of the inverse of the 
     // world to local matrix. Pre-multiplying is equivalent to doing a post-multiplication of the transpose.
-    osg::Vec3 localEyeDir = localToWorld * eyeDir;
+    osg::Vec3d localEyeDir = localToWorld * eyeDir;
     localEyeDir.normalize();
     return localEyeDir;
 }
 
-osg::Plane computePlaneThruPointAndOrientedToEye(const osg::Vec3& eyeDir, const osg::Matrix& localToWorld,
-                                                 const osg::Vec3& point, bool front)
+osg::Plane computePlaneThruPointAndOrientedToEye(const osg::Vec3d& eyeDir, const osg::Matrix& localToWorld,
+                                                 const osg::Vec3d& point, bool front)
 {
-    osg::Vec3 planeNormal = getLocalEyeDirection(eyeDir, localToWorld);
+    osg::Vec3d planeNormal = getLocalEyeDirection(eyeDir, localToWorld);
     if (! front) planeNormal = -planeNormal;
 
     osg::Plane plane;
@@ -194,18 +194,18 @@ osg::Plane computePlaneThruPointAndOrientedToEye(const osg::Vec3& eyeDir, const 
     return plane;
 }
 
-osg::Plane computePlaneParallelToAxisAndOrientedToEye(const osg::Vec3& eyeDir, const osg::Matrix& localToWorld,
-                                                      const osg::Vec3& axisDir, float radius,
-                                                      osg::Vec3& planeLineStart, osg::Vec3& planeLineEnd,
+osg::Plane computePlaneParallelToAxisAndOrientedToEye(const osg::Vec3d& eyeDir, const osg::Matrix& localToWorld,
+                                                      const osg::Vec3d& axisDir, double radius,
+                                                      osg::Vec3d& planeLineStart, osg::Vec3d& planeLineEnd,
                                                       bool front)
 {
-    osg::Vec3 perpDir = axisDir ^ getLocalEyeDirection(eyeDir, localToWorld);
-    osg::Vec3 planeDir = perpDir ^ axisDir;
+    osg::Vec3d perpDir = axisDir ^ getLocalEyeDirection(eyeDir, localToWorld);
+    osg::Vec3d planeDir = perpDir ^ axisDir;
     planeDir.normalize();
     if (! front)
         planeDir = -planeDir;
 
-    osg::Vec3 planePoint = planeDir * radius + axisDir;
+    osg::Vec3d planePoint = planeDir * radius + axisDir;
     osg::Plane plane;
     plane.set(planeDir, planePoint);
 
@@ -239,7 +239,7 @@ LineProjector::~LineProjector()
 {
 }
 
-bool LineProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool LineProjector::project(const PointerInfo& pi, osg::Vec3d& projectedPoint) const
 {
     if (!_line->valid())
     {
@@ -252,15 +252,15 @@ bool LineProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) co
     objectLine->mult(*_line, getLocalToWorld());
 
     // Get the near and far points for the mouse point.
-    osg::Vec3 nearPoint, farPoint;
+    osg::Vec3d nearPoint, farPoint;
     pi.getNearFarPoints(nearPoint,farPoint);
     osg::ref_ptr<osg::LineSegment> pointerLine = new osg::LineSegment(nearPoint,farPoint);
 
-    osg::Vec3 closestPtLine, closestPtProjWorkingLine;
+    osg::Vec3d closestPtLine, closestPtProjWorkingLine;
     if (! computeClosestPoints(*objectLine, *pointerLine, closestPtLine, closestPtProjWorkingLine))
         return false;
 
-    osg::Vec3 localClosestPtLine = closestPtLine * getWorldToLocal();
+    osg::Vec3d localClosestPtLine = closestPtLine * getWorldToLocal();
 
     projectedPoint = localClosestPtLine;
 
@@ -281,7 +281,7 @@ PlaneProjector::~PlaneProjector()
 {
 }
 
-bool PlaneProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool PlaneProjector::project(const PointerInfo& pi, osg::Vec3d& projectedPoint) const
 {
     if (!_plane.valid())
     {
@@ -290,11 +290,11 @@ bool PlaneProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) c
     }
 
     // Get the near and far points for the mouse point.
-    osg::Vec3 nearPoint, farPoint;
+    osg::Vec3d nearPoint, farPoint;
     pi.getNearFarPoints(nearPoint,farPoint);
 
     // Transform these points into local coordinates.
-    osg::Vec3 objectNearPoint, objectFarPoint;
+    osg::Vec3d objectNearPoint, objectFarPoint;
     objectNearPoint = nearPoint * getWorldToLocal();
     objectFarPoint  = farPoint * getWorldToLocal();
 
@@ -316,7 +316,7 @@ SphereProjector::~SphereProjector()
 {
 }
 
-bool SphereProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool SphereProjector::project(const PointerInfo& pi, osg::Vec3d& projectedPoint) const
 {
     if (!_sphere->valid())
     {
@@ -325,16 +325,16 @@ bool SphereProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) 
     }
 
     // Get the near and far points for the mouse point.
-    osg::Vec3 nearPoint, farPoint;
+    osg::Vec3d nearPoint, farPoint;
     pi.getNearFarPoints(nearPoint,farPoint);
 
     // Transform these points into local coordinates.
-    osg::Vec3 objectNearPoint, objectFarPoint;
+    osg::Vec3d objectNearPoint, objectFarPoint;
     objectNearPoint = nearPoint * getWorldToLocal();
     objectFarPoint  = farPoint * getWorldToLocal();
 
     // Find the intersection of the sphere with the line.
-    osg::Vec3 dontCare;
+    osg::Vec3d dontCare;
     if (_front)
         return getSphereLineIntersection(*_sphere, objectNearPoint, objectFarPoint, projectedPoint, dontCare);
     return getSphereLineIntersection(*_sphere, objectNearPoint, objectFarPoint, dontCare, projectedPoint);
@@ -342,7 +342,7 @@ bool SphereProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) 
 
 bool SphereProjector::isPointInFront(const PointerInfo& pi, const osg::Matrix& localToWorld) const
 {
-    osg::Vec3 centerToPoint = getSphere()->getCenter() - pi.getLocalIntersectPoint();
+    osg::Vec3d centerToPoint = getSphere()->getCenter() - pi.getLocalIntersectPoint();
     if (centerToPoint * getLocalEyeDirection(pi.getEyeDir(), localToWorld) < 0.0)
         return false;
     return true;
@@ -362,7 +362,7 @@ SpherePlaneProjector::~SpherePlaneProjector()
 {
 }
 
-osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnSphere, const osg::Vec3& p2, bool p2OnSphere,
+osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3d& p1, bool p1OnSphere, const osg::Vec3d& p2, bool p2OnSphere,
                                             float radialFactor) const
 {
     if (p1OnSphere && p2OnSphere)
@@ -379,10 +379,10 @@ osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnSphere
         osg::Quat rotation;
         rotation.makeRotate(p1 - getSphere()->getCenter(), p2 - getSphere()->getCenter());
 
-        osg::Vec3 axis; double angle;
+        osg::Vec3d axis; double angle;
         rotation.getRotate(angle, axis);
 
-        osg::Vec3 realAxis;
+        osg::Vec3d realAxis;
         if (axis * _plane.getNormal() > 0.0f)
             realAxis = _plane.getNormal();
         else
@@ -390,16 +390,16 @@ osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnSphere
 
         osg::Quat rollRotation(angle, realAxis);
 
-        osg::Vec3 diff1 = p1 - getSphere()->getCenter();
-        osg::Vec3 diff2 = p2 - getSphere()->getCenter();
-        float d = diff2.length() - diff1.length();
+        osg::Vec3d diff1 = p1 - getSphere()->getCenter();
+        osg::Vec3d diff2 = p2 - getSphere()->getCenter();
+        double d = diff2.length() - diff1.length();
 
-        float theta = d / getSphere()->getRadius();
+        double theta = d / getSphere()->getRadius();
         if (fabs(theta) < 0.000001 || fabs(theta) > 1.0)
             return rollRotation;
 
         diff1.normalize();
-        osg::Vec3 pullAxis = diff1 ^ _plane.getNormal();
+        osg::Vec3d pullAxis = diff1 ^ _plane.getNormal();
         pullAxis.normalize();
         osg::Quat pullRotation(radialFactor * theta, pullAxis);
 
@@ -408,9 +408,9 @@ osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnSphere
     }
     else
     {
-        const osg::Vec3& planePoint = getSphere()->getCenter();
+        const osg::Vec3d& planePoint = getSphere()->getCenter();
 
-        osg::Vec3 intersection, dontCare;
+        osg::Vec3d intersection, dontCare;
         if (p1OnSphere)
             getSphereLineIntersection(*getSphere(), p2, planePoint, intersection, dontCare);
         else
@@ -425,7 +425,7 @@ osg::Quat SpherePlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnSphere
     }
 }
 
-bool SpherePlaneProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool SpherePlaneProjector::project(const PointerInfo& pi, osg::Vec3d& projectedPoint) const
 {
     if (!_sphere->valid())
     {
@@ -434,16 +434,16 @@ bool SpherePlaneProjector::project(const PointerInfo& pi, osg::Vec3& projectedPo
     }
 
     // Get the near and far points for the mouse point.
-    osg::Vec3 nearPoint, farPoint;
+    osg::Vec3d nearPoint, farPoint;
     pi.getNearFarPoints(nearPoint,farPoint);
 
     // Transform these points into local coordinates.
-    osg::Vec3 objectNearPoint, objectFarPoint;
+    osg::Vec3d objectNearPoint, objectFarPoint;
     objectNearPoint = nearPoint * getWorldToLocal();
     objectFarPoint  = farPoint * getWorldToLocal();
 
     // Find the intersection of the sphere with the line.
-    osg::Vec3 sphereIntersection, dontCare;
+    osg::Vec3d sphereIntersection, dontCare;
     bool hitSphere = false;
     if (_front)
         hitSphere = getSphereLineIntersection(*_sphere, objectNearPoint, objectFarPoint, sphereIntersection, dontCare);
@@ -454,7 +454,7 @@ bool SpherePlaneProjector::project(const PointerInfo& pi, osg::Vec3& projectedPo
     _plane = computePlaneThruPointAndOrientedToEye(pi.getEyeDir(), getLocalToWorld(), getSphere()->getCenter(), _front);
 
     // Find the intersection on the plane.
-    osg::Vec3 planeIntersection;
+    osg::Vec3d planeIntersection;
     if (hitSphere)
     {
         if (! getPlaneLineIntersection(_plane.asVec4(), sphereIntersection, sphereIntersection + _plane.getNormal(), planeIntersection))
@@ -467,7 +467,7 @@ bool SpherePlaneProjector::project(const PointerInfo& pi, osg::Vec3& projectedPo
     }
 
     // Distance from the plane intersection point to the center of the sphere.
-    float dist = (planeIntersection - getSphere()->getCenter()).length();
+    double dist = (planeIntersection - getSphere()->getCenter()).length();
 
     // If the distance is less that the sphere radius choose the sphere intersection else choose
     // the plane intersection.
@@ -498,7 +498,7 @@ CylinderProjector::~CylinderProjector()
 {
 }
 
-bool CylinderProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool CylinderProjector::project(const PointerInfo& pi, osg::Vec3d& projectedPoint) const
 {
     if (!_cylinder.valid())
     {
@@ -508,26 +508,26 @@ bool CylinderProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint
     }
 
     // Get the near and far points for the mouse point.
-    osg::Vec3 nearPoint, farPoint;
+    osg::Vec3d nearPoint, farPoint;
     pi.getNearFarPoints(nearPoint,farPoint);
 
     // Transform these points into local coordinates.
-    osg::Vec3 objectNearPoint, objectFarPoint;
+    osg::Vec3d objectNearPoint, objectFarPoint;
     objectNearPoint = nearPoint * getWorldToLocal();
     objectFarPoint  = farPoint * getWorldToLocal();
 
     // Find the intersection of the sphere with the line.
-    osg::Vec3 dontCare;
+    osg::Vec3d dontCare;
     return getCylinderLineIntersection(*_cylinder, objectNearPoint, objectFarPoint, projectedPoint, dontCare);
 }
 
 bool CylinderProjector::isPointInFront(const PointerInfo& pi, const osg::Matrix& localToWorld) const
 {
-    osg::Vec3 closestPointOnAxis;
+    osg::Vec3d closestPointOnAxis;
     computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis,
                               pi.getLocalIntersectPoint(), closestPointOnAxis);
 
-    osg::Vec3 perpPoint = pi.getLocalIntersectPoint() - closestPointOnAxis;
+    osg::Vec3d perpPoint = pi.getLocalIntersectPoint() - closestPointOnAxis;
     if (perpPoint * getLocalEyeDirection(pi.getEyeDir(), localToWorld) < 0.0)
         return false;
     return true;
@@ -545,7 +545,7 @@ CylinderPlaneProjector::~CylinderPlaneProjector()
 {
 }
 
-bool CylinderPlaneProjector::project(const PointerInfo& pi, osg::Vec3& projectedPoint) const
+bool CylinderPlaneProjector::project(const PointerInfo& pi, osg::Vec3d& projectedPoint) const
 {
     if (!_cylinder.valid())
     {
@@ -555,25 +555,25 @@ bool CylinderPlaneProjector::project(const PointerInfo& pi, osg::Vec3& projected
     }
 
     // Get the near and far points for the mouse point.
-    osg::Vec3 nearPoint, farPoint;
+    osg::Vec3d nearPoint, farPoint;
     pi.getNearFarPoints(nearPoint,farPoint);
 
     // Transform these points into local coordinates.
-    osg::Vec3 objectNearPoint, objectFarPoint;
+    osg::Vec3d objectNearPoint, objectFarPoint;
     objectNearPoint = nearPoint * getWorldToLocal();
     objectFarPoint  = farPoint * getWorldToLocal();
 
     // Find the intersection of the sphere with the line.
-    osg::Vec3 cylIntersection;
+    osg::Vec3d cylIntersection;
     bool hitCylinder = false;
     if (_front)
     {
-        osg::Vec3 dontCare;
+        osg::Vec3d dontCare;
         hitCylinder = getCylinderLineIntersection(*_cylinder, objectNearPoint, objectFarPoint, cylIntersection, dontCare);
     }
     else
     {
-        osg::Vec3 dontCare;
+        osg::Vec3d dontCare;
         hitCylinder = getCylinderLineIntersection(*_cylinder, objectNearPoint, objectFarPoint, dontCare, cylIntersection);
     }
 
@@ -583,20 +583,20 @@ bool CylinderPlaneProjector::project(const PointerInfo& pi, osg::Vec3& projected
                                    _front);
 
     // Find the intersection on the plane.
-    osg::Vec3 planeIntersection;
+    osg::Vec3d planeIntersection;
     getPlaneLineIntersection(_plane.asVec4(), objectNearPoint, objectFarPoint, planeIntersection);
 
     if (hitCylinder)
     {
-        osg::Vec3 projectIntersection;
+        osg::Vec3d projectIntersection;
         getPlaneLineIntersection(_plane.asVec4(), cylIntersection, cylIntersection + _plane.getNormal(), projectIntersection);
 
-        osg::Vec3 closestPointToCylAxis;
+        osg::Vec3d closestPointToCylAxis;
         computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis,
                                   projectIntersection, closestPointToCylAxis);
 
         // Distance from the plane intersection point to the closest point on the cylinder axis.
-        float dist = (projectIntersection - closestPointToCylAxis).length();
+        double dist = (projectIntersection - closestPointToCylAxis).length();
 
         if (dist < getCylinder()->getRadius())
         {
@@ -619,45 +619,45 @@ bool CylinderPlaneProjector::project(const PointerInfo& pi, osg::Vec3& projected
     return true;
 }
 
-osg::Quat CylinderPlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnCyl, const osg::Vec3& p2, bool p2OnCyl) const
+osg::Quat CylinderPlaneProjector::getRotation(const osg::Vec3d& p1, bool p1OnCyl, const osg::Vec3d& p2, bool p2OnCyl) const
 {
     if (p1OnCyl && p2OnCyl)
     {
-        osg::Vec3 closestPointToCylAxis1, closestPointToCylAxis2;
+        osg::Vec3d closestPointToCylAxis1, closestPointToCylAxis2;
         computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis * getCylinder()->getHeight(),
                                   p1, closestPointToCylAxis1);
         computeClosestPointOnLine(getCylinder()->getCenter(), getCylinder()->getCenter() + _cylinderAxis * getCylinder()->getHeight(),
                                   p2, closestPointToCylAxis2);
 
-        osg::Vec3 v1 = p1 - closestPointToCylAxis1;
-        osg::Vec3 v2 = p2 - closestPointToCylAxis2;
+        osg::Vec3d v1 = p1 - closestPointToCylAxis1;
+        osg::Vec3d v2 = p2 - closestPointToCylAxis2;
 
-        float cosAngle = v1 * v2 / (v1.length() * v2.length());
+        double cosAngle = v1 * v2 / (v1.length() * v2.length());
 
         if (cosAngle > 1.0 || cosAngle < -1.0)
             return osg::Quat();
 
-        float angle = acosf(cosAngle);
-        osg::Vec3 rotAxis = v1 ^ v2;
+        double angle = acosf(cosAngle);
+        osg::Vec3d rotAxis = v1 ^ v2;
 
         return osg::Quat(angle, rotAxis);
     }
     else if (!p1OnCyl && !p2OnCyl)
     {
-        osg::Vec3 closestPointToPlaneLine1, closestPointToPlaneLine2;
+        osg::Vec3d closestPointToPlaneLine1, closestPointToPlaneLine2;
         computeClosestPointOnLine(_planeLineStart, _planeLineEnd,
                                   p1, closestPointToPlaneLine1);
         computeClosestPointOnLine(_planeLineStart, _planeLineEnd,
                                   p2, closestPointToPlaneLine2);
 
-        osg::Vec3 v1 = p1 - closestPointToPlaneLine1;
-        osg::Vec3 v2 = p2 - closestPointToPlaneLine2;
+        osg::Vec3d v1 = p1 - closestPointToPlaneLine1;
+        osg::Vec3d v2 = p2 - closestPointToPlaneLine2;
 
-        osg::Vec3 diff = v2 - v1;
-        float d = diff.length();
+        osg::Vec3d diff = v2 - v1;
+        double d = diff.length();
 
-        float angle = (getCylinder()->getRadius() == 0.0) ? 0.0 : (d / getCylinder()->getRadius());
-        osg::Vec3 rotAxis = _plane.getNormal() ^ v1;
+        double angle = (getCylinder()->getRadius() == 0.0) ? 0.0 : (d / getCylinder()->getRadius());
+        osg::Vec3d rotAxis = _plane.getNormal() ^ v1;
 
         if (v2.length() > v1.length())
             return osg::Quat(angle, rotAxis);
@@ -667,15 +667,15 @@ osg::Quat CylinderPlaneProjector::getRotation(const osg::Vec3& p1, bool p1OnCyl,
     }
     else
     {
-        osg::Vec3 offCylinderPt = (p1OnCyl) ? p2 : p1;
+        osg::Vec3d offCylinderPt = (p1OnCyl) ? p2 : p1;
 
-        osg::Vec3 linePtNearest;
+        osg::Vec3d linePtNearest;
         computeClosestPointOnLine(_planeLineStart, _planeLineEnd,
                                   offCylinderPt, linePtNearest);
-        osg::Vec3 dirToOffCylinderPt = offCylinderPt - linePtNearest;
+        osg::Vec3d dirToOffCylinderPt = offCylinderPt - linePtNearest;
         dirToOffCylinderPt.normalize();
 
-        osg::Vec3 ptOnCylinder = linePtNearest + dirToOffCylinderPt * getCylinder()->getRadius();
+        osg::Vec3d ptOnCylinder = linePtNearest + dirToOffCylinderPt * getCylinder()->getRadius();
 
         if (p1OnCyl)
             return (getRotation(p1, true, ptOnCylinder, true) *

@@ -130,7 +130,7 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
 
                 cmd->setStage(MotionCommand::FINISH);
                 cmd->setLocalToWorldAndWorldToLocal(_startLocalToWorld,_startWorldToLocal);
-	    	
+                    
                 // Dispatch command.
                 if (_commandManager)
                 {
@@ -140,7 +140,7 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
 
                 // Reset color.
                 setMaterialColor(_color,*this);
-		
+                
                 aa.requestRedraw();
 
                 return true;

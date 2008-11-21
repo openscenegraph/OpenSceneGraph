@@ -34,10 +34,10 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
     public:
 
         /**
-	 * Motion command are based on click-drag-release actions. So each
-	 * command needs to indicate which stage of the motion the command
-	 * represents.
-	 */
+         * Motion command are based on click-drag-release actions. So each
+         * command needs to indicate which stage of the motion the command
+         * represents.
+         */
         enum Stage
         {
             NONE,
@@ -61,24 +61,24 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
         virtual void applyConstraint(const Constraint*) = 0;
 
         /**
-	 * Add Selection (receiver) to the command. The command will be 
-	 * executed on all the selections. 
-	 */
+         * Add Selection (receiver) to the command. The command will be 
+         * executed on all the selections. 
+         */
         void addSelection(Selection*);
 
         /** Remove Selection (receiver) from the command. */
         void removeSelection(Selection*);
 
         /**
-	 * Gets the matrix for transforming the Selection. This matrix is in the
-	 * command's coordinate systems. 
-	 */
+         * Gets the matrix for transforming the Selection. This matrix is in the
+         * command's coordinate systems. 
+         */
         virtual osg::Matrix getMotionMatrix() const = 0;
 
         /**
-	 * Sets the matrix for transforming the command's local coordinate
-	 * system to the world/object coordinate system.
-	 */
+         * Sets the matrix for transforming the command's local coordinate
+         * system to the world/object coordinate system.
+         */
         void setLocalToWorldAndWorldToLocal(const osg::Matrix& localToWorld, const osg::Matrix& worldToLocal)
         {
             _localToWorld = localToWorld;
@@ -86,15 +86,15 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
         }
 
         /**
-	 * Gets the matrix for transforming the command's local coordinate
-	 * system to the world/object coordinate system.
-	 */
+         * Gets the matrix for transforming the command's local coordinate
+         * system to the world/object coordinate system.
+         */
         inline const osg::Matrix& getLocalToWorld() const { return _localToWorld; }
 
         /**
-	 * Gets the matrix for transforming the command's world/object
-	 * coordinate system to the command's local coordinate system. 
-	 */
+         * Gets the matrix for transforming the command's world/object
+         * coordinate system to the command's local coordinate system. 
+         */
         inline const osg::Matrix& getWorldToLocal() const { return _worldToLocal; }
 
         void setStage(const Stage s) { _stage = s; }
@@ -114,7 +114,7 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
 
         Stage           _stage;
 
-        SelectionList	_selectionList;
+        SelectionList        _selectionList;
 };
 
 

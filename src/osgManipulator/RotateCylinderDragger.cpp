@@ -128,7 +128,7 @@ bool RotateCylinderDragger::handle(const PointerInfo& pointer, const osgGA::GUIE
 
                 cmd->setStage(MotionCommand::FINISH);
                 cmd->setLocalToWorldAndWorldToLocal(_startLocalToWorld,_startWorldToLocal);
-	    	
+                    
                 // Dispatch command.
                 if (_commandManager)
                 {
@@ -138,7 +138,7 @@ bool RotateCylinderDragger::handle(const PointerInfo& pointer, const osgGA::GUIE
 
                 // Reset color.
                 setMaterialColor(_color,*this);
-		
+                
                 aa.requestRedraw();
 
                 return true;

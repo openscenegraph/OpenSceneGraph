@@ -14,24 +14,15 @@ FOREACH( mylibfolder
         osgShadow
         osgSim
         osgTerrain
+        osgWidget
         osgVolume
+        osgPlugins
     )
 
     ADD_SUBDIRECTORY(${mylibfolder})
 
 ENDFOREACH( mylibfolder )
 
-OPTION(BUILD_OSGWIDGET "Enable to build osgWidget" ON)
-IF   (BUILD_OSGWIDGET)
-    ADD_SUBDIRECTORY(osgWidget)
-ENDIF(BUILD_OSGWIDGET)
-
-
-
-OPTION(BUILD_OSG_PLUGINS "Enable to build OSG Plugins" ON)
-IF   (BUILD_OSG_PLUGINS)
-    ADD_SUBDIRECTORY(osgPlugins)
-ENDIF(BUILD_OSG_PLUGINS)
 
 OPTION(BUILD_OSG_WRAPPERS "Enable to build Introspection and Wrappers" OFF)
 IF   (BUILD_OSG_WRAPPERS)

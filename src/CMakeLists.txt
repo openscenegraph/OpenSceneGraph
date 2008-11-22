@@ -6,14 +6,15 @@ FOREACH( mylibfolder
         osgUtil 
         osgGA 
         osgText 
-        osgManipulator
-        osgSim
+        osgViewer
+        osgAnimation 
         osgFX
+        osgManipulator
         osgParticle
         osgShadow
+        osgSim
         osgTerrain
         osgVolume
-        osgViewer
     )
 
     ADD_SUBDIRECTORY(${mylibfolder})

@@ -1,0 +1,56 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_CUBIC_BEZIER_H
+#define OSGANIMATION_CUBIC_BEZIER_H
+
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/Quat>
+
+namespace osgAnimation
+{
+
+    template <class T>
+    struct TemplateCubicBezier
+    {
+        T mPoint[3];
+        const T& getP0() const { return mPoint[0];}
+        const T& getP1() const { return mPoint[1];}
+        const T& getP2() const { return mPoint[2];}
+        TemplateCubicBezier(const T& v0, const T& v1, const T& v2) 
+        {
+            mPoint[0] = v0;
+            mPoint[1] = v1;
+            mPoint[2] = v2;
+        }
+
+        TemplateCubicBezier() {}
+
+        const T& getPosition() const { return mPoint[0];}
+        const T& getTangentPoint1() const { return mPoint[1];}
+        const T& getTangentPoint2() const { return mPoint[2];}
+    };
+
+
+    typedef TemplateCubicBezier<float> FloatCubicBezier;
+    typedef TemplateCubicBezier<double> DoubleCubicBezier;
+    typedef TemplateCubicBezier<osg::Vec2> Vec2CubicBezier;
+    typedef TemplateCubicBezier<osg::Vec3> Vec3CubicBezier;
+    typedef TemplateCubicBezier<osg::Vec4> Vec4CubicBezier;
+
+}
+
+#endif

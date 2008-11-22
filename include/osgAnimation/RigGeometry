@@ -1,0 +1,159 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_RIGGEOMETRY_H
+#define OSGANIMATION_RIGGEOMETRY_H
+
+#include <osgAnimation/Export>
+#include <osgAnimation/Skinning>
+#include <osgAnimation/Skeleton>
+#include <osg/Geometry>
+
+namespace osgAnimation 
+{
+
+    class OSGANIMATION_EXPORT RigGeometry : public osg::Geometry
+    {
+    public:
+
+        struct FindNearestParentSkeleton : public osg::NodeVisitor
+        {
+            osg::ref_ptr<osgAnimation::Skeleton> _root;
+            FindNearestParentSkeleton() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
+            void apply(osg::Transform& node) 
+            {
+                if (_root.valid())
+                    return;
+                _root = dynamic_cast<osgAnimation::Skeleton*>(&node);
+                traverse(node);
+            }
+        };
+
+
+        struct UpdateVertex : public osg::Drawable::UpdateCallback 
+        {
+            virtual void update(osg::NodeVisitor*, osg::Drawable* drw) 
+            {
+                RigGeometry* geom = dynamic_cast<RigGeometry*>(drw);
+                if (!geom)
+                    return;
+                if (!geom->getSkeleton() && !geom->getParents().empty()) 
+                {
+                    FindNearestParentSkeleton finder;
+                    if (geom->getParents().size() > 1)
+                        osg::notify(osg::WARN) << "A RigGeometry should not have multi parent ( " << geom->getName() << " )" << std::endl;
+                    geom->getParents()[0]->accept(finder);
+
+                    if (!finder._root.valid())
+                        return;
+                    geom->buildVertexSet();
+                    geom->buildTransformer(finder._root.get());
+                }
+
+                if (!geom->getSkeleton())
+                    return;
+
+                if (geom->getNeedToComputeMatrix())
+                    geom->computeMatrixFromRootSkeleton();
+                geom->transformSoftwareMethod();
+            }
+        };
+
+        /** BuildVertexTransformerVisitor is used to setup RigGeometry drawable
+         *  throw a subgraph. 
+         */
+        struct BuildVertexTransformerVisitor : public osg::NodeVisitor 
+        {
+            osg::ref_ptr<Skeleton> _root;
+            BuildVertexTransformerVisitor(Skeleton* root): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) { _root = root;}
+            void apply(osg::Geode& node) 
+            { 
+                int num = node.getNumDrawables();
+                for (int i = 0; i < num; i++) {
+                    RigGeometry* geom = dynamic_cast<RigGeometry*>(node.getDrawable(i));
+                    if (geom) 
+                    {
+                        geom->buildVertexSet();
+                        geom->buildTransformer(_root.get());
+                    }
+                }
+            }
+        };
+
+
+        RigGeometry() 
+        {
+            setUseDisplayList(false);
+            setUpdateCallback(new UpdateVertex);
+            setDataVariance(osg::Object::DYNAMIC);
+            _needToComputeMatrix = true;
+            _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
+        }
+        RigGeometry(const osg::Geometry& b) : osg::Geometry(b, osg::CopyOp::SHALLOW_COPY)
+        {
+            setUseDisplayList(false);
+            setUpdateCallback(new UpdateVertex);
+            setDataVariance(osg::Object::DYNAMIC);
+            _needToComputeMatrix = true;
+            _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
+        }
+
+        RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : 
+            osg::Geometry(b,copyop),
+            _positionSource(b._positionSource),
+            _normalSource(b._normalSource),
+            _vertexInfluenceSet(b._vertexInfluenceSet),
+            _vertexInfluenceMap(b._vertexInfluenceMap),
+            _transformVertexes(b._transformVertexes),
+            _needToComputeMatrix(b._needToComputeMatrix) {}
+
+        virtual osg::Object* cloneType() const { return new RigGeometry(); }
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new RigGeometry(*this,copyop); }        
+        virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const RigGeometry*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osgAnimation"; }
+        virtual const char* className() const { return "RigGeometry"; }
+
+
+        void setInfluenceMap(osgAnimation::VertexInfluenceMap* vertexInfluenceMap) { _vertexInfluenceMap = vertexInfluenceMap; }
+        const osgAnimation::VertexInfluenceMap* getInfluenceMap() const { return _vertexInfluenceMap.get();}
+        osgAnimation::VertexInfluenceMap* getInfluenceMap() { return _vertexInfluenceMap.get();}
+        void buildVertexSet();
+        void buildTransformer(Skeleton* root);
+        void computeMatrixFromRootSkeleton();
+
+        void setNeedToComputeMatrix(bool state) { _needToComputeMatrix = state;}
+        bool getNeedToComputeMatrix() const { return _needToComputeMatrix;}
+
+        const Skeleton* getSkeleton() const;
+        Skeleton* getSkeleton();
+        virtual void transformSoftwareMethod();
+        const osgAnimation::VertexInfluenceSet& getVertexInfluenceSet() const { return _vertexInfluenceSet;}
+
+        std::vector<osg::Vec3> _positionSource;
+        std::vector<osg::Vec3> _normalSource;
+
+        osgAnimation::VertexInfluenceSet _vertexInfluenceSet;
+        osg::ref_ptr<osgAnimation::VertexInfluenceMap> _vertexInfluenceMap;
+        osgAnimation::TransformVertexFunctor _transformVertexes;
+
+        osg::Matrix _matrixFromSkeletonToGeometry;
+        osg::Matrix _invMatrixFromSkeletonToGeometry;
+        osg::observer_ptr<Skeleton> _root;
+        bool _needToComputeMatrix;
+
+    };
+
+}
+
+#endif

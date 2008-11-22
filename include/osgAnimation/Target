@@ -1,0 +1,132 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+
+#ifndef OSGANIMATION_TARGET_H
+#define OSGANIMATION_TARGET_H
+
+#include <vector>
+#include <osg/Quat>
+#include <osg/Vec3>
+#include <osg/Vec2>
+#include <osg/Vec4>
+#include <osg/Referenced>
+#include <osgAnimation/Export>
+
+namespace osgAnimation 
+{
+
+    class Channel;
+
+    class OSGANIMATION_EXPORT Target : public osg::Referenced
+    {
+    public:
+            
+        Target();
+        virtual ~Target();
+        virtual void normalize() = 0;
+        float getWeight() const { return _weight; }
+        void reset() { _weight = 0;}
+        int getCount() const { return referenceCount(); }
+    protected:
+
+        void addWeight(float w) { _weight += w; }
+        float _weight;
+    };
+
+
+    template <class T>
+    class TemplateTarget : public Target
+    {
+    public:
+            
+        TemplateTarget() {}
+        TemplateTarget(const T& v) { setValue(v); }
+
+        void update(float weight, const T& val)
+        {
+            if (!_weight)
+                _target = val * weight;
+            else
+            {
+                weight = (1.0 - _weight) * weight;
+                _target += val * weight;
+            }
+            addWeight(weight);
+        }
+        const T& getValue() const { return _target;}
+
+        void normalize() 
+        {
+            float weightSummed = getWeight();
+            if (fabs(weightSummed) < 1e-4 || fabs(weightSummed-1) < 1e-4)
+                return;
+            (_target) /= weightSummed;
+        }
+
+        void setValue(const T& value) { _target = value;}
+
+    protected:
+
+        T _target;
+    };
+
+
+    // Target Specialisation for Quaternions
+    template <>
+    class TemplateTarget< osg::Quat > : public Target
+    {
+    public:
+            
+        TemplateTarget () {}
+
+        const osg::Quat& getValue() const { return _target;}
+        void update(float weight, const osg::Quat& val) 
+        { 
+            if (!_weight)
+                _target = val * weight;
+            else
+            {
+                weight = (1.0 - _weight) * weight;
+                _target += val * weight;
+            }
+            addWeight(weight);
+        }
+
+        // maybe normalize could be non virtual and put on ITarget
+        void normalize() 
+        {
+            float weightSummed = getWeight();
+            if (fabs(weightSummed) < 1e-4 || fabs(weightSummed-1.0) < 1e-4)
+                return;
+            (_target) /= weightSummed;
+        }
+
+        void setValue(const osg::Quat& value) { _target = value;}
+ 
+    protected:
+
+        osg::Quat _target;
+    };
+  
+    typedef TemplateTarget<osg::Quat> QuatTarget;
+    typedef TemplateTarget<osg::Vec3> Vec3Target;
+    typedef TemplateTarget<osg::Vec4> Vec4Target;
+    typedef TemplateTarget<osg::Vec2> Vec2Target;
+    typedef TemplateTarget<float> FloatTarget;
+    typedef TemplateTarget<double> DoubleTarget;
+  
+}
+
+#endif

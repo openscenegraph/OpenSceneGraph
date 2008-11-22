@@ -1,0 +1,209 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#include <iostream>
+#include <osgDB/ReadFile>
+#include <osgViewer/ViewerEventHandlers>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
+#include <osgGA/StateSetManipulator>
+#include <osgGA/AnimationPathManipulator>
+#include <osgGA/TerrainManipulator>
+
+#include <osgAnimation/Bone>
+#include <osgAnimation/Skeleton>
+#include <osgAnimation/RigGeometry>
+#include <osgAnimation/Skinning>
+#include <osgAnimation/Timeline>
+#include <osgAnimation/AnimationManagerBase>
+
+
+struct NoseBegin : public osgAnimation::Action::Callback
+{
+    virtual void operator()(osgAnimation::Action* action)
+    {
+        std::cout << "sacrebleu, it scratches my nose, let me scratch it" << std::endl;
+        std::cout << "process NoseBegin call back " << action->getName() << std::endl << std::endl;
+    }
+};
+
+struct NoseEnd : public osgAnimation::Action::Callback
+{
+    virtual void operator()(osgAnimation::Action* action)
+    {
+        std::cout << "shhhrt shrrrrt shhhhhhrrrrt, haaa it's better"<< std::endl;
+        std::cout << "process NoseEnd call back " << action->getName() << std::endl << std::endl;
+    }
+};
+
+struct ExampleTimelineUsage : public osgGA::GUIEventHandler
+{
+    osg::ref_ptr<osgAnimation::StripAnimation> _mainLoop;
+    osg::ref_ptr<osgAnimation::StripAnimation> _scratchHead;
+    osg::ref_ptr<osgAnimation::StripAnimation> _scratchNose;
+    osg::ref_ptr<osgAnimation::AnimationManagerTimeline> _manager;
+
+    bool _releaseKey;
+
+    ExampleTimelineUsage(osgAnimation::AnimationManagerTimeline* manager)
+    {
+        _releaseKey = false;
+        _manager = manager;
+
+        osgAnimation::AnimationMap map = _manager->getAnimationMap();
+        _mainLoop = new osgAnimation::StripAnimation(map["Idle_Main"].get(),0.0,0.0);
+        _mainLoop->setLoop(0); // means forever
+
+        _scratchHead = new osgAnimation::StripAnimation(map["Idle_Head_Scratch.02"].get(),0.2,0.3);
+        _scratchHead->setLoop(1); // one time
+
+        map["Idle_Nose_Scratch.01"]->setDuration(10.0); // set this animation duration to 10 seconds
+        _scratchNose = new osgAnimation::StripAnimation(map["Idle_Nose_Scratch.01"].get(),0.2,0.3);
+        _scratchNose->setLoop(1); // one time
+
+        // add the main loop at priority 0 at time 0.
+        
+        osgAnimation::Timeline* tml = _manager->getTimeline();
+        tml->play();
+        tml->addActionAt(0.0, _mainLoop.get(), 0);
+
+
+        // add a scratch head priority 1 at 3.0 second.
+        tml->addActionAt(5.0, _scratchHead.get(), 1);
+
+        // populate time with scratch head
+        for (int i = 1; i < 20; i++)
+        {
+            // we add a scratch head priority 1 each 10 second
+            // note:
+            //      it's possible to add the same instance more then once on the timeline
+            //      the only things you need to take care is if you remove it. It will remove
+            //      all instance that exist on the timeline. If you need to differtiate
+            //      it's better to create a new instance
+            tml->addActionAt(5.0 + 10.0 * i, _scratchHead.get(), 1);
+        }
+
+        // we will add the scratch nose action only when the player hit a key
+        // in the operator()
+
+        // now we will add callback at end and begin of animation of Idle_Nose_Scratch.02
+        _scratchNose->setCallback(0.0, new NoseBegin);
+        _scratchNose->setCallback(_scratchNose->getNumFrames()-1, new NoseEnd);
+    }
+
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
+        {
+            _releaseKey = true;
+        }
+        return false;
+    }
+
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
+        {
+            if (_releaseKey) // we hit a key and release it execute an action
+            {
+                osgAnimation::Timeline* tml = _manager->getTimeline();
+                // dont play if already playing
+                if (!tml->isActive(_scratchNose.get()))
+                {
+                    // add this animation on top of two other
+                    // we add one to evaluate the animation at the next frame, else we
+                    // will miss the current frame
+                    tml->addActionAt(tml->getCurrentFrame() + 1, _scratchNose.get(), 2);
+                }
+                _releaseKey = false;
+            }
+        }
+        else
+        {
+            osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+            if (ev && ev->getActionAdapter() && !ev->getEvents().empty())
+            {
+                for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
+                    itr != ev->getEvents().end();
+                    ++itr)
+                {
+                    handleWithCheckAgainstIgnoreHandledEventsMask(*(*itr), *(ev->getActionAdapter()), node, nv);
+                }
+            }
+        }            
+        traverse(node, nv);
+    }
+
+};
+
+
+int main (int argc, char* argv[])
+{
+    std::cerr << "This example workd only with osgAnimation/nathan.osg" << std::endl;
+
+    osg::ArgumentParser psr(&argc, argv);
+
+    osgViewer::Viewer viewer(psr);
+    osg::ref_ptr<osg::Group> group = new osg::Group();
+
+    std::string file = "osgAnimation/nathan.osg";
+    if(argc >= 2) 
+        file = psr[1];
+
+    // replace the manager
+    osgAnimation::AnimationManagerBase* animationManager = dynamic_cast<osgAnimation::AnimationManagerBase*>(osgDB::readNodeFile(file));
+    if(!animationManager) 
+    {
+        std::cerr << "Couldn't convert the file's toplevel object into an AnimationManager." << std::endl;
+        return 1;
+    }
+
+    osg::ref_ptr<osgAnimation::AnimationManagerTimeline> tl = new osgAnimation::AnimationManagerTimeline(*animationManager);
+
+    animationManager->removeChildren(0, animationManager->getNumChildren());
+    ExampleTimelineUsage* callback = new ExampleTimelineUsage(tl.get());
+    group->addChild(tl.get());
+    group->setEventCallback(callback);
+    group->setUpdateCallback(callback);
+
+
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+    
+    // add the thread model handler
+    viewer.addEventHandler(new osgViewer::ThreadingHandler);
+
+    // add the window size toggle handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+        
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+
+    // add the help handler
+    viewer.addEventHandler(new osgViewer::HelpHandler(psr.getApplicationUsage()));
+
+    // add the LOD Scale handler
+    viewer.addEventHandler(new osgViewer::LODScaleHandler);
+
+    // add the screen capture handler
+    viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
+
+    viewer.setSceneData(group.get());
+
+    return viewer.run();
+}
+
+

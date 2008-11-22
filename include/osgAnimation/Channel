@@ -1,0 +1,136 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_CHANNEL_H
+#define OSGANIMATION_CHANNEL_H
+
+#include <osgAnimation/Export>
+#include <osgAnimation/Sampler>
+#include <osgAnimation/Target>
+#include <osgAnimation/Assert>
+#include <osg/Referenced>
+#include <string>
+
+namespace osgAnimation
+{
+
+    class OSGANIMATION_EXPORT Channel : public osg::Referenced
+    {
+    public:
+
+        Channel();
+        virtual ~Channel();
+
+        virtual void update(float time) = 0;
+        virtual void reset() = 0;
+        virtual Target* getTarget() = 0;
+
+        const std::string& getName() const;
+        void setName(const std::string& name);
+
+        virtual float getStartTime() const = 0;
+        virtual float getEndTime() const = 0;
+
+        const std::string& getTargetName() const;
+        void setTargetName(const std::string& name);
+
+        float getWeight() const;
+        void setWeight(float w);
+
+        virtual Sampler* getSampler() = 0;
+        virtual const Sampler* getSampler() const = 0;
+
+    protected:
+    
+        std::string _targetName;
+        std::string _name;
+        float _weight;
+    };
+
+
+    template <typename SamplerType>
+    class TemplateChannel : public Channel
+    {
+    public:
+
+        typedef typename SamplerType::UsingType UsingType;
+        typedef TemplateTarget<UsingType> TargetType;
+        typedef TemplateKeyframeContainer<typename SamplerType::KeyframeType> KeyframeContainerType;
+
+        TemplateChannel (SamplerType* s = 0,TargetType* target = 0) 
+        {
+            if (target)
+                _target = target;
+            else
+                _target = new TargetType;
+            _sampler = s;
+        }
+
+        virtual ~TemplateChannel() {}
+        virtual void update(float time) 
+        {
+            // skip if weight == 0
+            if (_weight < 1e-4)
+                return;
+            typename SamplerType::UsingType value;
+            _sampler->getValueAt(time, value);
+            _target->update(_weight, value);
+        }
+        virtual void reset() { _target->reset(); }
+        virtual Target* getTarget() { return _target.get();}
+
+        SamplerType* getOrCreateSampler() 
+        {
+            if (!_sampler.valid())
+                _sampler = new SamplerType;
+            return _sampler.get();
+        }
+
+        Sampler* getSampler() { return _sampler.get(); }
+        const Sampler* getSampler() const { return _sampler.get(); }
+
+        SamplerType* getSamplerTyped() { return _sampler.get();}
+        const SamplerType* getSamplerTyped() const { return _sampler.get();}
+        void setSampler(SamplerType* sampler) { _sampler = sampler; }
+
+        TargetType* getTargetTyped() { return _target.get(); }
+        void setTarget(TargetType* target) { _target = target; }
+
+        virtual float getStartTime() const { OSGANIMATION_ASSERT(_sampler.valid() && "no sampler attached to channel"); return _sampler->getStartTime(); }
+        virtual float getEndTime() const { OSGANIMATION_ASSERT(_sampler.valid() && "no sampler attached to channel"); return _sampler->getEndTime(); }
+
+    protected:
+        osg::ref_ptr<TargetType> _target;
+        osg::ref_ptr<SamplerType> _sampler;
+    };
+
+
+    typedef std::vector<osg::ref_ptr<osgAnimation::Channel> > ChannelList;
+    typedef TemplateChannel<DoubleLinearSampler> DoubleLinearChannel;
+    typedef TemplateChannel<FloatLinearSampler> FloatLinearChannel;
+
+    typedef TemplateChannel<Vec2LinearSampler> Vec2LinearChannel;
+    typedef TemplateChannel<Vec3LinearSampler> Vec3LinearChannel;
+    typedef TemplateChannel<Vec4LinearSampler> Vec4LinearChannel;
+    typedef TemplateChannel<QuatSphericalLinearSampler> QuatSphericalLinearChannel;
+
+    typedef TemplateChannel<FloatCubicBezierSampler> FloatCubicBezierChannel;
+    typedef TemplateChannel<DoubleCubicBezierSampler> DoubleCubicBezierChannel;
+    typedef TemplateChannel<Vec2CubicBezierSampler> Vec2CubicBezierChannel;
+    typedef TemplateChannel<Vec3CubicBezierSampler> Vec3CubicBezierChannel;
+    typedef TemplateChannel<Vec4CubicBezierSampler> Vec4CubicBezierChannel;
+
+}
+
+#endif

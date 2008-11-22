@@ -1,0 +1,238 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_EASE_MOTION_H
+#define OSGANIMATION_EASE_MOTION_H
+
+namespace osgAnimation {
+
+    struct LinearFunction 
+    {
+        inline static void getValueAt(float t, float& result) { result = t;}
+    };
+
+
+    struct OutBounceFunction 
+    {
+        inline static void getValueAt(float t, float& result) 
+        { 
+            if ((t) < (1/2.75)) 
+            {
+                result = 7.5625 * t * t;
+            } 
+            else if (t < (2/2.75)) 
+            {
+                t = t - (1.5/2.75);
+                result = 7.5625* t * t + .75;
+            }
+            else if (t < (2.5/2.75)) 
+            {
+                t = t - (2.25/2.75);
+                result = 7.5625 * t * t + .9375;
+            }
+            else 
+            {
+                t = t - (2.625/2.75);
+                result = 7.5625* t * t + .984375;
+            }
+        }
+    };
+
+    struct InBounceFunction 
+    {
+        inline static void getValueAt(float t, float& result) 
+        { 
+            OutBounceFunction::getValueAt(1-t, result);
+            result = 1 - result;
+        }
+    };
+
+    struct InOutBounceFunction 
+    {
+        inline static void getValueAt(float t, float& result) 
+        { 
+            if (t < 0.5) 
+            {
+                InBounceFunction::getValueAt(t * 2, result);
+                result *= 0.5;
+            } 
+            else 
+            {
+                OutBounceFunction::getValueAt(t * 2 - 1 , result);
+                result = result * 0.5 + 0.5;
+            }
+        }
+    };
+
+  
+    struct OutQuadFunction 
+    {
+        inline static void getValueAt(float t, float& result) { result = - (t * (t -2.0));}
+    };
+
+    struct InQuadFunction 
+    {
+        inline static void getValueAt(float t, float& result) { result = t*t;}
+    };
+    struct InOutQuadFunction 
+    {
+        inline static void getValueAt(float t, float& result) 
+        { 
+            t = t * 2.0;
+            if (t < 1.0)
+                result = 0.5 * t * t;
+            else 
+            {
+                t = t - 1.0;
+                result = - 0.5 * t * ( t - 2) - 1;
+            }
+        }
+    };
+
+
+    struct OutCubicFunction 
+    {
+        inline static void getValueAt(float t, float& result) { t = t-1.0; result = t*t*t + 1;}
+    };
+    struct InCubicFunction 
+    {
+        inline static void getValueAt(float t, float& result) { result = t*t*t;}
+    };
+    struct InOutCubicFunction 
+    {
+        inline static void getValueAt(float t, float& result) 
+        { 
+            t = t * 2;
+            if (t < 1.0)
+                result = 0.5 * t * t * t;
+            else {
+                t = t - 2;
+                result = 0.5 * t * t * t + 2;
+            }
+        }
+    };
+ 
+    class Motion
+    {
+    public:
+        typedef float value_type;
+        enum TimeBehaviour 
+        {
+            CLAMP,
+            LOOP,
+        };
+        Motion(float startValue = 0, float duration = 1, float changeValue = 1, TimeBehaviour tb = CLAMP) : _time(0), _b(startValue), _c(changeValue), _d(duration), _behaviour(tb) {}
+        virtual ~Motion() {}
+        void reset() { setTime(0);}
+        float getTime() const { return _time; }
+        void update(float dt)
+        {
+            _time += dt;
+            switch (_behaviour) 
+            {
+            case CLAMP:
+                if (_time > _d)
+                    _time = _d;
+                else if (_time < 0.0)
+                    _time = 0.0;
+                break;
+            case LOOP:
+                _time = fmodf(_time, _d);
+                break;
+            }
+        }
+    
+        void setTime(float time) { _time = time; update(0);}
+        void getValue(value_type& result) const { getValueAt(_time, result); }
+        value_type getValue() const
+        {
+            value_type result;
+            getValueAt(_time, result);
+            return result;
+        }
+
+        void getValueAt(float time, value_type& result) const
+        {
+            getValueInNormalizedRange(time/_d, result);
+            result = result * _c + _b;
+        }
+        value_type getValueAt(float time) const
+        { 
+            value_type result;
+            getValueAt(time, result);
+            return result;
+        }
+
+        virtual void getValueInNormalizedRange(float t, value_type& result) const = 0;
+
+    protected:      
+        float _time;
+        float _b;
+        float _c;
+        float _d;
+        TimeBehaviour _behaviour;
+    };
+
+
+    template <typename T>
+    struct MathMotionTemplate : public Motion
+    {
+        MathMotionTemplate(float startValue = 0, float duration = 1, float changeValue = 1, TimeBehaviour tb = CLAMP) : Motion(startValue, duration, changeValue, tb) {}
+        virtual void getValueInNormalizedRange(float t, value_type& result) const { T::getValueAt(t, result); }
+    };
+
+    template <class T>
+    struct SamplerMotionTemplate : public Motion
+    {
+        T _sampler;
+        SamplerMotionTemplate(float startValue = 0, float duration = 1, float changeValue = 1, TimeBehaviour tb = CLAMP) : Motion(startValue, duration, changeValue, tb) {}
+        T& getSampler() { return _sampler;}
+        const T& getSampler() const { return _sampler;}
+        virtual void getValueInNormalizedRange(float t, value_type& result) const
+        { 
+            if (!_sampler.getKeyframeContainer()) 
+            {
+                result = 0;
+                return;
+            }
+            float size = _sampler.getEndTime() - _sampler.getStartTime();
+            t = t * size + _sampler.getStartTime();
+            _sampler.getValueAt(t, result);
+        }
+    };
+
+
+
+    // linear
+    typedef MathMotionTemplate<LinearFunction > LinearMotion;
+
+    // cubic
+    typedef MathMotionTemplate<OutCubicFunction > OutCubicMotion;
+    typedef MathMotionTemplate<InCubicFunction> InCubicMotion;
+    typedef MathMotionTemplate<InOutCubicFunction> InOutCubicMotion;
+
+    // quad
+    typedef MathMotionTemplate<OutQuadFunction > OutQuadMotion;
+    typedef MathMotionTemplate<InQuadFunction> InQuadMotion;
+    typedef MathMotionTemplate<InOutQuadFunction> InOutQuadMotion;
+
+    // bounce
+    typedef MathMotionTemplate<OutBounceFunction > OutBounceMotion;
+    typedef MathMotionTemplate<InBounceFunction> InBounceMotion;
+    typedef MathMotionTemplate<InOutBounceFunction> InOutBounceMotion;
+
+
+}
+
+#endif

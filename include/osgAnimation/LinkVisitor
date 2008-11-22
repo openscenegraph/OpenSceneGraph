@@ -1,0 +1,50 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_NODE_VISITOR_H
+#define OSGANIMATION_NODE_VISITOR_H
+
+#include <osg/NodeVisitor>
+#include <osgAnimation/Animation>
+#include <osgAnimation/UpdateCallback>
+
+namespace osgAnimation 
+{
+
+    struct LinkVisitor : public osg::NodeVisitor
+    {
+        AnimationList _animations;
+        unsigned int _nbLinkedTarget;
+        LinkVisitor(Animation* animation) : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) { _animations.push_back(animation); _nbLinkedTarget = 0;}
+        LinkVisitor(const AnimationList& animations) : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) { _animations = animations; _nbLinkedTarget = 0;}
+        void apply(osg::Node& node) 
+        {
+            osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(node.getUpdateCallback());
+            if (cb) 
+            {
+                int result = 0;
+                for (int i = 0; i < (int)_animations.size(); i++)
+                {
+                    result += cb->link(_animations[i].get());
+                    _nbLinkedTarget += result;
+                }
+                std::cout << "LinkVisitor links " << result << " for \"" << cb->getName() << '"' << std::endl;
+            }
+            traverse(node);
+        }
+    };
+
+}
+
+#endif

@@ -33,6 +33,7 @@ SET(TARGET_COMMON_LIBRARIES
 #
 #  NodeKit/Psudo loader plugins
 #
+ADD_SUBDIRECTORY(osgAnimation)
 ADD_SUBDIRECTORY(osgFX)
 ADD_SUBDIRECTORY(osgParticle)
 ADD_SUBDIRECTORY(osgSim)

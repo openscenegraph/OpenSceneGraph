@@ -1,0 +1,123 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+ *
+ * Authors:
+ * Cedric Pinson <mornifle@plopbyte.net>
+ * jeremy Moles <jeremy@emperorlinux.com>
+*/
+
+
+#ifndef ANIMTKVIEWER_H
+#define ANIMTKVIEWER_H
+
+#include <osg/Node>
+#include <osgDB/ReadFile>
+#include <osgAnimation/AnimationManager>
+
+class AnimtkViewerModelController 
+{
+public:
+    typedef std::vector<std::string> AnimationMapVector;
+
+    static AnimtkViewerModelController& instance() 
+    {
+        static AnimtkViewerModelController avmc;
+        return avmc;
+    }
+
+    static bool setModel(osgAnimation::AnimationManager* model) 
+    {
+        AnimtkViewerModelController& self = instance();
+        self._model = model;
+        self._map   = self._model->getAnimationMap();
+
+        for(osgAnimation::AnimationMap::iterator it = self._map.begin(); it != self._map.end(); it++)
+            self._amv.push_back(it->first);
+
+        return true;
+    }
+
+    bool list() 
+    {
+        std::cout << "Animation List:" << std::endl;
+        for(osgAnimation::AnimationMap::iterator it = _map.begin(); it != _map.end(); it++)
+            std::cout << it->first << std::endl;
+        return true;
+    }
+
+    bool play() 
+    {
+        if(_focus < _amv.size()) 
+        {
+            std::cout << "Play " << _amv[_focus] << std::endl;
+            _model->playAnimation(_map[_amv[_focus]].get());
+            return true;
+        }
+
+        return false;
+    }
+
+    bool stop() 
+    {
+        if(_focus < _amv.size()) 
+        {
+            std::cout << "Stop " << _amv[_focus] << std::endl;
+            _model->stopAnimation(_map[_amv[_focus]].get());
+            return true;
+        }
+        return false;
+    }	
+
+    bool next() 
+    {
+        _focus = (_focus + 1) % _map.size();
+        std::cout << "Current now is " << _amv[_focus] << std::endl;
+        return true;
+    }
+
+    bool previous() 
+    {
+        _focus = (_map.size() + _focus - 1) % _map.size();
+        std::cout << "Current now is " << _amv[_focus] << std::endl;
+        return true;
+    }
+
+    bool playByName(const std::string& name) 
+    {
+        for(unsigned int i = 0; i < _amv.size(); i++) if(_amv[i] == name) _focus = i;
+        _model->playAnimation(_map[name].get());
+        return true;
+    }
+
+    const std::string& getCurrentAnimationName() const 
+    {
+        return _amv[_focus];
+    }
+
+    const AnimationMapVector& getAnimationMap() const 
+    {
+        return _amv;
+    }
+
+private:
+    osg::ref_ptr<osgAnimation::AnimationManager> _model;
+    osgAnimation::AnimationMap                   _map;
+    AnimationMapVector                     _amv;
+    unsigned int                           _focus;
+
+    AnimtkViewerModelController():
+        _model(0),
+        _focus(0) {}
+};
+
+#endif

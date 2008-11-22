@@ -1,0 +1,206 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_INTERPOLATOR_H
+#define OSGANIMATION_INTERPOLATOR_H
+
+#include <osgAnimation/Assert>
+#include <osgAnimation/Interpolator>
+#include <osgAnimation/Keyframe>
+
+namespace osgAnimation
+{
+
+    template <class TYPE, class KEY>
+    class TemplateInterpolatorBase
+    {
+    public:
+        typedef KEY KeyframeType;
+        typedef TYPE UsingType;
+
+    public:
+        mutable int _lastKeyAccess;
+
+        TemplateInterpolatorBase() : _lastKeyAccess(-1) {}
+
+        void reset() { _lastKeyAccess = -1; }
+        int getKeyIndexFromTime(const TemplateKeyframeContainer<KEY>& keys, float time) const 
+        {
+            OSGANIMATION_ASSERT(!keys.empty() && "no keys");
+            OSGANIMATION_ASSERT(time >= keys.front().getTime() && time <= keys.back().getTime() && "bad range");
+
+            // todo use a cache
+            int key_size = keys.size();
+            const TemplateKeyframe<KeyframeType>* keysVector = &keys.front();
+            for (int i = 0; i < key_size-1; i++) 
+            {
+                float time0 = keysVector[i].getTime();
+                float time1 = keysVector[i+1].getTime();
+#ifndef OSGANIMATION_NO_EXTRA_CHECK
+                if ( time0>time1 )
+                    OSGANIMATION_ASSERT(0 && "invalid input data");
+#endif
+                if ( time >= time0 && time < time1 ) 
+                {
+                    _lastKeyAccess = i;
+                    return i;
+                }
+            }
+            std::cout << time << " first key " << keysVector[0].getTime() << " last key " << keysVector[key_size-1].getTime() << std::endl;
+            *((int *)0) = 0;
+            OSGANIMATION_ASSERT(0 && "impossible has happened");
+            return -1;
+        }
+    };
+
+
+    template <class TYPE, class KEY=TYPE>
+    class TemplateLinearInterpolator : public TemplateInterpolatorBase<TYPE,KEY>
+    {
+    public:
+
+        TemplateLinearInterpolator() {}
+        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, float time, TYPE& result) const 
+        {
+      
+            if (time >= keyframes.back().getTime()) 
+            {
+                result = keyframes.back().getValue();
+                return;
+            } 
+            else if (time <= keyframes.front().getTime()) 
+            {
+                result = keyframes.front().getValue();
+                return;
+            }
+        
+            int i = getKeyIndexFromTime(keyframes,time);
+            float blend = (time - keyframes[i].getTime()) / ( keyframes[i+1].getTime() -  keyframes[i].getTime());
+            const TYPE& v1 =  keyframes[i].getValue();
+            const TYPE& v2 =  keyframes[i+1].getValue();
+            result = v1*(1-blend) + v2*blend;
+        }
+    };
+
+
+    template <class TYPE, class KEY=TYPE>
+    class TemplateSphericalLinearInterpolator : public TemplateInterpolatorBase<TYPE,KEY>
+    {
+    public:
+        TemplateSphericalLinearInterpolator() {}
+        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, float time, TYPE& result) const 
+        {
+            if (time >= keyframes.back().getTime()) 
+            {
+                result = keyframes.back().getValue();
+                return;
+            }
+            else if (time <= keyframes.front().getTime()) 
+            {
+                result = keyframes.front().getValue();
+                return;
+            }
+
+            int i = getKeyIndexFromTime(keyframes,time);
+            float blend = (time -  keyframes[i].getTime()) / ( keyframes[i+1].getTime() -  keyframes[i].getTime());
+            const TYPE& q1 =  keyframes[i].getValue();
+            const TYPE& q2 =  keyframes[i+1].getValue();
+            result.slerp(blend,q1,q2);
+        }
+    };
+
+
+    template <class TYPE, class KEY>
+    class TemplateLinearPackedInterpolator : public TemplateInterpolatorBase<TYPE,KEY>
+    {
+    public:
+
+        TemplateLinearPackedInterpolator() {}
+        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, float time, TYPE& result) const 
+        {
+            if (time >= keyframes.back().getTime()) 
+            {
+                keyframes.back().getValue().uncompress(keyframes.mScale, keyframes.mMin, result);
+                return;
+            }
+            else if (time <= keyframes.front().getTime()) 
+            {
+                keyframes.front().getValue().uncompress(keyframes.mScale, keyframes.mMin, result);
+                return;
+            }
+
+            int i = getKeyIndexFromTime(keyframes,time);
+            float blend = (time - keyframes[i].getTime()) / ( keyframes[i+1].getTime() -  keyframes[i].getTime());
+            TYPE v1,v2;
+            keyframes[i].getValue().uncompress(keyframes.mScale, keyframes.mMin, v1);
+            keyframes[i+1].getValue().uncompress(keyframes.mScale, keyframes.mMin, v2);
+            result = v1*(1-blend) + v2*blend;
+        }
+    };
+
+
+    // http://en.wikipedia.org/wiki/B%C3%A9zier_curve
+    template <class TYPE, class KEY=TYPE>
+    class TemplateCubicBezierInterpolator : public TemplateInterpolatorBase<TYPE,KEY>
+    {
+    public:
+
+        TemplateCubicBezierInterpolator() {}
+        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, float time, TYPE& result) const 
+        {
+      
+            if (time >= keyframes.back().getTime()) 
+            {
+                result = keyframes.back().getValue().getPosition();
+                return;
+            }
+            else if (time <= keyframes.front().getTime()) 
+            {
+                result = keyframes.front().getValue().getPosition();
+                return;
+            }
+
+            int i = getKeyIndexFromTime(keyframes,time);
+      
+            float t = (time - keyframes[i].getTime()) / ( keyframes[i+1].getTime() -  keyframes[i].getTime());
+            float one_minus_t = 1.0-t;
+            float one_minus_t2 = one_minus_t * one_minus_t;
+            float one_minus_t3 = one_minus_t2 * one_minus_t;
+            float t2 = t * t;
+
+            TYPE v0 = keyframes[i].getValue().getPosition() * one_minus_t3;
+            TYPE v1 = keyframes[i].getValue().getTangentPoint1() * (3.0 * t * one_minus_t2);
+            TYPE v2 = keyframes[i].getValue().getTangentPoint2() * (3.0 * t2 * one_minus_t);
+            TYPE v3 = keyframes[i+1].getValue().getPosition() * (t2 * t);
+
+            result = v0 + v1 + v2 + v3;
+        }
+    };
+
+    typedef TemplateLinearInterpolator<double, double> DoubleLinearInterpolator;
+    typedef TemplateLinearInterpolator<float, float> FloatLinearInterpolator;
+    typedef TemplateLinearInterpolator<osg::Vec2, osg::Vec2> Vec2LinearInterpolator;
+    typedef TemplateLinearInterpolator<osg::Vec3, osg::Vec3> Vec3LinearInterpolator;
+    typedef TemplateLinearInterpolator<osg::Vec3, Vec3Packed> Vec3PackedLinearInterpolator;
+    typedef TemplateLinearInterpolator<osg::Vec4, osg::Vec4> Vec4LinearInterpolator;
+    typedef TemplateSphericalLinearInterpolator<osg::Quat, osg::Quat> QuatSphericalLinearInterpolator;
+
+    typedef TemplateCubicBezierInterpolator<float, FloatCubicBezier > FloatCubicBezierInterpolator;
+    typedef TemplateCubicBezierInterpolator<double, DoubleCubicBezier> DoubleCubicBezierInterpolator;
+    typedef TemplateCubicBezierInterpolator<osg::Vec2, Vec2CubicBezier> Vec2CubicBezierInterpolator;
+    typedef TemplateCubicBezierInterpolator<osg::Vec3, Vec3CubicBezier> Vec3CubicBezierInterpolator;
+    typedef TemplateCubicBezierInterpolator<osg::Vec4, Vec4CubicBezier> Vec4CubicBezierInterpolator;
+
+}
+#endif

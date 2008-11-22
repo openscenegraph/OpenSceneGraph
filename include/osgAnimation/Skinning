@@ -1,0 +1,167 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_SKINNING_H
+#define OSGANIMATION_SKINNING_H
+
+#include <iostream>
+#include <vector>
+#include <map>
+#include <string>
+#include <algorithm>
+#include <osgAnimation/Assert>
+#include <osgAnimation/VertexInfluence>
+#include <osgAnimation/Bone>
+#include <osg/Matrix>
+#include <osg/Vec3>
+#include <osg/Quat>
+
+namespace osgAnimation 
+{
+
+
+    class TransformVertexFunctor
+    {
+    public:
+        typedef osg::Matrix MatrixType;
+        typedef osgAnimation::Bone BoneType;
+        typedef Bone::BoneMap BoneMap;
+
+        class BoneWeight 
+        {
+        public:
+            BoneWeight(BoneType* bone, float weight) : _bone(bone), _weight(weight) {}
+            const BoneType* getBone() const { return &(*_bone); }
+            float getWeight() const { return _weight; }
+        protected:
+            osg::ref_ptr<BoneType> _bone;
+            float _weight;
+        };
+
+        typedef std::vector<BoneWeight> BoneWeightList;
+        typedef std::vector<int> VertexList;
+
+        class UniqBoneSetVertexSet 
+        {
+        public:
+            BoneWeightList& getBones() { return _bones; }
+            VertexList& getVertexes() { return _vertexes; }
+            void computeMatrixForVertexSet() 
+            {
+                if (_bones.empty()) 
+                {
+                    osg::notify(osg::WARN) << "TransformVertexFunctor::UniqBoneSetVertexSet no bones found" << std::endl;
+                    _result = MatrixType::identity();
+                    return;
+                }
+                _result = MatrixType(0, 0, 0, 0,
+                                     0, 0, 0, 0,
+                                     0, 0, 0, 0,
+                                     0, 0, 0, 0);
+                int size = _bones.size();
+                for (int i = 0; i < size; i++) 
+                {
+                    const BoneType* bone = _bones[i].getBone();
+                    const MatrixType& invBindMatrix = bone->getInvBindMatrixInSkeletonSpace();
+                    const MatrixType& matrix = bone->getMatrixInSkeletonSpace();
+                    double w = _bones[i].getWeight();
+                    _result = _result + ( (invBindMatrix * matrix ) * w);
+                }
+            }
+            const MatrixType& getMatrix() const { return _result;}
+        protected:
+            BoneWeightList _bones;
+            VertexList _vertexes;
+            MatrixType _result;
+        };
+
+
+        void init(const BoneMap& map, const osgAnimation::VertexInfluenceSet::UniqVertexSetToBoneSetList& influence)
+        {
+            _boneSetVertexSet.clear();
+
+            int size = influence.size();
+            _boneSetVertexSet.resize(size);
+            for (int i = 0; i < size; i++) 
+            {
+                const osgAnimation::VertexInfluenceSet::UniqVertexSetToBoneSet& inf = influence[i];
+                int nbBones = inf.getBones().size();
+
+                for (int b = 0; b < nbBones; b++) 
+                {
+                    const std::string& bname = inf.getBones()[b].getBoneName();
+                    float weight = inf.getBones()[b].getWeight();
+                    if (map.find(bname) == map.end()) 
+                    {
+                        std::cerr << "Warning TransformVertexFunctor Bone " << bname << " not found, skip the influence group " <<bname  << std::endl;
+                        continue;
+                    }
+                    BoneMap::const_iterator it = map.find(bname);
+                    if (it == map.end())
+                        std::cerr << "Warning TransformVertexFunctor does not find bone " << bname << " in the map" << std::endl;
+                    BoneType* bone = it->second.get();
+                    _boneSetVertexSet[i].getBones().push_back(BoneWeight(bone, weight));
+                }
+                _boneSetVertexSet[i].getVertexes() = inf.getVertexes();
+            }
+        }
+
+
+        template <class V> void compute(const V* src, V* dst)
+        {
+            OSGANIMATION_ASSERT(src != dst);
+            int size = _boneSetVertexSet.size();
+            for (int i = 0; i < size; i++) 
+            {
+                UniqBoneSetVertexSet& uniq = _boneSetVertexSet[i];
+                uniq.computeMatrixForVertexSet();
+                const MatrixType& matrix = uniq.getMatrix();
+
+                const VertexList& vertexes = uniq.getVertexes();
+                int vertexSize = vertexes.size();
+                for (int j = 0; j < vertexSize; j++) 
+                {
+                    int idx = vertexes[j];
+                    dst[idx] = src[idx] * matrix;
+                }
+            }
+        }
+
+        template <class V> void compute(const MatrixType& transform, const MatrixType& invTransform, const V* src, V* dst)
+        {
+            OSGANIMATION_ASSERT(src != dst);
+            int size = _boneSetVertexSet.size();
+            for (int i = 0; i < size; i++) 
+            {
+                UniqBoneSetVertexSet& uniq = _boneSetVertexSet[i];
+                uniq.computeMatrixForVertexSet();
+                MatrixType matrix =  transform * uniq.getMatrix() * invTransform;
+
+                const VertexList& vertexes = uniq.getVertexes();
+                int vertexSize = vertexes.size();
+                for (int j = 0; j < vertexSize; j++) 
+                {
+                    int idx = vertexes[j];
+                    dst[idx] = src[idx] * matrix;
+                }
+            }
+        }
+
+    protected:
+
+        std::vector<UniqBoneSetVertexSet> _boneSetVertexSet;
+    };
+}
+
+#endif

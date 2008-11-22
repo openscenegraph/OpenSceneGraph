@@ -1,0 +1,68 @@
+/*  -*-c++-*- 
+ *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGANIMATION_UPDATE_CALLBACK_H
+#define OSGANIMATION_UPDATE_CALLBACK_H
+
+#include <osg/Vec3>
+#include <osg/NodeCallback>
+#include <osg/observer_ptr>
+#include <osgAnimation/AnimationManagerBase>
+#include <osgAnimation/Export>
+
+namespace osgAnimation 
+{
+
+    class OSGANIMATION_EXPORT AnimationUpdateCallback : public osg::NodeCallback
+    {
+    protected:
+        osg::observer_ptr<osgAnimation::AnimationManagerBase> _manager;
+
+    public:
+        AnimationUpdateCallback(const std::string& name = "") { setName(name); }
+        AnimationUpdateCallback(const AnimationUpdateCallback& apc,const osg::CopyOp& copyop);
+        osgAnimation::AnimationManagerBase* getAnimationManager();
+        virtual bool needLink() const = 0;
+        virtual bool link(osgAnimation::Channel* channel) = 0;
+        virtual int link(osgAnimation::Animation* animation);
+        virtual void updateLink();
+    };
+  
+
+    class OSGANIMATION_EXPORT UpdateTransform : public AnimationUpdateCallback
+    {
+    protected:
+        osg::ref_ptr<osgAnimation::Vec3Target> _euler;
+        osg::ref_ptr<osgAnimation::Vec3Target> _position;
+        osg::ref_ptr<osgAnimation::Vec3Target> _scale;
+    
+    public:
+
+        META_Object(osgAnimation, UpdateTransform);
+
+        UpdateTransform(const std::string& name = "");
+        UpdateTransform(const UpdateTransform& apc,const osg::CopyOp& copyop);
+
+        /** Callback method called by the NodeVisitor when visiting a node.*/
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
+        void update(osg::MatrixTransform& mat);
+        void update(osg::PositionAttitudeTransform& pat);
+        bool needLink() const;
+        bool link(osgAnimation::Channel* channel);
+    };
+
+
+}
+
+#endif

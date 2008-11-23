@@ -1,22 +1,44 @@
+// -*-c++-*-
+
+/*
+ * $Id$
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 #include <osg/Image>
 #include <osg/Notify>
-#include <osg/Geode>
 #include <osg/Image>
 #include <osg/GL>
+#include <osg/Endian>
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
-#include <osgDB/fstream>
 
+#include <vector>
 
-typedef int int32;
-typedef unsigned int uint32;
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+
 
 /****************************************************************************
  *
  * Follows is code written by GWM and translated to fit with the OSG Ethos.
- *
  *
  * Ported into the OSG as a plugin, Geoff Michel October 2001.
  * For patches, bugs and new features
@@ -24,292 +46,496 @@ typedef unsigned int uint32;
  *
  **********************************************************************/
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
-enum { ERROR_NO_ERROR =0,ERROR_READING_HEADER,ERROR_READING_PALETTE, ERROR_MEMORY, ERROR_READ_ERROR,
-ERROR_NO_FILE,ERROR_READING_COLORS};
-
-static int bmperror = ERROR_NO_ERROR;
-
-// BMP format bits - at start of file is 512 bytes of pure garbage
-enum ftype {MB=19778}; // magic number identifies a bmp file; actually chars 'B''M'
-// allowed ftypes are 'BM'  for windoze;  OS2 allows:
-//'BA' - Bitmap Array
-//'CI' - Color Icon
-//'CP' - Color Pointer (mouse cursor)
-//'IC' - Icon
-//'PT' - Pointer (mouse cursor)
-
-enum ncol { BW=1, IA, RGB, RGBA};
-
-struct bmpheader {
-    short FileType; //always MB
-    unsigned short siz[2]; // a dword for whole file size - make unsigned Feb 2002
-    short Reserved1, Reserved2; //reserved for future purposes
-    unsigned short offset[2]; //offset to image in bytes
-};
-
-struct BMPInfo {
-    int32 width;   //width of the image in pixels
-    int32 height;    //   height of the image in pixels
-    short planes;       //:word: number of planes (always 1)
-    short Colorbits;       //word: number of bits used to describe color in each pixel
-    int32 compression;  //compression used
-    int32 ImageSize;    //image size in bytes
-    int32 XpixPerMeter; //pixels per meter in X
-    int32 YpixPerMeter; //pixels per meter in Y
-    int32 ColorUsed;   //number of colors used
-    int32 Important;   //number of "important" colors
-//    unsigned char rgbquad[4];
- //   long os2stuff[6]; // storage for os2.1 with 64 bytes to be read.  Dont know what these are yet.
-};
-
-int
-bmp_error(char *buffer, int bufferlen)
+// find least-significant (lowest) bit position in 16-bit mask
+static unsigned int findLeastSignificantBit(unsigned short mask)
 {
-    switch (bmperror)
+    unsigned int shift = 1;
+    while ((mask & 0x01) == 0)
     {
-        case ERROR_READING_COLORS:
-            strncpy(buffer, "BMP loader: Error reading colours", bufferlen);
-            break;
-        case ERROR_READING_HEADER:
-            strncpy(buffer, "BMP loader: Error reading header", bufferlen);
-            break;
-        case ERROR_READING_PALETTE:
-            strncpy(buffer, "BMP loader: Error reading palette", bufferlen);
-            break;
-        case ERROR_MEMORY:
-            strncpy(buffer, "BMP loader: Out of memory error", bufferlen);
-            break;
-        case ERROR_READ_ERROR:
-            strncpy(buffer, "BMP loader: Read error", bufferlen);
-            break;
+        mask >>= 1;
+        ++shift;
     }
-    return bmperror;
+    return shift;
 }
 
-/* byte order workarounds *sigh* */
-void swapbyte(int32 *i)
+// find most-significant (highest) bit position in 16-bit mask
+static unsigned int findMostSignificantBit(unsigned short mask)
 {
-    char *vv=(char *)i;
-    char tmp=vv[0];
-    vv[0]=vv[3];
-    vv[3]=tmp;
-    tmp=vv[1];
-    vv[1]=vv[2];
-    vv[2]=tmp;
-}
-void swapbyte(uint32 *i)
-{
-    char *vv=(char *)i;
-    char tmp=vv[0];
-    vv[0]=vv[3];
-    vv[3]=tmp;
-    tmp=vv[1];
-    vv[1]=vv[2];
-    vv[2]=tmp;
-}
-void swapbyte(float *i)
-{
-    char *vv=(char *)i;
-    char tmp=vv[0];
-    vv[0]=vv[3];
-    vv[3]=tmp;
-    tmp=vv[1];
-    vv[1]=vv[2];
-    vv[2]=tmp;
-}
-void swapbyte(unsigned short *i)
-{
-    char *vv=(char *)i;
-    char tmp=vv[0];
-    vv[0]=vv[1];
-    vv[1]=tmp;
-}
-void swapbyte(short *i)
-{
-    char *vv=(char *)i;
-    char tmp=vv[0];
-    vv[0]=vv[1];
-    vv[1]=tmp;
+    unsigned int shift = 16;
+    while ((mask & 0x8000) == 0)
+    {
+        mask <<= 1;
+        --shift;
+    }
+    return shift;
 }
 
-unsigned char *bmp_load(std::istream& fin,
-int *width_ret,
-int *height_ret,
-int *numComponents_ret)
-{ // the main area of changes from the pic format loader.
-    // reads filename, and returns the buffer
-    // bmp is very very simple format
-    // even Master Gates could have invented it.
-    // It is extremely expensive on disk space - every RGB pixel uses 3 bytes plus a header!
-    // BMP - sponsored by Seagate.
- //   unsigned char palette[256][3];
-    unsigned char *buffer=NULL; // returned to sender & as read from the disk
-    long filelen;
 
-    bmperror = ERROR_NO_FILE;
+/*
+ * BMP header
+ */
+const unsigned short BMP_MAGIC_BM = 0x424D; // 'BM'
+const unsigned short BMP_MAGIC_MB = 0x4D42; // 'MB'
 
+struct BMPHeader {
+    unsigned short magic; // stored 'BM', but read as ushort
+    unsigned int fileSize;
+    unsigned short reserved1;
+    unsigned short reserved2;
+    unsigned int imageOffset;
+};
+
+/*
+ * Windows v3 header
+ */
+enum BMPCOMPRESSION {
+    BI_RGB = 0,
+    BI_RLE8,
+    BI_RLE4,
+    BI_BITFIELDS,
+    BI_JPEG,
+    BI_PNG
+};
+struct BITMAPINFOHEADER {
+    //unsigned int hdrSize;
+    int width, height;
+    unsigned short colorPlanes;
+    unsigned short bitsPerPixel;
+    unsigned int compression;
+    unsigned int imageSize;
+    int horizontalPixelPerMeter;
+    int verticalPixelPerMeter;
+    unsigned int numColorsInPalette;
+    unsigned int numImportantColors;
+};
+
+/*
+ * OS/2 v1 header
+ */
+struct BITMAPCOREHEADER {
+    //unsigned int hdrSize;
+    unsigned short width, height;
+    unsigned short colorPlanes;
+    unsigned short bitsPerPixel;
+};
+
+static unsigned char* bmp_load(std::istream& fin,
+        int& width_ret, int& height_ret, int& numComponents_ret)
+{
+    // actual file size
     fin.seekg(0, std::ios::end);
-    filelen = fin.tellg(); // determine file size so we can fill it in later if FileSize == 0
+    size_t actFileSize = fin.tellg();
     fin.seekg(0, std::ios::beg);
 
-    int ncolours;
-    int ncomp=0;
-    bool swap=false; // dont need to swap bytes
-     // actual size of the bitmap header; 12=os2; 40 = normal; 64=os2.1
-    
-    struct bmpheader hd;
-    struct BMPInfo inf;
-    bmperror = ERROR_NO_ERROR;
-    fin.read((char*)&hd,sizeof(bmpheader));
-    if (hd.FileType != MB) {
-        swapbyte(&(hd.FileType));
-        swap=true;
-        if (hd.FileType != MB) {
-            bmperror=ERROR_READING_HEADER;
+    bool swap;
+
+    BMPHeader bmp;
+    {
+        /*
+         * read each part individually to avoid struct packing issues (and #pragma)
+         */
+        fin.read((char*) &bmp.magic, sizeof(bmp.magic));
+        fin.read((char*) &bmp.fileSize, sizeof(bmp.fileSize));
+        fin.read((char*) &bmp.reserved1, sizeof(bmp.reserved1));
+        fin.read((char*) &bmp.reserved2, sizeof(bmp.reserved2));
+        fin.read((char*) &bmp.imageOffset, sizeof(bmp.imageOffset));
+
+        if (bmp.magic != BMP_MAGIC_BM && bmp.magic != BMP_MAGIC_MB)
+        {
+            osg::notify(osg::WARN) << "Invalid BMP magic\n";
+            return 0;
+        }
+
+        swap = (bmp.magic == BMP_MAGIC_BM); // means machine is big-endian and must swap
+        if (swap)
+        {
+            osg::notify(osg::DEBUG_INFO) << "swap=" << swap << std::endl;
+            osg::swapBytes4((char*) &bmp.fileSize);
+            osg::swapBytes4((char*) &bmp.imageOffset);
+        }
+
+        if (bmp.fileSize != actFileSize)
+        {
+            osg::notify(osg::DEBUG_INFO) << "Stored BMP fileSize=" << bmp.fileSize << " != actual=" << actFileSize << std::endl;
+            bmp.fileSize = actFileSize;
         }
     }
-    if (hd.FileType == MB) {
-        int32 infsize;    //size of BMPinfo in bytes
-        unsigned char *cols=NULL; // dynamic colour palette
-        unsigned char *imbuff; // returned to sender & as read from the disk
-        fin.read((char*)&infsize,sizeof(int32)); // insert inside 'the file is bmp' clause
-        if (swap) swapbyte(&infsize);
-        unsigned char *hdr=new unsigned char[infsize]; // to hold the new header
-        fin.read((char*)hdr,infsize-sizeof(int32));
-        int32 hsiz=sizeof(inf); // minimum of structure size & 
-        if(infsize<=hsiz) hsiz=infsize;
-        memcpy(&inf,hdr, hsiz/*-sizeof(long)*/); // copy only the bytes I can cope with
-        delete [] hdr;
-        osg::notify(osg::INFO) << "loading bmp file "<<swap<<" "<<infsize<< " "<<sizeof(inf) << " "<<sizeof(bmpheader) << std::endl;
-        if (swap) { // inverse the field of the header which need swapping
-            swapbyte(&hd.siz[0]);
-            swapbyte(&hd.siz[1]);
-            swapbyte(&inf.Colorbits);
-            swapbyte(&inf.width);
-            swapbyte(&inf.height);
-            swapbyte(&inf.ImageSize);
-            swapbyte(&inf.ColorUsed);
-        }
-        if (infsize==12) { // os2, protect us from our friends ? || infsize==64
-            int wd = inf.width&0xffff; // shorts replace longs
-            int ht = inf.width>>16;
-            int npln = inf.height&0xffff; // number of planes
-            int cbits = inf.height>>16;
-            inf.width=wd;
-            inf.height=ht;
-            inf.planes=npln;
-            inf.Colorbits=cbits;
-            inf.ColorUsed=(int32)pow(2.0,(double)inf.Colorbits); // infer the colours
-        }
-        osg::notify(osg::INFO) << "readbmp " <<inf.width<< " "<<inf.height << std::endl;
-        
-        // previous size calculation, see new calcs below.
-        int32 size_prev = hd.siz[1]+hd.siz[0]*65536;
-        osg::notify(osg::INFO) << "previous size calc = "<<size_prev<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<std::endl;
-        
-        // order of size calculation swapped, by Christo Zietsman to fix size bug.
-        int32 size = hd.siz[1]*65536+hd.siz[0];
-        osg::notify(osg::INFO) << "new size calc = "<<size<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<std::endl;
 
-        // handle size==0 in uncompressed 24-bit BMPs -Eric Hammil
-        if (size==0) size = filelen;
-        osg::notify(osg::INFO) << "size after zero correction = "<<size<<"  hd.siz[1]="<<hd.siz[1]<<"  hd.siz[0]="<<hd.siz[0]<<std::endl;
+    BITMAPINFOHEADER dib;
+    unsigned int dibHdrSize;
 
+    /*
+     * read DIB header
+     */
+    fin.read((char*) &dibHdrSize, sizeof(dibHdrSize));
+    if (swap)
+        osg::swapBytes4((char*) &dibHdrSize);
 
-        int ncpal=4; // default number of colours per palette entry
-        size -= sizeof(bmpheader)+infsize;
-        if (inf.ImageSize<size) inf.ImageSize=size;
-        imbuff = new unsigned char [ inf.ImageSize]; // read from disk
-        fin.read((char*)imbuff,sizeof(unsigned char)*inf.ImageSize);
-        ncolours=inf.Colorbits/8;
-        switch (ncolours) {
-        case 1:
-            ncomp = BW; // actually this is a 256 colour, paletted image
-            inf.Colorbits=8; // so this is how many bits there are per index
-            //inf.ColorUsed=256; // and number of colours used
-        if(!inf.ColorUsed) inf.ColorUsed=256; /*the bitmap has 256 colours if ColorUsed = 0 otherwise as many as stored in ColorUsed*/
-            cols=imbuff; // colour palette address - uses 4 bytes/colour
-            break;
-        case 2:
-            ncomp = IA;
-            break;
-        case 3:
-            ncomp = RGB; 
-            break;
-        case 4:
-            ncomp = RGBA;
-            break;
-        default:
-            cols=imbuff; // colour palette address - uses 4 bytes/colour
-            if (infsize==12 || infsize==64) ncpal=3; // OS2 - uses 3 colours per palette entry
-            else ncpal=4; // Windoze uses 4!
+    if (dibHdrSize == 12)
+    {
+        /*
+         * OS/2 v1
+         */
+        BITMAPCOREHEADER hdr;
+
+        unsigned int expectHdrSize = sizeof(hdr) + sizeof(dibHdrSize);
+        if (expectHdrSize != dibHdrSize)
+        {
+            osg::notify(osg::WARN) << "Invalid BMP OS/2 v1 header size " << expectHdrSize << " != " << dibHdrSize << std::endl;
+            return 0;
         }
 
-        if (ncomp>0) buffer = new unsigned char [(ncomp==BW?3:ncomp)*inf.width*inf.height]; // to be returned
-        else buffer = new unsigned char [ 3*inf.width*inf.height]; // default full colour to be returned
-        
-        uint32 off=0;
-        uint32 rowbytes=ncomp*sizeof(unsigned char)*inf.width;
-        uint32 doff=(rowbytes)/4;
-        if ((rowbytes%4)) doff++; // round up if needed
-        doff*=4; // to find dword alignment
-        for(int j=0; j<inf.height; j++) {
-            if (ncomp>BW) memcpy(buffer+j*rowbytes, imbuff+off, rowbytes); // pack bytes closely
-            else { // find from the palette..
-                unsigned char *imptr=imbuff+inf.ColorUsed*ncpal; // add size of the palette- start of image
-                int npixperbyte=8/inf.Colorbits; // no of pixels per byte
-                for (int ii=0; ii<inf.width/npixperbyte; ii++) {
-                    unsigned char mask=0x00; // masked with index to extract colorbits bits
-                    unsigned char byte=imptr[(j*doff/npixperbyte)+ii];
-                    int jj;
-                    for (jj=0; jj<inf.Colorbits; jj++) mask |= (0x80>>jj); // fill N High end bits
-                    for (jj=0; jj<npixperbyte; jj++) {
-                        int colidx=(byte&mask)>>((npixperbyte-1-jj)*inf.Colorbits);
-                        buffer[3*(j*inf.width+ii*npixperbyte+jj)+0]=cols[ncpal*colidx+2];
-                        buffer[3*(j*inf.width+ii*npixperbyte+jj)+1]=cols[ncpal*colidx+1];
-                        buffer[3*(j*inf.width+ii*npixperbyte+jj)+2]=cols[ncpal*colidx];
-                        mask>>=inf.Colorbits;
+        fin.read((char*) &hdr, sizeof(hdr));
+        if (swap)
+        {
+            osg::swapBytes2((char*) &hdr.width);
+            osg::swapBytes2((char*) &hdr.height);
+            osg::swapBytes2((char*) &hdr.colorPlanes);
+            osg::swapBytes2((char*) &hdr.bitsPerPixel);
+        }
+
+        // store to BITMAPINFOHEADER
+        memset(&dib, 0, sizeof(dib));
+        dib.width = hdr.width;
+        dib.height = hdr.height;
+        dib.colorPlanes = hdr.colorPlanes;
+        dib.bitsPerPixel = hdr.bitsPerPixel;
+    }
+    else if (dibHdrSize == 40 || dibHdrSize == 108 || dibHdrSize == 124)
+    {
+        /*
+         * Windows v3/v4/v5 header
+         * reads only the common part (i.e. v3) and skips over the rest
+         */
+        fin.read((char*) &dib, sizeof(dib));
+        if (swap)
+        {
+            osg::swapBytes4((char*) &dib.width);
+            osg::swapBytes4((char*) &dib.height);
+            osg::swapBytes2((char*) &dib.colorPlanes);
+            osg::swapBytes2((char*) &dib.bitsPerPixel);
+            osg::swapBytes4((char*) &dib.compression);
+            osg::swapBytes4((char*) &dib.imageSize);
+            osg::swapBytes4((char*) &dib.numColorsInPalette);
+            osg::swapBytes4((char*) &dib.numImportantColors);
+        }
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Unsupported BMP/DIB header size=" << dibHdrSize << std::endl;
+        return 0;
+    }
+
+    // sanity checks
+    if (dib.height < 0)
+    {
+        osg::notify(osg::DEBUG_INFO) << "BMP Image is upside-down\n";
+        dib.height *= -1;
+    }
+    if (dib.colorPlanes != 1)
+    {
+        osg::notify(osg::WARN) << "Invalid BMP number of color planes=" << dib.colorPlanes << std::endl;
+        return 0;
+    }
+    if (dib.bitsPerPixel == 0)
+    {
+        osg::notify(osg::WARN) << "Invalid BMP bits/pixel=" << dib.bitsPerPixel << std::endl;
+        return 0;
+    }
+    if (dib.compression != BI_RGB && dib.compression != BI_BITFIELDS)
+    {
+        osg::notify(osg::WARN) << "Unsupported BMP compression=" << dib.compression << std::endl;
+        return 0;
+    }
+
+    /*
+     * color masks
+     */
+    unsigned int redMask, greenMask, blueMask;
+    unsigned int redMaskWidth, greenMaskWidth, blueMaskWidth;
+    unsigned int redShift, greenShift, blueShift; // greenShift? wtf? ;-)
+    if (dib.bitsPerPixel == 16)
+    {
+        if (dib.compression == BI_BITFIELDS)
+        {
+            fin.read((char*) &redMask, sizeof(redMask));
+            fin.read((char*) &greenMask, sizeof(greenMask));
+            fin.read((char*) &blueMask, sizeof(blueMask));
+            if (swap)
+            {
+                osg::swapBytes4((char*) &redMask);
+                osg::swapBytes4((char*) &greenMask);
+                osg::swapBytes4((char*) &blueMask);
+            }
+        }
+        else
+        {
+            redMask = 0x7c00;
+            greenMask = 0x03e0;
+            blueMask = 0x001f;
+        }
+
+        // determine shift width...
+        redShift = findLeastSignificantBit(redMask) - 1;
+        greenShift = findLeastSignificantBit(greenMask) - 1;
+        blueShift = findLeastSignificantBit(blueMask) - 1;
+
+        // determine mask width
+        redMaskWidth = findMostSignificantBit(redMask) - redShift;
+        greenMaskWidth = findMostSignificantBit(greenMask) - greenShift;
+        blueMaskWidth = findMostSignificantBit(blueMask) - blueShift;
+
+#if 0
+        printf("redMask=%04x/%d/%d greenMask=%04x/%d/%d blueMask=%04x/%d/%d\n",
+                redMask, redMaskWidth, redShift,
+                greenMask, greenMaskWidth, greenShift,
+                blueMask, blueMaskWidth, blueShift);
+#endif
+    }
+
+    unsigned int imageBytesPerPixel = 0;
+
+    /*
+     * color palette
+     */
+    std::vector<unsigned char> colorPalette;
+    if (dib.bitsPerPixel < 16)
+    {
+        // defaults to 2^n
+        if (dib.numColorsInPalette == 0)
+            dib.numColorsInPalette = 1 << dib.bitsPerPixel;
+
+        // allocate/read color palette
+        imageBytesPerPixel = (dibHdrSize == 12 ? 3 : 4); // OS/2 v1 stores RGB, else RGBA
+        colorPalette.resize(dib.numColorsInPalette * imageBytesPerPixel);
+        fin.read((char*) &*colorPalette.begin(), colorPalette.size());
+    }
+    else
+    {
+        if (dib.bitsPerPixel == 16)
+            imageBytesPerPixel = 3;
+        else if (dib.bitsPerPixel == 24 || dib.bitsPerPixel == 32)
+            imageBytesPerPixel = dib.bitsPerPixel / 8;
+        else
+        {
+            osg::notify(osg::WARN) << "Unsupported BMP bit depth " << dib.bitsPerPixel << std::endl;
+            return 0;
+        }
+    }
+
+    unsigned int where = fin.tellg();
+    if (where != bmp.imageOffset)
+    {
+        // this can happen because we don't fully parse v4/v5 headers
+        osg::notify(osg::DEBUG_INFO) << "BMP streampos out-of-sync where=" << where << " imageOffset=" << bmp.imageOffset << std::endl;
+        fin.seekg(bmp.imageOffset, std::ios::beg); // seek to imageOffset and hope for the best
+    }
+
+    /*
+     * image data
+     */
+    const unsigned int imageBytesPerRow = dib.width * imageBytesPerPixel;
+    const unsigned int imageBufferSize = imageBytesPerRow * dib.height;
+    unsigned char* imageBuffer = new unsigned char[imageBufferSize];
+    //printf("imageBytesPerPixel=%u imageBytesPerRow=%u\n", imageBytesPerPixel, imageBytesPerRow);
+
+    // byte/row in BMP image data
+    unsigned int bytesPerPixel;
+    unsigned int bytesPerRow;
+    if (dib.bitsPerPixel >= 8)
+    {
+        bytesPerPixel = dib.bitsPerPixel / 8;
+        bytesPerRow = dib.width * bytesPerPixel;
+    }
+    else
+    {
+        bytesPerPixel = 1;
+        bytesPerRow = (unsigned int) (dib.width * (dib.bitsPerPixel / 8.0f));
+    }
+    const unsigned int bytesPerRowAlign = (unsigned int) ceilf(bytesPerRow / 4.0f) * 4;
+    //printf("bytesPerPixel=%u bytesPerRow=%u bytesPerRowAlign=%u\n", bytesPerPixel, bytesPerRow, bytesPerRowAlign);
+
+    std::vector<unsigned char> rowBuffer;
+    rowBuffer.resize(bytesPerRowAlign);
+
+    if (dib.bitsPerPixel >= 16)
+    {
+        unsigned char* imgp = imageBuffer;
+        for (unsigned int i = 0; i < dib.height; ++i)
+        {
+            // read row
+            unsigned char* rowp = &*rowBuffer.begin();
+            fin.read((char*) rowp, rowBuffer.size());
+
+            // copy to image buffer, swap/unpack BGR to RGB(A)
+            for (unsigned int j = 0; j < bytesPerRow; j += bytesPerPixel)
+            {
+                if (dib.bitsPerPixel == 16)
+                {
+                    // 16-bit RGB -> 24-bit RGB
+                    unsigned short rgb16 = (rowp[1] << 8) | rowp[0];
+                    if (swap)
+                        osg::swapBytes2((char*) &rgb16);
+
+                    imgp[0] = (rgb16 & redMask) >> redShift;
+                    imgp[1] = (rgb16 & greenMask) >> greenShift;
+                    imgp[2] = (rgb16 & blueMask) >> blueShift;
+
+                    // expand range
+                    imgp[0] <<= (8-redMaskWidth);
+                    imgp[1] <<= (8-greenMaskWidth);
+                    imgp[2] <<= (8-blueMaskWidth);
+                }
+                else
+                {
+                    // BGR -> RGB(A)
+                    imgp[0] = rowp[2];
+                    imgp[1] = rowp[1];
+                    imgp[2] = rowp[0];
+                    if (imageBytesPerPixel == 4)
+                    {
+                        imgp[3] = 0xff;
                     }
                 }
-            }
-            off+=doff;
-            if (ncomp>2) { // yes bill, colours are usually BGR aren't they
-                for(int i=0; i<inf.width; i++) {
-                    int ijw=i+j*inf.width;
-                    unsigned char blu=buffer[3*ijw+0];
-                    buffer[3*ijw+0]=buffer[3*ijw+2]; // swap order of colours
-                    buffer[3*ijw+2]=blu;
-                }
+                imgp += imageBytesPerPixel;
+                rowp += bytesPerPixel;
             }
         }
-        delete [] imbuff; // free the on-disk storage
-
-    } 
-    else // else error in header
+    }
+    else
     {
-        return NULL;        
-    }
-    *width_ret = inf.width;
-    *height_ret = inf.height;
-    switch (ncomp) {
-    case BW:
-        *numComponents_ret = 3;
-        break;
-    case IA:
-    case RGB:
-    case RGBA:
-        *numComponents_ret = ncomp;
-        break;
-    default:
-        *numComponents_ret = 3;
-        break;
+        const unsigned int idxPerByte = 8 / dib.bitsPerPixel; // color indices per byte
+        const unsigned int idxMask = (1 << dib.bitsPerPixel) - 1; // index mask
+        //printf("idxPerByte=%d idxMask=%02x\n", idxPerByte, idxMask);
+
+        unsigned char* imgp = imageBuffer;
+        for (unsigned int i = 0; i < dib.height; ++i)
+        {
+            // read row
+            unsigned char* rowp = &*rowBuffer.begin();
+            fin.read((char*) rowp, rowBuffer.size());
+
+            unsigned int j = 0;
+            while (j < dib.width)
+            {
+                // unpack bytes/indices to image buffer
+                unsigned char val = rowp[0];
+                for (unsigned int k = 0; k < idxPerByte && j < dib.width; ++k, ++j)
+                {
+                    unsigned int idx = (val >> ((idxPerByte-1-k) * dib.bitsPerPixel)) & idxMask;
+                    idx *= imageBytesPerPixel;
+                    imgp[0] = colorPalette[idx+2];
+                    imgp[1] = colorPalette[idx+1];
+                    imgp[2] = colorPalette[idx+0];
+                    if (imageBytesPerPixel == 4)
+                    {
+                        imgp[3] = 0xff;
+                    }
+                    imgp += imageBytesPerPixel;
+                }
+                ++rowp;
+            }
+        }
     }
 
-    return buffer;
+    // return result
+    width_ret = dib.width;
+    height_ret = dib.height;
+    numComponents_ret = imageBytesPerPixel;
+
+    return imageBuffer;
+}
+
+static bool bmp_save(const osg::Image& img, std::ostream& fout)
+{
+    BMPHeader bmp;
+    const unsigned int bmpHdrSize = 14;
+
+    BITMAPINFOHEADER dib;
+    assert(sizeof(dib) == 36);
+    const unsigned int dibHdrSize = sizeof(dib) + 4;
+
+    const unsigned int bytesPerRowAlign = ((img.s() * 3 + 3) / 4) * 4;
+
+    bool swap = (osg::getCpuByteOrder() == osg::BigEndian);
+
+    // BMP header
+    {
+        bmp.magic = BMP_MAGIC_BM;
+        bmp.reserved1 = bmp.reserved2 = 0;
+        bmp.imageOffset = bmpHdrSize + dibHdrSize;
+        bmp.fileSize = bmp.imageOffset + bytesPerRowAlign * img.t();
+#if 0
+        printf("sizeof(bmp)=%u sizeof(dib)=%u dibHdrSize=%u\n", sizeof(bmp), sizeof(dib), dibHdrSize);
+        printf("fileSize=%u imageOffset=%u\n", bmp.fileSize, bmp.imageOffset);
+        printf("s=%u t=%u bytesPerRowAlign=%u\n", img.s(), img.t(), bytesPerRowAlign);
+#endif
+
+        if (swap)
+        {
+            // big-endian must swap everything except magic
+            osg::swapBytes4((char*) &bmp.fileSize);
+            osg::swapBytes4((char*) &bmp.imageOffset);
+        }
+        else
+        {
+            // little-endian must swap the magic
+            osg::swapBytes2((char*) &bmp.magic);
+        }
+
+        fout.write((char*) &bmp.magic, sizeof(bmp.magic));
+        fout.write((char*) &bmp.fileSize, sizeof(bmp.fileSize));
+        fout.write((char*) &bmp.reserved1, sizeof(bmp.reserved1));
+        fout.write((char*) &bmp.reserved2, sizeof(bmp.reserved2));
+        fout.write((char*) &bmp.imageOffset, sizeof(bmp.imageOffset));
+    }
+
+    // DIB header
+    {
+        dib.width = img.s();
+        dib.height = img.t();
+        dib.colorPlanes = 1;
+        dib.bitsPerPixel = 24;
+        dib.compression = BI_RGB;
+        dib.imageSize = bytesPerRowAlign * img.t();
+        dib.horizontalPixelPerMeter = 1000;
+        dib.verticalPixelPerMeter = 1000;
+        dib.numColorsInPalette = 0;
+        dib.numImportantColors = 0;
+
+        if (swap) {
+            osg::swapBytes4((char*) &dibHdrSize);
+            osg::swapBytes4((char*) &dib.width);
+            osg::swapBytes4((char*) &dib.height);
+            osg::swapBytes2((char*) &dib.colorPlanes);
+            osg::swapBytes2((char*) &dib.bitsPerPixel);
+            osg::swapBytes4((char*) &dib.imageSize);
+            osg::swapBytes4((char*) &dib.horizontalPixelPerMeter);
+            osg::swapBytes4((char*) &dib.verticalPixelPerMeter);
+        }
+
+        fout.write((char*) &dibHdrSize, sizeof(dibHdrSize));
+        fout.write((char*) &dib, sizeof(dib));
+    }
+
+    const unsigned int channelsPerPixel = img.computeNumComponents(img.getPixelFormat());
+
+    std::vector<unsigned char> rowBuffer(bytesPerRowAlign);
+    for (unsigned int y = 0; y < img.t(); ++y)
+    {
+        const unsigned char* imgp = img.data() + img.s() * y * channelsPerPixel;
+        for (unsigned int x = 0; x < img.s(); ++x)
+        {
+            // RGB -> BGR
+            unsigned int rowOffs = x * 3, imgOffs = x * channelsPerPixel;
+            rowBuffer[rowOffs + 2] = imgp[imgOffs + 0];
+            rowBuffer[rowOffs + 1] = imgp[imgOffs + 1];
+            rowBuffer[rowOffs + 0] = imgp[imgOffs + 2];
+        }
+        fout.write((char*) &*rowBuffer.begin(), rowBuffer.size());
+    }
+
+    return true;
 }
 
 
@@ -322,186 +548,94 @@ class ReaderWriterBMP : public osgDB::ReaderWriter
             supportsExtension("bmp","BMP Image format");
         }
     
-        virtual const char* className() const { return "BMP Image Reader"; }
+        const char* className() const { return "BMP Image Reader"; }
 
-        ReadResult readBMPStream(std::istream& fin) const
-        {
-            unsigned char *imageData = NULL;
-            int width_ret;
-            int height_ret;
-            int numComponents_ret;
 
-            imageData = bmp_load(fin,&width_ret,&height_ret,&numComponents_ret);
-
-            if (imageData==NULL) return ReadResult::FILE_NOT_HANDLED;
-
-            int s = width_ret;
-            int t = height_ret;
-            int r = 1;
-
-            int internalFormat = numComponents_ret;
-
-            unsigned int pixelFormat =
-                numComponents_ret == 1 ? GL_LUMINANCE :
-            numComponents_ret == 2 ? GL_LUMINANCE_ALPHA :
-            numComponents_ret == 3 ? GL_RGB :
-            numComponents_ret == 4 ? GL_RGBA : (GLenum)-1;
-
-            unsigned int dataType = GL_UNSIGNED_BYTE;
-
-            osg::Image* pOsgImage = new osg::Image;
-            pOsgImage->setImage(s,t,r,
-                internalFormat,
-                pixelFormat,
-                dataType,
-                imageData,
-                osg::Image::USE_NEW_DELETE);
-
-            return pOsgImage;
-        }
-
-        virtual ReadResult readObject(std::istream& fin,const osgDB::ReaderWriter::Options* options =NULL) const
+        ReadResult readObject(std::istream& fin, const Options* options = 0) const
         {
             return readImage(fin, options);
         }
 
-        virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options =NULL) const
+        ReadResult readObject(const std::string& file, const Options* options = 0) const
         {
             return readImage(file, options);
         }
 
-        virtual ReadResult readImage(std::istream& fin,const Options* =NULL) const
+
+        ReadResult readImage(std::istream& fin, const Options* = 0) const
         {
             return readBMPStream(fin);
         }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        ReadResult readImage(const std::string& file, const Options* options = 0) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file, options );
+            std::string fileName = osgDB::findDataFile(file, options);
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             if(!istream) return ReadResult::FILE_NOT_HANDLED;
+
             ReadResult rr = readBMPStream(istream);
             if(rr.validImage()) rr.getImage()->setFileName(file);
+
             return rr;
         }
 
-        bool WriteBMPStream(const osg::Image &img, std::ostream& fout, const std::string &fileName) const
+
+        WriteResult writeImage(const osg::Image& image, std::ostream& fout, const Options* = 0) const
         {
-            // its easier for me to write a binary write using stdio than streams
-            struct bmpheader hd;
-            uint32 nx=img.s(),ny=img.t(); //  unsigned long ndep=img.r();
-            uint32 size, wordsPerScan;
-            int32 infsize;    //size of BMPinfo in bytes
-            wordsPerScan=(nx*3+3)/4; // rounds up to next 32 bit boundary
-            size=4*ny*wordsPerScan; // rounded to 4bytes * number of scan lines
-            hd.FileType=MB;
-            hd.Reserved1=hd.Reserved2=0; // offset to image
-            hd.offset[0]=sizeof(int32)+sizeof(BMPInfo)+sizeof(hd); // 26; // offset to image
-            hd.offset[1]=0; // offset to image
-  
-            // previous way round.          
-            // hd.siz[0]=(size&0xffff0000)>>16; // high word
-            // hd.siz[1]=(size&0xffff); // low word
-            
-            // new round to be consistent with the swap in the size calclation in the reading code.
-            hd.siz[0]=(size&0xffff); // low word
-            hd.siz[1]=(size&0xffff0000)>>16; // high word
-            
-            fout.write((const char*)&hd, sizeof(hd));
-            struct BMPInfo inf;
-            osg::notify(osg::INFO) << "sizes "<<size << " "<<sizeof(inf)<< std::endl;
-            inf.width=nx;   //width of the image in pixels
-            inf.height=ny;    //   height of the image in pixels
-            inf.planes=1;       //:word: number of planes (always 1)
-            inf.Colorbits=24;       //word: number of bits used to describe color in each pixel
-            inf.compression=0;  //compression used windows says 0= no compression
-            inf.ImageSize=size;    //nx*ny*3; //image size in bytes
-            inf.XpixPerMeter=1000; //pixels per meter in X
-            inf.YpixPerMeter=1000; //pixels per meter in Y
-            inf.ColorUsed=0;   //number of colors used
-            inf.Important=0;   //number of "important" colors
-            // inf.os2stuff[6]; // allows os2.1 with 64 bytes to be read.  Dont know what these are yet.
-            infsize=sizeof(BMPInfo)+sizeof(int32);
-            fout.write((const char*)&infsize,sizeof(int32));
-            fout.write((const char*)&inf,sizeof(inf)); // one dword shorter than the structure defined by MS
-              // the infsize value (above) completes the structure.
-            osg::notify(osg::INFO) << "save screen "<<fileName <<inf.width<< " "<<inf.height << std::endl;
-            osg::notify(osg::INFO) << "sizes "<<size << " "<<infsize <<" "<<sizeof(inf)<< std::endl;
-            // now output the bitmap
-            // 1) swap Blue with Red - needed for Windoss.
-            const unsigned char* data = img.data();
-            unsigned char *dta=new unsigned char[size];
-            // we need to case between different number of components
-            switch(img.computeNumComponents(img.getPixelFormat()))
-            {
-                case(3) :
-                {
-                    for(unsigned int i=0;i<ny;i++) { // per scanline
-                        int ioff=4*wordsPerScan*i;
-                        for(unsigned int j=0;j<nx;j++) {
-                        // swap r with b,  thanks to good ole Bill - 
-                        //"Let's use BGR it's more logical than rgb which everyone else uses."
-                        dta[3*j+ioff]=data[3*(j+i*nx)+2];
-                        dta[3*j+ioff+1]=data[3*(j+i*nx)+1];
-                        dta[3*j+ioff+2]=data[3*(j+i*nx)+0];
-                        }
-                    }
-                }
-                break;
-                case(4) :
-                {
-                    for(unsigned int i=0;i<ny;i++) { // per scanline
-                        int ioff=4*wordsPerScan*i;
-                        for(unsigned int j=0;j<nx;j++) {
-                    // swap r with b,  thanks to good ole Bill - 
-                    //"Let's use BGR it's more logical than rgb which everyone else uses."
-                        dta[3*j+ioff]=dta[3*j+ioff+2];
-                        dta[3*j+ioff+0]=data[4*(j+i*nx)+2];
-                        dta[3*j+ioff+1]=data[4*(j+i*nx)+1];
-                        dta[3*j+ioff+2]=data[4*(j+i*nx)+0];
-                        }
-                    }
-                }
-                break;
-                default:
-                    osg::notify(osg::WARN) << "Cannot write images with other number of components than 3 or 4" << std::endl;
-                break;
-            }
-            fout.write((const char*)dta,sizeof(unsigned char)*size);
-            delete [] dta;
-
-            return true;
-        }
-
-        virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options*) const
-        {
-            bool success = WriteBMPStream(image, fout, "<output stream>");
-
-            if(success)
+            if (bmp_save(image, fout))
                 return WriteResult::FILE_SAVED;
             else
                 return WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        virtual WriteResult writeImage(const osg::Image &img,const std::string& fileName, const osgDB::ReaderWriter::Options*) const
+        WriteResult writeImage(const osg::Image& img, const std::string& fileName, const Options* options = 0) const
         {
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
             osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
-            if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+            if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
-            bool success = WriteBMPStream(img, fout, fileName);
+            return writeImage(img, fout, options);
+        }
 
-            if(success)
-                return WriteResult::FILE_SAVED;
-            else
-                return WriteResult::ERROR_IN_WRITING_FILE;
+    private:
+        static ReadResult readBMPStream(std::istream& fin)
+        {
+            int s, t;
+            int internalFormat;
+
+            unsigned char *imageData = bmp_load(fin, s, t, internalFormat);
+            if (imageData == 0) return ReadResult::ERROR_IN_READING_FILE; 
+
+            unsigned int pixelFormat;
+            switch (internalFormat)
+            {
+            case 1:
+                pixelFormat = GL_LUMINANCE;
+                break;
+            case 2:
+                pixelFormat = GL_LUMINANCE_ALPHA;
+                break;
+            case 3:
+                pixelFormat = GL_RGB;
+                break;
+            default:
+                pixelFormat = GL_RGBA;
+                break;
+            }
+
+            osg::Image* img = new osg::Image;
+            img->setImage(s, t, 1,
+                internalFormat, pixelFormat, GL_UNSIGNED_BYTE, imageData,
+                osg::Image::USE_NEW_DELETE);
+
+            return img;
         }
 };
 

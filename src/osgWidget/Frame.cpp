@@ -4,6 +4,7 @@
 #include <osgDB/ReadFile>
 #include <osgWidget/WindowManager>
 #include <osgWidget/Frame>
+#include <cassert>
 
 namespace osgWidget {
 
@@ -287,27 +288,35 @@ Frame* Frame::createSimpleFrameWithSingleTexture(
 
     else frame = createSimpleFrame(name, w, h, width, height, 0, exFrame);
 
-    for(unsigned int i = 0; i < 9; i++) frame->getObjects()[i]->setImage(image);
+    if (image)
+    {
 
-    XYCoord twh(w, h);
+        for(unsigned int i = 0; i < 9; i++) frame->getObjects()[i]->setImage(image);
 
-    frame->getCorner(CORNER_UPPER_LEFT )->setTexCoordRegion(0.0f,  0.0f, twh);
-    frame->getBorder(BORDER_TOP        )->setTexCoordRegion(w,     0.0f, twh);
-    frame->getCorner(CORNER_UPPER_RIGHT)->setTexCoordRegion(w * 2, 0.0f, twh);
-    frame->getBorder(BORDER_LEFT       )->setTexCoordRegion(w * 3, 0.0f, twh);
-    frame->getBorder(BORDER_RIGHT      )->setTexCoordRegion(w * 4, 0.0f, twh);
-    frame->getCorner(CORNER_LOWER_LEFT )->setTexCoordRegion(w * 5, 0.0f, twh);
-    frame->getBorder(BORDER_BOTTOM     )->setTexCoordRegion(w * 6, 0.0f, twh);
-    frame->getCorner(CORNER_LOWER_RIGHT)->setTexCoordRegion(w * 7, 0.0f, twh);
+        XYCoord twh(w, h);
 
-    // We set all of these to wrap vertically, but the REAL texture coordinates will
-    // be generated properly in the positioned() method.
-    frame->getByRowCol(0, 1)->setTexCoordWrapVertical();
-    frame->getByRowCol(1, 0)->setTexCoordWrapVertical();
-    frame->getByRowCol(1, 2)->setTexCoordWrapVertical();
-    frame->getByRowCol(2, 1)->setTexCoordWrapVertical();
+        frame->getCorner(CORNER_UPPER_LEFT )->setTexCoordRegion(0.0f,  0.0f, twh);
+        frame->getBorder(BORDER_TOP        )->setTexCoordRegion(w,     0.0f, twh);
+        frame->getCorner(CORNER_UPPER_RIGHT)->setTexCoordRegion(w * 2, 0.0f, twh);
+        frame->getBorder(BORDER_LEFT       )->setTexCoordRegion(w * 3, 0.0f, twh);
+        frame->getBorder(BORDER_RIGHT      )->setTexCoordRegion(w * 4, 0.0f, twh);
+        frame->getCorner(CORNER_LOWER_LEFT )->setTexCoordRegion(w * 5, 0.0f, twh);
+        frame->getBorder(BORDER_BOTTOM     )->setTexCoordRegion(w * 6, 0.0f, twh);
+        frame->getCorner(CORNER_LOWER_RIGHT)->setTexCoordRegion(w * 7, 0.0f, twh);
 
-    // frame->getEmbeddedWindow()->setTexCoordRegion(cw, ch, tw - (cw * 2.0f), th - (ch * 2.0f));
+        // We set all of these to wrap vertically, but the REAL texture coordinates will
+        // be generated properly in the positioned() method.
+        frame->getByRowCol(0, 1)->setTexCoordWrapVertical();
+        frame->getByRowCol(1, 0)->setTexCoordWrapVertical();
+        frame->getByRowCol(1, 2)->setTexCoordWrapVertical();
+        frame->getByRowCol(2, 1)->setTexCoordWrapVertical();
+
+        // frame->getEmbeddedWindow()->setTexCoordRegion(cw, ch, tw - (cw * 2.0f), th - (ch * 2.0f));
+    }
+    else 
+    {
+        osg::notify(osg::WARN) << "createSimpleFrameWithSingleTexture with a null image, the frame " << name << " will be use texture" << std::endl;
+    }
 
     return frame;
 }
@@ -324,6 +333,238 @@ bool Frame::resizeFrame(point_type w, point_type h) {
         left->getWidth() + right->getWidth() + w,
         top->getHeight() + bottom->getHeight() + h
     ); 
+}
+
+
+osg::Image* createNatifEdgeImageFromTheme(osg::Image* theme);
+
+Frame* Frame::createSimpleFrameFromTheme(
+    const std::string& name,
+    osg::Image*        image,
+    point_type         width,
+    point_type         height,
+    unsigned int       flags,
+    Frame*             exFrame
+) {
+
+    osg::ref_ptr<osg::Image> natifImage = createNatifEdgeImageFromTheme(image);
+    return createSimpleFrameWithSingleTexture(name, natifImage.get(), width, height, flags, exFrame);
+}
+
+
+
+
+
+
+
+// (c) 2006-2008   Jean-Sébastien Guay
+// adapted by Cedric Pinson
+
+/** Implementation of copyImage. */
+template<typename T>
+void copyDataImpl(const osg::Image* source,
+                  const unsigned int x1, const unsigned int y1,
+                  const unsigned int x2, const unsigned int y2,
+                  osg::Image* destination, 
+                  const unsigned int xd = 0, const unsigned int yd = 0)
+{
+    if ((unsigned int)destination->s() >= xd + (x2 - x1) && 
+        (unsigned int)destination->t() >= yd + (y2 - y1))
+    {
+        const unsigned int bpps =      source->getPixelSizeInBits() / (8 * sizeof(T));
+
+        T* srcdata = (T*)source->data();
+        T* dstdata = (T*)destination->data();
+
+        for (unsigned int y = 0; y < y2 - y1; ++y)
+        {
+            for (unsigned int x = 0; x < x2 - x1; ++x)
+            {
+                for (unsigned int d = 0; d < bpps; d++) 
+                {
+                    T v = srcdata[(y + y1) * source->s() * bpps + (x + x1) * bpps + d];
+                    dstdata[(yd + y) * destination->s() * bpps + (xd + x) * bpps + d] = v;
+                }
+            }
+        }
+    }
+    else
+        assert(false && "copyDataImpl: Incorrect image dimensions.");
+}
+
+/** Copies a rectangle of corners (x1, y1), (x2, y2) from an image into 
+    another image starting at position (xd, yd). No scaling is done, the
+    pixels are just copied, so the destination image must be at least 
+    (xd + (x2 - x1)) by (yd + (y2 - y1)) pixels. */
+void copyData(const osg::Image* source,
+              const unsigned int x1, const unsigned int y1, 
+              const unsigned int x2, const unsigned int y2,
+              osg::Image* destination, 
+              const unsigned int xd, const unsigned int yd)
+{
+    if (source->getDataType() == destination->getDataType())
+    {
+        if (source->getDataType() == GL_UNSIGNED_BYTE)
+        {
+            copyDataImpl<unsigned char>(source, x1, y1, x2, y2, 
+                                        destination, xd, yd);
+        }
+        else
+        {
+            assert(false && "copyData not implemented for this data type");
+        }
+    }
+    else
+    {
+        assert(false && "source and destination images must be of the same type.");
+        return;
+    }
+}
+
+
+/** Implementation of rotateImage. */
+template<typename T>
+osg::Image* rotateImageImpl(osg::Image* image)
+{
+    if (image->s() == image->t())
+    {
+        const unsigned int s = image->s();
+        const unsigned int bpp = image->getPixelSizeInBits() / (8 * sizeof(T));
+
+        osg::ref_ptr<osg::Image> destination  = new osg::Image;
+        destination->allocateImage(s, s, 1,
+                                   image->getPixelFormat(), image->getDataType(),
+                                   image->getPacking());
+        destination->setInternalTextureFormat(image->getInternalTextureFormat());
+
+        T* srcdata = (T*)image->data();
+        T* dstdata = (T*)destination->data();
+
+        for (unsigned int y = 0; y < s; ++y)
+        {
+            for (unsigned int x = 0; x < s; ++x)
+            {
+                for (unsigned int p = 0; p < bpp; p++)
+                    dstdata[y * s * bpp + x * bpp + p] = srcdata[x * s * bpp + y * bpp + p];
+            }
+        }
+
+        return destination.release();
+    }
+    else
+    {
+        assert(false && "rotateImageImpl: Image must be square.");
+        return 0;
+    }
+}
+
+/** Rotates an osg::Image by 90 degrees. Returns a new osg::Image, be sure to
+    store it in a ref_ptr so it will be freed correctly. */
+osg::Image* rotateImage(osg::Image* image)
+{
+    if (image->getDataType() == GL_UNSIGNED_BYTE)
+    {
+        return rotateImageImpl<unsigned char>(image);
+    }
+    else
+    {
+        assert(false && "rotateImage not implemented for this data type");
+        return 0;
+    }
+}
+
+
+
+// SOURCE
+//          +---+---+---+
+//          | 1 | 2 | 3 |
+//          +---+---+---+
+//          | 4 |   | 5 |
+//          +---+---+---+
+//          | 6 | 7 | 8 |
+//          +---+---+---+
+
+
+// FINAL
+//         +---+---+---+---+---+---+---+---+
+//         | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+//         +---+---+---+---+---+---+---+---+
+
+//         1. Upper-Left corner.
+//         2. Top border (rotated 90 degrees CCW).
+//         3. Upper-Right corner.
+//         4. Left border.
+//         5. Right border.
+//         6. Bottom-Left corner.
+//         7. Bottom border (rotated 90 degrees CCW).
+//         8. Bottom-Right corner.
+
+osg::Image* createNatifEdgeImageFromTheme(osg::Image* theme)
+{
+    osg::ref_ptr<osg::Image> final = new osg::Image;
+    const int s = theme->s();
+    const int t = theme->t();
+    const GLenum pixelFormat   = theme->getPixelFormat();
+    const GLenum dataType      = theme->getDataType();
+    const GLint internalFormat = theme->getInternalTextureFormat();
+    unsigned int packing       = theme->getPacking();
+
+    if (s != t)
+    {
+        osg::notify(osg::WARN) << "width and height are different, bad format theme image " << theme->getFileName() << std::endl;
+        return 0;
+    }
+    
+    // check size
+    int ceilvalue = static_cast<int>(ceil(s * 1.0 / 3));
+    int intvalue = s/3;
+    if (intvalue != ceilvalue)
+    {
+        osg::notify(osg::WARN) << "the size of theme file " << theme->getFileName() << " can not be divided by 3, check the documentation about theme format" << std::endl;
+        return 0;
+    }
+
+    const unsigned int one_third_s = s/3;
+    const unsigned int one_third_t = t/3;
+
+    final->allocateImage(8 * one_third_s , one_third_t, 1, pixelFormat, dataType, packing);
+    final->setInternalTextureFormat(internalFormat);
+
+    // copy 1 (6 in source)
+    copyData(theme, 0, 2 * one_third_s, one_third_s, 3 * one_third_s, final.get(), 0, 0);
+
+    // rotate and copy 2
+    osg::ref_ptr<osg::Image> rotateandcopy2  = new osg::Image;
+    rotateandcopy2->allocateImage(one_third_s , one_third_t, 1, pixelFormat, dataType, packing);
+    rotateandcopy2->setInternalTextureFormat(internalFormat);
+    copyData(theme, one_third_s, 0, 2 * one_third_s , one_third_s, rotateandcopy2.get(), 0, 0);
+    rotateandcopy2 = rotateImage(rotateandcopy2.get());
+    copyData(rotateandcopy2.get(), 0, 0, one_third_s , one_third_s, final.get(), one_third_s, 0);
+
+    // copy 3 (8 in source)
+    copyData(theme, 2*one_third_s , 2 *one_third_s, 3*one_third_s , 3 * one_third_s, final.get(), 2 * one_third_s, 0);
+
+    // copy 4
+    copyData(theme, 0, one_third_s, one_third_s , 2 * one_third_s, final.get(), 3 * one_third_s, 0);
+
+    // copy 5
+    copyData(theme, 2*one_third_s , one_third_s, 3 * one_third_s , 2 * one_third_s, final.get(), 4 * one_third_s, 0);
+
+    // copy 6 (1 in source)
+    copyData(theme, 0 , 0, one_third_s, one_third_s, final.get(), 5 * one_third_s, 0);
+
+    // rotate and copy 7
+    osg::ref_ptr<osg::Image> rotateandcopy7  = new osg::Image;
+    rotateandcopy7->allocateImage(one_third_s , one_third_t, 1, pixelFormat, dataType, packing);
+    rotateandcopy7->setInternalTextureFormat(internalFormat);
+    copyData(theme, one_third_s, 2*one_third_s, 2 * one_third_s , 3 * one_third_s, rotateandcopy7.get(), 0, 0);
+    rotateandcopy7 = rotateImage(rotateandcopy7.get());
+    copyData(rotateandcopy7.get(), 0, 0, one_third_s , one_third_s, final.get(), 6 * one_third_s, 0);
+
+    // copy 8 (3 in source)
+    copyData(theme, 2 * one_third_s, 0, 3 * one_third_s , one_third_s , final.get(), 7 * one_third_s, 0);
+
+    return final.release();
 }
 
 }

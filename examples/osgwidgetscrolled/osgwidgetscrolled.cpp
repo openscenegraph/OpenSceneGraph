@@ -89,9 +89,9 @@ int main(int argc, char** argv) {
         //osgWidget::WindowManager::WM_NO_INVERT_Y
     );
     
-    osgWidget::Frame* frame = osgWidget::Frame::createSimpleFrameWithSingleTexture(
+    osgWidget::Frame* frame = osgWidget::Frame::createSimpleFrameFromTheme(
         "frame",
-        osgDB::readImageFile("osgWidget/frame-theme.png"),
+        osgDB::readImageFile("osgWidget/theme.png"),
         40.0f,
         40.0f,
 	osgWidget::Frame::FRAME_ALL

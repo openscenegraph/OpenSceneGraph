@@ -5,6 +5,7 @@
 #include <osgWidget/WindowManager>
 #include <osgWidget/Frame>
 #include <osgWidget/Box>
+#include <osgDB/ReadFile>
 
 const unsigned int MASK_2D = 0xF0000000;
 
@@ -26,6 +27,37 @@ int main(int argc, char** argv) {
         300.0f,
         300.0f
     );
+
+    osgWidget::Frame* frame2 = osgWidget::Frame::createSimpleFrameFromTheme(
+        "frameTheme",
+        osgDB::readImageFile("osgWidget/theme-1.png"),
+        300.0f,
+        300.0f,
+        osgWidget::Frame::FRAME_ALL
+        );
+    frame2->setPosition(300,100,0);
+    frame2->getBackground()->setColor(1.0f, 1.0f, 1.0f, 0.0f);
+
+    osgWidget::Frame* frame22 = osgWidget::Frame::createSimpleFrameFromTheme(
+        "frameTheme",
+        osgDB::readImageFile("osgWidget/theme-2.png"),
+        300.0f,
+        300.0f,
+        osgWidget::Frame::FRAME_ALL
+        );
+    frame22->setPosition(300,100,0);
+    frame22->getBackground()->setColor(1.0f, 1.0f, 1.0f, 0.0f);
+
+
+    osgWidget::Frame* frame3 = osgWidget::Frame::createSimpleFrameFromTheme(
+        "frameTheme",
+        osgDB::readImageFile("osgWidget/theme-2.png"),
+        300.0f,
+        300.0f,
+        osgWidget::Frame::FRAME_ALL
+        );
+    frame3->setPosition(300,100,0);
+    frame3->getBackground()->setColor(0.0f, 0.0f, 0.0f, 1.0f);
     
     osgWidget::Table* table  = new osgWidget::Table("table", 2, 2);
     osgWidget::Box*   bottom = new osgWidget::Box("panel", osgWidget::Box::HORIZONTAL);
@@ -83,6 +115,9 @@ int main(int argc, char** argv) {
 
     // Add everything to the WindowManager.
     wm->addChild(frame);
+    wm->addChild(frame2);
+    wm->addChild(frame22);
+    wm->addChild(frame3);
     wm->addChild(bottom);
 
     return osgWidget::createExample(viewer, wm);

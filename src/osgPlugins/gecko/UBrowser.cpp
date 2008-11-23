@@ -214,21 +214,36 @@ struct UpdateOperation : public osg::Operation
                       std::back_inserter(images));
         }
 
+        int numUpdated = 0;
+
         for(RefImageList::iterator itr = images.begin();
             itr != images.end();
             ++itr)
         {
-            update(itr->get());
+            if (update(itr->get())) ++numUpdated;
         }
         
-        // osg::notify(osg::NOTICE)<<"complted Update"<<std::endl;
+        if (numUpdated==0)
+        {
+            //osg::notify(osg::NOTICE)<<"completed Update but no images updated"<<std::endl;
+            OpenThreads::Thread::YieldCurrentThread();
+        }
+        else
+        {
+            //osg::notify(osg::NOTICE)<<"completed Updated "<<numUpdated<<std::endl;
+        }
 
     }
     
-    void update(UBrowserImage* image)
+    bool update(UBrowserImage* image)
     {
-        if (!image) return;
+        if (!image) return false;
     
+        double deltaTime = image->getTimeOfLastRender() - image->getTimeOfLastUpdate();
+        if (deltaTime<0.0)
+        {
+            return false;
+        }
     
         int id = image->getBrowserWindowId();
 
@@ -271,9 +286,13 @@ struct UpdateOperation : public osg::Operation
             image->setImage(width,height,1, internalFormat, pixelFormat, GL_UNSIGNED_BYTE, 
                      (unsigned char*)LLMozLib::getInstance()->getBrowserWindowPixels( id ),
                      osg::Image::NO_DELETE);
+                     
+            image->updated();
 
             // _needsUpdate = false;
         }
+        
+        return true;
     }
 };
 
@@ -465,6 +484,8 @@ void UBrowserManager::sendPointerEvent(UBrowserImage* image, int x, int y, int b
     _previousButtonMask = buttonMask;
     
     _thread->add(new PointerEventOperation(image, x, y, deltaButton));
+    
+    active(image);
 }
 
 
@@ -496,6 +517,7 @@ void UBrowserManager::sendKeyEvent(UBrowserImage* image, int key, bool keyDown)
     if (_keyMap.find(key)==_keyMap.end()) _thread->add(new KeyEventOperation(image, key, true));
     else _thread->add(new KeyEventOperation(image, itr->second, false));
 
+    active(image);
 }
 
 
@@ -519,6 +541,12 @@ struct NavigateToOperation : public osg::Operation
 void UBrowserManager::navigateTo(UBrowserImage* image, const std::string& url)
 {
     _thread->add(new NavigateToOperation(image, url));
+
+    active(image);
+}
+
+void UBrowserManager::active(UBrowserImage* image)
+{
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -527,7 +555,9 @@ void UBrowserManager::navigateTo(UBrowserImage* image, const std::string& url)
 
 UBrowserImage::UBrowserImage(UBrowserManager* manager, const std::string& homeURL, int width, int height):
     _browserWindowId(0),
-    _needsUpdate(true)
+    _needsUpdate(true),
+    _timeOfLastUpdate(0.0),
+    _timeOfLastRender(0.0)
 {
     _manager = manager;
 
@@ -560,6 +590,18 @@ void UBrowserImage::sendPointerEvent(int x, int y, int buttonMask)
 void UBrowserImage::sendKeyEvent(int key, bool keyDown)
 {
     _manager->sendKeyEvent(this, key, keyDown);
+}
+
+void UBrowserImage::setFrameLastRendered(const osg::FrameStamp*)
+{
+    _timeOfLastRender = time();
+
+    _manager->active(this);
+}
+
+void UBrowserImage::updated()
+{
+    _timeOfLastUpdate = time();
 }
 
 void UBrowserImage::navigateTo(const std::string& url)

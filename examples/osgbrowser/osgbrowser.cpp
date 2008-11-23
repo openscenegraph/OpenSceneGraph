@@ -33,7 +33,10 @@ osg::Node* createInteractiveQuad(const osg::Vec3& origin, osg::Vec3& widthAxis, 
                 texture,
                 osg::StateAttribute::ON);
                 
-    pictureQuad->setEventCallback(new osgViewer::InteractiveImageHandler(image));
+    osg::ref_ptr<osgViewer::InteractiveImageHandler> callback = new osgViewer::InteractiveImageHandler(image);
+
+    pictureQuad->setEventCallback(callback.get());
+    pictureQuad->setCullCallback(callback.get());
 
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(pictureQuad);

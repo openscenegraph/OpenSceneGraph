@@ -16,6 +16,8 @@
 
 #include <math.h>
 
+#include <osg/Export>
+
 //certain math functions were not defined until 10.2
 //so this code checks the version so it can add in workarounds for older versions.
 #ifdef __APPLE__
@@ -225,6 +227,12 @@ inline float computeVolume(const T& f1,const T& f2,const T& f3,
            computeVolume(b1,b2,b3,f2)+
            computeVolume(b1,b3,f2,f3);
 }
+
+/** Convert a ascii number to a double, ignoring locale settings.*/
+extern OSG_EXPORT double asciiToDouble(const char* str);
+
+/** Convert a ascii number to a float, ignoring locale settings.*/
+inline float asciiToFloat(const char* str) { return static_cast<float>(asciiToDouble(str)); }
 
 }
 

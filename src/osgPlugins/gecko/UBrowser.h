@@ -17,6 +17,7 @@
 #include <osgWidget/Browser>
 
 #include <osg/OperationThread>
+#include <osg/Timer>
 
 #include <list>
 #include <algorithm>
@@ -69,6 +70,8 @@ class UBrowserManager : public osgWidget::BrowserManager
 
         OpenThreads::Mutex  _ubrowserImageListMutex;
         UBrowserImageList   _ubrowserImageList;
+        
+        void active(UBrowserImage* image);
 
     protected:
     
@@ -109,7 +112,10 @@ class UBrowserImage : public osgWidget::BrowserImage, public LLEmbeddedBrowserWi
 
         virtual void sendKeyEvent(int key, bool keyDown);
 
+        virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp);
+
         virtual void navigateTo(const std::string& url);
+        
         
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -167,6 +173,13 @@ class UBrowserImage : public osgWidget::BrowserImage, public LLEmbeddedBrowserWi
         int getBrowserWindowId() const { return _browserWindowId; }
 
         osg::ref_ptr<UBrowserManager> _manager;
+        
+        void updated();
+        
+        double getTimeOfLastUpdate() const { return _timeOfLastUpdate; }
+        double getTimeOfLastRender() const { return _timeOfLastRender; }
+
+        double time() const { return osg::Timer::instance()->time_s(); }
 
     protected:
 
@@ -175,6 +188,9 @@ class UBrowserImage : public osgWidget::BrowserImage, public LLEmbeddedBrowserWi
         int         _browserWindowId;        
         bool        _needsUpdate;
         std::string _homeURL;
+        
+        double      _timeOfLastUpdate;
+        double      _timeOfLastRender;
 };
 
 #endif

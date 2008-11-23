@@ -311,11 +311,13 @@ class OSG_EXPORT Image : public Object
         
 
         /** method for sending pointer events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.*/
-        virtual void sendPointerEvent(int x, int y, int buttonMask) {};
+        virtual void sendPointerEvent(int x, int y, int buttonMask) {}
 
         /** method for sending key events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.*/
-        virtual void sendKeyEvent(int key, bool keyDown) {};
+        virtual void sendKeyEvent(int key, bool keyDown) {}
 
+        /** method for passing frame information to the custom Image classes, to be called only when objects associated with imagery are not culled.*/
+        virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp) {}
 
     protected :
 

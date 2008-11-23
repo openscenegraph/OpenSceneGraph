@@ -365,19 +365,27 @@ class OSGVIEWER_EXPORT ScreenCaptureHandler : public osgGA::GUIEventHandler
 /** InteractiveImage is an event handler that computes the mouse coordinates in an images coordinate frame
   * and then passes keyboard and mouse events to it.  This event handler is useful for vnc or browser
   * surfaces in the 3D scene.*/
-class OSGVIEWER_EXPORT InteractiveImageHandler : public osgGA::GUIEventHandler
+class OSGVIEWER_EXPORT InteractiveImageHandler : public osgGA::GUIEventHandler, public osg::Drawable::CullCallback
 {
 public:
 
     InteractiveImageHandler(osg::Image* image):
         _image(image) {}
-    
+
+    META_Object(osgViewer, InteractiveImageHandler);
+
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv);
+
+    virtual bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo) const;
 
 protected:
 
     virtual ~InteractiveImageHandler() {}
     
+    InteractiveImageHandler() {}
+
+    InteractiveImageHandler(const InteractiveImageHandler& rhs,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) {}
+
     bool mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const;
 
     osg::observer_ptr<osg::Image>  _image;

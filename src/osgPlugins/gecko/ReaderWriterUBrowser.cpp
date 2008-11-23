@@ -105,8 +105,11 @@ class ReaderWriterUBrowser : public osgDB::ReaderWriter
                         texture,
                         osg::StateAttribute::ON);
 
-            pictureQuad->setEventCallback(new osgViewer::InteractiveImageHandler(image));
+            osg::ref_ptr<osgViewer::InteractiveImageHandler> callback = new osgViewer::InteractiveImageHandler(image);
 
+            pictureQuad->setEventCallback(callback.get());
+            pictureQuad->setCullCallback(callback.get());
+            
             osg::Geode* geode = new osg::Geode;
             geode->addDrawable(pictureQuad);
 

@@ -731,4 +731,14 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
     return false;
 }
 
+bool InteractiveImageHandler::cull(osg::NodeVisitor* nv, osg::Drawable*, osg::RenderInfo*) const
+{
+    if (_image.valid())
+    {
+        _image->setFrameLastRendered(nv->getFrameStamp());
+    }
+
+    return false;
+}
+
 }

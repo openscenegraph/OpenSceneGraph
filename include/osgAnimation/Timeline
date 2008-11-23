@@ -23,6 +23,7 @@
 #include <osg/Group>
 #include <osgAnimation/Animation>
 #include <osgAnimation/AnimationManagerBase>
+#include <osgAnimation/Export>
 
 namespace osgAnimation
 {
@@ -541,7 +542,7 @@ namespace osgAnimation
 
 
 
-    class AnimationManagerTimeline : public AnimationManagerBase
+    class OSGANIMATION_EXPORT AnimationManagerTimeline : public AnimationManagerBase
     {
     protected:
         osg::ref_ptr<Timeline> _timeline;

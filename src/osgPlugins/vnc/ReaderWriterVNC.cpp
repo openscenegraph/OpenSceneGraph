@@ -10,6 +10,8 @@
  * include LICENSE.txt for more details.
 */
 
+#include <osg/Timer>
+
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
@@ -34,12 +36,27 @@ class VncImage : public osg::Image
         
         virtual void sendPointerEvent(int x, int y, int buttonMask);
 
+        double getTimeOfLastUpdate() const { return _timeOfLastUpdate; }
+        double getTimeOfLastRender() const { return _timeOfLastRender; }
+
+        double time() const { return osg::Timer::instance()->time_s(); }
+
         virtual void sendKeyEvent(int key, bool keyDown);
+
+        virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp);
+
+        void updated();
 
         static rfbBool resizeImage(rfbClient* client);
         
         static void updateImage(rfbClient* client,int x,int y,int w,int h);
         
+        double                      _timeOfLastUpdate;
+        double                      _timeOfLastRender;
+
+        bool                        _active;
+        osg::ref_ptr<osg::RefBlock> _inactiveBlock;
+
     protected:
     
         virtual ~VncImage();
@@ -48,14 +65,14 @@ class VncImage : public osg::Image
         {
         public:
 
-            RfbThread(rfbClient* client):
+            RfbThread(rfbClient* client, VncImage* image):
                 _client(client),
+                _image(image),
                 _done(false) {}
 
             virtual ~RfbThread()
             {
                 _done = true;
-                cancel();
                 while(isRunning()) 
                 {
                     OpenThreads::Thread::YieldCurrentThread();
@@ -66,18 +83,45 @@ class VncImage : public osg::Image
             {
                 do
                 {
-                    int i=WaitForMessage(_client,500);
-                    if(i<0)
-                        return;
-                    if(i)
-                        if(!HandleRFBServerMessage(_client))
-                        return;
+                    if (_image->_active)
+                    {               
+                        int i=WaitForMessage(_client,5000);
+                        if(i<0)
+                            return;
+
+                        if(i)
+                        {
+                            osg::notify(osg::NOTICE)<<"Handling "<<i<<" messages"<<std::endl;
+                        
+                            if(!HandleRFBServerMessage(_client))
+                            return;
+
+                            _image->updated();
+                        }
+                    }
+                    else
+                    {
+                        _image->_inactiveBlock->block();
+                    }
+                    
+                    
+                    double deltaTime = _image->getTimeOfLastRender() - _image->getTimeOfLastUpdate();
+                    if (deltaTime<-0.01)
+                    {
+                        //osg::notify(osg::NOTICE)<<"Inactive"<<std::endl;
+                        //_image->_active = false;
+                    }
+                    else
+                    {
+                        _image->_active = true;
+                    }
 
                 } while (!_done && !testCancel());
             }
 
-            rfbClient*  _client;
-            bool        _done;
+            rfbClient*                  _client;
+            osg::observer_ptr<VncImage> _image;
+            bool                        _done;
 
         };
 
@@ -85,7 +129,7 @@ class VncImage : public osg::Image
 
         rfbClient* _client;
 
-        osg::ref_ptr<RfbThread> _rfbThread;
+        osg::ref_ptr<RfbThread>     _rfbThread;
       
 };
 
@@ -93,6 +137,8 @@ VncImage::VncImage():
     _client(0)
 {
     // setPixelBufferObject(new osg::PixelBufferObject(this);
+
+    _inactiveBlock = new osg::RefBlock;
 
 }
 
@@ -104,6 +150,7 @@ VncImage::~VncImage()
 bool VncImage::connect(int* argc, char** argv)
 {
     if (_client) close();
+    
 
     _client = rfbGetClient(8,3,4);
     _client->canHandleNewFBSize = TRUE;
@@ -116,7 +163,7 @@ bool VncImage::connect(int* argc, char** argv)
     
     if (rfbInitClient(_client,argc,argv))
     {
-        _rfbThread = new RfbThread(_client);
+        _rfbThread = new RfbThread(_client, this);
         _rfbThread->startThread();
 
         return true;
@@ -207,7 +254,7 @@ bool VncImage::connect(const std::string& hostname, const osgDB::ReaderWriter::O
 
     if(rfbInitConnection(_client))
     {
-        _rfbThread = new RfbThread(_client);
+        _rfbThread = new RfbThread(_client, this);
         _rfbThread->startThread();
         
         return true;
@@ -225,6 +272,8 @@ void VncImage::close()
 {
     if (_rfbThread.valid())
     {
+        _inactiveBlock->release();
+
         // stop the client thread
         _rfbThread = 0;
     }
@@ -275,6 +324,20 @@ void VncImage::sendKeyEvent(int key, bool keyDown)
     {
         SendKeyEvent(_client, key, keyDown ? TRUE : FALSE);
     }
+}
+
+
+void VncImage::setFrameLastRendered(const osg::FrameStamp*)
+{
+    _timeOfLastRender = time();
+
+    if (!_active) _inactiveBlock->release();
+    _active = true;
+}
+
+void VncImage::updated()
+{
+    _timeOfLastUpdate = time();
 }
 
 class ReaderWriterVNC : public osgDB::ReaderWriter
@@ -345,7 +408,10 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
                         texture,
                         osg::StateAttribute::ON);
 
-            pictureQuad->setEventCallback(new osgViewer::InteractiveImageHandler(image));
+            osg::ref_ptr<osgViewer::InteractiveImageHandler> callback = new osgViewer::InteractiveImageHandler(image);
+
+            pictureQuad->setEventCallback(callback.get());
+            pictureQuad->setCullCallback(callback.get());
 
             osg::Geode* geode = new osg::Geode;
             geode->addDrawable(pictureQuad);

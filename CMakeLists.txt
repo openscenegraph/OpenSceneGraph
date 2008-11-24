@@ -271,6 +271,9 @@ MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGBOX)
 OPTION(OSG_USE_UTF8_FILENAME "Set to ON to use a UTF8 locale for filenames instead of the default locale." OFF)
 MARK_AS_ADVANCED(OSG_USE_UTF8_FILENAME)
 
+OPTION(OSG_DISABLE_MSVC_WARNINGS "Set to OFF to not disable MSVC wartnings genertated by OSG headers." ON)
+MARK_AS_ADVANCED(OSG_DISABLE_MSVC_WARNINGS)
+
 OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
 
 ################################################################################

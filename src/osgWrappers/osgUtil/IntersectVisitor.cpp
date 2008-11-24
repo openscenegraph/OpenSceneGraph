@@ -361,7 +361,5 @@ END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< const osg::LineSegment * COMMA  osgUtil::IntersectVisitor::HitList >)
 
-STD_VECTOR_REFLECTOR(std::vector< int >)
-
 STD_VECTOR_REFLECTOR(std::vector< osgUtil::Hit >)
 

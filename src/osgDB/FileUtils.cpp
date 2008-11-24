@@ -27,8 +27,9 @@
     #define stat64 _stati64
 
     // set up for windows so acts just like unix access().
+#ifndef F_OK
     #define F_OK 4
-
+#endif
 
 #else // unix
 

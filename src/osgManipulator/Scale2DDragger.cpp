@@ -26,11 +26,11 @@ using namespace osgManipulator;
 namespace
 {
 
-osg::Vec2 computeScale(const osg::Vec3& startProjectedPoint,
-                       const osg::Vec3& projectedPoint,
-                       const osg::Vec2& scaleCenter)
+osg::Vec2d computeScale(const osg::Vec3d& startProjectedPoint,
+                        const osg::Vec3d& projectedPoint,
+                        const osg::Vec2d& scaleCenter)
 {
-    osg::Vec2 scale(1.0,1.0);
+    osg::Vec2d scale(1.0,1.0);
     if ((startProjectedPoint[0] - scaleCenter[0]) != 0.0)
         scale[0] = (projectedPoint[0] - scaleCenter[0])/(startProjectedPoint[0] - scaleCenter[0]);
     if ((startProjectedPoint[2] - scaleCenter[1]) != 0.0)
@@ -126,11 +126,11 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
         // Pick move.
         case (osgGA::GUIEventAdapter::DRAG):
             {
-                osg::Vec3 projectedPoint;
+                osg::Vec3d projectedPoint;
                 if (_projector->project(pointer, projectedPoint))
                 {
                     // Compute scale.
-                    osg::Vec2 scale = computeScale(_startProjectedPoint,projectedPoint,_scaleCenter);
+                    osg::Vec2d scale = computeScale(_startProjectedPoint,projectedPoint,_scaleCenter);
 
                     if (scale[0] < getMinScale()[0]) scale[0] = getMinScale()[0];
                     if (scale[1] < getMinScale()[1]) scale[1] = getMinScale()[1];
@@ -164,7 +164,7 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
                 cmd->setStage(MotionCommand::FINISH);
                 cmd->setReferencePoint(_referencePoint);
                 cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
-	    	
+                    
                 // Dispatch command.
                 if (_commandManager)
                 {
@@ -174,7 +174,7 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
 
                 // Reset color.
                 setMaterialColor(_color,*this);
-		
+                
                 aa.requestRedraw();
 
                 return true;

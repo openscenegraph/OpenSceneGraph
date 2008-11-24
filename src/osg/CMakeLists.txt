@@ -216,24 +216,26 @@ ADD_LIBRARY(${LIB_NAME}
     CoordinateSystemNode.cpp
     CopyOp.cpp
     CullFace.cpp
+    CullingSet.cpp
     CullSettings.cpp
     CullStack.cpp
-    CullingSet.cpp
     DeleteHandler.cpp
     Depth.cpp
     DisplaySettings.cpp
-    DrawPixels.cpp
     Drawable.cpp
+    DrawPixels.cpp
+    dxtctool.cpp
+    dxtctool.h
     Fog.cpp
     FragmentProgram.cpp
     FrameBufferObject.cpp
     FrameStamp.cpp
     FrontFace.cpp
+    Geode.cpp
+    Geometry.cpp
     GL2Extensions.cpp
     GLExtensions.cpp
     GLObjects.cpp
-    Geode.cpp
-    Geometry.cpp
     GraphicsContext.cpp
     GraphicsThread.cpp
     Group.cpp
@@ -242,24 +244,25 @@ ADD_LIBRARY(${LIB_NAME}
     ImageSequence.cpp
     ImageStream.cpp
     KdTree.cpp
-    LOD.cpp
     Light.cpp
     LightModel.cpp
     LightSource.cpp
     LineSegment.cpp
     LineStipple.cpp
     LineWidth.cpp
+    LOD.cpp
     LogicOp.cpp
     Material.cpp
+    Math.cpp
+    Matrixd.cpp
     MatrixDecomposition.cpp
-    MatrixTransform.cpp
+    Matrixf.cpp
     # We don't build this one
     #    Matrix_implementation.cpp
-    Matrixd.cpp
-    Matrixf.cpp
+    MatrixTransform.cpp
     Multisample.cpp
-    Node.cpp
     NodeCallback.cpp
+    Node.cpp
     NodeTrackerCallback.cpp
     NodeVisitor.cpp
     Notify.cpp
@@ -287,36 +290,34 @@ ADD_LIBRARY(${LIB_NAME}
     ShadowVolumeOccluder.cpp
     Shape.cpp
     ShapeDrawable.cpp
-    State.cpp
     StateAttribute.cpp
+    State.cpp
     StateSet.cpp
     Stats.cpp
     Stencil.cpp
     StencilTwoSided.cpp
     Switch.cpp
-    TexEnv.cpp
     TexEnvCombine.cpp
+    TexEnv.cpp
     TexEnvFilter.cpp
     TexGen.cpp
     TexGenNode.cpp
     TexMat.cpp
-    Texture.cpp
     Texture1D.cpp
-    Texture2D.cpp
     Texture2DArray.cpp
+    Texture2D.cpp
     Texture3D.cpp
+    Texture.cpp
     TextureCubeMap.cpp
     TextureRectangle.cpp
-    TransferFunction.cpp
     Timer.cpp
+    TransferFunction.cpp
     Transform.cpp
     Uniform.cpp
     Version.cpp
     VertexProgram.cpp
     View.cpp
     Viewport.cpp
-    dxtctool.cpp
-    dxtctool.h
 )
 
 LINK_INTERNAL(${LIB_NAME}     

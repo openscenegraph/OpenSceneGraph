@@ -35,9 +35,9 @@ class OSGMANIPULATOR_EXPORT TranslateAxisDragger : public CompositeDragger
 
         virtual ~TranslateAxisDragger();
 
-        osg::ref_ptr< Translate1DDragger >	_xDragger;
-        osg::ref_ptr< Translate1DDragger >	_yDragger;
-        osg::ref_ptr< Translate1DDragger >	_zDragger;
+        osg::ref_ptr< Translate1DDragger >  _xDragger;
+        osg::ref_ptr< Translate1DDragger >  _yDragger;
+        osg::ref_ptr< Translate1DDragger >  _zDragger;
 };
 
 

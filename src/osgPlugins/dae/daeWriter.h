@@ -39,6 +39,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
+#include <osgSim/MultiSwitch>
 
 #include <dae.h>
 #include <dae/daeDocument.h>
@@ -61,6 +62,17 @@ class domVisual_scene;
 class domP;
 
 namespace osgdae {
+
+/// Convert value to string using it's stream operator
+template <typename T>
+std::string toString(T value) {
+    std::stringstream str;
+    str << value;
+    return str.str();
+}
+
+std::string toString(osg::Vec3 value);
+std::string toString(osg::Matrix value);
   
 /**
 @class daeWriter
@@ -71,9 +83,7 @@ class daeWriter : public osg::NodeVisitor
 protected:
     class ArrayNIndices;
 public:
-    enum NodeType { NODE, GEODE, GROUP, LIGHT, CAMERA, MATRIX, POSATT, SWITCH, LOD };
-
-    daeWriter( DAE *dae_, const std::string &fileURI, bool usePolygons=false, bool GoogleMode = false );
+    daeWriter( DAE *dae_, const std::string &fileURI, bool usePolygons=false, bool GoogleMode = false,TraversalMode tm=TRAVERSE_ALL_CHILDREN, bool writeExtras = true);
     virtual ~daeWriter();
 
     void setRootNode( const osg::Node &node );
@@ -90,9 +100,10 @@ public:
     virtual void    apply( osg::MatrixTransform &node );
     virtual void    apply( osg::PositionAttitudeTransform &node );
     virtual void    apply( osg::Switch &node );
+    virtual void    apply( osg::Sequence &node );
     virtual void    apply( osg::LOD &node );
 
-    //virtual void  apply( osg::Billboard &node);
+    //virtual void    apply( osg::Billboard &node);
     virtual void    apply( osg::ProxyNode &node );
     //virtual void  apply( osg::Projection &node)
     virtual void    apply( osg::CoordinateSystemNode &node );
@@ -100,10 +111,13 @@ public:
     //virtual void  apply( osg::TexGenNode &node)
     virtual void    apply( osg::Transform &node );
     //virtual void  apply( osg::CameraView &node)
-    //virtual void  apply( osg::Sequence &node)
     //virtual void  apply( osg::PagedLOD &node)
     //virtual void  apply( osg::ClearNode &node)
     //virtual void  apply( osg::OccluderNode &node)
+
+    void writeNodeExtra(osg::Node &node);
+
+
 
     void traverse (osg::Node &node);
   
@@ -148,8 +162,9 @@ protected: //members
     domNode *currentNode;
     domVisual_scene *vs;
 
+    /// Write OSG specific data as extra data
+    bool writeExtras;
     bool success;
-    NodeType lastVisited;
     unsigned int lastDepth;
 
   struct CompareStateSet

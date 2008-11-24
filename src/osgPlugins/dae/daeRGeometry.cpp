@@ -18,17 +18,14 @@
 #include <dom/domInstance_geometry.h>
 #include <dom/domInstance_controller.h>
 #include <dom/domController.h>
+#include <osg/StateSet>
 
 #include <osg/Geometry>
 
 using namespace osgdae;
 
-osg::Node* daeReader::processInstance_geometry( domInstance_geometry *ig )
+osg::Geode* daeReader::processInstanceGeometry( domInstance_geometry *ig )
 {
-    //TODO: cache geometries so they don't get processed mulitple times.
-    //TODO: after cached need to check geometries and materials. both have to be the same for it
-    //      to be the same instance.
-
     daeElement *el = getElementFromURI( ig->getUrl() );
     domGeometry *geom = daeSafeCast< domGeometry >( el );
     if ( geom == NULL )
@@ -36,50 +33,65 @@ osg::Node* daeReader::processInstance_geometry( domInstance_geometry *ig )
         osg::notify( osg::WARN ) << "Failed to locate geometry " << ig->getUrl().getURI() << std::endl;
         return NULL;
     }
-    //check cache if geometry already exists
-    osg::Node *geo;
+    
+    // Check cache if geometry already exists
+    osg::Geode *geode;
 
-    std::map< domGeometry*, osg::Node* >::iterator iter = geometryMap.find( geom );
+    domGeometryGeodeMap::iterator iter = geometryMap.find( geom );
     if ( iter != geometryMap.end() )
     {
-        geo = iter->second;
+        osg::Geode* cachedGeode = iter->second;
+
+        // Create a copy of the cached Geode with a copy of the drawables,
+        // because the may be using a different material.
+        // TODO Cloning is not necessary if the material layouts are exactly the same.
+        // To check this we need to compare the material bindings used by the cached Geode
+        // and this new instance_geometry material bindings.
+        geode = static_cast<osg::Geode*>(cachedGeode->clone(osg::CopyOp::DEEP_COPY_DRAWABLES));
     }
     else
     {
-        geo = processGeometry( geom );
-        geometryMap.insert( std::make_pair( geom, geo ) );
+        geode = processGeometry( geom );
+        geometryMap.insert( std::make_pair( geom, geode ) );
     }
-    if ( geo == NULL )
+
+    if ( geode == NULL )
     {
         osg::notify( osg::WARN ) << "Failed to load geometry " << ig->getUrl().getURI() << std::endl;
         return NULL;
     }
-    //process material bindings
+
+    // process material bindings
     if ( ig->getBind_material() != NULL )
     {
-        processBindMaterial( ig->getBind_material(), geo );
+        processBindMaterial( ig->getBind_material(), geom, geode );
     }
 
-    return geo;
+    return geode;
 }
 
-osg::Node* daeReader::processInstance_controller( domInstance_controller *ictrl )
+// <controller>
+// attributes:
+// id, name
+// elements:
+// 0..1 <asset>
+// 1    <skin>, <morph>
+// 0..* <extra>
+osg::Geode* daeReader::processInstanceController( domInstance_controller *ictrl )
 {
-    //TODO: cache geometries so they don't get processed mulitple times.
-    //TODO: after cached need to check geometries and materials. both have to be the same for it
-    //      to be the same instance.
     //TODO: support skinning
-
-    osg::notify( osg::WARN ) << "Processing <instance_controller>. There is not skinning support but will display the base mesh." << std::endl;
-    daeElement *el = getElementFromURI( ictrl->getUrl() );
+    daeElement *el = getElementFromURI( ictrl->getUrl());
     domController *ctrl = daeSafeCast< domController >( el );
     if ( ctrl == NULL )
     {
-        osg::notify( osg::WARN ) << "Failed to locate controller " << ictrl->getUrl().getURI() << std::endl;
+        osg::notify( osg::WARN ) << "Failed to locate conroller " << ictrl->getUrl().getURI() << std::endl;
         return NULL;
     }
+
+    osg::notify( osg::WARN ) << "Processing <controller>. There is not skinning support but will display the base mesh." << std::endl;
+
     el = NULL;
-        //## non init
+    //## non init
     daeURI *src=NULL;
     if ( ctrl->getSkin() != NULL )
     {
@@ -91,12 +103,13 @@ osg::Node* daeReader::processInstance_controller( domInstance_controller *ictrl 
         src = &ctrl->getSkin()->getSource();
         el = getElementFromURI( ctrl->getMorph()->getSource() );
     }
-        //non init case
-        if ( !src )
-        {
-            osg::notify( osg::WARN ) << "Failed to locate geometry : URI is NULL" << std::endl;
-            return NULL;
-        }
+    
+    //non init case
+    if ( !src )
+    {
+        osg::notify( osg::WARN ) << "Failed to locate geometry : URI is NULL" << std::endl;
+        return NULL;
+    }
         
     domGeometry *geom = daeSafeCast< domGeometry >( el );
     if ( geom == NULL )
@@ -104,19 +117,29 @@ osg::Node* daeReader::processInstance_controller( domInstance_controller *ictrl 
         osg::notify( osg::WARN ) << "Failed to locate geometry " << src->getURI() << std::endl;
         return NULL;
     }
-    osg::Node *geo;
 
-    std::map< domGeometry*, osg::Node* >::iterator iter = geometryMap.find( geom );
+    // Check cache if geometry already exists
+    osg::Geode *geode;
+
+    domGeometryGeodeMap::iterator iter = geometryMap.find( geom );
     if ( iter != geometryMap.end() )
     {
-        geo = iter->second;
+        osg::Geode* cachedGeode = iter->second;
+
+        // Create a copy of the cached Geode with a copy of the drawables,
+        // because the may be using a different material.
+        // TODO Cloning is not necessary if the material layouts are exactly the same.
+        // To check this we need to compare the material bindings used by the cached Geode
+        // and this new instance_geometry material bindings.
+        geode = static_cast<osg::Geode*>(cachedGeode->clone(osg::CopyOp::DEEP_COPY_DRAWABLES));
     }
     else
     {
-        geo = processGeometry( geom );
-        geometryMap.insert( std::make_pair( geom, geo ) );
+        geode = processGeometry( geom );
+        geometryMap.insert( std::make_pair( geom, geode ) );
     }
-    if ( geo == NULL )
+
+    if ( geode == NULL )
     {
         osg::notify( osg::WARN ) << "Failed to load geometry " << src->getURI() << std::endl;
         return NULL;
@@ -124,13 +147,20 @@ osg::Node* daeReader::processInstance_controller( domInstance_controller *ictrl 
     //process material bindings
     if ( ictrl->getBind_material() != NULL )
     {
-        processBindMaterial( ictrl->getBind_material(), geo );
+        processBindMaterial( ictrl->getBind_material(), geom, geode );
     }
 
-    return geo;
+    return geode;
 }
 
-osg::Node *daeReader::processGeometry( domGeometry *geo )
+// <geometry>
+// attributes:
+// id, name
+// elements:
+// 0..1 <asset>
+// 1    <convex_mesh>, <mesh>, <spline>
+// 0..* <extra>
+osg::Geode *daeReader::processGeometry( domGeometry *geo )
 {
     domMesh *mesh = geo->getMesh();
     if ( mesh == NULL )
@@ -138,124 +168,87 @@ osg::Node *daeReader::processGeometry( domGeometry *geo )
         osg::notify( osg::WARN ) << "Unsupported Geometry type loading " << geo->getId() << std::endl;
         return NULL;
     }
-    osg::Node *node = new osg::Group();
 
-    if ( geo->getId() != NULL )
+    osg::Geode* geode = new osg::Geode;
+    if (geo->getId() != NULL )
     {
-        node->setName( geo->getId() );
+        geode->setName( geo->getId() );
     }
 
-    SourceMap sources;
-    
+    // <mesh>
+    // elements:
+    // 1..* <source>
+    // 1    <vertices>
+    // 0..*    <lines>, <linestrips>, <polygons>, <polylist>, <triangles>, <trifans>, <tristrips>
+    // 0..* <extra>
     size_t count = mesh->getContents().getCount();
-    for ( size_t i = 0; i < count; i++ )
+    
+    // 1..* <source>
+    SourceMap sources;
+    domSource_Array sourceArray = mesh->getSource_array();
+    for ( size_t i = 0; i < sourceArray.getCount(); i++)
     {
-        if ( daeSafeCast< domVertices >( mesh->getContents()[i] ) != NULL ) continue;
-
-        domSource *s = daeSafeCast< domSource >( mesh->getContents()[i] );
-        if ( s != NULL )
-        {
-            sources.insert( std::make_pair( (daeElement*)mesh->getContents()[i], 
-                domSourceReader( s ) ) ); 
-            continue;
-        }
-
-        osg::Node *n = NULL;
-
-        domTriangles *t = daeSafeCast< domTriangles >( mesh->getContents()[i] );
-        if ( t != NULL )
-        {
-            n = processSinglePPrimitive( t, sources, GL_TRIANGLES );
-            if ( n != NULL )
-            {
-                node->asGroup()->addChild( n );
-            }
-            continue;
-        }
-
-        domTristrips *ts = daeSafeCast< domTristrips >( mesh->getContents()[i] );
-        if ( ts != NULL )
-        {
-            n = processMultiPPrimitive( ts, sources, GL_TRIANGLE_STRIP );
-            if ( n != NULL )
-            {
-                node->asGroup()->addChild( n );
-            }
-            continue;
-        }
-
-        domTrifans *tf = daeSafeCast< domTrifans >( mesh->getContents()[i] );
-        if ( tf != NULL )
-        {
-            n = processMultiPPrimitive( tf, sources, GL_TRIANGLE_FAN );
-            if ( n != NULL )
-            {
-                node->asGroup()->addChild( n );
-            }
-            continue;
-        }
-
-        domLines *l = daeSafeCast< domLines >( mesh->getContents()[i] );
-        if ( l != NULL )
-        {
-            n = processSinglePPrimitive( l, sources, GL_LINES );
-            if ( n != NULL )
-            {
-                node->asGroup()->addChild( n );
-            }
-            continue;
-        }
-
-        domLinestrips *ls = daeSafeCast< domLinestrips >( mesh->getContents()[i] );
-        if ( ls != NULL )
-        {
-            n = processMultiPPrimitive( ls, sources, GL_LINE_STRIP );
-            if ( n != NULL )
-            {
-                node->asGroup()->addChild( n );
-            }
-            continue;
-        }
-
-        domPolygons *p = daeSafeCast< domPolygons >( mesh->getContents()[i] );
-        if ( p != NULL )
-        {
-            n = processMultiPPrimitive( p, sources, GL_POLYGON );
-            if ( n != NULL )
-            {
-                node->asGroup()->addChild( n );
-            }
-            continue;
-        }
-
-        domPolylist *pl = daeSafeCast< domPolylist >( mesh->getContents()[i] );
-        if ( pl != NULL )
-        {
-            n = processPolylist( pl, sources );
-            if ( n != NULL )
-            {
-                node->asGroup()->addChild( n );
-            }
-            continue;
-        }
-
-        osg::notify( osg::WARN ) << "Unsupported primitive type " << mesh->getContents()[i]->getTypeName() << " in geometry " << geo->getId() << std::endl;
+        sources.insert( std::make_pair((daeElement*)sourceArray[i], domSourceReader( sourceArray[i] ) ) ); 
     }
 
-    return node;
+    // 0..*    <lines>
+    domLines_Array linesArray = mesh->getLines_array();
+    for ( size_t i = 0; i < linesArray.getCount(); i++)
+    {
+        processSinglePPrimitive<domLines>(geode, linesArray[i], sources, GL_LINES );
+    }
+
+    // 0..*    <linestrips>
+    domLinestrips_Array linestripsArray = mesh->getLinestrips_array();
+    for ( size_t i = 0; i < linestripsArray.getCount(); i++)
+    {
+        processMultiPPrimitive<domLinestrips>(geode, linestripsArray[i], sources, GL_LINE_STRIP );
+    }
+
+    // 0..* <polygons>
+    domPolygons_Array polygonsArray = mesh->getPolygons_array();
+    for ( size_t i = 0; i < polygonsArray.getCount(); i++)
+    {
+        processMultiPPrimitive<domPolygons>(geode, polygonsArray[i], sources, GL_POLYGON );
+    }
+
+    // 0..* <polylist>
+    domPolylist_Array polylistArray = mesh->getPolylist_array();
+    for ( size_t i = 0; i < polylistArray.getCount(); i++)
+    {
+        processPolylist(geode, polylistArray[i], sources );
+    }
+
+    // 0..* <triangles>
+    domTriangles_Array trianglesArray = mesh->getTriangles_array();
+    for ( size_t i = 0; i < trianglesArray.getCount(); i++)
+    {
+        processSinglePPrimitive<domTriangles>(geode, trianglesArray[i], sources, GL_TRIANGLES );
+    }
+
+    // 0..* <trifans>
+    domTrifans_Array trifansArray = mesh->getTrifans_array();
+    for ( size_t i = 0; i < trifansArray.getCount(); i++)
+    {
+        processMultiPPrimitive<domTrifans>(geode, trifansArray[i], sources, GL_TRIANGLE_FAN );
+    }
+
+    // 0..* <tristrips>
+    domTristrips_Array tristripsArray = mesh->getTristrips_array();
+    for ( size_t i = 0; i < tristripsArray.getCount(); i++)
+    {
+        processMultiPPrimitive<domTristrips>(geode, tristripsArray[i], sources, GL_TRIANGLE_STRIP );
+    }
+
+    return geode;
 }
 
-template< typename T >
-osg::Node* daeReader::processSinglePPrimitive( T *group, SourceMap &sources, GLenum mode )
-{
-    osg::Geode* geode = new osg::Geode();
-    osg::Geometry *geometry = new osg::Geometry();
 
-    //Setting the name of the geode to the material symbol for easy binding later
-    if ( group->getMaterial() != NULL )
-    {
-        geode->setName( group->getMaterial() );
-    }
+template< typename T >
+void daeReader::processSinglePPrimitive(osg::Geode* geode, T *group, SourceMap &sources, GLenum mode )
+{
+    osg::Geometry *geometry = new osg::Geometry();
+    geometry->setName(group->getMaterial());
 
     IndexMap index_map;
     resolveArrays( group->getInput_array(), geometry, sources, index_map );
@@ -265,20 +258,13 @@ osg::Node* daeReader::processSinglePPrimitive( T *group, SourceMap &sources, GLe
     geometry->addPrimitiveSet( dal );
     
     geode->addDrawable( geometry );
-    return geode;
 }
 
 template< typename T >
-    osg::Node* daeReader::processMultiPPrimitive( T *group, SourceMap &sources, GLenum mode )
+void daeReader::processMultiPPrimitive(osg::Geode* geode, T *group, SourceMap &sources, GLenum mode )
 {
-    osg::Geode* geode = new osg::Geode();
     osg::Geometry *geometry = new osg::Geometry();
-
-    //Setting the name of the geode to the material symbol for easy binding later
-    if ( group->getMaterial() != NULL )
-    {
-        geode->setName( group->getMaterial() );
-    }
+    geometry->setName(group->getMaterial());
 
     IndexMap index_map;
     resolveArrays( group->getInput_array(), geometry, sources, index_map );
@@ -292,19 +278,12 @@ template< typename T >
     geometry->addPrimitiveSet( dal );
 
     geode->addDrawable( geometry );
-    return geode;
 }
 
-osg::Node* daeReader::processPolylist( domPolylist *group, SourceMap &sources )
+void daeReader::processPolylist(osg::Geode* geode, domPolylist *group, SourceMap &sources )
 {
-    osg::Geode* geode = new osg::Geode();
     osg::Geometry *geometry = new osg::Geometry();
-
-    //Setting the name of the geode to the material symbol for easy binding later
-    if ( group->getMaterial() != NULL )
-    {
-        geode->setName( group->getMaterial() );
-    }
+    geometry->setName(group->getMaterial());
 
     IndexMap index_map;
     resolveArrays( group->getInput_array(), geometry, sources, index_map );
@@ -342,12 +321,10 @@ osg::Node* daeReader::processPolylist( domPolylist *group, SourceMap &sources )
     geometry->addPrimitiveSet( dal );
     
     geode->addDrawable( geometry );
-    return geode;
 }
 
 void daeReader::processP( domP *p, osg::Geometry *&/*geom*/, IndexMap &index_map, osg::DrawArrayLengths* dal /*GLenum mode*/ )
 {
-    //osg::DrawArrayLengths* dal = new osg::DrawArrayLengths( mode );
     int idxcount = index_map.size();
     int count = p->getValue().getCount();
     count = (count/idxcount)*idxcount;
@@ -360,7 +337,6 @@ void daeReader::processP( domP *p, osg::Geometry *&/*geom*/, IndexMap &index_map
             k->second->push_back(tmp);
         }
     }
-    //geom->addPrimitiveSet( dal );
 }
 
 void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry *&geom, 
@@ -377,9 +353,11 @@ void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry 
     daeElement *tmp_el;
     domInputLocalOffset *tmp_input;
 
-    if ( findInputSourceBySemantic( inputs, "VERTEX", tmp_el, &tmp_input ) ) {
+    if ( findInputSourceBySemantic( inputs, "VERTEX", tmp_el, &tmp_input ) ) 
+    {
         vertices = daeSafeCast< domVertices >( tmp_el );
-        if ( vertices == NULL ) {
+        if ( vertices == NULL ) 
+        {
             osg::notify( osg::WARN )<<"Could not get vertices"<<std::endl;
             return;
         }
@@ -393,7 +371,8 @@ void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry 
         findInputSourceBySemantic( vertices->getInput_array(), "NORMAL", normal_source, &tmp );
         findInputSourceBySemantic( vertices->getInput_array(), "TEXCOORD", texcoord_source, &tmp );
         
-        if ( index_map[offset] == NULL ) {
+        if ( index_map[offset] == NULL ) 
+        {
             index_map[offset] = new osg::IntArray();
         }
         geom->setVertexIndices( index_map[offset] );
@@ -436,9 +415,8 @@ void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry 
         return;
     }
 
-    
-    if ( findInputSourceBySemantic( inputs, "COLOR", color_source, &tmp_input ) ) {
-        
+    if ( findInputSourceBySemantic( inputs, "COLOR", color_source, &tmp_input )) 
+    {
         offset = tmp_input->getOffset();
         if ( index_map[offset] == NULL ) {
             index_map[offset] = new osg::IntArray();
@@ -446,32 +424,36 @@ void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry 
         geom->setColorIndices( index_map[offset] );
     }
 
-    if ( color_source != NULL ) {
+    if ( color_source != NULL ) 
+    {
         geom->setColorArray( sources[color_source].getVec4Array() );
         geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
     }
 
-    if ( findInputSourceBySemantic( inputs, "NORMAL", normal_source, &tmp_input ) ) {
-        
+    if ( findInputSourceBySemantic( inputs, "NORMAL", normal_source, &tmp_input ) ) 
+    {
         offset = tmp_input->getOffset();
-        if ( index_map[offset] == NULL ) {
+        if ( index_map[offset] == NULL ) 
+        {
             index_map[offset] = new osg::IntArray();
         }
         geom->setNormalIndices( index_map[offset] );
     }
 
-    if ( normal_source ) {
+    if ( normal_source ) 
+    {
         geom->setNormalArray( sources[normal_source].getVec3Array() );
         geom->setNormalBinding( osg::Geometry::BIND_PER_VERTEX );
     }
 
     int unit = 0;
-    while ( findInputSourceBySemantic( inputs, "TEXCOORD", texcoord_source, &tmp_input, unit ) ) {
-        
+    while ( findInputSourceBySemantic( inputs, "TEXCOORD", texcoord_source, &tmp_input, unit ) ) 
+    {
         offset = tmp_input->getOffset();
         set = tmp_input->getSet();
 
-        if ( index_map[offset] == NULL ) {
+        if ( index_map[offset] == NULL ) 
+        {
             index_map[offset] = new osg::IntArray();
         }
         //this should really be set. Then when you bind_vertex_input you can adjust accordingly for the

@@ -14,6 +14,7 @@
 #include <memory>
 
 #include <osg/Notify>
+#include <osg/NodeVisitor>
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
@@ -40,7 +41,7 @@ ReaderWriterDAE::readNode(const std::string& fname,
     DAE* pDAE = NULL;
    
     if ( options )
-        pDAE = (DAE*) options->getPluginData("DAE");        
+        pDAE = (DAE*)options->getPluginData("DAE");
     
     std::string ext( osgDB::getLowerCaseFileExtension(fname) );
     if( ! acceptsExtension(ext) ) return ReadResult::FILE_NOT_HANDLED;
@@ -103,31 +104,32 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     if( ! acceptsExtension(ext) ) return WriteResult::FILE_NOT_HANDLED;
 
     // Process options
-    bool usePolygon(false);
-    bool GoogleMode(false);
+    bool usePolygon(false);    // Use plugin option "polygon" to enable
+    bool GoogleMode(false); // Use plugin option "GoogleMode" to enable
+    bool writeExtras(true); // Use plugin option "NoExtras" to disable
     if( options )
     {
-        pDAE = (DAE*) options->getPluginData("DAE");        
+        pDAE = (DAE*)options->getPluginData("DAE");
         std::istringstream iss( options->getOptionString() );
         std::string opt;
 
-      while( std::getline( iss, opt, ',' ) )
-      {
-        if( opt == "polygon")  usePolygon = true;
-        else if (opt == "GoogleMode") GoogleMode = true;
-        else
+        while( std::getline( iss, opt, ',' ) )
         {
-          osg::notify(osg::WARN)
-              << "\n" "COLLADA dae plugin: unrecognized option \"" << opt << "\"\n"
-              << "comma-delimited options:\n"
-              << "\tpolygon = use polygons instead of polylists for element\n"
-              << "\tGoogleMode = write files suitable for use by Google products\n"
-              << "example: osgviewer -O polygon bar.dae" "\n"
-              << std::endl;
+            if( opt == "polygon")  usePolygon = true;
+            else if (opt == "GoogleMode") GoogleMode = true;
+            else if (opt == "NoExtras") writeExtras = false;
+            else
+            {
+              osg::notify(osg::WARN)
+                  << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl 
+                  << "comma-delimited options:" <<  std::endl <<  std::endl 
+                  << "\tpolygon = use polygons instead of polylists for element" <<  std::endl 
+                  << "\tGoogleMode = write files suitable for use by Google products" <<  std::endl 
+                  << "example: osgviewer -O polygon bar.dae" <<  std::endl << std::endl;
+            }
         }
-      }
     }
-    
+
     if (NULL == pDAE)
     {
         bOwnDAE = true;
@@ -137,7 +139,9 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     // Convert file name to URI
     std::string fileURI = ConvertFilePathToColladaCompatibleURI(fname);
 
-    osgdae::daeWriter daeWriter(pDAE, fileURI, usePolygon, GoogleMode );
+    osg::NodeVisitor::TraversalMode traversalMode = writeExtras ? osg::NodeVisitor::TRAVERSE_ALL_CHILDREN : osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
+    
+    osgdae::daeWriter daeWriter(pDAE, fileURI, usePolygon, GoogleMode, traversalMode, writeExtras);
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 

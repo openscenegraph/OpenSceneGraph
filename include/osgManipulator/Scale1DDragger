@@ -36,26 +36,26 @@ class OSGMANIPULATOR_EXPORT Scale1DDragger : public Dragger
         Scale1DDragger(ScaleMode scaleMode=SCALE_WITH_ORIGIN_AS_PIVOT);
 
         /**
-	 * Handle pick events on dragger and generate TranslateInLine commands.
-	 */
+         * Handle pick events on dragger and generate TranslateInLine commands.
+         */
         virtual bool handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us);
 
         /** Setup default geometry for dragger. */
         void setupDefaultGeometry();
 
         /** Set/Get min scale for dragger. */
-        inline void  setMinScale(float min) { _minScale = min; }
-        inline float getMinScale() const    { return _minScale; }
+        inline void  setMinScale(double min) { _minScale = min; }
+        inline double getMinScale() const    { return _minScale; }
 
         /** Set/Get color for dragger. */
         inline void setColor(const osg::Vec4& color) { _color = color; setMaterialColor(_color,*this); }
         inline const osg::Vec4 getColor() const { return _color; }
 
         /**
-	 * Set/Get pick color for dragger. Pick color is color of the dragger
-	 * when picked. It gives a visual feedback to show that the dragger has 
-	 * been picked. 
-	 */
+         * Set/Get pick color for dragger. Pick color is color of the dragger
+         * when picked. It gives a visual feedback to show that the dragger has 
+         * been picked. 
+         */
         inline void setPickColor(const osg::Vec4& color) { _pickColor = color; }
         inline const osg::Vec4 getPickColor() const { return _pickColor; }
 
@@ -66,19 +66,19 @@ class OSGMANIPULATOR_EXPORT Scale1DDragger : public Dragger
         inline osg::Node* getRightHandleNode() { return _rightHandleNode.get(); }
 
         /** Set left/right handle position. */
-        inline void  setLeftHandlePosition(float pos)  { _projector->getLineStart() = osg::Vec3(pos,0.0,0.0); }
-        inline float getLeftHandlePosition() const     { return _projector->getLineStart()[0]; }
-        inline void  setRightHandlePosition(float pos) { _projector->getLineEnd() = osg::Vec3(pos,0.0,0.0); }
-        inline float getRightHandlePosition()          { return _projector->getLineEnd()[0]; }
+        inline void  setLeftHandlePosition(double pos)  { _projector->getLineStart() = osg::Vec3d(pos,0.0,0.0); }
+        inline double getLeftHandlePosition() const     { return _projector->getLineStart()[0]; }
+        inline void  setRightHandlePosition(double pos) { _projector->getLineEnd() = osg::Vec3d(pos,0.0,0.0); }
+        inline double getRightHandlePosition()          { return _projector->getLineEnd()[0]; }
         
     protected:
 
         virtual ~Scale1DDragger();
 
         osg::ref_ptr< LineProjector >   _projector;
-        osg::Vec3                       _startProjectedPoint;
-        float                           _scaleCenter;
-        float                           _minScale;
+        osg::Vec3d                      _startProjectedPoint;
+        double                          _scaleCenter;
+        double                          _minScale;
 
         osg::ref_ptr< osg::Node >       _leftHandleNode;
         osg::ref_ptr< osg::Node >       _rightHandleNode;

@@ -50,7 +50,7 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
 
     switch (ea.getEventType())
     {
-	// Pick start.
+        // Pick start.
         case (osgGA::GUIEventAdapter::PUSH):
             {
                 // Get the LocalToWorld matrix for this node and set it for the projector.
@@ -81,13 +81,13 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
 
                     aa.requestRedraw();
                 }
-		return true; 
+                return true; 
             }
             
-	// Pick move.
+        // Pick move.
         case (osgGA::GUIEventAdapter::DRAG):
             {
-                osg::Vec3 projectedPoint;
+                osg::Vec3d projectedPoint;
                 if (_projector->project(pointer, projectedPoint))
                 {
                     // Generate the motion command.
@@ -107,32 +107,32 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
 
                     aa.requestRedraw();
                 }
-		return true; 
+                return true; 
             }
             
-	// Pick finish.
+        // Pick finish.
         case (osgGA::GUIEventAdapter::RELEASE):
             {
-		osg::ref_ptr<TranslateInPlaneCommand> cmd = new TranslateInPlaneCommand(_projector->getPlane());
+                osg::ref_ptr<TranslateInPlaneCommand> cmd = new TranslateInPlaneCommand(_projector->getPlane());
 
-	    	cmd->setStage(MotionCommand::FINISH);
+                    cmd->setStage(MotionCommand::FINISH);
                 cmd->setReferencePoint(_startProjectedPoint);
                 cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
-	    	
-    		// Dispatch command.
-		if (_commandManager)
-		{
+                    
+                    // Dispatch command.
+                if (_commandManager)
+                {
                     _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-		    _commandManager->dispatch(*cmd);
-		}
+                    _commandManager->dispatch(*cmd);
+                }
 
-		// Reset color.
-		setMaterialColor(_color,*this);
+                // Reset color.
+                setMaterialColor(_color,*this);
                 getOrCreateStateSet()->removeAttribute(_polygonOffset.get());
-		
+                
                 aa.requestRedraw();
 
-		return true;
+                return true;
             }
         default:
             return false;

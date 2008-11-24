@@ -6,6 +6,8 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
+#include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 #include <osgDB/ReadFile>
 
 #include <cairo.h>
@@ -93,20 +95,33 @@ class PdfImage : public CarioImage
         bool open(const std::string& filename)
         {
             osg::notify(osg::NOTICE)<<"open("<<filename<<")"<<std::endl;
+            
+            std::string foundFile = osgDB::findDataFile(filename);
+            if (foundFile.empty())
+            {
+                osg::notify(osg::NOTICE)<<"could not find filename="<<filename<<std::endl;
+                return false;
+            }
+            
+            osg::notify(osg::NOTICE)<<"foundFile = "<<foundFile<<std::endl;
+            foundFile = osgDB::getRealPath(foundFile);
+            osg::notify(osg::NOTICE)<<"foundFile = "<<foundFile<<std::endl;
 
 	    static bool gTypeInit = false;
 
 	    if(!gTypeInit)
             {
-		    g_type_init();
+		g_type_init();
 
-		    gTypeInit = true;
+		gTypeInit = true;
 	    }
+            
+            std::string uri = std::string("file:") + foundFile;
 
-            PopplerDocument* doc = poppler_document_new_from_file(filename.c_str(), NULL, NULL);
+            PopplerDocument* doc = poppler_document_new_from_file(uri.c_str(), NULL, NULL);
             if (!doc) 
             {
-                osg::notify(osg::NOTICE)<<" could not open("<<filename<<")"<<std::endl;
+                osg::notify(osg::NOTICE)<<" could not open("<<filename<<"), uri="<<uri<<std::endl;
 
                 return false;
             }
@@ -170,7 +185,7 @@ class PdfImage : public CarioImage
 
             poppler_page_get_size(page, &w, &h);
 
-            create((unsigned int)(w),(unsigned int)(h));
+            create((unsigned int)(w*2.0),(unsigned int)(h*2.0));
 
             double r = 1.0;
             double g = 1.0;
@@ -180,11 +195,14 @@ class PdfImage : public CarioImage
             cairo_save(_context);
             
                 cairo_set_source_rgba(_context, r, g, b, a);
-                cairo_rectangle(_context, 0.0, 0.0, w, h);
+                cairo_rectangle(_context, 0.0, 0.0, double(s()), double(t()));
                 cairo_fill(_context);
+
+                cairo_scale(_context, double(s())/w, double(t())/h);
 
                 poppler_page_render(page, getContext());
             
+
             cairo_restore(_context);
 
             dirty();

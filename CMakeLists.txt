@@ -31,7 +31,7 @@ PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 2)
 SET(OPENSCENEGRAPH_MINOR_VERSION 7)
-SET(OPENSCENEGRAPH_PATCH_VERSION 5)
+SET(OPENSCENEGRAPH_PATCH_VERSION 6)
 SET(OPENSCENEGRAPH_SOVERSION 50)
 
 # set to 0 when not a release candidate, non zero means that any generated 
@@ -191,6 +191,11 @@ IF(WIN32)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
         ENDIF(WIN32_USE_MP)
 
+        # turn off various warnings
+        foreach(warning 4244 4251 4267 4275 4290 4786 4305 4996)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd${warning}")
+        endforeach(warning)
+
         # More MSVC specific compilation flags
         ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
         ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
@@ -302,6 +307,7 @@ FIND_PACKAGE(ZLIB)
 FIND_PACKAGE(ITK)
 FIND_PACKAGE(LibVNCServer)
 FIND_PACKAGE(OurDCMTK)
+FIND_PACKAGE(XUL)
 
 SET(wxWidgets_USE_LIBS base core gl net)
 FIND_PACKAGE(wxWidgets)
@@ -343,10 +349,9 @@ IF(PKG_CONFIG_FOUND)
 
     PKG_CHECK_MODULES(RSVG librsvg-2.0)
     PKG_CHECK_MODULES(CAIRO cairo)
+    PKG_CHECK_MODULES(POPPLER poppler-glib)
 
 ENDIF(PKG_CONFIG_FOUND)
-
-
 
 
 
@@ -529,11 +534,6 @@ ELSE (DYNAMIC_OPENSCENEGRAPH)
     SET(OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC "STATIC")
 ENDIF(DYNAMIC_OPENSCENEGRAPH)
 
-# Add a default plugin search path component
-IF   (DYNAMIC_OPENSCENEGRAPH)
-  ADD_DEFINITIONS(-DOSG_DEFAULT_LIBRARY_PATH=${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}/${OSG_PLUGINS})
-ENDIF(DYNAMIC_OPENSCENEGRAPH)
-
 INCLUDE(OsgMacroUtils)
 # OSG Core
 ADD_SUBDIRECTORY(src)
@@ -549,13 +549,6 @@ OPTION(BUILD_OSG_EXAMPLES "Enable to build OSG Examples" OFF)
 IF   (BUILD_OSG_EXAMPLES)
     ADD_SUBDIRECTORY(examples)
 ENDIF(BUILD_OSG_EXAMPLES)
-
-# OSG Animation test
-OPTION(BUILD_OSG_ANIMATIONTEST "Enable to build OSG Animation test" OFF)
-IF   (BUILD_OSG_ANIMATIONTEST)
-    ADD_SUBDIRECTORY(test)
-ENDIF(BUILD_OSG_ANIMATIONTEST)
-
 
 # This is for an advanced option to give aggressive warnings
 # under different compilers. If yours is not implemented, this option

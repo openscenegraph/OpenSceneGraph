@@ -59,7 +59,7 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
                 else
                     _projector->setFront(false);
 
-                osg::Vec3 projectedPoint;
+                osg::Vec3d projectedPoint;
                 if (_projector->project(pointer, projectedPoint))
                 {
                     // Generate the motion command.
@@ -94,11 +94,11 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
                 osg::Matrix localToWorld = osg::Matrix(_prevRotation) * _startLocalToWorld;
                 _projector->setLocalToWorld(localToWorld);
 
-                osg::Vec3 projectedPoint;
+                osg::Vec3d projectedPoint;
                 if (_projector->project(pointer, projectedPoint))
                 {
-                    osg::Vec3 prevProjectedPoint = _prevWorldProjPt * _projector->getWorldToLocal();
-                    osg::Quat deltaRotation = _projector->getRotation(prevProjectedPoint, _prevPtOnSphere,
+                    osg::Vec3d prevProjectedPoint = _prevWorldProjPt * _projector->getWorldToLocal();
+                    osg::Quat  deltaRotation = _projector->getRotation(prevProjectedPoint, _prevPtOnSphere,
                                                                       projectedPoint, _projector->isProjectionOnSphere(),1.0f);
                     osg::Quat rotation = deltaRotation * _prevRotation;
 
@@ -130,7 +130,7 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
 
                 cmd->setStage(MotionCommand::FINISH);
                 cmd->setLocalToWorldAndWorldToLocal(_startLocalToWorld,_startWorldToLocal);
-	    	
+                    
                 // Dispatch command.
                 if (_commandManager)
                 {
@@ -140,7 +140,7 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
 
                 // Reset color.
                 setMaterialColor(_color,*this);
-		
+                
                 aa.requestRedraw();
 
                 return true;

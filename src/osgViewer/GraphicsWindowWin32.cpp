@@ -20,6 +20,7 @@
 #include <osgViewer/api/Win32/PixelBufferWin32>
 
 #include <osg/DeleteHandler>
+#include <osg/ApplicationUsage>
 
 #include <vector>
 #include <map>
@@ -30,6 +31,8 @@ using namespace osgViewer;
 
 namespace osgViewer
 {
+
+static osg::ApplicationUsageProxy GraphicsWindowWin32_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_WIN32_NV_MULTIMON_MULTITHREAD_WORKAROUND on/off","Enable/disable duplicate makeCurrentContext call used as workaround for WinXP/NVidia/MultiView/MulitThread isues (pre 178.13 drivers).");
 
 //
 // Defines from the WGL_ARB_pixel_format specification document
@@ -883,7 +886,7 @@ bool Win32WindowingSystem::setScreenRefreshRate( const osg::GraphicsContext::Scr
     deviceMode.dmFields           = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY;
     deviceMode.dmPelsWidth        = width;
     deviceMode.dmPelsHeight       = height;
-    deviceMode.dmDisplayFrequency = refreshRate;
+    deviceMode.dmDisplayFrequency = (DWORD)refreshRate;
     
     return changeScreenSettings(si, displayDevice, deviceMode);
 }
@@ -978,7 +981,8 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
   _closeWindow(false),
   _destroyWindow(false),
   _destroying(false),
-  _appMouseCursor(LeftArrowCursor)
+  _appMouseCursor(LeftArrowCursor),
+  _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues( false )
 {
     _traits = traits;
     if (_traits->useCursor) setCursor(LeftArrowCursor);
@@ -1024,6 +1028,38 @@ void GraphicsWindowWin32::init()
 
     _initialized = _ownsWindow ? createWindow() : setWindow(windowHandle);
     _valid       = _initialized;
+
+    // 2008/10/03
+    // Few days ago NVidia released WHQL certified drivers ver 178.13. 
+    // These drivers (as well as former beta ver 177.92) were free from the bug described below. 
+    // So it looks like its high time to make the workaround inactive by default.
+    // If you happen to still use earlier drivers and have problems consider changing to new ones or 
+    // activate OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND macro def through CMake advanced vars.
+#ifdef OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND
+
+    // 2008/05/12
+    // Workaround for Bugs in NVidia drivers for windows XP / multithreaded / dualview / multicore CPU
+    // affects GeForce 6x00, 7x00, 8x00 boards (others were not tested) driver versions 174.xx - 175.xx
+    // pre 174.xx had other issues so reverting is not an option (statitistics, fbo)
+    // drivers release 175.16 is the latest currently available 
+    // 
+    // When using OpenGL in threaded app ( main thread sets up context / renderer thread draws using it )
+    // first wglMakeCurrent seems to not work right and screw OpenGL context driver data: 
+    // 1: succesive drawing shows a number of artifacts in TriangleStrips and TriangleFans 
+    // 2: weird behaviour of FramBufferObjects (glGenFramebuffer generates already generated ids ...)
+    // Looks like repeating wglMakeCurrent call fixes all these issues
+    // wglMakeCurrent call can impact performance so I try to minimize number of 
+    // wglMakeCurrent calls by checking current HDC and GL context
+    // and repeat wglMakeCurrent only when they change for current thread
+
+    _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues = true;
+#endif
+
+    const char* str = getenv("OSG_WIN32_NV_MULTIMON_MULTITHREAD_WORKAROUND");
+    if (str)
+    {
+        _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues = (strcmp(str, "on")==0 || strcmp(str, "ON")==0 || strcmp(str, "On")==0 );
+    }
 }
 
 bool GraphicsWindowWin32::createWindow()
@@ -1664,39 +1700,18 @@ bool GraphicsWindowWin32::makeCurrentImplementation()
         return false;
     }
 
-    // 2008/10/03
-    // Few days ago NVidia released WHQL certified drivers ver 178.13. 
-    // These drivers (as well as former beta ver 177.92) were free from the bug described below. 
-    // So it looks like its high time to undef the workaround.
-    // If you happen to still use earlier drivers and have problems consider changing to new ones or 
-    // activate OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND macro def through CMake advanced vars.
-#ifdef OSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND
-
-    // 2008/05/12
-    // Workaround for Bugs in NVidia drivers for windows XP / multithreaded / dualview / multicore CPU
-    // affects GeForce 6x00, 7x00, 8x00 boards (others were not tested) driver versions 174.xx - 175.xx
-    // pre 174.xx had other issues so reverting is not an option (statitistics, fbo)
-    // drivers release 175.16 is the latest currently available 
-    // 
-    // When using OpenGL in threaded app ( main thread sets up context / renderer thread draws using it )
-    // first wglMakeCurrent seems to not work right and screw OpenGL context driver data: 
-    // 1: succesive drawing shows a number of artifacts in TriangleStrips and TriangleFans 
-    // 2: weird behaviour of FramBufferObjects (glGenFramebuffer generates already generated ids ...)
-    // Looks like repeating wglMakeCurrent call fixes all these issues
-    // wglMakeCurrent call can impact performance so I try to minimize number of 
-    // wglMakeCurrent calls by checking current HDC and GL context
-    // and repeat wglMakeCurrent only when they change for current thread
-
-    if( ::wglGetCurrentDC() != _hdc ||
-        ::wglGetCurrentContext() != _hglrc ) 
-    { 
-        if (!::wglMakeCurrent(_hdc, _hglrc))
-        {
-            reportErrorForScreen("GraphicsWindowWin32::makeCurrentImplementation() - Unable to set current OpenGL rendering context", _traits->screenNum, ::GetLastError());
-            return false;
+    if( _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues )
+    {
+        if( ::wglGetCurrentDC() != _hdc ||
+            ::wglGetCurrentContext() != _hglrc ) 
+        { 
+            if (!::wglMakeCurrent(_hdc, _hglrc))
+            {
+                reportErrorForScreen("GraphicsWindowWin32::makeCurrentImplementation() - Unable to set current OpenGL rendering context", _traits->screenNum, ::GetLastError());
+                return false;
+            }
         }
     }
-#endif
 
     if (!::wglMakeCurrent(_hdc, _hglrc))
     {
@@ -1741,7 +1756,7 @@ void GraphicsWindowWin32::checkEvents()
     if (!_realized) return;
 
     MSG msg;
-    while (::PeekMessage(&msg, _hwnd, NULL, NULL, PM_REMOVE))
+    while (::PeekMessage(&msg, _hwnd, 0, 0, PM_REMOVE))
     {
         ::TranslateMessage(&msg);
         ::DispatchMessage(&msg);
@@ -1815,14 +1830,15 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
 #else
     // MIKEC: NEW CODE
     POINT pt;
-    pt.x=x;
-    pt.y=y;
+    pt.x = (LONG)x;
+    pt.y = (LONG)y;
+
     // convert point in client area coordinates to screen coordinates
-    if (!::ClientToScreen(_hwnd,&pt))
+    if (!::ClientToScreen(_hwnd, &pt))
     {
         reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to convert cursor position to screen coordinates", _traits->screenNum, ::GetLastError());
     }
-    if (!::SetCursorPos(pt.x,pt.y))
+    if (!::SetCursorPos(pt.x, pt.y))
     {
         reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Unable to set cursor position", _traits->screenNum, ::GetLastError());
         return;

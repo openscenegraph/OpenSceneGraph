@@ -66,3 +66,56 @@ osg::BoundingSphere osgParticle::ParticleSystemUpdater::computeBound() const
     return osg::BoundingSphere();
 }
 
+bool osgParticle::ParticleSystemUpdater::addParticleSystem(ParticleSystem* ps)
+{
+    _psv.push_back(ps);
+    return true;
+}
+
+bool osgParticle::ParticleSystemUpdater::removeParticleSystem(ParticleSystem* ps)
+{
+   unsigned int i = getParticleSystemIndex( ps );
+   if( i >= _psv.size() ) return false;
+
+   removeParticleSystem( i );
+   return true;
+}
+
+bool osgParticle::ParticleSystemUpdater::removeParticleSystem(unsigned int pos, unsigned int numParticleSystemsToRemove)
+{
+   if( (pos < _psv.size()) && (numParticleSystemsToRemove > 0) )
+   {
+      unsigned int endOfRemoveRange = pos + numParticleSystemsToRemove;
+      if( endOfRemoveRange > _psv.size() )
+      {
+         osg::notify(osg::DEBUG_INFO)<<"Warning: ParticleSystem::removeParticleSystem(i,numParticleSystemsToRemove) has been passed an excessive number"<<std::endl;
+         osg::notify(osg::DEBUG_INFO)<<"         of ParticleSystems to remove, trimming just to end of ParticleSystem list."<<std::endl;
+         endOfRemoveRange = _psv.size();
+      }
+      _psv.erase(_psv.begin()+pos, _psv.begin()+endOfRemoveRange);
+      return true;
+   }
+   return false;
+}
+
+bool osgParticle::ParticleSystemUpdater::replaceParticleSystem( ParticleSystem* origPS, ParticleSystem* newPS )
+{
+   if( (newPS == NULL) || (origPS == newPS) ) return false;
+
+   unsigned int pos = getParticleSystemIndex( origPS );
+   if( pos < _psv.size() )
+   {
+      return setParticleSystem( pos, newPS );
+   }
+   return false;
+}
+
+bool osgParticle::ParticleSystemUpdater::setParticleSystem( unsigned int i, ParticleSystem* ps )
+{
+   if( (i < _psv.size()) && ps )
+   {
+      _psv[i] = ps;
+      return true;
+   }
+   return false;
+}

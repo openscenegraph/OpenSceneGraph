@@ -30,8 +30,8 @@ class OSGMANIPULATOR_EXPORT RotateSphereDragger : public Dragger
         RotateSphereDragger();
 
         /**
-	 * Handle pick events on dragger and generate TranslateInLine commands.
-	 */
+         * Handle pick events on dragger and generate TranslateInLine commands.
+         */
         virtual bool handle(const PointerInfo&, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us);
 
         /** Setup default geometry for dragger. */
@@ -42,10 +42,10 @@ class OSGMANIPULATOR_EXPORT RotateSphereDragger : public Dragger
         inline const osg::Vec4 getColor() const { return _color; }
 
         /**
-	 * Set/Get pick color for dragger. Pick color is color of the dragger 
-	 * when picked. It gives a visual feedback to show that the dragger has
-	 * been picked.
-	 */
+         * Set/Get pick color for dragger. Pick color is color of the dragger 
+         * when picked. It gives a visual feedback to show that the dragger has
+         * been picked.
+         */
         inline void setPickColor(const osg::Vec4& color) { _pickColor = color; }
         inline const osg::Vec4 getPickColor() const { return _pickColor; }
 
@@ -55,7 +55,7 @@ class OSGMANIPULATOR_EXPORT RotateSphereDragger : public Dragger
 
         osg::ref_ptr<SpherePlaneProjector> _projector;
 
-        osg::Vec3   _prevWorldProjPt;
+        osg::Vec3d  _prevWorldProjPt;
         bool        _prevPtOnSphere;
         osg::Matrix _startLocalToWorld, _startWorldToLocal;
         osg::Quat   _prevRotation;

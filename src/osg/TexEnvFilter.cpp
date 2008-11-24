@@ -29,7 +29,7 @@ TexEnvFilter::~TexEnvFilter()
 void TexEnvFilter::apply(State& state) const
 {
     // note from RO, need to adapt to do testing per graphics context.
-    static float glVersion = atof( (const char *)glGetString( GL_VERSION ) );
+    static float glVersion = asciiToFloat( (const char *)glGetString( GL_VERSION ) );
     static bool s_isTexLodBias = glVersion>=1.4 || isGLExtensionSupported(state.getContextID(),"GL_EXT_texture_lod_bias");
 
     if (s_isTexLodBias)

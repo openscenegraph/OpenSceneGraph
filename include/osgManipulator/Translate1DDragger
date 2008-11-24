@@ -30,7 +30,7 @@ class OSGMANIPULATOR_EXPORT Translate1DDragger : public Dragger
 
         Translate1DDragger();
 
-        Translate1DDragger(const osg::Vec3& s, const osg::Vec3& e);
+        Translate1DDragger(const osg::Vec3d& s, const osg::Vec3d& e);
 
         /** Handle pick events on dragger and generate TranslateInLine commands. */
         virtual bool handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us);
@@ -43,7 +43,7 @@ class OSGMANIPULATOR_EXPORT Translate1DDragger : public Dragger
         inline const osg::Vec4 getColor() const { return _color; }
 
         /** Set/Get pick color for dragger. Pick color is color of the dragger when picked. 
-	    It gives a visual feedback to show that the dragger has been picked. */
+            It gives a visual feedback to show that the dragger has been picked. */
         inline void setPickColor(const osg::Vec4& color) { _pickColor = color; }
         inline const osg::Vec4 getPickColor() const { return _pickColor; }
 
@@ -54,7 +54,7 @@ class OSGMANIPULATOR_EXPORT Translate1DDragger : public Dragger
         virtual ~Translate1DDragger();
 
         osg::ref_ptr< LineProjector >   _projector;
-        osg::Vec3                       _startProjectedPoint;
+        osg::Vec3d                      _startProjectedPoint;
 
         osg::Vec4                       _color;
         osg::Vec4                       _pickColor;

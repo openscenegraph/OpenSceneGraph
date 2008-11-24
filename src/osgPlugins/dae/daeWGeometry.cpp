@@ -24,28 +24,33 @@
 
 using namespace osgdae;
 
-//GEODE
 void daeWriter::apply( osg::Geode &node )
 {
-#ifdef _DEBUG
     debugPrint( node );
-#endif
 
     pushStateSet(node.getStateSet());
     if (NULL != node.getStateSet())
         m_CurrentRenderingHint = node.getStateSet()->getRenderingHint();
 
+    // TODO
+    // Write a Geode as a single instance_geometry if all drawables use the same vertex streams
+    // Reuse an existing Geode if only statesets differ
     unsigned int count = node.getNumDrawables();
     for ( unsigned int i = 0; i < count; i++ )
     {
         osg::Geometry *g = node.getDrawable( i )->asGeometry();
+        
         if ( g != NULL )
         {
+            // Transparency at drawable level
+            if (NULL != g->getStateSet())
+                m_CurrentRenderingHint = g->getStateSet()->getRenderingHint();
+
             pushStateSet(g->getStateSet());
             std::map< osg::Geometry*, domGeometry *>::iterator iter = geometryMap.find( g );
             if ( iter != geometryMap.end() )
             {
-                domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( currentNode->createAndPlace( "instance_geometry" ) );
+                domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( currentNode->add( "instance_geometry" ) );
                     
                 std::string url = "#" + std::string( iter->second->getId() );
                 ig->setUrl( url.c_str() );
@@ -56,13 +61,13 @@ void daeWriter::apply( osg::Geode &node )
             {
                 if ( lib_geoms == NULL )
                 {
-                    lib_geoms = daeSafeCast< domLibrary_geometries >( dom->createAndPlace( COLLADA_ELEMENT_LIBRARY_GEOMETRIES ) );
+                    lib_geoms = daeSafeCast< domLibrary_geometries >( dom->add( COLLADA_ELEMENT_LIBRARY_GEOMETRIES ) );
                 }
                 std::string name = node.getName();
                 if ( name.empty() ) name = "geometry";
                 name = uniquify( name );
 
-                domGeometryRef geo = daeSafeCast< domGeometry >( lib_geoms->createAndPlace( COLLADA_ELEMENT_GEOMETRY ) );
+                domGeometryRef geo = daeSafeCast< domGeometry >( lib_geoms->add( COLLADA_ELEMENT_GEOMETRY ) );
                 geo->setId( name.c_str() );
 
                 if ( !processGeometry( g, geo, name ) )
@@ -71,7 +76,7 @@ void daeWriter::apply( osg::Geode &node )
                     continue;
                 }
 
-                domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( currentNode->createAndPlace( "instance_geometry" ) );
+                domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( currentNode->add( "instance_geometry" ) );
                     
                 std::string url = "#" + name;
                 ig->setUrl( url.c_str() );
@@ -86,8 +91,6 @@ void daeWriter::apply( osg::Geode &node )
             popStateSet(g->getStateSet());
         }
     }
-
-    lastVisited = GEODE;
 
     popStateSet(node.getStateSet());
 }
@@ -130,7 +133,7 @@ void daeWriter::appendGeometryIndices(osg::Geometry *geom,
     
 bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const std::string &name )
 {   
-    domMesh *mesh = daeSafeCast< domMesh >( geo->createAndPlace( COLLADA_ELEMENT_MESH ) );
+    domMesh *mesh = daeSafeCast< domMesh >( geo->add( COLLADA_ELEMENT_MESH ) );
     domSource *pos = NULL;
     domSource *norm = NULL;
     domSource *color = NULL;
@@ -206,12 +209,12 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     }
 
     //create a vertices element
-    domVertices *vertices = daeSafeCast< domVertices >( mesh->createAndPlace( COLLADA_ELEMENT_VERTICES ) );
+    domVertices *vertices = daeSafeCast< domVertices >( mesh->add( COLLADA_ELEMENT_VERTICES ) );
     std::string vName = name + "-vertices";
     vertices->setId( vName.c_str() );
 
     //make a POSITION input in it
-    domInputLocal *il = daeSafeCast< domInputLocal >( vertices->createAndPlace( "input" ) );
+    domInputLocal *il = daeSafeCast< domInputLocal >( vertices->add( "input" ) );
     il->setSemantic( "POSITION" );
     std::string url = "#" + std::string( pos->getId() );
     il->setSource( url.c_str() );
@@ -265,7 +268,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
 
         //if NORMAL shares same indices as POSITION put it in the vertices
         /*if ( normalInds == vertInds && vertInds != NULL ) {
-            il = daeSafeCast< domInputLocal >( vertices->createAndPlace( "input" ) );
+            il = daeSafeCast< domInputLocal >( vertices->add( "input" ) );
             il->setSemantic( "NORMAL" );
             url = "#" + std::string(md->norm->getId());
             il->setSource( url.c_str() );
@@ -316,7 +319,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
         }
         //if COLOR shares same indices as POSITION put it in the vertices
         /*if ( colorInds == vertInds && vertInds != NULL ) {
-            il = daeSafeCast< domInputLocal >( vertices->createAndPlace( "input" ) );
+            il = daeSafeCast< domInputLocal >( vertices->add( "input" ) );
             il->setSemantic( "COLOR" );
             url = "#" + std::string(md->color->getId());
             il->setSource( url.c_str() );
@@ -403,7 +406,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 if ( lines == NULL )
                 {
                     lines = createPrimGroup<domLines>( COLLADA_ELEMENT_LINES, mesh, norm, color, texcoord );
-                    lines->createAndPlace( COLLADA_ELEMENT_P );
+                    lines->add( COLLADA_ELEMENT_P );
                     std::string mat = name + "_material";
                     lines->setMaterial( mat.c_str() );
                 }
@@ -416,7 +419,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 if ( tris == NULL )
                 {
                     tris = createPrimGroup<domTriangles>( COLLADA_ELEMENT_TRIANGLES, mesh, norm, color, texcoord );
-                    tris->createAndPlace( COLLADA_ELEMENT_P );
+                    tris->add( COLLADA_ELEMENT_P );
                     std::string mat = name + "_material";
                     tris->setMaterial( mat.c_str() );
                 }
@@ -431,7 +434,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     if (usePolygons)
                     {
                           polys = createPrimGroup<domPolygons>( COLLADA_ELEMENT_POLYGONS, mesh, norm, color, texcoord );
-                          polys->createAndPlace( COLLADA_ELEMENT_P );
+                          polys->add( COLLADA_ELEMENT_P );
                           std::string mat = name + "_material";
                           polys->setMaterial( mat.c_str() );
                     }
@@ -439,8 +442,8 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     {
                           polylist = createPrimGroup<domPolylist>( COLLADA_ELEMENT_POLYLIST, mesh, norm, color, texcoord );
                             
-                          polylist->createAndPlace( COLLADA_ELEMENT_VCOUNT );
-                          polylist->createAndPlace( COLLADA_ELEMENT_P );
+                          polylist->add( COLLADA_ELEMENT_VCOUNT );
+                          polylist->add( COLLADA_ELEMENT_P );
                           std::string mat = name + "_material";
                           polylist->setMaterial( mat.c_str() );
                     }
@@ -492,7 +495,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     if (usePolygons)
                     {
                         polys = createPrimGroup<domPolygons>( COLLADA_ELEMENT_POLYGONS, mesh, norm, color, texcoord );
-                        polys->createAndPlace( COLLADA_ELEMENT_P );
+                        polys->add( COLLADA_ELEMENT_P );
                         std::string mat = name + "_material";
                         polys->setMaterial( mat.c_str() );
                     }
@@ -500,8 +503,8 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     {
                         polylist = createPrimGroup<domPolylist>( COLLADA_ELEMENT_POLYLIST, mesh, norm, color, texcoord );
 
-                        polylist->createAndPlace( COLLADA_ELEMENT_VCOUNT );
-                        polylist->createAndPlace( COLLADA_ELEMENT_P );
+                        polylist->add( COLLADA_ELEMENT_VCOUNT );
+                        polylist->add( COLLADA_ELEMENT_P );
                         std::string mat = name + "_material";
                         polylist->setMaterial( mat.c_str() );
                     }
@@ -549,19 +552,19 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     }
                     case GL_LINE_STRIP:
                     {
-                                                p.push_back(daeSafeCast<domP>( linestrips->createAndPlace( COLLADA_ELEMENT_P ) ));
+                                                p.push_back(daeSafeCast<domP>( linestrips->add( COLLADA_ELEMENT_P ) ));
                         linestrips->setCount( linestrips->getCount() + 1 );
                         break;
                     }
                     case GL_TRIANGLE_STRIP:
                     {
-                                                p.push_back(daeSafeCast<domP>( tristrips->createAndPlace( COLLADA_ELEMENT_P ) ));
+                                                p.push_back(daeSafeCast<domP>( tristrips->add( COLLADA_ELEMENT_P ) ));
                         tristrips->setCount( tristrips->getCount() + 1 );
                         break;
                     }
                     case GL_TRIANGLE_FAN:
                     {
-                                                p.push_back(daeSafeCast<domP>( trifans->createAndPlace( COLLADA_ELEMENT_P ) ));
+                                                p.push_back(daeSafeCast<domP>( trifans->add( COLLADA_ELEMENT_P ) ));
                         trifans->setCount( trifans->getCount() + 1 );
                         break;
                     }
@@ -650,19 +653,19 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                         }
                         case GL_LINE_STRIP:
                         {
-                            p.push_back(daeSafeCast<domP>( linestrips->createAndPlace( COLLADA_ELEMENT_P ) ));
+                            p.push_back(daeSafeCast<domP>( linestrips->add( COLLADA_ELEMENT_P ) ));
                             linestrips->setCount( linestrips->getCount() + 1 );
                             break;
                         }
                         case GL_TRIANGLE_STRIP:
                         {
-                            p.push_back(daeSafeCast<domP>( tristrips->createAndPlace( COLLADA_ELEMENT_P ) ));
+                            p.push_back(daeSafeCast<domP>( tristrips->add( COLLADA_ELEMENT_P ) ));
                             tristrips->setCount( tristrips->getCount() + 1 );
                             break;
                         }
                         case GL_TRIANGLE_FAN:
                         {
-                            p.push_back(daeSafeCast<domP>( trifans->createAndPlace( COLLADA_ELEMENT_P ) ));
+                            p.push_back(daeSafeCast<domP>( trifans->add( COLLADA_ELEMENT_P ) ));
                             trifans->setCount( trifans->getCount() + 1 );
                             break;
                         }
@@ -744,19 +747,19 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     }
                     case GL_LINE_STRIP:
                     {
-                        p.push_back(daeSafeCast<domP>( linestrips->createAndPlace( COLLADA_ELEMENT_P ) ));
+                        p.push_back(daeSafeCast<domP>( linestrips->add( COLLADA_ELEMENT_P ) ));
                         linestrips->setCount( linestrips->getCount() + 1 );
                         break;
                     }
                     case GL_TRIANGLE_STRIP:
                     {
-                        p.push_back(daeSafeCast<domP>( tristrips->createAndPlace( COLLADA_ELEMENT_P ) ));
+                        p.push_back(daeSafeCast<domP>( tristrips->add( COLLADA_ELEMENT_P ) ));
                         tristrips->setCount( tristrips->getCount() + 1 );
                         break;
                     }
                     case GL_TRIANGLE_FAN:
                     {
-                        p.push_back(daeSafeCast<domP>( trifans->createAndPlace( COLLADA_ELEMENT_P ) ));
+                        p.push_back(daeSafeCast<domP>( trifans->add( COLLADA_ELEMENT_P ) ));
                         trifans->setCount( trifans->getCount() + 1 );
                         break;
                     }
@@ -843,19 +846,19 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     }
                     case GL_LINE_STRIP:
                     {
-                        p.push_back(daeSafeCast<domP>( linestrips->createAndPlace( COLLADA_ELEMENT_P ) ));
+                        p.push_back(daeSafeCast<domP>( linestrips->add( COLLADA_ELEMENT_P ) ));
                         linestrips->setCount( linestrips->getCount() + 1 );
                         break;
                     }
                     case GL_TRIANGLE_STRIP:
                     {
-                        p.push_back(daeSafeCast<domP>( tristrips->createAndPlace( COLLADA_ELEMENT_P ) ));
+                        p.push_back(daeSafeCast<domP>( tristrips->add( COLLADA_ELEMENT_P ) ));
                         tristrips->setCount( tristrips->getCount() + 1 );
                         break;
                     }
                     case GL_TRIANGLE_FAN:
                     {
-                        p.push_back(daeSafeCast<domP>( trifans->createAndPlace( COLLADA_ELEMENT_P ) ));
+                        p.push_back(daeSafeCast<domP>( trifans->add( COLLADA_ELEMENT_P ) ));
                         trifans->setCount( trifans->getCount() + 1 );
                         break;
                     }
@@ -944,19 +947,19 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     }
                     case GL_LINE_STRIP:
                     {
-                        p.push_back(daeSafeCast<domP>( linestrips->createAndPlace( COLLADA_ELEMENT_P ) ));
+                        p.push_back(daeSafeCast<domP>( linestrips->add( COLLADA_ELEMENT_P ) ));
                         linestrips->setCount( linestrips->getCount() + 1 );
                         break;
                     }
                     case GL_TRIANGLE_STRIP:
                     {
-                        p.push_back(daeSafeCast<domP>( tristrips->createAndPlace( COLLADA_ELEMENT_P ) ));
+                        p.push_back(daeSafeCast<domP>( tristrips->add( COLLADA_ELEMENT_P ) ));
                         tristrips->setCount( tristrips->getCount() + 1 );
                         break;
                     }
                     case GL_TRIANGLE_FAN:
                     {
-                        p.push_back(daeSafeCast<domP>( trifans->createAndPlace( COLLADA_ELEMENT_P ) ));
+                        p.push_back(daeSafeCast<domP>( trifans->add( COLLADA_ELEMENT_P ) ));
                         trifans->setCount( trifans->getCount() + 1 );
                         break;
                     }
@@ -1038,39 +1041,39 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
 
 domSource *daeWriter::createSource( daeElement *parent, const std::string &baseName, int size, bool color, bool uv )
 {
-    domSource *src = daeSafeCast< domSource >( parent->createAndPlace( COLLADA_ELEMENT_SOURCE ) );
+    domSource *src = daeSafeCast< domSource >( parent->add( COLLADA_ELEMENT_SOURCE ) );
     if ( src == NULL )
     {
         return NULL;
     }
     src->setId( baseName.c_str() );
 
-    domFloat_array *fa = daeSafeCast< domFloat_array >( src->createAndPlace( COLLADA_ELEMENT_FLOAT_ARRAY ) );
+    domFloat_array *fa = daeSafeCast< domFloat_array >( src->add( COLLADA_ELEMENT_FLOAT_ARRAY ) );
     std::string fName = baseName + "-array";
     fa->setId( fName.c_str() );
 
-    domSource::domTechnique_common *teq = daeSafeCast< domSource::domTechnique_common >( src->createAndPlace( "technique_common" ) );
-    domAccessor *acc = daeSafeCast< domAccessor >( teq->createAndPlace( COLLADA_ELEMENT_ACCESSOR ) );
+    domSource::domTechnique_common *teq = daeSafeCast< domSource::domTechnique_common >( src->add( "technique_common" ) );
+    domAccessor *acc = daeSafeCast< domAccessor >( teq->add( COLLADA_ELEMENT_ACCESSOR ) );
     std::string url = "#" + fName;
     acc->setSource( url.c_str() );
     domParam *param;
     if ( color )
     {
         acc->setStride( size );
-        param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+        param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "R" );
         param->setType( "float" );
         
-        param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+        param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "G" );
         param->setType( "float" );
 
-        param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+        param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "B" );
         param->setType( "float" );
 
         if ( size == 4 ) {
-            param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+            param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
             param->setName( "A" );
             param->setType( "float" );
         }
@@ -1079,17 +1082,17 @@ domSource *daeWriter::createSource( daeElement *parent, const std::string &baseN
     else if ( uv )
     {
         acc->setStride( size );
-        param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+        param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "S" );
         param->setType( "float" );
 
-        param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+        param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "T" );
         param->setType( "float" );
 
         if ( size >=3 )
         {
-            param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+            param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
             param->setName( "P" );
             param->setType( "float" );
         }
@@ -1097,23 +1100,23 @@ domSource *daeWriter::createSource( daeElement *parent, const std::string &baseN
     else
     {
         acc->setStride( size );
-        param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+        param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "X" );
         param->setType( "float" );
 
-        param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+        param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "Y" );
         param->setType( "float" );
 
         if ( size >=3 )
         {
-            param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+            param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
             param->setName( "Z" );
             param->setType( "float" );
 
             if ( size == 4 )
             {
-                param = daeSafeCast< domParam >( acc->createAndPlace( COLLADA_ELEMENT_PARAM ) );
+                param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
                 param->setName( "W" );
                 param->setType( "float" );
             }
@@ -1127,15 +1130,15 @@ template < typename Ty >
 Ty *daeWriter::createPrimGroup( daeString type, domMesh *mesh, domSource *norm, domSource *color, const std::vector< domSource* > &texcoord )
 {
     unsigned int offset = 0;
-    Ty *retVal = daeSafeCast< Ty >( mesh->createAndPlace( type ) );
-    domInputLocalOffset *ilo = daeSafeCast< domInputLocalOffset >( retVal->createAndPlace( "input" ) );
+    Ty *retVal = daeSafeCast< Ty >( mesh->add( type ) );
+    domInputLocalOffset *ilo = daeSafeCast< domInputLocalOffset >( retVal->add( "input" ) );
     ilo->setOffset( offset++ );
     ilo->setSemantic( "VERTEX" );
     std::string url = "#" + std::string(mesh->getVertices()->getId());
     ilo->setSource( url.c_str() );
     if ( norm != NULL )
     {
-        ilo = daeSafeCast< domInputLocalOffset >( retVal->createAndPlace( "input" ) );
+        ilo = daeSafeCast< domInputLocalOffset >( retVal->add( "input" ) );
         ilo->setOffset( offset++ );
         ilo->setSemantic( "NORMAL" );
         url = "#" + std::string( norm->getId() );
@@ -1143,7 +1146,7 @@ Ty *daeWriter::createPrimGroup( daeString type, domMesh *mesh, domSource *norm, 
     }
     if ( color != NULL )
     {
-        ilo = daeSafeCast< domInputLocalOffset >( retVal->createAndPlace( "input" ) );
+        ilo = daeSafeCast< domInputLocalOffset >( retVal->add( "input" ) );
         ilo->setOffset( offset++ );
         ilo->setSemantic( "COLOR" );
         url = "#" + std::string( color->getId() );
@@ -1151,7 +1154,7 @@ Ty *daeWriter::createPrimGroup( daeString type, domMesh *mesh, domSource *norm, 
     }
     for ( unsigned int i = 0; i < texcoord.size(); i++ )
     {
-        ilo = daeSafeCast< domInputLocalOffset >( retVal->createAndPlace( "input" ) );
+        ilo = daeSafeCast< domInputLocalOffset >( retVal->add( "input" ) );
         ilo->setOffset( offset++ );
         ilo->setSemantic( "TEXCOORD" );
         ilo->setSet( i );

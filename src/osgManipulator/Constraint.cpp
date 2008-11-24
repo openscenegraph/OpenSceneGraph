@@ -59,7 +59,7 @@ bool GridConstraint::constrain(TranslateInLineCommand& command) const
     else if (command.getStage() == osgManipulator::MotionCommand::FINISH)
         return true;
 
-    osg::Vec3 translatedPoint = command.getLineStart() + command.getTranslation();
+    osg::Vec3d translatedPoint = command.getLineStart() + command.getTranslation();
     osg::Vec3d localTranslatedPoint = (osg::Vec3d(translatedPoint)
                                        * command.getLocalToWorld() * getWorldToLocal());
     osg::Vec3d newLocalTranslatedPoint = snap_point_to_grid(localTranslatedPoint,
@@ -86,7 +86,7 @@ bool GridConstraint::constrain(TranslateInPlaneCommand& command) const
     osg::Vec3d snappedCmdRefPoint = snappedLocalRefPoint * constraintToCommand;
 
     // Snap the translated point to grid.
-    osg::Vec3 translatedPoint = snappedCmdRefPoint + command.getTranslation();
+    osg::Vec3d translatedPoint = snappedCmdRefPoint + command.getTranslation();
     osg::Vec3d localTranslatedPoint = osg::Vec3d(translatedPoint) * commandToConstraint;
     osg::Vec3d newLocalTranslatedPoint = snap_point_to_grid(localTranslatedPoint, _origin, _spacing);
 
@@ -146,7 +146,7 @@ bool GridConstraint::constrain(Scale2DCommand& command) const
                                                   commandSpacing[2]*spacingFactor[1]));
 
     osg::Vec2d denom = command.getReferencePoint() - command.getScaleCenter();
-    osg::Vec2 snappedScale;
+    osg::Vec2d snappedScale;
     snappedScale[0] = denom[0] ? (snappedScaledPoint[0] - command.getScaleCenter()[0]) / denom[0] : 1.0;
     snappedScale[1] = denom[1] ? (snappedScaledPoint[1] - command.getScaleCenter()[1]) / denom[1] : 1.0;
 

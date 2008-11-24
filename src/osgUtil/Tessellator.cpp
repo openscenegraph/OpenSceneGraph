@@ -103,14 +103,26 @@ void Tessellator::reset()
         gluDeleteTess(_tobj);
         _tobj = 0;
     }
-    for (Vec3dList::iterator i = _coordData.begin(); i != _coordData.end(); ++i) {
-      delete (*i);
+
+    for (Vec3dList::iterator i = _coordData.begin(); i != _coordData.end(); ++i)
+    {
+        delete (*i);
     }
+    
+    // We need to also free the vertex list as well otherwise we are leaking...
+    for (NewVertexList::iterator j = _newVertexList.begin(); j != _newVertexList.end(); ++j)
+    {
+        NewVertex& newVertex = (*j);
+        delete newVertex._vpos;
+        newVertex._vpos = NULL;
+    }
+
     _coordData.clear();
     _newVertexList.clear();
     _primList.clear();
     _errorCode = 0;
 }
+
 
 class InsertNewVertices : public osg::ArrayVisitor
 {

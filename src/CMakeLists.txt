@@ -6,35 +6,23 @@ FOREACH( mylibfolder
         osgUtil 
         osgGA 
         osgText 
-        osgManipulator
-        osgSim
+        osgViewer
+        osgAnimation 
         osgFX
+        osgManipulator
         osgParticle
         osgShadow
+        osgSim
         osgTerrain
+        osgWidget
         osgVolume
-        osgViewer
+        osgPlugins
     )
 
     ADD_SUBDIRECTORY(${mylibfolder})
 
 ENDFOREACH( mylibfolder )
 
-OPTION(BUILD_OSGWIDGET "Enable to build osgWidget" ON)
-IF   (BUILD_OSGWIDGET)
-    ADD_SUBDIRECTORY(osgWidget)
-ENDIF(BUILD_OSGWIDGET)
-
-OPTION(BUILD_OSGANIMATION "Enable to build osgAnimation" ON)
-IF   (BUILD_OSGANIMATION)
-    ADD_SUBDIRECTORY(osgAnimation)
-ENDIF(BUILD_OSGANIMATION)
-
-
-OPTION(BUILD_OSG_PLUGINS "Enable to build OSG Plugins" ON)
-IF   (BUILD_OSG_PLUGINS)
-    ADD_SUBDIRECTORY(osgPlugins)
-ENDIF(BUILD_OSG_PLUGINS)
 
 OPTION(BUILD_OSG_WRAPPERS "Enable to build Introspection and Wrappers" OFF)
 IF   (BUILD_OSG_WRAPPERS)

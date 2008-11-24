@@ -67,8 +67,8 @@ TranslateInLineCommand::~TranslateInLineCommand()
 bool TranslateInLineCommand::execute()
 {
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*this);
     }
@@ -82,8 +82,8 @@ bool TranslateInLineCommand::unexecute()
     inverse->setTranslation(-_translation);
     
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*inverse);
     }
@@ -115,8 +115,8 @@ TranslateInPlaneCommand::~TranslateInPlaneCommand()
 bool TranslateInPlaneCommand::execute()
 {
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*this);
     }
@@ -130,8 +130,8 @@ bool TranslateInPlaneCommand::unexecute()
     inverse->setTranslation(-_translation);
     
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*inverse);
     }
@@ -148,7 +148,7 @@ void TranslateInPlaneCommand::applyConstraint(const Constraint* constraint)
 // Scale 1D command.
 //
 
-Scale1DCommand::Scale1DCommand() : _scale(1.0f)
+Scale1DCommand::Scale1DCommand() : _scale(1.0)
 {
 }
 
@@ -159,8 +159,8 @@ Scale1DCommand::~Scale1DCommand()
 bool Scale1DCommand::execute()
 {
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*this);
     }
@@ -174,8 +174,8 @@ bool Scale1DCommand::unexecute()
     if (_scale) inverse->setScale(1.0/_scale);
 
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*inverse);
     }
@@ -203,8 +203,8 @@ Scale2DCommand::~Scale2DCommand()
 bool Scale2DCommand::execute()
 {
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*this);
     }
@@ -219,8 +219,8 @@ bool Scale2DCommand::unexecute()
         inverse->setScale(osg::Vec2(1.0/_scale[0],1.0/_scale[1]));
     
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*inverse);
     }
@@ -237,7 +237,7 @@ void Scale2DCommand::applyConstraint(const Constraint* constraint)
 // Scale uniform command.
 //
 
-ScaleUniformCommand::ScaleUniformCommand() : _scale(1.0f)
+ScaleUniformCommand::ScaleUniformCommand() : _scale(1.0)
 {
 }
 
@@ -248,8 +248,8 @@ ScaleUniformCommand::~ScaleUniformCommand()
 bool ScaleUniformCommand::execute()
 {
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*this);
     }
@@ -263,8 +263,8 @@ bool ScaleUniformCommand::unexecute()
     if (_scale) inverse->setScale(1.0/_scale);
     
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*inverse);
     }
@@ -292,8 +292,8 @@ Rotate3DCommand::~Rotate3DCommand()
 bool Rotate3DCommand::execute()
 {
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*this);
     }
@@ -307,8 +307,8 @@ bool Rotate3DCommand::unexecute()
     inverse->setRotation(_rotation.inverse());
     
     for (SelectionList::iterator iter = getSelectionList().begin(); 
-	    iter != getSelectionList().end();
-	    ++iter)
+            iter != getSelectionList().end();
+            ++iter)
     {
         (*iter)->receive(*inverse);
     }

@@ -16,79 +16,44 @@
 #include <assert.h>
 #include <fstream>
 
-#include "BSPLoad.h"
+#include "Q3BSPReader.h"
+#include "Q3BSPLoad.h"
 
 
-class ReaderWriterQ3BSP: public osgDB::ReaderWriter
+using namespace bsp;
+
+
+Q3BSPReader::Q3BSPReader()
 {
-public:
-    ReaderWriterQ3BSP()
-    {
-        supportsExtension("bsp","Quake3 BSP model format");
-    }
-
-    virtual const char* className() const
-      {
-        return "Quake3 BSP Reader";
-      }
-
-    virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
-
-private:
-    osg::Geode* convertFromBSP(BSPLoad& aLoadData,const osgDB::ReaderWriter::Options* options) const;
-    osg::Geometry* createMeshFace(const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,
-                                  osg::Vec3Array& aVertexArray,std::vector<GLuint>& aIndices,
-                                  osg::Vec2Array& aTextureDecalCoords,osg::Vec2Array& aTextureLMapCoords
-                                 ) const;
-    osg::Geometry* createPolygonFace(const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,const std::vector<osg::Texture2D*>& aTextureLMapArray,
-                                  osg::Vec3Array& aVertexArray,
-                                  osg::Vec2Array& aTextureDecalCoords,osg::Vec2Array& aTextureLMapCoords
-                                 ) const;
-    bool        loadTextures(const BSPLoad& aLoadData,std::vector<osg::Texture2D*>& aTextureArray) const;
-    bool        loadLightMaps(const BSPLoad& aLoadData,std::vector<osg::Texture2D*>& aTextureArray) const;
-};
-
-// Register with Registry to instantiate the above reader/writer.
-REGISTER_OSGPLUGIN(bsp, ReaderWriterQ3BSP)
-
-
-
-
-
-
-
-
-
-
-
-// Read node
-osgDB::ReaderWriter::ReadResult ReaderWriterQ3BSP::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
-{
-    std::string ext = osgDB::getLowerCaseFileExtension(file);
-    if (!acceptsExtension(ext)) 
-      return ReadResult::FILE_NOT_HANDLED;
-
-    std::string file_name = osgDB::findDataFile( file, options );
-    if (file_name.empty())
-      return ReadResult::FILE_NOT_FOUND;
-
-    //osg::notify(osg::INFO) << "ReaderWriterQ3BSP::readNode(" << fileName.c_str() << ")\n";
-    BSPLoad load_data;
-    load_data.Load(file_name,8);
-
-    osg::Geode* geode = convertFromBSP(load_data, options);
-    if (!geode)
-      return ReadResult::FILE_NOT_HANDLED;
-
-    //osg::StateSet* state_set=geode->getOrCreateStateSet();
-    //state_set->setMode(osg::CullFace::BACK,osg::StateAttribute::ON);
-    return geode;
-
-
-    return ReadResult::FILE_NOT_HANDLED;
+    root_node = NULL;
 }
 
 
+bool Q3BSPReader::readFile(const std::string& file,
+                           const osgDB::ReaderWriter::Options* options)
+{
+    std::string ext = osgDB::getLowerCaseFileExtension(file);
+
+    Q3BSPLoad load_data;
+    load_data.Load(file,8);
+
+    osg::Geode* geode = convertFromBSP(load_data, options);
+    if (!geode)
+      return false;
+
+    //osg::StateSet* state_set=geode->getOrCreateStateSet();
+    //state_set->setMode(osg::CullFace::BACK,osg::StateAttribute::ON);
+
+    root_node = geode;
+
+    return true;
+}
+
+
+osg::ref_ptr<osg::Node>  Q3BSPReader::getRootNode()
+{
+    return root_node;
+}
 
 
 
@@ -196,7 +161,9 @@ public:
 
 
 
-osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::ReaderWriter::Options*) const
+osg::Geode* Q3BSPReader::convertFromBSP(
+                            Q3BSPLoad& aLoadData,
+                            const osgDB::ReaderWriter::Options* options) const
 {
 
   std::vector<osg::Texture2D*> texture_array;
@@ -353,7 +320,7 @@ osg::Geode* ReaderWriterQ3BSP::convertFromBSP(BSPLoad& aLoadData,const osgDB::Re
 
 
 
-osg::Geometry* ReaderWriterQ3BSP::createMeshFace( const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,
+osg::Geometry* Q3BSPReader::createMeshFace( const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,
                                                   osg::Vec3Array& aVertexArray,std::vector<GLuint>& aIndices,
                                                   osg::Vec2Array& aTextureDecalCoords,osg::Vec2Array& aTextureLMapCoords
                                                 ) const
@@ -403,7 +370,7 @@ osg::Geometry* ReaderWriterQ3BSP::createMeshFace( const BSP_LOAD_FACE& aLoadFace
 
 
 
-osg::Geometry* ReaderWriterQ3BSP::createPolygonFace(const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,const std::vector<osg::Texture2D*>& aTextureLMapArray,
+osg::Geometry* Q3BSPReader::createPolygonFace(const BSP_LOAD_FACE& aLoadFace,const std::vector<osg::Texture2D*>& aTextureArray,const std::vector<osg::Texture2D*>& aTextureLMapArray,
                                   osg::Vec3Array& aVertexArray,
                                   osg::Vec2Array& aTextureDecalCoords,osg::Vec2Array& aTextureLMapCoords
                                  ) const
@@ -464,7 +431,9 @@ osg::Geometry* ReaderWriterQ3BSP::createPolygonFace(const BSP_LOAD_FACE& aLoadFa
 
 
 
-bool ReaderWriterQ3BSP::loadTextures(const BSPLoad& aLoadData,std::vector<osg::Texture2D*>& aTextureArray) const
+bool Q3BSPReader::loadTextures(
+                           const Q3BSPLoad& aLoadData,
+                           std::vector<osg::Texture2D*>& aTextureArray) const
 {
   int num_textures=aLoadData.m_loadTextures.size();
 
@@ -503,7 +472,9 @@ bool ReaderWriterQ3BSP::loadTextures(const BSPLoad& aLoadData,std::vector<osg::T
 
 
 
-bool ReaderWriterQ3BSP::loadLightMaps(const BSPLoad& aLoadData,std::vector<osg::Texture2D*>& aTextureArray) const
+bool Q3BSPReader::loadLightMaps(
+                            const Q3BSPLoad& aLoadData,
+                            std::vector<osg::Texture2D*>& aTextureArray) const
 {
   int num_textures=aLoadData.m_loadLightmaps.size();
 

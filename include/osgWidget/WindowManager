@@ -11,8 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: WindowManager 66 2008-07-14 21:54:09Z cubicool $
+// Code by: Jeremy Moles (cubicool) 2007-2008
 
 #ifndef OSGWIDGET_WINDOW_MANAGER
 #define OSGWIDGET_WINDOW_MANAGER

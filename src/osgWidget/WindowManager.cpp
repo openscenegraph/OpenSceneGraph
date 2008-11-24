@@ -125,7 +125,8 @@ bool WindowManager::_handleMousePushed(float x, float y, bool& down) {
 
     if(!_lastPush) return false;
 
-    bool handled = _lastPush->callMethodAndCallbacks(ev);
+    // TODO: This is the old way; it didn't allow Event handler code to call grabFocus().
+    // bool handled = _lastPush->callMethodAndCallbacks(ev);
 
     if(_focusMode != PFM_SLOPPY) {
         if(ev._window) {
@@ -140,7 +141,7 @@ bool WindowManager::_handleMousePushed(float x, float y, bool& down) {
         else if(_focusMode == PFM_UNFOCUS) setFocused(0);
     }
 
-    return handled;
+    return _lastPush->callMethodAndCallbacks(ev);
 }
 
 bool WindowManager::_handleMouseReleased(float x, float y, bool& down) {

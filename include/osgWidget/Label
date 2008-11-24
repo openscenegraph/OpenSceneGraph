@@ -11,6 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
+// Code by: Jeremy Moles (cubicool) 2007-2008
+
 #ifndef OSGWIDGET_LABEL
 #define OSGWIDGET_LABEL
 

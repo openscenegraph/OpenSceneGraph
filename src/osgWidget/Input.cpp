@@ -21,7 +21,7 @@ _cursor      (new Widget("cursor")) {
     // Make the cursor un-copyable.
     _cursor->setCanClone(false);
     _cursor->setDataVariance(osg::Object::DYNAMIC);
-    _cursor->setColor(0.0f, 0.0f, 0.0f, 0.0f);
+    _cursor->setColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     setEventMask(
         // For showing/hiding the "cursor."
@@ -73,7 +73,7 @@ void Input::_calculateCursorOffsets() {
 }
 
 bool Input::focus(WindowManager*) {
-    _cursor->setColor(1.0f, 1.0f, 1.0f, 0.5f);
+    _cursor->setColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     return true;
 }

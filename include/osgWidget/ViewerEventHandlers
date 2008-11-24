@@ -11,8 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: ViewerEventHandlers 31 2008-04-01 19:36:41Z cubicool $
+// Code by: Jeremy Moles (cubicool) 2007-2008
 
 #ifndef OSGWIDGET_VIEWER_EVENT_HANDLERS
 #define OSGWIDGET_VIEWER_EVENT_HANDLERS

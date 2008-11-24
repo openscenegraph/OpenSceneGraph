@@ -3,14 +3,11 @@
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
-
-#include <osgWidget/Util>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgWidget/WindowManager>
 #include <osgWidget/Box>
-#include <osgWidget/Table>
-#include <osgWidget/Frame>
-#include <osgWidget/Label>
 #include <osgWidget/Input>
+#include <osgWidget/ViewerEventHandlers>
 
 const unsigned int MASK_2D = 0xF0000000;
 
@@ -28,8 +25,9 @@ int main(int argc, char** argv) {
     osgWidget::Box*   box   = new osgWidget::Box("vbox", osgWidget::Box::VERTICAL);
     osgWidget::Input* input = new osgWidget::Input("input", "", 50);
 
-    input->setFont("fonts/AMERSN__.ttf");
-    input->setFontSize(30);
+    input->setFont("fonts/VeraMono.ttf");
+    input->setFontColor(0.0f, 0.0f, 0.0f, 1.0f);
+    input->setFontSize(15);
     input->setYOffset(input->calculateBestYOffset("y"));
     input->setSize(400.0f, input->getText()->getCharacterHeight());
 
@@ -38,5 +36,24 @@ int main(int argc, char** argv) {
 
     wm->addChild(box);
 
-    return osgWidget::createExample(viewer, wm);
+    viewer.setUpViewInWindow(
+        50,
+        50,
+        static_cast<int>(wm->getWidth()),
+        static_cast<int>(wm->getHeight())
+    );
+
+    osg::Camera* camera = wm->createParentOrthoCamera();
+
+    viewer.addEventHandler(new osgWidget::MouseHandler(wm));
+    viewer.addEventHandler(new osgWidget::KeyboardHandler(wm));
+    viewer.addEventHandler(new osgWidget::ResizeHandler(wm, camera));
+    viewer.addEventHandler(new osgWidget::CameraSwitchHandler(wm, camera));
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler());
+
+    wm->resizeAllWindows();
+
+    viewer.setSceneData(camera);
+
+    return viewer.run();
 }

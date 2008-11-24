@@ -14,6 +14,7 @@
 #include <osg/GL>
 #include <osg/GLU>
 #include <osg/Notify>
+#include <osg/Math>
 #include <osg/buffered_value>
 
 #include <stdlib.h>

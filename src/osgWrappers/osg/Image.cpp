@@ -12,6 +12,7 @@
 
 #include <osg/BufferObject>
 #include <osg/CopyOp>
+#include <osg/FrameStamp>
 #include <osg/Image>
 #include <osg/NodeVisitor>
 #include <osg/Object>
@@ -384,6 +385,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __void__sendKeyEvent__int__bool,
 	          "method for sending key events to images that are acting as front ends to interactive surfaces such as a vnc or browser window. ",
 	          "");
+	I_Method1(void, setFrameLastRendered, IN, const osg::FrameStamp *, frameStamp,
+	          Properties::VIRTUAL,
+	          __void__setFrameLastRendered__C5_osg_FrameStamp_P1,
+	          "method for passing frame information to the custom Image classes, to be called only when objects associated with imagery are not culled. ",
+	          "");
 	I_StaticMethod1(bool, isPackedType, IN, GLenum, type,
 	                __bool__isPackedType__GLenum_S,
 	                "",
@@ -433,6 +439,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_SimpleProperty(const std::string &, FileName, 
 	                 __C5_std_string_R1__getFileName, 
 	                 __void__setFileName__C5_std_string_R1);
+	I_SimpleProperty(const osg::FrameStamp *, FrameLastRendered, 
+	                 0, 
+	                 __void__setFrameLastRendered__C5_osg_FrameStamp_P1);
 	I_SimpleProperty(unsigned int, ImageSizeInBytes, 
 	                 __unsigned_int__getImageSizeInBytes, 
 	                 0);

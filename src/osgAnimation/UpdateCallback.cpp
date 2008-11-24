@@ -26,6 +26,8 @@ AnimationUpdateCallback::AnimationUpdateCallback(const AnimationUpdateCallback& 
 
 int AnimationUpdateCallback::link(osgAnimation::Animation* animation)
 {
+    if (getName().empty())
+        osg::notify(osg::WARN) << "An update callback has no name, it means it can link only with \"\" named Target, often an error" << std::endl;
     int nbLinks = 0;
     for (osgAnimation::ChannelList::iterator it = animation->getChannels().begin();
          it != animation->getChannels().end();

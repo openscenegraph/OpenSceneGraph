@@ -19,19 +19,54 @@
 #include <dom/domConstants.h>
 #include <dom/domLibrary_cameras.h>
 #include <dom/domLibrary_lights.h>
-
+#include <dae/domAny.h>
 //#include <dom/domVisual_scene.h>
 //#include <dom/domLibrary_visual_scenes.h>
 
+#include <osgSim/MultiSwitch>
+#include <osg/Sequence>
+#include <osg/Billboard>
+
 using namespace osgdae;
 
+// Write non-standard node data as extra of type "Node" with "OpenSceneGraph" technique
+void daeWriter::writeNodeExtra(osg::Node &node)
+{
+    unsigned int numDesc = node.getDescriptions().size();
+    // Only create extra if descriptions are filled in
+    if (writeExtras && (numDesc > 0))
+    {
+        // Adds the following to a node
 
-//GROUP
+        //<extra type="Node">
+        //    <technique profile="OpenSceneGraph">
+        //        <Descriptions>
+        //            <Description>Some info</Description>
+        //        </Descriptions>
+        //    </technique>
+        //</extra>
+
+        domExtra *extra = daeSafeCast<domExtra>(currentNode->add( COLLADA_ELEMENT_EXTRA ));
+        extra->setType("Node");
+        domTechnique *teq = daeSafeCast<domTechnique>(extra->add( COLLADA_ELEMENT_TECHNIQUE ) );
+        teq->setProfile( "OpenSceneGraph" );
+        domAny *descriptions = (domAny*)teq->add( "Descriptions" );
+
+        for (unsigned int currDesc = 0; currDesc < numDesc; currDesc++)
+        {
+            std::string value = node.getDescription(currDesc);
+            if (!value.empty())
+            {
+                domAny *description = (domAny*)descriptions->add( "Description" );
+                description->setValue(value.c_str());
+            }
+        }
+    }
+}
+
 void daeWriter::apply( osg::Group &node )
 {
-#ifdef _DEBUG
     debugPrint( node );
-#endif
 
     while ( lastDepth >= _nodePath.size() )
     {
@@ -39,23 +74,73 @@ void daeWriter::apply( osg::Group &node )
         currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
         lastDepth--;
     }
-    currentNode = daeSafeCast< domNode >(currentNode->createAndPlace( COLLADA_ELEMENT_NODE ) );
+    currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
+    
+    // If a multiswitch node, store it's data as extra "MultiSwitch" data in the "OpenSceneGraph" technique
+    osgSim::MultiSwitch* multiswitch = dynamic_cast<osgSim::MultiSwitch*>(&node);
+    if (writeExtras && multiswitch)
+    {
+        // Adds the following to a node
+
+        //<extra type="MultiSwitch">
+        //    <technique profile="OpenSceneGraph">
+        //        <ActiveSwitchSet>0</ActiveSwitchSet>
+        //        <ValueLists>
+        //            <ValueList>1 0</ValueList>
+        //            <ValueList>0 1</ValueList>
+        //        </ValueLists>
+        //    </technique>
+        //</extra>
+
+        domExtra *extra = daeSafeCast<domExtra>(currentNode->add( COLLADA_ELEMENT_EXTRA ));
+        extra->setType("MultiSwitch");
+        domTechnique *teq = daeSafeCast<domTechnique>(extra->add( COLLADA_ELEMENT_TECHNIQUE ) );
+        teq->setProfile( "OpenSceneGraph" );
+
+        domAny *activeSwitchSet = (domAny*)teq->add("ActiveSwitchSet" );
+        activeSwitchSet->setValue(toString<unsigned int>(multiswitch->getActiveSwitchSet()).c_str());
+
+        domAny *valueLists = (domAny*)teq->add( "ValueLists" );
+
+        unsigned int pos = 0;
+        const osgSim::MultiSwitch::SwitchSetList& switchset = multiswitch->getSwitchSetList();
+        for(osgSim::MultiSwitch::SwitchSetList::const_iterator sitr=switchset.begin();
+            sitr!=switchset.end();
+            ++sitr,++pos)
+        {
+            domAny *valueList = (domAny*)valueLists->add( "ValueList" );
+            std::stringstream fw;
+            const osgSim::MultiSwitch::ValueList& values = *sitr;
+            for(osgSim::MultiSwitch::ValueList::const_iterator itr=values.begin();
+                itr!=values.end();
+                ++itr)
+            {
+                if (itr != values.begin())
+                {
+                    fw << " ";
+                }
+                fw << *itr;
+            }
+            valueList->setValue(fw.str().c_str());
+        }
+        currentNode->setId(getNodeName(node,"multiswitch").c_str());
+    }
+    else
+    {
         currentNode->setId(getNodeName(node,"group").c_str());
+    }
+
+    writeNodeExtra(node);
     
     lastDepth = _nodePath.size();
 
-    lastVisited = GROUP;
-    
     traverse( node );
 }
 
 
-//SWITCH
 void daeWriter::apply( osg::Switch &node )
 {
-#ifdef _DEBUG
     debugPrint( node );
-#endif
 
     while ( lastDepth >= _nodePath.size() )
     {
@@ -63,29 +148,52 @@ void daeWriter::apply( osg::Switch &node )
         currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
         lastDepth--;
     }
-    currentNode = daeSafeCast< domNode >(currentNode->createAndPlace( COLLADA_ELEMENT_NODE ) );
+    currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
     currentNode->setId(getNodeName(node,"switch").c_str());
+
+    if (writeExtras)
+    {
+        // Adds the following to a node
+
+        //<extra type="Switch">
+        //    <technique profile="OpenSceneGraph">
+        //        <ValueList>1 0</ValueList>
+        //    </technique>
+        //</extra>
+
+        domExtra *extra = daeSafeCast<domExtra>(currentNode->add( COLLADA_ELEMENT_EXTRA ));
+        extra->setType("Switch");
+        domTechnique *teq = daeSafeCast<domTechnique>(extra->add( COLLADA_ELEMENT_TECHNIQUE ) );
+        teq->setProfile( "OpenSceneGraph" );
+
+        domAny *valueList = (domAny*)teq->add( "ValueList" );
+
+        std::stringstream fw;
+        const osg::Switch::ValueList& values = node.getValueList();
+        for(osg::Switch::ValueList::const_iterator itr=values.begin();
+            itr!=values.end();
+            ++itr)
+        {
+            if (itr != values.begin())
+            {
+                fw << " ";
+            }
+            fw << *itr;
+        }
+        valueList->setValue(fw.str().c_str());
+    }
+
+    writeNodeExtra(node);
     
     lastDepth = _nodePath.size();
 
-    lastVisited = SWITCH;
-
-    unsigned int cnt = node.getNumChildren();
-    for ( unsigned int i = 0; i < cnt; i++ ) 
-    {
-        if ( node.getValue( i ) )
-        {
-            node.getChild( i )->accept( *this );
-        }
-    }
+    // Process all children
+    traverse( node );
 }
 
-//LOD
-void daeWriter::apply( osg::LOD &node )
+void daeWriter::apply( osg::Sequence &node )
 {
-#ifdef _DEBUG
     debugPrint( node );
-#endif
 
     while ( lastDepth >= _nodePath.size() )
     {
@@ -93,40 +201,158 @@ void daeWriter::apply( osg::LOD &node )
         currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
         lastDepth--;
     }
-    currentNode = daeSafeCast< domNode >(currentNode->createAndPlace( COLLADA_ELEMENT_NODE ) );
+    currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
+    currentNode->setId(getNodeName(node,"sequence").c_str());
+
+    // If a sequence node, store it's data as extra "Sequence" data in the "OpenSceneGraph" technique
+    if (writeExtras)
+    {
+        // Adds the following to a node
+
+        //<extra type="Sequence">
+        //    <technique profile="OpenSceneGraph">
+        //        <FrameTime>0 0</FrameTime>
+        //        <LastFrameTime>0</LastFrameTime>
+        //        <LoopMode>0</LoopMode>
+        //        <IntervalBegin>0</IntervalBegin>
+        //        <IntervalEnd>-1</IntervalEnd>
+        //        <DurationSpeed>1</DurationSpeed>
+        //        <DurationNReps>-1</DurationNReps>
+        //        <SequenceMode>0</SequenceMode>
+        //    </technique>
+        //</extra>
+
+        domExtra *extra = daeSafeCast<domExtra>(currentNode->add( COLLADA_ELEMENT_EXTRA ));
+        extra->setType("Sequence");
+        domTechnique *teq = daeSafeCast<domTechnique>(extra->add( COLLADA_ELEMENT_TECHNIQUE ) );
+        teq->setProfile( "OpenSceneGraph" );
+
+        domAny *frameTime = (domAny*)teq->add("FrameTime");
+        std::stringstream fw;
+        for (unsigned int i = 0; i < node.getNumChildren(); i++) 
+        {
+            if (i > 0)
+            {
+                fw << " ";
+            }
+            fw << node.getTime(i);
+        }
+        frameTime->setValue(fw.str().c_str());
+
+        domAny *lastFrameTime = (domAny*)teq->add("LastFrameTime");
+        lastFrameTime->setValue(toString<double>(node.getLastFrameTime()).c_str());
+
+        // loop mode & interval
+        osg::Sequence::LoopMode mode;
+        int begin, end;
+        node.getInterval(mode, begin, end);
+        domAny *loopMode = (domAny*)teq->add("LoopMode");
+        loopMode->setValue(toString<osg::Sequence::LoopMode>(mode).c_str());
+        domAny *intervalBegin = (domAny*)teq->add("IntervalBegin");
+        intervalBegin->setValue(toString<int>(begin).c_str());
+        domAny *intervalEnd = (domAny*)teq->add("IntervalEnd");
+        intervalEnd->setValue(toString<int>(end).c_str());
+        
+        // duration
+        float speed;
+        int nreps;
+        node.getDuration(speed, nreps);
+        domAny *durationSpeed = (domAny*)teq->add("DurationSpeed");
+        durationSpeed->setValue(toString<float>(speed).c_str());
+        domAny *durationNReps = (domAny*)teq->add("DurationNReps");
+        durationNReps->setValue(toString<int>(nreps).c_str());
+
+        // sequence mode
+        domAny *sequenceMode = (domAny*)teq->add("SequenceMode");
+        sequenceMode->setValue(toString<osg::Sequence::SequenceMode>(node.getMode()).c_str());
+    }
+
+    writeNodeExtra(node);
+    
+    lastDepth = _nodePath.size();
+    
+    traverse( node );
+}
+
+void daeWriter::apply( osg::LOD &node )
+{
+    debugPrint( node );
+
+    while ( lastDepth >= _nodePath.size() )
+    {
+        //We are not a child of previous node
+        currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
+        lastDepth--;
+    }
+    currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
     lastDepth = _nodePath.size();
     currentNode->setId(getNodeName(node,"LOD").c_str());
-    lastVisited = LOD;
 
-    //TODO : get the most or less detailed node, not only the first one
-    
-    /*for ( unsigned int i = 0; i < node.getNumChildren(); i++ )
+    if (writeExtras)
     {
-        if ( node.getChild( i ) != NULL )
+        // Store LOD data as extra "LOD" data in the "OpenSceneGraph" technique
+        // Adds the following to a node
+
+        //<extra type="LOD">
+        //    <technique profile="OpenSceneGraph">
+        //        <Center>1 2 3</Center> (optional )
+        //        <Radius>-1</Radius> (required if Center is available)
+        //        <RangeMode>0</RangeMode>
+        //        <RangeList>
+        //            <MinMax>0 300</MinMax>
+        //            <MinMax>300 600</MinMax>
+        //        </RangeList>
+        //    </technique>
+        //</extra>
+
+        domExtra *extra = daeSafeCast<domExtra>(currentNode->add( COLLADA_ELEMENT_EXTRA ));
+        extra->setType("LOD");
+        domTechnique *teq = daeSafeCast<domTechnique>(extra->add( COLLADA_ELEMENT_TECHNIQUE ) );
+        teq->setProfile( "OpenSceneGraph" );
+
+        if (node.getCenterMode()==osg::LOD::USER_DEFINED_CENTER)
         {
-            node.getChild( i )->accept( *this );
-            break;
+            domAny *center = (domAny*)teq->add("Center");
+            center->setValue(toString(node.getCenter()).c_str());
+
+            domAny *radius = (domAny*)teq->add("Radius");
+            radius->setValue(toString<osg::LOD::value_type>(node.getRadius()).c_str());
         }
-    }*/
-    //unsigned int cnt = node.getNumChildren();
-    node.getChild( 0 )->accept( *this );
+
+        domAny *rangeMode = (domAny*)teq->add("RangeMode");
+        rangeMode->setValue(toString<osg::LOD::RangeMode>(node.getRangeMode()).c_str());
+
+        domAny *valueLists = (domAny*)teq->add("RangeList");
+
+        unsigned int pos = 0;
+        const osg::LOD::RangeList& rangelist = node.getRangeList();
+        for(osg::LOD::RangeList::const_iterator sitr=rangelist.begin();
+            sitr!=rangelist.end();
+            ++sitr,++pos)
+        {
+            domAny *valueList = (domAny*)valueLists->add("MinMax");
+            std::stringstream fw;
+            fw << sitr->first << " " << sitr->second;
+            valueList->setValue(fw.str().c_str());
+        }
+    }
+        
+    writeNodeExtra(node);
+
+    // Process all children
+    traverse( node );
 }
 
 void daeWriter::apply( osg::ProxyNode &node ) 
 {
-    osg::notify( osg::WARN ) << "ProxyNode. Missing " << node.getNumChildren() << " children\n";
+    osg::notify( osg::WARN ) << "ProxyNode. Missing " << node.getNumChildren() << " children" << std::endl;
 }
 
-
-
-//LIGHT
 void daeWriter::apply( osg::LightSource &node )
 {
-#ifdef _DEBUG
     debugPrint( node );
-#endif
 
-    domInstance_light *il = daeSafeCast< domInstance_light >( currentNode->createAndPlace( "instance_light" ) );
+    domInstance_light *il = daeSafeCast< domInstance_light >( currentNode->add( "instance_light" ) );
     std::string name = node.getName();
     if ( name.empty() )
     {
@@ -137,24 +363,19 @@ void daeWriter::apply( osg::LightSource &node )
 
     if ( lib_lights == NULL )
     {
-        lib_lights = daeSafeCast< domLibrary_lights >( dom->createAndPlace( COLLADA_ELEMENT_LIBRARY_LIGHTS ) );
+        lib_lights = daeSafeCast< domLibrary_lights >( dom->add( COLLADA_ELEMENT_LIBRARY_LIGHTS ) );
     }
-    domLight *light = daeSafeCast< domLight >( lib_lights->createAndPlace( COLLADA_ELEMENT_LIGHT ) );
+    domLight *light = daeSafeCast< domLight >( lib_lights->add( COLLADA_ELEMENT_LIGHT ) );
     light->setId( name.c_str() );
     
-    lastVisited = LIGHT;
-
     traverse( node );
 }
 
-//CAMERA
 void daeWriter::apply( osg::Camera &node )
 {
-#ifdef _DEBUG
     debugPrint( node );
-#endif
 
-    domInstance_camera *ic = daeSafeCast< domInstance_camera >( currentNode->createAndPlace( "instance_camera" ) );
+    domInstance_camera *ic = daeSafeCast< domInstance_camera >( currentNode->add( "instance_camera" ) );
     std::string name = node.getName();
     if ( name.empty() )
     {
@@ -165,12 +386,10 @@ void daeWriter::apply( osg::Camera &node )
 
     if ( lib_cameras == NULL )
     {
-        lib_cameras = daeSafeCast< domLibrary_cameras >( dom->createAndPlace( COLLADA_ELEMENT_LIBRARY_CAMERAS ) );
+        lib_cameras = daeSafeCast< domLibrary_cameras >( dom->add( COLLADA_ELEMENT_LIBRARY_CAMERAS ) );
     }
-    domCamera *cam = daeSafeCast< domCamera >( lib_cameras->createAndPlace( COLLADA_ELEMENT_CAMERA ) );
+    domCamera *cam = daeSafeCast< domCamera >( lib_cameras->add( COLLADA_ELEMENT_CAMERA ) );
     cam->setId( name.c_str() );
-
-    lastVisited = CAMERA;
 
     traverse( node );
 }

@@ -13,9 +13,11 @@
 
 #include "daeReader.h"
 #include <dae.h>
+#include <dae/domAny.h>
 #include <dom/domCOLLADA.h>
 #include <dom/domInstanceWithExtra.h>
 #include <dom/domConstants.h>
+#include <osg/MatrixTransform>
 
 using namespace osgdae;
 
@@ -86,19 +88,24 @@ bool daeReader::convert( const std::string &fileURI )
             m_AssetUp_axis = document->getAsset()->getUp_axis()->getValue();
     }
 
-    if (dae->getDatabase()) {
+    if (dae->getDatabase()) 
+    {
         count = dae->getDatabase()->getElementCount(NULL, COLLADA_TYPE_INSTANCE_RIGID_BODY, NULL);
 
         // build a std::map for lookup if Group or PositionAttitudeTransform should be created, 
         // i.e, make it easy to check if a instance_rigid_body targets a visual node
-        for (int i=0; i<count; i++) {
+        for (int i=0; i<count; i++) 
+        {
             result = dae->getDatabase()->getElement(&colladaElement, i, NULL, COLLADA_TYPE_INSTANCE_RIGID_BODY);
 
-            if (result == DAE_OK) {
+            if (result == DAE_OK) 
+            {
                 irb = daeSafeCast<domInstance_rigid_body>(colladaElement);
-                if (irb) {
-                        domNode *node = daeSafeCast<domNode>(irb->getTarget().getElement());
-                    if (node && node->getId()) {
+                if (irb) 
+                {
+                    domNode *node = daeSafeCast<domNode>(irb->getTarget().getElement());
+                    if (node && node->getId()) 
+                    {
                         _targetMap[ std::string(node->getId()) ] = true;          
                     }
                 }
@@ -121,7 +128,7 @@ bool daeReader::convert( const std::string &fileURI )
 osg::Node* daeReader::processVisualScene( domVisual_scene *scene )
 {
     osg::Node *retVal; 
-    //### do not add an empty group if there is only one
+
     unsigned int nbVisualSceneGroup=scene->getNode_array().getCount();
     if (nbVisualSceneGroup==0)
     {
@@ -154,231 +161,246 @@ osg::Node* daeReader::processVisualScene( domVisual_scene *scene )
        }
     }
     return retVal;
-    
 }
 
+osg::Node* daeReader::processExtras(domNode *node)
+{
+    // See if one of the extras contains OpenSceneGraph specific information
+    unsigned int numExtras = node->getExtra_array().getCount();
+    for (unsigned int currExtra=0; currExtra < numExtras; currExtra++)
+    {
+        domExtra* extra = node->getExtra_array()[currExtra];
+        domTechnique* teq = NULL;
+
+        daeString extraType = extra->getType();
+        if (extraType)
+        {
+            if (strcmp(extraType, "Switch") == 0)
+            {
+                teq = getOpenSceneGraphProfile(extra);
+                if (teq)
+                {
+                    return processOsgSwitch(teq);
+                }
+            }
+            else if (strcmp(extraType, "MultiSwitch") == 0)
+            {
+                teq = getOpenSceneGraphProfile(extra);
+                if (teq)
+                {
+                    return processOsgMultiSwitch(teq);
+                }
+            }
+            else if (strcmp(extraType, "LOD") == 0)
+            {
+                teq = getOpenSceneGraphProfile(extra);
+                if (teq)
+                {
+                    return processOsgLOD(teq);
+                }
+            }
+            else if (strcmp(extraType, "DOFTransform") == 0)
+            {
+                teq = getOpenSceneGraphProfile(extra);
+                if (teq)
+                {
+                    return processOsgDOFTransform(teq);
+                }
+            }
+            else if (strcmp(extraType, "Sequence") == 0)
+            {
+                teq = getOpenSceneGraphProfile(extra);
+                if (teq)
+                {
+                    return processOsgSequence(teq);
+                }
+            }
+        }
+    }
+    return new osg::Group;
+}
+
+void daeReader::processNodeExtra(osg::Node* osgNode, domNode *node)
+{
+    // See if one of the extras contains OpenSceneGraph specific information
+    unsigned int numExtras = node->getExtra_array().getCount();
+
+    for (unsigned int currExtra=0; currExtra < numExtras; currExtra++)
+    {
+        domExtra* extra = node->getExtra_array()[currExtra];
+
+        daeString extraType = extra->getType();
+        if (extraType && (strcmp(extraType, "Node") == 0))
+        {
+            domTechnique* teq = getOpenSceneGraphProfile(extra);
+            if (teq)
+            {
+                domAny* any = daeSafeCast< domAny >(teq->getChild("Descriptions"));
+                if (any)
+                {
+                    osg::Node::DescriptionList descriptions;
+                    unsigned int numChildren = any->getChildren().getCount();
+                    for (unsigned int currChild = 0; currChild < numChildren; currChild++)
+                    {
+                        domAny* child = daeSafeCast<domAny>(any->getChildren()[currChild]);
+                        if (child)
+                        {
+                            if (strcmp(child->getElementName(), "Description" ) == 0 )
+                            {
+                                std::string value = child->getValue();
+                                descriptions.push_back(value);
+                            }
+                            else
+                            {
+                                osg::notify(osg::WARN) << "Child of element 'Descriptions' is not of type 'Description'" << std::endl;
+                            }
+                        }
+                        else
+                        {
+                            osg::notify(osg::WARN) << "Element 'Descriptions' does not contain expected elements." << std::endl;
+                        }
+                    }
+                    osgNode->setDescriptions(descriptions);
+                }
+                else
+                {
+                    osg::notify(osg::WARN) << "Expected element 'Descriptions' not found" << std::endl;
+                }
+            }
+        }
+    }
+}
+
+domTechnique* daeReader::getOpenSceneGraphProfile(domExtra* extra)
+{
+    unsigned int numTeqs = extra->getTechnique_array().getCount();
+
+    for ( unsigned int currTeq = 0; currTeq < numTeqs; ++currTeq )
+    {
+        // Only interested in OpenSceneGraph technique
+        if (strcmp( extra->getTechnique_array()[currTeq]->getProfile(), "OpenSceneGraph" ) == 0 )
+        {
+            return extra->getTechnique_array()[currTeq];
+        }
+    }
+    return NULL;
+}
+
+
+// <node>
+// attributes:
+// id, name, sid, type, layer
+// child elements:
+// 0..1 <asset>
+// 0..* <lookat>, <matrix>, <rotate>, <scale>, <skew>, <translate>
+// 0..* <instance_camera>
+// 0..* <instance_controller>
+// 0..* <instance_geometry>
+// 0..* <instance_light>
+// 0..* <instance_node>
+// 0..* <node>
+// 0..* <extra>
 osg::Node* daeReader::processNode( domNode *node )
 {
-    osg::Node *retVal;
-    osg::PositionAttitudeTransform *pat; 
+    // First we need to determine what kind of OSG node we need
+    // If there exist any of the <lookat>, <matrix>, <rotate>, <scale>, <skew>, <translate> elements
+    // or if a COLLADA_TYPE_INSTANCE_RIGID_BODY targets this node we need a MatrixTransform
+    int coordcount =    node->getRotate_array().getCount() +
+                        node->getScale_array().getCount() +
+                        node->getTranslate_array().getCount() +
+                        node->getLookat_array().getCount() +
+                        node->getMatrix_array().getCount() +
+                        node->getSkew_array().getCount();
 
-    int patcount = node->getRotate_array().getCount() +
-                node->getScale_array().getCount() +
-                node->getTranslate_array().getCount();
-
+    // See if it is targeted
     bool targeted = false;
-
-    if (node->getId()) {
+    if (node->getId()) 
+    {
         targeted = _targetMap[std::string(node->getId())];
     }
 
-
-    if (patcount > 0 || targeted ) 
+    osg::Node *resultNode;
+    if (coordcount > 0 || targeted ) 
     {
-        pat = new osg::PositionAttitudeTransform();
-        retVal = pat;
-    } 
-    else 
+        resultNode = processOsgMatrixTransform(node);
+    }
+    else
     {
-        retVal = new osg::Group();
+        // No transform data, determine node type based on it's available extra data
+        resultNode = processExtras(node);
     }
 
-    osg::Node *current = retVal;
+    // See if there is generic node info attached as extra
+    processNodeExtra(resultNode, node);
 
-    retVal->setName( node->getId() ? node->getId() : "" );
+    resultNode->setName( node->getId() ? node->getId() : "" );
 
+    osg::Group* groupNode = resultNode->asGroup();
 
-    // Handle rotate, translate and scale first..
-    // will make the hierarchy less deep
-
-    // <rotate>
-    osg::Quat osgRot;
-    for (unsigned int i=0; i<node->getRotate_array().getCount(); i++) 
+    if (groupNode)
     {
-        daeSmartRef<domRotate> rot = node->getRotate_array().get(i);
-        if (rot->getValue().getCount() != 4 ) {
-            osg::notify(osg::WARN)<<"Data is wrong size for rotate"<<std::endl;
-            continue;
-        }
-
-        domFloat4& r = rot->getValue();
-
-        osg::Vec3 axis;
-        axis.set(r[0],r[1],r[2]);
-        osgRot =  osg::Quat(osg::DegreesToRadians(r[3]),axis) * osgRot;
-        pat->setAttitude(osgRot);
-    }
-
-    // <scale>
-    osg::Vec3 osgScale = osg::Vec3(1.0, 1.0, 1.0);
-    for (unsigned int i=0; i<node->getScale_array().getCount(); i++) 
-    {
-        daeSmartRef<domScale> scale = node->getScale_array().get(i);
-
-        if (scale->getValue().getCount() != 3 ) {
-            osg::notify(osg::WARN)<<"Data is wrong size for scale"<<std::endl;
-            continue;
-        }
-        domFloat3& s = scale->getValue();
-
-        osgScale[0] *= s[0];
-        osgScale[1] *= s[1];
-        osgScale[2] *= s[2];
-        pat->setScale(osgScale);
-    }
-
-    // <translate>
-    osg::Vec3 osgTrans = osg::Vec3(0.0, 0.0, 0.0);
-    for (unsigned int i=0; i<node->getTranslate_array().getCount(); i++) 
-    {
-        daeSmartRef<domTranslate> trans = node->getTranslate_array().get(i);
-
-        if (trans->getValue().getCount() != 3 ) {
-            osg::notify(osg::WARN)<<"Data is wrong size for translate"<<std::endl;
-            continue;
-        }
-
-        domFloat3& t = trans->getValue();
-        osgTrans += osg::Vec3(t[0],t[1],t[2]);
-        pat->setPosition(osgTrans);
-    }
-
-
-
-    size_t count = node->getContents().getCount();
-    for ( size_t i = 0; i < count; i++ ) 
-    {
-        osg::Node *trans = NULL;
-
-        //I'm using daeSafeCast to check type because the pointer comparisons are a lot faster
-        //than a strcmp
-        domTranslate * t = daeSafeCast< domTranslate >( node->getContents()[i] );
-        if ( t != NULL )
+        // 0..* <instance_camera>
+        domInstance_camera_Array cameraInstanceArray = node->getInstance_camera_array();
+        for ( size_t i = 0; i < cameraInstanceArray.getCount(); i++ ) 
         {
-            continue;
-        }
-
-        domRotate * r = daeSafeCast< domRotate >( node->getContents()[i] );
-        if ( r != NULL ) {
-            continue;
-        }
-
-        domScale * s = daeSafeCast< domScale >( node->getContents()[i] );
-        if ( s != NULL ) {
-            continue;
-        }
-
-        domMatrix * m = daeSafeCast< domMatrix >( node->getContents()[i] );
-        if ( m != NULL ) {
-            trans = processMatrix( m );
-            if ( trans != NULL )
-            {
-                current->asGroup()->addChild( trans );
-                current = trans;
-            }
-            continue;
-        }
-
-        domSkew *sk = daeSafeCast< domSkew >( node->getContents()[i] );
-        if ( sk != NULL ) {
-            trans = processSkew( sk );
-            if ( trans != NULL )
-            {
-                current->asGroup()->addChild( trans );
-                current = trans;
-            }
-            continue;
-        }
-
-        domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( node->getContents()[i] );
-        if ( ig != NULL )
-        {
-            trans = processInstance_geometry( ig );
-            if ( trans != NULL )
-            {
-                current->asGroup()->addChild( trans );
-            }
-            continue;
-        }
-        
-        domInstance_controller *ictrl = daeSafeCast< domInstance_controller >( node->getContents()[i] );
-        if ( ictrl != NULL )
-        {
-            trans = processInstance_controller( ictrl );
-            if ( trans != NULL )
-            {
-                current->asGroup()->addChild( trans );
-            }
-            continue;
-        }
-
-        domInstance_camera *ic = daeSafeCast< domInstance_camera >( node->getContents()[i] );
-        if ( ic != NULL )
-        {
-            daeElement *el = getElementFromURI( ic->getUrl() );
+            daeElement *el = getElementFromURI( cameraInstanceArray[i]->getUrl());
             domCamera *c = daeSafeCast< domCamera >( el );
-            if ( c == NULL )
-            {
-                osg::notify( osg::WARN ) << "Failed to locate camera " << ic->getUrl().getURI() << std::endl;
-            }
-            trans = processCamera( c );
-            if ( trans != NULL )
-            {
-                current->asGroup()->addChild( trans );
-            }
-            continue;
+
+            if (c)
+                groupNode->addChild( processCamera( c ));
+            else
+                osg::notify( osg::WARN ) << "Failed to locate camera " << cameraInstanceArray[i]->getUrl().getURI() << std::endl;
         }
-        
-        domInstance_light *il = daeSafeCast< domInstance_light >( node->getContents()[i] );
-        if ( il != NULL )
+
+        // 0..* <instance_controller>
+        domInstance_controller_Array controllerInstanceArray = node->getInstance_controller_array();
+        for ( size_t i = 0; i < controllerInstanceArray.getCount(); i++ ) 
         {
-            daeElement *el = getElementFromURI( il->getUrl() );
+            groupNode->addChild( processInstanceController( controllerInstanceArray[i] ));
+        }
+
+        // 0..* <instance_geometry>
+        domInstance_geometry_Array geometryInstanceArray = node->getInstance_geometry_array();
+        for ( size_t i = 0; i < geometryInstanceArray.getCount(); i++ ) 
+        {
+            groupNode->addChild( processInstanceGeometry( geometryInstanceArray[i] ));
+        }
+
+        // 0..* <instance_light>
+        domInstance_light_Array lightInstanceArray = node->getInstance_light_array();
+        for ( size_t i = 0; i < lightInstanceArray.getCount(); i++ ) 
+        {
+            daeElement *el = getElementFromURI( lightInstanceArray[i]->getUrl());
             domLight *l = daeSafeCast< domLight >( el );
-            if ( l == NULL )
-            {
-                osg::notify( osg::WARN ) << "Failed to locate light " << il->getUrl().getURI() << std::endl;
-            }
-            trans = processLight( l );
-            if ( trans != NULL )
-            {
-                current->asGroup()->addChild( trans );
-            }
-            continue;
+            
+            if (l)
+                groupNode->addChild( processLight( l ));
+            else
+                osg::notify( osg::WARN ) << "Failed to locate light " << lightInstanceArray[i]->getUrl().getURI() << std::endl;
         }
 
-        domInstance_node *instn = daeSafeCast< domInstance_node >( node->getContents()[i] );
-        if ( instn != NULL )
+        // 0..* <instance_node>
+        domInstance_node_Array nodeInstanceArray = node->getInstance_node_array();
+        for ( size_t i = 0; i < nodeInstanceArray.getCount(); i++ ) 
         {
-            daeElement *el = getElementFromURI( instn->getUrl() );
+            daeElement *el = getElementFromURI( nodeInstanceArray[i]->getUrl());
             domNode *n = daeSafeCast< domNode >( el );
-            if ( n == NULL )
-            {
-                osg::notify( osg::WARN ) << "Failed to locate camera " << ic->getUrl().getURI() << std::endl;
-            }
-            trans = processNode( n );
-            if ( trans != NULL )
-            {
-                current->asGroup()->addChild( trans );
-            }
-            continue;
+
+            if (n)
+                // Recursive call
+                groupNode->addChild( processNode( n ));
+            else
+                osg::notify( osg::WARN ) << "Failed to locate node " << nodeInstanceArray[i]->getUrl().getURI() << std::endl;
         }
 
-        domNode *n = daeSafeCast< domNode >( node->getContents()[i] );
-        if ( n != NULL )
+        // 0..* <node>
+        domNode_Array nodeArray = node->getNode_array();
+        for ( size_t i = 0; i < nodeArray.getCount(); i++ ) 
         {
-            trans = processNode( n );
-            if ( trans != NULL )
-            {
-                current->asGroup()->addChild( trans );
-            }
-            continue;
+            // Recursive call
+            groupNode->addChild( processNode( nodeArray[i] ));
         }
-
-        const char *name = node->getContents()[i]->getElementName();
-        if ( name == NULL ) name = node->getContents()[i]->getTypeName();
-        osg::notify( osg::WARN ) << "Unsupported element type: " << name << " in COLLADA scene!" << std::endl;
-
     }
 
-    return retVal;
+    return resultNode;
 }

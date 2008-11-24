@@ -20,13 +20,33 @@
 
 #include <sstream>
 
-using namespace osgdae;
 
-daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons,  bool GoogleMode ) : osg::NodeVisitor( TRAVERSE_ALL_CHILDREN ),
+namespace osgdae {
+
+std::string toString(osg::Vec3 value)
+{
+    std::stringstream str;
+    str << value.x() << " " << value.y() << " " << value.z();
+    return str.str();
+}
+
+std::string toString(osg::Matrix value)
+{
+    std::stringstream str;
+    str << value(0,0) << " " << value(1,0) << " " << value(2,0) << " " << value(3,0) << " "
+        << value(0,1) << " " << value(1,1) << " " << value(2,1) << " " << value(3,1) << " "
+        << value(0,2) << " " << value(1,2) << " " << value(2,2) << " " << value(3,2) << " "
+        << value(0,3) << " " << value(1,3) << " " << value(2,3) << " " << value(3,3);
+    return str.str();
+}
+
+
+daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons,  bool GoogleMode, TraversalMode tm, bool _writeExtras) : osg::NodeVisitor( tm ),
                                         dae(dae_),
                                         rootName(*dae_),
                                         usePolygons (_usePolygons),
-                                        m_GoogleMode(GoogleMode)
+                                        m_GoogleMode(GoogleMode),
+                                        writeExtras(_writeExtras)
 {
     success = true;
 
@@ -36,14 +56,14 @@ daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons, 
     dae->getDatabase()->createDocument( fileURI.c_str(), &doc );
     dom = (domCOLLADA*)doc->getDomRoot();
     //create scene and instance visual scene
-    domCOLLADA::domScene *scene = daeSafeCast< domCOLLADA::domScene >( dom->createAndPlace( COLLADA_ELEMENT_SCENE ) );
-    domInstanceWithExtra *ivs = daeSafeCast< domInstanceWithExtra >( scene->createAndPlace( "instance_visual_scene" ) );
+    domCOLLADA::domScene *scene = daeSafeCast< domCOLLADA::domScene >( dom->add( COLLADA_ELEMENT_SCENE ) );
+    domInstanceWithExtra *ivs = daeSafeCast< domInstanceWithExtra >( scene->add( "instance_visual_scene" ) );
     ivs->setUrl( "#defaultScene" );
     //create library visual scenes and a visual scene and the root node
-    lib_vis_scenes = daeSafeCast<domLibrary_visual_scenes>( dom->createAndPlace( COLLADA_ELEMENT_LIBRARY_VISUAL_SCENES ) );
-    vs = daeSafeCast< domVisual_scene >( lib_vis_scenes->createAndPlace( COLLADA_ELEMENT_VISUAL_SCENE ) );
+    lib_vis_scenes = daeSafeCast<domLibrary_visual_scenes>( dom->add( COLLADA_ELEMENT_LIBRARY_VISUAL_SCENES ) );
+    vs = daeSafeCast< domVisual_scene >( lib_vis_scenes->add( COLLADA_ELEMENT_VISUAL_SCENE ) );
     vs->setId( "defaultScene" );
-    currentNode = daeSafeCast< domNode >( vs->createAndPlace( COLLADA_ELEMENT_NODE ) );
+    currentNode = daeSafeCast< domNode >( vs->add( COLLADA_ELEMENT_NODE ) );
     currentNode->setId( "sceneRoot" );
 
     //create Asset
@@ -66,12 +86,14 @@ daeWriter::~daeWriter()
 
 void daeWriter::debugPrint( osg::Node &node )
 {
+#ifdef _DEBUG
     std::string indent = "";
     for ( unsigned int i = 0; i < _nodePath.size(); i++ )
     {
         indent += "  ";
     }
     osg::notify( osg::INFO ) << indent << node.className() << std::endl;
+#endif
 }
 
 bool daeWriter::writeFile()
@@ -94,7 +116,7 @@ void daeWriter::setRootNode( const osg::Node &node )
 std::string daeWriter::getNodeName(const osg::Node & node,const std::string & defaultName)
 {
     std::string nodeName;
-    if ((node.getName().empty()) || (node.getName()!=""))
+    if (node.getName().empty())
         nodeName=uniquify(defaultName);
     else
         nodeName=node.getName();
@@ -104,12 +126,9 @@ std::string daeWriter::getNodeName(const osg::Node & node,const std::string & de
 //NODE
 void daeWriter::apply( osg::Node &node )
 {
-#ifdef _DEBUG
     debugPrint( node );
-#endif
 
-    osg::notify( osg::INFO ) << "generic node\n";
-    lastVisited = NODE;
+    writeNodeExtra(node);
 
     traverse( node );
 }
@@ -135,10 +154,10 @@ std::string daeWriter::uniquify( const std::string &name )
 
 void daeWriter::createAssetTag()
 {
-    domAsset *asset = daeSafeCast< domAsset >(dom->createAndPlace( COLLADA_ELEMENT_ASSET ) );
-    domAsset::domCreated *c = daeSafeCast< domAsset::domCreated >( asset->createAndPlace( "created" ) );
-    domAsset::domModified *m = daeSafeCast< domAsset::domModified >( asset->createAndPlace( "modified" ) );
-    domAsset::domUnit *u = daeSafeCast< domAsset::domUnit >( asset->createAndPlace( "unit" ) );
+    domAsset *asset = daeSafeCast< domAsset >(dom->add( COLLADA_ELEMENT_ASSET ) );
+    domAsset::domCreated *c = daeSafeCast< domAsset::domCreated >(asset->add("created" ));
+    domAsset::domModified *m = daeSafeCast< domAsset::domModified >(asset->add("modified" ));
+    domAsset::domUnit *u = daeSafeCast< domAsset::domUnit >(asset->add("unit"));
 
     //TODO : set date and time
     c->setValue( "2006-07-25T00:00:00Z" );
@@ -179,3 +198,4 @@ void daeWriter::popStateSet(osg::StateSet* ss)
     }
 }
 
+} // namespace osgdae

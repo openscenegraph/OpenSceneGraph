@@ -93,6 +93,38 @@ bool findInputSourceBySemantic( TInputArray& inputs, const char* semantic, daeEl
     return false;
 }
 
+/// Convert string to value using it's stream operator
+template <typename T>
+T parseString(const std::string& valueAsString) {
+    std::stringstream str;
+    str << valueAsString;
+    T result;
+    str >> result;
+    return result;
+}
+
+inline osg::Vec3 parseVec3String(const std::string& valueAsString)
+{
+    std::stringstream str;
+    str << valueAsString;
+    osg::Vec3 result;
+    str >> result.x() >> result.y() >> result.z();
+    return result;
+}
+
+inline osg::Matrix parseMatrixString(const std::string& valueAsString)
+{
+    std::stringstream str;
+    str << valueAsString;
+    osg::Matrix result;
+    str >> result(0,0) >> result(1,0) >> result(2,0) >> result(3,0)
+        >> result(0,1) >> result(1,1) >> result(2,1) >> result(3,1)
+        >> result(0,2) >> result(1,2) >> result(2,2) >> result(3,2)
+        >> result(0,3) >> result(1,3) >> result(2,3) >> result(3,3);
+    return result;
+}
+
+
 /**
 @class daeReader
 @brief Read a OSG scene from a DAE file 
@@ -113,33 +145,38 @@ public:
 
 protected:
     //scene processing
-    osg::Node* processVisualScene( domVisual_scene *scene );
-    osg::Node* processNode( domNode *node );
+    osg::Node*    processVisualScene( domVisual_scene *scene );
+    osg::Node*    processNode( domNode *node );
+    osg::Node*    processOsgMatrixTransform( domNode *node );
     //osg::Node* processInstance( domInstanceWithExtra *iwe );
 
-    //transform processing
-    osg::Transform* processMatrix( domMatrix *mat );
-    osg::Transform* processTranslate( domTranslate *trans );
-    osg::Transform* processRotate( domRotate *rot );
-    osg::Transform* processScale( domScale *scale );
-    osg::Transform* processLookat( domLookat *la );
-    osg::Transform* processSkew( domSkew *skew );
+    // Processing of OSG specific info stored in node extras
+    osg::Node* processExtras(domNode *node);
+    void processNodeExtra(osg::Node* osgNode, domNode *node);
+    domTechnique* getOpenSceneGraphProfile(domExtra* extra);
+    void processAsset( domAsset *node );
+
+    osg::Node* processOsgSwitch(domTechnique* teq);
+    osg::Node* processOsgMultiSwitch(domTechnique* teq);
+    osg::Node* processOsgLOD(domTechnique* teq);
+    osg::Node* processOsgDOFTransform(domTechnique* teq);
+    osg::Node* processOsgSequence(domTechnique* teq);
 
     //geometry processing
-    osg::Node* processInstance_geometry( domInstance_geometry *ig );
-    osg::Node* processGeometry( domGeometry *geo );
-    osg::Node* processInstance_controller( domInstance_controller *ictrl );
+    osg::Geode* processInstanceGeometry( domInstance_geometry *ig );
+    osg::Geode* processGeometry( domGeometry *geo );
+    osg::Geode* processInstanceController( domInstance_controller *ictrl );
 
     typedef std::map< daeElement*, domSourceReader > SourceMap;
     typedef std::map< int, osg::IntArray*, std::less<int> > IndexMap;
 
     template< typename T >
-    osg::Node* processSinglePPrimitive( T *group, SourceMap &sources, GLenum mode );
+    void processSinglePPrimitive(osg::Geode* geode, T *group, SourceMap &sources, GLenum mode );
     
     template< typename T >
-    osg::Node* processMultiPPrimitive( T *group, SourceMap &sources, GLenum mode );
+    void processMultiPPrimitive(osg::Geode* geode, T *group, SourceMap &sources, GLenum mode );
 
-    osg::Node* processPolylist( domPolylist *group, SourceMap &sources );
+    void processPolylist(osg::Geode* geode, domPolylist *group, SourceMap &sources );
 
     void resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry *&geom, 
                         SourceMap &sources, IndexMap &index_map );
@@ -147,12 +184,16 @@ protected:
     void processP( domP *p, osg::Geometry *&geom, IndexMap &index_map, osg::DrawArrayLengths* dal/*GLenum mode*/ );
 
     //material/effect processing
-    void processBindMaterial( domBind_material *bm, osg::Node *geo );
-    osg::StateSet *processMaterial( domMaterial *mat );
-    osg::StateSet *processEffect( domEffect *effect );
-    osg::StateSet *processProfileCOMMON( domProfile_COMMON *pc );
+    void processBindMaterial( domBind_material *bm, domGeometry *geom, osg::Geode *geode );
+    void processMaterial(osg::StateSet *ss, domMaterial *mat );
+    void processEffect(osg::StateSet *ss, domEffect *effect );
+    void processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc );
     bool processColorOrTextureType( domCommon_color_or_texture_type *cot, 
-        osg::Material::ColorMode channel, osg::Material *mat, domCommon_float_or_param_type *fop = NULL, osg::StateAttribute **sa = NULL );
+                                    osg::Material::ColorMode channel, 
+                                    osg::Material *mat, 
+                                    domCommon_float_or_param_type *fop = NULL, 
+                                    osg::StateAttribute **sa = NULL,
+                                    bool normalizeShininess=false);
     osg::StateAttribute *processTransparencySettings( domCommon_transparent_type *ctt, domCommon_float_or_param_type *pTransparency, osg::StateSet *ss );
     bool GetFloat4Param(xsNCName Reference, domFloat4 &f4);
     bool GetFloatParam(xsNCName Reference, domFloat &f);
@@ -174,8 +215,17 @@ protected:
     domInstance_effect *currentInstance_effect;
     domEffect *currentEffect;
 
-    std::map< domGeometry*, osg::Node* > geometryMap;
-    std::map< domMaterial*, osg::StateSet* > materialMap;
+    typedef std::map< domGeometry*, osg::Geode*>    domGeometryGeodeMap;
+    typedef std::map< domMaterial*, osg::StateSet*> domMaterialStateSetMap;
+    typedef std::map< std::string, osg::StateSet*>    MaterialStateSetMap;
+
+    /// Maps geometry to a Geode
+    domGeometryGeodeMap geometryMap;
+    // Maps material target to stateset
+    domMaterialStateSetMap materialMap;
+    // Maps material symbol to stateset
+    MaterialStateSetMap materialMap2;
+
     enum AuthoringTool
     {
         UNKNOWN,

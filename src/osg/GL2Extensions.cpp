@@ -22,6 +22,7 @@
 #include <osg/ref_ptr>
 #include <osg/GL2Extensions>
 #include <osg/GLExtensions>
+#include <osg/Math>
 
 using namespace osg;
 
@@ -325,7 +326,7 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
         return;
     }
     
-    _glVersion = atof( version );
+    _glVersion = asciiToFloat( version );
     _glslLanguageVersion = 0.0f;
 
     _isShaderObjectsSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_shader_objects");
@@ -341,7 +342,7 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
         while(glGetError() != GL_NO_ERROR) {}        // reset error flag
         const char* langVerStr = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
         if( (glGetError() == GL_NO_ERROR) && langVerStr )
-            _glslLanguageVersion = atof( langVerStr );
+            _glslLanguageVersion = asciiToFloat( langVerStr );
         else
             _glslLanguageVersion = 1.0f;
     }

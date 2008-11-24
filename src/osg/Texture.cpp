@@ -1635,7 +1635,7 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
     }
     
 
-    float glVersion = atof( (const char *)version );
+    float glVersion = asciiToFloat( (const char *)version );
     const char* renderer = (const char*) glGetString(GL_RENDERER);
     std::string rendererString(renderer ? renderer : "");
     

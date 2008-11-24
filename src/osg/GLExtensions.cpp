@@ -47,7 +47,7 @@ float osg::getGLVersionNumber()
     if (!versionstring) return 0.0;
 
     std::string vs( versionstring );
-    return( atof( vs.substr( 0, vs.find( " " ) ).c_str() ) );
+    return( asciiToFloat( vs.substr( 0, vs.find( " " ) ).c_str() ) );
 }
 
 bool osg::isExtensionInExtensionString(const char *extension, const char *extensionString)

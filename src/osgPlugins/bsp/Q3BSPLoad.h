@@ -1,7 +1,7 @@
 
 
-#ifndef BSPLOAD_H
-#define BSPLOAD_H
+#ifndef Q3BSPLOAD_H
+#define Q3BSPLOAD_H
 
 
 #include <osg/Vec3f>
@@ -11,6 +11,11 @@
 #include <string>
 
 #include <fstream>
+
+
+namespace bsp
+{
+
 
 //Directory entry in header
 class BSP_DIRECTORY_ENTRY
@@ -170,7 +175,7 @@ public:
 
 
 
-class BSPLoad
+class Q3BSPLoad
 {
 public:
 
@@ -200,6 +205,8 @@ public:
 };
 
 
+}
 
-#endif  // BSPLOAD_H 
+
+#endif  // Q3BSPLOAD_H 
 

@@ -166,6 +166,8 @@ void singleWindowSideBySideCameras(osgViewer::Viewer& viewer)
     unsigned int width, height;
     wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
 
+
+
     // Not fullscreen
     width /= 2;
     height /= 2;
@@ -194,19 +196,16 @@ void singleWindowSideBySideCameras(osgViewer::Viewer& viewer)
         osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
     }
 
-    double aspectRatioScale = 1.0;
 
     osg::Camera* master = viewer.getCamera();
+
+    // get the default settings for the camera
     double fovy, aspectRatio, zNear, zFar;
     master->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
-    master->setProjectionResizePolicy(osg::Camera::VERTICAL);
-    fovy = 90;
-    aspectRatio = 1;
-    master->setProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
 
-    double h = osg::absolute(tan(osg::DegreesToRadians(fovy / 2)));
-    double w = h * aspectRatio;
-    double fovx = osg::absolute(osg::RadiansToDegrees(atan(w)) * 2);
+    // reset this for the actual apsect ratio of out created window
+    double windowAspectRatio = double(width)/double(height);
+    master->setProjectionMatrixAsPerspective(fovy, windowAspectRatio, 1.0, 10000.0);
 
     master->setName("MasterCam");
 
@@ -218,7 +217,7 @@ void singleWindowSideBySideCameras(osgViewer::Viewer& viewer)
     GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
     camera->setDrawBuffer(buffer);
     camera->setReadBuffer(buffer);
-    viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
+    viewer.addSlave(camera.get(), osg::Matrixd::scale(1.0,0.5,1.0), osg::Matrixd());
 
     camera = new osg::Camera;
     camera->setCullMask(2);
@@ -228,7 +227,7 @@ void singleWindowSideBySideCameras(osgViewer::Viewer& viewer)
     buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
     camera->setDrawBuffer(buffer);
     camera->setReadBuffer(buffer);
-    viewer.addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
+    viewer.addSlave(camera.get(), osg::Matrixd::scale(1.0,0.5,1.0), osg::Matrixd());
 }
 
 int main( int argc, char **argv )

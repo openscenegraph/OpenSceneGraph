@@ -280,8 +280,14 @@ Frame* Frame::createSimpleFrameWithSingleTexture(
 ) {
     Frame* frame = 0;
 
-    double w = image->s() / 8.0f;
-    double h = image->t();
+    double w = width;
+    double h = height;
+
+    if (image)
+    {
+        w = image->s() / 8.0f;
+        h = image->t();
+    }
 
     // The same as above...
     if(!exFrame) frame = createSimpleFrame(name, w, h, width, height, flags);
@@ -501,6 +507,10 @@ osg::Image* rotateImage(osg::Image* image)
 
 osg::Image* createNatifEdgeImageFromTheme(osg::Image* theme)
 {
+    if (!theme) {
+        osg::notify(osg::WARN) << "can't create a natif edge image from null image theme as argument" << std::endl;
+        return 0;
+    }
     osg::ref_ptr<osg::Image> final = new osg::Image;
     const int s = theme->s();
     const int t = theme->t();

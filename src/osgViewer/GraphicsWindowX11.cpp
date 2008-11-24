@@ -705,9 +705,10 @@ bool GraphicsWindowX11::createWindow()
     // now update the window dimensions to account for any size changes made by the window manager,
     XGetWindowAttributes( _display, _window, &watt );
     
-    if (_traits->width != watt.width && _traits->height != watt.height)
+    if (_traits->x != watt.x || _traits->y != watt.y
+        ||_traits->width != watt.width || _traits->height != watt.height)
     {
-        resized( _traits->x, _traits->y, _traits->width, _traits->height );
+        resized( watt.x, watt.y, watt.width, watt.height );
     }
         
     //osg::notify(osg::NOTICE)<<"After sync apply.x = "<<watt.x<<" watt.y="<<watt.y<<" width="<<watt.width<<" height="<<watt.height<<std::endl;

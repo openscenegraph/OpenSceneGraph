@@ -27,9 +27,10 @@ OPTION(COLLADA_USE_STATIC "Set to ON to build OpenSceneGraph with static Collada
 IF    (WIN32)
 
   IF   (COLLADA_USE_STATIC)
-    SET(TARGET_EXTERNAL_LIBRARIES libcollada_dom libcollada_dae libcollada_STLDatabase libcollada_LIBXMLPlugin libcollada_stdErrPlugin libxml2 )
+    SET(TARGET_EXTERNAL_LIBRARIES libxml2 pcrecpp-d pcre-d)
   ELSE (COLLADA_USE_STATIC)
-    ADD_DEFINITIONS(-DDOM_DYNAMIC)
+#    ADD_DEFINITIONS(-DDOM_DYNAMIC)
+    SET(TARGET_EXTERNAL_LIBRARIES libxml2 pcrecpp-d pcre-d)
   ENDIF(COLLADA_USE_STATIC)
 
 ELSE (WIN32)
@@ -53,6 +54,7 @@ ELSE (WIN32)
 ENDIF(WIN32)
 
 SET(TARGET_LIBRARIES_VARS COLLADA_LIBRARY)
+SET(TARGET_ADDED_LIBRARIES osgSim ) 
 
 #### end var setup  ###
 SETUP_PLUGIN(dae)

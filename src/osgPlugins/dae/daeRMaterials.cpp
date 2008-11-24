@@ -29,84 +29,120 @@
 
 using namespace osgdae;
 
-void daeReader::processBindMaterial( domBind_material *bm, osg::Node *geo )
+
+// <bind_material>
+// elements:
+// 0..*    <param>
+//        name
+//        sid
+//        semantic
+//        type
+// 1    <technique_common>
+//        0..*    <instance_material>
+//                symbol
+//                target
+//                sid
+//                name
+// 0..*    <technique>
+//        profile
+// 0..* <extra>
+//        id
+//        name
+//        type
+void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, osg::Geode *geode )
 {
-    if ( bm->getTechnique_common() == NULL )
+    if (bm->getTechnique_common() == NULL )
     {
         osg::notify( osg::WARN ) << "No COMMON technique for bind_material" << std::endl;
         return;
     }
-    osg::Group *group = geo->asGroup();
-    if ( group == NULL )
-    {
-        //this shouldn't happen unless something is terribly wrong
-        return;
-    }
-    domInstance_material_Array &ima = bm->getTechnique_common()->getInstance_material_array();
-    size_t count = ima.getCount();
-    for ( size_t i = 0; i < count; i++ )
-    {
-        std::string symbol = ima[i]->getSymbol();
-        domMaterial *mat = daeSafeCast< domMaterial >( getElementFromURI( ima[i]->getTarget() ) );
-        if ( mat == NULL ) 
-        {
-            osg::notify( osg::WARN ) << "Failed to locate material " << ima[i]->getTarget().getURI() << std::endl;
-            continue;
-        }
-        osg::StateSet *ss;
-        //check material cache if this material already exists
-        std::map< domMaterial*, osg::StateSet*>::iterator iter = materialMap.find( mat );
-        if ( iter != materialMap.end() )
-        {
-            ss = iter->second;
-        }
-        else
-        {
-            ss = processMaterial( mat );
-            materialMap.insert( std::make_pair( mat, ss ) );
-        }
-        if ( ss == NULL )
-        {
-            continue;
-        }
-        //TODO: process all of the <bind>s and <bind_vertex_input>s that are here in the instance_material.
 
-        for ( unsigned int x = 0; x < group->getNumChildren(); x++ )
+    for (size_t i =0; i < geode->getNumDrawables(); i++)
+    {
+        osg::Drawable* drawable = geode->getDrawable(i);
+        std::string materialName = drawable->getName();
+        
+        domInstance_material_Array &ima = bm->getTechnique_common()->getInstance_material_array();
+        std::string symbol;
+        bool found = false;
+        for ( size_t j = 0; j < ima.getCount(); j++)
         {
-            //I named the geode with the material symbol so I can do this check for binding
-            if ( group->getChild( x )->getName() == symbol )
-            {
-                /*if ( group->getChild( x )->getStateSet() != NULL )
+            symbol = ima[j]->getSymbol();
+            if (symbol.compare(materialName) == 0)
+            { 
+                found = true;
+                domMaterial *mat = daeSafeCast< domMaterial >(getElementFromURI( ima[j]->getTarget()));
+                if (mat)
                 {
-                    //already have a stateSet this means I am an instance so clone me.
-                    group->replaceChild( group->getChild( x ), (osg::Node*)group->getChild( x )->cloneType() );
-                }*/
-                group->getChild( x )->setStateSet( ss );
+                    // Check material cache if this material already exists
+                    domMaterialStateSetMap::iterator iter = materialMap.find( mat );
+                    if ( iter != materialMap.end() )
+                    {
+                        // Reuse material
+                        drawable->setStateSet(iter->second);
+                    }
+                    else
+                    {
+                        // Create new material
+                        osg::StateSet* ss = new osg::StateSet;
+                        processMaterial(ss, mat);
+                        drawable->setStateSet(ss);
+                        materialMap.insert(std::make_pair(mat, ss));
+                    }
+                }
+                else
+                {
+                    osg::notify( osg::WARN ) << "Failed to locate <material> wit id " << ima[i]->getTarget().getURI() << std::endl;
+                }
+
+                break;
             }
+        }
+        if (!found)
+        {
+            osg::notify( osg::WARN ) << "Failed to locate <instance_material> with symbol " << materialName << std::endl;
         }
     }
 }
 
-osg::StateSet *daeReader::processMaterial( domMaterial *mat )
+// <material>
+// attributes:
+// 0..1    id
+// 0..1    name
+// elements:
+// 0..1 <asset>
+// 1    <instance_effect>
+// 0..* <extra>
+void    daeReader::processMaterial(osg::StateSet *ss, domMaterial *mat )
 {
     currentInstance_effect = mat->getInstance_effect();
     domEffect *effect = daeSafeCast< domEffect >( getElementFromURI( currentInstance_effect->getUrl() ) );
-    if ( effect == NULL )
+    if (effect)
+    {
+        processEffect(ss, effect);
+    
+        //TODO: process all of the setParams that could happen here in the material. ESP. the textures
+    }
+    else
     {
         osg::notify( osg::WARN ) << "Failed to locate effect " << mat->getInstance_effect()->getUrl().getURI() << std::endl;
-        return NULL;
     }
-    osg::StateSet *ss = processEffect( effect );
-    
-    //TODO: process all of the setParams that could happen here in the material. ESP. the textures
-
-    return ss;
 }
 
-osg::StateSet *daeReader::processEffect( domEffect *effect )
+// <effect>
+// attributes:
+// 1    id
+// 0..1    name
+// elements:
+// 0..1 <asset>
+// 0..* <annotate>
+// 0..* <image>
+// 0..* <newparam>
+// 1..*    <fx_profile_abstract>
+// 0..* <extra>
+void daeReader::processEffect(osg::StateSet *ss, domEffect *effect )
 {
     bool hasCOMMON = false;
-    osg::StateSet *ss = NULL;
 
     for ( size_t i = 0; i < effect->getFx_profile_abstract_array().getCount(); i++ )
     {
@@ -119,21 +155,28 @@ osg::StateSet *daeReader::processEffect( domEffect *effect )
                 continue;
             }
             currentEffect = effect;
-            ss = processProfileCOMMON( pc );
+            processProfileCOMMON(ss, pc);
             hasCOMMON = true;
             continue;
         }
 
         osg::notify( osg::WARN ) << "unsupported effect profile " << effect->getFx_profile_abstract_array()[i]->getTypeName() << std::endl;
     }
-
-    return ss;
 }
 
-osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
+// <profile_COMMON>
+// elements:
+// 0..* <image>, <newparam>
+// 1    <technique>
+//        attributes:
+//        elements:
+//        0..1    <asset>
+//        0..*    <image>, <newparam>
+//        1        <constant>, <lambert>, <phong>, <blinn>
+//        0..*    <extra>
+// 0..* <extra>
+void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
 {
-    osg::StateSet *ss = new osg::StateSet();
-    
     domProfile_COMMON::domTechnique *teq = pc->getTechnique();
 
     domProfile_COMMON::domTechnique::domConstant *c = teq->getConstant();
@@ -143,42 +186,53 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
 
     ss->setMode( GL_CULL_FACE, GL_TRUE );
 
-    if (m_AuthoringTool == GOOGLE_SKETCHUP)
+    // See if there are any extra's that are supported by OpenSceneGraph
+    const domExtra_Array& ExtraArray = pc->getExtra_array();
+    size_t NumberOfExtras = ExtraArray.getCount();
+    size_t CurrentExtra;
+    for (CurrentExtra = 0; CurrentExtra < NumberOfExtras; CurrentExtra++)
     {
-        const domExtra_Array& ExtraArray = pc->getExtra_array();
-        size_t NumberOfExtras = ExtraArray.getCount();
-        size_t CurrentExtra;
-        for (CurrentExtra = 0; CurrentExtra < NumberOfExtras; CurrentExtra++)
+        const domTechnique_Array& TechniqueArray = ExtraArray[CurrentExtra]->getTechnique_array();
+        size_t NumberOfTechniques = TechniqueArray.getCount();
+        size_t CurrentTechnique;
+        for (CurrentTechnique = 0; CurrentTechnique < NumberOfTechniques; CurrentTechnique++)
         {
-            const domTechnique_Array& TechniqueArray = ExtraArray[CurrentExtra]->getTechnique_array();
-            size_t NumberOfTechniques = TechniqueArray.getCount();
-            size_t CurrentTechnique;
-            for (CurrentTechnique = 0; CurrentTechnique < NumberOfTechniques; CurrentTechnique++)
+            //  <technique profile="GOOGLEEARTH">
+            //      <double_sided>0</double_sided>
+            //  </technique>
+            if (strcmp(TechniqueArray[CurrentTechnique]->getProfile(), "GOOGLEEARTH") == 0)
             {
-                if (strcmp(TechniqueArray[CurrentTechnique]->getProfile(), "GOOGLEEARTH") == 0)
+                const daeElementRefArray& ElementArray = TechniqueArray[CurrentTechnique]->getContents();
+                size_t NumberOfElements = ElementArray.getCount();
+                size_t CurrentElement;
+                for (CurrentElement = 0; CurrentElement < NumberOfElements; CurrentElement++)
                 {
-                    const daeElementRefArray& ElementArray = TechniqueArray[CurrentTechnique]->getContents();
-                    size_t NumberOfElements = ElementArray.getCount();
-                    size_t CurrentElement;
-                    for (CurrentElement = 0; CurrentElement < NumberOfElements; CurrentElement++)
+                    domAny* pAny = (domAny*)ElementArray[CurrentElement].cast();
+                    if (strcmp(pAny->getElementName(), "double_sided") == 0)
                     {
-                        domAny* pAny = (domAny*)ElementArray[CurrentElement].cast();
-                        if (strcmp(pAny->getElementName(), "double_sided") == 0)
-                        {
-                            daeString Value = pAny->getValue();
-                            if (strcmp(Value, "1") == 0)
-                                ss->setMode( GL_CULL_FACE, GL_FALSE );
-                        }
+                        daeString Value = pAny->getValue();
+                        if (strcmp(Value, "1") == 0)
+                            ss->setMode( GL_CULL_FACE, GL_FALSE );
                     }
                 }
             }
         }
     }
 
-    //ss->setMode( GL_LIGHTING, GL_FALSE );
-
     osg::ref_ptr< osg::Material > mat = new osg::Material();
     bool insertMat = false;
+    // <blinn>
+    // elements:
+    // 0..1 <emission>
+    // 0..1 <ambient>
+    // 0..1 <diffuse>
+    // 0..1 <specular>
+    // 0..1 <shininess>
+    // 0..1 <reflective>
+    // 0..1 <reflectivity>
+    // 0..1 <transparent>
+    // 0..1 <transparency>
+    // 0..1 <index_of_refraction>
     if ( b != NULL )
     {
         bool tmp;
@@ -197,7 +251,7 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
             ss->setTextureAttribute( 0, sa );
         }
 
-        tmp = processColorOrTextureType( b->getSpecular(), osg::Material::SPECULAR, mat.get(), b->getShininess() );
+        tmp = processColorOrTextureType( b->getSpecular(), osg::Material::SPECULAR, mat.get(), b->getShininess(), NULL, true );
         insertMat = insertMat || tmp;
 
         osg::StateAttribute *sa2 = NULL;
@@ -214,16 +268,33 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
                 osg::notify( osg::WARN ) << "Already have a texture in the diffuse channel" << std::endl;
             }
         }
-
     }
+    // <phong>
+    // elements:
+    // 0..1 <emission>
+    // 0..1 <ambient>
+    // 0..1 <diffuse>
+    // 0..1 <specular>
+    // 0..1 <shininess>
+    // 0..1 <reflective>
+    // 0..1 <reflectivity>
+    // 0..1 <transparent>
+    // 0..1 <transparency>
+    // 0..1 <index_of_refraction>
     else if ( p != NULL )
     {
         bool tmp;
         tmp = processColorOrTextureType( p->getEmission(), osg::Material::EMISSION, mat.get() );
         insertMat = insertMat || tmp;
         
-        tmp = processColorOrTextureType( p->getAmbient(), osg::Material::AMBIENT, mat.get() );
+        osg::StateAttribute *sa1 = NULL;
+        tmp = processColorOrTextureType( p->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL, &sa1 );
         insertMat = insertMat || tmp;
+        if ( sa1 != NULL ) 
+        {
+            ss->setTextureMode( 1, GL_TEXTURE_2D, GL_TRUE );
+            ss->setTextureAttribute( 0, sa1 );
+        }
         
         osg::StateAttribute *sa = NULL;
         tmp = processColorOrTextureType( p->getDiffuse(), osg::Material::DIFFUSE, mat.get(), NULL, &sa );
@@ -253,6 +324,16 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
         }
 
     }
+    // <lambert>
+    // elements:
+    // 0..1 <emission>
+    // 0..1 <ambient>
+    // 0..1 <diffuse>
+    // 0..1 <reflective>
+    // 0..1 <reflectivity>
+    // 0..1 <transparent>
+    // 0..1 <transparency>
+    // 0..1 <index_of_refraction>
     else if ( l != NULL )
     {
         bool tmp;
@@ -287,6 +368,14 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
         }
         
     }
+    // <constant>
+    // elements:
+    // 0..1 <emission>
+    // 0..1 <reflective>
+    // 0..1 <reflectivity>
+    // 0..1 <transparent>
+    // 0..1 <transparency>
+    // 0..1 <index_of_refraction>
     else if ( c != NULL )
     {
         insertMat = processColorOrTextureType( c->getEmission(), osg::Material::EMISSION, mat.get() );
@@ -303,21 +392,32 @@ osg::StateSet *daeReader::processProfileCOMMON( domProfile_COMMON *pc )
     {
         ss->setAttribute( mat.get() );
     }
-
-    return ss;
 }
 
-bool daeReader::processColorOrTextureType( domCommon_color_or_texture_type *cot, 
-osg::Material::ColorMode channel,
-osg::Material *mat,
-domCommon_float_or_param_type *fop,
-osg::StateAttribute **sa )
+// colorOrTexture
+// 1  of
+//         <color>
+//        <param>
+//        attributes:
+//        1        ref
+//        <texture>
+//        attributes:
+//        1        texture
+//        1        texcoord
+//        0..*    extra
+bool daeReader::processColorOrTextureType(    domCommon_color_or_texture_type *cot, 
+                                            osg::Material::ColorMode channel,
+                                            osg::Material *mat,
+                                            domCommon_float_or_param_type *fop,
+                                            osg::StateAttribute **sa,
+                                            bool blinn)
 {
     if ( cot == NULL )
     {
         return false;
     }
     bool retVal = false;
+
     //osg::StateAttribute *sa = NULL;
     //TODO: Make all channels process <param ref=""> type of value
     if ( channel == osg::Material::EMISSION )
@@ -328,7 +428,6 @@ osg::StateAttribute **sa )
             mat->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
             retVal = true;
         }
-
         else if (cot->getParam() != NULL)
         {
             domFloat4 f4;
@@ -338,10 +437,14 @@ osg::StateAttribute **sa )
                 retVal = true;
             }
         }
-        else
+        else if (cot->getTexture() != NULL)
         {
             osg::notify( osg::WARN ) << "Currently no support for <texture> in Emission channel " << std::endl;
         }       
+        else
+        {
+            osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Emission channel " << std::endl;
+        }
     }
     else if ( channel == osg::Material::AMBIENT )
     {
@@ -360,9 +463,14 @@ osg::StateAttribute **sa )
                 retVal = true;
             }
         }
+        else if (cot->getTexture() != NULL && sa != NULL)
+        {
+            *sa = processTexture( cot->getTexture() );
+            //osg::notify( osg::WARN ) << "Currently no support for <texture> in Ambient channel " << std::endl;
+        }
         else
         {
-            osg::notify( osg::WARN ) << "Currently no support for <texture> in Ambient channel " << std::endl;
+            osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Ambient channel " << std::endl;
         }
     }
     else if ( channel == osg::Material::DIFFUSE )
@@ -377,8 +485,7 @@ osg::StateAttribute **sa )
         {
             *sa = processTexture( cot->getTexture() );
             domExtra *extra = cot->getTexture()->getExtra();
-            if ( extra != NULL && extra->getType() != NULL && 
-                 strcmp( extra->getType(), "color" ) == 0 )
+            if ( extra != NULL && extra->getType() != NULL && strcmp( extra->getType(), "color" ) == 0 )
             {
                 //the extra data for osg. Diffuse color can happen with a texture.
                 for ( unsigned int i = 0; i < extra->getTechnique_array().getCount(); i++ )
@@ -406,6 +513,10 @@ osg::StateAttribute **sa )
                 retVal = true;
             }
         }
+        else
+        {
+            osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Diffuse channel " << std::endl;
+        }
     }
     else if ( channel == osg::Material::SPECULAR )
     {
@@ -415,7 +526,7 @@ osg::StateAttribute **sa )
             mat->setSpecular( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
             retVal = true;
         }
-         else if (cot->getParam() != NULL)
+        else if (cot->getParam() != NULL)
         {
             domFloat4 f4;
             if (GetFloat4Param(cot->getParam()->getRef(), f4))
@@ -424,13 +535,25 @@ osg::StateAttribute **sa )
                 retVal = true;
             }
         }
-       else
+        else if (cot->getTexture() != NULL)
         {
             osg::notify( osg::WARN ) << "Currently no support for <texture> in Specular channel " << std::endl;
         }
+        else
+        {
+            osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Specular channel " << std::endl;
+        }
+
         if ( fop != NULL && fop->getFloat() != NULL )
         {
-            mat->setShininess( osg::Material::FRONT_AND_BACK, fop->getFloat()->getValue() );
+            float shininess = fop->getFloat()->getValue();
+            if (blinn)
+            {
+                // If the blinn mode is in the range [0,1] rescale it to [0,128]
+                if (shininess < 1)
+                    shininess *= 128.0f;
+            }
+            mat->setShininess( osg::Material::FRONT_AND_BACK, shininess );
             retVal = true;
         }
     }
@@ -808,6 +931,28 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
     return t2D;
 }
 
+
+/*
+Collada 1.4.1 Specification (2nd Edition) Patch Release Notes: Revision C Release notes
+
+In <blinn>, <constant>, <lambert>, and <phong>, the child element <transparent> now has an
+optional opaque attribute whose valid values are:
+• A_ONE (the default): Takes the transparency information from the color’s alpha channel, where the value 1.0 is opaque.
+• RGB_ZERO: Takes the transparency information from the color’s red, green, and blue channels, where the value 0.0 is opaque,
+with each channel modulated independently.
+In the Specification, this is described in the “FX Reference” chapter in the
+common_color_or_texture_type entry, along with a description of how transparency works in the
+“Getting Started with COLLADA FX” chapter in the “Determining Transparency” section.
+
+
+Collada Digital Asset Schema Release 1.5.0 Release Notes
+
+The <transparent> element’s opaque attribute now allows, in addition to A_ONE and RGB_ZERO, the following values:
+• A_ZERO (the default): Takes the transparency information from the color’s alpha channel, where the value 0.0 is opaque.
+• RGB_ONE: Takes the transparency information from the color’s red, green, and blue channels, where the value 1.0 is opaque,
+with each channel modulated independently.
+*/
+
 osg::StateAttribute *daeReader::processTransparencySettings( domCommon_transparent_type *ctt,  domCommon_float_or_param_type *pTransparency, osg::StateSet *ss )
 {
     if (NULL == ctt && NULL == pTransparency)
@@ -881,17 +1026,6 @@ osg::StateAttribute *daeReader::processTransparencySettings( domCommon_transpare
         }
     }
 
-    osg::BlendColor *bc = new osg::BlendColor();
-    bc->setConstantColor(osg::Vec4( f4[0] * Transparency, f4[1] * Transparency, f4[2] * Transparency, f4[3] * Transparency ));
-    ss->setAttribute( bc );
-    osg::BlendFunc *bf;
-    if (FX_OPAQUE_ENUM_A_ONE == Opaque)
-        bf = new osg::BlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
-    else
-        bf = new osg::BlendFunc(GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_COLOR);
-    ss->setAttribute( bf );
-    ss->setMode( GL_BLEND, GL_TRUE );
-
     if (FX_OPAQUE_ENUM_A_ONE == Opaque)
     {
         if (Transparency  * f4[3] > 0.99f)
@@ -908,7 +1042,20 @@ osg::StateAttribute *daeReader::processTransparencySettings( domCommon_transpare
             return NULL;
     }
 
+    osg::BlendColor *bc = new osg::BlendColor();
+    bc->setConstantColor(osg::Vec4( f4[0] * Transparency, f4[1] * Transparency, f4[2] * Transparency, f4[3] * Transparency ));
+    ss->setAttribute( bc );
+    osg::BlendFunc *bf;
+    if (FX_OPAQUE_ENUM_A_ONE == Opaque)
+        bf = new osg::BlendFunc(GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA);
+    else
+        bf = new osg::BlendFunc(GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_COLOR);
+    ss->setAttribute( bf );
+    ss->setMode( GL_BLEND, GL_TRUE );
+
     ss->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
     ss->setRenderBinDetails( 10, "DepthSortedBin" );
     return NULL;
 }
+
+// 0..* <extra>

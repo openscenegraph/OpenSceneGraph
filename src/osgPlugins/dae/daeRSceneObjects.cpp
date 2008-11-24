@@ -13,18 +13,316 @@
 
 #include "daeReader.h"
 #include <dae.h>
+#include <dae/domAny.h>
 #include <dom/domCOLLADA.h>
 
 #include <osg/Switch>
 #include <osg/LightSource>
 #include <osg/Geode>
-#include <osg/Switch>
 #include <osg/ShapeDrawable>
+#include <osg/LOD>
+#include <osg/Billboard>
+#include <osgSim/MultiSwitch>
+#include <osg/Sequence>
 
 using namespace osgdae;
 
+osg::Node* daeReader::processOsgMultiSwitch(domTechnique* teq)
+{
+    osgSim::MultiSwitch* msw = new osgSim::MultiSwitch;
+
+    domAny* any = daeSafeCast<domAny>(teq->getChild("ActiveSwitchSet"));
+    if (any)
+    {
+        msw->setActiveSwitchSet(parseString<unsigned int>(any->getValue()));
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'ActiveSwitchSet' not found" << std::endl;
+    }
+    
+    any = daeSafeCast<domAny>(teq->getChild("ValueLists"));
+    if (any)
+    {
+        unsigned int numChildren = any->getChildren().getCount();
+        for (unsigned int currChild = 0; currChild < numChildren; currChild++)
+        {
+            domAny* child = daeSafeCast<domAny>(any->getChildren()[currChild]);
+            if (child)
+            {
+                if (strcmp(child->getElementName(), "ValueList" ) == 0 )
+                {
+                    std::list<std::string> stringValues;
+                    osgSim::MultiSwitch::ValueList values;
+
+                    cdom::tokenize(child->getValue(), " ", stringValues);
+                    cdom::tokenIter iter = stringValues.begin();
+                    
+                    while (iter != stringValues.end())
+                    {
+                        values.push_back(parseString<bool>(*iter));
+                        ++iter;
+                    }
+                    
+                    msw->setValueList(currChild, values);
+                }
+                else
+                {
+                    osg::notify(osg::WARN) << "Child of element 'ValueLists' is not of type 'ValueList'" << std::endl;
+                }
+            }
+            else
+            {
+                osg::notify(osg::WARN) << "Element 'ValueLists' does not contain expected elements." << std::endl;
+            }
+        }
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'ValueLists' not found" << std::endl;
+    }
+    return msw;
+}
+
+osg::Node* daeReader::processOsgSwitch(domTechnique* teq)
+{
+    osg::Switch* sw = new osg::Switch;
+
+    domAny* any = daeSafeCast< domAny >(teq->getChild("ValueList"));
+    if (any)
+    {
+        std::list<std::string> stringValues;
+
+        cdom::tokenize(any->getValue(), " ", stringValues);
+        cdom::tokenIter iter = stringValues.begin();
+
+        int pos = 0;
+        while (iter != stringValues.end())
+        {
+            sw->setValue(pos++, parseString<bool>(*iter));
+            ++iter;
+        }
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'ValueList' not found" << std::endl;
+    }
+    return sw;
+}
+
+osg::Node* daeReader::processOsgSequence(domTechnique* teq)
+{
+    osg::Sequence* sq = new osg::Sequence;
+
+    domAny* any = daeSafeCast< domAny >(teq->getChild("FrameTime"));
+    if (any)
+    {
+        std::list<std::string> stringValues;
+
+        cdom::tokenize(any->getValue(), " ", stringValues);
+        cdom::tokenIter iter = stringValues.begin();
+
+        int frame = 0;
+        while (iter != stringValues.end())
+        {
+            sq->setTime(frame++, parseString<double>(*iter));
+            ++iter;
+        }
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'FrameTime' not found" << std::endl;
+    }
+
+    any = daeSafeCast< domAny >(teq->getChild("LastFrameTime"));
+    if (any)
+    {
+        sq->setLastFrameTime(parseString<double>(any->getValue()));
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'LastFrameTime' not found" << std::endl;
+    }
+
+    osg::Sequence::LoopMode loopmode;
+    any = daeSafeCast< domAny >(teq->getChild("LoopMode"));
+    if (any)
+    {
+        loopmode = (osg::Sequence::LoopMode)parseString<int>(any->getValue());
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'LoopMode' not found" << std::endl;
+    }
+    
+    int begin=0;
+    any = daeSafeCast< domAny >(teq->getChild("IntervalBegin"));
+    if (any)
+    {
+        begin = parseString<int>(any->getValue());
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'IntervalBegin' not found" << std::endl;
+    }
+    
+    int end=-1;
+    any = daeSafeCast< domAny >(teq->getChild("IntervalEnd"));
+    if (any)
+    {
+        end = parseString<int>(any->getValue());
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'IntervalEnd' not found" << std::endl;
+    }
+
+    sq->setInterval(loopmode, begin, end);
+
+    float speed = 0;
+    any = daeSafeCast< domAny >(teq->getChild("DurationSpeed"));
+    if (any)
+    {
+        speed = parseString<float>(any->getValue());
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'DurationSpeed' not found" << std::endl;
+    }
+    
+    int nreps = -1;
+    any = daeSafeCast< domAny >(teq->getChild("DurationNReps"));
+    if (any)
+    {
+        nreps = parseString<int>(any->getValue());
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'DurationNReps' not found" << std::endl;
+    }
+
+    sq->setDuration(speed, nreps);
+
+    any = daeSafeCast< domAny >(teq->getChild("SequenceMode"));
+    if (any)
+    {
+        sq->setMode((osg::Sequence::SequenceMode)parseString<int>(any->getValue()));
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'SequenceMode' not found" << std::endl;
+    }
+
+    return sq;
+}
+
+
+osg::Node* daeReader::processOsgLOD(domTechnique* teq)
+{
+    osg::LOD* lod = new osg::LOD;
+
+    domAny* any = daeSafeCast< domAny >(teq->getChild("Center"));
+    if (any)
+    {
+        // If a center is specified
+        lod->setCenterMode(osg::LOD::USER_DEFINED_CENTER);
+        lod->setCenter(parseVec3String(any->getValue()));
+
+        any = daeSafeCast< domAny >(teq->getChild("Radius"));
+        if (any)
+        {
+            lod->setRadius(parseString<osg::LOD::value_type>(any->getValue()));
+        }
+        else
+        {
+            osg::notify(osg::WARN) << "Expected element 'Radius' not found" << std::endl;
+        }
+    }
+
+    any = daeSafeCast< domAny >(teq->getChild("RangeMode"));
+    if (any)
+    {
+        lod->setRangeMode((osg::LOD::RangeMode)parseString<int>(any->getValue()));
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'RangeMode' not found" << std::endl;
+    }
+
+    any = daeSafeCast< domAny >(teq->getChild("RangeList"));
+    if (any)
+    {
+        osg::LOD::RangeList rangelist;
+
+        unsigned int numChildren = any->getChildren().getCount();
+        for (unsigned int currChild = 0; currChild < numChildren; currChild++)
+        {
+            domAny* child = daeSafeCast<domAny>(any->getChildren()[currChild]);
+            if (child)
+            {
+                if (strcmp(child->getElementName(), "MinMax" ) == 0 )
+                {
+                    std::list<std::string> stringValues;
+                    osg::LOD::MinMaxPair minMaxPair;
+        
+                    cdom::tokenize(child->getValue(), " ", stringValues);
+                    cdom::tokenIter iter = stringValues.begin();
+                    
+                    if (iter != stringValues.end())
+                    {
+                        minMaxPair.first = parseString<float>(*iter);
+                        ++iter;
+                    }
+                    else
+                    {
+                        osg::notify(osg::WARN) << "'MinMax' does not contain a valid minimum value" << std::endl;
+                    }
+
+                    if (iter != stringValues.end())
+                    {
+                        minMaxPair.second = parseString<float>(*iter);
+                    }
+                    else
+                    {
+                        osg::notify(osg::WARN) << "'MinMax' does not contain a valid maximum value" << std::endl;
+                    }
+
+                    rangelist.push_back(minMaxPair);
+                }
+                else
+                {
+                    osg::notify(osg::WARN) << "Child of element 'RangeList' is not of type 'MinMax'" << std::endl;
+                }
+            }
+            else
+            {
+                osg::notify(osg::WARN) << "Element 'RangeList' does not contain expected elements." << std::endl;
+            }
+        }
+
+        lod->setRangeList(rangelist);
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "Expected element 'RangeList' not found" << std::endl;
+    }
+
+    return lod;
+}
+
+// <light>
+// attributes:
+// id, name
+// elements:
+// 0..1 <asset>
+// 1    <technique_common>
+//        1    <ambient>, <directional>, <point>, <spot>
+// 0..* <technique>
+// 0..* <extra>
 osg::Node* daeReader::processLight( domLight *dlight )
 {
+    osg::Node *node = new osg::Switch();
+
     //do light processing here.
     domLight::domTechnique_common::domAmbient *ambient;
     domLight::domTechnique_common::domDirectional *directional;
@@ -37,8 +335,6 @@ osg::Node* daeReader::processLight( domLight *dlight )
         osg::notify( osg::WARN ) << "Invalid content for light" << std::endl;
         return NULL;
     }
-
-    osg::Node* node = new osg::Switch();
 
     osg::Light* light = new osg::Light();
 
@@ -182,11 +478,25 @@ osg::Node* daeReader::processLight( domLight *dlight )
     return node;
 }
 
-osg::Node* daeReader::processCamera( domCamera* /*dcamera*/ )
+// <camera>
+// attributes:
+// id, name
+// elements:
+// 0..1 <asset>
+// 1    <optics>
+//        1        <technique_common>
+//                1        <orthographic>, <perspective>
+//        0..*    <technique>
+//        0..*    <extra>
+// 0..* <imager>
+//        1        <technique>
+//        0..*    <extra>
+// 0..* <extra>
+osg::Node* daeReader::processCamera( domCamera * dcamera )
 {
-    //TODO: Make the camera actually make a camera to view from. Not just draw a cone.
     osg::Node *node = new osg::Switch();
 
+    //TODO: Make the camera actually make a camera to view from. Not just draw a cone.
     osg::Cone* cone = new osg::Cone();
 
     osg::ShapeDrawable* sd = new osg::ShapeDrawable(cone);

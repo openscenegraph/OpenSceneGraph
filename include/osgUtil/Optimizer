@@ -310,7 +310,8 @@ class OSGUTIL_EXPORT Optimizer
 
             protected:
 
-                void transformDrawables(osg::Geode& geode);
+                void transformGeode(osg::Geode& geode);
+                void transformDrawable(osg::Drawable& drawable);
                 void transformBillboard(osg::Billboard& billboard);
 
                 std::vector<osg::Matrix> _matrixStack;

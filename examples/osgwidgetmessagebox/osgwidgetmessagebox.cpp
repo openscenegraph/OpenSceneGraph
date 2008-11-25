@@ -50,7 +50,7 @@ osgWidget::Window* createButtonOk(const std::string& theme, const std::string& t
         osgDB::readImageFile(theme),
         300.0f, 
         50.0f,
-        osgWidget::Frame::FRAME_ALL
+        osgWidget::Frame::FRAME_TEXTURE
         );
     frame->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -58,6 +58,7 @@ osgWidget::Window* createButtonOk(const std::string& theme, const std::string& t
     label->setFont("fonts/Vera.ttf");
     label->setFontSize(fontSize);
     label->setFontColor(osgWidget::Color(0,0,0,1));
+    label->setColor(osgWidget::Color(0,0,0,0));
     label->setLabel(text);
     label->setCanFill(true);
 
@@ -68,7 +69,7 @@ osgWidget::Window* createButtonOk(const std::string& theme, const std::string& t
     frame->getEmbeddedWindow()->setWindow(box);
 
     frame->resizeFrame(box->getWidth(), box->getHeight());
-    frame->resizeAdd(20, 20);
+    frame->resizeAdd(10, 0);
     return frame.release();
 }
 
@@ -94,7 +95,11 @@ osgWidget::Frame* createError(const std::string& theme, const std::string& text,
     osgWidget::Box*   vbox   = new osgWidget::Box("HBOX", osgWidget::Box::HORIZONTAL);
     osgWidget::Box*   box   = new osgWidget::Box("VBOX", osgWidget::Box::VERTICAL);
 
-    box->addWidget(createButtonOk(theme,"Ok")->embed());
+    std::string theme2 = theme; //"osgWidget/theme-3.png";
+    osgWidget::Widget* buttonOK = createButtonOk(theme2,"Ok")->embed();
+    buttonOK->setColor(osgWidget::Color(0,0,0,0));
+    buttonOK->setCanFill(false);
+    box->addWidget(buttonOK);
     box->addWidget(label);
     box->attachScaleCallback();
     box->getBackground()->setColor(186/255.0, 186/255.0, 186/255.0,1);
@@ -136,7 +141,7 @@ int main(int argc, char** argv)
     wm->addChild(frame);
     frame->resizeAdd(30, 30);
 
-    AlphaSetterVisitor alpha(.5f);
-//    frame->accept(alpha);
+    AlphaSetterVisitor alpha(.8f);
+    frame->accept(alpha);
     return osgWidget::createExample(viewer, wm, osgDB::readNodeFile("cow.osg"));
 }

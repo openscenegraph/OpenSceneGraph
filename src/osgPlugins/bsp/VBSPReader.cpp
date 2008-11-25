@@ -351,9 +351,9 @@ void VBSPReader::processDispVerts(std::istream & str, int offset, int length)
 
 
 std::string VBSPReader::getToken(std::string str, const char * delim,
-                                 int & index)
+                                 std::string::size_type & index)
 {
-    int           start, end;
+    std::string::size_type start, end;
     std::string   token;
 
     // Look for the first non-occurrence of the delimiters
@@ -523,13 +523,6 @@ ref_ptr<Texture> VBSPReader::readTextureFile(std::string textureName)
 
 ref_ptr<StateSet> VBSPReader::createBlendShader(Texture * tex1, Texture * tex2)
 {
-    StateSet *  stateSet;
-    Program *   blendProgram;
-    Shader *    blendVtxShader;
-    Shader *    blendFrgShader;
-    Uniform *   tex1Sampler;
-    Uniform *   tex2Sampler;
-
     const char *  blendVtxShaderCode = 
     {
         "attribute float vBlendParam;\n"
@@ -586,26 +579,26 @@ ref_ptr<StateSet> VBSPReader::createBlendShader(Texture * tex1, Texture * tex2)
     };
 
     // Create the stateset
-    stateSet = new StateSet();
+    StateSet * stateSet = new StateSet();
  
     // Add the two textures
     stateSet->setTextureAttributeAndModes(0, tex1, StateAttribute::ON);
     stateSet->setTextureAttributeAndModes(1, tex2, StateAttribute::ON);
 
     // Create the vertex and fragment shaders
-    blendVtxShader = new Shader(Shader::VERTEX);
+    Shader * blendVtxShader = new Shader(Shader::VERTEX);
     blendVtxShader->setShaderSource(blendVtxShaderCode);
-    blendFrgShader = new Shader(Shader::FRAGMENT);
+    Shader * blendFrgShader = new Shader(Shader::FRAGMENT);
     blendFrgShader->setShaderSource(blendFrgShaderCode);
 
     // Create the two texture uniforms
-    tex1Sampler = new Uniform(Uniform::SAMPLER_2D, "tex1");
+    Uniform * tex1Sampler = new Uniform(Uniform::SAMPLER_2D, "tex1");
     tex1Sampler->set(0);
-    tex2Sampler = new Uniform(Uniform::SAMPLER_2D, "tex2");
+    Uniform * tex2Sampler = new Uniform(Uniform::SAMPLER_2D, "tex2");
     tex1Sampler->set(1);
 
     // Create the program
-    blendProgram = new Program();
+    Program * blendProgram = new Program();
     blendProgram->addShader(blendVtxShader);
     blendProgram->addShader(blendFrgShader);
 
@@ -624,20 +617,20 @@ ref_ptr<StateSet> VBSPReader::createBlendShader(Texture * tex1, Texture * tex2)
 
 ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
 {
-    std::string          mtlFileName;
-    std::string          mtlPath;
-    osgDB::ifstream *    mtlFile;
-    std::string          line;
-    int                  start;
-    std::string          token;
-    bool                 found;
-    ref_ptr<StateSet>    stateSet;
-    std::string          shaderName;
-    osg::Image *         texImage;
-    std::string          texName;
-    std::string          tex2Name;
-    ref_ptr<Texture>     texture;
-    ref_ptr<Texture>     texture2;
+    std::string             mtlFileName;
+    std::string             mtlPath;
+    osgDB::ifstream *       mtlFile;
+    std::string             line;
+    std::string::size_type  start = std::string::npos;
+    std::string             token;
+    bool                    found = false;
+    ref_ptr<StateSet>       stateSet;
+    std::string             shaderName;
+    osg::Image *            texImage = 0;
+    std::string             texName;
+    std::string             tex2Name;
+    ref_ptr<Texture>        texture;
+    ref_ptr<Texture>        texture2;
 
     // Find the material file
     mtlFileName = std::string(materialName) + ".vmt";
@@ -806,15 +799,15 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
 void VBSPReader::createScene()
 {
     ref_ptr<Group>       group;
-    VBSPGeometry **      vbspGeomList;
+    VBSPGeometry **      vbspGeomList  = 0;
     ref_ptr<Group>       subGroup;
     Face                 currentFace;
     TexInfo              currentTexInfo;
     TexData              currentTexData;
-    char *               currentTexName;
+    char *               currentTexName = 0;
     char                 prefix[64];
-    char *               mtlPtr;
-    char *               tmpPtr;
+    char *               mtlPtr = 0;
+    char *               tmpPtr = 0;
     char                 tempTex[256];
     int                  i, j;
     ref_ptr<StateSet>    stateSet;
@@ -1006,9 +999,9 @@ const DisplacedVertex & VBSPReader::getDispVertex(int index) const
 
 bool VBSPReader::readFile(const std::string & file)
 {
-    osgDB::ifstream *   mapFile;
+    osgDB::ifstream *   mapFile = 0;
     Header              header;
-    int                 i;
+    int                 i = 0;
 
     // Remember the map name
     map_name = getStrippedName(file);

@@ -345,7 +345,7 @@ protected:
     void   processDispVerts(std::istream & str, int offset, int length);
 
     std::string       getToken(std::string str, const char * delim,
-                               int & index);
+                               std::string::size_type & index);
 
     std::string       findFileIgnoreCase(std::string filePath);
 

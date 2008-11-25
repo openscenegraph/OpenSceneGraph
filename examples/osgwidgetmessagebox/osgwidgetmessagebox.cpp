@@ -5,9 +5,35 @@
 #include <osgWidget/WindowManager>
 #include <osgWidget/Frame>
 #include <osgWidget/Box>
+#include <osgWidget/Widget>
+#include <osgWidget/Types>
 #include <osgDB/ReadFile>
 
 const unsigned int MASK_2D = 0xF0000000;
+
+
+struct AlphaSetterVisitor : public osg::NodeVisitor
+{
+    float _alpha;
+    AlphaSetterVisitor( float alpha = 1.0):osg::NodeVisitor(TRAVERSE_ALL_CHILDREN) { _alpha = alpha;}
+
+    void apply(osg::MatrixTransform& node)
+    {
+        osgWidget::Window* win = dynamic_cast<osgWidget::Window*>(&node);
+        if (win) {
+            for (osgWidget::UIObjectParent<osgWidget::Widget>::Vector::iterator it = win->begin(); it != win->end(); it++)
+            {
+//                osgWidget::Window* w = dynamic_cast<osgWidget::Window*>((*it).get());
+                if (1) {
+                    osgWidget::Color color = (*it)->getColor();
+                    color[3] = color[3] *_alpha;
+                    (*it)->setColor(color);
+                }
+            }
+        }
+        traverse(node);
+    }
+};
 
 
 osgWidget::Frame* createError(const std::string& theme, const std::string& text, int fontSize = 13)
@@ -70,5 +96,8 @@ int main(int argc, char** argv)
     // Add everything to the WindowManager.
     wm->addChild(frame);
     frame->resizeAdd(30, 30);
+
+    AlphaSetterVisitor alpha(.5f);
+    frame->accept(alpha);
     return osgWidget::createExample(viewer, wm);
 }

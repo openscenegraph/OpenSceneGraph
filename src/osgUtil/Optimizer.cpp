@@ -4408,7 +4408,7 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
         // If there is only one parent, just transform all vertices and normals
         if(geode.getNumParents() == 1)
         {
-            transformDrawables(geode);
+            transformGeode(geode);
         }    
         else
         {
@@ -4428,7 +4428,7 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
                 else
                     osg::notify(osg::NOTICE) << "No parent for this Geode" << std::endl;
 
-                transformDrawables(*(new_geode.get()));
+                transformGeode(*(new_geode.get()));
             }
         }
     }
@@ -4469,42 +4469,52 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
 }
 
 
-void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::transformDrawables(osg::Geode& geode)
+void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::transformGeode(osg::Geode& geode)
 {
     for(unsigned int i=0; i<geode.getNumDrawables(); i++)
     {
-        osg::Geometry* geometry = geode.getDrawable(i)->asGeometry();
-        if(geometry)
-        {
-            // transform all geometry
-            osg::Vec3Array* verts = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
-            if(verts)
-            {
-                for(unsigned int j=0; j<verts->size(); j++)
-                    (*verts)[j] = (*verts)[j] * _matrixStack.back();
-            }
-            else
-            {
-                osg::Vec4Array* verts = dynamic_cast<osg::Vec4Array*>(geometry->getVertexArray());
-                if(verts)
-                {
-                    for(unsigned int j=0; j<verts->size(); j++)
-                        (*verts)[j] = _matrixStack.back() * (*verts)[j];
-                }
-            }
-            osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
-            if(normals)
-            {
-                for(unsigned int j=0; j<normals->size(); j++)
-                    (*normals)[j] = osg::Matrix::transform3x3((*normals)[j], _matrixStack.back());
-            }
-
-            geometry->dirtyBound();
-            geometry->dirtyDisplayList();
-        }
+        transformDrawable(*geode.getDrawable(i));
     }
 
     geode.dirtyBound();
+}
+
+
+void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::transformDrawable(osg::Drawable& drawable)
+{
+    osg::Geometry* geometry = drawable.asGeometry();
+    if(geometry)
+    {
+        // transform all geometry
+        osg::Vec3Array* verts = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+        if(verts)
+        {
+            for(unsigned int j=0; j<verts->size(); j++)
+            {
+                (*verts)[j] = (*verts)[j] * _matrixStack.back();
+            }
+        }
+        else
+        {
+            osg::Vec4Array* verts = dynamic_cast<osg::Vec4Array*>(geometry->getVertexArray());
+            if(verts)
+            {
+                for(unsigned int j=0; j<verts->size(); j++)
+                {
+                    (*verts)[j] = _matrixStack.back() * (*verts)[j];
+                }
+            }
+        }
+        osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
+        if(normals)
+        {
+            for(unsigned int j=0; j<normals->size(); j++)
+                (*normals)[j] = osg::Matrix::transform3x3((*normals)[j], _matrixStack.back());
+        }
+
+        geometry->dirtyBound();
+        geometry->dirtyDisplayList();
+    }
 }
 
 
@@ -4519,7 +4529,18 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::transf
     billboard.setNormal(normal);
 
     for(unsigned int i=0; i<billboard.getNumDrawables(); i++)
-        billboard.setPosition(i, billboard.getPosition(i) * _matrixStack.back());
+    {
+        osg::Vec3 originalBillboardPosition = billboard.getPosition(i);
+        billboard.setPosition(i, originalBillboardPosition * _matrixStack.back());
+
+        osg::Matrix matrixForDrawable = _matrixStack.back();
+        matrixForDrawable.preMult(osg::Matrix::translate(originalBillboardPosition));
+        matrixForDrawable.postMult(osg::Matrix::translate(-billboard.getPosition(i)));
+
+        _matrixStack.push_back(matrixForDrawable);
+        transformDrawable(*billboard.getDrawable(i));
+        _matrixStack.pop_back();
+    }
 
     billboard.dirtyBound();
 }

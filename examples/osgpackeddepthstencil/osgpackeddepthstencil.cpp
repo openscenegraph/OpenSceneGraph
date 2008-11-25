@@ -191,7 +191,7 @@ int main( int argc, char **argv )
     g0->addChild(createMask());
     g0->addChild(createGeometry());
     rttCamera->addChild(g0);
-    rootNode->addChild(rttCamera);
+    rootNode->addChild(rttCamera.get());
 
     // creates textured quad with result
     rootNode->addChild(createTextureQuad(texture));

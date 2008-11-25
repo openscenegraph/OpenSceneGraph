@@ -1,3 +1,21 @@
+/* OpenSceneGraph example, osgpackeddepthstencil.
+*
+*  Permission is hereby granted, free of charge, to any person obtaining a copy
+*  of this software and associated documentation files (the "Software"), to deal
+*  in the Software without restriction, including without limitation the rights
+*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+*  copies of the Software, and to permit persons to whom the Software is
+*  furnished to do so, subject to the following conditions:
+*
+*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+*  THE SOFTWARE.
+*/
+
 #include <osg/GLExtensions>
 #include <osg/Node>
 #include <osg/Geometry>
@@ -6,10 +24,12 @@
 #include <osg/Stencil>
 #include <osg/ColorMask>
 #include <osg/Geode>
+#include <osg/FrameBufferObject>
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
+#include <iostream>
 
 osg::Geode* createMask()
 {
@@ -97,11 +117,35 @@ int main( int argc, char **argv )
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
 
+    arguments.getApplicationUsage()->addCommandLineOption("--fbo","Use Frame Buffer Object for render to texture, where supported.");
+    arguments.getApplicationUsage()->addCommandLineOption("--pbuffer-rtt","Use Pixel Buffer for render to texture, where supported.");
+    arguments.getApplicationUsage()->addCommandLineOption("--nopds", "Don't use packed depth stencil.");
+    arguments.getApplicationUsage()->addCommandLineOption("--fbo-samples","");
+    arguments.getApplicationUsage()->addCommandLineOption("--color-samples", "");
+
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
     // add stats
     viewer.addEventHandler( new osgViewer::StatsHandler() );
+
+    // if user request help write it out to cout.
+    if (arguments.read("-h") || arguments.read("--help"))
+    {
+        arguments.getApplicationUsage()->write(std::cout);
+        return 1;
+    }
+
+    osg::Camera::RenderTargetImplementation renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
+    int colorSamples = 0, samples = 0;
+    bool usePDS = true;
+
+    while (arguments.read("--fbo")) { renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT; }
+    while (arguments.read("--pbuffer-rtt")) { renderImplementation = osg::Camera::PIXEL_BUFFER_RTT; }
+    while (arguments.read("--nopds")) { usePDS = false; } 
+    while (arguments.read("--fbo-samples", samples)) {}
+    while (arguments.read("--color-samples", colorSamples)) {}
+    
 
     osg::Group* rootNode = new osg::Group;
     rootNode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
@@ -125,19 +169,21 @@ int main( int argc, char **argv )
     rttCamera->setViewMatrix(osg::Matrixd::identity());
     rttCamera->setViewport(0, 0, 1024, 1024);
     rttCamera->setRenderOrder(osg::Camera::PRE_RENDER);
-    rttCamera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
-    
-#define USE_PACKED_DEPTH_STENCIL
+    rttCamera->setRenderTargetImplementation(renderImplementation);
 
-#ifdef USE_PACKED_DEPTH_STENCIL
-    rttCamera->attach(osg::Camera::PACKED_DEPTH_STENCIL_BUFFER, GL_DEPTH_STENCIL_EXT);
-#else
-    // this doesn't work on NVIDIA/Vista 64bit
-    // FBO status = 0x8cd6 (FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT)
-    rttCamera->attach(osg::Camera::DEPTH_BUFFER, GL_DEPTH_COMPONENT);
-    rttCamera->attach(osg::Camera::STENCIL_BUFFER, GL_STENCIL_INDEX_EXT);
-#endif
-    rttCamera->attach(osg::Camera::COLOR_BUFFER, texture);
+    if(usePDS)
+    {
+        rttCamera->attach(osg::Camera::PACKED_DEPTH_STENCIL_BUFFER, GL_DEPTH_STENCIL_EXT);
+    }
+    else
+    {
+        // this doesn't work on NVIDIA/Vista 64bit
+        // FBO status = 0x8cd6 (FRAMEBUFFER_INCOMPLETE_ATTACHMENT_EXT)
+        rttCamera->attach(osg::Camera::DEPTH_BUFFER, GL_DEPTH_COMPONENT);
+        rttCamera->attach(osg::Camera::STENCIL_BUFFER, GL_STENCIL_INDEX8_EXT);
+    }
+
+    rttCamera->attach(osg::Camera::COLOR_BUFFER, texture, 0, 0, false, samples, colorSamples);
     rttCamera->setCullingMode(osg::Camera::VIEW_FRUSTUM_SIDES_CULLING);
 
     // creates rtt subtree

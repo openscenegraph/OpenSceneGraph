@@ -388,6 +388,9 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         case Camera::STENCIL_BUFFER:
                             internalFormat = GL_STENCIL_INDEX8_EXT;
                             break;
+                        case Camera::PACKED_DEPTH_STENCIL_BUFFER:
+                            internalFormat = GL_DEPTH_STENCIL_EXT;
+                            break;
                         default:
                             internalFormat = GL_RGBA;
                             break;
@@ -401,7 +404,13 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 
                 if (buffer==osg::Camera::DEPTH_BUFFER) depthAttached = true;
                 else if (buffer==osg::Camera::STENCIL_BUFFER) stencilAttached = true;
+                else if (buffer==osg::Camera::PACKED_DEPTH_STENCIL_BUFFER)
+                {
+                    depthAttached = true;
+                    stencilAttached = true;
+                }
                 else if (buffer>=osg::Camera::COLOR_BUFFER) colorAttached = true;
+                
             }
 
             if (!depthAttached)
@@ -558,6 +567,13 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         traits->stencil = 8;
                         stencilAttached = true;
                         break;
+                    }
+                    case(osg::Camera::PACKED_DEPTH_STENCIL_BUFFER):
+                    {
+                        traits->depth = 24;
+                        depthAttached = true;
+                        traits->stencil = 8;
+                        stencilAttached = true;
                     }
                     case(osg::Camera::COLOR_BUFFER):
                     {
@@ -862,6 +878,8 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
             case Camera::STENCIL_BUFFER:
                 blitMask |= GL_STENCIL_BUFFER_BIT;
                 break;
+            case Camera::PACKED_DEPTH_STENCIL_BUFFER:
+                blitMask |= GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
             default:
                 blitMask |= GL_COLOR_BUFFER_BIT;
                 break;

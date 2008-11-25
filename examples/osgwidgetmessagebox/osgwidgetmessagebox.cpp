@@ -20,15 +20,17 @@ struct AlphaSetterVisitor : public osg::NodeVisitor
     void apply(osg::MatrixTransform& node)
     {
         osgWidget::Window* win = dynamic_cast<osgWidget::Window*>(&node);
+
         if (win) {
-            for (osgWidget::UIObjectParent<osgWidget::Widget>::Vector::iterator it = win->begin(); it != win->end(); it++)
+            osgWidget::warn() << "I am in Window: " << win->getName() << std::endl;
+
+            for (osgWidget::Window::Iterator it = win->begin(); it != win->end(); it++)
             {
-//                osgWidget::Window* w = dynamic_cast<osgWidget::Window*>((*it).get());
-                if (1) {
-                    osgWidget::Color color = (*it)->getColor();
-                    color[3] = color[3] *_alpha;
-                    (*it)->setColor(color);
-                }
+                osgWidget::warn() << "   I am operating on Widget: " << it->get()->getName() << std::endl;
+                
+		osgWidget::Color color = it->get()->getColor();
+                color[3] = color[3] *_alpha;
+                it->get()->setColor(color);
             }
         }
         traverse(node);
@@ -99,5 +101,5 @@ int main(int argc, char** argv)
 
     AlphaSetterVisitor alpha(.5f);
     frame->accept(alpha);
-    return osgWidget::createExample(viewer, wm);
+    return osgWidget::createExample(viewer, wm, osgDB::readNodeFile("cow.osg"));
 }

@@ -549,7 +549,8 @@ osg::Image* createNatifEdgeImageFromTheme(osg::Image* theme)
     rotateandcopy2->setInternalTextureFormat(internalFormat);
     copyData(theme, one_third_s, 0, 2 * one_third_s , one_third_s, rotateandcopy2.get(), 0, 0);
     rotateandcopy2 = rotateImage(rotateandcopy2.get());
-    copyData(rotateandcopy2.get(), 0, 0, one_third_s , one_third_s, final.get(), one_third_s, 0);
+    rotateandcopy2->flipHorizontal();
+    copyData(rotateandcopy2.get(), 0, 0, one_third_s , one_third_s, final.get(), 6*one_third_s, 0);
 
     // copy 3 (8 in source)
     copyData(theme, 2*one_third_s , 2 *one_third_s, 3*one_third_s , 3 * one_third_s, final.get(), 2 * one_third_s, 0);
@@ -569,7 +570,8 @@ osg::Image* createNatifEdgeImageFromTheme(osg::Image* theme)
     rotateandcopy7->setInternalTextureFormat(internalFormat);
     copyData(theme, one_third_s, 2*one_third_s, 2 * one_third_s , 3 * one_third_s, rotateandcopy7.get(), 0, 0);
     rotateandcopy7 = rotateImage(rotateandcopy7.get());
-    copyData(rotateandcopy7.get(), 0, 0, one_third_s , one_third_s, final.get(), 6 * one_third_s, 0);
+    rotateandcopy7->flipHorizontal();
+    copyData(rotateandcopy7.get(), 0, 0, one_third_s , one_third_s, final.get(), one_third_s, 0);
 
     // copy 8 (3 in source)
     copyData(theme, 2 * one_third_s, 0, 3 * one_third_s , one_third_s , final.get(), 7 * one_third_s, 0);

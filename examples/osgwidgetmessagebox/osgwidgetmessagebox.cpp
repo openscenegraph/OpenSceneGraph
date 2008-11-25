@@ -69,7 +69,7 @@ osgWidget::Window* createButtonOk(const std::string& theme, const std::string& t
     frame->getEmbeddedWindow()->setWindow(box);
 
     frame->resizeFrame(box->getWidth(), box->getHeight());
-    frame->resizeAdd(10, 0);
+    frame->resizeAdd(0, 0);
     return frame.release();
 }
 
@@ -95,7 +95,7 @@ osgWidget::Frame* createError(const std::string& theme, const std::string& text,
     osgWidget::Box*   vbox   = new osgWidget::Box("HBOX", osgWidget::Box::HORIZONTAL);
     osgWidget::Box*   box   = new osgWidget::Box("VBOX", osgWidget::Box::VERTICAL);
 
-    std::string theme2 = theme; //"osgWidget/theme-3.png";
+    std::string theme2 = "osgWidget/theme-4.png";
     osgWidget::Widget* buttonOK = createButtonOk(theme2,"Ok")->embed();
     buttonOK->setColor(osgWidget::Color(0,0,0,0));
     buttonOK->setCanFill(false);

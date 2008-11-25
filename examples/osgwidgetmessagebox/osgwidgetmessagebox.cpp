@@ -28,15 +28,49 @@ struct AlphaSetterVisitor : public osg::NodeVisitor
             {
                 osgWidget::warn() << "   I am operating on Widget: " << it->get()->getName() << std::endl;
                 
-		osgWidget::Color color = it->get()->getColor();
+                osgWidget::Color color = it->get()->getColor();
                 color[3] = color[3] *_alpha;
                 it->get()->setColor(color);
+            }
+            {
+                osgWidget::Color color = win->getBackground()->getColor();
+                color[3] = color[3] *_alpha;
+                win->getBackground()->setColor(color);
             }
         }
         traverse(node);
     }
 };
 
+
+osgWidget::Window* createButtonOk(const std::string& theme, const std::string& text, int fontSize = 13)
+{
+    osg::ref_ptr<osgWidget::Frame> frame = osgWidget::Frame::createSimpleFrameFromTheme(
+        "ButtonOK",
+        osgDB::readImageFile(theme),
+        300.0f, 
+        50.0f,
+        osgWidget::Frame::FRAME_ALL
+        );
+    frame->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    osgWidget::Label* label = new osgWidget::Label("", "");
+    label->setFont("fonts/Vera.ttf");
+    label->setFontSize(fontSize);
+    label->setFontColor(osgWidget::Color(0,0,0,1));
+    label->setLabel(text);
+    label->setCanFill(true);
+
+    osgWidget::Box* box = new osgWidget::Box("HBOX", osgWidget::Box::HORIZONTAL);
+    box->addWidget(label);
+    box->resize();
+    box->getBackground()->setColor(186/255.0, 186/255.0, 186/255.0,1);
+    frame->getEmbeddedWindow()->setWindow(box);
+
+    frame->resizeFrame(box->getWidth(), box->getHeight());
+    frame->resizeAdd(20, 20);
+    return frame.release();
+}
 
 osgWidget::Frame* createError(const std::string& theme, const std::string& text, int fontSize = 13)
 {
@@ -57,16 +91,19 @@ osgWidget::Frame* createError(const std::string& theme, const std::string& text,
     label->setLabel(text);
     label->setCanFill(true);
 
-    osgWidget::Box*   hbox   = new osgWidget::Box("HBOX", osgWidget::Box::HORIZONTAL);
-    osgWidget::Box*   vbox   = new osgWidget::Box("VBOX", osgWidget::Box::VERTICAL);
-    hbox->addWidget(label);
-    hbox->attachScaleCallback();
-//    hbox->addWidget(vbox);
-    hbox->getBackground()->setColor(186/255.0, 186/255.0, 186/255.0,1);
+    osgWidget::Box*   vbox   = new osgWidget::Box("HBOX", osgWidget::Box::HORIZONTAL);
+    osgWidget::Box*   box   = new osgWidget::Box("VBOX", osgWidget::Box::VERTICAL);
+
+    box->addWidget(createButtonOk(theme,"Ok")->embed());
+    box->addWidget(label);
+    box->attachScaleCallback();
+    box->getBackground()->setColor(186/255.0, 186/255.0, 186/255.0,1);
     label->setColor(osgWidget::Color(0,0,0,0));
-    frame->setWindow(hbox);
-    hbox->resize();
-    frame->resizeFrame(hbox->getWidth(), hbox->getHeight());
+    frame->setWindow(box);
+
+
+    box->resize();
+    frame->resizeFrame(box->getWidth(), box->getHeight());
     return frame.release();
 }
 
@@ -100,6 +137,6 @@ int main(int argc, char** argv)
     frame->resizeAdd(30, 30);
 
     AlphaSetterVisitor alpha(.5f);
-    frame->accept(alpha);
+//    frame->accept(alpha);
     return osgWidget::createExample(viewer, wm, osgDB::readNodeFile("cow.osg"));
 }

@@ -113,7 +113,7 @@ void Uniform::setNumElements( unsigned int numElements )
 void Uniform::allocateDataArray()
 {
     // if one array is already allocated, the job is done.
-    if( _floatArray.valid() != _intArray.valid() ) return;
+    if( _floatArray.valid() || _intArray.valid() || _uintArray.valid() ) return;
 
     // array cannot be created until _type and _numElements are specified
     int arrayNumElements = getInternalArrayNumElements();
@@ -124,11 +124,19 @@ void Uniform::allocateDataArray()
             case GL_FLOAT:
                 _floatArray = new FloatArray(arrayNumElements);
                 _intArray = 0;
+                _uintArray = 0;
                 return;
 
             case GL_INT:
                 _intArray = new IntArray(arrayNumElements);
                 _floatArray = 0;
+                _uintArray = 0;
+                return;
+
+            case GL_UNSIGNED_INT:
+                _uintArray = new UIntArray(arrayNumElements);
+                _floatArray = 0;
+                _intArray = 0;
                 return;
 
             default:
@@ -137,6 +145,7 @@ void Uniform::allocateDataArray()
     }
     _floatArray = 0;
     _intArray = 0;
+    _uintArray = 0;
 }
 
 bool Uniform::setArray( FloatArray* array )
@@ -152,6 +161,7 @@ bool Uniform::setArray( FloatArray* array )
 
     _floatArray = array;
     _intArray = 0;
+    _uintArray = 0;
     dirty();
     return true;
 }
@@ -169,10 +179,28 @@ bool Uniform::setArray( IntArray* array )
 
     _intArray = array;
     _floatArray = 0;
+    _uintArray = 0;
     dirty();
     return true;
 }
 
+bool Uniform::setArray( UIntArray* array )
+{
+    if( !array ) return false;
+
+    // incoming array must match configuration of the Uniform
+    if( getInternalArrayType(getType())!=GL_UNSIGNED_INT || getInternalArrayNumElements()!=array->getNumElements() )
+    {
+        osg::notify(osg::WARN) << "Uniform::setArray : incompatible array" << std::endl;
+        return false;
+    }
+
+    _uintArray = array;
+    _floatArray = 0;
+    _intArray = 0;
+    dirty();
+    return true;
+}
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -211,6 +239,15 @@ int Uniform::compareData(const Uniform& rhs) const
         return memcmp( _intArray->getDataPointer(), rhs._intArray->getDataPointer(),
             _intArray->getTotalDataSize() );
     }
+
+    if( _uintArray.valid() )
+    {
+        if( ! rhs._uintArray ) return 1;
+        if( _uintArray == rhs._uintArray ) return 0;
+        return memcmp( _uintArray->getDataPointer(), rhs._uintArray->getDataPointer(),
+            _uintArray->getTotalDataSize() );
+    }
+    
     return -1;  // how got here?
 }
 
@@ -218,9 +255,10 @@ void Uniform::copyData(const Uniform& rhs)
 {
     // caller must ensure that _type==rhs._type
     _numElements = rhs._numElements;
-    if (rhs._floatArray.valid() || rhs._intArray.valid()) allocateDataArray();
+    if (rhs._floatArray.valid() || rhs._intArray.valid() || rhs._uintArray.valid()) allocateDataArray();
     if( _floatArray.valid() && rhs._floatArray.valid() ) *_floatArray = *rhs._floatArray;
     if( _intArray.valid() && rhs._intArray.valid() )     *_intArray = *rhs._intArray;
+    if( _uintArray.valid() && rhs._uintArray.valid() )     *_uintArray = *rhs._uintArray;
     dirty();
 }
 
@@ -283,6 +321,7 @@ const char* Uniform::getTypename( Type t )
     case FLOAT_MAT4x3:  return "mat4x3";
     case SAMPLER_BUFFER:       return "samplerBuffer";
     case SAMPLER_CUBE_SHADOW:  return "samplerCubeShadow";
+    case UNSIGNED_INT:         return "unsigned int";
     case UNSIGNED_INT_VEC2:    return "uvec2";
     case UNSIGNED_INT_VEC3:    return "uvec3";
     case UNSIGNED_INT_VEC4:    return "uvec4";
@@ -312,6 +351,7 @@ int Uniform::getTypeNumComponents( Type t )
     {
     case FLOAT:
     case INT:
+    case UNSIGNED_INT:
     case BOOL:
     case SAMPLER_1D:
     case SAMPLER_2D:
@@ -420,6 +460,7 @@ Uniform::Type Uniform::getTypeId( const std::string& tname )
     if( tname == "mat4x3" )          return FLOAT_MAT4x3;
     if( tname == "samplerBuffer" )     return SAMPLER_BUFFER;
     if( tname == "samplerCubeShadow" ) return SAMPLER_CUBE_SHADOW;
+    if( tname == "unsigned int" )    return UNSIGNED_INT;
     if( tname == "uvec2" )           return UNSIGNED_INT_VEC2;
     if( tname == "uvec3" )           return UNSIGNED_INT_VEC3;
     if( tname == "uvec4" )           return UNSIGNED_INT_VEC4;
@@ -549,10 +590,12 @@ GLenum Uniform::getInternalArrayType( Type t )
     case UNSIGNED_INT_SAMPLER_BUFFER:
         return GL_INT;
 
-    // TODO integrate new types
+    case UNSIGNED_INT:
     case UNSIGNED_INT_VEC2:
     case UNSIGNED_INT_VEC3:
     case UNSIGNED_INT_VEC4:
+        return GL_UNSIGNED_INT;
+
     default:
         return 0;
     }
@@ -652,6 +695,38 @@ Uniform::Uniform( const char* name, int i0, int i1, int i2 ) :
 
 Uniform::Uniform( const char* name, int i0, int i1, int i2, int i3 ) :
     _type(INT_VEC4), _numElements(1), _modifiedCount(0)
+{
+    setName(name);
+    allocateDataArray();
+    set( i0, i1, i2, i3 );
+}
+
+Uniform::Uniform( const char* name, unsigned int i ) :
+    _type(UNSIGNED_INT), _numElements(1), _modifiedCount(0)
+{
+    setName(name);
+    allocateDataArray();
+    set( i );
+}
+
+Uniform::Uniform( const char* name, unsigned int i0, unsigned int i1 ) :
+    _type(UNSIGNED_INT_VEC2), _numElements(1), _modifiedCount(0)
+{
+    setName(name);
+    allocateDataArray();
+    set( i0, i1 );
+}
+
+Uniform::Uniform( const char* name, unsigned int i0, unsigned int i1, unsigned int i2 ) :
+    _type(UNSIGNED_INT_VEC3), _numElements(1), _modifiedCount(0)
+{
+    setName(name);
+    allocateDataArray();
+    set( i0, i1, i2 );
+}
+
+Uniform::Uniform( const char* name, unsigned int i0, unsigned int i1, unsigned int i2, unsigned int i3 ) :
+    _type(UNSIGNED_INT_VEC4), _numElements(1), _modifiedCount(0)
 {
     setName(name);
     allocateDataArray();
@@ -767,6 +842,30 @@ bool Uniform::set( int i0, int i1, int i2, int i3 )
     return isScalar() ? setElement(0,i0,i1,i2,i3) : false;
 }
 
+bool Uniform::set( unsigned int i )
+{
+    if( getNumElements() == 0 ) setNumElements(1);
+    return isScalar() ? setElement(0,i) : false;
+}
+
+bool Uniform::set( unsigned int i0, unsigned int i1 )
+{
+    if( getNumElements() == 0 ) setNumElements(1);
+    return isScalar() ? setElement(0,i0,i1) : false;
+}
+
+bool Uniform::set( unsigned int i0, unsigned int i1, unsigned int i2 )
+{
+    if( getNumElements() == 0 ) setNumElements(1);
+    return isScalar() ? setElement(0,i0,i1,i2) : false;
+}
+
+bool Uniform::set( unsigned int i0, unsigned int i1, unsigned int i2, unsigned int i3 )
+{
+    if( getNumElements() == 0 ) setNumElements(1);
+    return isScalar() ? setElement(0,i0,i1,i2,i3) : false;
+}
+
 bool Uniform::set( bool b )
 {
     if( getNumElements() == 0 ) setNumElements(1);
@@ -850,6 +949,26 @@ bool Uniform::get( int& i0, int& i1, int& i2 ) const
 }
 
 bool Uniform::get( int& i0, int& i1, int& i2, int& i3 ) const
+{
+    return isScalar() ? getElement(0,i0,i1,i2,i3) : false;
+}
+
+bool Uniform::get( unsigned int& i ) const
+{
+    return isScalar() ? getElement(0,i) : false;
+}
+
+bool Uniform::get( unsigned int& i0, unsigned int& i1 ) const
+{
+    return isScalar() ? getElement(0,i0,i1) : false;
+}
+
+bool Uniform::get( unsigned int& i0, unsigned int& i1, unsigned int& i2 ) const
+{
+    return isScalar() ? getElement(0,i0,i1,i2) : false;
+}
+
+bool Uniform::get( unsigned int& i0, unsigned int& i1, unsigned int& i2, unsigned int& i3 ) const
 {
     return isScalar() ? getElement(0,i0,i1,i2,i3) : false;
 }
@@ -995,6 +1114,48 @@ bool Uniform::setElement( unsigned int index, int i0, int i1, int i2, int i3 )
     (*_intArray)[j+1] = i1;
     (*_intArray)[j+2] = i2;
     (*_intArray)[j+3] = i3;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, unsigned int i )
+{
+    if( index>=getNumElements() || !isCompatibleType(UNSIGNED_INT) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_uintArray)[j] = i;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, unsigned int i0, unsigned int i1 )
+{
+    if( index>=getNumElements() || !isCompatibleType(UNSIGNED_INT_VEC2) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_uintArray)[j] = i0;
+    (*_uintArray)[j+1] = i1;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, unsigned int i0, unsigned int i1, unsigned int i2 )
+{
+    if( index>=getNumElements() || !isCompatibleType(UNSIGNED_INT_VEC3) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_uintArray)[j] = i0;
+    (*_uintArray)[j+1] = i1;
+    (*_uintArray)[j+2] = i2;
+    dirty();
+    return true;
+}
+
+bool Uniform::setElement( unsigned int index, unsigned int i0, unsigned int i1, unsigned int i2, unsigned int i3 )
+{
+    if( index>=getNumElements() || !isCompatibleType(UNSIGNED_INT_VEC4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    (*_uintArray)[j] = i0;
+    (*_uintArray)[j+1] = i1;
+    (*_uintArray)[j+2] = i2;
+    (*_uintArray)[j+3] = i3;
     dirty();
     return true;
 }
@@ -1152,6 +1313,44 @@ bool Uniform::getElement( unsigned int index, int& i0, int& i1, int& i2, int& i3
     return true;
 }
 
+bool Uniform::getElement( unsigned int index, unsigned int& i ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(UNSIGNED_INT) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    i = (*_uintArray)[j];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, unsigned int& i0, unsigned int& i1 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(UNSIGNED_INT_VEC2) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    i0 = (*_uintArray)[j];
+    i1 = (*_uintArray)[j+1];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, unsigned int& i0, unsigned int& i1, unsigned int& i2 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(UNSIGNED_INT_VEC3) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    i0 = (*_uintArray)[j];
+    i1 = (*_uintArray)[j+1];
+    i2 = (*_uintArray)[j+2];
+    return true;
+}
+
+bool Uniform::getElement( unsigned int index, unsigned int& i0, unsigned int& i1, unsigned int& i2, unsigned int& i3 ) const
+{
+    if( index>=getNumElements() || !isCompatibleType(UNSIGNED_INT_VEC4) ) return false;
+    unsigned int j = index * getTypeNumComponents(getType());
+    i0 = (*_uintArray)[j];
+    i1 = (*_uintArray)[j+1];
+    i2 = (*_uintArray)[j+2];
+    i3 = (*_uintArray)[j+3];
+    return true;
+}
+
 bool Uniform::getElement( unsigned int index, bool& b ) const
 {
     if( index>=getNumElements() || !isCompatibleType(BOOL) ) return false;
@@ -1243,6 +1442,22 @@ void Uniform::apply(const GL2Extensions* ext, GLint location) const
 
     case INT_VEC4:
         if( _intArray.valid() ) ext->glUniform4iv( location, num, &_intArray->front() );
+        break;
+
+    case UNSIGNED_INT:
+        if( _uintArray.valid() ) ext->glUniform1uiv( location, num, &_uintArray->front() );
+        break;
+
+    case UNSIGNED_INT_VEC2:
+        if( _uintArray.valid() ) ext->glUniform2uiv( location, num, &_uintArray->front() );
+        break;
+
+    case UNSIGNED_INT_VEC3:
+        if( _uintArray.valid() ) ext->glUniform3uiv( location, num, &_uintArray->front() );
+        break;
+
+    case UNSIGNED_INT_VEC4:
+        if( _uintArray.valid() ) ext->glUniform4uiv( location, num, &_uintArray->front() );
         break;
 
     default:

@@ -339,10 +339,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::FlattenStaticTransformsDuplicatingSha
 	          __void__apply__osg_Billboard_R1,
 	          "",
 	          "");
-	I_ProtectedMethod1(void, transformDrawables, IN, osg::Geode &, geode,
+	I_ProtectedMethod1(void, transformGeode, IN, osg::Geode &, geode,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__transformDrawables__osg_Geode_R1,
+	                   __void__transformGeode__osg_Geode_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, transformDrawable, IN, osg::Drawable &, drawable,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__transformDrawable__osg_Drawable_R1,
 	                   "",
 	                   "");
 	I_ProtectedMethod1(void, transformBillboard, IN, osg::Billboard &, billboard,

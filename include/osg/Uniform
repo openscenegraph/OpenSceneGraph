@@ -190,6 +190,7 @@ class OSG_EXPORT Uniform : public Object
             FLOAT_MAT4x3 = GL_FLOAT_MAT4x3,
             SAMPLER_BUFFER = GL_SAMPLER_BUFFER_EXT,
             SAMPLER_CUBE_SHADOW = GL_SAMPLER_CUBE_SHADOW_EXT,
+            UNSIGNED_INT = GL_UNSIGNED_INT,
             UNSIGNED_INT_VEC2 = GL_UNSIGNED_INT_VEC2_EXT,
             UNSIGNED_INT_VEC3 = GL_UNSIGNED_INT_VEC3_EXT,
             UNSIGNED_INT_VEC4 = GL_UNSIGNED_INT_VEC4_EXT,
@@ -261,6 +262,7 @@ class OSG_EXPORT Uniform : public Object
         /** convenient scalar (non-array) constructors w/ assignment */
         explicit Uniform( const char* name, float f );
         explicit Uniform( const char* name, int i );
+        explicit Uniform( const char* name, unsigned int i );
         explicit Uniform( const char* name, bool b );
         Uniform( const char* name, const osg::Vec2& v2 );
         Uniform( const char* name, const osg::Vec3& v3 );
@@ -272,6 +274,9 @@ class OSG_EXPORT Uniform : public Object
         Uniform( const char* name, int i0, int i1 );
         Uniform( const char* name, int i0, int i1, int i2 );
         Uniform( const char* name, int i0, int i1, int i2, int i3 );
+        Uniform( const char* name, unsigned int i0, unsigned int i1 );
+        Uniform( const char* name, unsigned int i0, unsigned int i1, unsigned int i2 );
+        Uniform( const char* name, unsigned int i0, unsigned int i1, unsigned int i2, unsigned int i3 );
         Uniform( const char* name, bool b0, bool b1 );
         Uniform( const char* name, bool b0, bool b1, bool b2 );
         Uniform( const char* name, bool b0, bool b1, bool b2, bool b3 );
@@ -316,6 +321,7 @@ class OSG_EXPORT Uniform : public Object
         /** convenient scalar (non-array) value assignment */
         bool set( float f );
         bool set( int i );
+        bool set( unsigned int i );
         bool set( bool b );
         bool set( const osg::Vec2& v2 );
         bool set( const osg::Vec3& v3 );
@@ -327,6 +333,9 @@ class OSG_EXPORT Uniform : public Object
         bool set( int i0, int i1 );
         bool set( int i0, int i1, int i2 );
         bool set( int i0, int i1, int i2, int i3 );
+        bool set( unsigned int i0, unsigned int i1 );
+        bool set( unsigned int i0, unsigned int i1, unsigned int i2 );
+        bool set( unsigned int i0, unsigned int i1, unsigned int i2, unsigned int i3 );
         bool set( bool b0, bool b1 );
         bool set( bool b0, bool b1, bool b2 );
         bool set( bool b0, bool b1, bool b2, bool b3 );
@@ -334,6 +343,7 @@ class OSG_EXPORT Uniform : public Object
         /** convenient scalar (non-array) value query */
         bool get( float& f ) const;
         bool get( int& i ) const;
+        bool get( unsigned int& i ) const;
         bool get( bool& b ) const;
         bool get( osg::Vec2& v2 ) const;
         bool get( osg::Vec3& v3 ) const;
@@ -345,6 +355,9 @@ class OSG_EXPORT Uniform : public Object
         bool get( int& i0, int& i1 ) const;
         bool get( int& i0, int& i1, int& i2 ) const;
         bool get( int& i0, int& i1, int& i2, int& i3 ) const;
+        bool get( unsigned int& i0, unsigned int& i1 ) const;
+        bool get( unsigned int& i0, unsigned int& i1, unsigned int& i2 ) const;
+        bool get( unsigned int& i0, unsigned int& i1, unsigned int& i2, unsigned int& i3 ) const;
         bool get( bool& b0, bool& b1 ) const;
         bool get( bool& b0, bool& b1, bool& b2 ) const;
         bool get( bool& b0, bool& b1, bool& b2, bool& b3 ) const;
@@ -352,6 +365,7 @@ class OSG_EXPORT Uniform : public Object
         /** value assignment for array uniforms */
         bool setElement( unsigned int index, float f );
         bool setElement( unsigned int index, int i );
+        bool setElement( unsigned int index, unsigned int i );
         bool setElement( unsigned int index, bool b );
         bool setElement( unsigned int index, const osg::Vec2& v2 );
         bool setElement( unsigned int index, const osg::Vec3& v3 );
@@ -363,6 +377,9 @@ class OSG_EXPORT Uniform : public Object
         bool setElement( unsigned int index, int i0, int i1 );
         bool setElement( unsigned int index, int i0, int i1, int i2 );
         bool setElement( unsigned int index, int i0, int i1, int i2, int i3 );
+        bool setElement( unsigned int index, unsigned int i0, unsigned int i1 );
+        bool setElement( unsigned int index, unsigned int i0, unsigned int i1, unsigned int i2 );
+        bool setElement( unsigned int index, unsigned int i0, unsigned int i1, unsigned int i2, unsigned int i3 );
         bool setElement( unsigned int index, bool b0, bool b1 );
         bool setElement( unsigned int index, bool b0, bool b1, bool b2 );
         bool setElement( unsigned int index, bool b0, bool b1, bool b2, bool b3 );
@@ -370,6 +387,7 @@ class OSG_EXPORT Uniform : public Object
         /** value query for array uniforms */
         bool getElement( unsigned int index, float& f ) const;
         bool getElement( unsigned int index, int& i ) const;
+        bool getElement( unsigned int index, unsigned int& i ) const;
         bool getElement( unsigned int index, bool& b ) const;
         bool getElement( unsigned int index, osg::Vec2& v2 ) const;
         bool getElement( unsigned int index, osg::Vec3& v3 ) const;
@@ -381,6 +399,9 @@ class OSG_EXPORT Uniform : public Object
         bool getElement( unsigned int index, int& i0, int& i1 ) const;
         bool getElement( unsigned int index, int& i0, int& i1, int& i2 ) const;
         bool getElement( unsigned int index, int& i0, int& i1, int& i2, int& i3 ) const;
+        bool getElement( unsigned int index, unsigned int& i0, unsigned int& i1 ) const;
+        bool getElement( unsigned int index, unsigned int& i0, unsigned int& i1, unsigned int& i2 ) const;
+        bool getElement( unsigned int index, unsigned int& i0, unsigned int& i1, unsigned int& i2, unsigned int& i3 ) const;
         bool getElement( unsigned int index, bool& b0, bool& b1 ) const;
         bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2 ) const;
         bool getElement( unsigned int index, bool& b0, bool& b1, bool& b2, bool& b3 ) const;
@@ -425,6 +446,7 @@ class OSG_EXPORT Uniform : public Object
         /** Set the internal data array for a osg::Uniform */
         bool setArray( FloatArray* array );
         bool setArray( IntArray* array );
+        bool setArray( UIntArray* array );
 
         /** Get the internal data array for a float osg::Uniform. */
         FloatArray* getFloatArray() { return _floatArray.get(); }
@@ -433,6 +455,10 @@ class OSG_EXPORT Uniform : public Object
         /** Get the internal data array for an int osg::Uniform. */
         IntArray* getIntArray() { return _intArray.get(); }
         const IntArray* getIntArray() const { return _intArray.get(); }
+
+        /** Get the internal data array for an unsigned int osg::Uniform. */
+        UIntArray* getUIntArray() { return _uintArray.get(); }
+        const UIntArray* getUIntArray() const { return _uintArray.get(); }
 
         inline void setModifiedCount(unsigned int mc) { _modifiedCount = mc; }
         inline unsigned int getModifiedCount() const { return _modifiedCount; }
@@ -463,6 +489,7 @@ class OSG_EXPORT Uniform : public Object
         // getInternalArrayType() of length getInternalArrayNumElements().
         ref_ptr<FloatArray> _floatArray;
         ref_ptr<IntArray>   _intArray;
+        ref_ptr<UIntArray>  _uintArray;
 
         ref_ptr<Callback>   _updateCallback;
         ref_ptr<Callback>   _eventCallback;

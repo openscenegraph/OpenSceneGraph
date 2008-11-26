@@ -354,7 +354,23 @@ Frame* Frame::createSimpleFrameFromTheme(
 ) {
 
     osg::ref_ptr<osg::Image> natifImage = createNatifEdgeImageFromTheme(image);
-    return createSimpleFrameWithSingleTexture(name, natifImage.get(), width, height, flags, exFrame);
+    Frame* frame;
+
+    frame = createSimpleFrameWithSingleTexture(name, natifImage.get(), width, height, flags, exFrame);
+
+    if (frame && image && natifImage.valid()) 
+    {
+        const unsigned int bpps = image->getPixelSizeInBits() / 8;
+        const unsigned int one_third_s = image->s()/3;
+        unsigned char* srcdata = (unsigned char*)image->data();
+        osg::Vec4 color(0,0,0,1);
+        for (unsigned int d = 0; d < bpps; d++)
+        {
+            color[d] = srcdata[one_third_s * image->s() * bpps + (one_third_s) * bpps + d] * 1.0/255.0;
+        }
+        frame->getEmbeddedWindow()->setColor(color);
+    }
+    return frame;
 }
 
 

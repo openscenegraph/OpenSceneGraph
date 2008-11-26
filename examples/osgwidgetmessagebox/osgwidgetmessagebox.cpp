@@ -8,6 +8,8 @@
 #include <osgWidget/Widget>
 #include <osgWidget/Types>
 #include <osgDB/ReadFile>
+#include <osgAnimation/EaseMotion>
+#include <iostream>
 
 const unsigned int MASK_2D = 0xF0000000;
 
@@ -43,6 +45,61 @@ struct AlphaSetterVisitor : public osg::NodeVisitor
 };
 
 
+struct EventOK : public osgWidget::Callback, osg::NodeCallback
+{
+    typedef osgAnimation::OutQuadMotion WidgetMotion;
+    WidgetMotion _motionOver;
+    
+    double _lastUpdate;
+    osgWidget::Color _defaultColor;
+    osgWidget::Color _overColor;
+    bool _over;
+    osg::observer_ptr<osgWidget::Frame> _frame;
+    EventOK(osgWidget::Frame* frame) : osgWidget::Callback(osgWidget::EVENT_ALL), _frame(frame) 
+    {
+        _defaultColor = _frame->getEmbeddedWindow()->getColor();
+        _overColor = osgWidget::Color(1,1,0,1);
+        _over  = false;
+    }
+
+    bool operator()(osgWidget::Event& ev)
+    {
+        if (ev.type == osgWidget::EVENT_MOUSE_ENTER)
+        {
+            _over = true;
+            std::cout << "Enter" << std::endl;
+            return true;
+        }
+        else if (ev.type == osgWidget::EVENT_MOUSE_LEAVE) 
+        {
+            _over = false;
+            std::cout << "Leave" << std::endl;
+            return true;
+        }
+        return false;
+    }
+
+    void operator()(osg::Node* node, osg::NodeVisitor* nv)
+    {
+        if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
+        {
+            const osg::FrameStamp* fs = nv->getFrameStamp();
+            double dt = fs->getSimulationTime() - _lastUpdate;
+            _lastUpdate = fs->getSimulationTime();
+
+            if (_over)
+                _motionOver.update(dt);
+            else
+                _motionOver.update(-dt);
+
+            _frame->getEmbeddedWindow()->setColor(_defaultColor + ((_overColor - _defaultColor) * _motionOver.getValue()));
+        }
+        node->traverse(*nv);
+    }
+};
+
+
+
 osgWidget::Window* createButtonOk(const std::string& theme, const std::string& text, int fontSize = 13)
 {
     osg::ref_ptr<osgWidget::Frame> frame = osgWidget::Frame::createSimpleFrameFromTheme(
@@ -65,7 +122,44 @@ osgWidget::Window* createButtonOk(const std::string& theme, const std::string& t
     osgWidget::Box* box = new osgWidget::Box("HBOX", osgWidget::Box::HORIZONTAL);
     box->addWidget(label);
     box->resize();
-    box->getBackground()->setColor(186/255.0, 186/255.0, 186/255.0,1);
+    osgWidget::Color colorBack = frame->getEmbeddedWindow()->getColor();
+    box->getBackground()->setColor(colorBack);
+    frame->getEmbeddedWindow()->setWindow(box);
+
+    frame->resizeFrame(box->getWidth(), box->getHeight());
+    frame->resizeAdd(0, 0);
+
+    EventOK* event = new EventOK(frame);
+    frame->setUpdateCallback(event);
+    frame->addCallback(event);
+
+    return frame.release();
+}
+
+osgWidget::Window* createButtonOkSelected(const std::string& theme, const std::string& text, int fontSize = 13)
+{
+    osg::ref_ptr<osgWidget::Frame> frame = osgWidget::Frame::createSimpleFrameFromTheme(
+        "ButtonOKSelected",
+        osgDB::readImageFile(theme),
+        300.0f, 
+        50.0f,
+        osgWidget::Frame::FRAME_TEXTURE
+        );
+    frame->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    osgWidget::Label* label = new osgWidget::Label("", "");
+    label->setFont("fonts/Vera.ttf");
+    label->setFontSize(fontSize);
+    label->setFontColor(osgWidget::Color(0,0,0,1));
+    label->setColor(osgWidget::Color(0,0,0,0));
+    label->setLabel(text);
+    label->setCanFill(true);
+
+    osgWidget::Box* box = new osgWidget::Box("HBOX", osgWidget::Box::HORIZONTAL);
+    box->addWidget(label);
+    box->resize();
+    osgWidget::Color colorBack = frame->getEmbeddedWindow()->getColor();
+    box->getBackground()->setColor(colorBack);
     frame->getEmbeddedWindow()->setWindow(box);
 
     frame->resizeFrame(box->getWidth(), box->getHeight());
@@ -95,14 +189,15 @@ osgWidget::Frame* createError(const std::string& theme, const std::string& text,
     osgWidget::Box*   vbox   = new osgWidget::Box("HBOX", osgWidget::Box::HORIZONTAL);
     osgWidget::Box*   box   = new osgWidget::Box("VBOX", osgWidget::Box::VERTICAL);
 
-    std::string theme2 = "osgWidget/theme-4.png";
-    osgWidget::Widget* buttonOK = createButtonOk(theme2,"Ok")->embed();
+    std::string theme2 = "osgWidget/theme-4-small.png";
+    osgWidget::Widget* buttonOK = createButtonOk(theme2,"Ok", fontSize)->embed();
     buttonOK->setColor(osgWidget::Color(0,0,0,0));
     buttonOK->setCanFill(false);
     box->addWidget(buttonOK);
     box->addWidget(label);
     box->attachScaleCallback();
-    box->getBackground()->setColor(186/255.0, 186/255.0, 186/255.0,1);
+    osgWidget::Color colorBack = frame->getEmbeddedWindow()->getColor();
+    box->getBackground()->setColor(colorBack);
     label->setColor(osgWidget::Color(0,0,0,0));
     frame->setWindow(box);
 
@@ -136,7 +231,7 @@ int main(int argc, char** argv)
         osgWidget::WindowManager::WM_PICK_DEBUG
     );
 
-    osgWidget::Frame* frame = createError(theme, LABEL1);
+    osgWidget::Frame* frame = createError(theme, LABEL1, 16);
     // Add everything to the WindowManager.
     wm->addChild(frame);
     frame->resizeAdd(30, 30);

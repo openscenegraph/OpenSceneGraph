@@ -20,6 +20,7 @@
 # #include "gdal.h"
 
 FIND_PATH(GDAL_INCLUDE_DIR gdal.h
+  PATHS
   $ENV{GDAL_DIR}
   NO_DEFAULT_PATH
     PATH_SUFFIXES include

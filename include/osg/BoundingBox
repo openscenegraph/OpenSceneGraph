@@ -22,24 +22,19 @@
 
 namespace osg {
 
-class BoundingSphere;
+template<typename VT>
+class BoundingSphereImpl;
 
 /** General purpose axis-aligned bounding box class for enclosing objects/vertices.
   * Bounds leaf objects in a scene such as osg::Drawable objects. Used for frustum
   * culling etc.
 */
-class OSG_EXPORT BoundingBox
+template<typename VT>
+class BoundingBoxImpl
 {
     public:
-    
-#ifdef OSG_USE_FLOAT_BOUNDINGBOX
-        typedef Vec3f vec_type;
-        typedef float value_type;
-#else
-        typedef Vec3d vec_type;
-        typedef double value_type;
-#endif
-
+        typedef VT vec_type;
+        typedef typename VT::value_type value_type;
     
         /** Minimum extent. (Smallest X, Y, and Z values of all coordinates.) */
         vec_type _min;
@@ -47,25 +42,35 @@ class OSG_EXPORT BoundingBox
         vec_type _max;
 
         /** Creates an uninitialized bounding box. */
-        inline BoundingBox() : _min(FLT_MAX,FLT_MAX,FLT_MAX),
-                        _max(-FLT_MAX,-FLT_MAX,-FLT_MAX) {}
+        inline BoundingBoxImpl() :
+            _min(FLT_MAX,
+                 FLT_MAX,
+                 FLT_MAX),
+            _max(-FLT_MAX,
+                 -FLT_MAX,
+                 -FLT_MAX)
+        {}
     
         /** Creates a bounding box initialized to the given extents. */
-        inline BoundingBox(value_type xmin, value_type ymin, value_type zmin,
+        inline BoundingBoxImpl(value_type xmin, value_type ymin, value_type zmin,
                            value_type xmax, value_type ymax, value_type zmax) :
                            _min(xmin,ymin,zmin),
                            _max(xmax,ymax,zmax) {}
 
         /** Creates a bounding box initialized to the given extents. */
-        inline BoundingBox(const vec_type& min,const vec_type& max) : 
+        inline BoundingBoxImpl(const vec_type& min,const vec_type& max) : 
                     _min(min),
                     _max(max) {}
 
         /** Clear the bounding box. Erases existing minimum and maximum extents. */
         inline void init()
         {
-            _min.set(FLT_MAX,FLT_MAX,FLT_MAX);
-            _max.set(-FLT_MAX,-FLT_MAX,-FLT_MAX);
+            _min.set(FLT_MAX,
+                     FLT_MAX,
+                     FLT_MAX);
+            _max.set(-FLT_MAX,
+                     -FLT_MAX,
+                     -FLT_MAX);
         }
         
         /** Returns true if the bounding box extents are valid, false otherwise. */              
@@ -168,22 +173,22 @@ class OSG_EXPORT BoundingBox
 
         /** Expands this bounding box to include the given bounding box.
           * If this box is uninitialized, set it equal to bb. */
-        void expandBy(const BoundingBox& bb);
+        void expandBy(const BoundingBoxImpl& bb);
 
         /** Expands this bounding box to include the given sphere.
           * If this box is uninitialized, set it to include sh. */
-        void expandBy(const BoundingSphere& sh);
+        void expandBy(const BoundingSphereImpl<VT>& sh);
         
 
         /** Returns the intersection of this bounding box and the specified bounding box. */
-        BoundingBox intersect(const BoundingBox& bb) const
-        {    return osg::BoundingBox(osg::maximum(xMin(),bb.xMin()),osg::maximum(yMin(),bb.yMin()),osg::maximum(zMin(),bb.zMin()),
+        BoundingBoxImpl intersect(const BoundingBoxImpl& bb) const
+        {    return BoundingBoxImpl(osg::maximum(xMin(),bb.xMin()),osg::maximum(yMin(),bb.yMin()),osg::maximum(zMin(),bb.zMin()),
                                      osg::minimum(xMax(),bb.xMax()),osg::minimum(yMax(),bb.yMax()),osg::minimum(zMax(),bb.zMax()));
 
         }
 
         /** Return true if this bounding box intersects the specified bounding box. */
-        bool intersects(const BoundingBox& bb) const
+        bool intersects(const BoundingBoxImpl& bb) const
         {    return osg::maximum(xMin(),bb.xMin()) <= osg::minimum(xMax(),bb.xMax()) &&
                     osg::maximum(yMin(),bb.yMin()) <= osg::minimum(yMax(),bb.yMax()) &&
                     osg::maximum(zMin(),bb.zMin()) <= osg::minimum(zMax(),bb.zMax());
@@ -199,6 +204,45 @@ class OSG_EXPORT BoundingBox
                    (v.z()>=_min.z() && v.z()<=_max.z());
         }
 };
+
+template<typename VT>
+void BoundingBoxImpl<VT>::expandBy(const BoundingBoxImpl<VT>& bb)
+{
+    if (!bb.valid()) return;
+
+    if(bb._min.x()<_min.x()) _min.x() = bb._min.x();
+    if(bb._max.x()>_max.x()) _max.x() = bb._max.x();
+
+    if(bb._min.y()<_min.y()) _min.y() = bb._min.y();
+    if(bb._max.y()>_max.y()) _max.y() = bb._max.y();
+
+    if(bb._min.z()<_min.z()) _min.z() = bb._min.z();
+    if(bb._max.z()>_max.z()) _max.z() = bb._max.z();
+}
+
+template<typename VT>
+void BoundingBoxImpl<VT>::expandBy(const BoundingSphereImpl<VT>& sh)
+{
+    if (!sh.valid()) return;
+
+    if(sh._center.x()-sh._radius<_min.x()) _min.x() = sh._center.x()-sh._radius;
+    if(sh._center.x()+sh._radius>_max.x()) _max.x() = sh._center.x()+sh._radius;
+
+    if(sh._center.y()-sh._radius<_min.y()) _min.y() = sh._center.y()-sh._radius;
+    if(sh._center.y()+sh._radius>_max.y()) _max.y() = sh._center.y()+sh._radius;
+
+    if(sh._center.z()-sh._radius<_min.z()) _min.z() = sh._center.z()-sh._radius;
+    if(sh._center.z()+sh._radius>_max.z()) _max.z() = sh._center.z()+sh._radius;
+}
+
+typedef BoundingBoxImpl<Vec3f> BoundingBoxf;
+typedef BoundingBoxImpl<Vec3d> BoundingBoxd;
+
+#ifdef OSG_USE_FLOAT_BOUNDINGBOX
+typedef BoundingBoxf BoundingBox;
+#else
+typedef BoundingBoxd BoundingBox;
+#endif
 
 }
 

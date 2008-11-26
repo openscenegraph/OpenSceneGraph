@@ -204,6 +204,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __unsigned_int__getMaximumNumOfObjectsToCompilePerFrame,
 	          "Get the maximum number of OpenGL objects that the page should attempt to compile per frame. ",
 	          "");
+	I_Method1(void, setTargetMaximumNumberOfPageLOD, IN, unsigned int, target,
+	          Properties::NON_VIRTUAL,
+	          __void__setTargetMaximumNumberOfPageLOD__unsigned_int,
+	          "Set the target maximum number of PagedLOD to maintain in memory. ",
+	          "Note, if more than the target number are required for rendering of a frame then these active PagedLOD are excempt from being expiried. But once the number of active drops back below the target the inactive PagedLOD will be trimmed back to the target number. ");
+	I_Method0(unsigned int, getTargetMaximumNumberOfPageLOD,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getTargetMaximumNumberOfPageLOD,
+	          "Get the target maximum number of PagedLOD to maintain in memory. ",
+	          "");
 	I_Method1(void, setExpiryDelay, IN, double, expiryDelay,
 	          Properties::NON_VIRTUAL,
 	          __void__setExpiryDelay__double,
@@ -485,6 +495,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(double, TargetFrameRate, 
 	                 __double__getTargetFrameRate, 
 	                 __void__setTargetFrameRate__double);
+	I_SimpleProperty(unsigned int, TargetMaximumNumberOfPageLOD, 
+	                 __unsigned_int__getTargetMaximumNumberOfPageLOD, 
+	                 __void__setTargetMaximumNumberOfPageLOD__unsigned_int);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DatabaseThread::Mode)

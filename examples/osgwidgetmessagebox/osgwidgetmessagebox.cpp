@@ -9,6 +9,7 @@
 #include <osgWidget/Types>
 #include <osgDB/ReadFile>
 #include <osgAnimation/EaseMotion>
+#include <osg/io_utils>
 #include <iostream>
 
 const unsigned int MASK_2D = 0xF0000000;
@@ -45,6 +46,37 @@ struct AlphaSetterVisitor : public osg::NodeVisitor
 };
 
 
+struct ColorSetterVisitor : public osg::NodeVisitor
+{
+    osgWidget::Color _color;
+    ColorSetterVisitor( const osgWidget::Color& color):osg::NodeVisitor(TRAVERSE_ALL_CHILDREN) { _color = color;}
+
+    void apply(osg::MatrixTransform& node)
+    {
+        osgWidget::Window* win = dynamic_cast<osgWidget::Window*>(&node);
+
+        if (win) {
+            osgWidget::warn() << "I am in Window: " << win->getName() << std::endl;
+
+            for (osgWidget::Window::Iterator it = win->begin(); it != win->end(); it++)
+            {
+                osgWidget::warn() << "   I am operating on Widget: " << it->get()->getName() << std::endl;
+                
+//                 osgWidget::Color color = it->get()->getColor();
+//                 color[3] = color[3] *_alpha;
+                it->get()->setColor(_color);
+            }
+            {
+//                 osgWidget::Color color = win->getBackground()->getColor();
+//                 color[3] = color[3] *_alpha;
+                win->getBackground()->setColor(_color);
+            }
+        }
+        traverse(node);
+    }
+};
+
+
 struct EventOK : public osgWidget::Callback, osg::NodeCallback
 {
     typedef osgAnimation::OutQuadMotion WidgetMotion;
@@ -54,7 +86,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
     osgWidget::Color _defaultColor;
     osgWidget::Color _overColor;
     bool _over;
-    osg::observer_ptr<osgWidget::Frame> _frame;
+    osg::ref_ptr<osgWidget::Frame> _frame;
     EventOK(osgWidget::Frame* frame) : osgWidget::Callback(osgWidget::EVENT_ALL), _frame(frame) 
     {
         _defaultColor = _frame->getEmbeddedWindow()->getColor();
@@ -83,6 +115,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
     {
         if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
         {
+            std::cout << " Update Visitor " << std::endl;
             const osg::FrameStamp* fs = nv->getFrameStamp();
             double dt = fs->getSimulationTime() - _lastUpdate;
             _lastUpdate = fs->getSimulationTime();
@@ -92,7 +125,14 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
             else
                 _motionOver.update(-dt);
 
-            _frame->getEmbeddedWindow()->setColor(_defaultColor + ((_overColor - _defaultColor) * _motionOver.getValue()));
+            if (_frame.valid())
+            {
+                osgWidget::Color c = _defaultColor + ((_overColor - _defaultColor) * _motionOver.getValue());
+                std::cout << "color " << c << std::endl;
+                ColorSetterVisitor colorSetter(c);
+                _frame->accept(colorSetter);
+                //_frame->getEmbeddedWindow()->setColor(c);
+            }
         }
         node->traverse(*nv);
     }
@@ -136,6 +176,7 @@ osgWidget::Window* createButtonOk(const std::string& theme, const std::string& t
     return frame.release();
 }
 
+#if 0
 osgWidget::Window* createButtonOkSelected(const std::string& theme, const std::string& text, int fontSize = 13)
 {
     osg::ref_ptr<osgWidget::Frame> frame = osgWidget::Frame::createSimpleFrameFromTheme(
@@ -166,6 +207,7 @@ osgWidget::Window* createButtonOkSelected(const std::string& theme, const std::s
     frame->resizeAdd(0, 0);
     return frame.release();
 }
+#endif
 
 osgWidget::Frame* createError(const std::string& theme, const std::string& text, int fontSize = 13)
 {

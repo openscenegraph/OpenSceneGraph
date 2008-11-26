@@ -334,6 +334,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __unsigned_int__getDataToCompileListSize,
 	          "Report how many items are in the _dataToCompileList queue. ",
 	          "");
+	I_Method0(unsigned int, getDataToMergeListSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getDataToMergeListSize,
+	          "Report how many items are in the _dataToCompileList queue. ",
+	          "");
+	I_Method0(bool, getRequestsInProgress,
+	          Properties::NON_VIRTUAL,
+	          __bool__getRequestsInProgress,
+	          "Report whether any requests are in the pager. ",
+	          "");
 	I_Method0(double, getMinimumTimeToMergeTile,
 	          Properties::NON_VIRTUAL,
 	          __double__getMinimumTimeToMergeTile,
@@ -417,6 +427,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(unsigned int, DataToCompileListSize, 
 	                 __unsigned_int__getDataToCompileListSize, 
 	                 0);
+	I_SimpleProperty(unsigned int, DataToMergeListSize, 
+	                 __unsigned_int__getDataToMergeListSize, 
+	                 0);
 	I_SimpleProperty(bool, DatabasePagerThreadPause, 
 	                 __bool__getDatabasePagerThreadPause, 
 	                 __void__setDatabasePagerThreadPause__bool);
@@ -463,6 +476,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_SimpleProperty(int, ReleaseFrames, 
 	                 __int__getReleaseFrames, 
 	                 __void__setReleaseFrames__int);
+	I_SimpleProperty(bool, RequestsInProgress, 
+	                 __bool__getRequestsInProgress, 
+	                 0);
 	I_SimpleProperty(OpenThreads::Thread::ThreadPriority, SchedulePriority, 
 	                 0, 
 	                 __int__setSchedulePriority__OpenThreads_Thread_ThreadPriority);
@@ -500,6 +516,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager::DatabaseThread)
 	          __bool__getDone,
 	          "",
 	          "");
+	I_Method1(void, setActive, IN, bool, active,
+	          Properties::NON_VIRTUAL,
+	          __void__setActive__bool,
+	          "",
+	          "");
+	I_Method0(bool, getActive,
+	          Properties::NON_VIRTUAL,
+	          __bool__getActive,
+	          "",
+	          "");
 	I_Method0(int, cancel,
 	          Properties::VIRTUAL,
 	          __int__cancel,
@@ -510,6 +536,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager::DatabaseThread)
 	          __void__run,
 	          "Thread's run method. ",
 	          "Must be implemented by derived classes. This is where the action happens. ");
+	I_SimpleProperty(bool, Active, 
+	                 __bool__getActive, 
+	                 __void__setActive__bool);
 	I_SimpleProperty(bool, Done, 
 	                 __bool__getDone, 
 	                 __void__setDone__bool);

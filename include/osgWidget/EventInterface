@@ -322,7 +322,7 @@ class OSGWIDGET_EXPORT EventInterface
                 // This is the OLD method; testing a new method below.
                 // if(i->getType() == ev.type && (*i)(ev)) return true;
 
-                if(i->get()->getType() == ev.type) {
+                if(i->get()->getType() & ev.type) {
                     ev.setData(i->get()->getData());
 
                     if((*i->get())(ev)) return true;

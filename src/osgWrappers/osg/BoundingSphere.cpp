@@ -10,7 +10,6 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/BoundingBox>
 #include <osg/BoundingSphere>
 #include <osg/Vec3d>
 #include <osg/Vec3f>
@@ -23,27 +22,31 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osg::Vec3f, osg::BoundingSphere::vec_type)
+#include <osg/BoundingBox>
+	
+TYPE_NAME_ALIAS(osg::BoundingSphereImpl< osg::Vec3f >, osg::BoundingSpheref)
 
-TYPE_NAME_ALIAS(float, osg::BoundingSphere::value_type)
+TYPE_NAME_ALIAS(osg::BoundingSphereImpl< osg::Vec3d >, osg::BoundingSphered)
 
-BEGIN_VALUE_REFLECTOR(osg::BoundingSphere)
+TYPE_NAME_ALIAS(osg::BoundingSpheref, osg::BoundingSphere)
+
+BEGIN_VALUE_REFLECTOR(osg::BoundingSphereImpl< osg::Vec3d >)
 	I_DeclaringFile("osg/BoundingSphere");
-	I_Constructor0(____BoundingSphere,
+	I_Constructor0(____BoundingSphereImpl,
 	               "Construct a default bounding sphere with radius to -1.0f, representing an invalid/unset bounding sphere. ",
 	               "");
-	I_Constructor2(IN, const osg::BoundingSphere::vec_type &, center, IN, osg::BoundingSphere::value_type, radius,
-	               ____BoundingSphere__C5_vec_type_R1__value_type,
+	I_Constructor2(IN, const osg::BoundingSphereImpl< osg::Vec3d >::vec_type &, center, IN, osg::BoundingSphereImpl< osg::Vec3d >::value_type, radius,
+	               ____BoundingSphereImpl__C5_vec_type_R1__value_type,
 	               "Creates a bounding sphere initialized to the given extents. ",
 	               "");
-	I_Constructor1(IN, const osg::BoundingSphere &, bs,
+	I_Constructor1(IN, const osg::BoundingSphereImpl< osg::Vec3d > &, bs,
 	               Properties::NON_EXPLICIT,
-	               ____BoundingSphere__C5_BoundingSphere_R1,
+	               ____BoundingSphereImpl__C5_BoundingSphereImpl_R1,
 	               "Creates a bounding sphere initialized to the given extents. ",
 	               "");
-	I_Constructor1(IN, const osg::BoundingBox &, bb,
+	I_Constructor1(IN, const osg::BoundingBoxImpl< osg::Vec3d > &, bb,
 	               Properties::NON_EXPLICIT,
-	               ____BoundingSphere__C5_BoundingBox_R1,
+	               ____BoundingSphereImpl__C5_BoundingBoxImplT1_VT__R1,
 	               "Creates a bounding sphere initialized to the given extents. ",
 	               "");
 	I_Method0(void, init,
@@ -56,87 +59,160 @@ BEGIN_VALUE_REFLECTOR(osg::BoundingSphere)
 	          __bool__valid,
 	          "Returns true of the bounding sphere extents are valid, false otherwise. ",
 	          "");
-	I_Method2(void, set, IN, const osg::BoundingSphere::vec_type &, center, IN, osg::BoundingSphere::value_type, radius,
+	I_Method2(void, set, IN, const osg::BoundingSphereImpl< osg::Vec3d >::vec_type &, center, IN, osg::BoundingSphereImpl< osg::Vec3d >::value_type, radius,
 	          Properties::NON_VIRTUAL,
 	          __void__set__C5_vec_type_R1__value_type,
 	          "Set the bounding sphere to the given center/radius using floats. ",
 	          "");
-	I_Method0(osg::BoundingSphere::vec_type &, center,
+	I_Method0(osg::BoundingSphereImpl< osg::Vec3d >::vec_type &, center,
 	          Properties::NON_VIRTUAL,
 	          __vec_type_R1__center,
 	          "Returns the center of the bounding sphere. ",
 	          "");
-	I_Method0(const osg::BoundingSphere::vec_type &, center,
+	I_Method0(const osg::BoundingSphereImpl< osg::Vec3d >::vec_type &, center,
 	          Properties::NON_VIRTUAL,
 	          __C5_vec_type_R1__center,
 	          "Returns the const center of the bounding sphere. ",
 	          "");
-	I_Method0(osg::BoundingSphere::value_type &, radius,
+	I_Method0(osg::BoundingSphereImpl< osg::Vec3d >::value_type &, radius,
 	          Properties::NON_VIRTUAL,
 	          __value_type_R1__radius,
 	          "Returns the radius of the bounding sphere. ",
 	          "");
-	I_Method0(osg::BoundingSphere::value_type, radius,
+	I_Method0(osg::BoundingSphereImpl< osg::Vec3d >::value_type, radius,
 	          Properties::NON_VIRTUAL,
 	          __value_type__radius,
 	          "Returns the const radius of the bounding sphere. ",
 	          "");
-	I_Method0(osg::BoundingSphere::value_type, radius2,
+	I_Method0(osg::BoundingSphereImpl< osg::Vec3d >::value_type, radius2,
 	          Properties::NON_VIRTUAL,
 	          __value_type__radius2,
 	          "Returns the squared length of the radius. ",
 	          "Note, For performance reasons, the calling method is responsible for checking to make sure the sphere is valid. ");
-	I_Method1(void, expandBy, IN, const osg::Vec3f &, v,
+	I_Method1(void, expandBy, IN, const osg::BoundingSphereImpl< osg::Vec3d > &, sh,
 	          Properties::NON_VIRTUAL,
-	          __void__expandBy__C5_Vec3f_R1,
-	          "Expands the sphere to encompass the given point. ",
-	          "Repositions the sphere center to minimize the radius increase. If the sphere is uninitialized, set its center to v and radius to zero. ");
-	I_Method1(void, expandRadiusBy, IN, const osg::Vec3f &, v,
-	          Properties::NON_VIRTUAL,
-	          __void__expandRadiusBy__C5_Vec3f_R1,
-	          "Expands the sphere to encompass the given point. ",
-	          "Does not reposition the sphere center. If the sphere is uninitialized, set its center to v and radius to zero. ");
-	I_Method1(void, expandBy, IN, const osg::Vec3d &, v,
-	          Properties::NON_VIRTUAL,
-	          __void__expandBy__C5_Vec3d_R1,
-	          "Expands the sphere to encompass the given point. ",
-	          "Repositions the sphere center to minimize the radius increase. If the sphere is uninitialized, set its center to v and radius to zero. ");
-	I_Method1(void, expandRadiusBy, IN, const osg::Vec3d &, v,
-	          Properties::NON_VIRTUAL,
-	          __void__expandRadiusBy__C5_Vec3d_R1,
-	          "Expands the sphere to encompass the given point. ",
-	          "Does not reposition the sphere center. If the sphere is uninitialized, set its center to v and radius to zero. ");
-	I_Method1(void, expandBy, IN, const osg::BoundingSphere &, sh,
-	          Properties::NON_VIRTUAL,
-	          __void__expandBy__C5_BoundingSphere_R1,
+	          __void__expandBy__C5_BoundingSphereImpl_R1,
 	          "Expands the sphere to encompass the given sphere. ",
 	          "Repositions the sphere center to minimize the radius increase. If the sphere is uninitialized, set its center and radius to match sh. ");
-	I_Method1(void, expandRadiusBy, IN, const osg::BoundingSphere &, sh,
+	I_Method1(void, expandRadiusBy, IN, const osg::BoundingSphereImpl< osg::Vec3d > &, sh,
 	          Properties::NON_VIRTUAL,
-	          __void__expandRadiusBy__C5_BoundingSphere_R1,
+	          __void__expandRadiusBy__C5_BoundingSphereImpl_R1,
 	          "Expands the sphere to encompass the given sphere. ",
 	          "Does not repositions the sphere center. If the sphere is uninitialized, set its center and radius to match sh. ");
-	I_Method1(void, expandBy, IN, const osg::BoundingBox &, bb,
+	I_Method1(void, expandBy, IN, const osg::BoundingBoxImpl< osg::Vec3d > &, bb,
 	          Properties::NON_VIRTUAL,
-	          __void__expandBy__C5_BoundingBox_R1,
+	          __void__expandBy__C5_BoundingBoxImplT1_VT__R1,
 	          "Expands the sphere to encompass the given box. ",
 	          "Repositions the sphere center to minimize the radius increase. ");
-	I_Method1(void, expandRadiusBy, IN, const osg::BoundingBox &, bb,
+	I_Method1(void, expandRadiusBy, IN, const osg::BoundingBoxImpl< osg::Vec3d > &, bb,
 	          Properties::NON_VIRTUAL,
-	          __void__expandRadiusBy__C5_BoundingBox_R1,
+	          __void__expandRadiusBy__C5_BoundingBoxImplT1_VT__R1,
 	          "Expands the sphere to encompass the given box. ",
 	          "Does not repositions the sphere center. ");
-	I_Method1(bool, contains, IN, const osg::BoundingSphere::vec_type &, v,
+	I_Method1(bool, contains, IN, const osg::BoundingSphereImpl< osg::Vec3d >::vec_type &, v,
 	          Properties::NON_VIRTUAL,
 	          __bool__contains__C5_vec_type_R1,
 	          "Returns true if v is within the sphere. ",
 	          "");
-	I_Method1(bool, intersects, IN, const osg::BoundingSphere &, bs,
+	I_Method1(bool, intersects, IN, const osg::BoundingSphereImpl< osg::Vec3d > &, bs,
 	          Properties::NON_VIRTUAL,
-	          __bool__intersects__C5_BoundingSphere_R1,
+	          __bool__intersects__C5_BoundingSphereImpl_R1,
 	          "Returns true if there is a non-empty intersection with the given bounding sphere. ",
 	          "");
-	I_PublicMemberProperty(osg::BoundingSphere::vec_type, _center);
-	I_PublicMemberProperty(osg::BoundingSphere::value_type, _radius);
+	I_PublicMemberProperty(osg::BoundingSphereImpl< osg::Vec3d >::vec_type, _center);
+	I_PublicMemberProperty(osg::BoundingSphereImpl< osg::Vec3d >::value_type, _radius);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::BoundingSphereImpl< osg::Vec3f >)
+	I_DeclaringFile("osg/BoundingSphere");
+	I_Constructor0(____BoundingSphereImpl,
+	               "Construct a default bounding sphere with radius to -1.0f, representing an invalid/unset bounding sphere. ",
+	               "");
+	I_Constructor2(IN, const osg::BoundingSphereImpl< osg::Vec3f >::vec_type &, center, IN, osg::BoundingSphereImpl< osg::Vec3f >::value_type, radius,
+	               ____BoundingSphereImpl__C5_vec_type_R1__value_type,
+	               "Creates a bounding sphere initialized to the given extents. ",
+	               "");
+	I_Constructor1(IN, const osg::BoundingSphereImpl< osg::Vec3f > &, bs,
+	               Properties::NON_EXPLICIT,
+	               ____BoundingSphereImpl__C5_BoundingSphereImpl_R1,
+	               "Creates a bounding sphere initialized to the given extents. ",
+	               "");
+	I_Constructor1(IN, const osg::BoundingBoxImpl< osg::Vec3f > &, bb,
+	               Properties::NON_EXPLICIT,
+	               ____BoundingSphereImpl__C5_BoundingBoxImplT1_VT__R1,
+	               "Creates a bounding sphere initialized to the given extents. ",
+	               "");
+	I_Method0(void, init,
+	          Properties::NON_VIRTUAL,
+	          __void__init,
+	          "Clear the bounding sphere. ",
+	          "Reset to default values. ");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "Returns true of the bounding sphere extents are valid, false otherwise. ",
+	          "");
+	I_Method2(void, set, IN, const osg::BoundingSphereImpl< osg::Vec3f >::vec_type &, center, IN, osg::BoundingSphereImpl< osg::Vec3f >::value_type, radius,
+	          Properties::NON_VIRTUAL,
+	          __void__set__C5_vec_type_R1__value_type,
+	          "Set the bounding sphere to the given center/radius using floats. ",
+	          "");
+	I_Method0(osg::BoundingSphereImpl< osg::Vec3f >::vec_type &, center,
+	          Properties::NON_VIRTUAL,
+	          __vec_type_R1__center,
+	          "Returns the center of the bounding sphere. ",
+	          "");
+	I_Method0(const osg::BoundingSphereImpl< osg::Vec3f >::vec_type &, center,
+	          Properties::NON_VIRTUAL,
+	          __C5_vec_type_R1__center,
+	          "Returns the const center of the bounding sphere. ",
+	          "");
+	I_Method0(osg::BoundingSphereImpl< osg::Vec3f >::value_type &, radius,
+	          Properties::NON_VIRTUAL,
+	          __value_type_R1__radius,
+	          "Returns the radius of the bounding sphere. ",
+	          "");
+	I_Method0(osg::BoundingSphereImpl< osg::Vec3f >::value_type, radius,
+	          Properties::NON_VIRTUAL,
+	          __value_type__radius,
+	          "Returns the const radius of the bounding sphere. ",
+	          "");
+	I_Method0(osg::BoundingSphereImpl< osg::Vec3f >::value_type, radius2,
+	          Properties::NON_VIRTUAL,
+	          __value_type__radius2,
+	          "Returns the squared length of the radius. ",
+	          "Note, For performance reasons, the calling method is responsible for checking to make sure the sphere is valid. ");
+	I_Method1(void, expandBy, IN, const osg::BoundingSphereImpl< osg::Vec3f > &, sh,
+	          Properties::NON_VIRTUAL,
+	          __void__expandBy__C5_BoundingSphereImpl_R1,
+	          "Expands the sphere to encompass the given sphere. ",
+	          "Repositions the sphere center to minimize the radius increase. If the sphere is uninitialized, set its center and radius to match sh. ");
+	I_Method1(void, expandRadiusBy, IN, const osg::BoundingSphereImpl< osg::Vec3f > &, sh,
+	          Properties::NON_VIRTUAL,
+	          __void__expandRadiusBy__C5_BoundingSphereImpl_R1,
+	          "Expands the sphere to encompass the given sphere. ",
+	          "Does not repositions the sphere center. If the sphere is uninitialized, set its center and radius to match sh. ");
+	I_Method1(void, expandBy, IN, const osg::BoundingBoxImpl< osg::Vec3f > &, bb,
+	          Properties::NON_VIRTUAL,
+	          __void__expandBy__C5_BoundingBoxImplT1_VT__R1,
+	          "Expands the sphere to encompass the given box. ",
+	          "Repositions the sphere center to minimize the radius increase. ");
+	I_Method1(void, expandRadiusBy, IN, const osg::BoundingBoxImpl< osg::Vec3f > &, bb,
+	          Properties::NON_VIRTUAL,
+	          __void__expandRadiusBy__C5_BoundingBoxImplT1_VT__R1,
+	          "Expands the sphere to encompass the given box. ",
+	          "Does not repositions the sphere center. ");
+	I_Method1(bool, contains, IN, const osg::BoundingSphereImpl< osg::Vec3f >::vec_type &, v,
+	          Properties::NON_VIRTUAL,
+	          __bool__contains__C5_vec_type_R1,
+	          "Returns true if v is within the sphere. ",
+	          "");
+	I_Method1(bool, intersects, IN, const osg::BoundingSphereImpl< osg::Vec3f > &, bs,
+	          Properties::NON_VIRTUAL,
+	          __bool__intersects__C5_BoundingSphereImpl_R1,
+	          "Returns true if there is a non-empty intersection with the given bounding sphere. ",
+	          "");
+	I_PublicMemberProperty(osg::BoundingSphereImpl< osg::Vec3f >::vec_type, _center);
+	I_PublicMemberProperty(osg::BoundingSphereImpl< osg::Vec3f >::value_type, _radius);
 END_REFLECTOR
 

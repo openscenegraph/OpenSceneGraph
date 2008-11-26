@@ -31,6 +31,7 @@
 
 #include <osgUtil/TriStripVisitor>
 #include <osgUtil/SmoothingVisitor>
+#include <osg/TriangleFunctor>
 
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -50,6 +51,7 @@ public:
         supportsExtension("stl","STL binary format");
         supportsExtension("sta","STL ASCII format");
         supportsOption("smooth", "run SmoothingVisitor");
+        supportsOption("separateFiles", "Save every geode in a different file. Can be a Huge amount of Files!!!");
     }
 
     virtual const char* className() const {
@@ -57,7 +59,7 @@ public:
     }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
-
+    virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) const ;
 private:
 
     struct ReaderObject
@@ -76,6 +78,94 @@ private:
         bool readStlAscii(FILE* fp);
         bool readStlBinary(FILE* fp);
     };
+
+  class CreateStlVisitor : public osg::NodeVisitor {
+  public:
+
+    CreateStlVisitor( std::string const & fout, const osgDB::ReaderWriter::Options* options = 0): osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN ), counter(0), m_fout(fout), m_options(options) {
+      if (options && (options->getOptionString() == "separateFiles")) {
+    osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: Files are seperated written" << std::endl;                
+      } else {
+    m_f = new std::ofstream(m_fout.c_str());        
+    *m_f << "solid " << counter << std::endl;
+      }
+    };
+
+    std::string i2s( int i) {
+      char buf[16];  // -2^31 == -2147483648 needs 11 chars + \0  -> 12 (+4 for security ;-)
+      sprintf(buf,"%d",i);
+      return buf;
+    }
+
+    virtual void apply(  osg::Geode& node ){ 
+      osg::Matrix mat = osg::computeLocalToWorld( getNodePath() );
+      
+      if (m_options && (m_options->getOptionString() == "separateFiles")) {
+    std::string sepFile = m_fout + i2s(counter);
+    m_f = new std::ofstream(sepFile.c_str());
+    *m_f << "solid " << std::endl;
+      }
+      
+      for ( unsigned int i = 0; i < node.getNumDrawables(); ++i ) {
+    osg::TriangleFunctor<PushPoints> tf;
+    tf.m_stream = m_f;
+    tf.m_mat = mat;
+    node.getDrawable( i )->accept( tf );
+      }
+      
+      if (m_options && (m_options->getOptionString() == "separateFiles")) {
+    *m_f << "endsolid " << std::endl;
+    m_f->close();
+    delete m_f;
+      }
+      
+      ++counter;
+      traverse(node);
+      
+    }
+    //        nHandle->SetLocation( Frame( mat ) );
+    ~CreateStlVisitor() {
+      if (m_options && (m_options->getOptionString() == "separateFiles")) {
+    osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: " << counter-1 << "Files were written" << std::endl;                                
+      } else {
+    *m_f << "endsolid " << std::endl;
+    m_f->close();
+    delete m_f;
+      }
+    }
+  private:
+    int counter;
+    std::ofstream* m_f;
+    std::string m_fout;
+    osgDB::ReaderWriter::Options const * m_options;
+    
+    
+    struct PushPoints {
+      std::ofstream* m_stream;
+      osg::Matrix m_mat;
+      inline void operator () ( const osg::Vec3& _v1, const osg::Vec3& _v2, const osg::Vec3& _v3, bool treatVertexDataAsTemporary ) {
+    osg::Vec3 v1 = _v1 * m_mat;
+    osg::Vec3 v2 = _v2 * m_mat;
+    osg::Vec3 v3 = _v3 * m_mat;
+    osg::Vec3 vV1V2 = v2-v1;
+    osg::Vec3 vV1V3 = v3-v1;
+    osg::Vec3 vNormal = vV1V2.operator ^(vV1V3);
+    *m_stream << "facet normal " << vNormal[0] << " " << vNormal[1] << " " << vNormal[2] << std::endl;
+    *m_stream << "outer loop" << std::endl;
+    *m_stream << "vertex " << v1[0] << " " << v1[1] << " " << v1[2] << std::endl;
+    *m_stream << "vertex " << v2[0] << " " << v2[1] << " " << v2[2] << std::endl;
+    *m_stream << "vertex " << v3[0] << " " << v3[1] << " " << v3[2] << std::endl;
+    *m_stream << "endloop" << std::endl;
+    *m_stream << "endfacet " << std::endl;
+      }
+      
+    };
+    
+    
+  };
+  
+  
+       
 };
 
 
@@ -354,4 +444,22 @@ bool ReaderWriterSTL::ReaderObject::readStlBinary(FILE* fp)
     }
 
     return true;
+}
+
+osgDB::ReaderWriter::WriteResult ReaderWriterSTL::writeNode(const osg::Node& node,const std::string& fout, const Options* opts) const {
+  std::string ext = osgDB::getLowerCaseFileExtension(fout);
+  if (ext != "stl" ){
+    // sta - extension implies STL-Binary...
+    osg::notify(osg::FATAL) << "ReaderWriterSTL::writeNode: Only STL-ASCII-files supported'" << std::endl;
+    return WriteResult::FILE_NOT_HANDLED;
+  }
+  
+  try {
+    CreateStlVisitor createStlVisitor( fout, opts );
+    const_cast<osg::Node&>(node).accept( createStlVisitor );
+  } catch(...) {
+    return WriteResult::ERROR_IN_WRITING_FILE;
+  }
+  
+  return WriteResult::FILE_SAVED;
 }

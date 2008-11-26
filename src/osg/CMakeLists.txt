@@ -197,8 +197,6 @@ ADD_LIBRARY(${LIB_NAME}
     BlendColor.cpp
     BlendEquation.cpp
     BlendFunc.cpp
-    BoundingBox.cpp
-    BoundingSphere.cpp
     BufferObject.cpp
     Camera.cpp
     CameraView.cpp

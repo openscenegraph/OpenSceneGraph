@@ -94,7 +94,7 @@ unsigned char *exr_load(std::istream& fin,
     
     try
     {    
-        C_IStream inStream = C_IStream(&fin);
+        C_IStream inStream(&fin);
         RgbaInputFile rgbafile(inStream);
 
         Box2i dw = rgbafile.dataWindow();
@@ -268,7 +268,7 @@ protected:
         }
 
          //Create a stream to save to
-         C_OStream outStream = C_OStream(&fout);
+         C_OStream outStream(&fout);
 
          //Copy data from texture to rgba pixel format
         Array2D<Rgba> outPixels(height,width);

@@ -270,7 +270,7 @@ struct DisplaceInfo
     int                      lightmap_sample_pos_start;
     DisplaceNeighbor         edge_neighbors[4];
     DisplaceCornerNeighbor   corner_neighbors[4];
-    unsigned long            allowed_verts[10];
+    unsigned int             allowed_verts[10];
 };
 
 

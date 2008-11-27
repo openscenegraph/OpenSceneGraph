@@ -317,6 +317,15 @@ int main(int argc, char** argv)
     message.getWindow()->accept(alpha);
 
     wm->addChild(message.getWindow());
+
+    // center
+    osgWidget::point_type w = wm->getWidth();
+    osgWidget::point_type h = wm->getHeight();
+    osgWidget::point_type ww = message.getWindow()->getWidth();
+    osgWidget::point_type hw = message.getWindow()->getHeight();
+    osgWidget::point_type ox = (w - ww) / 2;
+    osgWidget::point_type oy = (h - hw) / 2;
+    message.getWindow()->setPosition(osgWidget::Point(ox, oy, message.getWindow()->getPosition()[2] ));
 //    frame->resizeAdd(30, 30);
 
 //    AlphaSetterVisitor alpha(.8f);

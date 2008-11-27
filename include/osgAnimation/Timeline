@@ -15,6 +15,7 @@
 #ifndef OSGANIMATION_TIMELINE_H
 #define OSGANIMATION_TIMELINE_H
 
+#include <osgAnimation/Export>
 #include <osg/Object>
 #include <map>
 #include <vector>
@@ -541,7 +542,7 @@ namespace osgAnimation
 
 
 
-    class AnimationManagerTimeline : public AnimationManagerBase
+    class OSGANIMATION_EXPORT AnimationManagerTimeline : public AnimationManagerBase
     {
     protected:
         osg::ref_ptr<Timeline> _timeline;

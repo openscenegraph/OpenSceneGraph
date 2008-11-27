@@ -211,11 +211,11 @@ int main( int argc, char **argv )
     if (arguments.read("--camera", lat, lon, alt, heading, incline, roll))
     {
         camera_specified=true;
-        lat = lat * M_PI / 180.0;  // Convert to radians
-        lon = lon * M_PI / 180.0;  // Convert to radians
-        heading = heading * M_PI / 180.0;  // Convert to radians
-        incline = incline * M_PI / 180.0;  // Convert to radians
-        roll = roll * M_PI / 180.0;  // Convert to radians
+        lat = osg::DegreesToRadians(lat);
+        lon = osg::DegreesToRadians(lon);
+        heading = osg::DegreesToRadians(heading);
+        incline = osg::DegreesToRadians(incline);
+        roll = osg::DegreesToRadians(roll);
     }
 
     // load the data

@@ -4,8 +4,10 @@
 #include <osg/Image>
 #include <osg/GL>
 
+#ifdef _WIN32
 //Make the half format work against openEXR libs 
-// #define OPENEXR_DLL
+#define OPENEXR_DLL
+#endif
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>

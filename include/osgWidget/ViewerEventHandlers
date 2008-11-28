@@ -11,8 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: ViewerEventHandlers 31 2008-04-01 19:36:41Z cubicool $
+// Code by: Jeremy Moles (cubicool) 2007-2008
 
 #ifndef OSGWIDGET_VIEWER_EVENT_HANDLERS
 #define OSGWIDGET_VIEWER_EVENT_HANDLERS
@@ -31,6 +30,7 @@ namespace osgWidget {
 class OSGWIDGET_EXPORT MouseHandler: public osgGA::GUIEventHandler
 {
     public:
+
         MouseHandler(WindowManager*);
 
         virtual bool handle(
@@ -46,7 +46,7 @@ class OSGWIDGET_EXPORT MouseHandler: public osgGA::GUIEventHandler
 
     protected:
 
-        osg::ref_ptr<WindowManager> _wm;
+        osg::observer_ptr<WindowManager> _wm;
 
         bool _handleMousePush        (float, float, int);
         bool _handleMouseRelease     (float, float, int);
@@ -57,13 +57,13 @@ class OSGWIDGET_EXPORT MouseHandler: public osgGA::GUIEventHandler
 
         MouseAction _isMouseEvent (osgGA::GUIEventAdapter::EventType) const;
         bool        _doMouseEvent (float, float, MouseEvent);
-
 };
 
 // This handles the forwarding of keypress events.
 class OSGWIDGET_EXPORT KeyboardHandler: public osgGA::GUIEventHandler 
 {
     public:
+
         KeyboardHandler(WindowManager*);
 
         virtual bool handle(
@@ -74,7 +74,7 @@ class OSGWIDGET_EXPORT KeyboardHandler: public osgGA::GUIEventHandler
         );
 
     protected:
-        osg::ref_ptr<WindowManager> _wm;
+        osg::observer_ptr<WindowManager> _wm;
 
 };
 
@@ -82,7 +82,8 @@ class OSGWIDGET_EXPORT KeyboardHandler: public osgGA::GUIEventHandler
 class OSGWIDGET_EXPORT ResizeHandler: public osgGA::GUIEventHandler
 {
     public:
-        ResizeHandler(WindowManager*, osg::Camera*);
+
+        ResizeHandler(WindowManager*, osg::Camera* = 0);
 
         virtual bool handle(
             const osgGA::GUIEventAdapter&,
@@ -93,9 +94,30 @@ class OSGWIDGET_EXPORT ResizeHandler: public osgGA::GUIEventHandler
 
     protected:
     
-        osg::ref_ptr<WindowManager> _wm;
-        osg::ref_ptr<osg::Camera>   _camera;
+        osg::observer_ptr<WindowManager> _wm;
+        osg::observer_ptr<osg::Camera>   _camera;
+};
 
+// This class provides a hotkey that lets you toggle back and forth between
+// a camera and setting the CameraManipulator's home point.
+class OSGWIDGET_EXPORT CameraSwitchHandler: public osgGA::GUIEventHandler
+{
+    public:
+
+        CameraSwitchHandler(WindowManager*, osg::Camera*);
+
+        virtual bool handle(
+            const osgGA::GUIEventAdapter&,
+            osgGA::GUIActionAdapter&,
+            osg::Object*,
+            osg::NodeVisitor*
+        );
+
+    protected:
+    
+        osg::observer_ptr<WindowManager> _wm;
+        osg::observer_ptr<osg::Camera>   _camera;
+        osg::ref_ptr<osg::Node>          _oldNode;
 };
 
 }

@@ -1,5 +1,4 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Table.cpp 48 2008-05-05 14:13:20Z cubicool $
 
 #include <osgWidget/Table>
 

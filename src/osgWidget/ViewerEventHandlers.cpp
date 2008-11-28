@@ -1,5 +1,4 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: ViewerEventHandlers.cpp 59 2008-05-15 20:55:31Z cubicool $
 
 #include <osgWidget/ViewerEventHandlers>
 
@@ -175,14 +174,85 @@ bool ResizeHandler::handle(
     osg::Matrix::value_type w = gea.getWindowWidth();
     osg::Matrix::value_type h = gea.getWindowHeight();
 
-    if(_wm->isInvertedY()) _camera->setProjectionMatrix(
-        createInvertedYOrthoProjectionMatrix(w, h)
-    );
+    if(_camera.valid()) {
+        _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0f, w, 0.0f, h));
 
-    else _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0f, w, 0.0f, h));
+        _wm->setSize(w, h);
+    }
     
-    _wm->setSize(w, h);
+    _wm->setWindowSize(w, h);
     _wm->resizeAllWindows();
+
+    return true;
+}
+
+CameraSwitchHandler::CameraSwitchHandler(WindowManager* wm, osg::Camera* camera):
+_wm     (wm),
+_camera (camera) {
+}
+
+bool CameraSwitchHandler::handle(
+    const osgGA::GUIEventAdapter& gea,
+    osgGA::GUIActionAdapter&      gaa,
+    osg::Object*                  obj,
+    osg::NodeVisitor*             nv
+) {
+    if(
+        gea.getEventType() != osgGA::GUIEventAdapter::KEYDOWN ||
+        gea.getKey()       != osgGA::GUIEventAdapter::KEY_F12
+    ) return false;
+
+    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&gaa);
+
+    if(!view) return false;
+
+    osg::Node* oldNode = view->getSceneData();
+
+    osg::MatrixTransform* oldTrans = dynamic_cast<osg::MatrixTransform*>(oldNode);
+
+    if(!oldTrans) {
+        // Imagine this is the number of pixels...
+        double scale  = 2000.0f;
+        double width  = _wm->getWidth();
+        double height = _wm->getHeight();
+
+        _oldNode = oldNode;
+
+        osg::MatrixTransform* mt = new osg::MatrixTransform();
+
+        mt->setMatrix(
+            osg::Matrix::translate(width / 2.0f, 0.0f, 0.0f) *
+            osg::Matrix::scale(1.0f, 1.0f, scale) *
+            osg::Matrix::rotate(osg::DegreesToRadians(45.0f), 0.0f, 1.0f, 0.0f)
+        );
+
+        mt->addChild(_wm.get());
+        mt->getOrCreateStateSet()->setMode(
+            GL_LIGHTING,
+            osg::StateAttribute::PROTECTED | osg::StateAttribute::OFF
+        );
+        mt->getOrCreateStateSet()->setMode(
+            GL_SCISSOR_TEST,
+            osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF
+        );
+
+        osgGA::MatrixManipulator* mm = view->getCameraManipulator();
+
+        // mm->setDistance(3000.0f);
+        // mm->setMinimumZoomScale(10.0f);
+        mm->setHomePosition(
+            // eye
+            osg::Vec3(width / 2.0f, height, 100.0f),
+            // center
+            osg::Vec3(0.0f, 0.0f, -(scale / 2.0f)),
+            // up
+            osg::Vec3(0.0f, 1.0f, 0.0f)
+        );
+
+        view->setSceneData(mt);
+    }
+
+    else view->setSceneData(_oldNode.get());
 
     return true;
 }

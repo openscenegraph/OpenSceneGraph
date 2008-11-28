@@ -23,8 +23,8 @@ WindowManager::WindowManager(
 ):
 _width          (width),
 _height         (height),
-_zNear          (0.0f),
-_zFar           (-1.0f),
+_windowWidth    (width),
+_windowHeight   (height),
 _numForeground  (0.0f),
 _numBackground  (0.0f),
 _flags          (flags),
@@ -56,6 +56,8 @@ _styleManager   (new StyleManager()) {
         if(!_python->initialize()) warn() << "Error creating PythonEngine." << std::endl;
     }
 
+    if(_flags & WM_USE_RENDERBINS) getOrCreateStateSet()->setMode(GL_DEPTH_TEST, false);
+
     // Setup our picking debug (is debug the right word here?) Window...
     if(_flags & WM_PICK_DEBUG) {
         _pickWindow = new Box("PickWindow", Box::VERTICAL);
@@ -79,28 +81,11 @@ _styleManager   (new StyleManager()) {
         _updatePickWindow(0, 0, 0);
     }
 
-    if(!(_flags & WM_NO_BETA_WARN)) {
-        Box*   box   = new Box("BetaWarningBox", Box::VERTICAL);
-        Label* label = new Label("BetaWarning");
-
-        label->setFontSize(15);
-        label->setFontColor(0.0f, 0.0f, 1.0f, 1.0f);
-        label->setFont("fonts/arial.ttf");
-        label->setPadding(5.0f);
-        label->setCanFill(true);
-        label->setLabel("This is BETA software! Please see: http://osgwidget.googlecode.com");
-
-        box->getBackground()->setColor(1.0f, 0.7f, 0.0f, 1.0f);
-        box->addWidget(label);
-        box->setNodeMask(~_nodeMask);
-        box->removeEventMask(EVENT_MASK_FOCUS);
-        box->setStrata(Window::STRATA_BACKGROUND);
-        box->setOrigin(0.0f, 0.0f);
-
-        addChild(box);
-        
-        box->resizePercent(100.0f, 0.0f);
-    }
+    getOrCreateStateSet()->setMode(
+        GL_BLEND,
+        osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE
+    );
+    getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 }
 
 WindowManager::WindowManager(const WindowManager& wm, const osg::CopyOp& co):
@@ -140,7 +125,8 @@ bool WindowManager::_handleMousePushed(float x, float y, bool& down) {
 
     if(!_lastPush) return false;
 
-    bool handled = _lastPush->callMethodAndCallbacks(ev);
+    // TODO: This is the old way; it didn't allow Event handler code to call grabFocus().
+    // bool handled = _lastPush->callMethodAndCallbacks(ev);
 
     if(_focusMode != PFM_SLOPPY) {
         if(ev._window) {
@@ -155,7 +141,7 @@ bool WindowManager::_handleMousePushed(float x, float y, bool& down) {
         else if(_focusMode == PFM_UNFOCUS) setFocused(0);
     }
 
-    return handled;
+    return _lastPush->callMethodAndCallbacks(ev);
 }
 
 bool WindowManager::_handleMouseReleased(float x, float y, bool& down) {
@@ -181,10 +167,7 @@ bool WindowManager::_handleMouseReleased(float x, float y, bool& down) {
 
 void WindowManager::_getPointerXYDiff(float& x, float& y) {
     x -= _lastX;
-
-    if(isInvertedY()) y = -(y - _lastY);
-
-    else y -= _lastY;
+    y -= _lastY;
 }
 
 void WindowManager::_updatePickWindow(const WidgetList* wl, point_type x, point_type y) {
@@ -299,9 +282,10 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
 
             // Make sure that our window is valid, and that our pick is within the
             // "visible area" of the Window.
-            if(!win ||
-              (win->getVisibilityMode()==Window::VM_PARTIAL && !win->isPointerXYWithinVisible(x, y))) 
-            {
+            if(
+                !win ||
+                (win->getVisibilityMode() == Window::VM_PARTIAL && !win->isPointerXYWithinVisible(x, y))
+            ) {
                 continue;
             }
 
@@ -333,6 +317,49 @@ bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
     
     return false;
 }
+
+/*
+bool WindowManager::pickAtXY(float x, float y, WidgetList& wl) {
+    Intersections intr;
+
+    if(!_view->computeIntersections(x, y, intr, _nodeMask)) return false;
+
+    typedef std::vector<osg::observer_ptr<Window> > WindowVector;
+
+    WindowVector windows;
+
+    Window* activeWin = 0;
+
+    for(Intersections::iterator i = intr.begin(); i != intr.end(); i++) {
+        Window* win = dynamic_cast<Window*>(i->nodePath.back()->getParent(0));
+
+        if(
+            !win ||
+            (win->getVisibilityMode() == Window::VM_PARTIAL && !win->isPointerXYWithinVisible(x, y))
+        ) {
+            continue;
+        }
+
+        if(activeWin != win) {
+            activeWin = win;
+
+            windows.push_back(win);
+        }
+    }
+
+    if(!windows.size()) return false;
+
+    std::sort(windows.begin(), windows.end(), WindowBinNumberCompare());
+
+    for(WindowVector::iterator i = windows.begin(); i != windows.end(); i++) {
+        warn() << "- " << i->get()->getName() << " " << i->get()->getOrCreateStateSet()->getBinNumber() << std::endl;
+    }
+        
+    warn() << std::endl;
+
+    return false;
+}
+*/
 
 bool WindowManager::setFocused(Window* window) {
     Event ev(this);
@@ -371,7 +398,7 @@ bool WindowManager::setFocused(Window* window) {
     // the Z space allocated to it so that it can properly arrange it's children. We
     // add 2 additional Windows here for anything that should appear in the background
     // and foreground areas.
-    matrix_type zRange = (_zNear - _zFar) / (focusable.size() + 2.0f);
+    matrix_type zRange = 1.0f / (focusable.size() + 2.0f);
 
     // Our offset for the following for() loop.
     unsigned int i = 3;
@@ -455,6 +482,16 @@ void WindowManager::resizeAllWindows(bool visible) {
         
         i->get()->resize();
     }
+}
+
+// Returns the application window coordinates of the WindowManager XY position.
+XYCoord WindowManager::windowXY(double x, double y) const {
+    return XYCoord((_windowWidth / _width) * x, (_windowHeight / _height) * y);
+}
+
+// Returns the WindowManager coordinates of the application window XY position.
+XYCoord WindowManager::localXY(double x, double y) const {
+    return XYCoord((_width / _windowWidth) * x, (_height / _windowHeight) * y);
 }
 
 // This is called by a ViewerEventHandler/MouseHandler (or whatever) as the pointer moves
@@ -574,11 +611,7 @@ bool WindowManager::keyUp(int key, int mask) {
 // A convenience wrapper for creating a proper orthographic camera using the current
 // width and height.
 osg::Camera* WindowManager::createParentOrthoCamera() {
-    osg::Camera* camera = 0;
-
-    if(isInvertedY()) camera = createInvertedYOrthoCamera(_width, _height);
-
-    else camera = createOrthoCamera(_width, _height);
+    osg::Camera* camera = createOrthoCamera(_width, _height);
 
     camera->addChild(this);
 

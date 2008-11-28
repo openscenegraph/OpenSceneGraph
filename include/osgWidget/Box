@@ -11,8 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Box 46 2008-04-30 16:11:51Z cubicool $
+// Code by: Jeremy Moles (cubicool) 2007-2008
 
 #ifndef OSGWIDGET_BOX
 #define OSGWIDGET_BOX
@@ -21,17 +20,26 @@
 
 namespace osgWidget {
 
+//! The Box object is a Window subclass that can be configured to uniformly (or
+//! non-uniformly) position it's children either vertically or horizontally. It
+//! is the most basic Window implementation, though there is some difficulty when
+//! positioning children such that each child object ends up pixel-aligned. 
 class OSGWIDGET_EXPORT Box: public Window
 {
     public:
-        enum BOX_TYPE {
+
+        //! An enum corresponding to the type of Box alignment.
+        enum BoxType {
             VERTICAL,
             HORIZONTAL
         };
 
-        META_Object   (osgWidget, Box);
-
-        Box (const std::string& = "", BOX_TYPE = HORIZONTAL, bool = false);
+        META_Object(osgWidget, Box);
+        
+        //! The main constructor; takes the string name, the BoxType orientation, and a
+        //! boolean indicating whether or not all of the Box regions should be uniformly
+        //! sized.
+        Box (const std::string& = "", BoxType = HORIZONTAL, bool = false);
         Box (const Box&, const osg::CopyOp&);
 
     protected:
@@ -43,10 +51,9 @@ class OSGWIDGET_EXPORT Box: public Window
 
     private:
 
-        BOX_TYPE     _boxType;
+        BoxType      _boxType;
         bool         _uniform;
         unsigned int _lastAdd;
-
 };
 
 }

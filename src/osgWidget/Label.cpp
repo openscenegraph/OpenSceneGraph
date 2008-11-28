@@ -1,5 +1,4 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Label.cpp 59 2008-05-15 20:55:31Z cubicool $
 
 #include <osg/Math>
 #include <osgWidget/WindowManager>
@@ -9,11 +8,16 @@ namespace osgWidget {
 
 Label::Label(const std::string& name, const std::string& label):
 Widget     (name, 0, 0),
-_textIndex (0),
-_text      (new osgText::Text()) {
-    _text->setText(label);
+_text      (new osgText::Text()), 
+_textIndex (0) {
     _text->setAlignment(osgText::Text::LEFT_BOTTOM);
     _text->setDataVariance(osg::Object::DYNAMIC);
+
+    if(label.size()) {
+        _text->setText(label);
+
+        _calculateSize(getTextSize());
+    }
 
     // TODO: Make a patch for this!
     // If you're wondering why we don't use this let me explain...
@@ -36,7 +40,7 @@ _textIndex (label._textIndex) {
 }
 
 void Label::_calculateSize(const XYCoord& size) {
-    if(size.x() && size.y()) setMinimumSize(size.x(), size.y());
+    // if(size.x() && size.y()) setMinimumSize(size.x(), size.y());
 
     if(getWidth() < size.x()) setWidth(size.x());
     
@@ -45,8 +49,15 @@ void Label::_calculateSize(const XYCoord& size) {
 
 // TODO: This will almost certainly get out of sync. :(
 void Label::parented(Window* parent) {
-    // If we've been cloned, use the index of the old text Drawable.
-    if(_textIndex) parent->getGeode()->setDrawable(_textIndex, _text.get());
+    osg::Geode* geode = parent->getGeode();
+
+    // If we've been cloned, use the index of the old text Drawable if it's already there.
+    // However, we have a problem here: imagine a Label gets cloned AFTER being added to
+    // a Window; it'll have a _textIndex, but that _textIndex won't apply to the
+    // currently cloned object. In this case, we'll need to check to be SURE.
+    osgText::Text* text = dynamic_cast<osgText::Text*>(geode->getDrawable(_textIndex));
+    
+    if(text) parent->getGeode()->setDrawable(_textIndex, _text.get());
 
     // Otherwise, add it as new.
     else _textIndex = parent->addDrawableAndGetIndex(_text.get());
@@ -58,33 +69,16 @@ void Label::unparented(Window* parent) {
     _textIndex = 0;
 }
 
-void Label::managed(WindowManager* wm) {
-    if(wm->isInvertedY()) {
-        // We rotate along our X axis, so we need to make sure and translate the
-        // text later to preserve centering.
-        _text->setAxisAlignment(osgText::Text::USER_DEFINED_ROTATION);
-        _text->setRotation(osg::Quat(
-            osg::DegreesToRadians(180.0f),
-            osg::Vec3(1.0f, 0.0f, 0.0f)
-        ));
-    }
-}
-
 void Label::positioned() {
     XYCoord    size = getTextSize();
     point_type x    = osg::round(((getWidth() - size.x()) / 2.0f) + getX());
-    point_type y    = 0.0f;
+    point_type y    = osg::round(((getHeight() - size.y()) / 2.0f) + getY());
+    point_type z    = _calculateZ(getLayer() + 1);
 
-    if(getWindowManager() && getWindowManager()->isInvertedY()) y =
-        osg::round(((getHeight() - size.y()) / 2.0f) + getY() + size.y())
-    ;
-
-    else y = osg::round(((getHeight() - size.y()) / 2.0f) + getY());
-    
     // These values are permisable with CENTER_CENTER mode is active.
     // point_type x  = round(getX() + (getWidth() / 2.0f));
     // point_type y  = round(getY() + (getHeight() / 2.0f));
-    
+
     /*
     warn() << "Label widget size : " << getWidth() << " x " << getHeight() << std::endl;
     warn() << "Label widget tsize: " << getWidthTotal() << " x " << getHeightTotal() << std::endl;
@@ -94,12 +88,18 @@ void Label::positioned() {
     warn() << "------------------------------------" << std::endl;
     */
 
-    _text->setPosition(osg::Vec3(x, y, _calculateZ(getLayer() + 1)));
-}
+    const WindowManager* wm = _getWindowManager();
 
-void Label::update()
-{
-    warn() << "Label::update() not implemented yet."<<std::endl;
+    if(wm && wm->isUsingRenderBins()) {
+        _text->getOrCreateStateSet()->setRenderBinDetails(
+            static_cast<int>(z * OSGWIDGET_RENDERBIN_MOD),
+            "RenderBin"
+        );
+
+        z = 0.0f;
+    }
+
+    _text->setPosition(osg::Vec3(x, y, z));
 }
 
 void Label::setLabel(const std::string& label) {

@@ -11,8 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: UIObjectParent 55 2008-05-12 19:14:42Z cubicool $
+// Code by: Jeremy Moles (cubicool) 2007-2008
 
 #ifndef OSGWIDGET_UI_OBJECT_PARENT
 #define OSGWIDGET_UI_OBJECT_PARENT
@@ -26,6 +25,7 @@ template <typename T>
 class UIObjectParent
 {
     public:
+
         typedef T                               object_type;
         typedef osg::observer_ptr<object_type>  ptr_type;
         typedef std::vector<ptr_type>           Vector;

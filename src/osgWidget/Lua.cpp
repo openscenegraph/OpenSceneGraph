@@ -1,5 +1,4 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Lua.cpp 2 2008-01-24 16:11:26Z cubicool $
 
 #include <osgDB/FileUtils>
 #include <osgWidget/Lua>

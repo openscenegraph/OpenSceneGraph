@@ -1,5 +1,4 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Canvas.cpp 66 2008-07-14 21:54:09Z cubicool $
 
 #include <osgWidget/Canvas>
 
@@ -20,13 +19,11 @@ void Canvas::_resizeImplementation(point_type w, point_type h) {
 }
 
 bool Canvas::addWidget(Widget* widget, point_type x, point_type y) {
-    if(Window::addWidget(widget)) {
-        widget->setOrigin(x, y);
+    if(!widget) return false;
 
-        return true;
-    }
-
-    return false;
+    widget->setOrigin(x, y);
+    
+    return Window::addWidget(widget);
 }
 
 }

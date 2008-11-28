@@ -206,7 +206,7 @@ osg::Node* setupCube()
 
 osg::MatrixTransform* setupAnimtkNode()
 {
-    osg::Vec3 v[4];
+    osg::Vec3 v[5];
     v[0] = osg::Vec3(0,0,0);
     v[1] = osg::Vec3(10,-50,0);
     v[2] = osg::Vec3(30,-10,20);

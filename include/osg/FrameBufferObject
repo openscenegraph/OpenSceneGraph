@@ -25,7 +25,7 @@
 #define GL_EXT_framebuffer_object 1
 #define GL_FRAMEBUFFER_EXT                     0x8D40
 #define GL_RENDERBUFFER_EXT                    0x8D41
-#define GL_STENCIL_INDEX_EXT                   0x8D45
+// #define GL_STENCIL_INDEX_EXT                   0x8D45  // removed in rev. #114 of the spec
 #define GL_STENCIL_INDEX1_EXT                  0x8D46
 #define GL_STENCIL_INDEX4_EXT                  0x8D47
 #define GL_STENCIL_INDEX8_EXT                  0x8D48

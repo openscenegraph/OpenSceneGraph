@@ -189,7 +189,7 @@ void Sequence::setMode(SequenceMode mode)
         uend = (_end < 0 ? (int)_frameTime.size()-1: _end);
         _step = (ubegin > uend ? -1 : 1);
 
-        _start = _now;
+        _start = -1.0;
         _mode = mode;
         if (_saveRealLastFrameTime>=0.)
         {

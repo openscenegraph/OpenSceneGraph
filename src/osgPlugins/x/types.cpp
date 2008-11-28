@@ -99,8 +99,8 @@ namespace DX {
                 continue;
 
             Coords2d c;
-            c.u = (float) atof(token[0].c_str());
-            c.v = (float) atof(token[1].c_str());
+            c.u = osg::asciiToFloat(token[0].c_str());
+            c.v = osg::asciiToFloat(token[1].c_str());
             v.push_back(c);
             i++;
         }
@@ -124,9 +124,9 @@ namespace DX {
                 continue;
 
             Vector vec;
-            vec.x = (float) atof(token[0].c_str());
-            vec.y = (float) atof(token[1].c_str());
-            vec.z = (float) atof(token[2].c_str());
+            vec.x = osg::asciiToFloat(token[0].c_str());
+            vec.y = osg::asciiToFloat(token[1].c_str());
+            vec.z = osg::asciiToFloat(token[2].c_str());
             v.push_back(vec);
             i++;
         }
@@ -159,29 +159,29 @@ namespace DX {
                 switch (i) {
                     case 0: {
                                 // ColorRGBA
-                                material.faceColor.red = (float) atof(token[0].c_str());
-                                material.faceColor.green = (float) atof(token[1].c_str());
-                                material.faceColor.blue = (float) atof(token[2].c_str());
-                                material.faceColor.alpha = (float) atof(token[3].c_str());
+                                material.faceColor.red = osg::asciiToFloat(token[0].c_str());
+                                material.faceColor.green = osg::asciiToFloat(token[1].c_str());
+                                material.faceColor.blue = osg::asciiToFloat(token[2].c_str());
+                                material.faceColor.alpha = osg::asciiToFloat(token[3].c_str());
                                 i++;
                             } break;
                     case 1: {
                                 // Power
-                                material.power = (float) atof(token[0].c_str());
+                                material.power = osg::asciiToFloat(token[0].c_str());
                                 i++;
                             } break;
                     case 2: {
                                 // ColorRGB
-                                material.specularColor.red = (float) atof(token[0].c_str());
-                                material.specularColor.green = (float) atof(token[1].c_str());
-                                material.specularColor.blue = (float) atof(token[2].c_str());
+                                material.specularColor.red = osg::asciiToFloat(token[0].c_str());
+                                material.specularColor.green = osg::asciiToFloat(token[1].c_str());
+                                material.specularColor.blue = osg::asciiToFloat(token[2].c_str());
                                 i++;
                             } break;
                     case 3: {
                                 // ColorRGB
-                                material.emissiveColor.red = (float) atof(token[0].c_str());
-                                material.emissiveColor.green = (float) atof(token[1].c_str());
-                                material.emissiveColor.blue = (float) atof(token[2].c_str());
+                                material.emissiveColor.red = osg::asciiToFloat(token[0].c_str());
+                                material.emissiveColor.green = osg::asciiToFloat(token[1].c_str());
+                                material.emissiveColor.blue = osg::asciiToFloat(token[2].c_str());
                                 i++;
                             } break;
                 }

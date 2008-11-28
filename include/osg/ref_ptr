@@ -71,8 +71,20 @@ class ref_ptr
         friend bool operator != (const T* ptr, const ref_ptr& rp) { return (ptr!=rp._ptr); }
  
         bool operator < (const ref_ptr& rp) const { return (_ptr<rp._ptr); }
+
+
+    // follows is an implmentation of the "safe bool idiom", details can be found at:
+    //   http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Safe_bool
+    //   http://lists.boost.org/Archives/boost/2003/09/52856.php
+
+    private:
+        typedef T* ref_ptr::*unspecified_bool_type;
+
+    public:
+        // safe bool conversion
+        operator unspecified_bool_type() const { return valid()? &ref_ptr::_ptr : 0; }
 #endif
-        
+
         T& operator*() const { return *_ptr; }
         T* operator->() const { return _ptr; }
         T* get() const { return _ptr; }

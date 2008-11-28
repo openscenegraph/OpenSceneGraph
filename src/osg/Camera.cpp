@@ -255,6 +255,37 @@ void Camera::getViewMatrixAsLookAt(Vec3f& eye,Vec3f& center,Vec3f& up,float look
 
 void Camera::attach(BufferComponent buffer, GLenum internalFormat)
 {
+    switch(buffer)
+    {
+    case DEPTH_BUFFER:
+        if(_bufferAttachmentMap.find(PACKED_DEPTH_STENCIL_BUFFER) != _bufferAttachmentMap.end())
+        {
+            notify(WARN) 
+                << "Camera: DEPTH_BUFFER already attached as PACKED_DEPTH_STENCIL_BUFFER !" 
+                << std::endl;
+        }
+        break;
+
+    case STENCIL_BUFFER:
+        if(_bufferAttachmentMap.find(PACKED_DEPTH_STENCIL_BUFFER) != _bufferAttachmentMap.end())
+        {
+            notify(WARN) 
+                << "Camera: STENCIL_BUFFER already attached as PACKED_DEPTH_STENCIL_BUFFER !" 
+                << std::endl;
+        }
+        break;
+
+    case PACKED_DEPTH_STENCIL_BUFFER:
+        if(_bufferAttachmentMap.find(DEPTH_BUFFER) != _bufferAttachmentMap.end())
+        {
+            notify(WARN) << "Camera: DEPTH_BUFFER already attached !" << std::endl;
+        }
+        if(_bufferAttachmentMap.find(STENCIL_BUFFER) != _bufferAttachmentMap.end())
+        {
+            notify(WARN) << "Camera: STENCIL_BUFFER already attached !" << std::endl;
+        }
+        break;
+    }
     _bufferAttachmentMap[buffer]._internalFormat = internalFormat;
 }
 

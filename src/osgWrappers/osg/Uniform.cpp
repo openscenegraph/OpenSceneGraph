@@ -160,6 +160,7 @@ BEGIN_ENUM_REFLECTOR(osg::Uniform::Type)
 	I_EnumLabel(osg::Uniform::FLOAT_MAT4x3);
 	I_EnumLabel(osg::Uniform::SAMPLER_BUFFER);
 	I_EnumLabel(osg::Uniform::SAMPLER_CUBE_SHADOW);
+	I_EnumLabel(osg::Uniform::UNSIGNED_INT);
 	I_EnumLabel(osg::Uniform::UNSIGNED_INT_VEC2);
 	I_EnumLabel(osg::Uniform::UNSIGNED_INT_VEC3);
 	I_EnumLabel(osg::Uniform::UNSIGNED_INT_VEC4);
@@ -259,6 +260,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	               ____Uniform__C5_char_P1__int,
 	               "",
 	               "");
+	I_Constructor2(IN, const char *, name, IN, unsigned int, i,
+	               ____Uniform__C5_char_P1__unsigned_int,
+	               "",
+	               "");
 	I_Constructor2(IN, const char *, name, IN, bool, b,
 	               ____Uniform__C5_char_P1__bool,
 	               "",
@@ -301,6 +306,18 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	               "");
 	I_Constructor5(IN, const char *, name, IN, int, i0, IN, int, i1, IN, int, i2, IN, int, i3,
 	               ____Uniform__C5_char_P1__int__int__int__int,
+	               "",
+	               "");
+	I_Constructor3(IN, const char *, name, IN, unsigned int, i0, IN, unsigned int, i1,
+	               ____Uniform__C5_char_P1__unsigned_int__unsigned_int,
+	               "",
+	               "");
+	I_Constructor4(IN, const char *, name, IN, unsigned int, i0, IN, unsigned int, i1, IN, unsigned int, i2,
+	               ____Uniform__C5_char_P1__unsigned_int__unsigned_int__unsigned_int,
+	               "",
+	               "");
+	I_Constructor5(IN, const char *, name, IN, unsigned int, i0, IN, unsigned int, i1, IN, unsigned int, i2, IN, unsigned int, i3,
+	               ____Uniform__C5_char_P1__unsigned_int__unsigned_int__unsigned_int__unsigned_int,
 	               "",
 	               "");
 	I_Constructor3(IN, const char *, name, IN, bool, b0, IN, bool, b1,
@@ -365,6 +382,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	          __bool__set__int,
 	          "",
 	          "");
+	I_Method1(bool, set, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __bool__set__unsigned_int,
+	          "",
+	          "");
 	I_Method1(bool, set, IN, bool, b,
 	          Properties::NON_VIRTUAL,
 	          __bool__set__bool,
@@ -420,6 +442,21 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	          __bool__set__int__int__int__int,
 	          "",
 	          "");
+	I_Method2(bool, set, IN, unsigned int, i0, IN, unsigned int, i1,
+	          Properties::NON_VIRTUAL,
+	          __bool__set__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method3(bool, set, IN, unsigned int, i0, IN, unsigned int, i1, IN, unsigned int, i2,
+	          Properties::NON_VIRTUAL,
+	          __bool__set__unsigned_int__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method4(bool, set, IN, unsigned int, i0, IN, unsigned int, i1, IN, unsigned int, i2, IN, unsigned int, i3,
+	          Properties::NON_VIRTUAL,
+	          __bool__set__unsigned_int__unsigned_int__unsigned_int__unsigned_int,
+	          "",
+	          "");
 	I_Method2(bool, set, IN, bool, b0, IN, bool, b1,
 	          Properties::NON_VIRTUAL,
 	          __bool__set__bool__bool,
@@ -443,6 +480,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method1(bool, get, IN, int &, i,
 	          Properties::NON_VIRTUAL,
 	          __bool__get__int_R1,
+	          "",
+	          "");
+	I_Method1(bool, get, IN, unsigned int &, i,
+	          Properties::NON_VIRTUAL,
+	          __bool__get__unsigned_int_R1,
 	          "",
 	          "");
 	I_Method1(bool, get, IN, bool &, b,
@@ -500,6 +542,21 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	          __bool__get__int_R1__int_R1__int_R1__int_R1,
 	          "",
 	          "");
+	I_Method2(bool, get, IN, unsigned int &, i0, IN, unsigned int &, i1,
+	          Properties::NON_VIRTUAL,
+	          __bool__get__unsigned_int_R1__unsigned_int_R1,
+	          "",
+	          "");
+	I_Method3(bool, get, IN, unsigned int &, i0, IN, unsigned int &, i1, IN, unsigned int &, i2,
+	          Properties::NON_VIRTUAL,
+	          __bool__get__unsigned_int_R1__unsigned_int_R1__unsigned_int_R1,
+	          "",
+	          "");
+	I_Method4(bool, get, IN, unsigned int &, i0, IN, unsigned int &, i1, IN, unsigned int &, i2, IN, unsigned int &, i3,
+	          Properties::NON_VIRTUAL,
+	          __bool__get__unsigned_int_R1__unsigned_int_R1__unsigned_int_R1__unsigned_int_R1,
+	          "",
+	          "");
 	I_Method2(bool, get, IN, bool &, b0, IN, bool &, b1,
 	          Properties::NON_VIRTUAL,
 	          __bool__get__bool_R1__bool_R1,
@@ -523,6 +580,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method2(bool, setElement, IN, unsigned int, index, IN, int, i,
 	          Properties::NON_VIRTUAL,
 	          __bool__setElement__unsigned_int__int,
+	          "",
+	          "");
+	I_Method2(bool, setElement, IN, unsigned int, index, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __bool__setElement__unsigned_int__unsigned_int,
 	          "",
 	          "");
 	I_Method2(bool, setElement, IN, unsigned int, index, IN, bool, b,
@@ -580,6 +642,21 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	          __bool__setElement__unsigned_int__int__int__int__int,
 	          "",
 	          "");
+	I_Method3(bool, setElement, IN, unsigned int, index, IN, unsigned int, i0, IN, unsigned int, i1,
+	          Properties::NON_VIRTUAL,
+	          __bool__setElement__unsigned_int__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method4(bool, setElement, IN, unsigned int, index, IN, unsigned int, i0, IN, unsigned int, i1, IN, unsigned int, i2,
+	          Properties::NON_VIRTUAL,
+	          __bool__setElement__unsigned_int__unsigned_int__unsigned_int__unsigned_int,
+	          "",
+	          "");
+	I_Method5(bool, setElement, IN, unsigned int, index, IN, unsigned int, i0, IN, unsigned int, i1, IN, unsigned int, i2, IN, unsigned int, i3,
+	          Properties::NON_VIRTUAL,
+	          __bool__setElement__unsigned_int__unsigned_int__unsigned_int__unsigned_int__unsigned_int,
+	          "",
+	          "");
 	I_Method3(bool, setElement, IN, unsigned int, index, IN, bool, b0, IN, bool, b1,
 	          Properties::NON_VIRTUAL,
 	          __bool__setElement__unsigned_int__bool__bool,
@@ -603,6 +680,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method2(bool, getElement, IN, unsigned int, index, IN, int &, i,
 	          Properties::NON_VIRTUAL,
 	          __bool__getElement__unsigned_int__int_R1,
+	          "",
+	          "");
+	I_Method2(bool, getElement, IN, unsigned int, index, IN, unsigned int &, i,
+	          Properties::NON_VIRTUAL,
+	          __bool__getElement__unsigned_int__unsigned_int_R1,
 	          "",
 	          "");
 	I_Method2(bool, getElement, IN, unsigned int, index, IN, bool &, b,
@@ -658,6 +740,21 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method5(bool, getElement, IN, unsigned int, index, IN, int &, i0, IN, int &, i1, IN, int &, i2, IN, int &, i3,
 	          Properties::NON_VIRTUAL,
 	          __bool__getElement__unsigned_int__int_R1__int_R1__int_R1__int_R1,
+	          "",
+	          "");
+	I_Method3(bool, getElement, IN, unsigned int, index, IN, unsigned int &, i0, IN, unsigned int &, i1,
+	          Properties::NON_VIRTUAL,
+	          __bool__getElement__unsigned_int__unsigned_int_R1__unsigned_int_R1,
+	          "",
+	          "");
+	I_Method4(bool, getElement, IN, unsigned int, index, IN, unsigned int &, i0, IN, unsigned int &, i1, IN, unsigned int &, i2,
+	          Properties::NON_VIRTUAL,
+	          __bool__getElement__unsigned_int__unsigned_int_R1__unsigned_int_R1__unsigned_int_R1,
+	          "",
+	          "");
+	I_Method5(bool, getElement, IN, unsigned int, index, IN, unsigned int &, i0, IN, unsigned int &, i1, IN, unsigned int &, i2, IN, unsigned int &, i3,
+	          Properties::NON_VIRTUAL,
+	          __bool__getElement__unsigned_int__unsigned_int_R1__unsigned_int_R1__unsigned_int_R1__unsigned_int_R1,
 	          "",
 	          "");
 	I_Method3(bool, getElement, IN, unsigned int, index, IN, bool &, b0, IN, bool &, b1,
@@ -720,6 +817,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	          __bool__setArray__IntArray_P1,
 	          "",
 	          "");
+	I_Method1(bool, setArray, IN, osg::UIntArray *, array,
+	          Properties::NON_VIRTUAL,
+	          __bool__setArray__UIntArray_P1,
+	          "",
+	          "");
 	I_Method0(osg::FloatArray *, getFloatArray,
 	          Properties::NON_VIRTUAL,
 	          __FloatArray_P1__getFloatArray,
@@ -738,6 +840,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_Method0(const osg::IntArray *, getIntArray,
 	          Properties::NON_VIRTUAL,
 	          __C5_IntArray_P1__getIntArray,
+	          "",
+	          "");
+	I_Method0(osg::UIntArray *, getUIntArray,
+	          Properties::NON_VIRTUAL,
+	          __UIntArray_P1__getUIntArray,
+	          "Get the internal data array for an unsigned int osg::Uniform. ",
+	          "");
+	I_Method0(const osg::UIntArray *, getUIntArray,
+	          Properties::NON_VIRTUAL,
+	          __C5_UIntArray_P1__getUIntArray,
 	          "",
 	          "");
 	I_Method1(void, setModifiedCount, IN, unsigned int, mc,
@@ -849,6 +961,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_SimpleProperty(osg::Uniform::Type, Type, 
 	                 __Type__getType, 
 	                 __bool__setType__Type);
+	I_SimpleProperty(osg::UIntArray *, UIntArray, 
+	                 __UIntArray_P1__getUIntArray, 
+	                 0);
 	I_SimpleProperty(osg::Uniform::Callback *, UpdateCallback, 
 	                 __Callback_P1__getUpdateCallback, 
 	                 __void__setUpdateCallback__Callback_P1);

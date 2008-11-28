@@ -17,11 +17,6 @@
 
 namespace osgAnimation {
 
-    struct LinearFunction 
-    {
-        inline static void getValueAt(float t, float& result) { result = t;}
-    };
-
 
     struct OutBounceFunction 
     {
@@ -75,7 +70,15 @@ namespace osgAnimation {
         }
     };
 
+
+    /// Linear function
+    struct LinearFunction 
+    {
+        inline static void getValueAt(float t, float& result) { result = t;}
+    };
+
   
+    /// Quad function
     struct OutQuadFunction 
     {
         inline static void getValueAt(float t, float& result) { result = - (t * (t -2.0));}
@@ -101,6 +104,7 @@ namespace osgAnimation {
     };
 
 
+    /// Cubic function
     struct OutCubicFunction 
     {
         inline static void getValueAt(float t, float& result) { t = t-1.0; result = t*t*t + 1;}
@@ -123,6 +127,35 @@ namespace osgAnimation {
         }
     };
  
+
+    /// Quart function
+    struct InQuartFunction 
+    {
+        inline static void getValueAt(float t, float& result) { result = t*t*t*t*t;}
+    };
+
+    struct OutQuartFunction
+    {
+        inline static void getValueAt(float t, float& result) { t = t - 1; result = - (t*t*t*t -1); }
+    };
+
+    struct InOutQuartFunction
+    {
+        inline static void getValueAt(float t, float& result) 
+        {
+            t = t * 2.0;
+            if ( t < 1)
+                result = 0.5*t*t*t*t;
+            else
+            {
+                t -= 2.0;
+                result = -0.5 * (t*t*t*t -2);
+            }
+        }
+    };
+
+
+
     class Motion
     {
     public:
@@ -185,6 +218,7 @@ namespace osgAnimation {
     };
 
 
+
     template <typename T>
     struct MathMotionTemplate : public Motion
     {
@@ -217,15 +251,21 @@ namespace osgAnimation {
     // linear
     typedef MathMotionTemplate<LinearFunction > LinearMotion;
 
+    // quad
+    typedef MathMotionTemplate<OutQuadFunction > OutQuadMotion;
+    typedef MathMotionTemplate<InQuadFunction> InQuadMotion;
+    typedef MathMotionTemplate<InOutQuadFunction> InOutQuadMotion;
+
     // cubic
     typedef MathMotionTemplate<OutCubicFunction > OutCubicMotion;
     typedef MathMotionTemplate<InCubicFunction> InCubicMotion;
     typedef MathMotionTemplate<InOutCubicFunction> InOutCubicMotion;
 
-    // quad
-    typedef MathMotionTemplate<OutQuadFunction > OutQuadMotion;
-    typedef MathMotionTemplate<InQuadFunction> InQuadMotion;
-    typedef MathMotionTemplate<InOutQuadFunction> InOutQuadMotion;
+    // quart
+    typedef MathMotionTemplate<OutQuartFunction > OutQuartMotion;
+    typedef MathMotionTemplate<InQuartFunction> InQuartMotion;
+    typedef MathMotionTemplate<InOutQuartFunction> InOutQuartMotion;
+
 
     // bounce
     typedef MathMotionTemplate<OutBounceFunction > OutBounceMotion;

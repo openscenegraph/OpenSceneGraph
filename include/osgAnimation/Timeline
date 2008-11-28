@@ -15,14 +15,15 @@
 #ifndef OSGANIMATION_TIMELINE_H
 #define OSGANIMATION_TIMELINE_H
 
+#include <osgAnimation/Export>
 #include <osg/Object>
 #include <map>
 #include <vector>
+#include <cmath>
 #include <osg/Notify>
 #include <osg/Group>
 #include <osgAnimation/Animation>
 #include <osgAnimation/AnimationManagerBase>
-#include <osgAnimation/Export>
 
 namespace osgAnimation
 {
@@ -213,7 +214,7 @@ namespace osgAnimation
             // process all pending remove action operation
             while( !_removeActionOperations.empty())
             {
-                internalRemoveAction(_removeActionOperations.back().second.get());
+                internalRemoveAction(_removeActionOperations.back().second);
                 _removeActionOperations.pop_back();
             }
         }

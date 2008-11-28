@@ -30,7 +30,12 @@
 namespace osgAnimation 
 {
 
-
+    /// This class manage format for software skinning
+    /// it used the technic on this paper http://www.intel.com/cd/ids/developer/asmo-na/eng/172124.htm
+    /// The idea is to prepare the data to do only v' = M x v  with M a combined matrix as below
+    /// M = Mbone1 * w1 + Mbone2 * w2 + ...
+    /// a M matrix is uniq for a set of vertex then to fully compute the skinned mesh
+    /// you have to iterate on each UniqBoneSetVertexSet
     class TransformVertexFunctor
     {
     public:
@@ -44,6 +49,7 @@ namespace osgAnimation
             BoneWeight(BoneType* bone, float weight) : _bone(bone), _weight(weight) {}
             const BoneType* getBone() const { return &(*_bone); }
             float getWeight() const { return _weight; }
+            void setWeight(float w) { _weight = w; }
         protected:
             osg::ref_ptr<BoneType> _bone;
             float _weight;
@@ -57,6 +63,35 @@ namespace osgAnimation
         public:
             BoneWeightList& getBones() { return _bones; }
             VertexList& getVertexes() { return _vertexes; }
+            
+            void resetMatrix() 
+            {
+                _result.set(0, 0, 0, 0,
+                            0, 0, 0, 0,
+                            0, 0, 0, 0,
+                            0, 0, 0, 1);
+            }
+            void accummulateMatrix(const osg::Matrix& invBindMatrix, const osg::Matrix& matrix, osg::Matrix::value_type weight)
+            {
+                osg::Matrix m = invBindMatrix * matrix;
+                osg::Matrix::value_type* ptr = m.ptr();
+                osg::Matrix::value_type* ptrresult = _result.ptr();
+                ptrresult[0] += ptr[0] * weight;
+                ptrresult[1] += ptr[1] * weight;
+                ptrresult[2] += ptr[2] * weight;
+
+                ptrresult[4] += ptr[4] * weight;
+                ptrresult[5] += ptr[5] * weight;
+                ptrresult[6] += ptr[6] * weight;
+
+                ptrresult[8] += ptr[8] * weight;
+                ptrresult[9] += ptr[9] * weight;
+                ptrresult[10] += ptr[10] * weight;
+
+                ptrresult[12] += ptr[12] * weight;
+                ptrresult[13] += ptr[13] * weight;
+                ptrresult[14] += ptr[14] * weight;
+            }
             void computeMatrixForVertexSet() 
             {
                 if (_bones.empty()) 
@@ -65,18 +100,16 @@ namespace osgAnimation
                     _result = MatrixType::identity();
                     return;
                 }
-                _result = MatrixType(0, 0, 0, 0,
-                                     0, 0, 0, 0,
-                                     0, 0, 0, 0,
-                                     0, 0, 0, 0);
+                resetMatrix();
+
                 int size = _bones.size();
-                for (int i = 0; i < size; i++) 
+                for (int i = 0; i < size; i++)
                 {
                     const BoneType* bone = _bones[i].getBone();
                     const MatrixType& invBindMatrix = bone->getInvBindMatrixInSkeletonSpace();
                     const MatrixType& matrix = bone->getMatrixInSkeletonSpace();
-                    double w = _bones[i].getWeight();
-                    _result = _result + ( (invBindMatrix * matrix ) * w);
+                    osg::Matrix::value_type w = _bones[i].getWeight();
+                    accummulateMatrix(invBindMatrix, matrix, w);
                 }
             }
             const MatrixType& getMatrix() const { return _result;}
@@ -97,21 +130,31 @@ namespace osgAnimation
             {
                 const osgAnimation::VertexInfluenceSet::UniqVertexSetToBoneSet& inf = influence[i];
                 int nbBones = inf.getBones().size();
+                BoneWeightList& boneList = _boneSetVertexSet[i].getBones();
 
+                double sumOfWeight = 0;
                 for (int b = 0; b < nbBones; b++) 
                 {
                     const std::string& bname = inf.getBones()[b].getBoneName();
                     float weight = inf.getBones()[b].getWeight();
-                    if (map.find(bname) == map.end()) 
+                    BoneMap::const_iterator it = map.find(bname);
+                    if (it == map.end()) 
                     {
-                        std::cerr << "Warning TransformVertexFunctor Bone " << bname << " not found, skip the influence group " <<bname  << std::endl;
+                        osg::notify(osg::WARN) << "TransformVertexFunctor Bone " << bname << " not found, skip the influence group " <<bname  << std::endl;
                         continue;
                     }
-                    BoneMap::const_iterator it = map.find(bname);
-                    if (it == map.end())
-                        std::cerr << "Warning TransformVertexFunctor does not find bone " << bname << " in the map" << std::endl;
                     BoneType* bone = it->second.get();
-                    _boneSetVertexSet[i].getBones().push_back(BoneWeight(bone, weight));
+                    boneList.push_back(BoneWeight(bone, weight));
+                    sumOfWeight += weight;
+                }
+                // if a bone referenced by a vertexinfluence is missed it can make the sum less than 1.0
+                // so we check it and renormalize the all weight bone
+                const double threshold = 1e-4;
+                if (!_boneSetVertexSet[i].getBones().empty() && 
+                    (sumOfWeight < 1.0 - threshold ||  sumOfWeight > 1.0 + threshold))
+                {
+                    for (int b = 0; b < boneList.size(); b++)
+                        boneList[b].setWeight(boneList[b].getWeight() / sumOfWeight);
                 }
                 _boneSetVertexSet[i].getVertexes() = inf.getVertexes();
             }

@@ -1,6 +1,8 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
 // $Id: osgwidgetframe.cpp 34 2008-04-07 03:12:41Z cubicool $
 
+#include <osgDB/ReadFile>
+
 #include <osgWidget/Util>
 #include <osgWidget/WindowManager>
 #include <osgWidget/Frame>
@@ -84,17 +86,15 @@ int main(int argc, char** argv) {
         1024.0f,
         MASK_2D,
         osgWidget::WindowManager::WM_PICK_DEBUG
+        //osgWidget::WindowManager::WM_NO_INVERT_Y
     );
     
-    osgWidget::Frame* frame = osgWidget::Frame::createSimpleFrameWithSingleTexture(
+    osgWidget::Frame* frame = osgWidget::Frame::createSimpleFrameFromTheme(
         "frame",
-        "osgWidget/theme-2.png",
-        64.0f,
-        64.0f,
-        16.0f,
-        16.0f,
-        100.0f,
-        100.0f
+        osgDB::readImageFile("osgWidget/theme.png"),
+        40.0f,
+        40.0f,
+	osgWidget::Frame::FRAME_ALL
     );
 
     frame->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -122,11 +122,12 @@ int main(int argc, char** argv) {
     box->addWidget(img4);
     box->setEventMask(osgWidget::EVENT_NONE);
 
-    frame->getEmbeddedWindow()->setWindow(box);
+    //frame->getEmbeddedWindow()->setWindow(box);
+    frame->setWindow(box);
     frame->getEmbeddedWindow()->setColor(1.0f, 1.0f, 1.0f, 1.0f);
     frame->resize(300.0f, 300.0f);
-    frame->addCallback(osgWidget::Callback(&scrollWindow, osgWidget::EVENT_MOUSE_SCROLL));
-    frame->addCallback(osgWidget::Callback(&changeTheme, osgWidget::EVENT_KEY_DOWN));
+    frame->addCallback(new osgWidget::Callback(&scrollWindow, osgWidget::EVENT_MOUSE_SCROLL));
+    frame->addCallback(new osgWidget::Callback(&changeTheme, osgWidget::EVENT_KEY_DOWN));
 
     wm->addChild(frame);
 

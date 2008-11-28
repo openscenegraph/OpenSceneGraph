@@ -2,11 +2,16 @@
 // $Id: osgwidgetnotebook.cpp 45 2008-04-23 16:46:11Z cubicool $
 
 #include <osg/io_utils>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/StateSetManipulator>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgWidget/Util>
 #include <osgWidget/WindowManager>
 #include <osgWidget/Box>
 #include <osgWidget/Canvas>
 #include <osgWidget/Label>
+#include <osgWidget/Label>
+#include <osgWidget/ViewerEventHandlers>
 
 const unsigned int MASK_2D = 0xF0000000;
 const unsigned int MASK_3D = 0x0F000000;
@@ -23,12 +28,12 @@ public:
 
         for(unsigned int i = 0; i < objs.size(); i++) objs[i]->setLayer(
             osgWidget::Widget::LAYER_MIDDLE,
-            i
+            i * 2
         );
 
         _windows->getByName(ev.getWidget()->getName())->setLayer(
             osgWidget::Widget::LAYER_MIDDLE,
-            objs.size()
+            objs.size() * 2
         );
 
         _windows->resize();
@@ -78,13 +83,13 @@ public:
             label2->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
             label2->setColor(0.0f, i / 4.0f, 0.3f, 1.0f);
             label2->setLabel(descr.str());
-            label2->setLayer(osgWidget::Widget::LAYER_MIDDLE, i);
+            label2->setLayer(osgWidget::Widget::LAYER_MIDDLE, i * 2);
             label2->addSize(50.0f, 50.0f);
 
             _windows->addWidget(label2, 0.0f, 0.0f);
 
             label1->setEventMask(osgWidget::EVENT_MOUSE_PUSH);
-            label1->addCallback(osgWidget::Callback(
+            label1->addCallback(new osgWidget::Callback(
                 &Notebook::callbackTabPressed,
                 this,
                 osgWidget::EVENT_MOUSE_PUSH
@@ -100,12 +105,18 @@ public:
         label->addSize(20.0f, 20.0f);
         label->setShadow(0.08f);
         label->setCanFill(true);
-
+   
         addWidget(label);
         addWidget(_tabs->embed());
         addWidget(_windows->embed());
     }
 };
+
+void bound(osg::Node* node) {
+    osg::BoundingSphere bs = node->getBound();
+
+    osgWidget::warn() << "center: " << bs.center() << " radius: " << bs.radius() << std::endl;
+}
 
 int main(int argc, char** argv) {
     osgViewer::Viewer viewer;
@@ -114,21 +125,20 @@ int main(int argc, char** argv) {
         &viewer,
         1280.0f,
         720.0f,
-        MASK_2D,
-        osgWidget::WindowManager::WM_PICK_DEBUG
+        MASK_2D //,
+        //osgWidget::WindowManager::WM_USE_RENDERBINS
     );
 
-    Notebook* notebook = new Notebook("notebook");
+    Notebook* notebook1 = new Notebook("notebook1");
+    Notebook* notebook2 = new Notebook("notebook2");
 
-    osgWidget::warn()
-        << "Sizes are..." << std::endl
-        << "Cur: " << notebook->getSize() << std::endl
-        << "Min: " << notebook->getMinSize() << std::endl
-    ;
+    notebook2->setOrigin(100.0f, 100.0f);
 
-    notebook->attachMoveCallback();
+    notebook1->attachMoveCallback();
+    notebook2->attachMoveCallback();
 
-    wm->addChild(notebook);
+    wm->addChild(notebook1);
+    wm->addChild(notebook2);
 
     return osgWidget::createExample(viewer, wm);
 }

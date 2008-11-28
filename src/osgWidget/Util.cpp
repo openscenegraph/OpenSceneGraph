@@ -1,5 +1,4 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Util.cpp 59 2008-05-15 20:55:31Z cubicool $
 
 #include <osg/io_utils>
 
@@ -36,14 +35,6 @@ std::string generateRandomName(const std::string& base) {
     return ss.str();
 }
 
-osg::Matrix createInvertedYOrthoProjectionMatrix(matrix_type width, matrix_type height) {
-    osg::Matrix m = osg::Matrix::ortho2D(0.0f, width, 0.0f, height);
-    osg::Matrix s = osg::Matrix::scale(1.0f, -1.0f, 1.0f);
-    osg::Matrix t = osg::Matrix::translate(0.0f, -height, 0.0f);
-
-    return t * s * m;
-}
-
 osg::Camera* createOrthoCamera(matrix_type width, matrix_type height) {
     osg::Camera* camera = new osg::Camera();
 
@@ -61,20 +52,12 @@ osg::Camera* createOrthoCamera(matrix_type width, matrix_type height) {
     return camera;
 }
 
-osg::Camera* createInvertedYOrthoCamera(matrix_type width, matrix_type height) {
-    osg::Camera* camera = createOrthoCamera(width, height);
+int createExample(osgViewer::Viewer& viewer, WindowManager* wm, osg::Node* node) {
+    if(!wm) return 1;
 
-    camera->setProjectionMatrix(createInvertedYOrthoProjectionMatrix(width, height));
-    
-    return camera;
-}
-
-osg::Group* _createExampleCommon(osgViewer::View* view, WindowManager* wm, osg::Node* node) {
-    if(!wm) return 0;
-
-    view->setUpViewInWindow(
-        0,
-        0,
+    viewer.setUpViewInWindow(
+        50,
+        50,
         static_cast<int>(wm->getWidth()),
         static_cast<int>(wm->getHeight())
     );
@@ -86,83 +69,19 @@ osg::Group* _createExampleCommon(osgViewer::View* view, WindowManager* wm, osg::
 
     if(node) group->addChild(node);
 
-    view->addEventHandler(new osgWidget::MouseHandler(wm));
-    view->addEventHandler(new osgWidget::KeyboardHandler(wm));
-    view->addEventHandler(new osgWidget::ResizeHandler(wm, camera));
-    view->addEventHandler(new osgViewer::StatsHandler());
-    view->addEventHandler(new osgViewer::WindowSizeHandler());
-    view->addEventHandler(new osgGA::StateSetManipulator(
-        view->getCamera()->getOrCreateStateSet()
+    viewer.addEventHandler(new osgWidget::MouseHandler(wm));
+    viewer.addEventHandler(new osgWidget::KeyboardHandler(wm));
+    viewer.addEventHandler(new osgWidget::ResizeHandler(wm, camera));
+    viewer.addEventHandler(new osgWidget::CameraSwitchHandler(wm, camera));
+    viewer.addEventHandler(new osgViewer::StatsHandler());
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler());
+    viewer.addEventHandler(new osgGA::StateSetManipulator(
+        viewer.getCamera()->getOrCreateStateSet()
     ));
 
     wm->resizeAllWindows();
-    
-    return group;
-}
-
-int createExample(osgViewer::Viewer& viewer, WindowManager* wm, osg::Node* node) {
-    osg::Group* group = _createExampleCommon(&viewer, wm, node);
 
     viewer.setSceneData(group);
-
-    return viewer.run();
-}
-
-// TODO: This function is totally broken; I don't really have any idea of how to do this.
-// Incredibly frustrating stuff.
-int createCompositeExample(
-    osgViewer::CompositeViewer& viewer,
-    osgViewer::View*            view,
-    WindowManager*              wm,
-    osg::Node*                  node
-) {
-    osg::Group*           group   = _createExampleCommon(view, wm, node);
-    osg::MatrixTransform* watcher = new osg::MatrixTransform();
-
-    watcher->addChild(wm);
-
-    // Setup the main 2D view.
-    viewer.addView(view);
-
-    view->setSceneData(group);
-
-    // The view that "watches" the main view.
-    osgViewer::View* viewWatcher = new osgViewer::View();
-
-    viewer.addView(viewWatcher);
-
-    int w = static_cast<int>(wm->getWidth());
-    int h = static_cast<int>(wm->getHeight());
-    
-    viewWatcher->setUpViewInWindow(0, 0, w, h);
-
-    // Setup our parent MatrixTransform so things look right in perspective.
-    watcher->setMatrix(
-        osg::Matrix::scale(1.0f, -1.0f, 1000.0f) *
-        osg::Matrix::rotate(osg::DegreesToRadians(90.0f), osg::Vec3d(1.0f, 0.0f, 0.0f))
-    );
-
-    watcher->getOrCreateStateSet()->setAttributeAndModes(
-        new osg::Scissor(0, 0, w, h),
-        osg::StateAttribute::OVERRIDE
-    );
-
-    osgGA::TrackballManipulator* tb = new osgGA::TrackballManipulator();
-
-    warn() << watcher->getMatrix() << std::endl;
-
-    /*
-    const osg::BoundingSphere& bs = watcher->getBound();
-
-    tb->setHomePosition(
-        bs.center() + osg::Vec3(0.0f, -3.5f * bs.radius(), 0.0f),
-        bs.center(),
-        osg::Vec3(0.0f, 1.0f, 0.0f)
-    );
-    */
-
-    viewWatcher->setSceneData(watcher);
-    viewWatcher->setCameraManipulator(tb);
 
     return viewer.run();
 }

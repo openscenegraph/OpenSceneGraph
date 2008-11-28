@@ -3,8 +3,7 @@
 
 #include <osg/io_utils>
 #include <osg/Math>
-#include <osg/BlendFunc>
-#include <osg/TexMat>
+#include <osg/TextureRectangle>
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 #include <osgWidget/WindowManager>
@@ -34,8 +33,8 @@ _canFill   (false),
 _canClone  (true),
 _isManaged (false),
 _isStyled  (false),
-_minWidth  (w),
-_minHeight (h) {
+_minWidth  (0.0f),
+_minHeight (0.0f) {
     _name = name.size() ? name : generateRandomName("Widget");
 
     if(!_norms.valid()) {
@@ -63,9 +62,6 @@ _minHeight (h) {
 
     setDimensions(0.0f, 0.0f, w, h);
     setColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-    getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
-    getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 }
 
 Widget::Widget(const Widget& widget, const osg::CopyOp& co):
@@ -108,24 +104,11 @@ WindowManager* Widget::_getWindowManager() const {
 }
 
 osg::Image* Widget::_getImage() const {
-    const osg::Texture2D* texture = _texture();
+    const osg::Texture* texture = _texture();
 
     if(texture) return const_cast<osg::Image*>(texture->getImage(0));
 
     return 0;
-}
-
-void Widget::managed(WindowManager* wm) {
-    if(!wm->isInvertedY()) return;
-
-    osg::Matrix s = osg::Matrix::scale(1.0f, -1.0f, 1.0f);
-    osg::Matrix t = osg::Matrix::translate(0.0f, -1.0, 0.0f);
-
-    getOrCreateStateSet()->setTextureAttributeAndModes(
-        0,
-        new osg::TexMat(t * s),
-        osg::StateAttribute::ON
-    );
 }
 
 void Widget::setDimensions(point_type x, point_type y, point_type w, point_type h, point_type z) {
@@ -205,6 +188,14 @@ void Widget::setDimensions(point_type x, point_type y, point_type w, point_type 
         }
     }
 
+    const WindowManager* wm = _getWindowManager();
+
+    if(wm && wm->isUsingRenderBins()) {
+        getOrCreateStateSet()->setRenderBinDetails(static_cast<int>(z), "RenderBin");
+
+        z = 0.0f;
+    }
+
     (*verts)[LL].set(x,     y,     z);
     (*verts)[LR].set(x + w, y,     z);
     (*verts)[UR].set(x + w, y + h, z);
@@ -221,7 +212,7 @@ void Widget::setColor(color_type r, color_type g, color_type b, color_type a, Co
         (*cols)[UL].set(r, g, b, a);
     }
 
-    else (*cols)[convertCorner(p)].set(r, g, b, a);
+    else (*cols)[p].set(r, g, b, a);
 }
 
 void Widget::addColor(color_type r, color_type g, color_type b, color_type a, Corner p) {
@@ -234,7 +225,7 @@ void Widget::addColor(color_type r, color_type g, color_type b, color_type a, Co
         (*cols)[UL] += Color(r, g, b, a);
     }
 
-    else (*cols)[convertCorner(p)] += Color(r, g, b, a);
+    else (*cols)[p] += Color(r, g, b, a);
 }
 
 void Widget::setTexCoord(texcoord_type tx, texcoord_type ty, Corner p) {
@@ -247,7 +238,15 @@ void Widget::setTexCoord(texcoord_type tx, texcoord_type ty, Corner p) {
         (*texs)[UL].set(tx, ty);
     }
 
-    else (*texs)[convertCorner(p)].set(tx, ty);
+    else (*texs)[p].set(tx, ty);
+}
+
+// TODO: We chop off any offset here if you use TOP; we need to do the same
+// for BG, etc.
+void Widget::setLayer(Layer layer, unsigned int offset) {
+    if(layer == LAYER_TOP) offset = 0;
+
+    _layer = layer + offset;
 }
 
 void Widget::setTexCoordRegion(point_type x, point_type y, point_type w, point_type h) {
@@ -263,27 +262,27 @@ void Widget::setTexCoordRegion(point_type x, point_type y, point_type w, point_t
     // Set the LOWER_LEFT point.
     XYCoord t(x / tw, y / tw);
 
-    (*texs)[UL] = t;
+    (*texs)[LL] = t;
     
     // Set the LOWER_RIGHT point.
     t += XYCoord(w / tw, 0.0f);
 
-    (*texs)[UR] = t;
+    (*texs)[LR] = t;
 
     // Set the UPPER_RIGHT point.
     t += XYCoord(0.0f, h / th);
 
-    (*texs)[LR] = t;
+    (*texs)[UR] = t;
 
     // Set the UPPER_LEFT point.
     t += XYCoord(-(w / tw), 0.0f);
 
-    (*texs)[LL] = t;
+    (*texs)[UL] = t;
 }
 
 void Widget::setTexCoordWrapHorizontal() {
-    osg::Image*     image   = _image();
-    osg::Texture2D* texture = _texture();
+    osg::Image*   image   = _image();
+    osg::Texture* texture = _texture();
 
     if(!image || !texture || image->s() == 0.0f) return;
 
@@ -294,8 +293,8 @@ void Widget::setTexCoordWrapHorizontal() {
 }
 
 void Widget::setTexCoordWrapVertical() {
-    osg::Image*     image   = _image();
-    osg::Texture2D* texture = _texture();
+    osg::Image*   image   = _image();
+    osg::Texture* texture = _texture();
 
     if(!image || !texture || image->t() == 0.0f) return;
     
@@ -311,35 +310,27 @@ XYCoord Widget::localXY(double _x, double _y) const {
     return _parent->localXY(_x, _y) - getOrigin();
 }
 
-bool Widget::setImage(osg::Image* image, bool setTexCoords) {
+bool Widget::setImage(osg::Image* image, bool setTexCoords, bool useTextRect) {
     if(!image) {
         warn() << "Widget [" << _name << "] cannot use a NULL image." << std::endl;
 
         return false;
     }
 
-    osg::Texture2D* texture = new osg::Texture2D();
+    osg::Texture* texture = 0;
     
-    texture->setDataVariance(osg::Object::DYNAMIC);
+    if(useTextRect) texture = new osg::TextureRectangle();
+    
+    else texture = new osg::Texture2D();
+    
+    if(!texture) return false;
+
     texture->setImage(0, image);
 
-    getOrCreateStateSet()->setTextureAttributeAndModes(
-        0,
-        texture,
-        osg::StateAttribute::ON
-    );
-
-    if(setTexCoords) {
-        setTexCoord(0.0f, 0.0f, LOWER_LEFT);
-        setTexCoord(1.0f, 0.0f, LOWER_RIGHT);
-        setTexCoord(1.0f, 1.0f, UPPER_RIGHT);
-        setTexCoord(0.0f, 1.0f, UPPER_LEFT);
-    }
-
-    return true;
+    return setTexture(texture, setTexCoords, useTextRect);
 }
 
-bool Widget::setImage(const std::string& filePath, bool setTexCoords) {
+bool Widget::setImage(const std::string& filePath, bool setTexCoords, bool useTextRect) {
     if(!osgDB::findDataFile(filePath).size()) {
         warn()
             << "Widget [" << _name
@@ -350,7 +341,37 @@ bool Widget::setImage(const std::string& filePath, bool setTexCoords) {
         return false;
     }
 
-    return setImage(osgDB::readImageFile(filePath), setTexCoords);
+    return setImage(osgDB::readImageFile(filePath), setTexCoords, useTextRect);
+}
+
+bool Widget::setTexture(osg::Texture* texture, bool setTexCoords, bool useTextRect) {
+    if(!texture) return false;
+
+    getOrCreateStateSet()->setTextureAttributeAndModes(
+        0,
+        texture,
+        osg::StateAttribute::ON
+    );
+
+    if(setTexCoords) {
+        if(useTextRect) {
+             osg::Image* image = texture->getImage(0);
+
+            setTexCoord(0.0f, 0.0f, LOWER_LEFT);
+            setTexCoord(image->s(), 0.0f, LOWER_RIGHT);
+            setTexCoord(image->s(), image->t(), UPPER_RIGHT);
+            setTexCoord(0.0f, image->t(), UPPER_LEFT);
+        }
+
+        else {
+            setTexCoord(0.0f, 0.0f, LOWER_LEFT);
+            setTexCoord(1.0f, 0.0f, LOWER_RIGHT);
+            setTexCoord(1.0f, 1.0f, UPPER_RIGHT);
+            setTexCoord(0.0f, 1.0f, UPPER_LEFT);
+        }
+    }
+
+    return true;
 }
 
 void Widget::setPadding(point_type pad) {
@@ -451,7 +472,7 @@ const Point& Widget::getPoint(Corner p) const {
 
     if(p == ALL_CORNERS) point = UPPER_LEFT;
 
-    return (*_verts())[convertCorner(point)];
+    return (*_verts())[point];
 }
 
 const Color& Widget::getColor(Corner p) const {
@@ -459,7 +480,7 @@ const Color& Widget::getColor(Corner p) const {
 
     if(p == ALL_CORNERS) point = UPPER_LEFT;
 
-    return (*_cols())[convertCorner(point)];
+    return (*_cols())[point];
 }
 
 const TexCoord& Widget::getTexCoord(Corner p) const {
@@ -467,25 +488,7 @@ const TexCoord& Widget::getTexCoord(Corner p) const {
 
     if(p == ALL_CORNERS) point = UPPER_LEFT;
 
-    return (*_texs())[convertCorner(point)];
-}
-
-// This converts our points back and forth depding on whether or not we're in an
-// inverted-Y WindowManager.
-Widget::Corner Widget::convertCorner(Corner p) const {
-    const WindowManager* wm = getWindowManager();
-
-    if(!wm || !wm->isInvertedY()) return p;
-    
-    if(p == UPPER_LEFT) return LOWER_LEFT;
-
-    else if(p == UPPER_RIGHT) return LOWER_RIGHT;
-
-    else if(p == LOWER_LEFT) return UPPER_LEFT;
-
-    else if(p == LOWER_RIGHT) return UPPER_RIGHT;
-
-    else return p;
+    return (*_texs())[point];
 }
 
 Color Widget::getImageColorAtXY(point_type x, point_type y) const {

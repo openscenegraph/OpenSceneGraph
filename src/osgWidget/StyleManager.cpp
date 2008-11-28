@@ -1,5 +1,4 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: StyleManager.cpp 55 2008-05-12 19:14:42Z cubicool $
 
 #include <sstream>
 #include <osg/io_utils>

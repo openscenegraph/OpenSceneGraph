@@ -11,13 +11,12 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Util 59 2008-05-15 20:55:31Z cubicool $
+// Code by: Jeremy Moles (cubicool) 2007-2008
 
 #ifndef OSGWIDGET_UTIL
 #define OSGWIDGET_UTIL
 
-#include <ctype.h>
+#include <cctype>
 #include <algorithm>
 #include <sstream>
 #include <osg/Camera>
@@ -71,26 +70,12 @@ class WindowManager;
 
 OSGWIDGET_EXPORT std::string  getFilePath        (const std::string&);
 OSGWIDGET_EXPORT std::string  generateRandomName (const std::string&);
-
-OSGWIDGET_EXPORT osg::Matrix  createInvertedYOrthoProjectionMatrix (matrix_type, matrix_type);
-OSGWIDGET_EXPORT osg::Camera* createOrthoCamera                    (matrix_type, matrix_type);
-OSGWIDGET_EXPORT osg::Camera* createInvertedYOrthoCamera           (matrix_type, matrix_type);
+OSGWIDGET_EXPORT osg::Camera* createOrthoCamera  (matrix_type, matrix_type);
 
 // This function sets up our basic example framework, and optionally sets some root
 // scene data.
-OSGWIDGET_EXPORT int createExample(osgViewer::Viewer&, WindowManager*, osg::Node* = 0);
-
-// This function works like the above routine, except creates an additional "outside"
-// view for looking at your 2D scene.
-// TODO: Fix this!
-OSGWIDGET_EXPORT int createCompositeExample(
-    osgViewer::CompositeViewer&,
-    osgViewer::View*,
-    WindowManager*,
-    osg::Node* = 0
-);
-
-OSGWIDGET_EXPORT bool writeWindowManagerNode(WindowManager*);
+OSGWIDGET_EXPORT int  createExample          (osgViewer::Viewer&, WindowManager*, osg::Node* = 0);
+OSGWIDGET_EXPORT bool writeWindowManagerNode (WindowManager*);
 
 }
 

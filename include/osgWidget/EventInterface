@@ -11,8 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: EventInterface 64 2008-06-30 21:32:00Z cubicool $
+// Code by: Jeremy Moles (cubicool) 2007-2008
 
 #ifndef OSGWIDGET_EVENT_INTERFACE
 #define OSGWIDGET_EVENT_INTERFACE
@@ -67,15 +66,15 @@ class OSGWIDGET_EXPORT Event
         int        keyMask;
 
         Event(WindowManager* wm, EventType _type = EVENT_NONE):
-        _wm     (wm),
-        _window (0),
-        _widget (0),
-        _data   (0),
         type    (_type),
         x       (0.0f),
         y       (0.0f),
         key     (-1),
-        keyMask (-1) {
+        keyMask (-1),
+        _wm     (wm),
+        _window (0),
+        _widget (0),
+        _data   (0) {
         }
 
         Event& makeType(EventType _type) {
@@ -203,13 +202,19 @@ class FunctionCallback: public CallbackInterface
 };
 
 // The highlevel functor.
-class OSGWIDGET_EXPORT Callback
+class OSGWIDGET_EXPORT Callback: public osg::Referenced
 {
     public:
-    
-        Callback():_type(EVENT_NONE),_data(0) {}
-        Callback(const Callback& rhs):_type(rhs._type),_data(rhs._data),_callback(rhs._callback) {}
-    
+        Callback(): _type(EVENT_NONE), _data(0), _callback(0) {}
+        Callback(const Callback& rhs): osg::Referenced(rhs), _type(rhs._type), _data(rhs._data), _callback(rhs._callback) {}
+
+        // The more traditional style of OSG Callbacks.
+        Callback(EventType type, void* data=0):
+        _type     (type),
+        _data     (data),
+        _callback (0) {
+        }
+
         // Creates a Callback that is bound to a member function.
         template<typename T>
         Callback(bool (T::*function)(Event&), T* obj, EventType type, void* data=0):
@@ -226,7 +231,11 @@ class OSGWIDGET_EXPORT Callback
         _callback (new FunctionCallback<T>(functor)) {
         }
 
-        bool operator()(Event& ev) {
+        virtual ~Callback() {}
+
+        virtual bool operator()(Event& ev) {
+            if(!_callback) return false;
+
             return (*_callback)(ev);
         }
 
@@ -241,9 +250,10 @@ class OSGWIDGET_EXPORT Callback
         const void* getData() const {
             return _data;
         }
+
     protected:
         EventType _type;
-        void*      _data;
+        void*     _data;
 
         // We use a ref_ptr here so that we don't have to worry about memory.
         osg::ref_ptr<CallbackInterface> _callback;
@@ -301,7 +311,7 @@ class OSGWIDGET_EXPORT EventInterface
             return _eventMask;
         }
 
-        void addCallback(const Callback& cb) {
+        void addCallback(Callback* cb) {
             _callbacks.push_back(cb);
         }
 
@@ -312,10 +322,10 @@ class OSGWIDGET_EXPORT EventInterface
                 // This is the OLD method; testing a new method below.
                 // if(i->getType() == ev.type && (*i)(ev)) return true;
 
-                if(i->getType() == ev.type) {
-                    ev.setData(i->getData());
+                if(i->get()->getType() & ev.type) {
+                    ev.setData(i->get()->getData());
 
-                    if((*i)(ev)) return true;
+                    if((*i->get())(ev)) return true;
                 }
             }
 
@@ -387,7 +397,7 @@ class OSGWIDGET_EXPORT EventInterface
         bool canKeyUp   () const { return (_eventMask & EVENT_KEY_UP) != 0; }
 
     private:
-        typedef std::list<Callback> CallbackList;
+        typedef std::list<osg::ref_ptr<Callback> > CallbackList;
 
         unsigned int _eventMask;
         CallbackList _callbacks;

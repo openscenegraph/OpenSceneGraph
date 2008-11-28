@@ -1,11 +1,10 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Box.cpp 64 2008-06-30 21:32:00Z cubicool $
 
 #include <osgWidget/Box>
 
 namespace osgWidget {
 
-Box::Box(const std::string& name, BOX_TYPE bt, bool uniform):
+Box::Box(const std::string& name, BoxType bt, bool uniform):
 Window   (name),
 _boxType (bt),
 _uniform (uniform),

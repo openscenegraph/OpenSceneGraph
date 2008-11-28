@@ -11,8 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Label 59 2008-05-15 20:55:31Z cubicool $
+// Code by: Jeremy Moles (cubicool) 2007-2008
 
 #ifndef OSGWIDGET_LABEL
 #define OSGWIDGET_LABEL
@@ -34,10 +33,8 @@ class OSGWIDGET_EXPORT Label: public Widget
 
         virtual void parented   (Window*);
         virtual void unparented (Window*);
-        virtual void managed    (WindowManager*);
         virtual void positioned ();
 
-        void update       ();
         void setLabel     (const std::string&);
         void setFont      (const std::string&);
         void setFontSize  (unsigned int);

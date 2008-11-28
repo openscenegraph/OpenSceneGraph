@@ -11,8 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Widget 64 2008-06-30 21:32:00Z cubicool $
+// Code by: Jeremy Moles (cubicool) 2007-2008
 
 #ifndef OSGWIDGET_WIDGET
 #define OSGWIDGET_WIDGET
@@ -44,14 +43,14 @@ public:
             LR          = LOWER_RIGHT,
             UR          = UPPER_RIGHT,
             UL          = UPPER_LEFT,
-            ALL_CORNERS  = 4
+            ALL_CORNERS = 4
         };
 
         enum Layer {
-            LAYER_TOP    = 20,
-            LAYER_HIGH   = 15,
-            LAYER_MIDDLE = 10,
-            LAYER_LOW    = 5,
+            LAYER_TOP    = 100,
+            LAYER_HIGH   = 75,
+            LAYER_MIDDLE = 50,
+            LAYER_LOW    = 25,
             LAYER_BG     = 0
         };
 
@@ -94,7 +93,8 @@ public:
         // WindowManager object. The base managed method (WHICH YOU MUST REMEMBER
         // TO CALL IN YOUR DERIVED METHODS!) sets the TexMat properly depending
         // on what coordinate system you're using.
-        virtual void managed(WindowManager*);
+        virtual void managed(WindowManager*) {
+        }
 
         virtual void unmanaged(WindowManager*) {
         }
@@ -117,6 +117,7 @@ public:
         void setColor    (color_type, color_type, color_type, color_type, Corner = ALL_CORNERS);
         void addColor    (color_type, color_type, color_type, color_type, Corner = ALL_CORNERS);
         void setTexCoord (texcoord_type, texcoord_type, Corner = ALL_CORNERS);
+        void setLayer    (Layer l, unsigned int offset = 0);
 
         // These are additional texture coordinate setting methods.
         // This method will use a given origin as the LOWER_LEFT point and texture the
@@ -127,8 +128,9 @@ public:
         void setTexCoordWrapHorizontal ();
         void setTexCoordWrapVertical   ();
 
-        bool setImage (osg::Image*, bool=false);
-        bool setImage (const std::string&, bool=false);
+        bool setImage   (osg::Image*, bool = false, bool = false);
+        bool setImage   (const std::string&, bool = false, bool = false);
+        bool setTexture (osg::Texture*, bool = false, bool = false);
 
         void addX      (point_type);
         void addY      (point_type);
@@ -149,7 +151,6 @@ public:
         const Color&    getColor    (Corner = ALL_CORNERS) const;
         const TexCoord& getTexCoord (Corner = ALL_CORNERS) const;
 
-        Corner  convertCorner     (Corner) const;
         Color   getImageColorAtXY (point_type x, point_type y) const;
         XYCoord localXY           (double, double) const;
 
@@ -216,6 +217,14 @@ public:
             setTexCoordRegion(xy.x(), xy.y(), w, h);
         }
 
+        void setTexCoordRegion(point_type x, point_type y, const XYCoord& wh) {
+            setTexCoordRegion(x, y, wh.x(), wh.y());
+        }
+
+        void setTexCoordRegion(const XYCoord& xy, const XYCoord& wh) {
+            setTexCoordRegion(xy.x(), xy.y(), wh.x(), wh.y());
+        }
+
         void addColor(const Color& col, Corner p = ALL_CORNERS) {
             addColor(col.r(), col.g(), col.b(), col.a(), p);
         }
@@ -235,11 +244,6 @@ public:
 
         void setMinimumSize(const XYCoord& xy) {
             setMinimumSize(xy.x(), xy.y());
-        }
-
-        // TODO: Refine this...
-        void setLayer(Layer l, unsigned int offset = 0) {
-            _layer = l + offset;
         }
 
         void setPadLeft(point_type p) {
@@ -394,8 +398,6 @@ public:
 
     protected:
 
-
-
         point_type _calculateZ(unsigned int) const;
 
         PointArray* _verts() {
@@ -422,15 +424,23 @@ public:
             return dynamic_cast<const TexCoordArray*>(getTexCoordArray(0));
         }
 
-        osg::Texture2D* _texture() {
+        osg::Texture* _texture() {
+            osg::StateSet* ss = getStateSet();
+
+            if(!ss) return 0;
+
             return dynamic_cast<osg::Texture2D*>(
-                getStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
+                ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
             );
         }
 
-        const osg::Texture2D* _texture() const {
+        const osg::Texture* _texture() const {
+            const osg::StateSet* ss = getStateSet();
+
+            if(!ss) return 0;
+
             return dynamic_cast<const osg::Texture2D*>(
-                getStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
+                ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE)
             );
         }
 

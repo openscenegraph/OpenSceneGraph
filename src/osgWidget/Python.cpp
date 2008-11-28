@@ -1,5 +1,4 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Python.cpp 59 2008-05-15 20:55:31Z cubicool $
 
 // Python.h needs to be included before anything else.
 #ifdef OSGWIDGET_USEPYTHON
@@ -172,7 +171,7 @@ bool PythonEngine::runFile(const std::string& filePath) {
         return false;
     }
 
-    FILE*     f = osgDB::fopen(filePath.c_str(), "r");
+    FILE*     f = fopen(filePath.c_str(), "r");
     PyObject* r = PyRun_File(f, filePath.c_str(), Py_file_input, _data->main, _data->main);
 
     fclose(f);

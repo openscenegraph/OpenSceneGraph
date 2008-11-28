@@ -11,8 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-// -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
-// $Id: Types 33 2008-04-04 19:03:12Z cubicool $
+// Code by: Jeremy Moles (cubicool) 2007-2008
 
 #ifndef OSGWIDGET_TYPES
 #define OSGWIDGET_TYPES
@@ -38,6 +37,11 @@ typedef osg::Vec2 XYCoord;
 typedef osg::Vec4 Quad;
 
 typedef osg::Matrix::value_type matrix_type;
+
+// This is multiplied by a normalized Z value [0.0f, -1.0f] to create a RenderBin number
+// to set the state of the Window/Widget with. Perhaps at some later time this should
+// be configurable.
+const int OSGWIDGET_RENDERBIN_MOD = 5000;
 
 }
 

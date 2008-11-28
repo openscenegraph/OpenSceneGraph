@@ -55,7 +55,7 @@ struct ColorWidget: public osgWidget::Widget {
 	}
 };
 
-osgWidget::Box* createBox(const std::string& name, osgWidget::Box::BOX_TYPE bt) {
+osgWidget::Box* createBox(const std::string& name, osgWidget::Box::BoxType bt) {
 	osgWidget::Box*    box     = new osgWidget::Box(name, bt, true);
 	osgWidget::Widget* widget1 = new osgWidget::Widget(name + "_widget1", 100.0f, 100.0f);
 	osgWidget::Widget* widget2 = new osgWidget::Widget(name + "_widget2", 100.0f, 100.0f);
@@ -78,17 +78,14 @@ osgWidget::Box* createBox(const std::string& name, osgWidget::Box::BOX_TYPE bt) 
 }
 
 int main(int argc, char** argv) {
-	osgViewer::CompositeViewer viewer;
-
-	osgViewer::View* view = new osgViewer::View();
+	osgViewer::Viewer viewer;
 
 	osgWidget::WindowManager* wm = new osgWidget::WindowManager(
-		view,
+		&viewer,
 		1280.0f,
 		1024.0f,
 		MASK_2D,
-		osgWidget::WindowManager::WM_PICK_DEBUG |
-		osgWidget::WindowManager::WM_NO_INVERT_Y
+		osgWidget::WindowManager::WM_PICK_DEBUG
 	);
 	
 	wm->setPointerFocusMode(osgWidget::WindowManager::PFM_SLOPPY);
@@ -118,5 +115,5 @@ int main(int argc, char** argv) {
 
 	model->setNodeMask(MASK_3D);
 
-	return osgWidget::createCompositeExample(viewer, view, wm, model);
+	return osgWidget::createExample(viewer, wm, model);
 }

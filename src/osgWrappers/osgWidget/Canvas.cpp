@@ -64,7 +64,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Canvas)
 	I_Method3(bool, addWidget, IN, osgWidget::Widget *, x, IN, osgWidget::point_type, x, IN, osgWidget::point_type, x,
 	          Properties::VIRTUAL,
 	          __bool__addWidget__Widget_P1__point_type__point_type,
-	          "",
+	          "Adds a Widget at the given XY coordinate. ",
 	          "");
 	I_ProtectedMethod2(void, _resizeImplementation, IN, osgWidget::point_type, x, IN, osgWidget::point_type, x,
 	                   Properties::VIRTUAL,

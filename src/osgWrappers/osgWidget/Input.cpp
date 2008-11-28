@@ -67,6 +67,11 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Input)
 	          __void__setCursor__Widget_P1,
 	          "",
 	          "");
+	I_MethodWithDefaults1(unsigned int, calculateBestYOffset, IN, const std::string &, x, "qgl",
+	                      Properties::NON_VIRTUAL,
+	                      __unsigned_int__calculateBestYOffset__C5_std_string_R1,
+	                      "",
+	                      "");
 	I_Method1(void, setXOffset, IN, osgWidget::point_type, xo,
 	          Properties::NON_VIRTUAL,
 	          __void__setXOffset__point_type,

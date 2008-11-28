@@ -22,7 +22,7 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Box::BOX_TYPE)
+BEGIN_ENUM_REFLECTOR(osgWidget::Box::BoxType)
 	I_DeclaringFile("osgWidget/Box");
 	I_EnumLabel(osgWidget::Box::VERTICAL);
 	I_EnumLabel(osgWidget::Box::HORIZONTAL);
@@ -56,9 +56,9 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Box)
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
-	I_ConstructorWithDefaults3(IN, const std::string &, x, "", IN, osgWidget::Box::BOX_TYPE, x, osgWidget::Box::HORIZONTAL, IN, bool, x, false,
-	                           ____Box__C5_std_string_R1__BOX_TYPE__bool,
-	                           "",
+	I_ConstructorWithDefaults3(IN, const std::string &, x, "", IN, osgWidget::Box::BoxType, x, osgWidget::Box::HORIZONTAL, IN, bool, x, false,
+	                           ____Box__C5_std_string_R1__BoxType__bool,
+	                           "The main constructor; takes the string name, the BoxType orientation, and a boolean indicating whether or not all of the Box regions should be uniformly sized. ",
 	                           "");
 	I_Constructor2(IN, const osgWidget::Box &, x, IN, const osg::CopyOp &, x,
 	               ____Box__C5_Box_R1__C5_osg_CopyOp_R1,

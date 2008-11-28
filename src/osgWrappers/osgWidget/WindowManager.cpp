@@ -35,9 +35,8 @@ BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::WmFlags)
 	I_DeclaringFile("osgWidget/WindowManager");
 	I_EnumLabel(osgWidget::WindowManager::WM_USE_LUA);
 	I_EnumLabel(osgWidget::WindowManager::WM_USE_PYTHON);
+	I_EnumLabel(osgWidget::WindowManager::WM_USE_RENDERBINS);
 	I_EnumLabel(osgWidget::WindowManager::WM_PICK_DEBUG);
-	I_EnumLabel(osgWidget::WindowManager::WM_NO_INVERT_Y);
-	I_EnumLabel(osgWidget::WindowManager::WM_NO_BETA_WARN);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::PointerDirection)
@@ -117,6 +116,16 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::WindowManager)
 	                      __void__resizeAllWindows__bool,
 	                      "",
 	                      "");
+	I_Method2(osgWidget::XYCoord, windowXY, IN, double, x, IN, double, x,
+	          Properties::NON_VIRTUAL,
+	          __XYCoord__windowXY__double__double,
+	          "",
+	          "");
+	I_Method2(osgWidget::XYCoord, localXY, IN, double, x, IN, double, x,
+	          Properties::NON_VIRTUAL,
+	          __XYCoord__localXY__double__double,
+	          "",
+	          "");
 	I_Method2(bool, pointerMove, IN, float, x, IN, float, x,
 	          Properties::NON_VIRTUAL,
 	          __bool__pointerMove__float__float,
@@ -162,9 +171,9 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::WindowManager)
 	          __bool__isUsingPython,
 	          "",
 	          "");
-	I_Method0(bool, isInvertedY,
+	I_Method0(bool, isUsingRenderBins,
 	          Properties::NON_VIRTUAL,
-	          __bool__isInvertedY,
+	          __bool__isUsingRenderBins,
 	          "",
 	          "");
 	I_Method0(int, getMouseKeysDown,
@@ -305,6 +314,11 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::WindowManager)
 	I_Method2(void, setSize, IN, osgWidget::point_type, w, IN, osgWidget::point_type, h,
 	          Properties::NON_VIRTUAL,
 	          __void__setSize__point_type__point_type,
+	          "",
+	          "");
+	I_Method2(void, setWindowSize, IN, osgWidget::point_type, w, IN, osgWidget::point_type, h,
+	          Properties::NON_VIRTUAL,
+	          __void__setWindowSize__point_type__point_type,
 	          "",
 	          "");
 	I_Method2(bool, mousePushedLeft, IN, float, x, IN, float, y,

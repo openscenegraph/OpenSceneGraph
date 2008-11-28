@@ -13,6 +13,7 @@
 #include <osg/CopyOp>
 #include <osg/Image>
 #include <osg/Object>
+#include <osg/Texture>
 #include <osgWidget/Types>
 #include <osgWidget/Widget>
 #include <osgWidget/Window>
@@ -342,6 +343,11 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	                      __void__setTexCoord__texcoord_type__texcoord_type__Corner,
 	                      "",
 	                      "");
+	I_MethodWithDefaults2(void, setLayer, IN, osgWidget::Widget::Layer, l, , IN, unsigned int, offset, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setLayer__Layer__unsigned_int,
+	                      "",
+	                      "");
 	I_Method4(void, setTexCoordRegion, IN, osgWidget::point_type, x, IN, osgWidget::point_type, x, IN, osgWidget::point_type, x, IN, osgWidget::point_type, x,
 	          Properties::NON_VIRTUAL,
 	          __void__setTexCoordRegion__point_type__point_type__point_type__point_type,
@@ -357,14 +363,19 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __void__setTexCoordWrapVertical,
 	          "",
 	          "");
-	I_MethodWithDefaults2(bool, setImage, IN, osg::Image *, x, , IN, bool, x, false,
+	I_MethodWithDefaults3(bool, setImage, IN, osg::Image *, x, , IN, bool, x, false, IN, bool, x, false,
 	                      Properties::NON_VIRTUAL,
-	                      __bool__setImage__osg_Image_P1__bool,
+	                      __bool__setImage__osg_Image_P1__bool__bool,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(bool, setImage, IN, const std::string &, x, , IN, bool, x, false,
+	I_MethodWithDefaults3(bool, setImage, IN, const std::string &, x, , IN, bool, x, false, IN, bool, x, false,
 	                      Properties::NON_VIRTUAL,
-	                      __bool__setImage__C5_std_string_R1__bool,
+	                      __bool__setImage__C5_std_string_R1__bool__bool,
+	                      "",
+	                      "");
+	I_MethodWithDefaults3(bool, setTexture, IN, osg::Texture *, x, , IN, bool, x, false, IN, bool, x, false,
+	                      Properties::NON_VIRTUAL,
+	                      __bool__setTexture__osg_Texture_P1__bool__bool,
 	                      "",
 	                      "");
 	I_Method1(void, addX, IN, osgWidget::point_type, x,
@@ -447,11 +458,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	                      __C5_TexCoord_R1__getTexCoord__Corner,
 	                      "",
 	                      "");
-	I_Method1(osgWidget::Widget::Corner, convertCorner, IN, osgWidget::Widget::Corner, x,
-	          Properties::NON_VIRTUAL,
-	          __Corner__convertCorner__Corner,
-	          "",
-	          "");
 	I_Method2(osgWidget::Color, getImageColorAtXY, IN, osgWidget::point_type, x, IN, osgWidget::point_type, y,
 	          Properties::NON_VIRTUAL,
 	          __Color__getImageColorAtXY__point_type__point_type,
@@ -542,6 +548,16 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __void__setTexCoordRegion__C5_XYCoord_R1__point_type__point_type,
 	          "",
 	          "");
+	I_Method3(void, setTexCoordRegion, IN, osgWidget::point_type, x, IN, osgWidget::point_type, y, IN, const osgWidget::XYCoord &, wh,
+	          Properties::NON_VIRTUAL,
+	          __void__setTexCoordRegion__point_type__point_type__C5_XYCoord_R1,
+	          "",
+	          "");
+	I_Method2(void, setTexCoordRegion, IN, const osgWidget::XYCoord &, xy, IN, const osgWidget::XYCoord &, wh,
+	          Properties::NON_VIRTUAL,
+	          __void__setTexCoordRegion__C5_XYCoord_R1__C5_XYCoord_R1,
+	          "",
+	          "");
 	I_MethodWithDefaults2(void, addColor, IN, const osgWidget::Color &, col, , IN, osgWidget::Widget::Corner, p, osgWidget::Widget::ALL_CORNERS,
 	                      Properties::NON_VIRTUAL,
 	                      __void__addColor__C5_Color_R1__Corner,
@@ -567,11 +583,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	          __void__setMinimumSize__C5_XYCoord_R1,
 	          "",
 	          "");
-	I_MethodWithDefaults2(void, setLayer, IN, osgWidget::Widget::Layer, l, , IN, unsigned int, offset, 0,
-	                      Properties::NON_VIRTUAL,
-	                      __void__setLayer__Layer__unsigned_int,
-	                      "",
-	                      "");
 	I_Method1(void, setPadLeft, IN, osgWidget::point_type, p,
 	          Properties::NON_VIRTUAL,
 	          __void__setPadLeft__point_type,
@@ -799,16 +810,16 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Widget)
 	                   __C5_TexCoordArray_P1___texs,
 	                   "",
 	                   "");
-	I_ProtectedMethod0(osg::Texture2D *, _texture,
+	I_ProtectedMethod0(osg::Texture *, _texture,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __osg_Texture2D_P1___texture,
+	                   __osg_Texture_P1___texture,
 	                   "",
 	                   "");
-	I_ProtectedMethod0(const osg::Texture2D *, _texture,
+	I_ProtectedMethod0(const osg::Texture *, _texture,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __C5_osg_Texture2D_P1___texture,
+	                   __C5_osg_Texture_P1___texture,
 	                   "",
 	                   "");
 	I_ProtectedMethod0(osg::Image *, _image,

@@ -13,6 +13,7 @@
 #include <osg/CopyOp>
 #include <osg/Drawable>
 #include <osg/Geode>
+#include <osg/Node>
 #include <osg/Object>
 #include <osgWidget/Types>
 #include <osgWidget/Widget>
@@ -130,6 +131,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	          __unsigned_int__addDrawableAndGetIndex__osg_Drawable_P1,
 	          "",
 	          "");
+	I_Method1(unsigned int, addChildAndGetIndex, IN, osg::Node *, x,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__addChildAndGetIndex__osg_Node_P1,
+	          "",
+	          "");
 	I_Method0(bool, isVisible,
 	          Properties::NON_VIRTUAL,
 	          __bool__isVisible,
@@ -158,6 +164,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	I_Method1(bool, setFocused, IN, const std::string &, x,
 	          Properties::NON_VIRTUAL,
 	          __bool__setFocused__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method0(bool, grabFocus,
+	          Properties::NON_VIRTUAL,
+	          __bool__grabFocus,
 	          "",
 	          "");
 	I_Method0(bool, setFirstFocusable,
@@ -195,11 +206,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	          __XYCoord__getAbsoluteOrigin,
 	          "",
 	          "");
-	I_Method0(osgWidget::Window::EmbeddedWindow *, embed,
-	          Properties::NON_VIRTUAL,
-	          __EmbeddedWindow_P1__embed,
-	          "",
-	          "");
+	I_MethodWithDefaults3(osgWidget::Window::EmbeddedWindow *, embed, IN, const std::string &, x, "", IN, osgWidget::Widget::Layer, x, osgWidget::Widget::LAYER_MIDDLE, IN, unsigned, int, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __EmbeddedWindow_P1__embed__C5_std_string_R1__Widget_Layer__unsigned,
+	                      "",
+	                      "");
 	I_Method0(osgWidget::Widget *, getFocused,
 	          Properties::NON_VIRTUAL,
 	          __Widget_P1__getFocused,
@@ -390,6 +401,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	          __void__setY__matrix_type,
 	          "",
 	          "");
+	I_Method1(void, setZ, IN, osgWidget::matrix_type, z,
+	          Properties::NON_VIRTUAL,
+	          __void__setZ__matrix_type,
+	          "",
+	          "");
+	I_Method1(void, setZRange, IN, osgWidget::matrix_type, zRange,
+	          Properties::NON_VIRTUAL,
+	          __void__setZRange__matrix_type,
+	          "",
+	          "");
 	I_Method3(void, setPosition, IN, osgWidget::matrix_type, x, IN, osgWidget::matrix_type, y, IN, osgWidget::matrix_type, z,
 	          Properties::NON_VIRTUAL,
 	          __void__setPosition__matrix_type__matrix_type__matrix_type,
@@ -403,6 +424,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	I_Method2(void, setOrigin, IN, osgWidget::matrix_type, x, IN, osgWidget::matrix_type, y,
 	          Properties::NON_VIRTUAL,
 	          __void__setOrigin__matrix_type__matrix_type,
+	          "",
+	          "");
+	I_Method1(void, setOrigin, IN, const osgWidget::XYCoord &, xy,
+	          Properties::NON_VIRTUAL,
+	          __void__setOrigin__C5_XYCoord_R1,
 	          "",
 	          "");
 	I_Method1(void, setRotate, IN, osgWidget::matrix_type, r,
@@ -777,7 +803,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	                 0);
 	I_SimpleProperty(osgWidget::XYCoord, Origin, 
 	                 __XYCoord__getOrigin, 
-	                 0);
+	                 __void__setOrigin__C5_XYCoord_R1);
 	I_SimpleProperty(osgWidget::Window *, Parent, 
 	                 __Window_P1__getParent, 
 	                 0);
@@ -822,10 +848,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	                 __void__setY__matrix_type);
 	I_SimpleProperty(osgWidget::matrix_type, Z, 
 	                 __matrix_type__getZ, 
-	                 0);
+	                 __void__setZ__matrix_type);
 	I_SimpleProperty(osgWidget::matrix_type, ZRange, 
 	                 __matrix_type__getZRange, 
-	                 0);
+	                 __void__setZRange__matrix_type);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgWidget::Window::EmbeddedWindow)
@@ -892,6 +918,11 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Window::EmbeddedWindow)
 	I_Method1(bool, setWindow, IN, osgWidget::Window *, x,
 	          Properties::NON_VIRTUAL,
 	          __bool__setWindow__Window_P1,
+	          "",
+	          "");
+	I_Method0(void, updateSizeFromWindow,
+	          Properties::NON_VIRTUAL,
+	          __void__updateSizeFromWindow,
 	          "",
 	          "");
 	I_Method0(osgWidget::Window *, getWindow,

@@ -19,7 +19,6 @@
 #include <osg/Object>
 #include <map>
 #include <vector>
-#include <cmath>
 #include <osg/Notify>
 #include <osg/Group>
 #include <osgAnimation/Animation>

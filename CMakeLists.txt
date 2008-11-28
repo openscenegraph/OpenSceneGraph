@@ -32,7 +32,7 @@ PROJECT(OpenSceneGraph)
 SET(OPENSCENEGRAPH_MAJOR_VERSION 2)
 SET(OPENSCENEGRAPH_MINOR_VERSION 7)
 SET(OPENSCENEGRAPH_PATCH_VERSION 6)
-SET(OPENSCENEGRAPH_SOVERSION 50)
+SET(OPENSCENEGRAPH_SOVERSION 51)
 
 # set to 0 when not a release candidate, non zero means that any generated 
 # svn tags will be treated as release candidates of given number
@@ -271,6 +271,9 @@ MARK_AS_ADVANCED(OSG_USE_FLOAT_BOUNDINGBOX)
 OPTION(OSG_USE_UTF8_FILENAME "Set to ON to use a UTF8 locale for filenames instead of the default locale." OFF)
 MARK_AS_ADVANCED(OSG_USE_UTF8_FILENAME)
 
+OPTION(OSG_DISABLE_MSVC_WARNINGS "Set to OFF to not disable MSVC wartnings genertated by OSG headers." ON)
+MARK_AS_ADVANCED(OSG_DISABLE_MSVC_WARNINGS)
+
 OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
 
 ################################################################################
@@ -296,6 +299,7 @@ FIND_PACKAGE(SDL)
 FIND_PACKAGE(FOX)
 FIND_PACKAGE(Inventor)
 FIND_PACKAGE(Jasper)
+FIND_PACKAGE(OpenEXR)
 FIND_PACKAGE(COLLADA)
 FIND_PACKAGE(Xine)
 FIND_PACKAGE(OpenVRML)

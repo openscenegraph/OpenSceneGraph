@@ -94,7 +94,6 @@ namespace osgAnimation
         void clear() 
         {
             _bone2Vertexes.clear(); 
-            _bone2Vertexes.clear(); 
             _uniqVertexSetToBoneSet.clear();
         }
     protected:

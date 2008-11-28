@@ -78,7 +78,7 @@ namespace osgAnimation
         { 
             setName(name); 
             _needToRecomputeBindMatrix = false;
-            setUpdateCallback(new UpdateBone);
+            setUpdateCallback(new UpdateBone(name));
         }
 
 

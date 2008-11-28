@@ -1,3 +1,682 @@
+2008-11-27 14:05 +0000 [r9276]  robert:
+
+	* Changed unsigned long to unsigned int to avoid 64bit portability
+	  issue.
+
+2008-11-27 09:45 +0000 [r9275]  robert:
+
+	* From Jean-Sebastien Guay, "osgautocapture uses M_PI to convert
+	  degrees to radians, which didn't compile on Win32. Switched to
+	  using osg::DegreesToRadians. Also removed the "convert to
+	  radians" comment on each line, as the code clearly conveys this
+	  without needing a comment now."
+
+2008-11-27 09:36 +0000 [r9273-9274]  robert:
+
+	* Enabled the build of exr plugin
+
+	* Build fixes
+
+2008-11-27 09:33 +0000 [r9272]  robert:
+
+	* Removed the use of = operator.
+
+2008-11-26 16:40 +0000 [r9268-9269]  robert:
+
+	* Updated wrappers
+
+	* From Tim Moore, "Double precision versions of BoundingBox and
+	  BoundingSphere are useful for doing computations in world
+	  coordinates, especially when working with a geocentric scene. By
+	  default, these classes are built using floats, so templated
+	  versions fill a need. I've used the double precision templates to
+	  fix some problems with ViewDependentShadow, which will follow
+	  shortly. "
+
+2008-11-26 16:00 +0000 [r9267]  robert:
+
+	* added workaround of compile issues with templated version of
+	  BoundingBox
+
+2008-11-26 13:18 +0000 [r9264]  robert:
+
+	* Updated wrappers
+
+2008-11-26 12:50 +0000 [r9263]  robert:
+
+	* From Andy Preece, "To reproduce the bug: 1. Create a template
+	  osg::Sequence node (and underlying geometry) but do not attach
+	  the node to the current active scenegraph. 2. At some point
+	  during the rendering loop (perhaps on a keystroke) clone the
+	  sequence node (I use the call:
+	  dynamic_cast<osg::Node*>(templateNode -> clone( osg::CopyOp(
+	  (osg::CopyOp::CopyFlags)osg::CopyOp::DEEP_COPY_NODES ) ) ) 3. Set
+	  the cloned sequence node duration to a value that makes the
+	  animation run slower (i.e. 2.0). 4. Start the cloned sequence
+	  (using setMode()). 5. Repeat steps 2 \u2013 4 and observe that
+	  the cloned sequences do not run slow but run as fast, appearing
+	  to ignore the duration that has been set on them. Looking at the
+	  \u2018good documentation\u2019 (2.4 source code), I see that
+	  _start is being set to _now (osg::Sequence::setMode(), line 192).
+	  Should this not _start not be set to -1.0?"
+
+2008-11-26 12:35 +0000 [r9261-9262]  robert:
+
+	* Added searching for OpenEXR
+
+	* From Ragnar Hammarqvist, "I wrote an EXR image plug-in to osg, I
+	  would like to contribute this plug-in to the osg project if you
+	  find it useful. The plug-in is a wrapper around open-exr
+	  (http://www.openexr.com) that consists of two projects,
+	  ilmbase-1.0.1 and openexr-1.6.1. I have only tested it on windows
+	  XP 32 machine. So there might be some work making it work on
+	  other platforms. The plug-in supports writing and reading EXR
+	  files. When writing it can use the data type GL_HALF_FLOAT_ARB(se
+	  ilmbase-1.0.1) and GL_FLOAT. When reading the data type always
+	  becomes GL_HALF_FLOAT_ARB. It supports textures with three and
+	  four channels. When reading an exr file it automatically removes
+	  Alfa channel if it didn't store any information." -- From Robert
+	  Osfield, started work on ported it to other platforms, but could
+	  fix some problems relating to error: ?Imf::OStream::OStream(const
+	  Imf::OStream&)? is private I'm checking in now so that others can
+	  have a bash at completing the port.
+
+2008-11-26 12:07 +0000 [r9260]  robert:
+
+	* From Gino van den Bergen, "The FindGDAL.cmake seems to be broken
+	  in OSG 2.6.1 for locating gdal.h through enviroment variable
+	  GDAL_DIR. Also, I've modified the FindCOLLADA.cmake to locate the
+	  current 2.1 versions of the COLLADA DOM in the build directories
+	  under VC8. I've also added a COLLADA_LIBRARY_DEBUG spec. Other
+	  flavors may be added depending on compiler version and DOM
+	  version."
+
+2008-11-26 11:45 +0000 [r9259]  robert:
+
+	* From BjornHein, "attached a proposal for an extension for the the
+	  stl-File ReaderWriter. It allows saving of an osg node tree as
+	  stl file in ASCII-Format. Standard is to generate one stl file.
+	  With an additional option it is possible to write one file per
+	  Geode. This option is not very "useful" for typical application,
+	  I use it for separating and conversion of geometric data. So it
+	  could be removed if considered to special."
+
+2008-11-26 11:23 +0000 [r9258]  robert:
+
+	* From John Vidar Larring, osgautocapture example that captures an
+	  image from a paged database by frame loop to the paging is
+	  complete, then takes a snapshot.
+
+2008-11-26 11:12 +0000 [r9257]  robert:
+
+	* Added DatabasePager::getRequestsInProgress() that return true if
+	  there are still tiles to load. Added
+	  DatabasePager::setTargetMaximumNumberOfPageLOD(..) that sets the
+	  target number of PagedLOD to try and maintain
+
+2008-11-25 16:24 +0000 [r9249]  robert:
+
+	* From Piotr Rak, "added bool conversion for ref_ptr, when no
+	  implicit conversion to T* is used."
+
+2008-11-25 15:57 +0000 [r9248]  robert:
+
+	* Fix for build with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION off
+
+2008-11-25 15:38 +0000 [r9247]  robert:
+
+	* Fixed build for when OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION
+	  is off
+
+2008-11-25 14:40 +0000 [r9246]  robert:
+
+	* Updated wrappers
+
+2008-11-25 14:31 +0000 [r9245]  robert:
+
+	* From Joakim Simmonsson, fix for handling of billboards in
+	  FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS
+
+2008-11-25 14:15 +0000 [r9243-9244]  robert:
+
+	* Added support for unsigned int uniforms
+
+	* From Ferdi Smit, added support for unsigned int typed uniforms
+
+2008-11-25 13:45 +0000 [r9242]  robert:
+
+	* From Urlich Hertlein, "Attached is a patched version that
+	  replaces calls to atof() with osg::asciiToFloat()."
+
+2008-11-25 12:22 +0000 [r9241]  robert:
+
+	* Fixed warning and some unitialized variables.
+
+2008-11-25 11:09 +0000 [r9240]  robert:
+
+	* Fixed warning
+
+2008-11-25 10:57 +0000 [r9239]  robert:
+
+	* From Jaromir Vitek, "In attachment are another fixes for using
+	  packed depth+stencil (PDS). * When used PDS
+	  RenderStage::runCameraSetUp sets flag that FBO has already
+	  stencil,depth buffer attached. Prevents adding next depth buffer.
+	  * Sets correct traits for p-buffer if used PDS and something goes
+	  wrong with FBO setup or p-buffer is used directly. * Adds warning
+	  to camera if user add depth/stencil already attached through PDS.
+	  * Sets blitMask when use blit to resolve buffer. There is also
+	  new example with using multisampled FBO."
+
+2008-11-24 16:32 +0000 [r9235]  robert:
+
+	* From Wojciech Lewandowski, "I have restored MSVC disabled
+	  warnings in osg/Export. Difference is they are now disabled only
+	  when OSG_DISABLE_MSVC_WARNINGS macro is defined. This macro is
+	  set through CMake options and autogenerated in osg/Config. Simon
+	  suggested that it would be cool if we had more control over
+	  selected warnings. I tried to learn how to make selection of
+	  individual warning numbers possible, but had to gave up as my
+	  cmake skills were not sufficient. The only way I saw this
+	  possible would be adding one define for each MSVC warning number.
+	  But many definitions seemed too be to much clutter for osg/Config
+	  file so I rejected thar idea. For this it would be cool if
+	  autogenerated Config entries could more powerful than simple
+	  #define/#undef flags. Maybe Cmake gurus know how to do it. I have
+	  not reverted added Compiler options. I assume that one may want
+	  to have warnings enabled for the application but may not want to
+	  see them while OSG libraries and examples compile. Modified
+	  files: osg/Export - now explicitly includes osg/Config to make
+	  sure OSG_DISABLE_MSVC_WARNINGS is read osg/Config.in - declares
+	  OSG_DISABLE_MSVC_WARNINGS flag to be added to autogenerated
+	  osg/Config CMakeLists.txt - declares OSG_DISABLE_MSVC_WARNINGS as
+	  option with default ON setting "
+
+2008-11-24 16:26 +0000 [r9234]  robert:
+
+	* From Marco Jez, "The DDS plugin currently prints too many NOTICE
+	  messages that, given their nature and frequency, should really be
+	  demoted to INFO or DEBUG severity. Fix is attached."
+
+2008-11-24 16:09 +0000 [r9233]  robert:
+
+	* From Alberto Luaces, removed #include <cmath> as it was cause a
+	  build problem under Cygwin.
+
+2008-11-24 16:02 +0000 [r9232]  robert:
+
+	* Improved the set of the master + slave cameras
+
+2008-11-24 15:27 +0000 [r9231]  robert:
+
+	* From Rolad Smeenk, "Forgot a call to uniqify when generating an
+	  Id based on osg::Node name."
+
+2008-11-24 14:37 +0000 [r9229]  robert:
+
+	* From Roland Smeenk, "This application can be used for testing
+	  plugins that can both read and write a certain file format. It
+	  will display the original file next to the written and reread
+	  file. Example: osgsidebyside -o cow.dae cow.osg This example will
+	  read cow.osg, write cow.dae, read cow.dae and display cow.osg on
+	  the left side and cow.dae on the right side of the view. Possible
+	  interactions: KEY_UP Speedup DOF animation KEY_DOWN SlowDown DOF
+	  animation KEY_RIGHT Toggle all MultiSwitches"
+
+2008-11-24 14:26 +0000 [r9228]  robert:
+
+	* From Roland Smeenk, "Overview of the Collada/dae plugin changes
+	  New features +Read and write of osg::LOD, osg::Switch,
+	  osgSim::Sequence, osgim::MultiSwitch and osgSim::DOFTransform
+	  data in <extra> +Read and write of osg::Node description data in
+	  <extra> +Plugin option "NoExtras" to prevent writing of <extra>
+	  data and only traverse the active children when saving
+	  Changes/additions +instanced_geometry and instanced_controller
+	  are now loaded in a single Geode with multiple Geometries instead
+	  of multiple geodes with a single Geometry +Changed all calls to
+	  the deprecated createAndPlace() to the new add() methods +All
+	  transformation elements <scale>, <rotate>, <translate>, <lookat>,
+	  <matrix>, <skew> are now concatenated properly in to a single
+	  MatrixTransform. Previously this was not done in order as
+	  required by Collada and and not all elements were included.
+	  +Complete skew matrix creation +Automatically add
+	  GL_RESCALE_NORMAL if scale is non-identity +Blinn shininess
+	  remapping to [0,128] when in range [0,1] +Changes to CMake file
+	  to make it compile on Windows +Coding style and code
+	  documentation Bug fixes +Transparent texture writing fixed +Fixed
+	  bug in using osg node name as collada node ID +Fixed usage of
+	  double sided faces in GOOGLEEARTH extra +Not adding blendfunc and
+	  blendcolor when opaque TODO/Wishlist -solve differences in
+	  drawables, DAE reader should place multiple collation elements
+	  into multiple primitivesets in a single geometry where possible
+	  (only when same material) -solve differences in matrices
+	  -multitexture support -skinned mesh and generic animations using
+	  osgAnimation -profile_GLSL based on COLLADA OpenGL Effects Viewer
+	  http://ati.amd.com/developer/rendermonkey/downloads.html
+	  -handling more <extra> to more closely mimic the intended
+	  lighting"
+
+2008-11-24 13:50 +0000 [r9227]  robert:
+
+	* Replaced usage atof to asciiToFloat.
+
+2008-11-24 13:19 +0000 [r9226]  robert:
+
+	* Converted OpenGL version number code to using osg::asciiToFloat
+	  to avoid issues with conversion using locale senstive atof
+	  function
+
+2008-11-24 11:39 +0000 [r9224]  robert:
+
+	* From Jason Daly, "This is a plugin (two, actually) that will
+	  allow OSG to load .bsp map files from Valve's Source Engine games
+	  (Half-Life 2, etc.). One plugin (called "vbsp" to distinguish it
+	  from the Quake 3 bsp loader) reads the .bsp file itself, and the
+	  other ("vtf") reads the texture files. The set up for this to
+	  work is a bit more complex than most files, since the engine
+	  expects all files to be in a certain place, and it tends to mix
+	  case a lot. I tried to explain everything in the VBSP_README.txt
+	  file." This plugin has been integrated with the pre-exisiting bsp
+	  plugin.
+
+2008-11-24 10:28 +0000 [r9223]  robert:
+
+	* Renamig of files in prep of merge of valve bsp support
+
+2008-11-24 10:16 +0000 [r9221-9222]  robert:
+
+	* From Tim Moore, "the GraphicsWindowX11 code was not correctly
+	  calling GraphicsContext::resized when the window was not mapped
+	  with the requested geometry."
+
+	* Updated wrappers
+
+2008-11-23 17:28 +0000 [r9220]  robert:
+
+	* Added mechnism for tracking when a VncImage is inactive or not.
+
+2008-11-23 15:51 +0000 [r9219]  robert:
+
+	* Added mechanism for tracking when interactive images are being
+	  rendered to enable their backends to only rendered them when they
+	  are actively being rendered in the OpenGL window.
+
+2008-11-23 11:35 +0000 [r9218]  robert:
+
+	* Introduce osg::asciiToDouble/asciiToFloat function.
+
+2008-11-23 10:20 +0000 [r9217]  robert:
+
+	* From Ulrich Hertlein, "I noticed some regression in the BMP
+	  loader - some 8-bit (paletted) files wouldn't load anymore but
+	  simply crash. After taking a look at the current state of the BMP
+	  loader I decided it might be worth a shot at reimplementing that
+	  part. For example: the current loader doesn't properly handle 1-
+	  and 4-bit files, incorrectly loads 16-bit files as
+	  intensity-alpha (they are RGB555), is full of dead code, and
+	  generally not in very good shape. Attached is my
+	  re-implementation for review. I've checked it against the test
+	  images from http://wvnvaxa.wvnet.edu/vmswww/bmp.html and models
+	  that use BMP files. "
+
+2008-11-23 09:57 +0000 [r9216]  robert:
+
+	* From Paul Martz, added missing export
+
+2008-11-22 14:30 +0000 [r9213]  robert:
+
+	* Removed the optional build for osgWidget and plugins as these are
+	  options that are appropriate for building all the time
+
+2008-11-22 12:14 +0000 [r9212]  robert:
+
+	* From Cedric Pinson, Pulled in osgAnimation from
+	  OpenSceneGraph-osgWidget-dev into svn/trunk.
+
+2008-11-21 18:16 +0000 [r9209]  robert:
+
+	* From Danny Valente, submitted bu Jean-Sebastien Guay, "Some
+	  context: In the past I submitted a fix to
+	  osgViewer::CompositeViewer where events would get wrong input
+	  ranges. Later, you made a change to set the eventState's current
+	  graphics context to the current graphics context. However,
+	  there's a problem in the sequence of events. Here's the recap
+	  (doing a graphical diff with the attached file will show this
+	  clearly): Before: 1. if the camera is not a slave camera 1.1 set
+	  the eventState's graphics context to the current context. 2. if
+	  the current master view is not the view which has the focus 2.1
+	  set the current master view to be the view which has the focus
+	  2.2 use the new master view's eventState instead of the old one
+	  Now as you can see from this sequence, the graphics context is
+	  set on the eventState before switching to the view which has
+	  focus (and thus using another eventState). So the new eventState,
+	  in the case we need to switch views, will contain an old graphics
+	  context, not the correct one. Just inversing these steps fixes
+	  the problem: 1. if the current master view is not the view which
+	  has the focus 1.1 set the current master view to be the view
+	  which has the focus 1.2 use the new master view's eventState
+	  instead of the old one 2. if the camera is not a slave camera 2.1
+	  set the eventState's graphics context to the current context.
+	  Now, the eventState will refer to the correct graphics context in
+	  both cases. Attached is a fixed CompositeViewer.cpp (based on
+	  today's SVN) which does this. Note that some other things are
+	  done in the 1. and 2. cases, but they have no influence on each
+	  other so they can just be swapped without problems. "
+
+2008-11-21 17:44 +0000 [r9208]  robert:
+
+	* Added handling of View::LightingMode
+
+2008-11-21 17:10 +0000 [r9207]  robert:
+
+	* Build fix
+
+2008-11-21 16:09 +0000 [r9206]  robert:
+
+	* Added exports
+
+2008-11-21 13:23 +0000 [r9205]  robert:
+
+	* From David Spilling, better support for multitexture in obj
+	  loader.
+
+2008-11-21 12:38 +0000 [r9204]  robert:
+
+	* From Jaromir Vitek, osgpackeddepthstencil example as a test case.
+
+2008-11-21 12:31 +0000 [r9202-9203]  robert:
+
+	* Updated wrappers
+
+	* Made the ParticleSystemUpdate::addParticleSystem,
+	  removeParticleSystem, replaceParticleSystem and setParticleSystem
+	  methods all virtual to allow them to be overriden.
+
+2008-11-21 12:15 +0000 [r9201]  robert:
+
+	* From Mario Valle, "Attached two small correction to remove the
+	  following warnings from MINGW build."
+
+2008-11-21 12:10 +0000 [r9200]  robert:
+
+	* From Jason Beverage, "The _pluginData member variable is not
+	  properly copied when using the copy constructor for
+	  ReaderWriter::Options."
+
+2008-11-21 12:05 +0000 [r9199]  robert:
+
+	* From Joakim Simonsson, fixed warning.
+
+2008-11-21 11:52 +0000 [r9198]  robert:
+
+	* From Gordon Tomlinson, "Find enclosed fix for a leak in the
+	  Tessellator::reset(), were the new verts were not being deleted,
+	  only the container was We have confirmed the leak while running
+	  things through Purify," Small code tweaks by Robert Osfield to
+	  streamline the code.
+
+2008-11-21 11:27 +0000 [r9197]  robert:
+
+	* Updated wrappers
+
+2008-11-21 11:23 +0000 [r9196]  robert:
+
+	* From Serge Lages, "Here you can find some modifications to
+	  osgManipulator to work with double values instead of floats.
+	  Indeed I faced problems with the osgManipulator library when
+	  working with Earth based scenes, it was impossible to drag
+	  objects in a precise way if they were too far from the center of
+	  the scene."
+
+2008-11-21 11:09 +0000 [r9195]  robert:
+
+	* Replaced tabs
+
+2008-11-21 10:27 +0000 [r9194]  robert:
+
+	* Added handling of case when there is so scene graph attached to a
+	  view.
+
+2008-11-20 17:27 +0000 [r9193]  robert:
+
+	* From Jim Vaughan, "I found a bug in the code I sent you last
+	  month. It was working for SoVRMLTransform nodes, but SOTransform
+	  nodes are not in the IV scenegraph the way I thought they were.
+	  The attached file contains a fix for this."
+
+2008-11-20 13:07 +0000 [r9192]  robert:
+
+	* Added readNodeFile support the gecko plugin.
+
+2008-11-20 12:03 +0000 [r9191]  robert:
+
+	* Added DisplaySettings::s/getApplication() to help with gecko
+	  plugin initialization when it requires the application name
+
+2008-11-20 11:47 +0000 [r9190]  robert:
+
+	* Updated wrappers
+
+2008-11-20 11:28 +0000 [r9188-9189]  robert:
+
+	* Clean up osgbrowser after moving browser implementation into
+	  gecko plugin
+
+	* Moved browser code from osgbrowser example into gecko plugin to
+	  make the browser functionality accessible to other OSG
+	  applications
+
+2008-11-19 20:34 +0000 [r9186]  robert:
+
+	* Reverted Kyle Centers mistaken patch that removed a
+	  _currentContext->valid() that was actually required.
+
+2008-11-19 17:16 +0000 [r9185]  robert:
+
+	* Moved Browser.h and Browser.cpp from osgbrowser into osgWidget.
+
+2008-11-19 17:04 +0000 [r9183-9184]  robert:
+
+	* Added XUL_DIR searching
+
+	* Fixed component directory path handling.
+
+2008-11-19 16:58 +0000 [r9182]  robert:
+
+	* Refactored browser classes so that there is now a base class and
+	  reader writer.
+
+2008-11-18 23:38 +0000 [r9181]  robert:
+
+	* Changed osgbrowser example to use a local
+	  CMakeModules/FindXUL.cmake script, and specialization of GTK
+	  dependencies to only non Windows/OSX platforms.
+
+2008-11-18 17:20 +0000 [r9180]  robert:
+
+	* Removed debug output
+
+2008-11-18 15:18 +0000 [r9179]  robert:
+
+	* Added optional bool keep to BarrierOperation to make it more
+	  resuable
+
+2008-11-18 14:46 +0000 [r9178]  robert:
+
+	* Moved update functionality into from UBrowserImage into update.
+
+2008-11-18 13:36 +0000 [r9177]  robert:
+
+	* Added support for running all ubrowser operataions in a
+	  background thread.
+
+2008-11-17 19:15 +0000 [r9176]  robert:
+
+	* Fixed key mapping
+
+2008-11-17 17:58 +0000 [r9175]  robert:
+
+	* Refactored the UBrowser functionality so a UBrowserThread
+	  singlton class takes over more responsibility of integratation
+	  with llmozlib.
+
+2008-11-17 15:53 +0000 [r9174]  robert:
+
+	* Removed dependency on GLUT.
+
+2008-11-17 15:49 +0000 [r9173]  robert:
+
+	* Ported example to using OSG objects for rendering rather than
+	  GLUT
+
+2008-11-17 10:36 +0000 [r9170]  robert:
+
+	* Introduced xulrunner extensions from llmozlib2, and got things
+	  working under linux
+
+2008-11-14 20:50 +0000 [r9169]  robert:
+
+	* From Philip Lowman, "If you change CMAKE_INSTALL_PREFIX in the
+	  cache editor after building the OSG, it causes the entire project
+	  to rebuild (at least with the CMake makefile generator due to
+	  changing preprocessor definitions applied across all targets). I
+	  suggest moving the definition of OSG_DEFAULT_LIBRARY_PATH (which
+	  is responsible for this global rebuild) into osgDB/CMakeLists.txt
+	  which is the only library in the code where this definition is
+	  (and is likely ever to be) used. This way if the user changes it,
+	  only osgDB will rebuild."
+
+2008-11-14 20:31 +0000 [r9168]  robert:
+
+	* Added definition of std::wstring as a work around to a lack of
+	  wstring under Cygwin.
+
+2008-11-14 18:22 +0000 [r9167]  robert:
+
+	* From Simon Hammett, moved VS #prgama warning disabling from
+	  include/osg/Export to CMakeList.txt.
+
+2008-11-14 18:15 +0000 [r9166]  robert:
+
+	* Removed reduncent #includes
+
+2008-11-14 17:03 +0000 [r9165]  robert:
+
+	* From Wojciech Lewandowski, "Attached are modifications to
+	  GraphicsWindowWin32. By default workaround is set to off. But
+	  could be activated/decativated via CMake as well as system
+	  environment variable. I also modified
+	  src\osgViewer\CMakeLists.txt to turn off this workaround by
+	  default as suggested."
+
+2008-11-14 16:54 +0000 [r9164]  robert:
+
+	* Added GTK and GLUT guards to osgbrowser include
+
+2008-11-14 16:48 +0000 [r9163]  robert:
+
+	* Further work on experiment llmozlib/geko based embedded web
+	  browser
+
+2008-11-13 15:35 +0000 [r9161]  robert:
+
+	* An "attempt" at using LLMozLib sources as a base for a gecko
+	  based embedded browser.
+
+2008-11-13 10:49 +0000 [r9160]  robert:
+
+	* Updated version number in prep for 2.5.6 dev release
+
+2008-11-12 22:54 +0000 [r9159]  robert:
+
+	* Moved Poppler-glib check into root CMakeList.txt
+
+2008-11-12 14:57 +0000 [r9158]  robert:
+
+	* Improved filepath handling, and increased the image resolution
+	  for better rendering quality
+
+2008-11-12 14:21 +0000 [r9155-9156]  robert:
+
+	* Introduced new osgpdf example that use Cario + Poppler libraries
+	  to provide a means of rendering a pdf document to an osg::Image.
+
+	* Updated wrappers
+
+2008-11-12 10:30 +0000 [r9154]  robert:
+
+	* Added osgViewerGetVersion() into context creation code as a means
+	  of forcing windows to link in osgViewer properly.
+
+2008-11-11 17:59 +0000 [r9149]  robert:
+
+	* Improved naming
+
+2008-11-11 17:30 +0000 [r9147-9148]  robert:
+
+	* Tweaked comment
+
+	* Added default fallback of a window context is none is otherwise
+	  specified.
+
+2008-11-11 16:59 +0000 [r9145-9146]  robert:
+
+	* Added command line argument docs and support for -h/--help
+	  command line options
+
+	* Removed the redundent prepending of application name.
+
+2008-11-11 16:21 +0000 [r9144]  robert:
+
+	* Added timing stats
+
+2008-11-11 16:13 +0000 [r9143]  robert:
+
+	* Added --geometry, --geometry-vbo and --geometry-va command line
+	  options and associated geometry test codes
+
+2008-11-11 15:00 +0000 [r9142]  robert:
+
+	* Added --delay <microseconds> option that is run between each
+	  OpenGL object apply, defaults to 0
+
+2008-11-11 12:50 +0000 [r9141]  robert:
+
+	* Added support for fbo testing.
+
+2008-11-10 20:06 +0000 [r9140]  robert:
+
+	* First cut of osgmemorytest example that is written to allocate
+	  many windows/pbuffer/GL objects as test of how many objects can
+	  be allocated on a machine.
+
+2008-11-10 13:56 +0000 [r9139]  robert:
+
+	* Added commented out flt entry for compiling the old deprecated
+	  flight plugin (useful for testing purposes).
+
+2008-11-10 13:48 +0000 [r9138]  robert:
+
+	* Fix to traversal of children of an LOD - based on a suggestion
+	  from Katharina Plugge.
+
+2008-11-09 11:56 +0000 [r9136-9137]  robert:
+
+	* Added support for Camera::PACKED_DEPTH_STENCIL_BUFFER to .osg and
+	  .ive formats
+
+	* From Jaromir Vitek, "patch contains extension to fbo and camera.
+	  Camera can attach new render buffer for depth and stencil logical
+	  buffer in packed form."
+
+2008-11-08 17:53 +0000 [r9135]  robert:
+
+	* From Jean-Sebastien Guay, replaced M_PI with osg::PI.
+
+2008-11-07 18:02 +0000 [r9132]  robert:
+
+	* Updated ChangeLog for 2.7.5 release
+
 2008-11-07 17:40 +0000 [r9131]  robert:
 
 	* From Csaba Halasz, fix for hang when running in

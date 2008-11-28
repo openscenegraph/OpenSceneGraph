@@ -30,8 +30,33 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
 )
 
 FIND_LIBRARY(COLLADA_LIBRARY 
-    NAMES collada_dom collada14dom
+    NAMES collada_dom collada14dom libcollada14dom21
     PATHS
+    $ENV{COLLADA_DIR}/build/vc8-1.4
+    $ENV{COLLADA_DIR}/lib
+    $ENV{COLLADA_DIR}/lib-dbg
+    $ENV{COLLADA_DIR}
+    $ENV{OSGDIR}/lib
+    $ENV{OSGDIR}
+    $ENV{OSG_ROOT}/lib
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/lib
+    /usr/local/lib64
+    /usr/lib
+    /usr/lib64
+    /sw/lib
+    /opt/local/lib
+    /opt/csw/lib
+    /opt/lib
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+    /usr/freeware/lib64
+)
+
+FIND_LIBRARY(COLLADA_LIBRARY_DEBUG 
+    NAMES collada_dom-d collada14dom-d libcollada14dom21-d
+    PATHS
+    $ENV{COLLADA_DIR}/build/vc8-1.4-d
     $ENV{COLLADA_DIR}/lib
     $ENV{COLLADA_DIR}/lib-dbg
     $ENV{COLLADA_DIR}

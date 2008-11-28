@@ -5,11 +5,11 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>osgVolume</string>
+	<string>osgAnimation</string>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>org.OpenSceneGraph.osgVolume</string>
+	<string>org.OpenSceneGraph.osgAnimation</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>

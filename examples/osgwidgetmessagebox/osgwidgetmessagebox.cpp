@@ -223,7 +223,7 @@ osgWidget::Frame* MessageBox::createButtonOk(const std::string& theme,
     frame->resizeFrame(box->getWidth(), box->getHeight());
     frame->resizeAdd(0, 0);
 
-    EventOK* event = new EventOK(frame);
+    EventOK* event = new EventOK(frame.get());
     frame->setUpdateCallback(event);
     frame->addCallback(event);
 

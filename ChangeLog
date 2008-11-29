@@ -1,3 +1,53 @@
+2008-11-29 11:35 +0000 [r9294]  robert:
+
+	* Build fix for when implicit conversion in ref_ptr<> is switched
+	  off.
+
+2008-11-29 11:10 +0000 [r9293]  robert:
+
+	* Fixed build for when ref_ptr<> impicit cast is not built
+
+2008-11-28 17:18 +0000 [r9292]  robert:
+
+	* Removed cmath include as it was causing build problems under
+	  Cgwin
+
+2008-11-28 14:37 +0000 [r9286-9291]  robert:
+
+	* Added new examples
+
+	* From Cedric Pinson, updates to osganimation examples. Merged by
+	  Robert Osfield, from OpenSceneGraph-osgWidget-dev
+
+	* From Jeremy Moles, updates to osgwidget examples. Merged by
+	  Robert Osfield from OpenSceneGraph-osgWidget-dev
+
+	* Updated wrappers
+
+	* From Jeremy Moles, updates to osgWidget Merged my Robert Osfield
+	  from OpenSceneGraph-osgWidget-dev.
+
+	* From Cedric Pinson, updates toosgAnimation. Merged by Robert
+	  Osfield, from OpenSceneGraph-osgWidget-dev.
+
+2008-11-27 17:31 +0000 [r9280-9282]  robert:
+
+	* From Cedric Pinson, "updated the CMakelist.txt of curl plugin to
+	  compile with the static library of curl. I added the external
+	  dependency wldap32"
+
+	* Updated SO version number for 2.5.6 release
+
+	* Updated ChangeLog
+
+2008-11-27 16:58 +0000 [r9278]  shuber:
+
+	* From Stephan Huber: updated XCode project, added osgAnimation
+	  framework + one example using it (osganimationviewer). Added
+	  _OPENTHREADS_ATOMIC_USE_BSD_ATOMIC to local OpenThreads/Config
+	  when compiling for the 10.5 SDK. Some minor fixes on some of the
+	  configurations/targets
+
 2008-11-27 14:05 +0000 [r9276]  robert:
 
 	* Changed unsigned long to unsigned int to avoid 64bit portability

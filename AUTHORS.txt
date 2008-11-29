@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.7.5
+OpenSceneGraph Library 2.7.6
 
-349 Contributors:
+357 Contributors:
 
 Firstname Surname
 -----------------
@@ -16,8 +16,8 @@ Mathias Fröhlich
 Geoff Michel
 Farshid Lashkari
 Bob Kuehne
-Eric Sokolowsky
 Ulrich Hertlein
+Eric Sokolowsky
 Martin Lavery
 Jean-Sebastien Guay
 David Callu
@@ -30,72 +30,73 @@ Colin McDonald
 Pavel Moloshtan
 Tom Jolley
 Roger James
+Jeremy Moles
 Andy Skinner
 Norman Vine
-Jeremy Moles
 Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
 Michael Platings
+Jason Beverage
 Art Tevs
 Adrian Egli
 Paul Melis
 Olaf Flebbe
-Jason Beverage
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
 Per Fahlberg
 Michael Gronager
 Mathieu Marache
+Joakim Simonsson
 J.P. Delport
+David Spilling
 Daniel Sjölie
 Chris Hanson
 Sherman Wilcox
-David Spilling
 Philip Lowman
 Melchior Franz
-Joakim Simonsson
-Chris Denham
-Joran Jessurun
 Jason Daly
+Chris Denham
+Cedric Pinson
+Serge Lages
+Roland Smeenk
+Joran Jessurun
 Frederic Marmond
 David Fries
 Boris Bralo
+Alberto Luaces
 Yefei He
+Tim Moore
 Terry Welsh
 Stephane Lamoliatte
 Sondra Iverson
-Serge Lages
 Rune Schmidt Jensen
 Rainer Oder
 Mike Connell
+Mario Valle
+Gordon Tomlinson
+Gino van den Bergen
 Carlo Camporesi
 Bryan Thrall
 Ben Discoe
 Andreas Ekstrand
-Alberto Luaces
 Sasa Bistrovic
 Neil Groves
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
-Mario Valle
 Loic Dachary
 Joseph Steel
 John Shue
 Jan Peciva
 Jan Ciger
-Gordon Tomlinson
 Glenn Waldron
-Gino van den Bergen
 Brad Colbert
 Vivek Rajan
-Tim Moore
 Thibault Genessay
 Sean Spicer
-Roland Smeenk
 Ravi Mathur
 Nikolaus Hanekamp
 Neil Salter
@@ -105,7 +106,6 @@ Luc Frauciel
 Laurens Voerman
 David Guthrie
 Corbin Holtz
-Cedric Pinson
 Brad Christiansen
 Toshiyuki Takahei
 Thom DeCarlo
@@ -117,6 +117,7 @@ Paul de Repentigny
 Mattias Helsing
 Liang Aibin
 Leandro Motta Barros
+John Vidar Larring
 John Kelso
 Daniel Larimer
 Csaba Halasz
@@ -138,8 +139,8 @@ Mattias Linde
 Maria Ten
 Ken Sewell
 Julian Ortiz
-John Vidar Larring
 Jeremy Bell
+Jaromir Vitek
 James French
 Garrett Potts
 Gabor Dorka
@@ -179,9 +180,11 @@ Martijn Kragtwijk
 Lionel Lagarde
 Kevin Moiule
 Keith Steffen
+Katharina Plugge
 Joseph Winston
 John Aughey
 Johan Nouvel
+Jim Vaughan
 James Moliere
 Igor Kravtchenko
 He Sicong
@@ -220,6 +223,7 @@ Thom Carlo
 Tery Welsh
 Tanguy Fautré
 Steven Thomas
+Simon Hammett
 Sid Byce
 Shuxing Xiao
 Shane Arnott
@@ -235,7 +239,9 @@ Rene Molenaar
 Reinhard Sainitzer
 Rein Kadijk
 Raymond de Vries
+Ragnar Hammarqvist
 Qing Shen
+Piotr Rak
 Philipp Siemoleit
 Philipp Mächler
 Paul Palumbo
@@ -279,7 +285,6 @@ Lewis Harmon
 Lars Nilson
 Kyle Centers
 Kristopher Bixler
-Katharina Plugge
 Karsten Weiss
 Karl Heijdenberg
 Jutta Sauer
@@ -290,7 +295,6 @@ John Donovan
 John Davis
 John Argentieri
 Joan Abadie
-Jim Vaughan
 Jeoen den Dekker
 Jean-Christophe Lombardo
 Jay Zuckerman
@@ -310,6 +314,7 @@ Frank Warmerdam
 Frank Lindeman
 Frank Lichtenheld
 Ferdinand Cornelissen
+Ferdi Smit
 Fabien Dachicourt
 Ewe Woessner
 Emmanuel Roche
@@ -322,6 +327,7 @@ Douglas A. Pouk
 Dean Iverson
 David Jung
 David Gurhrie
+Danny Valente
 Daniel Stien
 Dan Minor
 Cyril Brulebois
@@ -336,11 +342,13 @@ Bruno Herbelin
 Brian Keener
 Brandon Hamm
 Bora Utka
+Björn Hein
 Bill Prendergast
 Benoit Laniel
 Ben van Basten
 Bart Gallet
 Axel Volley
+Andy Preece
 Andrew Reyonolds
 Andreas Jochens
 Andre Normann

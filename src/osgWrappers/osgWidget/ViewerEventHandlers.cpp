@@ -26,6 +26,20 @@
 #undef OUT
 #endif
 
+BEGIN_OBJECT_REFLECTOR(osgWidget::CameraSwitchHandler)
+	I_DeclaringFile("osgWidget/ViewerEventHandlers");
+	I_BaseType(osgGA::GUIEventHandler);
+	I_Constructor2(IN, osgWidget::WindowManager *, x, IN, osg::Camera *, x,
+	               ____CameraSwitchHandler__WindowManager_P1__osg_Camera_P1,
+	               "",
+	               "");
+	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x, IN, osg::Object *, x, IN, osg::NodeVisitor *, x,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1__osg_Object_P1__osg_NodeVisitor_P1,
+	          "Handle events, return true if handled, false otherwise. ",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgWidget::KeyboardHandler)
 	I_DeclaringFile("osgWidget/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
@@ -111,10 +125,10 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgWidget::ResizeHandler)
 	I_DeclaringFile("osgWidget/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
-	I_Constructor2(IN, osgWidget::WindowManager *, x, IN, osg::Camera *, x,
-	               ____ResizeHandler__WindowManager_P1__osg_Camera_P1,
-	               "",
-	               "");
+	I_ConstructorWithDefaults2(IN, osgWidget::WindowManager *, x, , IN, osg::Camera *, x, 0,
+	                           ____ResizeHandler__WindowManager_P1__osg_Camera_P1,
+	                           "",
+	                           "");
 	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x, IN, osg::Object *, x, IN, osg::NodeVisitor *, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1__osg_Object_P1__osg_NodeVisitor_P1,

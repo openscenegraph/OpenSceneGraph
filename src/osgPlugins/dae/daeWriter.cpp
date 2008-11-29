@@ -119,7 +119,7 @@ std::string daeWriter::getNodeName(const osg::Node & node,const std::string & de
     if (node.getName().empty())
         nodeName=uniquify(defaultName);
     else
-        nodeName=node.getName();
+        nodeName=uniquify(node.getName());
     return nodeName;
 }
 

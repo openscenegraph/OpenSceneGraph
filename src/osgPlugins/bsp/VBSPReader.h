@@ -270,7 +270,7 @@ struct DisplaceInfo
     int                      lightmap_sample_pos_start;
     DisplaceNeighbor         edge_neighbors[4];
     DisplaceCornerNeighbor   corner_neighbors[4];
-    unsigned long            allowed_verts[10];
+    unsigned int             allowed_verts[10];
 };
 
 
@@ -345,7 +345,7 @@ protected:
     void   processDispVerts(std::istream & str, int offset, int length);
 
     std::string       getToken(std::string str, const char * delim,
-                               int & index);
+                               std::string::size_type & index);
 
     std::string       findFileIgnoreCase(std::string filePath);
 

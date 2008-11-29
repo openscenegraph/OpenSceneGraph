@@ -23,8 +23,9 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osgWidget::Callback)
+BEGIN_OBJECT_REFLECTOR(osgWidget::Callback)
 	I_DeclaringFile("osgWidget/EventInterface");
+	I_BaseType(osg::Referenced);
 	I_Constructor0(____Callback,
 	               "",
 	               "");
@@ -33,6 +34,10 @@ BEGIN_VALUE_REFLECTOR(osgWidget::Callback)
 	               ____Callback__C5_Callback_R1,
 	               "",
 	               "");
+	I_ConstructorWithDefaults2(IN, osgWidget::EventType, type, , IN, void *, data, 0,
+	                           ____Callback__EventType__void_P1,
+	                           "",
+	                           "");
 	I_Method0(osgWidget::EventType, getType,
 	          Properties::NON_VIRTUAL,
 	          __EventType__getType,
@@ -234,9 +239,9 @@ BEGIN_VALUE_REFLECTOR(osgWidget::EventInterface)
 	          __unsigned_int__getEventMask,
 	          "",
 	          "");
-	I_Method1(void, addCallback, IN, const osgWidget::Callback &, cb,
+	I_Method1(void, addCallback, IN, osgWidget::Callback *, cb,
 	          Properties::NON_VIRTUAL,
-	          __void__addCallback__C5_Callback_R1,
+	          __void__addCallback__Callback_P1,
 	          "",
 	          "");
 	I_Method1(bool, callCallbacks, IN, osgWidget::Event &, ev,

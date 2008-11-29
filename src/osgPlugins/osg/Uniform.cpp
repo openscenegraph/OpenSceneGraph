@@ -42,18 +42,31 @@ bool Uniform_readLocalData(Object& obj, Input& fr)
     if (fr[0].matchWord("type"))
     {
         // post-May 2006 format (OSG versions > 1.0)
-        uniform.setType( Uniform::getTypeId( fr[1].getStr() ) );
 
+        ++fr;
+        
+        if (fr.matchSequence("unsigned int"))
+        {
+            uniform.setType( Uniform::getTypeId( "unsigned int" ) );
+            fr += 2;
+        }
+        else
+        {    
+            uniform.setType( Uniform::getTypeId( fr[0].getStr() ) );
+            ++fr;
+        }
+        
         unsigned int numElements;
-        fr[2].getUInt(numElements);
+        fr[0].getUInt(numElements);
         uniform.setNumElements( numElements );
 
-        fr+=3;
+        ++fr;
         iteratorAdvanced = true;
 
         Array* data = Array_readLocalData(fr);
         uniform.setArray( dynamic_cast<FloatArray*>(data) );
         uniform.setArray( dynamic_cast<IntArray*>(data) );
+        uniform.setArray( dynamic_cast<UIntArray*>(data) );
     }
 #if 1 //[
 // Deprecated; for backwards compatibility only.
@@ -233,6 +246,7 @@ bool Uniform_writeLocalData(const Object& obj,Output& fw)
 
     if( uniform.getFloatArray() ) Array_writeLocalData( *uniform.getFloatArray(), fw );
     if( uniform.getIntArray() )   Array_writeLocalData( *uniform.getIntArray(), fw );
+    if( uniform.getUIntArray() )   Array_writeLocalData( *uniform.getUIntArray(), fw );
 
     if (uniform.getUpdateCallback())
     {

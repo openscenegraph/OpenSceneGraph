@@ -250,6 +250,8 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
     float             texVOffset;
     float             texVScale;
     unsigned int      i, j, k;
+    double            dist, minDist;
+    int               minIndex;
     osg::Vec3         temp;
     int               edgeIndex;
     int               currentSurfEdge;
@@ -322,9 +324,23 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
 
     // Rotate the base coordinates for the surface until the first vertex
     // matches the start position
-    while ((fabs(vertices[0].x() - dispInfo.start_position.x()) > 0.1) ||
-           (fabs(vertices[0].y() - dispInfo.start_position.y()) > 0.1) ||
-           (fabs(vertices[0].z() - dispInfo.start_position.z()) > 0.1))
+    minDist = 1.0e9;
+    for (i = 0; i < 4; i++)
+    {
+       // Calculate the distance of the start position from this vertex
+       dist = (vertices[i] - dispInfo.start_position).length();
+
+       // If this is the smallest distance we've seen, remember it
+       if (dist < minDist)
+       {
+          minDist = dist;
+          minIndex = i;
+       }
+    }
+
+    // Rotate the displacement surface quad until we get the starting vertex
+    // in the 0th position
+    for (i = 0; i < minIndex; i++)
     {
         temp = vertices[0];
         vertices[0] = vertices[1];

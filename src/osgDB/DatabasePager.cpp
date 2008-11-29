@@ -339,6 +339,7 @@ void DatabasePager::ReadQueue::takeFirst(osg::ref_ptr<DatabaseRequest>& database
 //
 DatabasePager::DatabaseThread::DatabaseThread(DatabasePager* pager, Mode mode, const std::string& name):
     _done(false),
+    _active(false),
     _pager(pager),
     _mode(mode),
     _name(name)
@@ -347,6 +348,7 @@ DatabasePager::DatabaseThread::DatabaseThread(DatabasePager* pager, Mode mode, c
 
 DatabasePager::DatabaseThread::DatabaseThread(const DatabaseThread& dt, DatabasePager* pager):
     _done(false),
+    _active(false),
     _pager(pager),
     _mode(dt._mode),
     _name(dt._name)
@@ -442,8 +444,11 @@ void DatabasePager::DatabaseThread::run()
 
     do
     {
+        _active = false;
 
         read_queue->block();
+
+        _active = true;
 
         osg::notify(osg::INFO)<<_name<<": _pager->_requestList.size()= "<<read_queue->_requestList.size()<<" to delete = "<<read_queue->_childrenToDeleteList.size()<<std::endl;
 
@@ -907,11 +912,11 @@ DatabasePager::DatabasePager()
     }
 
 
-    _maximumNumberOfPageLOD = 0;
+    _targetMaximumNumberOfPageLOD = 0;
     if( (ptr = getenv("OSG_MAX_PAGEDLOD")) != 0)
     {
-        _maximumNumberOfPageLOD = atoi(ptr);
-        osg::notify(osg::NOTICE)<<"_maximumNumberOfPageLOD = "<<_maximumNumberOfPageLOD<<std::endl;
+        _targetMaximumNumberOfPageLOD = atoi(ptr);
+        osg::notify(osg::NOTICE)<<"_targetMaximumNumberOfPageLOD = "<<_targetMaximumNumberOfPageLOD<<std::endl;
     }
 
 
@@ -987,7 +992,7 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     _releaseDelay = rhs._releaseDelay;
     _releaseFrames = rhs._releaseFrames;
 
-    _maximumNumberOfPageLOD = rhs._maximumNumberOfPageLOD;
+    _targetMaximumNumberOfPageLOD = rhs._targetMaximumNumberOfPageLOD;
 
     _doPreCompile = rhs._doPreCompile;
     _targetFrameRate = rhs._targetFrameRate;
@@ -1193,6 +1198,27 @@ void DatabasePager::resetStats()
     _numTilesMerges = 0;
 }
 
+bool DatabasePager::getRequestsInProgress() const
+{
+    if (getFileRequestListSize()>0) return true;
+
+    if (getDataToCompileListSize()>0) 
+    {
+        return true;
+    }
+
+    if (getDataToMergeListSize()>0) return true;
+
+    for(DatabaseThreadList::const_iterator itr = _databaseThreads.begin();
+        itr != _databaseThreads.begin();
+        ++itr)
+    {
+        if ((*itr)->getActive()) return true;
+    }
+    return false;
+}
+
+
 void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group,
                                     float priority, const osg::FrameStamp* framestamp,
                                     osg::ref_ptr<osg::Referenced>& databaseRequest)
@@ -1233,7 +1259,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
         DatabaseRequest* databaseRequest = dynamic_cast<DatabaseRequest*>(databaseRequestRef.get());
         if (databaseRequest)
         {
-            osg::notify(osg::INFO)<<"DatabasePager::fileRequest("<<fileName<<") updating alraedy assigned."<<std::endl;
+            osg::notify(osg::INFO)<<"DatabasePager::fileRequest("<<fileName<<") updating already assigned."<<std::endl;
 
             RequestQueue* requestQueue = databaseRequest->_requestQueue;
             if (requestQueue)
@@ -1477,7 +1503,7 @@ public:
 
 void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
 {
-    if (_maximumNumberOfPageLOD>0)
+    if (_targetMaximumNumberOfPageLOD>0)
     {
         capped_removeExpiredSubgraphs(frameStamp);
     }
@@ -1564,13 +1590,13 @@ void DatabasePager::capped_removeExpiredSubgraphs(const osg::FrameStamp& frameSt
     if (s_total_max_stage_a<time_a) s_total_max_stage_a = time_a;
     
 
-    if (numPagedLODs <= _maximumNumberOfPageLOD)
+    if (numPagedLODs <= _targetMaximumNumberOfPageLOD)
     {
         // nothing to do
         return;
     }
     
-    int numToPrune = numPagedLODs - _maximumNumberOfPageLOD;
+    int numToPrune = numPagedLODs - _targetMaximumNumberOfPageLOD;
     if (numToPrune > inactivePLOD)
     {
         numToPrune = inactivePLOD;

@@ -16,7 +16,6 @@
 #include <osgWidget/Label>
 #include <osgWidget/Types>
 #include <osgWidget/Window>
-#include <osgWidget/WindowManager>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -72,19 +71,9 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Label)
 	          __void__unparented__Window_P1,
 	          "",
 	          "");
-	I_Method1(void, managed, IN, osgWidget::WindowManager *, x,
-	          Properties::VIRTUAL,
-	          __void__managed__WindowManager_P1,
-	          "",
-	          "");
 	I_Method0(void, positioned,
 	          Properties::VIRTUAL,
 	          __void__positioned,
-	          "",
-	          "");
-	I_Method0(void, update,
-	          Properties::NON_VIRTUAL,
-	          __void__update,
 	          "",
 	          "");
 	I_Method1(void, setLabel, IN, const std::string &, x,

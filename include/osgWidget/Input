@@ -40,7 +40,7 @@ class OSGWIDGET_EXPORT Input: public Label
         virtual bool keyDown (int, int, WindowManager*);
 
         void         setCursor            (Widget*);
-        unsigned int calculateBestYOffset (const std::string& = DESCENT_STRING);
+        unsigned int calculateBestYOffset (const std::string& = "qgl");
 
         void setXOffset(point_type xo) {
             _xoff = xo;

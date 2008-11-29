@@ -100,6 +100,9 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             
             void setDone(bool done) { _done = done; }
             bool getDone() const { return _done; }
+            
+            void setActive(bool active) { _active = active; }
+            bool getActive() const { return _active; }
 
             virtual int cancel();
             
@@ -110,6 +113,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             virtual ~DatabaseThread();
         
             bool            _done;
+            bool            _active;
             DatabasePager*  _pager;
             Mode            _mode;
             std::string     _name;
@@ -200,6 +204,15 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         /** Get the maximum number of OpenGL objects that the page should attempt to compile per frame.*/
         unsigned int getMaximumNumOfObjectsToCompilePerFrame() const { return _maximumNumOfObjectsToCompilePerFrame; }
+
+
+        /** Set the target maximum number of PagedLOD to maintain in memory.
+          * Note, if more than the target number are required for rendering of a frame then these active PagedLOD are excempt from being expiried.
+          * But once the number of active drops back below the target the inactive PagedLOD will be trimmed back to the target number.*/
+        void setTargetMaximumNumberOfPageLOD(unsigned int target) { _targetMaximumNumberOfPageLOD = target; }
+
+        /** Get the target maximum number of PagedLOD to maintain in memory.*/
+        unsigned int getTargetMaximumNumberOfPageLOD() const { return _targetMaximumNumberOfPageLOD; }
 
 
         /** Set the amount of time that a subgraph will be kept without being visited in the cull traversal
@@ -311,7 +324,11 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Report how many items are in the _dataToCompileList queue */
         unsigned int getDataToCompileListSize() const { return _dataToCompileList->_requestList.size(); }
         
+        /** Report how many items are in the _dataToCompileList queue */
+        unsigned int getDataToMergeListSize() const { return _dataToMergeList->_requestList.size(); }
 
+        /** Report whether any requests are in the pager.*/
+        bool getRequestsInProgress() const;
         
         /** Get the minimum time between the first request for a tile to be loaded and the time of its merge into the main scene graph.*/
         double getMinimumTimeToMergeTile() const { return _minimumTimeToMergeTile; }
@@ -558,7 +575,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         PagedLODList                    _activePagedLODList;
         PagedLODList                    _inactivePagedLODList;
         
-        unsigned int                    _maximumNumberOfPageLOD;
+        unsigned int                    _targetMaximumNumberOfPageLOD;
 
         double                          _expiryDelay;
         int                             _expiryFrames;

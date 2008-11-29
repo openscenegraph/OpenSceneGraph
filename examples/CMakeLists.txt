@@ -18,6 +18,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
 
     ADD_SUBDIRECTORY(osg2cpp)
     ADD_SUBDIRECTORY(osganimate)
+    ADD_SUBDIRECTORY(osgautocapture)
     ADD_SUBDIRECTORY(osgautotransform)
     ADD_SUBDIRECTORY(osgbillboard)
     ADD_SUBDIRECTORY(osgblendequation)

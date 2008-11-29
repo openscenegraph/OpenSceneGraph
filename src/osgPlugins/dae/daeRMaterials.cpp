@@ -1057,5 +1057,3 @@ osg::StateAttribute *daeReader::processTransparencySettings( domCommon_transpare
     ss->setRenderBinDetails( 10, "DepthSortedBin" );
     return NULL;
 }
-
-// 0..* <extra>

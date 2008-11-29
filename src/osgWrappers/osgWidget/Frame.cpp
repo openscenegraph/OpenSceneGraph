@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/Image>
 #include <osg/Object>
 #include <osgWidget/Frame>
 #include <osgWidget/Types>
@@ -25,7 +26,7 @@
 #undef OUT
 #endif
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Frame::CORNER)
+BEGIN_ENUM_REFLECTOR(osgWidget::Frame::CornerType)
 	I_DeclaringFile("osgWidget/Frame");
 	I_EnumLabel(osgWidget::Frame::CORNER_LOWER_LEFT);
 	I_EnumLabel(osgWidget::Frame::CORNER_LOWER_RIGHT);
@@ -33,12 +34,20 @@ BEGIN_ENUM_REFLECTOR(osgWidget::Frame::CORNER)
 	I_EnumLabel(osgWidget::Frame::CORNER_UPPER_RIGHT);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgWidget::Frame::BORDER)
+BEGIN_ENUM_REFLECTOR(osgWidget::Frame::BorderType)
 	I_DeclaringFile("osgWidget/Frame");
 	I_EnumLabel(osgWidget::Frame::BORDER_LEFT);
 	I_EnumLabel(osgWidget::Frame::BORDER_RIGHT);
 	I_EnumLabel(osgWidget::Frame::BORDER_TOP);
 	I_EnumLabel(osgWidget::Frame::BORDER_BOTTOM);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osgWidget::Frame::FrameOptions)
+	I_DeclaringFile("osgWidget/Frame");
+	I_EnumLabel(osgWidget::Frame::FRAME_RESIZE);
+	I_EnumLabel(osgWidget::Frame::FRAME_MOVE);
+	I_EnumLabel(osgWidget::Frame::FRAME_TEXTURE);
+	I_EnumLabel(osgWidget::Frame::FRAME_ALL);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgWidget::Frame)
@@ -69,28 +78,22 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame)
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
 	          "");
-	I_ConstructorWithDefaults1(IN, const std::string &, x, "",
-	                           Properties::NON_EXPLICIT,
-	                           ____Frame__C5_std_string_R1,
+	I_ConstructorWithDefaults2(IN, const std::string &, x, "", IN, unsigned, int, 0,
+	                           ____Frame__C5_std_string_R1__unsigned,
 	                           "",
 	                           "");
 	I_Constructor2(IN, const osgWidget::Frame &, x, IN, const osg::CopyOp &, x,
 	               ____Frame__C5_Frame_R1__C5_osg_CopyOp_R1,
 	               "",
 	               "");
-	I_Method1(void, managed, IN, osgWidget::WindowManager *, x,
-	          Properties::VIRTUAL,
-	          __void__managed__WindowManager_P1,
-	          "",
-	          "");
 	I_Method4(void, createSimpleFrame, IN, osgWidget::point_type, cw, IN, osgWidget::point_type, ch, IN, osgWidget::point_type, w, IN, osgWidget::point_type, h,
 	          Properties::NON_VIRTUAL,
 	          __void__createSimpleFrame__point_type__point_type__point_type__point_type,
 	          "",
 	          "");
-	I_Method7(void, createSimpleFrameWithSingleTexture, IN, const std::string &, tex, IN, osgWidget::point_type, tw, IN, osgWidget::point_type, th, IN, osgWidget::point_type, cw, IN, osgWidget::point_type, ch, IN, osgWidget::point_type, w, IN, osgWidget::point_type, h,
+	I_Method3(void, createSimpleFrameWithSingleTexture, IN, osg::Image *, image, IN, osgWidget::point_type, w, IN, osgWidget::point_type, h,
 	          Properties::NON_VIRTUAL,
-	          __void__createSimpleFrameWithSingleTexture__C5_std_string_R1__point_type__point_type__point_type__point_type__point_type__point_type,
+	          __void__createSimpleFrameWithSingleTexture__osg_Image_P1__point_type__point_type,
 	          "",
 	          "");
 	I_Method1(bool, setWindow, IN, osgWidget::Window *, x,
@@ -108,57 +111,94 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame)
 	          __C5_EmbeddedWindow_P1__getEmbeddedWindow,
 	          "",
 	          "");
-	I_Method1(osgWidget::Frame::Corner *, getCorner, IN, osgWidget::Frame::CORNER, c,
+	I_Method1(osgWidget::Frame::Corner *, getCorner, IN, osgWidget::Frame::CornerType, c,
 	          Properties::NON_VIRTUAL,
-	          __Corner_P1__getCorner__CORNER,
+	          __Corner_P1__getCorner__CornerType,
 	          "",
 	          "");
-	I_Method1(const osgWidget::Frame::Corner *, getCorner, IN, osgWidget::Frame::CORNER, c,
+	I_Method1(const osgWidget::Frame::Corner *, getCorner, IN, osgWidget::Frame::CornerType, c,
 	          Properties::NON_VIRTUAL,
-	          __C5_Corner_P1__getCorner__CORNER,
+	          __C5_Corner_P1__getCorner__CornerType,
 	          "",
 	          "");
-	I_Method1(osgWidget::Frame::Border *, getBorder, IN, osgWidget::Frame::BORDER, b,
+	I_Method1(osgWidget::Frame::Border *, getBorder, IN, osgWidget::Frame::BorderType, b,
 	          Properties::NON_VIRTUAL,
-	          __Border_P1__getBorder__BORDER,
+	          __Border_P1__getBorder__BorderType,
 	          "",
 	          "");
-	I_Method1(const osgWidget::Frame::Border *, getBorder, IN, osgWidget::Frame::BORDER, b,
+	I_Method1(const osgWidget::Frame::Border *, getBorder, IN, osgWidget::Frame::BorderType, b,
 	          Properties::NON_VIRTUAL,
-	          __C5_Border_P1__getBorder__BORDER,
+	          __C5_Border_P1__getBorder__BorderType,
 	          "",
 	          "");
-	I_StaticMethod1(std::string, cornerToString, IN, osgWidget::Frame::CORNER, x,
-	                __std_string__cornerToString__CORNER_S,
+	I_Method2(bool, resizeFrame, IN, osgWidget::point_type, x, IN, osgWidget::point_type, x,
+	          Properties::NON_VIRTUAL,
+	          __bool__resizeFrame__point_type__point_type,
+	          "",
+	          "");
+	I_Method0(unsigned int, getFlags,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getFlags,
+	          "",
+	          "");
+	I_Method1(void, setFlags, IN, unsigned int, flags,
+	          Properties::NON_VIRTUAL,
+	          __void__setFlags__unsigned_int,
+	          "",
+	          "");
+	I_Method0(bool, canResize,
+	          Properties::NON_VIRTUAL,
+	          __bool__canResize,
+	          "",
+	          "");
+	I_Method0(bool, canMove,
+	          Properties::NON_VIRTUAL,
+	          __bool__canMove,
+	          "",
+	          "");
+	I_Method0(bool, canTexture,
+	          Properties::NON_VIRTUAL,
+	          __bool__canTexture,
+	          "",
+	          "");
+	I_StaticMethod1(std::string, cornerTypeToString, IN, osgWidget::Frame::CornerType, x,
+	                __std_string__cornerTypeToString__CornerType_S,
 	                "",
 	                "");
-	I_StaticMethod1(std::string, borderToString, IN, osgWidget::Frame::BORDER, x,
-	                __std_string__borderToString__BORDER_S,
+	I_StaticMethod1(std::string, borderTypeToString, IN, osgWidget::Frame::BorderType, x,
+	                __std_string__borderTypeToString__BorderType_S,
 	                "",
 	                "");
-	I_StaticMethodWithDefaults6(osgWidget::Frame *, createSimpleFrame, IN, const std::string &, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::Frame *, x, 0,
-	                            __Frame_P1__createSimpleFrame__C5_std_string_R1__point_type__point_type__point_type__point_type__Frame_P1_S,
+	I_StaticMethodWithDefaults7(osgWidget::Frame *, createSimpleFrame, IN, const std::string &, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, unsigned, int, 0, IN, osgWidget::Frame *, x, 0,
+	                            __Frame_P1__createSimpleFrame__C5_std_string_R1__point_type__point_type__point_type__point_type__unsigned__Frame_P1_S,
 	                            "",
 	                            "");
-	I_StaticMethodWithDefaults9(osgWidget::Frame *, createSimpleFrameWithSingleTexture, IN, const std::string &, x, , IN, const std::string &, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::Frame *, x, 0,
-	                            __Frame_P1__createSimpleFrameWithSingleTexture__C5_std_string_R1__C5_std_string_R1__point_type__point_type__point_type__point_type__point_type__point_type__Frame_P1_S,
+	I_StaticMethodWithDefaults6(osgWidget::Frame *, createSimpleFrameWithSingleTexture, IN, const std::string &, x, , IN, osg::Image *, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, unsigned, int, 0, IN, osgWidget::Frame *, x, 0,
+	                            __Frame_P1__createSimpleFrameWithSingleTexture__C5_std_string_R1__osg_Image_P1__point_type__point_type__unsigned__Frame_P1_S,
 	                            "",
 	                            "");
-	I_ProtectedMethod1(osgWidget::Widget *, _getCorner, IN, osgWidget::Frame::CORNER, x,
+	I_StaticMethodWithDefaults6(osgWidget::Frame *, createSimpleFrameFromTheme, IN, const std::string &, x, , IN, osg::Image *, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, unsigned, int, 0, IN, osgWidget::Frame *, x, 0,
+	                            __Frame_P1__createSimpleFrameFromTheme__C5_std_string_R1__osg_Image_P1__point_type__point_type__unsigned__Frame_P1_S,
+	                            "",
+	                            "");
+	I_ProtectedMethod1(osgWidget::Widget *, _getCorner, IN, osgWidget::Frame::CornerType, x,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __Widget_P1___getCorner__CORNER,
+	                   __Widget_P1___getCorner__CornerType,
 	                   "",
 	                   "");
-	I_ProtectedMethod1(osgWidget::Widget *, _getBorder, IN, osgWidget::Frame::BORDER, x,
+	I_ProtectedMethod1(osgWidget::Widget *, _getBorder, IN, osgWidget::Frame::BorderType, x,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __Widget_P1___getBorder__BORDER,
+	                   __Widget_P1___getBorder__BorderType,
 	                   "",
 	                   "");
 	I_SimpleProperty(osgWidget::Window::EmbeddedWindow *, EmbeddedWindow, 
 	                 __EmbeddedWindow_P1__getEmbeddedWindow, 
 	                 0);
+	I_SimpleProperty(unsigned int, Flags, 
+	                 __unsigned_int__getFlags, 
+	                 __void__setFlags__unsigned_int);
 	I_SimpleProperty(osgWidget::Window *, Window, 
 	                 0, 
 	                 __bool__setWindow__Window_P1);
@@ -192,40 +232,50 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Border)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_ConstructorWithDefaults3(IN, osgWidget::Frame::BORDER, x, osgWidget::Frame::BORDER_LEFT, IN, osgWidget::point_type, x, 0.0f, IN, osgWidget::point_type, x, 0.0f,
-	                           ____Border__BORDER__point_type__point_type,
+	I_ConstructorWithDefaults3(IN, osgWidget::Frame::BorderType, x, osgWidget::Frame::BORDER_LEFT, IN, osgWidget::point_type, x, 0.0f, IN, osgWidget::point_type, x, 0.0f,
+	                           ____Border__BorderType__point_type__point_type,
 	                           "",
 	                           "");
 	I_Constructor2(IN, const osgWidget::Frame::Border &, x, IN, const osg::CopyOp &, x,
 	               ____Border__C5_Border_R1__C5_osg_CopyOp_R1,
 	               "",
 	               "");
+	I_Method1(void, parented, IN, osgWidget::Window *, x,
+	          Properties::VIRTUAL,
+	          __void__parented__Window_P1,
+	          "",
+	          "");
+	I_Method0(void, positioned,
+	          Properties::VIRTUAL,
+	          __void__positioned,
+	          "",
+	          "");
 	I_Method3(bool, mouseDrag, IN, double, x, IN, double, x, IN, osgWidget::WindowManager *, x,
 	          Properties::VIRTUAL,
 	          __bool__mouseDrag__double__double__WindowManager_P1,
 	          "",
 	          "");
-	I_Method0(osgWidget::Frame::BORDER, getBorder,
+	I_Method0(osgWidget::Frame::BorderType, getBorderType,
 	          Properties::NON_VIRTUAL,
-	          __BORDER__getBorder,
+	          __BorderType__getBorderType,
 	          "",
 	          "");
-	I_Method1(void, setBorder, IN, osgWidget::Frame::BORDER, border,
+	I_Method1(void, setBorderType, IN, osgWidget::Frame::BorderType, border,
 	          Properties::NON_VIRTUAL,
-	          __void__setBorder__BORDER,
+	          __void__setBorderType__BorderType,
 	          "",
 	          "");
-	I_Method1(void, setBorderAndName, IN, osgWidget::Frame::BORDER, border,
+	I_Method1(void, setBorderTypeAndName, IN, osgWidget::Frame::BorderType, border,
 	          Properties::NON_VIRTUAL,
-	          __void__setBorderAndName__BORDER,
+	          __void__setBorderTypeAndName__BorderType,
 	          "",
 	          "");
-	I_SimpleProperty(osgWidget::Frame::BORDER, Border, 
-	                 __BORDER__getBorder, 
-	                 __void__setBorder__BORDER);
-	I_SimpleProperty(osgWidget::Frame::BORDER, BorderAndName, 
+	I_SimpleProperty(osgWidget::Frame::BorderType, BorderType, 
+	                 __BorderType__getBorderType, 
+	                 __void__setBorderType__BorderType);
+	I_SimpleProperty(osgWidget::Frame::BorderType, BorderTypeAndName, 
 	                 0, 
-	                 __void__setBorderAndName__BORDER);
+	                 __void__setBorderTypeAndName__BorderType);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Corner)
@@ -256,39 +306,44 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Corner)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_ConstructorWithDefaults3(IN, osgWidget::Frame::CORNER, x, osgWidget::Frame::CORNER_LOWER_LEFT, IN, osgWidget::point_type, x, 0.0f, IN, osgWidget::point_type, x, 0.0f,
-	                           ____Corner__CORNER__point_type__point_type,
+	I_ConstructorWithDefaults3(IN, osgWidget::Frame::CornerType, x, osgWidget::Frame::CORNER_LOWER_LEFT, IN, osgWidget::point_type, x, 0.0f, IN, osgWidget::point_type, x, 0.0f,
+	                           ____Corner__CornerType__point_type__point_type,
 	                           "",
 	                           "");
 	I_Constructor2(IN, const osgWidget::Frame::Corner &, x, IN, const osg::CopyOp &, x,
 	               ____Corner__C5_Corner_R1__C5_osg_CopyOp_R1,
 	               "",
 	               "");
+	I_Method1(void, parented, IN, osgWidget::Window *, x,
+	          Properties::VIRTUAL,
+	          __void__parented__Window_P1,
+	          "",
+	          "");
 	I_Method3(bool, mouseDrag, IN, double, x, IN, double, x, IN, osgWidget::WindowManager *, x,
 	          Properties::VIRTUAL,
 	          __bool__mouseDrag__double__double__WindowManager_P1,
 	          "",
 	          "");
-	I_Method0(osgWidget::Frame::CORNER, getCorner,
+	I_Method0(osgWidget::Frame::CornerType, getCornerType,
 	          Properties::NON_VIRTUAL,
-	          __CORNER__getCorner,
+	          __CornerType__getCornerType,
 	          "",
 	          "");
-	I_Method1(void, setCorner, IN, osgWidget::Frame::CORNER, corner,
+	I_Method1(void, setCornerType, IN, osgWidget::Frame::CornerType, corner,
 	          Properties::NON_VIRTUAL,
-	          __void__setCorner__CORNER,
+	          __void__setCornerType__CornerType,
 	          "",
 	          "");
-	I_Method1(void, setCornerAndName, IN, osgWidget::Frame::CORNER, corner,
+	I_Method1(void, setCornerTypeAndName, IN, osgWidget::Frame::CornerType, corner,
 	          Properties::NON_VIRTUAL,
-	          __void__setCornerAndName__CORNER,
+	          __void__setCornerTypeAndName__CornerType,
 	          "",
 	          "");
-	I_SimpleProperty(osgWidget::Frame::CORNER, Corner, 
-	                 __CORNER__getCorner, 
-	                 __void__setCorner__CORNER);
-	I_SimpleProperty(osgWidget::Frame::CORNER, CornerAndName, 
+	I_SimpleProperty(osgWidget::Frame::CornerType, CornerType, 
+	                 __CornerType__getCornerType, 
+	                 __void__setCornerType__CornerType);
+	I_SimpleProperty(osgWidget::Frame::CornerType, CornerTypeAndName, 
 	                 0, 
-	                 __void__setCornerAndName__CORNER);
+	                 __void__setCornerTypeAndName__CornerType);
 END_REFLECTOR
 

@@ -213,7 +213,7 @@ namespace osgAnimation
             // process all pending remove action operation
             while( !_removeActionOperations.empty())
             {
-                internalRemoveAction(_removeActionOperations.back().second);
+                internalRemoveAction(_removeActionOperations.back().second.get());
                 _removeActionOperations.pop_back();
             }
         }

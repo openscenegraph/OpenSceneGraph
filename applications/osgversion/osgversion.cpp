@@ -226,6 +226,9 @@ bool validName(const std::string& first)
     if (first=="LineSegment") return false;
     if (first=="Canvas") return false;
     if (first=="OpenSceneGraph-2") return false;
+    if (first=="OpenSceneGraph-osgWidget-dev") return false;
+    if (first=="Valve") return false;
+    if (first=="Source") return false;
     return true;
 }
 
@@ -279,6 +282,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Garret") return "Garrett";
     if (name=="Geof") return "Geoff";
     if (name=="Giatan") return "Gaitan";
+    if (name=="Rolad") return "Roland";
     if (name=="Gronenger") return "Gronager";
     if (name=="Gronger") return "Gronager";
     if (name=="Hebelin") return "Herbelin";
@@ -372,12 +376,25 @@ std::string typoCorrection(const std::string& name)
     if (name=="Xennon") return "Hanson";
     if (name=="Yefrei") return "Yefei";
     if (name=="Yfei") return "Yefei";
+    if (name=="Urlich") return "Ulrich";
     
     return name;
 }
 
 void nameCorrection(NamePair& name)
 {
+    if (name.first=="BjornHein" && name.second=="")
+    {
+        name.first = "Björn";
+        name.second = "Hein";
+    }
+    
+    if (name.first=="Bjorn" && name.second=="Hein")
+    {
+        name.first = "Björn";
+        name.second = "Hein";
+    }
+    
     if (name.first=="Erik" && name.second=="van")
     {
         name.first = "Erik";

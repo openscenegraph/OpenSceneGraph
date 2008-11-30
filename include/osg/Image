@@ -255,6 +255,7 @@ class OSG_EXPORT Image : public Object
 
         static bool isPackedType(GLenum type);
         static GLenum computePixelFormat(GLenum pixelFormat);
+        static GLenum computeFormatDataType(GLenum pixelFormat);
         static unsigned int computeNumComponents(GLenum pixelFormat);
         static unsigned int computePixelSizeInBits(GLenum pixelFormat,GLenum type);
         static unsigned int computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum type,int packing);
@@ -294,6 +295,15 @@ class OSG_EXPORT Image : public Object
         {
            return _data+getMipmapOffset(mipmapLevel);
         }
+
+        /*inline const unsigned char* getMipmapData(unsigned int row, unsigned int column, unsigned int mipmapLevel) const
+        {
+           if (!_data) return NULL;
+           return getMipmapData(mipmapLevel) + (column*getPixelSizeInBits())/8+row*getRowSizeInBytes();
+        }*/
+
+        /** Build all mipmap levels and change the image type to \"contain mipmaps\" **/
+        void buildMipmaps();
         
         /** Return true if this image is translucent - i.e. it has alpha values that are less 1.0 (when normalized). */
         bool isImageTranslucent() const;

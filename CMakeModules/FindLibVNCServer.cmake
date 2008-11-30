@@ -1,14 +1,12 @@
-# Locate gdal
+# Locate libvncserver
 # This module defines
 # LIBVNCSERVER_LIBRARY
-# LIBVNCSERVER_FOUND, if false, do not try to link to gdal 
+# LIBVNCSERVER_FOUND, if false, do not try to link to libvncserver 
 # LIBVNCSERVER_INCLUDE_DIR, where to find the headers
 #
 # $LIBVNCSERVER_DIR is an environment variable that would
 # correspond to the ./configure --prefix=$LIBVNCSERVER_DIR
-# used in building gdal.
-#
-# Created by Ulrich Hertlein. 
+# used in building libvncserver.
 
 FIND_PATH(LIBVNCSERVER_INCLUDE_DIR rfb/rfb.h
     $ENV{LIBVNCSERVER_DIR}/include

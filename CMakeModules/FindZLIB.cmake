@@ -1,12 +1,12 @@
-# Locate gdal
+# Locate zlib
 # This module defines
 # ZLIB_LIBRARY
-# ZLIB_FOUND, if false, do not try to link to gdal 
+# ZLIB_FOUND, if false, do not try to link to zlib 
 # ZLIB_INCLUDE_DIR, where to find the headers
 #
 # $ZLIB_DIR is an environment variable that would
 # correspond to the ./configure --prefix=$ZLIB_DIR
-# used in building gdal.
+# used in building zlib.
 #
 # Created by Ulrich Hertlein. 
 

@@ -724,3 +724,103 @@ void PixelBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
 
     _bufferEntryImagePair.first.modifiedCount.resize(maxSize);
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//
+//  PixelDataBufferObject
+//
+//--------------------------------------------------------------------------------
+PixelDataBufferObject::PixelDataBufferObject()
+{
+    _target = GL_ARRAY_BUFFER;
+    _usage = GL_DYNAMIC_DRAW_ARB;
+    _bufferData.dataSize = 0;
+}
+
+//--------------------------------------------------------------------------------
+PixelDataBufferObject::PixelDataBufferObject(const PixelDataBufferObject& buffer,const CopyOp& copyop):
+    BufferObject(buffer,copyop),
+    _bufferData(buffer._bufferData)
+{
+}
+
+//--------------------------------------------------------------------------------
+PixelDataBufferObject::~PixelDataBufferObject()
+{
+}
+
+//--------------------------------------------------------------------------------
+void PixelDataBufferObject::compileBuffer(State& state) const
+{
+    unsigned int contextID = state.getContextID();    
+    if (!isDirty(contextID) || _bufferData.dataSize == 0) return;
+
+    Extensions* extensions = getExtensions(contextID,true);
+
+    GLuint& pbo = buffer(contextID);
+    if (pbo == 0)
+    {
+        extensions->glGenBuffers(1, &pbo);
+    }
+
+    extensions->glBindBuffer(_target, pbo);
+    extensions->glBufferData(_target, _bufferData.dataSize, NULL, _usage);
+    extensions->glBindBuffer(_target, 0);
+
+    _compiledList[contextID] = 1;
+}
+
+//--------------------------------------------------------------------------------
+void PixelDataBufferObject::bindBufferInReadMode(State& state)
+{
+    unsigned int contextID = state.getContextID();    
+    if (isDirty(contextID)) compileBuffer(state);
+
+    Extensions* extensions = getExtensions(contextID,true);
+
+    extensions->glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, buffer(contextID));
+    _mode[contextID] = READ;
+}
+
+//--------------------------------------------------------------------------------
+void PixelDataBufferObject::bindBufferInWriteMode(State& state)
+{
+    unsigned int contextID = state.getContextID();    
+    if (isDirty(contextID)) compileBuffer(state);
+
+    Extensions* extensions = getExtensions(contextID,true);
+
+    extensions->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, buffer(contextID));
+    _mode[contextID] = WRITE;
+}
+
+//--------------------------------------------------------------------------------
+void PixelDataBufferObject::unbindBuffer(unsigned int contextID) const
+{ 
+    Extensions* extensions = getExtensions(contextID,true);
+
+    switch(_mode[contextID])
+    {
+        case READ:
+            extensions->glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,0);
+            break;
+        case WRITE:
+            extensions->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB,0);
+            break;
+        default:
+            extensions->glBindBuffer(_target,0);
+            break;
+    }
+
+    _mode[contextID] = NONE;
+}
+
+//--------------------------------------------------------------------------------
+void PixelDataBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    BufferObject::resizeGLObjectBuffers(maxSize);
+
+    _mode.resize(maxSize);
+}
+

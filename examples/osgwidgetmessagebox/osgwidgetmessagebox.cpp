@@ -258,6 +258,9 @@ bool MessageBox::create(const std::string& themeMessage,
     buttonOK->setColor(osgWidget::Color(0,0,0,0));
     buttonOK->setCanFill(false);
 
+    labelTitle->setPadBottom(30.0f);
+    labelText->setPadBottom(30.0f);
+
     box->addWidget(buttonOK);
     box->addWidget(labelText);
     box->addWidget(labelTitle);
@@ -325,7 +328,9 @@ int main(int argc, char** argv)
     osgWidget::point_type hw = message.getWindow()->getHeight();
     osgWidget::point_type ox = (w - ww) / 2;
     osgWidget::point_type oy = (h - hw) / 2;
-    message.getWindow()->setPosition(osgWidget::Point(ox, oy, message.getWindow()->getPosition()[2] ));
+    message.getWindow()->setPosition(osgWidget::Point(
+        osg::round(ox), osg::round(oy), message.getWindow()->getPosition()[2])
+    );
 //    frame->resizeAdd(30, 30);
 
 //    AlphaSetterVisitor alpha(.8f);

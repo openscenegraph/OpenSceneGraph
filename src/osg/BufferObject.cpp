@@ -733,7 +733,7 @@ void PixelBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
 //--------------------------------------------------------------------------------
 PixelDataBufferObject::PixelDataBufferObject()
 {
-    _target = GL_ARRAY_BUFFER;
+    _target = GL_ARRAY_BUFFER_ARB;
     _usage = GL_DYNAMIC_DRAW_ARB;
     _bufferData.dataSize = 0;
 }

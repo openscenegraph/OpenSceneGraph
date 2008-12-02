@@ -1,8 +1,12 @@
-# Locate gdal
-# This module defines
-# COLLADA_LIBRARY
-# COLLADA_FOUND, if false, do not try to link to gdal 
+# Locate Collada
+# This module defines:
 # COLLADA_INCLUDE_DIR, where to find the headers
+#
+# COLLADA_LIBRARY, COLLADA_LIBRARY_DEBUG
+# COLLADA_FOUND, if false, do not try to link to Collada dynamically
+#
+# COLLADA_LIBRARY_STATIC, COLLADA_LIBRARY_STATIC_DEBUG
+# COLLADA_STATIC_FOUND, if false, do not try to link to Collada statically
 #
 # $COLLADA_DIR is an environment variable that would
 # correspond to the ./configure --prefix=$COLLADA_DIR
@@ -29,7 +33,7 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     /usr/freeware/include
 )
 
-FIND_LIBRARY(COLLADA_LIBRARY 
+FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY 
     NAMES collada_dom collada14dom libcollada14dom21
     PATHS
     $ENV{COLLADA_DIR}/build/vc8-1.4
@@ -53,7 +57,7 @@ FIND_LIBRARY(COLLADA_LIBRARY
     /usr/freeware/lib64
 )
 
-FIND_LIBRARY(COLLADA_LIBRARY_DEBUG 
+FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG 
     NAMES collada_dom-d collada14dom-d libcollada14dom21-d
     PATHS
     $ENV{COLLADA_DIR}/build/vc8-1.4-d
@@ -77,9 +81,57 @@ FIND_LIBRARY(COLLADA_LIBRARY_DEBUG
     /usr/freeware/lib64
 )
 
+FIND_LIBRARY(COLLADA_STATIC_LIBRARY
+    NAMES collada_dom-s collada14dom-s libcollada14dom21-s
+    PATHS
+    $ENV{COLLADA_DIR}/build/vc8-1.4
+    $ENV{COLLADA_DIR}/lib
+    $ENV{COLLADA_DIR}/lib-dbg
+    $ENV{COLLADA_DIR}
+    $ENV{OSGDIR}/lib
+    $ENV{OSGDIR}
+    $ENV{OSG_ROOT}/lib
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/lib
+    /usr/local/lib64
+    /usr/lib
+    /usr/lib64
+    /sw/lib
+    /opt/local/lib
+    /opt/csw/lib
+    /opt/lib
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+    /usr/freeware/lib64
+)
+
+FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG 
+    NAMES collada_dom-sd collada14dom-sd libcollada14dom21-sd
+    PATHS
+    $ENV{COLLADA_DIR}/build/vc8-1.4-d
+    $ENV{COLLADA_DIR}/lib
+    $ENV{COLLADA_DIR}/lib-dbg
+    $ENV{COLLADA_DIR}
+    $ENV{OSGDIR}/lib
+    $ENV{OSGDIR}
+    $ENV{OSG_ROOT}/lib
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/lib
+    /usr/local/lib64
+    /usr/lib
+    /usr/lib64
+    /sw/lib
+    /opt/local/lib
+    /opt/csw/lib
+    /opt/lib
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
+    /usr/freeware/lib64
+)
+
 SET(COLLADA_FOUND "NO")
-IF(COLLADA_LIBRARY AND COLLADA_INCLUDE_DIR)
-    SET(COLLADA_FOUND "YES")
-ENDIF(COLLADA_LIBRARY AND COLLADA_INCLUDE_DIR)
-
-
+IF(COLLADA_DYNAMIC_LIBRARY OR COLLADA_STATIC_LIBRARY)
+    IF   (COLLADA_INCLUDE_DIR)
+        SET(COLLADA_FOUND "YES")
+    ENDIF(COLLADA_INCLUDE_DIR)
+ENDIF(COLLADA_DYNAMIC_LIBRARY OR COLLADA_STATIC_LIBRARY)

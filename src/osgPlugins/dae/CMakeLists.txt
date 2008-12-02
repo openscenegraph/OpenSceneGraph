@@ -21,30 +21,27 @@ SET(TARGET_H
     domSourceReader.h
 )
 
-OPTION(COLLADA_USE_STATIC "Set to ON to build OpenSceneGraph with static Collada support." OFF)
-#MARK_AS_ADVANCED(COLLADA_USE_STATIC)
+IF   (COLLADA_STATIC_LIBRARY)
+    SET(COLLADA_USE_STATIC "YES")
+ELSE(COLLADA_STATIC_LIBRARY)
+    SET(COLLADA_USE_STATIC "NO")
+ENDIF(COLLADA_STATIC_LIBRARY)
+
+IF   (COLLADA_DYNAMIC_LIBRARY OR COLLADA_STATIC_LIBRARY)
+    OPTION(COLLADA_USE_STATIC "Set to ON to build OpenSceneGraph with static Collada support." OFF)
+    MARK_AS_ADVANCED(COLLADA_USE_STATIC)
+ENDIF(COLLADA_DYNAMIC_LIBRARY OR COLLADA_STATIC_LIBRARY)
 
 IF    (WIN32)
 
   IF   (COLLADA_USE_STATIC)
-    SET(TARGET_EXTERNAL_LIBRARIES libxml2 pcrecpp-d pcre-d)
+    SET(TARGET_EXTERNAL_LIBRARIES libxml2 pcrecpp pcre)
   ELSE (COLLADA_USE_STATIC)
-#    ADD_DEFINITIONS(-DDOM_DYNAMIC)
-    SET(TARGET_EXTERNAL_LIBRARIES libxml2 pcrecpp-d pcre-d)
+    ADD_DEFINITIONS(-DDOM_DYNAMIC)
   ENDIF(COLLADA_USE_STATIC)
 
 ELSE (WIN32)
 
-    # SET(TARGET_EXTERNAL_LIBRARIES collada_dom collada_dae collada_STLDatabase collada_LIBXMLPlugin collada_stdErrPlugin xml2 )
-    # JC hack STLDatabase and XMLPlugin are statically linked on Linux
-    #
-    # This works in "shared" mode
-    # SET(TARGET_EXTERNAL_LIBRARIES collada_dom_shared collada_dae_shared xml2 )
-    #
-    # This works in "static" mode
-    # SET(TARGET_EXTERNAL_LIBRARIES collada_dom collada_dae xml2 pcrecpp)
-    #
-    # ...so what we need is a conditional way to properly SET() the right one.
     IF(COLLADA_USE_STATIC)
         SET(TARGET_EXTERNAL_LIBRARIES collada14dom xml2 pcrecpp)
     ELSE(COLLADA_USE_STATIC)
@@ -53,7 +50,12 @@ ELSE (WIN32)
 
 ENDIF(WIN32)
 
-SET(TARGET_LIBRARIES_VARS COLLADA_LIBRARY)
+IF   (COLLADA_USE_STATIC)
+    SET(TARGET_LIBRARIES_VARS COLLADA_STATIC_LIBRARY)
+ELSE (COLLADA_USE_STATIC)
+    SET(TARGET_LIBRARIES_VARS COLLADA_DYNAMIC_LIBRARY)
+ENDIF(COLLADA_USE_STATIC)
+ 
 SET(TARGET_ADDED_LIBRARIES osgSim ) 
 
 #### end var setup  ###

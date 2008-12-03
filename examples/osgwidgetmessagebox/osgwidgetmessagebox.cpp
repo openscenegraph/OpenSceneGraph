@@ -118,6 +118,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
     osg::ref_ptr<osgWidget::Frame> _frame;
     float _width;
     float _height;
+    osg::Matrix _matrix;
     EventOK(osgWidget::Frame* frame) : osgWidget::Callback(osgWidget::EVENT_ALL), _frame(frame) 
     {
         _motionOver = WidgetMotion(0.0, 0.4);
@@ -138,6 +139,8 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
             _width = _frame->getWidth();
             _height = _frame->getHeight();
             _motionOver.reset();
+            _matrix = _frame->getMatrix();
+            _frame->setMatrix(osg::Matrix::scale(2, 2, 1) * _frame->getMatrix());
             std::cout << "enter" << std::endl;
             return true;
         }
@@ -145,6 +148,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
         {
             _over = false;
             _motionLeave.reset();
+            _frame->setMatrix(_matrix);
             std::cout << "leave" << std::endl;
             return true;
         }

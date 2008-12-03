@@ -140,7 +140,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
             _height = _frame->getHeight();
             _motionOver.reset();
             _matrix = _frame->getMatrix();
-            _frame->setMatrix(osg::Matrix::scale(2, 2, 1) * _frame->getMatrix());
+            _frame->setMatrix(osg::Matrix::scale(2, 2, 1) * _frame->getMatrix() );
             std::cout << "enter" << std::endl;
             return true;
         }
@@ -223,6 +223,7 @@ osgWidget::Frame* MessageBox::createButtonOk(const std::string& theme,
     box->getBackground()->setColor(colorBack);
     frame->getEmbeddedWindow()->setWindow(box);
     box->setEventMask(osgWidget::EVENT_NONE);
+    frame->setVisibilityMode(osgWidget::Window::VM_ENTIRE);
 
     frame->resizeFrame(box->getWidth(), box->getHeight());
     frame->resizeAdd(0, 0);

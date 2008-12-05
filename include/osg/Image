@@ -51,6 +51,10 @@
 #endif
 
 
+#ifndef GL_ABGR_EXT
+#define GL_ABGR_EXT                         0x8000
+#endif
+
 namespace osg {
 
 // forward declare

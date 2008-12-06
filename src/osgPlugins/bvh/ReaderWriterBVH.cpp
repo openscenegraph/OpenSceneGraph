@@ -79,7 +79,7 @@ public:
                     osg::ref_ptr<osgAnimation::Bone> bone = new osgAnimation::Bone( parent->getName()+"End" );
                     bone->setBindMatrixInBoneSpace( osg::Matrix::translate(offsetEndSite) );
                     bone->setDataVariance( osg::Object::DYNAMIC );
-                    parent->addChild( bone );
+                    parent->addChild( bone.get() );
 
                     if ( _drawingFlag )
                         parent->addChild( createRefGeometry(offsetEndSite, 0.5).get() );
@@ -98,7 +98,7 @@ public:
             osgAnimation::AnimationUpdateCallback* cb =
                 dynamic_cast<osgAnimation::AnimationUpdateCallback*>( bone->getUpdateCallback() );
             if ( cb ) cb->setName( bone->getName() );
-            parent->addChild( bone );
+            parent->addChild( bone.get() );
             _joints.push_back( JointNode(bone, 0) );
 
             int entry = fr[1].getNoNestedBrackets();

@@ -60,9 +60,9 @@ class UBrowserManager : public osgWidget::BrowserManager
             if (itr != _ubrowserImageList.end()) _ubrowserImageList.erase(itr);
         }
 
-        void sendKeyEvent(UBrowserImage* image, int key, bool keyDown);
+        bool sendKeyEvent(UBrowserImage* image, int key, bool keyDown);
         
-        void sendPointerEvent(UBrowserImage* image, int x, int y, int buttonMask);
+        bool sendPointerEvent(UBrowserImage* image, int x, int y, int buttonMask);
 
         void navigateTo(UBrowserImage* image, const std::string& page);
 
@@ -108,9 +108,9 @@ class UBrowserImage : public osgWidget::BrowserImage, public LLEmbeddedBrowserWi
 
         const std::string& getHomeURL() const { return _homeURL; }
 
-        virtual void sendPointerEvent(int x, int y, int buttonMask);
+        virtual bool sendPointerEvent(int x, int y, int buttonMask);
 
-        virtual void sendKeyEvent(int key, bool keyDown);
+        virtual bool sendKeyEvent(int key, bool keyDown);
 
         virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp);
 

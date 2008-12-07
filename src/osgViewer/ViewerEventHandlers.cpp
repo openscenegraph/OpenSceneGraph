@@ -705,8 +705,7 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
             int x,y;
             if (mousePosition(view, nv, ea, x, y))
             {
-                _image->sendPointerEvent(x, y, ea.getButtonMask());
-                return true;
+                return _image->sendPointerEvent(x, y, ea.getButtonMask());
             }
             break;
         }
@@ -719,9 +718,7 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
         
             if (sendKeyEvent)
             {
-                _image->sendKeyEvent(ea.getKey(), ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN);
-
-                return true;
+                return _image->sendKeyEvent(ea.getKey(), ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN);
             }          
         }
 

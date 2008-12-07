@@ -160,14 +160,14 @@ class PopplerPdfImage : public osgWidget::PdfImage
         
         virtual bool sendKeyEvent(int key, bool keyDown)
         {
-            if (keyDown)
+            if (keyDown && key!=0)
             {
-                if (key=='n') 
+                if (key==_nextPageKeyEvent) 
                 {
                     next();
                     return true;
                 }
-                else if (key=='p')
+                else if (key==_previousPageKeyEvent)
                 {
                     previous();
                     return true;

@@ -478,7 +478,7 @@ struct PointerEventOperation : public osg::Operation
     int _buttonDelta;
 };
 
-void UBrowserManager::sendPointerEvent(UBrowserImage* image, int x, int y, int buttonMask)
+bool UBrowserManager::sendPointerEvent(UBrowserImage* image, int x, int y, int buttonMask)
 {
     int deltaButton = (buttonMask&1) - (_previousButtonMask&1);
     _previousButtonMask = buttonMask;
@@ -486,6 +486,8 @@ void UBrowserManager::sendPointerEvent(UBrowserImage* image, int x, int y, int b
     _thread->add(new PointerEventOperation(image, x, y, deltaButton));
     
     active(image);
+    
+    return true;
 }
 
 
@@ -509,15 +511,17 @@ struct KeyEventOperation : public osg::Operation
     bool _isUnicode;
 };
 
-void UBrowserManager::sendKeyEvent(UBrowserImage* image, int key, bool keyDown)
+bool UBrowserManager::sendKeyEvent(UBrowserImage* image, int key, bool keyDown)
 {
-    if (!keyDown) return;
+    if (!keyDown) return false;
 
     KeyMap::const_iterator itr = _keyMap.find(key);    
     if (_keyMap.find(key)==_keyMap.end()) _thread->add(new KeyEventOperation(image, key, true));
     else _thread->add(new KeyEventOperation(image, itr->second, false));
 
     active(image);
+    
+    return true;
 }
 
 
@@ -582,14 +586,14 @@ UBrowserImage::~UBrowserImage()
     _manager->unregisterUBrowserImage(this);
 }
 
-void UBrowserImage::sendPointerEvent(int x, int y, int buttonMask)
+bool UBrowserImage::sendPointerEvent(int x, int y, int buttonMask)
 {
-    _manager->sendPointerEvent(this, x, y, buttonMask);
+    return _manager->sendPointerEvent(this, x, y, buttonMask);
 }
 
-void UBrowserImage::sendKeyEvent(int key, bool keyDown)
+bool UBrowserImage::sendKeyEvent(int key, bool keyDown)
 {
-    _manager->sendKeyEvent(this, key, keyDown);
+    return _manager->sendKeyEvent(this, key, keyDown);
 }
 
 void UBrowserImage::setFrameLastRendered(const osg::FrameStamp*)

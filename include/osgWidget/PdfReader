@@ -1,0 +1,116 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGWIDGET_PDFREADER
+#define OSGWIDGET_PDFREADER
+
+#include <osg/Image>
+#include <osg/Geode>
+
+#include <osgWidget/Export>
+
+namespace osgWidget {
+
+
+/** Hints structure that can be passed to PdfReader and VncClient classes to help guide them on what geometry to build.*/
+struct GeometryHints
+{
+    enum AspectRatioPolicy
+    {
+        RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO,
+        RESIZE_WIDTH_TO_MAINTAINCE_ASPECT_RATIO,
+        IGNORE_DOCUMENT_ASPECT_RATIO,
+    };
+
+    GeometryHints():
+        position(0.0f,0.0f,0.0f),
+        widthVec(1.0f,0.0f,0.0f),
+        heightVec(0.0f,1.0f,0.0f),
+        aspectRatioPolicy(RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO) {}
+
+    GeometryHints(const osg::Vec3& pos,
+                  const osg::Vec3& wVec,
+                  const osg::Vec3& hVec, 
+                  AspectRatioPolicy asp=RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO):
+        position(pos),
+        widthVec(wVec),
+        heightVec(hVec),
+        aspectRatioPolicy(asp) {}
+
+    osg::Vec3 position;
+    osg::Vec3 widthVec;
+    osg::Vec3 heightVec;
+    AspectRatioPolicy aspectRatioPolicy;
+
+};
+
+/** Pure virtual base class for interfacing with implementation of PDF reader.*/
+class PdfImage : public osg::Image
+{
+    public:
+    
+        PdfImage():_pageNum(0) {}
+    
+        int getPageNum() const { return _pageNum; }
+    
+	virtual int getNumOfPages() = 0;
+        
+        virtual bool page(int pageNum) = 0;
+
+        bool previous()
+        {
+            return page(_pageNum-1);
+        }
+        
+        bool next()
+        { 
+             return page(_pageNum+1);
+        }
+        
+
+    protected:
+    
+        virtual ~PdfImage() {}
+        
+        int _pageNum;
+    
+};
+
+
+/** Convinience class that provides a interactive quad that can be placed directly in the scene.*/
+class OSGWIDGET_EXPORT PdfReader : public osg::Geode
+{
+    public:
+    
+        PdfReader() {}
+
+        PdfReader(const std::string& filename, GeometryHints hints = GeometryHints());
+        
+        bool assign(PdfImage* pdfImage, GeometryHints hints = GeometryHints());
+
+        bool open(const std::string& filename, GeometryHints hints = GeometryHints());
+
+        bool page(int pageNum);
+
+        bool previous();
+        
+        bool next();
+
+    protected:
+    
+        osg::ref_ptr<PdfImage> _pdfImage;
+};
+
+}
+
+#endif

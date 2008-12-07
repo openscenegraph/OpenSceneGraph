@@ -59,7 +59,10 @@ class PdfImage : public osg::Image
 {
     public:
     
-        PdfImage():_pageNum(0) {}
+        PdfImage():
+            _pageNum(0),
+            _nextPageKeyEvent('n'),
+            _previousPageKeyEvent('p') {}
     
         int getPageNum() const { return _pageNum; }
     
@@ -76,13 +79,20 @@ class PdfImage : public osg::Image
         { 
              return page(_pageNum+1);
         }
-        
+
+        void setNextPageKeyEvent(int key) { _nextPageKeyEvent = key; }
+        int getNextPageKeyEvent() const { return _nextPageKeyEvent; }
+
+        void setPreviousPageKeyEvent(int key) { _previousPageKeyEvent = key; }
+        int getPreviousPageKeyEvent() const { return _previousPageKeyEvent; }
 
     protected:
     
         virtual ~PdfImage() {}
         
         int _pageNum;
+        int _nextPageKeyEvent;
+        int _previousPageKeyEvent;
     
 };
 

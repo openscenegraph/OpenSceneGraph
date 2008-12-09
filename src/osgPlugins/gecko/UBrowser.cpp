@@ -240,11 +240,16 @@ struct UpdateOperation : public osg::Operation
         if (!image) return false;
     
         double deltaTime = image->getTimeOfLastRender() - image->getTimeOfLastUpdate();
+
+//        osg::notify(osg::NOTICE)<<"deltaTime = "<<deltaTime<<std::endl;
+//        osg::notify(osg::NOTICE)<<"    image->getTimeOfLastRender() = "<<image->getTimeOfLastRender()<<std::endl;
+//        osg::notify(osg::NOTICE)<<"    image->getTimeOfLastUpdate() = "<<image->getTimeOfLastUpdate()<<std::endl;
+
         if (deltaTime<0.0)
         {
             return false;
         }
-    
+
         int id = image->getBrowserWindowId();
 
         if (id==0)
@@ -282,6 +287,8 @@ struct UpdateOperation : public osg::Operation
 
             GLint internalFormat = LLMozLib::getInstance()->getBrowserDepth( id ) == 3 ? GL_RGB : GL_RGBA;
             GLenum pixelFormat = LLMozLib::getInstance()->getBrowserDepth( id ) == 3 ? GL_BGR_EXT : GL_BGRA_EXT;
+
+            // osg::notify(osg::NOTICE)<<"  doing image update "<<std::endl;
 
             image->setImage(width,height,1, internalFormat, pixelFormat, GL_UNSIGNED_BYTE, 
                      (unsigned char*)LLMozLib::getInstance()->getBrowserWindowPixels( id ),
@@ -599,7 +606,6 @@ bool UBrowserImage::sendKeyEvent(int key, bool keyDown)
 void UBrowserImage::setFrameLastRendered(const osg::FrameStamp*)
 {
     _timeOfLastRender = time();
-
     _manager->active(this);
 }
 

@@ -93,7 +93,10 @@ bool Browser::assign(BrowserImage* browserImage, const GeometryHints& hints)
                 texture,
                 osg::StateAttribute::ON);
 
-    pictureQuad->setEventCallback(new osgViewer::InteractiveImageHandler(_browserImage.get()));
+    osg::ref_ptr<osgViewer::InteractiveImageHandler> handler = new osgViewer::InteractiveImageHandler(_browserImage.get());
+
+    pictureQuad->setEventCallback(handler.get());
+    pictureQuad->setCullCallback(handler.get());
 
     addDrawable(pictureQuad);
 

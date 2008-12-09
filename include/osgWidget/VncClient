@@ -45,11 +45,11 @@ class OSGWIDGET_EXPORT VncClient : public osg::Geode
     
         VncClient() {}
 
-        VncClient(const std::string& hostname, GeometryHints hints = GeometryHints());
+        VncClient(const std::string& hostname, const GeometryHints& hints = GeometryHints());
         
-        bool assign(VncImage* vncImage, GeometryHints hints = GeometryHints());
+        bool assign(VncImage* vncImage, const GeometryHints& hints = GeometryHints());
         
-        bool connect(const std::string& hostname, GeometryHints hints = GeometryHints());
+        bool connect(const std::string& hostname, const GeometryHints& hints = GeometryHints());
 
         void close();
 

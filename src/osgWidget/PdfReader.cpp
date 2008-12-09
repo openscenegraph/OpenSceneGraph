@@ -21,12 +21,12 @@
 
 using namespace osgWidget;
 
-PdfReader::PdfReader(const std::string& filename, GeometryHints hints)
+PdfReader::PdfReader(const std::string& filename, const GeometryHints& hints)
 {
     open(filename, hints);
 }
         
-bool PdfReader::assign(PdfImage* pdfImage, GeometryHints hints)
+bool PdfReader::assign(PdfImage* pdfImage, const GeometryHints& hints)
 {
     if (!pdfImage) return false;
 
@@ -73,7 +73,7 @@ bool PdfReader::assign(PdfImage* pdfImage, GeometryHints hints)
     return true;
 }
 
-bool PdfReader::open(const std::string& filename, GeometryHints hints)
+bool PdfReader::open(const std::string& filename, const GeometryHints& hints)
 {
     osg::ref_ptr<osg::Image> image = osgDB::readImageFile(filename);
     return assign(dynamic_cast<PdfImage*>(image.get()), hints);

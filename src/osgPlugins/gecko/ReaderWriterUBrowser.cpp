@@ -72,8 +72,10 @@ class ReaderWriterUBrowser : public osgDB::ReaderWriter
                 osgWidget::BrowserManager::instance()->init(osgWidget::BrowserManager::instance()->getApplication());
             }
 
+            unsigned int width = 1024;
+            unsigned int height = 1024;
             
-            return osgWidget::BrowserManager::instance()->createBrowserImage(osgDB::getNameLessExtension(file));
+            return osgWidget::BrowserManager::instance()->createBrowserImage(osgDB::getNameLessExtension(file), width, height);
         }
 
         
@@ -82,38 +84,15 @@ class ReaderWriterUBrowser : public osgDB::ReaderWriter
             osgDB::ReaderWriter::ReadResult result = readImage(fileName, options);
             if (!result.validImage()) return result;
             
-            osg::Image* image = result.getImage();
-            
-            bool xyPlane = false;
-            bool flip = image->getOrigin()==osg::Image::TOP_LEFT;
-            osg::Vec3 origin = osg::Vec3(0.0f,0.0f,0.0f);
-            float width = 1.0;
-            float height = float(image->t())/float(image->s());
-            osg::Vec3 widthAxis = osg::Vec3(width,0.0f,0.0f);
-            osg::Vec3 heightAxis = xyPlane ? osg::Vec3(0.0f,height,0.0f) : osg::Vec3(0.0f,0.0f,height);
-
-            osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(origin, widthAxis, heightAxis,
-                                               0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
-
-            osg::Texture2D* texture = new osg::Texture2D(image);
-            texture->setResizeNonPowerOfTwoHint(false);
-            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-            texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
-            texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
-
-            pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
-                        texture,
-                        osg::StateAttribute::ON);
-
-            osg::ref_ptr<osgViewer::InteractiveImageHandler> callback = new osgViewer::InteractiveImageHandler(image);
-
-            pictureQuad->setEventCallback(callback.get());
-            pictureQuad->setCullCallback(callback.get());
-            
-            osg::Geode* geode = new osg::Geode;
-            geode->addDrawable(pictureQuad);
-
-            return geode;
+            osg::ref_ptr<osgWidget::Browser> browser = new osgWidget::Browser();
+            if (browser->assign(dynamic_cast<osgWidget::BrowserImage*>(result.getImage())))
+            {
+                return browser.release();
+            }
+            else
+            {
+                return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
+            }
         }
 
         bool _initialized;

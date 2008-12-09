@@ -37,24 +37,35 @@ struct GeometryHints
         widthVec(1.0f,0.0f,0.0f),
         heightVec(0.0f,1.0f,0.0f),
         backgroundColor(1.0f,1.0f,1.0f,1.0f),
-        aspectRatioPolicy(RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO) {}
+        aspectRatioPolicy(RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO),
+        widthResolution(1024),
+        heightResolution(1024) {}
 
     GeometryHints(const osg::Vec3& pos,
                   const osg::Vec3& wVec,
                   const osg::Vec3& hVec, 
                   const osg::Vec4& bColor,
-                  AspectRatioPolicy asp=RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO):
+                  AspectRatioPolicy asp=RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO,
+                  unsigned int wRes=1024,
+                  unsigned int hRes=1024):
         position(pos),
         widthVec(wVec),
         heightVec(hVec),
         backgroundColor(bColor),
-        aspectRatioPolicy(asp) {}
+        aspectRatioPolicy(asp),
+        widthResolution(wRes),
+        heightResolution(hRes) {}
 
-    osg::Vec3 position;
-    osg::Vec3 widthVec;
-    osg::Vec3 heightVec;
-    osg::Vec4 backgroundColor;
-    AspectRatioPolicy aspectRatioPolicy;
+    osg::Vec3           position;
+    osg::Vec3           widthVec;
+    osg::Vec3           heightVec;
+    
+    osg::Vec4           backgroundColor;
+    
+    AspectRatioPolicy   aspectRatioPolicy;
+    
+    unsigned int        widthResolution;
+    unsigned int        heightResolution;
 
 };
 
@@ -114,11 +125,11 @@ class OSGWIDGET_EXPORT PdfReader : public osg::Geode
     
         PdfReader() {}
 
-        PdfReader(const std::string& filename, GeometryHints hints = GeometryHints());
+        PdfReader(const std::string& filename, const GeometryHints& hints = GeometryHints());
         
-        bool assign(PdfImage* pdfImage, GeometryHints hints = GeometryHints());
+        bool assign(PdfImage* pdfImage, const GeometryHints& hints = GeometryHints());
 
-        bool open(const std::string& filename, GeometryHints hints = GeometryHints());
+        bool open(const std::string& filename, const GeometryHints& hints = GeometryHints());
 
         bool page(int pageNum);
 

@@ -33,6 +33,10 @@ class OSG_EXPORT Switch : public Group
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         Switch(const Switch&,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
+        virtual Switch* asSwitch() { return this; }
+        virtual const Switch* asSwitch() const { return this; }
+
+
         META_Node(osg, Switch);
 
         virtual void traverse(NodeVisitor& nv);

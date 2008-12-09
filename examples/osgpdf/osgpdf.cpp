@@ -20,6 +20,7 @@ int main(int argc,char** argv)
     osgWidget::GeometryHints hints(osg::Vec3(1.0f,0.0f,0.0f),
                                    osg::Vec3(1.0f,0.0f,0.0f),
                                    osg::Vec3(0.0f,0.0f,1.0f),
+                                   osg::Vec4(1.0f,1.0f,1.0f,1.0f),
                                    osgWidget::GeometryHints::RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO);
 
     osg::ref_ptr<osg::Group> group = new osg::Group;

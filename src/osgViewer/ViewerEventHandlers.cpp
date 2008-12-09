@@ -676,7 +676,7 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
             x = int( tc.x() );
             y = int( tc.y() );
         }
-        else
+        else if (_image.valid())
         {
             x = int( float(_image->s()) * tc.x() );
             y = int( float(_image->t()) * tc.y() );
@@ -693,6 +693,8 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
 bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv)
 {
     if (ea.getHandled()) return false;
+    
+    if (!_image) return false;
 
     switch(ea.getEventType())
     {

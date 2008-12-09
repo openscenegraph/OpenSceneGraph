@@ -36,20 +36,24 @@ struct GeometryHints
         position(0.0f,0.0f,0.0f),
         widthVec(1.0f,0.0f,0.0f),
         heightVec(0.0f,1.0f,0.0f),
+        backgroundColor(1.0f,1.0f,1.0f,1.0f),
         aspectRatioPolicy(RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO) {}
 
     GeometryHints(const osg::Vec3& pos,
                   const osg::Vec3& wVec,
                   const osg::Vec3& hVec, 
+                  const osg::Vec4& bColor,
                   AspectRatioPolicy asp=RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO):
         position(pos),
         widthVec(wVec),
         heightVec(hVec),
+        backgroundColor(bColor),
         aspectRatioPolicy(asp) {}
 
     osg::Vec3 position;
     osg::Vec3 widthVec;
     osg::Vec3 heightVec;
+    osg::Vec4 backgroundColor;
     AspectRatioPolicy aspectRatioPolicy;
 
 };
@@ -60,10 +64,14 @@ class PdfImage : public osg::Image
     public:
     
         PdfImage():
+            _backgroundColor(1.0f,1.0f,1.0f,1.0f),
             _pageNum(0),
             _nextPageKeyEvent('n'),
             _previousPageKeyEvent('p') {}
     
+        void setBackgroundColor(const osg::Vec4& backgroundColor) { _backgroundColor = backgroundColor; }
+        const osg::Vec4& getBackgroundColor() const { return _backgroundColor; }
+
         int getPageNum() const { return _pageNum; }
     
 	virtual int getNumOfPages() = 0;
@@ -85,11 +93,13 @@ class PdfImage : public osg::Image
 
         void setPreviousPageKeyEvent(int key) { _previousPageKeyEvent = key; }
         int getPreviousPageKeyEvent() const { return _previousPageKeyEvent; }
-
+        
     protected:
     
         virtual ~PdfImage() {}
         
+        osg::Vec4 _backgroundColor;
+
         int _pageNum;
         int _nextPageKeyEvent;
         int _previousPageKeyEvent;

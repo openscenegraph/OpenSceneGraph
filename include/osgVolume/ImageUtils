@@ -129,6 +129,9 @@ extern OSGVOLUME_EXPORT bool offsetAndScaleImage(osg::Image* image, const osg::V
 /** Compute source image to destination image.*/
 extern OSGVOLUME_EXPORT bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int width, int height, int depth,
                                        osg::Image* destImage, int dest_s, int dest_t, int dest_r, bool doRescale = false);
+
+/** Compute the min max colour values in the image.*/
+extern OSGVOLUME_EXPORT bool clearImageToColor(osg::Image* image, const osg::Vec4& colour);
 }
 
 

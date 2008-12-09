@@ -31,6 +31,7 @@ bool PdfReader::assign(PdfImage* pdfImage, GeometryHints hints)
     if (!pdfImage) return false;
 
     _pdfImage = pdfImage;
+    _pdfImage->setBackgroundColor(hints.backgroundColor);
 
     bool flip = _pdfImage->getOrigin()==osg::Image::TOP_LEFT;
 

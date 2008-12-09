@@ -14,8 +14,7 @@
 #ifndef OSGWIDGET_BROWSER
 #define OSGWIDGET_BROWSER
 
-#include <osg/Image>
-#include <osgWidget/Export>
+#include <osgWidget/PdfReader>
 
 namespace osgWidget {
 
@@ -33,7 +32,6 @@ class OSGWIDGET_EXPORT BrowserManager : public osg::Object
         void setApplication(const std::string& application) { _application = application; }
         const std::string& getApplication() const { return _application; }
 
-        virtual BrowserImage* createBrowserImage(const std::string& url);
         virtual BrowserImage* createBrowserImage(const std::string& url, int width, int height);
         
     protected:
@@ -48,20 +46,42 @@ class OSGWIDGET_EXPORT BrowserManager : public osg::Object
 };
 
 
-class OSGWIDGET_EXPORT BrowserImage : public osg::Image
+/** Pure virtual base class for that provides the browser inteface for integration with 3rd party implementations.
+  * Implementation of BrowserImage are provide via the gecko plugin.*/
+class BrowserImage : public osg::Image
 {
     public:
     
-        BrowserImage();
+        BrowserImage() {}
     
         virtual void navigateTo(const std::string& url) = 0;
 
     protected:
     
-        virtual ~BrowserImage();  
+        virtual ~BrowserImage() {}
     
 };
 
+
+/** Convinience class that provides a interactive quad that can be placed directly in the scene.*/
+class OSGWIDGET_EXPORT Browser : public osg::Geode
+{
+    public:
+    
+        Browser() {}
+
+        Browser(const std::string& url, const GeometryHints& hints = GeometryHints());
+        
+        bool assign(BrowserImage* browserImage, const GeometryHints& hints = GeometryHints());
+
+        bool open(const std::string& url, const GeometryHints& hints = GeometryHints());
+
+        void navigateTo(const std::string& url);
+
+    protected:
+    
+        osg::ref_ptr<BrowserImage> _browserImage;
+};
 
 }
 

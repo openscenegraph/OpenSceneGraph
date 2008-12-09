@@ -17,12 +17,12 @@
 
 using namespace osgWidget;
 
-VncClient::VncClient(const std::string& hostname, GeometryHints hints)
+VncClient::VncClient(const std::string& hostname, const GeometryHints& hints)
 {
     connect(hostname, hints);
 }
 
-bool VncClient::assign(VncImage* vncImage, GeometryHints hints)
+bool VncClient::assign(VncImage* vncImage, const GeometryHints& hints)
 {
     if (!vncImage) return false;
     
@@ -30,7 +30,25 @@ bool VncClient::assign(VncImage* vncImage, GeometryHints hints)
 
     bool flip = _vncImage->getOrigin()==osg::Image::TOP_LEFT;
 
-    osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(hints.position, hints.widthVec, hints.heightVec,
+    float aspectRatio = (_vncImage->t()>0 && _vncImage->s()>0) ? float(_vncImage->t()) / float(_vncImage->s()) : 1.0;
+
+    osg::Vec3 widthVec(hints.widthVec);
+    osg::Vec3 heightVec(hints.heightVec);
+    
+    switch(hints.aspectRatioPolicy)
+    {
+        case(GeometryHints::RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO):
+            heightVec *= aspectRatio;
+            break;
+        case(GeometryHints::RESIZE_WIDTH_TO_MAINTAINCE_ASPECT_RATIO):
+            widthVec /= aspectRatio;
+            break;
+        default:
+            // no need to adjust aspect ratio
+            break;
+    }
+    
+    osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(hints.position, widthVec, heightVec,
                                        0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
 
     osg::Texture2D* texture = new osg::Texture2D(_vncImage.get());
@@ -50,10 +68,10 @@ bool VncClient::assign(VncImage* vncImage, GeometryHints hints)
     return true;
 }
 
-bool VncClient::connect(const std::string& hostname, GeometryHints hints)
+bool VncClient::connect(const std::string& hostname, const GeometryHints& hints)
 {
     osg::ref_ptr<osg::Image> image = osgDB::readImageFile(hostname+".vnc");
-    return assign(dynamic_cast<VncImage*>(image.get()));
+    return assign(dynamic_cast<VncImage*>(image.get()), hints);
 }
 
 void VncClient::close()

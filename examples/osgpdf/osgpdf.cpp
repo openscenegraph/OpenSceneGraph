@@ -1,14 +1,5 @@
-#include <osg/Image>
-#include <osg/Geometry>
-#include <osg/Texture2D>
-#include <osg/io_utils>
-
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
-
-#include <osgDB/FileUtils>
-#include <osgDB/FileNameUtils>
-#include <osgDB/ReadFile>
 
 #include <osgWidget/PdfReader>
 
@@ -17,7 +8,7 @@ int main(int argc,char** argv)
     osg::ArgumentParser arguments(&argc, argv);
     osgViewer::Viewer viewer(arguments);
 
-    osgWidget::GeometryHints hints(osg::Vec3(1.0f,0.0f,0.0f),
+    osgWidget::GeometryHints hints(osg::Vec3(0.0f,0.0f,0.0f),
                                    osg::Vec3(1.0f,0.0f,0.0f),
                                    osg::Vec3(0.0f,0.0f,1.0f),
                                    osg::Vec4(1.0f,1.0f,1.0f,1.0f),

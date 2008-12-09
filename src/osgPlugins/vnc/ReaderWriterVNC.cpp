@@ -356,7 +356,6 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
             osgDB::ReaderWriter::ReadResult result = readImage(fileName, options);
             if (!result.validImage()) return result;
             
-
             osg::ref_ptr<osgWidget::VncClient> vncClient = new osgWidget::VncClient();
             if (vncClient->assign(dynamic_cast<osgWidget::VncImage*>(result.getImage())))
             {

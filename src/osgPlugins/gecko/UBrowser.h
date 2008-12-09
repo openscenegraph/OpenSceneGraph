@@ -152,7 +152,7 @@ class UBrowserImage : public osgWidget::BrowserImage, public LLEmbeddedBrowserWi
         // virtual
         void onStatusTextChange( const EventType& eventIn )
         {
-            osg::notify(osg::NOTICE) << "Event: status updated to " << eventIn.getStringValue() << std::endl;
+            osg::notify(osg::INFO) << "Event: status updated to " << eventIn.getStringValue() << std::endl;
         };
 
         ////////////////////////////////////////////////////////////////////////////////

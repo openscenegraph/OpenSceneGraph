@@ -19,7 +19,7 @@ bool Shader_readLocalData(Object& obj, Input& fr);
 bool Shader_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_ShaderProxy
+REGISTER_DOTOSGWRAPPER(Shader)
 (
     new osg::Shader,
     "Shader",

@@ -12,7 +12,7 @@ bool TexMat_readLocalData(Object& obj, Input& fr);
 bool TexMat_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TexMatProxy
+REGISTER_DOTOSGWRAPPER(TexMat)
 (
     new osg::TexMat,
     "TexMat",

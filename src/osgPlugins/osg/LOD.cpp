@@ -13,7 +13,7 @@ bool LOD_readLocalData(Object& obj, Input& fr);
 bool LOD_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_LODProxy
+REGISTER_DOTOSGWRAPPER(LOD)
 (
     new osg::LOD,
     "LOD",

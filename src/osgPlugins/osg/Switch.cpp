@@ -12,7 +12,7 @@ bool Switch_readLocalData(Object& obj, Input& fr);
 bool Switch_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_SwitchProxy
+REGISTER_DOTOSGWRAPPER(Switch)
 (
     new osg::Switch,
     "Switch",

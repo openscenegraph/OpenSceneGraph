@@ -22,7 +22,7 @@ const char* Texture2D_getInternalFormatModeStr(Texture2D::InternalFormatMode mod
 bool Texture2D_matchInternalFormatStr(const char* str,int& value);
 const char* Texture2D_getInternalFormatStr(int value);
 
-RegisterDotOsgWrapperProxy g_OldTextureProxy
+REGISTER_DOTOSGWRAPPER(OldTexture)
 (
     new osg::Texture2D,
     "Texture",
@@ -32,7 +32,7 @@ RegisterDotOsgWrapperProxy g_OldTextureProxy
 );
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_Texture2DProxy
+REGISTER_DOTOSGWRAPPER(Texture2D)
 (
     new osg::Texture2D,
     "Texture2D",

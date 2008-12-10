@@ -12,7 +12,7 @@ bool Sequence_readLocalData(Object& obj, Input& fr);
 bool Sequence_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_SequenceProxy
+REGISTER_DOTOSGWRAPPER(Sequence)
 (
     new osg::Sequence,
     "Sequence",

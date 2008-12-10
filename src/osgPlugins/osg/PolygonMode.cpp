@@ -12,7 +12,7 @@ bool PolygonMode_readLocalData(Object& obj, Input& fr);
 bool PolygonMode_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_PolygonModeProxy
+REGISTER_DOTOSGWRAPPER(PolygonMode)
 (
     new osg::PolygonMode,
     "PolygonMode",

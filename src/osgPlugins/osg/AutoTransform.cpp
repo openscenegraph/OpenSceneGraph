@@ -13,7 +13,7 @@ bool AutoTransform_readLocalData(Object& obj, Input& fr);
 bool AutoTransform_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_AutoTransformProxy
+REGISTER_DOTOSGWRAPPER(AutoTransform)
 (
     new osg::AutoTransform,
     "AutoTransform",

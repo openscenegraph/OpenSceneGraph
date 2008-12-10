@@ -18,7 +18,7 @@ bool ProxyNode_readLocalData(Object& obj, Input& fr);
 bool ProxyNode_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_ProxyNodeProxy
+REGISTER_DOTOSGWRAPPER(ProxyNode)
 (
     new osg::ProxyNode,
     "ProxyNode",

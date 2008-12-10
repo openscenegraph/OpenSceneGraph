@@ -14,7 +14,7 @@ bool LineStipple_writeLocalData(const Object& obj, Output& fw);
 
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_LineStippleProxy
+REGISTER_DOTOSGWRAPPER(LineStipple)
 (
     new osg::LineStipple,
     "LineStipple",

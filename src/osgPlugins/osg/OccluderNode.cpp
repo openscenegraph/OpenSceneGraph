@@ -12,7 +12,7 @@ bool OccluderNode_readLocalData(Object& obj, Input& fr);
 bool OccluderNode_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_OccluderNodeProxy
+REGISTER_DOTOSGWRAPPER(OccluderNode)
 (
     new osg::OccluderNode,
     "OccluderNode",

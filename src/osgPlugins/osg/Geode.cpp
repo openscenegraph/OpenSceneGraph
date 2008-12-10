@@ -12,7 +12,7 @@ bool Geode_readLocalData(Object& obj, Input& fr);
 bool Geode_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_GeodeProxy
+REGISTER_DOTOSGWRAPPER(Geode)
 (
     new osg::Geode,
     "Geode",

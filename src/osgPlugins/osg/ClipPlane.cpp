@@ -17,7 +17,7 @@ bool ClipPlane_readLocalData(Object& obj, Input& fr);
 bool ClipPlane_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_ClipPlaneProxy
+REGISTER_DOTOSGWRAPPER(ClipPlane)
 (
     new osg::ClipPlane,
     "ClipPlane",

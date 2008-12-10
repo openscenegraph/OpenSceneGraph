@@ -12,7 +12,7 @@ bool TexGenNode_readLocalData(Object& obj, Input& fr);
 bool TexGenNode_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TexGenNodeProxy
+REGISTER_DOTOSGWRAPPER(TexGenNode)
 (
     new osg::TexGenNode,
     "TexGenNode",

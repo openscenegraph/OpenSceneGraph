@@ -13,9 +13,8 @@ bool Drawable_readLocalData(Object& obj, Input& fr);
 bool Drawable_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_DrawableFuncProxy
-(
-    /*new osg::Drawable*/NULL,
+REGISTER_DOTOSGWRAPPER(Drawable)
+(   NULL,
     "Drawable",
     "Object Drawable",
     &Drawable_readLocalData,

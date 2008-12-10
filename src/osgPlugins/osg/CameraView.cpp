@@ -14,7 +14,7 @@ bool CameraView_readLocalData(Object& obj, Input& fr);
 bool CameraView_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_CameraViewProxy
+REGISTER_DOTOSGWRAPPER(CameraView)
 (
     new osg::CameraView,
     "CameraView",

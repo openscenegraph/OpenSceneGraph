@@ -12,7 +12,7 @@ bool TexEnvFilter_readLocalData(Object& obj, Input& fr);
 bool TexEnvFilter_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TexEnvFilterProxy
+REGISTER_DOTOSGWRAPPER(TexEnvFilter)
 (
     new TexEnvFilter,
     "TexEnvFilter",

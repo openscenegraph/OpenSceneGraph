@@ -12,7 +12,7 @@ using namespace osgDB;
 bool  NodeCallback_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  NodeCallback_writeLocalData(const osg::Object &obj, osgDB::Output &fw); // register the read and write functions with the osgDB::Registry.
 
-osgDB::RegisterDotOsgWrapperProxy  NodeCallback_Proxy
+REGISTER_DOTOSGWRAPPER(NodeCallback)
 (
     new NodeCallback,
     "NodeCallback",

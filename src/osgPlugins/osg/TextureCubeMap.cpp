@@ -14,7 +14,7 @@ bool TextureCubeMap_readLocalData(Object& obj, Input& fr);
 bool TextureCubeMap_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TextureCubeMapProxy
+REGISTER_DOTOSGWRAPPER(TextureCubeMap)
 (
     new osg::TextureCubeMap,
     "TextureCubeMap",

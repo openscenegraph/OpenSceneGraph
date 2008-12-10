@@ -13,7 +13,7 @@ bool EllipsoidModel_readLocalData(Object& obj, Input& fr);
 bool EllipsoidModel_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_EllipsoidModelFuncProxy
+REGISTER_DOTOSGWRAPPER(EllipsoidModel)
 (
     new osg::EllipsoidModel,
     "EllipsoidModel",

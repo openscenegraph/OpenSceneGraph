@@ -336,7 +336,11 @@ struct SetToColourOperator
 
 bool clearImageToColor(osg::Image* image, const osg::Vec4& colour)
 {
+    if (!image) return false;
+
     modifyImage(image, SetToColourOperator(colour));
+    
+    return true;
 }
 
 }

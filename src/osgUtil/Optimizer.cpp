@@ -3668,9 +3668,6 @@ void Optimizer::TextureAtlasBuilder::Atlas::clampToNearestPowerOfTwoSize()
     _height = h;
 }
 
-#if 0
-    #include <osgDB/WriteFile>
-#endif
 
 void Optimizer::TextureAtlasBuilder::Atlas::copySources()
 {
@@ -3832,11 +3829,6 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
 
         }
     }
-
-#if 0
-    osg::notify(osg::NOTICE)<<"Writing atlas image "<<_image->getFileName()<<std::endl;
-    osgDB::writeImageFile(*_image,_image->getFileName());
-#endif
 }
 
 

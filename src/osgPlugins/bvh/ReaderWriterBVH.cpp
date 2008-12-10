@@ -8,7 +8,7 @@
 
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
-#include <osgAnimation/AnimationManager>
+#include <osgAnimation/BasicAnimationManager>
 
 class BvhMotionBuilder : public osg::Referenced
 {
@@ -94,10 +94,8 @@ public:
 
             // Process JOINT section
             osg::ref_ptr<osgAnimation::Bone> bone = new osgAnimation::Bone( fr[1].getStr() );
+            bone->setDefaultUpdateCallback();
             bone->setDataVariance( osg::Object::DYNAMIC );
-            osgAnimation::AnimationUpdateCallback* cb =
-                dynamic_cast<osgAnimation::AnimationUpdateCallback*>( bone->getUpdateCallback() );
-            if ( cb ) cb->setName( bone->getName() );
             parent->addChild( bone );
             _joints.push_back( JointNode(bone, 0) );
 
@@ -185,7 +183,7 @@ public:
         }
     }
 
-    osgAnimation::AnimationManager* buildBVH( std::istream& stream, const osgDB::ReaderWriter::Options* options )
+    osg::Group* buildBVH( std::istream& stream, const osgDB::ReaderWriter::Options* options )
     {
         if ( options )
         {
@@ -197,6 +195,7 @@ public:
         fr.attach( &stream );
 
         osg::ref_ptr<osgAnimation::Skeleton> skelroot = new osgAnimation::Skeleton;
+        skelroot->setDefaultUpdateCallback();
         osg::ref_ptr<osgAnimation::Animation> anim = new osgAnimation::Animation;
 
         while( !fr.eof() )
@@ -234,14 +233,16 @@ public:
         }
 #endif
 
-        osgAnimation::AnimationManager* manager = new osgAnimation::AnimationManager;
-        manager->addChild( skelroot.get() );
+        osg::Group* root = new osg::Group;
+        osgAnimation::BasicAnimationManager* manager = new osgAnimation::BasicAnimationManager;
+        root->addChild( skelroot.get() );
+        root->setUpdateCallback(manager);
         manager->registerAnimation( anim.get() );
         manager->buildTargetReference();
         manager->playAnimation( anim.get() );
 
         _joints.clear();
-        return manager;
+        return root;
     }
 
 protected:

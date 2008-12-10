@@ -25,6 +25,7 @@
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/Skinning>
+#include <osgAnimation/BasicAnimationManager>
 
 osg::Geode* createAxis()
 {
@@ -178,7 +179,9 @@ int main (int argc, char* argv[])
     right0->addChild(right1.get());
     skelroot->addChild(root.get());
 
-    osg::ref_ptr<osgAnimation::AnimationManager> manager = new osgAnimation::AnimationManager;
+    osg::Group* scene = new osg::Group;
+    osg::ref_ptr<osgAnimation::BasicAnimationManager> manager = new osgAnimation::BasicAnimationManager;
+    scene->setUpdateCallback(manager.get());
 
     osgAnimation::Animation* anim = new osgAnimation::Animation;
     {
@@ -223,7 +226,6 @@ int main (int argc, char* argv[])
     manager->playAnimation(anim);
 
     // we will use local data from the skeleton
-    osg::Group* scene = new osg::Group;
     osg::MatrixTransform* rootTransform = new osg::MatrixTransform;
     rootTransform->setMatrix(osg::Matrix::rotate(osg::PI_2,osg::Vec3(1,0,0)));
     right0->addChild(createAxis());
@@ -234,9 +236,9 @@ int main (int argc, char* argv[])
     trueroot->setMatrix(osg::Matrix(root->getMatrixInBoneSpace().ptr()));
     trueroot->addChild(createAxis());
     trueroot->setDataVariance(osg::Object::DYNAMIC);
-    rootTransform->addChild(manager.get());
+//    rootTransform->addChild(scene.get());
     scene->addChild(rootTransform);
-    manager->addChild(skelroot.get());
+//    manager->addChild(skelroot.get());
   
     osgAnimation::RigGeometry* geom = createTesselatedBox(4, 4.0);
     osg::Geode* geode = new osg::Geode;

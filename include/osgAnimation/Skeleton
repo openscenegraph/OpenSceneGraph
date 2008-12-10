@@ -27,16 +27,18 @@ namespace osgAnimation
     public:
         META_Node(osgAnimation, Skeleton);
 
-        struct UpdateCallback : public osg::NodeCallback
+        struct UpdateSkeleton : public osg::NodeCallback
         {
+            META_Object(osgAnimation, UpdateSkeleton);
+            UpdateSkeleton() {}
+            UpdateSkeleton(const UpdateSkeleton& us, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : osg::NodeCallback(us, copyop) {}
             virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
         };
 
         Skeleton(const Skeleton& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : Bone(b,copyop) {}
         Skeleton();
-
+        void setDefaultUpdateCallback(void);
         void computeBindMatrix() { _invBindInSkeletonSpace = osg::Matrix::inverse(_bindInBoneSpace); }
-
     };
 
 }

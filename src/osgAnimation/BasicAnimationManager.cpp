@@ -12,17 +12,15 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgAnimation/AnimationManager>
+#include <osgAnimation/BasicAnimationManager>
 #include <osgAnimation/LinkVisitor>
 #include <osgAnimation/Assert>
 
 using namespace osgAnimation;
 
+BasicAnimationManager::~BasicAnimationManager() {}
 
-AnimationManager::~AnimationManager() {}
-
-
-void AnimationManager::stopAll()
+void BasicAnimationManager::stopAll()
 {
     // loop over all playing animation
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim ) 
@@ -34,11 +32,11 @@ void AnimationManager::stopAll()
     _animationsPlaying.clear();
 }
 
-AnimationManager::AnimationManager()
+BasicAnimationManager::BasicAnimationManager()
 {
     _lastUpdate = 0; 
 }
-void AnimationManager::playAnimation(Animation* pAnimation, int priority, float weight)
+void BasicAnimationManager::playAnimation(Animation* pAnimation, int priority, float weight)
 {
     bool r = findAnimation(pAnimation);
     OSGANIMATION_ASSERT(r && "This animation is not registered");
@@ -51,7 +49,7 @@ void AnimationManager::playAnimation(Animation* pAnimation, int priority, float 
     pAnimation->setWeight(weight);
 }
 
-bool AnimationManager::stopAnimation(Animation* pAnimation)
+bool BasicAnimationManager::stopAnimation(Animation* pAnimation)
 {
     // search though the layer and remove animation
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim ) 
@@ -69,7 +67,7 @@ bool AnimationManager::stopAnimation(Animation* pAnimation)
 }
 
 
-void AnimationManager::update (double time)
+void BasicAnimationManager::update (double time)
 {
     if (!_lastUpdate)
         _lastUpdate = time;
@@ -77,7 +75,6 @@ void AnimationManager::update (double time)
     // could filtered with an active flag
     for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
         (*it).get()->reset();
-
 
     // update from high priority to low priority
     for( AnimationLayers::reverse_iterator iterAnim = _animationsPlaying.rbegin(); iterAnim != _animationsPlaying.rend(); ++iterAnim )
@@ -104,7 +101,7 @@ void AnimationManager::update (double time)
 }
 
 
-bool AnimationManager::findAnimation(Animation* pAnimation) 
+bool BasicAnimationManager::findAnimation(Animation* pAnimation)
 {
     for( AnimationList::const_iterator iterAnim = _animations.begin(); iterAnim != _animations.end(); ++iterAnim ) 
     {
@@ -115,7 +112,7 @@ bool AnimationManager::findAnimation(Animation* pAnimation)
 }
 
 
-bool AnimationManager::isPlaying(Animation* pAnimation) 
+bool BasicAnimationManager::isPlaying(Animation* pAnimation)
 {
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
@@ -127,7 +124,7 @@ bool AnimationManager::isPlaying(Animation* pAnimation)
     return false;
 }
 
-bool AnimationManager::isPlaying(const std::string& name)
+bool BasicAnimationManager::isPlaying(const std::string& name)
 {
     // loop over all playing animation
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )

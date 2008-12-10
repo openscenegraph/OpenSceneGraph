@@ -24,6 +24,31 @@ osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone&
 {
 }
 
+
+osgAnimation::Bone::Bone(const Bone& b, const osg::CopyOp& copyop)
+    : osg::Transform(b,copyop),
+      _position(b._position),
+    _rotation(b._rotation),
+    _scale(b._scale) 
+{
+}
+
+osgAnimation::Bone::Bone(const std::string& name)
+{
+    if (!name.empty())
+        setName(name);
+    _needToRecomputeBindMatrix = false;
+}
+
+
+void osgAnimation::Bone::setDefaultUpdateCallback(const std::string& name)
+{
+    std::string cbName = name;
+    if (cbName.empty())
+        cbName = getName();
+    setUpdateCallback(new UpdateBone(cbName));
+}
+
 void osgAnimation::Bone::computeBindMatrix()
 {
     _invBindInSkeletonSpace = osg::Matrix::inverse(_bindInBoneSpace);

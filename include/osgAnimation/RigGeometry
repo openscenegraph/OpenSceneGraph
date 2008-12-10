@@ -41,9 +41,9 @@ namespace osgAnimation
         };
 
 
-        struct UpdateVertex : public osg::Drawable::UpdateCallback 
+        struct UpdateVertex : public osg::Drawable::UpdateCallback
         {
-            virtual void update(osg::NodeVisitor*, osg::Drawable* drw) 
+            virtual void update(osg::NodeVisitor*, osg::Drawable* drw)
             {
                 RigGeometry* geom = dynamic_cast<RigGeometry*>(drw);
                 if (!geom)
@@ -92,31 +92,9 @@ namespace osgAnimation
         };
 
 
-        RigGeometry() 
-        {
-            setUseDisplayList(false);
-            setUpdateCallback(new UpdateVertex);
-            setDataVariance(osg::Object::DYNAMIC);
-            _needToComputeMatrix = true;
-            _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
-        }
-        RigGeometry(const osg::Geometry& b) : osg::Geometry(b, osg::CopyOp::SHALLOW_COPY)
-        {
-            setUseDisplayList(false);
-            setUpdateCallback(new UpdateVertex);
-            setDataVariance(osg::Object::DYNAMIC);
-            _needToComputeMatrix = true;
-            _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
-        }
-
-        RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : 
-            osg::Geometry(b,copyop),
-            _positionSource(b._positionSource),
-            _normalSource(b._normalSource),
-            _vertexInfluenceSet(b._vertexInfluenceSet),
-            _vertexInfluenceMap(b._vertexInfluenceMap),
-            _transformVertexes(b._transformVertexes),
-            _needToComputeMatrix(b._needToComputeMatrix) {}
+        RigGeometry();
+        RigGeometry(const osg::Geometry& b);
+        RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         virtual osg::Object* cloneType() const { return new RigGeometry(); }
         virtual osg::Object* clone(const osg::CopyOp& copyop) const { return new RigGeometry(*this,copyop); }        

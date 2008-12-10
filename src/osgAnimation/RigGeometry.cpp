@@ -22,14 +22,45 @@
  */
 #include <osgAnimation/RigGeometry>
 
-void osgAnimation::RigGeometry::buildTransformer(Skeleton* root)
+using namespace osgAnimation;
+
+RigGeometry::RigGeometry()
+{
+    setUseDisplayList(false);
+    setUpdateCallback(new UpdateVertex);
+    setDataVariance(osg::Object::DYNAMIC);
+    _needToComputeMatrix = true;
+    _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
+}
+
+RigGeometry::RigGeometry(const osg::Geometry& b) : osg::Geometry(b, osg::CopyOp::SHALLOW_COPY)
+{
+    setUseDisplayList(false);
+    setUpdateCallback(new UpdateVertex);
+    setDataVariance(osg::Object::DYNAMIC);
+    _needToComputeMatrix = true;
+    _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
+}
+
+RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) : 
+    osg::Geometry(b,copyop),
+    _positionSource(b._positionSource),
+    _normalSource(b._normalSource),
+    _vertexInfluenceSet(b._vertexInfluenceSet),
+    _vertexInfluenceMap(b._vertexInfluenceMap),
+    _transformVertexes(b._transformVertexes),
+    _needToComputeMatrix(b._needToComputeMatrix) 
+{
+}
+
+void RigGeometry::buildTransformer(Skeleton* root)
 {
     Bone::BoneMap bm = root->getBoneMap();
     _transformVertexes.init(bm, _vertexInfluenceSet.getUniqVertexSetToBoneSetList());
     _root = root;
 }
 
-void osgAnimation::RigGeometry::buildVertexSet() 
+void RigGeometry::buildVertexSet() 
 {
     if (!_vertexInfluenceMap.valid()) 
     {
@@ -47,7 +78,7 @@ void osgAnimation::RigGeometry::buildVertexSet()
     std::cout << "uniq groups " << _vertexInfluenceSet.getUniqVertexSetToBoneSetList().size() << " for " << getName() << std::endl;
 }
 
-void osgAnimation::RigGeometry::computeMatrixFromRootSkeleton() 
+void RigGeometry::computeMatrixFromRootSkeleton() 
 {
     if (!_root.valid()) 
     {
@@ -60,8 +91,11 @@ void osgAnimation::RigGeometry::computeMatrixFromRootSkeleton()
     _needToComputeMatrix = false;
 }
 
-void osgAnimation::RigGeometry::transformSoftwareMethod()
+void RigGeometry::transformSoftwareMethod()
 {
+    setUseDisplayList(false);
+    setUseVertexBufferObjects(true);
+
     //    std::cout << getName() << " _matrixFromSkeletonToGeometry" << _matrixFromSkeletonToGeometry << std::endl;
     osg::Vec3Array* pos = dynamic_cast<osg::Vec3Array*>(getVertexArray());
     if (pos && _positionSource.size() != pos->size()) 
@@ -86,8 +120,10 @@ void osgAnimation::RigGeometry::transformSoftwareMethod()
         _transformVertexes.compute<osg::Vec3>(_matrixFromSkeletonToGeometry, _invMatrixFromSkeletonToGeometry, &_normalSource.front(), &normal->front());
         normal->dirty();
     }
+    if (getUseDisplayList())
+        dirtyDisplayList();
     dirtyBound();
 }
 
-const osgAnimation::Skeleton* osgAnimation::RigGeometry::getSkeleton() const { return _root.get(); }
-osgAnimation::Skeleton* osgAnimation::RigGeometry::getSkeleton() { return _root.get(); }
+const osgAnimation::Skeleton* RigGeometry::getSkeleton() const { return _root.get(); }
+osgAnimation::Skeleton* RigGeometry::getSkeleton() { return _root.get(); }

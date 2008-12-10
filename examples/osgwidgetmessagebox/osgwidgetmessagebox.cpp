@@ -146,7 +146,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
             std::cout << "enter" << std::endl;
             return true;
         }
-        else if (ev.type == osgWidget::EVENT_MOUSE_LEAVE) 
+        else if (ev.type == osgWidget::EVENT_MOUSE_LEAVE)
         {
             _over = false;
             _motionLeave.reset();

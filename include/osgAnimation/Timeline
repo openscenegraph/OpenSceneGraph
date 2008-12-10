@@ -165,9 +165,14 @@ namespace osgAnimation
         typedef std::pair<unsigned int, osg::ref_ptr<Action> > FrameAction;
         typedef std::vector<FrameAction> ActionList;
         typedef std::map<int, ActionList> ActionLayers;
+        enum State
+        {
+            Play,
+            Stop,
+        };
+        
 
         ActionLayers _actions;
-
         double _lastUpdate;
         double _speed;
         unsigned int _currentFrame;
@@ -177,12 +182,6 @@ namespace osgAnimation
         bool _loop;
         bool _initFirstFrame;
 
-        enum State
-        {
-            Play,
-            Stop,
-        };
-        
         State _state;
 
         // to manage pending operation
@@ -240,20 +239,8 @@ namespace osgAnimation
 
         META_Object(osgAnimation, Timeline);
 
-        Timeline()
-        {
-            _lastUpdate = 0;
-            _currentFrame = 0;
-            _fps = 25;
-            _speed = 1.0;
-            _state = Stop;
-            _initFirstFrame = false;
-            _previousFrameEvaluated = 0;
-            _evaluating = 0;
-            _numberFrame = -1; // something like infinity
-            setName("Timeline");
-        }
-        Timeline(const Timeline& nc,const osg::CopyOp&) {}
+        Timeline();
+        Timeline(const Timeline& nc,const osg::CopyOp& op = osg::CopyOp::SHALLOW_COPY);
         State getStatus() const { return _state; }
         const ActionList& getActionLayer(int i)
         {
@@ -539,23 +526,6 @@ namespace osgAnimation
         }
     };
 
-
-
-    class OSGANIMATION_EXPORT AnimationManagerTimeline : public AnimationManagerBase
-    {
-    protected:
-        osg::ref_ptr<Timeline> _timeline;
-
-    public:
-        META_Node(osgAnimation, AnimationManagerTimeline);
-        AnimationManagerTimeline();
-        AnimationManagerTimeline(const AnimationManagerBase& manager);
-        AnimationManagerTimeline(const AnimationManagerTimeline& nc,const osg::CopyOp&) {}
-
-        Timeline* getTimeline() { return _timeline.get(); }
-        void update(double time);
-
-    };
 
 
 }

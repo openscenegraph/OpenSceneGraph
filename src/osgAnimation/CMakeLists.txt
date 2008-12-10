@@ -22,7 +22,8 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Skinning
 	${HEADER_PATH}/CubicBezier
 	${HEADER_PATH}/Vec3Packed
-	${HEADER_PATH}/AnimationManager
+	${HEADER_PATH}/BasicAnimationManager
+	${HEADER_PATH}/TimelineAnimationManager
 	${HEADER_PATH}/AnimationManagerBase
 	${HEADER_PATH}/UpdateCallback
 	${HEADER_PATH}/LinkVisitor
@@ -41,7 +42,8 @@ ADD_LIBRARY(${LIB_NAME}
     Animation.cpp
     Bone.cpp
     RigGeometry.cpp
-    AnimationManager.cpp
+    BasicAnimationManager.cpp
+    TimelineAnimationManager.cpp
     AnimationManagerBase.cpp
     Skeleton.cpp
     VertexInfluence.cpp

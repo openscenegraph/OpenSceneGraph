@@ -15,7 +15,7 @@ bool Transform_readLocalData(Object& obj, Input& fr);
 bool Transform_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TransformProxy
+REGISTER_DOTOSGWRAPPER(Transform)
 (
     new osg::Transform,
     "Transform",

@@ -11,7 +11,7 @@ using namespace osgDB;
 bool  ClusterCullingCallback_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  ClusterCullingCallback_writeLocalData(const osg::Object &obj, osgDB::Output &fw); // register the read and write functions with the osgDB::Registry.
 
-osgDB::RegisterDotOsgWrapperProxy  ClusterCullingCallback_Proxy
+REGISTER_DOTOSGWRAPPER(ClusterCullingCallback)
 (
     new ClusterCullingCallback,
     "ClusterCullingCallback",

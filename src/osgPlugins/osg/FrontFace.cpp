@@ -12,7 +12,7 @@ bool FrontFace_readLocalData(Object& obj, Input& fr);
 bool FrontFace_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_FrontFaceProxy
+REGISTER_DOTOSGWRAPPER(FrontFace)
 (
     new osg::FrontFace,
     "FrontFace",

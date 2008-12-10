@@ -12,7 +12,7 @@ bool Scissor_readLocalData(Object& obj, Input& fr);
 bool Scissor_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_ScissorProxy
+REGISTER_DOTOSGWRAPPER(Scissor)
 (
     new osg::Scissor,
     "Scissor",

@@ -18,7 +18,7 @@ bool Material_writeLocalData(const Object& obj, Output& fw);
 bool Material_matchFaceAndColor(Input& fr,const char* name,Material::Face& mf,Vec4& color);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_MaterialProxy
+REGISTER_DOTOSGWRAPPER(Material)
 (
     new osg::Material,
     "Material",

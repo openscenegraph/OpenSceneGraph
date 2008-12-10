@@ -14,7 +14,8 @@ bool Node_readLocalData(Object& obj, Input& fr);
 bool Node_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_NodeProxy
+//REGISTER_DOTOSGWRAPPER(Node)
+REGISTER_DOTOSGWRAPPER(Node)
 (
     new osg::Node,
     "Node",

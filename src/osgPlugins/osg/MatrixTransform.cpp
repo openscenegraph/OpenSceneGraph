@@ -14,7 +14,7 @@ bool MatrixTransform_readLocalData(Object& obj, Input& fr);
 bool MatrixTransform_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_MatrixTransformProxy
+REGISTER_DOTOSGWRAPPER(MatrixTransform)
 (
     new osg::MatrixTransform,
     "MatrixTransform",
@@ -25,7 +25,7 @@ RegisterDotOsgWrapperProxy g_MatrixTransformProxy
 );
 
 // register old style 'DCS' read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_DCSProxy
+REGISTER_DOTOSGWRAPPER(DCS)
 (
     new osg::MatrixTransform,
     "DCS",

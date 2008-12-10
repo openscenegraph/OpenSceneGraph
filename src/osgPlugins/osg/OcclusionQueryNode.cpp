@@ -28,7 +28,7 @@
 bool OQN_readLocalData( osg::Object &obj, osgDB::Input &fr );
 bool OQN_writeLocalData( const osg::Object &obj, osgDB::Output &fw );
 
-osgDB::RegisterDotOsgWrapperProxy OcclusionQueryNode_Proxy
+REGISTER_DOTOSGWRAPPER(OcclusionQueryNode)
 (
     new osg::OcclusionQueryNode,
     "OcclusionQueryNode",

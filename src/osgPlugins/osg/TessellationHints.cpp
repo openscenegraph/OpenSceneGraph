@@ -12,7 +12,7 @@ using namespace osgDB;
 bool TessellationHints_readLocalData(Object& obj, Input& fr);
 bool TessellationHints_writeLocalData(const Object& obj, Output& fw);
 
-RegisterDotOsgWrapperProxy g_TessellationHintsFuncProxy
+REGISTER_DOTOSGWRAPPER(TessellationHints)
 (
     new osg::TessellationHints,
     "TessellationHints",

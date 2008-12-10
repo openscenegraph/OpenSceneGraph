@@ -12,7 +12,7 @@ bool ClipNode_readLocalData(Object& obj, Input& fr);
 bool ClipNode_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_ClipNodeProxy
+REGISTER_DOTOSGWRAPPER(ClipNode)
 (
     new osg::ClipNode,
     "ClipNode",

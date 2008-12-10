@@ -23,7 +23,7 @@ bool Texture3D_matchInternalFormatStr(const char* str,int& value);
 const char* Texture3D_getInternalFormatStr(int value);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_Texture3DProxy
+REGISTER_DOTOSGWRAPPER(Texture3D)
 (
     new osg::Texture3D,
     "Texture3D",

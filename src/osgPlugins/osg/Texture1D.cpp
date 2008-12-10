@@ -23,7 +23,7 @@ bool Texture1D_matchInternalFormatStr(const char* str,int& value);
 const char* Texture1D_getInternalFormatStr(int value);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_Texture1DProxy
+REGISTER_DOTOSGWRAPPER(Texture1D)
 (
     new osg::Texture1D,
     "Texture1D",

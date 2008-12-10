@@ -14,7 +14,7 @@ bool Object_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
 // note, Object doesn't currently require any read and write.
-RegisterDotOsgWrapperProxy g_ObjectProxy
+REGISTER_DOTOSGWRAPPER(Object)
 (
     /*new osg::Object*/NULL,
     "Object",

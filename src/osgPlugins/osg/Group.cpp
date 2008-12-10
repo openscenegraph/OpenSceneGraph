@@ -12,7 +12,7 @@ bool Group_readLocalData(Object& obj, Input& fr);
 bool Group_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_GroupProxy
+REGISTER_DOTOSGWRAPPER(Group)
 (
     new osg::Group,
     "Group",

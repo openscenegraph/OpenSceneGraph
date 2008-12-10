@@ -23,7 +23,7 @@ bool TextureRectangle_matchInternalFormatStr(const char* str,int& value);
 const char* TextureRectangle_getInternalFormatStr(int value);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TextureRectangleProxy
+REGISTER_DOTOSGWRAPPER(TextureRectangle)
 (
     new osg::TextureRectangle,
     "TextureRectangle",

@@ -1,3 +1,40 @@
+2008-12-12 18:47  robert
+
+	* CMakeLists.txt, ChangeLog,
+	  examples/osgphotoalbum/PhotoArchive.cpp,
+	  examples/osgscreencapture/osgscreencapture.cpp,
+	  include/osg/Referenced, include/osgDB/ConvertUTF,
+	  include/osgDB/DotOsgWrapper, include/osgDB/Field,
+	  include/osgDB/FieldReader, include/osgDB/FileUtils,
+	  include/osgSim/ShapeAttribute, src/osg/Referenced.cpp,
+	  src/osgDB/ConvertUTF.cpp, src/osgDB/DatabasePager.cpp,
+	  src/osgDB/Field.cpp, src/osgDB/FileUtils.cpp,
+	  src/osgDB/Output.cpp, src/osgPlugins/3dc/ReaderWriter3DC.cpp,
+	  src/osgPlugins/bsp/Q3BSPReader.cpp,
+	  src/osgPlugins/bsp/VBSPReader.cpp,
+	  src/osgPlugins/dds/ReaderWriterDDS.cpp,
+	  src/osgPlugins/geo/osgGeoStructs.h,
+	  src/osgPlugins/lwo/ReaderWriterLWO.cpp,
+	  src/osgPlugins/lwo/old_Lwo2.cpp, src/osgPlugins/obj/obj.cpp,
+	  src/osgPlugins/osg/AlphaFunc.cpp,
+	  src/osgPlugins/osg/BlendEquation.cpp,
+	  src/osgPlugins/osg/BlendFunc.cpp, src/osgPlugins/osg/Camera.cpp,
+	  src/osgPlugins/osg/ColorMask.cpp, src/osgPlugins/osg/Depth.cpp,
+	  src/osgPlugins/osg/Fog.cpp, src/osgPlugins/osg/Geometry.cpp,
+	  src/osgPlugins/osg/Sequence.cpp, src/osgPlugins/osg/StateSet.cpp,
+	  src/osgPlugins/osg/Stencil.cpp, src/osgPlugins/osg/TexEnv.cpp,
+	  src/osgPlugins/osg/TexEnvCombine.cpp,
+	  src/osgPlugins/osg/TexGen.cpp, src/osgPlugins/osg/Texture.cpp,
+	  src/osgPlugins/osgTerrain/Layer.cpp,
+	  src/osgPlugins/pnm/ReaderWriterPNM.cpp,
+	  src/osgPlugins/stl/ReaderWriterSTL.cpp,
+	  src/osgPlugins/txp/ReaderWriterTXP.cpp,
+	  src/osgShadow/ConvexPolyhedron.cpp,
+	  src/osgSim/ShapeAttribute.cpp, src/osgText/Font.cpp,
+	  src/osgViewer/ScreenCaptureHandler.cpp, src/osgViewer/Viewer.cpp:
+	  Where possible moved redundent C header includes from headers to
+	  source files
+
 2008-12-12 14:54  robert
 
 	* CMakeModules/ModuleInstall.cmake,

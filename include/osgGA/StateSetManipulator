@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGGA_STATESTATE_MANIPULATOR
-#define OSGGA_STATESTATE_MANIPULATOR 1
+#ifndef OSGGA_STATESET_MANIPULATOR
+#define OSGGA_STATESET_MANIPULATOR 1
 
 #include <osgGA/Export>
 #include <osgGA/GUIEventAdapter>
@@ -23,7 +23,7 @@
 #include <osg/PolygonMode>
 
 
-namespace osgGA{
+namespace osgGA {
 
 /**
 Experimental class, not been looked at for a while, but which will
@@ -37,13 +37,13 @@ public:
 
         virtual const char* className() const { return "StateSetManipulator"; }
 
-        /** attach a STATESTATE to the manipulator to be used for specifying view.*/
+        /** attach a StateSet to the manipulator to be used for specifying view.*/
         virtual void setStateSet(osg::StateSet*);
 
-        /** get the attached a STATESTATE.*/
+        /** get the attached a StateSet.*/
         virtual osg::StateSet * getStateSet();
 
-        /** get the attached a STATESTATE.*/
+        /** get the attached a StateSet.*/
         virtual const osg::StateSet * getStateSet() const;
         
 

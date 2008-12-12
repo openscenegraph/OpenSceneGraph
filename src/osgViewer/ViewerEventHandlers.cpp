@@ -340,7 +340,7 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
 #if 1                    
                 case(osgViewer::ViewerBase::AutomaticSelection):
                     viewerBase->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
-                    osg::notify(osg::NOTICE)<<"Threading model 'AutomaticSelection' selected."<<std::endl;
+                    osg::notify(osg::NOTICE)<<"Threading model 'SingleThreaded' selected."<<std::endl;
 #else                    
                 case(osgViewer::ViewerBase::AutomaticSelection):
                     viewerBase->setThreadingModel(viewer->suggestBestThreadingModel());
@@ -373,7 +373,7 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
     return false;
 }
 
-RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename):
+RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename, float fps):
     _filename(filename),
     _autoinc( -1 ),
     _keyEventToggleRecord('z'),
@@ -387,10 +387,14 @@ RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename):
     _animPath = new osg::AnimationPath();
 
     const char* str = getenv("OSG_RECORD_CAMERA_PATH_FPS");
-
-    if (str) _interval = 1.0f / atof(str);
-
-    else _interval = 1.0f / 25.0f;
+    if (str)
+    {
+        _interval = 1.0f / atof(str);
+    }
+    else
+    {
+        _interval = 1.0f / fps;
+    }
 }
 
 void RecordCameraPathHandler::getUsage(osg::ApplicationUsage &usage) const
@@ -477,7 +481,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     }
                 }
 
-                // THe user has requested to STOP recording, write the file!
+                // The user has requested to STOP recording, write the file!
                 else
                 {
                     _currentlyRecording = false;

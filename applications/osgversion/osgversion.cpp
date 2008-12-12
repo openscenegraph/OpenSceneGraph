@@ -229,6 +229,7 @@ bool validName(const std::string& first)
     if (first=="OpenSceneGraph-osgWidget-dev") return false;
     if (first=="Valve") return false;
     if (first=="Source") return false;
+    if (first=="PixelDataBufferObject") return false;
     return true;
 }
 
@@ -728,11 +729,11 @@ void readContributors(NameMap& names, const std::string& file)
         }
         else
         {
-            if (words[i]=="robert:") 
+            if (words[i]=="robert") 
             {
                 ++names[NameRobertOsfield];
             }
-            else if (words[i]=="don:")
+            else if (words[i]=="don")
             {
                 ++names[NameDonBurns];
             }

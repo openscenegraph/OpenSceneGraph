@@ -662,7 +662,6 @@
 		001D030B065AACB8003310BF /* ReaderWriterOSG.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D02CC065AACB7003310BF /* ReaderWriterOSG.cpp */; };
 		001D030C065AACB8003310BF /* Sequence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D02CE065AACB7003310BF /* Sequence.cpp */; };
 		001D030D065AACB8003310BF /* ShadeModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D02CF065AACB7003310BF /* ShadeModel.cpp */; };
-		001D030E065AACB8003310BF /* Shape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D02D0065AACB7003310BF /* Shape.cpp */; };
 		001D030F065AACB8003310BF /* ShapeDrawable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D02D1065AACB7003310BF /* ShapeDrawable.cpp */; };
 		001D0310065AACB8003310BF /* StateSet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D02D2065AACB7003310BF /* StateSet.cpp */; };
 		001D0311065AACB8003310BF /* Stencil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D02D3065AACB7003310BF /* Stencil.cpp */; };
@@ -2652,6 +2651,13 @@
 		D4D8CF080E3491C800FA6EB4 /* ImagePager in Headers */ = {isa = PBXBuildFile; fileRef = D4D8CF070E3491C800FA6EB4 /* ImagePager */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4D8CF0A0E3491D200FA6EB4 /* ImagePager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4D8CF090E3491D200FA6EB4 /* ImagePager.cpp */; };
 		D4D8CF0C0E3491FB00FA6EB4 /* ImageSequence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4D8CF0B0E3491FB00FA6EB4 /* ImageSequence.cpp */; };
+		D4DE6F590EF2EEB0000E119F /* Box.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4DE6F520EF2EEAF000E119F /* Box.cpp */; };
+		D4DE6F5A0EF2EEB0000E119F /* Capsule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4DE6F530EF2EEAF000E119F /* Capsule.cpp */; };
+		D4DE6F5B0EF2EEB0000E119F /* CompositeShape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4DE6F540EF2EEAF000E119F /* CompositeShape.cpp */; };
+		D4DE6F5C0EF2EEB0000E119F /* Cone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4DE6F550EF2EEAF000E119F /* Cone.cpp */; };
+		D4DE6F5D0EF2EEB0000E119F /* Cylinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4DE6F560EF2EEB0000E119F /* Cylinder.cpp */; };
+		D4DE6F5E0EF2EEB0000E119F /* HeightField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4DE6F570EF2EEB0000E119F /* HeightField.cpp */; };
+		D4DE6F5F0EF2EEB0000E119F /* Sphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4DE6F580EF2EEB0000E119F /* Sphere.cpp */; };
 		D4DFC4710B57D619005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4DFC47B0B57D61D005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4DFC47C0B57D62F005CBCD2 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
@@ -6540,7 +6546,6 @@
 		001D02CC065AACB7003310BF /* ReaderWriterOSG.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterOSG.cpp; path = ../../src/osgPlugins/osg/ReaderWriterOSG.cpp; sourceTree = SOURCE_ROOT; };
 		001D02CE065AACB7003310BF /* Sequence.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Sequence.cpp; path = ../../src/osgPlugins/osg/Sequence.cpp; sourceTree = SOURCE_ROOT; };
 		001D02CF065AACB7003310BF /* ShadeModel.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ShadeModel.cpp; path = ../../src/osgPlugins/osg/ShadeModel.cpp; sourceTree = SOURCE_ROOT; };
-		001D02D0065AACB7003310BF /* Shape.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Shape.cpp; path = ../../src/osgPlugins/osg/Shape.cpp; sourceTree = SOURCE_ROOT; };
 		001D02D1065AACB7003310BF /* ShapeDrawable.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ShapeDrawable.cpp; path = ../../src/osgPlugins/osg/ShapeDrawable.cpp; sourceTree = SOURCE_ROOT; };
 		001D02D2065AACB7003310BF /* StateSet.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = StateSet.cpp; path = ../../src/osgPlugins/osg/StateSet.cpp; sourceTree = SOURCE_ROOT; };
 		001D02D3065AACB7003310BF /* Stencil.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Stencil.cpp; path = ../../src/osgPlugins/osg/Stencil.cpp; sourceTree = SOURCE_ROOT; };
@@ -8149,6 +8154,13 @@
 		D4D8CF070E3491C800FA6EB4 /* ImagePager */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ImagePager; sourceTree = "<group>"; };
 		D4D8CF090E3491D200FA6EB4 /* ImagePager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImagePager.cpp; sourceTree = "<group>"; };
 		D4D8CF0B0E3491FB00FA6EB4 /* ImageSequence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageSequence.cpp; sourceTree = "<group>"; };
+		D4DE6F520EF2EEAF000E119F /* Box.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Box.cpp; sourceTree = "<group>"; };
+		D4DE6F530EF2EEAF000E119F /* Capsule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Capsule.cpp; sourceTree = "<group>"; };
+		D4DE6F540EF2EEAF000E119F /* CompositeShape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeShape.cpp; sourceTree = "<group>"; };
+		D4DE6F550EF2EEAF000E119F /* Cone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cone.cpp; sourceTree = "<group>"; };
+		D4DE6F560EF2EEB0000E119F /* Cylinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Cylinder.cpp; sourceTree = "<group>"; };
+		D4DE6F570EF2EEB0000E119F /* HeightField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HeightField.cpp; sourceTree = "<group>"; };
+		D4DE6F580EF2EEB0000E119F /* Sphere.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Sphere.cpp; sourceTree = "<group>"; };
 		D4E1D5460CAFF2B4007F8430 /* ViewerBase */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ViewerBase; sourceTree = "<group>"; };
 		D4E1D5480CAFF2C8007F8430 /* ViewerBase.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ViewerBase.cpp; sourceTree = "<group>"; };
 		D4E1D85D0CB031B9007F8430 /* hdrwriter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = hdrwriter.cpp; sourceTree = "<group>"; };
@@ -10575,6 +10587,13 @@
 		001D02A1065AACB6003310BF /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D4DE6F520EF2EEAF000E119F /* Box.cpp */,
+				D4DE6F530EF2EEAF000E119F /* Capsule.cpp */,
+				D4DE6F540EF2EEAF000E119F /* CompositeShape.cpp */,
+				D4DE6F550EF2EEAF000E119F /* Cone.cpp */,
+				D4DE6F560EF2EEB0000E119F /* Cylinder.cpp */,
+				D4DE6F570EF2EEB0000E119F /* HeightField.cpp */,
+				D4DE6F580EF2EEB0000E119F /* Sphere.cpp */,
 				D41889590EDEEC6C00C17A84 /* BlendEquation.cpp */,
 				D418895A0EDEEC6C00C17A84 /* StateAttribute.cpp */,
 				D4D8CF0B0E3491FB00FA6EB4 /* ImageSequence.cpp */,
@@ -10634,7 +10653,6 @@
 				001D02CE065AACB7003310BF /* Sequence.cpp */,
 				00A14B30084D61B1000150AD /* Shader.cpp */,
 				001D02CF065AACB7003310BF /* ShadeModel.cpp */,
-				001D02D0065AACB7003310BF /* Shape.cpp */,
 				001D02D1065AACB7003310BF /* ShapeDrawable.cpp */,
 				001D02D2065AACB7003310BF /* StateSet.cpp */,
 				001D02D3065AACB7003310BF /* Stencil.cpp */,
@@ -19962,7 +19980,6 @@
 				001D030B065AACB8003310BF /* ReaderWriterOSG.cpp in Sources */,
 				001D030C065AACB8003310BF /* Sequence.cpp in Sources */,
 				001D030D065AACB8003310BF /* ShadeModel.cpp in Sources */,
-				001D030E065AACB8003310BF /* Shape.cpp in Sources */,
 				001D030F065AACB8003310BF /* ShapeDrawable.cpp in Sources */,
 				001D0310065AACB8003310BF /* StateSet.cpp in Sources */,
 				001D0311065AACB8003310BF /* Stencil.cpp in Sources */,
@@ -20000,6 +20017,13 @@
 				D4D8CF0C0E3491FB00FA6EB4 /* ImageSequence.cpp in Sources */,
 				D418895B0EDEEC6C00C17A84 /* BlendEquation.cpp in Sources */,
 				D418895C0EDEEC6C00C17A84 /* StateAttribute.cpp in Sources */,
+				D4DE6F590EF2EEB0000E119F /* Box.cpp in Sources */,
+				D4DE6F5A0EF2EEB0000E119F /* Capsule.cpp in Sources */,
+				D4DE6F5B0EF2EEB0000E119F /* CompositeShape.cpp in Sources */,
+				D4DE6F5C0EF2EEB0000E119F /* Cone.cpp in Sources */,
+				D4DE6F5D0EF2EEB0000E119F /* Cylinder.cpp in Sources */,
+				D4DE6F5E0EF2EEB0000E119F /* HeightField.cpp in Sources */,
+				D4DE6F5F0EF2EEB0000E119F /* Sphere.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

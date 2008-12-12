@@ -234,7 +234,7 @@ class OSGVIEWER_EXPORT RecordCameraPathHandler : public osgGA::GUIEventHandler
 {
 public:
 
-        RecordCameraPathHandler(const std::string &filename = "saved_animation.path");
+        RecordCameraPathHandler(const std::string &filename = "saved_animation.path", float fps = 25.0f);
 
         void setKeyEventToggleRecord(int key) { _keyEventToggleRecord = key; }
         int getKeyEventToggleRecord() const { return _keyEventToggleRecord; }

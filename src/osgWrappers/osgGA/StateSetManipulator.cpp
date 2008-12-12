@@ -41,17 +41,17 @@ BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	I_Method1(void, setStateSet, IN, osg::StateSet *, x,
 	          Properties::VIRTUAL,
 	          __void__setStateSet__osg_StateSet_P1,
-	          "attach a STATESTATE to the manipulator to be used for specifying view. ",
+	          "attach a StateSet to the manipulator to be used for specifying view. ",
 	          "");
 	I_Method0(osg::StateSet *, getStateSet,
 	          Properties::VIRTUAL,
 	          __osg_StateSet_P1__getStateSet,
-	          "get the attached a STATESTATE. ",
+	          "get the attached a StateSet. ",
 	          "");
 	I_Method0(const osg::StateSet *, getStateSet,
 	          Properties::VIRTUAL,
 	          __C5_osg_StateSet_P1__getStateSet,
-	          "get the attached a STATESTATE. ",
+	          "get the attached a StateSet. ",
 	          "");
 	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
 	          Properties::VIRTUAL,

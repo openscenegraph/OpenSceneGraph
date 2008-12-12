@@ -18,7 +18,6 @@
 #include <osgDB/Export>
 
 #include <string>
-#include <string.h>
 
 #ifdef __CYGWIN__
 namespace std
@@ -30,14 +29,14 @@ typedef basic_string<wchar_t> wstring;
 namespace osgDB
 {
 
-std::string OSGDB_EXPORT convertUTF16toUTF8(const wchar_t* source, unsigned sourceLength);
-std::wstring OSGDB_EXPORT convertUTF8toUTF16(const char* source, unsigned sourceLength);
+extern OSGDB_EXPORT std::string convertUTF16toUTF8(const wchar_t* source, unsigned sourceLength);
+extern OSGDB_EXPORT std::wstring convertUTF8toUTF16(const char* source, unsigned sourceLength);
 
-inline std::string convertUTF16toUTF8(const std::wstring& s){return convertUTF16toUTF8(s.c_str(), s.length());}
-inline std::string convertUTF16toUTF8(const wchar_t* s){return convertUTF16toUTF8(s, wcslen(s));}
+extern OSGDB_EXPORT std::string convertUTF16toUTF8(const std::wstring& s);
+extern OSGDB_EXPORT std::string convertUTF16toUTF8(const wchar_t* s);
 
-inline std::wstring convertUTF8toUTF16(const std::string& s){return convertUTF8toUTF16(s.c_str(), s.length());}
-inline std::wstring convertUTF8toUTF16(const char* s){return convertUTF8toUTF16(s, strlen(s));}
+extern OSGDB_EXPORT std::wstring convertUTF8toUTF16(const std::string& s);
+extern OSGDB_EXPORT std::wstring convertUTF8toUTF16(const char* s);
 
 }
 

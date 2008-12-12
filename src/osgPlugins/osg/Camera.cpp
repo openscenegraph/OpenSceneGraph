@@ -8,6 +8,8 @@
 
 #include "Matrix.h"
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 

@@ -25,8 +25,8 @@
 #include <osgViewer/Renderer>
 #include <osgViewer/CompositeViewer>
 
-
 #include <sstream>
+#include <string.h>
 
 using namespace osgViewer;
 

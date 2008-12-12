@@ -13,6 +13,8 @@
 #include <osgDB/Output>
 #include <osgDB/ParameterOutput>
 
+#include <string.h>
+
 bool Layer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Layer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 bool Layer_matchFilterStr(const char* str, osg::Texture::FilterMode& filter);

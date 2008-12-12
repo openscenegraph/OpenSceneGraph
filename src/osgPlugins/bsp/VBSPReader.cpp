@@ -14,7 +14,9 @@
 #include <osgDB/FileUtils>
 #include <osgDB/ReadFile>
 #include <osg/io_utils>
+
 #include <iostream>
+#include <string.h>
 
 #include "VBSPReader.h"
 #include "VBSPGeometry.h"

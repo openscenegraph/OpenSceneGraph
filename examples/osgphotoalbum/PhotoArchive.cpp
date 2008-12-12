@@ -26,8 +26,7 @@
 #include <osg/GraphicsContext>
 
 #include <iostream>
-
-
+#include <string.h>
 
 const std::string FILE_IDENTIFER("osgphotoalbum photo archive");
 

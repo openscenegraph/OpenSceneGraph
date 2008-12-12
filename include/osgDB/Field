@@ -17,7 +17,6 @@
 #include <osgDB/Export>
 
 #include <string>
-#include <stdlib.h>
 
 namespace osgDB {
 

@@ -6,6 +6,8 @@
 #include <osgDB/Input>
 #include <osgDB/ParameterOutput>
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 

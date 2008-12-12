@@ -10,12 +10,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-#include <string.h>
 
 #include <osg/Notify>
 #include <osg/Math>
 
 #include <osgDB/Field>
+
+#include <string.h>
+#include <stdlib.h>
 
 using namespace osgDB;
 using namespace std;

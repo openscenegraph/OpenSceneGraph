@@ -74,6 +74,8 @@
 #include <osgDB/Registry>
 
 #include <errno.h>
+#include <string.h>
+
 #include <stack>
 
 namespace osgDB

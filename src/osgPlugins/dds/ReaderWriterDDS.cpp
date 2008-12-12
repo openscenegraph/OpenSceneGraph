@@ -27,6 +27,7 @@
 
 #include <iomanip>
 #include <stdio.h>
+#include <string.h>
 
 
 // NOTICE ON WIN32:

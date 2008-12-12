@@ -12,6 +12,7 @@
 
 #include <osg/BoundingSphere>
 #include <osg/CopyOp>
+#include <osg/Geode>
 #include <osg/Group>
 #include <osg/Node>
 #include <osg/NodeCallback>
@@ -19,6 +20,7 @@
 #include <osg/Object>
 #include <osg/State>
 #include <osg/StateSet>
+#include <osg/Switch>
 #include <osg/Transform>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -90,6 +92,26 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	          __C5_Transform_P1__asTransform,
 	          "convert 'const this' into a const Transform pointer if Node is a Transform, otherwise return 0. ",
 	          "Equivalent to dynamic_cast<const Transform*>(this). ");
+	I_Method0(osg::Switch *, asSwitch,
+	          Properties::VIRTUAL,
+	          __Switch_P1__asSwitch,
+	          "Convert 'this' into a Switch pointer if Node is a Switch, otherwise return 0. ",
+	          "Equivalent to dynamic_cast<Switch*>(this). ");
+	I_Method0(const osg::Switch *, asSwitch,
+	          Properties::VIRTUAL,
+	          __C5_Switch_P1__asSwitch,
+	          "convert 'const this' into a const Switch pointer if Node is a Switch, otherwise return 0. ",
+	          "Equivalent to dynamic_cast<const Switch*>(this). ");
+	I_Method0(osg::Geode *, asGeode,
+	          Properties::VIRTUAL,
+	          __Geode_P1__asGeode,
+	          "Convert 'this' into a Geode pointer if Node is a Geode, otherwise return 0. ",
+	          "Equivalent to dynamic_cast<Geode*>(this). ");
+	I_Method0(const osg::Geode *, asGeode,
+	          Properties::VIRTUAL,
+	          __C5_Geode_P1__asGeode,
+	          "convert 'const this' into a const Geode pointer if Node is a Geode, otherwise return 0. ",
+	          "Equivalent to dynamic_cast<const Geode*>(this). ");
 	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
 	          __void__accept__NodeVisitor_R1,
@@ -155,6 +177,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	          __C5_NodeCallback_P1__getUpdateCallback,
 	          "Get const update node callback, called during update traversal. ",
 	          "");
+	I_Method1(void, addUpdateCallback, IN, osg::NodeCallback *, nc,
+	          Properties::NON_VIRTUAL,
+	          __void__addUpdateCallback__NodeCallback_P1,
+	          "Convenience method that sets the update callback of the node if it doesn't exist, or nest it into the existing one. ",
+	          "");
+	I_Method1(void, removeUpdateCallback, IN, osg::NodeCallback *, nc,
+	          Properties::NON_VIRTUAL,
+	          __void__removeUpdateCallback__NodeCallback_P1,
+	          "Convenience method that removes a given callback from a node, even if that callback is nested. ",
+	          "There is no error return in case the given callback is not found. ");
 	I_Method0(unsigned int, getNumChildrenRequiringUpdateTraversal,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumChildrenRequiringUpdateTraversal,
@@ -163,18 +195,28 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	I_Method1(void, setEventCallback, IN, osg::NodeCallback *, nc,
 	          Properties::NON_VIRTUAL,
 	          __void__setEventCallback__NodeCallback_P1,
-	          "Set update node callback, called during update traversal. ",
+	          "Set event node callback, called during event traversal. ",
 	          "");
 	I_Method0(osg::NodeCallback *, getEventCallback,
 	          Properties::NON_VIRTUAL,
 	          __NodeCallback_P1__getEventCallback,
-	          "Get update node callback, called during update traversal. ",
+	          "Get event node callback, called during event traversal. ",
 	          "");
 	I_Method0(const osg::NodeCallback *, getEventCallback,
 	          Properties::NON_VIRTUAL,
 	          __C5_NodeCallback_P1__getEventCallback,
-	          "Get const update node callback, called during update traversal. ",
+	          "Get const event node callback, called during event traversal. ",
 	          "");
+	I_Method1(void, addEventCallback, IN, osg::NodeCallback *, nc,
+	          Properties::NON_VIRTUAL,
+	          __void__addEventCallback__NodeCallback_P1,
+	          "Convenience method that sets the event callback of the node if it doesn't exist, or nest it into the existing one. ",
+	          "");
+	I_Method1(void, removeEventCallback, IN, osg::NodeCallback *, nc,
+	          Properties::NON_VIRTUAL,
+	          __void__removeEventCallback__NodeCallback_P1,
+	          "Convenience method that removes a given callback from a node, even if that callback is nested. ",
+	          "There is no error return in case the given callback is not found. ");
 	I_Method0(unsigned int, getNumChildrenRequiringEventTraversal,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumChildrenRequiringEventTraversal,
@@ -195,6 +237,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Node)
 	          __C5_NodeCallback_P1__getCullCallback,
 	          "Get const cull node callback, called during cull traversal. ",
 	          "");
+	I_Method1(void, addCullCallback, IN, osg::NodeCallback *, nc,
+	          Properties::NON_VIRTUAL,
+	          __void__addCullCallback__NodeCallback_P1,
+	          "Convenience method that sets the cull callback of the node if it doesn't exist, or nest it into the existing one. ",
+	          "");
+	I_Method1(void, removeCullCallback, IN, osg::NodeCallback *, nc,
+	          Properties::NON_VIRTUAL,
+	          __void__removeCullCallback__NodeCallback_P1,
+	          "Convenience method that removes a given callback from a node, even if that callback is nested. ",
+	          "There is no error return in case the given callback is not found. ");
 	I_Method1(void, setCullingActive, IN, bool, active,
 	          Properties::NON_VIRTUAL,
 	          __void__setCullingActive__bool,

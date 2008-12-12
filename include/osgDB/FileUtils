@@ -20,8 +20,6 @@
 #include <deque>
 #include <string>
 
-#include <stdio.h>
-
 namespace osgDB {
 
 enum CaseSensitivity

@@ -18,6 +18,8 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
+#include <string.h>
+
 namespace osgViewer
 {
 

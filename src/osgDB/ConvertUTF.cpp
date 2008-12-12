@@ -14,6 +14,8 @@
 #include <osgDB/ConvertUTF>
 #include <osg/Notify>
 
+#include <string.h>
+
 #if defined(WIN32) && !defined(__CYGWIN__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -21,6 +23,12 @@
 
 namespace osgDB
 {
+
+std::string convertUTF16toUTF8(const std::wstring& s){return convertUTF16toUTF8(s.c_str(), s.length());}
+std::string convertUTF16toUTF8(const wchar_t* s){return convertUTF16toUTF8(s, wcslen(s));}
+
+std::wstring convertUTF8toUTF16(const std::string& s){return convertUTF8toUTF16(s.c_str(), s.length());}
+std::wstring convertUTF8toUTF16(const char* s){return convertUTF8toUTF16(s, strlen(s));}
 
 std::string convertUTF16toUTF8(const wchar_t* source, unsigned sourceLength)
 {

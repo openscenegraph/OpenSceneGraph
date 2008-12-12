@@ -24,6 +24,8 @@
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
 
+#include <string.h>
+
 using namespace obj;
 
 static std::string strip( const std::string& ss )

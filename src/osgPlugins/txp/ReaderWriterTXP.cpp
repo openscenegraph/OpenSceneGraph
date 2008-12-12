@@ -7,8 +7,10 @@
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
 #include <osg/io_utils>
+
 #include <iostream>
 #include <sstream>
+#include <string.h>
 
 #include "ReaderWriterTXP.h"
 #include "TXPNode.h"

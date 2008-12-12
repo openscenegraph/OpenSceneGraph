@@ -26,8 +26,6 @@
 
 #include <osg/DeleteHandler>
 
-#ifndef OSG_JAVA_BUILD       
-
 namespace osg
 {
 
@@ -368,5 +366,3 @@ void Referenced::deleteUsingDeleteHandler() const
 }
 
 } // end of namespace osg
-
-#endif //OSG_JAVA_BUILD        

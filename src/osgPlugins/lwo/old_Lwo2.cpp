@@ -37,6 +37,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <string.h>
 
 #include "old_Lwo2.h"
 #include "old_Lwo2Layer.h"

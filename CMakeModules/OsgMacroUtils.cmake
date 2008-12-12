@@ -307,7 +307,7 @@ MACRO(SETUP_EXAMPLE EXAMPLE_NAME)
         IF(APPLE)
             INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION share/OpenSceneGraph/bin BUNDLE DESTINATION share/OpenSceneGraph/bin )            
         ELSE(APPLE)
-            INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION share/OpenSceneGraph/bin COMPONENT libopenscenegraph-examples )            
+            INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION share/OpenSceneGraph/bin COMPONENT openscenegraph-examples )
         ENDIF(APPLE)
 
 ENDMACRO(SETUP_EXAMPLE)

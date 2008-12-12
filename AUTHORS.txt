@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.7.6
+OpenSceneGraph Library 2.7.7
 
-357 Contributors:
+359 Contributors:
 
 Firstname Surname
 -----------------
@@ -18,8 +18,8 @@ Farshid Lashkari
 Bob Kuehne
 Ulrich Hertlein
 Eric Sokolowsky
-Martin Lavery
 Jean-Sebastien Guay
+Martin Lavery
 David Callu
 Tree 
 Luigi Calori
@@ -33,13 +33,13 @@ Roger James
 Jeremy Moles
 Andy Skinner
 Norman Vine
+Art Tevs
 Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
 Michael Platings
 Jason Beverage
-Art Tevs
 Adrian Egli
 Paul Melis
 Olaf Flebbe
@@ -56,8 +56,8 @@ Daniel Sjölie
 Chris Hanson
 Sherman Wilcox
 Philip Lowman
-Melchior Franz
 Jason Daly
+Melchior Franz
 Chris Denham
 Cedric Pinson
 Serge Lages
@@ -84,6 +84,7 @@ Ben Discoe
 Andreas Ekstrand
 Sasa Bistrovic
 Neil Groves
+Mattias Helsing
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
@@ -114,7 +115,6 @@ Sebastien Grignard
 Romano Magacho
 Richard Schmidt
 Paul de Repentigny
-Mattias Helsing
 Liang Aibin
 Leandro Motta Barros
 John Vidar Larring
@@ -153,14 +153,17 @@ Charles Cole
 Blake Williams
 Antoine Hue
 Andrew Bettison
+Andreas Goebel
 Anders Backman
 Ali Botorabi
 Zach Deedler
 Yuzhong Shen
+Wang Rui
 Tugkan Calapoglu
 Tim Daoust
 Terrex 
 Sylvain Marie
+Sukender 
 Steve Lunsford
 Stephane Simon
 Stephan Eilemann
@@ -192,6 +195,7 @@ Gustavo Wagner
 Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
+Ferdi Smit
 Erik den Dekker
 Edgar Ellis
 David Ergo
@@ -200,11 +204,9 @@ Christophe Loustaunau
 Brad Anderegg
 Andrew Sampson
 Andrew Lorino
-Andreas Goebel
 Zbigniew Sroczynski
 Yuri Vilmanis
 Warren Macchi
-Wang Rui
 Wang Lam
 Walter J. Altice
 Volker Walkiewicz
@@ -277,6 +279,7 @@ Martin Amueller
 Mario Guimaraes
 Marin Lavery
 Marco Lehmann
+Marcin Prus
 Maceij Krol
 Lukas Diduch
 Louis Hamilton
@@ -314,7 +317,6 @@ Frank Warmerdam
 Frank Lindeman
 Frank Lichtenheld
 Ferdinand Cornelissen
-Ferdi Smit
 Fabien Dachicourt
 Ewe Woessner
 Emmanuel Roche

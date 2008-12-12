@@ -15,7 +15,7 @@ subscribe to our public mailing list:
 
 Robert Osfield.
 Project Lead.
-29th October 2008.
+12th December 2008.
 
 --
 

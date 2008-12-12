@@ -62,5 +62,5 @@ ENDIF(WIN32 OR APPLE)
 SET(TARGET_ADDED_LIBRARIES osgWidget osgViewer)
 
 #### end var setup  ###
-SETUP_PLUGIN(gecko)
+SETUP_PLUGIN(gecko gecko)
 

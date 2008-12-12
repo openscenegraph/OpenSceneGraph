@@ -691,6 +691,7 @@ IF(BUILD_DOCUMENTATION)
     ELSE(DOT)
         SET(HAVE_DOT NO)
     ENDIF(DOT)
+    
     # This processes our Doxyfile.in and substitutes paths to generate
     # a final Doxyfile
     CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/doxyfile.cmake
@@ -720,6 +721,10 @@ IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
     SET(OSG_CONFIG_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether this is the first time running CMake or if CMake has been configured before")
 ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
 
+OPTION(BUILD_PACKAGES "Set to ON to generate CPack configuration files and default packaging targets" OFF)
+IF(BUILD_PACKAGES)
+    INCLUDE(OsgCPack)
+ENDIF(BUILD_PACKAGES)
 
 #-----------------------------------------------------------------------------
 ### uninstall target

@@ -22,4 +22,4 @@ SET(TARGET_H
 )
 
 #### end var setup  ###
-SETUP_PLUGIN(vrml)
+SETUP_PLUGIN(vrml vrml)

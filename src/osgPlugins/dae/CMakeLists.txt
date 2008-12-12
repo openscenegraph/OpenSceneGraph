@@ -59,4 +59,4 @@ ENDIF(COLLADA_USE_STATIC)
 SET(TARGET_ADDED_LIBRARIES osgSim ) 
 
 #### end var setup  ###
-SETUP_PLUGIN(dae)
+SETUP_PLUGIN(dae dae)

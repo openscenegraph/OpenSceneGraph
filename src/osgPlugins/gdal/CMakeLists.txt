@@ -13,4 +13,4 @@ SET(TARGET_LIBRARIES_VARS GDAL_LIBRARY )
 SET(TARGET_ADDED_LIBRARIES osgTerrain )
 
 #### end var setup  ###
-SETUP_PLUGIN(gdal)
+SETUP_PLUGIN(gdal gdal)

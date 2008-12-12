@@ -41,13 +41,14 @@ ENDIF(MSVC AND OSG_MSVC_VERSIONED_DLL)
 
 INSTALL(
     TARGETS OpenThreads
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib COMPONENT libopenthreads-dev
+    LIBRARY DESTINATION lib COMPONENT libopenthreads
+    RUNTIME DESTINATION bin COMPONENT libopenthreads
 )
 INSTALL(
     FILES ${OpenThreads_PUBLIC_HEADERS}
     DESTINATION include/OpenThreads
+    COMPONENT libopenthreads-dev
 )
 
 #commented out# INCLUDE(ModuleInstall OPTIONAL)

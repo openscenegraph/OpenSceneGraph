@@ -301,9 +301,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	                      __bool__computeIntersections__float__float__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
 	                      "Compute intersections between a ray through the specified master cameras window/eye coords and a specified node. ",
 	                      "Note, when a master cameras has slaves and no viewport itself its coordinate frame will be in clip space i.e. -1,-1 to 1,1, while if its has a viewport the coordintates will be relative to its viewport dimensions. Mouse events handled by the view will automatically be attached into the master camera window/clip coords so can be passed directly on to the computeIntersections method. ");
-	I_MethodWithDefaults5(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, osg::NodePath &, nodePath, , IN, osgUtil::LineSegmentIntersector::Intersections &, intersections, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	I_MethodWithDefaults5(bool, computeIntersections, IN, float, x, , IN, float, y, , IN, const osg::NodePath &, nodePath, , IN, osgUtil::LineSegmentIntersector::Intersections &, intersections, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
 	                      Properties::NON_VIRTUAL,
-	                      __bool__computeIntersections__float__float__osg_NodePath_R1__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
+	                      __bool__computeIntersections__float__float__C5_osg_NodePath_R1__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
 	                      "Compute intersections between a ray through the specified master cameras window/eye coords and a specified nodePath's subgraph. ",
 	                      "");
 	I_Method0(void, requestRedraw,

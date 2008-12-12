@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osgWidget/Browser>
+#include <osgWidget/PdfReader>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -19,6 +20,33 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+BEGIN_OBJECT_REFLECTOR(osgWidget::Browser)
+	I_DeclaringFile("osgWidget/Browser");
+	I_BaseType(osg::Geode);
+	I_Constructor0(____Browser,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const std::string &, url, , IN, const osgWidget::GeometryHints &, hints, osgWidget::GeometryHints(),
+	                           ____Browser__C5_std_string_R1__C5_GeometryHints_R1,
+	                           "",
+	                           "");
+	I_MethodWithDefaults2(bool, assign, IN, osgWidget::BrowserImage *, browserImage, , IN, const osgWidget::GeometryHints &, hints, osgWidget::GeometryHints(),
+	                      Properties::NON_VIRTUAL,
+	                      __bool__assign__BrowserImage_P1__C5_GeometryHints_R1,
+	                      "",
+	                      "");
+	I_MethodWithDefaults2(bool, open, IN, const std::string &, url, , IN, const osgWidget::GeometryHints &, hints, osgWidget::GeometryHints(),
+	                      Properties::NON_VIRTUAL,
+	                      __bool__open__C5_std_string_R1__C5_GeometryHints_R1,
+	                      "",
+	                      "");
+	I_Method1(void, navigateTo, IN, const std::string &, url,
+	          Properties::NON_VIRTUAL,
+	          __void__navigateTo__C5_std_string_R1,
+	          "",
+	          "");
+END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::BrowserImage)
 	I_DeclaringFile("osgWidget/Browser");
@@ -49,11 +77,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::BrowserManager)
 	I_Method0(const std::string &, getApplication,
 	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getApplication,
-	          "",
-	          "");
-	I_Method1(osgWidget::BrowserImage *, createBrowserImage, IN, const std::string &, url,
-	          Properties::VIRTUAL,
-	          __BrowserImage_P1__createBrowserImage__C5_std_string_R1,
 	          "",
 	          "");
 	I_Method3(osgWidget::BrowserImage *, createBrowserImage, IN, const std::string &, url, IN, int, width, IN, int, height,

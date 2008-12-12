@@ -70,6 +70,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Geode)
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
+	I_Method0(osg::Geode *, asGeode,
+	          Properties::VIRTUAL,
+	          __Geode_P1__asGeode,
+	          "Convert 'this' into a Geode pointer if Node is a Geode, otherwise return 0. ",
+	          "Equivalent to dynamic_cast<Geode*>(this). ");
+	I_Method0(const osg::Geode *, asGeode,
+	          Properties::VIRTUAL,
+	          __C5_Geode_P1__asGeode,
+	          "convert 'const this' into a const Geode pointer if Node is a Geode, otherwise return 0. ",
+	          "Equivalent to dynamic_cast<const Geode*>(this). ");
 	I_Method1(bool, addDrawable, IN, osg::Drawable *, drawable,
 	          Properties::VIRTUAL,
 	          __bool__addDrawable__Drawable_P1,

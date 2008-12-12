@@ -217,9 +217,8 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgViewer::RecordCameraPathHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
-	I_ConstructorWithDefaults1(IN, const std::string &, filename, "saved_animation.path",
-	                           Properties::NON_EXPLICIT,
-	                           ____RecordCameraPathHandler__C5_std_string_R1,
+	I_ConstructorWithDefaults2(IN, const std::string &, filename, "saved_animation.path", IN, float, fps, 25.0f,
+	                           ____RecordCameraPathHandler__C5_std_string_R1__float,
 	                           "",
 	                           "");
 	I_Method1(void, setKeyEventToggleRecord, IN, int, key,

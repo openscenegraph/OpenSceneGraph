@@ -914,7 +914,7 @@ DatabasePager::DatabasePager()
     }
 
 
-    _targetMaximumNumberOfPageLOD = 0;
+    _targetMaximumNumberOfPageLOD = 500;
     if( (ptr = getenv("OSG_MAX_PAGEDLOD")) != 0)
     {
         _targetMaximumNumberOfPageLOD = atoi(ptr);
@@ -922,9 +922,7 @@ DatabasePager::DatabasePager()
     }
 
 
-
-
-    _doPreCompile = true;
+    _doPreCompile = false;
     if( (ptr = getenv("OSG_DO_PRE_COMPILE")) != 0)
     {
         _doPreCompile = strcmp(ptr,"yes")==0 || strcmp(ptr,"YES")==0 ||

@@ -1271,8 +1271,8 @@ void GraphicsWindowCarbon::requestWarpPointer(float x,float y)
     CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
 
     CGPoint point;
-    point.x = x;
-    point.y = y;
+    point.x = x + _traits->x;
+    point.y = y + _traits->y;
     CGDisplayMoveCursorToPoint(displayId, point);
 
     getEventQueue()->mouseWarped(x,y);

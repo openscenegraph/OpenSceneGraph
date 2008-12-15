@@ -215,37 +215,28 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         unsigned int getTargetMaximumNumberOfPageLOD() const { return _targetMaximumNumberOfPageLOD; }
 
 
-        /** Set the amount of time that a subgraph will be kept without being visited in the cull traversal
-          * before being removed.*/
+        /** Deprecated.*/
         void setExpiryDelay(double expiryDelay) { _expiryDelay = expiryDelay; }
         
-        /** Get the amount of time that a subgraph will be kept without being visited in the cull traversal
-          * before being removed.*/
+        /** Deprecated.*/
         double getExpiryDelay() const { return _expiryDelay; }
 
-        /** Set the number of frames that a subgraph will be kept without being visited in the cull traversal
-          * before being removed.*/
+        /** Deprecated.*/
         void setExpiryFrames(int expiryFrames) { _expiryFrames = expiryFrames; }
         
-        /** Get the number of frames that a subgraph will be kept without being visited in the cull traversal
-          * before being removed.*/
+        /** Deprecated.*/
         int getExpiryFrames() const { return _expiryFrames; }
 
-
-        /** Set the amount of time that a subgraph's OpenGL objects will be kept without being visited in the cull traversal
-          * before being released.*/
+        /** Deprecated.*/
         void setReleaseDelay(double releaseDelay);
         
-        /** Get the amount of time that a subgraph's OpenGL objects will be kept without being visited in the cull traversal
-          * before being released.*/
+        /** Deprecated.*/
         double getReleaseDelay() const { return _releaseDelay; }
 
-        /** Set the number of frames that a subgraph's OpenGL objects will be kept without being visited in the cull traversal
-          * before being released.*/
+        /** Deprecated.*/
         void setReleaseFrames(int releaseFrames) { _releaseFrames = releaseFrames; }
         
-        /** Get the number of frames that a subgraph's OpenGL objects will be kept without being visited in the cull traversal
-          * before being released.*/
+        /** Deprecated.*/
         int getReleaseFrames() const { return _releaseFrames; }
 
 

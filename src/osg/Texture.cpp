@@ -1639,30 +1639,32 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
     const char* renderer = (const char*) glGetString(GL_RENDERER);
     std::string rendererString(renderer ? renderer : "");
     
-    _isMultiTexturingSupported = ( glVersion >= 1.3 ) ||
-                                 isGLExtensionSupported(contextID,"GL_ARB_multitexture") ||
-                                 isGLExtensionSupported(contextID,"GL_EXT_multitexture");
+    _isMultiTexturingSupported = isGLExtensionOrVersionSupported( contextID,"GL_ARB_multitexture", 1.3) ||
+                                 isGLExtensionOrVersionSupported(contextID,"GL_EXT_multitexture", 1.3);
+                                 
     _isTextureFilterAnisotropicSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_filter_anisotropic");
-    _isTextureCompressionARBSupported = ( glVersion >= 1.3 ) ||
-                                        isGLExtensionSupported(contextID,"GL_ARB_texture_compression");
+    
+    _isTextureCompressionARBSupported = isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_compression", 1.3);
+    
     _isTextureCompressionS3TCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_s3tc");
-    _isTextureMirroredRepeatSupported = ( glVersion >= 1.4 ) || 
-                                    isGLExtensionSupported(contextID,"GL_IBM_texture_mirrored_repeat") ||
-                                    isGLExtensionSupported(contextID,"GL_ARB_texture_mirrored_repeat");
-    _isTextureEdgeClampSupported = ( glVersion >= 1.2 ) ||
-                                    isGLExtensionSupported(contextID,"GL_EXT_texture_edge_clamp") || 
-                                    isGLExtensionSupported(contextID,"GL_SGIS_texture_edge_clamp");
-    _isTextureBorderClampSupported = ( glVersion >= 1.3 ) ||
-                                    isGLExtensionSupported(contextID,"GL_ARB_texture_border_clamp");
-    _isGenerateMipMapSupported = (strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0) ||
-                                  isGLExtensionSupported(contextID,"GL_SGIS_generate_mipmap");
+    
+    _isTextureMirroredRepeatSupported = isGLExtensionOrVersionSupported(contextID,"GL_IBM_texture_mirrored_repeat", 1.4) ||
+                                        isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_mirrored_repeat", 1.4);
+                                        
+    _isTextureEdgeClampSupported = isGLExtensionOrVersionSupported(contextID,"GL_EXT_texture_edge_clamp", 1.2) || 
+                                   isGLExtensionOrVersionSupported(contextID,"GL_SGIS_texture_edge_clamp", 1.2);
+                                   
+    _isTextureBorderClampSupported = isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3);
+    
+    _isGenerateMipMapSupported = isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4);
+                                  
     _isShadowSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow");
+    
     _isShadowAmbientSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow_ambient");
 
     _isClientStorageSupported = isGLExtensionSupported(contextID,"GL_APPLE_client_storage");
 
-    _isNonPowerOfTwoTextureNonMipMappedSupported = ( glVersion >= 2.0 ) ||
-                                       isGLExtensionSupported(contextID,"GL_ARB_texture_non_power_of_two");
+    _isNonPowerOfTwoTextureNonMipMappedSupported = isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_non_power_of_two", 2.0);
 
     _isNonPowerOfTwoTextureMipMappedSupported = _isNonPowerOfTwoTextureNonMipMappedSupported;
     

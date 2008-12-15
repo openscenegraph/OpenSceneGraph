@@ -306,9 +306,6 @@ class OSG_EXPORT Image : public Object
            return getMipmapData(mipmapLevel) + (column*getPixelSizeInBits())/8+row*getRowSizeInBytes();
         }*/
 
-        /** Build all mipmap levels and change the image type to contain mipmaps **/
-        void buildMipmaps();
-        
         /** Return true if this image is translucent - i.e. it has alpha values that are less 1.0 (when normalized). */
         bool isImageTranslucent() const;
 

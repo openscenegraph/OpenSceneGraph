@@ -350,11 +350,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __C5_unsigned_char_P1__getMipmapData__unsigned_int,
 	          "",
 	          "");
-	I_Method0(void, buildMipmaps,
-	          Properties::NON_VIRTUAL,
-	          __void__buildMipmaps,
-	          "Build all mipmap levels and change the image type to contain mipmaps. ",
-	          "");
 	I_Method0(bool, isImageTranslucent,
 	          Properties::NON_VIRTUAL,
 	          __bool__isImageTranslucent,

@@ -12,6 +12,8 @@
 */
 
 #include <osgTerrain/Terrain>
+#include <osgTerrain/GeometryTechnique>
+
 #include <OpenThreads/ScopedLock>
 
 using namespace osg;
@@ -21,12 +23,14 @@ Terrain::Terrain():
     _sampleRatio(1.0),
     _verticalScale(1.0)
 {
+    _terrainTechnique = new GeometryTechnique;
 }
 
 Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
     osg::Group(ts,copyop),
     _sampleRatio(ts._sampleRatio),
-    _verticalScale(ts._verticalScale)
+    _verticalScale(ts._verticalScale),
+    _terrainTechnique(ts._terrainTechnique)
 {
 }
 

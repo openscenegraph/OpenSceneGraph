@@ -43,8 +43,13 @@ GeometryTechnique::GeometryTechnique():
 }
 
 GeometryTechnique::GeometryTechnique(const GeometryTechnique& gt,const osg::CopyOp& copyop):
-    TerrainTechnique(gt,copyop)
+    TerrainTechnique(gt,copyop),
+    _currentReadOnlyBuffer(1),
+    _currentWriteBuffer(0)
 {
+    setFilterBias(gt._filterBias);
+    setFilterWidth(gt._filterWidth);
+    setFilterMatrix(gt._filterMatrix);
 }
 
 GeometryTechnique::~GeometryTechnique()

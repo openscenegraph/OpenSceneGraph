@@ -107,7 +107,7 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         
 
         /** Set the TerrainTechnique*/
-        void setTerrainTechnique(TerrainTechnique* TerrainTechnique);
+        void setTerrainTechnique(TerrainTechnique* terrainTechnique);
 
         /** Get the TerrainTechnique*/
         TerrainTechnique* getTerrainTechnique() { return _terrainTechnique.get(); }

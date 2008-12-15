@@ -55,7 +55,7 @@ Uniform::~Uniform()
 
 void Uniform::addParent(osg::StateSet* object)
 {
-    osg::notify(osg::INFO)<<"Uniform Adding parent"<<std::endl;
+    osg::notify(osg::DEBUG_FP)<<"Uniform Adding parent"<<std::endl;
 
     _parents.push_back(object);
 }

@@ -13,6 +13,7 @@
 
 #include <osgTerrain/TerrainTile>
 #include <osgTerrain/Terrain>
+#include <osgTerrain/GeometryTechnique>
 
 #include <osg/ClusterCullingCallback>
 
@@ -113,7 +114,9 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
                 }
             }
         }
-            
+        
+        init();
+                    
         _hasBeenTraversal = true;
     }
 
@@ -138,6 +141,19 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
 
 void TerrainTile::init()
 {
+    if (!_terrainTechnique)
+    {        
+        if (_terrain && _terrain->getTerrainTechniquePrototype())
+        {            
+            osg::ref_ptr<osg::Object> object = _terrain->getTerrainTechniquePrototype()->clone(osg::CopyOp::DEEP_COPY_ALL);
+            setTerrainTechnique(dynamic_cast<TerrainTechnique*>(object.get()));
+        }
+        else
+        {
+            setTerrainTechnique(new GeometryTechnique);
+        }
+    }
+
     if (_terrainTechnique.valid() && getDirty())
     {
         _terrainTechnique->init();

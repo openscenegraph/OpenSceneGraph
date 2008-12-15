@@ -914,7 +914,7 @@ DatabasePager::DatabasePager()
     }
 
 
-    _targetMaximumNumberOfPageLOD = 500;
+    _targetMaximumNumberOfPageLOD = 300;
     if( (ptr = getenv("OSG_MAX_PAGEDLOD")) != 0)
     {
         _targetMaximumNumberOfPageLOD = atoi(ptr);

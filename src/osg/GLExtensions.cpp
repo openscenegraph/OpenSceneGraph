@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <float.h>
 
 #include <string>
 #include <vector>
@@ -69,83 +70,94 @@ bool osg::isExtensionInExtensionString(const char *extension, const char *extens
 
 bool osg::isGLExtensionSupported(unsigned int contextID, const char *extension)
 {
+    return osg::isGLExtensionOrVersionSupported(contextID, extension, FLT_MAX);
+}
+
+bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *extension, float requiredGLVersion)
+{
     ExtensionSet& extensionSet = s_glExtensionSetList[contextID];
     std::string& rendererString = s_glRendererList[contextID];
 
-    // if not already set up, initialize all the per graphic context values.
-    if (!s_glInitializedList[contextID])
-    {
-        s_glInitializedList[contextID] = 1;
+    // first check to see if GL version number of recent enough.
+    bool result = requiredGLVersion <= osg::getGLVersionNumber();
     
-        // set up the renderer
-        const GLubyte* renderer = glGetString(GL_RENDERER);
-        rendererString = renderer ? (const char*)renderer : "";
-
-        // get the extension list from OpenGL.
-        const char* extensions = (const char*)glGetString(GL_EXTENSIONS);
-        if (extensions==NULL) return false;
-
-        // insert the ' ' delimiated extensions words into the extensionSet.
-        const char *startOfWord = extensions;
-        const char *endOfWord;
-        while ((endOfWord = strchr(startOfWord,' '))!=NULL)
+    if (!result)
+    {    
+        // if not already set up, initialize all the per graphic context values.
+        if (!s_glInitializedList[contextID])
         {
-            extensionSet.insert(std::string(startOfWord,endOfWord));
-            startOfWord = endOfWord+1;
-        }
-        if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
+            s_glInitializedList[contextID] = 1;
 
-#if defined(WIN32)
+            // set up the renderer
+            const GLubyte* renderer = glGetString(GL_RENDERER);
+            rendererString = renderer ? (const char*)renderer : "";
 
-        // add WGL extensions to the list
+            // get the extension list from OpenGL.
+            const char* extensions = (const char*)glGetString(GL_EXTENSIONS);
+            if (extensions==NULL) return false;
 
-        typedef const char* WINAPI WGLGETEXTENSIONSSTRINGARB(HDC);
-        WGLGETEXTENSIONSSTRINGARB* wglGetExtensionsStringARB = 
-            (WGLGETEXTENSIONSSTRINGARB*)getGLExtensionFuncPtr("wglGetExtensionsStringARB");
-        
-        typedef const char* WINAPI WGLGETEXTENSIONSSTRINGEXT();
-        WGLGETEXTENSIONSSTRINGEXT* wglGetExtensionsStringEXT = 
-            (WGLGETEXTENSIONSSTRINGEXT*)getGLExtensionFuncPtr("wglGetExtensionsStringEXT");
-        
-        const char* wglextensions = 0;
-        
-        if (wglGetExtensionsStringARB)
-        {
-            HDC dc = wglGetCurrentDC();
-            wglextensions = wglGetExtensionsStringARB(dc);
-        }
-        else if (wglGetExtensionsStringEXT)
-        {
-            wglextensions = wglGetExtensionsStringEXT();
-        }
-
-        if (wglextensions)
-        {    
-            const char* startOfWord = wglextensions;
-            const char* endOfWord;
-            while ((endOfWord = strchr(startOfWord, ' ')))
+            // insert the ' ' delimiated extensions words into the extensionSet.
+            const char *startOfWord = extensions;
+            const char *endOfWord;
+            while ((endOfWord = strchr(startOfWord,' '))!=NULL)
             {
-                extensionSet.insert(std::string(startOfWord, endOfWord));
+                extensionSet.insert(std::string(startOfWord,endOfWord));
                 startOfWord = endOfWord+1;
             }
-            if (*startOfWord != 0) extensionSet.insert(std::string(startOfWord));
+            if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
+
+    #if defined(WIN32)
+
+            // add WGL extensions to the list
+
+            typedef const char* WINAPI WGLGETEXTENSIONSSTRINGARB(HDC);
+            WGLGETEXTENSIONSSTRINGARB* wglGetExtensionsStringARB = 
+                (WGLGETEXTENSIONSSTRINGARB*)getGLExtensionFuncPtr("wglGetExtensionsStringARB");
+
+            typedef const char* WINAPI WGLGETEXTENSIONSSTRINGEXT();
+            WGLGETEXTENSIONSSTRINGEXT* wglGetExtensionsStringEXT = 
+                (WGLGETEXTENSIONSSTRINGEXT*)getGLExtensionFuncPtr("wglGetExtensionsStringEXT");
+
+            const char* wglextensions = 0;
+
+            if (wglGetExtensionsStringARB)
+            {
+                HDC dc = wglGetCurrentDC();
+                wglextensions = wglGetExtensionsStringARB(dc);
+            }
+            else if (wglGetExtensionsStringEXT)
+            {
+                wglextensions = wglGetExtensionsStringEXT();
+            }
+
+            if (wglextensions)
+            {    
+                const char* startOfWord = wglextensions;
+                const char* endOfWord;
+                while ((endOfWord = strchr(startOfWord, ' ')))
+                {
+                    extensionSet.insert(std::string(startOfWord, endOfWord));
+                    startOfWord = endOfWord+1;
+                }
+                if (*startOfWord != 0) extensionSet.insert(std::string(startOfWord));
+            }
+
+    #endif
+
+            osg::notify(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
+            for(ExtensionSet::iterator itr=extensionSet.begin();
+                itr!=extensionSet.end();
+                ++itr)
+            {
+                osg::notify(INFO)<<"    "<<*itr<<std::endl;
+            }
+
         }
 
-#endif
-        
-        osg::notify(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
-        for(ExtensionSet::iterator itr=extensionSet.begin();
-            itr!=extensionSet.end();
-            ++itr)
-        {
-            osg::notify(INFO)<<"    "<<*itr<<std::endl;
-        }
-            
+        // true if extension found in extensionSet.
+        result = extensionSet.find(extension)!=extensionSet.end();
     }
-
-    // true if extension found in extensionSet.
-    bool result = extensionSet.find(extension)!=extensionSet.end();
-
+    
     // now see if extension is in the extension disabled list
     bool extensionDisabled = false;
     if (result)

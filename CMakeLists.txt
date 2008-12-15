@@ -720,10 +720,14 @@ IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
     SET(OSG_CONFIG_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether this is the first time running CMake or if CMake has been configured before")
 ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
 
-OPTION(BUILD_PACKAGES "Set to ON to generate CPack configuration files and default packaging targets" OFF)
-IF(BUILD_PACKAGES)
-    INCLUDE(OsgCPack)
-ENDIF(BUILD_PACKAGES)
+# CPack is only available for cmake version >= 2.6.0
+IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
+    # If CMake >= 2.6.0
+    OPTION(BUILD_OSG_PACKAGES "Set to ON to generate CPack configuration files and default packaging targets" OFF)
+    IF(BUILD_OSG_PACKAGES)
+      INCLUDE(OsgCPack)
+    ENDIF(BUILD_OSG_PACKAGES)
+ENDIF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
 
 #-----------------------------------------------------------------------------
 ### uninstall target

@@ -65,7 +65,7 @@ ENDIF(OSG_CPACK_COMPILER)
 # expose this to the user/packager
 SET(CPACK_PACKAGE_CONTACT "" CACHE STRING "Supply contact information (email) here")
 ## variables that apply to all packages
-SET(CPACK_PACKAGE_NAME ${CMAKE_PROJECT_NAME} ${OPENSCENEGRAPH_VERSION})
+SET(CPACK_PACKAGE_NAME ${CMAKE_PROJECT_NAME})
 SET(CPACK_PACKAGE_FILE_NAME "openscenegraph-all-${OPENSCENEGRAPH_VERSION}-${OSG_CPACK_SYSTEM_SPEC_STRING}")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The OpenSceneGraph is an open source high performance 3d graphics toolkit")
 SET(CPACK_PACKAGE_VENDOR "The OpenSceneGraph authors")
@@ -117,17 +117,16 @@ ENDIF(WIN32 AND NOT UNIX)
 # make the best use I could of the targets that including CPack implies
 INCLUDE(CPack)
 
-# includiong CPack will generate a PACKAGE project on MSVC and package/package_src target on unixes. For MSVC also create a PACKAGE_SOURCE
-IF(MSVC_IDE)
-    ADD_CUSTOM_TARGET("PACKAGE-SOURCE" 
-        COMMAND ${CMAKE_CPACK_COMMAND} --config ${OpenSceneGraph_BINARY_DIR}/CPackSourceConfig.cmake
-    )
-ENDIF(MSVC_IDE)
-
 # including CPack also has the benefit of creating this nice variable which is a collection of all defined COMPONENTS
 # Create configs and targets for each component
 FOREACH(package ${CPACK_COMPONENTS_ALL})
-    SET(CPACK_PACKAGE_FILE_NAME ${package}-${OPENSCENEGRAPH_VERSION}-${OSG_CPACK_SYSTEM_SPEC_STRING})
+    # the doc packages don't need a system-arch specification
+    IF(${package} MATCHES -doc)
+        SET(CPACK_PACKAGE_FILE_NAME ${package}-${OPENSCENEGRAPH_VERSION})
+    ELSE(${package} MATCHES -doc)
+        SET(CPACK_PACKAGE_FILE_NAME ${package}-${OPENSCENEGRAPH_VERSION}-${OSG_CPACK_SYSTEM_SPEC_STRING})
+    ENDIF(${package} MATCHES -doc)
+
     SET(OSG_CPACK_COMPONENT ${package})
     CONFIGURE_FILE("${OpenSceneGraph_SOURCE_DIR}/CMakeModules/OsgCPackConfig.cmake.in" "${OpenSceneGraph_BINARY_DIR}/CPackConfig-${OSG_CPACK_COMPONENT}.cmake" IMMEDIATE)
 

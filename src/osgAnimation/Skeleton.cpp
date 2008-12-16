@@ -52,15 +52,15 @@ struct updateMatrixVisitor : public osg::NodeVisitor
         }
 
         if (parent)
-            bone->_boneInSkeletonSpace = bone->getMatrixInBoneSpace() * bone->getBoneParent()->getMatrixInSkeletonSpace();
+            bone->setBoneInSkeletonSpace(bone->getMatrixInBoneSpace() * bone->getBoneParent()->getMatrixInSkeletonSpace());
         else
-            bone->_boneInSkeletonSpace = bone->getMatrixInBoneSpace();// * _skeleton;
+            bone->setBoneInSkeletonSpace(bone->getMatrixInBoneSpace());
 
         traverse(node);
     }
 };
 
-void Skeleton::UpdateCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
+void Skeleton::UpdateSkeleton::operator()(osg::Node* node, osg::NodeVisitor* nv)
 { 
     if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
     {
@@ -72,23 +72,18 @@ void Skeleton::UpdateCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
             // process. It's important to update Bone before other things because the update
             // of RigGeometry need it
             updateMatrixVisitor visitor;
-#if 0
-            visitor._skeleton = b->getMatrix();
-            int numChildren = b->getNumChildren();
-            for (int i = 0; i < numChildren; i++) 
-            {
-                b->getChild(i)->accept(visitor);
-            }
-#else
             b->accept(visitor);
-#endif
         }
     }
     traverse(node,nv);
 }
 
 
-Skeleton::Skeleton() 
+Skeleton::Skeleton()
 {
-    setUpdateCallback(new UpdateCallback());
+}
+
+void Skeleton::setDefaultUpdateCallback()
+{
+    setUpdateCallback(new Skeleton::UpdateSkeleton );
 }

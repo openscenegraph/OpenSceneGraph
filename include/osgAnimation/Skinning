@@ -153,7 +153,7 @@ namespace osgAnimation
                 if (!_boneSetVertexSet[i].getBones().empty() && 
                     (sumOfWeight < 1.0 - threshold ||  sumOfWeight > 1.0 + threshold))
                 {
-                    for (int b = 0; b < boneList.size(); b++)
+                    for (int b = 0; b < (int)boneList.size(); b++)
                         boneList[b].setWeight(boneList[b].getWeight() / sumOfWeight);
                 }
                 _boneSetVertexSet[i].getVertexes() = inf.getVertexes();

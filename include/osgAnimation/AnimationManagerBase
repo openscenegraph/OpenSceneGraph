@@ -12,78 +12,39 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGANIMATION_ANIMATIONMANAGERBASE_H
-#define OSGANIMATION_ANIMATIONMANAGERBASE_H
+#ifndef OSGANIMATION_ANIMATION_MANAGER_BASE_H
+#define OSGANIMATION_ANIMATION_MANAGER_BASE_H
 
 #include <osgAnimation/Animation>
 #include <osgAnimation/Export>
 #include <osg/FrameStamp>
 #include <osg/Group>
 
+
+
 namespace osgAnimation
 {
-
-    class OSGANIMATION_EXPORT AnimationManagerBase : public osg::Group
+    class OSGANIMATION_EXPORT AnimationManagerBase : public osg::NodeCallback
     {
     public:
         typedef std::set<osg::ref_ptr<Target> > TargetSet;
-        struct UpdateCallback : public osg::NodeCallback
-        {
-            /** Callback method called by the NodeVisitor when visiting a node.*/
-            virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-            { 
-                if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
-                {
-                    AnimationManagerBase* b = dynamic_cast<AnimationManagerBase*>(node);
-                    if (b) 
-                    {
-                        if (b->needToLink())
-                        {
-                            /** manager need to link, it means that an animation has been added
-                                so we need to relink all item animated with all animations.
-                                We apply the linker visitor on the manager node to affect
-                                all its children.
-                                But it should not be done here, it should be done in the
-                                update of AnimationManager
-                            */
-                            b->link();
-                        }
-                        const osg::FrameStamp* fs = nv->getFrameStamp();
-                        b->update(fs->getSimulationTime());
-                    }
-                }
-                traverse(node,nv);
-            }
-        };
 
         AnimationManagerBase();
-        AnimationManagerBase(const AnimationManagerBase& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : 
-            osg::Group(b,copyop) 
-        {
-            _animations = b._animations;
-            _targets = b._targets;
-            _needToLink = b._needToLink;
-        }
+        AnimationManagerBase(const AnimationManagerBase& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY);
         virtual ~AnimationManagerBase();
-
-        virtual void update (double time) = 0;
         virtual void buildTargetReference();
         virtual void registerAnimation (Animation* animation);
-        virtual void link();
+        virtual void link(osg::Node* subgraph);
+        virtual void update(double t) = 0;
         virtual bool needToLink() const;
         const AnimationList& getAnimationList() const { return _animations;}
-        AnimationMap getAnimationMap() const;
 
-        void clearTargets()
-        {
-            for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
-                (*it).get()->reset();
-        }
-        void normalizeTargets()
-        {
-            for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
-                (*it).get()->normalize();
-        }
+        /** Callback method called by the NodeVisitor when visiting a node.*/
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
+
+        /// Operation that must be done each frame
+        void clearTargets();
+        void normalizeTargets();
 
 
     protected:
@@ -91,8 +52,6 @@ namespace osgAnimation
         AnimationList _animations;
         TargetSet _targets;
         bool _needToLink;
-
     };
-
 }
 #endif

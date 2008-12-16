@@ -13,35 +13,28 @@
 */
 
 #include <osgAnimation/Timeline>
+#include <osgAnimation/TimelineAnimationManager>
 
 using namespace osgAnimation;
 
-
-Timeline::Timeline()
+TimelineAnimationManager::TimelineAnimationManager()
 {
-    _lastUpdate = 0;
-    _currentFrame = 0;
-    _fps = 25;
-    _speed = 1.0;
-    _state = Stop;
-    _initFirstFrame = false;
-    _previousFrameEvaluated = 0;
-    _evaluating = 0;
-    _numberFrame = -1; // something like infinity
-    setName("Timeline");
+    _timeline = new Timeline;
 }
 
-Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op) : osg::Object(nc, op),
-    _actions(nc._actions)
+TimelineAnimationManager::TimelineAnimationManager(const AnimationManagerBase& manager) : AnimationManagerBase(manager)
 {
-    _lastUpdate = 0;
-    _currentFrame = 0;
-    _fps = 25;
-    _speed = 1.0;
-    _state = Stop;
-    _initFirstFrame = false;
-    _previousFrameEvaluated = 0;
-    _evaluating = 0;
-    _numberFrame = -1; // something like infinity
-    setName("Timeline");
+    _timeline = new Timeline;
+}
+
+TimelineAnimationManager::TimelineAnimationManager(const TimelineAnimationManager& nc,const osg::CopyOp& co) : AnimationManagerBase(nc, co)
+{
+    _timeline = new Timeline(*nc.getTimeline());
+}
+
+void TimelineAnimationManager::update(double time)
+{
+    clearTargets();
+    _timeline->update(time);
+    normalizeTargets();
 }

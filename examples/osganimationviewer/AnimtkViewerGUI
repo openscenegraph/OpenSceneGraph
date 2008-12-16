@@ -25,22 +25,22 @@
 #include <osgWidget/WindowManager>
 
 class AnimtkViewerGUI: public osgWidget::WindowManager {
-	osg::ref_ptr<osgWidget::Box> _buttonBox;
-	osg::ref_ptr<osgWidget::Box> _listBox;
-	osg::ref_ptr<osgWidget::Box> _labelBox;
+    osg::ref_ptr<osgWidget::Box> _buttonBox;
+    osg::ref_ptr<osgWidget::Box> _listBox;
+    osg::ref_ptr<osgWidget::Box> _labelBox;
 
 protected:
-	osgWidget::Widget* _createButton(const std::string&);
-	
-	bool _buttonPush(osgWidget::Event&);
-	bool _listMouseHover(osgWidget::Event&);
+    osgWidget::Widget* _createButton(const std::string&);
+    
+    bool _buttonPush(osgWidget::Event&);
+    bool _listMouseHover(osgWidget::Event&);
 
-	void _createButtonBox();
-	void _createListBox();
-	void _createLabelBox();
+    void _createButtonBox();
+    void _createListBox();
+    void _createLabelBox();
 
 public:
-	AnimtkViewerGUI(osgViewer::View*, float, float, unsigned int);
+    AnimtkViewerGUI(osgViewer::View*, float, float, unsigned int);
 };
 
 #endif

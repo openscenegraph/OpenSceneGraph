@@ -30,30 +30,8 @@
 #include <osgAnimation/Keyframe>
 #include <osgAnimation/UpdateCallback>
 #include <osgAnimation/Animation>
-#include <osgAnimation/AnimationManager>
+#include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/VertexInfluence>
-
-namespace osgAnimation 
-{
-    
-    inline osg::Matrix operator* (const osg::Matrix matrix, double v)
-    {
-        osg::Matrix result;
-        for (int i = 0; i < 16; i++)
-            result.ptr()[i] = matrix.ptr()[i] * v;
-        return result;
-    }
-
-    inline osg::Matrix operator+ (const osg::Matrix a, const osg::Matrix b)
-    {
-        osg::Matrix result;
-        for (int i = 0; i < 16; i++)
-            result.ptr()[i] = a.ptr()[i] + b.ptr()[i];
-        return result;
-    }
-
-}
-
 
 namespace osgAnimation 
 {
@@ -68,19 +46,10 @@ namespace osgAnimation
         typedef osg::Matrix MatrixType;
 
         META_Node(osgAnimation, Bone);
-        Bone(const Bone& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : 
-            osg::Transform(b,copyop),
-            _position(b._position),
-            _rotation(b._rotation),
-            _scale(b._scale) {}
+        Bone(const Bone& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY);
+        Bone(const std::string& name = "");
 
-        Bone(const std::string& name = "")
-        { 
-            setName(name); 
-            _needToRecomputeBindMatrix = false;
-            setUpdateCallback(new UpdateBone(name));
-        }
-
+        void setDefaultUpdateCallback(const std::string& name = "");
 
         struct BoneMapVisitor : public osg::NodeVisitor
         {
@@ -103,11 +72,18 @@ namespace osgAnimation
         {
             osg::ref_ptr<osgAnimation::AnimationManagerBase> _manager;
             FindNearestParentAnimationManager() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
-            void apply(osg::Group& node) 
+            void apply(osg::Node& node)
             {
                 if (_manager.valid())
                     return;
-                _manager = dynamic_cast<osgAnimation::AnimationManagerBase*>(&node);
+                osg::NodeCallback* callback = node.getUpdateCallback();
+                while (callback) 
+                {
+                    _manager = dynamic_cast<osgAnimation::AnimationManagerBase*>(callback);
+                    if (_manager.valid())
+                        return;
+                    callback = callback->getNestedCallback();
+                }
                 traverse(node);
             }
         };
@@ -219,24 +195,8 @@ namespace osgAnimation
             }
         };
 
-
-
-        osg::Vec3 _position;
-        osg::Quat _rotation;
-        osg::Vec3 _scale;
-
         virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;
         virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;
-
-        // flag to recompute bind pose
-        bool _needToRecomputeBindMatrix;
-
-        // bind data
-        osg::Matrix _bindInBoneSpace;
-        osg::Matrix _invBindInSkeletonSpace;
-
-        // bone updated
-        osg::Matrix _boneInSkeletonSpace;
 
         Bone* getBoneParent();
         const Bone* getBoneParent() const;
@@ -251,7 +211,7 @@ namespace osgAnimation
         const osg::Matrix& getBindMatrixInBoneSpace() const { return _bindInBoneSpace; }
         const osg::Matrix& getMatrixInSkeletonSpace() const { return _boneInSkeletonSpace; }
         const osg::Matrix& getInvBindMatrixInSkeletonSpace() const { return _invBindInSkeletonSpace;}
-
+        void setBoneInSkeletonSpace(const osg::Matrix& matrix) { _boneInSkeletonSpace = matrix; }
         void setBindMatrixInBoneSpace(const osg::Matrix& matrix) 
         {
             _bindInBoneSpace = matrix;
@@ -262,7 +222,7 @@ namespace osgAnimation
         virtual void computeBindMatrix();
 
         bool needLink() const;
-    
+
         void setNeedToComputeBindMatrix(bool state) { _needToRecomputeBindMatrix = state; }
 
         /** Add Node to Group.
@@ -274,6 +234,24 @@ namespace osgAnimation
         virtual bool addChild( Node *child );
         BoneMap getBoneMap();
 
+
+    protected:
+
+        osg::Vec3 _position;
+        osg::Quat _rotation;
+        osg::Vec3 _scale;
+
+
+        // flag to recompute bind pose
+        bool _needToRecomputeBindMatrix;
+
+        // bind data
+        osg::Matrix _bindInBoneSpace;
+        osg::Matrix _invBindInSkeletonSpace;
+
+        // bone updated
+        osg::Matrix _boneInSkeletonSpace;
+    
     };
 
 

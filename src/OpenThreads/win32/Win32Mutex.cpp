@@ -93,7 +93,6 @@ Mutex::Mutex() {
 // Use: public.
 //
 Mutex::~Mutex() {
-    unlock();
     delete static_cast<Win32MutexPrivateData*>(_prvData);
 }
 //----------------------------------------------------------------------------

@@ -356,8 +356,7 @@ void VertexBufferObject::compileBuffer(State& state) const
     // osg::notify(osg::NOTICE)<<"VertexBufferObject::compileBuffer frameNumber="<<state.getFrameStamp()->getFrameNumber()<<std::endl;
 
     unsigned int totalSizeRequired = 0;
-//    unsigned int numModified = 0;
-//    unsigned int numNotModified = 0;
+    unsigned int numNewArrays = 0;
     for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
         itr != _bufferEntryArrayPairs.end();
         ++itr)
@@ -366,6 +365,7 @@ void VertexBufferObject::compileBuffer(State& state) const
         if (bep.second)
         {
             totalSizeRequired += bep.second->getTotalDataSize();
+            if (bep.first.dataSize == 0) ++numNewArrays;
         }
     }
 
@@ -402,9 +402,8 @@ void VertexBufferObject::compileBuffer(State& state) const
 
     typedef std::map<unsigned int,std::vector<unsigned int> > SizePosMap_t;
     SizePosMap_t freeList;
-    if (copyAll == false)
+    if (copyAll == false && numNewArrays > 0)
     {
-        unsigned int numNewArrays = 0;
         std::map<unsigned int,unsigned int> usedList;
         for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
             itr != _bufferEntryArrayPairs.end();

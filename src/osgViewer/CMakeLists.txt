@@ -86,7 +86,22 @@ ELSE(WIN32)
     ELSE(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
 
         # X11 for everybody else
-        OPTION(OSGVIEWER_USE_XRANDR "Set to ON to enable Xrandr support for GraphicsWindowX11." OFF)
+
+
+        INCLUDE(FindPkgConfig)
+        IF (PKG_CONFIG_FOUND)
+
+            PKG_CHECK_MODULES(XRANDR xrandr)
+            
+            IF (XRANDR_FOUND) 
+                OPTION(OSGVIEWER_USE_XRANDR "Set to ON to enable Xrandr support for GraphicsWindowX11." ON)
+            ELSE(XRANDR_FOUND) 
+                SET(OSGVIEWER_USE_XRANDR OFF)
+            ENDIF (XRANDR_FOUND)
+        ELSE(PKG_CONFIG_FOUND)
+            SET(OSGVIEWER_USE_XRANDR OFF)
+        ENDIF(PKG_CONFIG_FOUND)
+
 
         SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
             ${HEADER_PATH}/api/X11/GraphicsWindowX11
@@ -99,8 +114,6 @@ ELSE(WIN32)
         )
         
         IF(OSGVIEWER_USE_XRANDR)
-            INCLUDE(FindPkgConfig)
-            PKG_CHECK_MODULES(XRANDR REQUIRED xrandr)
             ADD_DEFINITIONS(-DOSGVIEWER_USE_XRANDR)
             SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} ${XRANDR_INCLUDE_DIRS})
             LINK_LIBRARIES(Xrandr)

@@ -237,17 +237,17 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
 
     // Return the resolution of specified screen
     // (0,0) is returned if screen is unknown
-    virtual void getScreenResolution( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height );
+    virtual void getScreenSettings( const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution );
 
     // Return the bits per pixel of specified screen
     // (0) is returned if screen is unknown
     virtual void getScreenColorDepth( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& dmBitsPerPel );
 
     // Set the resolution for given screen
-    virtual bool setScreenResolution( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int width, unsigned int height );
+    virtual bool setScreenSettings( const osg::GraphicsContext::ScreenIdentifier& si, const osg::GraphicsContext::ScreenSettings & resolution );
 
-    // Set the refresh rate for given screen
-    virtual bool setScreenRefreshRate( const osg::GraphicsContext::ScreenIdentifier& si, double refreshRate );
+    // Enumerates available resolutions
+    virtual void enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, osg::GraphicsContext::ScreenSettingsList & resolution);
 
     // Return the screen position and width/height.
     // all zeros returned if screen is unknown
@@ -800,21 +800,40 @@ bool Win32WindowingSystem::getScreenInformation( const osg::GraphicsContext::Scr
     return true;
 }
 
-void Win32WindowingSystem::getScreenResolution( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height )
+void Win32WindowingSystem::getScreenSettings( const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution )
 {
     DISPLAY_DEVICE displayDevice;
     DEVMODE        deviceMode;
 
-    if (getScreenInformation(si, displayDevice, deviceMode))
-    {
-        width  = deviceMode.dmPelsWidth;
-        height = deviceMode.dmPelsHeight;
+    if (!getScreenInformation(si, displayDevice, deviceMode))
+        deviceMode.dmFields = 0;        // Set the fields to 0 so that it says 'nothing'.
+
+    // Get resolution
+    if ((deviceMode.dmFields & (DM_PELSWIDTH | DM_PELSHEIGHT)) != 0) {
+        resolution.width  = deviceMode.dmPelsWidth;
+        resolution.height = deviceMode.dmPelsHeight;
+    } else {
+        resolution.width  = 0;
+        resolution.height = 0;
     }
+
+    // Get refersh rate
+    if ((deviceMode.dmFields & DM_DISPLAYFREQUENCY) != 0) {
+        resolution.refreshRate = deviceMode.dmDisplayFrequency;
+        if (resolution.refreshRate == 0 || resolution.refreshRate == 1) {
+            // Windows specific: 0 and 1 represent the hhardware's default refresh rate.
+            // If someone knows how to get this refresh rate (in Hz)...
+            osg::notify(osg::NOTICE) << "Win32WindowingSystem::getScreenSettings() is not fully implemented (cannot retreive the hardware's default refresh rate)."<<std::endl;
+            resolution.refreshRate = 0;
+        }
+    } else
+        resolution.refreshRate = 0;
+
+    // Get bits per pixel for color buffer
+    if ((deviceMode.dmFields & DM_BITSPERPEL) != 0)
+        resolution.colorDepth = deviceMode.dmBitsPerPel;
     else
-    {
-        width  = 0;
-        height = 0;
-    }
+        resolution.colorDepth = 0;
 }
 
 void Win32WindowingSystem::getScreenColorDepth( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& dmBitsPerPel )
@@ -859,36 +878,65 @@ bool Win32WindowingSystem::changeScreenSettings( const osg::GraphicsContext::Scr
     return false;
 }
 
-bool Win32WindowingSystem::setScreenResolution( const osg::GraphicsContext::ScreenIdentifier& si, unsigned int width, unsigned int height )
+bool Win32WindowingSystem::setScreenSettings( const osg::GraphicsContext::ScreenIdentifier& si, const osg::GraphicsContext::ScreenSettings & resolution )
 {
     DISPLAY_DEVICE displayDevice;
     DEVMODE        deviceMode;
 
     if (!getScreenInformation(si, displayDevice, deviceMode)) return false;
 
-    deviceMode.dmFields     = DM_PELSWIDTH | DM_PELSHEIGHT;
-    deviceMode.dmPelsWidth  = width;
-    deviceMode.dmPelsHeight = height;
+    deviceMode.dmFields = 0;
+    // Set resolution
+    if (resolution.width>0 && resolution.height>0) {
+        deviceMode.dmFields    |= DM_PELSWIDTH | DM_PELSHEIGHT;
+        deviceMode.dmPelsWidth  = static_cast<DWORD>(resolution.width);
+        deviceMode.dmPelsHeight = static_cast<DWORD>(resolution.height);
+    }
+    // Set refersh rate
+    if (resolution.refreshRate>0) {
+        deviceMode.dmFields           |= DM_DISPLAYFREQUENCY;
+        deviceMode.dmDisplayFrequency  = static_cast<DWORD>(resolution.refreshRate);
+    }
+    // Set bits per pixel for color buffer
+    if (resolution.colorDepth>0) {
+        deviceMode.dmFields     |= DM_BITSPERPEL;
+        deviceMode.dmBitsPerPel  = static_cast<DWORD>(resolution.colorDepth);
+    }
     
     return changeScreenSettings(si, displayDevice, deviceMode);
 }
 
-bool Win32WindowingSystem::setScreenRefreshRate( const osg::GraphicsContext::ScreenIdentifier& si, double refreshRate )
-{
-    DISPLAY_DEVICE displayDevice;
-    DEVMODE        deviceMode;
+void Win32WindowingSystem::enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettingsList & resolutionList) {
+    resolutionList.clear();
 
-    unsigned int width, height;
-    getScreenResolution(si, width, height);
+    if (si.displayNum>0)
+    {
+        osg::notify(osg::WARN) << "Win32WindowingSystem::enumerateScreenSettings() - The screen identifier on the Win32 platform must always use display number 0. Value received was " << si.displayNum << std::endl;
+        return;
+    }
 
-    if (!getScreenInformation(si, displayDevice, deviceMode)) return false;
+    DisplayDevices displayDevices;
+    enumerateDisplayDevices(displayDevices);
 
-    deviceMode.dmFields           = DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY;
-    deviceMode.dmPelsWidth        = width;
-    deviceMode.dmPelsHeight       = height;
-    deviceMode.dmDisplayFrequency = (DWORD)refreshRate;
-    
-    return changeScreenSettings(si, displayDevice, deviceMode);
+    if (si.screenNum>=static_cast<int>(displayDevices.size()))
+    {
+        osg::notify(osg::WARN) << "Win32WindowingSystem::enumerateScreenSettings() - Cannot get information for screen " << si.screenNum << " because it does not exist." << std::endl;
+        return;
+    }
+
+    DISPLAY_DEVICE displayDevice = displayDevices[si.screenNum];
+
+    // Do the enumeration
+    DEVMODE deviceMode;
+    static const unsigned int MAX_RESOLUTIONS = 4046;        // Upper limit to avoid infinite (= very long) loop.
+    for (unsigned int i=0; i<MAX_RESOLUTIONS; ++i)
+    {
+        if (!::EnumDisplaySettings(displayDevice.DeviceName, i, &deviceMode))
+            break;
+        deviceMode.dmSize        = sizeof(deviceMode);
+        deviceMode.dmDriverExtra = 0;
+        resolutionList.push_back(osg::GraphicsContext::ScreenSettings(deviceMode.dmPelsWidth, deviceMode.dmPelsHeight, deviceMode.dmDisplayFrequency, deviceMode.dmBitsPerPel));
+    }
 }
 
 void Win32WindowingSystem::getScreenPosition( const osg::GraphicsContext::ScreenIdentifier& si, int& originX, int& originY, unsigned int& width, unsigned int& height )

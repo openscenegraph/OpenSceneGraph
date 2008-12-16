@@ -41,7 +41,7 @@ struct ButtonFunctor: public WidgetSampler
     float _previous;
 
     const float _speed;
-	
+    
     ButtonFunctor(): _speed(5) { _direction = -_speed; _previous = 0;}
 
     bool enter(osgWidget::Event& ev)
@@ -229,7 +229,7 @@ AnimtkViewerGUI::AnimtkViewerGUI(osgViewer::View* view, float w, float h, unsign
 osgWidget::Widget* AnimtkViewerGUI::_createButton(const std::string& name) 
 {
     osgWidget::Widget* b = new osgWidget::Widget(name, 64.0f, 64.0f);
-	
+    
     if(!b) return 0;
 
     b->setImage(IMAGE_PATH + name + ".png", true);
@@ -237,7 +237,7 @@ osgWidget::Widget* AnimtkViewerGUI::_createButton(const std::string& name)
 
     ButtonFunctor* bt = new ButtonFunctor();
     b->setUpdateCallback(bt);
-	
+    
     b->addCallback(new osgWidget::Callback(&ButtonFunctor::enter, bt, osgWidget::EVENT_MOUSE_ENTER));
     b->addCallback(new osgWidget::Callback(&ButtonFunctor::leave, bt, osgWidget::EVENT_MOUSE_LEAVE));
     b->addCallback(new osgWidget::Callback(&AnimtkViewerGUI::_buttonPush, this, osgWidget::EVENT_MOUSE_PUSH));
@@ -259,7 +259,7 @@ bool AnimtkViewerGUI::_listMouseHover(osgWidget::Event& ev)
     else if(ev.type == osgWidget::EVENT_MOUSE_PUSH) {
         AnimtkViewerModelController::instance().playByName(ev.getWidget()->getName());
     }
-	
+    
     else return false;
 
     return true;
@@ -293,11 +293,11 @@ bool AnimtkViewerGUI::_buttonPush(osgWidget::Event& ev)
         l->setLabel(mc.getCurrentAnimationName());
         lf->setActive(true);
     }
-	
+    
     else if(name == "back") 
 {
         mc.previous();
-		
+        
         l->setFontColor(osg::Vec4(0.0f, 0.0f, 0.0f, 0.7f));
         l->setLabel(mc.getCurrentAnimationName());
         lf->setActive(true);
@@ -345,7 +345,7 @@ void AnimtkViewerGUI::_createButtonBox()
     _buttonBox->addWidget(open);
     _buttonBox->addWidget(osg::clone(space, "space1", osg::CopyOp::DEEP_COPY_ALL));
     _buttonBox->getBackground()->setColor(0.0f, 0.0f, 0.0f, 0.7f);
-	
+    
     _buttonBox->setEventMask(osgWidget::EVENT_MASK_MOUSE_DRAG);
     _buttonBox->addCallback(new osgWidget::Callback(&eatDrag, osgWidget::EVENT_MOUSE_DRAG));
 }
@@ -392,7 +392,7 @@ void AnimtkViewerGUI::_createLabelBox()
     _labelBox = new osgWidget::Box("labelBox", osgWidget::Box::VERTICAL);
 
     osgWidget::Label* label = new osgWidget::Label("label");
-	
+    
     label->setFont("fonts/Vera.ttf");
     label->setFontSize(50);
     label->setFontColor(0.0f, 0.0f, 0.0f, 0.7f);

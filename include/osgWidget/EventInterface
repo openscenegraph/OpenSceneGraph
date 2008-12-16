@@ -397,7 +397,7 @@ class OSGWIDGET_EXPORT EventInterface
         bool canKeyUp   () const { return (_eventMask & EVENT_KEY_UP) != 0; }
 
     private:
-        typedef std::list<osg::ref_ptr<Callback> > CallbackList;
+        typedef std::list<osg::observer_ptr<Callback> > CallbackList;
 
         unsigned int _eventMask;
         CallbackList _callbacks;

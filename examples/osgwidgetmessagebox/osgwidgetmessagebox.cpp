@@ -118,6 +118,7 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
     osg::ref_ptr<osgWidget::Frame> _frame;
     float _width;
     float _height;
+    osg::Matrix _matrix;
     EventOK(osgWidget::Frame* frame) : osgWidget::Callback(osgWidget::EVENT_ALL), _frame(frame) 
     {
         _motionOver = WidgetMotion(0.0, 0.4);
@@ -138,13 +139,20 @@ struct EventOK : public osgWidget::Callback, osg::NodeCallback
             _width = _frame->getWidth();
             _height = _frame->getHeight();
             _motionOver.reset();
+            _matrix = _frame->getMatrix();
+            //_frame->setMatrix(osg::Matrix::scale(2, 2, 1) * _frame->getMatrix());
+            _frame->setScale(1.1f); //osg::Matrix::scale(2, 2, 1) * _frame->getMatrix());
+            _frame->update(); //osg::Matrix::scale(2, 2, 1) * _frame->getMatrix());
             std::cout << "enter" << std::endl;
             return true;
         }
-        else if (ev.type == osgWidget::EVENT_MOUSE_LEAVE) 
+        else if (ev.type == osgWidget::EVENT_MOUSE_LEAVE)
         {
             _over = false;
             _motionLeave.reset();
+            //_frame->setMatrix(_matrix);
+            _frame->setScale(1.0f);
+            _frame->update();
             std::cout << "leave" << std::endl;
             return true;
         }
@@ -218,7 +226,9 @@ osgWidget::Frame* MessageBox::createButtonOk(const std::string& theme,
     osgWidget::Color colorBack = frame->getEmbeddedWindow()->getColor();
     box->getBackground()->setColor(colorBack);
     frame->getEmbeddedWindow()->setWindow(box);
+    box->setVisibilityMode(osgWidget::Window::VM_ENTIRE);
     box->setEventMask(osgWidget::EVENT_NONE);
+    frame->setVisibilityMode(osgWidget::Window::VM_ENTIRE);
 
     frame->resizeFrame(box->getWidth(), box->getHeight());
     frame->resizeAdd(0, 0);
@@ -255,8 +265,12 @@ bool MessageBox::create(const std::string& themeMessage,
 
     _button = createButtonOk(themeButton, buttonText, font, fontSize);
     osgWidget::Widget* buttonOK = _button->embed();
+    _button->setVisibilityMode(osgWidget::Window::VM_ENTIRE);
     buttonOK->setColor(osgWidget::Color(0,0,0,0));
     buttonOK->setCanFill(false);
+
+    labelTitle->setPadBottom(30.0f);
+    labelText->setPadBottom(30.0f);
 
     box->addWidget(buttonOK);
     box->addWidget(labelText);
@@ -325,12 +339,14 @@ int main(int argc, char** argv)
     osgWidget::point_type hw = message.getWindow()->getHeight();
     osgWidget::point_type ox = (w - ww) / 2;
     osgWidget::point_type oy = (h - hw) / 2;
-    message.getWindow()->setPosition(osgWidget::Point(ox, oy, message.getWindow()->getPosition()[2] ));
+    message.getWindow()->setPosition(osgWidget::Point(
+        osg::round(ox), osg::round(oy), message.getWindow()->getPosition()[2])
+    );
 //    frame->resizeAdd(30, 30);
 
 //    AlphaSetterVisitor alpha(.8f);
 //    frame->accept(alpha);
-    return osgWidget::createExample(viewer, wm, osgDB::readNodeFile("cow.osg"));
+    return osgWidget::createExample(viewer, wm); //osgDB::readNodeFile("cow.osg"));
 
 }
 
@@ -566,6 +582,7 @@ osgWidget::Window* createButtonOk(const std::string& theme, const std::string& t
     osgWidget::Color colorBack = frame->getEmbeddedWindow()->getColor();
     box->getBackground()->setColor(colorBack);
     frame->getEmbeddedWindow()->setWindow(box);
+    box->setVisibilityMode(osgWidget::Window::VM_ENTIRE);
     box->setEventMask(osgWidget::EVENT_NONE);
 
     frame->resizeFrame(box->getWidth(), box->getHeight());

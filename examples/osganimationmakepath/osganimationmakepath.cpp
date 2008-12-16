@@ -234,10 +234,10 @@ public:
 osg::StateSet* setupStateSet() 
 {
     osg::StateSet* st = new osg::StateSet();
-	
+    
     st->setAttributeAndModes(new osg::Material(), true);
     st->setMode(GL_BLEND, true);
-	
+    
     AnimtkStateSetUpdateCallback* callback = new AnimtkStateSetUpdateCallback();
     osgAnimation::Vec4KeyframeContainer* keys = callback->_sampler->getOrCreateKeyframeContainer();
     keys->push_back(osgAnimation::Vec4Keyframe(0, osg::Vec4(1,0,0,1)));
@@ -248,7 +248,7 @@ osg::StateSet* setupStateSet()
     keys->push_back(osgAnimation::Vec4Keyframe(10, osg::Vec4(1,0,0,1)));
     callback->start();
     st->setUpdateCallback(callback);
-	
+    
     return st;
 }
 
@@ -300,10 +300,10 @@ osg::MatrixTransform* setupAnimtkNode(osg::Geode* staticGeode)
     node->setUpdateCallback(callback);
 
     osg::Geode* geode = new osg::Geode();
-	
+    
     geode->setStateSet(setupStateSet());
     geode->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 2)));
-	
+    
     node->addChild(geode);
 
     return node;
@@ -312,7 +312,7 @@ osg::MatrixTransform* setupAnimtkNode(osg::Geode* staticGeode)
 int main(int argc, char** argv) 
 {
     osgViewer::Viewer viewer;
-	
+    
     osgGA::TrackballManipulator* tbm = new osgGA::TrackballManipulator();
 
     viewer.setCameraManipulator(tbm);

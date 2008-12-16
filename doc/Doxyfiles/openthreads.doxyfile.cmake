@@ -4,8 +4,8 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = OpenSceneGraph
-PROJECT_NUMBER         = ${OPENSCENEGRAPH_VERSION}
+PROJECT_NAME           = OpenThreads
+PROJECT_NUMBER         = ${OPENTHREADS_VERSION}
 OUTPUT_DIRECTORY       = "${PROJECT_BINARY_DIR}/doc/"
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
@@ -84,23 +84,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = "${OpenSceneGraph_SOURCE_DIR}/include/OpenThreads" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osg" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgDB" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgFX" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgGA" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgIntrospection" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgManipulator" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgParticle" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgShadow" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgSim" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgTerrain" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgText" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgUtil" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgViewer" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgVolume" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgWidget" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osgAnimation"
+INPUT                  = "${OpenSceneGraph_SOURCE_DIR}/include/OpenThreads"
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *include* \
                          *.cpp
@@ -137,7 +121,7 @@ IGNORE_PREFIX          =
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
-HTML_OUTPUT            = OpenSceneGraphReferenceDocs
+HTML_OUTPUT            = OpenThreadsReferenceDocs
 HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = 
 HTML_FOOTER            = "${OpenSceneGraph_SOURCE_DIR}/doc/Doxyfiles/custom_Footer.html"
@@ -148,7 +132,7 @@ GENERATE_DOCSET        = NO
 DOCSET_FEEDNAME        = "Doxygen generated docs"
 DOCSET_BUNDLE_ID       = org.doxygen.Project
 GENERATE_HTMLHELP      = ${GENERATE_HTMLHELP}
-CHM_FILE               = "../${CMAKE_PROJECT_NAME}ReferenceDocs-${OPENSCENEGRAPH_VERSION}.chm"
+CHM_FILE               = "../OpenThreadsReferenceDocs-${OPENSCENEGRAPH_VERSION}.chm"
 HHC_LOCATION           = "${HTML_HELP_COMPILER}"
 GENERATE_CHI           = NO
 CHM_INDEX_ENCODING     = 
@@ -256,7 +240,7 @@ CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png
-DOT_PATH               = "${DOXYGEN_DOT_PATH}"
+DOT_PATH               = 
 DOTFILE_DIRS           = 
 DOT_GRAPH_MAX_NODES    = 50
 MAX_DOT_GRAPH_DEPTH    = 0

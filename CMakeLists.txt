@@ -63,16 +63,6 @@ SET(OpenThreads_SOURCE_DIR ${OpenSceneGraph_SOURCE_DIR})
 # Maybe this can be used override existing behavior if needed?
 SET(CMAKE_MODULE_PATH "${OpenSceneGraph_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
-# Mainly for Windows as a convenience. This will find a directory in parallel with the
-# OSG source that contains 3rd party headers and libraries.
-# Use of relative paths in CMake is ill-advised, but don't know of any alternatives in this case
-#SET(CMAKE_INCLUDE_PATH "${OpenSceneGraph_SOURCE_DIR}/../3rdParty/include;${CMAKE_INCLUDE_PATH}")
-#SET(CMAKE_LIBRARY_PATH "${OpenSceneGraph_SOURCE_DIR}/../3rdParty/lib;${CMAKE_LIBRARY_PATH}")
-IF(USING_OSG_OP_OT_TRIPLE_SET)
-    SET(CMAKE_INCLUDE_PATH "${OpenSceneGraph_SOURCE_DIR}/../../3rdParty/include;${CMAKE_INCLUDE_PATH}")
-    SET(CMAKE_LIBRARY_PATH "${OpenSceneGraph_SOURCE_DIR}/../../3rdParty/lib;${CMAKE_LIBRARY_PATH}")
-ENDIF(USING_OSG_OP_OT_TRIPLE_SET)
-
 
 # Okay, here's the problem: On some platforms, linking against OpenThreads
 # is not enough and explicit linking to the underlying thread library
@@ -654,33 +644,24 @@ ADD_CUSTOM_TARGET(wrappers
     COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/genwrapper.conf -l ${OpenSceneGraph_SOURCE_DIR}
 )
 
-
-OPTION(BUILD_REF_DOCS "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
-
-IF(BUILD_REF_DOCS)
-    SET(BUILD_DOCUMENTATION YES)
-    OPTION(BUILD_REF_DOCS_SEARCHENGINE "Enable doxygen's search engine (requires that documentation to be installed on a php enabled web server)" OFF)
-    OPTION(BUILD_REF_DOCS_TAGFILE "Generate a tag file named osg.tag on the documentation web server" OFF)
-ENDIF(BUILD_REF_DOCS)
-
 # For Doxygen
-#FIXME: I haven't figured out what to do with OSG's multiple doxyfiles
-# and footer.
 INCLUDE(${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL)
-OPTION(BUILD_DOCUMENTATION "Build osg documentation" OFF)
+OPTION(BUILD_DOCUMENTATION "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
 # To build the documention, you will have to enable it
 # and then do the equivalent of "make DoxygenDoc".
 IF(BUILD_DOCUMENTATION)
-    SET(BUILD_DOCUMENTATION YES)
+#    SET(BUILD_DOCUMENTATION YES)
 
+    OPTION(BUILD_REF_DOCS_SEARCHENGINE "Enable doxygen's search engine (requires that documentation to be installed on a php enabled web server)" OFF)
     IF(BUILD_REF_DOCS_SEARCHENGINE)
         SET(SEARCHENGINE YES)
     ELSE(BUILD_REF_DOCS_SEARCHENGINE)
         SET(SEARCHENGINE NO)
     ENDIF(BUILD_REF_DOCS_SEARCHENGINE)
 
+    OPTION(BUILD_REF_DOCS_TAGFILE "Generate a tag file named osg.tag on the documentation web server" OFF)
     IF(BUILD_REF_DOCS_TAGFILE)
-        SET(GENERATE_TAGFILE "doc/OpenSceneGraphReferenceDocs/osg.tag")
+        SET(GENERATE_TAGFILE "${OpenSceneGraph_BINARY_DIR}/doc/OpenSceneGraphReferenceDocs/osg.tag")
     ELSE(BUILD_REF_DOCS_TAGFILE)
         SET(GENERATE_TAGFILE "")
     ENDIF(BUILD_REF_DOCS_TAGFILE)
@@ -691,19 +672,65 @@ IF(BUILD_DOCUMENTATION)
         SET(HAVE_DOT NO)
     ENDIF(DOT)
     
-    # This processes our Doxyfile.in and substitutes paths to generate
+    # If html help generation was requested. DOCUMENTATION_HTML_HELP is defined by Documentation.cmake
+    SET(GENERATE_HTMLHELP "NO")
+    IF(DOCUMENTATION_HTML_HELP)
+        # on win Documentation.cmake finds the html help workshop fi it exists. On u*ix we might have it with wine but no way to point it out
+        IF(NOT WIN32)
+            SET(HTML_HELP_COMPILER "" CACHE FILEPATH "Enter location of the HTML help compiler to let doxygen compile html")
+            MARK_AS_ADVANCED(HTML_HELP_COMPILER)
+        ENDIF(NOT WIN32)
+        # this var sets a proper value in .doxygen files when coniguring them below
+        SET(GENERATE_HTMLHELP "YES")
+    endif(DOCUMENTATION_HTML_HELP)
+  
+    # This processes our doxyfile.cmake and substitutes paths to generate
     # a final Doxyfile
     CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/doxyfile.cmake
-        ${PROJECT_BINARY_DIR}/doc/doxyfile
+        ${PROJECT_BINARY_DIR}/doc/openscenegraph.doxyfile
     )
+    # copy the osg logo to documentations target folder
+    CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/PlatformSpecifics/Windows/icons/src/osg32-32.png
+        ${PROJECT_BINARY_DIR}/doc/OpenSceneGraphReferenceDocs/osg32-32.png COPYONLY
+    )
+    #INSTALL(FILES ${PROJECT_BINARY_DIR}/doc/${PROJECT_NAME}ReferenceDocs-${OPENSCENEGRAPH_VERSION}.chm DESTINATION doc OPTIONAL COMPONENT openscenegraph-doc)
+    INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/doc/OpenSceneGraphReferenceDocs DESTINATION doc COMPONENT openscenegraph-doc)
+
+    # now set up openthreads documentation generation
+    IF(BUILD_REF_DOCS_TAGFILE)
+        SET(GENERATE_TAGFILE "${OpenSceneGraph_BINARY_DIR}/doc/OpenThreadsReferenceDocs/ot.tag")
+    ENDIF(BUILD_REF_DOCS_TAGFILE)
+
+    # This processes our openthreads.doxyfile.cmake and generate a final doxyfile
+    CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/openthreads.doxyfile.cmake
+        ${PROJECT_BINARY_DIR}/doc/openthreads.doxyfile
+    )
+    # copy the osg logo to documentations target folder
+    CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/PlatformSpecifics/Windows/icons/src/osg32-32.png
+        ${PROJECT_BINARY_DIR}/doc/OpenThreadsReferenceDocs/osg32-32.png COPYONLY
+    )
+    #INSTALL(FILES ${PROJECT_BINARY_DIR}/doc/${PROJECT_NAME}ReferenceDocs-${OPENSCENEGRAPH_VERSION}.chm DESTINATION doc OPTIONAL COMPONENT openscenegraph-doc)
+    INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/doc/OpenThreadsReferenceDocs DESTINATION doc COMPONENT openthreads-doc)
+
+    # Process our other doxyfiles but don't create targets for these
+    CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/all_Doxyfile
+        ${PROJECT_BINARY_DIR}/doc/all_Doxyfile)
+    CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/auto_Doxyfile
+        ${PROJECT_BINARY_DIR}/doc/auto_Doxyfile)
+    CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/core_Doxyfile
+        ${PROJECT_BINARY_DIR}/doc/core_Doxyfile)
+    
     # This creates a new target to build documentation.
     # It runs ${DOXYGEN} which is the full path and executable to
     # Doxygen on your system, set by the FindDoxygen.cmake module
     # (called by FindDocumentation.cmake).
     # It runs the final generated Doxyfile against it.
     # The DOT_PATH is substituted into the Doxyfile.
-    ADD_CUSTOM_TARGET(DoxygenDoc ${DOXYGEN}
-        ${PROJECT_BINARY_DIR}/doc/doxyfile
+    ADD_CUSTOM_TARGET(doc_openscenegraph ${DOXYGEN}
+        ${PROJECT_BINARY_DIR}/doc/openscenegraph.doxyfile
+    )
+    ADD_CUSTOM_TARGET(doc_openthreads ${DOXYGEN}
+        ${PROJECT_BINARY_DIR}/doc/openthreads.doxyfile
     )
 ENDIF(BUILD_DOCUMENTATION)
 

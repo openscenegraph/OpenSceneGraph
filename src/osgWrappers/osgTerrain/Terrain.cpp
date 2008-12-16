@@ -14,6 +14,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osgTerrain/Terrain>
+#include <osgTerrain/TerrainTechnique>
 #include <osgTerrain/TerrainTile>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -99,6 +100,21 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __C5_TerrainTile_P1__getTile__C5_TileID_R1,
 	          "Get the const TerrainTile for a given TileID. ",
 	          "");
+	I_Method1(void, setTerrainTechniquePrototype, IN, osgTerrain::TerrainTechnique *, technique,
+	          Properties::NON_VIRTUAL,
+	          __void__setTerrainTechniquePrototype__TerrainTechnique_P1,
+	          "Set the TerrainTechnique cprototype from which TerrainTiles can clone the techniques from. ",
+	          "");
+	I_Method0(osgTerrain::TerrainTechnique *, getTerrainTechniquePrototype,
+	          Properties::NON_VIRTUAL,
+	          __TerrainTechnique_P1__getTerrainTechniquePrototype,
+	          "Get the TerrainTechnique prototype. ",
+	          "");
+	I_Method0(const osgTerrain::TerrainTechnique *, getTerrainTechniquePrototype,
+	          Properties::NON_VIRTUAL,
+	          __C5_TerrainTechnique_P1__getTerrainTechniquePrototype,
+	          "Get the const TerrainTechnique protype. ",
+	          "");
 	I_ProtectedMethod0(void, dirtyRegisteredTiles,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -120,6 +136,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	I_SimpleProperty(float, SampleRatio, 
 	                 __float__getSampleRatio, 
 	                 __void__setSampleRatio__float);
+	I_SimpleProperty(osgTerrain::TerrainTechnique *, TerrainTechniquePrototype, 
+	                 __TerrainTechnique_P1__getTerrainTechniquePrototype, 
+	                 __void__setTerrainTechniquePrototype__TerrainTechnique_P1);
 	I_SimpleProperty(float, VerticalScale, 
 	                 __float__getVerticalScale, 
 	                 __void__setVerticalScale__float);

@@ -2244,7 +2244,7 @@ bool CameraConfig::parseFile( const std::string &file )
     {
 
         int pd[2];
-        pipe( pd );
+        int result = pipe( pd );
 
         flexer = new yyFlexLexer;
         if( fork() == 0 )
@@ -2252,7 +2252,7 @@ bool CameraConfig::parseFile( const std::string &file )
             // we don't want to read from the pipe in the child, so close it.
             close( pd[0] );
             close( 1 );
-            dup( pd[1] );
+            result = dup( pd[1] );
 
 
             /* This was here to allow reading a config file from stdin.
@@ -2261,7 +2261,7 @@ bool CameraConfig::parseFile( const std::string &file )
                 execlp( cpp_path, "cpp",  "-P", 0L );
             else
             */
-            execlp( cpp_path, "cpp",  "-P", fileName.c_str(), 0L );
+            execlp( cpp_path, "cpp",  "-P", fileName.c_str(), NULL );
 
             // This should not execute unless an error happens
             perror( "execlp" );
@@ -2270,7 +2270,7 @@ bool CameraConfig::parseFile( const std::string &file )
         {
             close( pd[1]);
             close( 0 );
-            dup( pd[0] );
+            result = dup( pd[0] );
 
             cfg = this;
 

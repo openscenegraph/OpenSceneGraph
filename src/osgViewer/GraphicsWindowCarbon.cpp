@@ -395,10 +395,10 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
         resolution.width = CGDisplayPixelsWide(id);
         resolution.height = CGDisplayPixelsHigh(id);
         resolution.colorDepth = CGDisplayBitsPerPixel(id);
-        resolution.refreshRate = getDictDouble (CGDisplayCurrentMode(displayID), kCGDisplayRefreshRate);        // Not tested
+        resolution.refreshRate = getDictDouble (CGDisplayCurrentMode(id), kCGDisplayRefreshRate);        // Not tested
         if (resolution.refreshRate<0) resolution.refreshRate = 0;
     }
-    
+
     /** return the top left coord of a specific screen in global screen space */
     void getScreenTopLeft(const osg::GraphicsContext::ScreenIdentifier& si, int& x, int& y) {
         CGRect bounds = CGDisplayBounds( getDisplayID(si) );
@@ -415,7 +415,7 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
         CFNumberRef number_value = (CFNumberRef) CFDictionaryGetValue(refDict, key);
         if (!number_value) // if can't get a number for the dictionary
             return -1;  // fail
-        if (!CFNumberGetValue(number_value, kCFNumberDoubleType, &double_value)) // or if cant convert it
+        if (!CFNumberGetValue(number_value, kCFNumberDoubleType, &value)) // or if cant convert it
             return -1; // fail
         return value; // otherwise return the long value
     }
@@ -438,7 +438,7 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
         CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
         
         CGRefreshRate refresh = resolution.refreshRate>0 ? resolution.refreshRate : getDictDouble (CGDisplayCurrentMode(displayID), kCGDisplayRefreshRate);  
-        sizt_t depth = resolution.colorDepth>0 ? resolution.colorDepth : CGDisplayBitsPerPixel(displayID);
+        size_t depth = resolution.colorDepth>0 ? resolution.colorDepth : CGDisplayBitsPerPixel(displayID);
         CFDictionaryRef display_mode_values =
             CGDisplayBestModeForParametersAndRefreshRate(
                             displayID, 

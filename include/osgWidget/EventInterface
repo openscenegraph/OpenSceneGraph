@@ -18,6 +18,7 @@
 
 #include <list>
 #include <osg/ref_ptr>
+#include <osg/observer_ptr>
 #include <osg/Referenced>
 
 #include <osgWidget/Export>

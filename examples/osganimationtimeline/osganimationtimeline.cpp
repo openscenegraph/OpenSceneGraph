@@ -177,7 +177,8 @@ int main (int argc, char* argv[])
     }
 
     osg::ref_ptr<osgAnimation::TimelineAnimationManager> tl = new osgAnimation::TimelineAnimationManager(*animationManager);
-    root->setUpdateCallback(tl);
+    root->setUpdateCallback(tl.get());
+    
     ExampleTimelineUsage* callback = new ExampleTimelineUsage(tl.get());
     root->setEventCallback(callback);
     root->getUpdateCallback()->addNestedCallback(callback);

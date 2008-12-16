@@ -591,7 +591,7 @@ TX_EXDECL class TX_CLDECL trpgLightAttr : public trpgReadWriteable
     } LightQuality;
 
     // Struct for Performer Lights
-    typedef struct PerformerAttr
+    struct PerformerAttr
     {
 	PerformerAttr() : flags(0),minPixelSize(0),maxPixelSize(0),actualSize(0),
 	     transparentPixelSize(0),transparentFallofExp(0),transparentScale(0),
@@ -608,7 +608,7 @@ TX_EXDECL class TX_CLDECL trpgLightAttr : public trpgReadWriteable
     };
 
     // Struct for Animated Lights
-    typedef struct AnimationAttr
+    struct AnimationAttr
     {
 	AnimationAttr() : period(0),phaseDelay(0),timeOn(0),vector(trpg3dPoint(0,0,0)),flags(0) {};
 	float64					period;
@@ -619,7 +619,7 @@ TX_EXDECL class TX_CLDECL trpgLightAttr : public trpgReadWriteable
     };
 
     // Struct for Calligraphic Lights
-    typedef struct CalligraphicAttr
+    struct CalligraphicAttr
     {
 	CalligraphicAttr() : drawOrder(0),minDefocus(0),maxDefocus(0) {} ;
 	int32					drawOrder;

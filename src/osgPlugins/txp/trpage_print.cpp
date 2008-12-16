@@ -100,8 +100,8 @@ bool trpgFilePrintBuffer::prnLine(const char *str)
 
     if (str)
     {
-        fprintf(fp,indentStr);
-        fprintf(fp,str);
+        fprintf(fp,"%s",indentStr);
+        fprintf(fp,"%s",str);
         fprintf(fp,"\n");
     } else
         fprintf(fp,"\n");

@@ -4,6 +4,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -14,7 +16,7 @@ bool ColorMask_matchModeStr(const char* str,bool& mode);
 const char* ColorMask_getModeStr(bool mode);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_ColorMaskProxy
+REGISTER_DOTOSGWRAPPER(ColorMask)
 (
     new osg::ColorMask,
     "ColorMask",

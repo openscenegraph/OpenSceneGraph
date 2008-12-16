@@ -37,6 +37,8 @@
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tessellator>
 
+#include <string.h>
+
 #include "Converter.h"
 #include "VertexMap.h"
 

@@ -38,6 +38,8 @@ class OSG_EXPORT Geode : public Node
 
         META_Node(osg, Geode);
 
+        virtual Geode* asGeode() { return this; }
+        virtual const Geode* asGeode() const { return this; }
         
         /** Add a \c Drawable to the \c Geode.
           * If \c drawable is not \c NULL and is not contained in the \c Geode

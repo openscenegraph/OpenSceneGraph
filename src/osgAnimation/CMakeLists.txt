@@ -22,8 +22,7 @@ SET(LIB_PUBLIC_HEADERS
 	${HEADER_PATH}/Skinning
 	${HEADER_PATH}/CubicBezier
 	${HEADER_PATH}/Vec3Packed
-	${HEADER_PATH}/BasicAnimationManager
-	${HEADER_PATH}/TimelineAnimationManager
+	${HEADER_PATH}/AnimationManager
 	${HEADER_PATH}/AnimationManagerBase
 	${HEADER_PATH}/UpdateCallback
 	${HEADER_PATH}/LinkVisitor
@@ -42,8 +41,7 @@ ADD_LIBRARY(${LIB_NAME}
     Animation.cpp
     Bone.cpp
     RigGeometry.cpp
-    BasicAnimationManager.cpp
-    TimelineAnimationManager.cpp
+    AnimationManager.cpp
     AnimationManagerBase.cpp
     Skeleton.cpp
     VertexInfluence.cpp
@@ -53,6 +51,8 @@ ADD_LIBRARY(${LIB_NAME}
 
 LINK_INTERNAL(${LIB_NAME}
     osg
+    OpenThreads
 )
+
 LINK_CORELIB_DEFAULT(${LIB_NAME})
 INCLUDE(ModuleInstall OPTIONAL)

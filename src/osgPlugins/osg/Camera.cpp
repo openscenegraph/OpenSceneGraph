@@ -8,6 +8,8 @@
 
 #include "Matrix.h"
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -20,7 +22,7 @@ const char* Camera_getBufferComponentStr(Camera::BufferComponent buffer);
 
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_CameraProxy
+REGISTER_DOTOSGWRAPPER(Camera)
 (
     new osg::Camera,
     "Camera",
@@ -31,7 +33,7 @@ RegisterDotOsgWrapperProxy g_CameraProxy
 );
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_CameraNodeProxy
+REGISTER_DOTOSGWRAPPER(CameraNode)
 (
     new osg::Camera,
     "CameraNode",

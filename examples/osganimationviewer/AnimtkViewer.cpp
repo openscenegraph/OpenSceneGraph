@@ -30,7 +30,6 @@
 #include <osgGA/TrackballManipulator>
 #include <osgGA/StateSetManipulator>
 #include <osgDB/ReadFile>
-#include <osgAnimation/AnimationManagerBase>
 
 const int WIDTH  = 1440;
 const int HEIGHT = 900;
@@ -80,28 +79,26 @@ int main(int argc, char** argv)
 
     osgViewer::Viewer viewer(psr);
     osg::ref_ptr<osg::Group> group = new osg::Group();
+	
+    osgAnimation::AnimationManager* animationManager = dynamic_cast<osgAnimation::AnimationManager*>(osgDB::readNodeFile(psr[1]));
 
-    osg::Group* node = dynamic_cast<osg::Group*>(osgDB::readNodeFile(psr[1])); //dynamic_cast<osgAnimation::AnimationManager*>(osgDB::readNodeFile(psr[1]));
-    if(!node) 
+    if(!animationManager) 
     {
-        std::cerr << "Can't read file " << psr[1]<< std::endl;
+        std::cerr << "Couldn't convert the file's toplevel object into an AnimationManager." << std::endl;
         return 1;
     }
 
     // Set our Singleton's model.
-    osgAnimation::AnimationManagerBase* base = dynamic_cast<osgAnimation::AnimationManagerBase*>(node->getUpdateCallback());
-    osgAnimation::BasicAnimationManager* manager = new osgAnimation::BasicAnimationManager(*base);
-    node->setUpdateCallback(manager);
-    AnimtkViewerModelController::setModel(manager);
+    AnimtkViewerModelController::setModel(animationManager);
 
-    node->addChild(createAxis());
+    animationManager->addChild(createAxis());
 
     AnimtkViewerGUI* gui    = new AnimtkViewerGUI(&viewer, WIDTH, HEIGHT, 0x1234);
     osg::Camera*     camera = gui->createParentOrthoCamera();
 	
-    node->setNodeMask(0x0001);
+    animationManager->setNodeMask(0x0001);
 
-    group->addChild(node);
+    group->addChild(animationManager);
     group->addChild(camera);
 
     viewer.addEventHandler(new AnimtkKeyEventHandler());

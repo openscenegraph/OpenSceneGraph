@@ -37,6 +37,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Switch)
 	                           ____Switch__C5_Switch_R1__C5_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
+	I_Method0(osg::Switch *, asSwitch,
+	          Properties::VIRTUAL,
+	          __Switch_P1__asSwitch,
+	          "Convert 'this' into a Switch pointer if Node is a Switch, otherwise return 0. ",
+	          "Equivalent to dynamic_cast<Switch*>(this). ");
+	I_Method0(const osg::Switch *, asSwitch,
+	          Properties::VIRTUAL,
+	          __C5_Switch_P1__asSwitch,
+	          "convert 'const this' into a const Switch pointer if Node is a Switch, otherwise return 0. ",
+	          "Equivalent to dynamic_cast<const Switch*>(this). ");
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,

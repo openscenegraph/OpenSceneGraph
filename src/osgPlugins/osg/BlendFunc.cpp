@@ -4,6 +4,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -16,7 +18,7 @@ const char* BlendFunc_getModeStr(int value);
 
 // register the read and write functions with the osgDB::Registry.
 
-RegisterDotOsgWrapperProxy g_TransparencyProxy
+REGISTER_DOTOSGWRAPPER(Transparency)
 (
     new osg::BlendFunc,
     "Transparency",
@@ -25,7 +27,7 @@ RegisterDotOsgWrapperProxy g_TransparencyProxy
     &BlendFunc_writeLocalData
 );
 
-RegisterDotOsgWrapperProxy g_BlendFuncProxy
+REGISTER_DOTOSGWRAPPER(BlendFunc)
 (
     new osg::BlendFunc,
     "BlendFunc",

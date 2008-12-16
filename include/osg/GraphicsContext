@@ -16,6 +16,7 @@
 
 #include <osg/State>
 #include <osg/GraphicsThread>
+#include <vector>
 
 namespace osg {
 
@@ -150,23 +151,72 @@ class OSG_EXPORT GraphicsContext : public Object
             // X11 hint whether to override the window managers window size/position redirection
             bool overrideRedirect;
         };
-    
-    
+
+        /** Simple resolution structure used by WindowingSystemInterface to get and set screen resolution.
+          * Note the '0' value stands for 'unset'. */
+        struct ScreenSettings {
+            ScreenSettings() :
+                width(0),
+                height(0),
+                colorDepth(0),
+                refreshRate(0)
+            {}
+            ScreenSettings(int width, int height, double refreshRate=0, unsigned int colorDepth=0) :
+                width(width),
+                height(height),
+                colorDepth(colorDepth),
+                refreshRate(refreshRate)
+            {}
+
+            int width;
+            int height;
+            double refreshRate;         ///< Screen refresh rate, in Hz.
+            unsigned int colorDepth;    ///< RGB(A) color buffer depth.
+        };
+
+        typedef std::vector<ScreenSettings> ScreenSettingsList;
+
         /** Callback to be implemented to provide access to Windowing API's ability to create Windows/pbuffers.*/
         struct WindowingSystemInterface : public osg::Referenced
         {
-        
             virtual unsigned int getNumScreens(const ScreenIdentifier& screenIdentifier = ScreenIdentifier()) = 0;
 
-            virtual void getScreenResolution(const ScreenIdentifier& screenIdentifier, unsigned int& width, unsigned int& height) = 0;
+            virtual void getScreenSettings(const ScreenIdentifier& screenIdentifier, ScreenSettings & resolution) = 0;
 
-            virtual bool setScreenResolution(const ScreenIdentifier& /*screenIdentifier*/, unsigned int /*width*/, unsigned int /*height*/) { return false; }
-        
-            virtual bool setScreenRefreshRate(const ScreenIdentifier& /*screenIdentifier*/, double /*refreshRate*/) { return false; }
+            virtual bool setScreenSettings(const ScreenIdentifier& /*screenIdentifier*/, const ScreenSettings & /*resolution*/) { return false; }
+
+            virtual void enumerateScreenSettings(const ScreenIdentifier& screenIdentifier, ScreenSettingsList & resolutionList) = 0;
 
             virtual GraphicsContext* createGraphicsContext(Traits* traits) = 0;
             
-            virtual ~WindowingSystemInterface() {};
+            virtual ~WindowingSystemInterface() {}
+
+
+            /** Gets screen resolution without using the ScreenResolution structure.
+              * \deprecated Provided only for backward compatibility. */
+            inline void getScreenResolution(const ScreenIdentifier& screenIdentifier, unsigned int& width, unsigned int& height)
+            {
+                ScreenSettings settings;
+                getScreenSettings(screenIdentifier, settings);
+                width = settings.width;
+                height = settings.height;
+            }
+
+            /** Sets screen resolution without using the ScreenSettings structure.
+              * \deprecated Provided only for backward compatibility. */
+            inline bool setScreenResolution(const ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height)
+            {
+                return setScreenSettings(screenIdentifier, ScreenSettings(width, height));
+            }
+
+            /** \deprecated Provided only for backward compatibility. */
+            inline bool setScreenRefreshRate(const ScreenIdentifier& screenIdentifier, double refreshRate)
+            {
+                ScreenSettings settings;
+                getScreenSettings(screenIdentifier, settings);
+                settings.refreshRate = refreshRate;
+                return setScreenSettings(screenIdentifier, settings);
+            }
         };
     
     

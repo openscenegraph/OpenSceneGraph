@@ -251,7 +251,7 @@ void StateSet::computeDataVariance()
 
 void StateSet::addParent(osg::Object* object)
 {
-    // osg::notify(osg::INFO)<<"Adding parent"<<std::endl;
+    // osg::notify(osg::DEBUG_FP)<<"Adding parent"<<std::endl;
     OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
 
     _parents.push_back(object);

@@ -13,7 +13,7 @@ using namespace osgDB;
 bool ShapeDrawable_readLocalData(Object& obj, Input& fr);
 bool ShapeDrawable_writeLocalData(const Object& obj, Output& fw);
 
-RegisterDotOsgWrapperProxy g_ShapeDrawableFuncProxy
+REGISTER_DOTOSGWRAPPER(ShapeDrawable)
 (
     new osg::ShapeDrawable,
     "ShapeDrawable",

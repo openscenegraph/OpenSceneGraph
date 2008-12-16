@@ -9,6 +9,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -19,7 +21,7 @@ bool TexGen_matchModeStr(const char* str,TexGen::Mode& mode);
 const char* TexGen_getModeStr(TexGen::Mode mode);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TexGenProxy
+REGISTER_DOTOSGWRAPPER(TexGen)
 (
     new osg::TexGen,
     "TexGen",

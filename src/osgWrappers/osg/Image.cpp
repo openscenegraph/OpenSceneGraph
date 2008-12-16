@@ -375,16 +375,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __void__update__NodeVisitor_P1,
 	          "",
 	          "");
-	I_Method3(void, sendPointerEvent, IN, int, x, IN, int, y, IN, int, buttonMask,
+	I_Method3(bool, sendPointerEvent, IN, int, x, IN, int, y, IN, int, buttonMask,
 	          Properties::VIRTUAL,
-	          __void__sendPointerEvent__int__int__int,
+	          __bool__sendPointerEvent__int__int__int,
 	          "method for sending pointer events to images that are acting as front ends to interactive surfaces such as a vnc or browser window. ",
-	          "");
-	I_Method2(void, sendKeyEvent, IN, int, key, IN, bool, keyDown,
+	          "Return true if handled. ");
+	I_Method2(bool, sendKeyEvent, IN, int, key, IN, bool, keyDown,
 	          Properties::VIRTUAL,
-	          __void__sendKeyEvent__int__bool,
+	          __bool__sendKeyEvent__int__bool,
 	          "method for sending key events to images that are acting as front ends to interactive surfaces such as a vnc or browser window. ",
-	          "");
+	          "Return true if handled. ");
 	I_Method1(void, setFrameLastRendered, IN, const osg::FrameStamp *, frameStamp,
 	          Properties::VIRTUAL,
 	          __void__setFrameLastRendered__C5_osg_FrameStamp_P1,
@@ -396,6 +396,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	                "");
 	I_StaticMethod1(GLenum, computePixelFormat, IN, GLenum, pixelFormat,
 	                __GLenum__computePixelFormat__GLenum_S,
+	                "",
+	                "");
+	I_StaticMethod1(GLenum, computeFormatDataType, IN, GLenum, pixelFormat,
+	                __GLenum__computeFormatDataType__GLenum_S,
 	                "",
 	                "");
 	I_StaticMethod1(unsigned int, computeNumComponents, IN, GLenum, pixelFormat,

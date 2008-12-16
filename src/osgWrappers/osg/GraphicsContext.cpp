@@ -28,6 +28,8 @@
 
 #include <osg/Camera>
 	
+TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext::ScreenSettings >, osg::GraphicsContext::ScreenSettingsList)
+
 TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osg::GraphicsContext::GraphicsContexts)
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Operation > >, osg::GraphicsContext::OperationQueue)
@@ -456,6 +458,21 @@ BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenIdentifier)
 	I_PublicMemberProperty(int, screenNum);
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osg::GraphicsContext::ScreenSettings)
+	I_DeclaringFile("osg/GraphicsContext");
+	I_Constructor0(____ScreenSettings,
+	               "",
+	               "");
+	I_ConstructorWithDefaults4(IN, int, width, , IN, int, height, , IN, double, refreshRate, 0, IN, unsigned int, colorDepth, 0,
+	                           ____ScreenSettings__int__int__double__unsigned_int,
+	                           "",
+	                           "");
+	I_PublicMemberProperty(int, width);
+	I_PublicMemberProperty(int, height);
+	I_PublicMemberProperty(double, refreshRate);
+	I_PublicMemberProperty(unsigned int, colorDepth);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_DeclaringFile("osg/GraphicsContext");
 	I_BaseType(osg::Referenced);
@@ -506,24 +523,39 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext::WindowingSystemInterface)
 	                      __unsigned_int__getNumScreens__C5_ScreenIdentifier_R1,
 	                      "",
 	                      "");
-	I_Method3(void, getScreenResolution, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, IN, unsigned int &, width, IN, unsigned int &, height,
+	I_Method2(void, getScreenSettings, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, IN, osg::GraphicsContext::ScreenSettings &, resolution,
 	          Properties::PURE_VIRTUAL,
-	          __void__getScreenResolution__C5_ScreenIdentifier_R1__unsigned_int_R1__unsigned_int_R1,
+	          __void__getScreenSettings__C5_ScreenIdentifier_R1__ScreenSettings_R1,
 	          "",
 	          "");
-	I_Method3(bool, setScreenResolution, IN, const osg::GraphicsContext::ScreenIdentifier &, x, IN, unsigned, int, IN, unsigned, int,
+	I_Method2(bool, setScreenSettings, IN, const osg::GraphicsContext::ScreenIdentifier &, x, IN, const osg::GraphicsContext::ScreenSettings &, x,
 	          Properties::VIRTUAL,
-	          __bool__setScreenResolution__C5_ScreenIdentifier_R1__unsigned__unsigned,
+	          __bool__setScreenSettings__C5_ScreenIdentifier_R1__C5_ScreenSettings_R1,
 	          "",
 	          "");
-	I_Method2(bool, setScreenRefreshRate, IN, const osg::GraphicsContext::ScreenIdentifier &, x, IN, double, x,
-	          Properties::VIRTUAL,
-	          __bool__setScreenRefreshRate__C5_ScreenIdentifier_R1__double,
+	I_Method2(void, enumerateScreenSettings, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, IN, osg::GraphicsContext::ScreenSettingsList &, resolutionList,
+	          Properties::PURE_VIRTUAL,
+	          __void__enumerateScreenSettings__C5_ScreenIdentifier_R1__ScreenSettingsList_R1,
 	          "",
 	          "");
 	I_Method1(osg::GraphicsContext *, createGraphicsContext, IN, osg::GraphicsContext::Traits *, traits,
 	          Properties::PURE_VIRTUAL,
 	          __GraphicsContext_P1__createGraphicsContext__Traits_P1,
+	          "",
+	          "");
+	I_Method3(void, getScreenResolution, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, IN, unsigned int &, width, IN, unsigned int &, height,
+	          Properties::NON_VIRTUAL,
+	          __void__getScreenResolution__C5_ScreenIdentifier_R1__unsigned_int_R1__unsigned_int_R1,
+	          "Gets screen resolution without using the ScreenResolution structure. ",
+	          "");
+	I_Method3(bool, setScreenResolution, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, IN, unsigned int, width, IN, unsigned int, height,
+	          Properties::NON_VIRTUAL,
+	          __bool__setScreenResolution__C5_ScreenIdentifier_R1__unsigned_int__unsigned_int,
+	          "Sets screen resolution without using the ScreenSettings structure. ",
+	          "");
+	I_Method2(bool, setScreenRefreshRate, IN, const osg::GraphicsContext::ScreenIdentifier &, screenIdentifier, IN, double, refreshRate,
+	          Properties::NON_VIRTUAL,
+	          __bool__setScreenRefreshRate__C5_ScreenIdentifier_R1__double,
 	          "",
 	          "");
 END_REFLECTOR
@@ -573,4 +605,6 @@ STD_LIST_REFLECTOR(std::list< osg::Camera * >)
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Operation > >)
 
 STD_VECTOR_REFLECTOR(std::vector< osg::GraphicsContext * >)
+
+STD_VECTOR_REFLECTOR(std::vector< osg::GraphicsContext::ScreenSettings >)
 

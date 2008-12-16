@@ -697,6 +697,15 @@ struct PluginFunctionProxy
     extern "C" void osgdb_##ext(void) {} \
     static osgDB::RegisterReaderWriterProxy<classname> g_proxy_##classname;
 
+
+#define USE_DOTOSGWRAPPER(classname) \
+    extern "C" void dotosgwrapper_##classname(void); \
+    static osgDB::PluginFunctionProxy proxy_dotosgwrapper_##classname(dotosgwrapper_##classname);
+
+#define REGISTER_DOTOSGWRAPPER(classname) \
+    extern "C" void dotosgwrapper_##classname(void) {} \
+    static osgDB::RegisterDotOsgWrapperProxy dotosgwrapper_proxy_##classname
+
 }
 
 #endif

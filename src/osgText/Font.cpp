@@ -23,6 +23,8 @@
 #include <osgDB/FileNameUtils>
 #include <osg/GLU>
 
+#include <string.h>
+
 #include <OpenThreads/ReentrantMutex>
 
 using namespace osgText;

@@ -146,7 +146,7 @@ class OSG_EXPORT BufferObject : public Object
             extensions->glBindBuffer(_target,_bufferObjectList[contextID]);
         }
 
-        inline void unbindBuffer(unsigned int contextID) const
+        virtual void unbindBuffer(unsigned int contextID) const
         { 
             Extensions* extensions = getExtensions(contextID,true);
             extensions->glBindBuffer(_target,0);
@@ -372,6 +372,67 @@ class OSG_EXPORT PixelBufferObject : public BufferObject
         virtual ~PixelBufferObject();
         
         BufferEntryImagePair _bufferEntryImagePair;
+};
+
+/**
+ * This object represent a general class of pixel buffer objects,
+ * which are capable of allocating buffer object (memory)
+ * on the GPU. The memory can then be used either for CPU-GPU
+ * pixel transfer or directly for GPU-GPU transfer, without CPU intervention.
+ **/
+class OSG_EXPORT PixelDataBufferObject : public BufferObject
+{
+    public:
+        PixelDataBufferObject();
+        PixelDataBufferObject(const PixelDataBufferObject& pbo, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Object(osg, PixelDataBufferObject);
+
+        //! Set new size of the buffer object. This will reallocate the memory on the next compile
+        inline void setDataSize(unsigned int size) { _bufferData.dataSize = size; dirty(); }
+
+        //! Get data size of the used buffer 
+        inline unsigned int getDataSize() { return _bufferData.dataSize; }
+
+        //! Compile the buffer (reallocate the memory if buffer is dirty)
+        virtual void compileBuffer(State& state) const;
+
+        //! Bind the buffer in read mode, which means that data can be downloaded from the buffer (note: GL_PIXEL_UNPACK_BUFFER_ARB)
+        virtual void bindBufferInReadMode(State& state);
+
+        //! Bind the buffer in write mode, which means following OpenGL instructions will write data into the buffer (note: GL_PIXEL_PACK_BUFFER_ARB)
+        virtual void bindBufferInWriteMode(State& state);
+
+        //! Unbind the buffer 
+        virtual void unbindBuffer(unsigned int contextID) const;
+
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        enum Mode
+        {
+            //! A normal mode of this data buffer
+            NONE = 0,
+
+            //! Buffer is in read mode (@see bindBufferInReadMode)
+            READ = 1,
+
+            //! Buffer is in write mode (@see bindBufferInWriteMode)
+            WRITE = 2
+        };
+
+        Mode getMode(unsigned int contextID) const { return (Mode)_mode[contextID]; }
+
+    protected:
+
+        virtual ~PixelDataBufferObject();
+
+        BufferEntry _bufferData;
+
+        typedef osg::buffered_value<unsigned int> ModeList;
+        
+        mutable ModeList _mode;
+        
 };
 
 

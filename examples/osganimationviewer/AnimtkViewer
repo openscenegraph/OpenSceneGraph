@@ -22,7 +22,7 @@
 
 #include <osg/Node>
 #include <osgDB/ReadFile>
-#include <osgAnimation/BasicAnimationManager>
+#include <osgAnimation/AnimationManager>
 
 class AnimtkViewerModelController 
 {
@@ -35,12 +35,11 @@ public:
         return avmc;
     }
 
-    static bool setModel(osgAnimation::BasicAnimationManager* model) 
+    static bool setModel(osgAnimation::AnimationManager* model) 
     {
         AnimtkViewerModelController& self = instance();
         self._model = model;
-        for (osgAnimation::AnimationList::const_iterator it = self._model->getAnimationList().begin(); it != self._model->getAnimationList().end(); it++)
-            self._map[(*it)->getName()] = *it;
+        self._map   = self._model->getAnimationMap();
 
         for(osgAnimation::AnimationMap::iterator it = self._map.begin(); it != self._map.end(); it++)
             self._amv.push_back(it->first);
@@ -111,7 +110,7 @@ public:
     }
 
 private:
-    osg::ref_ptr<osgAnimation::BasicAnimationManager> _model;
+    osg::ref_ptr<osgAnimation::AnimationManager> _model;
     osgAnimation::AnimationMap                   _map;
     AnimationMapVector                     _amv;
     unsigned int                           _focus;

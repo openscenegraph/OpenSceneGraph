@@ -12,7 +12,7 @@ bool CullFace_readLocalData(Object& obj, Input& fr);
 bool CullFace_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_CullFaceFuncProxy
+REGISTER_DOTOSGWRAPPER(CullFace)
 (
     new osg::CullFace,
     "CullFace",

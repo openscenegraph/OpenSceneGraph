@@ -26,20 +26,19 @@ SET(TARGET_COMMON_LIBRARIES
 	osgText 
 )
 
-ADD_SUBDIRECTORY(osgviewer)
-ADD_SUBDIRECTORY(osgarchive)
-ADD_SUBDIRECTORY(osgconv)
-ADD_SUBDIRECTORY(osgversion)
-ADD_SUBDIRECTORY(osgfilecache)
+IF(DYNAMIC_OPENSCENEGRAPH)
 
-#REWRITE_CMAKELIST(ADD_OSG_EXAMPLE)
+    ADD_SUBDIRECTORY(osgviewer)
+    ADD_SUBDIRECTORY(osgarchive)
+    ADD_SUBDIRECTORY(osgconv)
+    ADD_SUBDIRECTORY(osgfilecache)
 
-#MESSAGE("---->${MY_EXAMPLE_LIST}<---------")
-##########to get all the variables of Cmake
-#GET_CMAKE_PROPERTY(MYVARS VARIABLES)
-#FOREACH(myvar ${MYVARS})
-#	FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/AllVariables.txt
-#		"${myvar} -->${${myvar}}<-\n"
-#	)
-#ENDFOREACH(myvar)
+ELSE(DYNAMIC_OPENSCENEGRAPH)
+
+    # need to define this on win32 or linker cries about _declspecs
+    ADD_DEFINITIONS(-DOSG_LIBRARY_STATIC)
+
+    ADD_SUBDIRECTORY(osgversion)
+    
+ENDIF(DYNAMIC_OPENSCENEGRAPH)
 

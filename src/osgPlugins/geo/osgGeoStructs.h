@@ -16,6 +16,8 @@ AUTHOR:			Geoff Michel
 #ifndef _GEO_STRUCTS_H_
 #define _GEO_STRUCTS_H_ 1
 
+#include <string.h>
+
 typedef std::vector< geoExtensionDefRec > geoExtensionDefList;
 
 class geoField { // holds one field of data as read from the disk of a GEO file

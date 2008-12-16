@@ -1487,7 +1487,10 @@ class X11WindowingSystemInterface : public osg::GraphicsContext::WindowingSystem
     // TODO: Investigate whether or not Robert thinks we should store/restore the original
     // resolution in the destructor; I'm not sure the other ones do this, and it may be the
     // responsibility of the user.
-    bool _setScreen(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int width, unsigned height, double rate) {
+    bool _setScreen(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int width, unsigned int height, unsigned int colorDepth, double rate) {
+        if (colorDepth>0)
+            osg::notify(osg::NOTICE) << "X11WindowingSystemInterface::_setScreen() is not fully implemented (missing depth)."<<std::endl;
+
         Display* display = XOpenDisplay(si.displayName().c_str());
         
         if(display)
@@ -1607,7 +1610,10 @@ public:
             osg::notify(osg::INFO) << "X11WindowingSystemInterface, xInitThreads() multi-threaded X support initialized.\n";
         }
 #endif        
+
     }
+
+
 
     ~X11WindowingSystemInterface()
     {
@@ -1654,41 +1660,109 @@ public:
         }
     }
 
-    virtual void getScreenResolution(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height)
+    bool supportsRandr(Display* display) const
+    {
+#ifdef OSGVIEWER_USE_XRANDR
+        int event_basep;
+        int error_basep;
+        bool supports_randr = XRRQueryExtension( display, &event_basep, &error_basep );
+        if( supports_randr )
+        {
+            int major, minor;
+            XRRQueryVersion( display, &major, &minor );
+            return ( major > 1 || ( major == 1 && minor >= 2 ) );
+        }
+#endif
+        return false;
+    }
+
+    virtual void getScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution )
     {
         Display* display = XOpenDisplay(si.displayName().c_str());
         if(display)
         {
-            width = DisplayWidth(display, si.screenNum);
-            height = DisplayHeight(display, si.screenNum);
+            resolution.width = DisplayWidth(display, si.screenNum);
+            resolution.height = DisplayHeight(display, si.screenNum);
+            resolution.colorDepth = DefaultDepth(display, si.screenNum);
+            resolution.refreshRate = 0;            // Missing call. Need a X11 expert.
+            
             XCloseDisplay(display);
         }
         else
         {
             osg::notify(osg::NOTICE) << "Unable to open display \"" << XDisplayName(si.displayName().c_str()) << "\"."<<std::endl;
-            width = 0;
-            height = 0;
+            resolution.width = 0;
+            resolution.height = 0;
+            resolution.colorDepth = 0;
+            resolution.refreshRate = 0;
         }
     }
 
-    virtual bool setScreenResolution(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int width, unsigned int height)
+    virtual bool setScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, const osg::GraphicsContext::ScreenSettings & resolution )
     {
 #ifdef OSGVIEWER_USE_XRANDR
-        return _setScreen(si, width, height, 0.0f);
+        _setScreen(si, resolution.width, resolution.height, resolution.colorDepth, resolution.refreshRate);
 #else
-        osg::notify(osg::NOTICE) << "You must build osgViewer with Xrandr 1.2 or higher for setScreenResolution support!" << std::endl;
-        return false;
+        osg::notify(osg::NOTICE) << "You must build osgViewer with Xrandr 1.2 or higher for setScreenSettings support!" << std::endl;
 #endif
+        return false;
     }
 
-    virtual bool setScreenRefreshRate(const osg::GraphicsContext::ScreenIdentifier& si, double rate)
+    virtual void enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettingsList & resolutionList)
     {
+        resolutionList.clear();
+
+        Display* display = XOpenDisplay(si.displayName().c_str());
+        if(display)
+        {
 #ifdef OSGVIEWER_USE_XRANDR
-        return _setScreen(si, 0, 0, rate);
-#else
-        osg::notify(osg::NOTICE) << "You must build osgViewer with Xrandr 1.2 or higher for setScreenRefreshRate support!" << std::endl;
-        return false;
-#endif
+            int defaultDepth = DefaultDepth(display, si.screenNum);
+
+            if (supportsRandr(display))
+            {
+                int nsizes = 0;
+                XRRScreenSize * screenSizes = XRRSizes(display, si.screenNum, &nsizes);
+                if (screenSizes && nsizes>0)
+                {
+                    for(int i=0; i<nsizes; ++i)
+                    {
+                        osg::notify(osg::INFO)<<"Screen size "<<screenSizes[i].width<<" "<<screenSizes[i].height<<" "<<screenSizes[i].mwidth<<" "<<screenSizes[i].mheight<<std::endl;
+
+                        int nrates;
+                        short * rates = XRRRates (display, si.screenNum, i, &nrates);
+                        if (rates && nrates>0)
+                        {
+                            for(int j=0; j<nrates; ++j)
+                            {
+                                osg::notify(osg::INFO)<<"   rates "<<rates[j]<<std::endl;
+                                
+                                resolutionList.push_back(osg::GraphicsContext::ScreenSettings(
+                                    screenSizes[i].width,
+                                    screenSizes[i].height,
+                                    double(rates[j]),
+                                    defaultDepth));
+                            }
+                        }
+                        else
+                        {
+                            resolutionList.push_back(osg::GraphicsContext::ScreenSettings(
+                                screenSizes[i].width,
+                                screenSizes[i].height,
+                                0.0,
+                                defaultDepth));
+                        }
+
+                    }
+                }
+            }
+#endif            
+            XCloseDisplay(display);
+        }
+
+        if (resolutionList.empty())
+        {
+            osg::notify(osg::NOTICE) << "X11WindowingSystemInterface::enumerateScreenSettings() not supported." << std::endl;
+        }
     }
 
     virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)

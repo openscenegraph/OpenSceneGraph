@@ -340,7 +340,7 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
 #if 1                    
                 case(osgViewer::ViewerBase::AutomaticSelection):
                     viewerBase->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
-                    osg::notify(osg::NOTICE)<<"Threading model 'AutomaticSelection' selected."<<std::endl;
+                    osg::notify(osg::NOTICE)<<"Threading model 'SingleThreaded' selected."<<std::endl;
 #else                    
                 case(osgViewer::ViewerBase::AutomaticSelection):
                     viewerBase->setThreadingModel(viewer->suggestBestThreadingModel());
@@ -373,7 +373,7 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
     return false;
 }
 
-RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename):
+RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename, float fps):
     _filename(filename),
     _autoinc( -1 ),
     _keyEventToggleRecord('z'),
@@ -387,10 +387,14 @@ RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename):
     _animPath = new osg::AnimationPath();
 
     const char* str = getenv("OSG_RECORD_CAMERA_PATH_FPS");
-
-    if (str) _interval = 1.0f / atof(str);
-
-    else _interval = 1.0f / 25.0f;
+    if (str)
+    {
+        _interval = 1.0f / atof(str);
+    }
+    else
+    {
+        _interval = 1.0f / fps;
+    }
 }
 
 void RecordCameraPathHandler::getUsage(osg::ApplicationUsage &usage) const
@@ -477,7 +481,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     }
                 }
 
-                // THe user has requested to STOP recording, write the file!
+                // The user has requested to STOP recording, write the file!
                 else
                 {
                     _currentlyRecording = false;
@@ -676,7 +680,7 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
             x = int( tc.x() );
             y = int( tc.y() );
         }
-        else
+        else if (_image.valid())
         {
             x = int( float(_image->s()) * tc.x() );
             y = int( float(_image->t()) * tc.y() );
@@ -693,6 +697,8 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
 bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv)
 {
     if (ea.getHandled()) return false;
+    
+    if (!_image) return false;
 
     switch(ea.getEventType())
     {
@@ -705,8 +711,7 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
             int x,y;
             if (mousePosition(view, nv, ea, x, y))
             {
-                _image->sendPointerEvent(x, y, ea.getButtonMask());
-                return true;
+                return _image->sendPointerEvent(x, y, ea.getButtonMask());
             }
             break;
         }
@@ -719,9 +724,7 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
         
             if (sendKeyEvent)
             {
-                _image->sendKeyEvent(ea.getKey(), ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN);
-
-                return true;
+                return _image->sendKeyEvent(ea.getKey(), ea.getEventType()==osgGA::GUIEventAdapter::KEYDOWN);
             }          
         }
 

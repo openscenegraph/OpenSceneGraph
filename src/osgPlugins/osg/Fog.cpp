@@ -9,6 +9,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -19,7 +21,7 @@ bool Fog_matchModeStr(const char* str,Fog::Mode& mode);
 const char* Fog_getModeStr(Fog::Mode mode);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_FogProxy
+REGISTER_DOTOSGWRAPPER(Fog)
 (
     new osg::Fog,
     "Fog",

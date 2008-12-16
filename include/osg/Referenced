@@ -15,20 +15,10 @@
 #define OSG_REFERENCED 1
 
 // When building OSG with Java need to derive from Noodle::CBridgable class,
-// therefore so OSG_JAVA_BUILD must be defined. Also the thread-safe ref/unref test
-// as built in for the NoodleGlue wrapping. NoodleGlue has a Garbage collector mechanism 
-// which is very similar to osg::DeletionManager. So these aspects of osg::Referenced
-// have been removed
-//#define OSG_JAVA_BUILD
-
 #include <osg/Export>
 
-#ifdef OSG_JAVA_BUILD
-#include <NoodleGlue/Bridgable.h>
-#else
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
-#endif
 
 #include <OpenThreads/Atomic>
 #if !defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
@@ -37,7 +27,6 @@
 
 namespace osg {
 
-#ifndef OSG_JAVA_BUILD
 // forward declare, declared after Referenced below.
 class DeleteHandler;
 class Observer;
@@ -192,36 +181,6 @@ inline void Referenced::unref() const
 // use of osg Referenced classes with boost::intrusive_ptr
 inline void intrusive_ptr_add_ref(Referenced* p) { p->ref(); }
 inline void intrusive_ptr_release(Referenced* p) { p->unref(); }
-
-#else 
-
-/** Java wrappers use the CBridgable base-class for referencing
-  * and garbage collection.
-  */
-class OSG_EXPORT Referenced : public NoodleGlue::CBridgable 
-{
-    public:
-        /** Method not used in NoodleGlue referencing 
-          */
-        inline void unref_nodelete() const { --_refCount; }
-        inline int referenceCount() const { return _refCount; }
-
-        /* These methods are not used in JavaOSG */
-        void addObserver(Observer* observer) {}
-        void removeObserver(Observer* observer) {}
-
-    public:
-
-        /** Set whether reference counting should be use a mutex to create thread reference counting.*/
-        static void setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting) {}
-        
-        /** Get whether reference counting is active. */
-        static bool getThreadSafeReferenceCounting() { return true; }
-
-    protected:
-        virtual ~Referenced() {}
-};
-#endif //OSG_JAVA_BUILD
 
 }
 

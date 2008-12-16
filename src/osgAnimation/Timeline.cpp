@@ -16,32 +16,34 @@
 
 using namespace osgAnimation;
 
-
-Timeline::Timeline()
+// temporary
+// the problem comes that the AnimationManagerBase should only a group
+// and it's data should be in an update callback
+struct TimelineAdaptator : public Timeline
 {
-    _lastUpdate = 0;
-    _currentFrame = 0;
-    _fps = 25;
-    _speed = 1.0;
-    _state = Stop;
-    _initFirstFrame = false;
-    _previousFrameEvaluated = 0;
-    _evaluating = 0;
-    _numberFrame = -1; // something like infinity
-    setName("Timeline");
+    osg::ref_ptr<AnimationManagerTimeline> _manager;
+
+    TimelineAdaptator(AnimationManagerTimeline* manager) : _manager(manager) {}
+    void evaluate(unsigned int frame)
+    {
+        _manager->clearTargets();
+        Timeline::evaluate(frame);
+        _manager->normalizeTargets();
+    }
+};
+
+AnimationManagerTimeline::AnimationManagerTimeline()
+{
+    _timeline = new TimelineAdaptator(this);
 }
 
-Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op) : osg::Object(nc, op),
-    _actions(nc._actions)
+AnimationManagerTimeline::AnimationManagerTimeline(const AnimationManagerBase& manager) : AnimationManagerBase(manager)
 {
-    _lastUpdate = 0;
-    _currentFrame = 0;
-    _fps = 25;
-    _speed = 1.0;
-    _state = Stop;
-    _initFirstFrame = false;
-    _previousFrameEvaluated = 0;
-    _evaluating = 0;
-    _numberFrame = -1; // something like infinity
-    setName("Timeline");
+    _timeline = new TimelineAdaptator(this);
 }
+
+void AnimationManagerTimeline::update(double time)
+{
+    _timeline->update(time);
+}
+

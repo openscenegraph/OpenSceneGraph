@@ -12,7 +12,7 @@ bool PolygonOffset_readLocalData(Object& obj, Input& fr);
 bool PolygonOffset_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_PolygonOffsetProxy
+REGISTER_DOTOSGWRAPPER(PolygonOffset)
 (
     new osg::PolygonOffset,
     "PolygonOffset",

@@ -4,6 +4,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -14,7 +16,7 @@ bool AlphaFunc_matchFuncStr(const char* str,AlphaFunc::ComparisonFunction& func)
 const char* AlphaFunc_getFuncStr(AlphaFunc::ComparisonFunction func);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_AlphaFuncProxy
+REGISTER_DOTOSGWRAPPER(AlphaFunc)
 (
     new osg::AlphaFunc,
     "AlphaFunc",

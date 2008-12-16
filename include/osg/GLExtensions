@@ -38,6 +38,12 @@ extern OSG_EXPORT bool isExtensionInExtensionString(const char *extension, const
 */
 extern OSG_EXPORT bool isGLExtensionSupported(unsigned int contextID, const char *extension);
 
+/** Return true if OpenGL "extension" or minimum OpenGL version number is supported.
+  * Note: Must only be called within a valid OpenGL context,
+  * undefined behavior may occur otherwise.
+*/
+extern OSG_EXPORT bool isGLExtensionOrVersionSupported(unsigned int contextID, const char *extension, float requiredGlVersion);
+
 /** Return the address of the specified OpenGL function.
   * Return NULL if function not supported by OpenGL library.
   * Note, glGLExtensionFuncPtr is declared inline so that the code

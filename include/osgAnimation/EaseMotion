@@ -15,12 +15,6 @@
 #ifndef OSGANIMATION_EASE_MOTION_H
 #define OSGANIMATION_EASE_MOTION_H
 
-#include <osg/Referenced>
-#include <osg/ref_ptr>
-#include <osg/Notify>
-#include <osg/Math>
-#include <vector>
-
 namespace osgAnimation {
 
 
@@ -162,7 +156,7 @@ namespace osgAnimation {
 
 
 
-    class Motion : public osg::Referenced
+    class Motion
     {
     public:
         typedef float value_type;
@@ -171,36 +165,28 @@ namespace osgAnimation {
             CLAMP,
             LOOP,
         };
-        Motion(float startValue = 0, float duration = 1, float changeValue = 1, TimeBehaviour tb = CLAMP) : _time(0), _startValue(startValue), _changeValue(changeValue), _duration(duration), _behaviour(tb) {}
+        Motion(float startValue = 0, float duration = 1, float changeValue = 1, TimeBehaviour tb = CLAMP) : _time(0), _b(startValue), _c(changeValue), _d(duration), _behaviour(tb) {}
         virtual ~Motion() {}
         void reset() { setTime(0);}
         float getTime() const { return _time; }
-        float evaluateTime(float time) const
+        void update(float dt)
         {
+            _time += dt;
             switch (_behaviour) 
             {
             case CLAMP:
-                if (time > _duration)
-                    time = _duration;
-                else if (time < 0.0)
-                    time = 0.0;
+                if (_time > _d)
+                    _time = _d;
+                else if (_time < 0.0)
+                    _time = 0.0;
                 break;
             case LOOP:
-                if (time <= 0)
-                    time = 0;
-                else
-                    time = fmodf(time, _duration);
+                _time = fmodf(_time, _d);
                 break;
             }
-            return time;
-        }
-
-        void update(float dt)
-        {
-            _time = evaluateTime(_time + dt);
         }
     
-        void setTime(float time) { _time = evaluateTime(time);}
+        void setTime(float time) { _time = time; update(0);}
         void getValue(value_type& result) const { getValueAt(_time, result); }
         value_type getValue() const
         {
@@ -211,24 +197,23 @@ namespace osgAnimation {
 
         void getValueAt(float time, value_type& result) const
         {
-            getValueInNormalizedRange(evaluateTime(time)/_duration, result);
-            result = result * _changeValue + _startValue;
+            getValueInNormalizedRange(time/_d, result);
+            result = result * _c + _b;
         }
         value_type getValueAt(float time) const
         { 
             value_type result;
-            getValueAt(evaluateTime(time), result);
+            getValueAt(time, result);
             return result;
         }
 
         virtual void getValueInNormalizedRange(float t, value_type& result) const = 0;
 
-        float getDuration() const { return _duration;}
     protected:      
         float _time;
-        float _startValue;
-        float _changeValue;
-        float _duration;
+        float _b;
+        float _c;
+        float _d;
         TimeBehaviour _behaviour;
     };
 
@@ -261,39 +246,6 @@ namespace osgAnimation {
         }
     };
 
-    struct CompositeMotion : public Motion
-    {
-        typedef std::vector<osg::ref_ptr<Motion> > MotionList;
-        MotionList _motions;
-        
-        MotionList& getMotionList() { return _motions; }
-        const MotionList& getMotionList() const { return _motions; }
-        CompositeMotion(float startValue = 0, float duration = 1, float changeValue = 1, TimeBehaviour tb = CLAMP) : Motion(startValue, duration, changeValue, tb) {}
-
-        virtual void getValueInNormalizedRange(float t, value_type& result) const 
-        {
-            if (_motions.empty())
-            {
-                result = 0;
-                osg::notify(osg::WARN) << "CompositeMotion::getValueInNormalizedRange no Motion in the CompositeMotion, add motion to have result" << std::endl;
-                return;
-            }
-            for (MotionList::const_iterator it = _motions.begin(); it != _motions.end(); it++)
-            {
-                const Motion* motion = static_cast<const Motion*>(it->get());
-                float durationInRange = motion->getDuration() / getDuration();
-                if (t < durationInRange)
-                {
-                    float tInRange = t/durationInRange * motion->getDuration();
-                    motion->getValueAt( tInRange, result);
-                    return;
-                } else
-                    t = t - durationInRange;
-            }
-            osg::notify(osg::WARN) << "CompositeMotion::getValueInNormalizedRange did find the value in range, something wrong" << std::endl;
-            result = 0;
-        }
-    };
 
 
     // linear

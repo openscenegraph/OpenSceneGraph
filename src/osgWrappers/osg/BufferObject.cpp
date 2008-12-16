@@ -82,7 +82,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          "",
 	          "");
 	I_Method1(void, unbindBuffer, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__unbindBuffer__unsigned_int,
 	          "",
 	          "");
@@ -408,6 +408,93 @@ BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __Image_P1__getImage, 
 	                 __void__setImage__osg_Image_P1);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osg::PixelDataBufferObject::Mode)
+	I_DeclaringFile("osg/BufferObject");
+	I_EnumLabel(osg::PixelDataBufferObject::NONE);
+	I_EnumLabel(osg::PixelDataBufferObject::READ);
+	I_EnumLabel(osg::PixelDataBufferObject::WRITE);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::PixelDataBufferObject)
+	I_DeclaringFile("osg/BufferObject");
+	I_BaseType(osg::BufferObject);
+	I_Constructor0(____PixelDataBufferObject,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::PixelDataBufferObject &, pbo, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____PixelDataBufferObject__C5_PixelDataBufferObject_R1__C5_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setDataSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setDataSize__unsigned_int,
+	          "Set new size of the buffer object. This will reallocate the memory on the next compile. ",
+	          "");
+	I_Method0(unsigned int, getDataSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getDataSize,
+	          "Get data size of the used buffer. ",
+	          "");
+	I_Method1(void, compileBuffer, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__compileBuffer__State_R1,
+	          "Compile the buffer (reallocate the memory if buffer is dirty). ",
+	          "");
+	I_Method1(void, bindBufferInReadMode, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__bindBufferInReadMode__State_R1,
+	          "Bind the buffer in read mode, which means that data can be downloaded from the buffer (note: GL_PIXEL_UNPACK_BUFFER_ARB). ",
+	          "");
+	I_Method1(void, bindBufferInWriteMode, IN, osg::State &, state,
+	          Properties::VIRTUAL,
+	          __void__bindBufferInWriteMode__State_R1,
+	          "Bind the buffer in write mode, which means following OpenGL instructions will write data into the buffer (note: GL_PIXEL_PACK_BUFFER_ARB). ",
+	          "");
+	I_Method1(void, unbindBuffer, IN, unsigned int, contextID,
+	          Properties::VIRTUAL,
+	          __void__unbindBuffer__unsigned_int,
+	          "Unbind the buffer. ",
+	          "");
+	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
+	          Properties::VIRTUAL,
+	          __void__resizeGLObjectBuffers__unsigned_int,
+	          "Resize any per context GLObject buffers to specified size. ",
+	          "");
+	I_Method1(osg::PixelDataBufferObject::Mode, getMode, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __Mode__getMode__unsigned_int,
+	          "",
+	          "");
+	I_SimpleProperty(unsigned int, DataSize, 
+	                 __unsigned_int__getDataSize, 
+	                 __void__setDataSize__unsigned_int);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Array * >, osg::VertexBufferObject::BufferEntryArrayPair)

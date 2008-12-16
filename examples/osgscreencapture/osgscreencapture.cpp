@@ -31,6 +31,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <string.h>
 
 class WindowCaptureCallback : public osg::Camera::DrawCallback
 {

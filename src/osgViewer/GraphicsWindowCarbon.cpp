@@ -389,11 +389,14 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
     }
 
     /** returns the resolution of a specific display */
-    virtual void getScreenResolution(const osg::GraphicsContext::ScreenIdentifier& si, unsigned int& width, unsigned int& height)
+    virtual void getScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution)
     {
         CGDirectDisplayID id = getDisplayID(si);
-        width = CGDisplayPixelsWide(id);
-        height = CGDisplayPixelsHigh(id);
+        resolution.width = CGDisplayPixelsWide(id);
+        resolution.height = CGDisplayPixelsHigh(id);
+        resolution.colorDepth = CGDisplayBitsPerPixel(id);
+        resolution.refreshRate = getDictDouble (CGDisplayCurrentMode(displayID), kCGDisplayRefreshRate);        // Not tested
+        if (resolution.refreshRate<0) resolution.refreshRate = 0;
     }
     
     /** return the top left coord of a specific screen in global screen space */
@@ -405,66 +408,75 @@ struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::Windowin
         // osg::notify(osg::DEBUG_INFO) << "topleft of screen " << si.screenNum <<" " << bounds.origin.x << "/" << bounds.origin.y << std::endl;
     }
     
-    /** helper method to get a value out of a CFDictionary */
+    /** Helper method to get a double value out of a CFDictionary */
     static double getDictDouble (CFDictionaryRef refDict, CFStringRef key)
     {
-       double double_value;
-       CFNumberRef number_value = (CFNumberRef) CFDictionaryGetValue(refDict, key);
-       if (!number_value) // if can't get a number for the dictionary
-           return -1;  // fail
-       if (!CFNumberGetValue(number_value, kCFNumberDoubleType, &double_value)) // or if cant convert it
+        double value;
+        CFNumberRef number_value = (CFNumberRef) CFDictionaryGetValue(refDict, key);
+        if (!number_value) // if can't get a number for the dictionary
+            return -1;  // fail
+        if (!CFNumberGetValue(number_value, kCFNumberDoubleType, &double_value)) // or if cant convert it
             return -1; // fail
-        return double_value; // otherwise return the long value
+        return value; // otherwise return the long value
     }
 
-    
-    /** implementation of setScreenResolution */
-    virtual bool setScreenResolution(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) 
+    /** Helper method to get a long value out of a CFDictionary */
+    static long getDictLong(CFDictionaryRef refDict, CFStringRef key)        // const void* key?
+    {
+        long value = 0;
+        CFNumberRef number_value = (CFNumberRef)CFDictionaryGetValue(refDict, key); 
+        if (!number_value) // if can't get a number for the dictionary
+            return -1;  // fail
+        if (!CFNumberGetValue(number_value, kCFNumberLongType, &value)) // or if cant convert it
+            return -1; // fail
+        return value;
+    }
+
+    /** implementation of setScreenSettings */
+    virtual bool setScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, const osg::GraphicsContext::ScreenSettings & resolution) 
     { 
         CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
         
-        // add next line and on following line replace hard coded depth and refresh rate
-        CGRefreshRate refresh =  getDictDouble (CGDisplayCurrentMode(displayID), kCGDisplayRefreshRate);  
+        CGRefreshRate refresh = resolution.refreshRate>0 ? resolution.refreshRate : getDictDouble (CGDisplayCurrentMode(displayID), kCGDisplayRefreshRate);  
+        sizt_t depth = resolution.colorDepth>0 ? resolution.colorDepth : CGDisplayBitsPerPixel(displayID);
         CFDictionaryRef display_mode_values =
             CGDisplayBestModeForParametersAndRefreshRate(
                             displayID, 
-                            CGDisplayBitsPerPixel(displayID), 
-                            width, height,  
+                            depth,
+                            resolution.width, resolution.height,
                             refresh,  
                             NULL);
 
-                                          
+
         CGDisplaySwitchToMode(displayID, display_mode_values);    
         return true; 
     }
-    
-    /** implementation of setScreenRefreshRate */
-    virtual bool setScreenRefreshRate(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate) { 
-        
-        boolean_t  success(false);
-        unsigned width, height;
-        getScreenResolution(screenIdentifier, width, height);
-        
-        CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
-        
-        // add next line and on following line replace hard coded depth and refresh rate
-        CFDictionaryRef display_mode_values =
-            CGDisplayBestModeForParametersAndRefreshRate(
-                            displayID, 
-                            CGDisplayBitsPerPixel(displayID), 
-                            width, height,  
-                            refreshRate,  
-                            &success);
 
-                                          
-        if (success)
-            CGDisplaySwitchToMode(displayID, display_mode_values);    
-            
-        return (success != 0);
+    virtual void enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, osg::GraphicsContext::ScreenSettingsList & resolutionList) {
+        // Warning! This method has not been tested.
+        resolutionList.clear();
+
+        CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
+        CFArrayRef availableModes = CGDisplayAvailableModes(displayID);
+        unsigned int numberOfAvailableModes = CFArrayGetCount(availableModes);
+        for (unsigned int i=0; i<numberOfAvailableModes; ++i) {
+            // look at each mode in the available list
+            CFDictionaryRef mode = (CFDictionaryRef)CFArrayGetValueAtIndex(availableModes, i);
+            osg::GraphicsContext::ScreenSettings tmpSR;
+
+            long width = getDictLong(mode, kCGDisplayWidth);
+            tmpSR.width = width<=0 ? 0 : width;
+            long height = getDictLong(mode, kCGDisplayHeight);
+            tmpSR.height = height<=0 ? 0 : height;
+            long rate = getDictLong(mode, kCGDisplayRefreshRate);
+            tmpSR.refreshRate = rate<=0 ? 0 : rate;
+            long depth = getDictLong(mode, kCGDisplayBitsPerPixel);
+            tmpSR.colorDepth = depth<=0 ? 0 : depth;
+
+            resolutionList.push_back(tmpSR);
+        }
     }
 
-        
-    
     virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)
     {
         if (traits->pbuffer)
@@ -1271,8 +1283,8 @@ void GraphicsWindowCarbon::requestWarpPointer(float x,float y)
     CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
 
     CGPoint point;
-    point.x = x;
-    point.y = y;
+    point.x = x + _traits->x;
+    point.y = y + _traits->y;
     CGDisplayMoveCursorToPoint(displayId, point);
 
     getEventQueue()->mouseWarped(x,y);

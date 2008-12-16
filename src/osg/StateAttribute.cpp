@@ -27,7 +27,7 @@ StateAttribute::StateAttribute()
 
 void StateAttribute::addParent(osg::StateSet* object)
 {
-    osg::notify(osg::INFO)<<"Adding parent"<<getRefMutex()<<std::endl;
+    osg::notify(osg::DEBUG_FP)<<"Adding parent"<<getRefMutex()<<std::endl;
     OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
     
     _parents.push_back(object);

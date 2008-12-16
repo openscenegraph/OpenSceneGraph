@@ -13,7 +13,7 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr);
 bool PagedLOD_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_PagedLODProxy
+REGISTER_DOTOSGWRAPPER(PagedLOD)
 (
     new osg::PagedLOD,
     "PagedLOD",

@@ -10,6 +10,8 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/Box
     ${HEADER_PATH}/Browser
+    ${HEADER_PATH}/PdfReader
+    ${HEADER_PATH}/VncClient
     ${HEADER_PATH}/Canvas
     ${HEADER_PATH}/EventInterface
     ${HEADER_PATH}/Frame
@@ -37,6 +39,8 @@ ADD_LIBRARY(${LIB_NAME}
     ${LIB_PUBLIC_HEADERS}
     Box.cpp
     Browser.cpp
+    PdfReader.cpp
+    VncClient.cpp
     Canvas.cpp
     CMakeLists.txt
     Frame.cpp

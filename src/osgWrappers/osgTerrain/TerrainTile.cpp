@@ -104,7 +104,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	          __C5_TileID_R1__getTileID,
 	          "Get the TileID (layer, x,y) of the TerrainTile. ",
 	          "");
-	I_Method1(void, setTerrainTechnique, IN, osgTerrain::TerrainTechnique *, TerrainTechnique,
+	I_Method1(void, setTerrainTechnique, IN, osgTerrain::TerrainTechnique *, terrainTechnique,
 	          Properties::NON_VIRTUAL,
 	          __void__setTerrainTechnique__TerrainTechnique_P1,
 	          "Set the TerrainTechnique. ",

@@ -1,5 +1,6 @@
 SET(TARGET_SRC
     ReaderWriterBSP.cpp
+    ReaderWriterVTF.cpp
     BITSET.cpp
     Q3BSPReader.cpp
     Q3BSPLoad.cpp

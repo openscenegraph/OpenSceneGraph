@@ -51,6 +51,10 @@
 #endif
 
 
+#ifndef GL_ABGR_EXT
+#define GL_ABGR_EXT                         0x8000
+#endif
+
 namespace osg {
 
 // forward declare
@@ -255,6 +259,7 @@ class OSG_EXPORT Image : public Object
 
         static bool isPackedType(GLenum type);
         static GLenum computePixelFormat(GLenum pixelFormat);
+        static GLenum computeFormatDataType(GLenum pixelFormat);
         static unsigned int computeNumComponents(GLenum pixelFormat);
         static unsigned int computePixelSizeInBits(GLenum pixelFormat,GLenum type);
         static unsigned int computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum type,int packing);
@@ -294,7 +299,13 @@ class OSG_EXPORT Image : public Object
         {
            return _data+getMipmapOffset(mipmapLevel);
         }
-        
+
+        /*inline const unsigned char* getMipmapData(unsigned int row, unsigned int column, unsigned int mipmapLevel) const
+        {
+           if (!_data) return NULL;
+           return getMipmapData(mipmapLevel) + (column*getPixelSizeInBits())/8+row*getRowSizeInBytes();
+        }*/
+
         /** Return true if this image is translucent - i.e. it has alpha values that are less 1.0 (when normalized). */
         bool isImageTranslucent() const;
 
@@ -310,11 +321,11 @@ class OSG_EXPORT Image : public Object
         virtual void update(NodeVisitor* nv) {}
         
 
-        /** method for sending pointer events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.*/
-        virtual void sendPointerEvent(int x, int y, int buttonMask) {}
+        /** method for sending pointer events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.  Return true if handled. */
+        virtual bool sendPointerEvent(int x, int y, int buttonMask) { return false; }
 
-        /** method for sending key events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.*/
-        virtual void sendKeyEvent(int key, bool keyDown) {}
+        /** method for sending key events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.  Return true if handled.*/
+        virtual bool sendKeyEvent(int key, bool keyDown) { return false; }
 
         /** method for passing frame information to the custom Image classes, to be called only when objects associated with imagery are not culled.*/
         virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp) {}

@@ -8,7 +8,7 @@
 
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
-#include <osgAnimation/BasicAnimationManager>
+#include <osgAnimation/AnimationManager>
 
 class BvhMotionBuilder : public osg::Referenced
 {
@@ -79,7 +79,7 @@ public:
                     osg::ref_ptr<osgAnimation::Bone> bone = new osgAnimation::Bone( parent->getName()+"End" );
                     bone->setBindMatrixInBoneSpace( osg::Matrix::translate(offsetEndSite) );
                     bone->setDataVariance( osg::Object::DYNAMIC );
-                    parent->addChild( bone );
+                    parent->addChild( bone.get() );
 
                     if ( _drawingFlag )
                         parent->addChild( createRefGeometry(offsetEndSite, 0.5).get() );
@@ -94,9 +94,11 @@ public:
 
             // Process JOINT section
             osg::ref_ptr<osgAnimation::Bone> bone = new osgAnimation::Bone( fr[1].getStr() );
-            bone->setDefaultUpdateCallback();
             bone->setDataVariance( osg::Object::DYNAMIC );
-            parent->addChild( bone );
+            osgAnimation::AnimationUpdateCallback* cb =
+                dynamic_cast<osgAnimation::AnimationUpdateCallback*>( bone->getUpdateCallback() );
+            if ( cb ) cb->setName( bone->getName() );
+            parent->addChild( bone.get() );
             _joints.push_back( JointNode(bone, 0) );
 
             int entry = fr[1].getNoNestedBrackets();
@@ -183,7 +185,7 @@ public:
         }
     }
 
-    osg::Group* buildBVH( std::istream& stream, const osgDB::ReaderWriter::Options* options )
+    osgAnimation::AnimationManager* buildBVH( std::istream& stream, const osgDB::ReaderWriter::Options* options )
     {
         if ( options )
         {
@@ -195,7 +197,6 @@ public:
         fr.attach( &stream );
 
         osg::ref_ptr<osgAnimation::Skeleton> skelroot = new osgAnimation::Skeleton;
-        skelroot->setDefaultUpdateCallback();
         osg::ref_ptr<osgAnimation::Animation> anim = new osgAnimation::Animation;
 
         while( !fr.eof() )
@@ -233,16 +234,14 @@ public:
         }
 #endif
 
-        osg::Group* root = new osg::Group;
-        osgAnimation::BasicAnimationManager* manager = new osgAnimation::BasicAnimationManager;
-        root->addChild( skelroot.get() );
-        root->setUpdateCallback(manager);
+        osgAnimation::AnimationManager* manager = new osgAnimation::AnimationManager;
+        manager->addChild( skelroot.get() );
         manager->registerAnimation( anim.get() );
         manager->buildTargetReference();
         manager->playAnimation( anim.get() );
 
         _joints.clear();
-        return root;
+        return manager;
     }
 
 protected:

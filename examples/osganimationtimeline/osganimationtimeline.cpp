@@ -29,7 +29,6 @@
 #include <osgAnimation/Skinning>
 #include <osgAnimation/Timeline>
 #include <osgAnimation/AnimationManagerBase>
-#include <osgAnimation/TimelineAnimationManager>
 
 
 struct NoseBegin : public osgAnimation::Action::Callback
@@ -55,20 +54,16 @@ struct ExampleTimelineUsage : public osgGA::GUIEventHandler
     osg::ref_ptr<osgAnimation::StripAnimation> _mainLoop;
     osg::ref_ptr<osgAnimation::StripAnimation> _scratchHead;
     osg::ref_ptr<osgAnimation::StripAnimation> _scratchNose;
-    osg::ref_ptr<osgAnimation::TimelineAnimationManager> _manager;
+    osg::ref_ptr<osgAnimation::AnimationManagerTimeline> _manager;
 
     bool _releaseKey;
 
-    ExampleTimelineUsage(osgAnimation::TimelineAnimationManager* manager)
+    ExampleTimelineUsage(osgAnimation::AnimationManagerTimeline* manager)
     {
         _releaseKey = false;
         _manager = manager;
 
-        const osgAnimation::AnimationList& list = _manager->getAnimationList();
-        osgAnimation::AnimationMap map;
-        for (osgAnimation::AnimationList::const_iterator it = list.begin(); it != list.end(); it++)
-            map[(*it)->getName()] = *it;
-
+        osgAnimation::AnimationMap map = _manager->getAnimationMap();
         _mainLoop = new osgAnimation::StripAnimation(map["Idle_Main"].get(),0.0,0.0);
         _mainLoop->setLoop(0); // means forever
 
@@ -162,26 +157,27 @@ int main (int argc, char* argv[])
     osg::ArgumentParser psr(&argc, argv);
 
     osgViewer::Viewer viewer(psr);
+    osg::ref_ptr<osg::Group> group = new osg::Group();
 
     std::string file = "osgAnimation/nathan.osg";
     if(argc >= 2) 
         file = psr[1];
 
     // replace the manager
-    osg::Group* root = dynamic_cast<osg::Group*>(osgDB::readNodeFile(file));
-    osgAnimation::AnimationManagerBase* animationManager = dynamic_cast<osgAnimation::AnimationManagerBase*>(root->getUpdateCallback());
+    osgAnimation::AnimationManagerBase* animationManager = dynamic_cast<osgAnimation::AnimationManagerBase*>(osgDB::readNodeFile(file));
     if(!animationManager) 
     {
-        std::cerr << "Did not found AnimationManagerBase updateCallback needed to animate elements" << std::endl;
+        std::cerr << "Couldn't convert the file's toplevel object into an AnimationManager." << std::endl;
         return 1;
     }
 
-    osg::ref_ptr<osgAnimation::TimelineAnimationManager> tl = new osgAnimation::TimelineAnimationManager(*animationManager);
-    root->setUpdateCallback(tl);
+    osg::ref_ptr<osgAnimation::AnimationManagerTimeline> tl = new osgAnimation::AnimationManagerTimeline(*animationManager);
+
+    animationManager->removeChildren(0, animationManager->getNumChildren());
     ExampleTimelineUsage* callback = new ExampleTimelineUsage(tl.get());
-    root->setEventCallback(callback);
-    root->getUpdateCallback()->addNestedCallback(callback);
-        
+    group->addChild(tl.get());
+    group->setEventCallback(callback);
+    group->setUpdateCallback(callback);
 
 
     // add the state manipulator
@@ -205,7 +201,7 @@ int main (int argc, char* argv[])
     // add the screen capture handler
     viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
 
-    viewer.setSceneData(root);
+    viewer.setSceneData(group.get());
 
     return viewer.run();
 }

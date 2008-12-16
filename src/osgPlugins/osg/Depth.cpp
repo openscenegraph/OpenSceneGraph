@@ -4,6 +4,10 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include <string.h>
+
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -16,7 +20,7 @@ const char* Depth_getFuncStr(Depth::Function func);
 
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_DepthProxy
+REGISTER_DOTOSGWRAPPER(Depth)
 (
     new osg::Depth,
     "Depth",

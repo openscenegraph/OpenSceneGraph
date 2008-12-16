@@ -205,7 +205,7 @@ GLenum Image::computePixelFormat(GLenum format)
         case(GL_LUMINANCE_ALPHA8UI_EXT):
         case(GL_LUMINANCE_ALPHA16UI_EXT):
         case(GL_LUMINANCE_ALPHA32UI_EXT):
-            return GL_LUMINANCE_ALPHA_INTEGER_EXT;;
+            return GL_LUMINANCE_ALPHA_INTEGER_EXT;
         case(GL_RGB32I_EXT):
         case(GL_RGB16I_EXT):
         case(GL_RGB8I_EXT):
@@ -223,6 +223,62 @@ GLenum Image::computePixelFormat(GLenum format)
 
         default:
             return format;
+    }
+}
+
+GLenum Image::computeFormatDataType(GLenum pixelFormat)
+{
+    switch (pixelFormat)
+    {
+        case GL_LUMINANCE32F_ARB:
+        case GL_LUMINANCE16F_ARB: 
+        case GL_LUMINANCE_ALPHA32F_ARB:
+        case GL_LUMINANCE_ALPHA16F_ARB: 
+        case GL_RGB32F_ARB:
+        case GL_RGB16F_ARB: 
+        case GL_RGBA32F_ARB:
+        case GL_RGBA16F_ARB: return GL_FLOAT;
+
+        case GL_RGBA32UI_EXT:
+        case GL_RGB32UI_EXT:
+        case GL_LUMINANCE32UI_EXT:
+        case GL_LUMINANCE_ALPHA32UI_EXT: return GL_UNSIGNED_INT;
+
+        case GL_RGB16UI_EXT:
+        case GL_RGBA16UI_EXT:
+        case GL_LUMINANCE16UI_EXT: 
+        case GL_LUMINANCE_ALPHA16UI_EXT: return GL_UNSIGNED_SHORT;
+
+        case GL_RGBA8UI_EXT:
+        case GL_RGB8UI_EXT:
+        case GL_LUMINANCE8UI_EXT:
+        case GL_LUMINANCE_ALPHA8UI_EXT:  return GL_UNSIGNED_BYTE;
+
+        case GL_RGBA32I_EXT:  
+        case GL_RGB32I_EXT:
+        case GL_LUMINANCE32I_EXT:
+        case GL_LUMINANCE_ALPHA32I_EXT: return GL_INT;
+
+        case GL_RGBA16I_EXT:
+        case GL_RGB16I_EXT:
+        case GL_LUMINANCE16I_EXT:
+        case GL_LUMINANCE_ALPHA16I_EXT: return GL_SHORT;
+
+        case GL_RGB8I_EXT: 
+        case GL_RGBA8I_EXT: 
+        case GL_LUMINANCE8I_EXT: 
+        case GL_LUMINANCE_ALPHA8I_EXT: return GL_BYTE;
+
+        case GL_RGBA:
+        case GL_RGB:
+        case GL_LUMINANCE:
+        case GL_LUMINANCE_ALPHA: return GL_UNSIGNED_BYTE;
+
+        default: 
+        {
+            notify(WARN)<<"error computeFormatType = "<<std::hex<<pixelFormat<<std::endl;
+            return 0;
+        }
     }
 }
 
@@ -308,6 +364,17 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_DSDT_NV): return 2;
         case(GL_DSDT_MAG_NV): return 3;
         case(GL_DSDT_MAG_VIB_NV): return 4;
+        case(GL_RED_INTEGER_EXT): return 1;
+        case(GL_GREEN_INTEGER_EXT): return 1;
+        case(GL_BLUE_INTEGER_EXT): return 1;
+        case(GL_ALPHA_INTEGER_EXT): return 1;
+        case(GL_RGB_INTEGER_EXT): return 3;
+        case(GL_RGBA_INTEGER_EXT): return 4;
+        case(GL_BGR_INTEGER_EXT): return 3;
+        case(GL_BGRA_INTEGER_EXT): return 4;
+        case(GL_LUMINANCE_INTEGER_EXT): return 1;
+        case(GL_LUMINANCE_ALPHA_INTEGER_EXT): return 2;
+
         default:
         {
             notify(WARN)<<"error pixelFormat = "<<std::hex<<pixelFormat<<std::endl;

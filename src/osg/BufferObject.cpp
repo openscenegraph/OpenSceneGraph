@@ -356,8 +356,7 @@ void VertexBufferObject::compileBuffer(State& state) const
     // osg::notify(osg::NOTICE)<<"VertexBufferObject::compileBuffer frameNumber="<<state.getFrameStamp()->getFrameNumber()<<std::endl;
 
     unsigned int totalSizeRequired = 0;
-//    unsigned int numModified = 0;
-//    unsigned int numNotModified = 0;
+    unsigned int numNewArrays = 0;
     for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
         itr != _bufferEntryArrayPairs.end();
         ++itr)
@@ -366,6 +365,7 @@ void VertexBufferObject::compileBuffer(State& state) const
         if (bep.second)
         {
             totalSizeRequired += bep.second->getTotalDataSize();
+            if (bep.first.dataSize == 0) ++numNewArrays;
         }
     }
 
@@ -400,6 +400,47 @@ void VertexBufferObject::compileBuffer(State& state) const
         }
     }
 
+    typedef std::map<unsigned int,std::vector<unsigned int> > SizePosMap_t;
+    SizePosMap_t freeList;
+    if (copyAll == false && numNewArrays > 0)
+    {
+        std::map<unsigned int,unsigned int> usedList;
+        for(BufferEntryArrayPairs::const_iterator itr = _bufferEntryArrayPairs.begin();
+            itr != _bufferEntryArrayPairs.end();
+            ++itr)
+        {
+            const BufferEntryArrayPair& bep = *itr;
+            if (bep.second==NULL) continue;
+            if (bep.first.dataSize == 0) continue;
+            usedList[bep.first.offset] = bep.first.dataSize;
+        }
+        unsigned int numFreeBlocks = 0;
+        unsigned int pos=0;
+
+        for (std::map<unsigned int,unsigned int>::const_iterator it=usedList.begin(); it!=usedList.end(); ++it)
+        {
+            unsigned int start = it->first;
+            unsigned int length = it->second;
+            if (pos < start)
+            {
+                freeList[start-pos].push_back(pos);
+                ++numFreeBlocks;
+            }
+            pos = start+length;
+        }
+        if (pos < totalSizeRequired)
+        {
+            freeList[totalSizeRequired-pos].push_back(pos);
+            ++numFreeBlocks;
+        }
+        if (numNewArrays < numFreeBlocks)
+        {
+            copyAll = true;     // too fragmented, fallback to copyAll
+            freeList.clear();
+        }
+    }
+
+
 //    osg::Timer_t start_tick = osg::Timer::instance()->tick();
 
 
@@ -418,19 +459,42 @@ void VertexBufferObject::compileBuffer(State& state) const
         const Array* de = bep.second;
         if (de)
         {
+            const unsigned int arraySize = de->getTotalDataSize();
             if (copyAll ||
                 bep.first.modifiedCount[contextID] != bep.second->getModifiedCount() ||
-                bep.first.dataSize != bep.second->getTotalDataSize())
+                bep.first.dataSize != arraySize)
             {
                 // copy data across
-                bep.first.dataSize = bep.second->getTotalDataSize();
-                bep.first.modifiedCount[contextID] = de->getModifiedCount();
+                unsigned int newOffset = bep.first.offset;              
                 if (copyAll)
                 {
-                    bep.first.offset = offset;
-                    de->setVertexBufferObjectOffset((GLvoid*)offset);
-                    offset += bep.first.dataSize;
+                    newOffset = offset;
+                    offset += arraySize;
                 }
+                else if (bep.first.dataSize == 0)
+                {
+                    SizePosMap_t::iterator findIt = freeList.lower_bound(arraySize);
+                    if (findIt==freeList.end())
+                    {
+                        osg::notify(osg::FATAL)<<"No suitable Memory in VBO found!"<<std::endl;
+                        continue;
+                    }
+                    const unsigned int oldOffset = findIt->second.back();
+                    newOffset = oldOffset;
+                    if (findIt->first > arraySize) // using larger block
+                    {
+                        freeList[findIt->first-arraySize].push_back(oldOffset+arraySize);
+                    }
+                    findIt->second.pop_back();
+                    if (findIt->second.empty())
+                    {
+                        freeList.erase(findIt);
+                    }
+                }
+                bep.first.dataSize = arraySize;
+                bep.first.modifiedCount[contextID] = de->getModifiedCount();
+                bep.first.offset = newOffset;
+                de->setVertexBufferObjectOffset((GLvoid*)newOffset);
 
                 // osg::notify(osg::NOTICE)<<"   copying vertex buffer data "<<bep.first.dataSize<<" bytes"<<std::endl;
 
@@ -724,3 +788,103 @@ void PixelBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
 
     _bufferEntryImagePair.first.modifiedCount.resize(maxSize);
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//
+//  PixelDataBufferObject
+//
+//--------------------------------------------------------------------------------
+PixelDataBufferObject::PixelDataBufferObject()
+{
+    _target = GL_ARRAY_BUFFER_ARB;
+    _usage = GL_DYNAMIC_DRAW_ARB;
+    _bufferData.dataSize = 0;
+}
+
+//--------------------------------------------------------------------------------
+PixelDataBufferObject::PixelDataBufferObject(const PixelDataBufferObject& buffer,const CopyOp& copyop):
+    BufferObject(buffer,copyop),
+    _bufferData(buffer._bufferData)
+{
+}
+
+//--------------------------------------------------------------------------------
+PixelDataBufferObject::~PixelDataBufferObject()
+{
+}
+
+//--------------------------------------------------------------------------------
+void PixelDataBufferObject::compileBuffer(State& state) const
+{
+    unsigned int contextID = state.getContextID();    
+    if (!isDirty(contextID) || _bufferData.dataSize == 0) return;
+
+    Extensions* extensions = getExtensions(contextID,true);
+
+    GLuint& pbo = buffer(contextID);
+    if (pbo == 0)
+    {
+        extensions->glGenBuffers(1, &pbo);
+    }
+
+    extensions->glBindBuffer(_target, pbo);
+    extensions->glBufferData(_target, _bufferData.dataSize, NULL, _usage);
+    extensions->glBindBuffer(_target, 0);
+
+    _compiledList[contextID] = 1;
+}
+
+//--------------------------------------------------------------------------------
+void PixelDataBufferObject::bindBufferInReadMode(State& state)
+{
+    unsigned int contextID = state.getContextID();    
+    if (isDirty(contextID)) compileBuffer(state);
+
+    Extensions* extensions = getExtensions(contextID,true);
+
+    extensions->glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, buffer(contextID));
+    _mode[contextID] = READ;
+}
+
+//--------------------------------------------------------------------------------
+void PixelDataBufferObject::bindBufferInWriteMode(State& state)
+{
+    unsigned int contextID = state.getContextID();    
+    if (isDirty(contextID)) compileBuffer(state);
+
+    Extensions* extensions = getExtensions(contextID,true);
+
+    extensions->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, buffer(contextID));
+    _mode[contextID] = WRITE;
+}
+
+//--------------------------------------------------------------------------------
+void PixelDataBufferObject::unbindBuffer(unsigned int contextID) const
+{ 
+    Extensions* extensions = getExtensions(contextID,true);
+
+    switch(_mode[contextID])
+    {
+        case READ:
+            extensions->glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,0);
+            break;
+        case WRITE:
+            extensions->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB,0);
+            break;
+        default:
+            extensions->glBindBuffer(_target,0);
+            break;
+    }
+
+    _mode[contextID] = NONE;
+}
+
+//--------------------------------------------------------------------------------
+void PixelDataBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    BufferObject::resizeGLObjectBuffers(maxSize);
+
+    _mode.resize(maxSize);
+}
+

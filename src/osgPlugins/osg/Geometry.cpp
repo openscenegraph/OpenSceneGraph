@@ -6,6 +6,8 @@
 #include <osgDB/Input>
 #include <osgDB/ParameterOutput>
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -24,7 +26,7 @@ Array* Array_readLocalData(Input& fr);
 bool Primitive_readLocalData(Input& fr,osg::Geometry& geom);
 
 //register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_GeometryFuncProxy
+REGISTER_DOTOSGWRAPPER(Geometry)
 (
     new osg::Geometry,
     "Geometry",

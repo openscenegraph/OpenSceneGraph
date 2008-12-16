@@ -17,7 +17,7 @@ bool Point_readLocalData(Object& obj, Input& fr);
 bool Point_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_PointProxy
+REGISTER_DOTOSGWRAPPER(Point)
 (
     new osg::Point,
     "Point",

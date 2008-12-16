@@ -17,8 +17,6 @@
 #include <osg/Notify>
 #include <osgVolume/ImageUtils>
 
-using namespace osgVolume;
-
 namespace osgVolume
 {
 
@@ -87,9 +85,7 @@ struct OffsetAndScaleOperator
     }
 };
 
-}
-
-bool osgVolume::computeMinMax(const osg::Image* image, osg::Vec4& minValue, osg::Vec4& maxValue)
+bool computeMinMax(const osg::Image* image, osg::Vec4& minValue, osg::Vec4& maxValue)
 {
     if (!image) return false;
 
@@ -111,7 +107,7 @@ bool osgVolume::computeMinMax(const osg::Image* image, osg::Vec4& minValue, osg:
            minValue.a()<=maxValue.a();
 }
 
-bool osgVolume::offsetAndScaleImage(osg::Image* image, const osg::Vec4& offset, const osg::Vec4& scale)
+bool offsetAndScaleImage(osg::Image* image, const osg::Vec4& offset, const osg::Vec4& scale)
 {
     if (!image) return false;
 
@@ -199,7 +195,7 @@ struct WriteRowOperator
     inline void rgba(float& r,float& g,float& b,float& a) const {  r = _colours[_pos].r(); g = _colours[_pos].g(); b = _colours[_pos].b(); a = _colours[_pos++].a(); }
 };
 
-bool osgVolume::copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int width, int height, int depth,
+bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int width, int height, int depth,
                           osg::Image* destImage, int dest_s, int dest_t, int dest_r, bool doRescale)
 {
     if ((src_s+width) > (dest_s + destImage->s()))
@@ -320,6 +316,32 @@ bool osgVolume::copyImage(const osg::Image* srcImage, int src_s, int src_t, int 
         
         return false;
     }
+
+}
+
+
+struct SetToColourOperator
+{
+    SetToColourOperator(const osg::Vec4& colour):
+        _colour(colour) {}
+
+    inline void luminance(float& l) const { l = (_colour.r()+_colour.g()+_colour.b())*0.333333; } 
+    inline void alpha(float& a) const { a = _colour.a(); } 
+    inline void luminance_alpha(float& l,float& a) const { l = (_colour.r()+_colour.g()+_colour.b())*0.333333; a = _colour.a(); }
+    inline void rgb(float& r,float& g,float& b) const { r = _colour.r(); g = _colour.g(); b = _colour.b(); }
+    inline void rgba(float& r,float& g,float& b,float& a) const { r = _colour.r(); g = _colour.g(); b = _colour.b(); a = _colour.a(); }
+
+    osg::Vec4 _colour;
+};
+
+bool clearImageToColor(osg::Image* image, const osg::Vec4& colour)
+{
+    if (!image) return false;
+
+    modifyImage(image, SetToColourOperator(colour));
+    
+    return true;
+}
 
 }
 

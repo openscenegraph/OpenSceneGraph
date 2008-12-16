@@ -8,4 +8,4 @@ LINK_LIBRARIES(${RSVG_LIBRARIES} ${CAIRO_LIBRARIES})
 
 SET(TARGET_SRC ReaderWriterSVG.cpp )
 #### end var setup  ###
-SETUP_PLUGIN(svg)
+SETUP_PLUGIN(svg svg)

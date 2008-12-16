@@ -14,7 +14,7 @@ bool ClearNode_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
 
-RegisterDotOsgWrapperProxy g_EarthSkyProxy
+REGISTER_DOTOSGWRAPPER(EarthSky)
 (
     new osg::ClearNode,
     "EarthSky",
@@ -23,7 +23,7 @@ RegisterDotOsgWrapperProxy g_EarthSkyProxy
     &ClearNode_writeLocalData
 );
 
-RegisterDotOsgWrapperProxy g_ClearNodeProxy
+REGISTER_DOTOSGWRAPPER(ClearNode)
 (
     new osg::ClearNode,
     "ClearNode",

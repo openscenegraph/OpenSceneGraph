@@ -12,7 +12,7 @@ bool CoordinateSystemNode_readLocalData(Object& obj, Input& fr);
 bool CoordinateSystemNode_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_CoordinateSystemNodeProxy
+REGISTER_DOTOSGWRAPPER(CoordinateSystemNode)
 (
     new osg::CoordinateSystemNode,
     "CoordinateSystemNode",

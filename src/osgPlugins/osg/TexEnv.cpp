@@ -5,6 +5,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -15,7 +17,7 @@ bool TexEnv_matchModeStr(const char* str,TexEnv::Mode& mode);
 const char* TexEnv_getModeStr(TexEnv::Mode mode);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TexEnvProxy
+REGISTER_DOTOSGWRAPPER(TexEnv)
 (
     new osg::TexEnv,
     "TexEnv",

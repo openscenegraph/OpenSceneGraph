@@ -1811,7 +1811,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
     return 0;
 }
 
-bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
+bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections, osg::Node::NodeMask traversalMask)
 {
     if (!_camera.valid()) return false;
 
@@ -1899,15 +1899,23 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
     return false;
 }
 
-bool View::computeIntersections(float x,float y, osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
+bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
 {
-    if (!_camera.valid()) return false;
+    if (!_camera.valid() || nodePath.empty()) return false;
     
     float local_x, local_y = 0.0;    
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
     if (!camera) camera = _camera.get();
     
-    osg::Matrix matrix = osg::computeWorldToLocal(nodePath) *  camera->getViewMatrix() * camera->getProjectionMatrix();
+    osg::Matrixd matrix;
+    if (nodePath.size()>1)
+    {
+        osg::NodePath prunedNodePath(nodePath.begin(),nodePath.end()-1);
+        matrix = osg::computeLocalToWorld(prunedNodePath);
+    }
+    
+    matrix.postMult(camera->getViewMatrix());
+    matrix.postMult(camera->getProjectionMatrix());
 
     double zNear = -1.0;
     double zFar = 1.0;
@@ -1918,7 +1926,7 @@ bool View::computeIntersections(float x,float y, osg::NodePath& nodePath, osgUti
         zFar = 1.0;
     }
 
-    osg::Matrix inverse;
+    osg::Matrixd inverse;
     inverse.invert(matrix);
 
     osg::Vec3d startVertex = osg::Vec3d(local_x,local_y,zNear) * inverse;

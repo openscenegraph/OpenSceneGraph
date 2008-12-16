@@ -12,8 +12,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGANIMATION_BASIC_ANIMATION_MANAGER_H
-#define OSGANIMATION_BASIC_ANIMATION_MANAGER_H
+#ifndef OSGANIMATION_ANIMATION_MANAGER_H
+#define OSGANIMATION_ANIMATION_MANAGER_H
 
 #include <osg/Group>
 #include <osgAnimation/AnimationManagerBase>
@@ -22,15 +22,17 @@
 
 namespace osgAnimation
 {
-    class OSGANIMATION_EXPORT BasicAnimationManager : public AnimationManagerBase
+
+    class OSGANIMATION_EXPORT AnimationManager : public AnimationManagerBase
     {
     public:
 
-        META_Object(osgAnimation, BasicAnimationManager);
+        META_Node(osgAnimation, AnimationManager);
   
-        BasicAnimationManager();
-        BasicAnimationManager(const AnimationManagerBase& b, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY) : AnimationManagerBase(b,copyop) {}
-        virtual ~BasicAnimationManager();
+        AnimationManager();
+        AnimationManager(const AnimationManager& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : 
+            AnimationManagerBase(b,copyop) {}
+        virtual ~AnimationManager();
 
         void update (double time);
 
@@ -45,7 +47,10 @@ namespace osgAnimation
     
     protected:
         typedef std::map<int, AnimationList > AnimationLayers;
+
         AnimationLayers _animationsPlaying;
+
+        // clock
         double _lastUpdate;
     };
 

@@ -4,6 +4,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -15,7 +17,7 @@ bool BlendEquation_matchModeStr(const char* str,int& mode);
 const char* BlendEquation_getModeStr(int value);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_BlendEquationProxy
+REGISTER_DOTOSGWRAPPER(BlendEquation)
 (
     new osg::BlendEquation,
     "BlendEquation",

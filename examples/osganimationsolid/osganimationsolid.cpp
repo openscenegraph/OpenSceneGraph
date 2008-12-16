@@ -20,7 +20,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osg/MatrixTransform>
 
-#include <osgAnimation/BasicAnimationManager>
+#include <osgAnimation/AnimationManager>
 #include <osgAnimation/Channel>
 #include <osgAnimation/UpdateCallback>
 
@@ -80,11 +80,10 @@ int main (int argc, char* argv[])
     root->addChild (trans.get());
 
     // Define a scheduler for our animations
-    osg::Group* grp = new osg::Group;
-    osgAnimation::BasicAnimationManager* mng = new osgAnimation::BasicAnimationManager();
-    grp->setUpdateCallback(mng);
+    osgAnimation::AnimationManager* mng = new osgAnimation::AnimationManager();
 
-    grp->addChild(root);
+
+    mng->addChild(root);
 
     // And we finaly define our channel
     osgAnimation::Vec3LinearChannel* channelAnimation1 = new osgAnimation::Vec3LinearChannel;
@@ -114,6 +113,6 @@ int main (int argc, char* argv[])
     mng->playAnimation(anim1);
     mng->playAnimation(anim2);
 
-    viewer.setSceneData( grp );
+    viewer.setSceneData( mng );
     return viewer.run();
 }

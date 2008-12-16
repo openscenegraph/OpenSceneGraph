@@ -54,9 +54,9 @@ void AnimationUpdateCallback::updateLink()
                 Maybe this function should be on the manager side like
                 _manager->linkItem(Bone);
             */
-            const AnimationList& animationList = _manager->getAnimationList();
-            for (AnimationList::const_iterator it = animationList.begin(); it != animationList.end(); it++)
-                link(it->get());
+            AnimationMap map = _manager->getAnimationMap();
+            for (AnimationMap::iterator it = map.begin(); it != map.end(); it++)
+                link(it->second.get());
             _manager->buildTargetReference();
         }
     }

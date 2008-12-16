@@ -16,6 +16,8 @@
 #include <assert.h>
 #include <fstream>
 
+#include <string.h>
+
 #include "Q3BSPReader.h"
 #include "Q3BSPLoad.h"
 

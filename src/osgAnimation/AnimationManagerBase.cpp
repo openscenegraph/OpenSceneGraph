@@ -18,51 +18,13 @@
 
 using namespace osgAnimation;
 
+
 AnimationManagerBase::~AnimationManagerBase() {}
 
 AnimationManagerBase::AnimationManagerBase()
 {
+    setUpdateCallback(new UpdateCallback); 
     _needToLink = false; 
-}
-
-void AnimationManagerBase::clearTargets()
-{
-    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
-        (*it).get()->reset();
-}
-void AnimationManagerBase::normalizeTargets()
-{
-    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
-        (*it).get()->normalize();
-}
-
-void AnimationManagerBase::operator()(osg::Node* node, osg::NodeVisitor* nv)
-{ 
-    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
-    {
-        if (needToLink())
-        {
-            /** manager need to link, it means that an animation has been added
-                so we need to relink all item animated with all animations.
-                We apply the linker visitor on the manager node to affect
-                all its children.
-                But it should not be done here, it should be done in the
-                update of AnimationManager
-            */
-            link(node);
-        }
-        const osg::FrameStamp* fs = nv->getFrameStamp();
-        update(fs->getSimulationTime());
-    }
-    traverse(node,nv);
-}
-
-
-AnimationManagerBase::AnimationManagerBase(const AnimationManagerBase& b, const osg::CopyOp& copyop) : osg::NodeCallback(b,copyop) 
-{
-    _animations = b._animations;
-    _targets = b._targets;
-    _needToLink = b._needToLink;
 }
 
 void AnimationManagerBase::buildTargetReference()
@@ -90,10 +52,20 @@ bool AnimationManagerBase::needToLink() const { return _needToLink; }
 
 
 
-void AnimationManagerBase::link(osg::Node* subgraph)
+void AnimationManagerBase::link()
 {
     LinkVisitor linker(_animations);
-    subgraph->accept(linker);
+    accept(linker);
     _needToLink = false;
     buildTargetReference();
 }
+
+
+osgAnimation::AnimationMap AnimationManagerBase::getAnimationMap() const
+{
+    osgAnimation::AnimationMap map;
+    for (AnimationList::const_iterator it = _animations.begin(); it != _animations.end(); it++)
+        map[(*it)->getName()] = *it;
+    return map;
+}
+

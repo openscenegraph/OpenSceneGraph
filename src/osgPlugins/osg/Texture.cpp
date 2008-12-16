@@ -6,6 +6,8 @@
 #include <osgDB/Input>
 #include <osgDB/Output>
 
+#include <string.h>
+
 using namespace osg;
 using namespace osgDB;
 
@@ -25,7 +27,7 @@ bool Texture_matchSourceTypeStr(const char* str,int& value);
 const char* Texture_getSourceTypeStr(int value);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_TextureProxy
+REGISTER_DOTOSGWRAPPER(Texture)
 (
     0,
     "TextureBase",

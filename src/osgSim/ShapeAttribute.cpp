@@ -13,6 +13,7 @@
 
 #include <memory.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <osgSim/ShapeAttribute>
 
@@ -66,6 +67,13 @@ void ShapeAttribute::free()
         ::free(_string);
         _string = 0;
     }
+}
+
+void ShapeAttribute::setValue(const char * value)
+{
+    free(); 
+    _type = STRING; 
+    _string = (value ? strdup(value) : 0);
 }
 
 void ShapeAttribute::copy(const ShapeAttribute& sa)

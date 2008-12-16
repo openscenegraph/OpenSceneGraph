@@ -234,7 +234,7 @@ class OSGVIEWER_EXPORT RecordCameraPathHandler : public osgGA::GUIEventHandler
 {
 public:
 
-        RecordCameraPathHandler(const std::string &filename = "saved_animation.path");
+        RecordCameraPathHandler(const std::string &filename = "saved_animation.path", float fps = 25.0f);
 
         void setKeyEventToggleRecord(int key) { _keyEventToggleRecord = key; }
         int getKeyEventToggleRecord() const { return _keyEventToggleRecord; }
@@ -373,7 +373,7 @@ public:
         _image(image) {}
 
     META_Object(osgViewer, InteractiveImageHandler);
-
+ 
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv);
 
     virtual bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo) const;
@@ -389,6 +389,10 @@ protected:
     bool mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const;
 
     osg::observer_ptr<osg::Image>  _image;
+    bool    _handleKeyboardEvents;
+    bool    _handledOnKeyboardEvents;
+    bool    _handleMouseEvents;
+    bool    _handledOnMouseEvents;
     
 };
 

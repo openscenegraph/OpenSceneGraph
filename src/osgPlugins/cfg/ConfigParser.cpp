@@ -1974,7 +1974,7 @@ yyreduce:
   case 120:
 
     {
-        int n;
+        unsigned int n;
         sscanf( flexer->YYText(), "0x%x", &n );
         yyval.integer = n;
     ;}

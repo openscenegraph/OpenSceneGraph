@@ -36,7 +36,7 @@
 #include <stdio.h>
 
 //
-// Below is relatively straight forward example of use OpenGL multiple render targets extension
+// Below is relatively straight forward example of using the OpenGL multiple render targets (MRT) extension
 // to FrameBufferObjects/GLSL shaders.
 //
 // Another, more sophisticated MRT example can be found in the osgstereomatch example.
@@ -213,8 +213,16 @@ osg::Node* createScene(osg::Node* cam_subgraph, unsigned int tex_width, unsigned
 
         if (useHDR)
         {
-            textureRect[i]->setInternalFormat(GL_FLOAT_RGBA32_NV);
-            //textureRect[i]->setInternalFormat(GL_FLOAT_RGBA16_NV);
+            // Default HDR format
+            textureRect[i]->setInternalFormat(GL_RGBA32F_ARB);
+
+            // GL_FLOAT_RGBA32_NV might be supported on pre 8-series GPUs
+            //textureRect[i]->setInternalFormat(GL_FLOAT_RGBA32_NV);
+
+            // GL_RGBA16F_ARB can be used with this example, 
+            // but modify e-12 and e12 in the shaders accordingly
+            //textureRect[i]->setInternalFormat(GL_RGBA16F_ARB);
+            
             textureRect[i]->setSourceFormat(GL_RGBA);
             textureRect[i]->setSourceType(GL_FLOAT);
         }
@@ -379,13 +387,13 @@ int main( int argc, char **argv )
     osg::ArgumentParser arguments(&argc,argv);
 
     // set up the usage document, in case we need to print out how to use this program.
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName() + " demonstrates the use of multiple render targets (MRT) using frame buffer objects. A render to texture camera is used to render to four textures using a single shader. The four textures are then combined to texture the viewed geometry.");
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName() + " demonstrates the use of multiple render targets (MRT) with frame buffer objects (FBOs). A render to texture (RTT) camera is used to render to four textures using a single shader. The four textures are then combined to texture the viewed geometry.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information.");
     arguments.getApplicationUsage()->addCommandLineOption("--width","Set the width of the render to texture.");
     arguments.getApplicationUsage()->addCommandLineOption("--height","Set the height of the render to texture.");
-    arguments.getApplicationUsage()->addCommandLineOption("--image","Render one of the targets to an image, then apply a post draw callback to modify it, and use this image to update a texture.");
-    arguments.getApplicationUsage()->addCommandLineOption("--hdr","Use high dynamic range. Create floating point textures to render to.");
+    arguments.getApplicationUsage()->addCommandLineOption("--image","Render one of the targets to an image, then apply a post draw callback to modify it and use this image to update the final texture. Print some texture values when using HDR.");
+    arguments.getApplicationUsage()->addCommandLineOption("--hdr","Use high dynamic range (HDR). Create floating point textures to render to.");
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);

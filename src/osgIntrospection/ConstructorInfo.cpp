@@ -18,9 +18,9 @@ using namespace osgIntrospection;
 
 void ConstructorInfo::getInheritedProviders(CustomAttributeProviderList& providers) const
 {
-    for (int i=0; i<_decltype.getNumBaseTypes(); ++i)
+    for (int i=0; i<_declarationType.getNumBaseTypes(); ++i)
     {
-        const ConstructorInfo* ci = _decltype.getBaseType(i).getConstructor(_params);
+        const ConstructorInfo* ci = _declarationType.getBaseType(i).getConstructor(_params);
         if (ci)
         {
             providers.push_back(ci);

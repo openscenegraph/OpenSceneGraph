@@ -46,10 +46,10 @@ namespace osgIntrospection
         };
 
         /// Direct initialization constructor.
-        inline MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string());
+        inline MethodInfo(const std::string& qname, const Type& declarationType, const Type& rtype, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp = std::string(), std::string detailedHelp = std::string());
 
         /// Direct initialization constructor for static functions (no virtual specifier).
-        inline MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string());
+        inline MethodInfo(const std::string& qname, const Type& declarationType, const Type& rtype, const ParameterInfoList& plist, std::string briefHelp = std::string(), std::string detailedHelp = std::string());
 
         /// Destructor
         inline ~MethodInfo();
@@ -119,7 +119,7 @@ namespace osgIntrospection
         virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;
 
         std::string _name;
-        const Type& _decltype;
+        const Type& _declarationType;
         const Type& _rtype;
         ParameterInfoList _params;
         VirtualState _virtualState;
@@ -130,9 +130,9 @@ namespace osgIntrospection
 
     // INLINE METHODS
 
-    inline MethodInfo::MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp, std::string detailedHelp)
+    inline MethodInfo::MethodInfo(const std::string& qname, const Type& declarationType, const Type& rtype, const ParameterInfoList& plist, VirtualState virtualState, std::string briefHelp, std::string detailedHelp)
     :   CustomAttributeProvider(),
-        _decltype(decltype), 
+        _declarationType(declarationType), 
         _rtype(rtype),
         _params(plist),
         _virtualState(virtualState),
@@ -142,9 +142,9 @@ namespace osgIntrospection
         _name = strip_namespace(qname);
     }
 
-    inline MethodInfo::MethodInfo(const std::string& qname, const Type& decltype, const Type& rtype, const ParameterInfoList& plist, std::string briefHelp, std::string detailedHelp)
+    inline MethodInfo::MethodInfo(const std::string& qname, const Type& declarationType, const Type& rtype, const ParameterInfoList& plist, std::string briefHelp, std::string detailedHelp)
     :   CustomAttributeProvider(),
-        _decltype(decltype), 
+        _declarationType(declarationType), 
         _rtype(rtype),
         _params(plist),
         _virtualState(NON_VIRTUAL),
@@ -169,7 +169,7 @@ namespace osgIntrospection
 
     inline const Type& MethodInfo::getDeclaringType() const
     {
-        return _decltype;
+        return _declarationType;
     }
 
     inline const Type& MethodInfo::getReturnType() const

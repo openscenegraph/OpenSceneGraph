@@ -18,9 +18,9 @@ using namespace osgIntrospection;
 
 void MethodInfo::getInheritedProviders(CustomAttributeProviderList& providers) const
 {
-    for (int i=0; i<_decltype.getNumBaseTypes(); ++i)
+    for (int i=0; i<_declarationType.getNumBaseTypes(); ++i)
     {
-        const MethodInfo* mi = _decltype.getBaseType(i).getMethod(_name, _params, false);
+        const MethodInfo* mi = _declarationType.getBaseType(i).getMethod(_name, _params, false);
         if (mi)
         {
             providers.push_back(mi);
@@ -31,7 +31,7 @@ void MethodInfo::getInheritedProviders(CustomAttributeProviderList& providers) c
 bool MethodInfo::overrides(const MethodInfo* other) const
 {
     if (isConst() != other->isConst()) return false;
-    if (_decltype != other->_decltype) return false;
+    if (_declarationType != other->_declarationType) return false;
     if (_rtype != other->_rtype) return false;
     if (_name != other->_name) return false;
     if (_params.size() != other->_params.size()) return false;

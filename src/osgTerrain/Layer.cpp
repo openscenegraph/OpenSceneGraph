@@ -571,7 +571,7 @@ void ProxyLayer::dirty()
 void ProxyLayer::setModifiedCount(unsigned int value)
 {
     if (_implementation.valid()) _implementation->setModifiedCount(value);
-};
+}
 
 unsigned int ProxyLayer::getModifiedCount() const
 {

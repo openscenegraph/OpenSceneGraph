@@ -20,9 +20,9 @@ using namespace osgIntrospection;
 
 void PropertyInfo::getInheritedProviders(CustomAttributeProviderList& providers) const
 {
-    for (int i=0; i<_decltype.getNumBaseTypes(); ++i)
+    for (int i=0; i<_declarationType.getNumBaseTypes(); ++i)
     {
-        const PropertyInfo* pi = _decltype.getBaseType(i).getProperty(_name, _ptype, getIndexParameters(), false);
+        const PropertyInfo* pi = _declarationType.getBaseType(i).getProperty(_name, _ptype, getIndexParameters(), false);
         if (pi)
         {
             providers.push_back(pi);
@@ -43,7 +43,7 @@ Value PropertyInfo::getValue(const Value& instance) const
     }
 
     if (!_getm)
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::GET);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::GET);
 
     if (pta)
         return _getm->invoke(instance).convertTo(pta->getPropertyType());
@@ -63,7 +63,7 @@ Value PropertyInfo::getValue(Value& instance) const
     }
 
     if (!_getm)
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::GET);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::GET);
 
     if (pta)
         return _getm->invoke(instance).convertTo(pta->getPropertyType());
@@ -81,7 +81,7 @@ void PropertyInfo::setValue(Value& instance, const Value& value) const
     }
 
     if (!_setm)
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::SET);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::SET);
 
     ValueList args;
     args.push_back(value);
@@ -101,7 +101,7 @@ Value PropertyInfo::getIndexedValue(const Value& instance, ValueList& args) cons
     }
 
     if (!_getm) 
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::IGET);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::IGET);
 
     if (pta)
         return _getm->invoke(instance, args).convertTo(pta->getPropertyType());
@@ -121,7 +121,7 @@ Value PropertyInfo::getIndexedValue(Value& instance, ValueList& args) const
     }
 
     if (!_getm) 
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::IGET);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::IGET);
 
     if (pta)
         return _getm->invoke(instance, args).convertTo(pta->getPropertyType());
@@ -138,7 +138,7 @@ void PropertyInfo::setIndexedValue(Value& instance, ValueList& args, const Value
     }
 
     if (!_setm) 
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::ISET);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::ISET);
 
     ValueList tmpArgs(args);
     tmpArgs.push_back(value);
@@ -151,7 +151,7 @@ int PropertyInfo::getNumArrayItems(const Value& instance) const
     if (ccount) return ccount->getCounter()->count(instance);
 
     if (!_numm)
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::COUNT);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::COUNT);
 
     return variant_cast<int>(_numm->invoke(instance));
 }
@@ -169,7 +169,7 @@ Value PropertyInfo::getArrayItem(const Value& instance, int i) const
     }
 
     if (!_getm) 
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::AGET);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::AGET);
 
     ValueList args;
     args.push_back(i);
@@ -192,7 +192,7 @@ Value PropertyInfo::getArrayItem(Value& instance, int i) const
     }
 
     if (!_getm) 
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::AGET);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::AGET);
 
     ValueList args;
     args.push_back(i);
@@ -212,7 +212,7 @@ void PropertyInfo::setArrayItem(Value& instance, int i, const Value& value) cons
     }
     
     if (!_setm) 
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::ASET);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::ASET);
 
     ValueList args;
     args.push_back(i);
@@ -230,7 +230,7 @@ void PropertyInfo::addArrayItem(Value& instance, const Value& value) const
     }
 
     if (!_addm) 
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::ADD);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::ADD);
 
     ValueList args;
     args.push_back(value);
@@ -247,7 +247,7 @@ void PropertyInfo::insertArrayItem(Value& instance, int i, const Value& value) c
     }
 
     if (!_addm) 
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::INSERT);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::INSERT);
 
     ValueList args;
     args.push_back(i);
@@ -265,7 +265,7 @@ void PropertyInfo::removeArrayItem(Value& instance, int i) const
     }
 
     if (!_remm) 
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::REMOVE);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::REMOVE);
 
     ValueList args;
     args.push_back(i);
@@ -289,7 +289,7 @@ Value PropertyInfo::getDefaultValue() const
         }
     }
 
-    if (_decltype.isAbstract()) 
+    if (_declarationType.isAbstract()) 
     {
         if (_ptype.isAbstract() || !_ptype.isDefined())
             return Value();
@@ -297,7 +297,7 @@ Value PropertyInfo::getDefaultValue() const
     }
 
     // auto default value
-    Value instance = _decltype.createInstance();
+    Value instance = _declarationType.createInstance();
     return getValue(instance);
 }
 
@@ -360,7 +360,7 @@ void PropertyInfo::removeIndexedItem(Value& instance, ValueList& args) const
     }
 
     if (!_remm) 
-        throw PropertyAccessException(_decltype.getQualifiedName() + "::" + _name, PropertyAccessException::REMOVE);
+        throw PropertyAccessException(_declarationType.getQualifiedName() + "::" + _name, PropertyAccessException::REMOVE);
 
     _remm->invoke(instance, args);    
 }

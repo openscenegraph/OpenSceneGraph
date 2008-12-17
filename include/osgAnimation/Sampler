@@ -119,6 +119,6 @@ namespace osgAnimation
     typedef TemplateSampler<Vec3CubicBezierInterpolator> Vec3CubicBezierSampler;
     typedef TemplateSampler<Vec4CubicBezierInterpolator> Vec4CubicBezierSampler;
   
-};
+}
 
 #endif

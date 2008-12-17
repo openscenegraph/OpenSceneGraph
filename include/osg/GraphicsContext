@@ -158,14 +158,14 @@ class OSG_EXPORT GraphicsContext : public Object
             ScreenSettings() :
                 width(0),
                 height(0),
-                colorDepth(0),
-                refreshRate(0)
+                refreshRate(0),
+                colorDepth(0)
             {}
             ScreenSettings(int width, int height, double refreshRate=0, unsigned int colorDepth=0) :
                 width(width),
                 height(height),
-                colorDepth(colorDepth),
-                refreshRate(refreshRate)
+                refreshRate(refreshRate),
+                colorDepth(colorDepth)
             {}
 
             int width;

@@ -252,46 +252,41 @@ static unsigned char* bmp_load(std::istream& fin,
      * color masks
      */
     unsigned int redMask, greenMask, blueMask;
-    unsigned int redMaskWidth, greenMaskWidth, blueMaskWidth;
-    unsigned int redShift, greenShift, blueShift; // greenShift? wtf? ;-)
-    if (dib.bitsPerPixel == 16)
+    if (dib.bitsPerPixel == 16 && dib.compression == BI_BITFIELDS)
     {
-        if (dib.compression == BI_BITFIELDS)
+        fin.read((char*) &redMask, sizeof(redMask));
+        fin.read((char*) &greenMask, sizeof(greenMask));
+        fin.read((char*) &blueMask, sizeof(blueMask));
+        if (swap)
         {
-            fin.read((char*) &redMask, sizeof(redMask));
-            fin.read((char*) &greenMask, sizeof(greenMask));
-            fin.read((char*) &blueMask, sizeof(blueMask));
-            if (swap)
-            {
-                osg::swapBytes4((char*) &redMask);
-                osg::swapBytes4((char*) &greenMask);
-                osg::swapBytes4((char*) &blueMask);
-            }
+            osg::swapBytes4((char*) &redMask);
+            osg::swapBytes4((char*) &greenMask);
+            osg::swapBytes4((char*) &blueMask);
         }
-        else
-        {
-            redMask = 0x7c00;
-            greenMask = 0x03e0;
-            blueMask = 0x001f;
-        }
+    }
+    else
+    {
+        redMask = 0x7c00;
+        greenMask = 0x03e0;
+        blueMask = 0x001f;
+    }
 
-        // determine shift width...
-        redShift = findLeastSignificantBit(redMask) - 1;
-        greenShift = findLeastSignificantBit(greenMask) - 1;
-        blueShift = findLeastSignificantBit(blueMask) - 1;
+    // determine shift width...
+    unsigned int redShift = findLeastSignificantBit(redMask) - 1;
+    unsigned int greenShift = findLeastSignificantBit(greenMask) - 1;
+    unsigned int blueShift = findLeastSignificantBit(blueMask) - 1;
 
-        // determine mask width
-        redMaskWidth = findMostSignificantBit(redMask) - redShift;
-        greenMaskWidth = findMostSignificantBit(greenMask) - greenShift;
-        blueMaskWidth = findMostSignificantBit(blueMask) - blueShift;
+    // determine mask width
+    unsigned int redMaskWidth = findMostSignificantBit(redMask) - redShift;
+    unsigned int greenMaskWidth = findMostSignificantBit(greenMask) - greenShift;
+    unsigned int blueMaskWidth = findMostSignificantBit(blueMask) - blueShift;
 
 #if 0
-        printf("redMask=%04x/%d/%d greenMask=%04x/%d/%d blueMask=%04x/%d/%d\n",
-                redMask, redMaskWidth, redShift,
-                greenMask, greenMaskWidth, greenShift,
-                blueMask, blueMaskWidth, blueShift);
+    printf("redMask=%04x/%d/%d greenMask=%04x/%d/%d blueMask=%04x/%d/%d\n",
+            redMask, redMaskWidth, redShift,
+            greenMask, greenMaskWidth, greenShift,
+            blueMask, blueMaskWidth, blueShift);
 #endif
-    }
 
     unsigned int imageBytesPerPixel = 0;
 
@@ -361,7 +356,7 @@ static unsigned char* bmp_load(std::istream& fin,
     if (dib.bitsPerPixel >= 16)
     {
         unsigned char* imgp = imageBuffer;
-        for (unsigned int i = 0; i < dib.height; ++i)
+        for (int i = 0; i < dib.height; ++i)
         {
             // read row
             unsigned char* rowp = &*rowBuffer.begin();
@@ -404,23 +399,23 @@ static unsigned char* bmp_load(std::istream& fin,
     }
     else
     {
-        const unsigned int idxPerByte = 8 / dib.bitsPerPixel; // color indices per byte
-        const unsigned int idxMask = (1 << dib.bitsPerPixel) - 1; // index mask
+        const int idxPerByte = 8 / dib.bitsPerPixel; // color indices per byte
+        const int idxMask = (1 << dib.bitsPerPixel) - 1; // index mask
         //printf("idxPerByte=%d idxMask=%02x\n", idxPerByte, idxMask);
 
         unsigned char* imgp = imageBuffer;
-        for (unsigned int i = 0; i < dib.height; ++i)
+        for (int i = 0; i < dib.height; ++i)
         {
             // read row
             unsigned char* rowp = &*rowBuffer.begin();
             fin.read((char*) rowp, rowBuffer.size());
 
-            unsigned int j = 0;
+            int j = 0;
             while (j < dib.width)
             {
                 // unpack bytes/indices to image buffer
                 unsigned char val = rowp[0];
-                for (unsigned int k = 0; k < idxPerByte && j < dib.width; ++k, ++j)
+                for (int k = 0; k < idxPerByte && j < dib.width; ++k, ++j)
                 {
                     unsigned int idx = (val >> ((idxPerByte-1-k) * dib.bitsPerPixel)) & idxMask;
                     idx *= imageBytesPerPixel;
@@ -521,10 +516,10 @@ static bool bmp_save(const osg::Image& img, std::ostream& fout)
     const unsigned int channelsPerPixel = img.computeNumComponents(img.getPixelFormat());
 
     std::vector<unsigned char> rowBuffer(bytesPerRowAlign);
-    for (unsigned int y = 0; y < img.t(); ++y)
+    for (int y = 0; y < img.t(); ++y)
     {
         const unsigned char* imgp = img.data() + img.s() * y * channelsPerPixel;
-        for (unsigned int x = 0; x < img.s(); ++x)
+        for (int x = 0; x < img.s(); ++x)
         {
             // RGB -> BGR
             unsigned int rowOffs = x * 3, imgOffs = x * channelsPerPixel;

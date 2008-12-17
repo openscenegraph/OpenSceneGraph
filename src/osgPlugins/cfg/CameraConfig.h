@@ -40,7 +40,7 @@ namespace osgProducer {
     enum ThreadModel {
       SingleThreaded,
       ThreadPerRenderSurface,
-      ThreadPerCamera,
+      ThreadPerCamera
     };
     static ThreadModel getDefaultThreadModel() { return SingleThreaded;}
   };
@@ -241,7 +241,7 @@ class CameraConfig : public osg::Referenced
         CameraGroup::ThreadModel _threadModelDirective;
 };
 
-};
+}
 
 
 #endif

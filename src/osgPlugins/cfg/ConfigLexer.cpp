@@ -1959,8 +1959,12 @@ void yyFlexLexer::yy_delete_buffer( YY_BUFFER_STATE b )
 	yy_flex_free( (void *) b );
 	}
 
+#ifndef __THROW
+    #define __THROW
+#endif
 
-extern "C" int isatty YY_PROTO(( int ));
+extern "C" int isatty YY_PROTO(( int )) __THROW;
+
 void yyFlexLexer::yy_init_buffer( YY_BUFFER_STATE b, std::istream* file )
 
 	{

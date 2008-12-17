@@ -36,13 +36,13 @@ using namespace osgShadow;
 
 DebugShadowMap::DebugShadowMap(): 
     BaseClass(),
-    _doDebugDraw( false ),
     _hudSize( 2, 2 ),
     _hudOrigin( -1, -1 ),
     _viewportSize( DEFAULT_DEBUG_HUD_SIZE_X, DEFAULT_DEBUG_HUD_SIZE_Y ),
     _viewportOrigin( DEFAULT_DEBUG_HUD_ORIGIN_X, DEFAULT_DEBUG_HUD_ORIGIN_Y ), 
     _orthoSize( 2, 2 ),
-    _orthoOrigin( -1, -1 )
+    _orthoOrigin( -1, -1 ),
+    _doDebugDraw( false )
 {
     
     // Why this fancy 24 bit depth to 24 bit rainbow colors shader ?
@@ -104,13 +104,13 @@ DebugShadowMap::DebugShadowMap():
 DebugShadowMap::DebugShadowMap
 (const DebugShadowMap& copy, const osg::CopyOp& copyop) :
     BaseClass(copy,copyop),
-    _doDebugDraw( copy._doDebugDraw ),
     _hudSize( copy._hudSize ),
     _hudOrigin( copy._hudOrigin ),
     _viewportSize( copy._viewportSize ),
     _viewportOrigin( copy._viewportOrigin ), 
     _orthoSize( copy._viewportOrigin ),
-    _orthoOrigin( copy._viewportOrigin )
+    _orthoOrigin( copy._viewportOrigin ),
+    _doDebugDraw( copy._doDebugDraw )
 {
     if( copy._depthColorFragmentShader.valid() )
         _depthColorFragmentShader =
@@ -226,7 +226,7 @@ void DebugShadowMap::ViewData::setDebugPolytope
 
     if( &polytope == NULL ) { // delete        
         PolytopeGeometry & pg = _polytopeGeometryMap[ std::string( name ) ];
-        for( int i = 0; i < VECTOR_LENGTH( pg._geometry ) ; i++ )
+        for( unsigned int i = 0; i < VECTOR_LENGTH( pg._geometry ) ; i++ )
         {
             if( pg._geometry[i].valid() ) {
                 if( _geode[i].valid() &&
@@ -246,7 +246,7 @@ void DebugShadowMap::ViewData::setDebugPolytope
         if( colorInside.a() > 0 )
             pg._colorInside = colorInside;
 
-        for( int i = 0; i < VECTOR_LENGTH( pg._geometry ) ; i++ )
+        for( unsigned int i = 0; i < VECTOR_LENGTH( pg._geometry ) ; i++ )
         {
             if( !pg._geometry[i].valid() ) {
                 pg._geometry[i] = new osg::Geometry;
@@ -274,8 +274,6 @@ void DebugShadowMap::ViewData::updateDebugGeometry
 
     const int num = 2; // = VECTOR_LENGTH( PolytopeGeometry::_geometry );
     
-    const osg::Camera *camera[2] = { viewCam, shadowCam };
-
     osg::Matrix    
         transform[ num ] = 
             { viewCam->getViewMatrix() * 

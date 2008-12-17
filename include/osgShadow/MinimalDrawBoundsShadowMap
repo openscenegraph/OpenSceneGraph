@@ -118,8 +118,8 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
             }
 
         protected:
-            osg::ref_ptr< osg::NodeCallback > _nc;
             osg::observer_ptr< ViewData >     _vd;
+            osg::ref_ptr< osg::NodeCallback > _nc;
         };
 };
 

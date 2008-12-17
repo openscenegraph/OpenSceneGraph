@@ -285,6 +285,8 @@ void Camera::attach(BufferComponent buffer, GLenum internalFormat)
             notify(WARN) << "Camera: STENCIL_BUFFER already attached !" << std::endl;
         }
         break;
+    default:
+        break;
     }
     _bufferAttachmentMap[buffer]._internalFormat = internalFormat;
 }

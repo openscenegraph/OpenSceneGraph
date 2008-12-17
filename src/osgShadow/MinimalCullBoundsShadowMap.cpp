@@ -136,7 +136,7 @@ public:
       if ( !a ) return false; // NULL render leaf goes last
       return !b ||
              a->_projection < b->_projection || 
-             a->_projection == b->_projection && a->_modelview < b->_modelview;
+             (a->_projection == b->_projection && a->_modelview < b->_modelview);
   }
 };
 
@@ -313,8 +313,10 @@ osg::BoundingBox MinimalCullBoundsShadowMap::ViewData::ComputeRenderLeavesBounds
 
     osg::ref_ptr< osg::RefMatrix > modelview;
     osg::ref_ptr< osg::RefMatrix > projection;
-    osg::Matrix viewToWorld, modelToWorld, *ptrProjection = NULL,
-                *ptrViewToWorld = &projectionToWorld, *ptrModelToWorld;
+    osg::Matrix viewToWorld, modelToWorld,
+                *ptrProjection = NULL,
+                *ptrViewToWorld = &projectionToWorld, 
+                *ptrModelToWorld = NULL;
 
     // compute bounding boxes but skip old ones (placed at the end as NULLs)
     for( RenderLeafList::iterator it = rll.begin(); it != rll.end(); ++it ) {

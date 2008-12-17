@@ -148,7 +148,7 @@ osg::BoundingBox MinimalDrawBoundsShadowMap::ViewData::scanImage
 
         unsigned char * pb = (unsigned char *)image->data();
 
-        float scale = 1.f / 254, bias = 0.5f;
+        float scale = 1.f / 254;
         for( int y = 0; y < image->t(); y++ ) {
             float fY = ( 0.5f + y ) / image->t();
             for( int x = 0; x < image->s(); x++ ) {

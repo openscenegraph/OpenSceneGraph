@@ -56,9 +56,9 @@ namespace osgIntrospection
         /// be null, meaning a restricted access. If both are null, the
         /// user is expected to add a custom accessor attribute to this
         /// PropertyInfo object.
-        PropertyInfo(const Type& decltype, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        PropertyInfo(const Type& declaratiionType, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
         :   CustomAttributeProvider(),
-            _decltype(decltype),
+            _declarationType(declaratiionType),
             _ptype(ptype),
             _name(name),
             _getm(getm),
@@ -78,9 +78,9 @@ namespace osgIntrospection
         /// declares the property, the Type object that describes the
         /// type of the property's value, the property name and the
         /// getter/setter/counter/adder/insert/remover methods.
-        PropertyInfo(const Type& decltype, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, const MethodInfo* numm, const MethodInfo* addm, const MethodInfo* insm, const MethodInfo* remm, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        PropertyInfo(const Type& declaratiionType, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, const MethodInfo* numm, const MethodInfo* addm, const MethodInfo* insm, const MethodInfo* remm, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
         :   CustomAttributeProvider(),
-            _decltype(decltype),
+            _declarationType(declaratiionType),
             _ptype(ptype),
             _name(name),
             _getm(getm),
@@ -105,9 +105,9 @@ namespace osgIntrospection
         /// If the getter method has parameters, the property is considered
         /// to be indexed. The same is true if the getter is null and the
         /// setter has more than one parameter.
-        PropertyInfo(const Type& decltype, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, const MethodInfo* remm, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        PropertyInfo(const Type& declaratiionType, const Type& ptype, const std::string& name, const MethodInfo* getm, const MethodInfo* setm, const MethodInfo* remm, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
         :   CustomAttributeProvider(),
-            _decltype(decltype),
+            _declarationType(declaratiionType),
             _ptype(ptype),
             _name(name),
             _getm(getm),
@@ -161,7 +161,7 @@ namespace osgIntrospection
         /// Returns the type that declares the property.
         inline virtual const Type& getDeclaringType() const
         {
-            return _decltype;
+            return _declarationType;
         }
 
         /// Returns the type of the reflected property.
@@ -360,7 +360,7 @@ namespace osgIntrospection
         virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;
 
     private:
-        const Type& _decltype;
+        const Type& _declarationType;
         const Type& _ptype;
         std::string _name;
         const MethodInfo* _getm;

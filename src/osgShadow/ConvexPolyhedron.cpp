@@ -995,9 +995,9 @@ int ConvexPolyhedron::isFacePolygonConvex( Face & face, bool ignoreColinearVerti
         osg::Vec3d vb = face.vertices[(i+1)%face.vertices.size()];
         osg::Vec3d vc = face.vertices[(i+2)%face.vertices.size()];
 
-        double dist = fabs( face.plane.distance( va ) );
 
 #if ( CONVEX_POLYHEDRON_WARN_ON_INCOHERENT_DATA  > 1 || CONVEX_POLYHEDRON_WARN_ON_CONCAVE_POLYGON )
+        double dist = fabs( face.plane.distance( va ) );
         if( dist > 0.0001 )
         {
             WARN << "ConvexPolyhedron::isFacePolygonConvex - plane point too far from plane (" << dist <<")" << std::endl;
@@ -1025,10 +1025,10 @@ int ConvexPolyhedron::isFacePolygonConvex( Face & face, bool ignoreColinearVerti
     if( !negative && !positive )
         return 0;
 
-    if( negative + colinear == face.vertices.size() )
+    if( (negative + colinear) == static_cast<int>(face.vertices.size()) )
         return -( negative + colinear );
 
-    if( positive + colinear == face.vertices.size() )
+    if( (positive + colinear) == static_cast<int>(face.vertices.size()) )
         return +( positive + colinear );
 
     return 0;
@@ -1599,15 +1599,15 @@ void ConvexPolyhedron::extrude( const osg::Vec3d & offset )
             double dotOffset1 = edgeFaces[1]->plane.getNormal() * offset;
 #endif
             //Select orthogonal faces and vertices appropriate for offseting
-            if( dotOffset0 == 0.0 && dotOffset1 < 0.0 ||
-                dotOffset1 == 0.0 && dotOffset0 < 0.0 )
+            if( (dotOffset0 == 0.0 && dotOffset1 < 0.0) ||
+                (dotOffset1 == 0.0 && dotOffset0 < 0.0) )
             {
                 Face * face = ( dotOffset0 == 0 ? edgeFaces[0] : edgeFaces[1] );
                 silhouetteFaces[ face ].insert( edge );
             }
 
-            if( dotOffset0 < 0.0 && dotOffset1 > 0.0 ||
-                dotOffset1 < 0.0 && dotOffset0 > 0.0 )
+            if( (dotOffset0 < 0.0 && dotOffset1 > 0.0) ||
+                (dotOffset1 < 0.0 && dotOffset0 > 0.0) )
             {
                 Face & face = createFace();
                 char ac[40] = "Side plane from edge extrude ";                

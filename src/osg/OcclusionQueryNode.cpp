@@ -596,7 +596,8 @@ OcclusionQueryNode::traverseQuery( const osg::Camera* camera, osg::NodeVisitor& 
 
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _frameCountMutex );
         int& lastQueryFrame = _frameCountMap[ camera ];
-        if ( issueQuery = (curFrame - lastQueryFrame >= _queryFrameCount) )
+        issueQuery = (curFrame - lastQueryFrame >= _queryFrameCount);
+        if (issueQuery)
             lastQueryFrame = curFrame;
     }
     if (issueQuery)

@@ -27,8 +27,8 @@ namespace osgIntrospection
     {
     public:
         // Standard constructor.
-        ConstructorInfo(const Type& decltype, const ParameterInfoList& params, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
-        :   _decltype(decltype),
+        ConstructorInfo(const Type& declaratiionType, const ParameterInfoList& params, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :   _declarationType(declaratiionType),
             _params(params),
             _explicit(false),
             _briefHelp(briefHelp),
@@ -37,8 +37,8 @@ namespace osgIntrospection
         }
 
         // Constructor allowing explicit state specification.
-        ConstructorInfo(const Type& decltype, const ParameterInfoList& params, bool isExplicit, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
-        :   _decltype(decltype),
+        ConstructorInfo(const Type& declaratiionType, const ParameterInfoList& params, bool isExplicit, std::string briefHelp = std::string(), std::string detailedHelp = std::string())
+        :   _declarationType(declaratiionType),
             _params(params),
             _explicit(isExplicit),
             _briefHelp(briefHelp),
@@ -68,7 +68,7 @@ namespace osgIntrospection
         /// declares the reflected constructor.
         inline const Type& getDeclaringType() const
         {
-            return _decltype;
+            return _declarationType;
         }
  
         /// Returns a list of objects that describe the reflected
@@ -92,7 +92,7 @@ namespace osgIntrospection
         virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;
         
     private:
-        const Type& _decltype;
+        const Type& _declarationType;
         ParameterInfoList _params;
         bool _explicit;
 

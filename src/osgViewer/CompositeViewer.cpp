@@ -991,8 +991,6 @@ void CompositeViewer::updateTraversal()
     {
         View* view = vitr->get();
 
-        Scene* scene = view->getScene();
-
         {
             // call any camera update callbacks, but only traverse that callback, don't traverse its subgraph
             // leave that to the scene update traversal.

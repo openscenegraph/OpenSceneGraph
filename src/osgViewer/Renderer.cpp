@@ -345,7 +345,7 @@ void Renderer::draw()
 {
     DEBUG_MESSAGE<<"draw() "<<this<<std::endl;
 
-    osg::Timer_t startDrawTick = osg::Timer::instance()->tick();
+    // osg::Timer_t startDrawTick = osg::Timer::instance()->tick();
 
     osgUtil::SceneView* sceneView = _drawQueue.takeFront();
 

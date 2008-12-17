@@ -238,7 +238,6 @@ void StatsHandler::reset()
 void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
 {
     osgViewer::GraphicsWindow* window = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
-    osg::GraphicsContext* context;
     
     if (!window)
     {    
@@ -248,14 +247,11 @@ void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
         if (windows.empty()) return;
 
         window = windows.front();
-
-                
-        context = window;
     }
 
-    _camera->setGraphicsContext(context);
+    _camera->setGraphicsContext(window);
 
-    _camera->setViewport(0, 0, context->getTraits()->width, context->getTraits()->height);
+    _camera->setViewport(0, 0, window->getTraits()->width, window->getTraits()->height);
     _camera->setRenderOrder(osg::Camera::POST_RENDER, 10);
 
     _camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
@@ -828,9 +824,9 @@ struct PagerCallback : public virtual osg::NodeCallback
         _minValue(minValue),
         _maxValue(maxValue),
         _averageValue(averageValue),
-        _multiplier(multiplier),
         _filerequestlist(filerequestlist),
-        _compilelist(compilelist)
+        _compilelist(compilelist),
+        _multiplier(multiplier)
     {
     }
 
@@ -888,7 +884,7 @@ struct PagerCallback : public virtual osg::NodeCallback
     osg::ref_ptr<osgText::Text> _averageValue;
     osg::ref_ptr<osgText::Text> _filerequestlist;
     osg::ref_ptr<osgText::Text> _compilelist;
-    double _multiplier;
+    double              _multiplier;
     char                _tmpText[128];
     osg::Timer_t        _tickLastUpdated;
 };

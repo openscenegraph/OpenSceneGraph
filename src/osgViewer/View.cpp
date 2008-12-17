@@ -210,7 +210,7 @@ void View::take(osg::View& rhs)
         
         rhs_osgViewer->_coordinateSystemNodePath.clear();
         
-        rhs_osgViewer->_displaySettings;
+        rhs_osgViewer->_displaySettings = 0;
     }
 #endif
     computeActiveCoordinateSystemNodePath();
@@ -1114,8 +1114,6 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
     
-    bool centerProjection = false;
-
     double distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
     bool flip = false;
     bool texcoord_flip = false;
@@ -1154,9 +1152,7 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
 
     osg::Vec3 screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
     float screenRadius = heightVector.length() * 0.5f;
-
-    double rotation = 0.0;
-
+    
     geometry->getOrCreateStateSet()->setMode(GL_CULL_FACE, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
 
     for(int i=0;i<noSteps;++i)

@@ -42,12 +42,15 @@ void Input::_calculateSize(const XYCoord& size) {
     // An Input cannot currently set it's own size RELIABLY until the osgText implementation
     // is dratiscally improved. I'm getting wildly crazy results. :(
     // point_type height = size.y() > _cursor->getHeight() ? size.y() : _cursor->getHeight();
+
+#if 0
     point_type width  = size.x() + _cursor->getWidth();
     point_type height = _cursor->getHeight();
 
-    // if(width > getWidth()) setWidth(osg::round(width));
+    if(width > getWidth()) setWidth(osg::round(width));
 
-    // if(height > getHeight()) setHeight(osg::round(height));
+    if(height > getHeight()) setHeight(osg::round(height));
+#endif
 }
 
 void Input::_calculateCursorOffsets() {
@@ -99,10 +102,7 @@ void Input::positioned() {
 
     ln = ln == 0.0f ? 1.0f : ln;
 
-    point_type th =
-        (_text->getCharacterHeight() * ln) +
-        (_text->getLineSpacing() * (ln - 1.0f))
-    ;
+    // point_type th = (_text->getCharacterHeight() * ln) + (_text->getLineSpacing() * (ln - 1.0f));
 
     point_type x = getX() + _xoff;
     point_type y = getY() + _yoff;

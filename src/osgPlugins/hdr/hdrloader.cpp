@@ -57,6 +57,7 @@ bool HDRLoader::isHDRFile(const char *_fileName)
 
     char str[10];
     fread(str, 10, 1, file);
+    
     fclose(file);
 
     if (memcmp(str, "#?RADIANCE", 10) && memcmp(str, "#?RGBE", 6))

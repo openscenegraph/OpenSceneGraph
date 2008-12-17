@@ -745,14 +745,14 @@ void State::initializeExtensionProcs()
 {
     if (_extensionProcsInitialized) return;
 
-    _glClientActiveTexture = (ActiveTextureProc) osg::getGLExtensionFuncPtr("glClientActiveTexture","glClientActiveTextureARB");
-    _glActiveTexture =  (ActiveTextureProc) osg::getGLExtensionFuncPtr("glActiveTexture","glActiveTextureARB");
-    _glFogCoordPointer = (FogCoordPointerProc) osg::getGLExtensionFuncPtr("glFogCoordPointer","glFogCoordPointerEXT");
-    _glSecondaryColorPointer = (SecondaryColorPointerProc) osg::getGLExtensionFuncPtr("glSecondaryColorPointer","glSecondaryColorPointerEXT");
-    _glVertexAttribPointer =  (VertexAttribPointerProc) osg::getGLExtensionFuncPtr("glVertexAttribPointer","glVertexAttribPointerARB");
-    _glEnableVertexAttribArray =  (EnableVertexAttribProc) osg::getGLExtensionFuncPtr("glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
-    _glDisableVertexAttribArray =  (DisableVertexAttribProc) osg::getGLExtensionFuncPtr("glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
-    _glBindBuffer = (BindBufferProc) osg::getGLExtensionFuncPtr("glBindBuffer","glBindBufferARB");
+    setGLExtensionFuncPtr(_glClientActiveTexture,"glClientActiveTexture","glClientActiveTextureARB");
+    setGLExtensionFuncPtr(_glActiveTexture, "glActiveTexture","glActiveTextureARB");
+    setGLExtensionFuncPtr(_glFogCoordPointer, "glFogCoordPointer","glFogCoordPointerEXT");
+    setGLExtensionFuncPtr(_glSecondaryColorPointer, "glSecondaryColorPointer","glSecondaryColorPointerEXT");
+    setGLExtensionFuncPtr(_glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB");
+    setGLExtensionFuncPtr(_glEnableVertexAttribArray, "glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
+    setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
+    setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
 
     if ( osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_shader") )
     {

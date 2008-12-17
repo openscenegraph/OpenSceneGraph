@@ -152,7 +152,7 @@ namespace osgAnimation
         enum State
         {
             Play,
-            Stop,
+            Stop
         };
         
         State _state;
@@ -168,7 +168,7 @@ namespace osgAnimation
         enum State
         {
             Play,
-            Stop,
+            Stop
         };
         
 

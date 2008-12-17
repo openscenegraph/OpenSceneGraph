@@ -403,7 +403,7 @@ bool ReaderWriterCURL::read(std::istream& fin, std::string& destination) const
                        15 + 32 // autodected zlib or gzip header
                        );
     if (ret != Z_OK)
-        return ret;
+        return false;
 
     /* decompress until deflate stream ends or end of file */
     do {

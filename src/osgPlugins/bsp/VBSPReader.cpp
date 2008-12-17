@@ -440,7 +440,6 @@ std::string VBSPReader::findFileIgnoreCase(std::string filePath)
 
 ref_ptr<Texture> VBSPReader::readTextureFile(std::string textureName)
 {
-    int           i;
     std::string   texFile;
     std::string   texPath;
     Image *       texImage;
@@ -811,7 +810,7 @@ void VBSPReader::createScene()
     char *               mtlPtr = 0;
     char *               tmpPtr = 0;
     char                 tempTex[256];
-    int                  i, j;
+    int                  i;
     ref_ptr<StateSet>    stateSet;
 
     // Create the root group for the scene

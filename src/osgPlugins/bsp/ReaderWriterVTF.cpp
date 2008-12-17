@@ -357,7 +357,6 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     int               s, t, r;
     unsigned int      lrSize;
     unsigned char *   imageData;
-    unsigned char *   imageDataPtr;
     unsigned int      base;
     unsigned int      size;
     int               mip;

@@ -27,7 +27,7 @@ namespace osgAnimation
     public:
         META_Node(osgAnimation, Skeleton);
 
-        struct UpdateSkeleton : public osg::NodeCallback
+        struct OSGANIMATION_EXPORT UpdateSkeleton : public osg::NodeCallback
         {
             META_Object(osgAnimation, UpdateSkeleton);
             UpdateSkeleton() {}

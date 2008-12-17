@@ -261,7 +261,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
 
     static MyCompressedTexImage1DArbProc glCompressedTexImage1D_ptr = 
-        (MyCompressedTexImage1DArbProc)getGLExtensionFuncPtr("glCompressedTexImage1DARB");
+        convertPointerType<MyCompressedTexImage1DArbProc, void*>(getGLExtensionFuncPtr("glCompressedTexImage1DARB"));
 
     if( _min_filter == LINEAR || _min_filter == NEAREST )
     {

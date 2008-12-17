@@ -78,6 +78,13 @@ inline void* getGLExtensionFuncPtr(const char *funcName,const char *fallbackFunc
     return getGLExtensionFuncPtr(fallbackFuncName);
 }
 
+template<typename T, typename R>
+T convertPointerType(R src)
+{
+    T dest;
+    memcpy(&dest, &src, sizeof(src));
+    return dest;
+}
 
 template<typename T>
 bool setGLExtensionFuncPtr(T& t, const char* str1)

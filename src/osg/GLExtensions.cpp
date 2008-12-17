@@ -307,6 +307,7 @@ bool osg::isGLUExtensionSupported(unsigned int contextID, const char *extension)
     #include <dlfcn.h>
 #endif
 
+
 void* osg::getGLExtensionFuncPtr(const char *funcName)
 {
 #if defined(WIN32)
@@ -358,10 +359,10 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
 
     typedef void (*__GLXextFuncPtr)(void);
     typedef __GLXextFuncPtr (*GetProcAddressARBProc)(const char*);
-    static GetProcAddressARBProc s_glXGetProcAddressARB = (GetProcAddressARBProc)dlsym(0, "glXGetProcAddressARB");
+    static GetProcAddressARBProc s_glXGetProcAddressARB = convertPointerType<GetProcAddressARBProc, void*>(dlsym(0, "glXGetProcAddressARB"));
     if (s_glXGetProcAddressARB)
     {
-        return (void*) (s_glXGetProcAddressARB)(funcName);
+        return convertPointerType<void*, __GLXextFuncPtr>((s_glXGetProcAddressARB)(funcName));
     }
     else
     {

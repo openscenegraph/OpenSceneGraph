@@ -30,9 +30,9 @@ namespace flt
 
 
 TexturePaletteManager::TexturePaletteManager( const FltExportVisitor& nv, const ExportOptions& fltOpt )
-  : _fltOpt( fltOpt ),
+  : _currIndex( 0 ),
     _nv( nv ),
-    _currIndex( 0 )
+    _fltOpt( fltOpt )
 {
 }
 

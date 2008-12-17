@@ -377,7 +377,7 @@ protected:
         std::string id = in.readString(8);
         int32 appearanceIndex = in.readInt32();
         int32 animationIndex = in.readInt32();
-        int32 drawOrder = in.readInt32();           // for calligraphic lights
+        /*int32 drawOrder =*/ in.readInt32();           // for calligraphic lights
 
         LightPointAppearancePool* lpAppearancePool = document.getOrCreateLightPointAppearancePool();
         _appearance = lpAppearancePool->get(appearanceIndex);

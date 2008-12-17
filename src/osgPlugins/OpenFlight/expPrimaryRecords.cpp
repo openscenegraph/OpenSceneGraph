@@ -87,8 +87,8 @@ FltExportVisitor::writeHeader( const std::string& headerName )
     }
 
     static const unsigned int SAVE_VERTEX_NORMALS_BIT = 0x80000000u >> 0;
-    static const unsigned int PACKED_COLOR_MODE_BIT   = 0x80000000u >> 1;
-    static const unsigned int CAD_VIEW_MODE_BIT       = 0x80000000u >> 2;
+    //static const unsigned int PACKED_COLOR_MODE_BIT   = 0x80000000u >> 1;
+    //static const unsigned int CAD_VIEW_MODE_BIT       = 0x80000000u >> 2;
     uint32 flags( SAVE_VERTEX_NORMALS_BIT );
 
     IdHelper id(*this, headerName);

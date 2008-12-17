@@ -64,8 +64,8 @@ FltExportVisitor::FltExportVisitor( DataOutputStream* dos,
                                 ExportOptions* fltOpt )
 
   : osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ALL_CHILDREN ),
-    _dos( *dos ),
     _fltOpt( fltOpt ),
+    _dos( *dos ),
     _materialPalette( new MaterialPaletteManager( *fltOpt ) ),
     _texturePalette( new TexturePaletteManager( *this, *fltOpt ) ),
     _lightSourcePalette( new LightSourcePaletteManager( *fltOpt ) ),

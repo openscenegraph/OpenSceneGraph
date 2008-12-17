@@ -45,6 +45,7 @@ public:
     void write( DataOutputStream& dos ) const;
 
 protected:
+
     int _currIndex;
 
     typedef std::map< const osg::Texture2D*, int > TextureIndexMap;

@@ -28,10 +28,10 @@ namespace flt
 
 
 VertexPaletteManager::VertexPaletteManager( const ExportOptions& fltOpt )
-  : _fltOpt( fltOpt ),
-    _currentSizeBytes( 8 ),
+  : _currentSizeBytes( 8 ),
     _current( NULL ),
-    _vertices( NULL )
+    _vertices( NULL ),
+    _fltOpt( fltOpt )
 {
 }
 
@@ -223,7 +223,7 @@ VertexPaletteManager::writeRecords( const osg::Vec3dArray* v, const osg::Vec4Arr
     const PaletteRecordType recType = recordType( v, c, n, t );
     const int16 sizeBytes = recordSize( recType );
 
-    int16 opcode;
+    int16 opcode = 0;
     switch( recType )
     {
     case VERTEX_C:

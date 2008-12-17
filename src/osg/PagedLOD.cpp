@@ -117,7 +117,11 @@ void PagedLOD::traverse(NodeVisitor& nv)
 {
     // set the frame number of the traversal so that external nodes can find out how active this
     // node is.
-    if (nv.getFrameStamp()) setFrameNumberOfLastTraversal(nv.getFrameStamp()->getFrameNumber());
+    if (nv.getFrameStamp() && 
+        nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR) 
+    {
+        setFrameNumberOfLastTraversal(nv.getFrameStamp()->getFrameNumber());
+    }
 
     double timeStamp = nv.getFrameStamp()?nv.getFrameStamp()->getReferenceTime():0.0;
     int frameNumber = nv.getFrameStamp()?nv.getFrameStamp()->getFrameNumber():0;

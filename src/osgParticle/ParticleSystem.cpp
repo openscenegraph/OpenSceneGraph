@@ -195,7 +195,7 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
         else
         {
             xAxis /= (scaleX*scaleX);
-            yAxis /= (scaleX*scaleY);
+            yAxis /= (scaleY*scaleY);
         }
     }
 

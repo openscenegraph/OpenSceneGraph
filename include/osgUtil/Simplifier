@@ -30,6 +30,7 @@ class OSGUTIL_EXPORT Simplifier : public osg::NodeVisitor
 
         Simplifier(double sampleRatio=1.0, double maximumError=FLT_MAX, double maximumLength=0.0);
 
+        META_NodeVisitor("osgUtil","Simplifier")
 
         void setSampleRatio(float sampleRatio) { _sampleRatio = sampleRatio; }
         float getSampleRatio() const { return _sampleRatio; }

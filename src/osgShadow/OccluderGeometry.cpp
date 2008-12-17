@@ -48,6 +48,8 @@ public:
         if (matrix) pushMatrix(*matrix);
     }
 
+    META_NodeVisitor("osgShadow","CollectOccludersVisitor")
+
     void apply(osg::Node& node)
     {
         if (node.getStateSet()) pushState(node.getStateSet());

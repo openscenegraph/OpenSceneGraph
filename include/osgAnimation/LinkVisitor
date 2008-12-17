@@ -26,8 +26,12 @@ namespace osgAnimation
     {
         AnimationList _animations;
         unsigned int _nbLinkedTarget;
+        
         LinkVisitor(Animation* animation) : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) { _animations.push_back(animation); _nbLinkedTarget = 0;}
         LinkVisitor(const AnimationList& animations) : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) { _animations = animations; _nbLinkedTarget = 0;}
+
+        META_NodeVisitor("osgAnimation","LinkVisitor")
+
         void apply(osg::Node& node) 
         {
             osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(node.getUpdateCallback());

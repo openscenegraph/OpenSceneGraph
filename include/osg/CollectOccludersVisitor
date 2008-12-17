@@ -31,6 +31,8 @@ class OSG_EXPORT CollectOccludersVisitor : public osg::NodeVisitor, public osg::
         CollectOccludersVisitor();
         virtual ~CollectOccludersVisitor();
 
+        META_NodeVisitor("osg","CollectOccludersVisitor")
+
         virtual CollectOccludersVisitor* cloneType() const { return new CollectOccludersVisitor(); }
 
         virtual void reset();

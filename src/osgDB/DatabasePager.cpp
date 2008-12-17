@@ -129,6 +129,8 @@ public:
         
     }
     
+    META_NodeVisitor("osgDB","FindCompileableGLObjectsVisitor")
+    
     virtual void apply(osg::Node& node)
     {
         apply(node.getStateSet());
@@ -1486,6 +1488,8 @@ public:
     {
     }
 
+    META_NodeVisitor("osgDB","FindCompileableGLObjectsVisitor")
+
     virtual void apply(osg::PagedLOD& plod)
     {
         if (plod.getName()!=_marker)
@@ -1842,6 +1846,8 @@ public:
     {
     }
     
+    META_NodeVisitor("osgDB","FindPagedLODsVisitor")
+
     virtual void apply(osg::PagedLOD& plod)
     {
         plod.setFrameNumberOfLastTraversal(_frameNumber);

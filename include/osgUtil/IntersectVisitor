@@ -102,6 +102,8 @@ class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
         IntersectVisitor();
         virtual ~IntersectVisitor();
 
+        META_NodeVisitor("osgUtil","IntersectVisitor")
+
         void reset();
         
         /** Add a line segment to use for intersection testing during scene traversal.

@@ -51,9 +51,10 @@ class OSGUTIL_EXPORT GLObjectsVisitor : public osg::NodeVisitor
           * display list/texture objects etc. Default mode is to compile 
           * GL objects.
           */
-        GLObjectsVisitor(Mode mode=COMPILE_DISPLAY_LISTS|COMPILE_STATE_ATTRIBUTES|CHECK_BLACK_LISTED_MODES);
-        
-        
+        GLObjectsVisitor(Mode mode=COMPILE_DISPLAY_LISTS|COMPILE_STATE_ATTRIBUTES|CHECK_BLACK_LISTED_MODES);      
+ 
+        META_NodeVisitor("osg","GLObjectsVisitor")
+       
         virtual void reset()
         {
             _drawablesAppliedSet.clear();

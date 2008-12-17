@@ -1014,6 +1014,8 @@ class PolytopeVisitor : public osg::NodeVisitor
             _polytopeStack.back().second.setAndTransformProvidingInverse(polytope, _polytopeStack.back().first);
         }
         
+        META_NodeVisitor("osgSim","PolytopeVisitor")
+
         void reset()
         {
             _polytopeStack.clear();

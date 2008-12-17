@@ -41,9 +41,11 @@ class OSGUTIL_EXPORT UpdateVisitor : public osg::NodeVisitor
         UpdateVisitor();
         virtual ~UpdateVisitor();
 
+        META_NodeVisitor("osgUtil","UpdateVisitor")
+
         virtual void reset();
 
-    /** During traversal each type of node calls its callbacks and its children traversed. */
+        /** During traversal each type of node calls its callbacks and its children traversed. */
         virtual void apply(osg::Node& node)         { handle_callbacks_and_traverse(node); }
         
         virtual void apply(osg::Geode& node)        { handle_geode_callbacks(node); }

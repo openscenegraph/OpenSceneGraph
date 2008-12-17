@@ -30,6 +30,9 @@ namespace
     class TsgVisitor: public NodeVisitor {
     public:
         TsgVisitor(BumpMapping* bm): NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN), _bm(bm) {}
+
+        META_NodeVisitor("osgFX","TsgVisitor")
+
         void apply(osg::Geode& geode)
         {
             for (unsigned i=0; i<geode.getNumDrawables(); ++i) {
@@ -50,6 +53,9 @@ namespace
     class TexCoordGenerator: public osg::NodeVisitor {
     public:
         TexCoordGenerator(int du, int nu): NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN), du_(du), nu_(nu) {}
+
+        META_NodeVisitor("osgFX","TexCoordGenerator")
+
         void apply(osg::Geode& geode)
         {
             const osg::BoundingSphere &bsphere = geode.getBound();

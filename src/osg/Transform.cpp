@@ -39,6 +39,8 @@ class TransformVisitor : public NodeVisitor
             _ignoreCameras(ignoreCameras)
             {}
 
+        META_NodeVisitor("osg","TransformVisitor")
+
         virtual void apply(Transform& transform)
         {
             if (_coordMode==LOCAL_TO_WORLD)

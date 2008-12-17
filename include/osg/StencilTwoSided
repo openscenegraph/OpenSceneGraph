@@ -161,7 +161,8 @@ class OSG_EXPORT StencilTwoSided : public StateAttribute
                 
                 bool _isStencilTwoSidedSupported;
                 
-                void* _glActiveStencilFace;
+                typedef void (APIENTRY * ActiveStencilFaceProc) (GLenum);
+                ActiveStencilFaceProc _glActiveStencilFace;
         };
         
         /** Function to call to get the extension of a specified context.

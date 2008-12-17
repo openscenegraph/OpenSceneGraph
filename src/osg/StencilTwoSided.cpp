@@ -142,15 +142,14 @@ void StencilTwoSided::Extensions::setupGLExtensions(unsigned int contextID)
 {
     _isStencilTwoSidedSupported = isGLExtensionSupported(contextID,"GL_EXT_stencil_two_side");
 
-    _glActiveStencilFace = osg::getGLExtensionFuncPtr("glActiveStencilFace","glActiveStencilFaceEXT");
+    setGLExtensionFuncPtr(_glActiveStencilFace, "glActiveStencilFace","glActiveStencilFaceEXT");
 }
 
 void StencilTwoSided::Extensions::glActiveStencilFace(GLenum face) const
 {
     if (_glActiveStencilFace)
     {
-        typedef void (APIENTRY * ActiveStencilFaceProc) (GLenum);
-        ((ActiveStencilFaceProc)_glActiveStencilFace)(face);
+        _glActiveStencilFace(face);
     }
     else
     {

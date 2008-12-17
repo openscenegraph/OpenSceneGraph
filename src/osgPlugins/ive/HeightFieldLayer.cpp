@@ -51,8 +51,6 @@ void HeightFieldLayer::write(DataOutputStream* out)
             out->writeFloat(hf->getSkirtHeight());
             out->writeUInt(hf->getBorderWidth());
 
-            int packingSize = 1;
-
             float maxError = 0.0f;
             
             if (getLocator())

@@ -582,12 +582,12 @@ void Texture3D::Extensions::setupGLExtensions(unsigned int contextID)
     
     glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &_maxTexture3DSize);
 
-    _glTexImage3D                     = getGLExtensionFuncPtr("glTexImage3D","glTexImage3DEXT");
-    _glTexSubImage3D                  = getGLExtensionFuncPtr("glTexSubImage3D","glTexSubImage3DEXT");
-    _glCompressedTexImage3D           = getGLExtensionFuncPtr("glCompressedTexImage3D","glCompressedTexImage3DARB");
-    _glCompressedTexSubImage3D        = getGLExtensionFuncPtr("glCompressedTexSubImage3D","glCompressedTexSubImage3DARB");
-    _glCopyTexSubImage3D              = getGLExtensionFuncPtr("glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
-    _gluBuild3DMipmaps                = getGLExtensionFuncPtr("gluBuild3DMipmaps");
+    setGLExtensionFuncPtr(_glTexImage3D,"glTexImage3D","glTexImage3DEXT");
+    setGLExtensionFuncPtr(_glTexSubImage3D,"glTexSubImage3D","glTexSubImage3DEXT");
+    setGLExtensionFuncPtr(_glCompressedTexImage3D,"glCompressedTexImage3D","glCompressedTexImage3DARB");
+    setGLExtensionFuncPtr(_glCompressedTexSubImage3D,"glCompressedTexSubImage3D","glCompressedTexSubImage3DARB");
+    setGLExtensionFuncPtr(_glCopyTexSubImage3D,"glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
+    setGLExtensionFuncPtr(_gluBuild3DMipmaps,"gluBuild3DMipmaps");
 
 }
 
@@ -596,8 +596,7 @@ void Texture3D::Extensions::glTexImage3D( GLenum target, GLint level, GLenum int
 //    ::glTexImage3D( target, level, internalFormat, width, height, depth, border, format, type, pixels);
     if (_glTexImage3D)
     {
-        typedef void (APIENTRY * GLTexImage3DProc)      ( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels);
-        ((GLTexImage3DProc)_glTexImage3D)( target, level, internalFormat, width, height, depth, border, format, type, pixels);
+        _glTexImage3D( target, level, internalFormat, width, height, depth, border, format, type, pixels);
     }
     else
     {
@@ -610,8 +609,7 @@ void Texture3D::Extensions::glTexSubImage3D( GLenum target, GLint level, GLint x
 //    ::glTexSubImage3D( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
     if (_glTexSubImage3D)
     {
-        typedef void (APIENTRY * GLTexSubImage3DProc)   ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels);
-        ((GLTexSubImage3DProc)_glTexSubImage3D)( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
+        _glTexSubImage3D( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
     }
     else
     {
@@ -623,8 +621,7 @@ void Texture3D::Extensions::glCompressedTexImage3D(GLenum target, GLint level, G
 {
     if (_glCompressedTexImage3D)
     {
-        typedef void (APIENTRY * CompressedTexImage3DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data);
-        ((CompressedTexImage3DArbProc)_glCompressedTexImage3D)(target, level, internalformat, width, height, depth, border, imageSize, data);
+        _glCompressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, data);
     }
     else
     {
@@ -636,8 +633,7 @@ void Texture3D::Extensions::glCompressedTexSubImage3D( GLenum target, GLint leve
 {
     if (_glCompressedTexSubImage3D)
     {
-        typedef void (APIENTRY * CompressedTexSubImage3DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data);
-        ((CompressedTexSubImage3DArbProc)_glCompressedTexSubImage3D)(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
+        _glCompressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
     }
     else
     {
@@ -650,8 +646,7 @@ void Texture3D::Extensions::glCopyTexSubImage3D( GLenum target, GLint level, GLi
 //    ::glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
     if (_glCopyTexSubImage3D)
     {
-        typedef void (APIENTRY * GLCopyTexSubImageProc) ( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height );
-        ((GLCopyTexSubImageProc)_glCopyTexSubImage3D)(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+        _glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
     }
     else
     {
@@ -664,8 +659,7 @@ void Texture3D::Extensions::gluBuild3DMipmaps( GLenum target, GLint internalForm
 //    ::gluBuild3DMipmaps(target, internalFormat, width, height, depth, format, type, data);
     if (_gluBuild3DMipmaps)
     {
-        typedef void (APIENTRY * GLUBuild3DMipMapsProc) ( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data);
-        ((GLUBuild3DMipMapsProc)_gluBuild3DMipmaps)(target, internalFormat, width, height, depth, format, type, data);
+        _gluBuild3DMipmaps(target, internalFormat, width, height, depth, format, type, data);
     }
     else
     {

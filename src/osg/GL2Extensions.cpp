@@ -354,132 +354,132 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
             << std::endl;
 
 
-    _glBlendEquationSeparate = osg::getGLExtensionFuncPtr("glBlendEquationSeparate");
-    _glDrawBuffers = osg::getGLExtensionFuncPtr("glDrawBuffers", "glDrawBuffersARB");
-    _glStencilOpSeparate = osg::getGLExtensionFuncPtr("glStencilOpSeparate");
-    _glStencilFuncSeparate = osg::getGLExtensionFuncPtr("glStencilFuncSeparate");
-    _glStencilMaskSeparate = osg::getGLExtensionFuncPtr("glStencilMaskSeparate");
-    _glAttachShader = osg::getGLExtensionFuncPtr("glAttachShader", "glAttachObjectARB");
-    _glBindAttribLocation = osg::getGLExtensionFuncPtr("glBindAttribLocation", "glBindAttribLocationARB");
-    _glCompileShader = osg::getGLExtensionFuncPtr("glCompileShader", "glCompileShaderARB");
-    _glCreateProgram = osg::getGLExtensionFuncPtr("glCreateProgram", "glCreateProgramObjectARB");
-    _glCreateShader = osg::getGLExtensionFuncPtr("glCreateShader", "glCreateShaderObjectARB");
-    _glDeleteProgram = osg::getGLExtensionFuncPtr("glDeleteProgram");
-    _glDeleteShader = osg::getGLExtensionFuncPtr("glDeleteShader");
-    _glDetachShader = osg::getGLExtensionFuncPtr("glDetachShader", "glDetachObjectARB");
-    _glDisableVertexAttribArray = osg::getGLExtensionFuncPtr("glDisableVertexAttribArray");
-    _glEnableVertexAttribArray = osg::getGLExtensionFuncPtr("glEnableVertexAttribArray");
-    _glGetActiveAttrib = osg::getGLExtensionFuncPtr("glGetActiveAttrib", "glGetActiveAttribARB");
-    _glGetActiveUniform = osg::getGLExtensionFuncPtr("glGetActiveUniform", "glGetActiveUniformARB");
-    _glGetAttachedShaders = osg::getGLExtensionFuncPtr("glGetAttachedShaders", "glGetAttachedObjectsARB");
-    _glGetAttribLocation = osg::getGLExtensionFuncPtr("glGetAttribLocation", "glGetAttribLocationARB");
-    _glGetProgramiv = osg::getGLExtensionFuncPtr("glGetProgramiv");
-    _glGetProgramInfoLog = osg::getGLExtensionFuncPtr("glGetProgramInfoLog");
-    _glGetShaderiv = osg::getGLExtensionFuncPtr("glGetShaderiv");
-    _glGetShaderInfoLog = osg::getGLExtensionFuncPtr("glGetShaderInfoLog");
-    _glGetShaderSource = osg::getGLExtensionFuncPtr("glGetShaderSource", "glGetShaderSourceARB");
-    _glGetUniformLocation = osg::getGLExtensionFuncPtr("glGetUniformLocation", "glGetUniformLocationARB");
-    _glGetUniformfv = osg::getGLExtensionFuncPtr("glGetUniformfv", "glGetUniformfvARB");
-    _glGetUniformiv = osg::getGLExtensionFuncPtr("glGetUniformiv", "glGetUniformivARB");
-    _glGetVertexAttribdv = osg::getGLExtensionFuncPtr("glGetVertexAttribdv");
-    _glGetVertexAttribfv = osg::getGLExtensionFuncPtr("glGetVertexAttribfv");
-    _glGetVertexAttribiv = osg::getGLExtensionFuncPtr("glGetVertexAttribiv");
-    _glGetVertexAttribPointerv = osg::getGLExtensionFuncPtr("glGetVertexAttribPointerv");
-    _glIsProgram = osg::getGLExtensionFuncPtr("glIsProgram");
-    _glIsShader = osg::getGLExtensionFuncPtr("glIsShader");
-    _glLinkProgram = osg::getGLExtensionFuncPtr("glLinkProgram", "glLinkProgramARB");
-    _glShaderSource = osg::getGLExtensionFuncPtr("glShaderSource", "glShaderSourceARB");
-    _glUseProgram = osg::getGLExtensionFuncPtr("glUseProgram", "glUseProgramObjectARB");
-    _glUniform1f = osg::getGLExtensionFuncPtr("glUniform1f", "glUniform1fARB");
-    _glUniform2f = osg::getGLExtensionFuncPtr("glUniform2f", "glUniform2fARB");
-    _glUniform3f = osg::getGLExtensionFuncPtr("glUniform3f", "glUniform3fARB");
-    _glUniform4f = osg::getGLExtensionFuncPtr("glUniform4f", "glUniform4fARB");
-    _glUniform1i = osg::getGLExtensionFuncPtr("glUniform1i", "glUniform1iARB");
-    _glUniform2i = osg::getGLExtensionFuncPtr("glUniform2i", "glUniform2iARB");
-    _glUniform3i = osg::getGLExtensionFuncPtr("glUniform3i", "glUniform3iARB");
-    _glUniform4i = osg::getGLExtensionFuncPtr("glUniform4i", "glUniform4iARB");
-    _glUniform1fv = osg::getGLExtensionFuncPtr("glUniform1fv", "glUniform1fvARB");
-    _glUniform2fv = osg::getGLExtensionFuncPtr("glUniform2fv", "glUniform2fvARB");
-    _glUniform3fv = osg::getGLExtensionFuncPtr("glUniform3fv", "glUniform3fvARB");
-    _glUniform4fv = osg::getGLExtensionFuncPtr("glUniform4fv", "glUniform4fvARB");
-    _glUniform1iv = osg::getGLExtensionFuncPtr("glUniform1iv", "glUniform1ivARB");
-    _glUniform2iv = osg::getGLExtensionFuncPtr("glUniform2iv", "glUniform2ivARB");
-    _glUniform3iv = osg::getGLExtensionFuncPtr("glUniform3iv", "glUniform3ivARB");
-    _glUniform4iv = osg::getGLExtensionFuncPtr("glUniform4iv", "glUniform4ivARB");
-    _glUniformMatrix2fv = osg::getGLExtensionFuncPtr("glUniformMatrix2fv", "glUniformMatrix2fvARB");
-    _glUniformMatrix3fv = osg::getGLExtensionFuncPtr("glUniformMatrix3fv", "glUniformMatrix3fvARB");
-    _glUniformMatrix4fv = osg::getGLExtensionFuncPtr("glUniformMatrix4fv", "glUniformMatrix4fvARB");
-    _glValidateProgram = osg::getGLExtensionFuncPtr("glValidateProgram", "glValidateProgramARB");
-    _glVertexAttrib1d = osg::getGLExtensionFuncPtr("glVertexAttrib1d");
-    _glVertexAttrib1dv = osg::getGLExtensionFuncPtr("glVertexAttrib1dv");
-    _glVertexAttrib1f = osg::getGLExtensionFuncPtr("glVertexAttrib1f");
-    _glVertexAttrib1fv = osg::getGLExtensionFuncPtr("glVertexAttrib1fv");
-    _glVertexAttrib1s = osg::getGLExtensionFuncPtr("glVertexAttrib1s");
-    _glVertexAttrib1sv = osg::getGLExtensionFuncPtr("glVertexAttrib1sv");
-    _glVertexAttrib2d = osg::getGLExtensionFuncPtr("glVertexAttrib2d");
-    _glVertexAttrib2dv = osg::getGLExtensionFuncPtr("glVertexAttrib2dv");
-    _glVertexAttrib2f = osg::getGLExtensionFuncPtr("glVertexAttrib2f");
-    _glVertexAttrib2fv = osg::getGLExtensionFuncPtr("glVertexAttrib2fv");
-    _glVertexAttrib2s = osg::getGLExtensionFuncPtr("glVertexAttrib2s");
-    _glVertexAttrib2sv = osg::getGLExtensionFuncPtr("glVertexAttrib2sv");
-    _glVertexAttrib3d = osg::getGLExtensionFuncPtr("glVertexAttrib3d");
-    _glVertexAttrib3dv = osg::getGLExtensionFuncPtr("glVertexAttrib3dv");
-    _glVertexAttrib3f = osg::getGLExtensionFuncPtr("glVertexAttrib3f");
-    _glVertexAttrib3fv = osg::getGLExtensionFuncPtr("glVertexAttrib3fv");
-    _glVertexAttrib3s = osg::getGLExtensionFuncPtr("glVertexAttrib3s");
-    _glVertexAttrib3sv = osg::getGLExtensionFuncPtr("glVertexAttrib3sv");
-    _glVertexAttrib4Nbv = osg::getGLExtensionFuncPtr("glVertexAttrib4Nbv");
-    _glVertexAttrib4Niv = osg::getGLExtensionFuncPtr("glVertexAttrib4Niv");
-    _glVertexAttrib4Nsv = osg::getGLExtensionFuncPtr("glVertexAttrib4Nsv");
-    _glVertexAttrib4Nub = osg::getGLExtensionFuncPtr("glVertexAttrib4Nub");
-    _glVertexAttrib4Nubv = osg::getGLExtensionFuncPtr("glVertexAttrib4Nubv");
-    _glVertexAttrib4Nuiv = osg::getGLExtensionFuncPtr("glVertexAttrib4Nuiv");
-    _glVertexAttrib4Nusv = osg::getGLExtensionFuncPtr("glVertexAttrib4Nusv");
-    _glVertexAttrib4bv = osg::getGLExtensionFuncPtr("glVertexAttrib4bv");
-    _glVertexAttrib4d = osg::getGLExtensionFuncPtr("glVertexAttrib4d");
-    _glVertexAttrib4dv = osg::getGLExtensionFuncPtr("glVertexAttrib4dv");
-    _glVertexAttrib4f = osg::getGLExtensionFuncPtr("glVertexAttrib4f");
-    _glVertexAttrib4fv = osg::getGLExtensionFuncPtr("glVertexAttrib4fv");
-    _glVertexAttrib4iv = osg::getGLExtensionFuncPtr("glVertexAttrib4iv");
-    _glVertexAttrib4s = osg::getGLExtensionFuncPtr("glVertexAttrib4s");
-    _glVertexAttrib4sv = osg::getGLExtensionFuncPtr("glVertexAttrib4sv");
-    _glVertexAttrib4ubv = osg::getGLExtensionFuncPtr("glVertexAttrib4ubv");
-    _glVertexAttrib4uiv = osg::getGLExtensionFuncPtr("glVertexAttrib4uiv");
-    _glVertexAttrib4usv = osg::getGLExtensionFuncPtr("glVertexAttrib4usv");
-    _glVertexAttribPointer = osg::getGLExtensionFuncPtr("glVertexAttribPointer");
+    setGLExtensionFuncPtr(_glBlendEquationSeparate, "glBlendEquationSeparate");
+    setGLExtensionFuncPtr(_glDrawBuffers, "glDrawBuffers", "glDrawBuffersARB");
+    setGLExtensionFuncPtr(_glStencilOpSeparate, "glStencilOpSeparate");
+    setGLExtensionFuncPtr(_glStencilFuncSeparate, "glStencilFuncSeparate");
+    setGLExtensionFuncPtr(_glStencilMaskSeparate, "glStencilMaskSeparate");
+    setGLExtensionFuncPtr(_glAttachShader, "glAttachShader", "glAttachObjectARB");
+    setGLExtensionFuncPtr(_glBindAttribLocation, "glBindAttribLocation", "glBindAttribLocationARB");
+    setGLExtensionFuncPtr(_glCompileShader, "glCompileShader", "glCompileShaderARB");
+    setGLExtensionFuncPtr(_glCreateProgram, "glCreateProgram", "glCreateProgramObjectARB");
+    setGLExtensionFuncPtr(_glCreateShader, "glCreateShader", "glCreateShaderObjectARB");
+    setGLExtensionFuncPtr(_glDeleteProgram, "glDeleteProgram");
+    setGLExtensionFuncPtr(_glDeleteShader, "glDeleteShader");
+    setGLExtensionFuncPtr(_glDetachShader, "glDetachShader", "glDetachObjectARB");
+    setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray");
+    setGLExtensionFuncPtr(_glEnableVertexAttribArray, "glEnableVertexAttribArray");
+    setGLExtensionFuncPtr(_glGetActiveAttrib, "glGetActiveAttrib", "glGetActiveAttribARB");
+    setGLExtensionFuncPtr(_glGetActiveUniform, "glGetActiveUniform", "glGetActiveUniformARB");
+    setGLExtensionFuncPtr(_glGetAttachedShaders, "glGetAttachedShaders", "glGetAttachedObjectsARB");
+    setGLExtensionFuncPtr(_glGetAttribLocation, "glGetAttribLocation", "glGetAttribLocationARB");
+    setGLExtensionFuncPtr(_glGetProgramiv, "glGetProgramiv");
+    setGLExtensionFuncPtr(_glGetProgramInfoLog, "glGetProgramInfoLog");
+    setGLExtensionFuncPtr(_glGetShaderiv, "glGetShaderiv");
+    setGLExtensionFuncPtr(_glGetShaderInfoLog, "glGetShaderInfoLog");
+    setGLExtensionFuncPtr(_glGetShaderSource, "glGetShaderSource", "glGetShaderSourceARB");
+    setGLExtensionFuncPtr(_glGetUniformLocation, "glGetUniformLocation", "glGetUniformLocationARB");
+    setGLExtensionFuncPtr(_glGetUniformfv, "glGetUniformfv", "glGetUniformfvARB");
+    setGLExtensionFuncPtr(_glGetUniformiv, "glGetUniformiv", "glGetUniformivARB");
+    setGLExtensionFuncPtr(_glGetVertexAttribdv, "glGetVertexAttribdv");
+    setGLExtensionFuncPtr(_glGetVertexAttribfv, "glGetVertexAttribfv");
+    setGLExtensionFuncPtr(_glGetVertexAttribiv, "glGetVertexAttribiv");
+    setGLExtensionFuncPtr(_glGetVertexAttribPointerv, "glGetVertexAttribPointerv");
+    setGLExtensionFuncPtr(_glIsProgram, "glIsProgram");
+    setGLExtensionFuncPtr(_glIsShader, "glIsShader");
+    setGLExtensionFuncPtr(_glLinkProgram, "glLinkProgram", "glLinkProgramARB");
+    setGLExtensionFuncPtr(_glShaderSource, "glShaderSource", "glShaderSourceARB");
+    setGLExtensionFuncPtr(_glUseProgram, "glUseProgram", "glUseProgramObjectARB");
+    setGLExtensionFuncPtr(_glUniform1f, "glUniform1f", "glUniform1fARB");
+    setGLExtensionFuncPtr(_glUniform2f, "glUniform2f", "glUniform2fARB");
+    setGLExtensionFuncPtr(_glUniform3f, "glUniform3f", "glUniform3fARB");
+    setGLExtensionFuncPtr(_glUniform4f, "glUniform4f", "glUniform4fARB");
+    setGLExtensionFuncPtr(_glUniform1i, "glUniform1i", "glUniform1iARB");
+    setGLExtensionFuncPtr(_glUniform2i, "glUniform2i", "glUniform2iARB");
+    setGLExtensionFuncPtr(_glUniform3i, "glUniform3i", "glUniform3iARB");
+    setGLExtensionFuncPtr(_glUniform4i, "glUniform4i", "glUniform4iARB");
+    setGLExtensionFuncPtr(_glUniform1fv, "glUniform1fv", "glUniform1fvARB");
+    setGLExtensionFuncPtr(_glUniform2fv, "glUniform2fv", "glUniform2fvARB");
+    setGLExtensionFuncPtr(_glUniform3fv, "glUniform3fv", "glUniform3fvARB");
+    setGLExtensionFuncPtr(_glUniform4fv, "glUniform4fv", "glUniform4fvARB");
+    setGLExtensionFuncPtr(_glUniform1iv, "glUniform1iv", "glUniform1ivARB");
+    setGLExtensionFuncPtr(_glUniform2iv, "glUniform2iv", "glUniform2ivARB");
+    setGLExtensionFuncPtr(_glUniform3iv, "glUniform3iv", "glUniform3ivARB");
+    setGLExtensionFuncPtr(_glUniform4iv, "glUniform4iv", "glUniform4ivARB");
+    setGLExtensionFuncPtr(_glUniformMatrix2fv, "glUniformMatrix2fv", "glUniformMatrix2fvARB");
+    setGLExtensionFuncPtr(_glUniformMatrix3fv, "glUniformMatrix3fv", "glUniformMatrix3fvARB");
+    setGLExtensionFuncPtr(_glUniformMatrix4fv, "glUniformMatrix4fv", "glUniformMatrix4fvARB");
+    setGLExtensionFuncPtr(_glValidateProgram, "glValidateProgram", "glValidateProgramARB");
+    setGLExtensionFuncPtr(_glVertexAttrib1d, "glVertexAttrib1d");
+    setGLExtensionFuncPtr(_glVertexAttrib1dv, "glVertexAttrib1dv");
+    setGLExtensionFuncPtr(_glVertexAttrib1f, "glVertexAttrib1f");
+    setGLExtensionFuncPtr(_glVertexAttrib1fv, "glVertexAttrib1fv");
+    setGLExtensionFuncPtr(_glVertexAttrib1s, "glVertexAttrib1s");
+    setGLExtensionFuncPtr(_glVertexAttrib1sv, "glVertexAttrib1sv");
+    setGLExtensionFuncPtr(_glVertexAttrib2d, "glVertexAttrib2d");
+    setGLExtensionFuncPtr(_glVertexAttrib2dv, "glVertexAttrib2dv");
+    setGLExtensionFuncPtr(_glVertexAttrib2f, "glVertexAttrib2f");
+    setGLExtensionFuncPtr(_glVertexAttrib2fv, "glVertexAttrib2fv");
+    setGLExtensionFuncPtr(_glVertexAttrib2s, "glVertexAttrib2s");
+    setGLExtensionFuncPtr(_glVertexAttrib2sv, "glVertexAttrib2sv");
+    setGLExtensionFuncPtr(_glVertexAttrib3d, "glVertexAttrib3d");
+    setGLExtensionFuncPtr(_glVertexAttrib3dv, "glVertexAttrib3dv");
+    setGLExtensionFuncPtr(_glVertexAttrib3f, "glVertexAttrib3f");
+    setGLExtensionFuncPtr(_glVertexAttrib3fv, "glVertexAttrib3fv");
+    setGLExtensionFuncPtr(_glVertexAttrib3s, "glVertexAttrib3s");
+    setGLExtensionFuncPtr(_glVertexAttrib3sv, "glVertexAttrib3sv");
+    setGLExtensionFuncPtr(_glVertexAttrib4Nbv, "glVertexAttrib4Nbv");
+    setGLExtensionFuncPtr(_glVertexAttrib4Niv, "glVertexAttrib4Niv");
+    setGLExtensionFuncPtr(_glVertexAttrib4Nsv, "glVertexAttrib4Nsv");
+    setGLExtensionFuncPtr(_glVertexAttrib4Nub, "glVertexAttrib4Nub");
+    setGLExtensionFuncPtr(_glVertexAttrib4Nubv, "glVertexAttrib4Nubv");
+    setGLExtensionFuncPtr(_glVertexAttrib4Nuiv, "glVertexAttrib4Nuiv");
+    setGLExtensionFuncPtr(_glVertexAttrib4Nusv, "glVertexAttrib4Nusv");
+    setGLExtensionFuncPtr(_glVertexAttrib4bv, "glVertexAttrib4bv");
+    setGLExtensionFuncPtr(_glVertexAttrib4d, "glVertexAttrib4d");
+    setGLExtensionFuncPtr(_glVertexAttrib4dv, "glVertexAttrib4dv");
+    setGLExtensionFuncPtr(_glVertexAttrib4f, "glVertexAttrib4f");
+    setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv");
+    setGLExtensionFuncPtr(_glVertexAttrib4iv, "glVertexAttrib4iv");
+    setGLExtensionFuncPtr(_glVertexAttrib4s, "glVertexAttrib4s");
+    setGLExtensionFuncPtr(_glVertexAttrib4sv, "glVertexAttrib4sv");
+    setGLExtensionFuncPtr(_glVertexAttrib4ubv, "glVertexAttrib4ubv");
+    setGLExtensionFuncPtr(_glVertexAttrib4uiv, "glVertexAttrib4uiv");
+    setGLExtensionFuncPtr(_glVertexAttrib4usv, "glVertexAttrib4usv");
+    setGLExtensionFuncPtr(_glVertexAttribPointer, "glVertexAttribPointer");
 
     // v1.5-only ARB entry points, in case they're needed for fallback
-    _glGetInfoLogARB = osg::getGLExtensionFuncPtr("glGetInfoLogARB");
-    _glGetObjectParameterivARB = osg::getGLExtensionFuncPtr("glGetObjectParameterivARB");
-    _glDeleteObjectARB = osg::getGLExtensionFuncPtr("glDeleteObjectARB");
-    _glGetHandleARB = osg::getGLExtensionFuncPtr("glGetHandleARB");
+    setGLExtensionFuncPtr(_glGetInfoLogARB, "glGetInfoLogARB");
+    setGLExtensionFuncPtr(_glGetObjectParameterivARB, "glGetObjectParameterivARB");
+    setGLExtensionFuncPtr(_glDeleteObjectARB, "glDeleteObjectARB");
+    setGLExtensionFuncPtr(_glGetHandleARB, "glGetHandleARB");
 
     // GL 2.1
-    _glUniformMatrix2x3fv = osg::getGLExtensionFuncPtr( "glUniformMatrix2x3fv" );
-    _glUniformMatrix3x2fv = osg::getGLExtensionFuncPtr( "glUniformMatrix3x2fv" );
-    _glUniformMatrix2x4fv = osg::getGLExtensionFuncPtr( "glUniformMatrix2x4fv" );
-    _glUniformMatrix4x2fv = osg::getGLExtensionFuncPtr( "glUniformMatrix4x2fv" );
-    _glUniformMatrix3x4fv = osg::getGLExtensionFuncPtr( "glUniformMatrix3x4fv" );
-    _glUniformMatrix4x3fv = osg::getGLExtensionFuncPtr( "glUniformMatrix4x3fv" );
+    setGLExtensionFuncPtr(_glUniformMatrix2x3fv,  "glUniformMatrix2x3fv" );
+    setGLExtensionFuncPtr(_glUniformMatrix3x2fv,  "glUniformMatrix3x2fv" );
+    setGLExtensionFuncPtr(_glUniformMatrix2x4fv,  "glUniformMatrix2x4fv" );
+    setGLExtensionFuncPtr(_glUniformMatrix4x2fv,  "glUniformMatrix4x2fv" );
+    setGLExtensionFuncPtr(_glUniformMatrix3x4fv,  "glUniformMatrix3x4fv" );
+    setGLExtensionFuncPtr(_glUniformMatrix4x3fv,  "glUniformMatrix4x3fv" );
 
     // EXT_geometry_shader4
-    _glProgramParameteri = osg::getGLExtensionFuncPtr( "glProgramParameteri", "glProgramParameteriEXT" );
-    _glFramebufferTexture = osg::getGLExtensionFuncPtr( "glFramebufferTexture", "glFramebufferTextureEXT" );
-    _glFramebufferTextureLayer = osg::getGLExtensionFuncPtr( "glFramebufferTextureLayer", "glFramebufferTextureLayerEXT" );
-    _glFramebufferTextureFace = osg::getGLExtensionFuncPtr( "glFramebufferTextureFace", "glFramebufferTextureFaceEXT" );
+    setGLExtensionFuncPtr(_glProgramParameteri,  "glProgramParameteri", "glProgramParameteriEXT" );
+    setGLExtensionFuncPtr(_glFramebufferTexture,  "glFramebufferTexture", "glFramebufferTextureEXT" );
+    setGLExtensionFuncPtr(_glFramebufferTextureLayer,  "glFramebufferTextureLayer", "glFramebufferTextureLayerEXT" );
+    setGLExtensionFuncPtr(_glFramebufferTextureFace,  "glFramebufferTextureFace", "glFramebufferTextureFaceEXT" );
 
     // EXT_gpu_shader4
-    _glGetUniformuiv = osg::getGLExtensionFuncPtr( "glGetUniformuiv", "glGetUniformuivEXT" );
-    _glBindFragDataLocation = osg::getGLExtensionFuncPtr( "glBindFragDataLocation", "glBindFragDataLocationEXT" );
-    _glGetFragDataLocation = osg::getGLExtensionFuncPtr( "glGetFragDataLocation", "glGetFragDataLocationEXT" );
-    _glUniform1ui = osg::getGLExtensionFuncPtr( "glUniform1ui", "glUniform1uiEXT" );
-    _glUniform2ui = osg::getGLExtensionFuncPtr( "glUniform2ui", "glUniform2uiEXT" );
-    _glUniform3ui = osg::getGLExtensionFuncPtr( "glUniform3ui", "glUniform3uiEXT" );
-    _glUniform4ui = osg::getGLExtensionFuncPtr( "glUniform4ui", "glUniform4uiEXT" );
-    _glUniform1uiv = osg::getGLExtensionFuncPtr( "glUniform1uiv", "glUniform1uivEXT" );
-    _glUniform2uiv = osg::getGLExtensionFuncPtr( "glUniform2uiv", "glUniform2uivEXT" );
-    _glUniform3uiv = osg::getGLExtensionFuncPtr( "glUniform3uiv", "glUniform3uivEXT" );
-    _glUniform4uiv = osg::getGLExtensionFuncPtr( "glUniform4uiv", "glUniform4uivEXT" );
+    setGLExtensionFuncPtr(_glGetUniformuiv,  "glGetUniformuiv", "glGetUniformuivEXT" );
+    setGLExtensionFuncPtr(_glBindFragDataLocation,  "glBindFragDataLocation", "glBindFragDataLocationEXT" );
+    setGLExtensionFuncPtr(_glGetFragDataLocation,  "glGetFragDataLocation", "glGetFragDataLocationEXT" );
+    setGLExtensionFuncPtr(_glUniform1ui,  "glUniform1ui", "glUniform1uiEXT" );
+    setGLExtensionFuncPtr(_glUniform2ui,  "glUniform2ui", "glUniform2uiEXT" );
+    setGLExtensionFuncPtr(_glUniform3ui,  "glUniform3ui", "glUniform3uiEXT" );
+    setGLExtensionFuncPtr(_glUniform4ui,  "glUniform4ui", "glUniform4uiEXT" );
+    setGLExtensionFuncPtr(_glUniform1uiv,  "glUniform1uiv", "glUniform1uivEXT" );
+    setGLExtensionFuncPtr(_glUniform2uiv,  "glUniform2uiv", "glUniform2uivEXT" );
+    setGLExtensionFuncPtr(_glUniform3uiv,  "glUniform3uiv", "glUniform3uivEXT" );
+    setGLExtensionFuncPtr(_glUniform4uiv,  "glUniform4uiv", "glUniform4uivEXT" );
 }
 
 
@@ -527,8 +527,7 @@ void GL2Extensions::glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) co
 {
     if (_glBlendEquationSeparate)
     {
-        typedef void (APIENTRY * BlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
-        ((BlendEquationSeparateProc)_glBlendEquationSeparate)(modeRGB, modeAlpha);
+        _glBlendEquationSeparate(modeRGB, modeAlpha);
     }
     else
     {
@@ -541,8 +540,7 @@ void GL2Extensions::glDrawBuffers(GLsizei n, const GLenum *bufs) const
 {
     if (_glDrawBuffers)
     {
-        typedef void (APIENTRY * DrawBuffersProc)(GLsizei n, const GLenum *bufs);
-        ((DrawBuffersProc)_glDrawBuffers)(n, bufs);
+        _glDrawBuffers(n, bufs);
     }
     else
     {
@@ -555,8 +553,7 @@ void GL2Extensions::glStencilOpSeparate(GLenum face, GLenum sfail, GLenum dpfail
 {
     if (_glStencilOpSeparate)
     {
-        typedef void (APIENTRY * StencilOpSeparateProc)(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass);
-        ((StencilOpSeparateProc)_glStencilOpSeparate)(face, sfail, dpfail, dppass);
+        _glStencilOpSeparate(face, sfail, dpfail, dppass);
     }
     else
     {
@@ -569,8 +566,7 @@ void GL2Extensions::glStencilFuncSeparate(GLenum frontfunc, GLenum backfunc, GLi
 {
     if (_glStencilFuncSeparate)
     {
-        typedef void (APIENTRY * StencilFuncSeparateProc)(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask);
-        ((StencilFuncSeparateProc)_glStencilFuncSeparate)(frontfunc, backfunc, ref, mask);
+        _glStencilFuncSeparate(frontfunc, backfunc, ref, mask);
     }
     else
     {
@@ -583,8 +579,7 @@ void GL2Extensions::glStencilMaskSeparate(GLenum face, GLuint mask) const
 {
     if (_glStencilMaskSeparate)
     {
-        typedef void (APIENTRY * StencilMaskSeparateProc)(GLenum face, GLuint mask);
-        ((StencilMaskSeparateProc)_glStencilMaskSeparate)(face, mask);
+        _glStencilMaskSeparate(face, mask);
     }
     else
     {
@@ -597,8 +592,7 @@ void GL2Extensions::glAttachShader(GLuint program, GLuint shader) const
 {
     if (_glAttachShader)
     {
-        typedef void (APIENTRY * AttachShaderProc)(GLuint program, GLuint shader);
-        ((AttachShaderProc)_glAttachShader)(program, shader);
+        _glAttachShader(program, shader);
     }
     else
     {
@@ -611,8 +605,7 @@ void GL2Extensions::glBindAttribLocation(GLuint program, GLuint index, const GLc
 {
     if (_glBindAttribLocation)
     {
-        typedef void (APIENTRY * BindAttribLocationProc)(GLuint program, GLuint index, const GLchar *name);
-        ((BindAttribLocationProc)_glBindAttribLocation)(program, index, name);
+        _glBindAttribLocation(program, index, name);
     }
     else
     {
@@ -625,8 +618,7 @@ void GL2Extensions::glCompileShader(GLuint shader) const
 {
     if (_glCompileShader)
     {
-        typedef void (APIENTRY * CompileShaderProc)(GLuint shader);
-        ((CompileShaderProc)_glCompileShader)(shader);
+        _glCompileShader(shader);
     }
     else
     {
@@ -639,8 +631,7 @@ GLuint GL2Extensions::glCreateProgram(void) const
 {
     if (_glCreateProgram)
     {
-        typedef GLuint (APIENTRY * CreateProgramProc)(void);
-        return ((CreateProgramProc)_glCreateProgram)();
+        return _glCreateProgram();
     }
     else
     {
@@ -654,8 +645,7 @@ GLuint GL2Extensions::glCreateShader(GLenum type) const
 {
     if (_glCreateShader)
     {
-        typedef GLuint (APIENTRY * CreateShaderProc)(GLenum type);
-        return ((CreateShaderProc)_glCreateShader)(type);
+        return _glCreateShader(type);
     }
     else
     {
@@ -669,13 +659,11 @@ void GL2Extensions::glDeleteProgram(GLuint program) const
 {
     if (_glDeleteProgram)
     {
-        typedef void (APIENTRY * DeleteProgramProc)(GLuint program);
-        ((DeleteProgramProc)_glDeleteProgram)(program);
+        _glDeleteProgram(program);
     }
     else if (_glDeleteObjectARB)
     {
-        typedef void (APIENTRY * DeleteObjectARBProc)(GLuint program);
-        ((DeleteObjectARBProc)_glDeleteObjectARB)(program);
+        _glDeleteObjectARB(program);
     }
     else
     {
@@ -688,13 +676,11 @@ void GL2Extensions::glDeleteShader(GLuint shader) const
 {
     if (_glDeleteShader)
     {
-        typedef void (APIENTRY * DeleteShaderProc)(GLuint shader);
-        ((DeleteShaderProc)_glDeleteShader)(shader);
+        _glDeleteShader(shader);
     }
     else if (_glDeleteObjectARB)
     {
-        typedef void (APIENTRY * DeleteObjectARBProc)(GLuint shader);
-        ((DeleteObjectARBProc)_glDeleteObjectARB)(shader);
+        _glDeleteObjectARB(shader);
     }
     else
     {
@@ -707,8 +693,7 @@ void GL2Extensions::glDetachShader(GLuint program, GLuint shader) const
 {
     if (_glDetachShader)
     {
-        typedef void (APIENTRY * DetachShaderProc)(GLuint program, GLuint shader);
-        ((DetachShaderProc)_glDetachShader)(program, shader);
+        _glDetachShader(program, shader);
     }
     else
     {
@@ -721,8 +706,7 @@ void GL2Extensions::glDisableVertexAttribArray(GLuint index) const
 {
     if (_glDisableVertexAttribArray)
     {
-        typedef void (APIENTRY * DisableVertexAttribArrayProc)(GLuint index);
-        ((DisableVertexAttribArrayProc)_glDisableVertexAttribArray)(index);
+        _glDisableVertexAttribArray(index);
     }
     else
     {
@@ -735,8 +719,7 @@ void GL2Extensions::glEnableVertexAttribArray(GLuint index) const
 {
     if (_glEnableVertexAttribArray)
     {
-        typedef void (APIENTRY * EnableVertexAttribArrayProc)(GLuint index);
-        ((EnableVertexAttribArrayProc)_glEnableVertexAttribArray)(index);
+        _glEnableVertexAttribArray(index);
     }
     else
     {
@@ -749,8 +732,7 @@ void GL2Extensions::glGetActiveAttrib(GLuint program, GLuint index, GLsizei bufS
 {
     if (_glGetActiveAttrib)
     {
-        typedef void (APIENTRY * GetActiveAttribProc)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
-        ((GetActiveAttribProc)_glGetActiveAttrib)(program, index, bufSize, length, size, type, name);
+        _glGetActiveAttrib(program, index, bufSize, length, size, type, name);
     }
     else
     {
@@ -763,8 +745,7 @@ void GL2Extensions::glGetActiveUniform(GLuint program, GLuint index, GLsizei buf
 {
     if (_glGetActiveUniform)
     {
-        typedef void (APIENTRY * GetActiveUniformProc)(GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLint *size, GLenum *type, GLchar *name);
-        ((GetActiveUniformProc)_glGetActiveUniform)(program, index, bufSize, length, size, type, name);
+        _glGetActiveUniform(program, index, bufSize, length, size, type, name);
     }
     else
     {
@@ -777,8 +758,7 @@ void GL2Extensions::glGetAttachedShaders(GLuint program, GLsizei maxCount, GLsiz
 {
     if (_glGetAttachedShaders)
     {
-        typedef void (APIENTRY * GetAttachedShadersProc)(GLuint program, GLsizei maxCount, GLsizei *count, GLuint *obj);
-        ((GetAttachedShadersProc)_glGetAttachedShaders)(program, maxCount, count, obj);
+        _glGetAttachedShaders(program, maxCount, count, obj);
     }
     else
     {
@@ -791,8 +771,7 @@ GLint GL2Extensions::glGetAttribLocation(GLuint program, const GLchar *name) con
 {
     if (_glGetAttribLocation)
     {
-        typedef GLint (APIENTRY * GetAttribLocationProc)(GLuint program, const GLchar *name);
-        return ((GetAttribLocationProc)_glGetAttribLocation)(program, name);
+        return _glGetAttribLocation(program, name);
     }
     else
     {
@@ -806,13 +785,13 @@ void GL2Extensions::glGetProgramiv(GLuint program, GLenum pname, GLint *params) 
 {
     if (_glGetProgramiv)
     {
-        typedef void (APIENTRY * GetProgramivProc)(GLuint program, GLenum pname, GLint *params);
-        ((GetProgramivProc)_glGetProgramiv)(program, pname, params);
+
+        _glGetProgramiv(program, pname, params);
     }
     else if (_glGetObjectParameterivARB)
     {
-        typedef void (APIENTRY * GetObjectParameterivARBProc)(GLuint program, GLenum pname, GLint *params);
-        ((GetObjectParameterivARBProc)_glGetObjectParameterivARB)(program, pname, params);
+
+        _glGetObjectParameterivARB(program, pname, params);
     }
     else
     {
@@ -825,13 +804,13 @@ void GL2Extensions::glGetProgramInfoLog(GLuint program, GLsizei bufSize, GLsizei
 {
     if (_glGetProgramInfoLog)
     {
-        typedef void (APIENTRY * GetProgramInfoLogProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-        ((GetProgramInfoLogProc)_glGetProgramInfoLog)(program, bufSize, length, infoLog);
+
+        _glGetProgramInfoLog(program, bufSize, length, infoLog);
     }
     else if (_glGetInfoLogARB)
     {
-        typedef void (APIENTRY * GetInfoLogARBProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-        ((GetInfoLogARBProc)_glGetInfoLogARB)(program, bufSize, length, infoLog);
+
+        _glGetInfoLogARB(program, bufSize, length, infoLog);
     }
     else
     {
@@ -844,13 +823,13 @@ void GL2Extensions::glGetShaderiv(GLuint shader, GLenum pname, GLint *params) co
 {
     if (_glGetShaderiv)
     {
-        typedef void (APIENTRY * GetShaderivProc)(GLuint shader, GLenum pname, GLint *params);
-        ((GetShaderivProc)_glGetShaderiv)(shader, pname, params);
+
+        _glGetShaderiv(shader, pname, params);
     }
     else if (_glGetObjectParameterivARB)
     {
-        typedef void (APIENTRY * GetObjectParameterivARBProc)(GLuint shader, GLenum pname, GLint *params);
-        ((GetObjectParameterivARBProc)_glGetObjectParameterivARB)(shader, pname, params);
+
+        _glGetObjectParameterivARB(shader, pname, params);
     }
     else
     {
@@ -863,13 +842,13 @@ void GL2Extensions::glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei *
 {
     if (_glGetShaderInfoLog)
     {
-        typedef void (APIENTRY * GetShaderInfoLogProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-        ((GetShaderInfoLogProc)_glGetShaderInfoLog)(shader, bufSize, length, infoLog);
+
+        _glGetShaderInfoLog(shader, bufSize, length, infoLog);
     }
     else if (_glGetInfoLogARB)
     {
-        typedef void (APIENTRY * GetInfoLogARBProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
-        ((GetInfoLogARBProc)_glGetInfoLogARB)(shader, bufSize, length, infoLog);
+
+        _glGetInfoLogARB(shader, bufSize, length, infoLog);
     }
     else
     {
@@ -882,8 +861,8 @@ void GL2Extensions::glGetShaderSource(GLuint shader, GLsizei bufSize, GLsizei *l
 {
     if (_glGetShaderSource)
     {
-        typedef void (APIENTRY * GetShaderSourceProc)(GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *source);
-        ((GetShaderSourceProc)_glGetShaderSource)(shader, bufSize, length, source);
+
+        _glGetShaderSource(shader, bufSize, length, source);
     }
     else
     {
@@ -896,8 +875,8 @@ GLint GL2Extensions::glGetUniformLocation(GLuint program, const GLchar *name) co
 {
     if (_glGetUniformLocation)
     {
-        typedef GLint (APIENTRY * GetUniformLocationProc)(GLuint program, const GLchar *name);
-        return ((GetUniformLocationProc)_glGetUniformLocation)(program, name);
+
+        return _glGetUniformLocation(program, name);
     }
     else
     {
@@ -911,8 +890,8 @@ void GL2Extensions::glGetUniformfv(GLuint program, GLint location, GLfloat *para
 {
     if (_glGetUniformfv)
     {
-        typedef void (APIENTRY * GetUniformfvProc)(GLuint program, GLint location, GLfloat *params);
-        ((GetUniformfvProc)_glGetUniformfv)(program, location, params);
+
+        _glGetUniformfv(program, location, params);
     }
     else
     {
@@ -925,8 +904,8 @@ void GL2Extensions::glGetUniformiv(GLuint program, GLint location, GLint *params
 {
     if (_glGetUniformiv)
     {
-        typedef void (APIENTRY * GetUniformivProc)(GLuint program, GLint location, GLint *params);
-        ((GetUniformivProc)_glGetUniformiv)(program, location, params);
+
+        _glGetUniformiv(program, location, params);
     }
     else
     {
@@ -939,8 +918,8 @@ void GL2Extensions::glGetVertexAttribdv(GLuint index, GLenum pname, GLdouble *pa
 {
     if (_glGetVertexAttribdv)
     {
-        typedef void (APIENTRY * GetVertexAttribdvProc)(GLuint index, GLenum pname, GLdouble *params);
-        ((GetVertexAttribdvProc)_glGetVertexAttribdv)(index, pname, params);
+
+        _glGetVertexAttribdv(index, pname, params);
     }
     else
     {
@@ -953,8 +932,8 @@ void GL2Extensions::glGetVertexAttribfv(GLuint index, GLenum pname, GLfloat *par
 {
     if (_glGetVertexAttribfv)
     {
-        typedef void (APIENTRY * GetVertexAttribfvProc)(GLuint index, GLenum pname, GLfloat *params);
-        ((GetVertexAttribfvProc)_glGetVertexAttribfv)(index, pname, params);
+
+        _glGetVertexAttribfv(index, pname, params);
     }
     else
     {
@@ -967,8 +946,8 @@ void GL2Extensions::glGetVertexAttribiv(GLuint index, GLenum pname, GLint *param
 {
     if (_glGetVertexAttribiv)
     {
-        typedef void (APIENTRY * GetVertexAttribivProc)(GLuint index, GLenum pname, GLint *params);
-        ((GetVertexAttribivProc)_glGetVertexAttribiv)(index, pname, params);
+
+        _glGetVertexAttribiv(index, pname, params);
     }
     else
     {
@@ -981,8 +960,8 @@ void GL2Extensions::glGetVertexAttribPointerv(GLuint index, GLenum pname, GLvoid
 {
     if (_glGetVertexAttribPointerv)
     {
-        typedef void (APIENTRY * GetVertexAttribPointervProc)(GLuint index, GLenum pname, GLvoid* *pointer);
-        ((GetVertexAttribPointervProc)_glGetVertexAttribPointerv)(index, pname, pointer);
+
+        _glGetVertexAttribPointerv(index, pname, pointer);
     }
     else
     {
@@ -995,8 +974,8 @@ GLboolean GL2Extensions::glIsProgram(GLuint program) const
 {
     if (_glIsProgram)
     {
-        typedef GLboolean (APIENTRY * IsProgramProc)(GLuint program);
-        return ((IsProgramProc)_glIsProgram)(program);
+
+        return _glIsProgram(program);
     }
     else
     {
@@ -1010,8 +989,8 @@ GLboolean GL2Extensions::glIsShader(GLuint shader) const
 {
     if (_glIsShader)
     {
-        typedef GLboolean (APIENTRY * IsShaderProc)(GLuint shader);
-        return ((IsShaderProc)_glIsShader)(shader);
+
+        return _glIsShader(shader);
     }
     else
     {
@@ -1025,8 +1004,8 @@ void GL2Extensions::glLinkProgram(GLuint program) const
 {
     if (_glLinkProgram)
     {
-        typedef void (APIENTRY * LinkProgramProc)(GLuint program);
-        ((LinkProgramProc)_glLinkProgram)(program);
+
+        _glLinkProgram(program);
     }
     else
     {
@@ -1039,8 +1018,8 @@ void GL2Extensions::glShaderSource(GLuint shader, GLsizei count, const GLchar* *
 {
     if (_glShaderSource)
     {
-        typedef void (APIENTRY * ShaderSourceProc)(GLuint shader, GLsizei count, const GLchar* *string, const GLint *length);
-        ((ShaderSourceProc)_glShaderSource)(shader, count, string, length);
+
+        _glShaderSource(shader, count, string, length);
     }
     else
     {
@@ -1053,8 +1032,8 @@ void GL2Extensions::glUseProgram(GLuint program) const
 {
     if (_glUseProgram)
     {
-        typedef void (APIENTRY * UseProgramProc)(GLuint program);
-        ((UseProgramProc)_glUseProgram)(program);
+
+        _glUseProgram(program);
     }
     else
     {
@@ -1067,8 +1046,8 @@ void GL2Extensions::glUniform1f(GLint location, GLfloat v0) const
 {
     if (_glUniform1f)
     {
-        typedef void (APIENTRY * Uniform1fProc)(GLint location, GLfloat v0);
-        ((Uniform1fProc)_glUniform1f)(location, v0);
+
+        _glUniform1f(location, v0);
     }
     else
     {
@@ -1081,8 +1060,8 @@ void GL2Extensions::glUniform2f(GLint location, GLfloat v0, GLfloat v1) const
 {
     if (_glUniform2f)
     {
-        typedef void (APIENTRY * Uniform2fProc)(GLint location, GLfloat v0, GLfloat v1);
-        ((Uniform2fProc)_glUniform2f)(location, v0, v1);
+
+        _glUniform2f(location, v0, v1);
     }
     else
     {
@@ -1095,8 +1074,8 @@ void GL2Extensions::glUniform3f(GLint location, GLfloat v0, GLfloat v1, GLfloat 
 {
     if (_glUniform3f)
     {
-        typedef void (APIENTRY * Uniform3fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2);
-        ((Uniform3fProc)_glUniform3f)(location, v0, v1, v2);
+
+        _glUniform3f(location, v0, v1, v2);
     }
     else
     {
@@ -1109,8 +1088,8 @@ void GL2Extensions::glUniform4f(GLint location, GLfloat v0, GLfloat v1, GLfloat 
 {
     if (_glUniform4f)
     {
-        typedef void (APIENTRY * Uniform4fProc)(GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
-        ((Uniform4fProc)_glUniform4f)(location, v0, v1, v2, v3);
+
+        _glUniform4f(location, v0, v1, v2, v3);
     }
     else
     {
@@ -1123,8 +1102,8 @@ void GL2Extensions::glUniform1i(GLint location, GLint v0) const
 {
     if (_glUniform1i)
     {
-        typedef void (APIENTRY * Uniform1iProc)(GLint location, GLint v0);
-        ((Uniform1iProc)_glUniform1i)(location, v0);
+
+        _glUniform1i(location, v0);
     }
     else
     {
@@ -1137,8 +1116,8 @@ void GL2Extensions::glUniform2i(GLint location, GLint v0, GLint v1) const
 {
     if (_glUniform2i)
     {
-        typedef void (APIENTRY * Uniform2iProc)(GLint location, GLint v0, GLint v1);
-        ((Uniform2iProc)_glUniform2i)(location, v0, v1);
+
+        _glUniform2i(location, v0, v1);
     }
     else
     {
@@ -1151,8 +1130,8 @@ void GL2Extensions::glUniform3i(GLint location, GLint v0, GLint v1, GLint v2) co
 {
     if (_glUniform3i)
     {
-        typedef void (APIENTRY * Uniform3iProc)(GLint location, GLint v0, GLint v1, GLint v2);
-        ((Uniform3iProc)_glUniform3i)(location, v0, v1, v2);
+
+        _glUniform3i(location, v0, v1, v2);
     }
     else
     {
@@ -1165,8 +1144,8 @@ void GL2Extensions::glUniform4i(GLint location, GLint v0, GLint v1, GLint v2, GL
 {
     if (_glUniform4i)
     {
-        typedef void (APIENTRY * glUniform4iProc)(GLint location, GLint v0, GLint v1, GLint v2, GLint v3);
-        ((glUniform4iProc)_glUniform4i)(location, v0, v1, v2, v3);
+
+        _glUniform4i(location, v0, v1, v2, v3);
     }
     else
     {
@@ -1179,8 +1158,8 @@ void GL2Extensions::glUniform1fv(GLint location, GLsizei count, const GLfloat *v
 {
     if (_glUniform1fv)
     {
-        typedef void (APIENTRY * Uniform1fvProc)(GLint location, GLsizei count, const GLfloat *value);
-        ((Uniform1fvProc)_glUniform1fv)(location, count, value);
+
+        _glUniform1fv(location, count, value);
     }
     else
     {
@@ -1193,8 +1172,8 @@ void GL2Extensions::glUniform2fv(GLint location, GLsizei count, const GLfloat *v
 {
     if (_glUniform2fv)
     {
-        typedef void (APIENTRY * Uniform2fvProc)(GLint location, GLsizei count, const GLfloat *value);
-        ((Uniform2fvProc)_glUniform2fv)(location, count, value);
+
+        _glUniform2fv(location, count, value);
     }
     else
     {
@@ -1207,8 +1186,8 @@ void GL2Extensions::glUniform3fv(GLint location, GLsizei count, const GLfloat *v
 {
     if (_glUniform3fv)
     {
-        typedef void (APIENTRY * Uniform3fvProc)(GLint location, GLsizei count, const GLfloat *value);
-        ((Uniform3fvProc)_glUniform3fv)(location, count, value);
+
+        _glUniform3fv(location, count, value);
     }
     else
     {
@@ -1221,8 +1200,8 @@ void GL2Extensions::glUniform4fv(GLint location, GLsizei count, const GLfloat *v
 {
     if (_glUniform4fv)
     {
-        typedef void (APIENTRY * Uniform4fvProc)(GLint location, GLsizei count, const GLfloat *value);
-        ((Uniform4fvProc)_glUniform4fv)(location, count, value);
+
+        _glUniform4fv(location, count, value);
     }
     else
     {
@@ -1235,8 +1214,8 @@ void GL2Extensions::glUniform1iv(GLint location, GLsizei count, const GLint *val
 {
     if (_glUniform1iv)
     {
-        typedef void (APIENTRY * Uniform1ivProc)(GLint location, GLsizei count, const GLint *value);
-        ((Uniform1ivProc)_glUniform1iv)(location, count, value);
+
+        _glUniform1iv(location, count, value);
     }
     else
     {
@@ -1249,8 +1228,8 @@ void GL2Extensions::glUniform2iv(GLint location, GLsizei count, const GLint *val
 {
     if (_glUniform2iv)
     {
-        typedef void (APIENTRY * Uniform2ivProc)(GLint location, GLsizei count, const GLint *value);
-        ((Uniform2ivProc)_glUniform2iv)(location, count, value);
+
+        _glUniform2iv(location, count, value);
     }
     else
     {
@@ -1263,8 +1242,8 @@ void GL2Extensions::glUniform3iv(GLint location, GLsizei count, const GLint *val
 {
     if (_glUniform3iv)
     {
-        typedef void (APIENTRY * glUniform3ivProc)(GLint location, GLsizei count, const GLint *value);
-        ((glUniform3ivProc)_glUniform3iv)(location, count, value);
+
+        _glUniform3iv(location, count, value);
     }
     else
     {
@@ -1277,8 +1256,8 @@ void GL2Extensions::glUniform4iv(GLint location, GLsizei count, const GLint *val
 {
     if (_glUniform4iv)
     {
-        typedef void (APIENTRY * Uniform4ivProc)(GLint location, GLsizei count, const GLint *value);
-        ((Uniform4ivProc)_glUniform4iv)(location, count, value);
+
+        _glUniform4iv(location, count, value);
     }
     else
     {
@@ -1291,8 +1270,8 @@ void GL2Extensions::glUniformMatrix2fv(GLint location, GLsizei count, GLboolean 
 {
     if (_glUniformMatrix2fv)
     {
-        typedef void (APIENTRY * UniformMatrix2fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-        ((UniformMatrix2fvProc)_glUniformMatrix2fv)(location, count, transpose, value);
+
+        _glUniformMatrix2fv(location, count, transpose, value);
     }
     else
     {
@@ -1305,8 +1284,8 @@ void GL2Extensions::glUniformMatrix3fv(GLint location, GLsizei count, GLboolean 
 {
     if (_glUniformMatrix3fv)
     {
-        typedef void (APIENTRY * glUniformMatrix3fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-        ((glUniformMatrix3fvProc)_glUniformMatrix3fv)(location, count, transpose, value);
+
+        _glUniformMatrix3fv(location, count, transpose, value);
     }
     else
     {
@@ -1319,8 +1298,8 @@ void GL2Extensions::glUniformMatrix4fv(GLint location, GLsizei count, GLboolean 
 {
     if (_glUniformMatrix4fv)
     {
-        typedef void (APIENTRY * UniformMatrix4fvProc)(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-        ((UniformMatrix4fvProc)_glUniformMatrix4fv)(location, count, transpose, value);
+
+        _glUniformMatrix4fv(location, count, transpose, value);
     }
     else
     {
@@ -1333,8 +1312,8 @@ void GL2Extensions::glValidateProgram(GLuint program) const
 {
     if (_glValidateProgram)
     {
-        typedef void (APIENTRY * ValidateProgramProc)(GLuint program);
-        ((ValidateProgramProc)_glValidateProgram)(program);
+
+        _glValidateProgram(program);
     }
     else
     {
@@ -1347,8 +1326,8 @@ void GL2Extensions::glVertexAttrib1d(GLuint index, GLdouble x) const
 {
     if (_glVertexAttrib1d)
     {
-        typedef void (APIENTRY * VertexAttrib1dProc)(GLuint index, GLdouble x);
-        ((VertexAttrib1dProc)_glVertexAttrib1d)(index, x);
+
+        _glVertexAttrib1d(index, x);
     }
     else
     {
@@ -1361,8 +1340,8 @@ void GL2Extensions::glVertexAttrib1dv(GLuint index, const GLdouble *v) const
 {
     if (_glVertexAttrib1dv)
     {
-        typedef void (APIENTRY * glVertexAttrib1dvProc)(GLuint index, const GLdouble *v);
-        ((glVertexAttrib1dvProc)_glVertexAttrib1dv)(index, v);
+
+        _glVertexAttrib1dv(index, v);
     }
     else
     {
@@ -1375,8 +1354,8 @@ void GL2Extensions::glVertexAttrib1f(GLuint index, GLfloat x) const
 {
     if (_glVertexAttrib1f)
     {
-        typedef void (APIENTRY * VertexAttrib1fProc)(GLuint index, GLfloat x);
-        ((VertexAttrib1fProc)_glVertexAttrib1f)(index, x);
+
+        _glVertexAttrib1f(index, x);
     }
     else
     {
@@ -1389,8 +1368,8 @@ void GL2Extensions::glVertexAttrib1fv(GLuint index, const GLfloat *v) const
 {
     if (_glVertexAttrib1fv)
     {
-        typedef void (APIENTRY * VertexAttrib1fvProc)(GLuint index, const GLfloat *v);
-        ((VertexAttrib1fvProc)_glVertexAttrib1fv)(index, v);
+
+        _glVertexAttrib1fv(index, v);
     }
     else
     {
@@ -1403,8 +1382,8 @@ void GL2Extensions::glVertexAttrib1s(GLuint index, GLshort x) const
 {
     if (_glVertexAttrib1s)
     {
-        typedef void (APIENTRY * VertexAttrib1sProc)(GLuint index, GLshort x);
-        ((VertexAttrib1sProc)_glVertexAttrib1s)(index, x);
+
+        _glVertexAttrib1s(index, x);
     }
     else
     {
@@ -1417,8 +1396,8 @@ void GL2Extensions::glVertexAttrib1sv(GLuint index, const GLshort *v) const
 {
     if (_glVertexAttrib1sv)
     {
-        typedef void (APIENTRY * VertexAttrib1svProc)(GLuint index, const GLshort *v);
-        ((VertexAttrib1svProc)_glVertexAttrib1sv)(index, v);
+
+        _glVertexAttrib1sv(index, v);
     }
     else
     {
@@ -1431,8 +1410,8 @@ void GL2Extensions::glVertexAttrib2d(GLuint index, GLdouble x, GLdouble y) const
 {
     if (_glVertexAttrib2d)
     {
-        typedef void (APIENTRY * VertexAttrib2dProc)(GLuint index, GLdouble x, GLdouble y);
-        ((VertexAttrib2dProc)_glVertexAttrib2d)(index, x, y);
+
+        _glVertexAttrib2d(index, x, y);
     }
     else
     {
@@ -1445,8 +1424,8 @@ void GL2Extensions::glVertexAttrib2dv(GLuint index, const GLdouble *v) const
 {
     if (_glVertexAttrib2dv)
     {
-        typedef void (APIENTRY * VertexAttrib2dvProc)(GLuint index, const GLdouble *v);
-        ((VertexAttrib2dvProc)_glVertexAttrib2dv)(index, v);
+
+        _glVertexAttrib2dv(index, v);
     }
     else
     {
@@ -1459,8 +1438,8 @@ void GL2Extensions::glVertexAttrib2f(GLuint index, GLfloat x, GLfloat y) const
 {
     if (_glVertexAttrib2f)
     {
-        typedef void (APIENTRY * VertexAttrib2fProc)(GLuint index, GLfloat x, GLfloat y);
-        ((VertexAttrib2fProc)_glVertexAttrib2f)(index, x, y);
+
+        _glVertexAttrib2f(index, x, y);
     }
     else
     {
@@ -1473,8 +1452,8 @@ void GL2Extensions::glVertexAttrib2fv(GLuint index, const GLfloat *v) const
 {
     if (_glVertexAttrib2fv)
     {
-        typedef void (APIENTRY * VertexAttrib2fvProc)(GLuint index, const GLfloat *v);
-        ((VertexAttrib2fvProc)_glVertexAttrib2fv)(index, v);
+
+        _glVertexAttrib2fv(index, v);
     }
     else
     {
@@ -1487,8 +1466,8 @@ void GL2Extensions::glVertexAttrib2s(GLuint index, GLshort x, GLshort y) const
 {
     if (_glVertexAttrib2s)
     {
-        typedef void (APIENTRY * VertexAttrib2sProc)(GLuint index, GLshort x, GLshort y);
-        ((VertexAttrib2sProc)_glVertexAttrib2s)(index, x, y);
+
+        _glVertexAttrib2s(index, x, y);
     }
     else
     {
@@ -1501,8 +1480,8 @@ void GL2Extensions::glVertexAttrib2sv(GLuint index, const GLshort *v) const
 {
     if (_glVertexAttrib2sv)
     {
-        typedef void (APIENTRY * VertexAttrib2svProc)(GLuint index, const GLshort *v);
-        ((VertexAttrib2svProc)_glVertexAttrib2sv)(index, v);
+
+        _glVertexAttrib2sv(index, v);
     }
     else
     {
@@ -1515,8 +1494,8 @@ void GL2Extensions::glVertexAttrib3d(GLuint index, GLdouble x, GLdouble y, GLdou
 {
     if (_glVertexAttrib3d)
     {
-        typedef void (APIENTRY * VertexAttrib3dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z);
-        ((VertexAttrib3dProc)_glVertexAttrib3d)(index, x, y, z);
+
+        _glVertexAttrib3d(index, x, y, z);
     }
     else
     {
@@ -1529,8 +1508,8 @@ void GL2Extensions::glVertexAttrib3dv(GLuint index, const GLdouble *v) const
 {
     if (_glVertexAttrib3dv)
     {
-        typedef void (APIENTRY * VertexAttrib3dvProc)(GLuint index, const GLdouble *v);
-        ((VertexAttrib3dvProc)_glVertexAttrib3dv)(index, v);
+
+        _glVertexAttrib3dv(index, v);
     }
     else
     {
@@ -1543,8 +1522,8 @@ void GL2Extensions::glVertexAttrib3f(GLuint index, GLfloat x, GLfloat y, GLfloat
 {
     if (_glVertexAttrib3f)
     {
-        typedef void (APIENTRY * VertexAttrib3fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z);
-        ((VertexAttrib3fProc)_glVertexAttrib3f)(index, x, y, z);
+
+        _glVertexAttrib3f(index, x, y, z);
     }
     else
     {
@@ -1557,8 +1536,8 @@ void GL2Extensions::glVertexAttrib3fv(GLuint index, const GLfloat *v) const
 {
     if (_glVertexAttrib3fv)
     {
-        typedef void (APIENTRY * VertexAttrib3fvProc)(GLuint index, const GLfloat *v);
-        ((VertexAttrib3fvProc)_glVertexAttrib3fv)(index, v);
+
+        _glVertexAttrib3fv(index, v);
     }
     else
     {
@@ -1571,8 +1550,8 @@ void GL2Extensions::glVertexAttrib3s(GLuint index, GLshort x, GLshort y, GLshort
 {
     if (_glVertexAttrib3s)
     {
-        typedef void (APIENTRY * VertexAttrib3sProc)(GLuint index, GLshort x, GLshort y, GLshort z);
-        ((VertexAttrib3sProc)_glVertexAttrib3s)(index, x, y, z);
+
+        _glVertexAttrib3s(index, x, y, z);
     }
     else
     {
@@ -1585,8 +1564,8 @@ void GL2Extensions::glVertexAttrib3sv(GLuint index, const GLshort *v) const
 {
     if (_glVertexAttrib3sv)
     {
-        typedef void (APIENTRY * VertexAttrib3svProc)(GLuint index, const GLshort *v);
-        ((VertexAttrib3svProc)_glVertexAttrib3sv)(index, v);
+
+        _glVertexAttrib3sv(index, v);
     }
     else
     {
@@ -1599,8 +1578,8 @@ void GL2Extensions::glVertexAttrib4Nbv(GLuint index, const GLbyte *v) const
 {
     if (_glVertexAttrib4Nbv)
     {
-        typedef void (APIENTRY * VertexAttrib4NbvProc)(GLuint index, const GLbyte *v);
-        ((VertexAttrib4NbvProc)_glVertexAttrib4Nbv)(index, v);
+
+        _glVertexAttrib4Nbv(index, v);
     }
     else
     {
@@ -1613,8 +1592,8 @@ void GL2Extensions::glVertexAttrib4Niv(GLuint index, const GLint *v) const
 {
     if (_glVertexAttrib4Niv)
     {
-        typedef void (APIENTRY * VertexAttrib4NivProc)(GLuint index, const GLint *v);
-        ((VertexAttrib4NivProc)_glVertexAttrib4Niv)(index, v);
+
+        _glVertexAttrib4Niv(index, v);
     }
     else
     {
@@ -1627,8 +1606,8 @@ void GL2Extensions::glVertexAttrib4Nsv(GLuint index, const GLshort *v) const
 {
     if (_glVertexAttrib4Nsv)
     {
-        typedef void (APIENTRY * VertexAttrib4NsvProc)(GLuint index, const GLshort *v);
-        ((VertexAttrib4NsvProc)_glVertexAttrib4Nsv)(index, v);
+
+        _glVertexAttrib4Nsv(index, v);
     }
     else
     {
@@ -1641,8 +1620,8 @@ void GL2Extensions::glVertexAttrib4Nub(GLuint index, GLubyte x, GLubyte y, GLuby
 {
     if (_glVertexAttrib4Nub)
     {
-        typedef void (APIENTRY * VertexAttrib4NubProc)(GLuint index, GLubyte x, GLubyte y, GLubyte z, GLubyte w);
-        ((VertexAttrib4NubProc)_glVertexAttrib4Nub)(index, x, y, z, w);
+
+        _glVertexAttrib4Nub(index, x, y, z, w);
     }
     else
     {
@@ -1655,8 +1634,8 @@ void GL2Extensions::glVertexAttrib4Nubv(GLuint index, const GLubyte *v) const
 {
     if (_glVertexAttrib4Nubv)
     {
-        typedef void (APIENTRY * VertexAttrib4NubvProc)(GLuint index, const GLubyte *v);
-        ((VertexAttrib4NubvProc)_glVertexAttrib4Nubv)(index, v);
+
+        _glVertexAttrib4Nubv(index, v);
     }
     else
     {
@@ -1669,8 +1648,8 @@ void GL2Extensions::glVertexAttrib4Nuiv(GLuint index, const GLuint *v) const
 {
     if (_glVertexAttrib4Nuiv)
     {
-        typedef void (APIENTRY * VertexAttrib4NuivProc)(GLuint index, const GLuint *v);
-        ((VertexAttrib4NuivProc)_glVertexAttrib4Nuiv)(index, v);
+
+        _glVertexAttrib4Nuiv(index, v);
     }
     else
     {
@@ -1683,8 +1662,8 @@ void GL2Extensions::glVertexAttrib4Nusv(GLuint index, const GLushort *v) const
 {
     if (_glVertexAttrib4Nusv)
     {
-        typedef void (APIENTRY * VertexAttrib4NusvProc)(GLuint index, const GLushort *v);
-        ((VertexAttrib4NusvProc)_glVertexAttrib4Nusv)(index, v);
+
+        _glVertexAttrib4Nusv(index, v);
     }
     else
     {
@@ -1697,8 +1676,8 @@ void GL2Extensions::glVertexAttrib4bv(GLuint index, const GLbyte *v) const
 {
     if (_glVertexAttrib4bv)
     {
-        typedef void (APIENTRY * VertexAttrib4bvProc)(GLuint index, const GLbyte *v);
-        ((VertexAttrib4bvProc)_glVertexAttrib4bv)(index, v);
+
+        _glVertexAttrib4bv(index, v);
     }
     else
     {
@@ -1711,8 +1690,8 @@ void GL2Extensions::glVertexAttrib4d(GLuint index, GLdouble x, GLdouble y, GLdou
 {
     if (_glVertexAttrib4d)
     {
-        typedef void (APIENTRY * VertexAttrib4dProc)(GLuint index, GLdouble x, GLdouble y, GLdouble z, GLdouble w);
-        ((VertexAttrib4dProc)_glVertexAttrib4d)(index, x, y, z, w);
+
+        _glVertexAttrib4d(index, x, y, z, w);
     }
     else
     {
@@ -1725,8 +1704,8 @@ void GL2Extensions::glVertexAttrib4dv(GLuint index, const GLdouble *v) const
 {
     if (_glVertexAttrib4dv)
     {
-        typedef void (APIENTRY * VertexAttrib4dvProc)(GLuint index, const GLdouble *v);
-        ((VertexAttrib4dvProc)_glVertexAttrib4dv)(index, v);
+
+        _glVertexAttrib4dv(index, v);
     }
     else
     {
@@ -1739,8 +1718,8 @@ void GL2Extensions::glVertexAttrib4f(GLuint index, GLfloat x, GLfloat y, GLfloat
 {
     if (_glVertexAttrib4f)
     {
-        typedef void (APIENTRY * VertexAttrib4fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-        ((VertexAttrib4fProc)_glVertexAttrib4f)(index, x, y, z, w);
+
+        _glVertexAttrib4f(index, x, y, z, w);
     }
     else
     {
@@ -1753,8 +1732,8 @@ void GL2Extensions::glVertexAttrib4fv(GLuint index, const GLfloat *v) const
 {
     if (_glVertexAttrib4fv)
     {
-        typedef void (APIENTRY * VertexAttrib4fvProc)(GLuint index, const GLfloat *v);
-        ((VertexAttrib4fvProc)_glVertexAttrib4fv)(index, v);
+
+        _glVertexAttrib4fv(index, v);
     }
     else
     {
@@ -1767,8 +1746,8 @@ void GL2Extensions::glVertexAttrib4iv(GLuint index, const GLint *v) const
 {
     if (_glVertexAttrib4iv)
     {
-        typedef void (APIENTRY * VertexAttrib4ivProc)(GLuint index, const GLint *v);
-        ((VertexAttrib4ivProc)_glVertexAttrib4iv)(index, v);
+
+        _glVertexAttrib4iv(index, v);
     }
     else
     {
@@ -1781,8 +1760,8 @@ void GL2Extensions::glVertexAttrib4s(GLuint index, GLshort x, GLshort y, GLshort
 {
     if (_glVertexAttrib4s)
     {
-        typedef void (APIENTRY * VertexAttrib4sProc)(GLuint index, GLshort x, GLshort y, GLshort z, GLshort w);
-        ((VertexAttrib4sProc)_glVertexAttrib4s)(index, x, y, z, w);
+
+        _glVertexAttrib4s(index, x, y, z, w);
     }
     else
     {
@@ -1795,8 +1774,8 @@ void GL2Extensions::glVertexAttrib4sv(GLuint index, const GLshort *v) const
 {
     if (_glVertexAttrib4sv)
     {
-        typedef void (APIENTRY * VertexAttrib4svProc)(GLuint index, const GLshort *v);
-        ((VertexAttrib4svProc)_glVertexAttrib4sv)(index, v);
+
+        _glVertexAttrib4sv(index, v);
     }
     else
     {
@@ -1809,8 +1788,8 @@ void GL2Extensions::glVertexAttrib4ubv(GLuint index, const GLubyte *v) const
 {
     if (_glVertexAttrib4ubv)
     {
-        typedef void (APIENTRY * VertexAttrib4ubvProc)(GLuint index, const GLubyte *v);
-        ((VertexAttrib4ubvProc)_glVertexAttrib4ubv)(index, v);
+
+        _glVertexAttrib4ubv(index, v);
     }
     else
     {
@@ -1823,8 +1802,8 @@ void GL2Extensions::glVertexAttrib4uiv(GLuint index, const GLuint *v) const
 {
     if (_glVertexAttrib4uiv)
     {
-        typedef void (APIENTRY * VertexAttrib4uivProc)(GLuint index, const GLuint *v);
-        ((VertexAttrib4uivProc)_glVertexAttrib4uiv)(index, v);
+
+        _glVertexAttrib4uiv(index, v);
     }
     else
     {
@@ -1837,8 +1816,8 @@ void GL2Extensions::glVertexAttrib4usv(GLuint index, const GLushort *v) const
 {
     if (_glVertexAttrib4usv)
     {
-        typedef void (APIENTRY * VertexAttrib4usvProc)(GLuint index, const GLushort *v);
-        ((VertexAttrib4usvProc)_glVertexAttrib4usv)(index, v);
+
+        _glVertexAttrib4usv(index, v);
     }
     else
     {
@@ -1851,8 +1830,8 @@ void GL2Extensions::glVertexAttribPointer(GLuint index, GLint size, GLenum type,
 {
     if (_glVertexAttribPointer)
     {
-        typedef void (APIENTRY * VertexAttribPointerProc)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
-        ((VertexAttribPointerProc)_glVertexAttribPointer)(index, size, type, normalized, stride, pointer);
+
+        _glVertexAttribPointer(index, size, type, normalized, stride, pointer);
     }
     else
     {
@@ -1865,8 +1844,8 @@ void GL2Extensions::glUniformMatrix2x3fv( GLint location, GLsizei count, GLboole
 {
     if (_glUniformMatrix2x3fv)
     {
-        typedef void (APIENTRY * UniformMatrix2x3fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        ((UniformMatrix2x3fvProc)_glUniformMatrix2x3fv)( location, count, transpose, value );
+
+        _glUniformMatrix2x3fv( location, count, transpose, value );
     }
     else
     {
@@ -1878,8 +1857,8 @@ void GL2Extensions::glUniformMatrix3x2fv( GLint location, GLsizei count, GLboole
 {
     if (_glUniformMatrix3x2fv)
     {
-        typedef void (APIENTRY * UniformMatrix3x2fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        ((UniformMatrix3x2fvProc)_glUniformMatrix3x2fv)( location, count, transpose, value );
+
+        _glUniformMatrix3x2fv( location, count, transpose, value );
     }
     else
     {
@@ -1891,8 +1870,8 @@ void GL2Extensions::glUniformMatrix2x4fv( GLint location, GLsizei count, GLboole
 {
     if (_glUniformMatrix2x4fv)
     {
-        typedef void (APIENTRY * UniformMatrix2x4fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        ((UniformMatrix2x4fvProc)_glUniformMatrix2x4fv)( location, count, transpose, value );
+
+        _glUniformMatrix2x4fv( location, count, transpose, value );
     }
     else
     {
@@ -1904,8 +1883,8 @@ void GL2Extensions::glUniformMatrix4x2fv( GLint location, GLsizei count, GLboole
 {
     if (_glUniformMatrix4x2fv)
     {
-        typedef void (APIENTRY * UniformMatrix4x2fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        ((UniformMatrix4x2fvProc)_glUniformMatrix4x2fv)( location, count, transpose, value );
+
+        _glUniformMatrix4x2fv( location, count, transpose, value );
     }
     else
     {
@@ -1917,8 +1896,8 @@ void GL2Extensions::glUniformMatrix3x4fv( GLint location, GLsizei count, GLboole
 {
     if (_glUniformMatrix3x4fv)
     {
-        typedef void (APIENTRY * UniformMatrix3x4fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        ((UniformMatrix3x4fvProc)_glUniformMatrix3x4fv)( location, count, transpose, value );
+
+        _glUniformMatrix3x4fv( location, count, transpose, value );
     }
     else
     {
@@ -1930,8 +1909,8 @@ void GL2Extensions::glUniformMatrix4x3fv( GLint location, GLsizei count, GLboole
 {
     if (_glUniformMatrix4x3fv)
     {
-        typedef void (APIENTRY * UniformMatrix4x3fvProc)( GLint location, GLsizei count, GLboolean transpose, const GLfloat* value );
-        ((UniformMatrix4x3fvProc)_glUniformMatrix4x3fv)( location, count, transpose, value );
+
+        _glUniformMatrix4x3fv( location, count, transpose, value );
     }
     else
     {
@@ -1944,8 +1923,8 @@ void GL2Extensions::glProgramParameteri( GLuint program, GLenum pname, GLint val
 {
     if (_glProgramParameteri)
     {
-        typedef void (APIENTRY * ProgramParameteriProc)( GLuint program, GLenum pname, GLint value );
-        ((ProgramParameteriProc)_glProgramParameteri)( program, pname, value );
+
+        _glProgramParameteri( program, pname, value );
     }
     else
     {
@@ -1957,8 +1936,8 @@ void GL2Extensions::glFramebufferTexture( GLenum target, GLenum attachment, GLui
 {
     if (_glFramebufferTexture)
     {
-        typedef void (APIENTRY * FramebufferTextureProc)( GLenum target, GLenum attachment, GLuint texture, GLint level );
-        ((FramebufferTextureProc)_glFramebufferTexture)( target, attachment, texture, level );
+
+        _glFramebufferTexture( target, attachment, texture, level );
     }
     else
     {
@@ -1970,8 +1949,8 @@ void GL2Extensions::glFramebufferTextureLayer( GLenum target, GLenum attachment,
 {
     if (_glFramebufferTextureLayer)
     {
-        typedef void (APIENTRY * FramebufferTextureLayerProc)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer );
-        ((FramebufferTextureLayerProc)_glFramebufferTextureLayer)( target, attachment, texture, level, layer );
+
+        _glFramebufferTextureLayer( target, attachment, texture, level, layer );
     }
     else
     {
@@ -1983,8 +1962,8 @@ void GL2Extensions::glFramebufferTextureFace( GLenum target, GLenum attachment, 
 {
     if (_glFramebufferTextureFace)
     {
-        typedef void (APIENTRY * FramebufferTextureFaceProc)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face );
-        ((FramebufferTextureFaceProc)_glFramebufferTextureFace)( target, attachment, texture, level, face );
+
+        _glFramebufferTextureFace( target, attachment, texture, level, face );
     }
     else
     {
@@ -1997,8 +1976,8 @@ void GL2Extensions::glGetUniformuiv( GLuint program, GLint location, GLuint* par
 {
     if (_glGetUniformuiv)
     {
-        typedef void (APIENTRY * GetUniformuivProc)( GLuint program, GLint location, GLuint* params );
-        ((GetUniformuivProc)_glGetUniformuiv)( program, location, params );
+
+        _glGetUniformuiv( program, location, params );
     }
     else
     {
@@ -2010,8 +1989,8 @@ void GL2Extensions::glBindFragDataLocation( GLuint program, GLuint color, const 
 {
     if (_glBindFragDataLocation)
     {
-        typedef void (APIENTRY * BindFragDataLocationProc)( GLuint program, GLuint color, const GLchar* name );
-        ((BindFragDataLocationProc)_glBindFragDataLocation)( program, color, name );
+
+        _glBindFragDataLocation( program, color, name );
     }
     else
     {
@@ -2023,8 +2002,8 @@ GLint GL2Extensions::glGetFragDataLocation( GLuint program, const GLchar* name )
 {
     if (_glGetFragDataLocation)
     {
-        typedef GLint (APIENTRY * GetFragDataLocationProc)( GLuint program, const GLchar* name );
-        return ((GetFragDataLocationProc)_glGetFragDataLocation)( program, name );
+
+        return _glGetFragDataLocation( program, name );
     }
     else
     {
@@ -2038,8 +2017,8 @@ void GL2Extensions::glUniform1ui( GLint location, GLuint v0 ) const
 {
     if (_glUniform1ui)
     {
-        typedef void (APIENTRY * Uniform1uiProc)( GLint location, GLuint v0 );
-        ((Uniform1uiProc)_glUniform1ui)( location, v0 );
+
+        _glUniform1ui( location, v0 );
     }
     else
     {
@@ -2051,8 +2030,8 @@ void GL2Extensions::glUniform2ui( GLint location, GLuint v0, GLuint v1 ) const
 {
     if (_glUniform2ui)
     {
-        typedef void (APIENTRY * Uniform2uiProc)( GLint location, GLuint v0, GLuint v1 );
-        ((Uniform2uiProc)_glUniform2ui)( location, v0, v1 );
+
+        _glUniform2ui( location, v0, v1 );
     }
     else
     {
@@ -2064,8 +2043,8 @@ void GL2Extensions::glUniform3ui( GLint location, GLuint v0, GLuint v1, GLuint v
 {
     if (_glUniform3ui)
     {
-        typedef void (APIENTRY * Uniform3uiProc)( GLint location, GLuint v0, GLuint v1, GLuint v2 );
-        ((Uniform3uiProc)_glUniform3ui)( location, v0, v1, v2 );
+
+        _glUniform3ui( location, v0, v1, v2 );
     }
     else
     {
@@ -2077,8 +2056,8 @@ void GL2Extensions::glUniform4ui( GLint location, GLuint v0, GLuint v1, GLuint v
 {
     if (_glUniform4ui)
     {
-        typedef void (APIENTRY * Uniform4uiProc)( GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3 );
-        ((Uniform4uiProc)_glUniform4ui)( location, v0, v1, v2, v3 );
+
+        _glUniform4ui( location, v0, v1, v2, v3 );
     }
     else
     {
@@ -2090,8 +2069,8 @@ void GL2Extensions::glUniform1uiv( GLint location, GLsizei count, const GLuint *
 {
     if (_glUniform1uiv)
     {
-        typedef void (APIENTRY * Uniform1uivProc)( GLint location, GLsizei count, const GLuint *value );
-        ((Uniform1uivProc)_glUniform1uiv)( location, count, value );
+
+        _glUniform1uiv( location, count, value );
     }
     else
     {
@@ -2103,8 +2082,8 @@ void GL2Extensions::glUniform2uiv( GLint location, GLsizei count, const GLuint *
 {
     if (_glUniform2uiv)
     {
-        typedef void (APIENTRY * Uniform2uivProc)( GLint location, GLsizei count, const GLuint *value );
-        ((Uniform2uivProc)_glUniform2uiv)( location, count, value );
+
+        _glUniform2uiv( location, count, value );
     }
     else
     {
@@ -2116,8 +2095,8 @@ void GL2Extensions::glUniform3uiv( GLint location, GLsizei count, const GLuint *
 {
     if (_glUniform3uiv)
     {
-        typedef void (APIENTRY * Uniform3uivProc)( GLint location, GLsizei count, const GLuint *value );
-        ((Uniform3uivProc)_glUniform3uiv)( location, count, value );
+
+        _glUniform3uiv( location, count, value );
     }
     else
     {
@@ -2129,8 +2108,8 @@ void GL2Extensions::glUniform4uiv( GLint location, GLsizei count, const GLuint *
 {
     if (_glUniform4uiv)
     {
-        typedef void (APIENTRY * Uniform4uivProc)( GLint location, GLsizei count, const GLuint *value );
-        ((Uniform4uivProc)_glUniform4uiv)( location, count, value );
+
+        _glUniform4uiv( location, count, value );
     }
     else
     {
@@ -2157,8 +2136,7 @@ GLuint GL2Extensions::getCurrentProgram() const
 #ifndef GL_PROGRAM_OBJECT_ARB
 #define GL_PROGRAM_OBJECT_ARB 0x8B40
 #endif
-        typedef GLuint (APIENTRY * GetHandleProc) (GLenum pname);
-        return ((GetHandleProc)_glGetHandleARB)( GL_PROGRAM_OBJECT_ARB );
+        return _glGetHandleARB( GL_PROGRAM_OBJECT_ARB );
     }
     else
     {

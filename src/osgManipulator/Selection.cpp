@@ -15,35 +15,26 @@
 #include <osgManipulator/Selection>
 #include <osgManipulator/Command>
 
+#include <osg/Notify>
+
 #include <algorithm>
 
 using namespace osgManipulator;
 
-class FindNodePathToRootVisitor : public osg::NodeVisitor
-{
-    public:
-        
-        osg::NodePath& _nodePathToRoot;
-
-        FindNodePathToRootVisitor(osg::NodePath& np) 
-            : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS), 
-              _nodePathToRoot(np)
-        {}
-
-        virtual void apply(osg::Node& node)
-        {
-            _nodePathToRoot.push_back(&node);
-            traverse(node);
-        }
-};
-
 void osgManipulator::computeNodePathToRoot(osg::Node& node, osg::NodePath& np)
 {
     np.clear();
-    osg::ref_ptr<FindNodePathToRootVisitor> visitor = new FindNodePathToRootVisitor(np);
-    node.accept(*visitor);
-    np.pop_back();
-    std::reverse(np.begin(), np.end());
+    
+    osg::NodePathList nodePaths = node.getParentalNodePaths();
+    
+    if (!nodePaths.empty())
+    {
+        np = nodePaths.front();
+        if (nodePaths.size()>1)
+        {
+            osg::notify(osg::NOTICE)<<"osgManipulator::computeNodePathToRoot(,) taking first parent path, ignoring others."<<std::endl;
+        }
+    }
 }
 
 Selection::Selection()

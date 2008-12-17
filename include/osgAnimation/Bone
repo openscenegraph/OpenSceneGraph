@@ -56,6 +56,8 @@ namespace osgAnimation
             BoneMap _map;
             BoneMapVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
 
+            META_NodeVisitor("osgAnimation","BoneMapVisitor")
+
             void apply(osg::Node& node) { return; }
             void apply(osg::Transform& node)
             {

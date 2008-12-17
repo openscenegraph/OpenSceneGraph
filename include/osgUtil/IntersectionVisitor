@@ -137,6 +137,8 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
         IntersectionVisitor(Intersector* intersector=0, ReadCallback* readCallback=0);
         
+        META_NodeVisitor("osgUtil","IntersectionVisitor")
+
         virtual void reset();
 
 

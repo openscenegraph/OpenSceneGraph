@@ -34,7 +34,8 @@ public:
     CollectedCoordinateSystemNodesVisitor():
         NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN) {}
         
-        
+    META_NodeVisitor("osgViewer","CollectedCoordinateSystemNodesVisitor")
+
     virtual void apply(osg::Node& node)
     {
         traverse(node);

@@ -26,6 +26,8 @@ public:
 
     ComputeBoundsVisitor(TraversalMode traversalMode = TRAVERSE_ALL_CHILDREN);
     
+    META_NodeVisitor("osg","ComputeBoundsVisitor")
+
     virtual void reset();
     
     osg::BoundingBox& getBoundingBox() { return _bb; }

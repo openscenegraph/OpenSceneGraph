@@ -48,6 +48,8 @@ namespace osgDB {
 
         SharedStateManager(unsigned int mode = SHARE_ALL);
 
+        META_NodeVisitor("osgDB","SharedStateManager")
+ 
         void setShareMode(unsigned int mode);
         
         unsigned int getShareMode() { return _shareMode; }

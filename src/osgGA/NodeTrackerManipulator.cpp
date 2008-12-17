@@ -20,26 +20,6 @@ using namespace osg;
 using namespace osgGA;
 
 
-class CollectParentPaths : public osg::NodeVisitor
-{
-public:
-    CollectParentPaths() : 
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
-        
-    virtual void apply(osg::Node& node)
-    {
-        if (node.getNumParents()==0)
-        {
-            _nodePaths.push_back(getNodePath());
-        }
-        traverse(node);
-   }
-    
-    osg::NodePath _nodePath;
-    typedef std::vector< osg::NodePath > NodePathList;
-    NodePathList _nodePaths;
-};
-
 NodeTrackerManipulator::NodeTrackerManipulator()
 {
     _trackerMode = NODE_CENTER_AND_ROTATION; 
@@ -120,14 +100,17 @@ void NodeTrackerManipulator::setTrackNode(osg::Node* node)
         return;
     }
 
-    CollectParentPaths cpp;
-    node->accept(cpp);
-
-    if (!cpp._nodePaths.empty())
+    osg::NodePathList nodePaths = node->getParentalNodePaths();
+    if (!nodePaths.empty())
     {
+        if (nodePaths.size()>1)
+        {
+            osg::notify(osg::NOTICE)<<"osgGA::NodeTrackerManipualtor::setTrackNode(..) taking first parent path, ignoring others."<<std::endl;
+        }
+
         osg::notify(osg::INFO)<<"NodeTrackerManipulator::setTrackNode(Node*"<<node<<" "<<node->getName()<<"): Path set"<<std::endl;
         _trackNodePath.clear();
-        setTrackNodePath( cpp._nodePaths[0] );
+        setTrackNodePath( nodePaths.front() );
     }
     else
     {

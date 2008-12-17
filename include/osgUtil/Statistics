@@ -167,6 +167,8 @@ public:
 
     StatsVisitor();
         
+    META_NodeVisitor("osgUtil","StatsVisitor")
+
     void reset();
     
     void apply(osg::Node& node);

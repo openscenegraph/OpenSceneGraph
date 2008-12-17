@@ -77,6 +77,9 @@ namespace osgAnimation
         {
             osg::ref_ptr<Skeleton> _root;
             BuildVertexTransformerVisitor(Skeleton* root): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) { _root = root;}
+
+            META_NodeVisitor("osgAnimation","BuildVertexTransformerVisitor")
+
             void apply(osg::Geode& node) 
             { 
                 int num = node.getNumDrawables();

@@ -36,6 +36,7 @@ class OSGUTIL_EXPORT DisplayRequirementsVisitor : public osg::NodeVisitor
           * alpha and stencil off.*/
         DisplayRequirementsVisitor();
         
+        META_NodeVisitor("osgUtil","DisplayRequirementsVisitor")
 
         /** Set the DisplaySettings. */
         inline void setDisplaySettings(osg::DisplaySettings* ds) { _ds = ds; }

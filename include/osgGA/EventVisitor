@@ -43,6 +43,7 @@ class OSGGA_EXPORT EventVisitor : public osg::NodeVisitor
         EventVisitor();
         virtual ~EventVisitor();
         
+        META_NodeVisitor("osgGA","EventVisitor")
         
         void setActionAdapter(osgGA::GUIActionAdapter* actionAdapter) { _actionAdapter=actionAdapter; }
         

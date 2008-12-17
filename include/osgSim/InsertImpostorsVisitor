@@ -29,6 +29,8 @@ class OSGSIM_EXPORT InsertImpostorsVisitor : public osg::NodeVisitor
         /** Default to traversing all children. */
         InsertImpostorsVisitor();
         
+        META_NodeVisitor("osgSim","InsertImpostorsVisitor")
+
         void setImpostorThresholdRatio(float ratio) { _impostorThresholdRatio = ratio; }
         float getImpostorThresholdRatio() const { return _impostorThresholdRatio; }
 

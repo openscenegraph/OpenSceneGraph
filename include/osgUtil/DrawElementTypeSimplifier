@@ -32,6 +32,8 @@ class OSGUTIL_EXPORT DrawElementTypeSimplifierVisitor : public osg::NodeVisitor
 {
     public:
         
+        META_NodeVisitor("osgUtil","DrawElementTypeSimplifierVisitor")
+
         void apply(osg::Geode& node);
 };
 

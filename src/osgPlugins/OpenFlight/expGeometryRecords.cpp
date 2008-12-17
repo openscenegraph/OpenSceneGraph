@@ -38,13 +38,15 @@ namespace flt
 
 // Bit flags for multitexturing
 static unsigned int LAYER_1( 0x80000000 >> 0 );
+#if 0
+// unused so if'deffing out
 static unsigned int LAYER_2( 0x80000000 >> 1 );
 static unsigned int LAYER_3( 0x80000000 >> 2 );
 static unsigned int LAYER_4( 0x80000000 >> 3 );
 static unsigned int LAYER_5( 0x80000000 >> 4 );
 static unsigned int LAYER_6( 0x80000000 >> 5 );
 static unsigned int LAYER_7( 0x80000000 >> 6 );
-
+#endif
 
 
 bool
@@ -126,13 +128,14 @@ FltExportVisitor::writeFace( const osg::Geode& geode, const osg::Geometry& geom,
         POINT_ROTATE_WITH_ALPHA_BLENDING = 4
     };
 
-    const unsigned int TERRAIN_BIT      = 0x80000000u >> 0;
-    const unsigned int NO_COLOR_BIT     = 0x80000000u >> 1;
-    const unsigned int NO_ALT_COLOR_BIT = 0x80000000u >> 2;
+    // const unsigned int TERRAIN_BIT      = 0x80000000u >> 0;
+    // const unsigned int NO_COLOR_BIT     = 0x80000000u >> 1;
+    // const unsigned int NO_ALT_COLOR_BIT = 0x80000000u >> 2;
     const unsigned int PACKED_COLOR_BIT = 0x80000000u >> 3;
-    const unsigned int FOOTPRINT_BIT    = 0x80000000u >> 4;    // Terrain culture cutout
+    // const unsigned int FOOTPRINT_BIT    = 0x80000000u >> 4;    // Terrain culture cutout
     const unsigned int HIDDEN_BIT       = 0x80000000u >> 5;
-    const unsigned int ROOFLINE_BIT     = 0x80000000u >> 6;
+    // const unsigned int ROOFLINE_BIT     = 0x80000000u >> 6;
+
     uint32 flags( PACKED_COLOR_BIT );
     if (geode.getNodeMask() == 0)
         flags |= HIDDEN_BIT;
@@ -175,7 +178,7 @@ FltExportVisitor::writeFace( const osg::Geode& geode, const osg::Geometry& geom,
         (int)(packedColorRaw[0]*255);
 
 
-    int8 drawType;
+    int8 drawType = SOLID_NO_BACKFACE;
 
     switch( mode )
     {
@@ -305,7 +308,7 @@ FltExportVisitor::writeFace( const osg::Geode& geode, const osg::Geometry& geom,
     _records->writeInt32( -1 ); // Alternate color index
     // Next four bytes:
     //   15.8: two 2-byte "reserved" fields
-    //   15.9: one 4-byte "reserved" field
+    //   15.9: one 4-byte "reserved" field;
     _records->writeInt16( 0 ); // Reserved
     _records->writeInt16( -1 ); // Shader index
 }
@@ -333,13 +336,13 @@ FltExportVisitor::writeMesh( const osg::Geode& geode, const osg::Geometry& geom 
         POINT_ROTATE_WITH_ALPHA_BLENDING = 4
     };
 
-    const unsigned int TERRAIN_BIT      = 0x80000000u >> 0;
-    const unsigned int NO_COLOR_BIT     = 0x80000000u >> 1;
-    const unsigned int NO_ALT_COLOR_BIT = 0x80000000u >> 2;
+    // const unsigned int TERRAIN_BIT      = 0x80000000u >> 0;
+    //const unsigned int NO_COLOR_BIT     = 0x80000000u >> 1;
+    //const unsigned int NO_ALT_COLOR_BIT = 0x80000000u >> 2;
     const unsigned int PACKED_COLOR_BIT = 0x80000000u >> 3;
-    const unsigned int FOOTPRINT_BIT    = 0x80000000u >> 4;    // Terrain culture cutout
+    //const unsigned int FOOTPRINT_BIT    = 0x80000000u >> 4;    // Terrain culture cutout
     const unsigned int HIDDEN_BIT       = 0x80000000u >> 5;
-    const unsigned int ROOFLINE_BIT     = 0x80000000u >> 6;
+    //const unsigned int ROOFLINE_BIT     = 0x80000000u >> 6;
     uint32 flags( PACKED_COLOR_BIT );
     if (geode.getNodeMask() == 0)
         flags |= HIDDEN_BIT;
@@ -558,7 +561,7 @@ FltExportVisitor::writeLocalVertexPool( const osg::Geometry& geom )
 {
     // Attribute Mask
     static const unsigned int HAS_POSITION      = 0x80000000u >> 0;
-    static const unsigned int HAS_COLOR_INDEX   = 0x80000000u >> 1;
+    // static const unsigned int HAS_COLOR_INDEX   = 0x80000000u >> 1;
     static const unsigned int HAS_RGBA_COLOR    = 0x80000000u >> 2;
     static const unsigned int HAS_NORMAL        = 0x80000000u >> 3;
     static const unsigned int HAS_BASE_UV       = 0x80000000u >> 4;
@@ -790,7 +793,7 @@ FltExportVisitor::writeUVList( int numVerts, const osg::Geometry& geom )
     _records->writeInt32( flags );
 
     osg::Vec2 defaultCoord( 0., 0. );
-    const osg::StateSet* ss = getCurrentStateSet();
+    // const osg::StateSet* ss = getCurrentStateSet();
     for( idx=1; idx<8; idx++)
     {
         if( isTextured( idx, geom ) )
@@ -805,7 +808,7 @@ FltExportVisitor::writeUVList( int numVerts, const osg::Geometry& geom )
                 _fltOpt->getWriteResult().warn( warning.str() );
                 t2 = new osg::Vec2Array;
             }
-            else if (t2->getNumElements() != numVerts)
+            else if (static_cast<int>(t2->getNumElements()) != numVerts)
             {
                 std::ostringstream warning;
                 warning << "fltexp: Invalid number of texture coordinates for unit " << idx;

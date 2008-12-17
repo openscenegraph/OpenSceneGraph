@@ -1690,10 +1690,7 @@ void DatabasePager::capped_removeExpiredSubgraphs(const osg::FrameStamp& frameSt
 
                 ++numRemoved;
 
-                PagedLODList::iterator itr_to_erase = itr;
-                ++itr;
-
-                _activePagedLODList.erase(itr_to_erase);
+                itr = pagedLODList.erase(itr);
             }
         }
 

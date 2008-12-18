@@ -250,7 +250,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS)
     {
-        osg::notify(osg::NOTICE)<<"Optimizer::optimize() doing FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS"<<std::endl;
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS"<<std::endl;
 
         // no combine any adjacent static transforms.
         FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor fstdssv(this);

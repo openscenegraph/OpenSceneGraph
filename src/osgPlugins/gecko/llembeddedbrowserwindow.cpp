@@ -98,28 +98,29 @@
 //
 LLEmbeddedBrowserWindow::LLEmbeddedBrowserWindow() :
     mParent( 0 ),
-    mWebBrowser( nsnull ),
-    mBaseWindow( nsnull ),
-    mWindowId( 0 ),
     mPercentComplete( 0 ),
-    mBrowserWidth( 0 ),
-    mBrowserHeight( 0 ),
-    mBrowserDepth( 4 ),
-    mPageBuffer( 0 ),
-    mEnabled( true ),
-    mCurrentUri( "" ),
     mStatusText( "" ),
+    mCurrentUri( "" ),
     mClickHref( "" ),
     mClickTarget( "" ),
     mNoFollowScheme( "secondlife://" ),
+    mWebBrowser( nsnull ),
+    mBaseWindow( nsnull ),
+    mWindowId( 0 ),
+    mPageBuffer( 0 ),
+    m404RedirectUrl( "" ),
+    mEnabled( true ),
+    mFlipBitmap( false ),
+    mBrowserRowSpan( 0 ),
+    mBrowserWidth( 0 ),
+    mBrowserHeight( 0 ),
+    mBrowserDepth( 4 ),
     mBkgRed( 0xff ),
     mBkgGreen( 0xff ),
     mBkgBlue( 0xff ),
     mCaretRed( 0x00 ),
     mCaretGreen( 0x00 ),
-    mCaretBlue( 0x00 ),
-    m404RedirectUrl( "" ),
-    mFlipBitmap( false )
+    mCaretBlue( 0x00 )
 {
 }
 
@@ -131,19 +132,19 @@ LLEmbeddedBrowserWindow::~LLEmbeddedBrowserWindow()
     {
         mWebNav->Stop ( nsIWebNavigation::STOP_ALL );
         mWebNav = nsnull;
-    };
+    }
 
     if ( mBaseWindow )
     {
         mBaseWindow->Destroy();
         mBaseWindow = nsnull;
-    };
+    }
 
     if ( mPageBuffer )
     {
         delete[] mPageBuffer;
         mPageBuffer = 0;
-    };
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -186,7 +187,7 @@ nsresult LLEmbeddedBrowserWindow::createBrowser( void* nativeWindowHandleIn, PRI
     if ( NS_FAILED( result ) || ! mWebNav )
     {
         return NS_ERROR_FAILURE;
-    };
+    }
 
     setSize( widthIn, heightIn );
 
@@ -196,7 +197,7 @@ nsresult LLEmbeddedBrowserWindow::createBrowser( void* nativeWindowHandleIn, PRI
         NS_ADDREF( *aBrowser );
 
         return NS_OK;
-    };
+    }
 
     return NS_ERROR_FAILURE;
 }
@@ -231,10 +232,10 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::GetInterface( const nsIID &aIID, void** a
         if ( mWebBrowser )
         {
             return mWebBrowser->GetContentDOMWindow( ( nsIDOMWindow** )aInstancePtr );
-        };
+        }
 
         return NS_ERROR_NOT_INITIALIZED;
-    };
+    }
 
     return QueryInterface( aIID, aInstancePtr );
 }
@@ -367,13 +368,13 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnStateChange( nsIWebProgress* progress, 
             nsCOMPtr< nsIDOMEventTarget > target = do_QueryInterface( window );
             if ( target )
                 target->RemoveEventListener(NS_ConvertUTF8toUTF16( "click" ), this, PR_TRUE );
-        };
+        }
 
         // set the listener to we can catch nsURIContentListener events
         if ( mWebBrowser )
         {
             mWebBrowser->SetParentURIContentListener( NS_STATIC_CAST( nsIURIContentListener*, this ) );
-        };
+        }
 
         // emit event that navigation is beginning
         mStatusText = std::string( "Browser loaded" );
@@ -383,7 +384,7 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnStateChange( nsIWebProgress* progress, 
         // about to move to a different page so have to stop grabbing a page
         // but done one final grab in case the app doesn't ever call grabWindow again
         grabWindow( 0, 0, mBrowserWidth, mBrowserHeight );
-    };
+    }
 
     if ( ( progressStateFlags & STATE_STOP ) && ( progressStateFlags & STATE_IS_WINDOW ) && ( status == NS_OK ) )
     {
@@ -395,7 +396,7 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnStateChange( nsIWebProgress* progress, 
             nsCOMPtr< nsIDOMEventTarget > target = do_QueryInterface( window );
             if ( target )
                 target->AddEventListener(NS_ConvertUTF8toUTF16( "click" ), this, PR_TRUE );
-        };
+        }
 
         // pick up raw HTML response status code
         PRUint32 responseStatus = 0;
@@ -405,8 +406,8 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnStateChange( nsIWebProgress* progress, 
             if ( httpChannel )
             {
                 httpChannel->GetResponseStatus( &responseStatus );
-            };
-        };
+            }
+        }
 
         // emit event that navigation is finished
         mStatusText = std::string( "Done" );
@@ -415,22 +416,22 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnStateChange( nsIWebProgress* progress, 
 
         // also set the flag here since back/forward navigation doesn't call progress change
         grabWindow( 0, 0, mBrowserWidth, mBrowserHeight );
-    };
+    }
 
     if ( progressStateFlags & STATE_REDIRECTING )
     {
         mStatusText = std::string( "Redirecting..." );
-    };
+    }
 
     if ( progressStateFlags & STATE_TRANSFERRING )
     {
         mStatusText = std::string( "Transferring..." );
-    };
+    }
 
     if ( progressStateFlags & STATE_NEGOTIATING )
     {
         mStatusText = std::string( "Negotiating..." );
-    };
+    }
 
     LLEmbeddedBrowserWindowEvent event( getWindowId(), getCurrentUri(), mStatusText );
     mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onStatusTextChange, event );
@@ -464,11 +465,11 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnLocationChange( nsIWebProgress* webProg
                             ( NS_ConvertUTF8toUTF16( m404RedirectUrl.c_str() ).get() ),
                                 nsIWebNavigation::LOAD_FLAGS_REPLACE_HISTORY,
                                     nsnull, nsnull, nsnull );
-                    };
-                };
-            };
-        };
-    };
+                    }
+                }
+            }
+        }
+    }
 
     nsCAutoString newURI;
     location->GetSpec( newURI );
@@ -665,12 +666,12 @@ unsigned char* LLEmbeddedBrowserWindow::grabWindow( int xIn, int yIn, int widthI
             memcpy( mPageBuffer + y * mBrowserRowSpan, 
                         data + ( mBrowserHeight - y - 1 ) * mBrowserRowSpan, 
                             mBrowserRowSpan );
-        };
+        }
     }
     else
     {
         memcpy( mPageBuffer, data, mBrowserRowSpan * mBrowserHeight );
-    };
+    }
 
     // release and destroy the surface we rendered to
     surface->Unlock();
@@ -751,10 +752,10 @@ PRBool LLEmbeddedBrowserWindow::renderCaret()
                     mPageBuffer[ base_pos * getBrowserRowSpan() + ( caretX + 1 ) * mBrowserDepth + 0 ] = mCaretBlue;
                     mPageBuffer[ base_pos * getBrowserRowSpan() + ( caretX + 1 ) * mBrowserDepth + 1 ] = mCaretGreen;
                     mPageBuffer[ base_pos * getBrowserRowSpan() + ( caretX + 1 ) * mBrowserDepth + 2 ] = mCaretRed;
-                };
-            };
-        };
-    };
+                }
+            }
+        }
+    }
 
     return NS_OK;
 }
@@ -805,10 +806,10 @@ PRBool LLEmbeddedBrowserWindow::navigateTo( const std::string uriIn )
                 nsnull, nsnull, nsnull );
 
         return PR_TRUE;
-    };
+    }
 
     return PR_FALSE;
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -817,7 +818,7 @@ PRBool LLEmbeddedBrowserWindow::canNavigateBack()
     if ( ! mWebNav )
     {
         return PR_FALSE;
-    };
+    }
 
     PRBool canGoBack = PR_FALSE;
 
@@ -825,10 +826,10 @@ PRBool LLEmbeddedBrowserWindow::canNavigateBack()
     if ( NS_FAILED( result ) )
     {
         return PR_FALSE;
-    };
+    }
 
     return canGoBack;
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -836,7 +837,7 @@ void LLEmbeddedBrowserWindow::navigateStop()
 {
     if ( mWebNav )
         mWebNav->Stop( nsIWebNavigation::STOP_ALL );
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -844,7 +845,7 @@ void LLEmbeddedBrowserWindow::navigateBack()
 {
     if ( mWebNav )
         mWebNav->GoBack();
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -859,10 +860,10 @@ PRBool LLEmbeddedBrowserWindow::canNavigateForward()
     if ( NS_FAILED( result ) )
     {
         return PR_FALSE;
-    };
+    }
 
     return canGoForward;
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -870,7 +871,7 @@ void LLEmbeddedBrowserWindow::navigateForward()
 {
     if ( mWebNav )
         mWebNav->GoForward();
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -879,7 +880,7 @@ void LLEmbeddedBrowserWindow::navigateReload()
     // maybe need a cache version of this too?
     if ( mWebNav )
         mWebNav->Reload( nsIWebNavigation::LOAD_FLAGS_BYPASS_CACHE );
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // set the size of the browser window
@@ -892,7 +893,7 @@ PRBool LLEmbeddedBrowserWindow::setSize( PRInt16 widthIn, PRInt16 heightIn )
         {
             delete[] mPageBuffer;
             mPageBuffer = 0;
-        };
+        }
 
         // record new size (important: may change after grabWindow() is called);
         mBrowserWidth = widthIn;
@@ -912,7 +913,7 @@ PRBool LLEmbeddedBrowserWindow::setSize( PRInt16 widthIn, PRInt16 heightIn )
         mBaseWindow->SetSize( widthIn, heightIn, PR_FALSE );
 
         return PR_TRUE;
-    };
+    }
 
     return PR_FALSE;
 }
@@ -972,8 +973,8 @@ void LLEmbeddedBrowserWindow::scrollByLines( PRInt16 linesIn )
         if ( ! NS_FAILED( result ) && window )
         {
             result = window->ScrollByLines( linesIn );
-        };
-    };
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1031,7 +1032,7 @@ PRBool LLEmbeddedBrowserWindow::sendMozillaMouseEvent( PRInt16 eventIn, PRInt16 
         return PR_FALSE;
 
     return PR_TRUE;
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // higher level keyboard functions
@@ -1128,11 +1129,11 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::HandleEvent( nsIDOMEvent* anEvent )
         {
             LLEmbeddedBrowserWindowEvent event( getWindowId(), getCurrentUri(), mClickHref, mClickTarget );
             mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onClickLinkHref, event );
-        };
-    };
+        }
+    }
 
     return NS_OK;
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // override nsIURIContentListener methods
@@ -1155,7 +1156,7 @@ NS_IMETHODIMP LLEmbeddedBrowserWindow::OnStartURIOpen( nsIURI *aURI, PRBool *_re
     {
         // tell browser to proceed as normal
         *_retval = PR_FALSE;
-    };
+    }
 
     return NS_OK;
 }
@@ -1249,8 +1250,8 @@ void LLEmbeddedBrowserWindow::focusBrowser( PRBool focusBrowserIn )
         {
             nsCOMPtr< nsIWebBrowserFocus > focus( do_GetInterface( mWebBrowser ) );
             focus->Deactivate();
-        };
-    };
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1282,8 +1283,8 @@ PRBool LLEmbeddedBrowserWindow::enableToolkitObserver( PRBool enableIn )
     //    if ( toolkit->AddObserver( this ) )
     //    {
     //        return true;
-    //    };
-    //};
+    //    }
+    //}
     //return false;
 
     // TODO: this is horrible but seems to work - need a better way to get the toolkit
@@ -1348,13 +1349,13 @@ NS_METHOD LLEmbeddedBrowserWindow::NotifyInvalidated( nsIWidget *aWidget, PRInt3
     {
         nativeWidgetChild = nativeWidget;
         nativeWidget = ::GetParent( nativeWidget );
-    };
+    }
 
     if ( ( (HWND)mainWidget->GetNativeData( NS_NATIVE_WIDGET ) ) == nativeWidgetChild )
     {
         LLEmbeddedBrowserWindowEvent event( getWindowId(), getCurrentUri(), x, y, width, height );
         mEventEmitter.update( &LLEmbeddedBrowserWindowObserver::onPageChanged, event );
-    };
+    }
 
     // other platforms will always update - desperately inefficient but you'll see something.
     #else

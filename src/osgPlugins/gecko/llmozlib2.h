@@ -85,8 +85,8 @@ class LLEmbeddedBrowserWindowEvent
         LLEmbeddedBrowserWindowEvent( int eventWindowIdIn, std::string uriIn, std::string stringValIn, int intValIn ) :
             mEventWindowId( eventWindowIdIn ),
             mEventUri( uriIn ),
-            mStringVal( stringValIn ),
-            mIntVal( intValIn )
+            mIntVal( intValIn ),
+            mStringVal( stringValIn )
         {
         };
 

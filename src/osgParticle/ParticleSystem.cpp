@@ -207,7 +207,7 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
         }
         
         scaled_aligned_xAxis *= xScale;
-        scaled_aligned_xAxis *= yScale;
+        scaled_aligned_yAxis *= yScale;
         
         xAxis *= xScale;
         yAxis *= yScale;

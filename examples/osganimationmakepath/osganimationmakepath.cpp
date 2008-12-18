@@ -254,7 +254,7 @@ osg::StateSet* setupStateSet()
 
 osg::MatrixTransform* setupAnimtkNode(osg::Geode* staticGeode) 
 {
-    osg::Vec3 v[4];
+    osg::Vec3 v[5];
 
     v[0] = osg::Vec3(  0,   0,   0);
     v[1] = osg::Vec3(20, 40, 60);

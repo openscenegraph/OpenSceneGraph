@@ -260,9 +260,9 @@ class GeometryTest : public GLMemoryTest
         {
             unsigned int numVertices = _width * _height;
             osg::Vec3Array* vertices = new osg::Vec3Array(numVertices);
-            for(unsigned int j=0; j<_height; ++j)
+            for(int j=0; j<_height; ++j)
             {
-                for(unsigned i=0; i<_width; ++i)
+                for(int i=0; i<_width; ++i)
                 {
                     (*vertices)[i+j*_width].set(float(i),float(j),0.0f);
                 }
@@ -271,9 +271,9 @@ class GeometryTest : public GLMemoryTest
             unsigned int numIndices = (_width-1) * (_height-1) * 4;
             osg::DrawElementsUShort* quads = new osg::DrawElementsUShort(GL_QUADS);
             quads->reserve(numIndices);
-            for(unsigned int j=0; j<_height-1; ++j)
+            for(int j=0; j<_height-1; ++j)
             {
-                for(unsigned i=0; i<_width-1; ++i)
+                for(int i=0; i<_width-1; ++i)
                 {
                     quads->push_back(i   + j*_width);
                     quads->push_back(i+1 + j*_width);

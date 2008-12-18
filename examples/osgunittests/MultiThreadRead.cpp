@@ -183,7 +183,7 @@ void runMultiThreadReadTests(int numThreads, osg::ArgumentParser& arguments)
     typedef std::list< osg::ref_ptr<ReadThread> > ReadThreads;
     ReadThreads readThreads;
 
-    for(unsigned int i=0; i<numThreads; ++i)
+    for(int i=0; i<numThreads; ++i)
     {
         osg::ref_ptr<ReadThread> readThread = new ReadThread;
 

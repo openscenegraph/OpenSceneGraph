@@ -228,12 +228,11 @@ int runApp(std::string xapp)
             
             osg::notify(osg::INFO) << "char* = " << cxapp <<std::endl;
             
-            system(cxapp);
-            return 1;
+            return system(cxapp);
         }
     }
     osg::notify(osg::INFO) << "app not found!" << std::endl;
-    return 0;
+    return 1;
 } // end printList()
 
 

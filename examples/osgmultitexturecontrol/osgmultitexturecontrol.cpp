@@ -93,10 +93,10 @@ class ElevationLayerBlendingCallback : public osg::NodeCallback
         ElevationLayerBlendingCallback(osgFX::MultiTextureControl* mtc, const Elevations& elevations, float animationTime=4.0f):
             _previousFrame(-1),
             _previousTime(0.0),
+            _animationTime(animationTime),
             _currentElevation(0.0),
             _mtc(mtc),
-            _elevations(elevations),
-            _animationTime(animationTime) {}
+            _elevations(elevations) {}
     
         /** Callback method called by the NodeVisitor when visiting a node.*/
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)

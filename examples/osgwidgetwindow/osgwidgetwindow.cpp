@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
     // Now we actually attach our two types of callbacks to the box instance. The first
     // uses the simple function signature, the second uses a bound method, passing "this"
     // as the second argument to the Callback constructor.
-    Object obj;
+    // Object obj;
 
     static std::string data = "lol ur face!";
 

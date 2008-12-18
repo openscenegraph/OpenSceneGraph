@@ -337,7 +337,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
     static ref_ptr<StateSet::Callback> s_callback = new osg::StateSet::Callback;
     while (fr.matchSequence("UpdateCallback {"))
     {
-        int entry = fr[0].getNoNestedBrackets();
+        // int entry = fr[0].getNoNestedBrackets();
         fr += 2;
         StateSet::Callback* callback = dynamic_cast<StateSet::Callback*>(fr.readObjectOfType(*s_callback));
         if (callback) {
@@ -348,7 +348,7 @@ bool StateSet_readLocalData(Object& obj, Input& fr)
 
     while (fr.matchSequence("EventCallback {"))
     {
-        int entry = fr[0].getNoNestedBrackets();
+        //int entry = fr[0].getNoNestedBrackets();
         fr += 2;
         StateSet::Callback* callback = dynamic_cast<StateSet::Callback*>(fr.readObjectOfType(*s_callback));
         if (callback) {

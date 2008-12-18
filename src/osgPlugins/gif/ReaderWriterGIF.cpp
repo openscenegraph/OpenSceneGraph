@@ -64,13 +64,18 @@ extern  "C"
 class GifImageStream : public osg::ImageStream, public OpenThreads::Thread
 {
 public:
-    GifImageStream() 
-        : _length(0), _dataNum(0), _frameNum(0), 
-        _done(false), _currentLength(0), _multiplier(1.0),
-        osg::ImageStream()
+    GifImageStream() :
+        osg::ImageStream(),
+        _multiplier(1.0),
+        _currentLength(0), 
+        _length(0), 
+        _frameNum(0), 
+        _dataNum(0), 
+        _done(false)
     {
         _status=PAUSED;
     }
+
     virtual Object* clone() const { return new GifImageStream; }
     virtual bool isSameKindAs( const Object* obj ) const 
     { return dynamic_cast<const GifImageStream*>(obj) != NULL; }
@@ -182,13 +187,10 @@ public:
             return;
         }
 
-        _s = ss;
-        _t = tt;
-        _r = rr;
-        _internalFormat = numComponents;
-        _dataType = GL_UNSIGNED_BYTE;
+        GLint internalFormat = numComponents;
+        GLenum dataType = GL_UNSIGNED_BYTE;
 
-        _pixelFormat =
+        GLenum pixelFormat =
             numComponents == 1 ? GL_LUMINANCE :
             numComponents == 2 ? GL_LUMINANCE_ALPHA :
             numComponents == 3 ? GL_RGB :
@@ -197,7 +199,7 @@ public:
         if ( _dataList.empty() )
         {
             // Set image texture for the first time
-            setImage(_s,_t,_r,_internalFormat,_pixelFormat,_dataType,
+            setImage(ss, tt, rr, internalFormat, pixelFormat, dataType,
                 imgData,osg::Image::NO_DELETE,1);
         }
 
@@ -222,7 +224,7 @@ protected:
         if ( *_dataIter )
         {
             unsigned char* image = (*_dataIter)->data;
-            setImage(_s,_t,_r,_internalFormat,_pixelFormat,_dataType,
+            setImage(_s,_t,_r,_internalTextureFormat,_pixelFormat,_dataType,
                 image,osg::Image::NO_DELETE,1);
             dirty();
         }
@@ -241,21 +243,14 @@ protected:
         }
     }
 
-    double _multiplier;
-    unsigned int _currentLength;
-    unsigned int _length;
+    double          _multiplier;
+    unsigned int    _currentLength;
+    unsigned int    _length;
 
-    unsigned int _frameNum;
-    unsigned int _dataNum;
+    unsigned int    _frameNum;
+    unsigned int    _dataNum;
     std::vector<FrameData*> _dataList;
     std::vector<FrameData*>::iterator _dataIter;
-
-    int _s;
-    int _t;
-    int _r;
-    int _internalFormat;
-    unsigned int _pixelFormat;
-    unsigned int _dataType;
 
     bool _done;
     OpenThreads::Mutex _mutex;

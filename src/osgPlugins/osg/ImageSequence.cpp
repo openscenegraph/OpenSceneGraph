@@ -27,9 +27,6 @@ bool ImageSequence_readLocalData(Object& obj, Input& fr)
 
     ImageSequence& is = static_cast<ImageSequence&>(obj);
 
-    unsigned int numFilesToPreLoad = 1;
-
-
     std::string modeStr;
     if (fr.read("Mode",modeStr))
     {

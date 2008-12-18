@@ -20,9 +20,9 @@ osgDB::RegisterDotOsgWrapperProxy CompositeViewer_Proxy
     CompositeViewer_writeLocalData
 );
 
-bool CompositeViewer_readLocalData(osg::Object &obj, osgDB::Input &fr)
+bool CompositeViewer_readLocalData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 {
-    osgViewer::CompositeViewer* compositeViewer = dynamic_cast<osgViewer::CompositeViewer*>(&obj);
+    // osgViewer::CompositeViewer* compositeViewer = dynamic_cast<osgViewer::CompositeViewer*>(&obj);
     bool iteratorAdvanced = false;
 
     osg::notify(osg::NOTICE)<<"CompositeViewer_readLocalData"<<std::endl;
@@ -30,9 +30,9 @@ bool CompositeViewer_readLocalData(osg::Object &obj, osgDB::Input &fr)
     return iteratorAdvanced;
 }
 
-bool CompositeViewer_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
+bool CompositeViewer_writeLocalData(const osg::Object& /*obj*/, osgDB::Output& /*fw*/)
 {
-    const osgViewer::CompositeViewer* compositeViewer = dynamic_cast<const osgViewer::CompositeViewer*>(&obj);
+    // const osgViewer::CompositeViewer* compositeViewer = dynamic_cast<const osgViewer::CompositeViewer*>(&obj);
     
     osg::notify(osg::NOTICE)<<"CompositeViewer_writeLocalData"<<std::endl;
 

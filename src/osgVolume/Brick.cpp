@@ -24,8 +24,8 @@ using namespace osgVolume;
 //
 Brick::Brick():
     _volume(0),
-    _hasBeenTraversal(false),
-    _dirty(false)
+    _dirty(false),
+    _hasBeenTraversal(false)
 {
     setThreadSafeRefUnref(true);
 }
@@ -33,9 +33,9 @@ Brick::Brick():
 Brick::Brick(const Brick& brick,const osg::CopyOp& copyop):
     Group(brick,copyop),
     _volume(0),
+    _dirty(false),
     _hasBeenTraversal(false),
-    _image(brick._image),
-    _dirty(false)
+    _image(brick._image)
 {
     if (brick.getVolumeTechnique()) 
     {

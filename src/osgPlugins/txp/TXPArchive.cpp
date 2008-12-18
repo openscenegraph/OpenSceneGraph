@@ -458,7 +458,7 @@ bool TXPArchive::loadModel(int ix)
 
 bool TXPArchive::loadModels()
 {
-    osg::notify(osg::NOTICE) << "txp:: Loading models ..." << std::endl;
+    osg::notify(osg::INFO) << "txp:: Loading models ..." << std::endl;
 
     int numModel;
     modelTable.GetNumModels(numModel);
@@ -470,13 +470,13 @@ bool TXPArchive::loadModels()
     {
     loadModel(itr->first);
     }
-    osg::notify(osg::NOTICE) << "txp:: ... done." << std::endl;
+    osg::notify(osg::INFO) << "txp:: ... done." << std::endl;
     return true;
 }
 
 bool TXPArchive::loadLightAttributes()
 {
-    osg::notify(osg::NOTICE) << "txp:: Loading light attributes ..." << std::endl;
+    osg::notify(osg::INFO) << "txp:: Loading light attributes ..." << std::endl;
 
     trpgLightTable::LightMapType *lm  = lightTable.getLightMap();
     trpgLightTable::LightMapType::iterator itr = lm->begin();
@@ -576,7 +576,7 @@ bool TXPArchive::loadLightAttributes()
     addLightAttribute(osgLight, stateSet, osg::Vec3(normal.x,normal.y,normal.z),itr->first);
     }
 
-    osg::notify(osg::NOTICE) << "txp:: ... done." << std::endl;
+    osg::notify(osg::INFO) << "txp:: ... done." << std::endl;
     return true;
 }
 
@@ -604,7 +604,7 @@ bool TXPArchive::loadTextStyles()
 
     if (fmapfile.is_open())
     {
-    osg::notify(osg::NOTICE) << "txp:: Font map file found: " << fmapfname << std::endl;
+    osg::notify(osg::INFO) << "txp:: Font map file found: " << fmapfname << std::endl;
     std::string line;
     while (std::getline(fmapfile,line))
     {

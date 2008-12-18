@@ -69,7 +69,7 @@ class Lwo2
 
   unsigned char _read_char();
   unsigned short _read_short();
-  unsigned long _read_long();
+  unsigned int _read_uint();
   float _read_float();
   string& _read_string(string&);
 

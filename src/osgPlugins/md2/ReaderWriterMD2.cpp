@@ -173,7 +173,11 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
     }
 #else
     mapbase = malloc (st.st_size);
-    read (file_fd, mapbase, st.st_size);
+    if (read(file_fd, mapbase, st.st_size)==0)
+    {
+        close (file_fd);
+        return NULL;
+    }
 #endif
 
     if (g_md2NormalsArray == NULL) {

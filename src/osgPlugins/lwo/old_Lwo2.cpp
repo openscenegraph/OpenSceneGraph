@@ -41,6 +41,7 @@
 
 #include "old_Lwo2.h"
 #include "old_Lwo2Layer.h"
+#include "lwo2read.h"
 
 Lwo2::Lwo2():
   _current_layer(0),
@@ -77,7 +78,7 @@ Lwo2::ReadFile( const string& filename )
 
     // checking EA-IFF85 format
     // http://www.lightwave3d.com/developer/75lwsdk/docs/filefmts/eaiff85.html
-    if (_read_long() != tag_FORM) 
+    if (_read_uint() != tag_FORM) 
     {
         notify(INFO) << "File '" << filename << "' is not IFF format file." << std::endl;
         _fin.close();
@@ -88,12 +89,12 @@ Lwo2::ReadFile( const string& filename )
         notify(INFO) << "Detected EA-IFF85 format" << std::endl;
     }
 
-    unsigned long form_size = _read_long();
+    unsigned int form_size = _read_uint();
     notify(INFO) << "Form size: " << form_size << std::endl;
 
     // checking LWO2 format 
     // http://www.lightwave3d.com/developer/75lwsdk/docs/filefmts/lwo2.html
-    if (_read_long() != tag_LWO2) 
+    if (_read_uint() != tag_LWO2) 
     {
         unsigned long make_id(const char*);
         notify(INFO) << "File '" << filename << "' is not LWO2 format file." << std::endl;
@@ -112,8 +113,8 @@ Lwo2::ReadFile( const string& filename )
     // main loop for reading tags
     while (read_bytes < form_size && !_fin.eof())
     {
-        current_tag_name = _read_long();
-        current_tag_size = _read_long();
+        current_tag_name = _read_uint();
+        current_tag_size = _read_uint();
         read_bytes += 8 + current_tag_size + current_tag_size % 2;
 
         _print_tag(current_tag_name, current_tag_size);
@@ -176,8 +177,8 @@ Lwo2::_read_char()
   return static_cast<unsigned char>(c);
 }
 
-unsigned long 
-Lwo2::_read_long()
+unsigned int 
+Lwo2::_read_uint()
 {
   return
     (_read_char() << 24) | 
@@ -197,8 +198,7 @@ Lwo2::_read_short()
 float 
 Lwo2::_read_float()
 {
-  unsigned long x = _read_long();
-  return *(float*)&x;
+  return lwo2::changeType4<float, unsigned int>(_read_uint());
 }
 
 // read null terminated string 
@@ -316,7 +316,7 @@ void Lwo2::_read_points(unsigned long size)
 
 void Lwo2::_read_vertex_mapping(unsigned long size) 
 {
-    unsigned int type = _read_long();
+    unsigned int type = _read_uint();
     size -= 4;
 
     _print_type(type);
@@ -364,7 +364,7 @@ void Lwo2::_read_vertex_mapping(unsigned long size)
 void 
 Lwo2::_read_polygons(unsigned long size) 
 {
-    unsigned int type = _read_long();
+    unsigned int type = _read_uint();
     size -= 4;
 
     _print_type(type);
@@ -408,7 +408,7 @@ Lwo2::_read_polygons(unsigned long size)
 
 void Lwo2::_read_polygon_tag_mapping(unsigned long size) 
 {
-    unsigned int type = _read_long();
+    unsigned int type = _read_uint();
     size -= 4;
 
     _print_type(type);
@@ -441,7 +441,7 @@ void Lwo2::_read_polygon_tag_mapping(unsigned long size)
 
 void Lwo2::_read_polygons_mapping(unsigned long size) 
 {
-    unsigned int type = _read_long();
+    unsigned int type = _read_uint();
     size -= 4;
 
     _print_type(type);
@@ -503,14 +503,14 @@ void Lwo2::_read_polygons_mapping(unsigned long size)
 void 
 Lwo2::_read_image_definition(unsigned long size)
 {
-    unsigned int index = _read_long();
+    unsigned int index = _read_uint();
     size -= 4;
     notify(DEBUG_INFO) << "  index  \t" << index << std::endl;
 
     unsigned int type;
     while (size > 0)
     {
-        type = _read_long();
+        type = _read_uint();
         size -= 4;
 
         _print_type(type);
@@ -557,7 +557,7 @@ void Lwo2::_read_surface(unsigned long size)
 
     while (size > 0 && !_fin.eof()) 
     {
-        current_tag_name = _read_long();
+        current_tag_name = _read_uint();
         size -= 4;
         current_tag_size = _read_short();
         size -= 2;
@@ -572,7 +572,7 @@ void Lwo2::_read_surface(unsigned long size)
             size -= blok_size;
             while (blok_size > 0) 
             {
-                current_tag_name = _read_long();
+                current_tag_name = _read_uint();
                 blok_size -= 4;
                 current_tag_size = _read_short();
                 blok_size -= 2;
@@ -599,7 +599,7 @@ void Lwo2::_read_surface(unsigned long size)
 
                     while(imap_size > 0)
                     {
-                        current_tag_name = _read_long();
+                        current_tag_name = _read_uint();
                         imap_size -= 4;
                         current_tag_size = _read_short();
                         imap_size -= 2;

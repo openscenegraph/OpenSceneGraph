@@ -71,11 +71,6 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
                     fileName.c_str(), dirname);
             }
 
-            osg::notify(osg::NOTICE)<<"Running command '"<<command<<"'"<<std::endl;
-            if ( system( command ) ) {
-                return ReadResult::FILE_NOT_HANDLED;
-            }
-
         #else
             sprintf( dirname, "/tmp/.zip%06d", getpid());
             mkdir( dirname, 0700 );
@@ -84,10 +79,14 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
                 "unzip %s -d %s",
                 fileName.c_str(), dirname);
 
-            system( command );
         #endif
 
-            osg::Group *grp = new osg::Group;
+            osg::notify(osg::INFO)<<"Running command '"<<command<<"'"<<std::endl;
+            if ( system( command ) ) {
+                return ReadResult::FILE_NOT_HANDLED;
+            }
+
+            osg::ref_ptr<osg::Group> grp = new osg::Group;
  
             osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::ReaderWriter::Options;
             local_options->getDatabasePathList().push_front(dirname);
@@ -117,20 +116,20 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             // note, is this the right command for windows?
             // is there any way of overiding the Y/N option? RO.
             sprintf( command, "erase /S /Q \"%s\"", dirname );
-            system( command );
+            int result = system( command );
         #else
 
             sprintf( command, "rm -rf %s", dirname );
-            system( command );
+            int result = system( command );
         #endif
+            if (result!=0) return ReadResult::ERROR_IN_READING_FILE;
 
             if( grp->getNumChildren() == 0 )
             {
-                grp->unref();
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
-            return grp;
+            return grp.get();
         }
 
 };

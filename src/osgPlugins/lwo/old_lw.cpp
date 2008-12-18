@@ -17,6 +17,9 @@
  */
 
 #include "old_lw.h"
+
+#include "lwo2read.h"
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -80,10 +83,10 @@ static gint32 read_long(FILE *f)
   return (read_char(f)<<24) | (read_char(f)<<16) | (read_char(f)<<8) | read_char(f);
 }
 
+
 static GLfloat read_float(FILE *f)
 {
-  gint32 x = read_long(f);
-  return *(GLfloat*)&x;
+  return lwo2::changeType4<GLfloat, gint32>(read_long(f));
 }
 
 static gint read_string(FILE *f, char *s)

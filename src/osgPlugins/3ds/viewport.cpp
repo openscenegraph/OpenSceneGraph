@@ -83,7 +83,10 @@ lib3ds_viewport_read(Lib3dsViewport *viewport, FILE *f)
                 lib3ds_vector_read(viewport->layout.viewL[cur].center,f);
                 viewport->layout.viewL[cur].horiz_angle=lib3ds_float_read(f);
                 viewport->layout.viewL[cur].vert_angle=lib3ds_float_read(f);
-                fread(viewport->layout.viewL[cur].camera,11,1,f);
+
+                int result = fread(viewport->layout.viewL[cur].camera,11,1,f);
+                if (result==0) return (LIB3DS_FALSE);
+
                 ++cur;
               }
               break;
@@ -157,7 +160,8 @@ lib3ds_viewport_read(Lib3dsViewport *viewport, FILE *f)
             case LIB3DS_VIEW_CAMERA:
               {
                 viewport->default_view.type=LIB3DS_VIEW_TYPE_CAMERA;
-                fread(viewport->default_view.camera,11,1,f);
+                int result = fread(viewport->default_view.camera,11,1,f);
+                if (result==0) return (LIB3DS_FALSE);
               }
               break;
             default:
@@ -249,7 +253,8 @@ lib3ds_viewport_write(Lib3dsViewport *viewport, FILE *f)
       lib3ds_vector_write(viewport->layout.viewL[i].center,f);
       lib3ds_float_write(viewport->layout.viewL[i].horiz_angle,f);
       lib3ds_float_write(viewport->layout.viewL[i].vert_angle,f);
-      fwrite(viewport->layout.viewL[i].camera,11,1,f);
+      int result = fwrite(viewport->layout.viewL[i].camera,11,1,f);
+      if (result==0) return (LIB3DS_FALSE);
     }
 
     if (!lib3ds_chunk_write_end(&c,f)) {
@@ -345,7 +350,8 @@ lib3ds_viewport_write(Lib3dsViewport *viewport, FILE *f)
           c.chunk=LIB3DS_VIEW_CAMERA;
           c.size=17;
           lib3ds_chunk_write(&c,f);
-          fwrite(viewport->default_view.camera,1,11,f);
+          int result = fwrite(viewport->default_view.camera,1,11,f);
+          if (result==0) return (LIB3DS_FALSE);
         }
         break;
     }

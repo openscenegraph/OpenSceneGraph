@@ -213,7 +213,6 @@ public:
     {
         osg::Geometry* geom = new osg::Geometry;
 
-        unsigned int total = 0;
         for (int i = 0; i < mpolygon->getNumGeometries(); i++ ) 
         {
             OGRGeometry* ogrGeom = mpolygon->getGeometryRef(i);
@@ -233,7 +232,6 @@ public:
 
                 if (!geom->getVertexArray()) 
                 { // no yet data we put the first in
-                    osg::Vec3Array* arraySrc = static_cast<osg::Vec3Array*>(geom->getVertexArray());
                     geom->setVertexArray(geometry->getVertexArray());
                     geom->setPrimitiveSetList(geometry->getPrimitiveSetList());
 

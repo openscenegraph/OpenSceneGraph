@@ -692,7 +692,7 @@ PolygonM::~PolygonM()
     delete[] parts;
     delete[] points;
     delete[] mArray;
-};
+}
 
 
 bool PolygonM::read( int fd )

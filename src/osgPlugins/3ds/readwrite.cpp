@@ -54,7 +54,8 @@ lib3ds_byte_read(FILE *f)
   Lib3dsByte b;
 
   ASSERT(f);
-  fread(&b,1,1,f);
+  int result = fread(&b,1,1,f);
+  if (result==0) return 0;
   return(b);
 }
 
@@ -73,7 +74,9 @@ lib3ds_word_read(FILE *f)
   Lib3dsWord w;
 
   ASSERT(f);
-  fread(b,2,1,f);
+  int result = fread(b,2,1,f);
+  if (result==0) return 0;
+
   w=((Lib3dsWord)b[1] << 8) |
     ((Lib3dsWord)b[0]);
   return(w);
@@ -96,7 +99,9 @@ lib3ds_dword_read(FILE *f)
   Lib3dsDword d;        
                          
   ASSERT(f);
-  fread(b,4,1,f);
+  int result = fread(b,4,1,f);
+  if (result==0) return 0;
+
   d=((Lib3dsDword)b[3] << 24) |
     ((Lib3dsDword)b[2] << 16) |
     ((Lib3dsDword)b[1] << 8) |
@@ -120,7 +125,9 @@ lib3ds_intb_read(FILE *f)
   Lib3dsIntb b;
 
   ASSERT(f);
-  fread(&b,1,1,f);
+  int result = fread(&b,1,1,f);
+  if (result==0) return 0;
+
   return(b);
 }
 
@@ -140,7 +147,8 @@ lib3ds_intw_read(FILE *f)
   Lib3dsByte b[2];
 
   ASSERT(f);
-  fread(b,2,1,f);
+  int result = fread(b,2,1,f);
+  if (result==0) return 0;
 
   if (s_requiresByteSwap)
   {
@@ -166,7 +174,8 @@ lib3ds_intd_read(FILE *f)
   Lib3dsByte b[4];
                          
   ASSERT(f);
-  fread(b,4,1,f);
+  int result = fread(b,4,1,f);
+  if (result==0) return 0;
 
   if (s_requiresByteSwap)
   {
@@ -192,7 +201,8 @@ lib3ds_float_read(FILE *f)
   Lib3dsByte b[4];
 
   ASSERT(f);
-  fread(b,4,1,f);
+  int result = fread(b,4,1,f);
+  if (result==0) return 0;
 
   if (s_requiresByteSwap)
   {
@@ -434,18 +444,30 @@ lib3ds_intd_write(Lib3dsIntd d, FILE *f)
  *
  * \return   True on success, False otherwise.
  */
+ 
+ 
 Lib3dsBool
 lib3ds_float_write(Lib3dsFloat l, FILE *f)
 {
-  Lib3dsByte b[4];
-  Lib3dsDword d;
 
-  ASSERT(f);
-  d=*((Lib3dsDword*)&l);
-  b[3]=(Lib3dsByte)(((Lib3dsDword)d & 0xFF000000) >> 24);
-  b[2]=(Lib3dsByte)(((Lib3dsDword)d & 0x00FF0000) >> 16);
-  b[1]=(Lib3dsByte)(((Lib3dsDword)d & 0x0000FF00) >> 8);
-  b[0]=(Lib3dsByte)(((Lib3dsDword)d & 0x000000FF));
+  Lib3dsByte b[4];
+  Lib3dsByte* ptr = (Lib3dsByte*) (&l);
+
+  if (s_requiresByteSwap)
+  {
+      b[3] = *ptr++;
+      b[2] = *ptr++;
+      b[1] = *ptr++;
+      b[0] = *ptr++;
+  }
+  else
+  {
+      b[0] = *ptr++;
+      b[1] = *ptr++;
+      b[2] = *ptr++;
+      b[3] = *ptr++;
+  }
+  
   if (fwrite(b,4,1,f)!=1) {
     return(LIB3DS_FALSE);
   }

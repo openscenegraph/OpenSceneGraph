@@ -272,10 +272,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
         //Setting Proxy by OSG Options
         if(!optProxy.empty())
+        {
             if(!optProxyPort.empty())
                 proxyAddress = optProxy + ":" + optProxyPort;
             else
                 proxyAddress = optProxy + ":8080"; //Port not found, using default
+        }
     }
 
     std::string fileName;

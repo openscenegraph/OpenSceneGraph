@@ -24,17 +24,17 @@ osgDB::RegisterDotOsgWrapperProxy ShadowVolume_Proxy
     ShadowVolume_writeLocalData
 );
 
-bool ShadowVolume_readLocalData(osg::Object& obj, osgDB::Input &fr)
+bool ShadowVolume_readLocalData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 {
-    osgShadow::ShadowVolume& ss = static_cast<osgShadow::ShadowVolume&>(obj);
+    // osgShadow::ShadowVolume& ss = static_cast<osgShadow::ShadowVolume&>(obj);
     bool itAdvanced = false;
 
     return itAdvanced;
 }
 
-bool ShadowVolume_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
+bool ShadowVolume_writeLocalData(const osg::Object& /*obj*/, osgDB::Output& /*fw*/)
 {
-    const osgShadow::ShadowVolume& ss = static_cast<const osgShadow::ShadowVolume &>(obj);
+    // const osgShadow::ShadowVolume& ss = static_cast<const osgShadow::ShadowVolume &>(obj);
 
     return true;
 }

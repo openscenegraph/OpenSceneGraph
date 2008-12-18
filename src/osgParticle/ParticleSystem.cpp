@@ -13,6 +13,7 @@
 #include <osg/TexEnv>
 #include <osg/Material>
 #include <osg/Notify>
+#include <osg/io_utils>
 
 #include <osgDB/ReadFile>
 
@@ -180,23 +181,36 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
     osg::Vec3 xAxis = _align_X_axis;
     osg::Vec3 yAxis = _align_Y_axis;
     
+    osg::Vec3 scaled_aligned_xAxis = _align_X_axis;
+    osg::Vec3 scaled_aligned_yAxis = _align_Y_axis;
+
+    float xScale = 1.0f;
+    float yScale = 1.0f;
+    
     if (_alignment==BILLBOARD)
     {
-        xAxis = osg::Matrix::transform3x3(modelview,xAxis);
-        yAxis = osg::Matrix::transform3x3(modelview,yAxis);
-        float scaleX = xAxis.length();
-        float scaleY = yAxis.length();
+        xAxis = osg::Matrix::transform3x3(modelview,_align_X_axis);
+        yAxis = osg::Matrix::transform3x3(modelview,_align_Y_axis);
+        
+        float lengthX2 = xAxis.length2();
+        float lengthY2 = yAxis.length2();
 
         if (_particleScaleReferenceFrame==LOCAL_COORDINATES)
         {
-            xAxis /= scaleX;
-            yAxis /= scaleY;
+            xScale = 1.0f/sqrtf(lengthX2);
+            yScale = 1.0f/sqrtf(lengthY2);
         }
         else
         {
-            xAxis /= (scaleX*scaleX);
-            yAxis /= (scaleY*scaleY);
+            xScale = 1.0f/lengthX2;
+            yScale = 1.0f/lengthY2;
         }
+        
+        scaled_aligned_xAxis *= xScale;
+        scaled_aligned_xAxis *= yScale;
+        
+        xAxis *= xScale;
+        yAxis *= yScale;
     }
 
     for(unsigned int i=0; i<_particles.size(); i+=_detail)
@@ -212,7 +226,38 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
             }
             ++_draw_count;
             
-            currentParticle->render(currentParticle->getPosition(), xAxis, yAxis, scale);
+            const osg::Vec3& angle = currentParticle->getAngle();
+            bool requiresRotation = (angle.x()!=0.0f || angle.y()!=0.0f || angle.z()!=0.0f);
+            if (requiresRotation)
+            {
+                osg::Matrix R;
+                R.makeRotate(
+                    angle.x(), osg::Vec3(1, 0, 0), 
+                    angle.y(), osg::Vec3(0, 1, 0), 
+                    angle.z(), osg::Vec3(0, 0, 1));
+
+                if (_alignment==BILLBOARD)
+                {
+                    xAxis = osg::Matrix::transform3x3(R,scaled_aligned_xAxis);
+                    xAxis = osg::Matrix::transform3x3(modelview,xAxis);
+                    
+                    yAxis = osg::Matrix::transform3x3(R,scaled_aligned_yAxis);
+                    yAxis = osg::Matrix::transform3x3(modelview,yAxis);
+
+                    currentParticle->render(currentParticle->getPosition(), xAxis, yAxis, scale);
+                }
+                else
+                {
+                    xAxis = osg::Matrix::transform3x3(R, scaled_aligned_xAxis);
+                    yAxis = osg::Matrix::transform3x3(R, scaled_aligned_yAxis);
+
+                    currentParticle->render(currentParticle->getPosition(), xAxis, yAxis, scale);
+                }
+            }
+            else
+            {
+                currentParticle->render(currentParticle->getPosition(), xAxis, yAxis, scale);
+            }
         } 
     }
 

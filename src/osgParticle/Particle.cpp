@@ -130,12 +130,6 @@ void osgParticle::Particle::render(const osg::Vec3& xpos, const osg::Vec3& px, c
                 _current_color.z(), 
                 _current_color.w() * _current_alpha);
 
-    osg::Matrix R;
-    R.makeRotate(
-        _angle.x(), osg::Vec3(1, 0, 0), 
-        _angle.y(), osg::Vec3(0, 1, 0), 
-        _angle.z(), osg::Vec3(0, 0, 1));
-
     osg::Vec3 p1(px * _current_size * scale);
     osg::Vec3 p2(py * _current_size * scale);
 
@@ -147,19 +141,18 @@ void osgParticle::Particle::render(const osg::Vec3& xpos, const osg::Vec3& px, c
 
     case QUAD:
         glTexCoord2f(_s_coord, _t_coord);
-        glVertex3fv((xpos-(p1+p2)*R).ptr());
+        glVertex3fv((xpos-(p1+p2)).ptr());
         glTexCoord2f(_s_coord+_s_tile, _t_coord);
-        glVertex3fv((xpos+(p1-p2)*R).ptr());
+        glVertex3fv((xpos+(p1-p2)).ptr());
         glTexCoord2f(_s_coord+_s_tile, _t_coord+_t_tile);
-        glVertex3fv((xpos+(p1+p2)*R).ptr());
+        glVertex3fv((xpos+(p1+p2)).ptr());
         glTexCoord2f(_s_coord, _t_coord+_t_tile);
-        glVertex3fv((xpos-(p1-p2)*R).ptr());
+        glVertex3fv((xpos-(p1-p2)).ptr());
         break;
 
     case QUAD_TRIANGLESTRIP:
         glPushMatrix();
         glTranslatef(xpos.x(), xpos.y(), xpos.z());
-        glMultMatrix(R.ptr());
         // we must glBegin() and glEnd() here, because each particle is a single strip
         glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(_s_coord+_s_tile, _t_coord+_t_tile);
@@ -170,14 +163,12 @@ void osgParticle::Particle::render(const osg::Vec3& xpos, const osg::Vec3& px, c
         glVertex3fv((p1-p2).ptr());
         glTexCoord2f(_s_coord, _t_coord);
         glVertex3fv((-p1-p2).ptr());
-        glEnd();
         glPopMatrix();
         break;
 
     case HEXAGON:
         glPushMatrix();
         glTranslatef(xpos.x(), xpos.y(), xpos.z());
-        glMultMatrix(R.ptr());        
         // we must glBegin() and glEnd() here, because each particle is a single fan
         glBegin(GL_TRIANGLE_FAN);
         glTexCoord2f(_s_coord + _s_tile * 0.5f, _t_coord + _t_tile * 0.5f);
@@ -197,7 +188,6 @@ void osgParticle::Particle::render(const osg::Vec3& xpos, const osg::Vec3& px, c
         glTexCoord2f(_s_coord + _s_tile * hex_texcoord_x1, _t_coord + _t_tile * hex_texcoord_y1);
         glVertex3fv((p1*cosPI3+p2*sinPI3).ptr());
         glEnd();
-        glPopMatrix();
         break;
 
     case LINE:

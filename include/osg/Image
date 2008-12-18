@@ -318,17 +318,16 @@ class OSG_EXPORT Image : public Object
         /** Get the const PixelBufferObject.*/ 
         const PixelBufferObject* getPixelBufferObject() const { return _bufferObject.get(); }
        
-        virtual void update(NodeVisitor* nv) {}
-        
+        virtual void update(NodeVisitor* /*nv*/) {}        
 
         /** method for sending pointer events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.  Return true if handled. */
-        virtual bool sendPointerEvent(int x, int y, int buttonMask) { return false; }
+        virtual bool sendPointerEvent(int /*x*/, int /*y*/, int /*buttonMask*/) { return false; }
 
         /** method for sending key events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.  Return true if handled.*/
-        virtual bool sendKeyEvent(int key, bool keyDown) { return false; }
+        virtual bool sendKeyEvent(int /*key*/, bool /*keyDown*/) { return false; }
 
         /** method for passing frame information to the custom Image classes, to be called only when objects associated with imagery are not culled.*/
-        virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp) {}
+        virtual void setFrameLastRendered(const osg::FrameStamp* /*frameStamp*/) {}
 
     protected :
 

@@ -40,10 +40,10 @@ osg::ref_ptr<TerrainTile::TileLoadedCallback>& TerrainTile::getTileLoadedCallbac
 
 TerrainTile::TerrainTile():
     _terrain(0),
+    _dirty(false),
     _hasBeenTraversal(false),
     _requiresNormals(true),
-    _treatBoundariesToValidDataAsDefaultValue(false),
-    _dirty(false)
+    _treatBoundariesToValidDataAsDefaultValue(false)
 {
     setThreadSafeRefUnref(true);
 }
@@ -51,12 +51,12 @@ TerrainTile::TerrainTile():
 TerrainTile::TerrainTile(const TerrainTile& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
     _terrain(0),
+    _dirty(false),
     _hasBeenTraversal(false),
     _elevationLayer(terrain._elevationLayer),
     _colorLayers(terrain._colorLayers),
     _requiresNormals(terrain._requiresNormals),
-    _treatBoundariesToValidDataAsDefaultValue(terrain._treatBoundariesToValidDataAsDefaultValue),
-    _dirty(false)
+    _treatBoundariesToValidDataAsDefaultValue(terrain._treatBoundariesToValidDataAsDefaultValue)
 {
     if (terrain.getTerrainTechnique()) 
     {

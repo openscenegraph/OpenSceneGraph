@@ -7,14 +7,16 @@
 #include <osgDB/FileUtils>
 #include <osgWidget/Frame>
 
-bool osgWidget_Frame_readData(osg::Object& obj, osgDB::Input& fr) {
+bool osgWidget_Frame_readData(osg::Object& /*obj*/, osgDB::Input& fr)
+{
 	osgWidget::warn() << "Frame read" << std::endl;
 	
 	return false;
 }
 
-bool osgWidget_Frame_writeData(const osg::Object& obj, osgDB::Output& fw) {
-	const osgWidget::Frame& model = static_cast<const osgWidget::Frame&>(obj);
+bool osgWidget_Frame_writeData(const osg::Object& /*obj*/, osgDB::Output& fw)
+{
+	// const osgWidget::Frame& model = static_cast<const osgWidget::Frame&>(obj);
 	
 	fw.indent() << fw.wrapString("Frame stuff...") << std::endl;
 

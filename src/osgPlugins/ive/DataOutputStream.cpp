@@ -646,11 +646,11 @@ void DataOutputStream::writePackedFloatArray(const osg::FloatArray* a, float max
     if (maxError>0.0f)
     {
     
-        float byteError = 0.0f;
+        //float byteError = 0.0f;
         float byteMultiplier = 255.0f/(maxValue-minValue);
         float byteInvMultiplier = 1.0f/byteMultiplier;
 
-        float shortError = 0.0f;
+        //float shortError = 0.0f;
         float shortMultiplier = 65535.0f/(maxValue-minValue);
         float shortInvMultiplier = 1.0f/shortMultiplier;
 

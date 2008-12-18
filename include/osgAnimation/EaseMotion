@@ -169,7 +169,7 @@ namespace osgAnimation {
         enum TimeBehaviour 
         {
             CLAMP,
-            LOOP,
+            LOOP
         };
         Motion(float startValue = 0, float duration = 1, float changeValue = 1, TimeBehaviour tb = CLAMP) : _time(0), _startValue(startValue), _changeValue(changeValue), _duration(duration), _behaviour(tb) {}
         virtual ~Motion() {}

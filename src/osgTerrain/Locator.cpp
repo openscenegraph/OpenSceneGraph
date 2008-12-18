@@ -33,9 +33,9 @@ Locator::Locator():
 Locator::Locator(const Locator& locator,const osg::CopyOp& copyop):
     osg::Object(locator,copyop),
     _coordinateSystemType(locator._coordinateSystemType),
-    _ellipsoidModel(locator._ellipsoidModel),
     _format(locator._format),
     _cs(locator._cs),
+    _ellipsoidModel(locator._ellipsoidModel),
     _transform(locator._transform),
     _definedInFile(locator._definedInFile),
     _transformScaledByResolution(locator._transformScaledByResolution)

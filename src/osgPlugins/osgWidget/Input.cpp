@@ -7,14 +7,16 @@
 #include <osgDB/FileUtils>
 #include <osgWidget/Input>
 
-bool osgWidget_Input_readData(osg::Object& obj, osgDB::Input& fr) {
+bool osgWidget_Input_readData(osg::Object& /*obj*/, osgDB::Input& fr) 
+{
 	osgWidget::warn() << "Input read" << std::endl;
 	
 	return false;
 }
 
-bool osgWidget_Input_writeData(const osg::Object& obj, osgDB::Output& fw) {
-	const osgWidget::Input& model = static_cast<const osgWidget::Input&>(obj);
+bool osgWidget_Input_writeData(const osg::Object& /*obj*/, osgDB::Output& fw)
+{
+	// const osgWidget::Input& model = static_cast<const osgWidget::Input&>(obj);
 	
 	fw.indent() << fw.wrapString("Input stuff...") << std::endl;
 

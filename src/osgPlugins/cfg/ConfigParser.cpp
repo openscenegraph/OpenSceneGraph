@@ -2110,7 +2110,7 @@ yyerrlab:
      token.  */
   goto yyerrlab2;
 
-
+#if 0
 /*----------------------------------------------------.
 | yyerrlab1 -- error raised explicitly by an action.  |
 `----------------------------------------------------*/
@@ -2125,7 +2125,7 @@ yyerrlab1:
 
 
   goto yyerrlab2;
-
+#endif
 
 /*---------------------------------------------------------------.
 | yyerrlab2 -- pop states until the error token can be shifted.  |

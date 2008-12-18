@@ -139,8 +139,8 @@ bool trpgRange::operator == (const trpgRange &in) const
 		if (strcmp(category,in.category))
 			return false;
 	} else {
-		if (category && !in.category ||
-			!category && in.category)
+		if ((category && !in.category) ||
+	            (!category && in.category) )
 			return false;
 	}
 
@@ -148,8 +148,8 @@ bool trpgRange::operator == (const trpgRange &in) const
 		if (strcmp(subCategory,in.subCategory))
 			return false;
 	} else {
-		if (subCategory && !in.subCategory ||
-			!subCategory && in.subCategory)
+		if ((subCategory && !in.subCategory) ||
+		    (subCategory && in.subCategory))
 			return false;
 	}
 	if(handle != in.handle)
@@ -192,8 +192,14 @@ bool trpgRange::Read(trpgReadBuffer &buf)
 
 		// Read the handle if we can..
 		try {
-			if(!buf.Get((int32 &)handle)) {
-				handle = -1;
+                        int32 tempHandle;                
+			if(buf.Get(tempHandle)) 
+                        {
+                            handle = tempHandle;
+                        }
+                        else
+                        {
+			    handle = -1;
 			}
 		}
 		catch (...) {

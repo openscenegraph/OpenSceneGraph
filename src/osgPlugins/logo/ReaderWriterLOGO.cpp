@@ -171,7 +171,7 @@ class Logos: public osg::Drawable
         bool hasLogos()
         {
             int n = 0;
-            for( int i = Center; i <= last_position; i++ )
+            for( int i = Center; i < last_position; i++ )
                 n += logos[i].size();
             return (n != 0);
         }

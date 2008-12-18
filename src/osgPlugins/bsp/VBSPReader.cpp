@@ -355,11 +355,11 @@ void VBSPReader::processDispVerts(std::istream & str, int offset, int length)
 std::string VBSPReader::getToken(std::string str, const char * delim,
                                  std::string::size_type & index)
 {
-    std::string::size_type start, end;
     std::string   token;
 
     // Look for the first non-occurrence of the delimiters
-    start = str.find_first_not_of(" \t\n\r\"", index);
+    std::string::size_type start = str.find_first_not_of(" \t\n\r\"", index);
+    std::string::size_type end = std::string::npos;
     if (start != std::string::npos)
     {
         // From there, look for the first occurrence of a delimiter
@@ -627,7 +627,6 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
     bool                    found = false;
     ref_ptr<StateSet>       stateSet;
     std::string             shaderName;
-    osg::Image *            texImage = 0;
     std::string             texName;
     std::string             tex2Name;
     ref_ptr<Texture>        texture;

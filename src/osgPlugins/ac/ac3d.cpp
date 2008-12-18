@@ -1168,7 +1168,8 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
             std::string texname = readString(stream);
 
             // strip absolute paths
-            if (texname[0] == '/' || isalpha(texname[0]) && texname[1] == ':') {
+            if (texname[0] == '/' || 
+                (isalpha(texname[0]) && texname[1] == ':')) {
                 std::string::size_type p = texname.rfind('\\');
                 if (p != std::string::npos)
                     texname = texname.substr(p+1, std::string::npos);

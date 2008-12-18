@@ -258,13 +258,13 @@ public:
         _string(""),
         _point1(0,0,0),
         _point2(0,0,0),
+        _ocs(0,0,1),
         _height(1),
         _xscale(1),
         _rotation(0),
         _flags(0),
         _hjustify(0),
-        _vjustify(0),
-        _ocs(0,0,1) {}
+        _vjustify(0) {}
 
     virtual ~dxfText() {}
     virtual dxfBasicEntity*        create() { return new dxfText; }

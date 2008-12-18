@@ -67,11 +67,23 @@ U4 read_U4(Iter &it)
     return u4;
 }
 
+template<typename D, typename S>
+D changeType4(S src)
+{
+    D dest;
+    char* dest_ptr = reinterpret_cast<char*>(&dest);
+    char* src_ptr = reinterpret_cast<char*>(&src);
+    for(int i=0; i<4; ++i)
+    {
+        *dest_ptr = *src_ptr;
+    }
+    return dest;
+}
+
 template<class Iter>
 F4 read_F4(Iter &it)
 {
-    U4 u4 = read_U4(it);
-    return *reinterpret_cast<F4 *>(&u4);
+    return changeType4<F4, U4>(read_U4(it));
 }
 
 template<class Iter>

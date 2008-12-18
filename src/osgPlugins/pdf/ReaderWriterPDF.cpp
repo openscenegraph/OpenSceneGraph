@@ -31,9 +31,12 @@ class CairoImage : public osg::Referenced
             _context(0) {}
             
         
-        void create(unsigned int width, unsigned int height)
+        void create(int width, int height)
         {
-            if (_image->data() && width==_image->s() && height==_image->t()) return;
+            if (_image->data() && width==_image->s() && height==_image->t()) 
+            {
+                return;
+            }
 
             osg::notify(osg::NOTICE)<<"Create cario surface/context "<<width<<", "<<height<<std::endl;
 
@@ -208,7 +211,8 @@ class PopplerPdfImage : public osgWidget::PdfImage
             cairo_restore(_cairoImage->getContext());
 
             dirty();
-
+            
+            return true;
 	}
 
 

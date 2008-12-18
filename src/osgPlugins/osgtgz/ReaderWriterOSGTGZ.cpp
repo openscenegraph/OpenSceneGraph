@@ -73,9 +73,11 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             mkdir( dirname, 0700 );
         #endif
 
-            system( command );
+            if ( system( command ) ) {
+                return ReadResult::FILE_NOT_HANDLED;
+            }
 
-            osg::Group *grp = new osg::Group;
+            osg::ref_ptr<osg::Group> grp = new osg::Group;
             
             osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::ReaderWriter::Options;
             local_options->getDatabasePathList().push_front(dirname);
@@ -97,12 +99,13 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             // note, is this the right command for windows?
             // is there any way of overiding the Y/N option? RO.
             sprintf( command, "erase %s", dirname );
-            system( command );
         #else
 
             sprintf( command, "rm -rf %s", dirname );
-            system( command );
         #endif
+            if ( system( command ) ) {
+                return ReadResult::FILE_NOT_HANDLED;
+            }
 
             if( grp->getNumChildren() == 0 )
             {
@@ -110,7 +113,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
-            return grp;
+            return grp.get();
 
         }
 

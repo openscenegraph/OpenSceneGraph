@@ -24,17 +24,17 @@ osgDB::RegisterDotOsgWrapperProxy ShadowMap_Proxy
     ShadowMap_writeLocalData
 );
 
-bool ShadowMap_readLocalData(osg::Object& obj, osgDB::Input &fr)
+bool ShadowMap_readLocalData(osg::Object& /*obj*/, osgDB::Input &/*fr*/)
 {
-    osgShadow::ShadowMap& ss = static_cast<osgShadow::ShadowMap&>(obj);
+    // osgShadow::ShadowMap& ss = static_cast<osgShadow::ShadowMap&>(obj);
     bool itAdvanced = false;
 
     return itAdvanced;
 }
 
-bool ShadowMap_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
+bool ShadowMap_writeLocalData(const osg::Object& /*obj*/, osgDB::Output& /*fw*/)
 {
-    const osgShadow::ShadowMap& ss = static_cast<const osgShadow::ShadowMap &>(obj);
+    // const osgShadow::ShadowMap& ss = static_cast<const osgShadow::ShadowMap &>(obj);
 
     return true;
 }

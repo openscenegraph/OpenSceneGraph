@@ -286,6 +286,7 @@ bool LibVncImage::sendPointerEvent(int x, int y, int buttonMask)
         SendPointerEvent(_client ,x, y, buttonMask);
         return true;
     }
+    return false;
 }
 
 bool LibVncImage::sendKeyEvent(int key, bool keyDown)
@@ -295,6 +296,7 @@ bool LibVncImage::sendKeyEvent(int key, bool keyDown)
         SendKeyEvent(_client, key, keyDown ? TRUE : FALSE);
         return true;
     }
+    return false;
 }
 
 

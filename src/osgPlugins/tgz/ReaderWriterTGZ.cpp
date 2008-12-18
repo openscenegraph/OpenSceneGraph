@@ -84,9 +84,11 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
  
             osg::notify(osg::NOTICE)<<"Running command '"<<command<<"'"<<std::endl;
 
-            system( command );
+            int result = system( command );
+            if (result!=0) return ReadResult::ERROR_IN_READING_FILE;
+            
 
-            osg::Group *grp = new osg::Group;
+            osg::ref_ptr<osg::Group> grp = new osg::Group;
  
             osg::notify(osg::NOTICE)<<"Done"<<std::endl;
  
@@ -124,15 +126,16 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
             sprintf( command, "rm -rf %s", dirname );
         #endif
             osg::notify(osg::NOTICE)<<"Running command '"<<command<<"'"<<std::endl;
-            system( command );
+
+            result = system( command );
+            if (result!=0) return ReadResult::ERROR_IN_READING_FILE;
 
             if( grp->getNumChildren() == 0 )
             {
-                grp->unref();
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
-            return grp;
+            return grp.get();
 
         }
 

@@ -24,17 +24,17 @@ osgDB::RegisterDotOsgWrapperProxy ShadowTexture_Proxy
     ShadowTexture_writeLocalData
 );
 
-bool ShadowTexture_readLocalData(osg::Object& obj, osgDB::Input &fr)
+bool ShadowTexture_readLocalData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 {
-    osgShadow::ShadowTexture& ss = static_cast<osgShadow::ShadowTexture&>(obj);
+    // osgShadow::ShadowTexture& ss = static_cast<osgShadow::ShadowTexture&>(obj);
     bool itAdvanced = false;
 
     return itAdvanced;
 }
 
-bool ShadowTexture_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
+bool ShadowTexture_writeLocalData(const osg::Object& /*obj*/, osgDB::Output& /*fw*/)
 {
-    const osgShadow::ShadowTexture& ss = static_cast<const osgShadow::ShadowTexture &>(obj);
+    // const osgShadow::ShadowTexture& ss = static_cast<const osgShadow::ShadowTexture &>(obj);
 
     return true;
 }

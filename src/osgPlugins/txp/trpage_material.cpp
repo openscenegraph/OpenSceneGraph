@@ -1417,11 +1417,15 @@ bool trpgTexture::Read(trpgReadBuffer &buf)
 	buf.Get(ival);  
 	// Read the handle if we can..
 	try {
-	    if(!buf.Get((int32 &)handle)) {
-		handle = -1;
-	    }
-	    else {
+            int32 tempHandle;                
+	    if(buf.Get(tempHandle)) 
+            {
 		writeHandle = true;
+                handle = tempHandle;
+            }
+            else
+            {
+		handle = -1;
 	    }
 	}
 	catch (...) {

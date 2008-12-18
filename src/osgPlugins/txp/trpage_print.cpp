@@ -763,13 +763,13 @@ bool trpgLightAttr::Print(trpgPrintBuffer &buf) const
     buf.IncreaseIndent();
     sprintf(ls,"type = %s",strType[(int)(data.type)]);                buf.prnLine(ls);
     sprintf(ls,"directionality = %s",strDirect[(int)(data.directionality)]);    buf.prnLine(ls);
-    sprintf(ls,"front color (RGB) = %.2lf, %.2lf, %.2lf",
+    sprintf(ls,"front color (RGB) = %.2f, %.2f, %.2f",
             data.frontColor.red, data.frontColor.green,data.frontColor.blue );    buf.prnLine(ls);
-    sprintf(ls,"front intensity = %.2lf", data.frontIntensity );        buf.prnLine(ls);
-    sprintf(ls,"back color (RGB) = %.2lf, %.2lf, %.2lf",
+    sprintf(ls,"front intensity = %.2f", data.frontIntensity );        buf.prnLine(ls);
+    sprintf(ls,"back color (RGB) = %.2f, %.2f, %.2f",
             data.backColor.red, data.backColor.green,data.backColor.blue );    buf.prnLine(ls);
-    sprintf(ls,"back intensity = %.2lf", data.backIntensity );            buf.prnLine(ls);
-    sprintf(ls,"normal (xyz) = %.2lf,%.2lf,%.2lf",
+    sprintf(ls,"back intensity = %.2f", data.backIntensity );            buf.prnLine(ls);
+    sprintf(ls,"normal (xyz) = %.2f,%.2f,%.2f",
             data.normal.x,data.normal.y,data.normal.z );            buf.prnLine(ls);
     sprintf(ls,"smc = %d",data.smc);                        buf.prnLine(ls);
     sprintf(ls,"fid = %d",data.fid);                        buf.prnLine(ls);
@@ -783,15 +783,15 @@ bool trpgLightAttr::Print(trpgPrintBuffer &buf) const
             (data.flags & trpgLightAttr::trpg_Directional ? "yes" : "no" ));    buf.prnLine(ls);
     sprintf(ls,"enable back color = %s",
             (data.flags & trpgLightAttr::trpg_BackColor ? "yes" : "no" ));    buf.prnLine(ls);
-    sprintf(ls,"horizontal lobe angle = %.2lf",data.horizontalLobeAngle);    buf.prnLine(ls);
-    sprintf(ls,"vertical lobe angle = %.2lf",data.verticalLobeAngle);        buf.prnLine(ls);
-    sprintf(ls,"lobe roll angle = %.2lf",data.lobeRollAngle);            buf.prnLine(ls);
-    sprintf(ls,"lobe falloff = %.2lf",data.lobeFalloff);            buf.prnLine(ls);
-    sprintf(ls,"ambient intensity = %.2lf",data.ambientIntensity);        buf.prnLine(ls);
+    sprintf(ls,"horizontal lobe angle = %.2f",data.horizontalLobeAngle);    buf.prnLine(ls);
+    sprintf(ls,"vertical lobe angle = %.2f",data.verticalLobeAngle);        buf.prnLine(ls);
+    sprintf(ls,"lobe roll angle = %.2f",data.lobeRollAngle);            buf.prnLine(ls);
+    sprintf(ls,"lobe falloff = %.2f",data.lobeFalloff);            buf.prnLine(ls);
+    sprintf(ls,"ambient intensity = %.2f",data.ambientIntensity);        buf.prnLine(ls);
     sprintf(ls,"reflective only = %s",
             (data.flags & trpgLightAttr::trpg_Reflective ? "yes" : "no") );    buf.prnLine(ls);
     sprintf(ls,"quality = %s", strQuality[(int)(data.quality)]);        buf.prnLine(ls);
-    sprintf(ls,"significance for RASCAL lights = %.2lf",
+    sprintf(ls,"significance for RASCAL lights = %.2f",
             data.rascalSignificance );                        buf.prnLine(ls);
     sprintf(ls,"calligraphic draw order = %d",
             data.calligraphicAttr.drawOrder );                    buf.prnLine(ls);
@@ -809,27 +809,27 @@ bool trpgLightAttr::Print(trpgPrintBuffer &buf) const
             (data.flags & trpgLightAttr::trpg_FogPunch ? "yes" : "no" ) );    buf.prnLine(ls);
     sprintf(ls,"performer range mode enable Z buffer = %s",
             (data.flags & trpgLightAttr::trpg_ZBuffer ? "yes" : "no" ) );    buf.prnLine(ls);
-    sprintf(ls,"performer maximum pixel size = %.2lf",
+    sprintf(ls,"performer maximum pixel size = %.2f",
             data.performerAttr.maxPixelSize );                    buf.prnLine(ls);
-    sprintf(ls,"performer minimum pixel size = %.2lf",
+    sprintf(ls,"performer minimum pixel size = %.2f",
             data.performerAttr.minPixelSize );                    buf.prnLine(ls);
-    sprintf(ls,"performer actual size = %.2lf",
+    sprintf(ls,"performer actual size = %.2f",
             data.performerAttr.actualSize );                    buf.prnLine(ls);
-    sprintf(ls,"performer transparent pixel size = %.2lf",
+    sprintf(ls,"performer transparent pixel size = %.2f",
             data.performerAttr.transparentPixelSize );                buf.prnLine(ls);
-    sprintf(ls,"performer transparent falloff exponent = %.2lf",
+    sprintf(ls,"performer transparent falloff exponent = %.2f",
             data.performerAttr.transparentFallofExp );                buf.prnLine(ls);
-    sprintf(ls,"performer transparent scale = %.2lf",
+    sprintf(ls,"performer transparent scale = %.2f",
             data.performerAttr.transparentScale );                buf.prnLine(ls);
-    sprintf(ls,"performer transparent clamp = %.2lf",
+    sprintf(ls,"performer transparent clamp = %.2f",
             data.performerAttr.transparentClamp );                buf.prnLine(ls);
-    sprintf(ls,"performer fog scale = %.2lf",
+    sprintf(ls,"performer fog scale = %.2f",
             data.performerAttr.fogScale );                    buf.prnLine(ls);
-    sprintf(ls,"animation period = %.2lf",data.animationAttr.period);        buf.prnLine(ls);
-    sprintf(ls,"animation phase delay = %.2lf",
+    sprintf(ls,"animation period = %.2f",data.animationAttr.period);        buf.prnLine(ls);
+    sprintf(ls,"animation phase delay = %.2f",
             data.animationAttr.phaseDelay );                    buf.prnLine(ls);
-    sprintf(ls,"animation time on = %.2lf",data.animationAttr.timeOn);        buf.prnLine(ls);
-    sprintf(ls,"animation vector (ijk) = %.2lf, %.2lf, %.2lf",
+    sprintf(ls,"animation time on = %.2f",data.animationAttr.timeOn);        buf.prnLine(ls);
+    sprintf(ls,"animation vector (ijk) = %.2f, %.2f, %.2f",
             data.animationAttr.vector.x,data.animationAttr.vector.y,
             data.animationAttr.vector.z);                    buf.prnLine(ls);
     sprintf(ls,"animation - flashing = %s",

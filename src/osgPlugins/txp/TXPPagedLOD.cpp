@@ -23,7 +23,7 @@ TXPPagedLOD::~TXPPagedLOD()
 void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 {
 
-    TileMapper* tileMapper = dynamic_cast<TileMapper*>(nv.getUserData());
+    //TileMapper* tileMapper = dynamic_cast<TileMapper*>(nv.getUserData());
     //Modified by Brad Anderegg (May-27-08) because the black listing process appears to make tiles switch lods
     //when they clearly shouldnt, in the worst cases a tile will page out that is right in front of you.  
     bool forceUseOfFirstChild = /*tileMapper ? (tileMapper->isNodeBlackListed(this)) :*/ false;
@@ -49,7 +49,8 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 
             for(unsigned int i=0;i<maxRangeSize;++i)
             {
-                if (forceUseOfFirstChild || _rangeList[i].first<=distance && distance<_rangeList[i].second)
+                if (forceUseOfFirstChild || 
+                    (_rangeList[i].first<=distance && distance<_rangeList[i].second))
                 {
                     if (i<_children.size())
                     {

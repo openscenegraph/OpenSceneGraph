@@ -351,6 +351,7 @@ bool ivApplicateIntType(const osg::Array *array, fieldClass &field, int startInd
                                           (array, field, 1, 255, 0, startIndex, stopIndex, numItemsUntilMinusOne); return true;
       case osg::Array::Vec4ArrayType:   osgArray2ivMField_pack_template<fieldClass, fieldItemType, float, 4>
                                           (array, field, 255.f, 255.f, 0.f, startIndex, stopIndex, numItemsUntilMinusOne); return true;
+      default: break;
     }
   }
   return false;
@@ -365,6 +366,7 @@ static void osgArray2ivMField(const osg::Array *array, SoMField &field, int star
     {
       case osg::Array::FloatArrayType:  osgArray2ivMField_template<SoMFFloat, float, float>
                                           (array, (SoMFFloat&)field, startIndex, stopIndex, numItemsUntilMinusOne); return;
+      default: break;
     }
   }
   else if (ivApplicateIntType<SoMFInt32,  int32_t>(array, (SoMFInt32&) field, startIndex, stopIndex, numItemsUntilMinusOne)) return; 
@@ -377,6 +379,7 @@ static void osgArray2ivMField(const osg::Array *array, SoMField &field, int star
     {
       case osg::Array::Vec2ArrayType:   osgArray2ivMField_composite_template<SoMFVec2f, SbVec2f, float, 2>
                                           (array, (SoMFVec2f&)field, startIndex, stopIndex, numItemsUntilMinusOne); return;
+      default: break;
     }
   }
   else if (field.isOfType(SoMFVec3f::getClassTypeId()))
@@ -387,6 +390,7 @@ static void osgArray2ivMField(const osg::Array *array, SoMField &field, int star
                                           (array, (SoMFVec3f&)field, startIndex, stopIndex, numItemsUntilMinusOne); return;
       case osg::Array::Vec2ArrayType:   osgArray2ivMField_composite_template<SoMFVec3f, SbVec3f, float, 2>
                                           (array, (SoMFVec3f&)field, startIndex, stopIndex, numItemsUntilMinusOne); return;
+      default: break;
     }
   }
   else if (field.isOfType(SoMFVec4f::getClassTypeId()))
@@ -394,6 +398,7 @@ static void osgArray2ivMField(const osg::Array *array, SoMField &field, int star
     switch (array->getType()) {
       case osg::Array::Vec4ArrayType:   osgArray2ivMField_composite_template<SoMFVec4f, SbVec4f, float, 4>
                                           (array, (SoMFVec4f&)field, startIndex, stopIndex, numItemsUntilMinusOne); return;
+      default: break;
     }
   }
   else if (field.isOfType(SoMFColor::getClassTypeId()))
@@ -406,6 +411,7 @@ static void osgArray2ivMField(const osg::Array *array, SoMField &field, int star
                                           (array, (SoMFColor&)field, startIndex, stopIndex, numItemsUntilMinusOne); return;
       case osg::Array::Vec4ubArrayType: osgArray2ivMField_composite_template<SoMFColor, SbColor, GLubyte, 4>
                                           (array, (SoMFColor&)field, startIndex, stopIndex, numItemsUntilMinusOne); return;
+      default: break;
     }
   };
 
@@ -594,7 +600,7 @@ static void postProcessField(const SbIntList &runLengths, osg::PrimitiveSet::Mod
   field->setNum(newNum);
   int32_t *src = tmpArray;
   int32_t *dst = field->startEditing();
-  int32_t *dst2 = dst;
+  // int32_t *dst2 = dst;
   switch (binding) {
     case osg::Geometry::BIND_PER_VERTEX:
       for (int i=0; i<l; i++) {
@@ -1097,7 +1103,8 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
   bool ok = true;
   const osg::DrawArrayLengths *drawArrayLengths =
     (elementsCount == -1) ? dynamic_cast<const osg::DrawArrayLengths*>(pset) : NULL;
-  int drawArrayLengthsElems;
+
+  int drawArrayLengthsElems = 0;
 
   if (drawArrayLengths) {
 
@@ -1121,7 +1128,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
 
   // Normal indexing
   int normalStart = g->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX ? startIndex : normalIndex;
-  int numNormalsUsed;
+  int numNormalsUsed = 0;
   switch (g->getNormalBinding()) {
   case osg::Geometry::BIND_OFF: // FIXME: what is meaning of OFF value?
   case osg::Geometry::BIND_OVERALL:           numNormalsUsed = 0; break;
@@ -1134,7 +1141,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
 
   // Color indexing
   int colorStart = g->getColorBinding() == osg::Geometry::BIND_PER_VERTEX ? startIndex : colorIndex;
-  int numColorsUsed;
+  int numColorsUsed = 0;
   switch (g->getColorBinding()) {
   case osg::Geometry::BIND_OFF:
   case osg::Geometry::BIND_OVERALL:           numColorsUsed = 0; break;
@@ -1193,7 +1200,8 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
     int i,n = stopIndex-startIndex;
 
     // create alternate coordinates
-    if (ivCoords->isOfType(SoCoordinate4::getClassTypeId())) {
+    if (ivCoords->isOfType(SoCoordinate4::getClassTypeId()))
+    {
       nonIndexedCoords = new SoCoordinate4;
       if (ok) {
         ((SoCoordinate4*)nonIndexedCoords)->point.setNum(n);
@@ -1217,9 +1225,12 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
 
     // create alternate texture coordinates
     if (ivTexCoords)
-      if (ivTexCoords->isOfType(SoTextureCoordinate2::getClassTypeId())) {
+    {
+      if (ivTexCoords->isOfType(SoTextureCoordinate2::getClassTypeId()))
+      {
         nonIndexedTexCoords = new SoTextureCoordinate2;
-        if (ok) {
+        if (ok)
+        {
           ((SoTextureCoordinate2*)nonIndexedTexCoords)->point.setNum(n);
           ok = ivProcessArray<SbVec2f,SoMFVec2f>(g->getTexCoordIndices(0),
                                                drawElemIndices,
@@ -1229,9 +1240,11 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
         }
       } else
 #ifdef __COIN__
-      if (ivTexCoords->isOfType(SoTextureCoordinate3::getClassTypeId())) {
+      if (ivTexCoords->isOfType(SoTextureCoordinate3::getClassTypeId()))
+      {
         nonIndexedTexCoords = new SoTextureCoordinate3;
-        if (ok) {
+        if (ok)
+        {
           ((SoTextureCoordinate3*)nonIndexedTexCoords)->point.setNum(n);
           ok = ivProcessArray<SbVec3f,SoMFVec3f>(g->getTexCoordIndices(0),
                                                drawElemIndices,
@@ -1239,10 +1252,12 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
                                                &((SoTextureCoordinate3*)ivCoords)->point,
                                                startIndex, n);
         }
-      } else
+      } 
+      else
 #endif  // __COIN__
         nonIndexedTexCoords = ivTexCoords;
-
+    }
+    
     // create alternate normals
     if (ivNormals) {
       nonIndexedNormals = new SoNormal;
@@ -1827,7 +1842,7 @@ void ConvertToInventor::apply(osg::Geode &node)
 #endif
 
   // Create SoSeparator and convert StateSet for Geode
-  InventorState *ivGeodeState = createInventorState(node.getStateSet());
+  /*InventorState *ivGeodeState = */createInventorState(node.getStateSet());
 
   // Convert drawables
   const int numDrawables = node.getNumDrawables();
@@ -1848,7 +1863,7 @@ void ConvertToInventor::apply(osg::Group &node)
 #endif
 
   // Create SoSeparator and convert StateSet
-  InventorState *ivState = createInventorState(node.getStateSet());
+  /*InventorState *ivState = */createInventorState(node.getStateSet());
 
   traverse(node);
 

@@ -85,7 +85,7 @@ protected:
   bool useIvExtensions;
   SoSeparator *ivRoot;
 
-  typedef struct InventorState {
+  struct InventorState {
     class SoGroup      *ivHead;
     class SoTexture2   *ivTexture;
     class SoMaterial   *ivMaterial;
@@ -120,6 +120,7 @@ protected:
         osgBlendEnabled(s.osgBlendEnabled), osgBlendFunc(s.osgBlendFunc)  {}
     static InventorState createTopLevelState(SoSeparator *ivRoot) { return InventorState(ivRoot); }
   };
+
   std::stack<InventorState> ivStack;
 
   typedef std::map<const class osg::TexEnv*, class SoTexture2*> Env2ivTexMap;

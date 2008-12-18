@@ -235,7 +235,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 #ifdef USE_DCMTK
 
         void convertPixelTypes(const DiPixel* pixelData, 
-                               EP_Representation& pixelRep, unsigned int& numPlanes, 
+                               EP_Representation& pixelRep, int& numPlanes, 
                                GLenum& dataType, GLenum& pixelFormat, unsigned int& pixelSize) const
         {
             dataType = GL_UNSIGNED_BYTE;
@@ -362,11 +362,10 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             osg::ref_ptr<osg::Image> image;
             unsigned int imageNum = 0;
             EP_Representation pixelRep;
-            unsigned int numPlanes = 0;
+            int numPlanes = 0;
             GLenum pixelFormat = 0;
             GLenum dataType = 0;
             unsigned int pixelSize = 0;
-            bool invertOrigiantion = false;
             
             typedef std::list<FileInfo> FileInfoList;
             FileInfoList fileInfoList;
@@ -576,7 +575,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                         osg::ref_ptr<osg::Image> imageAdapter = new osg::Image;
                         
                         EP_Representation curr_pixelRep;
-                        unsigned int curr_numPlanes;
+                        int curr_numPlanes;
                         GLenum curr_pixelFormat;
                         GLenum curr_dataType;
                         unsigned int curr_pixelSize;
@@ -619,7 +618,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                                                  
                             notice()<<"Image dimensions = "<<image->s()<<", "<<image->t()<<", "<<image->r()<<" pixelFormat=0x"<<std::hex<<pixelFormat<<" dataType=0x"<<std::hex<<dataType<<std::endl;
                         }
-                        else if (pixelData->getPlanes()>numPlanes || pixelData->getRepresentation()>pixelRep)
+                        else if (pixelData->getPlanes()>numPlanes ||
+                                 pixelData->getRepresentation()>pixelRep)
                         {
                             notice()<<"Need to reallocated "<<image->s()<<", "<<image->t()<<", "<<image->r()<<std::endl;
                             
@@ -696,6 +696,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 sliceThickness = rhs.sliceThickness;
                 numSlices = rhs.numSlices;
                 distance = rhs.distance;
+                
+                return *this;
             }
 
             std::string     filename;

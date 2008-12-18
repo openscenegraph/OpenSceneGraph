@@ -56,7 +56,7 @@ static bool readMatrix(osg::Matrix& matrix, osgDB::Input& fr, const char* keywor
     return iteratorAdvanced;
 }
 
-
+#if 0
 static bool writeMatrix(const osg::Matrix& matrix, osgDB::Output& fw, const char* keyword)
 {
     fw.indent() << keyword <<" {" << std::endl;
@@ -69,6 +69,7 @@ static bool writeMatrix(const osg::Matrix& matrix, osgDB::Output& fw, const char
     fw.indent() << "}"<< std::endl;
     return true;
 }
+#endif
 
 osg::Image* readIntensityImage(osgDB::Input& fr, bool& itrAdvanced)
 {

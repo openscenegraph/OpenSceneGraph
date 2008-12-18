@@ -20,16 +20,16 @@ osgDB::RegisterDotOsgWrapperProxy Viewer_Proxy
     Viewer_writeLocalData
 );
 
-bool Viewer_readLocalData(osg::Object &obj, osgDB::Input &fr)
+bool Viewer_readLocalData(osg::Object& /*obj*/, osgDB::Input& /*fr*/)
 {
-    osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&obj);
+    // osgViewer::Viewer* viewer = dynamic_cast<osgViewer::Viewer*>(&obj);
     bool iteratorAdvanced = false;
 
     return iteratorAdvanced;
 }
 
-bool Viewer_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
+bool Viewer_writeLocalData(const osg::Object& /*obj*/, osgDB::Output& /*fw*/)
 {
-    const osgViewer::Viewer* viewer = dynamic_cast<const osgViewer::Viewer*>(&obj);
+    // const osgViewer::Viewer* viewer = dynamic_cast<const osgViewer::Viewer*>(&obj);
     return true;
 }

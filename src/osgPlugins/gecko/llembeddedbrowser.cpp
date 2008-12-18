@@ -75,8 +75,8 @@ LLEmbeddedBrowser* LLEmbeddedBrowser::sInstance = 0;
 ////////////////////////////////////////////////////////////////////////////////
 //
 LLEmbeddedBrowser::LLEmbeddedBrowser() :
-    mErrorNum( 0 ),
-    mNativeWindowHandle( 0 )
+    mNativeWindowHandle( 0 ),
+    mErrorNum( 0 )
 {
 }
 
@@ -93,10 +93,10 @@ LLEmbeddedBrowser* LLEmbeddedBrowser::getInstance()
     if ( ! sInstance )
     {
         sInstance = new LLEmbeddedBrowser;
-    };
+    }
 
     return sInstance;
-};
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -400,7 +400,7 @@ LLEmbeddedBrowserWindow* LLEmbeddedBrowser::createBrowserWindow( int browserWidt
 
     setLastError( 0x2001 );
     return 0;
-};
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////

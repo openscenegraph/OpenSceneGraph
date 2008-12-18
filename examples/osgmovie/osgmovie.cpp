@@ -43,7 +43,7 @@ class MovieEventHandler : public osgGA::GUIEventHandler
 {
 public:
 
-    MovieEventHandler():_trackMouse(false),_playToggle(true) {}
+    MovieEventHandler():_playToggle(true),_trackMouse(false) {}
     
     void setMouseTracking(bool track) { _trackMouse = track; }
     bool getMouseTracking() const { return _trackMouse; }

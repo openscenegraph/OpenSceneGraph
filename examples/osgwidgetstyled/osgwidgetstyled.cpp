@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     osgWidget::Widget* widget1 = new osgWidget::Widget("w1", 200.0f, 200.0f);
     osgWidget::Widget* widget2 = new osgWidget::Widget("w2", 100.0f, 100.0f);
     osgWidget::Widget* widget3 = new osgWidget::Widget("w3", 0.0f, 0.0f);
-    CustomStyled*      cs      = new CustomStyled();
+    // CustomStyled*      cs      = new CustomStyled();
 
     // Yep.
     wm->getStyleManager()->addStyle(new osgWidget::Style("widget.style1", STYLE1));

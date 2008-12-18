@@ -484,15 +484,24 @@ osg::Node* createIsland(const osg::Vec3& center = osg::Vec3( 0,0,0 ), float radi
     osg::Image* colorMap = NULL; // osgDB::readImageFile("Images/colorMap.png");
     if ( !colorMap ) {        
         
-        struct colorElevation { unsigned elevation; osg::Vec4ub color; } 
-            colorElevationMap[] = {
-                0, osg::Vec4ub( 0, 128, 255, 255 ), 
-                8, osg::Vec4ub( 192, 192, 128, 255 ),
-                32, osg::Vec4ub( 0, 255, 0, 255 ),
-                128, osg::Vec4ub( 128, 128, 128, 255 ),
-                192, osg::Vec4ub( 96, 96, 96, 255 ),
-                255, osg::Vec4ub( 255, 255, 255, 255 ),
-                256, osg::Vec4ub( 255, 255, 255, 255 ), // Guard
+        struct colorElevation 
+        {
+            colorElevation(unsigned int elev, const osg::Vec4ub& c):
+                elevation(elev), color(c) {}
+                
+            unsigned int elevation; 
+            osg::Vec4ub color;
+        };
+        
+        colorElevation colorElevationMap[] =
+            {
+                colorElevation(0, osg::Vec4ub( 0, 128, 255, 255 )), 
+                colorElevation(8, osg::Vec4ub( 192, 192, 128, 255 )),
+                colorElevation(32, osg::Vec4ub( 0, 255, 0, 255 )),
+                colorElevation(128, osg::Vec4ub( 128, 128, 128, 255 )),
+                colorElevation(192, osg::Vec4ub( 96, 96, 96, 255 )),
+                colorElevation(255, osg::Vec4ub( 255, 255, 255, 255 )),
+                colorElevation(256, osg::Vec4ub( 255, 255, 255, 255 ))
             };        
 
         colorMap = new osg::Image();
@@ -560,5 +569,5 @@ osg::Node* createModel(osg::ArgumentParser& /*arguments*/)
     return createIsland();
 }
 
-};
+}
 ////////////////////////////////////////////////////////////////////////////////

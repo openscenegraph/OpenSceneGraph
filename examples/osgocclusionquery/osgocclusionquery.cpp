@@ -635,8 +635,8 @@ createRandomTriangles( unsigned int num )
 {
     osg::ref_ptr<osg::Geode> tris = new osg::Geode;
 
-    osg::StateSet* state = tris->getOrCreateStateSet();
     osg::StateSet* ss = tris->getOrCreateStateSet();
+
     // Force wireframe. Many gfx cards handle this poorly.
     osg::PolygonMode* pm = new osg::PolygonMode(
         osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE );

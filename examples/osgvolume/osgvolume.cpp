@@ -1860,8 +1860,6 @@ int main( int argc, char **argv )
 
     
     ShadingModel shadingModel = Standard;
-    
-    bool maximumIntensityProjection = false;
     while(arguments.read("--mip")) shadingModel =  MaximumIntensityProjection;
 
     bool createNormalMap = false;

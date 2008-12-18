@@ -44,7 +44,7 @@ protected:
         Help,
         Play,
         Next,
-        Prev,
+        Prev
     };
 
     std::map<Binding, int> _actionKeys;

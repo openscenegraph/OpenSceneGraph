@@ -125,8 +125,6 @@ public:
         if(ea.getEventType()==GUIEventAdapter::KEYDOWN)
         {
 
-            int key = ea.getKey() ;
-
             switch( ea.getKey() )
             {
                 case osgGA::GUIEventAdapter::KEY_Right:

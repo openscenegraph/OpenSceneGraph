@@ -17,7 +17,8 @@
 using namespace osg;
 
 ClipNode::ClipNode():
-    _value(StateAttribute::ON)
+    _value(StateAttribute::ON),
+    _referenceFrame(RELATIVE_RF)
 {
     setStateSet(new StateSet);
 }
@@ -41,6 +42,12 @@ ClipNode::ClipNode(const ClipNode& cn, const CopyOp& copyop):
 
 ClipNode::~ClipNode()
 {
+}
+
+
+void ClipNode::setReferenceFrame(ReferenceFrame rf)
+{
+    _referenceFrame = rf;
 }
 
 // Create a 6 clip planes to create a clip box.

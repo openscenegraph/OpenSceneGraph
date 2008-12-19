@@ -27,6 +27,22 @@ bool ClipNode_readLocalData(Object& obj, Input& fr)
 
     ClipNode& clipnode = static_cast<ClipNode&>(obj);
 
+    if (fr[0].matchWord("referenceFrame"))
+    {
+        if (fr[1].matchWord("ABSOLUTE"))
+        {
+            clipnode.setReferenceFrame(ClipNode::ABSOLUTE_RF);
+            fr += 2;
+            iteratorAdvanced = true;
+        }
+        if (fr[1].matchWord("RELATIVE"))
+        {
+            clipnode.setReferenceFrame(ClipNode::RELATIVE_RF);
+            fr += 2;
+            iteratorAdvanced = true;
+        }
+    }
+
     osg::ref_ptr<StateAttribute> sa=0;
     while((sa=fr.readStateAttribute())!=0)
     {
@@ -42,6 +58,17 @@ bool ClipNode_readLocalData(Object& obj, Input& fr)
 bool ClipNode_writeLocalData(const Object& obj, Output& fw)
 {
     const ClipNode& clipnode = static_cast<const ClipNode&>(obj);
+
+    fw.indent() << "referenceFrame ";
+    switch (clipnode.getReferenceFrame())
+    {
+        case ClipNode::ABSOLUTE_RF:
+            fw << "ABSOLUTE\n";
+            break;
+        case ClipNode::RELATIVE_RF:
+        default:
+            fw << "RELATIVE\n";
+    };
 
     for(unsigned  int i=0;i<clipnode.getNumClipPlanes();++i)
     {

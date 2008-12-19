@@ -32,6 +32,11 @@ void ClipNode::write(DataOutputStream* out){
         throw Exception("ClipNode::write(): Could not cast this osg::ClipNode to an osg::Group.");
     // Write ClipNode's properties.
 
+    if ( out->getVersion() >= VERSION_0037 )
+    {
+        out->writeInt((int)getReferenceFrame());
+    }
+
     out->writeUInt(getNumClipPlanes());
 
     for (unsigned int i=0;i<getNumClipPlanes();++i)
@@ -55,6 +60,11 @@ void ClipNode::read(DataInputStream* in){
         else
             throw Exception("ClipNode::read(): Could not cast this osg::ClipNode to an osg::Object.");
         // Read ClipNode's properties
+
+        if ( in->getVersion() >= VERSION_0037 )
+        {
+            setReferenceFrame((osg::ClipNode::ReferenceFrame) in->readInt());
+        }
 
         unsigned int numClipPlanes = in->readUInt();
 

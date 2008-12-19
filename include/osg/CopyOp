@@ -52,7 +52,7 @@ class OSG_EXPORT CopyOp
             DEEP_COPY_PRIMITIVES        = 1<<8,
             DEEP_COPY_SHAPES            = 1<<9,
             DEEP_COPY_UNIFORMS          = 1<<10,
-            DEEP_COPY_ALL               = 0xffffffff
+            DEEP_COPY_ALL               = 0x7FFFFFFF
         };
 
         typedef unsigned int CopyFlags;

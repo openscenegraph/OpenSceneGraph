@@ -268,12 +268,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StencilTwoSided::Extensions)
 	          __void__glActiveStencilFace__GLenum,
 	          "",
 	          "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, ActiveStencilFaceProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
+
 	I_SimpleProperty(bool, StencilTwoSidedSupported, 
 	                 0, 
 	                 __void__setStencilTwoSidedSupported__bool);

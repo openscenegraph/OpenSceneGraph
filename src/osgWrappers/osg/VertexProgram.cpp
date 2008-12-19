@@ -257,36 +257,11 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexProgram::Extensions)
 	          __void__glProgramLocalParameter4fv__GLenum__GLuint__C5_GLfloat_P1,
 	          "",
 	          "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, BindProgramProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, GenProgramsProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, DeleteProgramsProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, ProgramStringProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, ProgramLocalParameter4fvProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
+
+
+
+
+
 	I_SimpleProperty(bool, VertexProgramSupported, 
 	                 0, 
 	                 __void__setVertexProgramSupported__bool);

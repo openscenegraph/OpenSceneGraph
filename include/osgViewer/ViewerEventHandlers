@@ -347,7 +347,10 @@ class OSGVIEWER_EXPORT ScreenCaptureHandler : public osgGA::GUIEventHandler
 
         // aa will point to an osgViewer::View, so we will take a screenshot
         // of that view's graphics contexts.
-        bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+        virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+
+        /** Capture the given viewer's views on the next frame. */
+        virtual void captureNextFrame(osgViewer::ViewerBase& viewer);
 
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;

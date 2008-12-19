@@ -1,3 +1,733 @@
+2008-12-19 18:37  robert
+
+	* applications/CMakeLists.txt: Added osgversion into dynamic build
+	  path
+
+2008-12-19 18:02  robert
+
+	* src/osgViewer/View.cpp: Removed debug message
+
+2008-12-19 17:50  robert
+
+	* include/osgViewer/View, src/osgViewer/View.cpp,
+	  src/osgViewer/Viewer.cpp, src/osgWrappers/osgViewer/View.cpp:
+	  Moved main setSceneData methods in
+	  osgViewer::View::setSceneData()
+
+2008-12-19 17:15  robert
+
+	* src/osgWrappers/osgViewer/ViewerEventHandlers.cpp: Updated
+	  wrappers
+
+2008-12-19 17:15  robert
+
+	* include/osgViewer/ViewerEventHandlers,
+	  src/osgViewer/ScreenCaptureHandler.cpp: From Jean-Sebastein Guay,
+	  I recently had to reimplement screen capture functionality into
+	  our framework (which was broken since the switch from OSG 1.2 to
+	  2.2 over a year and a half ago). I used the ScreenCaptureHandler
+	  which I had contributed right before OSG 2.6 shipped, bit I had
+	  to trigger the screen capture programatically instead of by a key
+	  press in some cases, so I added a convenience method to do that.
+	  
+	  It's a minimal change, it just calls an already existing
+	  protected method. It was trivial to subclass the handler to do it
+	  in our code, but pushing the change into OSG makes sense as it's
+	  generally useful to have it in the handler itself.
+	  
+	  I also noticed that the handle() method was overridden from
+	  osgGA::GUIEventHandler but wasn't marked virtual. It wasn't
+	  intended that subclasses not be able to override it in turn, so
+	  I've added the keyword.""
+
+2008-12-19 16:59  robert
+
+	* src/osgPlugins/gz/ReaderWriterGZ.cpp: Fixed warning
+
+2008-12-19 16:35  robert
+
+	* src/osgPlugins/Inventor/ConvertToInventor.cpp: Fixed compile
+	  error during debug build
+
+2008-12-19 16:13  robert
+
+	* examples/osgprecipitation/osgprecipitation.cpp: Added support for
+	  user defined clipping of the precipitation effect, to test use:
+	  
+	  osgpreciptation lz.osg --clip 20
+	  
+
+2008-12-19 16:12  robert
+
+	* src/osgParticle/PrecipitationEffect.cpp: Added setting of the
+	  gl_ClipVertex to enable clip planes to affect preciptation
+
+2008-12-19 15:29  robert
+
+	* include/osg/ClipNode, src/osg/ClipNode.cpp,
+	  src/osgPlugins/ive/ClipNode.cpp, src/osgPlugins/ive/IveVersion.h,
+	  src/osgPlugins/osg/ClipNode.cpp, src/osgUtil/CullVisitor.cpp,
+	  src/osgWrappers/osg/ClipNode.cpp: Added
+	  ClipNode::set/getReferenceFrame();
+
+2008-12-19 14:30  robert
+
+	* src/osgText/CMakeLists.txt: Removed MATH_LIBRARY and FREETYPE
+	  library reference.
+
+2008-12-19 12:58  robert
+
+	* include/osgSim/SphereSegment, include/osgWidget/Widget: Fixed
+	  warning & error
+
+2008-12-19 12:50  robert
+
+	* applications/osgviewer/osgviewer.cpp: Reverted previous check-in
+	  to osgviewer.cpp as this was an accididental check-in with the
+	  code only in testing state, not appropriate to be checked-in.
+
+2008-12-19 12:46  robert
+
+	* include/osg/CopyOp: Fixed warning
+
+2008-12-19 12:29  robert
+
+	* src/osgShadow/StandardShadowMap.cpp: Fixed warning
+
+2008-12-19 12:28  robert
+
+	* examples/osgshadow/osgshadow.cpp: Added StandardShadowMap to list
+	  to test cases
+
+2008-12-19 11:36  robert
+
+	* applications/osgviewer/osgviewer.cpp,
+	  src/osgWrappers/genwrapper.conf,
+	  src/osgWrappers/osg/GL2Extensions.cpp,
+	  src/osgWrappers/osg/StencilTwoSided.cpp,
+	  src/osgWrappers/osg/Texture3D.cpp,
+	  src/osgWrappers/osg/VertexProgram.cpp,
+	  src/osgWrappers/osgAnimation/modified.gw: Updated wrappers
+
+2008-12-19 11:04  robert
+
+	* CMakeLists.txt, doc/Doxyfiles/doxyfile.cmake: From Mattias
+	  Helsing, "
+	  * Removed processing of include/OpenThreads in the OpenSceneGraph
+	  refman
+	  * Clears the mark_as_advanced property of the BUILD_DOCUMENTATION
+	  cmake variable (so it gets visible in simple view).
+	  "
+
+2008-12-19 10:20  robert
+
+	* include/osgUtil/SceneView, src/osgWrappers/Doxyfile.template,
+	  src/osgWrappers/osg/CollectOccludersVisitor.cpp,
+	  src/osgWrappers/osg/ComputeBoundsVisitor.cpp,
+	  src/osgWrappers/osg/GL2Extensions.cpp,
+	  src/osgWrappers/osg/Image.cpp, src/osgWrappers/osg/KdTree.cpp,
+	  src/osgWrappers/osg/NodeVisitor.cpp,
+	  src/osgWrappers/osg/StencilTwoSided.cpp,
+	  src/osgWrappers/osg/Texture3D.cpp,
+	  src/osgWrappers/osg/VertexProgram.cpp,
+	  src/osgWrappers/osgAnimation/Bone.cpp,
+	  src/osgWrappers/osgAnimation/LinkVisitor.cpp,
+	  src/osgWrappers/osgAnimation/RigGeometry.cpp,
+	  src/osgWrappers/osgAnimation/modified.gw,
+	  src/osgWrappers/osgDB/SharedStateManager.cpp,
+	  src/osgWrappers/osgGA/EventVisitor.cpp,
+	  src/osgWrappers/osgSim/InsertImpostorsVisitor.cpp,
+	  src/osgWrappers/osgUtil/CullVisitor.cpp,
+	  src/osgWrappers/osgUtil/DisplayRequirementsVisitor.cpp,
+	  src/osgWrappers/osgUtil/DrawElementTypeSimplifier.cpp,
+	  src/osgWrappers/osgUtil/GLObjectsVisitor.cpp,
+	  src/osgWrappers/osgUtil/IntersectVisitor.cpp,
+	  src/osgWrappers/osgUtil/IntersectionVisitor.cpp,
+	  src/osgWrappers/osgUtil/Simplifier.cpp,
+	  src/osgWrappers/osgUtil/Statistics.cpp,
+	  src/osgWrappers/osgUtil/UpdateVisitor.cpp: Updated wrappers
+
+2008-12-18 17:40  robert
+
+	* src/osgParticle/ParticleSystem.cpp: Fixed typo
+
+2008-12-18 17:09  robert
+
+	* CMakeLists.txt: From Bob Kuehne, "minor tweak to the cmake root
+	  file to handle debug correctly on os x."
+
+2008-12-18 17:01  robert
+
+	* src/osgParticle/Particle.cpp, src/osgParticle/ParticleSystem.cpp:
+	  Refactored the handling of particle rotation
+
+2008-12-18 16:10  robert
+
+	* src/osgPlugins/gecko/llembeddedbrowser.cpp,
+	  src/osgPlugins/gecko/llembeddedbrowserwindow.cpp,
+	  src/osgPlugins/gecko/llmozlib2.h: Fixed warnings
+
+2008-12-18 15:49  robert
+
+	* src/osgPlugins/3ds/readwrite.cpp,
+	  src/osgPlugins/3ds/viewport.cpp, src/osgPlugins/ac/ac3d.cpp,
+	  src/osgPlugins/bsp/VBSPGeometry.cpp,
+	  src/osgPlugins/bsp/VBSPReader.cpp,
+	  src/osgPlugins/curl/ReaderWriterCURL.cpp,
+	  src/osgPlugins/dxf/dxfEntity.h,
+	  src/osgPlugins/logo/ReaderWriterLOGO.cpp,
+	  src/osgPlugins/lwo/lwo2read.h, src/osgPlugins/lwo/old_Lwo2.cpp,
+	  src/osgPlugins/lwo/old_Lwo2.h, src/osgPlugins/lwo/old_lw.cpp,
+	  src/osgPlugins/md2/ReaderWriterMD2.cpp,
+	  src/osgPlugins/ogr/ReaderWriterOGR.cpp,
+	  src/osgPlugins/osgShadow/ShadowMap.cpp,
+	  src/osgPlugins/osgShadow/ShadowTechnique.cpp,
+	  src/osgPlugins/osgShadow/ShadowTexture.cpp,
+	  src/osgPlugins/osgShadow/ShadowVolume.cpp,
+	  src/osgPlugins/osgtgz/ReaderWriterOSGTGZ.cpp,
+	  src/osgPlugins/pdf/ReaderWriterPDF.cpp,
+	  src/osgPlugins/shp/ESRIShape.cpp,
+	  src/osgPlugins/tgz/ReaderWriterTGZ.cpp,
+	  src/osgPlugins/vnc/ReaderWriterVNC.cpp,
+	  src/osgPlugins/xine/ReaderWriterXine.cpp,
+	  src/osgPlugins/zip/ReaderWriterZIP.cpp: Fixed warnings
+
+2008-12-18 14:18  robert
+
+	* src/osgText/CMakeLists.txt: Added MATH_LIBRARY to link list
+
+2008-12-18 13:56  robert
+
+	* examples/osganimationmakepath/osganimationmakepath.cpp,
+	  examples/osganimationviewer/AnimtkViewerKeyHandler,
+	  examples/osgimagesequence/osgimagesequence.cpp,
+	  examples/osglauncher/osglauncher.cpp,
+	  examples/osgmemorytest/osgmemorytest.cpp,
+	  examples/osgmovie/osgmovie.cpp,
+	  examples/osgmultitexturecontrol/osgmultitexturecontrol.cpp,
+	  examples/osgocclusionquery/osgocclusionquery.cpp,
+	  examples/osgshadow/IslandScene.cpp,
+	  examples/osgsidebyside/osgsidebyside.cpp,
+	  examples/osgunittests/MultiThreadRead.cpp,
+	  examples/osgvolume/osgvolume.cpp,
+	  examples/osgwidgetstyled/osgwidgetstyled.cpp,
+	  examples/osgwidgetwindow/osgwidgetwindow.cpp: Fixed warnings
+
+2008-12-18 13:23  robert
+
+	* src/osgPlugins/Inventor/ConvertToInventor.cpp,
+	  src/osgPlugins/Inventor/ConvertToInventor.h: Fixed warnings
+
+2008-12-18 12:29  robert
+
+	* src/osgPlugins/cfg/ConfigParser.cpp: Fixed warning
+
+2008-12-18 12:27  robert
+
+	* src/osgPlugins/txp/TXPArchive.cpp: Quitened down debug messages
+
+2008-12-18 12:26  robert
+
+	* src/osgPlugins/txp/TXPPagedLOD.cpp,
+	  src/osgPlugins/txp/trpage_material.cpp,
+	  src/osgPlugins/txp/trpage_model.cpp,
+	  src/osgPlugins/txp/trpage_print.cpp,
+	  src/osgPlugins/txp/trpage_range.cpp: Fixed warnings
+
+2008-12-18 12:25  robert
+
+	* src/osgUtil/Optimizer.cpp: Quitened down debug message
+
+2008-12-18 11:54  robert
+
+	* src/osgPlugins/dicom/ReaderWriterDICOM.cpp,
+	  src/osgPlugins/gif/ReaderWriterGIF.cpp,
+	  src/osgPlugins/osg/ImageSequence.cpp,
+	  src/osgPlugins/osg/StateAttribute.cpp,
+	  src/osgPlugins/osg/StateSet.cpp, src/osgPlugins/osg/Uniform.cpp,
+	  src/osgPlugins/osgViewer/CompositeViewer.cpp,
+	  src/osgPlugins/osgViewer/View.cpp,
+	  src/osgPlugins/osgViewer/Viewer.cpp, src/osgVolume/Brick.cpp:
+	  Fixed warnings
+
+2008-12-18 11:06  robert
+
+	* include/osg/Image, include/osgAnimation/EaseMotion,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/osgWidget/Box.cpp,
+	  src/osgPlugins/osgWidget/EmbeddedWindow.cpp,
+	  src/osgPlugins/osgWidget/Frame.cpp,
+	  src/osgPlugins/osgWidget/Input.cpp,
+	  src/osgPlugins/osgWidget/Label.cpp,
+	  src/osgPlugins/osgWidget/Table.cpp,
+	  src/osgPlugins/osgWidget/Widget.cpp,
+	  src/osgPlugins/osgWidget/WindowManager.cpp,
+	  src/osgTerrain/GeometryTechnique.cpp, src/osgTerrain/Locator.cpp,
+	  src/osgTerrain/TerrainTile.cpp: Fixed warnings
+
+2008-12-17 22:52  robert
+
+	* src/osg/PagedLOD.cpp, src/osgDB/DatabasePager.cpp,
+	  src/osgParticle/ParticleSystem.cpp: Improved the effectiveness of
+	  the new max target number PageLOD's
+
+2008-12-17 17:23  robert
+
+	* examples/osgmultiplerendertargets/osgmultiplerendertargets.cpp:
+	  From J.P Delport, "I changed the default HDR mode to the ARB
+	  format and put in comments for some other possible modes.
+	  
+	  Some other comment cleanups too."
+
+2008-12-17 17:11  robert
+
+	* src/osgViewer/CompositeViewer.cpp, src/osgViewer/Renderer.cpp,
+	  src/osgViewer/ScreenCaptureHandler.cpp,
+	  src/osgViewer/StatsHandler.cpp, src/osgViewer/View.cpp: Fixed
+	  warnings
+
+2008-12-17 16:58  robert
+
+	* src/osgDB/DatabasePager.cpp: Fixed inactive PagedLOD removal code
+
+2008-12-17 16:13  robert
+
+	* include/osg/StencilTwoSided, include/osg/Texture3D,
+	  src/osg/StencilTwoSided.cpp, src/osg/Texture.cpp,
+	  src/osg/Texture1D.cpp, src/osg/Texture3D.cpp,
+	  src/osgPlugins/ive/HeightFieldLayer.cpp: Fixed warnings
+
+2008-12-17 16:02  robert
+
+	* src/osgPlugins/OpenFlight/FltExportVisitor.cpp,
+	  src/osgPlugins/OpenFlight/LightPointRecords.cpp,
+	  src/osgPlugins/OpenFlight/LightSourcePaletteManager.cpp,
+	  src/osgPlugins/OpenFlight/MaterialPaletteManager.cpp,
+	  src/osgPlugins/OpenFlight/TexturePaletteManager.cpp,
+	  src/osgPlugins/OpenFlight/TexturePaletteManager.h,
+	  src/osgPlugins/OpenFlight/VertexPaletteManager.cpp,
+	  src/osgPlugins/OpenFlight/expGeometryRecords.cpp,
+	  src/osgPlugins/OpenFlight/expPrimaryRecords.cpp: Fixed warnings
+
+2008-12-17 15:36  robert
+
+	* src/osgPlugins/hdr/hdrloader.cpp: Fixed warnings
+
+2008-12-17 15:32  robert
+
+	* include/osg/GLExtensions, include/osg/VertexProgram,
+	  include/osgAnimation/Timeline, include/osgWidget/PdfReader,
+	  src/osg/GLExtensions.cpp, src/osg/State.cpp,
+	  src/osg/VertexProgram.cpp, src/osgPlugins/hdr/hdrloader.cpp,
+	  src/osgWidget/Input.cpp: Fixed warnings
+
+2008-12-17 14:56  robert
+
+	* src/osgPlugins/cfg/CameraConfig.h,
+	  src/osgPlugins/cfg/ConfigLexer.cpp,
+	  src/osgPlugins/cfg/ConfigParser.cpp: Fixed warnings
+
+2008-12-17 13:14  robert
+
+	* include/osg/GL2Extensions, src/osg/GL2Extensions.cpp: Warning
+	  fixes
+
+2008-12-17 12:13  robert
+
+	* include/osg/CollectOccludersVisitor,
+	  include/osg/ComputeBoundsVisitor, include/osg/KdTree,
+	  include/osg/NodeVisitor, include/osgAnimation/Bone,
+	  include/osgAnimation/LinkVisitor,
+	  include/osgAnimation/RigGeometry,
+	  include/osgDB/SharedStateManager, include/osgGA/EventVisitor,
+	  include/osgSim/InsertImpostorsVisitor,
+	  include/osgUtil/CullVisitor,
+	  include/osgUtil/DisplayRequirementsVisitor,
+	  include/osgUtil/DrawElementTypeSimplifier,
+	  include/osgUtil/GLObjectsVisitor,
+	  include/osgUtil/IntersectVisitor,
+	  include/osgUtil/IntersectionVisitor, include/osgUtil/Simplifier,
+	  include/osgUtil/Statistics, include/osgUtil/UpdateVisitor,
+	  src/osg/Transform.cpp, src/osgDB/DatabasePager.cpp,
+	  src/osgFX/BumpMapping.cpp, src/osgGA/NodeTrackerManipulator.cpp,
+	  src/osgManipulator/Selection.cpp,
+	  src/osgShadow/OccluderGeometry.cpp, src/osgSim/SphereSegment.cpp,
+	  src/osgViewer/View.cpp: Introduce NodeVisitor::className and
+	  libraryName()
+
+2008-12-17 11:00  robert
+
+	* include/osg/GraphicsContext, include/osgAnimation/Sampler,
+	  include/osgIntrospection/ConstructorInfo,
+	  include/osgIntrospection/MethodInfo,
+	  include/osgIntrospection/PropertyInfo,
+	  include/osgShadow/MinimalDrawBoundsShadowMap, src/osg/Camera.cpp,
+	  src/osg/OcclusionQueryNode.cpp,
+	  src/osgIntrospection/ConstructorInfo.cpp,
+	  src/osgIntrospection/MethodInfo.cpp,
+	  src/osgIntrospection/PropertyInfo.cpp,
+	  src/osgShadow/ConvexPolyhedron.cpp,
+	  src/osgShadow/DebugShadowMap.cpp,
+	  src/osgShadow/MinimalCullBoundsShadowMap.cpp,
+	  src/osgShadow/MinimalDrawBoundsShadowMap.cpp,
+	  src/osgTerrain/Layer.cpp, src/osgText/Font.cpp,
+	  src/osgText/String.cpp: Warning fixes
+
+2008-12-17 10:34  robert
+
+	* src/osgPlugins/bsp/ReaderWriterVTF.cpp,
+	  src/osgPlugins/bsp/VBSPReader.cpp,
+	  src/osgPlugins/curl/ReaderWriterCURL.cpp: From Sekender, fixed
+	  warnins
+
+2008-12-17 10:33  robert
+
+	* src/osgPlugins/bmp/ReaderWriterBMP.cpp: Fixed warnings
+
+2008-12-17 10:01  robert
+
+	* include/osgAnimation/Skeleton: From Jean-Sebastien Guay, added
+	  missing export
+
+2008-12-16 21:16  robert
+
+	* include/osgWidget/EventInterface, src/osgWrappers/osgAnimation,
+	  src/osgWrappers/osgAnimation/Animation.cpp,
+	  src/osgWrappers/osgAnimation/AnimationManager.cpp,
+	  src/osgWrappers/osgAnimation/AnimationManagerBase.cpp,
+	  src/osgWrappers/osgAnimation/Assert.cpp,
+	  src/osgWrappers/osgAnimation/BasicAnimationManager.cpp,
+	  src/osgWrappers/osgAnimation/Bone.cpp,
+	  src/osgWrappers/osgAnimation/Channel.cpp,
+	  src/osgWrappers/osgAnimation/CubicBezier.cpp,
+	  src/osgWrappers/osgAnimation/EaseMotion.cpp,
+	  src/osgWrappers/osgAnimation/Interpolator.cpp,
+	  src/osgWrappers/osgAnimation/Keyframe.cpp,
+	  src/osgWrappers/osgAnimation/LinkVisitor.cpp,
+	  src/osgWrappers/osgAnimation/RigGeometry.cpp,
+	  src/osgWrappers/osgAnimation/Sampler.cpp,
+	  src/osgWrappers/osgAnimation/Skeleton.cpp,
+	  src/osgWrappers/osgAnimation/Skinning.cpp,
+	  src/osgWrappers/osgAnimation/Target.cpp,
+	  src/osgWrappers/osgAnimation/Timeline.cpp,
+	  src/osgWrappers/osgAnimation/TimelineAnimationManager.cpp,
+	  src/osgWrappers/osgAnimation/UpdateCallback.cpp,
+	  src/osgWrappers/osgAnimation/Vec3Packed.cpp,
+	  src/osgWrappers/osgAnimation/VertexInfluence.cpp,
+	  src/osgWrappers/osgAnimation/modified.gw,
+	  src/osgWrappers/osgAnimation/removed.gw,
+	  src/osgWrappers/osgWidget/PdfReader.cpp,
+	  src/osgWrappers/osgWidget/VncClient.cpp: Updated wrappers
+
+2008-12-16 20:49  robert
+
+	* examples/osganimationtimeline/osganimationtimeline.cpp,
+	  src/osgPlugins/bvh/ReaderWriterBVH.cpp: Build fixes for when the
+	  implict ref_ptr<> cast is not enabled
+
+2008-12-16 20:29  robert
+
+	* examples/osganimationmakepath/osganimationmakepath.cpp,
+	  examples/osganimationskinning/osganimationskinning.cpp,
+	  examples/osganimationsolid/osganimationsolid.cpp,
+	  examples/osganimationtimeline/osganimationtimeline.cpp,
+	  examples/osganimationviewer/AnimtkViewer,
+	  examples/osganimationviewer/AnimtkViewer.cpp,
+	  examples/osganimationviewer/AnimtkViewerGUI,
+	  examples/osganimationviewer/AnimtkViewerGUI.cpp,
+	  examples/osgwidgetbox/osgwidgetbox.cpp,
+	  examples/osgwidgetcanvas/osgwidgetcanvas.cpp,
+	  examples/osgwidgetmessagebox/osgwidgetmessagebox.cpp,
+	  examples/osgwidgetprogress/osgwidgetprogress.cpp,
+	  examples/osgwidgetstyled/osgwidgetstyled.cpp,
+	  examples/osgwidgettable/osgwidgettable.cpp,
+	  examples/osgwidgetwindow/osgwidgetwindow.cpp,
+	  include/osgAnimation/AnimationManagerBase,
+	  include/osgAnimation/BasicAnimationManager,
+	  include/osgAnimation/Bone, include/osgAnimation/EaseMotion,
+	  include/osgAnimation/RigGeometry, include/osgAnimation/Skeleton,
+	  include/osgAnimation/Skinning, include/osgAnimation/Timeline,
+	  include/osgAnimation/TimelineAnimationManager,
+	  include/osgWidget/EventInterface,
+	  src/osgAnimation/AnimationManagerBase.cpp,
+	  src/osgAnimation/BasicAnimationManager.cpp,
+	  src/osgAnimation/Bone.cpp, src/osgAnimation/CMakeLists.txt,
+	  src/osgAnimation/RigGeometry.cpp, src/osgAnimation/Skeleton.cpp,
+	  src/osgAnimation/Timeline.cpp,
+	  src/osgAnimation/TimelineAnimationManager.cpp,
+	  src/osgAnimation/UpdateCallback.cpp,
+	  src/osgPlugins/bvh/ReaderWriterBVH.cpp,
+	  src/osgPlugins/osgAnimation/ReaderWriter.cpp: From Cedric Pinson
+	  and Jeremey Moles, Changes to OpenSceneGraph-osgWidget-dev
+	  branch.
+	  
+	  Notes from Robert Osfield, Merged changes to
+	  OpenSceneGraph-osgWidget-dev r9367 (prior to my botched attempt
+	  at merged svn/trunk into the branch).
+
+2008-12-16 19:49  robert
+
+	* src/osgViewer/GraphicsWindowCarbon.cpp: From Bob Kuehne, build
+	  fixes.
+
+2008-12-16 16:36  robert
+
+	* CMakeLists.txt, include/OpenThreads/Version, include/osg/Version,
+	  packaging/pkgconfig/openscenegraph.pc,
+	  src/OpenThreads/CMakeLists.txt: Updated version numbers for 2.8.8
+	  dev release
+
+2008-12-16 15:58  robert
+
+	* src/osgWrappers/osg/GraphicsContext.cpp,
+	  src/osgWrappers/osgDB/DatabasePager.cpp,
+	  src/osgWrappers/osgTerrain/Terrain.cpp,
+	  src/osgWrappers/osgTerrain/TerrainTile.cpp: Updated wrappers
+
+2008-12-16 15:21  robert
+
+	* src/OpenThreads/win32/Win32Mutex.cpp: From Mathias Froehilch, "
+	  On OpenThreads win32 implementation we unconditionally unlock a
+	  mutex in the
+	  destructor. That happens even if the mutex was not locked before.
+	  When running a osg application within microsofts application
+	  verifier, that
+	  software checks tells me that we should not unlock an unlocked
+	  mutex.
+	  
+	  When I look at the posix threads mutex implementation, which does
+	  no unlock in
+	  the destructor and where it is illegal to destroy a locked mutex,
+	  I conclude
+	  that it is not needed for an OpenThreads::Mutex to do that unlock
+	  in the
+	  win32 Mutex destructor.
+	  
+	  Thus this patch based on rev 9358 removes that additional unlock
+	  in the win32
+	  mutex implementations destructor."
+
+2008-12-16 15:08  robert
+
+	* include/osg/GraphicsContext, src/osgViewer/CMakeLists.txt,
+	  src/osgViewer/GraphicsWindowCarbon.cpp,
+	  src/osgViewer/GraphicsWindowWin32.cpp,
+	  src/osgViewer/GraphicsWindowX11.cpp: From Sukender and Robert
+	  Osfield, introduced GraphicsContext::ScreenSettings &
+	  WindowingSystemInterface::enumerateScreenSettings.
+
+2008-12-16 12:38  robert
+
+	* src/osg/BufferObject.cpp: From Peter Hrenka, "Fix counting number
+	  of new arrays and avoid
+	  building free-list when not needed (saves
+	  a handfull of mallocs/frees).
+	  "
+
+2008-12-16 12:23  robert
+
+	* src/osgPlugins/txp/trpage_geom.h,
+	  src/osgPlugins/txp/trpage_print.cpp: Fixed warnings
+
+2008-12-16 12:20  robert
+
+	* src/osgPlugins/cfg/ConfigParser.cpp: Fixed warnings
+
+2008-12-16 11:43  robert
+
+	* CMakeLists.txt, CMakeModules/OsgCPack.cmake,
+	  doc/Doxyfiles/all_Doxyfile, doc/Doxyfiles/auto_Doxyfile,
+	  doc/Doxyfiles/core_Doxyfile, doc/Doxyfiles/custom_Footer.html,
+	  doc/Doxyfiles/doxyfile.cmake,
+	  doc/Doxyfiles/openthreads.doxyfile.cmake,
+	  src/OpenThreads/pthreads/CMakeLists.txt,
+	  src/OpenThreads/sproc/CMakeLists.txt: From Mattias Helsing,"Added
+	  doc/Doxyfiles/openthreads.doxyfile.cmake
+	  Updated all doxyfiles under doc/Doxyfiles. They are now all
+	  processed
+	  by cmake but make targets are only generated for
+	  OpenSceneGraphReferenceDocs and OpenThreadsReferenceDocs. The
+	  others
+	  can be run with doxygen directly in <builddir>/doc.
+	  Fixed a copy-paste in openthreads sproc and pthreads CMakeLists
+	  Added the osg logo to the html footers
+	  Added possibility to get generation of chm files.
+	  
+	  CMakeLists (toplevel):
+	  Added install of osg and ot reference docs. This also generates
+	  packaging targets of openscenegraph-doc and openthreads-doc if
+	  you
+	  have packaging enabled
+	  Removed the unused USING_OP_OT_TRIPLE_SET since there was no way
+	  of
+	  enabling it anyway
+	  Removed BUILD_REF_DOCS. IMO it was redundant -
+	  BUILD_DOCUMENTATION
+	  does the same thing and we get that anyway from including
+	  Documentation.cmake.
+	  OsgCPack.cmake:
+	  Removed generation of PACKAGE_SRC for msvc
+	  Added special handling for -doc packaging targets - they don't
+	  require
+	  system, architecture or compiler"
+
+2008-12-15 22:18  robert
+
+	* include/osgTerrain/Terrain, include/osgTerrain/TerrainTile,
+	  src/osgTerrain/GeometryTechnique.cpp, src/osgTerrain/Terrain.cpp,
+	  src/osgTerrain/TerrainTile.cpp: Added support for a
+	  Terrain::s/getTerrainTechniquePrototype()
+
+2008-12-15 20:38  robert
+
+	* src/osgViewer/GraphicsWindowCarbon.cpp: From Tatsuhiro Nishioka,
+	  "I found a bug in GraphicsWindowCarbon.
+	  GraphicsWindowCarbon::requestWarpPointer() places the mouse
+	  pointer in a (global?) display coordination, but it must be in a
+	  local window coordination. This problem is critical because the
+	  mouse cursor can go off a window especially when you place the
+	  window on the secondary screen.
+	  
+	  Attached is the file to fix this problem.
+	  
+	  I tested this modified file with the following situations (on
+	  FlightGear) and all works fine.
+	  - two windows on two screens (each has one window).
+	  - two windows on two screens (secondary screen has all windows).
+	  - two windows on two screens (primary screen has all windows).
+	  
+	  In all scenarios, warp requests (by right-click the mouse)
+	  successfully moves the mouse pointer to the center of the main
+	  window,
+	  and it is what it's supposed to be in the flightgear."
+
+2008-12-15 20:32  robert
+
+	* applications/CMakeLists.txt: Limited the static build to just
+	  osversion and osgstaticviewer
+
+2008-12-15 19:37  robert
+
+	* include/osg/GLExtensions, src/osg/GLExtensions.cpp,
+	  src/osg/Texture.cpp: Aded
+	  osg::isGLExtensionOrVersionSupported(uint contextID, char*
+	  extensionName, float minVersionRequired) method that
+	  returns true if (the extension string is supported or GL version
+	  is greater than or equal to a specified version) and
+	  non extension disable is used. This makes it possible to disable
+	  extensions that are now
+	  available as parts of the core OpenGL spec.
+	  
+	  Updated Texture.cpp is use this method.
+
+2008-12-15 16:46  robert
+
+	* src/osg/StateAttribute.cpp, src/osg/StateSet.cpp,
+	  src/osg/Uniform.cpp: From Paul Martz, "I'm not sure why this
+	  message was added, but it doesn't appear to merit INFO verbosity.
+	  Changing this from INFO to DEBUG_FP."
+
+2008-12-15 16:42  robert
+
+	* src/osg/BufferObject.cpp: From Peter Hrenka, "I implemented a
+	  free list reallocation scheme in
+	  VertexBufferObject::compileBuffer().
+	  
+	  The offsets of newly added Arrays were not properly
+	  calculated. This submission tries to find a
+	  matching empty slot when the total size of
+	  the VBO has not changed (e.g. when an array
+	  is replaced by another array of the same size).
+	  
+	  
+	  This fixes the overwriting issue that I showed in my posting
+	  "Bug in VertexBufferObject::compileBuffer" on OSG-Users.
+	  "
+
+2008-12-15 16:41  robert
+
+	* src/osgDB/DatabasePager.cpp: Reduced the default number
+	  _targetMaximumNumberOfPageLOD to 300 to keep the memory
+	  consumption on large databases a bit lower.
+
+2008-12-15 16:10  robert
+
+	* include/osgDB/DatabasePager: Added deprecated messages to get/set
+	  methods of outgoing expiry schemes.
+
+2008-12-15 14:07  robert
+
+	* CMakeLists.txt, CMakeModules/OsgCPack.cmake,
+	  src/osgWrappers/CMakeLists.txt: From Mathias Helsing, "Cpack
+	  support submission with:
+	  
+	  Better package naming. example
+	  openscenegraph-core-2.7.7-Linux-i386.tar.gz on my ubuntu laptop
+	  and
+	  openscenegraph-core.2.7.7-win32-x86-vc80.tar.gz on winxp.
+	  
+	  CMakers will not get options for selecting compression format.
+	  TGZ
+	  goes for all platforms (on win32 I use 7zip)
+	  
+	  The wrappers is now given the COMPONENT name
+	  libopenscenegraph-wrappers. Feel free to change the name.
+	  
+	  On windows with visual studio the OsgCPack script make some
+	  efforts to
+	  discover the compiler used but support is a bit poor so I've
+	  given
+	  CMake acces to OSG_CPACK_COMPILER to provide some mean to name
+	  the
+	  compiler.
+	  
+	  stop
+	  
+	  The platform part is taken from CMAKE_SYSTEM_NAME and for windows
+	  I
+	  change this to win32 or win64 based on CMAKE_CL_64. This might
+	  not be
+	  necessary if the arch part has that information. This information
+	  is
+	  taken from CMAKE_SYSTEM_PROCESSOR. I only have 32bit here so if
+	  some
+	  of you could uncomment line 15,16 in OsgCPack.cmake and report
+	  what
+	  cmake report it would be nice. I'm especially interested anything
+	  but
+	  win32 and linux32"
+
+2008-12-15 13:56  robert
+
+	* src/osgDB/DatabasePager.cpp: Made the folowing changes to make
+	  the DatabasePager more restrained in its memory consumption, and
+	  to improve the speed of merging of tiles (at the potential cost
+	  of extra frame drops).
+	  
+	  Set Made DatabasePager TargetMaximumNumberOfPageLOD technique the
+	  be the default with a default target number of PagedLOD of 500.
+	  
+	  Set DatabasePager DoPreCompile to OFF by default.
+
+2008-12-15 12:16  robert
+
+	* include/osg/Image, src/osgWrappers/osg/Image.cpp: Removed
+	  buildMipmaps method that had no implementation.
+
+2008-12-12 22:28  shuber
+
+	* Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj:
+	  From Stephan Huber: updated XCode project
+
+2008-12-12 19:19  robert
+
+	* AUTHORS.txt, README.txt, applications/osgversion/osgversion.cpp:
+	  Updated AUTHORS and READER for 2.7.7 dev release
+
+2008-12-12 19:12  robert
+
+	* ChangeLog: Updated change log
+
 2008-12-12 18:47  robert
 
 	* CMakeLists.txt, ChangeLog,

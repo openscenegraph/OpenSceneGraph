@@ -112,13 +112,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          "",
 	          "");
 	I_Method1(void, setSceneData, IN, osg::Node *, node,
-	          Properties::NON_VIRTUAL,
-	          __void__setSceneData__osg_Node_P1,
-	          "Set the scene graph that the View will use. ",
-	          "");
-	I_Method1(void, setSceneData, IN, osg::ref_ptr< osg::Node >, node,
 	          Properties::VIRTUAL,
-	          __void__setSceneData__osg_ref_ptrT1_osg_Node_,
+	          __void__setSceneData__osg_Node_P1,
 	          "Set the scene graph that the View will use. ",
 	          "");
 	I_Method0(osg::Node *, getSceneData,

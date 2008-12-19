@@ -722,6 +722,12 @@ bool ScreenCaptureHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIAc
     return false;
 }
 
+/** Capture the given viewer's views on the next frame. */
+void ScreenCaptureHandler::captureNextFrame(osgViewer::ViewerBase& viewer)
+{
+    addCallbackToViewer(viewer);
+}
+
 /** Get the keyboard and mouse usage of this manipulator.*/
 void ScreenCaptureHandler::getUsage(osg::ApplicationUsage& usage) const
 {

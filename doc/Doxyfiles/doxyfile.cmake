@@ -84,8 +84,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = "${OpenSceneGraph_SOURCE_DIR}/include/OpenThreads" \
-                         "${OpenSceneGraph_SOURCE_DIR}/include/osg" \
+INPUT                  = "${OpenSceneGraph_SOURCE_DIR}/include/osg" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgDB" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgFX" \
                          "${OpenSceneGraph_SOURCE_DIR}/include/osgGA" \

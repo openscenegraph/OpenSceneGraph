@@ -71,8 +71,8 @@ public:
         SURFACE =   0x00000001, ///< Draw the specified area on the sphere's surface
         SPOKES =    0x00000002, ///< Draw the spokes from the sphere's centre to the surface's corners
         EDGELINE =  0x00000008, ///< Draw the line round the edge of the area on the sphere's surface
-        SIDES =    0x00000010, ///< Draw the planes from the sphere's centre to the edge of the sphere's surface
-        ALL =       0xffffffff  ///< Draw every part of the sphere segment
+        SIDES =     0x00000010, ///< Draw the planes from the sphere's centre to the edge of the sphere's surface
+        ALL =       0x7fffffff  ///< Draw every part of the sphere segment
     };
 
 

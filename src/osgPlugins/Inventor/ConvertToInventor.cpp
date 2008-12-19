@@ -650,7 +650,6 @@ static void postProcessField(const SbIntList &runLengths, osg::PrimitiveSet::Mod
     default:
       assert(0);
   }
-  assert(dst2+newNum == dst && "Something wrong in the loop.");
   field->finishEditing();
 
   // free resources

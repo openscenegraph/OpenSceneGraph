@@ -553,6 +553,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
             "    v1.xy += dp*texCoord.x;\n"
             "    \n"
             "    gl_Position = gl_ProjectionMatrix * v1;\n"
+            "    gl_ClipVertex = v1;\n"
             "}\n";
 
         char fragmentShaderSource[] = 
@@ -624,6 +625,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
             "    v1.xyz += dv*texCoord.y;\n"
             "    \n"
             "    gl_Position = gl_ProjectionMatrix * v1;\n"
+            "    gl_ClipVertex = v1;\n"
             "}\n";
 
         char fragmentShaderSource[] = 
@@ -681,6 +683,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
             "    gl_PointSize = ceil(pointSize);\n"
             "    \n"
             "    colour.a = 0.05+(pointSize*pointSize)/(gl_PointSize*gl_PointSize);\n"
+            "    gl_ClipVertex = v_current;\n"
             "}\n";
 
         char fragmentShaderSource[] = 

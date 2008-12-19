@@ -16,7 +16,7 @@
 #include <osg/Switch>
 #include <osgText/Text>
 
-#include <osgViewer/Viewer>
+#include <osgViewer/CompositeViewer>
 #include <osgViewer/ViewerEventHandlers>
 
 #include <osgGA/TrackballManipulator>
@@ -28,6 +28,76 @@
 #include <osgGA/TerrainManipulator>
 
 #include <iostream>
+
+
+void addEventHandlers(osgViewer::View* view)
+{
+    // set up the camera manipulators.
+    view->setCameraManipulator( new osgGA::TrackballManipulator() );
+
+    // add the state manipulator
+    view->addEventHandler( new osgGA::StateSetManipulator(view->getCamera()->getOrCreateStateSet()) );
+    
+    // add the thread model handler
+    view->addEventHandler(new osgViewer::ThreadingHandler);
+
+    // add the window size toggle handler
+    view->addEventHandler(new osgViewer::WindowSizeHandler);
+        
+    // add the stats handler
+    view->addEventHandler(new osgViewer::StatsHandler);
+
+    // add the record camera path handler
+    view->addEventHandler(new osgViewer::RecordCameraPathHandler);
+
+    // add the LOD Scale handler
+    view->addEventHandler(new osgViewer::LODScaleHandler);
+
+    // add the screen capture handler
+    view->addEventHandler(new osgViewer::ScreenCaptureHandler);
+}
+
+
+class AddViewHandler : public osgGA::GUIEventHandler
+{
+public:
+    AddViewHandler(osgViewer::CompositeViewer* viewer, osg::Node* sceneRoot) 
+        : _viewer(viewer), _sceneRoot(sceneRoot) {}
+
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYDOWN && ea.getKey()== 'a')
+        {
+            osgViewer::View* view = new osgViewer::View;
+
+            view->setUpViewInWindow(50, 50, 800, 600);
+            view->getCamera()->getGraphicsContext()->realize();
+
+            view->setSceneData(_sceneRoot.get());
+            addEventHandlers(view);
+
+            _viewer->stopThreading();
+
+            _viewer->addView(view);
+
+            osg::notify(osg::NOTICE)<<"osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts()="<<  osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts()<<std::endl;
+
+            view->getSceneData()->setThreadSafeRefUnref(true);
+            view->getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
+
+            _viewer->startThreading();
+
+            return true;
+        }
+
+        return false;
+    }
+
+protected:
+    osg::observer_ptr<osgViewer::CompositeViewer> _viewer;
+    osg::ref_ptr<osg::Node>                  _sceneRoot;
+};
+
 
 int main(int argc, char** argv)
 {
@@ -41,7 +111,7 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
     arguments.getApplicationUsage()->addCommandLineOption("--login <url> <username> <password>","Provide authentication information for http file access.");
 
-    osgViewer::Viewer viewer(arguments);
+    osgViewer::CompositeViewer viewer(arguments);
 
     unsigned int helpType = 0;
     if ((helpType = arguments.readHelpType()))
@@ -76,55 +146,9 @@ int main(int argc, char** argv)
         }
     }
 
-    // set up the camera manipulators.
-    {
-        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
-
-        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
-        keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
-        keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
-        keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
-
-        std::string pathfile;
-        char keyForAnimationPath = '5';
-        while (arguments.read("-p",pathfile))
-        {
-            osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
-            {
-                unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
-                keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
-                keyswitchManipulator->selectMatrixManipulator(num);
-                ++keyForAnimationPath;
-            }
-        }
-
-        viewer.setCameraManipulator( keyswitchManipulator.get() );
-    }
-
-    // add the state manipulator
-    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    
-    // add the thread model handler
-    viewer.addEventHandler(new osgViewer::ThreadingHandler);
-
-    // add the window size toggle handler
-    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
-        
-    // add the stats handler
-    viewer.addEventHandler(new osgViewer::StatsHandler);
-
-    // add the help handler
-    viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
-
-    // add the record camera path handler
-    viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
-
-    // add the LOD Scale handler
-    viewer.addEventHandler(new osgViewer::LODScaleHandler);
-
-    // add the screen capture handler
-    viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
+    osg::ref_ptr<osgViewer::View> defaultView = new osgViewer::View;
+    viewer.addView(defaultView.get());
+    addEventHandlers(defaultView.get());
 
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
@@ -146,13 +170,15 @@ int main(int argc, char** argv)
 
 
     // optimize the scene graph, remove redundant nodes and state etc.
-    osgUtil::Optimizer optimizer;
-    optimizer.optimize(loadedModel.get());
+    //osgUtil::Optimizer optimizer;
+    //optimizer.optimize(loadedModel.get());
 
-    viewer.setSceneData( loadedModel.get() );
+    defaultView->setSceneData( loadedModel.get() );
+
+    defaultView->setUpViewInWindow(50, 50, 800, 600);
+    defaultView->addEventHandler(new AddViewHandler(&viewer, loadedModel.get()));
 
     viewer.realize();
 
     return viewer.run();
-
 }

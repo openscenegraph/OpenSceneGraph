@@ -346,42 +346,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture3D::Extensions)
 	          __void__gluBuild3DMipmaps__GLenum__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLenum__C5_GLvoid_P1,
 	          "",
 	          "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, GLTexImage3DProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, GLTexSubImage3DProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, CompressedTexImage3DArbProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, CompressedTexSubImage3DArbProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, GLCopyTexSubImageProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(typedef, void, IN, APIENTRY *, GLUBuild3DMipMapsProc,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __typedef__void__APIENTRY_P1,
-	                   "",
-	                   "");
+
+
+
+
+
+
 	I_SimpleProperty(GLint, MaxTexture3DSize, 
 	                 0, 
 	                 __void__setMaxTexture3DSize__GLint);

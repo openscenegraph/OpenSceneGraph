@@ -42,6 +42,7 @@
 #include <osgShadow/SoftShadowMap>
 #include <osgShadow/ParallelSplitShadowMap>
 #include <osgShadow/LightSpacePerspectiveShadowMap>
+#include <osgShadow/StandardShadowMap>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -612,6 +613,11 @@ int main(int argc, char** argv)
     else if (arguments.read("--st"))
     {
         osg::ref_ptr<osgShadow::ShadowTexture> st = new osgShadow::ShadowTexture;
+        shadowedScene->setShadowTechnique(st.get());
+    }
+    else if (arguments.read("--stsm"))
+    {
+        osg::ref_ptr<osgShadow::StandardShadowMap> st = new osgShadow::StandardShadowMap;
         shadowedScene->setShadowTechnique(st.get());
     }
     else if (arguments.read("--pssm"))

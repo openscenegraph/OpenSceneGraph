@@ -165,7 +165,7 @@ public:
         }
 
         void setDimensions(const Quad& q, point_type z = -1.0f) {
-            setDimensions(q[0], q[1], q[2], q[4], z);
+            setDimensions(q[0], q[1], q[2], q[3], z);
         }
 
         void setX(point_type x) {

@@ -953,7 +953,14 @@ void CullVisitor::apply(ClipNode& node)
         itr!=planes.end();
         ++itr)
     {
-        addPositionedAttribute(&matrix,itr->get());
+        if (node.getReferenceFrame()==osg::ClipNode::RELATIVE_RF)
+        {
+            addPositionedAttribute(&matrix,itr->get());
+        }
+        else
+        {
+            addPositionedAttribute(0,itr->get());
+        }
     }
 
     handle_cull_callbacks_and_traverse(node);

@@ -30,6 +30,12 @@
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::ClipPlane > >, osg::ClipNode::ClipPlaneList)
 
+BEGIN_ENUM_REFLECTOR(osg::ClipNode::ReferenceFrame)
+	I_DeclaringFile("osg/ClipNode");
+	I_EnumLabel(osg::ClipNode::RELATIVE_RF);
+	I_EnumLabel(osg::ClipNode::ABSOLUTE_RF);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::ClipNode)
 	I_DeclaringFile("osg/ClipNode");
 	I_BaseType(osg::Group);
@@ -69,6 +75,16 @@ BEGIN_OBJECT_REFLECTOR(osg::ClipNode)
 	          Properties::VIRTUAL,
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
+	          "");
+	I_Method1(void, setReferenceFrame, IN, osg::ClipNode::ReferenceFrame, rf,
+	          Properties::NON_VIRTUAL,
+	          __void__setReferenceFrame__ReferenceFrame,
+	          "Set the light sources's ReferenceFrame, either to be relative to its parent reference frame, or relative to an absolute coordinate frame. ",
+	          "RELATIVE_RF is the default. Note: setting the ReferenceFrame to be ABSOLUTE_RF will also set the CullingActive flag on the light source, and hence all of its parents, to false, thereby disabling culling of it and all its parents. This is necessary to prevent inappropriate culling, but may impact cull times if the absolute light source is deep in the scene graph. It is therefore recommended to only use absolute light source at the top of the scene. ");
+	I_Method0(osg::ClipNode::ReferenceFrame, getReferenceFrame,
+	          Properties::NON_VIRTUAL,
+	          __ReferenceFrame__getReferenceFrame,
+	          "",
 	          "");
 	I_MethodWithDefaults2(void, createClipBox, IN, const osg::BoundingBox &, bb, , IN, unsigned int, clipPlaneNumberBase, 0,
 	                      Properties::NON_VIRTUAL,
@@ -148,6 +164,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ClipNode)
 	I_SimpleProperty(osg::StateAttribute::GLModeValue, LocalStateSetModes, 
 	                 0, 
 	                 __void__setLocalStateSetModes__StateAttribute_GLModeValue);
+	I_SimpleProperty(osg::ClipNode::ReferenceFrame, ReferenceFrame, 
+	                 __ReferenceFrame__getReferenceFrame, 
+	                 __void__setReferenceFrame__ReferenceFrame);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::ClipPlane >)

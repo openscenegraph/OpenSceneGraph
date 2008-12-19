@@ -20,6 +20,17 @@
 #include <osgDB/FileUtils>
 #include <osgUtil/Optimizer>
 #include <osgUtil/CullVisitor>
+#include <osg/ClipNode>
+
+
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
+#include <osgGA/StateSetManipulator>
+#include <osgGA/AnimationPathManipulator>
+#include <osgGA/TerrainManipulator>
+
 #include <osgViewer/Viewer>
 
 #include <osg/MatrixTransform>
@@ -83,6 +94,32 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgViewer::Viewer viewer;
 
+    // set up the camera manipulators.
+    {
+        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+
+        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
+
+        std::string pathfile;
+        char keyForAnimationPath = '5';
+        while (arguments.read("-p",pathfile))
+        {
+            osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
+            if (apm || !apm->valid()) 
+            {
+                unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
+                keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
+                keyswitchManipulator->selectMatrixManipulator(num);
+                ++keyForAnimationPath;
+            }
+        }
+
+        viewer.setCameraManipulator( keyswitchManipulator.get() );
+    }
+
     osg::ref_ptr<osgParticle::PrecipitationEffect> precipitationEffect = new osgParticle::PrecipitationEffect;
 
     float intensity;
@@ -108,6 +145,9 @@ int main( int argc, char **argv )
 
     osg::Vec3 cellSize;
     while (arguments.read("--cellSize", cellSize.x(), cellSize.y(), cellSize.z())) precipitationEffect->setCellSize(cellSize); 
+
+    double clipDistance = 0.0;
+    while (arguments.read("--clip",clipDistance)) {}
 
     osg::BoundingBox bb;
     while (arguments.read("--boundingBox", bb.xMin(),
@@ -144,11 +184,25 @@ int main( int argc, char **argv )
     
     // precipitationEffect->setUpdateCallback(new MyGustCallback);
     
-
     osg::ref_ptr<osg::Group> group = new osg::Group;
-    group->addChild(precipitationEffect.get());
+    
+    if (clipDistance!=0.0)
+    {    
+        osg::ref_ptr<osg::ClipNode> clipNode = new osg::ClipNode;
+        clipNode->addClipPlane( new osg::ClipPlane( 0 ) );
+        clipNode->getClipPlane(0)->setClipPlane( 0.0, 0.0, -1.0, -clipDistance );
+        clipNode->setReferenceFrame(osg::ClipNode::ABSOLUTE_RF);
+        clipNode->addChild(precipitationEffect.get());
 
+        group->addChild(clipNode.get());
+    }
+    else
+    {
+        group->addChild(precipitationEffect.get());
+    }
+    
     group->addChild(loadedModel.get());
+
     loadedModel->getOrCreateStateSet()->setAttributeAndModes(precipitationEffect->getFog());
     
     // create the light    

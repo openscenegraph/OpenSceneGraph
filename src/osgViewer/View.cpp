@@ -280,8 +280,6 @@ void View::setSceneData(osg::Node* node)
         // make sure that existing scene graph objects are allocated with thread safe ref/unref
         if (getViewerBase()->getThreadingModel()!=ViewerBase::SingleThreaded) 
         {
-            osg::notify(osg::NOTICE)<<"Making sure we have set the thread safe ref/unref"<<std::endl;
-        
             getSceneData()->setThreadSafeRefUnref(true);
         }
         

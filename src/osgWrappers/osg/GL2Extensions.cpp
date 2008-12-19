@@ -721,6 +721,12 @@ BEGIN_OBJECT_REFLECTOR(osg::GL2Extensions)
 	                __void__Set__unsigned_int__GL2Extensions_P1_S,
 	                "allows users to override the extensions across graphics contexts. ",
 	                "typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
+	I_ProtectedMethod1(typedef, GLuint, IN, APIENTRY *, GetHandleProc,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __typedef__GLuint__APIENTRY_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(GLuint, CurrentProgram, 
 	                 __GLuint__getCurrentProgram, 
 	                 0);

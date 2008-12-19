@@ -30,6 +30,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::DisplayRequirementsVisitor)
 	I_Constructor0(____DisplayRequirementsVisitor,
 	               "Default to traversing all children, and requiresDoubleBuffer, requiresRGB and requiresDepthBuffer to true and with alpha and stencil off. ",
 	               "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the library name/namespapce of the visitor's. ",
+	          "Should be defined by derived classes. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the visitor's class type. ",
+	          "Should be defined by derived classes. ");
 	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, ds,
 	          Properties::NON_VIRTUAL,
 	          __void__setDisplaySettings__osg_DisplaySettings_P1,

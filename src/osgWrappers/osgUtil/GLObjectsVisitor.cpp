@@ -64,6 +64,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
 	                           ____GLObjectsVisitor__Mode,
 	                           "Construct a GLObjectsVisitor to traverse all children, operating on node according to specified mode, such as to compile or release display list/texture objects etc. ",
 	                           "Default mode is to compile GL objects. ");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the library name/namespapce of the visitor's. ",
+	          "Should be defined by derived classes. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the visitor's class type. ",
+	          "Should be defined by derived classes. ");
 	I_Method0(void, reset,
 	          Properties::VIRTUAL,
 	          __void__reset,

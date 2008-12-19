@@ -243,13 +243,13 @@ void View::setStartTick(osg::Timer_t tick)
     _startTick = tick;
 }
 
-void View::setSceneData(osg::ref_ptr<osg::Node> node)
+void View::setSceneData(osg::Node* node)
 {
     if (node==_scene->getSceneData()) return;
 
-    osg::ref_ptr<Scene> scene = Scene::getScene(node.get());
+    osg::ref_ptr<Scene> scene = Scene::getScene(node);
 
-    if (scene.valid())
+    if (scene)
     {
         osg::notify(osg::INFO)<<"View::setSceneData() Sharing scene "<<scene.get()<<std::endl;
         _scene = scene;
@@ -267,7 +267,7 @@ void View::setSceneData(osg::ref_ptr<osg::Node> node)
             osg::notify(osg::INFO)<<"View::setSceneData() Reusing exisitng scene"<<_scene.get()<<std::endl;
         }
 
-        _scene->setSceneData(node.get());
+        _scene->setSceneData(node);
     }
 
     if (getSceneData())
@@ -276,6 +276,17 @@ void View::setSceneData(osg::ref_ptr<osg::Node> node)
         // the scene graph from being run in parallel.
         osgUtil::Optimizer::StaticObjectDetectionVisitor sodv;
         getSceneData()->accept(sodv);
+        
+        // make sure that existing scene graph objects are allocated with thread safe ref/unref
+        if (getViewerBase()->getThreadingModel()!=ViewerBase::SingleThreaded) 
+        {
+            osg::notify(osg::NOTICE)<<"Making sure we have set the thread safe ref/unref"<<std::endl;
+        
+            getSceneData()->setThreadSafeRefUnref(true);
+        }
+        
+        // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
+        getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
     }
     
     computeActiveCoordinateSystemNodePath();

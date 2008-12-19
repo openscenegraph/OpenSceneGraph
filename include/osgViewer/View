@@ -60,10 +60,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         const Scene* getScene() const { return _scene.get(); }
 
         /** Set the scene graph that the View will use.*/
-        inline void setSceneData(osg::Node* node) { setSceneData(osg::ref_ptr<osg::Node>(node)); }
-
-        /** Set the scene graph that the View will use.*/
-        virtual void setSceneData(osg::ref_ptr<osg::Node> node);
+        virtual void setSceneData(osg::Node* node);
 
         /** Get the View's scene graph.*/
         osg::Node* getSceneData() { return _scene.valid() ? _scene->getSceneData() : 0; }

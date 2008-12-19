@@ -360,16 +360,6 @@ void Viewer::setSceneData(osg::Node* node)
     setReferenceTime(0.0);
 
     View::setSceneData(node);
-
-    if (_threadingModel!=SingleThreaded && getSceneData())
-    {
-        // make sure that existing scene graph objects are allocated with thread safe ref/unref
-        getSceneData()->setThreadSafeRefUnref(true);
-        
-        // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
-        getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
-    }
-
 }
 
 GraphicsWindowEmbedded* Viewer::setUpViewerAsEmbeddedInWindow(int x, int y, int width, int height)

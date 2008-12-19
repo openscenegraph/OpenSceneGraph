@@ -647,10 +647,10 @@ ADD_CUSTOM_TARGET(wrappers
 # For Doxygen
 INCLUDE(${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL)
 OPTION(BUILD_DOCUMENTATION "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
+MARK_AS_ADVANCED(CLEAR BUILD_DOCUMENTATION)
 # To build the documention, you will have to enable it
 # and then do the equivalent of "make DoxygenDoc".
 IF(BUILD_DOCUMENTATION)
-#    SET(BUILD_DOCUMENTATION YES)
 
     OPTION(BUILD_REF_DOCS_SEARCHENGINE "Enable doxygen's search engine (requires that documentation to be installed on a php enabled web server)" OFF)
     IF(BUILD_REF_DOCS_SEARCHENGINE)
@@ -675,7 +675,7 @@ IF(BUILD_DOCUMENTATION)
     # If html help generation was requested. DOCUMENTATION_HTML_HELP is defined by Documentation.cmake
     SET(GENERATE_HTMLHELP "NO")
     IF(DOCUMENTATION_HTML_HELP)
-        # on win Documentation.cmake finds the html help workshop fi it exists. On u*ix we might have it with wine but no way to point it out
+        # on windows Documentation.cmake finds the html help workshop fi it exists. On u*ix we might have it with wine but no way to point it out
         IF(NOT WIN32)
             SET(HTML_HELP_COMPILER "" CACHE FILEPATH "Enter location of the HTML help compiler to let doxygen compile html")
             MARK_AS_ADVANCED(HTML_HELP_COMPILER)

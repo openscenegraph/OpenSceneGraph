@@ -20,6 +20,7 @@
 #include <osg/RenderInfo>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
+#include <osgViewer/ViewerBase>
 #include <osgViewer/ViewerEventHandlers>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -299,6 +300,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler)
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Deprecated, Handle events, return true if handled, false otherwise. ",
+	          "");
+	I_Method1(void, captureNextFrame, IN, osgViewer::ViewerBase &, viewer,
+	          Properties::VIRTUAL,
+	          __void__captureNextFrame__osgViewer_ViewerBase_R1,
+	          "Capture the given viewer's views on the next frame. ",
 	          "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
 	          Properties::VIRTUAL,

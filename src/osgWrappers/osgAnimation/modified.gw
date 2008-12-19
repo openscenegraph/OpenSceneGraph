@@ -1,6 +1,3 @@
-AnimationManager.cpp
-AnimationManagerBase.cpp
 Bone.cpp
-EaseMotion.cpp
-Skeleton.cpp
-Timeline.cpp
+LinkVisitor.cpp
+RigGeometry.cpp

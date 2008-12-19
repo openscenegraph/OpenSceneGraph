@@ -370,22 +370,22 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __C5_PixelBufferObject_P1__getPixelBufferObject,
 	          "Get the const PixelBufferObject. ",
 	          "");
-	I_Method1(void, update, IN, osg::NodeVisitor *, nv,
+	I_Method1(void, update, IN, osg::NodeVisitor *, x,
 	          Properties::VIRTUAL,
 	          __void__update__NodeVisitor_P1,
 	          "",
 	          "");
-	I_Method3(bool, sendPointerEvent, IN, int, x, IN, int, y, IN, int, buttonMask,
+	I_Method3(bool, sendPointerEvent, IN, int, x, IN, int, x, IN, int, x,
 	          Properties::VIRTUAL,
 	          __bool__sendPointerEvent__int__int__int,
 	          "method for sending pointer events to images that are acting as front ends to interactive surfaces such as a vnc or browser window. ",
 	          "Return true if handled. ");
-	I_Method2(bool, sendKeyEvent, IN, int, key, IN, bool, keyDown,
+	I_Method2(bool, sendKeyEvent, IN, int, x, IN, bool, x,
 	          Properties::VIRTUAL,
 	          __bool__sendKeyEvent__int__bool,
 	          "method for sending key events to images that are acting as front ends to interactive surfaces such as a vnc or browser window. ",
 	          "Return true if handled. ");
-	I_Method1(void, setFrameLastRendered, IN, const osg::FrameStamp *, frameStamp,
+	I_Method1(void, setFrameLastRendered, IN, const osg::FrameStamp *, x,
 	          Properties::VIRTUAL,
 	          __void__setFrameLastRendered__C5_osg_FrameStamp_P1,
 	          "method for passing frame information to the custom Image classes, to be called only when objects associated with imagery are not culled. ",

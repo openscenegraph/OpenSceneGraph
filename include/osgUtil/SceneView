@@ -151,7 +151,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
                                               DELTA_SIMULATION_TIME_UNIFORM |
                                               VIEW_MATRIX_UNIFORM |
                                               VIEW_MATRIX_INVERSE_UNIFORM,
-            ALL_UNIFORMS                    = 0xFFFFFFFF
+            ALL_UNIFORMS                    = 0x7FFFFFFF
         };
 
         /** Set the uniforms that SceneView should set set up on each frame.*/        

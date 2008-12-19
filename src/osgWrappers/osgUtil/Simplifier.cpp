@@ -31,6 +31,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)
 	                           ____Simplifier__double__double__double,
 	                           "",
 	                           "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the library name/namespapce of the visitor's. ",
+	          "Should be defined by derived classes. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the visitor's class type. ",
+	          "Should be defined by derived classes. ");
 	I_Method1(void, setSampleRatio, IN, float, sampleRatio,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampleRatio__float,

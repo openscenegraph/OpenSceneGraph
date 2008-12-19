@@ -289,8 +289,7 @@ StandardShadowMap::StandardShadowMap():
         "} \n" );                                                                
 }                                                                                
 
-StandardShadowMap::StandardShadowMap
-(const StandardShadowMap& copy, const osg::CopyOp& copyop) :
+StandardShadowMap::StandardShadowMap(const StandardShadowMap& copy, const osg::CopyOp& copyop) :
     BaseClass(copy,copyop),
     _polygonOffsetFactor( copy._polygonOffsetFactor ),
     _polygonOffsetUnits( copy._polygonOffsetUnits ),
@@ -320,32 +319,32 @@ StandardShadowMap::~StandardShadowMap(void)
                                                                                 
 }                                    
 
-void StandardShadowMap::updateTextureCoordIndices
-    ( unsigned int fromTextureCoordIndex, unsigned int toTextureCoordIndex )
+void StandardShadowMap::updateTextureCoordIndices( unsigned int fromTextureCoordIndex, unsigned int toTextureCoordIndex )
 {
+
     if( fromTextureCoordIndex == toTextureCoordIndex ) return;
 
     const char *expressions[] = {
-        "gl_TexCoord[%d]",
-        "gl_TextureMatrix[%d]",
-        "gl_MultiTexCoord%d",
-        "gl_EyePlaneS[%d]",
-        "gl_EyePlaneT[%d]",
-        "gl_EyePlaneR[%d]",
-        "gl_EyePlaneQ[%d]",
+        "gl_TexCoord[","]",
+        "gl_TextureMatrix[","]",
+        "gl_MultiTexCoord","",
+        "gl_EyePlaneS[","]",
+        "gl_EyePlaneT[","]",
+        "gl_EyePlaneR[","]",
+        "gl_EyePlaneQ[","]"
     };
 
     for( unsigned int i = 0;
          i < sizeof( expressions ) / sizeof( expressions[0] );
-         i++ )
+         i+=2 )
     {
         char acFrom[ 32 ], acTo[32];
 
         // its not elegant to mix stdio & stl strings 
         // but in this context I do an exception for cleaner code
 
-        sprintf( acFrom, expressions[i], fromTextureCoordIndex );
-        sprintf( acTo, expressions[i], toTextureCoordIndex );
+        sprintf( acFrom, "%s%d%s", expressions[i], fromTextureCoordIndex, expressions[i+1]);
+        sprintf( acTo, "%s%d%s", expressions[i], toTextureCoordIndex, expressions[i+1]);
 
         std::string from( acFrom ), to( acTo );
 

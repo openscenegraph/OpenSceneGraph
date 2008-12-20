@@ -16,9 +16,9 @@
 #include <osg/Matrix>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osgVolume/Brick>
 #include <osgVolume/Volume>
 #include <osgVolume/VolumeTechnique>
+#include <osgVolume/VolumeTile>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -28,14 +28,34 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgVolume::Brick)
-	I_DeclaringFile("osgVolume/Brick");
-	I_BaseType(osg::Group);
-	I_Constructor0(____Brick,
+BEGIN_VALUE_REFLECTOR(osgVolume::TileID)
+	I_DeclaringFile("osgVolume/VolumeTile");
+	I_Constructor0(____TileID,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osgVolume::Brick &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____Brick__C5_Brick_R1__C5_osg_CopyOp_R1,
+	I_Constructor4(IN, int, in_level, IN, int, in_x, IN, int, in_y, IN, int, in_z,
+	               ____TileID__int__int__int__int,
+	               "",
+	               "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_PublicMemberProperty(int, level);
+	I_PublicMemberProperty(int, x);
+	I_PublicMemberProperty(int, y);
+	I_PublicMemberProperty(int, z);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTile)
+	I_DeclaringFile("osgVolume/VolumeTile");
+	I_BaseType(osg::Group);
+	I_Constructor0(____VolumeTile,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgVolume::VolumeTile &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____VolumeTile__C5_VolumeTile_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
 	I_Method0(osg::Object *, cloneType,
@@ -93,15 +113,15 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Brick)
 	          __C5_Volume_P1__getVolume,
 	          "Get the const Volume that this Volume tile is a member of. ",
 	          "");
-	I_Method1(void, setBrickID, IN, const osgVolume::BrickID &, brickID,
+	I_Method1(void, setTileID, IN, const osgVolume::TileID &, tileID,
 	          Properties::NON_VIRTUAL,
-	          __void__setBrickID__C5_BrickID_R1,
-	          "Set the BrickID (layer, x,y) of the Brick. ",
-	          "The BrickID is used so it can be located by its neighbours via the enclosing Terrain node that manages a map of BrickID to TerraiTiles. ");
-	I_Method0(const osgVolume::BrickID &, getBrickID,
+	          __void__setTileID__C5_TileID_R1,
+	          "Set the TileID (layer, x,y,z) of the VolumeTile. ",
+	          "The TileID is used so it can be located by its neighbours via the enclosing Volume node that manages a map of TileID to VolumeTiles. ");
+	I_Method0(const osgVolume::TileID &, getTileID,
 	          Properties::NON_VIRTUAL,
-	          __C5_BrickID_R1__getBrickID,
-	          "Get the BrickID (layer, x,y) of the Brick. ",
+	          __C5_TileID_R1__getTileID,
+	          "Get the TileID (layer, x,y,z) of the VolumeTile. ",
 	          "");
 	I_Method1(void, setLocator, IN, osg::RefMatrix *, locator,
 	          Properties::NON_VIRTUAL,
@@ -163,9 +183,6 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Brick)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
 	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
-	I_SimpleProperty(const osgVolume::BrickID &, BrickID, 
-	                 __C5_BrickID_R1__getBrickID, 
-	                 __void__setBrickID__C5_BrickID_R1);
 	I_SimpleProperty(bool, Dirty, 
 	                 __bool__getDirty, 
 	                 __void__setDirty__bool);
@@ -175,31 +192,14 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Brick)
 	I_SimpleProperty(osg::RefMatrix *, Locator, 
 	                 __osg_RefMatrix_P1__getLocator, 
 	                 __void__setLocator__osg_RefMatrix_P1);
+	I_SimpleProperty(const osgVolume::TileID &, TileID, 
+	                 __C5_TileID_R1__getTileID, 
+	                 __void__setTileID__C5_TileID_R1);
 	I_SimpleProperty(osgVolume::Volume *, Volume, 
 	                 __Volume_P1__getVolume, 
 	                 __void__setVolume__Volume_P1);
 	I_SimpleProperty(osgVolume::VolumeTechnique *, VolumeTechnique, 
 	                 __VolumeTechnique_P1__getVolumeTechnique, 
 	                 __void__setVolumeTechnique__VolumeTechnique_P1);
-END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osgVolume::BrickID)
-	I_DeclaringFile("osgVolume/Brick");
-	I_Constructor0(____BrickID,
-	               "",
-	               "");
-	I_Constructor3(IN, int, in_level, IN, int, in_x, IN, int, in_y,
-	               ____BrickID__int__int__int,
-	               "",
-	               "");
-	I_Method0(bool, valid,
-	          Properties::NON_VIRTUAL,
-	          __bool__valid,
-	          "",
-	          "");
-	I_PublicMemberProperty(int, level);
-	I_PublicMemberProperty(int, x);
-	I_PublicMemberProperty(int, y);
-	I_PublicMemberProperty(int, z);
 END_REFLECTOR
 

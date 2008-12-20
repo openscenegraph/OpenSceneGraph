@@ -13,8 +13,8 @@
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osgVolume/Brick>
 #include <osgVolume/Volume>
+#include <osgVolume/VolumeTile>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -69,32 +69,32 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Volume)
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
-	I_Method1(osgVolume::Brick *, getBrick, IN, const osgVolume::BrickID &, brickID,
+	I_Method1(osgVolume::VolumeTile *, getVolumeTile, IN, const osgVolume::TileID &, tileID,
 	          Properties::NON_VIRTUAL,
-	          __Brick_P1__getBrick__C5_BrickID_R1,
-	          "Get the Brick for a given BrickID. ",
+	          __VolumeTile_P1__getVolumeTile__C5_TileID_R1,
+	          "Get the VolumeTile for a given VolumeTileID. ",
 	          "");
-	I_Method1(const osgVolume::Brick *, getBrick, IN, const osgVolume::BrickID &, brickID,
+	I_Method1(const osgVolume::VolumeTile *, getVolumeTile, IN, const osgVolume::TileID &, tileID,
 	          Properties::NON_VIRTUAL,
-	          __C5_Brick_P1__getBrick__C5_BrickID_R1,
-	          "Get the const Brick for a given BrickID. ",
+	          __C5_VolumeTile_P1__getVolumeTile__C5_TileID_R1,
+	          "Get the const VolumeTile for a given VolumeTileID. ",
 	          "");
-	I_ProtectedMethod0(void, dirtyRegisteredBricks,
+	I_ProtectedMethod0(void, dirtyRegisteredVolumeTiles,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__dirtyRegisteredBricks,
+	                   __void__dirtyRegisteredVolumeTiles,
 	                   "",
 	                   "");
-	I_ProtectedMethod1(void, registerBrick, IN, osgVolume::Brick *, tile,
+	I_ProtectedMethod1(void, registerVolumeTile, IN, osgVolume::VolumeTile *, tile,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__registerBrick__Brick_P1,
+	                   __void__registerVolumeTile__VolumeTile_P1,
 	                   "",
 	                   "");
-	I_ProtectedMethod1(void, unregisterBrick, IN, osgVolume::Brick *, tile,
+	I_ProtectedMethod1(void, unregisterVolumeTile, IN, osgVolume::VolumeTile *, tile,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__unregisterBrick__Brick_P1,
+	                   __void__unregisterVolumeTile__VolumeTile_P1,
 	                   "",
 	                   "");
 END_REFLECTOR

@@ -17,11 +17,11 @@
 #include <osg/Group>
 #include <osg/CoordinateSystemNode>
 
-#include <osgVolume/Brick>
+#include <osgVolume/VolumeTile>
 
 namespace osgVolume {
 
-/** Volume provides a framework for loosely coupling 3d image Brick's with volume algorithms.
+/** Volume provides a framework for loosely coupling 3d image VolumeTile's with volume algorithms.
   * This allows VolumeTechnique's to be plugged in at runtime.*/
 class OSGVOLUME_EXPORT Volume : public osg::Group
 {
@@ -36,30 +36,29 @@ class OSGVOLUME_EXPORT Volume : public osg::Group
 
         virtual void traverse(osg::NodeVisitor& nv);
         
-        /** Get the Brick for a given BrickID.*/
-        Brick* getBrick(const BrickID& brickID);
+        /** Get the VolumeTile for a given VolumeTileID.*/
+        VolumeTile* getVolumeTile(const TileID& tileID);
 
-        /** Get the const Brick for a given BrickID.*/
-        const Brick* getBrick(const BrickID& brickID) const;
+        /** Get the const VolumeTile for a given VolumeTileID.*/
+        const VolumeTile* getVolumeTile(const TileID& tileID) const;
 
     protected:
 
         virtual ~Volume();
         
-        friend class Brick;
+        friend class VolumeTile;
         
-        void dirtyRegisteredBricks();
+        void dirtyRegisteredVolumeTiles();
 
-        void registerBrick(Brick* tile);
-        void unregisterBrick(Brick* tile);
+        void registerVolumeTile(VolumeTile* tile);
+        void unregisterVolumeTile(VolumeTile* tile);
 
-        typedef std::map< BrickID, Brick* >    BrickMap;
-        typedef std::set< Brick* >      BrickSet;
+        typedef std::map< TileID, VolumeTile* > VolumeTileMap;
+        typedef std::set< VolumeTile* >         VolumeTileSet;
 
-        mutable OpenThreads::Mutex          _mutex;
-        BrickSet                            _brickSet;
-        BrickMap                            _brickMap;
-
+        mutable OpenThreads::Mutex              _mutex;
+        VolumeTileSet                           _volumeTileSet;
+        VolumeTileMap                           _volumeTileMap;
        
 };
 

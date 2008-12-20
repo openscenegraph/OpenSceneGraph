@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGVOLUME_BRICK
-#define OSGVOLUME_BRICK 1
+#ifndef OSGVOLUME_tile
+#define OSGVOLUME_tile 1
 
 #include <osg/Group>
 #include <osg/Image>
@@ -25,37 +25,41 @@ namespace osgVolume {
 
 class Volume;
 
-class BrickID
+class TileID
 {
     public:
     
-        BrickID():
+        TileID():
             level(-1),
             x(-1),
-            y(-1) {}
+            y(-1),
+            z(-1) {}
 
-        BrickID(int in_level, int in_x, int in_y):
+        TileID(int in_level, int in_x, int in_y, int in_z):
             level(in_level),
             x(in_x),
-            y(in_y) {}
+            y(in_y),
+            z(in_z) {}
             
-        bool operator == (const BrickID& rhs) const        
+        bool operator == (const TileID& rhs) const        
         {
-            return (level==rhs.level) && (x==rhs.x) && (y==rhs.y);
+            return (level==rhs.level) && (x==rhs.x) && (y==rhs.y) && (z==rhs.z);
         }
 
-        bool operator != (const BrickID& rhs) const        
+        bool operator != (const TileID& rhs) const        
         {
-            return (level!=rhs.level) || (x!=rhs.x) || (y!=rhs.y);
+            return (level!=rhs.level) || (x!=rhs.x) || (y!=rhs.y) || (z!=rhs.z);
         }
 
-        bool operator < (const BrickID& rhs) const
+        bool operator < (const TileID& rhs) const
         {
             if (level<rhs.level) return true;
             if (level>rhs.level) return false;
             if (x<rhs.x) return true;
             if (x>rhs.x) return false;
-            return y<rhs.y;
+            if (y<rhs.y) return true;
+            if (y>rhs.y) return false;
+            return z<rhs.z;
         }
         
         bool valid() const { return level>=0; }
@@ -67,18 +71,18 @@ class BrickID
 };
 
 
-/** Terrain provides a framework for loosely coupling height field data with height rendering algorithms.
+/** VolumeTile provides a framework for loosely coupling 3d image data with rendering algorithms.
   * This allows TerrainTechnique's to be plugged in at runtime.*/
-class OSGVOLUME_EXPORT Brick : public osg::Group
+class OSGVOLUME_EXPORT VolumeTile : public osg::Group
 {
     public:
 
-        Brick();
+        VolumeTile();
         
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        Brick(const Brick&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        VolumeTile(const VolumeTile&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
-        META_Node(osgVolume, Brick);
+        META_Node(osgVolume, VolumeTile);
 
         virtual void traverse(osg::NodeVisitor& nv);
 
@@ -96,13 +100,13 @@ class OSGVOLUME_EXPORT Brick : public osg::Group
         const Volume* getVolume() const { return _volume; }
 
         
-        /** Set the BrickID (layer, x,y) of the Brick.
-          * The BrickID is used so it can be located by its neighbours 
-          * via the enclosing Terrain node that manages a map of BrickID to TerraiTiles.*/
-        void setBrickID(const BrickID& brickID);
+        /** Set the TileID (layer, x,y,z) of the VolumeTile.
+          * The TileID is used so it can be located by its neighbours 
+          * via the enclosing Volume node that manages a map of TileID to VolumeTiles.*/
+        void setTileID(const TileID& tileID);
         
-        /** Get the BrickID (layer, x,y) of the Brick.*/
-        const BrickID& getBrickID() const { return _brickID; }
+        /** Get the TileID (layer, x,y,z) of the VolumeTile.*/
+        const TileID& getTileID() const { return _tileID; }
         
         
         void setLocator(osg::RefMatrix* locator) { _locator = locator; }
@@ -136,7 +140,7 @@ class OSGVOLUME_EXPORT Brick : public osg::Group
 
     protected:
 
-        virtual ~Brick();
+        virtual ~VolumeTile();
 
         friend class Volume;
 
@@ -145,7 +149,7 @@ class OSGVOLUME_EXPORT Brick : public osg::Group
         bool                                _dirty;
         bool                                _hasBeenTraversal;
         
-        BrickID                             _brickID;
+        TileID                              _tileID;
 
         osg::ref_ptr<VolumeTechnique>       _volumeTechnique;
 

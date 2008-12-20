@@ -33,4 +33,4 @@ ENDIF(DCMTK_FOUND)
 SET(TARGET_ADDED_LIBRARIES osgVolume )
 
 #### end var setup  ###
-SETUP_PLUGIN(dicom)
+SETUP_PLUGIN(dicom dicom)

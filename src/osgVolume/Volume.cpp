@@ -30,15 +30,15 @@ Volume::~Volume()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    for(BrickSet::iterator itr = _brickSet.begin();
-        itr != _brickSet.end();
+    for(VolumeTileSet::iterator itr = _volumeTileSet.begin();
+        itr != _volumeTileSet.end();
         ++itr)
     {
-        const_cast<Brick*>(*itr)->_volume = 0;
+        const_cast<VolumeTile*>(*itr)->_volume = 0;
     }
     
-    _brickSet.clear();
-    _brickMap.clear();
+    _volumeTileSet.clear();
+    _volumeTileMap.clear();
 }
 
 void Volume::traverse(osg::NodeVisitor& nv)
@@ -46,69 +46,69 @@ void Volume::traverse(osg::NodeVisitor& nv)
     Group::traverse(nv);
 }
 
-Brick* Volume::getBrick(const BrickID& BrickID)
+VolumeTile* Volume::getVolumeTile(const TileID& tileID)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    BrickMap::iterator itr = _brickMap.find(BrickID);
-    if (itr != _brickMap.end()) return 0;
+    VolumeTileMap::iterator itr = _volumeTileMap.find(tileID);
+    if (itr != _volumeTileMap.end()) return 0;
     
     return itr->second;
 }
 
-const Brick* Volume::getBrick(const BrickID& BrickID) const
+const VolumeTile* Volume::getVolumeTile(const TileID& tileID) const
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    BrickMap::const_iterator itr = _brickMap.find(BrickID);
-    if (itr != _brickMap.end()) return 0;
+    VolumeTileMap::const_iterator itr = _volumeTileMap.find(tileID);
+    if (itr != _volumeTileMap.end()) return 0;
     
     return itr->second;
 }
 
-void Volume::dirtyRegisteredBricks()
+void Volume::dirtyRegisteredVolumeTiles()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    for(BrickSet::iterator itr = _brickSet.begin();
-        itr != _brickSet.end();
+    for(VolumeTileSet::iterator itr = _volumeTileSet.begin();
+        itr != _volumeTileSet.end();
         ++itr)
     {
-        (const_cast<Brick*>(*itr))->setDirty(true);
+        (const_cast<VolumeTile*>(*itr))->setDirty(true);
     }
 }
 
-static unsigned int s_maxNumBricks = 0;
-void Volume::registerBrick(Brick* Brick)
+static unsigned int s_maxNumVolumeTiles = 0;
+void Volume::registerVolumeTile(VolumeTile* volumeTile)
 {
-    if (!Brick) return;
+    if (!volumeTile) return;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     
-    if (Brick->getBrickID().valid())
+    if (volumeTile->getTileID().valid())
     {
-        _brickMap[Brick->getBrickID()] = Brick;
+        _volumeTileMap[volumeTile->getTileID()] = volumeTile;
     }
     
-    _brickSet.insert(Brick);
+    _volumeTileSet.insert(volumeTile);
 
-    if (_brickSet.size() > s_maxNumBricks) s_maxNumBricks = _brickSet.size();
+    if (_volumeTileSet.size() > s_maxNumVolumeTiles) s_maxNumVolumeTiles = _volumeTileSet.size();
 
-    // osg::notify(osg::NOTICE)<<"Volume::registerBrick "<<Brick<<" total number of Brick "<<_brickSet.size()<<" max = "<<s_maxNumBricks<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Volume::registerVolumeTile "<<volumeTile<<" total number of VolumeTile "<<_volumeTileSet.size()<<" max = "<<s_maxNumVolumeTiles<<std::endl;
 }
 
-void Volume::unregisterBrick(Brick* Brick)
+void Volume::unregisterVolumeTile(VolumeTile* volumeTile)
 {
-    if (!Brick) return;
+    if (!volumeTile) return;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    if (Brick->getBrickID().valid())
+    if (volumeTile->getTileID().valid())
     {
-        _brickMap.erase(Brick->getBrickID());
+        _volumeTileMap.erase(volumeTile->getTileID());
     }
     
-    _brickSet.erase(Brick);
+    _volumeTileSet.erase(volumeTile);
 
-    // osg::notify(osg::NOTICE)<<"Volume::unregisterBrick "<<Brick<<" total number of Brick "<<_brickSet.size()<<" max = "<<s_maxNumBricks<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Volume::unregisterVolumeTile "<<volumeTile<<" total number of VolumeTile "<<_volumeTileSet.size()<<" max = "<<s_maxNumVolumeTiles<<std::endl;
 }

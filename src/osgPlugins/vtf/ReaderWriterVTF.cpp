@@ -5,8 +5,8 @@
 *    DESCRIPTION:    Class for reading a Valve Texture Format (VTF) file
 *                    into an osg::Image.
 *
-*                    Borrows heavily from Rune Schmidt Jensen's DDS 
-*                    plugin for OSG, as well as the Valve Source SDK
+*                    Borrows heavily from the DDS plugin for OSG, as well 
+*                    as the Valve Source SDK
 *
 *    CREATED BY:     Jason Daly (jdaly@ist.ucf.edu)
 *
@@ -27,97 +27,97 @@
 
 enum VTFFlags
 {
-   VTF_FLAGS_POINTSAMPLE                          = 0x00000001,
-   VTF_FLAGS_TRILINEAR                            = 0x00000002,
-   VTF_FLAGS_CLAMP_S                              = 0x00000004,
-   VTF_FLAGS_CLAMP_T                              = 0x00000008,
-   VTF_FLAGS_ANISOTROPIC                          = 0x00000010,
-   VTF_FLAGS_HINT_DXT5                            = 0x00000020,
-   VTF_FLAGS_NOCOMPRESS                           = 0x00000040,
-   VTF_FLAGS_NORMAL                               = 0x00000080,
-   VTF_FLAGS_NOMIP                                = 0x00000100,
-   VTF_FLAGS_NOLOD                                = 0x00000200,
-   VTF_FLAGS_MINMIP                               = 0x00000400,
-   VTF_FLAGS_PROCEDURAL                           = 0x00000800,
-   VTF_FLAGS_ONEBITALPHA                          = 0x00001000,
-   VTF_FLAGS_EIGHTBITALPHA                        = 0x00002000,
-   VTF_FLAGS_ENVMAP                               = 0x00004000,
-   VTF_FLAGS_RENDERTARGET                         = 0x00008000,
-   VTF_FLAGS_DEPTHRENDERTARGET                    = 0x00010000,
-   VTF_FLAGS_NODEBUGOVERRIDE                      = 0x00020000,
-   VTF_FLAGS_SINGLECOPY                           = 0x00040000,
-   VTF_FLAGS_ONEOVERMIPLEVELINALPHA               = 0x00080000,
-   VTF_FLAGS_PREMULTCOLORBYONEOVERMIPLEVEL        = 0x00100000,
-   VTF_FLAGS_NORMALTODUDV                         = 0x00200000,
-   VTF_FLAGS_ALPHATESTMIPGENERATION               = 0x00400000,
-   VTF_FLAGS_NODEPTHBUFFER                        = 0x00800000,
-   VTF_FLAGS_NICEFILTERED                         = 0x01000000,
-   VTF_FLAGS_CLAMP_U                              = 0x02000000,
-   VTF_FLAGS_PRESWIZZLED                          = 0x04000000,
-   VTF_FLAGS_CACHEABLE                            = 0x08000000,
-   VTF_FLAGS_UNFILTERABLE_OK                      = 0x10000000,
-   VTF_FLAGS_LASTFLAG                             = 0x10000000
+    VTF_FLAGS_POINTSAMPLE                          = 0x00000001,
+    VTF_FLAGS_TRILINEAR                            = 0x00000002,
+    VTF_FLAGS_CLAMP_S                              = 0x00000004,
+    VTF_FLAGS_CLAMP_T                              = 0x00000008,
+    VTF_FLAGS_ANISOTROPIC                          = 0x00000010,
+    VTF_FLAGS_HINT_DXT5                            = 0x00000020,
+    VTF_FLAGS_NOCOMPRESS                           = 0x00000040,
+    VTF_FLAGS_NORMAL                               = 0x00000080,
+    VTF_FLAGS_NOMIP                                = 0x00000100,
+    VTF_FLAGS_NOLOD                                = 0x00000200,
+    VTF_FLAGS_MINMIP                               = 0x00000400,
+    VTF_FLAGS_PROCEDURAL                           = 0x00000800,
+    VTF_FLAGS_ONEBITALPHA                          = 0x00001000,
+    VTF_FLAGS_EIGHTBITALPHA                        = 0x00002000,
+    VTF_FLAGS_ENVMAP                               = 0x00004000,
+    VTF_FLAGS_RENDERTARGET                         = 0x00008000,
+    VTF_FLAGS_DEPTHRENDERTARGET                    = 0x00010000,
+    VTF_FLAGS_NODEBUGOVERRIDE                      = 0x00020000,
+    VTF_FLAGS_SINGLECOPY                           = 0x00040000,
+    VTF_FLAGS_ONEOVERMIPLEVELINALPHA               = 0x00080000,
+    VTF_FLAGS_PREMULTCOLORBYONEOVERMIPLEVEL        = 0x00100000,
+    VTF_FLAGS_NORMALTODUDV                         = 0x00200000,
+    VTF_FLAGS_ALPHATESTMIPGENERATION               = 0x00400000,
+    VTF_FLAGS_NODEPTHBUFFER                        = 0x00800000,
+    VTF_FLAGS_NICEFILTERED                         = 0x01000000,
+    VTF_FLAGS_CLAMP_U                              = 0x02000000,
+    VTF_FLAGS_PRESWIZZLED                          = 0x04000000,
+    VTF_FLAGS_CACHEABLE                            = 0x08000000,
+    VTF_FLAGS_UNFILTERABLE_OK                      = 0x10000000,
+    VTF_FLAGS_LASTFLAG                             = 0x10000000
 };
 
 
 enum VTFCubeMapFaceIndex
 {
-   VTF_CUBEMAP_FACE_RIGHT = 0,
-   VTF_CUBEMAP_FACE_LEFT,
-   VTF_CUBEMAP_FACE_BACK,
-   VTF_CUBEMAP_FACE_FRONT,
-   VTF_CUBEMAP_FACE_UP,
-   VTF_CUBEMAP_FACE_DOWN,
-   VTF_CUBEMAP_FACE_SPHEREMAP,
-   VTF_CUBEMAP_FACE_COUNT
+    VTF_CUBEMAP_FACE_RIGHT = 0,
+    VTF_CUBEMAP_FACE_LEFT,
+    VTF_CUBEMAP_FACE_BACK,
+    VTF_CUBEMAP_FACE_FRONT,
+    VTF_CUBEMAP_FACE_UP,
+    VTF_CUBEMAP_FACE_DOWN,
+    VTF_CUBEMAP_FACE_SPHEREMAP,
+    VTF_CUBEMAP_FACE_COUNT
 };
 
 
 enum VTFLookDir
 {
-   VTF_LOOK_DOWN_X = 0,
-   VTF_LOOK_DOWN_NEGX,
-   VTF_LOOK_DOWN_Y = 0,
-   VTF_LOOK_DOWN_NEGY,
-   VTF_LOOK_DOWN_Z = 0,
-   VTF_LOOK_DOWN_NEGZ
+    VTF_LOOK_DOWN_X = 0,
+    VTF_LOOK_DOWN_NEGX,
+    VTF_LOOK_DOWN_Y = 0,
+    VTF_LOOK_DOWN_NEGY,
+    VTF_LOOK_DOWN_Z = 0,
+    VTF_LOOK_DOWN_NEGZ
 };
 
 
 enum VTFImageFormat
 {
-   VTF_FORMAT_UNKNOWN    = -1,
-   VTF_FORMAT_RGBA8888   = 0,
-   VTF_FORMAT_ABGR8888,
-   VTF_FORMAT_RGB888,
-   VTF_FORMAT_BGR888,
-   VTF_FORMAT_RGB565,
-   VTF_FORMAT_I8,
-   VTF_FORMAT_IA88,
-   VTF_FORMAT_P8,
-   VTF_FORMAT_A8,
-   VTF_FORMAT_RGB888_BLUESCREEN,
-   VTF_FORMAT_BGR888_BLUESCREEN,
-   VTF_FORMAT_ARGB8888,
-   VTF_FORMAT_BGRA8888,
-   VTF_FORMAT_DXT1,
-   VTF_FORMAT_DXT3,
-   VTF_FORMAT_DXT5,
-   VTF_FORMAT_BGRX8888,
-   VTF_FORMAT_BGR565,
-   VTF_FORMAT_BGRX5551,
-   VTF_FORMAT_BGRA4444,
-   VTF_FORMAT_DXT1_ONEBITALPHA,
-   VTF_FORMAT_BGRA5551,
-   VTF_FORMAT_UV88,
-   VTF_FORMAT_UVWQ8888,
-   VTF_FORMAT_RGBA16161616F,
-   VTF_FORMAT_RGBA16161616,
-   VTF_FORMAT_UVLX8888,
-   VTF_FORMAT_R32F,
-   VTF_FORMAT_RGB323232F,
-   VTF_FORMAT_RGBA32323232F,
-   VTF_NUM_IMAGE_FORMATS
+    VTF_FORMAT_UNKNOWN    = -1,
+    VTF_FORMAT_RGBA8888   = 0,
+    VTF_FORMAT_ABGR8888,
+    VTF_FORMAT_RGB888,
+    VTF_FORMAT_BGR888,
+    VTF_FORMAT_RGB565,
+    VTF_FORMAT_I8,
+    VTF_FORMAT_IA88,
+    VTF_FORMAT_P8,
+    VTF_FORMAT_A8,
+    VTF_FORMAT_RGB888_BLUESCREEN,
+    VTF_FORMAT_BGR888_BLUESCREEN,
+    VTF_FORMAT_ARGB8888,
+    VTF_FORMAT_BGRA8888,
+    VTF_FORMAT_DXT1,
+    VTF_FORMAT_DXT3,
+    VTF_FORMAT_DXT5,
+    VTF_FORMAT_BGRX8888,
+    VTF_FORMAT_BGR565,
+    VTF_FORMAT_BGRX5551,
+    VTF_FORMAT_BGRA4444,
+    VTF_FORMAT_DXT1_ONEBITALPHA,
+    VTF_FORMAT_BGRA5551,
+    VTF_FORMAT_UV88,
+    VTF_FORMAT_UVWQ8888,
+    VTF_FORMAT_RGBA16161616F,
+    VTF_FORMAT_RGBA16161616,
+    VTF_FORMAT_UVLX8888,
+    VTF_FORMAT_R32F,
+    VTF_FORMAT_RGB323232F,
+    VTF_FORMAT_RGBA32323232F,
+    VTF_NUM_IMAGE_FORMATS
 };
 
 
@@ -126,27 +126,27 @@ enum VTFImageFormat
 
 struct VTFFileHeader
 {
-   char             magic_number[4];
-   unsigned int     file_version[2];
-   unsigned int     header_size;
-   unsigned short   image_width;
-   unsigned short   image_height;
-   unsigned int     image_flags;
-   unsigned short   num_frames;
-   unsigned short   start_frame;
+    char             magic_number[4];
+    unsigned int     file_version[2];
+    unsigned int     header_size;
+    unsigned short   image_width;
+    unsigned short   image_height;
+    unsigned int     image_flags;
+    unsigned short   num_frames;
+    unsigned short   start_frame;
 
-   unsigned char    padding_0[4];
-   osg::Vec3f       reflectivity_value;
-   unsigned char    padding_1[4];
+    unsigned char    padding_0[4];
+    osg::Vec3f       reflectivity_value;
+    unsigned char    padding_1[4];
 
-   float            bump_scale;
-   unsigned int     image_format;
-   unsigned char    num_mip_levels;
-   unsigned char    low_res_image_format;
-   unsigned char    padding_2[3];
-   unsigned char    low_res_image_width;
-   unsigned char    low_res_image_height;
-   unsigned short   image_depth;
+    float            bump_scale;
+    unsigned int     image_format;
+    unsigned char    num_mip_levels;
+    unsigned char    low_res_image_format;
+    unsigned char    padding_2[3];
+    unsigned char    low_res_image_width;
+    unsigned char    low_res_image_height;
+    unsigned short   image_depth;
 };
 
 
@@ -357,6 +357,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     int               s, t, r;
     unsigned int      lrSize;
     unsigned char *   imageData;
+    unsigned char *   imageDataPtr;
     unsigned int      base;
     unsigned int      size;
     int               mip;
@@ -395,12 +396,53 @@ osg::Image* ReadVTFFile(std::istream& _istream)
         return NULL;
     }
 
+    osg::notify(osg::INFO) << "VTF Header: (" << sizeof(VTFFileHeader);
+    osg::notify(osg::INFO) << " bytes)" << std::endl;
+    osg::notify(osg::INFO) << "   magic_number = ";
+    osg::notify(osg::INFO) << vtf_header.magic_number[0];
+    osg::notify(osg::INFO) << vtf_header.magic_number[1];
+    osg::notify(osg::INFO) << vtf_header.magic_number[2];
+    osg::notify(osg::INFO) << vtf_header.magic_number[3] << std:: endl;
+    osg::notify(osg::INFO) << "   file_version = ";
+    osg::notify(osg::INFO) << vtf_header.file_version[0] << ".";
+    osg::notify(osg::INFO) << vtf_header.file_version[1] << std:: endl;
+    osg::notify(osg::INFO) << "   header_size  = ";
+    osg::notify(osg::INFO) << vtf_header.header_size << std::endl;
+    osg::notify(osg::INFO) << "   image_width  = ";
+    osg::notify(osg::INFO) << vtf_header.image_width << std::endl;
+    osg::notify(osg::INFO) << "   image_height = ";
+    osg::notify(osg::INFO) << vtf_header.image_height << std::endl;
+    osg::notify(osg::INFO) << "   num_frames   = ";
+    osg::notify(osg::INFO) << vtf_header.num_frames << std::endl;
+    osg::notify(osg::INFO) << "   start_frame  = ";
+    osg::notify(osg::INFO) << vtf_header.start_frame << std::endl;
+    osg::notify(osg::INFO) << "   reflectivity = ";
+    osg::notify(osg::INFO) << vtf_header.reflectivity_value.x() << ", ";
+    osg::notify(osg::INFO) << vtf_header.reflectivity_value.y() << ", ";
+    osg::notify(osg::INFO) << vtf_header.reflectivity_value.z() << std::endl;
+    osg::notify(osg::INFO) << "   bump_scale   = ";
+    osg::notify(osg::INFO) << vtf_header.bump_scale << std::endl;
+    osg::notify(osg::INFO) << "   image_format = ";
+    osg::notify(osg::INFO) << vtf_header.image_format << std::endl;
+    osg::notify(osg::INFO) << "   num_mip_lvls = ";
+    osg::notify(osg::INFO) << (int)vtf_header.num_mip_levels << std::endl;
+    osg::notify(osg::INFO) << "   lr_image_fmt = ";
+    osg::notify(osg::INFO) << (int)vtf_header.low_res_image_format << std::endl;
+    osg::notify(osg::INFO) << "   lr_width     = ";
+    osg::notify(osg::INFO) << (int)vtf_header.low_res_image_width << std::endl;
+    osg::notify(osg::INFO) << "   lr_height    = ";
+    osg::notify(osg::INFO) << (int)vtf_header.low_res_image_height << std::endl;
+    osg::notify(osg::INFO) << "   image_depth  = ";
+    osg::notify(osg::INFO) << (int)vtf_header.image_depth << std::endl;
+
     // Before we get to the real image, we need to skip over the "low res"
     // image that's often stored along with VTF textures, so get the
     // low-res image dimensions
     s = vtf_header.low_res_image_width;
     t = vtf_header.low_res_image_height;
     r = 1;
+    osg::notify(osg::INFO) << "Low-res s = " << s << std::endl;
+    osg::notify(osg::INFO) << "Low-res t = " << t << std::endl;
 
     // See if the low-res image is there
     lrSize = 0;
@@ -428,6 +470,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
         lrSize = loResImage->getTotalSizeInBytes();
 
         // Skip over the low-res image data
+        osg::notify(osg::INFO) << "Low-res size = " << lrSize << std::endl;
         _istream.ignore(lrSize);
     }
 
@@ -525,7 +568,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
                 if (height == 0)
                     height = 1;
                 if (depth == 0)
-                    height = 1;
+                    depth = 1;
 
                 // Compute and store the offset into the final image data
                 offset += depth * height *
@@ -551,10 +594,11 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     osgImage->setImage(s, t, r, internalFormat, pixelFormat, dataType,
                        0, osg::Image::USE_NEW_DELETE);
     if (mipmaps.size() > 0)
-       osgImage->setMipmapLevels(mipmaps);
+        osgImage->setMipmapLevels(mipmaps);
 
     // Compute the total image size
     size = osgImage->getTotalSizeInBytesIncludingMipmaps();
+    osg::notify(osg::INFO) << "ReadVTFFile info : size = " << size << std::endl;
     if(size <= 0)
     {
         osg::notify(osg::WARN) << "ReadVTFFile warning: size <= 0" << std::endl;
@@ -602,6 +646,30 @@ osg::Image* ReadVTFFile(std::istream& _istream)
         _istream.read((char*)imageData, size);
     }
 
+/*
+    // Check if alpha information embedded in the 8-byte encoding blocks
+    if (checkIfUsingOneBitAlpha)
+    {
+        const DXT1TexelsBlock *texelsBlock =
+            reinterpret_cast<const DXT1TexelsBlock*>(imageData);
+
+        // Only do the check on the first mipmap level
+        unsigned int numBlocks = mipmaps.size()>0 ? mipmaps[0] / 8 : size / 8;
+
+        for (int i=numBlocks; i>0; --i, ++texelsBlock)
+        {
+            if (texelsBlock->color_0<=texelsBlock->color_1)
+            {
+                // Texture is using the 1-bit alpha encoding, so we need to
+                // update the assumed pixel format
+                internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                break;
+            }
+        }
+    }
+*/
+
     // Now, set the actual image data and mipmap levels
     osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType,
                        imageData, osg::Image::USE_NEW_DELETE);
@@ -609,6 +677,13 @@ osg::Image* ReadVTFFile(std::istream& _istream)
          
     // Finally, return the image
     return osgImage.release();
+}
+
+
+bool WriteVTFFile(const osg::Image *img, std::ostream& fout)
+{
+    // Not supported
+    return false; 
 }
 
 
@@ -625,22 +700,17 @@ public:
         return osgDB::equalCaseInsensitive(extension, "vtf"); 
     }
 
-    virtual ReadResult readObject(
-                           const std::string& file,
-                           const osgDB::ReaderWriter::Options* options) const
+    virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         return readImage(file,options);
     }
 
-    virtual ReadResult readObject(std::istream& fin,
-                                  const Options* options) const
+    virtual ReadResult readObject(std::istream& fin, const Options* options) const
     {
         return readImage(fin,options);
     }
 
-    virtual ReadResult readImage(
-                            const std::string& file,
-                            const osgDB::ReaderWriter::Options* options) const
+    virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         std::string ext = osgDB::getLowerCaseFileExtension(file);
         if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -649,22 +719,19 @@ public:
     
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
         
-        osgDB::ifstream stream(fileName.c_str(),
-                               std::ios::in | std::ios::binary);
+        std::ifstream stream(fileName.c_str(), std::ios::in | std::ios::binary);
         if(!stream) return ReadResult::FILE_NOT_HANDLED;
         ReadResult rr = readImage(stream, options);
         if(rr.validImage()) rr.getImage()->setFileName(file);
         return rr;
     }
 
-    virtual ReadResult readImage(std::istream& fin,
-                                 const Options* options) const
+    virtual ReadResult readImage(std::istream& fin, const Options* options) const
     {
         osg::Image* osgImage = ReadVTFFile(fin);
         if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
         
-        if (options && 
-            options->getOptionString().find("vtf_flip")!=std::string::npos)
+        if (options && options->getOptionString().find("vtf_flip")!=std::string::npos)
         {
             osgImage->flipVertical();
         }
@@ -672,10 +739,7 @@ public:
         return osgImage;
     }
 
-    virtual WriteResult writeObject(
-                            const osg::Object& object,
-                            const std::string& file,
-                            const osgDB::ReaderWriter::Options* options) const
+    virtual WriteResult writeObject(const osg::Object& object,const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
         const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
         if (!image) return WriteResult::FILE_NOT_HANDLED;
@@ -683,26 +747,34 @@ public:
         return writeImage(*image,file,options);
     }
 
-    virtual WriteResult writeObject(const osg::Object& object,
-                                    std::ostream& fout,
-                                    const Options* options) const
+    virtual WriteResult writeObject(const osg::Object& object,std::ostream& fout,const Options* options) const
     {
-        return WriteResult::FILE_NOT_HANDLED;
+        const osg::Image* image = dynamic_cast<const osg::Image*>(&object);
+        if (!image) return WriteResult::FILE_NOT_HANDLED;
+
+        return writeImage(*image,fout,options);
     }
 
 
-    virtual WriteResult writeImage(
-                           const osg::Image &image,
-                           const std::string& file,
-                           const osgDB::ReaderWriter::Options* options) const
+    virtual WriteResult writeImage(const osg::Image &image,const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
-        return WriteResult::FILE_NOT_HANDLED;
+        std::string ext = osgDB::getFileExtension(file);
+        if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
+        std::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
+        if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+
+        return writeImage(image,fout,options);
     }
 
-    virtual WriteResult writeImage(const osg::Image& image,
-                                   std::ostream& fout,const Options*) const
+    virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const Options*) const
     {
-        return WriteResult::FILE_NOT_HANDLED;
+        bool success = WriteVTFFile(&image, fout);
+
+        if(success)
+            return WriteResult::FILE_SAVED;
+        else
+            return WriteResult::ERROR_IN_WRITING_FILE;
     }
 };
 

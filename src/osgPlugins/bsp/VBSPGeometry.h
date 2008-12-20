@@ -6,7 +6,7 @@
 #include <osg/Array>
 #include <osg/Geometry>
 
-#include "VBSPReader.h"
+#include "VBSPData.h"
 
 
 namespace bsp
@@ -17,7 +17,7 @@ class VBSPGeometry
 {
     protected:
 
-        VBSPReader *   vbsp_reader;
+        VBSPData *   bsp_data;
 
         osg::ref_ptr<osg::Vec3Array>          vertex_array;
         osg::ref_ptr<osg::Vec3Array>          normal_array;
@@ -39,7 +39,7 @@ class VBSPGeometry
 
     public:
 
-        VBSPGeometry(VBSPReader * reader);
+        VBSPGeometry(VBSPData * bspData);
         virtual ~VBSPGeometry();
 
         void                       addFace(int faceIndex);

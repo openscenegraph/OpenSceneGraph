@@ -1,17 +1,19 @@
 
+#include <stdlib.h>
+#include <osg/Geode>
+
 #include "VBSPGeometry.h"
 
 
 using namespace osg;
-using namespace osgDB;
 using namespace bsp;
 
 
-VBSPGeometry::VBSPGeometry(VBSPReader * reader)
+VBSPGeometry::VBSPGeometry(VBSPData * bspData)
 {
-    // Keep track of the reader, as it has all of the data lists that we
+    // Keep track of the bsp data, as it has all of the data lists that we
     // need
-    vbsp_reader = reader;
+    bsp_data = bspData;
 
     // Create arrays for the vertex attributes
     vertex_array = new Vec3Array();
@@ -249,17 +251,17 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
     Vec3              texV;
     float             texVOffset;
     float             texVScale;
-    int               i, j, k;
+    unsigned int      i, j, k;
     double            dist, minDist;
-    int               minIndex = 0;
+    int               minIndex;
     osg::Vec3         temp;
     int               edgeIndex;
     int               currentSurfEdge;
     Edge              currentEdge;
     osg::Vec3         currentVertex;
     osg::Vec3         vertices[4];
-    int               firstVertex;
-    int               numEdgeVertices;
+    unsigned int      firstVertex;
+    unsigned int      numEdgeVertices;
     double            subdivideScale;
     osg::Vec3         leftEdge, rightEdge;
     osg::Vec3         leftEdgeStep, rightEdgeStep;
@@ -276,8 +278,8 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
    
 
     // Get the texture info for this face
-    currentTexInfo = vbsp_reader->getTexInfo(face.texinfo_index);
-    currentTexData = vbsp_reader->getTexData(currentTexInfo.texdata_index);
+    currentTexInfo = bsp_data->getTexInfo(face.texinfo_index);
+    currentTexData = bsp_data->getTexData(currentTexInfo.texdata_index);
 
     // Get the texture vectors and offsets.  These are used to calculate
     // texture coordinates 
@@ -289,6 +291,10 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
              currentTexInfo.texture_vecs[1][1],
              currentTexInfo.texture_vecs[1][2]);
     texVOffset = currentTexInfo.texture_vecs[1][3];
+
+    // Scale the texture vectors from inches to meters
+    texU *= 39.37;
+    texV *= 39.37;
 
     // Get the size of the texture involved, as the planar texture projection 
     // assumes non-normalized texture coordinates
@@ -304,16 +310,16 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
         // Look up the edge specified by the surface edge index, the
         // index might be negative (see below), so take the absolute
         // value
-        currentSurfEdge = vbsp_reader->getSurfaceEdge(edgeIndex);
-        currentEdge = vbsp_reader->getEdge(abs(currentSurfEdge));
+        currentSurfEdge = bsp_data->getSurfaceEdge(edgeIndex);
+        currentEdge = bsp_data->getEdge(abs(currentSurfEdge));
 
         // The sign of the surface edge index specifies which vertex is
         // "first" for this face.  A negative index means the edge should
         // be flipped, and the second vertex treated as the first
         if (currentSurfEdge < 0)
-            currentVertex = vbsp_reader->getVertex(currentEdge.vertex[1]);
+            currentVertex = bsp_data->getVertex(currentEdge.vertex[1]);
         else
-            currentVertex = vbsp_reader->getVertex(currentEdge.vertex[0]);
+            currentVertex = bsp_data->getVertex(currentEdge.vertex[0]);
 
         // Add the vertex to the array
         vertices[i] = currentVertex;
@@ -328,7 +334,7 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
     for (i = 0; i < 4; i++)
     {
        // Calculate the distance of the start position from this vertex
-       dist = (vertices[i] - dispInfo.start_position).length();
+       dist = (vertices[i] - dispInfo.start_position * 0.0254).length();
 
        // If this is the smallest distance we've seen, remember it
        if (dist < minDist)
@@ -388,14 +394,15 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
             // Get the displacement info for this vertex
             dispVertIndex = dispInfo.disp_vert_start;
             dispVertIndex += i * numEdgeVertices + j;
-            dispVertInfo = vbsp_reader->getDispVertex(dispVertIndex);
+            dispVertInfo = bsp_data->getDispVertex(dispVertIndex);
 
             // Calculate the flat vertex
             flatVertex = leftEnd + (leftRightStep * (double) j);
 
             // Calculate the displaced vertex
             dispVertex =
-                dispVertInfo.displace_vec * dispVertInfo.displace_dist;
+                dispVertInfo.displace_vec * 
+                (dispVertInfo.displace_dist * 0.0254);
             dispVertex += flatVertex;
 
             // Add the vertex to the displaced vertex array
@@ -510,14 +517,14 @@ void VBSPGeometry::addFace(int faceIndex)
 
     // Make sure this face is not "on node" (an internal node of the BSP tree).
     // These faces are not used for visible geometry
-    currentFace = vbsp_reader->getFace(faceIndex);
+    currentFace = bsp_data->getFace(faceIndex);
 
     // See if this is a displacement surface
     if (currentFace.dispinfo_index != -1)
     {
         // Get the displacement info
         currentDispInfo =
-            vbsp_reader->getDispInfo(currentFace.dispinfo_index);
+            bsp_data->getDispInfo(currentFace.dispinfo_index);
 
         // Generate the displacement surface
         createDispSurface(currentFace, currentDispInfo);
@@ -525,13 +532,13 @@ void VBSPGeometry::addFace(int faceIndex)
     else
     {
         // Get the face normal, using the plane information
-        normal = vbsp_reader->getPlane(currentFace.plane_index).plane_normal;
+        normal = bsp_data->getPlane(currentFace.plane_index).plane_normal;
         if (currentFace.plane_side != 0)
             normal = -normal;
 
         // Get the texture info and data structures
-        currentTexInfo = vbsp_reader->getTexInfo(currentFace.texinfo_index);
-        currentTexData = vbsp_reader->getTexData(currentTexInfo.texdata_index);
+        currentTexInfo = bsp_data->getTexInfo(currentFace.texinfo_index);
+        currentTexData = bsp_data->getTexData(currentTexInfo.texdata_index);
 
         // Get the texture vectors and offsets.  These are used to calculate
         // texture coordinates 
@@ -543,6 +550,10 @@ void VBSPGeometry::addFace(int faceIndex)
                  currentTexInfo.texture_vecs[1][1],
                  currentTexInfo.texture_vecs[1][2]);
         texVOffset = currentTexInfo.texture_vecs[1][3];
+
+        // Scale the texture vectors from inches to meters
+        texU *= 39.37;
+        texV *= 39.37;
 
         // Get the texture size, as the planar texture projection results in
         // non-normalized texture coordinates
@@ -562,16 +573,16 @@ void VBSPGeometry::addFace(int faceIndex)
             // Look up the edge specified by the surface edge index, the
             // index might be negative (see below), so take the absolute
             // value
-            currentSurfEdge = vbsp_reader->getSurfaceEdge(edgeIndex);
-            currentEdge = vbsp_reader->getEdge(abs(currentSurfEdge));
+            currentSurfEdge = bsp_data->getSurfaceEdge(edgeIndex);
+            currentEdge = bsp_data->getEdge(abs(currentSurfEdge));
 
             // The sign of the surface edge index specifies which vertex is
             // "first" for this face.  A negative index means the edge should
             // be flipped, and the second vertex treated as the first
             if (currentSurfEdge < 0)
-                currentVertex = vbsp_reader->getVertex(currentEdge.vertex[1]);
+                currentVertex = bsp_data->getVertex(currentEdge.vertex[1]);
             else
-                currentVertex = vbsp_reader->getVertex(currentEdge.vertex[0]);
+                currentVertex = bsp_data->getVertex(currentEdge.vertex[0]);
 
             // Add the vertex to the array
             vertex_array->push_back(currentVertex);

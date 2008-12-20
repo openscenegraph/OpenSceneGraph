@@ -3,7 +3,6 @@
 
 
 #include <osg/Geometry>
-#include <osg/Matrixd>
 #include <osg/Node>
 #include <osg/Object>
 #include <osg/StateSet>
@@ -11,6 +10,7 @@
 #include <osgDB/FileNameUtils>
 #include <osg/Referenced>
 
+#include "VBSPData.h"
 
 namespace bsp
 {
@@ -178,107 +178,52 @@ struct Header
 };
 
 
-struct Plane
+struct GameHeader
 {
-    osg::Vec3f   plane_normal;
-    float        origin_dist;
-    int          type;
+    int              num_lumps;
+
+    // This is followed by this many GameLump entries (see below)
+};
+
+   
+struct GameLump
+{
+    int               lump_id;
+    unsigned short    lump_flags;
+    unsigned short    lump_version;
+    int               lump_offset;
+    int               lump_length;
+}; 
+   
+   
+// This is the ID for the static prop game lump
+const int STATIC_PROP_ID = (('s'<<24)+('p'<<16)+('r'<<8)+'p');
+
+
+struct StaticPropModelNames
+{  
+    int    num_model_names;
+
+    // This is followed by this many names, each 128 characters long
 };
 
 
-struct Edge
+struct StaticPropLeaves
 {
-    unsigned short   vertex[2];
+    int   num_leaf_entries;
+
+    // This is followed by this many unsigned shorts, indicating which BSP
+    // leaves this prop occupies
 };
 
 
-struct Face
+struct StaticProps
 {
-    unsigned short   plane_index;
-    unsigned char    plane_side;
-    unsigned char    on_node;
-    int              first_edge;
-    short            num_edges;
-    short            texinfo_index;
-    short            dispinfo_index;
-    short            surface_fog_volume_id;
-    unsigned char    styles[4];
-    int              light_offset;
-    float            face_area;
-    int              lightmap_texture_mins_in_luxels[2];
-    int              lightmap_texture_size_in_luxels[2];
-    int              original_face;
-    unsigned short   num_primitives;
-    unsigned short   first_primitive_id;
-    unsigned int     smoothing_groups;
-};
+    int   num_static_props;
 
-
-struct TexInfo
-{
-    float   texture_vecs[2][4];
-    float   lightmap_vecs[2][4];
-    int     texture_flags;
-    int     texdata_index;
-};
-
-
-struct TexData
-{
-    osg::Vec3f   texture_reflectivity;
-    int          name_string_table_id;
-    int          texture_width;
-    int          texture_height;
-    int          view_width;
-    int          view_height;
-};
-
-
-struct DisplaceSubNeighbor
-{
-    unsigned short   neighbor_index;
-    unsigned char    neighbor_orient;
-    unsigned char    local_span;
-    unsigned char    neighbor_span;
-};
-
-
-struct DisplaceNeighbor
-{
-    DisplaceSubNeighbor   sub_neighbors[2];
-};
-
-
-struct DisplaceCornerNeighbor
-{
-    unsigned short   neighbor_indices[4];
-    unsigned char    neighbor_count;
-};
-
-
-struct DisplaceInfo
-{
-    osg::Vec3f               start_position;
-    int                      disp_vert_start;
-    int                      disp_tri_start;
-    int                      power;
-    int                      min_tesselation;
-    float                    smooth_angle;
-    int                      surface_contents;
-    unsigned short           map_face;
-    int                      lightmap_alpha_start;
-    int                      lightmap_sample_pos_start;
-    DisplaceNeighbor         edge_neighbors[4];
-    DisplaceCornerNeighbor   corner_neighbors[4];
-    unsigned int             allowed_verts[10];
-};
-
-
-struct DisplacedVertex
-{
-    osg::Vec3f   displace_vec;
-    float        displace_dist;
-    float        alpha_blend;
+    // This is followed by this many StaticProp entries (see VBSPData.h), note
+    // that there are two possible StaticProp versions, depending on the
+    // version of the GameLump
 };
 
 
@@ -288,48 +233,17 @@ protected:
 
     std::string                map_name;
 
+    VBSPData *                 bsp_data;
+
     osg::ref_ptr<osg::Node>    root_node;
 
-    char **                    entity_list;
-    int                        num_entities;
-
-    Plane *                    plane_list;
-    int                        num_planes;
-
-    osg::Vec3f *               vertex_list;
-    int                        num_vertices;
-
-    Edge *                     edge_list;
-    int                        num_edges;
-
-    int *                      surface_edges;
-    int                        num_surf_edges;
-
-    Face *                     face_list;
-    int                        num_faces;
-
-    TexInfo *                  texinfo_list;
-    int                        num_texinfo_entries;
-
-    TexData *                  texdata_list;
-    int                        num_texdata_entries;
-
+    char *                     texdata_string;
     int *                      texdata_string_table;
     int                        num_texdata_string_table_entries;
 
-    char **                    texdata_string_data;
-    int                        num_texdata_strings;
-
-    DisplaceInfo *             dispinfo_list;
-    int                        num_dispinfo_entries;
-
-    DisplacedVertex *          displaced_vertex_list;
-    int                        num_displaced_vertices;
-   
-
-    void   writeBlanks(int count) const;
 
     void   processEntities(std::istream & str, int offset, int length);
+    void   processModels(std::istream & str, int offset, int length);
     void   processPlanes(std::istream & str, int offset, int length);
     void   processVertices(std::istream & str, int offset, int length);
     void   processEdges(std::istream & str, int offset, int length);
@@ -339,15 +253,15 @@ protected:
     void   processTexData(std::istream & str, int offset, int length);
     void   processTexDataStringTable(std::istream & str, int offset,
                                      int length);
-    void   processTexDataStringData(std::istream & str, int offset,
-                                    int length);
+    void   processTexDataStringData(std::istream & str, int offset, int length);
     void   processDispInfo(std::istream & str, int offset, int length);
     void   processDispVerts(std::istream & str, int offset, int length);
+    void   processGameData(std::istream & str, int offset, int length);
+    void   processStaticProps(std::istream & str, int offset, int length,
+                              int lumpVersion);
 
     std::string       getToken(std::string str, const char * delim,
-                               std::string::size_type & index);
-
-    std::string       findFileIgnoreCase(std::string filePath);
+                               size_t & index);
 
     osg::ref_ptr<osg::StateSet>   createBlendShader(osg::Texture * tex1,
                                                     osg::Texture * tex2);
@@ -361,18 +275,6 @@ public:
 
     VBSPReader();
     virtual ~VBSPReader();
- 
-    const char *              getEntity(int index) const;
-    const Plane &             getPlane(int index) const;
-    const osg::Vec3f &        getVertex(int index) const;
-    const Edge &              getEdge(int index) const;
-    const int                 getSurfaceEdge(int index) const;
-    const Face &              getFace(int index) const;
-    const TexInfo &           getTexInfo(int index) const;
-    const TexData &           getTexData(int index) const;
-    const char *              getTexDataString(int index) const;
-    const DisplaceInfo &      getDispInfo(int index) const;
-    const DisplacedVertex &   getDispVertex(int index) const;
 
     bool   readFile(const std::string & file);
 

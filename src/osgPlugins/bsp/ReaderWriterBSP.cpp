@@ -56,11 +56,11 @@ ReaderWriter::ReadResult ReaderWriterBSP::readNode(
         return ReadResult::FILE_NOT_FOUND;
 
     // Open the file and read the magic number and version
-    stream.open(file.c_str(), std::ios::binary);
+    stream.open(fileName.c_str(), std::ios::binary);
     stream.read((char *) &magicNumber, sizeof(int));
     stream.read((char *) &version, sizeof(int));
     stream.close();
-   
+
     // See which kind of BSP file this is
     if ((magicNumber == VBSP_MAGIC_NUMBER) &&
         (version >= 19) && (version <= 20))

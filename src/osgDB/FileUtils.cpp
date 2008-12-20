@@ -378,38 +378,122 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
     bool needDirectoryName = true;
     osgDB::DirectoryContents dc;
 
-    if (dirName.empty())
+    std::string realDirName = dirName;
+    std::string realFileName = fileName;
+
+    // Skip case-insensitive recursion if on Windows
+    #ifdef WIN32
+        bool win32 = true;
+    #else
+        bool win32 = false;
+    #endif
+    
+    // If the fileName contains extra path information, make that part of the
+    // directory name instead
+    if (fileName != getSimpleFileName(fileName))
+    {
+        // See if we need to add a slash between the directory and file
+        if (realDirName.empty())
+        {
+            realDirName = getFilePath(fileName);
+        }
+        else if (realDirName=="." || realDirName=="./" || realDirName==".\\")
+        {
+            realDirName = "./" + getFilePath(fileName);
+        }
+        else
+        {
+            char lastChar = dirName[dirName.size()-1];
+            if ((lastChar == '/') || (lastChar == '\\'))
+                realDirName = dirName + getFilePath(fileName);
+            else
+                realDirName = dirName + "/" + getFilePath(fileName);
+        }
+
+        // Simplify the file name
+        realFileName = getSimpleFileName(fileName);
+    }
+
+    osg::notify(osg::DEBUG_INFO) << "findFileInDirectory() : looking for " << realFileName << " in " << realDirName << "...\n";
+
+    if (realDirName.empty())
     {
         dc = osgDB::getDirectoryContents(".");
         needFollowingBackslash = false;
         needDirectoryName = false;
     }
-    else if (dirName=="." || dirName=="./" || dirName==".\\")
+    else if (realDirName=="." || realDirName=="./" || realDirName==".\\")
     {
         dc = osgDB::getDirectoryContents(".");
         needFollowingBackslash = false;
         needDirectoryName = false;
+    }
+    else if (realDirName=="/")
+    {
+        dc = osgDB::getDirectoryContents("/");
+        needFollowingBackslash = false;
+        needDirectoryName = true;
     }
     else
     {
-        dc = osgDB::getDirectoryContents(dirName);
-        char lastChar = dirName[dirName.size()-1];
-        if (lastChar=='/') needFollowingBackslash = false;
-        else if (lastChar=='\\') needFollowingBackslash = false;
-        else needFollowingBackslash = true;
-        needDirectoryName = true;
+        // See if we're working in case insensitive mode, and that we're not
+        // using Windows (the recursive search is not needed in these
+        // cases)
+        if ((caseSensitivity == CASE_INSENSITIVE) && (!win32))
+        {
+            // Split the last path element from the directory name
+            std::string parentPath = getFilePath(realDirName);
+            std::string lastElement = getSimpleFileName(realDirName);
+
+            // See if we're already at the top level of the filesystem
+            if ((parentPath.empty()) && (!lastElement.empty()))
+            {
+                // Search for the first path element (ignoring case) in
+                // the top-level directory
+                realDirName = findFileInDirectory(lastElement, "/",
+                                                  CASE_INSENSITIVE);
+      
+                dc = osgDB::getDirectoryContents(realDirName);
+                needFollowingBackslash = true;
+                needDirectoryName = true;
+            }
+            else
+            {
+                // Recursively search for the last path element (ignoring case)
+                // in the parent path
+                realDirName = findFileInDirectory(lastElement, parentPath,
+                                                  CASE_INSENSITIVE);
+      
+                dc = osgDB::getDirectoryContents(realDirName);
+                char lastChar = realDirName[realDirName.size()-1];
+                if (lastChar=='/') needFollowingBackslash = false;
+                else if (lastChar=='\\') needFollowingBackslash = false;
+                else needFollowingBackslash = true;
+                needDirectoryName = true;
+            }
+        }
+        else
+        {
+            // No need for recursive search if we're doing an exact comparison
+            dc = osgDB::getDirectoryContents(realDirName);
+            char lastChar = realDirName[realDirName.size()-1];
+            if (lastChar=='/') needFollowingBackslash = false;
+            else if (lastChar=='\\') needFollowingBackslash = false;
+            else needFollowingBackslash = true;
+            needDirectoryName = true;
+        }
     }
 
     for(osgDB::DirectoryContents::iterator itr=dc.begin();
         itr!=dc.end();
         ++itr)
     {
-        if ((caseSensitivity==CASE_INSENSITIVE && osgDB::equalCaseInsensitive(fileName,*itr)) ||
-            (fileName==*itr))
+        if ((caseSensitivity==CASE_INSENSITIVE && osgDB::equalCaseInsensitive(realFileName,*itr)) ||
+            (realFileName==*itr))
         {
             if (!needDirectoryName) return *itr;
-            else if (needFollowingBackslash) return dirName+'/'+*itr;
-            else return dirName+*itr;
+            else if (needFollowingBackslash) return realDirName+'/'+*itr;
+            else return realDirName+*itr;
         }
     }
     return "";

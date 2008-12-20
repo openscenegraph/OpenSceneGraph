@@ -88,7 +88,7 @@ ELSE(WIN32)
         # X11 for everybody else
 
 
-        INCLUDE(FindPkgConfig)
+        INCLUDE(FindPkgConfig OPTIONAL)
         IF (PKG_CONFIG_FOUND)
 
             PKG_CHECK_MODULES(XRANDR xrandr)

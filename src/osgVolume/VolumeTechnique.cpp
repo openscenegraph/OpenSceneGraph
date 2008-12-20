@@ -12,19 +12,19 @@
 */
 
 #include <osgVolume/VolumeTechnique>
-#include <osgVolume/Brick>
+#include <osgVolume/VolumeTile>
 
 using namespace osgVolume;
 
 VolumeTechnique::VolumeTechnique():
-    _brick(0)
+    _volumeTile(0)
 {
     setThreadSafeRefUnref(true);
 }
 
 VolumeTechnique::VolumeTechnique(const VolumeTechnique& rhs,const osg::CopyOp& copyop):
     osg::Object(rhs,copyop),
-    _brick(0)
+    _volumeTile(0)
 {
 }
 
@@ -40,13 +40,13 @@ void VolumeTechnique::init()
 void VolumeTechnique::update(osgUtil::UpdateVisitor* uv)
 {
     osg::notify(osg::NOTICE)<<className()<<"::update(..) not implementated yet"<<std::endl;
-    if (_brick) _brick->osg::Group::traverse(*uv);
+    if (_volumeTile) _volumeTile->osg::Group::traverse(*uv);
 }
 
 void VolumeTechnique::cull(osgUtil::CullVisitor* cv)
 {
     osg::notify(osg::NOTICE)<<className()<<"::cull(..) not implementated yet"<<std::endl;
-    if (_brick) _brick->osg::Group::traverse(*cv);
+    if (_volumeTile) _volumeTile->osg::Group::traverse(*cv);
 }
 
 void VolumeTechnique::cleanSceneGraph()
@@ -56,12 +56,12 @@ void VolumeTechnique::cleanSceneGraph()
 
 void VolumeTechnique::traverse(osg::NodeVisitor& nv)
 {
-    if (!_brick) return;
+    if (!_volumeTile) return;
 
     // if app traversal update the frame count.
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
-        if (_brick->getDirty()) _brick->init();
+        if (_volumeTile->getDirty()) _volumeTile->init();
 
         osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
         if (uv)
@@ -81,8 +81,8 @@ void VolumeTechnique::traverse(osg::NodeVisitor& nv)
         }
     }
 
-    if (_brick->getDirty()) _brick->init();
+    if (_volumeTile->getDirty()) _volumeTile->init();
 
     // otherwise fallback to the Group::traverse()
-    _brick->osg::Group::traverse(nv);
+    _volumeTile->osg::Group::traverse(nv);
 }

@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgVolume/Brick>
+#include <osgVolume/VolumeTile>
 #include <osgVolume/Volume>
 
 
@@ -20,9 +20,9 @@ using namespace osgVolume;
 
 /////////////////////////////////////////////////////////////////////////////////
 //
-// Brick
+// VolumeTile
 //
-Brick::Brick():
+VolumeTile::VolumeTile():
     _volume(0),
     _dirty(false),
     _hasBeenTraversal(false)
@@ -30,7 +30,7 @@ Brick::Brick():
     setThreadSafeRefUnref(true);
 }
 
-Brick::Brick(const Brick& brick,const osg::CopyOp& copyop):
+VolumeTile::VolumeTile(const VolumeTile& brick,const osg::CopyOp& copyop):
     Group(brick,copyop),
     _volume(0),
     _dirty(false),
@@ -43,35 +43,35 @@ Brick::Brick(const Brick& brick,const osg::CopyOp& copyop):
     }
 }
 
-Brick::~Brick()
+VolumeTile::~VolumeTile()
 {
     if (_volume) setVolume(0);
 }
 
-void Brick::setVolume(Volume* volume)
+void VolumeTile::setVolume(Volume* volume)
 {
     if (_volume == volume) return;
     
-    if (_volume) _volume->unregisterBrick(this);
+    if (_volume) _volume->unregisterVolumeTile(this);
     
     _volume = volume;
 
-    if (_volume) _volume->registerBrick(this);
+    if (_volume) _volume->registerVolumeTile(this);
 }
 
-void Brick::setBrickID(const BrickID& brickID)
+void VolumeTile::setTileID(const TileID& tileID)
 {
-    if (_brickID == brickID) return;
+    if (_tileID == tileID) return;
 
-    if (_volume) _volume->unregisterBrick(this);
+    if (_volume) _volume->unregisterVolumeTile(this);
 
-    _brickID = brickID;
+    _tileID = tileID;
 
-    if (_volume) _volume->registerBrick(this);
+    if (_volume) _volume->registerVolumeTile(this);
 }
 
 
-void Brick::traverse(osg::NodeVisitor& nv)
+void VolumeTile::traverse(osg::NodeVisitor& nv)
 {
     if (!_hasBeenTraversal)
     {
@@ -107,7 +107,7 @@ void Brick::traverse(osg::NodeVisitor& nv)
     }
 }
 
-void Brick::init()
+void VolumeTile::init()
 {
     if (_volumeTechnique.valid() && getDirty())
     {
@@ -117,7 +117,7 @@ void Brick::init()
     }    
 }
 
-void Brick::setVolumeTechnique(VolumeTechnique* volumeTechnique)
+void VolumeTile::setVolumeTechnique(VolumeTechnique* volumeTechnique)
 {
     if (_volumeTechnique == volumeTechnique) return; 
 
@@ -125,14 +125,14 @@ void Brick::setVolumeTechnique(VolumeTechnique* volumeTechnique)
 
     if (_volumeTechnique.valid()) 
     {
-        _volumeTechnique->_brick = 0;
+        _volumeTechnique->_volumeTile = 0;
     }
 
     _volumeTechnique = volumeTechnique;
     
     if (_volumeTechnique.valid()) 
     {
-        _volumeTechnique->_brick = this;
+        _volumeTechnique->_volumeTile = this;
         ++dirtyDelta;        
     }
     
@@ -140,7 +140,7 @@ void Brick::setVolumeTechnique(VolumeTechnique* volumeTechnique)
     else if (dirtyDelta<0) setDirty(false);
 }
 
-void Brick::setDirty(bool dirty)
+void VolumeTile::setDirty(bool dirty)
 {
     if (_dirty==dirty) return;
 
@@ -156,11 +156,11 @@ void Brick::setDirty(bool dirty)
     }
 }
 
-osg::BoundingSphere Brick::computeBound() const
+osg::BoundingSphere VolumeTile::computeBound() const
 {
     osg::BoundingSphere bs;
 
-    osg::notify(osg::NOTICE)<<"TODO Brick::computeBound()"<<std::endl;    
+    osg::notify(osg::NOTICE)<<"TODO VolumeTile::computeBound()"<<std::endl;    
     
     return bs;
 }

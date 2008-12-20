@@ -14,7 +14,7 @@
 #include <osgDB/Registry>
 
 #include <osgVolume/Volume>
-#include <osgVolume/Brick>
+#include <osgVolume/VolumeTile>
 #include <osgVolume/ImageUtils>
 
 #ifdef  USE_DCMTK
@@ -119,9 +119,9 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             
             osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
 
-            osg::ref_ptr<osgVolume::Brick> brick = new osgVolume::Brick;
-            brick->setVolume(volume.get());
-            brick->setImage(result.getImage());
+            osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
+            tile->setVolume(volume.get());
+            tile->setImage(result.getImage());
 
             // get matrix providing size of texels (in mm)
             osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(result.getImage()->getUserData());
@@ -130,18 +130,18 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             {
             
             
-                // scale up to provide scale of complete brick
+                // scale up to provide scale of complete tile
                 osg::Vec3d scale(osg::Vec3(result.getImage()->s(),result.getImage()->t(), result.getImage()->r()));
                 matrix->postMultScale(scale);
 
-                brick->setLocator(matrix);
+                tile->setLocator(matrix);
                 
                 result.getImage()->setUserData(0);
                 
                 notice()<<"Locator "<<*matrix<<std::endl;
             }
             
-            volume->addChild(brick.get());
+            volume->addChild(tile.get());
                         
             return volume.release();
         }

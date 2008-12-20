@@ -15,8 +15,8 @@
 #include <osg/Object>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/UpdateVisitor>
-#include <osgVolume/Brick>
 #include <osgVolume/VolumeTechnique>
+#include <osgVolume/VolumeTile>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -61,14 +61,14 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTechnique)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method0(osgVolume::Brick *, getBrick,
+	I_Method0(osgVolume::VolumeTile *, getVolumeTile,
 	          Properties::NON_VIRTUAL,
-	          __Brick_P1__getBrick,
+	          __VolumeTile_P1__getVolumeTile,
 	          "",
 	          "");
-	I_Method0(const osgVolume::Brick *, getBrick,
+	I_Method0(const osgVolume::VolumeTile *, getVolumeTile,
 	          Properties::NON_VIRTUAL,
-	          __C5_Brick_P1__getBrick,
+	          __C5_VolumeTile_P1__getVolumeTile,
 	          "",
 	          "");
 	I_Method0(void, init,
@@ -102,8 +102,8 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTechnique)
 	                   __void__setDirty__bool,
 	                   "",
 	                   "");
-	I_SimpleProperty(osgVolume::Brick *, Brick, 
-	                 __Brick_P1__getBrick, 
+	I_SimpleProperty(osgVolume::VolumeTile *, VolumeTile, 
+	                 __VolumeTile_P1__getVolumeTile, 
 	                 0);
 END_REFLECTOR
 

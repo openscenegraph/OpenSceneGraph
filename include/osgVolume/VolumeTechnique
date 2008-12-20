@@ -23,7 +23,7 @@
 
 namespace osgVolume {
 
-class Brick;
+class VolumeTile;
 
 class OSGVOLUME_EXPORT VolumeTechnique : public osg::Object
 {
@@ -36,8 +36,8 @@ class OSGVOLUME_EXPORT VolumeTechnique : public osg::Object
         
         META_Object(osgVolume, VolumeTechnique);
 
-        Brick* getBrick() { return _brick; }
-        const Brick* getBrick() const { return _brick; }
+        VolumeTile* getVolumeTile() { return _volumeTile; }
+        const VolumeTile* getVolumeTile() const { return _volumeTile; }
 
         virtual void init();
 
@@ -57,9 +57,9 @@ class OSGVOLUME_EXPORT VolumeTechnique : public osg::Object
 
         virtual ~VolumeTechnique();
         
-        friend class osgVolume::Brick;
+        friend class osgVolume::VolumeTile;
 
-        Brick*    _brick;
+        VolumeTile*    _volumeTile;
 
 };
 

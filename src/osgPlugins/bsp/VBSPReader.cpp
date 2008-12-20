@@ -1,3 +1,4 @@
+#include <osg/BlendFunc>
 #include <osg/BoundingSphere>
 #include <osg/Geometry>
 #include <osg/Group>
@@ -6,6 +7,7 @@
 #include <osg/MatrixTransform>
 #include <osg/Node>
 #include <osg/Notify>
+#include <osg/Quat>
 #include <osg/StateSet>
 #include <osg/Texture1D>
 #include <osg/Texture2D>
@@ -14,12 +16,11 @@
 #include <osgDB/FileUtils>
 #include <osgDB/ReadFile>
 #include <osg/io_utils>
-
 #include <iostream>
 #include <string.h>
 
 #include "VBSPReader.h"
-#include "VBSPGeometry.h"
+#include "VBSPEntity.h"
 
 
 using namespace bsp;
@@ -38,41 +39,34 @@ VBSPReader::VBSPReader()
     // Start with no root node
     root_node = NULL;
 
-    // No map data yet
-    entity_list = NULL;
-    vertex_list = NULL;
-    edge_list = NULL;
-    surface_edges = NULL;
-    face_list = NULL;
+    // Create the map data object
+    bsp_data = new VBSPData();
+
+    // No string table yet
+    texdata_string = NULL;
+    texdata_string_table = NULL;
+    num_texdata_string_table_entries = 0;
 }
 
 
 VBSPReader::~VBSPReader()
 {
-    // Clean up the data from the VBSP file
-    delete [] entity_list;
-    delete [] plane_list;
-    delete [] vertex_list;
-    delete [] edge_list;
-    delete [] surface_edges;
-    delete [] face_list;
-    delete [] texinfo_list;
-    delete [] texdata_list;
+    // Clean up the texdata strings and such
+    delete [] texdata_string;
     delete [] texdata_string_table;
-    delete [] texdata_string_data;
-    delete [] dispinfo_list;
-    delete [] displaced_vertex_list;
 }
 
 
 void VBSPReader::processEntities(std::istream & str, int offset,
                                  int length)
 {
-    char *   entities;
-    char *   startPtr;
-    char *   endPtr;
-    int      i;
-    int      entityLen;
+    char *          entities;
+    char *          startPtr;
+    char *          endPtr;
+    int             numEntities;
+    int             i;
+    std::string     entityStr;
+    size_t          entityLen;
 
     // Create the string
     entities = new char[length];
@@ -87,11 +81,11 @@ void VBSPReader::processEntities(std::istream & str, int offset,
     // Count the number of entities
     startPtr = entities;
     endPtr = strchr(entities, '}');
-    num_entities = 0;
+    numEntities = 0;
     while ((startPtr != NULL) && (endPtr != NULL))
     {
         // Increment the count
-        num_entities++;
+        numEntities++;
 
         // Advance the pointers
         startPtr = strchr(endPtr, '{');
@@ -99,21 +93,17 @@ void VBSPReader::processEntities(std::istream & str, int offset,
             endPtr = strchr(startPtr, '}');
     }
 
-    // Create the entity list
-    entity_list = new char * [num_entities];
-    memset(entity_list, 0, num_entities * sizeof(char *));
-
     // Parse the entities
     startPtr = entities;
     endPtr = strchr(entities, '}');
-    for (i = 0; i < num_entities; i++)
+    for (i = 0; i < numEntities; i++)
     {
         // Get the length of this entity
         entityLen = endPtr - startPtr + 1;
 
         // Create the entity list entry and copy the entity information
-        entity_list[i] = new char[entityLen + 1];
-        strncpy(entity_list[i], startPtr, entityLen);
+        entityStr = std::string(startPtr, entityLen);
+        bsp_data->addEntity(entityStr);
 
         // Advance the pointers
         startPtr = strchr(endPtr, '{');
@@ -126,121 +116,213 @@ void VBSPReader::processEntities(std::istream & str, int offset,
 }
 
 
+void VBSPReader::processModels(std::istream & str, int offset, int length)
+{
+    int       numModels;
+    int       i;
+    Model *   models;
+
+    // Calculate the number of models
+    numModels = length / sizeof(Model);
+
+    // Seek to the Models lump
+    str.seekg(offset);
+
+    // Read the models
+    models = new Model[numModels];
+    str.read((char *) models, sizeof(Model) * numModels);
+
+    // Add the models to the model list
+    for (i = 0; i < numModels; i++)
+        bsp_data->addModel(models[i]);
+
+    // Clean up
+    delete [] models;
+}
+
+
 void VBSPReader::processPlanes(std::istream & str, int offset, int length)
 {
-    // Calculate the number of planes
-    num_planes = length / sizeof(Plane);
+    int       numPlanes;
+    int       i;
+    Plane *   planes;
 
-    // Create the plane list
-    plane_list = new Plane[num_planes];
+    // Calculate the number of planes
+    numPlanes = length / sizeof(Plane);
 
     // Seek to the Planes lump
     str.seekg(offset);
 
-    // Read in the planes
-    str.read((char *) plane_list, sizeof(Plane) * num_planes);
+    // Read the planes
+    planes = new Plane[numPlanes];
+    str.read((char *) planes, sizeof(Plane) * numPlanes);
+
+    // Add the planes to the plane list
+    for (i = 0; i < numPlanes; i++)
+        bsp_data->addPlane(planes[i]);
+
+    // Clean up
+    delete [] planes;
 }
 
 
 void VBSPReader::processVertices(std::istream & str, int offset, int length)
 {
-    // Calculate the number of vertices
-    num_vertices = length / 3 / sizeof(float);
+    int       numVertices;
+    int       i;
+    Vec3f *   vertices;
 
-    // Create the vertex list
-    vertex_list = new Vec3f[num_vertices];
+    // Calculate the number of vertices
+    numVertices = length / 3 / sizeof(float);
 
     // Seek to the Vertices lump
     str.seekg(offset);
 
-    // Read in the vertices
-    str.read((char *) vertex_list, sizeof(Vec3f) * num_vertices);
+    // Read the vertex
+    vertices = new Vec3f[numVertices];
+    str.read((char *) vertices, sizeof(Vec3f) * numVertices);
+
+    // Add it the vertices to the list
+    for (i = 0; i < numVertices; i++)
+        bsp_data->addVertex(vertices[i]);
+
+    // Clean up
+    delete [] vertices;
 }
 
 
 void VBSPReader::processEdges(std::istream & str, int offset, int length)
 {
-    // Calculate the number of edges
-    num_edges = length / sizeof(Edge);
+    int      numEdges;
+    int      i;
+    Edge *   edges;
 
-    // Create the edge list
-    edge_list = new Edge[num_edges];
+    // Calculate the number of edges
+    numEdges = length / sizeof(Edge);
 
     // Seek to the Edges lump
     str.seekg(offset);
 
-    // Read in the edge list
-    str.read((char *) edge_list, sizeof(Edge) * num_edges);
+    // Read the edges
+    edges = new Edge[numEdges];
+    str.read((char *) edges, sizeof(Edge) * numEdges);
+
+    // Add the edges to the edge list
+    for (i = 0; i < numEdges; i++)
+        bsp_data->addEdge(edges[i]);
+
+    // Clean up
+    delete [] edges;
 }
 
 
 void VBSPReader::processSurfEdges(std::istream & str, int offset, int length)
 {
-    // Calculate the number of edges
-    num_surf_edges = length / sizeof(int);
+    int     numSurfEdges;
+    int     i;
+    int *   surfEdges;
 
-    // Create the surface edges list
-    surface_edges = new int[num_surf_edges];
+    // Calculate the number of edges
+    numSurfEdges = length / sizeof(int);
 
     // Seek to the SurfEdges lump
     str.seekg(offset);
 
-    // Read in the surface edge list
-    str.read((char *) surface_edges, sizeof(int) * num_surf_edges);
+    // Read the surface edges
+    surfEdges = new int[numSurfEdges];
+    str.read((char *) surfEdges, sizeof(int) * numSurfEdges);
+
+    // Add the surface edges to the surface edge list
+    for (i = 0; i < numSurfEdges; i++)
+        bsp_data->addSurfaceEdge(surfEdges[i]);
+
+    // Clean up
+    delete [] surfEdges;
 }
 
 
 void VBSPReader::processFaces(std::istream & str, int offset, int length)
 {
-    // Calculate the number of faces
-    num_faces = length / sizeof(Face);
+    int      numFaces;
+    int      i;
+    Face *   faces;
 
-    // Create the face list
-    face_list = new Face[num_faces];
+    // Calculate the number of faces
+    numFaces = length / sizeof(Face);
 
     // Seek to the Faces lump
     str.seekg(offset);
 
-    // Read in the faces
-    str.read((char *) face_list, sizeof(Face) * num_faces);
+    // Read the faces
+    faces = new Face[numFaces];
+    str.read((char *) faces, sizeof(Face) * numFaces);
+
+    // Add the faces to the face list
+    for (i = 0; i < numFaces; i++)
+        bsp_data->addFace(faces[i]);
+
+    // Clean up
+    delete [] faces;
 }
 
 
 void VBSPReader::processTexInfo(std::istream & str, int offset, int length)
 {
-    // Calculate the number of texinfos
-    num_texinfo_entries = length / sizeof(TexInfo);
+    int         numTexInfos;
+    int         i;
+    TexInfo *   texinfos;
 
-    // Create the texinfo list
-    texinfo_list = new TexInfo[num_texinfo_entries];
+    // Calculate the number of texinfos
+    numTexInfos = length / sizeof(TexInfo);
 
     // Seek to the TexInfo lump
     str.seekg(offset);
 
     // Read in the texinfo entries
-    str.read((char *) texinfo_list, sizeof(TexInfo) * num_texinfo_entries);
+    texinfos = new TexInfo[numTexInfos];
+    str.read((char *) texinfos, sizeof(TexInfo) * numTexInfos);
+
+    // Add the texinfo entries to the texinfo list
+    for (i = 0; i < numTexInfos; i++)
+        bsp_data->addTexInfo(texinfos[i]);
+
+    // Clean up
+    delete [] texinfos;
 }
 
 
 void VBSPReader::processTexData(std::istream & str, int offset, int length)
 {
-    // Calculate the number of texdatas
-    num_texdata_entries = length / sizeof(TexData);
+    int         numTexDatas;
+    int         i;
+    TexData *   texdatas;
 
-    // Create the texdata list
-    texdata_list = new TexData[num_texdata_entries];
+    // Calculate the number of texdatas
+    numTexDatas = length / sizeof(TexData);
 
     // Seek to the TexData lump
     str.seekg(offset);
 
     // Read in the texdata entries
-    str.read((char *) texdata_list, sizeof(TexData) * num_texdata_entries);
+    texdatas = new TexData[numTexDatas];
+    str.read((char *) texdatas, sizeof(TexData) * numTexDatas);
+
+    // Add the texdata entries to the texdata list
+    for (i = 0; i < numTexDatas; i++)
+        bsp_data->addTexData(texdatas[i]);
+
+    // Clean up
+    delete [] texdatas;
 }
 
 
 void VBSPReader::processTexDataStringTable(std::istream & str, int offset,
                                            int length)
 {
+    int           i;
+    int           index;
+    std::string   texStr;
+
     // Calculate the number of table entries
     num_texdata_string_table_entries = length / sizeof(int);
 
@@ -253,117 +335,196 @@ void VBSPReader::processTexDataStringTable(std::istream & str, int offset,
     // Read in the texdata_string_table
     str.read((char *) texdata_string_table,
              sizeof(int) * num_texdata_string_table_entries);
+
+    // If we have a texdata string loaded, parse the texdata strings now
+    if (texdata_string != NULL)
+    {
+        for (i = 0; i < num_texdata_string_table_entries; i++)
+        {
+            // Add the strings from the string data, using the string table
+            // to index it
+            index = texdata_string_table[i];
+            texStr = std::string(&texdata_string[index]);
+            bsp_data->addTexDataString(texStr);
+        }
+    }
 }
 
 
 void VBSPReader::processTexDataStringData(std::istream & str, int offset,
                                           int length)
 {
-    char *   texDataString;
-    char *   startPtr;
-    char *   endPtr;
     int      i;
-    int      stringLen;
+    int           index;
+    std::string   texStr;
 
-    // Create the buffer to load the texdata strings
-    texDataString = new char[length];
-    memset(texDataString, 0, length * sizeof(char));
+    // Create the buffer to hold the texdata string
+    texdata_string = new char[length];
+    memset(texdata_string, 0, length * sizeof(char));
 
     // Seek to the TexDataStringData lump
     str.seekg(offset);
 
     // Read the entire texdata string (this string is actually a
     // NULL-delimited list of strings)
-    str.read((char *) texDataString, sizeof(char) * length);
+    str.read((char *) texdata_string, sizeof(char) * length);
 
-    // Count the number of strings
-    startPtr = texDataString;
-    endPtr = startPtr + strlen(startPtr);
-    num_texdata_strings = 0;
-    while ((startPtr - texDataString) < length)
+    // If we have a string table loaded, parse the texdata strings now
+    // (if not, num_texdata_string_table_entries will be zero and we'll
+    // skip this loop)
+    for (i = 0; i < num_texdata_string_table_entries; i++)
     {
-        // Increment the count
-        num_texdata_strings++;
-
-        // Advance the pointers
-        startPtr = endPtr+1;
-        if ((startPtr - texDataString) < length)
-            endPtr = startPtr + strlen(startPtr);
+        // Add the strings from the string data, using the string table
+        // to index it
+        index = texdata_string_table[i];
+        texStr = std::string(&texdata_string[index]);
+        bsp_data->addTexDataString(texStr);
     }
-
-    // Create the texdata string list
-    texdata_string_data = new char * [num_texdata_strings];
-    memset(texdata_string_data, 0, num_texdata_strings * sizeof(char *));
-
-    // Parse the texdata strings
-    startPtr = texDataString;
-    endPtr = startPtr + strlen(startPtr);
-    for (i = 0; i < num_texdata_strings; i++)
-    {
-        // Get the length of this string
-        stringLen = endPtr - startPtr + 1;
-
-        // Create the texdata string list entry and copy the string
-        texdata_string_data[i] = new char[stringLen + 1];
-        strncpy(texdata_string_data[i], startPtr, stringLen);
-
-        // Advance the pointers
-        startPtr = endPtr+1;
-        if ((startPtr - texDataString) < length)
-            endPtr = startPtr + strlen(startPtr);
-    }
-
-    // Free up the original texdata string
-    free(texDataString);
 }
 
 
 void VBSPReader::processDispInfo(std::istream & str, int offset, int length)
 {
-    // Calculate the number of texinfos
-    num_dispinfo_entries = length / sizeof(DisplaceInfo);
+    int              numDispInfos;
+    int              i;
+    DisplaceInfo *   dispinfos;
 
-    // Create the texinfo list
-    dispinfo_list = new DisplaceInfo[num_dispinfo_entries];
+    // Calculate the number of dispinfos
+    numDispInfos = length / sizeof(DisplaceInfo);
 
-    // Seek to the DispInfo lump
+    // Seek to the DisplaceInfo lump
     str.seekg(offset);
 
-    // Read in the texinfo entries
-    str.read((char *) dispinfo_list,
-             sizeof(DisplaceInfo) * num_dispinfo_entries);
+    // Read in the dispinfo entries
+    dispinfos = new DisplaceInfo[numDispInfos];
+    str.read((char *) dispinfos, sizeof(DisplaceInfo) * numDispInfos);
+
+    // Add the dispinfo entries to the displace info list
+    for (i = 0; i < numDispInfos; i++)
+        bsp_data->addDispInfo(dispinfos[i]);
+
+    // Clean up
+    delete [] dispinfos;
 }
 
 
 void VBSPReader::processDispVerts(std::istream & str, int offset, int length)
 {
+    int                 numDispVerts;
+    int                 i;
+    DisplacedVertex *   dispverts;
+
     // Calculate the number of displaced vertices
-    num_displaced_vertices = length / sizeof(DisplacedVertex);
+    numDispVerts = length / sizeof(DisplacedVertex);
 
-    // Create the texinfo list
-    displaced_vertex_list = new DisplacedVertex[num_displaced_vertices];
-
-    // Seek to the DispVerts lump
+    // Seek to the DispVert lump
     str.seekg(offset);
 
     // Read in the displaced vertices
-    str.read((char *) displaced_vertex_list,
-             sizeof(DisplacedVertex) * num_displaced_vertices);
+    dispverts = new DisplacedVertex[numDispVerts];
+    str.read((char *) dispverts, sizeof(DisplacedVertex) * numDispVerts);
+
+    // Add the displaced vertices to the displaced vertex list
+    for (i = 0; i < numDispVerts; i++)
+        bsp_data->addDispVertex(dispverts[i]);
+
+    // Clean up
+    delete [] dispverts;
+}
+
+
+void VBSPReader::processGameData(std::istream & str, int offset, int length)
+{
+    GameHeader    gameHeader;
+    GameLump *    gameLumps;
+    int           i;
+
+    // Read the header
+    str.seekg(offset);
+    str.read((char *) &gameHeader, sizeof(GameHeader));
+
+    // Create and read in the game lump list
+    gameLumps = new GameLump[gameHeader.num_lumps];
+    str.read((char *) gameLumps, sizeof(GameLump) * gameHeader.num_lumps);
+
+    // Iterate over the game lumps
+    for (i = 0; i < gameHeader.num_lumps; i++)
+    {
+        // See if this is a lump we're interested in
+        if (gameLumps[i].lump_id == STATIC_PROP_ID)
+        {
+             processStaticProps(str, gameLumps[i].lump_offset,
+                                gameLumps[i].lump_length,
+                                gameLumps[i].lump_version);
+        }
+    }
+
+    // Clean up
+    delete [] gameLumps;
+}
+
+
+void VBSPReader::processStaticProps(std::istream & str, int offset, int length,
+                                    int lumpVersion)
+{
+    StaticPropModelNames    sprpModelNames;
+    char                    modelName[130];
+    std::string             modelStr;
+    int                     i;
+    StaticPropLeaves        sprpLeaves;
+    StaticProps             sprpHeader;
+    StaticPropV4            sprp4;
+    StaticProp              sprp5;
+
+    // First, read the static prop models dictionary
+    str.seekg(offset);
+    str.read((char *) &sprpModelNames, sizeof(StaticPropModelNames));
+    for (i = 0; i < sprpModelNames.num_model_names; i++)
+    {
+        str.read(modelName, 128);
+        modelName[128] = 0;
+        modelStr = std::string(modelName);
+        bsp_data->addStaticPropModel(modelStr);
+    }
+
+    // Next, skip over the static prop leaf array
+    str.read((char *) &sprpLeaves, sizeof(StaticPropLeaves));
+    str.seekg(sprpLeaves.num_leaf_entries * sizeof(unsigned short), 
+              std::istream::cur);
+
+    // Finally, read in the static prop entries
+    str.read((char *) &sprpHeader, sizeof(StaticProps));
+    for (i = 0; i < sprpHeader.num_static_props; i++)
+    {
+        // The version number determines how much we read for each prop
+        if (lumpVersion == 4)
+        {
+            // Read the static prop and add it to the bsp data
+            str.read((char *) &sprp4, sizeof(StaticPropV4));
+            bsp_data->addStaticProp(sprp4);
+        }
+        else if (lumpVersion == 5)
+        {
+            // Read the static prop and add it to the bsp data
+            str.read((char *) &sprp5, sizeof(StaticProp));
+            bsp_data->addStaticProp(sprp5);
+        }
+    }
 }
 
 
 std::string VBSPReader::getToken(std::string str, const char * delim,
-                                 std::string::size_type & index)
+                                 size_t & index)
 {
+    size_t        start, end;
     std::string   token;
 
     // Look for the first non-occurrence of the delimiters
-    std::string::size_type start = str.find_first_not_of(" \t\n\r\"", index);
-    std::string::size_type end = std::string::npos;
+    start = str.find_first_not_of(delim, index);
     if (start != std::string::npos)
     {
         // From there, look for the first occurrence of a delimiter
-        end = str.find_first_of(" \t\n\r\"", start+1);
+        end = str.find_first_of(delim, start+1);
         if (end != std::string::npos)
         {
             // Found a delimiter, so grab the string in between
@@ -394,52 +555,9 @@ std::string VBSPReader::getToken(std::string str, const char * delim,
 }
 
 
-std::string VBSPReader::findFileIgnoreCase(std::string filePath)
-{
-    std::string         path;
-    std::string         file;
-    DirectoryContents   dirList;
-    std::string         result;
-
-    // Split the filename from the directory
-    path = getFilePath(filePath);
-    file = getSimpleFileName(filePath);
-
-    // Get the list of files in this directory
-    dirList = getDirectoryContents(path);
-
-    // Recursively find the path (in case some path elements are in the wrong
-    // case)
-    if (path.empty())
-    {
-        path = ".";
-        dirList = getDirectoryContents(".");
-    }
-    else
-    {
-        path = findFileIgnoreCase(path);
-        dirList = getDirectoryContents(path);
-    }
-
-    // Look for matching file in the directory, without regard to case
-    DirectoryContents::iterator itr;
-    for (itr = dirList.begin(); itr != dirList.end(); itr++)
-    {
-        if (equalCaseInsensitive(file, *itr))
-        {
-            // This file matches, so return it
-            result = concatPaths(path, *itr);
-            return result;
-        }
-    }
-
-    // Return an empty string
-    return std::string();
-}
-
-
 ref_ptr<Texture> VBSPReader::readTextureFile(std::string textureName)
 {
+    int           i;
     std::string   texFile;
     std::string   texPath;
     Image *       texImage;
@@ -447,13 +565,13 @@ ref_ptr<Texture> VBSPReader::readTextureFile(std::string textureName)
 
     // Find the texture's image file
     texFile = std::string(textureName) + ".vtf";
-    texPath = findFileIgnoreCase(texFile);
+    texPath = findDataFile(texFile, CASE_INSENSITIVE);
 
     // If we don't find it right away, check in a "materials" subdirectory
     if (texPath.empty())
     {
         texFile = "materials/" + std::string(textureName) + ".vtf";
-        texPath = findFileIgnoreCase(texFile);
+        texPath = findDataFile(texFile, CASE_INSENSITIVE);
 
         // Check up one directory if we don't find it here (the map file is 
         // usually located in the "maps" directory, adjacent to the materials
@@ -461,7 +579,7 @@ ref_ptr<Texture> VBSPReader::readTextureFile(std::string textureName)
         if (texPath.empty())
         {
             texFile = "../materials/" + std::string(textureName) + ".vtf";
-            texPath = findFileIgnoreCase(texFile);
+            texPath = findDataFile(texFile, CASE_INSENSITIVE);
         }
     }
 
@@ -596,7 +714,7 @@ ref_ptr<StateSet> VBSPReader::createBlendShader(Texture * tex1, Texture * tex2)
     Uniform * tex1Sampler = new Uniform(Uniform::SAMPLER_2D, "tex1");
     tex1Sampler->set(0);
     Uniform * tex2Sampler = new Uniform(Uniform::SAMPLER_2D, "tex2");
-    tex1Sampler->set(1);
+    tex2Sampler->set(1);
 
     // Create the program
     Program * blendProgram = new Program();
@@ -627,20 +745,23 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
     bool                    found = false;
     ref_ptr<StateSet>       stateSet;
     std::string             shaderName;
+    osg::Image *            texImage = 0;
     std::string             texName;
     std::string             tex2Name;
     ref_ptr<Texture>        texture;
     ref_ptr<Texture>        texture2;
+    ref_ptr<BlendFunc>      blend;
+    bool                    translucent;
 
     // Find the material file
     mtlFileName = std::string(materialName) + ".vmt";
-    mtlPath = findFileIgnoreCase(mtlFileName);
+    mtlPath = findDataFile(mtlFileName, CASE_INSENSITIVE);
 
     // If we don't find it right away, check in a "materials" subdirectory
     if (mtlPath.empty())
     {
         mtlFileName = "materials/" + std::string(materialName) + ".vmt";
-        mtlPath = findFileIgnoreCase(mtlFileName);
+        mtlPath = findDataFile(mtlFileName, CASE_INSENSITIVE);
 
         // Check up one directory if we don't find it here (the map file is
         // usually located in the "maps" directory, adjacent to the materials
@@ -648,7 +769,7 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
         if (mtlPath.empty())
         {
             mtlFileName = "../materials/" + std::string(materialName) + ".vmt";
-            mtlPath = findFileIgnoreCase(mtlFileName);
+            mtlPath = findDataFile(mtlFileName, CASE_INSENSITIVE);
         }
     }
 
@@ -699,6 +820,9 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
     texture = NULL;
     texture2 = NULL;
 
+    // Assume no transparency unless the properties say otherwise
+    translucent = false;
+
     // Read the material properties next
     while (!mtlFile->eof())
     {
@@ -729,6 +853,16 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
                 if (!token.empty())
                     texture2 = readTextureFile(token);
             }
+            else if ((equalCaseInsensitive(token, "$translucent")) ||
+                     (equalCaseInsensitive(token, "$alphatest")))
+            {
+                // Get the translucency setting
+                token = getToken(line, " \t\n\r\"", start);
+
+                // Interpret the setting
+                if ((token == "1") || (token == "true"))
+                     translucent = true;
+            }
  
             // Try the next token
             token = getToken(line, " \t\n\r\"", start);
@@ -758,6 +892,19 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
         {
             stateSet->setTextureAttributeAndModes(0, texture.get(),
                                                   StateAttribute::ON);
+
+            // See if the material is translucent
+            if (translucent)
+            {
+                // Create and apply a blend function attribute to the
+                // state set
+                blend = new BlendFunc(BlendFunc::SRC_ALPHA,
+                                      BlendFunc::ONE_MINUS_SRC_ALPHA);
+                stateSet->setAttributeAndModes(blend.get(), StateAttribute::ON);
+
+                // Set the state set's rendering hint to transparent
+                stateSet->setRenderingHint(StateSet::TRANSPARENT_BIN);
+            }
         }
         else
         {
@@ -779,6 +926,19 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
         {
             stateSet->setTextureAttributeAndModes(0, texture.get(),
                                                   StateAttribute::ON);
+
+            // See if the material is translucent
+            if (translucent)
+            {
+                // Create and apply a blend function attribute to the
+                // state set
+                blend = new BlendFunc(BlendFunc::SRC_ALPHA,
+                                      BlendFunc::ONE_MINUS_SRC_ALPHA);
+                stateSet->setAttributeAndModes(blend.get(), StateAttribute::ON);
+
+                // Set the state set's rendering hint to transparent
+                stateSet->setRenderingHint(StateSet::TRANSPARENT_BIN);
+            }
         }
         else
         {
@@ -798,82 +958,37 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
 
 void VBSPReader::createScene()
 {
-    ref_ptr<Group>       group;
-    VBSPGeometry **      vbspGeomList  = 0;
-    ref_ptr<Group>       subGroup;
-    Face                 currentFace;
-    TexInfo              currentTexInfo;
-    TexData              currentTexData;
-    char *               currentTexName = 0;
-    char                 prefix[64];
-    char *               mtlPtr = 0;
-    char *               tmpPtr = 0;
-    char                 tempTex[256];
-    int                  i;
-    ref_ptr<StateSet>    stateSet;
+    ref_ptr<Group>              group;
+    ref_ptr<Group>              subGroup;
+    Face                        currentFace;
+    TexInfo                     currentTexInfo;
+    TexData                     currentTexData;
+    const char *                texName;
+    char                        currentTexName[256];
+    char                        prefix[64];
+    char *                      mtlPtr;
+    char *                      tmpPtr;
+    char                        tempTex[256];
+    std::string                 entityText;
+    VBSPEntity *                currentEntity;
+    int                         i;
+    ref_ptr<StateSet>           stateSet;
+    StaticProp                  staticProp;
+    Matrixf                     transMat, rotMat;
+    Quat                        yaw, pitch, roll;
+    ref_ptr<MatrixTransform>    propXform;
+    std::string                 propModel;
+    std::string                 propFile;
+    ref_ptr<Node>               propNode;
 
-    // Create the root group for the scene
-    group = new Group();
-
-    // Create VBSPGeometry object for each texdata entry in the scene
-    // These objects will hold the necessary geometry data until we convert
-    // them back into OSG geometry objects.  We need one for each texdata
-    // entry because we'll need separate state sets for each one when they're
-    // converted
-    vbspGeomList = new VBSPGeometry *[num_texdata_entries];
-    for (i = 0; i < num_texdata_entries; i++)
-        vbspGeomList[i] = new VBSPGeometry(this);
-
-    // Iterate over the face list and assign faces to the appropriate geometry
-    // objects
-    for (i = 0; i < num_faces; i++)
+    // Load the materials and create a StateSet for each one
+    for (i = 0; i < bsp_data->getNumTexDatas(); i++)
     {
-        // Get the current face
-        currentFace = face_list[i];
-
-        // Get the texdata used by this face
-        currentTexInfo = texinfo_list[currentFace.texinfo_index];
-        currentTexData = texdata_list[currentTexInfo.texdata_index];
-
-        // Get the texture name
-        currentTexName = 
-            texdata_string_data[currentTexData.name_string_table_id];
-
-        // See if this is a non-drawable surface
-        if ((strcasecmp(currentTexName, "tools/toolsareaportal") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsblocklos") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsblockbullets") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsblocklight") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsclip") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolscontrolclip") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsdotted") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolshint") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsinvisible") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsinvisibleladder") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsnodraw") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsnpcclip") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsoccluder") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsorigin") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsskip") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsskybox") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolsskyfog") != 0) &&
-            (strcasecmp(currentTexName, "tools/toolstrigger") != 0))
-        {
-            // Add the face to the appropriate VBSPGeometry object
-            vbspGeomList[currentTexInfo.texdata_index]->addFace(i);
-        }
-    }
-
-    // Assemble the geometry
-    for (i = 0; i < num_texdata_entries; i++)
-    {
-        // Create the OSG geometry from the VBSP geometry
-        subGroup = vbspGeomList[i]->createGeometry();
-
         // Get the texdata entry and texture name
-        currentTexData = texdata_list[i];
-        currentTexName =
-            texdata_string_data[currentTexData.name_string_table_id];
+        currentTexData = bsp_data->getTexData(i);
+        texName = bsp_data->
+            getTexDataString(currentTexData.name_string_table_id).c_str();
+        strcpy(currentTexName, texName);
 
         // See if this is referring to an environment mapped material (we don't
         // handle this yet)
@@ -909,91 +1024,85 @@ void VBSPReader::createScene()
                 *mtlPtr = 0;
 
             // That should be it, so make it the texture name
-            currentTexName = tempTex;
+            strcpy(currentTexName, tempTex);
         }
 
         // Read the material for this geometry
         stateSet = readMaterialFile(currentTexName);
 
-        // If we successfully created a StateSet, add it now
-        if (stateSet != NULL)
-            subGroup->setStateSet(stateSet.get());
-
-        // Add the geometry to the main group
-        group->addChild(subGroup.get());
+        // Whether we successfully created a StateSet or not, add it to the
+        // bsp data list now
+        bsp_data->addStateSet(stateSet.get());
     }
 
-    // Clean up
-    delete [] vbspGeomList;
+    // Create the root group for the scene
+    group = new Group();
+
+    // Iterate through the list of entities, and try to convert all the
+    // visible entities to geometry
+    for (i = 0; i < bsp_data->getNumEntities(); i++)
+    {
+        // Get the entity
+        entityText = bsp_data->getEntity(i);
+        currentEntity = new VBSPEntity(entityText, bsp_data);
+
+        // See if the entity is visible
+        if (currentEntity->isVisible())
+        {
+            // Create geometry for the entity
+            subGroup = currentEntity->createGeometry();
+
+            // If the entity's geometry is valid, add it to the main group
+            if (subGroup.valid())
+                group->addChild(subGroup.get());
+        }
+
+        // Done with this entity
+        delete currentEntity;
+    }
+
+    // Iterate through the list of static props, and add them to the scene
+    // as well
+    for (i = 0; i < bsp_data->getNumStaticProps(); i++)
+    {
+        // Get the static prop
+        staticProp = bsp_data->getStaticProp(i);
+
+        // Create a MatrixTransform for this prop (scale the position from
+        // inches to meters)
+        transMat.makeTranslate(staticProp.prop_origin * 0.0254);
+        pitch.makeRotate(osg::DegreesToRadians(staticProp.prop_angles.x()),
+                         Vec3f(0.0, 1.0, 0.0));
+        yaw.makeRotate(osg::DegreesToRadians(staticProp.prop_angles.y()),
+                       Vec3f(0.0, 0.0, 1.0));
+        roll.makeRotate(osg::DegreesToRadians(staticProp.prop_angles.z()),
+                        Vec3f(1.0, 0.0, 0.0));
+        rotMat.makeRotate(roll * pitch * yaw);
+        propXform = new MatrixTransform();
+        propXform->setMatrix(rotMat * transMat);
+
+        // Load the prop's model
+        propModel = bsp_data->getStaticPropModel(staticProp.prop_type);
+        propNode = osgDB::readNodeFile(propModel);
+
+        // If we loaded the prop correctly, add it to the scene
+        if (propNode.valid())
+        {
+            propXform->addChild(propNode.get());
+            group->addChild(propXform.get());
+        }
+        else
+        {
+            notify(WARN) << "Couldn't find static prop \"" << propModel;
+            notify(WARN) << "\"." << std::endl;
+
+            // Couldn't find the prop, so get rid of the transform node
+            propXform = NULL;
+        }
+    }
 
     // Set the root node to the result
     root_node = group.get();
-}
-
-
-const char * VBSPReader::getEntity(int index) const
-{
-    return entity_list[index];
-}
-
-
-const bsp::Plane & VBSPReader::getPlane(int index) const
-{
-    return plane_list[index];
-}
-
-
-const osg::Vec3f & VBSPReader::getVertex(int index) const
-{
-    return vertex_list[index];
-}
-
-
-const Edge & VBSPReader::getEdge(int index) const
-{
-    return edge_list[index];
-}
-
-
-const int VBSPReader::getSurfaceEdge(int index) const
-{
-    return surface_edges[index];
-}
-
-
-const Face & VBSPReader::getFace(int index) const
-{
-    return face_list[index];
-}
-
-
-const TexInfo & VBSPReader::getTexInfo(int index) const
-{
-    return texinfo_list[index];
-}
-
-
-const TexData & VBSPReader::getTexData(int index) const
-{
-    return texdata_list[index];
-}
-
-
-const char * VBSPReader::getTexDataString(int index) const
-{
-    return texdata_string_data[index];
-}
-
-
-const DisplaceInfo & VBSPReader::getDispInfo(int index) const
-{
-    return dispinfo_list[index];
-}
-
-
-const DisplacedVertex & VBSPReader::getDispVertex(int index) const
-{
-    return displaced_vertex_list[index];
 }
 
 
@@ -1042,6 +1151,10 @@ bool VBSPReader::readFile(const std::string & file)
                     processSurfEdges(*mapFile, header.lump_table[i].file_offset,
                                      header.lump_table[i].lump_length);
                     break;
+                case MODELS_LUMP:
+                    processModels(*mapFile, header.lump_table[i].file_offset,
+                                  header.lump_table[i].lump_length);
+                    break;
                 case FACES_LUMP:
                     processFaces(*mapFile, header.lump_table[i].file_offset,
                                  header.lump_table[i].lump_length);
@@ -1071,6 +1184,10 @@ bool VBSPReader::readFile(const std::string & file)
                 case DISP_VERTS_LUMP:
                     processDispVerts(*mapFile, header.lump_table[i].file_offset,
                                      header.lump_table[i].lump_length);
+                    break;
+                case GAME_LUMP:
+                    processGameData(*mapFile, header.lump_table[i].file_offset,
+                                    header.lump_table[i].lump_length);
                     break;
             }
         }

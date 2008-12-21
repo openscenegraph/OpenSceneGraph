@@ -138,19 +138,19 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTile)
 	          __C5_osg_RefMatrix_P1__getLocator,
 	          "",
 	          "");
-	I_Method1(void, setImage, IN, osg::Image *, image,
+	I_Method2(void, setImage, IN, unsigned int, i, IN, osg::Image *, image,
 	          Properties::NON_VIRTUAL,
-	          __void__setImage__osg_Image_P1,
+	          __void__setImage__unsigned_int__osg_Image_P1,
 	          "",
 	          "");
-	I_Method0(osg::Image *, getImage,
+	I_Method1(osg::Image *, getImage, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
-	          __osg_Image_P1__getImage,
+	          __osg_Image_P1__getImage__unsigned_int,
 	          "",
 	          "");
-	I_Method0(const osg::Image *, getImage,
+	I_Method1(const osg::Image *, getImage, IN, unsigned int, i,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Image_P1__getImage,
+	          __C5_osg_Image_P1__getImage__unsigned_int,
 	          "",
 	          "");
 	I_Method1(void, setVolumeTechnique, IN, osgVolume::VolumeTechnique *, VolumeTechnique,
@@ -186,9 +186,10 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTile)
 	I_SimpleProperty(bool, Dirty, 
 	                 __bool__getDirty, 
 	                 __void__setDirty__bool);
-	I_SimpleProperty(osg::Image *, Image, 
-	                 __osg_Image_P1__getImage, 
-	                 __void__setImage__osg_Image_P1);
+	I_IndexedProperty(osg::Image *, Image, 
+	                  __osg_Image_P1__getImage__unsigned_int, 
+	                  __void__setImage__unsigned_int__osg_Image_P1, 
+	                  0);
 	I_SimpleProperty(osg::RefMatrix *, Locator, 
 	                 __osg_RefMatrix_P1__getLocator, 
 	                 __void__setLocator__osg_RefMatrix_P1);

@@ -114,10 +114,9 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
         const osg::RefMatrix* getLocator() const { return _locator.get(); }
 
 
-        void setImage(osg::Image* image) { _image = image; }
-        osg::Image* getImage() { return _image.get(); }
-        const osg::Image* getImage() const { return _image.get(); }
-
+        void setImage(unsigned int i, osg::Image* image);
+        osg::Image* getImage(unsigned int i) { return i<_images.size() ? _images[i].get() : 0; }
+        const osg::Image* getImage(unsigned int i) const  { return i<_images.size() ? _images[i].get() : 0; }
 
         /** Set the VolumeTechnique*/
         void setVolumeTechnique(VolumeTechnique* VolumeTechnique);
@@ -154,7 +153,9 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
         osg::ref_ptr<VolumeTechnique>       _volumeTechnique;
 
         osg::ref_ptr<osg::RefMatrix>        _locator;        
-        osg::ref_ptr<osg::Image>            _image;
+
+        typedef std::vector< osg::ref_ptr<osg::Image> > Images;
+        Images                              _images;
 };
 
 }

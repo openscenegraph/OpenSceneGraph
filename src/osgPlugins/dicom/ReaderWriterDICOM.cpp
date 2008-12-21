@@ -121,7 +121,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
             osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
             tile->setVolume(volume.get());
-            tile->setImage(result.getImage());
+            tile->setImage(0, result.getImage());
 
             // get matrix providing size of texels (in mm)
             osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(result.getImage()->getUserData());

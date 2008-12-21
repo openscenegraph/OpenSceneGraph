@@ -22,9 +22,9 @@ if(COMMAND cmake_policy)
 
     # cmake-2.6.1 introduces policy cmp0008 decide how to treat full path libraries that do not appear to be valid library file names
     # quote from cvslog "Such libraries worked by accident in the VS IDE and Xcode generators in CMake 2.4 and below."
-    if(POLICY CMP0008)
+    if(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4 AND ${CMAKE_PATCH_VERSION} GREATER 0)
         cmake_policy(SET CMP0008 OLD)
-    endif(POLICY CMP0008)
+    endif(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4 AND ${CMAKE_PATCH_VERSION} GREATER 0)
 endif(COMMAND cmake_policy)
 
 PROJECT(OpenSceneGraph)

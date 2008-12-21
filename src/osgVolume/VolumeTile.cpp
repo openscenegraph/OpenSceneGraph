@@ -30,16 +30,16 @@ VolumeTile::VolumeTile():
     setThreadSafeRefUnref(true);
 }
 
-VolumeTile::VolumeTile(const VolumeTile& brick,const osg::CopyOp& copyop):
-    Group(brick,copyop),
+VolumeTile::VolumeTile(const VolumeTile& volumeTile,const osg::CopyOp& copyop):
+    Group(volumeTile,copyop),
     _volume(0),
     _dirty(false),
     _hasBeenTraversal(false),
-    _image(brick._image)
+    _images(volumeTile._images)
 {
-    if (brick.getVolumeTechnique()) 
+    if (volumeTile.getVolumeTechnique()) 
     {
-        setVolumeTechnique(osg::clone(brick.getVolumeTechnique()));
+        setVolumeTechnique(osg::clone(volumeTile.getVolumeTechnique()));
     }
 }
 

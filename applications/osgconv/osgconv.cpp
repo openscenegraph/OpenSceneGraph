@@ -493,6 +493,17 @@ static void usage( const char *prog, const char *msg )
                               "                         their own color values (--addMissingColours also accepted)."<< std::endl;
     osg::notify(osg::NOTICE)<<"    --overallNormal    - Replace normals with a single overall normal."<< std::endl;
 
+    osg::notify( osg::NOTICE ) << std::endl;
+    osg::notify( osg::NOTICE ) <<
+        "    --formats          - Lists all supported formats and their supported options." << std::endl;
+    osg::notify( osg::NOTICE ) <<
+        "    --format <format>  - Displays information about the spefied <format>, where <format>\n"
+        "                         is the file extension, such as \"flt\"." << std::endl;
+    osg::notify( osg::NOTICE ) <<
+        "    --plugins          - Lists all supported plugin files." << std::endl;
+    osg::notify( osg::NOTICE ) <<
+        "    --plugin >plugin>  - Displays information about the spefied <plugin>, where <plugin>\n"
+        "                         is the plugin's full path and file name." << std::endl;
 }
 
 
@@ -507,8 +518,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display command line parameters");
     arguments.getApplicationUsage()->addCommandLineOption("--help-env","Display environmental variables available");
-    arguments.getApplicationUsage()->addCommandLineOption("--formats","List supported file formats");
-    arguments.getApplicationUsage()->addCommandLineOption("--plugins","List database olugins");
+    //arguments.getApplicationUsage()->addCommandLineOption("--formats","List supported file formats");
+    //arguments.getApplicationUsage()->addCommandLineOption("--plugins","List database olugins");
 
 
     // if user request help write it out to cout.

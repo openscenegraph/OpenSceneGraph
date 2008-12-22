@@ -83,7 +83,6 @@ std::string MDLReader::getToken(std::string str, const char * delim,
 
 ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
 {
-    int           i;
     std::string   texFile;
     std::string   texPath;
     Image *       texImage;
@@ -190,7 +189,6 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
     bool                     found;
     ref_ptr<StateSet>        stateSet;
     std::string              shaderName;
-    osg::Image *             texImage;
     std::string              texName;
     std::string              tex2Name;
     ref_ptr<Texture>         texture;
@@ -499,7 +497,6 @@ Model * MDLReader::processModel(std::istream * str, int offset)
 
 Mesh * MDLReader::processMesh(std::istream * str, int offset)
 {
-    int            i;
     MDLMesh *      mesh;
     Mesh *         meshNode;
 
@@ -527,7 +524,8 @@ bool MDLReader::readFile(const std::string & file)
     std::string       fileName;
     std::ifstream *   mdlFile;
     MDLHeader         header;
-    int               i, j;
+    int               i;
+    unsigned int      j;
     int               offset;
     MDLRoot *         mdlRoot;
     BodyPart *        partNode;

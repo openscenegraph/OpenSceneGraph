@@ -48,7 +48,7 @@ bool VVDReader::readFile(const std::string & file)
     osgDB::ifstream *   vvdFile;
     VVDHeader           header;
     int                 vertIndex;
-    int                 i, j, k;
+    int                 i, j;
 
     // Remember the map name
     vvd_name = getStrippedName(file);

@@ -98,7 +98,7 @@ ref_ptr<Group> VTXReader::processModel(std::istream * str, int offset,
     VTXModel         model;
     float            lastDistance;
     float            distance;
-    LOD *            lodNode;
+    LOD *            lodNode = 0;
     ref_ptr<Group>   group;
     ref_ptr<Group>   result;
 
@@ -327,7 +327,6 @@ ref_ptr<PrimitiveSet> VTXReader::processStrip(unsigned short * indexArray,
                                               std::istream * str,
                                               int offset)
 {
-    int                     i;
     VTXStrip                strip;
     ref_ptr<PrimitiveSet>   primSet;
     unsigned short *        start;
@@ -364,8 +363,7 @@ bool VTXReader::readFile(const std::string & file)
 {
     osgDB::ifstream *   vtxFile;
     VTXHeader           header;
-    int                 i, j;
-    int                 offset;
+    int                 i;
     BodyPart *          currentPart;
     ref_ptr<Group>      partGroup;
     Group *             rootGroup;

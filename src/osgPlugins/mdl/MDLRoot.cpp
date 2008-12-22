@@ -30,7 +30,7 @@ int MDLRoot::getNumBodyParts()
 
 BodyPart * MDLRoot::getBodyPart(int partIndex)
 {
-    if ((partIndex < 0) || (partIndex >= body_parts.size()))
+    if ((partIndex < 0) || (partIndex >= static_cast<int>(body_parts.size())))
         return NULL;
     else
         return body_parts[partIndex];

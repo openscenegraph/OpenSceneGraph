@@ -40,7 +40,7 @@ int BodyPart::getNumModels()
 
 Model * BodyPart::getModel(int partIndex)
 {
-    if ((partIndex < 0) || (partIndex >= part_models.size()))
+    if ((partIndex < 0) || (partIndex >= static_cast<int>(part_models.size())))
         return NULL;
     else
         return part_models[partIndex];

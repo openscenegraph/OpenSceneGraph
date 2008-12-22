@@ -48,7 +48,7 @@ int Model::getNumMeshes()
 
 Mesh * Model::getMesh(int meshIndex)
 {
-    if ((meshIndex < 0) || (meshIndex >= model_meshes.size()))
+    if ((meshIndex < 0) || (meshIndex >= static_cast<int>(model_meshes.size())))
         return NULL;
     else
         return model_meshes[meshIndex];

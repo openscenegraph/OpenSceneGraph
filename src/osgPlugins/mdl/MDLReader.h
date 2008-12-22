@@ -127,9 +127,9 @@ struct MDLHeader
     int           vertex_base;
     int           offset_base;
 
-    u_char        const_direction_light_dot;
-    u_char        root_lod;
-    u_char        unused_byte[2];
+    unsigned char const_direction_light_dot;
+    unsigned char root_lod;
+    unsigned char unused_byte[2];
 
     int           zero_frame_cache_offset;
 

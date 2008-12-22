@@ -52,9 +52,9 @@ struct VVDFixupEntry
 
 struct VVDBoneWeight
 {
-    float    weight[MAX_BONES_PER_VERTEX];
-    char     bone[MAX_BONES_PER_VERTEX];
-    u_char   num_bones;
+    float           weight[MAX_BONES_PER_VERTEX];
+    char            bone[MAX_BONES_PER_VERTEX];
+    unsigned char   num_bones;
 };
 
 

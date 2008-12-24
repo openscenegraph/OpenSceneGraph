@@ -516,11 +516,11 @@ void VBSPReader::processStaticProps(std::istream & str, int offset, int length,
 std::string VBSPReader::getToken(std::string str, const char * delim,
                                  size_t & index)
 {
-    size_t        start, end;
     std::string   token;
+    size_t        end = std::string::npos;
 
     // Look for the first non-occurrence of the delimiters
-    start = str.find_first_not_of(delim, index);
+    size_t start = str.find_first_not_of(delim, index);
     if (start != std::string::npos)
     {
         // From there, look for the first occurrence of a delimiter
@@ -557,7 +557,6 @@ std::string VBSPReader::getToken(std::string str, const char * delim,
 
 ref_ptr<Texture> VBSPReader::readTextureFile(std::string textureName)
 {
-    int           i;
     std::string   texFile;
     std::string   texPath;
     Image *       texImage;
@@ -745,7 +744,6 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
     bool                    found = false;
     ref_ptr<StateSet>       stateSet;
     std::string             shaderName;
-    osg::Image *            texImage = 0;
     std::string             texName;
     std::string             tex2Name;
     ref_ptr<Texture>        texture;
@@ -960,8 +958,6 @@ void VBSPReader::createScene()
 {
     ref_ptr<Group>              group;
     ref_ptr<Group>              subGroup;
-    Face                        currentFace;
-    TexInfo                     currentTexInfo;
     TexData                     currentTexData;
     const char *                texName;
     char                        currentTexName[256];

@@ -251,9 +251,10 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
     Vec3              texV;
     float             texVOffset;
     float             texVScale;
-    unsigned int      i, j, k;
+    int               i, j;
+    unsigned int      k;
     double            dist, minDist;
-    int               minIndex;
+    int               minIndex = 0;
     osg::Vec3         temp;
     int               edgeIndex;
     int               currentSurfEdge;
@@ -261,7 +262,7 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
     osg::Vec3         currentVertex;
     osg::Vec3         vertices[4];
     unsigned int      firstVertex;
-    unsigned int      numEdgeVertices;
+    int               numEdgeVertices;
     double            subdivideScale;
     osg::Vec3         leftEdge, rightEdge;
     osg::Vec3         leftEdgeStep, rightEdgeStep;

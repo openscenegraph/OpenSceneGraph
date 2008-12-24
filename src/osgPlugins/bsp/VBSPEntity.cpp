@@ -183,10 +183,10 @@ Vec3f VBSPEntity::getVector(std::string str)
     double x, y, z;
 
     // Look for the first non-whitespace
-    int start = str.find_first_not_of(" \t\r\n", 0);
+    std::string::size_type start = str.find_first_not_of(" \t\r\n", 0);
 
     // Look for the first whitespace after this
-    int end = str.find_first_of(" \t\r\n", start);
+    std::string::size_type end = str.find_first_of(" \t\r\n", start);
 
     if ((end > start) && (start != std::string::npos))
         x = atof(str.substr(start, end-start).c_str());
@@ -224,11 +224,11 @@ Vec3f VBSPEntity::getVector(std::string str)
 
 std::string VBSPEntity::getToken(std::string str, size_t & index)
 {
-    size_t        start, end;
+    std::string::size_type end = std::string::npos;
     std::string   token;
 
     // Look for the first quotation mark
-    start = str.find_first_of("\"", index);
+    std::string::size_type start = str.find_first_of("\"", index);
     if (start != std::string::npos)
     {
         // From there, look for the next occurrence of a delimiter

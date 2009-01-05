@@ -47,8 +47,8 @@ class OSGWIDGET_EXPORT Label: public Widget
 
         void setFontColor(point_type r, point_type g, point_type b, point_type a) { setFontColor(Color(r, g, b, a)); }
 
-        // For now you only get a const pointer, because we have a highly specific
-        // interface with the osgText library.
+        osgText::Text* getText() { return _text.get(); }
+
         const osgText::Text* getText() const { return _text.get(); }
 
     protected:

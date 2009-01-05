@@ -67,7 +67,7 @@ class OSG_EXPORT Timer {
         /** Get the time in nanoseconds between timer ticks t1 and t2.*/
         inline double delta_n( Timer_t t1, Timer_t t2 ) const { return delta_s(t1,t2)*1e9; }
         
-        /** Get the the number of ticks per second.*/
+        /** Get the the number of seconds per tick. */
         inline double getSecondsPerTick() const { return _secsPerTick; }
 
     protected :

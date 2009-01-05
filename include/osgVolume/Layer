@@ -1,0 +1,202 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVOLUME_LAYER
+#define OSGVOLUME_LAYER 1
+
+#include <osg/Object>
+#include <osg/Image>
+#include <osg/Shape>
+#include <osg/Array>
+#include <osg/TransferFunction>
+
+#include <osgVolume/Locator>
+
+namespace osgVolume {
+
+class OSGVOLUME_EXPORT Layer : public osg::Object
+{
+    public:
+
+        Layer();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Layer(const Layer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgVolume, Layer);
+        
+        /** Set the file name of the data associated with this layer. */
+        virtual void setFileName(const std::string& filename) { _filename = filename; }
+
+        /** Get the file name of the layer. */
+        virtual const std::string& getFileName() const { return _filename; }
+
+        void setLocator(Locator* locator) { _locator = locator; }
+        Locator* getLocator() { return _locator.get(); }
+        const Locator* getLocator() const { return _locator.get(); }
+        
+        void setDefaultValue(const osg::Vec4& value) { _defaultValue = value; }
+        const osg::Vec4& getDefaultValue() const { return _defaultValue; }
+
+        /** Set the minification texture filter to use when do texture associated with this layer.*/
+        void setMinFilter(osg::Texture::FilterMode filter) { _minFilter = filter; }
+
+        /** Get the minification texture filter to use when do texture associated with this layer.*/
+        osg::Texture::FilterMode getMinFilter() const { return _minFilter; }
+
+        /** Set the magniification texture filter to use when do texture associated with this layer.*/
+        void setMagFilter(osg::Texture::FilterMode filter) { _magFilter = filter; }
+
+        /** Get the magnification texture filter to use when do texture associated with this layer.*/
+        osg::Texture::FilterMode getMagFilter() const { return _magFilter; }
+
+        /** Return image associated with layer if supported. */        
+        virtual osg::Image* getImage() { return 0; }
+
+        /** Return const image associated with layer if supported. */        
+        virtual const osg::Image* getImage() const { return 0; }
+
+
+        /** Set the optional transfer function that maps the imagery pixels to new colours.
+          * Transfer function may be implemented on the GPU or via pre-processing step. */
+        void setTransferFunction(osg::TransferFunction* tf) { _transferFunction = tf; }
+
+        /** Get the transfer function.*/
+        osg::TransferFunction* getTransferFunction() { return _transferFunction.get(); }
+
+        /** Get the const transfer function.*/
+        const osg::TransferFunction* getTransferFunction() const { return _transferFunction.get(); }
+
+
+        /** increment the modified count."*/
+        virtual void dirty() {};
+
+        /** Set the modified count value.  */
+        virtual void setModifiedCount(unsigned int /*value*/) {};
+
+        /** Get modified count value. */
+        virtual unsigned int getModifiedCount() const { return 0; }
+
+        virtual osg::BoundingSphere computeBound() const;
+
+    protected:
+
+        virtual ~Layer();
+
+        std::string                         _filename;
+        osg::ref_ptr<Locator>               _locator;
+        osg::Vec4                           _defaultValue;
+        osg::Texture::FilterMode            _minFilter;
+        osg::Texture::FilterMode            _magFilter;
+        
+        osg::ref_ptr<osg::TransferFunction> _transferFunction;
+
+};
+
+class OSGVOLUME_EXPORT ImageLayer : public Layer
+{
+    public:
+
+        ImageLayer(osg::Image* image=0);
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ImageLayer(const ImageLayer& imageLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgVolume, ImageLayer);
+
+        void setFileName(const std::string& filename) { _filename = filename; if (_image.valid()) _image->setFileName(filename); }
+        virtual const std::string& getFileName() const { return _image.get() ? _image->getFileName() : _filename; }
+
+        void setImage(osg::Image* image);
+
+        /** Return image associated with layer. */  
+        virtual osg::Image* getImage() { return _image.get(); }
+
+        /** Return const image associated with layer. */
+        virtual const osg::Image* getImage() const { return _image.get(); }
+
+        virtual void dirty();
+        virtual void setModifiedCount(unsigned int value);
+        virtual unsigned int getModifiedCount() const;
+
+    protected:
+
+        virtual ~ImageLayer() {}
+
+        osg::ref_ptr<osg::Image>    _image;
+
+};
+
+class OSGVOLUME_EXPORT CompositeLayer : public Layer
+{
+    public:
+
+        CompositeLayer();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        CompositeLayer(const CompositeLayer& compositeLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgVolume, CompositeLayer);
+
+        void clear();
+
+        void setFileName(unsigned int i, const std::string& filename) { _layers[i].filename = filename; if (_layers[i].layer.valid()) _layers[i].layer->setFileName(filename); }
+        const std::string& getFileName(unsigned int i) const { return _layers[i].layer.valid() ? _layers[i].layer->getFileName() : _layers[i].filename; }
+
+        void setLayer(unsigned int i, Layer* layer) { if (i>=_layers.size()) _layers.resize(i+1); _layers[i].layer = layer; }
+        Layer* getLayer(unsigned int i) { return i<_layers.size() ? _layers[i].layer.get() : 0; }
+        const Layer* getLayer(unsigned int i) const { return i<_layers.size() ? _layers[i].layer.get() : 0; }
+
+        void addLayer(Layer* layer) { _layers.push_back(NameLayer(layer->getFileName(),layer)); }
+
+        void removeLayer(unsigned int i) { _layers.erase(_layers.begin()+i); }
+        
+        unsigned int getNumLayers() const { return _layers.size(); }
+
+    protected:
+
+        virtual ~CompositeLayer() {}
+
+        struct NameLayer
+        {
+            NameLayer() {}
+        
+            NameLayer(const NameLayer& cnl):
+                filename(cnl.filename),
+                layer(cnl.layer) {}
+
+            NameLayer(const std::string& fn, Layer* l):
+                filename(fn),
+                layer(l) {}
+
+            NameLayer& operator = (const NameLayer& cnl)
+            {
+                if (&cnl==this) return *this;
+                
+                filename = cnl.filename;
+                layer = cnl.layer;
+                return *this;
+            }
+
+            std::string         filename;
+            osg::ref_ptr<Layer> layer;
+        };
+        
+        typedef std::vector< NameLayer > Layers;
+        
+        Layers _layers;
+};
+
+}
+
+#endif

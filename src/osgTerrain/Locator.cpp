@@ -56,7 +56,7 @@ void Locator::setTransformAsExtents(double minX, double minY, double maxX, doubl
     _inverse.invert(_transform);
 }
 
-bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight)
+bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight) const
 {
     typedef std::list<osg::Vec3d> Corners;
     Corners corners;

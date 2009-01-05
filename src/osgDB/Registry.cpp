@@ -1472,26 +1472,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             return archive->readObject(fileName,options.get());
         }
     }
-
-    // if filename contains archive
-    // then get archive name
-    // if archive name is not in the cache then do an openArchive on
-    // that archive name
-    // use that archive to read the file.
-
-    if (containsServerAddress(readFunctor._filename))
-    {
-        ReaderWriter* rw = getReaderWriterForExtension("curl");
-        if (rw)
-        {
-            return readFunctor.doRead(*rw);
-        }
-        else
-        {
-            return  ReaderWriter::ReadResult("Warning: Could not find the .curl plugin to read from server.");
-        }
-    }
-    
+ 
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::ReadResult> Results;
     Results results;
@@ -1554,6 +1535,21 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             ReaderWriter::ReadResult rr = readFunctor.doRead(*itr);
             if (readFunctor.isValid(rr)) return rr;
             else results.push_back(rr);
+        }
+    }
+
+    //If the filename contains a server address and wasn't loaded by any of the plugins, try to use the CURL plugin
+    //to download the file and use the stream reading functionality of the plugins to load the file
+    if (containsServerAddress(readFunctor._filename))
+    {
+        ReaderWriter* rw = getReaderWriterForExtension("curl");
+        if (rw)
+        {
+            return readFunctor.doRead(*rw);
+        }
+        else
+        {
+            return  ReaderWriter::ReadResult("Warning: Could not find the .curl plugin to read from server.");
         }
     }
     

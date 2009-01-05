@@ -24,6 +24,7 @@
 #include <osg/BlendFunc>
 #include <osg/Texture2D>
 #include <osg/PointSprite>
+#include <osg/PolygonMode>
 
 #include <iostream>
 
@@ -115,7 +116,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("--sprites","Point sprites.");
-    
+    arguments.getApplicationUsage()->addCommandLineOption("--points","Sets the polygon mode to GL_POINT for front and back faces.");
+
 
     // construct the viewer.
     osgViewer::Viewer viewer;
@@ -132,6 +134,9 @@ int main( int argc, char **argv )
     
     bool usePointSprites = false;
     while (arguments.read("--sprites")) { usePointSprites = true; };
+
+    bool forcePointMode = false;
+    while (arguments.read("--points")) { forcePointMode = true; };
 
     if (arguments.argc()<=1)
     {
@@ -158,10 +163,9 @@ int main( int argc, char **argv )
     viewer.setSceneData(loadedModel.get());
     
 
+    osg::StateSet* stateset = loadedModel->getOrCreateStateSet();
     if (usePointSprites)    
     {
-        osg::StateSet* stateset = loadedModel->getOrCreateStateSet();
-
         /// Setup cool blending
         osg::BlendFunc *fn = new osg::BlendFunc();
         stateset->setAttributeAndModes(fn, osg::StateAttribute::ON);
@@ -174,6 +178,14 @@ int main( int argc, char **argv )
         osg::Texture2D *tex = new osg::Texture2D();
         tex->setImage(osgDB::readImageFile("Images/particle.rgb"));
         stateset->setTextureAttributeAndModes(0, tex, osg::StateAttribute::ON);
+    }
+
+    if( forcePointMode )
+    {
+        /// Set polygon mode to GL_POINT
+        osg::PolygonMode *pm = new osg::PolygonMode(
+            osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::POINT );
+        stateset->setAttributeAndModes( pm, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
     }
     
 

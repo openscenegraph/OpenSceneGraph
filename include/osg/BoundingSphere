@@ -44,7 +44,7 @@ class BoundingSphereImpl
         BoundingSphereImpl() : _center(0.0,0.0,0.0),_radius(-1.0) {}
     
         /** Creates a bounding sphere initialized to the given extents. */
-        BoundingSphereImpl(const vec_type& center,value_type radius) : _center(center),_radius(radius) {}
+        BoundingSphereImpl(const vec_type& center, value_type radius) : _center(center),_radius(radius) {}
 
         /** Creates a bounding sphere initialized to the given extents. */
         BoundingSphereImpl(const BoundingSphereImpl& bs) : _center(bs._center),_radius(bs._radius) {}

@@ -101,7 +101,7 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
             return true;
         }
         
-        bool computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight);
+        bool computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight) const;
         
         void setDefinedInFile(bool flag) { _definedInFile = flag; }
         bool getDefinedInFile() const { return _definedInFile; }

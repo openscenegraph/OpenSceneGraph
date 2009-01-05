@@ -116,6 +116,11 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Label)
 	          __void__setFontColor__point_type__point_type__point_type__point_type,
 	          "",
 	          "");
+	I_Method0(osgText::Text *, getText,
+	          Properties::NON_VIRTUAL,
+	          __osgText_Text_P1__getText,
+	          "",
+	          "");
 	I_Method0(const osgText::Text *, getText,
 	          Properties::NON_VIRTUAL,
 	          __C5_osgText_Text_P1__getText,
@@ -142,8 +147,8 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Label)
 	I_SimpleProperty(osgWidget::point_type, Shadow, 
 	                 0, 
 	                 __void__setShadow__point_type);
-	I_SimpleProperty(const osgText::Text *, Text, 
-	                 __C5_osgText_Text_P1__getText, 
+	I_SimpleProperty(osgText::Text *, Text, 
+	                 __osgText_Text_P1__getText, 
 	                 0);
 	I_SimpleProperty(osgWidget::XYCoord, TextSize, 
 	                 __XYCoord__getTextSize, 

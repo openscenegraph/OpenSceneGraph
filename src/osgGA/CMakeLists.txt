@@ -25,6 +25,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/TrackballManipulator
     ${HEADER_PATH}/UFOManipulator
     ${HEADER_PATH}/Version
+    ${HEADER_PATH}/CameraViewSwitchManipulator
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
@@ -46,6 +47,7 @@ ADD_LIBRARY(${LIB_NAME}
     TrackballManipulator.cpp
     UFOManipulator.cpp
     Version.cpp
+    CameraViewSwitchManipulator.cpp
 )
 
 LINK_INTERNAL(${LIB_NAME}     

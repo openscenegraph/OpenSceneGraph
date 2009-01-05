@@ -24,6 +24,7 @@
 #include <osg/Billboard>
 #include <osgSim/MultiSwitch>
 #include <osg/Sequence>
+#include <osg/CameraView>
 
 using namespace osgdae;
 
@@ -484,35 +485,102 @@ osg::Node* daeReader::processLight( domLight *dlight )
 // elements:
 // 0..1 <asset>
 // 1    <optics>
-//        1        <technique_common>
+//        1       <technique_common>
 //                1        <orthographic>, <perspective>
 //        0..*    <technique>
 //        0..*    <extra>
 // 0..* <imager>
-//        1        <technique>
+//        1       <technique>
 //        0..*    <extra>
 // 0..* <extra>
 osg::Node* daeReader::processCamera( domCamera * dcamera )
 {
-    osg::Node *node = new osg::Switch();
+    osg::CameraView* pOsgCameraView = new osg::CameraView;
+    pOsgCameraView->setName(dcamera->getId());
 
-    //TODO: Make the camera actually make a camera to view from. Not just draw a cone.
-    osg::Cone* cone = new osg::Cone();
+    domCamera::domOptics::domTechnique_common *pDomTechniqueCommon = dcamera->getOptics()->getTechnique_common();
+    domCamera::domOptics::domTechnique_common::domPerspective *pDomPerspective = pDomTechniqueCommon->getPerspective();
+    domCamera::domOptics::domTechnique_common::domOrthographic *pDomOrthographic = pDomTechniqueCommon->getOrthographic();
+    if (pDomPerspective)
+    {
+        // <perspective>
+        // 1    <xfov>, <yfov>, <xfov> and <yfov>, <xfov> and <aspect_ratio>, <yfov> and <aspect_ratio>
+        // 1    <znear>
+        // 1    <zfar>
+        domTargetableFloat *pXfov = daeSafeCast< domTargetableFloat >(pDomPerspective->getXfov());
+        domTargetableFloat *pYfov = daeSafeCast< domTargetableFloat >(pDomPerspective->getYfov());
+        domTargetableFloat *pAspectRatio = daeSafeCast< domTargetableFloat >(pDomPerspective->getAspect_ratio());
 
-    osg::ShapeDrawable* sd = new osg::ShapeDrawable(cone);
+        if (pXfov)
+        {
+            if (pYfov)
+            {
+                // <xfov> and <yfov>
+                pOsgCameraView->setFieldOfView(pXfov->getValue());
+                pOsgCameraView->setFieldOfViewMode(osg::CameraView::HORIZONTAL);
+                
+                if (pAspectRatio)
+                {
+                    osg::notify(osg::WARN) << "Unexpected <aspectratio> in <camera> '" << dcamera->getId() << "'" << std::endl;
+                }
+            }
+            else if (pAspectRatio)
+            {
+                // <xfov> and <aspect_ratio>
+                pOsgCameraView->setFieldOfView(pXfov->getValue() * pAspectRatio->getValue());
+                pOsgCameraView->setFieldOfViewMode(osg::CameraView::HORIZONTAL);
+            }
+            else 
+            {
+                // <xfov>
+                pOsgCameraView->setFieldOfView(pXfov->getValue());
+                pOsgCameraView->setFieldOfViewMode(osg::CameraView::HORIZONTAL);
+            }
+        }
+        else if (pYfov)
+        {
+            if (pAspectRatio)
+            {
+                // <yfov> and <aspect_ratio>
+                pOsgCameraView->setFieldOfView(pYfov->getValue() / pAspectRatio->getValue());
+                pOsgCameraView->setFieldOfViewMode(osg::CameraView::VERTICAL);
+            }
+            else
+            {
+                // <yfov>
+                pOsgCameraView->setFieldOfView(pYfov->getValue());
+                pOsgCameraView->setFieldOfViewMode(osg::CameraView::VERTICAL);
+            }
+        }
+        else
+        {
+            // xfov or yfov expected
+            osg::notify(osg::WARN) << "Expected <xfov> or <yfov> in <camera> '" << dcamera->getId() << "'" << std::endl;
+        }
 
-    cone->setRadius(0.3);
-    cone->setHeight(1.0);
+        domTargetableFloat *pZnear = daeSafeCast< domTargetableFloat >(pDomPerspective->getZnear());
+        domTargetableFloat *pZfar = daeSafeCast< domTargetableFloat >(pDomPerspective->getZfar());
 
-    osg::Geode* geode = new osg::Geode();
+        // TODO The current osg::CameraView does not support storage of near far
+    }
+    else if (pDomOrthographic)
+    {
+        // <orthographic> 
+        // 1    <xmag>, <ymag>, <xmag> and <ymag>, <xmag> and <aspect_ratio>, <ymag> and <aspect_ratio>
+        // 1    <znear>
+        // 1    <zfar>
+        domTargetableFloat *pXmag = daeSafeCast< domTargetableFloat >(pDomOrthographic->getXmag());
+        domTargetableFloat *pYmag = daeSafeCast< domTargetableFloat >(pDomOrthographic->getYmag());
+        domTargetableFloat *pAspectRatio = daeSafeCast< domTargetableFloat >(pDomOrthographic->getAspect_ratio());
 
-    geode->addDrawable(sd);
-    geode->setName("camera");
+        // TODO The current osg::CameraView does not support an orthographic view
+        osg::notify(osg::WARN) << "Orthographic in <camera> '" << dcamera->getId() << "' not supported" << std::endl;
 
-    osg::Switch* svitch = static_cast<osg::Switch*>(node);
+        domTargetableFloat *pZnear = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZnear());
+        domTargetableFloat *pZfar = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZfar());    
 
-    // Switched of by default to avoid excessively large scene bound
-    svitch->addChild(geode,false);
+        // TODO The current osg::CameraView does not support storage of near far
+    }
 
-    return node;
+    return pOsgCameraView;
 }

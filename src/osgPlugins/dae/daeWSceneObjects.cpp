@@ -26,6 +26,7 @@
 #include <osgSim/MultiSwitch>
 #include <osg/Sequence>
 #include <osg/Billboard>
+#include <osg/CameraView>
 
 using namespace osgdae;
 
@@ -392,4 +393,57 @@ void daeWriter::apply( osg::Camera &node )
     cam->setId( name.c_str() );
 
     traverse( node );
+}
+
+void daeWriter::apply( osg::CameraView &node)
+{
+    debugPrint( node );
+
+    domInstance_camera *ic = daeSafeCast< domInstance_camera >( currentNode->add( "instance_camera" ) );
+    std::string name = node.getName();
+    if ( name.empty() )
+    {
+        name = uniquify( "camera" );
+    }
+    std::string url = "#" + name;
+    ic->setUrl( url.c_str() );
+
+    if ( lib_cameras == NULL )
+    {
+        lib_cameras = daeSafeCast< domLibrary_cameras >( dom->add( COLLADA_ELEMENT_LIBRARY_CAMERAS ) );
+    }
+    domCamera *cam = daeSafeCast< domCamera >( lib_cameras->add( COLLADA_ELEMENT_CAMERA ) );
+    cam->setId( name.c_str() );
+
+    domCamera::domOptics *optics = daeSafeCast< domCamera::domOptics >( cam->add( COLLADA_ELEMENT_OPTICS ) );
+    domCamera::domOptics::domTechnique_common *techniqueCommon = daeSafeCast< domCamera::domOptics::domTechnique_common >( optics->add( COLLADA_ELEMENT_TECHNIQUE_COMMON ) );
+    domCamera::domOptics::domTechnique_common::domPerspective *pDomPerspective = daeSafeCast< domCamera::domOptics::domTechnique_common::domPerspective >( techniqueCommon->add( COLLADA_ELEMENT_PERSPECTIVE ) );
+
+    domTargetableFloat *pXfov = NULL;
+    domTargetableFloat *pYfov = NULL;
+    switch(node.getFieldOfViewMode())
+    {
+        case(osg::CameraView::UNCONSTRAINED): 
+            pXfov = daeSafeCast< domTargetableFloat >( pDomPerspective->add( COLLADA_ELEMENT_XFOV ) );
+            pXfov->setValue(node.getFieldOfView());
+            break;
+        case(osg::CameraView::HORIZONTAL): 
+            pXfov = daeSafeCast< domTargetableFloat >( pDomPerspective->add( COLLADA_ELEMENT_XFOV ) );
+            pXfov->setValue(node.getFieldOfView());
+            break;
+        case(osg::CameraView::VERTICAL): 
+            pYfov = daeSafeCast< domTargetableFloat >( pDomPerspective->add( COLLADA_ELEMENT_YFOV ) );
+            pYfov->setValue(node.getFieldOfView());
+            break;
+    }
+
+    // Using hardcoded values for <aspect_ratio>, <znear> and <zfar>
+    domTargetableFloat *pAspectRatio = daeSafeCast< domTargetableFloat >( pDomPerspective->add( COLLADA_ELEMENT_ASPECT_RATIO ) );
+    pAspectRatio->setValue(1.0);
+
+    domTargetableFloat *pNear = daeSafeCast< domTargetableFloat >( pDomPerspective->add( COLLADA_ELEMENT_ZNEAR ) );
+    pNear->setValue(1);
+
+    domTargetableFloat *pFar = daeSafeCast< domTargetableFloat >( pDomPerspective->add( COLLADA_ELEMENT_ZFAR ) );
+    pFar->setValue(1000);
 }

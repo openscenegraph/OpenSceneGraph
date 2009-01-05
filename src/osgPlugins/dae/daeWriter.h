@@ -110,7 +110,7 @@ public:
     //virtual void  apply( osg::ClipNode &node)
     //virtual void  apply( osg::TexGenNode &node)
     virtual void    apply( osg::Transform &node );
-    //virtual void  apply( osg::CameraView &node)
+    virtual void    apply( osg::CameraView &node);
     //virtual void  apply( osg::PagedLOD &node)
     //virtual void  apply( osg::ClearNode &node)
     //virtual void  apply( osg::OccluderNode &node)

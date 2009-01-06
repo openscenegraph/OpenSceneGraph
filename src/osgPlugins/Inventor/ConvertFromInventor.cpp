@@ -570,10 +570,12 @@ ConvertFromInventor::getStateSet(SoCallbackAction* action)
         stateSet->setTextureAttributeAndModes(0, texture.get(), osg::StateAttribute::ON);
         
         // propogate name
-        std::string name = texture->getName();
-        if (name != "")
-            stateSet->setName(name);
-
+        if(texture.valid())
+        {
+            std::string name = texture->getName();
+            if (name != "")
+                stateSet->setName(name);
+        }
         // Set the texture environment
         osg::ref_ptr<osg::TexEnv> texEnv = new osg::TexEnv;
         switch (action->getTextureModel())

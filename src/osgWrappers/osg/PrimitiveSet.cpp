@@ -40,10 +40,10 @@ BEGIN_OBJECT_REFLECTOR(osg::DrawArrays)
 	                           ____DrawArrays__GLenum,
 	                           "",
 	                           "");
-	I_Constructor3(IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count,
-	               ____DrawArrays__GLenum__GLint__GLsizei,
-	               "",
-	               "");
+	I_ConstructorWithDefaults4(IN, GLenum, mode, , IN, GLint, first, , IN, GLsizei, count, , IN, int, numInstances, 0,
+	                           ____DrawArrays__GLenum__GLint__GLsizei__int,
+	                           "",
+	                           "");
 	I_ConstructorWithDefaults2(IN, const osg::DrawArrays &, da, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____DrawArrays__C5_DrawArrays_R1__C5_CopyOp_R1,
 	                           "",
@@ -139,8 +139,8 @@ END_REFLECTOR
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(osg::PrimitiveSet);
-	I_ConstructorWithDefaults2(IN, osg::PrimitiveSet::Type, primType, osg::PrimitiveSet::PrimitiveType, IN, GLenum, mode, 0,
-	                           ____DrawElements__Type__GLenum,
+	I_ConstructorWithDefaults3(IN, osg::PrimitiveSet::Type, primType, osg::PrimitiveSet::PrimitiveType, IN, GLenum, mode, 0, IN, int, numInstances, 0,
+	                           ____DrawElements__Type__GLenum__int,
 	                           "",
 	                           "");
 	I_ConstructorWithDefaults2(IN, const osg::DrawElements &, copy, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
@@ -410,8 +410,8 @@ END_REFLECTOR
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	I_DeclaringFile("osg/PrimitiveSet");
 	I_BaseType(osg::Object);
-	I_ConstructorWithDefaults2(IN, osg::PrimitiveSet::Type, primType, osg::PrimitiveSet::PrimitiveType, IN, GLenum, mode, 0,
-	                           ____PrimitiveSet__Type__GLenum,
+	I_ConstructorWithDefaults3(IN, osg::PrimitiveSet::Type, primType, osg::PrimitiveSet::PrimitiveType, IN, GLenum, mode, 0, IN, int, numInstances, 0,
+	                           ____PrimitiveSet__Type__GLenum__int,
 	                           "",
 	                           "");
 	I_ConstructorWithDefaults2(IN, const osg::PrimitiveSet &, prim, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
@@ -461,6 +461,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	I_Method0(const osg::DrawElements *, getDrawElements,
 	          Properties::VIRTUAL,
 	          __C5_DrawElements_P1__getDrawElements,
+	          "",
+	          "");
+	I_Method1(void, setNumInstances, IN, int, n,
+	          Properties::NON_VIRTUAL,
+	          __void__setNumInstances__int,
+	          "",
+	          "");
+	I_Method0(int, getNumInstances,
+	          Properties::NON_VIRTUAL,
+	          __int__getNumInstances,
 	          "",
 	          "");
 	I_Method1(void, setMode, IN, GLenum, mode,
@@ -550,6 +560,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	I_SimpleProperty(unsigned int, ModifiedCount, 
 	                 __unsigned_int__getModifiedCount, 
 	                 __void__setModifiedCount__unsigned_int);
+	I_SimpleProperty(int, NumInstances, 
+	                 0, 
+	                 __void__setNumInstances__int);
 	I_SimpleProperty(unsigned int, TotalDataSize, 
 	                 __unsigned_int__getTotalDataSize, 
 	                 0);

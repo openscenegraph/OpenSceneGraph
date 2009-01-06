@@ -22,7 +22,6 @@
     #include <QtCore/QTimer>
     #include <QtGui/QKeyEvent>
     #include <QtGui/QApplication>
-    #include <QtOpenGL/QGLWidget>
     #include <QtGui/QtGui>
     #include <QtGui/QWidget>
     using Qt::WindowFlags;
@@ -50,7 +49,7 @@
 #include <osgViewer/api/Win32/GraphicsWindowWin32>
 typedef HWND WindowHandle;
 typedef osgViewer::GraphicsWindowWin32::WindowData WindowData;
-#elif defined(__APPLE__)
+#elif defined(__APPLE__)  // Assume using Carbon on Mac.
 #include <osgViewer/api/Carbon/GraphicsWindowCarbon>
 typedef WindowRef WindowHandle;
 typedef osgViewer::GraphicsWindowCarbon::WindowData WindowData;
@@ -146,11 +145,16 @@ void QOSGWidget::createContext()
     traits->sampleBuffers = ds->getMultiSamples();
     traits->samples = ds->getNumMultiSamples();
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) 
+    // Extract a WindowPtr from the HIViewRef that QWidget::winId() returns.
+    // Without this change, the peer tries to call GetWindowPort on the HIViewRef
+    // which returns 0 and we only render white.
     traits->inheritedWindowData = new WindowData(HIViewGetWindow((HIViewRef)winId()));
-#else
+
+#else // all others
     traits->inheritedWindowData = new WindowData(winId());
 #endif
+
 
     if (ds->getStereo())
     {
@@ -268,10 +272,6 @@ void QOSGWidget::mouseMoveEvent( QMouseEvent* event )
 
 
 
-
-
-
-
 class ViewerQOSG : public osgViewer::Viewer, public QOSGWidget
 {
     public:
@@ -279,15 +279,18 @@ class ViewerQOSG : public osgViewer::Viewer, public QOSGWidget
         ViewerQOSG(QWidget * parent = 0, const char * name = 0, WindowFlags f = 0):
             QOSGWidget( parent, name, f )
         {
+            setThreadingModel(osgViewer::Viewer::SingleThreaded);
+
+            connect(&_timer, SIGNAL(timeout()), this, SLOT(update()));
+            _timer.start(10);
+        }
+        
+        void updateCamera()
+        {
             getCamera()->setViewport(new osg::Viewport(0,0,width(),height()));
             getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width())/static_cast<double>(height()), 1.0f, 10000.0f);
             getCamera()->setGraphicsContext(getGraphicsWindow());
-
-            setThreadingModel(osgViewer::Viewer::SingleThreaded);
-
-        connect(&_timer, SIGNAL(timeout()), this, SLOT(update()));
-            _timer.start(10);
-    }
+        }
 
         virtual void paintEvent( QPaintEvent * event ) { frame(); }
 
@@ -308,7 +311,10 @@ class CompositeViewerQOSG : public osgViewer::CompositeViewer, public QOSGWidget
             setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
 
             connect(&_timer, SIGNAL(timeout()), this, SLOT(repaint()));
-            _timer.start(1);
+
+            // The app would hang on exit when using start(1).  Behaves better with 10
+            // like the non-composite viewer.  Was this just a typo?
+            _timer.start(10);
         }
 
         virtual void paintEvent( QPaintEvent * event ) { frame(); }
@@ -396,7 +402,11 @@ int mainQOSGWidget(QApplication& a, osg::ArgumentParser& arguments)
     if (arguments.read("--CompositeViewer"))
     {
         osg::ref_ptr<CompositeViewerQOSG> viewerWindow(new CompositeViewerQOSG);
+
         viewerWindow->setGeometry(0,0,640,480);
+        // Open the ViewerQOSG window at 30/30 instead of 0/0.  In some instances,
+        // the window may otherwise lack any window decoration.
+        // viewerWindow->setGeometry(30,30,640,480);
 
         unsigned int width = viewerWindow->width();
         unsigned int height = viewerWindow->height();
@@ -475,6 +485,7 @@ int mainQOSGWidget(QApplication& a, osg::ArgumentParser& arguments)
                 view->setCameraManipulator(new osgGA::TrackballManipulator);
                 view->setSceneData(loadedModel.get ());
                 ctimer->_viewer->addView(view);
+
             }
 
         //uiLayout->addWidget (ctimer);
@@ -495,8 +506,16 @@ int mainQOSGWidget(QApplication& a, osg::ArgumentParser& arguments)
     else
     {
         osg::ref_ptr<ViewerQOSG> viewerWindow(new ViewerQOSG);
-        viewerWindow->setGeometry(0,0,640,480);
 
+        // Open the ViewerQOSG window at 30/30 instead of 0/0.  In some instances,
+        // the window may otherwise lack any window decoration.
+        viewerWindow->setGeometry(0,0,640,480);
+        // viewerWindow->setGeometry(30,30,640,480);
+
+        // Setup the camera only after ViewerQOSG's Qt base class has been
+        // initialized. Without this change the view doesn't cover the whole
+        // window.
+        viewerWindow->updateCamera();
         viewerWindow->setCameraManipulator(new osgGA::TrackballManipulator);
         viewerWindow->setSceneData(loadedModel.get());
 

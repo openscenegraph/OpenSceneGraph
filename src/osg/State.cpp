@@ -79,6 +79,8 @@ State::State():
     _glVertexAttribPointer = 0;
     _glEnableVertexAttribArray = 0;
     _glDisableVertexAttribArray = 0;
+    _glDrawArraysInstanced = 0;
+    _glDrawElementsInstanced = 0;
 
     _dynamicObjectCount  = 0;
 
@@ -753,6 +755,9 @@ void State::initializeExtensionProcs()
     setGLExtensionFuncPtr(_glEnableVertexAttribArray, "glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
     setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
     setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
+
+    setGLExtensionFuncPtr(_glDrawArraysInstanced, "glDrawArraysInstanced","glDrawArraysInstancedEXT");
+    setGLExtensionFuncPtr(_glDrawElementsInstanced, "glDrawElementsInstanced","glDrawElementsInstancedEXT");
 
     if ( osg::getGLVersionNumber() >= 2.0 || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_shader") )
     {

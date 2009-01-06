@@ -30,6 +30,11 @@ void PrimitiveSet::write(DataOutputStream* out){
         throw Exception("PrimitiveSet::write(): Could not cast this osg::PrimitiveSet to an osg::Object.");
 
 
+    if ( out->getVersion() >= VERSION_0038 )
+    {
+        out->writeInt(getNumInstances());
+    }
+ 
     // Write PrimitiveSet's properties.
     out->writeInt(getMode());
 }
@@ -48,6 +53,11 @@ void PrimitiveSet::read(DataInputStream* in){
         else
             throw Exception("PrimitiveSet::read(): Could not cast this osg::PrimitiveSet to an osg::Object.");
 
+
+        if ( in->getVersion() >= VERSION_0038 )
+        {
+            setNumInstances(in->readInt());
+        }
 
         // Read in primitiveset properties.
         setMode(in->readInt());

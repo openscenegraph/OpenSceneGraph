@@ -1003,7 +1003,9 @@ bool Array_writeLocalData(const Array& array,Output& fw)
 bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
 {
     bool iteratorAdvanced = false;
-    if (fr.matchSequence("DrawArrays %w %i %i"))
+    bool firstMatched = false;
+    if ((firstMatched = fr.matchSequence("DrawArrays %w %i %i %i")) || 
+         fr.matchSequence("DrawArrays %w %i %i") )
     {
         
         GLenum mode;
@@ -1015,14 +1017,25 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int count;
         fr[3].getInt(count);
 
-        geom.addPrimitiveSet(new DrawArrays(mode,first,count));
+        int numInstances = 0;
+        if (firstMatched)
+        {
+            fr[4].getInt(numInstances);
+            fr += 5;
+        }
+        else
+        {
+            fr += 4;
+        }
 
-        fr += 4;
+        geom.addPrimitiveSet(new DrawArrays(mode, first, count, numInstances));
+
         
         iteratorAdvanced = true;
         
     }
-    else if (fr.matchSequence("DrawArrayLengths %w %i %i {"))
+    else if ((firstMatched = fr.matchSequence("DrawArrayLengths %w %i %i %i {")) || 
+         fr.matchSequence("DrawArrayLengths %w %i %i {") )
     {
         int entry = fr[1].getNoNestedBrackets();
 
@@ -1035,10 +1048,20 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int capacity;
         fr[3].getInt(capacity);
         
-        fr += 5;
-        
+        int numInstances = 0;
+        if (firstMatched)
+        {
+            fr[4].getInt(numInstances);
+            fr += 6;
+        }
+        else
+        {
+            fr += 5;
+        }
+
         DrawArrayLengths* prim = new DrawArrayLengths;
         prim->setMode(mode);
+        prim->setNumInstances(numInstances);
         prim->setFirst(first);
         prim->reserve(capacity);
 
@@ -1057,7 +1080,8 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
    
         iteratorAdvanced = true;
     }
-    else if (fr.matchSequence("DrawElementsUByte %w %i {"))
+    else if ((firstMatched = fr.matchSequence("DrawElementsUByte %w %i %i {")) || 
+         fr.matchSequence("DrawElementsUByte %w %i {"))
     {
         int entry = fr[1].getNoNestedBrackets();
 
@@ -1067,10 +1091,20 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int capacity;
         fr[2].getInt(capacity);
         
-        fr += 4;
-        
+        int numInstances = 0;
+        if (firstMatched)
+        {
+            fr[3].getInt(numInstances);
+            fr += 5;
+        }
+        else
+        {
+            fr += 4;
+        }
+
         DrawElementsUByte* prim = new DrawElementsUByte;
         prim->setMode(mode);
+        prim->setNumInstances(numInstances);
         prim->reserve(capacity);
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
@@ -1088,7 +1122,8 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
    
         iteratorAdvanced = true;
     }
-    else if (fr.matchSequence("DrawElementsUShort %w %i {"))
+    else if ((firstMatched = fr.matchSequence("DrawElementsUShort %w %i %i {")) || 
+         fr.matchSequence("DrawElementsUShort %w %i {"))
     {
         int entry = fr[1].getNoNestedBrackets();
 
@@ -1098,10 +1133,20 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int capacity;
         fr[2].getInt(capacity);
         
-        fr += 4;
+        int numInstances = 0;
+        if (firstMatched)
+        {
+            fr[3].getInt(numInstances);
+            fr += 5;
+        }
+        else
+        {
+            fr += 4;
+        }
         
         DrawElementsUShort* prim = new DrawElementsUShort;
         prim->setMode(mode);
+        prim->setNumInstances(numInstances);
         prim->reserve(capacity);
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
@@ -1119,7 +1164,8 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
    
         iteratorAdvanced = true;
     }
-    else if (fr.matchSequence("DrawElementsUInt %w %i {"))
+    else if ((firstMatched = fr.matchSequence("DrawElementsUInt %w %i %i {")) || 
+              fr.matchSequence("DrawElementsUInt %w %i {"))
     {
         int entry = fr[1].getNoNestedBrackets();
 
@@ -1129,10 +1175,20 @@ bool Primitive_readLocalData(Input& fr,osg::Geometry& geom)
         int capacity;
         fr[2].getInt(capacity);
         
-        fr += 4;
+        int numInstances = 0;
+        if (firstMatched)
+        {
+            fr[3].getInt(numInstances);
+            fr += 5;
+        }
+        else
+        {
+            fr += 4;
+        }
         
         DrawElementsUInt* prim = new DrawElementsUInt;
         prim->setMode(mode);
+        prim->setNumInstances(numInstances);
         prim->reserve(capacity);
 
         while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
@@ -1162,14 +1218,18 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
         case(PrimitiveSet::DrawArraysPrimitiveType):
             {
                 const DrawArrays& cprim = static_cast<const DrawArrays&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.getCount()<<std::endl;
+                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.getCount();
+                if (prim.getNumInstances()>0) fw<<" "<<prim.getNumInstances();
+                fw<<std::endl;
                 return true;
             }
             break;
         case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
             {
                 const DrawArrayLengths& cprim = static_cast<const DrawArrayLengths&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.size()<<std::endl;
+                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.getFirst()<<" "<<cprim.size();
+                if (prim.getNumInstances()>0) fw<<" "<<prim.getNumInstances();
+                fw<<std::endl;
                 writeArray(fw,cprim.begin(),cprim.end());
                 return true;
             }
@@ -1177,7 +1237,9 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
         case(PrimitiveSet::DrawElementsUBytePrimitiveType):
             {
                 const DrawElementsUByte& cprim = static_cast<const DrawElementsUByte&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
+                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size();
+                if (prim.getNumInstances()>0) fw<<" "<<prim.getNumInstances();
+                fw<<std::endl;
                 writeArrayAsInts(fw,cprim.begin(),cprim.end());
                 return true;
             }
@@ -1185,7 +1247,9 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
         case(PrimitiveSet::DrawElementsUShortPrimitiveType):
             {
                 const DrawElementsUShort& cprim = static_cast<const DrawElementsUShort&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
+                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size();
+                if (prim.getNumInstances()>0) fw<<" "<<prim.getNumInstances();
+                fw<<std::endl;
                 writeArray(fw,cprim.begin(),cprim.end());
                 return true;
             }
@@ -1193,7 +1257,9 @@ bool Primitive_writeLocalData(const PrimitiveSet& prim,Output& fw)
         case(PrimitiveSet::DrawElementsUIntPrimitiveType):
             {
                 const DrawElementsUInt& cprim = static_cast<const DrawElementsUInt&>(prim);
-                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size()<<std::endl;
+                fw<<cprim.className()<<" "<<Geometry_getPrimitiveModeStr(cprim.getMode())<<" "<<cprim.size();
+                if (prim.getNumInstances()>0) fw<<" "<<prim.getNumInstances();
+                fw<<std::endl;
                 writeArray(fw,cprim.begin(),cprim.end());
                 return true;
             }

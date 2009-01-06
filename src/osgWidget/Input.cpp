@@ -113,7 +113,7 @@ void Input::positioned() {
     
     point_type xoffset = _index > 0 ? _offsets[_index - 1] : 0.0f;
 
-    _cursor->setOrigin(x + xoffset + 1.0f, y - _cursor->getHeight() + 1.0f);
+    _cursor->setOrigin(x + xoffset + 1.0f, y + 1.0f);
     _cursor->setZ(_calculateZ(LAYER_MIDDLE));
 }
 

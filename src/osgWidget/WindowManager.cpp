@@ -248,9 +248,10 @@ void WindowManager::childInserted(unsigned int i) {
     _styleManager->applyStyles(window);
 }
     
-void WindowManager::childRemoved(unsigned int start, unsigned int end) {
-    while(start < end) {
-        Window* window = getByIndex(start);
+void WindowManager::childRemoved(unsigned int start, unsigned int numChildren) {
+    for (unsigned int i = start; i < start+numChildren; i++)
+    {
+        Window* window = getByIndex(i);
 
         if(!window) continue;
 
@@ -259,8 +260,6 @@ void WindowManager::childRemoved(unsigned int start, unsigned int end) {
 
             window->unmanaged(this);
         }
-
-        start++;
     }
 }
 

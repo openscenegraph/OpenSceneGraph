@@ -40,10 +40,10 @@ namespace osgAnimation
 }
 
 #ifdef OSGANIMATION_ASSERT_THROW
-#define OSGANIMATION_ASSERT(a)  if (!(a)) throw osgAnimation::ThrowAssert(std::string(#a),__FILE__,__LINE__);
+//#define OSGANIMATION_ASSERT(a)  if (!(a)) throw osgAnimation::ThrowAssert(std::string(#a),__FILE__,__LINE__);
 
 #else 
-#define OSGANIMATION_ASSERT(a)  {if (!(a)) *((int*)0) = 0;}
+//#define OSGANIMATION_ASSERT(a)  {if (!(a)) *((int*)0) = 0;}
 #endif
 
 #endif

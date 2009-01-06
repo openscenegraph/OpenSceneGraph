@@ -14,7 +14,6 @@
 
 #include <osgAnimation/AnimationManager>
 #include <osgAnimation/LinkVisitor>
-#include <osgAnimation/Assert>
 
 using namespace osgAnimation;
 
@@ -40,8 +39,10 @@ AnimationManager::AnimationManager()
 }
 void AnimationManager::playAnimation(Animation* pAnimation, int priority, float weight)
 {
-    bool r = findAnimation(pAnimation);
-    OSGANIMATION_ASSERT(r && "This animation is not registered");
+    if (!findAnimation(pAnimation))
+    {
+        return;
+    }
 
     if ( isPlaying(pAnimation) )
         stopAnimation(pAnimation);

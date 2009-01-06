@@ -14,7 +14,6 @@
 
 #include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/LinkVisitor>
-#include <osgAnimation/Assert>
 
 using namespace osgAnimation;
 

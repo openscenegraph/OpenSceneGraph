@@ -23,7 +23,7 @@
 #include <osgWidget/WindowManager>
 #include <osgAnimation/EaseMotion>
 
-const std::string IMAGE_PATH = "osgAnimation/Images/";
+const std::string IMAGE_PATH = "osgWidget/";
 
 template <class T>
 struct Sampler: public osg::Drawable::UpdateCallback 

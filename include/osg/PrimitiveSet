@@ -175,8 +175,9 @@ class OSG_EXPORT PrimitiveSet : public Object
             POLYGON = GL_POLYGON
         };
 
-        PrimitiveSet(Type primType=PrimitiveType,GLenum mode=0):
+        PrimitiveSet(Type primType=PrimitiveType,GLenum mode=0, int numInstances=0):
             _primitiveType(primType),
+            _numInstances(numInstances),
             _mode(mode),
             _modifiedCount(0),
             _rangeModifiedCount(0) {}
@@ -184,6 +185,7 @@ class OSG_EXPORT PrimitiveSet : public Object
         PrimitiveSet(const PrimitiveSet& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Object(prim,copyop),
             _primitiveType(prim._primitiveType),
+            _numInstances(prim._numInstances),
             _mode(prim._mode),
             _modifiedCount(0),
             _rangeModifiedCount(0) {}
@@ -200,6 +202,9 @@ class OSG_EXPORT PrimitiveSet : public Object
         virtual DrawElements* getDrawElements() { return 0; }
         virtual const DrawElements* getDrawElements() const { return 0; }
             
+        void setNumInstances(int n) { _numInstances = n; }
+        int getNumInstances() const { return _numInstances; }
+
         void setMode(GLenum mode) { _mode = mode; }
         GLenum getMode() const { return _mode; }
 
@@ -238,6 +243,7 @@ class OSG_EXPORT PrimitiveSet : public Object
         virtual ~PrimitiveSet() {}
 
         Type            _primitiveType;
+        int             _numInstances;
         GLenum          _mode;
         unsigned int    _modifiedCount;
         mutable unsigned int    _rangeModifiedCount;
@@ -275,8 +281,8 @@ class OSG_EXPORT DrawArrays : public PrimitiveSet
             _first(0),
             _count(0) {}
     
-        DrawArrays(GLenum mode, GLint first, GLsizei count):
-            PrimitiveSet(DrawArraysPrimitiveType,mode),
+        DrawArrays(GLenum mode, GLint first, GLsizei count, int numInstances=0):
+            PrimitiveSet(DrawArraysPrimitiveType, mode, numInstances),
             _first(first),
             _count(count) {}
 
@@ -385,8 +391,8 @@ class DrawElements : public PrimitiveSet
 {
     public:
         
-        DrawElements(Type primType=PrimitiveType, GLenum mode=0):
-            PrimitiveSet(primType,mode),
+        DrawElements(Type primType=PrimitiveType, GLenum mode=0, int numInstances=0):
+            PrimitiveSet(primType,mode, numInstances),
             _eboOffset(0) {}
     
         DrawElements(const DrawElements& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
@@ -472,8 +478,8 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
             DrawElements(array,copyop),
             vector_type(array) {}
 
-        DrawElementsUByte(GLenum mode, unsigned int no, const GLubyte* ptr) : 
-            DrawElements(DrawElementsUBytePrimitiveType,mode),
+        DrawElementsUByte(GLenum mode, unsigned int no, const GLubyte* ptr, int numInstances=0) : 
+            DrawElements(DrawElementsUBytePrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         DrawElementsUByte(GLenum mode, unsigned int no) : 
@@ -542,8 +548,8 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
             DrawElements(array,copyop),
             vector_type(array) {}
 
-        DrawElementsUShort(GLenum mode, unsigned int no, const GLushort* ptr) : 
-            DrawElements(DrawElementsUShortPrimitiveType,mode),
+        DrawElementsUShort(GLenum mode, unsigned int no, const GLushort* ptr, int numInstances=0) : 
+            DrawElements(DrawElementsUShortPrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         DrawElementsUShort(GLenum mode, unsigned int no) : 
@@ -616,8 +622,8 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
             DrawElements(array,copyop),
             vector_type(array) {}
 
-        DrawElementsUInt(GLenum mode, unsigned int no, const GLuint* ptr) : 
-            DrawElements(DrawElementsUIntPrimitiveType,mode),
+        DrawElementsUInt(GLenum mode, unsigned int no, const GLuint* ptr, int numInstances=0) : 
+            DrawElements(DrawElementsUIntPrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
         DrawElementsUInt(GLenum mode, unsigned int no) : 

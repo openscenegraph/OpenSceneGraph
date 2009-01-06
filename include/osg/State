@@ -459,6 +459,20 @@ class OSG_EXPORT State : public Referenced
             _glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,0);
             _currentPBO = 0;
         }
+        
+        
+        inline void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei primcount)
+        {
+            if (primcount>=1 && _glDrawArraysInstanced!=0) _glDrawArraysInstanced(mode, first, count, primcount);
+            else glDrawArrays(mode, first, count);
+        }
+    
+        inline void glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLsizei primcount )
+        {
+            if (primcount>=1 && _glDrawElementsInstanced!=0) _glDrawElementsInstanced(mode, count, type, indices, primcount);
+            else glDrawElements(mode, count, type, indices);
+        }
+
 
         /** Wrapper around glInterleavedArrays(..).
           * also resets the internal array points and modes within osg::State to keep the other
@@ -1293,7 +1307,9 @@ class OSG_EXPORT State : public Referenced
         typedef void (APIENTRY * EnableVertexAttribProc) (unsigned int);
         typedef void (APIENTRY * DisableVertexAttribProc) (unsigned int);
         typedef void (APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
-
+        
+        typedef void (APIENTRY * DrawArraysInstancedProc)( GLenum mode, GLint first, GLsizei count, GLsizei primcount );
+        typedef void (APIENTRY * DrawElementsInstancedProc)( GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLsizei primcount );
 
         bool                        _extensionProcsInitialized;
         GLint                       _glMaxTextureCoords;
@@ -1306,7 +1322,8 @@ class OSG_EXPORT State : public Referenced
         EnableVertexAttribProc      _glEnableVertexAttribArray;
         DisableVertexAttribProc     _glDisableVertexAttribArray;
         BindBufferProc              _glBindBuffer;
-
+        DrawArraysInstancedProc     _glDrawArraysInstanced;
+        DrawElementsInstancedProc   _glDrawElementsInstanced;
 
         unsigned int                                            _dynamicObjectCount;
         osg::ref_ptr<DynamicObjectRenderingCompletedCallback>   _completeDynamicObjectRenderingCallback;

@@ -386,6 +386,16 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__unbindPixelBufferObject,
 	          "",
 	          "");
+	I_Method4(void, glDrawArraysInstanced, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count, IN, GLsizei, primcount,
+	          Properties::NON_VIRTUAL,
+	          __void__glDrawArraysInstanced__GLenum__GLint__GLsizei__GLsizei,
+	          "",
+	          "");
+	I_Method5(void, glDrawElementsInstanced, IN, GLenum, mode, IN, GLsizei, count, IN, GLenum, type, IN, const GLvoid *, indices, IN, GLsizei, primcount,
+	          Properties::NON_VIRTUAL,
+	          __void__glDrawElementsInstanced__GLenum__GLsizei__GLenum__C5_GLvoid_P1__GLsizei,
+	          "",
+	          "");
 	I_Method3(void, setInterleavedArrays, IN, GLenum, format, IN, GLsizei, stride, IN, const GLvoid *, pointer,
 	          Properties::NON_VIRTUAL,
 	          __void__setInterleavedArrays__GLenum__GLsizei__C5_GLvoid_P1,

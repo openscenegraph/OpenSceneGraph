@@ -20,7 +20,6 @@
 #include <map>
 #include <string>
 #include <algorithm>
-#include <osgAnimation/Assert>
 #include <osgAnimation/VertexInfluence>
 #include <osgAnimation/Bone>
 #include <osg/Matrix>
@@ -163,7 +162,6 @@ namespace osgAnimation
 
         template <class V> void compute(const V* src, V* dst)
         {
-            OSGANIMATION_ASSERT(src != dst);
             int size = _boneSetVertexSet.size();
             for (int i = 0; i < size; i++) 
             {
@@ -183,7 +181,6 @@ namespace osgAnimation
 
         template <class V> void compute(const MatrixType& transform, const MatrixType& invTransform, const V* src, V* dst)
         {
-            OSGANIMATION_ASSERT(src != dst);
             int size = _boneSetVertexSet.size();
             for (int i = 0; i < size; i++) 
             {

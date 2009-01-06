@@ -18,7 +18,6 @@
 #include <osgAnimation/Export>
 #include <osgAnimation/Sampler>
 #include <osgAnimation/Target>
-#include <osgAnimation/Assert>
 #include <osg/Referenced>
 #include <string>
 
@@ -107,8 +106,8 @@ namespace osgAnimation
         TargetType* getTargetTyped() { return _target.get(); }
         void setTarget(TargetType* target) { _target = target; }
 
-        virtual float getStartTime() const { OSGANIMATION_ASSERT(_sampler.valid() && "no sampler attached to channel"); return _sampler->getStartTime(); }
-        virtual float getEndTime() const { OSGANIMATION_ASSERT(_sampler.valid() && "no sampler attached to channel"); return _sampler->getEndTime(); }
+        virtual float getStartTime() const { return _sampler->getStartTime(); }
+        virtual float getEndTime() const { return _sampler->getEndTime(); }
 
     protected:
         osg::ref_ptr<TargetType> _target;

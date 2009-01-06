@@ -15,7 +15,6 @@
 #ifndef OSGANIMATION_INTERPOLATOR_H
 #define OSGANIMATION_INTERPOLATOR_H
 
-#include <osgAnimation/Assert>
 #include <osgAnimation/Interpolator>
 #include <osgAnimation/Keyframe>
 
@@ -37,9 +36,6 @@ namespace osgAnimation
         void reset() { _lastKeyAccess = -1; }
         int getKeyIndexFromTime(const TemplateKeyframeContainer<KEY>& keys, float time) const 
         {
-            OSGANIMATION_ASSERT(!keys.empty() && "no keys");
-            OSGANIMATION_ASSERT(time >= keys.front().getTime() && time <= keys.back().getTime() && "bad range");
-
             // todo use a cache
             int key_size = keys.size();
             const TemplateKeyframe<KeyframeType>* keysVector = &keys.front();
@@ -47,10 +43,7 @@ namespace osgAnimation
             {
                 float time0 = keysVector[i].getTime();
                 float time1 = keysVector[i+1].getTime();
-#ifndef OSGANIMATION_NO_EXTRA_CHECK
-                if ( time0>time1 )
-                    OSGANIMATION_ASSERT(0 && "invalid input data");
-#endif
+
                 if ( time >= time0 && time < time1 ) 
                 {
                     _lastKeyAccess = i;
@@ -59,7 +52,7 @@ namespace osgAnimation
             }
             std::cout << time << " first key " << keysVector[0].getTime() << " last key " << keysVector[key_size-1].getTime() << std::endl;
             *((int *)0) = 0;
-            OSGANIMATION_ASSERT(0 && "impossible has happened");
+
             return -1;
         }
     };

@@ -247,7 +247,6 @@ int main (int argc, char* argv[])
     osg::ref_ptr<osg::Vec3Array> src = dynamic_cast<osg::Vec3Array*>(geom->getVertexArray());
     geom->getOrCreateStateSet()->setMode(GL_LIGHTING, false);
     geom->setDataVariance(osg::Object::DYNAMIC);
-    OSGANIMATION_ASSERT(src);
 
     initVertexMap(root.get(), right0.get(), right1.get(), geom, src.get());
 

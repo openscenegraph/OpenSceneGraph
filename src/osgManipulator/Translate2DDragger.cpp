@@ -137,7 +137,6 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
         default:
             return false;
     }
-    return false;
 }
 
 void Translate2DDragger::setupDefaultGeometry()

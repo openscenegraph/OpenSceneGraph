@@ -138,7 +138,6 @@ bool Translate1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
         default:
             return false;
     }
-    return false;
 }
 
 void Translate1DDragger::setupDefaultGeometry()

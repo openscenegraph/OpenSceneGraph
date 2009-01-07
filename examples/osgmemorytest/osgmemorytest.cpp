@@ -86,7 +86,6 @@ class ContextTest : public MemoryTest
                 if (_pbuffer) throw "Failed to create PixelBuffer";
                 else  throw "Failed to create GraphicsWindow";
             }
-            return 0;
         }
         
 
@@ -170,7 +169,6 @@ class TextureTest : public GLMemoryTest
             {
                 throw "Invalid texture size of 0,0,0";
             }
-            return 0;            
         }
         
 

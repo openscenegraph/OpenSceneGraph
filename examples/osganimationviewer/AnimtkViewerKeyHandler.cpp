@@ -42,7 +42,7 @@ void AnimtkKeyEventHandler::printUsage() const
 }
 
 
-bool AnimtkKeyEventHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa,
+bool AnimtkKeyEventHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&,
                                    osg::Object*, osg::NodeVisitor*)
 {
     AnimtkViewerModelController& mc = AnimtkViewerModelController::instance();

@@ -238,6 +238,11 @@ struct IdHelper
     flt::FltExportVisitor&  v_;
     const std::string        id_;
     DataOutputStream* dos_;
+
+protected:
+
+    IdHelper& operator = (const IdHelper&) { return *this; }
+
 };
 
 
@@ -262,6 +267,10 @@ struct SubfaceHelper
 
     flt::FltExportVisitor&  v_;
     bool _polygonOffsetOn;
+
+protected:
+
+    SubfaceHelper& operator = (const SubfaceHelper&) { return *this; }
 };
 
 }

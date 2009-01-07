@@ -665,7 +665,7 @@ bool PixelBufferWin32::realizeImplementation()
 
     if (_traits->sharedContext)
     {
-        HGLRC hglrc;
+        HGLRC hglrc = 0;
 
         GraphicsWindowWin32* graphicsWindowWin32 = dynamic_cast<GraphicsWindowWin32*>(_traits->sharedContext);
         if (graphicsWindowWin32) 

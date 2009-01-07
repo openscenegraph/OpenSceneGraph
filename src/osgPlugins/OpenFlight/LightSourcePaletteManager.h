@@ -66,6 +66,10 @@ class LightSourcePaletteManager
 
 
     ExportOptions& _fltOpt;
+
+protected:
+
+    LightSourcePaletteManager& operator = (const LightSourcePaletteManager&) { return *this; }
 };
 
 

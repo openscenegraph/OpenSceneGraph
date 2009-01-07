@@ -695,9 +695,9 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
         //      path specified by the App Paths registry key.
         filenamechar* ptr;
 #ifdef OSG_USE_UTF8_FILENAME
-        if (ptr = _wgetenv(OSGDB_FILENAME_TEXT("PATH")))
+        if ((ptr = _wgetenv(OSGDB_FILENAME_TEXT("PATH"))))
 #else
-        if (ptr = getenv("PATH"))
+        if ((ptr = getenv("PATH")))
 #endif
         {
             // Note that on any sane Windows system, some of the paths above

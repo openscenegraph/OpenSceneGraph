@@ -119,7 +119,9 @@ createStateSet()
 
 int main( int argc, char **argv )
 {
-    // Make a scene graph consisting of a single Geode, containing
+    osg::ArgumentParser arguments(&argc, argv);
+
+   // Make a scene graph consisting of a single Geode, containing
     // a single Geometry, and a single PrimitiveSet.
     osg::ref_ptr< osg::Geode > geode = new osg::Geode;
 
@@ -142,7 +144,7 @@ int main( int argc, char **argv )
 
     // osgDB::writeNodeFile(*geode, "instanced.osg");
 
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
     viewer.setSceneData( geode.get() );
     return viewer.run();
 }

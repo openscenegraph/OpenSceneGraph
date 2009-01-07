@@ -182,7 +182,6 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
         default:
             return false;
     }
-    return false;
 }
 
 void Scale2DDragger::setupDefaultGeometry()

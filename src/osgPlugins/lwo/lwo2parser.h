@@ -34,6 +34,8 @@ namespace lwo2
 	protected:
 		virtual iff::Chunk *parse_chunk_data(const std::string &tag, const std::string &context, Iter it, Iter end);
 		iff::Chunk *parse_subchunk(Iter &it, const std::string &context);
+                
+                Parser& operator = (const Parser&) { return *this; }
 	};
 
 

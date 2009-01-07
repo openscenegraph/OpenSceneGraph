@@ -92,6 +92,8 @@ public:
 
 protected:
 
+    dxtc_pixels& operator = (const dxtc_pixels&) { return *this; }
+
     // Limitation check functions
     inline bool DXT1() const;
     inline bool DXT3() const;

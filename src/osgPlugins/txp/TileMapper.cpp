@@ -308,9 +308,6 @@ bool TileMapper::canParentBeTraversed(const TileIdentifier& tid) const
             return (!parentHasSouthNeighour && !parentHasWestNeighour);
         }
     }
-    // we shouldn't get here...
-    
-    return true;
 }
 
 void TileMapper::checkValidityOfAllVisibleTiles()

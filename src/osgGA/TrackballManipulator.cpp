@@ -172,7 +172,6 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
         default:
             return false;
     }
-    return false;
 }
 
 

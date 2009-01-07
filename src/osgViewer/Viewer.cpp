@@ -288,8 +288,6 @@ bool Viewer::readConfiguration(const std::string& filename)
         osg::notify(osg::NOTICE)<<"Error: Config file \""<<filename<<"\" does not contain a valid Viewer configuration."<<std::endl;
         return false;
     }
-    
-    return false;
 }
 
 bool Viewer::isRealized() const

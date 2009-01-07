@@ -236,7 +236,7 @@ struct SnapeImageHandler : public osgGA::GUIEventHandler
         _key(key),
         _snapImage(si) {}
 
-    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&)
     {
         if (ea.getHandled()) return false;
 

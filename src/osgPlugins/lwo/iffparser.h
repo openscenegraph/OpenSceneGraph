@@ -51,6 +51,9 @@ namespace iff
 		inline std::ostream &os() { return os_; }
 
 	private:		
+		GenericParser& operator = (const GenericParser&) { return *this; }
+
+
 		Chunk_list chunks_;
 		std::ostream &os_;
 	};

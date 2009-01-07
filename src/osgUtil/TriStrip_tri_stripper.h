@@ -199,9 +199,7 @@ private:
 
     friend struct _cmp_tri_interface_lt;
 
-
-
-
+    tri_stripper& operator = (const tri_stripper&) { return *this; }
 
     typedef common_structures::graph_array<triangle, char> triangles_graph;
     typedef common_structures::heap_array<triangle_degree, _cmp_tri_degree_gt> triangles_heap;

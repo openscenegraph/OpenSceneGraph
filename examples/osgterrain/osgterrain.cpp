@@ -127,7 +127,7 @@ public:
             osgDB::Input fr;
             fr.attach(&fin);
 
-            bool readFilename;
+            bool readFilename = false;
 
             while(!fr.eof())
             {

@@ -252,8 +252,6 @@ bool UFOManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAda
         default:
             return false;
     }
-
-    return false;
 }
 
 void UFOManipulator::getUsage(osg::ApplicationUsage& usage) const

@@ -159,7 +159,6 @@ bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
         default:
             return false;
     }
-    return false;
 }
 
 void Scale1DDragger::setupDefaultGeometry()

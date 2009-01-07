@@ -315,7 +315,6 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         default:
             return false;
     }
-    return false;
 }
 
 void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const

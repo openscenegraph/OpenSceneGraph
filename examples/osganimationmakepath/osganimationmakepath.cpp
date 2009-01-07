@@ -311,7 +311,8 @@ osg::MatrixTransform* setupAnimtkNode(osg::Geode* staticGeode)
 
 int main(int argc, char** argv) 
 {
-    osgViewer::Viewer viewer;
+    osg::ArgumentParser arguments(&argc, argv);
+    osgViewer::Viewer viewer(arguments);
     
     osgGA::TrackballManipulator* tbm = new osgGA::TrackballManipulator();
 

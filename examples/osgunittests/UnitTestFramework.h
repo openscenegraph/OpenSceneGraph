@@ -479,6 +479,8 @@ protected:
 
 private:
 
+    TestRunner& operator = (const TestRunner&) { return *this; }
+
     TestReport                   _db;            // Results
     TestContext&                 _ctx;            // The Global Testing Context
     std::vector<std::string>    _tests;          // Specified Tests

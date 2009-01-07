@@ -42,7 +42,8 @@ MDLReader::~MDLReader()
 std::string MDLReader::getToken(std::string str, const char * delim,
                                 size_t & index)
 {
-    size_t        start, end;
+    size_t start;
+    size_t end = std::string::npos;
     std::string   token;
 
     // Look for the first non-occurrence of the delimiters

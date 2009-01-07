@@ -148,7 +148,6 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
         default:
             return false;
     }
-    return false;
 }
 
 void RotateSphereDragger::setupDefaultGeometry()

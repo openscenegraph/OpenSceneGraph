@@ -156,7 +156,9 @@ void initVertexMap(osgAnimation::Bone* b0,
 
 int main (int argc, char* argv[])
 {
-    osgViewer::Viewer viewer;
+    osg::ArgumentParser arguments(&argc, argv);
+    osgViewer::Viewer viewer(arguments);
+
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
     osg::ref_ptr<osgAnimation::Skeleton> skelroot = new osgAnimation::Skeleton;

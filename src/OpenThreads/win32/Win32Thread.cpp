@@ -437,8 +437,7 @@ int Thread::testCancel()
 //    ExitThread(0);
     throw Win32ThreadCanceled();
 
-    return 0;
-
+//    return 0;
 }
 
 

@@ -146,7 +146,6 @@ bool RotateCylinderDragger::handle(const PointerInfo& pointer, const osgGA::GUIE
         default:
             return false;
     }
-    return false;
 }
 
 void RotateCylinderDragger::setupDefaultGeometry()

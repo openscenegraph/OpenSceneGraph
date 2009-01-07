@@ -136,6 +136,8 @@ class OBJWriterNodeVisitor: public osg::NodeVisitor {
     
     private:
         
+        OBJWriterNodeVisitor& operator = (const OBJWriterNodeVisitor&) { return *this; }
+
         void processGeometry(osg::Geometry* geo, osg::Matrix& m);
         void processArray(const std::string& key, osg::Array* array, const osg::Matrix& m = osg::Matrix::identity(), bool isNormal = false);
         

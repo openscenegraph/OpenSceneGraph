@@ -84,7 +84,7 @@ class OSGSIM_EXPORT OverlayNode : public osg::Group
         double getOverlayBaseHeight() const { return _overlayBaseHeight; }
 
         /** Set the clear color to use when rendering the overlay subgraph.*/
-        void setOverlayClearColor(const osg::Vec4& color) { _overlayClearColor = _overlayClearColor; }
+        void setOverlayClearColor(const osg::Vec4& color) { _overlayClearColor = color; }
 
         /** Get the clear color to use when rendering the overlay subgraph.*/
         const osg::Vec4& getOverlayClearColor() const { return _overlayClearColor; }

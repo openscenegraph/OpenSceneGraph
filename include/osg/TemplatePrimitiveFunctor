@@ -76,7 +76,7 @@ namespace osg {
             notify(WARN)<<"Triangle Functor does not support Vec2d* vertex arrays"<<std::endl;
         }
 
-        virtual void setVertexArray(unsigned int count,const Vec3d* vertices)
+        virtual void setVertexArray(unsigned int,const Vec3d*)
         {
             notify(WARN)<<"Triangle Functor does not support Vec3d* vertex arrays"<<std::endl;
         }
@@ -247,9 +247,9 @@ namespace osg {
                     for(IndexPointer  iptr=indices;iptr<ilast;iptr+=1)
                         this->operator()(_vertexArrayPtr[*iptr],_vertexArrayPtr[*(iptr+1)],
                                          _treatVertexDataAsTemporary);
-                    break;
                     this->operator()(_vertexArrayPtr[*(ilast)],_vertexArrayPtr[indices[0]],
                                      _treatVertexDataAsTemporary);
+                    break;
                 }
                 default:
                     break;

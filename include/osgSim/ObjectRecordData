@@ -38,7 +38,9 @@ class ObjectRecordData : public osg::Object
 
             _significance( 0 )
         {}
-        ObjectRecordData( const ObjectRecordData& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY )
+
+        ObjectRecordData( const ObjectRecordData& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY ):
+            osg::Object(copy, copyop)
         {
             _flags = copy._flags;
             _relativePriority = copy._relativePriority;

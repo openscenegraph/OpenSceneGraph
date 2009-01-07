@@ -58,7 +58,7 @@ namespace osgAnimation
 
             META_NodeVisitor("osgAnimation","BoneMapVisitor")
 
-            void apply(osg::Node& node) { return; }
+            void apply(osg::Node&) { return; }
             void apply(osg::Transform& node)
             {
                 Bone* bone = dynamic_cast<Bone*>(&node);

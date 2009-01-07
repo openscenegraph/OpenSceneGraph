@@ -172,18 +172,16 @@ class ObjectCallback: public CallbackInterface
         typedef bool (T::*ObjectCallbackType)(Event&);
 
         ObjectCallback(ObjectCallbackType callback, T* obj):
-        _callback (callback),
-        _object   (obj) {
-        }
+        _object   (obj),
+        _callback (callback) {}
 
         virtual bool operator()(Event& ev) {
             return (_object->*_callback)(ev);
         }
 
     private:
-        ObjectCallbackType _callback;
         T*                 _object;
-
+        ObjectCallbackType _callback;
 };
 
 // The object that facilitates general functions as callbacks.

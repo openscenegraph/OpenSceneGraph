@@ -28,10 +28,10 @@ class OSGGA_EXPORT CameraViewSwitchManipulator : public MatrixManipulator
         virtual const char* className() const { return "CameraViewSwitcher"; }
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByMatrix(const osg::Matrixd& matrix) {}
+        virtual void setByMatrix(const osg::Matrixd& /*matrix*/) {}
 
         /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByInverseMatrix(const osg::Matrixd& matrix) {}
+        virtual void setByInverseMatrix(const osg::Matrixd& /*matrix*/) {}
 
         /** get the position of the manipulator as 4x4 Matrix.*/
         virtual osg::Matrixd getMatrix() const;
@@ -53,7 +53,7 @@ class OSGGA_EXPORT CameraViewSwitchManipulator : public MatrixManipulator
         virtual osg::Node* getNode() { return _node.get();}
         
         /** Start/restart the manipulator.*/
-        virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us) { _currentView = 0; }
+        virtual void init(const GUIEventAdapter& /*ea*/,GUIActionAdapter& /*aa*/) { _currentView = 0; }
 
         /** handle events, return true if handled, false otherwise.*/
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);

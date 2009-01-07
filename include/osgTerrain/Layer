@@ -100,7 +100,7 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
         virtual const osg::Image* getImage() const { return 0; }
 
 
-        virtual bool transform(float offset, float scale) { return false; }
+        virtual bool transform(float /*offset*/, float /*scale*/) { return false; }
 
 
         virtual bool getValue(unsigned int /*i*/, unsigned int /*j*/, float& /*value*/) const { return false; }

@@ -99,10 +99,11 @@ class ParameterOutput
         
     protected:
     
+        ParameterOutput& operator = (const ParameterOutput&) { return *this; }
+
         Output& _fw;
         int     _numItemsPerLine;
         int     _column;
-        
 };
 
 

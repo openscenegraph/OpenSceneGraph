@@ -278,7 +278,8 @@ void View::setSceneData(osg::Node* node)
         getSceneData()->accept(sodv);
         
         // make sure that existing scene graph objects are allocated with thread safe ref/unref
-        if (getViewerBase()->getThreadingModel()!=ViewerBase::SingleThreaded) 
+        if (getViewerBase() && 
+            getViewerBase()->getThreadingModel()!=ViewerBase::SingleThreaded) 
         {
             getSceneData()->setThreadSafeRefUnref(true);
         }

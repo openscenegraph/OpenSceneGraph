@@ -46,7 +46,7 @@ namespace osgAnimation
         META_Object(osgAnimation, VertexInfluenceMap);
 
         VertexInfluenceMap() {}
-        VertexInfluenceMap(const osgAnimation::VertexInfluenceMap& infl, const osg::CopyOp&) {;}
+        VertexInfluenceMap(const osgAnimation::VertexInfluenceMap&, const osg::CopyOp&) {}
     };
 
 

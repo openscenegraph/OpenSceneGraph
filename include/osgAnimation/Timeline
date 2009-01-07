@@ -35,11 +35,12 @@ namespace osgAnimation
         {
         public:
             Callback(){}
-            Callback(const Callback& nc,const osg::CopyOp&) {}
+            Callback(const Callback&,const osg::CopyOp&) {}
 
             META_Object(osgAnimation,Callback);
         
-            virtual void operator()(Action* action) {}
+            virtual void operator()(Action* /*action*/) {}
+            
             void addNestedCallback(Callback* callback) 
             { 
                 if (_nested.valid())
@@ -56,6 +57,7 @@ namespace osgAnimation
         typedef std::map<unsigned int, osg::ref_ptr<Callback> > FrameCallback;
 
         META_Object(osgAnimation, Action);
+        
         Action()
         {
             _numberFrame = 25;
@@ -63,7 +65,8 @@ namespace osgAnimation
             _speed = 1.0;
             _loop = 1;
         }
-        Action(const Action& nc,const osg::CopyOp&) {}
+
+        Action(const Action&,const osg::CopyOp&) {}
 
         void setCallback(double when, Callback* callback)
         {
@@ -520,7 +523,7 @@ namespace osgAnimation
         
     public:
         RunAction(Timeline* tm, Action* a) : _tm(tm), _action(a) {}
-        virtual void operator()(Action* action)
+        virtual void operator()(Action* /*action*/)
         {
             _tm->addActionAt(_tm->getCurrentFrame(), _action.get()); // warning we are trsversing the vector
         }

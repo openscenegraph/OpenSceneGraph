@@ -328,6 +328,9 @@ class OSGVIEWER_EXPORT ScreenCaptureHandler : public osgGA::GUIEventHandler
                 SavePolicy getSavePolicy() const { return _savePolicy; }
 
             protected:
+            
+                WriteToFile& operator = (const WriteToFile&) { return *this; }
+            
                 const std::string _filename;
                 const std::string _extension;
 
@@ -387,7 +390,7 @@ protected:
     
     InteractiveImageHandler() {}
 
-    InteractiveImageHandler(const InteractiveImageHandler& rhs,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) {}
+    InteractiveImageHandler(const InteractiveImageHandler&,const osg::CopyOp& = osg::CopyOp::SHALLOW_COPY) {}
 
     bool mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const;
 

@@ -37,7 +37,9 @@ class OSGWIDGET_EXPORT BrowserManager : public osg::Object
     protected:
 
         BrowserManager();
-        BrowserManager(const BrowserManager& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY) {}
+        BrowserManager(const BrowserManager& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            osg::Object(rhs,copyop) {}
+            
         virtual ~BrowserManager();
         
         META_Object(osgWidget,BrowserManager)

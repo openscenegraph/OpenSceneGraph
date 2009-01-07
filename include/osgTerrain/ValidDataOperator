@@ -24,7 +24,7 @@ namespace osgTerrain {
 
 struct ValidDataOperator : public osg::Referenced
 {
-    virtual bool operator() (float value) const { return true; }
+    virtual bool operator() (float /*value*/) const { return true; }
     virtual bool operator() (const osg::Vec2& value) const { return operator()(value.x()) && operator()(value.y()) ; }
     virtual bool operator() (const osg::Vec3& value) const { return operator()(value.x()) && operator()(value.y()) && operator()(value.z());  }
     virtual bool operator() (const osg::Vec4& value) const { return operator()(value.x()) && operator()(value.y()) && operator()(value.z()) && operator()(value.w()); }

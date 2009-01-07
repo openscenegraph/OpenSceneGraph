@@ -91,6 +91,8 @@ class ScopedReadLock
         
     protected:  
         ReadWriteMutex& _mutex;
+
+        ScopedReadLock& operator = (const ScopedReadLock&) { return *this; }
 };
 
 
@@ -103,6 +105,8 @@ class ScopedWriteLock
         
     protected:  
         ReadWriteMutex& _mutex;
+
+        ScopedWriteLock& operator = (const ScopedWriteLock&) { return *this; }
 };
 
 }

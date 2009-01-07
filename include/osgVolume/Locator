@@ -29,6 +29,7 @@ class OSGVOLUME_EXPORT Locator : public osg::Object
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Locator(const Locator& locator,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            osg::Object(locator, copyop),
             _transform(locator._transform) {}
         
         META_Object(osgVolume, Locator);

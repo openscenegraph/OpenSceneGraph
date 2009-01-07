@@ -345,12 +345,21 @@ class OSG_EXPORT NodeVisitor : public virtual Referenced
 
 
 /** Convenience functor for assisting visiting of arrays of osg::Node's.*/ 
-struct NodeAcceptOp
+class NodeAcceptOp
 {
-    NodeVisitor& _nv;
-    NodeAcceptOp(NodeVisitor& nv):_nv(nv) {}
-    void operator () (Node* node) { node->accept(_nv); }
-    void operator () (ref_ptr<Node> node) { node->accept(_nv); }
+    public:
+
+        NodeAcceptOp(NodeVisitor& nv):_nv(nv) {}
+        NodeAcceptOp(const NodeAcceptOp& naop):_nv(naop._nv) {}
+
+        void operator () (Node* node) { node->accept(_nv); }
+        void operator () (ref_ptr<Node> node) { node->accept(_nv); }
+
+    protected:
+
+        NodeAcceptOp& operator = (const NodeVisitor&) { return *this; }
+
+        NodeVisitor& _nv;
 };
 
 }

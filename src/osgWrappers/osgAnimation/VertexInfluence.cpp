@@ -73,7 +73,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::VertexInfluenceMap)
 	I_Constructor0(____VertexInfluenceMap,
 	               "",
 	               "");
-	I_Constructor2(IN, const osgAnimation::VertexInfluenceMap &, infl, IN, const osg::CopyOp &, x,
+	I_Constructor2(IN, const osgAnimation::VertexInfluenceMap &, x, IN, const osg::CopyOp &, x,
 	               ____VertexInfluenceMap__C5_osgAnimation_VertexInfluenceMap_R1__C5_osg_CopyOp_R1,
 	               "",
 	               "");

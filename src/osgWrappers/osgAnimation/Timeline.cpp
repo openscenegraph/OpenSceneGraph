@@ -57,7 +57,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Action)
 	I_Constructor0(____Action,
 	               "",
 	               "");
-	I_Constructor2(IN, const osgAnimation::Action &, nc, IN, const osg::CopyOp &, x,
+	I_Constructor2(IN, const osgAnimation::Action &, x, IN, const osg::CopyOp &, x,
 	               ____Action__C5_Action_R1__C5_osg_CopyOp_R1,
 	               "",
 	               "");
@@ -142,7 +142,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Action::Callback)
 	I_Constructor0(____Callback,
 	               "",
 	               "");
-	I_Constructor2(IN, const osgAnimation::Action::Callback &, nc, IN, const osg::CopyOp &, x,
+	I_Constructor2(IN, const osgAnimation::Action::Callback &, x, IN, const osg::CopyOp &, x,
 	               ____Callback__C5_Callback_R1__C5_osg_CopyOp_R1,
 	               "",
 	               "");

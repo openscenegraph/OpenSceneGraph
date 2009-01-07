@@ -39,7 +39,7 @@ void CameraViewSwitchManipulator::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("CameraViewSwitcher: ]","Increase current camera number");
 }
 
-bool CameraViewSwitchManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us)
+bool CameraViewSwitchManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter&)
 {
     if (ea.getHandled()) return false;
 

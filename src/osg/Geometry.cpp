@@ -2110,7 +2110,10 @@ class AttributeFunctorArrayVisitor : public ArrayVisitor
                 array->accept(*this);
             }
         }
-    
+
+    protected:        
+        
+        AttributeFunctorArrayVisitor& operator = (const AttributeFunctorArrayVisitor&) { return *this; }
         Drawable::AttributeFunctor&   _af;
         Drawable::AttributeType       _type;
 };
@@ -2171,6 +2174,10 @@ class ConstAttributeFunctorArrayVisitor : public ConstArrayVisitor
             }
         }
     
+protected:
+
+        ConstAttributeFunctorArrayVisitor& operator = (const ConstAttributeFunctorArrayVisitor&) { return *this; }
+
         Drawable::ConstAttributeFunctor&    _af;
         Drawable::AttributeType             _type;
 };
@@ -2944,7 +2951,8 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
         // the input array, but the interface of the osg::Array class doesn't include a way 
         // to set an element.
         template <class T>
-        osg::Array* create_noinline(const osg::Array& array, const osg::IndexArray& indices) {
+        osg::Array* create_noinline(const osg::Array& array, const osg::IndexArray& indices)
+        {
             T* newArray = 0;
             typedef typename T::ElementDataType EDT;
 
@@ -2961,42 +2969,44 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
             return newArray;
         }
 
-        osg::Array* create_noinline(const osg::Array& array, const osg::IndexArray& indices) {
-        switch (array.getType()) 
+        osg::Array* create_noinline(const osg::Array& array, const osg::IndexArray& indices)
+        {
+            switch (array.getType()) 
             {
-            case(osg::Array::ByteArrayType):   return create_noinline<osg::ByteArray>(array,indices);
-            case(osg::Array::ShortArrayType):  return create_noinline<osg::ShortArray>(array,indices);
-            case(osg::Array::IntArrayType):    return create_noinline<osg::IntArray>(array,indices);
-            case(osg::Array::UByteArrayType):  return create_noinline<osg::UByteArray>(array,indices);
-            case(osg::Array::UShortArrayType): return create_noinline<osg::UShortArray>(array,indices);
-            case(osg::Array::UIntArrayType):   return create_noinline<osg::UIntArray>(array,indices);
-            case(osg::Array::Vec4ubArrayType): return create_noinline<osg::Vec4ubArray>(array,indices);
-            case(osg::Array::FloatArrayType):  return create_noinline<osg::FloatArray>(array,indices);
-            case(osg::Array::Vec2ArrayType):   return create_noinline<osg::Vec2Array>(array,indices);
-            case(osg::Array::Vec3ArrayType):   return create_noinline<osg::Vec3Array>(array,indices);
-            case(osg::Array::Vec4ArrayType):   return create_noinline<osg::Vec4Array>(array,indices);
-            case(osg::Array::Vec2dArrayType):   return create_noinline<osg::Vec2dArray>(array,indices);
-            case(osg::Array::Vec3dArrayType):   return create_noinline<osg::Vec3dArray>(array,indices);
-            case(osg::Array::Vec4dArrayType):   return create_noinline<osg::Vec4dArray>(array,indices);
-            default:
-                return NULL;
+                case(osg::Array::ByteArrayType):   return create_noinline<osg::ByteArray>(array,indices);
+                case(osg::Array::ShortArrayType):  return create_noinline<osg::ShortArray>(array,indices);
+                case(osg::Array::IntArrayType):    return create_noinline<osg::IntArray>(array,indices);
+                case(osg::Array::UByteArrayType):  return create_noinline<osg::UByteArray>(array,indices);
+                case(osg::Array::UShortArrayType): return create_noinline<osg::UShortArray>(array,indices);
+                case(osg::Array::UIntArrayType):   return create_noinline<osg::UIntArray>(array,indices);
+                case(osg::Array::Vec4ubArrayType): return create_noinline<osg::Vec4ubArray>(array,indices);
+                case(osg::Array::FloatArrayType):  return create_noinline<osg::FloatArray>(array,indices);
+                case(osg::Array::Vec2ArrayType):   return create_noinline<osg::Vec2Array>(array,indices);
+                case(osg::Array::Vec3ArrayType):   return create_noinline<osg::Vec3Array>(array,indices);
+                case(osg::Array::Vec4ArrayType):   return create_noinline<osg::Vec4Array>(array,indices);
+                case(osg::Array::Vec2dArrayType):   return create_noinline<osg::Vec2dArray>(array,indices);
+                case(osg::Array::Vec3dArrayType):   return create_noinline<osg::Vec3dArray>(array,indices);
+                case(osg::Array::Vec4dArrayType):   return create_noinline<osg::Vec4dArray>(array,indices);
+                default:
+                    return NULL;
+            }
         }
-    }
 
         template <class TA, class TI>
-    osg::Array* create(const TA& array, const osg::IndexArray& indices) {
-        // We know that indices.getType returned the same thing as TI, but 
-        // we need to determine whether it is really an instance of TI, or 
-        // perhaps another subclass of osg::Array that contains the same 
-        // type of data.
-        const TI* ba(dynamic_cast<const TI*>(&indices));
-        if (ba != NULL) {
-        return create_inline(array,*ba);
+        osg::Array* create(const TA& array, const osg::IndexArray& indices)
+        {
+            // We know that indices.getType returned the same thing as TI, but 
+            // we need to determine whether it is really an instance of TI, or 
+            // perhaps another subclass of osg::Array that contains the same 
+            // type of data.
+            const TI* ba(dynamic_cast<const TI*>(&indices));
+            if (ba != NULL) {
+                return create_inline(array,*ba);
+            }
+            else {
+                return create_noinline(array, _indices);
+            }
         }
-        else {
-        return create_noinline(array, _indices);
-        }
-    }
 
         template <class T>
         osg::Array* create(const T& array)
@@ -3009,8 +3019,7 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
             case(osg::Array::UByteArrayType):  return create<T, osg::UByteArray>(array, _indices);
             case(osg::Array::UShortArrayType): return create<T, osg::UShortArray>(array, _indices);
             case(osg::Array::UIntArrayType):   return create<T, osg::UIntArray>(array, _indices);
-            default: 
-        return create_noinline(array, _indices);
+            default:                           return create_noinline(array, _indices);
             }
             
         }
@@ -3033,6 +3042,11 @@ class ExpandIndexedArray : public osg::ConstArrayVisitor
 
         const osg::IndexArray& _indices;
         osg::Array* _targetArray;
+
+    protected:
+
+        ExpandIndexedArray& operator = (const ExpandIndexedArray&) { return *this; }
+
 };
 
 bool Geometry::suitableForOptimization() const

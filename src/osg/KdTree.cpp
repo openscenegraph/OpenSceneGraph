@@ -48,6 +48,9 @@ struct BuildKdTree
     Indices             _primitiveIndices;
     CenterList          _centers;
 
+protected:
+
+    BuildKdTree& operator = (const BuildKdTree&) { return *this; }
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -464,6 +467,11 @@ struct IntersectKdTree
     osg::Vec3 _d_invX;
     osg::Vec3 _d_invY;
     osg::Vec3 _d_invZ;
+
+
+protected:
+
+    IntersectKdTree& operator = (const IntersectKdTree&) { return *this; }
 };
 
 
@@ -743,7 +751,10 @@ KdTree::KdTree()
 }
 
 KdTree::KdTree(const KdTree& rhs, const osg::CopyOp& copyop):
-    Shape(rhs)
+    Shape(rhs, copyop),
+    _vertices(rhs._vertices),
+    _kdNodes(rhs._kdNodes),
+    _triangles(rhs._triangles)
 {
 }
 

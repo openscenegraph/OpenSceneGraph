@@ -119,6 +119,8 @@ bool CompositeViewer::readConfiguration(const std::string& filename)
 
 void CompositeViewer::addView(osgViewer::View* view)
 {
+    if (!view) return;
+
     bool alreadyRealized = isRealized();
     
     bool threadsWereRuinning = _threadsRunning;
@@ -128,6 +130,18 @@ void CompositeViewer::addView(osgViewer::View* view)
     
     view->_viewerBase = this;
     
+    if (view->getSceneData())
+    {        
+        // make sure that existing scene graph objects are allocated with thread safe ref/unref
+        if (getThreadingModel()!=ViewerBase::SingleThreaded) 
+        {
+            view->getSceneData()->setThreadSafeRefUnref(true);
+        }
+        
+        // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
+        view->getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
+    }
+
     view->setFrameStamp(_frameStamp.get());
     
     if (alreadyRealized)

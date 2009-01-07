@@ -701,7 +701,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __C5_osg_Image_P1__getImage,
 	          "Return const image associated with layer if supported. ",
 	          "");
-	I_Method2(bool, transform, IN, float, offset, IN, float, scale,
+	I_Method2(bool, transform, IN, float, x, IN, float, x,
 	          Properties::VIRTUAL,
 	          __bool__transform__float__float,
 	          "",

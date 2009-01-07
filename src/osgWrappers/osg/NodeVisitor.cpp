@@ -54,6 +54,11 @@ BEGIN_VALUE_REFLECTOR(osg::NodeAcceptOp)
 	               ____NodeAcceptOp__NodeVisitor_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, const osg::NodeAcceptOp &, naop,
+	               Properties::NON_EXPLICIT,
+	               ____NodeAcceptOp__C5_NodeAcceptOp_R1,
+	               "",
+	               "");
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::NodeVisitor::TraversalMode)

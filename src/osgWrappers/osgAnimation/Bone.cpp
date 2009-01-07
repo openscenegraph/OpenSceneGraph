@@ -241,7 +241,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone::BoneMapVisitor)
 	          __C5_char_P1__className,
 	          "return the name of the visitor's class type. ",
 	          "Should be defined by derived classes. ");
-	I_Method1(void, apply, IN, osg::Node &, node,
+	I_Method1(void, apply, IN, osg::Node &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__osg_Node_R1,
 	          "",

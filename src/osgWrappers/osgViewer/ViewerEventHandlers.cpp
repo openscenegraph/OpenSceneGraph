@@ -159,7 +159,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::InteractiveImageHandler)
 	I_ProtectedConstructor0(____InteractiveImageHandler,
 	                        "",
 	                        "");
-	I_ProtectedConstructorWithDefaults2(IN, const osgViewer::InteractiveImageHandler &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	I_ProtectedConstructorWithDefaults2(IN, const osgViewer::InteractiveImageHandler &, x, , IN, const osg::CopyOp &, x, osg::CopyOp::SHALLOW_COPY,
 	                                    ____InteractiveImageHandler__C5_InteractiveImageHandler_R1__C5_osg_CopyOp_R1,
 	                                    "",
 	                                    "");

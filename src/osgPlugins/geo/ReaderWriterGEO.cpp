@@ -1187,9 +1187,12 @@ class ReaderGEO
             return;
         }
         Group *makeTextGeode(const georecord *gr)
-        { // in geo text is defined with a matrix included in the geo.geode (gr is this geo.geode)
+        {
+             // in geo text is defined with a matrix included in the geo.geode (gr is this geo.geode)
             // - we need to create this tree to render text
+#if 1            
             return NULL; // temporary disable april 2003
+#else
             Group *nug=new Group;
             const geoField *gfd=gr->getField(GEO_DB_RENDERGROUP_MAT);
             // may be used in future const unsigned int imat=gfd ? gfd->getInt():0;
@@ -1202,7 +1205,9 @@ class ReaderGEO
                 nug=NULL;
             }
             return nug;
+#endif
         }
+        
         Group *makeLightPointGeodes(const georecord *gr) {
             const geoField *gfd=gr->getField(GEO_DB_RENDERGROUP_MAT);
             Group *nug=new Group;

@@ -154,5 +154,4 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
     }
     return sym;
 #endif
-    return NULL;
 }

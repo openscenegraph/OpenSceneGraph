@@ -44,13 +44,13 @@ struct ButtonFunctor: public WidgetSampler
     
     ButtonFunctor(): _speed(5) { _direction = -_speed; _previous = 0;}
 
-    bool enter(osgWidget::Event& ev)
+    bool enter(osgWidget::Event&)
     {
         _direction = _speed; 
         return true;
     }
 
-    bool leave(osgWidget::Event& ev)
+    bool leave(osgWidget::Event&)
     {
         _direction = -_speed; 
         return true;

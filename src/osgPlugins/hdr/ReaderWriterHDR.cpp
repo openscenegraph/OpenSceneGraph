@@ -260,8 +260,8 @@ public:
         success = HDRWriter::writeHeader(source.get(),fout);
         if(!success)
         {
-            return WriteResult::ERROR_IN_WRITING_FILE;    // early out
             source = 0;    // delete the temporary image
+            return WriteResult::ERROR_IN_WRITING_FILE;    // early out
         }
 
         success = HDRWriter::writeRLE(source.get(), fout);

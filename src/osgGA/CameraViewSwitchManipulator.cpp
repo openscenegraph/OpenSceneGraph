@@ -67,7 +67,6 @@ bool CameraViewSwitchManipulator::handle(const GUIEventAdapter& ea,GUIActionAdap
         default:
             return false;
     }
-    return false;
 }
 
 osg::Matrixd CameraViewSwitchManipulator::getMatrix() const

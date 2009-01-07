@@ -1901,8 +1901,6 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
         intersections.clear();
         return false;
     }
-
-    return false;
 }
 
 bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)

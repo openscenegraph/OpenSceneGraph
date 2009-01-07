@@ -60,7 +60,9 @@ osg::ref_ptr<osg::Geode> createAxis()
 
 int main (int argc, char* argv[])
 {
-    osgViewer::Viewer viewer;
+    osg::ArgumentParser arguments(&argc, argv);
+    osgViewer::Viewer viewer(arguments);
+
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
     osg::Group* root = new osg::Group;

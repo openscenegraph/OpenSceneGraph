@@ -64,6 +64,10 @@ class MaterialPaletteManager
     MaterialPalette _materialPalette;
 
     ExportOptions& _fltOpt;
+
+protected:
+
+    MaterialPaletteManager& operator = (const MaterialPaletteManager&) { return *this; }
 };
 
 

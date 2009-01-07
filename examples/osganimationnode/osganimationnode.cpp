@@ -249,7 +249,9 @@ osg::MatrixTransform* setupAnimtkNode()
 
 int main (int argc, char* argv[])
 {
-    osgViewer::Viewer viewer;
+    osg::ArgumentParser arguments(&argc, argv);
+    osgViewer::Viewer viewer(arguments);
+
     osgGA::TrackballManipulator* manipulator = new osgGA::TrackballManipulator();
     viewer.setCameraManipulator(manipulator);
   

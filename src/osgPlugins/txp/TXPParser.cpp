@@ -955,26 +955,6 @@ void* layerRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     _parse->setCurrentNode(osgGroup.get());
     _parse->getCurrTop()->addChild(osgGroup.get());
     return (void*)1;
-
-#if 0
-    osg::Group* osgGroup = new osg::Group;
-    _parse->setCurrentNode(osgGroup);
-    _parse->getCurrTop()->addChild(osgGroup);
-    _parse->addLayer(osgGroup);
-    return (void*)1;
-
-#else
-    if (_parse->underLayerSubgraph()) return (void*)1;
-
-    osg::ref_ptr<GeodeGroup> layer = new GeodeGroup;
-
-    _parse->setLayerGeode(layer->getGeode());
-    _parse->setUnderLayerSubgraph(true);
-    _parse->setCurrentNode(layer.get());
-    _parse->getCurrTop()->addChild(layer.get());
-
-    return (void *)1;
-#endif
 }
 
 //----------------------------------------------------------------------------

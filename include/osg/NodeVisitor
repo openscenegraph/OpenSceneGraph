@@ -357,7 +357,7 @@ class NodeAcceptOp
 
     protected:
 
-        NodeAcceptOp& operator = (const NodeVisitor&) { return *this; }
+        NodeAcceptOp& operator = (const NodeAcceptOp&) { return *this; }
 
         NodeVisitor& _nv;
 };

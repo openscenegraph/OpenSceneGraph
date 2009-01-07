@@ -61,7 +61,7 @@ void BarrierOperation::release()
     Barrier::release();
 }
 
-void BarrierOperation::operator () (Object* object)
+void BarrierOperation::operator () (Object* /*object*/)
 {
     if (_preBlockOp!=NO_OPERATION)
     {

@@ -1879,6 +1879,10 @@ public:
     
     DatabasePager::PagedLODList& _activePagedLODList;
     int _frameNumber;
+        
+protected:
+    
+    FindPagedLODsVisitor& operator = (const FindPagedLODsVisitor&) { return *this; }
 };
 
 void DatabasePager::registerPagedLODs(osg::Node* subgraph, int frameNumber)

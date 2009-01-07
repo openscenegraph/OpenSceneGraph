@@ -16,7 +16,7 @@
 
 using namespace osg;
 
-void Hint::apply(State& state) const
+void Hint::apply(State& /*state*/) const
 {
     if (_target==GL_NONE || _mode==GL_NONE) return;
     

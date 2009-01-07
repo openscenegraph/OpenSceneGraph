@@ -294,7 +294,7 @@ osg::Image* ImagePager::readImageFile(const std::string& fileName)
     return osgDB::readImageFile(fileName);
 }
 
-void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp* framestamp)
+void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp*)
 {
     osg::notify(osg::INFO)<<"ImagePager::requestNodeFile("<<fileName<<")"<<std::endl;
 
@@ -333,7 +333,7 @@ bool ImagePager::requiresUpdateSceneGraph() const
     return !(_completedQueue->_requestList.empty());
 }
 
-void ImagePager::updateSceneGraph(const osg::FrameStamp &frameStamp)
+void ImagePager::updateSceneGraph(const osg::FrameStamp&)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_completedQueue->_requestMutex);
 

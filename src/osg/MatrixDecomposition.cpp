@@ -467,7 +467,7 @@ namespace MatrixDecomposition
         }
         if (turn>=0) {
             Quat qtoz, qp;
-            unsigned neg[3], win;
+            unsigned int  win;
             double mag[3], t;
             switch (turn) {
                 default: return (Qt_Conj(q));
@@ -480,11 +480,12 @@ namespace MatrixDecomposition
             mag[1] = (double)q.x*q.z-(double)q.y*q.w;
             mag[2] = (double)q.y*q.z+(double)q.x*q.w;
 
-            for (i=0; i<3; i++) 
-                //JVK?????? 
-                //if (neg[i] = (mag[i]<0.0)) 
-                if (neg[i] == (mag[i]<0.0)) 
-                    mag[i] = -mag[i];
+            bool neg[3];
+            for (i=0; i<3; i++)
+            {
+                neg[i] = (mag[i]<0.0);
+                if (neg[i]) mag[i] = -mag[i];
+            }
 
             if (mag[0]>mag[1]) {
                 if (mag[0]>mag[2]) 
@@ -509,13 +510,15 @@ namespace MatrixDecomposition
         } 
         else {
             double qa[4], pa[4];
-            unsigned lo, hi, neg[4], par = 0;
+            unsigned int lo, hi;
+            bool par = false;
+            bool neg[4];
             double all, big, two;
             qa[0] = q.x; qa[1] = q.y; qa[2] = q.z; qa[3] = q.w;
             for (i=0; i<4; i++) {
                 pa[i] = 0.0;
-                //if (neg[i] = (qa[i]<0.0)) qa[i] = -qa[i];
-                if (neg[i] == (qa[i]<0.0)) qa[i] = -qa[i];
+                neg[i] = (qa[i]<0.0);
+                if (neg[i]) qa[i] = -qa[i];
                 par ^= neg[i];
             }
 

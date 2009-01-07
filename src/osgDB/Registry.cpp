@@ -82,6 +82,8 @@ public:
 
 protected:
 
+    AvailableReaderWriterIterator& operator = (const AvailableReaderWriterIterator&) { return *this; }
+
     Registry::ReaderWriterList&     _rwList;
     OpenThreads::ReentrantMutex&    _pluginMutex;
     

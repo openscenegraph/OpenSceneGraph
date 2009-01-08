@@ -535,7 +535,7 @@ ELSE(CMAKE_COMPILER_IS_GNUCXX)
         # FIXME: What are good aggressive warning flags for Visual Studio?
         # And do we need to further subcase this for different versions of VS?
         # CMake variables: MSVC60, MSVC70, MSVC71, MSVC80, CMAKE_COMPILER_2005
-        SET(OSG_AGGRESSIVE_WARNING_FLAGS "/W4")
+        SET(OSG_AGGRESSIVE_WARNING_FLAGS "/W4 /wd4706 /wd4127")
 
 
     ELSE(MSVC)

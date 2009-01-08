@@ -23,6 +23,8 @@
 #define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
 # include <atomic.h>
+# include "Mutex"
+# include "ScopedLock"
 #elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
 # include <libkern/OSAtomic.h>
 # define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
@@ -68,6 +70,7 @@ class OPENTHREAD_EXPORT_DIRECTIVE Atomic {
     volatile int32_t _value;
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
     volatile uint_t _value;
+    mutable Mutex _mutex;  // needed for xor
 #else
     volatile unsigned _value;
 #endif
@@ -180,7 +183,10 @@ Atomic::XOR(unsigned value)
 #elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
     return __xor_and_fetch(&_value, value);
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
-    return atomic_xor_uint_nv(&_value, value);
+    //return atomic_xor_uint_nv(&_value, value);
+    ScopedLock<Mutex> lock(_mutex);
+    _value ^= value;
+    return _value;
 #elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
     ScopedLock<Mutex> lock(_mutex);
     _value ^= value;
@@ -240,7 +246,7 @@ AtomicPtr::assign(void* ptrNew, const void* const ptrOld)
 #elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
     return __compare_and_swap((unsigned long*)&_ptr, (unsigned long)ptrOld, (unsigned long)ptrNew);
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
-    return ptrOld == atomic_cas_ptr(&_ptr, ptrOld, ptrNew);
+    return ptrOld == atomic_cas_ptr(&_ptr, (void *)ptrOld, (void *)ptrNew);
 #elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
     ScopedLock<Mutex> lock(_mutex);
     if (_ptr != ptrOld)

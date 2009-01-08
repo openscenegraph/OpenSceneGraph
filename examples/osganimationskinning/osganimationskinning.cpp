@@ -162,20 +162,24 @@ int main (int argc, char* argv[])
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
     osg::ref_ptr<osgAnimation::Skeleton> skelroot = new osgAnimation::Skeleton;
+    skelroot->setDefaultUpdateCallback();
     osg::ref_ptr<osgAnimation::Bone> root = new osgAnimation::Bone;
     {
         root->setBindMatrixInBoneSpace(osg::Matrix::identity());
         root->setBindMatrixInBoneSpace(osg::Matrix::translate(-1,0,0));
         root->setName("root");
+        root->setDefaultUpdateCallback();
     }
 
     osg::ref_ptr<osgAnimation::Bone> right0 = new osgAnimation::Bone;
     right0->setBindMatrixInBoneSpace(osg::Matrix::translate(1,0,0));
     right0->setName("right0");
+    right0->setDefaultUpdateCallback("right0");
 
     osg::ref_ptr<osgAnimation::Bone> right1 = new osgAnimation::Bone;
     right1->setBindMatrixInBoneSpace(osg::Matrix::translate(1,0,0));
     right1->setName("right1");
+    right1->setDefaultUpdateCallback("right1");
 
     root->addChild(right0.get());
     right0->addChild(right1.get());
@@ -196,11 +200,9 @@ int main (int argc, char* argv[])
         osgAnimation::QuatSphericalLinearSampler* sampler = new osgAnimation::QuatSphericalLinearSampler;
         sampler->setKeyframeContainer(keys0);
         osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(right0->getUpdateCallback());
-        cb->setName("right0");
         osgAnimation::QuatSphericalLinearChannel* channel = new osgAnimation::QuatSphericalLinearChannel(sampler);
         channel->setName("quaternion");
         channel->setTargetName("right0");
-        //cb->link(channel);
         anim->addChannel(channel);
     }
 
@@ -215,10 +217,8 @@ int main (int argc, char* argv[])
         sampler->setKeyframeContainer(keys1);
         osgAnimation::QuatSphericalLinearChannel* channel = new osgAnimation::QuatSphericalLinearChannel(sampler);
         osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(right1->getUpdateCallback());
-        cb->setName("right1");
         channel->setName("quaternion");
         channel->setTargetName("right1");
-        //cb->link(channel);
         anim->addChannel(channel);
     }
     manager->registerAnimation(anim);
@@ -237,10 +237,10 @@ int main (int argc, char* argv[])
     osg::MatrixTransform* trueroot = new osg::MatrixTransform;
     trueroot->setMatrix(osg::Matrix(root->getMatrixInBoneSpace().ptr()));
     trueroot->addChild(createAxis());
+    trueroot->addChild(skelroot);
     trueroot->setDataVariance(osg::Object::DYNAMIC);
-//    rootTransform->addChild(scene.get());
+    rootTransform->addChild(trueroot);
     scene->addChild(rootTransform);
-//    manager->addChild(skelroot.get());
   
     osgAnimation::RigGeometry* geom = createTesselatedBox(4, 4.0);
     osg::Geode* geode = new osg::Geode;

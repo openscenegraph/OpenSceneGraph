@@ -179,7 +179,7 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////
 
-int main( int , char * )
+int main( int , char** )
 {
     osg::Geode* root( new osg::Geode );
     root->addDrawable( new SomePoints );

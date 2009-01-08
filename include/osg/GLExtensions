@@ -78,6 +78,22 @@ inline void* getGLExtensionFuncPtr(const char *funcName,const char *fallbackFunc
     return getGLExtensionFuncPtr(fallbackFuncName);
 }
 
+/** Return the address of the specified OpenGL function. If not found then
+  * check a second function name, if this fails then return NULL as function is
+  * not supported by OpenGL library. This is used for checking something
+  * like glActiveTexture (which is in OGL1.3) or glActiveTextureARB.
+*/
+inline void* getGLExtensionFuncPtr(const char *funcName1, const char *funcName2, const char *funcName3)
+{
+    void* ptr = getGLExtensionFuncPtr(funcName1);
+    if (ptr) return ptr;
+
+    ptr = getGLExtensionFuncPtr(funcName2);
+    if (ptr) return ptr;
+
+    return getGLExtensionFuncPtr(funcName3);
+}
+
 template<typename T, typename R>
 T convertPointerType(R src)
 {
@@ -106,6 +122,22 @@ template<typename T>
 bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2)
 {
     void* data = osg::getGLExtensionFuncPtr(str1,str2);
+    if (data)
+    {
+        memcpy(&t, &data, sizeof(T));
+        return true;        
+    }
+    else
+    {
+        t = 0;
+        return false;        
+    }
+}
+
+template<typename T>
+bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2, const char* str3)
+{
+    void* data = osg::getGLExtensionFuncPtr(str1,str2,str3);
     if (data)
     {
         memcpy(&t, &data, sizeof(T));

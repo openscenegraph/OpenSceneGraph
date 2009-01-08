@@ -183,7 +183,6 @@ Atomic::XOR(unsigned value)
 #elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
     return __xor_and_fetch(&_value, value);
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
-    //return atomic_xor_uint_nv(&_value, value);
     ScopedLock<Mutex> lock(_mutex);
     _value ^= value;
     return _value;
@@ -246,7 +245,7 @@ AtomicPtr::assign(void* ptrNew, const void* const ptrOld)
 #elif defined(_OPENTHREADS_ATOMIC_USE_MIPOSPRO_BUILTINS)
     return __compare_and_swap((unsigned long*)&_ptr, (unsigned long)ptrOld, (unsigned long)ptrNew);
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
-    return ptrOld == atomic_cas_ptr(&_ptr, (void *)ptrOld, (void *)ptrNew);
+    return ptrOld == atomic_cas_ptr(&_ptr, const_cast<void*>(ptrOld), ptrNew);
 #elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
     ScopedLock<Mutex> lock(_mutex);
     if (_ptr != ptrOld)

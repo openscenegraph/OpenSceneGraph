@@ -29,6 +29,7 @@
 #include <algorithm>
 
 #include <signal.h>
+#include <stdlib.h>
 
 static bool s_ExitApplication = false;
 

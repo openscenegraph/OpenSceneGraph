@@ -52,6 +52,7 @@
     #define stat64 stat
 #endif
 
+    #include <stdlib.h>
     #include <unistd.h>
     #include <sys/types.h>
     #include <sys/stat.h>

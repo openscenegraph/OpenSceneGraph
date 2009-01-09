@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
+#include <stdlib.h>
 #include <osg/Notify>
 #include <osg/Group>
 #include <osgDB/ReadFile>

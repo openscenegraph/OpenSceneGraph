@@ -11,6 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include <stdlib.h>
+
 
 #include<OpenThreads/ScopedLock>
 

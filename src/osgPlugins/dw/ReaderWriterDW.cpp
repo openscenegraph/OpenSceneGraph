@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 // reading a design workshop file utility
 // (c) GW Michel, 2001-2003.

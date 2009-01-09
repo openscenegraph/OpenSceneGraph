@@ -23,6 +23,7 @@
 #include<deque>
 #include<algorithm>
 
+#include <stdio.h>
 #include <string.h>
 
 using namespace osgShadow;

@@ -199,7 +199,7 @@ int main (int argc, char* argv[])
         keys0->push_back(osgAnimation::QuatKeyframe(6,rotate));
         osgAnimation::QuatSphericalLinearSampler* sampler = new osgAnimation::QuatSphericalLinearSampler;
         sampler->setKeyframeContainer(keys0);
-        osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(right0->getUpdateCallback());
+        // osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(right0->getUpdateCallback());
         osgAnimation::QuatSphericalLinearChannel* channel = new osgAnimation::QuatSphericalLinearChannel(sampler);
         channel->setName("quaternion");
         channel->setTargetName("right0");
@@ -216,7 +216,7 @@ int main (int argc, char* argv[])
         osgAnimation::QuatSphericalLinearSampler* sampler = new osgAnimation::QuatSphericalLinearSampler;
         sampler->setKeyframeContainer(keys1);
         osgAnimation::QuatSphericalLinearChannel* channel = new osgAnimation::QuatSphericalLinearChannel(sampler);
-        osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(right1->getUpdateCallback());
+        //osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(right1->getUpdateCallback());
         channel->setName("quaternion");
         channel->setTargetName("right1");
         anim->addChannel(channel);

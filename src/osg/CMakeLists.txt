@@ -82,6 +82,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Image
     ${HEADER_PATH}/ImageSequence
     ${HEADER_PATH}/ImageStream
+    ${HEADER_PATH}/ImageUtils
     ${HEADER_PATH}/io_utils
     ${HEADER_PATH}/KdTree
     ${HEADER_PATH}/Light
@@ -241,6 +242,7 @@ ADD_LIBRARY(${LIB_NAME}
     Image.cpp
     ImageSequence.cpp
     ImageStream.cpp
+    ImageUtils.cpp
     KdTree.cpp
     Light.cpp
     LightModel.cpp

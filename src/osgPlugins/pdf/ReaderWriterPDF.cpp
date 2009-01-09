@@ -16,7 +16,7 @@
 #include <osgDB/FileUtils>
 
 #include <osgWidget/PdfReader>
-#include <osgVolume/ImageUtils>
+#include <osg/ImageUtils>
 
 #include <cairo.h>
 #include <poppler.h>
@@ -200,7 +200,7 @@ class PopplerPdfImage : public osgWidget::PdfImage
 
             _cairoImage->create((unsigned int)(w*2.0),(unsigned int)(h*2.0));
 
-            osgVolume::clearImageToColor(this, _backgroundColor);
+            osg::clearImageToColor(this, _backgroundColor);
 
             cairo_save(_cairoImage->getContext());
             

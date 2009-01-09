@@ -9,7 +9,6 @@ SET(LIB_NAME osgVolume)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Export
-    ${HEADER_PATH}/ImageUtils
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/Volume
     ${HEADER_PATH}/Locator
@@ -22,7 +21,6 @@ SET(LIB_PUBLIC_HEADERS
 ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
-    ImageUtils.cpp
     Version.cpp
     Volume.cpp
     VolumeTechnique.cpp

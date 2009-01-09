@@ -35,9 +35,9 @@ VolumeTile::VolumeTile(const VolumeTile& volumeTile,const osg::CopyOp& copyop):
     _volume(0),
     _dirty(false),
     _hasBeenTraversal(false),
-    _images(volumeTile._images)
+    _layers(volumeTile._layers)
 {
-    if (volumeTile.getVolumeTechnique()) 
+    if (volumeTile.getVolumeTechnique()) ;
     {
         setVolumeTechnique(osg::clone(volumeTile.getVolumeTechnique()));
     }
@@ -46,6 +46,13 @@ VolumeTile::VolumeTile(const VolumeTile& volumeTile,const osg::CopyOp& copyop):
 VolumeTile::~VolumeTile()
 {
     if (_volume) setVolume(0);
+}
+ 
+void VolumeTile::setLayer(unsigned int i, Layer* layer)
+{
+    if (_layers.size() <= i) _layers.resize(i+1);
+    
+    _layers[i] = layer;
 }
 
 void VolumeTile::setVolume(Volume* volume)

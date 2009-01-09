@@ -60,7 +60,9 @@
 #include <algorithm>
 #include <iostream>
 
-#include <osgVolume/ImageUtils>
+#include <osg/ImageUtils>
+#include <osgVolume/Volume>
+#include <osgVolume/VolumeTile>
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
@@ -1519,8 +1521,8 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
     {
         // compute range of values
         osg::Vec4 minValue, maxValue;
-        osgVolume::computeMinMax(image.get(), minValue, maxValue);
-        osgVolume::modifyImage(image.get(),ScaleOperator(1.0f/maxValue.r())); 
+        osg::computeMinMax(image.get(), minValue, maxValue);
+        osg::modifyImage(image.get(),ScaleOperator(1.0f/maxValue.r())); 
     }
     
     
@@ -1545,12 +1547,12 @@ osg::Image* readRaw(int sizeX, int sizeY, int sizeZ, int numberBytesPerComponent
                 writeOp._pos = 0;
             
                 // read the pixels into readOp's _colour array
-                osgVolume::readRow(sizeS, pixelFormat, dataType, image->data(0,t,r), readOp);
+                osg::readRow(sizeS, pixelFormat, dataType, image->data(0,t,r), readOp);
                                 
                 // pass readOp's _colour array contents over to writeOp (note this is just a pointer swap).
                 writeOp._colours.swap(readOp._colours);
                 
-                osgVolume::modifyRow(sizeS, pixelFormat, GL_UNSIGNED_BYTE, new_image->data(0,t,r), writeOp);
+                osg::modifyRow(sizeS, pixelFormat, GL_UNSIGNED_BYTE, new_image->data(0,t,r), writeOp);
 
                 // return readOp's _colour array contents back to its rightful owner.
                 writeOp._colours.swap(readOp._colours);
@@ -1617,19 +1619,19 @@ osg::Image* doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, 
         case (MODULATE_ALPHA_BY_LUMINANCE):
         {
             std::cout<<"doing conversion MODULATE_ALPHA_BY_LUMINANCE"<<std::endl;
-            osgVolume::modifyImage(image,ModulateAlphaByLuminanceOperator()); 
+            osg::modifyImage(image,ModulateAlphaByLuminanceOperator()); 
             return image;
         }
         case (MODULATE_ALPHA_BY_COLOUR):
         {
             std::cout<<"doing conversion MODULATE_ALPHA_BY_COLOUR"<<std::endl;
-            osgVolume::modifyImage(image,ModulateAlphaByColourOperator(colour)); 
+            osg::modifyImage(image,ModulateAlphaByColourOperator(colour)); 
             return image;
         }
         case (REPLACE_ALPHA_WITH_LUMINANACE):
         {
             std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINANACE"<<std::endl;
-            osgVolume::modifyImage(image,ReplaceAlphaWithLuminanceOperator()); 
+            osg::modifyImage(image,ReplaceAlphaWithLuminanceOperator()); 
             return image;
         }
         case (REPLACE_RGB_WITH_LUMINANCE):
@@ -1637,8 +1639,8 @@ osg::Image* doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, 
             std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINANACE"<<std::endl;
             osg::Image* newImage = new osg::Image;
             newImage->allocateImage(image->s(), image->t(), image->r(), GL_LUMINANCE, image->getDataType());
-            osgVolume::copyImage(image, 0, 0, 0, image->s(), image->t(), image->r(),
-                                 newImage, 0, 0, 0, false);
+            osg::copyImage(image, 0, 0, 0, image->s(), image->t(), image->r(),
+                           newImage, 0, 0, 0, false);
             return newImage;
         }
         default:
@@ -1694,7 +1696,7 @@ osg::Image* applyTransferFunction(osg::Image* image, osg::TransferFunction1D* tr
     output_image->allocateImage(image->s(),image->t(), image->r(), GL_RGBA, GL_UNSIGNED_BYTE);
     
     ApplyTransferFunctionOperator op(transferFunction, output_image->data());
-    osgVolume::readImage(image,op); 
+    osg::readImage(image,op); 
     
     return output_image;
 }
@@ -1938,6 +1940,10 @@ int main( int argc, char **argv )
     unsigned int numComponentsDesired = 0; 
     while(arguments.read("--num-components", numComponentsDesired)) {}
 
+    bool useOsgVolume = true; 
+    while(arguments.read("--osgVolume")) { useOsgVolume = true; }
+    while(arguments.read("--no-osgVolume")) { useOsgVolume = false; }
+
     bool useShader = true; 
     while(arguments.read("--shader")) { useShader = true; }
     while(arguments.read("--no-shader")) { useShader = true; }
@@ -2139,7 +2145,7 @@ int main( int argc, char **argv )
         ++itr)
     {
         osg::Vec4 localMinValue, localMaxValue;
-        if (osgVolume::computeMinMax(itr->get(), localMinValue, localMaxValue))
+        if (osg::computeMinMax(itr->get(), localMinValue, localMaxValue))
         {
             if (localMinValue.r()<minValue.r()) minValue.r() = localMinValue.r();
             if (localMinValue.g()<minValue.g()) minValue.g() = localMinValue.g();
@@ -2187,7 +2193,7 @@ int main( int argc, char **argv )
                     itr != images.end();
                     ++itr)
                 {        
-                    osgVolume::offsetAndScaleImage(itr->get(), 
+                    osg::offsetAndScaleImage(itr->get(), 
                         osg::Vec4(offset, offset, offset, offset),
                         osg::Vec4(scale, scale, scale, scale));
                 }
@@ -2201,7 +2207,7 @@ int main( int argc, char **argv )
                     itr != images.end();
                     ++itr)
                 {        
-                    osgVolume::offsetAndScaleImage(itr->get(), 
+                    osg::offsetAndScaleImage(itr->get(), 
                         osg::Vec4(offset, offset, offset, offset),
                         osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
                 }
@@ -2280,35 +2286,50 @@ int main( int argc, char **argv )
     // create a model from the images.
     osg::Node* rootNode = 0;
     
-    if (useShader)
+    if (useOsgVolume)
     {
-        rootNode = createShaderModel(shadingModel, 
-                               image_3d, normalmap_3d.get(), 
-                               (gpuTransferFunction ? transferFunction.get() : 0),
-                               internalFormatMode,
-                               xSize, ySize, zSize,
-                               xMultiplier, yMultiplier, zMultiplier,
-                               numSlices, sliceEnd, alphaFunc);
+
+        osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
+        osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
+        osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d);
+        tile->addLayer(layer.get());
+        volume->addChild(tile);
+        
+        rootNode = volume.get();        
+
     }
     else
     {
-        rootNode = createModel(shadingModel,
-                               image_3d, normalmap_3d, 
-                               internalFormatMode,
-                               xSize, ySize, zSize,
-                               xMultiplier, yMultiplier, zMultiplier,
-                               numSlices, sliceEnd, alphaFunc);
-    }
-    
-    if (matrix && rootNode)
-    {
-        osg::MatrixTransform* mt = new osg::MatrixTransform;
-        mt->setMatrix(*matrix);
-        mt->addChild(rootNode);
+        if (useShader)
+        {
+            rootNode = createShaderModel(shadingModel, 
+                                   image_3d, normalmap_3d.get(), 
+                                   (gpuTransferFunction ? transferFunction.get() : 0),
+                                   internalFormatMode,
+                                   xSize, ySize, zSize,
+                                   xMultiplier, yMultiplier, zMultiplier,
+                                   numSlices, sliceEnd, alphaFunc);
+        }
+        else
+        {
+            rootNode = createModel(shadingModel,
+                                   image_3d, normalmap_3d, 
+                                   internalFormatMode,
+                                   xSize, ySize, zSize,
+                                   xMultiplier, yMultiplier, zMultiplier,
+                                   numSlices, sliceEnd, alphaFunc);
+        }
         
-        rootNode = mt;
+        if (matrix && rootNode)
+        {
+            osg::MatrixTransform* mt = new osg::MatrixTransform;
+            mt->setMatrix(*matrix);
+            mt->addChild(rootNode);
+
+            rootNode = mt;
+        }
     }
-    
+        
     if (!outputFile.empty())
     {   
         std::string ext = osgDB::getFileExtension(outputFile);

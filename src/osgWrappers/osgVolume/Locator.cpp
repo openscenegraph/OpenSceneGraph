@@ -30,6 +30,11 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Locator)
 	I_Constructor0(____Locator,
 	               "",
 	               "");
+	I_Constructor1(IN, const osg::Matrixd &, transform,
+	               Properties::NON_EXPLICIT,
+	               ____Locator__C5_osg_Matrixd_R1,
+	               "",
+	               "");
 	I_ConstructorWithDefaults2(IN, const osgVolume::Locator &, locator, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____Locator__C5_Locator_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",

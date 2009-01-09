@@ -13,11 +13,12 @@
 
 #include <float.h>
 #include <string.h>
+
 #include <osg/Math>
 #include <osg/Notify>
-#include <osgVolume/ImageUtils>
+#include <osg/ImageUtils>
 
-namespace osgVolume
+namespace osg
 {
 
 struct FindRangeOperator
@@ -89,7 +90,7 @@ bool computeMinMax(const osg::Image* image, osg::Vec4& minValue, osg::Vec4& maxV
 {
     if (!image) return false;
 
-    osgVolume::FindRangeOperator rangeOp;    
+    osg::FindRangeOperator rangeOp;    
     readImage(image, rangeOp);
     minValue.r() = rangeOp._rmin;
     minValue.g() = rangeOp._gmin;
@@ -111,7 +112,7 @@ bool offsetAndScaleImage(osg::Image* image, const osg::Vec4& offset, const osg::
 {
     if (!image) return false;
 
-    osgVolume::modifyImage(image,osgVolume::OffsetAndScaleOperator(offset, scale));
+    osg::modifyImage(image,osg::OffsetAndScaleOperator(offset, scale));
     
     return true;
 }
@@ -302,12 +303,12 @@ bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int 
                 writeOp._pos = 0;
             
                 // read the pixels into readOp's _colour array
-                osgVolume::readRow(width, srcImage->getPixelFormat(), srcImage->getDataType(), srcImage->data(src_s,src_t+row,src_r+slice), readOp);
+                osg::readRow(width, srcImage->getPixelFormat(), srcImage->getDataType(), srcImage->data(src_s,src_t+row,src_r+slice), readOp);
                                 
                 // pass readOp's _colour array contents over to writeOp (note this is just a pointer swap).
                 writeOp._colours.swap(readOp._colours);
                 
-                osgVolume::modifyRow(width, destImage->getPixelFormat(), destImage->getDataType(), destImage->data(dest_s, dest_t+row,dest_r+slice), writeOp);
+                osg::modifyRow(width, destImage->getPixelFormat(), destImage->getDataType(), destImage->data(dest_s, dest_t+row,dest_r+slice), writeOp);
 
                 // return readOp's _colour array contents back to its rightful owner.
                 writeOp._colours.swap(readOp._colours);

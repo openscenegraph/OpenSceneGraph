@@ -8,6 +8,7 @@
 #include <osg/Geode>
 #include <osg/GL>
 #include <osg/io_utils>
+#include <osg/ImageUtils>
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
@@ -15,7 +16,6 @@
 
 #include <osgVolume/Volume>
 #include <osgVolume/VolumeTile>
-#include <osgVolume/ImageUtils>
 
 #ifdef  USE_DCMTK
     #define HAVE_CONFIG_H
@@ -121,7 +121,10 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
             osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
             tile->setVolume(volume.get());
-            tile->setImage(0, result.getImage());
+            
+            osg::ref_ptr<osgVolume::Layer> layer= new osgVolume::ImageLayer(result.getImage());
+            
+            tile->addLayer(layer.get());
 
             // get matrix providing size of texels (in mm)
             osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(result.getImage()->getUserData());
@@ -134,7 +137,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 osg::Vec3d scale(osg::Vec3(result.getImage()->s(),result.getImage()->t(), result.getImage()->r()));
                 matrix->postMultScale(scale);
 
-                tile->setLocator(matrix);
+                tile->setLocator(new osgVolume::Locator(*matrix));
                 
                 result.getImage()->setUserData(0);
                 
@@ -637,15 +640,15 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), totalNumSlices, 
                                                  pixelFormat, dataType);
                                                  
-                            osgVolume::copyImage(previous_image.get(), 0,0,0, previous_image->s(), previous_image->t(), imageNum,
-                                                 image.get(), 0, 0, 0,                                                 
-                                                 false);
+                            osg::copyImage(previous_image.get(), 0,0,0, previous_image->s(), previous_image->t(), imageNum,
+                                           image.get(), 0, 0, 0,                                                 
+                                           false);
                             
                         }
                         
-                        osgVolume::copyImage(imageAdapter.get(), 0,0,0, imageAdapter->s(), imageAdapter->t(), imageAdapter->r(), 
-                                             image.get(), 0, 0, imageNum,
-                                             false);
+                        osg::copyImage(imageAdapter.get(), 0,0,0, imageAdapter->s(), imageAdapter->t(), imageAdapter->r(), 
+                                       image.get(), 0, 0, imageNum,
+                                       false);
                                              
                         imageNum += dcmImage->getFrameCount();
                     }

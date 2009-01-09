@@ -19,6 +19,7 @@
 
 #include <osgDB/ReaderWriter>
 
+#include <osgVolume/Layer>
 #include <osgVolume/VolumeTechnique>
 
 namespace osgVolume {
@@ -109,14 +110,19 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
         const TileID& getTileID() const { return _tileID; }
         
         
-        void setLocator(osg::RefMatrix* locator) { _locator = locator; }
-        osg::RefMatrix* getLocator() { return _locator.get(); }
-        const osg::RefMatrix* getLocator() const { return _locator.get(); }
+        void setLocator(Locator* locator) { _locator = locator; }
+        Locator* getLocator() { return _locator.get(); }
+        const Locator* getLocator() const { return _locator.get(); }
 
 
-        void setImage(unsigned int i, osg::Image* image);
-        osg::Image* getImage(unsigned int i) { return i<_images.size() ? _images[i].get() : 0; }
-        const osg::Image* getImage(unsigned int i) const  { return i<_images.size() ? _images[i].get() : 0; }
+        void setLayer(unsigned int i, Layer* layer);
+        Layer* getLayer(unsigned int i) { return i<_layers.size() ? _layers[i].get() : 0; }
+        const Layer* getImage(unsigned int i) const  { return i<_layers.size() ? _layers[i].get() : 0; }
+
+        void addLayer(Layer* layer) { if (layer) _layers.push_back(layer); }
+        
+        unsigned int getNumLayers() { return _layers.size(); }
+        
 
         /** Set the VolumeTechnique*/
         void setVolumeTechnique(VolumeTechnique* VolumeTechnique);
@@ -152,10 +158,10 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
 
         osg::ref_ptr<VolumeTechnique>       _volumeTechnique;
 
-        osg::ref_ptr<osg::RefMatrix>        _locator;        
+        osg::ref_ptr<Locator>               _locator;        
 
-        typedef std::vector< osg::ref_ptr<osg::Image> > Images;
-        Images                              _images;
+        typedef std::vector< osg::ref_ptr<Layer> > Layers;
+        Layers                              _layers;
 };
 
 }

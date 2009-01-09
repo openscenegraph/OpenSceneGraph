@@ -11,14 +11,14 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGVOLUME_IMAGEUTILS
-#define OSGVOLUME_IMAGEUTILS 1
+#ifndef OSG_IMAGEUTILS
+#define OSG_IMAGEUTILS 1
 
-#include <osgVolume/Export>
+#include <osg/Export>
 
 #include <osg/Image>
 
-namespace osgVolume {
+namespace osg {
 
 template <typename T, class O>    
 void _readRow(unsigned int num, GLenum pixelFormat, const T* data,float scale, O& operation)
@@ -121,17 +121,17 @@ void modifyImage(osg::Image* image, const M& operation)
 }
 
 /** Compute the min max colour values in the image.*/
-extern OSGVOLUME_EXPORT bool computeMinMax(const osg::Image* image, osg::Vec4& min, osg::Vec4& max);
+extern OSG_EXPORT bool computeMinMax(const osg::Image* image, osg::Vec4& min, osg::Vec4& max);
 
 /** Compute the min max colour values in the image.*/
-extern OSGVOLUME_EXPORT bool offsetAndScaleImage(osg::Image* image, const osg::Vec4& offset, const osg::Vec4& scale);
+extern OSG_EXPORT bool offsetAndScaleImage(osg::Image* image, const osg::Vec4& offset, const osg::Vec4& scale);
 
 /** Compute source image to destination image.*/
-extern OSGVOLUME_EXPORT bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int width, int height, int depth,
+extern OSG_EXPORT bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int width, int height, int depth,
                                        osg::Image* destImage, int dest_s, int dest_t, int dest_r, bool doRescale = false);
 
 /** Compute the min max colour values in the image.*/
-extern OSGVOLUME_EXPORT bool clearImageToColor(osg::Image* image, const osg::Vec4& colour);
+extern OSG_EXPORT bool clearImageToColor(osg::Image* image, const osg::Vec4& colour);
 }
 
 

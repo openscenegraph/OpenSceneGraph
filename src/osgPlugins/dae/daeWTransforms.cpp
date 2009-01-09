@@ -90,13 +90,13 @@ void daeWriter::apply( osg::PositionAttitudeTransform &node )
     const osg::Quat &q = node.getAttitude();
     const osg::Vec3 &s = node.getScale();
 
-    if ( s.x() != 1 || s.y() != 1 || s.z() != 1 )
+    if ( pos.x() != 0 || pos.y() != 0 || pos.z() != 0 )
     {
-        //make a scale
-        domScale *scale = daeSafeCast< domScale >( currentNode->add( COLLADA_ELEMENT_SCALE ) );
-        scale->getValue().append( s.x() );
-        scale->getValue().append( s.y() );
-        scale->getValue().append( s.z() );
+        //make a translate
+        domTranslate *trans = daeSafeCast< domTranslate >( currentNode->add( COLLADA_ELEMENT_TRANSLATE ) );
+        trans->getValue().append( pos.x() );
+        trans->getValue().append( pos.y() );
+        trans->getValue().append( pos.z() );
     }
 
     double angle;
@@ -112,13 +112,13 @@ void daeWriter::apply( osg::PositionAttitudeTransform &node )
         rot->getValue().append( osg::RadiansToDegrees(angle) );
     }
 
-    if ( pos.x() != 0 || pos.y() != 0 || pos.z() != 0 )
+    if ( s.x() != 1 || s.y() != 1 || s.z() != 1 )
     {
-        //make a translate
-        domTranslate *trans = daeSafeCast< domTranslate >( currentNode->add( COLLADA_ELEMENT_TRANSLATE ) );
-        trans->getValue().append( pos.x() );
-        trans->getValue().append( pos.y() );
-        trans->getValue().append( pos.z() );
+        //make a scale
+        domScale *scale = daeSafeCast< domScale >( currentNode->add( COLLADA_ELEMENT_SCALE ) );
+        scale->getValue().append( s.x() );
+        scale->getValue().append( s.y() );
+        scale->getValue().append( s.z() );
     }
 
     writeNodeExtra(node);

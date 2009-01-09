@@ -15,6 +15,7 @@
 #include <osg/Notify>
 
 #include <string.h>
+#include <wchar.h>
 
 #if defined(WIN32) && !defined(__CYGWIN__)
 #define WIN32_LEAN_AND_MEAN

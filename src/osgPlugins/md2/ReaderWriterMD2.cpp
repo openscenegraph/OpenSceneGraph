@@ -25,6 +25,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
+#include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
 

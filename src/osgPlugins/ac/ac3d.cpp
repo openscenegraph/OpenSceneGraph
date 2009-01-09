@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <iostream>
+#include <stdlib.h>
 
 #include <osg/GL>
 #include <osg/GLU>

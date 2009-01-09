@@ -114,6 +114,7 @@
 #include <osgDB/FileUtils>
 #include <osgDB/fstream>
 
+#include <stdlib.h>
 #include <sstream>
 
 using namespace ive;

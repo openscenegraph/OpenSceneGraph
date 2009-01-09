@@ -1,5 +1,7 @@
 // -*-c++-*- osgWidget - Code by: Jeremy Moles (cubicool) 2007-2008
 
+#include <stdlib.h>
+
 #include <osg/io_utils>
 
 #include <osgGA/TrackballManipulator>

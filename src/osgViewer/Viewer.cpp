@@ -12,6 +12,7 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <osg/DeleteHandler>
 #include <osg/io_utils>

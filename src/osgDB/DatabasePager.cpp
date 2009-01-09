@@ -30,6 +30,7 @@
 #include <functional>
 #include <set>
 
+#include <stdlib.h>
 #include <string.h>
 
 #ifdef WIN32

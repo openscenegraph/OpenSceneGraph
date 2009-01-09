@@ -8,6 +8,7 @@
 #include <osgDB/FileNameUtils>
 #include <iostream>
 #include <sstream>
+#include <stdlib.h>
 #include <string.h>
 
 

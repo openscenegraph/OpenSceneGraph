@@ -34,6 +34,8 @@
 #include <algorithm>
 #include <set>
 
+#include <stdlib.h>
+
 #if defined(__sgi)
     #include <ctype.h>
 #elif defined(__GNUC__) || !defined(WIN32) || defined(__MWERKS__)

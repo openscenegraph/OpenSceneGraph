@@ -591,7 +591,6 @@ void PixelBufferWin32::init()
     fAttribList.push_back(0);
     bAttribList.push_back(0);
 
-    HGLRC hglrc = 0;
     HDC hdc = 0;
     int format;
     osg::ref_ptr<TemporaryWindow> tempWin;

@@ -1977,7 +1977,7 @@ HCURSOR GraphicsWindowWin32::getOrCreateCursor(MouseCursor mouseCursor)
         _mouseCursorMap[mouseCursor] = NULL;
     break;
     case RightArrowCursor:
-    _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_ARROW);
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_ARROW);
         break;
     case LeftArrowCursor:
         _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_ARROW);
@@ -2035,6 +2035,8 @@ HCURSOR GraphicsWindowWin32::getOrCreateCursor(MouseCursor mouseCursor)
         break;
     case BottomLeftCorner:
         _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZENESW );
+        break;
+    default:
         break;
     }
     
@@ -2445,7 +2447,7 @@ struct RegisterWindowingSystemInterfaceProxy
 
 static RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
 
-}; // namespace OsgViewer
+} // namespace OsgViewer
 
 
 // declare C entry point for static compilation.

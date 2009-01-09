@@ -529,13 +529,13 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     # errors instead of warnings for certain issues, including superfluous
     # semicolons and commas, and the use of long long. -fpermissive seems
     # to be the workaround.
-    SET(OSG_AGGRESSIVE_WARNING_FLAGS "-Wall -Wparentheses -Wformat=2 -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -fpermissive")
+    SET(OSG_AGGRESSIVE_WARNING_FLAGS -Wall -Wparentheses -Wformat=2 -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -fpermissive)
 ELSE(CMAKE_COMPILER_IS_GNUCXX)
     IF(MSVC)
         # FIXME: What are good aggressive warning flags for Visual Studio?
         # And do we need to further subcase this for different versions of VS?
         # CMake variables: MSVC60, MSVC70, MSVC71, MSVC80, CMAKE_COMPILER_2005
-        SET(OSG_AGGRESSIVE_WARNING_FLAGS "/W4 /wd4706 /wd4127")
+        SET(OSG_AGGRESSIVE_WARNING_FLAGS /W4 /wd4706 /wd4127)
 
 
     ELSE(MSVC)
@@ -561,7 +561,7 @@ IF(OSG_AGGRESSIVE_WARNING_FLAGS)
     ELSE(OSG_USE_AGGRESSIVE_WARNINGS)
         # Remove all flags considered aggresive
         FOREACH(flag ${OSG_AGGRESSIVE_WARNING_FLAGS})
-            STRING(REGEX REPLACE "${flag}" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+            STRING(REGEX REPLACE "${flag}" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
         ENDFOREACH(flag)
     ENDIF(OSG_USE_AGGRESSIVE_WARNINGS)
 ENDIF(OSG_AGGRESSIVE_WARNING_FLAGS)

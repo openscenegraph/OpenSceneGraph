@@ -21,17 +21,16 @@
 
 using namespace osgdae;
 
-daeReader::daeReader(DAE *dae_) : dae(dae_),
-                  rootNode(NULL),
-                  m_numlights(0),
-                  currentEffect(NULL),
-                  currentInstance_effect(NULL),
-                  geometryMap(),
-                  materialMap(),
-                  m_AuthoringTool(UNKNOWN),
+daeReader::daeReader(DAE *dae_) : 
                   m_AssetUnitName("meter"),
                   m_AssetUnitMeter(1.0),
-                  m_AssetUp_axis(UPAXISTYPE_Y_UP)
+                  m_AssetUp_axis(UPAXISTYPE_Y_UP),
+                  dae(dae_),
+                  rootNode(NULL),
+                  m_numlights(0),
+                  currentInstance_effect(NULL),
+                  currentEffect(NULL),
+                  m_AuthoringTool(UNKNOWN)
 {
 }
 

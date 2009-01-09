@@ -111,17 +111,21 @@ void daeWriter::appendGeometryIndices(osg::Geometry *geom,
   p->getValue().append( verts.inds!=NULL?verts.inds->index( vindex ):vindex );
 
   if ( norm != NULL )
+  {
     if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_VERTEX )
       p->getValue().append( normals.inds!=NULL?normals.inds->index( vindex ):vindex );
     else
       p->getValue().append( normals.inds!=NULL?normals.inds->index( ncount ):ncount );
-
+  }
+  
   if ( color != NULL )
+  {
     if ( geom->getColorBinding() == osg::Geometry::BIND_PER_VERTEX )
       p->getValue().append( colors.inds!=NULL?colors.inds->index( vindex ):vindex );
     else
       p->getValue().append( colors.inds!=NULL?colors.inds->index( ccount ):ccount );
-
+  }
+  
   for ( unsigned int ti = 0; ti < texcoords.size(); ti++ )
   {
     //ArrayNIndices &tc = texcoords[ti];

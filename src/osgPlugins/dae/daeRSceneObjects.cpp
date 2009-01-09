@@ -145,7 +145,7 @@ osg::Node* daeReader::processOsgSequence(domTechnique* teq)
         osg::notify(osg::WARN) << "Expected element 'LastFrameTime' not found" << std::endl;
     }
 
-    osg::Sequence::LoopMode loopmode;
+    osg::Sequence::LoopMode loopmode = osg::Sequence::LOOP;
     any = daeSafeCast< domAny >(teq->getChild("LoopMode"));
     if (any)
     {
@@ -558,8 +558,8 @@ osg::Node* daeReader::processCamera( domCamera * dcamera )
             osg::notify(osg::WARN) << "Expected <xfov> or <yfov> in <camera> '" << dcamera->getId() << "'" << std::endl;
         }
 
-        domTargetableFloat *pZnear = daeSafeCast< domTargetableFloat >(pDomPerspective->getZnear());
-        domTargetableFloat *pZfar = daeSafeCast< domTargetableFloat >(pDomPerspective->getZfar());
+        //domTargetableFloat *pZnear = daeSafeCast< domTargetableFloat >(pDomPerspective->getZnear());
+        //domTargetableFloat *pZfar = daeSafeCast< domTargetableFloat >(pDomPerspective->getZfar());
 
         // TODO The current osg::CameraView does not support storage of near far
     }
@@ -569,15 +569,16 @@ osg::Node* daeReader::processCamera( domCamera * dcamera )
         // 1    <xmag>, <ymag>, <xmag> and <ymag>, <xmag> and <aspect_ratio>, <ymag> and <aspect_ratio>
         // 1    <znear>
         // 1    <zfar>
-        domTargetableFloat *pXmag = daeSafeCast< domTargetableFloat >(pDomOrthographic->getXmag());
-        domTargetableFloat *pYmag = daeSafeCast< domTargetableFloat >(pDomOrthographic->getYmag());
-        domTargetableFloat *pAspectRatio = daeSafeCast< domTargetableFloat >(pDomOrthographic->getAspect_ratio());
+        
+        //domTargetableFloat *pXmag = daeSafeCast< domTargetableFloat >(pDomOrthographic->getXmag());
+        //domTargetableFloat *pYmag = daeSafeCast< domTargetableFloat >(pDomOrthographic->getYmag());
+        //domTargetableFloat *pAspectRatio = daeSafeCast< domTargetableFloat >(pDomOrthographic->getAspect_ratio());
 
         // TODO The current osg::CameraView does not support an orthographic view
         osg::notify(osg::WARN) << "Orthographic in <camera> '" << dcamera->getId() << "' not supported" << std::endl;
 
-        domTargetableFloat *pZnear = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZnear());
-        domTargetableFloat *pZfar = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZfar());    
+        //domTargetableFloat *pZnear = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZnear());
+        //domTargetableFloat *pZfar = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZfar());    
 
         // TODO The current osg::CameraView does not support storage of near far
     }

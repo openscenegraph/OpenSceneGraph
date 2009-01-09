@@ -111,8 +111,8 @@ ReaderWriter::ReadResult ReaderWriterBSP::readNode(
             return ReadResult::ERROR_IN_READING_FILE;
         }
     }
-    else
-        return ReadResult::FILE_NOT_HANDLED;
+
+    return ReadResult::FILE_NOT_HANDLED;
 }
 
 

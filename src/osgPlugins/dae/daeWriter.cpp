@@ -43,10 +43,11 @@ std::string toString(osg::Matrix value)
 
 daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons,  bool GoogleMode, TraversalMode tm, bool _writeExtras) : osg::NodeVisitor( tm ),
                                         dae(dae_),
+                                        writeExtras(_writeExtras),
                                         rootName(*dae_),
                                         usePolygons (_usePolygons),
                                         m_GoogleMode(GoogleMode),
-                                        writeExtras(_writeExtras)
+                                        m_CurrentRenderingHint(osg::StateSet::DEFAULT_BIN)
 {
     success = true;
 

@@ -220,11 +220,11 @@ protected:
     typedef std::map< std::string, osg::StateSet*>    MaterialStateSetMap;
 
     /// Maps geometry to a Geode
-    domGeometryGeodeMap geometryMap;
+    domGeometryGeodeMap     geometryMap;
     // Maps material target to stateset
-    domMaterialStateSetMap materialMap;
+    domMaterialStateSetMap  materialMap;
     // Maps material symbol to stateset
-    MaterialStateSetMap materialMap2;
+    MaterialStateSetMap     materialMap2;
 
     enum AuthoringTool
     {

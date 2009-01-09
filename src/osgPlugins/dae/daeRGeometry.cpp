@@ -181,7 +181,8 @@ osg::Geode *daeReader::processGeometry( domGeometry *geo )
     // 1    <vertices>
     // 0..*    <lines>, <linestrips>, <polygons>, <polylist>, <triangles>, <trifans>, <tristrips>
     // 0..* <extra>
-    size_t count = mesh->getContents().getCount();
+
+    // size_t count = mesh->getContents().getCount();
     
     // 1..* <source>
     SourceMap sources;

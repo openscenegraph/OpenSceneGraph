@@ -14,6 +14,14 @@
 # Written for VXL by Amitha Perera.
 # Modified by Robert Osfied to enable support for install placements of DCMTK 3.5.4 versions onwards
 
+FIND_PATH( DCMTK_ROOT_INCLUDE_DIR dcmtk/config/osconfig.h
+    ${DCMTK_DIR}/config/include 
+    ${DCMTK_DIR}/include
+    /usr/local/include/
+    /usr/include/
+    /usr/local/dicom/include/
+)
+
 FIND_PATH( DCMTK_config_INCLUDE_DIR osconfig.h
     ${DCMTK_DIR}/config/include 
     ${DCMTK_DIR}/include

@@ -19,10 +19,10 @@
 
 #ifdef  USE_DCMTK
     #define HAVE_CONFIG_H
-    #include <dcmtk/config/osconfig.h> 
-    #include <dcmtk/dcmdata/dcfilefo.h>
-    #include <dcmtk/dcmdata/dcdeftag.h>
-    #include <dcmtk/dcmimgle/dcmimage.h>
+    #include <osconfig.h> 
+    #include <dcfilefo.h>
+    #include <dcdeftag.h>
+    #include <dcmimage.h>
 #endif
 
 #ifdef USE_ITK

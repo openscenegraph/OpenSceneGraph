@@ -2284,7 +2284,7 @@ int main( int argc, char **argv )
     }
 
     // create a model from the images.
-    osg::Node* rootNode = 0;
+    osg::ref_ptr<osg::Node> rootNode = 0;
     
     if (useOsgVolume)
     {
@@ -2370,7 +2370,7 @@ int main( int argc, char **argv )
     {
 
         // set the scene to render
-        viewer.setSceneData(rootNode);
+        viewer.setSceneData(rootNode.get());
         
         // the the viewers main frame loop
         viewer.run();

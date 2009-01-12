@@ -1,8 +1,7 @@
 # - find DCMTK libraries
 #
 
-#  DCMTK_INCLUDE_DIR   - Directories to include to use DCMTK
-#  DCMTK_ROOT_INCLUDE_DIR - root directory of DCMTK related include directories
+#  DCMTK_INCLUDE_DIRS  - Directories to include to use DCMTK
 #  DCMTK_LIBRARIES     - Files to link against to use DCMTK
 #  DCMTK_FOUND         - If false, don't try to use DCMTK
 #  DCMTK_DIR           - (optional) Source directory for DCMTK
@@ -14,14 +13,6 @@
 #
 # Written for VXL by Amitha Perera.
 # Modified by Robert Osfied to enable support for install placements of DCMTK 3.5.4 versions onwards
-
-FIND_PATH( DCMTK_ROOT_INCLUDE_DIR dcmtk/config/osconfig.h
-    ${DCMTK_DIR}/config/include 
-    ${DCMTK_DIR}/include
-    /usr/local/include/
-    /usr/include/
-    /usr/local/dicom/include/
-)
 
 FIND_PATH( DCMTK_config_INCLUDE_DIR osconfig.h
     ${DCMTK_DIR}/config/include 
@@ -131,7 +122,7 @@ IF( DCMTK_config_INCLUDE_DIR
     AND DCMTK_dcmimgle_LIBRARY )
 
   SET( DCMTK_FOUND "YES" )
-  SET( DCMTK_INCLUDE_DIR
+  SET( DCMTK_INCLUDE_DIRS
     ${DCMTK_config_INCLUDE_DIR}
     ${DCMTK_ofstd_INCLUDE_DIR}
     ${DCMTK_dcmdata_INCLUDE_DIR}

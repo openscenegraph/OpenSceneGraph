@@ -118,9 +118,17 @@ ENDIF(XUL_FOUND)
 #
 # 3D Image plugins
 #
-IF   (ITK_FOUND OR DCMTK_FOUND)
+IF   (DCMTK_FOUND AND ZLIB_FOUND)
+
     ADD_SUBDIRECTORY(dicom)
-ENDIF(ITK_FOUND OR DCMTK_FOUND)
+
+ELSE (DCMTK_FOUND AND ZLIB_FOUND)
+
+    IF   (ITK_FOUND)
+        ADD_SUBDIRECTORY(dicom)
+    ENDIF(ITK_FOUND)
+
+ENDIF(DCMTK_FOUND AND ZLIB_FOUND)
 
 
 ############################################################

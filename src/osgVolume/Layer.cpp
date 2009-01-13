@@ -13,6 +13,9 @@
 
 #include <osgVolume/Layer>
 
+#include <osg/Notify>
+#include <osg/io_utils>
+
 using namespace osgVolume;
 
 Layer::Layer():
@@ -39,6 +42,9 @@ osg::BoundingSphere Layer::computeBound() const
     
     osg::Vec3d left, right;
     getLocator()->computeLocalBounds(left, right);
+    
+    osg::notify(osg::NOTICE)<<"left = "<<left<<std::endl;
+    osg::notify(osg::NOTICE)<<"right = "<<right<<std::endl;
 
     return osg::BoundingSphere((left+right)*0.5, (right-left).length()*0.5);
 }

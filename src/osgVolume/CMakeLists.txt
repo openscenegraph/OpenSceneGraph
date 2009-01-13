@@ -9,10 +9,12 @@ SET(LIB_NAME osgVolume)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Export
+    ${HEADER_PATH}/FixedFunctionTechnique
+    ${HEADER_PATH}/Layer
+    ${HEADER_PATH}/Locator
+    ${HEADER_PATH}/ShaderTechnique
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/Volume
-    ${HEADER_PATH}/Locator
-    ${HEADER_PATH}/Layer
     ${HEADER_PATH}/VolumeTechnique
     ${HEADER_PATH}/VolumeTile
 )
@@ -21,11 +23,13 @@ SET(LIB_PUBLIC_HEADERS
 ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
+    FixedFunctionTechnique.cpp
+    Layer.cpp
+    Locator.cpp
+    ShaderTechnique.cpp
     Version.cpp
     Volume.cpp
     VolumeTechnique.cpp
-    Layer.cpp
-    Locator.cpp
     VolumeTile.cpp
 )
 

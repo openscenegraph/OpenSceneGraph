@@ -122,7 +122,7 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
         void addLayer(Layer* layer) { if (layer) _layers.push_back(layer); }
         
         unsigned int getNumLayers() { return _layers.size(); }
-        
+
 
         /** Set the VolumeTechnique*/
         void setVolumeTechnique(VolumeTechnique* VolumeTechnique);

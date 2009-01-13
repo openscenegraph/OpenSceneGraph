@@ -136,12 +136,19 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 // scale up to provide scale of complete tile
                 osg::Vec3d scale(osg::Vec3(result.getImage()->s(),result.getImage()->t(), result.getImage()->r()));
                 matrix->postMultScale(scale);
+                
+                osgVolume::Locator* locator = new osgVolume::Locator(*matrix);
 
-                tile->setLocator(new osgVolume::Locator(*matrix));
+                tile->setLocator(locator);
+                layer->setLocator(locator);
                 
-                result.getImage()->setUserData(0);
+                // result.getImage()->setUserData(0);
                 
-                notice()<<"Locator "<<*matrix<<std::endl;
+                osg::notify(osg::NOTICE)<<"Locator "<<*matrix<<std::endl;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"No Locator found on osg::Image"<<std::endl;
             }
             
             volume->addChild(tile.get());

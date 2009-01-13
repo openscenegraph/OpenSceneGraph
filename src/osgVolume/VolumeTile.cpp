@@ -167,7 +167,14 @@ osg::BoundingSphere VolumeTile::computeBound() const
 {
     osg::BoundingSphere bs;
 
-    osg::notify(osg::NOTICE)<<"TODO VolumeTile::computeBound()"<<std::endl;    
+    for(Layers::const_iterator itr = _layers.begin();
+        itr != _layers.end();
+        ++itr)
+    {
+        if (itr->valid()) bs.expandBy((*itr)->computeBound());
+    }
     
+    return bs;
+
     return bs;
 }

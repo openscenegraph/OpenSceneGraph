@@ -63,6 +63,8 @@
 #include <osg/ImageUtils>
 #include <osgVolume/Volume>
 #include <osgVolume/VolumeTile>
+#include <osgVolume/ShaderTechnique>
+#include <osgVolume/FixedFunctionTechnique>
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
@@ -2291,9 +2293,29 @@ int main( int argc, char **argv )
 
         osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
         osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
-        osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d);
-        tile->addLayer(layer.get());
         volume->addChild(tile);
+
+        osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d);
+        layer->setTransferFunction(transferFunction.get());
+        
+        if (matrix)
+        {
+            osgVolume::Locator* locator = new osgVolume::Locator(*matrix);
+            layer->setLocator(locator);
+            tile->setLocator(locator);
+        }
+        
+        tile->addLayer(layer.get());
+        
+        if (useShader)
+        {
+            tile->setVolumeTechnique(new osgVolume::ShaderTechnique);
+        }
+        else
+        {
+            tile->setVolumeTechnique(new osgVolume::FixedFunctionTechnique);
+        }
+        
         
         rootNode = volume.get();        
 

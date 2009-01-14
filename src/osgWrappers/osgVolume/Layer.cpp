@@ -15,10 +15,10 @@
 #include <osg/Image>
 #include <osg/Object>
 #include <osg/Texture>
-#include <osg/TransferFunction>
 #include <osg/Vec4>
 #include <osgVolume/Layer>
 #include <osgVolume/Locator>
+#include <osgVolume/Property>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -309,20 +309,20 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Layer)
 	          __C5_osg_Image_P1__getImage,
 	          "Return const image associated with layer if supported. ",
 	          "");
-	I_Method1(void, setTransferFunction, IN, osg::TransferFunction *, tf,
+	I_Method1(void, setProperty, IN, osgVolume::Property *, property,
 	          Properties::NON_VIRTUAL,
-	          __void__setTransferFunction__osg_TransferFunction_P1,
-	          "Set the optional transfer function that maps the imagery pixels to new colours. ",
-	          "Transfer function may be implemented on the GPU or via pre-processing step. ");
-	I_Method0(osg::TransferFunction *, getTransferFunction,
-	          Properties::NON_VIRTUAL,
-	          __osg_TransferFunction_P1__getTransferFunction,
-	          "Get the transfer function. ",
+	          __void__setProperty__Property_P1,
+	          "Set the Property (or Properties via the CompositeProperty) that informs the VolumeTechnique how this layer should be rendered. ",
 	          "");
-	I_Method0(const osg::TransferFunction *, getTransferFunction,
+	I_Method0(osgVolume::Property *, getProperty,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_TransferFunction_P1__getTransferFunction,
-	          "Get the const transfer function. ",
+	          __Property_P1__getProperty,
+	          "Get the Property that informs the VolumeTechnique how this layer should be rendered. ",
+	          "");
+	I_Method0(const osgVolume::Property *, getProperty,
+	          Properties::NON_VIRTUAL,
+	          __C5_Property_P1__getProperty,
+	          "Get the const Property that informs the VolumeTechnique how this layer should be rendered. ",
 	          "");
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,
@@ -365,8 +365,8 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Layer)
 	I_SimpleProperty(unsigned, ModifiedCount, 
 	                 0, 
 	                 __void__setModifiedCount__unsigned);
-	I_SimpleProperty(osg::TransferFunction *, TransferFunction, 
-	                 __osg_TransferFunction_P1__getTransferFunction, 
-	                 __void__setTransferFunction__osg_TransferFunction_P1);
+	I_SimpleProperty(osgVolume::Property *, Property, 
+	                 __Property_P1__getProperty, 
+	                 __void__setProperty__Property_P1);
 END_REFLECTOR
 

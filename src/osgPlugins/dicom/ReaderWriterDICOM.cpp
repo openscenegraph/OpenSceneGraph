@@ -124,7 +124,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             
             osg::ref_ptr<osgVolume::Layer> layer= new osgVolume::ImageLayer(result.getImage());
             
-            tile->addLayer(layer.get());
+            tile->setLayer(layer.get());
 
             // get matrix providing size of texels (in mm)
             osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(result.getImage()->getUserData());

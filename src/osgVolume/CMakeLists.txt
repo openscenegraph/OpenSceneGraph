@@ -12,6 +12,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/FixedFunctionTechnique
     ${HEADER_PATH}/Layer
     ${HEADER_PATH}/Locator
+    ${HEADER_PATH}/Property
     ${HEADER_PATH}/ShaderTechnique
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/Volume
@@ -26,6 +27,7 @@ ADD_LIBRARY(${LIB_NAME}
     FixedFunctionTechnique.cpp
     Layer.cpp
     Locator.cpp
+    Property.cpp
     ShaderTechnique.cpp
     Version.cpp
     Volume.cpp

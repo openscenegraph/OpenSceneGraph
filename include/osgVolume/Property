@@ -1,0 +1,95 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGVOLUME_PROPERTY
+#define OSGVOLUME_PROPERTY 1
+
+#include <osg/TransferFunction>
+
+#include <osgVolume/Export>
+
+namespace osgVolume {
+
+class OSGVOLUME_EXPORT Property : public osg::Object
+{
+    public:
+
+        Property();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        Property(const Property&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgVolume, Property);
+        
+    protected:
+
+        virtual ~Property();
+};
+
+class OSGVOLUME_EXPORT CompositeProperty : public Property
+{
+    public:
+
+        CompositeProperty();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        CompositeProperty(const CompositeProperty& compositeProperty,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgVolume, CompositeProperty);
+
+        void clear();
+
+        typedef std::vector< osg::ref_ptr<Property> > Properties;
+
+        void setProperty(unsigned int i, Property* property) { if (i>=_properties.size()) _properties.resize(i+1); _properties[i] = property; }
+
+        Property* getProperty(unsigned int i) { return i<_properties.size() ? _properties[i].get() : 0; }
+
+        const Property* getProperty(unsigned int i) const { return i<_properties.size() ? _properties[i].get() : 0; }
+
+        void addProperty(Property* property) { _properties.push_back(property); }
+
+        void removeProperty(unsigned int i) { _properties.erase(_properties.begin()+i); }
+        
+        unsigned int getNumProperties() const { return _properties.size(); }
+
+    protected:
+
+        virtual ~CompositeProperty() {}
+
+        
+        Properties _properties;
+};
+
+class OSGVOLUME_EXPORT TransferFunctionProperty : public Property
+{
+    public:
+
+        TransferFunctionProperty(osg::TransferFunction* tf = 0);
+        
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        TransferFunctionProperty(const TransferFunctionProperty& tfProperty,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgVolume, TransferFunctionProperty);
+        
+    protected:
+    
+        virtual ~TransferFunctionProperty() {}
+        
+        osg::ref_ptr<osg::TransferFunction> _tf;
+};
+
+
+}
+
+#endif

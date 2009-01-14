@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -35,7 +35,7 @@ VolumeTile::VolumeTile(const VolumeTile& volumeTile,const osg::CopyOp& copyop):
     _volume(0),
     _dirty(false),
     _hasBeenTraversal(false),
-    _layers(volumeTile._layers)
+    _layer(volumeTile._layer)
 {
     if (volumeTile.getVolumeTechnique()) ;
     {
@@ -48,13 +48,6 @@ VolumeTile::~VolumeTile()
     if (_volume) setVolume(0);
 }
  
-void VolumeTile::setLayer(unsigned int i, Layer* layer)
-{
-    if (_layers.size() <= i) _layers.resize(i+1);
-    
-    _layers[i] = layer;
-}
-
 void VolumeTile::setVolume(Volume* volume)
 {
     if (_volume == volume) return;
@@ -165,16 +158,7 @@ void VolumeTile::setDirty(bool dirty)
 
 osg::BoundingSphere VolumeTile::computeBound() const
 {
-    osg::BoundingSphere bs;
+    if (_layer.valid()) return _layer->computeBound();
 
-    for(Layers::const_iterator itr = _layers.begin();
-        itr != _layers.end();
-        ++itr)
-    {
-        if (itr->valid()) bs.expandBy((*itr)->computeBound());
-    }
-    
-    return bs;
-
-    return bs;
+    return osg::BoundingSphere();
 }

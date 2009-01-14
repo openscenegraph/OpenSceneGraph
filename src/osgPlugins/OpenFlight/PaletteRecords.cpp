@@ -666,7 +666,12 @@ protected:
         appearance->fadeOutDuration = in.readFloat32();
         appearance->LODRangeRatio = in.readFloat32();
         appearance->LODScale = in.readFloat32();
-        appearance->texturePatternIndex = in.readInt16(-1);
+          
+        if(document.version() > VERSION_15_8)
+            appearance->texturePatternIndex = in.readInt16(-1);
+        else
+           appearance->texturePatternIndex = -1;
+ 
         // The final short is reserved; don't bother reading it.
  
         // Add to pool

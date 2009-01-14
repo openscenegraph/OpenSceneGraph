@@ -41,15 +41,16 @@ class OSGVOLUME_EXPORT Volume : public osg::Group
 
         /** Get the const VolumeTile for a given VolumeTileID.*/
         const VolumeTile* getVolumeTile(const TileID& tileID) const;
-
-        /** Set the VolumeTechnique*/
-        void setVolumeTechnique(VolumeTechnique* VolumeTechnique);
-
-        /** Get the VolumeTechnique*/
-        VolumeTechnique* getVolumeTechnique() { return _volumeTechnique.get(); }
         
-        /** Get the const VolumeTechnique*/
-        const VolumeTechnique* getVolumeTechnique() const { return _volumeTechnique.get(); }
+
+        /** Set the VolumeTechnique prototype that nested VolumeTile should clone if they haven't already been assigned a volume rendering technique. */
+        void setVolumeTechniquePrototype(VolumeTechnique* volumeTechnique) { _volumeTechnique = volumeTechnique; }
+
+        /** Get the VolumeTechnique prototype. */
+        VolumeTechnique* getVolumeTechniquePrototype() { return _volumeTechnique.get(); }
+        
+        /** Get the const VolumeTechnique prototype. */
+        const VolumeTechnique* getVolumeTechniquePrototype() const { return _volumeTechnique.get(); }
 
 
     protected:

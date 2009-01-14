@@ -34,7 +34,7 @@ bool Volume_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgVolume::VolumeTechnique>());
     if (readObject.valid())
     {
-        volume.setVolumeTechnique(dynamic_cast<osgVolume::VolumeTechnique*>(readObject.get()));
+        volume.setVolumeTechniquePrototype(dynamic_cast<osgVolume::VolumeTechnique*>(readObject.get()));
         itrAdvanced = true;
     }
 
@@ -47,9 +47,9 @@ bool Volume_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 
     osg::notify(osg::NOTICE)<<"Volume write"<<std::endl;
 
-    if (volume.getVolumeTechnique())
+    if (volume.getVolumeTechniquePrototype())
     {
-        fw.writeObject(*volume.getVolumeTechnique());
+        fw.writeObject(*volume.getVolumeTechniquePrototype());
     }    
 
     return true;

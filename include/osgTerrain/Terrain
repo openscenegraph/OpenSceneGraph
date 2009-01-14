@@ -64,8 +64,8 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         /** Get the const TerrainTile for a given TileID.*/
         const TerrainTile* getTile(const TileID& tileID) const;
         
-        /** Set the TerrainTechnique cprototype from which TerrainTiles can clone the techniques from..*/
-        void setTerrainTechniquePrototype(TerrainTechnique* technique);
+        /** Set the TerrainTechnique prototype from which TerrainTiles can clone the techniques from..*/
+        void setTerrainTechniquePrototype(TerrainTechnique* technique) { _terrainTechnique = technique; }
 
         /** Get the TerrainTechnique prototype */
         TerrainTechnique* getTerrainTechniquePrototype() { return _terrainTechnique.get(); }

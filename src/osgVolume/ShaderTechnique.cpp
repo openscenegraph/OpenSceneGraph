@@ -87,6 +87,7 @@ void ShaderTechnique::init()
     float ySize = (matrix)(1,1);
     float zSize = (matrix)(2,2);
 
+    if (true)
     {    
         osg::Texture::FilterMode minFilter = osg::Texture::LINEAR;
         osg::Texture::FilterMode magFilter = osg::Texture::LINEAR;
@@ -411,7 +412,7 @@ void ShaderTechnique::update(osgUtil::UpdateVisitor* uv)
 
 void ShaderTechnique::cull(osgUtil::CullVisitor* cv)
 {
-    // osg::notify(osg::NOTICE)<<"ShaderTechnique::cull(osgUtil::CullVisitor* nv)"<<std::endl;    
+    //osg::notify(osg::NOTICE)<<"ShaderTechnique::cull(osgUtil::CullVisitor* nv)"<<std::endl;    
     if (_geode.valid())
     {
         _geode->accept(*cv);

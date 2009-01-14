@@ -42,6 +42,16 @@ class OSGVOLUME_EXPORT Volume : public osg::Group
         /** Get the const VolumeTile for a given VolumeTileID.*/
         const VolumeTile* getVolumeTile(const TileID& tileID) const;
 
+        /** Set the VolumeTechnique*/
+        void setVolumeTechnique(VolumeTechnique* VolumeTechnique);
+
+        /** Get the VolumeTechnique*/
+        VolumeTechnique* getVolumeTechnique() { return _volumeTechnique.get(); }
+        
+        /** Get the const VolumeTechnique*/
+        const VolumeTechnique* getVolumeTechnique() const { return _volumeTechnique.get(); }
+
+
     protected:
 
         virtual ~Volume();
@@ -60,6 +70,7 @@ class OSGVOLUME_EXPORT Volume : public osg::Group
         VolumeTileSet                           _volumeTileSet;
         VolumeTileMap                           _volumeTileMap;
        
+        osg::ref_ptr<VolumeTechnique>           _volumeTechnique;
 };
 
 }

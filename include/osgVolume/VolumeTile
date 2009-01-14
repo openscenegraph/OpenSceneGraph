@@ -117,7 +117,7 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
 
         void setLayer(Layer* layer) { _layer = layer; }
         Layer* getLayer() { return _layer.get(); }
-        const Layer* getImage() const  { return _layer.get(); }
+        const Layer* getLayer() const  { return _layer.get(); }
 
 
         /** Set the VolumeTechnique*/

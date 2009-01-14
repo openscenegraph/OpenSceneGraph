@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -115,13 +115,9 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
         const Locator* getLocator() const { return _locator.get(); }
 
 
-        void setLayer(unsigned int i, Layer* layer);
-        Layer* getLayer(unsigned int i) { return i<_layers.size() ? _layers[i].get() : 0; }
-        const Layer* getImage(unsigned int i) const  { return i<_layers.size() ? _layers[i].get() : 0; }
-
-        void addLayer(Layer* layer) { if (layer) _layers.push_back(layer); }
-        
-        unsigned int getNumLayers() { return _layers.size(); }
+        void setLayer(Layer* layer) { _layer = layer; }
+        Layer* getLayer() { return _layer.get(); }
+        const Layer* getImage() const  { return _layer.get(); }
 
 
         /** Set the VolumeTechnique*/
@@ -160,8 +156,7 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
 
         osg::ref_ptr<Locator>               _locator;        
 
-        typedef std::vector< osg::ref_ptr<Layer> > Layers;
-        Layers                              _layers;
+        osg::ref_ptr<Layer>                 _layer;
 };
 
 }

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -14,13 +14,10 @@
 #ifndef OSGVOLUME_LAYER
 #define OSGVOLUME_LAYER 1
 
-#include <osg/Object>
 #include <osg/Image>
-#include <osg/Shape>
-#include <osg/Array>
-#include <osg/TransferFunction>
 
 #include <osgVolume/Locator>
+#include <osgVolume/Property>
 
 namespace osgVolume {
 
@@ -67,15 +64,14 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         virtual const osg::Image* getImage() const { return 0; }
 
 
-        /** Set the optional transfer function that maps the imagery pixels to new colours.
-          * Transfer function may be implemented on the GPU or via pre-processing step. */
-        void setTransferFunction(osg::TransferFunction* tf) { _transferFunction = tf; }
+        /** Set the Property (or Properties via the CompositeProperty) that informs the VolumeTechnique how this layer should be rendered.*/
+        void setProperty(Property* property) { _property = property; }
 
-        /** Get the transfer function.*/
-        osg::TransferFunction* getTransferFunction() { return _transferFunction.get(); }
+        /** Get the Property that informs the VolumeTechnique how this layer should be rendered.*/
+        Property* getProperty() { return _property.get(); }
 
-        /** Get the const transfer function.*/
-        const osg::TransferFunction* getTransferFunction() const { return _transferFunction.get(); }
+        /** Get the const Property that informs the VolumeTechnique how this layer should be rendered.*/
+        const Property* getProperty() const { return _property.get(); }
 
 
         /** increment the modified count."*/
@@ -99,7 +95,7 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         osg::Texture::FilterMode            _minFilter;
         osg::Texture::FilterMode            _magFilter;
         
-        osg::ref_ptr<osg::TransferFunction> _transferFunction;
+        osg::ref_ptr<Property>              _property;
 
 };
 

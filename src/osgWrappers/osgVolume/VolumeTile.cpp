@@ -138,29 +138,19 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTile)
 	          __C5_Locator_P1__getLocator,
 	          "",
 	          "");
-	I_Method2(void, setLayer, IN, unsigned int, i, IN, osgVolume::Layer *, layer,
+	I_Method1(void, setLayer, IN, osgVolume::Layer *, layer,
 	          Properties::NON_VIRTUAL,
-	          __void__setLayer__unsigned_int__Layer_P1,
+	          __void__setLayer__Layer_P1,
 	          "",
 	          "");
-	I_Method1(osgVolume::Layer *, getLayer, IN, unsigned int, i,
+	I_Method0(osgVolume::Layer *, getLayer,
 	          Properties::NON_VIRTUAL,
-	          __Layer_P1__getLayer__unsigned_int,
+	          __Layer_P1__getLayer,
 	          "",
 	          "");
-	I_Method1(const osgVolume::Layer *, getImage, IN, unsigned int, i,
+	I_Method0(const osgVolume::Layer *, getImage,
 	          Properties::NON_VIRTUAL,
-	          __C5_Layer_P1__getImage__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, addLayer, IN, osgVolume::Layer *, layer,
-	          Properties::NON_VIRTUAL,
-	          __void__addLayer__Layer_P1,
-	          "",
-	          "");
-	I_Method0(unsigned int, getNumLayers,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getNumLayers,
+	          __C5_Layer_P1__getImage,
 	          "",
 	          "");
 	I_Method1(void, setVolumeTechnique, IN, osgVolume::VolumeTechnique *, VolumeTechnique,
@@ -196,13 +186,12 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTile)
 	I_SimpleProperty(bool, Dirty, 
 	                 __bool__getDirty, 
 	                 __void__setDirty__bool);
-	I_ArrayProperty(osgVolume::Layer *, Layer, 
-	                __Layer_P1__getLayer__unsigned_int, 
-	                __void__setLayer__unsigned_int__Layer_P1, 
-	                __unsigned_int__getNumLayers, 
-	                __void__addLayer__Layer_P1, 
-	                0, 
-	                0);
+	I_SimpleProperty(const osgVolume::Layer *, Image, 
+	                 __C5_Layer_P1__getImage, 
+	                 0);
+	I_SimpleProperty(osgVolume::Layer *, Layer, 
+	                 __Layer_P1__getLayer, 
+	                 __void__setLayer__Layer_P1);
 	I_SimpleProperty(osgVolume::Locator *, Locator, 
 	                 __Locator_P1__getLocator, 
 	                 __void__setLocator__Locator_P1);

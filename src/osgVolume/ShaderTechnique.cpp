@@ -63,22 +63,13 @@ void ShaderTechnique::init()
     osg::Image* image_3d = 0;
     osg::TransferFunction1D* tf = 0;
     osgVolume::Locator* masterLocator = _volumeTile->getLocator();
-    for(unsigned int i = 0;
-        i < _volumeTile->getNumLayers();
-        ++i)
+
+    image_3d = _volumeTile->getLayer()->getImage();
+    
+    if (_volumeTile->getLayer() && !masterLocator)
     {
-        if (_volumeTile->getLayer(i) && !masterLocator)
-        {
-            masterLocator = _volumeTile->getLayer(i)->getLocator();
-            osg::notify(osg::NOTICE)<<"assigning locator = "<<masterLocator<<std::endl;
-        }
-        
-        if (_volumeTile->getLayer(i)->getImage())
-        {
-            osg::notify(osg::NOTICE)<<"assigning image = "<<std::endl;
-            image_3d = _volumeTile->getLayer(i)->getImage();
-            tf = dynamic_cast<osg::TransferFunction1D*>(_volumeTile->getLayer(i)->getTransferFunction());
-        }
+        masterLocator = _volumeTile->getLayer()->getLocator();
+        osg::notify(osg::NOTICE)<<"assigning locator = "<<masterLocator<<std::endl;
     }
 
     osg::Matrix matrix;

@@ -2296,7 +2296,7 @@ int main( int argc, char **argv )
         volume->addChild(tile);
 
         osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d);
-        layer->setTransferFunction(transferFunction.get());
+        layer->setProperty(new osgVolume::TransferFunctionProperty(transferFunction.get()));
         
         if (matrix)
         {
@@ -2305,7 +2305,7 @@ int main( int argc, char **argv )
             tile->setLocator(locator);
         }
         
-        tile->addLayer(layer.get());
+        tile->setLayer(layer.get());
         
         if (useShader)
         {

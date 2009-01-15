@@ -117,16 +117,17 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
 
         void setLayer(Layer* layer) { _layer = layer; }
         Layer* getLayer() { return _layer.get(); }
-        const Layer* getLayer() const  { return _layer.get(); }
+        const Layer* getLayer() const { return _layer.get(); }
 
 
-        /** Set the VolumeTechnique*/
+
+        /** Set the VolumeTechnique that will be used to render this tile. */
         void setVolumeTechnique(VolumeTechnique* VolumeTechnique);
 
-        /** Get the VolumeTechnique*/
+        /** Get the VolumeTechnique that will be used to render this tile. */
         VolumeTechnique* getVolumeTechnique() { return _volumeTechnique.get(); }
         
-        /** Get the const VolumeTechnique*/
+        /** Get the const VolumeTechnique that will be used to render this tile. */
         const VolumeTechnique* getVolumeTechnique() const { return _volumeTechnique.get(); }
 
 

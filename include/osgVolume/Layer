@@ -73,6 +73,9 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         /** Get the const Property that informs the VolumeTechnique how this layer should be rendered.*/
         const Property* getProperty() const { return _property.get(); }
 
+        /** Add a property, automatically creating a CompositePorperty if one isn't already assigned.*/
+        void addProperty(Property* property);
+
 
         /** increment the modified count."*/
         virtual void dirty() {};

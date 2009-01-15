@@ -2309,6 +2309,23 @@ int main( int argc, char **argv )
         
         if (useShader)
         {
+            switch(shadingModel)
+            {
+                case(Standard):
+                    break;
+                case(Light):
+                    layer->addProperty(new osgVolume::LightingProperty);
+                    break;
+                case(Isosurface):
+                    layer->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
+                    break;
+                case(MaximumIntensityProjection):
+                    layer->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
+                    break;
+            }
+            
+            layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
+        
             tile->setVolumeTechnique(new osgVolume::ShaderTechnique);
         }
         else

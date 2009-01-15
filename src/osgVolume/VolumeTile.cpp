@@ -158,7 +158,26 @@ void VolumeTile::setDirty(bool dirty)
 
 osg::BoundingSphere VolumeTile::computeBound() const
 {
-    if (_layer.valid()) return _layer->computeBound();
+    const Locator* masterLocator = getLocator();
+    if (_layer.valid() && !masterLocator) 
+    {
+        masterLocator = _layer->getLocator();
+    }
 
-    return osg::BoundingSphere();
+    if (masterLocator)
+    {
+        osg::Vec3d left, right;
+        masterLocator->computeLocalBounds(left, right);
+
+        return osg::BoundingSphere((left+right)*0.5, (right-left).length()*0.5);
+    }
+    else if (_layer.valid())
+    {
+        // we have a layer but no Locator defined so will assume a Identity Locator
+        return osg::BoundingSphere( osg::Vec3(0.5,0.5,0.5), 0.867);
+    }
+    else
+    {
+        return osg::BoundingSphere();
+    }
 }

@@ -14,6 +14,7 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osgVolume/Volume>
+#include <osgVolume/VolumeTechnique>
 #include <osgVolume/VolumeTile>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -79,6 +80,21 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Volume)
 	          __C5_VolumeTile_P1__getVolumeTile__C5_TileID_R1,
 	          "Get the const VolumeTile for a given VolumeTileID. ",
 	          "");
+	I_Method1(void, setVolumeTechniquePrototype, IN, osgVolume::VolumeTechnique *, volumeTechnique,
+	          Properties::NON_VIRTUAL,
+	          __void__setVolumeTechniquePrototype__VolumeTechnique_P1,
+	          "Set the VolumeTechnique prototype that nested VolumeTile should clone if they haven't already been assigned a volume rendering technique. ",
+	          "");
+	I_Method0(osgVolume::VolumeTechnique *, getVolumeTechniquePrototype,
+	          Properties::NON_VIRTUAL,
+	          __VolumeTechnique_P1__getVolumeTechniquePrototype,
+	          "Get the VolumeTechnique prototype. ",
+	          "");
+	I_Method0(const osgVolume::VolumeTechnique *, getVolumeTechniquePrototype,
+	          Properties::NON_VIRTUAL,
+	          __C5_VolumeTechnique_P1__getVolumeTechniquePrototype,
+	          "Get the const VolumeTechnique prototype. ",
+	          "");
 	I_ProtectedMethod0(void, dirtyRegisteredVolumeTiles,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -97,5 +113,8 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Volume)
 	                   __void__unregisterVolumeTile__VolumeTile_P1,
 	                   "",
 	                   "");
+	I_SimpleProperty(osgVolume::VolumeTechnique *, VolumeTechniquePrototype, 
+	                 __VolumeTechnique_P1__getVolumeTechniquePrototype, 
+	                 __void__setVolumeTechniquePrototype__VolumeTechnique_P1);
 END_REFLECTOR
 

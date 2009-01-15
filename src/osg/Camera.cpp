@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Camera>
@@ -72,7 +72,7 @@ Camera::Camera(const Camera& camera,const CopyOp& copyop):
 Camera::~Camera()
 {
     setCameraThread(0);
-    
+
     if (_graphicsContext.valid()) _graphicsContext->removeCamera(this);
 }
 
@@ -89,12 +89,12 @@ void Camera::DrawCallback::operator () (osg::RenderInfo& renderInfo) const
 }
 
 
-void Camera::setGraphicsContext(GraphicsContext* context) 
+void Camera::setGraphicsContext(GraphicsContext* context)
 {
     if (_graphicsContext == context) return;
-    
+
     if (_graphicsContext.valid()) _graphicsContext->removeCamera(this);
-    
+
     _graphicsContext = context;
 
     if (_graphicsContext.valid()) _graphicsContext->addCamera(this);
@@ -111,7 +111,7 @@ void Camera::setRenderTargetImplementation(RenderTargetImplementation impl)
     _renderTargetImplementation = impl;
     if (impl<FRAME_BUFFER) _renderTargetFallback = (RenderTargetImplementation)(impl+1);
     else _renderTargetFallback = impl;
-}   
+}
 
 void Camera::setRenderTargetImplementation(RenderTargetImplementation impl, RenderTargetImplementation fallback)
 {
@@ -120,7 +120,7 @@ void Camera::setRenderTargetImplementation(RenderTargetImplementation impl, Rend
         _renderTargetImplementation = impl;
         _renderTargetFallback = fallback;
     }
-    else 
+    else
     {
         osg::notify(osg::NOTICE)<<"Warning: Camera::setRenderTargetImplementation(impl,fallback) must have a lower rated fallback than the main target implementation."<<std::endl;
         setRenderTargetImplementation(impl);
@@ -136,9 +136,9 @@ void Camera::setColorMask(osg::ColorMask* colorMask)
     {
         stateset->removeAttribute(_colorMask.get());
     }
-    
+
     _colorMask = colorMask;
-    
+
     if (_colorMask.valid() && stateset)
     {
         stateset->setAttribute(_colorMask.get());
@@ -160,9 +160,9 @@ void Camera::setViewport(osg::Viewport* viewport)
     {
         stateset->removeAttribute(_viewport.get());
     }
-    
+
     _viewport = viewport;
-    
+
     if (_viewport.valid() && stateset)
     {
         stateset->setAttribute(_viewport.get());
@@ -188,7 +188,7 @@ void Camera::setProjectionMatrixAsOrtho(double left, double right,
     setProjectionMatrix(osg::Matrixd::ortho(left, right,
                                            bottom, top,
                                            zNear, zFar));
-}                                           
+}
 
 void Camera::setProjectionMatrixAsOrtho2D(double left, double right,
                                              double bottom, double top)
@@ -211,7 +211,7 @@ void Camera::setProjectionMatrixAsPerspective(double fovy,double aspectRatio,
 {
     setProjectionMatrix(osg::Matrixd::perspective(fovy,aspectRatio,
                                                  zNear, zFar));
-}                                      
+}
 
 bool Camera::getProjectionMatrixAsOrtho(double& left, double& right,
                                            double& bottom, double& top,
@@ -229,13 +229,13 @@ bool Camera::getProjectionMatrixAsFrustum(double& left, double& right,
     return _projectionMatrix.getFrustum(left, right,
                                          bottom, top,
                                          zNear, zFar);
-}                                  
+}
 
 bool Camera::getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
                                                  double& zNear, double& zFar) const
 {
     return _projectionMatrix.getPerspective(fovy, aspectRatio, zNear, zFar);
-}                                                 
+}
 
 void Camera::setViewMatrixAsLookAt(const Vec3d& eye,const Vec3d& center,const Vec3d& up)
 {
@@ -260,8 +260,8 @@ void Camera::attach(BufferComponent buffer, GLenum internalFormat)
     case DEPTH_BUFFER:
         if(_bufferAttachmentMap.find(PACKED_DEPTH_STENCIL_BUFFER) != _bufferAttachmentMap.end())
         {
-            notify(WARN) 
-                << "Camera: DEPTH_BUFFER already attached as PACKED_DEPTH_STENCIL_BUFFER !" 
+            notify(WARN)
+                << "Camera: DEPTH_BUFFER already attached as PACKED_DEPTH_STENCIL_BUFFER !"
                 << std::endl;
         }
         break;
@@ -269,8 +269,8 @@ void Camera::attach(BufferComponent buffer, GLenum internalFormat)
     case STENCIL_BUFFER:
         if(_bufferAttachmentMap.find(PACKED_DEPTH_STENCIL_BUFFER) != _bufferAttachmentMap.end())
         {
-            notify(WARN) 
-                << "Camera: STENCIL_BUFFER already attached as PACKED_DEPTH_STENCIL_BUFFER !" 
+            notify(WARN)
+                << "Camera: STENCIL_BUFFER already attached as PACKED_DEPTH_STENCIL_BUFFER !"
                 << std::endl;
         }
         break;
@@ -292,7 +292,7 @@ void Camera::attach(BufferComponent buffer, GLenum internalFormat)
 }
 
 void Camera::attach(BufferComponent buffer, osg::Texture* texture, unsigned int level, unsigned int face, bool mipMapGeneration,
-                    unsigned int multisampleSamples, 
+                    unsigned int multisampleSamples,
                     unsigned int multisampleColorSamples)
 {
     _bufferAttachmentMap[buffer]._texture = texture;
@@ -304,7 +304,7 @@ void Camera::attach(BufferComponent buffer, osg::Texture* texture, unsigned int 
 }
 
 void Camera::attach(BufferComponent buffer, osg::Image* image,
-                    unsigned int multisampleSamples, 
+                    unsigned int multisampleSamples,
                     unsigned int multisampleColorSamples)
 {
     _bufferAttachmentMap[buffer]._image = image;
@@ -323,7 +323,7 @@ void Camera::resizeGLObjectBuffers(unsigned int maxSize)
     {
         const_cast<Camera*>(this)->_renderingCache->resizeGLObjectBuffers(maxSize);
     }
-    
+
     Transform::resizeGLObjectBuffers(maxSize);
 }
 
@@ -333,7 +333,7 @@ void Camera::releaseGLObjects(osg::State* state) const
     {
         const_cast<Camera*>(this)->_renderingCache->releaseGLObjects(state);
     }
-    
+
     Transform::releaseGLObjects(state);
 }
 
@@ -385,8 +385,8 @@ bool Camera::computeWorldToLocalMatrix(Matrix& matrix,NodeVisitor*) const
 void Camera::inheritCullSettings(const CullSettings& settings, unsigned int inheritanceMask)
 {
     CullSettings::inheritCullSettings(settings, inheritanceMask);
-    
-    if (inheritanceMask & CLEAR_COLOR) 
+
+    if (inheritanceMask & CLEAR_COLOR)
     {
         //osg::notify(osg::NOTICE)<<"Inheriting slave Camera"<<std::endl;
         const Camera* camera = dynamic_cast<const Camera*>(&settings);
@@ -404,9 +404,9 @@ void Camera::createCameraThread()
 
 void Camera::setCameraThread(OperationThread* gt)
 {
-    if (_cameraThread==gt) return; 
+    if (_cameraThread==gt) return;
 
-    if (_cameraThread.valid()) 
+    if (_cameraThread.valid())
     {
         // need to kill the thread in some way...
         _cameraThread->cancel();
@@ -414,8 +414,8 @@ void Camera::setCameraThread(OperationThread* gt)
     }
 
     _cameraThread = gt;
-    
-    if (_cameraThread.valid()) 
+
+    if (_cameraThread.valid())
     {
         _cameraThread->setParent(this);
     }

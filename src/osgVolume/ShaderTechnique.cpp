@@ -49,6 +49,36 @@ enum ShadingModel
     MaximumIntensityProjection
 };
 
+class CollectPropertiesVisitor : public osgVolume::PropertyVisitor
+{
+    public:
+    
+        CollectPropertiesVisitor() {}
+        
+        virtual void apply(Property&) {}
+        
+        virtual void apply(CompositeProperty& cp)
+        { 
+            for(unsigned int i=0; i<cp.getNumProperties(); ++i)
+            {
+                cp.getProperty(i)->accept(*this);
+            }
+        }
+        virtual void apply(TransferFunctionProperty& tf) { _tfProperty = &tf; }
+        virtual void apply(ScalarProperty&) {}
+        virtual void apply(IsoSurfaceProperty& iso) { _isoProperty = &iso; }
+        virtual void apply(AlphaFuncProperty& af) { _afProperty = &af; }
+        virtual void apply(MaximumIntensityProjectionProperty& mip) { _mipProperty = &mip; }
+        virtual void apply(LightingProperty& lp) { _lightingProperty = &lp; }
+        
+        osg::ref_ptr<TransferFunctionProperty> _tfProperty;
+        osg::ref_ptr<IsoSurfaceProperty> _isoProperty;
+        osg::ref_ptr<AlphaFuncProperty> _afProperty;
+        osg::ref_ptr<MaximumIntensityProjectionProperty> _mipProperty;
+        osg::ref_ptr<LightingProperty> _lightingProperty;
+        
+};
+
 void ShaderTechnique::init()
 {
     osg::notify(osg::NOTICE)<<"ShaderTechnique::init()"<<std::endl;
@@ -66,6 +96,41 @@ void ShaderTechnique::init()
 
     image_3d = _volumeTile->getLayer()->getImage();
     
+    CollectPropertiesVisitor cpv;
+    if (_volumeTile->getLayer()->getProperty())
+    {
+        _volumeTile->getLayer()->getProperty()->accept(cpv);
+    }
+
+    if (cpv._isoProperty.valid())
+    {
+        shadingModel = Isosurface;
+        alphaFuncValue = cpv._isoProperty->getValue();
+    }
+    else if (cpv._mipProperty.valid())
+    {
+        shadingModel = MaximumIntensityProjection;
+    }
+    else if (cpv._lightingProperty.valid())
+    {
+        shadingModel = Light;
+    }
+    else
+    {
+        shadingModel = Standard;
+    }
+
+    if (cpv._tfProperty.valid())
+    {
+        tf = dynamic_cast<osg::TransferFunction1D*>(cpv._tfProperty->getTransferFunction());
+    }
+
+    if (cpv._afProperty.valid())
+    {
+        alphaFuncValue = cpv._afProperty->getValue();
+    }
+
+
     if (_volumeTile->getLayer() && !masterLocator)
     {
         masterLocator = _volumeTile->getLayer()->getLocator();

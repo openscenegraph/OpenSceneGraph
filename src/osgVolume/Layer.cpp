@@ -43,12 +43,35 @@ osg::BoundingSphere Layer::computeBound() const
     osg::Vec3d left, right;
     getLocator()->computeLocalBounds(left, right);
     
-    osg::notify(osg::NOTICE)<<"left = "<<left<<std::endl;
-    osg::notify(osg::NOTICE)<<"right = "<<right<<std::endl;
+    //osg::notify(osg::NOTICE)<<"left = "<<left<<std::endl;
+    //osg::notify(osg::NOTICE)<<"right = "<<right<<std::endl;
 
     return osg::BoundingSphere((left+right)*0.5, (right-left).length()*0.5);
 }
 
+
+void Layer::addProperty(Property* property)
+{
+    if (!property) return;
+
+    if (!_property) 
+    {
+        _property = property;
+        return;
+    }
+    
+    CompositeProperty* cp = dynamic_cast<CompositeProperty*>(_property.get());
+    if (cp)
+    {
+        cp->addProperty(property);
+    }
+    else
+    {
+        cp = new CompositeProperty;
+        cp->addProperty(property);
+        _property = cp;
+    }
+}
 
 /////////////////////////////////////////////////////////////////////////////
 //

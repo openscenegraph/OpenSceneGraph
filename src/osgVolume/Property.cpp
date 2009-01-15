@@ -36,7 +36,7 @@ CompositeProperty::CompositeProperty()
 {
 }
 
-CompositeProperty::CompositeProperty(const CompositeProperty& compositeProperty,const osg::CopyOp& copyop):
+CompositeProperty::CompositeProperty(const CompositeProperty& compositeProperty, const osg::CopyOp& copyop):
     Property(compositeProperty,copyop)
 {
 }
@@ -56,8 +56,85 @@ TransferFunctionProperty::TransferFunctionProperty(osg::TransferFunction* tf):
 {
 }
 
-TransferFunctionProperty::TransferFunctionProperty(const TransferFunctionProperty& tfp,const osg::CopyOp& copyop):
+TransferFunctionProperty::TransferFunctionProperty(const TransferFunctionProperty& tfp, const osg::CopyOp& copyop):
     Property(tfp,copyop),
     _tf(tfp._tf)
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// ScalarProperty
+//
+ScalarProperty::ScalarProperty()
+{
+    _uniform = new osg::Uniform;
+}
+
+ScalarProperty::ScalarProperty(const std::string& scalarName, float value)
+{
+    setName(scalarName);
+    _uniform = new osg::Uniform(scalarName.c_str(), value);
+}
+
+ScalarProperty::ScalarProperty(const ScalarProperty& sp, const osg::CopyOp& copyop):
+    Property(sp,copyop)
+{
+    _uniform = new osg::Uniform(sp._uniform->getName().c_str(), getValue());
+
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// IsoSurfaceProperty
+//
+IsoSurfaceProperty::IsoSurfaceProperty(float value):
+    ScalarProperty("IsoSurfaceValue",value)
+{
+}
+
+IsoSurfaceProperty::IsoSurfaceProperty(const IsoSurfaceProperty& isp,const osg::CopyOp& copyop):
+    ScalarProperty(isp, copyop)
+{
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AlphaFuncProperty
+//
+AlphaFuncProperty::AlphaFuncProperty(float value):
+    ScalarProperty("AlphaFuncValue",value)
+{
+}
+
+AlphaFuncProperty::AlphaFuncProperty(const AlphaFuncProperty& afp,const osg::CopyOp& copyop):
+    ScalarProperty(afp, copyop)
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// MaximumIntensityProjectionProperty
+//
+MaximumIntensityProjectionProperty::MaximumIntensityProjectionProperty()
+{
+}
+
+MaximumIntensityProjectionProperty::MaximumIntensityProjectionProperty(const MaximumIntensityProjectionProperty& isp,const osg::CopyOp& copyop):
+    Property(isp, copyop)
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// LightingProperty
+//
+LightingProperty::LightingProperty()
+{
+}
+
+LightingProperty::LightingProperty(const LightingProperty& isp,const osg::CopyOp& copyop):
+    Property(isp, copyop)
 {
 }

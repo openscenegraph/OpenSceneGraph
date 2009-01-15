@@ -215,7 +215,7 @@ void Camera::setProjectionMatrixAsPerspective(double fovy,double aspectRatio,
 
 bool Camera::getProjectionMatrixAsOrtho(double& left, double& right,
                                            double& bottom, double& top,
-                                           double& zNear, double& zFar)
+                                           double& zNear, double& zFar) const
 {
     return _projectionMatrix.getOrtho(left, right,
                                        bottom, top,
@@ -224,7 +224,7 @@ bool Camera::getProjectionMatrixAsOrtho(double& left, double& right,
 
 bool Camera::getProjectionMatrixAsFrustum(double& left, double& right,
                                              double& bottom, double& top,
-                                             double& zNear, double& zFar)
+                                             double& zNear, double& zFar) const
 {
     return _projectionMatrix.getFrustum(left, right,
                                          bottom, top,
@@ -232,7 +232,7 @@ bool Camera::getProjectionMatrixAsFrustum(double& left, double& right,
 }                                  
 
 bool Camera::getProjectionMatrixAsPerspective(double& fovy,double& aspectRatio,
-                                                 double& zNear, double& zFar)
+                                                 double& zNear, double& zFar) const
 {
     return _projectionMatrix.getPerspective(fovy, aspectRatio, zNear, zFar);
 }                                                 
@@ -242,12 +242,12 @@ void Camera::setViewMatrixAsLookAt(const Vec3d& eye,const Vec3d& center,const Ve
     setViewMatrix(osg::Matrixd::lookAt(eye,center,up));
 }
 
-void Camera::getViewMatrixAsLookAt(Vec3d& eye,Vec3d& center,Vec3d& up,double lookDistance)
+void Camera::getViewMatrixAsLookAt(Vec3d& eye,Vec3d& center,Vec3d& up,double lookDistance) const
 {
     _viewMatrix.getLookAt(eye,center,up,lookDistance);
 }
 
-void Camera::getViewMatrixAsLookAt(Vec3f& eye,Vec3f& center,Vec3f& up,float lookDistance)
+void Camera::getViewMatrixAsLookAt(Vec3f& eye,Vec3f& center,Vec3f& up,float lookDistance) const
 {
     _viewMatrix.getLookAt(eye,center,up,lookDistance);
 }

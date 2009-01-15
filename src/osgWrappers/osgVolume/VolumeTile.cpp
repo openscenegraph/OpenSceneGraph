@@ -148,9 +148,9 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTile)
 	          __Layer_P1__getLayer,
 	          "",
 	          "");
-	I_Method0(const osgVolume::Layer *, getImage,
+	I_Method0(const osgVolume::Layer *, getLayer,
 	          Properties::NON_VIRTUAL,
-	          __C5_Layer_P1__getImage,
+	          __C5_Layer_P1__getLayer,
 	          "",
 	          "");
 	I_Method1(void, setVolumeTechnique, IN, osgVolume::VolumeTechnique *, VolumeTechnique,
@@ -186,9 +186,6 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTile)
 	I_SimpleProperty(bool, Dirty, 
 	                 __bool__getDirty, 
 	                 __void__setDirty__bool);
-	I_SimpleProperty(const osgVolume::Layer *, Image, 
-	                 __C5_Layer_P1__getImage, 
-	                 0);
 	I_SimpleProperty(osgVolume::Layer *, Layer, 
 	                 __Layer_P1__getLayer, 
 	                 __void__setLayer__Layer_P1);

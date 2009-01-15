@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -74,10 +74,10 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Set the DsplaySettings object associated with this view.*/
         void setDisplaySettings(osg::DisplaySettings* ds) { _displaySettings = ds; }
-        
+
         /** Set the DsplaySettings object associated with this view.*/
         osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
-        
+
         /** Set the DsplaySettings object associated with this view.*/
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
@@ -89,42 +89,42 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         /** Get the clear mask.*/
         inline GLbitfield getClearMask() const { return _clearMask; }
 
-        /** Set the clear color used in glClearColor(..). 
+        /** Set the clear color used in glClearColor(..).
           * glClearColor is only called if mask & GL_COLOR_BUFFER_BIT is true*/
         void setClearColor(const osg::Vec4& color) { _clearColor=color; applyMaskAction(CLEAR_COLOR); }
-        
+
         /** Get the clear color.*/
         const osg::Vec4& getClearColor() const { return _clearColor; }
-        
-        /** Set the clear accum used in glClearAccum(..). 
+
+        /** Set the clear accum used in glClearAccum(..).
           * glClearAcumm is only called if mask & GL_ACCUM_BUFFER_BIT is true. */
         void setClearAccum(const osg::Vec4& color) { _clearAccum=color; }
-        
+
         /** Get the clear accum value.*/
         const osg::Vec4& getClearAccum() const { return _clearAccum; }
-        
+
         /** Set the clear depth used in glClearDepth(..). Defaults to 1.0
           * glClearDepth is only called if mask & GL_DEPTH_BUFFER_BIT is true. */
         void setClearDepth(double depth) { _clearDepth=depth; }
-        
+
         /** Get the clear depth value.*/
         double getClearDepth() const { return _clearDepth; }
 
         /** Set the clear stencil value used in glClearStencil(). Defaults to 0;
           * glClearStencil is only called if mask & GL_STENCIL_BUFFER_BIT is true*/
         void setClearStencil(int stencil) { _clearStencil=stencil; }
-        
+
         /** Get the clear stencil value.*/
         int getClearStencil() const { return _clearStencil; }
-        
-        
+
+
         /** Set the color mask of the camera to use specified osg::ColorMask. */
         void setColorMask(osg::ColorMask* colorMask);
 
 
         /** Set the color mask of the camera to specified values. */
         void setColorMask(bool red, bool green, bool blue, bool alpha);
-        
+
         /** Get the const ColorMask. */
         const ColorMask* getColorMask() const { return _colorMask.get(); }
 
@@ -137,7 +137,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Set the viewport of the camera to specified dimensions. */
         void setViewport(int x,int y,int width,int height);
-        
+
         /** Get the const viewport. */
         const Viewport* getViewport() const { return _viewport.get(); }
 
@@ -148,22 +148,22 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         enum TransformOrder
         {
             PRE_MULTIPLY,
-            POST_MULTIPLY  
+            POST_MULTIPLY
         };
-        
+
         /** Set the transformation order for world-to-local and local-to-world transformation.*/
         void setTransformOrder(TransformOrder order) { _transformOrder = order; }
 
         /** Get the transformation order.*/
         TransformOrder getTransformOrder() const { return _transformOrder; }
-        
+
         enum ProjectionResizePolicy
         {
             FIXED, /** Keep the projection matrix fixed, despite window resizes.*/
             HORIZONTAL, /** Adjust the HORIZOTNAL field of view on window resizes.*/
             VERTICAL /** Adjust the VERTICAL field of view on window resizes.*/
         };
-        
+
         /** Set the policy used to determine if and how the projection matrix should be adjusted on window resizes. */
         inline void setProjectionResizePolicy(ProjectionResizePolicy policy) { _projectionResizePolicy = policy; }
 
@@ -202,7 +202,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         /** Get the const projection matrix.*/
         const osg::Matrixd& getProjectionMatrix() const { return _projectionMatrix; }
 
-        /** Get the orthographic settings of the orthographic projection matrix. 
+        /** Get the orthographic settings of the orthographic projection matrix.
           * Returns false if matrix is not an orthographic matrix, where parameter values are undefined.*/
         bool getProjectionMatrixAsOrtho(double& left, double& right,
                                         double& bottom, double& top,
@@ -215,7 +215,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
                                           double& zNear, double& zFar) const;
 
         /** Get the frustum setting of a symmetric perspective projection matrix.
-          * Returns false if matrix is not a perspective matrix, where parameter values are undefined. 
+          * Returns false if matrix is not a perspective matrix, where parameter values are undefined.
           * Note, if matrix is not a symmetric perspective matrix then the shear will be lost.
           * Asymmetric matrices occur when stereo, power walls, caves and reality center display are used.
           * In these configurations one should use the 'getProjectionMatrixAsFrustum' method instead.*/
@@ -226,7 +226,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
         inline void setViewMatrix(const osg::Matrixf& matrix) { _viewMatrix.set(matrix);  dirtyBound();}
-        
+
         /** Set the view matrix. Can be thought of as setting the position of the world relative to the camera in camera coordinates. */
         inline void setViewMatrix(const osg::Matrixd& matrix) { _viewMatrix.set(matrix);  dirtyBound();}
 
@@ -248,24 +248,24 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         /** Get the inverse view matrix.*/
         Matrixd getInverseViewMatrix() const;
 
-        
+
         enum RenderOrder
         {
             PRE_RENDER,
             NESTED_RENDER,
             POST_RENDER
         };
-        
+
         /** Set the rendering order of this camera's subgraph relative to any camera that this subgraph is nested within.
           * For rendering to a texture, one typically uses PRE_RENDER.
           * For Head Up Displays, one would typically use POST_RENDER.*/
         void setRenderOrder(RenderOrder order, int orderNum = 0) { _renderOrder = order; _renderOrderNum = orderNum; }
-        
+
         /** Get the rendering order of this camera's subgraph relative to any camera that this subgraph is nested within.*/
         RenderOrder getRenderOrder() const { return _renderOrder; }
 
         /** Get the rendering order number of this camera relative to any sibling cameras in this subgraph.*/
-        int getRenderOrderNum() const { return _renderOrderNum; }        
+        int getRenderOrderNum() const { return _renderOrderNum; }
 
         /** Return true if this Camera is set up as a render to texture camera, i.e. it has textures assigned to it.*/
         bool isRenderToTextureCamera() const;
@@ -292,14 +292,14 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         RenderTargetImplementation getRenderTargetFallback() const { return _renderTargetFallback; }
 
 
-        /** Set the draw buffer used at the start of each frame draw. 
+        /** Set the draw buffer used at the start of each frame draw.
           * Note, a buffer value of GL_NONE is used to sepecify that the rendering back-end should choose the most appropriate buffer.*/
         void setDrawBuffer(GLenum buffer) { _drawBuffer = buffer; }
 
         /** Get the draw buffer used at the start of each frame draw. */
         GLenum getDrawBuffer() const { return _drawBuffer; }
 
-        /** Set the read buffer for any required copy operations to use.  
+        /** Set the read buffer for any required copy operations to use.
           * Note, a buffer value of GL_NONE is used to sepecify that the rendering back-end should choose the most appropriate buffer.*/
         void setReadBuffer(GLenum buffer) { _readBuffer = buffer; }
 
@@ -333,9 +333,9 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         /** Attach a buffer with specified OpenGL internal format.*/
         void attach(BufferComponent buffer, GLenum internalFormat);
 
-        /** Attach a Texture to specified buffer component. 
-          * The level parameter controls the mip map level of the texture that is attached. 
-          * The face parameter controls the face of texture cube map or z level of 3d texture. 
+        /** Attach a Texture to specified buffer component.
+          * The level parameter controls the mip map level of the texture that is attached.
+          * The face parameter controls the face of texture cube map or z level of 3d texture.
           * The mipMapGeneration flag controls whether mipmap generation should be done for texture.*/
         void attach(BufferComponent buffer, osg::Texture* texture, unsigned int level = 0, unsigned int face=0, bool mipMapGeneration=false,
             unsigned int multisampleSamples = 0,
@@ -348,7 +348,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Detach specified buffer component.*/
         void detach(BufferComponent buffer);
-        
+
         struct Attachment
         {
             Attachment():
@@ -358,24 +358,24 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
                 _mipMapGeneration(false),
                 _multisampleSamples(0),
                 _multisampleColorSamples(0) {}
-        
+
             int width() const
             {
-                if (_texture.valid()) return _texture->getTextureWidth(); 
+                if (_texture.valid()) return _texture->getTextureWidth();
                 if (_image.valid()) return _image->s();
                 return 0;
             };
 
             int height() const
             {
-                if (_texture.valid()) return _texture->getTextureHeight(); 
+                if (_texture.valid()) return _texture->getTextureHeight();
                 if (_image.valid()) return _image->t();
                 return 0;
             };
-        
+
             int depth() const
             {
-                if (_texture.valid()) return _texture->getTextureDepth(); 
+                if (_texture.valid()) return _texture->getTextureDepth();
                 if (_image.valid()) return _image->r();
                 return 0;
             };
@@ -389,9 +389,9 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
             unsigned int        _multisampleSamples;
             unsigned int        _multisampleColorSamples;
         };
-        
+
         typedef std::map< BufferComponent, Attachment> BufferAttachmentMap;
-        
+
         /** Get the BufferAttachmentMap, used to configure frame buffer objects, pbuffers and texture reads.*/
         BufferAttachmentMap& getBufferAttachmentMap() { return _bufferAttachmentMap; }
 
@@ -421,8 +421,8 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Get the const GraphicsContext.*/
         const GraphicsContext* getGraphicsContext() const { return _graphicsContext.get(); }
-        
-        
+
+
         /** Set the Rendering object that is used to implement rendering of the subgraph.*/
         void setRenderer(osg::GraphicsOperation* rc) { _renderer = rc; }
 
@@ -431,7 +431,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Get the const Rendering object that is used to implement rendering of the subgraph.*/
         const osg::GraphicsOperation* getRenderer() const { return _renderer.get(); }
-        
+
 
         /** Set the Rendering cache that is used for cached objects associated with rendering of subgraphs.*/
         void setRenderingCache(osg::Object* rc) { _renderingCache = rc; }
@@ -441,7 +441,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Get the const Rendering cache that is used for cached objects associated with rendering of subgraphs.*/
         const osg::Object* getRenderingCache() const { return _renderingCache.get(); }
- 
+
 
         /** Draw callback for custom operations.*/
         struct OSG_EXPORT DrawCallback : virtual public Object
@@ -452,13 +452,13 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
             META_Object(osg, DrawCallback);
 
-            /** Functor method called by rendering thread. Users will typically override this method to carry tasks such as screen capture.*/ 
+            /** Functor method called by rendering thread. Users will typically override this method to carry tasks such as screen capture.*/
             virtual void operator () (osg::RenderInfo& renderInfo) const;
 
-            /** Functor method, provided for backwards compatibility, called by operator() (osg::RenderInfo& renderInfo) method.*/ 
+            /** Functor method, provided for backwards compatibility, called by operator() (osg::RenderInfo& renderInfo) method.*/
             virtual void operator () (const osg::Camera& /*camera*/) const {}
         };
-        
+
         /** Set the initial draw callback for custom operations to be done before the drawing of the camera's subgraph and pre render stages.*/
         void setInitialDrawCallback(DrawCallback* cb) { _initialDrawCallback = cb; }
 
@@ -467,7 +467,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Get the const initial draw callback.*/
         const DrawCallback* getInitialDrawCallback() const { return _initialDrawCallback.get(); }
- 
+
 
         /** Set the pre draw callback for custom operations to be done before the drawing of the camera's subgraph but after any pre render stages have been completed.*/
         void setPreDrawCallback(DrawCallback* cb) { _preDrawCallback = cb; }
@@ -477,7 +477,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Get the const pre draw callback.*/
         const DrawCallback* getPreDrawCallback() const { return _preDrawCallback.get(); }
- 
+
 
         /** Set the post draw callback for custom operations to be done after the drawing of the camera's subgraph but before the any post render stages have been completed.*/
         void setPostDrawCallback(DrawCallback* cb) { _postDrawCallback = cb; }
@@ -487,7 +487,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Get the const post draw callback.*/
         const DrawCallback* getPostDrawCallback() const { return _postDrawCallback.get(); }
-        
+
 
         /** Set the final draw callback for custom operations to be done after the drawing of the camera's subgraph and all of the post render stages has been completed.*/
         void setFinalDrawCallback(DrawCallback* cb) { _finalDrawCallback = cb; }
@@ -498,7 +498,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         /** Get the const final draw callback.*/
         const DrawCallback* getFinalDrawCallback() const { return _finalDrawCallback.get(); }
 
- 
+
         OpenThreads::Mutex* getDataChangeMutex() const { return &_dataChangeMutex; }
 
         /** Resize any per context GLObject buffers to specified size. */
@@ -521,9 +521,9 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         virtual void inheritCullSettings(const CullSettings& settings, unsigned int inheritanceMask);
 
     protected :
-    
+
         virtual ~Camera();
-        
+
         mutable OpenThreads::Mutex          _dataChangeMutex;
 
 
@@ -532,7 +532,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         osg::ref_ptr<osg::Stats>            _stats;
 
         bool                                _allowEventFocus;
-        
+
         osg::ref_ptr<osg::DisplaySettings>  _displaySettings;
 
         GLbitfield                          _clearMask;
@@ -540,7 +540,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         osg::Vec4                           _clearAccum;
         double                              _clearDepth;
         int                                 _clearStencil;
-        
+
         ref_ptr<ColorMask>                  _colorMask;
         ref_ptr<Viewport>                   _viewport;
 
@@ -549,24 +549,24 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         Matrixd                             _projectionMatrix;
         Matrixd                             _viewMatrix;
-        
+
         RenderOrder                         _renderOrder;
         int                                 _renderOrderNum;
-        
+
         GLenum                              _drawBuffer;
         GLenum                              _readBuffer;
-        
+
         RenderTargetImplementation          _renderTargetImplementation;
         RenderTargetImplementation          _renderTargetFallback;
         BufferAttachmentMap                 _bufferAttachmentMap;
 
         ref_ptr<OperationThread>            _cameraThread;
-        
+
         ref_ptr<GraphicsContext>            _graphicsContext;
-        
+
         ref_ptr<GraphicsOperation>          _renderer;
         ref_ptr<Object>                     _renderingCache;
-        
+
         ref_ptr<DrawCallback>               _initialDrawCallback;
         ref_ptr<DrawCallback>               _preDrawCallback;
         ref_ptr<DrawCallback>               _postDrawCallback;

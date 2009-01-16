@@ -44,6 +44,8 @@ class OSGVOLUME_EXPORT FixedFunctionTechnique : public VolumeTechnique
     protected:
     
         virtual ~FixedFunctionTechnique();
+        
+        osg::ref_ptr<osg::Node> _node;
 };
 
 }

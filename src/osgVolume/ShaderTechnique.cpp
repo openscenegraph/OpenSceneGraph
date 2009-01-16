@@ -49,36 +49,6 @@ enum ShadingModel
     MaximumIntensityProjection
 };
 
-class CollectPropertiesVisitor : public osgVolume::PropertyVisitor
-{
-    public:
-    
-        CollectPropertiesVisitor() {}
-        
-        virtual void apply(Property&) {}
-        
-        virtual void apply(CompositeProperty& cp)
-        { 
-            for(unsigned int i=0; i<cp.getNumProperties(); ++i)
-            {
-                cp.getProperty(i)->accept(*this);
-            }
-        }
-        virtual void apply(TransferFunctionProperty& tf) { _tfProperty = &tf; }
-        virtual void apply(ScalarProperty&) {}
-        virtual void apply(IsoSurfaceProperty& iso) { _isoProperty = &iso; }
-        virtual void apply(AlphaFuncProperty& af) { _afProperty = &af; }
-        virtual void apply(MaximumIntensityProjectionProperty& mip) { _mipProperty = &mip; }
-        virtual void apply(LightingProperty& lp) { _lightingProperty = &lp; }
-        
-        osg::ref_ptr<TransferFunctionProperty> _tfProperty;
-        osg::ref_ptr<IsoSurfaceProperty> _isoProperty;
-        osg::ref_ptr<AlphaFuncProperty> _afProperty;
-        osg::ref_ptr<MaximumIntensityProjectionProperty> _mipProperty;
-        osg::ref_ptr<LightingProperty> _lightingProperty;
-        
-};
-
 void ShaderTechnique::init()
 {
     osg::notify(osg::NOTICE)<<"ShaderTechnique::init()"<<std::endl;
@@ -145,15 +115,14 @@ void ShaderTechnique::init()
     
     osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<std::endl;
 
-    osg::Image* normalmap_3d = 0;
     osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
 
     float xSize = (matrix)(0,0);
     float ySize = (matrix)(1,1);
     float zSize = (matrix)(2,2);
 
-    if (true)
-    {    
+    {
+
         osg::Texture::FilterMode minFilter = osg::Texture::LINEAR;
         osg::Texture::FilterMode magFilter = osg::Texture::LINEAR;
 
@@ -177,7 +146,6 @@ void ShaderTechnique::init()
             program->addShader(new osg::Shader(osg::Shader::VERTEX, volume_vert));
         }
 
-        if (!(normalmap_3d && tf))
         {
             // set up the 3d texture itself,
             // note, well set the filtering up so that mip mapping is disabled,
@@ -286,63 +254,6 @@ void ShaderTechnique::init()
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_iso_frag));
                 }
             }
-        }
-        else if (normalmap_3d)
-        {
-            osg::notify(osg::NOTICE)<<"Setting up normalmapping shader"<<std::endl;
-
-            osg::Uniform* normalMapSampler = new osg::Uniform("normalMap",1);
-            stateset->addUniform(normalMapSampler);
-
-            osg::Texture3D* normalMap = new osg::Texture3D;
-            normalMap->setImage(normalmap_3d);    
-            normalMap->setResizeNonPowerOfTwoHint(false);
-            normalMap->setInternalFormatMode(internalFormatMode);
-            normalMap->setFilter(osg::Texture3D::MIN_FILTER, osg::Texture::LINEAR);
-            normalMap->setFilter(osg::Texture3D::MAG_FILTER, osg::Texture::LINEAR);
-            normalMap->setWrap(osg::Texture3D::WRAP_R,osg::Texture3D::CLAMP_TO_EDGE);
-            normalMap->setWrap(osg::Texture3D::WRAP_S,osg::Texture3D::CLAMP_TO_EDGE);
-            normalMap->setWrap(osg::Texture3D::WRAP_T,osg::Texture3D::CLAMP_TO_EDGE);
-
-            stateset->setTextureAttributeAndModes(1,normalMap,osg::StateAttribute::ON);
-
-            if (tf)
-            {
-                osg::Texture1D* texture1D = new osg::Texture1D;
-                texture1D->setImage(tf->getImage());    
-                texture1D->setResizeNonPowerOfTwoHint(false);
-                texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
-                texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
-                texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
-                stateset->setTextureAttributeAndModes(0,texture1D,osg::StateAttribute::ON);
-
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume-tf-n.frag");
-                if (fragmentShader)
-                {
-                    program->addShader(fragmentShader);
-                }
-                else
-                {
-                    #include "Shaders/volume_tf_n_frag.cpp"
-                    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_n_frag));
-                }
-
-                osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",0);
-                stateset->addUniform(tfTextureSampler);
-            }
-            else
-            {
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume-n.frag");
-                if (fragmentShader)
-                {
-                    program->addShader(fragmentShader);
-                }
-                else
-                {
-                    #include "Shaders/volume_n_frag.cpp"
-                    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_n_frag));
-                }
-            }
         } 
         else if (tf)
         {
@@ -397,10 +308,7 @@ void ShaderTechnique::init()
 
         osg::TexGen* texgen = new osg::TexGen;
         texgen->setMode(osg::TexGen::OBJECT_LINEAR);
-        texgen->setPlane(osg::TexGen::S, osg::Plane(1.0f/xSize,0.0f,0.0f,0.0f));
-        texgen->setPlane(osg::TexGen::T, osg::Plane(0.0f,1.0f/ySize,0.0f,0.0f));
-        texgen->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,1.0f/zSize,0.0f));
-        texgen->setPlane(osg::TexGen::Q, osg::Plane(0.0f,0.0f,0.0f,1.0f));
+        texgen->setPlanesFromMatrix(osg::Matrix::inverse(matrix));
 
         stateset->setTextureAttributeAndModes(0, texgen, osg::StateAttribute::ON);
 

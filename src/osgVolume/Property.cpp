@@ -138,3 +138,26 @@ LightingProperty::LightingProperty(const LightingProperty& isp,const osg::CopyOp
     Property(isp, copyop)
 {
 }
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// CollectPropertiesVisitor
+//
+CollectPropertiesVisitor::CollectPropertiesVisitor() {}
+
+void CollectPropertiesVisitor::apply(Property&) {}
+
+void CollectPropertiesVisitor::apply(CompositeProperty& cp)
+{ 
+    for(unsigned int i=0; i<cp.getNumProperties(); ++i)
+    {
+        cp.getProperty(i)->accept(*this);
+    }
+}
+
+void CollectPropertiesVisitor::apply(TransferFunctionProperty& tf) { _tfProperty = &tf; }
+void CollectPropertiesVisitor::apply(ScalarProperty&) {}
+void CollectPropertiesVisitor::apply(IsoSurfaceProperty& iso) { _isoProperty = &iso; }
+void CollectPropertiesVisitor::apply(AlphaFuncProperty& af) { _afProperty = &af; }
+void CollectPropertiesVisitor::apply(MaximumIntensityProjectionProperty& mip) { _mipProperty = &mip; }
+void CollectPropertiesVisitor::apply(LightingProperty& lp) { _lightingProperty = &lp; }

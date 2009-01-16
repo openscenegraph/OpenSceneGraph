@@ -48,6 +48,7 @@ class PropertyVisitor
         virtual void apply(LightingProperty&) {}
 };
 
+
 class OSGVOLUME_EXPORT Property : public osg::Object
 {
     public:
@@ -237,6 +238,30 @@ class OSGVOLUME_EXPORT LightingProperty : public Property
         virtual ~LightingProperty() {}
 };
 
+
+class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisitor
+{
+    public:
+    
+        CollectPropertiesVisitor();
+        
+        virtual void apply(Property&);
+        
+        virtual void apply(CompositeProperty& cp);
+        virtual void apply(TransferFunctionProperty& tf);
+        virtual void apply(ScalarProperty&);
+        virtual void apply(IsoSurfaceProperty& iso);
+        virtual void apply(AlphaFuncProperty& af);
+        virtual void apply(MaximumIntensityProjectionProperty& mip);
+        virtual void apply(LightingProperty& lp);
+        
+        osg::ref_ptr<TransferFunctionProperty> _tfProperty;
+        osg::ref_ptr<IsoSurfaceProperty> _isoProperty;
+        osg::ref_ptr<AlphaFuncProperty> _afProperty;
+        osg::ref_ptr<MaximumIntensityProjectionProperty> _mipProperty;
+        osg::ref_ptr<LightingProperty> _lightingProperty;
+        
+};
 
 }
 

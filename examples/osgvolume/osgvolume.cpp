@@ -1948,7 +1948,7 @@ int main( int argc, char **argv )
 
     bool useShader = true; 
     while(arguments.read("--shader")) { useShader = true; }
-    while(arguments.read("--no-shader")) { useShader = true; }
+    while(arguments.read("--no-shader")) { useShader = false; }
 
     bool gpuTransferFunction = true; 
     while(arguments.read("--gpu-tf")) { gpuTransferFunction = true; }

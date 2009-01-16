@@ -112,14 +112,11 @@ void ShaderTechnique::init()
     {
         matrix = masterLocator->getTransform();
     }
-    
+
+
     osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<std::endl;
 
     osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
-
-    float xSize = (matrix)(0,0);
-    float ySize = (matrix)(1,1);
-    float zSize = (matrix)(2,2);
 
     {
 

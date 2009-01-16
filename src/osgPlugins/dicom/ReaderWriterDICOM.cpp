@@ -134,12 +134,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         
             if (matrix)
             {
-            
-            
-                // scale up to provide scale of complete tile
-                osg::Vec3d scale(osg::Vec3(result.getImage()->s(),result.getImage()->t(), result.getImage()->r()));
-                matrix->postMultScale(scale);
-                
                 osgVolume::Locator* locator = new osgVolume::Locator(*matrix);
 
                 tile->setLocator(locator);
@@ -240,6 +234,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             }
             
             image->setUserData(matrix);
+            
+            matrix.preMult(osg::Matrix::scale(double(image->s()), double(image->t()), double(image->r())));
 
             return image;
         }
@@ -622,6 +618,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             (*matrix)(1,2) = fileInfo.matrix(1,2) * averageThickness;
                             (*matrix)(2,2) = fileInfo.matrix(2,2) * averageThickness;
                             
+
+                            
                             image = new osg::Image;
                             image->setUserData(matrix.get());
                             image->setFileName(fileName.c_str());
@@ -629,6 +627,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                                                  pixelFormat, dataType);
                                                  
                                                  
+                            matrix->preMult(osg::Matrix::scale(double(image->s()), double(image->t()), double(image->r())));
+
                             notice()<<"Image dimensions = "<<image->s()<<", "<<image->t()<<", "<<image->r()<<" pixelFormat=0x"<<std::hex<<pixelFormat<<" dataType=0x"<<std::hex<<dataType<<std::endl;
                         }
                         else if (pixelData->getPlanes()>numPlanes ||

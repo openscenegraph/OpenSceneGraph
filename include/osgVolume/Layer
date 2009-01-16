@@ -15,6 +15,7 @@
 #define OSGVOLUME_LAYER 1
 
 #include <osg/Image>
+#include <osg/TransferFunction>
 
 #include <osgVolume/Locator>
 #include <osgVolume/Property>
@@ -207,6 +208,12 @@ class OSGVOLUME_EXPORT CompositeLayer : public Layer
         
         Layers _layers;
 };
+
+/** Compute a 3d image that represent the normal map of the specified 3d image.*/
+extern OSGVOLUME_EXPORT osg::Image* createNormalMapTexture(osg::Image* image_3d);
+
+/** Create an image that has a transfer function applied specified Image.*/
+extern OSGVOLUME_EXPORT osg::Image* applyTransferFunction(osg::Image* image, osg::TransferFunction1D* transferFunction);
 
 }
 

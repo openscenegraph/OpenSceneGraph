@@ -122,7 +122,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
             tile->setVolume(volume.get());
             
-            osg::ref_ptr<osgVolume::Layer> layer= new osgVolume::ImageLayer(result.getImage());
+            osg::ref_ptr<osgVolume::ImageLayer> layer= new osgVolume::ImageLayer(result.getImage());
+            layer->rescaleToZeroToOneRange();
             
             tile->setLayer(layer.get());
 

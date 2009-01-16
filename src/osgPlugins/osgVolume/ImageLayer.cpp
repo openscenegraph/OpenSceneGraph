@@ -12,6 +12,8 @@
 #include <osgDB/Input>
 #include <osgDB/Output>
 #include <osgDB/ParameterOutput>
+#include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 
 #include <osgVolume/VolumeTile>
 
@@ -44,10 +46,31 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
 
             if (!deferExternalLayerLoading)
             {
-                osg::ref_ptr<osg::Image> image = fr.readImage(filename.c_str());
-                if (image.valid())
+
+                osgDB::FileType fileType = osgDB::fileType(filename);
+                if (fileType == osgDB::FILE_NOT_FOUND)
                 {
+                    filename = osgDB::findDataFile(filename);
+                    fileType = osgDB::fileType(filename);
+                }
+
+                osg::ref_ptr<osg::Image> image;
+                if (fileType == osgDB::DIRECTORY)
+                {
+                    image = osgDB::readImageFile(filename+".dicom");
+                    
+                }
+                else if (fileType == osgDB::REGULAR_FILE)
+                {
+                    image = osgDB::readImageFile( filename );
+                }
+
+                osg::notify(osg::NOTICE)<<"image "<<filename<<" pixelFormat "<<std::hex<<image->getPixelFormat()<<" textureFormat "<<image->getInternalTextureFormat()<<" dataType "<<image->getDataType()<<std::endl;
+
+                if (image.valid())
+                {                
                     layer.setImage(image.get());
+                    layer.rescaleToZeroToOneRange();
                 }
             }
         }

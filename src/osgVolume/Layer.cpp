@@ -13,13 +13,14 @@
 
 #include <osgVolume/Layer>
 
+#include <osg/ImageUtils>
 #include <osg/Notify>
 #include <osg/io_utils>
 
 using namespace osgVolume;
 
 Layer::Layer():
-    _minFilter(osg::Texture::LINEAR_MIPMAP_LINEAR),
+    _minFilter(osg::Texture::LINEAR),
     _magFilter(osg::Texture::LINEAR)
 {
 }
@@ -110,7 +111,58 @@ unsigned int ImageLayer::getModifiedCount() const
     else return _image->getModifiedCount();
 }
 
+bool ImageLayer::computeMinMax(osg::Vec4& minValue, osg::Vec4& maxValue)
+{
+    if (_image.valid()) return osg::computeMinMax(_image.get(), minValue, maxValue);
+    else return false;
+}
 
+void ImageLayer::offsetAndScaleImage(const osg::Vec4& offset, const osg::Vec4& scale)
+{
+    if (!_image) return;
+    
+    osg::offsetAndScaleImage(_image.get(), offset, scale);
+}
+
+void ImageLayer::rescaleToZeroToOneRange()
+{
+    osg::Vec4 minValue, maxValue;
+    if (computeMinMax(minValue, maxValue))
+    {
+        float minComponent = minValue[0];
+        minComponent = osg::minimum(minComponent,minValue[1]);
+        minComponent = osg::minimum(minComponent,minValue[2]);
+        minComponent = osg::minimum(minComponent,minValue[3]);
+
+        float maxComponent = maxValue[0];
+        maxComponent = osg::maximum(maxComponent,maxValue[1]);
+        maxComponent = osg::maximum(maxComponent,maxValue[2]);
+        maxComponent = osg::maximum(maxComponent,maxValue[3]);
+        
+        float scale = 0.99f/(maxComponent-minComponent);
+        float offset = -minComponent * scale;
+
+        offsetAndScaleImage(osg::Vec4(offset, offset, offset, offset),
+                            osg::Vec4(scale, scale, scale, scale));
+    }
+}
+
+void ImageLayer::translateMinToZero()
+{
+    osg::Vec4 minValue, maxValue;
+    if (computeMinMax(minValue, maxValue))
+    {
+        float minComponent = minValue[0];
+        minComponent = osg::minimum(minComponent,minValue[1]);
+        minComponent = osg::minimum(minComponent,minValue[2]);
+        minComponent = osg::minimum(minComponent,minValue[3]);
+
+        float offset = -minComponent;
+
+        offsetAndScaleImage(osg::Vec4(offset, offset, offset, offset),
+                            osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    }
+}
 
 /////////////////////////////////////////////////////////////////////////////
 //

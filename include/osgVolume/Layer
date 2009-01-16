@@ -123,6 +123,18 @@ class OSGVOLUME_EXPORT ImageLayer : public Layer
 
         /** Return const image associated with layer. */
         virtual const osg::Image* getImage() const { return _image.get(); }
+                
+        /** Compute the min and max pixel colors.*/
+        bool computeMinMax(osg::Vec4& min, osg::Vec4& max);
+                
+        /** Apply color transformation to pixels using c' = offset + c * scale .*/
+        void offsetAndScaleImage(const osg::Vec4& offset, const osg::Vec4& scale);
+        
+        /** Compute the min max range of the image, and then remap this to a 0 to 1 range.*/
+        void rescaleToZeroToOneRange();
+               
+        /** Compute the min color component of the image and then translate and pixels by this offset to make the new min component 0.*/
+        void translateMinToZero();
 
         virtual void dirty();
         virtual void setModifiedCount(unsigned int value);

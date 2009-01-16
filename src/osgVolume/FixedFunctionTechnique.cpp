@@ -28,12 +28,14 @@
 
 using namespace osgVolume;
 
-FixedFunctionTechnique::FixedFunctionTechnique()
+FixedFunctionTechnique::FixedFunctionTechnique():
+    _numSlices(500)
 {
 }
 
 FixedFunctionTechnique::FixedFunctionTechnique(const FixedFunctionTechnique& fft,const osg::CopyOp& copyop):
-    VolumeTechnique(fft,copyop)
+    VolumeTechnique(fft,copyop),
+    _numSlices(fft._numSlices)
 {
 }
 
@@ -41,7 +43,16 @@ FixedFunctionTechnique::~FixedFunctionTechnique()
 {
 }
 
-osg::Node* createCube(float size,float alpha, unsigned int numSlices, float sliceEnd=1.0f)
+void FixedFunctionTechnique::setNumSlices(unsigned int numSlices)
+{
+    if (_numSlices==numSlices) return;
+    
+    _numSlices = numSlices;
+    
+    if (_volumeTile) _volumeTile->setDirty(true);
+}
+ 
+osg::Node* createCube(const osg::Vec3& center, float size, unsigned int numSlices)
 {
 
     // set up the Geometry.
@@ -49,7 +60,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
 
     float halfSize = size*0.5f;
     float y = halfSize;
-    float dy =-size/(float)(numSlices-1)*sliceEnd;
+    float dy =-size/(float)(numSlices-1);
 
     //y = -halfSize;
     //dy *= 0.5;
@@ -70,7 +81,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
     osg::Vec4Array* colors = new osg::Vec4Array(1);
-    (*colors)[0].set(1.0f,1.0f,1.0f,alpha);
+    (*colors)[0].set(1.0f,1.0f,1.0f,1.0);
     geom->setColorArray(colors);
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);
 
@@ -79,7 +90,7 @@ osg::Node* createCube(float size,float alpha, unsigned int numSlices, float slic
     osg::Billboard* billboard = new osg::Billboard;
     billboard->setMode(osg::Billboard::POINT_ROT_WORLD);
     billboard->addDrawable(geom);
-    billboard->setPosition(0,osg::Vec3(0.0f,0.0f,0.0f));
+    billboard->setPosition(0,center);
     
     return billboard;
 }
@@ -136,74 +147,37 @@ void FixedFunctionTechnique::init()
     
     osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<std::endl;
 
-
-    unsigned int numSlices=500;
-    float sliceEnd=1.0f;
-    float xSize = 1.0;
-    float ySize = 1.0;
-    float zSize = 1.0;
-    float xMultiplier = 1.0;
-    float yMultiplier = 1.0;
-    float zMultiplier = 1.0;
-
-     
-    osg::BoundingBox bb(-xSize*0.5f,-ySize*0.5f,-zSize*0.5f,xSize*0.5f,ySize*0.5f,zSize*0.5f);
-
     osg::Texture::FilterMode minFilter = osg::Texture::NEAREST;
     osg::Texture::FilterMode magFilter = osg::Texture::NEAREST;
 
-    float maxAxis = xSize;
-    if (ySize > maxAxis) maxAxis = ySize;
-    if (zSize > maxAxis) maxAxis = zSize;
-
-    osg::Group* group = new osg::Group;
+    osg::Vec3d v000 = osg::Vec3d(0.0,0.0,0.0) * matrix;
+    osg::Vec3d v100 = osg::Vec3d(1.0,0.0,0.0) * matrix;
+    osg::Vec3d v010 = osg::Vec3d(0.0,1.0,0.0) * matrix;
+    osg::Vec3d v110 = osg::Vec3d(1.0,1.0,0.0) * matrix;
     
-    osg::TexGenNode* texgenNode_0 = new osg::TexGenNode;
-    texgenNode_0->setTextureUnit(0);
-    texgenNode_0->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::S, osg::Plane(xMultiplier/xSize,0.0f,0.0f,0.5f));
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::T, osg::Plane(0.0f,yMultiplier/ySize,0.0f,0.5f));
-    texgenNode_0->getTexGen()->setPlane(osg::TexGen::R, osg::Plane(0.0f,0.0f,zMultiplier/zSize,0.5f));
+    osg::Vec3d v001 = osg::Vec3d(0.0,0.0,1.0) * matrix;
+    osg::Vec3d v101 = osg::Vec3d(1.0,0.0,1.0) * matrix;
+    osg::Vec3d v011 = osg::Vec3d(0.0,1.0,1.0) * matrix;
+    osg::Vec3d v111 = osg::Vec3d(1.0,1.0,1.0) * matrix;
     
-    group->addChild(texgenNode_0);
-
-    float cubeSize = sqrtf(xSize*xSize+ySize*ySize+zSize*zSize);
+    double cubeSize = (v111-v000).length();
+    osg::Vec3d center = (v000+v111)*0.5;
 
     osg::ClipNode* clipnode = new osg::ClipNode;
-    clipnode->addChild(createCube(cubeSize,1.0f, numSlices,sliceEnd));
-    clipnode->createClipBox(bb);
+    clipnode->addChild(createCube(center, cubeSize, _numSlices));
 
-    {
-        // set up the Geometry to enclose the clip volume to prevent near/far clipping from affecting billboard
-        osg::Geometry* geom = new osg::Geometry;
+    clipnode->addClipPlane(new osg::ClipPlane(0, osg::Plane(v000, v011, v001)));
+    clipnode->addClipPlane(new osg::ClipPlane(1, osg::Plane(v100, v111, v110)));
+    clipnode->addClipPlane(new osg::ClipPlane(2, osg::Plane(v000, v101, v100)));
+    clipnode->addClipPlane(new osg::ClipPlane(3, osg::Plane(v110, v011, v010)));
+    clipnode->addClipPlane(new osg::ClipPlane(4, osg::Plane(v000, v110, v010)));
+    clipnode->addClipPlane(new osg::ClipPlane(5, osg::Plane(v001, v111, v101)));
 
-        osg::Vec3Array* coords = new osg::Vec3Array();
-        coords->push_back(bb.corner(0));
-        coords->push_back(bb.corner(1));
-        coords->push_back(bb.corner(2));
-        coords->push_back(bb.corner(3));
-        coords->push_back(bb.corner(4));
-        coords->push_back(bb.corner(5));
-        coords->push_back(bb.corner(6));
-        coords->push_back(bb.corner(7));
-
-        geom->setVertexArray(coords);
-
-        osg::Vec4Array* colors = new osg::Vec4Array(1);
-        (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
-        geom->setColorArray(colors);
-        geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-
-        geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POINTS,0,coords->size()));
-
-        osg::Geode* geode = new osg::Geode;
-        geode->addDrawable(geom);
-        
-        clipnode->addChild(geode);
-        
-    }
-
+    osg::TexGenNode* texgenNode_0 = new osg::TexGenNode;
     texgenNode_0->addChild(clipnode);
+    texgenNode_0->setTextureUnit(0);                                                                                                                              
+    texgenNode_0->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);                                                                                                  
+    texgenNode_0->getTexGen()->setPlanesFromMatrix(osg::Matrix::inverse(matrix));                                                            
 
     osg::StateSet* stateset = texgenNode_0->getOrCreateStateSet();
 
@@ -254,8 +228,7 @@ void FixedFunctionTechnique::init()
 
     stateset->setTextureAttributeAndModes(0,new osg::TexEnv(),osg::StateAttribute::ON);
         
-        
-    _node = group;
+    _node = texgenNode_0;
 }
 
 void FixedFunctionTechnique::update(osgUtil::UpdateVisitor* uv)

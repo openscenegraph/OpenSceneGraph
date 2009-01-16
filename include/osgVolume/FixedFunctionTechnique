@@ -34,6 +34,11 @@ class OSGVOLUME_EXPORT FixedFunctionTechnique : public VolumeTechnique
         virtual void update(osgUtil::UpdateVisitor* nv);
 
         virtual void cull(osgUtil::CullVisitor* nv);
+        
+        void setNumSlices(unsigned int numSlices);
+
+        unsigned int getNumSlices() const { return _numSlices; }
+        
 
         /** Clean scene graph from any terrain technique specific nodes.*/
         virtual void cleanSceneGraph();
@@ -46,6 +51,8 @@ class OSGVOLUME_EXPORT FixedFunctionTechnique : public VolumeTechnique
         virtual ~FixedFunctionTechnique();
         
         osg::ref_ptr<osg::Node> _node;
+        
+        unsigned int _numSlices;
 };
 
 }

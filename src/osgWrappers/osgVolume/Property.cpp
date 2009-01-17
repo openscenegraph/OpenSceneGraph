@@ -13,6 +13,7 @@
 #include <osg/CopyOp>
 #include <osg/Object>
 #include <osg/TransferFunction>
+#include <osg/Uniform>
 #include <osgVolume/Property>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -22,6 +23,103 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+BEGIN_OBJECT_REFLECTOR(osgVolume::AlphaFuncProperty)
+	I_DeclaringFile("osgVolume/Property");
+	I_BaseType(osgVolume::ScalarProperty);
+	I_ConstructorWithDefaults1(IN, float, value, 1.0,
+	                           Properties::NON_EXPLICIT,
+	                           ____AlphaFuncProperty__float,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osgVolume::AlphaFuncProperty &, isp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____AlphaFuncProperty__C5_AlphaFuncProperty_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osgVolume::PropertyVisitor &, pv,
+	          Properties::VIRTUAL,
+	          __void__accept__PropertyVisitor_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgVolume::CollectPropertiesVisitor)
+	I_DeclaringFile("osgVolume/Property");
+	I_BaseType(osgVolume::PropertyVisitor);
+	I_Constructor0(____CollectPropertiesVisitor,
+	               "",
+	               "");
+	I_Method1(void, apply, IN, osgVolume::Property &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__Property_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::CompositeProperty &, cp,
+	          Properties::VIRTUAL,
+	          __void__apply__CompositeProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::TransferFunctionProperty &, tf,
+	          Properties::VIRTUAL,
+	          __void__apply__TransferFunctionProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::ScalarProperty &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__ScalarProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::IsoSurfaceProperty &, iso,
+	          Properties::VIRTUAL,
+	          __void__apply__IsoSurfaceProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::AlphaFuncProperty &, af,
+	          Properties::VIRTUAL,
+	          __void__apply__AlphaFuncProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::MaximumIntensityProjectionProperty &, mip,
+	          Properties::VIRTUAL,
+	          __void__apply__MaximumIntensityProjectionProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::LightingProperty &, lp,
+	          Properties::VIRTUAL,
+	          __void__apply__LightingProperty_R1,
+	          "",
+	          "");
+	I_PublicMemberProperty(osg::ref_ptr< osgVolume::TransferFunctionProperty >, _tfProperty);
+	I_PublicMemberProperty(osg::ref_ptr< osgVolume::IsoSurfaceProperty >, _isoProperty);
+	I_PublicMemberProperty(osg::ref_ptr< osgVolume::AlphaFuncProperty >, _afProperty);
+	I_PublicMemberProperty(osg::ref_ptr< osgVolume::MaximumIntensityProjectionProperty >, _mipProperty);
+	I_PublicMemberProperty(osg::ref_ptr< osgVolume::LightingProperty >, _lightingProperty);
+END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgVolume::Property > >, osgVolume::CompositeProperty::Properties)
 
@@ -60,6 +158,11 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::CompositeProperty)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osgVolume::PropertyVisitor &, pv,
+	          Properties::VIRTUAL,
+	          __void__accept__PropertyVisitor_R1,
+	          "",
+	          "");
 	I_Method0(void, clear,
 	          Properties::NON_VIRTUAL,
 	          __void__clear,
@@ -101,6 +204,134 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::CompositeProperty)
 	                  0);
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgVolume::IsoSurfaceProperty)
+	I_DeclaringFile("osgVolume/Property");
+	I_BaseType(osgVolume::ScalarProperty);
+	I_ConstructorWithDefaults1(IN, float, value, 1.0,
+	                           Properties::NON_EXPLICIT,
+	                           ____IsoSurfaceProperty__float,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osgVolume::IsoSurfaceProperty &, isp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____IsoSurfaceProperty__C5_IsoSurfaceProperty_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osgVolume::PropertyVisitor &, pv,
+	          Properties::VIRTUAL,
+	          __void__accept__PropertyVisitor_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgVolume::LightingProperty)
+	I_DeclaringFile("osgVolume/Property");
+	I_BaseType(osgVolume::Property);
+	I_Constructor0(____LightingProperty,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgVolume::LightingProperty &, mipp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____LightingProperty__C5_LightingProperty_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osgVolume::PropertyVisitor &, pv,
+	          Properties::VIRTUAL,
+	          __void__accept__PropertyVisitor_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgVolume::MaximumIntensityProjectionProperty)
+	I_DeclaringFile("osgVolume/Property");
+	I_BaseType(osgVolume::Property);
+	I_Constructor0(____MaximumIntensityProjectionProperty,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgVolume::MaximumIntensityProjectionProperty &, mipp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____MaximumIntensityProjectionProperty__C5_MaximumIntensityProjectionProperty_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osgVolume::PropertyVisitor &, pv,
+	          Properties::VIRTUAL,
+	          __void__accept__PropertyVisitor_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgVolume::Property)
 	I_DeclaringFile("osgVolume/Property");
 	I_BaseType(osg::Object);
@@ -136,6 +367,130 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Property)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osgVolume::PropertyVisitor &, pv,
+	          Properties::VIRTUAL,
+	          __void__accept__PropertyVisitor_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgVolume::PropertyVisitor)
+	I_DeclaringFile("osgVolume/Property");
+	I_Constructor0(____PropertyVisitor,
+	               "",
+	               "");
+	I_Method1(void, apply, IN, osgVolume::Property &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__Property_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::CompositeProperty &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__CompositeProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::TransferFunctionProperty &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__TransferFunctionProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::ScalarProperty &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__ScalarProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::IsoSurfaceProperty &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__IsoSurfaceProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::AlphaFuncProperty &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__AlphaFuncProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::MaximumIntensityProjectionProperty &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__MaximumIntensityProjectionProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::LightingProperty &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__LightingProperty_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgVolume::ScalarProperty)
+	I_DeclaringFile("osgVolume/Property");
+	I_BaseType(osgVolume::Property);
+	I_Constructor0(____ScalarProperty,
+	               "",
+	               "");
+	I_Constructor2(IN, const std::string &, scaleName, IN, float, value,
+	               ____ScalarProperty__C5_std_string_R1__float,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgVolume::ScalarProperty &, scalarProperty, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ScalarProperty__C5_ScalarProperty_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osgVolume::PropertyVisitor &, pv,
+	          Properties::VIRTUAL,
+	          __void__accept__PropertyVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, setValue, IN, float, v,
+	          Properties::NON_VIRTUAL,
+	          __void__setValue__float,
+	          "Set the value. ",
+	          "");
+	I_Method0(float, getValue,
+	          Properties::NON_VIRTUAL,
+	          __float__getValue,
+	          "Get the value. ",
+	          "");
+	I_Method0(osg::Uniform *, getUniform,
+	          Properties::NON_VIRTUAL,
+	          __osg_Uniform_P1__getUniform,
+	          "Get the underlying uniform. ",
+	          "");
+	I_Method0(const osg::Uniform *, getUniform,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Uniform_P1__getUniform,
+	          "Get the underlying uniform. ",
+	          "");
+	I_SimpleProperty(osg::Uniform *, Uniform, 
+	                 __osg_Uniform_P1__getUniform, 
+	                 0);
+	I_SimpleProperty(float, Value, 
+	                 __float__getValue, 
+	                 __void__setValue__float);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgVolume::TransferFunctionProperty)
@@ -146,7 +501,7 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::TransferFunctionProperty)
 	                           ____TransferFunctionProperty__osg_TransferFunction_P1,
 	                           "",
 	                           "");
-	I_ConstructorWithDefaults2(IN, const osgVolume::TransferFunctionProperty &, tfProperty, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	I_ConstructorWithDefaults2(IN, const osgVolume::TransferFunctionProperty &, tfp, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____TransferFunctionProperty__C5_TransferFunctionProperty_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
 	                           "");
@@ -175,6 +530,29 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::TransferFunctionProperty)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osgVolume::PropertyVisitor &, pv,
+	          Properties::VIRTUAL,
+	          __void__accept__PropertyVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, setTransferFunction, IN, osg::TransferFunction *, tf,
+	          Properties::NON_VIRTUAL,
+	          __void__setTransferFunction__osg_TransferFunction_P1,
+	          "Set the transfer function. ",
+	          "");
+	I_Method0(osg::TransferFunction *, getTransferFunction,
+	          Properties::NON_VIRTUAL,
+	          __osg_TransferFunction_P1__getTransferFunction,
+	          "Get the transfer function. ",
+	          "");
+	I_Method0(const osg::TransferFunction *, getTransferFunction,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_TransferFunction_P1__getTransferFunction,
+	          "Get the const transfer function. ",
+	          "");
+	I_SimpleProperty(osg::TransferFunction *, TransferFunction, 
+	                 __osg_TransferFunction_P1__getTransferFunction, 
+	                 __void__setTransferFunction__osg_TransferFunction_P1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgVolume::Property >)

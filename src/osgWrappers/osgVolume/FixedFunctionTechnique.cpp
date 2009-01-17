@@ -75,6 +75,16 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::FixedFunctionTechnique)
 	          __void__cull__osgUtil_CullVisitor_P1,
 	          "",
 	          "");
+	I_Method1(void, setNumSlices, IN, unsigned int, numSlices,
+	          Properties::NON_VIRTUAL,
+	          __void__setNumSlices__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumSlices,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumSlices,
+	          "",
+	          "");
 	I_Method0(void, cleanSceneGraph,
 	          Properties::VIRTUAL,
 	          __void__cleanSceneGraph,
@@ -85,5 +95,8 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::FixedFunctionTechnique)
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse the terrain subgraph. ",
 	          "");
+	I_SimpleProperty(unsigned int, NumSlices, 
+	                 0, 
+	                 __void__setNumSlices__unsigned_int);
 END_REFLECTOR
 

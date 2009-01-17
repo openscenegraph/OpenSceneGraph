@@ -183,6 +183,26 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::ImageLayer)
 	          __C5_osg_Image_P1__getImage,
 	          "Return const image associated with layer. ",
 	          "");
+	I_Method2(bool, computeMinMax, IN, osg::Vec4 &, min, IN, osg::Vec4 &, max,
+	          Properties::NON_VIRTUAL,
+	          __bool__computeMinMax__osg_Vec4_R1__osg_Vec4_R1,
+	          "Compute the min and max pixel colors. ",
+	          "");
+	I_Method2(void, offsetAndScaleImage, IN, const osg::Vec4 &, offset, IN, const osg::Vec4 &, scale,
+	          Properties::NON_VIRTUAL,
+	          __void__offsetAndScaleImage__C5_osg_Vec4_R1__C5_osg_Vec4_R1,
+	          "Apply color transformation to pixels using c' = offset + c * scale . ",
+	          "");
+	I_Method0(void, rescaleToZeroToOneRange,
+	          Properties::NON_VIRTUAL,
+	          __void__rescaleToZeroToOneRange,
+	          "Compute the min max range of the image, and then remap this to a 0 to 1 range. ",
+	          "");
+	I_Method0(void, translateMinToZero,
+	          Properties::NON_VIRTUAL,
+	          __void__translateMinToZero,
+	          "Compute the min color component of the image and then translate and pixels by this offset to make the new min component 0. ",
+	          "");
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,
 	          __void__dirty,
@@ -323,6 +343,11 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Layer)
 	          Properties::NON_VIRTUAL,
 	          __C5_Property_P1__getProperty,
 	          "Get the const Property that informs the VolumeTechnique how this layer should be rendered. ",
+	          "");
+	I_Method1(void, addProperty, IN, osgVolume::Property *, property,
+	          Properties::NON_VIRTUAL,
+	          __void__addProperty__Property_P1,
+	          "Add a property, automatically creating a CompositePorperty if one isn't already assigned. ",
 	          "");
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,

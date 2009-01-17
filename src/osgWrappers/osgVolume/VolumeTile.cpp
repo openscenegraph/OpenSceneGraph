@@ -156,17 +156,17 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTile)
 	I_Method1(void, setVolumeTechnique, IN, osgVolume::VolumeTechnique *, VolumeTechnique,
 	          Properties::NON_VIRTUAL,
 	          __void__setVolumeTechnique__VolumeTechnique_P1,
-	          "Set the VolumeTechnique. ",
+	          "Set the VolumeTechnique that will be used to render this tile. ",
 	          "");
 	I_Method0(osgVolume::VolumeTechnique *, getVolumeTechnique,
 	          Properties::NON_VIRTUAL,
 	          __VolumeTechnique_P1__getVolumeTechnique,
-	          "Get the VolumeTechnique. ",
+	          "Get the VolumeTechnique that will be used to render this tile. ",
 	          "");
 	I_Method0(const osgVolume::VolumeTechnique *, getVolumeTechnique,
 	          Properties::NON_VIRTUAL,
 	          __C5_VolumeTechnique_P1__getVolumeTechnique,
-	          "Get the const VolumeTechnique. ",
+	          "Get the const VolumeTechnique that will be used to render this tile. ",
 	          "");
 	I_Method1(void, setDirty, IN, bool, dirty,
 	          Properties::NON_VIRTUAL,

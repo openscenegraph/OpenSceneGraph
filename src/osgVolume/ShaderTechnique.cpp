@@ -214,6 +214,8 @@ void ShaderTechnique::init()
         else if (shadingModel==Isosurface)
         {
 
+            stateset->addUniform(cpv._isoProperty->getUniform());
+
             if (tf)
             {
                 osg::Texture1D* texture1D = new osg::Texture1D;

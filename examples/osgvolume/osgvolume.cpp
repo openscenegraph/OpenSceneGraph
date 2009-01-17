@@ -457,114 +457,6 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow,
 }
 
 
-class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet::Callback
-{
-    public:
-    
-        FollowMouseCallback(bool shader = false):
-            _shader(shader)
-        {
-            _updateTransparency = false;
-            _updateAlphaCutOff = false;
-            _updateSampleDensity = false;
-        }
-
-        FollowMouseCallback(const FollowMouseCallback&,const osg::CopyOp&) {}
-
-        META_Object(osg,FollowMouseCallback);
-
-        virtual void operator() (osg::StateSet* stateset, osg::NodeVisitor* nv)
-        {
-            if (nv->getVisitorType()==osg::NodeVisitor::EVENT_VISITOR)
-            {
-                osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
-                if (ev)
-                {
-                    osgGA::GUIActionAdapter* aa = ev->getActionAdapter();
-                    osgGA::EventQueue::Events& events = ev->getEvents();
-                    for(osgGA::EventQueue::Events::iterator itr=events.begin();
-                        itr!=events.end();
-                        ++itr)
-                    {
-                        handle(*(*itr), *aa, stateset, ev);
-                    }
-                }
-            }
-        }
-        
-        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object* object, osg::NodeVisitor*)
-        {
-            osg::StateSet* stateset = dynamic_cast<osg::StateSet*>(object);
-            if (!stateset) return false;
-            
-            switch(ea.getEventType())
-            {
-                case(osgGA::GUIEventAdapter::MOVE):
-                case(osgGA::GUIEventAdapter::DRAG):
-                {
-                    float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
-                    if (_shader)
-                    {
-                        osg::Uniform* uniform = 0;
-                        if (_updateTransparency && (uniform = stateset->getUniform("transparency"))) uniform->set(v);
-                        if (_updateAlphaCutOff && (uniform = stateset->getUniform("alphaCutOff"))) uniform->set(v);
-                        if (_updateSampleDensity && (uniform = stateset->getUniform("sampleDensity"))) 
-                        {
-                            float value = powf(v,5);
-                            osg::notify(osg::INFO)<<"sampleDensity = "<<value<<std::endl;
-                            uniform->set(value);
-                        }
-                    }
-                    else
-                    {                    
-                        if (_updateAlphaCutOff)
-                        {
-                            osg::AlphaFunc* alphaFunc = dynamic_cast<osg::AlphaFunc*>(stateset->getAttribute(osg::StateAttribute::ALPHAFUNC));
-                            if (alphaFunc) 
-                            {
-                                alphaFunc->setReferenceValue(v);
-                            }
-                        }
-                        
-                        if (_updateTransparency)
-                        {
-                            osg::Material* material = dynamic_cast<osg::Material*>(stateset->getAttribute(osg::StateAttribute::MATERIAL));
-                            if (material)
-                            {
-                                material->setAlpha(osg::Material::FRONT_AND_BACK,v);
-                            }
-                        }
-                    }
-
-                    break;
-                }
-                case(osgGA::GUIEventAdapter::KEYDOWN):
-                {
-                    if (ea.getKey()=='t') _updateTransparency = true;
-                    if (ea.getKey()=='a') _updateAlphaCutOff = true;
-                    if (ea.getKey()=='d') _updateSampleDensity = true;
-                    break;
-                }
-                case(osgGA::GUIEventAdapter::KEYUP):
-                {
-                    if (ea.getKey()=='t') _updateTransparency = false;
-                    if (ea.getKey()=='a') _updateAlphaCutOff = false;
-                    if (ea.getKey()=='d') _updateSampleDensity = false;
-                    break;
-                }
-                default:
-                    break;
-            }
-            return false;
-        }
-        
-        bool _shader;
-        bool _updateTransparency;
-        bool _updateAlphaCutOff;
-        bool _updateSampleDensity;
-
-};
-
 struct ScaleOperator
 {
     ScaleOperator():_scale(1.0f) {}
@@ -848,6 +740,75 @@ osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename)
     
     return tf;
 }
+
+
+class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet::Callback
+{
+    public:
+    
+        FollowMouseCallback()
+        {
+            _updateTransparency = false;
+            _updateAlphaCutOff = false;
+            _updateSampleDensity = false;
+        }
+
+        FollowMouseCallback(const FollowMouseCallback&,const osg::CopyOp&) {}
+
+        META_Object(osg,FollowMouseCallback);
+
+        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object* object, osg::NodeVisitor*)
+        {
+            osgVolume::VolumeTile* tile = dynamic_cast<osgVolume::VolumeTile*>(object);
+            osgVolume::Layer* layer = tile ? tile->getLayer() : 0;
+            osgVolume::Property* property = layer ? layer->getProperty() : 0;
+            if (!property) return false;
+                        
+            osgVolume::CollectPropertiesVisitor cpv;
+            property->accept(cpv);
+            
+            switch(ea.getEventType())
+            {
+                case(osgGA::GUIEventAdapter::MOVE):
+                case(osgGA::GUIEventAdapter::DRAG):
+                {
+                    float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
+
+                    if (_updateAlphaCutOff && cpv._isoProperty.valid())
+                    {
+                        osg::notify(osg::NOTICE)<<"Setting isoProperty to "<<v<<std::endl;
+                        cpv._isoProperty->setValue(v);
+                    }
+
+                    if (_updateAlphaCutOff && cpv._afProperty.valid())
+                    {
+                        cpv._afProperty->setValue(v);
+                    }
+                }
+                case(osgGA::GUIEventAdapter::KEYDOWN):
+                {
+                    if (ea.getKey()=='t') _updateTransparency = true;
+                    if (ea.getKey()=='a') _updateAlphaCutOff = true;
+                    if (ea.getKey()=='d') _updateSampleDensity = true;
+                    break;
+                }
+                case(osgGA::GUIEventAdapter::KEYUP):
+                {
+                    if (ea.getKey()=='t') _updateTransparency = false;
+                    if (ea.getKey()=='a') _updateAlphaCutOff = false;
+                    if (ea.getKey()=='d') _updateSampleDensity = false;
+                    break;
+                }
+                default:
+                    break;
+            }
+            return false;
+        }
+        
+        bool _updateTransparency;
+        bool _updateAlphaCutOff;
+        bool _updateSampleDensity;
+};
 
 
 class TestSupportOperation: public osg::GraphicsOperation
@@ -1376,6 +1337,8 @@ int main( int argc, char **argv )
         }
         
         tile->setLayer(layer.get());
+        
+        tile->setEventCallback(new FollowMouseCallback());
         
         if (useShader)
         {

@@ -742,110 +742,6 @@ osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename)
 }
 
 
-namespace osgVolume
-{
-
-class PropertyAdjustmentCallback : public osgGA::GUIEventHandler, public osg::StateSet::Callback
-{
-    public:
-    
-        PropertyAdjustmentCallback()
-        {
-            _transparencyKey = 't';
-            _alphaFuncKey = 'a';
-            _sampleDensityKey = 'd';
-
-            _updateTransparency = false;
-            _updateAlphaCutOff = false;
-            _updateSampleDensity = false;
-        }
-
-        PropertyAdjustmentCallback(const PropertyAdjustmentCallback&,const osg::CopyOp&) {}
-
-        META_Object(osgVolume,PropertyAdjustmentCallback);
-        
-        void setKeyEventActivatesTransparenyAdjustment(int key) { _transparencyKey = key; }
-        int getKeyEventActivatesTransparenyAdjustment() const { return _transparencyKey; }
-
-        void setKeyEventActivatesSampleDensityAdjustment(int key) { _sampleDensityKey = key; }
-        int getKeyEventActivatesSampleAdjustment() const { return _sampleDensityKey; }
-
-        void setKeyEventActivatesAlphaFuncAdjustment(int key) { _alphaFuncKey = key; }
-        int getKeyEventActivatesAlphaFuncAdjustment() const { return _alphaFuncKey; }
-
-        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object* object, osg::NodeVisitor*)
-        {
-            osgVolume::VolumeTile* tile = dynamic_cast<osgVolume::VolumeTile*>(object);
-            osgVolume::Layer* layer = tile ? tile->getLayer() : 0;
-            osgVolume::Property* property = layer ? layer->getProperty() : 0;
-            if (!property) return false;
-                        
-            osgVolume::CollectPropertiesVisitor cpv;
-            property->accept(cpv);
-            
-            switch(ea.getEventType())
-            {
-                case(osgGA::GUIEventAdapter::MOVE):
-                case(osgGA::GUIEventAdapter::DRAG):
-                {
-                    float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
-                    float v2 = v*v;
-                    float v4 = v2*v2;
-
-                    if (_updateAlphaCutOff && cpv._isoProperty.valid())
-                    {
-                        osg::notify(osg::NOTICE)<<"Setting isoProperty to "<<v<<std::endl;
-                        cpv._isoProperty->setValue(v);
-                    }
-
-                    if (_updateAlphaCutOff && cpv._afProperty.valid())
-                    {
-                        osg::notify(osg::NOTICE)<<"Setting afProperty to "<<v2<<std::endl;
-                        cpv._afProperty->setValue(v2);
-                    }
-                    
-                    if (_updateTransparency && cpv._transparencyProperty.valid())
-                    {
-                        osg::notify(osg::NOTICE)<<"Setting transparency to "<<v2<<std::endl;
-                        cpv._transparencyProperty->setValue(v2);
-                    }
-
-                    if (_updateSampleDensity && cpv._sampleDensityProperty.valid())
-                    {
-                        osg::notify(osg::NOTICE)<<"Setting sample density to "<<v4<<std::endl;
-                        cpv._sampleDensityProperty->setValue(v4);
-                    }
-                }
-                case(osgGA::GUIEventAdapter::KEYDOWN):
-                {
-                    if (ea.getKey()=='t') _updateTransparency = true;
-                    if (ea.getKey()=='a') _updateAlphaCutOff = true;
-                    if (ea.getKey()=='d') _updateSampleDensity = true;
-                    break;
-                }
-                case(osgGA::GUIEventAdapter::KEYUP):
-                {
-                    if (ea.getKey()=='t') _updateTransparency = false;
-                    if (ea.getKey()=='a') _updateAlphaCutOff = false;
-                    if (ea.getKey()=='d') _updateSampleDensity = false;
-                    break;
-                }
-                default:
-                    break;
-            }
-            return false;
-        }
-        
-        int     _transparencyKey;
-        int     _alphaFuncKey;
-        int     _sampleDensityKey;
-        
-        bool    _updateTransparency;
-        bool    _updateAlphaCutOff;
-        bool    _updateSampleDensity;
-};
-
-}
 class TestSupportOperation: public osg::GraphicsOperation
 {
 public:
@@ -971,10 +867,9 @@ int main( int argc, char **argv )
     ShadingModel shadingModel = Standard;
     while(arguments.read("--mip")) shadingModel =  MaximumIntensityProjection;
 
-    while (arguments.read("--isosurface")) 
-    {
-        shadingModel = Isosurface;
-    }
+    while (arguments.read("--isosurface")) shadingModel = Isosurface;
+
+    while (arguments.read("--light")) shadingModel = Light;
 
     float xSize=1.0f, ySize=1.0f, zSize=1.0f;
     while (arguments.read("--xSize",xSize)) {}
@@ -1362,7 +1257,12 @@ int main( int argc, char **argv )
         volume->addChild(tile);
 
         osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d);
-        layer->setProperty(new osgVolume::TransferFunctionProperty(transferFunction.get()));
+        
+        if (transferFunction.valid())
+        {
+            osg::notify(osg::NOTICE)<<"Attaching transferFunction"<<std::endl;
+            layer->addProperty(new osgVolume::TransferFunctionProperty(transferFunction.get()));
+        }
         
         if (matrix)
         {

@@ -40,6 +40,7 @@ SET(TARGET_LIBRARIES_VARS FREETYPE_LIBRARY )
 LINK_INTERNAL(${LIB_NAME}     
     osgUtil
     osgDB
+    osgGA
     osg
     OpenThreads
 )

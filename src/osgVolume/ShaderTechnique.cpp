@@ -104,7 +104,6 @@ void ShaderTechnique::init()
     if (_volumeTile->getLayer() && !masterLocator)
     {
         masterLocator = _volumeTile->getLayer()->getLocator();
-        osg::notify(osg::NOTICE)<<"assigning locator = "<<masterLocator<<std::endl;
     }
 
     osg::Matrix matrix;
@@ -300,6 +299,8 @@ void ShaderTechnique::init()
         {
             if (tf)
             {
+                osg::notify(osg::NOTICE)<<"Setting up TF path"<<std::endl;
+            
                 osg::Texture1D* texture1D = new osg::Texture1D;
                 texture1D->setImage(tf->getImage());    
                 texture1D->setResizeNonPowerOfTwoHint(false);

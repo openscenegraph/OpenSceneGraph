@@ -742,20 +742,36 @@ osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename)
 }
 
 
-class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet::Callback
+namespace osgVolume
+{
+
+class PropertyAdjustmentCallback : public osgGA::GUIEventHandler, public osg::StateSet::Callback
 {
     public:
     
-        FollowMouseCallback()
+        PropertyAdjustmentCallback()
         {
+            _transparencyKey = 't';
+            _alphaFuncKey = 'a';
+            _sampleDensityKey = 'd';
+
             _updateTransparency = false;
             _updateAlphaCutOff = false;
             _updateSampleDensity = false;
         }
 
-        FollowMouseCallback(const FollowMouseCallback&,const osg::CopyOp&) {}
+        PropertyAdjustmentCallback(const PropertyAdjustmentCallback&,const osg::CopyOp&) {}
 
-        META_Object(osg,FollowMouseCallback);
+        META_Object(osgVolume,PropertyAdjustmentCallback);
+        
+        void setKeyEventActivatesTransparenyAdjustment(int key) { _transparencyKey = key; }
+        int getKeyEventActivatesTransparenyAdjustment() const { return _transparencyKey; }
+
+        void setKeyEventActivatesSampleDensityAdjustment(int key) { _sampleDensityKey = key; }
+        int getKeyEventActivatesSampleAdjustment() const { return _sampleDensityKey; }
+
+        void setKeyEventActivatesAlphaFuncAdjustment(int key) { _alphaFuncKey = key; }
+        int getKeyEventActivatesAlphaFuncAdjustment() const { return _alphaFuncKey; }
 
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object* object, osg::NodeVisitor*)
         {
@@ -774,6 +790,7 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
                 {
                     float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
                     float v2 = v*v;
+                    float v4 = v2*v2;
 
                     if (_updateAlphaCutOff && cpv._isoProperty.valid())
                     {
@@ -783,8 +800,8 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
 
                     if (_updateAlphaCutOff && cpv._afProperty.valid())
                     {
-                        osg::notify(osg::NOTICE)<<"Setting afProperty to "<<v<<std::endl;
-                        cpv._afProperty->setValue(v);
+                        osg::notify(osg::NOTICE)<<"Setting afProperty to "<<v2<<std::endl;
+                        cpv._afProperty->setValue(v2);
                     }
                     
                     if (_updateTransparency && cpv._transparencyProperty.valid())
@@ -795,8 +812,8 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
 
                     if (_updateSampleDensity && cpv._sampleDensityProperty.valid())
                     {
-                        osg::notify(osg::NOTICE)<<"Setting sample density to "<<v2<<std::endl;
-                        cpv._sampleDensityProperty->setValue(v2);
+                        osg::notify(osg::NOTICE)<<"Setting sample density to "<<v4<<std::endl;
+                        cpv._sampleDensityProperty->setValue(v4);
                     }
                 }
                 case(osgGA::GUIEventAdapter::KEYDOWN):
@@ -819,12 +836,16 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
             return false;
         }
         
-        bool _updateTransparency;
-        bool _updateAlphaCutOff;
-        bool _updateSampleDensity;
+        int     _transparencyKey;
+        int     _alphaFuncKey;
+        int     _sampleDensityKey;
+        
+        bool    _updateTransparency;
+        bool    _updateAlphaCutOff;
+        bool    _updateSampleDensity;
 };
 
-
+}
 class TestSupportOperation: public osg::GraphicsOperation
 {
 public:
@@ -1352,7 +1373,7 @@ int main( int argc, char **argv )
         
         tile->setLayer(layer.get());
         
-        tile->setEventCallback(new FollowMouseCallback());
+        tile->setEventCallback(new osgVolume::PropertyAdjustmentCallback());
         
         if (useShader)
         {

@@ -235,7 +235,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             
             image->setUserData(matrix);
             
-            matrix.preMult(osg::Matrix::scale(double(image->s()), double(image->t()), double(image->r())));
+            matrix->preMult(osg::Matrix::scale(double(image->s()), double(image->t()), double(image->r())));
 
             return image;
         }

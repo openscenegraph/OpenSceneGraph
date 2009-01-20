@@ -71,6 +71,7 @@ void Layer::addProperty(Property* property)
     {
         cp = new CompositeProperty;
         cp->addProperty(property);
+        cp->addProperty(_property.get());
         _property = cp;
     }
 }

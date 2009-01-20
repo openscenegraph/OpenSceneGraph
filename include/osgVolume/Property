@@ -18,6 +18,8 @@
 #include <osg/Uniform>
 #include <osg/AlphaFunc>
 
+#include <osgGA/GUIEventHandler>
+
 #include <osgVolume/Export>
 
 namespace osgVolume {
@@ -316,6 +318,35 @@ class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisi
         
 };
 
+class PropertyAdjustmentCallback : public osgGA::GUIEventHandler, public osg::StateSet::Callback
+{
+    public:
+    
+        PropertyAdjustmentCallback();
+
+        PropertyAdjustmentCallback(const PropertyAdjustmentCallback&,const osg::CopyOp&) {}
+
+        META_Object(osgVolume,PropertyAdjustmentCallback);
+        
+        void setKeyEventActivatesTransparenyAdjustment(int key) { _transparencyKey = key; }
+        int getKeyEventActivatesTransparenyAdjustment() const { return _transparencyKey; }
+
+        void setKeyEventActivatesSampleDensityAdjustment(int key) { _sampleDensityKey = key; }
+        int getKeyEventActivatesSampleAdjustment() const { return _sampleDensityKey; }
+
+        void setKeyEventActivatesAlphaFuncAdjustment(int key) { _alphaFuncKey = key; }
+        int getKeyEventActivatesAlphaFuncAdjustment() const { return _alphaFuncKey; }
+
+        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object* object, osg::NodeVisitor*);
+        
+        int     _transparencyKey;
+        int     _alphaFuncKey;
+        int     _sampleDensityKey;
+        
+        bool    _updateTransparency;
+        bool    _updateAlphaCutOff;
+        bool    _updateSampleDensity;
+};
 }
 
 #endif

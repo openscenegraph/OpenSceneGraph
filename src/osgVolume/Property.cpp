@@ -106,11 +106,19 @@ IsoSurfaceProperty::IsoSurfaceProperty(const IsoSurfaceProperty& isp,const osg::
 AlphaFuncProperty::AlphaFuncProperty(float value):
     ScalarProperty("AlphaFuncValue",value)
 {
+    _alphaFunc = new osg::AlphaFunc(osg::AlphaFunc::GREATER, value);
 }
 
 AlphaFuncProperty::AlphaFuncProperty(const AlphaFuncProperty& afp,const osg::CopyOp& copyop):
     ScalarProperty(afp, copyop)
 {
+    _alphaFunc = new osg::AlphaFunc(osg::AlphaFunc::GREATER, getValue());
+}
+
+void AlphaFuncProperty::setValue(float v)
+{
+    _uniform->set(v); 
+    _alphaFunc->setReferenceValue(v);
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -183,7 +183,15 @@ void FixedFunctionTechnique::init()
 
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::ON);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
-    stateset->setAttributeAndModes(new osg::AlphaFunc(osg::AlphaFunc::GREATER,alphaFuncValue), osg::StateAttribute::ON);
+    
+    if (cpv._afProperty.valid())
+    {
+        stateset->setAttributeAndModes(cpv._afProperty->getAlphaFunc(), osg::StateAttribute::ON);
+    }
+    else
+    {
+        stateset->setAttributeAndModes(new osg::AlphaFunc(osg::AlphaFunc::GREATER,alphaFuncValue), osg::StateAttribute::ON);
+    }
     
     osg::Material* material = new osg::Material;
     material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(1.0f,1.0f,1.0f,1.0f));

@@ -147,6 +147,36 @@ LightingProperty::LightingProperty(const LightingProperty& isp,const osg::CopyOp
 {
 }
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// SampleDensityProperty
+//
+SampleDensityProperty::SampleDensityProperty(float value):
+    ScalarProperty("SampleDensityValue",value)
+{
+}
+
+SampleDensityProperty::SampleDensityProperty(const SampleDensityProperty& isp,const osg::CopyOp& copyop):
+    ScalarProperty(isp, copyop)
+{
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TransparencyProperty
+//
+TransparencyProperty::TransparencyProperty(float value):
+    ScalarProperty("TransparencyValue",value)
+{
+}
+
+TransparencyProperty::TransparencyProperty(const TransparencyProperty& isp,const osg::CopyOp& copyop):
+    ScalarProperty(isp, copyop)
+{
+}
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // CollectPropertiesVisitor
@@ -169,3 +199,5 @@ void CollectPropertiesVisitor::apply(IsoSurfaceProperty& iso) { _isoProperty = &
 void CollectPropertiesVisitor::apply(AlphaFuncProperty& af) { _afProperty = &af; }
 void CollectPropertiesVisitor::apply(MaximumIntensityProjectionProperty& mip) { _mipProperty = &mip; }
 void CollectPropertiesVisitor::apply(LightingProperty& lp) { _lightingProperty = &lp; }
+void CollectPropertiesVisitor::apply(SampleDensityProperty& sdp) { _sampleDensityProperty = &sdp; }
+void CollectPropertiesVisitor::apply(TransparencyProperty& tp) { _transparencyProperty = &tp; }

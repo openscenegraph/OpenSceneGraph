@@ -773,6 +773,7 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
                 case(osgGA::GUIEventAdapter::DRAG):
                 {
                     float v = (ea.getY()-ea.getYmin())/(ea.getYmax()-ea.getYmin());
+                    float v2 = v*v;
 
                     if (_updateAlphaCutOff && cpv._isoProperty.valid())
                     {
@@ -784,6 +785,18 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
                     {
                         osg::notify(osg::NOTICE)<<"Setting afProperty to "<<v<<std::endl;
                         cpv._afProperty->setValue(v);
+                    }
+                    
+                    if (_updateTransparency && cpv._transparencyProperty.valid())
+                    {
+                        osg::notify(osg::NOTICE)<<"Setting transparency to "<<v2<<std::endl;
+                        cpv._transparencyProperty->setValue(v2);
+                    }
+
+                    if (_updateSampleDensity && cpv._sampleDensityProperty.valid())
+                    {
+                        osg::notify(osg::NOTICE)<<"Setting sample density to "<<v2<<std::endl;
+                        cpv._sampleDensityProperty->setValue(v2);
                     }
                 }
                 case(osgGA::GUIEventAdapter::KEYDOWN):
@@ -1360,6 +1373,9 @@ int main( int argc, char **argv )
                     layer->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
                     break;
             }
+            
+            layer->addProperty(new osgVolume::SampleDensityProperty(0.005));
+            layer->addProperty(new osgVolume::TransparencyProperty(1.0));
             
         
             tile->setVolumeTechnique(new osgVolume::ShaderTechnique);

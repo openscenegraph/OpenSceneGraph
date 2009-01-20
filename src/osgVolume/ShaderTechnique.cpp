@@ -294,16 +294,23 @@ void ShaderTechnique::init()
             }
         }
 
-        osg::Uniform* sampleDensity = new osg::Uniform("sampleDensity", 0.005f);
-        stateset->addUniform(sampleDensity);
+        if (cpv._sampleDensityProperty.valid())
+            stateset->addUniform(cpv._sampleDensityProperty->getUniform());
+        else
+            stateset->addUniform(new osg::Uniform("SampleDensityValue",0.0005f));
 
-        osg::Uniform* transpancy = new osg::Uniform("transparency",0.5f);
-        stateset->addUniform(transpancy);
+
+        if (cpv._transparencyProperty.valid())
+            stateset->addUniform(cpv._transparencyProperty->getUniform());
+        else
+            stateset->addUniform(new osg::Uniform("TransparencyValue",1.0f));
+
 
         if (cpv._afProperty.valid())
-        {
             stateset->addUniform(cpv._afProperty->getUniform());
-        }
+        else
+            stateset->addUniform(new osg::Uniform("AlphaFuncValue",alphaFuncValue));
+
 
         stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
 

@@ -31,6 +31,8 @@ class IsoSurfaceProperty;
 class MaximumIntensityProjectionProperty;
 class LightingProperty;
 class AlphaFuncProperty;
+class SampleDensityProperty;
+class TransparencyProperty;
 
 class PropertyVisitor
 {
@@ -47,6 +49,8 @@ class PropertyVisitor
         virtual void apply(AlphaFuncProperty&) {}
         virtual void apply(MaximumIntensityProjectionProperty&) {}
         virtual void apply(LightingProperty&) {}
+        virtual void apply(SampleDensityProperty&) {}
+        virtual void apply(TransparencyProperty&) {}
 };
 
 
@@ -249,6 +253,41 @@ class OSGVOLUME_EXPORT LightingProperty : public Property
 };
 
 
+class OSGVOLUME_EXPORT SampleDensityProperty : public ScalarProperty
+{
+    public:
+
+        SampleDensityProperty(float value=1.0);
+        
+        SampleDensityProperty(const SampleDensityProperty& isp,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgVolume, SampleDensityProperty);
+        
+        virtual void accept(PropertyVisitor& pv) { pv.apply(*this); }
+
+    protected:
+    
+        virtual ~SampleDensityProperty() {}
+};
+
+class OSGVOLUME_EXPORT TransparencyProperty : public ScalarProperty
+{
+    public:
+
+        TransparencyProperty(float value=1.0);
+        
+        TransparencyProperty(const TransparencyProperty& isp,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgVolume, TransparencyProperty);
+        
+        virtual void accept(PropertyVisitor& pv) { pv.apply(*this); }
+
+    protected:
+    
+        virtual ~TransparencyProperty() {}
+};
+
+
 class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisitor
 {
     public:
@@ -264,12 +303,16 @@ class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisi
         virtual void apply(AlphaFuncProperty& af);
         virtual void apply(MaximumIntensityProjectionProperty& mip);
         virtual void apply(LightingProperty& lp);
+        virtual void apply(SampleDensityProperty& sdp);
+        virtual void apply(TransparencyProperty& tp);
         
         osg::ref_ptr<TransferFunctionProperty> _tfProperty;
         osg::ref_ptr<IsoSurfaceProperty> _isoProperty;
         osg::ref_ptr<AlphaFuncProperty> _afProperty;
         osg::ref_ptr<MaximumIntensityProjectionProperty> _mipProperty;
         osg::ref_ptr<LightingProperty> _lightingProperty;
+        osg::ref_ptr<SampleDensityProperty> _sampleDensityProperty;
+        osg::ref_ptr<TransparencyProperty> _transparencyProperty;
         
 };
 

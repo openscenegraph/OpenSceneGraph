@@ -16,6 +16,7 @@
 
 #include <osg/TransferFunction>
 #include <osg/Uniform>
+#include <osg/AlphaFunc>
 
 #include <osgVolume/Export>
 
@@ -150,7 +151,7 @@ class OSGVOLUME_EXPORT ScalarProperty : public Property
         virtual void accept(PropertyVisitor& pv) { pv.apply(*this); }
 
         /** Set the value.*/
-        void setValue(float v) { _uniform->set(v); }
+        virtual void setValue(float v) { _uniform->set(v); }
 
         /** Get the value.*/
         float getValue() const { float v; _uniform->get(v); return v; }
@@ -198,9 +199,18 @@ class OSGVOLUME_EXPORT AlphaFuncProperty : public ScalarProperty
         
         virtual void accept(PropertyVisitor& pv) { pv.apply(*this); }
 
+        virtual void setValue(float v);
+        
+        osg::AlphaFunc* getAlphaFunc() { return _alphaFunc.get(); }
+
+        const osg::AlphaFunc* getAlphaFunc() const { return _alphaFunc.get(); }
+
+
     protected:
     
         virtual ~AlphaFuncProperty() {}
+        
+        osg::ref_ptr<osg::AlphaFunc> _alphaFunc;
 };
 
 class OSGVOLUME_EXPORT MaximumIntensityProjectionProperty : public Property

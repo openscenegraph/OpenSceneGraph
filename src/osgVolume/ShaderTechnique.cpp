@@ -300,8 +300,10 @@ void ShaderTechnique::init()
         osg::Uniform* transpancy = new osg::Uniform("transparency",0.5f);
         stateset->addUniform(transpancy);
 
-        osg::Uniform* alphaCutOff = new osg::Uniform("alphaCutOff",alphaFuncValue);
-        stateset->addUniform(alphaCutOff);
+        if (cpv._afProperty.valid())
+        {
+            stateset->addUniform(cpv._afProperty->getUniform());
+        }
 
         stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON);
 

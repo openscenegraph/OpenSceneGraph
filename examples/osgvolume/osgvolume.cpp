@@ -782,6 +782,7 @@ class FollowMouseCallback : public osgGA::GUIEventHandler, public osg::StateSet:
 
                     if (_updateAlphaCutOff && cpv._afProperty.valid())
                     {
+                        osg::notify(osg::NOTICE)<<"Setting afProperty to "<<v<<std::endl;
                         cpv._afProperty->setValue(v);
                     }
                 }
@@ -1345,24 +1346,27 @@ int main( int argc, char **argv )
             switch(shadingModel)
             {
                 case(Standard):
+                    layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
                     break;
                 case(Light):
+                    layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
                     layer->addProperty(new osgVolume::LightingProperty);
                     break;
                 case(Isosurface):
                     layer->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
                     break;
                 case(MaximumIntensityProjection):
+                    layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
                     layer->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
                     break;
             }
             
-            layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
         
             tile->setVolumeTechnique(new osgVolume::ShaderTechnique);
         }
         else
         {
+            layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
             tile->setVolumeTechnique(new osgVolume::FixedFunctionTechnique);
         }
         

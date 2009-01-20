@@ -254,46 +254,91 @@ void ShaderTechnique::init()
                 }
             }
         } 
-        else if (tf)
+        else if (shadingModel==Light)
         {
-            osg::Texture1D* texture1D = new osg::Texture1D;
-            texture1D->setImage(tf->getImage());    
-            texture1D->setResizeNonPowerOfTwoHint(false);
-            texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
-            texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
-            texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
-            stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
-
-            osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
-            stateset->addUniform(tfTextureSampler);
-
-            osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume-tf.frag");
-            if (fragmentShader)
+            if (tf)
             {
-                program->addShader(fragmentShader);
+                osg::Texture1D* texture1D = new osg::Texture1D;
+                texture1D->setImage(tf->getImage());    
+                texture1D->setResizeNonPowerOfTwoHint(false);
+                texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
+                texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+                texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
+                stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
+
+                osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
+                stateset->addUniform(tfTextureSampler);
+
+                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit_tf.frag");
+                if (fragmentShader)
+                {
+                    program->addShader(fragmentShader);
+                }
+                else
+                {
+                    #include "Shaders/volume_lit_tf_frag.cpp"
+                    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_lit_tf_frag));
+                }
+
             }
             else
-            {
-                #include "Shaders/volume_tf_frag.cpp"
-                program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_frag));
-            }
+            {    
 
+                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit.frag");
+                if (fragmentShader)
+                {
+                    program->addShader(fragmentShader);
+                }
+                else
+                {
+                    #include "Shaders/volume_lit_frag.cpp"
+                    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_lit_frag));
+                }
+            }
         }
         else
-        {    
-
-            osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume.frag");
-            if (fragmentShader)
+        {
+            if (tf)
             {
-                program->addShader(fragmentShader);
+                osg::Texture1D* texture1D = new osg::Texture1D;
+                texture1D->setImage(tf->getImage());    
+                texture1D->setResizeNonPowerOfTwoHint(false);
+                texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
+                texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+                texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
+                stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
+
+                osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
+                stateset->addUniform(tfTextureSampler);
+
+                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_tf.frag");
+                if (fragmentShader)
+                {
+                    program->addShader(fragmentShader);
+                }
+                else
+                {
+                    #include "Shaders/volume_tf_frag.cpp"
+                    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_tf_frag));
+                }
+
             }
             else
-            {
-                #include "Shaders/volume_frag.cpp"
-                program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_frag));
+            {    
+
+                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume.frag");
+                if (fragmentShader)
+                {
+                    program->addShader(fragmentShader);
+                }
+                else
+                {
+                    #include "Shaders/volume_frag.cpp"
+                    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_frag));
+                }
             }
         }
-
+        
         if (cpv._sampleDensityProperty.valid())
             stateset->addUniform(cpv._sampleDensityProperty->getUniform());
         else

@@ -11,22 +11,22 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGVOLUME_SHADERTECHNIQUE
-#define OSGVOLUME_SHADERTECHNIQUE 1
+#ifndef OSGVOLUME_RAYTRACEDTECHNIQUE
+#define OSGVOLUME_RAYTRACEDTECHNIQUE 1
 
 #include <osgVolume/VolumeTechnique>
 
 namespace osgVolume {
 
-class OSGVOLUME_EXPORT ShaderTechnique : public VolumeTechnique
+class OSGVOLUME_EXPORT RayTracedTechnique : public VolumeTechnique
 {
     public:
 
-        ShaderTechnique();
+        RayTracedTechnique();
 
-        ShaderTechnique(const ShaderTechnique&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        RayTracedTechnique(const RayTracedTechnique&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
         
-        META_Object(osgVolume, ShaderTechnique);
+        META_Object(osgVolume, RayTracedTechnique);
 
         virtual void init();
 
@@ -42,7 +42,7 @@ class OSGVOLUME_EXPORT ShaderTechnique : public VolumeTechnique
 
     protected:
     
-        virtual ~ShaderTechnique();
+        virtual ~RayTracedTechnique();
         
         osg::ref_ptr<osg::Geode> _geode;
 };

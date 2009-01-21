@@ -15,7 +15,7 @@
 #include <osg/Object>
 #include <osgUtil/CullVisitor>
 #include <osgUtil/UpdateVisitor>
-#include <osgVolume/ShaderTechnique>
+#include <osgVolume/RayTracedTechnique>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -25,14 +25,14 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osgVolume::ShaderTechnique)
-	I_DeclaringFile("osgVolume/ShaderTechnique");
+BEGIN_OBJECT_REFLECTOR(osgVolume::RayTracedTechnique)
+	I_DeclaringFile("osgVolume/RayTracedTechnique");
 	I_BaseType(osgVolume::VolumeTechnique);
-	I_Constructor0(____ShaderTechnique,
+	I_Constructor0(____RayTracedTechnique,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osgVolume::ShaderTechnique &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____ShaderTechnique__C5_ShaderTechnique_R1__C5_osg_CopyOp_R1,
+	I_ConstructorWithDefaults2(IN, const osgVolume::RayTracedTechnique &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____RayTracedTechnique__C5_RayTracedTechnique_R1__C5_osg_CopyOp_R1,
 	                           "",
 	                           "");
 	I_Method0(osg::Object *, cloneType,

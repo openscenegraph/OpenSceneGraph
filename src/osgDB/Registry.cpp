@@ -1517,12 +1517,16 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
                 }
             }
 
-            for(ritr=results.begin(); ritr!=results.end(); ++ritr)
+            //If the filename is a URL, don't return FILE_NOT_FOUND until the CURL plugin is given a chance
+            if (!osgDB::containsServerAddress(readFunctor._filename))
             {
-                if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
+                for(ritr=results.begin(); ritr!=results.end(); ++ritr)
                 {
-                    // osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
-                    return *ritr;
+                    if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
+                    {
+                        //osg::notify(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
+                        return *ritr;
+                    }
                 }
             }
         }

@@ -1247,75 +1247,39 @@ int main( int argc, char **argv )
         imageSequence->play();
     }
     
-    // create a model from the images.
-    osg::ref_ptr<osg::Node> rootNode = 0;
-    
+    osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
+    osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
+    volume->addChild(tile);
+
+    osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d);
+
+    if (matrix)
     {
+        osgVolume::Locator* locator = new osgVolume::Locator(*matrix);
+        layer->setLocator(locator);
+        tile->setLocator(locator);
+    }
 
-        osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
-        osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
-        volume->addChild(tile);
+    tile->setLayer(layer.get());
 
-        osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d);
-        
-        if (transferFunction.valid())
-        {
-            osg::notify(osg::NOTICE)<<"Attaching transferFunction"<<std::endl;
-            layer->addProperty(new osgVolume::TransferFunctionProperty(transferFunction.get()));
-        }
-        
-        if (matrix)
-        {
-            osgVolume::Locator* locator = new osgVolume::Locator(*matrix);
-            layer->setLocator(locator);
-            tile->setLocator(locator);
-        }
-        
-        tile->setLayer(layer.get());
-        
-        tile->setEventCallback(new osgVolume::PropertyAdjustmentCallback());
+    tile->setEventCallback(new osgVolume::PropertyAdjustmentCallback());
 
-#if 0        
-        if (useShader)
-        {
-            switch(shadingModel)
-            {
-                case(Standard):
-                    layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
-                    break;
-                case(Light):
-                    layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
-                    layer->addProperty(new osgVolume::LightingProperty);
-                    break;
-                case(Isosurface):
-                    layer->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
-                    break;
-                case(MaximumIntensityProjection):
-                    layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
-                    layer->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
-                    break;
-            }
-            
-            layer->addProperty(new osgVolume::SampleDensityProperty(0.005));
-            layer->addProperty(new osgVolume::TransparencyProperty(1.0));
-            
-        
-            tile->setVolumeTechnique(new osgVolume::ShaderTechnique);
-        }
-        else
-        {
-            layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
-            tile->setVolumeTechnique(new osgVolume::FixedFunctionTechnique);
-        }
-#else
+    if (useShader)
+    {
 
         osgVolume::SwitchProperty* sp = new osgVolume::SwitchProperty;
         sp->setActiveProperty(0);
-        
+
+        osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
+        osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
+        osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0);
+
         {
             // Standard
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-            cp->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
+            cp->addProperty(ap);
+            cp->addProperty(sd);
+            cp->addProperty(tp);
 
             sp->addProperty(cp);
         }
@@ -1323,7 +1287,9 @@ int main( int argc, char **argv )
         {
             // Light
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-            cp->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
+            cp->addProperty(ap);
+            cp->addProperty(sd);
+            cp->addProperty(tp);
             cp->addProperty(new osgVolume::LightingProperty);
 
             sp->addProperty(cp);
@@ -1332,6 +1298,8 @@ int main( int argc, char **argv )
         {
             // Isosurface
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+            cp->addProperty(sd);
+            cp->addProperty(tp);
             cp->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
 
             sp->addProperty(cp);
@@ -1340,18 +1308,28 @@ int main( int argc, char **argv )
         {
             // MaximumIntensityProjection
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-            cp->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
+            cp->addProperty(ap);
+            cp->addProperty(sd);
+            cp->addProperty(tp);
             cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
 
             sp->addProperty(cp);
         }
-        
-        layer->addProperty(sp);
-        tile->setVolumeTechnique(new osgVolume::ShaderTechnique);
 
-#endif        
-        
-        rootNode = volume.get();        
+        layer->addProperty(sp);
+
+        if (transferFunction.valid())
+        {
+            osg::notify(osg::NOTICE)<<"Attaching transferFunction"<<std::endl;
+            layer->addProperty(new osgVolume::TransferFunctionProperty(transferFunction.get()));
+        }
+
+        tile->setVolumeTechnique(new osgVolume::ShaderTechnique);
+    }
+    else
+    {
+        layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
+        tile->setVolumeTechnique(new osgVolume::FixedFunctionTechnique);
     }
         
     if (!outputFile.empty())
@@ -1365,15 +1343,15 @@ int main( int argc, char **argv )
                 image_3d->setFileName(name_no_ext + ".dds");            
                 osgDB::writeImageFile(*image_3d, image_3d->getFileName());
             }
-            osgDB::writeNodeFile(*rootNode, outputFile);
+            osgDB::writeNodeFile(*volume, outputFile);
         }
         else if (ext=="ive")
         {
-            osgDB::writeNodeFile(*rootNode, outputFile);        
+            osgDB::writeNodeFile(*volume, outputFile);        
         }
         else if (ext=="dds")
         {
-            osgDB::writeImageFile(*image_3d, outputFile);        
+            osgDB::writeImageFile(*image_3d, outputFile);
         }
         else
         {
@@ -1384,11 +1362,11 @@ int main( int argc, char **argv )
     }
 
 
-    if (rootNode) 
+    if (volume.valid()) 
     {
 
         // set the scene to render
-        viewer.setSceneData(rootNode.get());
+        viewer.setSceneData(volume.get());
         
         // the the viewers main frame loop
         viewer.run();

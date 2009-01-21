@@ -147,9 +147,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone)
 	          __C5_osg_Matrix_R1__getInvBindMatrixInSkeletonSpace,
 	          "",
 	          "");
-	I_Method1(void, setBoneInSkeletonSpace, IN, const osg::Matrix &, matrix,
+	I_Method1(void, setMatrixInSkeletonSpace, IN, const osg::Matrix &, matrix,
 	          Properties::NON_VIRTUAL,
-	          __void__setBoneInSkeletonSpace__C5_osg_Matrix_R1,
+	          __void__setMatrixInSkeletonSpace__C5_osg_Matrix_R1,
 	          "",
 	          "");
 	I_Method1(void, setBindMatrixInBoneSpace, IN, const osg::Matrix &, matrix,
@@ -190,9 +190,6 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone)
 	I_SimpleProperty(const osg::Matrix &, BindMatrixInBoneSpace, 
 	                 __C5_osg_Matrix_R1__getBindMatrixInBoneSpace, 
 	                 __void__setBindMatrixInBoneSpace__C5_osg_Matrix_R1);
-	I_SimpleProperty(const osg::Matrix &, BoneInSkeletonSpace, 
-	                 0, 
-	                 __void__setBoneInSkeletonSpace__C5_osg_Matrix_R1);
 	I_SimpleProperty(osgAnimation::Bone::BoneMap, BoneMap, 
 	                 __BoneMap__getBoneMap, 
 	                 0);
@@ -210,7 +207,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone)
 	                 0);
 	I_SimpleProperty(const osg::Matrix &, MatrixInSkeletonSpace, 
 	                 __C5_osg_Matrix_R1__getMatrixInSkeletonSpace, 
-	                 0);
+	                 __void__setMatrixInSkeletonSpace__C5_osg_Matrix_R1);
 	I_SimpleProperty(bool, NeedToComputeBindMatrix, 
 	                 0, 
 	                 __void__setNeedToComputeBindMatrix__bool);

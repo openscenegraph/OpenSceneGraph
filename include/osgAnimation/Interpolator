@@ -15,6 +15,7 @@
 #ifndef OSGANIMATION_INTERPOLATOR_H
 #define OSGANIMATION_INTERPOLATOR_H
 
+#include <osg/Notify>
 #include <osgAnimation/Interpolator>
 #include <osgAnimation/Keyframe>
 
@@ -38,8 +39,12 @@ namespace osgAnimation
         {
             // todo use a cache
             int key_size = keys.size();
+            if (!key_size) {
+                osg::notify(osg::WARN) << "TemplateInterpolatorBase::getKeyIndexFromTime the container is empty, impossible to get key index from time" << std::endl;;
+                return -1;
+            }
             const TemplateKeyframe<KeyframeType>* keysVector = &keys.front();
-            for (int i = 0; i < key_size-1; i++) 
+            for (int i = 0; i < key_size-1; i++)
             {
                 float time0 = keysVector[i].getTime();
                 float time1 = keysVector[i+1].getTime();
@@ -50,9 +55,7 @@ namespace osgAnimation
                     return i;
                 }
             }
-            std::cout << time << " first key " << keysVector[0].getTime() << " last key " << keysVector[key_size-1].getTime() << std::endl;
-            *((int *)0) = 0;
-
+            osg::notify(osg::WARN) << time << " first key " << keysVector[0].getTime() << " last key " << keysVector[key_size-1].getTime() << std::endl;
             return -1;
         }
     };

@@ -237,7 +237,7 @@ int main (int argc, char* argv[])
     osg::MatrixTransform* trueroot = new osg::MatrixTransform;
     trueroot->setMatrix(osg::Matrix(root->getMatrixInBoneSpace().ptr()));
     trueroot->addChild(createAxis());
-    trueroot->addChild(skelroot);
+    trueroot->addChild(skelroot.get());
     trueroot->setDataVariance(osg::Object::DYNAMIC);
     rootTransform->addChild(trueroot);
     scene->addChild(rootTransform);

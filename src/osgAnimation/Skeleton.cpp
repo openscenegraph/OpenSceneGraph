@@ -52,9 +52,9 @@ struct updateMatrixVisitor : public osg::NodeVisitor
         }
 
         if (parent)
-            bone->setBoneInSkeletonSpace(bone->getMatrixInBoneSpace() * bone->getBoneParent()->getMatrixInSkeletonSpace());
+            bone->setMatrixInSkeletonSpace(bone->getMatrixInBoneSpace() * bone->getBoneParent()->getMatrixInSkeletonSpace());
         else
-            bone->setBoneInSkeletonSpace(bone->getMatrixInBoneSpace());
+            bone->setMatrixInSkeletonSpace(bone->getMatrixInBoneSpace());
 
         traverse(node);
     }

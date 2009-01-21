@@ -117,7 +117,7 @@ void RigGeometry::transformSoftwareMethod()
     }
     if (!_normalSource.empty()) 
     {
-        _transformVertexes.compute<osg::Vec3>(_matrixFromSkeletonToGeometry, _invMatrixFromSkeletonToGeometry, &_normalSource.front(), &normal->front());
+        _transformVertexes.computeNormal<osg::Vec3>(_matrixFromSkeletonToGeometry, _invMatrixFromSkeletonToGeometry, &_normalSource.front(), &normal->front());
         normal->dirty();
     }
     if (getUseDisplayList())

@@ -64,11 +64,15 @@ namespace osgAnimation
 
         float getStartTime() const 
         {
+            if (!_keyframes)
+                return 0.0f;
             return _keyframes->front().getTime();
         }
 
         float getEndTime() const 
         {
+            if (!_keyframes)
+                return 0.0f;
             return _keyframes->back().getTime();
         }
 

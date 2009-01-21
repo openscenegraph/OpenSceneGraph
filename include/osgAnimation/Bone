@@ -213,7 +213,7 @@ namespace osgAnimation
         const osg::Matrix& getBindMatrixInBoneSpace() const { return _bindInBoneSpace; }
         const osg::Matrix& getMatrixInSkeletonSpace() const { return _boneInSkeletonSpace; }
         const osg::Matrix& getInvBindMatrixInSkeletonSpace() const { return _invBindInSkeletonSpace;}
-        void setBoneInSkeletonSpace(const osg::Matrix& matrix) { _boneInSkeletonSpace = matrix; }
+        void setMatrixInSkeletonSpace(const osg::Matrix& matrix) { _boneInSkeletonSpace = matrix; }
         void setBindMatrixInBoneSpace(const osg::Matrix& matrix) 
         {
             _bindInBoneSpace = matrix;

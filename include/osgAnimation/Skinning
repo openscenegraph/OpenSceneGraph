@@ -91,9 +91,9 @@ namespace osgAnimation
                 ptrresult[13] += ptr[13] * weight;
                 ptrresult[14] += ptr[14] * weight;
             }
-            void computeMatrixForVertexSet() 
+            void computeMatrixForVertexSet()
             {
-                if (_bones.empty()) 
+                if (_bones.empty())
                 {
                     osg::notify(osg::WARN) << "TransformVertexFunctor::UniqBoneSetVertexSet no bones found" << std::endl;
                     _result = MatrixType::identity();
@@ -181,6 +181,7 @@ namespace osgAnimation
 
         template <class V> void compute(const MatrixType& transform, const MatrixType& invTransform, const V* src, V* dst)
         {
+            // the result of matrix mult should be cached to be used for vertexes transform and normal transform and maybe other computation
             int size = _boneSetVertexSet.size();
             for (int i = 0; i < size; i++) 
             {
@@ -194,6 +195,26 @@ namespace osgAnimation
                 {
                     int idx = vertexes[j];
                     dst[idx] = src[idx] * matrix;
+                }
+            }
+        }
+
+
+        template <class V> void computeNormal(const MatrixType& transform, const MatrixType& invTransform, const V* src, V* dst)
+        {
+            int size = _boneSetVertexSet.size();
+            for (int i = 0; i < size; i++) 
+            {
+                UniqBoneSetVertexSet& uniq = _boneSetVertexSet[i];
+                uniq.computeMatrixForVertexSet();
+                MatrixType matrix =  transform * uniq.getMatrix() * invTransform;
+
+                const VertexList& vertexes = uniq.getVertexes();
+                int vertexSize = vertexes.size();
+                for (int j = 0; j < vertexSize; j++) 
+                {
+                    int idx = vertexes[j];
+                    dst[idx] = MatrixType::transform3x3(src[idx],matrix);
                 }
             }
         }

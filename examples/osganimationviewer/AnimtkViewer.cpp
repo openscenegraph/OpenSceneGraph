@@ -31,6 +31,7 @@
 #include <osgGA/StateSetManipulator>
 #include <osgDB/ReadFile>
 #include <osgAnimation/AnimationManagerBase>
+#include <osgAnimation/Bone>
 
 const int WIDTH  = 1440;
 const int HEIGHT = 900;
@@ -68,32 +69,86 @@ osg::Geode* createAxis()
     return geode;
 }
 
+
+struct AnimationManagerFinder : public osg::NodeVisitor
+{
+    osg::ref_ptr<osgAnimation::BasicAnimationManager> _am;
+    AnimationManagerFinder() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+    void apply(osg::Node& node) {
+        if (_am.valid())
+            return;
+        if (node.getUpdateCallback()) {
+            osgAnimation::AnimationManagerBase* b = dynamic_cast<osgAnimation::AnimationManagerBase*>(node.getUpdateCallback());
+            if (b) {
+                _am = new osgAnimation::BasicAnimationManager(*b);
+                return;
+            }
+        }
+        traverse(node);
+    }
+};
+
+
+struct AddHelperBone : public osg::NodeVisitor
+{
+    AddHelperBone() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+    void apply(osg::Transform& node) {
+        osgAnimation::Bone* bone = dynamic_cast<osgAnimation::Bone*>(&node);
+        if (bone)
+            bone->addChild(createAxis());
+        traverse(node);
+    }
+};
+
 int main(int argc, char** argv) 
 {
-    osg::ArgumentParser psr(&argc, argv);
+    osg::ArgumentParser arguments(&argc, argv);
+    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is a 3d poker game client");
+    arguments.getApplicationUsage()->addCommandLineOption("-h or --help","List command line options.");
+    arguments.getApplicationUsage()->addCommandLineOption("--drawbone","draw helps to display bones.");
 
-    if(argc < 2) 
+    if (arguments.read("-h") || arguments.read("--help"))
     {
-        std::cerr << "usage: AnimtkViewer <file.osg>" << std::endl;
+        arguments.getApplicationUsage()->write(std::cout, osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        return 0;
+    }
+
+    if (arguments.argc()<=1)
+    {
+        arguments.getApplicationUsage()->write(std::cout, osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
 
-    osgViewer::Viewer viewer(psr);
+    bool drawBone = false;
+    if (arguments.read("--drawbone"))
+        drawBone = true;
+
+    osgViewer::Viewer viewer(arguments);
     osg::ref_ptr<osg::Group> group = new osg::Group();
 
-    osg::Group* node = dynamic_cast<osg::Group*>(osgDB::readNodeFile(psr[1])); //dynamic_cast<osgAnimation::AnimationManager*>(osgDB::readNodeFile(psr[1]));
-    if(!node) 
+    osg::Group* node = dynamic_cast<osg::Group*>(osgDB::readNodeFiles(arguments)); //dynamic_cast<osgAnimation::AnimationManager*>(osgDB::readNodeFile(psr[1]));
+    if(!node)
     {
-        std::cerr << "Can't read file " << psr[1]<< std::endl;
+        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;
     }
 
     // Set our Singleton's model.
-    osgAnimation::AnimationManagerBase* base = dynamic_cast<osgAnimation::AnimationManagerBase*>(node->getUpdateCallback());
-    osgAnimation::BasicAnimationManager* manager = new osgAnimation::BasicAnimationManager(*base);
-    node->setUpdateCallback(manager);
-    AnimtkViewerModelController::setModel(manager);
+    AnimationManagerFinder finder;
+    node->accept(finder);
+    if (finder._am.valid()) {
+        node->setUpdateCallback(finder._am.get());
+        AnimtkViewerModelController::setModel(finder._am.get());
+    } else {
+        osg::notify(osg::WARN) << "no osgAnimation::AnimationManagerBase found in the subgraph, no animations available" << std::endl;
+    }
 
+    if (drawBone) {
+        osg::notify(osg::INFO) << "Add Bones Helper" << std::endl;
+        AddHelperBone addHelper;
+        node->accept(addHelper);
+    }
     node->addChild(createAxis());
 
     AnimtkViewerGUI* gui    = new AnimtkViewerGUI(&viewer, WIDTH, HEIGHT, 0x1234);

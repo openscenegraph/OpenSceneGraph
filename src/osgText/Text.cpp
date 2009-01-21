@@ -1942,7 +1942,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
     unsigned int contextID = state.getContextID();
     TextureGlyphQuadMap::iterator titr; // Moved up here for VC6
     
-    glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_TEST);
+    glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_STENCIL_TEST);
 
     // It seems I can get away without calling this here
     //glClear(GL_STENCIL_BUFFER_BIT);

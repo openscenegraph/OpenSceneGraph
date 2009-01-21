@@ -1274,7 +1274,8 @@ int main( int argc, char **argv )
         tile->setLayer(layer.get());
         
         tile->setEventCallback(new osgVolume::PropertyAdjustmentCallback());
-        
+
+#if 0        
         if (useShader)
         {
             switch(shadingModel)
@@ -1306,7 +1307,49 @@ int main( int argc, char **argv )
             layer->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
             tile->setVolumeTechnique(new osgVolume::FixedFunctionTechnique);
         }
+#else
+
+        osgVolume::SwitchProperty* sp = new osgVolume::SwitchProperty;
+        sp->setActiveProperty(0);
         
+        {
+            // Standard
+            osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+            cp->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
+
+            sp->addProperty(cp);
+        }
+
+        {
+            // Light
+            osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+            cp->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
+            cp->addProperty(new osgVolume::LightingProperty);
+
+            sp->addProperty(cp);
+        }
+
+        {
+            // Isosurface
+            osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+            cp->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
+
+            sp->addProperty(cp);
+        }
+
+        {
+            // MaximumIntensityProjection
+            osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+            cp->addProperty(new osgVolume::AlphaFuncProperty(alphaFunc));
+            cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
+
+            sp->addProperty(cp);
+        }
+        
+        layer->addProperty(sp);
+        tile->setVolumeTechnique(new osgVolume::ShaderTechnique);
+
+#endif        
         
         rootNode = volume.get();        
     }

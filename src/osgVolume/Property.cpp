@@ -337,25 +337,25 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
 
             if (_updateAlphaCutOff && cpv._isoProperty.valid())
             {
-                osg::notify(osg::NOTICE)<<"Setting isoProperty to "<<v<<std::endl;
+                osg::notify(osg::INFO)<<"Setting isoProperty to "<<v<<std::endl;
                 cpv._isoProperty->setValue(v);
             }
 
             if (_updateAlphaCutOff && cpv._afProperty.valid())
             {
-                osg::notify(osg::NOTICE)<<"Setting afProperty to "<<v2<<std::endl;
+                osg::notify(osg::INFO)<<"Setting afProperty to "<<v2<<std::endl;
                 cpv._afProperty->setValue(v2);
             }
 
             if (_updateTransparency && cpv._transparencyProperty.valid())
             {
-                osg::notify(osg::NOTICE)<<"Setting transparency to "<<v2<<std::endl;
+                osg::notify(osg::INFO)<<"Setting transparency to "<<v2<<std::endl;
                 cpv._transparencyProperty->setValue(v2);
             }
 
             if (_updateSampleDensity && cpv._sampleDensityProperty.valid())
             {
-                osg::notify(osg::NOTICE)<<"Setting sample density to "<<v4<<std::endl;
+                osg::notify(osg::INFO)<<"Setting sample density to "<<v4<<std::endl;
                 cpv._sampleDensityProperty->setValue(v4);
             }
         }

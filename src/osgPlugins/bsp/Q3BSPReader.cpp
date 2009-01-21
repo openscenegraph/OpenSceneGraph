@@ -448,10 +448,10 @@ bool Q3BSPReader::loadTextures(
       std::string jpgExtendedName(aLoadData.m_loadTextures[i].m_name);
       jpgExtendedName+=".jpg";
 
-      osg::Image* image = osgDB::readImageFile(tgaExtendedName);
+      osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(tgaExtendedName);
       if (!image)
         {
-          image = osgDB::readImageFile(jpgExtendedName);
+          image = osgDB::readRefImageFile(jpgExtendedName);
           if (!image)
             {
               aTextureArray.push_back(NULL);
@@ -460,7 +460,7 @@ bool Q3BSPReader::loadTextures(
         }
 
       osg::Texture2D* texture= new osg::Texture2D;
-      texture->setImage(image);
+      texture->setImage(image.get());
       texture->setDataVariance(osg::Object::DYNAMIC); // protect from being optimized away as static state.
       texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
       texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);

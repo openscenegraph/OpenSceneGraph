@@ -1128,7 +1128,7 @@ osg::Image* DataInputStream::readImage(std::string filename)
 
     // Image is not in list.
     // Read it from disk,
-    osg::Image* image = osgDB::readImageFile(filename.c_str(),_options.get());
+    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(filename.c_str(),_options.get());
 
     // add it to the imageList,
     _imageMap[filename] = image;
@@ -1136,7 +1136,7 @@ osg::Image* DataInputStream::readImage(std::string filename)
 
     if (_verboseOutput) std::cout<<"read/writeImage() ["<<image<<"]"<<std::endl;
 
-    return image;
+    return image.release();
 }
 
 osg::Image* DataInputStream::readImage()

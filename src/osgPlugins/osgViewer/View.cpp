@@ -185,7 +185,7 @@ bool View_readLocalData(osg::Object &obj, osgDB::Input &fr)
         
         if (!filename.empty())
         {
-            intensityMap = osgDB::readImageFile(filename);
+            intensityMap = osgDB::readRefImageFile(filename);
         }
 
         if (intensityMap.valid())

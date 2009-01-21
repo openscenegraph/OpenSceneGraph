@@ -242,15 +242,15 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
                 if (lw_material.ctex.flags && strlen(lw_material.ctex.name)!=0)
                 {
                     osg::notify(osg::INFO) << "ctex " << lw_material.ctex.name << std::endl;
-                    osg::Image* image = osgDB::readImageFile(lw_material.ctex.name);
-                    if (image)
+                    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(lw_material.ctex.name);
+                    if (image.valid())
                     {
                         // create state
                         osg::StateSet* stateset = new osg::StateSet;
 
                         // create texture
                         osg::Texture2D* texture = new osg::Texture2D;
-                        texture->setImage(image);
+                        texture->setImage(image.get());
 
                         // texture wrap mode
                         static osg::Texture::WrapMode mode[] = {

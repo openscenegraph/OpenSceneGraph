@@ -666,8 +666,8 @@ class ReaderGEO
             pt->setSize(4);
             dstate->setAttribute(pt);
             if (txidx>=0 && (unsigned int)txidx<txlist.size()) {
-                dstate->setTextureAttribute(0, txenvlist[txidx] );
-                dstate->setTextureAttributeAndModes(0,txlist[txidx],osg::StateAttribute::ON);
+                dstate->setTextureAttribute(0, txenvlist[txidx].get() );
+                dstate->setTextureAttributeAndModes(0,txlist[txidx].get(),osg::StateAttribute::ON);
                 const Image *txim=txlist[txidx]->getImage();
                 if (txim) {
                     GLint icm=txim->computeNumComponents(txim->getPixelFormat());
@@ -684,7 +684,7 @@ class ReaderGEO
                 matlist[imat]->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
                 dstate->setMode(GL_COLOR_MATERIAL, osg::StateAttribute::ON);
             }
-            dstate->setAttribute(matlist[imat]);
+            dstate->setAttribute(matlist[imat].get());
             Vec4 col=matlist[imat]->getAmbient(Material::FRONT);
             if (col[3]<0.99) {
                 dstate->setMode(GL_BLEND,StateAttribute::ON);
@@ -1466,11 +1466,11 @@ class ReaderGEO
             const geoField *gfd=gr->getField(GEO_DB_TEX_FILE_NAME);
             const char *name = gfd->getChar();
             if (name) {
-                Texture2D *tx=new Texture2D;
-                Image *ctx=osgDB::readImageFile(name,options);
-                if (ctx) {
+                osg::ref_ptr<osg::Texture2D> tx = new Texture2D;
+                osg::ref_ptr<osg::Image> ctx = osgDB::readImageFile(name,options);
+                if (ctx.valid()) {
                     ctx->setFileName(name);
-                    tx->setImage(ctx);
+                    tx->setImage(ctx.get());
                 }
                 gfd=gr->getField(GEO_DB_TEX_WRAPS);
                 osg::Texture2D::WrapMode wm=Texture2D::REPEAT;
@@ -1486,7 +1486,7 @@ class ReaderGEO
                     wm = (iwrap==GEO_DB_TEX_CLAMP) ? Texture2D::CLAMP : Texture2D::REPEAT;
                 }
                 tx->setWrap(Texture2D::WRAP_T, wm);
-                txlist.push_back(tx);
+                txlist.push_back(tx.get());
                 osg::TexEnv* texenv = new osg::TexEnv;
                 osg::TexEnv::Mode md=osg::TexEnv::MODULATE;
                 gfd=gr->getField(GEO_DB_TEX_ENV);
@@ -2014,9 +2014,9 @@ private:
     osg::ref_ptr<geoHeaderGeo> theHeader; // an OSG class - has animation vars etc
     std::vector<georecord *> geotxlist; // list of geo::textures for this model
     std::vector<georecord *> geomatlist; // list of geo::materials for this model
-    std::vector<osg::Texture2D *> txlist; // list of osg::textures for this model
-    std::vector<osg::TexEnv *> txenvlist; // list of texture environments for the textures
-    std::vector<osg::Material *> matlist; // list of materials for current model
+    std::vector< osg::ref_ptr<osg::Texture2D> > txlist; // list of osg::textures for this model
+    std::vector< osg::ref_ptr<osg::TexEnv> > txenvlist; // list of texture environments for the textures
+    std::vector< osg::ref_ptr<osg::Material> > matlist; // list of materials for current model
     georecord *cpalrec; // colour palette record
 };
 

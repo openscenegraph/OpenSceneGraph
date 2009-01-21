@@ -57,12 +57,12 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 osg::ref_ptr<osg::Image> image;
                 if (fileType == osgDB::DIRECTORY)
                 {
-                    image = osgDB::readImageFile(filename+".dicom");
+                    image = osgDB::readRefImageFile(filename+".dicom");
                     
                 }
                 else if (fileType == osgDB::REGULAR_FILE)
                 {
-                    image = osgDB::readImageFile( filename );
+                    image = osgDB::readRefImageFile( filename );
                 }
 
                 osg::notify(osg::NOTICE)<<"image "<<filename<<" pixelFormat "<<std::hex<<image->getPixelFormat()<<" textureFormat "<<image->getInternalTextureFormat()<<" dataType "<<image->getDataType()<<std::endl;

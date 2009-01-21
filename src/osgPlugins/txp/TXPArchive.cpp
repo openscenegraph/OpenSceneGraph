@@ -391,10 +391,10 @@ bool TXPArchive::loadTexture(int i)
             path += _PATHD ;
         
         std::string theFile = path + filename ;
-        osg::Image* image = osgDB::readImageFile(theFile);
-        if (image)
+        osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(theFile);
+        if (image.valid())
         {
-            osg_texture->setImage(image);
+            osg_texture->setImage(image.get());
         }
         else
         {

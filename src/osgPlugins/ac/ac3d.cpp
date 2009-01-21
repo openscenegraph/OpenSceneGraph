@@ -351,7 +351,7 @@ class TextureData
             osg::notify(osg::FATAL) << "osgDB ac3d reader: could not find texture \"" << name << "\"" << std::endl;
             return false;
         }
-        mImage = osgDB::readImageFile(absFileName, options);
+        mImage = osgDB::readRefImageFile(absFileName, options);
         if (!mImage.valid())
         {
             osg::notify(osg::FATAL) << "osgDB ac3d reader: could not read texture \"" << name << "\"" << std::endl;

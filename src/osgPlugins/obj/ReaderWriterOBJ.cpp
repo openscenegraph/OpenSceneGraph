@@ -197,13 +197,13 @@ static void load_material_texture(    obj::Model &model,
         if ( !model.getDatabasePath().empty() ) 
         {
             // first try with database path of parent. 
-            image = osgDB::readImageFile(model.getDatabasePath()+'/'+filename);
+            image = osgDB::readRefImageFile(model.getDatabasePath()+'/'+filename);
         }
         
         if ( !image.valid() )
         {
             // if not already set then try the filename as is.
-            image = osgDB::readImageFile(filename);
+            image = osgDB::readRefImageFile(filename);
         }
 
         if ( image.valid() )

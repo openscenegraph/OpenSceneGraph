@@ -103,7 +103,7 @@ createStateSet()
         osg::notify( osg::ALWAYS ) << "Can't open image file osg128.png" << std::endl;
         return( NULL );
     }
-    osg::Texture2D* texLogo = new osg::Texture2D( iLogo );
+    osg::Texture2D* texLogo = new osg::Texture2D( iLogo.get() );
     texLogo->setFilter( osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR );
     texLogo->setFilter( osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR );
 
@@ -136,7 +136,7 @@ int main( int argc, char **argv )
     geom->setInitialBound( bb );
     // Add geometric data and the PrimitiveSet. Specify numInstances as 32*32 or 1024.
     createDAIGeometry( *geom, 32*32 );
-    geode->addDrawable( geom );
+    geode->addDrawable( geom.get() );
 
     // Create a StateSet to render the instanced Geometry.
     osg::ref_ptr< osg::StateSet > ss = createStateSet();

@@ -735,7 +735,7 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
         return NULL;
     }
     //Got a sampler and a surface and an imaged. Time to create the texture stuff for osg
-    osg::Image *img = NULL;
+    osg::ref_ptr<osg::Image> img;
     if ( dImg->getInit_from() != NULL )
     {
         // daeURI uri = dImg->getInit_from()->getValue();
@@ -765,7 +765,7 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
 #else
             const char* filename = path.c_str();
 #endif
-            img = osgDB::readImageFile( filename );
+            img = osgDB::readRefImageFile( filename );
 
             osg::notify(osg::INFO)<<"  processTexture(..) - readImage("<<filename<<")"<<std::endl;
             
@@ -786,7 +786,7 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
             return NULL;
     }
 
-    osg::Texture2D *t2D = new osg::Texture2D( img );
+    osg::Texture2D *t2D = new osg::Texture2D( img.get() );
     //set texture parameters
     if ( sampler != NULL )
     {

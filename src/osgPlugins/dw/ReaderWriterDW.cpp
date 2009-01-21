@@ -54,11 +54,10 @@ public:
         if (isTextured()) { // shares common textures
             if (!ctx || !tx) { // new texture needed
                 if (fname.length()>0) { 
-                    ctx=osgDB::readImageFile(fname.c_str(),options);
-                    if (ctx) {
+                    ctx=osgDB::readRefImageFile(fname.c_str(),options);
+                    if (ctx.valid()) {
                         ctx->setFileName(fname);
-                        tx=new Texture2D;
-                        tx->setImage(ctx);
+                        tx=new Texture2D(ctx.get());
                         tx->setWrap(Texture2D::WRAP_S, Texture2D::REPEAT);
                         tx->setWrap(Texture2D::WRAP_T, Texture2D::REPEAT);
                     }
@@ -67,8 +66,8 @@ public:
                     dstate->setTextureAttribute(0, texenv );
                 }
             }
-            if (ctx && tx) { // texture exists
-                dstate->setTextureAttributeAndModes(0,tx,osg::StateAttribute::ON);
+            if (ctx.valid() && tx.valid()) { // texture exists
+                dstate->setTextureAttributeAndModes(0,tx.get(),osg::StateAttribute::ON);
             }
         }
     }
@@ -175,8 +174,8 @@ private:
     std::string fname; // picture file
     enum atten {NONE, INVERSE_DIST, INVERSE_SQUARE} atyp;
     float bright,halfIn,halfOut,falloff; // light brightness
-    Image *ctx;
-    Texture2D *tx;
+    osg::ref_ptr<osg::Image> ctx;
+    osg::ref_ptr<osg::Texture2D> tx;
     int _lightnum;
     StateSet *dstate; // used to represent the dw material in OSG
 };

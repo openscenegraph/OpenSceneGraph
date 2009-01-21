@@ -227,7 +227,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh,
             // Share image/texture pairs
             osg::Texture2D* texture = texForImage[mtl.texture[j]];
             if (!texture) {
-                osg::Image* image = osgDB::readImageFile(mtl.texture[j],options);
+                osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(mtl.texture[j],options);
                 if (!image)
                     continue;
 
@@ -235,7 +235,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh,
                 texture = new osg::Texture2D;
                 texForImage[mtl.texture[j]] = texture;
 
-                texture->setImage(image);
+                texture->setImage(image.get());
                 texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
                 texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
             }

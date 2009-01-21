@@ -224,14 +224,15 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
 #if 0
     std::vector<osg::Texture2D*> skin_textures;
 
-    for (int si = 0; si < md2_header->numSkins; si++) {
-        osg::Image *img;
-        osg::Texture2D *tex;
+    for (int si = 0; si < md2_header->numSkins; si++)
+    {
+        osg::ref_ptr<osg::Image> img;
+        osg::ref_ptr<osg::Texture2D> tex;
         std::string imgname (md2_skins[si].name);
 
         // first try loading the imgname straight
-        img = osgDB::readImageFile (imgname, options);
-        if (img) {
+        img = osgDB::readRefImageFile (imgname, options);
+        if (img.valid()) {
             tex = new osg::Texture2D;
             tex->setImage (img);
             skin_textures.push_back (tex);
@@ -244,18 +245,18 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
         {
             // it's a pcx, so try bmp and tga, since pcx sucks
             std::string basename = imgname.substr (0, imgname.size() - 3);
-            img = osgDB::readImageFile (basename + "bmp", options);
-            if (img) {
+            img = osgDB::readRefImageFile (basename + "bmp", options);
+            if (img.valid()) {
                 tex = new osg::Texture2D;
-                tex->setImage (img);
+                tex->setImage (img.get());
                 skin_textures.push_back (tex);
                 continue;
             }
 
-            img = osgDB::readImageFile (basename + "tga", options);
-            if (img) {
+            img = osgDB::readRefImageFile (basename + "tga", options);
+            if (img.valid()) {
                 tex = new osg::Texture2D;
-                tex->setImage (img);
+                tex->setImage (img,get());
                 skin_textures.push_back (tex);
                 continue;
             }
@@ -267,16 +268,16 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
     }
 #else
     // load the single skin
-    osg::Image *skin_image = NULL;
-    osg::Texture2D *skin_texture = NULL;
+    osg::ref_ptr<osg::Image> skin_image;
+    osg::ref_ptr<osg::Texture2D> skin_texture = NULL;
 
     if (md2_header->numSkins > 0) {
         std::string imgname (md2_skins[0].name);
 
         do {
             // first try loading the imgname straight
-            skin_image = osgDB::readImageFile (imgname, options);
-            if (skin_image) break;
+            skin_image = osgDB::readRefImageFile(imgname, options);
+            if (skin_image.valid()) break;
 
             // we failed, so check if it's a PCX image
             if (imgname.size() > 4 &&
@@ -284,17 +285,17 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
                 {
                 // it's a pcx, so try bmp and tga, since pcx sucks
                 std::string basename = imgname.substr (0, imgname.size() - 3);
-                skin_image = osgDB::readImageFile (basename + "bmp", options);
-                if (skin_image) break;
+                skin_image = osgDB::readRefImageFile (basename + "bmp", options);
+                if (skin_image.valid()) break;
 
-                skin_image = osgDB::readImageFile (basename + "tga", options);
-                if (skin_image) break;
+                skin_image = osgDB::readRefImageFile (basename + "tga", options);
+                if (skin_image.valid()) break;
             }
         } while (0);
 
-        if (skin_image) {
+        if (skin_image.valid()) {
             skin_texture = new osg::Texture2D;
-            skin_texture->setImage (skin_image);
+            skin_texture->setImage (skin_image.get());
             skin_texture->setFilter (osg::Texture2D::MAG_FILTER, osg::Texture2D::NEAREST);
         } else {
             // couldn't find the referenced texture skin for this model
@@ -407,7 +408,7 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
     osg::StateSet *state = new osg::StateSet;
 
     if (skin_texture != NULL) {
-        state->setTextureAttributeAndModes (0, skin_texture, osg::StateAttribute::ON);
+        state->setTextureAttributeAndModes (0, skin_texture.get(), osg::StateAttribute::ON);
     }
     base_switch->setStateSet (state);
 

@@ -296,7 +296,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
 
                     const std::string &url = mfs.value[0];
 
-                    osg::ref_ptr<osg::Image> image = osgDB::readImageFile(url);
+                    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(url);
 
                     if (image != 0) {
                         osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;

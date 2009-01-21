@@ -707,14 +707,14 @@ Lwo2::_generate_statesets_from_surfaces()
         // check if exist texture image for this surface
         if (surface->image_index >= 0) 
         {
-            Image* image = osgDB::readImageFile(_images[surface->image_index]);
+            osg::ref_ptr<Image> image = osgDB::readRefImageFile(_images[surface->image_index]);
             notify(DEBUG_INFO) << "\tloaded image '" << _images[surface->image_index] << "'" << std::endl;
             notify(DEBUG_INFO) << "\tresult - " << image << std::endl;
-            if (image)
+            if (image.valid())
             {
                 // create texture
                 Texture2D* texture = new osg::Texture2D;
-                texture->setImage(image);
+                texture->setImage(image.get());
                 state_set->setTextureAttributeAndModes(0, texture, StateAttribute::ON);        
 
                 // setup texture wrapping

@@ -84,10 +84,10 @@ std::string MDLReader::getToken(std::string str, const char * delim,
 
 ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
 {
-    std::string   texFile;
-    std::string   texPath;
-    Image *       texImage;
-    Texture *     texture;
+    std::string             texFile;
+    std::string             texPath;
+    osg::ref_ptr<Image>     texImage;
+    osg::ref_ptr<Texture>   texture;
 
     // Find the texture's image file
     texFile = std::string(textureName) + ".vtf";
@@ -124,26 +124,23 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
     // If we found the file, read it, otherwise bail
     if (!texPath.empty())
     {
-        texImage = readImageFile(texPath);
+        texImage = readRefImageFile(texPath);
 
         // If we got the image, create the texture attribute
-        if (texImage != NULL)
+        if (texImage.valid())
         {
             // Create the texture
             if (texImage->t() == 1)
             {
-                texture = new Texture1D();
-                ((Texture1D *)texture)->setImage(texImage);
+                texture = new Texture1D(texImage.get());
             }
             else if (texImage->r() == 1)
             {
-                texture = new Texture2D();
-                ((Texture2D *)texture)->setImage(texImage);
+                texture = new Texture2D(texImage.get());
             }
             else
             {
-                texture = new Texture3D();
-                ((Texture3D *)texture)->setImage(texImage);
+                texture = new Texture3D(texImage.get());
             }
 
             // Set texture attributes

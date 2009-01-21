@@ -715,15 +715,15 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
         osg::notify(osg::DEBUG_INFO) << "    LIB3DS_IGNORE_ALPHA "<<((texture->flags)&LIB3DS_IGNORE_ALPHA)<< std::endl;
         osg::notify(osg::DEBUG_INFO) << "    LIB3DS_RGB_TINT     "<<((texture->flags)&LIB3DS_RGB_TINT)<< std::endl;
 
-        osg::Image* osg_image = osgDB::readImageFile(fileName.c_str());
-        if (osg_image==NULL)
+        osg::ref_ptr<osg::Image> osg_image = osgDB::readRefImageFile(fileName.c_str());
+        if (!osg_image)
         {
             osg::notify(osg::NOTICE) << "Warning: Cannot create texture "<<texture->name<< std::endl;
             return NULL;
         }
 
         osg::Texture2D* osg_texture = new osg::Texture2D;
-        osg_texture->setImage(osg_image);
+        osg_texture->setImage(osg_image.get());
 
         // does the texture support transparancy?
         transparancy = ((texture->flags)&LIB3DS_ALPHA_SOURCE)!=0;

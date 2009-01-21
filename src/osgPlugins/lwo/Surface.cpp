@@ -195,11 +195,14 @@ void Surface::generate_stateset(unsigned int max_tex_units, bool force_arb_compr
                                 osg::notify(osg::WARN) << "Warning: lwosg::Surface: maximum number of texture units (" << max_tex_units << ") has been reached, skipping incoming blocks" << std::endl;
                                 break;
                             }
+                
+                            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(image_file, db_options);
+                            if (!image) break;
 
                             osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
                             if (force_arb_compression)
                                 texture->setInternalFormatMode(osg::Texture::USE_ARB_COMPRESSION);
-                            texture->setImage(osgDB::readImageFile(image_file, db_options));
+                            texture->setImage(image.get());
                             texture->setWrap(osg::Texture::WRAP_S, osg_wrap_mode(block.get_image_map().width_wrap));
                             texture->setWrap(osg::Texture::WRAP_T, osg_wrap_mode(block.get_image_map().height_wrap));
                             texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR_MIPMAP_LINEAR);

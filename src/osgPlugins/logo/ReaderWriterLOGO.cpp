@@ -158,9 +158,9 @@ class Logos: public osg::Drawable
 
         void addLogo( RelativePosition pos, std::string name )
         {
-            osg::Image *image = osgDB::readImageFile( name.c_str() );
-            if( image != NULL )
-                logos[pos].push_back( image ); 
+            osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile( name.c_str() );
+            if( image.valid())
+                logos[pos].push_back( image.get() ); 
             else
                 osg::notify(osg::WARN)<< "Logos::addLogo image file not found : " << name << ".\n";
         }

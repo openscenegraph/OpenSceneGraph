@@ -27,6 +27,7 @@ namespace osgVolume {
 // forward decarle
 class Property;
 class CompositeProperty;
+class SwitchProperty;
 class TransferFunctionProperty;
 class ScalarProperty;
 class IsoSurfaceProperty;
@@ -36,15 +37,17 @@ class AlphaFuncProperty;
 class SampleDensityProperty;
 class TransparencyProperty;
 
-class PropertyVisitor
+class OSGVOLUME_EXPORT PropertyVisitor
 {
     public:
     
-        PropertyVisitor() {}
+        PropertyVisitor(bool traverseOnlyActiveChildren=true);
+            
         virtual ~PropertyVisitor() {}
         
         virtual void apply(Property&) {}
-        virtual void apply(CompositeProperty&) {}
+        virtual void apply(CompositeProperty&);
+        virtual void apply(SwitchProperty&);
         virtual void apply(TransferFunctionProperty&) {}
         virtual void apply(ScalarProperty&) {}
         virtual void apply(IsoSurfaceProperty&) {}
@@ -53,6 +56,9 @@ class PropertyVisitor
         virtual void apply(LightingProperty&) {}
         virtual void apply(SampleDensityProperty&) {}
         virtual void apply(TransparencyProperty&) {}
+        
+        bool _traverseOnlyActiveChildren;
+        
 };
 
 
@@ -109,6 +115,34 @@ class OSGVOLUME_EXPORT CompositeProperty : public Property
 
         
         Properties _properties;
+};
+
+
+class OSGVOLUME_EXPORT SwitchProperty : public CompositeProperty
+{
+    public:
+
+        SwitchProperty();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        SwitchProperty(const SwitchProperty& switchProperty,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+        
+        META_Object(osgVolume, SwitchProperty);
+
+        virtual void accept(PropertyVisitor& pv) { pv.apply(*this); }
+
+        /** Set which child property is active.
+          * -1 disables all children.*/
+        void setActiveProperty(int i) { _activeProperty = i; }
+
+        /** Get the active property.*/
+        int getActiveProperty() const { return _activeProperty; }
+
+    protected:
+
+        virtual ~SwitchProperty() {}
+        
+        int _activeProperty;
 };
 
 class OSGVOLUME_EXPORT TransferFunctionProperty : public Property
@@ -294,12 +328,10 @@ class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisi
 {
     public:
     
-        CollectPropertiesVisitor();
+        CollectPropertiesVisitor(bool traverseOnlyActiveChildren=true);
         
         virtual void apply(Property&);
-        
-        virtual void apply(CompositeProperty& cp);
-        virtual void apply(TransferFunctionProperty& tf);
+        virtual void apply(TransferFunctionProperty&);
         virtual void apply(ScalarProperty&);
         virtual void apply(IsoSurfaceProperty& iso);
         virtual void apply(AlphaFuncProperty& af);
@@ -308,13 +340,13 @@ class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisi
         virtual void apply(SampleDensityProperty& sdp);
         virtual void apply(TransparencyProperty& tp);
         
-        osg::ref_ptr<TransferFunctionProperty> _tfProperty;
-        osg::ref_ptr<IsoSurfaceProperty> _isoProperty;
-        osg::ref_ptr<AlphaFuncProperty> _afProperty;
-        osg::ref_ptr<MaximumIntensityProjectionProperty> _mipProperty;
-        osg::ref_ptr<LightingProperty> _lightingProperty;
-        osg::ref_ptr<SampleDensityProperty> _sampleDensityProperty;
-        osg::ref_ptr<TransparencyProperty> _transparencyProperty;
+        osg::ref_ptr<TransferFunctionProperty>              _tfProperty;
+        osg::ref_ptr<IsoSurfaceProperty>                    _isoProperty;
+        osg::ref_ptr<AlphaFuncProperty>                     _afProperty;
+        osg::ref_ptr<MaximumIntensityProjectionProperty>    _mipProperty;
+        osg::ref_ptr<LightingProperty>                      _lightingProperty;
+        osg::ref_ptr<SampleDensityProperty>                 _sampleDensityProperty;
+        osg::ref_ptr<TransparencyProperty>                  _transparencyProperty;
         
 };
 
@@ -328,6 +360,12 @@ class PropertyAdjustmentCallback : public osgGA::GUIEventHandler, public osg::St
 
         META_Object(osgVolume,PropertyAdjustmentCallback);
         
+        void setKeyEventCycleForward(int key) { _cyleForwardKey = key; }
+        int getKeyEventCyclesForward() const { return _cyleForwardKey; }
+
+        void setKeyEventCycleBackward(int key) { _cyleBackwardKey = key; }
+        int getKeyEventCyclesBackward() const { return _cyleBackwardKey; }
+
         void setKeyEventActivatesTransparenyAdjustment(int key) { _transparencyKey = key; }
         int getKeyEventActivatesTransparenyAdjustment() const { return _transparencyKey; }
 
@@ -338,7 +376,9 @@ class PropertyAdjustmentCallback : public osgGA::GUIEventHandler, public osg::St
         int getKeyEventActivatesAlphaFuncAdjustment() const { return _alphaFuncKey; }
 
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object* object, osg::NodeVisitor*);
-        
+
+        int     _cyleForwardKey;
+        int     _cyleBackwardKey;
         int     _transparencyKey;
         int     _alphaFuncKey;
         int     _sampleDensityKey;
@@ -347,6 +387,7 @@ class PropertyAdjustmentCallback : public osgGA::GUIEventHandler, public osg::St
         bool    _updateAlphaCutOff;
         bool    _updateSampleDensity;
 };
+
 }
 
 #endif

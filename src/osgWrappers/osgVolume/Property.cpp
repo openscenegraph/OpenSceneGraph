@@ -96,20 +96,17 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgVolume::CollectPropertiesVisitor)
 	I_DeclaringFile("osgVolume/Property");
 	I_BaseType(osgVolume::PropertyVisitor);
-	I_Constructor0(____CollectPropertiesVisitor,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, bool, traverseOnlyActiveChildren, true,
+	                           Properties::NON_EXPLICIT,
+	                           ____CollectPropertiesVisitor__bool,
+	                           "",
+	                           "");
 	I_Method1(void, apply, IN, osgVolume::Property &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__Property_R1,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osgVolume::CompositeProperty &, cp,
-	          Properties::VIRTUAL,
-	          __void__apply__CompositeProperty_R1,
-	          "",
-	          "");
-	I_Method1(void, apply, IN, osgVolume::TransferFunctionProperty &, tf,
+	I_Method1(void, apply, IN, osgVolume::TransferFunctionProperty &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__TransferFunctionProperty_R1,
 	          "",
@@ -447,6 +444,26 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::PropertyAdjustmentCallback)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setKeyEventCycleForward, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventCycleForward__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventCyclesForward,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventCyclesForward,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventCycleBackward, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventCycleBackward__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventCyclesBackward,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventCyclesBackward,
+	          "",
+	          "");
 	I_Method1(void, setKeyEventActivatesTransparenyAdjustment, IN, int, key,
 	          Properties::NON_VIRTUAL,
 	          __void__setKeyEventActivatesTransparenyAdjustment__int,
@@ -494,6 +511,20 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::PropertyAdjustmentCallback)
 	I_SimpleProperty(int, KeyEventActivatesTransparenyAdjustment, 
 	                 __int__getKeyEventActivatesTransparenyAdjustment, 
 	                 __void__setKeyEventActivatesTransparenyAdjustment__int);
+	I_SimpleProperty(int, KeyEventCycleBackward, 
+	                 0, 
+	                 __void__setKeyEventCycleBackward__int);
+	I_SimpleProperty(int, KeyEventCycleForward, 
+	                 0, 
+	                 __void__setKeyEventCycleForward__int);
+	I_SimpleProperty(int, KeyEventCyclesBackward, 
+	                 __int__getKeyEventCyclesBackward, 
+	                 0);
+	I_SimpleProperty(int, KeyEventCyclesForward, 
+	                 __int__getKeyEventCyclesForward, 
+	                 0);
+	I_PublicMemberProperty(int, _cyleForwardKey);
+	I_PublicMemberProperty(int, _cyleBackwardKey);
 	I_PublicMemberProperty(int, _transparencyKey);
 	I_PublicMemberProperty(int, _alphaFuncKey);
 	I_PublicMemberProperty(int, _sampleDensityKey);
@@ -504,9 +535,11 @@ END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgVolume::PropertyVisitor)
 	I_DeclaringFile("osgVolume/Property");
-	I_Constructor0(____PropertyVisitor,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, bool, traverseOnlyActiveChildren, true,
+	                           Properties::NON_EXPLICIT,
+	                           ____PropertyVisitor__bool,
+	                           "",
+	                           "");
 	I_Method1(void, apply, IN, osgVolume::Property &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__Property_R1,
@@ -515,6 +548,11 @@ BEGIN_VALUE_REFLECTOR(osgVolume::PropertyVisitor)
 	I_Method1(void, apply, IN, osgVolume::CompositeProperty &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__CompositeProperty_R1,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, osgVolume::SwitchProperty &, x,
+	          Properties::VIRTUAL,
+	          __void__apply__SwitchProperty_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osgVolume::TransferFunctionProperty &, x,
@@ -557,6 +595,7 @@ BEGIN_VALUE_REFLECTOR(osgVolume::PropertyVisitor)
 	          __void__apply__TransparencyProperty_R1,
 	          "",
 	          "");
+	I_PublicMemberProperty(bool, _traverseOnlyActiveChildren);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgVolume::SampleDensityProperty)
@@ -673,6 +712,61 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::ScalarProperty)
 	I_SimpleProperty(float, Value, 
 	                 __float__getValue, 
 	                 __void__setValue__float);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgVolume::SwitchProperty)
+	I_DeclaringFile("osgVolume/Property");
+	I_BaseType(osgVolume::CompositeProperty);
+	I_Constructor0(____SwitchProperty,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgVolume::SwitchProperty &, switchProperty, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____SwitchProperty__C5_SwitchProperty_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, accept, IN, osgVolume::PropertyVisitor &, pv,
+	          Properties::VIRTUAL,
+	          __void__accept__PropertyVisitor_R1,
+	          "",
+	          "");
+	I_Method1(void, setActiveProperty, IN, int, i,
+	          Properties::NON_VIRTUAL,
+	          __void__setActiveProperty__int,
+	          "Set which child property is active. ",
+	          "-1 disables all children. ");
+	I_Method0(int, getActiveProperty,
+	          Properties::NON_VIRTUAL,
+	          __int__getActiveProperty,
+	          "Get the active property. ",
+	          "");
+	I_SimpleProperty(int, ActiveProperty, 
+	                 __int__getActiveProperty, 
+	                 __void__setActiveProperty__int);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgVolume::TransferFunctionProperty)

@@ -50,6 +50,21 @@ void CompositeProperty::clear()
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// SwitchProperty
+//
+SwitchProperty::SwitchProperty()
+{
+}
+
+SwitchProperty::SwitchProperty(const SwitchProperty& switchProperty, const osg::CopyOp& copyop):
+    CompositeProperty(switchProperty,copyop),
+    _activeProperty(switchProperty._activeProperty)
+{
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // TransferFunctionProperty
 //
 TransferFunctionProperty::TransferFunctionProperty(osg::TransferFunction* tf):
@@ -180,13 +195,14 @@ TransparencyProperty::TransparencyProperty(const TransparencyProperty& isp,const
 
 /////////////////////////////////////////////////////////////////////////////
 //
-// CollectPropertiesVisitor
+// PropertyVisitor
 //
-CollectPropertiesVisitor::CollectPropertiesVisitor() {}
+PropertyVisitor::PropertyVisitor(bool traverseOnlyActiveChildren):
+    _traverseOnlyActiveChildren(traverseOnlyActiveChildren)
+{
+}
 
-void CollectPropertiesVisitor::apply(Property&) {}
-
-void CollectPropertiesVisitor::apply(CompositeProperty& cp)
+void PropertyVisitor::apply(CompositeProperty& cp)
 { 
     for(unsigned int i=0; i<cp.getNumProperties(); ++i)
     {
@@ -194,6 +210,35 @@ void CollectPropertiesVisitor::apply(CompositeProperty& cp)
     }
 }
 
+void PropertyVisitor::apply(SwitchProperty& sp)
+{ 
+    if (_traverseOnlyActiveChildren)
+    {
+        if (sp.getActiveProperty()>=0 && sp.getActiveProperty()<static_cast<int>(sp.getNumProperties()))
+        {
+            sp.getProperty(sp.getActiveProperty())->accept(*this);
+        }
+    }
+    else
+    {
+        for(unsigned int i=0; i<sp.getNumProperties(); ++i)
+        {
+            sp.getProperty(i)->accept(*this);
+        }
+    }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// CollectPropertiesVisitor
+//
+CollectPropertiesVisitor::CollectPropertiesVisitor(bool traverseOnlyActiveChildren):
+    PropertyVisitor(traverseOnlyActiveChildren)
+{
+}
+
+void CollectPropertiesVisitor::apply(Property&) {}
 void CollectPropertiesVisitor::apply(TransferFunctionProperty& tf) { _tfProperty = &tf; }
 void CollectPropertiesVisitor::apply(ScalarProperty&) {}
 void CollectPropertiesVisitor::apply(IsoSurfaceProperty& iso) { _isoProperty = &iso; }
@@ -204,12 +249,64 @@ void CollectPropertiesVisitor::apply(SampleDensityProperty& sdp) { _sampleDensit
 void CollectPropertiesVisitor::apply(TransparencyProperty& tp) { _transparencyProperty = &tp; }
 
 
+class CycleSwitchVisitor : public osgVolume::PropertyVisitor
+{
+    public:
+    
+        CycleSwitchVisitor(int delta):
+            PropertyVisitor(false),
+            _delta(delta),
+            _switchModified(true) {}
+        
+        virtual void apply(SwitchProperty& sp)
+        {
+            if (sp.getNumProperties()>=2)
+            {
+                if (_delta>0)
+                {
+                    int newValue = sp.getActiveProperty()+_delta;
+                    if (newValue<static_cast<int>(sp.getNumProperties()))
+                    {
+                        sp.setActiveProperty(newValue);
+                    }
+                    else
+                    {
+                        sp.setActiveProperty(0);
+                    }
+                    
+                    _switchModified = true;
+                }
+                else // _delta<0
+                {
+                    int newValue = sp.getActiveProperty()+_delta;
+                    if (newValue>=0)
+                    {
+                        sp.setActiveProperty(newValue);
+                    }
+                    else
+                    {
+                        sp.setActiveProperty(sp.getNumProperties()-1);
+                    }
+
+                    _switchModified = true;
+                }
+            }
+            
+            PropertyVisitor::apply(sp);
+        }
+        
+        int     _delta;
+        bool    _switchModified;
+};
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // PropertyAdjustmentCallback
 //
 PropertyAdjustmentCallback::PropertyAdjustmentCallback()
 {
+    _cyleForwardKey = 'v';
+    _cyleBackwardKey = 'V';
     _transparencyKey = 't';
     _alphaFuncKey = 'a';
     _sampleDensityKey = 'd';
@@ -264,16 +361,26 @@ bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
-            if (ea.getKey()=='t') _updateTransparency = true;
-            if (ea.getKey()=='a') _updateAlphaCutOff = true;
-            if (ea.getKey()=='d') _updateSampleDensity = true;
+            if (ea.getKey()==_cyleForwardKey || ea.getKey()==_cyleBackwardKey)
+            {
+                CycleSwitchVisitor csv( (ea.getKey()==_cyleForwardKey) ? 1 : -1);
+                property->accept(csv);
+                if (csv._switchModified)
+                {
+                    tile->setDirty(true);
+                    tile->init();
+                }
+            }
+            else if (ea.getKey()==_transparencyKey) _updateTransparency = true;
+            else if (ea.getKey()==_alphaFuncKey) _updateAlphaCutOff = true;
+            else if (ea.getKey()==_sampleDensityKey) _updateSampleDensity = true;
             break;
         }
         case(osgGA::GUIEventAdapter::KEYUP):
         {
-            if (ea.getKey()=='t') _updateTransparency = false;
-            if (ea.getKey()=='a') _updateAlphaCutOff = false;
-            if (ea.getKey()=='d') _updateSampleDensity = false;
+            if (ea.getKey()==_transparencyKey) _updateTransparency = false;
+            else if (ea.getKey()==_alphaFuncKey) _updateAlphaCutOff = false;
+            else if (ea.getKey()==_sampleDensityKey) _updateSampleDensity = false;
             break;
         }
         default:

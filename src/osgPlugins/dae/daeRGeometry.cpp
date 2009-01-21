@@ -35,26 +35,22 @@ osg::Geode* daeReader::processInstanceGeometry( domInstance_geometry *ig )
     }
     
     // Check cache if geometry already exists
-    osg::Geode *geode;
+    osg::Geode* cachedGeode;
 
     domGeometryGeodeMap::iterator iter = geometryMap.find( geom );
     if ( iter != geometryMap.end() )
     {
-        osg::Geode* cachedGeode = iter->second;
-
-        // Create a copy of the cached Geode with a copy of the drawables,
-        // because the may be using a different material.
-        // TODO Cloning is not necessary if the material layouts are exactly the same.
-        // To check this we need to compare the material bindings used by the cached Geode
-        // and this new instance_geometry material bindings.
-        geode = static_cast<osg::Geode*>(cachedGeode->clone(osg::CopyOp::DEEP_COPY_DRAWABLES));
+        cachedGeode = iter->second;
     }
     else
     {
-        geode = processGeometry( geom );
-        geometryMap.insert( std::make_pair( geom, geode ) );
+        cachedGeode = processGeometry( geom );
+        geometryMap.insert( std::make_pair( geom, cachedGeode ) );
     }
 
+    // Create a copy of the cached Geode with a copy of the drawables,
+    // because we may be using a different material or texture unit bindings.
+    osg::Geode *geode = static_cast<osg::Geode*>(cachedGeode->clone(osg::CopyOp::DEEP_COPY_DRAWABLES));
     if ( geode == NULL )
     {
         osg::notify( osg::WARN ) << "Failed to load geometry " << ig->getUrl().getURI() << std::endl;
@@ -64,7 +60,7 @@ osg::Geode* daeReader::processInstanceGeometry( domInstance_geometry *ig )
     // process material bindings
     if ( ig->getBind_material() != NULL )
     {
-        processBindMaterial( ig->getBind_material(), geom, geode );
+        processBindMaterial( ig->getBind_material(), geom, geode, cachedGeode );
     }
 
     return geode;
@@ -119,26 +115,21 @@ osg::Geode* daeReader::processInstanceController( domInstance_controller *ictrl 
     }
 
     // Check cache if geometry already exists
-    osg::Geode *geode;
-
+    osg::Geode* cachedGeode;
     domGeometryGeodeMap::iterator iter = geometryMap.find( geom );
     if ( iter != geometryMap.end() )
     {
-        osg::Geode* cachedGeode = iter->second;
-
-        // Create a copy of the cached Geode with a copy of the drawables,
-        // because the may be using a different material.
-        // TODO Cloning is not necessary if the material layouts are exactly the same.
-        // To check this we need to compare the material bindings used by the cached Geode
-        // and this new instance_geometry material bindings.
-        geode = static_cast<osg::Geode*>(cachedGeode->clone(osg::CopyOp::DEEP_COPY_DRAWABLES));
+        cachedGeode = iter->second;
     }
     else
     {
-        geode = processGeometry( geom );
-        geometryMap.insert( std::make_pair( geom, geode ) );
+        cachedGeode = processGeometry( geom );
+        geometryMap.insert( std::make_pair( geom, cachedGeode ) );
     }
 
+    // Create a copy of the cached Geode with a copy of the drawables,
+    // because we may be using a different material or texture unit bindings.
+    osg::Geode *geode = static_cast<osg::Geode*>(cachedGeode->clone(osg::CopyOp::DEEP_COPY_DRAWABLES));
     if ( geode == NULL )
     {
         osg::notify( osg::WARN ) << "Failed to load geometry " << src->getURI() << std::endl;
@@ -147,7 +138,7 @@ osg::Geode* daeReader::processInstanceController( domInstance_controller *ictrl 
     //process material bindings
     if ( ictrl->getBind_material() != NULL )
     {
-        processBindMaterial( ictrl->getBind_material(), geom, geode );
+        processBindMaterial( ictrl->getBind_material(), geom, geode, cachedGeode );
     }
 
     return geode;
@@ -248,7 +239,7 @@ osg::Geode *daeReader::processGeometry( domGeometry *geo )
 template< typename T >
 void daeReader::processSinglePPrimitive(osg::Geode* geode, T *group, SourceMap &sources, GLenum mode )
 {
-    osg::Geometry *geometry = new osg::Geometry();
+    osg::Geometry *geometry = new ReaderGeometry();
     geometry->setName(group->getMaterial());
 
     IndexMap index_map;
@@ -264,7 +255,7 @@ void daeReader::processSinglePPrimitive(osg::Geode* geode, T *group, SourceMap &
 template< typename T >
 void daeReader::processMultiPPrimitive(osg::Geode* geode, T *group, SourceMap &sources, GLenum mode )
 {
-    osg::Geometry *geometry = new osg::Geometry();
+    osg::Geometry *geometry = new ReaderGeometry();
     geometry->setName(group->getMaterial());
 
     IndexMap index_map;
@@ -283,7 +274,7 @@ void daeReader::processMultiPPrimitive(osg::Geode* geode, T *group, SourceMap &s
 
 void daeReader::processPolylist(osg::Geode* geode, domPolylist *group, SourceMap &sources )
 {
-    osg::Geometry *geometry = new osg::Geometry();
+    osg::Geometry *geometry = new ReaderGeometry();
     geometry->setName(group->getMaterial());
 
     IndexMap index_map;
@@ -340,7 +331,7 @@ void daeReader::processP( domP *p, osg::Geometry *&/*geom*/, IndexMap &index_map
     }
 }
 
-void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry *&geom, 
+void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry *geom, 
                                     SourceMap &sources, IndexMap &index_map )
 {
     domVertices* vertices = NULL;
@@ -349,10 +340,11 @@ void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry 
     daeElement* normal_source = NULL;
     daeElement* texcoord_source = NULL;
 
-    int offset;
-    int set;
     daeElement *tmp_el;
     domInputLocalOffset *tmp_input;
+    ReaderGeometry* GeometryWrapper = dynamic_cast<ReaderGeometry*>(geom);
+
+    int TexCoordSetsUsed = 0;
 
     if ( findInputSourceBySemantic( inputs, "VERTEX", tmp_el, &tmp_input ) ) 
     {
@@ -362,52 +354,97 @@ void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry 
             osg::notify( osg::WARN )<<"Could not get vertices"<<std::endl;
             return;
         }
-        offset = tmp_input->getOffset();
-        set = tmp_input->getSet(); //if it wasn't actually set it will initialize to 0 which is 
-        //the value we would want anyways.
 
+        // Process mandatory offset attribute
+        int offset = tmp_input->getOffset();
+        if ( index_map[offset] == NULL ) 
+            index_map[offset] = new osg::IntArray();
+        geom->setVertexIndices( index_map[offset] );
+
+        // Process input elements within the vertices element. These are of the unshared type
+        // and therefore cannot have set and offset attributes
+
+        // The vertices POSITION semantic input element is mandatory
         domInputLocal *tmp;
         findInputSourceBySemantic( vertices->getInput_array(), "POSITION", position_source, &tmp );
-        findInputSourceBySemantic( vertices->getInput_array(), "COLOR", color_source, &tmp );
-        findInputSourceBySemantic( vertices->getInput_array(), "NORMAL", normal_source, &tmp );
-        findInputSourceBySemantic( vertices->getInput_array(), "TEXCOORD", texcoord_source, &tmp );
-        
-        if ( index_map[offset] == NULL ) 
-        {
-            index_map[offset] = new osg::IntArray();
-        }
-        geom->setVertexIndices( index_map[offset] );
         if ( position_source != NULL )
         {
             geom->setVertexArray( sources[position_source].getVec3Array() );
         }
+        else
+        {
+            osg::notify( osg::FATAL )<<"Mandatory POSITION semantic missing"<<std::endl;
+            return;
+        }
+
+        // Process additional vertices input elements
+        findInputSourceBySemantic( vertices->getInput_array(), "COLOR", color_source, &tmp );
+        findInputSourceBySemantic( vertices->getInput_array(), "NORMAL", normal_source, &tmp );
+        findInputSourceBySemantic( vertices->getInput_array(), "TEXCOORD", texcoord_source, &tmp );
+
+
+        int VertexCount = sources[position_source].getCount();
         if ( color_source != NULL ) 
         {
-            geom->setColorArray( sources[color_source].getVec4Array() );
-            geom->setColorIndices( index_map[offset] );
-            geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
+            // Check matching arrays
+            if ( sources[color_source].getCount() >= VertexCount )
+            {
+                geom->setColorArray( sources[color_source].getVec4Array() );
+                geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
+                geom->setColorIndices( index_map[offset] ); // Use the vertex indices
+            }
+            else
+            {
+                osg::notify( osg::WARN )<<"Not enough entries in color array"<<std::endl;
+            }
         }
         if ( normal_source != NULL )
         {
-            geom->setNormalArray( sources[normal_source].getVec3Array() );
-            geom->setNormalIndices( index_map[offset] );
-            geom->setNormalBinding( osg::Geometry::BIND_PER_VERTEX );
+            // Check matching arrays
+            if ( sources[normal_source].getCount() >= VertexCount )
+            {
+                geom->setNormalArray( sources[normal_source].getVec3Array() );
+                geom->setNormalBinding( osg::Geometry::BIND_PER_VERTEX );
+                geom->setNormalIndices( index_map[offset] ); // Use the vertex indices
+            }
+            else
+            {
+                osg::notify( osg::WARN )<<"Not enough entries in normal array"<<std::endl;
+            }
         }
+        // It seems sensible to only process the first input found here with a TEXCOORD semantic.
+        // as offsets are not allowed here.
+        // I assume that this belongs to set zero as the DOM returns 0 for the set attribute on shared
+        // input elements even if the attribute is absent.
         if ( texcoord_source != NULL )
         {
             domSourceReader *sc = &sources[texcoord_source];
-            switch( sc->getArrayType() ) {
-                case domSourceReader::Vec2:
-                    geom->setTexCoordArray( set, sc->getVec2Array() );
-                    break;
-                case domSourceReader::Vec3:
-                    geom->setTexCoordArray( set, sc->getVec3Array() );
-                    break;
-                default:
-                    osg::notify( osg::WARN )<<"Unsupported array type: "<< sc->getArrayType() <<std::endl;
-                    break;
+            if ( sc->getCount() >= VertexCount )
+            {
+                if (NULL != GeometryWrapper)
+                    GeometryWrapper->_TexcoordSetMap[0] = TexCoordSetsUsed;
+                switch( sc->getArrayType() )
+                {
+                    case domSourceReader::Vec2:
+                        geom->setTexCoordArray( TexCoordSetsUsed, sc->getVec2Array() );
+                        break;
+                    case domSourceReader::Vec3:
+                        geom->setTexCoordArray( TexCoordSetsUsed, sc->getVec3Array() );
+                        break;
+                    default:
+                        osg::notify( osg::WARN )<<"Unsupported array type: "<< sc->getArrayType() <<std::endl;
+                        break;
+                }
+                TexCoordSetsUsed++;
             }
-            geom->setTexCoordIndices( set, index_map[offset] );
+            else
+            {
+                osg::notify( osg::WARN )<<"Not enough entries in texcoord array"<<std::endl;
+            }
+        }
+        if ( findInputSourceBySemantic( inputs, "TEXCOORD", texcoord_source, &tmp_input, 1 ) )
+        {
+            osg::notify( osg::WARN )<<"More than one input element with TEXCOORD semantic found in vertices element"<<std::endl;
         }
     }
     else 
@@ -416,66 +453,68 @@ void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry 
         return;
     }
 
-    if ( findInputSourceBySemantic( inputs, "COLOR", color_source, &tmp_input )) 
+    if ( findInputSourceBySemantic( inputs, "COLOR", tmp_el, &tmp_input )) 
     {
-        offset = tmp_input->getOffset();
-        if ( index_map[offset] == NULL ) {
+        if (color_source != NULL)
+            osg::notify( osg::WARN )<<"Overwriting vertices input(COLOR) with input from primitive"<<std::endl;
+        else
+            geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
+
+        int offset = tmp_input->getOffset();
+        if ( index_map[offset] == NULL )
             index_map[offset] = new osg::IntArray();
-        }
         geom->setColorIndices( index_map[offset] );
+        geom->setColorArray( sources[tmp_el].getVec4Array() );
     }
 
-    if ( color_source != NULL ) 
+    if ( findInputSourceBySemantic( inputs, "NORMAL", tmp_el, &tmp_input ) ) 
     {
-        geom->setColorArray( sources[color_source].getVec4Array() );
-        geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
-    }
+        if (normal_source != NULL)
+            osg::notify( osg::WARN )<<"Overwriting vertices input(NORMAL) with input from primitive"<<std::endl;
+        else
+            geom->setNormalBinding( osg::Geometry::BIND_PER_VERTEX );
 
-    if ( findInputSourceBySemantic( inputs, "NORMAL", normal_source, &tmp_input ) ) 
-    {
-        offset = tmp_input->getOffset();
-        if ( index_map[offset] == NULL ) 
-        {
+        int offset = tmp_input->getOffset();
+        if ( index_map[offset] == NULL )
             index_map[offset] = new osg::IntArray();
-        }
         geom->setNormalIndices( index_map[offset] );
+        geom->setNormalArray( sources[tmp_el].getVec3Array() );
     }
 
-    if ( normal_source ) 
+    int inputNumber = 0;
+    while ( findInputSourceBySemantic( inputs, "TEXCOORD", texcoord_source, &tmp_input, inputNumber ) )
     {
-        geom->setNormalArray( sources[normal_source].getVec3Array() );
-        geom->setNormalBinding( osg::Geometry::BIND_PER_VERTEX );
-    }
-
-    int unit = 0;
-    while ( findInputSourceBySemantic( inputs, "TEXCOORD", texcoord_source, &tmp_input, unit ) ) 
-    {
-        offset = tmp_input->getOffset();
-        set = tmp_input->getSet();
+        int offset = tmp_input->getOffset();
+        int set = tmp_input->getSet();
+        if (NULL != GeometryWrapper)
+        {
+            if (GeometryWrapper->_TexcoordSetMap.find(set) != GeometryWrapper->_TexcoordSetMap.end())
+                    osg::notify( osg::WARN )<<"Duplicate texcoord set: "<< set <<std::endl;
+            GeometryWrapper->_TexcoordSetMap[set] = TexCoordSetsUsed;
+        }
 
         if ( index_map[offset] == NULL ) 
         {
             index_map[offset] = new osg::IntArray();
         }
-        //this should really be set. Then when you bind_vertex_input you can adjust accordingly for the
-        //effect which currently only puts textures in texunit 0
-        geom->setTexCoordIndices( unit/*set*/, index_map[offset] );
+        geom->setTexCoordIndices( TexCoordSetsUsed, index_map[offset] );
 
         if ( texcoord_source != NULL )
         {
             domSourceReader &sc = sources[texcoord_source];
             switch( sc.getArrayType() ) {
                 case domSourceReader::Vec2:
-                    geom->setTexCoordArray( unit/*set*/, sc.getVec2Array() );
+                    geom->setTexCoordArray( TexCoordSetsUsed, sc.getVec2Array() );
                     break;
                 case domSourceReader::Vec3:
-                    geom->setTexCoordArray( unit/*set*/, sc.getVec3Array() );
+                    geom->setTexCoordArray( TexCoordSetsUsed, sc.getVec3Array() );
                     break;
                 default:
                     osg::notify( osg::WARN )<<"Unsupported array type: "<< sc.getArrayType() <<std::endl;
                     break;
             }
         }
-        unit++;
+        TexCoordSetsUsed++;
+        inputNumber++;
     }
 }

@@ -21,7 +21,7 @@
 
 using namespace osgdae;
 
-daeReader::daeReader(DAE *dae_) : 
+daeReader::daeReader(DAE *dae_, bool strictTransparency) :
                   m_AssetUnitName("meter"),
                   m_AssetUnitMeter(1.0),
                   m_AssetUp_axis(UPAXISTYPE_Y_UP),
@@ -30,7 +30,8 @@ daeReader::daeReader(DAE *dae_) :
                   m_numlights(0),
                   currentInstance_effect(NULL),
                   currentEffect(NULL),
-                  m_AuthoringTool(UNKNOWN)
+                  m_AuthoringTool(UNKNOWN),
+                  m_StrictTransparency(strictTransparency)
 {
 }
 

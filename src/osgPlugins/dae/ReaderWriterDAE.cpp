@@ -57,7 +57,7 @@ ReaderWriterDAE::readNode(const std::string& fname,
         pDAE = new DAE;
     }
 
-    osgdae::daeReader daeReader(pDAE) ;
+    osgdae::daeReader daeReader(pDAE, options && options->getOptionString().find("StrictTransparency") != std::string::npos ) ;
 
     // Convert file name to URI
     std::string fileURI = ConvertFilePathToColladaCompatibleURI(fileName);

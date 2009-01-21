@@ -131,7 +131,7 @@ inline osg::Matrix parseMatrixString(const std::string& valueAsString)
 */ 
 class daeReader {
 public:
-    daeReader(DAE *dae_);
+    daeReader(DAE *dae_, bool strictTransparency = false);
     virtual ~daeReader();
 
     bool convert( const std::string &fileURI );
@@ -142,6 +142,14 @@ public:
     std::string m_AssetUnitName;
     float m_AssetUnitMeter;
     domUpAxisType m_AssetUp_axis;
+
+    // Texture unit useage
+    enum
+    {
+        AMBIENT_OCCLUSION_UNIT = 0,
+        MAIN_TEXTURE_UNIT,
+        TRANSPARENCY_MAP_UNIT
+    };
 
 protected:
     //scene processing
@@ -163,6 +171,11 @@ protected:
     osg::Node* processOsgSequence(domTechnique* teq);
 
     //geometry processing
+    class ReaderGeometry : public osg::Geometry
+    {
+    public:
+        std::map<int, int> _TexcoordSetMap;
+    };
     osg::Geode* processInstanceGeometry( domInstance_geometry *ig );
     osg::Geode* processGeometry( domGeometry *geo );
     osg::Geode* processInstanceController( domInstance_controller *ictrl );
@@ -178,13 +191,13 @@ protected:
 
     void processPolylist(osg::Geode* geode, domPolylist *group, SourceMap &sources );
 
-    void resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry *&geom, 
+    void resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry *geom, 
                         SourceMap &sources, IndexMap &index_map );
 
     void processP( domP *p, osg::Geometry *&geom, IndexMap &index_map, osg::DrawArrayLengths* dal/*GLenum mode*/ );
 
     //material/effect processing
-    void processBindMaterial( domBind_material *bm, domGeometry *geom, osg::Geode *geode );
+    void processBindMaterial( domBind_material *bm, domGeometry *geom, osg::Geode *geode, osg::Geode *cachedGeode );
     void processMaterial(osg::StateSet *ss, domMaterial *mat );
     void processEffect(osg::StateSet *ss, domEffect *effect );
     void processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc );
@@ -194,7 +207,11 @@ protected:
                                     domCommon_float_or_param_type *fop = NULL, 
                                     osg::StateAttribute **sa = NULL,
                                     bool normalizeShininess=false);
-    osg::StateAttribute *processTransparencySettings( domCommon_transparent_type *ctt, domCommon_float_or_param_type *pTransparency, osg::StateSet *ss );
+    void processTransparencySettings( domCommon_transparent_type *ctt,
+                                        domCommon_float_or_param_type *pTransparency, 
+                                        osg::StateSet *ss,
+                                        osg::Material *material,
+                                        xsNCName diffuseTextureName );
     bool GetFloat4Param(xsNCName Reference, domFloat4 &f4);
     bool GetFloatParam(xsNCName Reference, domFloat &f);
 
@@ -232,6 +249,7 @@ protected:
         GOOGLE_SKETCHUP
     };
     AuthoringTool m_AuthoringTool;
+    bool m_StrictTransparency;
 };
 
 }

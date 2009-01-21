@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgVolume/ShaderTechnique>
+#include <osgVolume/RayTracedTechnique>
 #include <osgVolume/VolumeTile>
 
 #include <osg/Geometry>
@@ -28,16 +28,16 @@
 
 using namespace osgVolume;
 
-ShaderTechnique::ShaderTechnique()
+RayTracedTechnique::RayTracedTechnique()
 {
 }
 
-ShaderTechnique::ShaderTechnique(const ShaderTechnique& fft,const osg::CopyOp& copyop):
+RayTracedTechnique::RayTracedTechnique(const RayTracedTechnique& fft,const osg::CopyOp& copyop):
     VolumeTechnique(fft,copyop)
 {
 }
 
-ShaderTechnique::~ShaderTechnique()
+RayTracedTechnique::~RayTracedTechnique()
 {
 }
 
@@ -49,9 +49,9 @@ enum ShadingModel
     MaximumIntensityProjection
 };
 
-void ShaderTechnique::init()
+void RayTracedTechnique::init()
 {
-    osg::notify(osg::NOTICE)<<"ShaderTechnique::init()"<<std::endl;
+    osg::notify(osg::NOTICE)<<"RayTracedTechnique::init()"<<std::endl;
     
      if (!_volumeTile) return;
      
@@ -432,28 +432,28 @@ void ShaderTechnique::init()
 
 }
 
-void ShaderTechnique::update(osgUtil::UpdateVisitor* uv)
+void RayTracedTechnique::update(osgUtil::UpdateVisitor* uv)
 {
-//    osg::notify(osg::NOTICE)<<"ShaderTechnique:update(osgUtil::UpdateVisitor* nv):"<<std::endl;
+//    osg::notify(osg::NOTICE)<<"RayTracedTechnique:update(osgUtil::UpdateVisitor* nv):"<<std::endl;
 }
 
-void ShaderTechnique::cull(osgUtil::CullVisitor* cv)
+void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
 {
-    //osg::notify(osg::NOTICE)<<"ShaderTechnique::cull(osgUtil::CullVisitor* nv)"<<std::endl;    
+    //osg::notify(osg::NOTICE)<<"RayTracedTechnique::cull(osgUtil::CullVisitor* nv)"<<std::endl;    
     if (_geode.valid())
     {
         _geode->accept(*cv);
     }
 }
 
-void ShaderTechnique::cleanSceneGraph()
+void RayTracedTechnique::cleanSceneGraph()
 {
-    osg::notify(osg::NOTICE)<<"ShaderTechnique::cleanSceneGraph()"<<std::endl;
+    osg::notify(osg::NOTICE)<<"RayTracedTechnique::cleanSceneGraph()"<<std::endl;
 }
 
-void ShaderTechnique::traverse(osg::NodeVisitor& nv)
+void RayTracedTechnique::traverse(osg::NodeVisitor& nv)
 {
-    // osg::notify(osg::NOTICE)<<"ShaderTechnique::traverse(osg::NodeVisitor& nv)"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"RayTracedTechnique::traverse(osg::NodeVisitor& nv)"<<std::endl;
     if (!_volumeTile) return;
 
     // if app traversal update the frame count.

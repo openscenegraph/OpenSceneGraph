@@ -4,7 +4,7 @@ SET(TARGET_SRC
     Layer.cpp
     Volume.cpp
     VolumeTile.cpp
-    ShaderTechnique.cpp
+    RayTracedTechnique.cpp
     FixedFunctionTechnique.cpp
 )
 

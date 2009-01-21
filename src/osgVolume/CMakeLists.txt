@@ -13,7 +13,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Layer
     ${HEADER_PATH}/Locator
     ${HEADER_PATH}/Property
-    ${HEADER_PATH}/ShaderTechnique
+    ${HEADER_PATH}/RayTracedTechnique
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/Volume
     ${HEADER_PATH}/VolumeTechnique
@@ -28,7 +28,7 @@ ADD_LIBRARY(${LIB_NAME}
     Layer.cpp
     Locator.cpp
     Property.cpp
-    ShaderTechnique.cpp
+    RayTracedTechnique.cpp
     Version.cpp
     Volume.cpp
     VolumeTechnique.cpp

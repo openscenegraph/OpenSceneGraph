@@ -63,7 +63,7 @@
 #include <osg/ImageUtils>
 #include <osgVolume/Volume>
 #include <osgVolume/VolumeTile>
-#include <osgVolume/ShaderTechnique>
+#include <osgVolume/RayTracedTechnique>
 #include <osgVolume/FixedFunctionTechnique>
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
@@ -1324,7 +1324,7 @@ int main( int argc, char **argv )
             layer->addProperty(new osgVolume::TransferFunctionProperty(transferFunction.get()));
         }
 
-        tile->setVolumeTechnique(new osgVolume::ShaderTechnique);
+        tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
     }
     else
     {

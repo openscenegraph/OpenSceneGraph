@@ -16,7 +16,7 @@
 
 #include <osgVolume/Volume>
 #include <osgVolume/VolumeTile>
-#include <osgVolume/ShaderTechnique>
+#include <osgVolume/RayTracedTechnique>
 
 #ifdef  USE_DCMTK
     #define HAVE_CONFIG_H
@@ -122,7 +122,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
             osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
             tile->setVolume(volume.get());
-            tile->setVolumeTechnique(new osgVolume::ShaderTechnique());
+            tile->setVolumeTechnique(new osgVolume::RayTracedTechnique());
             
             osg::ref_ptr<osgVolume::ImageLayer> layer= new osgVolume::ImageLayer(result.getImage());
             layer->rescaleToZeroToOneRange();

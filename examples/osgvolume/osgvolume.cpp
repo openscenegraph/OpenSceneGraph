@@ -1249,9 +1249,9 @@ int main( int argc, char **argv )
     
     osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
     osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
-    volume->addChild(tile);
+    volume->addChild(tile.get());
 
-    osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d);
+    osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d.get());
 
     if (matrix)
     {

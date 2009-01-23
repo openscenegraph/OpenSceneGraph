@@ -182,7 +182,7 @@ void AutoTransform::accept(NodeVisitor& nv)
 
                     if (getAutoScaleToScreen())
                     {
-                        double size = 1.0/cs->pixelSize(getPosition(),0.48);
+                        double size = 1.0/cs->pixelSize(getPosition(),0.48f);
 
                         if (_autoScaleTransitionWidthRatio>0.0)
                         { 

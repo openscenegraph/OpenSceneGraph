@@ -294,13 +294,13 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
     texVOffset = currentTexInfo.texture_vecs[1][3];
 
     // Scale the texture vectors from inches to meters
-    texU *= 39.37;
-    texV *= 39.37;
+    texU *= 39.37f;
+    texV *= 39.37f;
 
     // Get the size of the texture involved, as the planar texture projection 
     // assumes non-normalized texture coordinates
-    texUScale = 1.0 / (float)currentTexData.texture_width;
-    texVScale = 1.0 / (float)currentTexData.texture_height;
+    texUScale = 1.0f / (float)currentTexData.texture_width;
+    texVScale = 1.0f / (float)currentTexData.texture_height;
 
     // Get the first edge index
     edgeIndex = face.first_edge;
@@ -335,7 +335,7 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
     for (i = 0; i < 4; i++)
     {
        // Calculate the distance of the start position from this vertex
-       dist = (vertices[i] - dispInfo.start_position * 0.0254).length();
+       dist = (vertices[i] - dispInfo.start_position * 0.0254f).length();
 
        // If this is the smallest distance we've seen, remember it
        if (dist < minDist)
@@ -553,13 +553,13 @@ void VBSPGeometry::addFace(int faceIndex)
         texVOffset = currentTexInfo.texture_vecs[1][3];
 
         // Scale the texture vectors from inches to meters
-        texU *= 39.37;
-        texV *= 39.37;
+        texU *= 39.37f;
+        texV *= 39.37f;
 
         // Get the texture size, as the planar texture projection results in
         // non-normalized texture coordinates
-        texUScale = 1.0 / (float)currentTexData.texture_width;
-        texVScale = 1.0 / (float)currentTexData.texture_height;
+        texUScale = 1.0f / (float)currentTexData.texture_width;
+        texVScale = 1.0f / (float)currentTexData.texture_height;
 
         // Start with the last edge index, because we need to switch from
         // clockwise winding (DirectX) to counter-clockwise winding (OpenGL)

@@ -118,15 +118,65 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             ReadResult result = readImage(file, options);
             if (!result.validImage()) return result;
             
-            osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
-
             osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
-            tile->setVolume(volume.get());
             tile->setVolumeTechnique(new osgVolume::RayTracedTechnique());
             
             osg::ref_ptr<osgVolume::ImageLayer> layer= new osgVolume::ImageLayer(result.getImage());
             layer->rescaleToZeroToOneRange();
             
+            osgVolume::SwitchProperty* sp = new osgVolume::SwitchProperty;
+            sp->setActiveProperty(0);
+            
+            float alphaFunc = 0.1f;
+
+            osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
+            osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
+            osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0);
+
+            {
+                // Standard
+                osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+                cp->addProperty(ap);
+                cp->addProperty(sd);
+                cp->addProperty(tp);
+
+                sp->addProperty(cp);
+            }
+
+            {
+                // Light
+                osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+                cp->addProperty(ap);
+                cp->addProperty(sd);
+                cp->addProperty(tp);
+                cp->addProperty(new osgVolume::LightingProperty);
+
+                sp->addProperty(cp);
+            }
+
+            {
+                // Isosurface
+                osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+                cp->addProperty(sd);
+                cp->addProperty(tp);
+                cp->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
+
+                sp->addProperty(cp);
+            }
+
+            {
+                // MaximumIntensityProjection
+                osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+                cp->addProperty(ap);
+                cp->addProperty(sd);
+                cp->addProperty(tp);
+                cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
+
+                sp->addProperty(cp);
+            }
+
+            layer->addProperty(sp);
+
             tile->setLayer(layer.get());
 
             // get matrix providing size of texels (in mm)
@@ -148,9 +198,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 osg::notify(osg::NOTICE)<<"No Locator found on osg::Image"<<std::endl;
             }
             
-            volume->addChild(tile.get());
-                        
-            return volume.release();
+            return tile.release();
         }
 
 

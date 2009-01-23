@@ -350,7 +350,7 @@ class OSGVOLUME_EXPORT CollectPropertiesVisitor : public osgVolume::PropertyVisi
         
 };
 
-class PropertyAdjustmentCallback : public osgGA::GUIEventHandler, public osg::StateSet::Callback
+class OSGVOLUME_EXPORT PropertyAdjustmentCallback : public osgGA::GUIEventHandler, public osg::StateSet::Callback
 {
     public:
     

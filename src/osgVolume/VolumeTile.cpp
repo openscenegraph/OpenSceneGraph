@@ -37,7 +37,7 @@ VolumeTile::VolumeTile(const VolumeTile& volumeTile,const osg::CopyOp& copyop):
     _hasBeenTraversal(false),
     _layer(volumeTile._layer)
 {
-    if (volumeTile.getVolumeTechnique()) ;
+    if (volumeTile.getVolumeTechnique())
     {
         setVolumeTechnique(osg::clone(volumeTile.getVolumeTechnique()));
     }

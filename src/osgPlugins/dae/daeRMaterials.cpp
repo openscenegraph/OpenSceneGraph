@@ -1164,14 +1164,14 @@ void daeReader::processTransparencySettings( domCommon_transparent_type *ctt,
 
     if (ctt && ctt->getTexture() != NULL)
     {
-        if (strcmp( ctt->getTexture()->getTexture(), diffuseTextureName))
+        if (!diffuseTextureName || (strcmp( ctt->getTexture()->getTexture(), diffuseTextureName)))
         {
             osg::notify( osg::WARN ) << "Currently no support for different textures in diffuse and transparent channels." << std::endl;
             return;
         }
     }
     
-    // Fix up defaults acoording to 1.4.1 release notes
+    // Fix up defaults according to 1.4.1 release notes
     domFloat4 f4;
     domFx_opaque_enum Opaque = FX_OPAQUE_ENUM_A_ONE;
     if (NULL == ctt)

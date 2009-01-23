@@ -74,7 +74,7 @@ const bsp::Plane & VBSPData::getPlane(int index) const
 void VBSPData::addVertex(osg::Vec3f & newVertex)
 {
     // Scale the vertex from inches up to meter scale
-    vertex_list.push_back(newVertex * 0.0254);
+    vertex_list.push_back(newVertex * 0.0254f);
 }
 
 

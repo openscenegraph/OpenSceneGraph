@@ -233,7 +233,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
 
             if (node.bb.valid())
             {
-                float epsilon = 1e-6;
+                float epsilon = 1e-6f;
                 node.bb._min.x() -= epsilon;
                 node.bb._min.y() -= epsilon;
                 node.bb._min.z() -= epsilon;
@@ -505,7 +505,7 @@ void IntersectKdTree::intersect(const KdTree::KdNode& node, const osg::Vec3& ls,
             
             float r,r0,r1,r2;
             
-            const float esplison = 1e-10;
+            const float esplison = 1e-10f;
             if (det>esplison)
             {
                 float u = (P*T);

@@ -514,7 +514,7 @@ void ShadowMap::cleanSceneGraph()
 // Callback simply turns shadow compare mode off via GL while rendering hud and 
 // restores it afterwards. 
 ////////////////////////////////////////////////////////////////////////////////
-class DrawableDrawWithDepthShadowComparisonOffCallback: 
+class ShadowMap::DrawableDrawWithDepthShadowComparisonOffCallback: 
     public osg::Drawable::DrawCallback
 {
 public:
@@ -549,6 +549,7 @@ public:
     osg::ref_ptr< osg::Texture2D > _texture;
     unsigned                       _stage;
 };
+
 ////////////////////////////////////////////////////////////////////////////////
 osg::ref_ptr<osg::Camera> ShadowMap::makeDebugHUD()
 {

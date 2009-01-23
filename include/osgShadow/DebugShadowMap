@@ -75,6 +75,9 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
         /** Classic protected OSG destructor */
         virtual ~DebugShadowMap();
 
+        // forward declare, interface and implementation provided in DebugShadowMap.cpp
+        class DrawableDrawWithDepthShadowComparisonOffCallback;
+
         osg::Vec2s  _hudSize;
         osg::Vec2s  _hudOrigin;
         osg::Vec2s  _viewportSize;

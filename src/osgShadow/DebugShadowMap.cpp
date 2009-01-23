@@ -405,13 +405,13 @@ void DebugShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv )
     _cameraDebugHUD           = NULL;//Force debug HUD rebuild ( if needed )
 }
 
+
 // Callback used by debugging hud to display Shadow Map to color buffer
 // Had to do it this way because OSG does not allow to use 
 // the same GL Texture Id with different glTexParams. 
 // Callback simply turns compare mode off via GL while rendering hud and 
 // restores it before rendering the scene with shadows. 
-
-class DrawableDrawWithDepthShadowComparisonOffCallback: 
+class DebugShadowMap::DrawableDrawWithDepthShadowComparisonOffCallback: 
     public osg::Drawable::DrawCallback
 {
 public:

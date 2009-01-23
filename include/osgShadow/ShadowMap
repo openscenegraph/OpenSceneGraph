@@ -94,6 +94,9 @@ class OSGSHADOW_EXPORT ShadowMap : public ShadowTechnique
         virtual void createUniforms();
 
         virtual void createShaders();
+        
+        // forward declare, interface and implementation provided in ShadowMap.cpp
+        class DrawableDrawWithDepthShadowComparisonOffCallback;
 
         osg::ref_ptr<osg::Camera>       _camera;
         osg::ref_ptr<osg::TexGen>       _texgen;

@@ -109,6 +109,9 @@ namespace OpenThreads {
             // release the thread that created this thread.
             pd->threadStartedBlock.release();
 
+            if (0 <= pd->cpunum)
+                thread->setProcessorAffinity(pd->cpunum);
+
             try{
                 thread->run();
             }
@@ -248,6 +251,7 @@ Thread::Thread() {
     pd->threadPolicy = Thread::THREAD_SCHEDULE_DEFAULT;
     pd->detached = false;
     pd->cancelEvent.set(CreateEvent(NULL,TRUE,FALSE,NULL));
+    pd->cpunum = -1;
 
     _prvData = static_cast<void *>(pd);
 }
@@ -567,6 +571,14 @@ size_t Thread::getStackSize() {
 int Thread::setProcessorAffinity( unsigned int cpunum )
 {
     Win32ThreadPrivateData *pd = static_cast<Win32ThreadPrivateData *> (_prvData);
+    pd->cpunum = cpunum;
+    if (!pd->isRunning)
+       return 0;
+
+    if (pd->tid.get() == INVALID_HANDLE_VALUE)
+       return -1;
+
+
     DWORD affinityMask  = 0x1 << cpunum ; // thread affinity mask
     DWORD_PTR res =
         SetThreadAffinityMask

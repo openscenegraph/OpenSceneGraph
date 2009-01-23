@@ -29,7 +29,7 @@
 
 namespace OpenThreads {
 
-	class Win32ThreadPrivateData {
+    class Win32ThreadPrivateData {
     //-------------------------------------------------------------------------
     // We're friendly to Thread, so it can use our data.
     //
@@ -62,20 +62,22 @@ private:
 
     int uniqueId;
 
+    int cpunum;
+
 public:
 
-	HandleHolder cancelEvent;
+    HandleHolder cancelEvent;
 
-	struct TlsHolder{ // thread local storage slot
-		DWORD ID;
-		TlsHolder(): ID(TlsAlloc()){
-		}
-		~TlsHolder(){
-			TlsFree(ID);
-		}
-	};
+    struct TlsHolder{ // thread local storage slot
+        DWORD ID;
+        TlsHolder(): ID(TlsAlloc()){
+        }
+        ~TlsHolder(){
+            TlsFree(ID);
+        }
+    };
 
-	static TlsHolder TLS;
+    static TlsHolder TLS;
 
 };
 

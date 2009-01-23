@@ -2,8 +2,20 @@
 #if defined(_MSC_VER) || defined(__MINGW32__)
     #include <stdio.h>
     #include <io.h>
+    
+    namespace esri
+    {
+        int read(int fd, void * buf, size_t nbytes) { return _read(fd, buf, nbytes); }
+    }
+    
 #else
     #include <unistd.h>
+
+    namespace esri
+    {
+        int read(int fd, void * buf, size_t nbytes) { return ::read(fd, buf, nbytes); }
+    }
+
 #endif 
 
 #include "ESRIShape.h"
@@ -39,7 +51,7 @@ template <class T>
 inline bool readVal( int fd, T &val, ByteOrder bo = LittleEndian )
 {
     int nbytes = 0;
-    if( (nbytes = ::read( fd, &val, sizeof(T))) <= 0 ) 
+    if( (nbytes = esri::read( fd, &val, sizeof(T))) <= 0 ) 
         return false;
 
     if( getByteOrder() != bo )
@@ -98,7 +110,7 @@ void BoundingBox::print()
 bool ShapeHeader::read(int fd)
 {
     if( readVal<Integer>( fd, fileCode, BigEndian ) == false ) return false;
-    if( ::read( fd, _unused_0, sizeof(_unused_0)) <= 0 ) return false;
+    if( esri::read( fd, _unused_0, sizeof(_unused_0)) <= 0 ) return false;
     if( readVal<Integer>( fd, fileLength, BigEndian ) == false ) return false;
     if( readVal<Integer>( fd, version, LittleEndian ) == false ) return false;
     if( readVal<Integer>( fd, shapeType, LittleEndian ) == false ) return false;

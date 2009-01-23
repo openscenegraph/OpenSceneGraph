@@ -1472,7 +1472,7 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
 
     osg::Timer_t last = osg::Timer::instance()->tick();
 
-    osg::notify(osg::INFO)<<"Done DatabasePager::addLoadedDataToSceneGraph"<<
+    osg::notify(osg::DEBUG_INFO)<<"Done DatabasePager::addLoadedDataToSceneGraph"<<
         osg::Timer::instance()->delta_m(before,mid)<<"ms,\t"<<
         osg::Timer::instance()->delta_m(mid,last)<<"ms"<<
         "  objects"<<localFileLoadedList.size()<<std::endl<<std::endl;

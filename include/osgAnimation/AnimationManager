@@ -27,7 +27,7 @@ namespace osgAnimation
     {
     public:
 
-        META_NodeVisitor(osgAnimation, AnimationManager);
+        META_Object(osgAnimation, AnimationManager);
   
         AnimationManager();
         AnimationManager(const AnimationManager& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : 

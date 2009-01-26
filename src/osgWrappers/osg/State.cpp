@@ -43,6 +43,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_DeclaringFile("osg/State");
 	I_BaseType(osg::Referenced);
+	I_BaseType(osg::Observer);
 	I_Constructor0(____State,
 	               "",
 	               "");
@@ -715,6 +716,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          Properties::NON_VIRTUAL,
 	          __void__initializeExtensionProcs,
 	          "Initialize extension used by osg:State. ",
+	          "");
+	I_Method1(void, objectDeleted, IN, void *, object,
+	          Properties::VIRTUAL,
+	          __void__objectDeleted__void_P1,
+	          "",
 	          "");
 
 

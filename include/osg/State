@@ -19,6 +19,7 @@
 #include <osg/Matrix>
 #include <osg/Uniform>
 #include <osg/BufferObject>
+#include <osg/observer_ptr>
 
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
@@ -84,7 +85,7 @@ class GraphicsContext;
   *   which typically stall the graphics pipeline (see, for instance,
   *   \c captureCurrentState() and \c getModelViewMatrix()).
   */
-class OSG_EXPORT State : public Referenced
+class OSG_EXPORT State : public Referenced, public Observer
 {
     public :
 
@@ -960,8 +961,19 @@ class OSG_EXPORT State : public Referenced
         bool isVertexBufferObjectSupported() const { return _isVertexBufferObjectSupportResolved?_isVertexBufferObjectSupported:computeVertexBufferObjectSupported(); }
 
 
-        void setLastAppliedProgramObject(const Program::PerContextProgram* program) { if (_lastAppliedProgramObject!=program) { _lastAppliedProgramObject = program; if (program) _appliedProgramObjectSet.insert(program); } }
-        const Program::PerContextProgram* getLastAppliedProgramObject() const { return _lastAppliedProgramObject; }
+        inline void setLastAppliedProgramObject(const Program::PerContextProgram* program)
+        {
+            if (_lastAppliedProgramObject!=program)
+            {
+                _lastAppliedProgramObject = program; 
+                if (program && _appliedProgramObjectSet.count(program)==0)
+                {
+                    _appliedProgramObjectSet.insert(program); 
+                    program->addObserver(this);
+                }
+            }
+        }
+        inline const Program::PerContextProgram* getLastAppliedProgramObject() const { return _lastAppliedProgramObject; }
 
         inline GLint getUniformLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(name) : -1; }
         inline GLint getAttribLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getAttribLocation(name) : -1; }
@@ -1063,6 +1075,8 @@ class OSG_EXPORT State : public Referenced
 
         /** Initialize extension used by osg:::State.*/
         void initializeExtensionProcs();
+
+        virtual void objectDeleted(void* object);
 
     protected:
 
@@ -1206,7 +1220,7 @@ class OSG_EXPORT State : public Referenced
 
         typedef std::vector<ref_ptr<const Matrix> >                     MatrixStack;
         
-        typedef std::set<osg::ref_ptr<const Program::PerContextProgram> > AppliedProgramObjectSet;
+        typedef std::set<const Program::PerContextProgram* >            AppliedProgramObjectSet;
 
         ModeMap                                                         _modeMap;
         AttributeMap                                                    _attributeMap;

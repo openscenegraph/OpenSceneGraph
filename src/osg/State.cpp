@@ -90,6 +90,23 @@ State::State():
 
 State::~State()
 {
+    for(AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.begin();
+        itr != _appliedProgramObjectSet.end();
+        ++itr)
+    {
+        (*itr)->removeObserver(this);
+    }
+}
+
+void State::objectDeleted(void* object)
+{
+    const Program::PerContextProgram* ppcp = reinterpret_cast<const Program::PerContextProgram*>(object);
+    AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.find(ppcp);
+    if (itr != _appliedProgramObjectSet.end()) 
+    {
+        osg::notify(osg::NOTICE)<<"Removing _appliedProgramObjectSet entry "<<ppcp<<std::endl;
+        _appliedProgramObjectSet.erase(itr);
+    }
 }
 
 void State::reset()

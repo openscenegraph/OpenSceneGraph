@@ -309,7 +309,7 @@ void Referenced::unref_nodelete() const
 #endif
 }
 
-void Referenced::addObserver(Observer* observer)
+void Referenced::addObserver(Observer* observer) const
 {
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     ObserverSetData* observerSetData = static_cast<ObserverSetData*>(_observerSetDataPtr.get());
@@ -337,7 +337,7 @@ void Referenced::addObserver(Observer* observer)
 #endif
 }
 
-void Referenced::removeObserver(Observer* observer)
+void Referenced::removeObserver(Observer* observer) const
 {
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     ObserverSetData* observerSetData = static_cast<ObserverSetData*>(_observerSetDataPtr.get());

@@ -89,10 +89,10 @@ class OSG_EXPORT Referenced
         inline int referenceCount() const { return _refCount; }
 
         /** Add a Observer that is observing this object, notify the Observer when this object gets deleted.*/
-        void addObserver(Observer* observer);
+        void addObserver(Observer* observer) const;
 
         /** Add a Observer that is observing this object, notify the Observer when this object gets deleted.*/
-        void removeObserver(Observer* observer);
+        void removeObserver(Observer* observer) const;
 
     public:
 
@@ -121,7 +121,7 @@ class OSG_EXPORT Referenced
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
         struct ObserverSetData;
 
-        OpenThreads::AtomicPtr _observerSetDataPtr;
+        mutable OpenThreads::AtomicPtr _observerSetDataPtr;
 
         mutable OpenThreads::Atomic     _refCount;
 #else
@@ -130,7 +130,7 @@ class OSG_EXPORT Referenced
 
         mutable int                     _refCount;
         
-        void*                           _observers;
+        mutable void*                   _observers;
 #endif
 };
 

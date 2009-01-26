@@ -97,10 +97,17 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                                 itr != cameras.end();
                                 ++itr)
                             {
-                                if ((*itr)->getStats()) (*itr)->getStats()->collectStats("rendering",false);
-                                if ((*itr)->getStats()) (*itr)->getStats()->collectStats("gpu",false);
+                                osg::Stats* stats = (*itr)->getStats();
+                                if (stats)
+                                {
+                                    stats->collectStats("rendering",false);
+                                    stats->collectStats("gpu",false);
+                                    stats->collectStats("scene",false);
+                                }
                             }
                             
+                            viewer->getStats()->collectStats("scene",false);
+
                             _camera->setNodeMask(0x0); 
                             _switch->setAllChildrenOff();
                             break;
@@ -148,12 +155,27 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                         {
                             _camera->setNodeMask(0xffffffff);
                             _switch->setValue(_cameraSceneChildNum, true);
+
+                            for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
+                                itr != cameras.end();
+                                ++itr)
+                            {
+                                osg::Stats* stats = (*itr)->getStats();
+                                if (stats)
+                                {
+                                    stats->collectStats("scene",true);
+                                }
+                            }
+
                             break;
                         }
                         case(VIEWER_SCENE_STATS):
                         {
                             _camera->setNodeMask(0xffffffff);
                             _switch->setValue(_viewerSceneChildNum, true);
+
+                            viewer->getStats()->collectStats("scene",true);
+
                             break;
                         }
                         default:
@@ -320,22 +342,13 @@ struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCall
         _tickLastUpdated(0), 
         _cameraNumber(cameraNumber)
     {
-
-        _primitiveModeStreamMap[osg::PrimitiveSet::POINTS] = &stream[0];
-        _primitiveModeStreamMap[osg::PrimitiveSet::LINES] = &stream[1];
-        _primitiveModeStreamMap[osg::PrimitiveSet::LINE_STRIP] = &stream[2];
-        _primitiveModeStreamMap[osg::PrimitiveSet::LINE_LOOP] = &stream[3];
-        _primitiveModeStreamMap[osg::PrimitiveSet::TRIANGLES] = &stream[4];
-        _primitiveModeStreamMap[osg::PrimitiveSet::TRIANGLE_STRIP] = &stream[5];
-        _primitiveModeStreamMap[osg::PrimitiveSet::TRIANGLE_FAN] = &stream[6];
-        _primitiveModeStreamMap[osg::PrimitiveSet::QUADS] = &stream[7];
-        _primitiveModeStreamMap[osg::PrimitiveSet::QUAD_STRIP] = &stream[8];
-        _primitiveModeStreamMap[osg::PrimitiveSet::POLYGON] = &stream[9];
     }
 
     /** do customized draw code.*/
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
     {
+        if (!_camera) return;
+
         osgText::Text* text = (osgText::Text*)drawable;
 
         osg::Timer_t tick = osg::Timer::instance()->tick();
@@ -347,55 +360,55 @@ struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCall
             std::ostringstream viewStr;
             viewStr.clear();
 
-            osgUtil::Statistics stats;
+            osg::Stats* stats = _camera->getStats();
             osgViewer::Renderer* renderer = dynamic_cast<osgViewer::Renderer*>(_camera->getRenderer());
             
-            if (renderer)
+            if (stats && renderer)
             {
-                renderer->getSceneView(0)->getStats(stats);
-
                 viewStr.setf(std::ios::left,std::ios::adjustfield);
                 viewStr.width(14);
 
                 viewStr << std::setw(1) << _cameraNumber  << ": ";
+
                 // Camera name
                 if (_camera->getName().empty())
                     viewStr << std::endl;
                 else
                     viewStr << _camera->getName() << std::endl;
-
-                viewStr << std::setw(7) << stats._vertexCount << std::endl;
-                viewStr << std::setw(7) << stats.numDrawables << std::endl;
-                viewStr << std::setw(7) << stats.nlights << std::endl;
-                viewStr << std::setw(7) << stats.nbins << std::endl;
-                viewStr << std::setw(7) << stats.depth << std::endl;
-                viewStr << std::setw(7) << stats.nummat << std::endl;
-                viewStr << std::setw(7) << stats.nimpostor << std::endl;
-
-                // Initialize primitive streams 
-                PrimitiveModeStreamMap::const_iterator iter;
-                iter = _primitiveModeStreamMap.begin();
-                for(iter = _primitiveModeStreamMap.begin(); iter != _primitiveModeStreamMap.end(); ++iter)
+                    
+                int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+                if (!(renderer->getGraphicsThreadDoesCull()))
                 {
-                    iter->second->str("0");
-                }
-
-                // Write collected primitive values
-                osgUtil::Statistics::PrimitiveCountMap::iterator primitiveItr;
-                for(primitiveItr  = stats.GetPrimitivesBegin(); primitiveItr != stats.GetPrimitivesEnd(); ++primitiveItr)
-                {
-                    PrimitiveModeStreamMap::const_iterator strItr = _primitiveModeStreamMap.find((*primitiveItr).first);
-                    if (strItr != _primitiveModeStreamMap.end())
-                    {
-                        *(strItr->second) <<  (*primitiveItr).second;
-                    }
+                    --frameNumber;
                 }
                 
-                // Concatenate all streams
-                for(iter = _primitiveModeStreamMap.begin(); iter != _primitiveModeStreamMap.end(); ++iter)
-                {
-                    viewStr << iter->second->str() << std::endl;
-                }
+                #define STATS_ATTRIBUTE(str) \
+                    if (stats->getAttribute(frameNumber, str, value)) \
+                        viewStr << std::setw(7) << value << std::endl; \
+                    else \
+                        viewStr << std::setw(7) << "no value" << std::endl; \
+
+                double value = 0.0;
+
+                STATS_ATTRIBUTE("Visible vertex count")
+                STATS_ATTRIBUTE("Visible number of drawables")
+                STATS_ATTRIBUTE("Visible number of lights")
+                STATS_ATTRIBUTE("Visible number of render bins")
+                STATS_ATTRIBUTE("Visible depth")
+                STATS_ATTRIBUTE("Visible number of materials")
+                STATS_ATTRIBUTE("Visible number of impostors")
+
+                STATS_ATTRIBUTE("Visible number of GL_POINTS")
+                STATS_ATTRIBUTE("Visible number of GL_LINES")
+                STATS_ATTRIBUTE("Visible number of GL_LINE_STRIP")
+                STATS_ATTRIBUTE("Visible number of GL_LINE_LOOP")
+                STATS_ATTRIBUTE("Visible number of GL_TRIANGLES")
+                STATS_ATTRIBUTE("Visible number of GL_TRIANGLE_STRIP")
+                STATS_ATTRIBUTE("Visible number of GL_TRIANGLE_FAN")
+                STATS_ATTRIBUTE("Visible number of GL_QUADS")
+                STATS_ATTRIBUTE("Visible number of GL_QUAD_STRIP")
+                STATS_ATTRIBUTE("Visible number of GL_POLYGON")
+
 
                 text->setText(viewStr.str());
             }
@@ -403,12 +416,9 @@ struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCall
         text->drawImplementation(renderInfo);
     }
 
-    std::ostringstream stream[10];
-    typedef std::map<GLenum, std::ostringstream*> PrimitiveModeStreamMap;
-    PrimitiveModeStreamMap        _primitiveModeStreamMap;
-    osg::ref_ptr<osg::Camera>    _camera;
-    mutable osg::Timer_t        _tickLastUpdated;
-    int                            _cameraNumber;
+    osg::observer_ptr<osg::Camera>  _camera;
+    mutable osg::Timer_t            _tickLastUpdated;
+    int                             _cameraNumber;
 };
 
 
@@ -424,6 +434,8 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
     /** do customized draw code.*/
     virtual void drawImplementation(osg::RenderInfo& renderInfo,const osg::Drawable* drawable) const
     {
+        if (!_view) return;
+
         osgText::Text* text = (osgText::Text*)drawable;
 
         osg::Timer_t tick = osg::Timer::instance()->tick();
@@ -432,7 +444,7 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
         if (delta > 200) // update every 100ms
         {
             _tickLastUpdated = tick;
-            osg::ref_ptr<osg::Node> sceneRoot = _view ? _view->getScene()->getSceneData() : 0;
+            osg::ref_ptr<osg::Node> sceneRoot = _view.valid() ? _view->getScene()->getSceneData() : 0;
 
             if (sceneRoot.valid())
             {
@@ -493,11 +505,9 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
         text->drawImplementation(renderInfo);
     }
 
-    // Using a ref_ptr causes a crash during cleanup
-    //osg::ref_ptr<osgViewer::View>     _view;
-    osgViewer::View*        _view;
-    mutable osg::Timer_t    _tickLastUpdated;
-    int                        _viewNumber;
+    osg::observer_ptr<osgViewer::View>  _view;
+    mutable osg::Timer_t                _tickLastUpdated;
+    int                                 _viewNumber;
 };
 
 struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
@@ -1392,8 +1402,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         viewStr << "Line strips" << std::endl;
         viewStr << "Line loops" << std::endl;
         viewStr << "Triangles" << std::endl;
-        viewStr << "Triangle strips" << std::endl;
-        viewStr << "Triangle fans" << std::endl;
+        viewStr << "Tri. strips" << std::endl;
+        viewStr << "Tri. fans" << std::endl;
         viewStr << "Quads" << std::endl;
         viewStr << "Quad strips" << std::endl;
         viewStr << "Polygons" << std::endl;  

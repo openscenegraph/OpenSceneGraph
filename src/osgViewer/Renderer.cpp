@@ -17,6 +17,7 @@
 
 #include <osgUtil/Optimizer>
 #include <osgUtil/GLObjectsVisitor>
+#include <osgUtil/Statistics>
 
 #include <osgViewer/Renderer>
 #include <osgViewer/View>
@@ -334,6 +335,33 @@ void Renderer::cull()
             stats->setAttribute(frameNumber, "Cull traversal time taken", osg::Timer::instance()->delta_s(beforeCullTick, afterCullTick));
         }
 
+        if (stats && stats->collectStats("scene"))
+        {
+            osgUtil::Statistics sceneStats;
+            sceneView->getStats(sceneStats);
+            
+            stats->setAttribute(frameNumber, "Visible vertex count", static_cast<double>(sceneStats._vertexCount));
+            stats->setAttribute(frameNumber, "Visible number of drawables", static_cast<double>(sceneStats.numDrawables));
+            stats->setAttribute(frameNumber, "Visible number of lights", static_cast<double>(sceneStats.nlights));
+            stats->setAttribute(frameNumber, "Visible number of render bins", static_cast<double>(sceneStats.nbins));
+            stats->setAttribute(frameNumber, "Visible depth", static_cast<double>(sceneStats.depth));
+            stats->setAttribute(frameNumber, "Visible number of materials", static_cast<double>(sceneStats.nummat));
+            stats->setAttribute(frameNumber, "Visible number of impostors", static_cast<double>(sceneStats.nimpostor));
+
+            osgUtil::Statistics::PrimitiveCountMap& pcm = sceneStats.getPrimitiveCountMap();
+            stats->setAttribute(frameNumber, "Visible number of GL_POINTS", static_cast<double>(pcm[GL_POINTS]));
+            stats->setAttribute(frameNumber, "Visible number of GL_LINES", static_cast<double>(pcm[GL_LINES]));
+            stats->setAttribute(frameNumber, "Visible number of GL_LINE_STRIP", static_cast<double>(pcm[GL_LINE_STRIP]));
+            stats->setAttribute(frameNumber, "Visible number of GL_LINE_LOOP", static_cast<double>(pcm[GL_LINE_LOOP]));
+            stats->setAttribute(frameNumber, "Visible number of GL_TRIANGLES", static_cast<double>(pcm[GL_TRIANGLES]));
+            stats->setAttribute(frameNumber, "Visible number of GL_TRIANGLE_STRIP", static_cast<double>(pcm[GL_TRIANGLE_STRIP]));
+            stats->setAttribute(frameNumber, "Visible number of GL_TRIANGLE_FAN", static_cast<double>(pcm[GL_TRIANGLE_FAN]));
+            stats->setAttribute(frameNumber, "Visible number of GL_QUADS", static_cast<double>(pcm[GL_QUADS]));
+            stats->setAttribute(frameNumber, "Visible number of GL_QUAD_STRIP", static_cast<double>(pcm[GL_QUAD_STRIP]));
+            stats->setAttribute(frameNumber, "Visible number of GL_POLYGON", static_cast<double>(pcm[GL_POLYGON]));
+            
+        }
+
         _drawQueue.add(sceneView);
 
     }
@@ -456,6 +484,7 @@ void Renderer::draw()
             stats->setAttribute(frameNumber, "Draw traversal end time", osg::Timer::instance()->delta_s(_startTick, afterDrawTick));
             stats->setAttribute(frameNumber, "Draw traversal time taken", osg::Timer::instance()->delta_s(beforeDrawTick, afterDrawTick));
         }
+
     }
 
     DEBUG_MESSAGE<<"end draw() "<<this<<std::endl;
@@ -517,6 +546,20 @@ void Renderer::cull_draw()
     sceneView->cull();
 
     osg::Timer_t afterCullTick = osg::Timer::instance()->tick();
+
+    if (stats && stats->collectStats("scene"))
+    {
+        osgUtil::Statistics sceneStats;
+        sceneView->getStats(sceneStats);
+
+        stats->setAttribute(frameNumber, "Visible vertex count", static_cast<double>(sceneStats._vertexCount));
+        stats->setAttribute(frameNumber, "Visible number of drawables", static_cast<double>(sceneStats.numDrawables));
+        stats->setAttribute(frameNumber, "Visible number of lights", static_cast<double>(sceneStats.nlights));
+        stats->setAttribute(frameNumber, "Visible number of render bins", static_cast<double>(sceneStats.nbins));
+        stats->setAttribute(frameNumber, "Visible depth", static_cast<double>(sceneStats.depth));
+        stats->setAttribute(frameNumber, "Visible number of materials", static_cast<double>(sceneStats.nummat));
+        stats->setAttribute(frameNumber, "Visible number of impostors", static_cast<double>(sceneStats.nimpostor));
+    }
 
 #if 0
     if (state->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())

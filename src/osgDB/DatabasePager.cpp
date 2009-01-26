@@ -1994,7 +1994,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
                 StateSetList::iterator itr=sslist.begin();
                 unsigned int objTemp = numObjectsCompiled;
                 for(;
-                    itr!=sslist.end() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame;
+                    itr!=sslist.end() && (compileAll || ((elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame));
                     ++itr)
                 {
                     //osg::notify(osg::INFO)<<"    Compiling stateset "<<(*itr).get()<<std::endl;

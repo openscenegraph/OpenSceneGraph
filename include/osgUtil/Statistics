@@ -115,7 +115,12 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
                 
     public:
                 
+        PrimitiveCountMap& getPrimitiveCountMap() { return _primitives_count; }
+        const PrimitiveCountMap& getPrimitiveCountMap() const { return _primitives_count; }
+        
+        /// deprecated
         PrimitiveCountMap::iterator GetPrimitivesBegin() { return _primitives_count.begin(); }
+        /// deprecated
         PrimitiveCountMap::iterator GetPrimitivesEnd() { return _primitives_count.end(); }
 
         int numDrawables, nummat, nbins;

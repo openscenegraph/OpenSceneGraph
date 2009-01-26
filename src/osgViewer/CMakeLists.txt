@@ -106,8 +106,9 @@ ELSE(WIN32)
         SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
             ${HEADER_PATH}/api/X11/GraphicsWindowX11
             ${HEADER_PATH}/api/X11/PixelBufferX11
-            ${XRANDR_INCLUDE_DIRS}
         )
+
+
         SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
             GraphicsWindowX11.cpp 
             PixelBufferX11.cpp
@@ -115,7 +116,7 @@ ELSE(WIN32)
         
         IF(OSGVIEWER_USE_XRANDR)
             ADD_DEFINITIONS(-DOSGVIEWER_USE_XRANDR)
-            SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} ${XRANDR_INCLUDE_DIRS})
+            SET(LIB_PRIVATE_HEADERS ${LIB_PRIVATE_HEADERS} ${XRANDR_INCLUDE_DIRS} )
             LINK_LIBRARIES(Xrandr)
         ENDIF(OSGVIEWER_USE_XRANDR)
 

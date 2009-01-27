@@ -811,6 +811,10 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                     TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, 1);
                     bitsPerSample = 32;
                     break;
+                case GL_SHORT:
+                    TIFFSetField(image, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT);
+                    bitsPerSample = 16;
+                    break;
                 default:
                     bitsPerSample = 8;
                     break;

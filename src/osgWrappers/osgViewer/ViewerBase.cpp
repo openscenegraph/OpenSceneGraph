@@ -70,19 +70,19 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	               ____ViewerBase__C5_ViewerBase_R1,
 	               "",
 	               "");
-	I_Method1(void, setStats, IN, osg::Stats *, stats,
-	          Properties::NON_VIRTUAL,
-	          __void__setStats__osg_Stats_P1,
+	I_Method1(void, setViewerStats, IN, osg::Stats *, stats,
+	          Properties::PURE_VIRTUAL,
+	          __void__setViewerStats__osg_Stats_P1,
 	          "Set the Stats object used for collect various frame related timing and scene graph stats. ",
 	          "");
-	I_Method0(osg::Stats *, getStats,
-	          Properties::NON_VIRTUAL,
-	          __osg_Stats_P1__getStats,
+	I_Method0(osg::Stats *, getViewerStats,
+	          Properties::PURE_VIRTUAL,
+	          __osg_Stats_P1__getViewerStats,
 	          "Get the Viewers Stats object. ",
 	          "");
-	I_Method0(const osg::Stats *, getStats,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Stats_P1__getStats,
+	I_Method0(const osg::Stats *, getViewerStats,
+	          Properties::PURE_VIRTUAL,
+	          __C5_osg_Stats_P1__getViewerStats,
 	          "Get the Viewers Stats object. ",
 	          "");
 	I_Method1(bool, readConfiguration, IN, const std::string &, filename,
@@ -374,9 +374,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	I_SimpleProperty(bool, ReleaseContextAtEndOfFrameHint, 
 	                 __bool__getReleaseContextAtEndOfFrameHint, 
 	                 __void__setReleaseContextAtEndOfFrameHint__bool);
-	I_SimpleProperty(osg::Stats *, Stats, 
-	                 __osg_Stats_P1__getStats, 
-	                 __void__setStats__osg_Stats_P1);
 	I_SimpleProperty(osgViewer::ViewerBase::ThreadingModel, ThreadingModel, 
 	                 __ThreadingModel__getThreadingModel, 
 	                 __void__setThreadingModel__ThreadingModel);
@@ -389,6 +386,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	I_SimpleProperty(osg::FrameStamp *, ViewerFrameStamp, 
 	                 __osg_FrameStamp_P1__getViewerFrameStamp, 
 	                 0);
+	I_SimpleProperty(osg::Stats *, ViewerStats, 
+	                 __osg_Stats_P1__getViewerStats, 
+	                 __void__setViewerStats__osg_Stats_P1);
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< OpenThreads::Thread * >)

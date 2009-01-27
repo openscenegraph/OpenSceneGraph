@@ -24,7 +24,6 @@
 
 #include <osg/PolygonMode>
 #include <osg/Geometry>
-#include <osgUtil/Statistics>
 
 namespace osgViewer
 {
@@ -70,7 +69,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
         {
             if (ea.getKey()==_keyEventTogglesOnScreenStats)
             {
-                if (viewer->getStats())
+                if (viewer->getViewerStats())
                 {
                     if (!_initialized)
                     {
@@ -89,9 +88,9 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                     {
                         case(NO_STATS):
                         {
-                            viewer->getStats()->collectStats("frame_rate",false);
-                            viewer->getStats()->collectStats("event",false);
-                            viewer->getStats()->collectStats("update",false);
+                            viewer->getViewerStats()->collectStats("frame_rate",false);
+                            viewer->getViewerStats()->collectStats("event",false);
+                            viewer->getViewerStats()->collectStats("update",false);
 
                             for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
                                 itr != cameras.end();
@@ -106,7 +105,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                                 }
                             }
                             
-                            viewer->getStats()->collectStats("scene",false);
+                            viewer->getViewerStats()->collectStats("scene",false);
 
                             _camera->setNodeMask(0x0); 
                             _switch->setAllChildrenOff();
@@ -114,7 +113,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                         }
                         case(FRAME_RATE):
                         {
-                            viewer->getStats()->collectStats("frame_rate",true);
+                            viewer->getViewerStats()->collectStats("frame_rate",true);
                             
                             _camera->setNodeMask(0xffffffff);
                             _switch->setValue(_frameRateChildNum, true);
@@ -136,8 +135,8 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                                 }
                             }
                         
-                            viewer->getStats()->collectStats("event",true);
-                            viewer->getStats()->collectStats("update",true);
+                            viewer->getViewerStats()->collectStats("event",true);
+                            viewer->getViewerStats()->collectStats("update",true);
 
                             for(osgViewer::ViewerBase::Cameras::iterator itr = cameras.begin();
                                 itr != cameras.end();
@@ -174,7 +173,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                             _camera->setNodeMask(0xffffffff);
                             _switch->setValue(_viewerSceneChildNum, true);
 
-                            viewer->getStats()->collectStats("scene",true);
+                            viewer->getViewerStats()->collectStats("scene",true);
 
                             break;
                         }
@@ -188,12 +187,12 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
             }
             if (ea.getKey()==_keyEventPrintsOutStats)
             {
-                if (viewer->getStats())
+                if (viewer->getViewerStats())
                 {
                     osg::notify(osg::NOTICE)<<std::endl<<"Stats report:"<<std::endl;
                     typedef std::vector<osg::Stats*> StatsList;
                     StatsList statsList;
-                    statsList.push_back(viewer->getStats());
+                    statsList.push_back(viewer->getViewerStats());
 
                     osgViewer::ViewerBase::Contexts contexts;
                     viewer->getContexts(contexts);
@@ -213,7 +212,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                         }
                     }
 
-                    for(int i = viewer->getStats()->getEarliestFrameNumber(); i<= viewer->getStats()->getLatestFrameNumber()-1; ++i)
+                    for(int i = viewer->getViewerStats()->getEarliestFrameNumber(); i<= viewer->getViewerStats()->getLatestFrameNumber()-1; ++i)
                     {
                         for(StatsList::iterator itr = statsList.begin();
                             itr != statsList.end();
@@ -386,7 +385,7 @@ struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCall
                     if (stats->getAttribute(frameNumber, str, value)) \
                         viewStr << std::setw(7) << value << std::endl; \
                     else \
-                        viewStr << std::setw(7) << "no value" << std::endl; \
+                        viewStr << std::setw(7) << "." << std::endl; \
 
                 double value = 0.0;
 
@@ -444,13 +443,9 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
         if (delta > 200) // update every 100ms
         {
             _tickLastUpdated = tick;
-            osg::ref_ptr<osg::Node> sceneRoot = _view.valid() ? _view->getScene()->getSceneData() : 0;
-
-            if (sceneRoot.valid())
+            osg::Stats* stats = _view->getStats();
+            if (stats)
             {
-                osgUtil::StatsVisitor statsVisitor;
-                sceneRoot->accept(statsVisitor);
-
                 std::ostringstream viewStr;
                 viewStr.clear();
                 viewStr.setf(std::ios::left,std::ios::adjustfield);
@@ -465,33 +460,35 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
 
                 viewStr << std::endl;
 
-                unsigned int unique_primitives = 0;
-                osgUtil::Statistics::PrimitiveCountMap::iterator pcmitr;
-                for(pcmitr = statsVisitor._uniqueStats.GetPrimitivesBegin();
-                    pcmitr != statsVisitor._uniqueStats.GetPrimitivesEnd();
-                    ++pcmitr)
+                int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+                // if (!(renderer->getGraphicsThreadDoesCull()))
                 {
-                    unique_primitives += pcmitr->second;
+                    --frameNumber;
                 }
+                
+                #define STATS_ATTRIBUTE_PAIR(str1, str2) \
+                    if (stats->getAttribute(frameNumber, str1, value)) \
+                        viewStr << std::setw(10) << value; \
+                    else \
+                        viewStr << std::setw(10) << "."; \
+                    if (stats->getAttribute(frameNumber, str2, value)) \
+                        viewStr << std::setw(10) << value << std::endl; \
+                    else \
+                        viewStr << std::setw(10) << "." << std::endl; \
 
-                unsigned int instanced_primitives = 0;
-                for(pcmitr = statsVisitor._instancedStats.GetPrimitivesBegin();
-                    pcmitr != statsVisitor._instancedStats.GetPrimitivesEnd();
-                    ++pcmitr)
-                {
-                    instanced_primitives += pcmitr->second;
-                }
+                double value = 0.0;
 
-                viewStr << std::setw(10) << statsVisitor._statesetSet.size()       << std::setw(10) << statsVisitor._numInstancedStateSet << std::endl;
-                viewStr << std::setw(10) << statsVisitor._groupSet.size()          << std::setw(10) << statsVisitor._numInstancedGroup << std::endl;
-                viewStr << std::setw(10) << statsVisitor._transformSet.size()      << std::setw(10) << statsVisitor._numInstancedTransform << std::endl;
-                viewStr << std::setw(10) << statsVisitor._lodSet.size()            << std::setw(10) << statsVisitor._numInstancedLOD << std::endl;
-                viewStr << std::setw(10) << statsVisitor._switchSet.size()         << std::setw(10) << statsVisitor._numInstancedSwitch << std::endl;
-                viewStr << std::setw(10) << statsVisitor._geodeSet.size()          << std::setw(10) << statsVisitor._numInstancedGeode << std::endl;
-                viewStr << std::setw(10) << statsVisitor._drawableSet.size()       << std::setw(10) << statsVisitor._numInstancedDrawable << std::endl;
-                viewStr << std::setw(10) << statsVisitor._geometrySet.size()       << std::setw(10) << statsVisitor._numInstancedGeometry << std::endl;
-                viewStr << std::setw(10) << statsVisitor._uniqueStats._vertexCount << std::setw(10) << statsVisitor._instancedStats._vertexCount << std::endl;
-                viewStr << std::setw(10) << unique_primitives                        << std::setw(10) << instanced_primitives << std::endl;
+                STATS_ATTRIBUTE_PAIR("Number of unique StateSet","Number of instanced Stateset")
+                STATS_ATTRIBUTE_PAIR("Number of unique Group","Number of instanced Group")
+                STATS_ATTRIBUTE_PAIR("Number of unique Transform","Number of instanced Transform")
+                STATS_ATTRIBUTE_PAIR("Number of unique LOD","Number of instanced LOD")
+                STATS_ATTRIBUTE_PAIR("Number of unique Switch","Number of instanced Switch")
+                STATS_ATTRIBUTE_PAIR("Number of unique Geode","Number of instanced Geode")
+                STATS_ATTRIBUTE_PAIR("Number of unique Drawable","Number of instanced Drawable")
+                STATS_ATTRIBUTE_PAIR("Number of unique Geometry","Number of instanced Geometry")
+                STATS_ATTRIBUTE_PAIR("Number of unique Vertices","Number of instanced Vertices")
+                STATS_ATTRIBUTE_PAIR("Number of unique Primitives","Number of instanced Primitives")
+
 
                 text->setText(viewStr.str());
             }
@@ -1050,7 +1047,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         frameRateValue->setPosition(pos);
         frameRateValue->setText("0.0");
 
-        frameRateValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getStats(),"Frame rate",-1, true, 1.0));
+        frameRateValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getViewerStats(),"Frame rate",-1, true, 1.0));
 
         pos.y() -= characterSize*1.5f;
   
@@ -1119,11 +1116,11 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             eventValue->setPosition(pos);
             eventValue->setText("0.0");
 
-            eventValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getStats(),"Event traversal time taken",-1, false, 1000.0));
+            eventValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getViewerStats(),"Event traversal time taken",-1, false, 1000.0));
 
             pos.x() = startBlocks;
             osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdateAlpha, _numBlocks);
-            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewer->getStats(), viewer->getStats(), "Event traversal begin time", "Event traversal end time", -1, _numBlocks));
+            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewer->getViewerStats(), viewer->getViewerStats(), "Event traversal begin time", "Event traversal end time", -1, _numBlocks));
             geode->addDrawable(geometry);
 
             pos.y() -= characterSize*1.5f;
@@ -1152,11 +1149,11 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             updateValue->setPosition(pos);
             updateValue->setText("0.0");
 
-            updateValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getStats(),"Update traversal time taken",-1, false, 1000.0));
+            updateValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getViewerStats(),"Update traversal time taken",-1, false, 1000.0));
 
             pos.x() = startBlocks;
             osg::Geometry* geometry = createGeometry(pos, characterSize *0.8, colorUpdateAlpha, _numBlocks);
-            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewer->getStats(), viewer->getStats(), "Update traversal begin time", "Update traversal end time", -1, _numBlocks));
+            geometry->setDrawCallback(new BlockDrawCallback(this, startBlocks, viewer->getViewerStats(), viewer->getViewerStats(), "Update traversal begin time", "Update traversal end time", -1, _numBlocks));
             geode->addDrawable(geometry);
 
             pos.y() -= characterSize*1.5f;
@@ -1169,7 +1166,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             citr != cameras.end();
             ++citr)
         {
-            group->addChild(createCameraTimeStats(font, pos, startBlocks, acquireGPUStats, characterSize, viewer->getStats(), *citr));
+            group->addChild(createCameraTimeStats(font, pos, startBlocks, acquireGPUStats, characterSize, viewer->getViewerStats(), *citr));
         }
 
         // add frame ticks
@@ -1187,7 +1184,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             geode->addDrawable(ticks);
 
             osg::Geometry* frameMarkers = createFrameMarkers(pos, height, colourTicks, _numBlocks + 1);
-            frameMarkers->setDrawCallback(new FrameMarkerDrawCallback(this, startBlocks, viewer->getStats(), 0, _numBlocks + 1));
+            frameMarkers->setDrawCallback(new FrameMarkerDrawCallback(this, startBlocks, viewer->getViewerStats(), 0, _numBlocks + 1));
             geode->addDrawable(frameMarkers);
 
             pos.x() = leftPos;
@@ -1203,17 +1200,17 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             StatsGraph* statsGraph = new StatsGraph(pos, width, height);
             group->addChild(statsGraph);
 
-            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorFR, 100, "Frame rate");
-            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorEvent, 0.016, "Event traversal time taken");
-            statsGraph->addStatGraph(viewer->getStats(), viewer->getStats(), colorUpdate, 0.016, "Update traversal time taken");
+            statsGraph->addStatGraph(viewer->getViewerStats(), viewer->getViewerStats(), colorFR, 100, "Frame rate");
+            statsGraph->addStatGraph(viewer->getViewerStats(), viewer->getViewerStats(), colorEvent, 0.016, "Event traversal time taken");
+            statsGraph->addStatGraph(viewer->getViewerStats(), viewer->getViewerStats(), colorUpdate, 0.016, "Update traversal time taken");
             
             for(ViewerBase::Cameras::iterator citr = cameras.begin();
                 citr != cameras.end();
                 ++citr)
             {
-                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorCull, 0.016, "Cull traversal time taken");
-                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorDraw, 0.016, "Draw traversal time taken");
-                statsGraph->addStatGraph(viewer->getStats(), (*citr)->getStats(), colorGPU, 0.016, "GPU draw time taken");
+                statsGraph->addStatGraph(viewer->getViewerStats(), (*citr)->getStats(), colorCull, 0.016, "Cull traversal time taken");
+                statsGraph->addStatGraph(viewer->getViewerStats(), (*citr)->getStats(), colorDraw, 0.016, "Draw traversal time taken");
+                statsGraph->addStatGraph(viewer->getViewerStats(), (*citr)->getStats(), colorGPU, 0.016, "GPU draw time taken");
             }
 
             geode->addDrawable(createBackgroundRectangle( pos + osg::Vec3(-backgroundMargin, backgroundMargin, 0),

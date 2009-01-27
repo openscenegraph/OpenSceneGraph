@@ -41,13 +41,13 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         
         
         /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
-        void setStats(osg::Stats* stats) { _stats = stats; }
+        virtual void setViewerStats(osg::Stats* stats) = 0;
 
         /** Get the Viewers Stats object.*/
-        osg::Stats* getStats() { return _stats.get(); }
+        virtual osg::Stats* getViewerStats() = 0;
 
         /** Get the Viewers Stats object.*/
-        const osg::Stats* getStats() const { return _stats.get(); }
+        virtual const osg::Stats* getViewerStats() const = 0;
 
             
          /** read the viewer configuration from a configuration file.*/
@@ -259,9 +259,6 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         }
 
         virtual void viewerInit() = 0;
-        
-
-        osg::ref_ptr<osg::Stats>                    _stats;
 
         bool                                        _firstFrame;
         bool                                        _done;

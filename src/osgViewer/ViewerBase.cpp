@@ -27,6 +27,7 @@
 
 #include <osgUtil/Optimizer>
 #include <osgUtil/IntersectionVisitor>
+#include <osgUtil/Statistics>
 
 static osg::ApplicationUsageProxy ViewerBase_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_CONFIG_FILE <filename>","Specify a viewer configuration file to load by default.");
 static osg::ApplicationUsageProxy ViewerBase_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREADING <value>","Set the threading model using by Viewer, <value> can be SingleThreaded, CullDrawThreadPerContext, DrawThreadPerContext or CullThreadPerCameraDrawThreadPerContext.");
@@ -639,6 +640,66 @@ void ViewerBase::renderingTraversals()
 
     osg::FrameStamp* frameStamp = getViewerFrameStamp();
 
+    if (getViewerStats() && getViewerStats()->collectStats("scene"))
+    {
+        int frameNumber = frameStamp ? frameStamp->getFrameNumber() : 0;
+    
+        Views views;
+        getViews(views);
+        for(Views::iterator vitr = views.begin();
+            vitr != views.end();
+            ++vitr)
+        {
+            View* view = *vitr;
+            osg::Stats* stats = view->getStats();            
+            osg::Node* sceneRoot = view->getSceneData();
+            if (sceneRoot)
+            {
+                osgUtil::StatsVisitor statsVisitor;
+                sceneRoot->accept(statsVisitor);
+                
+                unsigned int unique_primitives = 0;
+                osgUtil::Statistics::PrimitiveCountMap::iterator pcmitr;
+                for(pcmitr = statsVisitor._uniqueStats.GetPrimitivesBegin();
+                    pcmitr != statsVisitor._uniqueStats.GetPrimitivesEnd();
+                    ++pcmitr)
+                {
+                    unique_primitives += pcmitr->second;
+                }
+
+                stats->setAttribute(frameNumber, "Number of unique StateSet", static_cast<double>(statsVisitor._statesetSet.size()));
+                stats->setAttribute(frameNumber, "Number of unique Group", static_cast<double>(statsVisitor._groupSet.size()));
+                stats->setAttribute(frameNumber, "Number of unique Transform", static_cast<double>(statsVisitor._transformSet.size()));
+                stats->setAttribute(frameNumber, "Number of unique LOD", static_cast<double>(statsVisitor._lodSet.size()));
+                stats->setAttribute(frameNumber, "Number of unique Switch", static_cast<double>(statsVisitor._switchSet.size()));
+                stats->setAttribute(frameNumber, "Number of unique Geode", static_cast<double>(statsVisitor._geodeSet.size()));
+                stats->setAttribute(frameNumber, "Number of unique Drawable", static_cast<double>(statsVisitor._drawableSet.size()));
+                stats->setAttribute(frameNumber, "Number of unique Geometry", static_cast<double>(statsVisitor._geometrySet.size()));
+                stats->setAttribute(frameNumber, "Number of unique Vertices", static_cast<double>(statsVisitor._uniqueStats._vertexCount));
+                stats->setAttribute(frameNumber, "Number of unique Primitives", static_cast<double>(unique_primitives));
+
+                unsigned int instanced_primitives = 0;
+                for(pcmitr = statsVisitor._instancedStats.GetPrimitivesBegin();
+                    pcmitr != statsVisitor._instancedStats.GetPrimitivesEnd();
+                    ++pcmitr)
+                {
+                    instanced_primitives += pcmitr->second;
+                }
+
+                stats->setAttribute(frameNumber, "Number of instanced Stateset", static_cast<double>(statsVisitor._numInstancedStateSet));
+                stats->setAttribute(frameNumber, "Number of instanced Group", static_cast<double>(statsVisitor._numInstancedGroup));
+                stats->setAttribute(frameNumber, "Number of instanced Transform", static_cast<double>(statsVisitor._numInstancedTransform));
+                stats->setAttribute(frameNumber, "Number of instanced LOD", static_cast<double>(statsVisitor._numInstancedLOD));
+                stats->setAttribute(frameNumber, "Number of instanced Switch", static_cast<double>(statsVisitor._numInstancedSwitch));
+                stats->setAttribute(frameNumber, "Number of instanced Geode", static_cast<double>(statsVisitor._numInstancedGeode));
+                stats->setAttribute(frameNumber, "Number of instanced Drawable", static_cast<double>(statsVisitor._numInstancedDrawable));
+                stats->setAttribute(frameNumber, "Number of instanced Geometry", static_cast<double>(statsVisitor._numInstancedGeometry));
+                stats->setAttribute(frameNumber, "Number of instanced Vertices", static_cast<double>(statsVisitor._instancedStats._vertexCount));
+                stats->setAttribute(frameNumber, "Number of instanced Primitives", static_cast<double>(instanced_primitives));
+           }
+        }
+    }
+
     Scenes scenes;
     getScenes(scenes);
     
@@ -756,14 +817,14 @@ void ViewerBase::renderingTraversals()
         releaseContext();
     }
 
-    if (getStats() && getStats()->collectStats("update"))
+    if (getViewerStats() && getViewerStats()->collectStats("update"))
     {
         double endRenderingTraversals = elapsedTime();
 
         // update current frames stats
-        getStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals begin time ", beginRenderingTraversals);
-        getStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals end time ", endRenderingTraversals);
-        getStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
+        getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals begin time ", beginRenderingTraversals);
+        getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals end time ", endRenderingTraversals);
+        getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
     }
 }
 

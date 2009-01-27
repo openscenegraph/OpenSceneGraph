@@ -16,6 +16,7 @@
 #include <osg/CopyOp>
 #include <osg/FrameStamp>
 #include <osg/Object>
+#include <osg/Stats>
 #include <osg/Timer>
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/View>
@@ -74,6 +75,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          Properties::VIRTUAL,
 	          __bool__readConfiguration__C5_std_string_R1,
 	          "read the viewer configuration from a configuration file. ",
+	          "");
+	I_Method1(void, setViewerStats, IN, osg::Stats *, stats,
+	          Properties::VIRTUAL,
+	          __void__setViewerStats__osg_Stats_P1,
+	          "Set the Stats object used for collect various frame related timing and scene graph stats. ",
+	          "");
+	I_Method0(osg::Stats *, getViewerStats,
+	          Properties::VIRTUAL,
+	          __osg_Stats_P1__getViewerStats,
+	          "Get the Viewers Stats object. ",
+	          "");
+	I_Method0(const osg::Stats *, getViewerStats,
+	          Properties::VIRTUAL,
+	          __C5_osg_Stats_P1__getViewerStats,
+	          "Get the Viewers Stats object. ",
 	          "");
 	I_Method1(void, addView, IN, osgViewer::View *, view,
 	          Properties::NON_VIRTUAL,
@@ -257,5 +273,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_SimpleProperty(osg::FrameStamp *, ViewerFrameStamp, 
 	                 __osg_FrameStamp_P1__getViewerFrameStamp, 
 	                 0);
+	I_SimpleProperty(osg::Stats *, ViewerStats, 
+	                 __osg_Stats_P1__getViewerStats, 
+	                 __void__setViewerStats__osg_Stats_P1);
 END_REFLECTOR
 

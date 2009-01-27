@@ -1,13 +1,13 @@
 # pkg-config source file
 
-prefix=/usr/local
+prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
-libdir=${exec_prefix}/lib64
+libdir=${exec_prefix}/lib@LIB_POSTFIX@
 includedir=${prefix}/include
 
 Name: openscenegraph
 Description: 3D scenegraph
-Version: 2.7.9
+Version: @OPENSCENEGRAPH_VERSION@
 Requires: openthreads
 Conflicts:
 Libs: -L${libdir} -losg -losgDB -losgFX -losgGA -losgParticle -losgSim -losgText -losgUtil -losgTerrain -losgManipulator -losgViewer -losgWidget -losgShadow -losgAnimation -losgVolume

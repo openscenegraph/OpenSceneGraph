@@ -750,6 +750,15 @@ IF(CMAKE_CPACK_COMMAND)
     ENDIF(BUILD_OSG_PACKAGES)
 ENDIF(CMAKE_CPACK_COMMAND)
 
+# Generate pkg-config configuration file
+
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/openscenegraph.pc.in
+        ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openscenegraph.pc
+    @ONLY
+    )
+
+INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openscenegraph.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig)
+
 #-----------------------------------------------------------------------------
 ### uninstall target
 #-----------------------------------------------------------------------------

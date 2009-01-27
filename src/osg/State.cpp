@@ -104,7 +104,7 @@ void State::objectDeleted(void* object)
     AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.find(ppcp);
     if (itr != _appliedProgramObjectSet.end()) 
     {
-        osg::notify(osg::NOTICE)<<"Removing _appliedProgramObjectSet entry "<<ppcp<<std::endl;
+        // osg::notify(osg::NOTICE)<<"Removing _appliedProgramObjectSet entry "<<ppcp<<std::endl;
         _appliedProgramObjectSet.erase(itr);
     }
 }

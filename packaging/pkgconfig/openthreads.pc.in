@@ -1,13 +1,13 @@
 # pkg-config source file
 
-prefix=/usr/local
+prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
-libdir=${exec_prefix}/lib64
+libdir=${exec_prefix}/lib@LIB_POSTFIX@
 includedir=${prefix}/include
 
 Name: openthreads
 Description: Object-Oriented (OO) thread interface for C++ programmers
-Version: 2.3.1
+Version: @OPENTHREADS_VERSION@
 Requires:
 Conflicts:
 Libs: -L${libdir} -lOpenThreads

@@ -177,7 +177,7 @@ void Viewer::constructorInit()
     _updateVisitor = new osgUtil::UpdateVisitor;
     _updateVisitor->setFrameStamp(_frameStamp.get());
 
-    setStats(new osg::Stats("Viewer"));
+    setViewerStats(new osg::Stats("Viewer"));
 }
 
 Viewer::~Viewer()
@@ -516,15 +516,15 @@ void Viewer::advance(double simulationTime)
         _frameStamp->setSimulationTime(simulationTime);
     }
     
-    if (getStats() && getStats()->collectStats("frame_rate"))
+    if (getViewerStats() && getViewerStats()->collectStats("frame_rate"))
     {
         // update previous frame stats
         double deltaFrameTime = _frameStamp->getReferenceTime() - prevousReferenceTime;
-        getStats()->setAttribute(previousFrameNumber, "Frame duration", deltaFrameTime);
-        getStats()->setAttribute(previousFrameNumber, "Frame rate", 1.0/deltaFrameTime);
+        getViewerStats()->setAttribute(previousFrameNumber, "Frame duration", deltaFrameTime);
+        getViewerStats()->setAttribute(previousFrameNumber, "Frame rate", 1.0/deltaFrameTime);
 
         // update current frames stats
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Reference time", _frameStamp->getReferenceTime());
+        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(), "Reference time", _frameStamp->getReferenceTime());
     }
 
     if (osg::Referenced::getDeleteHandler())
@@ -854,14 +854,14 @@ void Viewer::eventTraversal()
         }
     }
     
-    if (getStats() && getStats()->collectStats("event"))
+    if (getViewerStats() && getViewerStats()->collectStats("event"))
     {
         double endEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
         // update current frames stats
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal begin time", beginEventTraversal);
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal end time", endEventTraversal);
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal time taken", endEventTraversal-beginEventTraversal);
+        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal begin time", beginEventTraversal);
+        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal end time", endEventTraversal);
+        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(), "Event traversal time taken", endEventTraversal-beginEventTraversal);
     }
 
 }
@@ -926,14 +926,14 @@ void Viewer::updateTraversal()
 
     updateSlaves();
 
-    if (getStats() && getStats()->collectStats("update"))
+    if (getViewerStats() && getViewerStats()->collectStats("update"))
     {
         double endUpdateTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
         // update current frames stats
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal begin time", beginUpdateTraversal);
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal end time", endUpdateTraversal);
-        getStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal time taken", endUpdateTraversal-beginUpdateTraversal);
+        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal begin time", beginUpdateTraversal);
+        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal end time", endUpdateTraversal);
+        getViewerStats()->setAttribute(_frameStamp->getFrameNumber(), "Update traversal time taken", endUpdateTraversal-beginUpdateTraversal);
     }
 }
 

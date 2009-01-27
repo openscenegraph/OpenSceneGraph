@@ -16,6 +16,7 @@
 
 #include <osg/Camera>
 #include <osg/Light>
+#include <osg/Stats>
 
 #include <OpenThreads/Mutex>
 
@@ -37,6 +38,17 @@ class OSG_EXPORT View : public virtual osg::Object
         
         /** Take all the settings, Camera and Slaves from the passed in view, leaving it empty. */
         virtual void take(View& rhs);
+
+
+        /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
+        void setStats(osg::Stats* stats) { _stats = stats; }
+
+        /** Get the Viewers Stats object.*/
+        osg::Stats* getStats() { return _stats.get(); }
+
+        /** Get the Viewers Stats object.*/
+        const osg::Stats* getStats() const { return _stats.get(); }
+
 
         /** Options for controlling the global lighting used for the view.*/
         enum LightingMode
@@ -138,6 +150,8 @@ class OSG_EXPORT View : public virtual osg::Object
         virtual ~View();
 
         virtual osg::GraphicsOperation* createRenderer(osg::Camera*) { return 0; }
+
+        osg::ref_ptr<osg::Stats>        _stats;
 
         LightingMode                    _lightingMode;
         osg::ref_ptr<osg::Light>        _light;

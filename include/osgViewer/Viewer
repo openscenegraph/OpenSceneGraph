@@ -41,6 +41,17 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
         /** Take all the settings, Camera and Slaves from the passed in view(er), leaving it empty. */
         virtual void take(View& rhs);
 
+
+        /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
+        virtual void setViewerStats(osg::Stats* stats) { setStats(stats); }
+
+        /** Get the Viewers Stats object.*/
+        virtual osg::Stats* getViewerStats() { return getStats(); }
+
+        /** Get the Viewers Stats object.*/
+        virtual const osg::Stats* getViewerStats() const { return getStats(); }
+
+
         /** read the viewer configuration from a configuration file.*/
         virtual bool readConfiguration(const std::string& filename);
         

@@ -39,6 +39,17 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
         /** read the viewer configuration from a configuration file.*/
         bool readConfiguration(const std::string& filename);
 
+
+        /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
+        virtual void setViewerStats(osg::Stats* stats) { _stats = stats; }
+
+        /** Get the Viewers Stats object.*/
+        virtual osg::Stats* getViewerStats() { return _stats.get(); }
+
+        /** Get the Viewers Stats object.*/
+        virtual const osg::Stats* getViewerStats() const { return _stats.get(); }
+
+
         void addView(osgViewer::View* view);
         void removeView(osgViewer::View* view);
         
@@ -114,6 +125,8 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
        
         bool _firstFrame;
         
+        osg::ref_ptr<osg::Stats>            _stats;
+
         osg::Timer_t                        _startTick;
         osg::ref_ptr<osg::FrameStamp>       _frameStamp;
 

@@ -207,15 +207,25 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	          __void__add__C5_Statistics_R1,
 	          "",
 	          "");
+	I_Method0(osgUtil::Statistics::PrimitiveCountMap &, getPrimitiveCountMap,
+	          Properties::NON_VIRTUAL,
+	          __PrimitiveCountMap_R1__getPrimitiveCountMap,
+	          "",
+	          "");
+	I_Method0(const osgUtil::Statistics::PrimitiveCountMap &, getPrimitiveCountMap,
+	          Properties::NON_VIRTUAL,
+	          __C5_PrimitiveCountMap_R1__getPrimitiveCountMap,
+	          "",
+	          "");
 	I_Method0(osgUtil::Statistics::PrimitiveCountMap::iterator, GetPrimitivesBegin,
 	          Properties::NON_VIRTUAL,
 	          __PrimitiveCountMap_iterator__GetPrimitivesBegin,
-	          "",
+	          "deprecated ",
 	          "");
 	I_Method0(osgUtil::Statistics::PrimitiveCountMap::iterator, GetPrimitivesEnd,
 	          Properties::NON_VIRTUAL,
 	          __PrimitiveCountMap_iterator__GetPrimitivesEnd,
-	          "",
+	          "deprecated ",
 	          "");
 	I_SimpleProperty(int, BinNo, 
 	                 0, 
@@ -226,6 +236,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_SimpleProperty(int, Depth, 
 	                 0, 
 	                 __void__setDepth__int);
+	I_SimpleProperty(osgUtil::Statistics::PrimitiveCountMap &, PrimitiveCountMap, 
+	                 __PrimitiveCountMap_R1__getPrimitiveCountMap, 
+	                 0);
 	I_SimpleProperty(osgUtil::Statistics::StatsType, Type, 
 	                 0, 
 	                 __void__setType__StatsType);

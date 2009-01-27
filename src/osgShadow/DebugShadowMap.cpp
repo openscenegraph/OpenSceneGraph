@@ -278,7 +278,7 @@ void DebugShadowMap::ViewData::updateDebugGeometry
         transform[ num ] = 
             { viewCam->getViewMatrix() * 
                 // use near far clamped projection ( precomputed in cullDebugGeometry )
-                ( viewCam == _viewCamera ? _viewProjection : viewCam->getProjectionMatrix() ),
+                ( _viewCamera==viewCam ? _viewProjection : viewCam->getProjectionMatrix() ),
               shadowCam->getViewMatrix() * shadowCam->getProjectionMatrix() }, 
         inverse[ num ] = 
             { osg::Matrix::inverse( transform[0] ),
@@ -362,7 +362,7 @@ void DebugShadowMap::ViewData::cullDebugGeometry( )
         }
     }
     
-    updateDebugGeometry( _viewCamera, _camera.get() );
+    updateDebugGeometry( _viewCamera.get(), _camera.get() );
     
 #if 1 // Add geometries of polytopes to main cam Render Stage 
     _transform[0]->accept( *_cv );

@@ -53,7 +53,7 @@ class OSGSHADOW_EXPORT MinimalDrawBoundsShadowMap
             osg::ref_ptr< osg::Image >           _boundAnalysisImage;
             osg::ref_ptr< osg::Texture2D >       _boundAnalysisTexture;
             osg::ref_ptr< osg::Camera >          _boundAnalysisCamera;
-            osg::ref_ptr< osg::Camera >          _mainCamera;
+            osg::observer_ptr< osg::Camera >     _mainCamera;
 
             void setShadowCameraProjectionMatrixPtr( osg::RefMatrix * projection )
             { _projection = projection; }

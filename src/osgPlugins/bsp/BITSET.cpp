@@ -49,5 +49,5 @@ void BITSET::Set(int bitNumber)
 
 unsigned char BITSET::IsSet(int bitNumber) const
 {
-  return m_bits_aux[bitNumber>>3] & 1<<(bitNumber&7);
+  return static_cast<unsigned char>(m_bits_aux[bitNumber>>3] & 1<<(bitNumber&7));
 }

@@ -163,6 +163,7 @@ int main( int argc, char **argv )
         // view one
         {
             osgViewer::View* view = new osgViewer::View;
+            view->setName("View one");
             viewer.addView(view);
 
             view->setUpViewOnSingleScreen(0);
@@ -179,6 +180,7 @@ int main( int argc, char **argv )
         // view two
         {
             osgViewer::View* view = new osgViewer::View;
+            view->setName("View two");
             viewer.addView(view);
 
             view->setUpViewOnSingleScreen(1);
@@ -234,9 +236,11 @@ int main( int argc, char **argv )
         // view one
         {
             osgViewer::View* view = new osgViewer::View;
+            view->setName("View one");
             viewer.addView(view);
 
             view->setSceneData(scene.get());
+            view->getCamera()->setName("Cam one");
             view->getCamera()->setViewport(new osg::Viewport(0,0, traits->width/2, traits->height/2));
             view->getCamera()->setGraphicsContext(gc.get());
             view->setCameraManipulator(new osgGA::TrackballManipulator);
@@ -257,9 +261,11 @@ int main( int argc, char **argv )
         // view two
         {
             osgViewer::View* view = new osgViewer::View;
+            view->setName("View two");
             viewer.addView(view);
 
             view->setSceneData(scene.get());
+            view->getCamera()->setName("Cam two");
             view->getCamera()->setViewport(new osg::Viewport(traits->width/2,0, traits->width/2, traits->height/2));
             view->getCamera()->setGraphicsContext(gc.get());
             view->setCameraManipulator(new osgGA::TrackballManipulator);
@@ -272,10 +278,12 @@ int main( int argc, char **argv )
         // view three
         {
             osgViewer::View* view = new osgViewer::View;
+            view->setName("View three");
             viewer.addView(view);
 
             view->setSceneData(osgDB::readNodeFile("cessnafire.osg"));
 
+            view->getCamera()->setName("Cam three");
             view->getCamera()->setProjectionMatrixAsPerspective(30.0, double(traits->width) / double(traits->height/2), 1.0, 1000.0);
             view->getCamera()->setViewport(new osg::Viewport(0, traits->height/2, traits->width, traits->height/2));
             view->getCamera()->setGraphicsContext(gc.get());

@@ -11,6 +11,9 @@
  * OpenSceneGraph Public License for more details.
  */
 
+#include <stdlib.h>
+#include <string.h>
+
 #include "RenderSurface.h"
 
 using namespace std;
@@ -53,7 +56,6 @@ RenderSurface::RenderSurface( void )
     // This used to be #ifdefed for the X11 implementation
     // but the code is pure C++ and should compile anywhere
     // The _dislayNum variable is used by CGL as well.
-#if 0
     char *envptr = getenv( "DISPLAY" );
     if( envptr != NULL && *envptr != 0 )
     {
@@ -78,7 +80,7 @@ RenderSurface::RenderSurface( void )
             _screen = 0;
         }
     }
-#endif
+
     _windowLeft     = 0;
     _windowRight    = 1;
     _windowBottom   = 0;
@@ -94,20 +96,11 @@ RenderSurface::RenderSurface( void )
     _customFullScreenWidth   = UnknownDimension;
     _customFullScreenHeight  = UnknownDimension;
     _useCustomFullScreen     = false;
-#if 0
-    _dpy             = NULL;
-    _win             = 0;
-    _parent          = 0;
+
     _readDrawableRenderSurface = 0L;
-    _visualInfo     = NULL;
-    _visualID       = 0;
-    _currentCursor   = 0;
-    _nullCursor      = 0;
-    _defaultCursor   = 0;
     _windowName      = defaultWindowName;
     _realized        = false;
     _useConfigEventThread = true;
-    _threadReady = new OpenThreads::Barrier(2);
     _overrideRedirectFlag = false;
 
     char *override_envptr = getenv( "PRODUCER_OVERRIDE_REDIRECT" );
@@ -122,7 +115,7 @@ RenderSurface::RenderSurface( void )
             _overrideRedirectFlag = false;
         }
     }
-#endif
+
     _decorations     = true;
     _useCursorFlag   = true;
 

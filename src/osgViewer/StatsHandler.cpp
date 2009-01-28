@@ -392,13 +392,13 @@ struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCall
 
                 double value = 0.0;
 
-                STATS_ATTRIBUTE("Visible vertex count")
-                STATS_ATTRIBUTE("Visible number of drawables")
                 STATS_ATTRIBUTE("Visible number of lights")
                 STATS_ATTRIBUTE("Visible number of render bins")
                 STATS_ATTRIBUTE("Visible depth")
                 STATS_ATTRIBUTE("Visible number of materials")
                 STATS_ATTRIBUTE("Visible number of impostors")
+                STATS_ATTRIBUTE("Visible number of drawables")
+                STATS_ATTRIBUTE("Visible vertex count")
 
                 STATS_ATTRIBUTE("Visible number of GL_POINTS")
                 STATS_ATTRIBUTE("Visible number of GL_LINES")
@@ -470,18 +470,18 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
 
                 #define STATS_ATTRIBUTE_PAIR(str1, str2) \
                     if (stats->getAttribute(frameNumber, str1, value)) \
-                        viewStr << std::setw(10) << value; \
+                        viewStr << std::setw(9) << value; \
                     else \
-                        viewStr << std::setw(10) << "."; \
+                        viewStr << std::setw(9) << "."; \
                     if (stats->getAttribute(frameNumber, str2, value)) \
-                        viewStr << std::setw(10) << value << std::endl; \
+                        viewStr << std::setw(9) << value << std::endl; \
                     else \
-                        viewStr << std::setw(10) << "." << std::endl; \
+                        viewStr << std::setw(9) << "." << std::endl; \
 
                 double value = 0.0;
 
                 // header
-                viewStr << std::setw(10) << "Unique" << std::setw(10) << "Instanced" << std::endl;
+                viewStr << std::setw(9) << "Unique" << std::setw(9) << "Instance" << std::endl;
 
                 STATS_ATTRIBUTE_PAIR("Number of unique StateSet","Number of instanced Stateset")
                 STATS_ATTRIBUTE_PAIR("Number of unique Group","Number of instanced Group")
@@ -1393,13 +1393,13 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         viewStr.width(14);
         viewStr << "Camera" << std::endl;
         viewStr << "" << std::endl; // placeholder for Camera name
-        viewStr << "Vertices" << std::endl;
-        viewStr << "Drawables" << std::endl;
         viewStr << "Lights" << std::endl;
         viewStr << "Bins" << std::endl;
         viewStr << "Depth" << std::endl;
         viewStr << "Matrices" << std::endl;
         viewStr << "Imposters" << std::endl;
+        viewStr << "Drawables" << std::endl;
+        viewStr << "Vertices" << std::endl;
         viewStr << "Points" << std::endl;
         viewStr << "Lines" << std::endl;
         viewStr << "Line strips" << std::endl;
@@ -1495,7 +1495,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         for (it = views.begin(); it != views.end(); ++it)
         {
             geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-                                                            11 * characterSize + 2 * backgroundMargin,
+                                                            10 * characterSize + 2 * backgroundMargin,
                                                             12 * characterSize + 2 * backgroundMargin,
                                                             backgroundColor));
 
@@ -1509,7 +1509,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             text->setPosition(pos);
             text->setDrawCallback(new ViewSceneStatsTextDrawCallback(*it, viewCounter));
 
-            pos.x() += 11 * characterSize + 2 * backgroundMargin + backgroundSpacing;
+            pos.x() += 10 * characterSize + 2 * backgroundMargin + backgroundSpacing;
             viewCounter++;
         }
     }

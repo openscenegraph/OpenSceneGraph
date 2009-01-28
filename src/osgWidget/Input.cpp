@@ -175,7 +175,7 @@ unsigned int Input::calculateBestYOffset(const std::string& s) {
     for(osgText::String::iterator i = utf.begin(); i != utf.end(); i++) {
         osgText::Font*        font  = const_cast<osgText::Font*>(_text->getFont());
         osgText::Font::Glyph* glyph = font->getGlyph(fr, *i);
-        unsigned int          d     = abs(glyph->getHorizontalBearing().y());
+        unsigned int          d     = abs((int)glyph->getHorizontalBearing().y());
 
         if(d > descent) descent = d;
     }

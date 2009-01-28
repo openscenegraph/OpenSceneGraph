@@ -49,6 +49,16 @@ BEGIN_OBJECT_REFLECTOR(osg::CullStack)
 	          __void__reset,
 	          "",
 	          "");
+	I_Method0(void, pushCullingSet,
+	          Properties::NON_VIRTUAL,
+	          __void__pushCullingSet,
+	          "",
+	          "");
+	I_Method0(void, popCullingSet,
+	          Properties::NON_VIRTUAL,
+	          __void__popCullingSet,
+	          "",
+	          "");
 	I_Method1(void, setOccluderList, IN, const osg::ShadowVolumeOccluderList &, svol,
 	          Properties::NON_VIRTUAL,
 	          __void__setOccluderList__C5_ShadowVolumeOccluderList_R1,
@@ -244,18 +254,6 @@ BEGIN_OBJECT_REFLECTOR(osg::CullStack)
 	          __C5_osg_Vec3__getLookVectorLocal,
 	          "",
 	          "");
-	I_ProtectedMethod0(void, pushCullingSet,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__pushCullingSet,
-	                   "",
-	                   "");
-	I_ProtectedMethod0(void, popCullingSet,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__popCullingSet,
-	                   "",
-	                   "");
 	I_ProtectedMethod0(void, computeFrustumVolume,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

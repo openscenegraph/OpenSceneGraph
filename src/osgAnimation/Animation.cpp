@@ -112,7 +112,7 @@ bool Animation::update (float time)
         if (!_duration)
             t = _startTime;
         else if (t > _duration)
-            t = fmodf(t, _duration);
+            t = fmod(t, (float)_duration);
         //      std::cout << "t " << t << " duration " << _duration << std::endl;
         break;
     case PPONG: 
@@ -121,7 +121,7 @@ bool Animation::update (float time)
         else 
         {
             int tt = (int) (t / _duration);
-            t = fmodf(t, _duration);
+            t = fmod(t, (float)_duration);
             if (tt%2)
                 t = _duration - t;
         }

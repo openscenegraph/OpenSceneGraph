@@ -36,10 +36,14 @@ void osgParticle::FluidFrictionOperator::operate(Particle* P, double dt)
     float R = _coeff_A * r * vm + _coeff_B * r * r * vm * vm;
     
     osg::Vec3 Fr(-R * v.x(), -R * v.y(), -R * v.z());
-
+    
+#if 0
+    // Commenting out rotation of force vector rotation from local to world as the particle velocity itself
+    // should already be in world coords so shouldn't need rotating.
     if (_current_program->getReferenceFrame() == ModularProgram::RELATIVE_RF) {
         Fr = _current_program->rotateLocalToWorld(Fr);
     }
+#endif
 
     // correct unwanted velocity increments
     osg::Vec3 dv = Fr * P->getMassInv() * dt;

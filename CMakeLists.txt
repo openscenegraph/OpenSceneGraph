@@ -736,12 +736,6 @@ IF(BUILD_DASHBOARD_REPORTS)
     INCLUDE(Dart)
 ENDIF(BUILD_DASHBOARD_REPORTS)
 
-# This needs to be run very last so other parts of the scripts can take
-# advantage of this.
-IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-    SET(OSG_CONFIG_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether this is the first time running CMake or if CMake has been configured before")
-ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-
 # present the packaging option only if we have the cpack command defined (effectively >= 2.6.0)
 IF(CMAKE_CPACK_COMMAND)
     OPTION(BUILD_OSG_PACKAGES "Set to ON to generate CPack configuration files and packaging targets" OFF)
@@ -757,7 +751,44 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/openscenegraph.pc.in
     @ONLY
     )
 
-INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openscenegraph.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openscenegraph.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig COMPONENT libopenscenegraph-dev)
+
+# Run this as late as possible so users can easier spot the message
+IF(LIB_POSTFIX)
+    MESSAGE("You will be installing libraries to ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX}\n"
+        "Your loader may not be able to find your installed libraries unless you:\n"
+        "  set your LD_LIBRARY_PATH (user specific)\n"
+        "  update your ld.so configuration (system wide)")
+    IF(IS_DIRECTORY /etc/ld.so.conf.d)
+        MESSAGE("You have an ld.so.conf.d directory on your system.\n"
+            "You can install a openscenegraph specific ld.so configuration with:\n"
+            "  sudo make install_ld_conf")
+        CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/ld.so.conf.d/openscenegraph.conf.in
+            ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
+        )
+        ADD_CUSTOM_TARGET(install_ld_conf ${CMAKE_COMMAND} -E copy_if_different 
+            ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
+            /etc/ld.so.conf.d/openscenegraph.conf
+            COMMAND ldconfig
+            COMMENT "Copying openscenegraph.conf to /etc/ld.so.conf.d and running ldconfig"
+        )
+    ELSE(IS_DIRECTORY /etc/ld.so.conf.d)
+        IF(EXIST /etc/ld.so.conf)
+            MESSAGE("You have an ld.so.conf file in /etc\n"
+                "You may need to add ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX} to it.")
+        ENDIF(EXIST /etc/ld.so.conf)
+    ENDIF(IS_DIRECTORY /etc/ld.so.conf.d)
+
+    # emit a message during installation.
+    INSTALL(CODE "MESSAGE(\"Libraries were installed to ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX}.\\nYou may need to update your ld.so configuration. \")")
+ENDIF(LIB_POSTFIX)
+
+
+# This needs to be run very last so other parts of the scripts can take
+# advantage of this.
+IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
+    SET(OSG_CONFIG_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether this is the first time running CMake or if CMake has been configured before")
+ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
 
 #-----------------------------------------------------------------------------
 ### uninstall target

@@ -643,17 +643,43 @@ void SceneView::computeRightEyeViewport(const osg::Viewport *viewport)
     }
 }
 
+void SceneView::setLightingMode(LightingMode mode)
+{
+    if (mode==_lightingMode) return;
+    
+    if (_lightingMode!=NO_SCENEVIEW_LIGHT)
+    {
+        // remove GL_LIGHTING mode
+        _globalStateSet->removeMode(GL_LIGHTING);
+    }
+
+    _lightingMode = mode;
+
+    if (_lightingMode!=NO_SCENEVIEW_LIGHT)
+    {
+        // add GL_LIGHTING mode
+        _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    }
+}
+
 void SceneView::inheritCullSettings(const osg::CullSettings& settings, unsigned int inheritanceMask)
 {
     if (_camera.valid() && _camera->getView()) 
     {
         if (inheritanceMask & osg::CullSettings::LIGHTING_MODE)
         {
+            LightingMode newLightingMode = _lightingMode;
+        
             switch(_camera->getView()->getLightingMode())
             {
-                case(osg::View::NO_LIGHT): setLightingMode(NO_SCENEVIEW_LIGHT); break;
-                case(osg::View::HEADLIGHT): setLightingMode(HEADLIGHT); break;
-                case(osg::View::SKY_LIGHT): setLightingMode(SKY_LIGHT); break;
+                case(osg::View::NO_LIGHT): newLightingMode = NO_SCENEVIEW_LIGHT; break;
+                case(osg::View::HEADLIGHT): newLightingMode = HEADLIGHT; break;
+                case(osg::View::SKY_LIGHT): newLightingMode = SKY_LIGHT; break;
+            }
+            
+            if (newLightingMode != _lightingMode)
+            {
+                setLightingMode(newLightingMode);
             }
         }
                 

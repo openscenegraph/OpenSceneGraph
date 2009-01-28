@@ -165,7 +165,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
 
         typedef Options LightingMode;
 
-        void setLightingMode(LightingMode mode) { _lightingMode=mode; }
+        void setLightingMode(LightingMode mode);
         LightingMode getLightingMode() const { return _lightingMode; }
 
         void setLight(osg::Light* light) { _light = light; }

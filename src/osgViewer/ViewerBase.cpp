@@ -653,7 +653,7 @@ void ViewerBase::renderingTraversals()
             View* view = *vitr;
             osg::Stats* stats = view->getStats();            
             osg::Node* sceneRoot = view->getSceneData();
-            if (sceneRoot)
+            if (sceneRoot && stats)
             {
                 osgUtil::StatsVisitor statsVisitor;
                 sceneRoot->accept(statsVisitor);

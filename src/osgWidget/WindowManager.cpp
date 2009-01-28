@@ -256,7 +256,7 @@ void WindowManager::childRemoved(unsigned int start, unsigned int numChildren) {
         if(!window) continue;
 
         if(_remove(window)) {
-            window->_index = -1;
+            window->_index = 0; // was originally -1, but _index is a unsigned int...
 
             window->unmanaged(this);
         }

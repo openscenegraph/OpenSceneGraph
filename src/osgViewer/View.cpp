@@ -148,6 +148,8 @@ View::View():
     getCamera()->setRenderer(createRenderer(getCamera()));
 
     setEventQueue(new osgGA::EventQueue);
+    
+    setStats(new osg::Stats("View"));
 }
 
 
@@ -163,6 +165,8 @@ View::View(const osgViewer::View& view, const osg::CopyOp& copyop):
     getCamera()->setRenderer(createRenderer(getCamera()));
 
     setEventQueue(new osgGA::EventQueue);
+
+    setStats(new osg::Stats("View"));
 }
 
 View::~View()

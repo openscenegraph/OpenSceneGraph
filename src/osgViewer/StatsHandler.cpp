@@ -366,26 +366,29 @@ struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCall
             {
                 viewStr.setf(std::ios::left, std::ios::adjustfield);
                 viewStr.width(14);
+                // Used fixed formatting, as scientific will switch to "...e+.." notation for
+                // large numbers of vertices/drawables/etc.
+                viewStr.setf(std::ios::fixed);
+                viewStr.precision(0);
 
-                viewStr << std::setw(1) << _cameraNumber  << ": ";
+                viewStr << std::setw(1) << "#" << _cameraNumber << std::endl;
 
                 // Camera name
-                if (_camera->getName().empty())
-                    viewStr << std::endl;
-                else
-                    viewStr << _camera->getName() << std::endl;
-                    
+                if (!_camera->getName().empty())
+                    viewStr << _camera->getName();
+                viewStr << std::endl;
+
                 int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
                 if (!(renderer->getGraphicsThreadDoesCull()))
                 {
                     --frameNumber;
                 }
-                
+
                 #define STATS_ATTRIBUTE(str) \
                     if (stats->getAttribute(frameNumber, str, value)) \
-                        viewStr << std::setw(7) << value << std::endl; \
+                        viewStr << std::setw(8) << value << std::endl; \
                     else \
-                        viewStr << std::setw(7) << "." << std::endl; \
+                        viewStr << std::setw(8) << "." << std::endl; \
 
                 double value = 0.0;
 
@@ -447,16 +450,16 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
             {
                 std::ostringstream viewStr;
                 viewStr.clear();
-                viewStr.setf(std::ios::left,std::ios::adjustfield);
+                viewStr.setf(std::ios::left, std::ios::adjustfield);
                 viewStr.width(20);
-                
-                viewStr << std::setw(1) << _viewNumber  << ": ";
-                // View name
-                if (_view->getName().empty())
-                    viewStr << std::endl;
-                else
-                    viewStr << _view->getName() << std::endl;
+                viewStr.setf(std::ios::fixed);
+                viewStr.precision(0);
 
+                viewStr << std::setw(1) << "#" << _viewNumber;
+
+                // View name
+                if (!_view->getName().empty())
+                    viewStr << ": " << _view->getName();
                 viewStr << std::endl;
 
                 int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
@@ -476,6 +479,9 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
                         viewStr << std::setw(10) << "." << std::endl; \
 
                 double value = 0.0;
+
+                // header
+                viewStr << std::setw(10) << "Unique" << std::setw(10) << "Instanced" << std::endl;
 
                 STATS_ATTRIBUTE_PAIR("Number of unique StateSet","Number of instanced Stateset")
                 STATS_ATTRIBUTE_PAIR("Number of unique Group","Number of instanced Group")
@@ -1087,8 +1093,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         float topOfViewerStats = pos.y() + characterSize;
 
-        geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
-                                                        _camera->getViewport()->width() - 2 * backgroundMargin, 
+        geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
+                                                        _camera->getViewport()->width() - 2 * backgroundMargin,
                                                         (3 + 4.5 * cameras.size()) * characterSize + 2 * backgroundMargin,
                                                       backgroundColor) );
 
@@ -1234,8 +1240,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             {
                 pos.y() -= (characterSize + backgroundSpacing);
 
-                geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
-                                                                _camera->getViewport()->width() - 2 * backgroundMargin, 
+                geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
+                                                                _camera->getViewport()->width() - 2 * backgroundMargin,
                                                                 characterSize + 2 * backgroundMargin,
                                                                 backgroundColor));
 
@@ -1368,14 +1374,14 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         osg::Geode* geode = new osg::Geode();
         geode->setCullingActive(false);
         group->addChild(geode);
-        geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
-                                                        7 * characterSize + 2 * backgroundMargin, 
-                                                        18 * characterSize + 2 * backgroundMargin,
+        geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
+                                                        7 * characterSize + 2 * backgroundMargin,
+                                                        19 * characterSize + 2 * backgroundMargin,
                                                         backgroundColor));
 
         // Camera scene & primitive stats static text
         osg::ref_ptr<osgText::Text> camStaticText = new osgText::Text;
-        geode->addDrawable( camStaticText.get() );  
+        geode->addDrawable( camStaticText.get() );
         camStaticText->setColor(staticTextColor);
         camStaticText->setFont(font);
         camStaticText->setCharacterSize(characterSize);
@@ -1383,9 +1389,10 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         std::ostringstream viewStr;
         viewStr.clear();
-        viewStr.setf(std::ios::left,std::ios::adjustfield);
+        viewStr.setf(std::ios::left, std::ios::adjustfield);
         viewStr.width(14);
         viewStr << "Camera" << std::endl;
+        viewStr << "" << std::endl; // placeholder for Camera name
         viewStr << "Vertices" << std::endl;
         viewStr << "Drawables" << std::endl;
         viewStr << "Lights" << std::endl;
@@ -1407,15 +1414,15 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         camStaticText->setText(viewStr.str());
 
         // Move camera block to the right
-        pos.x() += 7 * characterSize + 2 * backgroundMargin + backgroundSpacing; 
+        pos.x() += 7 * characterSize + 2 * backgroundMargin + backgroundSpacing;
 
-        // add camera scene stats
+        // Add camera scene stats, one block per camera
         int cameraCounter = 0;
         for(ViewerBase::Cameras::iterator citr = cameras.begin(); citr != cameras.end(); ++citr)
         {
-            geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
-                                                            5 * characterSize + 2 * backgroundMargin, 
-                                                            18 * characterSize + 2 * backgroundMargin,
+            geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
+                                                            5 * characterSize + 2 * backgroundMargin,
+                                                            19 * characterSize + 2 * backgroundMargin,
                                                             backgroundColor));
 
             // Camera scene stats
@@ -1430,7 +1437,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             camStatsText->setDrawCallback(new CameraSceneStatsTextDrawCallback(*citr, cameraCounter));
 
             // Move camera block to the right
-            pos.x() +=  5 * characterSize + 2 * backgroundMargin + backgroundSpacing; 
+            pos.x() +=  5 * characterSize + 2 * backgroundMargin + backgroundSpacing;
             cameraCounter++;
         }
     }
@@ -1445,8 +1452,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         geode->setCullingActive(false);
         group->addChild(geode);
 
-        geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
-                                                        5 * characterSize + 2 * backgroundMargin, 
+        geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
+                                                        6 * characterSize + 2 * backgroundMargin,
                                                         12 * characterSize + 2 * backgroundMargin,
                                                         backgroundColor));
 
@@ -1460,10 +1467,10 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         std::ostringstream viewStr;
         viewStr.clear();
-        viewStr.setf(std::ios::left,std::ios::adjustfield);
+        viewStr.setf(std::ios::left, std::ios::adjustfield);
         viewStr.width(14);
         viewStr << "View" << std::endl;
-        viewStr << std::endl;
+        viewStr << " " << std::endl;
         viewStr << "Stateset" << std::endl;
         viewStr << "Group" << std::endl;
         viewStr << "Transform" << std::endl;
@@ -1474,11 +1481,11 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         viewStr << "Geometry" << std::endl;
         viewStr << "Vertices" << std::endl;
         viewStr << "Primitives" << std::endl;
-        viewStr.setf(std::ios::right,std::ios::adjustfield);
+        viewStr.setf(std::ios::right, std::ios::adjustfield);
         camStaticText->setText(viewStr.str());
 
-        // Move camera block to the right
-        pos.x() += 5 * characterSize + 2 * backgroundMargin + backgroundSpacing; 
+        // Move viewer block to the right
+        pos.x() += 6 * characterSize + 2 * backgroundMargin + backgroundSpacing;
 
         std::vector<osgViewer::View*> views;
         viewer->getViews(views);
@@ -1487,8 +1494,8 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         int viewCounter = 0;
         for (it = views.begin(); it != views.end(); ++it)
         {
-            geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0), 
-                                                            6 * characterSize + 2 * backgroundMargin, 
+            geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
+                                                            11 * characterSize + 2 * backgroundMargin,
                                                             12 * characterSize + 2 * backgroundMargin,
                                                             backgroundColor));
 
@@ -1502,7 +1509,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             text->setPosition(pos);
             text->setDrawCallback(new ViewSceneStatsTextDrawCallback(*it, viewCounter));
 
-            pos.x() += 6 * characterSize + 2 * backgroundMargin + backgroundSpacing; 
+            pos.x() += 11 * characterSize + 2 * backgroundMargin + backgroundSpacing;
             viewCounter++;
         }
     }

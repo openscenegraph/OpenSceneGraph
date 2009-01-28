@@ -773,10 +773,10 @@ IF(LIB_POSTFIX)
             COMMENT "Copying openscenegraph.conf to /etc/ld.so.conf.d and running ldconfig"
         )
     ELSE(IS_DIRECTORY /etc/ld.so.conf.d)
-        IF(EXIST /etc/ld.so.conf)
+        IF(EXISTS /etc/ld.so.conf)
             MESSAGE("You have an ld.so.conf file in /etc\n"
                 "You may need to add ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX} to it.")
-        ENDIF(EXIST /etc/ld.so.conf)
+        ENDIF(EXISTS /etc/ld.so.conf)
     ENDIF(IS_DIRECTORY /etc/ld.so.conf.d)
 
     # emit a message during installation.

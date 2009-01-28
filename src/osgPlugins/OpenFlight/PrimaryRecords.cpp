@@ -692,12 +692,12 @@ protected:
         {
             in.forward(4);
 
-            uint32 mask = in.readUInt32(~0);
+            uint32 mask = in.readUInt32(~0u);
 
             // Possible bug in models with version number 15.4.1 ?
             // Symptoms: Black trees in VegaPlayer town.
             if (document.version() == 1541)
-                mask = ~0;
+                mask = ~0u;
 
             ParentPools* parentPools = new ParentPools;
 

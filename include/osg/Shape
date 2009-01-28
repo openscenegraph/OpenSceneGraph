@@ -99,12 +99,12 @@ class HeightField;
 
 class CompositeShape;
 
-class ShapeVisitor
+class OSG_EXPORT ShapeVisitor
 {
     public:
     
         ShapeVisitor() {}
-        virtual ~ShapeVisitor() {}
+        virtual ~ShapeVisitor();
 
         virtual void apply(Shape&) {}
         virtual void apply(Sphere&) {}
@@ -121,12 +121,12 @@ class ShapeVisitor
         virtual void apply(CompositeShape&) {}
 };
 
-class ConstShapeVisitor
+class OSG_EXPORT ConstShapeVisitor
 {
     public:
     
         ConstShapeVisitor() {}
-        virtual ~ConstShapeVisitor() {}
+        virtual ~ConstShapeVisitor();
 
         virtual void apply(const Shape&) {}
         virtual void apply(const Sphere&) {}
@@ -143,7 +143,7 @@ class ConstShapeVisitor
         virtual void apply(const CompositeShape&) {}
 };
 
-class Sphere : public Shape
+class OSG_EXPORT Sphere : public Shape
 {
     public:
 
@@ -178,14 +178,14 @@ class Sphere : public Shape
 
     protected:
 
-        virtual ~Sphere() {}
+        virtual ~Sphere();
 
         Vec3    _center;
         float   _radius;
 
 };
 
-class Box : public Shape
+class OSG_EXPORT Box : public Shape
 {
     public:
 
@@ -230,7 +230,7 @@ class Box : public Shape
 
     protected:
     
-        virtual ~Box() {}
+        virtual ~Box();
     
         Vec3    _center;
         Vec3    _halfLengths;
@@ -240,7 +240,7 @@ class Box : public Shape
 
 
 
-class Cone : public Shape
+class OSG_EXPORT Cone : public Shape
 {
     public:
 
@@ -291,7 +291,7 @@ class Cone : public Shape
 
     protected:
     
-        virtual ~Cone() {}
+        virtual ~Cone();
     
         Vec3    _center;
         float   _radius;
@@ -300,7 +300,7 @@ class Cone : public Shape
         Quat    _rotation;
 };
 
-class Cylinder : public Shape
+class OSG_EXPORT Cylinder : public Shape
 {
     public:
 
@@ -348,7 +348,7 @@ class Cylinder : public Shape
 
     protected:
     
-        virtual ~Cylinder() {}
+        virtual ~Cylinder();
 
         Vec3    _center;
         float   _radius;
@@ -356,7 +356,7 @@ class Cylinder : public Shape
         Quat    _rotation;
 };
 
-class Capsule : public Shape
+class OSG_EXPORT Capsule : public Shape
 {
     public:
 
@@ -404,7 +404,7 @@ class Capsule : public Shape
 
     protected:
     
-        virtual ~Capsule() {}
+        virtual ~Capsule();
     
         Vec3    _center;
         float   _radius;
@@ -412,7 +412,7 @@ class Capsule : public Shape
         Quat    _rotation;
 };
 
-class InfinitePlane : public Shape, public Plane
+class OSG_EXPORT InfinitePlane : public Shape, public Plane
 {
     public:
         InfinitePlane() {}
@@ -425,10 +425,10 @@ class InfinitePlane : public Shape, public Plane
 
      protected:
      
-        virtual ~InfinitePlane() {}
+        virtual ~InfinitePlane();
 };
 
-class TriangleMesh : public Shape
+class OSG_EXPORT TriangleMesh : public Shape
 {
     public:
     
@@ -453,14 +453,14 @@ class TriangleMesh : public Shape
 
     protected:
     
-        ~TriangleMesh() {}
+        virtual ~TriangleMesh();
 
         ref_ptr<Vec3Array> _vertices;
         ref_ptr<IndexArray> _indices;
 
 };
 
-class ConvexHull : public TriangleMesh
+class OSG_EXPORT ConvexHull : public TriangleMesh
 {
     public:
     
@@ -473,7 +473,7 @@ class ConvexHull : public TriangleMesh
 
     protected:
     
-        ~ConvexHull() {}
+        virtual ~ConvexHull();
 };
 
 class OSG_EXPORT HeightField : public Shape
@@ -583,7 +583,7 @@ class OSG_EXPORT HeightField : public Shape
 typedef HeightField Grid;
 
 
-class CompositeShape : public Shape
+class OSG_EXPORT CompositeShape : public Shape
 {
     public:
 
@@ -637,7 +637,7 @@ class CompositeShape : public Shape
 
     protected:
     
-        ~CompositeShape() {}
+        virtual ~CompositeShape();
 
         ref_ptr<Shape>  _shape;
         ChildList       _children;

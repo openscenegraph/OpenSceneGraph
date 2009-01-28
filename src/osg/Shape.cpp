@@ -19,6 +19,46 @@ Shape::~Shape()
 {
 }
 
+ShapeVisitor::~ShapeVisitor()
+{
+}
+
+ConstShapeVisitor::~ConstShapeVisitor()
+{
+}
+
+Sphere::~Sphere()
+{
+}
+
+Box::~Box()
+{
+}
+
+Cone::~Cone()
+{
+}
+
+Cylinder::~Cylinder()
+{
+}
+
+Capsule::~Capsule()
+{
+}
+
+InfinitePlane::~InfinitePlane()
+{
+}
+
+TriangleMesh::~TriangleMesh()
+{
+}
+
+ConvexHull::~ConvexHull()
+{
+}
+
 HeightField::HeightField():
     _columns(0),
     _rows(0),
@@ -129,4 +169,7 @@ Vec2 HeightField::getHeightDelta(unsigned int c,unsigned int r) const
     return heightDelta;
 }
 
+CompositeShape::~CompositeShape()
+{
+}
 

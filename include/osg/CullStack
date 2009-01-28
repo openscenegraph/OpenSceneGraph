@@ -39,6 +39,9 @@ class OSG_EXPORT CullStack : public osg::CullSettings
 
         void reset();
         
+        void pushCullingSet();
+        void popCullingSet();
+
         void setOccluderList(const ShadowVolumeOccluderList& svol) { _occluderList = svol; }
         ShadowVolumeOccluderList& getOccluderList() { return _occluderList; }
         const ShadowVolumeOccluderList& getOccluderList() const { return _occluderList; }
@@ -158,12 +161,8 @@ class OSG_EXPORT CullStack : public osg::CullSettings
         }
         
 
-
     protected:
     
-        void pushCullingSet();
-        void popCullingSet();
-
         // base set of shadow volume occluder to use in culling.
         ShadowVolumeOccluderList                                    _occluderList;
 

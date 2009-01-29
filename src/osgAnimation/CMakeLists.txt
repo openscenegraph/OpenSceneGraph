@@ -42,6 +42,7 @@ ADD_LIBRARY(${LIB_NAME}
     Animation.cpp
     Bone.cpp
     RigGeometry.cpp
+    AnimationManager.cpp
     BasicAnimationManager.cpp
     TimelineAnimationManager.cpp
     AnimationManagerBase.cpp

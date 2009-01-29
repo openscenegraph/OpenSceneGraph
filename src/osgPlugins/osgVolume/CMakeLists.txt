@@ -10,6 +10,7 @@ SET(TARGET_SRC
     CompositeProperty.cpp
     SwitchProperty.cpp
     ScalarProperty.cpp
+    PropertyAdjustmentCallback.cpp
 )
 
 SET(TARGET_ADDED_LIBRARIES osgVolume )

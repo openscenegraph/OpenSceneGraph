@@ -272,6 +272,15 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Config.in"
 
 
 ################################################################################
+# Optional build components
+
+# OSG Applications
+OPTION(BUILD_OSG_APPLICATIONS "Enable to build OSG Applications (e.g. osgviewer)" ON)
+
+# OSG Examples
+OPTION(BUILD_OSG_EXAMPLES "Enable to build OSG Examples" OFF)
+
+################################################################################
 # 3rd Party Dependency Stuff
 IF(WIN32)
     INCLUDE(Find3rdPartyDependencies)
@@ -279,10 +288,6 @@ ENDIF(WIN32)
 
 # Common to all platforms:
 FIND_PACKAGE(FreeType)
-FIND_PACKAGE(FLTK)
-FIND_PACKAGE(GLUT)
-FIND_PACKAGE(SDL)
-FIND_PACKAGE(FOX)
 FIND_PACKAGE(Inventor)
 FIND_PACKAGE(Jasper)
 FIND_PACKAGE(OpenEXR)
@@ -298,29 +303,6 @@ FIND_PACKAGE(ITK)
 FIND_PACKAGE(LibVNCServer)
 FIND_PACKAGE(OurDCMTK)
 FIND_PACKAGE(XUL)
-
-SET(wxWidgets_USE_LIBS base core gl net)
-FIND_PACKAGE(wxWidgets)
-
-# To select a specific version of QT define DESIRED_QT_VERSION
-# via cmake -DDESIRED_QT_VERSION=4
-IF  (DESIRED_QT_VERSION)
-
-    IF  (DESIRED_QT_VERSION MATCHES 4)
-      FIND_PACKAGE(Qt4)
-    ELSE(DESIRED_QT_VERSION MATCHES 4)
-      FIND_PACKAGE(Qt3)
-    ENDIF(DESIRED_QT_VERSION MATCHES 4)
-
-ELSE(DESIRED_QT_VERSION)
-
-    FIND_PACKAGE(Qt4)
-
-    IF  (NOT QT4_FOUND)
-        FIND_PACKAGE(Qt3)
-    ENDIF(NOT QT4_FOUND)
-
-ENDIF(DESIRED_QT_VERSION)
 
 #use pkg-config to find various modues
 INCLUDE(FindPkgConfig OPTIONAL)
@@ -342,6 +324,42 @@ IF(PKG_CONFIG_FOUND)
     PKG_CHECK_MODULES(POPPLER poppler-glib)
 
 ENDIF(PKG_CONFIG_FOUND)
+
+#optional example related dependencies
+IF   (BUILD_OSG_EXAMPLES)
+
+
+    FIND_PACKAGE(FLTK)
+    FIND_PACKAGE(GLUT)
+    FIND_PACKAGE(SDL)
+    FIND_PACKAGE(FOX)
+
+    SET(wxWidgets_USE_LIBS base core gl net)
+    FIND_PACKAGE(wxWidgets)
+
+    # To select a specific version of QT define DESIRED_QT_VERSION
+    # via cmake -DDESIRED_QT_VERSION=4
+    IF  (DESIRED_QT_VERSION)
+
+        IF  (DESIRED_QT_VERSION MATCHES 4)
+          FIND_PACKAGE(Qt4)
+        ELSE(DESIRED_QT_VERSION MATCHES 4)
+          FIND_PACKAGE(Qt3)
+        ENDIF(DESIRED_QT_VERSION MATCHES 4)
+
+    ELSE(DESIRED_QT_VERSION)
+
+        FIND_PACKAGE(Qt4)
+
+        IF  (NOT QT4_FOUND)
+            FIND_PACKAGE(Qt3)
+        ENDIF(NOT QT4_FOUND)
+
+    ENDIF(DESIRED_QT_VERSION)
+
+ENDIF(BUILD_OSG_EXAMPLES)
+
+
 
 
 
@@ -579,17 +597,14 @@ INCLUDE(OsgMacroUtils)
 # OSG Core
 ADD_SUBDIRECTORY(src)
 
-# OSG Applications
-OPTION(BUILD_OSG_APPLICATIONS "Enable to build OSG Applications (e.g. osgviewer)" ON)
 IF   (BUILD_OSG_APPLICATIONS)
     ADD_SUBDIRECTORY(applications)
 ENDIF(BUILD_OSG_APPLICATIONS)
 
-# OSG Examples
-OPTION(BUILD_OSG_EXAMPLES "Enable to build OSG Examples" OFF)
 IF   (BUILD_OSG_EXAMPLES)
     ADD_SUBDIRECTORY(examples)
 ENDIF(BUILD_OSG_EXAMPLES)
+
 
 # Set defaults for Universal Binaries. We want 32-bit Intel/PPC on 10.4
 # and 32/64-bit Intel/PPC on >= 10.5. Anything <= 10.3 doesn't support.
@@ -758,35 +773,48 @@ IF (${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local")
 SET(REQUIRES_LIBPATH_MESSAGE ON)
 ENDIF(${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local") 
 
-IF(REQUIRES_LIBPATH_MESSAGE AND NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-    MESSAGE("\nThe build system is configured to instal libraries to ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}\n"
-        "Your applications may not be able to find your installed libraries unless you:\n"
-        "    set your LD_LIBRARY_PATH (user specific) or\n"
-        "    update your ld.so configuration (system wide)")
-    IF(IS_DIRECTORY /etc/ld.so.conf.d)
-        MESSAGE("You have an ld.so.conf.d directory on your system, so if you wish to ensure that\n"
-            "applications find the installed osg libraries, system wide, you could install a\n"
-            "openscenegraph specific ld.so configuration with:\n"
-            "    sudo make install_ld_conf\n")
-        CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/ld.so.conf.d/openscenegraph.conf.in
-            ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
-        )
-        ADD_CUSTOM_TARGET(install_ld_conf ${CMAKE_COMMAND} -E copy_if_different 
-            ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
-            /etc/ld.so.conf.d/openscenegraph.conf
-            COMMAND ldconfig
-            COMMENT "Copying openscenegraph.conf to /etc/ld.so.conf.d and running ldconfig"
-        )
-    ELSE(IS_DIRECTORY /etc/ld.so.conf.d)
-        IF(EXISTS /etc/ld.so.conf)
-            MESSAGE("You have an ld.so.conf file in /etc\n"
-                "You may need to add ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX} to it.")
-        ENDIF(EXISTS /etc/ld.so.conf)
-    ENDIF(IS_DIRECTORY /etc/ld.so.conf.d)
+IF(REQUIRES_LIBPATH_MESSAGE)
 
-    # emit a message during installation.
-    INSTALL(CODE "MESSAGE(\"Libraries were installed to ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX}.\\nYou may need to update your ld.so configuration. \")")
-ENDIF(REQUIRES_LIBPATH_MESSAGE AND NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
+    IF (NOT OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE)
+ 
+        SET(OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether the libpath message has been reported before")
+
+        MESSAGE("\nThe build system is configured to instal libraries to ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}\n"
+            "Your applications may not be able to find your installed libraries unless you:\n"
+            "    set your LD_LIBRARY_PATH (user specific) or\n"
+            "    update your ld.so configuration (system wide)")
+        IF(IS_DIRECTORY /etc/ld.so.conf.d)
+            MESSAGE("You have an ld.so.conf.d directory on your system, so if you wish to ensure that\n"
+                "applications find the installed osg libraries, system wide, you could install a\n"
+                "openscenegraph specific ld.so configuration with:\n"
+                "    sudo make install_ld_conf\n")
+            CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/ld.so.conf.d/openscenegraph.conf.in
+                ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
+            )
+            ADD_CUSTOM_TARGET(install_ld_conf ${CMAKE_COMMAND} -E copy_if_different 
+                ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
+                /etc/ld.so.conf.d/openscenegraph.conf
+                COMMAND ldconfig
+                COMMENT "Copying openscenegraph.conf to /etc/ld.so.conf.d and running ldconfig"
+            )
+        ELSE(IS_DIRECTORY /etc/ld.so.conf.d)
+            IF(EXISTS /etc/ld.so.conf)
+                MESSAGE("You have an ld.so.conf file in /etc, if you wish to ensure \n"
+                "that applications find the installed osg libraries, system wide, you\n"
+                "could add ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX} to it.")
+            ENDIF(EXISTS /etc/ld.so.conf)
+        ENDIF(IS_DIRECTORY /etc/ld.so.conf.d)
+
+        # emit a message during installation.
+        INSTALL(CODE "MESSAGE(\"Libraries were installed to ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX}.\\nYou may need to update your ld.so configuration. \")")
+
+    ENDIF(NOT OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE)
+
+ELSE(REQUIRES_LIBPATH_MESSAGE)
+
+    SET(OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE 0 CACHE INTERNAL "Flag to track whether the libpath message has been reported before")
+
+ENDIF(REQUIRES_LIBPATH_MESSAGE)
 
 
 # This needs to be run very last so other parts of the scripts can take

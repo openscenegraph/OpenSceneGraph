@@ -375,17 +375,41 @@ osg::Image* ReadVTFFile(std::istream& _istream)
         return NULL;
     }
 
-    // Read next two fields of the header (which includes the header size)
-    _istream.read((char *)&vtf_header.file_version[0], 12);
-
     // Now, read the rest of the header
-    _istream.read((char *)&vtf_header.image_width, vtf_header.header_size - 16);
+    _istream.read((char *)&vtf_header.file_version[0], 8);
+    _istream.read((char *)&vtf_header.header_size, 4);
+    _istream.read((char *)&vtf_header.image_width, 2);
+    _istream.read((char *)&vtf_header.image_height, 2);
+    _istream.read((char *)&vtf_header.image_flags, 4);
+    _istream.read((char *)&vtf_header.num_frames, 2);
+    _istream.read((char *)&vtf_header.start_frame, 2);
+    _istream.ignore(4);
+    _istream.read((char *)&vtf_header.reflectivity_value, 12);
+    _istream.ignore(4);
+    _istream.read((char *)&vtf_header.bump_scale, 4);
+    _istream.read((char *)&vtf_header.image_format, 4);
+    _istream.read((char *)&vtf_header.num_mip_levels, 1);
+    _istream.read((char *)&vtf_header.low_res_image_format, 4);
+    _istream.read((char *)&vtf_header.low_res_image_width, 1);
+    _istream.read((char *)&vtf_header.low_res_image_height, 1);
 
     // No depth in textures earlier than version 7.2
     if ((vtf_header.file_version[0] < 7) ||
         ((vtf_header.file_version[0] == 7) && 
          (vtf_header.file_version[1] < 2)))
+    {
+        // No depth in header, set it to 1
         vtf_header.image_depth = 1;
+    }
+    else
+    {
+        // Read the image depth
+        _istream.read((char *)&vtf_header.image_depth, 2);
+    }
+
+    // Skip past the rest of the header's space
+    std::streampos filePos = _istream.tellg();
+    _istream.ignore(vtf_header.header_size - filePos);
 
     // Environment maps not supported
     if (vtf_header.image_flags & VTF_FLAGS_ENVMAP)
@@ -634,9 +658,9 @@ osg::Image* ReadVTFFile(std::istream& _istream)
             _istream.read((char*)&imageData[mipOffset], mipSize);
         }
 
-        // We've read all of the mipmaps except the largest (the original,
+        // We've read all of the mipmaps except the largest (the original
         // image), so do that now
-        mipSize = mipmaps[1];
+        mipSize = mipmaps[0];
         _istream.read((char*)imageData, mipSize);
     }
     else

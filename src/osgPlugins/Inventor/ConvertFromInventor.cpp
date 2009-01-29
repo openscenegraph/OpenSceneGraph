@@ -589,13 +589,17 @@ ConvertFromInventor::getStateSet(SoCallbackAction* action)
             case SoTexture2::BLEND:
                 texEnv->setMode(osg::TexEnv::BLEND);
                 break;
-
+#if defined(__COIN__) && ((COIN_MAJOR_VERSION==2 && COIN_MINOR_VERSION>=2) || (COIN_MAJOR_VERSION>2))
             // SGI's Inventor does not have REPLACE mode, but the Coin 3D library does.
             // Coin supports REPLACE since 2.2 release, TGS Inventor from 4.0.
             // Let's convert to the TexEnv anyway.
-            case (SoTexture2::Model)GL_REPLACE: // SoTexture2::REPLACE is the same as GL_REPLACE
+            case SoTexture2::REPLACE:
                 texEnv->setMode(osg::TexEnv::REPLACE);
                 break;
+#endif
+            default:
+                break;
+
         }
         stateSet->setTextureAttributeAndModes(0,texEnv.get(),osg::StateAttribute::ON);
     }

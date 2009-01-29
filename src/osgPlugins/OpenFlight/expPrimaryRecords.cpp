@@ -708,7 +708,7 @@ FltExportVisitor::writeLightPoint( const osgSim::LightPointNode* lpn )
         _records->writeID( id );
         _records->writeInt16( 0 ); // Surface material code
         _records->writeInt16( 0 ); // Feature ID
-        _records->writeUInt32( -1 ); // Back color for bidirectional
+        _records->writeUInt32( ~0u ); // OpenFlight erronously say -1, so will assume ~0u is OK.  Back color for bidirectional
         _records->writeInt32( EITHER ); // Display mode
         _records->writeFloat32( lp0._intensity ); // Intensity
         _records->writeFloat32( 0.f ); // Back intensity TBD

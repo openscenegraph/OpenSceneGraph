@@ -3,7 +3,7 @@ OSG News
 
 = !OpenSceneGraph 2.8 release adds osgAnimation and osgVolume rendering libraries, DICOM support and much more. =
 
-PERTHSHIRE, Scotland - Early February 2009 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.6, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.6 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.6 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - Early February 2009 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.8, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.8 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.8 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
 The !OpenSceneGraph 2.8 release is the culmination of 9 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs. 
@@ -24,6 +24,8 @@ The !OpenSceneGraph 2.8 release is the culmination of 9 years of work by the lea
     * New Browser client widget support (based on Gecko/UBrowser)
     * Improvements to DatabasePager tailored for low latency paging.
     * Improved stats collection and on screen reporting.
+    * Support for the OpenGL geometry instancing extension.
+    * Improvements to COLLADA support.
     * Build reporting using CDash
     * New Packing support using CPack
     * A wide range of build and bug fixes 

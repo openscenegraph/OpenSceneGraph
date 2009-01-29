@@ -754,15 +754,20 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/openscenegraph.pc.in
 INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openscenegraph.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig COMPONENT libopenscenegraph-dev)
 
 # Run this as late as possible so users can easier spot the message
-IF(LIB_POSTFIX)
-    MESSAGE("You will be installing libraries to ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX}\n"
-        "Your loader may not be able to find your installed libraries unless you:\n"
-        "  set your LD_LIBRARY_PATH (user specific)\n"
-        "  update your ld.so configuration (system wide)")
+IF (${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local")
+SET(REQUIRES_LIBPATH_MESSAGE ON)
+ENDIF(${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local") 
+
+IF(REQUIRES_LIBPATH_MESSAGE AND NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
+    MESSAGE("\nThe build system is configured to instal libraries to ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}\n"
+        "Your applications may not be able to find your installed libraries unless you:\n"
+        "    set your LD_LIBRARY_PATH (user specific) or\n"
+        "    update your ld.so configuration (system wide)")
     IF(IS_DIRECTORY /etc/ld.so.conf.d)
-        MESSAGE("You have an ld.so.conf.d directory on your system.\n"
-            "You can install a openscenegraph specific ld.so configuration with:\n"
-            "  sudo make install_ld_conf")
+        MESSAGE("You have an ld.so.conf.d directory on your system, so if you wish to ensure that\n"
+            "applications find the installed osg libraries, system wide, you could install a\n"
+            "openscenegraph specific ld.so configuration with:\n"
+            "    sudo make install_ld_conf\n")
         CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/ld.so.conf.d/openscenegraph.conf.in
             ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf
         )
@@ -781,7 +786,7 @@ IF(LIB_POSTFIX)
 
     # emit a message during installation.
     INSTALL(CODE "MESSAGE(\"Libraries were installed to ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX}.\\nYou may need to update your ld.so configuration. \")")
-ENDIF(LIB_POSTFIX)
+ENDIF(REQUIRES_LIBPATH_MESSAGE AND NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
 
 
 # This needs to be run very last so other parts of the scripts can take

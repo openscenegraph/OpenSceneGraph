@@ -935,10 +935,6 @@ int main( int argc, char **argv )
     unsigned int numComponentsDesired = 0; 
     while(arguments.read("--num-components", numComponentsDesired)) {}
 
-    bool useOsgVolume = true; 
-    while(arguments.read("--osgVolume")) { useOsgVolume = true; }
-    while(arguments.read("--no-osgVolume")) { useOsgVolume = false; }
-
     bool useShader = true; 
     while(arguments.read("--shader")) { useShader = true; }
     while(arguments.read("--no-shader")) { useShader = false; }
@@ -1273,6 +1269,7 @@ int main( int argc, char **argv )
         osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
         osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
         osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0);
+        osgVolume::TransferFunctionProperty* tfp = new osgVolume::TransferFunctionProperty(transferFunction.get());
 
         {
             // Standard
@@ -1280,6 +1277,7 @@ int main( int argc, char **argv )
             cp->addProperty(ap);
             cp->addProperty(sd);
             cp->addProperty(tp);
+            if (tfp) cp->addProperty(tfp);
 
             sp->addProperty(cp);
         }
@@ -1291,6 +1289,7 @@ int main( int argc, char **argv )
             cp->addProperty(sd);
             cp->addProperty(tp);
             cp->addProperty(new osgVolume::LightingProperty);
+            if (tfp) cp->addProperty(tfp);
 
             sp->addProperty(cp);
         }
@@ -1301,6 +1300,7 @@ int main( int argc, char **argv )
             cp->addProperty(sd);
             cp->addProperty(tp);
             cp->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
+            if (tfp) cp->addProperty(tfp);
 
             sp->addProperty(cp);
         }
@@ -1312,17 +1312,20 @@ int main( int argc, char **argv )
             cp->addProperty(sd);
             cp->addProperty(tp);
             cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
+            if (tfp) cp->addProperty(tfp);
 
             sp->addProperty(cp);
         }
 
+        switch(shadingModel)
+        {
+            case(Standard):                     sp->setActiveProperty(0); break;
+            case(Light):                        sp->setActiveProperty(1); break;
+            case(Isosurface):                   sp->setActiveProperty(2); break;
+            case(MaximumIntensityProjection):   sp->setActiveProperty(3); break;
+        }
         layer->addProperty(sp);
 
-        if (transferFunction.valid())
-        {
-            osg::notify(osg::NOTICE)<<"Attaching transferFunction"<<std::endl;
-            layer->addProperty(new osgVolume::TransferFunctionProperty(transferFunction.get()));
-        }
 
         tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
     }

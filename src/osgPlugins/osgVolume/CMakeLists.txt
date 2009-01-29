@@ -6,6 +6,10 @@ SET(TARGET_SRC
     VolumeTile.cpp
     RayTracedTechnique.cpp
     FixedFunctionTechnique.cpp
+    Property.cpp
+    CompositeProperty.cpp
+    SwitchProperty.cpp
+    ScalarProperty.cpp
 )
 
 SET(TARGET_ADDED_LIBRARIES osgVolume )

@@ -651,6 +651,12 @@ void SceneView::setLightingMode(LightingMode mode)
     {
         // remove GL_LIGHTING mode
         _globalStateSet->removeMode(GL_LIGHTING);
+
+        if (_light.valid())
+        {
+            _globalStateSet->removeAssociatedModes(_light.get());
+        }
+
     }
 
     _lightingMode = mode;
@@ -659,6 +665,10 @@ void SceneView::setLightingMode(LightingMode mode)
     {
         // add GL_LIGHTING mode
         _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+        if (_light.valid()) 
+        {
+            _globalStateSet->setAssociatedModes(_light.get(), osg::StateAttribute::ON);
+        }
     }
 }
 

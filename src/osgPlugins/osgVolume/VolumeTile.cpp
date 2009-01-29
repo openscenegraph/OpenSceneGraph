@@ -124,16 +124,12 @@ bool VolumeTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osgVolume::Locator* locator = dynamic_cast<osgVolume::Locator*>(readObject.get());
     if (locator) volumeTile.setLocator(locator);
 
-    {
-        osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgVolume::Layer>());
-        osgVolume::Layer* readLayer = dynamic_cast<osgVolume::Layer*>(readObject.get());
-        if (readLayer)
-        {
-            volumeTile.setLayer(readLayer);
-        }
 
-        itrAdvanced = true;
-    }
+    readObject = fr.readObjectOfType(osgDB::type_wrapper<osgVolume::Layer>());
+    if (readObject.valid()) itrAdvanced = true;
+
+    osgVolume::Layer* readLayer = dynamic_cast<osgVolume::Layer*>(readObject.get());
+    if (readLayer) volumeTile.setLayer(readLayer);
 
 
     readObject = fr.readObjectOfType(osgDB::type_wrapper<osgVolume::VolumeTechnique>());
@@ -158,12 +154,9 @@ bool VolumeTile_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
         fw.writeObject(*volumeTile.getLocator());
     }
 
+    if (volumeTile.getLayer())
     {
-        const osgVolume::Layer* layer = volumeTile.getLayer();
-        if (layer)
-        {
-            fw.writeObject(*layer);
-        }
+        fw.writeObject(*volumeTile.getLayer());
     }
 
     if (volumeTile.getVolumeTechnique())

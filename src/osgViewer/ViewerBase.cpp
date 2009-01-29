@@ -657,6 +657,7 @@ void ViewerBase::renderingTraversals()
             {
                 osgUtil::StatsVisitor statsVisitor;
                 sceneRoot->accept(statsVisitor);
+                statsVisitor.totalUpStats();
                 
                 unsigned int unique_primitives = 0;
                 osgUtil::Statistics::PrimitiveCountMap::iterator pcmitr;

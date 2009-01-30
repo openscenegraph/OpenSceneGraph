@@ -97,7 +97,7 @@ class OSG_EXPORT Group : public Node
         virtual bool replaceChild( Node *origChild, Node* newChild );
 
         /** Return the number of children nodes. */
-        inline unsigned int getNumChildren() const { return _children.size(); }
+        inline unsigned int getNumChildren() const { return static_cast<unsigned int>(_children.size()); }
 
         /** Set child node at position i.
           * Return true if set correctly, false on failure (if node==NULL || i is out of range).
@@ -139,7 +139,7 @@ class OSG_EXPORT Group : public Node
             {
                 if (_children[childNum]==node) return childNum;
             }
-            return _children.size(); // node not found.
+            return static_cast<unsigned int>(_children.size()); // node not found.
         }
 
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/

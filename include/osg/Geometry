@@ -199,7 +199,7 @@ class OSG_EXPORT Geometry : public Drawable
         ArrayData& getTexCoordData(unsigned int index);
         const ArrayData& getTexCoordData(unsigned int index) const;
 
-        unsigned int getNumTexCoordArrays() const {  return _texCoordList.size(); }
+        unsigned int getNumTexCoordArrays() const {  return static_cast<unsigned int>(_texCoordList.size()); }
         ArrayDataList& getTexCoordArrayList() { return _texCoordList; }
         const ArrayDataList& getTexCoordArrayList() const { return _texCoordList; }
 
@@ -219,7 +219,7 @@ class OSG_EXPORT Geometry : public Drawable
         ArrayData& getVertexAttribData(unsigned int index);
         const ArrayData& getVertexAttribData(unsigned int index) const;
 
-        unsigned int getNumVertexAttribArrays() const { return _vertexAttribList.size(); }
+        unsigned int getNumVertexAttribArrays() const { return static_cast<unsigned int>(_vertexAttribList.size()); }
         ArrayDataList& getVertexAttribArrayList() { return _vertexAttribList; }
         const ArrayDataList& getVertexAttribArrayList() const { return _vertexAttribList; }
 
@@ -231,7 +231,7 @@ class OSG_EXPORT Geometry : public Drawable
         PrimitiveSetList& getPrimitiveSetList() { return _primitives; }
         const PrimitiveSetList& getPrimitiveSetList() const { return _primitives; }
 
-        unsigned int getNumPrimitiveSets() const { return _primitives.size(); }
+        unsigned int getNumPrimitiveSets() const { return static_cast<unsigned int>(_primitives.size()); }
         PrimitiveSet* getPrimitiveSet(unsigned int pos) { return _primitives[pos].get(); }
         const PrimitiveSet* getPrimitiveSet(unsigned int pos) const { return _primitives[pos].get(); }
         

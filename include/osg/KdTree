@@ -131,7 +131,7 @@ class OSG_EXPORT KdTree : public osg::Shape
 
         int addNode(const KdNode& node)
         {
-            int num = _kdNodes.size(); 
+            int num = static_cast<int>(_kdNodes.size()); 
             _kdNodes.push_back(node); 
             return num;
         }
@@ -147,7 +147,7 @@ class OSG_EXPORT KdTree : public osg::Shape
 
         unsigned int addTriangle(const Triangle& tri)
         {
-            unsigned int num = _triangles.size();
+            unsigned int num = static_cast<unsigned int>(_triangles.size());
             _triangles.push_back(tri);
             return num;
         }

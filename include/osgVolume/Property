@@ -180,8 +180,6 @@ class OSGVOLUME_EXPORT ScalarProperty : public Property
 {
     public:
 
-        ScalarProperty();
-
         ScalarProperty(const std::string& scaleName, float value);
         
         ScalarProperty(const ScalarProperty& scalarProperty,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
@@ -206,6 +204,8 @@ class OSGVOLUME_EXPORT ScalarProperty : public Property
     
         virtual ~ScalarProperty() {}
         
+        ScalarProperty();
+
         osg::ref_ptr<osg::Uniform>  _uniform;
 };
 

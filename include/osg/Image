@@ -273,7 +273,7 @@ class OSG_EXPORT Image : public Object
 
         unsigned int getNumMipmapLevels() const
         {
-            return _mipmapData.size()+1;
+            return static_cast<unsigned int>(_mipmapData.size())+1;
         };
 
         /** Send offsets into data. It is assumed that first mipmap offset (index 0) is 0.*/

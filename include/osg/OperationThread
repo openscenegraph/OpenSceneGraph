@@ -108,7 +108,7 @@ class OSG_EXPORT OperationQueue : public Referenced
         bool empty() const { return _operations.empty(); }
         
         /** Return the num of pending operations that are sitting in the OperationQueue.*/
-        unsigned int getNumOperationsInQueue() const { return _operations.size(); }
+        unsigned int getNumOperationsInQueue() const { return static_cast<unsigned int>(_operations.size()); }
 
         /** Add operation to end of OperationQueue, this will be 
           * executed by the operation thread once this operation gets to the head of the queue.*/

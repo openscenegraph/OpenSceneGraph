@@ -144,7 +144,7 @@ class OSG_EXPORT Node : public Object
          * Get the number of parents of node.
          * @return the number of parents of this node.
          */
-        inline unsigned int getNumParents() const { return _parents.size(); }
+        inline unsigned int getNumParents() const { return static_cast<unsigned int>(_parents.size()); }
 
         /** Get the list of node paths parent paths.
           * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */
@@ -279,7 +279,7 @@ class OSG_EXPORT Node : public Object
         inline std::string& getDescription(unsigned int i) { return _descriptions[i]; }
 
         /** Get the number of descriptions of the node.*/
-        inline unsigned int getNumDescriptions() const { return _descriptions.size(); }
+        inline unsigned int getNumDescriptions() const { return static_cast<unsigned int>(_descriptions.size()); }
 
         /** Add a description string to the node.*/
         void addDescription(const std::string& desc) { _descriptions.push_back(desc); }

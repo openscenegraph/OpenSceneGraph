@@ -38,7 +38,7 @@ class OSG_EXPORT Stats : public osg::Referenced
         
         void allocate(unsigned int numberOfFrames);
         
-        int getEarliestFrameNumber() const { return _latestFrameNumber < static_cast<int>(_attributeMapList.size()) ? 0 : _latestFrameNumber - _attributeMapList.size() + 1; }
+        int getEarliestFrameNumber() const { return _latestFrameNumber < static_cast<int>(_attributeMapList.size()) ? 0 : _latestFrameNumber - static_cast<int>(_attributeMapList.size()) + 1; }
         int getLatestFrameNumber() const { return _latestFrameNumber; }
         
         typedef std::map<std::string, double> AttributeMap;
@@ -102,7 +102,7 @@ class OSG_EXPORT Stats : public osg::Referenced
             if (frameNumber < getEarliestFrameNumber()) return -1;
             
             if (frameNumber >= _baseFrameNumber) return frameNumber - _baseFrameNumber;
-            else return _attributeMapList.size() - (_baseFrameNumber-frameNumber);
+            else return static_cast<int>(_attributeMapList.size()) - (_baseFrameNumber-frameNumber);
         }
 
         std::string         _name;

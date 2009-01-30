@@ -83,7 +83,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
           * Mark Program as needing relink.  Return true for success */
         bool addShader( Shader* shader );
 
-        unsigned int getNumShaders() const { return _shaderList.size(); }
+        unsigned int getNumShaders() const { return static_cast<unsigned int>(_shaderList.size()); }
 
         Shader* getShader( unsigned int i ) { return _shaderList[i].get(); }
         const Shader* getShader( unsigned int i ) const { return _shaderList[i].get(); }

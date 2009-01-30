@@ -22,9 +22,10 @@ The !OpenSceneGraph 2.8 release is the culmination of 9 years of work by the lea
     * New PDF widget support (based on libPoppler)
     * New VNC client widget support (based on libVNCServer) 
     * New Browser client widget support (based on Gecko/UBrowser)
+    * New plugins for loading Half-Life 2 maps and models.
     * Improvements to DatabasePager tailored for low latency paging.
     * Improved stats collection and on screen reporting.
-    * Support for the OpenGL geometry instancing extension.
+    * Support for the OpenGL draw instanced extension.
     * Improvements to COLLADA support.
     * Build reporting using CDash
     * New Packing support using CPack

@@ -23,8 +23,8 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
 {
     osgParticle::ParticleEffect& effect = static_cast<osgParticle::ParticleEffect&>(object);
     bool itrAdvanced = false;
-
-    if (fr.matchSequence("position %s"))
+    
+    if (fr.matchSequence("textFileName %s"))
     {
         effect.setTextureFileName(fr[1].getStr());
         fr += 2;
@@ -192,8 +192,7 @@ bool ParticleEffect_readLocalData(osg::Object& object, osgDB::Input& fr)
 bool ParticleEffect_writeLocalData(const osg::Object& object, osgDB::Output& fw)
 {
     const osgParticle::ParticleEffect& effect = static_cast<const osgParticle::ParticleEffect&>(object);
-    
-    fw.indent()<<"textFileName "<<effect.getTextureFileName()<<std::endl;
+    fw.indent()<<"textFileName "<<fw.wrapString(effect.getTextureFileName())<<std::endl;
     fw.indent()<<"position "<<effect.getPosition()<<std::endl;
     fw.indent()<<"scale "<<effect.getScale()<<std::endl;
     fw.indent()<<"intensity "<<effect.getIntensity()<<std::endl;

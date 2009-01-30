@@ -275,7 +275,7 @@ void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
     _camera->setViewport(0, 0, window->getTraits()->width, window->getTraits()->height);
     _camera->setRenderOrder(osg::Camera::POST_RENDER, 10);
 
-    _camera->setProjectionMatrix(osg::Matrix::ortho2D(0,1280,0,1024));
+    _camera->setProjectionMatrix(osg::Matrix::ortho2D(0,window->getTraits()->width,0,window->getTraits()->height));
     _camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     _camera->setViewMatrix(osg::Matrix::identity());
 
@@ -608,8 +608,8 @@ struct StatsGraph : public osg::MatrixTransform
           _statsGraphGeode(new osg::Geode)
     {
         _pos -= osg::Vec3(0, height, 0.1);
-        this->setMatrix(osg::Matrix::translate(_pos));
-        this->addChild(_statsGraphGeode.get());
+        setMatrix(osg::Matrix::translate(_pos));
+        addChild(_statsGraphGeode.get());
     }
 
     void addStatGraph(osg::Stats* viewerStats, osg::Stats* stats, const osg::Vec4& color, float max, const std::string& nameBegin, const std::string& nameEnd = "")
@@ -629,16 +629,16 @@ protected:
         Graph(float width, float height, osg::Stats* viewerStats, osg::Stats* stats,
               const osg::Vec4& color, float max, const std::string& nameBegin, const std::string& nameEnd = "")
         {
-            this->setUseDisplayList(false);
+            setUseDisplayList(false);
 
-            this->setVertexArray(new osg::Vec3Array);
+            setVertexArray(new osg::Vec3Array);
 
             osg::Vec4Array* colors = new osg::Vec4Array;
             colors->push_back(color);
-            this->setColorArray(colors);
-            this->setColorBinding(osg::Geometry::BIND_OVERALL);
+            setColorArray(colors);
+            setColorBinding(osg::Geometry::BIND_OVERALL);
 
-            this->setDrawCallback(new GraphUpdateCallback(width, height, viewerStats, stats, max, nameBegin, nameEnd));
+            setDrawCallback(new GraphUpdateCallback(width, height, viewerStats, stats, max, nameBegin, nameEnd));
         }
     };
 
@@ -1093,10 +1093,11 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         float topOfViewerStats = pos.y() + characterSize;
 
-        geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-                                                        _camera->getViewport()->width() - 2 * backgroundMargin,
-                                                        (3 + 4.5 * cameras.size()) * characterSize + 2 * backgroundMargin,
-                                                      backgroundColor) );
+        geode->addDrawable(createBackgroundRectangle(
+            pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
+            _camera->getViewport()->width() - 2 * backgroundMargin,
+            (3 + 4.5 * cameras.size()) * characterSize + 2 * backgroundMargin,
+            backgroundColor) );
 
         {
             pos.x() = leftPos;

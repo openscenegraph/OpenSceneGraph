@@ -154,7 +154,7 @@ class OSG_EXPORT Drawable : public Object
          * Get the number of parents of node.
          * @return the number of parents of this node.
          */
-        inline unsigned int getNumParents() const { return _parents.size(); }
+        inline unsigned int getNumParents() const { return static_cast<unsigned int>(_parents.size()); }
 
         /** Get the list of matrices that transform this node from local coordinates to world coordinates.
           * The optional Node* haltTraversalAtNode allows the user to prevent traversal beyond a specifed node. */

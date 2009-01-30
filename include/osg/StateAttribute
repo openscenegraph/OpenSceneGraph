@@ -256,7 +256,7 @@ class OSG_EXPORT StateAttribute : public Object
          * Get the number of parents of this StateAttribute.
          * @return the number of parents of this StateAttribute.
          */
-        inline unsigned int getNumParents() const { return _parents.size(); }
+        inline unsigned int getNumParents() const { return static_cast<unsigned int>(_parents.size()); }
 
 
         struct ModeUsage

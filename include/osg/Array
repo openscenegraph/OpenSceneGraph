@@ -226,8 +226,8 @@ class TemplateArray : public Array, public MixinVector<T>
         }
         
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
-        virtual unsigned int    getTotalDataSize() const { return this->size()*sizeof(T); }
-        virtual unsigned int    getNumElements() const { return this->size(); }
+        virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(this->size()*sizeof(T)); }
+        virtual unsigned int    getNumElements() const { return static_cast<unsigned int>(this->size()); }
 
         typedef T ElementDataType; // expose T
 
@@ -312,8 +312,8 @@ class TemplateIndexArray : public IndexArray, public MixinVector<T>
         }
         
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
-        virtual unsigned int    getTotalDataSize() const { return this->size()*sizeof(T); }
-        virtual unsigned int    getNumElements() const { return this->size(); }
+        virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(this->size()*sizeof(T)); }
+        virtual unsigned int    getNumElements() const { return static_cast<unsigned int>(this->size()); }
 
         virtual unsigned int    index(unsigned int pos) const { return (*this)[pos]; }
 

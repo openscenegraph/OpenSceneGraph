@@ -134,7 +134,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         void removeStateSet(unsigned int pos);
         
         /** Get the number of StateSet's on the StateSet stack.*/
-        unsigned int getStateSetStackSize() { return _stateStateStack.size(); }
+        unsigned int getStateSetStackSize() { return static_cast<unsigned int>(_stateStateStack.size()); }
         
         /** Pop StateSet's for the StateSet stack till its size equals the specified size.*/
         void popStateSetStackToSize(unsigned int size) { while (_stateStateStack.size()>size) popStateSet(); }

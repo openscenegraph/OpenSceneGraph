@@ -89,7 +89,7 @@ class OSG_EXPORT StateSet : public Object
          * Get the number of parents of this StateSet.
          * @return the number of parents of this StateSet.
          */
-        inline unsigned int getNumParents() const { return _parents.size(); }
+        inline unsigned int getNumParents() const { return static_cast<unsigned int>(_parents.size()); }
 
 
         /** Compute the DataVariance based on an assessment of callback etc.*/

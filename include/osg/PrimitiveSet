@@ -316,8 +316,8 @@ class OSG_EXPORT DrawArrays : public PrimitiveSet
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
         
-        virtual unsigned int getNumIndices() const { return _count; }
-        virtual unsigned int index(unsigned int pos) const { return _first+pos; }
+        virtual unsigned int getNumIndices() const { return static_cast<unsigned int>(_count); }
+        virtual unsigned int index(unsigned int pos) const { return static_cast<unsigned int>(_first)+pos; }
         virtual void offsetIndices(int offset) { _first += offset; }
 
     protected:
@@ -493,7 +493,7 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
         virtual const char* className() const { return "DrawElementsUByte"; }
 
         virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
-        virtual unsigned int    getTotalDataSize() const { return size(); }
+        virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(size()); }
         virtual bool            supportsBufferObject() const { return false; }
 
         virtual void draw(State& state, bool useVertexBufferObjects) const ;
@@ -501,7 +501,7 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
 
-        virtual unsigned int getNumIndices() const { return size(); }
+        virtual unsigned int getNumIndices() const { return static_cast<unsigned int>(size()); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
         
@@ -568,7 +568,7 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
         virtual const char* className() const { return "DrawElementsUShort"; }
 
         virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
-        virtual unsigned int    getTotalDataSize() const { return 2*size(); }
+        virtual unsigned int    getTotalDataSize() const { return 2u*static_cast<unsigned int>(size()); }
         virtual bool            supportsBufferObject() const { return false; }
 
         virtual void draw(State& state, bool useVertexBufferObjects) const;
@@ -576,7 +576,7 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
 
-        virtual unsigned int getNumIndices() const { return size(); }
+        virtual unsigned int getNumIndices() const { return static_cast<unsigned int>(size()); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
@@ -642,7 +642,7 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         virtual const char* className() const { return "DrawElementsUInt"; }
 
         virtual const GLvoid*   getDataPointer() const { return empty()?0:&front(); }
-        virtual unsigned int    getTotalDataSize() const { return 4*size(); }
+        virtual unsigned int    getTotalDataSize() const { return 4u*static_cast<unsigned int>(size()); }
         virtual bool            supportsBufferObject() const { return false; }
 
         virtual void draw(State& state, bool useVertexBufferObjects) const;
@@ -650,7 +650,7 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         virtual void accept(PrimitiveFunctor& functor) const;
         virtual void accept(PrimitiveIndexFunctor& functor) const;
 
-        virtual unsigned int getNumIndices() const { return size(); }
+        virtual unsigned int getNumIndices() const { return static_cast<unsigned int>(size()); }
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 

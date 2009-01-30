@@ -609,7 +609,7 @@ class OSG_EXPORT CompositeShape : public Shape
         const Shape* getShape() const { return _shape.get(); }
 
         /** Get the number of children of this composite shape.*/
-        unsigned int getNumChildren() const { return _children.size(); }
+        unsigned int getNumChildren() const { return static_cast<unsigned int>(_children.size()); }
 
         /** Get a child.*/
         Shape* getChild(unsigned int i) { return _children[i].get(); }
@@ -631,7 +631,7 @@ class OSG_EXPORT CompositeShape : public Shape
             {
                 if (_children[childNo]==shape) return childNo;
             }
-            return _children.size(); // node not found.
+            return static_cast<unsigned int>(_children.size()); // node not found.
 
         }
 

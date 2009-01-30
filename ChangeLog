@@ -1,3 +1,59 @@
+2009-01-30 12:09  robert
+
+	* src/osgViewer/StatsHandler.cpp: Fixed size of background of frame
+	  stats so that it's the correct width of the window
+
+2009-01-30 11:40  robert
+
+	* src/osgWrappers/osgVolume/Property.cpp: Updated wrappers
+
+2009-01-30 10:55  robert
+
+	* NEWS.txt, include/osg/Array, include/osg/Drawable,
+	  include/osg/Geometry, include/osg/Group, include/osg/Image,
+	  include/osg/KdTree, include/osg/Node,
+	  include/osg/OperationThread, include/osg/PrimitiveSet,
+	  include/osg/Program, include/osg/Shape, include/osg/State,
+	  include/osg/StateAttribute, include/osg/StateSet,
+	  include/osg/Stats, include/osg/View, include/osgVolume/Property:
+	  Fixed warnings, updated NEWS
+
+2009-01-29 20:40  robert
+
+	* src/osgPlugins/osgVolume/CMakeLists.txt,
+	  src/osgPlugins/osgVolume/PropertyAdjustmentCallback.cpp: Added
+	  support for osgVolume::ProperyAdjustmentCallback
+
+2009-01-29 20:34  robert
+
+	* src/osgPlugins/osgVolume/CMakeLists.txt,
+	  src/osgPlugins/osgVolume/CompositeProperty.cpp,
+	  src/osgPlugins/osgVolume/ImageLayer.cpp,
+	  src/osgPlugins/osgVolume/Property.cpp,
+	  src/osgPlugins/osgVolume/ScalarProperty.cpp,
+	  src/osgPlugins/osgVolume/SwitchProperty.cpp: Added support for
+	  osgVolume::Property classes
+
+2009-01-29 17:19  robert
+
+	* src/osgPlugins/osgVolume/ImageLayer.cpp,
+	  src/osgPlugins/osgVolume/VolumeTile.cpp: Fixed handling of files
+	  with event callbacks on them.
+
+2009-01-29 16:38  robert
+
+	* examples/osgcluster/CMakeLists.txt: From Jean-Sebastien Guay,
+	  added missing windows socket library
+
+2009-01-29 15:37  robert
+
+	* CMakeModules/FindOSG.cmake: Updated FindOSG.cmake from the
+	  version used by Present3D as this is more up to date.
+
+2009-01-29 15:32  robert
+
+	* ChangeLog: Update ChangeLog
+
 2009-01-29 15:07  robert
 
 	* NEWS.txt: Updated news

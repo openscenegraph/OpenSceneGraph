@@ -645,9 +645,6 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgVolume::ScalarProperty)
 	I_DeclaringFile("osgVolume/Property");
 	I_BaseType(osgVolume::Property);
-	I_Constructor0(____ScalarProperty,
-	               "",
-	               "");
 	I_Constructor2(IN, const std::string &, scaleName, IN, float, value,
 	               ____ScalarProperty__C5_std_string_R1__float,
 	               "",
@@ -706,6 +703,9 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::ScalarProperty)
 	          __C5_osg_Uniform_P1__getUniform,
 	          "Get the underlying uniform. ",
 	          "");
+	I_ProtectedConstructor0(____ScalarProperty,
+	                        "",
+	                        "");
 	I_SimpleProperty(osg::Uniform *, Uniform, 
 	                 __osg_Uniform_P1__getUniform, 
 	                 0);

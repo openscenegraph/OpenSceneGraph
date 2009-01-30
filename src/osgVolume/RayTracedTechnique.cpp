@@ -131,7 +131,7 @@ void RayTracedTechnique::init()
 
         // get shaders from source
 
-        osg::Shader* vertexShader = osgDB::readShaderFile(osg::Shader::VERTEX, "volume.vert");
+        osg::Shader* vertexShader = osgDB::readShaderFile(osg::Shader::VERTEX, "shaders/volume.vert");
         if (vertexShader)
         {
             program->addShader(vertexShader);
@@ -181,7 +181,7 @@ void RayTracedTechnique::init()
                 texture1D->setImage(tf->getImage());    
                 stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
 
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_tf_mip.frag");
+                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf_mip.frag");
                 if (fragmentShader)
                 {
                     program->addShader(fragmentShader);
@@ -198,7 +198,7 @@ void RayTracedTechnique::init()
             }
             else
             {    
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_mip.frag");
+                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_mip.frag");
                 if (fragmentShader)
                 {
                     program->addShader(fragmentShader);
@@ -228,7 +228,7 @@ void RayTracedTechnique::init()
                 osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
                 stateset->addUniform(tfTextureSampler);
 
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_tf_iso.frag");
+                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf_iso.frag");
                 if (fragmentShader)
                 {
                     program->addShader(fragmentShader);
@@ -241,13 +241,17 @@ void RayTracedTechnique::init()
             }
             else
             {    
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_iso.frag");
+                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_iso.frag");
                 if (fragmentShader)
                 {
+                    osg::notify(osg::NOTICE)<<"Shader found"<<std::endl;
+                
                     program->addShader(fragmentShader);
                 }
                 else
                 {
+                    osg::notify(osg::NOTICE)<<"No Shader found"<<std::endl;
+
                     #include "Shaders/volume_iso_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_iso_frag));
                 }
@@ -312,7 +316,7 @@ void RayTracedTechnique::init()
                 osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
                 stateset->addUniform(tfTextureSampler);
 
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume_tf.frag");
+                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf.frag");
                 if (fragmentShader)
                 {
                     program->addShader(fragmentShader);
@@ -327,7 +331,7 @@ void RayTracedTechnique::init()
             else
             {    
 
-                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "volume.frag");
+                osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume.frag");
                 if (fragmentShader)
                 {
                     program->addShader(fragmentShader);

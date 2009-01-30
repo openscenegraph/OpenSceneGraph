@@ -97,6 +97,7 @@ void TransferFunction1D::assign(const ValueMap& vcm, bool updateMinMaxRange)
                 _colors[i] = color;
             }
         }
+        _image->dirty();
         return;
     }
     
@@ -135,5 +136,7 @@ void TransferFunction1D::assign(const ValueMap& vcm, bool updateMinMaxRange)
         
         lower_itr = upper_itr;      
     }
+
+    _image->dirty();
 }
 

@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.7.7
+OpenSceneGraph Library 2.7.9
 
-359 Contributors:
+364 Contributors:
 
 Firstname Surname
 -----------------
@@ -10,9 +10,9 @@ Marco Jez
 Paul Martz
 Mike Weiblen
 Eric Wing
-Brede Johansen
 Stephan Huber
 Mathias Fröhlich
+Brede Johansen
 Geoff Michel
 Farshid Lashkari
 Bob Kuehne
@@ -27,46 +27,47 @@ Trajce Nikolov
 Mike Wittman
 Wojciech Lewandowski
 Colin McDonald
+Andy Skinner
+Roger James
 Pavel Moloshtan
 Tom Jolley
-Roger James
 Jeremy Moles
-Andy Skinner
+Paul Melis
 Norman Vine
+Mattias Helsing
+Jason Beverage
 Art Tevs
 Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
 Michael Platings
-Jason Beverage
+Cedric Pinson
 Adrian Egli
-Paul Melis
 Olaf Flebbe
+Jason Daly
+J.P. Delport
 Gideon May
 Don Tidrow
+Sherman Wilcox
 Romano José Magacho da Silva
+Roland Smeenk
 Per Fahlberg
 Michael Gronager
 Mathieu Marache
 Joakim Simonsson
-J.P. Delport
 David Spilling
 Daniel Sjölie
 Chris Hanson
-Sherman Wilcox
 Philip Lowman
-Jason Daly
+Alberto Luaces
 Melchior Franz
 Chris Denham
-Cedric Pinson
 Serge Lages
-Roland Smeenk
 Joran Jessurun
 Frederic Marmond
 David Fries
 Boris Bralo
-Alberto Luaces
 Yefei He
 Tim Moore
 Terry Welsh
@@ -84,7 +85,6 @@ Ben Discoe
 Andreas Ekstrand
 Sasa Bistrovic
 Neil Groves
-Mattias Helsing
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
@@ -99,17 +99,22 @@ Vivek Rajan
 Thibault Genessay
 Sean Spicer
 Ravi Mathur
+Peter Hrenka
 Nikolaus Hanekamp
 Neil Salter
 Mihai Radu
 Michael Hartman
 Luc Frauciel
+Lionel Lagarde
 Laurens Voerman
 David Guthrie
 Corbin Holtz
 Brad Christiansen
+Blasius Czink
 Toshiyuki Takahei
 Thom DeCarlo
+Tatsuhiro Nishioka
+Sukender 
 Simon Julier
 Sebastien Grignard
 Romano Magacho
@@ -123,18 +128,16 @@ Daniel Larimer
 Csaba Halasz
 Colin Dunlop
 Bruce Clay
-Blasius Czink
 Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
 Tony Horrobin
-Tatsuhiro Nishioka
 Sohey Yamamoto
+Rudolf Wiedemann
 Riccardo Corsi
 Ralf Habacker
 Rafa Gaitan
 Phil Atkin
-Peter Hrenka
 Mattias Linde
 Maria Ten
 Ken Sewell
@@ -163,13 +166,12 @@ Tugkan Calapoglu
 Tim Daoust
 Terrex 
 Sylvain Marie
-Sukender 
 Steve Lunsford
 Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
+Sergey Leontyev
 Sebastian Messerschmidt
-Rudolf Wiedemann
 Ralf Kern
 Perry Miller
 Nathan Monteleone
@@ -180,7 +182,6 @@ Maya Leonard
 Max Bandazian
 Mathew May
 Martijn Kragtwijk
-Lionel Lagarde
 Kevin Moiule
 Keith Steffen
 Katharina Plugge
@@ -196,8 +197,10 @@ Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
 Ferdi Smit
+Ewe Woessner
 Erik den Dekker
 Edgar Ellis
+Don Leich
 David Ergo
 Daniel Trstenjak
 Christophe Loustaunau
@@ -229,13 +232,13 @@ Simon Hammett
 Sid Byce
 Shuxing Xiao
 Shane Arnott
-Sergey Leontyev
 Sebastien Kuntz
 Ruth Lang
 Ronny Krueger
 Robert Swain
 Rob Bloemkool
 Rick Pingry
+Rick Appleton
 Ricard Schmidt
 Rene Molenaar
 Reinhard Sainitzer
@@ -249,6 +252,7 @@ Philipp Mächler
 Paul Palumbo
 Paul Obermeier
 Paul Fredrikson
+Patrick Hartling
 Parag Chaudhur
 Panagiotis Papadakos
 Panagiotis Koutsourakis
@@ -291,6 +295,7 @@ Kristopher Bixler
 Karsten Weiss
 Karl Heijdenberg
 Jutta Sauer
+Julian Scheid
 Josh Portway
 John Tan
 John Grant
@@ -317,8 +322,8 @@ Frank Warmerdam
 Frank Lindeman
 Frank Lichtenheld
 Ferdinand Cornelissen
+Fabien Lavignotte
 Fabien Dachicourt
-Ewe Woessner
 Emmanuel Roche
 Edmond Gheury
 Ed Ralston

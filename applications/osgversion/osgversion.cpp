@@ -249,11 +249,7 @@ std::string typoCorrection(const std::string& name)
     if (name=="Antione") return "Antoine";
     if (name=="Antonoine") return "Antoine";
     if (name=="Atr")  return "Art";
-    if (name=="Osfeld")  return "Osfield";
-    if (name=="Rucard")  return "Richard";
     if (name=="Baverage") return "Beverage";
-    if (name=="Lagrade") return "Lagarde";
-    if (name=="Lucas") return "Luaces";
     if (name=="Bistroviae") return "Bistrovic";
     if (name=="Callue")  return "Callu";
     if (name=="Christaiansen") return "Christiansen";
@@ -272,8 +268,8 @@ std::string typoCorrection(const std::string& name)
     if (name=="Fredrick") return "Frederic";
     if (name=="Fredric") return "Frederic";
     if (name=="Froechlich") return "Fröhlich";
-    if (name=="Froehlich") return "Fröhlich";
     if (name=="Froehilch") return "Fröhlich";
+    if (name=="Froehlich") return "Fröhlich";
     if (name=="Froelich") return "Fröhlich";    
     if (name=="Froenlich") return "Fröhlich";
     if (name=="FrÃ¶hlich") return "Fröhlich";
@@ -283,15 +279,13 @@ std::string typoCorrection(const std::string& name)
     if (name=="Garret") return "Garrett";
     if (name=="Geof") return "Geoff";
     if (name=="Giatan") return "Gaitan";
-    if (name=="Rolad") return "Roland";
     if (name=="Gronenger") return "Gronager";
     if (name=="Gronger") return "Gronager";
     if (name=="Hebelin") return "Herbelin";
-    if (name=="Wedner") return "Weidner";
+    if (name=="Heirtlein") return "Hertlein";
+    if (name=="Heirtlein") return "Hertlein";
+    if (name=="Heirtlein") return "Hertlein";
     if (name=="Hertleinm") return "Hertlein";
-    if (name=="Heirtlein") return "Hertlein";
-    if (name=="Heirtlein") return "Hertlein";
-    if (name=="Heirtlein") return "Hertlein";
     if (name=="Hertlien") return "Hertlein";
     if (name=="Hi") return "He";
     if (name=="Hooper") return "Hopper";
@@ -310,14 +304,16 @@ std::string typoCorrection(const std::string& name)
     if (name=="J") return "José";
     if (name=="Keuhne") return "Kuehne";
     if (name=="Kheune") return "Kuehne";
+    if (name=="Lagrade") return "Lagarde";
     if (name=="Larshkari") return "Lashkari";
     if (name=="Lashakari") return "Lashkari";
     if (name=="Lashari") return "Lashkari";
     if (name=="Lasharki") return "Lashkari";
     if (name=="Laskari") return "Lashkari";
     if (name=="Leandowski" || name=="Lawandowski")  return "Lewandowski";
-    if (name=="Lweandowski")  return "Lewandowski";
+    if (name=="Lucas") return "Luaces";
     if (name=="Lugi") return "Luigi";
+    if (name=="Lweandowski")  return "Lewandowski";
     if (name=="Machler") return "Mächler";
     if (name=="Macro") return "Marco";
     if (name=="Maechler") return "Mächler";
@@ -343,12 +339,16 @@ std::string typoCorrection(const std::string& name)
     if (name=="Olad") return "Olaf";
     if (name=="Olar") return "Olaf";
     if (name=="Oritz") return "Ortiz";
+    if (name=="Osfeld")  return "Osfield";
     if (name=="Osfied") return "Osfield";
     if (name=="Pail") return "Paul";
     if (name=="Rajce") return "Trajce";
     if (name=="Randal") return "Randall";
     if (name=="Robet") return "Robert";
     if (name=="Rodger") return "Roger";
+    if (name=="Rolad") return "Roland";
+    if (name=="Rucard")  return "Richard";
+    if (name=="Sekender") return "Sukender";
     if (name=="Sewel") return "Sewell";
     if (name=="Simmonson") return "Simonsson";
     if (name=="Simmonsson") return "Simonsson";
@@ -369,16 +369,18 @@ std::string typoCorrection(const std::string& name)
     if (name=="Takehei") return "Takahei";
     if (name=="Tarantilils") return "Tarantilis";
     if (name=="Trastenjak") return "Trstenjak";
+    if (name=="Urlich") return "Ulrich";
     if (name=="Vines") return "Vine";
     if (name=="Waldrom")  return "Waldron";
+    if (name=="Wedner") return "Weidner";
     if (name=="Weidemann") return "Wiedemann";
     if (name=="Wieblen") return "Weiblen";
+    if (name=="Woesnner") return "Woessner";
     if (name=="Wojiech" || name=="Wojchiech")  return "Wojciech";
     if (name=="Xennon") return "Hanson";
     if (name=="Yefrei") return "Yefei";
     if (name=="Yfei") return "Yefei";
-    if (name=="Urlich") return "Ulrich";
-    
+    if (name=="Jean-Sebastein") return "Jean-Sebastien";
     return name;
 }
 
@@ -390,12 +392,24 @@ void nameCorrection(NamePair& name)
         name.second = "Hein";
     }
     
+    if (name.first=="Mattias" && name.second=="Fröhlich")
+    {
+        name.first = "Mathias";
+        name.second = "Fröhlich";
+    }
+    
+    if (name.first=="Mathias"  && name.second=="Helsing")
+    {
+        name.first = "Mattias";
+        name.second = "Helsing";
+    }
+    
     if (name.first=="Bjorn" && name.second=="Hein")
     {
         name.first = "Björn";
         name.second = "Hein";
     }
-    
+
     if (name.first=="Erik" && name.second=="van")
     {
         name.first = "Erik";

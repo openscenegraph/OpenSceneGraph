@@ -89,5 +89,4 @@ char volume_tf_mip_frag[] = "uniform sampler3D baseTexture;\n"
                             "    if (fragColor.w>1.0) fragColor.w = 1.0; \n"
                             "    if (fragColor.w<AlphaFuncValue) discard;\n"
                             "    gl_FragColor = fragColor;\n"
-                            "}\n"
-                            "\n";
+                            "}\n";

@@ -126,5 +126,4 @@ char volume_tf_iso_frag[] = "uniform sampler3D baseTexture;\n"
                             "   // we didn't find an intersection so just discard fragment\n"
                             "   discard;\n"
                             "\n"
-                            "}\n"
-                            "\n";
+                            "}\n";

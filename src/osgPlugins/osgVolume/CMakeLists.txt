@@ -10,6 +10,7 @@ SET(TARGET_SRC
     CompositeProperty.cpp
     SwitchProperty.cpp
     ScalarProperty.cpp
+    TransferFunctionProperty.cpp
     PropertyAdjustmentCallback.cpp
 )
 

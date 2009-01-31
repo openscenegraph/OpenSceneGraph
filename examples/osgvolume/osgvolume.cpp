@@ -1269,7 +1269,7 @@ int main( int argc, char **argv )
         osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
         osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
         osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0);
-        osgVolume::TransferFunctionProperty* tfp = new osgVolume::TransferFunctionProperty(transferFunction.get());
+        osgVolume::TransferFunctionProperty* tfp = transferFunction.valid() ? new osgVolume::TransferFunctionProperty(transferFunction.get()) : 0;
 
         {
             // Standard

@@ -27,6 +27,11 @@ TransferFunction::TransferFunction()
 {
 }
 
+TransferFunction::TransferFunction(const TransferFunction& tf, const CopyOp& copyop):
+    Object(tf,copyop)
+{
+}
+
 TransferFunction::~TransferFunction()
 {
 }
@@ -39,6 +44,18 @@ TransferFunction1D::TransferFunction1D()
 {
     _minimum = 0.0;
     _maximum = 1.0;
+}
+
+TransferFunction1D::TransferFunction1D(const TransferFunction1D& tf, const CopyOp& copyop):
+    TransferFunction(tf,copyop),
+    _minimum(tf._minimum),
+    _maximum(tf._maximum)
+{
+    allocate(tf._colors.size());
+    for(unsigned int i=0; i<_colors.size(); ++i)
+    {
+        _colors[i] = tf._colors[i];
+    }
 }
 
 void TransferFunction1D::setInputRange(float minimum, float maximum)

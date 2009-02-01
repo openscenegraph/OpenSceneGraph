@@ -27,11 +27,16 @@ namespace osg {
   * Typically uses include mapping heights to colours when contouring terrain, 
   * or mapping intensities to colours when volume rendering.
 */
-class OSG_EXPORT TransferFunction : public osg::Referenced
+class OSG_EXPORT TransferFunction : public osg::Object
 {
     public :
     
         TransferFunction();
+
+       /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        TransferFunction(const TransferFunction& tf, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Object(osg, TransferFunction)
 
         osg::Image* getImage() { return _image.get(); }
         const osg::Image* getImage() const { return _image.get(); }
@@ -53,6 +58,11 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
     
         TransferFunction1D();
     
+       /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        TransferFunction1D(const TransferFunction1D& tf, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Object(osg, TransferFunction1D)
+
         void setInputRange(float minimum, float maximum);
         
         void setMinimum(float value) { _minimum = value; }

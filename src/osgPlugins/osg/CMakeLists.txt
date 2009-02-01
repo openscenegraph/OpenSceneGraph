@@ -84,6 +84,7 @@ SET(TARGET_SRC
     Texture.cpp
     TextureCubeMap.cpp
     TextureRectangle.cpp
+    TransferFunction.cpp
     Transform.cpp
     Uniform.cpp
     VertexProgram.cpp

@@ -1,6 +1,8 @@
 
 #include <osgParticle/FluidFrictionOperator>
 
+#include <osg/io_utils>
+
 #include <osgDB/Registry>
 #include <osgDB/Input>
 #include <osgDB/Output>
@@ -25,6 +27,7 @@ bool FluidFrictionOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
     bool itAdvanced = false;
 
     float f;
+    osg::Vec3 w;
 
     if (fr[0].matchWord("fluidDensity")) {
         if (fr[1].getFloat(f)) {
@@ -50,6 +53,14 @@ bool FluidFrictionOperator_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
 
+    if (fr[0].matchWord("wind")) {
+        if (fr[1].getFloat(w.x()) && fr[2].getFloat(w.y()) && fr[3].getFloat(w.z())) {
+            aop.setWind(w);
+            fr += 4;
+            itAdvanced = true;
+        }
+    }
+
     return itAdvanced;
 }
 
@@ -58,6 +69,9 @@ bool FluidFrictionOperator_writeLocalData(const osg::Object &obj, osgDB::Output 
     const osgParticle::FluidFrictionOperator &aop = static_cast<const osgParticle::FluidFrictionOperator &>(obj);
     fw.indent() << "fluidDensity " << aop.getFluidDensity() << std::endl;
     fw.indent() << "fluidViscosity " << aop.getFluidViscosity() << std::endl;
-    fw.indent() << "overrideRadius " << aop.getOverrideRadius();
+    fw.indent() << "overrideRadius " << aop.getOverrideRadius() << std::endl;
+    
+    osg::Vec3 w = aop.getWind();
+    fw.indent() << "wind " << w << std::endl;
     return true;
 }

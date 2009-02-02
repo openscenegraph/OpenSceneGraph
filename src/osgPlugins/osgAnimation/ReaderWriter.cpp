@@ -75,8 +75,6 @@ bool Bone_readLocalData(Object& obj, Input& fr)
     }
 
     bone.setBindMatrixInBoneSpace( osg::Matrix(att) * osg::Matrix::translate(pos));
-//     if (bone.getUpdateCallback() && bone.getUpdateCallback()->getName().empty() && bone.getUpdateCallback()->getNestedCallback())
-//         bone.setUpdateCallback(bone.getUpdateCallback()->getNestedCallback()); // skip the default callback build in constructor of Bone
     return iteratorAdvanced;
 }
 
@@ -496,7 +494,7 @@ RegisterDotOsgWrapperProxy g_atkUpdateBoneProxy
 (
     new osgAnimation::Bone::UpdateBone,
     "osgAnimation::UpdateBone",
-    "Object osgAnimation::UpdateBone",
+    "Object NodeCallback osgAnimation::UpdateBone",
     &UpdateBone_readLocalData,
     &UpdateBone_writeLocalData,
     DotOsgWrapper::READ_AND_WRITE
@@ -519,7 +517,7 @@ RegisterDotOsgWrapperProxy g_atkUpdateSkeletonProxy
 (
     new osgAnimation::Skeleton::UpdateSkeleton,
     "osgAnimation::UpdateSkeleton",
-    "Object osgAnimation::UpdateSkeleton",
+    "Object NodeCallback osgAnimation::UpdateSkeleton",
     &UpdateSkeleton_readLocalData,
     &UpdateSkeleton_writeLocalData,
     DotOsgWrapper::READ_AND_WRITE
@@ -542,7 +540,7 @@ RegisterDotOsgWrapperProxy g_atkUpdateTransformProxy
 (
     new osgAnimation::UpdateTransform,
     "osgAnimation::UpdateTransform",
-    "Object osgAnimation::UpdateTransform",
+    "Object NodeCallback osgAnimation::UpdateTransform",
     &UpdateTransform_readLocalData,
     &UpdateTransform_writeLocalData,
     DotOsgWrapper::READ_AND_WRITE

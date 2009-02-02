@@ -13,6 +13,7 @@
 */
 
 #include <osgAnimation/Timeline>
+#include <limits.h>
 
 using namespace osgAnimation;
 
@@ -27,7 +28,7 @@ Timeline::Timeline()
     _initFirstFrame = false;
     _previousFrameEvaluated = 0;
     _evaluating = 0;
-    _numberFrame = -1; // something like infinity
+    _numberFrame = UINT_MAX; // something like infinity
     setName("Timeline");
 }
 
@@ -42,6 +43,6 @@ Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op) : osg::Object(nc, o
     _initFirstFrame = false;
     _previousFrameEvaluated = 0;
     _evaluating = 0;
-    _numberFrame = -1; // something like infinity
+    _numberFrame = UINT_MAX; // something like infinity
     setName("Timeline");
 }

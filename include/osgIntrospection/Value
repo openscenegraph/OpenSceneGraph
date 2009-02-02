@@ -177,9 +177,22 @@ namespace osgIntrospection
         struct Instance: Instance_base
         {
             Instance(T data): _data(data) {}
+            
             virtual Instance_base *clone() const { return new Instance<T>(*this); }
             virtual ~Instance() {}
             T _data;
+            
+        protected:
+        
+            Instance& operator = (const Instance& rhs)
+            {
+                if (&rhs!=this) 
+                {
+                    _data = rhs._data;
+                }
+                return *this;
+            }
+            
         };
 
         // Base class for storage of Instance objects. Actually three
@@ -233,7 +246,7 @@ namespace osgIntrospection
                 _ref_inst = new Instance<T &>(vl->_data);
                 _const_ref_inst = new Instance<const T &>(vl->_data);
             }
-
+            
             virtual Instance_box_base *clone() const
             {
                 Instance_box<T> *new_inbox = new Instance_box<T>();
@@ -261,6 +274,9 @@ namespace osgIntrospection
 
         private:
             bool nullptr_;
+
+            Instance_box& operator = (const Instance_box&) { return *this; }
+
         };
 
         // Generic instance box for pointer values. Unlike Instance_box<>, 

@@ -46,6 +46,10 @@ class WriteValue : public osg::ConstValueVisitor
         virtual void apply(const Vec2& v) { _o << v; }
         virtual void apply(const Vec3& v) { _o << v; }
         virtual void apply(const Vec4& v) { _o << v; }
+
+    protected:
+    
+        WriteValue& operator = (const WriteValue&) { return *this; }
 };
 
 
@@ -129,6 +133,10 @@ struct VertexAttribComparitor
         }
     }
 
+protected:
+
+    VertexAttribComparitor& operator = (const VertexAttribComparitor&) { return *this; }    
+
 };
 
 class RemapArray : public osg::ArrayVisitor
@@ -163,6 +171,10 @@ class RemapArray : public osg::ArrayVisitor
         virtual void apply(osg::Vec2Array& array) { remap(array); }
         virtual void apply(osg::Vec3Array& array) { remap(array); }
         virtual void apply(osg::Vec4Array& array) { remap(array); }
+
+protected:
+
+        RemapArray& operator = (const RemapArray&) { return *this; }
 };
 
 struct MyTriangleOperator

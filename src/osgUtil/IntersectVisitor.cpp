@@ -418,6 +418,11 @@ struct TriangleHit
     const osg::Vec3*    _v2;        
     float               _r3;
     const osg::Vec3*    _v3;        
+
+protected:
+
+    TriangleHit& operator = (const TriangleHit&) { return *this; }
+
 };
 
 

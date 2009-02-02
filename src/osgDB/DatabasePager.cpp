@@ -257,6 +257,10 @@ public:
     std::set<osg::ref_ptr<osg::Texture> >   _textureSet;
     std::set<osg::ref_ptr<osg::Drawable> >  _drawableSet;
     osg::ref_ptr<osg::KdTreeBuilder>        _kdTreeBuilder;
+    
+protected:
+
+    FindCompileableGLObjectsVisitor& operator = (const FindCompileableGLObjectsVisitor&) { return *this; }
 };
 
 

@@ -1348,6 +1348,11 @@ class CopyArrayToPointsVisitor : public osg::ArrayVisitor
         }
         
         EdgeCollapse::PointList& _pointList;
+        
+        
+    protected:
+    
+        CopyArrayToPointsVisitor& operator = (const CopyArrayToPointsVisitor&) { return *this; }
 };
 
 class CopyVertexArrayToPointsVisitor : public osg::ArrayVisitor
@@ -1400,6 +1405,11 @@ class CopyVertexArrayToPointsVisitor : public osg::ArrayVisitor
         }
         
         EdgeCollapse::PointList& _pointList;
+
+    protected:
+    
+        CopyVertexArrayToPointsVisitor& operator = (const CopyVertexArrayToPointsVisitor&) { return *this; }
+
 };
 
 void EdgeCollapse::setGeometry(osg::Geometry* geometry, const Simplifier::IndexList& protectedPoints)
@@ -1567,6 +1577,10 @@ class CopyPointsToArrayVisitor : public osg::ArrayVisitor
         
         EdgeCollapse::PointList& _pointList;
         unsigned int _index;
+        
+    protected:
+    
+        CopyPointsToArrayVisitor& operator = (CopyPointsToArrayVisitor&) { return *this; }
 };
 
 class NormalizeArrayVisitor : public osg::ArrayVisitor
@@ -1633,6 +1647,10 @@ class CopyPointsToVertexArrayVisitor : public osg::ArrayVisitor
         }
         
         EdgeCollapse::PointList& _pointList;
+        
+    protected:
+    
+        CopyPointsToVertexArrayVisitor& operator = (CopyPointsToArrayVisitor&) { return *this; }
 };
 
 

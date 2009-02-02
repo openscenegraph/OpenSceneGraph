@@ -68,6 +68,9 @@ namespace osgIntrospection
         inline bool isInOut() const { return isIn() && isOut(); }
 
     private:
+
+        ParameterInfo& operator = (const ParameterInfo&) { return *this; }
+
         std::string _name;
         const Type& _type;
         int attribs_;

@@ -920,6 +920,10 @@ struct ActivateTransparencyOnType
     }
 
     const std::type_info&  _t;
+    
+protected:
+
+    ActivateTransparencyOnType& operator = (const ActivateTransparencyOnType&) { return *this; }
 };
 
 struct DeactivateTransparencyOnType
@@ -938,6 +942,10 @@ struct DeactivateTransparencyOnType
     }
 
     const std::type_info&  _t;
+    
+protected:
+
+    DeactivateTransparencyOnType& operator = (const DeactivateTransparencyOnType&) { return *this; }
 };
 
 void SphereSegment::setSurfaceColor(const osg::Vec4& c)
@@ -1190,6 +1198,10 @@ namespace SphereSegmentIntersector
         }
 
         VertexArray& _vertices;
+
+    protected:
+    
+        SortFunctor& operator = (const SortFunctor&) { return *this; }
     };
 
 
@@ -2600,6 +2612,10 @@ namespace SphereSegmentIntersector
         {
             return _lowerOutside ? _plane.distance(v) : -_plane.distance(v) ;
         }
+    
+    protected:
+        
+        AzimPlaneIntersector& operator = (const AzimPlaneIntersector&) { return *this; }
     };
 
     struct ElevationIntersector
@@ -2737,6 +2753,10 @@ namespace SphereSegmentIntersector
 
             return _lowerOutside ? computedElev-_elev : _elev-computedElev ;
         }
+        
+    protected:
+    
+        ElevationIntersector& operator = (const ElevationIntersector&) { return *this; }
 
     };
 
@@ -2863,6 +2883,10 @@ namespace SphereSegmentIntersector
             return _tif._radius-v.length();
         }
 
+
+    protected:
+    
+        RadiusIntersector& operator = (const RadiusIntersector&) { return *this; }
 
     };
 }

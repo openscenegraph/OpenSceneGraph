@@ -92,6 +92,9 @@ namespace osgIntrospection
         virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;
         
     private:
+
+        ConstructorInfo& operator = (const ConstructorInfo&) { return *this; }
+
         const Type& _declarationType;
         ParameterInfoList _params;
         bool _explicit;

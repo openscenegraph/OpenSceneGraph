@@ -288,6 +288,8 @@ namespace osgIntrospection
 
     private:
         const Type& _type;
+
+        PropertyTypeAttribute& operator = (const PropertyTypeAttribute&) { return *this; }
     };
 
     /// Attribute for overriding the type of an index (of an indexed 
@@ -313,6 +315,9 @@ namespace osgIntrospection
         }
 
     private:
+    
+        IndexTypeAttribute& operator = (const IndexTypeAttribute&) { return *this; }
+    
         int _wi;
         const Type& _type;
     };

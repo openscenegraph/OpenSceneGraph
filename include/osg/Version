@@ -20,9 +20,9 @@ extern "C" {
 
 
 #define OPENSCENEGRAPH_MAJOR_VERSION    2
-#define OPENSCENEGRAPH_MINOR_VERSION    7
+#define OPENSCENEGRAPH_MINOR_VERSION    8
 #define OPENSCENEGRAPH_PATCH_VERSION    9
-#define OPENSCENEGRAPH_SOVERSION        54
+#define OPENSCENEGRAPH_SOVERSION        55
 
 /**
   * osgGetVersion() returns the library version number.

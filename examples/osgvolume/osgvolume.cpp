@@ -716,7 +716,7 @@ osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename)
     
     std::cout<<"Reading transfer function "<<filename<<std::endl;
 
-    osg::TransferFunction1D::ValueMap valueMap;
+    osg::TransferFunction1D::ColorMap colorMap;
     osgDB::ifstream fin(foundFile.c_str());
     while(fin)
     {
@@ -725,18 +725,18 @@ osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename)
         if (fin) 
         {
             std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
-            valueMap[value] = osg::Vec4(red,green,blue,alpha);
+            colorMap[value] = osg::Vec4(red,green,blue,alpha);
         }
     }
     
-    if (valueMap.empty())
+    if (colorMap.empty())
     {
         std::cout<<"Error: No values read from transfer function file: "<<filename<<std::endl;
         return 0;
     }
     
     osg::TransferFunction1D* tf = new osg::TransferFunction1D;
-    tf->assign(valueMap, true);
+    tf->assign(colorMap);
     
     return tf;
 }
@@ -850,6 +850,23 @@ int main( int argc, char **argv )
     while (arguments.read("--tf",tranferFunctionFile))
     {
         transferFunction = readTransferFunctionFile(tranferFunctionFile);
+    }
+    
+    while(arguments.read("--test"))
+    {
+        transferFunction = new osg::TransferFunction1D;
+        transferFunction->setColor(0.0, osg::Vec4(1.0,0.0,0.0,0.0));
+        transferFunction->setColor(0.5, osg::Vec4(1.0,1.0,0.0,0.5));
+        transferFunction->setColor(1.0, osg::Vec4(0.0,0.0,1.0,1.0));
+    }
+
+    while(arguments.read("--test2"))
+    {
+        transferFunction = new osg::TransferFunction1D;
+        transferFunction->setColor(0.0, osg::Vec4(1.0,0.0,0.0,0.0));
+        transferFunction->setColor(0.5, osg::Vec4(1.0,1.0,0.0,0.5));
+        transferFunction->setColor(1.0, osg::Vec4(0.0,0.0,1.0,1.0));
+        transferFunction->assign(transferFunction->getColorMap());
     }
 
     unsigned int numSlices=500;
@@ -975,7 +992,7 @@ int main( int argc, char **argv )
             osgDB::ifstream fin(transfer_filename.c_str());
             if (fin)
             {
-                osg::TransferFunction1D::ValueMap valueMap;
+                osg::TransferFunction1D::ColorMap colorMap;
                 float value = 0.0;
                 while(fin && value<=1.0)
                 {
@@ -983,21 +1000,21 @@ int main( int argc, char **argv )
                     fin >> red >> green >> blue >> alpha;
                     if (fin) 
                     {
-                        valueMap[value] = osg::Vec4(red/255.0f,green/255.0f,blue/255.0f,alpha/255.0f);
+                        colorMap[value] = osg::Vec4(red/255.0f,green/255.0f,blue/255.0f,alpha/255.0f);
                         std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")";
-                        std::cout<<"  ("<<valueMap[value]<<")"<<std::endl;
+                        std::cout<<"  ("<<colorMap[value]<<")"<<std::endl;
                     }
                     value += 1/255.0;
                 }
 
-                if (valueMap.empty())
+                if (colorMap.empty())
                 {
                     std::cout<<"Error: No values read from transfer function file: "<<transfer_filename<<std::endl;
                     return 0;
                 }
 
                 transferFunction = new osg::TransferFunction1D;
-                transferFunction->assign(valueMap, true);
+                transferFunction->assign(colorMap);
             }
         }
 

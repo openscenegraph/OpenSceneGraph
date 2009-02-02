@@ -285,7 +285,7 @@ class OSGTERRAIN_EXPORT ContourLayer : public Layer
         virtual const osg::Image* getImage() const { return _tf.valid() ? _tf->getImage() : 0; }
 
 
-        virtual unsigned int getNumColumns() const { return _tf.valid() ? _tf->getNumberCellsX() : 0; }
+        virtual unsigned int getNumColumns() const { return _tf.valid() ? _tf->getNumberImageCells() : 0; }
         virtual unsigned int getNumRows() const { return _tf.valid() ? 1 : 0;  }
 
         virtual bool getValue(unsigned int i, unsigned int j, float& value) const;

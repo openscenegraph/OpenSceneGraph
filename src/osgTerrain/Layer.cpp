@@ -328,15 +328,19 @@ bool ContourLayer::transform(float offset, float scale)
 
     osg::notify(osg::NOTICE)<<"ContourLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
 
-    for(unsigned int i=0; i<_tf->getNumberCellsX(); ++i)
+    osg::TransferFunction1D::ColorMap newColorMap = _tf->getColorMap();
+    for(osg::TransferFunction1D::ColorMap::iterator itr = newColorMap.begin();
+        itr != newColorMap.end();
+        ++itr)
     {
-        osg::Vec4 value = _tf->getValue(i);
+        osg::Vec4& value = itr->second;
         value.r() = offset + value.r()* scale;
         value.g() = offset + value.g()* scale;
         value.b() = offset + value.b()* scale;
         value.a() = offset + value.a()* scale;
-        _tf->setValue(i, value);
     }
+
+    _tf->assign(newColorMap);
 
     dirty();
 
@@ -347,7 +351,7 @@ bool ContourLayer::getValue(unsigned int i, unsigned int j, float& value) const
 {
     if (!_tf) return false;
 
-    const osg::Vec4& v = _tf->getValue(i);
+    const osg::Vec4& v = _tf->getPixelValue(i);
     value = v[0];
 
     return true;
@@ -357,7 +361,7 @@ bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) co
 {
     if (!_tf) return false;
 
-    const osg::Vec4& v = _tf->getValue(i);
+    const osg::Vec4& v = _tf->getPixelValue(i);
     value.x() = v.x();
     value.y() = v.y();
 
@@ -368,7 +372,7 @@ bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec3& value) co
 {
     if (!_tf) return false;
 
-    const osg::Vec4& v = _tf->getValue(i);
+    const osg::Vec4& v = _tf->getPixelValue(i);
     value.x() = v.x();
     value.y() = v.y();
     value.z() = v.z();
@@ -380,7 +384,7 @@ bool ContourLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value) co
 {
     if (!_tf) return false;
 
-    value = _tf->getValue(i);
+    value = _tf->getPixelValue(i);
 
     return true;
 }

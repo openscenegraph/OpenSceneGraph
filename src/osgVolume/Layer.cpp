@@ -398,7 +398,7 @@ struct ApplyTransferFunctionOperator
         
     inline void luminance(float l) const
     {
-        osg::Vec4 c = _tf->getInterpolatedValue(l);
+        osg::Vec4 c = _tf->getColor(l);
         //std::cout<<"l = "<<l<<" c="<<c<<std::endl;
         *(_data++) = (unsigned char)(c[0]*255.0f + 0.5f);
         *(_data++) = (unsigned char)(c[1]*255.0f + 0.5f);

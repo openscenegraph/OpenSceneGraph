@@ -59,6 +59,9 @@ class DrawShapeVisitor : public ConstShapeVisitor
         const TessellationHints*    _hints;
         
     protected:
+
+        DrawShapeVisitor& operator = (const DrawShapeVisitor&) { return *this; }
+
         enum SphereHalf { SphereTopHalf, SphereBottomHalf };
     
         // helpers for apply( Cylinder | Sphere | Capsule )
@@ -1055,6 +1058,11 @@ class ComputeBoundShapeVisitor : public ConstShapeVisitor
         virtual void apply(const CompositeShape&);
 
         BoundingBox&    _bb;
+
+    protected:
+
+        ComputeBoundShapeVisitor& operator = (const ComputeBoundShapeVisitor&) { return *this; }
+
 };
 
 
@@ -1322,6 +1330,9 @@ class PrimitiveShapeVisitor : public ConstShapeVisitor
         const TessellationHints*  _hints;
 
     private:
+
+        PrimitiveShapeVisitor& operator = (const PrimitiveShapeVisitor&) { return *this; }
+
         // helpers for apply( Cylinder | Sphere | Capsule )
         void createCylinderBody(unsigned int numSegments, float radius, float height, const osg::Matrix& matrix);
         void createHalfSphere(unsigned int numSegments, unsigned int numRows, float radius, int which, float zOffset, const osg::Matrix& matrix);

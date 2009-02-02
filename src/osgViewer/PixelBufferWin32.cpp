@@ -189,7 +189,6 @@ class TemporaryWindow: public osg::Referenced
 {
 public:
     TemporaryWindow();
-    TemporaryWindow(const TemporaryWindow &);
 
     HWND  getHandle() const    { return _handle; }
     HDC   getDC() const        { return _dc; }
@@ -199,6 +198,7 @@ public:
 
 protected:
     ~TemporaryWindow();
+    TemporaryWindow(const TemporaryWindow &) {}
     TemporaryWindow &operator=(const TemporaryWindow &) { return *this; }
 
     void create();
@@ -219,11 +219,6 @@ TemporaryWindow::TemporaryWindow()
     _instance(0)
 {
     create();
-}
-
-TemporaryWindow::TemporaryWindow(const TemporaryWindow &)
-{
-    throw "This is TemporaryWindow, please don't copy me!"; 
 }
 
 void TemporaryWindow::create()

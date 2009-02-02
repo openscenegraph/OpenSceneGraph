@@ -428,6 +428,10 @@ class CopyVertexArrayToPointsVisitor : public osg::ArrayVisitor
         }
         
         EdgeCollector::PointList& _pointList;
+        
+    protected:
+    
+        CopyVertexArrayToPointsVisitor& operator = (const CopyVertexArrayToPointsVisitor&) { return *this; }
 };
 
 EdgeCollector::~EdgeCollector()

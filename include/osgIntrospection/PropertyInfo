@@ -360,6 +360,9 @@ namespace osgIntrospection
         virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;
 
     private:
+    
+        PropertyInfo& operator = (const PropertyInfo&) { return *this; }
+
         const Type& _declarationType;
         const Type& _ptype;
         std::string _name;

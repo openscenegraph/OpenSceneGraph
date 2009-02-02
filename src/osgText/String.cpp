@@ -54,6 +54,10 @@ struct look_ahead_iterator
     const std::string&      _string;
     unsigned int            _index;
     unsigned char           _nullCharacter;
+    
+protected:
+
+    look_ahead_iterator& operator = (const look_ahead_iterator&) { return *this; }
 };
 
 String::Encoding findEncoding(look_ahead_iterator& charString,String::Encoding overrideEncoding)

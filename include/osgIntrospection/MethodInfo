@@ -114,6 +114,9 @@ namespace osgIntrospection
         inline Value invoke() const;
 
     private:
+
+        MethodInfo& operator = (const MethodInfo&) { return *this; }
+
         inline std::string strip_namespace(const std::string& s) const;
 
         virtual void getInheritedProviders(CustomAttributeProviderList& providers) const;

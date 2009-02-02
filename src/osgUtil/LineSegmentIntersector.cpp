@@ -45,7 +45,11 @@ namespace LineSegmentIntersectorUtils
         float               _r2;
         const osg::Vec3*    _v2;        
         float               _r3;
-        const osg::Vec3*    _v3;        
+        const osg::Vec3*    _v3;
+        
+    protected:
+    
+        TriangleIntersection& operator = (const TriangleIntersection&) { return *this; }
     };
 
     typedef std::multimap<float,TriangleIntersection> TriangleIntersections;

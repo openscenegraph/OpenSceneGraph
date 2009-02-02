@@ -117,7 +117,7 @@ public:
         }
     };
 
-    Edge() {}
+    Edge(): ib_(0), ie_(0), ibs_(0), ies_(0), duplicate_(false) {}
     Edge(Vertex_index ib, Vertex_index ie) : ib_(ib), ie_(ie), ibs_(osg::minimum(ib, ie)), ies_(osg::maximum(ib, ie)), duplicate_(false) {}
 
     // first endpoint
@@ -150,6 +150,13 @@ private:
 class Triangle
 {
 public:
+
+    Triangle():
+        a_(0),
+        b_(0),
+        c_(0) {}
+        
+    
     Triangle(Vertex_index a, Vertex_index b, Vertex_index c, osg::Vec3Array *points)
         :    a_(a), 
             b_(b), 
@@ -159,6 +166,21 @@ public:
         edge_[0] = Edge(a_, b_);
         edge_[1] = Edge(b_, c_);
         edge_[2] = Edge(c_, a_);
+    }
+
+    Triangle& operator = (const Triangle& rhs)
+    {
+        if (&rhs==this) return *this;
+        
+        a_ = rhs.a_;
+        b_ = rhs.b_;
+        c_ = rhs.c_;
+        cc_ = rhs.cc_;
+        edge_[0]  = rhs.edge_[0];
+        edge_[1]  = rhs.edge_[1];
+        edge_[2]  = rhs.edge_[2];
+        
+        return *this;
     }
 
     inline Vertex_index a() const { return a_; }
@@ -320,6 +342,7 @@ public:
     }
     
 private:
+
 
     bool intersect(const osg::Vec2 p1,const osg::Vec2 p2,const osg::Vec2 p3,const osg::Vec2 p4) const
     {

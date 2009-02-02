@@ -194,6 +194,9 @@ public:
 //    friend void swap(_mytype & Left, _mytype & Right)    { Left.swap(Right); }
 
 protected:
+
+    graph_array& operator = (const graph_array&) { return *this; }
+
     size_t                m_NbArcs;
     std::vector<node>    m_Nodes;
 };

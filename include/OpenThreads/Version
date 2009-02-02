@@ -19,8 +19,8 @@
 extern "C" {
 
 #define OPENTHREADS_MAJOR_VERSION 2
-#define OPENTHREADS_MINOR_VERSION 3
-#define OPENTHREADS_PATCH_VERSION 1
+#define OPENTHREADS_MINOR_VERSION 4
+#define OPENTHREADS_PATCH_VERSION 0
 #define OPENTHREADS_SOVERSION 11
 
 /** OpenThreadsGetVersion() returns the library version number.

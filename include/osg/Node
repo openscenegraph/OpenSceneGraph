@@ -166,14 +166,18 @@ class OSG_EXPORT Node : public Object
 
         /** Convenience method that sets the update callback of the node if it doesn't exist, or nest it into the existing one. */
         inline void addUpdateCallback(NodeCallback* nc) {
-            if (_updateCallback.valid()) _updateCallback->addNestedCallback(nc);
-            else setUpdateCallback(nc);
+            if (nc != NULL) {
+                if (_updateCallback.valid()) _updateCallback->addNestedCallback(nc);
+                else setUpdateCallback(nc);
+            }
         }
 
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
         inline void removeUpdateCallback(NodeCallback* nc) {
-            if (_updateCallback == nc) setUpdateCallback(nc->getNestedCallback());        // replace the callback by the nested one
-            else _updateCallback->removeNestedCallback(nc);
+            if (nc != NULL && _updateCallback.valid()) {
+                if (_updateCallback == nc) setUpdateCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                else _updateCallback->removeNestedCallback(nc);
+            }
         }
 
         /** Get the number of Children of this node which require Update traversal,
@@ -192,14 +196,18 @@ class OSG_EXPORT Node : public Object
 
         /** Convenience method that sets the event callback of the node if it doesn't exist, or nest it into the existing one. */
         inline void addEventCallback(NodeCallback* nc) {
-            if (_eventCallback.valid()) _eventCallback->addNestedCallback(nc);
-            else setEventCallback(nc);
+            if (nc != NULL) {
+                if (_eventCallback.valid()) _eventCallback->addNestedCallback(nc);
+                else setEventCallback(nc);
+            }
         }
 
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
         inline void removeEventCallback(NodeCallback* nc) {
-            if (_eventCallback == nc) setEventCallback(nc->getNestedCallback());        // replace the callback by the nested one
-            else _eventCallback->removeNestedCallback(nc);
+            if (nc != NULL && _eventCallback.valid()) {
+                if (_eventCallback == nc) setEventCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                else _eventCallback->removeNestedCallback(nc);
+            }
         }
 
         /** Get the number of Children of this node which require Event traversal,
@@ -218,14 +226,18 @@ class OSG_EXPORT Node : public Object
 
         /** Convenience method that sets the cull callback of the node if it doesn't exist, or nest it into the existing one. */
         inline void addCullCallback(NodeCallback* nc) {
-            if (_cullCallback.valid()) _cullCallback->addNestedCallback(nc);
-            else setCullCallback(nc);
+            if (nc != NULL) {
+                if (_cullCallback.valid()) _cullCallback->addNestedCallback(nc);
+                else setCullCallback(nc);
+            }
         }
 
         /** Convenience method that removes a given callback from a node, even if that callback is nested. There is no error return in case the given callback is not found. */
         inline void removeCullCallback(NodeCallback* nc) {
-            if (_cullCallback == nc) setCullCallback(nc->getNestedCallback());        // replace the callback by the nested one
-            else _cullCallback->removeNestedCallback(nc);
+            if (nc != NULL && _cullCallback.valid()) {
+                if (_cullCallback == nc) setCullCallback(nc->getNestedCallback());        // replace the callback by the nested one
+                else _cullCallback->removeNestedCallback(nc);
+            }
         }
 
         /** Set the view frustum/small feature culling of this node to be active or inactive.

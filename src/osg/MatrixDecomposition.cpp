@@ -449,7 +449,7 @@ namespace MatrixDecomposition
 #define cycle(a,p)  if (p) {a[3]=a[0]; a[0]=a[1]; a[1]=a[2]; a[2]=a[3];}\
         else   {a[3]=a[2]; a[2]=a[1]; a[1]=a[0]; a[0]=a[3];}
 
-        Quat p;
+        Quat p = {0.0, 0.0, 0.0, 1.0};
         double ka[4];
         int i, turn = -1;
         ka[X] = k->x; ka[Y] = k->y; ka[Z] = k->z;

@@ -140,6 +140,9 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
         unsigned int                        _viewerSceneChildNum;
         unsigned int                        _numBlocks;
         double                              _blockMultiplier;
+        
+        float                               _statsWidth;
+        float                               _statsHeight;
     
  
 };

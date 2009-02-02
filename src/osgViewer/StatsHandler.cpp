@@ -40,7 +40,9 @@ StatsHandler::StatsHandler():
     _cameraSceneChildNum(0),
     _viewerSceneChildNum(0),
     _numBlocks(8),
-    _blockMultiplier(10000.0)
+    _blockMultiplier(10000.0),
+    _statsWidth(1280.0f),
+    _statsHeight(1024.0f)
 {
     _camera = new osg::Camera;
     _camera->setRenderer(new Renderer(_camera.get()));
@@ -273,9 +275,10 @@ void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
     _camera->setGraphicsContext(window);
 
     _camera->setViewport(0, 0, window->getTraits()->width, window->getTraits()->height);
+    
     _camera->setRenderOrder(osg::Camera::POST_RENDER, 10);
 
-    _camera->setProjectionMatrix(osg::Matrix::ortho2D(0,window->getTraits()->width,0,window->getTraits()->height));
+    _camera->setProjectionMatrix(osg::Matrix::ortho2D(0.0,_statsWidth,0.0,_statsHeight));
     _camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
     _camera->setViewMatrix(osg::Matrix::identity());
 
@@ -1008,7 +1011,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     float startBlocks = 150.0f;
     float characterSize = 20.0f;
 
-    osg::Vec3 pos(leftPos,1000.0f,0.0f);
+    osg::Vec3 pos(leftPos, _statsHeight-24.0f,0.0f);
 
     osg::Vec4 colorFR(1.0f,1.0f,1.0f,1.0f);
     osg::Vec4 colorFRAlpha(1.0f,1.0f,1.0f,0.5f);
@@ -1095,7 +1098,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         geode->addDrawable(createBackgroundRectangle(
             pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-            _camera->getViewport()->width() - 2 * backgroundMargin,
+            _statsWidth - 2 * backgroundMargin,
             (3 + 4.5 * cameras.size()) * characterSize + 2 * backgroundMargin,
             backgroundColor) );
 
@@ -1199,7 +1202,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         // Stats line graph
         {
             pos.y() -= (backgroundSpacing + 2 * backgroundMargin);
-            float width = _camera->getViewport()->width() - 4 * backgroundMargin;
+            float width = _statsWidth - 4 * backgroundMargin;
             float height = 5 * characterSize;
 
             // Create a stats graph and add any stats we want to track with it.
@@ -1242,7 +1245,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
                 pos.y() -= (characterSize + backgroundSpacing);
 
                 geode->addDrawable(createBackgroundRectangle(    pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-                                                                _camera->getViewport()->width() - 2 * backgroundMargin,
+                                                                _statsWidth - 2 * backgroundMargin,
                                                                 characterSize + 2 * backgroundMargin,
                                                                 backgroundColor));
 

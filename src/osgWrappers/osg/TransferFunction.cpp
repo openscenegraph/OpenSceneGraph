@@ -62,12 +62,12 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction)
 	I_Method0(osg::Image *, getImage,
 	          Properties::NON_VIRTUAL,
 	          __osg_Image_P1__getImage,
-	          "",
+	          "Get the image that is used for passing the transfer function data to the GPU. ",
 	          "");
 	I_Method0(const osg::Image *, getImage,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Image_P1__getImage,
-	          "",
+	          "Get the const image that is used for passing the transfer function data to the GPU. ",
 	          "");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __osg_Image_P1__getImage, 
@@ -125,7 +125,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)
 	          Properties::NON_VIRTUAL,
 	          __void__allocate__unsigned_int,
 	          "allocate the osg::Image with specified dimension. ",
-	          "The Image tracks the color map, and is used to represent the transfer function when download to the graphics card. ");
+	          "The Image tracks the color map, and is used to represent the transfer function when download to GPU. ");
 	I_MethodWithDefaults1(void, clear, IN, const osg::Vec4 &, color, osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f),
 	                      Properties::NON_VIRTUAL,
 	                      __void__clear__C5_osg_Vec4_R1,
@@ -139,7 +139,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TransferFunction1D)
 	I_Method0(unsigned int, getNumberImageCells,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getNumberImageCells,
-	          "Get the number of image cells that are assigned to the represent the transfer function when download to the graphics card. ",
+	          "Get the number of image cells that are assigned to the represent the transfer function when download to the GPU. ",
 	          "");
 	I_MethodWithDefaults3(void, setColor, IN, float, v, , IN, const osg::Vec4 &, color, , IN, bool, updateImage, true,
 	                      Properties::NON_VIRTUAL,

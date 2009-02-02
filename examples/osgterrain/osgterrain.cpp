@@ -831,15 +831,17 @@ int main(int argc, char** argv)
 
             osg::ref_ptr<osg::TransferFunction1D> tf = new osg::TransferFunction1D;
             
-            tf->setInputRange(minValue, maxValue);
+            unsigned int numCells = 6;
+            float delta = (maxValue-minValue)/float(numCells-1);
+            float v = minValue;
             
             tf->allocate(6);
-            tf->setValue(0, osg::Vec4(1.0,1.0,1.0,1.0));
-            tf->setValue(1, osg::Vec4(1.0,0.0,1.0,1.0));
-            tf->setValue(2, osg::Vec4(1.0,0.0,0.0,1.0));
-            tf->setValue(3, osg::Vec4(1.0,1.0,0.0,1.0));
-            tf->setValue(4, osg::Vec4(0.0,1.0,1.0,1.0));
-            tf->setValue(5, osg::Vec4(0.0,1.0,0.0,1.0));
+            tf->setColor(v, osg::Vec4(1.0,1.0,1.0,1.0)); v += delta;
+            tf->setColor(v, osg::Vec4(1.0,0.0,1.0,1.0)); v += delta;
+            tf->setColor(v, osg::Vec4(1.0,0.0,0.0,1.0)); v += delta;
+            tf->setColor(v, osg::Vec4(1.0,1.0,0.0,1.0)); v += delta;
+            tf->setColor(v, osg::Vec4(0.0,1.0,1.0,1.0)); v += delta;
+            tf->setColor(v, osg::Vec4(0.0,1.0,0.0,1.0));
             
             osg::notify(osg::NOTICE)<<"--tf "<<minValue<<" "<<maxValue<<std::endl;
 

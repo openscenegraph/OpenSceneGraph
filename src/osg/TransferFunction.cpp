@@ -42,118 +42,175 @@ TransferFunction::~TransferFunction()
 //
 TransferFunction1D::TransferFunction1D()
 {
-    _minimum = 0.0;
-    _maximum = 1.0;
 }
 
 TransferFunction1D::TransferFunction1D(const TransferFunction1D& tf, const CopyOp& copyop):
-    TransferFunction(tf,copyop),
-    _minimum(tf._minimum),
-    _maximum(tf._maximum)
+    TransferFunction(tf,copyop)
 {
-    allocate(tf._colors.size());
-    for(unsigned int i=0; i<_colors.size(); ++i)
-    {
-        _colors[i] = tf._colors[i];
-    }
-}
-
-void TransferFunction1D::setInputRange(float minimum, float maximum)
-{
-    _minimum = minimum;
-    _maximum = maximum;
+    allocate(tf.getNumberImageCells());
+    assign(_colorMap);
 }
 
 void TransferFunction1D::allocate(unsigned int numX)
 {
-    _colors.resize(numX);
     _image = new osg::Image;
-    _image->setImage(numX,1,1,GL_RGBA, GL_RGBA, GL_FLOAT, (unsigned char*)&_colors[0], osg::Image::NO_DELETE);
+    _image->allocateImage(numX,1,1,GL_RGBA, GL_FLOAT);
+    if (!_colorMap.empty()) assign(_colorMap);
 }
 
 void TransferFunction1D::clear(const osg::Vec4& color)
 {
-    for(Colors::iterator itr = _colors.begin();
-        itr != _colors.end();
-        ++itr)
+    ColorMap newColours;
+    newColours[getMinimum()] = color;
+    newColours[getMaximum()] = color;
+    
+    assign(newColours);
+}
+
+void TransferFunction1D::assignToImage(float lower_v, const osg::Vec4& lower_c, float upper_v, const osg::Vec4& upper_c)
+{
+    float minimum = _colorMap.begin()->first;
+    float maximum = _colorMap.rbegin()->first;
+    float endPos = float(getNumberImageCells()-1);
+    float multiplier = endPos/(maximum - minimum);
+    osg::Vec4* imageData = reinterpret_cast<osg::Vec4*>(_image->data());
+    
+    float lower_iPos = (lower_v - minimum)*multiplier; 
+    float upper_iPos = (upper_v - minimum)*multiplier;
+
+    float start_iPos = ceilf(lower_iPos);
+    if (start_iPos<0.0f) start_iPos=0.0f;
+    if (start_iPos>endPos) return;
+
+    float end_iPos = floorf(upper_iPos);
+    if (end_iPos<0.0f) return;
+    if (end_iPos>endPos) end_iPos=endPos;
+
+    Vec4 delta_c = (upper_c-lower_c)/(upper_iPos-lower_iPos);
+    unsigned int i=static_cast<unsigned int>(start_iPos);
+    for(float iPos=start_iPos;
+        iPos<=end_iPos; 
+        ++iPos, ++i)
     {
-        *itr = color;
+        imageData[i] = lower_c + delta_c*(iPos-lower_v);
     }
+    
+    _image->dirty();
 }
 
 
-void TransferFunction1D::assign(const ValueMap& vcm, bool updateMinMaxRange)
+void TransferFunction1D::setColor(float v, const osg::Vec4& color, bool updateImage)
 {
-    if (vcm.empty()) return;
-    
-    if (updateMinMaxRange)
+    if (!updateImage)
     {
-        _minimum = vcm.begin()->first;
-        _maximum = vcm.rbegin()->first;
+        _colorMap[v] = color;
+        return;
     }
+
+    if (!_image) allocate(1024);
     
-    if (_colors.empty()) allocate(1024);
-    
-    
-    float multiplier = float(_colors.size()-1)/(_maximum - _minimum);
-    
-    if (vcm.size()==1)
+    if (_colorMap.empty() || v<getMinimum() || v>getMaximum()) 
     {
-        osg::Vec4 color = vcm.begin()->second;
-        if (_minimum == _maximum)
+        _colorMap[v] = color;
+
+        assign(_colorMap);
+        return;
+    }
+
+    _colorMap[v] = color;
+
+    ColorMap::iterator itr = _colorMap.find(v);
+ 
+    if (itr != _colorMap.begin())
+    {
+        ColorMap::iterator previous_itr = itr;
+        --previous_itr;
+        
+        assignToImage(previous_itr->first, previous_itr->second, v, color); 
+    }
+
+    ColorMap::iterator next_itr = itr;
+    ++next_itr;
+
+    if (next_itr != _colorMap.end())
+    {
+        assignToImage(v, color, next_itr->first, next_itr->second); 
+    }
+}
+
+osg::Vec4 TransferFunction1D::getColor(float v) const
+{
+    if (_colorMap.empty()) return osg::Vec4(1.0f,1.0f,1.0f,1.0f);
+    if (_colorMap.size()==1) return _colorMap.begin()->second;
+
+    if (v <= _colorMap.begin()->first) return _colorMap.begin()->second;
+    if (v >= _colorMap.rbegin()->first) return _colorMap.rbegin()->second;
+
+    // need to implement
+    std::pair<ColorMap::const_iterator, ColorMap::const_iterator> range = _colorMap.equal_range(v);
+      
+    // we have an identical match
+    if (v == range.first->first) return range.first->second;
+    
+    // range.first will be at the next element after v, so move it before.
+    --range.first;
+    
+    float vBefore = range.first->first;
+    const osg::Vec4& cBefore = range.first->second;
+
+    float vAfter = range.second->first;
+    const osg::Vec4& cAfter = range.second->second;
+    
+    float r = (v-vBefore)/(vAfter-vBefore);
+
+    return cBefore*(1.0f-r) + cAfter*r;
+}
+
+
+void TransferFunction1D::assign(const ColorMap& newColours)
+{
+    _colorMap = newColours;
+    
+    updateImage();
+}
+
+void TransferFunction1D::updateImage()
+{
+    if (_colorMap.empty()) return;
+
+    if (!_image || _image->data()==0) allocate(1024);
+    
+    osg::Vec4* imageData = reinterpret_cast<osg::Vec4*>(_image->data());
+
+    if (_colorMap.size()==1)
+    {
+        osg::Vec4 color = _colorMap.begin()->second;
+
+        for(int i=0; i<_image->s(); ++i)
         {
-            clear(color);
-        }
-        else
-        {
-            float iPos = (vcm.begin()->first - _minimum)*multiplier;
-            if (iPos>=0.0f || iPos<float(_colors.size()))
-            {
-                float iFloor = floorf(iPos);
-                unsigned int i = (unsigned int)(iFloor);
-                _colors[i] = color;
-            }
+            imageData[i] = color;
         }
         _image->dirty();
         return;
     }
     
-    ValueMap::const_iterator lower_itr = vcm.begin();
-    ValueMap::const_iterator upper_itr = lower_itr;
+    ColorMap::const_iterator lower_itr = _colorMap.begin();
+    ColorMap::const_iterator upper_itr = lower_itr;
     ++upper_itr;
     
     for(;
-        upper_itr != vcm.end();
+        upper_itr != _colorMap.end();
         ++upper_itr)
     {
         float lower_v = lower_itr->first;
         const osg::Vec4& lower_c = lower_itr->second;
         float upper_v = upper_itr->first;
         const osg::Vec4& upper_c = upper_itr->second;
-        
-        float lower_iPos = (lower_v - _minimum)*multiplier; 
-        float upper_iPos = (upper_v - _minimum)*multiplier;
 
-        float start_iPos = ceilf(lower_iPos);
-        if (start_iPos<0.0f) start_iPos=0.0f;
-        if (start_iPos>float(_colors.size()-1)) break;
-        
-        float end_iPos = floorf(upper_iPos);
-        if (end_iPos<0.0f) continue;
-        if (end_iPos>float(_colors.size()-1)) end_iPos=_colors.size()-1;
-
-        Vec4 delta_c = (upper_c-lower_c)/(upper_iPos-lower_iPos);
-        unsigned int i=static_cast<unsigned int>(start_iPos);
-        for(float iPos=start_iPos;
-            iPos<=end_iPos; 
-            ++iPos, ++i)
-        {
-            _colors[i] = lower_c + delta_c*(iPos-lower_v);
-        }
+        assignToImage(lower_v, lower_c, upper_v, upper_c);
         
         lower_itr = upper_itr;      
     }
 
     _image->dirty();
 }
-

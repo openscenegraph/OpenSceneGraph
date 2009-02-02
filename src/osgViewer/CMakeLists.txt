@@ -115,10 +115,16 @@ ELSE(WIN32)
         )
         
         IF(OSGVIEWER_USE_XRANDR)
+        
             ADD_DEFINITIONS(-DOSGVIEWER_USE_XRANDR)
             SET(LIB_PRIVATE_HEADERS ${LIB_PRIVATE_HEADERS} ${XRANDR_INCLUDE_DIRS} )
-#            SET(LIB_EXTRA_LIBS ${X11_Xrandr_LIB} ${LIB_EXTRA_LIBS})
-            SET(LIB_EXTRA_LIBS ${XRANDR_LIBRARIES} ${LIB_EXTRA_LIBS})
+
+            IF  (X11_Xrandr_LIB)
+                SET(LIB_EXTRA_LIBS ${X11_Xrandr_LIB} ${LIB_EXTRA_LIBS})
+            ELSE(X11_Xrandr_LIB)
+                SET(LIB_EXTRA_LIBS ${XRANDR_LIBRARIES} ${LIB_EXTRA_LIBS})
+            ENDIF(X11_Xrandr_LIB)
+            
         ENDIF(OSGVIEWER_USE_XRANDR)
 
         # X11 on Apple requires X11 library plus OpenGL linking hack on Leopard

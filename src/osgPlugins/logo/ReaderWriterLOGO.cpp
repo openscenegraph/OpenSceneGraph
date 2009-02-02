@@ -140,7 +140,7 @@ class Logos: public osg::Drawable
                     float yi = place[i][3];
                     for( p = _logos[i].begin(); p != _logos[i].end(); p++ )
                     {
-                        osg::Image *img = *p;
+                        osg::Image *img = (*p).get();
                         x = place[i][0] + xi * img->s();
                         if( i == Center || i == UpperLeft || i == UpperRight || i == UpperCenter)
                             y += yi * img->t();

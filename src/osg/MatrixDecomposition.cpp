@@ -61,6 +61,17 @@ namespace MatrixDecomposition
 
     static _HMatrix mat_id = {{1,0,0,0},{0,1,0,0},{0,0,1,0},{0,0,0,1}};
 
+    #define SQRTHALF (0.7071067811865475244)
+    static Quat qxtoz = {0,SQRTHALF,0,SQRTHALF};
+    static Quat qytoz = {SQRTHALF,0,0,SQRTHALF};
+    static Quat qppmm = { 0.5, 0.5,-0.5,-0.5};
+    static Quat qpppp = { 0.5, 0.5, 0.5, 0.5};
+    static Quat qmpmm = {-0.5, 0.5,-0.5,-0.5};
+    static Quat qpppm = { 0.5, 0.5, 0.5,-0.5};
+    static Quat q0001 = { 0.0, 0.0, 0.0, 1.0};
+    static Quat q1000 = { 1.0, 0.0, 0.0, 0.0};
+
+
     /* Return product of quaternion q by scalar w. */
     Quat Qt_Scale(Quat q, double w)
     {
@@ -245,7 +256,7 @@ namespace MatrixDecomposition
          * |w| is greater than 1/2, which is as small as a largest component can be.
          * Otherwise, the largest diagonal entry corresponds to the largest of |x|,
          * |y|, or |z|, one of which must be larger than |w|, and at least 1/2. */
-        Quat qu;
+        Quat qu = q0001;
         double tr, s;
 
         tr = mat[X][X] + mat[Y][Y]+ mat[Z][Z];
@@ -425,16 +436,6 @@ namespace MatrixDecomposition
 
     /******* Spectral Axis Adjustment *******/
 
-#define SQRTHALF (0.7071067811865475244)
-    static Quat qxtoz = {0,SQRTHALF,0,SQRTHALF};
-    static Quat qytoz = {SQRTHALF,0,0,SQRTHALF};
-    static Quat qppmm = { 0.5, 0.5,-0.5,-0.5};
-    static Quat qpppp = { 0.5, 0.5, 0.5, 0.5};
-    static Quat qmpmm = {-0.5, 0.5,-0.5,-0.5};
-    static Quat qpppm = { 0.5, 0.5, 0.5,-0.5};
-    static Quat q0001 = { 0.0, 0.0, 0.0, 1.0};
-    static Quat q1000 = { 1.0, 0.0, 0.0, 0.0};
-
     /* Given a unit quaternion, q, and a scale vector, k, find a unit quaternion, p,
      * which permutes the axes and turns freely in the plane of duplicate scale
      * factors, such that q p has the largest possible w component, i.e. the
@@ -449,7 +450,7 @@ namespace MatrixDecomposition
 #define cycle(a,p)  if (p) {a[3]=a[0]; a[0]=a[1]; a[1]=a[2]; a[2]=a[3];}\
         else   {a[3]=a[2]; a[2]=a[1]; a[1]=a[0]; a[0]=a[3];}
 
-        Quat p = {0.0, 0.0, 0.0, 1.0};
+        Quat p = q0001;
         double ka[4];
         int i, turn = -1;
         ka[X] = k->x; ka[Y] = k->y; ka[Z] = k->z;

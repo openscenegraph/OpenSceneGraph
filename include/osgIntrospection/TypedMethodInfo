@@ -15,6 +15,12 @@
 #ifndef OSGINTROSPECTION_TYPEDMETHODINFO_
 #define OSGINTROSPECTION_TYPEDMETHODINFO_
 
+#if defined(_MSC_VER)
+    // disable for this header the VS warning C4121 : "alignment of a member was sensitive to packing"
+    #pragma warning( push )
+    #pragma warning( disable : 4121)
+#endif
+
 #include <osgIntrospection/MethodInfo>
 #include <osgIntrospection/Reflection>
 #include <osgIntrospection/Utility>
@@ -3900,6 +3906,10 @@ namespace osgIntrospection
     };
 
 }
+
+#if defined(_MSC_VER)
+    #pragma warning( pop )
+#endif
 
 #endif
 

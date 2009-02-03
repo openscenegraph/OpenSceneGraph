@@ -394,7 +394,7 @@ protected:
     InteractiveImageHandler() {}
 
     InteractiveImageHandler(const InteractiveImageHandler&,const osg::CopyOp& = osg::CopyOp::SHALLOW_COPY):
-         osgGA::GUIEventHandler(), osg::Drawable::CullCallback() {}
+         osg::Object(), osgGA::GUIEventHandler(), osg::Drawable::CullCallback() {}
 
     bool mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const;
 

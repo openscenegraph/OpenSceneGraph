@@ -78,7 +78,9 @@ class PrintVisitor : public NodeVisitor
         virtual void apply(LOD& node)           { apply((Group&)node); }
 
    protected:
-    
+
+        PrintVisitor& operator = (const PrintVisitor&) { return *this; }
+
         std::ostream& _out;
         int _indent;
         int _step;

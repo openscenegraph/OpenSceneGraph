@@ -17,8 +17,17 @@ namespace lwo2
 
 // basic types
 
-struct ID4 {
-	char id[4];
+struct ID4
+{
+    ID4()
+    {
+        id[0] = 0;
+        id[1] = 0;
+        id[2] = 0;
+        id[3] = 0;
+    }
+    
+    char id[4];
 };
 
 typedef signed char			I1;

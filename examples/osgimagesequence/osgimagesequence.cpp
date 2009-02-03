@@ -230,6 +230,10 @@ protected:
         }
         
         ImageStreamList& _imageStreamList;
+        
+    protected:
+    
+        FindImageStreamsVisitor& operator = (const FindImageStreamsVisitor&) { return *this; }
     };
 
 

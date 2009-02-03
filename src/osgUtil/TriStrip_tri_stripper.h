@@ -82,7 +82,28 @@ class triangle
 {
 public:
     triangle();
+    
+    triangle(const triangle& tri):
+        m_A(tri.m_A),
+        m_B(tri.m_B),
+        m_C(tri.m_C),
+        m_StripID(tri.m_StripID)
+    {
+    }
+    
     triangle(const indice A, const indice B, const indice C);
+    
+    triangle& operator = (const triangle& tri)
+    {
+        if (&tri==this) return *this;
+        
+        m_A = tri.m_A;
+        m_B = tri.m_B;
+        m_C = tri.m_C;
+        m_StripID = tri.m_StripID;
+        
+        return *this;
+    }
 
     void SetStripID(const size_t StripID);
 

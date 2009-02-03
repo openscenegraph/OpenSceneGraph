@@ -631,6 +631,10 @@ namespace osgIntrospection
                     values.push_back(Value(i->first).convertTo(_itype));
                 }
             }
+
+        protected:
+        
+            Indexer& operator = (const Indexer&) { return *this; }
         };
 
         struct Remover: PropertyRemover

@@ -386,7 +386,7 @@ class DataConverter
                 _swapBytes = !_swapBytes;
             }
             
-            cameraPacket._masterKilled = readUInt();
+            cameraPacket._masterKilled = readUInt()!=0;
             
             read(cameraPacket._matrix);
             read(cameraPacket._frameStamp);

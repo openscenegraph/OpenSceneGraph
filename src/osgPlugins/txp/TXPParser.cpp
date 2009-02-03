@@ -293,6 +293,9 @@ public:
         traverse(group);
     }
 protected:
+
+    FindEmptyGroupsVisitor& operator = (const FindEmptyGroupsVisitor&) { return *this; }
+
     osg::NodeList& _nl;
 };
 

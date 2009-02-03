@@ -70,6 +70,9 @@ class ValueVisitor : public osg::ValueVisitor {
             _fout << v[0] << ' ' << v[1] << ' ' << v[2]; 
         }
     private:
+
+        ValueVisitor& operator = (const ValueVisitor&) { return *this; }
+
         std::ostream&    _fout;
         osg::Matrix        _m;
         bool            _applyMatrix, _isNormal;
@@ -302,6 +305,9 @@ class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
         }    
     
     private:
+
+        PrimitiveIndexWriter& operator = (const PrimitiveIndexWriter&) { return *this; }
+
         std::ostream&         _fout;
         GLenum               _modeCache;
         std::vector<GLuint>  _indexCache;
@@ -309,8 +315,6 @@ class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
         bool                 _hasNormalCoords, _hasTexCoords;
         osg::Geometry*         _geo;
         unsigned int         _normalIndex;
-
-
 };
 
 

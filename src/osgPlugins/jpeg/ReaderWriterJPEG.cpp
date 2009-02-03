@@ -56,6 +56,10 @@ extern "C"
 #include <assert.h>
 #include <stdlib.h>
 
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
+    #pragma warning( disable : 4611 )
+#endif
+
 namespace osgDBJPEG
 {
 

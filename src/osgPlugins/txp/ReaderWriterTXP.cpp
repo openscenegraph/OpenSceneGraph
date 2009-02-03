@@ -652,6 +652,8 @@ public:
 
 protected:
     osg::Node* seamReplacement(osg::Node* node);
+    
+    SeamFinder& operator = (const SeamFinder&) { return *this; }
 
     int _x, _y, _lod;
     const TXPArchive::TileInfo& _info;

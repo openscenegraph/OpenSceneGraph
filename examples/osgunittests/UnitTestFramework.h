@@ -386,6 +386,29 @@ its result, and a textual description of any problems.
 class TestRecord
 {
     public:
+    
+        TestRecord() {}
+        
+        TestRecord(const TestRecord& rhs):
+            name_(rhs.name_),
+            start_(rhs.start_),
+            stop_(rhs.stop_),
+            result_(rhs.result_),
+            problem_(rhs.problem_)
+        {}
+        
+        TestRecord& operator = (const TestRecord& rhs)
+        {
+            if (&rhs==this) return *this;
+
+            name_ = rhs.name_;
+            start_ = rhs.start_;
+            stop_ = rhs.stop_;
+            result_ = rhs.result_;
+            problem_ = rhs.problem_;
+
+            return *this;
+        }
 
         void start();
         void stop();
@@ -393,8 +416,6 @@ class TestRecord
         void log(const TestErrorX& e);
         void log(const std::exception& e);
         void log(const std::string& s);
-
-        // Default copy construction and assignment are OK
 
         // FIXME: Add accessors?
 

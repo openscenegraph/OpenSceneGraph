@@ -1074,21 +1074,15 @@ bool trpgTexture::isValid() const
     switch (mode) {
     case External:
 	return (name != NULL);
-	break;
     case Local:
 	return (type != trpg_Unknown && sizeX != -1 && sizeY != -1);
-	break;
     case Global:
 	return (type != trpg_Unknown);
-	break;
     case Template:
 	return (type != trpg_Unknown && sizeX != -1 && sizeY != -1);
-	break;
     default:
 	return false;
     }
-
-    return false;
 }
 
 

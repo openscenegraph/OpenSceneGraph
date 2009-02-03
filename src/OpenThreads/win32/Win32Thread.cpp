@@ -136,8 +136,8 @@ namespace OpenThreads {
         // Print information related to thread schduling parameters.
         //
         static void PrintThreadSchedulingInfo(Thread *thread) {
-            Win32ThreadPrivateData *pd =
-                static_cast<Win32ThreadPrivateData *>(thread->_prvData);
+
+            // Win32ThreadPrivateData *pd = static_cast<Win32ThreadPrivateData *>(thread->_prvData);
 
             std::cout<<"Thread "<< thread <<" priority : ";
 

@@ -196,7 +196,7 @@ void Broadcaster::sync( void )
     unsigned int size = sizeof( SOCKADDR_IN );
     sendto( _so, (const char *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
     int err = WSAGetLastError ();
-    int *dum = (int*) _buffer;
+    if (err!=0) fprintf( stderr, "Broadcaster::sync() - error %d\n",err );
 #else
     unsigned int size = sizeof( struct sockaddr_in );
     sendto( _so, (const void *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );

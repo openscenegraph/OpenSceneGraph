@@ -290,7 +290,8 @@ bool TestRunner::visitEnter( TestSuite* pSuite )
 
 namespace osgUtx{
 
-struct isSpecified{
+struct isSpecified
+{
 
     const std::string& pTestName_;
 
@@ -299,6 +300,10 @@ struct isSpecified{
     bool operator()(const std::string& specifiedTest){
         return pTestName_.find(specifiedTest) == 0;
     }
+
+protected:
+
+    isSpecified& operator = (const isSpecified&) { return *this; }
 };
 
 }

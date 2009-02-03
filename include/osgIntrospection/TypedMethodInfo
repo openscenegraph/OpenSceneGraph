@@ -15,7 +15,7 @@
 #ifndef OSGINTROSPECTION_TYPEDMETHODINFO_
 #define OSGINTROSPECTION_TYPEDMETHODINFO_
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
     // disable for this header the VS warning C4121 : "alignment of a member was sensitive to packing"
     #pragma warning( push )
     #pragma warning( disable : 4121)

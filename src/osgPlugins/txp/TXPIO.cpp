@@ -62,6 +62,10 @@ public:
         NodeVisitor::apply(node);
     }
     osgDB::Output &_fw;
+    
+protected:
+
+    Dump2Osg& operator = (const Dump2Osg&) { return *this; }
 };
 
 

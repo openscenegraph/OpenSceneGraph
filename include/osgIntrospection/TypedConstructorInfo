@@ -32,7 +32,6 @@ namespace osgIntrospection
 
         Value createInstance(ValueList&  /*args*/) const
         {
-
             return IC::create();
         }
 

@@ -1650,7 +1650,7 @@ class CopyPointsToVertexArrayVisitor : public osg::ArrayVisitor
         
     protected:
     
-        CopyPointsToVertexArrayVisitor& operator = (CopyPointsToArrayVisitor&) { return *this; }
+        CopyPointsToVertexArrayVisitor& operator = (const CopyPointsToArrayVisitor&) { return *this; }
 };
 
 

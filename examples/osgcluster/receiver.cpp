@@ -142,7 +142,7 @@ void Receiver::sync( void )
     recvfrom( _so, (char *)_buffer, _buffer_size, 0, (sockaddr*)&saddr, &size );
 //    recvfrom(sock_Receive, szMessage, 256, 0, (sockaddr*)&addr_Cli, &clilen)
     int err = WSAGetLastError ();
-    int *dum = (int*) _buffer;
+    if (err!=0) fprintf( stderr, "Receiver::sync() - error %d\n",err );
 
     while( select( _so+1, &fdset, 0L, 0L, &tv ) )
     {

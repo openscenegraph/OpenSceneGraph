@@ -657,6 +657,7 @@ osg::Node* createSubloadWall(osg::BoundingBox& bb)
     // create the text label.
     
     osgText::Text* text = new osgText::Text;
+    text->setDataVariance(osg::Object::DYNAMIC);
     text->setFont("fonts/arial.ttf");
     text->setPosition(center);
     text->setCharacterSize(height*0.03f);

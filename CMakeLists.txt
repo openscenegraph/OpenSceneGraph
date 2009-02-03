@@ -548,6 +548,15 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     # semicolons and commas, and the use of long long. -fpermissive seems
     # to be the workaround.
     SET(OSG_AGGRESSIVE_WARNING_FLAGS -Wall -Wparentheses -Wformat=2 -Wno-long-long -Wno-import -pedantic -Wreturn-type -Wmissing-braces -Wunknown-pragmas -Wunused -fpermissive)
+
+    IF(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+
+        # disable the "warning: format not a string literal and no format arguments" emited from std library ostream support
+        SET(OSG_AGGRESSIVE_WARNING_FLAGS ${OSG_AGGRESSIVE_WARNING_FLAGS} -Wformat=0)
+
+    ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+
+
 ELSE(CMAKE_COMPILER_IS_GNUCXX)
     IF(MSVC)
         # FIXME: What are good aggressive warning flags for Visual Studio?

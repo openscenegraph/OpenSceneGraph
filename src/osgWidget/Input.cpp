@@ -165,8 +165,11 @@ bool Input::keyDown(int key, int mask, WindowManager*) {
 void Input::setCursor(Widget*) {
 }
 
-unsigned int Input::calculateBestYOffset(const std::string& s) {
-    const osgText::FontResolution fr(_text->getCharacterHeight(), _text->getCharacterHeight());
+unsigned int Input::calculateBestYOffset(const std::string& s)
+{
+
+    const osgText::FontResolution fr(static_cast<unsigned int>(_text->getCharacterHeight()),
+                                     static_cast<unsigned int>(_text->getCharacterHeight()));
 
     osgText::String utf(s);
 

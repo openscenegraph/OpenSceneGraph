@@ -20,6 +20,11 @@
 // Simple example using GLUT to create an OpenGL window and OSG for rendering.
 // Derived from osgGLUTsimple.cpp and osgkeyboardmouse.cpp
 
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
+    // disable warning "glutCreateMenu_ATEXIT_HACK' : unreferenced local function has been removed"
+    #pragma warning( disable : 4505 )
+#endif
+
 #include <iostream>
 #ifdef WIN32
 #include <windows.h>

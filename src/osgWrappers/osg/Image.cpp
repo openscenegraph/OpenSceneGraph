@@ -150,9 +150,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __void__scaleImage__int__int__int__GLenum,
 	          "Scale image to specified size and with specified data type. ",
 	          "");
-	I_Method4(void, copySubImage, IN, int, s_offset, IN, int, t_offset, IN, int, r_offset, IN, osg::Image *, source,
+	I_Method4(void, copySubImage, IN, int, s_offset, IN, int, t_offset, IN, int, r_offset, IN, const osg::Image *, source,
 	          Properties::NON_VIRTUAL,
-	          __void__copySubImage__int__int__int__osg_Image_P1,
+	          __void__copySubImage__int__int__int__C5_osg_Image_P1,
 	          "Copy a source Image into a subpart of this Image at specified position. ",
 	          "Typically used to copy to an already allocated image, such as creating a 3D image from a stack 2D images. If this Image is empty then image data is created to accomodate the source image in its offset position. If source is NULL then no operation happens, this Image is left unchanged. ");
 	I_Method1(void, setOrigin, IN, osg::Image::Origin, origin,

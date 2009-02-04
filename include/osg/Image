@@ -145,7 +145,7 @@ class OSG_EXPORT Image : public Object
           * accomodate the source image in its offset position.
           * If source is NULL then no operation happens, this Image is left unchanged.
         */
-        void copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* source);
+        void copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source);
 
 
         enum Origin 

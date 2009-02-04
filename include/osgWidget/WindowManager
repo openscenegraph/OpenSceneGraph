@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2008 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -248,7 +248,7 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
             _windowHeight = h;
         }
 
-        // Wrappers around the real calls. These only pertains to mouse buttons, 
+        // Wrappers around the real calls. These only pertains to mouse buttons,
         // particularly 3-button mice, although there are other more generic
         // "pointer" API methods.
         bool mousePushedLeft(float x, float y) {
@@ -333,7 +333,7 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
 
         bool _handleMousePushed   (float, float, bool&);
         bool _handleMouseReleased (float, float, bool&);
-        bool _haneldMouseScrolled (float, float, bool = false);
+        bool _handleMouseScrolled (float, float, bool = false);
         void _getPointerXYDiff    (float&, float&);
         void _updatePickWindow    (const WidgetList*, point_type, point_type);
 
@@ -368,7 +368,7 @@ EventInterface* WindowManager::getFirstEventInterface(T& container, Event& ev) {
         parent->getParentList(windowList);
 
         // A WindowList from getParentList includes the Window the method was called
-        // on, and the entire tree of parentage. 
+        // on, and the entire tree of parentage.
         for(WindowList::iterator i = windowList.begin(); i != windowList.end(); i++) {
             Window* window = i->get();
 

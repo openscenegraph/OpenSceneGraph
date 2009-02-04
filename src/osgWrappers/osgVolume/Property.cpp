@@ -464,14 +464,14 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::PropertyAdjustmentCallback)
 	          __int__getKeyEventCyclesBackward,
 	          "",
 	          "");
-	I_Method1(void, setKeyEventActivatesTransparenyAdjustment, IN, int, key,
+	I_Method1(void, setKeyEventActivatesTransparencyAdjustment, IN, int, key,
 	          Properties::NON_VIRTUAL,
-	          __void__setKeyEventActivatesTransparenyAdjustment__int,
+	          __void__setKeyEventActivatesTransparencyAdjustment__int,
 	          "",
 	          "");
-	I_Method0(int, getKeyEventActivatesTransparenyAdjustment,
+	I_Method0(int, getKeyEventActivatesTransparencyAdjustment,
 	          Properties::NON_VIRTUAL,
-	          __int__getKeyEventActivatesTransparenyAdjustment,
+	          __int__getKeyEventActivatesTransparencyAdjustment,
 	          "",
 	          "");
 	I_Method1(void, setKeyEventActivatesSampleDensityAdjustment, IN, int, key,
@@ -508,9 +508,9 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::PropertyAdjustmentCallback)
 	I_SimpleProperty(int, KeyEventActivatesSampleDensityAdjustment, 
 	                 0, 
 	                 __void__setKeyEventActivatesSampleDensityAdjustment__int);
-	I_SimpleProperty(int, KeyEventActivatesTransparenyAdjustment, 
-	                 __int__getKeyEventActivatesTransparenyAdjustment, 
-	                 __void__setKeyEventActivatesTransparenyAdjustment__int);
+	I_SimpleProperty(int, KeyEventActivatesTransparencyAdjustment, 
+	                 __int__getKeyEventActivatesTransparencyAdjustment, 
+	                 __void__setKeyEventActivatesTransparencyAdjustment__int);
 	I_SimpleProperty(int, KeyEventCycleBackward, 
 	                 0, 
 	                 __void__setKeyEventCycleBackward__int);

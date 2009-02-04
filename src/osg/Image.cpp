@@ -939,7 +939,7 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
     dirty();
 }
 
-void Image::copySubImage(int s_offset,int t_offset,int r_offset,osg::Image* source)
+void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source)
 {
     if (!source) return;
     if (s_offset<0 || t_offset<0 || r_offset<0) 

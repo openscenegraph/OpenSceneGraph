@@ -130,7 +130,7 @@ Atomic::operator unsigned() const
     return _value;
 #elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
     MemoryBarrier();
-    return static_cast<unsigned const volatile &>(_value);
+    return _value;
 #elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
     OSMemoryBarrier();
     return static_cast<unsigned const volatile>(_value);

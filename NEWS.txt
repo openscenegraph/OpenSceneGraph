@@ -27,7 +27,7 @@ The !OpenSceneGraph 2.8 release is the culmination of 10 years of work by the le
     * Internet browser client widget support (based on Gecko/UBrowser)
   * New plugins for loading Half-Life 2 maps and models.
   * New plugin for loaded exr, high dynamic range imagery
-  * Improvements to DatabasePager tailored for low latency paging.
+  * Improvements to !DatabasePager tailored for low latency paging.
   * Improved runtime stats collection and on screen reporting.
   * Performance improvements through optimization of matrix operations.
   * Support for the OpenGL draw instanced extension.

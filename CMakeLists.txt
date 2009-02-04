@@ -33,7 +33,7 @@ SET(OPENSCENEGRAPH_SOVERSION 55)
 
 # set to 0 when not a release candidate, non zero means that any generated 
 # svn tags will be treated as release candidates of given number
-SET(OPENSCENEGRAPH_RELEASE_CANDIDATE 0)
+SET(OPENSCENEGRAPH_RELEASE_CANDIDATE 1)
 
 SET(OPENSCENEGRAPH_VERSION ${OPENSCENEGRAPH_MAJOR_VERSION}.${OPENSCENEGRAPH_MINOR_VERSION}.${OPENSCENEGRAPH_PATCH_VERSION})
 
@@ -91,7 +91,7 @@ IF (OSG_MAINTAINER)
     SET(SVNCOMMAND svn)
     SET(SVNTRUNKDIR     http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk)
     SET(SVNTAGDIR       http://www.openscenegraph.org/svn/osg/OpenSceneGraph/tags)
-    SET(SVNBRANCHDIR    http://www.openscenegraph.org/svn/osg/OpenSceneGraph/branch)
+    SET(SVNBRANCHDIR    http://www.openscenegraph.org/svn/osg/OpenSceneGraph/branches)
 
     IF   (OPENSCENEGRAPH_SVN STREQUAL "trunk")
         SET(SVNSOURCEDIR ${SVNTRUNKDIR})

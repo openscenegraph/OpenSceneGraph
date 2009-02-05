@@ -16,6 +16,13 @@
 *  THE SOFTWARE.
 */
 
+#include <osg/Config>
+
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
+    // disable warning "'QtConcurrent::BlockSizeManager' : assignment operator could not be generated"
+    #pragma warning( disable : 4512 )
+#endif
+
 #if USE_QT4
 
     #include <QtCore/QString>

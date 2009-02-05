@@ -31,6 +31,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/EaseMotion
     ${HEADER_PATH}/Assert
     ${HEADER_PATH}/Timeline
+    ${HEADER_PATH}/RigGeometry
 )
 
 

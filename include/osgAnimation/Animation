@@ -84,7 +84,6 @@ namespace osgAnimation
 
         ~Animation() {}
   
-        std::string _name;
         double _duration;
         double _originalDuration;
         float _weight;

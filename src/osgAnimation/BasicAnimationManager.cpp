@@ -17,7 +17,20 @@
 
 using namespace osgAnimation;
 
-BasicAnimationManager::~BasicAnimationManager() {}
+BasicAnimationManager::BasicAnimationManager()
+: _lastUpdate(0.0) 
+{
+}
+
+BasicAnimationManager::BasicAnimationManager(const AnimationManagerBase& b, const osg::CopyOp& copyop) 
+: AnimationManagerBase(b,copyop)
+, _lastUpdate(0.0) 
+{
+}
+
+BasicAnimationManager::~BasicAnimationManager() 
+{
+}
 
 void BasicAnimationManager::stopAll()
 {
@@ -31,10 +44,6 @@ void BasicAnimationManager::stopAll()
     _animationsPlaying.clear();
 }
 
-BasicAnimationManager::BasicAnimationManager()
-{
-    _lastUpdate = 0; 
-}
 void BasicAnimationManager::playAnimation(Animation* pAnimation, int priority, float weight)
 {
     if (!findAnimation(pAnimation))

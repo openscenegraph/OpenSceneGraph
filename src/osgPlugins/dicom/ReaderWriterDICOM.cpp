@@ -418,7 +418,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix;
             osg::ref_ptr<osg::Image> image;
             unsigned int imageNum = 0;
-            EP_Representation pixelRep;
+            EP_Representation pixelRep = EPR_Uint8;
             int numPlanes = 0;
             GLenum pixelFormat = 0;
             GLenum dataType = 0;

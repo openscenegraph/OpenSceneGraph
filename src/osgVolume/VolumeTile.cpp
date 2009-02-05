@@ -20,6 +20,27 @@ using namespace osgVolume;
 
 /////////////////////////////////////////////////////////////////////////////////
 //
+// TileID
+//
+TileID::TileID():
+    level(-1),
+    x(-1),
+    y(-1),
+    z(-1)
+{
+}
+
+TileID::TileID(int in_level, int in_x, int in_y, int in_z):
+    level(in_level),
+    x(in_x),
+    y(in_y),
+    z(in_z)
+{
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//
 // VolumeTile
 //
 VolumeTile::VolumeTile():

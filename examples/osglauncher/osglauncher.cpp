@@ -194,6 +194,8 @@ class Xample
     {
         return app;
     }
+  private:
+      Xample() {}
 }; // end class Xample
 
 

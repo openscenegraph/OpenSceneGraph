@@ -9,6 +9,8 @@
 #define YY_FLEX_MAJOR_VERSION 2
 #define YY_FLEX_MINOR_VERSION 5
 
+#include <osg/Config>
+
 #if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
     // disable '=' : conversion from 'int' to 'char', possible loss of data style warnings
     #pragma warning( disable : 4244)

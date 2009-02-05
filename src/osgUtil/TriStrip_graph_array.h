@@ -79,6 +79,7 @@ public:
     class arc
     {
     public:
+        arc() {}
         arc & mark()                                    { m_Marker = true; return (* this); }
         arc & unmark()                                    { m_Marker = false; return (* this); }
         bool marked() const                                { return m_Marker; }

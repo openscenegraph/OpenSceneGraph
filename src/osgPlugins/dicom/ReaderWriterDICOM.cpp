@@ -448,7 +448,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 double pixelSize_x = 1.0;
                 double sliceThickness = 1.0;
                 double imagePositionPatient[3] = {0, 0, 0};
-	        double imageOrientationPatient[6] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
+                double imageOrientationPatient[6] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
                 Uint16 numOfSlices = 1;
                 
                 double value = 0.0;
@@ -507,7 +507,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 // patient position
                 for(int i=0; i<3; ++i)
                 {
-		    if (fileformat.getDataset()->findAndGetFloat64(DCM_ImagePositionPatient, imagePositionPatient[i],i).good())
+                    if (fileformat.getDataset()->findAndGetFloat64(DCM_ImagePositionPatient, imagePositionPatient[i],i).good())
                     {
                         notice()<<"Read DCM_ImagePositionPatient["<<i<<"], "<<imagePositionPatient[i]<<std::endl;
                     }
@@ -523,7 +523,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 for(int i=0; i<6; ++i)
                 {
                     double value = 0.0;
-		    if (fileformat.getDataset()->findAndGetFloat64(DCM_ImageOrientationPatient, value,i).good())
+                    if (fileformat.getDataset()->findAndGetFloat64(DCM_ImageOrientationPatient, value,i).good())
                     {
                         imageOrientationPatient[i] = value;
                         notice()<<"Read imageOrientationPatient["<<i<<"], "<<imageOrientationPatient[i]<<std::endl;

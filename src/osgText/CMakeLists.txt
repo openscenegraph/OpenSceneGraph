@@ -34,6 +34,7 @@ ADD_LIBRARY(${LIB_NAME}
     Text.cpp
     Text3D.cpp
     Version.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 LINK_INTERNAL(${LIB_NAME}     

@@ -29,6 +29,7 @@ ADD_LIBRARY(${LIB_NAME}
     Terrain.cpp
     GeometryTechnique.cpp
     Version.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 LINK_INTERNAL(${LIB_NAME}     

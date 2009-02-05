@@ -62,6 +62,7 @@ ADD_LIBRARY(${LIB_NAME}
     SphereSegment.cpp
     Version.cpp
     VisibilityGroup.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 LINK_INTERNAL(${LIB_NAME}     

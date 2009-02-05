@@ -54,6 +54,7 @@ ADD_LIBRARY(${LIB_NAME}
     Utility.cpp
     Value.cpp
     Version.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 LINK_INTERNAL(${LIB_NAME}

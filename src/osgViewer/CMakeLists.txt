@@ -34,6 +34,7 @@ SET(LIB_COMMON_FILES
     Viewer.cpp
     ViewerBase.cpp
     ViewerEventHandlers.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 SET(LIB_EXTRA_LIBS)

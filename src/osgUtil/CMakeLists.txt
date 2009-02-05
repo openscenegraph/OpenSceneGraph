@@ -88,6 +88,7 @@ ADD_LIBRARY(${LIB_NAME}
     TriStripVisitor.cpp
     UpdateVisitor.cpp
     Version.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 LINK_INTERNAL(${LIB_NAME}     

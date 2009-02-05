@@ -51,6 +51,7 @@ ADD_LIBRARY(${LIB_NAME}
     MinimalShadowMap.cpp
     StandardShadowMap.cpp
     ViewDependentShadowTechnique.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 LINK_INTERNAL(${LIB_NAME}     

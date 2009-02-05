@@ -29,7 +29,7 @@ namespace osgAnimation
         META_Object(osgAnimation, BasicAnimationManager);
   
         BasicAnimationManager();
-        BasicAnimationManager(const AnimationManagerBase& b, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY) : AnimationManagerBase(b,copyop) {}
+        BasicAnimationManager(const AnimationManagerBase& b, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY); 
         virtual ~BasicAnimationManager();
 
         void update (double time);

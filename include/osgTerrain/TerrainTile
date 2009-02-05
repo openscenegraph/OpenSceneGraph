@@ -27,19 +27,13 @@ namespace osgTerrain {
 
 class Terrain;
 
-class TileID
+class OSGTERRAIN_EXPORT TileID
 {
     public:
     
-        TileID():
-            level(-1),
-            x(-1),
-            y(-1) {}
+        TileID();
 
-        TileID(int in_level, int in_x, int in_y):
-            level(in_level),
-            x(in_x),
-            y(in_y) {}
+        TileID(int in_level, int in_x, int in_y);
             
         bool operator == (const TileID& rhs) const        
         {

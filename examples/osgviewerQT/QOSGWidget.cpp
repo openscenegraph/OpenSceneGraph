@@ -96,6 +96,10 @@ class QOSGWidget : public QWidget
         void init();
         void createContext();
 
+        //  The GraphincsWindowWin32 implementation already takes care of message handling.
+        //  We don't want to relay these on Windows, it will just cause duplicate messages
+        //  with further problems downstream (i.e. not being able to throw the trackball
+#ifndef WIN32 
         virtual void mouseDoubleClickEvent ( QMouseEvent * event );
         virtual void closeEvent( QCloseEvent * event );
         virtual void destroyEvent( bool destroyWindow = true, bool destroySubWindows = true);
@@ -105,7 +109,7 @@ class QOSGWidget : public QWidget
         virtual void mousePressEvent( QMouseEvent* event );
         virtual void mouseReleaseEvent( QMouseEvent* event );
         virtual void mouseMoveEvent( QMouseEvent* event );
-
+#endif
         osg::ref_ptr<osgViewer::GraphicsWindow> _gw;
     bool _overrideTraits;
 };
@@ -188,6 +192,8 @@ void QOSGWidget::createContext()
     }
 
 }
+
+#ifndef WIN32 
 void QOSGWidget::destroyEvent(bool destroyWindow, bool destroySubWindows)
 {   
     _gw->getEventQueue()->closeWindow();
@@ -275,7 +281,7 @@ void QOSGWidget::mouseMoveEvent( QMouseEvent* event )
 {
     _gw->getEventQueue()->mouseMotion(event->x(), event->y());
 }
-
+#endif
 
 
 
@@ -307,30 +313,99 @@ class ViewerQOSG : public osgViewer::Viewer, public QOSGWidget
 };
 
 
-
 class CompositeViewerQOSG : public osgViewer::CompositeViewer, public QOSGWidget
 {
     public:
-
-        CompositeViewerQOSG(QWidget * parent = 0, const char * name = 0, WindowFlags f = 0):
-            QOSGWidget( parent, name, f )
+        CompositeViewerQOSG(QWidget * parent = 0, const char * name = 0, WindowFlags f = 0)
+        : QOSGWidget( parent, name, f )
         {
-            setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
+          setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
 
-            connect(&_timer, SIGNAL(timeout()), this, SLOT(repaint()));
+          connect(&_timer, SIGNAL(timeout()), this, SLOT(repaint()));
 
-            // The app would hang on exit when using start(1).  Behaves better with 10
-            // like the non-composite viewer.  Was this just a typo?
-            _timer.start(10);
+          // The composite viewer needs at least one view to work
+          // Create a dummy view with a zero sized viewport and no
+          // scene to keep the viewer alive.
+          osgViewer::View * pView = new osgViewer::View;
+          pView->getCamera()->setGraphicsContext( getGraphicsWindow() );
+          pView->getCamera()->setViewport( 0, 0, 0, 0 );
+          addView( pView );
+
+          // Clear the viewer of removed views
+          getGraphicsWindow()->setClearMask( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+          getGraphicsWindow()->setClearColor( osg::Vec4( 0.08, 0.08, 0.5, 1.0 ) );
+
+          // The app would hang on exit when using start(1).  Behaves better with 10
+          // like the non-composite viewer.  Was this just a typo?
+          _timer.start(10);
         }
-
+          
         virtual void paintEvent( QPaintEvent * event ) { frame(); }
 
-    protected:
+        void keyPressEvent( QKeyEvent* event )
+        {
+          if ( event->text() == "a" )
+          {
+            AddView( _scene );
+          }
+          
+          if ( event->text() == "r" )
+          {
+            RemoveView();
+          }
 
+          QOSGWidget::keyPressEvent( event );
+        }
+
+
+        void AddView( osg::Node * scene );
+        void RemoveView();
+        void Tile();
+
+        osg::ref_ptr< osg::Node > _scene;
+
+    protected:
         QTimer _timer;
 };
 
+void CompositeViewerQOSG::Tile()
+{
+  int n = getNumViews() - 1; // -1 to account for dummy view
+
+  for ( int i = 0; i < n; ++i )
+  {
+    osgViewer::View * view = getView(i+1);  // +1 to account for dummy view
+    view->getCamera()->setViewport( new osg::Viewport( 0, i*height()/n , width(), height()/n ) );
+    view->getCamera()->setProjectionMatrixAsPerspective( 30.0f, double( width() ) / double( height()/n ), 1.0f, 10000.0f );
+  }
+}
+
+
+void CompositeViewerQOSG::AddView( osg::Node * scene )
+{
+  osgViewer::View* view = new osgViewer::View;
+  addView(view);
+
+  view->setSceneData( scene );
+  view->setCameraManipulator(new osgGA::TrackballManipulator);
+
+  // add the state manipulator
+  osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator;
+  statesetManipulator->setStateSet(view->getCamera()->getOrCreateStateSet());
+
+  view->getCamera()->setGraphicsContext( getGraphicsWindow() );
+  view->getCamera()->setClearColor( osg::Vec4( 0.08, 0.08, 0.5, 1.0 ) );
+  Tile();
+}
+
+void CompositeViewerQOSG::RemoveView()
+{
+  if ( getNumViews() > 1 )
+  {
+    removeView( getView( getNumViews() - 1 ) );
+  }
+  Tile();
+}
 
 
 #if USE_QT4
@@ -410,7 +485,7 @@ int mainQOSGWidget(QApplication& a, osg::ArgumentParser& arguments)
     {
         osg::ref_ptr<CompositeViewerQOSG> viewerWindow(new CompositeViewerQOSG);
 
-        viewerWindow->setGeometry(0,0,640,480);
+        viewerWindow->setGeometry(50,50,640,480);
         // Open the ViewerQOSG window at 30/30 instead of 0/0.  In some instances,
         // the window may otherwise lack any window decoration.
         // viewerWindow->setGeometry(30,30,640,480);
@@ -424,6 +499,7 @@ int mainQOSGWidget(QApplication& a, osg::ArgumentParser& arguments)
             view1->getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width)/static_cast<double>(height/2), 1.0, 1000.0);
             view1->getCamera()->setViewport(new osg::Viewport(0,0,width,height/2));
             view1->setSceneData(loadedModel.get());
+            view1->getCamera()->setClearColor( osg::Vec4( 0.08, 0.08, 0.5, 1.0 ) );
 
             setupManipulatorAndHandler(*view1, arguments);
 
@@ -436,12 +512,15 @@ int mainQOSGWidget(QApplication& a, osg::ArgumentParser& arguments)
             view2->getCamera()->setProjectionMatrixAsPerspective(30.0f, static_cast<double>(width)/static_cast<double>(height/2), 1.0, 1000.0);
             view2->getCamera()->setViewport(new osg::Viewport(0,height/2,width,height/2));
             view2->setSceneData(loadedModel.get());
+            view2->getCamera()->setClearColor( osg::Vec4( 0.08, 0.08, 0.5, 1.0 ) );
 
             setupManipulatorAndHandler(*view2, arguments);
 
             viewerWindow->addView(view2);
         }
 
+        viewerWindow->_scene = loadedModel.get();
+        viewerWindow->Tile();
         viewerWindow->show();
 
         a.connect( &a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()) );

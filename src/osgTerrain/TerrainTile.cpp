@@ -25,6 +25,24 @@ using namespace osgTerrain;
 
 /////////////////////////////////////////////////////////////////////////////////
 //
+// TileID
+//
+TileID::TileID():
+    level(-1),
+    x(-1),
+    y(-1)
+{
+}
+
+TileID::TileID(int in_level, int in_x, int in_y):
+    level(in_level),
+    x(in_x),
+    y(in_y)
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//
 // TerrainTile
 //
 void TerrainTile::setTileLoadedCallback(TerrainTile::TileLoadedCallback* lc)

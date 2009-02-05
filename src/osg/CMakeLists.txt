@@ -318,6 +318,7 @@ ADD_LIBRARY(${LIB_NAME}
     VertexProgram.cpp
     View.cpp
     Viewport.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 LINK_INTERNAL(${LIB_NAME}     

@@ -33,6 +33,7 @@ ADD_LIBRARY(${LIB_NAME}
     Volume.cpp
     VolumeTechnique.cpp
     VolumeTile.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 

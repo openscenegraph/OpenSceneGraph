@@ -56,6 +56,7 @@ ADD_LIBRARY(${LIB_NAME}
     Widget.cpp
     Window.cpp
     WindowManager.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 

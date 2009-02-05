@@ -48,6 +48,7 @@ ADD_LIBRARY(${LIB_NAME}
     UFOManipulator.cpp
     Version.cpp
     CameraViewSwitchManipulator.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 LINK_INTERNAL(${LIB_NAME}     

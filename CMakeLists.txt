@@ -272,6 +272,15 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Config.in"
 
 
 ################################################################################
+# Set Version Info resource file
+
+IF(WIN32)
+    SET(OPENSCENEGRAPH_VERSIONINFO_RC "${PROJECT_BINARY_DIR}/PlatformSpecifics/Windows/VersionInfo.rc")
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/PlatformSpecifics/Windows/VersionInfo.rc.in"
+                   "${OPENSCENEGRAPH_VERSIONINFO_RC}")
+ENDIF(WIN32)
+
+################################################################################
 # Optional build components
 
 # OSG Applications

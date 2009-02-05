@@ -57,6 +57,7 @@ ADD_LIBRARY(${LIB_NAME}
     TranslateAxisDragger.cpp
     TranslatePlaneDragger.cpp
     Version.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 LINK_INTERNAL(${LIB_NAME}     

@@ -70,6 +70,7 @@ ADD_LIBRARY(${LIB_NAME}
     SharedStateManager.cpp
     Version.cpp
     WriteFile.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 IF(APPLE)

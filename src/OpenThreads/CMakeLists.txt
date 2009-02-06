@@ -33,7 +33,7 @@ CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/common/Config.in"
 
 IF(MSVC)
     SET(OPENTHREADS_VERSIONINFO_RC "${PROJECT_BINARY_DIR}/PlatformSpecifics/Windows/OpenThreadsVersionInfo.rc")
-    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/PlatformSpecifics/Windows/OpenThreadsVersionInfo.rc.in"
+    CONFIGURE_FILE("${PROJECT_SOURCE_DIR}/PlatformSpecifics/Windows/OpenThreadsVersionInfo.rc.in"
                    "${OPENTHREADS_VERSIONINFO_RC}")
 ENDIF(MSVC)
 

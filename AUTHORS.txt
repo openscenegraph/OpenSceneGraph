@@ -1,6 +1,6 @@
 OpenSceneGraph Library 2.8.0
 
-364 Contributors:
+365 Contributors:
 
 Firstname Surname
 -----------------
@@ -26,23 +26,23 @@ Luigi Calori
 Trajce Nikolov
 Mike Wittman
 Wojciech Lewandowski
+Paul Melis
 Colin McDonald
 Andy Skinner
 Roger James
 Pavel Moloshtan
 Tom Jolley
 Jeremy Moles
-Paul Melis
 Norman Vine
 Mattias Helsing
 Jason Beverage
+Cedric Pinson
 Art Tevs
 Alberto Farre
 André Garneau
 Ruben Lopez
 Randall Hopper
 Michael Platings
-Cedric Pinson
 Adrian Egli
 Olaf Flebbe
 Jason Daly
@@ -59,8 +59,8 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Chris Hanson
-Philip Lowman
 Alberto Luaces
+Philip Lowman
 Melchior Franz
 Chris Denham
 Serge Lages
@@ -89,6 +89,7 @@ Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Loic Dachary
+Lionel Lagarde
 Joseph Steel
 John Shue
 Jan Peciva
@@ -97,6 +98,7 @@ Glenn Waldron
 Brad Colbert
 Vivek Rajan
 Thibault Genessay
+Sukender 
 Sean Spicer
 Ravi Mathur
 Peter Hrenka
@@ -105,7 +107,6 @@ Neil Salter
 Mihai Radu
 Michael Hartman
 Luc Frauciel
-Lionel Lagarde
 Laurens Voerman
 David Guthrie
 Corbin Holtz
@@ -114,7 +115,6 @@ Blasius Czink
 Toshiyuki Takahei
 Thom DeCarlo
 Tatsuhiro Nishioka
-Sukender 
 Simon Julier
 Sebastien Grignard
 Romano Magacho
@@ -145,6 +145,7 @@ Julian Ortiz
 Jeremy Bell
 Jaromir Vitek
 James French
+Gary Quinn
 Garrett Potts
 Gabor Dorka
 Fabio Mierlo
@@ -175,6 +176,7 @@ Sebastian Messerschmidt
 Ralf Kern
 Perry Miller
 Nathan Monteleone
+Morné Pistorius
 Miguel Escriva
 Michael Henheffer
 Michael Guerrero
@@ -197,6 +199,7 @@ Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
 Ferdi Smit
+Fabien Lavignotte
 Ewe Woessner
 Erik den Dekker
 Edgar Ellis
@@ -247,6 +250,7 @@ Raymond de Vries
 Ragnar Hammarqvist
 Qing Shen
 Piotr Rak
+Pierre Haritchablaet
 Philipp Siemoleit
 Philipp Mächler
 Paul Palumbo
@@ -262,7 +266,6 @@ Nicolas Brodu
 Neil Hughes
 Nathan Cournia
 Morten Haukness
-Morné Pistorius
 Mirko Viviani
 Mikkel GjÃ¸l
 Mike Garrity
@@ -315,14 +318,12 @@ Guillaume Millet
 Graeme Harkness
 Gian Lorenzetto
 George Papagiannakis
-Gary Quinn
 Galen Faidley
 Frederic Bouvier
 Frank Warmerdam
 Frank Lindeman
 Frank Lichtenheld
 Ferdinand Cornelissen
-Fabien Lavignotte
 Fabien Dachicourt
 Emmanuel Roche
 Edmond Gheury

@@ -15,7 +15,7 @@
 # Modified by Robert Osfied to enable support for install placements of DCMTK 3.5.4 versions onwards
 
 FIND_PATH( DCMTK_ROOT_INCLUDE_DIR dcmtk/config/osconfig.h
-    ${DCMTK_DIR}/config/include 
+    ${DCMTK_DIR}/config/include
     ${DCMTK_DIR}/include
     /usr/local/include/
     /usr/include/
@@ -23,7 +23,8 @@ FIND_PATH( DCMTK_ROOT_INCLUDE_DIR dcmtk/config/osconfig.h
 )
 
 FIND_PATH( DCMTK_config_INCLUDE_DIR osconfig.h
-    ${DCMTK_DIR}/config/include 
+    ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/config
+    ${DCMTK_DIR}/config/include
     ${DCMTK_DIR}/include
     /usr/local/include/dcmtk/config
     /usr/include/dcmtk/config
@@ -31,7 +32,8 @@ FIND_PATH( DCMTK_config_INCLUDE_DIR osconfig.h
 )
 
 FIND_PATH( DCMTK_ofstd_INCLUDE_DIR ofstdinc.h
-    ${DCMTK_DIR}/ofstd/include 
+    ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/ofstd
+    ${DCMTK_DIR}/ofstd/include
     ${DCMTK_DIR}/include/ofstd
     /usr/local/include/dcmtk/ofstd
     /usr/include/dcmtk/ofstd
@@ -54,6 +56,7 @@ FIND_LIBRARY( DCMTK_ofstd_LIBRARY ofstd
 
 
 FIND_PATH( DCMTK_dcmdata_INCLUDE_DIR dctypes.h
+    ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/dcmdata
     ${DCMTK_DIR}/dcmdata/include
     ${DCMTK_DIR}/include/dcmdata
     /usr/local/include/dcmtk/dcmdata
@@ -77,6 +80,7 @@ FIND_LIBRARY( DCMTK_dcmdata_LIBRARY dcmdata
 
 
 FIND_PATH( DCMTK_dcmimgle_INCLUDE_DIR dcmimage.h
+    ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/dcmimgle
     ${DCMTK_DIR}/dcmimgle/include
     ${DCMTK_DIR}/include/dcmimgle
     /usr/local/include/dcmtk/dcmimgle
@@ -98,7 +102,7 @@ FIND_LIBRARY( DCMTK_dcmimgle_LIBRARY dcmimgle
     /usr/local/dicom/lib
 )
 
-FIND_LIBRARY(DCMTK_imagedb_LIBRARY imagedb 
+FIND_LIBRARY(DCMTK_imagedb_LIBRARY imagedb
     ${DCMTK_DIR}/imagectn/libsrc/Release
     ${DCMTK_DIR}/imagectn/libsrc/
     ${DCMTK_DIR}/imagectn/libsrc/Debug
@@ -109,7 +113,7 @@ FIND_LIBRARY(DCMTK_imagedb_LIBRARY imagedb
     /usr/local/dicom/lib
 )
 
-FIND_LIBRARY(DCMTK_dcmnet_LIBRARY dcmnet 
+FIND_LIBRARY(DCMTK_dcmnet_LIBRARY dcmnet
     ${DCMTK_DIR}/dcmnet/libsrc/Release
     ${DCMTK_DIR}/dcmnet/libsrc/Debug
     ${DCMTK_DIR}/dcmnet/libsrc/
@@ -121,8 +125,8 @@ FIND_LIBRARY(DCMTK_dcmnet_LIBRARY dcmnet
 )
 
 
-IF( DCMTK_config_INCLUDE_DIR 
-    AND DCMTK_ofstd_INCLUDE_DIR 
+IF( DCMTK_config_INCLUDE_DIR
+    AND DCMTK_ofstd_INCLUDE_DIR
     AND DCMTK_ofstd_LIBRARY
     AND DCMTK_dcmdata_INCLUDE_DIR
     AND DCMTK_dcmdata_LIBRARY
@@ -162,8 +166,8 @@ IF( DCMTK_config_INCLUDE_DIR
     SET( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} netapi32 )
   ENDIF( WIN32 )
 
-ENDIF( DCMTK_config_INCLUDE_DIR 
-    AND DCMTK_ofstd_INCLUDE_DIR 
+ENDIF( DCMTK_config_INCLUDE_DIR
+    AND DCMTK_ofstd_INCLUDE_DIR
     AND DCMTK_ofstd_LIBRARY
     AND DCMTK_dcmdata_INCLUDE_DIR
     AND DCMTK_dcmdata_LIBRARY

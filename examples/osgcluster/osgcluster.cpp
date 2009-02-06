@@ -413,7 +413,7 @@ void CameraPacket::readEventQueue(osgViewer::Viewer& viewer)
 
 void CameraPacket::writeEventQueue(osgViewer::Viewer& viewer)
 {
-    osg::notify(osg::INFO)<<"recieved events = "<<_events.size()<<std::endl;
+    osg::notify(osg::INFO)<<"received events = "<<_events.size()<<std::endl;
 
     viewer.getEventQueue()->appendEvents(_events);
 }
@@ -437,7 +437,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
     arguments.getApplicationUsage()->addCommandLineOption("-m","Set viewer to MASTER mode, sending view via packets.");
-    arguments.getApplicationUsage()->addCommandLineOption("-s","Set viewer to SLAVE mode, reciving view via packets.");
+    arguments.getApplicationUsage()->addCommandLineOption("-s","Set viewer to SLAVE mode, receiving view via packets.");
     arguments.getApplicationUsage()->addCommandLineOption("-n <int>","Socket number to transmit packets");
     arguments.getApplicationUsage()->addCommandLineOption("-f <float>","Field of view of camera");
     arguments.getApplicationUsage()->addCommandLineOption("-o <float>","Offset angle of camera");

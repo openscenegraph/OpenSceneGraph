@@ -81,7 +81,7 @@ class ContextTest : public MemoryTest
             }
             else
             {
-                std::cerr<<"Error: Unable to create graphis context, problem with running osgViewer-"<<osgViewerGetVersion()<<", cannot create windows/pbuffers."<<std::endl;
+                std::cerr<<"Error: Unable to create graphics context, problem with running osgViewer-"<<osgViewerGetVersion()<<", cannot create windows/pbuffers."<<std::endl;
                 
                 if (_pbuffer) throw "Failed to create PixelBuffer";
                 else  throw "Failed to create GraphicsWindow";
@@ -406,7 +406,7 @@ int main( int argc, char **argv )
     {
         if (glMemoryTests.empty())
         {
-            std::cout<<"Not tests specified, please specify test using the command line options below."<<std::endl<<std::endl;
+            std::cout<<"No tests specified, please specify test using the command line options below."<<std::endl<<std::endl;
         
             arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
             return 1;            

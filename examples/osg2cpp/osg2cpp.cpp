@@ -89,7 +89,7 @@ int main( int argc, char **argv )
         }
         else
         {
-            std::cout<<"Error: could not found file '"<<filename<<"'"<<std::endl;
+            std::cout<<"Error: could not find file '"<<filename<<"'"<<std::endl;
             return 1;
         }
         

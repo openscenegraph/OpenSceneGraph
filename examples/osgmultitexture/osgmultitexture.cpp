@@ -51,7 +51,7 @@ int main( int argc, char **argv )
     
     if (!rootnode)
     {
-        osg::notify(osg::NOTICE)<<"Please specify and model filename on the command line."<<std::endl;
+        osg::notify(osg::NOTICE)<<"Please specify a model filename on the command line."<<std::endl;
         return 1;
     }
     

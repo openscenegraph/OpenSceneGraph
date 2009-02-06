@@ -677,7 +677,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                                                  
                             matrix->preMult(osg::Matrix::scale(double(image->s()), double(image->t()), double(image->r())));
 
-                            notice()<<"Image dimensions = "<<image->s()<<", "<<image->t()<<", "<<image->r()<<" pixelFormat=0x"<<std::hex<<pixelFormat<<" dataType=0x"<<std::hex<<dataType<<std::endl;
+                            notice()<<"Image dimensions = "<<image->s()<<", "<<image->t()<<", "<<image->r()<<" pixelFormat=0x"<<std::hex<<pixelFormat<<" dataType=0x"<<std::hex<<dataType<<std::dec<<std::endl;
                         }
                         else if (pixelData->getPlanes()>numPlanes ||
                                  pixelData->getRepresentation()>pixelRep)

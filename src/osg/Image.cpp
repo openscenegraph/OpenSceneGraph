@@ -276,7 +276,7 @@ GLenum Image::computeFormatDataType(GLenum pixelFormat)
 
         default: 
         {
-            notify(WARN)<<"error computeFormatType = "<<std::hex<<pixelFormat<<std::endl;
+            notify(WARN)<<"error computeFormatType = "<<std::hex<<pixelFormat<<std::dec<<std::endl;
             return 0;
         }
     }
@@ -377,7 +377,7 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
 
         default:
         {
-            notify(WARN)<<"error pixelFormat = "<<std::hex<<pixelFormat<<std::endl;
+            notify(WARN)<<"error pixelFormat = "<<std::hex<<pixelFormat<<std::dec<<std::endl;
             return 0;
         }
     }        

@@ -441,7 +441,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             
             if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
             {
-                osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp(), FBO setup failed, FBO status= 0x"<<std::hex<<status<<std::endl;
+                osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp(), FBO setup failed, FBO status= 0x"<<std::hex<<status<<std::dec<<std::endl;
 
                 fbo_supported = false;
                 fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
@@ -472,7 +472,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                     {
                         notify(NOTICE) << "RenderStage::runCameraSetUp(), "
                             "multisample FBO setup failed, FBO status = 0x"
-                            << std::hex << status << std::endl;
+                            << std::hex << status << std::dec << std::endl;
 
                         fbo->apply(state);
                         fbo_multisample = 0;
@@ -852,9 +852,9 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         {
             const char* error = (char*)gluErrorString(errorNo);
             if (error)  osg::notify(osg::NOTICE)<<"Warning: detected OpenGL error '"<<error<<"' after RenderBin::draw(,)"<<std::endl;
-            else        osg::notify(osg::NOTICE)<<"Warning: detected OpenGL errorNo= 0x"<<std::hex<<errorNo<<" after RenderBin::draw(,)"<<std::endl;
+            else        osg::notify(osg::NOTICE)<<"Warning: detected OpenGL errorNo= 0x"<<std::hex<<errorNo<<" after RenderBin::draw(,)"<<std::dec<<std::endl;
 
-            if (fbo_ext) osg::notify(osg::NOTICE)<<"RenderStage::drawInner(,) FBO status= 0x"<<std::hex<<fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)<<std::endl;
+            if (fbo_ext) osg::notify(osg::NOTICE)<<"RenderStage::drawInner(,) FBO status= 0x"<<std::hex<<fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT)<<std::dec<<std::endl;
         }
     }
 

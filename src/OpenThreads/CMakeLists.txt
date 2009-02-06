@@ -27,6 +27,17 @@ SET(OPENTHREADS_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/OpenThreads/Config"
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/common/Config.in"
                "${OPENTHREADS_CONFIG_HEADER}")
 
+
+################################################################################
+# Set Version Info resource file
+
+IF(MSVC)
+    SET(OPENTHREADS_VERSIONINFO_RC "${PROJECT_BINARY_DIR}/PlatformSpecifics/Windows/OpenThreadsVersionInfo.rc")
+    CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/PlatformSpecifics/Windows/OpenThreadsVersionInfo.rc.in"
+                   "${OPENTHREADS_VERSIONINFO_RC}")
+ENDIF(MSVC)
+
+
 # INSTALL_FILES(/include/OpenThreads/ FILES "${OPENTHREADS_CONFIG_HEADER}")
 
 ################################################################################

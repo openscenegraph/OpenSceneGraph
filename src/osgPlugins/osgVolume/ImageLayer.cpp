@@ -71,7 +71,7 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                     image = osgDB::readRefImageFile( filename );
                 }
 
-                osg::notify(osg::INFO)<<"osgVolume::ImageLyaer image read: "<<filename<<" pixelFormat "<<std::hex<<image->getPixelFormat()<<" textureFormat "<<image->getInternalTextureFormat()<<" dataType "<<image->getDataType()<<std::endl;
+                osg::notify(osg::INFO)<<"osgVolume::ImageLayer image read: "<<filename<<" pixelFormat "<<std::hex<<image->getPixelFormat()<<" textureFormat "<<image->getInternalTextureFormat()<<" dataType "<<image->getDataType()<<std::dec<<std::endl;
 
                 if (image.valid())
                 {                

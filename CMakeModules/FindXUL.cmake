@@ -1,15 +1,33 @@
-# Locate gdal
+# Locate XUL
 # This module defines
 # XUL_LIBRARIES
-# XUL_FOUND, if false, do not try to link to gdal 
+# XUL_FOUND, if false, do not try to link to gdal
 # XUL_INCLUDE_DIR, where to find the headers
 #
 # $XUL_DIR is an environment variable that would
 # correspond to the ./configure --prefix=$XUL_DIR
 #
-# Created by Robert Osfield. 
+# Created by Robert Osfield.
+
+#use pkg-config to find various modues
+INCLUDE(FindPkgConfig OPTIONAL)
+
+IF(PKG_CONFIG_FOUND)
+
+    INCLUDE(FindPkgConfig)
+
+    pkg_check_modules(XULRUNNER_XPCOM xulrunner-xpcom)
+    pkg_check_modules(XULRUNNER_JS xulrunner-js)
+    pkg_check_modules(XULRUNNER_NSPR xulrunner-nspr)
+    pkg_check_modules(XULRUNNER_NSS xulrunner-nss)
+
+ENDIF(PKG_CONFIG_FOUND)
+
+
+#MESSAGE("BLAH " ${XULRUNNER_DOH_INCLUDE_DIRS})
 
 FIND_PATH(XUL_INCLUDE_DIR nsEmbedAPI.h
+    PATHS ${XULRUNNER_XPCOM_INCLUDE_DIRS}
     $ENV{OSG_DIR}/include/xulrunner
     $ENV{OSG_DIR}/include
     $ENV{OSG_DIR}/xulrunner
@@ -17,7 +35,7 @@ FIND_PATH(XUL_INCLUDE_DIR nsEmbedAPI.h
     $ENV{OSGDIR}/include/xulrunner
     $ENV{OSGDIR}/include
     $ENV{OSGDIR}/xulrunner
-    $ENV{OSGDIR}    
+    $ENV{OSGDIR}
     $ENV{OSG_ROOT}/include/xulrunner
     $ENV{OSG_ROOT}/include
     ~/Library/Frameworks
@@ -41,6 +59,7 @@ FIND_PATH(XUL_INCLUDE_DIR nsEmbedAPI.h
 )
 
 FIND_PATH(NSPR_INCLUDE_DIR prtypes.h
+    PATHS ${XULRUNNER_NSPR_INCLUDE_DIRS}
     $ENV{OSG_DIR}/include/nspr
     $ENV{OSG_DIR}/include
     $ENV{OSG_DIR}/nspr
@@ -48,7 +67,7 @@ FIND_PATH(NSPR_INCLUDE_DIR prtypes.h
     $ENV{OSGDIR}/include/nspr
     $ENV{OSGDIR}/include
     $ENV{OSGDIR}/nspr
-    $ENV{OSGDIR}    
+    $ENV{OSGDIR}
     $ENV{OSG_ROOT}/include/nspr
     $ENV{OSG_ROOT}/include
     ~/Library/Frameworks
@@ -72,6 +91,7 @@ FIND_PATH(NSPR_INCLUDE_DIR prtypes.h
 )
 
 FIND_PATH(MOZJS_INCLUDE_DIR jsapi.h
+    PATHS ${XULRUNNER_JS_INCLUDE_DIRS}
     $ENV{OSG_DIR}/include/mozjs
     $ENV{OSG_DIR}/include
     $ENV{OSG_DIR}/mozjs
@@ -79,7 +99,7 @@ FIND_PATH(MOZJS_INCLUDE_DIR jsapi.h
     $ENV{OSGDIR}/include/mozjs
     $ENV{OSGDIR}/include
     $ENV{OSGDIR}/mozjs
-    $ENV{OSGDIR}    
+    $ENV{OSGDIR}
     $ENV{OSG_ROOT}/include/mozjs
     $ENV{OSG_ROOT}/include
     ~/Library/Frameworks
@@ -102,7 +122,7 @@ FIND_PATH(MOZJS_INCLUDE_DIR jsapi.h
     /usr/freeware/include
 )
 
-FIND_PATH(XUL_DIR 
+FIND_PATH(XUL_DIR
     NAMES components/appshell.xpt
     PATHS
     $ENV{OSG_DIR}/lib
@@ -129,10 +149,13 @@ FIND_PATH(XUL_DIR
     /usr/freeware/lib64
 )
 
-
 MACRO(FIND_XUL_LIBRARY MYLIBRARY MYLIBRARYNAME)
 
     FIND_LIBRARY(${MYLIBRARY}
+        PATHS ${XULRUNNER_XPCOM_LIBRARY_DIRS}
+        PATHS ${XULRUNNER_JS_LIBRARY_DIRS}
+        PATHS ${XULRUNNER_NSPR_LIBRARY_DIRS}
+        PATHS ${XULRUNNER_NSS_LIBRARY_DIRS}
         NAMES ${MYLIBRARYNAME}
         PATHS
         $ENV{OSG_DIR}/lib

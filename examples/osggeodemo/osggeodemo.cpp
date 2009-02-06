@@ -110,7 +110,7 @@ int main( int argc, char **argv )
     osg::Node* rootnode = osgDB::readNodeFiles(arguments);
     if (!rootnode)
     {
-        osg::notify(osg::NOTICE)<<"Please specify and geo model filename on the command line."<<std::endl;
+        osg::notify(osg::NOTICE)<<"Please specify a geo model filename on the command line."<<std::endl;
         return 1;
     }
     

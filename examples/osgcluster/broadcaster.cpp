@@ -164,7 +164,7 @@ void Broadcaster::setHost( const char *hostname )
     struct hostent *h;
     if( (h = gethostbyname( hostname )) == 0L )
     {
-        fprintf( stderr, "Broadcaster::setHost() - Cannot resolv an address for \"%s\".\n", hostname );
+        fprintf( stderr, "Broadcaster::setHost() - Cannot resolve an address for \"%s\".\n", hostname );
         _address = 0;
     }
     else

@@ -157,7 +157,7 @@ struct ExampleTimelineUsage : public osgGA::GUIEventHandler
 
 int main (int argc, char* argv[])
 {
-    std::cerr << "This example workd only with osgAnimation/nathan.osg" << std::endl;
+    std::cerr << "This example works only with osgAnimation/nathan.osg" << std::endl;
 
     osg::ArgumentParser psr(&argc, argv);
 
@@ -172,7 +172,7 @@ int main (int argc, char* argv[])
     osgAnimation::AnimationManagerBase* animationManager = dynamic_cast<osgAnimation::AnimationManagerBase*>(root->getUpdateCallback());
     if(!animationManager) 
     {
-        std::cerr << "Did not found AnimationManagerBase updateCallback needed to animate elements" << std::endl;
+        std::cerr << "Did not find AnimationManagerBase updateCallback needed to animate elements" << std::endl;
         return 1;
     }
 

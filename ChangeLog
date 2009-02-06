@@ -1,3 +1,168 @@
+2009-02-06 15:27  robert
+
+	* examples/osg2cpp/osg2cpp.cpp,
+	  examples/osganimationtimeline/osganimationtimeline.cpp,
+	  examples/osganimationviewer/AnimtkViewerKeyHandler.cpp,
+	  examples/osgcluster/broadcaster.cpp,
+	  examples/osgcluster/osgcluster.cpp,
+	  examples/osggeodemo/osggeodemo.cpp,
+	  examples/osgmemorytest/osgmemorytest.cpp,
+	  examples/osgmultitexture/osgmultitexture.cpp: From Gary Quinn,
+	  spelling fixes
+
+2009-02-06 15:13  robert
+
+	* NEWS.txt: Updated date of release
+
+2009-02-06 14:23  robert
+
+	* CMakeModules/FindXUL.cmake: Added version checks and an extra
+	  header check to make sure everything that is required by the
+	  gecko plugin is available.
+
+2009-02-06 12:12  robert
+
+	* src/osgPlugins/lwo/lwo2read.h: Fixed data copy bug
+
+2009-02-06 11:14  robert
+
+	* PlatformSpecifics/Windows/osgShell.bat: From Gary Quin, update to
+	  paths
+
+2009-02-06 10:54  robert
+
+	* include/osgIntrospection/Export: Added #include <osg/Config> to
+	  export to enable the pragama to work
+
+2009-02-06 10:48  robert
+
+	* CMakeModules/FindOurDCMTK.cmake, CMakeModules/FindXUL.cmake: From
+	  Paul Melis, added use of pkg-config to find FindXUL and DCMTK env
+	  var for finding DCMTK
+
+2009-02-06 10:35  robert
+
+	* src/osg/Image.cpp, src/osg/State.cpp,
+	  src/osgPlugins/dicom/ReaderWriterDICOM.cpp,
+	  src/osgPlugins/osgVolume/ImageLayer.cpp,
+	  src/osgUtil/RenderStage.cpp: From Alberto Luaces, "here are some
+	  minor fixes to notify warnings were the std::hex modifier was
+	  used but never restored to the decimal notation. That made OSG
+	  print messages
+	  like the following after some notifications:
+	  
+	  Warning: detected OpenGL error 'invalid value' after
+	  RenderBin::draw(,)
+	  RenderStage::drawInner(,) FBO status= 0x8cd5
+	  [...]
+	  Scaling image 'brick_side.JPG' from (1b4,24f) to (200,200) <---
+	  Values in hex
+	  because of previous error.
+	  [...]"
+
+2009-02-06 10:12  robert
+
+	* include/osg/Export: Added pragma disables for VS C4702 and C4511
+	  as VS7.1 was spitting out lots warnings for valid code.
+
+2009-02-06 10:06  robert
+
+	* CMakeLists.txt: Removed -Wunitialized flag as it was caused
+	  warnings from some versions of gcc
+
+2009-02-05 16:09  robert
+
+	* include/osg/Export: Added the disabling of VS warning C4267.
+
+2009-02-05 15:24  robert
+
+	* CMakeLists.txt: Updated release candidate number to 2
+
+2009-02-05 15:23  robert
+
+	* include/osgAnimation/Animation,
+	  include/osgAnimation/BasicAnimationManager,
+	  src/osgAnimation/BasicAnimationManager.cpp,
+	  src/osgAnimation/CMakeLists.txt: From Fabien Lavignotte, "Here is
+	  some various small fixes i have done while playing with
+	  osgAnimation.
+	  - Animation : removed the _name attribute that is never used.
+	  - BasicAnimationManager : fix a crash on Windows with the example
+	  osganimationviewer. The _lastUpdate attribute was not initialized
+	  when
+	  using copy constructor.
+	  - CMakeLists.txt : add RigGeometry to the headers list"
+
+2009-02-05 14:34  robert
+
+	* src/osgPlugins/gecko/CMakeLists.txt: Added suppression of
+	  strict-alaising warning emitted by gecko headers
+
+2009-02-05 14:16  robert
+
+	* src/osgPlugins/xine/CMakeLists.txt: Disabled deprecated warning
+
+2009-02-05 12:45  robert
+
+	* src/osgPlugins/dicom/ReaderWriterDICOM.cpp: Fixed tabs
+
+2009-02-05 12:43  robert
+
+	* src/osgPlugins/dicom/ReaderWriterDICOM.cpp: Added initializer to
+	  fix warning
+
+2009-02-05 12:36  robert
+
+	* include/osgTerrain/TerrainTile, include/osgVolume/VolumeTile,
+	  src/osgTerrain/TerrainTile.cpp, src/osgVolume/VolumeTile.cpp:
+	  Added exports to TileID classes, and moved their constructors to
+	  .cpp's.
+
+2009-02-05 12:21  robert
+
+	* examples/osgviewerQT/QOSGWidget.cpp: From Morne Pistorius,
+	  "Attached is a modified version of the QOSGWidget example that
+	  shows
+	  the workaround we discussed for adding/removing views in a
+	  composite
+	  viewer at runtime. A dummy view is added to the viewer to always
+	  keep
+	  it live.
+	  
+	  Also, I added a #define to the Qt event relay methods to not
+	  override
+	  them on a Windows system. This fixes the bug where duplicate
+	  events
+	  are being sent and making it impossible to throw the trackball."
+
+2009-02-05 12:03  robert
+
+	* examples/osgviewerQT/QOSGWidget.cpp: Warning fixes
+
+2009-02-05 11:06  robert
+
+	* include/osg/Export: Added suppression of C4512 as it's just
+	  causing lots of warnings on some VS compiler versions, fixes the
+	  warnings via code is just too much of risk at this late stage of
+	  the 2.8 release
+
+2009-02-05 10:40  robert
+
+	* CMakeLists.txt: Removed the --format=2 entry as it was reported
+	  problems with buggy standard library headers
+
+2009-02-04 19:22  robert
+
+	* examples/osglauncher/osglauncher.cpp,
+	  examples/osgviewerGLUT/osgviewerGLUT.cpp,
+	  src/osgPlugins/cfg/ConfigLexer.cpp,
+	  src/osgUtil/TriStrip_graph_array.h: From Jean-Sebastien Guay,
+	  warning fixes.
+
+2009-02-04 14:15  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2009-02-04 13:53  robert
 
 	* include/osgVolume/Property, include/osgWidget/WindowManager,

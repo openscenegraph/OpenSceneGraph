@@ -16,15 +16,45 @@ IF(PKG_CONFIG_FOUND)
 
     INCLUDE(FindPkgConfig)
 
-    pkg_check_modules(XULRUNNER_XPCOM xulrunner-xpcom)
+    pkg_check_modules(XULRUNNER_XPCOM xulrunner-xpcom<=1.8.9)
     pkg_check_modules(XULRUNNER_JS xulrunner-js)
     pkg_check_modules(XULRUNNER_NSPR xulrunner-nspr)
     pkg_check_modules(XULRUNNER_NSS xulrunner-nss)
 
 ENDIF(PKG_CONFIG_FOUND)
 
-
-#MESSAGE("BLAH " ${XULRUNNER_DOH_INCLUDE_DIRS})
+# Added check to make sure that nsIBaseWindow.h is available, as it's not a standard part the of 1.8.x SDK
+FIND_PATH(NSIBASEWINDOW_INCLUDE_DIR widget/nsIBaseWindow.h
+    PATHS ${XULRUNNER_XPCOM_INCLUDE_DIRS}
+    $ENV{OSG_DIR}/include/xulrunner
+    $ENV{OSG_DIR}/include
+    $ENV{OSG_DIR}/xulrunner
+    $ENV{OSG_DIR}
+    $ENV{OSGDIR}/include/xulrunner
+    $ENV{OSGDIR}/include
+    $ENV{OSGDIR}/xulrunner
+    $ENV{OSGDIR}
+    $ENV{OSG_ROOT}/include/xulrunner
+    $ENV{OSG_ROOT}/include
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/include/xulrunner
+    /usr/local/include
+    /usr/include/xulrunner
+    /usr/include
+    /sw/include/xulrunner # Fink
+    /sw/include # Fink
+    /opt/local/include/xulrunner # DarwinPorts
+    /opt/local/include # DarwinPorts
+    /opt/csw/include/xulrunner # Blastwave
+    /opt/csw/include # Blastwave
+    /opt/include/xulrunner
+    /opt/include
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include/xulrunner
+    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
+    /usr/freeware/include/xulrunner
+    /usr/freeware/include
+)
 
 FIND_PATH(XUL_INCLUDE_DIR nsEmbedAPI.h
     PATHS ${XULRUNNER_XPCOM_INCLUDE_DIRS}
@@ -193,13 +223,13 @@ FIND_XUL_LIBRARY(XUL_NSS_LIBRARY nss3)
 
 
 SET(XUL_FOUND "NO")
-IF(XUL_LIBRARY AND XUL_INCLUDE_DIR)
+IF(XUL_LIBRARY AND XUL_INCLUDE_DIR AND NSIBASEWINDOW_INCLUDE_DIR)
 
     SET(XUL_FOUND "YES")
     SET(XUL_LIBRARIES ${XUL_LIBRARY} ${XUL_MOZJS_LIBRARY} ${XUL_XPCOM_LIBRARY} ${XUL_PLUGIN_LIBRARY} ${XUL_NSS_LIBRARY})
     SET(XUL_INCLUDE_DIRS ${XUL_INCLUDE_DIR} ${NSPR_INCLUDE_DIR} ${MOZJS_INCLUDE_DIR})
 
-ENDIF(XUL_LIBRARY AND XUL_INCLUDE_DIR)
+ENDIF(XUL_LIBRARY AND XUL_INCLUDE_DIR AND NSIBASEWINDOW_INCLUDE_DIR)
 
 # MESSAGE("XUL_INCLUDE_DIR " ${XUL_INCLUDE_DIR})
 # MESSAGE("XUL_LIBRARIES " ${XUL_LIBRARIES})

@@ -37,8 +37,8 @@ void AnimtkKeyEventHandler::printUsage() const
     std::cout << (char) _actionKeys.find(Help)->second << " for Help" << std::endl;
     std::cout << (char) _actionKeys.find(List)->second << " for List" << std::endl;
     std::cout << (char) _actionKeys.find(Play)->second << " for Play" << std::endl;
-    std::cout << (char) _actionKeys.find(Next)->second << " for selext Next item" << std::endl;
-    std::cout << (char) _actionKeys.find(Prev)->second << " for selext Previous item" << std::endl;
+    std::cout << (char) _actionKeys.find(Next)->second << " for select Next item" << std::endl;
+    std::cout << (char) _actionKeys.find(Prev)->second << " for select Previous item" << std::endl;
 }
 
 

@@ -5,8 +5,8 @@ REM trees.
 REM mew 2004-07-16
 
 cd ..\..
-set PATH=%CD%\OpenThreads\bin\win32;%CD%\OpenSceneGraph\bin\win32;%CD%\3rdParty\bin;%PATH%
-set OSG_FILE_PATH=%CD%\OpenSceneGraph-Data;%CD%\OpenSceneGraph-Data\Images;%CD%\OpenSceneGraph-Data\fonts;%OSG_FILE_PATH%
+set PATH=%CD%\OpenThreads\bin\win32;%CD%\bin;%CD%\3rdParty\bin;%PATH%
+set OSG_FILE_PATH=%CD%\OpenSceneGraph-Data;%OSG_FILE_PATH%
 
 REM uncomment one of these for your desired notify level...
 rem set OSG_NOTIFY_LEVEL=ALWAYS

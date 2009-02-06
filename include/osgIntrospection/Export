@@ -15,6 +15,7 @@
 #ifndef OSGINTROSPECTION_EXPORTHDR
 #define OSGINTROSPECTION_EXPORTHDR 1
 
+#include <osg/Config>
 
 #if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
     #pragma warning( disable : 4251 )

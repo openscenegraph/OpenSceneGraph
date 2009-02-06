@@ -75,7 +75,7 @@ D changeType4(S src)
     char* src_ptr = reinterpret_cast<char*>(&src);
     for(int i=0; i<4; ++i)
     {
-        *dest_ptr = *src_ptr;
+        dest_ptr[i] = src_ptr[i];
     }
     return dest;
 }

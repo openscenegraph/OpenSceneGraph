@@ -245,7 +245,6 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         CombineStaticTransformsVisitor cstv(this);
         node->accept(cstv);
         cstv.removeTransforms(node);
-
     }
 
     if (options & FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS)
@@ -1062,6 +1061,7 @@ bool CollectLowestTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRem
                 group->setName( transform->getName() );
                 group->setDataVariance(osg::Object::STATIC);
                 group->setNodeMask(transform->getNodeMask());
+                group->setStateSet(transform->getStateSet());
                 for(unsigned int i=0;i<transform->getNumChildren();++i)
                 {
                     for(unsigned int j=0;j<transform->getNumParents();++j)
@@ -1259,6 +1259,11 @@ bool Optimizer::CombineStaticTransformsVisitor::removeTransforms(osg::Node* node
             
             osg::Matrix newMatrix = child->getMatrix()*transform->getMatrix();
             child->setMatrix(newMatrix);
+            if (transform->getStateSet())
+            {
+                if(child->getStateSet()) child->getStateSet()->merge(*transform->getStateSet());
+                else child->setStateSet(transform->getStateSet());
+            }
             
             transformRemoved = true;
 

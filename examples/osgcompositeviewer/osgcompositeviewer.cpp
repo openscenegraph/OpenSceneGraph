@@ -16,6 +16,8 @@
 *  THE SOFTWARE.
 */
 
+#include <iostream>
+
 #include <osgUtil/Optimizer>
 #include <osgDB/ReadFile>
 
@@ -134,13 +136,14 @@ int main( int argc, char **argv )
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
 
-    if (!scene) return 1;
+    if (!scene)
+    {
+        std::cout << argv[0] << ": requires filename argument." << std::endl;
+        return 1;
+    }
 
     // construct the viewer.
     osgViewer::CompositeViewer viewer(arguments);
-
-
-
 
     if (arguments.read("-1"))
     {
@@ -300,3 +303,4 @@ int main( int argc, char **argv )
      // run the viewer's main frame loop
      return viewer.run();
 }
+

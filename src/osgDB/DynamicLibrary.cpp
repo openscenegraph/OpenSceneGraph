@@ -1,17 +1,17 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
-//The dlopen calls were not adding to OS X until 10.3 
+//The dlopen calls were not adding to OS X until 10.3
 #ifdef __APPLE__
 #include <AvailabilityMacros.h>
 #if !defined(MAC_OS_X_VERSION_10_3) || (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_3)
@@ -46,7 +46,7 @@
 using namespace osg;
 using namespace osgDB;
 
-DynamicLibrary::DynamicLibrary(const std::string& name,HANDLE handle)
+DynamicLibrary::DynamicLibrary(const std::string& name, HANDLE handle)
 {
     _name = name;
     _handle = handle;
@@ -67,7 +67,7 @@ DynamicLibrary::~DynamicLibrary()
         shl_unload (static_cast<shl_t>(_handle));
 #else // other unix
         dlclose(_handle);
-#endif    
+#endif
     }
 }
 
@@ -79,7 +79,7 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
     std::string fullLibraryName = osgDB::findLibraryFile(libraryName);
     if (!fullLibraryName.empty()) handle = getLibraryHandle( fullLibraryName ); // try the lib we have found
     else handle = getLibraryHandle( libraryName ); // havn't found a lib ourselves, see if the OS can find it simply from the library name.
-    
+
     if (handle) return new DynamicLibrary(libraryName,handle);
 
     // else no lib found so report errors.
@@ -115,9 +115,21 @@ DynamicLibrary::HANDLE DynamicLibrary::getLibraryHandle( const std::string& libr
         localLibraryName = "./" + libraryName;
     else
         localLibraryName = libraryName;
+
     handle = dlopen( localLibraryName.c_str(), RTLD_LAZY | RTLD_GLOBAL);
     if( handle == NULL )
-        notify(INFO) << "DynamicLibrary::getLibraryHandle( "<< libraryName << ") - dlopen(): " << dlerror() << std::endl;
+    {
+        if (fileExists(localLibraryName))
+        {
+            notify(WARN) << "Warning: dynamic library '" << libraryName << "' exists, but an error occurred while trying to open it:" << std::endl;
+            notify(WARN) << dlerror() << std::endl;
+        }
+        else
+        {
+            notify(WARN) << "Warning: dynamic library '" << libraryName << "' does not exist (or isn't readable):" << std::endl;
+            notify(WARN) << dlerror() << std::endl;
+        }
+    }
 #endif
     return handle;
 }
@@ -155,3 +167,4 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
     return sym;
 #endif
 }
+

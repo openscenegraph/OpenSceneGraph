@@ -491,18 +491,20 @@ void Text::computeGlyphRepresentation()
 
                 }
             }
+
+            if (itr!=_text.end())
+            {
+                // skip over spaces and return.
+                while (*itr==' ') ++itr;
+                if (*itr=='\n') ++itr;
+            }
+
         }
         else
         {
             ++itr;
         }
                                 
-        if (itr!=_text.end())
-        {
-            // skip over spaces and return.
-            while (*itr==' ') ++itr;
-            if (*itr=='\n') ++itr;
-        }
                 
         // move to new line.
         switch(_layout)

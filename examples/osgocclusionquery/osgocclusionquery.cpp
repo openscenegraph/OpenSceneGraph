@@ -245,7 +245,7 @@ public:
 
             if (_total > _limit)
                 break;
-        } 
+        }
     }
 
 protected:
@@ -311,7 +311,7 @@ OcclusionQueryVisitor::apply( osg::Group& group )
         // A least one OQN was added below the current node.
         //   Don't add one here to avoid hierarchical nesting.
         return;
-    
+
     // There are no OQNs below this group. If the vertex
     //   count exceeds the threshold, add an OQN here.
     addOQN( group );
@@ -395,7 +395,7 @@ EnableQueryVisitor::apply( osg::OcclusionQueryNode& oqn )
 }
 
 
-void 
+void
 DebugDisplayVisitor::apply( osg::OcclusionQueryNode& oqn )
 {
     oqn.setDebugDisplay( _debug );
@@ -489,9 +489,9 @@ StatisticsVisitor::getNumPassed() const
 // KetHandler --
 // Allow user to do interesting things with an
 // OcclusionQueryNode-enabled scene graph at run time.
-class KeyHandler : public osgGA::GUIEventHandler 
+class KeyHandler : public osgGA::GUIEventHandler
 {
-public: 
+public:
     KeyHandler( osg::Node& node )
       : _node( node ),
         _enable( true ),
@@ -563,7 +563,7 @@ createBox()
     osg::ref_ptr<osg::Geode> box = new osg::Geode;
 
     osg::StateSet* state = box->getOrCreateStateSet();
-    osg::PolygonMode* pm = new osg::PolygonMode( 
+    osg::PolygonMode* pm = new osg::PolygonMode(
         osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL );
     state->setAttributeAndModes( pm,
         osg::StateAttribute::ON | osg::StateAttribute::PROTECTED );
@@ -630,6 +630,7 @@ createBox()
 //  * Force glBegin/glEnd slow path
 //  * Lots of vertices and color data per vertex
 //  * No vertex sharing
+//  * Draw the triangles as wireframe
 osg::ref_ptr<osg::Node>
 createRandomTriangles( unsigned int num )
 {
@@ -655,7 +656,7 @@ createRandomTriangles( unsigned int num )
 
     unsigned int i;
     srand( 0 );
-#define RAND_NEG1_TO_1 ( ((rand()%20)-10)*.1 ) 
+#define RAND_NEG1_TO_1 ( ((rand()%20)-10)*.1 )
     for (i=0; i<num; i++)
     {
         osg::Vec3& v0 = (*v)[ i*3+0 ];
@@ -672,7 +673,7 @@ createRandomTriangles( unsigned int num )
     geom->setColorBinding( osg::Geometry::BIND_PER_PRIMITIVE );
     c->resize( num );
 
-#define RAND_0_TO_1 ( (rand()%10)*.1 ) 
+#define RAND_0_TO_1 ( (rand()%10)*.1 )
     for (i=0; i<num; i++)
     {
         osg::Vec4& c0 = (*c)[ i ];
@@ -731,12 +732,12 @@ int main(int argc, char** argv)
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
+
     osgViewer::Viewer viewer( arguments );
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
@@ -791,3 +792,4 @@ int main(int argc, char** argv)
 
     return viewer.run();
 }
+

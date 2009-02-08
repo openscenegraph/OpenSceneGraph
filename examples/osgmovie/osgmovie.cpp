@@ -44,14 +44,14 @@ class MovieEventHandler : public osgGA::GUIEventHandler
 public:
 
     MovieEventHandler():_playToggle(true),_trackMouse(false) {}
-    
+
     void setMouseTracking(bool track) { _trackMouse = track; }
     bool getMouseTracking() const { return _trackMouse; }
-    
+
     void set(osg::Node* node);
 
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object*, osg::NodeVisitor* nv);
-    
+
     virtual void getUsage(osg::ApplicationUsage& usage) const;
 
     typedef std::vector< osg::observer_ptr<osg::ImageStream> > ImageStreamList;
@@ -65,7 +65,7 @@ protected:
     public:
         FindImageStreamsVisitor(ImageStreamList& imageStreamList):
             _imageStreamList(imageStreamList) {}
-            
+
         virtual void apply(osg::Geode& geode)
         {
             apply(geode.getStateSet());
@@ -74,7 +74,7 @@ protected:
             {
                 apply(geode.getDrawable(i)->getStateSet());
             }
-        
+
             traverse(geode);
         }
 
@@ -83,11 +83,11 @@ protected:
             apply(node.getStateSet());
             traverse(node);
         }
-        
+
         inline void apply(osg::StateSet* stateset)
         {
             if (!stateset) return;
-            
+
             osg::StateAttribute* attr = stateset->getTextureAttribute(0,osg::StateAttribute::TEXTURE);
             if (attr)
             {
@@ -98,19 +98,19 @@ protected:
                 if (textureRec) apply(dynamic_cast<osg::ImageStream*>(textureRec->getImage()));
             }
         }
-        
+
         inline void apply(osg::ImageStream* imagestream)
         {
             if (imagestream)
             {
-                _imageStreamList.push_back(imagestream); 
+                _imageStreamList.push_back(imagestream);
             }
         }
-        
+
         ImageStreamList& _imageStreamList;
 
     protected:
-    
+
         FindImageStreamsVisitor& operator = (const FindImageStreamsVisitor&) { return *this; }
 
     };
@@ -119,7 +119,7 @@ protected:
     bool            _playToggle;
     bool            _trackMouse;
     ImageStreamList _imageStreamList;
-    
+
 };
 
 
@@ -150,11 +150,11 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 bool foundIntersection = view==0 ? false :
                     (nv==0 ? view->computeIntersections(ea.getX(), ea.getY(), intersections) :
                              view->computeIntersections(ea.getX(), ea.getY(), nv->getNodePath(), intersections));
-                
+
                 if (foundIntersection)
                 {
 
-                    // use the nearest intersection                 
+                    // use the nearest intersection
                     const osgUtil::LineSegmentIntersector::Intersection& intersection = *(intersections.begin());
                     osg::Drawable* drawable = intersection.drawable.get();
                     osg::Geometry* geometry = drawable ? drawable->asGeometry() : 0;
@@ -179,7 +179,7 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                             osg::Vec2Array* texcoords_Vec2Array = dynamic_cast<osg::Vec2Array*>(texcoords);
                             if (texcoords_Vec2Array)
                             {
-                                // we have tex coord array so now we can compute the final tex coord at the point of intersection.                                
+                                // we have tex coord array so now we can compute the final tex coord at the point of intersection.
                                 osg::Vec2 tc1 = (*texcoords_Vec2Array)[i1];
                                 osg::Vec2 tc2 = (*texcoords_Vec2Array)[i2];
                                 osg::Vec2 tc3 = (*texcoords_Vec2Array)[i3];
@@ -279,7 +279,7 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
 {
     bool flip = image->getOrigin()==osg::Image::TOP_LEFT;
     if (option_flip) flip = !flip;
-    
+
     if (useTextureRectangle)
     {
         osg::Geometry* pictureQuad = osg::createTexturedQuadGeometry(pos,
@@ -290,12 +290,12 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
         osg::TextureRectangle* texture = new osg::TextureRectangle(image);
         texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
         texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
-        
-        
+
+
         pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
                                                                         texture,
                                                                         osg::StateAttribute::ON);
-        
+
         return pictureQuad;
     }
     else
@@ -304,14 +304,14 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
                                            osg::Vec3(width,0.0f,0.0f),
                                            xyPlane ? osg::Vec3(0.0f,height,0.0f) : osg::Vec3(0.0f,0.0f,height),
                                            0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
-                                    
+
         osg::Texture2D* texture = new osg::Texture2D(image);
         texture->setResizeNonPowerOfTwoHint(false);
         texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
         texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
         texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
-        
-        
+
+
         pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
                     texture,
                     osg::StateAttribute::ON);
@@ -324,7 +324,7 @@ int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
     osg::ArgumentParser arguments(&argc,argv);
-    
+
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" example demonstrates the use of ImageStream for rendering movies as textures.");
@@ -334,20 +334,23 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--shader","Use shaders to post process the video.");
     arguments.getApplicationUsage()->addCommandLineOption("--interactive","Use camera manipulator to allow movement around movie.");
     arguments.getApplicationUsage()->addCommandLineOption("--flip","Flip the movie so top becomes bottom.");
+#if defined(WIN32) || defined(__APPLE__)
     arguments.getApplicationUsage()->addCommandLineOption("--devices","Print the Video input capability via QuickTime and exit.");
-    
+#endif
+
     bool useTextureRectangle = true;
     bool useShader = false;
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
-    
+
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
         return 1;
     }
 
+#if defined(WIN32) || defined(__APPLE__)
     // if user requests devices video capability.
     if (arguments.read("-devices") || arguments.read("--devices"))
     {
@@ -355,12 +358,13 @@ int main(int argc, char** argv)
         osgDB::readImageFile("devices.live");
         return 1;
     }
+#endif
 
     while (arguments.read("--texture2D")) useTextureRectangle=false;
     while (arguments.read("--shader")) useShader=true;
 
     bool mouseTracking = false;
-    while (arguments.read("--mouse")) mouseTracking=true; 
+    while (arguments.read("--mouse")) mouseTracking=true;
 
 
     // if user request help write it out to cout.
@@ -419,9 +423,9 @@ int main(int argc, char** argv)
     osg::Vec3 pos(0.0f,0.0f,0.0f);
     osg::Vec3 topleft = pos;
     osg::Vec3 bottomright = pos;
-    
+
     bool xyPlane = fullscreen;
-    
+
     for(int i=1;i<arguments.argc();++i)
     {
         if (arguments.isString(i))
@@ -433,9 +437,9 @@ int main(int argc, char** argv)
             if (image)
             {
                 osg::notify(osg::NOTICE)<<"image->s()"<<image->s()<<" image-t()="<<image->t()<<std::endl;
-            
+
                 geode->addDrawable(myCreateTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle, xyPlane, flip));
-        
+
                 bottomright = pos + osg::Vec3(static_cast<float>(image->s()),static_cast<float>(image->t()),0.0f);
 
                 if (xyPlane) pos.y() += image->t()*1.05f;
@@ -444,10 +448,10 @@ int main(int argc, char** argv)
             else
             {
                 std::cout<<"Unable to read file "<<arguments[i]<<std::endl;
-            }            
+            }
         }
     }
-    
+
     // set the scene to render
     viewer.setSceneData(geode.get());
 
@@ -496,3 +500,4 @@ int main(int argc, char** argv)
         return viewer.run();
     }
 }
+

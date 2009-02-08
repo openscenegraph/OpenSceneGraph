@@ -11,7 +11,7 @@ void textInfo(osgText::Text* text)
 	const osgText::Text::TextureGlyphQuadMap& tgqm = text->getTextureGlyphQuadMap();
 
 	const osgText::Text::TextureGlyphQuadMap::const_iterator tgqmi = tgqm.begin();
-	
+
 	const osgText::Text::GlyphQuads& gq = tgqmi->second;
 
 	osgText::String& s = text->getText();
@@ -59,7 +59,7 @@ osg::Camera* createOrthoCamera(double width, double height)
 	camera->setViewMatrix(osg::Matrix::identity());
 	camera->setClearMask(GL_DEPTH_BUFFER_BIT);
 	camera->setRenderOrder(osg::Camera::POST_RENDER);
-	
+
 	return camera;
 }
 
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 	// Make sure we have the minimum args...
 	if(argc <= 2)
 	{
-		osg::notify(osg::FATAL) << "usage: " << args[0] << " FONTFILE [sizes...]" << std::endl;
+		osg::notify(osg::FATAL) << "usage: " << args[0] << " fontfile size1 [size2 ...]" << std::endl;
 
 		return 1;
 	}
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
 	viewer.addEventHandler(new osgViewer::WindowSizeHandler());
 
 	osg::Group*  group  = new osg::Group();
-	osg::Camera* camera = createOrthoCamera(1280.0f, 1024.0f); 
+	osg::Camera* camera = createOrthoCamera(1280.0f, 1024.0f);
 
 	// Create the list of desired sizes.
 	Sizes sizes;
@@ -138,3 +138,4 @@ int main(int argc, char** argv)
 
 	return viewer.run();
 }
+

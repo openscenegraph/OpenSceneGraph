@@ -11,12 +11,9 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
-#include <osg/Drawable>
-#include <osg/Geode>
 #include <osg/Geometry>
-#include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/Transform>
+#include <osg/Vec3>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/VertexInfluence>
@@ -84,6 +81,26 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	          __osgAnimation_VertexInfluenceMap_P1__getInfluenceMap,
 	          "",
 	          "");
+	I_Method0(const osgAnimation::Skeleton *, getSkeleton,
+	          Properties::NON_VIRTUAL,
+	          __C5_Skeleton_P1__getSkeleton,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Skeleton *, getSkeleton,
+	          Properties::NON_VIRTUAL,
+	          __Skeleton_P1__getSkeleton,
+	          "",
+	          "");
+	I_Method1(void, setNeedToComputeMatrix, IN, bool, state,
+	          Properties::NON_VIRTUAL,
+	          __void__setNeedToComputeMatrix__bool,
+	          "",
+	          "");
+	I_Method0(bool, getNeedToComputeMatrix,
+	          Properties::NON_VIRTUAL,
+	          __bool__getNeedToComputeMatrix,
+	          "",
+	          "");
 	I_Method0(void, buildVertexSet,
 	          Properties::NON_VIRTUAL,
 	          __void__buildVertexSet,
@@ -99,26 +116,6 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	          __void__computeMatrixFromRootSkeleton,
 	          "",
 	          "");
-	I_Method1(void, setNeedToComputeMatrix, IN, bool, state,
-	          Properties::NON_VIRTUAL,
-	          __void__setNeedToComputeMatrix__bool,
-	          "",
-	          "");
-	I_Method0(bool, getNeedToComputeMatrix,
-	          Properties::NON_VIRTUAL,
-	          __bool__getNeedToComputeMatrix,
-	          "",
-	          "");
-	I_Method0(const osgAnimation::Skeleton *, getSkeleton,
-	          Properties::NON_VIRTUAL,
-	          __C5_Skeleton_P1__getSkeleton,
-	          "",
-	          "");
-	I_Method0(osgAnimation::Skeleton *, getSkeleton,
-	          Properties::NON_VIRTUAL,
-	          __Skeleton_P1__getSkeleton,
-	          "",
-	          "");
 	I_Method0(void, transformSoftwareMethod,
 	          Properties::VIRTUAL,
 	          __void__transformSoftwareMethod,
@@ -129,79 +126,33 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	          __C5_osgAnimation_VertexInfluenceSet_R1__getVertexInfluenceSet,
 	          "",
 	          "");
+	I_Method0(const std::vector< osg::Vec3 > &, getPositionSource,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_vectorT1_osg_Vec3__R1__getPositionSource,
+	          "",
+	          "");
+	I_Method0(const std::vector< osg::Vec3 > &, getNormalSource,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_vectorT1_osg_Vec3__R1__getNormalSource,
+	          "",
+	          "");
 	I_SimpleProperty(osgAnimation::VertexInfluenceMap *, InfluenceMap, 
 	                 __osgAnimation_VertexInfluenceMap_P1__getInfluenceMap, 
 	                 __void__setInfluenceMap__osgAnimation_VertexInfluenceMap_P1);
 	I_SimpleProperty(bool, NeedToComputeMatrix, 
 	                 __bool__getNeedToComputeMatrix, 
 	                 __void__setNeedToComputeMatrix__bool);
+	I_SimpleProperty(const std::vector< osg::Vec3 > &, NormalSource, 
+	                 __C5_std_vectorT1_osg_Vec3__R1__getNormalSource, 
+	                 0);
+	I_SimpleProperty(const std::vector< osg::Vec3 > &, PositionSource, 
+	                 __C5_std_vectorT1_osg_Vec3__R1__getPositionSource, 
+	                 0);
 	I_SimpleProperty(osgAnimation::Skeleton *, Skeleton, 
 	                 __Skeleton_P1__getSkeleton, 
 	                 0);
 	I_SimpleProperty(const osgAnimation::VertexInfluenceSet &, VertexInfluenceSet, 
 	                 __C5_osgAnimation_VertexInfluenceSet_R1__getVertexInfluenceSet, 
 	                 0);
-	I_PublicMemberProperty(std::vector< osg::Vec3 >, _positionSource);
-	I_PublicMemberProperty(std::vector< osg::Vec3 >, _normalSource);
-	I_PublicMemberProperty(osgAnimation::VertexInfluenceSet, _vertexInfluenceSet);
-	I_PublicMemberProperty(osg::ref_ptr< osgAnimation::VertexInfluenceMap >, _vertexInfluenceMap);
-	I_PublicMemberProperty(osgAnimation::TransformVertexFunctor, _transformVertexes);
-	I_PublicMemberProperty(osg::Matrix, _matrixFromSkeletonToGeometry);
-	I_PublicMemberProperty(osg::Matrix, _invMatrixFromSkeletonToGeometry);
-	I_PublicMemberProperty(osg::observer_ptr< osgAnimation::Skeleton >, _root);
-	I_PublicMemberProperty(bool, _needToComputeMatrix);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry::BuildVertexTransformerVisitor)
-	I_DeclaringFile("osgAnimation/RigGeometry");
-	I_BaseType(osg::NodeVisitor);
-	I_Constructor1(IN, osgAnimation::Skeleton *, root,
-	               Properties::NON_EXPLICIT,
-	               ____BuildVertexTransformerVisitor__Skeleton_P1,
-	               "",
-	               "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the library name/namespapce of the visitor's. ",
-	          "Should be defined by derived classes. ");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the visitor's class type. ",
-	          "Should be defined by derived classes. ");
-	I_Method1(void, apply, IN, osg::Geode &, node,
-	          Properties::VIRTUAL,
-	          __void__apply__osg_Geode_R1,
-	          "",
-	          "");
-	I_PublicMemberProperty(osg::ref_ptr< osgAnimation::Skeleton >, _root);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry::FindNearestParentSkeleton)
-	I_DeclaringFile("osgAnimation/RigGeometry");
-	I_BaseType(osg::NodeVisitor);
-	I_Constructor0(____FindNearestParentSkeleton,
-	               "",
-	               "");
-	I_Method1(void, apply, IN, osg::Transform &, node,
-	          Properties::VIRTUAL,
-	          __void__apply__osg_Transform_R1,
-	          "",
-	          "");
-	I_PublicMemberProperty(osg::ref_ptr< osgAnimation::Skeleton >, _root);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry::UpdateVertex)
-	I_DeclaringFile("osgAnimation/RigGeometry");
-	I_BaseType(osg::Drawable::UpdateCallback);
-	I_Constructor0(____UpdateVertex,
-	               "",
-	               "");
-	I_Method2(void, update, IN, osg::NodeVisitor *, x, IN, osg::Drawable *, drw,
-	          Properties::VIRTUAL,
-	          __void__update__osg_NodeVisitor_P1__osg_Drawable_P1,
-	          "do customized update code. ",
-	          "");
 END_REFLECTOR
 

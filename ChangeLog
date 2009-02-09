@@ -1,3 +1,205 @@
+2009-02-09 22:59  robert
+
+	* examples/osganimationskinning/osganimationskinning.cpp,
+	  include/osgAnimation/RigGeometry, include/osgAnimation/Timeline,
+	  src/osgWrappers/osgAnimation/RigGeometry.cpp,
+	  src/osgWrappers/osgAnimation/Timeline.cpp: From Fabien
+	  Lavignotte,"Some other litte changes just to clean up the API.
+	  
+	  TimeLine : remove virtual inheritance that is not needed
+	  RigGeometry : put some methods/members in private section
+	  (everything was public), use META_Object macro
+	  osganimationskinning.cpp : remove two lines that are not needed"
+	  
+	  Merged from svn/trunk:
+	  
+	  svn merge -r 9736:9737
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk
+
+2009-02-09 22:28  robert
+
+	* src/osgDB/DatabasePager.cpp: Fixed for loop bug in
+	  DatabasePager::getRequestsInProgress().
+
+2009-02-09 22:13  robert
+
+	* CMakeLists.txt: Update release candidate to 4.
+
+2009-02-09 22:09  robert
+
+	* src/osgWrappers/genwrapper.conf,
+	  src/osgWrappers/osgParticle/ParticleSystem.cpp: Add suppression
+	  of the ScopedLock<Mutex> template
+
+2009-02-09 21:53  robert
+
+	* src/osgPlugins/osg/ReaderWriterOSG.cpp: From Bryan Thrall, "The
+	  .osg plugin doesn't seem to support an option to write shader
+	  files
+	  separately, so it always inlines them in the .osg file (as far as
+	  I can
+	  tell). This change adds that ability. "
+	  
+	  Merged from svn/trunk.
+
+2009-02-09 21:17  robert
+
+	* src/osgViewer/GraphicsWindowWin32.cpp: From Ralf Habacker, "on
+	  win32 there is a memory leak in recent svn code in
+	  GraphicsWindowWin32.cpp.
+	  
+	  in bool GraphicsWindowWin32::setWindow( HWND handle )
+	  
+	  there is the following if/else statement
+	  
+	  if (_traits.valid() && _traits->setInheritedWindowPixelFormat)
+	  ....
+	  else
+	  setPixelFormat()
+	  _hglrc = ::wglCreateContext(...) [1]
+	  
+	  setPixelFormat() calls wglCreateContext() and saves the result
+	  into _hglrc which is overwritten by a second call to
+	  wglCreateContext() call at [1]
+	  
+	  The same behavior occurs in bool
+	  Win32WindowingSystem::getSampleOpenGLContext( OpenGLContext&
+	  context, HDC windowHDC, int windowOriginX, int windowOriginY ).
+	  
+	  The solution for this issue is to move the wglCreateContext() out
+	  of setPixelFormat() and to place it into the caller which is done
+	  to the appended file
+	  "
+
+2009-02-09 18:20  robert
+
+	* include/osgParticle/ParticleSystem,
+	  src/osgParticle/ConnectedParticleSystem.cpp,
+	  src/osgParticle/ParticleProcessor.cpp,
+	  src/osgParticle/ParticleSystem.cpp,
+	  src/osgParticle/ParticleSystemUpdater.cpp,
+	  src/osgWrappers/osgParticle/ParticleSystem.cpp: To address a
+	  thread related crash reported in osgParticle changed the
+	  ParticleSystem
+	  to have an optional compile path for either using a
+	  OpenThreads::ReadWriteMutex or an
+	  OpenThreads::Mutex as it's base implementation, with the Mutex
+	  now being used by default.
+
+2009-02-09 14:51  robert
+
+	* Xcode/OpenSceneGraph/config/OpenThreads/Config: Fixed indentation
+
+2009-02-09 14:48  robert
+
+	* Xcode/OpenSceneGraph/config/OpenThreads/Config: Synced OSG-2.8
+	  version with the svn/trunk version.
+
+2009-02-09 14:38  robert
+
+	* Xcode/OpenSceneGraph/config/OpenThreads/Config: From Stephan
+	  Huber, did an merge from svn/trunk:
+	  
+	  svn merge -r 9722:9721
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk
+
+2009-02-09 13:12  robert
+
+	* CMakeLists.txt: Reset the release candidate number in prep for
+	  official 2.8.0 release
+
+2009-02-09 12:59  robert
+
+	* NEWS.txt, README.txt: Updated date of 2.8.0 release
+
+2009-02-09 11:15  robert
+
+	* NEWS.txt: From Paul Melis, syncing improvements made to wiki
+	  version of NEWS for 2.8
+
+2009-02-09 10:58  robert
+
+	* src/osgDB/Registry.cpp: Removed inapproriatly placed #pragma
+
+2009-02-09 09:48  robert
+
+	* src/osgWrappers/osgAnimation/Animation.cpp: Updated wrappers
+
+2009-02-09 09:41  robert
+
+	* include/osgAnimation/Animation: From Cedric Pinson, removed
+	  virtual inheritance from osgAnimation::Animation
+
+2009-02-08 19:40  robert
+
+	* NEWS.txt, README.txt: Updated NEWS and README dates for 2.8.0-rc3
+
+2009-02-08 19:39  robert
+
+	* CMakeLists.txt: Fixed handling of making svn tags when on a
+	  branch
+
+2009-02-08 19:35  robert
+
+	* CMakeLists.txt: Changed the svn source from trunk to branches
+
+2009-02-08 19:27  robert
+
+	* src/osgText/Text.cpp: Fixed handling of a series of \n in the
+	  text string so that the correct line spacing is maintained.
+
+2009-02-08 15:56  robert
+
+	* examples/osgcompositeviewer/osgcompositeviewer.cpp,
+	  examples/osgfont/osgfont.cpp, examples/osgmovie/osgmovie.cpp,
+	  examples/osgocclusionquery/osgocclusionquery.cpp,
+	  src/osgDB/DynamicLibrary.cpp: Form Paul Melis, "While trying out
+	  the osgbrowser example (where I had forgotten to update
+	  LD_LIBRARY_PATH so the XUL libs would be found) I noticed that
+	  although
+	  the gecko plugin was found it could not be loaded. But this did
+	  not
+	  trigger any visible warning/error message (at least not without
+	  INFO
+	  notify level). Would you mind if we change the notify level for a
+	  dlerror() to WARNING? This will also make it more explicit for
+	  the case
+	  when a plugin isn't actually found, which seems to come up a lot
+	  for
+	  novice users (e.g. no freetype on win32, so no freetype plugin,
+	  etc).
+	  Also, the current error message is misleading ("Warning: Could
+	  not FIND
+	  plugin to ...") because the it's not always a case of not finding
+	  the
+	  plugin. I slightly enhanced the situation of not finding a plugin
+	  versus
+	  finding it but not being able to load it.
+	  
+	  Here's also a few fixes to some of the examples:
+	  - osgfont: make usage help line more in line with the actual
+	  behaviour
+	  - osgcompositeviewer: complain when no model file was provided
+	  - osgmovie: don't include quicktime-dependent feature on Linux
+	  - osgocclussionquery: comment addition (as I was surprised that
+	  lines
+	  were being drawn in a function called createRandomTriangles())"
+
+2009-02-07 11:28  robert
+
+	* src/osgUtil/Optimizer.cpp: Added merge.setting of StateSet during
+	  replacement of Transforms in FlattenStaticTransfrom and
+	  CombineAdjacentTransfroms
+
+2009-02-06 16:07  robert
+
+	* AUTHORS.txt, applications/osgversion/osgversion.cpp: Updated
+	  Authors
+
+2009-02-06 16:03  robert
+
+	* ChangeLog: Updated ChangeLog for 2.8.0-rc2
+
 2009-02-06 15:27  robert
 
 	* examples/osg2cpp/osg2cpp.cpp,

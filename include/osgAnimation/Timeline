@@ -27,11 +27,11 @@
 namespace osgAnimation
 {
 
-    class Action : public virtual osg::Object
+    class Action : public osg::Object
     {
     public:
 
-        class Callback : public virtual osg::Object
+        class Callback : public osg::Object
         {
         public:
             Callback(){}
@@ -162,7 +162,7 @@ namespace osgAnimation
     };
 
 
-    class Timeline : public virtual osg::Object
+    class Timeline : public osg::Object
     {
     protected:
         typedef std::pair<unsigned int, osg::ref_ptr<Action> > FrameAction;

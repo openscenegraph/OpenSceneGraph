@@ -252,9 +252,6 @@ int main (int argc, char* argv[])
 
     initVertexMap(root.get(), right0.get(), right1.get(), geom, src.get());
 
-    geom->buildVertexSet();
-    geom->buildTransformer(skelroot.get());
-
     // let's run !
     viewer.setSceneData( scene );
     viewer.realize();

@@ -264,6 +264,10 @@ class OSGReaderWriter : public ReaderWriter
                     {
                         fout.setOutputTextureFiles(true);
                     }
+                    if (opt=="OutputShaderFiles")
+                    {
+                        fout.setOutputShaderFiles(true);
+                    }
                 }
             }
         }            

@@ -67,6 +67,7 @@ Serge Lages
 Joran Jessurun
 Frederic Marmond
 David Fries
+Bryan Thrall
 Boris Bralo
 Yefei He
 Tim Moore
@@ -80,7 +81,6 @@ Mario Valle
 Gordon Tomlinson
 Gino van den Bergen
 Carlo Camporesi
-Bryan Thrall
 Ben Discoe
 Andreas Ekstrand
 Sasa Bistrovic
@@ -119,6 +119,7 @@ Simon Julier
 Sebastien Grignard
 Romano Magacho
 Richard Schmidt
+Ralf Habacker
 Paul de Repentigny
 Liang Aibin
 Leandro Motta Barros
@@ -135,7 +136,6 @@ Tony Horrobin
 Sohey Yamamoto
 Rudolf Wiedemann
 Riccardo Corsi
-Ralf Habacker
 Rafa Gaitan
 Phil Atkin
 Mattias Linde
@@ -149,6 +149,7 @@ Gary Quinn
 Garrett Potts
 Gabor Dorka
 Fabio Mierlo
+Fabien Lavignotte
 Doug McCorkle
 Donn Mielcarek
 Donald Cipperly
@@ -199,7 +200,6 @@ Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
 Ferdi Smit
-Fabien Lavignotte
 Ewe Woessner
 Erik den Dekker
 Edgar Ellis

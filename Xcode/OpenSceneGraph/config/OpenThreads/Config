@@ -2,10 +2,13 @@
 #define _OPENTHREADS_CONFIG
 
 #include <AvailabilityMacros.h>
+
+#define _OPENTHREADS_ATOMIC_USE_MUTEX
+
 #if defined(MAC_OS_X_VERSION_10_5)
     #if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_5
         #define _OPENTHREADS_ATOMIC_USE_BSD_ATOMIC
-    #elif
+    #undef _OPENTHREADS_ATOMIC_USE_MUTEX
     #endif
 #endif
 /* #undef _OPENTHREADS_ATOMIC_USE_GCC_BUILTINS */

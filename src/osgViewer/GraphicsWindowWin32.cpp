@@ -1172,6 +1172,20 @@ bool GraphicsWindowWin32::createWindow()
         return false;
     }
 
+    //
+    // Create the OpenGL rendering context associated with this window
+    //
+
+    _hglrc = ::wglCreateContext(_hdc);
+    if (_hglrc==0)
+    {
+        reportErrorForScreen("GraphicsWindowWin32::createWindow() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());
+        ::ReleaseDC(_hwnd, _hdc);
+        _hdc  = 0;
+        destroyWindow();
+        return false;
+    }
+
     Win32WindowingSystem::getInterface()->registerWindow(_hwnd, this);
     return true;
 }
@@ -1209,37 +1223,23 @@ bool GraphicsWindowWin32::setWindow( HWND handle )
     // Check if we must set the pixel format of the inherited window
     //
 
-    if (_traits.valid() && _traits->setInheritedWindowPixelFormat)
+    if (!setPixelFormat())
     {
-        if (!setPixelFormat())
-        {
-            reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to set the inherited window pixel format", _traits->screenNum, ::GetLastError());
-            _hdc  = 0;
-            _hwnd = 0;
-            return false;
-        }
+        reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to set the inherited window pixel format", _traits->screenNum, ::GetLastError());
+        ::ReleaseDC(_hwnd, _hdc);
+        _hdc  = 0;
+        _hwnd = 0;
+        return false;
     }
-    else
+
+    _hglrc = ::wglCreateContext(_hdc);
+    if (_hglrc==0)
     {
-        //
-        // Create the OpenGL rendering context associated with this window
-        //
-        if (!setPixelFormat())
-        {
-            reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to set the inherited window pixel format", _traits->screenNum, ::GetLastError());
-            _hdc  = 0;
-            _hwnd = 0;
-            return false;
-        }
-        _hglrc = ::wglCreateContext(_hdc);
-        if (_hglrc==0)
-        {
-            reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());
-            ::ReleaseDC(_hwnd, _hdc);
-            _hdc  = 0;
-            _hwnd = 0;
-            return false;
-        }
+        reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());
+        ::ReleaseDC(_hwnd, _hdc);
+        _hdc  = 0;
+        _hwnd = 0;
+        return false;
     }
 
     if (!registerWindowProcedure())
@@ -1563,17 +1563,6 @@ bool GraphicsWindowWin32::setPixelFormat()
     if (!::SetPixelFormat(_hdc, pixelFormatIndex, &pfd))
     {
         reportErrorForScreen("GraphicsWindowWin32::setPixelFormat() - Unable to set pixel format", _traits->screenNum, ::GetLastError());
-        return false;
-    }
-
-    //
-    // Create the OpenGL rendering context associated with this window
-    //
-
-    _hglrc = ::wglCreateContext(_hdc);
-    if (_hglrc==0)
-    {
-        reportErrorForScreen("GraphicsWindowWin32::setPixelFormat() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());
         return false;
     }
 

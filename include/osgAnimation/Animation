@@ -25,7 +25,7 @@
 namespace osgAnimation
 {
 
-    class OSGANIMATION_EXPORT Animation : public virtual osg::Object
+    class OSGANIMATION_EXPORT Animation : public osg::Object
     {
     public:
         META_Object(osgAnimation, Animation)

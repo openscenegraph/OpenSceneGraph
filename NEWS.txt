@@ -15,38 +15,38 @@ The !OpenSceneGraph 2.8 release is the culmination of 10 years of work by the le
     * Transfer functions
     * Per pixel lighting
     * Iso surface rendering
-    * Maximum Intensity rendering
-    * non power of two 3d texture and 3d texture compression
-    * DICOM loader for reading dicom medical data
+    * Maximum Intensity Projection rendering
+    * Non-power-of-two 3D textures, and 3D texture compression
+    * DICOM loading for reading dicom medical data
   * New osgAnimation library for character and scene animation.
   * New plugin for reading Biovision hierarchical files (.BVH) to generate character motion animations.
   * New osgShadow support for Light Space Perspective Shadow Maps (LispSM).
   * Three new scene graph widgets for placing traditional 2D capability into fully interactive 3D scenes:
-    * PDF widget support (based on libPoppler)
-    * VNC client widget support (based on libVNCServer) 
-    * Internet browser client widget support (based on Gecko/UBrowser)
+    * PDF widget (based on libPoppler)
+    * VNC client widget (based on libVNCServer) 
+    * Internet browser client widget (based on Gecko/UBrowser)
   * New plugins for loading Half-Life 2 maps and models.
-  * New plugin for loaded exr, high dynamic range imagery
-  * Improvements to !DatabasePager tailored for low latency paging.
+  * New plugin for loading EXR, high dynamic range imagery
+  * Improvements to !DatabasePager, tailored for low latency paging.
   * Improved runtime stats collection and on screen reporting.
   * Performance improvements through optimization of matrix operations.
-  * Support for the OpenGL draw instanced extension.
+  * Support for the OpenGL "draw instanced" extension.
   * Improvements to COLLADA support.
   * Build reporting using CDash
-  * New packing support using CPack
+  * New packaging support using CPack
   * A wide range of build and bug fixes 
 
 === Downloads and Licensing ===
-!OpenSceneGraph is open-source so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [http://www.openscenegraph.org/projects/osg/wiki/Downloads Downloads] section of the openscenegraph.org website.
+!OpenSceneGraph is open-source, so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [http://www.openscenegraph.org/projects/osg/wiki/Downloads Downloads] section of the openscenegraph.org website.
 
 !OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software. 
 
 === !OpenSceneGraph Books now available ===
 
-The !OpenSceneGraph Quick Start Guide is now available in Chinese as well as English, and alongside the Reference Manual books can be found at [http://www.osgbooks.com OsgBooks].
+The !OpenSceneGraph Quick Start Guide is now available in Chinese as well as English, and alongside the Reference Manual, books can be found at [http://www.osgbooks.com OsgBooks].
 
 === Professional support and services ===
-!OpenSceneGraph project is backed up with professional services by [http://openscenegraph.com OpenSceneGraph Professional Services], based in Scotland, and [http://www.skew-matrix.com Skew-Matrix] and [http://www.blue-newt.com Blue-Newt Software] both based in the USA, and a range of [wiki:Community/Contractors Contractors] from around the world.  Services available include:
+!OpenSceneGraph project is backed up with professional services by [http://www.openscenegraph.com OpenSceneGraph Professional Services], based in Scotland, and [http://www.skew-matrix.com Skew-Matrix] and [http://www.blue-newt.com Blue-Newt Software] both based in the USA, and a range of [wiki:Community/Contractors Contractors] from around the world.  Services available include:
 
  * Confidential Professional Support
  * Bespoke development
@@ -60,8 +60,8 @@ The !OpenSceneGraph project owes a great deal to the community for its developme
 
 ----
 
-About !OpenSceneGraph:[[BR]]
-!OpenSceneGraph Project was founded in September 1999 by Don Burns and Robert Osfield.
+About !OpenSceneGraph: [[BR]]
+The !OpenSceneGraph Project was founded in September 1999 by Don Burns and Robert Osfield.
 Further information, screenshots, downloads, documentation, and support links can be found on the !OpenSceneGraph project website http://www.openscenegraph.org.
 
 About !OpenSceneGraph Professional Services:[[BR]]

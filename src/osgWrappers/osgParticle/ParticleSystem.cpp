@@ -310,12 +310,3 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	                 0);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(OpenThreads::ScopedLock< OpenThreads::Mutex >)
-	I_DeclaringFile("OpenThreads/ScopedLock");
-	I_Constructor1(IN, OpenThreads::Mutex &, m,
-	               Properties::EXPLICIT,
-	               ____ScopedLock__M_R1,
-	               "",
-	               "");
-END_REFLECTOR
-

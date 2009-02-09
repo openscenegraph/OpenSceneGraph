@@ -28,7 +28,7 @@ TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osg::ref_ptr< osgAnimation::Action
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Action)
 	I_DeclaringFile("osgAnimation/Timeline");
-	I_VirtualBaseType(osg::Object);
+	I_BaseType(osg::Object);
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
@@ -138,7 +138,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Action::Callback)
 	I_DeclaringFile("osgAnimation/Timeline");
-	I_VirtualBaseType(osg::Object);
+	I_BaseType(osg::Object);
 	I_Constructor0(____Callback,
 	               "",
 	               "");
@@ -322,7 +322,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Timeline)
 	I_DeclaringFile("osgAnimation/Timeline");
-	I_VirtualBaseType(osg::Object);
+	I_BaseType(osg::Object);
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,

@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <OpenThreads/ReadWriteMutex>
+#include <OpenThreads/Mutex>
 #include <osg/BoundingBox>
 #include <osg/CopyOp>
 #include <osg/Object>
@@ -26,6 +26,12 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+TYPE_NAME_ALIAS(OpenThreads::Mutex, osgParticle::ParticleSystem::ReadWriterMutex)
+
+TYPE_NAME_ALIAS(OpenThreads::ScopedLock< OpenThreads::Mutex >, osgParticle::ParticleSystem::ScopedReadLock)
+
+TYPE_NAME_ALIAS(OpenThreads::ScopedLock< OpenThreads::Mutex >, osgParticle::ParticleSystem::ScopedWriteLock)
 
 BEGIN_ENUM_REFLECTOR(osgParticle::ParticleSystem::Alignment)
 	I_DeclaringFile("osgParticle/ParticleSystem");
@@ -249,9 +255,9 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          __osg_BoundingBox__computeBound,
 	          "Compute the bounding box around Drawables's geometry. ",
 	          "");
-	I_Method0(OpenThreads::ReadWriteMutex *, getReadWriteMutex,
+	I_Method0(osgParticle::ParticleSystem::ReadWriterMutex *, getReadWriteMutex,
 	          Properties::NON_VIRTUAL,
-	          __OpenThreads_ReadWriteMutex_P1__getReadWriteMutex,
+	          __ReadWriterMutex_P1__getReadWriteMutex,
 	          "",
 	          "");
 	I_ProtectedMethod2(void, update_bounds, IN, const osg::Vec3 &, p, IN, float, r,
@@ -299,8 +305,17 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	I_SimpleProperty(osgParticle::ParticleSystem::ParticleScaleReferenceFrame, ParticleScaleReferenceFrame, 
 	                 __ParticleScaleReferenceFrame__getParticleScaleReferenceFrame, 
 	                 __void__setParticleScaleReferenceFrame__ParticleScaleReferenceFrame);
-	I_SimpleProperty(OpenThreads::ReadWriteMutex *, ReadWriteMutex, 
-	                 __OpenThreads_ReadWriteMutex_P1__getReadWriteMutex, 
+	I_SimpleProperty(osgParticle::ParticleSystem::ReadWriterMutex *, ReadWriteMutex, 
+	                 __ReadWriterMutex_P1__getReadWriteMutex, 
 	                 0);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(OpenThreads::ScopedLock< OpenThreads::Mutex >)
+	I_DeclaringFile("OpenThreads/ScopedLock");
+	I_Constructor1(IN, OpenThreads::Mutex &, m,
+	               Properties::EXPLICIT,
+	               ____ScopedLock__M_R1,
+	               "",
+	               "");
 END_REFLECTOR
 

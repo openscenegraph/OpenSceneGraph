@@ -30,7 +30,17 @@
 #include <osg/Vec3>
 #include <osg/BoundingBox>
 
-#include <OpenThreads/ReadWriteMutex>
+// 9th Febrary 2009, disabled the use of ReadWriteMutex as it looks like this
+// is introducing threading problems due to threading problems in OpenThreads::ReadWriteMutex.
+// #define OSGPARTICLE_USE_ReadWriteMutex
+
+#ifdef OSGPARTICLE_USE_ReadWriteMutex
+    #include <OpenThreads/ReadWriteMutex>
+#else
+    #include <OpenThreads/Mutex>
+    #include <OpenThreads/ScopedLock>
+#endif
+
 
 namespace osgParticle
 {
@@ -182,7 +192,17 @@ namespace osgParticle
 
         virtual osg::BoundingBox computeBound() const;
         
-        OpenThreads::ReadWriteMutex* getReadWriteMutex() const { return &_readWriteMutex; }
+#ifdef OSGPARTICLE_USE_ReadWriteMutex
+        typedef OpenThreads::ReadWriteMutex ReadWriterMutex;
+        typedef OpenThreads::ScopedReadLock ScopedReadLock;
+        typedef OpenThreads::ScopedWriteLock ScopedWriteLock;
+#else
+        typedef OpenThreads::Mutex ReadWriterMutex;
+        typedef OpenThreads::ScopedLock<OpenThreads::Mutex> ScopedReadLock;
+        typedef OpenThreads::ScopedLock<OpenThreads::Mutex> ScopedWriteLock;
+#endif
+
+        ReadWriterMutex* getReadWriteMutex() const { return &_readWriteMutex; }
 
     protected:
 
@@ -222,8 +242,7 @@ namespace osgParticle
         int _detail;
         mutable int _draw_count;
         
-        mutable OpenThreads::ReadWriteMutex _readWriteMutex;
-        
+        mutable ReadWriterMutex _readWriteMutex;
     };
     
     // INLINE FUNCTIONS

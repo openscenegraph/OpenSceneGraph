@@ -96,7 +96,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
 {
     osg::State& state = *renderInfo.getState();
 
-    OpenThreads::ScopedReadLock lock(_readWriteMutex);
+    ScopedReadLock lock(_readWriteMutex);
 
     // update the frame count, so other objects can detect when
     // this particle system is culled

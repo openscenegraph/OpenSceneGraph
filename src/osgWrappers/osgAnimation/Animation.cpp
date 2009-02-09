@@ -33,7 +33,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	I_DeclaringFile("osgAnimation/Animation");
-	I_VirtualBaseType(osg::Object);
+	I_BaseType(osg::Object);
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,

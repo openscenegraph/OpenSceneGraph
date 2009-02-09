@@ -1217,7 +1217,7 @@ bool DatabasePager::getRequestsInProgress() const
     if (getDataToMergeListSize()>0) return true;
 
     for(DatabaseThreadList::const_iterator itr = _databaseThreads.begin();
-        itr != _databaseThreads.begin();
+        itr != _databaseThreads.end();
         ++itr)
     {
         if ((*itr)->getActive()) return true;

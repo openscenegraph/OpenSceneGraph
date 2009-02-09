@@ -672,7 +672,6 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
     return prepend+"osgdb_"+lowercase_ext+".sl";
 #else
     #ifdef _DEBUG
-#pragma message(OSG_DEBUG_POSTFIX_WITH_QUOTES)
          return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX_WITH_QUOTES + ".so";
     #else
          return prepend+"osgdb_"+lowercase_ext+".so";

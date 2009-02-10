@@ -29,7 +29,7 @@ FIND_PATH(ZLIB_INCLUDE_DIR zlib.h
 )
 
 FIND_LIBRARY(ZLIB_LIBRARY 
-    NAMES z libz
+    NAMES z libz zlib
     PATHS
     $ENV{ZLIB_DIR}/lib
     $ENV{ZLIB_DIR}

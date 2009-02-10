@@ -83,6 +83,7 @@ EasyCurl::EasyCurl()
 
     curl_easy_setopt(_curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");            
     curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, StreamMemoryCallback);
+    curl_easy_setopt(_curl, CURLOPT_FOLLOWLOCATION, 1);
 }
 
 EasyCurl::~EasyCurl()

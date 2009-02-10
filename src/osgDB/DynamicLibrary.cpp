@@ -126,8 +126,8 @@ DynamicLibrary::HANDLE DynamicLibrary::getLibraryHandle( const std::string& libr
         }
         else
         {
-            notify(WARN) << "Warning: dynamic library '" << libraryName << "' does not exist (or isn't readable):" << std::endl;
-            notify(WARN) << dlerror() << std::endl;
+            notify(INFO) << "Warning: dynamic library '" << libraryName << "' does not exist (or isn't readable):" << std::endl;
+            notify(INFO) << dlerror() << std::endl;
         }
     }
 #endif

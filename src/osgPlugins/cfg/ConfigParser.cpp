@@ -2261,7 +2261,7 @@ bool CameraConfig::parseFile( const std::string &file )
                 execlp( cpp_path, "cpp",  "-P", 0L );
             else
             */
-            execlp( cpp_path, "cpp",  "-P", fileName.c_str(), NULL );
+            execlp( cpp_path, "cpp",  "-P", fileName.c_str(), (char *)NULL );
 
             // This should not execute unless an error happens
             perror( "execlp" );

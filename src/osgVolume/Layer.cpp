@@ -14,6 +14,7 @@
 #include <osgVolume/Layer>
 
 #include <osg/ImageUtils>
+#include <osg/ImageStream>
 #include <osg/Endian>
 #include <osg/Notify>
 #include <osg/io_utils>
@@ -166,6 +167,16 @@ void ImageLayer::translateMinToZero()
     }
 }
 
+bool ImageLayer::requiresUpdateTraversal() const
+{
+    return dynamic_cast<osg::ImageStream*>(_image.get())!=0;
+}
+
+void ImageLayer::update(osg::NodeVisitor& nv)
+{
+    if (_image.valid()) _image->update(&nv);
+}
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // CompositeLayer
@@ -184,6 +195,30 @@ void CompositeLayer::clear()
 {
     _layers.clear();
 }
+
+bool CompositeLayer::requiresUpdateTraversal() const
+{
+    for(Layers::const_iterator itr = _layers.begin();
+        itr != _layers.end();
+        ++itr)
+    {
+        if (itr->layer->requiresUpdateTraversal()) return true;
+    }
+    
+    return false;
+}
+
+void CompositeLayer::update(osg::NodeVisitor& nv)
+{
+    for(Layers::const_iterator itr = _layers.begin();
+        itr != _layers.end();
+        ++itr)
+    {
+        itr->layer->update(nv);
+    }
+    
+}
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

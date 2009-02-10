@@ -13,6 +13,7 @@
 #include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Image>
+#include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/Texture>
 #include <osg/Vec4>
@@ -108,6 +109,16 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::CompositeLayer)
 	          __unsigned_int__getNumLayers,
 	          "",
 	          "");
+	I_Method0(bool, requiresUpdateTraversal,
+	          Properties::VIRTUAL,
+	          __bool__requiresUpdateTraversal,
+	          "Specify whether ImageLayer requires update traversal. ",
+	          "");
+	I_Method1(void, update, IN, osg::NodeVisitor &, x,
+	          Properties::VIRTUAL,
+	          __void__update__osg_NodeVisitor_R1,
+	          "Call update on the Layer. ",
+	          "");
 	I_IndexedProperty(const std::string &, FileName, 
 	                  __C5_std_string_R1__getFileName__unsigned_int, 
 	                  __void__setFileName__unsigned_int__C5_std_string_R1, 
@@ -202,6 +213,16 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::ImageLayer)
 	          Properties::NON_VIRTUAL,
 	          __void__translateMinToZero,
 	          "Compute the min color component of the image and then translate and pixels by this offset to make the new min component 0. ",
+	          "");
+	I_Method0(bool, requiresUpdateTraversal,
+	          Properties::VIRTUAL,
+	          __bool__requiresUpdateTraversal,
+	          "Specify whether ImageLayer requires update traversal. ",
+	          "");
+	I_Method1(void, update, IN, osg::NodeVisitor &, x,
+	          Properties::VIRTUAL,
+	          __void__update__osg_NodeVisitor_R1,
+	          "Call update on the Layer. ",
 	          "");
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,
@@ -348,6 +369,16 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Layer)
 	          Properties::NON_VIRTUAL,
 	          __void__addProperty__Property_P1,
 	          "Add a property, automatically creating a CompositePorperty if one isn't already assigned. ",
+	          "");
+	I_Method0(bool, requiresUpdateTraversal,
+	          Properties::VIRTUAL,
+	          __bool__requiresUpdateTraversal,
+	          "Specify whether ImageLayer requires update traversal. ",
+	          "");
+	I_Method1(void, update, IN, osg::NodeVisitor &, x,
+	          Properties::VIRTUAL,
+	          __void__update__osg_NodeVisitor_R1,
+	          "Call update on the Layer. ",
 	          "");
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,

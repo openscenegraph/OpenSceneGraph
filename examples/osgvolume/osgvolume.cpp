@@ -808,6 +808,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--no-rescale","Disable the rescaling of the pixel data to 0.0 to 1.0 range");
     arguments.getApplicationUsage()->addCommandLineOption("--rescale","Enable the rescale of the pixel data to 0.0 to 1.0 range (default).");
     arguments.getApplicationUsage()->addCommandLineOption("--shift-min-to-zero","Shift the pixel data so min value is 0.0.");
+    arguments.getApplicationUsage()->addCommandLineOption("--sequence-length <num>","Set the length of time that a sequence of images with run for.");
+    arguments.getApplicationUsage()->addCommandLineOption("--sd <num>","Short hand for --sequence-length");
 //    arguments.getApplicationUsage()->addCommandLineOption("--raw <sizeX> <sizeY> <sizeZ> <numberBytesPerComponent> <numberOfComponents> <endian> <filename>","read a raw image data");
 
     // construct the viewer.
@@ -959,6 +961,10 @@ int main( int argc, char **argv )
     bool gpuTransferFunction = true; 
     while(arguments.read("--gpu-tf")) { gpuTransferFunction = true; }
     while(arguments.read("--cpu-tf")) { gpuTransferFunction = false; }
+
+    double sequenceLength = 10.0;
+    while(arguments.read("--sequence-duration", sequenceLength) || 
+          arguments.read("--sd", sequenceLength)) {}
 
     typedef std::list< osg::ref_ptr<osg::Image> > Images;
     Images images;
@@ -1249,7 +1255,7 @@ int main( int argc, char **argv )
         osg::notify(osg::NOTICE)<<"Creating sequence of "<<images.size()<<" volumes."<<std::endl;
     
         osg::ref_ptr<osg::ImageSequence> imageSequence = new osg::ImageSequence;
-        imageSequence->setLength(10.0);
+        imageSequence->setLength(sequenceLength);
         image_3d = imageSequence.get();
         for(Images::iterator itr = images.begin();
             itr != images.end();

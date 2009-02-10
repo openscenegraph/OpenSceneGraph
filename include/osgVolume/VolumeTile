@@ -107,7 +107,7 @@ class OSGVOLUME_EXPORT VolumeTile : public osg::Group
         const Locator* getLocator() const { return _locator.get(); }
 
 
-        void setLayer(Layer* layer) { _layer = layer; }
+        void setLayer(Layer* layer);
         Layer* getLayer() { return _layer.get(); }
         const Layer* getLayer() const { return _layer.get(); }
 

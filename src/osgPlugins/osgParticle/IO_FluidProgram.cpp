@@ -49,7 +49,7 @@ bool FluidProgram_readLocalData(osg::Object &obj, osgDB::Input &fr)
     
     if (fr[0].matchWord("density")) {
         if (fr[1].getFloat(f)) {
-            myobj.setFluidViscosity(f);
+            myobj.setFluidDensity(f);
             fr += 2;
             itAdvanced = true;
         }

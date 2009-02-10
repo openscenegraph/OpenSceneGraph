@@ -78,6 +78,12 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         void addProperty(Property* property);
 
 
+        /** Specify whether ImageLayer requires update traversal. */
+        virtual bool requiresUpdateTraversal() const { return false; }
+
+        /** Call update on the Layer.*/
+        virtual void update(osg::NodeVisitor& /*nv*/) {}        
+
         /** increment the modified count."*/
         virtual void dirty() {};
 
@@ -137,6 +143,10 @@ class OSGVOLUME_EXPORT ImageLayer : public Layer
         /** Compute the min color component of the image and then translate and pixels by this offset to make the new min component 0.*/
         void translateMinToZero();
 
+        virtual bool requiresUpdateTraversal() const;
+
+        virtual void update(osg::NodeVisitor& /*nv*/);
+
         virtual void dirty();
         virtual void setModifiedCount(unsigned int value);
         virtual unsigned int getModifiedCount() const;
@@ -174,6 +184,10 @@ class OSGVOLUME_EXPORT CompositeLayer : public Layer
         void removeLayer(unsigned int i) { _layers.erase(_layers.begin()+i); }
         
         unsigned int getNumLayers() const { return _layers.size(); }
+
+        bool requiresUpdateTraversal() const;
+   
+        virtual void update(osg::NodeVisitor& /*nv*/);
 
     protected:
 

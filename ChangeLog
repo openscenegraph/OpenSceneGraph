@@ -1,3 +1,75 @@
+2009-02-10 20:28  robert
+
+	* src/osgPlugins/cfg/ConfigParser.cpp: Warning fix
+
+2009-02-10 20:25  robert
+
+	* CMakeLists.txt, NEWS.txt, README.txt: Updated release number and
+	  dates for 2.8.0-rc5
+
+2009-02-10 20:15  robert
+
+	* CMakeLists.txt, CMakeModules/FindCOLLADA.cmake,
+	  src/osgPlugins/dae/CMakeLists.txt: Merged from svn/trunk changes
+	  for better Collada build support from Roland Smeenk, Roger James
+	  and Robert Osfield, merge commands.
+	  
+	  svn merge -r 9740:9741
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk
+	  svn merge -r 9750:9751
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk
+
+2009-02-10 20:07  robert
+
+	* src/osgDB/DynamicLibrary.cpp: Changed the message about not
+	  finding plugin so that it's notify level is INFO
+
+2009-02-10 18:59  robert
+
+	* src/osgPlugins/osgParticle/IO_FluidProgram.cpp: From Pierre
+	  Haritchabalet, "In IO_FluidProgram.cpp,
+	  FluidProgram_readLocalData() function is wrong. When density
+	  parameter is read, the function "setFluidViscosity()" is called
+	  instead of "setFluidDensity()".
+	  This patch fixes osg plug'in FluidProgram_readLocalData."
+	  
+	  merged from svn/trunk using:
+	  
+	  svn diff -r 9748:9749
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk
+
+2009-02-10 18:48  robert
+
+	* examples/osgvolume/osgvolume.cpp, include/osgVolume/Layer,
+	  include/osgVolume/VolumeTile, src/osgVolume/Layer.cpp,
+	  src/osgVolume/VolumeTile.cpp,
+	  src/osgWrappers/osgVolume/Layer.cpp: Fixed the handle of
+	  ImageSequence in osgVolume.
+
+2009-02-10 13:58  robert
+
+	* src/osgPlugins/curl/ReaderWriterCURL.cpp: From Jason Beverage,
+	  "I've added a small change to the CURL plugin that allows support
+	  for HTTP redirects."
+	  
+	  Merged from svn/trunk:
+	  
+	  svn merge -r 9743:9744
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk
+
+2009-02-10 13:31  robert
+
+	* CMakeModules/FindZLIB.cmake: From Miguel Escriva, fixed finding
+	  of zlib under Windows, merged in from svn/trunk using:
+	  
+	  svn merge -r 9741:9742
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk
+
+2009-02-09 23:23  robert
+
+	* AUTHORS.txt, ChangeLog: Update ChangeLog and AUTHORS for
+	  2.8.0-rc2
+
 2009-02-09 22:59  robert
 
 	* examples/osganimationskinning/osganimationskinning.cpp,

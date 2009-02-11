@@ -33,8 +33,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayConstraint)
 	I_Method3(void, addtriangle, IN, int, i1, IN, int, i2, IN, int, i3,
 	          Properties::NON_VIRTUAL,
 	          __void__addtriangle__int__int__int,
-	          "collect up indices of triangle from delaunay triangles. ",
-	          "The delaunay triangles inside the DelaunayConstraint area can be used to fill the area or generate geometry that terrain follows the area in some way. These triangles can form a canopy or a field. ");
+	          "Each primitiveset is a list of vertices which may be closed by joining up to its start to make a loop. ",
+	          "Constraints should be simple lines, not crossing themselves. Constraints which cross other constraints can cause difficulties - see the example for methods of dealing with them. collect up indices of triangle from delaunay triangles. The delaunay triangles inside the DelaunayConstraint area can be used to fill the area or generate geometry that terrain follows the area in some way. These triangles can form a canopy or a field. ");
 	I_Method0(const osg::DrawElementsUInt *, getTriangles,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_DrawElementsUInt_P1__getTriangles,

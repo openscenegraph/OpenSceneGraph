@@ -76,7 +76,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Group)
 	          __C5_Group_P1__asGroup,
 	          "convert 'const this' into a const Group pointer if Node is a Group, otherwise return 0. ",
 	          "Equivalent to dynamic_cast<const Group*>(this). ");
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, x,
 	          Properties::VIRTUAL,
 	          __void__traverse__NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",

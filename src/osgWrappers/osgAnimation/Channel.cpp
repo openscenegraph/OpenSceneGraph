@@ -183,7 +183,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::DoubleCubicBezierSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::DoubleCubicBezierSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::DoubleCubicBezierSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::DoubleCubicBezierSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -202,7 +202,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::DoubleCubicB
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::DoubleCubicBezierSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -217,17 +217,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::DoubleCubicB
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::DoubleCubicBezierSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::DoubleCubicBezierSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::DoubleCubicBezierSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -255,10 +255,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::DoubleCubicB
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::DoubleCubicBezierSampler *, Sampler, 
+	I_SimpleProperty(SamplerType *, Sampler, 
 	                 0, 
 	                 __void__setSampler__SamplerType_P1);
-	I_SimpleProperty(osgAnimation::DoubleCubicBezierSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 
@@ -275,7 +275,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::DoubleLinearSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::DoubleLinearSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::DoubleLinearSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::DoubleLinearSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -294,7 +294,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::DoubleLinear
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::DoubleLinearSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -309,17 +309,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::DoubleLinear
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::DoubleLinearSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::DoubleLinearSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::DoubleLinearSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -347,10 +347,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::DoubleLinear
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::DoubleLinearSampler *, Sampler, 
+	I_SimpleProperty(SamplerType *, Sampler, 
 	                 0, 
 	                 __void__setSampler__SamplerType_P1);
-	I_SimpleProperty(osgAnimation::DoubleLinearSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 
@@ -367,7 +367,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::FloatCubicBezierSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::FloatCubicBezierSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::FloatCubicBezierSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::FloatCubicBezierSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -386,7 +386,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::FloatCubicBe
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::FloatCubicBezierSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -401,17 +401,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::FloatCubicBe
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::FloatCubicBezierSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::FloatCubicBezierSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::FloatCubicBezierSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -439,10 +439,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::FloatCubicBe
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::FloatCubicBezierSampler *, Sampler, 
+	I_SimpleProperty(SamplerType *, Sampler, 
 	                 0, 
 	                 __void__setSampler__SamplerType_P1);
-	I_SimpleProperty(osgAnimation::FloatCubicBezierSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 
@@ -459,7 +459,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::FloatLinearSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::FloatLinearSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::FloatLinearSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::FloatLinearSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -478,7 +478,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::FloatLinearS
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::FloatLinearSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -493,17 +493,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::FloatLinearS
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::FloatLinearSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::FloatLinearSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::FloatLinearSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -531,10 +531,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::FloatLinearS
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::FloatLinearSampler *, Sampler, 
+	I_SimpleProperty(SamplerType *, Sampler, 
 	                 0, 
 	                 __void__setSampler__SamplerType_P1);
-	I_SimpleProperty(osgAnimation::FloatLinearSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 
@@ -551,7 +551,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::QuatSphericalLinearSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::QuatSphericalLinearSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::QuatSphericalLinearSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::QuatSphericalLinearSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -570,7 +570,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::QuatSpherica
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::QuatSphericalLinearSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -585,17 +585,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::QuatSpherica
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::QuatSphericalLinearSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::QuatSphericalLinearSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::QuatSphericalLinearSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -623,10 +623,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::QuatSpherica
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::QuatSphericalLinearSampler *, Sampler, 
+	I_SimpleProperty(SamplerType *, Sampler, 
 	                 0, 
 	                 __void__setSampler__SamplerType_P1);
-	I_SimpleProperty(osgAnimation::QuatSphericalLinearSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 
@@ -643,7 +643,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec2CubicBezierSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::Vec2CubicBezierSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec2CubicBezierSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec2CubicBezierSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -662,7 +662,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec2CubicBez
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec2CubicBezierSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -677,17 +677,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec2CubicBez
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec2CubicBezierSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::Vec2CubicBezierSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::Vec2CubicBezierSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -715,10 +715,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec2CubicBez
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::Sampler *, Sampler, 
-	                 __Sampler_P1__getSampler, 
-	                 0);
-	I_SimpleProperty(osgAnimation::Vec2CubicBezierSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 
@@ -735,7 +735,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec2LinearSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::Vec2LinearSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec2LinearSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec2LinearSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -754,7 +754,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec2LinearSa
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec2LinearSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -769,17 +769,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec2LinearSa
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec2LinearSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::Vec2LinearSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::Vec2LinearSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -807,10 +807,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec2LinearSa
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::Sampler *, Sampler, 
-	                 __Sampler_P1__getSampler, 
-	                 0);
-	I_SimpleProperty(osgAnimation::Vec2LinearSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 
@@ -827,7 +827,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec3CubicBezierSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::Vec3CubicBezierSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec3CubicBezierSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec3CubicBezierSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -846,7 +846,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec3CubicBez
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec3CubicBezierSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -861,17 +861,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec3CubicBez
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec3CubicBezierSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::Vec3CubicBezierSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::Vec3CubicBezierSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -899,10 +899,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec3CubicBez
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::Sampler *, Sampler, 
-	                 __Sampler_P1__getSampler, 
-	                 0);
-	I_SimpleProperty(osgAnimation::Vec3CubicBezierSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 
@@ -919,7 +919,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec3LinearSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::Vec3LinearSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec3LinearSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec3LinearSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -938,7 +938,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec3LinearSa
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec3LinearSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -953,17 +953,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec3LinearSa
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec3LinearSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::Vec3LinearSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::Vec3LinearSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -991,10 +991,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec3LinearSa
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::Sampler *, Sampler, 
-	                 __Sampler_P1__getSampler, 
-	                 0);
-	I_SimpleProperty(osgAnimation::Vec3LinearSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 
@@ -1011,7 +1011,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec4CubicBezierSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::Vec4CubicBezierSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec4CubicBezierSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec4CubicBezierSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -1030,7 +1030,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec4CubicBez
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec4CubicBezierSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -1045,17 +1045,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec4CubicBez
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec4CubicBezierSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::Vec4CubicBezierSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::Vec4CubicBezierSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -1083,10 +1083,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec4CubicBez
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::Sampler *, Sampler, 
-	                 __Sampler_P1__getSampler, 
-	                 0);
-	I_SimpleProperty(osgAnimation::Vec4CubicBezierSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 
@@ -1103,7 +1103,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec4LinearSampler >)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osgAnimation::Channel);
-	I_ConstructorWithDefaults2(IN, osgAnimation::Vec4LinearSampler *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec4LinearSampler >::TargetType *, target, 0,
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec4LinearSampler >::TargetType *, target, 0,
 	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
 	                           "",
 	                           "");
@@ -1122,7 +1122,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec4LinearSa
 	          __Target_P1__getTarget,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec4LinearSampler *, getOrCreateSampler,
+	I_Method0(SamplerType *, getOrCreateSampler,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getOrCreateSampler,
 	          "",
@@ -1137,17 +1137,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec4LinearSa
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
-	I_Method0(osgAnimation::Vec4LinearSampler *, getSamplerTyped,
+	I_Method0(SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::Vec4LinearSampler *, getSamplerTyped,
+	I_Method0(const SamplerType *, getSamplerTyped,
 	          Properties::NON_VIRTUAL,
 	          __C5_SamplerType_P1__getSamplerTyped,
 	          "",
 	          "");
-	I_Method1(void, setSampler, IN, osgAnimation::Vec4LinearSampler *, sampler,
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
 	          Properties::NON_VIRTUAL,
 	          __void__setSampler__SamplerType_P1,
 	          "",
@@ -1175,10 +1175,10 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec4LinearSa
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);
-	I_SimpleProperty(osgAnimation::Sampler *, Sampler, 
-	                 __Sampler_P1__getSampler, 
-	                 0);
-	I_SimpleProperty(osgAnimation::Vec4LinearSampler *, SamplerTyped, 
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
 	                 __SamplerType_P1__getSamplerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 

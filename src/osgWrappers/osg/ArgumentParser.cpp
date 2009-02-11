@@ -21,16 +21,32 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ArgumentParser::ErrorSeverity >, osg::ArgumentParser::ErrorMessageMap)
-
 BEGIN_ENUM_REFLECTOR(osg::ArgumentParser::ErrorSeverity)
 	I_DeclaringFile("osg/ArgumentParser");
 	I_EnumLabel(osg::ArgumentParser::BENIGN);
 	I_EnumLabel(osg::ArgumentParser::CRITICAL);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ArgumentParser::ErrorSeverity >, osg::ArgumentParser::ErrorMessageMap)
+
 BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
 	I_DeclaringFile("osg/ArgumentParser");
+	I_StaticMethod1(bool, isOption, IN, const char *, str,
+	                __bool__isOption__C5_char_P1_S,
+	                "Return true if the specified string is an option in the form -option or --option. ",
+	                "");
+	I_StaticMethod1(bool, isString, IN, const char *, str,
+	                __bool__isString__C5_char_P1_S,
+	                "Return true if string is non-NULL and not an option in the form -option or --option. ",
+	                "");
+	I_StaticMethod1(bool, isNumber, IN, const char *, str,
+	                __bool__isNumber__C5_char_P1_S,
+	                "Return true if specified parameter is a number. ",
+	                "");
+	I_StaticMethod1(bool, isBool, IN, const char *, str,
+	                __bool__isBool__C5_char_P1_S,
+	                "Return true if specified parameter is a bool. ",
+	                "");
 	I_Constructor2(IN, int *, argc, IN, char **, argv,
 	               ____ArgumentParser__int_P1__char_P1P1,
 	               "",
@@ -225,22 +241,6 @@ BEGIN_VALUE_REFLECTOR(osg::ArgumentParser)
 	          __ApplicationUsage_Type__readHelpType,
 	          "This convinience method handles help requests on the command line. ",
 	          "Return the type(s) of help requested. The return value of this function is suitable for passing into getApplicationUsage()->write(). If ApplicationUsage::NO_HELP is returned then no help commandline option was found on the command line. ");
-	I_StaticMethod1(bool, isOption, IN, const char *, str,
-	                __bool__isOption__C5_char_P1_S,
-	                "Return true if the specified string is an option in the form -option or --option. ",
-	                "");
-	I_StaticMethod1(bool, isString, IN, const char *, str,
-	                __bool__isString__C5_char_P1_S,
-	                "Return true if string is non-NULL and not an option in the form -option or --option. ",
-	                "");
-	I_StaticMethod1(bool, isNumber, IN, const char *, str,
-	                __bool__isNumber__C5_char_P1_S,
-	                "Return true if specified parameter is a number. ",
-	                "");
-	I_StaticMethod1(bool, isBool, IN, const char *, str,
-	                __bool__isBool__C5_char_P1_S,
-	                "Return true if specified parameter is a bool. ",
-	                "");
 	I_SimpleProperty(std::string, ApplicationName, 
 	                 __std_string__getApplicationName, 
 	                 0);

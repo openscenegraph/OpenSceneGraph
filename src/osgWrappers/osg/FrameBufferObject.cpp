@@ -32,91 +32,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglBindRenderbufferEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglDeleteRenderbuffersEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenRenderbuffersEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglRenderbufferStorageEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglRenderbufferStorageMultisampleEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglRenderbufferStorageMultisampleCoverageNV)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglBindFramebufferEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglDeleteFramebuffersEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenFramebuffersEXT)
-
-TYPE_NAME_ALIAS(GLenum , osg::FBOExtensions::TglCheckFramebufferStatusEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture1DEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture2DEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTexture3DEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferTextureLayerEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglFramebufferRenderbufferEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglGenerateMipmapEXT)
-
-TYPE_NAME_ALIAS(void , osg::FBOExtensions::TglBlitFramebufferEXT)
-
-BEGIN_OBJECT_REFLECTOR(osg::FBOExtensions)
-	I_DeclaringFile("osg/FrameBufferObject");
-	I_BaseType(osg::Referenced);
-	I_Method0(bool, isSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isSupported,
-	          "",
-	          "");
-	I_Method0(bool, isMultisampleSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isMultisampleSupported,
-	          "",
-	          "");
-	I_Method0(bool, isMultisampleCoverageSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isMultisampleCoverageSupported,
-	          "",
-	          "");
-	I_Method0(bool, isPackedDepthStencilSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isPackedDepthStencilSupported,
-	          "",
-	          "");
-	I_StaticMethod2(osg::FBOExtensions *, instance, IN, unsigned, contextID, IN, bool, createIfNotInitalized,
-	                __FBOExtensions_P1__instance__unsigned__bool_S,
-	                "",
-	                "");
-	I_ProtectedConstructor1(IN, unsigned int, contextID,
-	                        Properties::NON_EXPLICIT,
-	                        ____FBOExtensions__unsigned_int,
-	                        "",
-	                        "");
-	I_PublicMemberProperty(osg::FBOExtensions::TglBindRenderbufferEXT *, glBindRenderbufferEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglGenRenderbuffersEXT *, glGenRenderbuffersEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglDeleteRenderbuffersEXT *, glDeleteRenderbuffersEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglRenderbufferStorageEXT *, glRenderbufferStorageEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglRenderbufferStorageMultisampleEXT *, glRenderbufferStorageMultisampleEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglRenderbufferStorageMultisampleCoverageNV *, glRenderbufferStorageMultisampleCoverageNV);
-	I_PublicMemberProperty(osg::FBOExtensions::TglBindFramebufferEXT *, glBindFramebufferEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglDeleteFramebuffersEXT *, glDeleteFramebuffersEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglGenFramebuffersEXT *, glGenFramebuffersEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglCheckFramebufferStatusEXT *, glCheckFramebufferStatusEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTexture1DEXT *, glFramebufferTexture1DEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTexture2DEXT *, glFramebufferTexture2DEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTexture3DEXT *, glFramebufferTexture3DEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferTextureLayerEXT *, glFramebufferTextureLayerEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglFramebufferRenderbufferEXT *, glFramebufferRenderbufferEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglGenerateMipmapEXT *, glGenerateMipmapEXT);
-	I_PublicMemberProperty(osg::FBOExtensions::TglBlitFramebufferEXT *, glBlitFramebufferEXT);
-END_REFLECTOR
-
 BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	I_DeclaringFile("osg/FrameBufferObject");
 	I_Constructor0(____FrameBufferAttachment,
@@ -242,18 +157,18 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	                 0);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::FrameBufferAttachment >, osg::FrameBufferObject::AttachmentMap)
-
-TYPE_NAME_ALIAS(std::vector< GLenum >, osg::FrameBufferObject::MultipleRenderingTargets)
-
-TYPE_NAME_ALIAS(osg::Camera::BufferComponent, osg::FrameBufferObject::BufferComponent)
-
 BEGIN_ENUM_REFLECTOR(osg::FrameBufferObject::BindTarget)
 	I_DeclaringFile("osg/FrameBufferObject");
 	I_EnumLabel(osg::FrameBufferObject::READ_FRAMEBUFFER);
 	I_EnumLabel(osg::FrameBufferObject::DRAW_FRAMEBUFFER);
 	I_EnumLabel(osg::FrameBufferObject::READ_DRAW_FRAMEBUFFER);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::FrameBufferAttachment >, osg::FrameBufferObject::AttachmentMap)
+
+TYPE_NAME_ALIAS(std::vector< GLenum >, osg::FrameBufferObject::MultipleRenderingTargets)
+
+TYPE_NAME_ALIAS(osg::Camera::BufferComponent, osg::FrameBufferObject::BufferComponent)
 
 BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	I_DeclaringFile("osg/FrameBufferObject");
@@ -270,7 +185,7 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
@@ -335,7 +250,7 @@ BEGIN_OBJECT_REFLECTOR(osg::FrameBufferObject)
 	          __int__compare__C5_StateAttribute_R1,
 	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
-	I_Method1(void, apply, IN, osg::State &, state,
+	I_Method1(void, apply, IN, osg::State &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
@@ -409,7 +324,7 @@ BEGIN_OBJECT_REFLECTOR(osg::RenderBuffer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

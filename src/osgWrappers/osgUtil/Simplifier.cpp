@@ -129,8 +129,8 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)
 	I_Method2(void, simplify, IN, osg::Geometry &, geometry, IN, const osgUtil::Simplifier::IndexList &, protectedPoints,
 	          Properties::NON_VIRTUAL,
 	          __void__simplify__osg_Geometry_R1__C5_IndexList_R1,
-	          "simply the geometry, whilst protecting key points from being modified. ",
-	          "");
+	          "a list of point indices ",
+	          "simply the geometry, whilst protecting key points from being modified. ");
 	I_SimpleProperty(osgUtil::Simplifier::ContinueSimplificationCallback *, ContinueSimplificationCallback, 
 	                 __ContinueSimplificationCallback_P1__getContinueSimplificationCallback, 
 	                 __void__setContinueSimplificationCallback__ContinueSimplificationCallback_P1);

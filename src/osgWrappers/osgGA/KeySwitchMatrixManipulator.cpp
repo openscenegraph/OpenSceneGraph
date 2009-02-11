@@ -143,7 +143,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	          __float__getFusionDistanceValue,
 	          "Get the FusionDistanceValue. ",
 	          "Used by SceneView for setting up stereo convergence. ");
-	I_Method1(void, setNode, IN, osg::Node *, n,
+	I_Method1(void, setNode, IN, osg::Node *, x,
 	          Properties::VIRTUAL,
 	          __void__setNode__osg_Node_P1,
 	          "Attach a node to the manipulator, automatically detaching any previously attached node. ",
@@ -173,12 +173,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	          __void__computeHomePosition,
 	          "Compute the home position. ",
 	          "");
-	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ee, IN, osgGA::GUIActionAdapter &, aa,
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
 	          "Move the camera to the default position. ",
 	          "May be ignored by manipulators if home functionality is not appropriate. ");
-	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ee, IN, osgGA::GUIActionAdapter &, aa,
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
 	          "Start/restart the manipulator. ",

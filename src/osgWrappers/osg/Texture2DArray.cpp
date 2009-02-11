@@ -40,7 +40,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2DArray)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
@@ -230,123 +230,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture2DArray)
 	I_SimpleProperty(osg::StateAttribute::Type, Type, 
 	                 __Type__getType, 
 	                 0);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::Texture2DArray::Extensions)
-	I_DeclaringFile("osg/Texture2DArray");
-	I_BaseType(osg::Referenced);
-	I_Constructor1(IN, unsigned int, contextID,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__unsigned_int,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::Texture2DArray::Extensions &, rhs,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__C5_Extensions_R1,
-	               "",
-	               "");
-	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture2DArray::Extensions &, rhs,
-	          Properties::NON_VIRTUAL,
-	          __void__lowestCommonDenominator__C5_Extensions_R1,
-	          "",
-	          "");
-	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __void__setupGLExtensions__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, setTexture2DArraySupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexture2DArraySupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTexture2DArraySupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTexture2DArraySupported,
-	          "",
-	          "");
-	I_Method1(void, setTexture3DSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTexture3DSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTexture3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTexture3DSupported,
-	          "",
-	          "");
-	I_Method1(void, setMaxLayerCount, IN, GLint, count,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaxLayerCount__GLint,
-	          "",
-	          "");
-	I_Method0(GLint, maxLayerCount,
-	          Properties::NON_VIRTUAL,
-	          __GLint__maxLayerCount,
-	          "",
-	          "");
-	I_Method1(void, setMax2DSize, IN, GLint, size,
-	          Properties::NON_VIRTUAL,
-	          __void__setMax2DSize__GLint,
-	          "",
-	          "");
-	I_Method0(GLint, max2DSize,
-	          Properties::NON_VIRTUAL,
-	          __GLint__max2DSize,
-	          "",
-	          "");
-	I_Method10(void, glTexImage3D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, pixels,
-	           Properties::NON_VIRTUAL,
-	           __void__glTexImage3D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint__GLenum__GLenum__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method11(void, glTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLenum, type, IN, const GLvoid *, pixels,
-	           Properties::NON_VIRTUAL,
-	           __void__glTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLenum__C5_GLvoid_P1,
-	           "",
-	           "");
-	I_Method9(void, glCopyTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLint, x, IN, GLint, y, IN, GLsizei, width, IN, GLsizei, height,
-	          Properties::NON_VIRTUAL,
-	          __void__glCopyTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLint__GLint__GLsizei__GLsizei,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexImage3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexImage3DSupported,
-	          "",
-	          "");
-	I_Method9(void, glCompressedTexImage3D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glCompressedTexImage3D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint__GLsizei__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexSubImage3DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexSubImage3DSupported,
-	          "",
-	          "");
-	I_Method11(void, glCompressedTexSubImage3D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLint, zoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLenum, format, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	           Properties::NON_VIRTUAL,
-	           __void__glCompressedTexSubImage3D__GLenum__GLint__GLint__GLint__GLint__GLsizei__GLsizei__GLsizei__GLenum__GLsizei__C5_GLvoid_P1,
-	           "",
-	           "");
-
-
-
-
-
-	I_SimpleProperty(GLint, Max2DSize, 
-	                 0, 
-	                 __void__setMax2DSize__GLint);
-	I_SimpleProperty(GLint, MaxLayerCount, 
-	                 0, 
-	                 __void__setMaxLayerCount__GLint);
-	I_SimpleProperty(bool, Texture2DArraySupported, 
-	                 0, 
-	                 __void__setTexture2DArraySupported__bool);
-	I_SimpleProperty(bool, Texture3DSupported, 
-	                 0, 
-	                 __void__setTexture3DSupported__bool);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture2DArray::SubloadCallback)

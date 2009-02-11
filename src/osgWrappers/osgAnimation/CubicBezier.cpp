@@ -10,9 +10,6 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Vec2>
-#include <osg/Vec3>
-#include <osg/Vec4>
 #include <osgAnimation/CubicBezier>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -35,295 +32,295 @@ TYPE_NAME_ALIAS(osgAnimation::TemplateCubicBezier< osg::Vec4 >, osgAnimation::Ve
 
 BEGIN_VALUE_REFLECTOR(osgAnimation::TemplateCubicBezier< double >)
 	I_DeclaringFile("osgAnimation/CubicBezier");
-	I_Method0(const double &, getP0,
+	I_Method0(const T &, getP0,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP0,
 	          "",
 	          "");
-	I_Method0(const double &, getP1,
+	I_Method0(const T &, getP1,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP1,
 	          "",
 	          "");
-	I_Method0(const double &, getP2,
+	I_Method0(const T &, getP2,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP2,
 	          "",
 	          "");
-	I_Constructor3(IN, const double &, v0, IN, const double &, v1, IN, const double &, v2,
+	I_Constructor3(IN, const T &, v0, IN, const T &, v1, IN, const T &, v2,
 	               ____TemplateCubicBezier__C5_T_R1__C5_T_R1__C5_T_R1,
 	               "",
 	               "");
 	I_Constructor0(____TemplateCubicBezier,
 	               "",
 	               "");
-	I_Method0(const double &, getPosition,
+	I_Method0(const T &, getPosition,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getPosition,
 	          "",
 	          "");
-	I_Method0(const double &, getTangentPoint1,
+	I_Method0(const T &, getTangentPoint1,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getTangentPoint1,
 	          "",
 	          "");
-	I_Method0(const double &, getTangentPoint2,
+	I_Method0(const T &, getTangentPoint2,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getTangentPoint2,
 	          "",
 	          "");
-	I_SimpleProperty(const double &, P0, 
+	I_SimpleProperty(const T &, P0, 
 	                 __C5_T_R1__getP0, 
 	                 0);
-	I_SimpleProperty(const double &, P1, 
+	I_SimpleProperty(const T &, P1, 
 	                 __C5_T_R1__getP1, 
 	                 0);
-	I_SimpleProperty(const double &, P2, 
+	I_SimpleProperty(const T &, P2, 
 	                 __C5_T_R1__getP2, 
 	                 0);
-	I_SimpleProperty(const double &, Position, 
+	I_SimpleProperty(const T &, Position, 
 	                 __C5_T_R1__getPosition, 
 	                 0);
-	I_SimpleProperty(const double &, TangentPoint1, 
+	I_SimpleProperty(const T &, TangentPoint1, 
 	                 __C5_T_R1__getTangentPoint1, 
 	                 0);
-	I_SimpleProperty(const double &, TangentPoint2, 
+	I_SimpleProperty(const T &, TangentPoint2, 
 	                 __C5_T_R1__getTangentPoint2, 
 	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgAnimation::TemplateCubicBezier< float >)
 	I_DeclaringFile("osgAnimation/CubicBezier");
-	I_Method0(const float &, getP0,
+	I_Method0(const T &, getP0,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP0,
 	          "",
 	          "");
-	I_Method0(const float &, getP1,
+	I_Method0(const T &, getP1,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP1,
 	          "",
 	          "");
-	I_Method0(const float &, getP2,
+	I_Method0(const T &, getP2,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP2,
 	          "",
 	          "");
-	I_Constructor3(IN, const float &, v0, IN, const float &, v1, IN, const float &, v2,
+	I_Constructor3(IN, const T &, v0, IN, const T &, v1, IN, const T &, v2,
 	               ____TemplateCubicBezier__C5_T_R1__C5_T_R1__C5_T_R1,
 	               "",
 	               "");
 	I_Constructor0(____TemplateCubicBezier,
 	               "",
 	               "");
-	I_Method0(const float &, getPosition,
+	I_Method0(const T &, getPosition,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getPosition,
 	          "",
 	          "");
-	I_Method0(const float &, getTangentPoint1,
+	I_Method0(const T &, getTangentPoint1,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getTangentPoint1,
 	          "",
 	          "");
-	I_Method0(const float &, getTangentPoint2,
+	I_Method0(const T &, getTangentPoint2,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getTangentPoint2,
 	          "",
 	          "");
-	I_SimpleProperty(const float &, P0, 
+	I_SimpleProperty(const T &, P0, 
 	                 __C5_T_R1__getP0, 
 	                 0);
-	I_SimpleProperty(const float &, P1, 
+	I_SimpleProperty(const T &, P1, 
 	                 __C5_T_R1__getP1, 
 	                 0);
-	I_SimpleProperty(const float &, P2, 
+	I_SimpleProperty(const T &, P2, 
 	                 __C5_T_R1__getP2, 
 	                 0);
-	I_SimpleProperty(const float &, Position, 
+	I_SimpleProperty(const T &, Position, 
 	                 __C5_T_R1__getPosition, 
 	                 0);
-	I_SimpleProperty(const float &, TangentPoint1, 
+	I_SimpleProperty(const T &, TangentPoint1, 
 	                 __C5_T_R1__getTangentPoint1, 
 	                 0);
-	I_SimpleProperty(const float &, TangentPoint2, 
+	I_SimpleProperty(const T &, TangentPoint2, 
 	                 __C5_T_R1__getTangentPoint2, 
 	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgAnimation::TemplateCubicBezier< osg::Vec2 >)
 	I_DeclaringFile("osgAnimation/CubicBezier");
-	I_Method0(const osg::Vec2 &, getP0,
+	I_Method0(const T &, getP0,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP0,
 	          "",
 	          "");
-	I_Method0(const osg::Vec2 &, getP1,
+	I_Method0(const T &, getP1,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec2 &, getP2,
+	I_Method0(const T &, getP2,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP2,
 	          "",
 	          "");
-	I_Constructor3(IN, const osg::Vec2 &, v0, IN, const osg::Vec2 &, v1, IN, const osg::Vec2 &, v2,
+	I_Constructor3(IN, const T &, v0, IN, const T &, v1, IN, const T &, v2,
 	               ____TemplateCubicBezier__C5_T_R1__C5_T_R1__C5_T_R1,
 	               "",
 	               "");
 	I_Constructor0(____TemplateCubicBezier,
 	               "",
 	               "");
-	I_Method0(const osg::Vec2 &, getPosition,
+	I_Method0(const T &, getPosition,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getPosition,
 	          "",
 	          "");
-	I_Method0(const osg::Vec2 &, getTangentPoint1,
+	I_Method0(const T &, getTangentPoint1,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getTangentPoint1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec2 &, getTangentPoint2,
+	I_Method0(const T &, getTangentPoint2,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getTangentPoint2,
 	          "",
 	          "");
-	I_SimpleProperty(const osg::Vec2 &, P0, 
+	I_SimpleProperty(const T &, P0, 
 	                 __C5_T_R1__getP0, 
 	                 0);
-	I_SimpleProperty(const osg::Vec2 &, P1, 
+	I_SimpleProperty(const T &, P1, 
 	                 __C5_T_R1__getP1, 
 	                 0);
-	I_SimpleProperty(const osg::Vec2 &, P2, 
+	I_SimpleProperty(const T &, P2, 
 	                 __C5_T_R1__getP2, 
 	                 0);
-	I_SimpleProperty(const osg::Vec2 &, Position, 
+	I_SimpleProperty(const T &, Position, 
 	                 __C5_T_R1__getPosition, 
 	                 0);
-	I_SimpleProperty(const osg::Vec2 &, TangentPoint1, 
+	I_SimpleProperty(const T &, TangentPoint1, 
 	                 __C5_T_R1__getTangentPoint1, 
 	                 0);
-	I_SimpleProperty(const osg::Vec2 &, TangentPoint2, 
+	I_SimpleProperty(const T &, TangentPoint2, 
 	                 __C5_T_R1__getTangentPoint2, 
 	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgAnimation::TemplateCubicBezier< osg::Vec3 >)
 	I_DeclaringFile("osgAnimation/CubicBezier");
-	I_Method0(const osg::Vec3 &, getP0,
+	I_Method0(const T &, getP0,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP0,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getP1,
+	I_Method0(const T &, getP1,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getP2,
+	I_Method0(const T &, getP2,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP2,
 	          "",
 	          "");
-	I_Constructor3(IN, const osg::Vec3 &, v0, IN, const osg::Vec3 &, v1, IN, const osg::Vec3 &, v2,
+	I_Constructor3(IN, const T &, v0, IN, const T &, v1, IN, const T &, v2,
 	               ____TemplateCubicBezier__C5_T_R1__C5_T_R1__C5_T_R1,
 	               "",
 	               "");
 	I_Constructor0(____TemplateCubicBezier,
 	               "",
 	               "");
-	I_Method0(const osg::Vec3 &, getPosition,
+	I_Method0(const T &, getPosition,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getPosition,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getTangentPoint1,
+	I_Method0(const T &, getTangentPoint1,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getTangentPoint1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getTangentPoint2,
+	I_Method0(const T &, getTangentPoint2,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getTangentPoint2,
 	          "",
 	          "");
-	I_SimpleProperty(const osg::Vec3 &, P0, 
+	I_SimpleProperty(const T &, P0, 
 	                 __C5_T_R1__getP0, 
 	                 0);
-	I_SimpleProperty(const osg::Vec3 &, P1, 
+	I_SimpleProperty(const T &, P1, 
 	                 __C5_T_R1__getP1, 
 	                 0);
-	I_SimpleProperty(const osg::Vec3 &, P2, 
+	I_SimpleProperty(const T &, P2, 
 	                 __C5_T_R1__getP2, 
 	                 0);
-	I_SimpleProperty(const osg::Vec3 &, Position, 
+	I_SimpleProperty(const T &, Position, 
 	                 __C5_T_R1__getPosition, 
 	                 0);
-	I_SimpleProperty(const osg::Vec3 &, TangentPoint1, 
+	I_SimpleProperty(const T &, TangentPoint1, 
 	                 __C5_T_R1__getTangentPoint1, 
 	                 0);
-	I_SimpleProperty(const osg::Vec3 &, TangentPoint2, 
+	I_SimpleProperty(const T &, TangentPoint2, 
 	                 __C5_T_R1__getTangentPoint2, 
 	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgAnimation::TemplateCubicBezier< osg::Vec4 >)
 	I_DeclaringFile("osgAnimation/CubicBezier");
-	I_Method0(const osg::Vec4 &, getP0,
+	I_Method0(const T &, getP0,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP0,
 	          "",
 	          "");
-	I_Method0(const osg::Vec4 &, getP1,
+	I_Method0(const T &, getP1,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec4 &, getP2,
+	I_Method0(const T &, getP2,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getP2,
 	          "",
 	          "");
-	I_Constructor3(IN, const osg::Vec4 &, v0, IN, const osg::Vec4 &, v1, IN, const osg::Vec4 &, v2,
+	I_Constructor3(IN, const T &, v0, IN, const T &, v1, IN, const T &, v2,
 	               ____TemplateCubicBezier__C5_T_R1__C5_T_R1__C5_T_R1,
 	               "",
 	               "");
 	I_Constructor0(____TemplateCubicBezier,
 	               "",
 	               "");
-	I_Method0(const osg::Vec4 &, getPosition,
+	I_Method0(const T &, getPosition,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getPosition,
 	          "",
 	          "");
-	I_Method0(const osg::Vec4 &, getTangentPoint1,
+	I_Method0(const T &, getTangentPoint1,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getTangentPoint1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec4 &, getTangentPoint2,
+	I_Method0(const T &, getTangentPoint2,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getTangentPoint2,
 	          "",
 	          "");
-	I_SimpleProperty(const osg::Vec4 &, P0, 
+	I_SimpleProperty(const T &, P0, 
 	                 __C5_T_R1__getP0, 
 	                 0);
-	I_SimpleProperty(const osg::Vec4 &, P1, 
+	I_SimpleProperty(const T &, P1, 
 	                 __C5_T_R1__getP1, 
 	                 0);
-	I_SimpleProperty(const osg::Vec4 &, P2, 
+	I_SimpleProperty(const T &, P2, 
 	                 __C5_T_R1__getP2, 
 	                 0);
-	I_SimpleProperty(const osg::Vec4 &, Position, 
+	I_SimpleProperty(const T &, Position, 
 	                 __C5_T_R1__getPosition, 
 	                 0);
-	I_SimpleProperty(const osg::Vec4 &, TangentPoint1, 
+	I_SimpleProperty(const T &, TangentPoint1, 
 	                 __C5_T_R1__getTangentPoint1, 
 	                 0);
-	I_SimpleProperty(const osg::Vec4 &, TangentPoint2, 
+	I_SimpleProperty(const T &, TangentPoint2, 
 	                 __C5_T_R1__getTangentPoint2, 
 	                 0);
 END_REFLECTOR

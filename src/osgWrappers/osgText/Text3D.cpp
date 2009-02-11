@@ -49,7 +49,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text3D)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -92,8 +92,8 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text3D)
 	I_MethodWithDefaults1(void, setFont, IN, osgText::Font3D *, font, 0,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setFont__Font3D_P1,
-	                      "Set the Font to use to render the text. ",
-	                      "setFont(0) sets the use of the default font. ");
+	                      "Get the wall StateSet. ",
+	                      "Get or create the wall StateSet Set the wall StateSet Get the back StateSet Get or create the back StateSet Set the back StateSet Set the Font to use to render the text. setFont(0) sets the use of the default font. ");
 	I_Method1(void, setFont, IN, osg::ref_ptr< osgText::Font3D >, font,
 	          Properties::NON_VIRTUAL,
 	          __void__setFont__osg_ref_ptrT1_Font3D_,
@@ -127,13 +127,13 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text3D)
 	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
 	          Properties::VIRTUAL,
 	          __bool__supports__C5_osg_PrimitiveFunctor_R1,
-	          "return true, osgText::Text does support accept(PrimitiveFunctor&) . ",
-	          "");
+	          "accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
+	          "return true, osgText::Text does support accept(PrimitiveFunctor&) . ");
 	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
 	          Properties::VIRTUAL,
 	          __void__setThreadSafeRefUnref__bool,
-	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
-	          "");
+	          "accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has. ",
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ");
 	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
 	          Properties::VIRTUAL,
 	          __void__resizeGLObjectBuffers__unsigned_int,

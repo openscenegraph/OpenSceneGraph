@@ -115,7 +115,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystemUpdater)
 	          __unsigned_int__getParticleSystemIndex__C5_ParticleSystem_P1,
 	          "get index number of ParticleSystem. ",
 	          "");
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, x,
 	          Properties::VIRTUAL,
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",

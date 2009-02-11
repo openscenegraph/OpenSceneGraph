@@ -159,8 +159,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	I_Method0(bool, valid,
 	          Properties::VIRTUAL,
 	          __bool__valid,
-	          "Return whether a valid and usable GraphicsContext has been created. ",
-	          "");
+	          "Create a new mouse cursor from the usual bitmap data. ",
+	          "Return whether a valid and usable GraphicsContext has been created. ");
 	I_Method0(bool, realizeImplementation,
 	          Properties::VIRTUAL,
 	          __bool__realizeImplementation,
@@ -206,12 +206,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__requestRedraw,
 	          "requestRedraw() requests a single redraw. ",
 	          "");
-	I_MethodWithDefaults1(void, requestContinuousUpdate, IN, bool, x, true,
+	I_MethodWithDefaults1(void, requestContinuousUpdate, IN, bool, needed, true,
 	                      Properties::VIRTUAL,
 	                      __void__requestContinuousUpdate__bool,
 	                      "requestContinousUpdate(bool) is for en/disabling a throw or idle callback to be requested by a GUIEventHandler (typically a MatrixManipulator, though other GUIEventHandler's may also provide functionality). ",
 	                      "GUI toolkits can respond to this immediately by registering an idle/timed callback, or can delay setting the callback and update at their own leisure. ");
-	I_Method2(void, requestWarpPointer, IN, float, x, IN, float, x,
+	I_Method2(void, requestWarpPointer, IN, float, x, IN, float, y,
 	          Properties::VIRTUAL,
 	          __void__requestWarpPointer__float__float,
 	          "requestWarpPointer(int,int) is requesting a repositioning of the mouse pointer to a specified x,y location on the window. ",
@@ -268,8 +268,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
 	I_Method0(bool, valid,
 	          Properties::VIRTUAL,
 	          __bool__valid,
-	          "Return whether a valid and usable GraphicsContext has been created. ",
-	          "");
+	          "Create a new mouse cursor from the usual bitmap data. ",
+	          "Return whether a valid and usable GraphicsContext has been created. ");
 	I_Method0(bool, realizeImplementation,
 	          Properties::VIRTUAL,
 	          __bool__realizeImplementation,

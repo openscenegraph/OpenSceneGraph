@@ -25,14 +25,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osg::BoundingSphere::vec_type, osg::LOD::vec_type)
-
-TYPE_NAME_ALIAS(osg::BoundingSphere::value_type, osg::LOD::value_type)
-
-TYPE_NAME_ALIAS(std::pair< float COMMA  float >, osg::LOD::MinMaxPair)
-
-TYPE_NAME_ALIAS(std::vector< osg::LOD::MinMaxPair >, osg::LOD::RangeList)
-
 BEGIN_ENUM_REFLECTOR(osg::LOD::CenterMode)
 	I_DeclaringFile("osg/LOD");
 	I_EnumLabel(osg::LOD::USE_BOUNDING_SPHERE_CENTER);
@@ -44,6 +36,14 @@ BEGIN_ENUM_REFLECTOR(osg::LOD::RangeMode)
 	I_EnumLabel(osg::LOD::DISTANCE_FROM_EYE_POINT);
 	I_EnumLabel(osg::LOD::PIXEL_SIZE_ON_SCREEN);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(osg::BoundingSphere::vec_type, osg::LOD::vec_type)
+
+TYPE_NAME_ALIAS(osg::BoundingSphere::value_type, osg::LOD::value_type)
+
+TYPE_NAME_ALIAS(std::pair< float COMMA  float >, osg::LOD::MinMaxPair)
+
+TYPE_NAME_ALIAS(std::vector< osg::LOD::MinMaxPair >, osg::LOD::RangeList)
 
 BEGIN_OBJECT_REFLECTOR(osg::LOD)
 	I_DeclaringFile("osg/LOD");
@@ -85,7 +85,7 @@ BEGIN_OBJECT_REFLECTOR(osg::LOD)
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
-	I_Method1(void, traverse, IN, osg::NodeVisitor &, nv,
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, x,
 	          Properties::VIRTUAL,
 	          __void__traverse__NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",

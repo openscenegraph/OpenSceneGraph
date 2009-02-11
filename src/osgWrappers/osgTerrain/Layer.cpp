@@ -47,7 +47,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -189,7 +189,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ContourLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -274,7 +274,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ContourLayer)
 	          __void__dirty,
 	          "increment the modified count. ",
 	          "\" ");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	I_Method1(void, setModifiedCount, IN, unsigned int, int,
 	          Properties::VIRTUAL,
 	          __void__setModifiedCount__unsigned_int,
 	          "Set the modified count value. ",
@@ -312,7 +312,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -397,7 +397,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::HeightFieldLayer)
 	          __void__dirty,
 	          "increment the modified count. ",
 	          "\" ");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	I_Method1(void, setModifiedCount, IN, unsigned int, int,
 	          Properties::VIRTUAL,
 	          __void__setModifiedCount__unsigned_int,
 	          "Set the modified count value. ",
@@ -435,7 +435,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -520,7 +520,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ImageLayer)
 	          __void__dirty,
 	          "increment the modified count. ",
 	          "\" ");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	I_Method1(void, setModifiedCount, IN, unsigned int, int,
 	          Properties::VIRTUAL,
 	          __void__setModifiedCount__unsigned_int,
 	          "Set the modified count value. ",
@@ -556,7 +556,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -829,7 +829,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -924,7 +924,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::ProxyLayer)
 	          __void__dirty,
 	          "increment the modified count. ",
 	          "\" ");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	I_Method1(void, setModifiedCount, IN, unsigned int, int,
 	          Properties::VIRTUAL,
 	          __void__setModifiedCount__unsigned_int,
 	          "Set the modified count value. ",
@@ -968,7 +968,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::SwitchLayer)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

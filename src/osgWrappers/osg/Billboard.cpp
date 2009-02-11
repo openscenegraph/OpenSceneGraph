@@ -27,14 +27,14 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::Billboard::PositionList)
-
 BEGIN_ENUM_REFLECTOR(osg::Billboard::Mode)
 	I_DeclaringFile("osg/Billboard");
 	I_EnumLabel(osg::Billboard::POINT_ROT_EYE);
 	I_EnumLabel(osg::Billboard::POINT_ROT_WORLD);
 	I_EnumLabel(osg::Billboard::AXIAL_ROT);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osg::Billboard::PositionList)
 
 BEGIN_OBJECT_REFLECTOR(osg::Billboard)
 	I_DeclaringFile("osg/Billboard");

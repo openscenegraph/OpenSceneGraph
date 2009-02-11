@@ -66,7 +66,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendFunc)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
@@ -96,7 +96,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendFunc)
 	          __int__compare__C5_StateAttribute_R1,
 	          "Return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
 	          "");
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x,
 	          Properties::VIRTUAL,
 	          __bool__getModeUsage__StateAttribute_ModeUsage_R1,
 	          "Return the modes associated with this StateAttribute. ",
@@ -171,7 +171,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendFunc)
 	          __GLenum__getDestinationAlpha,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osg::State &, state,
+	I_Method1(void, apply, IN, osg::State &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",
@@ -205,49 +205,5 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendFunc)
 	I_SimpleProperty(osg::StateAttribute::Type, Type, 
 	                 __Type__getType, 
 	                 0);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::BlendFunc::Extensions)
-	I_DeclaringFile("osg/BlendFunc");
-	I_BaseType(osg::Referenced);
-	I_Constructor1(IN, unsigned int, contextID,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__unsigned_int,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::BlendFunc::Extensions &, rhs,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__C5_Extensions_R1,
-	               "",
-	               "");
-	I_Method1(void, lowestCommonDenominator, IN, const osg::BlendFunc::Extensions &, rhs,
-	          Properties::NON_VIRTUAL,
-	          __void__lowestCommonDenominator__C5_Extensions_R1,
-	          "",
-	          "");
-	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __void__setupGLExtensions__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, setBlendFuncSeparateSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setBlendFuncSeparateSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isBlendFuncSeparateSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isBlendFuncSeparateSupported,
-	          "",
-	          "");
-	I_Method4(void, glBlendFuncSeparate, IN, GLenum, sfactorRGB, IN, GLenum, dfactorRGB, IN, GLenum, sfactorAlpha, IN, GLenum, dfactorAlpha,
-	          Properties::NON_VIRTUAL,
-	          __void__glBlendFuncSeparate__GLenum__GLenum__GLenum__GLenum,
-	          "",
-	          "");
-
-	I_SimpleProperty(bool, BlendFuncSeparateSupported, 
-	                 0, 
-	                 __void__setBlendFuncSeparateSupported__bool);
 END_REFLECTOR
 

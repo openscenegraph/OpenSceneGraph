@@ -77,7 +77,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
@@ -292,7 +292,7 @@ BEGIN_OBJECT_REFLECTOR(osg::TexEnvCombine)
 	          __Vec3__getConstantColorAsLightDirection,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osg::State &, state,
+	I_Method1(void, apply, IN, osg::State &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
 	          "apply the OpenGL state attributes. ",

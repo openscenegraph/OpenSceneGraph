@@ -23,10 +23,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osgShadow::MinimalShadowMap, osgShadow::MinimalShadowMap::ThisClass)
-
-TYPE_NAME_ALIAS(osgShadow::StandardShadowMap, osgShadow::MinimalShadowMap::BaseClass)
-
 BEGIN_ENUM_REFLECTOR(osgShadow::MinimalShadowMap::ShadowReceivingCoarseBoundAccuracy)
 	I_DeclaringFile("osgShadow/MinimalShadowMap");
 	I_EnumLabel(osgShadow::MinimalShadowMap::EMPTY_BOX);
@@ -34,6 +30,10 @@ BEGIN_ENUM_REFLECTOR(osgShadow::MinimalShadowMap::ShadowReceivingCoarseBoundAccu
 	I_EnumLabel(osgShadow::MinimalShadowMap::BOUNDING_BOX);
 	I_EnumLabel(osgShadow::MinimalShadowMap::DEFAULT_ACCURACY);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(osgShadow::MinimalShadowMap, osgShadow::MinimalShadowMap::ThisClass)
+
+TYPE_NAME_ALIAS(osgShadow::StandardShadowMap, osgShadow::MinimalShadowMap::BaseClass)
 
 BEGIN_OBJECT_REFLECTOR(osgShadow::MinimalShadowMap)
 	I_DeclaringFile("osgShadow/MinimalShadowMap");
@@ -50,7 +50,7 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::MinimalShadowMap)
 	          __osg_Object_P1__cloneType,
 	          "Declaration of standard OSG object methods. ",
 	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

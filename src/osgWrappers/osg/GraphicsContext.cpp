@@ -39,6 +39,54 @@ TYPE_NAME_ALIAS(std::list< osg::Camera * >, osg::GraphicsContext::Cameras)
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_DeclaringFile("osg/GraphicsContext");
 	I_BaseType(osg::Object);
+	I_StaticMethod1(void, setWindowingSystemInterface, IN, osg::GraphicsContext::WindowingSystemInterface *, wsInterface,
+	                __void__setWindowingSystemInterface__WindowingSystemInterface_P1_S,
+	                "Set the query the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. ",
+	                "");
+	I_StaticMethod0(osg::GraphicsContext::WindowingSystemInterface *, getWindowingSystemInterface,
+	                __WindowingSystemInterface_P1__getWindowingSystemInterface_S,
+	                "Get the WindowingSystemInterface. ",
+	                "");
+	I_StaticMethod1(osg::GraphicsContext *, createGraphicsContext, IN, osg::GraphicsContext::Traits *, traits,
+	                __GraphicsContext_P1__createGraphicsContext__Traits_P1_S,
+	                "Create a graphics context for a specified set of traits. ",
+	                "");
+	I_StaticMethod0(unsigned int, createNewContextID,
+	                __unsigned_int__createNewContextID_S,
+	                "Create a contextID for a new graphics context, this contextID is used to set up the osg::State associate with context. ",
+	                "Automatically increments the usage count of the contextID to 1. ");
+	I_StaticMethod0(unsigned int, getMaxContextID,
+	                __unsigned_int__getMaxContextID_S,
+	                "Get the current max ContextID. ",
+	                "");
+	I_StaticMethod1(void, incrementContextIDUsageCount, IN, unsigned int, contextID,
+	                __void__incrementContextIDUsageCount__unsigned_int_S,
+	                "Increment the usage count associate with a contextID. ",
+	                "The usage count specifies how many graphics contexts a specific contextID is shared between. ");
+	I_StaticMethod1(void, decrementContextIDUsageCount, IN, unsigned int, contextID,
+	                __void__decrementContextIDUsageCount__unsigned_int_S,
+	                "Decrement the usage count associate with a contextID. ",
+	                "Once the contextID goes to 0 the contextID is then free to be reused. ");
+	I_StaticMethod0(osg::GraphicsContext::GraphicsContexts, getAllRegisteredGraphicsContexts,
+	                __GraphicsContexts__getAllRegisteredGraphicsContexts_S,
+	                "Get all the registered graphics contexts. ",
+	                "");
+	I_StaticMethod1(osg::GraphicsContext::GraphicsContexts, getRegisteredGraphicsContexts, IN, unsigned int, contextID,
+	                __GraphicsContexts__getRegisteredGraphicsContexts__unsigned_int_S,
+	                "Get all the registered graphics contexts associated with a specific contextID. ",
+	                "");
+	I_StaticMethod2(void, setCompileContext, IN, unsigned int, contextID, IN, osg::GraphicsContext *, gc,
+	                __void__setCompileContext__unsigned_int__GraphicsContext_P1_S,
+	                "Get the GraphicsContext for doing background compilation for GraphicsContexts associated with specified contextID. ",
+	                "");
+	I_StaticMethod1(osg::GraphicsContext *, getOrCreateCompileContext, IN, unsigned int, contextID,
+	                __GraphicsContext_P1__getOrCreateCompileContext__unsigned_int_S,
+	                "Get existing or create a new GraphicsContext to do background compilation for GraphicsContexts associated with specified contextID. ",
+	                "");
+	I_StaticMethod1(osg::GraphicsContext *, getCompileContext, IN, unsigned int, contextID,
+	                __GraphicsContext_P1__getCompileContext__unsigned_int_S,
+	                "Get the GraphicsContext for doing background compilation for GraphicsContexts associated with specified contextID. ",
+	                "");
 	I_Method1(void, add, IN, osg::Operation *, operation,
 	          Properties::NON_VIRTUAL,
 	          __void__add__Operation_P1,
@@ -289,54 +337,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_StaticMethod1(void, setWindowingSystemInterface, IN, osg::GraphicsContext::WindowingSystemInterface *, wsInterface,
-	                __void__setWindowingSystemInterface__WindowingSystemInterface_P1_S,
-	                "Set the query the windowing system for screens and create graphics context - this functor should be supplied by the windows toolkit. ",
-	                "");
-	I_StaticMethod0(osg::GraphicsContext::WindowingSystemInterface *, getWindowingSystemInterface,
-	                __WindowingSystemInterface_P1__getWindowingSystemInterface_S,
-	                "Get the WindowingSystemInterface. ",
-	                "");
-	I_StaticMethod1(osg::GraphicsContext *, createGraphicsContext, IN, osg::GraphicsContext::Traits *, traits,
-	                __GraphicsContext_P1__createGraphicsContext__Traits_P1_S,
-	                "Create a graphics context for a specified set of traits. ",
-	                "");
-	I_StaticMethod0(unsigned int, createNewContextID,
-	                __unsigned_int__createNewContextID_S,
-	                "Create a contextID for a new graphics context, this contextID is used to set up the osg::State associate with context. ",
-	                "Automatically increments the usage count of the contextID to 1. ");
-	I_StaticMethod0(unsigned int, getMaxContextID,
-	                __unsigned_int__getMaxContextID_S,
-	                "Get the current max ContextID. ",
-	                "");
-	I_StaticMethod1(void, incrementContextIDUsageCount, IN, unsigned int, contextID,
-	                __void__incrementContextIDUsageCount__unsigned_int_S,
-	                "Increment the usage count associate with a contextID. ",
-	                "The usage count specifies how many graphics contexts a specific contextID is shared between. ");
-	I_StaticMethod1(void, decrementContextIDUsageCount, IN, unsigned int, contextID,
-	                __void__decrementContextIDUsageCount__unsigned_int_S,
-	                "Decrement the usage count associate with a contextID. ",
-	                "Once the contextID goes to 0 the contextID is then free to be reused. ");
-	I_StaticMethod0(osg::GraphicsContext::GraphicsContexts, getAllRegisteredGraphicsContexts,
-	                __GraphicsContexts__getAllRegisteredGraphicsContexts_S,
-	                "Get all the registered graphics contexts. ",
-	                "");
-	I_StaticMethod1(osg::GraphicsContext::GraphicsContexts, getRegisteredGraphicsContexts, IN, unsigned int, contextID,
-	                __GraphicsContexts__getRegisteredGraphicsContexts__unsigned_int_S,
-	                "Get all the registered graphics contexts associated with a specific contextID. ",
-	                "");
-	I_StaticMethod2(void, setCompileContext, IN, unsigned int, contextID, IN, osg::GraphicsContext *, gc,
-	                __void__setCompileContext__unsigned_int__GraphicsContext_P1_S,
-	                "Get the GraphicsContext for doing background compilation for GraphicsContexts associated with specified contextID. ",
-	                "");
-	I_StaticMethod1(osg::GraphicsContext *, getOrCreateCompileContext, IN, unsigned int, contextID,
-	                __GraphicsContext_P1__getOrCreateCompileContext__unsigned_int_S,
-	                "Get existing or create a new GraphicsContext to do background compilation for GraphicsContexts associated with specified contextID. ",
-	                "");
-	I_StaticMethod1(osg::GraphicsContext *, getCompileContext, IN, unsigned int, contextID,
-	                __GraphicsContext_P1__getCompileContext__unsigned_int_S,
-	                "Get the GraphicsContext for doing background compilation for GraphicsContexts associated with specified contextID. ",
-	                "");
 	I_ProtectedConstructor0(____GraphicsContext,
 	                        "",
 	                        "");

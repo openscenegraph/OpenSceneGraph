@@ -41,8 +41,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsOperation)
 	                           "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(unsigned int, osgUtil::GLObjectsVisitor::Mode)
-
 BEGIN_ENUM_REFLECTOR(osgUtil::GLObjectsVisitor::ModeValues)
 	I_DeclaringFile("osgUtil/GLObjectsVisitor");
 	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS);
@@ -55,6 +53,8 @@ BEGIN_ENUM_REFLECTOR(osgUtil::GLObjectsVisitor::ModeValues)
 	I_EnumLabel(osgUtil::GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS);
 	I_EnumLabel(osgUtil::GLObjectsVisitor::CHECK_BLACK_LISTED_MODES);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(unsigned int, osgUtil::GLObjectsVisitor::Mode)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::GLObjectsVisitor)
 	I_DeclaringFile("osgUtil/GLObjectsVisitor");

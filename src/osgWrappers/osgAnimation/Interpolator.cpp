@@ -10,13 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Quat>
-#include <osg/Vec2>
-#include <osg/Vec3>
-#include <osg/Vec4>
-#include <osgAnimation/CubicBezier>
 #include <osgAnimation/Interpolator>
-#include <osgAnimation/Vec3Packed>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -56,7 +50,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateCubicBezierInterpolator< double COM
 	I_Constructor0(____TemplateCubicBezierInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< osgAnimation::DoubleCubicBezier > &, keyframes, IN, float, time, IN, double &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -69,7 +63,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateCubicBezierInterpolator< float COMM
 	I_Constructor0(____TemplateCubicBezierInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< osgAnimation::FloatCubicBezier > &, keyframes, IN, float, time, IN, float &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -82,7 +76,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateCubicBezierInterpolator< osg::Vec2 
 	I_Constructor0(____TemplateCubicBezierInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< osgAnimation::Vec2CubicBezier > &, keyframes, IN, float, time, IN, osg::Vec2 &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -95,7 +89,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateCubicBezierInterpolator< osg::Vec3 
 	I_Constructor0(____TemplateCubicBezierInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< osgAnimation::Vec3CubicBezier > &, keyframes, IN, float, time, IN, osg::Vec3 &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -108,7 +102,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateCubicBezierInterpolator< osg::Vec4 
 	I_Constructor0(____TemplateCubicBezierInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< osgAnimation::Vec4CubicBezier > &, keyframes, IN, float, time, IN, osg::Vec4 &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -121,7 +115,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateLinearInterpolator< double COMMA  d
 	I_Constructor0(____TemplateLinearInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< double > &, keyframes, IN, float, time, IN, double &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -134,7 +128,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateLinearInterpolator< float COMMA  fl
 	I_Constructor0(____TemplateLinearInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< float > &, keyframes, IN, float, time, IN, float &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -147,7 +141,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateLinearInterpolator< osg::Vec2 COMMA
 	I_Constructor0(____TemplateLinearInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< osg::Vec2 > &, keyframes, IN, float, time, IN, osg::Vec2 &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -160,7 +154,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateLinearInterpolator< osg::Vec3 COMMA
 	I_Constructor0(____TemplateLinearInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< osg::Vec3 > &, keyframes, IN, float, time, IN, osg::Vec3 &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -173,7 +167,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateLinearInterpolator< osg::Vec3 COMMA
 	I_Constructor0(____TemplateLinearInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< osgAnimation::Vec3Packed > &, keyframes, IN, float, time, IN, osg::Vec3 &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -186,7 +180,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateLinearInterpolator< osg::Vec4 COMMA
 	I_Constructor0(____TemplateLinearInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< osg::Vec4 > &, keyframes, IN, float, time, IN, osg::Vec4 &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",
@@ -199,7 +193,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateSphericalLinearInterpolator< osg::Q
 	I_Constructor0(____TemplateSphericalLinearInterpolator,
 	               "",
 	               "");
-	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< osg::Quat > &, keyframes, IN, float, time, IN, osg::Quat &, result,
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
 	          Properties::NON_VIRTUAL,
 	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
 	          "",

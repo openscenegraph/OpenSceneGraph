@@ -38,10 +38,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::Drawable::ParentList)
-
-TYPE_NAME_ALIAS(unsigned int, osg::Drawable::AttributeType)
-
 BEGIN_ENUM_REFLECTOR(osg::Drawable::AttributeTypes)
 	I_DeclaringFile("osg/Drawable");
 	I_EnumLabel(osg::Drawable::VERTICES);
@@ -62,6 +58,10 @@ BEGIN_ENUM_REFLECTOR(osg::Drawable::AttributeTypes)
 	I_EnumLabel(osg::Drawable::TEXTURE_COORDS_6);
 	I_EnumLabel(osg::Drawable::TEXTURE_COORDS_7);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::Drawable::ParentList)
+
+TYPE_NAME_ALIAS(unsigned int, osg::Drawable::AttributeType)
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	I_DeclaringFile("osg/Drawable");
@@ -622,7 +622,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -746,7 +746,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::CullCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -793,7 +793,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -835,7 +835,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::EventCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -862,407 +862,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::EventCallback)
 	          "");
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osg::Drawable::Extensions)
-	I_DeclaringFile("osg/Drawable");
-	I_BaseType(osg::Referenced);
-	I_Constructor1(IN, unsigned int, contextID,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__unsigned_int,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::Drawable::Extensions &, rhs,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__C5_Extensions_R1,
-	               "",
-	               "");
-	I_Method1(void, lowestCommonDenominator, IN, const osg::Drawable::Extensions &, rhs,
-	          Properties::NON_VIRTUAL,
-	          __void__lowestCommonDenominator__C5_Extensions_R1,
-	          "",
-	          "");
-	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __void__setupGLExtensions__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, setVertexProgramSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setVertexProgramSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isVertexProgramSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isVertexProgramSupported,
-	          "",
-	          "");
-	I_Method1(void, setSecondaryColorSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setSecondaryColorSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isSecondaryColorSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isSecondaryColorSupported,
-	          "",
-	          "");
-	I_Method1(void, setFogCoordSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setFogCoordSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isFogCoordSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isFogCoordSupported,
-	          "",
-	          "");
-	I_Method1(void, setMultiTexSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setMultiTexSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isMultiTexSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isMultiTexSupported,
-	          "",
-	          "");
-	I_Method1(void, setOcclusionQuerySupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setOcclusionQuerySupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isOcclusionQuerySupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isOcclusionQuerySupported,
-	          "",
-	          "");
-	I_Method1(void, setARBOcclusionQuerySupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setARBOcclusionQuerySupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isARBOcclusionQuerySupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isARBOcclusionQuerySupported,
-	          "",
-	          "");
-	I_Method1(void, setTimerQuerySupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTimerQuerySupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTimerQuerySupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTimerQuerySupported,
-	          "",
-	          "");
-	I_Method1(void, glSecondaryColor3ubv, IN, const GLubyte *, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glSecondaryColor3ubv__C5_GLubyte_P1,
-	          "",
-	          "");
-	I_Method1(void, glSecondaryColor3fv, IN, const GLfloat *, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glSecondaryColor3fv__C5_GLfloat_P1,
-	          "",
-	          "");
-	I_Method1(void, glFogCoordfv, IN, const GLfloat *, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glFogCoordfv__C5_GLfloat_P1,
-	          "",
-	          "");
-	I_Method2(void, glMultiTexCoord1f, IN, GLenum, target, IN, GLfloat, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glMultiTexCoord1f__GLenum__GLfloat,
-	          "",
-	          "");
-	I_Method2(void, glMultiTexCoord2fv, IN, GLenum, target, IN, const GLfloat *, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glMultiTexCoord2fv__GLenum__C5_GLfloat_P1,
-	          "",
-	          "");
-	I_Method2(void, glMultiTexCoord3fv, IN, GLenum, target, IN, const GLfloat *, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glMultiTexCoord3fv__GLenum__C5_GLfloat_P1,
-	          "",
-	          "");
-	I_Method2(void, glMultiTexCoord4fv, IN, GLenum, target, IN, const GLfloat *, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glMultiTexCoord4fv__GLenum__C5_GLfloat_P1,
-	          "",
-	          "");
-	I_Method2(void, glMultiTexCoord1d, IN, GLenum, target, IN, GLdouble, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glMultiTexCoord1d__GLenum__GLdouble,
-	          "",
-	          "");
-	I_Method2(void, glMultiTexCoord2dv, IN, GLenum, target, IN, const GLdouble *, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glMultiTexCoord2dv__GLenum__C5_GLdouble_P1,
-	          "",
-	          "");
-	I_Method2(void, glMultiTexCoord3dv, IN, GLenum, target, IN, const GLdouble *, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glMultiTexCoord3dv__GLenum__C5_GLdouble_P1,
-	          "",
-	          "");
-	I_Method2(void, glMultiTexCoord4dv, IN, GLenum, target, IN, const GLdouble *, coord,
-	          Properties::NON_VIRTUAL,
-	          __void__glMultiTexCoord4dv__GLenum__C5_GLdouble_P1,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib1s, IN, unsigned int, index, IN, GLshort, s,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib1s__unsigned_int__GLshort,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib1f, IN, unsigned int, index, IN, GLfloat, f,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib1f__unsigned_int__GLfloat,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib1d, IN, unsigned int, index, IN, GLdouble, f,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib1d__unsigned_int__GLdouble,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib2fv, IN, unsigned int, index, IN, const GLfloat *, v,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib2fv__unsigned_int__C5_GLfloat_P1,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib3fv, IN, unsigned int, index, IN, const GLfloat *, v,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib3fv__unsigned_int__C5_GLfloat_P1,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib4fv, IN, unsigned int, index, IN, const GLfloat *, v,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib4fv__unsigned_int__C5_GLfloat_P1,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib2dv, IN, unsigned int, index, IN, const GLdouble *, v,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib2dv__unsigned_int__C5_GLdouble_P1,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib3dv, IN, unsigned int, index, IN, const GLdouble *, v,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib3dv__unsigned_int__C5_GLdouble_P1,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib4dv, IN, unsigned int, index, IN, const GLdouble *, v,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib4dv__unsigned_int__C5_GLdouble_P1,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib4ubv, IN, unsigned int, index, IN, const GLubyte *, v,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib4ubv__unsigned_int__C5_GLubyte_P1,
-	          "",
-	          "");
-	I_Method2(void, glVertexAttrib4Nubv, IN, unsigned int, index, IN, const GLubyte *, v,
-	          Properties::NON_VIRTUAL,
-	          __void__glVertexAttrib4Nubv__unsigned_int__C5_GLubyte_P1,
-	          "",
-	          "");
-	I_Method2(void, glGenBuffers, IN, GLsizei, n, IN, GLuint *, buffers,
-	          Properties::NON_VIRTUAL,
-	          __void__glGenBuffers__GLsizei__GLuint_P1,
-	          "",
-	          "");
-	I_Method2(void, glBindBuffer, IN, GLenum, target, IN, GLuint, buffer,
-	          Properties::NON_VIRTUAL,
-	          __void__glBindBuffer__GLenum__GLuint,
-	          "",
-	          "");
-	I_Method4(void, glBufferData, IN, GLenum, target, IN, GLsizeiptrARB, size, IN, const GLvoid *, data, IN, GLenum, usage,
-	          Properties::NON_VIRTUAL,
-	          __void__glBufferData__GLenum__GLsizeiptrARB__C5_GLvoid_P1__GLenum,
-	          "",
-	          "");
-	I_Method4(void, glBufferSubData, IN, GLenum, target, IN, GLintptrARB, offset, IN, GLsizeiptrARB, size, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glBufferSubData__GLenum__GLintptrARB__GLsizeiptrARB__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Method2(void, glDeleteBuffers, IN, GLsizei, n, IN, const GLuint *, buffers,
-	          Properties::NON_VIRTUAL,
-	          __void__glDeleteBuffers__GLsizei__C5_GLuint_P1,
-	          "",
-	          "");
-	I_Method1(GLboolean, glIsBuffer, IN, GLuint, buffer,
-	          Properties::NON_VIRTUAL,
-	          __GLboolean__glIsBuffer__GLuint,
-	          "",
-	          "");
-	I_Method4(void, glGetBufferSubData, IN, GLenum, target, IN, GLintptrARB, offset, IN, GLsizeiptrARB, size, IN, GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glGetBufferSubData__GLenum__GLintptrARB__GLsizeiptrARB__GLvoid_P1,
-	          "",
-	          "");
-	I_Method2(GLvoid *, glMapBuffer, IN, GLenum, target, IN, GLenum, access,
-	          Properties::NON_VIRTUAL,
-	          __GLvoid_P1__glMapBuffer__GLenum__GLenum,
-	          "",
-	          "");
-	I_Method1(GLboolean, glUnmapBuffer, IN, GLenum, target,
-	          Properties::NON_VIRTUAL,
-	          __GLboolean__glUnmapBuffer__GLenum,
-	          "",
-	          "");
-	I_Method3(void, glGetBufferParameteriv, IN, GLenum, target, IN, GLenum, pname, IN, GLint *, params,
-	          Properties::NON_VIRTUAL,
-	          __void__glGetBufferParameteriv__GLenum__GLenum__GLint_P1,
-	          "",
-	          "");
-	I_Method3(void, glGetBufferPointerv, IN, GLenum, target, IN, GLenum, pname, IN, GLvoid **, params,
-	          Properties::NON_VIRTUAL,
-	          __void__glGetBufferPointerv__GLenum__GLenum__GLvoid_P1P1,
-	          "",
-	          "");
-	I_Method2(void, glGenOcclusionQueries, IN, GLsizei, n, IN, GLuint *, ids,
-	          Properties::NON_VIRTUAL,
-	          __void__glGenOcclusionQueries__GLsizei__GLuint_P1,
-	          "",
-	          "");
-	I_Method2(void, glDeleteOcclusionQueries, IN, GLsizei, n, IN, const GLuint *, ids,
-	          Properties::NON_VIRTUAL,
-	          __void__glDeleteOcclusionQueries__GLsizei__C5_GLuint_P1,
-	          "",
-	          "");
-	I_Method1(GLboolean, glIsOcclusionQuery, IN, GLuint, id,
-	          Properties::NON_VIRTUAL,
-	          __GLboolean__glIsOcclusionQuery__GLuint,
-	          "",
-	          "");
-	I_Method1(void, glBeginOcclusionQuery, IN, GLuint, id,
-	          Properties::NON_VIRTUAL,
-	          __void__glBeginOcclusionQuery__GLuint,
-	          "",
-	          "");
-	I_Method0(void, glEndOcclusionQuery,
-	          Properties::NON_VIRTUAL,
-	          __void__glEndOcclusionQuery,
-	          "",
-	          "");
-	I_Method3(void, glGetOcclusionQueryiv, IN, GLuint, id, IN, GLenum, pname, IN, GLint *, params,
-	          Properties::NON_VIRTUAL,
-	          __void__glGetOcclusionQueryiv__GLuint__GLenum__GLint_P1,
-	          "",
-	          "");
-	I_Method3(void, glGetOcclusionQueryuiv, IN, GLuint, id, IN, GLenum, pname, IN, GLuint *, params,
-	          Properties::NON_VIRTUAL,
-	          __void__glGetOcclusionQueryuiv__GLuint__GLenum__GLuint_P1,
-	          "",
-	          "");
-	I_Method3(void, glGetQueryiv, IN, GLenum, target, IN, GLenum, pname, IN, GLint *, params,
-	          Properties::NON_VIRTUAL,
-	          __void__glGetQueryiv__GLenum__GLenum__GLint_P1,
-	          "",
-	          "");
-	I_Method2(void, glGenQueries, IN, GLsizei, n, IN, GLuint *, ids,
-	          Properties::NON_VIRTUAL,
-	          __void__glGenQueries__GLsizei__GLuint_P1,
-	          "",
-	          "");
-	I_Method2(void, glBeginQuery, IN, GLenum, target, IN, GLuint, id,
-	          Properties::NON_VIRTUAL,
-	          __void__glBeginQuery__GLenum__GLuint,
-	          "",
-	          "");
-	I_Method1(void, glEndQuery, IN, GLenum, target,
-	          Properties::NON_VIRTUAL,
-	          __void__glEndQuery__GLenum,
-	          "",
-	          "");
-	I_Method1(GLboolean, glIsQuery, IN, GLuint, id,
-	          Properties::NON_VIRTUAL,
-	          __GLboolean__glIsQuery__GLuint,
-	          "",
-	          "");
-	I_Method2(void, glDeleteQueries, IN, GLsizei, n, IN, const GLuint *, ids,
-	          Properties::NON_VIRTUAL,
-	          __void__glDeleteQueries__GLsizei__C5_GLuint_P1,
-	          "",
-	          "");
-	I_Method3(void, glGetQueryObjectiv, IN, GLuint, id, IN, GLenum, pname, IN, GLint *, params,
-	          Properties::NON_VIRTUAL,
-	          __void__glGetQueryObjectiv__GLuint__GLenum__GLint_P1,
-	          "",
-	          "");
-	I_Method3(void, glGetQueryObjectuiv, IN, GLuint, id, IN, GLenum, pname, IN, GLuint *, params,
-	          Properties::NON_VIRTUAL,
-	          __void__glGetQueryObjectuiv__GLuint__GLenum__GLuint_P1,
-	          "",
-	          "");
-	I_Method3(void, glGetQueryObjectui64v, IN, GLuint, id, IN, GLenum, pname, IN, GLuint64EXT *, params,
-	          Properties::NON_VIRTUAL,
-	          __void__glGetQueryObjectui64v__GLuint__GLenum__GLuint64EXT_P1,
-	          "",
-	          "");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	I_SimpleProperty(bool, ARBOcclusionQuerySupported, 
-	                 0, 
-	                 __void__setARBOcclusionQuerySupported__bool);
-	I_SimpleProperty(bool, FogCoordSupported, 
-	                 0, 
-	                 __void__setFogCoordSupported__bool);
-	I_SimpleProperty(bool, MultiTexSupported, 
-	                 0, 
-	                 __void__setMultiTexSupported__bool);
-	I_SimpleProperty(bool, OcclusionQuerySupported, 
-	                 0, 
-	                 __void__setOcclusionQuerySupported__bool);
-	I_SimpleProperty(bool, SecondaryColorSupported, 
-	                 0, 
-	                 __void__setSecondaryColorSupported__bool);
-	I_SimpleProperty(bool, TimerQuerySupported, 
-	                 0, 
-	                 __void__setTimerQuerySupported__bool);
-	I_SimpleProperty(bool, VertexProgramSupported, 
-	                 0, 
-	                 __void__setVertexProgramSupported__bool);
-END_REFLECTOR
-
 BEGIN_OBJECT_REFLECTOR(osg::Drawable::UpdateCallback)
 	I_DeclaringFile("osg/Drawable");
 	I_VirtualBaseType(osg::Object);
@@ -1278,7 +877,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::UpdateCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

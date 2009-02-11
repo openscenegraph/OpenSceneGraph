@@ -42,7 +42,7 @@ class OSGWIDGET_EXPORT BrowserManager : public osg::Object
             
         virtual ~BrowserManager();
         
-        META_Object(osgWidget,BrowserManager)
+        META_Object(osgWidget,BrowserManager);
 
         std::string _application;
 };

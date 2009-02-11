@@ -22,10 +22,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tessellator::VertexPointList)
-
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::Tessellator::Prim > >, osgUtil::Tessellator::PrimList)
-
 BEGIN_ENUM_REFLECTOR(osgUtil::Tessellator::WindingType)
 	I_DeclaringFile("osgUtil/Tessellator");
 	I_EnumLabel(osgUtil::Tessellator::TESS_WINDING_ODD);
@@ -41,6 +37,10 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Tessellator::TessellationType)
 	I_EnumLabel(osgUtil::Tessellator::TESS_TYPE_DRAWABLE);
 	I_EnumLabel(osgUtil::Tessellator::TESS_TYPE_POLYGONS);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osg::Vec3 * >, osgUtil::Tessellator::VertexPointList)
+
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgUtil::Tessellator::Prim > >, osgUtil::Tessellator::PrimList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Tessellator)
 	I_DeclaringFile("osgUtil/Tessellator");

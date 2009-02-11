@@ -43,8 +43,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(osgUtil::SceneView::Options, osgUtil::SceneView::LightingMode)
-
 BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::Options)
 	I_DeclaringFile("osgUtil/SceneView");
 	I_EnumLabel(osgUtil::SceneView::NO_SCENEVIEW_LIGHT);
@@ -73,6 +71,8 @@ BEGIN_ENUM_REFLECTOR(osgUtil::SceneView::FusionDistanceMode)
 	I_EnumLabel(osgUtil::SceneView::PROPORTIONAL_TO_SCREEN_DISTANCE);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(osgUtil::SceneView::Options, osgUtil::SceneView::LightingMode)
+
 BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	I_DeclaringFile("osgUtil/SceneView");
 	I_BaseType(osg::Object);
@@ -91,7 +91,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

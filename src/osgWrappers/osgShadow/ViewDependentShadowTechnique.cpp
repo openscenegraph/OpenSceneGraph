@@ -28,8 +28,8 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ViewDependentShadowTechnique)
 	I_DeclaringFile("osgShadow/ViewDependentShadowTechnique");
 	I_BaseType(osgShadow::ShadowTechnique);
 	I_Constructor0(____ViewDependentShadowTechnique,
-	               "Classic OSG constructor. ",
-	               "");
+	               "osgShadow::ShadowTechnique equivalent methods for view dependent techniques ",
+	               "Classic OSG constructor ");
 	I_ConstructorWithDefaults2(IN, const osgShadow::ViewDependentShadowTechnique &, vdst, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____ViewDependentShadowTechnique__C5_ViewDependentShadowTechnique_R1__C5_osg_CopyOp_R1,
 	                           "Classic OSG cloning constructor. ",
@@ -39,7 +39,7 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ViewDependentShadowTechnique)
 	          __osg_Object_P1__cloneType,
 	          "Declaration of standard OSG object methods. ",
 	          "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

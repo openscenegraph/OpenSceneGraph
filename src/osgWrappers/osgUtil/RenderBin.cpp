@@ -36,12 +36,6 @@ BEGIN_VALUE_REFLECTOR(osgUtil::RegisterRenderBinProxy)
 	               "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osgUtil::RenderLeaf * >, osgUtil::RenderBin::RenderLeafList)
-
-TYPE_NAME_ALIAS(std::vector< osgUtil::StateGraph * >, osgUtil::RenderBin::StateGraphList)
-
-TYPE_NAME_ALIAS(std::map< int COMMA  osg::ref_ptr< osgUtil::RenderBin > >, osgUtil::RenderBin::RenderBinList)
-
 BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
 	I_DeclaringFile("osgUtil/RenderBin");
 	I_EnumLabel(osgUtil::RenderBin::SORT_BY_STATE);
@@ -50,9 +44,39 @@ BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
 	I_EnumLabel(osgUtil::RenderBin::SORT_BACK_TO_FRONT);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::vector< osgUtil::RenderLeaf * >, osgUtil::RenderBin::RenderLeafList)
+
+TYPE_NAME_ALIAS(std::vector< osgUtil::StateGraph * >, osgUtil::RenderBin::StateGraphList)
+
+TYPE_NAME_ALIAS(std::map< int COMMA  osg::ref_ptr< osgUtil::RenderBin > >, osgUtil::RenderBin::RenderBinList)
+
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_DeclaringFile("osgUtil/RenderBin");
 	I_BaseType(osg::Object);
+	I_StaticMethod1(osgUtil::RenderBin *, createRenderBin, IN, const std::string &, binName,
+	                __RenderBin_P1__createRenderBin__C5_std_string_R1_S,
+	                "",
+	                "");
+	I_StaticMethod1(osgUtil::RenderBin *, getRenderBinPrototype, IN, const std::string &, binName,
+	                __RenderBin_P1__getRenderBinPrototype__C5_std_string_R1_S,
+	                "",
+	                "");
+	I_StaticMethod2(void, addRenderBinPrototype, IN, const std::string &, binName, IN, osgUtil::RenderBin *, proto,
+	                __void__addRenderBinPrototype__C5_std_string_R1__RenderBin_P1_S,
+	                "",
+	                "");
+	I_StaticMethod1(void, removeRenderBinPrototype, IN, osgUtil::RenderBin *, proto,
+	                __void__removeRenderBinPrototype__RenderBin_P1_S,
+	                "",
+	                "");
+	I_StaticMethod1(void, setDefaultRenderBinSortMode, IN, osgUtil::RenderBin::SortMode, mode,
+	                __void__setDefaultRenderBinSortMode__SortMode_S,
+	                "",
+	                "");
+	I_StaticMethod0(osgUtil::RenderBin::SortMode, getDefaultRenderBinSortMode,
+	                __SortMode__getDefaultRenderBinSortMode_S,
+	                "",
+	                "");
 	I_Constructor0(____RenderBin,
 	               "",
 	               "");
@@ -70,7 +94,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -270,30 +294,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	          __void__copyLeavesFromStateGraphListToRenderLeafList,
 	          "",
 	          "");
-	I_StaticMethod1(osgUtil::RenderBin *, createRenderBin, IN, const std::string &, binName,
-	                __RenderBin_P1__createRenderBin__C5_std_string_R1_S,
-	                "",
-	                "");
-	I_StaticMethod1(osgUtil::RenderBin *, getRenderBinPrototype, IN, const std::string &, binName,
-	                __RenderBin_P1__getRenderBinPrototype__C5_std_string_R1_S,
-	                "",
-	                "");
-	I_StaticMethod2(void, addRenderBinPrototype, IN, const std::string &, binName, IN, osgUtil::RenderBin *, proto,
-	                __void__addRenderBinPrototype__C5_std_string_R1__RenderBin_P1_S,
-	                "",
-	                "");
-	I_StaticMethod1(void, removeRenderBinPrototype, IN, osgUtil::RenderBin *, proto,
-	                __void__removeRenderBinPrototype__RenderBin_P1_S,
-	                "",
-	                "");
-	I_StaticMethod1(void, setDefaultRenderBinSortMode, IN, osgUtil::RenderBin::SortMode, mode,
-	                __void__setDefaultRenderBinSortMode__SortMode_S,
-	                "",
-	                "");
-	I_StaticMethod0(osgUtil::RenderBin::SortMode, getDefaultRenderBinSortMode,
-	                __SortMode__getDefaultRenderBinSortMode_S,
-	                "",
-	                "");
 	I_SimpleProperty(int, BinNum, 
 	                 __int__getBinNum, 
 	                 0);

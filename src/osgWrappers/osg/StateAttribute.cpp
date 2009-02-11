@@ -26,16 +26,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(GLenum, osg::StateAttribute::GLMode)
-
-TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::GLModeValue)
-
-TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::OverrideValue)
-
-TYPE_NAME_ALIAS(std::pair< osg::StateAttribute::Type COMMA  unsigned int >, osg::StateAttribute::TypeMemberPair)
-
-TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::StateAttribute::ParentList)
-
 BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Values)
 	I_DeclaringFile("osg/StateAttribute");
 	I_EnumLabel(osg::StateAttribute::OFF);
@@ -96,6 +86,16 @@ BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Type)
 	I_EnumLabel(osg::StateAttribute::OSGNVSLANG_PROGRAM);
 	I_EnumLabel(osg::StateAttribute::OSGNVPARSE_PROGRAM_PARSER);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(GLenum, osg::StateAttribute::GLMode)
+
+TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::GLModeValue)
+
+TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::OverrideValue)
+
+TYPE_NAME_ALIAS(std::pair< osg::StateAttribute::Type COMMA  unsigned int >, osg::StateAttribute::TypeMemberPair)
+
+TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::StateAttribute::ParentList)
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	I_DeclaringFile("osg/StateAttribute");
@@ -301,7 +301,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

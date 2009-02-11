@@ -93,17 +93,17 @@ BEGIN_OBJECT_REFLECTOR(osgGA::AnimationPathManipulator)
 	          __bool__valid,
 	          "",
 	          "");
-	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
 	          "Start/restart the manipulator. ",
 	          "FIXME: what does this actually mean? Provide examples. ");
-	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
 	          "Move the camera to the default position. ",
 	          "May be ignored by manipulators if home functionality is not appropriate. ");
-	I_Method1(void, home, IN, double, currentTime,
+	I_Method1(void, home, IN, double, x,
 	          Properties::VIRTUAL,
 	          __void__home__double,
 	          "Move the camera to the default position. ",

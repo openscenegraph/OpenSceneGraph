@@ -33,12 +33,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::pair< unsigned int COMMA  unsigned int >, osgUtil::Statistics::PrimitivePair)
-
-TYPE_NAME_ALIAS(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >, osgUtil::Statistics::PrimitiveValueMap)
-
-TYPE_NAME_ALIAS(std::map< GLenum COMMA  unsigned int >, osgUtil::Statistics::PrimitiveCountMap)
-
 BEGIN_ENUM_REFLECTOR(osgUtil::Statistics::StatsType)
 	I_DeclaringFile("osgUtil/Statistics");
 	I_EnumLabel(osgUtil::Statistics::STAT_NONE);
@@ -50,6 +44,12 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Statistics::StatsType)
 	I_EnumLabel(osgUtil::Statistics::STAT_DC);
 	I_EnumLabel(osgUtil::Statistics::STAT_RESTART);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::pair< unsigned int COMMA  unsigned int >, osgUtil::Statistics::PrimitivePair)
+
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  osgUtil::Statistics::PrimitivePair >, osgUtil::Statistics::PrimitiveValueMap)
+
+TYPE_NAME_ALIAS(std::map< GLenum COMMA  unsigned int >, osgUtil::Statistics::PrimitiveCountMap)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_DeclaringFile("osgUtil/Statistics");
@@ -67,52 +67,52 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	          __void__setType__StatsType,
 	          "",
 	          "");
-	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3 *, x,
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3 *, vertices,
 	          Properties::VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_osg_Vec3_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
 	          "Somehow mimics the OpenGL glVertexPointer() function. ");
-	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2 *, x,
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2 *, vertices,
 	          Properties::VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_osg_Vec2_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
 	          "Somehow mimics the OpenGL glVertexPointer() function. ");
-	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, x,
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4 *, vertices,
 	          Properties::VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_osg_Vec4_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
 	          "Somehow mimics the OpenGL glVertexPointer() function. ");
-	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3d *, x,
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec3d *, vertices,
 	          Properties::VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_osg_Vec3d_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
 	          "Somehow mimics the OpenGL glVertexPointer() function. ");
-	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2d *, x,
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec2d *, vertices,
 	          Properties::VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_osg_Vec2d_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
 	          "Somehow mimics the OpenGL glVertexPointer() function. ");
-	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4d *, x,
+	I_Method2(void, setVertexArray, IN, unsigned int, count, IN, const osg::Vec4d *, vertices,
 	          Properties::VIRTUAL,
 	          __void__setVertexArray__unsigned_int__C5_osg_Vec4d_P1,
 	          "Sets the array of vertices used to describe the primitives. ",
 	          "Somehow mimics the OpenGL glVertexPointer() function. ");
-	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, x, IN, GLsizei, count,
+	I_Method3(void, drawArrays, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count,
 	          Properties::VIRTUAL,
 	          __void__drawArrays__GLenum__GLint__GLsizei,
 	          "Mimics the OpenGL glDrawArrays() function. ",
 	          "");
-	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLubyte *, x,
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLubyte *, indices,
 	          Properties::VIRTUAL,
 	          __void__drawElements__GLenum__GLsizei__C5_GLubyte_P1,
 	          "Mimics the OpenGL glDrawElements() function. ",
 	          "");
-	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLushort *, x,
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLushort *, indices,
 	          Properties::VIRTUAL,
 	          __void__drawElements__GLenum__GLsizei__C5_GLushort_P1,
 	          "Mimics the OpenGL glDrawElements() function. ",
 	          "");
-	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLuint *, x,
+	I_Method3(void, drawElements, IN, GLenum, mode, IN, GLsizei, count, IN, const GLuint *, indices,
 	          Properties::VIRTUAL,
 	          __void__drawElements__GLenum__GLsizei__C5_GLuint_P1,
 	          "Mimics the OpenGL glDrawElements() function. ",
@@ -127,32 +127,32 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	          __void__vertex,
 	          "",
 	          "");
-	I_Method3(void, vertex, IN, float, x, IN, float, x, IN, float, x,
+	I_Method3(void, vertex, IN, float, x, IN, float, y, IN, float, z,
 	          Properties::VIRTUAL,
 	          __void__vertex__float__float__float,
 	          "Mimics the OpenGL glVertex() \"family of functions\". ",
 	          "");
-	I_Method1(void, vertex, IN, const osg::Vec3 &, x,
+	I_Method1(void, vertex, IN, const osg::Vec3 &, vert,
 	          Properties::VIRTUAL,
 	          __void__vertex__C5_osg_Vec3_R1,
 	          "Mimics the OpenGL glVertex() \"family of functions\". ",
 	          "");
-	I_Method1(void, vertex, IN, const osg::Vec2 &, x,
+	I_Method1(void, vertex, IN, const osg::Vec2 &, vert,
 	          Properties::VIRTUAL,
 	          __void__vertex__C5_osg_Vec2_R1,
 	          "Mimics the OpenGL glVertex() \"family of functions\". ",
 	          "");
-	I_Method1(void, vertex, IN, const osg::Vec4 &, x,
+	I_Method1(void, vertex, IN, const osg::Vec4 &, vert,
 	          Properties::VIRTUAL,
 	          __void__vertex__C5_osg_Vec4_R1,
 	          "Mimics the OpenGL glVertex() \"family of functions\". ",
 	          "");
-	I_Method2(void, vertex, IN, float, x, IN, float, x,
+	I_Method2(void, vertex, IN, float, x, IN, float, y,
 	          Properties::VIRTUAL,
 	          __void__vertex__float__float,
 	          "Mimics the OpenGL glVertex() \"family of functions\". ",
 	          "");
-	I_Method4(void, vertex, IN, float, x, IN, float, x, IN, float, x, IN, float, x,
+	I_Method4(void, vertex, IN, float, x, IN, float, y, IN, float, z, IN, float, w,
 	          Properties::VIRTUAL,
 	          __void__vertex__float__float__float__float,
 	          "Mimics the OpenGL glVertex() \"family of functions\". ",

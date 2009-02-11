@@ -29,6 +29,14 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DrawablePolicy)
+	I_DeclaringFile("osgDB/DatabasePager");
+	I_EnumLabel(osgDB::DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS);
+	I_EnumLabel(osgDB::DatabasePager::USE_DISPLAY_LISTS);
+	I_EnumLabel(osgDB::DatabasePager::USE_VERTEX_BUFFER_OBJECTS);
+	I_EnumLabel(osgDB::DatabasePager::USE_VERTEX_ARRAYS);
+END_REFLECTOR
+
 TYPE_NAME_ALIAS(OpenThreads::Thread::ThreadPriority, osgDB::DatabasePager::ThreadPriority)
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::PagedLOD > >, osgDB::DatabasePager::PagedLODList)
@@ -44,14 +52,6 @@ TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osgDB::DatabasePager::DataToCompil
 TYPE_NAME_ALIAS(std::set< unsigned int >, osgDB::DatabasePager::ActiveGraphicsContexts)
 
 TYPE_NAME_ALIAS(std::vector< osg::observer_ptr< osg::GraphicsContext > >, osgDB::DatabasePager::CompileGraphicsContexts)
-
-BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DrawablePolicy)
-	I_DeclaringFile("osgDB/DatabasePager");
-	I_EnumLabel(osgDB::DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS);
-	I_EnumLabel(osgDB::DatabasePager::USE_DISPLAY_LISTS);
-	I_EnumLabel(osgDB::DatabasePager::USE_VERTEX_BUFFER_OBJECTS);
-	I_EnumLabel(osgDB::DatabasePager::USE_VERTEX_ARRAYS);
-END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	I_DeclaringFile("osgDB/DatabasePager");

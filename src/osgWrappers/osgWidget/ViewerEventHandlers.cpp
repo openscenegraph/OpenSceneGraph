@@ -33,7 +33,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::CameraSwitchHandler)
 	               ____CameraSwitchHandler__WindowManager_P1__osg_Camera_P1,
 	               "",
 	               "");
-	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x, IN, osg::Object *, x, IN, osg::NodeVisitor *, x,
+	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa, IN, osg::Object *, x, IN, osg::NodeVisitor *, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1__osg_Object_P1__osg_NodeVisitor_P1,
 	          "Handle events, return true if handled, false otherwise. ",
@@ -48,16 +48,14 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::KeyboardHandler)
 	               ____KeyboardHandler__WindowManager_P1,
 	               "",
 	               "");
-	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x, IN, osg::Object *, x, IN, osg::NodeVisitor *, x,
+	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa, IN, osg::Object *, x, IN, osg::NodeVisitor *, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1__osg_Object_P1__osg_NodeVisitor_P1,
 	          "Handle events, return true if handled, false otherwise. ",
 	          "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(bool(osgWidget::MouseHandler::*), osgWidget::MouseHandler::MouseAction)
 
-TYPE_NAME_ALIAS(bool(osgWidget::WindowManager::*), osgWidget::MouseHandler::MouseEvent)
 
 BEGIN_OBJECT_REFLECTOR(osgWidget::MouseHandler)
 	I_DeclaringFile("osgWidget/ViewerEventHandlers");
@@ -67,7 +65,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::MouseHandler)
 	               ____MouseHandler__WindowManager_P1,
 	               "",
 	               "");
-	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x, IN, osg::Object *, x, IN, osg::NodeVisitor *, x,
+	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa, IN, osg::Object *, x, IN, osg::NodeVisitor *, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1__osg_Object_P1__osg_NodeVisitor_P1,
 	          "Handle events, return true if handled, false otherwise. ",
@@ -129,7 +127,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::ResizeHandler)
 	                           ____ResizeHandler__WindowManager_P1__osg_Camera_P1,
 	                           "",
 	                           "");
-	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x, IN, osg::Object *, x, IN, osg::NodeVisitor *, x,
+	I_Method4(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa, IN, osg::Object *, x, IN, osg::NodeVisitor *, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1__osg_Object_P1__osg_NodeVisitor_P1,
 	          "Handle events, return true if handled, false otherwise. ",

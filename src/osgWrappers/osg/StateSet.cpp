@@ -26,6 +26,20 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderingHint)
+	I_DeclaringFile("osg/StateSet");
+	I_EnumLabel(osg::StateSet::DEFAULT_BIN);
+	I_EnumLabel(osg::StateSet::OPAQUE_BIN);
+	I_EnumLabel(osg::StateSet::TRANSPARENT_BIN);
+END_REFLECTOR
+
+BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderBinMode)
+	I_DeclaringFile("osg/StateSet");
+	I_EnumLabel(osg::StateSet::INHERIT_RENDERBIN_DETAILS);
+	I_EnumLabel(osg::StateSet::USE_RENDERBIN_DETAILS);
+	I_EnumLabel(osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
+END_REFLECTOR
+
 TYPE_NAME_ALIAS(std::vector< osg::Object * >, osg::StateSet::ParentList)
 
 TYPE_NAME_ALIAS(std::map< osg::StateAttribute::GLMode COMMA  osg::StateAttribute::GLModeValue >, osg::StateSet::ModeList)
@@ -42,20 +56,6 @@ TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::Uniform > COMMA  osg::StateAttribu
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::StateSet::RefUniformPair >, osg::StateSet::UniformList)
 
-BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderingHint)
-	I_DeclaringFile("osg/StateSet");
-	I_EnumLabel(osg::StateSet::DEFAULT_BIN);
-	I_EnumLabel(osg::StateSet::OPAQUE_BIN);
-	I_EnumLabel(osg::StateSet::TRANSPARENT_BIN);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osg::StateSet::RenderBinMode)
-	I_DeclaringFile("osg/StateSet");
-	I_EnumLabel(osg::StateSet::INHERIT_RENDERBIN_DETAILS);
-	I_EnumLabel(osg::StateSet::USE_RENDERBIN_DETAILS);
-	I_EnumLabel(osg::StateSet::OVERRIDE_RENDERBIN_DETAILS);
-END_REFLECTOR
-
 BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	I_DeclaringFile("osg/StateSet");
 	I_BaseType(osg::Object);
@@ -71,7 +71,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet)
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -688,7 +688,7 @@ BEGIN_OBJECT_REFLECTOR(osg::StateSet::Callback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

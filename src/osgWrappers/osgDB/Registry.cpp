@@ -69,8 +69,6 @@ BEGIN_VALUE_REFLECTOR(osgDB::RegisterDotOsgWrapperProxy)
 	                           "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgDB::ReaderWriter > >, osgDB::Registry::ReaderWriterList)
-
 BEGIN_ENUM_REFLECTOR(osgDB::Registry::LoadStatus)
 	I_DeclaringFile("osgDB/Registry");
 	I_EnumLabel(osgDB::Registry::NOT_LOADED);
@@ -78,9 +76,15 @@ BEGIN_ENUM_REFLECTOR(osgDB::Registry::LoadStatus)
 	I_EnumLabel(osgDB::Registry::LOADED);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgDB::ReaderWriter > >, osgDB::Registry::ReaderWriterList)
+
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_DeclaringFile("osgDB/Registry");
 	I_BaseType(osg::Referenced);
+	I_StaticMethodWithDefaults1(osgDB::Registry *, instance, IN, bool, erase, false,
+	                            __Registry_P1__instance__bool_S,
+	                            "",
+	                            "");
 	I_Method1(void, readCommandLine, IN, osg::ArgumentParser &, commandLine,
 	          Properties::NON_VIRTUAL,
 	          __void__readCommandLine__osg_ArgumentParser_R1,
@@ -561,10 +565,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __void__addArchiveExtension__C5_std_string,
 	          "Add an Archive extension. ",
 	          "");
-	I_StaticMethodWithDefaults1(osgDB::Registry *, instance, IN, bool, erase, false,
-	                            __Registry_P1__instance__bool_S,
-	                            "",
-	                            "");
 	I_ProtectedConstructor0(____Registry,
 	                        "constructor is private, as its a singleton, preventing construction other than via the instance() method and therefore ensuring only one copy is ever constructed ",
 	                        "");

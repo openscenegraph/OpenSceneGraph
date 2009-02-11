@@ -27,10 +27,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Texture::TextureObject > >, osg::Texture::TextureObjectList)
-
-TYPE_NAME_ALIAS(osg::buffered_object< osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap)
-
 BEGIN_ENUM_REFLECTOR(osg::Texture::WrapParameter)
 	I_DeclaringFile("osg/Texture");
 	I_EnumLabel(osg::Texture::WRAP_S);
@@ -101,6 +97,10 @@ BEGIN_ENUM_REFLECTOR(osg::Texture::GenerateMipmapMode)
 	I_EnumLabel(osg::Texture::GENERATE_MIPMAP_TEX_PARAMETER);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Texture::TextureObject > >, osg::Texture::TextureObjectList)
+
+TYPE_NAME_ALIAS(osg::buffered_object< osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap)
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_DeclaringFile("osg/Texture");
 	I_BaseType(osg::StateAttribute);
@@ -116,7 +116,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an attribute, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::PURE_VIRTUAL,
 	          __osg_Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an attribute, with Object* return type. ",
@@ -161,7 +161,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __GLenum__getTextureTarget,
 	          "",
 	          "");
-	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, usage,
+	I_Method1(bool, getModeUsage, IN, osg::StateAttribute::ModeUsage &, x,
 	          Properties::VIRTUAL,
 	          __bool__getModeUsage__StateAttribute_ModeUsage_R1,
 	          "Return the modes associated with this StateAttribute. ",
@@ -653,248 +653,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                  __WrapMode__getWrap__WrapParameter, 
 	                  __void__setWrap__WrapParameter__WrapMode, 
 	                  0);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::Texture::Extensions)
-	I_DeclaringFile("osg/Texture");
-	I_BaseType(osg::Referenced);
-	I_Constructor1(IN, unsigned int, contextID,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__unsigned_int,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::Texture::Extensions &, rhs,
-	               Properties::NON_EXPLICIT,
-	               ____Extensions__C5_Extensions_R1,
-	               "",
-	               "");
-	I_Method1(void, lowestCommonDenominator, IN, const osg::Texture::Extensions &, rhs,
-	          Properties::NON_VIRTUAL,
-	          __void__lowestCommonDenominator__C5_Extensions_R1,
-	          "",
-	          "");
-	I_Method1(void, setupGLExtensions, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __void__setupGLExtensions__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, setMultiTexturingSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setMultiTexturingSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isMultiTexturingSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isMultiTexturingSupported,
-	          "",
-	          "");
-	I_Method1(void, setTextureFilterAnisotropicSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureFilterAnisotropicSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTextureFilterAnisotropicSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTextureFilterAnisotropicSupported,
-	          "",
-	          "");
-	I_Method1(void, setTextureCompressionARBSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureCompressionARBSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTextureCompressionARBSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTextureCompressionARBSupported,
-	          "",
-	          "");
-	I_Method1(void, setTextureCompressionS3TCSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureCompressionS3TCSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTextureCompressionS3TCSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTextureCompressionS3TCSupported,
-	          "",
-	          "");
-	I_Method1(void, setTextureMirroredRepeatSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureMirroredRepeatSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTextureMirroredRepeatSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTextureMirroredRepeatSupported,
-	          "",
-	          "");
-	I_Method1(void, setTextureEdgeClampSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureEdgeClampSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTextureEdgeClampSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTextureEdgeClampSupported,
-	          "",
-	          "");
-	I_Method1(void, setTextureBorderClampSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureBorderClampSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTextureBorderClampSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTextureBorderClampSupported,
-	          "",
-	          "");
-	I_Method1(void, setGenerateMipMapSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setGenerateMipMapSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isGenerateMipMapSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isGenerateMipMapSupported,
-	          "",
-	          "");
-	I_Method1(void, setShadowSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setShadowSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isShadowSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isShadowSupported,
-	          "",
-	          "");
-	I_Method1(void, setShadowAmbientSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setShadowAmbientSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isShadowAmbientSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isShadowAmbientSupported,
-	          "",
-	          "");
-	I_Method1(void, setMaxTextureSize, IN, GLint, maxsize,
-	          Properties::NON_VIRTUAL,
-	          __void__setMaxTextureSize__GLint,
-	          "",
-	          "");
-	I_Method0(GLint, maxTextureSize,
-	          Properties::NON_VIRTUAL,
-	          __GLint__maxTextureSize,
-	          "",
-	          "");
-	I_Method1(void, setNumTextureUnits, IN, GLint, nunits,
-	          Properties::NON_VIRTUAL,
-	          __void__setNumTextureUnits__GLint,
-	          "",
-	          "");
-	I_Method0(GLint, numTextureUnits,
-	          Properties::NON_VIRTUAL,
-	          __GLint__numTextureUnits,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexImage2DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexImage2DSupported,
-	          "",
-	          "");
-	I_Method0(bool, isCompressedTexSubImage2DSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isCompressedTexSubImage2DSupported,
-	          "",
-	          "");
-	I_Method8(void, glCompressedTexImage2D, IN, GLenum, target, IN, GLint, level, IN, GLenum, internalformat, IN, GLsizei, width, IN, GLsizei, height, IN, GLint, border, IN, GLsizei, imageSize, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glCompressedTexImage2D__GLenum__GLint__GLenum__GLsizei__GLsizei__GLint__GLsizei__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Method9(void, glCompressedTexSubImage2D, IN, GLenum, target, IN, GLint, level, IN, GLint, xoffset, IN, GLint, yoffset, IN, GLsizei, width, IN, GLsizei, height, IN, GLenum, format, IN, GLsizei, type, IN, const GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glCompressedTexSubImage2D__GLenum__GLint__GLint__GLint__GLsizei__GLsizei__GLenum__GLsizei__C5_GLvoid_P1,
-	          "",
-	          "");
-	I_Method3(void, glGetCompressedTexImage, IN, GLenum, target, IN, GLint, level, IN, GLvoid *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glGetCompressedTexImage__GLenum__GLint__GLvoid_P1,
-	          "",
-	          "");
-	I_Method0(bool, isClientStorageSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isClientStorageSupported,
-	          "",
-	          "");
-	I_Method1(bool, isNonPowerOfTwoTextureSupported, IN, GLenum, filter,
-	          Properties::NON_VIRTUAL,
-	          __bool__isNonPowerOfTwoTextureSupported__GLenum,
-	          "",
-	          "");
-	I_Method1(void, setTextureIntegerSupported, IN, bool, flag,
-	          Properties::NON_VIRTUAL,
-	          __void__setTextureIntegerSupported__bool,
-	          "",
-	          "");
-	I_Method0(bool, isTextureIntegerSupported,
-	          Properties::NON_VIRTUAL,
-	          __bool__isTextureIntegerSupported,
-	          "",
-	          "");
-	I_Method3(void, glTexParameterIiv, IN, GLenum, target, IN, GLenum, pname, IN, const GLint *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glTexParameterIiv__GLenum__GLenum__C5_GLint_P1,
-	          "",
-	          "");
-	I_Method3(void, glTexParameterIuiv, IN, GLenum, target, IN, GLenum, pname, IN, const GLuint *, data,
-	          Properties::NON_VIRTUAL,
-	          __void__glTexParameterIuiv__GLenum__GLenum__C5_GLuint_P1,
-	          "",
-	          "");
-
-
-
-	I_SimpleProperty(bool, GenerateMipMapSupported, 
-	                 0, 
-	                 __void__setGenerateMipMapSupported__bool);
-	I_SimpleProperty(GLint, MaxTextureSize, 
-	                 0, 
-	                 __void__setMaxTextureSize__GLint);
-	I_SimpleProperty(bool, MultiTexturingSupported, 
-	                 0, 
-	                 __void__setMultiTexturingSupported__bool);
-	I_SimpleProperty(GLint, NumTextureUnits, 
-	                 0, 
-	                 __void__setNumTextureUnits__GLint);
-	I_SimpleProperty(bool, ShadowAmbientSupported, 
-	                 0, 
-	                 __void__setShadowAmbientSupported__bool);
-	I_SimpleProperty(bool, ShadowSupported, 
-	                 0, 
-	                 __void__setShadowSupported__bool);
-	I_SimpleProperty(bool, TextureBorderClampSupported, 
-	                 0, 
-	                 __void__setTextureBorderClampSupported__bool);
-	I_SimpleProperty(bool, TextureCompressionARBSupported, 
-	                 0, 
-	                 __void__setTextureCompressionARBSupported__bool);
-	I_SimpleProperty(bool, TextureCompressionS3TCSupported, 
-	                 0, 
-	                 __void__setTextureCompressionS3TCSupported__bool);
-	I_SimpleProperty(bool, TextureEdgeClampSupported, 
-	                 0, 
-	                 __void__setTextureEdgeClampSupported__bool);
-	I_SimpleProperty(bool, TextureFilterAnisotropicSupported, 
-	                 0, 
-	                 __void__setTextureFilterAnisotropicSupported__bool);
-	I_SimpleProperty(bool, TextureIntegerSupported, 
-	                 0, 
-	                 __void__setTextureIntegerSupported__bool);
-	I_SimpleProperty(bool, TextureMirroredRepeatSupported, 
-	                 0, 
-	                 __void__setTextureMirroredRepeatSupported__bool);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)

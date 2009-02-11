@@ -9,8 +9,9 @@
 // the Free Software Foundation; either version 2.1 of the License, or (at    //
 // your option) any later version.                                            //
 //****************************************************************************//
+
 /*****************************************************************************/
-/** Loads a core compressed keyframe instance.
+/* Loads a core compressed keyframe instance.
  *
  * This function loads a core compressed keyframe instance from a data source.
  *

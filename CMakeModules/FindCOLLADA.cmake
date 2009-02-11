@@ -260,7 +260,9 @@ IF(COLLADA_DYNAMIC_LIBRARY OR COLLADA_STATIC_LIBRARY)
             ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
         )
 
-        SET(COLLADA_BOOST_INCLUDE_DIR ${COLLADA_DOM_ROOT}/external-libs/boost)
+      FIND_PATH(COLLADA_BOOST_INCLUDE_DIR boost/filesystem/convenience.hpp
+        ${COLLADA_DOM_ROOT}/external-libs/boost
+      ) 
 
     ENDIF(WIN32)
 

@@ -1197,10 +1197,8 @@ void daeReader::processTransparencySettings( domCommon_transparent_type *ctt,
         }
     }
 
-    domFloat Transparency;
-    if (NULL == pTransparency)
-        Transparency = 1.0f;
-    else
+    domFloat Transparency = 1.0f;
+    if (NULL != pTransparency)
     {
         if (NULL != pTransparency->getFloat())
         {

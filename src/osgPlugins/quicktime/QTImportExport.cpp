@@ -34,7 +34,6 @@ QuicktimeImportExport::QuicktimeImportExport()
 :    _error(0), 
     _lastError("")
 {
-    initQuicktime();
 }
 
 

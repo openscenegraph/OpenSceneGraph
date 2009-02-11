@@ -49,16 +49,6 @@
 #define OffsetRect MacOffsetRect
 
 #endif
-
-
-    /**
-     * inits Quicktime, if erase = true, the Quicktime-stuff gets cleaned, call it before your app exits
-     * @param erase true, if you want to cleanup quicktime-related stuff
-     */
-    void initQuicktime(bool erase = false);
-    
-    /** cleans up all quicktime-related stuff */
-    void exitQuicktime();
     
     /** constructs an FSSpec out of an path */
      OSStatus MakeFSSpecFromPath(const char* path, FSSpec* spec);

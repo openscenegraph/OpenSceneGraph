@@ -198,13 +198,13 @@ void ThreadPrivateActions::PrintThreadSchedulingInfo(Thread *thread) {
     if(status != 0 || my_policy == -1) {
 
 	printf("THREAD INFO (%d) : Get sched param: %s/%s\n",
-	       unsigned int(thread->getProcessId()),
+	       (unsigned int)(thread->getProcessId()),
 	       strerror(status),
 	       strerror(errno));
     } else {
 	printf(
 	    "THREAD INFO (%d) : Thread running at %s / Priority: %d\n",
-	    unsigned int(thread->getProcessId()),
+	    (unsigned int)(thread->getProcessId()),
 	    (my_policy == SCHED_FIFO ? "SCHEDULE_FIFO"
 	     : (my_policy == SCHED_RR ? "SCHEDULE_ROUND_ROBIN"
 		: (my_policy == SCHED_TS ? "SCHEDULE_TIME_SHARE"
@@ -217,7 +217,7 @@ void ThreadPrivateActions::PrintThreadSchedulingInfo(Thread *thread) {
 
 	printf(
 	    "THREAD INFO (%d) : Max priority: %d, Min priority: %d\n",
-	    unsigned int(thread->getProcessId()),
+	    (unsigned int)(thread->getProcessId()),
 	    max_priority, min_priority);
 
     }

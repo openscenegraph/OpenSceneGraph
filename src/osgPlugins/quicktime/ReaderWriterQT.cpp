@@ -36,46 +36,94 @@
 
 using namespace osg;
 
-// This class is used as a helper to de-initialize
-// properly quicktime, when the last media loaded 
-// with the quicktime plugin is released. 
-// All loaded media must be added to the observer 
-// (see ReaderWriterQT::readImage() function) 
-class QuicktimeExitObserver : public osg::Observer
-{
-public:
-
-   QuicktimeExitObserver () : _instanceCount(0)
-   {
-   }
-   virtual ~QuicktimeExitObserver()
-   {
-   };
-
-   void addMedia(Image* ptr)
-   {
-      ptr->addObserver(this);
-      ++ _instanceCount;
-   }
-   
-   virtual void objectDeleted(void*) 
-   {
-      -- _instanceCount;
-      if(_instanceCount== 0)
-         exitQuicktime();
-   }
-
-private:
-   unsigned int _instanceCount;
-};
-
-
 
 class ReaderWriterQT : public osgDB::ReaderWriter
 {
 public:
+
+
+    // This class is used as a helper to de-initialize
+    // properly quicktime, when the last media loaded 
+    // with the quicktime plugin is released. 
+    // All loaded media must be added to the observer 
+    // (see ReaderWriterQT::readImage() function) 
+    class QuicktimeInitializer : public osg::Observer
+    {
+    public:
+
+       QuicktimeInitializer (): 
+          _instanceCount(0),
+             _setup(false)
+          {}
+
+          virtual ~QuicktimeInitializer()
+          {
+             // When we get here, the exit() function 
+             // should have been called, when last media was released. 
+             // In case no media has been added after initialization, 
+             // let's perform an extra check
+             if (_setup && _instanceCount == 0)
+             {
+                exit();
+             }
+          };
+
+          void addMedia(Image* ptr)
+          {
+             ptr->addObserver(this);
+             ++ _instanceCount;
+          }
+
+          virtual void objectDeleted(void*) 
+          {
+             -- _instanceCount;
+             if(_instanceCount== 0)
+                exit();
+          }
+
+          void init()
+          {
+             if (!_setup)
+             {
+                #ifndef __APPLE__
+                InitializeQTML(0);
+                #endif
+
+                OSErr err = EnterMovies();
+                if (err!=0)
+                   osg::notify(osg::FATAL) << "Error while initializing quicktime: " << err << std::endl; 
+                else
+                   osg::notify(osg::DEBUG_INFO) << "Quicktime initialized successfully"  << std::endl;            
+
+                _setup = true;            
+             }
+          }
+
+          void exit()
+          {
+             #ifndef __APPLE__
+             ExitMovies();
+             #endif
+
+             _setup = false;
+          }
+
+    private:
+       unsigned int _instanceCount;
+       bool _setup;
+
+    };
+
+
+
+
+
     ReaderWriterQT::ReaderWriterQT()
     {
+
+       registerQtReader();
+
+
         supportsExtension("mov","Movie format");
         supportsExtension("mpg","Movie format");
         supportsExtension("mpv","Movie format");
@@ -228,8 +276,9 @@ public:
                   // Quicktime initialization is done here, when a media is found
                   // and before any image or movie is loaded. 
                   // After the first call the function does nothing. 
-                  // The cleaning up is left to the QuicktimeExitObserver (see below)
-                  initQuicktime();
+                  // The cleaning up is left to the QuicktimeInitializer (see below)
+                  _qtExitObserver.init();
+
                   //
                   QuicktimeLiveImageStream* p_qt_image_stream = new QuicktimeLiveImageStream(osgDB::getNameLessExtension(file));
                   // add the media to the observer for proper clean up on exit
@@ -252,8 +301,8 @@ public:
       // Quicktime initialization is done here, when a media is found
       // and before any image or movie is loaded. 
       // After the first call the function does nothing. 
-      // The cleaning up is left to the QuicktimeExitObserver (see below)
-      initQuicktime();
+      // The cleaning up is left to the QuicktimeInitializer (see below)
+      _qtExitObserver.init();
 
 
       // if the file is a movie file then load as an ImageStream.
@@ -316,6 +365,8 @@ public:
                 }
             }
         }
+
+        _qtExitObserver.init();
         
         QuicktimeImportExport importer;
         osg::ref_ptr<osg::Image> image = importer.readFromStream(is, filename, sizeHint);
@@ -334,7 +385,7 @@ public:
         std::string ext = osgDB::getFileExtension(fileName);
         if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-        initQuicktime();
+        _qtExitObserver.init();
 
         //Buidl map  of extension <-> osFileTypes
         std::map<std::string, OSType> extmap;
@@ -386,6 +437,8 @@ public:
             }
         }
         
+        _qtExitObserver.init();
+
         QuicktimeImportExport exporter;
         exporter.writeToStream(os, const_cast<osg::Image*>(&img), filename);
             
@@ -395,8 +448,35 @@ public:
         return WriteResult::ERROR_IN_WRITING_FILE;         
     }
 
+protected:
 
-    mutable QuicktimeExitObserver _qtExitObserver;
+   //internal utils
+   void registerQtReader() const
+   {
+      osgDB::Registry* r = osgDB::Registry::instance();
+      r->addFileExtensionAlias("mov",  "qt");
+
+      #ifdef QT_HANDLE_IMAGES_ALSO
+      r->addFileExtensionAlias("jpg",  "qt");
+      r->addFileExtensionAlias("jpe",  "qt");
+      r->addFileExtensionAlias("jpeg", "qt");
+      r->addFileExtensionAlias("tif",  "qt");
+      r->addFileExtensionAlias("tiff", "qt");
+      r->addFileExtensionAlias("gif",  "qt");
+      r->addFileExtensionAlias("png",  "qt");
+      r->addFileExtensionAlias("psd",  "qt");
+      r->addFileExtensionAlias("tga",  "qt");
+      r->addFileExtensionAlias("mov",  "qt");
+      r->addFileExtensionAlias("avi",  "qt");
+      r->addFileExtensionAlias("mpg",  "qt");
+      r->addFileExtensionAlias("mpv",  "qt");
+      r->addFileExtensionAlias("dv",   "qt");
+      r->addFileExtensionAlias("mp4",  "qt");
+      r->addFileExtensionAlias("m4v",  "qt");         
+      #endif
+   }
+
+    mutable QuicktimeInitializer _qtExitObserver;
 };
 
 // now register with Registry to instantiate the above

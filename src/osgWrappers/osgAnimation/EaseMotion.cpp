@@ -149,13 +149,13 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::LinearFunction)
 	                "");
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(float, osgAnimation::Motion::value_type)
-
 BEGIN_ENUM_REFLECTOR(osgAnimation::Motion::TimeBehaviour)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_EnumLabel(osgAnimation::Motion::CLAMP);
 	I_EnumLabel(osgAnimation::Motion::LOOP);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(float, osgAnimation::Motion::value_type)
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Motion)
 	I_DeclaringFile("osgAnimation/EaseMotion");

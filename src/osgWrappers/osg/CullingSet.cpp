@@ -30,14 +30,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::StateSet > COMMA  osg::Polytope >, osg::CullingSet::StateFrustumPair)
-
-TYPE_NAME_ALIAS(std::vector< osg::CullingSet::StateFrustumPair >, osg::CullingSet::StateFrustumList)
-
-TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullingSet::OccluderList)
-
-TYPE_NAME_ALIAS(unsigned int, osg::CullingSet::Mask)
-
 BEGIN_ENUM_REFLECTOR(osg::CullingSet::MaskValues)
 	I_DeclaringFile("osg/CullingSet");
 	I_EnumLabel(osg::CullingSet::NO_CULLING);
@@ -50,6 +42,14 @@ BEGIN_ENUM_REFLECTOR(osg::CullingSet::MaskValues)
 	I_EnumLabel(osg::CullingSet::DEFAULT_CULLING);
 	I_EnumLabel(osg::CullingSet::ENABLE_ALL_CULLING);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< osg::StateSet > COMMA  osg::Polytope >, osg::CullingSet::StateFrustumPair)
+
+TYPE_NAME_ALIAS(std::vector< osg::CullingSet::StateFrustumPair >, osg::CullingSet::StateFrustumList)
+
+TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullingSet::OccluderList)
+
+TYPE_NAME_ALIAS(unsigned int, osg::CullingSet::Mask)
 
 BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
 	I_DeclaringFile("osg/CullingSet");

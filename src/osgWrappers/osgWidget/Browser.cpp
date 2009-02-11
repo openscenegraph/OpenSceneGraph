@@ -64,6 +64,10 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgWidget::BrowserManager)
 	I_DeclaringFile("osgWidget/Browser");
 	I_BaseType(osg::Object);
+	I_StaticMethod0(osg::ref_ptr< osgWidget::BrowserManager > &, instance,
+	                __osg_ref_ptrT1_BrowserManager__R1__instance_S,
+	                "",
+	                "");
 	I_Method1(void, init, IN, const std::string &, application,
 	          Properties::VIRTUAL,
 	          __void__init__C5_std_string_R1,
@@ -84,10 +88,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::BrowserManager)
 	          __BrowserImage_P1__createBrowserImage__C5_std_string_R1__int__int,
 	          "",
 	          "");
-	I_StaticMethod0(osg::ref_ptr< osgWidget::BrowserManager > &, instance,
-	                __osg_ref_ptrT1_BrowserManager__R1__instance_S,
-	                "",
-	                "");
 	I_ProtectedConstructor0(____BrowserManager,
 	                        "",
 	                        "");
@@ -101,7 +101,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::BrowserManager)
 	                   __osg_Object_P1__cloneType,
 	                   "Clone the type of an object, with Object* return type. ",
 	                   "Must be defined by derived classes. ");
-	I_ProtectedMethod1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_ProtectedMethod1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	                   Properties::VIRTUAL,
 	                   Properties::CONST,
 	                   __osg_Object_P1__clone__C5_osg_CopyOp_R1,

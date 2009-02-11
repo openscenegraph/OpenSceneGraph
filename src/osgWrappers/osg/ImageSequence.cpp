@@ -25,16 +25,16 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Image > >, osg::ImageSequence::Images)
-
-TYPE_NAME_ALIAS(std::vector< std::string >, osg::ImageSequence::FileNames)
-
 BEGIN_ENUM_REFLECTOR(osg::ImageSequence::Mode)
 	I_DeclaringFile("osg/ImageSequence");
 	I_EnumLabel(osg::ImageSequence::PRE_LOAD_ALL_IMAGES);
 	I_EnumLabel(osg::ImageSequence::PAGE_AND_RETAIN_IMAGES);
 	I_EnumLabel(osg::ImageSequence::PAGE_AND_DISCARD_USED_IMAGES);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Image > >, osg::ImageSequence::Images)
+
+TYPE_NAME_ALIAS(std::vector< std::string >, osg::ImageSequence::FileNames)
 
 BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	I_DeclaringFile("osg/ImageSequence");
@@ -51,7 +51,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -174,7 +174,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	I_MethodWithDefaults9(void, setImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLint, internalTextureformat, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, unsigned char *, data, , IN, osg::Image::AllocationMode, mode, , IN, int, packing, 1,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setImage__int__int__int__GLint__GLenum__GLenum__unsigned_char_P1__AllocationMode__int,
-	                      "",
+	                      "Set the image dimensions, format and data. ",
 	                      "");
 	I_Method2(void, setImage, IN, unsigned int, pos, IN, osg::Image *, image,
 	          Properties::NON_VIRTUAL,

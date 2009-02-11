@@ -10,10 +10,6 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Quat>
-#include <osg/Vec2>
-#include <osg/Vec3>
-#include <osg/Vec4>
 #include <osgAnimation/Target>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -82,17 +78,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< double >)
 	I_Constructor0(____TemplateTarget,
 	               "",
 	               "");
-	I_Constructor1(IN, const double &, v,
+	I_Constructor1(IN, const T &, v,
 	               Properties::NON_EXPLICIT,
 	               ____TemplateTarget__C5_T_R1,
 	               "",
 	               "");
-	I_Method2(void, update, IN, float, weight, IN, const double &, val,
+	I_Method2(void, update, IN, float, weight, IN, const T &, val,
 	          Properties::NON_VIRTUAL,
 	          __void__update__float__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const double &, getValue,
+	I_Method0(const T &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
@@ -102,12 +98,12 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< double >)
 	          __void__normalize,
 	          "",
 	          "");
-	I_Method1(void, setValue, IN, const double &, value,
+	I_Method1(void, setValue, IN, const T &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_SimpleProperty(const double &, Value, 
+	I_SimpleProperty(const T &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -118,17 +114,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< float >)
 	I_Constructor0(____TemplateTarget,
 	               "",
 	               "");
-	I_Constructor1(IN, const float &, v,
+	I_Constructor1(IN, const T &, v,
 	               Properties::NON_EXPLICIT,
 	               ____TemplateTarget__C5_T_R1,
 	               "",
 	               "");
-	I_Method2(void, update, IN, float, weight, IN, const float &, val,
+	I_Method2(void, update, IN, float, weight, IN, const T &, val,
 	          Properties::NON_VIRTUAL,
 	          __void__update__float__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const float &, getValue,
+	I_Method0(const T &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
@@ -138,12 +134,12 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< float >)
 	          __void__normalize,
 	          "",
 	          "");
-	I_Method1(void, setValue, IN, const float &, value,
+	I_Method1(void, setValue, IN, const T &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_SimpleProperty(const float &, Value, 
+	I_SimpleProperty(const T &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -154,17 +150,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< osg::Quat >)
 	I_Constructor0(____TemplateTarget,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::Quat &, v,
+	I_Constructor1(IN, const T &, v,
 	               Properties::NON_EXPLICIT,
 	               ____TemplateTarget__C5_T_R1,
 	               "",
 	               "");
-	I_Method2(void, update, IN, float, weight, IN, const osg::Quat &, val,
+	I_Method2(void, update, IN, float, weight, IN, const T &, val,
 	          Properties::NON_VIRTUAL,
 	          __void__update__float__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Quat &, getValue,
+	I_Method0(const T &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
@@ -174,12 +170,12 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< osg::Quat >)
 	          __void__normalize,
 	          "",
 	          "");
-	I_Method1(void, setValue, IN, const osg::Quat &, value,
+	I_Method1(void, setValue, IN, const T &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_SimpleProperty(const osg::Quat &, Value, 
+	I_SimpleProperty(const T &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -190,17 +186,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< osg::Vec2 >)
 	I_Constructor0(____TemplateTarget,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::Vec2 &, v,
+	I_Constructor1(IN, const T &, v,
 	               Properties::NON_EXPLICIT,
 	               ____TemplateTarget__C5_T_R1,
 	               "",
 	               "");
-	I_Method2(void, update, IN, float, weight, IN, const osg::Vec2 &, val,
+	I_Method2(void, update, IN, float, weight, IN, const T &, val,
 	          Properties::NON_VIRTUAL,
 	          __void__update__float__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec2 &, getValue,
+	I_Method0(const T &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
@@ -210,12 +206,12 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< osg::Vec2 >)
 	          __void__normalize,
 	          "",
 	          "");
-	I_Method1(void, setValue, IN, const osg::Vec2 &, value,
+	I_Method1(void, setValue, IN, const T &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_SimpleProperty(const osg::Vec2 &, Value, 
+	I_SimpleProperty(const T &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -226,17 +222,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< osg::Vec3 >)
 	I_Constructor0(____TemplateTarget,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::Vec3 &, v,
+	I_Constructor1(IN, const T &, v,
 	               Properties::NON_EXPLICIT,
 	               ____TemplateTarget__C5_T_R1,
 	               "",
 	               "");
-	I_Method2(void, update, IN, float, weight, IN, const osg::Vec3 &, val,
+	I_Method2(void, update, IN, float, weight, IN, const T &, val,
 	          Properties::NON_VIRTUAL,
 	          __void__update__float__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec3 &, getValue,
+	I_Method0(const T &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
@@ -246,12 +242,12 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< osg::Vec3 >)
 	          __void__normalize,
 	          "",
 	          "");
-	I_Method1(void, setValue, IN, const osg::Vec3 &, value,
+	I_Method1(void, setValue, IN, const T &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_SimpleProperty(const osg::Vec3 &, Value, 
+	I_SimpleProperty(const T &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -262,17 +258,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< osg::Vec4 >)
 	I_Constructor0(____TemplateTarget,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::Vec4 &, v,
+	I_Constructor1(IN, const T &, v,
 	               Properties::NON_EXPLICIT,
 	               ____TemplateTarget__C5_T_R1,
 	               "",
 	               "");
-	I_Method2(void, update, IN, float, weight, IN, const osg::Vec4 &, val,
+	I_Method2(void, update, IN, float, weight, IN, const T &, val,
 	          Properties::NON_VIRTUAL,
 	          __void__update__float__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const osg::Vec4 &, getValue,
+	I_Method0(const T &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
@@ -282,12 +278,12 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< osg::Vec4 >)
 	          __void__normalize,
 	          "",
 	          "");
-	I_Method1(void, setValue, IN, const osg::Vec4 &, value,
+	I_Method1(void, setValue, IN, const T &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_SimpleProperty(const osg::Vec4 &, Value, 
+	I_SimpleProperty(const T &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR

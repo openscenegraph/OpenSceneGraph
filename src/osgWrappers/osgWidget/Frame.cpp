@@ -53,6 +53,26 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgWidget::Frame)
 	I_DeclaringFile("osgWidget/Frame");
 	I_BaseType(osgWidget::Table);
+	I_StaticMethod1(std::string, cornerTypeToString, IN, osgWidget::Frame::CornerType, x,
+	                __std_string__cornerTypeToString__CornerType_S,
+	                "",
+	                "");
+	I_StaticMethod1(std::string, borderTypeToString, IN, osgWidget::Frame::BorderType, x,
+	                __std_string__borderTypeToString__BorderType_S,
+	                "",
+	                "");
+	I_StaticMethodWithDefaults7(osgWidget::Frame *, createSimpleFrame, IN, const std::string &, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, unsigned, int, 0, IN, osgWidget::Frame *, x, 0,
+	                            __Frame_P1__createSimpleFrame__C5_std_string_R1__point_type__point_type__point_type__point_type__unsigned__Frame_P1_S,
+	                            "",
+	                            "");
+	I_StaticMethodWithDefaults6(osgWidget::Frame *, createSimpleFrameWithSingleTexture, IN, const std::string &, x, , IN, osg::Image *, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, unsigned, int, 0, IN, osgWidget::Frame *, x, 0,
+	                            __Frame_P1__createSimpleFrameWithSingleTexture__C5_std_string_R1__osg_Image_P1__point_type__point_type__unsigned__Frame_P1_S,
+	                            "",
+	                            "");
+	I_StaticMethodWithDefaults6(osgWidget::Frame *, createSimpleFrameFromTheme, IN, const std::string &, x, , IN, osg::Image *, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, unsigned, int, 0, IN, osgWidget::Frame *, x, 0,
+	                            __Frame_P1__createSimpleFrameFromTheme__C5_std_string_R1__osg_Image_P1__point_type__point_type__unsigned__Frame_P1_S,
+	                            "",
+	                            "");
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
@@ -161,26 +181,6 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame)
 	          __bool__canTexture,
 	          "",
 	          "");
-	I_StaticMethod1(std::string, cornerTypeToString, IN, osgWidget::Frame::CornerType, x,
-	                __std_string__cornerTypeToString__CornerType_S,
-	                "",
-	                "");
-	I_StaticMethod1(std::string, borderTypeToString, IN, osgWidget::Frame::BorderType, x,
-	                __std_string__borderTypeToString__BorderType_S,
-	                "",
-	                "");
-	I_StaticMethodWithDefaults7(osgWidget::Frame *, createSimpleFrame, IN, const std::string &, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, unsigned, int, 0, IN, osgWidget::Frame *, x, 0,
-	                            __Frame_P1__createSimpleFrame__C5_std_string_R1__point_type__point_type__point_type__point_type__unsigned__Frame_P1_S,
-	                            "",
-	                            "");
-	I_StaticMethodWithDefaults6(osgWidget::Frame *, createSimpleFrameWithSingleTexture, IN, const std::string &, x, , IN, osg::Image *, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, unsigned, int, 0, IN, osgWidget::Frame *, x, 0,
-	                            __Frame_P1__createSimpleFrameWithSingleTexture__C5_std_string_R1__osg_Image_P1__point_type__point_type__unsigned__Frame_P1_S,
-	                            "",
-	                            "");
-	I_StaticMethodWithDefaults6(osgWidget::Frame *, createSimpleFrameFromTheme, IN, const std::string &, x, , IN, osg::Image *, x, , IN, osgWidget::point_type, x, , IN, osgWidget::point_type, x, , IN, unsigned, int, 0, IN, osgWidget::Frame *, x, 0,
-	                            __Frame_P1__createSimpleFrameFromTheme__C5_std_string_R1__osg_Image_P1__point_type__point_type__unsigned__Frame_P1_S,
-	                            "",
-	                            "");
 	I_ProtectedMethod1(osgWidget::Widget *, _getCorner, IN, osgWidget::Frame::CornerType, x,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
@@ -212,7 +212,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Border)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -286,7 +286,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Corner)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

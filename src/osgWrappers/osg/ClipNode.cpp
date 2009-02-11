@@ -28,13 +28,13 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::ClipPlane > >, osg::ClipNode::ClipPlaneList)
-
 BEGIN_ENUM_REFLECTOR(osg::ClipNode::ReferenceFrame)
 	I_DeclaringFile("osg/ClipNode");
 	I_EnumLabel(osg::ClipNode::RELATIVE_RF);
 	I_EnumLabel(osg::ClipNode::ABSOLUTE_RF);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::ClipPlane > >, osg::ClipNode::ClipPlaneList)
 
 BEGIN_OBJECT_REFLECTOR(osg::ClipNode)
 	I_DeclaringFile("osg/ClipNode");

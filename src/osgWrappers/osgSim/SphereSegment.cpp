@@ -29,8 +29,6 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Vec3Array > >, osgSim::SphereSegment::LineList)
-
 BEGIN_ENUM_REFLECTOR(osgSim::SphereSegment::DrawMask)
 	I_DeclaringFile("osgSim/SphereSegment");
 	I_EnumLabel(osgSim::SphereSegment::SURFACE);
@@ -39,6 +37,8 @@ BEGIN_ENUM_REFLECTOR(osgSim::SphereSegment::DrawMask)
 	I_EnumLabel(osgSim::SphereSegment::SIDES);
 	I_EnumLabel(osgSim::SphereSegment::ALL);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Vec3Array > >, osgSim::SphereSegment::LineList)
 
 BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	I_DeclaringFile("osgSim/SphereSegment");

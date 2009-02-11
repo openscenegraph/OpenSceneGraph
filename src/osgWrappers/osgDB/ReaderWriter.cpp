@@ -28,14 +28,14 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osgDB::ReaderWriter::FormatDescriptionMap)
-
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ArchiveStatus)
 	I_DeclaringFile("osgDB/ReaderWriter");
 	I_EnumLabel(osgDB::ReaderWriter::READ);
 	I_EnumLabel(osgDB::ReaderWriter::WRITE);
 	I_EnumLabel(osgDB::ReaderWriter::CREATE);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osgDB::ReaderWriter::FormatDescriptionMap)
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	I_DeclaringFile("osgDB/ReaderWriter");
@@ -52,7 +52,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -261,7 +261,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

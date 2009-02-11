@@ -31,14 +31,14 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::vector< const osg::StateSet * >, osg::State::StateSetStack)
-
 BEGIN_ENUM_REFLECTOR(osg::State::CheckForGLErrors)
 	I_DeclaringFile("osg/State");
 	I_EnumLabel(osg::State::NEVER_CHECK_GL_ERRORS);
 	I_EnumLabel(osg::State::ONCE_PER_FRAME);
 	I_EnumLabel(osg::State::ONCE_PER_ATTRIBUTE);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::vector< const osg::StateSet * >, osg::State::StateSetStack)
 
 BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_DeclaringFile("osg/State");

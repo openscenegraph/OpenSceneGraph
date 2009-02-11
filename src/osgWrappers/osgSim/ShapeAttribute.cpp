@@ -30,103 +30,6 @@ BEGIN_ENUM_REFLECTOR(osgSim::ShapeAttribute::Type)
 	I_EnumLabel(osgSim::ShapeAttribute::STRING);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osgSim::ShapeAttribute)
-	I_DeclaringFile("osgSim/ShapeAttribute");
-	I_Constructor0(____ShapeAttribute,
-	               "",
-	               "");
-	I_Constructor1(IN, const char *, name,
-	               Properties::NON_EXPLICIT,
-	               ____ShapeAttribute__C5_char_P1,
-	               "",
-	               "");
-	I_Constructor2(IN, const char *, name, IN, int, value,
-	               ____ShapeAttribute__C5_char_P1__int,
-	               "",
-	               "");
-	I_Constructor2(IN, const char *, name, IN, double, value,
-	               ____ShapeAttribute__C5_char_P1__double,
-	               "",
-	               "");
-	I_Constructor2(IN, const char *, name, IN, const char *, value,
-	               ____ShapeAttribute__C5_char_P1__C5_char_P1,
-	               "Note, ShapeAttribute takes a copy of both name and value, the calling code should manage its own clean up of the original strings. ",
-	               "");
-	I_Constructor1(IN, const osgSim::ShapeAttribute &, sa,
-	               Properties::NON_EXPLICIT,
-	               ____ShapeAttribute__C5_ShapeAttribute_R1,
-	               "",
-	               "");
-	I_Method0(const std::string &, getName,
-	          Properties::NON_VIRTUAL,
-	          __C5_std_string_R1__getName,
-	          "",
-	          "");
-	I_Method1(void, setName, IN, const std::string &, name,
-	          Properties::NON_VIRTUAL,
-	          __void__setName__C5_std_string_R1,
-	          "",
-	          "");
-	I_Method0(const osgSim::ShapeAttribute::Type, getType,
-	          Properties::NON_VIRTUAL,
-	          __C5_Type__getType,
-	          "",
-	          "");
-	I_Method0(int, getInt,
-	          Properties::NON_VIRTUAL,
-	          __int__getInt,
-	          "",
-	          "");
-	I_Method0(double, getDouble,
-	          Properties::NON_VIRTUAL,
-	          __double__getDouble,
-	          "",
-	          "");
-	I_Method0(const char *, getString,
-	          Properties::NON_VIRTUAL,
-	          __C5_char_P1__getString,
-	          "",
-	          "");
-	I_Method1(void, setValue, IN, int, value,
-	          Properties::NON_VIRTUAL,
-	          __void__setValue__int,
-	          "",
-	          "");
-	I_Method1(void, setValue, IN, double, value,
-	          Properties::NON_VIRTUAL,
-	          __void__setValue__double,
-	          "",
-	          "");
-	I_Method1(void, setValue, IN, const char *, value,
-	          Properties::NON_VIRTUAL,
-	          __void__setValue__C5_char_P1,
-	          "",
-	          "");
-	I_Method1(int, compare, IN, const osgSim::ShapeAttribute &, sa,
-	          Properties::NON_VIRTUAL,
-	          __int__compare__C5_osgSim_ShapeAttribute_R1,
-	          "return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. ",
-	          "");
-	I_SimpleProperty(double, Double, 
-	                 __double__getDouble, 
-	                 0);
-	I_SimpleProperty(int, Int, 
-	                 __int__getInt, 
-	                 0);
-	I_SimpleProperty(const std::string &, Name, 
-	                 __C5_std_string_R1__getName, 
-	                 __void__setName__C5_std_string_R1);
-	I_SimpleProperty(const char *, String, 
-	                 __C5_char_P1__getString, 
-	                 0);
-	I_SimpleProperty(const osgSim::ShapeAttribute::Type, Type, 
-	                 __C5_Type__getType, 
-	                 0);
-	I_SimpleProperty(double, Value, 
-	                 0, 
-	                 __void__setValue__double);
-END_REFLECTOR
-
 BEGIN_OBJECT_REFLECTOR(osgSim::ShapeAttributeList)
 	I_DeclaringFile("osgSim/ShapeAttribute");
 	I_BaseType(osg::Object);
@@ -135,7 +38,7 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ShapeAttributeList)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

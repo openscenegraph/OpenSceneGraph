@@ -33,14 +33,15 @@ Roger James
 Pavel Moloshtan
 Tom Jolley
 Jeremy Moles
+Jason Beverage
 Norman Vine
 Mattias Helsing
-Jason Beverage
 Cedric Pinson
 Art Tevs
 Alberto Farre
 André Garneau
 Ruben Lopez
+Roland Smeenk
 Randall Hopper
 Michael Platings
 Adrian Egli
@@ -51,7 +52,6 @@ Gideon May
 Don Tidrow
 Sherman Wilcox
 Romano José Magacho da Silva
-Roland Smeenk
 Per Fahlberg
 Michael Gronager
 Mathieu Marache
@@ -83,6 +83,7 @@ Gino van den Bergen
 Carlo Camporesi
 Ben Discoe
 Andreas Ekstrand
+Sukender 
 Sasa Bistrovic
 Neil Groves
 Martin Naylor
@@ -98,7 +99,6 @@ Glenn Waldron
 Brad Colbert
 Vivek Rajan
 Thibault Genessay
-Sukender 
 Sean Spicer
 Ravi Mathur
 Peter Hrenka
@@ -119,6 +119,7 @@ Simon Julier
 Sebastien Grignard
 Romano Magacho
 Richard Schmidt
+Riccardo Corsi
 Ralf Habacker
 Paul de Repentigny
 Liang Aibin
@@ -135,9 +136,9 @@ Uwe Woessner
 Tony Horrobin
 Sohey Yamamoto
 Rudolf Wiedemann
-Riccardo Corsi
 Rafa Gaitan
 Phil Atkin
+Miguel Escriva
 Mattias Linde
 Maria Ten
 Ken Sewell
@@ -175,10 +176,10 @@ Stanislav Blinov
 Sergey Leontyev
 Sebastian Messerschmidt
 Ralf Kern
+Pierre Haritchabalet
 Perry Miller
 Nathan Monteleone
 Morné Pistorius
-Miguel Escriva
 Michael Henheffer
 Michael Guerrero
 Maya Leonard
@@ -250,7 +251,6 @@ Raymond de Vries
 Ragnar Hammarqvist
 Qing Shen
 Piotr Rak
-Pierre Haritchablaet
 Philipp Siemoleit
 Philipp Mächler
 Paul Palumbo

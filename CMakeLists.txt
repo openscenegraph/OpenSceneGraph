@@ -570,7 +570,14 @@ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 # This part is for the CMake menu option to toggle the warnings on/off.
 # This will only be made available if we set values for OSG_AGGRESSIVE_WARNING_FLAGS.
 IF(OSG_AGGRESSIVE_WARNING_FLAGS)
-    OPTION(OSG_USE_AGGRESSIVE_WARNINGS "Enable to activate aggressive warnings" ON)
+
+    IF (APPLE)
+        SET(DEFAULT_USE_AGGRESSIVE_WARNINGS OFF)
+    ELSE(APPLE)
+        SET(DEFAULT_USE_AGGRESSIVE_WARNINGS ON)
+    ENDIF(APPLE)
+
+    OPTION(OSG_USE_AGGRESSIVE_WARNINGS "Enable to activate aggressive warnings" ${DEFAULT_USE_AGGRESSIVE_WARNINGS})
     MARK_AS_ADVANCED(OSG_USE_AGGRESSIVE_WARNINGS)
 
     IF(OSG_USE_AGGRESSIVE_WARNINGS)

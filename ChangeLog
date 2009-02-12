@@ -1,3 +1,21 @@
+2009-02-12 14:35  robert
+
+	* examples/osgviewerQT/QOSGWidget.cpp: Compiled fix
+
+2009-02-12 14:01  robert
+
+	* src/osgVolume/Shaders/volume_iso_frag.cpp: Changed iso surface
+	  lighting to ignore intensity of the texture
+
+2009-02-12 13:57  robert
+
+	* examples/osgvolume/osgvolume.cpp: Fixed handling of xSize, ySize
+	  and zSize
+
+2009-02-12 13:31  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2009-02-12 12:51  robert
 
 	* include/osgDB/fstream, include/osgWidget/Export: Warning fixes

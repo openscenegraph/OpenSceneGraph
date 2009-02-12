@@ -890,15 +890,10 @@ int main( int argc, char **argv )
 
     while (arguments.read("--light")) shadingModel = Light;
 
-    float xSize=1.0f, ySize=1.0f, zSize=1.0f;
+    float xSize=0.0f, ySize=0.0f, zSize=0.0f;
     while (arguments.read("--xSize",xSize)) {}
     while (arguments.read("--ySize",ySize)) {}
     while (arguments.read("--zSize",zSize)) {}
-
-    float xMultiplier=1.0f, yMultiplier=1.0f, zMultiplier=1.0f;
-    while (arguments.read("--xMultiplier",xMultiplier)) {}
-    while (arguments.read("--yMultiplier",yMultiplier)) {}
-    while (arguments.read("--zMultiplier",zMultiplier)) {}
 
     osg::ref_ptr<TestSupportOperation> testSupportOperation = new TestSupportOperation;
     viewer.setRealizeOperation(testSupportOperation.get());
@@ -1123,16 +1118,16 @@ int main( int argc, char **argv )
 
 
     Images::iterator sizeItr = images.begin();
-    xSize = (*sizeItr)->s();
-    ySize = (*sizeItr)->t();
-    zSize = (*sizeItr)->r();
+    int image_s = (*sizeItr)->s();
+    int image_t = (*sizeItr)->t();
+    int image_r = (*sizeItr)->r();
     ++sizeItr;
 
     for(;sizeItr != images.end(); ++sizeItr)
     {
-        if ((*sizeItr)->s() != xSize || 
-            (*sizeItr)->t() != ySize ||
-            (*sizeItr)->r() != zSize)
+        if ((*sizeItr)->s() != image_s || 
+            (*sizeItr)->t() != image_t ||
+            (*sizeItr)->r() != image_r)
         {
             std::cout<<"Images in sequence are not of the same dimensions."<<std::endl;
             return 1;
@@ -1140,7 +1135,19 @@ int main( int argc, char **argv )
     }
 
 
-    osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(images.front()->getUserData());
+    osg::ref_ptr<osg::RefMatrix> matrix = dynamic_cast<osg::RefMatrix*>(images.front()->getUserData());
+
+    if (!matrix)
+    {
+        if (xSize==0.0) xSize = static_cast<float>(image_s);
+        if (ySize==0.0) ySize = static_cast<float>(image_t);
+        if (zSize==0.0) zSize = static_cast<float>(image_r);
+        
+        matrix = new osg::RefMatrix(xSize, 0.0,   0.0,   0.0,
+                                    0.0,   ySize, 0.0,   0.0,
+                                    0.0,   0.0,   zSize, 0.0,
+                                    0.0,   0.0,   0.0,   1.0);
+    }
 
     osg::Vec4 minValue(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);
     osg::Vec4 maxValue(-FLT_MAX, -FLT_MAX, -FLT_MAX, -FLT_MAX);
@@ -1272,12 +1279,9 @@ int main( int argc, char **argv )
 
     osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d.get());
 
-    if (matrix)
-    {
-        osgVolume::Locator* locator = new osgVolume::Locator(*matrix);
-        layer->setLocator(locator);
-        tile->setLocator(locator);
-    }
+    osgVolume::Locator* locator = new osgVolume::Locator(*matrix);
+    layer->setLocator(locator);
+    tile->setLocator(locator);
 
     tile->setLayer(layer.get());
 

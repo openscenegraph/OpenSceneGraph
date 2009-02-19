@@ -105,4 +105,4 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/openthreads.pc.in
     @ONLY
     )
 
-INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openthreads.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openthreads.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig  COMPONENT libopenthreads-dev)

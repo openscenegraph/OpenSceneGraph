@@ -57,7 +57,7 @@ The !OpenSceneGraph Quick Start Guide is now available in Chinese as well as Eng
 === Community support and contributions ===
 The diverse and growing community of over 2000 developers is centred around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists. 
 
-The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointEight 364 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base. 
+The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointEight 365 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base. 
 
 ----
 

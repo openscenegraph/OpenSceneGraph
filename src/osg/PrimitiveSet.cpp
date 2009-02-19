@@ -180,18 +180,18 @@ void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const
         state.bindElementBufferObject(ebo);
         if (ebo)
         {
-            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_BYTE, getElementBufferObjectOffset(), _numInstances);
+            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_SHORT, getElementBufferObjectOffset(), _numInstances);
             else glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, getElementBufferObjectOffset());
         }
         else
         {
-            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_BYTE, &front(), _numInstances);
+            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_SHORT, &front(), _numInstances);
             else glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, &front());
         }
     }
     else 
     {
-        if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_BYTE, &front(), _numInstances);
+        if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_SHORT, &front(), _numInstances);
         else glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, &front());
     }
 }
@@ -230,18 +230,18 @@ void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const
         state.bindElementBufferObject(ebo);
         if (ebo)
         {
-            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_BYTE, getElementBufferObjectOffset(), _numInstances);
+            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_INT, getElementBufferObjectOffset(), _numInstances);
             else glDrawElements(_mode, size(), GL_UNSIGNED_INT, getElementBufferObjectOffset());
         }
         else
         {
-            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_BYTE, &front(), _numInstances);
+            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_INT, &front(), _numInstances);
             else glDrawElements(_mode, size(), GL_UNSIGNED_INT, &front());
         }
     }
     else 
     {
-        if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_BYTE, &front(), _numInstances);
+        if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_INT, &front(), _numInstances);
         else glDrawElements(_mode, size(), GL_UNSIGNED_INT, &front());
     }
 }

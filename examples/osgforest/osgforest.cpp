@@ -32,6 +32,8 @@
 #include <osg/Switch>
 #include <osg/Texture2D>
 #include <osg/TexEnv>
+#include <osg/VertexProgram>
+#include <osg/FragmentProgram>
 
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
@@ -48,6 +50,7 @@
 #include <osgGA/StateSetManipulator>
 
 #include <iostream>
+#include <sstream>
 
 // for the grid data..
 #include "../osghangglide/terrain_coords.h"
@@ -327,7 +330,7 @@ bool ForestTechniqueManager::Cell::divide(bool xAxis, bool yAxis, bool zAxis)
 
 void ForestTechniqueManager::Cell::bin()
 {   
-    // put trees in apprpriate cells.
+    // put trees in appropriate cells.
     TreeList treesNotAssigned;
     for(TreeList::iterator titr=_trees.begin();
         titr!=_trees.end();
@@ -967,6 +970,7 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
     osg::StateSet *dstate = new osg::StateSet;
     {    
         dstate->setTextureAttributeAndModes(0, tex, osg::StateAttribute::ON );
+
         dstate->setTextureAttribute(0, new osg::TexEnv );
 
         dstate->setAttributeAndModes( new osg::BlendFunc, osg::StateAttribute::ON );
@@ -1005,19 +1009,77 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
         std::cout<<"Creating osg::MatrixTransform based forest...";
         osg::Group* group = new osg::Group;
         group->addChild(createTransformGraph(cell.get(),dstate));
-        group->addChild(createHUDWithText("Using osg::MatrixTransform's to create a forest\n\nPress left cursor key to select double quad based forest\nPress right cursor key to select OpenGL shader based forest"));
+        group->addChild(createHUDWithText("Using osg::MatrixTransform's to create a forest\n\nPress left cursor key to select double quad based forest\nPress right cursor key to select osg::Vertex/FragmentProgram based forest"));
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }
 
     {
+        std::cout<<"Creating osg::Vertex/FragmentProgram based forest...";
         osg::Group* group = new osg::Group;
-        
 
-        osg::StateSet* stateset = new osg::StateSet;
+        osg::StateSet* stateset = new osg::StateSet(*dstate, osg::CopyOp::DEEP_COPY_ALL);
 
-        stateset->setTextureAttributeAndModes(0, tex, osg::StateAttribute::ON );
-        stateset->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
+        {
+            // vertex program
+            std::ostringstream vp_oss;
+            vp_oss <<
+                "!!ARBvp1.0\n"
+                
+                "ATTRIB vpos = vertex.position;\n"
+                "ATTRIB vcol = vertex.color;\n"
+                "ATTRIB tc = vertex.texcoord[" << 0 << "];"
+
+                "PARAM mvp[4] = { state.matrix.mvp };\n"
+                "PARAM one = { 1.0, 1.0, 1.0, 1.0 };"
+
+                "TEMP position;\n"
+                
+                 // vec3 position = gl_Vertex.xyz * gl_Color.w + gl_Color.xyz;
+                "MAD position, vpos, vcol.w, vcol;\n"
+
+                // gl_Position     = gl_ModelViewProjectionMatrix * vec4(position,1.0);
+                "MOV position.w, one;\n"
+                "DP4 result.position.x, mvp[0], position;\n"
+                "DP4 result.position.y, mvp[1], position;\n"
+                "DP4 result.position.z, mvp[2], position;\n"
+                "DP4 result.position.w, mvp[3], position;\n"
+
+                // gl_FrontColor = vec4(1.0,1.0,1.0,1.0);
+                "MOV result.color.front.primary, one;\n"
+
+                 // texcoord = gl_MultiTexCoord0.st;
+                "MOV result.texcoord, tc;\n"
+                "END\n";
+
+
+            // fragment program
+            std::ostringstream fp_oss;
+            fp_oss <<
+                "!!ARBfp1.0\n"
+                "TEX result.color, fragment.texcoord[" << 0 << "], texture[" << 0 << "], 2D;"
+                "END\n";
+
+            osg::ref_ptr<osg::VertexProgram> vp = new osg::VertexProgram;
+            vp->setVertexProgram(vp_oss.str());
+            stateset->setAttributeAndModes(vp.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+
+            osg::ref_ptr<osg::FragmentProgram> fp = new osg::FragmentProgram;
+            fp->setFragmentProgram(fp_oss.str());
+            stateset->setAttributeAndModes(fp.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+        }
+
+        group->addChild(createShaderGraph(cell.get(),stateset));
+        group->addChild(createHUDWithText("Using osg::Vertex/FragmentProgram to create a forest\n\nPress left cursor key to select osg::MatrixTransform's based forest\nPress right cursor key to select OpenGL shader based forest"));
+        _techniqueSwitch->addChild(group);
+        std::cout<<"done."<<std::endl;
+    }
+
+    {
+        std::cout<<"Creating OpenGL shader based forest...";
+        osg::Group* group = new osg::Group;
+
+        osg::StateSet* stateset = new osg::StateSet(*dstate, osg::CopyOp::DEEP_COPY_ALL);
 
         {
             osg::Program* program = new osg::Program;
@@ -1069,9 +1131,8 @@ osg::Node* ForestTechniqueManager::createScene(unsigned int numTreesToCreates)
             stateset->addUniform(baseTextureSampler);
         }
 
-        std::cout<<"Creating OpenGL shader based forest...";
         group->addChild(createShaderGraph(cell.get(),stateset));
-        group->addChild(createHUDWithText("Using OpenGL Shader to create a forest\n\nPress left cursor key to select osg::MatrixTransform based forest\nPress right cursor key to select osg::Billboard based forest"));
+        group->addChild(createHUDWithText("Using OpenGL Shader to create a forest\n\nPress left cursor key to select osg::Vertex/FragmentProgram based forest\nPress right cursor key to select osg::Billboard based forest"));
         _techniqueSwitch->addChild(group);
         std::cout<<"done."<<std::endl;
     }

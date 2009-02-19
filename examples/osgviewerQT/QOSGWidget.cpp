@@ -346,7 +346,7 @@ class CompositeViewerQOSG : public osgViewer::CompositeViewer, public QOSGWidget
         {
           if ( event->text() == "a" )
           {
-            AddView( _scene );
+            AddView( _scene.get() );
           }
           
           if ( event->text() == "r" )

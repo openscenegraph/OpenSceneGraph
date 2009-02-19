@@ -193,6 +193,7 @@ void State::reset()
         ++apitr)
     {
         (*apitr)->resetAppliedUniforms();
+        (*apitr)->removeObserver(this);
     }
     
     _appliedProgramObjectSet.clear();

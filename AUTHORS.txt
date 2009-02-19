@@ -1,6 +1,6 @@
 OpenSceneGraph Library 2.8.0
 
-364 Contributors:
+365 Contributors:
 
 Firstname Surname
 -----------------
@@ -26,23 +26,24 @@ Luigi Calori
 Trajce Nikolov
 Mike Wittman
 Wojciech Lewandowski
+Paul Melis
 Colin McDonald
 Andy Skinner
 Roger James
 Pavel Moloshtan
 Tom Jolley
 Jeremy Moles
-Paul Melis
+Jason Beverage
 Norman Vine
 Mattias Helsing
-Jason Beverage
+Cedric Pinson
 Art Tevs
 Alberto Farre
 André Garneau
 Ruben Lopez
+Roland Smeenk
 Randall Hopper
 Michael Platings
-Cedric Pinson
 Adrian Egli
 Olaf Flebbe
 Jason Daly
@@ -51,7 +52,6 @@ Gideon May
 Don Tidrow
 Sherman Wilcox
 Romano José Magacho da Silva
-Roland Smeenk
 Per Fahlberg
 Michael Gronager
 Mathieu Marache
@@ -59,14 +59,15 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Chris Hanson
-Philip Lowman
 Alberto Luaces
+Philip Lowman
 Melchior Franz
 Chris Denham
 Serge Lages
 Joran Jessurun
 Frederic Marmond
 David Fries
+Bryan Thrall
 Boris Bralo
 Yefei He
 Tim Moore
@@ -80,15 +81,16 @@ Mario Valle
 Gordon Tomlinson
 Gino van den Bergen
 Carlo Camporesi
-Bryan Thrall
 Ben Discoe
 Andreas Ekstrand
+Sukender 
 Sasa Bistrovic
 Neil Groves
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
 Loic Dachary
+Lionel Lagarde
 Joseph Steel
 John Shue
 Jan Peciva
@@ -105,7 +107,6 @@ Neil Salter
 Mihai Radu
 Michael Hartman
 Luc Frauciel
-Lionel Lagarde
 Laurens Voerman
 David Guthrie
 Corbin Holtz
@@ -114,11 +115,12 @@ Blasius Czink
 Toshiyuki Takahei
 Thom DeCarlo
 Tatsuhiro Nishioka
-Sukender 
 Simon Julier
 Sebastien Grignard
 Romano Magacho
 Richard Schmidt
+Riccardo Corsi
+Ralf Habacker
 Paul de Repentigny
 Liang Aibin
 Leandro Motta Barros
@@ -134,10 +136,9 @@ Uwe Woessner
 Tony Horrobin
 Sohey Yamamoto
 Rudolf Wiedemann
-Riccardo Corsi
-Ralf Habacker
 Rafa Gaitan
 Phil Atkin
+Miguel Escriva
 Mattias Linde
 Maria Ten
 Ken Sewell
@@ -145,9 +146,11 @@ Julian Ortiz
 Jeremy Bell
 Jaromir Vitek
 James French
+Gary Quinn
 Garrett Potts
 Gabor Dorka
 Fabio Mierlo
+Fabien Lavignotte
 Doug McCorkle
 Donn Mielcarek
 Donald Cipperly
@@ -173,9 +176,10 @@ Stanislav Blinov
 Sergey Leontyev
 Sebastian Messerschmidt
 Ralf Kern
+Pierre Haritchabalet
 Perry Miller
 Nathan Monteleone
-Miguel Escriva
+Morné Pistorius
 Michael Henheffer
 Michael Guerrero
 Maya Leonard
@@ -262,7 +266,6 @@ Nicolas Brodu
 Neil Hughes
 Nathan Cournia
 Morten Haukness
-Morné Pistorius
 Mirko Viviani
 Mikkel GjÃ¸l
 Mike Garrity
@@ -315,14 +318,12 @@ Guillaume Millet
 Graeme Harkness
 Gian Lorenzetto
 George Papagiannakis
-Gary Quinn
 Galen Faidley
 Frederic Bouvier
 Frank Warmerdam
 Frank Lindeman
 Frank Lichtenheld
 Ferdinand Cornelissen
-Fabien Lavignotte
 Fabien Dachicourt
 Emmanuel Roche
 Edmond Gheury

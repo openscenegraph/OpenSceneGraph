@@ -15,6 +15,7 @@
 #define OSGDB_FSTREAM 1
 
 #include <osgDB/Export>
+#include <osg/Export>
 
 #include <fstream>
 

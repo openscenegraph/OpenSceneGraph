@@ -104,7 +104,7 @@ int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is a 3d poker game client");
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an example for viewing osgAnimation animations.");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","List command line options.");
     arguments.getApplicationUsage()->addCommandLineOption("--drawbone","draw helps to display bones.");
 

@@ -137,6 +137,9 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
     ELSE(${ARGC} GREATER 1)
       SET(PACKAGE_COMPONENT libopenscenegraph)
     ENDIF(${ARGC} GREATER 1)
+
+    # Add the VisualStudio versioning info    
+    SET(TARGET_SRC ${TARGET_SRC} ${OPENSCENEGRAPH_VERSIONINFO_RC})
     
     # here we use the command to generate the library    
 

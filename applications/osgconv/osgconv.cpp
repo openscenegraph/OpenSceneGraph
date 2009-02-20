@@ -191,6 +191,30 @@ public:
             }
         }
     }
+
+    void write(const std::string &dir)
+    {
+        for(TextureSet::iterator itr=_textureSet.begin();
+            itr!=_textureSet.end();
+            ++itr)
+        {
+            osg::Texture* texture = const_cast<osg::Texture*>(itr->get());
+            
+            osg::Texture2D* texture2D = dynamic_cast<osg::Texture2D*>(texture);
+            osg::Texture3D* texture3D = dynamic_cast<osg::Texture3D*>(texture);
+            
+            osg::ref_ptr<osg::Image> image = texture2D ? texture2D->getImage() : (texture3D ? texture3D->getImage() : 0);
+            if (image.valid())
+            {
+                std::string name = osgDB::getStrippedName(image->getFileName());
+                name += ".dds";
+                image->setFileName(name);
+                std::string path = dir.empty() ? name : osgDB::concatPaths(dir, name);
+                osgDB::writeImageFile(*image, path);
+                osg::notify(osg::NOTICE) << "Image written to '" << path << "'." << std::endl;
+            }
+        }
+    }
     
     typedef std::set< osg::ref_ptr<osg::Texture> > TextureSet;
     TextureSet                          _textureSet;
@@ -781,15 +805,14 @@ int main( int argc, char **argv )
         if (internalFormatMode != osg::Texture::USE_IMAGE_DATA_FORMAT)
         {
             std::string ext = osgDB::getFileExtension(fileNameOut);
-            if (ext=="ive")
+            CompressTexturesVisitor ctv(internalFormatMode);
+            root->accept(ctv);
+            ctv.compress();
+
+            osgDB::ReaderWriter::Options *options = osgDB::Registry::instance()->getOptions();
+            if (ext!="ive" || (options && options->getOptionString().find("noTexturesInIVEFile")!=std::string::npos))
             {
-                CompressTexturesVisitor ctv(internalFormatMode);
-                root->accept(ctv);
-                ctv.compress();
-            }
-            else
-            {
-                std::cout<<"Warning: compressing texture only supported when outputing to .ive"<<std::endl;
+                ctv.write(osgDB::getFilePath(fileNameOut));
             }
         }
 

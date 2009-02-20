@@ -24,6 +24,7 @@ std::map<std::string, ref_ptr<dxfBasicEntity> > dxfEntity::_registry;
 RegisterEntityProxy<dxf3DFace> g_dxf3DFace;
 RegisterEntityProxy<dxfCircle> g_dxfCircle;
 RegisterEntityProxy<dxfArc> g_dxfArc;
+RegisterEntityProxy<dxfPoint> g_dxfPoint;
 RegisterEntityProxy<dxfLine> g_dxfLine;
 RegisterEntityProxy<dxfVertex> g_dxfVertex;
 RegisterEntityProxy<dxfPolyline> g_dxfPolyline;
@@ -325,6 +326,34 @@ dxfLine::drawScene(scene* sc)
 //    static long lcount = 0;
 //    std::cout << ++lcount << " ";
 //    sc->ocs_clear();
+}
+void
+dxfPoint::assign(dxfFile* dxf, codeValue& cv)
+{
+    double d = cv._double;
+    //unsigned short s = cv._short;
+    switch (cv._groupCode) {
+        case 10:
+            _a.x() = d;
+            break;
+        case 20:
+            _a.y() = d;
+            break;
+        case 30:
+            _a.z() = d;
+            break;
+        default:
+            dxfBasicEntity::assign(dxf, cv);
+            break;
+    }
+}
+
+void
+dxfPoint::drawScene(scene* sc)
+{
+    Matrixd m;
+    getOCSMatrix(_ocs, m);
+    sc->addPoint(getLayer(), _color,_a);
 }
 
 void 

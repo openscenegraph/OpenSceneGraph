@@ -50,6 +50,15 @@ Vec3d scene::addNormal(Vec3d v)
     // to do: vertices are not always listed in order. find why.
     return v;
 }
+void 
+scene::addPoint(const std::string & l, unsigned short color, Vec3d & s) 
+{
+    dxfLayer* layer = _layerTable->findOrCreateLayer(l);
+    if (layer->getFrozen()) return;
+    sceneLayer* ly = findOrCreateSceneLayer(l);
+    Vec3d a(addVertex(s));
+    ly->_points[correctedColorIndex(l, color)].push_back(a);    
+}
 
 void 
 scene::addLine(const std::string & l, unsigned short color, Vec3d & s, Vec3d & e) 

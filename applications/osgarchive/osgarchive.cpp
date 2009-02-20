@@ -79,7 +79,12 @@ int main( int argc, char **argv )
                 else if (fileType==osgDB::DIRECTORY)
                 {
                     osgDB::DirectoryContents directory = osgDB::getDirectoryContents(arguments[pos]);
-                    files.insert(files.end(),directory.begin(),directory.end());
+                    osgDB::DirectoryContents::iterator it = directory.begin();
+                    while( it != directory.end())
+                    {
+                        files.push_back(filePath + "/" + (*it));
+                        ++it;
+                    }
                 }
             }
             else

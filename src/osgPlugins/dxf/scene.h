@@ -58,6 +58,23 @@ public:
 
 
 static inline 
+osg::Geometry* createPtGeometry( osg::PrimitiveSet::Mode pointType, osg::Vec3Array* vertices, const osg::Vec4 & color)
+{
+    osg::Geometry* geom = new osg::Geometry;
+    geom->setVertexArray(vertices);
+    geom->addPrimitiveSet(new osg::DrawArrays(pointType, 0, vertices->size())); 
+    osg::Vec4Array* colors = new osg::Vec4Array;
+    colors->push_back(color);
+    geom->setColorArray(colors);
+    geom->setColorBinding(osg::Geometry::BIND_OVERALL);
+    osg::Vec3Array *norms = new osg::Vec3Array;
+    norms->push_back(osg::Vec3(0,0,1));
+    geom->setNormalArray(norms);
+    geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    return geom;
+}
+
+static inline 
 osg::Geometry* createLnGeometry( osg::PrimitiveSet::Mode lineType, osg::Vec3Array* vertices, const osg::Vec4 & color)
 {
     osg::Geometry* geom = new osg::Geometry;
@@ -73,7 +90,6 @@ osg::Geometry* createLnGeometry( osg::PrimitiveSet::Mode lineType, osg::Vec3Arra
     geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
     return geom;
 }
-
 
 static inline 
 osg::Geometry* createTriGeometry( osg::Vec3Array* vertices, osg::Vec3Array* normals, const osg::Vec4 & color)
@@ -143,12 +159,14 @@ public:
     virtual ~sceneLayer() {}
     void layer2osg(osg::Group* root, bounds &b)
     {
+        osgPoints(root, b);
         osgLines(root, b);
         osgTriangles(root, b);
         osgQuads(root, b);
         osgText(root, b);
     }
     MapVListList    _linestrips;
+    MapVList        _points;
     MapVList        _lines;
     MapVList        _triangles;
     MapVList        _trinorms;
@@ -171,6 +189,22 @@ protected:
     std::string        _name;
 
     osg::Vec4        getColor(unsigned short color);
+
+    void osgPoints(osg::Group* root, bounds &b)
+    {
+       
+        for (MapVList::iterator mitr = _points.begin();
+            mitr != _points.end(); ++mitr) {
+            osg::Vec3Array *coords = new osg::Vec3Array;
+            for (VList::iterator itr = mitr->second.begin();
+                itr != mitr->second.end(); ++itr) {
+                osg::Vec3 v(itr->x() - b._min.x(), itr->y() - b._min.y(), itr->z() - b._min.z());
+                coords->push_back(v);
+            }
+            root->addChild(createModel(_name, createPtGeometry(osg::PrimitiveSet::POINTS, coords, getColor(mitr->first))));
+        }
+    }
+
     void osgLines(osg::Group* root, bounds &b)
     {
         for(MapVListList::iterator mlitr = _linestrips.begin();
@@ -314,6 +348,7 @@ public:
     }
     unsigned short correctedColorIndex(const std::string & l, unsigned short color);
 
+    void addPoint(const std::string & l, unsigned short color, osg::Vec3d & s);
     void addLine(const std::string & l, unsigned short color, osg::Vec3d & s, osg::Vec3d & e);
     void addLineStrip(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices);
     void addLineLoop(const std::string & l, unsigned short color, std::vector<osg::Vec3d> & vertices);

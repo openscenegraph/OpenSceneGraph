@@ -104,6 +104,22 @@ protected:
     double    _endAngle;
     osg::Vec3d    _ocs;
 };
+
+class dxfPoint : public dxfBasicEntity
+{
+public:
+    dxfPoint() : _ocs(0,0,1) {}
+    virtual ~dxfPoint() {}
+    virtual dxfBasicEntity* create() { return new dxfPoint; }
+    virtual const char* name() { return "POINT"; }
+    virtual void assign(dxfFile* dxf, codeValue& cv);
+    virtual void drawScene(scene* sc);
+protected:
+    osg::Vec3d    _a;
+    //osg::Vec3d    _b;
+    osg::Vec3d    _ocs;
+};
+
 class dxfLine : public dxfBasicEntity
 {
 public:

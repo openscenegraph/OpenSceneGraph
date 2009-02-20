@@ -597,7 +597,7 @@ dxfPolyline::drawScene(scene* sc)
         // is there a flag 1 or 32 for 64?
     } else {
         // simple polyline?
-        for (short i = _vertices.size()-1; i >= 0; i--)
+        for (int i = _vertices.size()-1; i >= 0; i--)
             vlist.push_back(_vertices[i]->getVertex());
         if (_flag & 1) {
 //            std::cout << "line loop " << _vertices.size() << std::endl;

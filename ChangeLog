@@ -1,3 +1,148 @@
+2009-02-23 09:54  robert
+
+	* src/osgPlugins/ogr/ReaderWriterOGR.cpp: From Ralf Habacker &
+	  Robert Osfield, fixed handling of file name string of the
+	  form"PG:host=localhost user=postgres dbname=osm
+	  tables=public.planet_osm_line". The patch also routes gdal debug
+	  and error message to the related osg::notify debug port - this is
+	  usefull for debugging ogr plugin.
+
+2009-02-20 16:27  robert
+
+	* applications/osgarchive/osgarchive.cpp: From Mathieu Marache, "I
+	  was trying to use the archive output of osgdem without success
+	  when
+	  I eventually found out that it was now disabled (the mailing list
+	  archive tells me it is because of multithreaded write issues with
+	  vpn). I then decided to use osgarchive to make it myself from the
+	  generated output. However if one of the insert parameters is a
+	  directory, it won't be able to find them. The attached versions
+	  corrects this."
+
+2009-02-20 15:47  robert
+
+	* applications/osgconv/osgconv.cpp: From Maciej Krol, "Small
+	  improvement in --compressed option of osgconv. For non IVE output
+	  files compressed images are written into directory of output file
+	  as DDS.
+	  " + "Further improvement for conversion to IVE format. Compressed
+	  DDS files are written for IVE output when noTexturesInIVEFile
+	  option is defined i.e. osgconv --compressed -O
+	  noTexturesInIVEFile dir1/input.osg dir2/output.ive will write
+	  images into dir2."
+
+2009-02-20 13:58  robert
+
+	* CMakeModules/OsgMacroUtils.cmake: Added VisualStudio versioning
+	  info to plugins
+
+2009-02-20 11:53  robert
+
+	* examples/osganimationviewer/AnimtkViewer.cpp,
+	  src/osg/DisplaySettings.cpp: From Bryan Thrall, "Attached files
+	  fix typos, from svn 9791:
+	  
+	  DisplaySettings.cpp: OSG_COMPIlE_CONTEXTS -> OSG_COMPILE_CONTEXTS
+	  AnimtkViewer.cpp: is a 3d poker game client -> is an example for
+	  viewing
+	  osgAnimation animations"
+
+2009-02-20 11:51  robert
+
+	* src/osgPlugins/dxf/dxfEntity.cpp, src/osgPlugins/dxf/dxfEntity.h,
+	  src/osgPlugins/dxf/scene.cpp, src/osgPlugins/dxf/scene.h: From
+	  Martin Beckett, "I have added support for DXF POINTS to the dxf
+	  reader plugin
+	  It's really just a cut-paste job from the existing LINE support.
+	  
+	  The current dxf plugin architecture isn't very efficient,
+	  especially if you
+	  are loading large point clouds (LIDAR)
+	  eg. it makes multiple lookups of the layer name for each vertex.
+	  I don't know if I can improve this for the general case or if I
+	  have to add a
+	  special large point cloud dxf reader."
+
+2009-02-20 11:30  robert
+
+	* src/osgPlugins/dxf/dxfEntity.cpp: From Himar Carmona, "When
+	  reading a DXF file, the reader breaks at a debug assertion at
+	  vector (it breaks on release version). Inspecting the code show
+	  that the cause could be in dxfEntity.cpp.
+	  
+	  It seems that the problem is an offending "short" used in a for
+	  loop, where it should be "int" or "long". It causes an index out
+	  of range error. "
+
+2009-02-19 19:05  robert
+
+	* src/osgUtil/RenderStage.cpp: From Bob Kuehne and Robert Osfield,
+	  email from Bob : "this fix quashes fbo warnings when the fbo
+	  status is 'complete', aka 'ok'.
+	  ", which was then ammended by Robert replacing crytic value
+	  0x8CD5 with GL_FRAMEBUFFER_COMPLETE_EXT and added brackets to
+	  make code clearer.
+
+2009-02-19 17:34  robert
+
+	* src/osgPlugins/hdr/hdrloader.cpp: Fixed bug in checking if
+	  numRead values.
+
+2009-02-19 16:58  robert
+
+	* examples/osgforest/osgforest.cpp: From Christian Buchner, "I am
+	  hereby amending the osgforest sample with some code (functionally
+	  equivalent to the GLSL shaders sample) that displays the forest
+	  with
+	  shaders on Intel 945 GM hardware. This card supports OpenGL 1.4
+	  and
+	  ARB_fragment/vertex_program only.
+	  
+	  I would be pleased if this change made it into the official set
+	  of
+	  examples, as it illustrates the use of ARB shaders quite nicely.
+	  I did
+	  not find any other example covering this topic."
+
+2009-02-19 16:29  robert
+
+	* src/osg/State.cpp: From Tanguy Fautre, "This fixes the OSG
+	  crashes reported by
+	  http://lists.openscenegraph.org/pipermail/osg-users-openscenegraph.org/2009-February/023499.html
+	  
+	  
+	  
+	  It\u2019s a one line change against OSG 2.8.0 (see line 196).
+	  I\u2019ve already tested the change, and confirmed it\u2019s
+	  fixing the crashes described above."
+
+2009-02-19 15:57  robert
+
+	* src/osg/PrimitiveSet.cpp: From Ruben Smelik, "I've found a
+	  (copy-paste?) error in PrimitiveSet.cpp regarding instanced
+	  drawing. For DrawElementsUInt and DrawElementsUShort the type
+	  argument of glDrawElementsInstanced was set as GL_BYTE instead of
+	  GL_UNSIGNED_INT and GL_UNSIGNED_SHORT. I've attached the fixed
+	  source file (based on the current SVN head version)."
+
+2009-02-19 15:15  robert
+
+	* src/OpenThreads/CMakeLists.txt: From Mattias Helsing, "Here is a
+	  fix for the "Unspecified" package. The openthreads pkgconfig
+	  file is made part of libopenthreads-dev component.
+	  
+	  Attached is the modded cmakelists.txt for src/OpenThreads/
+	  "
+
+2009-02-19 14:24  robert
+
+	* AUTHORS.txt, CMakeLists.txt, ChangeLog, NEWS.txt, README.txt,
+	  examples/osgviewerQT/QOSGWidget.cpp,
+	  examples/osgvolume/osgvolume.cpp, include/osgDB/fstream,
+	  include/osgIntrospection/Export, include/osgWidget/Export,
+	  src/osgVolume/Shaders/volume_iso_frag.cpp: Merged in various
+	  changes from the OSG-2.8 to being svn/trunk up to date.
+
 2009-02-11 20:26  robert
 
 	* applications/osgversion/osgversion.cpp: Fixed typo

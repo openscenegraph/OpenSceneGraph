@@ -38,6 +38,17 @@
 
 #define SERIALIZER() OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex)  
 
+void CPL_STDCALL CPLOSGErrorHandler( CPLErr eErrClass, int nError, 
+                             const char * pszErrorMsg )
+{
+    if( eErrClass == CE_Debug )
+        osg::notify(osg::DEBUG_INFO) << pszErrorMsg << std::endl;
+    else if( eErrClass == CE_Warning )
+        osg::notify(osg::WARN) << nError << " " << pszErrorMsg << std::endl;
+    else
+        osg::notify(osg::FATAL) << nError << " " << pszErrorMsg << std::endl;
+}
+
 static osg::Material* createDefaultMaterial()
 {
     osg::Vec4 color;
@@ -86,19 +97,29 @@ public:
         supportsExtension("ogr","OGR file reader");
         supportsOption("useRandomColorByFeature", "Assign a random color to each feature.");
         supportsOption("addGroupPerFeature", "Places each feature in a seperate group.");
+        oldHandler = CPLSetErrorHandler(CPLOSGErrorHandler);
     }
+
+    virtual ~ReaderWriterOGR()
+    {
+        CPLSetErrorHandler(oldHandler); 
+    }
+    
     virtual const char* className() const { return "OGR file reader"; }
 
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
+        osg::notify(osg::NOTICE)<<"OGR::readNode("<<file<<")"<<std::endl;
+    
         if (osgDB::equalCaseInsensitive(osgDB::getFileExtension(file),"ogr"))
         {
-            return readObject(osgDB::getNameLessExtension(file),options);
+            OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
+            return readFile(osgDB::getNameLessExtension(file), options);
         }
 
         OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_serializerMutex);
         std::string fileName = osgDB::findDataFile( file, options );
-        if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+        if (fileName.empty()) return readFile(file, options); // ReadResult::FILE_NOT_FOUND;
 
         return readFile(fileName, options);
     }
@@ -418,7 +439,7 @@ public:
     }
 
     mutable OpenThreads::ReentrantMutex _serializerMutex;
-        
+    CPLErrorHandler oldHandler;
 };
 
 // now register with Registry to instantiate the above

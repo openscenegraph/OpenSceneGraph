@@ -311,6 +311,7 @@ FIND_PACKAGE(ITK)
 FIND_PACKAGE(LibVNCServer)
 FIND_PACKAGE(OurDCMTK)
 FIND_PACKAGE(XUL)
+FIND_PACKAGE(FFmpeg)
 
 #use pkg-config to find various modues
 INCLUDE(FindPkgConfig OPTIONAL)

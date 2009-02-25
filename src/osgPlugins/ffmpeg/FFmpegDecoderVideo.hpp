@@ -2,15 +2,14 @@
 #ifndef HEADER_GUARD_OSGFFMPEG_FFMPEG_DECODER_VIDEO_H
 #define HEADER_GUARD_OSGFFMPEG_FFMPEG_DECODER_VIDEO_H
 
-#include <boost/shared_ptr.hpp>
-#include <OpenThreads/Thread>
-#include <vector>
 
 #include "BoundedMessageQueue.hpp"
 #include "FFmpegClocks.hpp"
 #include "FFmpegPacket.hpp"
 
-
+#include <boost/shared_ptr.hpp>
+#include <OpenThreads/Thread>
+#include <vector>
 
 namespace osgFFmpeg {
 

@@ -1,4 +1,3 @@
-
 #include "FFmpegDecoderVideo.hpp"
 
 #include <osg/Notify>

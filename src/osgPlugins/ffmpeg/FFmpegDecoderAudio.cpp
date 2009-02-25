@@ -1,8 +1,6 @@
-
 #include "FFmpegDecoderAudio.hpp"
 
 #include <osg/Notify>
-
 
 #include <stdexcept>
 #include <string.h>

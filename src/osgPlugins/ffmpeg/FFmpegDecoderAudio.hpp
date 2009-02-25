@@ -4,11 +4,12 @@
 
 #include <OpenThreads/Thread>
 
-#include "AudioSinkInterface.hpp"
-#include "BoundedMessageQueue.hpp"
 #include "FFmpegClocks.hpp"
 #include "FFmpegPacket.hpp"
 #include "FFmpegSampleFormat.hpp"
+
+#include "AudioSinkInterface.hpp"
+#include "BoundedMessageQueue.hpp"
 
 
 

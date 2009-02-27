@@ -2,15 +2,58 @@
 #ifndef HEADER_GUARD_OSGFFMPEG_FFMPEG_DECODER_H
 #define HEADER_GUARD_OSGFFMPEG_FFMPEG_DECODER_H
 
-#include <boost/shared_ptr.hpp>
-
 #include "FFmpegDecoderAudio.hpp"
 #include "FFmpegDecoderVideo.hpp"
 
+#include <osg/Notify>
 
 
 namespace osgFFmpeg {
 
+class FormatContextPtr
+{
+    public:
+    
+        typedef AVFormatContext T;
+    
+        explicit FormatContextPtr() : _ptr(0) {}
+        explicit FormatContextPtr(T* ptr) : _ptr(ptr) {}
+        
+        ~FormatContextPtr()
+        {
+            cleanup();
+        }
+        
+        T* get() { return _ptr; }
+
+        T * operator-> () const // never throws
+        {
+            return _ptr;
+        }
+
+        void reset(T* ptr) 
+        {
+            if (ptr==_ptr) return;
+            cleanup();
+            _ptr = ptr;
+        }
+
+        void cleanup()
+        {
+            if (_ptr) 
+            {
+                osg::notify(osg::NOTICE)<<"Calling av_close_input_file("<<_ptr<<")"<<std::endl;
+                av_close_input_file(_ptr);
+            }
+            _ptr = 0;
+        }
+        
+        
+
+    protected:
+    
+        T* _ptr;
+};
 
 
 class FFmpegDecoder
@@ -45,7 +88,6 @@ protected:
         REWINDING
     };
 
-    typedef boost::shared_ptr<AVFormatContext> FormatContextPtr;
     typedef BoundedMessageQueue<FFmpegPacket> PacketQueue;
 
     void findAudioStream();

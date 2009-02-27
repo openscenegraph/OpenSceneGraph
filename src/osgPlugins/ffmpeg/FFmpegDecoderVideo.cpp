@@ -72,10 +72,10 @@ void FFmpegDecoderVideo::open(AVStream * const stream)
         throw std::runtime_error("avcodec_open() failed");
 
     // Allocate video frame
-    m_frame.reset(avcodec_alloc_frame(), av_free);
+    m_frame.reset(avcodec_alloc_frame());
 
     // Allocate converted RGB frame
-    m_frame_rgba.reset(avcodec_alloc_frame(), av_free);
+    m_frame_rgba.reset(avcodec_alloc_frame());
     m_buffer_rgba.resize(avpicture_get_size(PIX_FMT_RGB32, width(), height()));
     m_buffer_rgba_public.resize(m_buffer_rgba.size());
 

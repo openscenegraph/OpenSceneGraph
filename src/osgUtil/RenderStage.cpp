@@ -391,8 +391,14 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         case Camera::PACKED_DEPTH_STENCIL_BUFFER:
                             internalFormat = GL_DEPTH_STENCIL_EXT;
                             break;
+
+                        // all other buffers are color buffers
                         default:
-                            internalFormat = GL_RGBA;
+                            // setup the internal format based on attached texture if such exists, otherwise just default format
+                            if (attachment._texture)
+                                internalFormat = attachment._texture->getInternalFormat();
+                            else
+                                internalFormat = GL_RGBA;
                             break;
                         }
                     }
@@ -894,6 +900,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         }
 
         // Bind the resolve framebuffer to blit into.
+        _fbo->apply(state, FrameBufferObject::READ_FRAMEBUFFER);
         _resolveFbo->apply(state, FrameBufferObject::DRAW_FRAMEBUFFER);
 
         // Blit to the resolve framebuffer.

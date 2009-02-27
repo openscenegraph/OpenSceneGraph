@@ -6,10 +6,11 @@
 
 #include "FFmpegClocks.hpp"
 #include "FFmpegPacket.hpp"
-#include "FFmpegSampleFormat.hpp"
 
-#include "AudioSinkInterface.hpp"
+#include <osg/AudioStream>
+
 #include "BoundedMessageQueue.hpp"
+
 
 
 
@@ -36,7 +37,7 @@ public:
     bool validContext() const;
     int frequency() const;
     int nbChannels() const;
-    FFmpegSampleFormat sampleFormat() const;
+    osg::AudioStream::SampleFormat sampleFormat() const;
 
 private:
 
@@ -63,7 +64,7 @@ private:
 
     int                    m_frequency;
     int                    m_nb_channels;
-    FFmpegSampleFormat    m_sample_format;
+    osg::AudioStream::SampleFormat    m_sample_format;
 
     SinkPtr                m_audio_sink;
 
@@ -93,7 +94,7 @@ inline int FFmpegDecoderAudio::nbChannels() const
 }
 
 
-inline FFmpegSampleFormat FFmpegDecoderAudio::sampleFormat() const
+inline osg::AudioStream::SampleFormat FFmpegDecoderAudio::sampleFormat() const
 {
     return m_sample_format;
 }

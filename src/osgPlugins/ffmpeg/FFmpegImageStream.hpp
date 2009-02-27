@@ -7,10 +7,6 @@
 #include <OpenThreads/Condition>
 #include <OpenThreads/Thread>
 
-#include "AudioSinkInterface.hpp"
-#include "FFmpegSampleFormat.hpp"
-
-
 
 #ifdef _WIN32
     #if defined OSG_LIBRARY_STATIC
@@ -18,7 +14,7 @@
     #elif defined OSG_LIBRARY || defined osgFFmpeg_EXPORTS
     #define OSGFFMPEG_EXPORT_API  __declspec(dllexport)
     #else
-    #define OSGFFMPEG_EXPORT_API  __declspec(dllimport)
+    #define OSGFFMPEG_EXPORT_API  __declspec(dllimport);
     #endif
 #else
     #define OSGFFMPEG_EXPORT_API
@@ -55,7 +51,12 @@ namespace osgFFmpeg
 
         virtual void setAudioSink(osg::AudioSinkInterface* audio_sink);
         
-        void fillAudioBuffer(void * const buffer, const size_t size);
+        void consumeAudioBuffer(void * const buffer, const size_t size);
+        
+        bool audioStream() const;
+        int audioFrequency() const;
+        int audioNbChannels() const;
+        osg::AudioStream::SampleFormat audioSampleFormat() const;
 
         double duration() const;
 
@@ -63,10 +64,6 @@ namespace osgFFmpeg
         double videoAspectRatio() const;
         double videoFrameRate() const;
 
-        bool audioStream() const;
-        int audioFrequency() const;
-        int audioNbChannels() const;
-        FFmpegSampleFormat audioSampleFormat() const;
 
     private:
 

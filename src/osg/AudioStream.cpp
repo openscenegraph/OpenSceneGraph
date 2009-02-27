@@ -11,34 +11,20 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osg/ImageStream>
+#include <osg/AudioStream>
 
 using namespace osg;
 
-ImageStream::ImageStream():
-    _status(INVALID),
-    _loopingMode(LOOPING)
-{
-    setDataVariance(DYNAMIC); 
-    
-#ifndef __APPLE__
-    // disabled under OSX for time being while we resolve why PBO
-    // doesn't function properly under OSX.
-    setPixelBufferObject(new PixelBufferObject(this));
-#endif
-
-}
-
-ImageStream::ImageStream(const ImageStream& image,const CopyOp& copyop):
-    Image(image,copyop),
-    _status(image._status),
-    _loopingMode(image._loopingMode),
-    _audioStreams(image._audioStreams)
+AudioSinkInterface::AudioSinkInterface() :
+    _delay(0.0)
 {
 }
 
-int ImageStream::compare(const Image& rhs) const
+AudioStream::AudioStream()
 {
-    return Image::compare(rhs);
 }
 
+AudioStream::AudioStream(const AudioStream& audio,const CopyOp& copyop):
+    osg::Object(audio, copyop)
+{
+}

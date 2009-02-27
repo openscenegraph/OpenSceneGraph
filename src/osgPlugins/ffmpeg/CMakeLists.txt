@@ -20,7 +20,6 @@ SET(TARGET_SRC
 )
 
 SET(TARGET_H
-    AudioSinkInterface.hpp
     BoundedMessageQueue.hpp
     FFmpegClocks.hpp
     FFmpegDecoderAudio.hpp

@@ -15,6 +15,7 @@
 #define OSG_IMAGESTREAM 1
 
 #include <osg/Image>
+#include <osg/AudioStream>
 
 namespace osg {
 
@@ -86,6 +87,12 @@ class OSG_EXPORT ImageStream : public Image
         
         virtual void setVolume(float) {}
         virtual float getVolume() const { return 0.0f; }
+
+
+        typedef std::vector< osg::ref_ptr<osg::AudioStream> > AudioStreams;
+        void setAudioStreams(const AudioStreams& asl) { _audioStreams = asl; }
+        AudioStreams& getAudioStreams() { return _audioStreams; }
+        const AudioStreams& getAudioStreams() const { return _audioStreams; }
         
 
     protected:
@@ -95,6 +102,8 @@ class OSG_EXPORT ImageStream : public Image
 
         StreamStatus    _status;
         LoopingMode     _loopingMode;
+        
+        AudioStreams    _audioStreams;
 };
 
 } // namespace

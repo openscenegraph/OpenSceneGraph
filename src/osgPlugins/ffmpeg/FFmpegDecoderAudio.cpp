@@ -56,7 +56,7 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
 
         m_frequency = m_context->sample_rate;
         m_nb_channels = m_context->channels;
-        m_sample_format = FFmpegSampleFormat(m_context->sample_fmt);
+        m_sample_format = osg::AudioStream::SampleFormat(m_context->sample_fmt);
 
         // Check stream sanity
         if (m_context->codec_id == CODEC_ID_NONE)
@@ -199,23 +199,23 @@ void FFmpegDecoderAudio::adjustBufferEndTps(const size_t buffer_size)
 
     switch (sampleFormat())
     {
-    case SAMPLE_FORMAT_U8:
+    case osg::AudioStream::SAMPLE_FORMAT_U8:
         sample_size *= 1;
         break;
 
-    case SAMPLE_FORMAT_S16:
+    case osg::AudioStream::SAMPLE_FORMAT_S16:
         sample_size *= 2;
         break;
 
-    case SAMPLE_FORMAT_S24:
+    case osg::AudioStream::SAMPLE_FORMAT_S24:
         sample_size *= 3;
         break;
 
-    case SAMPLE_FORMAT_S32:
+    case osg::AudioStream::SAMPLE_FORMAT_S32:
         sample_size *= 4;
         break;
 
-    case SAMPLE_FORMAT_F32:
+    case osg::AudioStream::SAMPLE_FORMAT_F32:
         sample_size *= 4;
         break;
 

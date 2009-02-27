@@ -127,7 +127,7 @@ void FFmpegImageStream::setAudioSink(osg::AudioSinkInterface* audio_sink)
 }
 
 
-void FFmpegImageStream::fillAudioBuffer(void * const buffer, const size_t size)
+void FFmpegImageStream::consumeAudioBuffer(void * const buffer, const size_t size)
 { 
     m_decoder->audio_decoder().fillBuffer(buffer, size);
 }
@@ -183,7 +183,7 @@ int FFmpegImageStream::audioNbChannels() const
 
 
 
-FFmpegSampleFormat FFmpegImageStream::audioSampleFormat() const 
+osg::AudioStream::SampleFormat FFmpegImageStream::audioSampleFormat() const 
 { 
     return m_decoder->audio_decoder().sampleFormat(); 
 }

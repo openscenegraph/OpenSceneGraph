@@ -53,7 +53,8 @@ namespace osgFFmpeg
         virtual void rewind();
         virtual void quit(bool waitForThreadToExit = true);
 
-        void setAudioSink(osg::ref_ptr<AudioSinkInterface> audio_sink);
+        virtual void setAudioSink(osg::AudioSinkInterface* audio_sink);
+        
         void fillAudioBuffer(void * const buffer, const size_t size);
 
         double duration() const;

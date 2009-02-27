@@ -1,12 +1,12 @@
 
-#ifndef HEADER_GUARD_OSGFFMPEG_AUDIO_SINK_INTERFACE_H
-#define HEADER_GUARD_OSGFFMPEG_AUDIO_SINK_INTERFACE_H
+#ifndef OSG_AUDIOSINKINTERFACE_H
+#define OSG_AUDIOSINKINTERFACE_H
 
 #include <osg/Object>
 
 
 
-namespace osgFFmpeg
+namespace osg
 {
 
     class AudioSinkInterface : public osg::Object

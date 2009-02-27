@@ -46,7 +46,7 @@ bool FFmpegDecoder::open(const std::string & filename)
         if (av_open_input_file(&p_format_context, filename.c_str(), 0, 0, 0) != 0)
             throw std::runtime_error("av_open_input_file() failed");
 
-        m_format_context.reset(p_format_context, av_close_input_file);
+        m_format_context.reset(p_format_context);
 
         // Retrieve stream info
         if (av_find_stream_info(p_format_context) < 0)

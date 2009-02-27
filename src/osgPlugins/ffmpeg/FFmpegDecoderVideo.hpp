@@ -13,7 +13,46 @@
 
 namespace osgFFmpeg {
 
+class FramePtr
+{
+    public:
+    
+        typedef AVFrame T;
+    
+        explicit FramePtr() : _ptr(0) {}
+        explicit FramePtr(T* ptr) : _ptr(ptr) {}
+        
+        ~FramePtr()
+        {
+            cleanup();
+        }
+        
+        T* get() { return _ptr; }
 
+        T * operator-> () const // never throws
+        {
+            return _ptr;
+        }
+
+        void reset(T* ptr) 
+        {
+            if (ptr==_ptr) return;
+            cleanup();
+            _ptr = ptr;
+        }
+
+        void cleanup()
+        {
+            if (_ptr) av_free(_ptr);
+            _ptr = 0;
+        }
+        
+        
+
+    protected:
+    
+        T* _ptr;
+};
 
 class FFmpegDecoderVideo : public OpenThreads::Thread
 {
@@ -40,7 +79,6 @@ public:
 
 private:
 
-    typedef boost::shared_ptr<AVFrame> FramePtr;
     typedef std::vector<uint8_t> Buffer;
 
     void decodeLoop();

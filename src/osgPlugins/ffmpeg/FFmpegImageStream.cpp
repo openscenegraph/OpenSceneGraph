@@ -121,11 +121,10 @@ void FFmpegImageStream::quit(bool waitForThreadToExit)
 
 
 
-void FFmpegImageStream::setAudioSink(osg::ref_ptr<AudioSinkInterface> audio_sink)
+void FFmpegImageStream::setAudioSink(osg::AudioSinkInterface* audio_sink)
 { 
     m_decoder->audio_decoder().setAudioSink(audio_sink); 
 }
-
 
 
 void FFmpegImageStream::fillAudioBuffer(void * const buffer, const size_t size)

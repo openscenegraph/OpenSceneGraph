@@ -1935,25 +1935,28 @@ void GraphicsWindowWin32::useCursor( bool cursorOn )
 
 void GraphicsWindowWin32::setCursor( MouseCursor mouseCursor )
 {
-    if (mouseCursor != LeftRightCursor && 
-        mouseCursor != UpDownCursor && 
-        mouseCursor != TopLeftCorner && 
-        mouseCursor != TopRightCorner && 
-        mouseCursor != BottomLeftCorner && 
-        mouseCursor != BottomRightCorner)
+    if (_mouseCursor != mouseCursor)
     {
-        _appMouseCursor = mouseCursor;
+        if (mouseCursor != LeftRightCursor && 
+            mouseCursor != UpDownCursor && 
+            mouseCursor != TopLeftCorner && 
+            mouseCursor != TopRightCorner && 
+            mouseCursor != BottomLeftCorner && 
+            mouseCursor != BottomRightCorner)
+        {
+            _appMouseCursor = mouseCursor;
+        }
+
+        _mouseCursor = mouseCursor;
+        HCURSOR newCursor = getOrCreateCursor( mouseCursor);
+        if (newCursor == _currentCursor) return;
+
+        _currentCursor = newCursor;
+        _traits->useCursor = (_currentCursor != NULL);
+
+        if (_mouseCursor != InheritCursor)
+            ::SetCursor(_currentCursor);
     }
-
-    _mouseCursor = mouseCursor;
-    HCURSOR newCursor = getOrCreateCursor( mouseCursor);
-    if (newCursor == _currentCursor) return;
-
-    _currentCursor = newCursor;
-    _traits->useCursor = (_currentCursor != NULL);
-
-    if (_mouseCursor != InheritCursor)
-        ::SetCursor(_currentCursor);
 }
 
 HCURSOR GraphicsWindowWin32::getOrCreateCursor(MouseCursor mouseCursor)

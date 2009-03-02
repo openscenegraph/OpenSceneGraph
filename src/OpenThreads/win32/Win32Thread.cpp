@@ -98,7 +98,7 @@ namespace OpenThreads {
 
             if (thread->_prvData==0) return 0;
 
-            TlsSetValue(Win32ThreadPrivateData::TLS.ID ,data);
+            TlsSetValue(Win32ThreadPrivateData::TLS.getId(), data);
             //---------------------------------------------------------------------
             // Set the proper scheduling priorities
             //
@@ -127,6 +127,7 @@ namespace OpenThreads {
                 // abnormal termination but must be caught in win32 anyway
             }
 
+            TlsSetValue(Win32ThreadPrivateData::TLS.getId(), 0);
             pd->isRunning = false;
 
             return 0;
@@ -207,7 +208,7 @@ namespace OpenThreads {
 
 Thread* Thread::CurrentThread()
 {
-    return (Thread* )TlsGetValue(Win32ThreadPrivateData::TLS.ID);
+    return (Thread* )TlsGetValue(Win32ThreadPrivateData::TLS.getId());
 };
 
 //----------------------------------------------------------------------------

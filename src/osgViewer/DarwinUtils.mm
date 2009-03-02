@@ -97,8 +97,8 @@ void MenubarController::update()
 			if (CGRectIntersectsRect(_mainScreenBounds, windowBounds))
             {
                 ++windowsIntersectingMainScreen;
-                osg::notify(osg::WARN) << "testint rect " << windowBounds.origin.x << "/" << windowBounds.origin.y << " " << windowBounds.size.width << "x" << windowBounds.size.height << std::endl;
-				osg::notify(osg::WARN) << "agains       " << _availRect.origin.x << "/" << _availRect.origin.y << " " << _availRect.size.width << "x" << _availRect.size.height << std::endl;
+                // osg::notify(osg::ALWAYS) << "testing rect " << windowBounds.origin.x << "/" << windowBounds.origin.y << " " << windowBounds.size.width << "x" << windowBounds.size.height << std::endl;
+				// osg::notify(osg::ALWAYS) << "against      " << _availRect.origin.x << "/" << _availRect.origin.y << " " << _availRect.size.width << "x" << _availRect.size.height << std::endl;
                 // the window intersects the main-screen, does it intersect with the menubar/dock?
                 if (((_availRect.origin.y > _mainScreenBounds.origin.y) && (_availRect.origin.y > windowBounds.origin.y)) ||
                     ((_availRect.origin.x > _mainScreenBounds.origin.x) && (_availRect.origin.x > windowBounds.origin.x)) || 

@@ -130,13 +130,40 @@ class CocoaKeyboardMap {
 };
 
 
-/** remaps a native os x keycode to a GUIEventAdapter-keycode */
+// ----------------------------------------------------------------------------------------------------------
+// remapCocoaKey
+// ----------------------------------------------------------------------------------------------------------
 static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false)
 {
     static CocoaKeyboardMap s_CocoaKeyboardMap;
     return s_CocoaKeyboardMap.remapKey(key, pressedOnKeypad);
 }
 
+
+// ----------------------------------------------------------------------------------------------------------
+// Cocoa uses a coordinate system where its origin is in the bottom left corner, 
+// osg and quartz uses top left for the origin
+//
+// these 2 methods convets rects between the different coordinate systems
+// ----------------------------------------------------------------------------------------------------------
+
+static NSRect convertFromQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,const NSRect& rect)  
+{
+    NSRect frame = [[win->getWindow() screen] frame];
+    
+    float y = frame.size.height - rect.origin.y - rect.size.height;
+    return NSMakeRect(rect.origin.x, y, rect.size.width, rect.size.height);
+}
+
+static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,const NSRect& rect)
+{
+    NSRect frame = [[win->getWindow() screen] frame];
+    
+    float y = frame.size.height - (rect.origin.y + rect.size.height);
+    return NSMakeRect(rect.origin.x, y, rect.size.width, rect.size.height);
+}
+
+#pragma mark CocoaAppDelegate
 
 // ----------------------------------------------------------------------------------------------------------
 // the app-delegate, handling quit-requests
@@ -153,16 +180,16 @@ static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
     s_quit_requested = true;
-    std::cout << "quit requested " << std::endl;
+    // std::cout << "quit requested " << std::endl;
     return NSTerminateNow;
 }
 
 @end
 
-
+#pragma mark GraphicsWindowCocoaWindow
 
 // ----------------------------------------------------------------------------------------------------------
-// GraphicsWindowCocoaWindow
+// GraphicsWindowCocoaWindow, implements canBecomeKeyWindow + canBecomeMainWindow
 // ----------------------------------------------------------------------------------------------------------
 
 @interface GraphicsWindowCocoaWindow : NSWindow
@@ -189,10 +216,14 @@ static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false
 
 @end
 
+#pragma mark GraphicsWindowCocoaGLView
+
+
 // ----------------------------------------------------------------------------------------------------------
 // GraphicsWindowCocoaGLView
+// custom NSOpenGLView-class handling mouse- and keyboard-events, forwarding them to the EventQueue
+// some code borrowed from the example osgCocoaViewer from E.Wing
 // ----------------------------------------------------------------------------------------------------------
-
 
 @interface GraphicsWindowCocoaGLView : NSOpenGLView
 {
@@ -586,6 +617,7 @@ static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false
 }
 
 
+
 @end
 
 
@@ -605,9 +637,12 @@ static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false
 
 - (id)initWith: (osgViewer::GraphicsWindowCocoa*) win;
 - (void)windowDidMove:(NSNotification *)notification;
+- (void)windowDidResize:(NSNotification *)notification;
 - (BOOL)windowShouldClose:(id)window;
+- (void)updateWindowBounds;
 
 @end
+
 
 @implementation GraphicsWindowCocoaDelegate
 
@@ -618,13 +653,29 @@ static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false
     return [super init];
 }
 
+
 - (void)windowDidMove:(NSNotification *)notification
+{
+    [self updateWindowBounds];
+}
+
+- (void)windowDidResize:(NSNotification *)notification
+{
+    [self updateWindowBounds];
+}
+
+-(void)updateWindowBounds
 {
     if (_inDidMove) return;
     _inDidMove = true;
+    
     GraphicsWindowCocoaWindow* nswin = _win->getWindow();
     NSRect bounds = [nswin contentRectForFrameRect: [nswin frame] ];
-    std::cout << "windowdidmove: " << bounds.origin.x << " " << bounds.origin.y << " " << bounds.size.width << " " << bounds.size.height << std::endl;
+    
+    // convert to quartz-coordinate-system
+    bounds = convertToQuartzCoordinates(_win, bounds);
+    
+    // std::cout << "windowdidmove: " << bounds.origin.x << " " << bounds.origin.y << " " << bounds.size.width << " " << bounds.size.height << std::endl;
    
     _win->resized(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
     _win->getEventQueue()->windowResize(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height, _win->getEventQueue()->getTime());
@@ -640,7 +691,7 @@ static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false
 @end
 
 
-#pragma mark GraphicsWindowCocoa
+#pragma mark CocoaWindowAdapter
 
 
 
@@ -661,7 +712,8 @@ public:
     virtual void getWindowBounds(CGRect& rect) 
     {
         NSRect nsrect = [_win->getWindow() frame];
-
+        nsrect = convertToQuartzCoordinates(_win.get(), nsrect);
+        
         rect.origin.x = nsrect.origin.x;
         rect.origin.y = nsrect.origin.y;
         rect.size.width = nsrect.size.width;
@@ -673,6 +725,13 @@ private:
     osg::observer_ptr<GraphicsWindowCocoa> _win;
 };
 
+#pragma mark GraphicsWindowCocoa
+
+
+
+// ----------------------------------------------------------------------------------------------------------
+// init
+// ----------------------------------------------------------------------------------------------------------
 
 void GraphicsWindowCocoa::init()
 {
@@ -686,20 +745,29 @@ void GraphicsWindowCocoa::init()
 }
 
 
+// ----------------------------------------------------------------------------------------------------------
+// setupNSWindow
+// sets up the NSWindow, adds delegates, etc
+// ----------------------------------------------------------------------------------------------------------
 
 void GraphicsWindowCocoa::setupNSWindow(NSWindow* win)
 {
 
     [win setReleasedWhenClosed:NO];
 	[win setDisplaysWhenScreenProfileChanges:YES];	
-	[win setDelegate: [[GraphicsWindowCocoaDelegate alloc] initWith: this] ];
-        
+    GraphicsWindowCocoaDelegate* delegate = [[GraphicsWindowCocoaDelegate alloc] initWith: this];
+    [win setDelegate: delegate ];
+    //[delegate autorelease];
+	    
     [win makeKeyAndOrderFront:nil];
     [win setAcceptsMouseMovedEvents: YES];
 
 }
 
 
+// ----------------------------------------------------------------------------------------------------------
+// realizeImplementation, creates the window + context
+// ----------------------------------------------------------------------------------------------------------
 
 bool GraphicsWindowCocoa::realizeImplementation()
 {
@@ -715,15 +783,26 @@ bool GraphicsWindowCocoa::realizeImplementation()
             style |= NSResizableWindowMask;
     }
     
+    DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    int screenLeft(0), screenTop(0);
+    if (wsi) {
+        
+        wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
+        _traits->y += screenTop;
+        _traits->x += screenLeft;
+    }
     
 	NSRect rect = NSMakeRect(_traits->x, _traits->y, _traits->width, _traits->height);
+    
 	_window = [[GraphicsWindowCocoaWindow alloc] initWithContentRect: rect styleMask: style backing: NSBackingStoreBuffered defer: NO];
 	
     if (!_window) {
-        osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation :: could not create window" << std::endl;
+        osg::notify(osg::WARN) << "GraphicsWindowCocoa::realizeImplementation :: could not create window" << std::endl;
         return false;
     }
     
+    rect = convertFromQuartzCoordinates(this,  rect);
+    [_window setFrameOrigin: rect.origin];
 	 
 	NSOpenGLPixelFormatAttribute attr[32];
     int i = 0;
@@ -777,7 +856,7 @@ bool GraphicsWindowCocoa::realizeImplementation()
     _context = [[NSOpenGLContext alloc] initWithFormat: pixelformat shareContext: sharedContext];
     
     if (!_context) {
-        osg::notify(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation :: could not create context" << std::endl;
+        osg::notify(osg::WARN) << "GraphicsWindowCocoa::realizeImplementation :: could not create context" << std::endl;
         return false;
     }
 	GraphicsWindowCocoaGLView* theView = [[ GraphicsWindowCocoaGLView alloc ] initWithFrame:[ _window frame ] ];
@@ -809,9 +888,9 @@ bool GraphicsWindowCocoa::realizeImplementation()
 
 
 
-
-
-/** Close the graphics context. */
+// ----------------------------------------------------------------------------------------------------------
+// closeImplementation
+// ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::closeImplementation()
 {
     _valid = false;
@@ -825,7 +904,11 @@ void GraphicsWindowCocoa::closeImplementation()
     [_window release];
 }
 
-/** Make this graphics context current.*/
+
+// ----------------------------------------------------------------------------------------------------------
+// makeCurrentImplementation
+// ----------------------------------------------------------------------------------------------------------
+
 bool GraphicsWindowCocoa:: makeCurrentImplementation()
 {
 	[_context makeCurrentContext];
@@ -833,7 +916,10 @@ bool GraphicsWindowCocoa:: makeCurrentImplementation()
 }
 
 
-/** Release the graphics context.*/
+// ----------------------------------------------------------------------------------------------------------
+// releaseContextImplementation
+// ----------------------------------------------------------------------------------------------------------
+
 bool GraphicsWindowCocoa::releaseContextImplementation()
 {
 	[NSOpenGLContext clearCurrentContext];
@@ -841,14 +927,20 @@ bool GraphicsWindowCocoa::releaseContextImplementation()
 }
 
 
-/** Swap the front and back buffers.*/
+// ----------------------------------------------------------------------------------------------------------
+// swapBuffersImplementation
+// ----------------------------------------------------------------------------------------------------------
+
 void GraphicsWindowCocoa::swapBuffersImplementation()
 {
 	[_context flushBuffer];
 }
 
 
-/** Check to see if any events have been generated.*/
+// ----------------------------------------------------------------------------------------------------------
+// checkEvents
+// process all pending events 
+// ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::checkEvents()
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -884,23 +976,18 @@ void GraphicsWindowCocoa::checkEvents()
 }
 
 
-/** Set the window's position and size.*/
-bool GraphicsWindowCocoa::setWindowRectangleImplementation(int x, int y, int width, int height)
-{
-    std::cout << "GraphicsWindowCocoa :: realizeImplementation not implemented yet " << std::endl;
-	
-    MenubarController::instance()->update();
-    
-    return true;
-}
 
+// ----------------------------------------------------------------------------------------------------------
+// setWindowDecorationImplementation
+//
+// unfortunately there's no way to change the decoration of a window, so we create an new one 
+// and swap the content
+// ----------------------------------------------------------------------------------------------------------
 
-/** Set Window decoration.*/
 bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
 {
     if (!_realized) return false;
 	
-    // unfortunately there's no way to change the decoration of a window, so we create an new one and swap the content
     unsigned int style(NSBorderlessWindowMask);
     
     if (flag) {
@@ -923,37 +1010,63 @@ bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
         _window = new_win;
         [_window makeKeyAndOrderFront: nil];
     }
-
     
 	return true;
 }
 
 
-/** Get focus.*/
+// ----------------------------------------------------------------------------------------------------------
+// grabFocus
+// ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::grabFocus()
 {
 	[_window makeKeyAndOrderFront: nil];
 }
 
 
-/** Get focus on if the pointer is in this window.*/
+// ----------------------------------------------------------------------------------------------------------
+// grabFocusIfPointerInWindow
+// ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::grabFocusIfPointerInWindow()
 {
-	std::cout << "GraphicsWindowCocoa :: grabFocusIfPointerInWindow not implemented yet " << std::endl;
+	osg::notify(osg::INFO) << "GraphicsWindowCocoa :: grabFocusIfPointerInWindow not implemented yet " << std::endl;
 }
 
+
+// ----------------------------------------------------------------------------------------------------------
+// resizedImplementation
+// ----------------------------------------------------------------------------------------------------------
 
 void GraphicsWindowCocoa::resizedImplementation(int x, int y, int width, int height)
 {
 	GraphicsContext::resizedImplementation(x, y, width, height);
     
-    [_window setContentSize: NSMakeSize(width, height)];
     [_context update];
-    //[_window setFrameTopLeftPoint: NSMakePoint(x,y)];   
     MenubarController::instance()->update();
-    std::cout << "GraphicsWindowCocoa :: resizedImplementation not implemented yet " << std::endl;
 }
 
+
+// ----------------------------------------------------------------------------------------------------------
+// setWindowRectangleImplementation
+// ----------------------------------------------------------------------------------------------------------
+bool GraphicsWindowCocoa::setWindowRectangleImplementation(int x, int y, int width, int height)
+{
+   
+    NSRect rect = NSMakeRect(x,y,width, height);
+    rect = convertFromQuartzCoordinates(this, rect);
+    
+    [_window setFrame: [NSWindow frameRectForContentRect: rect styleMask: [_window styleMask]] display: YES];
+    [_context update];
+    MenubarController::instance()->update();
+    
+    return true;
+}
+
+
+
+// ----------------------------------------------------------------------------------------------------------
+// setWindowName
+// ----------------------------------------------------------------------------------------------------------
 
 void GraphicsWindowCocoa::setWindowName (const std::string & name)
 {
@@ -965,6 +1078,10 @@ void GraphicsWindowCocoa::setWindowName (const std::string & name)
     [pool release];
 }
 
+
+// ----------------------------------------------------------------------------------------------------------
+// useCursor
+// ----------------------------------------------------------------------------------------------------------
 
 void GraphicsWindowCocoa::useCursor(bool cursorOn)
 {
@@ -993,10 +1110,40 @@ void GraphicsWindowCocoa::useCursor(bool cursorOn)
 }
 
 
+// ----------------------------------------------------------------------------------------------------------
+// setCursor
+// ----------------------------------------------------------------------------------------------------------
+
 void GraphicsWindowCocoa::setCursor(MouseCursor mouseCursor)
 {
-	std::cout << "GraphicsWindowCocoa :: setCursor not implemented yet " << std::endl;
+	switch (mouseCursor) 
+    {
+
+        case NoCursor:
+            [NSCursor hide];
+            break;
+    
+        case LeftArrowCursor:
+            [[NSCursor arrowCursor] set];
+            break;
+        
+        case TextCursor:
+            [[NSCursor IBeamCursor] set];
+            break;
+            
+        case CrosshairCursor:
+            [[NSCursor crosshairCursor] set];
+            break;
+        
+        default:
+            osg::notify(osg::INFO) << "GraphicsWindowCocoa::setCursor :: unsupported MouseCursor: " << mouseCursor << std::endl;    
+    }
 }
+
+
+// ----------------------------------------------------------------------------------------------------------
+// setVSync
+// ----------------------------------------------------------------------------------------------------------
 
 void GraphicsWindowCocoa::setVSync(bool f) 
 {
@@ -1005,13 +1152,21 @@ void GraphicsWindowCocoa::setVSync(bool f)
 }
 
 
+// ----------------------------------------------------------------------------------------------------------
+// d'tor
+// ----------------------------------------------------------------------------------------------------------
+
 GraphicsWindowCocoa::~GraphicsWindowCocoa() 
 {
 }
 
 
 
+#pragma mark CocoaWindowingSystemInterface
 
+// ----------------------------------------------------------------------------------------------------------
+// CocoaWindowingSystemInterface
+// ----------------------------------------------------------------------------------------------------------
 
 struct CocoaWindowingSystemInterface : public DarwinWindowingSystemInterface {
 	

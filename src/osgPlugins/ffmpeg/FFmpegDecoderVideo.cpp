@@ -5,7 +5,12 @@
 #include <stdexcept>
 #include <string.h>
 
+extern "C" 
+{
+    int img_convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src,
+                int src_pix_fmt, int src_width, int src_height);
 
+};
 
 namespace osgFFmpeg {
 

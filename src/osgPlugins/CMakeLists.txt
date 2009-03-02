@@ -114,6 +114,11 @@ IF(XUL_FOUND)
 ENDIF(XUL_FOUND)
 
 
+# imageio-plugin for os x
+IF(APPLE)
+	ADD_SUBDIRECTORY(imageio)
+ENDIF(APPLE)
+
 
 ############################################################
 #

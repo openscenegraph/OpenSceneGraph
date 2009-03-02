@@ -10,7 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-
+#if !defined (__LP64__)
 
 #include <cstdio>
 #include <cstdlib>
@@ -845,3 +845,5 @@ VDUseSafeBuffers
 //    }
 //    osg::notify(osg::NOTICE) << "    * TEST SGSetChannelDevice(..) end" << std::endl;
 //}
+
+#endif

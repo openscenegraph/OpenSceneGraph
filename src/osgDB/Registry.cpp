@@ -239,6 +239,23 @@ Registry::Registry()
     addFileExtensionAlias("vert",   "glsl");
     addFileExtensionAlias("frag",   "glsl");
 
+#if defined (__APPLE__) && (__LP64__)
+#undef DARWIN_QUICKTIME
+#define DARWIN_IMAGEIO 1
+#endif
+
+#if defined(DARWIN_IMAGEIO)
+    addFileExtensionAlias("jpg",  "imageio");
+    addFileExtensionAlias("jpe",  "imageio");
+    addFileExtensionAlias("jpeg", "imageio");
+    addFileExtensionAlias("tif",  "imageio");
+    addFileExtensionAlias("tiff", "imageio");
+    addFileExtensionAlias("gif",  "imageio");
+    addFileExtensionAlias("png",  "imageio");
+    addFileExtensionAlias("psd",  "imageio");
+    addFileExtensionAlias("tga",  "imageio");
+#endif
+
 #if defined(DARWIN_QUICKTIME)
     addFileExtensionAlias("jpg",  "qt");
     addFileExtensionAlias("jpe",  "qt");
@@ -316,6 +333,9 @@ Registry::Registry()
     addFileExtensionAlias("pbm", "pnm");
     addFileExtensionAlias("pgm", "pnm");
     addFileExtensionAlias("ppm", "pnm");
+	
+	// register http-protocol, so the curl can handle it, if necessary
+	registerProtocol("http"); 
     
 }
 
@@ -2078,3 +2098,15 @@ SharedStateManager* Registry::getOrCreateSharedStateManager()
     
     return _sharedStateManager.get();
 }
+
+
+void Registry::registerProtocol(const std::string& protocol) 
+{  
+	_registeredProtocols.insert( convertToLowerCase(protocol) ); 
+}
+		
+bool Registry::isProtocolRegistered(const std::string& protocol) 
+{ 
+	return (_registeredProtocols.find( convertToLowerCase(protocol) ) != _registeredProtocols.end()); 
+}
+

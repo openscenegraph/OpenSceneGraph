@@ -6,6 +6,8 @@
  *  Copyright (c) 2002 digital mind. All rights reserved.
  *
  */
+#if !defined (__LP64__)
+
 
 #ifndef QTUTILS_HEADER_
 #define QTUTILS_HEADER_
@@ -50,11 +52,7 @@
 
 #endif
     
-    /** constructs an FSSpec out of an path */
-     OSStatus MakeFSSpecFromPath(const char* path, FSSpec* spec);
-    
-    /** opens a movie from a path */
-      OSStatus MakeMovieFromPath(const char* path, Movie* movie, short& resref);
 
+#endif
 
 #endif

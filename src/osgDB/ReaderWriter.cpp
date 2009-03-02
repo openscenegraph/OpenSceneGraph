@@ -47,7 +47,8 @@ bool ReaderWriter::acceptsExtension(const std::string& extension) const
 
 void ReaderWriter::supportsProtocol(const std::string& fmt, const std::string& description)
 {
-    _supportedProtocols[convertToLowerCase(fmt)] = description;
+    Registry::instance()->registerProtocol(fmt);
+	_supportedProtocols[convertToLowerCase(fmt)] = description;
 }
 
 void ReaderWriter::supportsExtension(const std::string& fmt, const std::string& description)

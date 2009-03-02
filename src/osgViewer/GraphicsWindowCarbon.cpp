@@ -11,7 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifdef __APPLE__
+#if defined (__APPLE__) && (!__LP64__)
+
 #include <osg/observer_ptr>
 
 #include <osgViewer/api/Carbon/PixelBufferCarbon>
@@ -24,7 +25,10 @@
 
 #include <iostream>
 
+#include "DarwinUtils.h"
+
 using namespace osgViewer;
+using namespace osgDarwin;
 
 
 // Carbon-Eventhandler to handle the click in the close-widget and the resize of windows
@@ -135,10 +139,10 @@ namespace osgViewer
 
 // small helper class which maps the raw key codes to osgGA::GUIEventAdapter::Keys
 
-class OSXKeyboardMap {
+class CarbonKeyboardMap {
 
     public:
-        OSXKeyboardMap()
+        CarbonKeyboardMap()
         {
             _keymap[53                ] =  osgGA::GUIEventAdapter::KEY_Escape;
             _keymap[115                ] =  osgGA::GUIEventAdapter::KEY_Home;
@@ -187,7 +191,7 @@ class OSXKeyboardMap {
 
         }
         
-        ~OSXKeyboardMap() {
+        ~CarbonKeyboardMap() {
         }
         
         unsigned int remapKey(unsigned int key, unsigned int rawkey)
@@ -202,309 +206,31 @@ class OSXKeyboardMap {
 };
 
 /** remaps a native os x keycode to a GUIEventAdapter-keycode */
-static unsigned int remapOSXKey(unsigned int key, unsigned int rawkey)
+static unsigned int remapCarbonKey(unsigned int key, unsigned int rawkey)
 {
-    static OSXKeyboardMap s_OSXKeyboardMap;
-    return s_OSXKeyboardMap.remapKey(key,rawkey);
+    static CarbonKeyboardMap s_CarbonKeyboardMap;
+    return s_CarbonKeyboardMap.remapKey(key,rawkey);
 }
 
 
-
-
-#pragma mark * * * MenubarController * * * 
-
-/** the MenubarController class checks all open windows if they intersect with the menubar / dock and hide the menubar/dock if necessary */
-class MenubarController : public osg::Referenced 
-{
-
-    public:
-        MenubarController() : 
-            osg::Referenced(), 
-            _list(), 
-            _menubarShown(false),
-            _mutex() 
-        {
-            // the following code will query the system for the available rect on the main-display (typically the displaying showing the menubar + the dock
-
-            GDHandle mainScreenDevice;
-            
-            DMGetGDeviceByDisplayID((DisplayIDType) CGMainDisplayID(), &mainScreenDevice, true);
-            GetAvailableWindowPositioningBounds (mainScreenDevice, &_availRect);
-            
-            // now we need the rect of the main-display including the menubar and the dock
-            _mainScreenBounds = CGDisplayBounds( CGMainDisplayID() );
-            
-            // hide the menubar initially
-            SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
-        }
-        
-        static MenubarController* instance();
-        
-        void attachWindow(GraphicsWindowCarbon* win);
-        void update();
-        void detachWindow(GraphicsWindowCarbon* win);
-        
-    private: 
-        typedef std::list< osg::observer_ptr< GraphicsWindowCarbon > > WindowList;
-        WindowList            _list;
-        bool                _menubarShown;
-        Rect                _availRect;
-        CGRect                _mainScreenBounds;
-        OpenThreads::Mutex    _mutex;
-        
+class CarbonWindowAdapter : public MenubarController::WindowAdapter {
+public:
+	CarbonWindowAdapter(GraphicsWindowCarbon* win) : MenubarController::WindowAdapter(), _win(win) {}
+	virtual bool valid() {return (_win.valid() && _win->valid()); }
+	virtual void getWindowBounds(CGRect& rect) 
+	{
+		Rect windowBounds;
+		OSErr error = GetWindowBounds(_win->getNativeWindowRef(), kWindowStructureRgn, &windowBounds);
+		rect.origin.x = windowBounds.left;
+		rect.origin.y = windowBounds.top;
+		rect.size.width = windowBounds.right - windowBounds.left;
+		rect.size.height = windowBounds.bottom - windowBounds.top;
+	}
+		
+	osgViewer::GraphicsWindow* getWindow()  { return _win.get(); }
+private: 
+	osg::observer_ptr<GraphicsWindowCarbon> _win;
 };
-
-
-MenubarController* MenubarController::instance() 
-{
-    static osg::ref_ptr<MenubarController> s_menubar_controller = new MenubarController();
-    return s_menubar_controller.get();
-}
-
-
-void MenubarController::attachWindow(GraphicsWindowCarbon* win)
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    _list.push_back(win);
-    update();
-}
-
-
-void MenubarController::detachWindow(GraphicsWindowCarbon* win) 
-{
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    for(WindowList::iterator i = _list.begin(); i != _list.end(); ) {
-        if ((*i).get() == win)
-            i = _list.erase(i);
-        else 
-            ++i;
-    }
-    update();
-}
-
-// iterate through all open windows and check, if they intersect the area occupied by the menubar/dock, and if so, hide the menubar/dock
-
-void MenubarController::update() 
-{
-    OSErr error(noErr);
-    unsigned int windowsCoveringMenubarArea = 0;    
-    unsigned int windowsIntersectingMainScreen = 0;
-    for(WindowList::iterator i = _list.begin(); i != _list.end(); ) {
-        if ((*i).valid()) {
-            GraphicsWindowCarbon* w = (*i).get();
-            Rect windowBounds;
-            error = GetWindowBounds(w->getNativeWindowRef(), kWindowStructureRgn, &windowBounds);
-            
-            bool intersect = !( (_mainScreenBounds.origin.x > windowBounds.right) ||
-                                (_mainScreenBounds.origin.x + _mainScreenBounds.size.width < windowBounds.left) ||
-                                (_mainScreenBounds.origin.y > windowBounds.bottom) ||
-                                (_mainScreenBounds.origin.y + _mainScreenBounds.size.height < windowBounds.top));
-            if (intersect && !error)
-            {
-                ++windowsIntersectingMainScreen;
-                
-                // the window intersects the main-screen, does it intersect with the menubar/dock?
-                if (((_availRect.top > _mainScreenBounds.origin.y) && (_availRect.top > windowBounds.top)) ||
-                    ((_availRect.left > _mainScreenBounds.origin.x) && (_availRect.left > windowBounds.left)) || 
-                    ((_availRect.right < _mainScreenBounds.origin.x + _mainScreenBounds.size.width) && (_availRect.right < windowBounds.right)) || 
-                    ((_availRect.bottom < _mainScreenBounds.origin.y + _mainScreenBounds.size.height) && (_availRect.bottom < windowBounds.bottom) ))
-                {
-                    ++windowsCoveringMenubarArea;
-                }
-            }
-            
-            ++i;
-        }
-        else
-            i= _list.erase(i);
-    }
-    
-    // see http://developer.apple.com/technotes/tn2002/tn2062.html for hiding the dock+menubar
-        
-    if (windowsCoveringMenubarArea && _menubarShown)
-        error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
-    
-    if (!windowsCoveringMenubarArea && !_menubarShown)
-        error = SetSystemUIMode(kUIModeNormal, 0);
-        _menubarShown = !windowsCoveringMenubarArea;
-    
-    // osg::notify(osg::DEBUG_INFO) << "MenubarController:: " << windowsCoveringMenubarArea << " windows covering the menubar/dock area, " << windowsIntersectingMainScreen << " intersecting mainscreen" << std::endl;
-}
-
-
-#pragma mark * * * OSXWindowingSystemInterface * * * 
-
-struct OSXCarbonWindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
-{
-    
-    /** ctor, get a list of all attached displays */
-    OSXCarbonWindowingSystemInterface() :
-        _displayCount(0),
-        _displayIds(NULL)
-    {
-        ProcessSerialNumber sn = { 0, kCurrentProcess };
-        TransformProcessType(&sn,kProcessTransformToForegroundApplication);
-        SetFrontProcess(&sn);
-        
-        if( CGGetActiveDisplayList( 0, NULL, &_displayCount ) != CGDisplayNoErr )
-            osg::notify(osg::WARN) << "OSXCarbonWindowingSystemInterface: could not get # of screens" << std::endl;
-            
-        _displayIds = new CGDirectDisplayID[_displayCount];
-        if( CGGetActiveDisplayList( _displayCount, _displayIds, &_displayCount ) != CGDisplayNoErr )
-            osg::notify(osg::WARN) << "OSXCarbonWindowingSystemInterface: CGGetActiveDisplayList failed" << std::endl;
-        
-        // register application event handler and AppleEventHandler to get quit-events:
-        static const EventTypeSpec menueventSpec = {kEventClassCommand, kEventCommandProcess};
-        OSErr status = InstallEventHandler(GetApplicationEventTarget(), NewEventHandlerUPP(ApplicationEventHandler), 1, &menueventSpec, 0, NULL);
-        status = AEInstallEventHandler( kCoreEventClass, kAEQuitApplication, NewAEEventHandlerUPP(QuitAppleEventHandler), 0, false);
-    }
-    
-    /** dtor */
-    ~OSXCarbonWindowingSystemInterface()
-    {
-        if (osg::Referenced::getDeleteHandler())
-        {
-            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
-            osg::Referenced::getDeleteHandler()->flushAll();
-        }
-
-        if (_displayIds) delete[] _displayIds;
-        _displayIds = NULL;
-    }
-    
-    /** @return a CGDirectDisplayID for a ScreenIdentifier */
-    inline CGDirectDisplayID getDisplayID(const osg::GraphicsContext::ScreenIdentifier& si) {
-        if (si.screenNum < _displayCount)
-            return _displayIds[si.screenNum];
-        else {
-            osg::notify(osg::WARN) << "GraphicsWindowCarbon :: invalid screen # " << si.screenNum << ", returning main-screen instead" << std::endl;
-            return _displayIds[0];
-        }
-    }
-
-    /** @return count of attached screens */
-    virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 
-    {
-        return _displayCount;
-    }
-
-    /** returns the resolution of a specific display */
-    virtual void getScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution)
-    {
-        CGDirectDisplayID id = getDisplayID(si);
-        resolution.width = CGDisplayPixelsWide(id);
-        resolution.height = CGDisplayPixelsHigh(id);
-        resolution.colorDepth = CGDisplayBitsPerPixel(id);
-        resolution.refreshRate = getDictDouble (CGDisplayCurrentMode(id), kCGDisplayRefreshRate);        // Not tested
-        if (resolution.refreshRate<0) resolution.refreshRate = 0;
-    }
-
-    /** return the top left coord of a specific screen in global screen space */
-    void getScreenTopLeft(const osg::GraphicsContext::ScreenIdentifier& si, int& x, int& y) {
-        CGRect bounds = CGDisplayBounds( getDisplayID(si) );
-        x = static_cast<int>(bounds.origin.x);
-        y = static_cast<int>(bounds.origin.y);
-        
-        // osg::notify(osg::DEBUG_INFO) << "topleft of screen " << si.screenNum <<" " << bounds.origin.x << "/" << bounds.origin.y << std::endl;
-    }
-    
-    /** Helper method to get a double value out of a CFDictionary */
-    static double getDictDouble (CFDictionaryRef refDict, CFStringRef key)
-    {
-        double value;
-        CFNumberRef number_value = (CFNumberRef) CFDictionaryGetValue(refDict, key);
-        if (!number_value) // if can't get a number for the dictionary
-            return -1;  // fail
-        if (!CFNumberGetValue(number_value, kCFNumberDoubleType, &value)) // or if cant convert it
-            return -1; // fail
-        return value; // otherwise return the long value
-    }
-
-    /** Helper method to get a long value out of a CFDictionary */
-    static long getDictLong(CFDictionaryRef refDict, CFStringRef key)        // const void* key?
-    {
-        long value = 0;
-        CFNumberRef number_value = (CFNumberRef)CFDictionaryGetValue(refDict, key); 
-        if (!number_value) // if can't get a number for the dictionary
-            return -1;  // fail
-        if (!CFNumberGetValue(number_value, kCFNumberLongType, &value)) // or if cant convert it
-            return -1; // fail
-        return value;
-    }
-
-    /** implementation of setScreenSettings */
-    virtual bool setScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, const osg::GraphicsContext::ScreenSettings & resolution) 
-    { 
-        CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
-        
-        CGRefreshRate refresh = resolution.refreshRate>0 ? resolution.refreshRate : getDictDouble (CGDisplayCurrentMode(displayID), kCGDisplayRefreshRate);  
-        size_t depth = resolution.colorDepth>0 ? resolution.colorDepth : CGDisplayBitsPerPixel(displayID);
-        CFDictionaryRef display_mode_values =
-            CGDisplayBestModeForParametersAndRefreshRate(
-                            displayID, 
-                            depth,
-                            resolution.width, resolution.height,
-                            refresh,  
-                            NULL);
-
-
-        CGDisplaySwitchToMode(displayID, display_mode_values);    
-        return true; 
-    }
-
-    virtual void enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, osg::GraphicsContext::ScreenSettingsList & resolutionList) {
-        // Warning! This method has not been tested.
-        resolutionList.clear();
-
-        CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
-        CFArrayRef availableModes = CGDisplayAvailableModes(displayID);
-        unsigned int numberOfAvailableModes = CFArrayGetCount(availableModes);
-        for (unsigned int i=0; i<numberOfAvailableModes; ++i) {
-            // look at each mode in the available list
-            CFDictionaryRef mode = (CFDictionaryRef)CFArrayGetValueAtIndex(availableModes, i);
-            osg::GraphicsContext::ScreenSettings tmpSR;
-
-            long width = getDictLong(mode, kCGDisplayWidth);
-            tmpSR.width = width<=0 ? 0 : width;
-            long height = getDictLong(mode, kCGDisplayHeight);
-            tmpSR.height = height<=0 ? 0 : height;
-            long rate = getDictLong(mode, kCGDisplayRefreshRate);
-            tmpSR.refreshRate = rate<=0 ? 0 : rate;
-            long depth = getDictLong(mode, kCGDisplayBitsPerPixel);
-            tmpSR.colorDepth = depth<=0 ? 0 : depth;
-
-            resolutionList.push_back(tmpSR);
-        }
-    }
-
-    virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits)
-    {
-        if (traits->pbuffer)
-        {
-            osg::ref_ptr<osgViewer::PixelBufferCarbon> pbuffer = new PixelBufferCarbon(traits);
-            if (pbuffer->valid()) return pbuffer.release();
-            else return 0;
-        }
-        else
-        {
-            osg::ref_ptr<osgViewer::GraphicsWindowCarbon> window = new GraphicsWindowCarbon(traits);
-            if (window->valid()) return window.release();
-            else return 0;
-        }
-    }
-    
-    
-    
-    private:
-        CGDisplayCount        _displayCount;
-        CGDirectDisplayID*    _displayIds;
-};
-
-}
-
-
-#pragma mark * * * GraphicsWindowCarbon * * *
-
 
 
 
@@ -630,7 +356,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
     useCursor(_traits->useCursor);
 
     // move the window to the right screen
-    OSXCarbonWindowingSystemInterface* wsi = dynamic_cast<OSXCarbonWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
     if (wsi) {
         
@@ -703,7 +429,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
     } else {
         aglSetDrawable(_context, GetWindowPort(_window)); 
         ShowWindow(_window); 
-        MenubarController::instance()->attachWindow(this);
+        MenubarController::instance()->attachWindow( new CarbonWindowAdapter(this) );
     }
     
     makeCurrent();
@@ -1032,7 +758,7 @@ bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
     UniChar* uniChars = new UniChar[dataSize+1];
     GetEventParameter( theEvent, kEventParamKeyUnicodes, typeUnicodeText, NULL, dataSize, NULL, (void*)uniChars );
     
-    unsigned int keychar = remapOSXKey(static_cast<unsigned long>(uniChars[0]), rawkey);
+    unsigned int keychar = remapCarbonKey(static_cast<unsigned long>(uniChars[0]), rawkey);
     
     switch(GetEventKind(theEvent))
     {
@@ -1199,7 +925,7 @@ void GraphicsWindowCarbon::useCursor(bool cursorOn)
 
     if (_traits.valid())
         _traits->useCursor = cursorOn;
-    OSXCarbonWindowingSystemInterface* wsi = dynamic_cast<OSXCarbonWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     if (wsi == NULL) {
         osg::notify(osg::WARN) << "GraphicsWindowCarbon::useCursor :: could not get OSXCarbonWindowingSystemInterface" << std::endl;
         return;
@@ -1274,7 +1000,7 @@ void GraphicsWindowCarbon::setWindowName (const std::string& name)
 void GraphicsWindowCarbon::requestWarpPointer(float x,float y)
 {
 
-    OSXCarbonWindowingSystemInterface* wsi = dynamic_cast<OSXCarbonWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     if (wsi == NULL) {
         osg::notify(osg::WARN) << "GraphicsWindowCarbon::useCursor :: could not get OSXCarbonWindowingSystemInterface" << std::endl;
         return;
@@ -1301,36 +1027,35 @@ void GraphicsWindowCarbon::transformMouseXY(float& x, float& y)
     }
 }
 
-
-
-
-
-
-struct RegisterWindowingSystemInterfaceProxy
-{
-    RegisterWindowingSystemInterfaceProxy()
-    {
-        osg::GraphicsContext::setWindowingSystemInterface(new osgViewer::OSXCarbonWindowingSystemInterface());
-    }
-
-    ~RegisterWindowingSystemInterfaceProxy()
-    {
-        if (osg::Referenced::getDeleteHandler())
-        {
-            osg::Referenced::getDeleteHandler()->setNumFramesToRetainObjects(0);
-            osg::Referenced::getDeleteHandler()->flushAll();
-        }
-
-        osg::GraphicsContext::setWindowingSystemInterface(0);
-    }
+class CarbonWindowingSystemInterface : public  DarwinWindowingSystemInterface {
+public:
+	CarbonWindowingSystemInterface()
+	:	DarwinWindowingSystemInterface()
+	{
+		// register application event handler and AppleEventHandler to get quit-events:
+		static const EventTypeSpec menueventSpec = {kEventClassCommand, kEventCommandProcess};
+		OSErr status = InstallEventHandler(GetApplicationEventTarget(), NewEventHandlerUPP(ApplicationEventHandler), 1, &menueventSpec, 0, NULL);
+		status = AEInstallEventHandler( kCoreEventClass, kAEQuitApplication, NewAEEventHandlerUPP(QuitAppleEventHandler), 0, false);
+	}
+	
+	virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits) 
+	{
+		return createGraphicsContextImplementation<PixelBufferCarbon, GraphicsWindowCarbon>(traits);
+	}
 };
 
-RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy;
+
+}
+
+#ifdef USE_DARWIN_CARBON_IMPLEMENTATION
+RegisterWindowingSystemInterfaceProxy<CarbonWindowingSystemInterface> createWindowingSystemInterfaceProxy;
+#endif
+
 
 // declare C entry point for static compilation.
 extern "C" void graphicswindow_Carbon(void)
 {
-    osg::GraphicsContext::setWindowingSystemInterface(new osgViewer::OSXCarbonWindowingSystemInterface());
+    osg::GraphicsContext::setWindowingSystemInterface(new osgViewer::CarbonWindowingSystemInterface());
 }
 
 #endif

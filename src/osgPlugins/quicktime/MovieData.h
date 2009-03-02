@@ -10,6 +10,8 @@
 #ifndef _MOVIEDATA_HEADER_
 #define _MOVIEDATA_HEADER_
 
+#if !defined (__LP64__)
+
 #include <osg/Notify>
 #include <osg/Image>
 #include <string>
@@ -99,7 +101,6 @@
             
         protected:
             char*           _pointer;
-            short           _resref;
             Movie           _movie;
             GWorldPtr       _gw;
             
@@ -131,5 +132,5 @@
 
 
 
-
+#endif
 #endif

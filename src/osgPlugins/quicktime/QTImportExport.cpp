@@ -6,6 +6,9 @@
  *  Copyright 2008 __MyCompanyName__. All rights reserved.
  *
  */
+ 
+ #if !defined (__LP64__)
+ 
 #include <map>
 #include <sstream>
 #include "QTImportExport.h"
@@ -524,3 +527,4 @@ osg::Image* QuicktimeImportExport::doImport(unsigned char* data, unsigned int si
 
 }
 
+#endif

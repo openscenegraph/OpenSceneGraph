@@ -11,6 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#if !defined (__LP64__)
+
 #ifdef __APPLE__
     #include <QuickTime/QuickTime.h>
     #include <Carbon/Carbon.h>
@@ -99,11 +101,7 @@ void get_video_device_bounds_idstr(short videoDeviceID, short videoDeviceInputID
 void get_sound_device_idstr(short soundDeviceID, short soundDeviceInputID, Str63& out_soundDeviceIDStr);
 
 
-
-
-
-
-
+#endif
 
 
 

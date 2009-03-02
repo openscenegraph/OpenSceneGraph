@@ -13,32 +13,34 @@
 
 
 
-#ifndef OSGVIEWER_PIXELBUFFERCARBON
-#define OSGVIEWER_PIXELBUFFERCARBON 1
+#ifndef OSGVIEWER_PIXELBUFFERCOCOA
+#define OSGVIEWER_PIXELBUFFERCOCOA 1
 
-#if defined (__APPLE__) && (!__LP64__)
+#ifdef __APPLE__
 
 #include <osg/GraphicsContext>
 #include <osgViewer/Export>
 
-#include <Carbon/Carbon.h>
-#include <AGL/agl.h>
 
+#ifdef __OBJC__
+@class NSOpenGLContext;
+#else
+class NSOpenGLContext;
+#endif
 
 namespace osgViewer
 {
 
-class OSGVIEWER_EXPORT PixelBufferCarbon : public osg::GraphicsContext
+class OSGVIEWER_EXPORT PixelBufferCocoa : public osg::GraphicsContext
 {
     public:
+		struct Implementation;
 
-        PixelBufferCarbon(osg::GraphicsContext::Traits* traits):
-            _valid(false),
+        PixelBufferCocoa(osg::GraphicsContext::Traits* traits):
+			_valid(false),
 			_initialized(false),
             _realized(false),
-			_pixelformat(0),
-            _pbuffer(0),
-            _context(0)
+            _context(NULL)
 		{
             _traits = traits;
 
@@ -62,7 +64,7 @@ class OSGVIEWER_EXPORT PixelBufferCarbon : public osg::GraphicsContext
             }
         }
     
-        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const PixelBufferCarbon*>(object)!=0; }
+        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const PixelBufferCocoa*>(object)!=0; }
         virtual const char* libraryName() const { return "osgViewer"; }
         virtual const char* className() const { return "PixelBufferCarbon"; }
 
@@ -91,11 +93,8 @@ class OSGVIEWER_EXPORT PixelBufferCarbon : public osg::GraphicsContext
 
         /** Swap the front and back buffers.*/
         virtual void swapBuffersImplementation();
-		
-		static AGLPixelFormat createPixelFormat(osg::GraphicsContext::Traits* traits);
-		
-		AGLContext getAGLContext() { return _context; }
-
+        
+         NSOpenGLContext* getContext() { return _context; }
     public:
     
 
@@ -103,18 +102,14 @@ class OSGVIEWER_EXPORT PixelBufferCarbon : public osg::GraphicsContext
 		
 
     
-        ~PixelBufferCarbon();
+        ~PixelBufferCocoa();
     
         void init();
 
         bool            _valid;
         bool            _initialized;
-        bool            _realized;
-		
-		AGLPixelFormat	_pixelformat;
-		AGLPbuffer		_pbuffer;
-		AGLContext		_context;
-        
+        bool            _realized;  
+		NSOpenGLContext* _context;
 };
 
 }

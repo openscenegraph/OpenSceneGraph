@@ -10,6 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
+#if !defined (__LP64__)
 
 #ifndef _QUICKTIMELIVEIMAGESTREAM_H_
 #define _QUICKTIMELIVEIMAGESTREAM_H_
@@ -115,4 +116,5 @@ public:
 };
 
 
+#endif
 #endif

@@ -16,22 +16,34 @@
  * These elements are license under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
 
-#ifndef OSGVIEWER_GRAPHICSWINDOWCARBON
-#define OSGVIEWER_GRAPHICSWINDOWCARBON 1
+#ifndef OSGVIEWER_GRAPHICSWINDOWCOCOA
+#define OSGVIEWER_GRAPHICSWINDOWCOCOA 1
 
-#if defined (__APPLE__) && (!__LP64__)
+#ifdef __APPLE__
+
+#ifdef __OBJC__
+@class GraphicsWindowCocoaWindow;
+@class NSOpenGLContext;
+@class NSWindow;
+#else
+class GraphicsWindowCocoaWindow;
+class NSOpenGLContext;
+class NSWindow;
+#endif
 
 #include <osgViewer/GraphicsWindow>
-#include <Carbon/Carbon.h>
-#include <AGL/agl.h>
+
+// we may not include any cocoa-header here, because this will pollute the name-sapce and tend to compile-errors
+
 namespace osgViewer
 {
 
-class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
+class GraphicsWindowCocoa : public osgViewer::GraphicsWindow
 {
     public:
+	class Implementation;
 
-        GraphicsWindowCarbon(osg::GraphicsContext::Traits* traits):
+        GraphicsWindowCocoa(osg::GraphicsContext::Traits* traits):
             _valid(false),
             _initialized(false),
             _realized(false),
@@ -59,7 +71,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
             }
         }
     
-        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindowCarbon*>(object)!=0; }
+        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindowCocoa*>(object)!=0; }
         virtual const char* libraryName() const { return "osgViewer"; }
         virtual const char* className() const { return "GraphicsWindowCarbon"; }
 
@@ -92,87 +104,68 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         /** Set Window decoration.*/
         virtual bool setWindowDecorationImplementation(bool flag);
 
-        // Override from GUIActionAdapter
-        virtual void requestWarpPointer( float x, float y);
-
         /** Get focus.*/
         virtual void grabFocus();
         
         /** Get focus on if the pointer is in this window.*/
         virtual void grabFocusIfPointerInWindow();
         
-        void requestClose() { _closeRequested = true; }
+        bool requestClose() { bool b = _closeRequested; _closeRequested = true; return b; }
         
         virtual void resizedImplementation(int x, int y, int width, int height);
         
         virtual void setWindowName (const std::string & name);
         virtual void useCursor(bool cursorOn);
         virtual void setCursor(MouseCursor mouseCursor);
-        
-        WindowRef getNativeWindowRef() { return _window; }
-        
-        bool handleMouseEvent(EventRef theEvent);
-        bool handleKeyboardEvent(EventRef theEvent);
-        bool handleModifierKeys(EventRef theEvent);
-
-        /** WindowData is used to pass in the Carbon window handle attached the GraphicsContext::Traits structure. */
+               
+        /** WindowData is used to pass in the Cocoa window handle attached the GraphicsContext::Traits structure. */
         class WindowData : public osg::Referenced
         {
             public:
-                WindowData(WindowRef window, AGLDrawable* drawable=NULL ): //ADEGLI
-                    _window(window), _AGLDrawable(drawable) ,_installEventHandler(false) {} //ADEGLI
+                WindowData(NSWindow* window)
+				:	_window(window) 
+				{
+				}
                 
-                WindowRef getNativeWindowRef() { return _window; }
-                void setInstallEventHandler(bool flag) { _installEventHandler = flag; }
-                bool installEventHandler() { return _installEventHandler; }
-                AGLDrawable* getAGLDrawable() { return _AGLDrawable; } //ADEGLI
-                
+                inline NSWindow* getNativeWindowRef() { return _window; }
+                                
             private:
-                WindowRef    _window;
-                AGLDrawable* _AGLDrawable; //ADEGLI
+                NSWindow*    _window;
                 bool         _installEventHandler;
             
         };
         
-        /// install the standard os-eventhandler
-        void installEventHandler();
+        NSOpenGLContext* getContext() { return _context; }
+        GraphicsWindowCocoaWindow* getWindow() { return _window; }
+                
+        void setVSync(bool f);
         
-        /// get the AGL context
-        AGLContext getAGLContext() { return _context; }
-        
-        // get the pixelformat
-        AGLPixelFormat getAGLPixelFormat() { return _pixelFormat; }
-
     protected:
     
         void init();
         
         void transformMouseXY(float& x, float& y);
+        void setupNSWindow(NSWindow* win);
         
         
-        
+        virtual ~GraphicsWindowCocoa();
 
 
         bool            _valid;
         bool            _initialized;
         bool            _realized;
         bool            _useWindowDecoration;
-
         bool            _ownsWindow;
-        WindowRef       _window;
-        AGLContext      _context;
-        AGLPixelFormat  _pixelFormat;
-        
-        int             _windowTitleHeight;    
-    private:        
-        /// computes the window attributes
-        WindowAttributes computeWindowAttributes(bool useWindowDecoration, bool supportsResize);
-        void handleModifierKey(UInt32 modifierKey, UInt32 modifierMask, osgGA::GUIEventAdapter::KeySymbol keySymbol);
 
+	
+         
+    private:        
+       
         
-        bool            _closeRequested;
-        UInt32          _lastModifierKeys;
-        MouseCursor     _currentCursor;
+        bool				_closeRequested;
+        MouseCursor			_currentCursor;
+		GraphicsWindowCocoaWindow* _window;
+		NSOpenGLContext*	_context;
 };
 
 }

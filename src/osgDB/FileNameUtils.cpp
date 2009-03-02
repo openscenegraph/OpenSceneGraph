@@ -179,26 +179,42 @@ bool osgDB::equalCaseInsensitive(const std::string& lhs,const char* rhs)
     return true;
 }
 
+
+
 bool osgDB::containsServerAddress(const std::string& filename)
 {
-    // need to check for http://
-    if (filename.size()<7) return false;
-    if (filename.compare(0,7,"http://")==0) return true;
-    return false;
+    // need to check for ://
+	std::string::size_type pos(filename.find_first_of("://"));
+	if (pos == std::string::npos) 
+		return false;
+	std::string proto(filename.substr(0, pos));
+    
+	return Registry::instance()->isProtocolRegistered(proto);
+}
+
+std::string osgDB::getServerProtocol(const std::string& filename)
+{
+	std::string::size_type pos(filename.find_first_of("://"));
+	if (pos != std::string::npos)
+		return filename.substr(0,pos);
+
+	return "";
 }
 
 std::string osgDB::getServerAddress(const std::string& filename)
 {
-    if (filename.size()>=7 && filename.compare(0,7,"http://")==0)
+    std::string::size_type pos(filename.find_first_of("://"));
+	
+	if (pos != std::string::npos)
     {
-        std::string::size_type pos_slash = filename.find_first_of('/',7);
+        std::string::size_type pos_slash = filename.find_first_of('/',pos+3);
         if (pos_slash!=std::string::npos)
         {
-            return filename.substr(7,pos_slash-7);
+            return filename.substr(pos+3,pos_slash-pos-3);
         }
         else
         {
-            return filename.substr(7,std::string::npos);
+            return filename.substr(pos+3,std::string::npos);
         }
     }
     return "";
@@ -206,9 +222,11 @@ std::string osgDB::getServerAddress(const std::string& filename)
 
 std::string osgDB::getServerFileName(const std::string& filename)
 {
-    if (filename.size()>=7 && filename.compare(0,7,"http://")==0)
+    std::string::size_type pos(filename.find_first_of("://"));
+
+	if (pos != std::string::npos)
     {
-        std::string::size_type pos_slash = filename.find_first_of('/',7);
+        std::string::size_type pos_slash = filename.find_first_of('/',pos+3);
         if (pos_slash!=std::string::npos)
         {
             return filename.substr(pos_slash+1,std::string::npos);

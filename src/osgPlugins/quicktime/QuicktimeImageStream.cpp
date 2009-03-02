@@ -23,6 +23,8 @@
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#if !defined (__LP64__)
+
 #include "QuicktimeImageStream.h"
 #include <osg/Notify>
 #include <osg/Timer>
@@ -239,3 +241,5 @@ void QuicktimeImageStream::applyLoopingMode()
     osg::notify(osg::INFO) << "applying loop mode " << getLoopingMode() << std::endl;
     _movieData->setLooping(getLoopingMode() == osg::ImageStream::LOOPING);
 }
+
+#endif

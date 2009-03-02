@@ -7,7 +7,8 @@
  *
  */
  
- #ifdef __APPLE__
+#if defined (__APPLE__) && (!__LP64__)
+
 
 #include <osg/observer_ptr>
 #include <osgViewer/api/Carbon/PixelBufferCarbon>
@@ -165,7 +166,6 @@ PixelBufferCarbon::~PixelBufferCarbon()
 {
 	close(true);
 }
-
 
 
 #endif

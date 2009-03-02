@@ -1,3 +1,5 @@
+#if !defined (__LP64__)
+
 #include "osg/Image"
 #include "osg/Notify"
 
@@ -131,11 +133,15 @@ public:
         supportsExtension("m4v","Movie format");
         supportsExtension("dv","Movie format");
         supportsExtension("avi","Movie format");
+		supportsExtension("sdp","RTSP Movie format");
         supportsExtension("flv","Movie format");
         supportsExtension("swf","Movie format");
         supportsExtension("3gp","Mobile movie format");
 
         supportsExtension("live","Live video streaming");
+		
+		supportsProtocol("http", "streaming media per http");
+		supportsProtocol("rtsp", "streaming media per rtsp");
 
         #ifdef QT_HANDLE_IMAGES_ALSO
         supportsExtension("jpg","jpg image format");
@@ -167,6 +173,7 @@ public:
          osgDB::equalCaseInsensitive(extension,"m4v") ||
          osgDB::equalCaseInsensitive(extension,"dv")  ||
          osgDB::equalCaseInsensitive(extension,"avi") ||
+		 osgDB::equalCaseInsensitive(extension,"sdp") ||
          osgDB::equalCaseInsensitive(extension,"flv") ||
          osgDB::equalCaseInsensitive(extension,"swf") ||
          osgDB::equalCaseInsensitive(extension,"3gp");
@@ -294,9 +301,10 @@ public:
       }
 
       // Not an encoded "live" psuedo file - so check a real file exists
-      std::string fileName = osgDB::findDataFile( file,  options);
-      if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-
+	  // only find the file if it isn't a URL
+	  std::string fileName = file;
+	  
+      
       // Note from Riccardo Corsi 
       // Quicktime initialization is done here, when a media is found
       // and before any image or movie is loaded. 
@@ -308,7 +316,13 @@ public:
       // if the file is a movie file then load as an ImageStream.
       if (acceptsMovieExtension(ext))
       {
-         // note from Robert Osfield when integrating, we should probably have so
+		 // quicktime supports playing movies from URLs
+		 if (!osgDB::containsServerAddress(fileName)) {
+		 	fileName = osgDB::findDataFile( file,  options);
+			if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+		 }
+		 
+		 // note from Robert Osfield when integrating, we should probably have so
          // error handling mechanism here.  Possibly move the load from
          // the constructor to a seperate load method, and have a valid
          // state on the ImageStream... will integrated as is right now
@@ -321,7 +335,13 @@ public:
 
          return moov;
       }
- 
+		
+		
+		// no live-video, no movie-file, so try to load as an image
+		
+		fileName = osgDB::findDataFile( file,  options);
+		if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+			
         QuicktimeImportExport importer;
 
         std::ifstream is;
@@ -482,3 +502,5 @@ protected:
 // now register with Registry to instantiate the above
 // reader/writer.
 REGISTER_OSGPLUGIN(quicktime, ReaderWriterQT)
+
+#endif

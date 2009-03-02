@@ -10,6 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
+#if !defined (__LP64__)
 
 #include <cstdlib>
 
@@ -592,5 +593,5 @@ void QuicktimeLiveImageStream::run()
 }
 
 
-
+#endif
 

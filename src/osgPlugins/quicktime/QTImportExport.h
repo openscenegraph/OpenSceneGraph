@@ -7,6 +7,8 @@
  *
  */
 
+#if !defined (__LP64__)
+
 #include <osg/Image>
 
 #ifndef QT_IMPORT_EXPORT_HEADER
@@ -62,4 +64,5 @@ class QuicktimeImportExport {
 
 
 
+#endif
 #endif

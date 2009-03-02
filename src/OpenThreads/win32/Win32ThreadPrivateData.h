@@ -69,12 +69,20 @@ public:
     HandleHolder cancelEvent;
 
     struct TlsHolder{ // thread local storage slot
-        DWORD ID;
-        TlsHolder(): ID(TlsAlloc()){
+        DWORD getId()
+        {
+            static bool initialized = false;
+            if (!initialized) {
+                ID = TlsAlloc();
+                initialized = true;
+            }
+            return ID;
         }
         ~TlsHolder(){
             TlsFree(ID);
         }
+    private:
+        DWORD ID;
     };
 
     static TlsHolder TLS;

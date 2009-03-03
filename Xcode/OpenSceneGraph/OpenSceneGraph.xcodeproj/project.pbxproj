@@ -2737,6 +2737,8 @@
 		D4F0928D0D4BB46100BB1AC7 /* Locator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F092810D4BB46000BB1AC7 /* Locator.cpp */; };
 		D4F0928E0D4BB46100BB1AC7 /* Locator.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F092820D4BB46000BB1AC7 /* Locator.h */; };
 		D4F092AD0D4BB47A00BB1AC7 /* osgTerrain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6320CD4307845BC300FE3D2C /* osgTerrain.framework */; };
+		D4F424CC0F5D9E290052261D /* AudioStream in Headers */ = {isa = PBXBuildFile; fileRef = D4F424CB0F5D9E290052261D /* AudioStream */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4F424CE0F5D9E3D0052261D /* AudioStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */; };
 		D4F8659E0E7019EE0070271C /* AnisotropicLighting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F8658C0E7019EC0070271C /* AnisotropicLighting.cpp */; };
 		D4F8659F0E7019EE0070271C /* AnisotropicLighting.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F8658D0E7019EC0070271C /* AnisotropicLighting.h */; };
 		D4F865A00E7019EE0070271C /* BlendEquation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F8658E0E7019ED0070271C /* BlendEquation.cpp */; };
@@ -8236,6 +8238,8 @@
 		D4F092800D4BB46000BB1AC7 /* Layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layer.h; sourceTree = "<group>"; };
 		D4F092810D4BB46000BB1AC7 /* Locator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Locator.cpp; sourceTree = "<group>"; };
 		D4F092820D4BB46000BB1AC7 /* Locator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Locator.h; sourceTree = "<group>"; };
+		D4F424CB0F5D9E290052261D /* AudioStream */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AudioStream; sourceTree = "<group>"; };
+		D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioStream.cpp; sourceTree = "<group>"; };
 		D4F8658C0E7019EC0070271C /* AnisotropicLighting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnisotropicLighting.cpp; sourceTree = "<group>"; };
 		D4F8658D0E7019EC0070271C /* AnisotropicLighting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnisotropicLighting.h; sourceTree = "<group>"; };
 		D4F8658E0E7019ED0070271C /* BlendEquation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BlendEquation.cpp; sourceTree = "<group>"; };
@@ -12789,6 +12793,7 @@
 		BE117FB705D63B8900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */,
 				D4163D1C0F2A6A540062226D /* ImageUtils.cpp */,
 				D41887010EDEE57C00C17A84 /* Math.cpp */,
 				D4D8CE080E348EB900FA6EB4 /* ImageSequence.cpp */,
@@ -12950,6 +12955,7 @@
 		BE1181ED05D63C0900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D4F424CB0F5D9E290052261D /* AudioStream */,
 				D4163D1A0F2A6A290062226D /* ImageUtils */,
 				D4D8CE060E348E8900FA6EB4 /* ImageSequence */,
 				D43AB4EB0E2E01CB00623C77 /* KdTree */,
@@ -15024,6 +15030,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4F424CC0F5D9E290052261D /* AudioStream in Headers */,
 				D4163D1B0F2A6A290062226D /* ImageUtils in Headers */,
 				D4D8CE070E348E8900FA6EB4 /* ImageSequence in Headers */,
 				D43AB4EC0E2E01CB00623C77 /* KdTree in Headers */,
@@ -21349,6 +21356,7 @@
 				D4D8CE090E348EB900FA6EB4 /* ImageSequence.cpp in Sources */,
 				D41887020EDEE57C00C17A84 /* Math.cpp in Sources */,
 				D4163D1D0F2A6A540062226D /* ImageUtils.cpp in Sources */,
+				D4F424CE0F5D9E3D0052261D /* AudioStream.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

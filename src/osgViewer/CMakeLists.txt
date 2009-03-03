@@ -72,8 +72,7 @@ ELSE(WIN32)
     ENDIF(APPLE)
     
     IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
-
-        # FIXME: OS X needs selection mechanism for Cocoa, Carbon, X11
+		ADD_DEFINITIONS(-DUSE_DARWIN_COCOA_IMPLEMENTATION)
         SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
             ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
             ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
@@ -88,8 +87,8 @@ ELSE(WIN32)
 	SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
 
     ELSE(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
-        IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
-
+        IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")	
+			ADD_DEFINITIONS(-DUSE_DARWIN_CARBON_IMPLEMENTATION)
             SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
                 ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
                 ${HEADER_PATH}/api/Carbon/PixelBufferCarbon

@@ -231,40 +231,45 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
         osgViewer::GraphicsWindowCocoa* _win;
         BOOL _isUsingCtrlClick, _isUsingOptionClick;
         unsigned int _cachedModifierFlags;
+		BOOL _handleTabletEvents;
         
 }
 - (void)setGraphicsWindowCocoa: (osgViewer::GraphicsWindowCocoa*) win;
 
 - (void)keyDown:(NSEvent *)theEvent;
 - (void)keyUp:(NSEvent *)theEvent;
+- (void)flagsChanged:(NSEvent *)theEvent;
+- (void) mouseMoved:(NSEvent*)theEvent;
+- (void) mouseDown:(NSEvent*)theEvent;
+- (void) mouseDragged:(NSEvent*)theEvent;
+- (void) mouseUp:(NSEvent*)theEvent;
+- (void) rightMouseDown:(NSEvent*)theEvent;
+- (void) rightMouseDragged:(NSEvent*)theEvent;
+- (void) rightMouseUp:(NSEvent*)theEvent;
+- (void) otherMouseDown:(NSEvent*)theEvent;
+- (void) otherMouseDragged:(NSEvent*)theEvent;
+- (void) otherMouseUp:(NSEvent*)theEvent;
 
-- (void) mouseMoved:(NSEvent*)the_event;
-- (void) mouseDown:(NSEvent*)the_event;
-- (void) mouseDragged:(NSEvent*)the_event;
-- (void) mouseUp:(NSEvent*)the_event;
-- (void) rightMouseDown:(NSEvent*)the_event;
-- (void) rightMouseDragged:(NSEvent*)the_event;
-- (void) rightMouseUp:(NSEvent*)the_event;
-- (void) otherMouseDown:(NSEvent*)the_event;
-- (void) otherMouseDragged:(NSEvent*)the_event;
-- (void) otherMouseUp:(NSEvent*)the_event;
-
-- (NSPoint) getLocalPoint: (NSEvent*)the_event;
-- (void) handleModifiers: (NSEvent*)the_event;
+- (NSPoint) getLocalPoint: (NSEvent*)theEvent;
+- (void) handleModifiers: (NSEvent*)theEvent;
 - (void) setIsUsingCtrlClick:(BOOL)is_using_ctrl_click;
 - (BOOL) isUsingCtrlClick;
 - (void) setIsUsingOptionClick:(BOOL)is_using_option_click;
 - (BOOL) isUsingOptionClick;
 
-- (void) doLeftMouseButtonDown:(NSEvent*)the_event;
-- (void) doLeftMouseButtonUp:(NSEvent*)the_event;
-- (void) doRightMouseButtonDown:(NSEvent*)the_event;
-- (void) doRightMouseButtonUp:(NSEvent*)the_event;
-- (void) doMiddleMouseButtonDown:(NSEvent*)the_event;
-- (void) doExtraMouseButtonDown:(NSEvent*)the_event buttonNumber:(int)button_number;
-- (void) doMiddleMouseButtonUp:(NSEvent*)the_event;
-- (void) doExtraMouseButtonUp:(NSEvent*)the_event buttonNumber:(int)button_number;
-- (void) scrollWheel:(NSEvent*)the_event;
+- (void) doLeftMouseButtonDown:(NSEvent*)theEvent;
+- (void) doLeftMouseButtonUp:(NSEvent*)theEvent;
+- (void) doRightMouseButtonDown:(NSEvent*)theEvent;
+- (void) doRightMouseButtonUp:(NSEvent*)theEvent;
+- (void) doMiddleMouseButtonDown:(NSEvent*)theEvent;
+- (void) doExtraMouseButtonDown:(NSEvent*)theEvent buttonNumber:(int)button_number;
+- (void) doMiddleMouseButtonUp:(NSEvent*)theEvent;
+- (void) doExtraMouseButtonUp:(NSEvent*)theEvent buttonNumber:(int)button_number;
+- (void) scrollWheel:(NSEvent*)theEvent;
+
+- (void)tabletPoint:(NSEvent *)theEvent;
+- (void)tabletProximity:(NSEvent *)theEvent;
+- (void)handleTabletEvents:(NSEvent*)theEvent;
 
 - (BOOL)acceptsFirstResponder;
 - (BOOL)becomeFirstResponder;
@@ -296,15 +301,15 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
 }
 
 
-- (NSPoint) getLocalPoint: (NSEvent*)the_event
+- (NSPoint) getLocalPoint: (NSEvent*)theEvent
 {
-    return  [self convertPoint:[the_event locationInWindow] fromView:nil];
+    return  [self convertPoint:[theEvent locationInWindow] fromView:nil];
 }
 
 
-- (void) handleModifiers: (NSEvent*)the_event
+- (void) handleModifiers: (NSEvent*)theEvent
 {
-    unsigned int flags = [the_event modifierFlags];
+    unsigned int flags = [theEvent modifierFlags];
     
     if (flags == _cachedModifierFlags) 
         return;
@@ -342,51 +347,58 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
     
 }
 
-- (void) mouseMoved:(NSEvent*)the_event 
+- (void)flagsChanged:(NSEvent *)theEvent {
+	[self handleModifiers: theEvent];
+}
+
+- (void) mouseMoved:(NSEvent*)theEvent 
 {
-    [self handleModifiers: the_event];
-    NSPoint converted_point = [self getLocalPoint: the_event];
+    NSPoint converted_point = [self getLocalPoint: theEvent];
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
 }
 
 
 
-- (void) mouseDown:(NSEvent*)the_event
+- (void) mouseDown:(NSEvent*)theEvent
 {
-    [self handleModifiers: the_event];
     // Because many Mac users have only a 1-button mouse, we should provide ways
     // to access the button 2 and 3 actions of osgViewer.
     // I will use the Ctrl modifer to represent right-clicking
     // and Option modifier to represent middle clicking.
-    if([the_event modifierFlags] & NSControlKeyMask)
+    if([theEvent modifierFlags] & NSControlKeyMask)
     {
         [self setIsUsingCtrlClick:YES];
-        [self doRightMouseButtonDown:the_event];
+        [self doRightMouseButtonDown:theEvent];
     }
-    else if([the_event modifierFlags] & NSAlternateKeyMask)
+    else if([theEvent modifierFlags] & NSAlternateKeyMask)
     {
         [self setIsUsingOptionClick:YES];
-        [self doMiddleMouseButtonDown:the_event];
+        [self doMiddleMouseButtonDown:theEvent];
     }
     else
     {
-        [self doLeftMouseButtonDown:the_event];
+        [self doLeftMouseButtonDown:theEvent];
     }
+	
+	if ([theEvent subtype] == NSTabletPointEventSubtype) {
+		_handleTabletEvents = true;
+		[self handleTabletEvents:theEvent];
+	}
 }
 
 
-- (void) mouseDragged:(NSEvent*)the_event
+- (void) mouseDragged:(NSEvent*)theEvent
 {
-    [self handleModifiers: the_event];
-    NSPoint converted_point = [self getLocalPoint: the_event];    
+    NSPoint converted_point = [self getLocalPoint: theEvent];    
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
+	
+	if (_handleTabletEvents)
+		[self handleTabletEvents:theEvent];
 }
 
 
-- (void) mouseUp:(NSEvent*)the_event
+- (void) mouseUp:(NSEvent*)theEvent
 {
-    [self handleModifiers: the_event];
-    
     // Because many Mac users have only a 1-button mouse, we should provide ways
     // to access the button 2 and 3 actions of osgViewer.
     // I will use the Ctrl modifer to represent right-clicking
@@ -394,72 +406,67 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
     if([self isUsingCtrlClick] == YES)
     {
         [self setIsUsingCtrlClick:NO];
-        [self doRightMouseButtonUp:the_event];
+        [self doRightMouseButtonUp:theEvent];
     }
     else if([self isUsingOptionClick] == YES)
     {
         [self setIsUsingOptionClick:NO];
-        [self doMiddleMouseButtonUp:the_event];
+        [self doMiddleMouseButtonUp:theEvent];
     }
     else
     {
-        [self doLeftMouseButtonUp:the_event];
+        [self doLeftMouseButtonUp:theEvent];
     }
+	_handleTabletEvents = false;
 }
 
-- (void) rightMouseDown:(NSEvent*)the_event
+- (void) rightMouseDown:(NSEvent*)theEvent
 {
-    [self handleModifiers: the_event];
-    [self doRightMouseButtonDown:the_event];
+    [self doRightMouseButtonDown:theEvent];
 }
 
-- (void) rightMouseDragged:(NSEvent*)the_event
+- (void) rightMouseDragged:(NSEvent*)theEvent
 {
-    [self handleModifiers: the_event];
-    
-    NSPoint converted_point = [self getLocalPoint: the_event];
+   
+    NSPoint converted_point = [self getLocalPoint: theEvent];
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
-    
 }
 
-- (void) rightMouseUp:(NSEvent*)the_event
+- (void) rightMouseUp:(NSEvent*)theEvent
 {
-    [self handleModifiers: the_event];
-    [self doRightMouseButtonUp:the_event];
+    [self doRightMouseButtonUp:theEvent];
+	_handleTabletEvents = false;
 }
 
 // "otherMouse" seems to capture middle button and any other buttons beyond (4th, etc).
-- (void) otherMouseDown:(NSEvent*)the_event
+- (void) otherMouseDown:(NSEvent*)theEvent
 {
-    [self handleModifiers: the_event];
     // Button 0 is left
     // Button 1 is right
     // Button 2 is middle
     // Button 3 keeps going
     // osgViewer expects 1 for left, 3 for right, 2 for middle
     // osgViewer has a reversed number mapping for right and middle compared to Cocoa
-    if([the_event buttonNumber] == 2)
+    if([theEvent buttonNumber] == 2)
     {
-        [self doMiddleMouseButtonDown:the_event];
+        [self doMiddleMouseButtonDown:theEvent];
     }
     else // buttonNumber should be 3,4,5,etc; must map to 4,5,6,etc in osgViewer
     {
-        [self doExtraMouseButtonDown:the_event buttonNumber:[the_event buttonNumber]];
+        [self doExtraMouseButtonDown:theEvent buttonNumber:[theEvent buttonNumber]];
     }
 }
 
-- (void) otherMouseDragged:(NSEvent*)the_event
+- (void) otherMouseDragged:(NSEvent*)theEvent
 {
-    [self handleModifiers: the_event];
-    NSPoint converted_point = [self getLocalPoint: the_event];    
+    NSPoint converted_point = [self getLocalPoint: theEvent];    
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
    
 }
 
 // "otherMouse" seems to capture middle button and any other buttons beyond (4th, etc).
-- (void) otherMouseUp:(NSEvent*)the_event
+- (void) otherMouseUp:(NSEvent*)theEvent
 {
-    [self handleModifiers: the_event];
     
     // Button 0 is left
     // Button 1 is right
@@ -467,16 +474,16 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
     // Button 3 keeps going
     // osgViewer expects 1 for left, 3 for right, 2 for middle
     // osgViewer has a reversed number mapping for right and middle compared to Cocoa
-    if([the_event buttonNumber] == 2)
+    if([theEvent buttonNumber] == 2)
     {
-        [self doMiddleMouseButtonUp:the_event];
+        [self doMiddleMouseButtonUp:theEvent];
     }
     else // buttonNumber should be 3,4,5,etc; must map to 4,5,6,etc in osgViewer
     {
         // I don't think osgViewer does anything for these additional buttons,
         // but just in case, pass them along. But as a Cocoa programmer, you might 
         // think about things you can do natively here instead of passing the buck.
-        [self doExtraMouseButtonUp:the_event buttonNumber:[the_event buttonNumber]];
+        [self doExtraMouseButtonUp:theEvent buttonNumber:[theEvent buttonNumber]];
     }
 }
 
@@ -501,11 +508,11 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
 }
 
 
-- (void) doLeftMouseButtonDown:(NSEvent*)the_event
+- (void) doLeftMouseButtonDown:(NSEvent*)theEvent
 {
-    NSPoint converted_point = [self getLocalPoint: the_event];
+    NSPoint converted_point = [self getLocalPoint: theEvent];
     
-    if([the_event clickCount] == 1)
+    if([theEvent clickCount] == 1)
     {
         _win->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 1);
     }
@@ -515,18 +522,18 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
     }
 }
 
-- (void) doLeftMouseButtonUp:(NSEvent*)the_event
+- (void) doLeftMouseButtonUp:(NSEvent*)theEvent
 {
-    NSPoint converted_point = [self getLocalPoint: the_event];
+    NSPoint converted_point = [self getLocalPoint: theEvent];
     
     _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 1);
 
 }
 
-- (void) doRightMouseButtonDown:(NSEvent*)the_event
+- (void) doRightMouseButtonDown:(NSEvent*)theEvent
 {
-    NSPoint converted_point = [self getLocalPoint: the_event];
-    if([the_event clickCount] == 1)
+    NSPoint converted_point = [self getLocalPoint: theEvent];
+    if([theEvent clickCount] == 1)
     {
         _win->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 3);
     }
@@ -538,17 +545,17 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
 }
 
 
-- (void) doRightMouseButtonUp:(NSEvent*)the_event
+- (void) doRightMouseButtonUp:(NSEvent*)theEvent
 {
-    NSPoint converted_point = [self getLocalPoint: the_event];    
+    NSPoint converted_point = [self getLocalPoint: theEvent];    
     _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 3);
 }
 
-- (void) doMiddleMouseButtonDown:(NSEvent*)the_event
+- (void) doMiddleMouseButtonDown:(NSEvent*)theEvent
 {
-    NSPoint converted_point = [self getLocalPoint: the_event];
+    NSPoint converted_point = [self getLocalPoint: theEvent];
     
-    if([the_event clickCount] == 1)
+    if([theEvent clickCount] == 1)
     {
         _win->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, 2);
     }
@@ -558,10 +565,10 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
     }
 }
 
-- (void) doExtraMouseButtonDown:(NSEvent*)the_event buttonNumber:(int)button_number
+- (void) doExtraMouseButtonDown:(NSEvent*)theEvent buttonNumber:(int)button_number
 {
-    NSPoint converted_point = [self getLocalPoint: the_event];
-    if([the_event clickCount] == 1)
+    NSPoint converted_point = [self getLocalPoint: theEvent];
+    if([theEvent clickCount] == 1)
     {
         _win->getEventQueue()->mouseButtonPress(converted_point.x, converted_point.y, button_number+1);
     }
@@ -572,34 +579,33 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
 }
 
 
-- (void) doMiddleMouseButtonUp:(NSEvent*)the_event
+- (void) doMiddleMouseButtonUp:(NSEvent*)theEvent
 {
-    NSPoint converted_point = [self getLocalPoint: the_event];
+    NSPoint converted_point = [self getLocalPoint: theEvent];
     _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 2);
 
 }
 
-- (void) doExtraMouseButtonUp:(NSEvent*)the_event buttonNumber:(int)button_number
+- (void) doExtraMouseButtonUp:(NSEvent*)theEvent buttonNumber:(int)button_number
 {
-    NSPoint converted_point = [self getLocalPoint: the_event];
+    NSPoint converted_point = [self getLocalPoint: theEvent];
     _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, button_number+1);
 }
 
 
 
-- (void) scrollWheel:(NSEvent*)the_event
+- (void) scrollWheel:(NSEvent*)theEvent
 {
     // Unfortunately, it turns out mouseScroll2D doesn't actually do anything.
     // The camera manipulators don't seem to implement any code that utilize the scroll values.
     // This this call does nothing.
-    _win->getEventQueue()->mouseScroll2D([the_event deltaX], [the_event deltaY]);
+    _win->getEventQueue()->mouseScroll2D([theEvent deltaX], [theEvent deltaY]);
 }
 
 
 
 - (void)keyDown:(NSEvent *)theEvent 
 {
-    [self handleModifiers: theEvent];
     NSString* chars = [theEvent charactersIgnoringModifiers]; 
     unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
     // std::cout << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
@@ -609,13 +615,47 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
 
 - (void)keyUp:(NSEvent *)theEvent 
 {   
-    [self handleModifiers: theEvent];
     NSString* chars = [theEvent charactersIgnoringModifiers]; 
     unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask));
     // std::cout << "key up: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
     _win->getEventQueue()->keyRelease( remapCocoaKey(keyCode), [theEvent timestamp]);
 }
 
+
+- (void)tabletPoint:(NSEvent *)theEvent
+{
+	//_handleTabletEvents = YES;
+	//[self handleTabletEvents:theEvent];
+}
+
+-(void)handleTabletEvents:(NSEvent *)theEvent
+{
+	float pressure = [theEvent pressure];
+	_win->getEventQueue()->penPressure(pressure);
+	NSPoint tilt = [theEvent tilt];
+	
+	_win->getEventQueue()->penOrientation (tilt.x, tilt.y, [theEvent rotation]);
+}
+
+
+- (void)tabletProximity:(NSEvent *)theEvent
+{
+	osgGA::GUIEventAdapter::TabletPointerType pt(osgGA::GUIEventAdapter::UNKNOWN);
+	switch ([theEvent pointingDeviceType]) {
+		case NSPenPointingDevice:
+			pt = osgGA::GUIEventAdapter::PEN;
+			break;
+		case NSCursorPointingDevice:
+			pt = osgGA::GUIEventAdapter::PUCK;
+			break;
+		case NSEraserPointingDevice:
+			pt = osgGA::GUIEventAdapter::ERASER;
+			break;
+		default:
+			break;
+	}
+	_win->getEventQueue()->penProximity(pt, [theEvent isEnteringProximity]); 
+}
 
 
 @end

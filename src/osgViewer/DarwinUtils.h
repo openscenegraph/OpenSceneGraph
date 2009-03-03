@@ -18,7 +18,7 @@
 #include <Carbon/Carbon.h>
 
 
-#define USE_DARWIN_COCOA_IMPLEMENTATION 1
+//#define USE_DARWIN_COCOA_IMPLEMENTATION 1
 //#define USE_DARWIN_CARBON_IMPLEMENTATION 1
 
 namespace osgDarwin {

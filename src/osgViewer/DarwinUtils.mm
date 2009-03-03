@@ -188,7 +188,7 @@ DarwinWindowingSystemInterface::~DarwinWindowingSystemInterface()
 
 /** @return a CGDirectDisplayID for a ScreenIdentifier */
 CGDirectDisplayID DarwinWindowingSystemInterface::getDisplayID(const osg::GraphicsContext::ScreenIdentifier& si) {
-	if (si.screenNum < _displayCount)
+	if (si.screenNum < static_cast<int>(_displayCount))
 		return _displayIds[si.screenNum];
 	else {
 		osg::notify(osg::WARN) << "GraphicsWindowCarbon :: invalid screen # " << si.screenNum << ", returning main-screen instead" << std::endl;

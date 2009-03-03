@@ -3,6 +3,7 @@
 #define HEADER_GUARD_OSGFFMPEG_FFMPEG_DECODER_VIDEO_H
 
 
+#include "FFmpegHeaders.hpp"
 #include "BoundedMessageQueue.hpp"
 #include "FFmpegClocks.hpp"
 #include "FFmpegPacket.hpp"

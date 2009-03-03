@@ -19,6 +19,7 @@ public:
         supportsExtension("avi", "");
         supportsExtension("flv", "");
         supportsExtension("mov", "");
+        supportsExtension("ogg", "Theora movie format");
         supportsExtension("mpg", "Mpeg movie format");
         supportsExtension("mpv", "Mpeg movie format");
         supportsExtension("wmv", "");

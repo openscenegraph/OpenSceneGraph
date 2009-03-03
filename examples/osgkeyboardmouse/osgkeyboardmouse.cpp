@@ -115,6 +115,112 @@ public:
     
 };
 
+class EventDumperEventHandler : public osgGA::GUIEventHandler {
+
+public:
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        if (ea.getEventType() == osgGA::GUIEventAdapter::FRAME) 
+            return false;
+        
+        static std::map<osgGA::GUIEventAdapter::EventType, std::string> type_mapping;
+        if (type_mapping.size() == 0) 
+        {
+            type_mapping[osgGA::GUIEventAdapter::NONE]					= "NONE";
+            type_mapping[osgGA::GUIEventAdapter::PUSH]					= "PUSH";
+            type_mapping[osgGA::GUIEventAdapter::RELEASE]				= "RELEASE";
+            type_mapping[osgGA::GUIEventAdapter::DOUBLECLICK]			= "DOUBLECLICK";
+            type_mapping[osgGA::GUIEventAdapter::DRAG]					= "DRAG";
+            type_mapping[osgGA::GUIEventAdapter::MOVE]					= "MOVE";
+            type_mapping[osgGA::GUIEventAdapter::KEYDOWN]				= "KEYDOWN";
+            type_mapping[osgGA::GUIEventAdapter::KEYUP]					= "KEYUP";
+            type_mapping[osgGA::GUIEventAdapter::FRAME]					= "FRAME";
+            type_mapping[osgGA::GUIEventAdapter::RESIZE]				= "RESIZE";
+            type_mapping[osgGA::GUIEventAdapter::SCROLL]				= "SCROLL";
+            type_mapping[osgGA::GUIEventAdapter::PEN_PRESSURE]			= "PEN_PRESSURE";
+            type_mapping[osgGA::GUIEventAdapter::PEN_ORIENTATION]		= "PEN_ORIENTATION";
+            type_mapping[osgGA::GUIEventAdapter::PEN_PROXIMITY_ENTER]   = "PEN_PROXIMITY_ENTER";
+            type_mapping[osgGA::GUIEventAdapter::PEN_PROXIMITY_LEAVE]   = "PEN_PROXIMITY_LEAVE";
+            type_mapping[osgGA::GUIEventAdapter::CLOSE_WINDOW]          = "CLOSE_WINDOW";
+            type_mapping[osgGA::GUIEventAdapter::QUIT_APPLICATION]      = "QUIT_APPLICATION";
+            type_mapping[osgGA::GUIEventAdapter::USER]					= "USER";
+		}
+		
+		static std::map<osgGA::GUIEventAdapter::TabletPointerType, std::string> pen_mapping;
+		if (pen_mapping.size() == 0) {
+			pen_mapping[osgGA::GUIEventAdapter::UNKNOWN]	= "UNKNOWN";
+			pen_mapping[osgGA::GUIEventAdapter::PEN]		= "PEN";
+			pen_mapping[osgGA::GUIEventAdapter::PUCK]		= "BUCK"; 
+			pen_mapping[osgGA::GUIEventAdapter::ERASER]		= "ERASER"; 	
+		}
+		
+		std::cout << type_mapping[ea.getEventType()] << " with ";
+		
+		switch (ea.getEventType()) {
+			case osgGA::GUIEventAdapter::PUSH:
+			case osgGA::GUIEventAdapter::RELEASE:
+			case osgGA::GUIEventAdapter::DOUBLECLICK:
+			case osgGA::GUIEventAdapter::DRAG:
+			case osgGA::GUIEventAdapter::MOVE:
+				std::cout << ea.getX() << "/" << ea.getY() << " modifiers: " << ea.getModKeyMask() << std::endl;
+				break;
+			
+			case osgGA::GUIEventAdapter::SCROLL:
+				std::cout << ea.getX() << "/" << ea.getY() << " scroll: ";
+				switch (ea.getScrollingMotion()) {
+					case osgGA::GUIEventAdapter::SCROLL_NONE:
+							std::cout << "NONE";
+							break;
+					case osgGA::GUIEventAdapter::SCROLL_LEFT:
+							std::cout << "SCROLL_LEFT";
+							break; 	
+					case osgGA::GUIEventAdapter::SCROLL_RIGHT:
+							std::cout << "SCROLL_RIGHT";
+							break;  	
+					case osgGA::GUIEventAdapter::SCROLL_UP:
+							std::cout << "SCROLL_UP";
+							break;  	
+					case osgGA::GUIEventAdapter::SCROLL_DOWN:
+							std::cout << "SCROLL_DOWN";
+							break;  	
+					case osgGA::GUIEventAdapter::SCROLL_2D:
+							std::cout << "SCROLL_2D";
+							break;  	
+
+				}
+				std::cout << " (" << ea.getScrollingDeltaX() << "/" << ea.getScrollingDeltaY() << ") modifiers: " << ea.getModKeyMask() << std::endl;
+				break;
+			
+			case osgGA::GUIEventAdapter::KEYUP:
+			case osgGA::GUIEventAdapter::KEYDOWN:
+				std::cout << ea.getKey() << " modifiers: " << ea.getModKeyMask() << std::endl;
+				break;
+				
+			case osgGA::GUIEventAdapter::RESIZE:
+				std::cout << pen_mapping[ea.getTabletPointerType()] << ": " << ea.getWindowX() << "/" << ea.getWindowY() << " " << ea.getWindowWidth() << "x" << ea.getWindowHeight() << std::endl;
+				break;
+			
+			case osgGA::GUIEventAdapter::PEN_PRESSURE:
+				std::cout << pen_mapping[ea.getTabletPointerType()] << ": " << ea.getPenPressure() << " tiltx: " << ea.getPenTiltY() << " tilty: " << ea.getPenTiltY() << std::endl;
+				break;
+			
+			case osgGA::GUIEventAdapter::PEN_ORIENTATION:
+				std::cout << pen_mapping[ea.getTabletPointerType()] << ": " << ea.getPenOrientation() << std::endl;
+				break;
+				
+			case osgGA::GUIEventAdapter::PEN_PROXIMITY_ENTER:
+			case osgGA::GUIEventAdapter::PEN_PROXIMITY_LEAVE:
+				std::cout << pen_mapping[ea.getTabletPointerType()] << std::endl;
+				break;
+			
+			default:
+				std::cout << std::endl;
+	}
+		
+		return false;
+	}
+};
+
 // class to handle events with a pick
 class PickHandler : public osgGA::GUIEventHandler 
 {
@@ -379,6 +485,8 @@ int main( int argc, char **argv )
     
     // create a tracball manipulator to move the camera around in response to keyboard/mouse events
     viewer.setCameraManipulator( new osgGA::TrackballManipulator );
+    
+    viewer.addEventHandler(new EventDumperEventHandler());
 
     osg::ref_ptr<osgGA::StateSetManipulator> statesetManipulator = new osgGA::StateSetManipulator(viewer.getCamera()->getStateSet());
     viewer.addEventHandler(statesetManipulator.get());

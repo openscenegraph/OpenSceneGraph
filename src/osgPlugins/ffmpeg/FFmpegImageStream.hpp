@@ -7,21 +7,6 @@
 #include <OpenThreads/Condition>
 #include <OpenThreads/Thread>
 
-
-#ifdef _WIN32
-    #if defined OSG_LIBRARY_STATIC
-    #define OSGFFMPEG_EXPORT_API
-    #elif defined OSG_LIBRARY || defined osgFFmpeg_EXPORTS
-    #define OSGFFMPEG_EXPORT_API  __declspec(dllexport)
-    #else
-    #define OSGFFMPEG_EXPORT_API  __declspec(dllimport);
-    #endif
-#else
-    #define OSGFFMPEG_EXPORT_API
-#endif
-
-
-
 namespace osgFFmpeg
 {
 
@@ -33,7 +18,7 @@ namespace osgFFmpeg
     class MessageQueue;
 
 
-    class OSGFFMPEG_EXPORT_API FFmpegImageStream : public osg::ImageStream, public OpenThreads::Thread
+    class FFmpegImageStream : public osg::ImageStream, public OpenThreads::Thread
     {
     public:
 

@@ -1,7 +1,7 @@
-# Locate gdal
+# Locate ffmpeg
 # This module defines
 # FFMPEG_LIBRARIES
-# FFMPEG_FOUND, if false, do not try to link to gdal 
+# FFMPEG_FOUND, if false, do not try to link to ffmpeg 
 # FFMPEG_INCLUDE_DIR, where to find the headers
 #
 # $FFMPEG_DIR is an environment variable that would
@@ -9,7 +9,7 @@
 #
 # Created by Robert Osfield. 
 
-#use pkg-config to find various modues
+#use pkg-config to find various modes
 INCLUDE(FindPkgConfig OPTIONAL)
 
 IF(PKG_CONFIG_FOUND)
@@ -29,13 +29,15 @@ IF   (FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODE
     SET(FFMPEG_FOUND "YES")
 
     SET(FFMPEG_INCLUDE_DIRS ${FFMPEG_LIBAVFORMAT_INCLUDE_DIRS})
-    
+
+    SET(FFMPEG_LIBRARY_DIRS ${FFMPEG_LIBAVFORMAT_LIBRARY_DIRS})
+
     SET(FFMPEG_LIBRARIES
         ${FFMPEG_LIBAVFORMAT_LIBRARIES}
         ${FFMPEG_LIBAVDEVICE_LIBRARIES}
         ${FFMPEG_LIBAVCODEC_LIBRARIES}
         ${FFMPEG_LIBAVUTIL_LIBRARIES})
-    
+   
 ENDIF(FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODEC_FOUND AND FFMPEG_LIBAVUTIL_FOUND)
 
 

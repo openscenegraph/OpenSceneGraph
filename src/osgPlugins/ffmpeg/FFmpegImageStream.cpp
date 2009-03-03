@@ -1,11 +1,9 @@
 
 #include "FFmpegImageStream.hpp"
+#include "FFmpegAudioStream.hpp"
 
 #include <OpenThreads/ScopedLock>
 #include <osg/Notify>
-
-#include "FFmpegDecoder.hpp"
-#include "MessageQueue.hpp"
 
 #include <memory>
 
@@ -44,7 +42,6 @@ FFmpegImageStream::~FFmpegImageStream()
     quit(true);
 
     delete m_commands;
-    delete m_decoder;
 }
 
 
@@ -63,6 +60,13 @@ bool FFmpegImageStream::open(const std::string & filename)
 
     m_decoder->video_decoder().setUserData(this);
     m_decoder->video_decoder().setPublishCallback(publishNewFrame);
+    
+    if (m_decoder->audio_decoder().validContext())
+    {
+        osg::notify(osg::NOTICE)<<"Attaching FFmpegAudioStream"<<std::endl;
+    
+        getAudioStreams().push_back(new FFmpegAudioStream(m_decoder.get()));
+    }
 
     _status = PAUSED;
     applyLoopingMode();
@@ -120,20 +124,6 @@ void FFmpegImageStream::quit(bool waitForThreadToExit)
 }
 
 
-
-void FFmpegImageStream::setAudioSink(osg::AudioSinkInterface* audio_sink)
-{ 
-    m_decoder->audio_decoder().setAudioSink(audio_sink); 
-}
-
-
-void FFmpegImageStream::consumeAudioBuffer(void * const buffer, const size_t size)
-{ 
-    m_decoder->audio_decoder().fillBuffer(buffer, size);
-}
-
-
-
 double FFmpegImageStream::duration() const
 { 
     return m_decoder->duration(); 
@@ -159,35 +149,6 @@ double FFmpegImageStream::videoFrameRate() const
 { 
     return m_decoder->video_decoder().frameRate(); 
 }
-
-
-
-bool FFmpegImageStream::audioStream() const 
-{ 
-    return m_decoder->audio_decoder().validContext(); 
-}
-
-
-
-int FFmpegImageStream::audioFrequency() const 
-{ 
-    return m_decoder->audio_decoder().frequency(); 
-}
-
-
-
-int FFmpegImageStream::audioNbChannels() const 
-{ 
-    return m_decoder->audio_decoder().nbChannels();
-}
-
-
-
-osg::AudioStream::SampleFormat FFmpegImageStream::audioSampleFormat() const 
-{ 
-    return m_decoder->audio_decoder().sampleFormat(); 
-}
-
 
 
 void FFmpegImageStream::run()

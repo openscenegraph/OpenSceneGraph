@@ -15,7 +15,7 @@
 
 using namespace osg;
 
-AudioSinkInterface::AudioSinkInterface() :
+AudioSink::AudioSink() :
     _delay(0.0)
 {
 }

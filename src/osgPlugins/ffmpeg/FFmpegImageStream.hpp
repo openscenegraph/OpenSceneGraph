@@ -7,16 +7,14 @@
 #include <OpenThreads/Condition>
 #include <OpenThreads/Thread>
 
+#include "FFmpegDecoder.hpp"
+#include "MessageQueue.hpp"
+
 namespace osgFFmpeg
 {
 
-    class FFmpegDecoder;
-    class FFmpegDecoderAudio;
-    class FFmpegDecoderVideo;
-
     template <class T>
     class MessageQueue;
-
 
     class FFmpegImageStream : public osg::ImageStream, public OpenThreads::Thread
     {
@@ -33,15 +31,6 @@ namespace osgFFmpeg
         virtual void pause();
         virtual void rewind();
         virtual void quit(bool waitForThreadToExit = true);
-
-        virtual void setAudioSink(osg::AudioSinkInterface* audio_sink);
-        
-        void consumeAudioBuffer(void * const buffer, const size_t size);
-        
-        bool audioStream() const;
-        int audioFrequency() const;
-        int audioNbChannels() const;
-        osg::AudioStream::SampleFormat audioSampleFormat() const;
 
         double duration() const;
 
@@ -76,7 +65,7 @@ namespace osgFFmpeg
 
         static void publishNewFrame(const FFmpegDecoderVideo &, void * user_data);
 
-        FFmpegDecoder *    m_decoder;
+        osg::ref_ptr<FFmpegDecoder>    m_decoder;
         CommandQueue *    m_commands;
 
         Mutex            m_mutex;

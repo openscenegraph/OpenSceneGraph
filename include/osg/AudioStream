@@ -18,12 +18,12 @@
 
 namespace osg {
 
-/** Pure virtual AudioSinkInterface bass class that is used to connect the audio system with AudioStreams. */
-class OSG_EXPORT AudioSinkInterface : public osg::Object
+/** Pure virtual AudioSink bass class that is used to connect the audio system with AudioStreams. */
+class OSG_EXPORT AudioSink : public osg::Object
 {
 public:
 
-    AudioSinkInterface();
+    AudioSink();
 
     virtual void startPlaying() = 0;
     virtual bool playing() const = 0;
@@ -36,8 +36,8 @@ public:
 
 private:
 
-    virtual AudioSinkInterface * cloneType() const { return 0; }
-    virtual AudioSinkInterface * clone(const osg::CopyOp &) const { return 0; }
+    virtual AudioSink * cloneType() const { return 0; }
+    virtual AudioSink * clone(const osg::CopyOp &) const { return 0; }
 
     double  _delay;
 };
@@ -55,7 +55,7 @@ class OSG_EXPORT AudioStream : public osg::Object
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "AudioStream"; }
 
-        virtual void setAudioSink(osg::AudioSinkInterface* audio_sink) = 0;
+        virtual void setAudioSink(osg::AudioSink* audio_sink) = 0;
         
         virtual void consumeAudioBuffer(void * const buffer, const size_t size) = 0;
         

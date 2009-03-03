@@ -31,7 +31,7 @@ public:
     void open(AVStream * stream);
     virtual void run();
 
-    void setAudioSink(osg::ref_ptr<osg::AudioSinkInterface> audio_sink);
+    void setAudioSink(osg::ref_ptr<osg::AudioSink> audio_sink);
     void fillBuffer(void * buffer, size_t size);
 
     bool validContext() const;
@@ -42,7 +42,7 @@ public:
 private:
 
     //typedef boost::shared_ptr<AVFrame> FramePtr;
-    typedef osg::ref_ptr<osg::AudioSinkInterface> SinkPtr;
+    typedef osg::ref_ptr<osg::AudioSink> SinkPtr;
     typedef std::vector<uint8_t> Buffer;
 
     void decodeLoop();

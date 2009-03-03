@@ -106,9 +106,10 @@ void FFmpegDecoderAudio::run()
 
 
 
-void FFmpegDecoderAudio::setAudioSink(osg::ref_ptr<osg::AudioSinkInterface> audio_sink)
+void FFmpegDecoderAudio::setAudioSink(osg::ref_ptr<osg::AudioSink> audio_sink)
 {
     // The FFmpegDecoderAudio object takes the responsability of destroying the audio_sink.
+    osg::notify(osg::NOTICE)<<"Assigning "<<audio_sink<<std::endl;
     m_audio_sink = audio_sink;
 }
 

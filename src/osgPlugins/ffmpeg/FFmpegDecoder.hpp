@@ -56,7 +56,7 @@ class FormatContextPtr
 };
 
 
-class FFmpegDecoder
+class FFmpegDecoder : public osg::Referenced
 {
 public:
 

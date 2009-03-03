@@ -29,6 +29,8 @@ FFmpegAudioStream::FFmpegAudioStream(const FFmpegAudioStream & audio, const osg:
 
 FFmpegAudioStream::~FFmpegAudioStream()
 {
+    // detact the audio sink first to avoid destrction order issues.
+    setAudioSink(0);
 }
 
 void FFmpegAudioStream::setAudioSink(osg::AudioSink* audio_sink)

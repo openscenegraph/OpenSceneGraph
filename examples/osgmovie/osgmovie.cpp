@@ -320,6 +320,77 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
     }
 }
 
+#if USE_SDL
+
+#include "SDL.h"
+
+class SDLAudioSink : public osg::AudioSink
+{
+    public:
+    
+        SDLAudioSink(osg::AudioStream* audioStream):
+            _playing(false),
+            _audioStream(audioStream) {}
+        
+        ~SDLAudioSink()
+        {        
+            if (_playing)
+            {
+
+	        SDL_PauseAudio(1);
+	        SDL_CloseAudio();
+
+                osg::notify(osg::NOTICE)<<"~SDLAudioSink() destructor, but still playing"<<std::endl;
+            }
+        }
+        
+        virtual void startPlaying()
+        {
+            _playing = true; 
+            osg::notify(osg::NOTICE)<<"SDLAudioSink()::startPlaying()"<<std::endl;
+
+            osg::notify(osg::NOTICE)<<"  audioFrequency()="<<_audioStream->audioFrequency()<<std::endl;
+            osg::notify(osg::NOTICE)<<"  audioNbChannels()="<<_audioStream->audioNbChannels()<<std::endl;
+            osg::notify(osg::NOTICE)<<"  audioSampleFormat()="<<_audioStream->audioSampleFormat()<<std::endl;
+
+            SDL_AudioSpec specs = { 0 };
+            SDL_AudioSpec wanted_specs = { 0 };
+
+            wanted_specs.freq = _audioStream->audioFrequency();
+            wanted_specs.format = AUDIO_S16SYS;
+            wanted_specs.channels = _audioStream->audioNbChannels();
+            wanted_specs.silence = 0;
+            wanted_specs.samples = 1024;
+            wanted_specs.callback = soundReadCallback;
+            wanted_specs.userdata = this;
+
+            if (SDL_OpenAudio(&wanted_specs, &specs) < 0)
+                throw "SDL_OpenAudio() failed (" + std::string(SDL_GetError()) + ")";
+
+            SDL_PauseAudio(0);
+
+        }
+        virtual bool playing() const { return _playing; }
+
+	static void soundReadCallback(void * user_data, uint8_t * data, int datalen);
+
+        bool                                _playing;
+        osg::observer_ptr<osg::AudioStream> _audioStream;
+};
+
+
+void SDLAudioSink::soundReadCallback(void * const user_data, Uint8 * const data, const int datalen)
+{
+    SDLAudioSink * sink = reinterpret_cast<SDLAudioSink*>(user_data);
+    osg::ref_ptr<osg::AudioStream> as = sink->_audioStream.get();
+    if (as.valid())
+    {            
+        as->consumeAudioBuffer(data, datalen);
+    }
+}
+
+#endif
+
 int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -425,6 +496,9 @@ int main(int argc, char** argv)
     osg::Vec3 bottomright = pos;
 
     bool xyPlane = fullscreen;
+    
+    bool useAudioSink = false;
+    while(arguments.read("--audio")) { useAudioSink = true; }
 
     for(int i=1;i<arguments.argc();++i)
     {
@@ -432,7 +506,21 @@ int main(int argc, char** argv)
         {
             osg::Image* image = osgDB::readImageFile(arguments[i]);
             osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image);
-            if (imagestream) imagestream->play();
+            if (imagestream) 
+            {
+                osg::ImageStream::AudioStreams& audioStreams = imagestream->getAudioStreams();
+                if (useAudioSink && !audioStreams.empty())
+                {
+                    osg::AudioStream* audioStream = audioStreams[0].get();
+                    osg::notify(osg::NOTICE)<<"AudioStream read ["<<audioStream->getName()<<"]"<<std::endl;
+#if USE_SDL
+                    audioStream->setAudioSink(new SDLAudioSink(audioStream));
+#endif
+                }
+
+
+                imagestream->play();
+            }
 
             if (image)
             {

@@ -45,7 +45,9 @@ public:
         if (! acceptsExtension(ext))
             return ReadResult::FILE_NOT_HANDLED;
 
-        const std::string path = osgDB::findDataFile(filename, options);
+        const std::string path = osgDB::containsServerAddress(filename) ?
+            filename :
+            osgDB::findDataFile(filename, options);
 
         if (path.empty())
             return ReadResult::FILE_NOT_FOUND;

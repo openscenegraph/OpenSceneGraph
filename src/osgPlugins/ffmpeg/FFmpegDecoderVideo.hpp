@@ -8,7 +8,6 @@
 #include "FFmpegClocks.hpp"
 #include "FFmpegPacket.hpp"
 
-#include <boost/shared_ptr.hpp>
 #include <OpenThreads/Thread>
 #include <vector>
 
@@ -85,7 +84,6 @@ private:
     void decodeLoop();
     void findAspectRatio();
     void publishFrame(double delay);
-    void swapBuffers();
     double synchronizeVideo(double pts);
     void yuva420pToRgba(AVPicture *dst, const AVPicture *src, int width, int height);
 

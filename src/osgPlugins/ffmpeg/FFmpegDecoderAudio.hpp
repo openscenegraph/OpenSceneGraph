@@ -41,7 +41,6 @@ public:
 
 private:
 
-    //typedef boost::shared_ptr<AVFrame> FramePtr;
     typedef osg::ref_ptr<osg::AudioSink> SinkPtr;
     typedef std::vector<uint8_t> Buffer;
 

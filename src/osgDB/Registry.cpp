@@ -239,10 +239,6 @@ Registry::Registry()
     addFileExtensionAlias("vert",   "glsl");
     addFileExtensionAlias("frag",   "glsl");
 
-#if defined (__APPLE__) && (__LP64__)
-#undef DARWIN_QUICKTIME
-#define DARWIN_IMAGEIO 1
-#endif
 
 #if defined(DARWIN_IMAGEIO)
     addFileExtensionAlias("jpg",  "imageio");

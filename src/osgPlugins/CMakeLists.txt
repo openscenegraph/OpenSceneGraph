@@ -114,10 +114,21 @@ IF(XUL_FOUND)
 ENDIF(XUL_FOUND)
 
 
-# imageio-plugin for os x
+
+############################################################
+#
+#  Quicktime or ImageIO
+#
+
 IF(APPLE)
 	ADD_SUBDIRECTORY(imageio)
 ENDIF(APPLE)
+
+IF(QUICKTIME_FOUND)
+    ADD_SUBDIRECTORY(quicktime)
+ENDIF(QUICKTIME_FOUND)
+
+
 
 
 ############################################################
@@ -205,9 +216,7 @@ IF(FFMPEG_FOUND)
     ADD_SUBDIRECTORY(ffmpeg)
 ENDIF(FFMPEG_FOUND)
 
-IF(QUICKTIME_FOUND)
-    ADD_SUBDIRECTORY(quicktime)
-ENDIF(QUICKTIME_FOUND)
+
 
 IF(FREETYPE_FOUND)
     ADD_SUBDIRECTORY(freetype)

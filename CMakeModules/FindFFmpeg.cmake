@@ -20,6 +20,7 @@ IF(PKG_CONFIG_FOUND)
     pkg_check_modules(FFMPEG_LIBAVDEVICE libavdevice)
     pkg_check_modules(FFMPEG_LIBAVCODEC libavcodec)
     pkg_check_modules(FFMPEG_LIBAVUTIL libavutil)
+    pkg_check_modules(FFMPEG_LIBSWSCALE libswscale)
 
 ENDIF(PKG_CONFIG_FOUND)
 

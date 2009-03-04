@@ -9,6 +9,11 @@ extern "C"
 #include <stdint.h>
 #include <avcodec.h>
 #include <avformat.h>
+
+#ifdef USE_SWSCALE    
+    #include <swscale.h>
+#endif
+
 }
 
 

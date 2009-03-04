@@ -11,6 +11,7 @@
 
 # Macro to find header and lib directories
 # example: FFMPEG_FIND(AVFORMAT avformat avformat.h)
+
 MACRO(FFMPEG_FIND varname shortname headername)
     # First try to find header directly in include directory
     FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS ${headername}
@@ -34,6 +35,28 @@ MACRO(FFMPEG_FIND varname shortname headername)
     # standard, perhaps we can keep just this case.
     IF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
         FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS lib${shortname}/${headername}
+            ${FFMPEG_ROOT}/include
+            $ENV{FFMPEG_DIR}/include
+            $ENV{OSGDIR}/include
+            $ENV{OSG_ROOT}/include
+            ~/Library/Frameworks
+            /Library/Frameworks
+            /usr/local/include
+            /usr/include/
+            /sw/include # Fink
+            /opt/local/include # DarwinPorts
+            /opt/csw/include # Blastwave
+            /opt/include
+            /usr/freeware/include
+        )
+    ENDIF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
+
+
+    # If not found, try to find it in a subdirectory. Tanguy's build has
+    # avformat.h in include/libavformat, so this catches that case. If that's
+    # standard, perhaps we can keep just this case.
+    IF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
+        FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS ffmpeg/${headername}
             ${FFMPEG_ROOT}/include
             $ENV{FFMPEG_DIR}/include
             $ENV{OSGDIR}/include

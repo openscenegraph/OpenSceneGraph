@@ -107,8 +107,8 @@ private:
     
     FramePtr                m_frame;
     FramePtr                m_frame_rgba;
-    Buffer                  m_buffer_rgba;
-    Buffer                  m_buffer_rgba_public;
+    Buffer                  m_buffer_rgba[2];
+    int                     m_writeBuffer;
 
     void *                  m_user_data;
     PublishFunc             m_publish_func;
@@ -175,7 +175,7 @@ inline double FFmpegDecoderVideo::frameRate() const
 
 inline const uint8_t * FFmpegDecoderVideo::image() const
 {
-    return &m_buffer_rgba_public[0];
+    return &((m_buffer_rgba[1-m_writeBuffer])[0]);
 }
 
 

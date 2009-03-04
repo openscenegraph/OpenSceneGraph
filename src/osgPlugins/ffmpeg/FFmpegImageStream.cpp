@@ -57,6 +57,8 @@ bool FFmpegImageStream::open(const std::string & filename)
         m_decoder->video_decoder().width(), m_decoder->video_decoder().height(), 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE,
         const_cast<unsigned char *>(m_decoder->video_decoder().image()), NO_DELETE
     );
+    
+    setOrigin(osg::Image::TOP_LEFT);
 
     m_decoder->video_decoder().setUserData(this);
     m_decoder->video_decoder().setPublishCallback(publishNewFrame);
@@ -264,8 +266,15 @@ void FFmpegImageStream::publishNewFrame(const FFmpegDecoderVideo &, void * user_
 {
     FFmpegImageStream * const this_ = reinterpret_cast<FFmpegImageStream*>(user_data);
 
+#if 1
+    this_->setImage(
+        this_->m_decoder->video_decoder().width(), this_->m_decoder->video_decoder().height(), 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE,
+        const_cast<unsigned char *>(this_->m_decoder->video_decoder().image()), NO_DELETE
+    );
+#else
     /** \bug If viewer.realize() hasn't been already called, this doesn't work? */
     this_->dirty();
+#endif
 
     OpenThreads::ScopedLock<Mutex> lock(this_->m_mutex);
 

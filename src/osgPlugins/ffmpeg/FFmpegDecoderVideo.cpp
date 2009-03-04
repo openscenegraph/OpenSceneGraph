@@ -18,8 +18,10 @@ FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clo
     m_packet_pts(AV_NOPTS_VALUE),
     m_user_data(0),
     m_publish_func(0),
-    m_exit(false),
-    m_swscale_ctx(0)
+    m_exit(false)
+#ifdef USE_SWSCALE
+    ,m_swscale_ctx(0)
+#endif
 {
 
 }
@@ -34,11 +36,13 @@ FFmpegDecoderVideo::~FFmpegDecoderVideo()
         join();
     }
     
+#ifdef USE_SWSCALE
     if (m_swscale_ctx)
     {
         sws_freeContext(m_swscale_ctx);
         m_swscale_ctx = 0;
     }
+#endif
 }
 
 
@@ -219,12 +223,16 @@ int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, const AVPicture
                                       SWS_BILINEAR, NULL, NULL, NULL);
     }
     
+    osg::notify(osg::NOTICE)<<"Using sws_scale"<<std::endl;
+
     return sws_scale(m_swscale_ctx,
            src->data, src->linesize, 0, src_height,
            dst->data, dst->linesize);
 #else
-    return im_convert(dst, dst_pix_fmt, src,
-                      src_pix_fmt, src_width, src_height)
+    osg::notify(osg::NOTICE)<<"Using img_convert"<<std::endl;
+
+    return img_convert(dst, dst_pix_fmt, src,
+                      src_pix_fmt, src_width, src_height);
 #endif
 }
 

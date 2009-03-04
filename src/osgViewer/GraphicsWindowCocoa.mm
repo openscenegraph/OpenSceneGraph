@@ -140,6 +140,12 @@ static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false
 }
 
 
+std::ostream& operator<<(std::ostream& os, const NSRect& rect) 
+{
+	os << rect.origin.x << "/" << rect.origin.y << " " << rect.size.width << "x" << rect.size.height;
+	return os;
+}
+
 // ----------------------------------------------------------------------------------------------------------
 // Cocoa uses a coordinate system where its origin is in the bottom left corner, 
 // osg and quartz uses top left for the origin
@@ -147,20 +153,27 @@ static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false
 // these 2 methods convets rects between the different coordinate systems
 // ----------------------------------------------------------------------------------------------------------
 
-static NSRect convertFromQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,const NSRect& rect)  
+static NSRect convertFromQuartzCoordinates(const NSRect& rect)  
 {
-    NSRect frame = [[win->getWindow() screen] frame];
-    
+    NSRect frame = [[[NSScreen screens] objectAtIndex: 0] frame];
     float y = frame.size.height - rect.origin.y - rect.size.height;
-    return NSMakeRect(rect.origin.x, y, rect.size.width, rect.size.height);
+	NSRect converted = NSMakeRect(rect.origin.x, y, rect.size.width, rect.size.height);
+	
+	// std::cout << "converting from Quartz " << rect << " to " << converted << " using screen rect " << frame << std::endl;
+	
+    return converted;
 }
 
-static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,const NSRect& rect)
+static NSRect convertToQuartzCoordinates(const NSRect& rect)
 {
-    NSRect frame = [[win->getWindow() screen] frame];
+    NSRect frame = [[[NSScreen screens] objectAtIndex: 0] frame];
     
     float y = frame.size.height - (rect.origin.y + rect.size.height);
-    return NSMakeRect(rect.origin.x, y, rect.size.width, rect.size.height);
+	NSRect converted = NSMakeRect(rect.origin.x, y, rect.size.width, rect.size.height);
+	
+	// std::cout << "converting To Quartz   " << rect << " to " << converted << " using screen rect " << frame << std::endl;
+	
+    return converted;
 }
 
 #pragma mark CocoaAppDelegate
@@ -713,7 +726,7 @@ static NSRect convertToQuartzCoordinates(osgViewer::GraphicsWindowCocoa* win,con
     NSRect bounds = [nswin contentRectForFrameRect: [nswin frame] ];
     
     // convert to quartz-coordinate-system
-    bounds = convertToQuartzCoordinates(_win, bounds);
+    bounds = convertToQuartzCoordinates(bounds);
     
     // std::cout << "windowdidmove: " << bounds.origin.x << " " << bounds.origin.y << " " << bounds.size.width << " " << bounds.size.height << std::endl;
    
@@ -752,7 +765,7 @@ public:
     virtual void getWindowBounds(CGRect& rect) 
     {
         NSRect nsrect = [_win->getWindow() frame];
-        nsrect = convertToQuartzCoordinates(_win.get(), nsrect);
+        nsrect = convertToQuartzCoordinates(nsrect);
         
         rect.origin.x = nsrect.origin.x;
         rect.origin.y = nsrect.origin.y;
@@ -822,7 +835,7 @@ bool GraphicsWindowCocoa::realizeImplementation()
         if (_traits->supportsResize) 
             style |= NSResizableWindowMask;
     }
-    
+    	
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
     if (wsi) {
@@ -841,7 +854,7 @@ bool GraphicsWindowCocoa::realizeImplementation()
         return false;
     }
     
-    rect = convertFromQuartzCoordinates(this,  rect);
+    rect = convertFromQuartzCoordinates(rect);
     [_window setFrameOrigin: rect.origin];
 	 
 	NSOpenGLPixelFormatAttribute attr[32];
@@ -1093,7 +1106,7 @@ bool GraphicsWindowCocoa::setWindowRectangleImplementation(int x, int y, int wid
 {
    
     NSRect rect = NSMakeRect(x,y,width, height);
-    rect = convertFromQuartzCoordinates(this, rect);
+    rect = convertFromQuartzCoordinates(rect);
     
     [_window setFrame: [NSWindow frameRectForContentRect: rect styleMask: [_window styleMask]] display: YES];
     [_context update];

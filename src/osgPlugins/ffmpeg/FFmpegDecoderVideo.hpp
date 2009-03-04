@@ -122,7 +122,7 @@ private:
 
     volatile bool           m_exit;
     
-#if USE_SWSCALE    
+#ifdef USE_SWSCALE    
     struct SwsContext *     m_swscale_ctx;
 #endif
 };

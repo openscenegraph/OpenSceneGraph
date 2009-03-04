@@ -5,18 +5,7 @@
 #include <stdexcept>
 #include <string.h>
 
-#if 0
-extern "C" 
-{
-    int img_convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src,
-                int src_pix_fmt, int src_width, int src_height);
-
-};
-#endif
-
 namespace osgFFmpeg {
-
-
 
 FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clocks) :
     m_packets(packets),
@@ -234,8 +223,8 @@ int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, const AVPicture
            src->data, src->linesize, 0, src_height,
            dst->data, dst->linesize);
 #else
-    return convert(dst, dst_pix_fmt, src,
-                   src_pix_fmt, src_width, src_height)
+    return im_convert(dst, dst_pix_fmt, src,
+                      src_pix_fmt, src_width, src_height)
 #endif
 }
 

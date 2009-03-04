@@ -158,6 +158,8 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Op
         osg::ref_ptr<osg::ImageStream> imageStream = dynamic_cast<osg::ImageStream*>(image.get());
         if (imageStream.valid())
         {
+            bool flip = image->getOrigin()==osg::Image::TOP_LEFT;
+
             // start the stream playing.
             imageStream->play();
 
@@ -169,7 +171,7 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Op
                 pictureQuad = osg::createTexturedQuadGeometry(osg::Vec3(0.0f,0.0f,0.0f),
                                                    osg::Vec3(image->s(),0.0f,0.0f),
                                                    osg::Vec3(0.0f,0.0f,image->t()),
-                                                   0.0f,image->t(), image->s(),0.0f);
+                                                   0.0f, flip ? image->t() : 0.0, image->s(), flip ? 0.0 : image->t());
 
                 pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
                             new osg::TextureRectangle(image.get()),
@@ -180,7 +182,7 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const ReaderWriter::Op
                 pictureQuad = osg::createTexturedQuadGeometry(osg::Vec3(0.0f,0.0f,0.0f),
                                                    osg::Vec3(image->s(),0.0f,0.0f),
                                                    osg::Vec3(0.0f,0.0f,image->t()),
-                                                   0.0f,0.0f, 1.0f,1.0f);
+                                                   0.0f, flip ? 1.0f : 0.0f , 1.0f, flip ? 0.0f : 1.0f);
 
                 pictureQuad->getOrCreateStateSet()->setTextureAttributeAndModes(0,
                             new osg::Texture2D(image.get()),

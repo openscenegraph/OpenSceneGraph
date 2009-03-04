@@ -39,9 +39,17 @@ FFmpegImageStream::FFmpegImageStream(const FFmpegImageStream & image, const osg:
 
 FFmpegImageStream::~FFmpegImageStream()
 {
+    osg::notify(osg::NOTICE)<<"Destructing FFMpegImageStream..."<<std::endl;
+
     quit(true);
 
+    // destroy the decoder and associated threads
+    m_decoder = 0;
+
+
     delete m_commands;
+
+    osg::notify(osg::NOTICE)<<"Destructed FFMpegImageStream."<<std::endl;
 }
 
 

@@ -32,6 +32,8 @@ FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clo
 
 FFmpegDecoderVideo::~FFmpegDecoderVideo()
 {
+    osg::notify(osg::NOTICE)<<"Destructing FFmpegDecoderVideo..."<<std::endl;
+
     if (isRunning())
     {
         m_exit = true;
@@ -45,6 +47,8 @@ FFmpegDecoderVideo::~FFmpegDecoderVideo()
         m_swscale_ctx = 0;
     }
 #endif
+
+    osg::notify(osg::NOTICE)<<"Destructed FFmpegDecoderVideo"<<std::endl;
 }
 
 
@@ -260,8 +264,6 @@ void FFmpegDecoderVideo::publishFrame(const double delay)
     const AVPicture * const src = (const AVPicture *) m_frame.get();
     AVPicture * const dst = (AVPicture *) m_frame_rgba.get();
 
-    osg::Timer_t startTick = osg::Timer::instance()->tick();
-
     // Assign appropriate parts of the buffer to image planes in m_frame_rgba
     avpicture_fill((AVPicture *) (m_frame_rgba).get(), &(m_buffer_rgba[m_writeBuffer])[0], PIX_FMT_RGB32, width(), height());
 
@@ -271,14 +273,6 @@ void FFmpegDecoderVideo::publishFrame(const double delay)
         yuva420pToRgba(dst, src, width(), height());
     else
         convert(dst, PIX_FMT_RGB32, src, m_context->pix_fmt, width(), height());
-
-
-    // Flip and swap buffer
-    // swapBuffers();
-
-
-    osg::Timer_t endTick = osg::Timer::instance()->tick();
-    osg::notify(osg::NOTICE)<<" time of swapBuffers = "<<osg::Timer::instance()->delta_m(startTick,endTick)<<"ms"<<std::endl;
 
     // Wait 'delay' seconds before publishing the picture.
     int i_delay = static_cast<int>(delay * 1000000 + 0.5);
@@ -299,14 +293,6 @@ void FFmpegDecoderVideo::publishFrame(const double delay)
     m_writeBuffer = 1-m_writeBuffer;
 
     m_publish_func(* this, m_user_data);
-}
-
-
-
-void FFmpegDecoderVideo::swapBuffers()
-{
-    for (int h = 0; h < height(); ++h)
-        memcpy(&(m_buffer_rgba[1-m_writeBuffer])[(height() - h - 1) * width() * 4], &(m_buffer_rgba[m_writeBuffer])[h * width() * 4], width() * 4);
 }
 
 

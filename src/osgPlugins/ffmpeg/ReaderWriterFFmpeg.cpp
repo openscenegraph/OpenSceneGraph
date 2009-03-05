@@ -40,8 +40,12 @@ public:
 
     virtual ReadResult readImage(const std::string & filename, const osgDB::ReaderWriter::Options * options) const
     {
+        if (filename.compare(0, 5, "/dev/")==0)
+        {
+            return readImageStream(filename, options);
+        }
+    
         const std::string ext = osgDB::getLowerCaseFileExtension(filename);
-
         if (! acceptsExtension(ext))
             return ReadResult::FILE_NOT_HANDLED;
 
@@ -52,11 +56,16 @@ public:
         if (path.empty())
             return ReadResult::FILE_NOT_FOUND;
 
-        osg::notify(osg::INFO) << "ReaderWriterFFmpeg::readImage " << path << std::endl;
+        return readImageStream(filename, options);
+    }
+    
+    ReadResult readImageStream(const std::string& filename, const osgDB::ReaderWriter::Options * options) const
+    {
+        osg::notify(osg::INFO) << "ReaderWriterFFmpeg::readImage " << filename << std::endl;
 
         osg::ref_ptr<osgFFmpeg::FFmpegImageStream> image_stream(new osgFFmpeg::FFmpegImageStream);
 
-        if (! image_stream->open(path))
+        if (! image_stream->open(filename))
             return ReadResult::FILE_NOT_HANDLED;
 
         return image_stream.release();

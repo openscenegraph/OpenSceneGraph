@@ -35,7 +35,6 @@ FFmpegDecoder::~FFmpegDecoder()
 }
 
 
-
 bool FFmpegDecoder::open(const std::string & filename)
 {
     try
@@ -43,9 +42,43 @@ bool FFmpegDecoder::open(const std::string & filename)
         // Open video file
         AVFormatContext * p_format_context = 0;
 
-        if (av_open_input_file(&p_format_context, filename.c_str(), 0, 0, 0) != 0)
-            throw std::runtime_error("av_open_input_file() failed");
+        if (filename.compare(0, 5, "/dev/")==0)
+        {
+            avdevice_register_all();
+        
+            osg::notify(osg::NOTICE)<<"Attempting to stream "<<filename<<std::endl;
 
+            AVFormatParameters formatParams;
+            memset(&formatParams, 0, sizeof(AVFormatParameters));
+            AVInputFormat *iformat;
+
+            formatParams.channel = 0;
+            formatParams.standard = 0;
+            formatParams.width = 640;
+            formatParams.height = 480;
+            formatParams.time_base.num = 1;
+            formatParams.time_base.den = 50;
+
+            iformat = av_find_input_format("video4linux2");
+            
+            if (iformat)
+            {
+                osg::notify(osg::NOTICE)<<"Found input format"<<std::endl;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"Failed to find input_format"<<std::endl;
+            }
+
+            if (av_open_input_file(&p_format_context, filename.c_str(), iformat, 0, &formatParams) != 0)
+                throw std::runtime_error("av_open_input_file() failed");
+        }
+        else
+        {
+            if (av_open_input_file(&p_format_context, filename.c_str(), 0, 0, 0) !=0 )
+                throw std::runtime_error("av_open_input_file() failed");
+        }
+        
         m_format_context.reset(p_format_context);
 
         // Retrieve stream info

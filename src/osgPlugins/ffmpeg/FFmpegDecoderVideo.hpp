@@ -65,6 +65,8 @@ public:
     ~FFmpegDecoderVideo();
 
     void open(AVStream * stream);
+    void close(bool waitForThreadToExit);
+
     virtual void run();
 
     void setUserData(void * user_data);

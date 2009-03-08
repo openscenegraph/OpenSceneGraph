@@ -31,7 +31,7 @@ FFmpegDecoder::FFmpegDecoder() :
 
 FFmpegDecoder::~FFmpegDecoder()
 {
-    close();
+    close(true);
 }
 
 
@@ -123,10 +123,13 @@ bool FFmpegDecoder::open(const std::string & filename)
 
 
 
-void FFmpegDecoder::close()
+void FFmpegDecoder::close(bool waitForThreadToExit)
 {
     flushAudioQueue();
     flushVideoQueue();
+    
+    m_audio_decoder.close(waitForThreadToExit);
+    m_video_decoder.close(waitForThreadToExit);
 }
 
 

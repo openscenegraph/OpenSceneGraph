@@ -29,6 +29,8 @@ public:
     ~FFmpegDecoderAudio();
 
     void open(AVStream * stream);
+    void close(bool waitForThreadToExit);
+    
     virtual void run();
 
     void setAudioSink(osg::ref_ptr<osg::AudioSink> audio_sink);

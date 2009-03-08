@@ -57,16 +57,35 @@
 
 typedef std::vector< osg::ref_ptr<osg::GraphicsThread> > GraphicsThreads;
 
+struct ReleaseBlockOnCompileCompleted : public osgUtil::IncrementalCompileOperation::CompileCompletedCallback
+{
+
+    ReleaseBlockOnCompileCompleted(osg::RefBlockCount* block):
+        _block(block) {}
+
+    virtual bool compileCompleted(osgUtil::IncrementalCompileOperation::CompileSet* compileSet)
+    {
+        if (_block.valid()) _block->completed();
+        
+        // tell IncrementalCompileOperation that it's now safe to remove the compileSet
+        
+        osg::notify(osg::NOTICE)<<"compileCompleted("<<compileSet<<")"<<std::endl;
+        
+        return true;
+    }
+
+    osg::ref_ptr<osg::RefBlockCount> _block;
+};
 
 
 class LoadAndCompileOperation : public osg::Operation
 {
 public:
 
-    LoadAndCompileOperation(const std::string& filename, GraphicsThreads& graphicsThreads, osg::RefBlockCount* block):
+    LoadAndCompileOperation(const std::string& filename, osgUtil::IncrementalCompileOperation* ico , osg::RefBlockCount* block):
         Operation("Load and compile Operation", false),
         _filename(filename),
-        _graphicsThreads(graphicsThreads),
+        _incrementalCompileOperation(ico),
         _block(block) {}
 
     virtual void operator () (osg::Object* object)
@@ -74,28 +93,28 @@ public:
         // osg::notify(osg::NOTICE)<<"LoadAndCompileOperation "<<_filename<<std::endl;
 
         _loadedModel = osgDB::readNodeFile(_filename);
-        if (_loadedModel.valid() && !_graphicsThreads.empty())
-        {
-            osg::ref_ptr<osgUtil::GLObjectsOperation> compileOperation = new osgUtil::GLObjectsOperation(_loadedModel.get());
-
-            for(GraphicsThreads::iterator gitr = _graphicsThreads.begin();
-                gitr != _graphicsThreads.end();
-                ++gitr)
-            {
-                (*gitr)->add( compileOperation.get() );
-                // requiresBarrier = true;
-            }
-        }
         
-        if (_block.valid()) _block->completed();
+        if (_loadedModel.valid() && _incrementalCompileOperation.valid())
+        {
+            osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet = 
+                new osgUtil::IncrementalCompileOperation::CompileSet(_loadedModel);
+            
+            compileSet->_compileCompletedCallback = new ReleaseBlockOnCompileCompleted(_block.get());
+        
+            _incrementalCompileOperation->add(compileSet.get());
+        }
+        else 
+        {
+            if (_block.valid()) _block->completed();
+        }
 
         // osg::notify(osg::NOTICE)<<"done LoadAndCompileOperation "<<_filename<<std::endl;
     }
     
-    std::string                 _filename;
-    GraphicsThreads             _graphicsThreads;
-    osg::ref_ptr<osg::Node>     _loadedModel;
-    osg::ref_ptr<osg::RefBlockCount> _block;
+    std::string                                         _filename;
+    osg::ref_ptr<osg::Node>                             _loadedModel;
+    osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
+    osg::ref_ptr<osg::RefBlockCount>                    _block;
 
 };
 
@@ -108,9 +127,10 @@ public:
     typedef std::vector< osg::ref_ptr<osg::Node> >  Nodes;
 
 
-    MasterOperation(const std::string& filename):
+    MasterOperation(const std::string& filename, osgUtil::IncrementalCompileOperation* ico):
         Operation("Master reading operation",true),
-        _filename(filename)
+        _filename(filename),
+        _incrementalCompileOperation(ico)
     {
     }
     
@@ -256,9 +276,6 @@ public:
                 if (gt) threads.push_back(gt);
             }
 
-            bool requiresBarrier = false;
-
-
             if (_operationQueue.valid())
             {
                 // osg::notify(osg::NOTICE)<<"Using OperationQueue"<<std::endl;
@@ -276,7 +293,7 @@ public:
                 {
                     // osg::notify(osg::NOTICE)<<"Adding LoadAndCompileOperation "<<*nitr<<std::endl;
 
-                    osg::ref_ptr<LoadAndCompileOperation> loadAndCompile = new LoadAndCompileOperation( *nitr, threads, _endOfLoadBlock.get() );
+                    osg::ref_ptr<LoadAndCompileOperation> loadAndCompile = new LoadAndCompileOperation( *nitr, _incrementalCompileOperation.get(), _endOfLoadBlock.get() );
                     loadAndCompileList.push_back(loadAndCompile);
                     _operationQueue->add( loadAndCompile.get() );
                 }
@@ -300,7 +317,6 @@ public:
                     if ((*litr)->_loadedModel.valid())
                     {
                         nodesToAdd[(*litr)->_filename] = (*litr)->_loadedModel;
-                        requiresBarrier = true;
                     }
                 }
 
@@ -308,6 +324,11 @@ public:
             
             else
             {
+
+                _endOfLoadBlock = new osg::RefBlockCount(newFiles.size());
+                
+                _endOfLoadBlock->reset();
+
                 for(Files::iterator nitr = newFiles.begin();
                     nitr != newFiles.end();
                     ++nitr)
@@ -318,38 +339,30 @@ public:
                     {
                         nodesToAdd[*nitr] = loadedModel;
 
-                        osg::ref_ptr<osgUtil::GLObjectsOperation> compileOperation = new osgUtil::GLObjectsOperation(loadedModel.get());
-
-                        for(GraphicsThreads::iterator gitr = threads.begin();
-                            gitr != threads.end();
-                            ++gitr)
+                        if (_incrementalCompileOperation.valid())
                         {
-                            (*gitr)->add( compileOperation.get() );
-                            requiresBarrier = true;
+                            osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet = 
+                                new osgUtil::IncrementalCompileOperation::CompileSet(loadedModel.get());
+
+                            compileSet->_compileCompletedCallback = new ReleaseBlockOnCompileCompleted(_endOfLoadBlock.get());
+
+                            _incrementalCompileOperation->add(compileSet.get());
+                        }
+                        else
+                        {
+                            _endOfLoadBlock->completed();
                         }
                     }
+                    else
+                    {
+                        _endOfLoadBlock->completed();
+                    }
                 }
+
+                _endOfLoadBlock->block();
+
             }
                         
-            if (requiresBarrier)
-            {
-                _endOfCompilebarrier = new osg::BarrierOperation(threads.size()+1);
-                _endOfCompilebarrier->setKeep(false);
-                
-                for(GraphicsThreads::iterator gitr = threads.begin();
-                    gitr != threads.end();
-                    ++gitr)
-                {
-                    (*gitr)->add(_endOfCompilebarrier.get());
-                }
-                
-                // osg::notify(osg::NOTICE)<<"Waiting for Compile to complete"<<std::endl;
-
-                // wait for the graphics threads to complete.
-                _endOfCompilebarrier->block();
-                
-                // osg::notify(osg::NOTICE)<<"done ... Waiting for Compile to complete"<<std::endl;
-            }
         }
         
         bool requiresBlock = false;
@@ -454,6 +467,7 @@ public:
     FilenameNodeMap                     _nodesToAdd;
     OpenThreads::Block                  _updatesMergedBlock;
 
+    osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
     osg::ref_ptr<osg::BarrierOperation> _endOfCompilebarrier;
     osg::ref_ptr<osg::RefBlockCount>    _endOfLoadBlock;
     
@@ -618,6 +632,9 @@ int main(int argc, char** argv)
     // add the record camera path handler
     viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
+    // attach an IncrementaCompileOperation to allow the master loading 
+    // to be handled with an incremental compile to avoid frame drops when large objects are added.
+    viewer.setIncrementalCompileOperation(new osgUtil::IncrementalCompileOperation());
 
     double x = 0.0;
     double y = 0.0;
@@ -631,7 +648,7 @@ int main(int argc, char** argv)
     std::string masterFilename;
     while(arguments.read("-m",masterFilename))
     {
-        masterOperation = new MasterOperation(masterFilename);
+        masterOperation = new MasterOperation(masterFilename, viewer.getIncrementalCompileOperation());
     }
     
 

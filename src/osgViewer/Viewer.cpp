@@ -448,7 +448,10 @@ void Viewer::realize()
             gc->releaseContext();
         }
     }
-    
+
+    // attach contexts to _incrementalCompileOperation if attached.
+    if (_incrementalCompileOperation) _incrementalCompileOperation->assignContexts(contexts);
+
     bool grabFocus = true;
     if (grabFocus)
     {
@@ -898,6 +901,13 @@ void Viewer::updateTraversal()
     {
         _updateOperations->runOperations(this);
     }
+    
+    if (_incrementalCompileOperation.valid())
+    {
+        // merge subgraphs that have been compiled by the incremental compiler operation.
+        _incrementalCompileOperation->mergeCompiledSubgraphs();
+    }
+
 
     {
         // call any camera update callbacks, but only traverse that callback, don't traverse its subgraph

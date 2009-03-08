@@ -123,12 +123,116 @@ class OSGUTIL_EXPORT GLObjectsOperation : public osg::GraphicsOperation
         GLObjectsOperation(osg::Node* subgraph, GLObjectsVisitor::Mode mode = GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES|GLObjectsVisitor::CHECK_BLACK_LISTED_MODES);
 
         virtual void operator () (osg::GraphicsContext* context);
-
+        
     protected:
     
         osg::ref_ptr<osg::Node> _subgraph;
         GLObjectsVisitor::Mode  _mode;
 };
+
+class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
+{
+    public:
+
+        IncrementalCompileOperation();
+        
+        typedef std::vector<osg::GraphicsContext*> Contexts;
+        void assignContexts(Contexts& contexts);
+        void removeContexts(Contexts& contexts);
+
+        void addGraphicsContext(osg::GraphicsContext* gc);
+        void removeGraphicsContext(osg::GraphicsContext* gc);
+
+
+        /** Merge subgraphs that have been compiled.*/
+        void mergeCompiledSubgraphs();
+
+        virtual void operator () (osg::GraphicsContext* context);
+        
+
+
+        struct CompileData : public osg::Referenced
+        {
+            typedef std::list< osg::ref_ptr<osg::Texture> >  Textures;
+            typedef std::list< osg::ref_ptr<osg::Drawable> > Drawables;
+            typedef std::list< osg::ref_ptr<osg::Program> >  Programs;
+            
+            bool empty() const { return _textures.empty() && _drawables.empty() && _programs.empty(); }
+            
+            Textures    _textures;
+            Drawables   _drawables;
+            Programs    _programs;
+        };
+
+        class CompileSet;
+        typedef std::set<osg::GraphicsContext*> ContextSet;
+        typedef std::map<osg::GraphicsContext*, osg::ref_ptr<CompileData> >  CompileMap;
+        
+        struct CompileCompletedCallback : public osg::Referenced
+        {
+            virtual bool compileCompleted(CompileSet* compileSet) = 0;
+        };
+
+        class CompileSet : public osg::Referenced
+        {
+        public:
+        
+            
+            CompileSet() {}
+            
+            CompileSet(osg::Node*subgraphToCompile):
+                _subgraphToCompile(subgraphToCompile) {}
+
+            CompileSet(osg::Group* attachmentPoint, osg::Node*subgraphToCompile):
+                _attachmentPoint(attachmentPoint),
+                _subgraphToCompile(subgraphToCompile) {}
+        
+            void buildCompileMap(ContextSet& context);
+
+            osg::ref_ptr<osg::Group>                _attachmentPoint;
+            osg::ref_ptr<osg::Node>                 _subgraphToCompile;
+            osg::ref_ptr<CompileCompletedCallback>  _compileCompletedCallback;
+            CompileMap                              _compileMap;
+            
+        // protected:
+        
+            virtual ~CompileSet() {}
+        };
+        
+        typedef std::list< osg::ref_ptr<CompileSet> >  CompileSets;
+
+
+        /** Add a subgraph to be compiled.*/
+        void add(osg::Node* subgraphToCompile);
+
+        /** Add a subgraph to be compiled and add automatically to attachPoint on call to mergeCompiledSubgraphs.*/
+        void add(osg::Group* attachmentPoint, osg::Node* subgraphToCompile);
+
+        /** Add a CompileSet to be compiled.*/
+        void add(CompileSet* compileSet, bool callBuildCompileMap=true);
+
+
+        OpenThreads::Mutex& getToCompiledMutex() { return _toCompileMutex; }
+        CompileSets& getToCompile() { return _compiled; }
+        
+        OpenThreads::Mutex& getCompiledMutex() { return _compiledMutex; }
+        CompileSets& getCompiled() { return _compiled; }
+
+    protected:
+
+        virtual ~IncrementalCompileOperation();
+
+    
+        OpenThreads::Mutex  _toCompileMutex;
+        CompileSets         _toCompile;
+        
+        OpenThreads::Mutex  _compiledMutex;
+        CompileSets         _compiled;
+        
+        ContextSet          _contexts;
+
+};
+
 
 }
 

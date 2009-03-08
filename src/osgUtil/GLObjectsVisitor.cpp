@@ -13,10 +13,16 @@
 #include <osgUtil/GLObjectsVisitor>
 #include <osg/Drawable>
 #include <osg/Notify>
+#include <OpenThreads/ScopedLock>
 
 using namespace osg;
 using namespace osgUtil;
 
+
+/////////////////////////////////////////////////////////////////
+//
+// GLObjectsVisitor
+//
 GLObjectsVisitor::GLObjectsVisitor(Mode mode)
 {
     setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
@@ -145,6 +151,11 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
     }
 }
 
+/////////////////////////////////////////////////////////////////
+//
+// GLObjectsVisitor
+//
+
 GLObjectsOperation::GLObjectsOperation(GLObjectsVisitor::Mode mode):
     osg::GraphicsOperation("GLObjectOperation",false),
     _mode(mode)
@@ -181,4 +192,157 @@ void GLObjectsOperation::operator () (osg::GraphicsContext* context)
         }
     }
     // osg::notify(osg::NOTICE)<<"GLObjectsOperation::after >>>>>>>>>>> "<<std::endl;
+}
+
+/////////////////////////////////////////////////////////////////
+//
+// IncrementalCompileOperation
+//
+IncrementalCompileOperation::IncrementalCompileOperation():
+    osg::GraphicsOperation("IncrementalCompileOperation",true)
+{
+}
+
+IncrementalCompileOperation::~IncrementalCompileOperation()
+{
+}
+
+void IncrementalCompileOperation::assignContexts(Contexts& contexts)
+{
+    for(Contexts::iterator itr = contexts.begin();
+        itr != contexts.end();
+        ++itr)
+    {
+        osg::GraphicsContext* gc = *itr;
+        addGraphicsContext(gc);
+    }
+}
+
+void IncrementalCompileOperation::removeContexts(Contexts& contexts)
+{
+    for(Contexts::iterator itr = contexts.begin();
+        itr != contexts.end();
+        ++itr)
+    {
+        osg::GraphicsContext* gc = *itr;
+        removeGraphicsContext(gc);
+    }
+}
+
+
+void IncrementalCompileOperation::addGraphicsContext(osg::GraphicsContext* gc)
+{
+    if (_contexts.count(gc)==0)
+    {
+        gc->add(this);
+        _contexts.insert(gc);
+    }
+}
+
+void IncrementalCompileOperation::removeGraphicsContext(osg::GraphicsContext* gc)
+{
+    if (_contexts.count(gc)!=0)
+    {
+        gc->remove(this);
+        _contexts.erase(gc);
+    }
+}
+
+void IncrementalCompileOperation::add(osg::Node* subgraphToCompile)
+{
+    osg::notify(osg::NOTICE)<<"IncrementalCompileOperation::add("<<subgraphToCompile<<")"<<std::endl;
+    add(new CompileSet(subgraphToCompile));
+}
+
+void IncrementalCompileOperation::add(osg::Group* attachmentPoint, osg::Node* subgraphToCompile)
+{
+    osg::notify(osg::NOTICE)<<"IncrementalCompileOperation::add("<<attachmentPoint<<", "<<subgraphToCompile<<")"<<std::endl;
+    add(new CompileSet(attachmentPoint, subgraphToCompile));
+}
+
+
+void IncrementalCompileOperation::add(CompileSet* compileSet, bool callBuildCompileMap)
+{
+    if (!compileSet) return;
+    
+    if (callBuildCompileMap) compileSet->buildCompileMap(_contexts);
+
+    osg::notify(osg::NOTICE)<<"IncrementalCompileOperation::add(CompileSet = "<<compileSet<<", "<<", "<<callBuildCompileMap<<")"<<std::endl;
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_toCompileMutex);
+    _toCompile.push_back(compileSet);
+}
+
+void IncrementalCompileOperation::mergeCompiledSubgraphs()
+{
+    osg::notify(osg::NOTICE)<<"IncrementalCompileOperation::mergeCompiledSubgraphs()"<<std::endl;
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex>  compilded_lock(_compiledMutex);
+    
+    for(CompileSets::iterator itr = _compiled.begin(); 
+        itr != _compiled.end();
+        ++itr)
+    {
+        CompileSet* cs = itr->get();
+        if (cs->_attachmentPoint.valid())
+        {
+            cs->_attachmentPoint->addChild(cs->_subgraphToCompile.get());
+        }
+    }
+    
+    _compiled.clear();
+}
+
+void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& context)
+{
+}
+
+void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
+{
+    osg::notify(osg::NOTICE)<<"IncrementalCompileOperation::operator () ("<<context<<")"<<std::endl;
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex>  toCompile_lock(_toCompileMutex);
+    for(CompileSets::iterator itr = _toCompile.begin(); 
+        itr != _toCompile.end();
+        )
+    {
+        CompileSet* cs = itr->get();
+        CompileMap& cm = cs->_compileMap;
+        CompileData* cd = cm[context].get();
+        
+        if (cd)
+        {        
+            // compile textures
+            cd->_textures.clear();
+
+            // compile drawables
+            cd->_drawables.clear();
+
+            // compile programs
+            cd->_programs.clear();
+        }
+                
+        if (!cd || cd->empty())
+        {
+            if (cs->_compileCompletedCallback.valid())
+            {
+                if (cs->_compileCompletedCallback->compileCompleted(cs))
+                {
+                    // callback will handle merging of subgraph so no need to place CompileSet in merge.
+                }
+                else
+                {
+                    OpenThreads::ScopedLock<OpenThreads::Mutex>  compilded_lock(_compiledMutex);
+                    _compiled.push_back(cs);
+                }
+            }
+        
+            // remove from toCompileSet;
+            itr = _toCompile.erase(itr);
+        }
+        else
+        {
+            ++itr;
+        }
+    }
 }

@@ -497,6 +497,10 @@ void CompositeViewer::realize()
         }
     }
     
+    // attach contexts to _incrementalCompileOperation if attached.
+    if (_incrementalCompileOperation) _incrementalCompileOperation->assignContexts(contexts);
+
+
     bool grabFocus = true;
     if (grabFocus)
     {
@@ -992,6 +996,12 @@ void CompositeViewer::updateTraversal()
             scene->getImagePager()->updateSceneGraph(*_frameStamp);
         }
 
+    }
+
+    if (_incrementalCompileOperation.valid())
+    {
+        // merge subgraphs that have been compiled by the incremental compiler operation.
+        _incrementalCompileOperation->mergeCompiledSubgraphs();
     }
 
     if (_updateOperations.valid())

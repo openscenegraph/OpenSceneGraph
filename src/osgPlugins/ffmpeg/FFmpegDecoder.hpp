@@ -64,7 +64,7 @@ public:
     ~FFmpegDecoder();
 
     bool open(const std::string & filename);
-    void close();
+    void close(bool waitForThreadToExit);
 
     bool readNextPacket();
     void rewind();

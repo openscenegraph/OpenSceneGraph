@@ -34,10 +34,15 @@ FFmpegDecoderVideo::~FFmpegDecoderVideo()
 {
     osg::notify(osg::NOTICE)<<"Destructing FFmpegDecoderVideo..."<<std::endl;
 
+
     if (isRunning())
     {
         m_exit = true;
+#if 0        
+        while(isRunning()) { OpenThreads::YieldCurrentThread(); }
+#else        
         join();
+#endif
     }
     
 #ifdef USE_SWSCALE
@@ -101,6 +106,16 @@ void FFmpegDecoderVideo::open(AVStream * const stream)
     m_context->release_buffer = releaseBuffer;
 }
 
+
+void FFmpegDecoderVideo::close(bool waitForThreadToExit)
+{
+    m_exit = true;
+    
+    if (isRunning() && waitForThreadToExit)
+    {
+        while(isRunning()) { OpenThreads::Thread::YieldCurrentThread(); }
+    }
+}
 
 
 void FFmpegDecoderVideo::run()

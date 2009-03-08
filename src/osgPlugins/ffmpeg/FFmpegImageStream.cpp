@@ -42,6 +42,12 @@ FFmpegImageStream::~FFmpegImageStream()
     osg::notify(osg::NOTICE)<<"Destructing FFMpegImageStream..."<<std::endl;
 
     quit(true);
+    
+    osg::notify(osg::NOTICE)<<"Have done quit"<<std::endl;
+
+    // release athe audio streams to make sure that the decoder doesn't retain any external
+    // refences.
+    getAudioStreams().clear();
 
     // destroy the decoder and associated threads
     m_decoder = 0;
@@ -130,7 +136,7 @@ void FFmpegImageStream::quit(bool waitForThreadToExit)
     }
 
     // Close the decoder (i.e. flush the decoder packet queues)
-    m_decoder->close();
+    m_decoder->close(waitForThreadToExit);
 }
 
 
@@ -197,6 +203,8 @@ void FFmpegImageStream::run()
     {
         osg::notify(osg::WARN) << "FFmpegImageStream::run : unhandled exception" << std::endl;
     }
+    
+    osg::notify(osg::NOTICE)<<"Finished FFmpegImageStream::run()"<<std::endl;
 }
 
 

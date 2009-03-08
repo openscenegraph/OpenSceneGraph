@@ -37,7 +37,11 @@ FFmpegDecoderAudio::~FFmpegDecoderAudio()
     if (isRunning())
     {
         m_exit = true;
+#if 0        
+        while(isRunning()) { OpenThreads::YieldCurrentThread(); }
+#else        
         join();
+#endif
     }
 }
 
@@ -85,6 +89,16 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
 }
 
 
+void FFmpegDecoderAudio::close(bool waitForThreadToExit)
+{
+    m_exit = true;
+    
+    if (isRunning() && waitForThreadToExit)
+    {
+        while(isRunning()) { OpenThreads::Thread::YieldCurrentThread(); }
+    }
+}
+
 
 void FFmpegDecoderAudio::run()
 {
@@ -103,7 +117,6 @@ void FFmpegDecoderAudio::run()
         osg::notify(osg::WARN) << "FFmpegDecoderAudio::run : unhandled exception" << std::endl;
     }
 }
-
 
 
 void FFmpegDecoderAudio::setAudioSink(osg::ref_ptr<osg::AudioSink> audio_sink)

@@ -15,6 +15,7 @@
 #include <osg/OperationThread>
 #include <osg/Stats>
 #include <osgGA/EventVisitor>
+#include <osgUtil/GLObjectsVisitor>
 #include <osgUtil/UpdateVisitor>
 #include <osgViewer/ViewerBase>
 
@@ -250,6 +251,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	          __osg_Operation_P1__getRealizeOperation,
 	          "Get the graphics operation to call on realization of the viewers graphics windows. ",
 	          "");
+	I_Method1(void, setIncrementalCompileOperation, IN, osgUtil::IncrementalCompileOperation *, ico,
+	          Properties::NON_VIRTUAL,
+	          __void__setIncrementalCompileOperation__osgUtil_IncrementalCompileOperation_P1,
+	          "Set the incremental compile operation. ",
+	          "Used to manage the OpenGL object compilation and merging of subgraphs in a way that avoids overloading the rendering of frame with too many new objects in one frame. ");
+	I_Method0(osgUtil::IncrementalCompileOperation *, getIncrementalCompileOperation,
+	          Properties::NON_VIRTUAL,
+	          __osgUtil_IncrementalCompileOperation_P1__getIncrementalCompileOperation,
+	          "Get the incremental compile operation. ",
+	          "");
 	I_Method0(void, checkWindowStatus,
 	          Properties::NON_VIRTUAL,
 	          __void__checkWindowStatus,
@@ -362,6 +373,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	I_SimpleProperty(osgGA::EventVisitor *, EventVisitor, 
 	                 __osgGA_EventVisitor_P1__getEventVisitor, 
 	                 __void__setEventVisitor__osgGA_EventVisitor_P1);
+	I_SimpleProperty(osgUtil::IncrementalCompileOperation *, IncrementalCompileOperation, 
+	                 __osgUtil_IncrementalCompileOperation_P1__getIncrementalCompileOperation, 
+	                 __void__setIncrementalCompileOperation__osgUtil_IncrementalCompileOperation_P1);
 	I_SimpleProperty(int, KeyEventSetsDone, 
 	                 __int__getKeyEventSetsDone, 
 	                 __void__setKeyEventSetsDone__int);

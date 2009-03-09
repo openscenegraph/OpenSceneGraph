@@ -268,6 +268,13 @@ void IncrementalCompileOperation::add(osg::Group* attachmentPoint, osg::Node* su
 void IncrementalCompileOperation::add(CompileSet* compileSet, bool callBuildCompileMap)
 {
     if (!compileSet) return;
+
+    if (compileSet->_subgraphToCompile.valid())
+    {
+        // force a compute of the bound of the subgraph to avoid the update traversal from having to do this work
+        // and reducing the change of frame drop.
+        compileSet->_subgraphToCompile->getBound();
+    }
     
     if (callBuildCompileMap) compileSet->buildCompileMap(_contexts);
 
@@ -467,6 +474,8 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
             osg::notify(osg::NOTICE)<<"cd._programs.size()="<<cd._programs.size()<<std::endl;
     
             osg::Timer_t startTick = osg::Timer::instance()->tick();
+            
+            // be extremely conservative right now during testing, just provide 1ms for doing compile.
             double maxTimeAvailable = 0.001;
             
             while(!cd._drawables.empty() && 

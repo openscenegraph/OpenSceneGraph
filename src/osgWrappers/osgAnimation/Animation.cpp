@@ -121,6 +121,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	          __void__setPlaymode__PlayMode,
 	          "",
 	          "");
+	I_Method0(osgAnimation::Animation::PlayMode, getPlayMode,
+	          Properties::NON_VIRTUAL,
+	          __PlayMode__getPlayMode,
+	          "",
+	          "");
 	I_Method1(void, setStartTime, IN, float, time,
 	          Properties::NON_VIRTUAL,
 	          __void__setStartTime__float,
@@ -143,6 +148,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	I_SimpleProperty(double, Duration, 
 	                 0, 
 	                 __void__setDuration__double);
+	I_SimpleProperty(osgAnimation::Animation::PlayMode, PlayMode, 
+	                 __PlayMode__getPlayMode, 
+	                 0);
 	I_SimpleProperty(osgAnimation::Animation::PlayMode, Playmode, 
 	                 0, 
 	                 __void__setPlaymode__PlayMode);

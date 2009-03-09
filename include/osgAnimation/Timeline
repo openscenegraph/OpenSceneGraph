@@ -152,99 +152,37 @@ namespace osgAnimation
         unsigned int _numberFrame;
         unsigned int _loop;
 
-        enum State
+        enum Status
         {
             Play,
             Stop
         };
         
-        State _state;
+        Status _state;
     };
 
 
     class Timeline : public osg::Object
     {
-    protected:
-        typedef std::pair<unsigned int, osg::ref_ptr<Action> > FrameAction;
-        typedef std::vector<FrameAction> ActionList;
-        typedef std::map<int, ActionList> ActionLayers;
-        enum State
-        {
-            Play,
-            Stop
-        };
-        
-
-        ActionLayers _actions;
-        double _lastUpdate;
-        double _speed;
-        unsigned int _currentFrame;
-        unsigned int _fps;
-        unsigned int _numberFrame;
-        unsigned int _previousFrameEvaluated;
-        bool _loop;
-        bool _initFirstFrame;
-
-        State _state;
-
-        // to manage pending operation
-        bool _evaluating;
-
-        struct Command
-        {
-            Command():_priority(0) {}
-            Command(int priority, const FrameAction& action) : _priority(priority), _action(action) {}
-            int _priority;
-            FrameAction _action;
-        };
-
-        typedef std::vector<Command> CommandList;
-        CommandList _addActionOperations;
-        ActionList _removeActionOperations;
-
-        void setEvaluating(bool state) { _evaluating = state;}
-        void processPendingOperation()
-        {
-            // process all pending add action operation
-            while( !_addActionOperations.empty())
-            {
-                internalAddAction(_addActionOperations.back()._priority, _addActionOperations.back()._action);
-                _addActionOperations.pop_back();
-            }
-
-            // process all pending remove action operation
-            while( !_removeActionOperations.empty())
-            {
-                internalRemoveAction(_removeActionOperations.back().second.get());
-                _removeActionOperations.pop_back();
-            }
-        }
-
-        void internalRemoveAction(Action* action)
-        {
-            for (ActionLayers::iterator it = _actions.begin(); it != _actions.end(); it++)
-            {
-                ActionList& fa = it->second;
-                for (unsigned int i = 0; i < fa.size(); i++)
-                    if (fa[i].second.get() == action)
-                    {
-                        fa.erase(fa.begin() + i);
-                        return;
-                    }
-            }
-        }
-        void internalAddAction(int priority, const FrameAction& ftl)
-        {
-            _actions[priority].push_back(ftl);
-        }
-        
     public:
 
         META_Object(osgAnimation, Timeline);
 
         Timeline();
         Timeline(const Timeline& nc,const osg::CopyOp& op = osg::CopyOp::SHALLOW_COPY);
-        State getStatus() const { return _state; }
+
+        enum Status
+        {
+            Play,
+            Stop
+        };
+
+        Status getStatus() const { return _state; }
+
+        typedef std::pair<unsigned int, osg::ref_ptr<Action> > FrameAction;
+        typedef std::vector<FrameAction> ActionList;
+        typedef std::map<int, ActionList> ActionLayers;
+
         const ActionList& getActionLayer(int i)
         {
             return _actions[i];
@@ -374,6 +312,73 @@ namespace osgAnimation
                 _lastUpdate += ((double)nb) / _fps;
             }
         }
+
+    protected:
+
+
+        ActionLayers _actions;
+        double _lastUpdate;
+        double _speed;
+        unsigned int _currentFrame;
+        unsigned int _fps;
+        unsigned int _numberFrame;
+        unsigned int _previousFrameEvaluated;
+        bool _loop;
+        bool _initFirstFrame;
+
+        Status _state;
+
+        // to manage pending operation
+        bool _evaluating;
+
+        struct Command
+        {
+            Command():_priority(0) {}
+            Command(int priority, const FrameAction& action) : _priority(priority), _action(action) {}
+            int _priority;
+            FrameAction _action;
+        };
+
+        typedef std::vector<Command> CommandList;
+        CommandList _addActionOperations;
+        ActionList _removeActionOperations;
+
+        void setEvaluating(bool state) { _evaluating = state;}
+        void processPendingOperation()
+        {
+            // process all pending add action operation
+            while( !_addActionOperations.empty())
+            {
+                internalAddAction(_addActionOperations.back()._priority, _addActionOperations.back()._action);
+                _addActionOperations.pop_back();
+            }
+
+            // process all pending remove action operation
+            while( !_removeActionOperations.empty())
+            {
+                internalRemoveAction(_removeActionOperations.back().second.get());
+                _removeActionOperations.pop_back();
+            }
+        }
+
+        void internalRemoveAction(Action* action)
+        {
+            for (ActionLayers::iterator it = _actions.begin(); it != _actions.end(); it++)
+            {
+                ActionList& fa = it->second;
+                for (unsigned int i = 0; i < fa.size(); i++)
+                    if (fa[i].second.get() == action)
+                    {
+                        fa.erase(fa.begin() + i);
+                        return;
+                    }
+            }
+        }
+        void internalAddAction(int priority, const FrameAction& ftl)
+        {
+            _actions[priority].push_back(ftl);
+        }
+        
     };
 
 

@@ -12,7 +12,6 @@
 
 #include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/State>
 #include <osgAnimation/Animation>
 #include <osgAnimation/Timeline>
 
@@ -320,6 +319,18 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::StripAnimation)
 	                 __void__setLoop__unsigned_int);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osgAnimation::Timeline::Status)
+	I_DeclaringFile("osgAnimation/Timeline");
+	I_EnumLabel(osgAnimation::Timeline::Play);
+	I_EnumLabel(osgAnimation::Timeline::Stop);
+END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::pair< unsigned int COMMA  osg::ref_ptr< osgAnimation::Action > >, osgAnimation::Timeline::FrameAction)
+
+TYPE_NAME_ALIAS(std::vector< osgAnimation::Timeline::FrameAction >, osgAnimation::Timeline::ActionList)
+
+TYPE_NAME_ALIAS(std::map< int COMMA  osgAnimation::Timeline::ActionList >, osgAnimation::Timeline::ActionLayers)
+
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Timeline)
 	I_DeclaringFile("osgAnimation/Timeline");
 	I_BaseType(osg::Object);
@@ -355,12 +366,12 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Timeline)
 	                           ____Timeline__C5_Timeline_R1__C5_osg_CopyOp_R1,
 	                           "",
 	                           "");
-	I_Method0(osg::State, getStatus,
+	I_Method0(osgAnimation::Timeline::Status, getStatus,
 	          Properties::NON_VIRTUAL,
-	          __State__getStatus,
+	          __Status__getStatus,
 	          "",
 	          "");
-	I_Method1(const ActionList &, getActionLayer, IN, int, i,
+	I_Method1(const osgAnimation::Timeline::ActionList &, getActionLayer, IN, int, i,
 	          Properties::NON_VIRTUAL,
 	          __C5_ActionList_R1__getActionLayer__int,
 	          "",
@@ -448,7 +459,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Timeline)
 	                   __void__internalRemoveAction__Action_P1,
 	                   "",
 	                   "");
-	I_ProtectedMethod2(void, internalAddAction, IN, int, priority, IN, const FrameAction &, ftl,
+	I_ProtectedMethod2(void, internalAddAction, IN, int, priority, IN, const osgAnimation::Timeline::FrameAction &, ftl,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__internalAddAction__int__C5_FrameAction_R1,
@@ -463,8 +474,48 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Timeline)
 	I_SimpleProperty(bool, Evaluating, 
 	                 __bool__getEvaluating, 
 	                 0);
-	I_SimpleProperty(osg::State, Status, 
-	                 __State__getStatus, 
+	I_SimpleProperty(osgAnimation::Timeline::Status, Status, 
+	                 __Status__getStatus, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Action >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgAnimation::Action *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgAnimation::Action > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgAnimation::Action *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Action *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgAnimation::Action > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgAnimation::Action *, , 
+	                 __T_P1__get, 
 	                 0);
 END_REFLECTOR
 
@@ -508,5 +559,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Action::Callback >)
 	                 0);
 END_REFLECTOR
 
+STD_MAP_REFLECTOR(std::map< int COMMA  osgAnimation::Timeline::ActionList >)
+
 STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osg::ref_ptr< osgAnimation::Action::Callback > >)
+
+STD_PAIR_REFLECTOR(std::pair< unsigned int COMMA  osg::ref_ptr< osgAnimation::Action > >)
+
+STD_VECTOR_REFLECTOR(std::vector< osgAnimation::Timeline::FrameAction >)
 

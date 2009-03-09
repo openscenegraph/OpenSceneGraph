@@ -14,6 +14,7 @@
 #ifndef OSGUTIL_GLOBJECTSVISITOR
 #define OSGUTIL_GLOBJECTSVISITOR 1
 
+#include <OpenThreads/Mutex>
 #include <osg/NodeVisitor>
 #include <osg/Geode>
 #include <osg/State>
@@ -223,10 +224,10 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         void add(CompileSet* compileSet, bool callBuildCompileMap=true);
 
 
-        OpenThreads::Mutex& getToCompiledMutex() { return _toCompileMutex; }
+        OpenThreads::Mutex* getToCompiledMutex() { return &_toCompileMutex; }
         CompileSets& getToCompile() { return _compiled; }
         
-        OpenThreads::Mutex& getCompiledMutex() { return _compiledMutex; }
+        OpenThreads::Mutex* getCompiledMutex() { return &_compiledMutex; }
         CompileSets& getCompiled() { return _compiled; }
 
     protected:

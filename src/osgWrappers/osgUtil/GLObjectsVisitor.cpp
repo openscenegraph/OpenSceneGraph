@@ -198,9 +198,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IncrementalCompileOperation)
 	                      __void__add__CompileSet_P1__bool,
 	                      "Add a CompileSet to be compiled. ",
 	                      "");
-	I_Method0(OpenThreads::Mutex &, getToCompiledMutex,
+	I_Method0(OpenThreads::Mutex *, getToCompiledMutex,
 	          Properties::NON_VIRTUAL,
-	          __OpenThreads_Mutex_R1__getToCompiledMutex,
+	          __OpenThreads_Mutex_P1__getToCompiledMutex,
 	          "",
 	          "");
 	I_Method0(osgUtil::IncrementalCompileOperation::CompileSets &, getToCompile,
@@ -208,9 +208,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IncrementalCompileOperation)
 	          __CompileSets_R1__getToCompile,
 	          "",
 	          "");
-	I_Method0(OpenThreads::Mutex &, getCompiledMutex,
+	I_Method0(OpenThreads::Mutex *, getCompiledMutex,
 	          Properties::NON_VIRTUAL,
-	          __OpenThreads_Mutex_R1__getCompiledMutex,
+	          __OpenThreads_Mutex_P1__getCompiledMutex,
 	          "",
 	          "");
 	I_Method0(osgUtil::IncrementalCompileOperation::CompileSets &, getCompiled,
@@ -221,14 +221,14 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::IncrementalCompileOperation)
 	I_SimpleProperty(osgUtil::IncrementalCompileOperation::CompileSets &, Compiled, 
 	                 __CompileSets_R1__getCompiled, 
 	                 0);
-	I_SimpleProperty(OpenThreads::Mutex &, CompiledMutex, 
-	                 __OpenThreads_Mutex_R1__getCompiledMutex, 
+	I_SimpleProperty(OpenThreads::Mutex *, CompiledMutex, 
+	                 __OpenThreads_Mutex_P1__getCompiledMutex, 
 	                 0);
 	I_SimpleProperty(osgUtil::IncrementalCompileOperation::CompileSets &, ToCompile, 
 	                 __CompileSets_R1__getToCompile, 
 	                 0);
-	I_SimpleProperty(OpenThreads::Mutex &, ToCompiledMutex, 
-	                 __OpenThreads_Mutex_R1__getToCompiledMutex, 
+	I_SimpleProperty(OpenThreads::Mutex *, ToCompiledMutex, 
+	                 __OpenThreads_Mutex_P1__getToCompiledMutex, 
 	                 0);
 END_REFLECTOR
 

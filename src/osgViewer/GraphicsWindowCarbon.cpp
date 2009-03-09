@@ -69,17 +69,15 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
                         // left the code for live-resizing, but it is not used, because of window-refreshing issues...
                         GetEventParameter( event, kEventParamCurrentBounds, typeQDRectangle, NULL, sizeof(Rect), NULL, &bounds );
                         
-                        w->resized(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
-                        w->getEventQueue()->windowResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top, w->getEventQueue()->getTime());
-                        w->requestRedraw();
+                        w->adaptResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
+						w->requestRedraw();
                         result = noErr;
                         break;
                             
                     case kEventWindowBoundsChanged:
                         InvalWindowRect(window, GetWindowPortBounds(window, &bounds));
                         GetWindowBounds(window, kWindowContentRgn, &bounds);
-                        w->resized(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
-                        w->getEventQueue()->windowResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top, w->getEventQueue()->getTime());
+                        w->adaptResize(bounds.left, bounds.top, bounds.right - bounds.left, bounds.bottom - bounds.top);
                         result = noErr;
                         break;
                     
@@ -358,12 +356,10 @@ bool GraphicsWindowCarbon::realizeImplementation()
     // move the window to the right screen
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
-    if (wsi) {
-        
+    if (wsi) 
+	{
         wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
-        _traits->y += screenTop;
-        _traits->x += screenLeft;
-    }
+	}
     
     WindowData *windowData = ( _traits.get() && _traits->inheritedWindowData.get() ) ? static_cast<osgViewer::GraphicsWindowCarbon::WindowData*>(_traits->inheritedWindowData.get()) : 0; 
      
@@ -372,7 +368,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
     if (_ownsWindow) {
         
         // create the window
-        Rect bounds = {_traits->y, _traits->x, _traits->y + _traits->height, _traits->x + _traits->width};
+        Rect bounds = {_traits->y + screenTop, _traits->x + screenLeft, _traits->y + _traits->height + screenTop, _traits->x + _traits->width + screenLeft};
         OSStatus err = 0;
         WindowAttributes attr = computeWindowAttributes(_useWindowDecoration, _traits->supportsResize);
         
@@ -531,6 +527,8 @@ void GraphicsWindowCarbon::resizedImplementation(int x, int y, int width, int he
 
     aglUpdateContext(_context);
     MenubarController::instance()->update();
+	
+	getEventQueue()->windowResize(x,y,width, height, getEventQueue()->getTime());
 }
 
 
@@ -899,12 +897,42 @@ void GraphicsWindowCarbon::checkEvents()
 
 bool GraphicsWindowCarbon::setWindowRectangleImplementation(int x, int y, int width, int height)
 {
-    Rect bounds = {y, x, y + height, x + width};
+	int screenLeft(0), screenTop(0);
+	DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+   if (wsi) 
+	{
+        wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
+	}
+	
+	Rect bounds = {y + screenTop, x + screenLeft, y + height + screenTop, x + width + screenLeft};
     SetWindowBounds(getNativeWindowRef(), kWindowContentRgn, &bounds);
     aglUpdateContext(_context);
     MenubarController::instance()->update();
     return true;
 }
+
+
+
+void GraphicsWindowCarbon::adaptResize(int x, int y, int w, int h)
+{
+	DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    int screenLeft(0), screenTop(0);
+    if (wsi) {
+		
+		// get the screen containing the window
+		unsigned int screenNdx = wsi->getScreenContaining(x,y,w,h);
+		
+		// update traits
+		_traits->screenNum = screenNdx;
+		
+		// get top left of screen
+        wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
+    }
+	
+	resized(x-screenLeft,y-screenTop,w,h);
+}
+
+
 
 void GraphicsWindowCarbon::grabFocus()
 {

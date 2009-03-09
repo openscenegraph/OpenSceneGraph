@@ -99,6 +99,7 @@ ELSE(WIN32)
                 DarwinUtils.mm
                 PixelBufferCarbon.cpp
             )
+	    SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
 
         ELSE(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
 

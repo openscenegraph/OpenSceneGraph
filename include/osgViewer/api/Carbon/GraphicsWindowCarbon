@@ -142,15 +142,14 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         
         // get the pixelformat
         AGLPixelFormat getAGLPixelFormat() { return _pixelFormat; }
+		
+		void adaptResize(int x, int y, int w, int h);
 
     protected:
     
         void init();
         
-        void transformMouseXY(float& x, float& y);
-        
-        
-        
+        void transformMouseXY(float& x, float& y);      
 
 
         bool            _valid;

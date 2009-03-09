@@ -117,22 +117,6 @@ ENDIF(XUL_FOUND)
 
 ############################################################
 #
-#  Quicktime or ImageIO
-#
-
-IF(APPLE)
-	ADD_SUBDIRECTORY(imageio)
-ENDIF(APPLE)
-
-IF(QUICKTIME_FOUND)
-    ADD_SUBDIRECTORY(quicktime)
-ENDIF(QUICKTIME_FOUND)
-
-
-
-
-############################################################
-#
 # 3D Image plugins
 #
 IF   (DCMTK_FOUND AND ZLIB_FOUND)
@@ -216,7 +200,13 @@ IF(FFMPEG_FOUND)
     ADD_SUBDIRECTORY(ffmpeg)
 ENDIF(FFMPEG_FOUND)
 
+# IF(OPENAL_FOUND)
+#    ADD_SUBDIRECTORY(OpenAL)
+# ENDIF(OPENAL_FOUND)
 
+IF(QUICKTIME_FOUND)
+    ADD_SUBDIRECTORY(quicktime)
+ENDIF(QUICKTIME_FOUND)
 
 IF(FREETYPE_FOUND)
     ADD_SUBDIRECTORY(freetype)

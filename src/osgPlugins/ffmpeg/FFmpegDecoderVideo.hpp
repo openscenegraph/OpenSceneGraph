@@ -89,34 +89,42 @@ private:
     double synchronizeVideo(double pts);
     void yuva420pToRgba(AVPicture *dst, const AVPicture *src, int width, int height);
 
+    int convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src,
+                int src_pix_fmt, int src_width, int src_height);
+
+
     static int getBuffer(AVCodecContext * context, AVFrame * picture);
     static void releaseBuffer(AVCodecContext * context, AVFrame * picture);
 
-    PacketQueue &        m_packets;
-    FFmpegClocks &        m_clocks;
-    AVStream *            m_stream;
-    AVCodecContext *    m_context;
-    AVCodec *            m_codec;
-    const uint8_t *        m_packet_data;
-    int                    m_bytes_remaining;
-    int64_t                m_packet_pts;
+    PacketQueue &           m_packets;
+    FFmpegClocks &          m_clocks;
+    AVStream *              m_stream;
+    AVCodecContext *        m_context;
+    AVCodec *               m_codec;
+    const uint8_t *         m_packet_data;
+    int                     m_bytes_remaining;
+    int64_t                 m_packet_pts;
     
-    FramePtr            m_frame;
-    FramePtr            m_frame_rgba;
-    Buffer                m_buffer_rgba;
-    Buffer                m_buffer_rgba_public;
+    FramePtr                m_frame;
+    FramePtr                m_frame_rgba;
+    Buffer                  m_buffer_rgba;
+    Buffer                  m_buffer_rgba_public;
 
-    void *                m_user_data;
-    PublishFunc            m_publish_func;
+    void *                  m_user_data;
+    PublishFunc             m_publish_func;
 
-    double                m_frame_rate;
-    double                m_aspect_ratio;
-    int                    m_width;
-    int                    m_height;
-    size_t                m_next_frame_index;
-    bool                m_alpha_channel;
+    double                  m_frame_rate;
+    double                  m_aspect_ratio;
+    int                     m_width;
+    int                     m_height;
+    size_t                  m_next_frame_index;
+    bool                    m_alpha_channel;
 
-    volatile bool        m_exit;
+    volatile bool           m_exit;
+    
+#ifdef USE_SWSCALE    
+    struct SwsContext *     m_swscale_ctx;
+#endif
 };
 
 

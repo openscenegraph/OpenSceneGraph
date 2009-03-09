@@ -5,11 +5,7 @@
 #include <stdexcept>
 #include <string.h>
 
-
-
 namespace osgFFmpeg {
-
-
 
 FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clocks) :
     m_packets(packets),
@@ -23,6 +19,9 @@ FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clo
     m_user_data(0),
     m_publish_func(0),
     m_exit(false)
+#ifdef USE_SWSCALE
+    ,m_swscale_ctx(0)
+#endif
 {
 
 }
@@ -36,6 +35,14 @@ FFmpegDecoderVideo::~FFmpegDecoderVideo()
         m_exit = true;
         join();
     }
+    
+#ifdef USE_SWSCALE
+    if (m_swscale_ctx)
+    {
+        sws_freeContext(m_swscale_ctx);
+        m_swscale_ctx = 0;
+    }
+#endif
 }
 
 
@@ -205,6 +212,29 @@ void FFmpegDecoderVideo::findAspectRatio()
     m_aspect_ratio = ratio;
 }
 
+int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src,
+            int src_pix_fmt, int src_width, int src_height)
+{
+#ifdef USE_SWSCALE
+    if (m_swscale_ctx==0)
+    {
+        m_swscale_ctx = sws_getContext(src_width, src_height, src_pix_fmt,
+                                      src_width, src_height, dst_pix_fmt,                                    
+                                      SWS_BILINEAR, NULL, NULL, NULL);
+    }
+    
+    osg::notify(osg::NOTICE)<<"Using sws_scale"<<std::endl;
+
+    return sws_scale(m_swscale_ctx,
+           src->data, src->linesize, 0, src_height,
+           dst->data, dst->linesize);
+#else
+    osg::notify(osg::NOTICE)<<"Using img_convert"<<std::endl;
+
+    return img_convert(dst, dst_pix_fmt, src,
+                      src_pix_fmt, src_width, src_height);
+#endif
+}
 
 
 void FFmpegDecoderVideo::publishFrame(const double delay)
@@ -225,7 +255,7 @@ void FFmpegDecoderVideo::publishFrame(const double delay)
     if (m_context->pix_fmt == PIX_FMT_YUVA420P)
         yuva420pToRgba(dst, src, width(), height());
     else
-        img_convert(dst, PIX_FMT_RGB32, src, m_context->pix_fmt, width(), height());
+        convert(dst, PIX_FMT_RGB32, src, m_context->pix_fmt, width(), height());
 
     // Flip and swap buffer
     swapBuffers();
@@ -261,7 +291,7 @@ void FFmpegDecoderVideo::swapBuffers()
 
 void FFmpegDecoderVideo::yuva420pToRgba(AVPicture * const dst, const AVPicture * const src, int width, int height)
 {
-    img_convert(dst, PIX_FMT_RGB32, src, m_context->pix_fmt, width, height);
+    convert(dst, PIX_FMT_RGB32, src, m_context->pix_fmt, width, height);
 
     const size_t bpp = 4;
 

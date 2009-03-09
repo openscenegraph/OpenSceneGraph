@@ -29,6 +29,8 @@ public:
     ~FFmpegDecoderAudio();
 
     void open(AVStream * stream);
+    void close(bool waitForThreadToExit);
+    
     virtual void run();
 
     void setAudioSink(osg::ref_ptr<osg::AudioSinkInterface> audio_sink);
@@ -41,7 +43,6 @@ public:
 
 private:
 
-    //typedef boost::shared_ptr<AVFrame> FramePtr;
     typedef osg::ref_ptr<osg::AudioSinkInterface> SinkPtr;
     typedef std::vector<uint8_t> Buffer;
 

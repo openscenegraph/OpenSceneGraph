@@ -17,6 +17,7 @@
 #include <osg/Stats>
 
 #include <osgUtil/UpdateVisitor>
+#include <osgUtil/GLObjectsVisitor>
 
 #include <osgGA/MatrixManipulator>
 #include <osgGA/EventVisitor>
@@ -184,6 +185,15 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** Get the graphics operation to call on realization of the viewers graphics windows.*/
         osg::Operation* getRealizeOperation() { return _realizeOperation.get(); }
+        
+        
+        /** Set the incremental compile operation.
+          * Used to manage the OpenGL object compilation and merging of subgraphs in a way that avoids overloading
+          * the rendering of frame with too many new objects in one frame. */
+        void setIncrementalCompileOperation(osgUtil::IncrementalCompileOperation* ico);
+
+        /** Get the incremental compile operation. */
+        osgUtil::IncrementalCompileOperation* getIncrementalCompileOperation() { return _incrementalCompileOperation.get(); }
 
 
         /** Check to see if windows are still open, if not set viewer done to true. */
@@ -260,29 +270,30 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         virtual void viewerInit() = 0;
 
-        bool                                        _firstFrame;
-        bool                                        _done;
-        int                                         _keyEventSetsDone;
-        bool                                        _quitEventSetsDone;
-        bool                                        _releaseContextAtEndOfFrameHint;
+        bool                                                _firstFrame;
+        bool                                                _done;
+        int                                                 _keyEventSetsDone;
+        bool                                                _quitEventSetsDone;
+        bool                                                _releaseContextAtEndOfFrameHint;
         
-        ThreadingModel                              _threadingModel;
-        bool                                        _threadsRunning;
+        ThreadingModel                                      _threadingModel;
+        bool                                                _threadsRunning;
 
-        BarrierPosition                             _endBarrierPosition;
+        BarrierPosition                                     _endBarrierPosition;
 
-        osg::ref_ptr<osg::BarrierOperation>         _startRenderingBarrier;
-        osg::ref_ptr<osg::BarrierOperation>         _endRenderingDispatchBarrier;
-        osg::ref_ptr<osg::EndOfDynamicDrawBlock>    _endDynamicDrawBlock;
+        osg::ref_ptr<osg::BarrierOperation>                 _startRenderingBarrier;
+        osg::ref_ptr<osg::BarrierOperation>                 _endRenderingDispatchBarrier;
+        osg::ref_ptr<osg::EndOfDynamicDrawBlock>            _endDynamicDrawBlock;
         
-        osg::ref_ptr<osgGA::EventVisitor>           _eventVisitor;
+        osg::ref_ptr<osgGA::EventVisitor>                   _eventVisitor;
         
-        osg::ref_ptr<osg::OperationQueue>           _updateOperations;
-        osg::ref_ptr<osgUtil::UpdateVisitor>        _updateVisitor;
+        osg::ref_ptr<osg::OperationQueue>                   _updateOperations;
+        osg::ref_ptr<osgUtil::UpdateVisitor>                _updateVisitor;
         
-        osg::ref_ptr<osg::Operation>                _realizeOperation;
+        osg::ref_ptr<osg::Operation>                        _realizeOperation;
+        osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
 
-        osg::observer_ptr<osg::GraphicsContext>     _currentContext;
+        osg::observer_ptr<osg::GraphicsContext>             _currentContext;
 };
 
 }

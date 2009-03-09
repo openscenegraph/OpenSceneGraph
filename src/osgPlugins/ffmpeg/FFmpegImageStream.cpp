@@ -1,11 +1,9 @@
 
 #include "FFmpegImageStream.hpp"
+#include "FFmpegAudioStream.hpp"
 
 #include <OpenThreads/ScopedLock>
 #include <osg/Notify>
-
-#include "FFmpegDecoder.hpp"
-#include "MessageQueue.hpp"
 
 #include <memory>
 
@@ -41,10 +39,23 @@ FFmpegImageStream::FFmpegImageStream(const FFmpegImageStream & image, const osg:
 
 FFmpegImageStream::~FFmpegImageStream()
 {
+    osg::notify(osg::NOTICE)<<"Destructing FFMpegImageStream..."<<std::endl;
+
     quit(true);
+    
+    osg::notify(osg::NOTICE)<<"Have done quit"<<std::endl;
+
+    // release athe audio streams to make sure that the decoder doesn't retain any external
+    // refences.
+    getAudioStreams().clear();
+
+    // destroy the decoder and associated threads
+    m_decoder = 0;
+
 
     delete m_commands;
-    delete m_decoder;
+
+    osg::notify(osg::NOTICE)<<"Destructed FFMpegImageStream."<<std::endl;
 }
 
 
@@ -60,9 +71,18 @@ bool FFmpegImageStream::open(const std::string & filename)
         m_decoder->video_decoder().width(), m_decoder->video_decoder().height(), 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE,
         const_cast<unsigned char *>(m_decoder->video_decoder().image()), NO_DELETE
     );
+    
+    setOrigin(osg::Image::TOP_LEFT);
 
     m_decoder->video_decoder().setUserData(this);
     m_decoder->video_decoder().setPublishCallback(publishNewFrame);
+    
+    if (m_decoder->audio_decoder().validContext())
+    {
+        osg::notify(osg::NOTICE)<<"Attaching FFmpegAudioStream"<<std::endl;
+    
+        getAudioStreams().push_back(new FFmpegAudioStream(m_decoder.get()));
+    }
 
     _status = PAUSED;
     applyLoopingMode();
@@ -116,22 +136,8 @@ void FFmpegImageStream::quit(bool waitForThreadToExit)
     }
 
     // Close the decoder (i.e. flush the decoder packet queues)
-    m_decoder->close();
+    m_decoder->close(waitForThreadToExit);
 }
-
-
-
-void FFmpegImageStream::setAudioSink(osg::AudioSinkInterface* audio_sink)
-{ 
-    m_decoder->audio_decoder().setAudioSink(audio_sink); 
-}
-
-
-void FFmpegImageStream::consumeAudioBuffer(void * const buffer, const size_t size)
-{ 
-    m_decoder->audio_decoder().fillBuffer(buffer, size);
-}
-
 
 
 double FFmpegImageStream::duration() const
@@ -159,35 +165,6 @@ double FFmpegImageStream::videoFrameRate() const
 { 
     return m_decoder->video_decoder().frameRate(); 
 }
-
-
-
-bool FFmpegImageStream::audioStream() const 
-{ 
-    return m_decoder->audio_decoder().validContext(); 
-}
-
-
-
-int FFmpegImageStream::audioFrequency() const 
-{ 
-    return m_decoder->audio_decoder().frequency(); 
-}
-
-
-
-int FFmpegImageStream::audioNbChannels() const 
-{ 
-    return m_decoder->audio_decoder().nbChannels();
-}
-
-
-
-osg::AudioStream::SampleFormat FFmpegImageStream::audioSampleFormat() const 
-{ 
-    return m_decoder->audio_decoder().sampleFormat(); 
-}
-
 
 
 void FFmpegImageStream::run()
@@ -226,6 +203,8 @@ void FFmpegImageStream::run()
     {
         osg::notify(osg::WARN) << "FFmpegImageStream::run : unhandled exception" << std::endl;
     }
+    
+    osg::notify(osg::NOTICE)<<"Finished FFmpegImageStream::run()"<<std::endl;
 }
 
 
@@ -303,8 +282,15 @@ void FFmpegImageStream::publishNewFrame(const FFmpegDecoderVideo &, void * user_
 {
     FFmpegImageStream * const this_ = reinterpret_cast<FFmpegImageStream*>(user_data);
 
+#if 1
+    this_->setImage(
+        this_->m_decoder->video_decoder().width(), this_->m_decoder->video_decoder().height(), 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE,
+        const_cast<unsigned char *>(this_->m_decoder->video_decoder().image()), NO_DELETE
+    );
+#else
     /** \bug If viewer.realize() hasn't been already called, this doesn't work? */
     this_->dirty();
+#endif
 
     OpenThreads::ScopedLock<Mutex> lock(this_->m_mutex);
 

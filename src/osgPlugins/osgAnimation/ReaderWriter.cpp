@@ -26,6 +26,7 @@
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/RigGeometry>
+#include <osgAnimation/MorphGeometry>
 #include <osgAnimation/UpdateCallback>
 
 #include <osgDB/Registry>
@@ -121,13 +122,83 @@ RegisterDotOsgWrapperProxy g_atkRootSkeletonProxy
     DotOsgWrapper::READ_AND_WRITE
     );
 
+// Helper method for reading channels
+bool Animation_readChannel(osgAnimation::Channel* pChannel, Input& fr)
+{
+    bool iteratorAdvanced = false;
+    std::string name = "unknown";
+    if (fr.matchSequence("name %s")) 
+    {
+        if (fr[1].getStr())
+            name = fr[1].getStr();
+        fr += 2;
+        iteratorAdvanced = true;
+    }
+    pChannel->setName(name);
 
+    std::string target = "unknown";
+    if (fr.matchSequence("target %s")) 
+    {
+        if (fr[1].getStr())
+            target = fr[1].getStr();
+        fr += 2;
+        iteratorAdvanced = true;
+    }
+    pChannel->setTargetName(target);
 
+    float weight = 1.0;
+    if (fr.matchSequence("weight %f")) 
+    {
+        fr[1].getFloat(weight);
+        fr += 2;
+        iteratorAdvanced = true;
+    }
+    pChannel->setWeight(weight);
+    return iteratorAdvanced;
+}
 
-bool Animation_readLocalData(Object& obj, Input& fr) 
+bool Animation_readLocalData(Object& obj, Input& fr)
 {
     osgAnimation::Animation& anim = dynamic_cast<osgAnimation::Animation&>(obj);
     bool iteratorAdvanced = false;
+
+    if (fr.matchSequence("playmode %w"))
+    {
+        if      (fr[1].matchWord("ONCE")) anim.setPlaymode(osgAnimation::Animation::ONCE);
+        else if (fr[1].matchWord("STAY")) anim.setPlaymode(osgAnimation::Animation::STAY);
+        else if (fr[1].matchWord("LOOP")) anim.setPlaymode(osgAnimation::Animation::LOOP);
+        else if (fr[1].matchWord("PPONG")) anim.setPlaymode(osgAnimation::Animation::PPONG);
+        fr += 2;
+        iteratorAdvanced = true;
+    }
+
+    if (fr.matchSequence("weight %f")) 
+    {
+        float weight;
+        fr[1].getFloat(weight);
+        fr += 2;
+        iteratorAdvanced = true;
+        anim.setWeight(weight);
+    }
+    
+    if (fr.matchSequence("duration %f")) 
+    {
+        float duration;
+        fr[1].getFloat(duration);
+        fr += 2;
+        iteratorAdvanced = true;
+        anim.setDuration(duration);
+    }
+
+    if (fr.matchSequence("starttime %f")) 
+    {
+        float starttime;
+        fr[1].getFloat(starttime);
+        fr += 2;
+        iteratorAdvanced = true;
+        anim.setStartTime(starttime);
+    }
+
     int nbChannels = 0;
     if (fr.matchSequence("num_channels %i")) 
     {
@@ -138,30 +209,267 @@ bool Animation_readLocalData(Object& obj, Input& fr)
 
     for (int i = 0; i < nbChannels; i++) 
     {
-        if (fr.matchSequence("Channel {")) 
+        if (fr.matchSequence("DoubleLinearChannel {")) 
+        {
+            fr += 2;
+
+            osgAnimation::DoubleLinearChannel* channel = new osgAnimation::DoubleLinearChannel;
+
+            if (Animation_readChannel(channel, fr))
+                iteratorAdvanced = true;
+                 
+            int nbKeys;
+            if (fr.matchSequence("Keyframes %i {")) 
+            {
+                fr[1].getInt(nbKeys);
+                fr += 3;
+                iteratorAdvanced = true;
+
+                for (int k = 0; k < nbKeys; k++) 
+                {
+                    double v;
+                    float time;
+                    if (fr.matchSequence("key %f %f"))
+                    {
+                        fr[1].getFloat(time);
+                        fr[2].getFloat(v);
+                        fr += 3;
+                        channel->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::DoubleKeyframe(time, v));
+                        iteratorAdvanced = true;
+                    }
+                }
+                anim.addChannel(channel);
+
+                if (fr.matchSequence("}")) // keyframes
+                    fr += 1;
+            }
+            if (fr.matchSequence("}")) // channel
+                fr += 1;
+        }
+        else if (fr.matchSequence("FloatLinearChannel {")) 
+        {
+            fr += 2;
+
+            osgAnimation::FloatLinearChannel* channel = new osgAnimation::FloatLinearChannel;
+
+            if (Animation_readChannel(channel, fr))
+                iteratorAdvanced = true;
+                 
+            int nbKeys;
+            if (fr.matchSequence("Keyframes %i {")) 
+            {
+                fr[1].getInt(nbKeys);
+                fr += 3;
+                iteratorAdvanced = true;
+
+                for (int k = 0; k < nbKeys; k++) 
+                {
+                    float v;
+                    float time;
+                    if (fr.matchSequence("key %f %f"))
+                    {
+                        fr[1].getFloat(time);
+                        fr[2].getFloat(v);
+                        fr += 3;
+                        channel->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::FloatKeyframe(time, v));
+                        iteratorAdvanced = true;
+                    }
+                }
+                anim.addChannel(channel);
+
+                if (fr.matchSequence("}")) // keyframes
+                    fr += 1;
+            }
+            if (fr.matchSequence("}")) // channel
+                fr += 1;
+        }
+        else if (fr.matchSequence("Vec2LinearChannel {")) 
+        {
+            fr += 2;
+
+            osgAnimation::Vec2LinearChannel* channel = new osgAnimation::Vec2LinearChannel;
+
+            if (Animation_readChannel(channel, fr))
+                iteratorAdvanced = true;
+                 
+            int nbKeys;
+            if (fr.matchSequence("Keyframes %i {")) 
+            {
+                fr[1].getInt(nbKeys);
+                fr += 3;
+                iteratorAdvanced = true;
+
+                for (int k = 0; k < nbKeys; k++) 
+                {
+                    osg::Vec2 v;
+                    float time;
+                    if (fr.matchSequence("key %f %f %f"))
+                    {
+                        fr[1].getFloat(time);
+                        fr[2].getFloat(v[0]);
+                        fr[3].getFloat(v[1]);
+                        fr += 4;
+                        channel->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec2Keyframe(time, v));
+                        iteratorAdvanced = true;
+                    }
+                }
+                anim.addChannel(channel);
+
+                if (fr.matchSequence("}")) // keyframes
+                    fr += 1;
+            }
+            if (fr.matchSequence("}")) // channel
+                fr += 1;
+        }
+        else if (fr.matchSequence("Vec3LinearChannel {")) 
+        {
+            fr += 2;
+
+            osgAnimation::Vec3LinearChannel* channel = new osgAnimation::Vec3LinearChannel;
+
+            if (Animation_readChannel(channel, fr))
+                iteratorAdvanced = true;
+                 
+            int nbKeys;
+            if (fr.matchSequence("Keyframes %i {")) 
+            {
+                fr[1].getInt(nbKeys);
+                fr += 3;
+                iteratorAdvanced = true;
+
+                for (int k = 0; k < nbKeys; k++) 
+                {
+                    osg::Vec3 v;
+                    float time;
+                    if (fr.matchSequence("key %f %f %f %f"))
+                    {
+                        fr[1].getFloat(time);
+                        fr[2].getFloat(v[0]);
+                        fr[3].getFloat(v[1]);
+                        fr[4].getFloat(v[2]);
+                        fr += 5;
+                        channel->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(time, v));
+                        iteratorAdvanced = true;
+                    }
+                }
+                anim.addChannel(channel);
+
+                if (fr.matchSequence("}")) // keyframes
+                    fr += 1;
+            }
+            if (fr.matchSequence("}")) // channel
+                fr += 1;
+        }
+        else if (fr.matchSequence("Vec4LinearChannel {")) 
+        {
+            fr += 2;
+
+            osgAnimation::Vec4LinearChannel* channel = new osgAnimation::Vec4LinearChannel;
+
+            if (Animation_readChannel(channel, fr))
+                iteratorAdvanced = true;
+                 
+            int nbKeys;
+            if (fr.matchSequence("Keyframes %i {")) 
+            {
+                fr[1].getInt(nbKeys);
+                fr += 3;
+                iteratorAdvanced = true;
+
+                for (int k = 0; k < nbKeys; k++) 
+                {
+                    osg::Vec4 v;
+                    float time;
+                    if (fr.matchSequence("key %f %f %f %f %f"))
+                    {
+                        fr[1].getFloat(time);
+                        fr[2].getFloat(v[0]);
+                        fr[3].getFloat(v[1]);
+                        fr[4].getFloat(v[2]);
+                        fr[5].getFloat(v[3]);
+                        fr += 6;
+                        channel->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec4Keyframe(time, v));
+                        iteratorAdvanced = true;
+                    }
+                }
+                anim.addChannel(channel);
+
+                if (fr.matchSequence("}")) // keyframes
+                    fr += 1;
+            }
+            if (fr.matchSequence("}")) // channel
+                fr += 1;
+        }
+        else if (fr.matchSequence("QuatSphericalLinearChannel {")) 
+        {
+            fr += 2;
+
+            osgAnimation::QuatSphericalLinearChannel* channel = new osgAnimation::QuatSphericalLinearChannel;
+
+            if (Animation_readChannel(channel, fr))
+                iteratorAdvanced = true;
+                 
+            int nbKeys;
+            if (fr.matchSequence("Keyframes %i {")) 
+            {
+                fr[1].getInt(nbKeys);
+                fr += 3;
+                iteratorAdvanced = true;
+
+                for (int k = 0; k < nbKeys; k++) 
+                {
+                    osg::Quat q;
+                    float time;
+                    if (fr.matchSequence("key %f %f %f %f %f"))
+                    {
+                        fr[1].getFloat(time);
+                        fr[2].getFloat(q[0]);
+                        fr[3].getFloat(q[1]);
+                        fr[4].getFloat(q[2]);
+                        fr[5].getFloat(q[3]);
+                        fr += 6;
+                        channel->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::QuatKeyframe(time, q));
+                        iteratorAdvanced = true;
+                    }
+                }
+                anim.addChannel(channel);
+
+                if (fr.matchSequence("}")) // keyframes
+                    fr += 1;
+            }
+            if (fr.matchSequence("}")) // channel
+                fr += 1;
+        }
+        // Deprecated
+        // Reading of old channel info 
+        // Kept here for easy conversion of old .osg data to new format
+        else if (fr.matchSequence("Channel {")) 
         {
             fr += 2;
 
             std::string name = "unknown";
             if (fr.matchSequence("name %s")) 
             {
-                name = fr[1].getStr();
+                if (fr[1].getStr())
+                    name = fr[1].getStr();
                 fr += 2;
                 iteratorAdvanced = true;
             }
             std::string target = "unknown";
             if (fr.matchSequence("target %s")) 
             {
-                target = fr[1].getStr();
+                if (fr[1].getStr())
+                    target = fr[1].getStr();
                 fr += 2;
                 iteratorAdvanced = true;
             }
 
-            std::string type;
+            std::string type = "unknown";
             int nbKeys;
             if (fr.matchSequence("Keyframes %s %i {")) 
             {
-                type = fr[1].getStr();
+                if (fr[1].getStr())
+                    type = fr[1].getStr();
                 fr[2].getInt(nbKeys);
                 fr += 4;
                 iteratorAdvanced = true;
@@ -175,11 +483,11 @@ bool Animation_readLocalData(Object& obj, Input& fr)
                 }
                 else if (type == "Vec3") 
                 {
-                    channel = new osgAnimation::Vec3LinearChannel;
                     osgAnimation::Vec3LinearChannel* c = new osgAnimation::Vec3LinearChannel;
                     c->getOrCreateSampler()->getOrCreateKeyframeContainer();
                     channel = c;
                 }
+
                 if (channel) 
                 {
                     for (int k = 0; k < nbKeys; k++) 
@@ -229,60 +537,130 @@ bool Animation_readLocalData(Object& obj, Input& fr)
     return iteratorAdvanced;
 }
 
+// Helper method for writing channels
+template <typename ChannelType, typename ContainerType>
+void Animation_writeChannel(const std::string& channelString, ChannelType* pChannel, Output& fw)
+{
+    fw.indent() << channelString.c_str() << " {" << std::endl;
+    fw.moveIn();
+    fw.indent() << "name \"" << pChannel->getName() << "\"" << std::endl;
+    fw.indent() << "target \"" << pChannel->getTargetName() << "\"" << std::endl;
+
+    fw.indent() << "weight " << pChannel->getWeight() << std::endl;
+
+    ContainerType* kfc  = pChannel->getSamplerTyped()->getKeyframeContainerTyped();
+    if (kfc)
+    {
+        fw.indent() << "Keyframes " << kfc->size() << " {" << std::endl;
+        fw.moveIn();
+        for (unsigned int k = 0; k < kfc->size(); k++) 
+        {
+            fw.indent() << "key " << (*kfc)[k].getTime() << " " <<  (*kfc)[k].getValue() << std::endl;
+        }
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
+    }
+}
+
 bool Animation_writeLocalData(const Object& obj, Output& fw)
 {
     const osgAnimation::Animation& anim = dynamic_cast<const osgAnimation::Animation&>(obj);
 
+    switch (anim.getPlayMode()) 
+    {
+    case osgAnimation::Animation::ONCE:
+        fw.indent() << "playmode ONCE" << std::endl;
+        break;
+    case osgAnimation::Animation::STAY:
+        fw.indent() << "playmode STAY" << std::endl;
+        break;
+    case osgAnimation::Animation::LOOP:
+        fw.indent() << "playmode LOOP" << std::endl;
+        break;
+    case osgAnimation::Animation::PPONG: 
+        fw.indent() << "playmode PPONG" << std::endl;
+        break;
+    default:
+        break;
+    }
+
+    fw.indent() << "weight " << anim.getWeight() << std::endl;
+    fw.indent() << "duration " << anim.getDuration() << std::endl;
+    fw.indent() << "starttime " << anim.getStartTime() << std::endl;
+
     fw.indent() << "num_channels " << anim.getChannels().size()  << std::endl;
     for (unsigned int i = 0; i < anim.getChannels().size(); i++) 
     {
-        fw.indent() << "Channel {" << std::endl;
-        fw.moveIn();
-        fw.indent() << "name \"" << anim.getChannels()[i]->getName() << "\"" << std::endl;
-        fw.indent() << "target \"" << anim.getChannels()[i]->getTargetName() << "\"" << std::endl;
+        osgAnimation::Channel* pChannel = anim.getChannels()[i];
 
-        std::string type = "unknown";
-        if (anim.getChannels()[i]->getName() == std::string("quaternion")) 
+        osgAnimation::DoubleLinearChannel* pDlc = dynamic_cast<osgAnimation::DoubleLinearChannel*>(pChannel);
+        if (pDlc)
         {
-            type = "Quat";
+            Animation_writeChannel<osgAnimation::DoubleLinearChannel, osgAnimation::DoubleKeyframeContainer>("DoubleLinearChannel",  pDlc, fw);
+            continue;
         }
-        else if (anim.getChannels()[i]->getName() == std::string("rotation")) 
+        osgAnimation::FloatLinearChannel* pFlc = dynamic_cast<osgAnimation::FloatLinearChannel*>(pChannel);
+        if (pFlc)
         {
-            type = "Quat";
+            Animation_writeChannel<osgAnimation::FloatLinearChannel, osgAnimation::FloatKeyframeContainer>("FloatLinearChannel",  pFlc, fw);
+            continue;
         }
-        else if (anim.getChannels()[i]->getName() == std::string("euler")) 
+        osgAnimation::Vec2LinearChannel* pV2lc = dynamic_cast<osgAnimation::Vec2LinearChannel*>(pChannel);
+        if (pV2lc)
         {
-            type = "Vec3";
+            Animation_writeChannel<osgAnimation::Vec2LinearChannel, osgAnimation::Vec2KeyframeContainer>("Vec2LinearChannel",  pV2lc, fw);
+            continue;
         }
-        else if (anim.getChannels()[i]->getName() == std::string("scale")) 
+        osgAnimation::Vec3LinearChannel* pV3lc = dynamic_cast<osgAnimation::Vec3LinearChannel*>(pChannel);
+        if (pV3lc)
         {
-            type = "Vec3";
+            Animation_writeChannel<osgAnimation::Vec3LinearChannel, osgAnimation::Vec3KeyframeContainer>("Vec3LinearChannel",  pV3lc, fw);
+            continue;
         }
-        else if (anim.getChannels()[i]->getName() == std::string("position")) 
+        osgAnimation::Vec4LinearChannel* pV4lc = dynamic_cast<osgAnimation::Vec4LinearChannel*>(pChannel);
+        if (pV4lc)
         {
-            type = "Vec3";
+            Animation_writeChannel<osgAnimation::Vec4LinearChannel, osgAnimation::Vec4KeyframeContainer>("Vec4LinearChannel",  pV4lc, fw);
+            continue;
         }
-
-        osgAnimation::KeyframeContainer* kf = anim.getChannels()[i]->getSampler()->getKeyframeContainer();
-        fw.indent() << "Keyframes \"" << type << "\" " << kf->size() << " {" << std::endl;
-        fw.moveIn();
-        for (unsigned int k = 0; k < kf->size(); k++) 
+        osgAnimation::QuatSphericalLinearChannel* pQslc = dynamic_cast<osgAnimation::QuatSphericalLinearChannel*>(pChannel);
+        if (pQslc)
         {
-            if (type == "Vec3") 
-            {
-                osgAnimation::Vec3KeyframeContainer* kk = dynamic_cast<osgAnimation::Vec3KeyframeContainer*>(kf);
-                fw.indent() << "key " << (*kk)[k].getTime() << " " <<  (*kk)[k].getValue() << std::endl;
-            }
-            else if ( type == "Quat") 
-            {
-                osgAnimation::QuatKeyframeContainer* kk = dynamic_cast<osgAnimation::QuatKeyframeContainer*>(kf);
-                fw.indent() << "key " << (*kk)[k].getTime() << " " <<  (*kk)[k].getValue() << std::endl;
-            }
+            Animation_writeChannel<osgAnimation::QuatSphericalLinearChannel, osgAnimation::QuatKeyframeContainer>("QuatSphericalLinearChannel",  pQslc, fw);
+            continue;
         }
-        fw.moveOut();
-        fw.indent() << "}" << std::endl;
-        fw.moveOut();
-        fw.indent() << "}" << std::endl;
+        osgAnimation::FloatCubicBezierChannel* pFcbc = dynamic_cast<osgAnimation::FloatCubicBezierChannel*>(pChannel);
+        if (pFcbc)
+        {
+            Animation_writeChannel<osgAnimation::FloatCubicBezierChannel, osgAnimation::FloatCubicBezierKeyframeContainer>("FloatCubicBezierChannel",  pFcbc, fw);
+            continue;
+        }
+        osgAnimation::DoubleCubicBezierChannel* pDcbc = dynamic_cast<osgAnimation::DoubleCubicBezierChannel*>(pChannel);
+        if (pDcbc)
+        {
+            Animation_writeChannel<osgAnimation::DoubleCubicBezierChannel, osgAnimation::DoubleCubicBezierKeyframeContainer>("DoubleCubicBezierChannel",  pDcbc, fw);
+            continue;
+        }
+        osgAnimation::Vec2CubicBezierChannel* pV2cbc = dynamic_cast<osgAnimation::Vec2CubicBezierChannel*>(pChannel);
+        if (pV2cbc)
+        {
+            Animation_writeChannel<osgAnimation::Vec2CubicBezierChannel, osgAnimation::Vec2CubicBezierKeyframeContainer>("Vec2CubicBezierChannel",  pV2cbc, fw);
+            continue;
+        }
+        osgAnimation::Vec3CubicBezierChannel* pV3cbc = dynamic_cast<osgAnimation::Vec3CubicBezierChannel*>(pChannel);
+        if (pV3cbc)
+        {
+            Animation_writeChannel<osgAnimation::Vec3CubicBezierChannel, osgAnimation::Vec3CubicBezierKeyframeContainer>("Vec3CubicBezierChannel",  pV3cbc, fw);
+            continue;
+        }
+        osgAnimation::Vec4CubicBezierChannel* pV4cbc = dynamic_cast<osgAnimation::Vec4CubicBezierChannel*>(pChannel);
+        if (pV4cbc)
+        {
+            Animation_writeChannel<osgAnimation::Vec4CubicBezierChannel, osgAnimation::Vec4CubicBezierKeyframeContainer>("Vec4CubicBezierChannel",  pV4cbc, fw);
+            continue;
+        }
     }
     return true;
 }
@@ -478,6 +856,123 @@ RegisterDotOsgWrapperProxy g_atkRigGeometryProxy
     );
 
 
+bool MorphGeometry_readLocalData(Object& obj, Input& fr) 
+{
+    osgAnimation::MorphGeometry& geom = dynamic_cast<osgAnimation::MorphGeometry&>(obj);
+
+    bool iteratorAdvanced = false;
+
+    if (fr[0].matchWord("method"))
+    {
+        if (fr[1].matchWord("NORMALIZED"))
+        {
+            geom.setMethod(osgAnimation::MorphGeometry::NORMALIZED);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+        else if  (fr[1].matchWord("RELATIVE"))
+        {
+            geom.setMethod(osgAnimation::MorphGeometry::RELATIVE);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+    }
+
+    if (fr[0].matchWord("morphNormals"))
+    {
+        if (fr[1].matchWord("TRUE"))
+        {
+            geom.setMorphNormals(true);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+        else if (fr[1].matchWord("FALSE"))
+        {
+            geom.setMorphNormals(false);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+    }
+
+    int num_morphTargets = 0;
+    if (fr.matchSequence("num_morphTargets %i"))
+    {
+        fr[1].getInt(num_morphTargets);
+        fr += 2;
+        iteratorAdvanced = true;
+    }
+
+    for (int i = 0; i < num_morphTargets; i++)
+    {
+        if (fr.matchSequence("MorphTarget {"))
+        {
+            int entry = fr[0].getNoNestedBrackets();
+            fr += 2;
+            iteratorAdvanced = true;
+
+            while (!fr.eof() && fr[0].getNoNestedBrackets()>entry)
+            {
+
+                float weight = 1.0;
+                if (fr.matchSequence("weight %f")) 
+                {
+                    fr[1].getFloat(weight);
+                    fr += 2;
+                }
+                osg::Drawable* drawable = NULL;
+                drawable = fr.readDrawable();
+                osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(drawable);
+                if (geometry)
+                    geom.addMorphTarget(geometry, weight);
+            }
+            if (fr.matchSequence("}"))
+                fr += 1;
+        }
+    }
+
+    return iteratorAdvanced;
+}
+
+bool MorphGeometry_writeLocalData(const Object& obj, Output& fw) 
+{
+    const osgAnimation::MorphGeometry& geom = dynamic_cast<const osgAnimation::MorphGeometry&>(obj);
+
+    switch(geom.getMethod())
+    {
+        case(osgAnimation::MorphGeometry::NORMALIZED): fw.indent() << "method NORMALIZED"<<std::endl; break;
+    case(osgAnimation::MorphGeometry::RELATIVE): fw.indent() << "method RELATIVE"<<std::endl; break;
+    }
+
+    fw.indent() << "morphNormals ";
+    if (geom.getMorphNormals()) 
+        fw << "TRUE" << std::endl;
+    else 
+        fw << "FALSE" << std::endl;
+
+    const osgAnimation::MorphGeometry::MorphTargetList& morphTargets = geom.getMorphTargetList();
+    fw.indent() << "num_morphTargets " << morphTargets.size() << std::endl;
+    for (unsigned int i = 0; i < morphTargets.size(); i++)
+    {
+        fw.indent() << "MorphTarget {" << std::endl;
+        fw.moveIn();
+        fw.indent() << "weight " << morphTargets[i].getWeight() <<std::endl;
+        fw.writeObject(*morphTargets[i].getGeometry());
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
+    }
+    return true;
+}
+
+RegisterDotOsgWrapperProxy g_osgAnimationMorphGeometryProxy
+(
+    new osgAnimation::MorphGeometry,
+    "osgAnimation::MorphGeometry",
+    "Object Drawable osgAnimation::MorphGeometry Geometry",
+    &MorphGeometry_readLocalData,
+    &MorphGeometry_writeLocalData,
+    DotOsgWrapper::READ_AND_WRITE
+    );
+
 
 bool UpdateBone_readLocalData(Object& obj, Input& fr) 
 {
@@ -543,6 +1038,27 @@ RegisterDotOsgWrapperProxy g_atkUpdateTransformProxy
     "Object NodeCallback osgAnimation::UpdateTransform",
     &UpdateTransform_readLocalData,
     &UpdateTransform_writeLocalData,
+    DotOsgWrapper::READ_AND_WRITE
+);
+
+bool UpdateMorph_readLocalData(Object& obj, Input& fr) 
+{
+    bool iteratorAdvanced = false;
+    return iteratorAdvanced;
+}
+
+bool UpdateMorph_writeLocalData(const Object& obj, Output& fw)
+{
+    return true;
+}
+
+RegisterDotOsgWrapperProxy g_atkUpdateMorphProxy
+(
+ new osgAnimation::UpdateMorph,
+    "osgAnimation::UpdateMorph",
+    "Object NodeCallback osgAnimation::UpdateMorph",
+    &UpdateMorph_readLocalData,
+    &UpdateMorph_writeLocalData,
     DotOsgWrapper::READ_AND_WRITE
 );
 

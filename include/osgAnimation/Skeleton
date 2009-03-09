@@ -38,7 +38,7 @@ namespace osgAnimation
         Skeleton(const Skeleton& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : Bone(b,copyop) {}
         Skeleton();
         void setDefaultUpdateCallback(void);
-        void computeBindMatrix() { _invBindInSkeletonSpace = osg::Matrix::inverse(_bindInBoneSpace); }
+        void computeBindMatrix() { _invBindInSkeletonSpace = osg::Matrix::inverse(_bindInBoneSpace); _needToRecomputeBindMatrix = false; }
     };
 
 }

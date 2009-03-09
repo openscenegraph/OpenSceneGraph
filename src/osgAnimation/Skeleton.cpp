@@ -27,7 +27,9 @@ struct computeBindMatrixVisitor : public osg::NodeVisitor
         Bone* bone = dynamic_cast<Bone*>(&node);
         if (!bone)
             return;
-        bone->computeBindMatrix();
+        if (bone->needToComputeBindMatrix())
+            bone->computeBindMatrix();
+
         traverse(node);
     }
 };

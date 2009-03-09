@@ -47,14 +47,14 @@ void BasicAnimationManager::stopAll()
 void BasicAnimationManager::playAnimation(Animation* pAnimation, int priority, float weight)
 {
     if (!findAnimation(pAnimation))
-    {
         return;
-    }
 
     if ( isPlaying(pAnimation) )
         stopAnimation(pAnimation);
   
     _animationsPlaying[priority].push_back(pAnimation);
+    // for debug
+    //std::cout << "player Animation " << pAnimation->getName() << " at " << _lastUpdate << std::endl;
     pAnimation->setStartTime(_lastUpdate);
     pAnimation->setWeight(weight);
 }
@@ -62,7 +62,7 @@ void BasicAnimationManager::playAnimation(Animation* pAnimation, int priority, f
 bool BasicAnimationManager::stopAnimation(Animation* pAnimation)
 {
     // search though the layer and remove animation
-    for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim ) 
+    for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
         AnimationList& list = iterAnim->second;
         for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
@@ -79,8 +79,7 @@ bool BasicAnimationManager::stopAnimation(Animation* pAnimation)
 
 void BasicAnimationManager::update (double time)
 {
-    if (!_lastUpdate)
-        _lastUpdate = time;
+    _lastUpdate = time; // keep time of last update
 
     // could filtered with an active flag
     for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
@@ -94,8 +93,16 @@ void BasicAnimationManager::update (double time)
         AnimationList& list = iterAnim->second;
         for (unsigned int i = 0; i < list.size(); i++)
         {
-            if (! list[i]->update(time))
+            if (! list[i]->update(time)) 
+            {
+                // debug
+                // std::cout << list[i]->getName() << " finished at " << time << std::endl;
                 toremove.push_back(i);
+            } else 
+            {
+                // debug
+                //std::cout << list[i]->getName() << " updated" << std::endl;
+            }
         }
 
         // remove finished animation

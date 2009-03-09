@@ -42,6 +42,21 @@ namespace osgAnimation
         const T& getPosition() const { return mPoint[0];}
         const T& getTangentPoint1() const { return mPoint[1];}
         const T& getTangentPoint2() const { return mPoint[2];}
+        
+        // steaming operators.
+        friend std::ostream& operator << (std::ostream& output, const TemplateCubicBezier<T>& vec)
+        {
+            output << vec.mPoint[0] << " "
+                   << vec.mPoint[1] << " "
+                   << vec.mPoint[2];
+            return output; // to enable cascading
+        }
+
+        friend std::istream& operator >> (std::istream& input, TemplateCubicBezier<T>& vec)
+        {
+            input >> vec.mPoint[0] >> vec.mPoint[1] >> vec.mPoint[2];
+            return input;
+        }
     };
 
 

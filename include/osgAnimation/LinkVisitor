@@ -32,7 +32,7 @@ namespace osgAnimation
 
         META_NodeVisitor("osgAnimation","LinkVisitor")
 
-        void apply(osg::Node& node) 
+        void apply(osg::Node& node)
         {
             osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(node.getUpdateCallback());
             if (cb) 

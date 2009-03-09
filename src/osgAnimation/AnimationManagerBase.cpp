@@ -37,7 +37,7 @@ void AnimationManagerBase::normalizeTargets()
 
 void AnimationManagerBase::operator()(osg::Node* node, osg::NodeVisitor* nv)
 { 
-    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
+    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
     {
         if (needToLink())
         {

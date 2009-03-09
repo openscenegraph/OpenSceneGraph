@@ -16,7 +16,7 @@
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
 
-osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone& apc,const osg::CopyOp& copyop):
+osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone& apc,const osg::CopyOp& copyop) :
     osgAnimation::AnimationUpdateCallback(apc, copyop),
     _position(apc._position),
     _quaternion(apc._quaternion),
@@ -25,11 +25,12 @@ osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone&
 }
 
 
-osgAnimation::Bone::Bone(const Bone& b, const osg::CopyOp& copyop)
-    : osg::Transform(b,copyop),
-      _position(b._position),
+osgAnimation::Bone::Bone(const Bone& b, const osg::CopyOp& copyop) :
+    osg::Transform(b,copyop),
+    _position(b._position),
     _rotation(b._rotation),
-    _scale(b._scale) 
+    _scale(b._scale),
+    _needToRecomputeBindMatrix(true)
 {
 }
 
@@ -56,24 +57,7 @@ void osgAnimation::Bone::computeBindMatrix()
     _needToRecomputeBindMatrix = false;
     if (!parent)
     {
-#if 0
-        // no more parent means, we get the skeleton
-        if (getParents().empty()) {
-            osg::notify(osg::WARN) << "Warning " << className() <<"::computeBindMatrix you should not have this message, it means you miss to attach this bone(" << getName() <<") to a Skeleton node" << std::endl;
-            return;
-        } else if (getParents().size() > 1) {
-            osg::notify(osg::WARN) << "Warning " << className() <<"::computeBindMatrix you have more than one parent in a skeleton structure (" << getName() <<") unknown behaviour" << std::endl;
-            return;
-        }
-        osgAnimation::Skeleton* skel = dynamic_cast<osgAnimation::Skeleton*>(getParents()[0]);
-        if (!skel) {
-            osg::notify(osg::WARN) << "Warning " << className() <<"::computeBindMatrix you should not have this message, it means you miss to attach this bone(" << getName() <<") to a Skeleton node" << std::endl;
-            return;
-        }
-        _invBindInSkeletonSpace = osg::Matrix::inverse(skel->getMatrix()) * _invBindInSkeletonSpace;
-#else
         osg::notify(osg::WARN) << "Warning " << className() <<"::computeBindMatrix you should not have this message, it means you miss to attach this bone(" << getName() <<") to a Skeleton node" << std::endl;
-#endif
         return;
     }
     _invBindInSkeletonSpace = parent->getInvBindMatrixInSkeletonSpace() * _invBindInSkeletonSpace;

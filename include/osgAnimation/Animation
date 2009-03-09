@@ -75,6 +75,8 @@ namespace osgAnimation
         void resetTargets();
 
         void setPlaymode (PlayMode mode) { _playmode = mode; }
+        PlayMode getPlayMode() const { return _playmode; }
+        
         void setStartTime(float time)  { _startTime = time;}
         float getStartTime() const { return _startTime;}
 

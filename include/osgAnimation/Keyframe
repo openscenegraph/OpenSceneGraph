@@ -98,6 +98,9 @@ namespace osgAnimation
 
     typedef TemplateKeyframe<float> FloatKeyframe;
     typedef TemplateKeyframeContainer<float> FloatKeyframeContainer;
+    
+    typedef TemplateKeyframe<double> DoubleKeyframe;
+    typedef TemplateKeyframeContainer<double> DoubleKeyframeContainer;    
 
     typedef TemplateKeyframe<osg::Vec2> Vec2Keyframe;
     typedef TemplateKeyframeContainer<osg::Vec2> Vec2KeyframeContainer;
@@ -116,12 +119,16 @@ namespace osgAnimation
 
     typedef TemplateKeyframe<FloatCubicBezier> FloatCubicBezierKeyframe;
     typedef TemplateKeyframeContainer<FloatCubicBezier> FloatCubicBezierKeyframeContainer;
+    
     typedef TemplateKeyframe<DoubleCubicBezier> DoubleCubicBezierKeyframe;
     typedef TemplateKeyframeContainer<DoubleCubicBezier> DoubleCubicBezierKeyframeContainer;
+    
     typedef TemplateKeyframe<Vec2CubicBezier> Vec2CubicBezierKeyframe;
     typedef TemplateKeyframeContainer<Vec2CubicBezier> Vec2CubicBezierKeyframeContainer;
+    
     typedef TemplateKeyframe<Vec3CubicBezier> Vec3CubicBezierKeyframe;
     typedef TemplateKeyframeContainer<Vec3CubicBezier> Vec3CubicBezierKeyframeContainer;
+    
     typedef TemplateKeyframe<Vec4CubicBezier> Vec4CubicBezierKeyframe;
     typedef TemplateKeyframeContainer<Vec4CubicBezier> Vec4CubicBezierKeyframeContainer;
 

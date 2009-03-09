@@ -730,8 +730,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     
     // std::cout << "windowdidmove: " << bounds.origin.x << " " << bounds.origin.y << " " << bounds.size.width << " " << bounds.size.height << std::endl;
    
-    _win->resized(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
-    _win->getEventQueue()->windowResize(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height, _win->getEventQueue()->getTime());
+    _win->adaptResize(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height);
+    //_win->getEventQueue()->windowResize(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height, _win->getEventQueue()->getTime());
     _win->requestRedraw();
     _inDidMove = false;
 }
@@ -839,13 +839,10 @@ bool GraphicsWindowCocoa::realizeImplementation()
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
     if (wsi) {
-        
         wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
-        _traits->y += screenTop;
-        _traits->x += screenLeft;
     }
     
-	NSRect rect = NSMakeRect(_traits->x, _traits->y, _traits->width, _traits->height);
+	NSRect rect = NSMakeRect(_traits->x + screenLeft, _traits->y + screenTop, _traits->width, _traits->height);
     
 	_window = [[GraphicsWindowCocoaWindow alloc] initWithContentRect: rect styleMask: style backing: NSBackingStoreBuffered defer: NO];
 	
@@ -1092,11 +1089,15 @@ void GraphicsWindowCocoa::grabFocusIfPointerInWindow()
 
 void GraphicsWindowCocoa::resizedImplementation(int x, int y, int width, int height)
 {
+	std::cout << "resized implementation" << x << " " << y << " " << width << " " << height << std::endl; 
 	GraphicsContext::resizedImplementation(x, y, width, height);
-    
+   
     [_context update];
     MenubarController::instance()->update();
+	getEventQueue()->windowResize(x,y,width, height, getEventQueue()->getTime());
 }
+
+
 
 
 // ----------------------------------------------------------------------------------------------------------
@@ -1104,8 +1105,14 @@ void GraphicsWindowCocoa::resizedImplementation(int x, int y, int width, int hei
 // ----------------------------------------------------------------------------------------------------------
 bool GraphicsWindowCocoa::setWindowRectangleImplementation(int x, int y, int width, int height)
 {
-   
-    NSRect rect = NSMakeRect(x,y,width, height);
+	DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    int screenLeft(0), screenTop(0);
+    if (wsi) {
+        wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
+    }
+
+
+    NSRect rect = NSMakeRect(x+screenLeft,y+screenTop,width, height);
     rect = convertFromQuartzCoordinates(rect);
     
     [_window setFrame: [NSWindow frameRectForContentRect: rect styleMask: [_window styleMask]] display: YES];
@@ -1115,6 +1122,30 @@ bool GraphicsWindowCocoa::setWindowRectangleImplementation(int x, int y, int wid
     return true;
 }
 
+
+// ----------------------------------------------------------------------------------------------------------
+// 
+// ----------------------------------------------------------------------------------------------------------
+
+void GraphicsWindowCocoa::adaptResize(int x, int y, int w, int h)
+{
+
+	DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    int screenLeft(0), screenTop(0);
+    if (wsi) {
+		
+		// get the screen containing the window
+		unsigned int screenNdx = wsi->getScreenContaining(x,y,w,h);
+		
+		// update traits
+		_traits->screenNum = screenNdx;
+		
+		// get top left of screen
+        wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
+    }
+	
+	resized(x-screenLeft,y-screenTop,w,h);
+}
 
 
 // ----------------------------------------------------------------------------------------------------------

@@ -294,7 +294,19 @@ bool DarwinWindowingSystemInterface::setScreenRefreshRate(const osg::GraphicsCon
 	return (success != 0);
 }
 
+
+unsigned int DarwinWindowingSystemInterface::getScreenContaining(int x, int y, int w, int h)
+{
+	CGRect rect = CGRectMake(x,y,w,h);
+	for(unsigned int i = 0; i < _displayCount; ++i) {
+		CGRect bounds = CGDisplayBounds( getDisplayID(i) );
+		if (CGRectIntersectsRect(bounds, rect)) {
+			return i;
+		}
+	}
 	
+	return 0;
+}
 
 
 

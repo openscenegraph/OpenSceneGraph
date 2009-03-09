@@ -88,6 +88,10 @@ struct DarwinWindowingSystemInterface : public osg::GraphicsContext::WindowingSy
 	/** implementation of setScreenRefreshRate */
 	virtual bool setScreenRefreshRate(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate);
 	
+	
+	/** returns screen-ndx containing rect x,y,w,h */
+	unsigned int getScreenContaining(int x, int y, int w, int h);
+	
 	protected:
 	
 		template<class PixelBufferImplementation, class GraphicsWindowImplementation>

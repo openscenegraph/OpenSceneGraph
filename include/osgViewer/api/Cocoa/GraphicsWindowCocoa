@@ -138,6 +138,9 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow
         GraphicsWindowCocoaWindow* getWindow() { return _window; }
                 
         void setVSync(bool f);
+		
+		/** adapts a resize / move of the window, coords in global screen space */
+		void adaptResize(int x, int y, int w, int h);
         
     protected:
     

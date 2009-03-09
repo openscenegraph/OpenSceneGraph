@@ -11,13 +11,17 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/GLObjectsVisitor>
+
 #include <osg/Drawable>
 #include <osg/Notify>
+#include <osg/Timer>
+
 #include <OpenThreads/ScopedLock>
 
-using namespace osg;
-using namespace osgUtil;
+#include <algorithm>
 
+namespace osgUtil 
+{
 
 /////////////////////////////////////////////////////////////////
 //
@@ -51,7 +55,7 @@ void GLObjectsVisitor::apply(osg::Geode& node)
 
     for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
-        Drawable* drawable = node.getDrawable(i);
+        osg::Drawable* drawable = node.getDrawable(i);
         if (drawable)
         {
             apply(*drawable);
@@ -133,7 +137,7 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
         }
         else if(_renderInfo.getState()->getLastAppliedProgramObject()){
                             
-            GL2Extensions* extensions = GL2Extensions::Get(_renderInfo.getState()->getContextID(), true);
+            osg::GL2Extensions* extensions = osg::GL2Extensions::Get(_renderInfo.getState()->getContextID(), true);
             extensions->glUseProgram(0);
             _renderInfo.getState()->setLastAppliedProgramObject(0);
         }
@@ -275,7 +279,7 @@ void IncrementalCompileOperation::add(CompileSet* compileSet, bool callBuildComp
 
 void IncrementalCompileOperation::mergeCompiledSubgraphs()
 {
-    osg::notify(osg::NOTICE)<<"IncrementalCompileOperation::mergeCompiledSubgraphs()"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"IncrementalCompileOperation::mergeCompiledSubgraphs()"<<std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex>  compilded_lock(_compiledMutex);
     
@@ -293,38 +297,234 @@ void IncrementalCompileOperation::mergeCompiledSubgraphs()
     _compiled.clear();
 }
 
-void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& context)
+class IncrementalCompileOperation::CollectStateToCompile : public osg::NodeVisitor
 {
+public:
+
+    CollectStateToCompile(GLObjectsVisitor::Mode mode):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _mode(mode) {}
+    
+    GLObjectsVisitor::Mode _mode;
+
+    typedef std::set<osg::Drawable*> DrawableSet;
+    typedef std::set<osg::StateSet*> StateSetSet;
+    typedef std::set<osg::Texture*> TextureSet;
+    typedef std::set<osg::Program*> ProgramSet;
+
+    DrawableSet _drawablesHandled;
+    StateSetSet _statesetsHandled;
+    
+    DrawableSet _drawables;
+    TextureSet _textures;
+    ProgramSet _programs;
+
+    void apply(osg::Node& node)
+    {
+        if (node.getStateSet())
+        {
+            apply(*(node.getStateSet()));
+        }
+
+        traverse(node);
+    }
+
+    void apply(osg::Geode& node)
+    {
+        if (node.getStateSet())
+        {
+            apply(*(node.getStateSet()));
+        }
+
+        for(unsigned int i=0;i<node.getNumDrawables();++i)
+        {
+            osg::Drawable* drawable = node.getDrawable(i);
+            if (drawable)
+            {
+                apply(*drawable);
+                if (drawable->getStateSet())
+                {
+                    apply(*(drawable->getStateSet()));
+                }
+            }
+        }
+    }
+
+    void apply(osg::Drawable& drawable)
+    {
+        if (_drawablesHandled.count(&drawable)!=0) return;
+
+        _drawablesHandled.insert(&drawable);
+
+        if (_mode&GLObjectsVisitor::SWITCH_OFF_DISPLAY_LISTS)
+        {
+            drawable.setUseDisplayList(false);
+        }
+
+        if (_mode&GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS)
+        {
+            drawable.setUseDisplayList(true);
+        }
+
+        if (_mode&GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS)
+        {
+            drawable.setUseVertexBufferObjects(true);
+        }
+
+        if (_mode&GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS)
+        {
+            drawable.setUseVertexBufferObjects(false);
+        }
+
+        if (_mode&GLObjectsVisitor::COMPILE_DISPLAY_LISTS)
+        {
+            _drawables.insert(&drawable);
+        }
+
+    }
+
+    void apply(osg::StateSet& stateset)
+    {
+        if (_statesetsHandled.count(&stateset)!=0) return;
+
+        _statesetsHandled.insert(&stateset);
+
+        if (_mode & GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES)
+        {
+            osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
+            if (program)
+            {
+                _programs.insert(program);
+            }
+            
+            osg::StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
+            for(osg::StateSet::TextureAttributeList::iterator itr = tal.begin();
+                itr != tal.end();
+                ++itr)
+            {
+                osg::StateSet::AttributeList& al = *itr;
+                osg::StateAttribute::TypeMemberPair tmp(osg::StateAttribute::TEXTURE,0);
+                osg::StateSet::AttributeList::iterator texItr = al.find(tmp);
+                if (texItr != al.end())
+                {
+                    osg::Texture* texture = dynamic_cast<osg::Texture*>(texItr->second.first.get());
+                    if (texture) _textures.insert(texture);
+                }
+            }
+        }
+    }
+    
+};
+
+
+void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contexts, GLObjectsVisitor::Mode mode)
+{
+    if (contexts.empty() || !_subgraphToCompile) return;
+    
+    CollectStateToCompile cstc(mode);
+    _subgraphToCompile->accept(cstc);
+    
+    if (cstc._textures.empty() &&  cstc._programs.empty() && cstc._drawables.empty()) return;
+    
+    for(ContextSet::iterator itr = contexts.begin();
+        itr != contexts.end();
+        ++itr)
+    {
+        CompileData& cd = _compileMap[*itr];
+        std::copy(cstc._textures.begin(), cstc._textures.end(), std::back_inserter<CompileData::Textures>(cd._textures));
+        std::copy(cstc._programs.begin(), cstc._programs.end(), std::back_inserter<CompileData::Programs>(cd._programs));
+        std::copy(cstc._drawables.begin(), cstc._drawables.end(), std::back_inserter<CompileData::Drawables>(cd._drawables));
+    }
+    
 }
 
 void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 {
-    osg::notify(osg::NOTICE)<<"IncrementalCompileOperation::operator () ("<<context<<")"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"IncrementalCompileOperation::operator () ("<<context<<")"<<std::endl;
 
-    OpenThreads::ScopedLock<OpenThreads::Mutex>  toCompile_lock(_toCompileMutex);
-    for(CompileSets::iterator itr = _toCompile.begin(); 
-        itr != _toCompile.end();
-        )
+    osg::RenderInfo renderInfo;
+    renderInfo.setState(context->getState());
+
+
+    CompileSets toCompileCopy;
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex>  toCompile_lock(_toCompileMutex);
+        std::copy(_toCompile.begin(),_toCompile.end(),std::back_inserter<CompileSets>(toCompileCopy));
+    }
+
+    for(CompileSets::iterator itr = toCompileCopy.begin(); 
+        itr != toCompileCopy.end();
+        ++itr)
     {
         CompileSet* cs = itr->get();
         CompileMap& cm = cs->_compileMap;
-        CompileData* cd = cm[context].get();
+        CompileData& cd = cm[context];
         
-        if (cd)
-        {        
-            // compile textures
-            cd->_textures.clear();
+        if (!cd.empty())
+        {
+            osg::notify(osg::NOTICE)<<"cd._drawables.size()="<<cd._drawables.size()<<std::endl;
+            osg::notify(osg::NOTICE)<<"cd._textures.size()="<<cd._textures.size()<<std::endl;
+            osg::notify(osg::NOTICE)<<"cd._programs.size()="<<cd._programs.size()<<std::endl;
+    
+            osg::Timer_t startTick = osg::Timer::instance()->tick();
+            double maxTimeAvailable = 0.001;
+            
+            while(!cd._drawables.empty() && 
+                  osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick()) < maxTimeAvailable)
+            {
+                cd._drawables.back()->compileGLObjects(renderInfo);
+                cd._drawables.pop_back();
+            }
+            
+            while(!cd._textures.empty() && 
+                  osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick()) < maxTimeAvailable)
+            {
+                cd._textures.back()->apply(*renderInfo.getState());
+                cd._textures.pop_back();
+            }
 
-            // compile drawables
-            cd->_drawables.clear();
-
-            // compile programs
-            cd->_programs.clear();
+            
+            if (!cd._programs.empty())
+            {
+                // compile programs
+                while(!cd._programs.empty() && 
+                      osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick()) < maxTimeAvailable)
+                {
+                    cd._programs.back()->apply(*renderInfo.getState());
+                    cd._programs.pop_back();
+                }
+                
+                // switch off Program,
+                osg::GL2Extensions* extensions = osg::GL2Extensions::Get(renderInfo.getState()->getContextID(), true);
+                extensions->glUseProgram(0);
+                renderInfo.getState()->setLastAppliedProgramObject(0);
+            }
         }
                 
-        if (!cd || cd->empty())
+        if (cd.empty())
         {
-            if (cs->_compileCompletedCallback.valid())
+            bool csCompleted = false;
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex>  toCompile_lock(_toCompileMutex);
+
+                if (cs->compileCompleted())
+                {                    
+                    CompileSets::iterator cs_itr = std::find(_toCompile.begin(), _toCompile.end(), *itr);
+                    if (cs_itr != _toCompile.end())
+                    {
+                        osg::notify(osg::NOTICE)<<"Erasing from list"<<std::endl;
+                        
+                        // remove from the _toCompile list, note cs won't be deleted here as the tempoary
+                        // toCompile_Copy list will retain a reference.
+                        _toCompile.erase(cs_itr);
+                        
+                        // signal that we need to do clean up operations/pass cs on to _compile list.
+                        csCompleted = true;
+                    }
+                }
+            }
+        
+            if (csCompleted && cs->_compileCompletedCallback.valid())
             {
                 if (cs->_compileCompletedCallback->compileCompleted(cs))
                 {
@@ -336,13 +536,9 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
                     _compiled.push_back(cs);
                 }
             }
-        
-            // remove from toCompileSet;
-            itr = _toCompile.erase(itr);
-        }
-        else
-        {
-            ++itr;
+            
         }
     }
 }
+
+} // end of namespace osgUtil

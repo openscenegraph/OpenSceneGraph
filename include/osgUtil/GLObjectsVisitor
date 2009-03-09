@@ -153,20 +153,20 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
 
         struct CompileData : public osg::Referenced
         {
-            typedef std::list< osg::ref_ptr<osg::Texture> >  Textures;
             typedef std::list< osg::ref_ptr<osg::Drawable> > Drawables;
+            typedef std::list< osg::ref_ptr<osg::Texture> >  Textures;
             typedef std::list< osg::ref_ptr<osg::Program> >  Programs;
             
-            bool empty() const { return _textures.empty() && _drawables.empty() && _programs.empty(); }
+            bool empty() const { return _drawables.empty() && _textures.empty() &&  _programs.empty(); }
             
-            Textures    _textures;
             Drawables   _drawables;
+            Textures    _textures;
             Programs    _programs;
         };
 
         class CompileSet;
         typedef std::set<osg::GraphicsContext*> ContextSet;
-        typedef std::map<osg::GraphicsContext*, osg::ref_ptr<CompileData> >  CompileMap;
+        typedef std::map<osg::GraphicsContext*, CompileData >  CompileMap;
         
         struct CompileCompletedCallback : public osg::Referenced
         {
@@ -187,7 +187,18 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
                 _attachmentPoint(attachmentPoint),
                 _subgraphToCompile(subgraphToCompile) {}
         
-            void buildCompileMap(ContextSet& context);
+            void buildCompileMap(ContextSet& context, GLObjectsVisitor::Mode mode=GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES);
+
+            bool compileCompleted() const
+            {
+                for(CompileMap::const_iterator itr = _compileMap.begin();
+                    itr != _compileMap.end();
+                    ++itr)
+                {
+                    if (!(itr->second.empty())) return false;
+                }
+                return true;
+            }
 
             osg::ref_ptr<osg::Group>                _attachmentPoint;
             osg::ref_ptr<osg::Node>                 _subgraphToCompile;
@@ -221,6 +232,9 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
     protected:
 
         virtual ~IncrementalCompileOperation();
+        
+        // forward declare to keep within class namespace
+        class CollectStateToCompile;
 
     
         OpenThreads::Mutex  _toCompileMutex;

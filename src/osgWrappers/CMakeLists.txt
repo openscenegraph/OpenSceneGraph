@@ -130,6 +130,7 @@ SET(OSGWRAPPER_LIB_LIST
     osgFX
     osgGA
     osgManipulator
+    osgAnimation
     osgParticle
     osgShadow
     osgSim

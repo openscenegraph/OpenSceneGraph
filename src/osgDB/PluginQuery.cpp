@@ -80,6 +80,7 @@ bool osgDB::queryPlugin(const std::string& fileName, ReaderWriterInfoList& infoL
                 rwi->protocols = rw->supportedProtocols();
                 rwi->extensions = rw->supportedExtensions();
                 rwi->options = rw->supportedOptions();
+                rwi->features = rw->supportedFeatures();
 
                 infoList.push_back(rwi.get());
             }
@@ -116,7 +117,17 @@ bool osgDB::outputPluginDetails(std::ostream& out, const std::string& fileName)
             osgDB::ReaderWriterInfo& info = *(*rwi_itr);
             out<<"    ReaderWriter : "<<info.description<<std::endl;
             out<<"    {"<<std::endl;
-
+            out<<"        features   : ";
+            osgDB::ReaderWriter::FeatureList fl = ReaderWriter::featureAsString(info.features);
+            osgDB::ReaderWriter::FeatureList::iterator fl_itr;
+            for(fl_itr = fl.begin();
+                fl_itr != fl.end();
+                ++fl_itr)
+            {
+                out << *fl_itr << " ";
+            }    
+            out << std::endl;
+            
             unsigned int longestOptionLength = 0;
             osgDB::ReaderWriter::FormatDescriptionMap::iterator fdm_itr;
             for(fdm_itr = info.protocols.begin();

@@ -48,6 +48,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         META_Object(osgDB,ReaderWriter);
 
         typedef std::map<std::string, std::string> FormatDescriptionMap;
+        typedef std::list<std::string> FeatureList;
 
         /** return which protocols are supported by ReaderWriter. */
         virtual const FormatDescriptionMap& supportedProtocols() const { return _supportedProtocols; }
@@ -60,6 +61,37 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
         /** return true if ReaderWriter accepts specified file extension.*/
         virtual bool acceptsExtension(const std::string& /*extension*/) const;
+
+        /// bit mask for setting up which feature types are available for read and/or write
+        enum Features
+        {
+            FEATURE_NONE               = 0,
+            FEATURE_READ_OBJECT        = 1<<0,
+            FEATURE_READ_IMAGE         = 1<<1, 
+            FEATURE_READ_HEIGHT_FIELD  = 1<<2,
+            FEATURE_READ_NODE          = 1<<3, 
+            FEATURE_READ_SHADER        = 1<<4, 
+            FEATURE_WRITE_OBJECT       = 1<<5,
+            FEATURE_WRITE_IMAGE        = 1<<6,
+            FEATURE_WRITE_HEIGHT_FIELD = 1<<7,
+            FEATURE_WRITE_NODE         = 1<<8,
+            FEATURE_WRITE_SHADER       = 1<<9,
+            FEATURE_ALL                = FEATURE_READ_OBJECT        |
+                                         FEATURE_READ_IMAGE         |
+                                         FEATURE_READ_HEIGHT_FIELD  |
+                                         FEATURE_READ_NODE          |
+                                         FEATURE_READ_SHADER        |
+                                         FEATURE_WRITE_OBJECT       |
+                                         FEATURE_WRITE_IMAGE        |
+                                         FEATURE_WRITE_HEIGHT_FIELD |
+                                         FEATURE_WRITE_NODE         |
+                                         FEATURE_WRITE_SHADER       
+        };    
+        /** return available features*/
+        virtual Features supportedFeatures() const;
+
+        /** return feature as string */
+        static FeatureList featureAsString(Features feature);
 
         /** Options base class used for passing options into plugins to control their operation.*/
         class Options : public osg::Object

@@ -60,3 +60,40 @@ void ReaderWriter::supportsOption(const std::string& fmt, const std::string& des
 {
     _supportedOptions[fmt] = description;
 }
+
+ReaderWriter::Features ReaderWriter::supportedFeatures() const
+{
+    Features features = FEATURE_ALL;
+    return features;
+}
+
+ReaderWriter::FeatureList ReaderWriter::featureAsString(ReaderWriter::Features feature)
+{
+    typedef struct {
+        ReaderWriter::Features feature;
+        const char *s;
+    } FeatureStringList;
+
+    FeatureStringList list[] = { 
+        { FEATURE_READ_OBJECT, "readObject" },
+        { FEATURE_READ_IMAGE,  "readImage" },        
+        { FEATURE_READ_HEIGHT_FIELD, "readHeightField" },
+        { FEATURE_READ_NODE, "readNode" },          
+        { FEATURE_READ_SHADER, "readShader" },        
+        { FEATURE_WRITE_OBJECT, "writeObject" },
+        { FEATURE_WRITE_IMAGE, "writeImage" },        
+        { FEATURE_WRITE_HEIGHT_FIELD, "writeHeightField" },
+        { FEATURE_WRITE_NODE, "writeNode" },         
+        { FEATURE_WRITE_SHADER, "writeShader" },
+        { FEATURE_NONE,0 }
+    };
+
+    FeatureList result; 
+    
+    for(FeatureStringList *p=list; p->feature != 0; p++)
+    {
+        if ((feature & p->feature) != 0)
+            result.push_back(p->s);
+    }
+    return result;
+}

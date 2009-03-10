@@ -39,6 +39,7 @@ class ReaderWriterInfo : public osg::Referenced
         ReaderWriter::FormatDescriptionMap  protocols;
         ReaderWriter::FormatDescriptionMap  extensions;
         ReaderWriter::FormatDescriptionMap  options;
+        ReaderWriter::Features              features;
 
     protected:
         

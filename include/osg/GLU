@@ -16,7 +16,8 @@
 
 #include <osg/GL>
 
-#if defined(__APPLE__) || defined (_AIX)
+#if defined(__APPLE__) || \
+    (defined (_AIX) && !defined (_AIX51))
     #include <OpenGL/glu.h>
 #else
     #include <GL/glu.h>

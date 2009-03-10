@@ -201,6 +201,7 @@ public:
     unsigned int _numInstancedGeode;
     unsigned int _numInstancedDrawable;
     unsigned int _numInstancedGeometry;
+    unsigned int _numInstancedFastGeometry;
     unsigned int _numInstancedStateSet;
 
     NodeSet _groupSet;
@@ -210,6 +211,7 @@ public:
     NodeSet _geodeSet;
     DrawableSet _drawableSet;
     DrawableSet _geometrySet;
+    DrawableSet _fastGeometrySet;
     StateSetSet _statesetSet;
 
     osgUtil::Statistics _uniqueStats;

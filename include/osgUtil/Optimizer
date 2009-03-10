@@ -74,22 +74,24 @@ class OSGUTIL_EXPORT Optimizer
             SHARE_DUPLICATE_STATE =     (1 << 4),
             MERGE_GEOMETRY =            (1 << 5),
             CHECK_GEOMETRY =            (1 << 6),
-            SPATIALIZE_GROUPS =         (1 << 7),
-            COPY_SHARED_NODES =         (1 << 8),
-            TRISTRIP_GEOMETRY =         (1 << 9),
-            TESSELLATE_GEOMETRY =       (1 << 10),
-            OPTIMIZE_TEXTURE_SETTINGS = (1 << 11),
-            MERGE_GEODES =              (1 << 12),
-            FLATTEN_BILLBOARDS =        (1 << 13),
-            TEXTURE_ATLAS_BUILDER =     (1 << 14),
-            STATIC_OBJECT_DETECTION =   (1 << 15),
-            FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS = (1 << 16),
+            MAKE_FAST_GEOMETRY =        (1 << 7),
+            SPATIALIZE_GROUPS =         (1 << 8),
+            COPY_SHARED_NODES =         (1 << 9),
+            TRISTRIP_GEOMETRY =         (1 << 10),
+            TESSELLATE_GEOMETRY =       (1 << 11),
+            OPTIMIZE_TEXTURE_SETTINGS = (1 << 12),
+            MERGE_GEODES =              (1 << 13),
+            FLATTEN_BILLBOARDS =        (1 << 14),
+            TEXTURE_ATLAS_BUILDER =     (1 << 15),
+            STATIC_OBJECT_DETECTION =   (1 << 16),
+            FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS = (1 << 17),
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |
                                 COMBINE_ADJACENT_LODS |
                                 SHARE_DUPLICATE_STATE |
                                 MERGE_GEOMETRY |
+                                MAKE_FAST_GEOMETRY |
                                 CHECK_GEOMETRY |
                                 OPTIMIZE_TEXTURE_SETTINGS |
                                 STATIC_OBJECT_DETECTION,
@@ -100,6 +102,7 @@ class OSGUTIL_EXPORT Optimizer
                                 SHARE_DUPLICATE_STATE |
                                 MERGE_GEODES |
                                 MERGE_GEOMETRY |
+                                MAKE_FAST_GEOMETRY |
                                 CHECK_GEOMETRY |
                                 SPATIALIZE_GROUPS |
                                 COPY_SHARED_NODES |
@@ -505,6 +508,20 @@ class OSGUTIL_EXPORT Optimizer
                 void checkGeode(osg::Geode& geode);
                 
         };
+        
+        class OSGUTIL_EXPORT MakeFastGeometryVisitor : public BaseOptimizerVisitor
+        {
+            public:
+
+                /// default to traversing all children.
+                MakeFastGeometryVisitor(Optimizer* optimizer=0):
+                    BaseOptimizerVisitor(optimizer, MAKE_FAST_GEOMETRY) {}
+
+                virtual void apply(osg::Geode& geode) { checkGeode(geode); }
+
+                void checkGeode(osg::Geode& geode);
+                
+        };        
         
         class OSGUTIL_EXPORT MergeGeometryVisitor : public BaseOptimizerVisitor
         {

@@ -21,6 +21,7 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/LOD>
 #include <osg/Billboard>
+#include <osg/CameraView>
 #include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/OccluderNode>
@@ -109,6 +110,9 @@ void Optimizer::optimize(osg::Node* node)
 
         if(str.find("~CHECK_GEOMETRY")!=std::string::npos) options ^= CHECK_GEOMETRY;
         else if(str.find("CHECK_GEOMETRY")!=std::string::npos) options |= CHECK_GEOMETRY;
+
+        if(str.find("~MAKE_FAST_GEOMETRY")!=std::string::npos) options ^= MAKE_FAST_GEOMETRY;
+        else if(str.find("MAKE_FAST_GEOMETRY")!=std::string::npos) options |= MAKE_FAST_GEOMETRY;
         
         if(str.find("~FLATTEN_BILLBOARDS")!=std::string::npos) options ^= FLATTEN_BILLBOARDS;
         else if(str.find("FLATTEN_BILLBOARDS")!=std::string::npos) options |= FLATTEN_BILLBOARDS;
@@ -276,6 +280,14 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         osg::notify(osg::INFO)<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
 
         CheckGeometryVisitor mgv(this);
+        node->accept(mgv);
+    }
+
+    if (options & MAKE_FAST_GEOMETRY)
+    {
+        osg::notify(osg::INFO)<<"Optimizer::optimize() doing MAKE_FAST_GEOMETRY"<<std::endl;
+
+        MakeFastGeometryVisitor mgv(this);
         node->accept(mgv);
     }
 
@@ -1308,7 +1320,7 @@ void Optimizer::RemoveEmptyNodesVisitor::apply(osg::Group& group)
     {
         // only remove empty groups, but not empty occluders.
         if (group.getNumChildren()==0 && isOperationPermissibleForObject(&group) && 
-            (typeid(group)==typeid(osg::Group) || dynamic_cast<osg::Transform*>(&group)))
+            (typeid(group)==typeid(osg::Group) || (dynamic_cast<osg::Transform*>(&group) && !dynamic_cast<osg::CameraView*>(&group))))
         {
             _redundantNodeList.insert(&group);
         }
@@ -1780,6 +1792,24 @@ void Optimizer::CheckGeometryVisitor::checkGeode(osg::Geode& geode)
             if (geom && isOperationPermissibleForObject(geom))
             {
                 geom->computeCorrectBindingsAndArraySizes();
+            }
+        }
+    }
+}
+
+void Optimizer::MakeFastGeometryVisitor::checkGeode(osg::Geode& geode)
+{
+    if (isOperationPermissibleForObject(&geode))
+    {
+        for(unsigned int i=0;i<geode.getNumDrawables();++i)
+        {
+            osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
+            if (geom && isOperationPermissibleForObject(geom))
+            {
+                if (!geom->areFastPathsUsed() && !geom->getInternalOptimizedGeometry())
+                {
+                    geom->computeInternalOptimizedGeometry();
+                }
             }
         }
     }

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -31,7 +31,7 @@ class Font3D;
 class Text3D;
 
 /** Read a font from specified file. The filename may contain a path.
-  * It will search for the font file in the following places in this order: 
+  * It will search for the font file in the following places in this order:
   * - In the current directory
   * - All paths defined in OSG_FILE_PATH or OSGFILEPATH environment variable
   * - Filename with path stripped: In the current directory
@@ -45,7 +45,7 @@ class Text3D;
   * - Other OS: In /usr/share/fonts/ttf
   * - Other OS: In /usr/share/fonts/ttf/western
   * - Other OS: In /usr/share/fonts/ttf/decoratives
-  * 
+  *
   * If the given file could not be found, the path part will be stripped and
   * the file will be searched again in the OS specific directories.
   */
@@ -67,7 +67,7 @@ class OSGTEXT_EXPORT Font3D : public osg::Object
 {
 // declare the interface to a font.
 public:
-    
+
     // forward declare nested classes.
     class Glyph3D;
     class Font3DImplementation;
@@ -92,13 +92,13 @@ public:
 
     /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
     virtual Glyph3D* getGlyph(unsigned int charcode);
-    
+
     /** Return true if this font provides vertical alignments and spacing or glyphs.*/
     virtual bool hasVertical() const;
 
     /** Return the scale to apply on the glyph to have a charactere size equal to 1 */
     virtual float getScale() const { return _implementation->getScale(); };
-    
+
     // make Text a friend to allow it add and remove its entry in the Font's _textList.
     friend class Font3DImplementation;
 
@@ -109,16 +109,16 @@ public:
 
     /** Set whether to use a mutex to ensure ref() and unref() */
     virtual void setThreadSafeRefUnref(bool threadSafe);
-    
+
     typedef OpenThreads::Mutex Font3DMutex;
 
 protected:
 
     virtual ~Font3D();
-    
+
 //    void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph);
     void addGlyph(unsigned int charcode, Glyph3D* glyph);
-    
+
     // current active size of font
     unsigned int                        _depth;
     unsigned int                        _width;
@@ -127,22 +127,22 @@ protected:
 //    float                           _marginRatio;
 
     typedef std::map<char, osg::ref_ptr<Glyph3D> > Glyph3DMap;
-    Glyph3DMap _glyph3DMap; 
-    
+    Glyph3DMap _glyph3DMap;
+
     osg::ref_ptr<Font3DImplementation> _implementation;
 
-    
+
 // declare the nested classes.
 public:
 
     class Font3DImplementation : public osg::Referenced
     {
     public:
-    
+
         Font3DImplementation():
             osg::Referenced(true),
             _facade(0) {}
-    
+
         virtual std::string getFileName() const = 0;
 
         /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
@@ -153,20 +153,20 @@ public:
 
         /** Return true if this font provides vertical alignments and spacing or glyphs.*/
         virtual bool hasVertical() const = 0;
-        
+
         virtual float getScale() const = 0;
-  
+
         void setFontWidth(unsigned int width) { _facade->_width = width; }
 
         void setFontHeight(unsigned int height) { _facade->_height = height; }
-        
+
         void setFontDepth(unsigned int depth) { _facade->_depth = depth; }
-        
+
 //        void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph3D* glyph)
 //        {
 //            _facade->addGlyph(width, height, charcode, glyph);
 //        }
-//        
+//
 //        void addGlyph(unsigned int charcode, Glyph3D* glyph)
 //        {
 //            _facade->addGlyph(charcode, glyph);
@@ -181,26 +181,26 @@ public:
 
         Glyph3D(unsigned int glyphCode):
             osg::Referenced(true),
-            _glyphCode(glyphCode), 
+            _glyphCode(glyphCode),
             _horizontalBearing(0,0),
             _horizontalAdvance(0),
             _verticalBearing(0,0),
             _verticalAdvance(0)
             {}
-        
+
 
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
 //        virtual int compare(const osg::StateAttribute& rhs) const;
-//        
+//
 //        virtual void apply(osg::State& state) const;
 
-        
-        
+
+
         unsigned int getGlyphCode() const { return _glyphCode; }
-        
+
         void setHorizontalBearing(const osg::Vec2& bearing) { _horizontalBearing=bearing; }
         const osg::Vec2 & getHorizontalBearing() const { return _horizontalBearing; }
-        
+
         void setHorizontalAdvance(float advance) { _horizontalAdvance=advance; }
         float getHorizontalAdvance() const { return _horizontalAdvance; }
 
@@ -209,42 +209,44 @@ public:
 
         void setVerticalAdvance(float advance) { _verticalAdvance=advance; }
         float getVerticalAdvance() const { return _verticalAdvance; }
-                
+
         void setBoundingBox(osg::BoundingBox & bb) { _bb=bb; }
         const osg::BoundingBox & getBoundingBox() const { return _bb; }
-        
-        
+
+
         /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
         virtual void setThreadSafeRefUnref(bool threadSafe);
 
-        
+
         /** Get the PrimitiveSetList for the front face. */
         osg::Geometry::PrimitiveSetList & getFrontPrimitiveSetList() { return _frontPrimitiveSetList; }
         /** Get the PrimitiveSetList for the wall face. */
         osg::Geometry::PrimitiveSetList & getWallPrimitiveSetList() { return _wallPrimitiveSetList; }
         /** Get et the PrimitiveSetList for the back face. */
         osg::Geometry::PrimitiveSetList & getBackPrimitiveSetList() { return _backPrimitiveSetList; }
-        
+
         /** Set the VertexArray of the glyph. */
         void setVertexArray(osg::Vec3Array * va) { _vertexArray = va; }
         /** Get the VertexArray of the glyph. */
         osg::Vec3Array * getVertexArray() { return _vertexArray.get(); }
+        /** Set the VertexArray of the glyph. */
+        void setNormalArray(osg::Vec3Array * na) { _normalArray = na; }
         /** Get the NormalArray for the wall face. */
         osg::Vec3Array * getNormalArray() { return _normalArray.get(); }
-        
+
         float getHorizontalWidth() { return (-_horizontalBearing.x() + _horizontalAdvance); }
         float getHorizontalHeight() { return (-_horizontalBearing.y() + _bb.yMax()); }
         float getVerticalWidth() { return (-_verticalBearing.x() + _bb.xMax()); }
         float getVerticalHeight() { return (-_verticalBearing.y() + _verticalAdvance); }
-        
+
         void setWidth(float width) { _width = width; }
         float getWidth() { return _width; }
-        
+
         void setHeight(float height) { _height = height; }
         float getHeight() { return _height; }
-        
+
     protected:
-    
+
         virtual ~Glyph3D() {}
 
         unsigned int                _glyphCode;
@@ -255,21 +257,21 @@ public:
         osg::Vec2                   _verticalBearing;
         float                       _verticalAdvance;
 
-        osg::BoundingBox            _bb;        
+        osg::BoundingBox            _bb;
 //        osg::Vec2                   _advance;
-        
+
         float _width;
         float _height;
-        
-        
+
+
         osg::ref_ptr<osg::Vec3Array> _vertexArray;
         osg::ref_ptr<osg::Vec3Array> _normalArray;
-        
+
         osg::Geometry::PrimitiveSetList _frontPrimitiveSetList;
         osg::Geometry::PrimitiveSetList _wallPrimitiveSetList;
         osg::Geometry::PrimitiveSetList _backPrimitiveSetList;
-        
-        
+
+
     };
 
 

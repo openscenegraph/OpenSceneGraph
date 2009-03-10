@@ -17,14 +17,15 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             supportsExtension("cid","Postscript CID-Fonts format");
             supportsExtension("cff","OpenType format");
             supportsExtension("cef","OpenType format");
-            supportsExtension("fon","Windows bitmap fonts format");
+            supportsExtension("fon","Windows bitmap fonts format");
             supportsExtension("fnt","Windows bitmap fonts format");
+            supportsExtension("text3d","use 3D Font instead of 2D Font");
 
             supportsOption("monochrome","Select monochrome font.");
         }
-        
+
         virtual const char* className() const { return "FreeType Font Reader/Writer"; }
-        
+
         static unsigned int getFlags(const osgDB::ReaderWriter::Options* options)
         {
             unsigned int flags = 0;
@@ -32,26 +33,40 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             {
                 flags |= FT_LOAD_MONOCHROME;
             }
-            
+
             return flags;
         }
 
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
-            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            std::string tmpFile = file;
+            bool needFont3D = false;
+
+            std::string ext = osgDB::getLowerCaseFileExtension(tmpFile);
+            if (ext == "text3d")
+            {
+                needFont3D = true;
+                tmpFile.erase(tmpFile.size()-7, 7);
+                ext = osgDB::getLowerCaseFileExtension(tmpFile);
+            }
+            else if ((options != NULL) && (options->getPluginData("3D")))
+            {
+                needFont3D = true;
+            }
+
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file, options );
+            std::string fileName = osgDB::findDataFile( tmpFile, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-            
+
             FreeTypeLibrary* freeTypeLibrary = FreeTypeLibrary::instance();
-            if (!freeTypeLibrary) 
+            if (!freeTypeLibrary)
             {
                 osg::notify(osg::WARN)<<"Warning:: cannot create freetype font after freetype library has been deleted."<<std::endl;
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
-            if ( (options != NULL) && (options->getPluginData("3D")) )
+            if (needFont3D)
                 return freeTypeLibrary->getFont3D(fileName,0,getFlags(options));
             else
                 return freeTypeLibrary->getFont(fileName,0,getFlags(options));
@@ -60,7 +75,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
         virtual ReadResult readObject(std::istream& stream, const osgDB::ReaderWriter::Options* options) const
         {
             FreeTypeLibrary* freeTypeLibrary = FreeTypeLibrary::instance();
-            if (!freeTypeLibrary) 
+            if (!freeTypeLibrary)
             {
                 osg::notify(osg::WARN)<<"Warning:: cannot create freetype font after freetype library has been deleted."<<std::endl;
                 return ReadResult::ERROR_IN_READING_FILE;

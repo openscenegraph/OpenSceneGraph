@@ -1,19 +1,19 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
 #include <osgText/Text3D>
 #include <osg/io_utils>
-namespace osgText 
+namespace osgText
 {
 
 Text3D::Text3D():
@@ -32,25 +32,66 @@ Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):
     computeGlyphRepresentation();
 }
 
-//void Text3D::accept(osg::Drawable::ConstAttributeFunctor& af) const
-//{
-//    TODO
-//}
+void Text3D::accept(osg::Drawable::ConstAttributeFunctor& af) const
+{
+    // ** for each line, do ...
+    TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
+    for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
+    {
+        // ** for each glyph in the line, do ...
+        LineRenderInfo::const_iterator it, end = itLine->end();
+        for (it = itLine->begin(); it!=end; ++it)
+        {
+            // ** apply the vertex array
+            af.apply(osg::Drawable::VERTICES, it->_glyph->getVertexArray()->size(), &(it->_glyph->getVertexArray()->front()));
+        }
+    }
+}
+void Text3D::accept(osg::PrimitiveFunctor& pf) const
+{
+    // ** for each line, do ...
+    TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
+    for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
+    {
+        // ** for each glyph in the line, do ...
+        LineRenderInfo::const_iterator it, end = itLine->end();
+        for (it = itLine->begin(); it!=end; ++it)
+        {
+            pf.setVertexArray(it->_glyph->getVertexArray()->size(),&(it->_glyph->getVertexArray()->front()));
 
-//void Text3D::accept(osg::PrimitiveFunctor& /*pf*/) const
-//{
-//    TODO 
-//}
+            // ** render the front face of the glyph
+            osg::Geometry::PrimitiveSetList & pslFront = it->_glyph->getFrontPrimitiveSetList();
+            for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslFront.begin(), end = pslFront.end(); itr!=end; ++itr)
+            {
+                (*itr)->accept(pf);
+            }
+
+            // ** render the wall face of the glyph
+            osg::Geometry::PrimitiveSetList & pslWall = it->_glyph->getWallPrimitiveSetList();
+            for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslWall.begin(), end=pslWall.end(); itr!=end; ++itr)
+            {
+                (*itr)->accept(pf);
+            }
+
+            // ** render the back face of the glyph
+            osg::Geometry::PrimitiveSetList & pslBack = it->_glyph->getBackPrimitiveSetList();
+            for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslBack.begin(), end=pslBack.end(); itr!=end; ++itr)
+            {
+                (*itr)->accept(pf);
+            }
+        }
+    }
+}
 
 void Text3D::setFont(osg::ref_ptr<Font3D> font)
-{ 
+{
     _font = font;
-    
+
     computeGlyphRepresentation();
 }
 
 void Text3D::setFont(const std::string & fontfile)
-{ 
+{
     setFont(readRefFont3DFile(fontfile));
 }
 
@@ -75,11 +116,11 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
 
     float maximumHeight = _maximumHeight / _font->getScale();
     float maximumWidth = _maximumWidth / _font->getScale();
-    
+
     for(bool outOfSpace=false;lastChar!=last;++lastChar)
     {
         unsigned int charcode = *lastChar;
-        
+
         if (charcode=='\n')
         {
             return lastChar;
@@ -89,16 +130,16 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
         if (glyph)
         {
             const osg::BoundingBox & bb = glyph->getBoundingBox();
-            
+
             // adjust cursor position w.r.t any kerning.
             if (previous_charcode)
             {
-                
+
                 if (_layout == RIGHT_TO_LEFT)
                 {
                     cursor.x() -= glyph->getHorizontalAdvance();
                 }
-                
+
                 if (kerning)
                 {
                     switch (_layout)
@@ -119,7 +160,7 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
                 }
             }
             else
-            { 
+            {
                 switch (_layout)
                 {
                     case LEFT_TO_RIGHT:
@@ -135,10 +176,10 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
                     case VERTICAL:
                         break;
                 }
-                
+
             }
-            
-            
+
+
 
             switch(_layout)
             {
@@ -158,7 +199,7 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
                 if (maximumHeight>0.0f && cursor.y()<-maximumHeight) outOfSpace=true;
                 break;
             }
-            
+
             // => word boundary detection & wrapping
             if (outOfSpace) break;
 
@@ -175,17 +216,17 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
         }
 
     }
-    
+
     // word boundary detection & wrapping
     if (lastChar!=last)
     {
-        if (deliminatorSet.count(*lastChar)==0) 
+        if (deliminatorSet.count(*lastChar)==0)
         {
             String::iterator lastValidChar = lastChar;
             while (lastValidChar!=first && deliminatorSet.count(*lastValidChar)==0)
             {
                 --lastValidChar;
-                
+
                 //Substract off glyphs from the cursor position (to correctly center text)
                 Font3D::Glyph3D* glyph = _font->getGlyph(*lastValidChar);
                 if (glyph)
@@ -198,7 +239,7 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
                     }
                 }
             }
-            
+
             if (first!=lastValidChar)
             {
                 ++lastValidChar;
@@ -213,17 +254,17 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
 void Text3D::computeGlyphRepresentation()
 {
     if (_font.valid() == false) return;
-    
+
     _textRenderInfo.clear();
     _lineCount = 0;
-    
-    if (_text.empty()) 
+
+    if (_text.empty())
     {
         _textBB.set(0,0,0, 0,0,0);//no size text
         TextBase::computePositions(); //to reset the origin
         return;
     }
-    
+
     // initialize bounding box, it will be expanded during glyph position calculation
     _textBB.init();
 
@@ -231,31 +272,31 @@ void Text3D::computeGlyphRepresentation()
     osg::Vec2 cursor(startOfLine_coords);
     osg::Vec2 local(0.0f,0.0f);
     osg::Vec2 startOffset(0.0f,0.0f);
-    
+
     unsigned int previous_charcode = 0;
     unsigned int linelength = 0;
     bool kerning = true;
-    
+
     unsigned int lineNumber = 0;
 
-  
+
 
     for(String::iterator itr=_text.begin(); itr!=_text.end(); )
     {
         _textRenderInfo.resize(lineNumber + 1);
         LineRenderInfo & currentLineRenderInfo = _textRenderInfo.back();
-        
+
         // record the start of the current line
         String::iterator startOfLine_itr = itr;
 
         // find the end of the current line.
         osg::Vec2 endOfLine_coords(cursor);
         String::iterator endOfLine_itr = computeLastCharacterOnLine(endOfLine_coords, itr,_text.end());
-        
-        // ** position the cursor function to the Layout and the alignement 
+
+        // ** position the cursor function to the Layout and the alignement
         TextBase::positionCursor(endOfLine_coords, cursor, (unsigned int) (endOfLine_itr - startOfLine_itr));
 
-        
+
         if (itr!=endOfLine_itr)
         {
             for(;itr!=endOfLine_itr;++itr)
@@ -266,7 +307,7 @@ void Text3D::computeGlyphRepresentation()
                 if (glyph)
                 {
                     const osg::BoundingBox & bb = glyph->getBoundingBox();
-                    
+
                     // adjust cursor position w.r.t any kerning.
                     if (previous_charcode)
                     {
@@ -274,7 +315,7 @@ void Text3D::computeGlyphRepresentation()
                         {
                             cursor.x() -= glyph->getHorizontalAdvance();
                         }
-                        
+
                         if (kerning)
                         {
                             switch (_layout)
@@ -295,7 +336,7 @@ void Text3D::computeGlyphRepresentation()
                         }
                     }
                     else
-                    { 
+                    {
                         switch (_layout)
                         {
                             case LEFT_TO_RIGHT:
@@ -314,19 +355,19 @@ void Text3D::computeGlyphRepresentation()
                                 break;
                             }
                         }
-                        
+
                     }
 
                     local = cursor;
-                    
+
                     if (_layout==VERTICAL)
                     {
                         local.x() += -glyph->getVerticalBearing().x();
                         local.y() += -glyph->getVerticalBearing().y();
                     }
-                     
-                    
-                    
+
+
+
                     // move the cursor onto the next character.
                     // also expand bounding box
                     switch (_layout)
@@ -344,14 +385,14 @@ void Text3D::computeGlyphRepresentation()
                         case RIGHT_TO_LEFT:
                             _textBB.expandBy(osg::Vec3(cursor.x()+bb.xMax(), cursor.y() + bb.yMax(), 0.0f)); //upper right corner
                             _textBB.expandBy(osg::Vec3(cursor.x()+bb.xMin(), cursor.y()+bb.yMin(), 0.0f)); //lower left corner
-                            
+
                             break;
                     }
-                    
+
                     osg::Vec3 pos = osg::Vec3(local.x(), local.y(), 0.0f);
                     currentLineRenderInfo.push_back(Text3D::GlyphRenderInfo(glyph, pos));
 
-                    
+
                     previous_charcode = charcode;
                 }
             }
@@ -360,13 +401,13 @@ void Text3D::computeGlyphRepresentation()
         {
             ++itr;
         }
-                                
+
         if (itr!=_text.end())
         {
             // skip over return.
             if (*itr=='\n') ++itr;
         }
-                
+
         // move to new line.
         switch(_layout)
         {
@@ -394,11 +435,9 @@ void Text3D::computeGlyphRepresentation()
         ++lineNumber;
     }
     _textBB.expandBy(0.0f,0.0f,-1);
-    
+
     TextBase::computePositions();
 }
-
-
 
 osg::BoundingBox Text3D::computeBound() const
 {
@@ -410,25 +449,17 @@ osg::BoundingBox Text3D::computeBound() const
         {
             osg::Matrix& matrix = _autoTransformCache[i]._matrix;
             bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
-//          bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
             bbox.expandBy(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax())*matrix);
-//          bbox.expandBy(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
         }
     }
-    
+
     return bbox;
 }
-
-
-
-
-
-
 
 void Text3D::computePositions(unsigned int contextID) const
 {
     if (_font.valid() == false) return;
-    
+
     switch(_alignment)
     {
     case LEFT_TOP:      _offset.set(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()); break;
@@ -446,16 +477,16 @@ void Text3D::computePositions(unsigned int contextID) const
     case LEFT_BASE_LINE:  _offset.set(0.0f,0.0f,0.0f); break;
     case CENTER_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,0.0f,0.0f); break;
     case RIGHT_BASE_LINE:  _offset.set(_textBB.xMax(),0.0f,0.0f); break;
-    
+
     case LEFT_BOTTOM_BASE_LINE:  _offset.set(0.0f,-_characterHeight*(_lineCount-1),0.0f); break;
     case CENTER_BOTTOM_BASE_LINE:  _offset.set((_textBB.xMax()+_textBB.xMin())*0.5f,-_characterHeight*(_lineCount-1),0.0f); break;
     case RIGHT_BOTTOM_BASE_LINE:  _offset.set(_textBB.xMax(),-_characterHeight*(_lineCount-1),0.0f); break;
     }
-    
+
     AutoTransformCache& atc = _autoTransformCache[contextID];
     osg::Matrix& matrix = atc._matrix;
 
-    
+
     float scale = _font->getScale();
     osg::Vec3 scaleVec(scale * _characterHeight, scale * _characterHeight / _characterAspectRatio, _characterDepth);
     matrix.makeTranslate(-_offset);
@@ -463,19 +494,19 @@ void Text3D::computePositions(unsigned int contextID) const
     matrix.postMultRotate(_rotation);
     matrix.postMultTranslate(_position);
 
-    
+
     _normal = osg::Matrix::transform3x3(osg::Vec3(0.0f,0.0f,1.0f),matrix);
     _normal.normalize();
 
-    const_cast<Text3D*>(this)->dirtyBound();    
+    const_cast<Text3D*>(this)->dirtyBound();
 }
 
 void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 {
     osg::State & state = *renderInfo.getState();
     unsigned int contextID = state.getContextID();
-    
-    
+
+
     // ** save the previous modelview matrix
     osg::ref_ptr<osg::RefMatrix> previous(new osg::RefMatrix(state.getModelViewMatrix()));
 
@@ -484,25 +515,25 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 
     // ** mult previous by the modelview for this context
     modelview->postMult(*previous.get());
-   
+
     // ** apply this new modelview matrix
     state.applyModelViewMatrix(modelview.get());
-    
-    
+
+
     if (_drawMode & TEXT)
     {
         renderInfo.getState()->disableAllVertexArrays();
-        
+
         glPushAttrib(GL_TRANSFORM_BIT);
         glEnable(GL_RESCALE_NORMAL);
-        
+
         switch(_renderMode)
         {
             case PER_FACE:  renderPerFace(*renderInfo.getState());   break;
             case PER_GLYPH:
             default:        renderPerGlyph(*renderInfo.getState());  break;
         }
-        
+
         glPopAttrib();
     }
 
@@ -514,41 +545,41 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
             osg::Vec3 c100(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMax()));
             osg::Vec3 c110(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMax()));
             osg::Vec3 c010(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMax()));
-        
+
             osg::Vec3 c001(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin()));
             osg::Vec3 c101(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin()));
             osg::Vec3 c111(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin()));
             osg::Vec3 c011(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()));
-        
+
             glBegin(GL_LINE_LOOP);
                 glVertex3fv(c000.ptr());
                 glVertex3fv(c100.ptr());
                 glVertex3fv(c110.ptr());
                 glVertex3fv(c010.ptr());
             glEnd();
-            
+
             glBegin(GL_LINE_LOOP);
                 glVertex3fv(c001.ptr());
                 glVertex3fv(c011.ptr());
                 glVertex3fv(c111.ptr());
                 glVertex3fv(c101.ptr());
             glEnd();
-            
+
             glBegin(GL_LINES);
                 glVertex3fv(c000.ptr());
                 glVertex3fv(c001.ptr());
-                
+
                 glVertex3fv(c100.ptr());
                 glVertex3fv(c101.ptr());
-                
+
                 glVertex3fv(c110.ptr());
                 glVertex3fv(c111.ptr());
-                
+
                 glVertex3fv(c010.ptr());
                 glVertex3fv(c011.ptr());
             glEnd();
         }
-    }    
+    }
 
     if (_drawMode & ALIGNMENT)
     {
@@ -565,17 +596,15 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
             glVertex3fv(vt.ptr());
             glVertex3fv(vb.ptr());
         glEnd();
-        
+
     }
 
     // restore the previous modelview matrix
     state.applyModelViewMatrix(previous.get());
 }
 
-
-
 void Text3D::renderPerGlyph(osg::State & state) const
-{   
+{
     // ** for each line, do ...
     TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
@@ -584,24 +613,23 @@ void Text3D::renderPerGlyph(osg::State & state) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            
+
             glPushMatrix();
 
             glTranslatef(it->_position.x(), it->_position.y(), it->_position.z());
-           
+
             // ** apply the vertex array
             state.setVertexPointer(it->_glyph->getVertexArray());
-            
+
             // ** render the front face of the glyph
             glNormal3f(0.0f,0.0f,1.0f);
-            
+
             osg::Geometry::PrimitiveSetList & pslFront = it->_glyph->getFrontPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslFront.begin(), end = pslFront.end(); itr!=end; ++itr)
             {
-                
                 (*itr)->draw(state, false);
             }
-            
+
             // ** render the wall face of the glyph
             state.setNormalPointer(it->_glyph->getNormalArray());
             osg::Geometry::PrimitiveSetList & pslWall = it->_glyph->getWallPrimitiveSetList();
@@ -609,16 +637,17 @@ void Text3D::renderPerGlyph(osg::State & state) const
             {
                 (*itr)->draw(state, false);
             }
-            
+            state.disableNormalPointer();
+
             // ** render the back face of the glyph
             glNormal3f(0.0f,0.0f,-1.0f);
-                        
+
             osg::Geometry::PrimitiveSetList & pslBack = it->_glyph->getBackPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslBack.begin(), end=pslBack.end(); itr!=end; ++itr)
             {
                 (*itr)->draw(state, false);
             }
-            
+
             glPopMatrix();
         }
     }
@@ -628,18 +657,18 @@ void Text3D::renderPerFace(osg::State & state) const
 {
     // ** render all front faces
     glNormal3f(0.0f,0.0f,1.0f);
-    
+
     TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
     {
         // ** for each glyph in the line, do ...
         LineRenderInfo::const_iterator it, end = itLine->end();
-        for (it = itLine->begin(); it!=end; ++it)   
+        for (it = itLine->begin(); it!=end; ++it)
         {
             glPushMatrix();
             glTranslatef(it->_position.x(), it->_position.y(), it->_position.z());
             state.setVertexPointer(it->_glyph->getVertexArray());
-            
+
             // ** render the front face of the glyph
             osg::Geometry::PrimitiveSetList & psl = it->_glyph->getFrontPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=psl.begin(), end=psl.end(); itr!=end; ++itr)
@@ -649,7 +678,7 @@ void Text3D::renderPerFace(osg::State & state) const
             glPopMatrix();
         }
     }
-    
+
 
     // ** render all wall face of the text
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
@@ -662,7 +691,7 @@ void Text3D::renderPerFace(osg::State & state) const
             glTranslatef(it->_position.x(), it->_position.y(), it->_position.z());
             state.setVertexPointer(it->_glyph->getVertexArray());
             state.setNormalPointer(it->_glyph->getNormalArray());
-            
+
             osg::Geometry::PrimitiveSetList & psl = it->_glyph->getWallPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=psl.begin(), end=psl.end(); itr!=end; ++itr)
             {
@@ -672,10 +701,10 @@ void Text3D::renderPerFace(osg::State & state) const
         }
     }
 
-    
+
     // ** render all back face of the text
     glNormal3f(0.0f,0.0f,-1.0f);
-                
+
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
     {
         // ** for each glyph in the line, do ...
@@ -685,7 +714,7 @@ void Text3D::renderPerFace(osg::State & state) const
             glPushMatrix();
             glTranslatef(it->_position.x(), it->_position.y(), it->_position.z());
             state.setVertexPointer(it->_glyph->getVertexArray());
-            
+
             // ** render the back face of the glyph
             osg::Geometry::PrimitiveSetList & psl = it->_glyph->getBackPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=psl.begin(), end=psl.end(); itr!=end; ++itr)
@@ -709,14 +738,14 @@ void Text3D::setThreadSafeRefUnref(bool threadSafe)
 void Text3D::resizeGLObjectBuffers(unsigned int maxSize)
 {
     TextBase::resizeGLObjectBuffers(maxSize);
-    
+
     if (_font.valid()) _font->resizeGLObjectBuffers(maxSize);
 }
 
 void Text3D::releaseGLObjects(osg::State* state) const
 {
     TextBase::releaseGLObjects(state);
-    
+
     if (_font.valid()) _font->releaseGLObjects(state);
 }
 

@@ -109,7 +109,9 @@ public:
 
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
-        osg::notify(osg::NOTICE)<<"OGR::readNode("<<file<<")"<<std::endl;
+        osg::notify(osg::INFO)<<"OGR::readNode("<<file<<")"<<std::endl;
+        
+        if (file.empty()) return ReadResult::FILE_NOT_FOUND;
     
         if (osgDB::equalCaseInsensitive(osgDB::getFileExtension(file),"ogr"))
         {

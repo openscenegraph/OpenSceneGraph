@@ -84,12 +84,14 @@ private:
   class CreateStlVisitor : public osg::NodeVisitor {
   public:
 
-    CreateStlVisitor( std::string const & fout, const osgDB::ReaderWriter::Options* options = 0): osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN ), counter(0), m_fout(fout), m_options(options) {
-      if (options && (options->getOptionString() == "separateFiles")) {
-    osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: Files are seperated written" << std::endl;                
+    CreateStlVisitor( std::string const & fout, const osgDB::ReaderWriter::Options* options = 0): osg::NodeVisitor( osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN ), counter(0), m_fout(fout), m_options(options)
+    {
+      if (options && (options->getOptionString() == "separateFiles"))
+      {
+        osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: Files are seperated written" << std::endl;
       } else {
-    m_f = new std::ofstream(m_fout.c_str());        
-    *m_f << "solid " << counter << std::endl;
+        m_f = new std::ofstream(m_fout.c_str());        
+        *m_f << "solid " << counter << std::endl;
       }
     };
 
@@ -448,16 +450,20 @@ bool ReaderWriterSTL::ReaderObject::readStlBinary(FILE* fp)
     return true;
 }
 
-osgDB::ReaderWriter::WriteResult ReaderWriterSTL::writeNode(const osg::Node& node,const std::string& fout, const Options* opts) const {
-  std::string ext = osgDB::getLowerCaseFileExtension(fout);
-  if (ext != "stl" ){
+osgDB::ReaderWriter::WriteResult ReaderWriterSTL::writeNode(const osg::Node& node,const std::string& fileName, const Options* opts) const
+{
+  if (fileName.empty()) return WriteResult::FILE_NOT_HANDLED;
+
+  std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+  if (ext != "stl" )
+  {
     // sta - extension implies STL-Binary...
-    osg::notify(osg::FATAL) << "ReaderWriterSTL::writeNode: Only STL-ASCII-files supported'" << std::endl;
+    osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: Only STL-ASCII-files supported'" << std::endl;
     return WriteResult::FILE_NOT_HANDLED;
   }
   
   try {
-    CreateStlVisitor createStlVisitor( fout, opts );
+    CreateStlVisitor createStlVisitor( fileName, opts );
     const_cast<osg::Node&>(node).accept( createStlVisitor );
   } catch(...) {
     return WriteResult::ERROR_IN_WRITING_FILE;

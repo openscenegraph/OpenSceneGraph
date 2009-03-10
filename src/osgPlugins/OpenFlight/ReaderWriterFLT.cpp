@@ -429,9 +429,9 @@ class FLTReaderWriter : public ReaderWriter
         {
             if ( fileName.empty() )
             {
-                osg::notify( osg::FATAL ) << "fltexp: writeNode: empty file name" << std::endl;
                 return WriteResult::FILE_NOT_HANDLED;
             }
+
             std::string ext = osgDB::getLowerCaseFileExtension( fileName );
             if ( !acceptsExtension(ext) )
                 return WriteResult::FILE_NOT_HANDLED;

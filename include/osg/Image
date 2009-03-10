@@ -307,7 +307,7 @@ class OSG_EXPORT Image : public Object
         }*/
 
         /** Return true if this image is translucent - i.e. it has alpha values that are less 1.0 (when normalized). */
-        bool isImageTranslucent() const;
+        virtual bool isImageTranslucent() const;
 
         /** Set the optional PixelBufferObject used to map the image memory efficiently to graphics memory. */ 
         void setPixelBufferObject(PixelBufferObject* buffer) { _bufferObject = buffer; if (_bufferObject.valid()) _bufferObject->setImage(this); }

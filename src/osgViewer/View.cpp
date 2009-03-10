@@ -1603,9 +1603,9 @@ void View::setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_co
                     "         float pos = gl_FragCoord.x/256.0;                                                                         " \
                     "         float blue = texture1D(wow_header, pos).b;                                                                " \
                     "         if ( blue < 0.5)                                                                                          " \
-                    "             gl_FragColor.b -=0.5;                                                                                 " \
+                    "             gl_FragColor.b = 0.0;                                                                                 " \
                     "         else                                                                                                      " \
-                    "             gl_FragColor.b += 0.5;                                                                                " \
+                    "             gl_FragColor.b = 1.0;                                                                                 " \
                     "     }                                                                                                             " \
                     " }                                                                                                               " );
 

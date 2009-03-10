@@ -33,21 +33,22 @@ namespace osg
 //#define DEBUG_OBJECT_ALLOCATION_DESTRUCTION
 
 // specialized smart pointer, used to get round auto_ptr<>'s lack of the destructor reseting itself to 0.
-struct DeleteHandlerPointer
+template<typename T>
+struct ResetPointer
 {
-    DeleteHandlerPointer():
+    ResetPointer():
         _ptr(0) {}
 
-    DeleteHandlerPointer(DeleteHandler* ptr):
+    ResetPointer(T* ptr):
         _ptr(ptr) {}
 
-    ~DeleteHandlerPointer()
+    ~ResetPointer()
     {
         delete _ptr;
         _ptr = 0;
     }
 
-    inline DeleteHandlerPointer& operator = (DeleteHandler* ptr)
+    inline ResetPointer& operator = (T* ptr)
     {
         if (_ptr==ptr) return *this;
         delete _ptr;
@@ -55,32 +56,35 @@ struct DeleteHandlerPointer
         return *this;
     }
 
-    void reset(DeleteHandler* ptr)
+    void reset(T* ptr)
     {
         if (_ptr==ptr) return;
         delete _ptr;
         _ptr = ptr;
     }
 
-    inline DeleteHandler& operator*()  { return *_ptr; }
+    inline T& operator*()  { return *_ptr; }
 
-    inline const DeleteHandler& operator*() const { return *_ptr; }
+    inline const T& operator*() const { return *_ptr; }
 
-    inline DeleteHandler* operator->() { return _ptr; }
+    inline T* operator->() { return _ptr; }
 
-    inline const DeleteHandler* operator->() const   { return _ptr; }
+    inline const T* operator->() const   { return _ptr; }
 
-    DeleteHandler* get() { return _ptr; }
+    T* get() { return _ptr; }
 
-    const DeleteHandler* get() const { return _ptr; }
+    const T* get() const { return _ptr; }
 
-    DeleteHandler* _ptr;
+    T* _ptr;
 };
+
+typedef ResetPointer<DeleteHandler> DeleteHandlerPointer;
+typedef ResetPointer<OpenThreads::Mutex> GlobalMutexPointer;
 
 OpenThreads::Mutex* Referenced::getGlobalReferencedMutex()
 {
-    static OpenThreads::Mutex s_ReferencedGlobalMutext;
-    return &s_ReferencedGlobalMutext;
+    static GlobalMutexPointer s_ReferencedGlobalMutext = new OpenThreads::Mutex;
+    return s_ReferencedGlobalMutext.get();
 }
 
 typedef std::set<Observer*> ObserverSet;

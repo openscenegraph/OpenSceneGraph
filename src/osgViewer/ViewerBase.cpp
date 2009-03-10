@@ -375,7 +375,7 @@ void ViewerBase::startThreading()
         
         if (!gc->isRealized())
         {
-            osg::notify(osg::INFO)<<"ViewerBase::startThreading() : Realizing window "<<gc<<std::endl;
+            osg::notify(osg::INFO)<<"ViewerBase::startThreading() : Realizng window "<<gc<<std::endl;
             gc->realize();
         }
         

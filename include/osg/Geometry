@@ -331,7 +331,13 @@ class OSG_EXPORT Geometry : public Drawable
           * use glBegin()/glVertex.../glEnd(). Use of per primitive bindings or per vertex indexed
           * arrays will drop the rendering path off the fast path.
         */
-        inline bool areFastPathsUsed() const { return _fastPath && _fastPathHint; }
+        inline bool areFastPathsUsed() const
+        {
+            if (_internalOptimizedGeometry.valid())
+                return _internalOptimizedGeometry->areFastPathsUsed();
+            else
+                return _fastPath && _fastPathHint;
+        }
 
         bool computeFastPathsUsed();
 

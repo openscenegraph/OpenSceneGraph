@@ -141,6 +141,7 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
         }
 
         case(GUIEventAdapter::DRAG):
+        case(GUIEventAdapter::SCROLL):
         {
             addMouseEvent(ea);
             if (calcMovement()) us.requestRedraw();
@@ -244,26 +245,41 @@ void TrackballManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3&
 
 bool TrackballManipulator::calcMovement()
 {
-    // return if less then two events have been added.
-    if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
+    // mosue scroll is only a single event
+    if (_ga_t0.get()==NULL) return false;
 
-    float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
-    float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
+    float dx=0.0f;
+    float dy=0.0f;
+    unsigned int buttonMask=osgGA::GUIEventAdapter::NONE;
 
-    float distance = sqrtf(dx*dx + dy*dy);
-    // return if movement is too fast, indicating an error in event values or change in screen.
-    if (distance>0.5)
+    if (_ga_t0->getEventType()==GUIEventAdapter::SCROLL)
     {
-        return false;
+        dy = _ga_t0->getScrollingMotion() == osgGA::GUIEventAdapter::SCROLL_DOWN ? -0.1 : 0.1;
+        buttonMask=GUIEventAdapter::SCROLL;
+    } 
+    else 
+    {
+
+        if (_ga_t1.get()==NULL) return false;
+        dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
+        dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
+        float distance = sqrtf(dx*dx + dy*dy);
+        
+        // return if movement is too fast, indicating an error in event values or change in screen.
+        if (distance>0.5)
+        {
+            return false;
+        }
+        
+        // return if there is no movement.
+        if (distance==0.0f)
+        {
+            return false;
+        }
+
+        buttonMask = _ga_t1->getButtonMask();
     }
     
-    // return if there is no movement.
-    if (distance==0.0f)
-    {
-        return false;
-    }
-
-    unsigned int buttonMask = _ga_t1->getButtonMask();
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {
 
@@ -307,7 +323,7 @@ bool TrackballManipulator::calcMovement()
         return true;
 
     }
-    else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
+    else if ((buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON) || (buttonMask==GUIEventAdapter::SCROLL))
     {
 
         // zoom model.

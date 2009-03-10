@@ -46,19 +46,22 @@ UBrowserManager::UBrowserManager():
     _nativeWindowHandle(0),
     _previousButtonMask(0)
 {
-    osg::notify(osg::NOTICE)<<"UBrowserManager::UBrowserManager()"<<std::endl;
+    osg::notify(osg::INFO)<<"UBrowserManager::UBrowserManager()"<<std::endl;
 }
 
 UBrowserManager::~UBrowserManager()
 {
-    _thread->setDone(true);
-    
-    while(_thread->isRunning()) 
+    if (_thread.valid())
     {
-        OpenThreads::Thread::YieldCurrentThread();
-    }
+        _thread->setDone(true);
 
-    _thread = 0;
+        while(_thread->isRunning()) 
+        {
+            OpenThreads::Thread::YieldCurrentThread();
+        }
+
+        _thread = 0;
+    }
 }
 
 osgWidget::BrowserImage* UBrowserManager::createBrowserImage(const std::string& url, int width, int height)

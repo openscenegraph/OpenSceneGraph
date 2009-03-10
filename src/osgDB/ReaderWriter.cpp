@@ -63,8 +63,27 @@ void ReaderWriter::supportsOption(const std::string& fmt, const std::string& des
 
 ReaderWriter::Features ReaderWriter::supportedFeatures() const
 {
-    Features features = FEATURE_ALL;
-    return features;
+    int features = FEATURE_NONE;
+    std::string dummyFilename;
+
+    if (readObject(dummyFilename,0).status()!=ReadResult::NOT_IMPLEMENTED) features |= FEATURE_READ_OBJECT;
+    if (readImage(dummyFilename,0).status()!=ReadResult::NOT_IMPLEMENTED) features |= FEATURE_READ_IMAGE;
+    if (readHeightField(dummyFilename,0).status()!=ReadResult::NOT_IMPLEMENTED) features |= FEATURE_READ_HEIGHT_FIELD;
+    if (readShader(dummyFilename,0).status()!=ReadResult::NOT_IMPLEMENTED) features |= FEATURE_READ_SHADER;
+    if (readNode(dummyFilename,0).status()!=ReadResult::NOT_IMPLEMENTED) features |= FEATURE_READ_NODE;
+
+    osg::ref_ptr<osg::Image> image = new osg::Image;
+    osg::ref_ptr<osg::HeightField> hf = new osg::HeightField;
+    osg::ref_ptr<osg::Shader> shader = new osg::Shader;
+    osg::ref_ptr<osg::Node> node = new osg::Node;
+
+    if (writeObject(*image, dummyFilename,0).status()!=WriteResult::NOT_IMPLEMENTED) features |= FEATURE_WRITE_OBJECT;
+    if (writeImage(*image,dummyFilename,0).status()!=WriteResult::NOT_IMPLEMENTED) features |= FEATURE_WRITE_IMAGE;
+    if (writeHeightField(*hf,dummyFilename,0).status()!=WriteResult::NOT_IMPLEMENTED) features |= FEATURE_WRITE_HEIGHT_FIELD;
+    if (writeShader(*shader,dummyFilename,0).status()!=WriteResult::NOT_IMPLEMENTED) features |= FEATURE_WRITE_SHADER;
+    if (writeNode(*node, dummyFilename,0).status()!=WriteResult::NOT_IMPLEMENTED) features |= FEATURE_WRITE_NODE;
+
+    return Features(features);
 }
 
 ReaderWriter::FeatureList ReaderWriter::featureAsString(ReaderWriter::Features feature)

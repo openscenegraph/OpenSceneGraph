@@ -25,7 +25,7 @@ class ReaderWriterUBrowser : public osgDB::ReaderWriter
     
         ReaderWriterUBrowser()
         {        
-             osg::notify(osg::NOTICE)<<"ReaderWriterUBrowser::ReaderWriterUBrowser()"<<std::endl;
+             osg::notify(osg::INFO)<<"ReaderWriterUBrowser::ReaderWriterUBrowser()"<<std::endl;
 
              supportsExtension("gecko","browser image");
              supportsExtension("browser","browser image");
@@ -41,7 +41,7 @@ class ReaderWriterUBrowser : public osgDB::ReaderWriter
                 osgWidget::BrowserManager::instance()->setApplication(previousManager->getApplication());
              }
              
-             osg::notify(osg::NOTICE)<<"ReaderWriterUBrowser::ReaderWriterUBrowser() done"<<std::endl;
+             osg::notify(osg::INFO)<<"ReaderWriterUBrowser::ReaderWriterUBrowser() done"<<std::endl;
         }
     
         virtual ~ReaderWriterUBrowser()

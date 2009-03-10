@@ -40,6 +40,7 @@ extern OSGDB_EXPORT bool equalCaseInsensitive(const std::string& lhs,const std::
 extern OSGDB_EXPORT bool equalCaseInsensitive(const std::string& lhs,const char* rhs);
 
 extern OSGDB_EXPORT bool containsServerAddress(const std::string& filename);
+extern OSGDB_EXPORT std::string getServerProtocol(const std::string& filename);
 extern OSGDB_EXPORT std::string getServerAddress(const std::string& filename);
 extern OSGDB_EXPORT std::string getServerFileName(const std::string& filename);
 

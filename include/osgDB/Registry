@@ -478,7 +478,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** Add an Archive extension.*/
         void addArchiveExtension(const std::string ext);
-
+        
+        /** registers a protocol */
+        void registerProtocol(const std::string& protocol);
+        
+        /** returns true, if named protocol is registered */
+        bool isProtocolRegistered(const std::string& protocol);
+        
     protected:
 
         virtual ~Registry();
@@ -491,6 +497,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
         typedef std::map<std::string, ObjectTimeStampPair >             ObjectCache;
         typedef std::map<std::string, osg::ref_ptr<osgDB::Archive> >    ArchiveCache;
+        
+        typedef std::set<std::string>                                   RegisteredProtocolsSet;
 
         /** constructor is private, as its a singleton, preventing
             construction other than via the instance() method and
@@ -508,6 +516,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         osg::ref_ptr<AuthenticationMap>             _authenticationMap;
         
         bool                                        _createNodeFromImage;
+        
+        RegisteredProtocolsSet                      _registeredProtocols;
 
         osg::Object*       readObject(DotOsgWrapperMap& dowMap,Input& fr);
 

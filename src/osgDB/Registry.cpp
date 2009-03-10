@@ -331,6 +331,9 @@ Registry::Registry()
     addFileExtensionAlias("pgm", "pnm");
     addFileExtensionAlias("ppm", "pnm");
     
+    // register http-protocol, so the curl can handle it, if necessary
+    registerProtocol("http"); 
+    
 }
 
 
@@ -2092,3 +2095,15 @@ SharedStateManager* Registry::getOrCreateSharedStateManager()
     
     return _sharedStateManager.get();
 }
+
+
+void Registry::registerProtocol(const std::string& protocol) 
+{  
+    _registeredProtocols.insert( convertToLowerCase(protocol) ); 
+}
+        
+bool Registry::isProtocolRegistered(const std::string& protocol) 
+{ 
+    return (_registeredProtocols.find( convertToLowerCase(protocol) ) != _registeredProtocols.end()); 
+}
+

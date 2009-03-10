@@ -44,7 +44,9 @@
     #include <float.h>
 #endif
 
-#if defined (sun) || defined (__APPLE__)
+#if defined (sun) || \
+    defined (__APPLE__) || \
+    (defined (_AIX) && defined (__GNUC__))
 
     #include <float.h>
 
@@ -93,7 +95,8 @@
 
 #if defined (sun) || \
     defined (__hpux) || \
-    defined (APPLE_PRE_10_2)
+    defined (APPLE_PRE_10_2) || \
+    (defined (_AIX) && defined (__GNUC__))
 
     #ifndef floorf
     inline float floorf(float value) { return static_cast<float>(floor(value)); }

@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -86,7 +86,7 @@ std::string findFont3DFile(const std::string& str)
     }
 
     // Not found, return empty string
-    osg::notify(osg::WARN)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
+    osg::notify(osg::WARN)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;
     return std::string();
 }
 
@@ -94,9 +94,22 @@ osgText::Font3D* readFont3DFile(const std::string& filename, const osgDB::Reader
 {
     if (filename=="") return 0;
 
-    std::string foundFile = findFont3DFile(filename);
+    // unsure filename have not .text3d at the end
+    std::string tmpFilename;
+    std::string text3dExt = ".text3d";
+    std::string ext = osgDB::getFileExtensionIncludingDot(filename);
+    if (ext == text3dExt)
+        tmpFilename = filename.substr(filename.size() - ext.size(), ext.size());
+    else
+        tmpFilename = filename;
+
+    //search font file
+    std::string foundFile = findFont3DFile(tmpFilename);
     if (foundFile.empty()) return 0;
-    
+
+    //unsure filename have .text3d at the end
+    foundFile += text3dExt;
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_Font3DFileMutex);
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
@@ -104,16 +117,10 @@ osgText::Font3D* readFont3DFile(const std::string& filename, const osgDB::Reader
     {
         localOptions = new osgDB::ReaderWriter::Options;
         localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
-        // ** HACK to load Font3D instead of Font
-        localOptions->setPluginData("3D", (void*) 1);
-    }
-    else
-    {
-        userOptions->setPluginData("3D", (void*) 1);
     }
 
     osg::Object* object = osgDB::readObjectFile(foundFile, userOptions ? userOptions : localOptions.get());
-    
+
     // if the object is a font then return it.
     osgText::Font3D* font3D = dynamic_cast<osgText::Font3D*>(object);
     if (font3D) return font3D;
@@ -142,7 +149,7 @@ osgText::Font3D* readFont3DStream(std::istream& stream, const osgDB::ReaderWrite
     // there should be a better way to get the FreeType ReaderWriter by name...
     osgDB::ReaderWriter *reader = osgDB::Registry::instance()->getReaderWriterForExtension("ttf");
     if (reader == 0) return 0;
-    
+
     osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, userOptions ? userOptions : localOptions.get());
     if (rr.error())
     {
@@ -150,7 +157,7 @@ osgText::Font3D* readFont3DStream(std::istream& stream, const osgDB::ReaderWrite
         return 0;
     }
     if (!rr.validObject()) return 0;
-    
+
     osg::Object *object = rr.takeObject();
 
     // if the object is a font then return it.
@@ -166,9 +173,19 @@ osg::ref_ptr<Font3D> readRefFont3DFile(const std::string& filename, const osgDB:
 {
     if (filename=="") return 0;
 
-    std::string foundFile = findFont3DFile(filename);
+    std::string tmpFilename;
+    std::string text3dExt = ".text3d";
+    std::string ext = osgDB::getFileExtensionIncludingDot(filename);
+    if (ext == text3dExt)
+        tmpFilename = filename.substr(0, filename.size() - ext.size());
+    else
+        tmpFilename = filename;
+
+    std::string foundFile = findFont3DFile(tmpFilename);
     if (foundFile.empty()) return 0;
-    
+
+    foundFile += text3dExt;
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_Font3DFileMutex);
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
@@ -176,16 +193,10 @@ osg::ref_ptr<Font3D> readRefFont3DFile(const std::string& filename, const osgDB:
     {
         localOptions = new osgDB::ReaderWriter::Options;
         localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
-        // ** HACK to load Font3D instead of Font
-        localOptions->setPluginData("3D", (void*) 1);
-    }
-    else
-    {
-        userOptions->setPluginData("3D", (void*) 1);
     }
 
     osg::ref_ptr<osg::Object> object = osgDB::readRefObjectFile(foundFile, userOptions ? userOptions : localOptions.get());
-    
+
     // if the object is a font then return it.
     osgText::Font3D* font3D = dynamic_cast<osgText::Font3D*>(object.get());
     if (font3D) return osg::ref_ptr<Font3D>(font3D);
@@ -212,7 +223,7 @@ osg::ref_ptr<Font3D> readRefFont3DStream(std::istream& stream, const osgDB::Read
     // there should be a better way to get the FreeType ReaderWriter by name...
     osgDB::ReaderWriter *reader = osgDB::Registry::instance()->getReaderWriterForExtension("ttf");
     if (reader == 0) return 0;
-    
+
     osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, userOptions ? userOptions : localOptions.get());
     if (rr.error())
     {
@@ -267,24 +278,24 @@ std::string Font3D::getFileName() const
 
 Font3D::Glyph3D* Font3D::getGlyph(unsigned int charcode)
 {
-    Glyph3D * glyph3D = NULL; 
-    
+    Glyph3D * glyph3D = NULL;
+
     Glyph3DMap::iterator itr = _glyph3DMap.find(charcode);
     if (itr!=_glyph3DMap.end()) glyph3D = itr->second.get();
-    
+
     else if (_implementation.valid())
     {
         glyph3D = _implementation->getGlyph(charcode);
         if (glyph3D) _glyph3DMap[charcode] = glyph3D;
     }
-    
+
     return glyph3D;
 }
 
 void Font3D::setThreadSafeRefUnref(bool threadSafe)
 {
     Glyph3DMap::iterator it,end = _glyph3DMap.end();
-    
+
     for (it=_glyph3DMap.begin(); it!=end; ++it)
         it->second->setThreadSafeRefUnref(threadSafe);
 }

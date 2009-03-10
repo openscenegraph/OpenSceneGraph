@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -20,13 +20,13 @@
 
 
 #include <osg/Geometry>
-#include <osg/Notify>  
+#include <osg/Notify>
 #include <osgDB/WriteFile>
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tessellator>
 
 
-#include <ft2build.h>  
+#include <ft2build.h>
 #include FT_FREETYPE_H
 
 #include <freetype/ftoutln.h>
@@ -173,7 +173,7 @@ int conicTo( const FT_Vector* control,const FT_Vector* to, void* user )
 int cubicTo( const FT_Vector* control1,const FT_Vector* control2,const FT_Vector* to, void* user )
 {
     Char3DInfo* char3d = (Char3DInfo*)user;
-    char3d->cubicTo( 
+    char3d->cubicTo(
         osg::Vec2(FT_NUM(control1->x),FT_NUM(control1->y)),
         osg::Vec2(FT_NUM(control2->x),FT_NUM(control2->y)),
         osg::Vec2(FT_NUM(to->x),FT_NUM(to->y)) );
@@ -220,7 +220,7 @@ void FreeTypeFont3D::init()
         return;
     }
 
-    FT_Set_Char_Size( _face, 64*64, 64*64, 600, 600); 
+    FT_Set_Char_Size( _face, 64*64, 64*64, 600, 600);
 
     int glyphIndex = FT_Get_Char_Index( _face, 'M' );
     _error = FT_Load_Glyph( _face, glyphIndex, FT_LOAD_DEFAULT );
@@ -290,7 +290,7 @@ FreeTypeFont3D::~FreeTypeFont3D()
             // remove myself from the local registry to ensure that
             // not dangling pointers remain
             freeTypeLibrary->removeFont3DImplmentation(this);
-        
+
             // free the freetype font face itself
             FT_Done_Face(_face);
             _face = 0;
@@ -308,12 +308,12 @@ FreeTypeFont3D::~FreeTypeFont3D()
 
 osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
 {
-    
-    
+
+
     //
-    // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being  
-    // returned, for symbol fonts in windows (FT_ENCONDING_MS_SYMBOL in freetype) the correct 
-    // values are from 0xF000 to 0xF0FF not from 0x000 to 0x00FF (0 to 255) as you would expect.  
+    // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being
+    // returned, for symbol fonts in windows (FT_ENCONDING_MS_SYMBOL in freetype) the correct
+    // values are from 0xF000 to 0xF0FF not from 0x000 to 0x00FF (0 to 255) as you would expect.
     // Microsoft uses a private field for its symbol fonts
     //
     unsigned int charindex = charcode;
@@ -336,7 +336,7 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
         osg::notify(osg::WARN) << "FreeTypeFont3D::getGlyph : not a vector font" << std::endl;
         return 0;
     }
-    
+
     // ** init FreeType to describe the glyph
     Char3DInfo char3d;
 
@@ -348,7 +348,7 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
     funcs.move_to = (FT_Outline_MoveToFunc)&moveTo;
     funcs.shift = 0;
     funcs.delta = 0;
-    
+
     // ** record description
     FT_Error _error = FT_Outline_Decompose(&outline, &funcs, &char3d);
     if (_error)
@@ -356,74 +356,74 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
         osg::notify(osg::WARN) << "FreeTypeFont3D::getGlyph : - outline decompose failed ..." << std::endl;
         return 0;
     }
-    
+
     // ** create geometry for each part of the glyph
     osg::ref_ptr<osg::Geometry> frontGeo(new osg::Geometry);
     frontGeo->setVertexArray(char3d.get()->getVertexArray());
     frontGeo->setPrimitiveSetList(char3d.get()->getPrimitiveSetList());
-    
+
     osg::ref_ptr<osg::Geometry> wallGeo(new osg::Geometry);
     wallGeo->setVertexArray(frontGeo->getVertexArray());
-    
+
     osg::ref_ptr<osg::Geometry> backGeo(new osg::Geometry);
     backGeo->setVertexArray(frontGeo->getVertexArray());
-        
-    
-    
-    // ** for conveniance.
+
+
+
+    // ** for convenience.
     osg::Vec3Array * vertices = char3d._verts.get();
-    
-    
-    
-    // ** duplicate the vertex for the back face 
+
+
+
+    // ** duplicate the vertex for the back face
     // ** with a depth equal to the font depth
     std::size_t len = vertices->size();
     std::size_t dlen = len * 2;
-      
+
     vertices->reserve(dlen);
-       
+
     osg::Vec3Array::iterator begin = vertices->begin();
     osg::Vec3Array::iterator it = vertices->begin();
-    
+
     for (std::size_t i = 0; i != len; ++i, ++it)
         vertices->push_back(*it);
 //    std::copy(begin, begin + len, begin + len + 1); TOCHECK
-    
- 
+
+
     // ** and decal new vertices
     unsigned int depth = _facade->getFontDepth();
     for (std::size_t i = len; i != dlen; ++i)
     {
         (*vertices)[i].z() -= depth;
     }
-    
+
     osg::Vec3Array::iterator end;
-    
+
     // ** create wall and back face from the front polygon
-    // **  then accumulate them in the apropriate geometry wallGeo and backGeo 
+    // **  then accumulate them in the appropriate geometry wallGeo and backGeo
     for (std::size_t i=0; i < frontGeo->getNumPrimitiveSets(); ++i)
     {
         // ** get the front polygon
         osg::ref_ptr<osg::DrawArrays> daFront(dynamic_cast<osg::DrawArrays*>(frontGeo->getPrimitiveSet(i)));
         unsigned int idx = daFront->getFirst();
         unsigned int cnt = daFront->getCount();
-        
+
         // ** reverse vertices to draw the front face in the CCW
         std::reverse(begin + idx, begin + idx + cnt);
-        
+
         // ** create the back polygon
         osg::ref_ptr<osg::DrawArrays> daBack(new osg::DrawArrays(osg::PrimitiveSet::POLYGON, idx + len, cnt));
         backGeo->addPrimitiveSet(daBack.get());
-        
-        
+
+
         // ** create the wall triangle strip
-        osg::ref_ptr<osg::DrawElementsUInt> deWall(new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP)); 
+        osg::ref_ptr<osg::DrawElementsUInt> deWall(new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP));
         wallGeo->addPrimitiveSet(deWall.get());
-        
+
         // **  link triangle strip
         deWall->push_back(idx + len);
         for (unsigned int j = 1; j < cnt; ++j)
-        {   
+        {
             deWall->push_back(idx + cnt - j);
             deWall->push_back(idx + len + j);
         }
@@ -439,7 +439,7 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
         ts.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
         ts.retessellatePolygons(*frontGeo);
     }
-    
+
     {
         osgUtil::Tessellator ts;
         ts.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
@@ -454,17 +454,18 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
         geode->addDrawable(wallGeo.get());
         geode->accept(sm);
     }
-    
-    // ** save vertices and PrimitiveSetList of each face in the Glyph3D PrimitiveSet face list 
+
+    // ** save vertices and PrimitiveSetList of each face in the Glyph3D PrimitiveSet face list
     osgText::Font3D::Glyph3D * glyph3D = new osgText::Font3D::Glyph3D(charcode);
 
     glyph3D->setVertexArray(dynamic_cast<osg::Vec3Array*>(frontGeo->getVertexArray()));
-    
+    glyph3D->setNormalArray(dynamic_cast<osg::Vec3Array*>(wallGeo->getNormalArray()));
+
     glyph3D->getFrontPrimitiveSetList() = frontGeo->getPrimitiveSetList();
     glyph3D->getWallPrimitiveSetList() = wallGeo->getPrimitiveSetList();
     glyph3D->getBackPrimitiveSetList() = backGeo->getPrimitiveSetList();
 
-    
+
     FT_Glyph_Metrics* metrics = &(_face->glyph->metrics);
 
     glyph3D->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX/64.0f,(float)(metrics->horiBearingY-metrics->height)/64.0f)); // bottom left.
@@ -475,7 +476,7 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
     glyph3D->setWidth((float)metrics->width / 64.0f);
     glyph3D->setHeight((float)metrics->height / 64.0f);
 
-    
+
     FT_BBox ftbb;
     FT_Outline_Get_BBox(&outline, &ftbb);
 
@@ -483,11 +484,11 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
     long xmax = ft_ceiling( ftbb.xMax );
     long ymin = ft_floor( ftbb.yMin );
     long ymax = ft_ceiling( ftbb.yMax );
-        
+
     osg::BoundingBox bb(xmin / 64.0f, ymin / 64.0f, 0.0f, xmax / 64.0f, ymax / 64.0f, 0.0f);
-    
+
     glyph3D->setBoundingBox(bb);
-    
+
     return glyph3D;
 }
 
@@ -500,8 +501,8 @@ osg::Vec2 FreeTypeFont3D::getKerning(unsigned int leftcharcode,unsigned int righ
     // convert character code to glyph index
     FT_UInt left = FT_Get_Char_Index( _face, leftcharcode );
     FT_UInt right = FT_Get_Char_Index( _face, rightcharcode );
-    
-    // get the kerning distances.   
+
+    // get the kerning distances.
     FT_Vector  kerning;
 
     FT_Error error = FT_Get_Kerning( _face,                     // handle to face object
@@ -524,7 +525,7 @@ bool FreeTypeFont3D::hasVertical() const
     return FT_HAS_VERTICAL(_face)!=0;
 }
 
-float FreeTypeFont3D::getScale() const 
-{ 
-    return _scale; 
+float FreeTypeFont3D::getScale() const
+{
+    return _scale;
 }

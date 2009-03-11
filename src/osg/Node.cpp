@@ -82,9 +82,9 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _numChildrenWithCullingDisabled(0), // assume no children yet.
         _numChildrenWithOccluderNodes(0),
         _nodeMask(node._nodeMask), 
-        _descriptions(node._descriptions),
-        _stateset(copyop(node._stateset.get()))
+        _descriptions(node._descriptions)
 {
+    setStateSet(copyop(node._stateset.get()));
 }
 
 Node::~Node()

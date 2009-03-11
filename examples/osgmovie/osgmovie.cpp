@@ -524,14 +524,27 @@ int main(int argc, char** argv)
 
             if (image)
             {
-                osg::notify(osg::NOTICE)<<"image->s()"<<image->s()<<" image-t()="<<image->t()<<std::endl;
+                osg::notify(osg::NOTICE)<<"image->s()"<<image->s()<<" image-t()="<<image->t()<<" aspectRatio="<<image->getPixelAspectRatio()<<std::endl;
 
-                geode->addDrawable(myCreateTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle, xyPlane, flip));
+                float width = image->s();
+                float height = image->t() * image->getPixelAspectRatio();
 
-                bottomright = pos + osg::Vec3(static_cast<float>(image->s()),static_cast<float>(image->t()),0.0f);
+                osg::ref_ptr<osg::Drawable> drawable = myCreateTexturedQuadGeometry(pos, width, height,image, useTextureRectangle, xyPlane, flip);
+                
+                if (image->isImageTranslucent())
+                {
+                    osg::notify(osg::NOTICE)<<"Transparent movie, enabling blending."<<std::endl;
 
-                if (xyPlane) pos.y() += image->t()*1.05f;
-                else pos.z() += image->t()*1.05f;
+                    drawable->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+                    drawable->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                }
+
+                geode->addDrawable(drawable.get());
+
+                bottomright = pos + osg::Vec3(width,height,0.0f);
+
+                if (xyPlane) pos.y() += height*1.05f;
+                else pos.z() += height*1.05f;
             }
             else
             {
@@ -572,8 +585,44 @@ int main(int argc, char** argv)
     if (fullscreen)
     {
         viewer.realize();
+        
+        viewer.getCamera()->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
 
+        float screenAspectRatio = 1280.0f/1024.0f;
+
+        osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+        if (wsi) 
+        {
+            unsigned int width, height;
+            wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+            
+            screenAspectRatio = float(width) / float(height);
+        }
+        
+        float modelAspectRatio = (bottomright.x()-topleft.x())/(bottomright.y()-topleft.y());
+        
         viewer.getCamera()->setViewMatrix(osg::Matrix::identity());
+
+
+        osg::Vec3 center = (bottomright + topleft)*0.5f;
+        osg::Vec3 dx(bottomright.x()-center.x(), 0.0f, 0.0f);
+        osg::Vec3 dy(0.0f, topleft.y()-center.y(), 0.0f);
+
+        float ratio = modelAspectRatio/screenAspectRatio;
+
+        if (ratio>1.0f)
+        {
+            // use model width as the control on model size.
+            bottomright = center + dx - dy * ratio;
+            topleft = center - dx + dy * ratio;
+        }
+        else
+        {
+            // use model height as the control on model size.
+            bottomright = center + dx / ratio - dy;
+            topleft = center - dx / ratio + dy;
+        }
+
         viewer.getCamera()->setProjectionMatrixAsOrtho2D(topleft.x(),bottomright.x(),topleft.y(),bottomright.y());
 
         while(!viewer.done())

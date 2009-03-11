@@ -186,7 +186,10 @@ class OSG_EXPORT Image : public Object
         void setPacking(unsigned int packing) { _packing = packing; }
         inline unsigned int getPacking() const { return _packing; }
 
+        /** Set the pixel aspect ratio, defined as the pixel width divided by the pixel height.*/
         inline void setPixelAspectRatio(float pixelAspectRatio) { _pixelAspectRatio = pixelAspectRatio; }
+
+        /** Get the pixel aspect ratio.*/
         inline float getPixelAspectRatio() const { return _pixelAspectRatio; }
         
         /** Return the number of bits required for each pixel. */

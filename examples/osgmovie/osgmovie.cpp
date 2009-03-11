@@ -499,6 +499,8 @@ int main(int argc, char** argv)
     
     bool useAudioSink = false;
     while(arguments.read("--audio")) { useAudioSink = true; }
+    
+    unsigned int numAudioStreamsEnabled = 0;
 
     for(int i=1;i<arguments.argc();++i)
     {
@@ -514,7 +516,13 @@ int main(int argc, char** argv)
                     osg::AudioStream* audioStream = audioStreams[0].get();
                     osg::notify(osg::NOTICE)<<"AudioStream read ["<<audioStream->getName()<<"]"<<std::endl;
 #if USE_SDL
-                    audioStream->setAudioSink(new SDLAudioSink(audioStream));
+
+                    if (numAudioStreamsEnabled==0)
+                    {
+                        audioStream->setAudioSink(new SDLAudioSink(audioStream));
+                        
+                        ++numAudioStreamsEnabled;
+                    }
 #endif
                 }
 

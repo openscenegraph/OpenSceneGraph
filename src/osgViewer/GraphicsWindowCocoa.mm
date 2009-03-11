@@ -142,8 +142,8 @@ static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false
 
 std::ostream& operator<<(std::ostream& os, const NSRect& rect) 
 {
-	os << rect.origin.x << "/" << rect.origin.y << " " << rect.size.width << "x" << rect.size.height;
-	return os;
+    os << rect.origin.x << "/" << rect.origin.y << " " << rect.size.width << "x" << rect.size.height;
+    return os;
 }
 
 // ----------------------------------------------------------------------------------------------------------
@@ -157,10 +157,10 @@ static NSRect convertFromQuartzCoordinates(const NSRect& rect)
 {
     NSRect frame = [[[NSScreen screens] objectAtIndex: 0] frame];
     float y = frame.size.height - rect.origin.y - rect.size.height;
-	NSRect converted = NSMakeRect(rect.origin.x, y, rect.size.width, rect.size.height);
-	
-	// std::cout << "converting from Quartz " << rect << " to " << converted << " using screen rect " << frame << std::endl;
-	
+    NSRect converted = NSMakeRect(rect.origin.x, y, rect.size.width, rect.size.height);
+    
+    // std::cout << "converting from Quartz " << rect << " to " << converted << " using screen rect " << frame << std::endl;
+    
     return converted;
 }
 
@@ -169,10 +169,10 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     NSRect frame = [[[NSScreen screens] objectAtIndex: 0] frame];
     
     float y = frame.size.height - (rect.origin.y + rect.size.height);
-	NSRect converted = NSMakeRect(rect.origin.x, y, rect.size.width, rect.size.height);
-	
-	// std::cout << "converting To Quartz   " << rect << " to " << converted << " using screen rect " << frame << std::endl;
-	
+    NSRect converted = NSMakeRect(rect.origin.x, y, rect.size.width, rect.size.height);
+    
+    // std::cout << "converting To Quartz   " << rect << " to " << converted << " using screen rect " << frame << std::endl;
+    
     return converted;
 }
 
@@ -244,7 +244,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
         osgViewer::GraphicsWindowCocoa* _win;
         BOOL _isUsingCtrlClick, _isUsingOptionClick;
         unsigned int _cachedModifierFlags;
-		BOOL _handleTabletEvents;
+        BOOL _handleTabletEvents;
         
 }
 - (void)setGraphicsWindowCocoa: (osgViewer::GraphicsWindowCocoa*) win;
@@ -361,7 +361,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 }
 
 - (void)flagsChanged:(NSEvent *)theEvent {
-	[self handleModifiers: theEvent];
+    [self handleModifiers: theEvent];
 }
 
 - (void) mouseMoved:(NSEvent*)theEvent 
@@ -392,11 +392,11 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     {
         [self doLeftMouseButtonDown:theEvent];
     }
-	
-	if ([theEvent subtype] == NSTabletPointEventSubtype) {
-		_handleTabletEvents = true;
-		[self handleTabletEvents:theEvent];
-	}
+    
+    if ([theEvent subtype] == NSTabletPointEventSubtype) {
+        _handleTabletEvents = true;
+        [self handleTabletEvents:theEvent];
+    }
 }
 
 
@@ -404,9 +404,9 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 {
     NSPoint converted_point = [self getLocalPoint: theEvent];    
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
-	
-	if (_handleTabletEvents)
-		[self handleTabletEvents:theEvent];
+    
+    if (_handleTabletEvents)
+        [self handleTabletEvents:theEvent];
 }
 
 
@@ -430,7 +430,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     {
         [self doLeftMouseButtonUp:theEvent];
     }
-	_handleTabletEvents = false;
+    _handleTabletEvents = false;
 }
 
 - (void) rightMouseDown:(NSEvent*)theEvent
@@ -448,7 +448,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 - (void) rightMouseUp:(NSEvent*)theEvent
 {
     [self doRightMouseButtonUp:theEvent];
-	_handleTabletEvents = false;
+    _handleTabletEvents = false;
 }
 
 // "otherMouse" seems to capture middle button and any other buttons beyond (4th, etc).
@@ -637,37 +637,37 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void)tabletPoint:(NSEvent *)theEvent
 {
-	//_handleTabletEvents = YES;
-	//[self handleTabletEvents:theEvent];
+    //_handleTabletEvents = YES;
+    //[self handleTabletEvents:theEvent];
 }
 
 -(void)handleTabletEvents:(NSEvent *)theEvent
 {
-	float pressure = [theEvent pressure];
-	_win->getEventQueue()->penPressure(pressure);
-	NSPoint tilt = [theEvent tilt];
-	
-	_win->getEventQueue()->penOrientation (tilt.x, tilt.y, [theEvent rotation]);
+    float pressure = [theEvent pressure];
+    _win->getEventQueue()->penPressure(pressure);
+    NSPoint tilt = [theEvent tilt];
+    
+    _win->getEventQueue()->penOrientation (tilt.x, tilt.y, [theEvent rotation]);
 }
 
 
 - (void)tabletProximity:(NSEvent *)theEvent
 {
-	osgGA::GUIEventAdapter::TabletPointerType pt(osgGA::GUIEventAdapter::UNKNOWN);
-	switch ([theEvent pointingDeviceType]) {
-		case NSPenPointingDevice:
-			pt = osgGA::GUIEventAdapter::PEN;
-			break;
-		case NSCursorPointingDevice:
-			pt = osgGA::GUIEventAdapter::PUCK;
-			break;
-		case NSEraserPointingDevice:
-			pt = osgGA::GUIEventAdapter::ERASER;
-			break;
-		default:
-			break;
-	}
-	_win->getEventQueue()->penProximity(pt, [theEvent isEnteringProximity]); 
+    osgGA::GUIEventAdapter::TabletPointerType pt(osgGA::GUIEventAdapter::UNKNOWN);
+    switch ([theEvent pointingDeviceType]) {
+        case NSPenPointingDevice:
+            pt = osgGA::GUIEventAdapter::PEN;
+            break;
+        case NSCursorPointingDevice:
+            pt = osgGA::GUIEventAdapter::PUCK;
+            break;
+        case NSEraserPointingDevice:
+            pt = osgGA::GUIEventAdapter::ERASER;
+            break;
+        default:
+            break;
+    }
+    _win->getEventQueue()->penProximity(pt, [theEvent isEnteringProximity]); 
 }
 
 
@@ -761,7 +761,7 @@ public:
     CocoaWindowAdapter(GraphicsWindowCocoa* win) : MenubarController::WindowAdapter(), _win(win) {}
     
     virtual bool valid() { return (_win.valid() && _win->valid()); }
-	
+    
     virtual void getWindowBounds(CGRect& rect) 
     {
         NSRect nsrect = [_win->getWindow() frame];
@@ -772,7 +772,7 @@ public:
         rect.size.width = nsrect.size.width;
         rect.size.height = nsrect.size.height;
     }
-	
+    
     virtual osgViewer::GraphicsWindow* getWindow() {return _win.get(); }
 private:
     osg::observer_ptr<GraphicsWindowCocoa> _win;
@@ -807,11 +807,11 @@ void GraphicsWindowCocoa::setupNSWindow(NSWindow* win)
 {
 
     [win setReleasedWhenClosed:NO];
-	[win setDisplaysWhenScreenProfileChanges:YES];	
+    [win setDisplaysWhenScreenProfileChanges:YES];    
     GraphicsWindowCocoaDelegate* delegate = [[GraphicsWindowCocoaDelegate alloc] initWith: this];
     [win setDelegate: delegate ];
     //[delegate autorelease];
-	    
+        
     [win makeKeyAndOrderFront:nil];
     [win setAcceptsMouseMovedEvents: YES];
 
@@ -835,17 +835,17 @@ bool GraphicsWindowCocoa::realizeImplementation()
         if (_traits->supportsResize) 
             style |= NSResizableWindowMask;
     }
-    	
+        
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
     if (wsi) {
         wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
     }
     
-	NSRect rect = NSMakeRect(_traits->x + screenLeft, _traits->y + screenTop, _traits->width, _traits->height);
+    NSRect rect = NSMakeRect(_traits->x + screenLeft, _traits->y + screenTop, _traits->width, _traits->height);
     
-	_window = [[GraphicsWindowCocoaWindow alloc] initWithContentRect: rect styleMask: style backing: NSBackingStoreBuffered defer: NO];
-	
+    _window = [[GraphicsWindowCocoaWindow alloc] initWithContentRect: rect styleMask: style backing: NSBackingStoreBuffered defer: NO];
+    
     if (!_window) {
         osg::notify(osg::WARN) << "GraphicsWindowCocoa::realizeImplementation :: could not create window" << std::endl;
         return false;
@@ -853,8 +853,8 @@ bool GraphicsWindowCocoa::realizeImplementation()
     
     rect = convertFromQuartzCoordinates(rect);
     [_window setFrameOrigin: rect.origin];
-	 
-	NSOpenGLPixelFormatAttribute attr[32];
+     
+    NSOpenGLPixelFormatAttribute attr[32];
     int i = 0;
     
     attr[i++] = NSOpenGLPFADepthSize;
@@ -901,25 +901,25 @@ bool GraphicsWindowCocoa::realizeImplementation()
             sharedContext = pixelbuffer->getContext();
         }
     }
-	
-	NSOpenGLPixelFormat* pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr ];
+    
+    NSOpenGLPixelFormat* pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr ];
     _context = [[NSOpenGLContext alloc] initWithFormat: pixelformat shareContext: sharedContext];
     
     if (!_context) {
         osg::notify(osg::WARN) << "GraphicsWindowCocoa::realizeImplementation :: could not create context" << std::endl;
         return false;
     }
-	GraphicsWindowCocoaGLView* theView = [[ GraphicsWindowCocoaGLView alloc ] initWithFrame:[ _window frame ] ];
+    GraphicsWindowCocoaGLView* theView = [[ GraphicsWindowCocoaGLView alloc ] initWithFrame:[ _window frame ] ];
     [theView setAutoresizingMask:  (NSViewWidthSizable | NSViewHeightSizable) ];
     [theView setGraphicsWindowCocoa: this];
     [theView setOpenGLContext:_context];
-	[_window setContentView: theView];
-	
+    [_window setContentView: theView];
+    
     setupNSWindow(_window);
     
     [theView release];
     [pool release];
-	
+    
     MenubarController::instance()->attachWindow( new CocoaWindowAdapter(this) );
     
     useCursor(_traits->useCursor);
@@ -950,7 +950,7 @@ void GraphicsWindowCocoa::closeImplementation()
     MenubarController* mbc = MenubarController::instance();
     if (mbc) mbc->detachWindow(this);
     
-	[_window close];
+    [_window close];
     [_window release];
 }
 
@@ -961,8 +961,8 @@ void GraphicsWindowCocoa::closeImplementation()
 
 bool GraphicsWindowCocoa:: makeCurrentImplementation()
 {
-	[_context makeCurrentContext];
-	return true;
+    [_context makeCurrentContext];
+    return true;
 }
 
 
@@ -972,8 +972,8 @@ bool GraphicsWindowCocoa:: makeCurrentImplementation()
 
 bool GraphicsWindowCocoa::releaseContextImplementation()
 {
-	[NSOpenGLContext clearCurrentContext];
-	return true;
+    [NSOpenGLContext clearCurrentContext];
+    return true;
 }
 
 
@@ -983,7 +983,7 @@ bool GraphicsWindowCocoa::releaseContextImplementation()
 
 void GraphicsWindowCocoa::swapBuffersImplementation()
 {
-	[_context flushBuffer];
+    [_context flushBuffer];
 }
 
 
@@ -993,7 +993,7 @@ void GraphicsWindowCocoa::swapBuffersImplementation()
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::checkEvents()
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     while(1)
     {
@@ -1012,7 +1012,7 @@ void GraphicsWindowCocoa::checkEvents()
         if(!event)
             break;
         [[NSApplication sharedApplication] sendEvent: event];
-    }	
+    }    
     
     if (_closeRequested)
         getEventQueue()->closeWindow();
@@ -1022,7 +1022,7 @@ void GraphicsWindowCocoa::checkEvents()
         s_quit_requested = false;
     }
         
-	[pool release];
+    [pool release];
 }
 
 
@@ -1037,7 +1037,7 @@ void GraphicsWindowCocoa::checkEvents()
 bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
 {
     if (!_realized) return false;
-	
+    
     unsigned int style(NSBorderlessWindowMask);
     
     if (flag) {
@@ -1047,8 +1047,8 @@ bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
         if (_traits->supportsResize) 
             style |= NSResizableWindowMask;
     }
-	NSRect rect = [_window contentRectForFrameRect: [_window frame] ];
-	GraphicsWindowCocoaWindow* new_win = [[GraphicsWindowCocoaWindow alloc] initWithContentRect: rect styleMask: style backing: NSBackingStoreBuffered defer: NO];
+    NSRect rect = [_window contentRectForFrameRect: [_window frame] ];
+    GraphicsWindowCocoaWindow* new_win = [[GraphicsWindowCocoaWindow alloc] initWithContentRect: rect styleMask: style backing: NSBackingStoreBuffered defer: NO];
     
     if (new_win) {
         [new_win setContentView: [_window contentView]];
@@ -1061,7 +1061,7 @@ bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
         [_window makeKeyAndOrderFront: nil];
     }
     
-	return true;
+    return true;
 }
 
 
@@ -1070,7 +1070,7 @@ bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::grabFocus()
 {
-	[_window makeKeyAndOrderFront: nil];
+    [_window makeKeyAndOrderFront: nil];
 }
 
 
@@ -1079,7 +1079,7 @@ void GraphicsWindowCocoa::grabFocus()
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::grabFocusIfPointerInWindow()
 {
-	osg::notify(osg::INFO) << "GraphicsWindowCocoa :: grabFocusIfPointerInWindow not implemented yet " << std::endl;
+    osg::notify(osg::INFO) << "GraphicsWindowCocoa :: grabFocusIfPointerInWindow not implemented yet " << std::endl;
 }
 
 
@@ -1089,12 +1089,12 @@ void GraphicsWindowCocoa::grabFocusIfPointerInWindow()
 
 void GraphicsWindowCocoa::resizedImplementation(int x, int y, int width, int height)
 {
-	std::cout << "resized implementation" << x << " " << y << " " << width << " " << height << std::endl; 
-	GraphicsContext::resizedImplementation(x, y, width, height);
+    std::cout << "resized implementation" << x << " " << y << " " << width << " " << height << std::endl; 
+    GraphicsContext::resizedImplementation(x, y, width, height);
    
     [_context update];
     MenubarController::instance()->update();
-	getEventQueue()->windowResize(x,y,width, height, getEventQueue()->getTime());
+    getEventQueue()->windowResize(x,y,width, height, getEventQueue()->getTime());
 }
 
 
@@ -1105,7 +1105,7 @@ void GraphicsWindowCocoa::resizedImplementation(int x, int y, int width, int hei
 // ----------------------------------------------------------------------------------------------------------
 bool GraphicsWindowCocoa::setWindowRectangleImplementation(int x, int y, int width, int height)
 {
-	DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
     if (wsi) {
         wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
@@ -1130,21 +1130,21 @@ bool GraphicsWindowCocoa::setWindowRectangleImplementation(int x, int y, int wid
 void GraphicsWindowCocoa::adaptResize(int x, int y, int w, int h)
 {
 
-	DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
     if (wsi) {
-		
-		// get the screen containing the window
-		unsigned int screenNdx = wsi->getScreenContaining(x,y,w,h);
-		
-		// update traits
-		_traits->screenNum = screenNdx;
-		
-		// get top left of screen
+        
+        // get the screen containing the window
+        unsigned int screenNdx = wsi->getScreenContaining(x,y,w,h);
+        
+        // update traits
+        _traits->screenNum = screenNdx;
+        
+        // get top left of screen
         wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
     }
-	
-	resized(x-screenLeft,y-screenTop,w,h);
+    
+    resized(x-screenLeft,y-screenTop,w,h);
 }
 
 
@@ -1154,11 +1154,11 @@ void GraphicsWindowCocoa::adaptResize(int x, int y, int w, int h)
 
 void GraphicsWindowCocoa::setWindowName (const std::string & name)
 {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSString* title = [NSString stringWithCString: name.c_str() encoding: NSUTF8StringEncoding];
-	[_window setTitle: title];
-	[title release];
+    [_window setTitle: title];
+    [title release];
     [pool release];
 }
 
@@ -1169,7 +1169,7 @@ void GraphicsWindowCocoa::setWindowName (const std::string & name)
 
 void GraphicsWindowCocoa::useCursor(bool cursorOn)
 {
-	if (_traits.valid())
+    if (_traits.valid())
         _traits->useCursor = cursorOn;
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     if (wsi == NULL) {
@@ -1200,7 +1200,7 @@ void GraphicsWindowCocoa::useCursor(bool cursorOn)
 
 void GraphicsWindowCocoa::setCursor(MouseCursor mouseCursor)
 {
-	switch (mouseCursor) 
+    switch (mouseCursor) 
     {
 
         case NoCursor:
@@ -1232,7 +1232,7 @@ void GraphicsWindowCocoa::setCursor(MouseCursor mouseCursor)
 void GraphicsWindowCocoa::setVSync(bool f) 
 {
     GLint VBL(f?1:0);
-	[_context setValues:&VBL forParameter:NSOpenGLCPSwapInterval];
+    [_context setValues:&VBL forParameter:NSOpenGLCPSwapInterval];
 }
 
 
@@ -1253,25 +1253,25 @@ GraphicsWindowCocoa::~GraphicsWindowCocoa()
 // ----------------------------------------------------------------------------------------------------------
 
 struct CocoaWindowingSystemInterface : public DarwinWindowingSystemInterface {
-	
-	CocoaWindowingSystemInterface()
-	:	DarwinWindowingSystemInterface() 
-	{
-		localPool = [[NSAutoreleasePool alloc] init];
+    
+    CocoaWindowingSystemInterface()
+    :    DarwinWindowingSystemInterface() 
+    {
+        localPool = [[NSAutoreleasePool alloc] init];
         [[NSApplication sharedApplication] setDelegate: [[CocoaAppDelegate alloc] init] ];
-	}
-	
-	virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits) 
-	{
-		return createGraphicsContextImplementation<PixelBufferCocoa, GraphicsWindowCocoa>(traits);
-	}
-	
-	virtual ~CocoaWindowingSystemInterface() 
-	{
-		[localPool release];
-	}
-	
-	NSAutoreleasePool *localPool;
+    }
+    
+    virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits) 
+    {
+        return createGraphicsContextImplementation<PixelBufferCocoa, GraphicsWindowCocoa>(traits);
+    }
+    
+    virtual ~CocoaWindowingSystemInterface() 
+    {
+        [localPool release];
+    }
+    
+    NSAutoreleasePool *localPool;
 
 };
 

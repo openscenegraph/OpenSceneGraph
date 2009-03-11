@@ -29,19 +29,19 @@ class MenubarController : public osg::Referenced
 {
 
     public:
-		class WindowAdapter : public osg::Referenced {
-			
-			public:
-				WindowAdapter() : osg::Referenced() {}
-				
-				virtual bool valid() = 0;
-				virtual void getWindowBounds(CGRect& rect) = 0;
-				virtual osgViewer::GraphicsWindow* getWindow() = 0;
-				
-			protected:
-				virtual ~WindowAdapter() {}
-		};
-		
+        class WindowAdapter : public osg::Referenced {
+            
+            public:
+                WindowAdapter() : osg::Referenced() {}
+                
+                virtual bool valid() = 0;
+                virtual void getWindowBounds(CGRect& rect) = 0;
+                virtual osgViewer::GraphicsWindow* getWindow() = 0;
+                
+            protected:
+                virtual ~WindowAdapter() {}
+        };
+        
         MenubarController();        
         static MenubarController* instance();
         
@@ -51,11 +51,11 @@ class MenubarController : public osg::Referenced
         
     private: 
         typedef std::list< osg::ref_ptr< WindowAdapter > > WindowList;
-        WindowList				_list;
-        bool					_menubarShown;
-        CGRect					_availRect;
-        CGRect					_mainScreenBounds;
-        OpenThreads::Mutex		_mutex;
+        WindowList          _list;
+        bool                _menubarShown;
+        CGRect              _availRect;
+        CGRect              _mainScreenBounds;
+        OpenThreads::Mutex  _mutex;
         
 };
 
@@ -64,55 +64,55 @@ class MenubarController : public osg::Referenced
 struct DarwinWindowingSystemInterface : public osg::GraphicsContext::WindowingSystemInterface
 {
     public:
-		DarwinWindowingSystemInterface();
-		
-		/** dtor */
-		~DarwinWindowingSystemInterface();
-		
-	/** @return a CGDirectDisplayID for a ScreenIdentifier */
-	CGDirectDisplayID getDisplayID(const osg::GraphicsContext::ScreenIdentifier& si);
-	
-	/** @return count of attached screens */
-	virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) ;
-	
-	virtual void getScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution);
+        DarwinWindowingSystemInterface();
 
-	virtual void enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, osg::GraphicsContext::ScreenSettingsList & resolutionList);
+        /** dtor */
+        ~DarwinWindowingSystemInterface();
 
-	/** return the top left coord of a specific screen in global screen space */
-	void getScreenTopLeft(const osg::GraphicsContext::ScreenIdentifier& si, int& x, int& y);
-	
-	/** implementation of setScreenResolution */
-	virtual bool setScreenResolution(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) ;
+        /** @return a CGDirectDisplayID for a ScreenIdentifier */
+        CGDirectDisplayID getDisplayID(const osg::GraphicsContext::ScreenIdentifier& si);
 
-	/** implementation of setScreenRefreshRate */
-	virtual bool setScreenRefreshRate(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate);
-	
-	
-	/** returns screen-ndx containing rect x,y,w,h */
-	unsigned int getScreenContaining(int x, int y, int w, int h);
-	
-	protected:
-	
-		template<class PixelBufferImplementation, class GraphicsWindowImplementation>
-		osg::GraphicsContext* createGraphicsContextImplementation(osg::GraphicsContext::Traits* traits)
-		{
-			if (traits->pbuffer)
-			{
-				osg::ref_ptr<PixelBufferImplementation> pbuffer = new PixelBufferImplementation(traits);
-				if (pbuffer->valid()) return pbuffer.release();
-				else return 0;
-			}
-			else
-			{
-				osg::ref_ptr<GraphicsWindowImplementation> window = new GraphicsWindowImplementation(traits);
-				if (window->valid()) return window.release();
-				else return 0;
-			}
-		}
-	
+        /** @return count of attached screens */
+        virtual unsigned int getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) ;
+
+        virtual void getScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution);
+
+        virtual void enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, osg::GraphicsContext::ScreenSettingsList & resolutionList);
+
+        /** return the top left coord of a specific screen in global screen space */
+        void getScreenTopLeft(const osg::GraphicsContext::ScreenIdentifier& si, int& x, int& y);
+
+        /** implementation of setScreenResolution */
+        virtual bool setScreenResolution(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) ;
+
+        /** implementation of setScreenRefreshRate */
+        virtual bool setScreenRefreshRate(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate);
+
+
+        /** returns screen-ndx containing rect x,y,w,h */
+        unsigned int getScreenContaining(int x, int y, int w, int h);
     
-	private:
+    protected:
+    
+        template<class PixelBufferImplementation, class GraphicsWindowImplementation>
+        osg::GraphicsContext* createGraphicsContextImplementation(osg::GraphicsContext::Traits* traits)
+        {
+            if (traits->pbuffer)
+            {
+                osg::ref_ptr<PixelBufferImplementation> pbuffer = new PixelBufferImplementation(traits);
+                if (pbuffer->valid()) return pbuffer.release();
+                else return 0;
+            }
+            else
+            {
+                osg::ref_ptr<GraphicsWindowImplementation> window = new GraphicsWindowImplementation(traits);
+                if (window->valid()) return window.release();
+                else return 0;
+            }
+        }
+    
+    
+    private:
         CGDisplayCount        _displayCount;
         CGDirectDisplayID*    _displayIds;
 

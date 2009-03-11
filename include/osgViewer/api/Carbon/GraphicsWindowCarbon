@@ -19,7 +19,7 @@
 #ifndef OSGVIEWER_GRAPHICSWINDOWCARBON
 #define OSGVIEWER_GRAPHICSWINDOWCARBON 1
 
-#ifdef __APPLE__
+#if defined (__APPLE__) && (!__LP64__)
 
 #include <osgViewer/GraphicsWindow>
 #include <Carbon/Carbon.h>
@@ -142,15 +142,14 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         
         // get the pixelformat
         AGLPixelFormat getAGLPixelFormat() { return _pixelFormat; }
+        
+        void adaptResize(int x, int y, int w, int h);
 
     protected:
     
         void init();
         
-        void transformMouseXY(float& x, float& y);
-        
-        
-        
+        void transformMouseXY(float& x, float& y);      
 
 
         bool            _valid;

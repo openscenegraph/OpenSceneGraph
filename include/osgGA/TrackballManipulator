@@ -78,6 +78,13 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
         /** get the minimum distance (as ratio) the eye point can be zoomed in */
         double getMinimumZoomScale() const { return _minimumZoomScale; }
 
+        /** set the mouse scroll wheel zoom delta.
+          * Range -1.0 to +1.0,  -ve value inverts wheel direction and zero switches off scroll wheel. */
+        void setScroolWheelZoomDelta(double zoomDelta) { _zoomDelta = zoomDelta; }
+
+        /** get the mouse scroll wheel zoom delta. */
+        double getScroolWheelZoomDelta() const { return _zoomDelta; }
+
         /** Set the center of the trackball. */
         void setCenter(const osg::Vec3d& center) { _center = center; }
 
@@ -139,6 +146,7 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
         osg::Quat    _rotation;
         double       _distance;
         float        _trackballSize;
+        float        _zoomDelta;
 
 };
 

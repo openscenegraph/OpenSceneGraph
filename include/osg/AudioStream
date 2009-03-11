@@ -59,7 +59,6 @@ class OSG_EXPORT AudioStream : public osg::Object
         
         virtual void consumeAudioBuffer(void * const buffer, const size_t size) = 0;
         
-        virtual bool audioStream() const = 0;
         virtual int audioFrequency() const = 0;
         virtual int audioNbChannels() const = 0;
 

@@ -222,15 +222,15 @@ void FFmpegDecoderVideo::decodeLoop()
 
 void FFmpegDecoderVideo::findAspectRatio()
 {
-    double ratio = 0.0;
+    float ratio = 0.0f;
 
     if (m_context->sample_aspect_ratio.num != 0)
-        ratio = (av_q2d(m_context->sample_aspect_ratio) * m_width) / m_height;
+        ratio = float(av_q2d(m_context->sample_aspect_ratio));
 
-    if (ratio <= 0.0)
-        ratio = double(m_width) / double(m_height);
+    if (ratio <= 0.0f)
+        ratio = 1.0f;
 
-    m_aspect_ratio = ratio;
+    m_pixel_aspect_ratio = ratio;
 }
 
 int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src,

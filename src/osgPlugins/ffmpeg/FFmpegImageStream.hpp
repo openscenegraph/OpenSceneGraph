@@ -32,12 +32,10 @@ namespace osgFFmpeg
         virtual void rewind();
         virtual void quit(bool waitForThreadToExit = true);
 
-        double duration() const;
+        virtual double getLength() const;
+        virtual double getFrameRate() const;
 
-        bool videoAlphaChannel() const;
-        double videoAspectRatio() const;
-        double videoFrameRate() const;
-
+        virtual bool isImageTranslucent() const;
 
     private:
 

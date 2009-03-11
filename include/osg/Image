@@ -185,6 +185,9 @@ class OSG_EXPORT Image : public Object
         
         void setPacking(unsigned int packing) { _packing = packing; }
         inline unsigned int getPacking() const { return _packing; }
+
+        inline void setPixelAspectRatio(float pixelAspectRatio) { _pixelAspectRatio = pixelAspectRatio; }
+        inline float getPixelAspectRatio() const { return _pixelAspectRatio; }
         
         /** Return the number of bits required for each pixel. */
         inline unsigned int getPixelSizeInBits() const { return computePixelSizeInBits(_pixelFormat,_dataType); }
@@ -346,6 +349,7 @@ class OSG_EXPORT Image : public Object
         GLenum _pixelFormat;
         GLenum _dataType;
         unsigned int _packing;
+        float _pixelAspectRatio;
 
         AllocationMode _allocationMode;
         unsigned char* _data;

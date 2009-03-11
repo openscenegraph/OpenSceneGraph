@@ -357,7 +357,20 @@ void View::home()
 
 void View::addEventHandler(osgGA::GUIEventHandler* eventHandler)
 { 
-    _eventHandlers.push_back(eventHandler);
+    EventHandlers::iterator itr = std::find(_eventHandlers.begin(), _eventHandlers.end(), eventHandler);
+    if (itr == _eventHandlers.end())
+    {
+        _eventHandlers.push_back(eventHandler);
+    }
+}
+
+void View::removeEventHandler(osgGA::GUIEventHandler* eventHandler)
+{
+    EventHandlers::iterator itr = std::find(_eventHandlers.begin(), _eventHandlers.end(), eventHandler);
+    if (itr != _eventHandlers.end())
+    {
+        _eventHandlers.erase(itr);
+    }
 }
 
 void View::setCoordinateSystemNodePath(const osg::NodePath& nodePath)

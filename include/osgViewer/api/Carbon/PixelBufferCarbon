@@ -16,7 +16,7 @@
 #ifndef OSGVIEWER_PIXELBUFFERCARBON
 #define OSGVIEWER_PIXELBUFFERCARBON 1
 
-#ifdef __APPLE__
+#if defined (__APPLE__) && (!__LP64__)
 
 #include <osg/GraphicsContext>
 #include <osgViewer/Export>
@@ -34,12 +34,12 @@ class OSGVIEWER_EXPORT PixelBufferCarbon : public osg::GraphicsContext
 
         PixelBufferCarbon(osg::GraphicsContext::Traits* traits):
             _valid(false),
-			_initialized(false),
+            _initialized(false),
             _realized(false),
-			_pixelformat(0),
+            _pixelformat(0),
             _pbuffer(0),
             _context(0)
-		{
+        {
             _traits = traits;
 
             init();
@@ -91,16 +91,16 @@ class OSGVIEWER_EXPORT PixelBufferCarbon : public osg::GraphicsContext
 
         /** Swap the front and back buffers.*/
         virtual void swapBuffersImplementation();
-		
-		static AGLPixelFormat createPixelFormat(osg::GraphicsContext::Traits* traits);
-		
-		AGLContext getAGLContext() { return _context; }
+        
+        static AGLPixelFormat createPixelFormat(osg::GraphicsContext::Traits* traits);
+        
+        AGLContext getAGLContext() { return _context; }
 
     public:
     
 
     protected:
-		
+        
 
     
         ~PixelBufferCarbon();
@@ -110,10 +110,10 @@ class OSGVIEWER_EXPORT PixelBufferCarbon : public osg::GraphicsContext
         bool            _valid;
         bool            _initialized;
         bool            _realized;
-		
-		AGLPixelFormat	_pixelformat;
-		AGLPbuffer		_pbuffer;
-		AGLContext		_context;
+        
+        AGLPixelFormat    _pixelformat;
+        AGLPbuffer        _pbuffer;
+        AGLContext        _context;
         
 };
 

@@ -511,8 +511,14 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         void setShadowComparison(bool flag) { _use_shadow_comparison = flag; }
 
         enum ShadowCompareFunc {
+            NEVER = GL_NEVER,
+            LESS = GL_LESS,
+            EQUAL = GL_EQUAL,
             LEQUAL = GL_LEQUAL,
-            GEQUAL = GL_GEQUAL
+            GREATER = GL_GREATER,
+            NOTEQUAL = GL_NOTEQUAL,
+            GEQUAL = GL_GEQUAL,
+            ALWAYS = GL_ALWAYS
         };
 
         /** Sets shadow texture comparison function. */

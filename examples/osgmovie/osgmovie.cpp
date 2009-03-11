@@ -526,8 +526,8 @@ int main(int argc, char** argv)
             {
                 osg::notify(osg::NOTICE)<<"image->s()"<<image->s()<<" image-t()="<<image->t()<<" aspectRatio="<<image->getPixelAspectRatio()<<std::endl;
 
-                float width = image->s();
-                float height = image->t() * image->getPixelAspectRatio();
+                float width = image->s() * image->getPixelAspectRatio();
+                float height = image->t();
 
                 osg::ref_ptr<osg::Drawable> drawable = myCreateTexturedQuadGeometry(pos, width, height,image, useTextureRectangle, xyPlane, flip);
                 

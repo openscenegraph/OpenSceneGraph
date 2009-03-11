@@ -29,6 +29,8 @@ class OSGMANIPULATOR_EXPORT TrackballDragger : public CompositeDragger
 
         TrackballDragger(bool useAutoTransform=false);
 
+        META_OSGMANIPULATOR_Object(osgManipulator,TrackballDragger)
+
         /** Setup default geometry for dragger. */
         void setupDefaultGeometry();
 

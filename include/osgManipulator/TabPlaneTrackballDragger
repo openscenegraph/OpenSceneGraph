@@ -29,6 +29,8 @@ class OSGMANIPULATOR_EXPORT TabPlaneTrackballDragger : public CompositeDragger
 
         TabPlaneTrackballDragger();
 
+        META_OSGMANIPULATOR_Object(osgManipulator,TabPlaneTrackballDragger)
+
         /** Setup default geometry for dragger. */
         void setupDefaultGeometry();
 

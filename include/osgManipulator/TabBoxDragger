@@ -20,7 +20,7 @@
 namespace osgManipulator {
 
 /**
- * TabBoxDragger consists of 6 TabPlaneDraggers to form a box dragger that 
+ * TabBoxDragger consists of 6 TabPlaneDraggers to form a box dragger that
  * performs translation and scaling.
  */
 class OSGMANIPULATOR_EXPORT TabBoxDragger : public CompositeDragger
@@ -28,6 +28,8 @@ class OSGMANIPULATOR_EXPORT TabBoxDragger : public CompositeDragger
     public:
 
         TabBoxDragger();
+
+        META_OSGMANIPULATOR_Object(osgManipulator,TabBoxDragger)
 
         /** Setup default geometry for dragger. */
         void setupDefaultGeometry();

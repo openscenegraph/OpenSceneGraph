@@ -29,6 +29,8 @@ class OSGMANIPULATOR_EXPORT RotateCylinderDragger : public Dragger
 
         RotateCylinderDragger();
 
+        META_OSGMANIPULATOR_Object(osgManipulator,RotateCylinderDragger)
+
         /**
          * Handle pick events on dragger and generate TranslateInLine commands.
          */
@@ -49,7 +51,7 @@ class OSGMANIPULATOR_EXPORT RotateCylinderDragger : public Dragger
         inline void setPickColor(const osg::Vec4& color) { _pickColor = color; }
         inline const osg::Vec4 getPickColor() const { return _pickColor; }
 
-        
+
     protected:
 
         virtual ~RotateCylinderDragger();

@@ -29,6 +29,8 @@ class OSGMANIPULATOR_EXPORT RotateSphereDragger : public Dragger
 
         RotateSphereDragger();
 
+        META_OSGMANIPULATOR_Object(osgManipulator,RotateSphereDragger)
+
         /**
          * Handle pick events on dragger and generate TranslateInLine commands.
          */
@@ -42,7 +44,7 @@ class OSGMANIPULATOR_EXPORT RotateSphereDragger : public Dragger
         inline const osg::Vec4 getColor() const { return _color; }
 
         /**
-         * Set/Get pick color for dragger. Pick color is color of the dragger 
+         * Set/Get pick color for dragger. Pick color is color of the dragger
          * when picked. It gives a visual feedback to show that the dragger has
          * been picked.
          */

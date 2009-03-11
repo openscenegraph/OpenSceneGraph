@@ -48,13 +48,13 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         {
             _hitList.clear();
             _hitIter = _hitList.begin();
-            setCamera(0);                
+            setCamera(0);
         }
 
 
         bool completed() const { return _hitIter==_hitList.end(); }
 
-        void next() 
+        void next()
         {
             if (!completed()) ++_hitIter;
         }
@@ -66,15 +66,15 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         osg::Vec3d getLocalIntersectPoint() const { return _hitIter->second; }
 
 
-        
+
         void setNearFarPoints (osg::Vec3d nearPoint, osg::Vec3d farPoint) {
             _nearPoint = nearPoint;
             _farPoint=farPoint;
             _eyeDir = farPoint - nearPoint;
         }
-        
+
         const osg::Vec3d& getEyeDir() const {return _eyeDir;}
-        
+
         void getNearFarPoints( osg::Vec3d& nearPoint, osg::Vec3d& farPoint) const {
             nearPoint = _nearPoint;
             farPoint = _farPoint;
@@ -84,7 +84,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
 
         void setCamera(osg::Camera* camera)
         {
-            
+
             if (camera)
             {
                 _MVPW = camera->getViewMatrix() * camera->getProjectionMatrix();
@@ -112,7 +112,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         }
 
         void setMousePosition(float pixel_x, float pixel_y)
-        {   
+        {
             projectWindowXYIntoObject(osg::Vec2d(pixel_x, pixel_y), _nearPoint, _farPoint);
         }
     protected:
@@ -123,7 +123,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         IntersectionList::const_iterator _hitIter;
 
     protected:
-       
+
         osg::Vec3d _nearPoint,_farPoint;
         osg::Vec3d _eyeDir;
 
@@ -134,14 +134,16 @@ class OSGMANIPULATOR_EXPORT PointerInfo
 
 /**
  * Base class for draggers. Concrete draggers implement the pick event handler
- * and generate motion commands (translate, rotate, ...) and sends these 
- * command to the CommandManager. The CommandManager dispatches the commands 
+ * and generate motion commands (translate, rotate, ...) and sends these
+ * command to the CommandManager. The CommandManager dispatches the commands
  * to all the Selections that are connected to the Dragger that generates the
  * commands.
  */
 class OSGMANIPULATOR_EXPORT Dragger : public Selection
 {
     public:
+
+        META_OSGMANIPULATOR_Object(osgManipulator,Dragger)
 
         /** Set/Get the CommandManager. Draggers use CommandManager to dispatch commands. */
         virtual void setCommandManager(CommandManager* cm) { _commandManager = cm; }
@@ -170,24 +172,26 @@ class OSGMANIPULATOR_EXPORT Dragger : public Selection
 
         Dragger();
         virtual ~Dragger();
-        
+
         CommandManager* _commandManager;
 
         Dragger*  _parentDragger;
-       
+
 };
 
 
 /**
- * CompositeDragger allows to create complex draggers that are composed of a 
+ * CompositeDragger allows to create complex draggers that are composed of a
  * hierarchy of Draggers.
  */
 class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
 {
     public:
 
+        META_OSGMANIPULATOR_Object(osgManipulator,CompositeDragger)
+
         typedef std::vector< osg::ref_ptr<Dragger> > DraggerList;
-        
+
         virtual const CompositeDragger* getComposite() const { return this; }
         virtual CompositeDragger* getComposite() { return this; }
 
@@ -210,14 +214,14 @@ class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
 
         CompositeDragger() {}
         virtual ~CompositeDragger() {}
-        
+
         DraggerList _draggerList;
 };
 
 /**
  * Culls the drawable all the time. Used by draggers to have invisible geometry
  * around lines and points so that they can be picked. For example, a dragger
- * could have a line with an invisible cylinder around it to enable picking on 
+ * could have a line with an invisible cylinder around it to enable picking on
  * that line.
  */
 void OSGMANIPULATOR_EXPORT setDrawableToAlwaysCull(osg::Drawable& drawable);

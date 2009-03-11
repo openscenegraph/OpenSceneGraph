@@ -32,8 +32,10 @@ class OSGMANIPULATOR_EXPORT Scale2DDragger : public Dragger
             SCALE_WITH_ORIGIN_AS_PIVOT = 0,
             SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT
         };
-        
+
         Scale2DDragger(ScaleMode scaleMode=SCALE_WITH_ORIGIN_AS_PIVOT);
+
+        META_OSGMANIPULATOR_Object(osgManipulator,Scale2DDragger)
 
         /**
          * Handle pick events on dragger and generate TranslateInLine commands.
@@ -51,7 +53,7 @@ class OSGMANIPULATOR_EXPORT Scale2DDragger : public Dragger
         inline void setColor(const osg::Vec4& color) { _color = color; setMaterialColor(_color,*this); }
         inline const osg::Vec4 getColor() const { return _color; }
 
-        /** 
+        /**
          * Set/Get pick color for dragger. Pick color is color of the dragger
          * when picked. It gives a visual feedback to show that the dragger has
          * been picked.
@@ -68,7 +70,7 @@ class OSGMANIPULATOR_EXPORT Scale2DDragger : public Dragger
         inline osg::Node* getTopRightHandleNode() { return _topRightHandleNode.get(); }
         inline void setBottomRightHandleNode(osg::Node& node) { _bottomRightHandleNode = &node; }
         inline osg::Node* getBottomRightHandleNode() { return _bottomRightHandleNode.get(); }
-        
+
         /** Set/Get the handle nodes postion for dragger. */
         inline void setTopLeftHandlePosition(const osg::Vec2d& pos) { _topLeftHandlePosition = pos; }
         const osg::Vec2d& getTopLeftHandlePosition() { return _topLeftHandlePosition; }

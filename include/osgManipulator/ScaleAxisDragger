@@ -28,6 +28,8 @@ class OSGMANIPULATOR_EXPORT ScaleAxisDragger : public CompositeDragger
 
         ScaleAxisDragger();
 
+        META_OSGMANIPULATOR_Object(osgManipulator,ScaleAxisDragger)
+
         /** Setup default geometry for dragger. */
         void setupDefaultGeometry();
 

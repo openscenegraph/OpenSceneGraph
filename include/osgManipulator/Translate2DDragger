@@ -33,6 +33,8 @@ class OSGMANIPULATOR_EXPORT Translate2DDragger : public Dragger
 
         Translate2DDragger(const osg::Plane& plane);
 
+        META_OSGMANIPULATOR_Object(osgManipulator,Translate2DDragger)
+
         /** Handle pick events on dragger and generate TranslateInLine commands. */
         virtual bool handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us);
 
@@ -43,7 +45,7 @@ class OSGMANIPULATOR_EXPORT Translate2DDragger : public Dragger
         inline void setColor(const osg::Vec4& color) { _color = color; setMaterialColor(_color,*this); }
         inline const osg::Vec4 getColor() const { return _color; }
 
-        /** Set/Get pick color for dragger. Pick color is color of the dragger when picked. 
+        /** Set/Get pick color for dragger. Pick color is color of the dragger when picked.
             It gives a visual feedback to show that the dragger has been picked. */
         inline void setPickColor(const osg::Vec4& color) { _pickColor = color; }
         inline const osg::Vec4 getPickColor() const { return _pickColor; }

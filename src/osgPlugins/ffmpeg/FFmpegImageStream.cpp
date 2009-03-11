@@ -39,11 +39,11 @@ FFmpegImageStream::FFmpegImageStream(const FFmpegImageStream & image, const osg:
 
 FFmpegImageStream::~FFmpegImageStream()
 {
-    osg::notify(osg::NOTICE)<<"Destructing FFMpegImageStream..."<<std::endl;
+    osg::notify(osg::INFO)<<"Destructing FFmpegImageStream..."<<std::endl;
 
     quit(true);
     
-    osg::notify(osg::NOTICE)<<"Have done quit"<<std::endl;
+    osg::notify(osg::INFO)<<"Have done quit"<<std::endl;
 
     // release athe audio streams to make sure that the decoder doesn't retain any external
     // refences.
@@ -55,7 +55,7 @@ FFmpegImageStream::~FFmpegImageStream()
 
     delete m_commands;
 
-    osg::notify(osg::NOTICE)<<"Destructed FFMpegImageStream."<<std::endl;
+    osg::notify(osg::INFO)<<"Destructed FFMpegImageStream."<<std::endl;
 }
 
 

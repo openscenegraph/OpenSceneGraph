@@ -1,10 +1,12 @@
+set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS TRUE)
+
 IF(WIN32)
     CMAKE_MINIMUM_REQUIRED(VERSION 2.4.6 FATAL_ERROR)
 ELSE(WIN32)
     IF(APPLE)
         CMAKE_MINIMUM_REQUIRED(VERSION 2.6.0 FATAL_ERROR)
     ELSE(APPLE)
-        CMAKE_MINIMUM_REQUIRED(VERSION 2.4.0 FATAL_ERROR)
+        CMAKE_MINIMUM_REQUIRED(VERSION 2.4.4 FATAL_ERROR)
     ENDIF(APPLE)
 ENDIF(WIN32)
 
@@ -21,8 +23,8 @@ if(COMMAND cmake_policy)
     # quote from cvslog "Such libraries worked by accident in the VS IDE and Xcode generators in CMake 2.4 and below."
     if(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4 AND ${CMAKE_PATCH_VERSION} GREATER 0)
         cmake_policy(SET CMP0008 OLD)
-    endif(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4 AND ${CMAKE_PATCH_VERSION} GREATER 0)
-endif(COMMAND cmake_policy)
+    endif()
+endif()
 
 PROJECT(OpenSceneGraph)
 
@@ -43,11 +45,11 @@ SET(OSG_PLUGIN_PREFIX "")
 
 IF (CYGWIN)
     SET(OSG_PLUGIN_PREFIX "cygwin_")
-ENDIF(CYGWIN)
+ENDIF()
 
 IF(MINGW)
     SET(OSG_PLUGIN_PREFIX "mingw_")
-ENDIF(MINGW)
+ENDIF()
 
 
 # We want to build SONAMES shared librariess
@@ -76,7 +78,7 @@ FIND_PACKAGE(Threads)
 IF(CMAKE_SYSTEM MATCHES IRIX)
     # Erase CMAKE_THREAD_LIBS_INIT and hope it works
     SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")
-ENDIF(CMAKE_SYSTEM MATCHES IRIX)
+ENDIF()
 
 OPTION(OSG_MAINTAINER "Enable OpenSceneGraph maintainer build methods, such as making svn branches, tags, updating ChangeLog." OFF)
 IF (OSG_MAINTAINER)
@@ -95,16 +97,16 @@ IF (OSG_MAINTAINER)
 
     IF   (OPENSCENEGRAPH_SVN STREQUAL "trunk")
         SET(SVNSOURCEDIR ${SVNTRUNKDIR})
-    ELSE (OPENSCENEGRAPH_SVN STREQUAL "trunk")
+    ELSE()
         SET(SVNSOURCEDIR ${SVNBRANCHDIR}/${OPENSCENEGRAPH_BRANCH})
-    ENDIF(OPENSCENEGRAPH_SVN STREQUAL "trunk")
+    ENDIF()
 
 
     IF   (OPENSCENEGRAPH_RELEASE_CANDIDATE EQUAL 0)
         SET(RELEASE_NAME OpenSceneGraph-${OPENSCENEGRAPH_VERSION})
-    ELSE (OPENSCENEGRAPH_RELEASE_CANDIDATE EQUAL 0)
+    ELSE()
         SET(RELEASE_NAME OpenSceneGraph-${OPENSCENEGRAPH_VERSION}-rc${OPENSCENEGRAPH_RELEASE_CANDIDATE})
-    ENDIF(OPENSCENEGRAPH_RELEASE_CANDIDATE EQUAL 0)
+    ENDIF()
 
 
     ADD_CUSTOM_TARGET(tag-test
@@ -142,7 +144,7 @@ FIND_PACKAGE(OpenGL)
 IF(APPLE)
     FIND_LIBRARY(CARBON_LIBRARY Carbon)
     FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-ENDIF(APPLE)
+ENDIF()
 
 IF(UNIX)
     # Not sure what this will do on Cygwin and Msys
@@ -150,12 +152,12 @@ IF(UNIX)
     FIND_PACKAGE(X11)
     # Some Unicies need explicit linkage to the Math library or the build fails.
     FIND_LIBRARY(MATH_LIBRARY m)
-ENDIF(UNIX)
+ENDIF()
 
 # Make the headers visible to everything
 IF(NOT ${PROJECT_BINARY_DIR} EQUAL ${PROJECT_SOURCE_DIR})
    INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/include)
-ENDIF(NOT ${PROJECT_BINARY_DIR} EQUAL ${PROJECT_SOURCE_DIR})
+ENDIF()
 
 INCLUDE_DIRECTORIES(
     ${OpenSceneGraph_SOURCE_DIR}/include
@@ -185,14 +187,15 @@ IF(WIN32)
         # More MSVC specific compilation flags
         ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
         ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
-    ENDIF(MSVC)
+    ENDIF()
 
     #needed for net plugin
     SET (OSG_SOCKET_LIBS wsock32)
     # Both Cygwin and Msys need -DNOMINMAX ???
     IF(UNIX)
         ADD_DEFINITIONS(-DNOMINMAX)
-    ENDIF(UNIX)
+    ENDIF()
+
 ########################################################################################################
 # the following options are MSVC specific,
 # the first OSG_MSVC_VERSIONED_DLL activate a custom build-time layout that should allow to run examples and application
@@ -209,7 +212,7 @@ IF(WIN32)
             MESSAGE("Warning:  disabling versioned options 2.4.6 exibits inconsintencies in .pdb naming, at least under MSVC, suggested upgrading at least to 2.4.7")
             SET(OSG_MSVC_VERSIONED_DLL OFF)
             SET(OSG_MSVC_DEBUG_INCREMENTAL_LINK ON)
-        ELSE(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4 AND ${CMAKE_PATCH_VERSION} LESS 7)
+        ELSE()
             OPTION(OSG_MSVC_VERSIONED_DLL "Set to ON to build OpenSceneGraph with versioned dll names" ON)
             MARK_AS_ADVANCED(OSG_MSVC_VERSIONED_DLL)
             OPTION(OSG_MSVC_DEBUG_INCREMENTAL_LINK "Set to OFF to build OpenSceneGraph without incremental linking in debug (release is off by default)" ON)
@@ -219,7 +222,7 @@ IF(WIN32)
                 SET(CMAKE_SHARED_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
                 SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL:NO")
             ENDIF(NOT OSG_MSVC_DEBUG_INCREMENTAL_LINK)
-        ENDIF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} EQUAL 4 AND ${CMAKE_PATCH_VERSION} LESS 7)
+        ENDIF()
     ENDIF(MSVC)
 ENDIF(WIN32)
 
@@ -278,7 +281,7 @@ IF(MSVC)
     SET(OPENSCENEGRAPH_VERSIONINFO_RC "${PROJECT_BINARY_DIR}/PlatformSpecifics/Windows/OpenSceneGraphVersionInfo.rc")
     CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/PlatformSpecifics/Windows/OpenSceneGraphVersionInfo.rc.in"
                    "${OPENSCENEGRAPH_VERSIONINFO_RC}")
-ENDIF(MSVC)
+ENDIF()
 
 ################################################################################
 # Optional build components
@@ -293,7 +296,7 @@ OPTION(BUILD_OSG_EXAMPLES "Enable to build OSG Examples" OFF)
 # 3rd Party Dependency Stuff
 IF(WIN32)
     INCLUDE(Find3rdPartyDependencies)
-ENDIF(WIN32)
+ENDIF()
 
 # Common to all platforms:
 FIND_PACKAGE(FreeType)
@@ -325,15 +328,15 @@ IF(PKG_CONFIG_FOUND)
 
     IF(WIN32)
         PKG_CHECK_MODULES(GTKGL gtkglext-win32-1.0)
-    ELSE(WIN32)
+    ELSE()
         PKG_CHECK_MODULES(GTKGL gtkglext-x11-1.0)
-    ENDIF(WIN32)
+    ENDIF()
 
     PKG_CHECK_MODULES(RSVG librsvg-2.0)
     PKG_CHECK_MODULES(CAIRO cairo)
     PKG_CHECK_MODULES(POPPLER poppler-glib)
 
-ENDIF(PKG_CONFIG_FOUND)
+ENDIF()
 
 #optional example related dependencies
 IF   (BUILD_OSG_EXAMPLES)
@@ -353,19 +356,19 @@ IF   (BUILD_OSG_EXAMPLES)
 
         IF  (DESIRED_QT_VERSION MATCHES 4)
           FIND_PACKAGE(Qt4)
-        ELSE(DESIRED_QT_VERSION MATCHES 4)
+        ELSE()
           FIND_PACKAGE(Qt3)
-        ENDIF(DESIRED_QT_VERSION MATCHES 4)
+        ENDIF()
 
-    ELSE(DESIRED_QT_VERSION)
+    ELSE()
 
         FIND_PACKAGE(Qt4)
 
         IF  (NOT QT4_FOUND)
             FIND_PACKAGE(Qt3)
-        ENDIF(NOT QT4_FOUND)
+        ENDIF()
 
-    ENDIF(DESIRED_QT_VERSION)
+    ENDIF()
 
 ENDIF(BUILD_OSG_EXAMPLES)
 
@@ -384,7 +387,7 @@ IF(NOT DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT)
         # form.
         SET(DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT false)
 
-    ELSE(WIN32 OR CMAKE_SYSTEM_NAME MATCHES "Linux")
+    ELSE()
 
         # For other platforms perform the check
         INCLUDE(CheckCXXSourceCompiles)
@@ -404,8 +407,8 @@ IF(NOT DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT)
         SET(DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT
             ${GLU_Tesselator_Needs_Variable_Parameter_Callback_Convention_Failure_Means_No})
 
-    ENDIF(WIN32 OR CMAKE_SYSTEM_NAME MATCHES "Linux")
-ENDIF(NOT DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT)
+    ENDIF()
+ENDIF()
 
 OPTION(OSG_GLU_TESS_CALLBACK_TRIPLEDOT "Set to ON to build with variable parameter (...) version of GLU tesselator callback" ${DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT})
 IF(OSG_GLU_TESS_CALLBACK_TRIPLEDOT)
@@ -435,18 +438,18 @@ IF(NOT APPLE)
     # QuickTime is required for OS X, but optional for Windows.
     IF(WIN32)
         FIND_PACKAGE(QuickTime)
-    ENDIF(WIN32)
+    ENDIF()
 
-ELSE(NOT APPLE)
+ELSE()
     FIND_PACKAGE(QuickTime)
-ENDIF(NOT APPLE)
+ENDIF()
 
 ################################################################################
 # Create bin and lib directories if required
 
 IF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
    FILE(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/bin ${CMAKE_BINARY_DIR}/lib ${CMAKE_BINARY_DIR}/lib/${OSG_PLUGINS})
-ENDIF("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+ENDIF()
 
 
 ################################################################################
@@ -458,24 +461,24 @@ ADD_DEFINITIONS(-DOSG_DEBUG_POSTFIX=${CMAKE_DEBUG_POSTFIX})
 IF(UNIX AND NOT WIN32)
   IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
     ADD_DEFINITIONS("-D_DEBUG")
-  ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
-ENDIF(UNIX AND NOT WIN32)
+  ENDIF()
+ENDIF()
 
 IF(CYGWIN)
   IF(CMAKE_BUILD_TYPE STREQUAL "Debug")
     ADD_DEFINITIONS("-D_DEBUG")
-  ENDIF(CMAKE_BUILD_TYPE STREQUAL "Debug")
-ENDIF(CYGWIN)
+  ENDIF()
+ENDIF()
 
 IF(UNIX AND NOT WIN32 AND NOT APPLE)
   IF(CMAKE_SIZEOF_VOID_P MATCHES "8")
       SET(LIB_POSTFIX "64" CACHE STRING "suffix for 32/64 dir placement")
       MARK_AS_ADVANCED(LIB_POSTFIX)
-  ENDIF(CMAKE_SIZEOF_VOID_P MATCHES "8")
-ENDIF(UNIX AND NOT WIN32 AND NOT APPLE)
+  ENDIF()
+ENDIF()
 IF(NOT DEFINED LIB_POSTFIX)
     SET(LIB_POSTFIX "")
-ENDIF(NOT DEFINED LIB_POSTFIX)
+ENDIF()
 
 # Here we apparantly do some funky stuff with making the bin/ and lib/
 # folders which is probably needed to work around a very old CMake bug?
@@ -500,7 +503,10 @@ ENDIF(NOT MSVC)
 # On CMake 2.6.x use the newly minted CMAKE_LIBRARY_OUTPUT_DIRECTORY,
 # CMAKE_ARCHIVE_OUTPUT_DIRECTORY & CMAKE_RUNTIME_OUTPUT_DIRECTORY
 
-IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
+IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION LESS 5)
+    SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_BINDIR})
+    SET(LIBRARY_OUTPUT_PATH    ${OUTPUT_LIBDIR})
+ELSE()
     # If CMake >= 2.6.0
     SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_LIBDIR})
     SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BINDIR})
@@ -509,10 +515,7 @@ IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
     ELSE(WIN32)
         SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_LIBDIR})
     ENDIF(WIN32)
-ELSE(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
-    SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_BINDIR})
-    SET(LIBRARY_OUTPUT_PATH ${OUTPUT_LIBDIR})
-ENDIF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
+ENDIF()
 
 #SET(INSTALL_BINDIR OpenSceneGraph/bin)
 #SET(INSTALL_INCDIR OpenSceneGraph/include)
@@ -562,7 +565,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
     # Previous included -Wformat=2 in OSG_AGGRESSIVE_WARNING_FLAGS but had to remove it due to standard library errors
 
 
-ELSE(CMAKE_COMPILER_IS_GNUCXX)
+ELSE()
     IF(MSVC)
         # FIXME: What are good aggressive warning flags for Visual Studio?
         # And do we need to further subcase this for different versions of VS?
@@ -570,12 +573,12 @@ ELSE(CMAKE_COMPILER_IS_GNUCXX)
         SET(OSG_AGGRESSIVE_WARNING_FLAGS /W4 /wd4706 /wd4127 /wd4100)
 
 
-    ELSE(MSVC)
+    ELSE()
         # CMake lacks an elseif, so other non-gcc, non-VS compilers need
         # to be listed below. If unhandled, OSG_AGGRESSIVE_WARNING_FLAGS should
         # remain unset.
-    ENDIF(MSVC)
-ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+    ENDIF()
+ENDIF()
 
 # This part is for the CMake menu option to toggle the warnings on/off.
 # This will only be made available if we set values for OSG_AGGRESSIVE_WARNING_FLAGS.
@@ -583,9 +586,9 @@ IF(OSG_AGGRESSIVE_WARNING_FLAGS)
 
     IF (APPLE)
         SET(DEFAULT_USE_AGGRESSIVE_WARNINGS OFF)
-    ELSE(APPLE)
+    ELSE()
         SET(DEFAULT_USE_AGGRESSIVE_WARNINGS ON)
-    ENDIF(APPLE)
+    ENDIF()
 
     OPTION(OSG_USE_AGGRESSIVE_WARNINGS "Enable to activate aggressive warnings" ${DEFAULT_USE_AGGRESSIVE_WARNINGS})
     MARK_AS_ADVANCED(OSG_USE_AGGRESSIVE_WARNINGS)
@@ -595,24 +598,24 @@ IF(OSG_AGGRESSIVE_WARNING_FLAGS)
         FOREACH(flag ${OSG_AGGRESSIVE_WARNING_FLAGS})
             IF(NOT CMAKE_CXX_FLAGS MATCHES "${flag}")
                 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}")
-            ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "${flag}")
-        ENDFOREACH(flag)
-    ELSE(OSG_USE_AGGRESSIVE_WARNINGS)
+            ENDIF()
+        ENDFOREACH()
+    ELSE()
         # Remove all flags considered aggresive
         FOREACH(flag ${OSG_AGGRESSIVE_WARNING_FLAGS})
             STRING(REGEX REPLACE "${flag}" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-        ENDFOREACH(flag)
-    ENDIF(OSG_USE_AGGRESSIVE_WARNINGS)
-ENDIF(OSG_AGGRESSIVE_WARNING_FLAGS)
+        ENDFOREACH()
+    ENDIF()
+ENDIF()
 
 
 # Dynamic vs Static Linking
 OPTION(DYNAMIC_OPENSCENEGRAPH "Set to ON to build OpenSceneGraph for dynamic linking.  Use OFF for static." ON)
 IF   (DYNAMIC_OPENSCENEGRAPH)
     SET(OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC "SHARED")
-ELSE (DYNAMIC_OPENSCENEGRAPH)
+ELSE ()
     SET(OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC "STATIC")
-ENDIF(DYNAMIC_OPENSCENEGRAPH)
+ENDIF()
 
 INCLUDE(OsgMacroUtils)
 # OSG Core
@@ -620,11 +623,11 @@ ADD_SUBDIRECTORY(src)
 
 IF   (BUILD_OSG_APPLICATIONS)
     ADD_SUBDIRECTORY(applications)
-ENDIF(BUILD_OSG_APPLICATIONS)
+ENDIF()
 
 IF   (BUILD_OSG_EXAMPLES)
     ADD_SUBDIRECTORY(examples)
-ENDIF(BUILD_OSG_EXAMPLES)
+ENDIF()
 
 
 # Set defaults for Universal Binaries. We want 32-bit Intel/PPC on 10.4
@@ -648,16 +651,14 @@ IF(APPLE)
             #SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
             SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-        ELSE(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
-            IF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
-                SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
-                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.4 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-            ELSE(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
-                # No Universal Binary support
-                # Should break down further to set the -mmacosx-version-min,
-                # but the SDK detection is too unreliable here.
-            ENDIF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
-        ENDIF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
+        ELSEIF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
+            SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.4 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+        ELSE()
+            # No Universal Binary support
+            # Should break down further to set the -mmacosx-version-min,
+            # but the SDK detection is too unreliable here.
+        ENDIF()
     ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
 
     OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" OFF)
@@ -686,22 +687,22 @@ IF(BUILD_DOCUMENTATION)
     OPTION(BUILD_REF_DOCS_SEARCHENGINE "Enable doxygen's search engine (requires that documentation to be installed on a php enabled web server)" OFF)
     IF(BUILD_REF_DOCS_SEARCHENGINE)
         SET(SEARCHENGINE YES)
-    ELSE(BUILD_REF_DOCS_SEARCHENGINE)
+    ELSE()
         SET(SEARCHENGINE NO)
-    ENDIF(BUILD_REF_DOCS_SEARCHENGINE)
+    ENDIF()
 
     OPTION(BUILD_REF_DOCS_TAGFILE "Generate a tag file named osg.tag on the documentation web server" OFF)
     IF(BUILD_REF_DOCS_TAGFILE)
         SET(GENERATE_TAGFILE "${OpenSceneGraph_BINARY_DIR}/doc/OpenSceneGraphReferenceDocs/osg.tag")
-    ELSE(BUILD_REF_DOCS_TAGFILE)
+    ELSE()
         SET(GENERATE_TAGFILE "")
-    ENDIF(BUILD_REF_DOCS_TAGFILE)
+    ENDIF()
 
     IF(DOT)
         SET(HAVE_DOT YES)
-    ELSE(DOT)
+    ELSE()
         SET(HAVE_DOT NO)
-    ENDIF(DOT)
+    ENDIF()
     
     # If html help generation was requested. DOCUMENTATION_HTML_HELP is defined by Documentation.cmake
     SET(GENERATE_HTMLHELP "NO")
@@ -710,10 +711,10 @@ IF(BUILD_DOCUMENTATION)
         IF(NOT WIN32)
             SET(HTML_HELP_COMPILER "" CACHE FILEPATH "Enter location of the HTML help compiler to let doxygen compile html")
             MARK_AS_ADVANCED(HTML_HELP_COMPILER)
-        ENDIF(NOT WIN32)
+        ENDIF()
         # this var sets a proper value in .doxygen files when coniguring them below
         SET(GENERATE_HTMLHELP "YES")
-    endif(DOCUMENTATION_HTML_HELP)
+    endif()
   
     # This processes our doxyfile.cmake and substitutes paths to generate
     # a final Doxyfile
@@ -730,7 +731,7 @@ IF(BUILD_DOCUMENTATION)
     # now set up openthreads documentation generation
     IF(BUILD_REF_DOCS_TAGFILE)
         SET(GENERATE_TAGFILE "${OpenSceneGraph_BINARY_DIR}/doc/OpenThreadsReferenceDocs/ot.tag")
-    ENDIF(BUILD_REF_DOCS_TAGFILE)
+    ENDIF()
 
     # This processes our openthreads.doxyfile.cmake and generate a final doxyfile
     CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/doc/Doxyfiles/openthreads.doxyfile.cmake
@@ -770,15 +771,15 @@ IF(BUILD_DASHBOARD_REPORTS)
 # The following are required to uses Dart and the Cdash dashboard
 # viewable here : http://www.cdash.org/CDashPublic/index.php?project=OpenSceneGraph
     INCLUDE(Dart)
-ENDIF(BUILD_DASHBOARD_REPORTS)
+ENDIF()
 
 # present the packaging option only if we have the cpack command defined (effectively >= 2.6.0)
 IF(CMAKE_CPACK_COMMAND)
     OPTION(BUILD_OSG_PACKAGES "Set to ON to generate CPack configuration files and packaging targets" OFF)
     IF(BUILD_OSG_PACKAGES)
       INCLUDE(OsgCPack)
-    ENDIF(BUILD_OSG_PACKAGES)
-ENDIF(CMAKE_CPACK_COMMAND)
+    ENDIF()
+ENDIF()
 
 # Generate pkg-config configuration file
 
@@ -790,14 +791,12 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/openscenegraph.pc.in
 INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openscenegraph.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig COMPONENT libopenscenegraph-dev)
 
 # Run this as late as possible so users can easier spot the message
-IF (${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local")
-SET(REQUIRES_LIBPATH_MESSAGE ON)
-ENDIF(${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local") 
+IF (NOT DEFINED REQUIRES_LIBPATH_MESSAGE AND ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local")
+    SET(REQUIRES_LIBPATH_MESSAGE ON)
+ENDIF()
 
 IF(REQUIRES_LIBPATH_MESSAGE)
-
     IF (NOT OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE)
- 
         SET(OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether the libpath message has been reported before")
 
         MESSAGE("\nThe build system is configured to instal libraries to ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}\n"
@@ -818,31 +817,29 @@ IF(REQUIRES_LIBPATH_MESSAGE)
                 COMMAND ldconfig
                 COMMENT "Copying openscenegraph.conf to /etc/ld.so.conf.d and running ldconfig"
             )
-        ELSE(IS_DIRECTORY /etc/ld.so.conf.d)
+        ELSE()
             IF(EXISTS /etc/ld.so.conf)
                 MESSAGE("You have an ld.so.conf file in /etc, if you wish to ensure \n"
                 "that applications find the installed osg libraries, system wide, you\n"
                 "could add ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX} to it.")
-            ENDIF(EXISTS /etc/ld.so.conf)
-        ENDIF(IS_DIRECTORY /etc/ld.so.conf.d)
+            ENDIF()
+        ENDIF()
 
         # emit a message during installation.
         INSTALL(CODE "MESSAGE(\"Libraries were installed to ${CMAKE_INSTALL_PREFIX}lib${LIB_POSTFIX}.\\nYou may need to update your ld.so configuration. \")")
 
     ENDIF(NOT OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE)
 
-ELSE(REQUIRES_LIBPATH_MESSAGE)
-
+ELSE()
     SET(OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE 0 CACHE INTERNAL "Flag to track whether the libpath message has been reported before")
-
-ENDIF(REQUIRES_LIBPATH_MESSAGE)
+ENDIF()
 
 
 # This needs to be run very last so other parts of the scripts can take
 # advantage of this.
 IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
     SET(OSG_CONFIG_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether this is the first time running CMake or if CMake has been configured before")
-ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
+ENDIF()
 
 #-----------------------------------------------------------------------------
 ### uninstall target

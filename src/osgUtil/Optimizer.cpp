@@ -2415,11 +2415,11 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
 
 
     // shift the indices of the incoming primitives to account for the pre existing geometry.
-    for(osg::Geometry::PrimitiveSetList::iterator primItr=rhs.getPrimitiveSetList().begin();
-        primItr!=rhs.getPrimitiveSetList().end();
-        ++primItr)
+    osg::Geometry::PrimitiveSetList::iterator primItr;
+    for(primItr=rhs.getPrimitiveSetList().begin(); primItr!=rhs.getPrimitiveSetList().end(); ++primItr)
     {
         osg::PrimitiveSet* primitive = primItr->get();
+        
         switch(primitive->getType())
         {
         case(osg::PrimitiveSet::DrawElementsUBytePrimitiveType):
@@ -2486,12 +2486,12 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
             primitive->offsetIndices(base);
             break;
         }
-
-        
     }
     
-    lhs.getPrimitiveSetList().insert(lhs.getPrimitiveSetList().end(),
-                                     rhs.getPrimitiveSetList().begin(),rhs.getPrimitiveSetList().end());
+    for(primItr=rhs.getPrimitiveSetList().begin(); primItr!=rhs.getPrimitiveSetList().end(); ++primItr)
+    {
+        lhs.addPrimitiveSet(primItr->get());
+    }
 
     lhs.dirtyBound();
     lhs.dirtyDisplayList();

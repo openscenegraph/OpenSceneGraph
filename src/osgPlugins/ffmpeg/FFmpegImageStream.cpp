@@ -18,7 +18,7 @@ FFmpegImageStream::FFmpegImageStream() :
     m_commands(0),
     m_frame_published_flag(false)
 {
-    setOrigin(osg::Image::BOTTOM_LEFT);
+    setOrigin(osg::Image::TOP_LEFT);
 
     std::auto_ptr<FFmpegDecoder> decoder(new FFmpegDecoder);
     std::auto_ptr<CommandQueue> commands(new CommandQueue);
@@ -71,9 +71,9 @@ bool FFmpegImageStream::open(const std::string & filename)
         m_decoder->video_decoder().width(), m_decoder->video_decoder().height(), 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE,
         const_cast<unsigned char *>(m_decoder->video_decoder().image()), NO_DELETE
     );
-    
-    setOrigin(osg::Image::TOP_LEFT);
 
+    setPixelAspectRatio(m_decoder->video_decoder().pixelAspectRatio());
+    
     m_decoder->video_decoder().setUserData(this);
     m_decoder->video_decoder().setPublishCallback(publishNewFrame);
     
@@ -140,31 +140,25 @@ void FFmpegImageStream::quit(bool waitForThreadToExit)
 }
 
 
-double FFmpegImageStream::duration() const
+double FFmpegImageStream::getLength() const
 { 
     return m_decoder->duration(); 
 }
 
 
 
-bool FFmpegImageStream::videoAlphaChannel() const 
+double FFmpegImageStream::getFrameRate() const
+{ 
+    return m_decoder->video_decoder().frameRate(); 
+}
+
+
+
+bool FFmpegImageStream::isImageTranslucent() const 
 { 
     return m_decoder->video_decoder().alphaChannel(); 
 }
 
-
-
-double FFmpegImageStream::videoAspectRatio() const
-{ 
-    return m_decoder->video_decoder().aspectRatio();
-}
-
-
-
-double FFmpegImageStream::videoFrameRate() const
-{ 
-    return m_decoder->video_decoder().frameRate(); 
-}
 
 
 void FFmpegImageStream::run()

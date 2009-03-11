@@ -74,7 +74,7 @@ public:
 
     int width() const;
     int height() const;
-    double aspectRatio() const;
+    float pixelAspectRatio() const;
     bool alphaChannel() const;
     double frameRate() const;
     const uint8_t * image() const;
@@ -114,7 +114,7 @@ private:
     PublishFunc             m_publish_func;
 
     double                  m_frame_rate;
-    double                  m_aspect_ratio;
+    float                   m_pixel_aspect_ratio;
     int                     m_width;
     int                     m_height;
     size_t                  m_next_frame_index;
@@ -155,9 +155,9 @@ inline int FFmpegDecoderVideo::height() const
 }
 
 
-inline double FFmpegDecoderVideo::aspectRatio() const
+inline float FFmpegDecoderVideo::pixelAspectRatio() const
 {
-    return m_aspect_ratio;
+    return m_pixel_aspect_ratio;
 }
 
 

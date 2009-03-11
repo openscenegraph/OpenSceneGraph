@@ -51,12 +51,6 @@ double FFmpegAudioStream::duration() const
 }
 
 
-bool FFmpegAudioStream::audioStream() const 
-{ 
-    return m_decoder->audio_decoder().validContext(); 
-}
-
-
 
 int FFmpegAudioStream::audioFrequency() const 
 { 

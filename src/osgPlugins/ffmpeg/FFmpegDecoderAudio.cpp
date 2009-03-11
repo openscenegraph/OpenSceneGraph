@@ -130,7 +130,6 @@ void FFmpegDecoderAudio::setAudioSink(osg::ref_ptr<osg::AudioSink> audio_sink)
 
 void FFmpegDecoderAudio::fillBuffer(void * const buffer, size_t size)
 {
-    size_t filled = 0;
     uint8_t * dst_buffer = reinterpret_cast<uint8_t*>(buffer);
 
     while (size != 0)

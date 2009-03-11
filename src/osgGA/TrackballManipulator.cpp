@@ -14,6 +14,7 @@ TrackballManipulator::TrackballManipulator()
 
     _distance = 1.0f;
     _trackballSize = 0.8f;
+    _zoomDelta = 0.1f;
 }
 
 
@@ -245,7 +246,7 @@ void TrackballManipulator::computePosition(const osg::Vec3& eye,const osg::Vec3&
 
 bool TrackballManipulator::calcMovement()
 {
-    // mosue scroll is only a single event
+    // mouse scroll is only a single event
     if (_ga_t0.get()==NULL) return false;
 
     float dx=0.0f;
@@ -254,7 +255,7 @@ bool TrackballManipulator::calcMovement()
 
     if (_ga_t0->getEventType()==GUIEventAdapter::SCROLL)
     {
-        dy = _ga_t0->getScrollingMotion() == osgGA::GUIEventAdapter::SCROLL_DOWN ? -0.1 : 0.1;
+        dy = _ga_t0->getScrollingMotion() == osgGA::GUIEventAdapter::SCROLL_UP ? _zoomDelta : -_zoomDelta;
         buttonMask=GUIEventAdapter::SCROLL;
     } 
     else 

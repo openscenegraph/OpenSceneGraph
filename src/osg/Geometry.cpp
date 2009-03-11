@@ -3084,7 +3084,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
     if (!copyToSelf) target.getPrimitiveSetList() = getPrimitiveSetList();
 
     // copy over attribute arrays.
-    if (getVertexIndices())
+    if (getVertexIndices() && getVertexArray())
     {
         ExpandIndexedArray eia(*(getVertexIndices()),target.getVertexArray());
         getVertexArray()->accept(eia);
@@ -3098,7 +3098,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
     }
 
     target.setNormalBinding(getNormalBinding());
-    if (getNormalIndices())
+    if (getNormalIndices() && getNormalArray())
     {
         ExpandIndexedArray eia(*(getNormalIndices()),target.getNormalArray());
         getNormalArray()->accept(eia);
@@ -3112,7 +3112,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
     }
 
     target.setColorBinding(getColorBinding());
-    if (getColorIndices())
+    if (getColorIndices() && getColorArray())
     {
         ExpandIndexedArray eia(*(getColorIndices()),target.getColorArray());
         getColorArray()->accept(eia);
@@ -3126,7 +3126,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
     }
 
     target.setSecondaryColorBinding(getSecondaryColorBinding());
-    if (getSecondaryColorIndices())
+    if (getSecondaryColorIndices() && getSecondaryColorArray())
     {
         ExpandIndexedArray eia(*(getSecondaryColorIndices()),target.getSecondaryColorArray());
         getSecondaryColorArray()->accept(eia);
@@ -3140,7 +3140,7 @@ void Geometry::copyToAndOptimize(Geometry& target)
     }
 
     target.setFogCoordBinding(getFogCoordBinding());
-    if (getFogCoordIndices())
+    if (getFogCoordIndices() && getFogCoordArray())
     {
         ExpandIndexedArray eia(*(getFogCoordIndices()),target.getFogCoordArray());
         getFogCoordArray()->accept(eia);
@@ -3155,9 +3155,10 @@ void Geometry::copyToAndOptimize(Geometry& target)
 
     for(unsigned int ti=0;ti<getNumTexCoordArrays();++ti)
     {
-        if (getTexCoordIndices(ti))
+        if (getTexCoordIndices(ti) && getTexCoordArray(ti))
         {
             ExpandIndexedArray eia(*(getTexCoordIndices(ti)),target.getTexCoordArray(ti));
+            
             getTexCoordArray(ti)->accept(eia);
 
             target.setTexCoordArray(ti,eia._targetArray);

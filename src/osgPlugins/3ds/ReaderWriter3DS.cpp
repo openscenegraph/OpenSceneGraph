@@ -821,7 +821,7 @@ osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat
 //        stateset->setTextureAttribute(0,texenv);
     }
 
-    if (transparency>0.0f || textureTransparancy)
+    if (transparency>0.0f || textureTransparancy || mat->opacity_map.flags!=0)
     {
         stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);

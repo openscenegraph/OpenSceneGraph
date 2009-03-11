@@ -22,7 +22,7 @@
 namespace osgManipulator {
 
 /**
- * Tab plane dragger consists of a plane with tabs on it's corners and edges 
+ * Tab plane dragger consists of a plane with tabs on it's corners and edges
  * for scaling. And the plane is used as a 2D translate dragger.
  */
 class OSGMANIPULATOR_EXPORT TabPlaneDragger : public CompositeDragger
@@ -30,6 +30,8 @@ class OSGMANIPULATOR_EXPORT TabPlaneDragger : public CompositeDragger
     public:
 
         TabPlaneDragger();
+
+        META_OSGMANIPULATOR_Object(osgManipulator,TabPlaneDragger)
 
         virtual bool handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us);
 

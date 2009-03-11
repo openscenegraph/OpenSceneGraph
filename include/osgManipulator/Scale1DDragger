@@ -32,8 +32,10 @@ class OSGMANIPULATOR_EXPORT Scale1DDragger : public Dragger
             SCALE_WITH_ORIGIN_AS_PIVOT = 0,
             SCALE_WITH_OPPOSITE_HANDLE_AS_PIVOT
         };
-        
+
         Scale1DDragger(ScaleMode scaleMode=SCALE_WITH_ORIGIN_AS_PIVOT);
+
+        META_OSGMANIPULATOR_Object(osgManipulator,Scale1DDragger)
 
         /**
          * Handle pick events on dragger and generate TranslateInLine commands.
@@ -53,8 +55,8 @@ class OSGMANIPULATOR_EXPORT Scale1DDragger : public Dragger
 
         /**
          * Set/Get pick color for dragger. Pick color is color of the dragger
-         * when picked. It gives a visual feedback to show that the dragger has 
-         * been picked. 
+         * when picked. It gives a visual feedback to show that the dragger has
+         * been picked.
          */
         inline void setPickColor(const osg::Vec4& color) { _pickColor = color; }
         inline const osg::Vec4 getPickColor() const { return _pickColor; }
@@ -70,7 +72,7 @@ class OSGMANIPULATOR_EXPORT Scale1DDragger : public Dragger
         inline double getLeftHandlePosition() const     { return _projector->getLineStart()[0]; }
         inline void  setRightHandlePosition(double pos) { _projector->getLineEnd() = osg::Vec3d(pos,0.0,0.0); }
         inline double getRightHandlePosition()          { return _projector->getLineEnd()[0]; }
-        
+
     protected:
 
         virtual ~Scale1DDragger();

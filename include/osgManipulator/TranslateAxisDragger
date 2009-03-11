@@ -28,6 +28,8 @@ class OSGMANIPULATOR_EXPORT TranslateAxisDragger : public CompositeDragger
 
         TranslateAxisDragger();
 
+        META_OSGMANIPULATOR_Object(osgManipulator,TranslateAxisDragger)
+
         /** Setup default geometry for dragger. */
         void setupDefaultGeometry();
 

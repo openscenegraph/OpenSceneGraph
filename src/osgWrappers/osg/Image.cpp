@@ -220,6 +220,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __unsigned_int__getPacking,
 	          "",
 	          "");
+	I_Method1(void, setPixelAspectRatio, IN, float, pixelAspectRatio,
+	          Properties::NON_VIRTUAL,
+	          __void__setPixelAspectRatio__float,
+	          "Set the pixel aspect ratio, defined as the pixel width divided by the pixel height. ",
+	          "");
+	I_Method0(float, getPixelAspectRatio,
+	          Properties::NON_VIRTUAL,
+	          __float__getPixelAspectRatio,
+	          "Get the pixel aspect ratio. ",
+	          "");
 	I_Method0(unsigned int, getPixelSizeInBits,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getPixelSizeInBits,
@@ -351,7 +361,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          "",
 	          "");
 	I_Method0(bool, isImageTranslucent,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__isImageTranslucent,
 	          "Return true if this image is translucent - i.e. ",
 	          "it has alpha values that are less 1.0 (when normalized). ");
@@ -464,6 +474,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_SimpleProperty(unsigned int, Packing, 
 	                 __unsigned_int__getPacking, 
 	                 __void__setPacking__unsigned_int);
+	I_SimpleProperty(float, PixelAspectRatio, 
+	                 __float__getPixelAspectRatio, 
+	                 __void__setPixelAspectRatio__float);
 	I_SimpleProperty(osg::PixelBufferObject *, PixelBufferObject, 
 	                 __PixelBufferObject_P1__getPixelBufferObject, 
 	                 __void__setPixelBufferObject__PixelBufferObject_P1);

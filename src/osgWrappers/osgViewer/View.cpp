@@ -196,6 +196,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __void__addEventHandler__osgGA_GUIEventHandler_P1,
 	          "Add an EventHandler that adds handling of events to the View. ",
 	          "");
+	I_Method1(void, removeEventHandler, IN, osgGA::GUIEventHandler *, eventHandler,
+	          Properties::NON_VIRTUAL,
+	          __void__removeEventHandler__osgGA_GUIEventHandler_P1,
+	          "Remove an EventHandler from View. ",
+	          "");
 	I_Method0(osgViewer::View::EventHandlers &, getEventHandlers,
 	          Properties::NON_VIRTUAL,
 	          __EventHandlers_R1__getEventHandlers,

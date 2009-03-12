@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Node>
+#include <osg/Object>
 #include <osg/Vec2d>
 #include <osg/Vec4>
 #include <osgGA/GUIActionAdapter>
@@ -40,6 +41,21 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DDragger)
 	                           ____Scale2DDragger__ScaleMode,
 	                           "",
 	                           "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
 	I_Method3(bool, handle, IN, const osgManipulator::PointerInfo &, pi, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_PointerInfo_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,

@@ -308,6 +308,11 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font3D::Glyph3D)
 	          __osg_Vec3Array_P1__getVertexArray,
 	          "Get the VertexArray of the glyph. ",
 	          "");
+	I_Method1(void, setNormalArray, IN, osg::Vec3Array *, na,
+	          Properties::NON_VIRTUAL,
+	          __void__setNormalArray__osg_Vec3Array_P1,
+	          "Set the VertexArray of the glyph. ",
+	          "");
 	I_Method0(osg::Vec3Array *, getNormalArray,
 	          Properties::NON_VIRTUAL,
 	          __osg_Vec3Array_P1__getNormalArray,
@@ -382,7 +387,7 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font3D::Glyph3D)
 	                 0);
 	I_SimpleProperty(osg::Vec3Array *, NormalArray, 
 	                 __osg_Vec3Array_P1__getNormalArray, 
-	                 0);
+	                 __void__setNormalArray__osg_Vec3Array_P1);
 	I_SimpleProperty(bool, ThreadSafeRefUnref, 
 	                 0, 
 	                 __void__setThreadSafeRefUnref__bool);

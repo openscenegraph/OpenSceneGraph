@@ -334,6 +334,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
 	I_PublicMemberProperty(unsigned int, _numInstancedGeode);
 	I_PublicMemberProperty(unsigned int, _numInstancedDrawable);
 	I_PublicMemberProperty(unsigned int, _numInstancedGeometry);
+	I_PublicMemberProperty(unsigned int, _numInstancedFastGeometry);
 	I_PublicMemberProperty(unsigned int, _numInstancedStateSet);
 	I_PublicMemberProperty(osgUtil::StatsVisitor::NodeSet, _groupSet);
 	I_PublicMemberProperty(osgUtil::StatsVisitor::NodeSet, _transformSet);
@@ -342,6 +343,7 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::StatsVisitor)
 	I_PublicMemberProperty(osgUtil::StatsVisitor::NodeSet, _geodeSet);
 	I_PublicMemberProperty(osgUtil::StatsVisitor::DrawableSet, _drawableSet);
 	I_PublicMemberProperty(osgUtil::StatsVisitor::DrawableSet, _geometrySet);
+	I_PublicMemberProperty(osgUtil::StatsVisitor::DrawableSet, _fastGeometrySet);
 	I_PublicMemberProperty(osgUtil::StatsVisitor::StateSetSet, _statesetSet);
 	I_PublicMemberProperty(osgUtil::Statistics, _uniqueStats);
 	I_PublicMemberProperty(osgUtil::Statistics, _instancedStats);

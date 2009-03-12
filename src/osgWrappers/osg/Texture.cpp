@@ -79,8 +79,14 @@ END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::ShadowCompareFunc)
 	I_DeclaringFile("osg/Texture");
+	I_EnumLabel(osg::Texture::NEVER);
+	I_EnumLabel(osg::Texture::LESS);
+	I_EnumLabel(osg::Texture::EQUAL);
 	I_EnumLabel(osg::Texture::LEQUAL);
+	I_EnumLabel(osg::Texture::GREATER);
+	I_EnumLabel(osg::Texture::NOTEQUAL);
 	I_EnumLabel(osg::Texture::GEQUAL);
+	I_EnumLabel(osg::Texture::ALWAYS);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::Texture::ShadowTextureMode)

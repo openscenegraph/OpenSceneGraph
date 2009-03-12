@@ -191,7 +191,9 @@ EXPAND_AS_DEFINED      = META_Object \
                          META_Shape \
                          META_Technique \
                          META_NodeVisitor \
-                         META_Effect
+                         META_Effect \
+                         META_OSGMANIPULATOR_Object
+                          
 PREDEFINED             = 
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------

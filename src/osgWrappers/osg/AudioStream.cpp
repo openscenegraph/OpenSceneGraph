@@ -107,11 +107,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::AudioStream)
 	          __void__consumeAudioBuffer__void_P1C5__C5_size_t,
 	          "",
 	          "");
-	I_Method0(bool, audioStream,
-	          Properties::PURE_VIRTUAL,
-	          __bool__audioStream,
-	          "",
-	          "");
 	I_Method0(int, audioFrequency,
 	          Properties::PURE_VIRTUAL,
 	          __int__audioFrequency,

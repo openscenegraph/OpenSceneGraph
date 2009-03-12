@@ -77,6 +77,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::SHARE_DUPLICATE_STATE);
 	I_EnumLabel(osgUtil::Optimizer::MERGE_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::CHECK_GEOMETRY);
+	I_EnumLabel(osgUtil::Optimizer::MAKE_FAST_GEOMETRY);
 	I_EnumLabel(osgUtil::Optimizer::SPATIALIZE_GROUPS);
 	I_EnumLabel(osgUtil::Optimizer::COPY_SHARED_NODES);
 	I_EnumLabel(osgUtil::Optimizer::TRISTRIP_GEOMETRY);
@@ -428,6 +429,26 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::IsOperationPermissibleForObjectCallba
 	I_Method3(bool, isOperationPermissibleForObjectImplementation, IN, const osgUtil::Optimizer *, optimizer, IN, const osg::Node *, node, IN, unsigned int, option,
 	          Properties::VIRTUAL,
 	          __bool__isOperationPermissibleForObjectImplementation__C5_Optimizer_P1__C5_osg_Node_P1__unsigned_int,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgUtil::Optimizer::MakeFastGeometryVisitor)
+	I_DeclaringFile("osgUtil/Optimizer");
+	I_BaseType(osgUtil::BaseOptimizerVisitor);
+	I_ConstructorWithDefaults1(IN, osgUtil::Optimizer *, optimizer, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____MakeFastGeometryVisitor__Optimizer_P1,
+	                           "default to traversing all children. ",
+	                           "");
+	I_Method1(void, apply, IN, osg::Geode &, geode,
+	          Properties::VIRTUAL,
+	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
+	I_Method1(void, checkGeode, IN, osg::Geode &, geode,
+	          Properties::NON_VIRTUAL,
+	          __void__checkGeode__osg_Geode_R1,
 	          "",
 	          "");
 END_REFLECTOR

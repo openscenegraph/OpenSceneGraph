@@ -31,6 +31,7 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriterInfo)
 	I_PublicMemberProperty(osgDB::ReaderWriter::FormatDescriptionMap, protocols);
 	I_PublicMemberProperty(osgDB::ReaderWriter::FormatDescriptionMap, extensions);
 	I_PublicMemberProperty(osgDB::ReaderWriter::FormatDescriptionMap, options);
+	I_PublicMemberProperty(osgDB::ReaderWriter::Features, features);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::list< std::string >, osgDB::FileNameList)

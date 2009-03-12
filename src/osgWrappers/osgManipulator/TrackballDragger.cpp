@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Object>
 #include <osgManipulator/TrackballDragger>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -28,6 +29,21 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TrackballDragger)
 	                           ____TrackballDragger__bool,
 	                           "",
 	                           "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
 	I_Method0(void, setupDefaultGeometry,
 	          Properties::NON_VIRTUAL,
 	          __void__setupDefaultGeometry,

@@ -83,9 +83,19 @@ void RenderBin::removeRenderBinPrototype(RenderBin* proto)
     RenderBinPrototypeList* list = renderBinPrototypeList();
     if (list && proto)
     {
-        RenderBinPrototypeList::iterator itr = list->find(proto->className());
-        if (itr != list->end()) list->erase(itr);
+        for(RenderBinPrototypeList::iterator itr = list->begin();
+            itr != list->end();
+            ++itr)
+        {
+            if (itr->second == proto)
+            {
+                // osg::notify(osg::NOTICE)<<"Found protype, now erasing "<<itr->first<<std::endl;
+                list->erase(itr);
+                return;
+            }
+        }
     }
+    // osg::notify(osg::NOTICE)<<"Not found protype"<<std::endl;
 }
 
 static bool s_defaultBinSortModeInitialized = false;

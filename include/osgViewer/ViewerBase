@@ -17,7 +17,7 @@
 #include <osg/Stats>
 
 #include <osgUtil/UpdateVisitor>
-#include <osgUtil/GLObjectsVisitor>
+#include <osgUtil/IncrementalCompileOperation>
 
 #include <osgGA/MatrixManipulator>
 #include <osgGA/EventVisitor>

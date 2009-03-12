@@ -16,6 +16,8 @@
 
 #include <osg/State>
 #include <osg/GraphicsThread>
+#include <osg/Timer>
+
 #include <vector>
 
 namespace osg {
@@ -328,6 +330,8 @@ class OSG_EXPORT GraphicsContext : public Object
           * Note, must only be called from a thread with this context current.*/
         virtual void clear();
         
+        double getTimeSinceLastClear() const { return osg::Timer::instance()->delta_s(_lastClearTick, osg::Timer::instance()->tick()); }
+        
 
         /** Realize the GraphicsContext.*/
         bool realize();
@@ -496,6 +500,7 @@ class OSG_EXPORT GraphicsContext : public Object
         
         ref_ptr<ResizedCallback>            _resizedCallback;
         
+        Timer_t                             _lastClearTick;
 };
 
 

@@ -382,7 +382,8 @@ GraphicsContext* GraphicsContext::getCompileContext(unsigned int contextID)
 GraphicsContext::GraphicsContext():
     _clearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)),
     _clearMask(0),
-    _threadOfLastMakeCurrent(0)
+    _threadOfLastMakeCurrent(0),
+    _lastClearTick(0)
 {
     setThreadSafeRefUnref(true);
     _operationsBlock = new RefBlock;
@@ -393,7 +394,8 @@ GraphicsContext::GraphicsContext():
 GraphicsContext::GraphicsContext(const GraphicsContext&, const osg::CopyOp&):
     _clearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f)),
     _clearMask(0),
-    _threadOfLastMakeCurrent(0)
+    _threadOfLastMakeCurrent(0),
+    _lastClearTick(0)
 {
     setThreadSafeRefUnref(true);
     _operationsBlock = new RefBlock;
@@ -410,6 +412,8 @@ GraphicsContext::~GraphicsContext()
 
 void GraphicsContext::clear()
 {
+    _lastClearTick = osg::Timer::instance()->tick();
+
     if (_clearMask==0 || !_traits) return;
 
     glViewport(0, 0, _traits->width, _traits->height);

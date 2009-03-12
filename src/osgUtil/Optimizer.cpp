@@ -1494,14 +1494,15 @@ void Optimizer::RemoveLoadedProxyNodesVisitor::removeRedundantNodes()
                 // take a copy of parents list since subsequent removes will modify the original one.
                 osg::Node::ParentList parents = group->getParents();
 
-                for(unsigned int i=0;i<group->getNumChildren();++i)
+                for(osg::Node::ParentList::iterator pitr=parents.begin();
+                    pitr!=parents.end();
+                    ++pitr)
                 {
-                    osg::Node* child = group->getChild(i);
-                    for(osg::Node::ParentList::iterator pitr=parents.begin();
-                        pitr!=parents.end();
-                        ++pitr)
+                    (*pitr)->removeChild(group.get());
+                    for(unsigned int i=0;i<group->getNumChildren();++i)
                     {
-                        (*pitr)->replaceChild(group.get(),child);
+                        osg::Node* child = group->getChild(i);
+                        (*pitr)->addChild(child);
                     }
 
                 }

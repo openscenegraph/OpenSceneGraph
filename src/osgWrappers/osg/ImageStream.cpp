@@ -125,6 +125,11 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	          __double__getLength,
 	          "",
 	          "");
+	I_Method0(double, getFrameRate,
+	          Properties::VIRTUAL,
+	          __double__getFrameRate,
+	          "",
+	          "");
 	I_Method1(void, setReferenceTime, IN, double, x,
 	          Properties::VIRTUAL,
 	          __void__setReferenceTime__double,
@@ -179,6 +184,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	I_SimpleProperty(const osg::ImageStream::AudioStreams &, AudioStreams, 
 	                 __C5_AudioStreams_R1__getAudioStreams, 
 	                 __void__setAudioStreams__C5_AudioStreams_R1);
+	I_SimpleProperty(double, FrameRate, 
+	                 __double__getFrameRate, 
+	                 0);
 	I_SimpleProperty(double, Length, 
 	                 __double__getLength, 
 	                 0);

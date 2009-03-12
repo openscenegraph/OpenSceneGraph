@@ -28,6 +28,22 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Features)
+	I_DeclaringFile("osgDB/ReaderWriter");
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_NONE);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_READ_OBJECT);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_READ_IMAGE);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_READ_HEIGHT_FIELD);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_READ_NODE);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_READ_SHADER);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_WRITE_OBJECT);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_WRITE_IMAGE);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_WRITE_HEIGHT_FIELD);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_WRITE_NODE);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_WRITE_SHADER);
+	I_EnumLabel(osgDB::ReaderWriter::FEATURE_ALL);
+END_REFLECTOR
+
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ArchiveStatus)
 	I_DeclaringFile("osgDB/ReaderWriter");
 	I_EnumLabel(osgDB::ReaderWriter::READ);
@@ -36,6 +52,8 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ArchiveStatus)
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osgDB::ReaderWriter::FormatDescriptionMap)
+
+TYPE_NAME_ALIAS(std::list< std::string >, osgDB::ReaderWriter::FeatureList)
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	I_DeclaringFile("osgDB/ReaderWriter");
@@ -91,6 +109,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	          Properties::VIRTUAL,
 	          __bool__acceptsExtension__C5_std_string_R1,
 	          "return true if ReaderWriter accepts specified file extension. ",
+	          "");
+	I_Method0(osgDB::ReaderWriter::Features, supportedFeatures,
+	          Properties::VIRTUAL,
+	          __Features__supportedFeatures,
+	          "return available features ",
 	          "");
 	I_MethodWithDefaults4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, x, , IN, osgDB::ReaderWriter::ArchiveStatus, x, , IN, unsigned, int, 4096, IN, const osgDB::ReaderWriter::Options *, x, NULL,
 	                      Properties::VIRTUAL,
@@ -202,6 +225,10 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	                      __WriteResult__writeShader__C5_osg_Shader_R1__std_ostream_R1__C5_Options_P1,
 	                      "",
 	                      "");
+	I_StaticMethod1(osgDB::ReaderWriter::FeatureList, featureAsString, IN, osgDB::ReaderWriter::Features, feature,
+	                __FeatureList__featureAsString__Features_S,
+	                "return feature as string ",
+	                "");
 	I_ProtectedMethod2(void, supportsProtocol, IN, const std::string &, fmt, IN, const std::string &, description,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -382,6 +409,7 @@ END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ReadResult::ReadStatus)
 	I_DeclaringFile("osgDB/ReaderWriter");
+	I_EnumLabel(osgDB::ReaderWriter::ReadResult::NOT_IMPLEMENTED);
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED);
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND);
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_LOADED);
@@ -563,6 +591,7 @@ END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::WriteResult::WriteStatus)
 	I_DeclaringFile("osgDB/ReaderWriter");
+	I_EnumLabel(osgDB::ReaderWriter::WriteResult::NOT_IMPLEMENTED);
 	I_EnumLabel(osgDB::ReaderWriter::WriteResult::FILE_NOT_HANDLED);
 	I_EnumLabel(osgDB::ReaderWriter::WriteResult::FILE_SAVED);
 	I_EnumLabel(osgDB::ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE);

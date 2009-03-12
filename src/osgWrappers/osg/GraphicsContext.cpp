@@ -182,6 +182,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __void__clear,
 	          "Do an OpenGL clear of the full graphics context/window. ",
 	          "Note, must only be called from a thread with this context current. ");
+	I_Method0(double, getTimeSinceLastClear,
+	          Properties::NON_VIRTUAL,
+	          __double__getTimeSinceLastClear,
+	          "",
+	          "");
 	I_Method0(bool, realize,
 	          Properties::NON_VIRTUAL,
 	          __bool__realize,
@@ -398,6 +403,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_SimpleProperty(osg::State *, State, 
 	                 __State_P1__getState, 
 	                 __void__setState__State_P1);
+	I_SimpleProperty(double, TimeSinceLastClear, 
+	                 __double__getTimeSinceLastClear, 
+	                 0);
 	I_SimpleProperty(const osg::GraphicsContext::Traits *, Traits, 
 	                 __C5_Traits_P1__getTraits, 
 	                 0);

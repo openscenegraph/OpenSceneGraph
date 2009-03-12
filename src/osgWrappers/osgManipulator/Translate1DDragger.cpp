@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Object>
 #include <osg/Vec3d>
 #include <osg/Vec4>
 #include <osgGA/GUIActionAdapter>
@@ -31,6 +32,21 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Translate1DDragger)
 	I_Constructor0(____Translate1DDragger,
 	               "",
 	               "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
 	I_Constructor2(IN, const osg::Vec3d &, s, IN, const osg::Vec3d &, e,
 	               ____Translate1DDragger__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
 	               "",

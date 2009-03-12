@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Object>
 #include <osgManipulator/Command>
 #include <osgManipulator/Selection>
 
@@ -27,6 +28,21 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Selection)
 	I_Constructor0(____Selection,
 	               "",
 	               "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
 	I_Method1(bool, receive, IN, const osgManipulator::MotionCommand &, x,
 	          Properties::VIRTUAL,
 	          __bool__receive__C5_MotionCommand_R1,

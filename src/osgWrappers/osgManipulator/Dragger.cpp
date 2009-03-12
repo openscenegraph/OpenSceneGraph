@@ -12,6 +12,7 @@
 
 #include <osg/Camera>
 #include <osg/Node>
+#include <osg/Object>
 #include <osg/Vec3d>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
@@ -31,6 +32,21 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgManipulator::Dragger > >, osgManip
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	I_DeclaringFile("osgManipulator/Dragger");
 	I_BaseType(osgManipulator::Dragger);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
 	I_Method0(const osgManipulator::CompositeDragger *, getComposite,
 	          Properties::VIRTUAL,
 	          __C5_CompositeDragger_P1__getComposite,
@@ -115,6 +131,21 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	I_DeclaringFile("osgManipulator/Dragger");
 	I_BaseType(osgManipulator::Selection);
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the node's library. ",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
+	          "");
 	I_Method1(void, setCommandManager, IN, osgManipulator::CommandManager *, cm,
 	          Properties::VIRTUAL,
 	          __void__setCommandManager__CommandManager_P1,

@@ -565,6 +565,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __void__addArchiveExtension__C5_std_string,
 	          "Add an Archive extension. ",
 	          "");
+	I_Method1(void, registerProtocol, IN, const std::string &, protocol,
+	          Properties::NON_VIRTUAL,
+	          __void__registerProtocol__C5_std_string_R1,
+	          "registers a protocol ",
+	          "");
+	I_Method1(bool, isProtocolRegistered, IN, const std::string &, protocol,
+	          Properties::NON_VIRTUAL,
+	          __bool__isProtocolRegistered__C5_std_string_R1,
+	          "returns true, if named protocol is registered ",
+	          "");
 	I_ProtectedConstructor0(____Registry,
 	                        "constructor is private, as its a singleton, preventing construction other than via the instance() method and therefore ensuring only one copy is ever constructed ",
 	                        "");

@@ -119,6 +119,16 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	          __double__getMinimumZoomScale,
 	          "get the minimum distance (as ratio) the eye point can be zoomed in ",
 	          "");
+	I_Method1(void, setScroolWheelZoomDelta, IN, double, zoomDelta,
+	          Properties::NON_VIRTUAL,
+	          __void__setScroolWheelZoomDelta__double,
+	          "set the mouse scroll wheel zoom delta. ",
+	          "Range -1.0 to +1.0, -ve value inverts wheel direction and zero switches off scroll wheel. ");
+	I_Method0(double, getScroolWheelZoomDelta,
+	          Properties::NON_VIRTUAL,
+	          __double__getScroolWheelZoomDelta,
+	          "get the mouse scroll wheel zoom delta. ",
+	          "");
 	I_Method1(void, setCenter, IN, const osg::Vec3d &, center,
 	          Properties::NON_VIRTUAL,
 	          __void__setCenter__C5_osg_Vec3d_R1,
@@ -234,6 +244,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	I_SimpleProperty(const osg::Quat &, Rotation, 
 	                 __C5_osg_Quat_R1__getRotation, 
 	                 __void__setRotation__C5_osg_Quat_R1);
+	I_SimpleProperty(double, ScroolWheelZoomDelta, 
+	                 __double__getScroolWheelZoomDelta, 
+	                 __void__setScroolWheelZoomDelta__double);
 	I_SimpleProperty(float, TrackballSize, 
 	                 __float__getTrackballSize, 
 	                 __void__setTrackballSize__float);

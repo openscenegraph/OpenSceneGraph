@@ -15,7 +15,7 @@
 #include <osg/OperationThread>
 #include <osg/Stats>
 #include <osgGA/EventVisitor>
-#include <osgUtil/GLObjectsVisitor>
+#include <osgUtil/IncrementalCompileOperation>
 #include <osgUtil/UpdateVisitor>
 #include <osgViewer/ViewerBase>
 

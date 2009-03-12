@@ -124,16 +124,26 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text3D)
 	          __bool__supports__C5_osg_Drawable_ConstAttributeFunctor_R1,
 	          "return true, osgText::Text does support accept(ConstAttributeFunctor&). ",
 	          "");
+	I_Method1(void, accept, IN, osg::Drawable::ConstAttributeFunctor &, af,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_Drawable_ConstAttributeFunctor_R1,
+	          "accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
+	          "");
 	I_Method1(bool, supports, IN, const osg::PrimitiveFunctor &, x,
 	          Properties::VIRTUAL,
 	          __bool__supports__C5_osg_PrimitiveFunctor_R1,
-	          "accept an ConstAttributeFunctor and call its methods to tell it about the interal attributes that this Drawable has. ",
-	          "return true, osgText::Text does support accept(PrimitiveFunctor&) . ");
+	          "return true, osgText::Text does support accept(PrimitiveFunctor&) . ",
+	          "");
+	I_Method1(void, accept, IN, osg::PrimitiveFunctor &, pf,
+	          Properties::VIRTUAL,
+	          __void__accept__osg_PrimitiveFunctor_R1,
+	          "accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has. ",
+	          "");
 	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
 	          Properties::VIRTUAL,
 	          __void__setThreadSafeRefUnref__bool,
-	          "accept a PrimtiveFunctor and call its methods to tell it about the interal primtives that this Drawable has. ",
-	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ");
+	          "Set whether to use a mutex to ensure ref() and unref() are thread safe. ",
+	          "");
 	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
 	          Properties::VIRTUAL,
 	          __void__resizeGLObjectBuffers__unsigned_int,

@@ -22,6 +22,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/HighlightMapGenerator
     ${HEADER_PATH}/IntersectionVisitor
     ${HEADER_PATH}/IntersectVisitor
+    ${HEADER_PATH}/IncrementalCompileOperation
     ${HEADER_PATH}/LineSegmentIntersector
     ${HEADER_PATH}/OperationArrayFunctor
     ${HEADER_PATH}/Optimizer
@@ -62,6 +63,7 @@ ADD_LIBRARY(${LIB_NAME}
     HighlightMapGenerator.cpp
     IntersectionVisitor.cpp
     IntersectVisitor.cpp
+    IncrementalCompileOperation.cpp
     LineSegmentIntersector.cpp
     Optimizer.cpp
     PlaneIntersector.cpp

@@ -33,7 +33,7 @@
 #include <osgDB/fstream>
 #include <osgDB/ReadFile>
 
-#include <osgUtil/GLObjectsVisitor>
+#include <osgUtil/IncrementalCompileOperation>
 
 #include <osgText/FadeText>
 

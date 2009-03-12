@@ -1,0 +1,197 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGUTIL_INCREMENTALCOMPILEOPERATOR
+#define OSGUTIL_INCREMENTALCOMPILEOPERATOR
+
+#include <osgUtil/GLObjectsVisitor>
+
+namespace osgUtil {
+
+class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
+{
+    public:
+
+        IncrementalCompileOperation();
+        
+        /** Set the target frame rate that the IncrementalCompileOperation should assume.
+          * Typically one would set this to the value refresh rate of your display system i.e. 60Hz.
+          * Default value is 100.
+          * Usage notes.  The TargetFrameRate and the MinimumTimeAvailableForGLCompileAndDeletePerFrame
+          * parameters are not directly used by IncrementalCompileOperation, but are should be used as a guide for how
+          * long to set aside per frame for compiling and deleting OpenGL objects. The longer amount of
+          * time to set aside  the faster databases will be paged in but with increased chance of frame drops,
+          * the lower the amount of time the set aside the slower databases will paged it but with better
+          * chance of avoid any frame drops.  The default values are chosen to achieve the later when running
+          * on a modern mid to high end  PC. 
+          * The way to compute the amount of available time use a scheme such as :
+          *    availableTime = maximum(1.0/targetFrameRate - timeTakenDuringUpdateCullAndDraw, minimumTimeAvailableForGLCompileAndDeletePerFrame). 
+          */
+        void setTargetFrameRate(double tfr) { _targetFrameRate = tfr; }
+
+        /** Get the target frame rate that the IncrementalCompileOperation should assume.*/
+        double getTargetFrameRate() const { return _targetFrameRate; }
+        
+        /** Set the minimum amount of time (in seconds) that should be made available for compiling and delete OpenGL objects per frame.
+          * Default value is 0.001 (1 millisecond). 
+          * For usage see notes in setTargetFrameRate.*/
+        void setMinimumTimeAvailableForGLCompileAndDeletePerFrame(double ta) { _minimumTimeAvailableForGLCompileAndDeletePerFrame = ta; }
+
+        /** Get the minimum amount of time that should be made available for compiling and delete OpenGL objects per frame.
+          * For usage see notes in setTargetFrameRate.*/
+        double getMinimumTimeAvailableForGLCompileAndDeletePerFrame() const { return _minimumTimeAvailableForGLCompileAndDeletePerFrame; }
+
+        /** Set the maximum number of OpenGL objects that the page should attempt to compile per frame.
+          * Note, Lower values reduces chances of a frame drop but lower the rate that database will be paged in at.
+          * Default value is 8. */
+        void setMaximumNumOfObjectsToCompilePerFrame(unsigned int num) { _maximumNumOfObjectsToCompilePerFrame = num; }
+
+        /** Get the maximum number of OpenGL objects that the page should attempt to compile per frame.*/
+        unsigned int getMaximumNumOfObjectsToCompilePerFrame() const { return _maximumNumOfObjectsToCompilePerFrame; }
+
+
+        /** FlushTimeRatio governs how much of the spare time in each frame is used for flushing deleted OpenGL objects.
+          * Default value is 0.5, valid range is 0.1 to 0.9.*/
+        void setFlushTimeRatio(double ratio) { _flushTimeRatio = ratio; }
+        double getFlushTimeRatio() const { return _flushTimeRatio; }
+
+        /** ConservativeTimeRatio governs how much of the measured spare time in each frame is used for flushing deleted and compile new OpenGL objects.
+          * Default value is 0.5, valid range is 0.1 to 1.0.
+          * A ratio near 1.0 will lead to paged databases being compiled and merged quicker but increase the chances of frame drop.
+          * A ratio near 0.1 will lead to paged databases being compiled and merged closer but reduse the chances of frame drop.*/
+        void setConservativeTimeRatio(double ratio) { _conservativeTimeRatio = ratio; }
+        double getConservativeTimeRatio() const { return _conservativeTimeRatio; }
+
+
+
+        typedef std::vector<osg::GraphicsContext*> Contexts;
+        void assignContexts(Contexts& contexts);
+        void removeContexts(Contexts& contexts);
+
+        void addGraphicsContext(osg::GraphicsContext* gc);
+        void removeGraphicsContext(osg::GraphicsContext* gc);
+
+
+        /** Merge subgraphs that have been compiled.*/
+        void mergeCompiledSubgraphs();
+
+        virtual void operator () (osg::GraphicsContext* context);
+        
+
+
+        struct CompileData : public osg::Referenced
+        {
+            typedef std::list< osg::ref_ptr<osg::Drawable> > Drawables;
+            typedef std::list< osg::ref_ptr<osg::Texture> >  Textures;
+            typedef std::list< osg::ref_ptr<osg::Program> >  Programs;
+            
+            bool empty() const { return _drawables.empty() && _textures.empty() &&  _programs.empty(); }
+            
+            Drawables   _drawables;
+            Textures    _textures;
+            Programs    _programs;
+        };
+
+        class CompileSet;
+        typedef std::set<osg::GraphicsContext*> ContextSet;
+        typedef std::map<osg::GraphicsContext*, CompileData >  CompileMap;
+        
+        struct CompileCompletedCallback : public osg::Referenced
+        {
+            virtual bool compileCompleted(CompileSet* compileSet) = 0;
+        };
+
+        class CompileSet : public osg::Referenced
+        {
+        public:
+        
+            
+            CompileSet() {}
+            
+            CompileSet(osg::Node*subgraphToCompile):
+                _subgraphToCompile(subgraphToCompile) {}
+
+            CompileSet(osg::Group* attachmentPoint, osg::Node*subgraphToCompile):
+                _attachmentPoint(attachmentPoint),
+                _subgraphToCompile(subgraphToCompile) {}
+        
+            void buildCompileMap(ContextSet& context, GLObjectsVisitor::Mode mode=GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES);
+
+            bool compileCompleted() const
+            {
+                for(CompileMap::const_iterator itr = _compileMap.begin();
+                    itr != _compileMap.end();
+                    ++itr)
+                {
+                    if (!(itr->second.empty())) return false;
+                }
+                return true;
+            }
+
+            osg::ref_ptr<osg::Group>                _attachmentPoint;
+            osg::ref_ptr<osg::Node>                 _subgraphToCompile;
+            osg::ref_ptr<CompileCompletedCallback>  _compileCompletedCallback;
+            CompileMap                              _compileMap;
+            
+        // protected:
+        
+            virtual ~CompileSet() {}
+        };
+        
+        typedef std::list< osg::ref_ptr<CompileSet> >  CompileSets;
+
+
+        /** Add a subgraph to be compiled.*/
+        void add(osg::Node* subgraphToCompile);
+
+        /** Add a subgraph to be compiled and add automatically to attachPoint on call to mergeCompiledSubgraphs.*/
+        void add(osg::Group* attachmentPoint, osg::Node* subgraphToCompile);
+
+        /** Add a CompileSet to be compiled.*/
+        void add(CompileSet* compileSet, bool callBuildCompileMap=true);
+
+
+        OpenThreads::Mutex* getToCompiledMutex() { return &_toCompileMutex; }
+        CompileSets& getToCompile() { return _compiled; }
+        
+        OpenThreads::Mutex* getCompiledMutex() { return &_compiledMutex; }
+        CompileSets& getCompiled() { return _compiled; }
+
+    protected:
+
+        virtual ~IncrementalCompileOperation();
+        
+        // forward declare to keep within class namespace
+        class CollectStateToCompile;
+    
+        double              _targetFrameRate;
+        double              _minimumTimeAvailableForGLCompileAndDeletePerFrame;
+        unsigned int        _maximumNumOfObjectsToCompilePerFrame;
+        double              _flushTimeRatio;
+        double              _conservativeTimeRatio;
+
+        OpenThreads::Mutex  _toCompileMutex;
+        CompileSets         _toCompile;
+        
+        OpenThreads::Mutex  _compiledMutex;
+        CompileSets         _compiled;
+        
+        ContextSet          _contexts;
+
+};
+
+
+}
+
+#endif
+

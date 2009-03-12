@@ -32,24 +32,24 @@ class ReentrantMutex : public OpenThreads::Mutex
 
         virtual int lock()
         {
-            if (_threadHoldingMutex==OpenThreads::Thread::CurrentThread() && _lockCount>0)
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_lockCountMutex);
-                ++_lockCount;
-                return 0;
-            }
-            else
-            {
-                int result = Mutex::lock();
-                if (result==0)
+                if (_threadHoldingMutex==OpenThreads::Thread::CurrentThread() && _lockCount>0)
                 {
-                    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_lockCountMutex);
-
-                    _threadHoldingMutex = OpenThreads::Thread::CurrentThread();
-                    _lockCount = 1;
+                    ++_lockCount;
+                    return 0;
                 }
-                return result;
             }
+
+            int result = Mutex::lock();
+            if (result==0)
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_lockCountMutex);
+
+                _threadHoldingMutex = OpenThreads::Thread::CurrentThread();
+                _lockCount = 1;
+            }
+            return result;
         }
 
 
@@ -87,24 +87,24 @@ class ReentrantMutex : public OpenThreads::Mutex
 
         virtual int trylock()
         {
-            if (_threadHoldingMutex==OpenThreads::Thread::CurrentThread() && _lockCount>0)
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_lockCountMutex);
-                ++_lockCount;
-                return 0;
-            }
-            else
-            {
-                int result = Mutex::trylock();
-                if (result==0)
+                if (_threadHoldingMutex==OpenThreads::Thread::CurrentThread() && _lockCount>0)
                 {
-                    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_lockCountMutex);
-
-                    _threadHoldingMutex = OpenThreads::Thread::CurrentThread();
-                    _lockCount = 1;
+                    ++_lockCount;
+                    return 0;
                 }
-                return result;
             }
+
+            int result = Mutex::trylock();
+            if (result==0)
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_lockCountMutex);
+
+                _threadHoldingMutex = OpenThreads::Thread::CurrentThread();
+                _lockCount = 1;
+            }
+            return result;
         }
 
     private:

@@ -50,11 +50,6 @@
 
 #endif
     
-    /** constructs an FSSpec out of an path */
-     OSStatus MakeFSSpecFromPath(const char* path, FSSpec* spec);
-    
-    /** opens a movie from a path */
-      OSStatus MakeMovieFromPath(const char* path, Movie* movie, short& resref);
 
 
 #endif

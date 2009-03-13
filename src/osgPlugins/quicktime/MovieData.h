@@ -99,7 +99,6 @@
             
         protected:
             char*           _pointer;
-            short           _resref;
             Movie           _movie;
             GWorldPtr       _gw;
             

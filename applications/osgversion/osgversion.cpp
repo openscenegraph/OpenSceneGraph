@@ -391,6 +391,12 @@ std::string typoCorrection(const std::string& name)
 
 void nameCorrection(NamePair& name)
 {
+    if (name.first=="Mick" && name.second=="")
+    {
+        name.first = "Maik";
+        name.second = "Keller";
+    }
+    
     if (name.first=="Gary" && name.second=="Quin")
     {
         name.first = "Gary";

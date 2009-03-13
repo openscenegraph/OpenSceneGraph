@@ -37,7 +37,7 @@ struct GeometryFinder : public osg::NodeVisitor
     {
         if (_geom.valid())
             return;
-        for (int i = 0; i < geode.getNumDrawables(); i++) 
+        for (unsigned int i = 0; i < geode.getNumDrawables(); i++) 
         {
             osg::Geometry* geom = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
             if (geom) {

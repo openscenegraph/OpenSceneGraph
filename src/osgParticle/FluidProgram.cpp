@@ -40,11 +40,11 @@ void osgParticle::FluidProgram::execute(double dt)
             osg::Vec3 wind_force = - relative_wind * Area * (_viscosityCoefficient + _densityCoefficient*relative_wind.length());
             osg::Vec3 wind_accel = wind_force * particle->getMassInv();
 
-            double critical_dt2 = relative_wind.length2()/wind_accel.length2();
             double compenstated_dt = dt;
-            if (critical_dt2 < dt*dt)
+            if (relative_wind.length2() < dt*dt*wind_accel.length2())
             {
                 // osg::notify(osg::NOTICE)<<"** Could be critical: dt="<<dt<<" critical_dt="<<sqrtf(critical_dt2)<<std::endl;
+                double critical_dt2 = relative_wind.length2()/wind_accel.length2();
                 compenstated_dt = sqrtf(critical_dt2)*0.8f;
             }
 

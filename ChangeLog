@@ -1,3 +1,1025 @@
+2009-03-13 11:06  robert
+
+	* examples/osganimationmorph/osganimationmorph.cpp,
+	  examples/osgmovie/osgmovie.cpp: Warning fixes
+
+2009-03-13 11:01  robert
+
+	* src/osgParticle/FluidProgram.cpp: Fixed for division by zero
+	  issue.
+
+2009-03-13 10:40  robert
+
+	* src/osgPlugins/glsl/ReaderWriterGLSL.cpp: From Bryan Thrall, "The
+	  attached ReaderWriterGLSL.cpp conveniently sets the shader type
+	  when
+	  the filename extension is "vert" or "frag" but still lets this be
+	  overridden by the Options (for those crazy people who store their
+	  fragment shaders in .vert files :) )."
+
+2009-03-12 17:54  robert
+
+	* src/osgDB/CMakeLists.txt: From Frank Midgley, "I tried running
+	  osgconv --formats yesterday on OS X and got no results. Turns out
+	  the changes discussed in the "osgDB::listAllAvailablePlugins
+	  win32 fix" thread back in Sep '08 broke this. The
+	  OSG_PLUGIN_EXTENSION macro is being defined in
+	  src/osgDB/CMakeLists.txt from CMAKE_SHARED_LIBRARY_SUFFIX which
+	  is "dylib" on OS X. The problem is that all of the plug-ins are
+	  setup in OsgMacroUtils.cmake with:
+	  
+	  ADD_LIBRARY(${TARGET_TARGETNAME} MODULE ${TARGET_SRC}
+	  ${TARGET_H})
+	  
+	  which gives them .so extensions. Since ".so" != ".dylib"
+	  osgDB::listAllAvailablePlugins finds no plug-ins. I believe the
+	  correct solution is to use CMAKE_SHARED_MODULE_SUFFIX instead.
+	  This builds and runs correctly on OS X but I have not tested on
+	  other platforms.
+	  
+	  Attached is an updated src/osgDB/CMakeLists.txt based on rev
+	  9915. The change is at line 108. To validate: build and then run
+	  bin/osgconv --formats. You should get many screenfuls of plug-in
+	  features, extensions and options."
+
+2009-03-12 17:47  robert
+
+	* src/osgUtil/Optimizer.cpp: From Konstantin Sinitsyn, "At this
+	  moment, I just introducing to OSG. When I reviewing optimizer
+	  code, I find a mistake in
+	  Optimizer::RemoveLoadedProxyNodesVisitor, as it seems. This
+	  optimizer removes proxy nodes that fully loaded and in some cases
+	  attach their childs to parrents directly (without creating of
+	  group). I dont understand how this works, because if proxy node
+	  doesn't have any attributes such as name, description, node mask
+	  and any callbacks, then new group does not created to hold proxy
+	  node childs. And code below trying to attach their children to
+	  all parents but seems like only first child beeing attached to
+	  all parents correctly.
+	  
+	  "
+
+2009-03-12 17:26  robert
+
+	* src/osg/GraphicsThread.cpp: Introduced a releaseAllOperation
+	  after completeion of OperationThread::run() to enable CUDA
+	  integration (in osgCuda) to be able to free up its resources.
+	  Code drawn from a submission from Mick.
+
+2009-03-12 17:12  robert
+
+	* src/osgWrappers/Doxyfile.template,
+	  src/osgWrappers/osg/AudioStream.cpp,
+	  src/osgWrappers/osg/GraphicsContext.cpp,
+	  src/osgWrappers/osg/Image.cpp,
+	  src/osgWrappers/osg/ImageStream.cpp,
+	  src/osgWrappers/osg/Texture.cpp,
+	  src/osgWrappers/osgDB/PluginQuery.cpp,
+	  src/osgWrappers/osgDB/ReaderWriter.cpp,
+	  src/osgWrappers/osgDB/Registry.cpp,
+	  src/osgWrappers/osgGA/TrackballManipulator.cpp,
+	  src/osgWrappers/osgManipulator/Dragger.cpp,
+	  src/osgWrappers/osgManipulator/RotateCylinderDragger.cpp,
+	  src/osgWrappers/osgManipulator/RotateSphereDragger.cpp,
+	  src/osgWrappers/osgManipulator/Scale1DDragger.cpp,
+	  src/osgWrappers/osgManipulator/Scale2DDragger.cpp,
+	  src/osgWrappers/osgManipulator/ScaleAxisDragger.cpp,
+	  src/osgWrappers/osgManipulator/Selection.cpp,
+	  src/osgWrappers/osgManipulator/TabBoxDragger.cpp,
+	  src/osgWrappers/osgManipulator/TabPlaneDragger.cpp,
+	  src/osgWrappers/osgManipulator/TabPlaneTrackballDragger.cpp,
+	  src/osgWrappers/osgManipulator/TrackballDragger.cpp,
+	  src/osgWrappers/osgManipulator/Translate1DDragger.cpp,
+	  src/osgWrappers/osgManipulator/Translate2DDragger.cpp,
+	  src/osgWrappers/osgManipulator/TranslateAxisDragger.cpp,
+	  src/osgWrappers/osgManipulator/TranslatePlaneDragger.cpp,
+	  src/osgWrappers/osgText/Font3D.cpp,
+	  src/osgWrappers/osgText/Text3D.cpp,
+	  src/osgWrappers/osgUtil/GLObjectsVisitor.cpp,
+	  src/osgWrappers/osgUtil/Optimizer.cpp,
+	  src/osgWrappers/osgUtil/Statistics.cpp,
+	  src/osgWrappers/osgViewer/View.cpp,
+	  src/osgWrappers/osgViewer/ViewerBase.cpp: Updated wrappers
+
+2009-03-12 15:21  robert
+
+	* examples/osgterrain/osgterrain.cpp,
+	  include/osgUtil/GLObjectsVisitor,
+	  include/osgUtil/IncrementalCompileOperation,
+	  include/osgViewer/ViewerBase, src/osgUtil/CMakeLists.txt,
+	  src/osgUtil/GLObjectsVisitor.cpp,
+	  src/osgUtil/IncrementalCompileOperation.cpp,
+	  src/osgUtil/RenderBin.cpp: Moved IncrementalCompileOperation out
+	  of include-src/osgUtil/GLObjectVisitor into their own files.
+	  
+	  Added support to IncrementCompileOperation for controlling how
+	  much time is alloted to compilation and flush
+
+2009-03-12 15:18  robert
+
+	* include/osg/GraphicsContext, src/osg/GraphicsContext.cpp: Added
+	  support for tracking the time since the last clear() call to
+	  enable other
+	  classes to be able to find out how long the current graphics
+	  frame has been running.
+
+2009-03-12 10:12  robert
+
+	* include/OpenThreads/ReentrantMutex: From Michael Platings, "I've
+	  been looking at the discussion from 2006 ("[osg-users]
+	  osgDB/Reentrant Mutex not threadsafe ?") about this, and having
+	  looked closely at OpenThreads::ReentrantMutex it's still not
+	  thread safe in the following situation:
+	  
+	  In my example case, there are 2 threads - one is a worker thread
+	  created by OpenThreads::Thread. The other thread is the main
+	  thread i.e. the thread that is intrinsically created when you
+	  execute the application. The crucial problem is that for the main
+	  thread, OpenThreads::Thread::CurrentThread() will return null.
+	  
+	  I'll demonstrate this by breaking ReentrantMutex::lock() into
+	  sub-statements:
+	  
+	  1.) if
+	  (_threadHoldingMutex==OpenThreads::Thread::CurrentThread())
+	  
+	  2.) if (_lockCount>0){
+	  
+	  3.)
+	  OpenThreads::ScopedLock<OpenThreads::Mutex>
+	  lock(_lockCountMutex);
+	  ++_lockCount;
+	  return 0;
+	  
+	  4.)
+	  int result = Mutex::lock();
+	  if (result==0)
+	  {
+	  OpenThreads::ScopedLock<OpenThreads::Mutex>
+	  lock(_lockCountMutex);
+	  
+	  5.)
+	  _threadHoldingMutex = OpenThreads::Thread::CurrentThread();
+	  _lockCount = 1;
+	  return result;
+	  
+	  
+	  An error will occur in the following case:
+	  1) The worker thread calls lock(), it gets to the start of
+	  statement 5.
+	  2) The main thread calls lock(). Statement 1 is evaluated as true
+	  as _threadHoldingMutex is null, and
+	  OpenThreads::Thread::CurrentThread() returns null.
+	  3) The worker thread executes statement 5.
+	  4) The main thread executes statement 2 and evaluates it as true,
+	  because the worker thread has set _lockCount to 1. The main
+	  thread executes statement 3, and now can access the mutexed-data
+	  at the same time as the worker thread!
+	  
+	  The simple solution to this is to always protect access to
+	  _lockCount and _threadHoldingMutex using _lockCountMutex. I have
+	  done this in the file I am submitting."
+
+2009-03-11 18:13  robert
+
+	* examples/osgmovie/osgmovie.cpp: Changed audio playing so that it
+	  only happens for a single movie to avoid
+	  problems with audio stalling.
+
+2009-03-11 17:57  robert
+
+	* examples/osgmovie/osgmovie.cpp, include/osg/Image: Added docs on
+	  getPixelAspectRatio and corrected usage of getPixelAspection in
+	  osgmovie.cpp
+
+2009-03-11 17:39  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.cpp: changed debug info
+	  to output to INFO instaed of NOTICE.
+
+2009-03-11 15:43  robert
+
+	* examples/osgmovie/osgmovie.cpp: Added handling of
+	  Image::isImageTranslucent(), when it is enabling blending.
+	  Added handling of Image::getPixelAspectRatio() in geometry
+	  sizing.
+	  Added scaling of the projection matrix to ensure that aspect
+	  ratio is honoured with running in fullscreen mode
+
+2009-03-11 15:12  robert
+
+	* include/osg/AudioStream, include/osg/Image,
+	  include/osg/ImageStream, src/osg/Image.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegAudioStream.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegAudioStream.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.hpp: From Tanguy Fautre,
+	  
+	  Clean up of the FFmpeg plugin's class API/AudioStream API.
+	  Implementation of isImageTransparent().
+	  Implementation of Image:g/setPixelAspectRatio()
+
+2009-03-11 14:18  robert
+
+	* include/osgViewer/View, src/osgViewer/View.cpp: Added
+	  View::removeEventHandler(..) method and added check into
+	  addEventHandler() to prevent handlers being added twice.
+
+2009-03-11 14:08  robert
+
+	* CMakeLists.txt: From Philip Lowman, "At a cost of bumping the
+	  required version to CMake 2.4.4 (released all the way back on
+	  November 21, 2006)... this cmake script patch
+	  
+	  1. Makes IF/ELSE/ENDIF code blocks easier to read by replacing
+	  code like this:
+	  
+	  IF(FOO)
+	  MESSAGE("FOO is true")
+	  ELSE(FOO)
+	  MESSAGE(" ??? ELSE(FOO)??? ")
+	  ENDIF(FOO)
+	  
+	  with this:
+	  
+	  IF(FOO)
+	  MESSAGE("FOO is true")
+	  ELSE()
+	  MESSAGE("FOO is clearly false")
+	  ENDIF()
+	  
+	  2. Also adds an ELSEIF() where it makes sense to do so (safe to
+	  use as of CMake 2.4.4)"
+
+2009-03-11 13:27  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp: From Neil Hughes, "I've
+	  spent the past four days playing with PNG files on 3DS objects,
+	  and I think I may have come across a small issue with the 3DS
+	  loader.
+	  
+	  At the company where I work we model literally thousands of 3DS
+	  models for all types of objects. Most don't have transparent
+	  textures applied to them, but a few do. The issue is that a
+	  texture may have an alpha channel defined, yet its 3DS material
+	  definition is not marked as being an alpha source, or
+	  transparent. This can happen for any number of modelling reasons
+	  (so I'm told) but the net effect is that when a 3DS object is
+	  loaded with such a material applied, the stateset creation for
+	  the 3DS geometry omits to add the GL_BLEND attribute as neither
+	  of the conditions that it currently tests for are satisfied under
+	  this scenario.
+	  
+	  However, one thing that is apparently an indication of
+	  transparency/alpha information that we do make use of when
+	  modelling, but that the 3DS reader omits to test, is that we
+	  assign to the transparent texture to the opacity_map of the 3DS
+	  material structure.
+	  
+	  Now, having discussed with our modellers the theory behind the
+	  opacity map, it seems that it is safe to say that if an opacity
+	  map is specified, then the reader should really apply the
+	  GL_BLEND attribute as it is an indication of some form of
+	  blending being required between materials.
+	  
+	  With this in mind, I have made a minor change to the function
+	  createStateSet below, from the ReaderWriter3DS.cpp file, that
+	  checks for an opacity map having been specified, and in such a
+	  scenario the GL_BLEND attribute is applied to the geometry. This
+	  fixed our issue, and thought it might be helpful to others."
+
+2009-03-11 13:08  robert
+
+	* include/osg/Texture: From Mathias Froehlich, "small addition to
+	  osg::Texture to include all possible depth test variants for
+	  the shadow depth comparison."
+
+2009-03-11 12:55  robert
+
+	* include/osgViewer/api/Carbon/GraphicsWindowCarbon,
+	  include/osgViewer/api/Carbon/PixelBufferCarbon: From Stephan
+	  Huber, files were are missed by Robert in check in of changes to
+	  GraphicsWindowCarbon.cpp
+
+2009-03-11 12:08  robert
+
+	* src/osgUtil/Optimizer.cpp: From Lionel Lagarde, "the attachment
+	  contains a correction of the Optimizer::MergeGeometryVisitor.
+	  When 2 geometries are merged, the primitive sets of the second
+	  geometry
+	  are copied to the first geometry.
+	  
+	  The primitive sets were copied with a std::insert into the first
+	  geometry
+	  primitive set vector. It doesn't work when the geometry is using
+	  VBOs (because
+	  the element buffer object of the primitive set is not updated).
+	  
+	  The correction replaces
+	  
+	  lhs.getPrimitiveSetList().insert(
+	  lhs.getPrimitiveSetList().end(),
+	  rhs.getPrimitiveSetList().begin(),
+	  rhs.getPrimitiveSetList().end() );
+	  
+	  by
+	  for( primItr=rhs.getPrimitiveSetList().begin();
+	  primItr!=rhs.getPrimitiveSetList().end();
+	  ++primItr )
+	  {
+	  lhs.addPrimitiveSet(primItr->get());
+	  }"
+
+2009-03-11 11:58  robert
+
+	* src/osg/Geometry.cpp: Fixed crash due to
+	  Geometry::copyToAndOptimize(..) not handling cases where indices
+	  are present, but no arrays are assocaited with them.
+
+2009-03-11 11:29  robert
+
+	* include/osgManipulator/Dragger,
+	  include/osgManipulator/RotateCylinderDragger,
+	  include/osgManipulator/RotateSphereDragger,
+	  include/osgManipulator/Scale1DDragger,
+	  include/osgManipulator/Scale2DDragger,
+	  include/osgManipulator/ScaleAxisDragger,
+	  include/osgManipulator/Selection,
+	  include/osgManipulator/TabBoxDragger,
+	  include/osgManipulator/TabPlaneDragger,
+	  include/osgManipulator/TabPlaneTrackballDragger,
+	  include/osgManipulator/TrackballDragger,
+	  include/osgManipulator/Translate1DDragger,
+	  include/osgManipulator/Translate2DDragger,
+	  include/osgManipulator/TranslateAxisDragger,
+	  include/osgManipulator/TranslatePlaneDragger: From David Callu,
+	  "osgManipulator Object have not META_Object macro call in class
+	  definition.
+	  > I add META_OSGMANIPULATOR_Object macro which define className,
+	  libraryName,
+	  > isSameKindAs methods.
+	  > Clone method is not appropriate for osgManipulator Object."
+
+2009-03-11 11:00  robert
+
+	* src/osg/Drawable.cpp, src/osg/Node.cpp: From Lionel Lagarde, "The
+	  copy constructor of the nodes and the drawables do :
+	  
+	  Node::Node(Node &node, copyop) :
+	  _stateSet(copyop(node.getStateSet()),
+	  
+	  It doesn't call the setStateSet method of osg::Node (or
+	  osg::Drawable). So the parent
+	  list of the state set is not updated with the new node
+	  (drawable)."
+
+2009-03-11 10:50  robert
+
+	* include/osgGA/TrackballManipulator,
+	  src/osgGA/TrackballManipulator.cpp: From Martin Beckett, added
+	  get/setScrollWheelZoomDelta() support for controlling the mouse
+	  scroll wheel zoom delta.
+
+2009-03-11 10:34  robert
+
+	* src/osgViewer/DarwinUtils.h, src/osgViewer/DarwinUtils.mm,
+	  src/osgViewer/GraphicsWindowCocoa.mm: Converted tabs to four
+	  spaces
+
+2009-03-11 10:34  robert
+
+	* src/osgViewer/GraphicsWindowCarbon.cpp: From Stephan Huber,
+	  "refactored the code and moved
+	  some stuff out into DarwinUtils.h/.mm so both implementations can
+	  share
+	  some of the code. There's even a bugfix for GraphicsWindowCarbon,
+	  which
+	  fixes some issues with multiple windows on different screens."
+
+2009-03-10 17:51  robert
+
+	* src/osg/Referenced.cpp: From Mathias Froehlich, "an other topic
+	  pointed out by some Microsoft verification tool:
+	  On destruction of some static variables, the global referenced
+	  mutex is used
+	  to lock access to the parent lists of state attributes, nodes and
+	  so on.
+	  This even happens past the mutex is already destroyed.
+	  
+	  This change to Referenced.cpp revision 9851 uses the same
+	  technique like the
+	  DeleteHandlerPointer already in Referenced.cpp to return an zero
+	  pointer for
+	  the global referenced lock if it is already destroyed."
+
+2009-03-10 17:47  robert
+
+	* src/osgViewer/View.cpp: From Konstantin Matveyev, submitted by
+	  Valery Bickov:
+	  
+	  "There is error in WoW shader, you can see it by this simple
+	  example:
+	  osgviewer cessna.osg --wowvx-42 --clear-color 0,0,0
+	  
+	  Clear color may be choosed any with at least one component equals
+	  to 0
+	  or 1. In my case I see weird blinking between normal image and
+	  image
+	  with depth map at right side on the screen."
+
+2009-03-10 17:39  robert
+
+	* src/osgGA/TrackballManipulator.cpp: From Martin Beckett,
+	  "Modified osgGA::TrackballManipulator so that
+	  osgGA::GUIEventAdapter::SCROLL performs a zoom.
+	  Arbitrarily zooms 10% in/out for each click."
+	  
+	  Note from Robert Osfield, flipped the orienation of the zoom to
+	  make the right mouse key zoom and the scroll wheel work in the
+	  same direction.
+
+2009-03-10 17:27  robert
+
+	* include/osgDB/ReaderWriter, src/osgDB/ReaderWriter.cpp,
+	  src/osgPlugins/OpenFlight/ReaderWriterFLT.cpp,
+	  src/osgPlugins/gdal/ReaderWriterGDAL.cpp,
+	  src/osgPlugins/gecko/ReaderWriterUBrowser.cpp,
+	  src/osgPlugins/gecko/UBrowser.cpp,
+	  src/osgPlugins/ogr/ReaderWriterOGR.cpp,
+	  src/osgPlugins/stl/ReaderWriterSTL.cpp,
+	  src/osgWidget/Browser.cpp: Completed support for automatic
+	  detection of plugin features.
+	  
+	  Cleaned up debug out of various plugins to ensure a clean osgconv
+	  --formats.
+
+2009-03-10 17:13  robert
+
+	* src/osgPlugins/dicom/ReaderWriterDICOM.cpp: quitened down debug
+	  info
+
+2009-03-10 16:52  robert
+
+	* include/osg/Image: Made bool isImageTranslucent() const virtual
+	  to allow subclasses to provide their own implementation
+
+2009-03-10 15:00  robert
+
+	* include/osgDB/PluginQuery, include/osgDB/ReaderWriter,
+	  src/osgDB/PluginQuery.cpp, src/osgDB/ReaderWriter.cpp: From Ralf
+	  Habacker, "The appended patch fixes this issue by adding a
+	  virtual method named supportedFeatures() to the class
+	  ReaderWriter, which could be overriden by a specific plugin to
+	  adjust the set of features.
+	  Single features are implemented as bits asother enums in
+	  ReaderWriter class already does, so that combinations are
+	  possible and fast comparison operations are possible
+	  
+	  By default all features are enabled.
+	  
+	  I have added this virtual method to the dot plugin to get an idea
+	  how to use these features.
+	  
+	  With this patch osgconv --formats shows an additional line
+	  'features' for each plugin"
+
+2009-03-10 14:15  robert
+
+	* include/osg/Geometry, include/osgUtil/Optimizer,
+	  include/osgUtil/Statistics, src/osgUtil/Optimizer.cpp,
+	  src/osgUtil/Statistics.cpp, src/osgViewer/ViewerBase.cpp: From
+	  Roland Smeenk, "While working on the Collada plugin I noticed
+	  that all geometry created by the dae reader result in slow path
+	  geometry.
+	  Because there already exists the option to convert slow path
+	  geometry to the fast path by computing an internal fast path
+	  alternative, I added a new optimizer option that automatically
+	  does this. To check the results I also made some changes to the
+	  statistics gathering and rendering.
+	  
+	  Somewhat unrelated, but also part of the optimizer I disabled
+	  removal of CameraView nodes during RemoveRedundantNodes
+	  optimization.
+	  As discussed on the ML, CameraViews were removed from the
+	  scenegraph. This solves that issue.
+	  
+	  Summary:
+	  -Geometry::areFastPathsUsed now also looks at
+	  internalOptimizedGeometry
+	  -Added Optimize option to make all slow path geometry compute
+	  their internal fast path alternative
+	  -Added fast geometry counter to the statistics
+	  -Disabled removel of CameraViews in optimizer
+	  "
+
+2009-03-10 13:46  robert
+
+	* src/osgPlugins/ffmpeg/ReaderWriterFFmpeg.cpp: Added copyright +
+	  fixed typo
+
+2009-03-10 12:21  robert
+
+	* include/osgDB/FileNameUtils, include/osgDB/Registry,
+	  src/osgDB/FileNameUtils.cpp, src/osgDB/ReaderWriter.cpp,
+	  src/osgDB/Registry.cpp: From Stephan Huber,
+	  "Attached you'll find a proposal for using different
+	  protocols. The idea behind the new code is:
+	  
+	  1.) plugins/apps register protocols which they can handle. This
+	  is done
+	  via osgDB::Registry::registerProtocol(aProtocolName). Plugins
+	  register
+	  supported protocols as usual via
+	  ReaderWriter::supportsProtocol(..), the
+	  Registry is updated accordingly.
+	  
+	  2.) osgDB::containsServerAddress checks first for an appearance
+	  of "://"
+	  in the filename and then checks the protocol against the set of
+	  registered protocols via
+	  Registry::isProtocolRegistered(aProtocollName)
+	  
+	  3.) the other getServer*-functions changed as well, there's even
+	  a
+	  getServerProtocol-function
+	  
+	  
+	  With these changes filenames/Urls get routed to loaded plugins
+	  even with
+	  different protocols than 'http'."
+
+2009-03-10 11:14  robert
+
+	* include/osg/GLU, include/osg/Math: From Martin Spott, compile
+	  fixes for IBM AIX.
+
+2009-03-10 10:56  robert
+
+	* include/osgText/Font3D, include/osgText/Text3D,
+	  src/osgDB/Registry.cpp,
+	  src/osgPlugins/freetype/FreeTypeFont3D.cpp,
+	  src/osgPlugins/freetype/ReaderWriterFreeType.cpp,
+	  src/osgText/Font3D.cpp, src/osgText/Text3D.cpp: From David Callu,
+	  "Problem:
+	  osgText::Text and osgText::Text3D use the same font file.
+	  The first really load the file and obtain an osgText::Font
+	  object,
+	  the second use the cache created during the first load of the
+	  font file, and so obtain an osgText::Font object instead of
+	  osgText::Font3D object. To obtain an osgText::Font3D object,
+	  osgText::Text3D call osgDB::readObjectFile(...) with an option
+	  to specify the plugin we want an osgText::Font3D instead of
+	  osgText::Font.
+	  
+	  Generalised Problem:
+	  In osgDB::Registry, loaded file cache is referenced by the name
+	  of this file, so if I load a file with some options, and the
+	  cache
+	  already contain object for this filename, I obtain an object
+	  potentially not loaded with my options.
+	  
+	  Behaviours:
+	  Cache management is delegate to osgDB::Registry, but cache
+	  coherence (load a file with option then reuse it, deactivate the
+	  cache when load a specific file or don't cached the loaded file)
+	  is user's responsibility.
+	  
+	  Text3D solution:
+	  Postfix the font file name by .text3d or something similar and
+	  then have the freetype plugin return
+	  osgText::Font3D when it detects this.
+	  This operation is done by osgText::readFont3DFile() which unsure
+	  the filename have .text3d as extension.
+	  This is totaly transparent for user, and backward compatible.
+	  
+	  
+	  BTW, I fix the bug about the Normal of 3D text. Currently, the
+	  front and wall face have
+	  the same normal (0,0,1) in the Text3D object coordinate. Now the
+	  wall face have its own
+	  normal array computed by the plugin.
+	  
+	  BTW 2, I implement
+	  - void Text3D::accept(osg::Drawable::ConstAttributeFunctor& af)
+	  const
+	  - void Text3D::accept(osg::PrimitiveFunctor& pf) const
+	  so now statistics are well reported.
+	  "
+
+2009-03-10 10:30  robert
+
+	* src/osgDB/CMakeLists.txt, src/osgDB/Registry.cpp,
+	  src/osgPlugins/CMakeLists.txt, src/osgPlugins/imageio,
+	  src/osgPlugins/imageio/CMakeLists.txt,
+	  src/osgPlugins/imageio/ReaderWriterImageIO.cpp: From Eric Wing
+	  and Stephan Huber, ImageIO code originally wrote by Eric Wing,
+	  and then later conveted into an OSG plugin by Stephan Huber.
+
+2009-03-10 10:13  robert
+
+	* include/osgViewer/api/Cocoa,
+	  include/osgViewer/api/Cocoa/GraphicsWindowCocoa,
+	  include/osgViewer/api/Cocoa/PixelBufferCocoa,
+	  src/osgViewer/CMakeLists.txt, src/osgViewer/DarwinUtils.h,
+	  src/osgViewer/DarwinUtils.mm,
+	  src/osgViewer/GraphicsWindowCocoa.mm,
+	  src/osgViewer/PixelBufferCocoa.mm: From Stephan Huber, support
+	  for Cocoa windowing under OSX.
+
+2009-03-09 23:11  robert
+
+	* include/osgAnimation/Timeline, src/osgWrappers/CMakeLists.txt,
+	  src/osgWrappers/genwrapper.conf,
+	  src/osgWrappers/osgAnimation/Animation.cpp,
+	  src/osgWrappers/osgAnimation/Channel.cpp,
+	  src/osgWrappers/osgAnimation/CubicBezier.cpp,
+	  src/osgWrappers/osgAnimation/Interpolator.cpp,
+	  src/osgWrappers/osgAnimation/Keyframe.cpp,
+	  src/osgWrappers/osgAnimation/MorphGeometry.cpp,
+	  src/osgWrappers/osgAnimation/Target.cpp,
+	  src/osgWrappers/osgAnimation/Timeline.cpp: Fixed osgWrappers for
+	  osgAnimation library
+
+2009-03-09 17:38  robert
+
+	* examples/CMakeLists.txt, examples/osganimationmorph,
+	  examples/osganimationmorph/CMakeLists.txt,
+	  examples/osganimationmorph/osganimationmorph.cpp,
+	  include/osgAnimation/Animation, include/osgAnimation/CubicBezier,
+	  include/osgAnimation/Keyframe, include/osgAnimation/LinkVisitor,
+	  include/osgAnimation/MorphGeometry,
+	  include/osgAnimation/Skeleton,
+	  src/osgAnimation/AnimationManagerBase.cpp,
+	  src/osgAnimation/BasicAnimationManager.cpp,
+	  src/osgAnimation/Bone.cpp, src/osgAnimation/CMakeLists.txt,
+	  src/osgAnimation/MorphGeometry.cpp,
+	  src/osgAnimation/Skeleton.cpp,
+	  src/osgPlugins/osgAnimation/ReaderWriter.cpp: From Roland Smeenk
+	  & Cedric Pinson,
+	  
+	  "Summary of changes:
+	  From Roland
+	  -Added MorphGeometry
+	  -Bone Bindmatrix is only calculated if needed
+	  -osgAnimation plugin now supports all available channel types
+	  (before only linear vec3 or quat channels)
+	  -osgAnimation plugin now supports MorphGeometry
+	  -osgAnimation plugin now supports animation and channel weights,
+	  animation playmode, duration and starttime
+	  -removed osgAnimationManager.cpp from CMakeList
+	  
+	  From Cedric
+	  -fixed the last_update field (it was only updated at the first
+	  update) in BasicAnimationManager.cpp
+	  - Refactore some part of MorphGeometry minor changes
+	  - Add osganimationmorph as example
+	  "
+
+2009-03-09 16:53  robert
+
+	* include/osgUtil/GLObjectsVisitor,
+	  src/osgWrappers/osgUtil/GLObjectsVisitor.cpp: Tweaked API to get
+	  wrappers to build
+
+2009-03-09 16:17  robert
+
+	* src/osgUtil/GLObjectsVisitor.cpp,
+	  src/osgWrappers/osgUtil/GLObjectsVisitor.cpp,
+	  src/osgWrappers/osgViewer/ViewerBase.cpp: Updated wrappers
+
+2009-03-09 14:56  robert
+
+	* include/osgUtil/GLObjectsVisitor,
+	  src/osgUtil/GLObjectsVisitor.cpp: Further work on
+	  IncrementalCompileOperation
+
+2009-03-08 16:48  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoder.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoder.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.cpp: Fixed thread exit
+	  problems
+
+2009-03-08 12:00  robert
+
+	* examples/osgterrain/osgterrain.cpp,
+	  include/osgUtil/GLObjectsVisitor, include/osgViewer/ViewerBase,
+	  src/osg/GraphicsContext.cpp, src/osgUtil/GLObjectsVisitor.cpp,
+	  src/osgViewer/CompositeViewer.cpp, src/osgViewer/Viewer.cpp,
+	  src/osgViewer/ViewerBase.cpp: Preliminary work on general purpose
+	  incremental compile support in osgViewer.
+
+2009-03-05 15:31  robert
+
+	* CMakeLists.txt, include/osg/Version,
+	  src/osgWrappers/osg/AudioStream.cpp,
+	  src/osgWrappers/osg/ImageStream.cpp: Updated wrappers and dev
+	  release version numbers
+
+2009-03-05 14:33  robert
+
+	* CMakeModules/FindFFmpeg.cmake: Cleaned up FindFFmpeg.cmake
+
+2009-03-05 10:57  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoder.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegHeaders.hpp,
+	  src/osgPlugins/ffmpeg/ReaderWriterFFmpeg.cpp: Added quick proof
+	  of concept for live video streaming under linux
+
+2009-03-04 16:35  robert
+
+	* CMakeModules/FindFFmpeg.cmake: Added search for headers in ffmpeg
+	  directory
+
+2009-03-04 16:16  robert
+
+	* CMakeModules/FindFFmpeg.cmake: From Jean-Sebastien Guay, added
+	  non pkg-config based ffmpeg search scheme.
+
+2009-03-04 16:15  robert
+
+	* include/osg/Referenced: Fixed indentation
+
+2009-03-04 16:03  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderAudio.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.cpp: Removed boost
+	  reference and cleaned up debug output
+
+2009-03-04 14:49  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.cpp: Introduced double
+	  buffering of video stream to avoid tearing of image.
+	  
+	  Removed swapBufers call and image y inversion.
+
+2009-03-04 13:24  robert
+
+	* src/osgDB/ReadFile.cpp: Added handling of ImageStream Origin to
+	  make sure the movie always appears the correct way up.
+
+2009-03-04 11:59  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp: Fixes to non
+	  swscale code path
+
+2009-03-04 11:46  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp: Fixed img_convert
+	  usage
+
+2009-03-04 11:06  robert
+
+	* src/osgPlugins/CMakeLists.txt: Removed reference to OpenAL plugin
+
+2009-03-04 11:05  robert
+
+	* CMakeModules/FindFFmpeg.cmake,
+	  src/osgPlugins/ffmpeg/CMakeLists.txt,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegHeaders.hpp,
+	  src/osgPlugins/ffmpeg/ReaderWriterFFmpeg.cpp: Added support for
+	  using libswscale
+
+2009-03-03 20:59  robert
+
+	* examples/osgmovie/osgmovie.cpp: Added SDL audio path
+
+2009-03-03 20:49  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegAudioStream.cpp: Improved the clean
+	  up ordering
+
+2009-03-03 17:37  robert
+
+	* examples/osgmovie/CMakeLists.txt, examples/osgmovie/osgmovie.cpp:
+	  Added SDL audio support for reading from ffmpeg movies
+
+2009-03-03 17:28  shuber
+
+	* Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj:
+	  From Stephan Huber: updated xcode project, added AudioStream to
+	  project
+
+2009-03-03 16:51  robert
+
+	* CMakeLists.txt, examples/osgmovie/CMakeLists.txt,
+	  examples/osgmovie/osgmovie.cpp, include/osg/AudioStream,
+	  src/osg/AudioStream.cpp, src/osgPlugins/CMakeLists.txt,
+	  src/osgPlugins/ffmpeg/CMakeLists.txt,
+	  src/osgPlugins/ffmpeg/FFmpegAudioStream.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegAudioStream.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoder.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.hpp: Introduce
+	  FFmpegAudioStream implementation
+
+2009-03-03 14:59  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegImageStream.hpp: Removed redudent
+	  export
+
+2009-03-03 11:52  robert
+
+	* src/osgPlugins/ffmpeg/CMakeLists.txt: Added LINK_DIRECTORIES
+
+2009-03-03 11:25  robert
+
+	* src/osgPlugins/ffmpeg/CMakeLists.txt: Fixed include list
+
+2009-03-03 10:53  robert
+
+	* CMakeModules/FindFFmpeg.cmake,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp: From Ulrich
+	  Hertlein, build fixes for OSX.
+
+2009-03-03 09:50  robert
+
+	* src/osgPlugins/ffmpeg/CMakeLists.txt: Added ffmpeg to include
+	  search paths
+
+2009-03-03 09:49  robert
+
+	* src/osgPlugins/ffmpeg/ReaderWriterFFmpeg.cpp: Added ogg to
+	  accepted formats
+
+2009-03-02 16:01  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp: Added extern for
+	  img_convert to get round disappeance of the declaration from
+	  headers.
+
+2009-03-02 10:49  robert
+
+	* src/OpenThreads/win32/Win32Thread.cpp,
+	  src/OpenThreads/win32/Win32ThreadPrivateData.h: From Mathias
+	  Froehlich, "An other one:
+	  The TLS Varialbe is accessed before it is initialized.
+	  Attached is a change to rev 9791."
+
+2009-03-02 09:56  robert
+
+	* examples/osgcluster/broadcaster.cpp: From Petr Salinger, fix for
+	  build under GNU/kFreeBSD.
+
+2009-02-27 20:16  robert
+
+	* include/osg/AudioStream, include/osg/ImageStream,
+	  src/osg/AudioStream.cpp, src/osg/CMakeLists.txt,
+	  src/osg/ImageStream.cpp,
+	  src/osgPlugins/ffmpeg/AudioSinkInterface.hpp,
+	  src/osgPlugins/ffmpeg/CMakeLists.txt,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegHeaders.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegSampleFormat.hpp: Introduced
+	  osg::AudioStream class to help manage audio streams coming in
+	  from movie reading plugins
+
+2009-02-27 17:00  robert
+
+	* src/osgPlugins/ffmpeg/AudioSinkInterface.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoder.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoder.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.hpp: Ported across from
+	  using boost pointers, and prepped for integration of audio
+	  interface into core OSG
+
+2009-02-27 11:11  robert
+
+	* src/osgViewer/GraphicsWindowWin32.cpp: From Roland Smeenk,
+	  "Attached is a small bug fix for the redundant messages that are
+	  created in OSG applications on windows.
+	  GraphicsWindowWin32::setCursor is called every frame from the
+	  WM_NCHITTEST message. This will result in a call to
+	  ::SetCursor(_currentCursor) every frame, which again causes a
+	  WM_MOUSEMOVE to occur. The fix exits
+	  GraphicsWindowWin32::setCursor if the requested cursor already is
+	  the current cursor.
+	  
+	  "
+
+2009-02-27 10:47  robert
+
+	* src/osgUtil/RenderStage.cpp: From Atr Tevs,
+	  
+	  first email:
+	  "in the current implementation of
+	  osgUtil::RenderStage::drawInner() method, there is some wrong
+	  assumptions made. The problem is, that whenever one does use
+	  multisampling functionality, the Blit operation (which suppose to
+	  copy the content of multisampled FBO into the usual one) doesn't
+	  perform well in some cases.
+	  
+	  I've attached a corrected version of the RenderStage. It do just
+	  add one line, which enables the multisampled FBO as a readable
+	  just before the usual FBO is set as writable. With these
+	  corrections the Blit operation performs now correct and allows
+	  using of multisampled rendering results further."
+	  
+	  second email:
+	  "There was a problem when blitting the multisampled FBO with
+	  internal formats. The default internal format of color buffered
+	  multisample FBO was GL_RGBA. This has converted the color values
+	  whenever the FBO content was copied. I've added couple of lines,
+	  which do just enable the multisampled FBO internal format in
+	  respect to the attached color texture's internal format. This
+	  makes it possible to blit even float valued texture, so make HDR
+	  with multisampling possible ;)"
+
+2009-02-26 22:09  robert
+
+	* CMakeModules/Find3rdPartyDependencies.cmake: From Mattias
+	  Helsing, "I added FORCE to set cmake vars
+	  FREETYPE_INCLUDE_DIR_ft2build and
+	  FREETYPE_INCLUDE_DIR_freetype2.
+	  The error case was that during first cmake run (unspecified
+	  ACTUAL_3RDPARTY_DIR) FindFreeType set these to xxx-NOTFOUND.
+	  After
+	  specifying ACTUAL_3RDPARTY_DIR, Find3rdPartyDependencies warn't
+	  able
+	  to change these (without FORCE).
+	  
+	  I also added freetype237 to the library search list since it is
+	  what's
+	  in my binary dependencies for vc90"
+
+2009-02-26 10:48  robert
+
+	* CMakeModules/Find3rdPartyDependencies.cmake: Addded setting of
+	  FREETYPE_INCLUDE_DIRS to Find3rdPartyDependencies.cmake
+
+2009-02-25 20:52  robert
+
+	* src/osgPlugins/ffmpeg/CMakeLists.txt,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp: Tweaks to handle
+	  more modern version of ffmpeg compiled form source.
+
+2009-02-25 16:05  robert
+
+	* CMakeLists.txt, CMakeModules/FindFFmpeg.cmake,
+	  src/osgPlugins/CMakeLists.txt: Added Cmake support for new ffmpeg
+	  plugin
+
+2009-02-25 16:04  robert
+
+	* src/osgPlugins/ffmpeg,
+	  src/osgPlugins/ffmpeg/AudioSinkInterface.hpp,
+	  src/osgPlugins/ffmpeg/BoundedMessageQueue.hpp,
+	  src/osgPlugins/ffmpeg/CMakeLists.txt,
+	  src/osgPlugins/ffmpeg/FFmpegClocks.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegClocks.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoder.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoder.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegHeaders.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegPacket.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegSampleFormat.hpp,
+	  src/osgPlugins/ffmpeg/MessageQueue.hpp,
+	  src/osgPlugins/ffmpeg/ReaderWriterFFmpeg.cpp: From Tanguy Fautre
+	  (Aris Technologies), ffmpeg plugin
+
+2009-02-23 10:50  robert
+
+	* AUTHORS.txt, applications/osgversion/osgversion.cpp: Updated
+	  version info for 2.9.0 release
+
+2009-02-23 10:41  robert
+
+	* ChangeLog: Updated ChangeLog for 2.9.0 dev release
+
 2009-02-23 09:54  robert
 
 	* src/osgPlugins/ogr/ReaderWriterOGR.cpp: From Ralf Habacker &

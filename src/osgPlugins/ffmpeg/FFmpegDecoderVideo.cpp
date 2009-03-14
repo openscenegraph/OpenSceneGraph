@@ -249,8 +249,8 @@ int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, const AVPicture
     osg::notify(osg::INFO)<<"Using sws_scale ";
 
     int result =  sws_scale(m_swscale_ctx,
-                            src->data, src->linesize, 0, src_height,
-                            dst->data, dst->linesize);
+                            (const uint8_t**)(src->data), (src->linesize), 0, src_height,
+                            (dst->data), (dst->linesize));
 #else
 
     osg::notify(osg::INFO)<<"Using img_convert ";

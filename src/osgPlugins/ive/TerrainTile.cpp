@@ -86,10 +86,13 @@ void TerrainTile::read(DataInputStream* in)
 
     if (in->getVersion() >= VERSION_0026)
     {
+    
         int level = in->readInt();
         int x = in->readInt();
         int y = in->readInt();
         setTileID(osgTerrain::TileID(level,x,y));
+
+        // osg::notify(osg::NOTICE)<<"Read TileID("<<level<<", "<<x<<", "<<y<<")"<<std::endl;
     }
 
     if (in->getVersion() >= VERSION_0023)

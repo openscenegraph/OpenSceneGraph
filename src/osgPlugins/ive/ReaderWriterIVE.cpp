@@ -19,6 +19,7 @@ class ReaderWriterIVE : public ReaderWriter
         {
             supportsExtension("ive","OpenSceneGraph native binary format");
 
+            supportsOption("compressed","Export option, use zlib compression to compress the data in the .ive ");
             supportsOption("noTexturesInIVEFile","Export option");
             supportsOption("includeImageFileInIVEFile","Export option");
             supportsOption("compressImageData","Export option");

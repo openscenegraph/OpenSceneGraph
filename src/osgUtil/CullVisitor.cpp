@@ -44,54 +44,6 @@ inline int EQUAL_F(float a, float b)
     { return a == b || fabsf(a-b) <= MAX_F(fabsf(a),fabsf(b))*1e-3f; }
 
 
-class PrintVisitor : public NodeVisitor
-{
-
-   public:
-   
-        PrintVisitor(std::ostream& out):
-            NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN),
-            _out(out)
-        {
-            _indent = 0;
-            _step = 4;
-        }
-        
-        inline void moveIn() { _indent += _step; }
-        inline void moveOut() { _indent -= _step; }
-        inline void writeIndent() 
-        {
-            for(int i=0;i<_indent;++i) _out << " ";
-        }
-                
-        virtual void apply(Node& node)
-        {
-            moveIn();
-            writeIndent(); _out << node.className() <<std::endl;
-            traverse(node);
-            moveOut();
-        }
-
-        virtual void apply(Geode& node)         { apply((Node&)node); }
-        virtual void apply(Billboard& node)     { apply((Geode&)node); }
-        virtual void apply(LightSource& node)   { apply((Group&)node); }
-        virtual void apply(ClipNode& node)      { apply((Group&)node); }
-        
-        virtual void apply(Group& node)         { apply((Node&)node); }
-        virtual void apply(Transform& node)     { apply((Group&)node); }
-        virtual void apply(Projection& node)    { apply((Group&)node); }
-        virtual void apply(Switch& node)        { apply((Group&)node); }
-        virtual void apply(LOD& node)           { apply((Group&)node); }
-
-   protected:
-   
-        PrintVisitor& operator = (const PrintVisitor&) { return *this; }
-    
-        std::ostream& _out;
-        int _indent;
-        int _step;
-};
-
 CullVisitor::CullVisitor():
     NodeVisitor(CULL_VISITOR,TRAVERSE_ACTIVE_CHILDREN),
     _currentStateGraph(NULL),

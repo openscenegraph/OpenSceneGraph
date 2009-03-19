@@ -8,6 +8,7 @@ SET(TARGET_SRC
     CompositeLayer.cpp
     SwitchLayer.cpp
     Layer.cpp
+    Terrain.cpp
     TerrainTile.cpp
     GeometryTechnique.cpp
     ReaderWriterOsgTerrain.cpp

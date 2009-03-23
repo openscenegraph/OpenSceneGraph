@@ -19,18 +19,18 @@ FOREACH( mylibfolder
         osgPlugins
     )
 
-    ADD_SUBDIRECTORY(${mylibfolder})
+        ADD_SUBDIRECTORY(${mylibfolder})
 
-ENDFOREACH( mylibfolder )
+ENDFOREACH()
 
 
 OPTION(BUILD_OSG_WRAPPERS "Enable to build Introspection and Wrappers" OFF)
-IF   (BUILD_OSG_WRAPPERS)
+IF(BUILD_OSG_WRAPPERS)
     ADD_SUBDIRECTORY(osgIntrospection)
     ADD_SUBDIRECTORY(osgWrappers)
-ENDIF(BUILD_OSG_WRAPPERS)
+ENDIF()
 
 IF(MSVC80)
   OPTION(OSG_MSVC_GENERATE_PLUGINS_AND_WRAPPERS_MANIFESTS "Generate or not manifests files under VS8 for dynamically loaded dlls" ON)
-ENDIF(MSVC80)
+ENDIF()
 

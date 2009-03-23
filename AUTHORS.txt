@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.1
+OpenSceneGraph Library 2.9.2
 
-375 Contributors:
+376 Contributors:
 
 Firstname Surname
 -----------------
@@ -30,21 +30,22 @@ Roger James
 Paul Melis
 Colin McDonald
 Andy Skinner
+Roland Smeenk
 Pavel Moloshtan
 Mattias Helsing
 Tom Jolley
-Roland Smeenk
+Michael Platings
 Jeremy Moles
 Jason Beverage
 Cedric Pinson
 Norman Vine
 Art Tevs
 Alberto Farre
-Michael Platings
 André Garneau
+Adrian Egli
 Ruben Lopez
 Randall Hopper
-Adrian Egli
+Philip Lowman
 Sherman Wilcox
 Olaf Flebbe
 Mathieu Marache
@@ -53,7 +54,6 @@ J.P. Delport
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
-Philip Lowman
 Per Fahlberg
 Michael Gronager
 Joakim Simonsson
@@ -69,6 +69,7 @@ Lionel Lagarde
 Joran Jessurun
 Frederic Marmond
 David Fries
+Csaba Halasz
 Boris Bralo
 Yefei He
 Tim Moore
@@ -91,6 +92,7 @@ Neil Groves
 Martin Naylor
 Martin Aumueller
 Markus Trenkwalder
+Luc Frauciel
 Loic Dachary
 Joseph Steel
 John Shue
@@ -107,7 +109,6 @@ Nikolaus Hanekamp
 Neil Salter
 Mihai Radu
 Michael Hartman
-Luc Frauciel
 Laurens Voerman
 David Guthrie
 Corbin Holtz
@@ -128,10 +129,10 @@ Leandro Motta Barros
 John Vidar Larring
 John Kelso
 Daniel Larimer
-Csaba Halasz
 Colin Dunlop
 Bruce Clay
 Alberto Barbati
+Wang Rui
 Vladimir Shabanov
 Uwe Woessner
 Tony Horrobin
@@ -143,6 +144,7 @@ Miguel Escriva
 Mattias Linde
 Martin Beckett
 Maria Ten
+Maciej Krol
 Ken Sewell
 Julian Ortiz
 Jeremy Bell
@@ -166,7 +168,6 @@ Anders Backman
 Ali Botorabi
 Zach Deedler
 Yuzhong Shen
-Wang Rui
 Tugkan Calapoglu
 Tim Daoust
 Terrex 
@@ -190,7 +191,6 @@ Max Bandazian
 Mathew May
 Martin Spott
 Martijn Kragtwijk
-Maciej Krol
 Kevin Moiule
 Keith Steffen
 Katharina Plugge
@@ -366,6 +366,7 @@ Benoit Laniel
 Ben van Basten
 Bart Gallet
 Axel Volley
+Aric Aumann
 Andy Preece
 Andrew Reyonolds
 Andreas Jochens

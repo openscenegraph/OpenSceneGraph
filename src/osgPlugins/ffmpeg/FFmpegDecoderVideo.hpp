@@ -87,9 +87,9 @@ private:
     void findAspectRatio();
     void publishFrame(double delay);
     double synchronizeVideo(double pts);
-    void yuva420pToRgba(AVPicture *dst, const AVPicture *src, int width, int height);
+    void yuva420pToRgba(AVPicture *dst, AVPicture *src, int width, int height);
 
-    int convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src,
+    int convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
                 int src_pix_fmt, int src_width, int src_height);
 
 

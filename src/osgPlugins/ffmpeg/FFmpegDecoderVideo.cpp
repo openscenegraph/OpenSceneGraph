@@ -233,7 +233,7 @@ void FFmpegDecoderVideo::findAspectRatio()
     m_pixel_aspect_ratio = ratio;
 }
 
-int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src,
+int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
             int src_pix_fmt, int src_width, int src_height)
 {
     osg::Timer_t startTick = osg::Timer::instance()->tick();
@@ -247,9 +247,9 @@ int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, const AVPicture
     
 
     osg::notify(osg::INFO)<<"Using sws_scale ";
-
+    
     int result =  sws_scale(m_swscale_ctx,
-                            (const uint8_t**)(src->data), (src->linesize), 0, src_height,
+                            (src->data), (src->linesize), 0, src_height,
                             (dst->data), (dst->linesize));
 #else
 
@@ -276,7 +276,7 @@ void FFmpegDecoderVideo::publishFrame(const double delay)
     if (delay < -0.010)
         return;
         
-    const AVPicture * const src = (const AVPicture *) m_frame.get();
+    AVPicture * const src = (AVPicture *) m_frame.get();
     AVPicture * const dst = (AVPicture *) m_frame_rgba.get();
 
     // Assign appropriate parts of the buffer to image planes in m_frame_rgba
@@ -312,7 +312,7 @@ void FFmpegDecoderVideo::publishFrame(const double delay)
 
 
 
-void FFmpegDecoderVideo::yuva420pToRgba(AVPicture * const dst, const AVPicture * const src, int width, int height)
+void FFmpegDecoderVideo::yuva420pToRgba(AVPicture * const dst, AVPicture * const src, int width, int height)
 {
     convert(dst, PIX_FMT_RGB32, src, m_context->pix_fmt, width, height);
 

@@ -38,6 +38,10 @@ class OSGUTIL_EXPORT PrintVisitor : public osg::NodeVisitor
         void enter() { _indent += _step; }
         void leave() { _indent -= _step; }
 
+    protected:
+    
+        PrintVisitor& operator = (const PrintVisitor&) { return *this; }
+
         std::ostream& _out;
         unsigned int _indent;
         unsigned int _step;

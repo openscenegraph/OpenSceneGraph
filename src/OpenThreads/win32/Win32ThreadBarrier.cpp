@@ -25,7 +25,7 @@ using namespace OpenThreads;
 // so compiler can place it somewhere
 Win32BarrierPrivateData::~Win32BarrierPrivateData()
 {
-};
+}
 
 //----------------------------------------------------------------------------
 //

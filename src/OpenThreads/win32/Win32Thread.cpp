@@ -204,12 +204,12 @@ namespace OpenThreads {
             return status!=0;
         };
     };
-};
+}
 
 Thread* Thread::CurrentThread()
 {
     return (Thread* )TlsGetValue(Win32ThreadPrivateData::TLS.getId());
-};
+}
 
 //----------------------------------------------------------------------------
 //
@@ -219,7 +219,7 @@ Thread* Thread::CurrentThread()
 //
 int Thread::SetConcurrency(int) {
     return -1;
-};
+}
 
 //----------------------------------------------------------------------------
 //
@@ -229,7 +229,7 @@ int Thread::SetConcurrency(int) {
 //
 int Thread::GetConcurrency() {
     return -1;
-};
+}
 
 //----------------------------------------------------------------------------
 //

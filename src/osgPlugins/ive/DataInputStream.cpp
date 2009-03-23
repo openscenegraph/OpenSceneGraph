@@ -56,6 +56,7 @@
 #include "Multisample.h"
 #include "Fog.h"
 #include "Light.h"
+#include "PolygonStipple.h"
 
 
 #include "Group.h"
@@ -1410,6 +1411,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVELIGHT){
         attribute = new osg::Light();
         ((ive::Light*)(attribute))->read(this);
+    }
+    else if(attributeID == IVEPOLYGONSTIPPLE){
+        attribute = new osg::PolygonStipple();
+        ((ive::PolygonStipple*)(attribute))->read(this);
     }
     else{
         throw Exception("Unknown StateAttribute in StateSet::read()");

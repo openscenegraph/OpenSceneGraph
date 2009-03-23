@@ -78,6 +78,7 @@ SET(TARGET_SRC
     PointSprite.cpp
     PolygonMode.cpp
     PolygonOffset.cpp
+    PolygonStipple.cpp
     PositionAttitudeTransform.cpp
     PrimitiveSet.cpp
     Program.cpp
@@ -194,6 +195,7 @@ SET(TARGET_H
     PointSprite.h
     PolygonMode.h
     PolygonOffset.h
+    PolygonStipple.h
     PositionAttitudeTransform.h
     PrimitiveSet.h
     Program.h

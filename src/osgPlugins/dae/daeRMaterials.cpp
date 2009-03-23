@@ -83,7 +83,7 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
                     if ( iter != materialMap.end() )
                     {
                         // Reuse material
-                        ss = iter->second;
+                        ss = iter->second.get();
                     }
                     else
                     {

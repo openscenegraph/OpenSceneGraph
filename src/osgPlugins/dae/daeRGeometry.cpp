@@ -40,7 +40,7 @@ osg::Geode* daeReader::processInstanceGeometry( domInstance_geometry *ig )
     domGeometryGeodeMap::iterator iter = geometryMap.find( geom );
     if ( iter != geometryMap.end() )
     {
-        cachedGeode = iter->second;
+        cachedGeode = iter->second.get();
     }
     else
     {
@@ -119,7 +119,7 @@ osg::Geode* daeReader::processInstanceController( domInstance_controller *ictrl 
     domGeometryGeodeMap::iterator iter = geometryMap.find( geom );
     if ( iter != geometryMap.end() )
     {
-        cachedGeode = iter->second;
+        cachedGeode = iter->second.get();
     }
     else
     {

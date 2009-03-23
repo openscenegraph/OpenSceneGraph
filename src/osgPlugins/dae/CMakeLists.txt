@@ -23,6 +23,7 @@ SET(TARGET_H
     daeReader.h
     daeWriter.h
     domSourceReader.h
+    ReaderWriterDAE.h
 )
 
 

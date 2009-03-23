@@ -50,7 +50,7 @@
 #include <osgSim/LightPointNode>
 #include <osgSim/ObjectRecordData>
 
-#ifdef _WIN32
+#ifdef _MSC_VER
 // Disable this warning. It's OK for us to use 'this' in initializer list,
 // as the texturePaletteManager merely stores a ref to it.
 #pragma warning( disable : 4355 )

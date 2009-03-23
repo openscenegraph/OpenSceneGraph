@@ -155,8 +155,6 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh,
 
     const DX::MeshTextureCoords* meshTexCoords = mesh.getMeshTextureCoords();
     //std::cerr << "texcoord=" << meshTexCoords << std::endl;
-    if (!meshTexCoords)
-        return NULL;
 
     /*
      * - MeshMaterialList contains a list of Material and a per-face
@@ -288,7 +286,8 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh,
 
         osg::Vec3Array* vertexArray = (osg::Vec3Array*) geom->getVertexArray();
         osg::Vec3Array* normalArray = (osg::Vec3Array*) geom->getNormalArray();
-        osg::Vec2Array* texCoordArray = (osg::Vec2Array*) geom->getTexCoordArray(0);
+        osg::Vec2Array* texCoordArray=NULL; // only make them if the original has them
+        if(meshTexCoords) texCoordArray = (osg::Vec2Array*) geom->getTexCoordArray(0);
 
         // Add vertices, normals, texcoords
         for (unsigned int j = 0; j < np; j++) {

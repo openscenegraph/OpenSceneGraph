@@ -1,3 +1,258 @@
+2009-03-23 20:25  robert
+
+	* src/osgPlugins/x/ReaderWriterDirectX.cpp: From Aric Aumann, fixed
+	  handling of null texture coordinates
+
+2009-03-23 17:08  robert
+
+	* src/osgPlugins/ive/CMakeLists.txt,
+	  src/osgPlugins/ive/DataInputStream.cpp,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/ive/PolygonStipple.cpp,
+	  src/osgPlugins/ive/PolygonStipple.h,
+	  src/osgPlugins/ive/ReadWrite.h: From Luc Frauciel, You'll find
+	  attached a modification in ive plugin for POLYGONSTIPPLE
+	  read/write.
+
+2009-03-23 16:45  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.hpp: From Wang Rui,
+	  "Attached is a very small fix for the ffmpeg plugin, to build it
+	  without compiling errors on MSVC. The ffmpeg win32 pre-built
+	  tarball is downloaded at http://ffmpeg.arrozcru.org/builds/.
+	  Tested on Windows XP SP3 and Visual Studio 9, but don't know if
+	  it still workable for Unix and Mac users. :)
+	  
+	  Please look at the .diff files for details. I have already
+	  enjoyed the latest Chinese *big* movie "Red Cliff" with the fixed
+	  ffmpeg plugin and osgmovie. :D"
+
+2009-03-23 16:31  robert
+
+	* src/osgPlugins/OpenFlight/FltExportVisitor.cpp: From Csaba
+	  Halasz, "I have modified FltExportVisitor to use _MSC_VER instead
+	  of _WIN32 in
+	  the condition around a #pragma warning that is specific to visual
+	  studio as _WIN32 is also defined for mingw compile but the
+	  #pragma is
+	  not applicable there."
+
+2009-03-23 16:28  robert
+
+	* src/OpenThreads/win32/Win32ConditionPrivateData.h: From Csaba
+	  Halasz, "IIRC the C++ standard says members will be initialized
+	  in declaration
+	  order, and not in the order they are listed in the constructor.
+	  To
+	  avoid possible trouble, gcc warns about this. Attached
+	  modification
+	  fixes the initializer order to silence this warning."
+
+2009-03-23 16:25  robert
+
+	* src/osgPlugins/dae/daeRGeometry.cpp,
+	  src/osgPlugins/dae/daeRMaterials.cpp,
+	  src/osgPlugins/dae/daeReader.h: From Michael Platings, "Changed
+	  some pointers to ref_ptr which fixed the leak
+	  "
+
+2009-03-23 16:21  robert
+
+	* src/OpenThreads/win32/Win32Thread.cpp,
+	  src/OpenThreads/win32/Win32ThreadBarrier.cpp: From Csaba Halasz,
+	  "I have removed some unnecessary semicolons that mingw build
+	  warns about."
+
+2009-03-23 16:15  robert
+
+	* src/osgDB/Registry.cpp: From Eric Sokolowsky, "The attached
+	  Registry.cpp fixes OSG under OSX when a library suffix string is
+	  used, as is selected by default with cmake.
+	  "
+
+2009-03-23 16:13  robert
+
+	* src/osgPlugins/dae/CMakeLists.txt: From Michale Platings, "Minor
+	  change to include ReaderWriterDAE.h"
+
+2009-03-23 16:11  robert
+
+	* CMakeModules/FindCOLLADA.cmake: From Michael Platings, "I've
+	  changed this file so CMake automatically chooses the correct
+	  directories & libs out of vc8,vc9,mac,mingw
+	  Tested with Visual Studio 9 2008"
+
+2009-03-23 16:07  robert
+
+	* examples/osganimationmorph/osganimationmorph.cpp: From Roland
+	  Smeenk, "Here's a small simplification of the osganimationmorph
+	  example. Only one morphtarget needs to be added to the
+	  MorphGeometry since it already has a base geometry. The animation
+	  will morph between the base geometry and the first target.
+	  
+	  "
+
+2009-03-23 16:05  robert
+
+	* applications/CMakeLists.txt,
+	  applications/osgarchive/CMakeLists.txt,
+	  applications/osgconv/CMakeLists.txt,
+	  applications/osgfilecache/CMakeLists.txt,
+	  applications/osgviewer/CMakeLists.txt: From Philip Lowman,
+	  "Mainly removing comments like "This file is automatically
+	  generated" (glad that never happened!)"
+
+2009-03-23 16:01  robert
+
+	* src/CMakeLists.txt, src/OpenThreads/CMakeLists.txt,
+	  src/OpenThreads/pthreads/CMakeLists.txt,
+	  src/OpenThreads/sproc/CMakeLists.txt,
+	  src/OpenThreads/win32/CMakeLists.txt, src/osg/CMakeLists.txt,
+	  src/osgAnimation/CMakeLists.txt, src/osgDB/CMakeLists.txt,
+	  src/osgFX/CMakeLists.txt, src/osgGA/CMakeLists.txt,
+	  src/osgIntrospection/CMakeLists.txt,
+	  src/osgManipulator/CMakeLists.txt,
+	  src/osgParticle/CMakeLists.txt, src/osgPlugins/CMakeLists.txt,
+	  src/osgShadow/CMakeLists.txt, src/osgSim/CMakeLists.txt,
+	  src/osgTerrain/CMakeLists.txt, src/osgText/CMakeLists.txt,
+	  src/osgUtil/CMakeLists.txt, src/osgViewer/CMakeLists.txt,
+	  src/osgVolume/CMakeLists.txt, src/osgWidget/CMakeLists.txt,
+	  src/osgWrappers/CMakeLists.txt: From Philip Lowman, "Here's the
+	  promised cleanup of the OSG's CMakeLists.txt files for the src/
+	  folder. I'll submit the others separately.
+	  
+	  Also, there was also a small bug in osgDB's CMakeLists.txt that
+	  was causing an error when I tested with CMake 2.4.4.
+	  
+	  IF(${OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX} STREQUAL "quicktime")
+	  was changed to
+	  IF(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX STREQUAL "quicktime")
+	  "
+
+2009-03-23 15:48  robert
+
+	* CMakeModules/FindFFmpeg.cmake,
+	  src/osgPlugins/ffmpeg/CMakeLists.txt: From David Callu, clean up
+	  of FindFFmpeg include paths
+
+2009-03-23 15:47  robert
+
+	* include/osgDB/DatabasePager: From Csaba Halasz, "here is another
+	  division by zero fix, this should be simpler ;)
+	  It caused problem if the stats display was popped up before the
+	  pager
+	  had anything to do."
+
+2009-03-23 15:38  robert
+
+	* include/osgUtil/PrintVisitor: Cleaned up interface
+
+2009-03-23 15:38  robert
+
+	* src/osgWrappers/genwrapper.conf: Updated wrapper conf to avoid
+	  generating wrappers for PrintVisitor
+
+2009-03-23 15:21  robert
+
+	* CMakeLists.txt, include/osg/Version: Bumped version numbers in
+	  prep for 2.7.2 dev release
+
+2009-03-23 15:10  robert
+
+	* src/osgWrappers/osgUtil/ShaderGen.cpp: Added ShaderGen wrapper
+
+2009-03-23 15:04  robert
+
+	* src/osgWrappers/osgUtil/PrintVisitor.cpp: Removed PrintVisitor as
+	  it was causing problems with wrapper building.
+
+2009-03-23 13:51  robert
+
+	* src/osg/Notify.cpp: From Eric Sokolowsky, "osgviewer (and all
+	  other OSG-based utilities) fails to provide help for the
+	  OSG_NOTIFY_LEVEL environment variable. This submission fixes that
+	  problem."
+
+2009-03-23 11:53  robert
+
+	* examples/CMakeLists.txt, examples/osgshadergen,
+	  examples/osgshadergen/CMakeLists.txt,
+	  examples/osgshadergen/osgshadergen.cpp,
+	  include/osgUtil/ShaderGen, src/osgUtil/CMakeLists.txt,
+	  src/osgUtil/ShaderGen.cpp: From Maciej Krol, "As promised to
+	  Roland I assembled simple shader generator. ShaderGenVisitor
+	  converts accumulated fixed function pipeline state sets to ones
+	  with shader programs. Generated state sets are attached to
+	  geometries and stored in ShaderGenCache for reuse.
+	  
+	  Very simple cases of state configuration are supported (all the
+	  ones I really need):
+	  - single per pixel not attenuated non spot light source ON/OFF
+	  - exp2 fog ON/OFF
+	  - diffuse texture in rgb + optional specular gloss in alpha
+	  (Texture unit 0) ON/OFF
+	  - normal map texture (Texture unit 1 and Tangent in
+	  VertexAttribArray 6) ON/OFF
+	  - blending and alpha testing (not in shader pipeline)
+	  
+	  To view fixed function pipeline files and paged databases simply
+	  run >osgshadergen myfile.osg"
+
+2009-03-19 11:36  robert
+
+	* src/osgWrappers/osgUtil/PrintVisitor.cpp: UPdated wrappers
+
+2009-03-19 11:11  robert
+
+	* include/osgUtil/PrintVisitor, src/osgUtil/CMakeLists.txt,
+	  src/osgUtil/CullVisitor.cpp, src/osgUtil/PrintVisitor.cpp:
+	  Inroduced simple PrintVisitor class for helping debug scene graph
+	  structures
+
+2009-03-19 10:56  robert
+
+	* src/osgPlugins/freetype/CMakeLists.txt: Fixed spacing
+
+2009-03-19 10:55  robert
+
+	* src/osgPlugins/ive/ReaderWriterIVE.cpp: Added compressed to list
+	  of supported options
+
+2009-03-19 10:55  robert
+
+	* src/osgPlugins/ive/TerrainTile.cpp: Added debug message
+	  (commented out for now.)
+
+2009-03-19 10:27  robert
+
+	* src/osgPlugins/osgTerrain/CMakeLists.txt,
+	  src/osgPlugins/osgTerrain/Terrain.cpp: Added osgTerrain::Terrain
+	  support to the .osg format
+
+2009-03-14 15:40  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp: From Adrian Egli,
+	  build fix for Win32 FFmpeg
+
+2009-03-13 15:56  robert
+
+	* src/osgPlugins/quicktime/MovieData.cpp,
+	  src/osgPlugins/quicktime/MovieData.h,
+	  src/osgPlugins/quicktime/QTUtils.cpp,
+	  src/osgPlugins/quicktime/QTUtils.h,
+	  src/osgPlugins/quicktime/ReaderWriterQT.cpp: From Stephan Huber,
+	  clean up of Quicktime plugin
+
+2009-03-13 13:25  robert
+
+	* AUTHORS.txt, applications/osgversion/osgversion.cpp: Update
+	  AUTHORS file
+
+2009-03-13 11:56  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2009-03-13 11:06  robert
 
 	* examples/osganimationmorph/osganimationmorph.cpp,

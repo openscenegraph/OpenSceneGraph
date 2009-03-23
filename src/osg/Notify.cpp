@@ -11,12 +11,15 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Notify>
+#include <osg/ApplicationUsage>
 #include <string>
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
 
 using namespace std;
+
+static osg::ApplicationUsageProxy Notify_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_NOTIFY_LEVEL <mode>", "FATAL | WARN | NOTICE | DEBUG_INFO | DEBUG_FP | DEBUG | INFO | ALWAYS");
 
 osg::NotifySeverity g_NotifyLevel = osg::NOTICE;
 

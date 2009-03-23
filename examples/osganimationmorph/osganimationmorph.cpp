@@ -62,7 +62,6 @@ int main (int argc, char* argv[])
     osg::ArgumentParser arguments(&argc, argv);
     osgViewer::Viewer viewer(arguments);
 
-
     osgAnimation::Animation* animation = new osgAnimation::Animation;
     osgAnimation::FloatLinearChannel* channel0 = new osgAnimation::FloatLinearChannel;
     channel0->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::FloatKeyframe(0,0.0));
@@ -70,14 +69,7 @@ int main (int argc, char* argv[])
     channel0->setTargetName("MorphNodeCallback");
     channel0->setName("0");
 
-    osgAnimation::FloatLinearChannel* channel1 = new osgAnimation::FloatLinearChannel;
-    channel1->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::FloatKeyframe(0,1.0));
-    channel1->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::FloatKeyframe(1,0.0));
-    channel1->setTargetName("MorphNodeCallback");
-    channel1->setName("1");
-
     animation->addChannel(channel0);
-    animation->addChannel(channel1);
     animation->setName("Morph");
     animation->computeDuration();
     animation->setPlaymode(osgAnimation::Animation::PPONG);
@@ -98,7 +90,6 @@ int main (int argc, char* argv[])
 
     // initialize with the first shape
     osgAnimation::MorphGeometry* morph = new osgAnimation::MorphGeometry(*geom0);
-    morph->addMorphTarget(geom0);
     morph->addMorphTarget(geom1);
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());

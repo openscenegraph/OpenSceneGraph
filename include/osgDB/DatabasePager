@@ -328,7 +328,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         double getMaximumTimeToMergeTile() const { return _maximumTimeToMergeTile; }
 
         /** Get the average time between the first request for a tile to be loaded and the time of its merge into the main scene graph.*/
-        double getAverageTimeToMergeTiles() const { return _totalTimeToMergeTiles/static_cast<double>(_numTilesMerges); }
+        double getAverageTimeToMergeTiles() const { return (_numTilesMerges > 0) ? _totalTimeToMergeTiles/static_cast<double>(_numTilesMerges) : 0; }
 
         /** Reset the Stats variables.*/
         void resetStats();

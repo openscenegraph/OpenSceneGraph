@@ -683,7 +683,11 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
         return prepend+"osgdb_"+lowercase_ext+".dll";
     #endif
 #elif macintosh
-    return prepend+"osgdb_"+lowercase_ext;
+    #ifdef _DEBUG
+        return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX_WITH_QUOTES;
+    #else
+        return prepend+"osgdb_"+lowercase_ext;
+    #endif
 #elif defined(__hpux__)
     // why don't we use PLUGIN_EXT from the makefiles here?
     return prepend+"osgdb_"+lowercase_ext+".sl";
@@ -710,7 +714,11 @@ std::string Registry::createLibraryNameForNodeKit(const std::string& name)
         return name+".dll";
     #endif
 #elif macintosh
-    return name;
+    #ifdef _DEBUG
+        return name+OSGDEBUG_POSTFIX_WITH_QUOTES;
+    #else
+        return name;
+    #endif
 #elif defined(__hpux__)
     // why don't we use PLUGIN_EXT from the makefiles here?
     return "lib"+name+".sl";

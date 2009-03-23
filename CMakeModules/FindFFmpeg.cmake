@@ -9,12 +9,25 @@
 #
 # Created by Robert Osfield.
 
+
+#In ffmpeg code, old version use "#include <header.h>" and newer use "#include <libname/header.h>"
+#In OSG ffmpeg plugin, we use "#include <header.h>" for compatibility with old version of ffmpeg
+
+#We have to search the path which contain the header.h (usefull for old version)
+#and search the path which contain the libname/header.h (usefull for new version)
+
+#Then we need to include ${FFMPEG_libname_INCLUDE_DIRS} (in old version case, use by ffmpeg header and osg plugin code)
+#                                                       (in new version case, use by ffmpeg header) 
+#and ${FFMPEG_libname_INCLUDE_DIRS/libname}             (in new version case, use by osg plugin code)
+
+
 # Macro to find header and lib directories
 # example: FFMPEG_FIND(AVFORMAT avformat avformat.h)
-
 MACRO(FFMPEG_FIND varname shortname headername)
-    # First try to find header directly in include directory
+    # old version of ffmpeg put header in $prefix/include/[ffmpeg]
+    # so try to find header in include directory
     FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS ${headername}
+        PATHS
         ${FFMPEG_ROOT}/include
         $ENV{FFMPEG_DIR}/include
         $ENV{OSGDIR}/include
@@ -22,17 +35,18 @@ MACRO(FFMPEG_FIND varname shortname headername)
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local/include
-        /usr/include/
+        /usr/include
         /sw/include # Fink
         /opt/local/include # DarwinPorts
         /opt/csw/include # Blastwave
         /opt/include
         /usr/freeware/include
+        PATH_SUFFIXES ffmpeg
+        DOC "Location of FFMPEG Headers"
     )
 
-    # If not found, try to find it in a subdirectory. Tanguy's build has
-    # avformat.h in include/libavformat, so this catches that case. If that's
-    # standard, perhaps we can keep just this case.
+    # newer version of ffmpeg put header in $prefix/include/[ffmpeg/]lib${shortname}
+    # so try to find lib${shortname}/header in include directory
     IF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
         FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS lib${shortname}/${headername}
             ${FFMPEG_ROOT}/include
@@ -48,28 +62,8 @@ MACRO(FFMPEG_FIND varname shortname headername)
             /opt/csw/include # Blastwave
             /opt/include
             /usr/freeware/include
-        )
-    ENDIF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
-
-
-    # If not found, try to find it in a subdirectory. Tanguy's build has
-    # avformat.h in include/libavformat, so this catches that case. If that's
-    # standard, perhaps we can keep just this case.
-    IF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
-        FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS ffmpeg/${headername}
-            ${FFMPEG_ROOT}/include
-            $ENV{FFMPEG_DIR}/include
-            $ENV{OSGDIR}/include
-            $ENV{OSG_ROOT}/include
-            ~/Library/Frameworks
-            /Library/Frameworks
-            /usr/local/include
-            /usr/include/
-            /sw/include # Fink
-            /opt/local/include # DarwinPorts
-            /opt/csw/include # Blastwave
-            /opt/include
-            /usr/freeware/include
+            PATH_SUFFIXES ffmpeg
+            DOC "Location of FFMPEG Headers"
         )
     ENDIF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
 
@@ -91,9 +85,10 @@ MACRO(FFMPEG_FIND varname shortname headername)
         /opt/csw/lib
         /opt/lib
         /usr/freeware/lib64
+        DOC "Location of FFMPEG Libraries"
     )
 
-    IF   (FFMPEG_${varname}_LIBRARIES AND FFMPEG_${varname}_INCLUDE_DIRS)
+    IF (FFMPEG_${varname}_LIBRARIES AND FFMPEG_${varname}_INCLUDE_DIRS)
         SET(FFMPEG_${varname}_FOUND 1)
     ENDIF(FFMPEG_${varname}_LIBRARIES AND FFMPEG_${varname}_INCLUDE_DIRS)
 

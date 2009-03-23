@@ -232,9 +232,9 @@ protected:
     domInstance_effect *currentInstance_effect;
     domEffect *currentEffect;
 
-    typedef std::map< domGeometry*, osg::Geode*>    domGeometryGeodeMap;
-    typedef std::map< domMaterial*, osg::StateSet*> domMaterialStateSetMap;
-    typedef std::map< std::string, osg::StateSet*>    MaterialStateSetMap;
+    typedef std::map< domGeometry*, osg::ref_ptr<osg::Geode> >    domGeometryGeodeMap;
+    typedef std::map< domMaterial*, osg::ref_ptr<osg::StateSet> > domMaterialStateSetMap;
+    typedef std::map< std::string, osg::ref_ptr<osg::StateSet> >    MaterialStateSetMap;
 
     /// Maps geometry to a Geode
     domGeometryGeodeMap     geometryMap;

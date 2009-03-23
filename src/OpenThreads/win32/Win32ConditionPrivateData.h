@@ -44,9 +44,9 @@ public:
 
     Win32ConditionPrivateData ()
         :waiters_(0), 
-         was_broadcast_(0),
          sema_(CreateSemaphore(NULL,0,0x7fffffff,NULL)),
-         waiters_done_(CreateEvent(NULL,FALSE,FALSE,NULL))
+         waiters_done_(CreateEvent(NULL,FALSE,FALSE,NULL)),
+         was_broadcast_(0)
     {
     }
 

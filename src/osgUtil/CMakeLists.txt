@@ -37,6 +37,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ReversePrimitiveFunctor
     ${HEADER_PATH}/SceneView
     ${HEADER_PATH}/SceneGraphBuilder
+    ${HEADER_PATH}/ShaderGen
     ${HEADER_PATH}/Simplifier
     ${HEADER_PATH}/SmoothingVisitor
     ${HEADER_PATH}/StateGraph
@@ -76,6 +77,7 @@ ADD_LIBRARY(${LIB_NAME}
     RenderStage.cpp
     ReversePrimitiveFunctor.cpp
     SceneView.cpp
+    ShaderGen.cpp
     Simplifier.cpp
     SmoothingVisitor.cpp
     SceneGraphBuilder.cpp

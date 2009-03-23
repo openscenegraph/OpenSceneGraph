@@ -59,6 +59,7 @@
 #include "Multisample.h"
 #include "Fog.h"
 #include "Light.h"
+#include "PolygonStipple.h"
 
 #include "Group.h"
 #include "MatrixTransform.h"
@@ -1088,6 +1089,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         // This is a Light
         else if(dynamic_cast<const osg::Light*>(attribute)){
             ((ive::Light*)(attribute))->write(this);
+        }
+        // This is a PolygonStipple
+        else if(dynamic_cast<const osg::PolygonStipple*>(attribute)){
+            ((ive::PolygonStipple*)(attribute))->write(this);
         }
 
         else{

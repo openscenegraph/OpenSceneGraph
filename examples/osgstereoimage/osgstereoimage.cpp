@@ -22,6 +22,7 @@
 #include <osgDB/WriteFile>
 #include <osgUtil/Optimizer>
 
+#include <osg/ImageStream>
 #include <osg/Geode>
 #include <osg/Notify>
 #include <osg/MatrixTransform>
@@ -35,6 +36,7 @@ typedef std::vector<std::string> FileList;
 
 osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s,float t, float radius, float height, float length)
 {
+    bool flip = image->getOrigin()==osg::Image::TOP_LEFT;
 
     int numSegments = 20;
     float Theta = length/radius;
@@ -74,8 +76,8 @@ osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s
         coords->push_back(osg::Vec3(sinf(angle)*radius,cosf(angle)*radius,height*0.5f)); // top
         coords->push_back(osg::Vec3(sinf(angle)*radius,cosf(angle)*radius,-height*0.5f)); // bottom.
         
-        tcoords->push_back(osg::Vec2(angle/ThetaZero+0.5f,1.0f)); // top
-        tcoords->push_back(osg::Vec2(angle/ThetaZero+0.5f,0.0f)); // bottom.
+        tcoords->push_back(osg::Vec2(angle/ThetaZero+0.5f, flip ? 0.0f : 1.0f)); // top
+        tcoords->push_back(osg::Vec2(angle/ThetaZero+0.5f, flip ? 1.0f : 0.0f)); // bottom.
 
     }
 
@@ -106,6 +108,13 @@ osg::Group * loadImages(std::string image1, std::string image2, osg::TexMat* tex
         osg::ref_ptr<osg::Image> imageRight = osgDB::readImageFile(image2);
         if (imageLeft.valid() && imageRight.valid())
         {
+            osg::ImageStream* streamLeft = dynamic_cast<osg::ImageStream*>(imageLeft.get());
+            if (streamLeft) streamLeft->play();
+        
+            osg::ImageStream* streamRight = dynamic_cast<osg::ImageStream*>(imageRight.get());
+            if (streamRight) streamRight->play();
+            
+        
             float average_s = (imageLeft->s()+imageRight->s())*0.5f;
             float average_t = (imageLeft->t()+imageRight->t())*0.5f;
             osg::Geode* geodeLeft = createSectorForImage(imageLeft.get(),texmatLeft,average_s,average_t, radius, height, length);

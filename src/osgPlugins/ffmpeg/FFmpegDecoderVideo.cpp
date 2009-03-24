@@ -240,8 +240,8 @@ int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
 #ifdef USE_SWSCALE
     if (m_swscale_ctx==0)
     {
-        m_swscale_ctx = sws_getContext(src_width, src_height, src_pix_fmt,
-                                      src_width, src_height, dst_pix_fmt,                                    
+        m_swscale_ctx = sws_getContext(src_width, src_height, (PixelFormat) src_pix_fmt,
+                                      src_width, src_height, (PixelFormat) dst_pix_fmt,
                                       /*SWS_BILINEAR*/ SWS_BICUBIC, NULL, NULL, NULL);
     }
     

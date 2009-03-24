@@ -36,7 +36,8 @@ public:
         supportsExtension("ogg", "Theora movie format");
         supportsExtension("mpg", "Mpeg movie format");
         supportsExtension("mpv", "Mpeg movie format");
-        supportsExtension("wmv", "");
+        supportsExtension("wmv", "Windows Media Video format");
+        supportsExtension("mkv", "Matroska");
 
         // Register all FFmpeg formats/codecs
         av_register_all();

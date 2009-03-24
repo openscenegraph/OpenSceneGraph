@@ -30,6 +30,7 @@ public:
     {
         supportsProtocol("http","Read video/audio from http using ffmpeg.");
 
+        supportsExtension("ffmpeg", "");
         supportsExtension("avi", "");
         supportsExtension("flv", "");
         supportsExtension("mov", "");
@@ -55,12 +56,14 @@ public:
 
     virtual ReadResult readImage(const std::string & filename, const osgDB::ReaderWriter::Options * options) const
     {
+        const std::string ext = osgDB::getLowerCaseFileExtension(filename);
+        if (ext=="ffmpeg") return readImage(osgDB::getNameLessExtension(filename),options);
+
         if (filename.compare(0, 5, "/dev/")==0)
         {
             return readImageStream(filename, options);
         }
     
-        const std::string ext = osgDB::getLowerCaseFileExtension(filename);
         if (! acceptsExtension(ext))
             return ReadResult::FILE_NOT_HANDLED;
 

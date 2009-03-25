@@ -54,10 +54,15 @@ bool FFmpegDecoder::open(const std::string & filename)
 
             formatParams.channel = 0;
             formatParams.standard = 0;
+#if 1
             formatParams.width = 640;
             formatParams.height = 480;
+#else
+            formatParams.width = 640;
+            formatParams.height = 480;
+#endif            
             formatParams.time_base.num = 1;
-            formatParams.time_base.den = 50;
+            formatParams.time_base.den = 15;
 
             iformat = av_find_input_format("video4linux2");
             

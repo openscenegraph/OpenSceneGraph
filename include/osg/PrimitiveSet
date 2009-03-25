@@ -449,6 +449,12 @@ class DrawElements : public PrimitiveSet
         {
             if (_ebo.valid()) _ebo->releaseGLObjects(state);
         }
+        
+        
+        virtual void reserveElements(unsigned int numIndices) = 0;
+        virtual void setElement(unsigned int, unsigned int) = 0;
+        virtual unsigned int getElement(unsigned int) = 0;
+        virtual void addElement(unsigned int) = 0;
 
     protected:
     
@@ -526,6 +532,11 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
             _rangeModifiedCount = _modifiedCount;
         }
         
+        virtual void reserveElements(unsigned int numIndices) { reserve(numIndices); }
+        virtual void setElement(unsigned int i, unsigned int v)  { (*this)[i] = v; }
+        virtual unsigned int getElement(unsigned int i) { return (*this)[i]; } 
+        virtual void addElement(unsigned int v) { push_back(GLubyte(v)); } 
+
     protected:
 
         virtual ~DrawElementsUByte();
@@ -601,6 +612,11 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
             _rangeModifiedCount = _modifiedCount;
         }
 
+        virtual void reserveElements(unsigned int numIndices) { reserve(numIndices); }
+        virtual void setElement(unsigned int i, unsigned int v) { (*this)[i] = v; }
+        virtual unsigned int getElement(unsigned int i) { return (*this)[i]; }
+        virtual void addElement(unsigned int v) { push_back(GLushort(v)); }
+
     protected:
 
         virtual ~DrawElementsUShort();
@@ -675,6 +691,11 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
             }
             _rangeModifiedCount = _modifiedCount;
         }
+
+        virtual void reserveElements(unsigned int numIndices) { reserve(numIndices); }
+        virtual void setElement(unsigned int i, unsigned int v) { (*this)[i] = v; }
+        virtual unsigned int getElement(unsigned int i) { return (*this)[i]; }
+        virtual void addElement(unsigned int v) { push_back(GLuint(v)); }
 
     protected:
 

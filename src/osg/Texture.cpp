@@ -603,7 +603,7 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                 switch(image.getPixelFormat())
                 {
                     case(3):
-                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
                     case(4):
                     case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT; break;
                     default:        internalFormat = image.getInternalTextureFormat(); break;
@@ -618,7 +618,7 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                 switch(image.getPixelFormat())
                 {
                     case(3):
-                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    case(GL_RGB):   internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT; break;
                     case(4):
                     case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT; break;
                     default:        internalFormat = image.getInternalTextureFormat(); break;

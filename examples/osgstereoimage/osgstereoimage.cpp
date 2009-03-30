@@ -34,6 +34,43 @@
 
 typedef std::vector<std::string> FileList;
 
+#include <osg/Program>
+#include <osg/Shader>
+
+osg::StateSet* createColorToGreyscaleStateSet()
+{
+    osg::StateSet* stateset = new osg::StateSet;
+    
+    osg::Program* program = new osg::Program;
+    stateset->setAttribute(program);
+    
+    const char* fragSource =
+    {
+        "uniform sampler2D baseTexture;\n"
+        "uniform mat4 colorMatrix;\n"
+        "void main(void)\n"
+        "{\n"
+        "    vec4 color = texture2D( baseTexture, gl_TexCoord[0].st );\n"
+        "    gl_FragColor = colorMatrix * color;\n"
+        "}\n"
+    };
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragSource));
+    
+    stateset->addUniform(new osg::Uniform("baseTexture",0));
+
+    osg::Matrixf colorMatrix(
+        0.3f, 0.3f, 0.3f, 0.0f,
+        0.59f, 0.59f, 0.59f, 0.0f,
+        0.11f, 0.11f, 0.11f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    );    
+    
+    stateset->addUniform(new osg::Uniform("colorMatrix",colorMatrix));
+
+    return stateset;
+}
+
+
 osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s,float t, float radius, float height, float length)
 {
     bool flip = image->getOrigin()==osg::Image::TOP_LEFT;
@@ -103,37 +140,38 @@ osg::Geode* createSectorForImage(osg::Image* image, osg::TexMat* texmat, float s
 
 }
 
-osg::Group * loadImages(std::string image1, std::string image2, osg::TexMat* texmatLeft, osg::TexMat* texmatRight, float radius, float height, float length) {
-        osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(image1);
-        osg::ref_ptr<osg::Image> imageRight = osgDB::readImageFile(image2);
-        if (imageLeft.valid() && imageRight.valid())
-        {
-            osg::ImageStream* streamLeft = dynamic_cast<osg::ImageStream*>(imageLeft.get());
-            if (streamLeft) streamLeft->play();
-        
-            osg::ImageStream* streamRight = dynamic_cast<osg::ImageStream*>(imageRight.get());
-            if (streamRight) streamRight->play();
-            
-        
-            float average_s = (imageLeft->s()+imageRight->s())*0.5f;
-            float average_t = (imageLeft->t()+imageRight->t())*0.5f;
-            osg::Geode* geodeLeft = createSectorForImage(imageLeft.get(),texmatLeft,average_s,average_t, radius, height, length);
-            geodeLeft->setNodeMask(0x01);
+osg::Group * loadImages(std::string image1, std::string image2, osg::TexMat* texmatLeft, osg::TexMat* texmatRight, float radius, float height, float length)
+{
+    osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(image1);
+    osg::ref_ptr<osg::Image> imageRight = osgDB::readImageFile(image2);
+    if (imageLeft.valid() && imageRight.valid())
+    {
+	osg::ImageStream* streamLeft = dynamic_cast<osg::ImageStream*>(imageLeft.get());
+	if (streamLeft) streamLeft->play();
 
-            osg::Geode* geodeRight = createSectorForImage(imageRight.get(),texmatRight,average_s,average_t, radius, height, length);
-            geodeRight->setNodeMask(0x02);
+	osg::ImageStream* streamRight = dynamic_cast<osg::ImageStream*>(imageRight.get());
+	if (streamRight) streamRight->play();
 
-            osg::Group * imageGroup = new osg::Group;
-            
-            imageGroup->addChild(geodeLeft);
-            imageGroup->addChild(geodeRight);
-            return imageGroup;
-        }
-        else
-        {
-            std::cout << "Warning: Unable to load both image files, '"<<image1<<"' & '"<<image2<<"', required for stereo imaging."<<std::endl;
-            return 0;
-        }
+
+	float average_s = (imageLeft->s()+imageRight->s())*0.5f;
+	float average_t = (imageLeft->t()+imageRight->t())*0.5f;
+	osg::Geode* geodeLeft = createSectorForImage(imageLeft.get(),texmatLeft,average_s,average_t, radius, height, length);
+	geodeLeft->setNodeMask(0x01);
+
+	osg::Geode* geodeRight = createSectorForImage(imageRight.get(),texmatRight,average_s,average_t, radius, height, length);
+	geodeRight->setNodeMask(0x02);
+
+	osg::Group * imageGroup = new osg::Group;
+
+	imageGroup->addChild(geodeLeft);
+	imageGroup->addChild(geodeRight);
+	return imageGroup;
+    }
+    else
+    {
+	std::cout << "Warning: Unable to load both image files, '"<<image1<<"' & '"<<image2<<"', required for stereo imaging."<<std::endl;
+	return 0;
+    }
 }
 
 // create a switch containing a set of child each containing a 
@@ -483,7 +521,7 @@ int main( int argc, char **argv )
     
 
     // construct the viewer.
-    osgViewer::Viewer viewer;
+    osgViewer::Viewer viewer(arguments);
 
     // register the handler to add keyboard and mouse handling.
     SlideEventHandler* seh = new SlideEventHandler();
@@ -581,6 +619,7 @@ int main( int argc, char **argv )
     //osgDB::writeNodeFile(*rootNode,"test.osg");
 
 
+
     viewer.getCamera()->setCullMask(0xffffffff);
     viewer.getCamera()->setCullMaskLeft(0x00000001);
     viewer.getCamera()->setCullMaskRight(0x00000002);
@@ -588,6 +627,12 @@ int main( int argc, char **argv )
     // set up the use of stereo by default.
     osg::DisplaySettings::instance()->setStereo(true);
 
+    if (osg::DisplaySettings::instance()->getStereoMode()==osg::DisplaySettings::ANAGLYPHIC)
+    {
+        rootNode->setStateSet(createColorToGreyscaleStateSet());
+    }
+    
+    
     // set the scene to render
     viewer.setSceneData(rootNode.get());
 

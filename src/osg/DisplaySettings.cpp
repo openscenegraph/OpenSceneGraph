@@ -184,6 +184,7 @@ static ApplicationUsageProxy DisplaySetting_e13(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e14(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SERIALIZE_DRAW_DISPATCH <mode>","OFF | ON Enable/disable the use a muetx to serialize the draw dispatch when there are multiple graphics threads.");
 static ApplicationUsageProxy DisplaySetting_e15(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_NUM_DATABASE_THREADS <int>","Set the hint for the total number of threads to set up in the DatabasePager.");
 static ApplicationUsageProxy DisplaySetting_e16(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_NUM_HTTP_DATABASE_THREADS <int>","Set the hint for the total number of threads dedicated to http requests to set up in the DatabasePager.");
+static ApplicationUsageProxy DisplaySetting_e17(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MULTI_SAMPLES <int>","Set the hint for the number of samples to use when multi-sampling.");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -374,6 +375,11 @@ void DisplaySettings::readEnvironmentalVariables()
     if( (ptr = getenv("OSG_NUM_HTTP_DATABASE_THREADS")) != 0)
     {
         _numHttpDatabaseThreadsHint = atoi(ptr);
+    }
+
+    if( (ptr = getenv("OSG_MULTI_SAMPLES")) != 0)
+    {
+        _numMultiSamples = atoi(ptr);
     }
 }
 

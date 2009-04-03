@@ -66,7 +66,7 @@ createStateSet()
         "{ \n"
             // Using the instance ID, generate "texture coords" for this instance.
             "vec2 tC; \n"
-            "const float r = gl_InstanceID / 32.; \n"
+            "float r = float(gl_InstanceID) / 32.; \n"
             "tC.s = fract( r ); tC.t = floor( r ) / 32.; \n"
             // Get the color from the OSG logo.
             "gl_FrontColor = texture2D( osgLogo, tC ); \n"

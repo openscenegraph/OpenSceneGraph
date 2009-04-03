@@ -443,6 +443,17 @@ void Drawable::dirtyBound()
 
 void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 {
+    bool useVertexArrays = _supportsVertexBufferObjects && _useVertexBufferObjects && renderInfo.getState()->isVertexBufferObjectSupported();
+    if (useVertexArrays)
+    {
+        if (_drawCallback.valid())
+            _drawCallback->drawImplementation(renderInfo,this);
+        else
+            drawImplementation(renderInfo);
+
+        return;
+    }
+
     if (!_useDisplayList) return;
 
     // get the contextID (user defined ID of 0 upwards) for the 

@@ -687,7 +687,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
 
 
-    //geometry->setUseDisplayList(false);
+    geometry->setUseDisplayList(false);
     geometry->setUseVertexBufferObjects(true);
     
     

@@ -664,7 +664,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
 
 
-    //geometry->setUseDisplayList(false);
+    geometry->setUseDisplayList(false);
     geometry->setUseVertexBufferObjects(true);
     
     
@@ -702,7 +702,7 @@ void GeometryTechnique::applyColorLayers()
             {
                 continue;
             }
-            
+
             colorLayer = switchLayer->getLayer(switchLayer->getActiveLayer());
             if (!colorLayer) continue;
         }
@@ -772,7 +772,7 @@ void GeometryTechnique::applyTransparency()
     bool containsTransparency = false;
     for(unsigned int i=0; i<_terrainTile->getNumColorLayers(); ++i)
     {
-        osg::Image* image = _terrainTile->getColorLayer(i)->getImage();
+        osg::Image* image = (_terrainTile->getColorLayer(i)!=0) ? _terrainTile->getColorLayer(i)->getImage() : 0;
         if (image)
         {
             containsTransparency = image->isImageTranslucent();

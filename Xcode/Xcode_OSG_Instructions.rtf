@@ -1,6 +1,6 @@
-{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf230
-{\fonttbl\f0\fnil\fcharset77 LucidaGrande-Bold;\f1\fswiss\fcharset77 ArialMT;\f2\fmodern\fcharset77 Courier;
-\f3\fnil\fcharset77 LucidaGrande;\f4\fswiss\fcharset77 Helvetica;}
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf350
+{\fonttbl\f0\fnil\fcharset0 LucidaGrande;\f1\fswiss\fcharset0 ArialMT;\f2\fmodern\fcharset0 Courier;
+\f3\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;}
 \margl1440\margr1440\vieww11980\viewh13540\viewkind0
 \deftab720
@@ -31,21 +31,13 @@
 \pard\pardeftab720\sa260\ql\qnatural
 
 \f2\fs21\fsmilli10563 \cf0 SomeDirectory/
-\f3 \uc0\u8232 \'ca\'ca
-\f2 OpenThreads/
-\f3 \uc0\u8232 \'ca\'ca\'ca\'ca
-\f2 Xcode/
-\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca
-\f2 OpenThreads/
-\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca\'ca\'ca
-\f2 OpenThreads.xcodeproj
-\f3 \uc0\u8232 \'ca\'ca
+\f0 \uc0\u8232 \'a0\'a0
 \f2 OpenSceneGraph/
-\f3 \uc0\u8232 \'ca\'ca\'ca\'ca
+\f0 \uc0\u8232 \'a0\'a0\'a0\'a0
 \f2  Xcode/
-\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca
+\f0 \uc0\u8232 \'a0\'a0\'a0\'a0\'a0\'a0
 \f2  OpenSceneGraph/
-\f3 \uc0\u8232 \'ca\'ca\'ca\'ca\'ca\'ca\'ca\'ca
+\f0 \uc0\u8232 \'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0
 \f2  OpenSceneGraph.xcodeproj
 \f1\fs26 \
 \pard\pardeftab720\sa200\ql\qnatural
@@ -53,8 +45,7 @@
 \f0\b\fs20 \cf0 Step 3 - Build it\
 \pard\pardeftab720\sa260\ql\qnatural
 
-\f1\b0\fs26 \cf0 Now use Xcode to build each of the projects. You should build OpenThreads first and OpenSceneGraph last. If you are using the Xcode 2.1+ projects, there is a cross-project dependency rule already setup for you in the OpenSceneGraph.xcodeproj called "AllStandardTargets" target. If you use this target, you can skip going to the other two projects and just go directly to OpenSceneGraph and it will build OpenThreads for you automatically.\
-You may want to set the build style to Deployment depending on what you are doing. The OpenSceneGraph project gives you multiple targets to select from so you may build everything, or just pieces you want.\
+\f1\b0\fs26 \cf0 Now use Xcode to build each of the projects. You may want to set the build style to Deployment depending on what you are doing. The OpenSceneGraph project gives you multiple targets to select from so you may build everything, or just pieces you want.\
 The binaries will be written to the Xcode build subdirectory (following standard Xcode behavior).\
 To "Install" the Frameworks, you may move the Frameworks to a standard location.\uc0\u8232 ~/Library/Frameworks (for a single user)\u8232 /Library/Frameworks (for system wide installation)\u8232 /Network/Library/Frameworks (for those who understand when this should be used)\u8232 Or you may place them inside your application bundle e.g.\u8232 YourApp.app/Contents/Frameworks\u8232 Simply drag and drop the frameworks to the desired location.\u8232 \u8232 Similarly, to "Install" the Plugins, move the .so files to\u8232 ~/Library/Application Support/OpenSceneGraph/PlugIns\u8232 /Library/Application Support/OpenSceneGraph/PlugIns\u8232 /Network/Library/Application Support/OpenSceneGraph/PlugIns\u8232 Or you may place the ones you need inside your application bundle e.g.\u8232 YourApp.app/Contents/PlugIns\
 \pard\pardeftab720\sa200\ql\qnatural
@@ -64,12 +55,12 @@ To "Install" the Frameworks, you may move the Frameworks to a standard location.
 
 \f1\b0\fs26 \cf0 That's it! Just remember to link using -framework instead of -l, e.g. \uc0\u8232 
 \f2\fs21\fsmilli10563 -framework osg -framework osgUtil -framework OpenThreads
-\f3 \uc0\u8232 
+\f0 \uc0\u8232 
 \f1\fs26 instead of \uc0\u8232 
 \f2\fs21\fsmilli10563 -losg -losgUtil -lOpenThreads\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardeftab720\ql\qnatural\pardirnatural
 
-\f4\fs24 \cf0 Also be aware that if using the 10.4 Universal SDK, you may have to explicitly set the Framework search paths (its an option/field in the build settings for your Target) due to the way Apple modifies the standard search paths when using an SDK.\
+\f3\fs24 \cf0 Also be aware that if using the 10.4 Universal SDK, you may have to explicitly set the Framework search paths (its an option/field in the build settings for your Target) due to the way Apple modifies the standard search paths when using an SDK.\
 
 \f1\fs26 \
 \pard\pardeftab720\sa200\ql\qnatural

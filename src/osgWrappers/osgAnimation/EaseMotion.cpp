@@ -72,6 +72,17 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::InCubicFunction)
 	                "");
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osgAnimation::InElasticFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InElasticFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgAnimation::InOutBounceFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____InOutBounceFunction,
@@ -86,6 +97,17 @@ END_REFLECTOR
 BEGIN_VALUE_REFLECTOR(osgAnimation::InOutCubicFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____InOutCubicFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgAnimation::InOutElasticFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InOutElasticFunction,
 	               "",
 	               "");
 	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
@@ -252,6 +274,17 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::OutCubicFunction)
 	                "");
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osgAnimation::OutElasticFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____OutElasticFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgAnimation::OutQuadFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____OutQuadFunction,
@@ -299,6 +332,12 @@ TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::OutBounceFunctio
 TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InBounceFunction >, osgAnimation::InBounceMotion)
 
 TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InOutBounceFunction >, osgAnimation::InOutBounceMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::OutElasticFunction >, osgAnimation::OutElasticMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InElasticFunction >, osgAnimation::InElasticMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InOutElasticFunction >, osgAnimation::InOutElasticMotion)
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Motion >)
 	I_DeclaringFile("osg/ref_ptr");
@@ -368,6 +407,20 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InCubicFu
 	          "");
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InElasticFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutBounceFunction >)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_BaseType(osgAnimation::Motion);
@@ -383,6 +436,20 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutBoun
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutCubicFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutElasticFunction >)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_BaseType(osgAnimation::Motion);
 	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
@@ -481,6 +548,20 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutBounce
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutCubicFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutElasticFunction >)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_BaseType(osgAnimation::Motion);
 	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,

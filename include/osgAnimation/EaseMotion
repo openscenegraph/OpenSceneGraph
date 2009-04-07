@@ -160,6 +160,41 @@ namespace osgAnimation {
         }
     };
 
+    /// Elastic function
+    struct OutElasticFunction 
+    {
+        inline static void getValueAt(float t, float& result) 
+        {
+            result = pow(2.0f, -10.0f * t) * sinf((t - 0.3f / 4.0f) * (2.0f * osg::PI) / 0.3f) + 1.0f;
+        }
+    };
+
+    struct InElasticFunction 
+    {
+        inline static void getValueAt(float t, float& result) 
+        {
+            OutElasticFunction::getValueAt(1.0f - t, result);
+            result = 1.0f - result;
+        }
+    };
+
+    struct InOutElasticFunction 
+    {
+        inline static void getValueAt(float t, float& result) 
+        {
+            t *= 2.0f;
+            if (t < 1.0f)
+            {
+                t -= 1.0f;
+                result =  -0.5 * (1.0f * pow(2.0f, 10.0f * t) * sinf((t - 0.45f / 4.0f) * (2.0f * osg::PI) / 0.45f));
+            }
+            else
+            {
+                t -= 1.0f;
+                result = pow(2.0f, -10.0f * t) * sinf((t - 0.45f / 4.0f) * (2.0f * osg::PI) / 0.45f) * 0.5f + 1.0f;
+            }
+        }
+    };
 
 
     class Motion : public osg::Referenced
@@ -320,6 +355,10 @@ namespace osgAnimation {
     typedef MathMotionTemplate<InBounceFunction> InBounceMotion;
     typedef MathMotionTemplate<InOutBounceFunction> InOutBounceMotion;
 
+    // elastic
+    typedef MathMotionTemplate<OutElasticFunction > OutElasticMotion;
+    typedef MathMotionTemplate<InElasticFunction > InElasticMotion;
+    typedef MathMotionTemplate<InOutElasticFunction > InOutElasticMotion;
 
 }
 

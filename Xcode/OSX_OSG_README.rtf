@@ -1,12 +1,12 @@
-{\rtf1\ansi\ansicpg1252\cocoartf949
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf430
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;\f2\fnil\fcharset0 Monaco;
 }
-{\colortbl;\red255\green255\blue255;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
 {\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid1}
 {\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid2}
 {\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc2\leveljcn2\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid0\'02\'05.;}{\levelnumbers\'01;}}{\listname ;}\listid3}}
 {\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}}
-\margl1440\margr1440\vieww11520\viewh13720\viewkind0
+\margl1440\margr1440\vieww12820\viewh18900\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \f0\b\fs24 \cf0 OpenSceneGraph on Mac OS X
@@ -27,12 +27,10 @@ Screencasts of how to install and get going with OSG for Mac OS X can be found h
 \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\b \cf0 Special Notes for Leopard:\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\b Special Notes for Leopard:\
 
-\b0 \cf0 (See {\field{\*\fldinst{HYPERLINK "http://www.openscenegraph.org/projects/osg/wiki/Support/PlatformSpecifics/MacOSX10.5"}}{\fldrslt http://www.openscenegraph.org/projects/osg/wiki/Support/PlatformSpecifics/MacOSX10.5}} for up-to-date information.)\
+\b0 (See {\field{\*\fldinst{HYPERLINK "http://www.openscenegraph.org/projects/osg/wiki/Support/PlatformSpecifics/MacOSX10.5"}}{\fldrslt http://www.openscenegraph.org/projects/osg/wiki/Support/PlatformSpecifics/MacOSX10.5}} for up-to-date information.)\
 \
 
 \b Broken Binary Compatibility:
@@ -79,8 +77,10 @@ collect2: ld returned 1 exit status\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \
 Apple has a posted a Technical Q&A (QA1567) on this entitled "Compiling X11 / OpenGL applications on Mac OS X v.10.5 Leopard"\
-{\field{\*\fldinst{HYPERLINK "http://developer.apple.com/qa/qa2007/qa1567.html"}}{\fldrslt http://developer.apple.com/qa/qa2007/qa1567.html\
-}}\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+{\field{\*\fldinst{HYPERLINK "http://developer.apple.com/qa/qa2007/qa1567.html"}}{\fldrslt \cf0 http://developer.apple.com/qa/qa2007/qa1567.html\
+}}\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 \
 Some people have reported a problem similar to this and/or used the solution posted in this Q&A to resolve a problem building the osgdb_freetype plugin. However, I believe this is the wrong solution to this specific problem. In the osgdb_freetype case, the problem was one of two things:\
 1) The wrong libfreetype.dylib was being used (wrong SDK)\
 2) The libfreetype.dylib was not found (wrong path)\
@@ -105,24 +105,21 @@ This is now fixed in the Xcode project in Subversion.\
 
 \b 64-bit:\
 
-\b0 OSG for OS X 64-bit is not ready. There are two major obstacles:\
-1) osgViewer\
-2) osgdb_qt\
+\b0 OSG for OS X 64-bit is now 64bit ready.\
 \
-The osgViewer backend is written in Carbon and as far as I know, uses some deprecated APIs that are not available in 64-bit. I do not know if this can be easily cleaned up or not. However, I still believe the better long term solution is for a Cocoa based osgViewer backend to be written. However, nothing yet has been written for this as far as I know.\
+If you are using CMake:\
 \
-The example, osgviewerCocoa is close to if not already 64-bit clean. However, because the example uses osgViewer::GraphicsWindowEmbedded which needlessly pulls in all the osgViewer Carbon backend dependencies, you will be unable to actually build osgviewerCocoa as 64-bit. But if you are in a hurry to get 64-bit on OS X, this might be where you want to start. Either strip away the Carbon dependencies from osgViewer, or take osgviewerCocoa and transform it into a Cocoa backend for osgViewer.\
+set OSG_WINDOWING_SYSTEM to Cocoa\
+set OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX to imageio\
 \
+this will instruct CMake to use the Cocoa backend and the imageio-plugin for images. The quicktime-plugin (which is not 64bit ready) will be discarded.\
 \
-osgdb_qt is a QuickTime based plugin that handles all image handling and movie handling on OS X. However, it is based on the old QuickTime API which has been marked deprecated and will not survive the 64-bit transition. Thus this plugin needs to be replaced.\
+If you are using the XCode-projects:\
 \
-I have already submitted a new plugin called osgdb_ImageIO to osgSubmissions which attempts to assume all the image handling duties. This plugin is based on Apple's ImageIO framework which is the new low-level entry point to deal with all image types handled by the platform. Thus this plugin should handle a lot more image formats than the old QuickTime plugin (e.g. JPEG2000, RAW, etc) and will get more as Apple adds support their system. It also adds support for C++ stream support which was missing from the QuickTime plugin. ImageIO is available on 10.4 and 10.5.\
+Open the project-settings: use the build configuration "Development 64bit Cocoa" or "Deployment 64bit Cocoa". This will set\
 \
-However, the osgdb_ImageIO plugin does not handle movies unlike the old QuickTime plugin. The current plan is to introduce a second plugin (osgdb_QTKit), which is based on the new QuickTime Kit framework (10.4 and 10.5). This plugin will replace the movie handling capabilities of the old QuickTime plugin. \
+\cf2 \CocoaLigature0 USE_DARWIN_COCOA_IMPLEMENTATION to 1 and compile the cocoa-backend.\cf0 \CocoaLigature1 \
 \
-Once both new plugins are in place and osgViewer is sorted out, we should be able to build a 32-bit/64-bit Universal Binary of OSG for OS X.\
-\
-Mac OS X 10.3 and earlier users and QuickTime for Windows users will still need to use the old QuickTime plugin.\
 \
 
 \b Xcode Project Templates:\
@@ -149,18 +146,16 @@ Also note you may place it in per-user locations, e.g.\
 \cf0 \
 \
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\b \cf0 What's New in this release (2.2):
+\b What's New in this release (2.2):
 \b0 \
 \pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\ql\qnatural\pardirnatural
 \ls1\ilvl0\cf0 (Sorry, no OS X specific notes.)\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\b \cf0 Notes for 2.0 release:\
+\b Notes for 2.0 release:\
 \pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\ql\qnatural\pardirnatural
 \ls2\ilvl0
 \b0 \cf0 {\listtext	\'95	}OpenThreads now uses Subversion 'externals' to make it look like part of the OSG source distribution.\
@@ -183,12 +178,10 @@ With Leopard on the horizon, the need to deal with 64-bit readiness and deprecat
 \
 \
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\b \cf0 Notes for 1.2 release:\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\b Notes for 1.2 release:\
 
-\b0 \cf0 1.2 was originally intended as a bug fix release for 1.1 (going for 1.1.1), but OSG broke ABI again so the number was bumped to 1.2. There are no significant changes to the Xcode projects or significant OS X specific changes.\
+\b0 1.2 was originally intended as a bug fix release for 1.1 (going for 1.1.1), but OSG broke ABI again so the number was bumped to 1.2. There are no significant changes to the Xcode projects or significant OS X specific changes.\
 \
 Since the 1.1 release, we have learned of serious problems (freezing of the window manager) on the (Intel) MacBook Pros using osgText. We believe the problem is with a serious driver bug for ATI in OS X 10.4.7. We believe the bug affects the ATI Radeon X1600. (You can get this string by calling glGetString(GL_RENDERER) when you have a valid OpenGL Context. The string returned to us on affected MacBook Pros is "ATI Radeon X1600 OpenGL Engine".)\
 \
@@ -262,9 +255,8 @@ If you are affected by this, please file a bug report at {\field{\*\fldinst{HYPE
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \b \cf0 Notes for 1.1 release:\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\b0 \cf0 We are now distributing Universal Binaries. These binaries were built using Xcode 2.3 and gcc 4.0.1.\
+\b0 We are now distributing Universal Binaries. These binaries were built using Xcode 2.3 and gcc 4.0.1.\
 The Xcode projects are also set to build as Universal Binaries for both Development and Deployment\
 targets. If you do not need this and want to save build time, you should change the architecture option\
 to your desired setting (most likely to $(NATIVE_ARCH)). It is overridden in the top-level "OpenSceneGraph" project in the Group & Files panel. Don't forget to change OpenThreads \
@@ -285,9 +277,8 @@ PlugIns, the file size shrunk from about 1GB to about 100MB.\
 We have stopped maintaining the Xcode 1.5/2.0 projects.\
 \
 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\b \cf0 Notes for 1.0 release:
+\b Notes for 1.0 release:
 \b0 \
 These projects were primarily developed with gcc 4.0.1 under Tiger 10.4.3 using Xcode 2.2. Starting with gcc 4.0, Apple no longer statically links in the C++ runtime. Apple has made available the g++ 4.0 dynamic runtime for Panther under the 10.3.9 release. To run under Panther, your system must have this update (or you must recompile the binaries for your system).\
 \
@@ -387,9 +378,8 @@ Also remember that OSG will still respond to standard OSG environmental variable
 \
 
 \b Prebinding Addresses:\
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\b0 \cf0 \
+\b0 \
 	These are now obsolete. Prebinding is now disabled. The old addresses were:\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -490,9 +480,8 @@ If you are compiling under Xcode 1.5 and are using our Xcode 1.5/2.0 projects, t
 {\listtext	\'95	}I noticed that for some reason, Xcode has problems compiling the Carbon header with the OpenThreads framework when autovectorization and precompiled headers were enabled. You might try disabling precompiled headers if it is not already. If the problem persists, you may also need to delete the entry that enables autovectorization. In the Groups and Files panel (left side panel), open the Info inspector for the project (top item) and click on the Build tab. Scroll down to the bottom, and remove the autovectorization option. \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 \cf0 \
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\b \cf0 Universal Binaries:
+\b Universal Binaries:
 \b0 \
 \
 Be aware, when building you're own Universal Binaries and you use the 10.4 SDK, you must explicitly\

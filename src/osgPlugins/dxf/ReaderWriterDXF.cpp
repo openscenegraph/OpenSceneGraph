@@ -17,8 +17,10 @@
 #include <map>
 #include <iostream>
 #include <utility>
+
 #include <string>
 #include <sstream>
+#include <string.h>
 
 #include "dxfFile.h"
 
@@ -46,10 +48,38 @@ REGISTER_OSGPLUGIN(dxf, ReaderWriterdxf)
 
 // read file and convert to OSG.
 osgDB::ReaderWriter::ReadResult 
-ReaderWriterdxf::readNode(const std::string& filename, const osgDB::ReaderWriter::Options*) const
+ReaderWriterdxf::readNode(const std::string& filename, const osgDB::ReaderWriter::Options* options) const
 {
     std::string ext = osgDB::getFileExtension(filename);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+    // extract accuracy options if available
+    if (options) {
+        bool useAccuracy=false;  // if we specify accuracy of curve rendering or not
+        double maxError=0.0;     // if useAccuracy - the accuracy (max deviation) from the arc
+        bool improveAccuracyOnly=false; // if true only use the given accuracy if it would improve the curve compared to the previous implementation
+                                        // Thus you can ensure that large curves get rendered better but small ones don't get worse
+        
+        std::string optionsstring=options->getOptionString();
+        
+        size_t accstart=optionsstring.find("Accuracy(");
+        if (accstart>=0) {
+            const char* start=optionsstring.c_str() + accstart + strlen("Accuracy(");
+            if (sscanf(start,"%lf",&maxError)==1) useAccuracy=true;
+        }
+        if (useAccuracy) {
+            // Option to only use the new accuracy code when it would improve on the accuracy of the old method
+            if (optionsstring.find("ImproveAccuracyOnly") != std::string::npos) {
+                improveAccuracyOnly=true;
+            } 
+            // Pull out the initial dxfArc copy from the registry and set accuracy there. 
+            // When actual dxfArcs/Circles are created they will inherit these parameters from the exemplar
+            dxfEntity::getRegistryEntity("ARC")->setAccuracy(true,maxError,improveAccuracyOnly);
+            dxfEntity::getRegistryEntity("CIRCLE")->setAccuracy(true,maxError,improveAccuracyOnly); 
+        } // accuracy options exists
+    } // options exist
+
+
     // Open
     dxfFile df(filename);
     if (df.parseFile()) {

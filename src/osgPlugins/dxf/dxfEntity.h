@@ -60,16 +60,29 @@ getOCSMatrix(const osg::Vec3d& ocs, osg::Matrixd& m)
 class dxfBasicEntity : public osg::Referenced
 {
 public:
-    dxfBasicEntity() : _color(0) {}
+    dxfBasicEntity() : _color(0), _useAccuracy(false), _maxError(0.01), _improveAccuracyOnly(false) {}
     virtual ~dxfBasicEntity() {}
     virtual dxfBasicEntity* create() = 0;
     virtual const char* name() = 0;
     virtual void assign(dxfFile* dxf, codeValue& cv);
     virtual void drawScene(scene*) {}
     const std::string getLayer() const { return _layer; }
+
+    void setAccuracy(bool useAccuracy,double maxError,bool improveAccuracyOnly) {
+        _useAccuracy=useAccuracy;
+        _maxError=maxError;
+        _improveAccuracyOnly=improveAccuracyOnly;
+    }
+
+
 protected:
     std::string    _layer;
     unsigned short    _color;
+
+    bool _useAccuracy;          // true to specify a maximum deviation for curve rendering
+    double _maxError;         // the error in model units, if _useAccuracy==true
+    bool _improveAccuracyOnly;// if true only use _maxError where it would increase the quality of curves compared to the previous algorithm
+
 };
 
 
@@ -78,7 +91,11 @@ class dxfCircle : public dxfBasicEntity
 public:
     dxfCircle() : _radius(0), _ocs(0,0,1) {}
     virtual ~dxfCircle() {}
-    virtual dxfBasicEntity* create() { return new dxfCircle; }
+    virtual dxfBasicEntity* create() { // we create a copy which uses our accuracy settings
+        dxfBasicEntity* circle=new dxfCircle; 
+        circle->setAccuracy(_useAccuracy,_maxError,_improveAccuracyOnly);
+        return circle;
+    }
     virtual const char* name() { return "CIRCLE"; }
     virtual void assign(dxfFile* dxf, codeValue& cv);
     virtual void drawScene(scene* sc);
@@ -93,7 +110,12 @@ class dxfArc : public dxfBasicEntity
 public:
     dxfArc() : _radius(0), _startAngle(0), _endAngle(360), _ocs(0,0,1) {}
     virtual ~dxfArc() {}
-    virtual dxfBasicEntity* create() { return new dxfArc; }
+    virtual dxfBasicEntity* create() { // we create a copy which uses our accuracy settings
+        dxfBasicEntity* arc=new dxfArc; 
+        arc->setAccuracy(_useAccuracy,_maxError,_improveAccuracyOnly);
+        //std::cout<<"dxfArc::create with _useAccuracy="<<_useAccuracy<<" maxError="<<_maxError<<" improveAccuracyOnly="<<_improveAccuracyOnly<<std::endl;
+        return arc;
+    }
     virtual const char* name() { return "ARC"; }
     virtual void assign(dxfFile* dxf, codeValue& cv);
     virtual void drawScene(scene* sc);
@@ -304,7 +326,7 @@ protected:
 class dxfEntity : public osg::Referenced
 {
 public:
-    dxfEntity(std::string s) : _entity(NULL), _seqend(false) 
+    dxfEntity(std::string s) : _entity(NULL), _seqend(false)
     {
         _entity = findByName(s);
         if (_entity) {
@@ -329,11 +351,19 @@ public:
     virtual void drawScene(scene* sc);
     dxfBasicEntity* getEntity() { return _entity; }
 
+    // Returns the exemplar from the registry - all other entities of this type are created by this one via entity->create
+    static dxfBasicEntity* getRegistryEntity(std::string s) {
+            return _registry[s].get();
+    }
+
 protected:
     std::vector<osg::ref_ptr<dxfBasicEntity> > _entityList;
     static std::map<std::string, osg::ref_ptr<dxfBasicEntity> > _registry;
     dxfBasicEntity* _entity;
     bool    _seqend; // bypass 0 codes. needs a 0 seqend to close.
+
+
+
 };
 
 /** Proxy class for automatic registration of dxf entities reader/writers.*/

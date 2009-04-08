@@ -52,6 +52,9 @@ public:
     {
         supportsExtension("x","DirectX scene format");
         supportsOption("flipTexture", "flip texture upside-down");
+        // made hand switching an option - .x models from XSI's export are right-handed already
+        supportsOption("rightHanded", "prevents reader from switching handedness for right handed files");
+        supportsOption("leftHanded", "reader switches handedness for left handed files");
     }
 
     virtual const char* className() const {
@@ -61,10 +64,10 @@ public:
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
 
 private:
-    osg::Group * convertFromDX(DX::Object & obj, bool flipTexture, float creaseAngle,
+    osg::Group * convertFromDX(DX::Object & obj, bool switchHands, bool flipTexture, float creaseAngle,
             const osgDB::ReaderWriter::Options * options) const;
 
-    osg::Geode * convertFromDX(DX::Mesh & mesh, bool flipTexture, float creaseAngle,
+    osg::Geode * convertFromDX(DX::Mesh & mesh, bool switchHands, bool flipTexture, float creaseAngle,
             const osgDB::ReaderWriter::Options * options) const;
 };
 
@@ -94,10 +97,17 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
     local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
     // Options?
-    bool flipTexture = true;
+    bool flipTexture = true; 
+    bool switchHands = true; // when true: swap y and z for incoming files
     float creaseAngle = 80.0f;
     if (options) {
         const std::string option = options->getOptionString();
+        if(option.find("rightHanded") != std::string::npos) { 
+            switchHands=false;
+        }
+        if(option.find("leftHanded") != std::string::npos) { 
+            switchHands=true;
+        }
         if (option.find("flipTexture") != std::string::npos) {
             flipTexture = false;
         }
@@ -107,7 +117,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
     }
 
     // Convert to osg::Group
-    osg::Group* group = convertFromDX(obj, flipTexture, creaseAngle, local_opt.get());
+    osg::Group* group = convertFromDX(obj, switchHands, flipTexture, creaseAngle, local_opt.get());
     if (!group) {
         return ReadResult::ERROR_IN_READING_FILE;
     }
@@ -116,7 +126,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
 }
 
 // Convert DirectX object
-osg::Group * ReaderWriterDirectX::convertFromDX(DX::Object & obj,
+osg::Group * ReaderWriterDirectX::convertFromDX(DX::Object & obj, bool switchHands,
                                                 bool flipTexture, float creaseAngle,
                                                 const osgDB::ReaderWriter::Options * options) const
 {
@@ -125,7 +135,7 @@ osg::Group * ReaderWriterDirectX::convertFromDX(DX::Object & obj,
     for (unsigned int i = 0; i < obj.getNumMeshes(); ++i) {
         //std::cerr << "converting mesh " << i << std::endl;
         DX::Mesh & mesh = *obj.getMesh(i);
-        osg::Geode * geode = convertFromDX(mesh, flipTexture, creaseAngle, options);
+        osg::Geode * geode = convertFromDX(mesh, switchHands, flipTexture, creaseAngle, options);
         if (!geode) {
             return 0;
         }
@@ -136,7 +146,7 @@ osg::Group * ReaderWriterDirectX::convertFromDX(DX::Object & obj,
 }
 
 // Convert DirectX mesh to osg::Geode
-osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh,
+osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh, bool switchHands,
                                                bool flipTexture, float creaseAngle,
                                                const osgDB::ReaderWriter::Options * options) const
 {
@@ -169,6 +179,10 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh,
      *   obj_x -> osg_x
      *   obj_y -> osg_z
      *   obj_z -> osg_y
+     *
+     * - aa: Changed always change left to right hand to an option that allows
+     *   us to read right-handed models as-is.  Our modeler is using XSI, which
+     *   exports to right-handed system.
      *
      * - Polys are CW oriented
      */
@@ -294,29 +308,38 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh,
 
             // Convert CW to CCW order
             unsigned int jj = (j > 0 ? np - j : j);
+            if(!switchHands) jj=j;
 
             // Vertices
             unsigned int vi = faces[i][jj];
             if (vertexArray) {
-                // Transform Xleft/Yup/Zinto to Xleft/Yinto/Zup
                 const DX::Vector & v = mesh.getVertices()[vi];
-                vertexArray->push_back(osg::Vec3(v.x,v.z,v.y));
+                if(switchHands)// Transform Xleft/Yup/Zinto to Xleft/Yinto/Zup
+                    vertexArray->push_back(osg::Vec3(v.x,v.z,v.y));
+                else
+                    vertexArray->push_back(osg::Vec3(v.x,v.y,v.z));
             }
 
             // Normals
             unsigned int ni = meshNormals->faceNormals[i][jj];
             if (normalArray) {
-                // Transform Xleft/Yup/Zinto to Xleft/Yinto/Zup
                 const DX::Vector& n = meshNormals->normals[ni];
-                normalArray->push_back(osg::Vec3(n.x,n.z,n.y));
+                if(switchHands)// Transform Xleft/Yup/Zinto to Xleft/Yinto/Zup
+                    normalArray->push_back(osg::Vec3(n.x,n.z,n.y));
+                else
+                    normalArray->push_back(osg::Vec3(n.x,n.y,n.z));
             }
 
             // TexCoords
             if (texCoordArray) {
                 const DX::Coords2d& tc = (*meshTexCoords)[vi];
                 osg::Vec2 uv;
-                if (flipTexture)
-                    uv.set(tc.u, 1.0f - tc.v); // Image is upside down
+                if (flipTexture){
+                    if(switchHands)
+                        uv.set(tc.u, 1.0f - tc.v); // Image is upside down
+                    else
+                        uv.set(1.0f - tc.u, 1.0f - tc.v); // Image is 180 degrees
+                }
                 else
                     uv.set(tc.u, tc.v);
                 texCoordArray->push_back(uv);

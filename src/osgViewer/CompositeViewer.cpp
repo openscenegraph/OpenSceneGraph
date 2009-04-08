@@ -17,6 +17,7 @@
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/Renderer>
 #include <osgDB/Registry>
+#include <osgDB/ReadFile>
 
 #include <osg/io_utils>
 
@@ -107,12 +108,19 @@ CompositeViewer::~CompositeViewer()
         (*citr)->close();
     }
 
-    osg::notify(osg::INFO)<<"finished CompositeViewer::~CompsiteViewer()"<<std::endl;
+    osg::notify(osg::INFO)<<"finished CompositeViewer::~CompositeViewer()"<<std::endl;
 }
 
 bool CompositeViewer::readConfiguration(const std::string& filename)
 {
     osg::notify(osg::NOTICE)<<"CompositeViewer::readConfiguration("<<filename<<")"<<std::endl;
+    osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(filename);
+    osgViewer::View * view = dynamic_cast<osgViewer::View *>(obj.get());
+    if (view)
+    {
+        addView(view);
+        return true;
+    }
     return false;
 }
 

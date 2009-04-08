@@ -105,7 +105,23 @@ Program::Program() :
 Program::Program(const Program& rhs, const osg::CopyOp& copyop):
     osg::StateAttribute(rhs, copyop)
 {
-    osg::notify(osg::FATAL) << "how got here?" << std::endl;
+    for( unsigned int shaderIndex=0; shaderIndex < rhs.getNumShaders(); ++shaderIndex )
+    {
+        addShader( new osg::Shader( *rhs.getShader( shaderIndex ), copyop ) );
+    }
+
+    const osg::Program::AttribBindingList &abl = rhs.getAttribBindingList();
+    for( osg::Program::AttribBindingList::const_iterator attribute = abl.begin(); attribute != abl.end(); ++attribute )
+    {
+        addBindAttribLocation( attribute->first, attribute->second );
+    }
+
+    const osg::Program::FragDataBindingList &fdl = rhs.getFragDataBindingList();
+    for( osg::Program::FragDataBindingList::const_iterator fragdata = fdl.begin(); fragdata != fdl.end(); ++fragdata )
+    {
+        addBindFragDataLocation( fragdata->first, fragdata->second );
+    }
+
     _geometryVerticesOut = rhs._geometryVerticesOut;
     _geometryInputType = rhs._geometryInputType;
     _geometryOutputType = rhs._geometryOutputType;

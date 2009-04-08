@@ -425,8 +425,10 @@ int StateSet::compare(const StateSet& rhs,bool compareAttributeContents) const
     {
         if      (lhs_uniform_itr->first<rhs_uniform_itr->first) return -1;
         else if (rhs_uniform_itr->first<lhs_uniform_itr->first) return 1;
-        if      (lhs_uniform_itr->second<rhs_uniform_itr->second) return -1;
-        else if (rhs_uniform_itr->second<lhs_uniform_itr->second) return 1;
+        if      (*lhs_uniform_itr->second.first<*rhs_uniform_itr->second.first) return -1;
+        else if (*rhs_uniform_itr->second.first<*lhs_uniform_itr->second.first) return 1;
+        if      (lhs_uniform_itr->second.second<rhs_uniform_itr->second.second) return -1;
+        else if (rhs_uniform_itr->second.second<lhs_uniform_itr->second.second) return 1;
         ++lhs_uniform_itr;
         ++rhs_uniform_itr;
     }

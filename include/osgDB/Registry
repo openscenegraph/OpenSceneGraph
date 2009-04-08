@@ -562,7 +562,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         friend struct ReadShaderFunctor;
 
         ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);
-        ReaderWriter::ReadResult readImplementation(const ReadFunctor& readFunctor,bool useObjectCache);
+        ReaderWriter::ReadResult readImplementation(const ReadFunctor& readFunctor,ReaderWriter::Options::CacheHintOptions cacheHint);
 
 
         // forward declare helper class

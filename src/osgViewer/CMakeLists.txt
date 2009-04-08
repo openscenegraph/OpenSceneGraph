@@ -163,8 +163,9 @@ LINK_INTERNAL(${LIB_NAME}
     osgUtil
     osg
     OpenThreads
-    ${LIB_EXTRA_LIBS}
 )
+
+LINK_EXTERNAL(${LIB_NAME} ${LIB_EXTRA_LIBS})
 
 LINK_CORELIB_DEFAULT(${LIB_NAME})
 

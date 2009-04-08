@@ -131,6 +131,7 @@ void Object::parseSection(ifstream& fin)
                 Mesh * mesh = new Mesh(this);
                 _meshes.push_back(mesh);
                 mesh->parseMesh(fin);
+                osg::notify(osg::INFO) << "Mesh " << (token.size()>1?token[1]:"") << endl;
             }
             else if (token[0] == "Material") {
                 //
@@ -144,9 +145,11 @@ void Object::parseSection(ifstream& fin)
                 }
                 parseMaterial(fin, mm);
                 _globalMaterials.push_back(mm);
+                osg::notify(osg::INFO) << "Material " << (token.size()>1?token[1]:"") << endl;
             }
             else if (token[0] == "Frame") {
-                parseFrame(fin);
+                //parseFrame(fin);
+                parseSection(fin);
             }
             else {
                 //cerr << "!!! Begin section " << token[0] << endl;

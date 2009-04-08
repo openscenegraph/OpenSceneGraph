@@ -2792,6 +2792,8 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Geode* geode, unsigned int 
     }
 
     osg::ref_ptr<osg::Group> group = new osg::Group;
+    group->setName(geode->getName());
+    group->setStateSet(geode->getStateSet());
     for(i=0; i<geode->getNumDrawables(); ++i)
     {
         osg::Geode* newGeode = new osg::Geode;

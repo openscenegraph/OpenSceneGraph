@@ -17,6 +17,7 @@
 
 #if defined(WIN32) && !defined(__CYGWIN__)
     #include <io.h>
+    #define WINBASE_DECLARE_GET_MODULE_HANDLE_EX
     #include <windows.h>
     #include <winbase.h>
     #include <sys/types.h>
@@ -86,6 +87,7 @@ namespace osgDB
 #define OSGDB_FILENAME_TO_STRING(s) osgDB::convertUTF16toUTF8(s)
 #define OSGDB_FILENAME_TEXT(x) L ## x
 #define OSGDB_WINDOWS_FUNCT(x) x ## W
+#define OSGDB_WINDOWS_FUNCT_STRING(x) L ## #x L"W"
 typedef wchar_t filenamechar;
 typedef std::wstring filenamestring;
 #else
@@ -93,6 +95,7 @@ typedef std::wstring filenamestring;
 #define OSGDB_FILENAME_TO_STRING(s) s
 #define OSGDB_FILENAME_TEXT(x) x
 #define OSGDB_WINDOWS_FUNCT(x) x ## A
+#define OSGDB_WINDOWS_FUNCT_STRING(x) #x "A"
 typedef char filenamechar;
 typedef std::string filenamestring;
 #endif
@@ -648,7 +651,45 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
                 "using Win32 API. It will not be searched." << std::endl;
         }
 
-        //   2. The system directory. Use the GetSystemDirectory function to 
+        //   2. The directory that the dll that contains this function is in.
+        // For static builds, this will be the executable directory.
+
+        // Requires use of the GetModuleHandleEx() function which is available only on Windows XP or higher.
+        // In order to allow execution on older versions, we load the function dynamically from the library and
+        // use it only if it's available.
+        bool addedDllDirectory = false;
+        OSGDB_WINDOWS_FUNCT(PGET_MODULE_HANDLE_EX) pGetModuleHandleEx = reinterpret_cast<OSGDB_WINDOWS_FUNCT(PGET_MODULE_HANDLE_EX)>
+            (GetProcAddress( GetModuleHandleA("kernel32.dll"), OSGDB_WINDOWS_FUNCT_STRING(GetModuleHandleEx)));
+        if( pGetModuleHandleEx )
+        {
+            HMODULE thisModule = 0;
+            static char static_variable = 0;    // Variable that is located in DLL address space.
+
+            if( pGetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, &static_variable, &thisModule) )
+            {
+                retval = OSGDB_WINDOWS_FUNCT(GetModuleFileName)(thisModule, path, size);
+                if (retval != 0 && retval < size)
+                {
+                    filenamestring pathstr(path);
+                    filenamestring dllDir(pathstr, 0, 
+                                              pathstr.find_last_of(OSGDB_FILENAME_TEXT("\\/")));
+                    convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(dllDir), filepath);
+                    addedDllDirectory = true;
+                }
+                else
+                {
+                    osg::notify(osg::WARN) << "Could not get dll directory "
+                        "using Win32 API. It will not be searched." << std::endl;
+                }
+            }
+            else
+            {
+                osg::notify(osg::WARN) << "Could not get dll module handle "
+                    "using Win32 API. Dll directory will not be searched." << std::endl;
+            }
+        }
+
+        //   3. The system directory. Use the GetSystemDirectory function to 
         //      get the path of this directory.
         filenamechar systemDir[(UINT)size];
         retval = OSGDB_WINDOWS_FUNCT(GetSystemDirectory)(systemDir, (UINT)size);
@@ -666,9 +707,9 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
                                               filepath);
         }
 
-        //   3. The 16-bit system directory. There is no function that obtains 
+        //   4. The 16-bit system directory. There is no function that obtains 
         //      the path of this directory, but it is searched.
-        //   4. The Windows directory. Use the GetWindowsDirectory function to 
+        //   5. The Windows directory. Use the GetWindowsDirectory function to 
         //      get the path of this directory.
         filenamechar windowsDir[(UINT)size];
         retval = OSGDB_WINDOWS_FUNCT(GetWindowsDirectory)(windowsDir, (UINT)size);
@@ -688,10 +729,10 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
         }
 
 
-        //   5. The current directory.
+        //   6. The current directory.
         convertStringPathIntoFilePathList(".", filepath);
 
-        //   6. The directories that are listed in the PATH environment 
+        //   7. The directories that are listed in the PATH environment 
         //      variable. Note that this does not include the per-application 
         //      path specified by the App Paths registry key.
         filenamechar* ptr;

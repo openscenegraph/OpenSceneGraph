@@ -69,7 +69,7 @@ class AdapterWidget : public QGLWidget
         virtual void mousePressEvent( QMouseEvent* event );
         virtual void mouseReleaseEvent( QMouseEvent* event );
         virtual void mouseMoveEvent( QMouseEvent* event );
-
+        virtual void wheelEvent(QWheelEvent *event);
         osg::ref_ptr<osgViewer::GraphicsWindowEmbedded> _gw;
 };
 
@@ -87,6 +87,7 @@ AdapterWidget::AdapterWidget( QWidget * parent, const char * name, const QGLWidg
     setFocusPolicy(QWidget::ClickFocus);
 #endif
 }
+
 
 void AdapterWidget::resizeGL( int width, int height )
 {
@@ -145,6 +146,11 @@ void AdapterWidget::mouseMoveEvent( QMouseEvent* event )
     _gw->getEventQueue()->mouseMotion(event->x(), event->y());
 }
 
+void AdapterWidget::wheelEvent(QWheelEvent *event)
+{    
+    _gw->getEventQueue()->mouseScroll((event->delta()>0) ?             
+            osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN);
+}
 
 class ViewerQT : public osgViewer::Viewer, public AdapterWidget
 {
@@ -264,6 +270,7 @@ int mainAdapterWidget(QApplication& a, osg::ArgumentParser& arguments)
 
         viewerWindow->setCameraManipulator(new osgGA::TrackballManipulator);
         viewerWindow->setSceneData(loadedModel.get());
+        viewerWindow->addEventHandler(new osgViewer::StatsHandler);
 
         viewerWindow->show();
     }    

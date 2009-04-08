@@ -123,8 +123,8 @@ void CompositeViewer::addView(osgViewer::View* view)
 
     bool alreadyRealized = isRealized();
     
-    bool threadsWereRuinning = _threadsRunning;
-    if (threadsWereRuinning) stopThreading();
+    bool threadsWereRunning = _threadsRunning;
+    if (threadsWereRunning) stopThreading();
 
     _views.push_back(view);
     
@@ -171,7 +171,7 @@ void CompositeViewer::addView(osgViewer::View* view)
 
     }
     
-    if (threadsWereRuinning) startThreading();
+    if (threadsWereRunning) startThreading();
 }
 
 void CompositeViewer::removeView(osgViewer::View* view)
@@ -182,14 +182,14 @@ void CompositeViewer::removeView(osgViewer::View* view)
     {
         if (*itr == view)
         {
-            bool threadsWereRuinning = _threadsRunning;
-            if (threadsWereRuinning) stopThreading();
+            bool threadsWereRunning = _threadsRunning;
+            if (threadsWereRunning) stopThreading();
 
             view->_viewerBase = 0;
 
             _views.erase(itr);
 
-            if (threadsWereRuinning) startThreading();
+            if (threadsWereRunning) startThreading();
 
             return;
         }

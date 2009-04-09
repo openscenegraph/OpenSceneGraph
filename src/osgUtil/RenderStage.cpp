@@ -1209,8 +1209,8 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
     // set up the back buffer.
     state.applyAttribute(_viewport.get());
 
-#define USE_SISSOR_TEST
-#ifdef USE_SISSOR_TEST
+#define USE_SCISSOR_TEST
+#ifdef USE_SCISSOR_TEST
     glScissor( static_cast<int>(_viewport->x()),
                static_cast<int>(_viewport->y()),
                static_cast<int>(_viewport->width()),
@@ -1242,7 +1242,7 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
 
     glClear( _clearMask );
     
-#ifdef USE_SISSOR_TEST
+#ifdef USE_SCISSOR_TEST
     glDisable( GL_SCISSOR_TEST );
 #endif
 

@@ -30,7 +30,6 @@ IF(MSVC)
         SET(SYSTEM_NAME "win32")
     ENDIF()
 ENDIF()
-
 # Guess the compiler (is this desired for other platforms than windows?)
 IF(NOT DEFINED OSG_CPACK_COMPILER)
     INCLUDE(OsgDetermineCompiler)
@@ -40,9 +39,9 @@ ENDIF()
 SET(OSG_CPACK_COMPILER "${OSG_COMPILER}" CACHE STRING "This ia short string (vc90, vc80sp1, gcc-4.3, ...) describing your compiler. The string is used for creating package filenames")
 
 IF(OSG_CPACK_COMPILER)
-    SET(OSG_CPACK_SYSTEM_SPEC_STRING ${SYSTEM_NAME}-${SYSTEM_ARCH}-${OSG_CPACK_COMPILER})
+  SET(OSG_CPACK_SYSTEM_SPEC_STRING ${SYSTEM_NAME}-${SYSTEM_ARCH}-${OSG_CPACK_COMPILER})
 ELSE()
-    SET(OSG_CPACK_SYSTEM_SPEC_STRING ${SYSTEM_NAME}-${SYSTEM_ARCH})
+  SET(OSG_CPACK_SYSTEM_SPEC_STRING ${SYSTEM_NAME}-${SYSTEM_ARCH})
 ENDIF()
 
 
@@ -50,7 +49,11 @@ ENDIF()
 SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${OPENSCENEGRAPH_VERSION}")
 
 # these goes for all platforms. Setting these stops the CPack.cmake script from generating options about other package compression formats (.z .tz, etc.)
-SET(CPACK_GENERATOR "TGZ")
+IF(WIN32)
+    SET(CPACK_GENERATOR "ZIP")
+ELSE()
+    SET(CPACK_GENERATOR "TGZ")
+ENDIF()
 SET(CPACK_SOURCE_GENERATOR "TGZ")
 
 
@@ -81,10 +84,6 @@ ENDIF()
 SET(PACKAGE_ALL_TARGETNAME "${PACKAGE_TARGET_PREFIX}ALL")
 ADD_CUSTOM_TARGET(${PACKAGE_ALL_TARGETNAME})
 
-#=============================
-# Macro:
-#    GENERATE_PACKAGING_TARGET()
-#
 MACRO(GENERATE_PACKAGING_TARGET package_name)
     SET(CPACK_PACKAGE_NAME ${package_name})
 
@@ -103,10 +102,17 @@ MACRO(GENERATE_PACKAGING_TARGET package_name)
     SET(PACKAGE_TARGETNAME "${PACKAGE_TARGET_PREFIX}${package_name}")
 
     # This is naive and will probably need fixing eventually
-    IF(WIN32)
+    IF(MSVC)
         SET(MOVE_COMMAND "move")
     ELSE()
         SET(MOVE_COMMAND "mv")
+    ENDIF()
+
+    # Set in and out archive filenames. Windows = zip, others = tar.gz
+    IF(WIN32)
+        SET(ARCHIVE_EXT "zip")
+    ELSE()
+        SET(ARCHIVE_EXT "tar.gz")
     ENDIF()
     
     # Create a target that creates the current package
@@ -114,20 +120,18 @@ MACRO(GENERATE_PACKAGING_TARGET package_name)
     ADD_CUSTOM_TARGET(${PACKAGE_TARGETNAME})
     ADD_CUSTOM_COMMAND(TARGET ${PACKAGE_TARGETNAME}
         COMMAND ${CMAKE_CPACK_COMMAND} -C ${OSG_CPACK_CONFIGURATION} --config ${OpenSceneGraph_BINARY_DIR}/CPackConfig-${package_name}.cmake
-        COMMAND "${MOVE_COMMAND}" "${CPACK_PACKAGE_FILE_NAME}.tar.gz" "${OSG_PACKAGE_FILE_NAME}.tar.gz"
-        COMMAND ${CMAKE_COMMAND} -E echo "renamed ${CPACK_PACKAGE_FILE_NAME}.tar.gz -> ${OSG_PACKAGE_FILE_NAME}.tar.gz"
+        COMMAND "${MOVE_COMMAND}" "${CPACK_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}" "${OSG_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}"
+        COMMAND ${CMAKE_COMMAND} -E echo "renamed ${CPACK_PACKAGE_FILE_NAME}.${ARCHIVE_EXT} -> ${OSG_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}"
         COMMENT "Run CPack packaging for ${package_name}..."
     )
     # Add the exact same custom command to the all package generating target. 
     # I can't use add_dependencies to do this because it would allow parallell building of packages so am going brute here
     ADD_CUSTOM_COMMAND(TARGET ${PACKAGE_ALL_TARGETNAME}
         COMMAND ${CMAKE_CPACK_COMMAND} -C ${OSG_CPACK_CONFIGURATION} --config ${OpenSceneGraph_BINARY_DIR}/CPackConfig-${package_name}.cmake
-        COMMAND "${MOVE_COMMAND}" "${CPACK_PACKAGE_FILE_NAME}.tar.gz" "${OSG_PACKAGE_FILE_NAME}.tar.gz"
-        COMMAND ${CMAKE_COMMAND} -E echo "renamed ${CPACK_PACKAGE_FILE_NAME}.tar.gz -> ${OSG_PACKAGE_FILE_NAME}.tar.gz"
+        COMMAND "${MOVE_COMMAND}" "${CPACK_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}" "${OSG_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}"
+        COMMAND ${CMAKE_COMMAND} -E echo "renamed ${CPACK_PACKAGE_FILE_NAME}.${ARCHIVE_EXT} -> ${OSG_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}"
     )
 ENDMACRO(GENERATE_PACKAGING_TARGET)
-#
-#=============================
 
 # Create configs and targets for a package including all components
 SET(OSG_CPACK_COMPONENT ALL)

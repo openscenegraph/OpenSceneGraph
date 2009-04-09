@@ -44,6 +44,7 @@ class EasyCurl : public osg::Referenced
             bool            _foutOpened;
             std::string     _cacheFileName;
             std::ofstream   _fout;
+            std::string     _resultMimeType;
         };
     
         static size_t StreamMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data);
@@ -51,6 +52,10 @@ class EasyCurl : public osg::Referenced
         EasyCurl();
 
         osgDB::ReaderWriter::ReadResult read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp, const osgDB::ReaderWriter::Options *options);
+
+        /** Returns the mime type of the data retrieved with the provided stream object on a
+          * previous call to EasyCurl::read(). */
+        std::string getResultMimeType(const StreamObject& sp) const;
 
     protected:
 

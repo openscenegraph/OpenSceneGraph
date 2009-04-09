@@ -57,6 +57,11 @@ void EasyCurl::StreamObject::write(const char* ptr, size_t realsize)
         }
     }
 }
+
+std::string EasyCurl::getResultMimeType(const StreamObject& sp) const
+{
+    return sp._resultMimeType;
+}
     
 size_t EasyCurl::StreamMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
 {
@@ -192,6 +197,15 @@ osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, 
             return rr;
         }
 
+        // Store the mime-type, if any. (Note: CURL manages the buffer returned by
+        // this call.)
+        char* ctbuf = NULL;
+        if ( curl_easy_getinfo(_curl, CURLINFO_CONTENT_TYPE, &ctbuf) == 0 && ctbuf )
+        {
+            sp._resultMimeType = ctbuf;
+        }
+
+
         return osgDB::ReaderWriter::ReadResult::FILE_LOADED;
 
     }
@@ -213,7 +227,7 @@ ReaderWriterCURL::ReaderWriterCURL()
     supportsExtension("curl","Psuedo file extension, used to select curl plugin.");
     supportsExtension("*","Passes all read files to other plugins to handle actual model loading.");
     supportsOption("OSG_CURL_PROXY","Specify the http proxy.");
-    supportsOption("OSG_CURL_PROXYPORT","Specify the http proxy oirt.");
+    supportsOption("OSG_CURL_PROXYPORT","Specify the http proxy port.");
 }
 
 ReaderWriterCURL::~ReaderWriterCURL()
@@ -324,14 +338,16 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     }
 
 
+    // Try to find a reader by file extension. If this fails, we will fetch the file
+    // anyway and try to get a reader via mime-type.
     osgDB::ReaderWriter *reader = 
         osgDB::Registry::instance()->getReaderWriterForExtension( ext );
 
-    if (!reader)
-    {
-        osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
-        return ReadResult::FILE_NOT_HANDLED;
-    }
+    //if (!reader)
+    //{
+    //    osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
+    //    return ReadResult::FILE_NOT_HANDLED;
+    //}
 
     const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
     if (proxyEnvAddress) //Env Proxy Settings
@@ -352,6 +368,24 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
     if (curlResult.status()==ReadResult::FILE_LOADED)
     {
+        // If we do not already have a ReaderWriter, try to find one based on the
+        // mime-type:
+        if ( !reader )
+        {
+            std::string mimeType = getEasyCurl().getResultMimeType(sp);
+            osg::notify(osg::INFO) << "CURL: Looking up extension for mime-type " << mimeType << std::endl;
+            if ( mimeType.length() > 0 )
+            {
+                reader = osgDB::Registry::instance()->getReaderWriterForMimeType(mimeType);
+            }
+        }
+
+        // If there is still no reader, fail.        
+        if ( !reader )
+        {
+            osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
+            return ReadResult::FILE_NOT_HANDLED;
+        }
 
         osg::ref_ptr<Options> local_opt = options ? 
             static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : 

@@ -34,9 +34,13 @@ bool precedes(const DistanceAccumulator::DistancePair &a,
     else return false;
 }
 
-/** Computes distance betwen a point and the viewpoint of a matrix */
+/** Computes distance (in z direction) betwen a point and the viewer's eye,
+    given by a view matrix */
 double distance(const osg::Vec3 &coord, const osg::Matrix& matrix)
 {
+    // Here we are taking only the z coordinate of the point transformed
+    // by the matrix, ie coord*matrix. The negative sign is because we
+    // want to consider into the screen as INCREASING distance.
     return -( coord[0]*matrix(0,2) + coord[1]*matrix(1,2) +
               coord[2]*matrix(2,2) + matrix(3,2) );
 }
@@ -56,19 +60,19 @@ void CURRENT_CLASS::pushLocalFrustum()
 {
     osg::Matrix& currMatrix = _viewMatrices.back();
 
-        // Compute the frustum in local space
-        osg::Polytope localFrustum;
-        localFrustum.setToUnitFrustum(false, false);
-        localFrustum.transformProvidingInverse(currMatrix*_projectionMatrices.back());
-        _localFrusta.push_back(localFrustum);
+    // Compute the frustum in local space
+    osg::Polytope localFrustum;
+    localFrustum.setToUnitFrustum(false, false);
+    localFrustum.transformProvidingInverse(currMatrix*_projectionMatrices.back());
+    _localFrusta.push_back(localFrustum);
 
-        // Compute new bounding box corners
-        bbCornerPair corner;
-        corner.second = (currMatrix(0,2)<=0?1:0) |
-                        (currMatrix(1,2)<=0?2:0) |
-                        (currMatrix(2,2)<=0?4:0);
-        corner.first = (~corner.second)&7;
-        _bbCorners.push_back(corner);
+    // Compute new bounding box corners
+    bbCornerPair corner;
+    corner.second = (currMatrix(0,2)<=0?1:0) |
+                    (currMatrix(1,2)<=0?2:0) |
+                    (currMatrix(2,2)<=0?4:0);
+    corner.first = (~corner.second)&7;
+    _bbCorners.push_back(corner);
 }
 
 void CURRENT_CLASS::pushDistancePair(double zNear, double zFar)
@@ -99,19 +103,57 @@ bool CURRENT_CLASS::shouldContinueTraversal(osg::Node &node)
     // Allow traversal to continue if we haven't reached maximum depth.
     bool keepTraversing = (_currentDepth < _maxDepth);
 
-    const osg::BoundingSphere &bs = node.getBound();
+    osg::BoundingSphere bs = node.getBound();
     double zNear = 0.0, zFar = 0.0;
 
-    // Make sure bounding sphere is valid and within viewing volume
+    // Make sure bounding sphere is valid
     if(bs.valid())
     {
+      // Make sure bounding sphere is within the viewing volume
       if(!_localFrusta.back().contains(bs)) keepTraversing = false;
-      else
+
+      else // Compute near and far planes for this node
       {
-        // Compute near and far planes for this node
-        zNear = distance(bs._center, _viewMatrices.back());
-        zFar = zNear + bs._radius;
-        zNear -= bs._radius;
+        // Since the view matrix could involve complex transformations,
+        // we need to determine a new BoundingSphere that would encompass
+        // the transformed BoundingSphere.
+        const osg::Matrix &l2w = _viewMatrices.back();
+
+        // Get the transformed x-axis of the BoundingSphere
+        osg::Vec3d newX = bs._center;
+        newX.x() += bs._radius; // Get X-edge of bounding sphere
+        newX = newX * l2w;
+
+        // Get the transformed y-axis of the BoundingSphere
+        osg::Vec3d newY = bs._center;
+        newY.y() += bs._radius; // Get Y-edge of bounding sphere
+        newY = newY * l2w;
+
+        // Get the transformed z-axis of the BoundingSphere
+        osg::Vec3d newZ = bs._center;
+        newZ.z() += bs._radius; // Get Z-edge of bounding sphere
+        newZ = newZ * l2w;
+
+        // Get the transformed center of the BoundingSphere
+        bs._center = bs._center * l2w;
+
+        // Compute lengths of transformed x, y, and z axes
+        double newXLen = (newX - bs._center).length();
+        double newYLen = (newY - bs._center).length();
+        double newZLen = (newZ - bs._center).length();
+
+        // The encompassing radius is the max of the transformed lengths
+        bs._radius = newXLen;
+        if(newYLen > bs._radius) bs._radius = newYLen;
+        if(newZLen > bs._radius) bs._radius = newZLen;
+
+        // Now we can compute the near & far planes, noting that for
+        // complex view transformations (ie. involving scales) the new
+        // BoundingSphere may be bigger than the original one.
+        // Note that the negative sign on the bounding sphere center is
+        // because we want distance to increase INTO the screen.
+        zNear = -bs._center.z() - bs._radius;
+        zFar = -bs._center.z() + bs._radius;
 
         // If near/far ratio is big enough, then we don't need to keep
         // traversing children of this node.
@@ -130,9 +172,9 @@ void CURRENT_CLASS::apply(osg::Node &node)
     if(shouldContinueTraversal(node))
     {
       // Traverse this node
-      _currentDepth++;
+      ++_currentDepth;
       traverse(node);
-      _currentDepth--;
+      --_currentDepth;
     }
 }
 
@@ -145,9 +187,9 @@ void CURRENT_CLASS::apply(osg::Projection &proj)
       pushLocalFrustum();
 
       // Traverse the group
-      _currentDepth++;
+      ++_currentDepth;
       traverse(proj);
-      _currentDepth--;
+      --_currentDepth;
 
       // Reload original matrix and frustum
       _localFrusta.pop_back();
@@ -171,9 +213,9 @@ void CURRENT_CLASS::apply(osg::Transform &transform)
         pushLocalFrustum();
       }
 
-      _currentDepth++;
+      ++_currentDepth;
       traverse(transform);
-      _currentDepth--;
+      --_currentDepth;
 
       if(pushMatrix) 
       {
@@ -195,7 +237,7 @@ void CURRENT_CLASS::apply(osg::Geode &geode)
       double zNear, zFar;
 
       // Handle each drawable in this geode
-      for(unsigned int i = 0; i < geode.getNumDrawables(); i++)
+      for(unsigned int i = 0; i < geode.getNumDrawables(); ++i)
       {
         drawable = geode.getDrawable(i);
 
@@ -268,7 +310,7 @@ void CURRENT_CLASS::computeCameraPairs()
     // pairs (called combined pairs) will not overlap.
     PairList combinedPairs;
     DistancePair currPair = _distancePairs.front();
-    for(i = _distancePairs.begin(); i != _distancePairs.end(); i++)
+    for(i = _distancePairs.begin(); i != _distancePairs.end(); ++i)
     {
       // Current distance pair does not overlap current combined pair, so
       // save the current combined pair and start a new one.
@@ -290,7 +332,7 @@ void CURRENT_CLASS::computeCameraPairs()
     double currNearLimit, numSegs, new_ratio;
     double ratio_invlog = 1.0/log(_nearFarRatio);
     unsigned int temp;
-    for(i = combinedPairs.begin(); i != combinedPairs.end(); i++)
+    for(i = combinedPairs.begin(); i != combinedPairs.end(); ++i)
     {
       currPair = *i; // Save current view segment
 
@@ -311,7 +353,7 @@ void CURRENT_CLASS::computeCameraPairs()
       }
 
       // See if the closest view segment can absorb other combined pairs
-      for(j = i+1; j != combinedPairs.end(); j++)
+      for(j = i+1; j != combinedPairs.end(); ++j)
       {
         // No other distance pairs can be included
         if(j->first < currNearLimit) break;

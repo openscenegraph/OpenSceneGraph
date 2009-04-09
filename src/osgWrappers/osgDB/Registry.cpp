@@ -100,6 +100,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __bool__readPluginAliasConfigurationFile__C5_std_string_R1,
 	          "Reads a file that configures extension mappings. ",
 	          "File is ASCII text and each line contains the parameters to the addFileExtensionAlias method. Lines can be commented out with an initial '#' character. ");
+	I_Method2(void, addMimeTypeExtensionMapping, IN, const std::string, fromMimeType, IN, const std::string, toExt,
+	          Properties::NON_VIRTUAL,
+	          __void__addMimeTypeExtensionMapping__C5_std_string__C5_std_string,
+	          "Registers a mapping of a mime-type to an extension. ",
+	          "A process fetching data over HTTP can use this facility to determine the proper ReaderWriter to use when there is no filename extension to rely upon. ");
 	I_Method1(void, addDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper,
 	          Properties::NON_VIRTUAL,
 	          __void__addDotOsgWrapper__DotOsgWrapper_P1,
@@ -154,6 +159,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          Properties::NON_VIRTUAL,
 	          __ReaderWriter_P1__getReaderWriterForExtension__C5_std_string_R1,
 	          "get a reader writer which handles specified extension. ",
+	          "");
+	I_Method1(osgDB::ReaderWriter *, getReaderWriterForMimeType, IN, const std::string &, mimeType,
+	          Properties::NON_VIRTUAL,
+	          __ReaderWriter_P1__getReaderWriterForMimeType__C5_std_string_R1,
+	          "gets a reader/writer that handles the extension mapped to by one of the registered mime-types. ",
 	          "");
 	I_Method0(osgDB::Registry::ReaderWriterList &, getReaderWriterList,
 	          Properties::NON_VIRTUAL,
@@ -593,10 +603,10 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	                   __ReaderWriter_ReadResult__read__C5_ReadFunctor_R1,
 	                   "",
 	                   "");
-	I_ProtectedMethod2(osgDB::ReaderWriter::ReadResult, readImplementation, IN, const osgDB::Registry::ReadFunctor &, readFunctor, IN, bool, useObjectCache,
+	I_ProtectedMethod2(osgDB::ReaderWriter::ReadResult, readImplementation, IN, const osgDB::Registry::ReadFunctor &, readFunctor, IN, osgDB::ReaderWriter::Options::CacheHintOptions, cacheHint,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __ReaderWriter_ReadResult__readImplementation__C5_ReadFunctor_R1__bool,
+	                   __ReaderWriter_ReadResult__readImplementation__C5_ReadFunctor_R1__ReaderWriter_Options_CacheHintOptions,
 	                   "",
 	                   "");
 	I_SimpleProperty(osgDB::AuthenticationMap *, AuthenticationMap, 

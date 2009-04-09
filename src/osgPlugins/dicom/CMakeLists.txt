@@ -1,5 +1,4 @@
-IF  (DCMTK_FOUND)
-
+IF(DCMTK_FOUND)
     # note, we have to include a '/' in front of the directory string to prevent a CMake bug from ignoring the directory
     INCLUDE_DIRECTORIES(/${DCMTK_ROOT_INCLUDE_DIR})
 
@@ -9,9 +8,7 @@ IF  (DCMTK_FOUND)
 
     ADD_DEFINITIONS(-DUSE_DCMTK)
 
-ELSE(DCMTK_FOUND)
-
-    IF (ITK_FOUND)
+ELSEIF(ITK_FOUND)
 
     INCLUDE(${ITK_USE_FILE})
 
@@ -27,9 +24,7 @@ ELSE(DCMTK_FOUND)
 
     ADD_DEFINITIONS(-DUSE_ITK)
 
-    ENDIF(ITK_FOUND)
-
-ENDIF(DCMTK_FOUND)
+ENDIF()
 
 SET(TARGET_ADDED_LIBRARIES osgVolume )
 

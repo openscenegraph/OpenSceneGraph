@@ -27,9 +27,9 @@ AGLPixelFormat PixelBufferCarbon::createPixelFormat(osg::GraphicsContext::Traits
     attributes.push_back(AGL_NO_RECOVERY);
     attributes.push_back(AGL_RGBA);
     if (!traits->pbuffer) 
-		attributes.push_back(AGL_COMPLIANT);
-	else
-		attributes.push_back(AGL_CLOSEST_POLICY);
+        attributes.push_back(AGL_COMPLIANT);
+    else
+        attributes.push_back(AGL_CLOSEST_POLICY);
     
     if (traits->doubleBuffer) attributes.push_back(AGL_DOUBLEBUFFER);
     if (traits->quadBufferStereo) attributes.push_back(AGL_STEREO);
@@ -73,12 +73,12 @@ void PixelBufferCarbon::init()
           * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
 bool PixelBufferCarbon::realizeImplementation() 
 {
-	if (!_valid) {
-		osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglChoosePixelFormat failed! " << aglErrorString(aglGetError()) << std::endl;
-		return false;
-	}
-	
-	AGLContext sharedContext = NULL;
+    if (!_valid) {
+        osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglChoosePixelFormat failed! " << aglErrorString(aglGetError()) << std::endl;
+        return false;
+    }
+    
+    AGLContext sharedContext = NULL;
 
     // get any shared GLX contexts    
     GraphicsWindowCarbon* graphicsWindowCarbon = dynamic_cast<GraphicsWindowCarbon*>(_traits->sharedContext);
@@ -94,55 +94,55 @@ bool PixelBufferCarbon::realizeImplementation()
             sharedContext = pixelBufferCarbon->getAGLContext();
         }
     }
-	
-	_context = aglCreateContext (_pixelformat, sharedContext);
-	
-	if (!_context) {
-		osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglCreateContext failed! " << aglErrorString(aglGetError()) << std::endl;
-		return false;
-	}
-	
+    
+    _context = aglCreateContext (_pixelformat, sharedContext);
+    
+    if (!_context) {
+        osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglCreateContext failed! " << aglErrorString(aglGetError()) << std::endl;
+        return false;
+    }
+    
 
-	
-	_realized = aglCreatePBuffer (_traits->width, _traits->height, _traits->target, GL_RGBA, _traits->level, &(_pbuffer));
-	if (!_realized) {
-		osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglCreatePBuffer failed! " << aglErrorString(aglGetError()) << std::endl;
-	}
-	
-	makeCurrentImplementation();
-	
-	_realized = aglSetPBuffer(_context, _pbuffer, _traits->face, _traits->level, 0);
-	if (!_realized) {
-		osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglSetPBuffer failed! " << aglErrorString(aglGetError()) << std::endl;
-	}
-	return _realized;
+    
+    _realized = aglCreatePBuffer (_traits->width, _traits->height, _traits->target, GL_RGBA, _traits->level, &(_pbuffer));
+    if (!_realized) {
+        osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglCreatePBuffer failed! " << aglErrorString(aglGetError()) << std::endl;
+    }
+    
+    makeCurrentImplementation();
+    
+    _realized = aglSetPBuffer(_context, _pbuffer, _traits->face, _traits->level, 0);
+    if (!_realized) {
+        osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglSetPBuffer failed! " << aglErrorString(aglGetError()) << std::endl;
+    }
+    return _realized;
 }
 
 void  PixelBufferCarbon::closeImplementation()  
 { 
-	if (_pbuffer) aglDestroyPBuffer(_pbuffer);
-	if (_context) aglDestroyContext(_context);
-	if (_pixelformat) aglDestroyPixelFormat(_pixelformat);
-	_valid = _realized = false;
+    if (_pbuffer) aglDestroyPBuffer(_pbuffer);
+    if (_context) aglDestroyContext(_context);
+    if (_pixelformat) aglDestroyPixelFormat(_pixelformat);
+    _valid = _realized = false;
 }
 
 /** Make this graphics context current implementation.
   * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
 bool  PixelBufferCarbon::makeCurrentImplementation() 
 { 
-	return (_realized) ? (aglSetCurrentContext(_context) == GL_TRUE) : false;
+    return (_realized) ? (aglSetCurrentContext(_context) == GL_TRUE) : false;
 }
         
 /** Make this graphics context current with specified read context implementation.
   * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
 bool  PixelBufferCarbon::makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { 
-	return makeCurrentImplementation();
+    return makeCurrentImplementation();
 }
 
 /** Release the graphics context.*/
 bool PixelBufferCarbon::releaseContextImplementation() 
 {  
-	 return (aglSetCurrentContext(NULL) == GL_TRUE);
+     return (aglSetCurrentContext(NULL) == GL_TRUE);
 }
 
 
@@ -150,20 +150,20 @@ bool PixelBufferCarbon::releaseContextImplementation()
   * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
 void PixelBufferCarbon::bindPBufferToTextureImplementation( GLenum buffer ){ 
 
-	osg::notify(osg::NOTICE)<<"GraphicsWindow::void bindPBufferToTextureImplementation(..) not implemented."<<std::endl; 
+    osg::notify(osg::NOTICE)<<"GraphicsWindow::void bindPBufferToTextureImplementation(..) not implemented."<<std::endl; 
 }
 
 /** Swap the front and back buffers implementation.
   * Pure virtual - must be implemented by Concrate implementations of GraphicsContext. */
 void PixelBufferCarbon::swapBuffersImplementation()  
 { 
-	 aglSwapBuffers(_context);
+     aglSwapBuffers(_context);
 }
    
-		
+        
 PixelBufferCarbon::~PixelBufferCarbon() 
 {
-	close(true);
+    close(true);
 }
 
 

@@ -63,6 +63,10 @@ static osg::ApplicationUsageProxy Registry_e1(osg::ApplicationUsage::ENVIRONMENT
 static osg::ApplicationUsageProxy Registry_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_BUILD_KDTREES on/off","Enable/disable the automatic building of KdTrees for each loaded Geometry.");
 
 
+// from MimeTypes.cpp
+extern const char* builtinMimeTypeExtMappings[];
+
+
 class Registry::AvailableReaderWriterIterator
 {
 public:
@@ -331,9 +335,17 @@ Registry::Registry()
     addFileExtensionAlias("pgm", "pnm");
     addFileExtensionAlias("ppm", "pnm");
     
+    // add built-in mime-type extension mappings
+    for( int i=0; ; i+=2 )
+    {
+        std::string mimeType = builtinMimeTypeExtMappings[i];
+        if ( mimeType.length() == 0 )
+            break;
+        addMimeTypeExtensionMapping( mimeType, builtinMimeTypeExtMappings[i+1] );
+    }
+    
     // register http-protocol, so the curl can handle it, if necessary
     registerProtocol("http"); 
-    
 }
 
 
@@ -587,6 +599,11 @@ void Registry::addFileExtensionAlias(const std::string mapExt, const std::string
     _extAliasMap[mapExt] = toExt;
 }
 
+void Registry::addMimeTypeExtensionMapping(const std::string fromMimeType, const std::string toExt)
+{
+    _mimeTypeExtMap[fromMimeType] = toExt;
+}
+
 bool Registry::readPluginAliasConfigurationFile( const std::string& file )
 {
     std::string fileName = osgDB::findDataFile( file );
@@ -823,6 +840,14 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
 
     return NULL;
 
+}
+
+ReaderWriter* Registry::getReaderWriterForMimeType(const std::string& mimeType)
+{
+    MimeTypeExtensionMap::const_iterator i = _mimeTypeExtMap.find( mimeType );
+    return i != _mimeTypeExtMap.end()?
+        getReaderWriterForExtension( i->second ) :
+        NULL;
 }
 
 struct concrete_wrapper: basic_type_wrapper 

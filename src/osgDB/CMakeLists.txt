@@ -68,6 +68,7 @@ ADD_LIBRARY(${LIB_NAME}
     ImageOptions.cpp
     ImagePager.cpp
     Input.cpp
+    MimeTypes.cpp
     Output.cpp
     PluginQuery.cpp
     ReaderWriter.cpp

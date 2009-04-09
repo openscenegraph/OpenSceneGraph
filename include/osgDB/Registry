@@ -94,6 +94,12 @@ class OSGDB_EXPORT Registry : public osg::Referenced
           * method. Lines can be commented out with an initial '#' character.*/
         bool readPluginAliasConfigurationFile( const std::string& file );
 
+        /** Registers a mapping of a mime-type to an extension. A process fetching data
+          * over HTTP can use this facility to determine the proper ReaderWriter to use
+          * when there is no filename extension to rely upon.
+          */
+        void addMimeTypeExtensionMapping(const std::string fromMimeType, const std::string toExt);
+
         void addDotOsgWrapper(DotOsgWrapper* wrapper);
         void removeDotOsgWrapper(DotOsgWrapper* wrapper);
 
@@ -129,6 +135,10 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** get a reader writer which handles specified extension.*/
         ReaderWriter* getReaderWriterForExtension(const std::string& ext);
+
+        /** gets a reader/writer that handles the extension mapped to by one of
+          * the registered mime-types. */
+        ReaderWriter* getReaderWriterForMimeType(const std::string& mimeType);
         
         /** get list of all registered ReaderWriters.*/
         ReaderWriterList& getReaderWriterList() { return _rwList; }
@@ -492,6 +502,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         typedef std::map< std::string, osg::ref_ptr<DotOsgWrapper> >    DotOsgWrapperMap;
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;
+        typedef std::map< std::string, std::string>                     MimeTypeExtensionMap;
         typedef std::vector< std::string>                               ArchiveExtensionList;
         
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
@@ -591,6 +602,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
     
         // map to alias to extensions to plugins.
         ExtensionAliasMap  _extAliasMap;
+
+        // maps mime-types to extensions.
+        MimeTypeExtensionMap _mimeTypeExtMap;
 
         // Utility: Removes whitespace from both ends of a string.
         static std::string trim( const std::string& str );

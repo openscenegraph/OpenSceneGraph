@@ -833,7 +833,7 @@ void DrawShapeVisitor::apply(const Capsule& capsule)
 
 void DrawShapeVisitor::apply(const InfinitePlane&)
 {
-    notify(NOTICE)<<"Warning: DrawShapeVisitor::apply(const InfinitePlane& plane) not yet implementated. "<<std::endl;
+    notify(NOTICE)<<"Warning: DrawShapeVisitor::apply(const InfinitePlane& plane) not yet implemented. "<<std::endl;
 }
 
 void DrawShapeVisitor::apply(const TriangleMesh& mesh)
@@ -1511,6 +1511,11 @@ void PrimitiveShapeVisitor::apply(const Sphere& sphere)
 
 void PrimitiveShapeVisitor::apply(const Box& box)
 {
+    // evaluate hints
+    bool createBody = (_hints ? _hints->getCreateBody() : true);
+    bool createTop = (_hints ? _hints->getCreateTop() : true);
+    bool createBottom = (_hints ? _hints->getCreateBottom() : true);
+
     float x = box.getHalfLengths().x();
     float y = box.getHalfLengths().y();
     float z = box.getHalfLengths().z();
@@ -1554,36 +1559,44 @@ void PrimitiveShapeVisitor::apply(const Box& box)
     }
 
     _functor.begin(GL_QUADS);
-    
-    _functor.vertex(top_1);
-    _functor.vertex(base_1);
-    _functor.vertex(base_2);
-    _functor.vertex(top_2);
+    if (createBody)
+    {
+        _functor.vertex(top_1);
+        _functor.vertex(base_1);
+        _functor.vertex(base_2);
+        _functor.vertex(top_2);
 
-    _functor.vertex(top_2);
-    _functor.vertex(base_2);
-    _functor.vertex(base_3);
-    _functor.vertex(top_3);
+        _functor.vertex(top_2);
+        _functor.vertex(base_2);
+        _functor.vertex(base_3);
+        _functor.vertex(top_3);
 
-    _functor.vertex(top_3);
-    _functor.vertex(base_3);
-    _functor.vertex(base_4);
-    _functor.vertex(top_4);
+        _functor.vertex(top_3);
+        _functor.vertex(base_3);
+        _functor.vertex(base_4);
+        _functor.vertex(top_4);
 
-    _functor.vertex(top_4);
-    _functor.vertex(base_4);
-    _functor.vertex(base_1);
-    _functor.vertex(top_1);
+        _functor.vertex(top_4);
+        _functor.vertex(base_4);
+        _functor.vertex(base_1);
+        _functor.vertex(top_1);
+    }
 
-    _functor.vertex(top_4);
-    _functor.vertex(top_1);
-    _functor.vertex(top_2);
-    _functor.vertex(top_3);
+    if (createTop)
+    {
+        _functor.vertex(top_4);
+        _functor.vertex(top_1);
+        _functor.vertex(top_2);
+        _functor.vertex(top_3);
+    }
 
-    _functor.vertex(base_4);
-    _functor.vertex(base_3);
-    _functor.vertex(base_2);
-    _functor.vertex(base_1);
+    if (createBottom)
+    {
+        _functor.vertex(base_4);
+        _functor.vertex(base_3);
+        _functor.vertex(base_2);
+        _functor.vertex(base_1);
+    }
 
     _functor.end();
 
@@ -1591,6 +1604,10 @@ void PrimitiveShapeVisitor::apply(const Box& box)
 
 void PrimitiveShapeVisitor::apply(const Cone& cone)
 {
+    // evaluate hints
+    bool createBody = (_hints ? _hints->getCreateBody() : true);
+    bool createBottom = (_hints ? _hints->getCreateBottom() : true);
+
     Matrix matrix = cone.computeRotationMatrix();
     matrix.setTrans(cone.getCenter());
 
@@ -1623,66 +1640,77 @@ void PrimitiveShapeVisitor::apply(const Cone& cone)
     float baser=rDelta;
     float angle;
 
-    for(unsigned int rowi=0;
-        rowi<numRows;
-        ++rowi,topz=basez, basez-=hDelta, topr=baser, baser+=rDelta)
+    if (createBody)
+    {
+        for(unsigned int rowi=0;
+            rowi<numRows;
+            ++rowi,topz=basez, basez-=hDelta, topr=baser, baser+=rDelta)
+        {
+            // we can't use a fan for the cone top
+            // since we need different normals at the top
+            // for each face..
+            _functor.begin(GL_QUAD_STRIP);
+
+                angle = 0.0f;
+                for(unsigned int topi=0;
+                    topi<numSegments;
+                    ++topi,angle+=angleDelta)
+                {
+
+                    float c = cosf(angle);
+                    float s = sinf(angle);
+
+                    _functor.vertex(Vec3(c*topr,s*topr,topz)*matrix);
+                    _functor.vertex(Vec3(c*baser,s*baser,basez)*matrix);
+
+                }
+
+                // do last point by hand to ensure no round off errors.
+                _functor.vertex(Vec3(topr,0.0f,topz)*matrix);
+                _functor.vertex(Vec3(baser,0.0f,basez)*matrix);
+
+            _functor.end();
+
+        }
+    }
+
+    if (createBottom)
     {
         // we can't use a fan for the cone top
         // since we need different normals at the top
         // for each face..
-        _functor.begin(GL_QUAD_STRIP);
+        _functor.begin(GL_TRIANGLE_FAN);
 
-            angle = 0.0f;
-            for(unsigned int topi=0;
-                topi<numSegments;
-                ++topi,angle+=angleDelta)
-            {
+        angle = osg::PI*2.0f;
+        basez = cone.getBaseOffset();
 
-                float c = cosf(angle);
-                float s = sinf(angle);
+        _functor.vertex(Vec3(0.0f,0.0f,basez)*matrix);
 
-                _functor.vertex(Vec3(c*topr,s*topr,topz)*matrix);
-                _functor.vertex(Vec3(c*baser,s*baser,basez)*matrix);
+        for(unsigned int bottomi=0;
+            bottomi<numSegments;
+            ++bottomi,angle-=angleDelta)
+        {
 
-            }
+            float c = cosf(angle);
+            float s = sinf(angle);
 
-            // do last point by hand to ensure no round off errors.
-            _functor.vertex(Vec3(topr,0.0f,topz)*matrix);
-            _functor.vertex(Vec3(baser,0.0f,basez)*matrix);
+            _functor.vertex(Vec3(c*r,s*r,basez)*matrix);
+
+        }
+
+        _functor.vertex(Vec3(r,0.0f,basez)*matrix);
 
         _functor.end();
-
     }
-
-    // we can't use a fan for the cone top
-    // since we need different normals at the top
-    // for each face..
-    _functor.begin(GL_TRIANGLE_FAN);
-
-    angle = osg::PI*2.0f;
-    basez = cone.getBaseOffset();
-
-    _functor.vertex(Vec3(0.0f,0.0f,basez)*matrix);
-
-    for(unsigned int bottomi=0;
-        bottomi<numSegments;
-        ++bottomi,angle-=angleDelta)
-    {
-
-        float c = cosf(angle);
-        float s = sinf(angle);
-
-        _functor.vertex(Vec3(c*r,s*r,basez)*matrix);
-
-    }
-
-    _functor.vertex(Vec3(r,0.0f,basez)*matrix);
-
-    _functor.end();
 }
 
 void PrimitiveShapeVisitor::apply(const Cylinder& cylinder)
 {
+    // evaluate hints
+    bool createBody = (_hints ? _hints->getCreateBody() : true);
+    bool createTop = (_hints ? _hints->getCreateTop() : true);
+    bool createBottom = (_hints ? _hints->getCreateBottom() : true);
+
     Matrix matrix = cylinder.computeRotationMatrix();
     matrix.setTrans(cylinder.getCenter());
 
@@ -1704,55 +1732,67 @@ void PrimitiveShapeVisitor::apply(const Cylinder& cylinder)
     float angle;
 
     // cylinder body
-    createCylinderBody(numSegments, cylinder.getRadius(), cylinder.getHeight(), matrix);
+    if (createBody)
+        createCylinderBody(numSegments, cylinder.getRadius(), cylinder.getHeight(), matrix);
 
     // cylinder top
-    _functor.begin(GL_TRIANGLE_FAN);
+    if (createTop)
+    {
+        _functor.begin(GL_TRIANGLE_FAN);
 
-        _functor.vertex(Vec3(0.0f,0.0f,topz)*matrix);
+            _functor.vertex(Vec3(0.0f,0.0f,topz)*matrix);
 
-        angle = 0.0f;
-        for(unsigned int topi=0;
-            topi<numSegments;
-            ++topi,angle+=angleDelta)
-        {
+            angle = 0.0f;
+            for(unsigned int topi=0;
+                topi<numSegments;
+                ++topi,angle+=angleDelta)
+            {
 
-            float c = cosf(angle);
-            float s = sinf(angle);
+                float c = cosf(angle);
+                float s = sinf(angle);
 
-            _functor.vertex(Vec3(c*r,s*r,topz)*matrix);
+                _functor.vertex(Vec3(c*r,s*r,topz)*matrix);
 
-        }
+            }
 
-        _functor.vertex(Vec3(r,0.0f,topz)*matrix);
+            _functor.vertex(Vec3(r,0.0f,topz)*matrix);
 
-    _functor.end();
+        _functor.end();
+    }
 
     // cylinder bottom
-    _functor.begin(GL_TRIANGLE_FAN);
+    if (createBottom)
+    {
+        _functor.begin(GL_TRIANGLE_FAN);
 
-        _functor.vertex(Vec3(0.0f,0.0f,basez)*matrix);
+            _functor.vertex(Vec3(0.0f,0.0f,basez)*matrix);
 
-        angle = osg::PI*2.0f;
-        for(unsigned int bottomi=0;
-            bottomi<numSegments;
-            ++bottomi,angle-=angleDelta)
-        {
+            angle = osg::PI*2.0f;
+            for(unsigned int bottomi=0;
+                bottomi<numSegments;
+                ++bottomi,angle-=angleDelta)
+            {
 
-            float c = cosf(angle);
-            float s = sinf(angle);
+                float c = cosf(angle);
+                float s = sinf(angle);
 
-            _functor.vertex(Vec3(c*r,s*r,basez)*matrix);
+                _functor.vertex(Vec3(c*r,s*r,basez)*matrix);
 
-        }
+            }
 
-        _functor.vertex(Vec3(r,0.0f,basez)*matrix);
+            _functor.vertex(Vec3(r,0.0f,basez)*matrix);
 
-    _functor.end();
+        _functor.end();
+    }
 }
 
 void PrimitiveShapeVisitor::apply(const Capsule& capsule)
 {
+    // evaluate hints
+    bool createBody = (_hints ? _hints->getCreateBody() : true);
+    bool createTop = (_hints ? _hints->getCreateTop() : true);
+    bool createBottom = (_hints ? _hints->getCreateBottom() : true);
+
     Matrix matrix = capsule.computeRotationMatrix();
     matrix.setTrans(capsule.getCenter());
 
@@ -1769,19 +1809,22 @@ void PrimitiveShapeVisitor::apply(const Capsule& capsule)
     }
 
     // capsule body
-    createCylinderBody(numSegments, capsule.getRadius(), capsule.getHeight(), matrix);
+    if (createBody)
+        createCylinderBody(numSegments, capsule.getRadius(), capsule.getHeight(), matrix);
 
     // capsule top cap
-    createHalfSphere(numSegments, numRows, capsule.getRadius(), 0, capsule.getHeight()/2.0f, matrix);
+    if (createTop)
+        createHalfSphere(numSegments, numRows, capsule.getRadius(), 0, capsule.getHeight()/2.0f, matrix);
 
     // capsule bottom cap
-    createHalfSphere(numSegments, numRows, capsule.getRadius(), 1, -capsule.getHeight()/2.0f, matrix);
+    if (createBottom)
+        createHalfSphere(numSegments, numRows, capsule.getRadius(), 1, -capsule.getHeight()/2.0f, matrix);
 
 }
 
 void PrimitiveShapeVisitor::apply(const InfinitePlane&)
 {
-    notify(NOTICE)<<"Warning: PrimitiveShapeVisitor::apply(const InfinitePlane& plane) not yet implementated. "<<std::endl;
+    notify(NOTICE)<<"Warning: PrimitiveShapeVisitor::apply(const InfinitePlane& plane) not yet implemented. "<<std::endl;
 }
 
 void PrimitiveShapeVisitor::apply(const TriangleMesh& mesh)

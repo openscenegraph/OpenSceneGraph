@@ -10,6 +10,7 @@ TrackballManipulator::TrackballManipulator()
 {
     _modelScale = 0.01f;
     _minimumZoomScale = 0.05f;
+    _allowThrow = true;
     _thrown = false;
 
     _distance = 1.0f;
@@ -80,7 +81,7 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
     switch(ea.getEventType())
     {
         case(GUIEventAdapter::FRAME):
-            if (_thrown)
+            if (_thrown && _allowThrow)
             {
                 if (calcMovement()) us.requestRedraw();
             }
@@ -117,7 +118,7 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
                     {
                         us.requestRedraw();
                         us.requestContinuousUpdate(true);
-                        _thrown = true;
+                        _thrown = _allowThrow;
                     }
                 }
                 else

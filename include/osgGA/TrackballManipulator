@@ -108,6 +108,12 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
 
         /** Get the size of the trackball. */
         float getTrackballSize() const { return _trackballSize; }
+
+        /** Set the 'allow throw' flag. Releasing the mouse button while moving the camera results in a throw. */
+        void setAllowThrow(bool allowThrow) { _allowThrow = allowThrow; }
+
+        /** Returns true if the camera can be thrown, false otherwise. This defaults to true. */
+        bool getAllowThrow() const { return _allowThrow; }
     protected:
 
         virtual ~TrackballManipulator();
@@ -140,6 +146,7 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
         double _modelScale;
         double _minimumZoomScale;
 
+        bool _allowThrow;
         bool _thrown;
         
         osg::Vec3d   _center;

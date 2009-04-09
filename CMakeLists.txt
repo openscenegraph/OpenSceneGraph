@@ -184,6 +184,15 @@ IF(WIN32)
         #     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd${warning}")
         # endforeach(warning)
 
+        # This option is to enable the /DYNAMICBASE switch
+        # It is used to workaround a bug in Windows 7 when linking in release, which results in corrupt
+        # binaries. See this page for details: http://www.wintellect.com/CS/blogs/jrobbins/archive/2009/01/24/the-case-of-the-corrupt-pe-binaries.aspx
+        OPTION(WIN32_USE_DYNAMICBASE "Set to ON to build OpenSceneGraph with the /DYNAMICBASE option to work around a bug when linking release executables on Windows 7." OFF)
+        MARK_AS_ADVANCED(WIN32_USE_DYNAMICBASE)
+        IF(WIN32_USE_DYNAMICBASE)
+            SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DYNAMICBASE")
+        ENDIF(WIN32_USE_DYNAMICBASE)
+
         # More MSVC specific compilation flags
         ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
         ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)

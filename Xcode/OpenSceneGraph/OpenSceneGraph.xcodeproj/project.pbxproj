@@ -2352,7 +2352,7 @@
 		D41887E60EDEE7A000C17A84 /* Timeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887DB0EDEE7A000C17A84 /* Timeline.cpp */; };
 		D41887E70EDEE7A000C17A84 /* UpdateCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887DC0EDEE7A000C17A84 /* UpdateCallback.cpp */; };
 		D41887E80EDEE7A000C17A84 /* VertexInfluence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887DD0EDEE7A000C17A84 /* VertexInfluence.cpp */; };
-		D41888760EDEE8E200C17A84 /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgManipulator.framework */; };
+		D41888760EDEE8E200C17A84 /* osgWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgWidget.framework */; };
 		D41888770EDEE8E200C17A84 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D41888780EDEE8E200C17A84 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D41888790EDEE8E200C17A84 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -2478,7 +2478,7 @@
 		D4646D320E34932C000EF4FB /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		D4646D330E34932C000EF4FB /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D4646D8B0E3493C5000EF4FB /* osgwidgetmenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4646D8A0E3493C5000EF4FB /* osgwidgetmenu.cpp */; };
-		D4646D920E3497AD000EF4FB /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgManipulator.framework */; };
+		D4646D920E3497AD000EF4FB /* osgWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgWidget.framework */; };
 		D47A06760B833F6E00E19024 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
 		D47A06770B833F6E00E19024 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		D47A06780B833F6E00E19024 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -2578,7 +2578,7 @@
 		D48F0FF00E3A199700DAAB64 /* PluginQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48F0FEF0E3A199700DAAB64 /* PluginQuery.cpp */; };
 		D48F101F0E3A1A4E00DAAB64 /* ImageSequence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48F101D0E3A1A4D00DAAB64 /* ImageSequence.cpp */; };
 		D48F10200E3A1A4E00DAAB64 /* ImageSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = D48F101E0E3A1A4E00DAAB64 /* ImageSequence.h */; };
-		D48F106A0E3A1FD600DAAB64 /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgManipulator.framework */; };
+		D48F106A0E3A1FD600DAAB64 /* osgWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgWidget.framework */; };
 		D48F106B0E3A1FD600DAAB64 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D48F106C0E3A1FD600DAAB64 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D48F106D0E3A1FD600DAAB64 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -2731,6 +2731,7 @@
 		D4E1D5490CAFF2C9007F8430 /* ViewerBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E1D5480CAFF2C8007F8430 /* ViewerBase.cpp */; };
 		D4E1D85F0CB031BA007F8430 /* hdrwriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E1D85D0CB031B9007F8430 /* hdrwriter.cpp */; };
 		D4E1D8600CB031BA007F8430 /* hdrwriter.h in Headers */ = {isa = PBXBuildFile; fileRef = D4E1D85E0CB031B9007F8430 /* hdrwriter.h */; };
+		D4E673A90F8E5B2400F6CCC1 /* MimeTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E673A80F8E5B2400F6CCC1 /* MimeTypes.cpp */; };
 		D4E759AB0B57D1BB006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E759B80B57D22B006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E759C60B57D288006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
@@ -8097,7 +8098,7 @@
 		D43AB4F90E2E14F800623C77 /* Text3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Text3D.h; sourceTree = "<group>"; };
 		D43AB50D0E2E17C800623C77 /* PluginQuery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginQuery.cpp; sourceTree = "<group>"; };
 		D43AB50E0E2E17C800623C77 /* PluginQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginQuery.h; sourceTree = "<group>"; };
-		D43AB5640E2E1D1900623C77 /* osgManipulator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgManipulator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D43AB5640E2E1D1900623C77 /* osgWidget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgWidget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43AB5CE0E2E1DD200623C77 /* Box */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Box; sourceTree = "<group>"; };
 		D43AB5CF0E2E1DD200623C77 /* Canvas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Canvas; sourceTree = "<group>"; };
 		D43AB5D00E2E1DD200623C77 /* EventInterface */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = EventInterface; sourceTree = "<group>"; };
@@ -8352,6 +8353,7 @@
 		D4E1D5480CAFF2C8007F8430 /* ViewerBase.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ViewerBase.cpp; sourceTree = "<group>"; };
 		D4E1D85D0CB031B9007F8430 /* hdrwriter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = hdrwriter.cpp; sourceTree = "<group>"; };
 		D4E1D85E0CB031B9007F8430 /* hdrwriter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = hdrwriter.h; sourceTree = "<group>"; };
+		D4E673A80F8E5B2400F6CCC1 /* MimeTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MimeTypes.cpp; sourceTree = "<group>"; };
 		D4F092750D4BA9BD00BB1AC7 /* GL2Extensions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GL2Extensions.cpp; sourceTree = "<group>"; };
 		D4F092790D4BB45F00BB1AC7 /* CompositeLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeLayer.cpp; sourceTree = "<group>"; };
 		D4F0927A0D4BB45F00BB1AC7 /* CompositeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompositeLayer.h; sourceTree = "<group>"; };
@@ -10134,7 +10136,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D41888E60EDEE9C400C17A84 /* osgAnimation.framework in Frameworks */,
-				D41888760EDEE8E200C17A84 /* osgManipulator.framework in Frameworks */,
+				D41888760EDEE8E200C17A84 /* osgWidget.framework in Frameworks */,
 				D41888770EDEE8E200C17A84 /* osgViewer.framework in Frameworks */,
 				D41888780EDEE8E200C17A84 /* osg.framework in Frameworks */,
 				D41888790EDEE8E200C17A84 /* osgDB.framework in Frameworks */,
@@ -10176,7 +10178,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4646D920E3497AD000EF4FB /* osgManipulator.framework in Frameworks */,
+				D4646D920E3497AD000EF4FB /* osgWidget.framework in Frameworks */,
 				D4646D2E0E34932C000EF4FB /* osgViewer.framework in Frameworks */,
 				D4646D2F0E34932C000EF4FB /* osg.framework in Frameworks */,
 				D4646D300E34932C000EF4FB /* osgDB.framework in Frameworks */,
@@ -10218,7 +10220,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D48F106A0E3A1FD600DAAB64 /* osgManipulator.framework in Frameworks */,
+				D48F106A0E3A1FD600DAAB64 /* osgWidget.framework in Frameworks */,
 				D48F106B0E3A1FD600DAAB64 /* osgViewer.framework in Frameworks */,
 				D48F106C0E3A1FD600DAAB64 /* osg.framework in Frameworks */,
 				D48F106D0E3A1FD600DAAB64 /* osgDB.framework in Frameworks */,
@@ -12554,7 +12556,7 @@
 				0084FBA60D3425180021E5C9 /* osgdb_osgViewer.so */,
 				0084FBDF0D3426180021E5C9 /* osgdb_osgTerrain.so */,
 				0084FC610D3427B70021E5C9 /* osgdb_cfg.so */,
-				D43AB5640E2E1D1900623C77 /* osgManipulator.framework */,
+				D43AB5640E2E1D1900623C77 /* osgWidget.framework */,
 				D4646D380E34932C000EF4FB /* osgwidgetmenu.app */,
 				D48F10750E3A1FD600DAAB64 /* osgimagesequence.app */,
 				D4C9C8320E91148900F8C4A0 /* osgVolume.framework */,
@@ -13405,6 +13407,7 @@
 		BE1188DF05D7641E00EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				D4E673A80F8E5B2400F6CCC1 /* MimeTypes.cpp */,
 				D4FBAB2A0ECB385C00008F6D /* ConvertUTF.cpp */,
 				D4FBAB2B0ECB385D00008F6D /* fstream.cpp */,
 				D4557DD30EC443210011939C /* FileCache.cpp */,
@@ -18394,11 +18397,11 @@
 			buildConfigurationList = 00FB20FD0B015CF20052DD79 /* Build configuration list for PBXNativeTarget "osgViewer" */;
 			buildPhases = (
 				00FB20D50B015CF20052DD79 /* Headers */,
+				0037A0D20C18DD5C0089AA1C /* Copy Subheaders to api:Carbon */,
+				D45878FC0F555D550060BAA4 /* Copy Subheaders to api:Cocoa */,
 				00FB20E70B015CF20052DD79 /* Resources */,
 				00FB20E80B015CF20052DD79 /* Sources */,
 				00FB20F80B015CF20052DD79 /* Rez */,
-				0037A0D20C18DD5C0089AA1C /* Copy Subheaders to api:Carbon */,
-				D45878FC0F555D550060BAA4 /* Copy Subheaders to api:Cocoa */,
 				00FB20F90B015CF20052DD79 /* Frameworks */,
 			);
 			buildRules = (
@@ -18645,7 +18648,7 @@
 			);
 			name = osgWidget;
 			productName = osgGA;
-			productReference = D43AB5640E2E1D1900623C77 /* osgManipulator.framework */;
+			productReference = D43AB5640E2E1D1900623C77 /* osgWidget.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		D4646D260E34932C000EF4FB /* osgwidgetmenu */ = {
@@ -21664,6 +21667,7 @@
 				D4557DD40EC443210011939C /* FileCache.cpp in Sources */,
 				D4FBAB2C0ECB385D00008F6D /* ConvertUTF.cpp in Sources */,
 				D4FBAB2D0ECB385D00008F6D /* fstream.cpp in Sources */,
+				D4E673A90F8E5B2400F6CCC1 /* MimeTypes.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -35008,6 +35012,7 @@
 					"-DUSE_DARWIN_COCOA_IMPLEMENTATION",
 					"-DDARWIN_IMAGEIO",
 				);
+				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
@@ -35034,6 +35039,7 @@
 					"-DGLU_TESS_CALLBACK_TRIPLEDOT",
 					"-DUSE_DARWIN_CARBON_IMPLEMENTATION",
 				);
+				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 				STRIP_STYLE = "non-global";
@@ -35060,6 +35066,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "-DGLU_TESS_CALLBACK_TRIPLEDOT";
+				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
@@ -37751,6 +37758,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "-DUSE_DARWIN_COCOA_IMPLEMENTATION";
+				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 			};
@@ -42785,6 +42793,7 @@
 					"-DGLU_TESS_CALLBACK_TRIPLEDOT",
 					"-DUSE_DARWIN_COCOA_IMPLEMENTATION",
 				);
+				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				STRIP_STYLE = "non-global";
@@ -47761,6 +47770,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_CFLAGS = "-DUSE_DARWIN_CARBON_IMPLEMENTATION";
+				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
@@ -53384,6 +53394,7 @@
 					"-DUSE_DARWIN_COCOA_IMPLEMENTATION",
 					"-DDARWIN_IMAGEIO",
 				);
+				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 				STRIP_STYLE = "non-global";

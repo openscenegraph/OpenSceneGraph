@@ -223,8 +223,6 @@ namespace osgAnimation
         inline bool needToComputeBindMatrix() { return _needToRecomputeBindMatrix;}
         virtual void computeBindMatrix();
 
-        bool needLink() const;
-
         void setNeedToComputeBindMatrix(bool state) { _needToRecomputeBindMatrix = state; }
 
         /** Add Node to Group.

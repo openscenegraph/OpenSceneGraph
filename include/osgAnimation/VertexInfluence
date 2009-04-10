@@ -52,7 +52,7 @@ namespace osgAnimation
 
     // this class manage VertexInfluence database by mesh
     // reference bones per vertex ...
-    class VertexInfluenceSet
+    class OSGANIMATION_EXPORT VertexInfluenceSet
     {
     public:
         typedef std::vector<VertexInfluence> BoneToVertexList;

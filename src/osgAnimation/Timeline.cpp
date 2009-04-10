@@ -18,7 +18,7 @@
 using namespace osgAnimation;
 
 
-Timeline::Timeline()
+osgAnimation::Timeline::Timeline()
 {
     _lastUpdate = 0;
     _currentFrame = 0;
@@ -32,7 +32,7 @@ Timeline::Timeline()
     setName("Timeline");
 }
 
-Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op) : osg::Object(nc, op),
+osgAnimation::Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op) : osg::Object(nc, op),
     _actions(nc._actions)
 {
     _lastUpdate = 0;

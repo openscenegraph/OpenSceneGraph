@@ -13,8 +13,9 @@
   under the terms of the OpenSceneGraph Public License (OSGPL) version 0.0
   or later.
   
-  Notes: the OSGPL is based on the LGPL, with the 4 exceptions laid in the wxWindows 
-  section below.  The LGPL in the final section of this license.
+  Notes: the OSGPL is based on the LGPL, with the 4 exceptions laid
+  out in the wxWindows section below.  The LGPL is contained in the
+  final section of this license.
 
 
 -------------------------------------------------------------------------------
@@ -187,7 +188,7 @@ modification follow.  Pay close attention to the difference between a
 former contains code derived from the library, whereas the latter must
 be combined with the library in order to run.
 
-		  GNU LESSER GENERAL PUBLIC LICENSE
+          GNU LESSER GENERAL PUBLIC LICENSE
    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
   0. This License Agreement applies to any software library or other

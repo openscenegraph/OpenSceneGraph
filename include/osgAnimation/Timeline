@@ -162,7 +162,7 @@ namespace osgAnimation
     };
 
 
-    class Timeline : public osg::Object
+    class OSGANIMATION_EXPORT Timeline : public osg::Object
     {
     public:
 

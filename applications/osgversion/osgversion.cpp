@@ -383,11 +383,27 @@ std::string typoCorrection(const std::string& name)
     if (name=="Yfei") return "Yefei";
     if (name=="Jean-Sebastein") return "Jean-Sebastien";
     if (name=="Haritchablaet") return "Haritchabalet";
+    if (name=="Amueller") return "Aumueller";
+    if (name=="Fautre") return "Fautré";
+    if (name=="Maceij") return "Maciej";
+    if (name=="Fabian") return "Fabien";
     return name;
 }
 
 void nameCorrection(NamePair& name)
 {
+    if (name.first=="Michale" && name.second=="Platings")
+    {
+        name.first = "Michael";
+        name.second = "Platings";
+    }
+    
+    if (name.first=="Mick" && name.second=="")
+    {
+        name.first = "Maik";
+        name.second = "Keller";
+    }
+    
     if (name.first=="Gary" && name.second=="Quin")
     {
         name.first = "Gary";

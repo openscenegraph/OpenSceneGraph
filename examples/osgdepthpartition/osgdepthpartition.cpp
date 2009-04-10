@@ -72,7 +72,7 @@ osg::Node* createScene()
       unitCircle->setColorBinding(osg::Geometry::BIND_OVERALL);
       const unsigned int n_points = 1024;
       osg::Vec3Array * coords = new osg::Vec3Array(n_points);
-      const double dx = 2.0*M_PI/n_points;
+      const double dx = 2.0*osg::PI/n_points;
       double s,c;
       for (unsigned int j=0; j<n_points; ++j) {
     s = sin(dx*j);

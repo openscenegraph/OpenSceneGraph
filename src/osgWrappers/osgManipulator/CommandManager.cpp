@@ -24,7 +24,7 @@
 #undef OUT
 #endif
 
-TYPE_NAME_ALIAS(std::list osg::ref_ptr< osgManipulator::Selection >, osgManipulator::CommandManager::Selections)
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgManipulator::Selection > >, osgManipulator::CommandManager::Selections)
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CommandManager)
 	I_DeclaringFile("osgManipulator/CommandManager");
@@ -64,5 +64,45 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CommandManager)
 	          "");
 END_REFLECTOR
 
-STD_LIST_REFLECTOR(std::list osg::ref_ptr< osgManipulator::Selection >)
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Selection >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgManipulator::Selection *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgManipulator::Selection > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgManipulator::Selection *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgManipulator::Selection *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgManipulator::Selection > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgManipulator::Selection *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgManipulator::Selection > >)
 

@@ -654,40 +654,40 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
         //   2. The directory that the dll that contains this function is in.
         // For static builds, this will be the executable directory.
 
-        // Requires use of the GetModuleHandleEx() function which is available only on Windows XP or higher.
-        // In order to allow execution on older versions, we load the function dynamically from the library and
-        // use it only if it's available.
-        bool addedDllDirectory = false;
-        OSGDB_WINDOWS_FUNCT(PGET_MODULE_HANDLE_EX) pGetModuleHandleEx = reinterpret_cast<OSGDB_WINDOWS_FUNCT(PGET_MODULE_HANDLE_EX)>
-            (GetProcAddress( GetModuleHandleA("kernel32.dll"), OSGDB_WINDOWS_FUNCT_STRING(GetModuleHandleEx)));
-        if( pGetModuleHandleEx )
-        {
-            HMODULE thisModule = 0;
-            static char static_variable = 0;    // Variable that is located in DLL address space.
-
-            if( pGetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, &static_variable, &thisModule) )
+        #if defined(_MSC_VER)
+            // Requires use of the GetModuleHandleEx() function which is available only on Windows XP or higher.
+            // In order to allow execution on older versions, we load the function dynamically from the library and
+            // use it only if it's available.
+            OSGDB_WINDOWS_FUNCT(PGET_MODULE_HANDLE_EX) pGetModuleHandleEx = reinterpret_cast<OSGDB_WINDOWS_FUNCT(PGET_MODULE_HANDLE_EX)>
+                (GetProcAddress( GetModuleHandleA("kernel32.dll"), OSGDB_WINDOWS_FUNCT_STRING(GetModuleHandleEx)));
+            if( pGetModuleHandleEx )
             {
-                retval = OSGDB_WINDOWS_FUNCT(GetModuleFileName)(thisModule, path, size);
-                if (retval != 0 && retval < size)
+                HMODULE thisModule = 0;
+                static char static_variable = 0;    // Variable that is located in DLL address space.
+
+                if( pGetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, &static_variable, &thisModule) )
                 {
-                    filenamestring pathstr(path);
-                    filenamestring dllDir(pathstr, 0, 
-                                              pathstr.find_last_of(OSGDB_FILENAME_TEXT("\\/")));
-                    convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(dllDir), filepath);
-                    addedDllDirectory = true;
+                    retval = OSGDB_WINDOWS_FUNCT(GetModuleFileName)(thisModule, path, size);
+                    if (retval != 0 && retval < size)
+                    {
+                        filenamestring pathstr(path);
+                        filenamestring dllDir(pathstr, 0,
+                                                pathstr.find_last_of(OSGDB_FILENAME_TEXT("\\/")));
+                        convertStringPathIntoFilePathList(OSGDB_FILENAME_TO_STRING(dllDir), filepath);
+                    }
+                    else
+                    {
+                        osg::notify(osg::WARN) << "Could not get dll directory "
+                            "using Win32 API. It will not be searched." << std::endl;
+                    }
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "Could not get dll directory "
-                        "using Win32 API. It will not be searched." << std::endl;
+                    osg::notify(osg::WARN) << "Could not get dll module handle "
+                        "using Win32 API. Dll directory will not be searched." << std::endl;
                 }
             }
-            else
-            {
-                osg::notify(osg::WARN) << "Could not get dll module handle "
-                    "using Win32 API. Dll directory will not be searched." << std::endl;
-            }
-        }
+        #endif
 
         //   3. The system directory. Use the GetSystemDirectory function to 
         //      get the path of this directory.

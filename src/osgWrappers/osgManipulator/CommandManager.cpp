@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::list osg::ref_ptr< osgManipulator::Selection >, osgManipulator::CommandManager::Selections)
+
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CommandManager)
 	I_DeclaringFile("osgManipulator/CommandManager");
 	I_BaseType(osg::Referenced);
@@ -55,5 +57,12 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CommandManager)
 	          __void__addSelectionsToCommand__MotionCommand_R1__Dragger_R1,
 	          "Add all selections connected to the dragger to the command. ",
 	          "");
+	I_Method1(osgManipulator::CommandManager::Selections, getConnectedSelections, IN, osgManipulator::Dragger &, dragger,
+	          Properties::NON_VIRTUAL,
+	          __Selections__getConnectedSelections__Dragger_R1,
+	          "Returns the selections connected to the dragger. ",
+	          "");
 END_REFLECTOR
+
+STD_LIST_REFLECTOR(std::list osg::ref_ptr< osgManipulator::Selection >)
 

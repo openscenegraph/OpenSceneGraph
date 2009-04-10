@@ -39,7 +39,7 @@ bool CommandManager::connect(Dragger& dragger, Selection& selection)
         {
             if (iter->second == &selection)
                 return false;
-        }            
+        }
     }
 
     // Associate selection with dragger
@@ -62,7 +62,7 @@ bool CommandManager::connect(Dragger& dragger, Constraint& constraint)
         {
             if (iter->second == &constraint)
                 return false;
-        }            
+        }
     }
 
     // Associate selection with dragger
@@ -101,10 +101,10 @@ void CommandManager::addSelectionsToCommand(MotionCommand& command, Dragger& dra
             }
         }
     }
-    
+
     // Add the dragger to the selection list first.
     command.addSelection(&dragger);
-    
+
     // Add the remaining selections.
     if (_draggerSelectionMap.count(&dragger) > 0)
     {
@@ -124,9 +124,9 @@ void CommandManager::addSelectionsToCommand(MotionCommand& command, Dragger& dra
 }
 
 
-std::list< osg::ref_ptr<Selection> > CommandManager::getConnectedSelections(Dragger& dragger)
+CommandManager::Selections CommandManager::getConnectedSelections(Dragger& dragger)
 {
-    std::list< osg::ref_ptr<Selection> > selections = std::list< osg::ref_ptr<Selection> >();
+    Selections selections = std::list< osg::ref_ptr<Selection> >();
 
     //Test if the dragger is in the list
     if (_draggerSelectionMap.count(&dragger) > 0)

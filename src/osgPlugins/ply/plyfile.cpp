@@ -1059,7 +1059,7 @@ Entry:
 
 void ply_get_property(
   PlyFile *plyfile,
-  char *elem_name,
+  const char *elem_name,
   PlyProperty *prop
 )
 {

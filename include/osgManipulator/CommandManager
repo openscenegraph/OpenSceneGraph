@@ -47,7 +47,7 @@ class OSGMANIPULATOR_EXPORT CommandManager : public osg::Referenced
         /** Add all selections connected to the dragger to the command. */
         void addSelectionsToCommand(MotionCommand& command, Dragger& dragger);
 
-        typedef std::list osg::ref_ptr<Selection> > Selections;
+        typedef std::list< osg::ref_ptr<Selection> > Selections;
 
         /** Returns the selections connected to the dragger */
         Selections getConnectedSelections(Dragger& dragger);

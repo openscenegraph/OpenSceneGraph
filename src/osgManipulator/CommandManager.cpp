@@ -122,3 +122,24 @@ void CommandManager::addSelectionsToCommand(MotionCommand& command, Dragger& dra
         }
     }
 }
+
+
+std::list< osg::ref_ptr<Selection> > CommandManager::getConnectedSelections(Dragger& dragger)
+{
+    std::list< osg::ref_ptr<Selection> > selections = std::list< osg::ref_ptr<Selection> >();
+
+    //Test if the dragger is in the list
+    if (_draggerSelectionMap.count(&dragger) > 0)
+    {
+        //Get the iterator range on key 'dragger'
+        std::pair<DraggerSelectionMap::iterator,DraggerSelectionMap::iterator> draggerRange = _draggerSelectionMap.equal_range(&dragger);
+        for (DraggerSelectionMap::iterator selectionsIterator = draggerRange.first;
+           selectionsIterator != draggerRange.second;
+           ++selectionsIterator)
+        {
+            //Push in the list all selections connected with the dragger
+            selections.push_back((*selectionsIterator).second);
+        }
+    }
+    return selections;
+}

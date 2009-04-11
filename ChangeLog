@@ -1,3 +1,561 @@
+2009-04-11 06:25  robert
+
+	* src/osgWrappers/osgAnimation/Bone.cpp: updated wrappers
+
+2009-04-11 06:16  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoder.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegHeaders.hpp,
+	  src/osgPlugins/ffmpeg/ReaderWriterFFmpeg.cpp: From Jean Sebastien
+	  Guay, added error reporting handling of wider range of video
+	  formats.
+
+2009-04-10 15:30  cedricpinson
+
+	* include/osgAnimation/Bone, include/osgAnimation/Timeline,
+	  include/osgAnimation/VertexInfluence,
+	  src/osgAnimation/Timeline.cpp: From Cedric Pinson, remove unsused
+	  method in Bone class\nadd namespace osgAnimation for Timeline
+	  constructors\nadd OSGANIMATION_EXPORT on VertexInfluence and
+	  Timeline class
+
+2009-04-10 14:11  robert
+
+	* src/osgDB/FileUtils.cpp: Added VS checks around code block from
+	  Mark Sciabica that broke the mingw build
+
+2009-04-10 11:19  robert
+
+	* examples/osgdepthpartition/osgdepthpartition.cpp: Fixed build
+	  error by replacing M_PI with osg::PI.
+
+2009-04-10 11:00  robert
+
+	* CMakeLists.txt, include/osg/Version,
+	  include/osgManipulator/CommandManager,
+	  src/osgWrappers/osgManipulator/CommandManager.cpp: Updated
+	  version info for 2.9.3 dev release, fixed typo and updated
+	  wrappers
+
+2009-04-10 10:07  robert
+
+	* include/osgManipulator/CommandManager,
+	  src/osgManipulator/CommandManager.cpp,
+	  src/osgWrappers/osgManipulator/CommandManager.cpp: Added typedef
+	  and updated wrappers
+
+2009-04-10 09:56  robert
+
+	* include/osgManipulator/CommandManager,
+	  src/osgManipulator/CommandManager.cpp: From Romain Charbit,
+	  "added a getConnectedSelections(Dragger&) method, so we can get
+	  which selections are connected to a dragger without make our own
+	  multimap, copying the existing _draggerSelectionMap (which is
+	  protected with no accessors) ."
+
+2009-04-10 09:37  robert
+
+	* LICENSE.txt: From J.P. Delport, tweak to fix spelling and grammer
+
+2009-04-10 09:16  robert
+
+	* src/osgPlugins/ply/ply.h, src/osgPlugins/ply/plyfile.cpp: From
+	  Santosh Gaikwad, warning fixes
+
+2009-04-09 18:27  robert
+
+	* src/osgPlugins/CMakeLists.txt: Added ply entry
+
+2009-04-09 18:26  robert
+
+	* src/osgPlugins/ply, src/osgPlugins/ply/CMakeLists.txt,
+	  src/osgPlugins/ply/ReaderWriterPLY.cpp, src/osgPlugins/ply/ply.h,
+	  src/osgPlugins/ply/plyfile.cpp, src/osgPlugins/ply/typedefs.h,
+	  src/osgPlugins/ply/vertexData.cpp,
+	  src/osgPlugins/ply/vertexData.h: From Santosh Gaikwad, ply
+	  plugin, based on Equalizer and other LGPL compatible sources.
+	  
+	  "Attached is the osg-plugin for reading ply ( Stanford Triangle
+	  Format ) file. I have written the plugin according to OSG
+	  standard and have also added cmake build system. The plugin is
+	  working fine on both Linux and Windows and should behave
+	  similarly on other OS as well."
+	  
+	  "I developed this plugin while working on a project based on
+	  Equalizer. So VertexData which I am using is taken from equalizer
+	  and modified to make them work as separate OSG plugin.
+	  Before contributing this plugin to OSG community, I asked project
+	  manager of Equalizer project Stefen regarding potential licensing
+	  issues and this is what he has said
+	  
+	  "The kd-Tree (VertexBuffer*) is LGPL-licensed, and the base ply
+	  loader (ply*) is BSD. As long as you leave the copyright notices
+	  intact, there is no issue."
+	  
+	  so I think using these files in OSG should not be a problem.
+	  
+	  As far as author of ReaderWriterPLY.cpp is concerned I am the
+	  author. I am working for Darshan3d which is a subsidiary of
+	  VizExperts thats why I have put VizExperts copyright."
+
+2009-04-09 16:40  shuber
+
+	* Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj:
+	  From Stephan Huber:
+	  updated XCode project to reflect current trunk
+
+2009-04-09 16:31  robert
+
+	* src/osgPlugins/3dc/ReaderWriter3DC.cpp: From Martin Beckett, "I
+	  have fixed up the 3DC reader to handle any field separator so it
+	  can read x,y,z files and added ability to write a 3DC file."
+	  
+	  From Robert Osfield, refactor of the above code to retain a bit
+	  more of the original funcionality, and to avoid the need to hand
+	  maintained XCode projects from being updated.
+
+2009-04-09 15:56  robert
+
+	* CMakeModules/OsgCPack.cmake: From Mattias Helsing, ""
+	  * Use the CPack ZIP generator on windows (WIN32)
+	  * Reformatted according to Philip Lowman's recent submissions"
+
+2009-04-09 15:55  robert
+
+	* src/osgWrappers/osgDB/Registry.cpp,
+	  src/osgWrappers/osgGA/TrackballManipulator.cpp: Updated wrappers
+
+2009-04-09 15:34  robert
+
+	* src/osgViewer/PixelBufferCarbon.cpp: From Stephan Huber,
+	  "attached you'll find a small fix for PixelBufferCarbon
+	  preventing it to
+	  be compiled for 64bit. This is the easiest solution for the old
+	  deprecated xcode project."
+
+2009-04-09 15:33  robert
+
+	* src/osgViewer/PixelBufferCarbon.cpp: Converted tabs to four
+	  spaces
+
+2009-04-09 14:41  robert
+
+	* src/osgUtil/RenderStage.cpp: From Paul Martz, typo fix
+
+2009-04-09 14:38  robert
+
+	* src/osg/ShapeDrawable.cpp: From Jean-Sebastien Guay, "When
+	  creating a cylinder without a bottom or a top (in the traits,
+	  createBottom=false and createTop=false), the cylinder could still
+	  be picked by picking its (non-existent) bottom or top. This is
+	  because the PrimitiveShapeFunctor does not consider the traits
+	  when returning the cylinder's geometry for the picking test, and
+	  always returns geometry for the whole cylinder, with bottom, top
+	  and body.
+	  
+	  I have attached a fixed file where the traits are checked in the
+	  PrimitiveShapeFunctor where appropriate. They are checked for
+	  Box, Cone Capsule and Cylinder. These just mirror the checks that
+	  were already done in the DrawShapeVisitor.
+	  
+	  (another instance where if the ShapeDrawable had just been
+	  osg::Geometry, there wouldn't have been a problem... :-) )
+	  
+	  I also fixed a small typo in the file in two places
+	  ("implementated" --> "implemented")."
+
+2009-04-09 14:31  robert
+
+	* include/osgGA/TrackballManipulator,
+	  src/osgGA/TrackballManipulator.cpp: From Cory Riddell, "I added
+	  an _allowThrow bool and get / set accessors to
+	  TrackballManipulator. The purpose of this is to disable throwing
+	  when
+	  you release the mouse button while moving the mouse. The default
+	  settings is true (ie, allow throw). The two source files are
+	  attached.
+	  "
+
+2009-04-09 14:25  robert
+
+	* examples/osgdepthpartition/DistanceAccumulator.cpp,
+	  examples/osgdepthpartition/osgdepthpartition.cpp: From Ravi
+	  Mathur, "OK I have been away for a looong time, but still
+	  occasionally watching from a distance, and saw the bug people
+	  have reported about the DepthPartitionNode not handling scaled
+	  models properly.
+	  
+	  I believe this is now fixed ... I have attached the new
+	  DistanceAccumulator.cpp, along with a modified example file that
+	  uses a PositionAttitudeTransform to draw the Earth's orbit around
+	  the Sun."
+
+2009-04-09 14:00  robert
+
+	* include/osgDB/Registry, src/osgDB/CMakeLists.txt,
+	  src/osgDB/MimeTypes.cpp, src/osgDB/Registry.cpp,
+	  src/osgPlugins/curl/ReaderWriterCURL.cpp,
+	  src/osgPlugins/curl/ReaderWriterCURL.h: From Glenn Waldron, "Here
+	  is a first cut at the mime-type support we discussed a little
+	  while ago
+	  (http://www.mail-archive.com/osg-users@lists.openscenegraph.org/msg23098.html)
+	  
+	  Background: when you access a file over HTTP, you cannot rely on
+	  a file extension being present; instead the file's mime-type is
+	  conveyed in the HTTP Content-Type response header. This facility
+	  adds a mime-type-to-extension map to the registry to handle this.
+	  
+	  There are two new osgDB::Registry functions which are pretty
+	  self-explanatory:
+	  
+	  void addMimeTypeExtensionMapping( mime-type, extension )
+	  ReaderWriter* getReaderWriterForMimeType( mime-type )
+	  
+	  I also added the file osgDB/MimeTypes.cpp which houses a
+	  hard-coded list of built-in types. I took the list from here
+	  (http://www.webmaster-toolkit.com/mime-types.shtml) and then
+	  pared it down to include mostly image and video types, editing
+	  them to map to existing plugins where possible.
+	  
+	  In addition, I updated the CURL plugin to a) install a set of
+	  built-in mime-type mappings, and b) use them to look up an
+	  extension in the event that the target filename does not have an
+	  extension.
+	  
+	  Here is a test case. This URL pulls down a JPEG (without a file
+	  extension):
+	  osgviewer --image
+	  "http://us.maps3.yimg.com/aerial.maps.yimg.com/ximg?v=1.8&s=256&t=a&r=1&x=0&y=0&z=2"
+	  "
+
+2009-04-09 09:25  robert
+
+	* CMakeLists.txt: From Jean-Sebastien Guay, "As I discussed in the
+	  thread "Windows 7 beta: "The binary is not a valid Windows
+	  image."" on osg-users, I needed to add the /DYNAMICBASE linker
+	  option for executables to link properly in release mode on
+	  Windows 7 beta.
+	  
+	  http://article.gmane.org/gmane.comp.graphics.openscenegraph.user/42400
+	  
+	  Since this is a workaround for a bug in a beta OS (which may or
+	  may not be fixed, since it's mentioned in their release notes so
+	  they may just leave it as it is) I've marked the option as
+	  advanced, default to OFF, and clearly documented it as being
+	  useful for Windows 7 only. I'd like to be able to test for
+	  Windows 7 directly instead of the blanket IF(WIN32), but I can't
+	  figure out if this is possible in CMake.
+	  
+	  Here's the modified CMakeLists.txt. It's a small change, with low
+	  impact, but will be useful to others who test out this OS and
+	  when it comes out. Note that I'm not familiar with this option in
+	  general, and didn't get any feedback to my questions in the
+	  above-mentioned thread, one of which was: Could we just add this
+	  option to all builds? What is the impact? That's still unclear to
+	  me, but without it OSG executables don't build, and the article I
+	  linked didn't seem to present any ill effects to enabling the
+	  option."
+
+2009-04-09 09:23  robert
+
+	* CMakeModules/CheckAtomicOps.cmake,
+	  CMakeModules/ModuleInstall.cmake, CMakeModules/OsgCPack.cmake,
+	  CMakeModules/OsgDetermineCompiler.cmake,
+	  CMakeModules/UtilityMacros.cmake,
+	  CMakeModules/cmake_uninstall.cmake.in,
+	  src/osgPlugins/3dc/CMakeLists.txt,
+	  src/osgPlugins/3ds/CMakeLists.txt,
+	  src/osgPlugins/OpenFlight/CMakeLists.txt,
+	  src/osgPlugins/ac/CMakeLists.txt,
+	  src/osgPlugins/bmp/CMakeLists.txt,
+	  src/osgPlugins/bvh/CMakeLists.txt,
+	  src/osgPlugins/curl/CMakeLists.txt,
+	  src/osgPlugins/dae/CMakeLists.txt,
+	  src/osgPlugins/dds/CMakeLists.txt,
+	  src/osgPlugins/dicom/CMakeLists.txt,
+	  src/osgPlugins/dot/CMakeLists.txt,
+	  src/osgPlugins/dw/CMakeLists.txt,
+	  src/osgPlugins/ffmpeg/CMakeLists.txt,
+	  src/osgPlugins/freetype/CMakeLists.txt,
+	  src/osgPlugins/gecko/CMakeLists.txt,
+	  src/osgPlugins/geo/CMakeLists.txt,
+	  src/osgPlugins/gif/CMakeLists.txt,
+	  src/osgPlugins/glsl/CMakeLists.txt,
+	  src/osgPlugins/gz/CMakeLists.txt,
+	  src/osgPlugins/hdr/CMakeLists.txt,
+	  src/osgPlugins/ive/CMakeLists.txt,
+	  src/osgPlugins/jp2/CMakeLists.txt,
+	  src/osgPlugins/jpeg/CMakeLists.txt,
+	  src/osgPlugins/logo/CMakeLists.txt,
+	  src/osgPlugins/lws/CMakeLists.txt,
+	  src/osgPlugins/md2/CMakeLists.txt,
+	  src/osgPlugins/net/CMakeLists.txt,
+	  src/osgPlugins/obj/CMakeLists.txt,
+	  src/osgPlugins/osg/CMakeLists.txt,
+	  src/osgPlugins/osgFX/CMakeLists.txt,
+	  src/osgPlugins/osgParticle/CMakeLists.txt,
+	  src/osgPlugins/osgTerrain/CMakeLists.txt,
+	  src/osgPlugins/osgText/CMakeLists.txt,
+	  src/osgPlugins/osgWidget/CMakeLists.txt,
+	  src/osgPlugins/osga/CMakeLists.txt,
+	  src/osgPlugins/osgtgz/CMakeLists.txt,
+	  src/osgPlugins/pfb/CMakeLists.txt,
+	  src/osgPlugins/pic/CMakeLists.txt,
+	  src/osgPlugins/png/CMakeLists.txt,
+	  src/osgPlugins/quicktime/CMakeLists.txt,
+	  src/osgPlugins/rgb/CMakeLists.txt,
+	  src/osgPlugins/rot/CMakeLists.txt,
+	  src/osgPlugins/scale/CMakeLists.txt,
+	  src/osgPlugins/shp/CMakeLists.txt,
+	  src/osgPlugins/stl/CMakeLists.txt,
+	  src/osgPlugins/svg/CMakeLists.txt,
+	  src/osgPlugins/tga/CMakeLists.txt,
+	  src/osgPlugins/tgz/CMakeLists.txt,
+	  src/osgPlugins/trans/CMakeLists.txt,
+	  src/osgPlugins/txp/CMakeLists.txt,
+	  src/osgPlugins/vnc/CMakeLists.txt,
+	  src/osgPlugins/vrml/CMakeLists.txt,
+	  src/osgPlugins/vtf/CMakeLists.txt,
+	  src/osgPlugins/x/CMakeLists.txt,
+	  src/osgPlugins/xine/CMakeLists.txt,
+	  src/osgPlugins/zip/CMakeLists.txt: From Philip Lowman, clean up
+	  of CMake files
+
+2009-04-08 14:16  robert
+
+	* src/osgViewer/CompositeViewer.cpp: From Eric Sokolowsky, "
+	  The osgViewer::CompositeViewer had partial support for Producer
+	  Camera
+	  config files, but it was not working completely. Here is the
+	  completed
+	  implementation. File: src/osgViewer/CompositeViewer.cpp.
+	  "
+
+2009-04-08 14:08  robert
+
+	* examples/osgviewerMFC/MFC_OSG.cpp: From Cory Riddell, fix for
+	  aspect ratio
+
+2009-04-08 14:06  robert
+
+	* include/osgDB/Registry, src/osgDB/Registry.cpp: From James
+	  Killian, "refactored the management of the object cache
+	  enabling/disabling"
+
+2009-04-08 13:40  robert
+
+	* src/osgViewer/CMakeLists.txt: From Eric
+	  Sokolowsky,"libosgViewerd.so was not being built properly because
+	  it was being
+	  linked with system libraries using LINK_INTERNAL instead of
+	  LINK_EXTERNAL. This caused it to try to link with libXrandrd
+	  instead of
+	  libXrandr, which failed. Attached is the fixed CMakeLists.txt."
+
+2009-04-08 13:21  robert
+
+	* src/osgPlugins/dxf/ReaderWriterDXF.cpp,
+	  src/osgPlugins/dxf/dxfEntity.cpp, src/osgPlugins/dxf/dxfEntity.h:
+	  From Mike Connell, "Here are some small fixes that allow you to
+	  specify the allowable deviation when creating polylines from arcs
+	  and circles in DXF files. Changes are against 2.8.0
+	  
+	  It adds two options:
+	  
+	  Accuracy(x) - ensures the polyline will be within x units from
+	  the ideal arc/curve
+	  ImproveAccuracyOnly - do not use the given accuracy 'x', if it
+	  would result in a worse curve than with the previous (2.8.0)
+	  implementation for a particular arc/curve.
+	  
+	  As an added bonus there was a small bug in the existing
+	  implementation whereby the primitives were line strips but the
+	  vertices generated were actually suitable for GL_LINES, so the
+	  improved accuracy doesn't even have to come at a performance cost
+	  :-)"
+
+2009-04-08 13:16  robert
+
+	* src/osgViewer/CompositeViewer.cpp: From Eric Sokolowky,
+	  ""Running" was spelled "Ruinning", which is hardly the same."
+
+2009-04-08 13:11  robert
+
+	* src/osgDB/CMakeLists.txt, src/osgDB/FileUtils.cpp: From Marc
+	  Sciabica, made searching of the install path for plugins option,
+	  and added the dll path to the search path under Windows
+
+2009-04-08 13:03  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoder.cpp: Reduced the default live
+	  video feed size to accomodate reading from the Minoru stereo
+	  wecam.
+
+2009-04-08 12:32  robert
+
+	* src/osg/Program.cpp, src/osg/StateSet.cpp: From Simon Carmody,
+	  "Patches for compare and copy of Programs and related state
+	  -Added copying of shaders and attributes in osg::Program copy
+	  constructor.
+	  -Changed StateSet::compare function to compare Uniforms and their
+	  override values. Previously it compared a RefUniformPair."
+
+2009-04-08 10:48  robert
+
+	* src/osgUtil/Optimizer.cpp: From Glenn Waldron, "Attached is a
+	  patch for osgUtil::Optimizer. If you run the
+	  SpatializeGroupsVisitor on a scene graph containing Geodes,
+	  StateSets attached to Geodes can be lost.
+	  
+	  The problem is in SpatializeGroupsVisitor::divide(osg::Geode*,
+	  unsigned int) where the code creates a new Group and divides up
+	  the input Geode into one Geode per Drawable.
+	  
+	  I fixed the problem by assigning the Geode's stateset to the new
+	  parent group.
+	  
+	  To replicate the bug, see attached osg/dds files:
+	  
+	  osgviewer b.osg -- model renders correctly
+	  set OSG_OPTIMIZER="SPATIALIZE_GROUPS"
+	  osgviewer b.osg -- textures are missing."
+
+2009-04-08 10:44  robert
+
+	* src/osgPlugins/x/ReaderWriterDirectX.cpp,
+	  src/osgPlugins/x/directx.cpp: From Aric Aumann, added options for
+	  controlling the swap of the left/right handed coordinate system
+
+2009-04-08 10:32  robert
+
+	* examples/osgviewerQT/AdapterWidget.cpp: From Martin Beckett,
+	  added mouse wheel support
+
+2009-04-07 10:13  robert
+
+	* src/osg/Drawable.cpp: Added better handling of use of VBO's in
+	  compileGLObjects()
+
+2009-04-07 10:12  robert
+
+	* src/osgWrappers/osgAnimation/EaseMotion.cpp: Updated wrappers
+
+2009-04-07 08:43  shuber
+
+	* Xcode/OSX_OSG_README.rtf,
+	  Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj,
+	  Xcode/OpenSceneGraph/config/osg/Config, Xcode/OpenThreads,
+	  Xcode/Xcode_OSG_Instructions.rtf: From Stephan Huber:
+	  removed OpenThreads-folder (as OpenThreads is part of
+	  OpenSceneGraph now), updated the Readmes regarding 64bit
+	  compilation and updated the XCode-project to match the current
+	  svn-trunk.
+
+2009-04-07 08:40  cedricpinson
+
+	* include/osgAnimation/EaseMotion: From Serge Lages, Elastic added
+	  to EaseMotion
+
+2009-04-06 12:28  robert
+
+	* src/osgTerrain/GeometryTechnique.cpp: Added disabling of
+	  mipmapping for non power of two textures
+
+2009-04-06 11:22  robert
+
+	* src/osgTerrain/GeometryTechnique.cpp: Added check against null
+	  colour layer to prevent a crash when a null colour layer is
+	  assigned
+
+2009-04-03 10:47  robert
+
+	* src/osgTerrain/GeometryTechnique.cpp: Displayed display lists to
+	  prevent frame drops when compiling large geometry tiles
+
+2009-04-03 09:54  robert
+
+	* examples/osgdrawinstanced/osgdrawinstanced.cpp: Tweaks to shader
+	  to fix warnings on with ATI drivers
+
+2009-04-02 08:44  robert
+
+	* src/osg/DisplaySettings.cpp: Added OSG_MULTI_SAMPLES env var for
+	  setting the default DisplaySettings NumMultiSamples value
+
+2009-03-30 09:55  robert
+
+	* examples/osgstereoimage/osgstereoimage.cpp: Added shader to
+	  convert images into greyscale when rendering in anaglyphic
+
+2009-03-26 17:24  robert
+
+	* examples/CMakeLists.txt, examples/osgtexturecompression,
+	  examples/osgtexturecompression/CMakeLists.txt,
+	  examples/osgtexturecompression/osgtexturecompression.cpp: Added
+	  osgtexturecompression example to demonstate the quality
+	  difference between
+	  different compression techniques.
+
+2009-03-25 11:17  robert
+
+	* include/osg/PrimitiveSet,
+	  src/osgPlugins/ffmpeg/FFmpegDecoder.cpp,
+	  src/osgTerrain/GeometryTechnique.cpp,
+	  src/osgWrappers/osg/PrimitiveSet.cpp: Added new virtual
+	  reseveElements, setElement, getElment and addElement methods to
+	  DrawElements
+	  to make is easier to write code that can work on
+	  DrawElementUByte, UShort or UInt.
+	  
+	  Changed the osgTerrain::GeometryTechnique so that it
+	  automatically chooses
+	  the use of DrawElementUShort or DrawElementsUInt accordining to
+	  the size of the tile.
+
+2009-03-24 23:25  robert
+
+	* src/osgPlugins/ffmpeg/ReaderWriterFFmpeg.cpp: Added support for
+	  adding .ffmpeg to filenames to force selection of ffmpeg plugin
+
+2009-03-24 23:17  robert
+
+	* examples/osgstereoimage/osgstereoimage.cpp: Added support for
+	  image streams
+
+2009-03-24 11:08  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp,
+	  src/osgPlugins/ffmpeg/ReaderWriterFFmpeg.cpp: From Ulrich
+	  Hertlein, "I got the following type error from gcc 4.0.1 on OS X
+	  10.5.6:
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp:
+	  In member function \u2018int
+	  osgFFmpeg::FFmpegDecoderVideo::convert(AVPicture*, int,
+	  AVPicture*, int, int, int)\u2019:
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp:245:
+	  error: invalid conversion from \u2018int\u2019 to
+	  \u2018PixelFormat\u2019
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp:245:
+	  error: initializing argument 3 of \u2018SwsContext*
+	  sws_getContext(int, int, PixelFormat, int, int, PixelFormat, int,
+	  SwsFilter*, SwsFilter*, double*)\u2019
+	  
+	  It expects 'src_pix_fmt' and 'dst_pix_fmt' to be of type
+	  'PixelFormat' rather than int. The attached cast fixes this (for
+	  me).
+	  
+	  I've also added Matroska video to the list of supported
+	  extensions"
+
+2009-03-23 20:47  robert
+
+	* AUTHORS.txt, applications/osgversion/osgversion.cpp: Updated
+	  AUTHORS.txt for 2.9.2 dev release
+
+2009-03-23 20:44  robert
+
+	* ChangeLog: Updated ChangeLog for 2.9.2 dev release
+
 2009-03-23 20:25  robert
 
 	* src/osgPlugins/x/ReaderWriterDirectX.cpp: From Aric Aumann, fixed

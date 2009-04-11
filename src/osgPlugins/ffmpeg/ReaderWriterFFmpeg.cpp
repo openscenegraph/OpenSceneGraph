@@ -29,16 +29,22 @@ public:
     ReaderWriterFFmpeg()
     {
         supportsProtocol("http","Read video/audio from http using ffmpeg.");
+        supportsProtocol("rtsp","Read video/audio from rtsp using ffmpeg.");
 
         supportsExtension("ffmpeg", "");
-        supportsExtension("avi", "");
-        supportsExtension("flv", "");
-        supportsExtension("mov", "");
-        supportsExtension("ogg", "Theora movie format");
-        supportsExtension("mpg", "Mpeg movie format");
-        supportsExtension("mpv", "Mpeg movie format");
-        supportsExtension("wmv", "Windows Media Video format");
-        supportsExtension("mkv", "Matroska");
+        supportsExtension("avi",    "");
+        supportsExtension("flv",    "Flash video");
+        supportsExtension("mov",    "Quicktime");
+        supportsExtension("ogg",    "Theora movie format");
+        supportsExtension("mpg",    "Mpeg movie format");
+        supportsExtension("mpv",    "Mpeg movie format");
+        supportsExtension("wmv",    "Windows Media Video format");
+        supportsExtension("mkv",    "Matroska");
+        supportsExtension("mjpeg",  "Motion JPEG");
+        supportsExtension("mp4",    "MPEG-4");
+        supportsExtension("sav",    "MPEG-4");
+        supportsExtension("3gp",    "MPEG-4");
+        supportsExtension("sdp",    "MPEG-4");
 
         // Register all FFmpeg formats/codecs
         av_register_all();

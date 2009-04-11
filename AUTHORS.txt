@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.2
+OpenSceneGraph Library 2.9.3
 
-376 Contributors:
+381 Contributors:
 
 Firstname Surname
 -----------------
@@ -16,8 +16,8 @@ Brede Johansen
 Geoff Michel
 Farshid Lashkari
 Bob Kuehne
-Ulrich Hertlein
 Eric Sokolowsky
+Ulrich Hertlein
 Jean-Sebastien Guay
 Martin Lavery
 David Callu
@@ -28,29 +28,29 @@ Mike Wittman
 Wojciech Lewandowski
 Roger James
 Paul Melis
+Mattias Helsing
 Colin McDonald
 Andy Skinner
 Roland Smeenk
 Pavel Moloshtan
-Mattias Helsing
+Cedric Pinson
 Tom Jolley
 Michael Platings
 Jeremy Moles
 Jason Beverage
-Cedric Pinson
 Norman Vine
 Art Tevs
 Alberto Farre
+Philip Lowman
 André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
-Philip Lowman
+J.P. Delport
 Sherman Wilcox
 Olaf Flebbe
 Mathieu Marache
 Jason Daly
-J.P. Delport
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
@@ -62,11 +62,13 @@ Daniel Sjölie
 Chris Hanson
 Alberto Luaces
 Bryan Thrall
+Serge Lages
 Melchior Franz
 Chris Denham
-Serge Lages
+Mike Connell
 Lionel Lagarde
 Joran Jessurun
+Glenn Waldron
 Frederic Marmond
 David Fries
 Csaba Halasz
@@ -78,7 +80,7 @@ Stephane Lamoliatte
 Sondra Iverson
 Rune Schmidt Jensen
 Rainer Oder
-Mike Connell
+Martin Aumueller
 Mario Valle
 Gordon Tomlinson
 Gino van den Bergen
@@ -87,10 +89,10 @@ Ben Discoe
 Andreas Ekstrand
 Sukender 
 Sasa Bistrovic
+Ravi Mathur
 Ralf Habacker
 Neil Groves
 Martin Naylor
-Martin Aumueller
 Markus Trenkwalder
 Luc Frauciel
 Loic Dachary
@@ -98,17 +100,16 @@ Joseph Steel
 John Shue
 Jan Peciva
 Jan Ciger
-Glenn Waldron
 Brad Colbert
 Vivek Rajan
 Thibault Genessay
 Sean Spicer
-Ravi Mathur
 Peter Hrenka
 Nikolaus Hanekamp
 Neil Salter
 Mihai Radu
 Michael Hartman
+Martin Beckett
 Laurens Voerman
 David Guthrie
 Corbin Holtz
@@ -142,7 +143,6 @@ Rafa Gaitan
 Phil Atkin
 Miguel Escriva
 Mattias Linde
-Martin Beckett
 Maria Ten
 Maciej Krol
 Ken Sewell
@@ -178,6 +178,7 @@ Stephan Eilemann
 Stanislav Blinov
 Sergey Leontyev
 Sebastian Messerschmidt
+Santosh Gaikwad
 Ralf Kern
 Pierre Haritchabalet
 Perry Miller
@@ -191,6 +192,7 @@ Max Bandazian
 Mathew May
 Martin Spott
 Martijn Kragtwijk
+Mark Sciabica
 Kevin Moiule
 Keith Steffen
 Katharina Plugge
@@ -212,8 +214,10 @@ Edgar Ellis
 Don Leich
 David Ergo
 Daniel Trstenjak
+Cory Riddell
 Christophe Loustaunau
 Brad Anderegg
+Aric Aumann
 Andrew Sampson
 Andrew Lorino
 Zbigniew Sroczynski
@@ -238,6 +242,7 @@ Thom Carlo
 Tery Welsh
 Steven Thomas
 Simon Hammett
+Simon Carmody
 Sid Byce
 Shuxing Xiao
 Shane Arnott
@@ -245,6 +250,7 @@ Sebastien Kuntz
 Ruth Lang
 Ruben Smelik
 Ronny Krueger
+Romain Charbit
 Robert Swain
 Rob Bloemkool
 Rick Pingry
@@ -287,7 +293,6 @@ Matt Burke
 Mathia Walker
 Mason Menninger
 Martins Innus
-Martin Amueller
 Mario Guimaraes
 Marin Lavery
 Marco Lehmann
@@ -318,6 +323,7 @@ Jean-Christophe Lombardo
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
+James Killian
 J.E. Hoffmann
 Himar Carmona
 Henrique Bucher
@@ -366,7 +372,6 @@ Benoit Laniel
 Ben van Basten
 Bart Gallet
 Axel Volley
-Aric Aumann
 Andy Preece
 Andrew Reyonolds
 Andreas Jochens

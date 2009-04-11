@@ -167,11 +167,6 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone)
 	          __void__computeBindMatrix,
 	          "",
 	          "");
-	I_Method0(bool, needLink,
-	          Properties::NON_VIRTUAL,
-	          __bool__needLink,
-	          "",
-	          "");
 	I_Method1(void, setNeedToComputeBindMatrix, IN, bool, state,
 	          Properties::NON_VIRTUAL,
 	          __void__setNeedToComputeBindMatrix__bool,

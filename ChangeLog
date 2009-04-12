@@ -1,3 +1,26 @@
+2009-04-12 10:29  robert
+
+	* src/osg/GraphicsThread.cpp: Added release from svn/trunk to
+	  enable osgCompute.
+
+2009-04-10 21:25  robert
+
+	* NEWS.txt: Updated NEWS for 2.8.1-rc1
+
+2009-04-10 14:35  robert
+
+	* README.txt: UPdated date
+
+2009-04-10 12:56  robert
+
+	* AUTHORS.txt, ChangeLog: Update ChangeLog and AUTHORS.txt file for
+	  2.8.1-rc1
+
+2009-04-10 12:54  robert
+
+	* applications/osgversion/osgversion.cpp: Merged changes from
+	  svn/trunk
+
 2009-04-10 10:58  robert
 
 	* CMakeLists.txt, include/osg/Version: Updater version numbers to

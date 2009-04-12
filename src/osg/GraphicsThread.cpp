@@ -37,6 +37,9 @@ void GraphicsThread::run()
 
     OperationThread::run();
 
+    // release operations before the thread stops working.
+    _operationQueue->releaseAllOperations(); 
+
     if (graphicsContext)
     {    
         graphicsContext->releaseContext();

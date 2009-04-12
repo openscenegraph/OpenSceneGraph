@@ -12,10 +12,9 @@ subscribe to our public mailing list:
     http://www.openscenegraph.org/projects/osg/wiki/MailingLists
 
 
-
 Robert Osfield.
 Project Lead.
-10th April 2009.
+12th April 2009.
 
 --
 

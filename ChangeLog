@@ -1,3 +1,8 @@
+2009-04-11 07:12  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/osgversion.cpp:
+	  Updated ChangeLog and AUTHORS for 2.9.3 dev release
+
 2009-04-11 06:25  robert
 
 	* src/osgWrappers/osgAnimation/Bone.cpp: updated wrappers

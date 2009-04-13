@@ -12,13 +12,12 @@
 #ifndef MESH_TYPEDEFS_H
 #define MESH_TYPEDEFS_H
 
-#   ifdef WIN32
+#   if defined(_MSC_VER)
 #      include <Winsock2.h>
 #      include <Windows.h>
 #   endif
 
 #   include <osg/Notify>
-#    include <cassert>
 
 #ifdef NDEBUG
 #   define MESHASSERT( x )
@@ -31,7 +30,7 @@
 #   define MESHWARN    osg::notify(osg::WARN)
 #   define MESHINFO    osg::notify(osg::INFO)
 
-#ifdef WIN32
+#if defined(_MSC_VER)
 typedef int        socklen_t;
 
 typedef UINT64     uint64_t;
@@ -44,7 +43,7 @@ typedef UINT8      uint8_t;
 typedef SSIZE_T    ssize_t;
 #    endif
 
-#endif // Win32
+#endif // defined(_MSC_VER)
 
 #include <exception>
 #include <iostream>

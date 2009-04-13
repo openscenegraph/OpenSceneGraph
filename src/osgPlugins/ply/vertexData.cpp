@@ -157,12 +157,23 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
     int     fileType;
     float   version;
     bool    result = false;
-    int        nComments;
-    char**    comments;
+    int     nComments;
+    char**  comments;
     
-    PlyFile* file = ply_open_for_reading( const_cast< char* >( filename ), 
+    PlyFile* file = NULL;
+
+    // Try to open ply file as for reading
+    try{
+            file  = ply_open_for_reading( const_cast< char* >( filename ), 
                                           &nPlyElems, &elemNames, 
                                           &fileType, &version );
+    }
+    // Catch the if any exception thrown
+    catch( exception& e )
+    {
+        MESHERROR << "Unable to read PLY file, an exception occured:  " 
+                    << e.what() << endl;
+    }
 
     if( !file )
     {
@@ -172,6 +183,7 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
     }
 
     MESHASSERT( elemNames != 0 );
+    
 
     nComments = file->num_comments;
     comments = file->comments;
@@ -195,8 +207,16 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         int nElems;
         int nProps;
         
-        PlyProperty** props = ply_get_element_description( file, elemNames[i], 
-                                                           &nElems, &nProps );
+        PlyProperty** props = NULL;
+        try{
+                props = ply_get_element_description( file, elemNames[i], 
+                                                     &nElems, &nProps );
+        }
+        catch( exception& e )
+        {
+            MESHERROR << "Unable to get PLY file description, an exception occured:  " 
+                        << e.what() << endl;
+        }
         MESHASSERT( props != 0 );
         
         #ifndef NDEBUG
@@ -221,14 +241,25 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
             
             if( ignoreColors )
                 MESHINFO << "Colors in PLY file ignored per request." << endl;
-            
-            // Read vertices and store in a std::vector array
-            readVertices( file, nElems, hasColors && !ignoreColors );
-            // Check whether all vertices are loaded or not
-            MESHASSERT( _vertices->size() == static_cast< size_t >( nElems ) );
-            // Check all color elements read or not
-            if( hasColors && !ignoreColors )
-                MESHASSERT( _colors->size() == static_cast< size_t >( nElems ) );
+         
+            try {   
+                // Read vertices and store in a std::vector array
+                readVertices( file, nElems, hasColors && !ignoreColors );
+                // Check whether all vertices are loaded or not
+                MESHASSERT( _vertices->size() == static_cast< size_t >( nElems ) );
+                // Check all color elements read or not
+                if( hasColors && !ignoreColors )
+                    MESHASSERT( _colors->size() == static_cast< size_t >( nElems ) );
+            }
+            catch( exception& e )
+            {
+                MESHERROR << "Unable to read vertex in PLY file, an exception occured:  " 
+                            << e.what() << endl;
+                // stop for loop by setting the loop variable to break condition
+                // this way resources still get released even on error cases
+                i = nPlyElems;
+                
+            }
         }
         // If the string is face means triangle info started
         else if( equal_strings( elemNames[i], "face" ) )

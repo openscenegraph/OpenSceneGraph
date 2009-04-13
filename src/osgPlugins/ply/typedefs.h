@@ -19,7 +19,14 @@
 
 #   include <osg/Notify>
 #    include <cassert>
-#   define MESHASSERT  assert
+
+#ifdef NDEBUG
+#   define MESHASSERT( x )
+#else
+#    define MESHASSERT(x) { if( !(x) )                                      \
+              osg::notify(osg::WARN) << "Ply Loader ##### Assert: " << #x << " #####" << std::endl; }
+#endif
+
 #   define MESHERROR   osg::notify(osg::WARN)
 #   define MESHWARN    osg::notify(osg::WARN)
 #   define MESHINFO    osg::notify(osg::INFO)

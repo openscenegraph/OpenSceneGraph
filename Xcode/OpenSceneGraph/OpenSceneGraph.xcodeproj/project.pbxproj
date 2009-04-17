@@ -35097,8 +35097,8 @@
 		001103B308736A190015C576 /* Deployment 32bit Carbon */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(HOME)/Library/Frameworks",
@@ -35117,7 +35117,7 @@
 				);
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				STRIP_STYLE = "non-global";
 			};
 			name = "Deployment 32bit Carbon";
@@ -47848,7 +47848,7 @@
 				OTHER_CFLAGS = "-DUSE_DARWIN_CARBON_IMPLEMENTATION";
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 			};
 			name = "Development 32bit Carbon";
 		};

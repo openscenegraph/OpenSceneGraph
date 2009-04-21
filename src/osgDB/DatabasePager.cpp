@@ -111,7 +111,7 @@ RefPtrAdapter<FuncObj> refPtrAdapt(const FuncObj& func)
 class DatabasePager::FindCompileableGLObjectsVisitor : public osg::NodeVisitor
 {
 public:
-    FindCompileableGLObjectsVisitor(DatabasePager::DataToCompile& dataToCompile, 
+    FindCompileableGLObjectsVisitor(DatabasePager::DataToCompile* dataToCompile,
                                bool changeAutoUnRef, bool valueAutoUnRef,
                                bool changeAnisotropy, float valueAnisotropy,
                                DatabasePager::DrawablePolicy drawablePolicy,
@@ -127,36 +127,34 @@ public:
         {
             _kdTreeBuilder = osgDB::Registry::instance()->getKdTreeBuilder()->clone();
         }
-        
     }
-    
+
     META_NodeVisitor("osgDB","FindCompileableGLObjectsVisitor")
-    
+
     virtual void apply(osg::Node& node)
     {
         apply(node.getStateSet());
 
         traverse(node);
     }
-    
+
     virtual void apply(osg::Geode& geode)
     {
         apply(geode.getStateSet());
-    
+
         for(unsigned int i=0;i<geode.getNumDrawables();++i)
         {
             apply(geode.getDrawable(i));
         }
 
         traverse(geode);
-        
+
         if (_kdTreeBuilder.valid())
         {
             geode.accept(*_kdTreeBuilder);
         }
-        
     }
-    
+
     inline void apply(osg::StateSet* stateset)
     {
         if (stateset)
@@ -181,7 +179,7 @@ public:
                         if (_changeAnisotropy)
                             texture->setMaxAnisotropy(_valueAnisotropy);
                     }
-                    
+
                     if (!_pager->isCompiled(texture))
                     {
                         compileStateSet = true;
@@ -197,23 +195,23 @@ public:
                     }
                 }
             }
-            if (compileStateSet)
+            if (compileStateSet && _dataToCompile)
             {
-                _dataToCompile.first.insert(stateset);
+                _dataToCompile->first.insert(stateset);
             }
 
         }
     }
-    
+
     inline void apply(osg::Drawable* drawable)
     {
         if (_drawableSet.count(drawable))
             return;
 
         _drawableSet.insert(drawable);
-        
+
         apply(drawable->getStateSet());
-        
+
         switch(_drawablePolicy)
         {
         case DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS: 
@@ -240,14 +238,14 @@ public:
         //
         // XXX This "compiles" VBOs too, but compilation doesn't do
         // anything for VBOs, does it?
-        if (drawable->getUseDisplayList() && !_pager->isCompiled(drawable))
+        if (_dataToCompile && drawable->getUseDisplayList() && !_pager->isCompiled(drawable))
         {
             // osg::notify(osg::NOTICE)<<"  Found compilable drawable"<<std::endl;
-            _dataToCompile.second.push_back(drawable);
+            _dataToCompile->second.push_back(drawable);
         }
     }
     
-    DatabasePager::DataToCompile&           _dataToCompile;
+    DatabasePager::DataToCompile*           _dataToCompile;
     bool                                    _changeAutoUnRef;
     bool                                    _valueAutoUnRef;
     bool                                    _changeAnisotropy;
@@ -595,8 +593,12 @@ void DatabasePager::DatabaseThread::run()
                 // merged with the main scene graph and large computeBound() isn't incurred.
                 ActiveGraphicsContexts::iterator itr = _pager->_activeGraphicsContexts.begin();
 
-                DataToCompile& dtc = databaseRequest->_dataToCompileMap[*itr];
-                ++itr;                
+                DataToCompile* dtc = 0;
+                if (itr != _pager->_activeGraphicsContexts.end())
+                {
+                    dtc = &(databaseRequest->_dataToCompileMap[*itr]);
+                    ++itr;
+                }
 
                 // find all the compileable rendering objects
                 DatabasePager::FindCompileableGLObjectsVisitor frov(dtc, 
@@ -619,7 +621,7 @@ void DatabasePager::DatabaseThread::run()
                 if (_pager->_doPreCompile &&
                     !_pager->_activeGraphicsContexts.empty())
                 {
-                    if (!dtc.first.empty() || !dtc.second.empty())
+                    if (!dtc->first.empty() || !dtc->second.empty())
                     {
                         loadedObjectsNeedToBeCompiled = true;                
 
@@ -628,7 +630,7 @@ void DatabasePager::DatabaseThread::run()
                             itr != _pager->_activeGraphicsContexts.end();
                             ++itr)
                         {
-                            databaseRequest->_dataToCompileMap[*itr] = dtc;
+                            databaseRequest->_dataToCompileMap[*itr] = *dtc;
                         }
                     }
                 }
@@ -644,7 +646,7 @@ void DatabasePager::DatabaseThread::run()
                     ++itr;                
 
                     // find all the compileable rendering objects
-                    DatabasePager::FindCompileableGLObjectsVisitor frov(dtc, 
+                    DatabasePager::FindCompileableGLObjectsVisitor frov(&dtc,
                                                          _pager->_changeAutoUnRef, _pager->_valueAutoUnRef,
                                                          _pager->_changeAnisotropy, _pager->_valueAnisotropy,
                                                          _pager->_drawablePolicy, 
@@ -1493,7 +1495,7 @@ public:
     {
     }
 
-    META_NodeVisitor("osgDB","FindCompileableGLObjectsVisitor")
+    META_NodeVisitor("osgDB","MarkPagedLODsVisitor")
 
     virtual void apply(osg::PagedLOD& plod)
     {

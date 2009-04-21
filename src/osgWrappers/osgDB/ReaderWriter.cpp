@@ -383,6 +383,26 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	          __void__removePluginData__C5_std_string_R1,
 	          "Remove a value from the PluginData. ",
 	          "");
+	I_Method2(void, setPluginStringData, IN, const std::string &, s, IN, const std::string &, v,
+	          Properties::NON_VIRTUAL,
+	          __void__setPluginStringData__C5_std_string_R1__C5_std_string_R1,
+	          "Sets a plugindata value PluginData with a string. ",
+	          "");
+	I_Method1(std::string, getPluginStringData, IN, const std::string &, s,
+	          Properties::NON_VIRTUAL,
+	          __std_string__getPluginStringData__C5_std_string_R1,
+	          "Get a string from the PluginStrData. ",
+	          "");
+	I_Method1(const std::string, getPluginStringData, IN, const std::string &, s,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string__getPluginStringData__C5_std_string_R1,
+	          "Get a value from the PluginData. ",
+	          "");
+	I_Method1(void, removePluginStringData, IN, const std::string &, s,
+	          Properties::NON_VIRTUAL,
+	          __void__removePluginStringData__C5_std_string_R1,
+	          "Remove a value from the PluginData. ",
+	          "");
 	I_SimpleProperty(osgDB::AuthenticationMap *, AuthenticationMap, 
 	                 0, 
 	                 __void__setAuthenticationMap__AuthenticationMap_P1);
@@ -404,6 +424,10 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
 	I_IndexedProperty(void *, PluginData, 
 	                  __void_P1__getPluginData__C5_std_string_R1, 
 	                  __void__setPluginData__C5_std_string_R1__void_P1, 
+	                  0);
+	I_IndexedProperty(std::string, PluginStringData, 
+	                  __std_string__getPluginStringData__C5_std_string_R1, 
+	                  __void__setPluginStringData__C5_std_string_R1__C5_std_string_R1, 
 	                  0);
 END_REFLECTOR
 

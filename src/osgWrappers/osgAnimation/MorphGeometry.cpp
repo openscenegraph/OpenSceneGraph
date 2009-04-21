@@ -104,7 +104,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::MorphGeometry)
 	                      Properties::VIRTUAL,
 	                      __void__addMorphTarget__osg_Geometry_P1__float,
 	                      "Add a MorphTarget to the MorphGeometry. ",
-	                      " param MorphTarget The MorphTarget to be added to the MorphGeometry.   return true for success; false otherwise. ");
+	                      " param morphTarget The MorphTarget to be added to the MorphGeometry.   return true for success; false otherwise. ");
 	I_Method2(void, setWeight, IN, unsigned int, index, IN, float, morphWeight,
 	          Properties::NON_VIRTUAL,
 	          __void__setWeight__unsigned_int__float,

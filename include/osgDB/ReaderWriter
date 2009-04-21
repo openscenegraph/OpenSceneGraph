@@ -157,7 +157,8 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                     _databasePaths(options._databasePaths),
                     _objectCacheHint(options._objectCacheHint),
                     _buildKdTreesHint(options._buildKdTreesHint),
-                    _pluginData(options._pluginData){}
+                    _pluginData(options._pluginData),
+                    _pluginStringData(options._pluginStringData){}
 
                 META_Object(osgDB,Options);
 
@@ -214,6 +215,26 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 /** Remove a value from the PluginData */
                 void removePluginData(const std::string& s) const { _pluginData.erase(s); }
 
+
+                /** Sets a plugindata value PluginData with a string */
+                void setPluginStringData(const std::string& s, const std::string& v) const { _pluginStringData[s] = v; }
+
+                /** Get a string from the PluginStrData */
+                std::string getPluginStringData(const std::string& s) { return _pluginStringData[s]; }
+
+                /** Get a value from the PluginData */
+                const std::string getPluginStringData(const std::string& s) const
+                {
+                    PluginStringDataMap::const_iterator itr = _pluginStringData.find(s);
+                    return (itr == _pluginStringData.end()) ? std::string("") : itr->second;
+                }
+
+                /** Remove a value from the PluginData */
+                void removePluginStringData(const std::string& s) const { _pluginStringData.erase(s); }
+
+
+
+
             protected:
 
                 virtual ~Options() {}
@@ -226,6 +247,9 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
                 typedef std::map<std::string,void*> PluginDataMap;
                 mutable PluginDataMap _pluginData;
+                typedef std::map<std::string,std::string> PluginStringDataMap;
+                mutable PluginStringDataMap _pluginStringData;
+
         };
 
 

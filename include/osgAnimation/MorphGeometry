@@ -87,7 +87,7 @@ namespace osgAnimation
           * then increment its reference count, add it to the MorphTargets list and
           * dirty the bounding sphere to force it to be recomputed on the next
           * call to \c getBound().
-          * @param MorphTarget The \c MorphTarget to be added to the \c MorphGeometry.
+          * @param morphTarget The \c MorphTarget to be added to the \c MorphGeometry.
           * @return  \c true for success; \c false otherwise.
         */
         virtual void addMorphTarget( osg::Geometry *morphTarget, float weight = 1.0 ) { _morphTargets.push_back(MorphTarget(morphTarget, weight)); _dirty = true; }

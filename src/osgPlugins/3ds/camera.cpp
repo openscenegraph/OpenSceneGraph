@@ -96,27 +96,27 @@ lib3ds_camera_dump(Lib3dsCamera *camera)
  * \ingroup camera
  */
 Lib3dsBool
-lib3ds_camera_read(Lib3dsCamera *camera, FILE *f)
+lib3ds_camera_read(Lib3dsCamera *camera, iostream *strm)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
 
-  if (!lib3ds_chunk_read_start(&c, LIB3DS_N_CAMERA, f)) {
+  if (!lib3ds_chunk_read_start(&c, LIB3DS_N_CAMERA, strm)) {
     return(LIB3DS_FALSE);
   }
   {
     int i;
     for (i=0; i<3; ++i) {
-      camera->position[i]=lib3ds_float_read(f);
+      camera->position[i]=lib3ds_float_read(strm);
     }
     for (i=0; i<3; ++i) {
-      camera->target[i]=lib3ds_float_read(f);
+      camera->target[i]=lib3ds_float_read(strm);
     }
   }
-  camera->roll=lib3ds_float_read(f);
+  camera->roll=lib3ds_float_read(strm);
   {
     float s;
-    s=lib3ds_float_read(f);
+    s=lib3ds_float_read(strm);
     if (fabs(s)<LIB3DS_EPSILON) {
       camera->fov=45.0;
     }
@@ -124,9 +124,9 @@ lib3ds_camera_read(Lib3dsCamera *camera, FILE *f)
       camera->fov=2400.0f/s;
     }
   }
-  lib3ds_chunk_read_tell(&c, f);
+  lib3ds_chunk_read_tell(&c, strm);
   
-  while ((chunk=lib3ds_chunk_read_next(&c, f))!=0) {
+  while ((chunk=lib3ds_chunk_read_next(&c, strm))!=0) {
     switch (chunk) {
       case LIB3DS_CAM_SEE_CONE:
         {
@@ -135,8 +135,8 @@ lib3ds_camera_read(Lib3dsCamera *camera, FILE *f)
         break;
       case LIB3DS_CAM_RANGES:
         {
-          camera->near_range=lib3ds_float_read(f);
-          camera->far_range=lib3ds_float_read(f);
+          camera->near_range=lib3ds_float_read(strm);
+          camera->far_range=lib3ds_float_read(strm);
         }
         break;
       default:
@@ -144,7 +144,7 @@ lib3ds_camera_read(Lib3dsCamera *camera, FILE *f)
     }
   }
   
-  lib3ds_chunk_read_end(&c, f);
+  lib3ds_chunk_read_end(&c, strm);
   return(LIB3DS_TRUE);
 }
 
@@ -153,41 +153,41 @@ lib3ds_camera_read(Lib3dsCamera *camera, FILE *f)
  * \ingroup camera
  */
 Lib3dsBool
-lib3ds_camera_write(Lib3dsCamera *camera, FILE *f)
+lib3ds_camera_write(Lib3dsCamera *camera, iostream *strm)
 {
   Lib3dsChunk c;
 
   c.chunk=LIB3DS_N_CAMERA;
-  if (!lib3ds_chunk_write_start(&c,f)) {
+  if (!lib3ds_chunk_write_start(&c,strm)) {
     return(LIB3DS_FALSE);
   }
 
-  lib3ds_vector_write(camera->position, f);
-  lib3ds_vector_write(camera->target, f);
-  lib3ds_float_write(camera->roll, f);
+  lib3ds_vector_write(camera->position, strm);
+  lib3ds_vector_write(camera->target, strm);
+  lib3ds_float_write(camera->roll, strm);
   if (fabs(camera->fov)<LIB3DS_EPSILON) {
-    lib3ds_float_write(2400.0f/45.0f, f);
+    lib3ds_float_write(2400.0f/45.0f, strm);
   }
   else {
-    lib3ds_float_write(2400.0f/camera->fov, f);
+    lib3ds_float_write(2400.0f/camera->fov, strm);
   }
 
   if (camera->see_cone) {
     Lib3dsChunk c;
     c.chunk=LIB3DS_CAM_SEE_CONE;
     c.size=6;
-    lib3ds_chunk_write(&c, f);
+    lib3ds_chunk_write(&c, strm);
   }
   {
     Lib3dsChunk c;
     c.chunk=LIB3DS_CAM_RANGES;
     c.size=14;
-    lib3ds_chunk_write(&c, f);
-    lib3ds_float_write(camera->near_range, f);
-    lib3ds_float_write(camera->far_range, f);
+    lib3ds_chunk_write(&c, strm);
+    lib3ds_float_write(camera->near_range, strm);
+    lib3ds_float_write(camera->far_range, strm);
   }
 
-  if (!lib3ds_chunk_write_end(&c,f)) {
+  if (!lib3ds_chunk_write_end(&c,strm)) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);

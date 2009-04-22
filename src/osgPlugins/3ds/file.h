@@ -35,10 +35,15 @@
 #ifndef INCLUDED_LIB3DS_VIEWPORT_H
 #include "viewport.h"
 #endif
+#include <osgDB/Registry>
+#include <iostream>
+using namespace std;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
 
 /*!
  * 3ds file structure
@@ -67,13 +72,14 @@ struct _Lib3dsFile {
     Lib3dsNode *nodes;
 }; 
 
-extern LIB3DSAPI Lib3dsFile* lib3ds_file_load(const char *filename);
+extern LIB3DSAPI Lib3dsFile* lib3ds_file_load(const char *filename, const osgDB::ReaderWriter::Options* options);
+extern LIB3DSAPI Lib3dsFile* lib3ds_stream_load(iostream * strm);
 extern LIB3DSAPI Lib3dsBool lib3ds_file_save(Lib3dsFile *file, const char *filename);
 extern LIB3DSAPI Lib3dsFile* lib3ds_file_new();
 extern LIB3DSAPI void lib3ds_file_free(Lib3dsFile *file);
 extern LIB3DSAPI void lib3ds_file_eval(Lib3dsFile *file, Lib3dsFloat t);
-extern LIB3DSAPI Lib3dsBool lib3ds_file_read(Lib3dsFile *file, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_file_write(Lib3dsFile *file, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_file_read(Lib3dsFile *file, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_file_write(Lib3dsFile *file, iostream *strm);
 extern LIB3DSAPI void lib3ds_file_insert_material(Lib3dsFile *file, Lib3dsMaterial *material);
 extern LIB3DSAPI void lib3ds_file_remove_material(Lib3dsFile *file, Lib3dsMaterial *material);
 extern LIB3DSAPI Lib3dsMaterial* lib3ds_file_material_by_name(Lib3dsFile *file, const char *name);

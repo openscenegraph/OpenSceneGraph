@@ -407,13 +407,13 @@ lib3ds_node_dump(Lib3dsNode *node, Lib3dsIntd level)
  * \ingroup node
  */
 Lib3dsBool
-lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
+lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, iostream *strm)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
 
   ASSERT(node);
-  if (!lib3ds_chunk_read_start(&c, 0, f)) {
+  if (!lib3ds_chunk_read_start(&c, 0, strm)) {
     return(LIB3DS_FALSE);
   }
   switch (c.chunk) {
@@ -429,22 +429,22 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
       return(LIB3DS_FALSE);
   }
 
-  while ((chunk=lib3ds_chunk_read_next(&c, f))!=0) {
+  while ((chunk=lib3ds_chunk_read_next(&c, strm))!=0) {
     switch (chunk) {
       case LIB3DS_NODE_ID:
         {
-          node->node_id=lib3ds_word_read(f);
+          node->node_id=lib3ds_word_read(strm);
           lib3ds_chunk_dump_info("  ID = %d", (short)node->node_id);
         }
         break;
       case LIB3DS_NODE_HDR:
         {
-          if (!lib3ds_string_read(node->name, 64, f)) {
+          if (!lib3ds_string_read(node->name, 64, strm)) {
             return(LIB3DS_FALSE);
           }
-          node->flags1=lib3ds_word_read(f);
-          node->flags2=lib3ds_word_read(f);
-          node->parent_id=lib3ds_word_read(f);
+          node->flags1=lib3ds_word_read(strm);
+          node->flags2=lib3ds_word_read(strm);
+          node->parent_id=lib3ds_word_read(strm);
           lib3ds_chunk_dump_info("  NAME =%s", node->name);
           lib3ds_chunk_dump_info("  PARENT=%d", (short)node->parent_id);
         }
@@ -454,7 +454,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
           if (node->type==LIB3DS_OBJECT_NODE) {
             int i;
             for (i=0; i<3; ++i) {
-              node->data.object.pivot[i]=lib3ds_float_read(f);
+              node->data.object.pivot[i]=lib3ds_float_read(strm);
             }
           }
           else {
@@ -465,7 +465,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
       case LIB3DS_INSTANCE_NAME:
         {
           if (node->type==LIB3DS_OBJECT_NODE) {
-            if (!lib3ds_string_read(node->data.object.instance, 64, f)) {
+            if (!lib3ds_string_read(node->data.object.instance, 64, strm)) {
               return(LIB3DS_FALSE);
             }
           }
@@ -479,10 +479,10 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
           if (node->type==LIB3DS_OBJECT_NODE) {
             int i;
             for (i=0; i<3; ++i) {
-              node->data.object.bbox_min[i]=lib3ds_float_read(f);
+              node->data.object.bbox_min[i]=lib3ds_float_read(strm);
             }
             for (i=0; i<3; ++i) {
-              node->data.object.bbox_max[i]=lib3ds_float_read(f);
+              node->data.object.bbox_max[i]=lib3ds_float_read(strm);
             }
           }
           else {
@@ -496,10 +496,10 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
           
           switch (node->type) {
             case LIB3DS_AMBIENT_NODE:
-              result=lib3ds_lin3_track_read(&node->data.ambient.col_track, f);
+              result=lib3ds_lin3_track_read(&node->data.ambient.col_track, strm);
               break;
             case LIB3DS_LIGHT_NODE:
-              result=lib3ds_lin3_track_read(&node->data.light.col_track, f);
+              result=lib3ds_lin3_track_read(&node->data.light.col_track, strm);
               break;
             default:
               lib3ds_chunk_unknown(chunk);
@@ -515,19 +515,19 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
 
           switch (node->type) {
             case LIB3DS_OBJECT_NODE:
-              result=lib3ds_lin3_track_read(&node->data.object.pos_track, f);
+              result=lib3ds_lin3_track_read(&node->data.object.pos_track, strm);
               break;
             case LIB3DS_CAMERA_NODE:
-              result=lib3ds_lin3_track_read(&node->data.camera.pos_track, f);
+              result=lib3ds_lin3_track_read(&node->data.camera.pos_track, strm);
               break;
             case LIB3DS_TARGET_NODE:
-              result=lib3ds_lin3_track_read(&node->data.target.pos_track, f);
+              result=lib3ds_lin3_track_read(&node->data.target.pos_track, strm);
               break;
             case LIB3DS_LIGHT_NODE:
-              result=lib3ds_lin3_track_read(&node->data.light.pos_track, f);
+              result=lib3ds_lin3_track_read(&node->data.light.pos_track, strm);
               break;
             case LIB3DS_SPOT_NODE:
-              result=lib3ds_lin3_track_read(&node->data.spot.pos_track, f);
+              result=lib3ds_lin3_track_read(&node->data.spot.pos_track, strm);
               break;
             default:
               lib3ds_chunk_unknown(chunk);
@@ -540,7 +540,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
       case LIB3DS_ROT_TRACK_TAG:
         {
           if (node->type==LIB3DS_OBJECT_NODE) {
-            if (!lib3ds_quat_track_read(&node->data.object.rot_track, f)) {
+            if (!lib3ds_quat_track_read(&node->data.object.rot_track, strm)) {
               return(LIB3DS_FALSE);
             }
           }
@@ -552,7 +552,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
       case LIB3DS_SCL_TRACK_TAG:
         {
           if (node->type==LIB3DS_OBJECT_NODE) {
-            if (!lib3ds_lin3_track_read(&node->data.object.scl_track, f)) {
+            if (!lib3ds_lin3_track_read(&node->data.object.scl_track, strm)) {
               return(LIB3DS_FALSE);
             }
           }
@@ -564,7 +564,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
       case LIB3DS_FOV_TRACK_TAG:
         {
           if (node->type==LIB3DS_CAMERA_NODE) {
-            if (!lib3ds_lin1_track_read(&node->data.camera.fov_track, f)) {
+            if (!lib3ds_lin1_track_read(&node->data.camera.fov_track, strm)) {
               return(LIB3DS_FALSE);
             }
           }
@@ -576,7 +576,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
       case LIB3DS_HOT_TRACK_TAG:
         {
           if (node->type==LIB3DS_LIGHT_NODE) {
-            if (!lib3ds_lin1_track_read(&node->data.light.hotspot_track, f)) {
+            if (!lib3ds_lin1_track_read(&node->data.light.hotspot_track, strm)) {
               return(LIB3DS_FALSE);
             }
           }
@@ -588,7 +588,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
       case LIB3DS_FALL_TRACK_TAG:
         {
           if (node->type==LIB3DS_LIGHT_NODE) {
-            if (!lib3ds_lin1_track_read(&node->data.light.falloff_track, f)) {
+            if (!lib3ds_lin1_track_read(&node->data.light.falloff_track, strm)) {
               return(LIB3DS_FALSE);
             }
           }
@@ -603,10 +603,10 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
 
           switch (node->type) {
             case LIB3DS_CAMERA_NODE:
-              result=lib3ds_lin1_track_read(&node->data.camera.roll_track, f);
+              result=lib3ds_lin1_track_read(&node->data.camera.roll_track, strm);
               break;
             case LIB3DS_LIGHT_NODE:
-              result=lib3ds_lin1_track_read(&node->data.light.roll_track, f);
+              result=lib3ds_lin1_track_read(&node->data.light.roll_track, strm);
               break;
             default:
               lib3ds_chunk_unknown(chunk);
@@ -619,7 +619,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
       case LIB3DS_HIDE_TRACK_TAG:
         {
           if (node->type==LIB3DS_OBJECT_NODE) {
-            if (!lib3ds_bool_track_read(&node->data.object.hide_track, f)) {
+            if (!lib3ds_bool_track_read(&node->data.object.hide_track, strm)) {
               return(LIB3DS_FALSE);
             }
           }
@@ -631,7 +631,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
       case LIB3DS_MORPH_SMOOTH:
         {
           if (node->type==LIB3DS_OBJECT_NODE) {
-            node->data.object.morph_smooth=lib3ds_float_read(f);
+            node->data.object.morph_smooth=lib3ds_float_read(strm);
           }
           else {
             lib3ds_chunk_unknown(chunk);
@@ -641,7 +641,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
       case LIB3DS_MORPH_TRACK_TAG:
         {
           if (node->type==LIB3DS_OBJECT_NODE) {
-            if (!lib3ds_morph_track_read(&node->data.object.morph_track, f)) {
+            if (!lib3ds_morph_track_read(&node->data.object.morph_track, strm)) {
               return(LIB3DS_FALSE);
             }
           }
@@ -655,7 +655,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
     }
   }
 
-  lib3ds_chunk_read_end(&c, f);
+  lib3ds_chunk_read_end(&c, strm);
   return(LIB3DS_TRUE);
 }
 
@@ -664,7 +664,7 @@ lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *, FILE *f)
  * \ingroup node
  */
 Lib3dsBool
-lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
+lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, iostream *strm)
 {
   Lib3dsChunk c;
 
@@ -695,7 +695,7 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
     default:
       return(LIB3DS_FALSE);
   }
-  if (!lib3ds_chunk_write_start(&c,f)) {
+  if (!lib3ds_chunk_write_start(&c,strm)) {
     return(LIB3DS_FALSE);
   }
 
@@ -703,19 +703,19 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
     Lib3dsChunk c;
     c.chunk=LIB3DS_NODE_ID;
     c.size=8;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_intw_write(node->node_id,f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_intw_write(node->node_id,strm);
   }
 
   { /*---- LIB3DS_NODE_HDR ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_NODE_HDR;
     c.size=6+ 1+strlen(node->name) +2+2+2;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_string_write(node->name,f);
-    lib3ds_word_write(node->flags1,f);
-    lib3ds_word_write(node->flags2,f);
-    lib3ds_word_write(node->parent_id,f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_string_write(node->name,strm);
+    lib3ds_word_write(node->flags1,strm);
+    lib3ds_word_write(node->flags2,strm);
+    lib3ds_word_write(node->parent_id,strm);
   }
 
   switch (c.chunk) {
@@ -723,13 +723,13 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
       { /*---- LIB3DS_COL_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_COL_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin3_track_write(&node->data.ambient.col_track,f)) {
+        if (!lib3ds_lin3_track_write(&node->data.ambient.col_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
@@ -739,8 +739,8 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
         Lib3dsChunk c;
         c.chunk=LIB3DS_PIVOT;
         c.size=18;
-        lib3ds_chunk_write(&c,f);
-        lib3ds_vector_write(node->data.object.pivot,f);
+        lib3ds_chunk_write(&c,strm);
+        lib3ds_vector_write(node->data.object.pivot,strm);
       }
       { /*---- LIB3DS_INSTANCE_NAME ----*/
         Lib3dsChunk c;
@@ -750,8 +750,8 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
 
           c.chunk=LIB3DS_INSTANCE_NAME;
           c.size=6+1+strlen(name);
-          lib3ds_chunk_write(&c,f);
-          lib3ds_string_write(name,f);
+          lib3ds_chunk_write(&c,strm);
+          lib3ds_string_write(name,strm);
         }
       }
       {
@@ -767,60 +767,60 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
           Lib3dsChunk c;
           c.chunk=LIB3DS_BOUNDBOX;
           c.size=30;
-          lib3ds_chunk_write(&c,f);
-          lib3ds_vector_write(node->data.object.bbox_min, f);
-          lib3ds_vector_write(node->data.object.bbox_max, f);
+          lib3ds_chunk_write(&c,strm);
+          lib3ds_vector_write(node->data.object.bbox_min, strm);
+          lib3ds_vector_write(node->data.object.bbox_max, strm);
         }
       }
       { /*---- LIB3DS_POS_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_POS_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin3_track_write(&node->data.object.pos_track,f)) {
+        if (!lib3ds_lin3_track_write(&node->data.object.pos_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
       { /*---- LIB3DS_ROT_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_ROT_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_quat_track_write(&node->data.object.rot_track,f)) {
+        if (!lib3ds_quat_track_write(&node->data.object.rot_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
       { /*---- LIB3DS_SCL_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_SCL_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin3_track_write(&node->data.object.scl_track,f)) {
+        if (!lib3ds_lin3_track_write(&node->data.object.scl_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
       if (node->data.object.hide_track.keyL) { /*---- LIB3DS_HIDE_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_HIDE_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_bool_track_write(&node->data.object.hide_track,f)) {
+        if (!lib3ds_bool_track_write(&node->data.object.hide_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
@@ -828,47 +828,47 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
         Lib3dsChunk c;
         c.chunk=LIB3DS_MORPH_SMOOTH;
         c.size=10;
-        lib3ds_chunk_write(&c,f);
-        lib3ds_float_write(node->data.object.morph_smooth,f);
+        lib3ds_chunk_write(&c,strm);
+        lib3ds_float_write(node->data.object.morph_smooth,strm);
       }
       break;
     case LIB3DS_CAMERA_NODE_TAG:
       { /*---- LIB3DS_POS_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_POS_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin3_track_write(&node->data.camera.pos_track,f)) {
+        if (!lib3ds_lin3_track_write(&node->data.camera.pos_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
       { /*---- LIB3DS_FOV_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_FOV_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin1_track_write(&node->data.camera.fov_track,f)) {
+        if (!lib3ds_lin1_track_write(&node->data.camera.fov_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
       { /*---- LIB3DS_ROLL_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_ROLL_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin1_track_write(&node->data.camera.roll_track,f)) {
+        if (!lib3ds_lin1_track_write(&node->data.camera.roll_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
@@ -877,13 +877,13 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
       { /*---- LIB3DS_POS_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_POS_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin3_track_write(&node->data.target.pos_track,f)) {
+        if (!lib3ds_lin3_track_write(&node->data.target.pos_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
@@ -892,26 +892,26 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
       { /*---- LIB3DS_POS_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_POS_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin3_track_write(&node->data.light.pos_track,f)) {
+        if (!lib3ds_lin3_track_write(&node->data.light.pos_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
       { /*---- LIB3DS_COL_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_COL_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin3_track_write(&node->data.light.col_track,f)) {
+        if (!lib3ds_lin3_track_write(&node->data.light.col_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
@@ -920,65 +920,65 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
       { /*---- LIB3DS_POS_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_POS_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin3_track_write(&node->data.light.pos_track,f)) {
+        if (!lib3ds_lin3_track_write(&node->data.light.pos_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
       { /*---- LIB3DS_COL_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_COL_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin3_track_write(&node->data.light.col_track,f)) {
+        if (!lib3ds_lin3_track_write(&node->data.light.col_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
       { /*---- LIB3DS_HOT_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_HOT_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin1_track_write(&node->data.light.hotspot_track,f)) {
+        if (!lib3ds_lin1_track_write(&node->data.light.hotspot_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
       { /*---- LIB3DS_FALL_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_FALL_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin1_track_write(&node->data.light.falloff_track,f)) {
+        if (!lib3ds_lin1_track_write(&node->data.light.falloff_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
       { /*---- LIB3DS_ROLL_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_ROLL_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin1_track_write(&node->data.light.roll_track,f)) {
+        if (!lib3ds_lin1_track_write(&node->data.light.roll_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
@@ -987,13 +987,13 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
       { /*---- LIB3DS_POS_TRACK_TAG ----*/
         Lib3dsChunk c;
         c.chunk=LIB3DS_POS_TRACK_TAG;
-        if (!lib3ds_chunk_write_start(&c,f)) {
+        if (!lib3ds_chunk_write_start(&c,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_lin3_track_write(&node->data.spot.pos_track,f)) {
+        if (!lib3ds_lin3_track_write(&node->data.spot.pos_track,strm)) {
           return(LIB3DS_FALSE);
         }
-        if (!lib3ds_chunk_write_end(&c,f)) {
+        if (!lib3ds_chunk_write_end(&c,strm)) {
           return(LIB3DS_FALSE);
         }
       }
@@ -1002,7 +1002,7 @@ lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f)
       return(LIB3DS_FALSE);
   }
 
-  if (!lib3ds_chunk_write_end(&c,f)) {
+  if (!lib3ds_chunk_write_end(&c,strm)) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);

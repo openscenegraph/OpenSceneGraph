@@ -27,6 +27,9 @@
 #include "types.h"
 #endif
 
+#include <iostream>
+using namespace std;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -71,8 +74,8 @@ struct _Lib3dsBackground {
     Lib3dsGradient gradient;
 };
 
-extern LIB3DSAPI Lib3dsBool lib3ds_background_read(Lib3dsBackground *background, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_background_write(Lib3dsBackground *background, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_background_read(Lib3dsBackground *background, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_background_write(Lib3dsBackground *background, iostream *strm);
 
 #ifdef __cplusplus
 }

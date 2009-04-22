@@ -67,23 +67,23 @@ lib3ds_material_free(Lib3dsMaterial *material)
 
 
 static Lib3dsBool
-color_read(Lib3dsRgba rgb, FILE *f)
+color_read(Lib3dsRgba rgb, iostream *strm)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
   Lib3dsBool have_lin=LIB3DS_FALSE;
 
-  if (!lib3ds_chunk_read_start(&c, 0, f)) {
+  if (!lib3ds_chunk_read_start(&c, 0, strm)) {
     return(LIB3DS_FALSE);
   }
 
-  while ((chunk=lib3ds_chunk_read_next(&c, f))!=0) {
+  while ((chunk=lib3ds_chunk_read_next(&c, strm))!=0) {
     switch (chunk) {
       case LIB3DS_LIN_COLOR_24:
         {
           int i;
           for (i=0; i<3; ++i) {
-            rgb[i]=1.0f*lib3ds_byte_read(f)/255.0f;
+            rgb[i]=1.0f*lib3ds_byte_read(strm)/255.0f;
           }
           rgb[3]=1.0f;
         }
@@ -95,40 +95,40 @@ color_read(Lib3dsRgba rgb, FILE *f)
         if (!have_lin) {
           int i;
           for (i=0; i<3; ++i) {
-            rgb[i]=1.0f*lib3ds_byte_read(f)/255.0f;
+            rgb[i]=1.0f*lib3ds_byte_read(strm)/255.0f;
           }
           rgb[3]=1.0f;
         }
         break;
       case LIB3DS_COLOR_F:
         // sth: this will fix 3ds-files exported from cinema 4d
-        lib3ds_rgb_read(rgb, f);
+        lib3ds_rgb_read(rgb, strm);
         break;
       default:
         lib3ds_chunk_unknown(chunk);
     }
   }
   
-  lib3ds_chunk_read_end(&c, f);
+  lib3ds_chunk_read_end(&c, strm);
   return(LIB3DS_TRUE);
 }
 
 
 static Lib3dsBool
-int_percentage_read(Lib3dsFloat *p, FILE *f)
+int_percentage_read(Lib3dsFloat *p, iostream *strm)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
 
-  if (!lib3ds_chunk_read_start(&c, 0, f)) {
+  if (!lib3ds_chunk_read_start(&c, 0, strm)) {
     return(LIB3DS_FALSE);
   }
 
-  while ((chunk=lib3ds_chunk_read_next(&c, f))!=0) {
+  while ((chunk=lib3ds_chunk_read_next(&c, strm))!=0) {
     switch (chunk) {
       case LIB3DS_INT_PERCENTAGE:
         {
-          Lib3dsIntw i=lib3ds_intw_read(f);
+          Lib3dsIntw i=lib3ds_intw_read(strm);
           *p=(Lib3dsFloat)(1.0*i/100.0);
         }
         break;
@@ -137,31 +137,31 @@ int_percentage_read(Lib3dsFloat *p, FILE *f)
     }
   }
   
-  lib3ds_chunk_read_end(&c, f);
+  lib3ds_chunk_read_end(&c, strm);
   return(LIB3DS_TRUE);
 }
 
 
 static Lib3dsBool
-texture_map_read(Lib3dsTextureMap *map, FILE *f)
+texture_map_read(Lib3dsTextureMap *map, iostream *strm)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
 
-  if (!lib3ds_chunk_read_start(&c, 0, f)) {
+  if (!lib3ds_chunk_read_start(&c, 0, strm)) {
     return(LIB3DS_FALSE);
   }
 
-  while ((chunk=lib3ds_chunk_read_next(&c, f))!=0) {
+  while ((chunk=lib3ds_chunk_read_next(&c, strm))!=0) {
     switch (chunk) {
       case LIB3DS_INT_PERCENTAGE:
         {
-          map->percent=1.0f*lib3ds_intw_read(f)/100.0f;
+          map->percent=1.0f*lib3ds_intw_read(strm)/100.0f;
         }
         break;
       case LIB3DS_MAT_MAPNAME:
         {
-          if (!lib3ds_string_read(map->name, 64, f)) {
+          if (!lib3ds_string_read(map->name, 64, strm)) {
             return(LIB3DS_FALSE);
           }
           lib3ds_chunk_dump_info("  NAME=%s", map->name);
@@ -169,72 +169,72 @@ texture_map_read(Lib3dsTextureMap *map, FILE *f)
         break;
       case LIB3DS_MAT_MAP_TILING:
         {
-          map->flags=lib3ds_word_read(f);
+          map->flags=lib3ds_word_read(strm);
         }
         break;
       case LIB3DS_MAT_MAP_TEXBLUR:
         {
-          map->blur=lib3ds_float_read(f);
+          map->blur=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_MAT_MAP_USCALE:
         {
-          map->scale[0]=lib3ds_float_read(f);
+          map->scale[0]=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_MAT_MAP_VSCALE:
         {
-          map->scale[1]=lib3ds_float_read(f);
+          map->scale[1]=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_MAT_MAP_UOFFSET:
         {
-          map->offset[0]=lib3ds_float_read(f);
+          map->offset[0]=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_MAT_MAP_VOFFSET:
         {
-          map->offset[1]=lib3ds_float_read(f);
+          map->offset[1]=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_MAT_MAP_ANG:
         {
-          map->rotation=lib3ds_float_read(f);
+          map->rotation=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_MAT_MAP_COL1:
         {
-          map->tint_1[0]=1.0f*lib3ds_byte_read(f)/255.0f;
-          map->tint_1[1]=1.0f*lib3ds_byte_read(f)/255.0f;
-          map->tint_1[2]=1.0f*lib3ds_byte_read(f)/255.0f;
+          map->tint_1[0]=1.0f*lib3ds_byte_read(strm)/255.0f;
+          map->tint_1[1]=1.0f*lib3ds_byte_read(strm)/255.0f;
+          map->tint_1[2]=1.0f*lib3ds_byte_read(strm)/255.0f;
         }
         break;
       case LIB3DS_MAT_MAP_COL2:
         {
-          map->tint_2[0]=1.0f*lib3ds_byte_read(f)/255.0f;
-          map->tint_2[1]=1.0f*lib3ds_byte_read(f)/255.0f;
-          map->tint_2[2]=1.0f*lib3ds_byte_read(f)/255.0f;
+          map->tint_2[0]=1.0f*lib3ds_byte_read(strm)/255.0f;
+          map->tint_2[1]=1.0f*lib3ds_byte_read(strm)/255.0f;
+          map->tint_2[2]=1.0f*lib3ds_byte_read(strm)/255.0f;
         }
         break;
       case LIB3DS_MAT_MAP_RCOL:
         {
-          map->tint_r[0]=1.0f*lib3ds_byte_read(f)/255.0f;
-          map->tint_r[1]=1.0f*lib3ds_byte_read(f)/255.0f;
-          map->tint_r[2]=1.0f*lib3ds_byte_read(f)/255.0f;
+          map->tint_r[0]=1.0f*lib3ds_byte_read(strm)/255.0f;
+          map->tint_r[1]=1.0f*lib3ds_byte_read(strm)/255.0f;
+          map->tint_r[2]=1.0f*lib3ds_byte_read(strm)/255.0f;
         }
         break;
       case LIB3DS_MAT_MAP_GCOL:
         {
-          map->tint_g[0]=1.0f*lib3ds_byte_read(f)/255.0f;
-          map->tint_g[1]=1.0f*lib3ds_byte_read(f)/255.0f;
-          map->tint_g[2]=1.0f*lib3ds_byte_read(f)/255.0f;
+          map->tint_g[0]=1.0f*lib3ds_byte_read(strm)/255.0f;
+          map->tint_g[1]=1.0f*lib3ds_byte_read(strm)/255.0f;
+          map->tint_g[2]=1.0f*lib3ds_byte_read(strm)/255.0f;
         }
         break;
       case LIB3DS_MAT_MAP_BCOL:
         {
-          map->tint_b[0]=1.0f*lib3ds_byte_read(f)/255.0f;
-          map->tint_b[1]=1.0f*lib3ds_byte_read(f)/255.0f;
-          map->tint_b[2]=1.0f*lib3ds_byte_read(f)/255.0f;
+          map->tint_b[0]=1.0f*lib3ds_byte_read(strm)/255.0f;
+          map->tint_b[1]=1.0f*lib3ds_byte_read(strm)/255.0f;
+          map->tint_b[2]=1.0f*lib3ds_byte_read(strm)/255.0f;
         }
         break;
       default:
@@ -242,7 +242,7 @@ texture_map_read(Lib3dsTextureMap *map, FILE *f)
     }
   }
   
-  lib3ds_chunk_read_end(&c, f);
+  lib3ds_chunk_read_end(&c, strm);
   return(LIB3DS_TRUE);
 }
 
@@ -337,21 +337,21 @@ lib3ds_material_dump(Lib3dsMaterial *material)
  * \ingroup material
  */
 Lib3dsBool
-lib3ds_material_read(Lib3dsMaterial *material, FILE *f)
+lib3ds_material_read(Lib3dsMaterial *material, iostream *strm)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
 
   ASSERT(material);
-  if (!lib3ds_chunk_read_start(&c, LIB3DS_MAT_ENTRY, f)) {
+  if (!lib3ds_chunk_read_start(&c, LIB3DS_MAT_ENTRY, strm)) {
     return(LIB3DS_FALSE);
   }
 
-  while ((chunk=lib3ds_chunk_read_next(&c, f))!=0) {
+  while ((chunk=lib3ds_chunk_read_next(&c, strm))!=0) {
     switch (chunk) {
       case LIB3DS_MAT_NAME:
         {
-          if (!lib3ds_string_read(material->name, 64, f)) {
+          if (!lib3ds_string_read(material->name, 64, strm)) {
             return(LIB3DS_FALSE);
           }
           lib3ds_chunk_dump_info("  NAME=%s", material->name);
@@ -359,56 +359,56 @@ lib3ds_material_read(Lib3dsMaterial *material, FILE *f)
         break;
       case LIB3DS_MAT_AMBIENT:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!color_read(material->ambient, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!color_read(material->ambient, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_DIFFUSE:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!color_read(material->diffuse, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!color_read(material->diffuse, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_SPECULAR:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!color_read(material->specular, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!color_read(material->specular, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_SHININESS:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!int_percentage_read(&material->shininess, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!int_percentage_read(&material->shininess, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_SHIN2PCT:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!int_percentage_read(&material->shin_strength, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!int_percentage_read(&material->shin_strength, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_TRANSPARENCY:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!int_percentage_read(&material->transparency, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!int_percentage_read(&material->transparency, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_XPFALL:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!int_percentage_read(&material->falloff, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!int_percentage_read(&material->falloff, strm)) {
             return(LIB3DS_FALSE);
           }
         }
@@ -420,8 +420,8 @@ lib3ds_material_read(Lib3dsMaterial *material, FILE *f)
         break;
       case LIB3DS_MAT_REFBLUR:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!int_percentage_read(&material->blur, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!int_percentage_read(&material->blur, strm)) {
             return(LIB3DS_FALSE);
           }
         }
@@ -433,7 +433,7 @@ lib3ds_material_read(Lib3dsMaterial *material, FILE *f)
         break;
       case LIB3DS_MAT_SHADING:
         {
-          material->shading=lib3ds_intw_read(f);
+          material->shading=lib3ds_intw_read(strm);
         }
         break;
       case LIB3DS_MAT_SELF_ILLUM:
@@ -478,144 +478,144 @@ lib3ds_material_read(Lib3dsMaterial *material, FILE *f)
         break;
       case LIB3DS_MAT_WIRE_SIZE:
         {
-          material->wire_size=lib3ds_float_read(f);
+          material->wire_size=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_MAT_TEXMAP:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->texture1_map, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->texture1_map, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_TEXMASK:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->texture1_mask, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->texture1_mask, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_TEX2MAP:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->texture2_map, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->texture2_map, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_TEX2MASK:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->texture2_mask, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->texture2_mask, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_OPACMAP:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->opacity_map, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->opacity_map, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_OPACMASK:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->opacity_mask, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->opacity_mask, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_BUMPMAP:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->bump_map, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->bump_map, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_BUMPMASK:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->bump_mask, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->bump_mask, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_SPECMAP:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->specular_map, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->specular_map, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_SPECMASK:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->specular_mask, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->specular_mask, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_SHINMAP:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->shininess_map, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->shininess_map, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_SHINMASK:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->shininess_mask, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->shininess_mask, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_SELFIMAP:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->self_illum_map, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->self_illum_map, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_SELFIMASK:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->self_illum_mask, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->self_illum_mask, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_REFLMAP:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->reflection_map, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->reflection_map, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_REFLMASK:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!texture_map_read(&material->reflection_mask, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!texture_map_read(&material->reflection_mask, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_MAT_ACUBIC:
         {
-          lib3ds_intb_read(f);
-          material->autorefl_map.level=lib3ds_intb_read(f);
-          material->autorefl_map.flags=lib3ds_intw_read(f);
-          material->autorefl_map.size=lib3ds_intd_read(f);
-          material->autorefl_map.frame_step=lib3ds_intd_read(f);
+          lib3ds_intb_read(strm);
+          material->autorefl_map.level=lib3ds_intb_read(strm);
+          material->autorefl_map.flags=lib3ds_intw_read(strm);
+          material->autorefl_map.size=lib3ds_intd_read(strm);
+          material->autorefl_map.frame_step=lib3ds_intd_read(strm);
         }
         break;
       default:
@@ -623,50 +623,50 @@ lib3ds_material_read(Lib3dsMaterial *material, FILE *f)
     }
   }
 
-  lib3ds_chunk_read_end(&c, f);
+  lib3ds_chunk_read_end(&c, strm);
   return(LIB3DS_TRUE);
 }
 
 
 static Lib3dsBool
-color_write(Lib3dsRgba rgb, FILE *f)
+color_write(Lib3dsRgba rgb, iostream *strm)
 {
   Lib3dsChunk c;
 
   c.chunk=LIB3DS_COLOR_24;
   c.size=9;
-  lib3ds_chunk_write(&c,f);
-  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[0]+0.5),f);
-  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[1]+0.5),f);
-  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[2]+0.5),f);
+  lib3ds_chunk_write(&c,strm);
+  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[0]+0.5),strm);
+  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[1]+0.5),strm);
+  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[2]+0.5),strm);
 
   c.chunk=LIB3DS_LIN_COLOR_24;
   c.size=9;
-  lib3ds_chunk_write(&c,f);
-  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[0]+0.5),f);
-  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[1]+0.5),f);
-  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[2]+0.5),f);
+  lib3ds_chunk_write(&c,strm);
+  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[0]+0.5),strm);
+  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[1]+0.5),strm);
+  lib3ds_byte_write((Lib3dsByte)floor(255.0*rgb[2]+0.5),strm);
 
   return(LIB3DS_TRUE);
 }
 
 
 static Lib3dsBool
-int_percentage_write(Lib3dsFloat p, FILE *f)
+int_percentage_write(Lib3dsFloat p, iostream *strm)
 {
   Lib3dsChunk c;
 
   c.chunk=LIB3DS_INT_PERCENTAGE;
   c.size=8;
-  lib3ds_chunk_write(&c,f);
-  lib3ds_intw_write((Lib3dsByte)floor(100.0*p+0.5),f);
+  lib3ds_chunk_write(&c,strm);
+  lib3ds_intw_write((Lib3dsByte)floor(100.0*p+0.5),strm);
 
   return(LIB3DS_TRUE);
 }
 
 
 static Lib3dsBool
-texture_map_write(Lib3dsWord chunk, Lib3dsTextureMap *map, FILE *f)
+texture_map_write(Lib3dsWord chunk, Lib3dsTextureMap *map, iostream *strm)
 {
   Lib3dsChunk c;
 
@@ -674,127 +674,127 @@ texture_map_write(Lib3dsWord chunk, Lib3dsTextureMap *map, FILE *f)
     return(LIB3DS_TRUE);
   }
   c.chunk=chunk;
-  if (!lib3ds_chunk_write_start(&c,f)) {
+  if (!lib3ds_chunk_write_start(&c,strm)) {
     return(LIB3DS_FALSE);
   }
   
-  int_percentage_write(map->percent,f);
+  int_percentage_write(map->percent,strm);
 
   { /*---- LIB3DS_MAT_MAPNAME ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAPNAME;
     c.size=6+strlen(map->name)+1;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_string_write(map->name,f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_string_write(map->name,strm);
   }
 
   { /*---- LIB3DS_MAT_MAP_TILING ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_TILING;
     c.size=8;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_word_write((Lib3dsWord)map->flags,f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_word_write((Lib3dsWord)map->flags,strm);
   }
   
   { /*---- LIB3DS_MAT_MAP_TEXBLUR ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_TEXBLUR;
     c.size=10;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_float_write(map->blur,f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_float_write(map->blur,strm);
   }
 
   { /*---- LIB3DS_MAT_MAP_USCALE ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_USCALE;
     c.size=10;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_float_write(map->scale[0],f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_float_write(map->scale[0],strm);
   }
 
   { /*---- LIB3DS_MAT_MAP_VSCALE ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_VSCALE;
     c.size=10;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_float_write(map->scale[1],f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_float_write(map->scale[1],strm);
   }
 
   { /*---- LIB3DS_MAT_MAP_UOFFSET ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_UOFFSET;
     c.size=10;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_float_write(map->offset[0],f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_float_write(map->offset[0],strm);
   }
 
   { /*---- LIB3DS_MAT_MAP_VOFFSET ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_VOFFSET;
     c.size=10;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_float_write(map->offset[1],f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_float_write(map->offset[1],strm);
   }
 
   { /*---- LIB3DS_MAT_MAP_ANG ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_ANG;
     c.size=10;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_float_write(map->rotation,f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_float_write(map->rotation,strm);
   }
 
   { /*---- LIB3DS_MAT_MAP_COL1 ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_COL1;
     c.size=9;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_1[0]+0.5), f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_1[1]+0.5), f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_1[2]+0.5), f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_1[0]+0.5), strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_1[1]+0.5), strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_1[2]+0.5), strm);
   }
 
   { /*---- LIB3DS_MAT_MAP_COL2 ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_COL2;
     c.size=9;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_2[0]+0.5), f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_2[1]+0.5), f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_2[2]+0.5), f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_2[0]+0.5), strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_2[1]+0.5), strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_2[2]+0.5), strm);
   }
   
   { /*---- LIB3DS_MAT_MAP_RCOL ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_RCOL;
     c.size=9;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_r[0]+0.5), f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_r[1]+0.5), f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_r[2]+0.5), f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_r[0]+0.5), strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_r[1]+0.5), strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_r[2]+0.5), strm);
   }
 
   { /*---- LIB3DS_MAT_MAP_GCOL ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_GCOL;
     c.size=9;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_g[0]+0.5), f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_g[1]+0.5), f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_g[2]+0.5), f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_g[0]+0.5), strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_g[1]+0.5), strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_g[2]+0.5), strm);
   }
   
   { /*---- LIB3DS_MAT_MAP_BCOL ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_MAP_BCOL;
     c.size=9;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_b[0]+0.5), f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_b[1]+0.5), f);
-    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_b[2]+0.5), f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_b[0]+0.5), strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_b[1]+0.5), strm);
+    lib3ds_byte_write((Lib3dsByte)floor(255.0*map->tint_b[2]+0.5), strm);
   }
 
-  if (!lib3ds_chunk_write_end(&c,f)) {
+  if (!lib3ds_chunk_write_end(&c,strm)) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -805,12 +805,12 @@ texture_map_write(Lib3dsWord chunk, Lib3dsTextureMap *map, FILE *f)
  * \ingroup material
  */
 Lib3dsBool
-lib3ds_material_write(Lib3dsMaterial *material, FILE *f)
+lib3ds_material_write(Lib3dsMaterial *material, iostream *strm)
 {
   Lib3dsChunk c;
 
   c.chunk=LIB3DS_MAT_ENTRY;
-  if (!lib3ds_chunk_write_start(&c,f)) {
+  if (!lib3ds_chunk_write_start(&c,strm)) {
     return(LIB3DS_FALSE);
   }
 
@@ -818,210 +818,210 @@ lib3ds_material_write(Lib3dsMaterial *material, FILE *f)
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_NAME;
     c.size=6+strlen(material->name)+1;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_string_write(material->name,f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_string_write(material->name,strm);
   }
 
   { /*---- LIB3DS_MAT_AMBIENT ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_AMBIENT;
     c.size=24;
-    lib3ds_chunk_write(&c,f);
-    color_write(material->ambient,f);
+    lib3ds_chunk_write(&c,strm);
+    color_write(material->ambient,strm);
   }
 
   { /*---- LIB3DS_MAT_DIFFUSE ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_DIFFUSE;
     c.size=24;
-    lib3ds_chunk_write(&c,f);
-    color_write(material->diffuse,f);
+    lib3ds_chunk_write(&c,strm);
+    color_write(material->diffuse,strm);
   }
 
   { /*---- LIB3DS_MAT_SPECULAR ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_SPECULAR;
     c.size=24;
-    lib3ds_chunk_write(&c,f);
-    color_write(material->specular,f);
+    lib3ds_chunk_write(&c,strm);
+    color_write(material->specular,strm);
   }
 
   { /*---- LIB3DS_MAT_SHININESS ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_SHININESS;
     c.size=14;
-    lib3ds_chunk_write(&c,f);
-    int_percentage_write(material->shininess,f);
+    lib3ds_chunk_write(&c,strm);
+    int_percentage_write(material->shininess,strm);
   }
 
   { /*---- LIB3DS_MAT_SHIN2PCT ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_SHIN2PCT;
     c.size=14;
-    lib3ds_chunk_write(&c,f);
-    int_percentage_write(material->shin_strength,f);
+    lib3ds_chunk_write(&c,strm);
+    int_percentage_write(material->shin_strength,strm);
   }
 
   { /*---- LIB3DS_MAT_TRANSPARENCY ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_TRANSPARENCY;
     c.size=14;
-    lib3ds_chunk_write(&c,f);
-    int_percentage_write(material->transparency,f);
+    lib3ds_chunk_write(&c,strm);
+    int_percentage_write(material->transparency,strm);
   }
 
   { /*---- LIB3DS_MAT_XPFALL ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_XPFALL;
     c.size=14;
-    lib3ds_chunk_write(&c,f);
-    int_percentage_write(material->falloff,f);
+    lib3ds_chunk_write(&c,strm);
+    int_percentage_write(material->falloff,strm);
   }
 
   if (material->use_falloff) { /*---- LIB3DS_MAT_USE_XPFALL ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_USE_XPFALL;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
   { /*---- LIB3DS_MAT_SHADING ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_SHADING;
     c.size=8;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_intw_write(material->shading,f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_intw_write(material->shading,strm);
   }
 
   { /*---- LIB3DS_MAT_REFBLUR ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_REFBLUR;
     c.size=14;
-    lib3ds_chunk_write(&c,f);
-    int_percentage_write(material->blur,f);
+    lib3ds_chunk_write(&c,strm);
+    int_percentage_write(material->blur,strm);
   }
 
   if (material->use_blur) { /*---- LIB3DS_MAT_USE_REFBLUR ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_USE_REFBLUR;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
   if (material->self_illum) { /*---- LIB3DS_MAT_SELF_ILLUM ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_SELF_ILLUM;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
   if (material->two_sided) { /*---- LIB3DS_MAT_TWO_SIDE ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_TWO_SIDE;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
   
   if (material->map_decal) { /*---- LIB3DS_MAT_DECAL ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_DECAL;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
   if (material->additive) { /*---- LIB3DS_MAT_ADDITIVE ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_ADDITIVE;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
   if (material->use_wire) { /*---- LIB3DS_MAT_WIRE ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_WIRE;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
   if (material->use_wire_abs) { /*---- LIB3DS_MAT_WIREABS ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_WIREABS;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
   { /*---- LIB3DS_MAT_WIRE_SIZE ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_WIRE_SIZE;
     c.size=10;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_float_write(material->wire_size,f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_float_write(material->wire_size,strm);
   }
 
   if (material->face_map) { /*---- LIB3DS_MAT_FACEMAP ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_FACEMAP;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
   if (material->soften) { /*---- LIB3DS_MAT_PHONGSOFT ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_MAT_PHONGSOFT;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
-  if (!texture_map_write(LIB3DS_MAT_TEXMAP, &material->texture1_map, f)) {
+  if (!texture_map_write(LIB3DS_MAT_TEXMAP, &material->texture1_map, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_TEXMASK, &material->texture1_mask, f)) {
+  if (!texture_map_write(LIB3DS_MAT_TEXMASK, &material->texture1_mask, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_TEX2MAP, &material->texture2_map, f)) {
+  if (!texture_map_write(LIB3DS_MAT_TEX2MAP, &material->texture2_map, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_TEX2MASK, &material->texture2_mask, f)) {
+  if (!texture_map_write(LIB3DS_MAT_TEX2MASK, &material->texture2_mask, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_OPACMAP, &material->opacity_map, f)) {
+  if (!texture_map_write(LIB3DS_MAT_OPACMAP, &material->opacity_map, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_OPACMASK, &material->opacity_mask, f)) {
+  if (!texture_map_write(LIB3DS_MAT_OPACMASK, &material->opacity_mask, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_BUMPMAP, &material->bump_map, f)) {
+  if (!texture_map_write(LIB3DS_MAT_BUMPMAP, &material->bump_map, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_BUMPMASK, &material->bump_mask, f)) {
+  if (!texture_map_write(LIB3DS_MAT_BUMPMASK, &material->bump_mask, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_SPECMAP, &material->specular_map, f)) {
+  if (!texture_map_write(LIB3DS_MAT_SPECMAP, &material->specular_map, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_SPECMASK, &material->specular_mask, f)) {
+  if (!texture_map_write(LIB3DS_MAT_SPECMASK, &material->specular_mask, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_SHINMAP, &material->shininess_map, f)) {
+  if (!texture_map_write(LIB3DS_MAT_SHINMAP, &material->shininess_map, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_SHINMASK, &material->shininess_mask, f)) {
+  if (!texture_map_write(LIB3DS_MAT_SHINMASK, &material->shininess_mask, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_SELFIMAP, &material->self_illum_map, f)) {
+  if (!texture_map_write(LIB3DS_MAT_SELFIMAP, &material->self_illum_map, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_SELFIMASK, &material->self_illum_mask, f)) {
+  if (!texture_map_write(LIB3DS_MAT_SELFIMASK, &material->self_illum_mask, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_REFLMAP,  &material->reflection_map, f)) {
+  if (!texture_map_write(LIB3DS_MAT_REFLMAP,  &material->reflection_map, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!texture_map_write(LIB3DS_MAT_REFLMASK,  &material->reflection_mask, f)) {
+  if (!texture_map_write(LIB3DS_MAT_REFLMASK,  &material->reflection_mask, strm)) {
     return(LIB3DS_FALSE);
   }
 
-  if (!lib3ds_chunk_write_end(&c,f)) {
+  if (!lib3ds_chunk_write_end(&c,strm)) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);

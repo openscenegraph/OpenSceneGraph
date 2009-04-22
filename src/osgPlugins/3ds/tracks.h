@@ -154,8 +154,8 @@ extern LIB3DSAPI void lib3ds_bool_track_free_keys(Lib3dsBoolTrack *track);
 extern LIB3DSAPI void lib3ds_bool_track_insert(Lib3dsBoolTrack *track, Lib3dsBoolKey* key);
 extern LIB3DSAPI void lib3ds_bool_track_remove(Lib3dsBoolTrack *track, Lib3dsIntd frame);
 extern LIB3DSAPI void lib3ds_bool_track_eval(Lib3dsBoolTrack *track, Lib3dsBool *p, Lib3dsFloat t);
-extern LIB3DSAPI Lib3dsBool lib3ds_bool_track_read(Lib3dsBoolTrack *track, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_bool_track_write(Lib3dsBoolTrack *track, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_bool_track_read(Lib3dsBoolTrack *track, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_bool_track_write(Lib3dsBoolTrack *track, iostream *strm);
 
 extern LIB3DSAPI Lib3dsLin1Key* lib3ds_lin1_key_new();
 extern LIB3DSAPI void lib3ds_lin1_key_free(Lib3dsLin1Key* key);
@@ -166,8 +166,8 @@ extern LIB3DSAPI void lib3ds_lin1_track_setup(Lib3dsLin1Track *track);
 extern LIB3DSAPI void lib3ds_lin1_track_insert(Lib3dsLin1Track *track, Lib3dsLin1Key *key);
 extern LIB3DSAPI void lib3ds_lin1_track_remove(Lib3dsLin1Track *track, Lib3dsIntd frame);
 extern LIB3DSAPI void lib3ds_lin1_track_eval(Lib3dsLin1Track *track, Lib3dsFloat *p, Lib3dsFloat t);
-extern LIB3DSAPI Lib3dsBool lib3ds_lin1_track_read(Lib3dsLin1Track *track, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_lin1_track_write(Lib3dsLin1Track *track, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_lin1_track_read(Lib3dsLin1Track *track, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_lin1_track_write(Lib3dsLin1Track *track, iostream *strm);
 
 extern LIB3DSAPI Lib3dsLin3Key* lib3ds_lin3_key_new();
 extern LIB3DSAPI void lib3ds_lin3_key_free(Lib3dsLin3Key* key);
@@ -178,8 +178,8 @@ extern LIB3DSAPI void lib3ds_lin3_track_setup(Lib3dsLin3Track *track);
 extern LIB3DSAPI void lib3ds_lin3_track_insert(Lib3dsLin3Track *track, Lib3dsLin3Key *key);
 extern LIB3DSAPI void lib3ds_lin3_track_remove(Lib3dsLin3Track *track, Lib3dsIntd frame);
 extern LIB3DSAPI void lib3ds_lin3_track_eval(Lib3dsLin3Track *track, Lib3dsVector p, Lib3dsFloat t);
-extern LIB3DSAPI Lib3dsBool lib3ds_lin3_track_read(Lib3dsLin3Track *track, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_lin3_track_write(Lib3dsLin3Track *track, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_lin3_track_read(Lib3dsLin3Track *track, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_lin3_track_write(Lib3dsLin3Track *track, iostream *strm);
 
 extern LIB3DSAPI Lib3dsQuatKey* lib3ds_quat_key_new();
 extern LIB3DSAPI void lib3ds_quat_key_free(Lib3dsQuatKey* key);
@@ -190,8 +190,8 @@ extern LIB3DSAPI void lib3ds_quat_track_setup(Lib3dsQuatTrack *track);
 extern LIB3DSAPI void lib3ds_quat_track_insert(Lib3dsQuatTrack *track, Lib3dsQuatKey *key);
 extern LIB3DSAPI void lib3ds_quat_track_remove(Lib3dsQuatTrack *track, Lib3dsIntd frame);
 extern LIB3DSAPI void lib3ds_quat_track_eval(Lib3dsQuatTrack *track, Lib3dsQuat p, Lib3dsFloat t);
-extern LIB3DSAPI Lib3dsBool lib3ds_quat_track_read(Lib3dsQuatTrack *track, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_quat_track_write(Lib3dsQuatTrack *track, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_quat_track_read(Lib3dsQuatTrack *track, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_quat_track_write(Lib3dsQuatTrack *track, iostream *strm);
 
 extern LIB3DSAPI Lib3dsMorphKey* lib3ds_morph_key_new();
 extern LIB3DSAPI void lib3ds_morph_key_free(Lib3dsMorphKey* key);
@@ -199,8 +199,8 @@ extern LIB3DSAPI void lib3ds_morph_track_free_keys(Lib3dsMorphTrack *track);
 extern LIB3DSAPI void lib3ds_morph_track_insert(Lib3dsMorphTrack *track, Lib3dsMorphKey *key);
 extern LIB3DSAPI void lib3ds_morph_track_remove(Lib3dsMorphTrack *track, Lib3dsIntd frame);
 extern LIB3DSAPI void lib3ds_morph_track_eval(Lib3dsMorphTrack *track, char *p, Lib3dsFloat t);
-extern LIB3DSAPI Lib3dsBool lib3ds_morph_track_read(Lib3dsMorphTrack *track, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_morph_track_write(Lib3dsMorphTrack *track, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_morph_track_read(Lib3dsMorphTrack *track, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_morph_track_write(Lib3dsMorphTrack *track, iostream *strm);
 
 #ifdef __cplusplus
 }

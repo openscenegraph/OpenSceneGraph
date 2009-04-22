@@ -35,35 +35,35 @@
 
 
 static Lib3dsBool
-solid_bgnd_read(Lib3dsBackground *background, FILE *f)
+solid_bgnd_read(Lib3dsBackground *background, iostream *strm)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
           
-  if (!lib3ds_chunk_read_start(&c, LIB3DS_SOLID_BGND, f)) {
+  if (!lib3ds_chunk_read_start(&c, LIB3DS_SOLID_BGND, strm)) {
     return(LIB3DS_FALSE);
   }
 
-  while ((chunk=lib3ds_chunk_read_next(&c, f))!=0) {
+  while ((chunk=lib3ds_chunk_read_next(&c, strm))!=0) {
     switch (chunk) {
       case LIB3DS_LIN_COLOR_F:
-        lib3ds_rgb_read(background->solid.col, f);
+        lib3ds_rgb_read(background->solid.col, strm);
         break;
       case LIB3DS_COLOR_F:
-        lib3ds_rgb_read(background->solid.col, f);
+        lib3ds_rgb_read(background->solid.col, strm);
         break;
       default:
         lib3ds_chunk_unknown(chunk);
     }
   }
   
-  lib3ds_chunk_read_end(&c, f);
+  lib3ds_chunk_read_end(&c, strm);
   return(LIB3DS_TRUE);
 }
 
 
 static Lib3dsBool
-v_gradient_read(Lib3dsBackground *background, FILE *f)
+v_gradient_read(Lib3dsBackground *background, iostream *strm)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
@@ -72,21 +72,21 @@ v_gradient_read(Lib3dsBackground *background, FILE *f)
   int have_lin=0;
   
 
-  if (!lib3ds_chunk_read_start(&c, LIB3DS_V_GRADIENT, f)) {
+  if (!lib3ds_chunk_read_start(&c, LIB3DS_V_GRADIENT, strm)) {
     return(LIB3DS_FALSE);
   }
-  background->gradient.percent=lib3ds_float_read(f);
-  lib3ds_chunk_read_tell(&c, f);
+  background->gradient.percent=lib3ds_float_read(strm);
+  lib3ds_chunk_read_tell(&c, strm);
 
   index[0]=index[1]=0;
-  while ((chunk=lib3ds_chunk_read_next(&c, f))!=0) {
+  while ((chunk=lib3ds_chunk_read_next(&c, strm))!=0) {
     switch (chunk) {
       case LIB3DS_COLOR_F:
-        lib3ds_rgb_read(col[0][index[0]],f);
+        lib3ds_rgb_read(col[0][index[0]],strm);
         index[0]++;
         break;
       case LIB3DS_LIN_COLOR_F:
-        lib3ds_rgb_read(col[1][index[1]],f);
+        lib3ds_rgb_read(col[1][index[1]],strm);
         index[1]++;
         have_lin=1;
         break;
@@ -102,7 +102,7 @@ v_gradient_read(Lib3dsBackground *background, FILE *f)
       background->gradient.bottom[i]=col[have_lin][2][i];
     }
   }
-  lib3ds_chunk_read_end(&c, f);
+  lib3ds_chunk_read_end(&c, strm);
   return(LIB3DS_TRUE);
 }
 
@@ -111,34 +111,34 @@ v_gradient_read(Lib3dsBackground *background, FILE *f)
  * \ingroup background
  */
 Lib3dsBool
-lib3ds_background_read(Lib3dsBackground *background, FILE *f)
+lib3ds_background_read(Lib3dsBackground *background, iostream *strm)
 {
   Lib3dsChunk c;
 
-  if (!lib3ds_chunk_read(&c, f)) {
+  if (!lib3ds_chunk_read(&c, strm)) {
     return(LIB3DS_FALSE);
   }
   
   switch (c.chunk) {
     case LIB3DS_BIT_MAP:
       {
-        if (!lib3ds_string_read(background->bitmap.name, 64, f)) {
+        if (!lib3ds_string_read(background->bitmap.name, 64, strm)) {
             return(LIB3DS_FALSE);
         }
       }
         break;
       case LIB3DS_SOLID_BGND:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!solid_bgnd_read(background, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!solid_bgnd_read(background, strm)) {
             return(LIB3DS_FALSE);
           }
         }
         break;
       case LIB3DS_V_GRADIENT:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!v_gradient_read(background, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!v_gradient_read(background, strm)) {
             return(LIB3DS_FALSE);
           }
         }
@@ -165,19 +165,19 @@ lib3ds_background_read(Lib3dsBackground *background, FILE *f)
 
 
 static Lib3dsBool
-colorf_write(Lib3dsRgba rgb, FILE *f)
+colorf_write(Lib3dsRgba rgb, iostream *strm)
 {
   Lib3dsChunk c;
 
   c.chunk=LIB3DS_COLOR_F;
   c.size=18;
-  lib3ds_chunk_write(&c,f);
-  lib3ds_rgb_write(rgb,f);
+  lib3ds_chunk_write(&c,strm);
+  lib3ds_rgb_write(rgb,strm);
 
   c.chunk=LIB3DS_LIN_COLOR_F;
   c.size=18;
-  lib3ds_chunk_write(&c,f);
-  lib3ds_rgb_write(rgb,f);
+  lib3ds_chunk_write(&c,strm);
+  lib3ds_rgb_write(rgb,strm);
   return(LIB3DS_TRUE);
 }
 
@@ -199,22 +199,22 @@ colorf_defined(Lib3dsRgba rgb)
  * \ingroup background
  */
 Lib3dsBool
-lib3ds_background_write(Lib3dsBackground *background, FILE *f)
+lib3ds_background_write(Lib3dsBackground *background, iostream *strm)
 {
   if (strlen(background->bitmap.name)) { /*---- LIB3DS_BIT_MAP ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_BIT_MAP;
     c.size=6+1+strlen(background->bitmap.name);
-    lib3ds_chunk_write(&c,f);
-    lib3ds_string_write(background->bitmap.name, f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_string_write(background->bitmap.name, strm);
   }
 
   if (colorf_defined(background->solid.col)) { /*---- LIB3DS_SOLID_BGND ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_SOLID_BGND;
     c.size=42;
-    lib3ds_chunk_write(&c,f);
-    colorf_write(background->solid.col,f);
+    lib3ds_chunk_write(&c,strm);
+    colorf_write(background->solid.col,strm);
   }
 
   if (colorf_defined(background->gradient.top) ||
@@ -223,32 +223,32 @@ lib3ds_background_write(Lib3dsBackground *background, FILE *f)
     Lib3dsChunk c;
     c.chunk=LIB3DS_V_GRADIENT;
     c.size=118;
-    lib3ds_chunk_write(&c,f);
-    lib3ds_float_write(background->gradient.percent,f);
-    colorf_write(background->gradient.top,f);
-    colorf_write(background->gradient.middle,f);
-    colorf_write(background->gradient.bottom,f);
+    lib3ds_chunk_write(&c,strm);
+    lib3ds_float_write(background->gradient.percent,strm);
+    colorf_write(background->gradient.top,strm);
+    colorf_write(background->gradient.middle,strm);
+    colorf_write(background->gradient.bottom,strm);
   }
 
   if (background->bitmap.use) { /*---- LIB3DS_USE_BIT_MAP ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_USE_BIT_MAP;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
   if (background->solid.use) { /*---- LIB3DS_USE_SOLID_BGND ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_USE_SOLID_BGND;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
 
   if (background->gradient.use) { /*---- LIB3DS_USE_V_GRADIENT ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_USE_V_GRADIENT;
     c.size=6;
-    lib3ds_chunk_write(&c,f);
+    lib3ds_chunk_write(&c,strm);
   }
   
   return(LIB3DS_TRUE);

@@ -27,6 +27,9 @@
 #include "types.h"
 #endif
 
+#include <iostream>
+using namespace std;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -156,8 +159,8 @@ struct _Lib3dsMaterial {
 extern LIB3DSAPI Lib3dsMaterial* lib3ds_material_new();
 extern LIB3DSAPI void lib3ds_material_free(Lib3dsMaterial *material);
 extern LIB3DSAPI void lib3ds_material_dump(Lib3dsMaterial *material);
-extern LIB3DSAPI Lib3dsBool lib3ds_material_read(Lib3dsMaterial *material, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_material_write(Lib3dsMaterial *material, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_material_read(Lib3dsMaterial *material, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_material_write(Lib3dsMaterial *material, iostream *strm);
 
 #ifdef __cplusplus
 }

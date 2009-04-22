@@ -121,28 +121,28 @@ lib3ds_light_dump(Lib3dsLight *light)
  * \ingroup light
  */
 static Lib3dsBool
-spotlight_read(Lib3dsLight *light, FILE *f)
+spotlight_read(Lib3dsLight *light, iostream *strm)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
   int i;
 
-  if (!lib3ds_chunk_read_start(&c, LIB3DS_DL_SPOTLIGHT, f)) {
+  if (!lib3ds_chunk_read_start(&c, LIB3DS_DL_SPOTLIGHT, strm)) {
     return(LIB3DS_FALSE);
   }
   light->spot_light=LIB3DS_TRUE;
   for (i=0; i<3; ++i) {
-    light->spot[i]=lib3ds_float_read(f);
+    light->spot[i]=lib3ds_float_read(strm);
   }
-  light->hot_spot = lib3ds_float_read(f);
-  light->fall_off = lib3ds_float_read(f);
-  lib3ds_chunk_read_tell(&c, f);
+  light->hot_spot = lib3ds_float_read(strm);
+  light->fall_off = lib3ds_float_read(strm);
+  lib3ds_chunk_read_tell(&c, strm);
   
-  while ((chunk=lib3ds_chunk_read_next(&c, f))!=0) {
+  while ((chunk=lib3ds_chunk_read_next(&c, strm))!=0) {
     switch (chunk) {
       case LIB3DS_DL_SPOT_ROLL:
         {
-          light->roll=lib3ds_float_read(f);
+          light->roll=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_DL_SHADOWED:
@@ -152,9 +152,9 @@ spotlight_read(Lib3dsLight *light, FILE *f)
         break;
       case LIB3DS_DL_LOCAL_SHADOW2:
         {
-          light->shadow_bias=lib3ds_float_read(f);
-          light->shadow_filter=lib3ds_float_read(f);
-          light->shadow_size=lib3ds_intw_read(f);
+          light->shadow_bias=lib3ds_float_read(strm);
+          light->shadow_filter=lib3ds_float_read(strm);
+          light->shadow_size=lib3ds_intw_read(strm);
         }
         break;
       case LIB3DS_DL_SEE_CONE:
@@ -169,13 +169,13 @@ spotlight_read(Lib3dsLight *light, FILE *f)
         break;
       case LIB3DS_DL_SPOT_ASPECT:
         {
-          light->spot_aspect=lib3ds_float_read(f);
+          light->spot_aspect=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_DL_SPOT_PROJECTOR:
         {
           light->use_projector=LIB3DS_TRUE;
-          if (!lib3ds_string_read(light->projector, 64, f)) {
+          if (!lib3ds_string_read(light->projector, 64, strm)) {
             return(LIB3DS_FALSE);
           }
         }
@@ -186,7 +186,7 @@ spotlight_read(Lib3dsLight *light, FILE *f)
         break;
       case LIB3DS_DL_RAY_BIAS:
         {
-          light->ray_bias=lib3ds_float_read(f);
+          light->ray_bias=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_DL_RAYSHAD:
@@ -199,7 +199,7 @@ spotlight_read(Lib3dsLight *light, FILE *f)
     }
   }
   
-  lib3ds_chunk_read_end(&c, f);
+  lib3ds_chunk_read_end(&c, strm);
   return(LIB3DS_TRUE);
 }
 
@@ -208,29 +208,29 @@ spotlight_read(Lib3dsLight *light, FILE *f)
  * \ingroup light
  */
 Lib3dsBool
-lib3ds_light_read(Lib3dsLight *light, FILE *f)
+lib3ds_light_read(Lib3dsLight *light, iostream * strm)
 {
   Lib3dsChunk c;
   Lib3dsWord chunk;
 
-  if (!lib3ds_chunk_read_start(&c, LIB3DS_N_DIRECT_LIGHT, f)) {
+  if (!lib3ds_chunk_read_start(&c, LIB3DS_N_DIRECT_LIGHT, strm)) {
     return(LIB3DS_FALSE);
   }
   {
     int i;
     for (i=0; i<3; ++i) {
-      light->position[i]=lib3ds_float_read(f);
+      light->position[i]=lib3ds_float_read(strm);
     }
   }
-  lib3ds_chunk_read_tell(&c, f);
+  lib3ds_chunk_read_tell(&c, strm);
   
-  while ((chunk=lib3ds_chunk_read_next(&c, f))!=0) {
+  while ((chunk=lib3ds_chunk_read_next(&c, strm))!=0) {
     switch (chunk) {
       case LIB3DS_COLOR_F:
         {
           int i;
           for (i=0; i<3; ++i) {
-            light->color[i]=lib3ds_float_read(f);
+            light->color[i]=lib3ds_float_read(strm);
           }
         }
         break;
@@ -241,17 +241,17 @@ lib3ds_light_read(Lib3dsLight *light, FILE *f)
         break;
       case LIB3DS_DL_OUTER_RANGE:
         {
-          light->outer_range=lib3ds_float_read(f);
+          light->outer_range=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_DL_INNER_RANGE:
         {
-          light->inner_range=lib3ds_float_read(f);
+          light->inner_range=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_DL_MULTIPLIER:
         {
-          light->multiplier=lib3ds_float_read(f);
+          light->multiplier=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_DL_EXCLUDE:
@@ -261,13 +261,13 @@ lib3ds_light_read(Lib3dsLight *light, FILE *f)
         }
       case LIB3DS_DL_ATTENUATE:
         {
-          light->attenuation=lib3ds_float_read(f);
+          light->attenuation=lib3ds_float_read(strm);
         }
         break;
       case LIB3DS_DL_SPOTLIGHT:
         {
-          lib3ds_chunk_read_reset(&c, f);
-          if (!spotlight_read(light, f)) {
+          lib3ds_chunk_read_reset(&c, strm);
+          if (!spotlight_read(light, strm)) {
             return(LIB3DS_FALSE);
           }
         }
@@ -277,7 +277,7 @@ lib3ds_light_read(Lib3dsLight *light, FILE *f)
     }
   }
   
-  lib3ds_chunk_read_end(&c, f);
+  lib3ds_chunk_read_end(&c, strm);
   return(LIB3DS_TRUE);
 }
 
@@ -286,79 +286,79 @@ lib3ds_light_read(Lib3dsLight *light, FILE *f)
  * \ingroup light
  */
 Lib3dsBool
-lib3ds_light_write(Lib3dsLight *light, FILE *f)
+lib3ds_light_write(Lib3dsLight *light, iostream *strm)
 {
   Lib3dsChunk c;
 
   c.chunk=LIB3DS_N_DIRECT_LIGHT;
-  if (!lib3ds_chunk_write_start(&c,f)) {
+  if (!lib3ds_chunk_write_start(&c,strm)) {
     return(LIB3DS_FALSE);
   }
-  lib3ds_vector_write(light->position, f);
+  lib3ds_vector_write(light->position, strm);
   { /*---- LIB3DS_COLOR_F ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_COLOR_F;
     c.size=18;
-    lib3ds_chunk_write(&c, f);
-    lib3ds_rgb_write(light->color,f);
+    lib3ds_chunk_write(&c, strm);
+    lib3ds_rgb_write(light->color,strm);
   }
   if (light->off) { /*---- LIB3DS_DL_OFF ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_DL_OFF;
     c.size=6;
-    lib3ds_chunk_write(&c, f);
+    lib3ds_chunk_write(&c, strm);
   }
   { /*---- LIB3DS_DL_OUTER_RANGE ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_DL_OUTER_RANGE;
     c.size=10;
-    lib3ds_chunk_write(&c, f);
-    lib3ds_float_write(light->outer_range,f);
+    lib3ds_chunk_write(&c, strm);
+    lib3ds_float_write(light->outer_range,strm);
   }
   { /*---- LIB3DS_DL_INNER_RANGE ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_DL_INNER_RANGE;
     c.size=10;
-    lib3ds_chunk_write(&c, f);
-    lib3ds_float_write(light->inner_range,f);
+    lib3ds_chunk_write(&c, strm);
+    lib3ds_float_write(light->inner_range,strm);
   }
   { /*---- LIB3DS_DL_MULTIPLIER ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_DL_MULTIPLIER;
     c.size=10;
-    lib3ds_chunk_write(&c, f);
-    lib3ds_float_write(light->multiplier, f);
+    lib3ds_chunk_write(&c, strm);
+    lib3ds_float_write(light->multiplier, strm);
   }
   if (light->attenuation) { /*---- LIB3DS_DL_ATTENUATE ----*/
     Lib3dsChunk c;
     c.chunk=LIB3DS_DL_ATTENUATE;
     c.size=6;
-    lib3ds_chunk_write(&c, f);
+    lib3ds_chunk_write(&c, strm);
   }
 
   if (light->spot_light) {
     Lib3dsChunk c;
 
     c.chunk=LIB3DS_DL_SPOTLIGHT;
-    if (!lib3ds_chunk_write_start(&c,f)) {
+    if (!lib3ds_chunk_write_start(&c,strm)) {
       return(LIB3DS_FALSE);
     }
-    lib3ds_vector_write(light->spot, f);
-    lib3ds_float_write(light->hot_spot, f);
-    lib3ds_float_write(light->fall_off, f);
+    lib3ds_vector_write(light->spot, strm);
+    lib3ds_float_write(light->hot_spot, strm);
+    lib3ds_float_write(light->fall_off, strm);
     
     { /*---- LIB3DS_DL_SPOT_ROLL ----*/
       Lib3dsChunk c;
       c.chunk=LIB3DS_DL_SPOT_ROLL;
       c.size=10;
-      lib3ds_chunk_write(&c, f);
-      lib3ds_float_write(light->roll,f);
+      lib3ds_chunk_write(&c, strm);
+      lib3ds_float_write(light->roll,strm);
     }
     if (light->shadowed) { /*---- LIB3DS_DL_SHADOWED ----*/
       Lib3dsChunk c;
       c.chunk=LIB3DS_DL_SHADOWED;
       c.size=6;
-      lib3ds_chunk_write(&c, f);
+      lib3ds_chunk_write(&c, strm);
     }
     if ((fabs(light->shadow_bias)>LIB3DS_EPSILON) ||
       (fabs(light->shadow_filter)>LIB3DS_EPSILON) ||
@@ -366,61 +366,61 @@ lib3ds_light_write(Lib3dsLight *light, FILE *f)
       Lib3dsChunk c;
       c.chunk=LIB3DS_DL_LOCAL_SHADOW2;
       c.size=16;
-      lib3ds_chunk_write(&c, f);
-      lib3ds_float_write(light->shadow_bias,f);
-      lib3ds_float_write(light->shadow_filter,f);
-      lib3ds_intw_write(light->shadow_size,f);
+      lib3ds_chunk_write(&c, strm);
+      lib3ds_float_write(light->shadow_bias,strm);
+      lib3ds_float_write(light->shadow_filter,strm);
+      lib3ds_intw_write(light->shadow_size,strm);
     }
     if (light->see_cone) { /*---- LIB3DS_DL_SEE_CONE ----*/
       Lib3dsChunk c;
       c.chunk=LIB3DS_DL_SEE_CONE;
       c.size=6;
-      lib3ds_chunk_write(&c, f);
+      lib3ds_chunk_write(&c, strm);
     }
     if (light->rectangular_spot) { /*---- LIB3DS_DL_SPOT_RECTANGULAR ----*/
       Lib3dsChunk c;
       c.chunk=LIB3DS_DL_SPOT_RECTANGULAR;
       c.size=6;
-      lib3ds_chunk_write(&c, f);
+      lib3ds_chunk_write(&c, strm);
     }
     if (fabs(light->spot_aspect)>LIB3DS_EPSILON) { /*---- LIB3DS_DL_SPOT_ASPECT ----*/
       Lib3dsChunk c;
       c.chunk=LIB3DS_DL_SPOT_ASPECT;
       c.size=10;
-      lib3ds_chunk_write(&c, f);
-      lib3ds_float_write(light->spot_aspect,f);
+      lib3ds_chunk_write(&c, strm);
+      lib3ds_float_write(light->spot_aspect,strm);
     }
     if (light->use_projector) { /*---- LIB3DS_DL_SPOT_PROJECTOR ----*/
       Lib3dsChunk c;
       c.chunk=LIB3DS_DL_SPOT_PROJECTOR;
       c.size=10;
-      lib3ds_chunk_write(&c, f);
-      lib3ds_string_write(light->projector,f);
+      lib3ds_chunk_write(&c, strm);
+      lib3ds_string_write(light->projector,strm);
     }
     if (light->spot_overshoot) { /*---- LIB3DS_DL_SPOT_OVERSHOOT ----*/
       Lib3dsChunk c;
       c.chunk=LIB3DS_DL_SPOT_OVERSHOOT;
       c.size=6;
-      lib3ds_chunk_write(&c, f);
+      lib3ds_chunk_write(&c, strm);
     }
     if (fabs(light->ray_bias)>LIB3DS_EPSILON) { /*---- LIB3DS_DL_RAY_BIAS ----*/
       Lib3dsChunk c;
       c.chunk=LIB3DS_DL_RAY_BIAS;
       c.size=10;
-      lib3ds_chunk_write(&c, f);
-      lib3ds_float_write(light->ray_bias,f);
+      lib3ds_chunk_write(&c, strm);
+      lib3ds_float_write(light->ray_bias,strm);
     }
     if (light->ray_shadows) { /*---- LIB3DS_DL_RAYSHAD ----*/
       Lib3dsChunk c;
       c.chunk=LIB3DS_DL_RAYSHAD;
       c.size=6;
-      lib3ds_chunk_write(&c, f);
+      lib3ds_chunk_write(&c, strm);
     }
-    if (!lib3ds_chunk_write_end(&c,f)) {
+    if (!lib3ds_chunk_write_end(&c,strm)) {
       return(LIB3DS_FALSE);
     }
   }
-  if (!lib3ds_chunk_write_end(&c,f)) {
+  if (!lib3ds_chunk_write_end(&c,strm)) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);

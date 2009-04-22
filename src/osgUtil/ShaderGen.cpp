@@ -353,7 +353,7 @@ void ShaderGenVisitor::update(osg::Drawable *drawable)
 
     StateEx *state = static_cast<StateEx *>(_state.get());
     // skip nodes without state sets
-    if (state->getStateSetStackSize() == (_rootStateSet.valid() ? 1 : 0))
+    if (state->getStateSetStackSize() == (_rootStateSet.valid() ? 1u : 0u))
         return;
 
     // skip state sets with already attached programs

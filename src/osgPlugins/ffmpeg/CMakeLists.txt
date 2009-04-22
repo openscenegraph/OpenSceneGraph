@@ -53,6 +53,11 @@ SET(TARGET_H
     MessageQueue.hpp
 )
 
+IF(CMAKE_COMPILER_IS_GNUCXX)
+    # Remove -pedantic flag as it barfs on ffmoeg headers
+   STRING(REGEX REPLACE "-pedantic" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+ENDIF()
 
 
 #### end var setup  ###

@@ -604,7 +604,6 @@ int main(int argc, char** argv)
     osg::ArgumentParser arguments(&argc,argv);
 
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
 
     osgViewer::Viewer viewer(arguments);

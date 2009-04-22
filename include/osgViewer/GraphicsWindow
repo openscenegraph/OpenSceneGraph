@@ -106,6 +106,7 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
             WaitCursor,
             TextCursor,
             CrosshairCursor,
+            HandCursor,
             UpDownCursor,
             LeftRightCursor,
             TopSideCursor,

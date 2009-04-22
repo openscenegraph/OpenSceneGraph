@@ -196,7 +196,7 @@ dxfCircle::drawScene(scene* sc)
     theta=osg::DegreesToRadians(theta);
 
     // We create an anglestep<=theta so that the line's points are evenly distributed around the circle
-    unsigned int numsteps=floor(osg::PI*2/theta);
+    unsigned int numsteps=static_cast<unsigned int>(floor(osg::PI*2/theta));
     if (numsteps<3) numsteps=3; // Sanity check: minimal representation of a circle is a tri 
     double anglestep=osg::PI*2/numsteps;
 

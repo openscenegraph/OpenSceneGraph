@@ -351,7 +351,6 @@ int main( int argc, char **argv )
     
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
     arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");

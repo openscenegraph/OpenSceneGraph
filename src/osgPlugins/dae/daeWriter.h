@@ -17,6 +17,7 @@
 #include <map>
 #include <stack>
 
+#include <osg/io_utils>
 #include <osg/Node>
 #include <osg/Geode>
 #include <osg/Geometry>

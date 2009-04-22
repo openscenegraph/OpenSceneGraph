@@ -76,7 +76,7 @@ public:
 
 osg::Group* createModel()
 {
-    // no database loaded so automatically create Ed Levin Park..
+    // no database loaded so automatically create Ed Levin Park
     osg::Group* group = new osg::Group;
 
     // the base and sky subgraphs go to set the earth sky of the
@@ -87,13 +87,13 @@ osg::Group* createModel()
     osg::ClearNode* clearNode = new osg::ClearNode;
     clearNode->setRequiresClear(false); // we've got base and sky to do it.
 
-    // use a transform to make the sky and base around with the eye point.
+    // use a transform to make the sky and base move around with the eye point.
     osg::Transform* transform = new MoveEarthySkyWithEyePointTransform;
 
     // transform's value isn't knowm until in the cull traversal so its bounding
     // volume is can't be determined, therefore culling will be invalid,
-    // so switch it off, this cause all our paresnts to switch culling
-    // off as well. But don't worry culling will be back on once underneath
+    // so switch it off, this causes all our paresnts to switch culling
+    // off as well. But don't worry, culling will be back on once underneath
     // this node or any other branch above this transform.
     transform->setCullingActive(false);
 
@@ -107,7 +107,7 @@ osg::Group* createModel()
     // add to earth sky to the scene.
     group->addChild(clearNode);
 
-    // the rest of the scene drawn after the base and sky above.
+    // the rest of the scene is drawn after the base and sky above.
     group->addChild(makeTrees()); // will drop into a transparent, depth sorted bin (1)
     group->addChild(makeTerrain()); // will drop into default bin - state sorted 0
     group->addChild(makeTank()); // will drop into default bin - state sorted 0
@@ -132,7 +132,7 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgViewer::Viewer viewer;
 
-    // if user request help write it out to cout.
+    // if user requests help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
         arguments.getApplicationUsage()->write(std::cout);
@@ -193,7 +193,7 @@ int main( int argc, char **argv )
     
     }
 
-    // set up the camera manipulation with out custom manipultor
+    // set up the camera manipulation with our custom manipultor
     viewer.setCameraManipulator(new GliderManipulator());
 
     // pass the scene graph to the viewer    

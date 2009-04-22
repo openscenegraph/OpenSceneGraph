@@ -455,7 +455,7 @@ void nameCorrection(NamePair& name)
     
     if (name.first=="Jeoen" && name.second=="den")
     {
-        name.first = "Jeoen";
+        name.first = "Jeroen";
         name.second = "den Dekker";
     }
     

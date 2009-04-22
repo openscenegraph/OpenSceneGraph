@@ -21,7 +21,6 @@ TexGenNode::TexGenNode():
     setCullingActive(false);
     
     _textureUnit = 0;
-    _value = StateAttribute::ON;
     setStateSet(new StateSet);
     _texgen = new TexGen;
 }
@@ -29,7 +28,6 @@ TexGenNode::TexGenNode():
 TexGenNode::TexGenNode(const TexGenNode& cn, const CopyOp& copyop):
     Group(cn,copyop),
     _textureUnit(cn._textureUnit),
-    _value(cn._value),
     _texgen(static_cast<TexGen*>(copyop(cn._texgen.get()))),
     _referenceFrame(cn._referenceFrame)
 {
@@ -43,7 +41,6 @@ TexGenNode::TexGenNode(TexGen *texgen):
     setCullingActive(false);
 
     _textureUnit = 0;
-    _value = StateAttribute::ON;
     setStateSet(new StateSet);
     _texgen = texgen;
 }

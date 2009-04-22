@@ -1242,14 +1242,19 @@ bool GraphicsWindowWin32::setWindow( HWND handle )
         return false;
     }
 
-    if (!registerWindowProcedure())
+    WindowData *windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
+
+    if (!windowData || windowData->_installEventHandler)
     {
-        ::wglDeleteContext(_hglrc);
-        _hglrc = 0;
-        ::ReleaseDC(_hwnd, _hdc);
-        _hdc  = 0;
-        _hwnd = 0;
-        return false;
+        if (!registerWindowProcedure())
+        {
+            ::wglDeleteContext(_hglrc);
+            _hglrc = 0;
+            ::ReleaseDC(_hwnd, _hdc);
+            _hdc  = 0;
+            _hwnd = 0;
+            return false;
+        }
     }
 
     Win32WindowingSystem::getInterface()->registerWindow(_hwnd, this);

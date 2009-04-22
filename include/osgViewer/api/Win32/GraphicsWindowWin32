@@ -97,10 +97,11 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
         /** WindowData is used to pass in the Win32 window handle attached the GraphicsContext::Traits structure.*/
         struct WindowData : public osg::Referenced
         {
-            WindowData(HWND window):
-                _hwnd(window) {}
+            WindowData(HWND window, bool installEventHandler = true):
+                _hwnd(window), _installEventHandler(installEventHandler) {}
                 
             HWND    _hwnd;
+            bool   _installEventHandler;
         };
 
         /** Get native window.*/        

@@ -318,6 +318,7 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_RGBA32F_ARB): return 4;
         case(GL_RGBA): return 4;
         case(GL_BGRA): return 4;
+        case(GL_RGBA8): return 4;
         case(GL_LUMINANCE): return 1;
         case(GL_LUMINANCE4): return 1;
         case(GL_LUMINANCE8): return 1;

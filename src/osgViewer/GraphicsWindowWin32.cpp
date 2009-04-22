@@ -2033,6 +2033,9 @@ HCURSOR GraphicsWindowWin32::getOrCreateCursor(MouseCursor mouseCursor)
     case BottomLeftCorner:
         _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_SIZENESW );
         break;
+    case HandCursor:
+        _mouseCursorMap[mouseCursor] = LoadCursor( NULL, IDC_HAND );
+        break;
     default:
         break;
     }

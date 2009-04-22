@@ -76,7 +76,7 @@ Node *makeTank( void )
         1
         );
 
-    // 42 required for sodes, 22 for the top.
+    // 42 required for sides, 22 for the top.
     Vec3Array& vc = *(new Vec3Array(42+22));
     Vec2Array& tc = *(new Vec2Array(42+22));
 

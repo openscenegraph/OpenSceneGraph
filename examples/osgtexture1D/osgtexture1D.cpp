@@ -18,7 +18,7 @@
 
 #include <osg/Notify>
 #include <osg/Texture1D>
-#include <osg/TexGen>
+#include <osg/TexGenNode>
 #include <osg/Material>
 
 #include <osgDB/Registry>
@@ -28,15 +28,10 @@
 
 #include <iostream>
 
-// Creates a stateset which contains a 1D texture which is populated by contour banded color
-// this is then used in conjunction with TexGen to create contoured models, either in 
-// object linear coords - like contours on a map, or eye linear which contour the distance from
-// the eye. An app callback toggles between the two tex gen modes.
+// Creates a stateset which contains a 1D texture which is populated by contour banded color,
+// and allows tex gen to override the S texture coordinate
 osg::StateSet* create1DTextureStateToDecorate(osg::Node* loadedModel)
 {
-    
-    const osg::BoundingSphere& bs = loadedModel->getBound();
-    
     osg::Image* image = new osg::Image;
 
     int noPixels = 1024;
@@ -76,13 +71,6 @@ osg::StateSet* create1DTextureStateToDecorate(osg::Node* loadedModel)
     texture->setWrap(osg::Texture1D::WRAP_S,osg::Texture1D::MIRROR);
     texture->setFilter(osg::Texture1D::MIN_FILTER,osg::Texture1D::LINEAR);
     texture->setImage(image);
-
-    float zBase = bs.center().z()-bs.radius();
-    float zScale = 2.0f/bs.radius();
-    
-    osg::TexGen* texgen = new osg::TexGen;
-    texgen->setMode(osg::TexGen::OBJECT_LINEAR);
-    texgen->setPlane(osg::TexGen::S,osg::Plane(0.0f,0.0f,zScale,-zBase));
     
     osg::Material* material = new osg::Material;
     
@@ -93,7 +81,6 @@ osg::StateSet* create1DTextureStateToDecorate(osg::Node* loadedModel)
     stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE);
     stateset->setTextureMode(0,GL_TEXTURE_3D,osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE);
 
-    stateset->setTextureAttribute(0,texgen,osg::StateAttribute::OVERRIDE);
     stateset->setTextureMode(0,GL_TEXTURE_GEN_S,osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
     
     stateset->setAttribute(material,osg::StateAttribute::OVERRIDE);
@@ -103,49 +90,44 @@ osg::StateSet* create1DTextureStateToDecorate(osg::Node* loadedModel)
 
 
 // An app callback which alternates the tex gen mode between object linear and eye linear to illustrate what differences it makes.
-class AnimateStateCallback : public osg::NodeCallback
+class AnimateTexGenCallback : public osg::NodeCallback
 {
     public:
-        AnimateStateCallback() {}
+        AnimateTexGenCallback() {}
         
-        void animateState(osg::StateSet* stateset,double time)
+        void animateTexGen(osg::TexGenNode* texgenNode,double time)
         {
             // here we simply get any existing texgen, and then increment its
             // plane, pushing the R coordinate through the texture.
-            osg::StateAttribute* attribute = stateset->getTextureAttribute(0,osg::StateAttribute::TEXGEN);
-            osg::TexGen* texgen = dynamic_cast<osg::TexGen*>(attribute);
-            if (texgen)
-            {
-                const double timeInterval = 1.0f;
-                
-                static double previousTime = time;
-                static bool state = false;
-                while (time>previousTime+timeInterval)
-                {
-                    previousTime+=timeInterval;
-                    state = !state;
-                }
+            const double timeInterval = 2.0f;
             
-                if (state)
-                {
-                    texgen->setMode(osg::TexGen::OBJECT_LINEAR);
-                }
-                else
-                {
-                    texgen->setMode(osg::TexGen::EYE_LINEAR);
-                }
+            static double previousTime = time;
+            static bool state = false;
+            while (time>previousTime+timeInterval)
+            {
+                previousTime+=timeInterval;
+                state = !state;
+            }
+        
+            if (state)
+            {
+                texgenNode->getTexGen()->setMode(osg::TexGen::OBJECT_LINEAR);
+            }
+            else
+            {
+                texgenNode->getTexGen()->setMode(osg::TexGen::EYE_LINEAR);
             }
             
         }
 
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
         { 
+            osg::TexGenNode* texgenNode = dynamic_cast<osg::TexGenNode*>(node);
 
-            osg::StateSet* stateset = node->getStateSet();
-            if (stateset && nv->getFrameStamp())
+            if (texgenNode && nv->getFrameStamp())
             {
                 // we have an exisitng stateset, so lets animate it.
-                animateState(stateset,nv->getFrameStamp()->getSimulationTime());
+                animateTexGen(texgenNode,nv->getFrameStamp()->getSimulationTime());
             }
 
             // note, callback is repsonsible for scenegraph traversal so
@@ -186,10 +168,29 @@ int main( int argc, char **argv )
 
 
     loadedModel->setStateSet(stateset);
-    loadedModel->setUpdateCallback(new AnimateStateCallback());
 
-    // add model to viewer.
-    viewer.setSceneData( loadedModel );
+    osg:: Group *root = new osg:: Group;
+    root -> addChild( loadedModel );
+
+    // The contour banded color texture is used in conjunction with TexGenNode
+    // to create contoured models, either in object linear coords - like
+    // contours on a map, or eye linear which contour the distance from
+    // the eye. An app callback toggles between the two tex gen modes.
+    osg::TexGenNode* texgenNode = new osg::TexGenNode;
+    texgenNode->setReferenceFrame( osg::TexGenNode::ABSOLUTE_RF );
+    texgenNode->getTexGen()->setMode( osg::TexGen::OBJECT_LINEAR );
+
+    const osg::BoundingSphere& bs = loadedModel->getBound();
+    float zBase = bs.center().z()-bs.radius();
+    float zScale = 2.0f/bs.radius();
+    texgenNode->getTexGen()->setPlane(osg::TexGen::S,osg::Plane(0.0f,0.0f,zScale,-zBase));
+
+    texgenNode->setUpdateCallback(new AnimateTexGenCallback());
+
+    root -> addChild( texgenNode );
+
+
+    viewer.setSceneData( root );
 
     return viewer.run();
 }

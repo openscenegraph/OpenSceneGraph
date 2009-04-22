@@ -33,6 +33,9 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 #ifndef __PLY_H__
 #define __PLY_H__
 
+// include to quieten down silly VS warnings
+#include <osg/Export>
+
 #ifdef __cplusplus
 extern "C" {
 #endif

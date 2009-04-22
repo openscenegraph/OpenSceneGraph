@@ -185,7 +185,7 @@ class TemplateArray : public Array, public MixinVector<T>
             Array(ARRAYTYPE,DataSize,DataType),
             MixinVector<T>(no) {}
 
-        TemplateArray(unsigned int no,T* ptr) : 
+        TemplateArray(unsigned int no,const T* ptr) : 
             Array(ARRAYTYPE,DataSize,DataType),
             MixinVector<T>(ptr,ptr+no) {}
 

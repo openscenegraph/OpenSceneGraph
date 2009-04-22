@@ -36,10 +36,6 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 // include to quieten down silly VS warnings
 #include <osg/Export>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdio.h>
 #include <stddef.h>
 
@@ -167,9 +163,5 @@ extern void ply_free_other_elements (PlyOtherElems *);
 
 extern int equal_strings(const char *, const char *);
 
-
-#ifdef __cplusplus
-}
-#endif
 #endif /* !__PLY_H__ */
 

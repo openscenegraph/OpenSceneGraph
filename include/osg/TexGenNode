@@ -68,7 +68,6 @@ class OSG_EXPORT TexGenNode : public Group
         virtual ~TexGenNode();
 
         unsigned int _textureUnit;
-        StateAttribute::GLModeValue _value;
         osg::ref_ptr<TexGen> _texgen;
 
         ReferenceFrame                  _referenceFrame;

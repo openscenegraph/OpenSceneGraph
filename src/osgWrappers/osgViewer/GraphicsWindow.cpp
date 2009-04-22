@@ -37,6 +37,7 @@ BEGIN_ENUM_REFLECTOR(osgViewer::GraphicsWindow::MouseCursor)
 	I_EnumLabel(osgViewer::GraphicsWindow::WaitCursor);
 	I_EnumLabel(osgViewer::GraphicsWindow::TextCursor);
 	I_EnumLabel(osgViewer::GraphicsWindow::CrosshairCursor);
+	I_EnumLabel(osgViewer::GraphicsWindow::HandCursor);
 	I_EnumLabel(osgViewer::GraphicsWindow::UpDownCursor);
 	I_EnumLabel(osgViewer::GraphicsWindow::LeftRightCursor);
 	I_EnumLabel(osgViewer::GraphicsWindow::TopSideCursor);

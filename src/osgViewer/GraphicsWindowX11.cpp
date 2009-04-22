@@ -526,6 +526,9 @@ Cursor GraphicsWindowX11::getOrCreateCursor(MouseCursor mouseCursor)
     case BottomLeftCorner:
         _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_bottom_left_corner );
         break;
+    case HandCursor:
+        _mouseCursorMap[mouseCursor] = XCreateFontCursor( display, XC_hand1 );
+        break;
 
     case InheritCursor:
     default:

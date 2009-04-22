@@ -27,32 +27,34 @@
 #include "types.h"
 #endif
 
+#include <iostream>
+using namespace std;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 extern LIB3DSAPI void setByteOrder();
-
-extern LIB3DSAPI Lib3dsByte lib3ds_byte_read(FILE *f);
-extern LIB3DSAPI Lib3dsWord lib3ds_word_read(FILE *f);
-extern LIB3DSAPI Lib3dsDword lib3ds_dword_read(FILE *f);
-extern LIB3DSAPI Lib3dsIntb lib3ds_intb_read(FILE *f);
-extern LIB3DSAPI Lib3dsIntw lib3ds_intw_read(FILE *f);
-extern LIB3DSAPI Lib3dsIntd lib3ds_intd_read(FILE *f);
-extern LIB3DSAPI Lib3dsFloat lib3ds_float_read(FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_vector_read(Lib3dsVector v, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_rgb_read(Lib3dsRgb rgb, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_string_read(char *s, int buflen, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_byte_write(Lib3dsByte b, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_word_write(Lib3dsWord w, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_dword_write(Lib3dsDword d, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_intb_write(Lib3dsIntb b, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_intw_write(Lib3dsIntw w, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_intd_write(Lib3dsIntd d, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_float_write(Lib3dsFloat l, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_vector_write(Lib3dsVector v, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_rgb_write(Lib3dsRgb rgb, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_string_write(const char *s, FILE *f);
+extern LIB3DSAPI Lib3dsByte lib3ds_byte_read(iostream *strm);
+extern LIB3DSAPI Lib3dsWord lib3ds_word_read(iostream *strm);
+extern LIB3DSAPI Lib3dsDword lib3ds_dword_read(iostream *strm);
+extern LIB3DSAPI Lib3dsIntb lib3ds_intb_read(iostream *strm);
+extern LIB3DSAPI Lib3dsIntw lib3ds_intw_read(iostream *strm);
+extern LIB3DSAPI Lib3dsIntd lib3ds_intd_read(iostream *strm);
+extern LIB3DSAPI Lib3dsFloat lib3ds_float_read(iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_vector_read(Lib3dsVector v, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_rgb_read(Lib3dsRgb rgb, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_string_read(char *s, int buflen, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_byte_write(Lib3dsByte b, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_word_write(Lib3dsWord w, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_dword_write(Lib3dsDword d, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_intb_write(Lib3dsIntb b, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_intw_write(Lib3dsIntw w, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_intd_write(Lib3dsIntd d, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_float_write(Lib3dsFloat l, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_vector_write(Lib3dsVector v, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_rgb_write(Lib3dsRgb rgb, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_string_write(const char *s, iostream *strm);
 
 #ifdef __cplusplus
 }

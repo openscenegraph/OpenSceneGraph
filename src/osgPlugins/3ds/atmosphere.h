@@ -27,6 +27,9 @@
 #include "types.h"
 #endif
 
+#include <iostream>
+using namespace std;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -91,8 +94,8 @@ struct _Lib3dsAtmosphere {
     Lib3dsDistanceCue dist_cue;
 };
 
-extern LIB3DSAPI Lib3dsBool lib3ds_atmosphere_read(Lib3dsAtmosphere *atmosphere, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_atmosphere_write(Lib3dsAtmosphere *atmosphere, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_atmosphere_read(Lib3dsAtmosphere *atmosphere, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_atmosphere_write(Lib3dsAtmosphere *atmosphere, iostream *strm);
 
 #ifdef __cplusplus
 }

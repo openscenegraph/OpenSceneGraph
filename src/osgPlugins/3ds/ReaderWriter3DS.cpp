@@ -34,6 +34,7 @@
 #include <set>
 #include <map>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 using namespace osg;
@@ -95,8 +96,10 @@ class ReaderWriter3DS : public osgDB::ReaderWriter
         virtual const char* className() const { return "3DS Auto Studio Reader"; }
 
         virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const;
+        virtual ReadResult readNode(std::istream& fin, const Options* options) const;
 
     protected:
+        ReadResult constructFrom3dsFile(Lib3dsFile *f,const std::string& filename, const Options* options) const;
 
 
         class ReaderObject
@@ -440,9 +443,29 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
     }
 }
 
+osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(std::istream& fin,  const osgDB::ReaderWriter::Options* options) const
+{
+    osgDB::ReaderWriter::ReadResult result = ReadResult::FILE_NOT_HANDLED;
+
+    std::string optFileName = "";
+    if (options)
+    {
+        optFileName = options->getPluginStringData("STREAM_FILENAME");
+    }
+
+    Lib3dsFile *f = lib3ds_stream_load((iostream *) &fin);
+    if (f)
+    {
+        result = constructFrom3dsFile(f,optFileName,options);
+        lib3ds_file_free(f);
+    }
+
+    return(result);
+}
 
 osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
+    osgDB::ReaderWriter::ReadResult result = ReadResult::FILE_NOT_HANDLED;
 
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -450,7 +473,22 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    Lib3dsFile *f = lib3ds_file_load(fileName.c_str());
+    Lib3dsFile *f = lib3ds_file_load(fileName.c_str(),options);
+
+    if (f)
+    {
+        osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+        local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
+
+        result = constructFrom3dsFile(f,file,local_opt.get());
+        lib3ds_file_free(f);
+    }
+
+    return result;
+}
+
+osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile *f,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+{
     if (f==NULL) return ReadResult::FILE_NOT_HANDLED;
 
     // MIKEC
@@ -461,7 +499,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
 
     ReaderObject reader;
 
-    reader._directory = osgDB::getFilePath(fileName);
+    reader._directory = options->getDatabasePathList().empty() ? osgDB::getFilePath(fileName) : options->getDatabasePathList().front();
 
     osg::Group* group = new osg::Group;
     group->setName(fileName);
@@ -515,8 +553,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
         group->accept(pv);
     }    
     
-    lib3ds_file_free(f);
-
     return group;
 }
 
@@ -690,17 +726,26 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
 {
     if (texture && *(texture->name))
     {
+        osg::notify(osg::NOTICE)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
+
+
         std::string fileName = osgDB::findFileInDirectory(texture->name,_directory,osgDB::CASE_INSENSITIVE);
         if (fileName.empty()) 
         {
             // file not found in .3ds file's directory, so we'll look in the datafile path list.
             fileName = osgDB::findDataFile(texture->name,options, osgDB::CASE_INSENSITIVE);
         }
-        
+
         if (fileName.empty())
         {
-            osg::notify(osg::WARN) << "texture '"<<texture->name<<"' not found"<< std::endl;
-            return NULL;
+            if (osgDB::containsServerAddress(_directory))
+            {
+                // if 3DS file is loaded from http, just attempt to load texture from same location.
+                fileName = _directory + "/" + texture->name;
+            } else {
+                osg::notify(osg::WARN) << "texture '"<<texture->name<<"' not found"<< std::endl;
+                return NULL;
+            }
         }
 
         if (label) osg::notify(osg::DEBUG_INFO) << label;
@@ -821,7 +866,7 @@ osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat
 //        stateset->setTextureAttribute(0,texenv);
     }
 
-    if (transparency>0.0f || textureTransparancy || mat->opacity_map.flags!=0)
+    if (transparency>0.0f || textureTransparancy)
     {
         stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);

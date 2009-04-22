@@ -27,6 +27,9 @@
 #include "types.h"
 #endif
 
+#include <iostream>
+using namespace std;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -122,9 +125,9 @@ struct _Lib3dsViewport {
     Lib3dsDefaultView default_view;
 };
 
-extern LIB3DSAPI Lib3dsBool lib3ds_viewport_read(Lib3dsViewport *viewport, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_viewport_read(Lib3dsViewport *viewport, iostream *strm);
 extern LIB3DSAPI void lib3ds_viewport_set_views(Lib3dsViewport *viewport, Lib3dsDword views);
-extern LIB3DSAPI Lib3dsBool lib3ds_viewport_write(Lib3dsViewport *viewport, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_viewport_write(Lib3dsViewport *viewport, iostream *strm);
 
 #ifdef __cplusplus
 }

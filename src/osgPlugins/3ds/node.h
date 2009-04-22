@@ -27,9 +27,13 @@
 #include "tracks.h"
 #endif
 
+#include <iostream>
+using namespace std;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 /*!
  * Scene graph ambient color node data
@@ -159,8 +163,8 @@ extern LIB3DSAPI Lib3dsNode* lib3ds_node_by_name(Lib3dsNode *node, const char* n
   Lib3dsNodeTypes type);
 extern LIB3DSAPI Lib3dsNode* lib3ds_node_by_id(Lib3dsNode *node, Lib3dsWord node_id);
 extern LIB3DSAPI void lib3ds_node_dump(Lib3dsNode *node, Lib3dsIntd level);
-extern LIB3DSAPI Lib3dsBool lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *file, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_node_read(Lib3dsNode *node, Lib3dsFile *file, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_node_write(Lib3dsNode *node, Lib3dsFile *file, iostream *strm);
 
 #ifdef __cplusplus
 }

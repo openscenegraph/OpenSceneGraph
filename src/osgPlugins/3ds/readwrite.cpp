@@ -23,12 +23,12 @@
 #include "readwrite.h"
 #include <osg/Endian>
 
+
 /*!
  * \defgroup readwrite Portable Binary Input/Ouput
  *
  * \author J.E. Hoffmann <je-h@gmx.net>
  */
-
 
 static bool s_requiresByteSwap = false;
 
@@ -49,13 +49,12 @@ extern LIB3DSAPI void setByteOrder()
  * \return The byte read. 
  */
 Lib3dsByte
-lib3ds_byte_read(FILE *f)
+lib3ds_byte_read(iostream *strm)
 {
   Lib3dsByte b;
 
-  ASSERT(f);
-  int result = fread(&b,1,1,f);
-  if (result==0) return 0;
+  ASSERT(strm);
+  strm->read((char*)&b,1);
   return(b);
 }
 
@@ -68,15 +67,13 @@ lib3ds_byte_read(FILE *f)
  * \return The word read. 
  */
 Lib3dsWord
-lib3ds_word_read(FILE *f)
+lib3ds_word_read(iostream *strm)
 {
   Lib3dsByte b[2];
   Lib3dsWord w;
 
-  ASSERT(f);
-  int result = fread(b,2,1,f);
-  if (result==0) return 0;
-
+  ASSERT(strm);  
+  strm->read((char*)&b,2);
   w=((Lib3dsWord)b[1] << 8) |
     ((Lib3dsWord)b[0]);
   return(w);
@@ -93,15 +90,13 @@ lib3ds_word_read(FILE *f)
  * \return The dword read. 
  */
 Lib3dsDword
-lib3ds_dword_read(FILE *f)
+lib3ds_dword_read(iostream *strm)
 {
   Lib3dsByte b[4];
   Lib3dsDword d;        
                          
-  ASSERT(f);
-  int result = fread(b,4,1,f);
-  if (result==0) return 0;
-
+  ASSERT(strm);  
+  strm->read((char*)&b,4);
   d=((Lib3dsDword)b[3] << 24) |
     ((Lib3dsDword)b[2] << 16) |
     ((Lib3dsDword)b[1] << 8) |
@@ -120,14 +115,12 @@ lib3ds_dword_read(FILE *f)
  * \return The signed byte read. 
  */
 Lib3dsIntb
-lib3ds_intb_read(FILE *f)
+lib3ds_intb_read(iostream *strm)
 {
   Lib3dsIntb b;
 
-  ASSERT(f);
-  int result = fread(&b,1,1,f);
-  if (result==0) return 0;
-
+  ASSERT(strm);  
+  strm->read((char*)&b,1);
   return(b);
 }
 
@@ -142,13 +135,12 @@ lib3ds_intb_read(FILE *f)
  * \return The signed word read. 
  */
 Lib3dsIntw
-lib3ds_intw_read(FILE *f)
+lib3ds_intw_read(iostream *strm)
 {
   Lib3dsByte b[2];
 
-  ASSERT(f);
-  int result = fread(b,2,1,f);
-  if (result==0) return 0;
+  ASSERT(strm);
+  strm->read((char*)&b,2);
 
   if (s_requiresByteSwap)
   {
@@ -169,13 +161,12 @@ lib3ds_intw_read(FILE *f)
  * \return The signed dword read. 
  */
 Lib3dsIntd
-lib3ds_intd_read(FILE *f)
+lib3ds_intd_read(iostream *strm)
 {
-  Lib3dsByte b[4];
+  Lib3dsByte b[4];     
                          
-  ASSERT(f);
-  int result = fread(b,4,1,f);
-  if (result==0) return 0;
+  ASSERT(strm);
+  strm->read((char*)&b,4);
 
   if (s_requiresByteSwap)
   {
@@ -183,6 +174,7 @@ lib3ds_intd_read(FILE *f)
   }
 
   return (*((Lib3dsIntd*)b));
+
 }
 
 
@@ -196,13 +188,13 @@ lib3ds_intd_read(FILE *f)
  * \return The float read. 
  */
 Lib3dsFloat
-lib3ds_float_read(FILE *f)
+lib3ds_float_read(iostream *strm)
 {
   Lib3dsByte b[4];
 
-  ASSERT(f);
-  int result = fread(b,4,1,f);
-  if (result==0) return 0;
+  ASSERT(strm);
+  b[0]=b[1]=b[2]=b[3]=0;
+  strm->read((char*)&b,4);  
 
   if (s_requiresByteSwap)
   {
@@ -225,18 +217,18 @@ lib3ds_float_read(FILE *f)
  * \return The float read. 
  */
 Lib3dsBool
-lib3ds_vector_read(Lib3dsVector v, FILE *f)
+lib3ds_vector_read(Lib3dsVector v, iostream *strm)
 {
-  v[0]=lib3ds_float_read(f);
-  v[1]=lib3ds_float_read(f);
-  v[2]=lib3ds_float_read(f);
+  v[0]=lib3ds_float_read(strm);
+  v[1]=lib3ds_float_read(strm);
+  v[2]=lib3ds_float_read(strm);
 
-  if (ferror(f)) {
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
-  
+
   /*printf("lib3ds_vector_read %f %f %f\n",v[0],v[1],v[2]);*/
-  
+
   return(LIB3DS_TRUE);
 }
 
@@ -245,13 +237,13 @@ lib3ds_vector_read(Lib3dsVector v, FILE *f)
  * \ingroup readwrite
  */
 Lib3dsBool
-lib3ds_rgb_read(Lib3dsRgb rgb, FILE *f)
+lib3ds_rgb_read(Lib3dsRgb rgb, iostream *strm)
 {
-  rgb[0]=lib3ds_float_read(f);
-  rgb[1]=lib3ds_float_read(f);
-  rgb[2]=lib3ds_float_read(f);
+  rgb[0]=lib3ds_float_read(strm);
+  rgb[1]=lib3ds_float_read(strm);
+  rgb[2]=lib3ds_float_read(strm);
 
-  if (ferror(f)) {
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
   /*printf("lib3ds_rgb_read %f %f %f\n",rgb[0],rgb[1],rgb[2]);*/
@@ -272,21 +264,23 @@ lib3ds_rgb_read(Lib3dsRgb rgb, FILE *f)
  * \return        True on success, False otherwise.
  */
 Lib3dsBool
-lib3ds_string_read(char *s, int buflen, FILE *f)
+lib3ds_string_read(char *s, int buflen, iostream *strm)
 {
   int k=0;
-  ASSERT(f);
-  while ((*s++=char(fgetc(f)))!=0) {
-    if (++k>=buflen) {
-      return(LIB3DS_FALSE);
-    }
-  }
-  if (ferror(f)) {
+  ASSERT(s);
+  s--;
+  do
+  {
+      s++;
+      k++;
+      strm->read(s,1);
+  } while ((*s!=0) && (k<buflen));
+
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
 }
-
 
 /*!
  * \ingroup readwrite
@@ -299,10 +293,11 @@ lib3ds_string_read(char *s, int buflen, FILE *f)
  * \return   True on success, False otherwise.
  */
 Lib3dsBool
-lib3ds_byte_write(Lib3dsByte b, FILE *f)
+lib3ds_byte_write(Lib3dsByte b, iostream *strm)
 {
-  ASSERT(f);
-  if (fwrite(&b,1,1,f)!=1) {
+  ASSERT(strm);
+  strm->write((char*)&b,1);
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -320,14 +315,15 @@ lib3ds_byte_write(Lib3dsByte b, FILE *f)
  * \return   True on success, False otherwise.
  */
 Lib3dsBool
-lib3ds_word_write(Lib3dsWord w, FILE *f)
+lib3ds_word_write(Lib3dsWord w, iostream *strm)
 {
   Lib3dsByte b[2];
 
-  ASSERT(f);
+  ASSERT(strm);
   b[1]=(Lib3dsByte)(((Lib3dsWord)w & 0xFF00) >> 8);
   b[0]=(Lib3dsByte)((Lib3dsWord)w & 0x00FF);
-  if (fwrite(b,2,1,f)!=1) {
+  strm->write((char*)b,2);
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -345,16 +341,18 @@ lib3ds_word_write(Lib3dsWord w, FILE *f)
  * \return   True on success, False otherwise.
  */
 Lib3dsBool
-lib3ds_dword_write(Lib3dsDword d, FILE *f)
+lib3ds_dword_write(Lib3dsDword d, iostream *strm)
 {
   Lib3dsByte b[4];
 
-  ASSERT(f);
+  ASSERT(strm);
   b[3]=(Lib3dsByte)(((Lib3dsDword)d & 0xFF000000) >> 24);
   b[2]=(Lib3dsByte)(((Lib3dsDword)d & 0x00FF0000) >> 16);
   b[1]=(Lib3dsByte)(((Lib3dsDword)d & 0x0000FF00) >> 8);
   b[0]=(Lib3dsByte)(((Lib3dsDword)d & 0x000000FF));
-  if (fwrite(b,4,1,f)!=1) {
+
+  strm->write((char*)b,4);
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -372,10 +370,11 @@ lib3ds_dword_write(Lib3dsDword d, FILE *f)
  * \return   True on success, False otherwise.
  */
 Lib3dsBool
-lib3ds_intb_write(Lib3dsIntb b, FILE *f)
+lib3ds_intb_write(Lib3dsIntb b, iostream *strm)
 {
-  ASSERT(f);
-  if (fwrite(&b,1,1,f)!=1) {
+  ASSERT(strm);
+  strm->write((char*)b,1);
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -393,14 +392,16 @@ lib3ds_intb_write(Lib3dsIntb b, FILE *f)
  * \return   True on success, False otherwise.
  */
 Lib3dsBool
-lib3ds_intw_write(Lib3dsIntw w, FILE *f)
+lib3ds_intw_write(Lib3dsIntw w, iostream *strm)
 {
   Lib3dsByte b[2];
 
-  ASSERT(f);
+  ASSERT(strm);
   b[1]=(Lib3dsByte)(((Lib3dsWord)w & 0xFF00) >> 8);
   b[0]=(Lib3dsByte)((Lib3dsWord)w & 0x00FF);
-  if (fwrite(b,2,1,f)!=1) {
+
+  strm->write((char*)b,2);
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -418,16 +419,18 @@ lib3ds_intw_write(Lib3dsIntw w, FILE *f)
  * \return   True on success, False otherwise.
  */
 Lib3dsBool
-lib3ds_intd_write(Lib3dsIntd d, FILE *f)
+lib3ds_intd_write(Lib3dsIntd d, iostream *strm)
 {
   Lib3dsByte b[4];
 
-  ASSERT(f);
+  ASSERT(strm);
   b[3]=(Lib3dsByte)(((Lib3dsDword)d & 0xFF000000) >> 24);
   b[2]=(Lib3dsByte)(((Lib3dsDword)d & 0x00FF0000) >> 16);
   b[1]=(Lib3dsByte)(((Lib3dsDword)d & 0x0000FF00) >> 8);
   b[0]=(Lib3dsByte)(((Lib3dsDword)d & 0x000000FF));
-  if (fwrite(b,4,1,f)!=1) {
+
+  strm->write((char*)b,4);
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -444,11 +447,10 @@ lib3ds_intd_write(Lib3dsIntd d, FILE *f)
  *
  * \return   True on success, False otherwise.
  */
- 
- 
 Lib3dsBool
-lib3ds_float_write(Lib3dsFloat l, FILE *f)
+lib3ds_float_write(Lib3dsFloat l, iostream *strm)
 {
+  ASSERT(strm);
 
   Lib3dsByte b[4];
   Lib3dsByte* ptr = (Lib3dsByte*) (&l);
@@ -467,8 +469,9 @@ lib3ds_float_write(Lib3dsFloat l, FILE *f)
       b[2] = *ptr++;
       b[3] = *ptr++;
   }
-  
-  if (fwrite(b,4,1,f)!=1) {
+
+  strm->write((char*)b,4);
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -485,15 +488,15 @@ lib3ds_float_write(Lib3dsFloat l, FILE *f)
  * \param f  Input file stream. 
  */
 Lib3dsBool
-lib3ds_vector_write(Lib3dsVector v, FILE *f)
+lib3ds_vector_write(Lib3dsVector v, iostream *strm)
 {
-  if (!lib3ds_float_write(v[0], f)) {
+  if (!lib3ds_float_write(v[0], strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!lib3ds_float_write(v[1], f)) {
+  if (!lib3ds_float_write(v[1], strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!lib3ds_float_write(v[2], f)) {
+  if (!lib3ds_float_write(v[2], strm)) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -504,15 +507,15 @@ lib3ds_vector_write(Lib3dsVector v, FILE *f)
  * \ingroup readwrite
  */
 Lib3dsBool
-lib3ds_rgb_write(Lib3dsRgb rgb, FILE *f)
+lib3ds_rgb_write(Lib3dsRgb rgb, iostream *strm)
 {
-  if (!lib3ds_float_write(rgb[0], f)) {
+  if (!lib3ds_float_write(rgb[0], strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!lib3ds_float_write(rgb[1], f)) {
+  if (!lib3ds_float_write(rgb[1], strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!lib3ds_float_write(rgb[2], f)) {
+  if (!lib3ds_float_write(rgb[2], strm)) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -530,12 +533,12 @@ lib3ds_rgb_write(Lib3dsRgb rgb, FILE *f)
  * \return   True on success, False otherwise.
  */
 Lib3dsBool
-lib3ds_string_write(const char *s, FILE *f)
+lib3ds_string_write(const char *s, iostream *strm)
 {
   ASSERT(s);
-  ASSERT(f);
-  do fputc(*s,f); while (*s++);
-  if (ferror(f)) {
+  ASSERT(strm);
+  do strm->write(s,1); while (*s++);
+  if (strm->fail()) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);

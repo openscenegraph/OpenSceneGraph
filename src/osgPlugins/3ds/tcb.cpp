@@ -77,28 +77,29 @@ lib3ds_tcb(Lib3dsTcb *p, Lib3dsTcb *pc, Lib3dsTcb *c, Lib3dsTcb *nc, Lib3dsTcb *
  * \ingroup tcb 
  */
 Lib3dsBool
-lib3ds_tcb_read(Lib3dsTcb *tcb, FILE *f)
+lib3ds_tcb_read(Lib3dsTcb *tcb, iostream *strm)
 {
   Lib3dsWord flags;
   
-  tcb->frame=lib3ds_intd_read(f);
-  tcb->flags=flags=lib3ds_word_read(f);
+  tcb->frame=lib3ds_intd_read(strm);
+  tcb->flags=flags=lib3ds_word_read(strm);
   if (flags&LIB3DS_USE_TENSION) {
-    tcb->tens=lib3ds_float_read(f);
+    tcb->tens=lib3ds_float_read(strm);
   }
   if (flags&LIB3DS_USE_CONTINUITY) {
-    tcb->cont=lib3ds_float_read(f);
+    tcb->cont=lib3ds_float_read(strm);
   }
   if (flags&LIB3DS_USE_BIAS) {
-    tcb->bias=lib3ds_float_read(f);
+    tcb->bias=lib3ds_float_read(strm);
   }
   if (flags&LIB3DS_USE_EASE_TO) {
-    tcb->ease_to=lib3ds_float_read(f);
+    tcb->ease_to=lib3ds_float_read(strm);
   }
   if (flags&LIB3DS_USE_EASE_FROM) {
-    tcb->ease_from=lib3ds_float_read(f);
+    tcb->ease_from=lib3ds_float_read(strm);
   }
-  if (ferror(f)) {
+
+  if (strm->fail()){
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -109,26 +110,26 @@ lib3ds_tcb_read(Lib3dsTcb *tcb, FILE *f)
  * \ingroup tcb 
  */
 Lib3dsBool
-lib3ds_tcb_write(Lib3dsTcb *tcb, FILE *f)
+lib3ds_tcb_write(Lib3dsTcb *tcb, iostream *strm)
 {
-  lib3ds_intd_write(tcb->frame,f);
-  lib3ds_word_write(tcb->flags,f);
+  lib3ds_intd_write(tcb->frame,strm);
+  lib3ds_word_write(tcb->flags,strm);
   if (tcb->flags&LIB3DS_USE_TENSION) {
-    lib3ds_float_write(tcb->tens,f);
+    lib3ds_float_write(tcb->tens,strm);
   }
   if (tcb->flags&LIB3DS_USE_CONTINUITY) {
-    lib3ds_float_write(tcb->cont,f);
+    lib3ds_float_write(tcb->cont,strm);
   }
   if (tcb->flags&LIB3DS_USE_BIAS) {
-    lib3ds_float_write(tcb->bias,f);
+    lib3ds_float_write(tcb->bias,strm);
   }
   if (tcb->flags&LIB3DS_USE_EASE_TO) {
-    lib3ds_float_write(tcb->ease_to,f);
+    lib3ds_float_write(tcb->ease_to,strm);
   }
   if (tcb->flags&LIB3DS_USE_EASE_FROM) {
-    lib3ds_float_write(tcb->ease_from,f);
+    lib3ds_float_write(tcb->ease_from,strm);
   }
-  if (ferror(f)) {
+  if (strm->fail()){
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);

@@ -27,9 +27,14 @@
 #include "types.h"
 #endif
 
+#include <iostream>
+using namespace std;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
 
 typedef enum _Lib3dsTcbFlags{
   LIB3DS_USE_TENSION    =0x0001,
@@ -52,8 +57,8 @@ typedef struct _Lib3dsTcb {
 extern LIB3DSAPI void lib3ds_tcb(Lib3dsTcb *p, Lib3dsTcb *pc, Lib3dsTcb *c,
   Lib3dsTcb *nc, Lib3dsTcb *n, Lib3dsFloat *ksm, Lib3dsFloat *ksp,
   Lib3dsFloat *kdm, Lib3dsFloat *kdp);
-extern LIB3DSAPI Lib3dsBool lib3ds_tcb_read(Lib3dsTcb *tcb, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_tcb_write(Lib3dsTcb *tcb, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_tcb_read(Lib3dsTcb *tcb, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_tcb_write(Lib3dsTcb *tcb, iostream *strm);
 
 #ifdef __cplusplus
 }

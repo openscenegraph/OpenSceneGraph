@@ -9,9 +9,9 @@
 /** note, derived from Equalizer LGPL source.*/
 
 #include "typedefs.h"
-
 #include "vertexData.h"
 #include "ply.h"
+
 #include <cstdlib>
 #include <algorithm>
 #include <osg/Geometry>
@@ -249,7 +249,9 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                 MESHASSERT( _vertices->size() == static_cast< size_t >( nElems ) );
                 // Check all color elements read or not
                 if( hasColors && !ignoreColors )
+                {
                     MESHASSERT( _colors->size() == static_cast< size_t >( nElems ) );
+                }
             }
             catch( exception& e )
             {

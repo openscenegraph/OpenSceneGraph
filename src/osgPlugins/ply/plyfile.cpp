@@ -46,7 +46,9 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <math.h>
 #include <string.h>
 
-
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
+    #pragma warning( disable : 4996 )
+#endif
 
 #ifdef WIN32
 #    ifndef LITTLE_ENDIAN
@@ -2411,24 +2413,24 @@ void get_binary_item(
           *uint_val = (unsigned int) *double_val;
           break;
       case PLY_DOUBLE:
-          result = fread (ptr, 8, 1, plyfile->fp);
-          if(!result < 1)
-          {
-              throw ply::MeshException( "Error in reading PLY file."
-                                 "fread not succeeded." );
-          }
-          if( plyfile->file_type == PLY_BINARY_BE )
-          {
-              swap8BE(ptr);
-          }
-          else
-          {
-              swap8LE(ptr);
-          }
-      *double_val = *((double *) ptr);
-      *int_val = (int) *double_val;
-      *uint_val = (unsigned int) *double_val;
-      break;
+        result = fread (ptr, 8, 1, plyfile->fp);
+        if(result < 1)
+        {
+            throw ply::MeshException( "Error in reading PLY file."
+                                "fread not succeeded." );
+        }
+        if( plyfile->file_type == PLY_BINARY_BE )
+        {
+            swap8BE(ptr);
+        }
+        else
+        {
+            swap8LE(ptr);
+        }
+        *double_val = *((double *) ptr);
+        *int_val = (int) *double_val;
+        *uint_val = (unsigned int) *double_val;
+        break;
     default:
       char error[100];
       sprintf (error, "get_binary_item: bad type = %d\n", type);

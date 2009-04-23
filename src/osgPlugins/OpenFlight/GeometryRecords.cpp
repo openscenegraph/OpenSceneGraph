@@ -23,8 +23,6 @@
 #include <osg/Geometry>
 #include <osg/Texture2D>
 #include <osg/CullFace>
-#include <osg/PolygonOffset>
-#include <osg/Depth>
 #include <osg/BlendFunc>
 #include <osgUtil/TransformAttributeFunctor>
 #include "Registry.h"
@@ -383,27 +381,11 @@ protected:
         // Subface
         if (document.subfaceLevel() > 0)
         {
-            static osg::ref_ptr<osg::PolygonOffset> polygonOffset = new osg::PolygonOffset(-10.0f, -40.0f);
-            stateset->setAttributeAndModes(polygonOffset.get(), osg::StateAttribute::ON);
-
-            static osg::ref_ptr<osg::Depth> depth = new osg::Depth(osg::Depth::LESS, 0.0, 1.0,false);
-            stateset->setAttribute(depth.get());
+            stateset->setAttributeAndModes(document.getSubSurfacePolygonOffset(document.subfaceLevel()), osg::StateAttribute::ON);
+            stateset->setAttribute(document.getSubSurfaceDepth());
 
             stateset->setRenderBinDetails(document.subfaceLevel(),"RenderBin");
         }
-
-#if 0
-// note from Robert Osfield, this "optimization" breaks multi-textured datasets that mix single texture 
-// and mulit-texture geometries as the Multitexture parsing can come after the below code, and accidentally 
-// polute the non multi-texture geometries StateSet.
-
-        // A simple share stateset optimization.
-        static osg::ref_ptr<osg::StateSet> lastStateset;
-        if (lastStateset.valid() && (stateset->compare(*lastStateset,false)==0))
-            stateset = lastStateset;
-        else
-            lastStateset = stateset;
-#endif
 
         _geode->setStateSet(stateset.get());
 
@@ -952,27 +934,11 @@ protected:
         // Subface
         if (document.subfaceLevel() > 0)
         {
-            static osg::ref_ptr<osg::PolygonOffset> polygonOffset = new osg::PolygonOffset(-10.0f, -40.0f);
-            stateset->setAttributeAndModes(polygonOffset.get(), osg::StateAttribute::ON);
-
-            static osg::ref_ptr<osg::Depth> depth = new osg::Depth(osg::Depth::LESS, 0.0, 1.0,false);
-            stateset->setAttribute(depth.get());
+            stateset->setAttributeAndModes(document.getSubSurfacePolygonOffset(document.subfaceLevel()), osg::StateAttribute::ON);
+            stateset->setAttribute(document.getSubSurfaceDepth());
 
             stateset->setRenderBinDetails(document.subfaceLevel(),"RenderBin");
         }
-
-#if 0
-// note from Robert Osfield, this "optimization" breaks multi-textured datasets that mix single texture 
-// and mulit-texture geometries as the Multitexture parsing can come after the below code, and accidentally 
-// polute the non multi-texture geometries StateSet.
-
-        // A simple share stateset optimization.
-        static osg::ref_ptr<osg::StateSet> lastStateset;
-        if (lastStateset.valid() && (stateset->compare(*lastStateset,false)==0))
-            stateset = lastStateset;
-        else
-            lastStateset = stateset;
-#endif
 
         _geode->setStateSet(stateset.get());
 

@@ -45,6 +45,7 @@ Document::Document() :
     _lightPointAnimationPoolParent(false),
     _shaderPoolParent(false)
 {
+    _subsurfaceDepth = new osg::Depth(osg::Depth::LESS, 0.0, 1.0,false);
 }
 
 Document::~Document()
@@ -108,6 +109,22 @@ osg::Node* Document::getInstanceDefinition(int no)
         return (*itr).second.get();
 
     return NULL;
+}
+
+void Document::setSubSurfacePolygonOffset(int level, osg::PolygonOffset* po)
+{
+    _subsurfacePolygonOffsets[level] = po;
+}
+
+osg::PolygonOffset* Document::getSubSurfacePolygonOffset(int level)
+{
+    osg::notify(osg::DEBUG_INFO)<<"Document::getSubSurfacePolygonOffset("<<level<<")"<<std::endl;
+    osg::ref_ptr<osg::PolygonOffset>& po = _subsurfacePolygonOffsets[level];
+    if (!po)
+    {
+        po = new osg::PolygonOffset(-1.0f*float(level), -1.0f);
+    }
+    return po.get();
 }
 
 double flt::unitsToMeters(CoordUnits unit)

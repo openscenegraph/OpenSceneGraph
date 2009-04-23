@@ -24,6 +24,8 @@
 #include <osg/Notify>
 #include <osg/Transform>
 #include <osg/Geometry>
+#include <osg/PolygonOffset>
+#include <osg/Depth>
 #include <osgDB/ReaderWriter>
 
 #include "Types.h"
@@ -166,6 +168,12 @@ class Document
         ShaderPool* getOrCreateShaderPool();
         bool getShaderPoolParent() const { return _shaderPoolParent; }
 
+        void setSubSurfacePolygonOffset(int level, osg::PolygonOffset* po);
+        osg::PolygonOffset* getSubSurfacePolygonOffset(int level);
+
+        void setSubSurfaceDepth(osg::Depth* depth) { _subsurfaceDepth = depth; }
+        osg::Depth* getSubSurfaceDepth() { return _subsurfaceDepth.get(); }
+
 
         // Options
         void setReplaceClampWithClampToEdge(bool flag) { _replaceClampWithClampToEdge = flag; }
@@ -184,7 +192,7 @@ class Document
         bool getDoUnitsConversion() const { return _doUnitsConversion; }
         void setDesiredUnits(CoordUnits units ) { _desiredUnits=units; }
         CoordUnits getDesiredUnits() const { return _desiredUnits; }
-        
+
         void setKeepExternalReferences( bool flag) { _keepExternalReferences=flag; }
         bool getKeepExternalReferences() const { return _keepExternalReferences; }
 
@@ -225,6 +233,11 @@ class Document
         osg::ref_ptr<LightPointAppearancePool> _lightPointAppearancePool;
         osg::ref_ptr<LightPointAnimationPool> _lightPointAnimationPool;
         osg::ref_ptr<ShaderPool> _shaderPool;
+
+        typedef std::map<int, osg::ref_ptr<osg::PolygonOffset> > SubSurfacePolygonOffsets;
+        SubSurfacePolygonOffsets _subsurfacePolygonOffsets;
+        osg::ref_ptr<osg::Depth> _subsurfaceDepth;
+
         bool _colorPoolParent;
         bool _texturePoolParent;
         bool _materialPoolParent;

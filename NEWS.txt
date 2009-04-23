@@ -23,7 +23,7 @@ The !OpenSceneGraph 2.8.1 release is the culmination of 10 years of work by the 
     * windows threading
     * memory leak in Collada loader
     * fixes to display lists/vbo creation that prevent crash under ATI drivers
-    * subsurface PolygonOffset setting in OpenFlight
+    * subface PolygonOffset setting in OpenFlight
     * osgconv --formats under OSX
 
 === Updates between 2.8 and 2.6 include: ===

@@ -1,3 +1,84 @@
+2009-04-23 13:27  robert
+
+	* CMakeLists.txt: Updated release candidate number
+
+2009-04-23 11:08  robert
+
+	* src/osgPlugins/OpenFlight,
+	  src/osgPlugins/OpenFlight/Document.cpp,
+	  src/osgPlugins/OpenFlight/Document.h,
+	  src/osgPlugins/OpenFlight/GeometryRecords.cpp: Fix to handling of
+	  subsurface layers so that more appropriate PolygonOffset values
+	  are chosen. Merged from svn/trunk using:
+	  
+	  svn merge -r 10083:10084
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgPlugins/OpenFlight/
+
+2009-04-23 11:07  robert
+
+	* src/osg/PolygonOffset.cpp: Merged from svn trunk using:
+	  
+	  svn merge -r 10082:10083
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osg/PolygonOffset.cpp
+
+2009-04-22 13:54  robert
+
+	* applications/osgversion/osgversion.cpp: Fixed typo.
+
+2009-04-22 13:09  robert
+
+	* src/osgPlugins/dae/daeWriter.h: From Bob Kuehne, "fix for failing
+	  collada builds on osx due to not being able to stringstreamify
+	  osg::Vec3 without io_utils included."
+
+2009-04-22 10:56  robert
+
+	* examples, examples/osgcluster/broadcaster.cpp,
+	  examples/osgmanipulator/osgmanipulator.cpp,
+	  examples/osgscreencapture/osgscreencapture.cpp: From Paul Martz,
+	  "Looks like the people who created these two examples were a bit
+	  careless with cut and paste."
+	  
+	  Merged from svn/trunk using:
+	  
+	  svn merge -r 10063:10064
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/examples/
+
+2009-04-22 10:49  robert
+
+	* src/osg/Image.cpp: From Eric Sokolowsky, "src/osg/Image.cpp is
+	  missing the GL_RGBA8 image type when calculating the number of
+	  components in an image. It is added here."
+	  
+	  Merged from svn trunk using:
+	  
+	  svn merge -r 10061:10062
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osg/Image.cpp
+
+2009-04-21 10:20  robert
+
+	* src/osgDB/DatabasePager.cpp: Fix for handling case of no graphics
+	  contexts being registered.
+	  
+	  Merged from svn/trunk using:
+	  svn merge -r 10053:10054
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgDB/DatabasePager.cpp
+
+2009-04-12 18:58  robert
+
+	* CMakeLists.txt, NEWS.txt, README.txt: Updated dates for 2.8.1-rc2
+
+2009-04-12 18:53  robert
+
+	* CMakeLists.txt, ChangeLog,
+	  applications/osgversion/osgversion.cpp: Updated CMakeLists.txt
+	  ChangeLog generator so that it tracks the current branch or
+	  svn/trunk to prevent branches generating logs for svn/trunk.
+	  
+	  Updated osgversion's authors mapping.
+	  
+	  Updated ChangeLog.
+
 2009-04-12 10:29  robert
 
 	* src/osg/GraphicsThread.cpp: Added release from svn/trunk to

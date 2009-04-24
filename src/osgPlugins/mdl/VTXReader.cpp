@@ -328,6 +328,7 @@ ref_ptr<PrimitiveSet> VTXReader::processStrip(unsigned short * indexArray,
                                               int offset)
 {
     VTXStrip                strip;
+    DrawElementsUShort *    drawElements;
     ref_ptr<PrimitiveSet>   primSet;
     unsigned short *        start;
     unsigned short *        end;
@@ -348,13 +349,17 @@ ref_ptr<PrimitiveSet> VTXReader::processStrip(unsigned short * indexArray,
 
     // Create the primitive set (based on the flag)
     if (strip.strip_flags & STRIP_IS_TRI_LIST)
-        primSet =
+        drawElements =
             new DrawElementsUShort(PrimitiveSet::TRIANGLES, start, end);
     else
-        primSet =
+        drawElements =
             new DrawElementsUShort(PrimitiveSet::TRIANGLE_STRIP, start, end);
 
+    // Flip the indices to get the front faces correct
+    std::reverse(drawElements->begin(), drawElements->end());
+
     // Return the primitive set
+    primSet = drawElements;
     return primSet;
 }
 

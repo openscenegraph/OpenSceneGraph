@@ -35,7 +35,7 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
         Viewer(const osgViewer::Viewer& viewer, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         virtual ~Viewer();
-        
+
         META_Object(osgViewer,Viewer);
 
         /** Take all the settings, Camera and Slaves from the passed in view(er), leaving it empty. */
@@ -74,9 +74,8 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
 
 
         virtual double elapsedTime();
-        
-        virtual osg::FrameStamp* getViewerFrameStamp() { return getFrameStamp(); }
 
+        virtual osg::FrameStamp* getViewerFrameStamp() { return getFrameStamp(); }
 
         /** Execute a main frame loop.
           * Equivalent to while (!viewer.done()) viewer.frame();
@@ -85,18 +84,21 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
           */
         virtual int run();
 
+        /** check to see if the new frame is required, called by run(..) when FrameScheme is set to ON_DEMAND.*/
+        virtual bool checkNeedToDoFrame();
+
         virtual void advance(double simulationTime=USE_REFERENCE_TIME);
 
         virtual void eventTraversal();
 
         virtual void updateTraversal();
-        
+
         void setCameraWithFocus(osg::Camera* camera) { _cameraWithFocus = camera; }
         osg::Camera* getCameraWithFocus() { return _cameraWithFocus.get(); }
         const osg::Camera* getCameraWithFocus() const { return _cameraWithFocus.get(); }
-        
+
         virtual void getCameras(Cameras& cameras, bool onlyActive=true);
-        
+
         virtual void getContexts(Contexts& contexts, bool onlyValid=true);
 
         virtual void getAllThreads(Threads& threads, bool onlyActive=true);

@@ -73,9 +73,9 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
         const osg::FrameStamp* getFrameStamp() const { return _frameStamp.get(); }
 
         virtual double elapsedTime();
-        
+
         virtual osg::FrameStamp* getViewerFrameStamp() { return getFrameStamp(); }
-        
+
 
         /** Execute a main frame loop.
           * Equivalent to while (!viewer.done()) viewer.frame();
@@ -84,17 +84,20 @@ class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::
           */
         virtual int run();
 
+        /** check to see if the new frame is required, called by run(..) when FrameScheme is set to ON_DEMAND.*/
+        virtual bool checkNeedToDoFrame();
+
         virtual void advance(double simulationTime=USE_REFERENCE_TIME);
 
         virtual void eventTraversal();
 
         virtual void updateTraversal();
-        
-        
+
+
         void setCameraWithFocus(osg::Camera* camera);
         osg::Camera* getCameraWithFocus() { return _cameraWithFocus.get(); }
         const osg::Camera* getCameraWithFocus() const { return _cameraWithFocus.get(); }
-        
+
         osgViewer::View* getViewWithFocus() { return _viewWithFocus.get(); }
         const osgViewer::View* getViewWithFocus() const { return _viewWithFocus.get(); }
         

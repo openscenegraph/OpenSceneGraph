@@ -199,14 +199,27 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         /** Check to see if windows are still open, if not set viewer done to true. */
         void checkWindowStatus();
 
+        enum FrameScheme
+        {
+            ON_DEMAND,
+            CONTINUOUS
+        };
 
+        void setRunFrameScheme(FrameScheme fs) { _runFrameScheme = fs; }
+        FrameScheme getRunFrameScheme() const { return _runFrameScheme; }
+
+        void setRunMaxFrameRate(double frameRate) { _runMaxFrameRate = frameRate; }
+        double getRunMaxFrameRate() const { return _runMaxFrameRate; }
 
         /** Execute a main frame loop.
           * Equivalent to while (!viewer.done()) viewer.frame();
           * Also calls realize() if the viewer is not already realized,
           * and installs trackball manipulator if one is not already assigned.
           */
-        virtual int run() = 0;
+        virtual int run();
+
+        /** check to see if the new frame is required, called by run(..) when FrameScheme is set to ON_DEMAND.*/
+        virtual bool checkNeedToDoFrame() = 0;
 
         /** Render a complete new frame.
           * Calls advance(), eventTraversal(), updateTraversal(), renderingTraversals(). */
@@ -249,16 +262,20 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         virtual void getUsage(osg::ApplicationUsage& usage) const = 0;
         
     protected:
-    
+
+        void viewerBaseInit();
+
+        friend class osgViewer::View;
+
         inline void makeCurrent(osg::GraphicsContext* gc)
         {
             if (_currentContext==gc) return;
-            
+
             releaseContext();
-            
+
             if (gc && gc->valid() && gc->makeCurrent()) _currentContext = gc;
         }
-        
+
         inline void releaseContext()
         {
             if (_currentContext.valid() && _currentContext->valid())
@@ -275,21 +292,28 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         int                                                 _keyEventSetsDone;
         bool                                                _quitEventSetsDone;
         bool                                                _releaseContextAtEndOfFrameHint;
-        
+
         ThreadingModel                                      _threadingModel;
         bool                                                _threadsRunning;
+
+        bool                                                _requestRedraw;
+        bool                                                _requestContinousUpdate;
+
+        FrameScheme                                         _runFrameScheme;
+        double                                              _runMaxFrameRate;
+
 
         BarrierPosition                                     _endBarrierPosition;
 
         osg::ref_ptr<osg::BarrierOperation>                 _startRenderingBarrier;
         osg::ref_ptr<osg::BarrierOperation>                 _endRenderingDispatchBarrier;
         osg::ref_ptr<osg::EndOfDynamicDrawBlock>            _endDynamicDrawBlock;
-        
+
         osg::ref_ptr<osgGA::EventVisitor>                   _eventVisitor;
-        
+
         osg::ref_ptr<osg::OperationQueue>                   _updateOperations;
         osg::ref_ptr<osgUtil::UpdateVisitor>                _updateVisitor;
-        
+
         osg::ref_ptr<osg::Operation>                        _realizeOperation;
         osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
 

@@ -53,6 +53,11 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     arguments.getApplicationUsage()->addCommandLineOption("--clear-color <color>","Set the background color of the viewer in the form \"r,g,b[,a]\".");
     arguments.getApplicationUsage()->addCommandLineOption("--screen <num>","Set the screen to use when multiple screens are present.");
     arguments.getApplicationUsage()->addCommandLineOption("--window <x y w h>","Set the position (x,y) and size (w,h) of the viewer window.");
+
+    arguments.getApplicationUsage()->addCommandLineOption("--run-on-demand","Set the run methods frame rate management to only rendering frames when required.");
+    arguments.getApplicationUsage()->addCommandLineOption("--run-continuous","Set the run methods frame rate management to rendering frames continuously.");
+    arguments.getApplicationUsage()->addCommandLineOption("--run-max-frame-rate","Set the run methods maximum permissable frame rate, 0.0 is default and switching off frame rate capping.");
+
     // FIXME: Uncomment these lines when the options have been documented properly
     //arguments.getApplicationUsage()->addCommandLineOption("--3d-sd","");
     //arguments.getApplicationUsage()->addCommandLineOption("--panoramic-sd","");
@@ -84,13 +89,21 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
         if( cnt==3 || cnt==4 ) getCamera()->setClearColor( osg::Vec4(r,g,b,a) );
         else osg::notify(osg::WARN)<<"Invalid clear color \""<<colorStr<<"\""<<std::endl;
     }
-    
+
+
+    while(arguments.read("--run-on-demand")) { setRunFrameScheme(ON_DEMAND); }
+    while(arguments.read("--run-continuous")) { setRunFrameScheme(CONTINUOUS); }
+
+    double runMaxFrameRate;
+    while(arguments.read("--run-max-frame-rate", runMaxFrameRate)) { setRunMaxFrameRate(runMaxFrameRate); }
+
+
     int screenNum = -1;
     while (arguments.read("--screen",screenNum)) {}
-    
+
     int x = -1, y = -1, width = -1, height = -1;
     while (arguments.read("--window",x,y,width,height)) {}
-    
+
     bool ss3d = false;
     bool wowvx20 = false;
     bool wowvx42 = false;
@@ -309,22 +322,40 @@ bool Viewer::isRealized() const
     return numRealizedWindows > 0;
 }
 
+bool Viewer::checkNeedToDoFrame()
+{
+    if (_requestRedraw) return true;
+    if (_requestContinousUpdate) return true;
+
+    // If the database pager is going to update the scene the render flag is
+    // set so that the updates show up
+    if(getDatabasePager()->requiresUpdateSceneGraph() || getDatabasePager()->getRequestsInProgress()) return true;
+
+    // now do a eventTraversal to see if any events might require a new frame.
+    eventTraversal();
+
+    if (_requestRedraw) return true;
+    if (_requestContinousUpdate) return true;
+
+    return false;
+}
+
 int Viewer::run()
 {
     if (!getCameraManipulator() && getCamera()->getAllowEventFocus())
     {
         setCameraManipulator(new osgGA::TrackballManipulator());
     }
-    
+
     setReleaseContextAtEndOfFrameHint(false);
-            
+
     return ViewerBase::run();
 }
 
 void Viewer::setStartTick(osg::Timer_t tick)
 {
     View::setStartTick(tick);
-    
+
     Contexts contexts;
     getContexts(contexts,false);
 

@@ -37,7 +37,17 @@ CompositeViewer::CompositeViewer(const CompositeViewer& cv,const osg::CopyOp& co
 CompositeViewer::CompositeViewer(osg::ArgumentParser& arguments)
 {
     constructorInit();
-    
+
+    arguments.getApplicationUsage()->addCommandLineOption("--SingleThreaded","Select SingleThreaded threading model for viewer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--CullDrawThreadPerContext","Select CullDrawThreadPerContext threading model for viewer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--DrawThreadPerContext","Select DrawThreadPerContext threading model for viewer.");
+    arguments.getApplicationUsage()->addCommandLineOption("--CullThreadPerCameraDrawThreadPerContext","Select CullThreadPerCameraDrawThreadPerContext threading model for viewer.");
+
+    arguments.getApplicationUsage()->addCommandLineOption("--run-on-demand","Set the run methods frame rate management to only rendering frames when required.");
+    arguments.getApplicationUsage()->addCommandLineOption("--run-continuous","Set the run methods frame rate management to rendering frames continuously.");
+    arguments.getApplicationUsage()->addCommandLineOption("--run-max-frame-rate","Set the run methods maximum permissable frame rate, 0.0 is default and switching off frame rate capping.");
+
+
     std::string filename;
     bool readConfig = false;
     while (arguments.read("-c",filename))
@@ -49,6 +59,14 @@ CompositeViewer::CompositeViewer(osg::ArgumentParser& arguments)
     while (arguments.read("--CullDrawThreadPerContext")) setThreadingModel(CullDrawThreadPerContext);
     while (arguments.read("--DrawThreadPerContext")) setThreadingModel(DrawThreadPerContext);
     while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) setThreadingModel(CullThreadPerCameraDrawThreadPerContext);
+
+
+    while(arguments.read("--run-on-demand")) { setRunFrameScheme(ON_DEMAND); }
+    while(arguments.read("--run-continuous")) { setRunFrameScheme(CONTINUOUS); }
+
+    double runMaxFrameRate;
+    while(arguments.read("--run-max-frame-rate", runMaxFrameRate)) { setRunMaxFrameRate(runMaxFrameRate); }
+
 
     osg::DisplaySettings::instance()->readCommandLine(arguments);
     osgDB::readCommandLine(arguments);
@@ -220,6 +238,34 @@ bool CompositeViewer::isRealized() const
     }
     
     return numRealizedWindows > 0;
+}
+
+bool CompositeViewer::checkNeedToDoFrame()
+{
+    if (_requestRedraw) return true;
+    if (_requestContinousUpdate) return true;
+
+    for(RefViews::iterator itr = _views.begin();
+        itr != _views.end();
+        ++itr)
+    {
+        osgViewer::View* view = itr->get();
+        if (view)
+        {
+            // If the database pager is going to update the scene the render flag is
+            // set so that the updates show up
+            if (view->getDatabasePager()->requiresUpdateSceneGraph() ||
+                view->getDatabasePager()->getRequestsInProgress()) return true;
+        }
+    }
+
+    // now do a eventTraversal to see if any events might require a new frame.
+    eventTraversal();
+
+    if (_requestRedraw) return true;
+    if (_requestContinousUpdate) return true;
+
+    return false;
 }
 
 int CompositeViewer::run()

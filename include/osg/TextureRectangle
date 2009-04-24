@@ -129,8 +129,6 @@ class OSG_EXPORT TextureRectangle : public Texture
         virtual void computeInternalFormat() const;
         void allocateMipmap(State& state) const;
 
-        void applyTexParameters(GLenum target, State& state) const;
-
         void applyTexImage_load(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const;
         void applyTexImage_subload(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight, GLint& inInternalFormat) const;
 

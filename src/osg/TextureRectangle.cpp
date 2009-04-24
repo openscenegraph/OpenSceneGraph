@@ -260,21 +260,6 @@ void TextureRectangle::apply(State& state) const
     }
 }
 
-void TextureRectangle::applyTexParameters(GLenum target, State& state) const
-{
-    // get the contextID (user defined ID of 0 upwards) for the 
-    // current OpenGL context.
-    const unsigned int contextID = state.getContextID();
-
-    glTexParameteri( target, GL_TEXTURE_WRAP_S, _wrap_s );
-    glTexParameteri( target, GL_TEXTURE_WRAP_T, _wrap_t );
-
-    glTexParameteri( target, GL_TEXTURE_MIN_FILTER, _min_filter);
-    glTexParameteri( target, GL_TEXTURE_MAG_FILTER, _mag_filter);
-
-    getTextureParameterDirty(contextID) = false;
-}
-
 void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& inheight) const
 {
     // if we don't have a valid image we can't create a texture!

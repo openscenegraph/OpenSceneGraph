@@ -778,6 +778,11 @@ void CullVisitor::apply(Geode& node)
             osg::notify(osg::NOTICE)<<"CullVisitor::apply(Geode&) detected NaN,"<<std::endl
                                     <<"    depth="<<depth<<", center=("<<bb.center()<<"),"<<std::endl
                                     <<"    matrix="<<matrix<<std::endl;
+            osg::notify(osg::DEBUG_INFO) << "    NodePath:" << std::endl;
+            for (NodePath::const_iterator i = getNodePath().begin(); i != getNodePath().end(); ++i)
+            {
+                osg::notify(osg::DEBUG_INFO) << "        \"" << (*i)->getName() << "\"" << std::endl;
+            }
         }
         else
         {        
@@ -851,6 +856,11 @@ void CullVisitor::apply(Billboard& node)
             osg::notify(osg::NOTICE)<<"CullVisitor::apply(Billboard&) detected NaN,"<<std::endl
                                     <<"    depth="<<depth<<", pos=("<<pos<<"),"<<std::endl
                                     <<"    *billboard_matrix="<<*billboard_matrix<<std::endl;
+            osg::notify(osg::DEBUG_INFO) << "    NodePath:" << std::endl;
+            for (NodePath::const_iterator i = getNodePath().begin(); i != getNodePath().end(); ++i)
+            {
+                osg::notify(osg::DEBUG_INFO) << "        \"" << (*i)->getName() << "\"" << std::endl;
+            }
         }
         else
         {        

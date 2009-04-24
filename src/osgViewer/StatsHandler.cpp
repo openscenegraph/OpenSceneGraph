@@ -183,7 +183,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                             break;
                     }
 
-
+                    aa.requestRedraw();
                 }
                 return true;
             }

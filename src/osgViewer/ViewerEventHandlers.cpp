@@ -100,6 +100,8 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
                 {
                     toggleFullscreen(*itr);
                 }
+
+                aa.requestRedraw();
                 return true;
             }
             else if (_changeWindowedResolution == true && ea.getKey() == _keyEventWindowedResolutionUp)
@@ -114,6 +116,8 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
                 {
                     changeWindowedResolution(*itr, true);
                 }
+
+                aa.requestRedraw();
                 return true;
             }
             else if (_changeWindowedResolution == true && ea.getKey() == _keyEventWindowedResolutionDown)
@@ -128,6 +132,8 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
                 {
                     changeWindowedResolution(*itr, false);
                 }
+
+                aa.requestRedraw();
                 return true;
             }
             break;
@@ -317,6 +323,7 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
 
             if (_changeThreadingModel == true && ea.getKey() == _keyEventChangeThreadingModel && delta > 1.0)
             {
+
                 _tickOrLastKeyPress = osg::Timer::instance()->tick();
 
                 switch(viewerBase->getThreadingModel())
@@ -348,6 +355,8 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
 #endif
                     break;
                 }
+
+                aa.requestRedraw();
                 return true;
             }
             if (viewer && _changeEndBarrierPosition == true && ea.getKey() == _keyEventChangeEndBarrierPosition)
@@ -363,6 +372,8 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
                     osg::notify(osg::NOTICE)<<"Threading model 'BeforeSwapBuffers' selected."<<std::endl;
                     break;
                 }
+
+                aa.requestRedraw();
                 return true;
             }
             break;
@@ -575,6 +586,8 @@ bool LODScaleHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
             {
                 camera->setLODScale(camera->getLODScale()*1.1);
                 osg::notify(osg::NOTICE)<<"LODScale = "<<camera->getLODScale()<<std::endl;
+
+                aa.requestRedraw();
                 return true;
             }
 
@@ -582,8 +595,10 @@ bool LODScaleHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
             {
                 camera->setLODScale(camera->getLODScale()/1.1);
                 osg::notify(osg::NOTICE)<<"LODScale = "<<camera->getLODScale()<<std::endl;
+
+                aa.requestRedraw();
                 return true;
-            }        
+            }
 
             break;
         }

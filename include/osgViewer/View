@@ -233,6 +233,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         osg::ref_ptr<osg::DisplaySettings>      _displaySettings;
         osgUtil::SceneView::FusionDistanceMode  _fusionDistanceMode;
         float                                   _fusionDistanceValue;
+
 };
 
 }

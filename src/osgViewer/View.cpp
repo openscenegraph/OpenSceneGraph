@@ -1696,10 +1696,12 @@ void View::assignSceneDataToCameras()
 
 void View::requestRedraw()
 {
+    getViewerBase()->_requestRedraw = true;
 }
 
-void View::requestContinuousUpdate(bool)
+void View::requestContinuousUpdate(bool flag)
 {
+    getViewerBase()->_requestContinousUpdate = flag;
 }
 
 void View::requestWarpPointer(float x,float y)

@@ -33,25 +33,24 @@ static osg::ApplicationUsageProxy ViewerBase_e0(osg::ApplicationUsage::ENVIRONME
 static osg::ApplicationUsageProxy ViewerBase_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_THREADING <value>","Set the threading model using by Viewer, <value> can be SingleThreaded, CullDrawThreadPerContext, DrawThreadPerContext or CullThreadPerCameraDrawThreadPerContext.");
 static osg::ApplicationUsageProxy ViewerBase_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_SCREEN <value>","Set the default screen that windows should open up on.");
 static osg::ApplicationUsageProxy ViewerBase_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_WINDOW x y width height","Set the default window dimensions that windows should open up on.");
-
+static osg::ApplicationUsageProxy ViewerBase_e4(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_RUN_FRAME_SCHEME","Frame rate manage scheme that viewer run should use,  ON_DEMAND or CONTINUOUS (default).");
+static osg::ApplicationUsageProxy ViewerBase_e5(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_RUN_MAX_FRAME_RATE","Set the maximum number of frame as second that viewer run. 0.0 is default and disables an frame rate capping.");
 
 using namespace osgViewer;
 
 ViewerBase::ViewerBase():
     osg::Object(true)
 {
-    _firstFrame = true;
-    _done = false;
-    _keyEventSetsDone = osgGA::GUIEventAdapter::KEY_Escape;
-    _quitEventSetsDone = true;
-    _releaseContextAtEndOfFrameHint = true;
-    _threadingModel = AutomaticSelection;
-    _threadsRunning = false;
-    _endBarrierPosition = AfterSwapBuffers;
+    viewerBaseInit();
 }
 
 ViewerBase::ViewerBase(const ViewerBase& base):
     osg::Object(true)
+{
+    viewerBaseInit();
+}
+
+void ViewerBase::viewerBaseInit()
 {
     _firstFrame = true;
     _done = false;
@@ -61,6 +60,24 @@ ViewerBase::ViewerBase(const ViewerBase& base):
     _threadingModel = AutomaticSelection;
     _threadsRunning = false;
     _endBarrierPosition = AfterSwapBuffers;
+    _requestRedraw = true;
+    _requestContinousUpdate = false;
+
+    _runFrameScheme = CONTINUOUS;
+    _runMaxFrameRate = 0.0f;
+
+    const char* str = getenv("OSG_RUN_FRAME_SCHEME");
+    if (str)
+    {
+        if      (strcmp(str, "ON_DEMAND")==0) _runFrameScheme = ON_DEMAND;
+        else if (strcmp(str, "CONTINUOUS")==0) _runFrameScheme = CONTINUOUS;
+    }
+
+    str = getenv("OSG_RUN_MAX_FRAME_RATE");
+    if (str)
+    {
+        _runMaxFrameRate = atof(str);
+    }
 }
 
 void ViewerBase::setThreadingModel(ThreadingModel threadingModel)
@@ -573,30 +590,28 @@ int ViewerBase::run()
         realize();
     }
 
-#if 0
-    while (!done())
-    {
-        frame();
-    }
-#else
-
     const char* str = getenv("OSG_RUN_FRAME_COUNT");
-    if (str)
+    int runTillFrameNumber = str==0 ? -1 : atoi(str);
+
+    while(!done() || (runTillFrameNumber>=0 && getViewerFrameStamp()->getFrameNumber()>runTillFrameNumber))
     {
-        int runTillFrameNumber = atoi(str);
-        while (!done() && getViewerFrameStamp()->getFrameNumber()<runTillFrameNumber)
+        double minFrameTime = _runMaxFrameRate>0.0 ? 1.0/_runMaxFrameRate : 0.0;
+        osg::Timer_t startFrameTick = osg::Timer::instance()->tick();
+        if (_runFrameScheme==ON_DEMAND)
+        {
+            if (checkNeedToDoFrame()) frame();
+        }
+        else
         {
             frame();
         }
+
+        // work out if we need to force a sleep to hold back the frame rate
+        osg::Timer_t endFrameTick = osg::Timer::instance()->tick();
+        double frameTime = osg::Timer::instance()->delta_s(startFrameTick, endFrameTick);
+        if (frameTime < minFrameTime) OpenThreads::Thread::microSleep(1000000.0*(minFrameTime-frameTime));
     }
-    else
-    {
-        while (!done())
-        {
-            frame();
-        }
-    }
-#endif    
+
     return 0;
 }
 
@@ -842,5 +857,7 @@ void ViewerBase::renderingTraversals()
         getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals end time ", endRenderingTraversals);
         getViewerStats()->setAttribute(frameStamp->getFrameNumber(), "Rendering traversals time taken", endRenderingTraversals-beginRenderingTraversals);
     }
+
+    _requestRedraw = false;
 }
 

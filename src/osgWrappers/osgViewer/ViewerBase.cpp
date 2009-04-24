@@ -46,6 +46,12 @@ BEGIN_ENUM_REFLECTOR(osgViewer::ViewerBase::BarrierPosition)
 	I_EnumLabel(osgViewer::ViewerBase::AfterSwapBuffers);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osgViewer::ViewerBase::FrameScheme)
+	I_DeclaringFile("osgViewer/ViewerBase");
+	I_EnumLabel(osgViewer::ViewerBase::ON_DEMAND);
+	I_EnumLabel(osgViewer::ViewerBase::CONTINUOUS);
+END_REFLECTOR
+
 TYPE_NAME_ALIAS(std::vector< osg::Camera * >, osgViewer::ViewerBase::Cameras)
 
 TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgViewer::ViewerBase::Contexts)
@@ -266,11 +272,36 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	          __void__checkWindowStatus,
 	          "Check to see if windows are still open, if not set viewer done to true. ",
 	          "");
+	I_Method1(void, setRunFrameScheme, IN, osgViewer::ViewerBase::FrameScheme, fs,
+	          Properties::NON_VIRTUAL,
+	          __void__setRunFrameScheme__FrameScheme,
+	          "",
+	          "");
+	I_Method0(osgViewer::ViewerBase::FrameScheme, getRunFrameScheme,
+	          Properties::NON_VIRTUAL,
+	          __FrameScheme__getRunFrameScheme,
+	          "",
+	          "");
+	I_Method1(void, setRunMaxFrameRate, IN, double, frameRate,
+	          Properties::NON_VIRTUAL,
+	          __void__setRunMaxFrameRate__double,
+	          "",
+	          "");
+	I_Method0(double, getRunMaxFrameRate,
+	          Properties::NON_VIRTUAL,
+	          __double__getRunMaxFrameRate,
+	          "",
+	          "");
 	I_Method0(int, run,
-	          Properties::PURE_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __int__run,
 	          "Execute a main frame loop. ",
 	          "Equivalent to while (!viewer.done()) viewer.frame(); Also calls realize() if the viewer is not already realized, and installs trackball manipulator if one is not already assigned. ");
+	I_Method0(bool, checkNeedToDoFrame,
+	          Properties::PURE_VIRTUAL,
+	          __bool__checkNeedToDoFrame,
+	          "check to see if the new frame is required, called by run(. ",
+	          ".) when FrameScheme is set to ON_DEMAND. ");
 	I_MethodWithDefaults1(void, frame, IN, double, simulationTime, USE_REFERENCE_TIME,
 	                      Properties::VIRTUAL,
 	                      __void__frame__double,
@@ -346,6 +377,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this viewer. ",
 	          "");
+	I_ProtectedMethod0(void, viewerBaseInit,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__viewerBaseInit,
+	                   "",
+	                   "");
 	I_ProtectedMethod1(void, makeCurrent, IN, osg::GraphicsContext *, gc,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -388,6 +425,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ViewerBase)
 	I_SimpleProperty(bool, ReleaseContextAtEndOfFrameHint, 
 	                 __bool__getReleaseContextAtEndOfFrameHint, 
 	                 __void__setReleaseContextAtEndOfFrameHint__bool);
+	I_SimpleProperty(osgViewer::ViewerBase::FrameScheme, RunFrameScheme, 
+	                 __FrameScheme__getRunFrameScheme, 
+	                 __void__setRunFrameScheme__FrameScheme);
+	I_SimpleProperty(double, RunMaxFrameRate, 
+	                 __double__getRunMaxFrameRate, 
+	                 __void__setRunMaxFrameRate__double);
 	I_SimpleProperty(osgViewer::ViewerBase::ThreadingModel, ThreadingModel, 
 	                 __ThreadingModel__getThreadingModel, 
 	                 __void__setThreadingModel__ThreadingModel);

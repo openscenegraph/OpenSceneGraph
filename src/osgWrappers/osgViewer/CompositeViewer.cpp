@@ -161,6 +161,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	          __int__run,
 	          "Execute a main frame loop. ",
 	          "Equivalent to while (!viewer.done()) viewer.frame(); Also calls realize() if the viewer is not already realized, and installs trackball manipulator if one is not already assigned. ");
+	I_Method0(bool, checkNeedToDoFrame,
+	          Properties::VIRTUAL,
+	          __bool__checkNeedToDoFrame,
+	          "check to see if the new frame is required, called by run(. ",
+	          ".) when FrameScheme is set to ON_DEMAND. ");
 	I_MethodWithDefaults1(void, advance, IN, double, simulationTime, USE_REFERENCE_TIME,
 	                      Properties::VIRTUAL,
 	                      __void__advance__double,

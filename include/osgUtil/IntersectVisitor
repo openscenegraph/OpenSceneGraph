@@ -89,7 +89,7 @@ class OSGUTIL_EXPORT Hit
 };
 
 
-/** Deprecated.*/
+/** Deprecated - use IntersectionVisitor instead.*/
 class OSGUTIL_EXPORT IntersectVisitor : public osg::NodeVisitor
 {
     public:

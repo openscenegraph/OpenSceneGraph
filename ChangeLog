@@ -1,3 +1,39 @@
+2009-04-24 20:14  robert
+
+	* src/osgWrappers/osgUtil/IntersectVisitor.cpp,
+	  src/osgWrappers/osgViewer/CompositeViewer.cpp,
+	  src/osgWrappers/osgViewer/Viewer.cpp,
+	  src/osgWrappers/osgViewer/ViewerBase.cpp: Updated wrappers
+
+2009-04-24 18:37  robert
+
+	* src/osgViewer/Viewer.cpp: Added checking of need to update.
+
+2009-04-24 17:51  robert
+
+	* include/osgUtil/IntersectVisitor: Added suggestion of
+	  IntersectionVisitor instead.
+
+2009-04-24 17:49  robert
+
+	* include/osgUtil/IntersectVisitor: Changed doxygen docs to say
+	  deprecated
+
+2009-04-24 16:20  robert
+
+	* include/osgViewer/CompositeViewer, include/osgViewer/View,
+	  include/osgViewer/Viewer, include/osgViewer/ViewerBase,
+	  src/osgViewer/CompositeViewer.cpp,
+	  src/osgViewer/StatsHandler.cpp, src/osgViewer/View.cpp,
+	  src/osgViewer/Viewer.cpp, src/osgViewer/ViewerBase.cpp,
+	  src/osgViewer/ViewerEventHandlers.cpp: Introduce new run frame
+	  rate management support to allow control of maximum frame rate
+	  and to support on demand rendering of frames
+
+2009-04-24 11:53  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2009-04-24 11:23  robert
 
 	* src/osgWrappers/osg/TextureRectangle.cpp: Updated wrappers

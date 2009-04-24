@@ -219,6 +219,7 @@ const char* invalidNames[] =
     "Vec3d",
     "Vec4ub",
     "Version",
+    "VertexData",
     "View",
     "Viewer",
     "ViewPoint",

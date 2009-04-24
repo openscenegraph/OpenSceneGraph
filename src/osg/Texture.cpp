@@ -19,6 +19,7 @@
 #include <osg/Timer>
 #include <osg/ApplicationUsage>
 #include <osg/FrameBufferObject>
+#include <osg/TextureRectangle>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
@@ -830,7 +831,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     }
 
     // integer texture are not supported by the shadow
-    if (extensions->isShadowSupported() && target == GL_TEXTURE_2D &&
+    if (extensions->isShadowSupported() && (target == GL_TEXTURE_2D || target == GL_TEXTURE_RECTANGLE) &&
         _internalFormatType != SIGNED_INTEGER && _internalFormatType != UNSIGNED_INTEGER)
     {
         if (_use_shadow_comparison)

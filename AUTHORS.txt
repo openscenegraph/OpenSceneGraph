@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.3
+OpenSceneGraph Library 2.9.4
 
-381 Contributors:
+383 Contributors:
 
 Firstname Surname
 -----------------
@@ -10,12 +10,12 @@ Marco Jez
 Paul Martz
 Mike Weiblen
 Stephan Huber
-Eric Wing
 Mathias Fröhlich
+Eric Wing
 Brede Johansen
 Geoff Michel
-Farshid Lashkari
 Bob Kuehne
+Farshid Lashkari
 Eric Sokolowsky
 Ulrich Hertlein
 Jean-Sebastien Guay
@@ -46,11 +46,12 @@ André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
+Jason Daly
 J.P. Delport
+Chris Hanson
 Sherman Wilcox
 Olaf Flebbe
 Mathieu Marache
-Jason Daly
 Gideon May
 Don Tidrow
 Romano José Magacho da Silva
@@ -59,7 +60,6 @@ Michael Gronager
 Joakim Simonsson
 David Spilling
 Daniel Sjölie
-Chris Hanson
 Alberto Luaces
 Bryan Thrall
 Serge Lages
@@ -91,6 +91,7 @@ Sukender
 Sasa Bistrovic
 Ravi Mathur
 Ralf Habacker
+Neil Hughes
 Neil Groves
 Martin Naylor
 Markus Trenkwalder
@@ -138,6 +139,7 @@ Vladimir Shabanov
 Uwe Woessner
 Tony Horrobin
 Sohey Yamamoto
+Santosh Gaikwad
 Rudolf Wiedemann
 Rafa Gaitan
 Phil Atkin
@@ -155,6 +157,7 @@ Garrett Potts
 Gabor Dorka
 Fabio Mierlo
 Fabien Lavignotte
+Erik den Dekker
 Doug McCorkle
 Donn Mielcarek
 Donald Cipperly
@@ -178,11 +181,9 @@ Stephan Eilemann
 Stanislav Blinov
 Sergey Leontyev
 Sebastian Messerschmidt
-Santosh Gaikwad
 Ralf Kern
 Pierre Haritchabalet
 Perry Miller
-Neil Hughes
 Nathan Monteleone
 Morné Pistorius
 Michael Henheffer
@@ -209,7 +210,6 @@ Gerrick Bivins
 George Tarantilis
 Ferdi Smit
 Ewe Woessner
-Erik den Dekker
 Edgar Ellis
 Don Leich
 David Ergo
@@ -266,6 +266,7 @@ Piotr Rak
 Philipp Siemoleit
 Philipp Mächler
 Petr Salinger
+Peter Amstutz
 Paul Palumbo
 Paul Obermeier
 Paul Fredrikson
@@ -318,7 +319,7 @@ John Donovan
 John Davis
 John Argentieri
 Joan Abadie
-Jeoen den Dekker
+Jeroen den Dekker
 Jean-Christophe Lombardo
 Jay Zuckerman
 Jason Howlett
@@ -341,6 +342,7 @@ Frank Lichtenheld
 Ferdinand Cornelissen
 Fabien Dachicourt
 Emmanuel Roche
+Eduardo Alberto
 Edmond Gheury
 Ed Ralston
 Duvan Cope

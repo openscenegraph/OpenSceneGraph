@@ -327,13 +327,19 @@ bool Viewer::checkNeedToDoFrame()
     if (_requestRedraw) return true;
     if (_requestContinousUpdate) return true;
 
+
     // If the database pager is going to update the scene the render flag is
     // set so that the updates show up
     if(getDatabasePager()->requiresUpdateSceneGraph() || getDatabasePager()->getRequestsInProgress()) return true;
 
+    // if there update callbacks then we need to do frame.
+    if (_camera->getUpdateCallback()) return true;
+    if (getSceneData()!=0 && getSceneData()->getNumChildrenRequiringUpdateTraversal()>0) return true;
+
     // now do a eventTraversal to see if any events might require a new frame.
     eventTraversal();
 
+    // now check if any of the event handles have prompted a redraw.
     if (_requestRedraw) return true;
     if (_requestContinousUpdate) return true;
 

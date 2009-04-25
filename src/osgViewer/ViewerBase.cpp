@@ -609,7 +609,7 @@ int ViewerBase::run()
         // work out if we need to force a sleep to hold back the frame rate
         osg::Timer_t endFrameTick = osg::Timer::instance()->tick();
         double frameTime = osg::Timer::instance()->delta_s(startFrameTick, endFrameTick);
-        if (frameTime < minFrameTime) OpenThreads::Thread::microSleep(1000000.0*(minFrameTime-frameTime));
+        if (frameTime < minFrameTime) OpenThreads::Thread::microSleep(static_cast<unsigned int>(1000000.0*(minFrameTime-frameTime)));
     }
 
     return 0;

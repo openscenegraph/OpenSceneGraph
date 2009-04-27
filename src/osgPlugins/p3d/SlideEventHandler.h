@@ -95,6 +95,9 @@ public:
 
     virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
 
+    /** Event traversal node callback method.*/
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
+
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
     
     virtual void getUsage(osg::ApplicationUsage& usage) const;

@@ -111,12 +111,12 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
             // add WGL extensions to the list
 
             typedef const char* WINAPI WGLGETEXTENSIONSSTRINGARB(HDC);
-            WGLGETEXTENSIONSSTRINGARB* wglGetExtensionsStringARB = 
-                (WGLGETEXTENSIONSSTRINGARB*)getGLExtensionFuncPtr("wglGetExtensionsStringARB");
+            WGLGETEXTENSIONSSTRINGARB* wglGetExtensionsStringARB = 0;
+            setGLExtensionsFuncPtr(wglGetExtensionsStringARB, "wglGetExtensionsStringARB");
 
             typedef const char* WINAPI WGLGETEXTENSIONSSTRINGEXT();
-            WGLGETEXTENSIONSSTRINGEXT* wglGetExtensionsStringEXT = 
-                (WGLGETEXTENSIONSSTRINGEXT*)getGLExtensionFuncPtr("wglGetExtensionsStringEXT");
+            WGLGETEXTENSIONSSTRINGEXT* wglGetExtensionsStringEXT = 0;
+            setGLExtensionsFuncPtr(wglGetExtensionsStringEXT, "wglGetExtensionsStringEXT");
 
             const char* wglextensions = 0;
 
@@ -312,7 +312,7 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
 {
 #if defined(WIN32)
 
-    return (void*)wglGetProcAddress(funcName);
+    return convertPointerType<void*, PROC>(wglGetProcAddress(funcName));
 
 #elif defined(__APPLE__)
 

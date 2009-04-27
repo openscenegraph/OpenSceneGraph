@@ -112,11 +112,11 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
 
             typedef const char* WINAPI WGLGETEXTENSIONSSTRINGARB(HDC);
             WGLGETEXTENSIONSSTRINGARB* wglGetExtensionsStringARB = 0;
-            setGLExtensionsFuncPtr(wglGetExtensionsStringARB, "wglGetExtensionsStringARB");
+            setGLExtensionFuncPtr(wglGetExtensionsStringARB, "wglGetExtensionsStringARB");
 
             typedef const char* WINAPI WGLGETEXTENSIONSSTRINGEXT();
             WGLGETEXTENSIONSSTRINGEXT* wglGetExtensionsStringEXT = 0;
-            setGLExtensionsFuncPtr(wglGetExtensionsStringEXT, "wglGetExtensionsStringEXT");
+            setGLExtensionFuncPtr(wglGetExtensionsStringEXT, "wglGetExtensionsStringEXT");
 
             const char* wglextensions = 0;
 

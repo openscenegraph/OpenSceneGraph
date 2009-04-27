@@ -774,20 +774,29 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
     osg::Image* image = osgDB::readImageFile(filename);
     
     if (!image) return;
-    
+
+    bool isImageTranslucent = false;
+
     osg::ImageStream* imageStream = dynamic_cast<osg::ImageStream*>(image);
     if (imageStream)
     {
         imageStream->setLoopingMode(imageData.loopingMode);
+
+        isImageTranslucent = imageStream->getPixelFormat()==GL_RGBA ||
+                             imageStream->getPixelFormat()==GL_BGRA;
+
     }
-    
-    
+    else
+    {
+        isImageTranslucent = image->isImageTranslucent();
+    }
+
     float s = image->s();
     float t = image->t();
-    
+
     // temporary hack
     float height = 0.0f;
-    
+
     float sx = imageData.region_in_pixel_coords ? 1.0f : s;
     float sy = imageData.region_in_pixel_coords ? 1.0f : t;
 
@@ -795,13 +804,13 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
     float y1 = imageData.region[1]*sy;
     float x2 = imageData.region[2]*sx;
     float y2 = imageData.region[3]*sy;
-    
+
     float aspectRatio = (y2-y1)/(x2-x1);
 
     float image_width = _slideWidth*positionData.scale.x();
     float image_height = image_width*aspectRatio*positionData.scale.y()/positionData.scale.x();
     float offset = height*image_height*0.1f;
-    
+
     osg::Vec3 pos = computePositionInModelCoords(positionData) + osg::Vec3(-image_width*0.5f+offset,-offset,-image_height*0.5f-offset);
 
     osg::Geode* picture = new osg::Geode;
@@ -821,6 +830,13 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         subgraph = attachMaterialAnimation(subgraph,positionData);
 
 
+    if (isImageTranslucent)
+    {
+        SetToTransparentBin sttb;
+        subgraph->accept(sttb);
+        pictureStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+    }
+
     // attached any rotation
     if (positionData.rotation[0]!=0.0)
     {
@@ -830,9 +846,9 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
             new osgUtil::TransformCallback(picture->getBound().center(),
                                            osg::Vec3(positionData.rotation[1],positionData.rotation[2],positionData.rotation[3]),
                                            osg::DegreesToRadians(positionData.rotation[0])));
-                                           
+
         animation_transform->addChild(subgraph);
-        
+
         subgraph = animation_transform;
     }
 
@@ -842,9 +858,9 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
     if (animation)
     {
         osg::notify(osg::INFO)<<"Have animation path for image"<<std::endl;
-        
+
         osg::Vec3 pivot = positionData.absolute_path ? osg::Vec3(0.0f,0.0f,0.0f) : subgraph->getBound().center();
-        
+
         osg::PositionAttitudeTransform* animation_transform = new osg::PositionAttitudeTransform;
         animation_transform->setDataVariance(osg::Object::DYNAMIC);
         animation_transform->setPivotPoint(pivot);
@@ -862,7 +878,6 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
     }
 
     _currentLayer->addChild(subgraph);
-    
 }
 
 void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, const ImageData& imageDataLeft, const std::string& filenameRight, const ImageData& imageDataRight,const PositionData& positionData)
@@ -872,19 +887,36 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
 
     osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(filenameLeft);
     osg::ref_ptr<osg::Image> imageRight = (filenameRight==filenameLeft) ? imageLeft.get() : osgDB::readImageFile(filenameRight);
-    
+
     if (!imageLeft && !imageRight) return;
-    
+
+    bool isImageTranslucent = false;
+
     osg::ImageStream* imageStreamLeft = dynamic_cast<osg::ImageStream*>(imageLeft.get());
     if (imageStreamLeft)
     {
         imageStreamLeft->setLoopingMode(imageDataLeft.loopingMode);
+        isImageTranslucent = imageStreamLeft->getPixelFormat()==GL_RGBA ||
+                             imageStreamLeft->getPixelFormat()==GL_BGRA;
+    }
+    else
+    {
+        isImageTranslucent = imageLeft->isImageTranslucent();
     }
 
     osg::ImageStream* imageStreamRight = dynamic_cast<osg::ImageStream*>(imageRight.get());
     if (imageStreamRight)
     {
         imageStreamRight->setLoopingMode(imageDataRight.loopingMode);
+        if (!isImageTranslucent)
+        {
+            isImageTranslucent = imageStreamRight->getPixelFormat()==GL_RGBA ||
+                                imageStreamRight->getPixelFormat()==GL_BGRA;
+        }
+    }
+    else if (!isImageTranslucent)
+    {
+        isImageTranslucent = imageRight->isImageTranslucent();
     }
 
 
@@ -921,12 +953,17 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
         osg::Geometry* pictureLeftQuad = createTexturedQuadGeometry(pos, positionData.rotate, image_width,image_height,imageLeft.get(),usedTextureRectangle);
         osg::StateSet* pictureLeftStateSet = pictureLeftQuad->getOrCreateStateSet();
 
+        if (isImageTranslucent)
+        {
+            pictureLeftStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+        }
+
 	attachTexMat(pictureLeftStateSet, imageDataLeft, s, t, usedTextureRectangle);
 
         pictureLeft->addDrawable(pictureLeftQuad);
 
     }
-    
+
     osg::Geode* pictureRight = new osg::Geode;
     {
         pictureRight->setNodeMask(0x02);
@@ -934,11 +971,16 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
         osg::Geometry* pictureRightQuad = createTexturedQuadGeometry(pos, positionData.rotate, image_width,image_height,imageRight.get(),usedTextureRectangle);
         osg::StateSet* pictureRightStateSet = pictureRightQuad->getOrCreateStateSet();
 
+        if (isImageTranslucent)
+        {
+            pictureRightStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
+        }
+
 	attachTexMat(pictureRightStateSet, imageDataRight, s, t, usedTextureRectangle);
 
         pictureRight->addDrawable(pictureRightQuad);
     }
-    
+
     osg::Group* subgraph = new osg::Group;
     subgraph->addChild(pictureLeft);
     subgraph->addChild(pictureRight);
@@ -947,6 +989,11 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     if (positionData.requiresMaterialAnimation())
         subgraph = attachMaterialAnimation(subgraph,positionData)->asGroup();
 
+    if (isImageTranslucent)
+    {
+        SetToTransparentBin sttb;
+        subgraph->accept(sttb);
+    }
 
     // attached any rotation
     if (positionData.rotation[0]!=0.0)

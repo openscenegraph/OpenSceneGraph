@@ -632,7 +632,7 @@ SlideEventHandler::SlideEventHandler(osgViewer::Viewer* viewer):
     _updateOpacityActive(false),
     _previousX(0), _previousY(0),
     _cursorOn(true),
-    _releaseAndCompileOnEachNewSlide(true),
+    _releaseAndCompileOnEachNewSlide(false),
     _firstSlideOrLayerChange(true),
     _tickAtFirstSlideOrLayerChange(0),
     _tickAtLastSlideOrLayerChange(0),
@@ -728,6 +728,25 @@ double SlideEventHandler::getCurrentTimeDelayBetweenSlides() const
     return _timePerSlide;
 }
 
+
+void SlideEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
+{
+    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+    if (ev)
+    {
+        if (node->getNumChildrenRequiringEventTraversal()>0) traverse(node,nv);
+
+        if (ev->getActionAdapter() && !ev->getEvents().empty())
+        {
+            for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
+                itr != ev->getEvents().end();
+                ++itr)
+            {
+                handleWithCheckAgainstIgnoreHandledEventsMask(*(*itr), *(ev->getActionAdapter()), node, nv);
+            }
+        }
+    }
+}
 
 bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
 {

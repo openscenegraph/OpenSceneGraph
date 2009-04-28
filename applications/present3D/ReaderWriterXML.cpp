@@ -112,22 +112,22 @@ public:
     virtual ReadResult readNode(const std::string& fileName,
                                 const osgDB::ReaderWriter::Options* options) const;
 
-    void parseModel(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
+    void parseModel(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
 
-    void parseVolume(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
+    void parseVolume(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
 
-    void parseStereoPair(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
+    void parseStereoPair(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
 
-    void parseLayer(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
+    void parseLayer(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
  
-    void parseBullets(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool inheritPreviousLayers, bool defineAsBaseLayer) const;
-    void parseText(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool inheritPreviousLayers, bool defineAsBaseLayer) const;
+    void parseBullets(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool inheritPreviousLayers, bool defineAsBaseLayer) const;
+    void parseText(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool inheritPreviousLayers, bool defineAsBaseLayer) const;
 
-    void parsePage (SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
+    void parsePage (osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
     
-    void parseSlide (SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool parseTitles=true, bool parseLayers=true) const;
+    void parseSlide (osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool parseTitles=true, bool parseLayers=true) const;
 
-    void parsePdfDocument (SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
+    void parsePdfDocument (osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const;
 
     osg::Vec4 mapStringToColor(const std::string& str) const
     {
@@ -175,14 +175,14 @@ public:
     bool getProperty(xmlNodePtr cur, const char* token, osgText::Text::Layout& value) const;
     bool getProperty(xmlNodePtr cur, const char* token, osgText::Text::AlignmentType& value) const;
     
-    bool getProperties(xmlNodePtr cur, SlideShowConstructor::PositionData& value) const;
-    bool getProperties(xmlNodePtr cur, SlideShowConstructor::FontData& value) const;
-    bool getProperties(xmlNodePtr cur, SlideShowConstructor::ModelData& value) const;
-    bool getProperties(xmlNodePtr cur, SlideShowConstructor::ImageData& value) const;
+    bool getProperties(xmlNodePtr cur, osgPresentation::SlideShowConstructor::PositionData& value) const;
+    bool getProperties(xmlNodePtr cur, osgPresentation::SlideShowConstructor::FontData& value) const;
+    bool getProperties(xmlNodePtr cur, osgPresentation::SlideShowConstructor::ModelData& value) const;
+    bool getProperties(xmlNodePtr cur, osgPresentation::SlideShowConstructor::ImageData& value) const;
     bool getJumpProperties(xmlNodePtr cur, bool& relativeJump, int& slideNum, int& layerNum) const;
  
-    bool getKeyPositionInner(xmlDocPtr doc, xmlNodePtr cur, SlideShowConstructor::KeyPosition& keyPosition) const;
-    bool getKeyPosition(xmlDocPtr doc, xmlNodePtr cur, SlideShowConstructor::KeyPosition& keyPosition) const;
+    bool getKeyPositionInner(xmlDocPtr doc, xmlNodePtr cur, osgPresentation::KeyPosition& keyPosition) const;
+    bool getKeyPosition(xmlDocPtr doc, xmlNodePtr cur, osgPresentation::KeyPosition& keyPosition) const;
 
     typedef std::map<std::string,osg::Vec4> ColorMap;
     typedef std::map<std::string,osgText::Text::Layout> LayoutMap;
@@ -444,7 +444,7 @@ bool ReaderWriterP3DXML::getProperty(xmlNodePtr cur, const char* token, osgText:
     return success;
 }
 
-bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, SlideShowConstructor::PositionData& value) const
+bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, osgPresentation::SlideShowConstructor::PositionData& value) const
 {
     bool propertiesRead=false;    
 
@@ -461,14 +461,14 @@ bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, SlideShowConstructor::Pos
     {
         propertiesRead = true;
 
-        if (str=="model") value.frame = SlideShowConstructor::MODEL;
-        else if (str=="slide") value.frame = SlideShowConstructor::SLIDE;
+        if (str=="model") value.frame = osgPresentation::SlideShowConstructor::MODEL;
+        else if (str=="slide") value.frame = osgPresentation::SlideShowConstructor::SLIDE;
         else osg::notify(_notifyLevel)<<"Parser error - coordinate_frame=\""<<str<<"\" unrecongonized value"<<std::endl;
         
-        osg::notify(_notifyLevel)<<"read coordinate_frame "<< ((value.frame==SlideShowConstructor::MODEL) ? "SlideShowConstructor::MODEL" : "SlideShowConstructor::SLIDE")<<std::endl;
+        osg::notify(_notifyLevel)<<"read coordinate_frame "<< ((value.frame==osgPresentation::SlideShowConstructor::MODEL) ? "osgPresentation::SlideShowConstructor::MODEL" : "osgPresentation::SlideShowConstructor::SLIDE")<<std::endl;
     }
 
-    if (value.frame==SlideShowConstructor::SLIDE)
+    if (value.frame==osgPresentation::SlideShowConstructor::SLIDE)
     {
         
         if (getProperty(cur, "position", str))
@@ -491,7 +491,7 @@ bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, SlideShowConstructor::Pos
             else osg::notify(_notifyLevel)<<"Read position="<<value.position<<std::endl;
         }
     }
-    else // value.frame==SlideShowConstructor::MODEL
+    else // value.frame==osgPresentation::SlideShowConstructor::MODEL
     {
 
         if (getProperty(cur, "position", str))
@@ -686,7 +686,7 @@ bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, SlideShowConstructor::Pos
     return propertiesRead;
 }
 
-bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, SlideShowConstructor::FontData& value) const
+bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, osgPresentation::SlideShowConstructor::FontData& value) const
 {
     bool propertiesRead=false;    
     
@@ -721,7 +721,7 @@ bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, SlideShowConstructor::Fon
     return propertiesRead;
 }
 
-bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, SlideShowConstructor::ModelData& value) const
+bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, osgPresentation::SlideShowConstructor::ModelData& value) const
 {
     bool propertiesRead=false;    
     
@@ -736,7 +736,7 @@ bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, SlideShowConstructor::Mod
     return propertiesRead;
 }
 
-bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, SlideShowConstructor::ImageData& value) const
+bool ReaderWriterP3DXML::getProperties(xmlNodePtr cur, osgPresentation::SlideShowConstructor::ImageData& value) const
 {
     bool propertiesRead=false;    
     
@@ -839,13 +839,13 @@ bool ReaderWriterP3DXML::getJumpProperties(xmlNodePtr cur, bool& relativeJump, i
     return propertyRead;
 }
 
-void ReaderWriterP3DXML::parseModel(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
+void ReaderWriterP3DXML::parseModel(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
 {
 
-    SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
+    osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
    bool positionRead = getProperties(cur,positionData);
 
-    SlideShowConstructor::ModelData modelData;// = constructor.getModelData();
+    osgPresentation::SlideShowConstructor::ModelData modelData;// = constructor.getModelData();
     getProperties(cur,modelData);
 
     std::string filename;
@@ -862,10 +862,10 @@ void ReaderWriterP3DXML::parseModel(SlideShowConstructor& constructor, xmlDocPtr
 
 }
 
-void ReaderWriterP3DXML::parseVolume(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
+void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
 {
 
-    SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
+    osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
     bool positionRead = getProperties(cur,positionData);
 
     std::string filename;
@@ -880,16 +880,16 @@ void ReaderWriterP3DXML::parseVolume(SlideShowConstructor& constructor, xmlDocPt
     }
 }
 
-void ReaderWriterP3DXML::parseStereoPair(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
+void ReaderWriterP3DXML::parseStereoPair(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
 {
     std::string filenameLeft;
     std::string filenameRight;
 
-    SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
+    osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
     bool positionRead = getProperties(cur,positionData);
 
-    SlideShowConstructor::ImageData imageDataLeft;// = constructor.getImageData();
-    SlideShowConstructor::ImageData imageDataRight;// = constructor.getImageData();
+    osgPresentation::SlideShowConstructor::ImageData imageDataLeft;// = constructor.getImageData();
+    osgPresentation::SlideShowConstructor::ImageData imageDataRight;// = constructor.getImageData();
 
     xmlChar *key;
     cur = cur->xmlChildrenNode;
@@ -925,7 +925,7 @@ void ReaderWriterP3DXML::parseStereoPair(SlideShowConstructor& constructor, xmlD
 
 }
 
-bool ReaderWriterP3DXML::getKeyPosition(xmlDocPtr doc, xmlNodePtr cur, SlideShowConstructor::KeyPosition& keyPosition) const
+bool ReaderWriterP3DXML::getKeyPosition(xmlDocPtr doc, xmlNodePtr cur, osgPresentation::KeyPosition& keyPosition) const
 {
     if ((!xmlStrcmp(cur->name, (const xmlChar *)"key")))
     {
@@ -941,7 +941,7 @@ bool ReaderWriterP3DXML::getKeyPosition(xmlDocPtr doc, xmlNodePtr cur, SlideShow
     return false;
 }
 
-bool ReaderWriterP3DXML::getKeyPositionInner(xmlDocPtr doc, xmlNodePtr cur, SlideShowConstructor::KeyPosition& keyPosition) const
+bool ReaderWriterP3DXML::getKeyPositionInner(xmlDocPtr doc, xmlNodePtr cur, osgPresentation::KeyPosition& keyPosition) const
 {
     // x in range -1 to 1, from left to right
     float x = FLT_MAX;
@@ -995,10 +995,10 @@ bool ReaderWriterP3DXML::getKeyPositionInner(xmlDocPtr doc, xmlNodePtr cur, Slid
 
 
 
-void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
+void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
 {
     // create a keyPosition just in case we need it.
-    SlideShowConstructor::KeyPosition keyPosition;
+    osgPresentation::KeyPosition keyPosition;
 
     osg::notify(osg::INFO)<<std::endl<<"parseLayer"<<std::endl;
 
@@ -1043,7 +1043,7 @@ void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr
             if (key) 
             {
                 osg::notify(osg::INFO)<<"click_to_run ["<<(const char*)key<<"]"<<std::endl;
-                constructor.layerClickToDoOperation((const char*)key,SlideShowConstructor::RUN, relativeJump, slideNum, layerNum);
+                constructor.layerClickToDoOperation((const char*)key,osgPresentation::RUN, relativeJump, slideNum, layerNum);
             }
             xmlFree(key);
         }
@@ -1058,7 +1058,7 @@ void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr
             if (key) 
             {
                 osg::notify(osg::INFO)<<"click_to_load ["<<(const char*)key<<"]"<<std::endl;
-                constructor.layerClickToDoOperation((const char*)key,SlideShowConstructor::LOAD, relativeJump, slideNum, layerNum);
+                constructor.layerClickToDoOperation((const char*)key,osgPresentation::LOAD, relativeJump, slideNum, layerNum);
             }
             xmlFree(key);
         }
@@ -1084,7 +1084,7 @@ void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr
             int layerNum = 0;
             getJumpProperties(cur, relativeJump, slideNum, layerNum);
 
-            constructor.layerClickEventOperation(SlideShowConstructor::JUMP, relativeJump, slideNum, layerNum);
+            constructor.layerClickEventOperation(osgPresentation::JUMP, relativeJump, slideNum, layerNum);
         }
 
         else if ((!xmlStrcmp(cur->name, (const xmlChar *)"newline")))
@@ -1109,10 +1109,10 @@ void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr
             if (key) 
             {
                  osg::notify(osg::INFO)<<"bullet ["<<(const char*)key<<"]"<<std::endl;
-                SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
+                osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
                 bool positionRead = getProperties(cur,positionData);
 
-                SlideShowConstructor::FontData fontData = constructor.getTextFontData();
+                osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTextFontData();
                 bool fontRead = getProperties(cur,fontData);
 
                 constructor.addBullet((const char*)key, 
@@ -1126,10 +1126,10 @@ void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             if (key) 
             {
-                SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
+                osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
                 bool positionRead = getProperties(cur,positionData);
 
-                SlideShowConstructor::FontData fontData = constructor.getTextFontData();
+                osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTextFontData();
                 bool fontRead = getProperties(cur,fontData);
 
                 constructor.addParagraph((const char*)key, 
@@ -1144,10 +1144,10 @@ void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             if (key) 
             {
-                SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
+                osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
                 bool positionRead = getProperties(cur,positionData);
 
-                SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
+                osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
                 getProperties(cur,imageData);
 
                 constructor.addImage((const char*)key, 
@@ -1161,10 +1161,10 @@ void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             if (key) 
             {
-                SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
+                osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
                 bool positionRead = getProperties(cur,positionData);
 
-                SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
+                osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
                 getProperties(cur,imageData);
 
                 constructor.addVNC((const char*)key, 
@@ -1178,10 +1178,10 @@ void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             if (key) 
             {
-                SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
+                osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
                 bool positionRead = getProperties(cur,positionData);
 
-                SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
+                osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
                 getProperties(cur,imageData);
 
                 constructor.addBrowser((const char*)key, 
@@ -1195,10 +1195,10 @@ void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr
             key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
             if (key) 
             {
-                SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
+                osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
                 bool positionRead = getProperties(cur,positionData);
 
-                SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
+                osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
                 getProperties(cur,imageData);
 
                 constructor.addPDF((const char*)key, 
@@ -1238,7 +1238,7 @@ void ReaderWriterP3DXML::parseLayer(SlideShowConstructor& constructor, xmlDocPtr
 
 }
 
-void ReaderWriterP3DXML::parseBullets(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool inheritPreviousLayers, bool defineAsBaseLayer) const
+void ReaderWriterP3DXML::parseBullets(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool inheritPreviousLayers, bool defineAsBaseLayer) const
 {
     xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
     if (key) 
@@ -1246,10 +1246,10 @@ void ReaderWriterP3DXML::parseBullets(SlideShowConstructor& constructor, xmlDocP
         constructor.addLayer(inheritPreviousLayers, defineAsBaseLayer);
 
         osg::notify(osg::INFO)<<"bullets ["<<(const char*)key<<"]"<<std::endl;
-        SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
+        osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
         bool positionRead = getProperties(cur,positionData);
 
-        SlideShowConstructor::FontData fontData = constructor.getTextFontData();
+        osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTextFontData();
         bool fontRead = getProperties(cur,fontData);
 
         constructor.addBullet((const char*)key,
@@ -1260,7 +1260,7 @@ void ReaderWriterP3DXML::parseBullets(SlideShowConstructor& constructor, xmlDocP
 }
 
 
-void ReaderWriterP3DXML::parseText(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool inheritPreviousLayers, bool defineAsBaseLayer) const
+void ReaderWriterP3DXML::parseText(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool inheritPreviousLayers, bool defineAsBaseLayer) const
 {
     xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
     if (key) 
@@ -1268,10 +1268,10 @@ void ReaderWriterP3DXML::parseText(SlideShowConstructor& constructor, xmlDocPtr 
         constructor.addLayer(inheritPreviousLayers, defineAsBaseLayer);
 
         osg::notify(osg::INFO)<<"text ["<<(const char*)key<<"]"<<std::endl;
-        SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
+        osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
         bool positionRead = getProperties(cur,positionData);
 
-        SlideShowConstructor::FontData fontData = constructor.getTextFontData();
+        osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTextFontData();
         bool fontRead = getProperties(cur,fontData);
 
         constructor.addParagraph((const char*)key,
@@ -1281,7 +1281,7 @@ void ReaderWriterP3DXML::parseText(SlideShowConstructor& constructor, xmlDocPtr 
     xmlFree(key);
 }
 
-void ReaderWriterP3DXML::parsePage(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
+void ReaderWriterP3DXML::parsePage(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
 {
     xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
     if (key) 
@@ -1313,10 +1313,10 @@ void ReaderWriterP3DXML::parsePage(SlideShowConstructor& constructor, xmlDocPtr 
 
         constructor.addLayer(true,false);
 
-        SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
+        osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
         bool positionRead = getProperties(cur,positionData);
 
-        SlideShowConstructor::FontData fontData = constructor.getTextFontData();
+        osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTextFontData();
         bool fontRead = getProperties(cur,fontData);
 
         constructor.addParagraph((const char*)key,
@@ -1326,7 +1326,7 @@ void ReaderWriterP3DXML::parsePage(SlideShowConstructor& constructor, xmlDocPtr 
     xmlFree(key);
 }
 
-void ReaderWriterP3DXML::parsePdfDocument(SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
+void ReaderWriterP3DXML::parsePdfDocument(osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur) const
 {
     xmlChar *key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
     if (key) 
@@ -1359,10 +1359,10 @@ void ReaderWriterP3DXML::parsePdfDocument(SlideShowConstructor& constructor, xml
 
         constructor.addLayer(true,false);
 
-        SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
-        bool positionRead = getProperties(cur,positionData);
+        osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
+        getProperties(cur,positionData);
 
-        SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
+        osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
         imageData.page = 0;
         getProperties(cur,imageData);
 
@@ -1410,14 +1410,14 @@ void ReaderWriterP3DXML::parsePdfDocument(SlideShowConstructor& constructor, xml
     xmlFree(key);
 }
 
-void ReaderWriterP3DXML::parseSlide (SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool parseTitles, bool parseLayers) const
+void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& constructor, xmlDocPtr doc, xmlNodePtr cur, bool parseTitles, bool parseLayers) const
 {
 
     osg::Vec4 previous_bgcolor = constructor.getBackgroundColor();
     osg::Vec4 previous_textcolor = constructor.getTextColor();
 
     // create a keyPosition just in case we need it.
-    SlideShowConstructor::KeyPosition keyPosition;
+    osgPresentation::KeyPosition keyPosition;
 
     xmlChar *key;
     cur = cur->xmlChildrenNode;
@@ -1431,10 +1431,10 @@ void ReaderWriterP3DXML::parseSlide (SlideShowConstructor& constructor, xmlDocPt
 
                 if (key)
                 {
-                    SlideShowConstructor::PositionData positionData = constructor.getTitlePositionData();
+                    osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getTitlePositionData();
                     bool positionRead = getProperties(cur,positionData);
 
-                    SlideShowConstructor::FontData fontData = constructor.getTitleFontData();
+                    osgPresentation::SlideShowConstructor::FontData fontData = constructor.getTitleFontData();
                     bool fontRead = getProperties(cur,fontData);
 
                     constructor.setSlideTitle((const char*)key,
@@ -1533,7 +1533,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     // create a keyPosition just in case we need it.
-    SlideShowConstructor::KeyPosition keyPosition;
+    osgPresentation::KeyPosition keyPosition;
 
     xmlDocPtr doc;
     xmlNodePtr cur;
@@ -1559,7 +1559,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
             return ReadResult::FILE_NOT_HANDLED;
     }
 
-    SlideShowConstructor constructor;
+    osgPresentation::SlideShowConstructor constructor;
           
     osgDB::FilePathList previousPaths = osgDB::getDataFilePathList();
           

@@ -50,6 +50,8 @@
 #include "AnimationMaterial.h"
 #include "PickEventHandler.h"
 
+using namespace osgPresentation;
+
 class SetToTransparentBin : public osg::NodeVisitor
 {
 public:
@@ -84,28 +86,6 @@ public:
     }        
 };
 
-void SlideShowConstructor::LayerAttributes::callEnterCallbacks(osg::Node* node)
-{
-    osg::notify(osg::INFO)<<"SlideShowConstructor::LayerAttributes::callEnterCallbacks("<<node<<")"<<std::endl;
-    for(LayerCallbacks::iterator itr = _enterLayerCallbacks.begin();
-        itr != _enterLayerCallbacks.end();
-        ++itr)
-    {
-        (*(*itr))(node);
-    }
-}
-
-void SlideShowConstructor::LayerAttributes::callLeaveCallbacks(osg::Node* node)
-{
-    osg::notify(osg::INFO)<<"SlideShowConstructor::LayerAttributes::callLeaveCallbacks("<<node<<")"<<std::endl;
-    for(LayerCallbacks::iterator itr = _leaveLayerCallbacks.begin();
-        itr != _leaveLayerCallbacks.end();
-        ++itr)
-    {
-        (*(*itr))(node);
-    }
-}
-        
 SlideShowConstructor::SlideShowConstructor()
 {
     _slideDistance = osg::DisplaySettings::instance()->getScreenDistance();
@@ -208,7 +188,7 @@ void SlideShowConstructor::createPresentation()
     if (_autoSteppingActive) _root->addDescription("auto");
 }
 
-SlideShowConstructor::LayerAttributes* SlideShowConstructor::getOrCreateLayerAttributes(osg::Node* node)
+LayerAttributes* SlideShowConstructor::getOrCreateLayerAttributes(osg::Node* node)
 {
     LayerAttributes* la = dynamic_cast<LayerAttributes*>(node->getUserData());
     if (!la)
@@ -294,7 +274,7 @@ void SlideShowConstructor::selectSlide(int slideNum)
     {        
         addSlide();
     }
-    else if (slideNum>=_presentationSwitch->getNumChildren())
+    else if (slideNum>=static_cast<int>(_presentationSwitch->getNumChildren()))
     {
         addSlide();
     }
@@ -435,7 +415,7 @@ void SlideShowConstructor::selectLayer(int layerNum)
         addSlide();
         addLayer();
     }
-    else if (layerNum>=0 && layerNum<_slide->getNumChildren() && _slide->getChild(layerNum)->asGroup())
+    else if (layerNum>=0 && layerNum<static_cast<int>(_slide->getNumChildren()) && _slide->getChild(layerNum)->asGroup())
     {
         _currentLayer = _slide->getChild(layerNum)->asGroup();
         _previousLayer = _currentLayer;
@@ -516,7 +496,7 @@ void SlideShowConstructor::layerClickToDoOperation(const std::string& command, O
 }
 
 
-void SlideShowConstructor::layerClickEventOperation(const SlideShowConstructor::KeyPosition& keyPos, bool relativeJump, int slideNum, int layerNum)
+void SlideShowConstructor::layerClickEventOperation(const KeyPosition& keyPos, bool relativeJump, int slideNum, int layerNum)
 {
     if (!_currentLayer) addLayer();
     
@@ -1075,7 +1055,7 @@ void SlideShowConstructor::addPDF(const std::string& filename, const PositionDat
     addInteractiveImage(filename, positionData, imageData);
 }
 
-class SetPageCallback: public SlideShowConstructor::LayerCallback
+class SetPageCallback: public LayerCallback
 {
 public:
     SetPageCallback(osgWidget::PdfImage* pdfImage, int pageNum):
@@ -1444,7 +1424,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
 
 void SlideShowConstructor::addVolume(const std::string& filename, const PositionData& positionData)
 {
-    osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
+    // osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
 
     std::string foundFile = filename;
 

@@ -75,7 +75,7 @@ bool p3d::readEnvVars(osg::ArgumentParser& arguments)
 {
     bool readVars = false;
 
-    for(unsigned int i=1; i<arguments.argc(); ++i)
+    for(int i=1; i<arguments.argc(); ++i)
     {
         if (!arguments.isOption(i))
         {

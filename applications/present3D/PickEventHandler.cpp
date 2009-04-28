@@ -17,7 +17,9 @@
 #include <osg/Notify>
 #include <osgDB/FileUtils>
 
-PickEventHandler::PickEventHandler(SlideShowConstructor::Operation operation,bool relativeJump, int slideNum, int layerNum):
+using namespace osgPresentation;
+
+PickEventHandler::PickEventHandler(osgPresentation::Operation operation,bool relativeJump, int slideNum, int layerNum):
     _operation(operation),
     _relativeJump(relativeJump),
     _slideNum(slideNum),
@@ -25,7 +27,7 @@ PickEventHandler::PickEventHandler(SlideShowConstructor::Operation operation,boo
 {
 }
 
-PickEventHandler::PickEventHandler(const std::string& str, SlideShowConstructor::Operation operation,bool relativeJump, int slideNum, int layerNum):
+PickEventHandler::PickEventHandler(const std::string& str, osgPresentation::Operation operation,bool relativeJump, int slideNum, int layerNum):
     _command(str),
     _operation(operation),
     _relativeJump(relativeJump),
@@ -34,9 +36,9 @@ PickEventHandler::PickEventHandler(const std::string& str, SlideShowConstructor:
 {
 }
 
-PickEventHandler::PickEventHandler(const SlideShowConstructor::KeyPosition& keyPos,bool relativeJump, int slideNum, int layerNum):
+PickEventHandler::PickEventHandler(const osgPresentation::KeyPosition& keyPos,bool relativeJump, int slideNum, int layerNum):
     _keyPos(keyPos),
-    _operation(SlideShowConstructor::EVENT),
+    _operation(osgPresentation::EVENT),
     _relativeJump(relativeJump),
     _slideNum(slideNum),
     _layerNum(layerNum)
@@ -114,13 +116,12 @@ void PickEventHandler::doOperation()
 {
     switch(_operation)
     {
-        case(SlideShowConstructor::RUN):
+        case(osgPresentation::RUN):
         {
             osg::notify(osg::NOTICE)<<"Run "<<_command<<std::endl;
-            
-            
+
+#if 0
             osgDB::FilePathList& paths = osgDB::getDataFilePathList();
-#if 0            
             if (!paths.empty())
             {
             #ifdef _WIN32            
@@ -164,15 +165,20 @@ void PickEventHandler::doOperation()
 
             break;
         }
-        case(SlideShowConstructor::LOAD):
+        case(osgPresentation::LOAD):
         {
             osg::notify(osg::NOTICE)<<"Load "<<_command<<std::endl;
             break;
         }
-        case(SlideShowConstructor::EVENT):
+        case(osgPresentation::EVENT):
         {
             osg::notify(osg::INFO)<<"Event "<<_keyPos._key<<" "<<_keyPos._x<<" "<<_keyPos._y<<std::endl;
             if (SlideEventHandler::instance()) SlideEventHandler::instance()->dispatchEvent(_keyPos);
+            break;
+        }
+        case(osgPresentation::JUMP):
+        {
+            osg::notify(osg::NOTICE)<<"Requires jump "<<std::endl;
             break;
         }
     }

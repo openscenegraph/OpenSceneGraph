@@ -29,10 +29,34 @@
 
 #include <iostream>
 
+using namespace osgPresentation;
 
 static osg::observer_ptr<SlideEventHandler> s_seh;
 
 SlideEventHandler* SlideEventHandler::instance() { return s_seh.get(); }
+
+void LayerAttributes::callEnterCallbacks(osg::Node* node)
+{
+    osg::notify(osg::INFO)<<"LayerAttributes::callEnterCallbacks("<<node<<")"<<std::endl;
+    for(LayerCallbacks::iterator itr = _enterLayerCallbacks.begin();
+        itr != _enterLayerCallbacks.end();
+        ++itr)
+    {
+        (*(*itr))(node);
+    }
+}
+
+void LayerAttributes::callLeaveCallbacks(osg::Node* node)
+{
+    osg::notify(osg::INFO)<<"LayerAttributes::callLeaveCallbacks("<<node<<")"<<std::endl;
+    for(LayerCallbacks::iterator itr = _leaveLayerCallbacks.begin();
+        itr != _leaveLayerCallbacks.end();
+        ++itr)
+    {
+        (*(*itr))(node);
+    }
+}
+
 
 struct ImageStreamOperator : public ObjectOperator
 {
@@ -159,7 +183,7 @@ struct CallbackOperator : public ObjectOperator
 
 struct LayerAttributesOperator : public ObjectOperator
 {
-    LayerAttributesOperator(osg::Node* node, SlideShowConstructor::LayerAttributes* la):
+    LayerAttributesOperator(osg::Node* node, LayerAttributes* la):
         _node(node),
         _layerAttribute(la)
     {
@@ -175,7 +199,7 @@ struct LayerAttributesOperator : public ObjectOperator
         {
             osg::notify(osg::INFO)<<"applyKeys {"<<std::endl;
 
-            for(SlideShowConstructor::LayerAttributes::Keys::iterator itr = _layerAttribute->_keys.begin();
+            for(LayerAttributes::Keys::iterator itr = _layerAttribute->_keys.begin();
                 itr != _layerAttribute->_keys.end();
                 ++itr)
             {
@@ -186,7 +210,7 @@ struct LayerAttributesOperator : public ObjectOperator
         }   
         if (!_layerAttribute->_runStrings.empty())
         {
-            for(SlideShowConstructor::LayerAttributes::RunStrings::iterator itr = _layerAttribute->_runStrings.begin();
+            for(LayerAttributes::RunStrings::iterator itr = _layerAttribute->_runStrings.begin();
                 itr != _layerAttribute->_runStrings.end();
                 ++itr)
             {
@@ -232,7 +256,7 @@ struct LayerAttributesOperator : public ObjectOperator
 
 
     osg::ref_ptr<osg::Node>                             _node;
-    osg::ref_ptr<SlideShowConstructor::LayerAttributes> _layerAttribute;
+    osg::ref_ptr<LayerAttributes> _layerAttribute;
 };
 
 
@@ -252,7 +276,7 @@ public:
             _operatorList.insert(new CallbackOperator(&node, node.getUpdateCallback()));
 	}
 
-        SlideShowConstructor::LayerAttributes* la = dynamic_cast<SlideShowConstructor::LayerAttributes*>(node.getUserData());
+        LayerAttributes* la = dynamic_cast<LayerAttributes*>(node.getUserData());
         if (la)
         {
             _operatorList.insert(new LayerAttributesOperator(&node, la));
@@ -409,7 +433,7 @@ public:
         
     void apply(osg::Node& node)
     {
-        SlideShowConstructor::HomePosition* homePosition = dynamic_cast<SlideShowConstructor::HomePosition*>(node.getUserData());
+        HomePosition* homePosition = dynamic_cast<HomePosition*>(node.getUserData());
         if (homePosition)
         {
             _homePosition = homePosition;
@@ -418,7 +442,7 @@ public:
         traverse(node);
     }
         
-    osg::ref_ptr<SlideShowConstructor::HomePosition> _homePosition;
+    osg::ref_ptr<HomePosition> _homePosition;
         
 };
 
@@ -457,7 +481,7 @@ public:
         
     void apply(osg::Node& node)
     {
-        SlideShowConstructor::FilePathData* fdd = dynamic_cast<SlideShowConstructor::FilePathData*>(node.getUserData());
+        FilePathData* fdd = dynamic_cast<FilePathData*>(node.getUserData());
         if (fdd) 
         {
             osg::notify(osg::INFO)<<"Recorded FilePathData"<<std::endl;
@@ -645,7 +669,7 @@ SlideEventHandler::SlideEventHandler(osgViewer::Viewer* viewer):
 
 double SlideEventHandler::getDuration(const osg::Node* node) const
 {
-    const SlideShowConstructor::LayerAttributes* la = dynamic_cast<const SlideShowConstructor::LayerAttributes*>(node->getUserData());
+    const LayerAttributes* la = dynamic_cast<const LayerAttributes*>(node->getUserData());
     return la ? la->_duration : -1.0;
 }
 
@@ -1091,7 +1115,7 @@ bool SlideEventHandler::previousLayerOrSlide()
 
 bool SlideEventHandler::nextSlide()
 {
-    SlideShowConstructor::LayerAttributes* la = _slideSwitch.valid() ? dynamic_cast<SlideShowConstructor::LayerAttributes*>(_slideSwitch->getUserData()) : 0;
+    LayerAttributes* la = _slideSwitch.valid() ? dynamic_cast<LayerAttributes*>(_slideSwitch->getUserData()) : 0;
     if (la && la->requiresJump())
     {
         if (la->getRelativeJump())
@@ -1135,7 +1159,7 @@ bool SlideEventHandler::previousSlide()
 
 bool SlideEventHandler::nextLayer()
 {
-    SlideShowConstructor::LayerAttributes* la = (_slideSwitch.valid() && _activeLayer>=0) ? dynamic_cast<SlideShowConstructor::LayerAttributes*>(_slideSwitch->getChild(_activeLayer)->getUserData()) : 0;
+    LayerAttributes* la = (_slideSwitch.valid() && _activeLayer>=0) ? dynamic_cast<LayerAttributes*>(_slideSwitch->getChild(_activeLayer)->getUserData()) : 0;
     if (la)
     {
         la->callLeaveCallbacks(_slideSwitch->getChild(_activeLayer));
@@ -1265,7 +1289,7 @@ void SlideEventHandler::releaseSlide(unsigned int slideNum)
     _presentationSwitch->getChild(slideNum)->accept(globjVisitor);
 }
 
-void SlideEventHandler::dispatchEvent(const SlideShowConstructor::KeyPosition& keyPosition)
+void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
 {
     osg::notify(osg::INFO)<<" keyPosition._key "<<keyPosition._key<<" "<<keyPosition._x<<" "<<keyPosition._y<<std::endl;
 

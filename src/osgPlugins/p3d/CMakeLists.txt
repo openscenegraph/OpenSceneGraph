@@ -17,7 +17,7 @@ SET(TARGET_H
     CompileSlideCallback.h
 )
 
-SET(TARGET_ADDED_LIBRARIES osgVolume)
+SET(TARGET_ADDED_LIBRARIES osgVolume osgViewer)
 
 #### end var setup  ###
 SETUP_PLUGIN(p3d)

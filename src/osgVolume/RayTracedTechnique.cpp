@@ -173,8 +173,12 @@ void RayTracedTechnique::init()
         }
 
 
+        bool enableBlending = false;
+
         if (shadingModel==MaximumIntensityProjection)
         {
+            enableBlending = true;
+
             if (tf)
             {
                 osg::Texture1D* texture1D = new osg::Texture1D;
@@ -259,6 +263,8 @@ void RayTracedTechnique::init()
         } 
         else if (shadingModel==Light)
         {
+            enableBlending = true;
+
             if (tf)
             {
                 osg::Texture1D* texture1D = new osg::Texture1D;
@@ -301,10 +307,12 @@ void RayTracedTechnique::init()
         }
         else
         {
+            enableBlending = true;
+
             if (tf)
             {
                 osg::notify(osg::NOTICE)<<"Setting up TF path"<<std::endl;
-            
+
                 osg::Texture1D* texture1D = new osg::Texture1D;
                 texture1D->setImage(tf->getImage());    
                 texture1D->setResizeNonPowerOfTwoHint(false);
@@ -329,7 +337,7 @@ void RayTracedTechnique::init()
 
             }
             else
-            {    
+            {
 
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume.frag");
                 if (fragmentShader)
@@ -360,6 +368,13 @@ void RayTracedTechnique::init()
             stateset->addUniform(cpv._afProperty->getUniform());
         else
             stateset->addUniform(new osg::Uniform("AlphaFuncValue",alphaFuncValue));
+
+
+        if (enableBlending)
+        {
+            stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+            stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+        }
 
 
         stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON);

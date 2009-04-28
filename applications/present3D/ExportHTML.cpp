@@ -82,7 +82,7 @@ std::string ExportHTML::createFileName(const std::string& basename, unsigned int
     else return createString(basename,'_', page, ext);
 }
 
-bool ExportHTML::write(SlideEventHandler* seh, osgViewer::Viewer& viewer, const std::string& filename)
+bool ExportHTML::write(osgPresentation::SlideEventHandler* seh, osgViewer::Viewer& viewer, const std::string& filename)
 {
     std::string image_basename;
     std::string image_ext;
@@ -179,7 +179,7 @@ bool ExportHTML::write(SlideEventHandler* seh, osgViewer::Viewer& viewer, const 
         }
         // wait for all cull and draw threads to complete.
 
-        seh->selectSlide(i, SlideEventHandler::LAST_POSITION);
+        seh->selectSlide(i, osgPresentation::SlideEventHandler::LAST_POSITION);
 
         // fire off the cull and draw traversals of the scene.
         viewer.frame();

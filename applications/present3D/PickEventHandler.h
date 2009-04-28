@@ -18,24 +18,27 @@
 
 #include <osgGA/GUIEventHandler>
 
-#include "SlideShowConstructor.h"
+#include "SlideEventHandler.h"
+
+namespace osgPresentation
+{
 
 class PickEventHandler : public osgGA::GUIEventHandler
 {
     public:
 
-        PickEventHandler(SlideShowConstructor::Operation operation, bool relativeJump=true, int slideNum=0, int layerNum=0);
-        PickEventHandler(const std::string& str, SlideShowConstructor::Operation operation, bool relativeJump=true, int slideNum=0, int layerNum=0);
-        PickEventHandler(const SlideShowConstructor::KeyPosition& keyPos, bool relativeJump=true, int slideNum=0, int layerNum=0);
+        PickEventHandler(osgPresentation::Operation operation, bool relativeJump=true, int slideNum=0, int layerNum=0);
+        PickEventHandler(const std::string& str, osgPresentation::Operation operation, bool relativeJump=true, int slideNum=0, int layerNum=0);
+        PickEventHandler(const osgPresentation::KeyPosition& keyPos, bool relativeJump=true, int slideNum=0, int layerNum=0);
         
-        void setOperation(SlideShowConstructor::Operation operation) { _operation = operation; }
-        SlideShowConstructor::Operation getOperation() const { return _operation; }
+        void setOperation(osgPresentation::Operation operation) { _operation = operation; }
+        osgPresentation::Operation getOperation() const { return _operation; }
         
         void setCommand(const std::string& str) { _command = str; }
         const std::string& getCommand() const { return _command; }
     
-        void setKeyPosition(const SlideShowConstructor::KeyPosition& keyPos) { _keyPos = keyPos; }
-        const SlideShowConstructor::KeyPosition&  getKeyPosition() const { return _keyPos; }
+        void setKeyPosition(const osgPresentation::KeyPosition& keyPos) { _keyPos = keyPos; }
+        const osgPresentation::KeyPosition&  getKeyPosition() const { return _keyPos; }
         
         void setRelativeJump(int slideDelta, int layerDelta);
         void setAbsoluteJump(int slideNum, int layerNum);
@@ -55,12 +58,14 @@ class PickEventHandler : public osgGA::GUIEventHandler
         void doOperation();
         
         std::string                         _command;
-        SlideShowConstructor::KeyPosition   _keyPos;
-        SlideShowConstructor::Operation     _operation;
+        osgPresentation::KeyPosition        _keyPos;
+        osgPresentation::Operation          _operation;
         
         bool                                _relativeJump;
         int                                 _slideNum;
         int                                 _layerNum;
 };
+
+}
 
 #endif

@@ -59,7 +59,7 @@ static const char* s_version = "1.3";
 void setViewer(osgViewer::Viewer& viewer, float width, float height, float distance)
 {
     double vfov = osg::RadiansToDegrees(atan2(height/2.0f,distance)*2.0);
-    double hfov = osg::RadiansToDegrees(atan2(width/2.0f,distance)*2.0);
+    // double hfov = osg::RadiansToDegrees(atan2(width/2.0f,distance)*2.0);
 
     viewer.getCamera()->setProjectionMatrixAsPerspective( vfov, width/height, 0.1, 1000.0);
 }
@@ -160,7 +160,7 @@ enum P3DApplicationType
 {
     VIEWER,
     MASTER,
-    SLAVE,
+    SLAVE
 };
 
 
@@ -321,7 +321,7 @@ int main( int argc, char **argv )
     while (arguments.read("--loop")) loopPresentation = true;
 
     // register the slide event handler - which moves the presentation from slide to slide, layer to layer.
-    SlideEventHandler* seh = new SlideEventHandler(&viewer);
+    osgPresentation::SlideEventHandler* seh = new osgPresentation::SlideEventHandler(&viewer);
     viewer.addEventHandler(seh);
 
     seh->setAutoSteppingActive(autoSteppingActive);

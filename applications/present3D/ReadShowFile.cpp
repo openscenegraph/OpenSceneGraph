@@ -24,8 +24,7 @@
 
 #include <osgVolume/VolumeTile>
 
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
+#include <osgDB/XmlParser>
 
 #include <string.h>
 
@@ -107,10 +106,14 @@ bool p3d::readEnvVars(const std::string& fileName)
         !osgDB::equalCaseInsensitive(ext,"p3d")) return false;
         
         
-    xmlDocPtr doc;
-    xmlNodePtr cur;
+    osg::ref_ptr<osgDB::XmlNode> doc = new osgDB::XmlNode;
+    osgDB::XmlNode* root = 0;
 
-    doc = xmlParseFile(fileName.c_str());
+    osgDB::XmlNode::Input input;
+    input.open(fileName);
+    input.readAllDataIntoBuffer();
+
+    doc->read(input);
 
     if (doc == NULL )
     {
@@ -118,50 +121,43 @@ bool p3d::readEnvVars(const std::string& fileName)
             return false;
     }
 
-     cur = xmlDocGetRootElement(doc);
-
-     if (cur == NULL)
-     {
-            fprintf(stderr,"empty document\n");
-            xmlFreeDoc(doc);
-            return false;
+    for(osgDB::XmlNode::Children::iterator itr = doc->children.begin();
+        itr != doc->children.end() && !root;
+        ++itr)
+    {
+        if ((*itr)->name=="presentation") root = itr->get();
     }
 
-     if (xmlStrcmp(cur->name, (const xmlChar *) "presentation"))
-     {
-            fprintf(stderr,"document of the wrong type, root node != presentation");
-            xmlFreeDoc(doc);
-            return false;
+    if (root == NULL)
+    {
+        fprintf(stderr,"empty document\n");
+        return false;
     }
-    
+
+    if (root->name!="presentation")
+    {
+        fprintf(stderr,"document of the wrong type, root node != presentation");
+        return false;
+    }
+
     bool readVars = false;
     
-    xmlChar *key;
-    cur = cur->xmlChildrenNode;
-    while (cur != NULL) {
+    for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
+        itr != root->children.end();
+        ++itr)
+    {
+        osgDB::XmlNode* cur = itr->get();
 
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"env")))
+        if (cur->name=="env")
         {
-            key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
-            if (key)
-            {
-                char* str = strdup((char*)key);
-                osg::notify(osg::INFO)<<"putenv("<<str<<")"<<std::endl;
-                putenv(str);
-                readVars = true;
-            }
-            xmlFree(key);
+            char* str = strdup(cur->contents.c_str());
+            osg::notify(osg::INFO)<<"putenv("<<str<<")"<<std::endl;
+            putenv(str);
+            readVars = true;
         }
-        cur = cur->next;
     }
 
- #ifndef __APPLE__
-    
-    xmlFreeDoc(doc);
-    
- #endif
-    
-     return readVars;
+    return readVars;
 }
 
 osg::Node* p3d::readHoldingSlide(const std::string& filename)

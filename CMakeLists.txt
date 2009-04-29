@@ -325,7 +325,6 @@ FIND_PACKAGE(OurDCMTK)
 FIND_PACKAGE(OpenAL)
 FIND_PACKAGE(XUL)
 FIND_PACKAGE(FFmpeg)
-FIND_PACKAGE(LibXml2)
 
 #use pkg-config to find various modues
 INCLUDE(FindPkgConfig OPTIONAL)

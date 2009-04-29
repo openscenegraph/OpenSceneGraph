@@ -20,7 +20,117 @@
 #include <osgViewer/Viewer>
 
 #include "CompileSlideCallback.h"
-#include "SlideShowConstructor.h"
+
+namespace osgPresentation
+{
+
+/// Operations related to click to run/load/key events.
+enum Operation
+{
+    RUN,
+    LOAD,
+    EVENT,
+    JUMP
+};
+
+struct HomePosition : public virtual osg::Referenced
+{
+    HomePosition() {}
+
+    HomePosition(const osg::Vec3& in_eye, const osg::Vec3& in_center, const osg::Vec3& in_up):
+        eye(in_eye),
+        center(in_center),
+        up(in_up) {}
+
+    osg::Vec3   eye;
+    osg::Vec3   center;
+    osg::Vec3   up;
+};
+
+struct KeyPosition
+{
+    KeyPosition(unsigned int key=0, float x=FLT_MAX, float y=FLT_MAX):
+        _key((osgGA::GUIEventAdapter::KeySymbol)key),
+        _x(x),
+        _y(y) {}
+
+
+    void set(unsigned int key=0, float x=FLT_MAX, float y=FLT_MAX)
+    {
+        _key = (osgGA::GUIEventAdapter::KeySymbol)key;
+        _x = x;
+        _y = y;
+    }
+
+    osgGA::GUIEventAdapter::KeySymbol _key;
+    float        _x;
+    float        _y;
+};
+
+struct LayerCallback : public virtual osg::Referenced
+{
+    virtual void operator() (osg::Node* node) const = 0;
+};
+
+struct LayerAttributes : public virtual osg::Referenced
+{
+    LayerAttributes():_duration(0),_relativeJump(true),_slideNum(0),_layerNum(0) {}
+    LayerAttributes(double in_duration):_duration(in_duration),_relativeJump(true),_slideNum(0),_layerNum(0) {}
+
+    void setDuration(double duration) { _duration = duration; }
+    double getDuration() const { return _duration; }
+
+    typedef std::vector<KeyPosition> Keys;
+    typedef std::vector<std::string> RunStrings;
+
+    void setKeys(const Keys& keys) { _keys = keys; }
+    const Keys& getKeys() const { return _keys; }
+
+    void addKey(const KeyPosition& kp) { _keys.push_back(kp); }
+
+    void setRunStrings(const RunStrings& runStrings) { _runStrings = runStrings; }
+    const RunStrings& getRunStrings() const { return _runStrings; }
+
+    void addRunString(const std::string& runString) { _runStrings.push_back(runString); }
+
+    void setJump(bool relativeJump, int slideNum, int layerNum)
+    {
+        _relativeJump = relativeJump;
+        _slideNum = slideNum;
+        _layerNum = layerNum;
+    }
+
+    bool getRelativeJump() const { return _relativeJump; }
+    int getSlideNum() const { return _slideNum; }
+    int getLayerNum() const { return _layerNum; }
+
+    bool requiresJump() const { return _relativeJump ? (_slideNum!=0 || _layerNum!=0) : true; }
+
+    double  _duration;
+    Keys    _keys;
+    RunStrings _runStrings;
+
+    bool                                _relativeJump;
+    int                                 _slideNum;
+    int                                 _layerNum;
+
+    void addEnterCallback(LayerCallback* lc) { _enterLayerCallbacks.push_back(lc); }
+    void addLeaveCallback(LayerCallback* lc) { _leaveLayerCallbacks.push_back(lc); }
+
+    void callEnterCallbacks(osg::Node* node);
+    void callLeaveCallbacks(osg::Node* node);
+
+    typedef std::list< osg::ref_ptr<LayerCallback> > LayerCallbacks;
+    LayerCallbacks _enterLayerCallbacks;
+    LayerCallbacks _leaveLayerCallbacks;
+};
+
+struct FilePathData : public virtual osg::Referenced
+{
+    FilePathData(const osgDB::FilePathList& fpl):filePathList(fpl) {}
+
+    osgDB::FilePathList filePathList;
+};
 
 
 struct dereference_less
@@ -95,9 +205,6 @@ public:
 
     virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
 
-    /** Event traversal node callback method.*/
-    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
-
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
     
     virtual void getUsage(osg::ApplicationUsage& usage) const;
@@ -151,7 +258,7 @@ public:
     void setLoopPresentation(bool loop) { _loopPresentation = loop; }
     bool getLoopPresentation() const { return _loopPresentation; }
     
-    void dispatchEvent(const SlideShowConstructor::KeyPosition& keyPosition);
+    void dispatchEvent(const KeyPosition& keyPosition);
 
     enum ObjectMask
     {
@@ -173,13 +280,13 @@ protected:
 
     osg::observer_ptr<osgViewer::Viewer>    _viewer;
     
-    osg::observer_ptr<osg::Switch>          _showSwitch;
+    osg::ref_ptr<osg::Switch>               _showSwitch;
     unsigned int                            _activePresentation;
     
-    osg::observer_ptr<osg::Switch>          _presentationSwitch;
+    osg::ref_ptr<osg::Switch>               _presentationSwitch;
     unsigned int                            _activeSlide;
 
-    osg::observer_ptr<osg::Switch>          _slideSwitch;
+    osg::ref_ptr<osg::Switch>               _slideSwitch;
     unsigned int                            _activeLayer;
 
     bool                                    _firstTraversal;
@@ -214,5 +321,7 @@ protected:
     void updateOperators();
         
 };
+
+}
 
 #endif

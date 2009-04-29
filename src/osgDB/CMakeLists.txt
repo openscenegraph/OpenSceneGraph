@@ -46,6 +46,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/SharedStateManager
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/WriteFile
+    ${HEADER_PATH}/XmlParser
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
@@ -77,6 +78,7 @@ ADD_LIBRARY(${LIB_NAME}
     SharedStateManager.cpp
     Version.cpp
     WriteFile.cpp
+    XmlParser.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 

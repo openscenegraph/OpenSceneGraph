@@ -1561,11 +1561,14 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
 
 
     osgDB::getDataFilePathList() = previousPaths;
+    
 
-    return constructor.takePresentation();
-    /*
-    std::cout<<"readSlide="<<readSlide<<std::endl;
-    std::cout<<"node="<<node<<std::endl;
-    return node;*/
+    osg::ref_ptr<osg::Node> presentation_node = constructor.takePresentation();
+
+    osgPresentation::SlideEventHandler* seh = new osgPresentation::SlideEventHandler;
+    seh->set(presentation_node.get());
+    presentation_node->setEventCallback(seh);
+
+    return presentation_node.release();
 }
 

@@ -205,6 +205,9 @@ public:
 
     virtual void accept(osgGA::GUIEventHandlerVisitor& v) { v.visit(*this); }
 
+    /** Event traversal node callback method.*/
+    virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
+
     virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&);
     
     virtual void getUsage(osg::ApplicationUsage& usage) const;
@@ -280,13 +283,13 @@ protected:
 
     osg::observer_ptr<osgViewer::Viewer>    _viewer;
     
-    osg::ref_ptr<osg::Switch>               _showSwitch;
+    osg::observer_ptr<osg::Switch>          _showSwitch;
     unsigned int                            _activePresentation;
     
-    osg::ref_ptr<osg::Switch>               _presentationSwitch;
+    osg::observer_ptr<osg::Switch>          _presentationSwitch;
     unsigned int                            _activeSlide;
 
-    osg::ref_ptr<osg::Switch>               _slideSwitch;
+    osg::observer_ptr<osg::Switch>          _slideSwitch;
     unsigned int                            _activeLayer;
 
     bool                                    _firstTraversal;

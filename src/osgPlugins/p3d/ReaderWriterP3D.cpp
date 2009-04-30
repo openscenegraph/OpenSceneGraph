@@ -111,6 +111,10 @@ public:
     virtual ReadResult readNode(const std::string& fileName,
                                 const osgDB::ReaderWriter::Options* options) const;
 
+    virtual ReadResult readNode(std::istream& fin, const Options* options) const;
+
+    ReadResult readNode(osgDB::XmlNode::Input& input, const osgDB::ReaderWriter::Options* options) const;
+
     void parseModel(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
     void parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
@@ -1384,14 +1388,31 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
 osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& file,
                                                            const osgDB::ReaderWriter::Options* options) const
 {
-
-    bool readOnlyHoldingPage = options ? options->getOptionString()=="holding_slide" : false;
-
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
     std::string fileName = osgDB::findDataFile( file );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+    osgDB::XmlNode::Input input;
+    input.open(fileName);
+    input.readAllDataIntoBuffer();
+
+    return readNode(input, options);
+}
+
+osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, const Options* options) const
+{
+    osgDB::XmlNode::Input input;
+    input.attach(fin);
+    input.readAllDataIntoBuffer();
+
+    return readNode(input, options);
+}
+
+osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Input& input, const osgDB::ReaderWriter::Options* options) const
+{
+    bool readOnlyHoldingPage = options ? options->getOptionString()=="holding_slide" : false;
 
     // create a keyPosition just in case we need it.
     osgPresentation::KeyPosition keyPosition;
@@ -1399,9 +1420,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
     osg::ref_ptr<osgDB::XmlNode> doc = new osgDB::XmlNode;
     osgDB::XmlNode* root = 0;
 
-    osgDB::XmlNode::Input input;
-    input.open(fileName);
-    input.readAllDataIntoBuffer();
 
     doc->read(input);
 

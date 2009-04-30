@@ -1696,12 +1696,26 @@ void View::assignSceneDataToCameras()
 
 void View::requestRedraw()
 {
-    getViewerBase()->_requestRedraw = true;
+    if (getViewerBase())
+    {
+        getViewerBase()->_requestRedraw = true;
+    }
+    else
+    {
+        osg::notify(osg::INFO)<<"View::requestRedraw(), No viewer base has been assigned yet."<<std::endl;
+    }
 }
 
 void View::requestContinuousUpdate(bool flag)
 {
-    getViewerBase()->_requestContinousUpdate = flag;
+    if (getViewerBase())
+    {
+        getViewerBase()->_requestContinousUpdate = flag;
+    }
+    else
+    {
+        osg::notify(osg::INFO)<<"View::requestContinuousUpdate(), No viewer base has been assigned yet."<<std::endl;
+    }
 }
 
 void View::requestWarpPointer(float x,float y)

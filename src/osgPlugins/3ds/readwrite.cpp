@@ -373,7 +373,7 @@ Lib3dsBool
 lib3ds_intb_write(Lib3dsIntb b, iostream *strm)
 {
   ASSERT(strm);
-  strm->write((const char*)b,1);
+  strm->write((const char*)&b,1);
   if (strm->fail()) {
     return(LIB3DS_FALSE);
   }

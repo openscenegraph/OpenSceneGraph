@@ -34,7 +34,7 @@ inline XmlNode* readXmlFile(const std::string& filename)
 extern OSGDB_EXPORT XmlNode* readXmlStream(std::istream& fin);
 
 /** XmlNode class for very basic reading and writing of xml files.*/
-class XmlNode : public osg::Referenced
+class OSGDB_EXPORT XmlNode : public osg::Referenced
 {
     public:
 
@@ -62,7 +62,7 @@ class XmlNode : public osg::Referenced
 
     public:
 
-        class Input
+        class OSGDB_EXPORT Input
         {
             public:
 

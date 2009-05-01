@@ -87,7 +87,7 @@ namespace osgDB
 #define OSGDB_FILENAME_TO_STRING(s) osgDB::convertUTF16toUTF8(s)
 #define OSGDB_FILENAME_TEXT(x) L ## x
 #define OSGDB_WINDOWS_FUNCT(x) x ## W
-#define OSGDB_WINDOWS_FUNCT_STRING(x) L ## #x L"W"
+#define OSGDB_WINDOWS_FUNCT_STRING(x) #x "W"
 typedef wchar_t filenamechar;
 typedef std::wstring filenamestring;
 #else
@@ -663,7 +663,7 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
             if( pGetModuleHandleEx )
             {
                 HMODULE thisModule = 0;
-                static char static_variable = 0;    // Variable that is located in DLL address space.
+                static filenamechar static_variable = 0;    // Variable that is located in DLL address space.
 
                 if( pGetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, &static_variable, &thisModule) )
                 {

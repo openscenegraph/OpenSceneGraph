@@ -214,7 +214,7 @@ void DataConverter::read(CameraPacket& cameraPacket)
         _swapBytes = !_swapBytes;
     }
 
-    cameraPacket._masterKilled = readUInt();
+    cameraPacket._masterKilled = bool(readUInt());
 
     read(cameraPacket._matrix);
     read(cameraPacket._frameStamp);
@@ -513,8 +513,8 @@ void Broadcaster::sync( void )
 #if defined (WIN32) && !defined(__CYGWIN__)
     unsigned int size = sizeof( SOCKADDR_IN );
     sendto( _so, (const char *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );
-    int err = WSAGetLastError ();
-    int *dum = (int*) _buffer;
+    // int err = WSAGetLastError ();
+    // int *dum = (int*) _buffer;
 #else
     unsigned int size = sizeof( struct sockaddr_in );
     sendto( _so, (const void *)_buffer, _buffer_size, 0, (struct sockaddr *)&saddr, size );

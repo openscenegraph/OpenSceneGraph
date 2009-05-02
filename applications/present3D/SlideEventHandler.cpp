@@ -733,7 +733,7 @@ double SlideEventHandler::getCurrentTimeDelayBetweenSlides() const
     if (_slideSwitch.valid())
     {
         double duration = -1.0;
-        if (_activeLayer<_slideSwitch->getNumChildren())
+        if (_activeLayer<static_cast<int>(_slideSwitch->getNumChildren()))
         {
             duration = getDuration(_slideSwitch->getChild(_activeLayer));
         }
@@ -991,7 +991,7 @@ unsigned int SlideEventHandler::getNumSlides()
 }
 
 
-bool SlideEventHandler::selectSlide(unsigned int slideNum,unsigned int layerNum)
+bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 {
     if (!_presentationSwitch) return false;
 
@@ -1002,7 +1002,7 @@ bool SlideEventHandler::selectSlide(unsigned int slideNum,unsigned int layerNum)
         slideNum = _presentationSwitch->getNumChildren()-1;
     }
     
-    if (slideNum>=_presentationSwitch->getNumChildren()) return false;
+    if (slideNum>=static_cast<int>(_presentationSwitch->getNumChildren())) return false;
 
 
     osg::Timer_t tick = osg::Timer::instance()->tick();
@@ -1080,7 +1080,7 @@ bool SlideEventHandler::selectSlide(unsigned int slideNum,unsigned int layerNum)
     
 }
 
-bool SlideEventHandler::selectLayer(unsigned int layerNum)
+bool SlideEventHandler::selectLayer(int layerNum)
 {
     if (!_slideSwitch) return false;
 
@@ -1089,7 +1089,7 @@ bool SlideEventHandler::selectLayer(unsigned int layerNum)
         layerNum = _slideSwitch->getNumChildren()-1;
     }
 
-    if (layerNum>=_slideSwitch->getNumChildren()) return false;
+    if (layerNum>=static_cast<int>(_slideSwitch->getNumChildren())) return false;
     
     _activeLayer = layerNum;
     _slideSwitch->setSingleChildOn(_activeLayer);

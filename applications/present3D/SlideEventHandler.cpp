@@ -656,7 +656,7 @@ SlideEventHandler::SlideEventHandler(osgViewer::Viewer* viewer):
     _updateOpacityActive(false),
     _previousX(0), _previousY(0),
     _cursorOn(true),
-    _releaseAndCompileOnEachNewSlide(true),
+    _releaseAndCompileOnEachNewSlide(false),
     _firstSlideOrLayerChange(true),
     _tickAtFirstSlideOrLayerChange(0),
     _tickAtLastSlideOrLayerChange(0),
@@ -701,7 +701,7 @@ void SlideEventHandler::set(osg::Node* model)
             _timePerSlide = duration;
         }
         
-        selectSlide(0);
+        //selectSlide(0);
     }
     else
     {
@@ -718,7 +718,7 @@ void SlideEventHandler::set(osg::Node* model)
             osg::notify(osg::INFO)<<"Found presentation slide"<<findSlide._switch->getName()<<std::endl;
 
             _slideSwitch = findSlide._switch;
-            selectLayer(0);
+            //selectLayer(0);
         }
         else
         {
@@ -753,8 +753,38 @@ double SlideEventHandler::getCurrentTimeDelayBetweenSlides() const
 }
 
 
+void SlideEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
+{
+    osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+    if (ev)
+    {
+        if (node->getNumChildrenRequiringEventTraversal()>0) traverse(node,nv);
+
+        if (ev->getActionAdapter() && !ev->getEvents().empty())
+        {
+            for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
+                itr != ev->getEvents().end();
+                ++itr)
+            {
+                handleWithCheckAgainstIgnoreHandledEventsMask(*(*itr), *(ev->getActionAdapter()), node, nv);
+            }
+        }
+    }
+}
+
 bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
 {
+
+    if (!_viewer)
+    {
+        _viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
+        selectSlide(0);
+        home();
+        osg::notify(osg::NOTICE)<<"Assigned viewer. to SlideEventHandler"<<std::endl;
+    }
+    // else  osg::notify(osg::NOTICE)<<"SlideEventHandler::handle()"<<std::endl;
+
+
     if (ea.getHandled()) return false;
 
     switch(ea.getEventType())
@@ -1201,8 +1231,11 @@ void SlideEventHandler::updateOperators()
     _activeOperators.collect(_slideSwitch.get());
     _activeOperators.process();
 
-    UpdateLightVisitor uav(_viewer->getCamera()->getViewMatrix(),0.0f,0.0f);
-    _viewer->getSceneData()->accept(uav);
+    if (_viewer.valid())
+    {
+        UpdateLightVisitor uav(_viewer->getCamera()->getViewMatrix(),0.0f,0.0f);
+        _viewer->getSceneData()->accept(uav);
+    }
 }
 
 bool SlideEventHandler::home(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)

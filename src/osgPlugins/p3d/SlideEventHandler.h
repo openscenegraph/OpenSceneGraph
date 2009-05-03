@@ -217,7 +217,7 @@ public:
     enum WhichPosition
     {
         FIRST_POSITION = 0,
-        LAST_POSITION = 0xffffffff
+        LAST_POSITION = -1
     };
 
     void compileSlide(unsigned int slideNum);
@@ -225,11 +225,11 @@ public:
 
     unsigned int getNumSlides();
     
-    unsigned int getActiveSlide() const { return _activeSlide; }
-    unsigned int getActiveLayer() const { return _activeLayer; }
+    int getActiveSlide() const { return _activeSlide; }
+    int getActiveLayer() const { return _activeLayer; }
 
-    bool selectSlide(unsigned int slideNum,unsigned int layerNum=FIRST_POSITION);
-    bool selectLayer(unsigned int layerNum);
+    bool selectSlide(int slideNum,int layerNum=FIRST_POSITION);
+    bool selectLayer(int layerNum);
 
     bool nextLayerOrSlide();
     bool previousLayerOrSlide();
@@ -284,13 +284,13 @@ protected:
     osg::observer_ptr<osgViewer::Viewer>    _viewer;
     
     osg::observer_ptr<osg::Switch>          _showSwitch;
-    unsigned int                            _activePresentation;
+    int                                     _activePresentation;
     
     osg::observer_ptr<osg::Switch>          _presentationSwitch;
-    unsigned int                            _activeSlide;
+    int                                     _activeSlide;
 
     osg::observer_ptr<osg::Switch>          _slideSwitch;
-    unsigned int                            _activeLayer;
+    int                                     _activeLayer;
 
     bool                                    _firstTraversal;
     double                                  _previousTime;

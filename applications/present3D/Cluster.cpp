@@ -214,7 +214,7 @@ void DataConverter::read(CameraPacket& cameraPacket)
         _swapBytes = !_swapBytes;
     }
 
-    cameraPacket._masterKilled = bool(readUInt());
+    cameraPacket._masterKilled = readUInt()!=0;
 
     read(cameraPacket._matrix);
     read(cameraPacket._frameStamp);
@@ -355,8 +355,8 @@ void Receiver::sync( void )
 //    saddr.sin_port   = htons( _port );
     recvfrom( _so, (char *)_buffer, _buffer_size, 0, (sockaddr*)&saddr, &size );
 //    recvfrom(sock_Receive, szMessage, 256, 0, (sockaddr*)&addr_Cli, &clilen)
-    int err = WSAGetLastError ();
-    int *dum = (int*) _buffer;
+    //int err = WSAGetLastError ();
+    //int *dum = (int*) _buffer;
 
     while( select( _so+1, &fdset, 0L, 0L, &tv ) )
     {

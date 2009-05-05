@@ -51,21 +51,38 @@ enum ShadingModel
 
 void RayTracedTechnique::init()
 {
-    osg::notify(osg::NOTICE)<<"RayTracedTechnique::init()"<<std::endl;
-    
-     if (!_volumeTile) return;
-     
+    osg::notify(osg::INFO)<<"RayTracedTechnique::init()"<<std::endl;
+
+    if (!_volumeTile)
+    {
+        osg::notify(osg::NOTICE)<<"RayTracedTechnique::init(), error no volume tile assigned."<<std::endl;
+        return;
+    }
+
+    if (_volumeTile->getLayer()==0)
+    {
+        osg::notify(osg::NOTICE)<<"RayTracedTechnique::init(), error no layer assigend to volume tile."<<std::endl;
+        return;
+    }
+
+    if (_volumeTile->getLayer()->getImage()==0)
+    {
+        osg::notify(osg::NOTICE)<<"RayTracedTechnique::init(), error no image assigned to layer."<<std::endl;
+        return;
+    }
+
      ShadingModel shadingModel = Isosurface;
      float alphaFuncValue = 0.1;
-   
+
     _geode = new osg::Geode;
-    
+
     osg::Image* image_3d = 0;
     osg::TransferFunction1D* tf = 0;
     osgVolume::Locator* masterLocator = _volumeTile->getLocator();
 
     image_3d = _volumeTile->getLayer()->getImage();
-    
+
+
     CollectPropertiesVisitor cpv;
     if (_volumeTile->getLayer()->getProperty())
     {

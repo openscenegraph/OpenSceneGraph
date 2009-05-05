@@ -98,9 +98,25 @@ osg::Node* createCube(const osg::Vec3& center, float size, unsigned int numSlice
 
 void FixedFunctionTechnique::init()
 {
-    osg::notify(osg::NOTICE)<<"FixedFunctionTechnique::init()"<<std::endl;
+    osg::notify(osg::INFO)<<"FixedFunctionTechnique::init()"<<std::endl;
 
-    if (!_volumeTile) return;
+    if (!_volumeTile)
+    {
+        osg::notify(osg::NOTICE)<<"FixedFunctionTechnique::init(), error no volume tile assigned."<<std::endl;
+        return;
+    }
+
+    if (_volumeTile->getLayer()==0)
+    {
+        osg::notify(osg::NOTICE)<<"FixedFunctionTechnique::init(), error no layer assigend to volume tile."<<std::endl;
+        return;
+    }
+
+    if (_volumeTile->getLayer()->getImage()==0)
+    {
+        osg::notify(osg::NOTICE)<<"FixedFunctionTechnique::init(), error no image assigned to layer."<<std::endl;
+        return;
+    }
 
     float alphaFuncValue = 0.1;
    

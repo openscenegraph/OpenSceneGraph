@@ -19,6 +19,7 @@
 #include <osgDB/ReaderWriter>
 
 #include <osgTerrain/TerrainTile>
+#include <osgVolume/VolumeTile>
 
 #include "IveVersion.h"
 #include "DataTypeSize.h"
@@ -102,7 +103,10 @@ public:
 
     void writeLayer(const osgTerrain::Layer* layer);
     void writeLocator(const osgTerrain::Locator* locator);
-    
+
+    void writeVolumeLayer(const osgVolume::Layer* layer);
+    void writeVolumeLocator(const osgVolume::Locator* locator);
+
     void writeObject(const osg::Object* object);
 
     void setWriteDirectory(const std::string& directoryName) { _writeDirectory = directoryName; }
@@ -151,7 +155,9 @@ private:
     typedef std::map<const osg::Node*,int>              NodeMap;
     typedef std::map<const osgTerrain::Layer*,int>      LayerMap;
     typedef std::map<const osgTerrain::Locator*,int>    LocatorMap;
-        
+    typedef std::map<const osgVolume::Layer*,int>       VolumeLayerMap;
+    typedef std::map<const osgVolume::Locator*,int>     VolumeLocatorMap;
+
     StateSetMap         _stateSetMap;
     StateAttributeMap   _stateAttributeMap;
     UniformMap          _uniformMap;
@@ -161,6 +167,8 @@ private:
     NodeMap             _nodeMap;
     LayerMap            _layerMap;
     LocatorMap          _locatorMap;
+    VolumeLayerMap      _volumeLayerMap;
+    VolumeLocatorMap    _volumeLocatorMap;
 
     std::string         _writeDirectory;
     bool                _includeExternalReferences;

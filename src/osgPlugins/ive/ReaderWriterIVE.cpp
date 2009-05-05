@@ -92,6 +92,10 @@ class ReaderWriterIVE : public ReaderWriter
         
         virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
+#if 1
+                ive::DataInputStream in(&fin, options);
+                return in.readNode();
+#else
             try{
                 // Create datainputstream.
                 ive::DataInputStream in(&fin, options);
@@ -102,6 +106,7 @@ class ReaderWriterIVE : public ReaderWriter
             {
                 return e.getError();
             }
+#endif
         }
 
         

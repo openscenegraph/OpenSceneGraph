@@ -96,6 +96,12 @@
 #include "Scribe.h"
 #include "SpecularHighlights.h"
 
+#include "Volume.h"
+#include "VolumeTile.h"
+#include "VolumeImageLayer.h"
+#include "VolumeCompositeLayer.h"
+#include "VolumeLocator.h"
+
 #include "Geometry.h"
 #include "ShapeDrawable.h"
 #include "Shape.h"
@@ -1721,10 +1727,17 @@ osg::Node* DataInputStream::readNode()
         node = new osgFX::SpecularHighlights();
         ((ive::SpecularHighlights*)(node))->read(this);
     }
-
     else if(nodeTypeID== IVETERRAINTILE){
         node = new osgTerrain::TerrainTile();
         ((ive::TerrainTile*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEVOLUME){
+        node = new osgVolume::Volume();
+        ((ive::Volume*)(node))->read(this);
+    }
+    else if(nodeTypeID== IVEVOLUMETILE){
+        node = new osgVolume::VolumeTile();
+        ((ive::VolumeTile*)(node))->read(this);
     }
     else{
         throw Exception("Unknown node identification in DataInputStream::readNode()");
@@ -1808,6 +1821,44 @@ osgTerrain::Layer* DataInputStream::readLayer()
     return layer;
 }
 
+osgVolume::Layer* DataInputStream::readVolumeLayer()
+{
+    // Read node unique ID.
+    int id = readInt();
+    if (id<0) return 0;
+
+    // See if layer is already in the list.
+    VolumeLayerMap::iterator itr= _volumeLayerMap.find(id);
+    if (itr!=_volumeLayerMap.end()) return itr->second.get();
+
+    // Layer is not in list.
+    // Create a new Layer,
+
+    osgVolume::Layer* layer = 0;
+    int layerid = peekInt();
+
+    if (layerid==IVEVOLUMEIMAGELAYER)
+    {
+        layer = new osgVolume::ImageLayer;
+        ((ive::VolumeImageLayer*)(layer))->read(this);
+    }
+    else if (layerid==IVEVOLUMECOMPOSITELAYER)
+    {
+        layer = new osgVolume::CompositeLayer;
+        ((ive::VolumeCompositeLayer*)(layer))->read(this);
+    }
+    else{
+        throw Exception("Unknown layer identification in DataInputStream::readLayer()");
+    }
+
+    // and add it to the node map,
+    _volumeLayerMap[id] = layer;
+
+
+    if (_verboseOutput) std::cout<<"read/writeVolumeLayer() ["<<id<<"]"<<std::endl;
+
+    return layer;
+}
 
 osgTerrain::Locator* DataInputStream::readLocator()
 {
@@ -1830,6 +1881,32 @@ osgTerrain::Locator* DataInputStream::readLocator()
     _locatorMap[id] = locator;
 
     if (_verboseOutput) std::cout<<"read/writeLocator() ["<<id<<"]"<<std::endl;
+
+    return locator;
+}
+
+
+osgVolume::Locator* DataInputStream::readVolumeLocator()
+{
+    // Read statesets unique ID.
+    int id = readInt();
+    if (id<0) return 0;
+
+    // See if stateset is already in the list.
+    VolumeLocatorMap::iterator itr= _volumeLocatorMap.find(id);
+    if (itr!=_volumeLocatorMap.end()) return itr->second.get();
+
+    // Locator is not in list.
+    // Create a new locator,
+    osgVolume::Locator* locator = new osgVolume::Locator();
+
+    // read its properties from stream
+    ((ive::VolumeLocator*)(locator))->read(this);
+
+    // and add it to the locator map,
+    _volumeLocatorMap[id] = locator;
+
+    if (_verboseOutput) std::cout<<"read/writeVolumeLocator() ["<<id<<"]"<<std::endl;
 
     return locator;
 }

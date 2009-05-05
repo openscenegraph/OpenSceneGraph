@@ -110,6 +110,12 @@
 #include "CompositeLayer.h"
 #include "SwitchLayer.h"
 
+#include "Volume.h"
+#include "VolumeTile.h"
+#include "VolumeImageLayer.h"
+#include "VolumeCompositeLayer.h"
+#include "VolumeLocator.h"
+
 #include <osg/Notify>
 #include <osg/io_utils>
 #include <osgDB/FileUtils>
@@ -1347,9 +1353,17 @@ void DataOutputStream::writeNode(const osg::Node* node)
         else if(dynamic_cast<const osgTerrain::TerrainTile*>(node)){
             ((ive::TerrainTile*)(node))->write(this);
         }
+        else if(dynamic_cast<const osgVolume::Volume*>(node)){
+            ((ive::Volume*)(node))->write(this);
+        }
+        else if(dynamic_cast<const osgVolume::VolumeTile*>(node)){
+            ((ive::VolumeTile*)(node))->write(this);
+        }
+
         else if(dynamic_cast<const osg::Group*>(node)){
             ((ive::Group*)(node))->write(this);
         }
+
         else if(dynamic_cast<const osg::Billboard*>(node)){
             ((ive::Billboard*)(node))->write(this);
         }
@@ -1611,6 +1625,85 @@ void DataOutputStream::writeLocator(const osgTerrain::Locator* locator)
         ((ive::Locator*)(locator))->write(this);
 
         if (_verboseOutput) std::cout<<"read/writeLocator() ["<<id<<"]"<<std::endl;
+
+    }
+}
+
+void DataOutputStream::writeVolumeLayer(const osgVolume::Layer* layer)
+{
+    if (layer==0)
+    {
+        writeInt(-1);
+        return;
+    }
+
+    VolumeLayerMap::iterator itr = _volumeLayerMap.find(layer);
+    if (itr!=_volumeLayerMap.end())
+    {
+        // Id already exists so just write ID.
+        writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeLayer() ["<<itr->second<<"]"<<std::endl;
+    }
+    else
+    {
+        // id doesn't exist so create a new ID and
+        // register the stateset.
+
+        int id = _volumeLayerMap.size();
+        _volumeLayerMap[layer] = id;
+
+        // write the id.
+        writeInt(id);
+
+        if (dynamic_cast<const osgVolume::ImageLayer*>(layer))
+        {
+            ((ive::VolumeImageLayer*)(layer))->write(this);
+        }
+        else if (dynamic_cast<const osgVolume::CompositeLayer*>(layer))
+        {
+            ((ive::VolumeCompositeLayer*)(layer))->write(this);
+        }
+        else
+        {
+            throw Exception("Unknown layer in DataOutputStream::writeLayer()");
+        }
+        if (_verboseOutput) std::cout<<"read/writeLayer() ["<<id<<"]"<<std::endl;
+    }
+}
+
+
+void DataOutputStream::writeVolumeLocator(const osgVolume::Locator* locator)
+{
+    if (locator==0)
+    {
+        writeInt(-1);
+        return;
+    }
+
+    VolumeLocatorMap::iterator itr = _volumeLocatorMap.find(locator);
+    if (itr!=_volumeLocatorMap.end())
+    {
+        // Id already exists so just write ID.
+        writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeVolumeLocator() ["<<itr->second<<"]"<<std::endl;
+    }
+    else
+    {
+        // id doesn't exist so create a new ID and
+        // register the locator.
+
+        int id = _volumeLocatorMap.size();
+        _volumeLocatorMap[locator] = id;
+
+        // write the id.
+        writeInt(id);
+
+        // write the locator.
+        ((ive::VolumeLocator*)(locator))->write(this);
+
+        if (_verboseOutput) std::cout<<"read/writeVolumeLocator() ["<<id<<"]"<<std::endl;
 
     }
 }

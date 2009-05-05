@@ -130,7 +130,7 @@ void RayTracedTechnique::init()
     }
 
 
-    osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<std::endl;
+    osg::notify(osg::INFO)<<"RayTracedTechnique::init() : matrix = "<<matrix<<std::endl;
 
     osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
 
@@ -328,7 +328,7 @@ void RayTracedTechnique::init()
 
             if (tf)
             {
-                osg::notify(osg::NOTICE)<<"Setting up TF path"<<std::endl;
+                osg::notify(osg::INFO)<<"Setting up TF path"<<std::endl;
 
                 osg::Texture1D* texture1D = new osg::Texture1D;
                 texture1D->setImage(tf->getImage());    

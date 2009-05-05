@@ -51,21 +51,38 @@ enum ShadingModel
 
 void RayTracedTechnique::init()
 {
-    osg::notify(osg::NOTICE)<<"RayTracedTechnique::init()"<<std::endl;
-    
-     if (!_volumeTile) return;
-     
+    osg::notify(osg::INFO)<<"RayTracedTechnique::init()"<<std::endl;
+
+    if (!_volumeTile)
+    {
+        osg::notify(osg::NOTICE)<<"RayTracedTechnique::init(), error no volume tile assigned."<<std::endl;
+        return;
+    }
+
+    if (_volumeTile->getLayer()==0)
+    {
+        osg::notify(osg::NOTICE)<<"RayTracedTechnique::init(), error no layer assigend to volume tile."<<std::endl;
+        return;
+    }
+
+    if (_volumeTile->getLayer()->getImage()==0)
+    {
+        osg::notify(osg::NOTICE)<<"RayTracedTechnique::init(), error no image assigned to layer."<<std::endl;
+        return;
+    }
+
      ShadingModel shadingModel = Isosurface;
      float alphaFuncValue = 0.1;
-   
+
     _geode = new osg::Geode;
-    
+
     osg::Image* image_3d = 0;
     osg::TransferFunction1D* tf = 0;
     osgVolume::Locator* masterLocator = _volumeTile->getLocator();
 
     image_3d = _volumeTile->getLayer()->getImage();
-    
+
+
     CollectPropertiesVisitor cpv;
     if (_volumeTile->getLayer()->getProperty())
     {
@@ -113,7 +130,7 @@ void RayTracedTechnique::init()
     }
 
 
-    osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<std::endl;
+    osg::notify(osg::INFO)<<"RayTracedTechnique::init() : matrix = "<<matrix<<std::endl;
 
     osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
 
@@ -173,8 +190,12 @@ void RayTracedTechnique::init()
         }
 
 
+        bool enableBlending = false;
+
         if (shadingModel==MaximumIntensityProjection)
         {
+            enableBlending = true;
+
             if (tf)
             {
                 osg::Texture1D* texture1D = new osg::Texture1D;
@@ -259,6 +280,8 @@ void RayTracedTechnique::init()
         } 
         else if (shadingModel==Light)
         {
+            enableBlending = true;
+
             if (tf)
             {
                 osg::Texture1D* texture1D = new osg::Texture1D;
@@ -301,10 +324,12 @@ void RayTracedTechnique::init()
         }
         else
         {
+            enableBlending = true;
+
             if (tf)
             {
-                osg::notify(osg::NOTICE)<<"Setting up TF path"<<std::endl;
-            
+                osg::notify(osg::INFO)<<"Setting up TF path"<<std::endl;
+
                 osg::Texture1D* texture1D = new osg::Texture1D;
                 texture1D->setImage(tf->getImage());    
                 texture1D->setResizeNonPowerOfTwoHint(false);
@@ -329,7 +354,7 @@ void RayTracedTechnique::init()
 
             }
             else
-            {    
+            {
 
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume.frag");
                 if (fragmentShader)
@@ -360,6 +385,13 @@ void RayTracedTechnique::init()
             stateset->addUniform(cpv._afProperty->getUniform());
         else
             stateset->addUniform(new osg::Uniform("AlphaFuncValue",alphaFuncValue));
+
+
+        if (enableBlending)
+        {
+            stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+            stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+        }
 
 
         stateset->setMode(GL_CULL_FACE, osg::StateAttribute::ON);

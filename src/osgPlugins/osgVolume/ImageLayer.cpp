@@ -56,7 +56,7 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 osgDB::FileType fileType = osgDB::fileType(filename);
                 if (fileType == osgDB::FILE_NOT_FOUND)
                 {
-                    filename = osgDB::findDataFile(filename);
+                    filename = osgDB::findDataFile(filename, fr.getOptions());
                     fileType = osgDB::fileType(filename);
                 }
 
@@ -71,10 +71,10 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                     image = osgDB::readRefImageFile( filename );
                 }
 
-                osg::notify(osg::INFO)<<"osgVolume::ImageLayer image read: "<<filename<<" pixelFormat "<<std::hex<<image->getPixelFormat()<<" textureFormat "<<image->getInternalTextureFormat()<<" dataType "<<image->getDataType()<<std::dec<<std::endl;
 
                 if (image.valid())
                 {                
+                    osg::notify(osg::INFO)<<"osgVolume::ImageLayer image read: "<<filename<<" pixelFormat "<<std::hex<<image->getPixelFormat()<<" textureFormat "<<image->getInternalTextureFormat()<<" dataType "<<image->getDataType()<<std::dec<<std::endl;
                     layer.setImage(image.get());
                     layer.rescaleToZeroToOneRange();
                 }

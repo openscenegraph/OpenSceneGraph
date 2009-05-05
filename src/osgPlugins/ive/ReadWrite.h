@@ -138,7 +138,18 @@ namespace ive {
 #define IVEVALIDRANGE                   0x0020000B
 #define IVENODATAVALUE                  0x0020000C
 #define IVESWITCHLAYER                  0x0020000D
-//#define IVETERRAIN                      0x0020000A
+#define IVETERRAIN                      0x0020000A
+
+// osgVolume classes
+#define IVEVOLUMETILE                   0x00300001
+#define IVEVOLUMELOCATOR                0x00300002
+#define IVEVOLUMELAYER                  0x00300003
+#define IVEVOLUMEIMAGELAYER             0x00300004
+#define IVEVOLUMECOMPOSITELAYER         0x00300005
+#define IVEVOLUMETECHNIQUE              0x00300008
+#define IVEVOLUMERAYTRACEDTECHNIQUE     0x00300009
+#define IVEVOLUMEFIXEDPIPELINETECHNIQUE 0x00300009
+#define IVEVOLUME                       0x0030000A
 
 // osgFX classes
 #define IVEMULTITEXTURECONTROL          0x01000001

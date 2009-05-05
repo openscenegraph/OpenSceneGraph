@@ -22,6 +22,7 @@
 #include <osg/ref_ptr>
 
 #include <osgTerrain/TerrainTile>
+#include <osgVolume/VolumeTile>
 
 #include <osgDB/ReaderWriter>
 
@@ -99,9 +100,13 @@ public:
     osg::Drawable* readDrawable();
     osg::Shape* readShape();
     osg::Node* readNode();
+
     osgTerrain::Layer* readLayer();
     osgTerrain::Locator* readLocator();
-    
+
+    osgVolume::Layer* readVolumeLayer();
+    osgVolume::Locator* readVolumeLocator();
+
     osg::Object* readObject();
 
     // Set and get if must be generated external reference ive files
@@ -119,6 +124,8 @@ public:
     typedef std::map<int,osg::ref_ptr<osg::Node> >              NodeMap;
     typedef std::map<int,osg::ref_ptr<osgTerrain::Layer> >      LayerMap;
     typedef std::map<int,osg::ref_ptr<osgTerrain::Locator> >    LocatorMap;
+    typedef std::map<int,osg::ref_ptr<osgVolume::Layer> >       VolumeLayerMap;
+    typedef std::map<int,osg::ref_ptr<osgVolume::Locator> >     VolumeLocatorMap;
 
     bool                _verboseOutput;
     std::istream*       _istream;
@@ -144,6 +151,8 @@ private:
     NodeMap             _nodeMap;
     LayerMap            _layerMap;
     LocatorMap          _locatorMap;
+    VolumeLayerMap      _volumeLayerMap;
+    VolumeLocatorMap    _volumeLocatorMap;
 
     bool _loadExternalReferenceFiles;
         

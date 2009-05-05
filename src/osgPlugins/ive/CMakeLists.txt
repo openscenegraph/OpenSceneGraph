@@ -23,6 +23,7 @@ SET(TARGET_SRC
     ClusterCullingCallback.cpp
     ColorMask.cpp
     CompositeLayer.cpp
+    VolumeCompositeLayer.cpp
     SwitchLayer.cpp
     ConeSector.cpp
     ConvexPlanarOccluder.cpp
@@ -53,8 +54,10 @@ SET(TARGET_SRC
     Image.cpp
     ImageSequence.cpp
     ImageLayer.cpp
+    VolumeImageLayer.cpp
     Impostor.cpp
     Layer.cpp
+    VolumeLayer.cpp
     Light.cpp
     LightModel.cpp
     LightPoint.cpp
@@ -63,6 +66,7 @@ SET(TARGET_SRC
     LineStipple.cpp
     LineWidth.cpp
     Locator.cpp
+    VolumeLocator.cpp
     LOD.cpp
     Material.cpp
     MatrixTransform.cpp
@@ -95,6 +99,8 @@ SET(TARGET_SRC
     Stencil.cpp
     Switch.cpp
     TerrainTile.cpp
+    Volume.cpp
+    VolumeTile.cpp
     TexEnvCombine.cpp
     TexEnv.cpp
     TexGen.cpp
@@ -138,6 +144,7 @@ SET(TARGET_H
     ClipPlane.h
     ClusterCullingCallback.h
     ColorMask.h
+    VolumeCompositeLayer.h
     CompositeLayer.h
     SwitchLayer.h
     ConeSector.h
@@ -170,9 +177,11 @@ SET(TARGET_H
     Image.h
     ImageSequence.h
     ImageLayer.h
+    VolumeImageLayer.h
     Impostor.h
     IveVersion.h
     Layer.h
+    VolumeLayer.h
     Light.h
     LightModel.h
     LightPoint.h
@@ -181,6 +190,7 @@ SET(TARGET_H
     LineStipple.h
     LineWidth.h
     Locator.h
+    VolumeLocator.h
     LOD.h
     Material.h
     MatrixTransform.h
@@ -212,6 +222,8 @@ SET(TARGET_H
     Stencil.h
     Switch.h
     TerrainTile.h
+    Volume.h
+    VolumeTile.h
     TexEnvCombine.h
     TexEnv.h
     TexGen.h
@@ -238,7 +250,7 @@ SET(TARGET_H
     Scribe.h
     SpecularHighlights.h
 )
-SET(TARGET_ADDED_LIBRARIES osgSim osgFX osgText osgTerrain)
+SET(TARGET_ADDED_LIBRARIES osgSim osgFX osgText osgTerrain osgVolume)
 
 IF(ZLIB_FOUND)
     SET(TARGET_LIBRARIES_VARS ZLIB_LIBRARY)

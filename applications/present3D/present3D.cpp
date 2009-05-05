@@ -450,6 +450,8 @@ int main( int argc, char **argv )
         {
             viewer.setSceneData(holdingModel.get());
 
+            seh->selectSlide(0);
+
             if (!viewerInitialized)
             {
                 // pass the global stateset to the point event handler so that it can
@@ -570,6 +572,7 @@ int main( int argc, char **argv )
 
     // pass the model to the slide event handler so it knows which to manipulate.
     seh->set(loadedModel.get());
+    seh->selectSlide(0);
 
     seh->home();
     

@@ -12,52 +12,53 @@
 */
 
 #include "Exception.h"
-#include "VolumeLayer.h"
-#include "VolumeLocator.h"
+#include "VolumeCompositeProperty.h"
 #include "Object.h"
-
-#include "VolumeImageLayer.h"
-#include "VolumeCompositeLayer.h"
 
 #include <osgDB/ReadFile>
 
 using namespace ive;
 
-void VolumeLayer::write(DataOutputStream* out)
+void VolumeCompositeProperty::write(DataOutputStream* out)
 {
     // Write Layer's identification.
-    out->writeInt(IVEVOLUMELAYER);
+    out->writeInt(IVEVOLUMECOMPOSITEPROPERTY);
 
     // If the osg class is inherited by any other class we should also write this to file.
-    osg::Object*  object = dynamic_cast<osg::Object*>(this);
+    osg::Object* object = dynamic_cast<osg::Object*>(this);
     if (object)
         ((ive::Object*)(object))->write(out);
     else
-        throw Exception("VolumeLayer::write(): Could not cast this osgVolume::Layer to an osg::Object.");
+        throw Exception("VolumeCompositeProperty::write(): Could not cast this osgVolume::CompositeProperty to an osg::Object.");
 
-    out->writeVolumeLocator(getLocator());
-    out->writeVolumeProperty(getProperty());
+    out->writeUInt(getNumProperties());
+    for(unsigned int i=0; i<getNumProperties(); ++i)
+    {
+        out->writeVolumeProperty(getProperty(i));
+    }
+
 }
 
-void VolumeLayer::read(DataInputStream* in)
+void VolumeCompositeProperty::read(DataInputStream* in)
 {
     // Peek on Layer's identification.
     int id = in->peekInt();
-    if (id != IVEVOLUMELAYER)
-        throw Exception("VolumeLayer::read(): Expected Layer identification.");
+    if (id != IVEVOLUMECOMPOSITEPROPERTY)
+        throw Exception("VolumeCompositeProperty::read(): Expected CompositeProperty identification.");
     
     // Read Layer's identification.
     id = in->readInt();
 
     // If the osg class is inherited by any other class we should also read this from file.
-    osg::Object*  object = dynamic_cast<osg::Object*>(this);
-    if(object)
+    osg::Object* object = dynamic_cast<osg::Object*>(this);
+    if (object)
         ((ive::Object*)(object))->read(in);
     else
-        throw Exception("VolumeLayer::read(): Could not cast this osgVolume::Layer to an osg::Object.");
+        throw Exception("VolumeCompositeProperty::write(): Could not cast this osgVolume::CompositeProperty to an osg::Object.");
 
-    setLocator(in->readVolumeLocator());
-    setProperty(in->readVolumeProperty());
-
+    unsigned int numProperties = in->readUInt();
+    for(unsigned int i=0; i<numProperties; ++i)
+    {
+        addProperty(in->readVolumeProperty());
+    }
 }
-

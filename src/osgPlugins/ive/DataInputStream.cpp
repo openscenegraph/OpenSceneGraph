@@ -101,6 +101,10 @@
 #include "VolumeImageLayer.h"
 #include "VolumeCompositeLayer.h"
 #include "VolumeLocator.h"
+#include "VolumeCompositeProperty.h"
+#include "VolumeSwitchProperty.h"
+#include "VolumeScalarProperty.h"
+#include "VolumeTransferFunctionProperty.h"
 
 #include "Geometry.h"
 #include "ShapeDrawable.h"
@@ -1821,6 +1825,32 @@ osgTerrain::Layer* DataInputStream::readLayer()
     return layer;
 }
 
+osgTerrain::Locator* DataInputStream::readLocator()
+{
+    // Read locator unique ID.
+    int id = readInt();
+    if (id<0) return 0;
+
+    // See if stateset is already in the list.
+    LocatorMap::iterator itr= _locatorMap.find(id);
+    if (itr!=_locatorMap.end()) return itr->second.get();
+
+    // Locator is not in list.
+    // Create a new locator,
+    osgTerrain::Locator* locator = new osgTerrain::Locator();
+
+    // read its properties from stream
+    ((ive::Locator*)(locator))->read(this);
+
+    // and add it to the locator map,
+    _locatorMap[id] = locator;
+
+    if (_verboseOutput) std::cout<<"read/writeLocator() ["<<id<<"]"<<std::endl;
+
+    return locator;
+}
+
+
 osgVolume::Layer* DataInputStream::readVolumeLayer()
 {
     // Read node unique ID.
@@ -1860,35 +1890,9 @@ osgVolume::Layer* DataInputStream::readVolumeLayer()
     return layer;
 }
 
-osgTerrain::Locator* DataInputStream::readLocator()
-{
-    // Read statesets unique ID.
-    int id = readInt();
-    if (id<0) return 0;
-
-    // See if stateset is already in the list.
-    LocatorMap::iterator itr= _locatorMap.find(id);
-    if (itr!=_locatorMap.end()) return itr->second.get();
-
-    // Locator is not in list.
-    // Create a new locator,
-    osgTerrain::Locator* locator = new osgTerrain::Locator();
-
-    // read its properties from stream
-    ((ive::Locator*)(locator))->read(this);
-
-    // and add it to the locator map,
-    _locatorMap[id] = locator;
-
-    if (_verboseOutput) std::cout<<"read/writeLocator() ["<<id<<"]"<<std::endl;
-
-    return locator;
-}
-
-
 osgVolume::Locator* DataInputStream::readVolumeLocator()
 {
-    // Read statesets unique ID.
+    // Read locator unique ID.
     int id = readInt();
     if (id<0) return 0;
 
@@ -1909,6 +1913,80 @@ osgVolume::Locator* DataInputStream::readVolumeLocator()
     if (_verboseOutput) std::cout<<"read/writeVolumeLocator() ["<<id<<"]"<<std::endl;
 
     return locator;
+}
+
+osgVolume::Property* DataInputStream::readVolumeProperty()
+{
+    // Read property unique ID.
+    int id = readInt();
+    if (id<0) return 0;
+
+    // See if stateset is already in the list.
+    VolumePropertyMap::iterator itr= _volumePropertyMap.find(id);
+    if (itr!=_volumePropertyMap.end()) return itr->second.get();
+
+    int layerid = peekInt();
+    osgVolume::Property* property = 0;
+
+    if (layerid==IVEVOLUMECOMPOSITEPROPERTY)
+    {
+        property = new osgVolume::CompositeProperty;
+        ((ive::VolumeCompositeProperty*)(property))->read(this);
+    }
+    else if (layerid==IVEVOLUMESWITCHPROPERTY)
+    {
+        property = new osgVolume::SwitchProperty;
+        ((ive::VolumeSwitchProperty*)(property))->read(this);
+    }
+    else if (layerid==IVEVOLUMETRANSFERFUNCTIONPROPERTY)
+    {
+        property = new osgVolume::TransferFunctionProperty;
+        ((ive::VolumeTransferFunctionProperty*)(property))->read(this);
+    }
+    else if (layerid==IVEVOLUMEMAXIMUMINTENSITYPROPERTY)
+    {
+        property = new osgVolume::MaximumIntensityProjectionProperty;
+        readInt();
+    }
+    else if (layerid==IVEVOLUMELIGHTINGPROPERTY)
+    {
+        property = new osgVolume::LightingProperty;
+        readInt();
+    }
+    else if (layerid==IVEVOLUMEISOSURFACEPROPERTY)
+    {
+        property = new osgVolume::IsoSurfaceProperty;
+        readInt();
+        ((ive::VolumeScalarProperty*)(property))->read(this);
+    }
+    else if (layerid==IVEVOLUMEALPHAFUNCPROPERTY)
+    {
+        property = new osgVolume::AlphaFuncProperty;
+        readInt();
+        ((ive::VolumeScalarProperty*)(property))->read(this);
+    }
+    else if (layerid==IVEVOLUMESAMPLEDENSITYPROPERTY)
+    {
+        property = new osgVolume::SampleDensityProperty;
+        readInt();
+        ((ive::VolumeScalarProperty*)(property))->read(this);
+    }
+    else if (layerid==IVEVOLUMETRANSPARENCYPROPERTY)
+    {
+        property = new osgVolume::TransparencyProperty;
+        readInt();
+        ((ive::VolumeScalarProperty*)(property))->read(this);
+    }
+    else{
+        throw Exception("Unknown layer identification in DataInputStream::readVolumeProperty()");
+    }
+
+    // and add it to the locator map,
+    _volumePropertyMap[id] = property;
+
+    if (_verboseOutput) std::cout<<"read/writeVolumeProperty() ["<<id<<"]"<<std::endl;
+
+    return property;
 }
 
 osg::Object* DataInputStream::readObject()

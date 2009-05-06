@@ -19,6 +19,7 @@
 #include "StateSet.h"
 #include "AnimationPathCallback.h"
 #include "ClusterCullingCallback.h"
+#include "VolumePropertyAdjustmentCallback.h"
 
 using namespace ive;
 
@@ -73,6 +74,17 @@ void Node::write(DataOutputStream* out){
         if(ccc)
         {
             ((ive::ClusterCullingCallback*)(ccc))->write(out);
+        }
+    }
+
+
+    if (out->getVersion() >= VERSION_0039)
+    {
+        osgVolume::PropertyAdjustmentCallback* pac = dynamic_cast<osgVolume::PropertyAdjustmentCallback*>(getEventCallback());
+        out->writeBool(pac!=0);
+        if(pac)
+        {
+            ((ive::VolumePropertyAdjustmentCallback*)pac)->write(out);
         }
     }
 
@@ -141,7 +153,26 @@ void Node::read(DataInputStream* in){
                 setCullCallback(ccc);
             }
         }
-        
+
+        if (in->getVersion() >= VERSION_0039)
+        {
+            if(in->readBool())
+            {
+                int pacID = in->peekInt();
+                if (pacID==IVEVOLUMEPROPERTYADJUSTMENTCALLBACK)
+                {
+                    osgVolume::PropertyAdjustmentCallback* pac = new osgVolume::PropertyAdjustmentCallback();
+                    ((ive::VolumePropertyAdjustmentCallback*)(pac))->read(in);
+                    setEventCallback(pac);
+                }
+                else
+                {
+                    throw Exception("Unknown event callback identification in Node::read()");
+                }
+
+            }
+        }
+
         if (in->getVersion() >= VERSION_0010)
         {
             if (in->readBool())

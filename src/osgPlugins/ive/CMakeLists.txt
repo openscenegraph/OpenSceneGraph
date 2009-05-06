@@ -8,6 +8,7 @@ SET(TARGET_SRC
     AlphaFunc.cpp
     AnimationPathCallback.cpp
     AnimationPath.cpp
+    AnisotropicLighting.cpp
     AutoTransform.cpp
     AzimElevationSector.cpp
     AzimSector.cpp
@@ -16,15 +17,15 @@ SET(TARGET_SRC
     BlendEquation.cpp
     BlendFunc.cpp
     BlinkSequence.cpp
+    BumpMapping.cpp
     Camera.cpp
     CameraView.cpp
+    Cartoon.cpp
     ClipNode.cpp
     ClipPlane.cpp
     ClusterCullingCallback.cpp
     ColorMask.cpp
     CompositeLayer.cpp
-    VolumeCompositeLayer.cpp
-    SwitchLayer.cpp
     ConeSector.cpp
     ConvexPlanarOccluder.cpp
     ConvexPlanarPolygon.cpp
@@ -41,9 +42,11 @@ SET(TARGET_SRC
     DrawElementsUByte.cpp
     DrawElementsUInt.cpp
     DrawElementsUShort.cpp
+    Effect.cpp
     ElevationSector.cpp
     EllipsoidModel.cpp
     Exception.cpp
+    FadeText.cpp
     Fog.cpp
     FragmentProgram.cpp
     FrontFace.cpp
@@ -52,12 +55,10 @@ SET(TARGET_SRC
     Group.cpp
     HeightFieldLayer.cpp
     Image.cpp
-    ImageSequence.cpp
     ImageLayer.cpp
-    VolumeImageLayer.cpp
+    ImageSequence.cpp
     Impostor.cpp
     Layer.cpp
-    VolumeLayer.cpp
     Light.cpp
     LightModel.cpp
     LightPoint.cpp
@@ -66,7 +67,6 @@ SET(TARGET_SRC
     LineStipple.cpp
     LineWidth.cpp
     Locator.cpp
-    VolumeLocator.cpp
     LOD.cpp
     Material.cpp
     MatrixTransform.cpp
@@ -89,26 +89,26 @@ SET(TARGET_SRC
     ProxyNode.cpp
     ReaderWriterIVE.cpp
     Scissor.cpp
+    Scribe.cpp
     Sequence.cpp
     ShadeModel.cpp
     Shader.cpp
+    ShapeAttributeList.cpp
     Shape.cpp
     ShapeDrawable.cpp
-    ShapeAttributeList.cpp
+    SpecularHighlights.cpp
     StateSet.cpp
     Stencil.cpp
     Switch.cpp
+    SwitchLayer.cpp
     TerrainTile.cpp
-    Volume.cpp
-    VolumeTile.cpp
     TexEnvCombine.cpp
     TexEnv.cpp
     TexGen.cpp
     TexGenNode.cpp
     TexMat.cpp
-    Text.cpp
-    FadeText.cpp
     Text3D.cpp
+    Text.cpp
     Texture1D.cpp
     Texture2D.cpp
     Texture3D.cpp
@@ -120,17 +120,22 @@ SET(TARGET_SRC
     VertexProgram.cpp
     Viewport.cpp
     VisibilityGroup.cpp
-    Effect.cpp
-    AnisotropicLighting.cpp
-    BumpMapping.cpp
-    Cartoon.cpp
-    Scribe.cpp
-    SpecularHighlights.cpp
+    VolumeCompositeLayer.cpp
+    VolumeCompositeProperty.cpp
+    VolumeSwitchProperty.cpp
+    VolumeScalarProperty.cpp
+    VolumePropertyAdjustmentCallback.cpp
+    Volume.cpp
+    VolumeImageLayer.cpp
+    VolumeLayer.cpp
+    VolumeLocator.cpp
+    VolumeTile.cpp
 )
 SET(TARGET_H
     AlphaFunc.h
     AnimationPathCallback.h
     AnimationPath.h
+    AnisotropicLighting.h
     AutoTransform.h
     AzimElevationSector.h
     AzimSector.h
@@ -138,15 +143,15 @@ SET(TARGET_H
     BlendColor.h
     BlendFunc.h
     BlinkSequence.h
+    BumpMapping.h
     Camera.h
     CameraView.h
+    Cartoon.h
     ClipNode.h
     ClipPlane.h
     ClusterCullingCallback.h
     ColorMask.h
-    VolumeCompositeLayer.h
     CompositeLayer.h
-    SwitchLayer.h
     ConeSector.h
     ConvexPlanarOccluder.h
     ConvexPlanarPolygon.h
@@ -164,9 +169,11 @@ SET(TARGET_H
     DrawElementsUByte.h
     DrawElementsUInt.h
     DrawElementsUShort.h
+    Effect.h
     ElevationSector.h
     EllipsoidModel.h
     Exception.h
+    FadeText.h
     Fog.h
     FragmentProgram.h
     FrontFace.h
@@ -175,13 +182,11 @@ SET(TARGET_H
     Group.h
     HeightFieldLayer.h
     Image.h
-    ImageSequence.h
     ImageLayer.h
-    VolumeImageLayer.h
+    ImageSequence.h
     Impostor.h
     IveVersion.h
     Layer.h
-    VolumeLayer.h
     Light.h
     LightModel.h
     LightPoint.h
@@ -190,7 +195,6 @@ SET(TARGET_H
     LineStipple.h
     LineWidth.h
     Locator.h
-    VolumeLocator.h
     LOD.h
     Material.h
     MatrixTransform.h
@@ -212,26 +216,26 @@ SET(TARGET_H
     ProxyNode.h
     ReadWrite.h
     Scissor.h
+    Scribe.h
     Sequence.h
     ShadeModel.h
     Shader.h
+    ShapeAttributeList.h
     ShapeDrawable.h
     Shape.h
-    ShapeAttributeList.h
+    SpecularHighlights.h
     StateSet.h
     Stencil.h
     Switch.h
+    SwitchLayer.h
     TerrainTile.h
-    Volume.h
-    VolumeTile.h
     TexEnvCombine.h
     TexEnv.h
     TexGen.h
     TexGenNode.h
     TexMat.h
-    Text.h
-    FadeText.h
     Text3D.h
+    Text.h
     Texture1D.h
     Texture2D.h
     Texture3D.h
@@ -243,12 +247,16 @@ SET(TARGET_H
     VertexProgram.h
     Viewport.h
     VisibilityGroup.h
-    Effect.h
-    AnisotropicLighting.h
-    BumpMapping.h
-    Cartoon.h
-    Scribe.h
-    SpecularHighlights.h
+    VolumeCompositeLayer.h
+    VolumeCompositeProperty.h
+    VolumeSwitchProperty.h
+    VolumeScalarProperty.h
+    VolumePropertyAdjustmentCallback.h
+    Volume.h
+    VolumeImageLayer.h
+    VolumeLayer.h
+    VolumeLocator.h
+    VolumeTile.h
 )
 SET(TARGET_ADDED_LIBRARIES osgSim osgFX osgText osgTerrain osgVolume)
 

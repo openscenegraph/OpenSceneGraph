@@ -12,52 +12,44 @@
 */
 
 #include "Exception.h"
-#include "VolumeLayer.h"
-#include "VolumeLocator.h"
-#include "Object.h"
-
-#include "VolumeImageLayer.h"
-#include "VolumeCompositeLayer.h"
+#include "VolumeSwitchProperty.h"
+#include "VolumeCompositeProperty.h"
 
 #include <osgDB/ReadFile>
 
 using namespace ive;
 
-void VolumeLayer::write(DataOutputStream* out)
+void VolumeSwitchProperty::write(DataOutputStream* out)
 {
     // Write Layer's identification.
-    out->writeInt(IVEVOLUMELAYER);
+    out->writeInt(IVEVOLUMESWITCHPROPERTY);
 
     // If the osg class is inherited by any other class we should also write this to file.
-    osg::Object*  object = dynamic_cast<osg::Object*>(this);
-    if (object)
-        ((ive::Object*)(object))->write(out);
+    osgVolume::CompositeProperty* cp = dynamic_cast<osgVolume::CompositeProperty*>(this);
+    if (cp)
+        ((ive::VolumeCompositeProperty*)(cp))->write(out);
     else
-        throw Exception("VolumeLayer::write(): Could not cast this osgVolume::Layer to an osg::Object.");
+        throw Exception("VolumeImageLayer::write(): Could not cast this osgVolume::SwitchProperty to an osgVolume::CompositeProperty.");
 
-    out->writeVolumeLocator(getLocator());
-    out->writeVolumeProperty(getProperty());
+    out->writeUInt(getActiveProperty());
 }
 
-void VolumeLayer::read(DataInputStream* in)
+void VolumeSwitchProperty::read(DataInputStream* in)
 {
     // Peek on Layer's identification.
     int id = in->peekInt();
-    if (id != IVEVOLUMELAYER)
-        throw Exception("VolumeLayer::read(): Expected Layer identification.");
+    if (id != IVEVOLUMESWITCHPROPERTY)
+        throw Exception("VolumeSwitchProperty::read(): Expected CompositeProperty identification.");
     
     // Read Layer's identification.
     id = in->readInt();
 
     // If the osg class is inherited by any other class we should also read this from file.
-    osg::Object*  object = dynamic_cast<osg::Object*>(this);
-    if(object)
-        ((ive::Object*)(object))->read(in);
+    osgVolume::CompositeProperty* cp = dynamic_cast<osgVolume::CompositeProperty*>(this);
+    if (cp)
+        ((ive::VolumeCompositeProperty*)(cp))->read(in);
     else
-        throw Exception("VolumeLayer::read(): Could not cast this osgVolume::Layer to an osg::Object.");
+        throw Exception("VolumeImageLayer::read(): Could not cast this osgVolume::SwitchProperty to an osgVolume::CompositeProperty.");
 
-    setLocator(in->readVolumeLocator());
-    setProperty(in->readVolumeProperty());
-
+    setActiveProperty(in->readUInt());
 }
-

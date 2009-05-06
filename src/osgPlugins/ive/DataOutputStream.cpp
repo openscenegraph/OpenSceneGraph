@@ -115,6 +115,10 @@
 #include "VolumeImageLayer.h"
 #include "VolumeCompositeLayer.h"
 #include "VolumeLocator.h"
+#include "VolumeCompositeProperty.h"
+#include "VolumeSwitchProperty.h"
+#include "VolumeScalarProperty.h"
+#include "VolumeTransferFunctionProperty.h"
 
 #include <osg/Notify>
 #include <osg/io_utils>
@@ -1704,6 +1708,84 @@ void DataOutputStream::writeVolumeLocator(const osgVolume::Locator* locator)
         ((ive::VolumeLocator*)(locator))->write(this);
 
         if (_verboseOutput) std::cout<<"read/writeVolumeLocator() ["<<id<<"]"<<std::endl;
+
+    }
+}
+
+void DataOutputStream::writeVolumeProperty(const osgVolume::Property* property)
+{
+    if (property==0)
+    {
+        writeInt(-1);
+        return;
+    }
+
+    VolumePropertyMap::iterator itr = _volumePropertyMap.find(property);
+    if (itr!=_volumePropertyMap.end())
+    {
+        // Id already exists so just write ID.
+        writeInt(itr->second);
+
+        if (_verboseOutput) std::cout<<"read/writeVolumeLocator() ["<<itr->second<<"]"<<std::endl;
+    }
+    else
+    {
+        // id doesn't exist so create a new ID and
+        // register the locator.
+
+        int id = _volumePropertyMap.size();
+        _volumePropertyMap[property] = id;
+
+        // write the id.
+        writeInt(id);
+
+        // write the propery
+         if (dynamic_cast<const osgVolume::SwitchProperty*>(property))
+        {
+            ((ive::VolumeSwitchProperty*)(property))->write(this);
+        }
+        else if (dynamic_cast<const osgVolume::CompositeProperty*>(property))
+        {
+            ((ive::VolumeCompositeProperty*)(property))->write(this);
+        }
+        else if (dynamic_cast<const osgVolume::TransferFunctionProperty*>(property))
+        {
+            ((ive::VolumeTransferFunctionProperty*)(property))->write(this);
+        }
+        else if (dynamic_cast<const osgVolume::MaximumIntensityProjectionProperty*>(property))
+        {
+            writeInt(IVEVOLUMEMAXIMUMINTENSITYPROPERTY);
+        }
+        else if (dynamic_cast<const osgVolume::LightingProperty*>(property))
+        {
+            writeInt(IVEVOLUMELIGHTINGPROPERTY);
+        }
+        else if (dynamic_cast<const osgVolume::IsoSurfaceProperty*>(property))
+        {
+            writeInt(IVEVOLUMEISOSURFACEPROPERTY);
+            ((ive::VolumeScalarProperty*)(property))->write(this);
+        }
+        else if (dynamic_cast<const osgVolume::AlphaFuncProperty*>(property))
+        {
+            writeInt(IVEVOLUMEALPHAFUNCPROPERTY);
+            ((ive::VolumeScalarProperty*)(property))->write(this);
+        }
+        else if (dynamic_cast<const osgVolume::SampleDensityProperty*>(property))
+        {
+            writeInt(IVEVOLUMESAMPLEDENSITYPROPERTY);
+            ((ive::VolumeScalarProperty*)(property))->write(this);
+        }
+        else if (dynamic_cast<const osgVolume::TransparencyProperty*>(property))
+        {
+            writeInt(IVEVOLUMETRANSPARENCYPROPERTY);
+            ((ive::VolumeScalarProperty*)(property))->write(this);
+        }
+        else
+        {
+            throw Exception("Unknown layer in DataOutputStream::writVolumeProperty()");
+        }
+
+        if (_verboseOutput) std::cout<<"read/writeVolumeProperty() ["<<id<<"]"<<std::endl;
 
     }
 }

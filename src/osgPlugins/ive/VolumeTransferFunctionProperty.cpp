@@ -12,52 +12,43 @@
 */
 
 #include "Exception.h"
-#include "VolumeLayer.h"
-#include "VolumeLocator.h"
-#include "Object.h"
-
-#include "VolumeImageLayer.h"
-#include "VolumeCompositeLayer.h"
+#include "VolumeTransferFunctionProperty.h"
 
 #include <osgDB/ReadFile>
 
 using namespace ive;
 
-void VolumeLayer::write(DataOutputStream* out)
+void VolumeTransferFunctionProperty::write(DataOutputStream* out)
 {
     // Write Layer's identification.
-    out->writeInt(IVEVOLUMELAYER);
+    out->writeInt(IVEVOLUMETRANSFERFUNCTIONPROPERTY);
 
     // If the osg class is inherited by any other class we should also write this to file.
-    osg::Object*  object = dynamic_cast<osg::Object*>(this);
+    osg::Object* object = dynamic_cast<osg::Object*>(this);
     if (object)
         ((ive::Object*)(object))->write(out);
     else
-        throw Exception("VolumeLayer::write(): Could not cast this osgVolume::Layer to an osg::Object.");
+        throw Exception("VolumeTransferFunctionProperty::write(): Could not cast this osgVolume::TransferFunctionProperty to an osg::Object.");
 
-    out->writeVolumeLocator(getLocator());
-    out->writeVolumeProperty(getProperty());
+    // out->writeFloat(getValue());
 }
 
-void VolumeLayer::read(DataInputStream* in)
+void VolumeTransferFunctionProperty::read(DataInputStream* in)
 {
     // Peek on Layer's identification.
     int id = in->peekInt();
-    if (id != IVEVOLUMELAYER)
-        throw Exception("VolumeLayer::read(): Expected Layer identification.");
+    if (id != IVEVOLUMETRANSFERFUNCTIONPROPERTY)
+        throw Exception("VolumeTransferFunctionProperty::read(): Expected CompositeProperty identification.");
     
     // Read Layer's identification.
     id = in->readInt();
 
     // If the osg class is inherited by any other class we should also read this from file.
-    osg::Object*  object = dynamic_cast<osg::Object*>(this);
-    if(object)
+    osg::Object* object = dynamic_cast<osg::Object*>(this);
+    if (object)
         ((ive::Object*)(object))->read(in);
     else
-        throw Exception("VolumeLayer::read(): Could not cast this osgVolume::Layer to an osg::Object.");
+        throw Exception("VolumeTransferFunctionProperty::write(): Could not cast this osgVolume::TransferFunctionProperty to an osg::Object.");
 
-    setLocator(in->readVolumeLocator());
-    setProperty(in->readVolumeProperty());
-
+    // setValue(in->readFloat());
 }
-

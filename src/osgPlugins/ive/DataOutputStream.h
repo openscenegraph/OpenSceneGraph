@@ -106,6 +106,7 @@ public:
 
     void writeVolumeLayer(const osgVolume::Layer* layer);
     void writeVolumeLocator(const osgVolume::Locator* locator);
+    void writeVolumeProperty(const osgVolume::Property* propety);
 
     void writeObject(const osg::Object* object);
 
@@ -157,6 +158,7 @@ private:
     typedef std::map<const osgTerrain::Locator*,int>    LocatorMap;
     typedef std::map<const osgVolume::Layer*,int>       VolumeLayerMap;
     typedef std::map<const osgVolume::Locator*,int>     VolumeLocatorMap;
+    typedef std::map<const osgVolume::Property*,int>    VolumePropertyMap;
 
     StateSetMap         _stateSetMap;
     StateAttributeMap   _stateAttributeMap;
@@ -169,6 +171,7 @@ private:
     LocatorMap          _locatorMap;
     VolumeLayerMap      _volumeLayerMap;
     VolumeLocatorMap    _volumeLocatorMap;
+    VolumePropertyMap   _volumePropertyMap;
 
     std::string         _writeDirectory;
     bool                _includeExternalReferences;

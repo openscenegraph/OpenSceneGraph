@@ -106,6 +106,7 @@ public:
 
     osgVolume::Layer* readVolumeLayer();
     osgVolume::Locator* readVolumeLocator();
+    osgVolume::Property* readVolumeProperty();
 
     osg::Object* readObject();
 
@@ -126,6 +127,7 @@ public:
     typedef std::map<int,osg::ref_ptr<osgTerrain::Locator> >    LocatorMap;
     typedef std::map<int,osg::ref_ptr<osgVolume::Layer> >       VolumeLayerMap;
     typedef std::map<int,osg::ref_ptr<osgVolume::Locator> >     VolumeLocatorMap;
+    typedef std::map<int,osg::ref_ptr<osgVolume::Property> >    VolumePropertyMap;
 
     bool                _verboseOutput;
     std::istream*       _istream;
@@ -153,6 +155,7 @@ private:
     LocatorMap          _locatorMap;
     VolumeLayerMap      _volumeLayerMap;
     VolumeLocatorMap    _volumeLocatorMap;
+    VolumePropertyMap   _volumePropertyMap;
 
     bool _loadExternalReferenceFiles;
         

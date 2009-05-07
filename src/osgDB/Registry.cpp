@@ -640,13 +640,8 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
     ExtensionAliasMap::iterator itr=_extAliasMap.find(lowercase_ext);
     if (itr!=_extAliasMap.end() && ext != itr->second) return createLibraryNameForExtension(itr->second);
 
-#ifdef OSG_JAVA_BUILD
+#if defined(OSG_JAVA_BUILD)
     static std::string prepend = std::string("osgPlugins-")+std::string(osgGetVersion())+std::string("/java");
-#elseif defined(__APPLE__)
-    // OSX is rather a mess in FileUtils.cpp w.r.t its appendPlatformSpecificLibraryFilePaths implementation
-    // as it hardwires the plugin name to PlugIns.  This *needs* fixing to use the naming convention as all
-    // other platforms.
-    static std::string prepend = "";
 #else
     static std::string prepend = std::string("osgPlugins-")+std::string(osgGetVersion())+std::string("/");
 #endif

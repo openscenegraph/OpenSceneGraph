@@ -822,14 +822,26 @@ void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
         {
             osg::View* view = camera->getView();
             osg::View::Slave* slave = view ? view->findSlaveForCamera(camera) : 0;
-            
-            if (slave && camera->getReferenceFrame()==osg::Transform::RELATIVE_RF)
+
+            if (slave)
             {
-                switch(view->getCamera()->getProjectionResizePolicy())
+                if (camera->getReferenceFrame()==osg::Transform::RELATIVE_RF)
                 {
-                    case(osg::Camera::HORIZONTAL): slave->_projectionOffset *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0); break;
-                    case(osg::Camera::VERTICAL): slave->_projectionOffset *= osg::Matrix::scale(1.0, aspectRatioChange,1.0); break;
-                    default: break;
+                    switch(view->getCamera()->getProjectionResizePolicy())
+                    {
+                        case(osg::Camera::HORIZONTAL): slave->_projectionOffset *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0); break;
+                        case(osg::Camera::VERTICAL): slave->_projectionOffset *= osg::Matrix::scale(1.0, aspectRatioChange,1.0); break;
+                        default: break;
+                    }
+                }
+                else
+                {
+                    switch(camera->getProjectionResizePolicy())
+                    {
+                        case(osg::Camera::HORIZONTAL): camera->getProjectionMatrix() *= osg::Matrix::scale(1.0/aspectRatioChange,1.0,1.0); break;
+                        case(osg::Camera::VERTICAL): camera->getProjectionMatrix() *= osg::Matrix::scale(1.0, aspectRatioChange,1.0); break;
+                        default: break;
+                    }
                 }
             }
             else
@@ -843,10 +855,10 @@ void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
                 }
             }
 
-        }    
+        }
 
     }
-    
+
     _traits->x = x;
     _traits->y = y;
     _traits->width = width;

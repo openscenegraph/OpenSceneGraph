@@ -124,6 +124,7 @@ SET(TARGET_SRC
     VolumeCompositeProperty.cpp
     VolumeSwitchProperty.cpp
     VolumeScalarProperty.cpp
+    VolumeTransferFunctionProperty.cpp
     VolumePropertyAdjustmentCallback.cpp
     Volume.cpp
     VolumeImageLayer.cpp
@@ -251,6 +252,7 @@ SET(TARGET_H
     VolumeCompositeProperty.h
     VolumeSwitchProperty.h
     VolumeScalarProperty.h
+    VolumeTransferFunctionProperty.h
     VolumePropertyAdjustmentCallback.h
     Volume.h
     VolumeImageLayer.h

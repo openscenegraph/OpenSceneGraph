@@ -15,6 +15,7 @@
 #include "VolumeTransferFunctionProperty.h"
 
 #include <osgDB/ReadFile>
+#include "Object.h"
 
 using namespace ive;
 
@@ -30,7 +31,41 @@ void VolumeTransferFunctionProperty::write(DataOutputStream* out)
     else
         throw Exception("VolumeTransferFunctionProperty::write(): Could not cast this osgVolume::TransferFunctionProperty to an osg::Object.");
 
-    // out->writeFloat(getValue());
+
+    osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(getTransferFunction());
+    if (tf)
+    {
+
+        out->writeUInt(1); // TransferFunction1D
+        out->writeUInt(tf->getNumberImageCells());
+
+        const osg::TransferFunction1D::ColorMap& colourMap = tf->getColorMap();
+
+        // count the number of colour entries in the map so we can write it to the .ive file
+        unsigned int numColours = 0;
+        for(osg::TransferFunction1D::ColorMap::const_iterator itr = colourMap.begin();
+            itr != colourMap.end();
+            ++itr)
+        {
+            ++numColours;
+        }
+
+        // write out the num of colours
+        out->writeUInt(numColours);
+
+        // write out the colour map entires
+        for(osg::TransferFunction1D::ColorMap::const_iterator itr = colourMap.begin();
+            itr != colourMap.end();
+            ++itr)
+        {
+            out->writeFloat(itr->first);
+            out->writeVec4(itr->second);
+        }
+    }
+    else
+    {
+        out->writeUInt(0);
+    }
 }
 
 void VolumeTransferFunctionProperty::read(DataInputStream* in)
@@ -39,7 +74,7 @@ void VolumeTransferFunctionProperty::read(DataInputStream* in)
     int id = in->peekInt();
     if (id != IVEVOLUMETRANSFERFUNCTIONPROPERTY)
         throw Exception("VolumeTransferFunctionProperty::read(): Expected CompositeProperty identification.");
-    
+
     // Read Layer's identification.
     id = in->readInt();
 
@@ -50,5 +85,29 @@ void VolumeTransferFunctionProperty::read(DataInputStream* in)
     else
         throw Exception("VolumeTransferFunctionProperty::write(): Could not cast this osgVolume::TransferFunctionProperty to an osg::Object.");
 
-    // setValue(in->readFloat());
+    unsigned int numDimensions = in->readUInt();
+    if (numDimensions==1)
+    {
+        osg::TransferFunction1D* tf = new osg::TransferFunction1D;
+        setTransferFunction(tf);
+
+        tf->allocate(in->readUInt());
+
+        osg::TransferFunction1D::ColorMap& colourMap = tf->getColorMap();
+
+        // count the number of colour entries in the map so we can write it to the .ive file
+        unsigned int numColours = in->readUInt();
+        for(unsigned int i=0; i<numColours; ++i)
+        {
+            float value = in->readFloat();
+            osg::Vec4 colour = in->readVec4();
+            colourMap[value] = colour;
+        }
+
+        tf->updateImage();
+    }
+    else
+    {
+    }
+
 }

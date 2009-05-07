@@ -2367,7 +2367,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                     break;
                 default:
                     if (_traits->useCursor && _appMouseCursor != InheritCursor)
-                        setCursor(LeftArrowCursor);
+                        setCursor(_appMouseCursor);
                     break;
                 }
                 return result;

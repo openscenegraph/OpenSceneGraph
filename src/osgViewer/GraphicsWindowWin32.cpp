@@ -1787,7 +1787,7 @@ void GraphicsWindowWin32::closeImplementation()
 void GraphicsWindowWin32::swapBuffersImplementation()
 {
     if (!_realized) return;
-    if (!::SwapBuffers(_hdc))
+    if (!::SwapBuffers(_hdc) && ::GetLastError() != 0)
     {
         reportErrorForScreen("GraphicsWindowWin32::swapBuffersImplementation() - Unable to swap display buffers", _traits->screenNum, ::GetLastError());
     }

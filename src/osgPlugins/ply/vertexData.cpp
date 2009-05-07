@@ -126,8 +126,8 @@ void VertexData::readTriangles( PlyFile* file, const int nFaces )
 
     
     // read in the faces, asserting that they are only triangles
-    uint8_t ind1 = _invertFaces ? 2 : 0;
-    uint8_t ind3 = _invertFaces ? 0 : 2;
+    int ind1 = _invertFaces ? 2 : 0;
+    int ind3 = _invertFaces ? 0 : 2;
     for( int i = 0; i < nFaces; ++i )
     {
         ply_get_element( file, static_cast< void* >( &face ) );

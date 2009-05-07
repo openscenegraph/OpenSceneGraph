@@ -34,23 +34,34 @@ bool Layer_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osgVolume::Layer& layer = static_cast<osgVolume::Layer&>(obj);
 
     bool itrAdvanced = false;
-    
+
     osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgVolume::Locator>());
     osgVolume::Locator* locator = dynamic_cast<osgVolume::Locator*>(readObject.get());
     if (locator) layer.setLocator(locator);
-    
+
+    readObject = fr.readObjectOfType(osgDB::type_wrapper<osgVolume::Property>());
+    if (readObject.valid()) itrAdvanced = true;
+
+    osgVolume::Property* property = dynamic_cast<osgVolume::Property*>(readObject.get());
+    if (property) layer.addProperty(property);
+
     return itrAdvanced;
 }
 
 bool Layer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 {
     const osgVolume::Layer& layer = static_cast<const osgVolume::Layer&>(obj);
-    
+
     if (layer.getLocator())
     {
         fw.writeObject(*layer.getLocator());
     }
-    
+
+    if (layer.getProperty())
+    {
+        fw.writeObject(*layer.getProperty());
+    }
+
     return true;
 }
 

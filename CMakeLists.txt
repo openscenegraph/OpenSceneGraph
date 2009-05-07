@@ -196,6 +196,12 @@ IF(WIN32)
         # More MSVC specific compilation flags
         ADD_DEFINITIONS(-D_SCL_SECURE_NO_WARNINGS)
         ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
+
+        OPTION(MSVC_DISABLE_CHECKED_ITERATORS "Set to ON to disable Visual C++ checked iterators. If you do this you must ensure that every other project in your solution and all dependencies are compiled with _SECURE_SCL=0." OFF)
+        MARK_AS_ADVANCED(MSVC_DISABLE_CHECKED_ITERATORS)
+        IF(MSVC_DISABLE_CHECKED_ITERATORS)
+            ADD_DEFINITIONS(-D_SECURE_SCL=0)
+        ENDIF(MSVC_DISABLE_CHECKED_ITERATORS)
     ENDIF()
 
     #needed for net plugin

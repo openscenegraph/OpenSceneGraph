@@ -144,6 +144,8 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
                 
         void transformMouseXY(float& x, float& y);
         
+        void setCursorImpl(MouseCursor cursor);
+
         HCURSOR getOrCreateCursor(MouseCursor mouseShape);
         
         HWND            _hwnd;

@@ -1940,25 +1940,21 @@ void GraphicsWindowWin32::useCursor( bool cursorOn )
 
 void GraphicsWindowWin32::setCursor( MouseCursor mouseCursor )
 {
+    _appMouseCursor = mouseCursor;
+    setCursorImpl(mouseCursor);
+}
+
+void GraphicsWindowWin32::setCursorImpl( MouseCursor mouseCursor )
+{
     if (_mouseCursor != mouseCursor)
     {
-        if (mouseCursor != LeftRightCursor && 
-            mouseCursor != UpDownCursor && 
-            mouseCursor != TopLeftCorner && 
-            mouseCursor != TopRightCorner && 
-            mouseCursor != BottomLeftCorner && 
-            mouseCursor != BottomRightCorner)
-        {
-            _appMouseCursor = mouseCursor;
-        }
-
         _mouseCursor = mouseCursor;
         HCURSOR newCursor = getOrCreateCursor( mouseCursor);
         if (newCursor == _currentCursor) return;
-
+    
         _currentCursor = newCursor;
         _traits->useCursor = (_currentCursor != NULL);
-
+    
         if (_mouseCursor != InheritCursor)
             ::SetCursor(_currentCursor);
     }
@@ -2354,28 +2350,28 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 {
                 case HTLEFT:
                 case HTRIGHT:
-                    setCursor(LeftRightCursor);
+                    setCursorImpl(LeftRightCursor);
                     break;
                 case HTTOP:
                 case HTBOTTOM:
-                    setCursor(UpDownCursor);
+                    setCursorImpl(UpDownCursor);
                     break;
                 case HTTOPLEFT:
-                    setCursor(TopLeftCorner);
+                    setCursorImpl(TopLeftCorner);
                     break;
                 case HTTOPRIGHT:
-                    setCursor(TopRightCorner);
+                    setCursorImpl(TopRightCorner);
                     break;
                 case HTBOTTOMLEFT:
-                    setCursor(BottomLeftCorner);
+                    setCursorImpl(BottomLeftCorner);
                     break;
                 case HTBOTTOMRIGHT:
                 case HTGROWBOX:
-                    setCursor(BottomRightCorner);
+                    setCursorImpl(BottomRightCorner);
                     break;
                 default:
                     if (_traits->useCursor && _appMouseCursor != InheritCursor)
-                        setCursor(LeftArrowCursor);
+                        setCursorImpl(_appMouseCursor);
                     break;
                 }
                 return result;

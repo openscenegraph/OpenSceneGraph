@@ -165,7 +165,7 @@ class OSG_EXPORT Polytope
             {
                 _resultMask = (_resultMask<<1) | 1;
             }
-            _maskStack.back() = _resultMask;
+            _maskStack.push_back(_resultMask);
         }
 
         inline ClippingMask& getCurrentMask() { return _maskStack.back(); }

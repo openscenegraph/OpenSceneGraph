@@ -86,7 +86,8 @@ public:
     }        
 };
 
-SlideShowConstructor::SlideShowConstructor()
+SlideShowConstructor::SlideShowConstructor(const osgDB::ReaderWriter::Options* options):
+    _options(options)
 {
     _slideDistance = osg::DisplaySettings::instance()->getScreenDistance();
     _slideHeight = osg::DisplaySettings::instance()->getScreenHeight();
@@ -321,7 +322,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
         // osg::notify(osg::NOTICE)<<"   new layer background = "<<_slideBackgroundImageFileName<<std::endl;
 
         osg::ref_ptr<osg::Image> image = !_slideBackgroundImageFileName.empty() ?
-            osgDB::readImageFile(_slideBackgroundImageFileName) :
+            osgDB::readImageFile(_slideBackgroundImageFileName, _options.get()) :
             0;
 
         // create the background and title..
@@ -774,7 +775,7 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
 {
     if (!_currentLayer) addLayer();
 
-    osg::Image* image = osgDB::readImageFile(filename);
+    osg::Image* image = osgDB::readImageFile(filename, _options.get());
     
     if (!image) return;
 
@@ -888,8 +889,8 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     if (!_currentLayer) addLayer();
 
 
-    osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(filenameLeft);
-    osg::ref_ptr<osg::Image> imageRight = (filenameRight==filenameLeft) ? imageLeft.get() : osgDB::readImageFile(filenameRight);
+    osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(filenameLeft, _options.get());
+    osg::ref_ptr<osg::Image> imageRight = (filenameRight==filenameLeft) ? imageLeft.get() : osgDB::readImageFile(filenameRight, _options.get());
 
     if (!imageLeft && !imageRight) return;
 
@@ -1083,7 +1084,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
 {
     if (!_currentLayer) addLayer();
 
-    osg::Image* image = osgDB::readImageFile(filename);
+    osg::Image* image = osgDB::readImageFile(filename, _options.get());
     
     osg::notify(osg::INFO)<<"addInteractiveImage("<<filename<<") "<<image<<std::endl;
     
@@ -1202,7 +1203,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
 
 std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filename)
 {
-    std::string foundFile = osgDB::findDataFile(filename);
+    std::string foundFile = osgDB::findDataFile(filename, _options.get());
     if (foundFile.empty()) return foundFile;
 
     osg::notify(osg::INFO)<<"foundFile "<<foundFile<<std::endl;
@@ -1245,7 +1246,7 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
         std::string foundFile = findFileAndRecordPath(filename);
         if (foundFile.empty()) return;
 
-        subgraph = osgDB::readNodeFile(foundFile);
+        subgraph = osgDB::readNodeFile(foundFile, _options.get());
     }
     
     if (!subgraph) return;
@@ -1438,11 +1439,11 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     osg::ref_ptr<osg::Image> image;
     if (fileType == osgDB::DIRECTORY)
     {
-       image = osgDB::readImageFile(foundFile+".dicom");
+       image = osgDB::readImageFile(foundFile+".dicom", _options.get());
     }
     else if (fileType == osgDB::REGULAR_FILE)
     {
-        image = osgDB::readImageFile( foundFile );
+        image = osgDB::readImageFile( foundFile, _options.get() );
     }
 
     if (!image) return;
@@ -1561,7 +1562,7 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
 
     if (!positionData.animation_material_filename.empty())
     {
-        std::string absolute_animation_file_path = osgDB::findDataFile(positionData.animation_material_filename);
+        std::string absolute_animation_file_path = osgDB::findDataFile(positionData.animation_material_filename, _options.get());
         if (!absolute_animation_file_path.empty())
         {        
             std::ifstream animation_filestream(absolute_animation_file_path.c_str());
@@ -1741,7 +1742,7 @@ osg::AnimationPathCallback* SlideShowConstructor::getAnimationPathCallback(const
 {
     if (!positionData.path.empty()) 
     {
-        std::string absolute_animation_file_path = osgDB::findDataFile(positionData.path);
+        std::string absolute_animation_file_path = osgDB::findDataFile(positionData.path, _options.get());
         if (!absolute_animation_file_path.empty())
         {        
 
@@ -1773,7 +1774,7 @@ osg::AnimationPathCallback* SlideShowConstructor::getAnimationPathCallback(const
                 fr.attach(&animation_filestream);
 
                 static osg::ref_ptr<osg::AnimationPath> s_path = new osg::AnimationPath;
-                osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(absolute_animation_file_path); // fr.readObjectOfType(*s_path);
+                osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(absolute_animation_file_path, _options.get()); // fr.readObjectOfType(*s_path);
                 object = fr.readObject(); // fr.readObjectOfType(*s_path);
                 if (object.valid())
                 {

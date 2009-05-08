@@ -604,7 +604,7 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::D
         if (_computeNearFar==COMPUTE_NEAR_FAR_USING_PRIMITIVES)
         {
             osg::Polytope& frustum = getCurrentCullingSet().getFrustum();
-            if (frustum.getCurrentMask() && frustum.getResultMask())
+            if (frustum.getResultMask())
             {
                 if (isBillboard)
                 {

@@ -85,7 +85,7 @@ private:
 
     void decodeLoop();
     void findAspectRatio();
-    void publishFrame(double delay);
+    void publishFrame(double delay, bool audio_disabled);
     double synchronizeVideo(double pts);
     void yuva420pToRgba(AVPicture *dst, AVPicture *src, int width, int height);
 

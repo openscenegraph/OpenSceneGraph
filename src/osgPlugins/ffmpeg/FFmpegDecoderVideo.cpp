@@ -190,7 +190,7 @@ void FFmpegDecoderVideo::decodeLoop()
                 const double synched_pts = m_clocks.videoSynchClock(m_frame.get(), av_q2d(m_stream->time_base), pts);
                 const double frame_delay = m_clocks.videoRefreshSchedule(synched_pts);
 
-                publishFrame(frame_delay);
+                publishFrame(frame_delay, m_clocks.audioDisabled());
             }
         }
 
@@ -268,16 +268,24 @@ int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
 }
 
 
-void FFmpegDecoderVideo::publishFrame(const double delay)
+void FFmpegDecoderVideo::publishFrame(const double delay, bool audio_disabled)
 {
     // If no publishing function, just ignore the frame
     if (m_publish_func == 0)
         return;
 
+#if 1
+    // new code from Jean-Sebasiten Guay - needs testing as we're unclear on the best solution
+    // If the display delay is too small, we better skip the frame.
+    if (!audio_disabled && delay < -0.010)
+        return;
+#else
+    // original solution that hung on video stream over web.
     // If the display delay is too small, we better skip the frame.
     if (delay < -0.010)
         return;
-        
+#endif
+
     AVPicture * const src = (AVPicture *) m_frame.get();
     AVPicture * const dst = (AVPicture *) m_frame_rgba.get();
 

@@ -29,6 +29,7 @@ public:
     void audioAdjustBufferEndPts(double increment);
     void audioSetDelay(double delay);
     void audioDisable();
+    bool audioDisabled() const { return m_audio_disabled; }
 
     double videoSynchClock(const AVFrame * frame, double time_base, double pts);
     double videoRefreshSchedule(double pts);

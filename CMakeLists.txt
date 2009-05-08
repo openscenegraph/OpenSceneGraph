@@ -331,6 +331,7 @@ FIND_PACKAGE(OurDCMTK)
 FIND_PACKAGE(OpenAL)
 FIND_PACKAGE(XUL)
 FIND_PACKAGE(FFmpeg)
+FIND_PACKAGE(SDL)
 
 #use pkg-config to find various modues
 INCLUDE(FindPkgConfig OPTIONAL)
@@ -353,13 +354,13 @@ IF(PKG_CONFIG_FOUND)
 
 ENDIF()
 
+
 #optional example related dependencies
 IF   (BUILD_OSG_EXAMPLES)
 
 
     FIND_PACKAGE(FLTK)
     FIND_PACKAGE(GLUT)
-    FIND_PACKAGE(SDL)
     FIND_PACKAGE(FOX)
 
     SET(wxWidgets_USE_LIBS base core gl net)

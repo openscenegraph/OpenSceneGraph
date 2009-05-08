@@ -227,7 +227,7 @@ public:
     };
 
 
-    SlideShowConstructor();
+    SlideShowConstructor(const osgDB::ReaderWriter::Options* options);
 
     void createPresentation();
     
@@ -360,6 +360,8 @@ protected:
         stateset->setMode(GL_NORMALIZE,osg::StateAttribute::ON);
         return stateset;
     }
+
+    osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
 
     osg::Vec3   _slideOrigin;
     osg::Vec3   _eyeOrigin;

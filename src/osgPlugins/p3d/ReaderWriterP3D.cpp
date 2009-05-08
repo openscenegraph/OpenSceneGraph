@@ -113,7 +113,7 @@ public:
 
     virtual ReadResult readNode(std::istream& fin, const Options* options) const;
 
-    ReadResult readNode(osgDB::XmlNode::Input& input, const osgDB::ReaderWriter::Options* options) const;
+    ReadResult readNode(osgDB::XmlNode::Input& input, osgDB::ReaderWriter::Options* options) const;
 
     void parseModel(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
@@ -1394,11 +1394,15 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
     std::string fileName = osgDB::findDataFile( file );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
+    // code for setting up the database path so that internally referenced file are searched for on relative paths.
+    osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+    local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
+
     osgDB::XmlNode::Input input;
     input.open(fileName);
     input.readAllDataIntoBuffer();
 
-    return readNode(input, options);
+    return readNode(input, local_opt);
 }
 
 osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, const Options* options) const
@@ -1407,10 +1411,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, 
     input.attach(fin);
     input.readAllDataIntoBuffer();
 
-    return readNode(input, options);
+    osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+
+    return readNode(input, local_opt);
 }
 
-osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Input& input, const osgDB::ReaderWriter::Options* options) const
+osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Input& input, osgDB::ReaderWriter::Options* options) const
 {
     bool readOnlyHoldingPage = options ? options->getOptionString()=="holding_slide" : false;
 
@@ -1450,11 +1456,61 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
             return ReadResult::FILE_NOT_HANDLED;
     }
 
-    osgPresentation::SlideShowConstructor constructor;
+    osgPresentation::SlideShowConstructor constructor(options);
 
     osgDB::FilePathList previousPaths = osgDB::getDataFilePathList();
 
     bool readSlide = false;
+
+    std::string pathToPresentation;
+    if (options && !(options->getDatabasePathList().empty()))
+    {
+        pathToPresentation = options->getDatabasePathList().front();
+    }
+
+    for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
+        itr != root->children.end();
+        ++itr)
+    {
+        osgDB::XmlNode* cur = itr->get();
+
+        if (cur->name=="env")
+        {
+            char* str = strdup(cur->contents.c_str());
+            osg::notify(osg::INFO)<<"putenv("<<str<<")"<<std::endl;
+            putenv(str);
+        }
+    }
+
+    for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
+        itr != root->children.end();
+        ++itr)
+    {
+        osgDB::XmlNode* cur = itr->get();
+
+        if (cur->name == "path")
+        {
+            std::string newpath = expandEnvVarsInFileName(cur->contents);
+
+            // now check if an absolue or http path
+            std::string::size_type colonPos = newpath.find_first_of(':');
+            std::string::size_type backslashPos = newpath.find_first_of('/');
+            std::string::size_type forwardslashPos = newpath.find_first_of('\\');
+            bool relativePath = colonPos == std::string::npos &&
+                                backslashPos != 0 &&
+                                forwardslashPos != 0;
+            if (relativePath)
+            {
+                newpath = osgDB::concatPaths(pathToPresentation, newpath);
+                osg::notify(osg::NOTICE)<<"relative path = "<<cur->contents<<", newpath="<<newpath<<std::endl;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"absolute path = "<<cur->contents<<", newpath="<<newpath<<std::endl;
+            }
+            options->getDatabasePathList().push_front(newpath);
+        }
+    }
 
     for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
         itr != root->children.end();

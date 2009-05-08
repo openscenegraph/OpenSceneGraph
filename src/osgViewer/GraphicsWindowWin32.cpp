@@ -1029,7 +1029,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
   _closeWindow(false),
   _destroyWindow(false),
   _destroying(false),
-  _mouseCursor(0),
+  _mouseCursor(InheritCursor),
   _appMouseCursor(LeftArrowCursor),
   _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues( false )
 {

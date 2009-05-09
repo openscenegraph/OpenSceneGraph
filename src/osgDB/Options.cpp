@@ -92,3 +92,20 @@ ReaderWriter::WriteResult WriteFileCallback::writeShader(const osg::Shader& obj,
 {
     return osgDB::Registry::instance()->writeShaderImplementation(obj,fileName,options);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Options constructor
+//
+
+Options::Options(const Options& options,const osg::CopyOp& copyop):
+    osg::Object(options,copyop),
+    _str(options._str),
+    _databasePaths(options._databasePaths),
+    _objectCacheHint(options._objectCacheHint),
+    _buildKdTreesHint(options._buildKdTreesHint),
+    _pluginData(options._pluginData),
+    _pluginStringData(options._pluginStringData),
+    _findFileCallback(options._findFileCallback),
+    _readFileCallback(options._readFileCallback),
+    _writeFileCallback(options._writeFileCallback) {}

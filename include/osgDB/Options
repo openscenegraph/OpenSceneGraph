@@ -143,14 +143,7 @@ class Options : public osg::Object
             _objectCacheHint(CACHE_ARCHIVES),
             _buildKdTreesHint(NO_PREFERENCE) {}
 
-        Options(const Options& options,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            osg::Object(options,copyop),
-            _str(options._str),
-            _databasePaths(options._databasePaths),
-            _objectCacheHint(options._objectCacheHint),
-            _buildKdTreesHint(options._buildKdTreesHint),
-            _pluginData(options._pluginData),
-            _pluginStringData(options._pluginStringData){}
+        Options(const Options& options,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgDB,Options);
 

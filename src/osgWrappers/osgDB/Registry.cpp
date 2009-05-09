@@ -27,6 +27,7 @@
 #include <osgDB/DynamicLibrary>
 #include <osgDB/FileCache>
 #include <osgDB/Input>
+#include <osgDB/Options>
 #include <osgDB/Output>
 #include <osgDB/ReaderWriter>
 #include <osgDB/Registry>
@@ -77,6 +78,12 @@ BEGIN_ENUM_REFLECTOR(osgDB::Registry::LoadStatus)
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgDB::ReaderWriter > >, osgDB::Registry::ReaderWriterList)
+
+TYPE_NAME_ALIAS(class osgDB::FindFileCallback, osgDB::Registry::FindFileCallback)
+
+TYPE_NAME_ALIAS(class osgDB::ReadFileCallback, osgDB::Registry::ReadFileCallback)
+
+TYPE_NAME_ALIAS(class osgDB::WriteFileCallback, osgDB::Registry::WriteFileCallback)
 
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_DeclaringFile("osgDB/Registry");
@@ -225,6 +232,41 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __bool__writeObject__C5_osg_Object_R1__Output_R1,
 	          "",
 	          "");
+	I_Method1(void, setFindFileCallback, IN, osgDB::Registry::FindFileCallback *, cb,
+	          Properties::NON_VIRTUAL,
+	          __void__setFindFileCallback__FindFileCallback_P1,
+	          "Set the Registry callback to use in place of the default findFile calls. ",
+	          "");
+	I_Method0(osgDB::Registry::FindFileCallback *, getFindFileCallback,
+	          Properties::NON_VIRTUAL,
+	          __FindFileCallback_P1__getFindFileCallback,
+	          "Get the findFile callback. ",
+	          "");
+	I_Method0(const osgDB::Registry::FindFileCallback *, getFindFileCallback,
+	          Properties::NON_VIRTUAL,
+	          __C5_FindFileCallback_P1__getFindFileCallback,
+	          "Get the const findFile callback. ",
+	          "");
+	I_Method3(std::string, findDataFile, IN, const std::string &, fileName, IN, const osgDB::Options *, options, IN, osgDB::CaseSensitivity, caseSensitivity,
+	          Properties::NON_VIRTUAL,
+	          __std_string__findDataFile__C5_std_string_R1__C5_Options_P1__CaseSensitivity,
+	          "",
+	          "");
+	I_Method3(std::string, findDataFileImplementation, IN, const std::string &, fileName, IN, const osgDB::Options *, options, IN, osgDB::CaseSensitivity, caseSensitivity,
+	          Properties::NON_VIRTUAL,
+	          __std_string__findDataFileImplementation__C5_std_string_R1__C5_Options_P1__CaseSensitivity,
+	          "",
+	          "");
+	I_Method3(std::string, findLibraryFile, IN, const std::string &, fileName, IN, const osgDB::Options *, options, IN, osgDB::CaseSensitivity, caseSensitivity,
+	          Properties::NON_VIRTUAL,
+	          __std_string__findLibraryFile__C5_std_string_R1__C5_Options_P1__CaseSensitivity,
+	          "",
+	          "");
+	I_Method3(std::string, findLibraryFileImplementation, IN, const std::string &, fileName, IN, const osgDB::Options *, options, IN, osgDB::CaseSensitivity, caseSensitivity,
+	          Properties::NON_VIRTUAL,
+	          __std_string__findLibraryFileImplementation__C5_std_string_R1__C5_Options_P1__CaseSensitivity,
+	          "",
+	          "");
 	I_Method1(void, setReadFileCallback, IN, osgDB::Registry::ReadFileCallback *, cb,
 	          Properties::NON_VIRTUAL,
 	          __void__setReadFileCallback__ReadFileCallback_P1,
@@ -240,64 +282,64 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __C5_ReadFileCallback_P1__getReadFileCallback,
 	          "Get the const readFile callback. ",
 	          "");
-	I_Method4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, fileName, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, fileName, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__openArchive__C5_std_string_R1__ReaderWriter_ArchiveStatus__unsigned_int__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_ReadResult__openArchive__C5_std_string_R1__ReaderWriter_ArchiveStatus__unsigned_int__C5_Options_P1,
 	          "",
 	          "");
-	I_Method4(osgDB::ReaderWriter::ReadResult, openArchiveImplementation, IN, const std::string &, fileName, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method4(osgDB::ReaderWriter::ReadResult, openArchiveImplementation, IN, const std::string &, fileName, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__openArchiveImplementation__C5_std_string_R1__ReaderWriter_ArchiveStatus__unsigned_int__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_ReadResult__openArchiveImplementation__C5_std_string_R1__ReaderWriter_ArchiveStatus__unsigned_int__C5_Options_P1,
 	          "",
 	          "");
-	I_MethodWithDefaults3(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, fileName, , IN, const osgDB::ReaderWriter::Options *, options, , IN, bool, buildKdTreeIfRequired, true,
+	I_MethodWithDefaults3(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, fileName, , IN, const osgDB::Options *, options, , IN, bool, buildKdTreeIfRequired, true,
 	                      Properties::NON_VIRTUAL,
-	                      __ReaderWriter_ReadResult__readObject__C5_std_string_R1__C5_ReaderWriter_Options_P1__bool,
+	                      __ReaderWriter_ReadResult__readObject__C5_std_string_R1__C5_Options_P1__bool,
 	                      "",
 	                      "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readObjectImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method2(osgDB::ReaderWriter::ReadResult, readObjectImplementation, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__readObjectImplementation__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_ReadResult__readObjectImplementation__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__readImage__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_ReadResult__readImage__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readImageImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method2(osgDB::ReaderWriter::ReadResult, readImageImplementation, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__readImageImplementation__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_ReadResult__readImageImplementation__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__readHeightField__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_ReadResult__readHeightField__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readHeightFieldImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method2(osgDB::ReaderWriter::ReadResult, readHeightFieldImplementation, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__readHeightFieldImplementation__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_ReadResult__readHeightFieldImplementation__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_MethodWithDefaults3(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, fileName, , IN, const osgDB::ReaderWriter::Options *, options, , IN, bool, buildKdTreeIfRequired, true,
+	I_MethodWithDefaults3(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, fileName, , IN, const osgDB::Options *, options, , IN, bool, buildKdTreeIfRequired, true,
 	                      Properties::NON_VIRTUAL,
-	                      __ReaderWriter_ReadResult__readNode__C5_std_string_R1__C5_ReaderWriter_Options_P1__bool,
+	                      __ReaderWriter_ReadResult__readNode__C5_std_string_R1__C5_Options_P1__bool,
 	                      "",
 	                      "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readNodeImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method2(osgDB::ReaderWriter::ReadResult, readNodeImplementation, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__readNodeImplementation__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_ReadResult__readNodeImplementation__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readShader, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method2(osgDB::ReaderWriter::ReadResult, readShader, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__readShader__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_ReadResult__readShader__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readShaderImplementation, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method2(osgDB::ReaderWriter::ReadResult, readShaderImplementation, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_ReadResult__readShaderImplementation__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_ReadResult__readShaderImplementation__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
 	I_Method1(void, setWriteFileCallback, IN, osgDB::Registry::WriteFileCallback *, cb,
@@ -315,69 +357,69 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __C5_WriteFileCallback_P1__getWriteFileCallback,
 	          "Get the const writeFile callback. ",
 	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, obj, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_WriteResult__writeObject__C5_osg_Object_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_WriteResult__writeObject__C5_osg_Object_R1__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeObjectImplementation, IN, const osg::Object &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeObjectImplementation, IN, const osg::Object &, obj, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_WriteResult__writeObjectImplementation__C5_osg_Object_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_WriteResult__writeObjectImplementation__C5_osg_Object_R1__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, obj, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_WriteResult__writeImage__C5_osg_Image_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_WriteResult__writeImage__C5_osg_Image_R1__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeImageImplementation, IN, const osg::Image &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeImageImplementation, IN, const osg::Image &, obj, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_WriteResult__writeImageImplementation__C5_osg_Image_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_WriteResult__writeImageImplementation__C5_osg_Image_R1__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, obj, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_WriteResult__writeHeightField__C5_osg_HeightField_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_WriteResult__writeHeightField__C5_osg_HeightField_R1__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeHeightFieldImplementation, IN, const osg::HeightField &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeHeightFieldImplementation, IN, const osg::HeightField &, obj, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_WriteResult__writeHeightFieldImplementation__C5_osg_HeightField_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_WriteResult__writeHeightFieldImplementation__C5_osg_HeightField_R1__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, node, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, node, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_WriteResult__writeNode__C5_osg_Node_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_WriteResult__writeNode__C5_osg_Node_R1__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeNodeImplementation, IN, const osg::Node &, node, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeNodeImplementation, IN, const osg::Node &, node, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_WriteResult__writeNodeImplementation__C5_osg_Node_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_WriteResult__writeNodeImplementation__C5_osg_Node_R1__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeShader, IN, const osg::Shader &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeShader, IN, const osg::Shader &, obj, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_WriteResult__writeShader__C5_osg_Shader_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_WriteResult__writeShader__C5_osg_Shader_R1__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeShaderImplementation, IN, const osg::Shader &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method3(osgDB::ReaderWriter::WriteResult, writeShaderImplementation, IN, const osg::Shader &, obj, IN, const std::string &, fileName, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_WriteResult__writeShaderImplementation__C5_osg_Shader_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	          __ReaderWriter_WriteResult__writeShaderImplementation__C5_osg_Shader_R1__C5_std_string_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method2(void, _buildKdTreeIfRequired, IN, osgDB::ReaderWriter::ReadResult &, result, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method2(void, _buildKdTreeIfRequired, IN, osgDB::ReaderWriter::ReadResult &, result, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __void___buildKdTreeIfRequired__ReaderWriter_ReadResult_R1__C5_ReaderWriter_Options_P1,
+	          __void___buildKdTreeIfRequired__ReaderWriter_ReadResult_R1__C5_Options_P1,
 	          "",
 	          "");
-	I_Method1(void, setBuildKdTreesHint, IN, osgDB::ReaderWriter::Options::BuildKdTreesHint, hint,
+	I_Method1(void, setBuildKdTreesHint, IN, osgDB::Options::BuildKdTreesHint, hint,
 	          Properties::NON_VIRTUAL,
-	          __void__setBuildKdTreesHint__ReaderWriter_Options_BuildKdTreesHint,
+	          __void__setBuildKdTreesHint__Options_BuildKdTreesHint,
 	          "Set whether the KdTrees should be built for geometry in the loader model. ",
 	          "");
-	I_Method0(osgDB::ReaderWriter::Options::BuildKdTreesHint, getBuildKdTreesHint,
+	I_Method0(osgDB::Options::BuildKdTreesHint, getBuildKdTreesHint,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_Options_BuildKdTreesHint__getBuildKdTreesHint,
+	          __Options_BuildKdTreesHint__getBuildKdTreesHint,
 	          "Get whether the KdTrees should be built for geometry in the loader model. ",
 	          "");
 	I_Method1(void, setKdTreeBuilder, IN, osg::KdTreeBuilder *, builder,
@@ -430,19 +472,19 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __bool__getCreateNodeFromImage,
 	          "",
 	          "");
-	I_Method1(void, setOptions, IN, osgDB::ReaderWriter::Options *, opt,
+	I_Method1(void, setOptions, IN, osgDB::Options *, opt,
 	          Properties::NON_VIRTUAL,
-	          __void__setOptions__ReaderWriter_Options_P1,
+	          __void__setOptions__Options_P1,
 	          "",
 	          "");
-	I_Method0(osgDB::ReaderWriter::Options *, getOptions,
+	I_Method0(osgDB::Options *, getOptions,
 	          Properties::NON_VIRTUAL,
-	          __ReaderWriter_Options_P1__getOptions,
+	          __Options_P1__getOptions,
 	          "",
 	          "");
-	I_Method0(const osgDB::ReaderWriter::Options *, getOptions,
+	I_Method0(const osgDB::Options *, getOptions,
 	          Properties::NON_VIRTUAL,
-	          __C5_ReaderWriter_Options_P1__getOptions,
+	          __C5_Options_P1__getOptions,
 	          "",
 	          "");
 	I_Method0(void, initFilePathLists,
@@ -603,18 +645,18 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	                   __ReaderWriter_ReadResult__read__C5_ReadFunctor_R1,
 	                   "",
 	                   "");
-	I_ProtectedMethod2(osgDB::ReaderWriter::ReadResult, readImplementation, IN, const osgDB::Registry::ReadFunctor &, readFunctor, IN, osgDB::ReaderWriter::Options::CacheHintOptions, cacheHint,
+	I_ProtectedMethod2(osgDB::ReaderWriter::ReadResult, readImplementation, IN, const osgDB::Registry::ReadFunctor &, readFunctor, IN, osgDB::Options::CacheHintOptions, cacheHint,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __ReaderWriter_ReadResult__readImplementation__C5_ReadFunctor_R1__ReaderWriter_Options_CacheHintOptions,
+	                   __ReaderWriter_ReadResult__readImplementation__C5_ReadFunctor_R1__Options_CacheHintOptions,
 	                   "",
 	                   "");
 	I_SimpleProperty(osgDB::AuthenticationMap *, AuthenticationMap, 
 	                 __AuthenticationMap_P1__getAuthenticationMap, 
 	                 __void__setAuthenticationMap__AuthenticationMap_P1);
-	I_SimpleProperty(osgDB::ReaderWriter::Options::BuildKdTreesHint, BuildKdTreesHint, 
-	                 __ReaderWriter_Options_BuildKdTreesHint__getBuildKdTreesHint, 
-	                 __void__setBuildKdTreesHint__ReaderWriter_Options_BuildKdTreesHint);
+	I_SimpleProperty(osgDB::Options::BuildKdTreesHint, BuildKdTreesHint, 
+	                 __Options_BuildKdTreesHint__getBuildKdTreesHint, 
+	                 __void__setBuildKdTreesHint__Options_BuildKdTreesHint);
 	I_SimpleProperty(bool, CreateNodeFromImage, 
 	                 __bool__getCreateNodeFromImage, 
 	                 __void__setCreateNodeFromImage__bool);
@@ -624,15 +666,18 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_SimpleProperty(osgDB::FileCache *, FileCache, 
 	                 __FileCache_P1__getFileCache, 
 	                 __void__setFileCache__FileCache_P1);
+	I_SimpleProperty(osgDB::Registry::FindFileCallback *, FindFileCallback, 
+	                 __FindFileCallback_P1__getFindFileCallback, 
+	                 __void__setFindFileCallback__FindFileCallback_P1);
 	I_SimpleProperty(osg::KdTreeBuilder *, KdTreeBuilder, 
 	                 __osg_KdTreeBuilder_P1__getKdTreeBuilder, 
 	                 __void__setKdTreeBuilder__osg_KdTreeBuilder_P1);
 	I_SimpleProperty(const osgDB::FilePathList &, LibraryFilePathList, 
 	                 __C5_FilePathList_R1__getLibraryFilePathList, 
 	                 __void__setLibraryFilePathList__C5_FilePathList_R1);
-	I_SimpleProperty(osgDB::ReaderWriter::Options *, Options, 
-	                 __ReaderWriter_Options_P1__getOptions, 
-	                 __void__setOptions__ReaderWriter_Options_P1);
+	I_SimpleProperty(osgDB::Options *, Options, 
+	                 __Options_P1__getOptions, 
+	                 __void__setOptions__Options_P1);
 	I_SimpleProperty(osgDB::Registry::ReadFileCallback *, ReadFileCallback, 
 	                 __ReadFileCallback_P1__getReadFileCallback, 
 	                 __void__setReadFileCallback__ReadFileCallback_P1);
@@ -647,48 +692,10 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	                 __void__setWriteFileCallback__WriteFileCallback_P1);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgDB::Registry::ReadFileCallback)
-	I_DeclaringFile("osgDB/Registry");
-	I_VirtualBaseType(osg::Referenced);
-	I_Constructor0(____ReadFileCallback,
-	               "",
-	               "");
-	I_Method4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, filename, IN, osgDB::ReaderWriter::ArchiveStatus, status, IN, unsigned int, indexBlockSizeHint, IN, const osgDB::ReaderWriter::Options *, useObjectCache,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_ReadResult__openArchive__C5_std_string_R1__ReaderWriter_ArchiveStatus__unsigned_int__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_ReadResult__readObject__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_ReadResult__readImage__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_ReadResult__readHeightField__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_ReadResult__readNode__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
-	I_Method2(osgDB::ReaderWriter::ReadResult, readShader, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_ReadResult__readShader__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
-END_REFLECTOR
-
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry::ReadFunctor)
 	I_DeclaringFile("osgDB/Registry");
-	I_Constructor2(IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options,
-	               ____ReadFunctor__C5_std_string_R1__C5_ReaderWriter_Options_P1,
+	I_Constructor2(IN, const std::string &, filename, IN, const osgDB::Options *, options,
+	               ____ReadFunctor__C5_std_string_R1__C5_Options_P1,
 	               "",
 	               "");
 	I_Method1(osgDB::ReaderWriter::ReadResult, doRead, IN, osgDB::ReaderWriter &, rw,
@@ -707,39 +714,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Registry::ReadFunctor)
 	          "",
 	          "");
 	I_PublicMemberProperty(std::string, _filename);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgDB::Registry::WriteFileCallback)
-	I_DeclaringFile("osgDB/Registry");
-	I_VirtualBaseType(osg::Referenced);
-	I_Constructor0(____WriteFileCallback,
-	               "",
-	               "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_WriteResult__writeObject__C5_osg_Object_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_WriteResult__writeImage__C5_osg_Image_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_WriteResult__writeHeightField__C5_osg_HeightField_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_WriteResult__writeNode__C5_osg_Node_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
-	I_Method3(osgDB::ReaderWriter::WriteResult, writeShader, IN, const osg::Shader &, obj, IN, const std::string &, fileName, IN, const osgDB::ReaderWriter::Options *, options,
-	          Properties::VIRTUAL,
-	          __ReaderWriter_WriteResult__writeShader__C5_osg_Shader_R1__C5_std_string_R1__C5_ReaderWriter_Options_P1,
-	          "",
-	          "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgDB::ReaderWriter >)

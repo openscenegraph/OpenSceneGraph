@@ -63,7 +63,7 @@ void Output::init()
     }
 }
 
-void Output::setOptions(const ReaderWriter::Options* options)
+void Output::setOptions(const Options* options)
 {
     _options = options;
 }

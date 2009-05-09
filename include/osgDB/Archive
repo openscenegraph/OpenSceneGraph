@@ -68,7 +68,7 @@ class OSGDB_EXPORT Archive : public ReaderWriter
 OSGDB_EXPORT Archive* openArchive(const std::string& filename, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint=4096);
 
 /** Open an archive for reading or writing.*/
-OSGDB_EXPORT Archive* openArchive(const std::string& filename, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint,ReaderWriter::Options* options);
+OSGDB_EXPORT Archive* openArchive(const std::string& filename, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint,Options* options);
 }
 
 #endif // OSGDB_ARCHIVE

@@ -37,6 +37,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ImagePager
     ${HEADER_PATH}/Input
     ${HEADER_PATH}/Output
+    ${HEADER_PATH}/Options
     ${HEADER_PATH}/ParameterOutput
     ${HEADER_PATH}/PluginQuery
     ${HEADER_PATH}/ReaderWriter
@@ -71,6 +72,7 @@ ADD_LIBRARY(${LIB_NAME}
     Input.cpp
     MimeTypes.cpp
     Output.cpp
+    Options.cpp
     PluginQuery.cpp
     ReaderWriter.cpp
     ReadFile.cpp

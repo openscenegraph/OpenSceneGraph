@@ -18,7 +18,7 @@
 #include <osg/StateAttribute>
 #include <osg/Uniform>
 #include <osgDB/Input>
-#include <osgDB/ReaderWriter>
+#include <osgDB/Options>
 #include <osgDB/Registry>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -37,14 +37,14 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Input)
 	I_Constructor0(____Input,
 	               "",
 	               "");
-	I_Method1(void, setOptions, IN, const osgDB::ReaderWriter::Options *, options,
+	I_Method1(void, setOptions, IN, const osgDB::Options *, options,
 	          Properties::NON_VIRTUAL,
-	          __void__setOptions__C5_ReaderWriter_Options_P1,
+	          __void__setOptions__C5_Options_P1,
 	          "",
 	          "");
-	I_Method0(const osgDB::ReaderWriter::Options *, getOptions,
+	I_Method0(const osgDB::Options *, getOptions,
 	          Properties::NON_VIRTUAL,
-	          __C5_ReaderWriter_Options_P1__getOptions,
+	          __C5_Options_P1__getOptions,
 	          "",
 	          "");
 	I_Method1(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj,
@@ -207,8 +207,8 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Input)
 	          __bool__read__C5_char_P1__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter__Parameter,
 	          "",
 	          "");
-	I_SimpleProperty(const osgDB::ReaderWriter::Options *, Options, 
-	                 __C5_ReaderWriter_Options_P1__getOptions, 
-	                 __void__setOptions__C5_ReaderWriter_Options_P1);
+	I_SimpleProperty(const osgDB::Options *, Options, 
+	                 __C5_Options_P1__getOptions, 
+	                 __void__setOptions__C5_Options_P1);
 END_REFLECTOR
 

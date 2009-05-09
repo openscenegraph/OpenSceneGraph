@@ -23,12 +23,6 @@
 
 namespace osgDB {
 
-enum CaseSensitivity
-{
-    CASE_SENSITIVE,
-    CASE_INSENSITIVE
-};
-
 enum FileType
 {
     FILE_NOT_FOUND,
@@ -86,7 +80,7 @@ extern OSGDB_EXPORT std::string findDataFile(const std::string& filename,CaseSen
 /** Search for specified file in file system, checking first the database path set in the Options structure, then the DataFilePathList for possible paths, 
   * returning the full path of the first valid file found, return an empty string if no string is found.
   */
-extern OSGDB_EXPORT std::string findDataFile(const std::string& filename,const ReaderWriter::Options* options, CaseSensitivity caseSensitivity=CASE_SENSITIVE);
+extern OSGDB_EXPORT std::string findDataFile(const std::string& filename,const Options* options, CaseSensitivity caseSensitivity=CASE_SENSITIVE);
 
 inline void setLibraryFilePathList(const FilePathList& filepaths) { osgDB::Registry::instance()->setLibraryFilePathList(filepaths); }
 

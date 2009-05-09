@@ -21,8 +21,8 @@ namespace osgDB {
 // forward declare
 class XmlNode;
 
-/** read an Xml file, find the file in ReaderWriter::Options DataFilePathList.*/
-extern OSGDB_EXPORT XmlNode* readXmlFile(const std::string& filename,const ReaderWriter::Options* options);
+/** read an Xml file, find the file in Options DataFilePathList.*/
+extern OSGDB_EXPORT XmlNode* readXmlFile(const std::string& filename,const Options* options);
 
 /** read an Xml file, find the file in osgDB::Registry's eaderWriter::Options DataFilePathList.*/
 inline XmlNode* readXmlFile(const std::string& filename)

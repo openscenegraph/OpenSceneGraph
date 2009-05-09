@@ -27,7 +27,7 @@ osgDB::Archive* osgDB::openArchive(const std::string& filename, ReaderWriter::Ar
     return openArchive(filename, status, indexBlockSizeHint, Registry::instance()->getOptions());
 }
 
-osgDB::Archive* osgDB::openArchive(const std::string& filename, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint,ReaderWriter::Options* options)
+osgDB::Archive* osgDB::openArchive(const std::string& filename, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint,Options* options)
 {
     // ensure archive extension is in the registry list
     std::string::size_type dot = filename.find_last_of('.');

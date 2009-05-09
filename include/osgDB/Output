@@ -36,8 +36,8 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
         virtual ~Output();
 
        
-        void setOptions(const ReaderWriter::Options* options);
-        const ReaderWriter::Options* getOptions() const { return _options.get(); }
+        void setOptions(const Options* options);
+        const Options* getOptions() const { return _options.get(); }
 
         void setWriteOutDefaultValues(bool flag) { _writeOutDefaultValues = flag; }
         bool getWriteOutDefaultValues() const { return _writeOutDefaultValues; }
@@ -106,7 +106,7 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
 
         virtual void init();
 
-        osg::ref_ptr<const ReaderWriter::Options> _options;
+        osg::ref_ptr<const Options> _options;
 
         int _indent;
         int _indentStep;

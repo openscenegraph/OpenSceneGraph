@@ -121,7 +121,9 @@ Shader::~Shader()
 
 bool Shader::setType( Type t )
 {
-    if( _type != UNDEFINED )
+    if (_type==t) return true;
+
+    if (_type != UNDEFINED)
     {
         osg::notify(osg::WARN) << "cannot change type of Shader" << std::endl;
         return false;

@@ -28,7 +28,7 @@
 
 #include <osgDB/SharedStateManager>
 #include <osgDB/ReaderWriter>
-#include <osgDB/Export>
+#include <osgDB/Options>
 
 #include <map>
 #include <list>
@@ -70,7 +70,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         virtual void requestNodeFile(const std::string& fileName,osg::Group* group,
                                      float priority, const osg::FrameStamp* framestamp,
                                      osg::ref_ptr<osg::Referenced>& databaseRequest,
-                                     ReaderWriter::Options* loadOptions);
+                                     Options* loadOptions);
 
         /** Set the priority of the database pager thread(s).*/
         int setSchedulePriority(OpenThreads::Thread::ThreadPriority priority);
@@ -375,7 +375,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             osg::observer_ptr<osg::Group>       _groupForAddingLoadedSubgraph;
             osg::ref_ptr<osg::Node>             _loadedModel;
             DataToCompileMap                    _dataToCompileMap;
-            osg::ref_ptr<ReaderWriter::Options> _loadOptions;
+            osg::ref_ptr<Options> _loadOptions;
             RequestQueue*                       _requestQueue;
 
             bool isRequestCurrent (int frameNumber) const

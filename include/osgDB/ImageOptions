@@ -14,11 +14,11 @@
 #ifndef OSGDB_IMAGEOPTIONS
 #define OSGDB_IMAGEOPTIONS 1
 
-#include <osgDB/ReaderWriter>
+#include <osgDB/Options>
 
 namespace osgDB {
 
-class OSGDB_EXPORT ImageOptions : public osgDB::ReaderWriter::Options
+class OSGDB_EXPORT ImageOptions : public osgDB::Options
 {
     public:
     
@@ -27,7 +27,7 @@ class OSGDB_EXPORT ImageOptions : public osgDB::ReaderWriter::Options
         ImageOptions(const std::string& str);
             
         ImageOptions(const ImageOptions& options,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            osgDB::ReaderWriter::Options(options,copyop),
+            osgDB::Options(options,copyop),
             _sourceImageSamplingMode(options._sourceImageSamplingMode),
             _sourceImageWindowMode(options._sourceImageWindowMode),
             _sourceRatioWindow(options._sourceRatioWindow),

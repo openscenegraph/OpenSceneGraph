@@ -1405,6 +1405,15 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
     return readNode(input, local_opt);
 }
 
+struct MyFindFileCallback : public osgDB::FindFileCallback
+{
+    virtual std::string findDataFile(const std::string& filename, const osgDB::Options* options, osgDB::CaseSensitivity caseSensitivity)
+    {
+        osg::notify(osg::NOTICE)<<"find file "<<filename<<std::endl;
+        return osgDB::Registry::instance()->findDataFileImplementation(filename, options, caseSensitivity);
+    }
+};
+
 osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, const Options* options) const
 {
     osgDB::XmlNode::Input input;
@@ -1412,6 +1421,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, 
     input.readAllDataIntoBuffer();
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+    local_opt->setFindFileCallback(new MyFindFileCallback);
 
     return readNode(input, local_opt);
 }
@@ -1428,6 +1438,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
 
 
     doc->read(input);
+
 
     // doc->write(std::cout);
 

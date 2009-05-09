@@ -27,6 +27,7 @@
 #include <osg/PolygonOffset>
 #include <osg/Depth>
 #include <osgDB/ReaderWriter>
+#include <osgDB/Options>
 
 #include "Types.h"
 #include "Record.h"

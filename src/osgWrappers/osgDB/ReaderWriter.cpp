@@ -17,7 +17,6 @@
 #include <osg/Shader>
 #include <osg/Shape>
 #include <osgDB/Archive>
-#include <osgDB/AuthenticationMap>
 #include <osgDB/ReaderWriter>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -28,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osgDB/Options>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Features)
 	I_DeclaringFile("osgDB/ReaderWriter");
 	I_EnumLabel(osgDB::ReaderWriter::FEATURE_NONE);
@@ -54,6 +55,8 @@ END_REFLECTOR
 TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osgDB::ReaderWriter::FormatDescriptionMap)
 
 TYPE_NAME_ALIAS(std::list< std::string >, osgDB::ReaderWriter::FeatureList)
+
+TYPE_NAME_ALIAS(osgDB::Options, osgDB::ReaderWriter::Options)
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	I_DeclaringFile("osgDB/ReaderWriter");
@@ -247,188 +250,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	                   __void__supportsOption__C5_std_string_R1__C5_std_string_R1,
 	                   "",
 	                   "");
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::CacheHintOptions)
-	I_DeclaringFile("osgDB/ReaderWriter");
-	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_NONE);
-	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_NODES);
-	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_IMAGES);
-	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_HEIGHTFIELDS);
-	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_ARCHIVES);
-	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_OBJECTS);
-	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_SHADERS);
-	I_EnumLabel(osgDB::ReaderWriter::Options::CACHE_ALL);
-END_REFLECTOR
-
-BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::Options::BuildKdTreesHint)
-	I_DeclaringFile("osgDB/ReaderWriter");
-	I_EnumLabel(osgDB::ReaderWriter::Options::NO_PREFERENCE);
-	I_EnumLabel(osgDB::ReaderWriter::Options::DO_NOT_BUILD_KDTREES);
-	I_EnumLabel(osgDB::ReaderWriter::Options::BUILD_KDTREES);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter::Options)
-	I_DeclaringFile("osgDB/ReaderWriter");
-	I_BaseType(osg::Object);
-	I_Constructor0(____Options,
-	               "",
-	               "");
-	I_Constructor1(IN, const std::string &, str,
-	               Properties::NON_EXPLICIT,
-	               ____Options__C5_std_string_R1,
-	               "",
-	               "");
-	I_ConstructorWithDefaults2(IN, const osgDB::ReaderWriter::Options &, options, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____Options__C5_Options_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(void, setOptionString, IN, const std::string &, str,
-	          Properties::NON_VIRTUAL,
-	          __void__setOptionString__C5_std_string_R1,
-	          "Set the general Options string. ",
-	          "");
-	I_Method0(const std::string &, getOptionString,
-	          Properties::NON_VIRTUAL,
-	          __C5_std_string_R1__getOptionString,
-	          "Get the general Options string. ",
-	          "");
-	I_Method1(void, setDatabasePath, IN, const std::string &, str,
-	          Properties::NON_VIRTUAL,
-	          __void__setDatabasePath__C5_std_string_R1,
-	          "Set the database path to use a hint of where to look when loading models. ",
-	          "");
-	I_Method0(osgDB::FilePathList &, getDatabasePathList,
-	          Properties::NON_VIRTUAL,
-	          __FilePathList_R1__getDatabasePathList,
-	          "Get the database path which is used a hint of where to look when loading models. ",
-	          "");
-	I_Method0(const osgDB::FilePathList &, getDatabasePathList,
-	          Properties::NON_VIRTUAL,
-	          __C5_FilePathList_R1__getDatabasePathList,
-	          "Get the const database path which is used a hint of where to look when loading models. ",
-	          "");
-	I_Method1(void, setObjectCacheHint, IN, osgDB::ReaderWriter::Options::CacheHintOptions, useObjectCache,
-	          Properties::NON_VIRTUAL,
-	          __void__setObjectCacheHint__CacheHintOptions,
-	          "Set whether the Registry::ObjectCache should be used by default. ",
-	          "");
-	I_Method0(osgDB::ReaderWriter::Options::CacheHintOptions, getObjectCacheHint,
-	          Properties::NON_VIRTUAL,
-	          __CacheHintOptions__getObjectCacheHint,
-	          "Get whether the Registry::ObjectCache should be used by default. ",
-	          "");
-	I_Method1(void, setBuildKdTreesHint, IN, osgDB::ReaderWriter::Options::BuildKdTreesHint, hint,
-	          Properties::NON_VIRTUAL,
-	          __void__setBuildKdTreesHint__BuildKdTreesHint,
-	          "Set whether the KdTrees should be built for geometry in the loader model. ",
-	          "");
-	I_Method0(osgDB::ReaderWriter::Options::BuildKdTreesHint, getBuildKdTreesHint,
-	          Properties::NON_VIRTUAL,
-	          __BuildKdTreesHint__getBuildKdTreesHint,
-	          "Get whether the KdTrees should be built for geometry in the loader model. ",
-	          "");
-	I_Method1(void, setAuthenticationMap, IN, osgDB::AuthenticationMap *, authenticationMap,
-	          Properties::NON_VIRTUAL,
-	          __void__setAuthenticationMap__AuthenticationMap_P1,
-	          "Set the password map to be used by plugins when access files from secure locations. ",
-	          "");
-	I_Method0(const osgDB::AuthenticationMap *, getAuthenticationMap,
-	          Properties::NON_VIRTUAL,
-	          __C5_AuthenticationMap_P1__getAuthenticationMap,
-	          "Get the password map to be used by plugins when access files from secure locations. ",
-	          "");
-	I_Method2(void, setPluginData, IN, const std::string &, s, IN, void *, v,
-	          Properties::NON_VIRTUAL,
-	          __void__setPluginData__C5_std_string_R1__void_P1,
-	          "Sets a plugindata value PluginData with a string. ",
-	          "");
-	I_Method1(void *, getPluginData, IN, const std::string &, s,
-	          Properties::NON_VIRTUAL,
-	          __void_P1__getPluginData__C5_std_string_R1,
-	          "Get a value from the PluginData. ",
-	          "");
-	I_Method1(const void *, getPluginData, IN, const std::string &, s,
-	          Properties::NON_VIRTUAL,
-	          __C5_void_P1__getPluginData__C5_std_string_R1,
-	          "Get a value from the PluginData. ",
-	          "");
-	I_Method1(void, removePluginData, IN, const std::string &, s,
-	          Properties::NON_VIRTUAL,
-	          __void__removePluginData__C5_std_string_R1,
-	          "Remove a value from the PluginData. ",
-	          "");
-	I_Method2(void, setPluginStringData, IN, const std::string &, s, IN, const std::string &, v,
-	          Properties::NON_VIRTUAL,
-	          __void__setPluginStringData__C5_std_string_R1__C5_std_string_R1,
-	          "Sets a plugindata value PluginData with a string. ",
-	          "");
-	I_Method1(std::string, getPluginStringData, IN, const std::string &, s,
-	          Properties::NON_VIRTUAL,
-	          __std_string__getPluginStringData__C5_std_string_R1,
-	          "Get a string from the PluginStrData. ",
-	          "");
-	I_Method1(const std::string, getPluginStringData, IN, const std::string &, s,
-	          Properties::NON_VIRTUAL,
-	          __C5_std_string__getPluginStringData__C5_std_string_R1,
-	          "Get a value from the PluginData. ",
-	          "");
-	I_Method1(void, removePluginStringData, IN, const std::string &, s,
-	          Properties::NON_VIRTUAL,
-	          __void__removePluginStringData__C5_std_string_R1,
-	          "Remove a value from the PluginData. ",
-	          "");
-	I_SimpleProperty(osgDB::AuthenticationMap *, AuthenticationMap, 
-	                 0, 
-	                 __void__setAuthenticationMap__AuthenticationMap_P1);
-	I_SimpleProperty(osgDB::ReaderWriter::Options::BuildKdTreesHint, BuildKdTreesHint, 
-	                 __BuildKdTreesHint__getBuildKdTreesHint, 
-	                 __void__setBuildKdTreesHint__BuildKdTreesHint);
-	I_SimpleProperty(const std::string &, DatabasePath, 
-	                 0, 
-	                 __void__setDatabasePath__C5_std_string_R1);
-	I_SimpleProperty(osgDB::FilePathList &, DatabasePathList, 
-	                 __FilePathList_R1__getDatabasePathList, 
-	                 0);
-	I_SimpleProperty(osgDB::ReaderWriter::Options::CacheHintOptions, ObjectCacheHint, 
-	                 __CacheHintOptions__getObjectCacheHint, 
-	                 __void__setObjectCacheHint__CacheHintOptions);
-	I_SimpleProperty(const std::string &, OptionString, 
-	                 __C5_std_string_R1__getOptionString, 
-	                 __void__setOptionString__C5_std_string_R1);
-	I_IndexedProperty(void *, PluginData, 
-	                  __void_P1__getPluginData__C5_std_string_R1, 
-	                  __void__setPluginData__C5_std_string_R1__void_P1, 
-	                  0);
-	I_IndexedProperty(std::string, PluginStringData, 
-	                  __std_string__getPluginStringData__C5_std_string_R1, 
-	                  __void__setPluginStringData__C5_std_string_R1__C5_std_string_R1, 
-	                  0);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ReadResult::ReadStatus)
@@ -669,8 +490,4 @@ BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::WriteResult)
 	          "",
 	          "");
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(std::deque< std::string >, osgDB::FilePathList)
-
-STD_VECTOR_REFLECTOR(std::deque< std::string >)
 

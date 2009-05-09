@@ -23,7 +23,7 @@
 #endif
 
 #include <osg/BoundingBox>
-	
+        
 TYPE_NAME_ALIAS(osg::BoundingSphereImpl< osg::Vec3f >, osg::BoundingSpheref)
 
 TYPE_NAME_ALIAS(osg::BoundingSphereImpl< osg::Vec3d >, osg::BoundingSphered)

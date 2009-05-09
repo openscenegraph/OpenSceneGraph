@@ -23,6 +23,7 @@
 #include <OpenThreads/Mutex>
 
 #include <osgDB/ReaderWriter>
+#include <osgDB/Options>
 
 namespace osgDB
 {
@@ -107,7 +108,7 @@ class OSGDB_EXPORT ImagePager : public osg::NodeVisitor::ImageRequestHandler
             
             double                              _timeToMergeBy;
             std::string                         _fileName;
-            osg::ref_ptr<ReaderWriter::Options> _loadOptions;
+            osg::ref_ptr<Options> _loadOptions;
             osg::observer_ptr<osg::Object>      _attachmentPoint;
             int                                 _attachmentIndex;
             osg::ref_ptr<osg::Image>            _loadedImage;

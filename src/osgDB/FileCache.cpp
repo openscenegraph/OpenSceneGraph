@@ -46,7 +46,7 @@ bool FileCache::existsInCache(const std::string& originalFileName) const
     return osgDB::fileExists(createCacheFileName(originalFileName));
 }
 
-ReaderWriter::ReadResult FileCache::readNode(const std::string& originalFileName, const osgDB::ReaderWriter::Options* options, bool buildKdTreeIfRequired) const
+ReaderWriter::ReadResult FileCache::readNode(const std::string& originalFileName, const osgDB::Options* options, bool buildKdTreeIfRequired) const
 {
     std::string cacheFileName = createCacheFileName(originalFileName);
     if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
@@ -60,7 +60,7 @@ ReaderWriter::ReadResult FileCache::readNode(const std::string& originalFileName
     }
 }
 
-ReaderWriter::WriteResult FileCache::writeNode(const osg::Node& node, const std::string& originalFileName, const osgDB::ReaderWriter::Options* options) const
+ReaderWriter::WriteResult FileCache::writeNode(const osg::Node& node, const std::string& originalFileName, const osgDB::Options* options) const
 {
     std::string cacheFileName = createCacheFileName(originalFileName);
     if (!cacheFileName.empty())

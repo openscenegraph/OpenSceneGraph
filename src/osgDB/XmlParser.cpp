@@ -18,7 +18,7 @@
 
 using namespace osgDB;
 
-XmlNode* osgDB::readXmlFile(const std::string& filename,const ReaderWriter::Options* options)
+XmlNode* osgDB::readXmlFile(const std::string& filename,const Options* options)
 {
     std::string foundFile = osgDB::findDataFile(filename, options);
     if (!foundFile.empty())

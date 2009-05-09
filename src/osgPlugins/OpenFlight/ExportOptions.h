@@ -21,7 +21,7 @@
 
 #include <osg/Node>
 #include <osg/Notify>
-#include <osgDB/ReaderWriter>
+#include <osgDB/Options>
 #include <osgDB/FileNameUtils>
 
 #include <string>
@@ -38,7 +38,7 @@ namespace flt
    Features a parser for the Option string as well as getter
    methods for supported options.
  */
-class ExportOptions : public osgDB::ReaderWriter::Options
+class ExportOptions : public osgDB::Options
 {
 public:
     ExportOptions( const Options* opt );

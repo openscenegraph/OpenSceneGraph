@@ -172,7 +172,7 @@ class OSGVOLUME_EXPORT CompositeLayer : public Layer
 
         void clear();
 
-        void setFileName(unsigned int i, const std::string& filename) { _layers[i].filename = filename; if (_layers[i].layer.valid()) _layers[i].layer->setFileName(filename); }
+        void setFileName(unsigned int i, const std::string& filename) { if (i>=_layers.size()) _layers.resize(i+1); _layers[i].filename = filename; if (_layers[i].layer.valid()) _layers[i].layer->setFileName(filename); }
         const std::string& getFileName(unsigned int i) const { return _layers[i].layer.valid() ? _layers[i].layer->getFileName() : _layers[i].filename; }
 
         void setLayer(unsigned int i, Layer* layer) { if (i>=_layers.size()) _layers.resize(i+1); _layers[i].layer = layer; }

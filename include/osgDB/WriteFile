@@ -32,7 +32,7 @@ namespace osgDB {
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
   * to write the specified file.*/
-extern OSGDB_EXPORT bool writeObjectFile(const osg::Object& object, const std::string& filename, const ReaderWriter::Options* options );
+extern OSGDB_EXPORT bool writeObjectFile(const osg::Object& object, const std::string& filename, const Options* options );
 
 /** Write an osg::Object to file. 
   * Return true on success,
@@ -52,7 +52,7 @@ inline bool writeObjectFile(const osg::Object& object, const std::string& filena
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
   * to write the specified file.*/
-extern OSGDB_EXPORT bool writeImageFile(const osg::Image& image, const std::string& filename, const ReaderWriter::Options* options );
+extern OSGDB_EXPORT bool writeImageFile(const osg::Image& image, const std::string& filename, const Options* options );
 
 /** Write an osg::Image to file. 
   * Return true on success,
@@ -72,7 +72,7 @@ inline bool writeImageFile(const osg::Image& image, const std::string& filename)
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
   * to write the specified file.*/
-extern OSGDB_EXPORT bool writeHeightFieldFile(const osg::HeightField& hf, const std::string& filename, const ReaderWriter::Options* options );
+extern OSGDB_EXPORT bool writeHeightFieldFile(const osg::HeightField& hf, const std::string& filename, const Options* options );
 
 /** Write an osg::HeightField to file. 
   * Return true on success,
@@ -92,7 +92,7 @@ inline bool writeHeightFieldFile(const osg::HeightField& hf, const std::string& 
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
   * to write the specified file.*/
-extern OSGDB_EXPORT bool writeNodeFile(const osg::Node& node, const std::string& filename, const ReaderWriter::Options* options );
+extern OSGDB_EXPORT bool writeNodeFile(const osg::Node& node, const std::string& filename, const Options* options );
 
 /** Write an osg::Node to file. 
   * Return true on success,
@@ -112,7 +112,7 @@ inline bool writeNodeFile(const osg::Node& node, const std::string& filename)
   * The osgDB::Registry is used to load the appropriate ReaderWriter plugin
   * for the filename extension, and this plugin then handles the request
   * to write the specified file.*/
-extern OSGDB_EXPORT bool writeShaderFile(const osg::Shader& shader, const std::string& filename, const ReaderWriter::Options* options );
+extern OSGDB_EXPORT bool writeShaderFile(const osg::Shader& shader, const std::string& filename, const Options* options );
 
 /** Write an osg::Shader to file. 
   * Return true on success,

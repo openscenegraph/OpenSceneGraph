@@ -12,6 +12,7 @@
 */
 
 #include <osgDB/ReaderWriter>
+#include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/Archive>
 

@@ -122,7 +122,7 @@ public:
             _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy),
             _drawablePolicy(drawablePolicy), _pager(pager)
     {
-        if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::ReaderWriter::Options::BUILD_KDTREES &&
+        if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::Options::BUILD_KDTREES &&
             osgDB::Registry::instance()->getKdTreeBuilder())
         {
             _kdTreeBuilder = osgDB::Registry::instance()->getKdTreeBuilder()->clone();
@@ -679,7 +679,7 @@ void DatabasePager::DatabaseThread::run()
                 else
                 {
                     // check to see if we need to run the KdTreeBuilder
-                    if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::ReaderWriter::Options::BUILD_KDTREES &&
+                    if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::Options::BUILD_KDTREES &&
                         osgDB::Registry::instance()->getKdTreeBuilder())
                     {
                         //osg::Timer_t before = osg::Timer::instance()->tick();
@@ -1238,7 +1238,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group,
                                     float priority, const osg::FrameStamp* framestamp,
                                     osg::ref_ptr<osg::Referenced>& databaseRequestRef,
-                                    ReaderWriter::Options* loadOptions)
+                                    Options* loadOptions)
 {
     if (!_acceptNewRequests) return;
     

@@ -38,7 +38,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::ImageOptions)
 	I_DeclaringFile("osgDB/ImageOptions");
-	I_BaseType(osgDB::ReaderWriter::Options);
+	I_BaseType(osgDB::Options);
 	I_Constructor0(____ImageOptions,
 	               "",
 	               "");

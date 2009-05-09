@@ -23,23 +23,23 @@ namespace osgDB {
 class OSGDB_EXPORT FileCache : public osg::Referenced
 {
     public: 
-    
+
         FileCache(const std::string& path);
 
         const std::string& getFileCachePath() const { return _fileCachePath; }
 
         virtual std::string createCacheFileName(const std::string& originalFileName) const;
-        
+
         virtual bool existsInCache(const std::string& originalFileName) const;
-        
-        virtual ReaderWriter::ReadResult readNode(const std::string& originalFileName, const osgDB::ReaderWriter::Options* options, bool buildKdTreeIfRequired=true) const;
-        
-        virtual ReaderWriter::WriteResult writeNode(const osg::Node& node, const std::string& originalFileName, const osgDB::ReaderWriter::Options* options) const;
+
+        virtual ReaderWriter::ReadResult readNode(const std::string& originalFileName, const osgDB::Options* options, bool buildKdTreeIfRequired=true) const;
+
+        virtual ReaderWriter::WriteResult writeNode(const osg::Node& node, const std::string& originalFileName, const osgDB::Options* options) const;
 
     protected:
 
         virtual ~FileCache();
-        
+
         std::string _fileCachePath;
 
 };

@@ -15,6 +15,7 @@
 #include <osg/Object>
 #include <osg/Shape>
 #include <osgDB/Archive>
+#include <osgDB/Options>
 #include <osgDB/ReaderWriter>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -68,42 +69,42 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::Archive)
 	          __bool__getFileNames__FileNameList_R1,
 	          "Get the full list of file names available in the archive. ",
 	          "");
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readObject, IN, const std::string &, x, , IN, const osgDB::Options *, x, NULL,
 	                      Properties::PURE_VIRTUAL,
 	                      __ReadResult__readObject__C5_std_string_R1__C5_Options_P1,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readImage, IN, const std::string &, x, , IN, const osgDB::Options *, x, NULL,
 	                      Properties::PURE_VIRTUAL,
 	                      __ReadResult__readImage__C5_std_string_R1__C5_Options_P1,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readHeightField, IN, const std::string &, x, , IN, const osgDB::Options *, x, NULL,
 	                      Properties::PURE_VIRTUAL,
 	                      __ReadResult__readHeightField__C5_std_string_R1__C5_Options_P1,
 	                      "",
 	                      "");
-	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	I_MethodWithDefaults2(osgDB::ReaderWriter::ReadResult, readNode, IN, const std::string &, x, , IN, const osgDB::Options *, x, NULL,
 	                      Properties::PURE_VIRTUAL,
 	                      __ReadResult__readNode__C5_std_string_R1__C5_Options_P1,
 	                      "",
 	                      "");
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeObject, IN, const osg::Object &, x, , IN, const std::string &, x, , IN, const osgDB::Options *, x, NULL,
 	                      Properties::PURE_VIRTUAL,
 	                      __WriteResult__writeObject__C5_osg_Object_R1__C5_std_string_R1__C5_Options_P1,
 	                      "",
 	                      "");
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeImage, IN, const osg::Image &, x, , IN, const std::string &, x, , IN, const osgDB::Options *, x, NULL,
 	                      Properties::PURE_VIRTUAL,
 	                      __WriteResult__writeImage__C5_osg_Image_R1__C5_std_string_R1__C5_Options_P1,
 	                      "",
 	                      "");
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeHeightField, IN, const osg::HeightField &, x, , IN, const std::string &, x, , IN, const osgDB::Options *, x, NULL,
 	                      Properties::PURE_VIRTUAL,
 	                      __WriteResult__writeHeightField__C5_osg_HeightField_R1__C5_std_string_R1__C5_Options_P1,
 	                      "",
 	                      "");
-	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, x, , IN, const std::string &, x, , IN, const osgDB::ReaderWriter::Options *, x, NULL,
+	I_MethodWithDefaults3(osgDB::ReaderWriter::WriteResult, writeNode, IN, const osg::Node &, x, , IN, const std::string &, x, , IN, const osgDB::Options *, x, NULL,
 	                      Properties::PURE_VIRTUAL,
 	                      __WriteResult__writeNode__C5_osg_Node_R1__C5_std_string_R1__C5_Options_P1,
 	                      "",

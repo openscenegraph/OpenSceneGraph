@@ -16,6 +16,8 @@
 #include "PagedLOD.h"
 #include "Node.h"
 
+#include <osgDB/Options>
+
 using namespace ive;
 
 void PagedLOD::write(DataOutputStream* out)

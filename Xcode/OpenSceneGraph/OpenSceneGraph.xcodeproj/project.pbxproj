@@ -2815,6 +2815,8 @@
 		D4F865AE0E7019EE0070271C /* SwitchLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F8659C0E7019EE0070271C /* SwitchLayer.cpp */; };
 		D4F865AF0E7019EE0070271C /* SwitchLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F8659D0E7019EE0070271C /* SwitchLayer.h */; };
 		D4F865E30E701D1D0070271C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
+		D4FB11020FB850D900F67E0E /* Options in Headers */ = {isa = PBXBuildFile; fileRef = D4FB11010FB850D900F67E0E /* Options */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4FB11040FB850EA00F67E0E /* Options.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4FB11030FB850EA00F67E0E /* Options.cpp */; };
 		D4FBAB280ECB384900008F6D /* ConvertUTF in Headers */ = {isa = PBXBuildFile; fileRef = D4FBAB260ECB384900008F6D /* ConvertUTF */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4FBAB290ECB384900008F6D /* fstream in Headers */ = {isa = PBXBuildFile; fileRef = D4FBAB270ECB384900008F6D /* fstream */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4FBAB2C0ECB385D00008F6D /* ConvertUTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4FBAB2A0ECB385C00008F6D /* ConvertUTF.cpp */; };
@@ -8466,6 +8468,8 @@
 		D4F8659B0E7019EE0070271C /* SpecularHighlights.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecularHighlights.h; sourceTree = "<group>"; };
 		D4F8659C0E7019EE0070271C /* SwitchLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SwitchLayer.cpp; sourceTree = "<group>"; };
 		D4F8659D0E7019EE0070271C /* SwitchLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchLayer.h; sourceTree = "<group>"; };
+		D4FB11010FB850D900F67E0E /* Options */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Options; sourceTree = "<group>"; };
+		D4FB11030FB850EA00F67E0E /* Options.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Options.cpp; sourceTree = "<group>"; };
 		D4FBAB260ECB384900008F6D /* ConvertUTF */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ConvertUTF; sourceTree = "<group>"; };
 		D4FBAB270ECB384900008F6D /* fstream */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fstream; sourceTree = "<group>"; };
 		D4FBAB2A0ECB385C00008F6D /* ConvertUTF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConvertUTF.cpp; sourceTree = "<group>"; };
@@ -13524,6 +13528,7 @@
 		BE1188DF05D7641E00EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				D4FB11030FB850EA00F67E0E /* Options.cpp */,
 				D4AF8DAF0FB1AF24004B17A0 /* XmlParser.cpp */,
 				D4E673A80F8E5B2400F6CCC1 /* MimeTypes.cpp */,
 				D4FBAB2A0ECB385C00008F6D /* ConvertUTF.cpp */,
@@ -13558,6 +13563,7 @@
 		BE1188E005D7646500EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				D4FB11010FB850D900F67E0E /* Options */,
 				D4AF8DAD0FB1AF15004B17A0 /* XmlParser */,
 				D4FBAB260ECB384900008F6D /* ConvertUTF */,
 				D4FBAB270ECB384900008F6D /* fstream */,
@@ -15583,6 +15589,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4FB11020FB850D900F67E0E /* Options in Headers */,
 				D4AF8DAE0FB1AF15004B17A0 /* XmlParser in Headers */,
 				D4FBAB280ECB384900008F6D /* ConvertUTF in Headers */,
 				D4FBAB290ECB384900008F6D /* fstream in Headers */,
@@ -21849,6 +21856,7 @@
 				D4FBAB2D0ECB385D00008F6D /* fstream.cpp in Sources */,
 				D4E673A90F8E5B2400F6CCC1 /* MimeTypes.cpp in Sources */,
 				D4AF8DB00FB1AF24004B17A0 /* XmlParser.cpp in Sources */,
+				D4FB11040FB850EA00F67E0E /* Options.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

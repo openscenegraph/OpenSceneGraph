@@ -419,11 +419,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::NodeVisitor::DatabaseRequestHandler)
 	I_Constructor0(____DatabaseRequestHandler,
 	               "",
 	               "");
-	I_Method5(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp, IN, osg::ref_ptr< osg::Referenced > &, databaseRequest,
-	          Properties::PURE_VIRTUAL,
-	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_FrameStamp_P1__osg_ref_ptrT1_osg_Referenced__R1,
-	          "",
-	          "");
+	I_MethodWithDefaults6(void, requestNodeFile, IN, const std::string &, fileName, , IN, osg::Group *, group, , IN, float, priority, , IN, const osg::FrameStamp *, framestamp, , IN, osg::ref_ptr< osg::Referenced > &, databaseRequest, , IN, const osg::Referenced *, options, 0,
+	                      Properties::PURE_VIRTUAL,
+	                      __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_FrameStamp_P1__osg_ref_ptrT1_osg_Referenced__R1__C5_osg_Referenced_P1,
+	                      "",
+	                      "");
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::NodeVisitor::ImageRequestHandler)

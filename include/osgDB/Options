@@ -16,6 +16,7 @@
 
 #include <osgDB/AuthenticationMap>
 #include <osgDB/ReaderWriter>
+#include <osgDB/FileCache>
 
 #include <deque>
 #include <list>
@@ -86,8 +87,27 @@ class OSGDB_EXPORT WriteFileCallback : public virtual osg::Referenced
         virtual ~WriteFileCallback() {}
 };
 
+class OSGDB_EXPORT FileLocationCallback : public virtual osg::Referenced
+{
+    public:
+
+        enum Location
+        {
+            LOCAL_FILE,
+            REMOTE_FILE
+        };
+
+        virtual Location fileLocation(const std::string& filename, const Options* options) = 0;
+
+        virtual bool useFileCache() const = 0;
+
+    protected:
+        virtual ~FileLocationCallback() {}
+};
+
+
 /** Options base class used for passing options into plugins to control their operation.*/
-class Options : public osg::Object
+class OSGDB_EXPORT Options : public osg::Object
 {
     public:
 
@@ -233,11 +253,25 @@ class Options : public osg::Object
         ReadFileCallback* getReadFileCallback() const { return _readFileCallback.get(); }
 
 
-        /** Set the Registry callback to use in place of the default writeFile calls.*/
+        /** Set the callback to use in place of the default writeFile calls.*/
         void setWriteFileCallback( WriteFileCallback* cb) { _writeFileCallback = cb; }
 
         /** Get the const writeFile callback.*/
         WriteFileCallback* getWriteFileCallback() const { return _writeFileCallback.get(); }
+
+
+        /** Set the callback to use inform the DatabasePager whether a file is located on local or remote file system..*/
+        void setFileLocationCallback( FileLocationCallback* cb) { _fileLocationCallback = cb; }
+
+        /** Get the callback to use inform the DatabasePager whether a file is located on local or remote file system..*/
+        FileLocationCallback* getFileLocationCallback() const { return _fileLocationCallback.get(); }
+
+
+        /** Set the FileCache that is used to manage local storage of files downloaded from the internet.*/
+        void setFileCache(FileCache* fileCache) { _fileCache = fileCache; }
+
+        /** Get the FileCache that is used to manage local storage of files downloaded from the internet.*/
+        FileCache* getFileCache() const { return _fileCache.get(); }
 
 
     protected:
@@ -258,6 +292,9 @@ class Options : public osg::Object
         osg::ref_ptr<FindFileCallback>      _findFileCallback;
         osg::ref_ptr<ReadFileCallback>      _readFileCallback;
         osg::ref_ptr<WriteFileCallback>     _writeFileCallback;
+        osg::ref_ptr<FileLocationCallback>  _fileLocationCallback;
+
+        osg::ref_ptr<FileCache>             _fileCache;
 };
 
 }

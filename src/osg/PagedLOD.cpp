@@ -58,6 +58,7 @@ PagedLOD::PagedLOD()
 
 PagedLOD::PagedLOD(const PagedLOD& plod,const CopyOp& copyop):
     LOD(plod,copyop),
+    _databaseOptions(plod._databaseOptions),
     _databasePath(plod._databasePath),
     _frameNumberOfLastTraversal(plod._frameNumberOfLastTraversal),
     _numChildrenThatCannotBeExpired(plod._numChildrenThatCannotBeExpired),
@@ -213,15 +214,14 @@ void PagedLOD::traverse(NodeVisitor& nv)
 
                     if (_databasePath.empty())
                     {
-                        nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp(), _perRangeDataList[numChildren]._databaseRequest);
+                        nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp(), _perRangeDataList[numChildren]._databaseRequest, _databaseOptions.get());
                     }
                     else
                     {
                         // prepend the databasePath to the child's filename.
-                        nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp(), _perRangeDataList[numChildren]._databaseRequest);
+                        nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp(), _perRangeDataList[numChildren]._databaseRequest, _databaseOptions.get());
                     }
                 }
-
 
             }
 

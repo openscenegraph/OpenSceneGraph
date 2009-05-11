@@ -85,6 +85,8 @@ TYPE_NAME_ALIAS(class osgDB::ReadFileCallback, osgDB::Registry::ReadFileCallback
 
 TYPE_NAME_ALIAS(class osgDB::WriteFileCallback, osgDB::Registry::WriteFileCallback)
 
+TYPE_NAME_ALIAS(class osgDB::FileLocationCallback, osgDB::Registry::FileLocationCallback)
+
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_DeclaringFile("osgDB/Registry");
 	I_BaseType(osg::Referenced);
@@ -412,6 +414,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __void___buildKdTreeIfRequired__ReaderWriter_ReadResult_R1__C5_Options_P1,
 	          "",
 	          "");
+	I_Method1(void, setFileLocationCallback, IN, osgDB::Registry::FileLocationCallback *, cb,
+	          Properties::NON_VIRTUAL,
+	          __void__setFileLocationCallback__FileLocationCallback_P1,
+	          "Set the callback to use inform the DatabasePager whether a file is located on local or remote file system. ",
+	          "");
+	I_Method0(osgDB::Registry::FileLocationCallback *, getFileLocationCallback,
+	          Properties::NON_VIRTUAL,
+	          __FileLocationCallback_P1__getFileLocationCallback,
+	          "Get the callback to use inform the DatabasePager whether a file is located on local or remote file system. ",
+	          "");
 	I_Method1(void, setBuildKdTreesHint, IN, osgDB::Options::BuildKdTreesHint, hint,
 	          Properties::NON_VIRTUAL,
 	          __void__setBuildKdTreesHint__Options_BuildKdTreesHint,
@@ -666,6 +678,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_SimpleProperty(osgDB::FileCache *, FileCache, 
 	                 __FileCache_P1__getFileCache, 
 	                 __void__setFileCache__FileCache_P1);
+	I_SimpleProperty(osgDB::Registry::FileLocationCallback *, FileLocationCallback, 
+	                 __FileLocationCallback_P1__getFileLocationCallback, 
+	                 __void__setFileLocationCallback__FileLocationCallback_P1);
 	I_SimpleProperty(osgDB::Registry::FindFileCallback *, FindFileCallback, 
 	                 __FindFileCallback_P1__getFindFileCallback, 
 	                 __void__setFindFileCallback__FindFileCallback_P1);

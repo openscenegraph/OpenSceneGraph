@@ -30,6 +30,11 @@ FileCache::~FileCache()
     osg::notify(osg::INFO)<<"Destructed FileCache "<<std::endl;
 }
 
+bool FileCache::isFileAppropriateForFileCache(const std::string& originalFileName) const
+{
+    return osgDB::containsServerAddress(originalFileName);
+}
+
 std::string FileCache::createCacheFileName(const std::string& originalFileName) const
 {
     std::string cacheFileName = _fileCachePath + "/" + 

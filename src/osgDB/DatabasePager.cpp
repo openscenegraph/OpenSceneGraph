@@ -1259,11 +1259,11 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     {
        loadOptions = Registry::instance()->getOptions();
 
-        osg::notify(osg::NOTICE)<<"Using options from Registry "<<std::endl;
+        // osg::notify(osg::NOTICE)<<"Using options from Registry "<<std::endl;
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"options from requestNodeFile "<<std::endl;
+        // osg::notify(osg::NOTICE)<<"options from requestNodeFile "<<std::endl;
     }
 
 

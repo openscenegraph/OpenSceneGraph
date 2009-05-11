@@ -28,6 +28,8 @@ class OSGDB_EXPORT FileCache : public osg::Referenced
 
         const std::string& getFileCachePath() const { return _fileCachePath; }
 
+        virtual bool isFileAppropriateForFileCache(const std::string& originalFileName) const;
+
         virtual std::string createCacheFileName(const std::string& originalFileName) const;
 
         virtual bool existsInCache(const std::string& originalFileName) const;

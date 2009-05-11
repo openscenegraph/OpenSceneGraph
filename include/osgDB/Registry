@@ -164,6 +164,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         typedef class osgDB::FindFileCallback FindFileCallback;
         typedef class osgDB::ReadFileCallback ReadFileCallback;
         typedef class osgDB::WriteFileCallback WriteFileCallback;
+        typedef class osgDB::FileLocationCallback FileLocationCallback;
 
         /** Set the Registry callback to use in place of the default findFile calls.*/
         void setFindFileCallback( FindFileCallback* cb) { _findFileCallback = cb; }
@@ -326,6 +327,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
             }
         }
 
+        /** Set the callback to use inform the DatabasePager whether a file is located on local or remote file system..*/
+        void setFileLocationCallback( FileLocationCallback* cb) { _fileLocationCallback = cb; }
+
+        /** Get the callback to use inform the DatabasePager whether a file is located on local or remote file system..*/
+        FileLocationCallback* getFileLocationCallback() const { return _fileLocationCallback.get(); }
+
+
 
         /** Set whether the KdTrees should be built for geometry in the loader model. */
         void setBuildKdTreesHint(Options::BuildKdTreesHint hint) { _buildKdTreesHint = hint; }
@@ -338,6 +346,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         /** Get the KdTreeBuilder visitor that is used to build KdTree on loaded models.*/
         osg::KdTreeBuilder* getKdTreeBuilder() { return _kdTreeBuilder.get(); }
+
 
         /** Set the FileCache that is used to manage local storage of files downloaded from the internet.*/
         void setFileCache(FileCache* fileCache) { _fileCache = fileCache; }
@@ -488,7 +497,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
             construction other than via the instance() method and
             therefore ensuring only one copy is ever constructed*/
         Registry();
-        
+
         /** get the attached library with specified name.*/
         DynamicLibraryList::iterator getLibraryItr(const std::string& fileName);
 
@@ -557,6 +566,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         osg::ref_ptr<FindFileCallback>      _findFileCallback;
         osg::ref_ptr<ReadFileCallback>      _readFileCallback;
         osg::ref_ptr<WriteFileCallback>     _writeFileCallback;
+        osg::ref_ptr<FileLocationCallback>  _fileLocationCallback;
 
         DotOsgWrapperMap   _objectWrapperMap;
         DotOsgWrapperMap   _imageWrapperMap;

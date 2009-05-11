@@ -274,19 +274,19 @@ class OSG_EXPORT NodeVisitor : public virtual Referenced
         class DatabaseRequestHandler : public osg::Referenced
         {
         public:
-        
+
             DatabaseRequestHandler():
                 Referenced(true) {}
-        
-            virtual void requestNodeFile(const std::string& fileName,osg::Group* group, float priority, const FrameStamp* framestamp, osg::ref_ptr<osg::Referenced>& databaseRequest) = 0;
-            
+
+            virtual void requestNodeFile(const std::string& fileName,osg::Group* group, float priority, const FrameStamp* framestamp, osg::ref_ptr<osg::Referenced>& databaseRequest, const osg::Referenced* options=0) = 0;
+
         protected:
             virtual ~DatabaseRequestHandler() {}
         };
-        
+
         /** Set the handler for database requests.*/
         void setDatabaseRequestHandler(DatabaseRequestHandler* handler) { _databaseRequestHandler = handler; }
-        
+
         /** Get the handler for database requests.*/
         DatabaseRequestHandler* getDatabaseRequestHandler() { return _databaseRequestHandler.get(); }
 

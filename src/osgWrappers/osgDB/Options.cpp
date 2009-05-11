@@ -17,6 +17,7 @@
 #include <osg/Shader>
 #include <osg/Shape>
 #include <osgDB/AuthenticationMap>
+#include <osgDB/FileCache>
 #include <osgDB/Options>
 #include <osgDB/ReaderWriter>
 
@@ -27,6 +28,30 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+BEGIN_ENUM_REFLECTOR(osgDB::FileLocationCallback::Location)
+	I_DeclaringFile("osgDB/Options");
+	I_EnumLabel(osgDB::FileLocationCallback::LOCAL_FILE);
+	I_EnumLabel(osgDB::FileLocationCallback::REMOTE_FILE);
+END_REFLECTOR
+
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::FileLocationCallback)
+	I_DeclaringFile("osgDB/Options");
+	I_VirtualBaseType(osg::Referenced);
+	I_Constructor0(____FileLocationCallback,
+	               "",
+	               "");
+	I_Method2(osgDB::FileLocationCallback::Location, fileLocation, IN, const std::string &, filename, IN, const osgDB::Options *, options,
+	          Properties::PURE_VIRTUAL,
+	          __Location__fileLocation__C5_std_string_R1__C5_Options_P1,
+	          "",
+	          "");
+	I_Method0(bool, useFileCache,
+	          Properties::PURE_VIRTUAL,
+	          __bool__useFileCache,
+	          "",
+	          "");
+END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgDB::FindFileCallback)
 	I_DeclaringFile("osgDB/Options");
@@ -223,12 +248,32 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Options)
 	I_Method1(void, setWriteFileCallback, IN, osgDB::WriteFileCallback *, cb,
 	          Properties::NON_VIRTUAL,
 	          __void__setWriteFileCallback__WriteFileCallback_P1,
-	          "Set the Registry callback to use in place of the default writeFile calls. ",
+	          "Set the callback to use in place of the default writeFile calls. ",
 	          "");
 	I_Method0(osgDB::WriteFileCallback *, getWriteFileCallback,
 	          Properties::NON_VIRTUAL,
 	          __WriteFileCallback_P1__getWriteFileCallback,
 	          "Get the const writeFile callback. ",
+	          "");
+	I_Method1(void, setFileLocationCallback, IN, osgDB::FileLocationCallback *, cb,
+	          Properties::NON_VIRTUAL,
+	          __void__setFileLocationCallback__FileLocationCallback_P1,
+	          "Set the callback to use inform the DatabasePager whether a file is located on local or remote file system. ",
+	          "");
+	I_Method0(osgDB::FileLocationCallback *, getFileLocationCallback,
+	          Properties::NON_VIRTUAL,
+	          __FileLocationCallback_P1__getFileLocationCallback,
+	          "Get the callback to use inform the DatabasePager whether a file is located on local or remote file system. ",
+	          "");
+	I_Method1(void, setFileCache, IN, osgDB::FileCache *, fileCache,
+	          Properties::NON_VIRTUAL,
+	          __void__setFileCache__FileCache_P1,
+	          "Set the FileCache that is used to manage local storage of files downloaded from the internet. ",
+	          "");
+	I_Method0(osgDB::FileCache *, getFileCache,
+	          Properties::NON_VIRTUAL,
+	          __FileCache_P1__getFileCache,
+	          "Get the FileCache that is used to manage local storage of files downloaded from the internet. ",
 	          "");
 	I_SimpleProperty(osgDB::AuthenticationMap *, AuthenticationMap, 
 	                 0, 
@@ -242,6 +287,12 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Options)
 	I_SimpleProperty(osgDB::FilePathList &, DatabasePathList, 
 	                 __FilePathList_R1__getDatabasePathList, 
 	                 0);
+	I_SimpleProperty(osgDB::FileCache *, FileCache, 
+	                 __FileCache_P1__getFileCache, 
+	                 __void__setFileCache__FileCache_P1);
+	I_SimpleProperty(osgDB::FileLocationCallback *, FileLocationCallback, 
+	                 __FileLocationCallback_P1__getFileLocationCallback, 
+	                 __void__setFileLocationCallback__FileLocationCallback_P1);
 	I_SimpleProperty(osgDB::FindFileCallback *, FindFileCallback, 
 	                 __FindFileCallback_P1__getFindFileCallback, 
 	                 __void__setFindFileCallback__FindFileCallback_P1);

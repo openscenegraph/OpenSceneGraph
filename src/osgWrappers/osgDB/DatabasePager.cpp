@@ -19,7 +19,6 @@
 #include <osg/Referenced>
 #include <osg/State>
 #include <osgDB/DatabasePager>
-#include <osgDB/Options>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -69,15 +68,10 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	          __DatabasePager_P1__clone,
 	          "Create a shallow copy on the DatabasePager. ",
 	          "");
-	I_Method5(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp, IN, osg::ref_ptr< osg::Referenced > &, databaseRequest,
+	I_Method6(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp, IN, osg::ref_ptr< osg::Referenced > &, databaseRequest, IN, const osg::Referenced *, options,
 	          Properties::VIRTUAL,
-	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_osg_FrameStamp_P1__osg_ref_ptrT1_osg_Referenced__R1,
+	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_osg_FrameStamp_P1__osg_ref_ptrT1_osg_Referenced__R1__C5_osg_Referenced_P1,
 	          "Add a request to load a node file to end the the database request list. ",
-	          "");
-	I_Method6(void, requestNodeFile, IN, const std::string &, fileName, IN, osg::Group *, group, IN, float, priority, IN, const osg::FrameStamp *, framestamp, IN, osg::ref_ptr< osg::Referenced > &, databaseRequest, IN, osgDB::Options *, loadOptions,
-	          Properties::VIRTUAL,
-	          __void__requestNodeFile__C5_std_string_R1__osg_Group_P1__float__C5_osg_FrameStamp_P1__osg_ref_ptrT1_osg_Referenced__R1__Options_P1,
-	          "",
 	          "");
 	I_Method1(int, setSchedulePriority, IN, OpenThreads::Thread::ThreadPriority, priority,
 	          Properties::NON_VIRTUAL,

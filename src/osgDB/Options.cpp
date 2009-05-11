@@ -108,4 +108,6 @@ Options::Options(const Options& options,const osg::CopyOp& copyop):
     _pluginStringData(options._pluginStringData),
     _findFileCallback(options._findFileCallback),
     _readFileCallback(options._readFileCallback),
-    _writeFileCallback(options._writeFileCallback) {}
+    _writeFileCallback(options._writeFileCallback),
+    _fileLocationCallback(options._fileLocationCallback),
+    _fileCache(options._fileCache) {}

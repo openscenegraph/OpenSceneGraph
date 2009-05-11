@@ -445,9 +445,7 @@ void DatabasePager::DatabaseThread::run()
             read_queue = _pager->_httpRequestQueue;
             break;
     }
-    
-    //Getting CURL Environment Variables (If found rewrite OSG Options)
-    osg::ref_ptr<FileCache> fileCache = osgDB::Registry::instance()->getFileCache();
+
 
     do
     {
@@ -481,9 +479,22 @@ void DatabasePager::DatabaseThread::run()
         read_queue->takeFirst(databaseRequest);
 
         bool readFromFileCache = false;
-                
+
+        osg::ref_ptr<FileCache> fileCache = osgDB::Registry::instance()->getFileCache();
+        osg::ref_ptr<FileLocationCallback> fileLocationCallback = osgDB::Registry::instance()->getFileLocationCallback();
+
         if (databaseRequest.valid())
         {
+            if (databaseRequest->_loadOptions.valid())
+            {
+                if (databaseRequest->_loadOptions->getFileCache()) fileCache = databaseRequest->_loadOptions->getFileCache();
+                if (databaseRequest->_loadOptions->getFileLocationCallback()) fileLocationCallback = databaseRequest->_loadOptions->getFileLocationCallback();
+            }
+
+            // disable the FileCache if the fileLocationCallback tells us that it isn't required for this request.
+            if (fileLocationCallback.valid() && !fileLocationCallback->useFileCache()) fileCache = 0;
+
+
             // check if databaseRequest is still relevant
             if ((_pager->_frameNumber-databaseRequest->_frameNumberLastRequest)<=1)
             {
@@ -492,19 +503,32 @@ void DatabasePager::DatabaseThread::run()
                 switch(_mode)
                 {
                     case(HANDLE_ALL_REQUESTS):
+                    {
                         // do nothing as this thread can handle the load
-                        if (osgDB::containsServerAddress(databaseRequest->_fileName))
+                        if (fileCache.valid() && fileCache->isFileAppropriateForFileCache(databaseRequest->_fileName))
                         {
-                            if (fileCache.valid() && fileCache->existsInCache(databaseRequest->_fileName))
+                            if (fileCache->existsInCache(databaseRequest->_fileName))
                             {
                                 readFromFileCache = true;
                             }
                         }
                         break;
-                        
+                    }
                     case(HANDLE_NON_HTTP):
+                    {
                         // check the cache first
-                        if (osgDB::containsServerAddress(databaseRequest->_fileName))
+                        bool isHighLatencyFileRequest = false;
+
+                        if (fileLocationCallback.valid())
+                        {
+                            isHighLatencyFileRequest = fileLocationCallback->fileLocation(databaseRequest->_fileName, databaseRequest->_loadOptions.get()) == FileLocationCallback::REMOTE_FILE;
+                        }
+                        else  if (fileCache.valid() && fileCache->isFileAppropriateForFileCache(databaseRequest->_fileName))
+                        {
+                            isHighLatencyFileRequest = true;
+                        }
+
+                        if (isHighLatencyFileRequest)
                         {
                             if (fileCache.valid() && fileCache->existsInCache(databaseRequest->_fileName))
                             {
@@ -518,15 +542,12 @@ void DatabasePager::DatabaseThread::run()
                             }
                         }
                         break;
-                        
+                    }
                     case(HANDLE_ONLY_HTTP):
-                        // make sure the request is a http request
-                        if (!osgDB::containsServerAddress(databaseRequest->_fileName))
-                        {
-                            osg::notify(osg::NOTICE)<<_name<<": Help we have request we shouldn't have "<<databaseRequest->_fileName<<std::endl;
-                            databaseRequest = 0;
-                        }
+                    {
+                        // accept all requests, as we'll assume only high latency requests will have got here.
                         break;
+                    }
                 }
             }
             else
@@ -554,8 +575,8 @@ void DatabasePager::DatabaseThread::run()
             if (rr.error()) osg::notify(osg::WARN)<<"Error in reading file "<<databaseRequest->_fileName<<" : "<<rr.message() << std::endl;
 
             if (databaseRequest->_loadedModel.valid() &&
-                osgDB::containsServerAddress(databaseRequest->_fileName) &&
                 fileCache.valid() &&
+                fileCache->isFileAppropriateForFileCache(databaseRequest->_fileName) &&
                 !readFromFileCache)
             {
                 fileCache->writeNode(*(databaseRequest->_loadedModel), databaseRequest->_fileName, databaseRequest->_loadOptions.get());
@@ -1230,16 +1251,22 @@ bool DatabasePager::getRequestsInProgress() const
 
 void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group,
                                     float priority, const osg::FrameStamp* framestamp,
-                                    osg::ref_ptr<osg::Referenced>& databaseRequest)
-{
-    requestNodeFile(fileName,group,priority,framestamp,databaseRequest,Registry::instance()->getOptions());
-}
-
-void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group,
-                                    float priority, const osg::FrameStamp* framestamp,
                                     osg::ref_ptr<osg::Referenced>& databaseRequestRef,
-                                    Options* loadOptions)
+                                    const osg::Referenced* options)
 {
+    osgDB::Options* loadOptions = dynamic_cast<osgDB::Options*>(const_cast<osg::Referenced*>(options));
+    if (!loadOptions)
+    {
+       loadOptions = Registry::instance()->getOptions();
+
+        osg::notify(osg::NOTICE)<<"Using options from Registry "<<std::endl;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"options from requestNodeFile "<<std::endl;
+    }
+
+
     if (!_acceptNewRequests) return;
     
     osg::Timer_t start_tick = osg::Timer::instance()->tick();

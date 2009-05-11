@@ -93,6 +93,21 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	                      __bool__removeChildren__unsigned_int__unsigned_int,
 	                      "Remove children from Group. ",
 	                      "Note, must be override by subclasses of Group which add per child attributes. ");
+	I_Method1(void, setDatabaseOptions, IN, osg::Referenced *, options,
+	          Properties::NON_VIRTUAL,
+	          __void__setDatabaseOptions__osg_Referenced_P1,
+	          "Set the optional database osgDB::Options object to use when loaded children. ",
+	          "");
+	I_Method0(osg::Referenced *, getDatabaseOptions,
+	          Properties::NON_VIRTUAL,
+	          __osg_Referenced_P1__getDatabaseOptions,
+	          "Get the optional database osgDB::Options object used when loaded children. ",
+	          "");
+	I_Method0(const osg::Referenced *, getDatabaseOptions,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Referenced_P1__getDatabaseOptions,
+	          "Get the optional database osgDB::Options object used when loaded children. ",
+	          "");
 	I_Method1(void, setDatabasePath, IN, const std::string &, path,
 	          Properties::NON_VIRTUAL,
 	          __void__setDatabasePath__C5_std_string_R1,
@@ -224,6 +239,9 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	                   __void__expandPerRangeDataTo__unsigned_int,
 	                   "",
 	                   "");
+	I_SimpleProperty(osg::Referenced *, DatabaseOptions, 
+	                 __osg_Referenced_P1__getDatabaseOptions, 
+	                 __void__setDatabaseOptions__osg_Referenced_P1);
 	I_SimpleProperty(const std::string &, DatabasePath, 
 	                 __C5_std_string_R1__getDatabasePath, 
 	                 __void__setDatabasePath__C5_std_string_R1);

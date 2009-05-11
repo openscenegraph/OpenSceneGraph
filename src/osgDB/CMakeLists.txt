@@ -21,6 +21,7 @@ SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Archive
     ${HEADER_PATH}/AuthenticationMap
+    ${HEADER_PATH}/Callbacks
     ${HEADER_PATH}/ConvertUTF
     ${HEADER_PATH}/DatabasePager
     ${HEADER_PATH}/DotOsgWrapper
@@ -56,6 +57,7 @@ ADD_LIBRARY(${LIB_NAME}
     ${LIB_PUBLIC_HEADERS}
     Archive.cpp
     AuthenticationMap.cpp
+    Callbacks.cpp
     ConvertUTF.cpp
     DatabasePager.cpp
     DotOsgWrapper.cpp

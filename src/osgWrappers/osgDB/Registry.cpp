@@ -23,6 +23,7 @@
 #include <osg/Uniform>
 #include <osgDB/Archive>
 #include <osgDB/AuthenticationMap>
+#include <osgDB/Callbacks>
 #include <osgDB/DotOsgWrapper>
 #include <osgDB/DynamicLibrary>
 #include <osgDB/FileCache>

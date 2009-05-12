@@ -1,3 +1,139 @@
+2009-05-12 11:12  robert
+
+	* src/osgWrappers/osgUtil/IntersectVisitor.cpp: Updated wrappers
+
+2009-05-12 10:49  robert
+
+	* src/osgWidget, src/osgWidget/WindowManager.cpp: From Fajran Iman
+	  Rusadi, fixed to handling of widget indices in insert and remove
+	  methods. Merged from svn/trunk using:
+	  
+	  svn merge -r 10181:10182
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgWidget
+
+2009-05-08 12:38  robert
+
+	* src/osgViewer/GraphicsWindowWin32.cpp: Added initializer for
+	  _mouseCursor
+
+2009-05-08 07:49  robert
+
+	* src/osgViewer/GraphicsWindowWin32.cpp: From Neil Groves, fixed
+	  unitialized variable
+
+2009-05-07 15:59  robert
+
+	* CMakeLists.txt: Updated release candidate to 4.
+
+2009-05-07 15:14  robert
+
+	* src/osgViewer/GraphicsWindowWin32.cpp: From Frederic Bouvier,
+	  workaround of setCursor problems under Windows.
+
+2009-05-07 14:58  robert
+
+	* src/osg/GraphicsContext.cpp: Fixed ABSOLUTE_RF slave camera
+	  resize policy, merged from svn trunk using:
+	  
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/
+
+2009-05-07 13:24  robert
+
+	* src/osgDB, src/osgDB/CMakeLists.txt, src/osgDB/DatabasePager.cpp,
+	  src/osgDB/Registry.cpp: From Stephan Huber, "while debugging a
+	  problem in finding plugins on OS X I discovered, that
+	  the conditional directives for setting the prepend-string in
+	  createLibraryNameForExtension were not in effect, because of the
+	  mixture
+	  of different #ifdef styles.
+	  
+	  I removed the conditional part for __APPLE__ completely to be
+	  more
+	  standard-conform with other platforms (plugins should be located
+	  in
+	  osgPlugins-X.X.X/). Because of the wrong syntax of the
+	  conditional
+	  compile the old code was not used anyway -- so no functional
+	  change.
+	  "
+	  
+	  Merged from svn/trunk using:
+	  
+	  svn merge -r 10149:10150
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgDB
+
+2009-05-07 13:18  robert
+
+	* src/osgViewer, src/osgViewer/GraphicsWindowWin32.cpp: From Chris
+	  Denham, fix for swapBuffers warning when window is minimized
+	  under Windows.
+	  
+	  
+	  svn merge -r 10146:10147
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgViewer/
+
+2009-05-07 09:47  robert
+
+	* src/osgPlugins/pdf, src/osgPlugins/pdf/CMakeLists.txt: Fixed name
+	  of POPPLER_LIBRARY_DIRS, merged from svn trunk using svn merge -r
+	  10143:10144
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgPlugins/pdf
+
+2009-05-05 12:56  robert
+
+	* src/osgPlugins/osgVolume,
+	  src/osgPlugins/osgVolume/ImageLayer.cpp,
+	  src/osgPlugins/osgVolume/RayTracedTechnique.cpp: Merged from
+	  svn/trunk support for searching for imagery in path relative to
+	  the .osg file being loaded. Merged using:
+	  
+	  svn merge -r 10100:10137
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgPlugins/osgVolume
+
+2009-05-05 12:54  robert
+
+	* src/osgVolume, src/osgVolume/FixedFunctionTechnique.cpp,
+	  src/osgVolume/RayTracedTechnique.cpp,
+	  src/osgVolume/Shaders/volume_iso_frag.cpp,
+	  src/osgVolume/VolumeTile.cpp: Merged improvements to osgVolume
+	  from svn/trunk using :
+	  
+	  svn merge -r 10100:10137
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgVolume
+
+2009-04-24 17:52  robert
+
+	* include/osgUtil/IntersectVisitor: Changed doxygen docs to
+	  indicate deprecated status with suggestion of IntersectionVisitor
+	  instead.
+
+2009-04-24 10:56  robert
+
+	* src/osgPlugins/mdl, src/osgPlugins/mdl/VTXReader.cpp: From Jason
+	  Daly, "Currently, the .mdl plugin loads vertices in the native
+	  DirectX order, which is the reverse of OpenGL order. This means
+	  that the back faces are currently rendered as front faces, and
+	  vice versa.
+	  
+	  This fix reverses the vertex order and sets up proper OpenGL
+	  facing. I didn't notice this problem until I started using the
+	  plug-in in my own code (osgviewer seems to not enable backface
+	  culling)."
+	  
+	  merged from svn/trunk using:
+	  
+	  svn merge -r 10092:10093
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgPlugins/mdl/
+
+2009-04-23 15:11  robert
+
+	* NEWS.txt: Fixed typo
+
+2009-04-23 13:46  robert
+
+	* AUTHORS.txt, ChangeLog, NEWS.txt, README.txt: Update ChnageLog,
+	  dates and authors for 2.8.1-rc3
+
 2009-04-23 13:27  robert
 
 	* CMakeLists.txt: Updated release candidate number

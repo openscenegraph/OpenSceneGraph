@@ -75,7 +75,7 @@ void MorphGeometry::transformSoftwareMethod()
         // See if we have an internal optimized geometry
         osg::Geometry* morphGeometry = this;
         if (_internalOptimizedGeometry.valid())
-            morphGeometry = _internalOptimizedGeometry;
+            morphGeometry = _internalOptimizedGeometry.get();
 
         osg::Vec3Array* pos = dynamic_cast<osg::Vec3Array*>(morphGeometry->getVertexArray());
         if (pos && _positionSource.size() != pos->size())

@@ -593,7 +593,7 @@ bool Animation_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "num_channels " << anim.getChannels().size()  << std::endl;
     for (unsigned int i = 0; i < anim.getChannels().size(); i++) 
     {
-        osgAnimation::Channel* pChannel = anim.getChannels()[i];
+        osgAnimation::Channel* pChannel = anim.getChannels()[i].get();
 
         osgAnimation::DoubleLinearChannel* pDlc = dynamic_cast<osgAnimation::DoubleLinearChannel*>(pChannel);
         if (pDlc)

@@ -978,6 +978,14 @@ class OSG_EXPORT State : public Referenced, public Observer
         inline GLint getUniformLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(name) : -1; }
         inline GLint getAttribLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getAttribLocation(name) : -1; }
 
+        typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributePair;
+        typedef std::vector<AttributePair>                                      AttributeVec;
+
+        AttributeVec& getAttributeVec( const osg::StateAttribute* attribute )
+        {
+                AttributeStack& as = _attributeMap[ attribute->getTypeMemberPair() ];
+                return as.attributeVec;
+        }
 
         /** Set the frame stamp for the current frame.*/
         inline void setFrameStamp(FrameStamp* fs) { _frameStamp = fs; }
@@ -1119,9 +1127,6 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         struct AttributeStack
         {
-            typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributePair;
-            typedef std::vector<AttributePair>                                      AttributeVec;
-
             AttributeStack()
             {
                 changed = false;
@@ -1383,7 +1388,7 @@ inline void State::pushAttributeList(AttributeMap& attributeMap,const StateSet::
         {
             // first pair so simply push incoming pair to back.
             as.attributeVec.push_back(
-                AttributeStack::AttributePair(aitr->second.first.get(),aitr->second.second));
+                AttributePair(aitr->second.first.get(),aitr->second.second));
         }
         else if ((as.attributeVec.back().second & StateAttribute::OVERRIDE) && !(aitr->second.second & StateAttribute::PROTECTED)) // check the existing override flag
         {
@@ -1394,7 +1399,7 @@ inline void State::pushAttributeList(AttributeMap& attributeMap,const StateSet::
         {
             // no override on so simply push incoming pair to back.
             as.attributeVec.push_back(
-                AttributeStack::AttributePair(aitr->second.first.get(),aitr->second.second));
+                AttributePair(aitr->second.first.get(),aitr->second.second));
         }
         as.changed = true;
     }

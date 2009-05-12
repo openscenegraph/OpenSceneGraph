@@ -322,8 +322,6 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
 
 #if USE_SDL
 
-#include "SDL.h"
-
 class SDLAudioSink : public osg::AudioSink
 {
     public:

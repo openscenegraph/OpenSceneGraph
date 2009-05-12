@@ -391,6 +391,12 @@ void SDLAudioSink::soundReadCallback(void * const user_data, Uint8 * const data,
 
 #endif
 
+#if defined(USE_SDL) && defined(__APPLE__)
+    // SDL under OSX causes a link error with a unresolved _main symbol
+    // so we have to add this dummy implementation to get round it.
+    main() {}
+#endif
+
 int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.

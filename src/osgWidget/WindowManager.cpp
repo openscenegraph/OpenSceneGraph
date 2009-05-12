@@ -232,6 +232,11 @@ void WindowManager::childInserted(unsigned int i) {
 
     if(!window) return;
 
+    // Update Window's index
+    for(Iterator w = begin(); w != end(); w++) {
+        if(w->get()->_index >= i) w->get()->_index++;
+    }
+
     _objects.push_back(window);
 
     window->_index = i;
@@ -261,6 +266,12 @@ void WindowManager::childRemoved(unsigned int start, unsigned int numChildren) {
             window->unmanaged(this);
         }
     }
+
+    // Update Window's index
+    for(Iterator w = begin(); w != end(); w++) {
+        if(w->get()->_index >= start) w->get()->_index -= numChildren;
+    }
+
 }
 
 // This method performs intersection testing at the given XY coords, and returns true if

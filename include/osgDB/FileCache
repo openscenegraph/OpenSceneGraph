@@ -34,9 +34,20 @@ class OSGDB_EXPORT FileCache : public osg::Referenced
 
         virtual bool existsInCache(const std::string& originalFileName) const;
 
-        virtual ReaderWriter::ReadResult readNode(const std::string& originalFileName, const osgDB::Options* options, bool buildKdTreeIfRequired=true) const;
+        virtual ReaderWriter::ReadResult readImage(const std::string& originalFileName, const osgDB::Options* options) const;
+        virtual ReaderWriter::WriteResult writeImage(const osg::Image& image, const std::string& originalFileName, const osgDB::Options* options) const;
 
+        virtual ReaderWriter::ReadResult readObject(const std::string& originalFileName, const osgDB::Options* options) const;
+        virtual ReaderWriter::WriteResult writeObject(const osg::Object& object, const std::string& originalFileName, const osgDB::Options* options) const;
+
+        virtual ReaderWriter::ReadResult readHeightField(const std::string& originalFileName, const osgDB::Options* options) const;
+        virtual ReaderWriter::WriteResult writeHeightField(const osg::HeightField& hf, const std::string& originalFileName, const osgDB::Options* options) const;
+
+        virtual ReaderWriter::ReadResult readNode(const std::string& originalFileName, const osgDB::Options* options, bool buildKdTreeIfRequired=true) const;
         virtual ReaderWriter::WriteResult writeNode(const osg::Node& node, const std::string& originalFileName, const osgDB::Options* options) const;
+
+        virtual ReaderWriter::ReadResult readShader(const std::string& originalFileName, const osgDB::Options* options) const;
+        virtual ReaderWriter::WriteResult writeShader(const osg::Shader& shader, const std::string& originalFileName, const osgDB::Options* options) const;
 
     protected:
 

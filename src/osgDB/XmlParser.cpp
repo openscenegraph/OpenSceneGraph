@@ -120,7 +120,12 @@ void XmlNode::Input::readAllDataIntoBuffer()
 
 void XmlNode::Input::skipWhiteSpace()
 {
-    while(_currentPos<_buffer.size() && _buffer[_currentPos]==' ') ++_currentPos;
+    while(_currentPos<_buffer.size() && _buffer[_currentPos]==' ')
+    {
+        // osg::notify(osg::NOTICE)<<"_currentPos="<<_currentPos<<"_buffer.size()="<<_buffer.size()<<" v="<<_buffer[_currentPos]<<std::endl;
+        ++_currentPos;
+    }
+    //osg::notify(osg::NOTICE)<<"done"<<std::endl;
 }
 
 XmlNode::XmlNode()
@@ -215,6 +220,8 @@ bool XmlNode::read(Input& input)
 
             while ((c=input[0])>=0 && c!='>')
             {
+                Input::size_type prev_pos = input.currentPosition();
+
                 input.skipWhiteSpace();
                 std::string option;
                 std::string value;
@@ -227,6 +234,9 @@ bool XmlNode::read(Input& input)
                 if (input[0]=='=')
                 {
                     ++input;
+
+                    input.skipWhiteSpace();
+
                     if (input[0]=='"')
                     {
                         ++input;
@@ -256,6 +266,12 @@ bool XmlNode::read(Input& input)
                             ++input;
                         }
                     }
+                }
+
+                if (prev_pos == input.currentPosition())
+                {
+                    osg::notify(osg::NOTICE)<<"Error, parser iterator note advanced, position: "<<input.substr(0,50)<<std::endl;
+                    ++input;
                 }
 
                 if (!option.empty())

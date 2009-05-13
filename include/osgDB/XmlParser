@@ -80,6 +80,8 @@ class OSGDB_EXPORT XmlNode : public osg::Referenced
 
                 operator bool () const { return _currentPos<_buffer.size(); }
 
+                size_type currentPosition() const { return _currentPos; }
+
                 int get() { if (_currentPos<_buffer.size()) return _buffer[_currentPos++]; else return -1; }
 
                 int operator [] (size_type i) const { if ((_currentPos+i)<_buffer.size()) return _buffer[_currentPos+i]; else return -1; }

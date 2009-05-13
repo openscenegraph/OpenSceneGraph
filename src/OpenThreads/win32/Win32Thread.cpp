@@ -345,12 +345,12 @@ int Thread::start() {
 
     pd->uniqueId = (int)ID;
 
-    // wait till the thread has actually started.
-    pd->threadStartedBlock.block();
-
     if(!pd->tid) {
         return -1;
     }
+
+    // wait till the thread has actually started.
+    pd->threadStartedBlock.block();
 
     return 0;
 

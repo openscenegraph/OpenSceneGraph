@@ -200,6 +200,10 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
         typedef osgDB::Options Options;
 
+        /** determine if a file exists, normally the default implementation will be approrpiate for local file access
+         *  but with plugins like the libcurl based on it will return true if the file is accessible a server.*/
+        virtual bool fileExists(const std::string& filename, const Options* options) const;
+
         /** open an archive for reading, writing, or to create an empty archive for writing to.*/ 
         virtual ReadResult openArchive(const std::string& /*fileName*/,ArchiveStatus, unsigned int =4096, const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
 

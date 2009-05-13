@@ -51,6 +51,105 @@ bool FileCache::existsInCache(const std::string& originalFileName) const
     return osgDB::fileExists(createCacheFileName(originalFileName));
 }
 
+ReaderWriter::ReadResult FileCache::readObject(const std::string& originalFileName, const osgDB::Options* options) const
+{
+    std::string cacheFileName = createCacheFileName(originalFileName);
+    if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
+    {
+        osg::notify(osg::INFO)<<"FileCache::readObjectFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        return osgDB::Registry::instance()->readObject(cacheFileName, options);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+ReaderWriter::WriteResult FileCache::writeObject(const osg::Object& object, const std::string& originalFileName, const osgDB::Options* options) const
+{
+    std::string cacheFileName = createCacheFileName(originalFileName);
+    if (!cacheFileName.empty())
+    {
+        std::string path = osgDB::getFilePath(cacheFileName);
+
+        if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
+        {
+            osg::notify(osg::NOTICE)<<"Could not create cache directory: "<<path<<std::endl;
+            return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
+        }
+
+        osg::notify(osg::NOTICE)<<"FileCache::writeObjectToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        return osgDB::Registry::instance()->writeObject(object, cacheFileName, options);
+    }
+    return ReaderWriter::WriteResult::FILE_NOT_HANDLED;
+}
+
+ReaderWriter::ReadResult FileCache::readImage(const std::string& originalFileName, const osgDB::Options* options) const
+{
+    std::string cacheFileName = createCacheFileName(originalFileName);
+    if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
+    {
+        osg::notify(osg::INFO)<<"FileCache::readImageFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        return osgDB::Registry::instance()->readImage(cacheFileName, options);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+ReaderWriter::WriteResult FileCache::writeImage(const osg::Image& image, const std::string& originalFileName, const osgDB::Options* options) const
+{
+    std::string cacheFileName = createCacheFileName(originalFileName);
+    if (!cacheFileName.empty())
+    {
+        std::string path = osgDB::getFilePath(cacheFileName);
+
+        if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
+        {
+            osg::notify(osg::NOTICE)<<"Could not create cache directory: "<<path<<std::endl;
+            return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
+        }
+
+        osg::notify(osg::NOTICE)<<"FileCache::writeImageToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        return osgDB::Registry::instance()->writeImage(image, cacheFileName, options);
+    }
+    return ReaderWriter::WriteResult::FILE_NOT_HANDLED;
+}
+
+ReaderWriter::ReadResult FileCache::readHeightField(const std::string& originalFileName, const osgDB::Options* options) const
+{
+    std::string cacheFileName = createCacheFileName(originalFileName);
+    if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
+    {
+        osg::notify(osg::INFO)<<"FileCache::readHeightFieldFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        return osgDB::Registry::instance()->readHeightField(cacheFileName, options);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+ReaderWriter::WriteResult FileCache::writeHeightField(const osg::HeightField& hf, const std::string& originalFileName, const osgDB::Options* options) const
+{
+    std::string cacheFileName = createCacheFileName(originalFileName);
+    if (!cacheFileName.empty())
+    {
+        std::string path = osgDB::getFilePath(cacheFileName);
+
+        if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
+        {
+            osg::notify(osg::NOTICE)<<"Could not create cache directory: "<<path<<std::endl;
+            return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
+        }
+
+        osg::notify(osg::NOTICE)<<"FileCache::writeHeightFieldToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        return osgDB::Registry::instance()->writeHeightField(hf, cacheFileName, options);
+    }
+    return ReaderWriter::WriteResult::FILE_NOT_HANDLED;
+}
+
 ReaderWriter::ReadResult FileCache::readNode(const std::string& originalFileName, const osgDB::Options* options, bool buildKdTreeIfRequired) const
 {
     std::string cacheFileName = createCacheFileName(originalFileName);
@@ -78,8 +177,42 @@ ReaderWriter::WriteResult FileCache::writeNode(const osg::Node& node, const std:
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        osg::notify(osg::INFO)<<"FileCache::writeNodeToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        osg::notify(osg::NOTICE)<<"FileCache::writeNodeToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->writeNode(node, cacheFileName, options);
+    }
+    return ReaderWriter::WriteResult::FILE_NOT_HANDLED;
+}
+
+
+ReaderWriter::ReadResult FileCache::readShader(const std::string& originalFileName, const osgDB::Options* options) const
+{
+    std::string cacheFileName = createCacheFileName(originalFileName);
+    if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
+    {
+        osg::notify(osg::INFO)<<"FileCache::readShaderFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        return osgDB::Registry::instance()->readShader(cacheFileName, options);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+ReaderWriter::WriteResult FileCache::writeShader(const osg::Shader& shader, const std::string& originalFileName, const osgDB::Options* options) const
+{
+    std::string cacheFileName = createCacheFileName(originalFileName);
+    if (!cacheFileName.empty())
+    {
+        std::string path = osgDB::getFilePath(cacheFileName);
+
+        if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
+        {
+            osg::notify(osg::NOTICE)<<"Could not create cache directory: "<<path<<std::endl;
+            return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
+        }
+
+        osg::notify(osg::NOTICE)<<"FileCache::writeShaderToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        return osgDB::Registry::instance()->writeShader(shader, cacheFileName, options);
     }
     return ReaderWriter::WriteResult::FILE_NOT_HANDLED;
 }

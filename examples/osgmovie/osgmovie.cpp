@@ -335,7 +335,6 @@ class SDLAudioSink : public osg::AudioSink
         virtual void startPlaying();
         virtual bool playing() const { return _playing; }
 
-        static void soundReadCallback(void * user_data, uint8_t * data, int datalen);
 
         bool                                _playing;
         osg::observer_ptr<osg::AudioStream> _audioStream;
@@ -603,6 +602,16 @@ int main(int argc, char** argv)
 
 #include "SDL.h"
 
+static void soundReadCallback(void * user_data, uint8_t * data, int datalen)
+{
+    SDLAudioSink * sink = reinterpret_cast<SDLAudioSink*>(user_data);
+    osg::ref_ptr<osg::AudioStream> as = sink->_audioStream.get();
+    if (as.valid())
+    {
+        as->consumeAudioBuffer(data, datalen);
+    }
+}
+
 SDLAudioSink::~SDLAudioSink()
 {
     if (_playing)
@@ -642,15 +651,6 @@ void SDLAudioSink::startPlaying()
 
 }
 
-void SDLAudioSink::soundReadCallback(void * const user_data, Uint8 * const data, const int datalen)
-{
-    SDLAudioSink * sink = reinterpret_cast<SDLAudioSink*>(user_data);
-    osg::ref_ptr<osg::AudioStream> as = sink->_audioStream.get();
-    if (as.valid())
-    {
-        as->consumeAudioBuffer(data, datalen);
-    }
-}
 
 #endif
 

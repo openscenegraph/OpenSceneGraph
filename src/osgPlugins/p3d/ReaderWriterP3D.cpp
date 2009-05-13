@@ -1385,6 +1385,306 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
 
 #include <iostream>
 
+
+struct MyFindFileCallback : public osgDB::FindFileCallback
+{
+    virtual std::string findDataFile(const std::string& filename, const osgDB::Options* options, osgDB::CaseSensitivity caseSensitivity)
+    {
+        osg::notify(osg::NOTICE)<<std::endl<<std::endl<<"find file "<<filename<<std::endl;
+
+        const osgDB::FilePathList& paths = options ? options->getDatabasePathList() : osgDB::getDataFilePathList();
+
+        for(osgDB::FilePathList::const_iterator itr = paths.begin();
+            itr != paths.end();
+            ++itr)
+        {
+            const std::string& path = *itr;
+            std::string newpath = osgDB::concatPaths(path, filename);
+            if (osgDB::containsServerAddress(path))
+            {
+                osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension("curl");
+                osg::notify(osg::NOTICE)<<"  file on server "<<*itr<<", try path "<<newpath<<std::endl;
+                osg::notify(osg::NOTICE)<<"  we have curl rw= "<<rw<<std::endl;
+                if (rw && rw->fileExists(newpath, options))
+                {
+                    osg::notify(osg::NOTICE)<<"  FOUND on server "<<newpath<<std::endl;
+                    return newpath;
+                }
+            }
+            else
+            {
+                if(osgDB::fileExists(newpath))
+                {
+                    osg::notify(osg::NOTICE)<<" FOUND "<<newpath<<std::endl;
+                    return newpath;
+                }
+            }
+        }
+
+        return osgDB::Registry::instance()->findDataFileImplementation(filename, options, caseSensitivity);
+    }
+};
+
+class OSGDB_EXPORT MyReadFileCallback : public virtual osgDB::ReadFileCallback
+{
+    public:
+
+        osgDB::FilePathList _paths;
+
+        typedef std::map< std::string, osg::ref_ptr<osg::Object> >  ObjectCache;
+
+        enum ObjectType
+        {
+            OBJECT,
+            IMAGE,
+            HEIGHT_FIELD,
+            NODE,
+            SHADER
+        };
+
+        osgDB::ReaderWriter::ReadResult readLocal(ObjectType type, const std::string& filename, const osgDB::Options* options)
+        {
+            osg::notify(osg::INFO)<<"Trying local file "<<filename<<std::endl;
+
+            switch(type)
+            {
+                case(OBJECT): return osgDB::Registry::instance()->readObjectImplementation(filename,options);
+                case(IMAGE): return osgDB::Registry::instance()->readImageImplementation(filename,options);
+                case(HEIGHT_FIELD): return osgDB::Registry::instance()->readHeightFieldImplementation(filename,options);
+                case(NODE): return osgDB::Registry::instance()->readNodeImplementation(filename,options);
+                case(SHADER): return osgDB::Registry::instance()->readShaderImplementation(filename,options);
+            }
+            return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
+        }
+
+        
+        osgDB::ReaderWriter::ReadResult readFileCache(ObjectType type, const std::string& filename, const osgDB::Options* options)
+        {
+
+            osgDB::FileCache* fileCache = options ? options->getFileCache() : 0;
+            if (!fileCache) fileCache = osgDB::Registry::instance()->getFileCache();
+            if (!fileCache) return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
+
+            osg::notify(osg::INFO)<<"Trying fileCache "<<filename<<std::endl;
+
+            osgDB::ReaderWriter::ReadResult result;
+            if (fileCache && fileCache->isFileAppropriateForFileCache(filename))
+            {
+                if (fileCache->existsInCache(filename))
+                {
+                    switch(type)
+                    {
+                        case(OBJECT):
+                            result = fileCache->readObject(filename, 0);
+                            break;
+                        case(IMAGE):
+                            result = fileCache->readImage(filename, 0);
+                            break;
+                        case(HEIGHT_FIELD):
+                            result = fileCache->readHeightField(filename, 0);
+                            break;
+                        case(NODE):
+                            result = fileCache->readNode(filename,0);
+                            break;
+                        case(SHADER):
+                            result = fileCache->readShader(filename, 0);
+                            break;
+                    }
+
+                    if (result.success())
+                    {
+                        osg::notify(osg::INFO)<<"   File read from FileCache."<<std::endl;
+                        return result;
+                    }
+
+                    osg::notify(osg::NOTICE)<<"   File in FileCache, but not successfully read"<<std::endl;
+                }
+                else
+                {
+                    osg::notify(osg::INFO)<<"   File does not exist in FileCache: "<<fileCache->createCacheFileName(filename)<<std::endl;
+                }
+            }
+
+            return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
+
+        }
+
+        osgDB::ReaderWriter::ReadResult readServer(ObjectType type, const std::string& filename, const osgDB::Options* options)
+        {
+            osg::notify(osg::INFO)<<"Trying server file "<<filename<<std::endl;
+
+            osgDB::ReaderWriter::ReadResult result;
+            osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension("curl");
+            if (!rw) return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
+
+            switch(type)
+            {
+                case(OBJECT):
+                    result = rw->readObject(filename,options);
+                    break;
+                case(IMAGE):
+                    result = rw->readImage(filename,options);
+                    break;
+                case(HEIGHT_FIELD):
+                    result = rw->readHeightField(filename,options);
+                    break;
+                case(NODE):
+                    result = rw->readNode(filename,options);
+                    break;
+                case(SHADER):
+                    result = rw->readShader(filename,options);
+                    break;
+            }
+
+            if (result.success())
+            {
+                osgDB::FileCache* fileCache = options ? options->getFileCache() : 0;
+                if (!fileCache) fileCache = osgDB::Registry::instance()->getFileCache();
+
+                if (fileCache && fileCache->isFileAppropriateForFileCache(filename))
+                {
+                    switch(type)
+                    {
+                        case(OBJECT):
+                            fileCache->writeObject(*result.getObject(),filename,options);
+                            break;
+                        case(IMAGE):
+                            fileCache->writeImage(*result.getImage(),filename,options);
+                            break;
+                        case(HEIGHT_FIELD):
+                            fileCache->writeHeightField(*result.getHeightField(),filename,options);
+                            break;
+                        case(NODE):
+                            fileCache->writeNode(*result.getNode(),filename,options);
+                            break;
+                        case(SHADER):
+                            fileCache->writeShader(*result.getShader(),filename,options);
+                            break;
+                    }
+                }
+
+                return result;
+            }
+            return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
+        }
+
+
+        osgDB::ReaderWriter::ReadResult read(const osgDB::FilePathList& filePathList, ObjectType type, const std::string& filename, const osgDB::Options* options, bool checkLocalFiles)
+        {
+            // go look in http paths
+            for(osgDB::FilePathList::const_iterator itr = filePathList.begin();
+                itr != filePathList.end();
+                ++itr)
+            {
+                const std::string& path = *itr;
+                std::string newpath = path.empty() ? filename : osgDB::concatPaths(path, filename);
+                osgDB::ReaderWriter::ReadResult result;
+                if (osgDB::containsServerAddress(newpath))
+                {
+                    if (checkLocalFiles) result = readFileCache(type, newpath, options);
+                    else result = readServer(type, newpath, options);
+                }
+                else if (checkLocalFiles && osgDB::fileExists(newpath))
+                {
+                    result = readLocal(type, newpath, options);
+                }
+
+                if (result.success())
+                {
+                    osg::notify(osg::INFO)<<"   inserting object into file cache "<<filename<<", "<<result.getObject()<<std::endl;
+                    _objectCache[filename] = result.getObject();
+
+                    options->setPluginStringData("filename",newpath);
+                    return result;
+                }
+            }
+            return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
+        }
+
+        osgDB::ReaderWriter::ReadResult read(ObjectType type, const std::string& filename, const osgDB::Options* options)
+        {
+            osgDB::FileCache* fileCache = options ? options->getFileCache() : 0;
+            if (!fileCache) fileCache = osgDB::Registry::instance()->getFileCache();
+            if (fileCache && !fileCache->isFileAppropriateForFileCache(filename)) fileCache = 0;
+
+            osg::notify(osg::INFO)<<"reading file "<<filename<<std::endl;
+            ObjectCache::iterator itr = _objectCache.find(filename);
+            if (itr != _objectCache.end())
+            {
+                // object is in cache, just retrieve it.
+                if (itr->second.valid())
+                {
+                    osg::notify(osg::INFO)<<"File retrieved from cache, filename="<<filename<<std::endl;
+                    return itr->second.get();
+                }
+                else
+                {
+                    osg::notify(osg::INFO)<<"File failed to load previously, won't attempt a second time "<<filename<<std::endl;
+                    return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
+                }
+            }
+
+            {
+                bool checkLocalFiles = true;
+                osgDB::ReaderWriter::ReadResult result = read(_paths, type, filename, options, checkLocalFiles);
+                if (result.success()) return result;
+
+                if (options && !(options->getDatabasePathList().empty()))
+                {
+                    result = read(options->getDatabasePathList(), type, filename, options, checkLocalFiles);
+                    if (result.success()) return result;
+                }
+
+                result = read(osgDB::Registry::instance()->getDataFilePathList(), type, filename, options, checkLocalFiles);
+                if (result.success()) return result;
+            }
+
+            {
+                bool checkLocalFiles = false;
+                osgDB::ReaderWriter::ReadResult result = read(_paths, type, filename, options, checkLocalFiles);
+                if (result.success()) return result;
+
+                if (options && !(options->getDatabasePathList().empty()))
+                {
+                    result = read(options->getDatabasePathList(), type, filename, options, checkLocalFiles);
+                    if (result.success()) return result;
+                }
+
+                result = read(osgDB::Registry::instance()->getDataFilePathList(), type, filename, options, checkLocalFiles);
+                if (result.success()) return result;
+            }
+
+            _objectCache[filename] = 0;
+
+            return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
+        }
+
+        virtual osgDB::ReaderWriter::ReadResult readImage(const std::string& filename, const osgDB::Options* options)
+        {
+            return read(IMAGE, filename, options);
+        }
+
+        virtual osgDB::ReaderWriter::ReadResult readHeightField(const std::string& filename, const osgDB::Options* options)
+        {
+            return read(HEIGHT_FIELD, filename, options);
+        }
+
+        virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& filename, const osgDB::Options* options)
+        {
+            return read(NODE, filename, options);
+        }
+
+        virtual osgDB::ReaderWriter::ReadResult readShader(const std::string& filename, const osgDB::Options* options)
+        {
+            return read(SHADER, filename, options);
+        }
+
+    protected:
+        virtual ~MyReadFileCallback() {}
+
+        ObjectCache _objectCache;
+};
+
 osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& file,
                                                            const osgDB::ReaderWriter::Options* options) const
 {
@@ -1397,6 +1697,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
     // code for setting up the database path so that internally referenced file are searched for on relative paths.
     osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
+    //local_opt->setFindFileCallback(new MyFindFileCallback);
+    local_opt->setReadFileCallback(new MyReadFileCallback);
 
     osgDB::XmlNode::Input input;
     input.open(fileName);
@@ -1405,15 +1707,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
     return readNode(input, local_opt);
 }
 
-struct MyFindFileCallback : public osgDB::FindFileCallback
-{
-    virtual std::string findDataFile(const std::string& filename, const osgDB::Options* options, osgDB::CaseSensitivity caseSensitivity)
-    {
-        osg::notify(osg::NOTICE)<<"find file "<<filename<<std::endl;
-        return osgDB::Registry::instance()->findDataFileImplementation(filename, options, caseSensitivity);
-    }
-};
-
 osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, const Options* options) const
 {
     osgDB::XmlNode::Input input;
@@ -1421,7 +1714,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, 
     input.readAllDataIntoBuffer();
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
-    local_opt->setFindFileCallback(new MyFindFileCallback);
+    //local_opt->setFindFileCallback(new MyFindFileCallback);
+    local_opt->setReadFileCallback(new MyReadFileCallback);
 
     return readNode(input, local_opt);
 }
@@ -1439,6 +1733,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
 
     doc->read(input);
 
+
+    osg::notify(osg::NOTICE)<<"P3D parsing"<<std::endl;
 
     // doc->write(std::cout);
 
@@ -1473,11 +1769,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
 
     bool readSlide = false;
 
-    std::string pathToPresentation;
-    if (options && !(options->getDatabasePathList().empty()))
-    {
-        pathToPresentation = options->getDatabasePathList().front();
-    }
 
     for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
         itr != root->children.end();
@@ -1492,6 +1783,17 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
             putenv(str);
         }
     }
+
+    std::string pathToPresentation;
+    MyReadFileCallback* readFileCallback = options ? dynamic_cast<MyReadFileCallback*>(options->getReadFileCallback()) : 0;
+
+    if (options && !(options->getDatabasePathList().empty()))
+    {
+        pathToPresentation = options->getDatabasePathList().front();
+
+       if (readFileCallback) readFileCallback->_paths.push_front(pathToPresentation);
+    }
+
 
     for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
         itr != root->children.end();
@@ -1510,7 +1812,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
             bool relativePath = colonPos == std::string::npos &&
                                 backslashPos != 0 &&
                                 forwardslashPos != 0;
-            if (relativePath)
+
+            if (relativePath && !pathToPresentation.empty())
             {
                 newpath = osgDB::concatPaths(pathToPresentation, newpath);
                 osg::notify(osg::NOTICE)<<"relative path = "<<cur->contents<<", newpath="<<newpath<<std::endl;
@@ -1519,9 +1822,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
             {
                 osg::notify(osg::NOTICE)<<"absolute path = "<<cur->contents<<", newpath="<<newpath<<std::endl;
             }
-            options->getDatabasePathList().push_front(newpath);
+
+            if (readFileCallback) readFileCallback->_paths.push_back(newpath);
+            else options->getDatabasePathList().push_back(newpath);
         }
     }
+
 
     for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
         itr != root->children.end();

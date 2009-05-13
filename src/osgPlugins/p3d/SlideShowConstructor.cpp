@@ -776,7 +776,8 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
     if (!_currentLayer) addLayer();
 
     osg::Image* image = osgDB::readImageFile(filename, _options.get());
-    
+    if (image) recordOptionsFilePath(_options.get());
+
     if (!image) return;
 
     bool isImageTranslucent = false;
@@ -890,7 +891,10 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
 
 
     osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(filenameLeft, _options.get());
+    if (imageLeft.valid()) recordOptionsFilePath(_options.get());
+
     osg::ref_ptr<osg::Image> imageRight = (filenameRight==filenameLeft) ? imageLeft.get() : osgDB::readImageFile(filenameRight, _options.get());
+    if (imageRight.valid()) recordOptionsFilePath(_options.get());
 
     if (!imageLeft && !imageRight) return;
 
@@ -1225,6 +1229,8 @@ std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filen
 
 void SlideShowConstructor::addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData)
 {
+    osg::notify(osg::NOTICE)<<"SlideShowConstructor::addModel("<<filename<<")"<<std::endl;
+
     osg::Node* subgraph = 0;
 
     if (filename=="sphere")
@@ -1243,15 +1249,16 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
     }
     else
     {
-        std::string foundFile = findFileAndRecordPath(filename);
-        if (foundFile.empty()) return;
-
-        subgraph = osgDB::readNodeFile(foundFile, _options.get());
+        subgraph = osgDB::readNodeFile(filename, _options.get());
+        if (subgraph) recordOptionsFilePath(_options.get());
     }
     
     if (!subgraph) return;
 
     addModel(subgraph, positionData, modelData);
+
+    osg::notify(osg::NOTICE)<<"end of SlideShowConstructor::addModel("<<filename<<")"<<std::endl<<std::endl;
+
 }
 
 void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& positionData, const ModelData& modelData)
@@ -1444,6 +1451,12 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     else if (fileType == osgDB::REGULAR_FILE)
     {
         image = osgDB::readImageFile( foundFile, _options.get() );
+    }
+    else
+    {
+        // not found image, so fallback to plguins/callbacks to find the model.
+        image = osgDB::readImageFile( filename, _options.get() );
+        if (image) recordOptionsFilePath(_options.get() );
     }
 
     if (!image) return;
@@ -1852,3 +1865,22 @@ void SlideShowConstructor::updatePositionFromInModelCoords(const osg::Vec3& vert
         positionData.position = vertex;
     }
 }
+
+void SlideShowConstructor::recordOptionsFilePath(const osgDB::Options* options)
+{
+    if (options)
+    {
+        std::string filename_used = _options->getPluginStringData("filename");
+        std::string path = osgDB::getFilePath(filename_used);
+        if (!path.empty() && _filePathData.valid())
+        {
+            osgDB::FilePathList::iterator itr = std::find(_filePathData->filePathList.begin(),_filePathData->filePathList.end(),path);
+            if (itr==_filePathData->filePathList.end())
+            {
+                osg::notify(osg::INFO)<<"SlideShowConstructor::recordOptionsFilePath(..) - new path to record path="<<path<<" filename_used="<<filename_used<<std::endl;
+                _filePathData->filePathList.push_front(path);
+            }
+        }
+    }
+}
+

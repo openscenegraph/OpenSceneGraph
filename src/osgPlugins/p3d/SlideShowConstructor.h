@@ -413,6 +413,8 @@ protected:
     
     std::string findFileAndRecordPath(const std::string& filename);
     
+    void recordOptionsFilePath(const osgDB::Options* options);
+
 };
 
 }

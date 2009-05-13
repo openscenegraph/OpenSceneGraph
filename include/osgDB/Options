@@ -142,7 +142,7 @@ class OSGDB_EXPORT Options : public osg::Object
         void setPluginStringData(const std::string& s, const std::string& v) const { _pluginStringData[s] = v; }
 
         /** Get a string from the PluginStrData */
-        std::string getPluginStringData(const std::string& s) { return _pluginStringData[s]; }
+        std::string& getPluginStringData(const std::string& s) { return _pluginStringData[s]; }
 
         /** Get a value from the PluginData */
         const std::string getPluginStringData(const std::string& s) const

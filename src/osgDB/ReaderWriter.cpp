@@ -117,3 +117,12 @@ ReaderWriter::FeatureList ReaderWriter::featureAsString(ReaderWriter::Features f
     }
     return result;
 }
+
+bool ReaderWriter::fileExists(const std::string& filename, const Options* /*options*/) const
+{
+#ifdef OSG_USE_UTF8_FILENAME
+    return _waccess( OSGDB_STRING_TO_FILENAME(filename).c_str(), F_OK ) == 0;
+#else
+    return access( filename.c_str(), F_OK ) == 0;
+#endif
+}

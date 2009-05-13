@@ -88,6 +88,8 @@ class ReaderWriterCURL : public osgDB::ReaderWriter
             return osgDB::equalCaseInsensitive(extension,"curl");
         }
 
+        virtual bool fileExists(const std::string& filename, const osgDB::Options* options) const;
+
         virtual ReadResult openArchive(const std::string& fileName,ArchiveStatus status, unsigned int , const Options* options) const
         {
             if (status!=READ) return ReadResult(ReadResult::FILE_NOT_HANDLED);

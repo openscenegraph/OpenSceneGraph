@@ -349,6 +349,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     //    return ReadResult::FILE_NOT_HANDLED;
     //}
 
+    osg::notify(osg::INFO)<<"CURL: Have readerwriter="<<reader<<std::endl;
+
     const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
     if (proxyEnvAddress) //Env Proxy Settings
     {
@@ -368,6 +370,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
     if (curlResult.status()==ReadResult::FILE_LOADED)
     {
+        osg::notify(osg::INFO)<<"CURL: ReadResult::FILE_LOADED "<<std::endl;
+
         // If we do not already have a ReaderWriter, try to find one based on the
         // mime-type:
         if ( !reader )
@@ -489,6 +493,22 @@ bool ReaderWriterCURL::read(std::istream& fin, std::string& destination) const
     return false;
 }
 #endif
+
+bool ReaderWriterCURL::fileExists(const std::string& filename, const osgDB::Options* options) const
+{
+    if (osgDB::containsServerAddress(filename))
+    {
+        osg::notify(osg::NOTICE)<<"Checking if file exists using curl plugin: "<<filename<<std::endl;
+
+        ReadResult result = readFile(OBJECT,filename,options);
+        return result.status()==osgDB::ReaderWriter::ReadResult::FILE_LOADED;
+    }
+    else
+    {
+        return ReaderWriter::fileExists(filename, options);
+    }
+}
+
 
 // now register with Registry to instantiate the above
 // reader/writer.

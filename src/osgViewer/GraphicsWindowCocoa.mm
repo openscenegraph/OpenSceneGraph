@@ -7,6 +7,8 @@
  * 
  *  Some code borrowed from the implementation of CocoaViewer, 
  *  Created by Eric Wing on 11/12/06. and ported by Martin Lavery 7/06/07
+ *
+ *  Other snippets are borrowed from the Cocoa-implementation of the SDL-lib
  */
 
 #include <iostream>
@@ -17,8 +19,17 @@
 
 #include "DarwinUtils.h"
 
+//#define DEBUG_OUT(s) std::cout << "GraphicsWindowCocoa :: " << s << std::endl;
+
+#define DEBUG_OUT(s) ;
 
 static bool s_quit_requested = false;
+
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
+@interface NSApplication(NSAppleMenu)
+- (void)setAppleMenu:(NSMenu *)menu;
+@end
+#endif
 
 
 // ----------------------------------------------------------------------------------------------------------
@@ -187,14 +198,20 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
 @end
 
 @implementation CocoaAppDelegate
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender
 {
     s_quit_requested = true;
-    // std::cout << "quit requested " << std::endl;
-    return NSTerminateNow;
+    DEBUG_OUT("quit requested ");
+    return NSTerminateCancel;
+}
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+    DEBUG_OUT("applicationDidFinishLaunching");
 }
 
 @end
@@ -322,6 +339,11 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) handleModifiers: (NSEvent*)theEvent
 {
+    DEBUG_OUT("handling modifiers");
+    
+    if ((!_win) || (!_win->getEventQueue())) 
+        return; // no event    queue in place
+    
     unsigned int flags = [theEvent modifierFlags];
     
     if (flags == _cachedModifierFlags) 
@@ -366,6 +388,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) mouseMoved:(NSEvent*)theEvent 
 {
+    DEBUG_OUT("Mouse moved");
     NSPoint converted_point = [self getLocalPoint: theEvent];
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
 }
@@ -374,6 +397,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) mouseDown:(NSEvent*)theEvent
 {
+    DEBUG_OUT("Mouse down");
     // Because many Mac users have only a 1-button mouse, we should provide ways
     // to access the button 2 and 3 actions of osgViewer.
     // I will use the Ctrl modifer to represent right-clicking
@@ -402,6 +426,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) mouseDragged:(NSEvent*)theEvent
 {
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];    
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
     
@@ -440,7 +466,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) rightMouseDragged:(NSEvent*)theEvent
 {
-   
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
 }
@@ -472,6 +499,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) otherMouseDragged:(NSEvent*)theEvent
 {
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];    
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
    
@@ -523,6 +552,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) doLeftMouseButtonDown:(NSEvent*)theEvent
 {
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];
     
     if([theEvent clickCount] == 1)
@@ -537,6 +568,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) doLeftMouseButtonUp:(NSEvent*)theEvent
 {
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];
     
     _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 1);
@@ -545,6 +578,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) doRightMouseButtonDown:(NSEvent*)theEvent
 {
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];
     if([theEvent clickCount] == 1)
     {
@@ -560,12 +595,16 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) doRightMouseButtonUp:(NSEvent*)theEvent
 {
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];    
     _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 3);
 }
 
 - (void) doMiddleMouseButtonDown:(NSEvent*)theEvent
 {
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];
     
     if([theEvent clickCount] == 1)
@@ -580,6 +619,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) doExtraMouseButtonDown:(NSEvent*)theEvent buttonNumber:(int)button_number
 {
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];
     if([theEvent clickCount] == 1)
     {
@@ -594,6 +635,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) doMiddleMouseButtonUp:(NSEvent*)theEvent
 {
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];
     _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, 2);
 
@@ -601,6 +644,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) doExtraMouseButtonUp:(NSEvent*)theEvent buttonNumber:(int)button_number
 {
+    if (!_win) return;
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];
     _win->getEventQueue()->mouseButtonRelease(converted_point.x, converted_point.y, button_number+1);
 }
@@ -609,6 +654,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) scrollWheel:(NSEvent*)theEvent
 {
+    if (!_win) return;
+    
     // Unfortunately, it turns out mouseScroll2D doesn't actually do anything.
     // The camera manipulators don't seem to implement any code that utilize the scroll values.
     // This this call does nothing.
@@ -619,6 +666,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void)keyDown:(NSEvent *)theEvent 
 {
+    if (!_win) return;
+    
     NSString* chars = [theEvent charactersIgnoringModifiers]; 
     unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
     // std::cout << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
@@ -628,6 +677,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void)keyUp:(NSEvent *)theEvent 
 {   
+    if (!_win) return;
+    
     NSString* chars = [theEvent charactersIgnoringModifiers]; 
     unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask));
     // std::cout << "key up: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
@@ -643,6 +694,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 -(void)handleTabletEvents:(NSEvent *)theEvent
 {
+    if (!_win) return;
+    
     float pressure = [theEvent pressure];
     _win->getEventQueue()->penPressure(pressure);
     NSPoint tilt = [theEvent tilt];
@@ -653,6 +706,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void)tabletProximity:(NSEvent *)theEvent
 {
+    if (!_win) return;
+    
     osgGA::GUIEventAdapter::TabletPointerType pt(osgGA::GUIEventAdapter::UNKNOWN);
     switch ([theEvent pointingDeviceType]) {
         case NSPenPointingDevice:
@@ -844,16 +899,34 @@ bool GraphicsWindowCocoa::realizeImplementation()
     
     NSRect rect = NSMakeRect(_traits->x + screenLeft, _traits->y + screenTop, _traits->width, _traits->height);
     
-    _window = [[GraphicsWindowCocoaWindow alloc] initWithContentRect: rect styleMask: style backing: NSBackingStoreBuffered defer: NO];
+    _ownsWindow = true;
     
-    if (!_window) {
-        osg::notify(osg::WARN) << "GraphicsWindowCocoa::realizeImplementation :: could not create window" << std::endl;
-        return false;
-    }
+    // should we create a NSView only??
+    WindowData* windowData = _traits->inheritedWindowData ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : NULL;
+    if (windowData) 
+    {
+        if (windowData->createOnlyView())
+            _ownsWindow = false;
+        _checkForEvents = windowData->checkForEvents();
+        
+    } 
     
-    rect = convertFromQuartzCoordinates(rect);
-    [_window setFrameOrigin: rect.origin];
-     
+
+    osg::notify(osg::DEBUG_INFO) << "GraphicsWindowCocoa::realizeImplementation / ownsWindow: " << _ownsWindow << " checkForEvents: " << _checkForEvents << std::endl;
+
+    if (_ownsWindow) 
+    {
+        _window = [[GraphicsWindowCocoaWindow alloc] initWithContentRect: rect styleMask: style backing: NSBackingStoreBuffered defer: NO];
+        
+        if (!_window) {
+            osg::notify(osg::WARN) << "GraphicsWindowCocoa::realizeImplementation :: could not create window" << std::endl;
+            return false;
+        }
+
+        rect = convertFromQuartzCoordinates(rect);
+        [_window setFrameOrigin: rect.origin];
+    } 
+            
     NSOpenGLPixelFormatAttribute attr[32];
     int i = 0;
     
@@ -913,14 +986,23 @@ bool GraphicsWindowCocoa::realizeImplementation()
     [theView setAutoresizingMask:  (NSViewWidthSizable | NSViewHeightSizable) ];
     [theView setGraphicsWindowCocoa: this];
     [theView setOpenGLContext:_context];
-    [_window setContentView: theView];
-    
-    setupNSWindow(_window);
-    
-    [theView release];
+    _view = theView;
+    osg::notify(osg::DEBUG_INFO) << "GraphicsWindowCocoa::realizeImplementation / view: " << theView << std::endl;
+
+    if (_ownsWindow) {
+        [_window setContentView: theView];
+        setupNSWindow(_window);
+        [theView release];
+        
+        MenubarController::instance()->attachWindow( new CocoaWindowAdapter(this) );
+    }
+    else 
+    {
+        windowData->setCreatedNSView(theView);
+    }
+
     [pool release];
     
-    MenubarController::instance()->attachWindow( new CocoaWindowAdapter(this) );
     
     useCursor(_traits->useCursor);
     setWindowName(_traits->windowName);
@@ -950,8 +1032,18 @@ void GraphicsWindowCocoa::closeImplementation()
     MenubarController* mbc = MenubarController::instance();
     if (mbc) mbc->detachWindow(this);
     
-    [_window close];
-    [_window release];
+    if (_window) {
+        [_window close];
+        [_window release];
+    }
+    
+    if (_view) {
+        [_view setGraphicsWindowCocoa: NULL];
+    }
+    
+    _window = NULL;
+    _view = NULL;
+    
 }
 
 
@@ -993,6 +1085,9 @@ void GraphicsWindowCocoa::swapBuffersImplementation()
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::checkEvents()
 {
+    if (!_checkForEvents)
+        return;
+    
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     while(1)
@@ -1004,14 +1099,14 @@ void GraphicsWindowCocoa::checkEvents()
             NSEventTrackingRunLoopMode is in the common set of modes
             so it may not effectively make much of a difference.
          */
-        NSEvent *event = [ [NSApplication sharedApplication]
+        NSEvent *event = [ NSApp
                 nextEventMatchingMask:NSAnyEventMask
                 untilDate:[NSDate distantPast]
                 inMode:NSDefaultRunLoopMode
                 dequeue: YES];
         if(!event)
             break;
-        [[NSApplication sharedApplication] sendEvent: event];
+        [NSApp sendEvent: event];
     }    
     
     if (_closeRequested)
@@ -1036,7 +1131,9 @@ void GraphicsWindowCocoa::checkEvents()
 
 bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
 {
-    if (!_realized) return false;
+    if (!_realized || !_ownsWindow) return false;
+    
+    NSAutoreleasePool* localPool = [[NSAutoreleasePool alloc] init];
     
     unsigned int style(NSBorderlessWindowMask);
     
@@ -1061,6 +1158,8 @@ bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
         [_window makeKeyAndOrderFront: nil];
     }
     
+    [localPool release];
+    
     return true;
 }
 
@@ -1070,7 +1169,8 @@ bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::grabFocus()
 {
-    [_window makeKeyAndOrderFront: nil];
+    if (_ownsWindow)
+        [_window makeKeyAndOrderFront: nil];
 }
 
 
@@ -1089,12 +1189,16 @@ void GraphicsWindowCocoa::grabFocusIfPointerInWindow()
 
 void GraphicsWindowCocoa::resizedImplementation(int x, int y, int width, int height)
 {
-    std::cout << "resized implementation" << x << " " << y << " " << width << " " << height << std::endl; 
+    DEBUG_OUT("resized implementation" << x << " " << y << " " << width << " " << height); 
     GraphicsContext::resizedImplementation(x, y, width, height);
+    
+    NSAutoreleasePool* localPool = [[NSAutoreleasePool alloc] init];
    
-    [_context update];
+    if (_context)
+        [_context update];
     MenubarController::instance()->update();
     getEventQueue()->windowResize(x,y,width, height, getEventQueue()->getTime());
+    [localPool release];
 }
 
 
@@ -1105,6 +1209,11 @@ void GraphicsWindowCocoa::resizedImplementation(int x, int y, int width, int hei
 // ----------------------------------------------------------------------------------------------------------
 bool GraphicsWindowCocoa::setWindowRectangleImplementation(int x, int y, int width, int height)
 {
+    if (!_ownsWindow)
+        return false;
+        
+    NSAutoreleasePool* localPool = [[NSAutoreleasePool alloc] init];
+        
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     int screenLeft(0), screenTop(0);
     if (wsi) {
@@ -1118,6 +1227,8 @@ bool GraphicsWindowCocoa::setWindowRectangleImplementation(int x, int y, int wid
     [_window setFrame: [NSWindow frameRectForContentRect: rect styleMask: [_window styleMask]] display: YES];
     [_context update];
     MenubarController::instance()->update();
+    
+    [localPool release];
     
     return true;
 }
@@ -1154,6 +1265,11 @@ void GraphicsWindowCocoa::adaptResize(int x, int y, int w, int h)
 
 void GraphicsWindowCocoa::setWindowName (const std::string & name)
 {
+    if (_traits.valid()) _traits->windowName = name;
+    
+    if (!_ownsWindow)
+        return;
+        
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
     NSString* title = [NSString stringWithCString: name.c_str() encoding: NSUTF8StringEncoding];
@@ -1200,6 +1316,8 @@ void GraphicsWindowCocoa::useCursor(bool cursorOn)
 
 void GraphicsWindowCocoa::setCursor(MouseCursor mouseCursor)
 {
+    NSAutoreleasePool* localPool = [[NSAutoreleasePool alloc] init];
+    
     switch (mouseCursor) 
     {
 
@@ -1222,6 +1340,8 @@ void GraphicsWindowCocoa::setCursor(MouseCursor mouseCursor)
         default:
             osg::notify(osg::INFO) << "GraphicsWindowCocoa::setCursor :: unsupported MouseCursor: " << mouseCursor << std::endl;    
     }
+    
+    [localPool release];
 }
 
 
@@ -1242,6 +1362,7 @@ void GraphicsWindowCocoa::setVSync(bool f)
 
 GraphicsWindowCocoa::~GraphicsWindowCocoa() 
 {
+    close();
 }
 
 
@@ -1255,26 +1376,131 @@ GraphicsWindowCocoa::~GraphicsWindowCocoa()
 struct CocoaWindowingSystemInterface : public DarwinWindowingSystemInterface {
     
     CocoaWindowingSystemInterface()
-    :    DarwinWindowingSystemInterface() 
+    :    DarwinWindowingSystemInterface()
+    
+    {        
+    }
+    
+    void initAsStandaloneApplication() 
     {
-        localPool = [[NSAutoreleasePool alloc] init];
-        [[NSApplication sharedApplication] setDelegate: [[CocoaAppDelegate alloc] init] ];
+        static bool s_inited = false;
+        if (s_inited) return;
+        s_inited = true;
+        
+        osg::notify(osg::INFO) << "CocoaWindowingSystemInterface::initAsStandaloneApplication " << std::endl;
+        
+        ProcessSerialNumber psn;
+        if (!GetCurrentProcess(&psn)) {
+            TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+            SetFrontProcess(&psn);
+        }
+        
+        NSAutoreleasePool* localPool = [[NSAutoreleasePool alloc] init];
+        
+        if (NSApp == nil) {
+            [NSApplication sharedApplication];
+        }
+        
+        [NSApp setDelegate: [[CocoaAppDelegate alloc] init] ];
+        
+        createApplicationMenus();
+        
+        [NSApp finishLaunching];
+        
+        [localPool release];
     }
     
     virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits) 
     {
+        if (!traits->pbuffer) 
+        {
+            GraphicsWindowCocoa::WindowData* windowData = traits->inheritedWindowData ? dynamic_cast<GraphicsWindowCocoa::WindowData*>(traits->inheritedWindowData.get()) : NULL;
+        
+            if (!windowData || (windowData && windowData->poseAsStandaloneApp())) 
+            {
+                initAsStandaloneApplication();
+            }
+        }
+        
         return createGraphicsContextImplementation<PixelBufferCocoa, GraphicsWindowCocoa>(traits);
     }
     
     virtual ~CocoaWindowingSystemInterface() 
     {
-        [localPool release];
     }
     
-    NSAutoreleasePool *localPool;
+private:
+    NSString *getApplicationName(void)
+    {
+        NSDictionary *dict;
+        NSString *appName = 0;
+
+        /* Determine the application name */
+        dict = (NSDictionary *)CFBundleGetInfoDictionary(CFBundleGetMainBundle());
+        if (dict)
+            appName = [dict objectForKey: @"CFBundleName"];
+        
+        if (![appName length])
+            appName = [[NSProcessInfo processInfo] processName];
+
+        return appName;
+    }
+    
+     void createApplicationMenus(void)
+    {
+        NSString *appName;
+        NSString *title;
+        NSMenu *appleMenu;
+        NSMenuItem *menuItem;
+        
+        /* Create the main menu bar */
+        [NSApp setMainMenu:[[NSMenu alloc] init]];
+
+        /* Create the application menu */
+        appName = getApplicationName();
+        appleMenu = [[NSMenu alloc] initWithTitle:@""];
+        
+        /* Add menu items */
+        title = [@"About " stringByAppendingString:appName];
+        [appleMenu addItemWithTitle:title action:@selector(orderFrontStandardAboutPanel:) keyEquivalent:@""];
+
+        [appleMenu addItem:[NSMenuItem separatorItem]];
+        
+        NSMenu* service_menu = [[NSMenu alloc] init];
+        NSMenuItem* service_menu_item = [[NSMenuItem alloc] initWithTitle:@"Services" action:nil keyEquivalent:@""];
+        [service_menu_item setSubmenu: service_menu];
+        [appleMenu addItem: service_menu_item];
+        [NSApp setServicesMenu: service_menu];
+        
+        [appleMenu addItem:[NSMenuItem separatorItem]];
+
+        title = [@"Hide " stringByAppendingString:appName];
+        [appleMenu addItemWithTitle:title action:@selector(hide:) keyEquivalent:@/*"h"*/"h"];
+
+        menuItem = (NSMenuItem *)[appleMenu addItemWithTitle:@"Hide Others" action:@selector(hideOtherApplications:) keyEquivalent:@/*"h"*/""];
+        [menuItem setKeyEquivalentModifierMask:(NSAlternateKeyMask|NSCommandKeyMask)];
+
+        [appleMenu addItemWithTitle:@"Show All" action:@selector(unhideAllApplications:) keyEquivalent:@""];
+
+        [appleMenu addItem:[NSMenuItem separatorItem]];
+
+        title = [@"Quit " stringByAppendingString:appName];
+        [appleMenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@/*"q"*/"q"];
+        
+        /* Put menu into the menubar */
+        menuItem = [[NSMenuItem alloc] initWithTitle:@"" action:nil keyEquivalent:@""];
+        [menuItem setSubmenu:appleMenu];
+        [[NSApp mainMenu] addItem:menuItem];
+        [menuItem release];
+
+        /* Tell the application object that this is now the application menu */
+        [NSApp setAppleMenu:appleMenu];
+        [appleMenu release];
+
+
+    }
 
 };
-
 
 }
 

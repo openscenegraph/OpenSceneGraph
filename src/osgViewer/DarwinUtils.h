@@ -78,21 +78,25 @@ struct DarwinWindowingSystemInterface : public osg::GraphicsContext::WindowingSy
         virtual void getScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution);
 
         virtual void enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, osg::GraphicsContext::ScreenSettingsList & resolutionList);
+        
+        virtual bool setScreenSettings (const osg::GraphicsContext::ScreenIdentifier & si, const osg::GraphicsContext::ScreenSettings & settings);
 
         /** return the top left coord of a specific screen in global screen space */
         void getScreenTopLeft(const osg::GraphicsContext::ScreenIdentifier& si, int& x, int& y);
 
-        /** implementation of setScreenResolution */
-        virtual bool setScreenResolution(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) ;
-
-        /** implementation of setScreenRefreshRate */
-        virtual bool setScreenRefreshRate(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate);
-
+        
 
         /** returns screen-ndx containing rect x,y,w,h */
         unsigned int getScreenContaining(int x, int y, int w, int h);
     
     protected:
+    
+        /** implementation of setScreenResolution */
+        bool setScreenResolutionImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) ;
+
+        /** implementation of setScreenRefreshRate */
+        bool setScreenRefreshRateImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate);
+
     
         template<class PixelBufferImplementation, class GraphicsWindowImplementation>
         osg::GraphicsContext* createGraphicsContextImplementation(osg::GraphicsContext::Traits* traits)

@@ -80,12 +80,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(const std::string&
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-    osg::notify(osg::NOTICE)<<"ReaderWriterPaths::readObject("<<file<<")"<<std::endl;
+    osg::notify(osg::INFO)<<"ReaderWriterPaths::readObject("<<file<<")"<<std::endl;
 
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    osg::notify(osg::NOTICE)<<"  Found path file :"<<fileName<<std::endl;
+    osg::notify(osg::INFO)<<"  Found path file :"<<fileName<<std::endl;
 
     // code for setting up the database path so that internally referenced file are searched for on relative paths.
     osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
@@ -98,7 +98,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(const std::string&
 
 osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(std::istream& fin, const osgDB::Options* options) const
 {
-    osg::notify(osg::NOTICE)<<"ReaderWriterPaths::readObject(std::istream& fin"<<std::endl;
+    osg::notify(osg::INFO)<<"ReaderWriterPaths::readObject(std::istream& fin"<<std::endl;
 
     if (!options) return ReadResult::FILE_NOT_HANDLED;
     if (!fin) return ReadResult::ERROR_IN_READING_FILE;
@@ -108,7 +108,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(std::istream& fin,
 
     std::string ext = osgDB::getLowerCaseFileExtension(filename);
 
-    osg::notify(osg::NOTICE)<<"   filename found in options: "<<filename<<"  extension="<<ext<<std::endl;
+    osg::notify(osg::INFO)<<"   filename found in options: "<<filename<<"  extension="<<ext<<std::endl;
 
 
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -212,8 +212,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::read_rotation_path(std::istre
     {
         RotationPathData currValue;
         fin >> currValue.time >> currValue.pivot.x() >> currValue.pivot.y() >> currValue.pivot.z() >> currValue.position.x() >> currValue.position.y() >> currValue.position.z() >> currValue.azim >> currValue.elevation >> currValue.scale;
-
-        osg::notify(osg::NOTICE)<<"rotation_path "<<currValue.time <<", "<< currValue.pivot.x() <<", "<< currValue.pivot.y() <<", "<< currValue.pivot.z() <<", "<< currValue.position.x() <<", "<< currValue.position.y() <<", "<< currValue.position.z() <<", "<< currValue.azim <<", "<< currValue.elevation <<", "<< currValue.scale<<std::endl;
 
         if(!fin.eof())
         {

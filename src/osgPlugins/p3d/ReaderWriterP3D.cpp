@@ -94,7 +94,7 @@ public:
         _stringKeyMap["F12"]=osgGA::GUIEventAdapter::KEY_F12;
 
 
-        _notifyLevel = osg::NOTICE;
+        _notifyLevel = osg::INFO;
     }
     
     virtual const char* className() const
@@ -1444,7 +1444,7 @@ class OSGDB_EXPORT MyReadFileCallback : public virtual osgDB::ReadFileCallback
 
         osgDB::ReaderWriter::ReadResult readLocal(ObjectType type, const std::string& filename, const osgDB::Options* options)
         {
-            osg::notify(osg::NOTICE)<<"Trying local file "<<filename<<std::endl;
+            osg::notify(osg::INFO)<<"Trying local file "<<filename<<std::endl;
 
             switch(type)
             {
@@ -1465,7 +1465,7 @@ class OSGDB_EXPORT MyReadFileCallback : public virtual osgDB::ReadFileCallback
             if (!fileCache) fileCache = osgDB::Registry::instance()->getFileCache();
             if (!fileCache) return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
 
-            osg::notify(osg::NOTICE)<<"Trying fileCache "<<filename<<std::endl;
+            osg::notify(osg::INFO)<<"Trying fileCache "<<filename<<std::endl;
 
             osgDB::ReaderWriter::ReadResult result;
             if (fileCache && fileCache->isFileAppropriateForFileCache(filename))
@@ -1511,7 +1511,7 @@ class OSGDB_EXPORT MyReadFileCallback : public virtual osgDB::ReadFileCallback
 
         osgDB::ReaderWriter::ReadResult readServer(ObjectType type, const std::string& filename, const osgDB::Options* options)
         {
-            osg::notify(osg::NOTICE)<<"Trying server file "<<filename<<std::endl;
+            osg::notify(osg::INFO)<<"Trying server file "<<filename<<std::endl;
 
             osgDB::ReaderWriter::ReadResult result;
             osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension("curl");
@@ -1608,7 +1608,7 @@ class OSGDB_EXPORT MyReadFileCallback : public virtual osgDB::ReadFileCallback
             if (!fileCache) fileCache = osgDB::Registry::instance()->getFileCache();
             if (fileCache && !fileCache->isFileAppropriateForFileCache(filename)) fileCache = 0;
 
-            osg::notify(osg::NOTICE)<<"reading file "<<filename<<std::endl;
+            osg::notify(osg::INFO)<<"reading file "<<filename<<std::endl;
             ObjectCache::iterator itr = _objectCache.find(filename);
             if (itr != _objectCache.end())
             {

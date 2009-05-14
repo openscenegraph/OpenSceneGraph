@@ -1229,7 +1229,7 @@ std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filen
 
 void SlideShowConstructor::addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData)
 {
-    osg::notify(osg::NOTICE)<<"SlideShowConstructor::addModel("<<filename<<")"<<std::endl;
+    osg::notify(osg::INFO)<<"SlideShowConstructor::addModel("<<filename<<")"<<std::endl;
 
     osg::Node* subgraph = 0;
 
@@ -1258,7 +1258,7 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
         addModel(subgraph, positionData, modelData);
     }
 
-    osg::notify(osg::NOTICE)<<"end of SlideShowConstructor::addModel("<<filename<<")"<<std::endl<<std::endl;
+    osg::notify(osg::INFO)<<"end of SlideShowConstructor::addModel("<<filename<<")"<<std::endl<<std::endl;
 
 }
 
@@ -1323,8 +1323,6 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
     if (positionData.requiresMaterialAnimation())
         subgraph = attachMaterialAnimation(subgraph,positionData);
 
-    osg::notify(osg::NOTICE)<<"positionData.rotation "<<positionData.rotation<<std::endl;
-
     // attached any rotation
     if (positionData.rotation[0]!=0.0)
     {
@@ -1334,10 +1332,10 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
             new osgUtil::TransformCallback(subgraph->getBound().center(),
                                            osg::Vec3(positionData.rotation[1],positionData.rotation[2],positionData.rotation[3]),
                                            osg::DegreesToRadians(positionData.rotation[0])));
-                                           
+
         animation_transform->addChild(subgraph);
-        
-        osg::notify(osg::NOTICE)<<"Rotation Matrix "<<animation_transform->getMatrix()<<std::endl;
+
+        osg::notify(osg::INFO)<<"Rotation Matrix "<<animation_transform->getMatrix()<<std::endl;
 
         subgraph = animation_transform;
     }
@@ -1347,10 +1345,10 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
     osg::AnimationPathCallback* animation = getAnimationPathCallback(positionData);
     if (animation)
     {
-        osg::notify(osg::NOTICE)<<"Have animation path for model"<<std::endl;
-        
+        osg::notify(osg::INFO)<<"Have animation path for model"<<std::endl;
+
         osg::Vec3 pivot = positionData.absolute_path ? osg::Vec3(0.0f,0.0f,0.0f) : subgraph->getBound().center();
-                
+
         osg::AnimationPath* path = animation->getAnimationPath();
         if (positionData.animation_name=="wheel" && (path->getTimeControlPointMap()).size()>=2)
         {

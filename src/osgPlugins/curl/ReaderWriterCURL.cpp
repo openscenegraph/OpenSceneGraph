@@ -397,6 +397,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
         local_opt->setPluginStringData("STREAM_FILENAME",osgDB::getSimpleFileName(fileName));
+        local_opt->setPluginStringData("filename",fileName);
 
         if (uncompress)
         {

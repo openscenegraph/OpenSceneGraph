@@ -38,17 +38,11 @@ GUIEventAdapter::GUIEventAdapter():
     _Ymax(1.0),
     _mx(0.0),
     _my(0.0),
-    _pressure(0.0),
-    _tiltX(0.0),
-    _tiltY(0.0),
-    _rotation(0.0),
     _buttonMask(0),
     _modKeyMask(0),
-    _scrollingMotion(SCROLL_NONE),
-    _scrollingDeltaX(0),
-    _scrollingDeltaY(0),
     _mouseYOrientation(Y_INCREASING_DOWNWARDS),
-    _tabletPointerType(UNKNOWN)
+    _scrolling(),
+    _tabletPen()
 {}
 
 GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs,const osg::CopyOp& copyop):
@@ -69,17 +63,11 @@ GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs,const osg::CopyOp& c
     _Ymax(rhs._Ymax),
     _mx(rhs._mx),
     _my(rhs._my),
-    _pressure(rhs._pressure),
-    _tiltX(rhs._tiltX),
-    _tiltY(rhs._tiltY),
-    _rotation(rhs._rotation),
     _buttonMask(rhs._buttonMask),
     _modKeyMask(rhs._modKeyMask),
-    _scrollingMotion(rhs._scrollingMotion),
-    _scrollingDeltaX(rhs._scrollingDeltaX),
-    _scrollingDeltaY(rhs._scrollingDeltaY),
     _mouseYOrientation(rhs._mouseYOrientation),
-    _tabletPointerType(rhs._tabletPointerType)
+    _scrolling(rhs._scrolling),
+    _tabletPen(rhs._tabletPen)
 {}
 
 GUIEventAdapter::~GUIEventAdapter()

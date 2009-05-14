@@ -268,7 +268,7 @@ public:
           * Typically all EventQueue will share this single GUIEventAdapter object for tracking
           * the mouse position, keyboard and mouse masks. */
         static osg::ref_ptr<GUIEventAdapter>& getAccumulatedEventState();
-        
+
 
         /** Set whether this event has been handled by an event handler or not.*/
         void setHandled(bool handled) const { _handled = handled; }
@@ -276,10 +276,10 @@ public:
         /** Get whether this event has been handled by an event handler or not.*/
         bool getHandled() const { return _handled; }
 
-        /** Get the Type of the GUI GUIEventAdapter.*/
+        /** set the event type. */
         void setEventType(EventType Type) { _eventType = Type; }
 
-        /** Get the Type of the GUI GUIEventAdapter.*/
+        /** get the event type. */
         virtual EventType getEventType() const { return _eventType; }
 
         /** set time in seconds of event. */
@@ -337,7 +337,7 @@ public:
         /** get mouse minimum y. */
         float getYmin() const { return _Ymin; }
 
-        /** get mouse maYimum y. */
+        /** get mouse maximum y. */
         float getYmax() const { return _Ymax; }
 
         /** set current mouse x position.*/
@@ -352,77 +352,97 @@ public:
         /** get current mouse y position.*/
         float getY() const { return _my; }
 
-        /** set current mouse button state */
-        void setButtonMask(unsigned int mask) { _buttonMask = mask; }
-
-        /** get current mouse button state */
-        unsigned int getButtonMask() const { return _buttonMask; }
-
-        void setModKeyMask(unsigned int mask) { _modKeyMask = mask; }
-
-        unsigned int getModKeyMask() const { return _modKeyMask; }
-
-        /// get the pressure, from a tablet input device (range 0 - 1)
-        float getPenPressure()  const { return _pressure; }
-        /// sets the pressure from a tablet
-        void setPenPressure(float pressure) { _pressure = pressure; }
-        /// get the tiltX, from a tablet input device (range -1 - 1)
-        float getPenTiltX()  const { return _tiltX; }
-        /// sets the tiltX from a tablet
-        void setPenTiltX(float tiltX) { _tiltX = tiltX; }
-        /// get the tiltY, from a tablet input device (range -1 - 1)
-        float getPenTiltY()  const { return _tiltY; }
-        /// sets the tiltY from a tablet
-        void setPenTiltY(float tiltY) { _tiltY = tiltY; }
-        /// get the rotation, from a tablet input device (range 0 - 2PI)
-        float getPenRotation()  const { return _rotation; }
-        /// sets the rotation from a tablet
-        void setPenRotation(float rotation) { _rotation = rotation; }
-        /// get the orientation from a tablet input device as a matrix
-        const osg::Matrix getPenOrientation() const;
-        /// get the current used tablet pointer type
-        TabletPointerType getTabletPointerType() const { return _tabletPointerType; }
-        /// set the current used tablet pointer type
-        void setTabletPointerType(TabletPointerType pt) { _tabletPointerType = pt; }
-        
-        void setScrollingMotion(ScrollingMotion motion) { _scrollingMotion = motion; }
-        
-        /** get the scrolling x-delta */
-        float getScrollingDeltaX() const { return _scrollingDeltaX; }
-        
-        /** get the scrolling y-delta */
-        float getScrollingDeltaY() const { return _scrollingDeltaY; }
-        
-        /** sets the scrolling delta to x,y and the type of scrolling to SCROLL_2D */
-        void setScrollingMotionDelta(float x, float y) {
-            _scrollingMotion = SCROLL_2D;
-            _scrollingDeltaX = x;
-            _scrollingDeltaY = y;
-        }
-        
-        ScrollingMotion getScrollingMotion() const { return _scrollingMotion; }
-
-
-        /** return the getX() value normalized to the range of -1 to 1.
-          * -1 would be the left hand side of the window.
-          * 0.0 would be the middle of the window. 
-          * +1 would be the right hand side of the window.*/
+        /**
+         * return the current mouse x value normalized to the range of -1 to 1.
+         * -1 would be the left hand side of the window.
+         * 0.0 would be the middle of the window. 
+         * +1 would be the right hand side of the window.
+         */
         inline float getXnormalized() const { return 2.0f*(getX()-getXmin())/(getXmax()-getXmin())-1.0f; }
 
-        /** return the getY() value normalized to the range of -1 to 1.
-          * -1 would be the bottom of the window.
-          * 0.0 would be the middle of the window. 
-          * +1 would be the top of the window.*/
+        /**
+         * return the current mouse y value normalized to the range of -1 to 1.
+         * -1 would be the bottom of the window.
+         * 0.0 would be the middle of the window. 
+         * +1 would be the top of the window.
+         */
         inline float getYnormalized() const
         {
             if (_mouseYOrientation==Y_INCREASING_UPWARDS) return 2.0f*(getY()-getYmin())/(getYmax()-getYmin())-1.0f;
             else return -(2.0f*(getY()-getYmin())/(getYmax()-getYmin())-1.0f);
         }
 
+        /// set mouse-Y orientation (mouse-Y increases upwards or downwards).
         void setMouseYOrientation(MouseYOrientation myo) { _mouseYOrientation = myo; }
+
+        /// get mouse-Y orientation (mouse-Y increases upwards or downwards).
         MouseYOrientation getMouseYOrientation() const { return _mouseYOrientation; }
 
-            
+        /// set current mouse button state.
+        void setButtonMask(unsigned int mask) { _buttonMask = mask; }
+
+        /// get current mouse button state.
+        unsigned int getButtonMask() const { return _buttonMask; }
+
+        /// set modifier key mask.
+        void setModKeyMask(unsigned int mask) { _modKeyMask = mask; }
+
+        /// get modifier key mask.
+        unsigned int getModKeyMask() const { return _modKeyMask; }
+
+        /// set scrolling motion (for EventType::SCROLL).
+        void setScrollingMotion(ScrollingMotion motion) { _scrolling.motion = motion; }
+
+        /// get scrolling motion (for EventType::SCROLL).
+        ScrollingMotion getScrollingMotion() const { return _scrolling.motion; }
+
+        /// set the scrolling delta to x,y and the scrolling motion to SCROLL_2D.
+        void setScrollingMotionDelta(float x, float y) {
+            _scrolling.motion = SCROLL_2D;
+            _scrolling.deltaX = x;
+            _scrolling.deltaY = y;
+        }
+
+        /// get the scrolling x-delta.
+        float getScrollingDeltaX() const { return _scrolling.deltaX; }
+
+        /// get the scrolling y-delta.
+        float getScrollingDeltaY() const { return _scrolling.deltaY; }
+
+
+        /// set the tablet pen pressure (range 0..1).
+        void setPenPressure(float pressure) { _tabletPen.pressure = pressure; }
+
+        /// get the tablet pen pressure (range 0..1).
+        float getPenPressure()  const { return _tabletPen.pressure; }
+
+        /// set the tablet pen tiltX in degrees.
+        void setPenTiltX(float tiltX) { _tabletPen.tiltX = tiltX; }
+
+        /// get the tablet pen tiltX in degrees.
+        float getPenTiltX()  const { return _tabletPen.tiltX; }
+
+        /// set the tablet pen tiltY in degrees.
+        void setPenTiltY(float tiltY) { _tabletPen.tiltY = tiltY; }
+
+        /// get the tablet pen tiltY in degrees.
+        float getPenTiltY()  const { return _tabletPen.tiltY; }
+
+        /// set the tablet pen rotation around the Z-axis in degrees.
+        void setPenRotation(float rotation) { _tabletPen.rotation = rotation; }
+
+        /// get the tablet pen rotation around the Z-axis in degrees.
+        float getPenRotation()  const { return _tabletPen.rotation; }
+
+        /// set the tablet pointer type.
+        void setTabletPointerType(TabletPointerType pt) { _tabletPen.tabletPointerType = pt; }
+
+        /// get the tablet pointer type.
+        TabletPointerType getTabletPointerType() const { return _tabletPen.tabletPointerType; }
+
+        /// set the orientation from a tablet input device as a matrix.
+        const osg::Matrix getPenOrientation() const;
+
 
     protected:
 
@@ -444,16 +464,32 @@ public:
         float _Ymin,_Ymax;
         float _mx;
         float _my;
-        float _pressure;
-        float _tiltX;
-        float _tiltY;
-        float _rotation;
         unsigned int _buttonMask;
         unsigned int _modKeyMask;
-        ScrollingMotion _scrollingMotion;
-        float _scrollingDeltaX, _scrollingDeltaY;
         MouseYOrientation _mouseYOrientation;
-        TabletPointerType _tabletPointerType;
+
+        struct Scrolling {
+            ScrollingMotion motion;
+            float deltaX;
+            float deltaY;
+
+            Scrolling() : motion(SCROLL_NONE), deltaX(0), deltaY(0) {}
+            Scrolling(const Scrolling& rhs) : motion(rhs.motion), deltaX(rhs.deltaX), deltaY(rhs.deltaY) {}
+        };
+        Scrolling _scrolling;
+
+        struct TabletPen {
+            float pressure;
+            float tiltX;
+            float tiltY;
+            float rotation;
+            TabletPointerType tabletPointerType;
+
+            TabletPen() : pressure(0), tiltX(0), tiltY(0), rotation(0), tabletPointerType(UNKNOWN) {}
+            TabletPen(const TabletPen& rhs) : pressure(rhs.pressure), tiltX(rhs.tiltX), tiltY(rhs.tiltY), rotation(rhs.rotation), tabletPointerType(rhs.tabletPointerType) {}
+        };
+        TabletPen _tabletPen;
+
 };
 
 }

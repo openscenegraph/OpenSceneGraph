@@ -86,7 +86,8 @@ public:
     }        
 };
 
-SlideShowConstructor::SlideShowConstructor()
+SlideShowConstructor::SlideShowConstructor(const osgDB::ReaderWriter::Options* options):
+    _options(options)
 {
     _slideDistance = osg::DisplaySettings::instance()->getScreenDistance();
     _slideHeight = osg::DisplaySettings::instance()->getScreenHeight();
@@ -321,7 +322,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
         // osg::notify(osg::NOTICE)<<"   new layer background = "<<_slideBackgroundImageFileName<<std::endl;
 
         osg::ref_ptr<osg::Image> image = !_slideBackgroundImageFileName.empty() ?
-            osgDB::readImageFile(_slideBackgroundImageFileName) :
+            osgDB::readImageFile(_slideBackgroundImageFileName, _options.get()) :
             0;
 
         // create the background and title..
@@ -635,23 +636,23 @@ class FindImageStreamsVisitor : public osg::NodeVisitor
 public:
     FindImageStreamsVisitor():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-        
+
     virtual void apply(osg::Node& node)
     {
-	if (node.getStateSet())
-	{
-	     process(node.getStateSet());
-	}
-	traverse(node);
-    }    	
+        if (node.getStateSet())
+        {
+                process(node.getStateSet());
+        }
+        traverse(node);
+    }
 
     virtual void apply(osg::Geode& node)
     {
-	if (node.getStateSet())
-	{
-	     process(node.getStateSet());
-	}
-    	
+        if (node.getStateSet())
+        {
+                process(node.getStateSet());
+        }
+
         for(unsigned int i=0;i<node.getNumDrawables();++i)
         {
             osg::Drawable* drawable = node.getDrawable(i);
@@ -680,7 +681,7 @@ public:
             }
         }
     }
-    
+
 };
 
 void SlideShowConstructor::findImageStreamsAndAddCallbacks(osg::Node* node)
@@ -774,8 +775,9 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
 {
     if (!_currentLayer) addLayer();
 
-    osg::Image* image = osgDB::readImageFile(filename);
-    
+    osg::Image* image = osgDB::readImageFile(filename, _options.get());
+    if (image) recordOptionsFilePath(_options.get());
+
     if (!image) return;
 
     bool isImageTranslucent = false;
@@ -888,8 +890,11 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     if (!_currentLayer) addLayer();
 
 
-    osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(filenameLeft);
-    osg::ref_ptr<osg::Image> imageRight = (filenameRight==filenameLeft) ? imageLeft.get() : osgDB::readImageFile(filenameRight);
+    osg::ref_ptr<osg::Image> imageLeft = osgDB::readImageFile(filenameLeft, _options.get());
+    if (imageLeft.valid()) recordOptionsFilePath(_options.get());
+
+    osg::ref_ptr<osg::Image> imageRight = (filenameRight==filenameLeft) ? imageLeft.get() : osgDB::readImageFile(filenameRight, _options.get());
+    if (imageRight.valid()) recordOptionsFilePath(_options.get());
 
     if (!imageLeft && !imageRight) return;
 
@@ -961,7 +966,7 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
             pictureLeftStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
         }
 
-	attachTexMat(pictureLeftStateSet, imageDataLeft, s, t, usedTextureRectangle);
+        attachTexMat(pictureLeftStateSet, imageDataLeft, s, t, usedTextureRectangle);
 
         pictureLeft->addDrawable(pictureLeftQuad);
 
@@ -979,7 +984,7 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
             pictureRightStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
         }
 
-	attachTexMat(pictureRightStateSet, imageDataRight, s, t, usedTextureRectangle);
+        attachTexMat(pictureRightStateSet, imageDataRight, s, t, usedTextureRectangle);
 
         pictureRight->addDrawable(pictureRightQuad);
     }
@@ -1083,7 +1088,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
 {
     if (!_currentLayer) addLayer();
 
-    osg::Image* image = osgDB::readImageFile(filename);
+    osg::Image* image = osgDB::readImageFile(filename, _options.get());
     
     osg::notify(osg::INFO)<<"addInteractiveImage("<<filename<<") "<<image<<std::endl;
     
@@ -1202,7 +1207,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
 
 std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filename)
 {
-    std::string foundFile = osgDB::findDataFile(filename);
+    std::string foundFile = osgDB::findDataFile(filename, _options.get());
     if (foundFile.empty()) return foundFile;
 
     osg::notify(osg::INFO)<<"foundFile "<<foundFile<<std::endl;
@@ -1224,6 +1229,8 @@ std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filen
 
 void SlideShowConstructor::addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData)
 {
+    osg::notify(osg::INFO)<<"SlideShowConstructor::addModel("<<filename<<")"<<std::endl;
+
     osg::Node* subgraph = 0;
 
     if (filename=="sphere")
@@ -1242,15 +1249,17 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
     }
     else
     {
-        std::string foundFile = findFileAndRecordPath(filename);
-        if (foundFile.empty()) return;
-
-        subgraph = osgDB::readNodeFile(foundFile);
+        subgraph = osgDB::readNodeFile(filename, _options.get());
+        if (subgraph) recordOptionsFilePath(_options.get());
     }
     
-    if (!subgraph) return;
+    if (subgraph)
+    {
+        addModel(subgraph, positionData, modelData);
+    }
 
-    addModel(subgraph, positionData, modelData);
+    osg::notify(osg::INFO)<<"end of SlideShowConstructor::addModel("<<filename<<")"<<std::endl<<std::endl;
+
 }
 
 void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& positionData, const ModelData& modelData)
@@ -1314,7 +1323,6 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
     if (positionData.requiresMaterialAnimation())
         subgraph = attachMaterialAnimation(subgraph,positionData);
 
-
     // attached any rotation
     if (positionData.rotation[0]!=0.0)
     {
@@ -1324,9 +1332,9 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
             new osgUtil::TransformCallback(subgraph->getBound().center(),
                                            osg::Vec3(positionData.rotation[1],positionData.rotation[2],positionData.rotation[3]),
                                            osg::DegreesToRadians(positionData.rotation[0])));
-                                           
+
         animation_transform->addChild(subgraph);
-        
+
         osg::notify(osg::INFO)<<"Rotation Matrix "<<animation_transform->getMatrix()<<std::endl;
 
         subgraph = animation_transform;
@@ -1338,9 +1346,9 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
     if (animation)
     {
         osg::notify(osg::INFO)<<"Have animation path for model"<<std::endl;
-        
+
         osg::Vec3 pivot = positionData.absolute_path ? osg::Vec3(0.0f,0.0f,0.0f) : subgraph->getBound().center();
-                
+
         osg::AnimationPath* path = animation->getAnimationPath();
         if (positionData.animation_name=="wheel" && (path->getTimeControlPointMap()).size()>=2)
         {
@@ -1438,11 +1446,17 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     osg::ref_ptr<osg::Image> image;
     if (fileType == osgDB::DIRECTORY)
     {
-       image = osgDB::readImageFile(foundFile+".dicom");
+       image = osgDB::readImageFile(foundFile+".dicom", _options.get());
     }
     else if (fileType == osgDB::REGULAR_FILE)
     {
-        image = osgDB::readImageFile( foundFile );
+        image = osgDB::readImageFile( foundFile, _options.get() );
+    }
+    else
+    {
+        // not found image, so fallback to plguins/callbacks to find the model.
+        image = osgDB::readImageFile( filename, _options.get() );
+        if (image) recordOptionsFilePath(_options.get() );
     }
 
     if (!image) return;
@@ -1561,7 +1575,8 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
 
     if (!positionData.animation_material_filename.empty())
     {
-        std::string absolute_animation_file_path = osgDB::findDataFile(positionData.animation_material_filename);
+#if 0
+        std::string absolute_animation_file_path = osgDB::findDataFile(positionData.animation_material_filename, _options.get());
         if (!absolute_animation_file_path.empty())
         {        
             std::ifstream animation_filestream(absolute_animation_file_path.c_str());
@@ -1571,6 +1586,11 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
                 animationMaterial->read(animation_filestream);
             }
         }
+#else
+        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(positionData.animation_material_filename, _options.get());
+        animationMaterial = dynamic_cast<ss3d::AnimationMaterial*>(object.get());
+#endif
+
     }
     else if (!positionData.fade.empty())
     {
@@ -1616,203 +1636,42 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
     return model;
 }
 
-osg::AnimationPath* SlideShowConstructor::readPivotPath(const std::string& filename) const
-{
-    std::ifstream in(filename.c_str());
-    if (!in.eof())
-    {
-        osg::AnimationPath* animation = new osg::AnimationPath;
-
-        while (!in.eof())
-        {
-            double time;
-            osg::Vec3 pivot;
-            osg::Vec3 position;
-            float scale;
-            osg::Quat rotation;
-            in >> time >> pivot.x() >> pivot.y() >> pivot.z() >> position.x() >> position.y() >> position.z() >> rotation.x() >> rotation.y() >> rotation.z() >> rotation.w() >> scale;
-            if(!in.eof())
-            {
-                osg::Matrix SR = osg::Matrix::scale(scale,scale,scale)*
-                                 osg::Matrixf::rotate(rotation);
-            
-                osg::Matrix invSR;
-                invSR.invert(SR);
-                
-                position += (invSR*pivot)*SR;
-            
-                animation->insert(time,osg::AnimationPath::ControlPoint(position,rotation,osg::Vec3(scale,scale,scale)));
-            }
-        }
-        
-        return animation;
-    }
-    return 0;
-}
-
-struct RotationPathData
-{
-    RotationPathData():
-        time(0.0),
-        scale(1.0f),
-        azim(0.0f),
-        elevation(0.0f) {}
-
-    double time;
-    osg::Vec3 pivot;
-    osg::Vec3 position;
-    float scale;
-    float azim;
-    float elevation;
-
-    void addToPath(osg::AnimationPath* animation) const
-    {
-        osg::Quat Rx, Rz, rotation;
-
-        Rx.makeRotate(osg::DegreesToRadians(elevation),1.0f,0.0f,0.0f);
-        Rz.makeRotate(osg::DegreesToRadians(azim),0.0f,0.0f,1.0f);
-        rotation = Rz * Rx; // note, I believe this is the wrong way round, but I had to put it in this order to fix the Quat properly.
-
-        osg::Matrix SR = osg::Matrix::scale(scale,scale,scale)*
-                         osg::Matrixf::rotate(rotation);
-
-        osg::Matrix invSR;
-        invSR.invert(SR);
-
-        osg::Vec3 local_position = position + (invSR*pivot)*SR;
-
-        animation->insert(time,osg::AnimationPath::ControlPoint(local_position,rotation,osg::Vec3(scale,scale,scale)));
-    }
-    
-};
-osg::AnimationPath* SlideShowConstructor::readRotationPath(const std::string& filename) const
-{
-    std::ifstream in(filename.c_str());
-    if (!in.eof())
-    {
-        osg::AnimationPath* animation = new osg::AnimationPath;
-
-        RotationPathData prevValue;
-        bool first = true;
-        while (!in.eof())
-        {
-            RotationPathData currValue;
-            in >> currValue.time >> currValue.pivot.x() >> currValue.pivot.y() >> currValue.pivot.z() >> currValue.position.x() >> currValue.position.y() >> currValue.position.z() >> currValue.azim >> currValue.elevation >> currValue.scale;
-            if(!in.eof())
-            {
-            
-                if (!first)
-                {
-            
-                    unsigned int num = 20;
-                    float dr = 1.0f/(float)num;
-                    float r=dr;
-                    for(unsigned int i=0;
-                        i<num;
-                        ++i, r+=dr)
-                    {
-                        RotationPathData localValue;
-                        localValue.time = currValue.time *r + prevValue.time * (1.0f-r);
-                        localValue.pivot = currValue.pivot *r + prevValue.pivot * (1.0f-r);
-                        localValue.position = currValue.position *r + prevValue.position * (1.0f-r);
-                        localValue.scale = currValue.scale *r + prevValue.scale * (1.0f-r);
-                        localValue.azim = currValue.azim *r + prevValue.azim * (1.0f-r);
-                        localValue.elevation = currValue.elevation *r + prevValue.elevation * (1.0f-r);
-
-                        localValue.addToPath(animation);
-                    }
-                }
-                else
-                {
-                    currValue.addToPath(animation);
-                }
-                prevValue = currValue;
-                first = false;
-            }
-            
-        }
-        
-        return animation;
-    }
-    return 0;
-}
-
 osg::AnimationPathCallback* SlideShowConstructor::getAnimationPathCallback(const PositionData& positionData)
 {
     if (!positionData.path.empty()) 
     {
-        std::string absolute_animation_file_path = osgDB::findDataFile(positionData.path);
-        if (!absolute_animation_file_path.empty())
-        {        
-
-            osg::AnimationPath* animation = 0;
-
-            std::string extension = osgDB::getLowerCaseFileExtension(absolute_animation_file_path);
-            if (osgDB::equalCaseInsensitive(extension,"pivot_path"))
+        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(positionData.path, _options.get());
+        osg::AnimationPath* animation = dynamic_cast<osg::AnimationPath*>(object.get());
+        if (animation)
+        {
+            if (positionData.frame==SlideShowConstructor::SLIDE)
             {
-                animation = readPivotPath(absolute_animation_file_path);
-            }
-            else if (osgDB::equalCaseInsensitive(extension,"rotation_path"))
-            {
-                animation = readRotationPath(absolute_animation_file_path);
-            }
-            else if (osgDB::equalCaseInsensitive(extension,"path"))
-            {            
-                std::ifstream animation_filestream(absolute_animation_file_path.c_str());
-                if (!animation_filestream.eof())
+                osg::AnimationPath::TimeControlPointMap& controlPoints = animation->getTimeControlPointMap();
+                for(osg::AnimationPath::TimeControlPointMap::iterator itr=controlPoints.begin();
+                    itr!=controlPoints.end();
+                    ++itr)
                 {
-                    animation = new osg::AnimationPath;
-                    animation->read(animation_filestream);
+                    osg::AnimationPath::ControlPoint& cp = itr->second;
+                    cp.setPosition(convertSlideToModel(cp.getPosition()+positionData.position));
                 }
             }
-            else
-            {
-                std::ifstream animation_filestream(absolute_animation_file_path.c_str());
 
-                osgDB::Input fr;
-                fr.attach(&animation_filestream);
+            animation->setLoopMode(positionData.path_loop_mode);
 
-                static osg::ref_ptr<osg::AnimationPath> s_path = new osg::AnimationPath;
-                osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(absolute_animation_file_path); // fr.readObjectOfType(*s_path);
-                object = fr.readObject(); // fr.readObjectOfType(*s_path);
-                if (object.valid())
-                {
-                    animation = dynamic_cast<osg::AnimationPath*>(object.get());
-                }
-            }
-            
-            if (animation)
-            {
-                if (positionData.frame==SlideShowConstructor::SLIDE)
-                {
-                    osg::AnimationPath::TimeControlPointMap& controlPoints = animation->getTimeControlPointMap();
-                    for(osg::AnimationPath::TimeControlPointMap::iterator itr=controlPoints.begin();
-                        itr!=controlPoints.end();
-                        ++itr)
-                    {
-                        osg::AnimationPath::ControlPoint& cp = itr->second;
-                        cp.setPosition(convertSlideToModel(cp.getPosition()+positionData.position));
-                    }
-                }
+            osg::AnimationPathCallback* apc = new osg::AnimationPathCallback(animation);
+            apc->setTimeOffset(positionData.path_time_offset);
+            apc->setTimeMultiplier(positionData.path_time_multiplier);
+            apc->setUseInverseMatrix(positionData.inverse_path);
 
-                animation->setLoopMode(positionData.path_loop_mode);
+            osg::notify(osg::INFO)<<"UseInverseMatrix "<<positionData.inverse_path<<std::endl;
 
-                osg::AnimationPathCallback* apc = new osg::AnimationPathCallback(animation);
-                apc->setTimeOffset(positionData.path_time_offset);
-                apc->setTimeMultiplier(positionData.path_time_multiplier);
-                apc->setUseInverseMatrix(positionData.inverse_path);
-                
-                osg::notify(osg::INFO)<<"UseInverseMatrix "<<positionData.inverse_path<<std::endl;
+            return apc;
 
-                return apc;
-                
-            }
         }
+
     }
     return 0;
 }
-
-
 
 osg::Vec3 SlideShowConstructor::computePositionInModelCoords(const PositionData& positionData) const
 {
@@ -1851,3 +1710,22 @@ void SlideShowConstructor::updatePositionFromInModelCoords(const osg::Vec3& vert
         positionData.position = vertex;
     }
 }
+
+void SlideShowConstructor::recordOptionsFilePath(const osgDB::Options* options)
+{
+    if (options)
+    {
+        std::string filename_used = _options->getPluginStringData("filename");
+        std::string path = osgDB::getFilePath(filename_used);
+        if (!path.empty() && _filePathData.valid())
+        {
+            osgDB::FilePathList::iterator itr = std::find(_filePathData->filePathList.begin(),_filePathData->filePathList.end(),path);
+            if (itr==_filePathData->filePathList.end())
+            {
+                osg::notify(osg::INFO)<<"SlideShowConstructor::recordOptionsFilePath(..) - new path to record path="<<path<<" filename_used="<<filename_used<<std::endl;
+                _filePathData->filePathList.push_front(path);
+            }
+        }
+    }
+}
+

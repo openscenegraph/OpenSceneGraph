@@ -114,7 +114,7 @@ public:
 
     struct PositionData
     {
-	PositionData():
+        PositionData():
             frame(SlideShowConstructor::SLIDE),
             position(0.0f,1.0f,0.0f),
             //position(0.5f,0.5f,0.0f),
@@ -122,7 +122,7 @@ public:
             rotate(0.0f,0.0f,0.0f,1.0f),
             rotation(0.0f,0.0f,1.0f,0.0f),
             absolute_path(false),
-	    inverse_path(false),
+            inverse_path(false),
             path_time_offset(0.0),
             path_time_multiplier(1.0f),
             path_loop_mode(osg::AnimationPath::NO_LOOPING),
@@ -155,23 +155,23 @@ public:
             return !animation_material_filename.empty() || !fade.empty();
         }
 
-	CoordinateFrame                         frame;
-	osg::Vec3                               position;
-	osg::Vec3                               scale;
-	osg::Vec4                               rotate;
-	osg::Vec4                               rotation;
+        CoordinateFrame                         frame;
+        osg::Vec3                               position;
+        osg::Vec3                               scale;
+        osg::Vec4                               rotate;
+        osg::Vec4                               rotation;
         std::string                             animation_name;
-	bool                                    absolute_path;
-	bool                                    inverse_path;
+        bool                                    absolute_path;
+        bool                                    inverse_path;
         double                                  path_time_offset;
         double                                  path_time_multiplier;
         osg::AnimationPath::LoopMode            path_loop_mode;
-	std::string                             path;
+        std::string                             path;
         double                                  animation_material_time_offset;
         double                                  animation_material_time_multiplier;
         ss3d::AnimationMaterial::LoopMode       animation_material_loop_mode;
-	std::string                             animation_material_filename;
-	std::string                             fade;
+        std::string                             animation_material_filename;
+        std::string                             fade;
     };
 
     struct ModelData
@@ -206,28 +206,28 @@ public:
 
     struct FontData
     {
-    	FontData():
-	    font("fonts/arial.ttf"),
-	    layout(osgText::Text::LEFT_TO_RIGHT),
-	    alignment(osgText::Text::LEFT_BASE_LINE),
-	    axisAlignment(osgText::Text::XZ_PLANE),
-	    characterSize(0.04f),
-	    maximumHeight(1.0f),
-	    maximumWidth(1.0f),
-	    color(1.0f,1.0f,1.0f,1.0f) {}
-    
-    	std::string 	    	    	font;
-	osgText::Text::Layout 	        layout;
-	osgText::Text::AlignmentType 	alignment;
-	osgText::Text::AxisAlignment 	axisAlignment;
-	float	    	    	    	characterSize;
-	float	    	    	    	maximumHeight;
-	float	    	    	    	maximumWidth;
-	osg::Vec4   	    	    	color;
+        FontData():
+            font("fonts/arial.ttf"),
+            layout(osgText::Text::LEFT_TO_RIGHT),
+            alignment(osgText::Text::LEFT_BASE_LINE),
+            axisAlignment(osgText::Text::XZ_PLANE),
+            characterSize(0.04f),
+            maximumHeight(1.0f),
+            maximumWidth(1.0f),
+            color(1.0f,1.0f,1.0f,1.0f) {}
+
+        std::string                     font;
+        osgText::Text::Layout           layout;
+        osgText::Text::AlignmentType    alignment;
+        osgText::Text::AxisAlignment    axisAlignment;
+        float                           characterSize;
+        float                           maximumHeight;
+        float                           maximumWidth;
+        osg::Vec4                       color;
     };
 
 
-    SlideShowConstructor();
+    SlideShowConstructor(const osgDB::ReaderWriter::Options* options);
 
     void createPresentation();
     
@@ -346,9 +346,6 @@ protected:
     osg::Vec3 convertSlideToModel(const osg::Vec3& position) const;
     osg::Vec3 convertModelToSlide(const osg::Vec3& position) const;
 
-    osg::AnimationPath* readPivotPath(const std::string& filename) const;
-    osg::AnimationPath* readRotationPath(const std::string& filename) const;
-
     osg::AnimationPathCallback* getAnimationPathCallback(const PositionData& positionData);
     
     osg::Node* attachMaterialAnimation(osg::Node* model, const PositionData& positionData);
@@ -360,6 +357,8 @@ protected:
         stateset->setMode(GL_NORMALIZE,osg::StateAttribute::ON);
         return stateset;
     }
+
+    osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
 
     osg::Vec3   _slideOrigin;
     osg::Vec3   _eyeOrigin;
@@ -411,6 +410,8 @@ protected:
     
     std::string findFileAndRecordPath(const std::string& filename);
     
+    void recordOptionsFilePath(const osgDB::Options* options);
+
 };
 
 }

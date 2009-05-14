@@ -1,5 +1,10 @@
 SET(TARGET_SRC osgversion.cpp )
 
+IF (OSG_MAINTAINER)
+    SET(TARGET_SRC ${TARGET_SRC} Contributors.cpp )
+    ADD_DEFINITIONS("-DBUILD_CONTRIBUTORS")
+ENDIF()
+
 SET(TARGET_COMMON_LIBRARIES 
     OpenThreads
     osg 

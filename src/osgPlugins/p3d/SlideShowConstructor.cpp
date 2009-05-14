@@ -1253,9 +1253,10 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
         if (subgraph) recordOptionsFilePath(_options.get());
     }
     
-    if (!subgraph) return;
-
-    addModel(subgraph, positionData, modelData);
+    if (subgraph)
+    {
+        addModel(subgraph, positionData, modelData);
+    }
 
     osg::notify(osg::NOTICE)<<"end of SlideShowConstructor::addModel("<<filename<<")"<<std::endl<<std::endl;
 
@@ -1322,6 +1323,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
     if (positionData.requiresMaterialAnimation())
         subgraph = attachMaterialAnimation(subgraph,positionData);
 
+    osg::notify(osg::NOTICE)<<"positionData.rotation "<<positionData.rotation<<std::endl;
 
     // attached any rotation
     if (positionData.rotation[0]!=0.0)
@@ -1335,7 +1337,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
                                            
         animation_transform->addChild(subgraph);
         
-        osg::notify(osg::INFO)<<"Rotation Matrix "<<animation_transform->getMatrix()<<std::endl;
+        osg::notify(osg::NOTICE)<<"Rotation Matrix "<<animation_transform->getMatrix()<<std::endl;
 
         subgraph = animation_transform;
     }
@@ -1345,7 +1347,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
     osg::AnimationPathCallback* animation = getAnimationPathCallback(positionData);
     if (animation)
     {
-        osg::notify(osg::INFO)<<"Have animation path for model"<<std::endl;
+        osg::notify(osg::NOTICE)<<"Have animation path for model"<<std::endl;
         
         osg::Vec3 pivot = positionData.absolute_path ? osg::Vec3(0.0f,0.0f,0.0f) : subgraph->getBound().center();
                 
@@ -1575,6 +1577,7 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
 
     if (!positionData.animation_material_filename.empty())
     {
+#if 0
         std::string absolute_animation_file_path = osgDB::findDataFile(positionData.animation_material_filename, _options.get());
         if (!absolute_animation_file_path.empty())
         {        
@@ -1585,6 +1588,11 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
                 animationMaterial->read(animation_filestream);
             }
         }
+#else
+        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(positionData.animation_material_filename, _options.get());
+        animationMaterial = dynamic_cast<ss3d::AnimationMaterial*>(object.get());
+#endif
+
     }
     else if (!positionData.fade.empty())
     {
@@ -1630,203 +1638,42 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
     return model;
 }
 
-osg::AnimationPath* SlideShowConstructor::readPivotPath(const std::string& filename) const
-{
-    std::ifstream in(filename.c_str());
-    if (!in.eof())
-    {
-        osg::AnimationPath* animation = new osg::AnimationPath;
-
-        while (!in.eof())
-        {
-            double time;
-            osg::Vec3 pivot;
-            osg::Vec3 position;
-            float scale;
-            osg::Quat rotation;
-            in >> time >> pivot.x() >> pivot.y() >> pivot.z() >> position.x() >> position.y() >> position.z() >> rotation.x() >> rotation.y() >> rotation.z() >> rotation.w() >> scale;
-            if(!in.eof())
-            {
-                osg::Matrix SR = osg::Matrix::scale(scale,scale,scale)*
-                                 osg::Matrixf::rotate(rotation);
-            
-                osg::Matrix invSR;
-                invSR.invert(SR);
-                
-                position += (invSR*pivot)*SR;
-            
-                animation->insert(time,osg::AnimationPath::ControlPoint(position,rotation,osg::Vec3(scale,scale,scale)));
-            }
-        }
-        
-        return animation;
-    }
-    return 0;
-}
-
-struct RotationPathData
-{
-    RotationPathData():
-        time(0.0),
-        scale(1.0f),
-        azim(0.0f),
-        elevation(0.0f) {}
-
-    double time;
-    osg::Vec3 pivot;
-    osg::Vec3 position;
-    float scale;
-    float azim;
-    float elevation;
-
-    void addToPath(osg::AnimationPath* animation) const
-    {
-        osg::Quat Rx, Rz, rotation;
-
-        Rx.makeRotate(osg::DegreesToRadians(elevation),1.0f,0.0f,0.0f);
-        Rz.makeRotate(osg::DegreesToRadians(azim),0.0f,0.0f,1.0f);
-        rotation = Rz * Rx; // note, I believe this is the wrong way round, but I had to put it in this order to fix the Quat properly.
-
-        osg::Matrix SR = osg::Matrix::scale(scale,scale,scale)*
-                         osg::Matrixf::rotate(rotation);
-
-        osg::Matrix invSR;
-        invSR.invert(SR);
-
-        osg::Vec3 local_position = position + (invSR*pivot)*SR;
-
-        animation->insert(time,osg::AnimationPath::ControlPoint(local_position,rotation,osg::Vec3(scale,scale,scale)));
-    }
-    
-};
-osg::AnimationPath* SlideShowConstructor::readRotationPath(const std::string& filename) const
-{
-    std::ifstream in(filename.c_str());
-    if (!in.eof())
-    {
-        osg::AnimationPath* animation = new osg::AnimationPath;
-
-        RotationPathData prevValue;
-        bool first = true;
-        while (!in.eof())
-        {
-            RotationPathData currValue;
-            in >> currValue.time >> currValue.pivot.x() >> currValue.pivot.y() >> currValue.pivot.z() >> currValue.position.x() >> currValue.position.y() >> currValue.position.z() >> currValue.azim >> currValue.elevation >> currValue.scale;
-            if(!in.eof())
-            {
-            
-                if (!first)
-                {
-            
-                    unsigned int num = 20;
-                    float dr = 1.0f/(float)num;
-                    float r=dr;
-                    for(unsigned int i=0;
-                        i<num;
-                        ++i, r+=dr)
-                    {
-                        RotationPathData localValue;
-                        localValue.time = currValue.time *r + prevValue.time * (1.0f-r);
-                        localValue.pivot = currValue.pivot *r + prevValue.pivot * (1.0f-r);
-                        localValue.position = currValue.position *r + prevValue.position * (1.0f-r);
-                        localValue.scale = currValue.scale *r + prevValue.scale * (1.0f-r);
-                        localValue.azim = currValue.azim *r + prevValue.azim * (1.0f-r);
-                        localValue.elevation = currValue.elevation *r + prevValue.elevation * (1.0f-r);
-
-                        localValue.addToPath(animation);
-                    }
-                }
-                else
-                {
-                    currValue.addToPath(animation);
-                }
-                prevValue = currValue;
-                first = false;
-            }
-            
-        }
-        
-        return animation;
-    }
-    return 0;
-}
-
 osg::AnimationPathCallback* SlideShowConstructor::getAnimationPathCallback(const PositionData& positionData)
 {
     if (!positionData.path.empty()) 
     {
-        std::string absolute_animation_file_path = osgDB::findDataFile(positionData.path, _options.get());
-        if (!absolute_animation_file_path.empty())
-        {        
-
-            osg::AnimationPath* animation = 0;
-
-            std::string extension = osgDB::getLowerCaseFileExtension(absolute_animation_file_path);
-            if (osgDB::equalCaseInsensitive(extension,"pivot_path"))
+        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(positionData.path, _options.get());
+        osg::AnimationPath* animation = dynamic_cast<osg::AnimationPath*>(object.get());
+        if (animation)
+        {
+            if (positionData.frame==SlideShowConstructor::SLIDE)
             {
-                animation = readPivotPath(absolute_animation_file_path);
-            }
-            else if (osgDB::equalCaseInsensitive(extension,"rotation_path"))
-            {
-                animation = readRotationPath(absolute_animation_file_path);
-            }
-            else if (osgDB::equalCaseInsensitive(extension,"path"))
-            {            
-                std::ifstream animation_filestream(absolute_animation_file_path.c_str());
-                if (!animation_filestream.eof())
+                osg::AnimationPath::TimeControlPointMap& controlPoints = animation->getTimeControlPointMap();
+                for(osg::AnimationPath::TimeControlPointMap::iterator itr=controlPoints.begin();
+                    itr!=controlPoints.end();
+                    ++itr)
                 {
-                    animation = new osg::AnimationPath;
-                    animation->read(animation_filestream);
+                    osg::AnimationPath::ControlPoint& cp = itr->second;
+                    cp.setPosition(convertSlideToModel(cp.getPosition()+positionData.position));
                 }
             }
-            else
-            {
-                std::ifstream animation_filestream(absolute_animation_file_path.c_str());
 
-                osgDB::Input fr;
-                fr.attach(&animation_filestream);
+            animation->setLoopMode(positionData.path_loop_mode);
 
-                static osg::ref_ptr<osg::AnimationPath> s_path = new osg::AnimationPath;
-                osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(absolute_animation_file_path, _options.get()); // fr.readObjectOfType(*s_path);
-                object = fr.readObject(); // fr.readObjectOfType(*s_path);
-                if (object.valid())
-                {
-                    animation = dynamic_cast<osg::AnimationPath*>(object.get());
-                }
-            }
-            
-            if (animation)
-            {
-                if (positionData.frame==SlideShowConstructor::SLIDE)
-                {
-                    osg::AnimationPath::TimeControlPointMap& controlPoints = animation->getTimeControlPointMap();
-                    for(osg::AnimationPath::TimeControlPointMap::iterator itr=controlPoints.begin();
-                        itr!=controlPoints.end();
-                        ++itr)
-                    {
-                        osg::AnimationPath::ControlPoint& cp = itr->second;
-                        cp.setPosition(convertSlideToModel(cp.getPosition()+positionData.position));
-                    }
-                }
+            osg::AnimationPathCallback* apc = new osg::AnimationPathCallback(animation);
+            apc->setTimeOffset(positionData.path_time_offset);
+            apc->setTimeMultiplier(positionData.path_time_multiplier);
+            apc->setUseInverseMatrix(positionData.inverse_path);
 
-                animation->setLoopMode(positionData.path_loop_mode);
+            osg::notify(osg::INFO)<<"UseInverseMatrix "<<positionData.inverse_path<<std::endl;
 
-                osg::AnimationPathCallback* apc = new osg::AnimationPathCallback(animation);
-                apc->setTimeOffset(positionData.path_time_offset);
-                apc->setTimeMultiplier(positionData.path_time_multiplier);
-                apc->setUseInverseMatrix(positionData.inverse_path);
-                
-                osg::notify(osg::INFO)<<"UseInverseMatrix "<<positionData.inverse_path<<std::endl;
+            return apc;
 
-                return apc;
-                
-            }
         }
+
     }
     return 0;
 }
-
-
 
 osg::Vec3 SlideShowConstructor::computePositionInModelCoords(const PositionData& positionData) const
 {

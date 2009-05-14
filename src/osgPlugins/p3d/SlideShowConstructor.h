@@ -346,9 +346,6 @@ protected:
     osg::Vec3 convertSlideToModel(const osg::Vec3& position) const;
     osg::Vec3 convertModelToSlide(const osg::Vec3& position) const;
 
-    osg::AnimationPath* readPivotPath(const std::string& filename) const;
-    osg::AnimationPath* readRotationPath(const std::string& filename) const;
-
     osg::AnimationPathCallback* getAnimationPathCallback(const PositionData& positionData);
     
     osg::Node* attachMaterialAnimation(osg::Node* model, const PositionData& positionData);

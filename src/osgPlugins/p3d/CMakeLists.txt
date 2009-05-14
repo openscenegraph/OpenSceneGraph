@@ -1,6 +1,7 @@
 SET(TARGET_SRC
     SlideShowConstructor.cpp
     ReaderWriterP3D.cpp
+    ReaderWriterPaths.cpp
     PickEventHandler.cpp
     AnimationMaterial.cpp
     SlideEventHandler.cpp

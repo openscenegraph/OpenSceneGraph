@@ -256,7 +256,28 @@ bool TrackballManipulator::calcMovement()
 
     if (_ga_t0->getEventType()==GUIEventAdapter::SCROLL)
     {
-        dy = _ga_t0->getScrollingMotion() == osgGA::GUIEventAdapter::SCROLL_UP ? _zoomDelta : -_zoomDelta;
+        switch (_ga_t0->getScrollingMotion()) {
+        case osgGA::GUIEventAdapter::SCROLL_UP:
+            dy = _zoomDelta;
+            break;
+        case osgGA::GUIEventAdapter::SCROLL_DOWN:
+            dy = -_zoomDelta;
+            break;
+        case osgGA::GUIEventAdapter::SCROLL_LEFT:
+        case osgGA::GUIEventAdapter::SCROLL_RIGHT:
+            // pass
+            break;
+        case osgGA::GUIEventAdapter::SCROLL_2D:
+            // normalize scrolling delta
+            dx = _ga_t0->getScrollingDeltaX() / ((_ga_t0->getXmax()-_ga_t0->getXmin()) * 0.5f);
+            dy = _ga_t0->getScrollingDeltaY() / ((_ga_t0->getYmax()-_ga_t0->getYmin()) * 0.5f);
+
+            dx *= _zoomDelta;
+            dy *= _zoomDelta;
+            break;
+        default:
+            break;
+        }
         buttonMask=GUIEventAdapter::SCROLL;
     } 
     else 

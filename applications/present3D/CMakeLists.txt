@@ -7,6 +7,7 @@ SET(TARGET_SRC
     PointsEventHandler.cpp
     present3D.cpp
     ReaderWriterP3D.cpp
+    ReaderWriterPaths.cpp
     ReadShowFile.cpp
     ShowEventHandler.cpp
     SlideEventHandler.cpp

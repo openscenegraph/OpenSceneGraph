@@ -870,10 +870,10 @@ void ReaderWriterP3DXML::parseStereoPair(osgPresentation::SlideShowConstructor& 
             getProperties(cur,imageDataRight);
         }
     }
-    
+
     if (!filenameLeft.empty() && !filenameRight.empty()) 
         constructor.addStereoImagePair(filenameLeft,imageDataLeft,
-				       filenameRight, imageDataRight,
+                                       filenameRight, imageDataRight,
                                        positionRead ? positionData : constructor.getImagePositionData());
 
 }

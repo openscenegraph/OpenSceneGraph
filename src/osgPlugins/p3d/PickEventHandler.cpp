@@ -130,7 +130,7 @@ void PickEventHandler::doOperation()
                 std::string delimintor(":");
             #endif
                 std::string filepath("OSG_FILE_PATH=");
-                
+
                 bool needDeliminator = false;
                 for(osgDB::FilePathList::iterator itr = paths.begin();
                     itr != paths.end();
@@ -145,7 +145,7 @@ void PickEventHandler::doOperation()
                 std::string binpath("PATH=");
                 char* path = getenv("PATH");
                 if (path) binpath += path;
-                
+
                 needDeliminator = true;
                 for(osgDB::FilePathList::iterator itr = paths.begin();
                     itr != paths.end();
@@ -158,10 +158,10 @@ void PickEventHandler::doOperation()
                 putenv( (char*) binpath.c_str());
 
             }
-#endif                                    
+#endif
             int result = system(_command.c_str());
-	    
-	    osg::notify(osg::INFO)<<"system("<<_command<<") result "<<result<<std::endl;
+
+            osg::notify(osg::INFO)<<"system("<<_command<<") result "<<result<<std::endl;
 
             break;
         }
@@ -186,7 +186,7 @@ void PickEventHandler::doOperation()
     if (requiresJump())
     {
         osg::notify(osg::NOTICE)<<"Requires jump "<<_relativeJump<<", "<<_slideNum<<", "<<_layerNum<<std::endl;
-        
+
         if (_relativeJump)
         {
             int previousSlide = SlideEventHandler::instance()->getActiveSlide();
@@ -197,7 +197,7 @@ void PickEventHandler::doOperation()
             {
                 newLayer = 0;
             }
-        
+
             osg::notify(osg::NOTICE)<<"   jump to "<<newSlide<<", "<<newLayer<<std::endl;
 
             SlideEventHandler::instance()->selectSlide(newSlide, newLayer);

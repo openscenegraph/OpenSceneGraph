@@ -636,23 +636,23 @@ class FindImageStreamsVisitor : public osg::NodeVisitor
 public:
     FindImageStreamsVisitor():
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-        
+
     virtual void apply(osg::Node& node)
     {
-	if (node.getStateSet())
-	{
-	     process(node.getStateSet());
-	}
-	traverse(node);
-    }    	
+        if (node.getStateSet())
+        {
+                process(node.getStateSet());
+        }
+        traverse(node);
+    }
 
     virtual void apply(osg::Geode& node)
     {
-	if (node.getStateSet())
-	{
-	     process(node.getStateSet());
-	}
-    	
+        if (node.getStateSet())
+        {
+                process(node.getStateSet());
+        }
+
         for(unsigned int i=0;i<node.getNumDrawables();++i)
         {
             osg::Drawable* drawable = node.getDrawable(i);
@@ -681,7 +681,7 @@ public:
             }
         }
     }
-    
+
 };
 
 void SlideShowConstructor::findImageStreamsAndAddCallbacks(osg::Node* node)
@@ -966,7 +966,7 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
             pictureLeftStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
         }
 
-	attachTexMat(pictureLeftStateSet, imageDataLeft, s, t, usedTextureRectangle);
+        attachTexMat(pictureLeftStateSet, imageDataLeft, s, t, usedTextureRectangle);
 
         pictureLeft->addDrawable(pictureLeftQuad);
 
@@ -984,7 +984,7 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
             pictureRightStateSet->setMode(GL_BLEND, osg::StateAttribute::ON);
         }
 
-	attachTexMat(pictureRightStateSet, imageDataRight, s, t, usedTextureRectangle);
+        attachTexMat(pictureRightStateSet, imageDataRight, s, t, usedTextureRectangle);
 
         pictureRight->addDrawable(pictureRightQuad);
     }

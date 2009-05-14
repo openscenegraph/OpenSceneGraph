@@ -248,9 +248,19 @@ void DarwinWindowingSystemInterface::getScreenTopLeft(const osg::GraphicsContext
 }
 
 
+bool DarwinWindowingSystemInterface::setScreenSettings(const osg::GraphicsContext::ScreenIdentifier &si, const osg::GraphicsContext::ScreenSettings & settings)
+{
+    bool result = setScreenResolutionImpl(si, settings.width, settings.height);
+    if (result)
+        setScreenRefreshRateImpl(si, settings.refreshRate);
+    
+    return result;
+}
+
+
 
 /** implementation of setScreenResolution */
-bool DarwinWindowingSystemInterface::setScreenResolution(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) 
+bool DarwinWindowingSystemInterface::setScreenResolutionImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) 
 { 
     CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
     
@@ -270,7 +280,7 @@ bool DarwinWindowingSystemInterface::setScreenResolution(const osg::GraphicsCont
 }
 
 /** implementation of setScreenRefreshRate */
-bool DarwinWindowingSystemInterface::setScreenRefreshRate(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate) { 
+bool DarwinWindowingSystemInterface::setScreenRefreshRateImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate) { 
     
     boolean_t  success(false);
     unsigned width, height;

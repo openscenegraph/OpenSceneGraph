@@ -23,12 +23,16 @@
 
 #ifdef __OBJC__
 @class GraphicsWindowCocoaWindow;
+@class GraphicsWindowCocoaGLView;
 @class NSOpenGLContext;
 @class NSWindow;
+@class NSView;
 #else
+class GraphicsWindowCocoaGLView;
 class GraphicsWindowCocoaWindow;
 class NSOpenGLContext;
 class NSWindow;
+class NSView;
 #endif
 
 #include <osgViewer/GraphicsWindow>
@@ -41,14 +45,18 @@ namespace osgViewer
 class GraphicsWindowCocoa : public osgViewer::GraphicsWindow
 {
     public:
-	class Implementation;
+    class Implementation;
 
         GraphicsWindowCocoa(osg::GraphicsContext::Traits* traits):
             _valid(false),
             _initialized(false),
             _realized(false),
+            _closeRequested(false),
+            _checkForEvents(true),
             _ownsWindow(true),
-            _currentCursor(RightArrowCursor)
+            _currentCursor(RightArrowCursor),
+            _window(NULL),
+            _context(NULL)
         {
             _traits = traits;
 
@@ -121,26 +129,38 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow
         class WindowData : public osg::Referenced
         {
             public:
-                WindowData(NSWindow* window)
-				:	_window(window) 
-				{
-				}
-                
-                inline NSWindow* getNativeWindowRef() { return _window; }
-                                
-            private:
-                NSWindow*    _window;
-                bool         _installEventHandler;
+                enum Options { CreateOnlyView = 1, CheckForEvents = 2, PoseAsStandaloneApp = 4};
+                WindowData(unsigned int options)
+                :    _createOnlyView(options & CreateOnlyView),
+                    _checkForEvents(options & CheckForEvents),
+                    _poseAsStandaloneApp(options & PoseAsStandaloneApp),
+                    _view(NULL)
+                {
+                }
+                            
+                inline NSView* getCreatedNSView() { return _view; }
+                bool createOnlyView() const { return _createOnlyView; }
+                bool checkForEvents() const { return _checkForEvents; }
+                bool poseAsStandaloneApp() const { return _poseAsStandaloneApp; }
             
+            protected:
+                inline void setCreatedNSView(NSView* view) { _view = view; }
+            
+            private:
+                bool         _createOnlyView, _checkForEvents, _poseAsStandaloneApp;
+                NSView*         _view;
+            
+            friend class GraphicsWindowCocoa;
+
         };
         
         NSOpenGLContext* getContext() { return _context; }
         GraphicsWindowCocoaWindow* getWindow() { return _window; }
                 
         void setVSync(bool f);
-		
-		/** adapts a resize / move of the window, coords in global screen space */
-		void adaptResize(int x, int y, int w, int h);
+        
+        /** adapts a resize / move of the window, coords in global screen space */
+        void adaptResize(int x, int y, int w, int h);
         
     protected:
     
@@ -157,17 +177,17 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow
         bool            _initialized;
         bool            _realized;
         bool            _useWindowDecoration;
-        bool            _ownsWindow;
 
-	
+    
          
     private:        
        
         
-        bool				_closeRequested;
-        MouseCursor			_currentCursor;
-		GraphicsWindowCocoaWindow* _window;
-		NSOpenGLContext*	_context;
+        bool                _closeRequested, _checkForEvents,_ownsWindow;
+        MouseCursor            _currentCursor;
+        GraphicsWindowCocoaWindow* _window;
+        GraphicsWindowCocoaGLView*    _view;
+        NSOpenGLContext*    _context;
 };
 
 }

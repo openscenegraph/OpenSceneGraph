@@ -136,44 +136,44 @@ struct CallbackOperator : public ObjectOperator
 
     virtual void setPause(bool pause)
     {
-	osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
-	osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
-	ss3d::AnimationMaterialCallback* amc = dynamic_cast<ss3d::AnimationMaterialCallback*>(_callback.get());
-	if (apc)
-	{
+        osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
+        osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
+        ss3d::AnimationMaterialCallback* amc = dynamic_cast<ss3d::AnimationMaterialCallback*>(_callback.get());
+        if (apc)
+        {
             osg::notify(osg::INFO)<<"apc->setPause("<<pause<<")"<<std::endl;
             apc->setPause(pause);
-	}
-	if (tc)
-	{
+        }
+        if (tc)
+        {
             osg::notify(osg::INFO)<<"tc->setPause("<<pause<<")"<<std::endl;
             tc->setPause(pause);
-	}
-	if (amc)
-	{
+        }
+        if (amc)
+        {
             osg::notify(osg::INFO)<<"amc->setPause("<<pause<<")"<<std::endl;
             amc->setPause(pause);
-	}
+        }
     }
 
     virtual void reset()
     {
-	osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
-	osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
-	ss3d::AnimationMaterialCallback* amc = dynamic_cast<ss3d::AnimationMaterialCallback*>(_callback.get());
-	if (apc)
-	{
+        osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
+        osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
+        ss3d::AnimationMaterialCallback* amc = dynamic_cast<ss3d::AnimationMaterialCallback*>(_callback.get());
+        if (apc)
+        {
             apc->reset();
             apc->update(*_node);
-	}
-	if (tc)
-	{
-	}
-	if (amc)
-	{
+        }
+        if (tc)
+        {
+        }
+        if (amc)
+        {
             amc->reset();
             amc->update(*_node);
-	}
+        }
     }
 
 
@@ -220,7 +220,7 @@ struct LayerAttributesOperator : public ObjectOperator
 
                 int result = system(itr->c_str());
 
-	        osg::notify(osg::INFO)<<"system("<<*itr<<") result "<<result<<std::endl;
+                osg::notify(osg::INFO)<<"system("<<*itr<<") result "<<result<<std::endl;
 
                 double timeForRun = osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick());
 
@@ -266,29 +266,28 @@ public:
     FindOperatorsVisitor(ActiveOperators::OperatorList& operatorList, osg::NodeVisitor::TraversalMode tm):
         osg::NodeVisitor(tm),
         _operatorList(operatorList) {}
-		
-    void apply(osg::Node& node)    
-    {
-    	if (node.getStateSet()) process(node.getStateSet());
 
-	if (node.getUpdateCallback())
-	{
+    void apply(osg::Node& node)
+    {
+        if (node.getStateSet()) process(node.getStateSet());
+
+        if (node.getUpdateCallback())
+        {
             _operatorList.insert(new CallbackOperator(&node, node.getUpdateCallback()));
-	}
+        }
 
         LayerAttributes* la = dynamic_cast<LayerAttributes*>(node.getUserData());
         if (la)
         {
             _operatorList.insert(new LayerAttributesOperator(&node, la));
         }
-        
+
         traverse(node);
     }
 
     void apply(osg::Geode& node)    
     {
         apply((osg::Node&)node);
-        
         for(unsigned int i=0;i<node.getNumDrawables();++i)
         {
             osg::Drawable* drawable = node.getDrawable(i);
@@ -308,8 +307,8 @@ public:
                 _operatorList.insert(new ImageStreamOperator(imageStream));
             }
         }
-    }	
-    
+    }
+
     ActiveOperators::OperatorList& _operatorList;
 };
 

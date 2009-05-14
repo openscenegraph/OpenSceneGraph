@@ -94,6 +94,11 @@ BEGIN_VALUE_REFLECTOR(osgDB::XmlNode::Input)
 	          __void__readAllDataIntoBuffer,
 	          "",
 	          "");
+	I_Method0(osgDB::XmlNode::Input::size_type, currentPosition,
+	          Properties::NON_VIRTUAL,
+	          __size_type__currentPosition,
+	          "",
+	          "");
 	I_Method0(int, get,
 	          Properties::NON_VIRTUAL,
 	          __int__get,

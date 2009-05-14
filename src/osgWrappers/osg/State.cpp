@@ -40,6 +40,10 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< const osg::StateSet * >, osg::State::StateSetStack)
 
+TYPE_NAME_ALIAS(std::pair< const osg::StateAttribute * COMMA  osg::StateAttribute::OverrideValue >, osg::State::AttributePair)
+
+TYPE_NAME_ALIAS(std::vector< osg::State::AttributePair >, osg::State::AttributeVec)
+
 BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_DeclaringFile("osg/State");
 	I_BaseType(osg::Referenced);
@@ -627,6 +631,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __GLint__getAttribLocation__C5_std_string_R1,
 	          "",
 	          "");
+	I_Method1(osg::State::AttributeVec &, getAttributeVec, IN, const osg::StateAttribute *, attribute,
+	          Properties::NON_VIRTUAL,
+	          __AttributeVec_R1__getAttributeVec__C5_osg_StateAttribute_P1,
+	          "",
+	          "");
 	I_Method1(void, setFrameStamp, IN, osg::FrameStamp *, fs,
 	          Properties::NON_VIRTUAL,
 	          __void__setFrameStamp__FrameStamp_P1,
@@ -884,5 +893,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::State::DynamicObjectRenderingCompletedCallb
 	          "");
 END_REFLECTOR
 
+STD_PAIR_REFLECTOR(std::pair< const osg::StateAttribute * COMMA  osg::StateAttribute::OverrideValue >)
+
 STD_VECTOR_REFLECTOR(std::vector< const osg::StateSet * >)
+
+STD_VECTOR_REFLECTOR(std::vector< osg::State::AttributePair >)
 

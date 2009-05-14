@@ -1,3 +1,42 @@
+2009-05-14 17:18  robert
+
+	* applications/osgversion/CMakeLists.txt,
+	  applications/osgversion/Contributors.cpp,
+	  applications/osgversion/osgversion.cpp: Moved the Contributors
+	  generation code out into a separate source file that is only
+	  compiled when OSG_MAINTAINER is enable via ccamke. This has been
+	  done to prevent build issues on some machines with compilers that
+	  chose a different local to the one that the contributors names
+	  are encoded.
+
+2009-05-13 08:35  robert
+
+	* src/OpenThreads/win32, src/OpenThreads/win32/Win32Thread.cpp:
+	  From Thibault Genessay, "On Windows, when a process tries to
+	  spawn one too many thread,
+	  _beginthreadex() fails but OpenThreads still waits on the startup
+	  Block before returning to the caller of
+	  OpenThreads::Thread::start().
+	  This causes a deadlock. The return value of _beginthreadex() is
+	  actually checked, but after the call to
+	  OpenThreads::Block::block() so
+	  it is basically useless.
+	  
+	  Attached is a fix to move the check for the return value of
+	  _beginthreadex() before the call to block(), so that start() can
+	  return to the caller with a non-zero error code. This solves the
+	  problem for me."
+	  
+	  Merged from svn trunk using:
+	  
+	  svn merge -r 10190:10191
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/OpenThreads/win32
+
+2009-05-12 11:15  robert
+
+	* ChangeLog, NEWS.txt, README.txt: Updated ChangeLog and
+	  NEWS/READER for release candidate
+
 2009-05-12 11:12  robert
 
 	* src/osgWrappers/osgUtil/IntersectVisitor.cpp: Updated wrappers

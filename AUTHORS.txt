@@ -1,6 +1,6 @@
 OpenSceneGraph Library 2.8.1
 
-370 Contributors:
+371 Contributors:
 
 Firstname Surname
 -----------------
@@ -44,11 +44,11 @@ Michael Platings
 André Garneau
 Ruben Lopez
 Randall Hopper
+Jason Daly
 J.P. Delport
 Adrian Egli
 Olaf Flebbe
 Mathieu Marache
-Jason Daly
 Gideon May
 Don Tidrow
 Sherman Wilcox
@@ -61,8 +61,8 @@ Daniel Sjölie
 Chris Hanson
 Alberto Luaces
 Philip Lowman
-Melchior Franz
 Chris Denham
+Melchior Franz
 Serge Lages
 Lionel Lagarde
 Joran Jessurun
@@ -77,6 +77,7 @@ Stephane Lamoliatte
 Sondra Iverson
 Rune Schmidt Jensen
 Rainer Oder
+Neil Groves
 Mike Connell
 Martin Aumueller
 Mario Valle
@@ -85,9 +86,9 @@ Gino van den Bergen
 Carlo Camporesi
 Ben Discoe
 Andreas Ekstrand
+Thibault Genessay
 Sukender 
 Sasa Bistrovic
-Neil Groves
 Martin Naylor
 Markus Trenkwalder
 Loic Dachary
@@ -98,7 +99,6 @@ Jan Ciger
 Glenn Waldron
 Brad Colbert
 Vivek Rajan
-Thibault Genessay
 Sean Spicer
 Ravi Mathur
 Peter Hrenka
@@ -203,6 +203,7 @@ Gustavo Wagner
 Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
+Frederic Bouvier
 Ferdi Smit
 Ewe Woessner
 Erik den Dekker
@@ -323,12 +324,12 @@ Glen Waldron
 Gian Lorenzetto
 George Papagiannakis
 Galen Faidley
-Frederic Bouvier
 Frank Warmerdam
 Frank Midgley
 Frank Lindeman
 Frank Lichtenheld
 Ferdinand Cornelissen
+Fajran Iman
 Fabien Dachicourt
 Emmanuel Roche
 Edmond Gheury

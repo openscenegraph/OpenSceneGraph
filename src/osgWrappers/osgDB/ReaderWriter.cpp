@@ -118,6 +118,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	          __Features__supportedFeatures,
 	          "return available features ",
 	          "");
+	I_Method2(bool, fileExists, IN, const std::string &, filename, IN, const osgDB::ReaderWriter::Options *, options,
+	          Properties::VIRTUAL,
+	          __bool__fileExists__C5_std_string_R1__C5_Options_P1,
+	          "determine if a file exists, normally the default implementation will be approrpiate for local file access but with plugins like the libcurl based on it will return true if the file is accessible a server. ",
+	          "");
 	I_MethodWithDefaults4(osgDB::ReaderWriter::ReadResult, openArchive, IN, const std::string &, x, , IN, osgDB::ReaderWriter::ArchiveStatus, x, , IN, unsigned, int, 4096, IN, const osgDB::ReaderWriter::Options *, x, NULL,
 	                      Properties::VIRTUAL,
 	                      __ReadResult__openArchive__C5_std_string_R1__ArchiveStatus__unsigned__C5_Options_P1,

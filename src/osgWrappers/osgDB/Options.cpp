@@ -164,9 +164,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Options)
 	          __void__setPluginStringData__C5_std_string_R1__C5_std_string_R1,
 	          "Sets a plugindata value PluginData with a string. ",
 	          "");
-	I_Method1(std::string, getPluginStringData, IN, const std::string &, s,
+	I_Method1(std::string &, getPluginStringData, IN, const std::string &, s,
 	          Properties::NON_VIRTUAL,
-	          __std_string__getPluginStringData__C5_std_string_R1,
+	          __std_string_R1__getPluginStringData__C5_std_string_R1,
 	          "Get a string from the PluginStrData. ",
 	          "");
 	I_Method1(const std::string, getPluginStringData, IN, const std::string &, s,
@@ -259,10 +259,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Options)
 	I_IndexedProperty(void *, PluginData, 
 	                  __void_P1__getPluginData__C5_std_string_R1, 
 	                  __void__setPluginData__C5_std_string_R1__void_P1, 
-	                  0);
-	I_IndexedProperty(std::string, PluginStringData, 
-	                  __std_string__getPluginStringData__C5_std_string_R1, 
-	                  __void__setPluginStringData__C5_std_string_R1__C5_std_string_R1, 
 	                  0);
 	I_SimpleProperty(osgDB::ReadFileCallback *, ReadFileCallback, 
 	                 __ReadFileCallback_P1__getReadFileCallback, 

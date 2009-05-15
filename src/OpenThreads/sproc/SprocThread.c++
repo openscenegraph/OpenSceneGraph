@@ -34,7 +34,6 @@
 using namespace OpenThreads;
 
 extern int errno;
-const char *OPENTHREAD_VERSION_STRING = "Sproc Thread Model, v1.1 ("__DATE__" "__TIME__")";
 
 #ifdef DEBUG
 #define DPRINTF(arg) printf arg; fflush(stdout);

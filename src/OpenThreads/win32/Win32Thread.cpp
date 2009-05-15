@@ -64,9 +64,6 @@ Win32ThreadPrivateData::~Win32ThreadPrivateData()
 {
 }
 
-const std::string OPENTHREAD_VERSION_STRING = "OpenThread v1.2preAlpha, WindowThreads (Public Implementation)";
-
-
 //-----------------------------------------------------------------------------
 // Initialize thread master priority level
 //

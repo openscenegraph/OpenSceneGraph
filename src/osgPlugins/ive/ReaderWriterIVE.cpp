@@ -89,13 +89,9 @@ class ReaderWriterIVE : public ReaderWriter
                 return e.getError();
             }
         }
-        
+
         virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
-#if 1
-                ive::DataInputStream in(&fin, options);
-                return in.readNode();
-#else
             try{
                 // Create datainputstream.
                 ive::DataInputStream in(&fin, options);
@@ -106,10 +102,7 @@ class ReaderWriterIVE : public ReaderWriter
             {
                 return e.getError();
             }
-#endif
         }
-
-        
 
         virtual WriteResult writeObject(const Object& object,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {

@@ -128,11 +128,14 @@ osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, 
         // use for https.
         // curl_easy_setopt(_curl, CURLOPT_KEYPASSWD, password.c_str());
 
+#if LIBCURL_VERSION_NUM >= 0x070a07
         if (details->httpAuthentication != _previousHttpAuthentication)
         { 
             curl_easy_setopt(_curl, CURLOPT_HTTPAUTH, details->httpAuthentication); 
             _previousHttpAuthentication = details->httpAuthentication;
         }
+#endif
+
     }
     else
     {
@@ -141,13 +144,15 @@ osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, 
             curl_easy_setopt(_curl, CURLOPT_USERPWD, 0);
             _previousPassword.clear();
         }
-    
+
+#if LIBCURL_VERSION_NUM >= 0x070a07
         // need to reset if previously set.
         if (_previousHttpAuthentication!=0)
         {
             curl_easy_setopt(_curl, CURLOPT_HTTPAUTH, 0); 
             _previousHttpAuthentication = 0;
         }
+#endif
     }
 
     curl_easy_setopt(_curl, CURLOPT_URL, fileName.c_str());
@@ -159,6 +164,8 @@ osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, 
 
     if (res==0)
     {
+
+#if LIBCURL_VERSION_NUM >= 0x070a07
         long code;
         if(!proxyAddress.empty())
         {
@@ -196,6 +203,7 @@ osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, 
 
             return rr;
         }
+#endif
 
         // Store the mime-type, if any. (Note: CURL manages the buffer returned by
         // this call.)
@@ -211,7 +219,12 @@ osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, 
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<" error = "<<curl_easy_strerror(res)<<std::endl;
+
+#if LIBCURL_VERSION_NUM >= 0x070c00
+         osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<" error = "<<curl_easy_strerror(res)<<std::endl;
+#else
+         osg::notify(osg::NOTICE)<<"Error: libcurl read error, file="<<fileName<<" error no = "<<res<<std::endl;
+#endif
         return osgDB::ReaderWriter::ReadResult::FILE_NOT_HANDLED;
     }
 }

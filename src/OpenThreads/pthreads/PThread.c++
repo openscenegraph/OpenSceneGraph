@@ -50,9 +50,6 @@
 
 using namespace OpenThreads;
 
-extern int errno;
-const char *OPENTHREAD_VERSION_STRING = "OpenThreads v1.2preAlpha, Posix Threads (Public Implementation)";
-
 #ifdef DEBUG
 # define DPRINTF(arg) printf arg
 #else

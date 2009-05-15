@@ -1425,7 +1425,7 @@ struct MyFindFileCallback : public osgDB::FindFileCallback
     }
 };
 
-class OSGDB_EXPORT MyReadFileCallback : public virtual osgDB::ReadFileCallback
+class MyReadFileCallback : public virtual osgDB::ReadFileCallback
 {
     public:
 

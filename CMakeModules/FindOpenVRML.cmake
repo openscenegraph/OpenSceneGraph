@@ -13,9 +13,6 @@
 FIND_PATH(OPENVRML_INCLUDE_DIR openvrml/openvrml/common.h
     $ENV{OPENVRML_DIR}/include
     $ENV{OPENVRML_DIR}
-    $ENV{OSGDIR}/include
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/include
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/include
@@ -24,7 +21,6 @@ FIND_PATH(OPENVRML_INCLUDE_DIR openvrml/openvrml/common.h
     /opt/local/include # DarwinPorts
     /opt/csw/include # Blastwave
     /opt/include
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
     /usr/freeware/include
 )
 
@@ -33,9 +29,6 @@ FIND_LIBRARY(OPENVRML_LIBRARY
     PATHS
     $ENV{OPENVRML_DIR}/lib
     $ENV{OPENVRML_DIR}
-    $ENV{OSGDIR}/lib
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/lib
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/lib
@@ -44,7 +37,6 @@ FIND_LIBRARY(OPENVRML_LIBRARY
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
     /usr/freeware/lib64
 )
 
@@ -53,9 +45,6 @@ FIND_LIBRARY(OPENVRML_LIBRARY_DEBUG
     PATHS
     $ENV{OPENVRML_DIR}/lib
     $ENV{OPENVRML_DIR}
-    $ENV{OSGDIR}/lib
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/lib
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/lib
@@ -64,7 +53,6 @@ FIND_LIBRARY(OPENVRML_LIBRARY_DEBUG
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
     /usr/freeware/lib64
 )
 

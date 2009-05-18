@@ -12,9 +12,6 @@
 FIND_PATH(FLTK_INCLUDE_DIR Fl/Fl.H Fl/Fl.h
     $ENV{FLTK_DIR}/include
     $ENV{FLTK_DIR}
-    $ENV{OSGDIR}/include
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/include
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/include
@@ -23,7 +20,6 @@ FIND_PATH(FLTK_INCLUDE_DIR Fl/Fl.H Fl/Fl.h
     /opt/local/include # DarwinPorts
     /opt/csw/include # Blastwave
     /opt/include
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
     /usr/freeware/include
 )
 
@@ -34,9 +30,6 @@ MACRO(FIND_FLTK_LIBRARY MYLIBRARY MYLIBRARYNAME)
         PATHS
         $ENV{FLTK_DIR}/lib
         $ENV{FLTK_DIR}
-        $ENV{OSGDIR}/lib
-        $ENV{OSGDIR}
-        $ENV{OSG_ROOT}/lib
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local/lib
@@ -45,7 +38,6 @@ MACRO(FIND_FLTK_LIBRARY MYLIBRARY MYLIBRARYNAME)
         /opt/local/lib
         /opt/csw/lib
         /opt/lib
-        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
         /usr/freeware/lib64
     )
 

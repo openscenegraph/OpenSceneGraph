@@ -12,9 +12,6 @@
 FIND_PATH(XINE_INCLUDE_DIR xine.h
     $ENV{XINE_DIR}/include
     $ENV{XINE_DIR}
-    $ENV{OSGDIR}/include
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/include
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/include
@@ -23,7 +20,6 @@ FIND_PATH(XINE_INCLUDE_DIR xine.h
     /opt/local/include # DarwinPorts
     /opt/csw/include # Blastwave
     /opt/include
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
     /usr/freeware/include
 )
 
@@ -32,9 +28,6 @@ FIND_LIBRARY(XINE_LIBRARY
     PATHS
     $ENV{XINE_DIR}/lib
     $ENV{XINE_DIR}
-    $ENV{OSGDIR}/lib
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/lib
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/lib
@@ -43,7 +36,6 @@ FIND_LIBRARY(XINE_LIBRARY
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
     /usr/freeware/lib64
 )
 

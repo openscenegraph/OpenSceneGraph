@@ -31,7 +31,6 @@ FIND_PATH(GIFLIB_INCLUDE_DIR gif_lib.h
   /opt/local/include # DarwinPorts
   /opt/csw/include # Blastwave
   /opt/include
-  [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
   /usr/freeware/include
 )
 
@@ -61,7 +60,6 @@ FIND_LIBRARY(GIFLIB_LIBRARY
   /opt/local
   /opt/csw
   /opt
-  [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]
   /usr/freeware
   PATH_SUFFIXES lib64 lib
 )

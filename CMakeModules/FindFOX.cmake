@@ -12,9 +12,6 @@
 FIND_PATH(FOX_INCLUDE_DIR fx.h
     $ENV{FOX_DIR}/include/fox-1.6
     $ENV{FOX_DIR}/fox-1.6
-    $ENV{OSGDIR}/include/fox-1.6
-    $ENV{OSGDIR}/fox-1.6
-    $ENV{OSG_ROOT}/include/fox-1.6
     ~/Library/Frameworks/fox-1.6
     /Library/Frameworks/fox-1.6
     /usr/local/include/fox-1.6
@@ -23,13 +20,9 @@ FIND_PATH(FOX_INCLUDE_DIR fx.h
     /opt/local/include/fox-1.6 # DarwinPorts
     /opt/csw/include/fox-1.6 # Blastwave
     /opt/include/fox-1.6
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include/fox-1.6
     /usr/freeware/include/fox-1.6
     $ENV{FOX_DIR}/include
     $ENV{FOX_DIR}
-    $ENV{OSGDIR}/include
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/include
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/include
@@ -38,7 +31,6 @@ FIND_PATH(FOX_INCLUDE_DIR fx.h
     /opt/local/include # DarwinPorts
     /opt/csw/include # Blastwave
     /opt/include
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
     /usr/freeware/include
 )
 
@@ -49,9 +41,6 @@ MACRO(FIND_FOX_LIBRARY MYLIBRARY MYLIBRARYNAME)
         PATHS
         $ENV{FOX_DIR}/lib
         $ENV{FOX_DIR}
-        $ENV{OSGDIR}/lib
-        $ENV{OSGDIR}
-        $ENV{OSG_ROOT}/lib
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local/lib
@@ -60,7 +49,6 @@ MACRO(FIND_FOX_LIBRARY MYLIBRARY MYLIBRARYNAME)
         /opt/local/lib
         /opt/csw/lib
         /opt/lib
-        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
         /usr/freeware/lib64
     )
 

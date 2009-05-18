@@ -15,6 +15,7 @@
 #define OSG_NOTIFY 1
 
 #include <osg/Export>
+#include <osg/Referenced> // for NotifyHandler
 
 #include <ostream>
 
@@ -23,8 +24,8 @@ namespace osg {
 /** Range of notify levels from DEBUG_FP through to FATAL, ALWAYS
   * is reserved for forcing the absorption of all messages.  The
   * keywords are also used verbatim when specified by the environmental
-  * variable OSGNOTIFYLEVEL.  See documentation on osg::notify() for
-  * further details.
+  * variable OSGNOTIFYLEVEL or OSG_NOTIFY_LEVEL.
+  * See documentation on osg::notify() for further details.
   */
 enum NotifySeverity {
     ALWAYS=0,
@@ -37,7 +38,7 @@ enum NotifySeverity {
 };
 
 /** set the notify level, overriding the default or the value set by
-  * the environmental variable OSGNOTIFYLEVEL.
+  * the environmental variable OSGNOTIFYLEVEL or OSG_NOTIFY_LEVEL.
   */
 extern OSG_EXPORT void setNotifyLevel(NotifySeverity severity);
 
@@ -53,21 +54,78 @@ extern OSG_EXPORT bool initNotifyLevel();
 /** notify messaging function for providing fatal through to verbose
   * debugging messages.  Level of messages sent to the console can
   * be controlled by setting the NotifyLevel either within your 
-  * application or via the an environmental variable. For instance
-  * setenv OSGNOTIFYLEVEL DEBUG (for tsh), export OSGNOTIFYLEVEL=DEBUG
-  * (for bourne shell) or set OSGNOTIFYLEVEL=DEBUG (for Windows) all
-  * tell the osg to redirect all debugging and more important messages
-  * to the console (useful for debugging :-)  setting ALWAYS will force
+  * application or via the an environmental variable i.e.
+  * - setenv OSGNOTIFYLEVEL DEBUG (for tsh)
+  * - export OSGNOTIFYLEVEL=DEBUG (for bourne shell)
+  * - set OSGNOTIFYLEVEL=DEBUG (for Windows)
+  *
+  * All tell the osg to redirect all debugging and more important messages
+  * to the notification stream (useful for debugging) setting ALWAYS will force
   * all messages to be absorbed, which might be appropriate for final
   * applications.  Default NotifyLevel is NOTICE.  Check the enum 
-  * NotifySeverity for full range of possibilities.  To use the notify
+  * #NotifySeverity for full range of possibilities.  To use the notify
   * with your code simply use the notify function as a normal file
-  * stream (like cout) i.e osg::notify(osg::DEBUG) << "Hello Bugs!"<<endl;
+  * stream (like std::cout) i.e 
+  * @code
+  * osg::notify(osg::DEBUG) << "Hello Bugs!" << std::endl;
+  * @endcode
+  * @see setNotifyLevel, setNotifyHandler
   */
-  
 extern OSG_EXPORT std::ostream& notify(const NotifySeverity severity);
 
 inline std::ostream& notify(void) { return notify(osg::INFO); }
+
+/** Handler processing output of notification stream. It acts as a sink to 
+  * notification messages. It is called when notification stream needs to be 
+  * synchronized (i.e. after osg::notify() << std::endl).
+  * StandardNotifyHandler is used by default, it writes notifications to stderr 
+  * (severity <= WARN) or stdout (severity > WARN).
+  * Notifications can be redirected to other sinks such as GUI widgets or 
+  * windows debugger (WinDebugNotifyHandler) with custom handlers.
+  * Use setNotifyHandler to set custom handler.
+  * Note that osg notification API is not thread safe although notification 
+  * handler is called from many threads. When incorporating handlers into GUI
+  * widgets you must take care of thread safety on your own.
+  * @see setNotifyHandler
+  */
+class OSG_EXPORT NotifyHandler : public osg::Referenced
+{
+public:
+    virtual void notify(osg::NotifySeverity severity, const char *message) = 0;
+};
+
+/** Set notification handler, by default StandardNotifyHandler is used.
+  * @see NotifyHandler
+  */
+extern OSG_EXPORT void setNotifyHandler(NotifyHandler *handler);
+
+/** Get currrent notification handler. */
+extern OSG_EXPORT NotifyHandler *getNotifyHandler();
+
+/** Redirects notification stream to stderr (severity <= WARN) or stdout (severity > WARN).
+  * The fputs() function is used to write messages to standard files. Note that
+  * std::out and std::cerr streams are not used.
+  * @see setNotifyHandler
+  */
+class OSG_EXPORT StandardNotifyHandler : public NotifyHandler
+{
+public:
+    void notify(osg::NotifySeverity severity, const char *message);
+};
+
+#if defined(WIN32) && !defined(__CYGWIN__)
+
+/** Redirects notification stream to windows debugger with use of 
+  * OuputDebugString functions.
+  * @see setNotifyHandler
+  */
+class OSG_EXPORT WinDebugNotifyHandler : public NotifyHandler
+{
+public:
+    void notify(osg::NotifySeverity severity, const char *message);
+};
+
+#endif
 
 }
 

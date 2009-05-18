@@ -1,6 +1,6 @@
 OpenSceneGraph Library 2.8.1
 
-371 Contributors:
+372 Contributors:
 
 Firstname Surname
 -----------------
@@ -179,6 +179,7 @@ Sebastian Messerschmidt
 Ralf Kern
 Pierre Haritchabalet
 Perry Miller
+Paul Obermeier
 Neil Hughes
 Nathan Monteleone
 Morné Pistorius
@@ -242,6 +243,7 @@ Shane Arnott
 Sebastien Kuntz
 Ruth Lang
 Ruben Smelik
+Ross Anderson
 Ronny Krueger
 Robert Swain
 Rob Bloemkool

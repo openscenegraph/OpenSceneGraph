@@ -1,3 +1,89 @@
+2009-05-18 15:49  robert
+
+	* src/osgUtil/RenderStage.cpp: Merged changed from svn/trunk,
+	  improving the reliability of the clear of the stencil and depth
+	  buffer.
+
+2009-05-18 14:53  robert
+
+	* include/osg, include/osg/BoundingSphere, include/osg/ImageUtils,
+	  include/osg/Vec2b, include/osg/Vec3b, include/osg/Vec4b,
+	  include/osg/Vec4ub, src/osgWrappers/osg/Vec2b.cpp,
+	  src/osgWrappers/osg/Vec3b.cpp, src/osgWrappers/osg/Vec4b.cpp,
+	  src/osgWrappers/osg/Vec4ub.cpp: From Paul Obermeier, "Please find
+	  enclosed some changed OSG header files.
+	  The changes are more or less just beautifications
+	  (when looked at them from the C++ view), but make
+	  wrapping OSG with SWIG easier.
+	  I have tested the changes with both 2.8.1-rc4 and the
+	  current head and would appreciate to incorporate the
+	  changes in both branches.
+	  
+	  Here is a description of the changes:
+	  
+	  osg/BoundingSphere:
+	  Use the following typedef (like used in BoundingBox)
+	  typedef typename VT::value_type value_type;
+	  instead of
+	  typedef typename vec_type::value_type value_type;
+	  
+	  SWIG reports errors on the latter construct.
+	  Also makes it consistent with BoundingBox.
+	  
+	  
+	  osg/Vec4ub:
+	  Consistent use of "value_type" throughout the file.
+	  
+	  
+	  osg/Vec?b:
+	  Consistent use of "value_type" throughout the files.
+	  
+	  Also changed
+	  typedef char value_type;
+	  to
+	  typedef signed char value_type;
+	  
+	  In the case of a simple "char", SWIG assumes a string.
+	  Using "signed char" instead of "char" does not change
+	  the behaviour of the class."
+
+2009-05-18 12:56  robert
+
+	* src/osgTerrain, src/osgTerrain/Layer.cpp: From Ross Anderson,
+	  "Symptom: The computation of TerrainTiles containing only image
+	  layers (no elevation layer) is incorrect. The resulting bounding
+	  sphere will always have a radius of zero.
+	  
+	  The fix is to remove the call to bs.expandBy(v) and compute the
+	  radius directly. I believe this call was intended to be
+	  bs.expandRadiusBy(v), but it is superfluous when the radius is
+	  computed directly.
+	  "
+	  
+	  Merged from svn/trunk using:
+	  
+	  svn merge -r 10229:10230
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgTerrain
+
+2009-05-15 15:13  robert
+
+	* src/osgPlugins/curl, src/osgPlugins/curl/ReaderWriterCURL.cpp:
+	  Merged from svn/trunk libcurl version checks to enable build
+	  against older versions of libcurl.
+	  
+	  svn merge -r 10221:10222
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgPlugins/curl/
+
+2009-05-15 12:37  robert
+
+	* src/OpenThreads/pthreads, src/OpenThreads/pthreads/PThread.c++:
+	  Removed redundent errno and version string declaration
+
+2009-05-15 09:25  robert
+
+	* ChangeLog, NEWS.txt, README.txt: Updated ChangeLog and dates for
+	  2.8.0-rc4
+
 2009-05-14 17:26  robert
 
 	* NEWS.txt, README.txt: Updated dates

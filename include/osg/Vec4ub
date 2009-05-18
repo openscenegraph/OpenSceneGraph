@@ -62,26 +62,26 @@ class Vec4ub
             else return (_v[3]<v._v[3]);
         }
 
-        inline unsigned char* ptr() { return _v; }
-        inline const unsigned char* ptr() const { return _v; }
+        inline value_type* ptr() { return _v; }
+        inline const value_type* ptr() const { return _v; }
 
-        inline void set(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+        inline void set(value_type r, value_type g, value_type b, value_type a)
         {
             _v[0]=r; _v[1]=g; _v[2]=b; _v[3]=a;
         }
 
-        inline unsigned char& operator [] (unsigned int i) { return _v[i]; }
-        inline unsigned char operator [] (unsigned int i) const { return _v[i]; }
+        inline value_type& operator [] (unsigned int i) { return _v[i]; }
+        inline value_type operator [] (unsigned int i) const { return _v[i]; }
 
-        inline unsigned char& r() { return _v[0]; }
-        inline unsigned char& g() { return _v[1]; }
-        inline unsigned char& b() { return _v[2]; }
-        inline unsigned char& a() { return _v[3]; }
+        inline value_type& r() { return _v[0]; }
+        inline value_type& g() { return _v[1]; }
+        inline value_type& b() { return _v[2]; }
+        inline value_type& a() { return _v[3]; }
 
-        inline unsigned char r() const { return _v[0]; }
-        inline unsigned char g() const { return _v[1]; }
-        inline unsigned char b() const { return _v[2]; }
-        inline unsigned char a() const { return _v[3]; }
+        inline value_type r() const { return _v[0]; }
+        inline value_type g() const { return _v[1]; }
+        inline value_type b() const { return _v[2]; }
+        inline value_type a() const { return _v[3]; }
 
         /** Multiply by scalar. */
         inline Vec4ub operator * (float rhs) const
@@ -94,10 +94,10 @@ class Vec4ub
         /** Unary multiply by scalar. */
         inline Vec4ub& operator *= (float rhs)
         {
-            _v[0]=(unsigned char)((float)_v[0]*rhs);
-            _v[1]=(unsigned char)((float)_v[1]*rhs);
-            _v[2]=(unsigned char)((float)_v[2]*rhs);
-            _v[3]=(unsigned char)((float)_v[3]*rhs);
+            _v[0]=(value_type)((float)_v[0]*rhs);
+            _v[1]=(value_type)((float)_v[1]*rhs);
+            _v[2]=(value_type)((float)_v[2]*rhs);
+            _v[3]=(value_type)((float)_v[3]*rhs);
             return *this;
         }
 

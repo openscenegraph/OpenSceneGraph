@@ -78,7 +78,7 @@ ReaderWriter::WriteResult FileCache::writeObject(const osg::Object& object, cons
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        osg::notify(osg::NOTICE)<<"FileCache::writeObjectToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        osg::notify(osg::INFO)<<"FileCache::writeObjectToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->writeObject(object, cacheFileName, options);
     }
     return ReaderWriter::WriteResult::FILE_NOT_HANDLED;
@@ -111,7 +111,7 @@ ReaderWriter::WriteResult FileCache::writeImage(const osg::Image& image, const s
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        osg::notify(osg::NOTICE)<<"FileCache::writeImageToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        osg::notify(osg::INFO)<<"FileCache::writeImageToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->writeImage(image, cacheFileName, options);
     }
     return ReaderWriter::WriteResult::FILE_NOT_HANDLED;
@@ -144,7 +144,7 @@ ReaderWriter::WriteResult FileCache::writeHeightField(const osg::HeightField& hf
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        osg::notify(osg::NOTICE)<<"FileCache::writeHeightFieldToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        osg::notify(osg::INFO)<<"FileCache::writeHeightFieldToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->writeHeightField(hf, cacheFileName, options);
     }
     return ReaderWriter::WriteResult::FILE_NOT_HANDLED;
@@ -177,7 +177,7 @@ ReaderWriter::WriteResult FileCache::writeNode(const osg::Node& node, const std:
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        osg::notify(osg::NOTICE)<<"FileCache::writeNodeToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        osg::notify(osg::INFO)<<"FileCache::writeNodeToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->writeNode(node, cacheFileName, options);
     }
     return ReaderWriter::WriteResult::FILE_NOT_HANDLED;
@@ -211,7 +211,7 @@ ReaderWriter::WriteResult FileCache::writeShader(const osg::Shader& shader, cons
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        osg::notify(osg::NOTICE)<<"FileCache::writeShaderToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        osg::notify(osg::INFO)<<"FileCache::writeShaderToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->writeShader(shader, cacheFileName, options);
     }
     return ReaderWriter::WriteResult::FILE_NOT_HANDLED;

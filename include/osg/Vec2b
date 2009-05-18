@@ -29,7 +29,7 @@ class Vec2b
         // Methods are defined here so that they are implicitly inlined
 
         /** Type of Vec class.*/
-        typedef char value_type;
+        typedef signed char value_type;
 
         /** Number of vector components. */
         enum { num_components = 2 };
@@ -39,7 +39,7 @@ class Vec2b
 
         Vec2b() { _v[0]=0; _v[1]=0; }
         
-        Vec2b(char r, char g)
+        Vec2b(value_type r, value_type g)
         {
             _v[0]=r; _v[1]=g;
         }
@@ -94,8 +94,8 @@ class Vec2b
         /** Unary multiply by scalar. */
         inline Vec2b& operator *= (float rhs)
         {
-            _v[0]=(char)((float)_v[0]*rhs);
-            _v[1]=(char)((float)_v[1]*rhs);            
+            _v[0]=(value_type)((float)_v[0]*rhs);
+            _v[1]=(value_type)((float)_v[1]*rhs);            
             return *this;
         }
 

@@ -327,10 +327,10 @@ class OSGDB_EXPORT Registry : public osg::Referenced
             }
         }
 
-        /** Set the callback to use inform the DatabasePager whether a file is located on local or remote file system..*/
+        /** Set the callback to use inform the DatabasePager whether a file is located on local or remote file system.*/
         void setFileLocationCallback( FileLocationCallback* cb) { _fileLocationCallback = cb; }
 
-        /** Get the callback to use inform the DatabasePager whether a file is located on local or remote file system..*/
+        /** Get the callback to use inform the DatabasePager whether a file is located on local or remote file system.*/
         FileLocationCallback* getFileLocationCallback() const { return _fileLocationCallback.get(); }
 
 

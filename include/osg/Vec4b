@@ -27,7 +27,7 @@ class Vec4b
     public:
 
         /** Type of Vec class.*/
-        typedef char value_type;
+        typedef signed char value_type;
 
         /** Number of vector components. */
         enum { num_components = 4 };
@@ -101,10 +101,10 @@ class Vec4b
         /** Unary multiply by scalar. */
         inline Vec4b& operator *= (float rhs)
         {
-            _v[0]=(char)((float)_v[0]*rhs);
-            _v[1]=(char)((float)_v[1]*rhs);
-            _v[2]=(char)((float)_v[2]*rhs);
-            _v[3]=(char)((float)_v[3]*rhs);
+            _v[0]=(value_type)((float)_v[0]*rhs);
+            _v[1]=(value_type)((float)_v[1]*rhs);
+            _v[2]=(value_type)((float)_v[2]*rhs);
+            _v[3]=(value_type)((float)_v[3]*rhs);
             return *this;
         }
 

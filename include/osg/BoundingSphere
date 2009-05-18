@@ -35,7 +35,7 @@ class BoundingSphereImpl
 {
     public:
         typedef VT vec_type;
-        typedef typename vec_type::value_type value_type;        
+        typedef typename VT::value_type value_type;        
 
         vec_type    _center;
         value_type  _radius;

@@ -117,8 +117,6 @@ osg::BoundingSphere Layer::computeBound(bool treatAsElevationLayer) const
 
         if (getLocator()->convertLocalToModel(osg::Vec3d(0.0,0.0,0.0), v))
         {
-            bs.expandBy(v);
-            
             bs.radius() = (bs.center() - v).length();
         }
 

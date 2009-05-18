@@ -128,6 +128,7 @@ bool daeReader::convert( const std::string &fileURI )
 osg::Node* daeReader::processVisualScene( domVisual_scene *scene )
 {
     osg::Node *retVal; 
+    _rootStateSet = new osg::StateSet();
 
     unsigned int nbVisualSceneGroup=scene->getNode_array().getCount();
     if (nbVisualSceneGroup==0)
@@ -160,6 +161,8 @@ osg::Node* daeReader::processVisualScene( domVisual_scene *scene )
           }
        }
     }
+    retVal->setStateSet(_rootStateSet);
+
     return retVal;
 }
 

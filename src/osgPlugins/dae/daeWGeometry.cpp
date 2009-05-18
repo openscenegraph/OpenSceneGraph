@@ -50,7 +50,7 @@ void daeWriter::apply( osg::Geode &node )
             std::map< osg::Geometry*, domGeometry *>::iterator iter = geometryMap.find( g );
             if ( iter != geometryMap.end() )
             {
-                domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( currentNode->add( "instance_geometry" ) );
+                domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( currentNode->add( COLLADA_ELEMENT_INSTANCE_GEOMETRY ) );
                     
                 std::string url = "#" + std::string( iter->second->getId() );
                 ig->setUrl( url.c_str() );
@@ -76,7 +76,7 @@ void daeWriter::apply( osg::Geode &node )
                     continue;
                 }
 
-                domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( currentNode->add( "instance_geometry" ) );
+                domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( currentNode->add( COLLADA_ELEMENT_INSTANCE_GEOMETRY ) );
                     
                 std::string url = "#" + name;
                 ig->setUrl( url.c_str() );
@@ -218,8 +218,8 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     vertices->setId( vName.c_str() );
 
     //make a POSITION input in it
-    domInputLocal *il = daeSafeCast< domInputLocal >( vertices->add( "input" ) );
-    il->setSemantic( "POSITION" );
+    domInputLocal *il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT) );
+    il->setSemantic(COMMON_PROFILE_INPUT_POSITION);
     std::string url = "#" + std::string( pos->getId() );
     il->setSource( url.c_str() );
 
@@ -272,8 +272,8 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
 
         //if NORMAL shares same indices as POSITION put it in the vertices
         /*if ( normalInds == vertInds && vertInds != NULL ) {
-            il = daeSafeCast< domInputLocal >( vertices->add( "input" ) );
-            il->setSemantic( "NORMAL" );
+            il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT) );
+            il->setSemantic(COMMON_PROFILE_INPUT_NORMAL);
             url = "#" + std::string(md->norm->getId());
             il->setSource( url.c_str() );
         }*/
@@ -323,8 +323,8 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
         }
         //if COLOR shares same indices as POSITION put it in the vertices
         /*if ( colorInds == vertInds && vertInds != NULL ) {
-            il = daeSafeCast< domInputLocal >( vertices->add( "input" ) );
-            il->setSemantic( "COLOR" );
+            il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT) );
+            il->setSemantic(COMMON_PROFILE_INPUT_COLOR);
             url = "#" + std::string(md->color->getId());
             il->setSource( url.c_str() );
         }*/
@@ -1056,7 +1056,7 @@ domSource *daeWriter::createSource( daeElement *parent, const std::string &baseN
     std::string fName = baseName + "-array";
     fa->setId( fName.c_str() );
 
-    domSource::domTechnique_common *teq = daeSafeCast< domSource::domTechnique_common >( src->add( "technique_common" ) );
+    domSource::domTechnique_common *teq = daeSafeCast< domSource::domTechnique_common >( src->add( COLLADA_ELEMENT_TECHNIQUE_COMMON ) );
     domAccessor *acc = daeSafeCast< domAccessor >( teq->add( COLLADA_ELEMENT_ACCESSOR ) );
     std::string url = "#" + fName;
     acc->setSource( url.c_str() );
@@ -1135,32 +1135,32 @@ Ty *daeWriter::createPrimGroup( daeString type, domMesh *mesh, domSource *norm, 
 {
     unsigned int offset = 0;
     Ty *retVal = daeSafeCast< Ty >( mesh->add( type ) );
-    domInputLocalOffset *ilo = daeSafeCast< domInputLocalOffset >( retVal->add( "input" ) );
+    domInputLocalOffset *ilo = daeSafeCast< domInputLocalOffset >(retVal->add( COLLADA_ELEMENT_INPUT));
     ilo->setOffset( offset++ );
-    ilo->setSemantic( "VERTEX" );
+    ilo->setSemantic(COMMON_PROFILE_INPUT_VERTEX);
     std::string url = "#" + std::string(mesh->getVertices()->getId());
     ilo->setSource( url.c_str() );
     if ( norm != NULL )
     {
-        ilo = daeSafeCast< domInputLocalOffset >( retVal->add( "input" ) );
+        ilo = daeSafeCast< domInputLocalOffset >( retVal->add(COLLADA_ELEMENT_INPUT));
         ilo->setOffset( offset++ );
-        ilo->setSemantic( "NORMAL" );
+        ilo->setSemantic( COMMON_PROFILE_INPUT_NORMAL);
         url = "#" + std::string( norm->getId() );
         ilo->setSource( url.c_str() );
     }
     if ( color != NULL )
     {
-        ilo = daeSafeCast< domInputLocalOffset >( retVal->add( "input" ) );
+        ilo = daeSafeCast< domInputLocalOffset >( retVal->add(COLLADA_ELEMENT_INPUT));
         ilo->setOffset( offset++ );
-        ilo->setSemantic( "COLOR" );
+        ilo->setSemantic(COMMON_PROFILE_INPUT_COLOR);
         url = "#" + std::string( color->getId() );
         ilo->setSource( url.c_str() );
     }
     for ( unsigned int i = 0; i < texcoord.size(); i++ )
     {
-        ilo = daeSafeCast< domInputLocalOffset >( retVal->add( "input" ) );
+        ilo = daeSafeCast< domInputLocalOffset >( retVal->add(COLLADA_ELEMENT_INPUT));
         ilo->setOffset( offset++ );
-        ilo->setSemantic( "TEXCOORD" );
+        ilo->setSemantic(COMMON_PROFILE_INPUT_TEXCOORD);
         ilo->setSet( i );
         url = "#" + std::string( texcoord[i]->getId() );
         ilo->setSource( url.c_str() );

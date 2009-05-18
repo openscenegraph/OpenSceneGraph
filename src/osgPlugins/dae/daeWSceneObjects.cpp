@@ -353,22 +353,129 @@ void daeWriter::apply( osg::LightSource &node )
 {
     debugPrint( node );
 
-    domInstance_light *il = daeSafeCast< domInstance_light >( currentNode->add( "instance_light" ) );
+    domInstance_light *pDomInstanceLight = daeSafeCast< domInstance_light >( currentNode->add(COLLADA_ELEMENT_INSTANCE_LIGHT));
     std::string name = node.getName();
     if ( name.empty() )
     {
         name = uniquify( "light" );
     }
     std::string url = "#" + name;
-    il->setUrl( url.c_str() );
+    pDomInstanceLight->setUrl( url.c_str() );
 
     if ( lib_lights == NULL )
     {
         lib_lights = daeSafeCast< domLibrary_lights >( dom->add( COLLADA_ELEMENT_LIBRARY_LIGHTS ) );
     }
-    domLight *light = daeSafeCast< domLight >( lib_lights->add( COLLADA_ELEMENT_LIGHT ) );
-    light->setId( name.c_str() );
     
+    osg::Light* pOsgLight = node.getLight();
+
+    domLight *pDomLight = daeSafeCast< domLight >( lib_lights->add( COLLADA_ELEMENT_LIGHT ) );
+    pDomLight->setId( name.c_str() );
+
+    domLight::domTechnique_common *domTechniqueCommon = daeSafeCast<domLight::domTechnique_common>(pDomLight->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
+
+    osg::Vec4 position = pOsgLight->getPosition();
+    osg::Vec3 direction = pOsgLight->getDirection();
+    osg::Vec4 ambientColor = pOsgLight->getAmbient();
+    osg::Vec4 diffuseColor = pOsgLight->getDiffuse();
+    osg::Vec4 specularColor = pOsgLight->getSpecular();
+
+    if (position.w() == 0)
+    {
+        // Directional light
+        domLight::domTechnique_common::domDirectional *domDirectional = daeSafeCast<domLight::domTechnique_common::domDirectional>(domTechniqueCommon->add(COLLADA_ELEMENT_DIRECTIONAL));
+
+        if ((position.x() != 0) || (position.y() != 0) || (position.z() != 0))
+        {
+            osg::Vec3 dir(-position.x(), -position.y(), -position.z());
+            // TODO wrap instance_light in a rotating node to translate default light [0,0,-1] into proper direction
+        }
+
+        domFloat3 color;
+        color.append3(diffuseColor.r(), diffuseColor.g(), diffuseColor.b());
+        domDirectional->add(COLLADA_ELEMENT_COLOR);
+        domDirectional->getColor()->setValue(color);
+    }
+    else if (direction.length() == 0)
+    {
+        // Omni/point light
+        domLight::domTechnique_common::domPoint *domPoint = daeSafeCast<domLight::domTechnique_common::domPoint>(domTechniqueCommon->add(COLLADA_ELEMENT_POINT));
+        domPoint->add(COLLADA_ELEMENT_CONSTANT_ATTENUATION);
+        domPoint->getConstant_attenuation()->setValue(pOsgLight->getConstantAttenuation());
+        domPoint->add(COLLADA_ELEMENT_LINEAR_ATTENUATION);
+        domPoint->getLinear_attenuation()->setValue(pOsgLight->getLinearAttenuation());
+        domPoint->add(COLLADA_ELEMENT_QUADRATIC_ATTENUATION);
+        domPoint->getQuadratic_attenuation()->setValue(pOsgLight->getQuadraticAttenuation());
+        
+        if ((position.x() != 0) || (position.y() != 0) || (position.z() != 0))
+        {
+            // TODO wrap instance_light in a transforming node to translate default light [0,0,0] into proper position
+        }
+
+        domFloat3 color;
+        color.append3(diffuseColor.r(), diffuseColor.g(), diffuseColor.b());
+        domPoint->add(COLLADA_ELEMENT_COLOR);
+        domPoint->getColor()->setValue(color);
+    }
+    else
+    {
+        // Spot light
+        domLight::domTechnique_common::domSpot *domSpot = daeSafeCast<domLight::domTechnique_common::domSpot>(domTechniqueCommon->add(COLLADA_ELEMENT_SPOT));
+        domSpot->add(COLLADA_ELEMENT_CONSTANT_ATTENUATION);
+        domSpot->getConstant_attenuation()->setValue(pOsgLight->getConstantAttenuation());
+        domSpot->add(COLLADA_ELEMENT_LINEAR_ATTENUATION);
+        domSpot->getLinear_attenuation()->setValue(pOsgLight->getLinearAttenuation());
+        domSpot->add(COLLADA_ELEMENT_QUADRATIC_ATTENUATION);
+        domSpot->getQuadratic_attenuation()->setValue(pOsgLight->getQuadraticAttenuation());
+
+        if ((position.x() != 0) || (position.y() != 0) || (position.z() != 0))
+        {
+            // TODO wrap instance_light in a transforming node to translate default light [0,0,0] into proper position
+            // and rotate default direction [0,0,-1] into proper dir
+        }
+
+        domFloat3 color;
+        color.append3(diffuseColor.r(), diffuseColor.g(), diffuseColor.b());
+        domSpot->add(COLLADA_ELEMENT_COLOR);
+        domSpot->getColor()->setValue(color);
+
+        domSpot->add(COLLADA_ELEMENT_FALLOFF_ANGLE);
+        domSpot->getFalloff_angle()->setValue(pOsgLight->getSpotCutoff());
+
+        domSpot->add(COLLADA_ELEMENT_FALLOFF_EXPONENT);
+        domSpot->getFalloff_exponent()->setValue(pOsgLight->getSpotExponent());
+    }
+
+    // Write ambient as a separate Collada <ambient> light
+    if ((ambientColor.r() != 0) || (ambientColor.g() != 0) || (ambientColor.b() != 0))
+    {
+        domInstance_light *ambientDomInstanceLight = daeSafeCast< domInstance_light >(currentNode->add( COLLADA_ELEMENT_INSTANCE_LIGHT ));
+        std::string name = node.getName();
+        if (name.empty())
+        {
+            name = uniquify( "light-ambient" );
+        }
+        else
+        {
+            name += "-ambient";
+        }
+        std::string url = "#" + name;
+        ambientDomInstanceLight->setUrl( url.c_str() );
+
+        domLight *ambientDomLight = daeSafeCast< domLight >( lib_lights->add( COLLADA_ELEMENT_LIGHT ) );
+        ambientDomLight->setId(name.c_str());
+        
+        domLight::domTechnique_common *ambientDomTechniqueCommon = daeSafeCast<domLight::domTechnique_common>(ambientDomLight->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
+
+        // Ambient light
+        domLight::domTechnique_common::domAmbient *domAmbient = daeSafeCast<domLight::domTechnique_common::domAmbient>(ambientDomTechniqueCommon->add(COLLADA_ELEMENT_AMBIENT));
+
+        domFloat3 color;
+        color.append3(ambientColor.r(), ambientColor.g(), ambientColor.b());
+        domAmbient->add(COLLADA_ELEMENT_COLOR);
+        domAmbient->getColor()->setValue(color);
+    }
+   
     traverse( node );
 }
 
@@ -376,7 +483,7 @@ void daeWriter::apply( osg::Camera &node )
 {
     debugPrint( node );
 
-    domInstance_camera *ic = daeSafeCast< domInstance_camera >( currentNode->add( "instance_camera" ) );
+    domInstance_camera *ic = daeSafeCast< domInstance_camera >( currentNode->add( COLLADA_ELEMENT_INSTANCE_CAMERA ) );
     std::string name = node.getName();
     if ( name.empty() )
     {
@@ -399,7 +506,7 @@ void daeWriter::apply( osg::CameraView &node)
 {
     debugPrint( node );
 
-    domInstance_camera *ic = daeSafeCast< domInstance_camera >( currentNode->add( "instance_camera" ) );
+    domInstance_camera *ic = daeSafeCast< domInstance_camera >( currentNode->add(COLLADA_ELEMENT_INSTANCE_CAMERA));
     std::string name = node.getName();
     if ( name.empty() )
     {

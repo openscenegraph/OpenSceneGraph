@@ -57,12 +57,12 @@ daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons, 
     dae->getDatabase()->createDocument( fileURI.c_str(), &doc );
     dom = (domCOLLADA*)doc->getDomRoot();
     //create scene and instance visual scene
-    domCOLLADA::domScene *scene = daeSafeCast< domCOLLADA::domScene >( dom->add( COLLADA_ELEMENT_SCENE ) );
-    domInstanceWithExtra *ivs = daeSafeCast< domInstanceWithExtra >( scene->add( "instance_visual_scene" ) );
+    domCOLLADA::domScene *scene = daeSafeCast< domCOLLADA::domScene >( dom->add(COLLADA_ELEMENT_SCENE));
+    domInstanceWithExtra *ivs = daeSafeCast< domInstanceWithExtra >( scene->add(COLLADA_ELEMENT_INSTANCE_VISUAL_SCENE));
     ivs->setUrl( "#defaultScene" );
     //create library visual scenes and a visual scene and the root node
-    lib_vis_scenes = daeSafeCast<domLibrary_visual_scenes>( dom->add( COLLADA_ELEMENT_LIBRARY_VISUAL_SCENES ) );
-    vs = daeSafeCast< domVisual_scene >( lib_vis_scenes->add( COLLADA_ELEMENT_VISUAL_SCENE ) );
+    lib_vis_scenes = daeSafeCast<domLibrary_visual_scenes>( dom->add(COLLADA_ELEMENT_LIBRARY_VISUAL_SCENES));
+    vs = daeSafeCast< domVisual_scene >( lib_vis_scenes->add(COLLADA_ELEMENT_VISUAL_SCENE));
     vs->setId( "defaultScene" );
     currentNode = daeSafeCast< domNode >( vs->add( COLLADA_ELEMENT_NODE ) );
     currentNode->setId( "sceneRoot" );
@@ -156,9 +156,9 @@ std::string daeWriter::uniquify( const std::string &name )
 void daeWriter::createAssetTag()
 {
     domAsset *asset = daeSafeCast< domAsset >(dom->add( COLLADA_ELEMENT_ASSET ) );
-    domAsset::domCreated *c = daeSafeCast< domAsset::domCreated >(asset->add("created" ));
-    domAsset::domModified *m = daeSafeCast< domAsset::domModified >(asset->add("modified" ));
-    domAsset::domUnit *u = daeSafeCast< domAsset::domUnit >(asset->add("unit"));
+    domAsset::domCreated *c = daeSafeCast< domAsset::domCreated >(asset->add(COLLADA_ELEMENT_CREATED));
+    domAsset::domModified *m = daeSafeCast< domAsset::domModified >(asset->add(COLLADA_ELEMENT_MODIFIED));
+    domAsset::domUnit *u = daeSafeCast< domAsset::domUnit >(asset->add(COLLADA_ELEMENT_UNIT));
 
     //TODO : set date and time
     c->setValue( "2006-07-25T00:00:00Z" );

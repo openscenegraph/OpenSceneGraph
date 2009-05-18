@@ -275,12 +275,12 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_Method1(void, setEventType, IN, osgGA::GUIEventAdapter::EventType, Type,
 	          Properties::NON_VIRTUAL,
 	          __void__setEventType__EventType,
-	          "Get the Type of the GUI GUIEventAdapter. ",
+	          "set the event type. ",
 	          "");
 	I_Method0(osgGA::GUIEventAdapter::EventType, getEventType,
 	          Properties::VIRTUAL,
 	          __EventType__getEventType,
-	          "Get the Type of the GUI GUIEventAdapter. ",
+	          "get the event type. ",
 	          "");
 	I_Method1(void, setTime, IN, double, time,
 	          Properties::NON_VIRTUAL,
@@ -375,7 +375,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_Method0(float, getYmax,
 	          Properties::NON_VIRTUAL,
 	          __float__getYmax,
-	          "get mouse maYimum y. ",
+	          "get mouse maximum y. ",
 	          "");
 	I_Method1(void, setX, IN, float, x,
 	          Properties::NON_VIRTUAL,
@@ -397,125 +397,125 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	          __float__getY,
 	          "get current mouse y position. ",
 	          "");
-	I_Method1(void, setButtonMask, IN, unsigned int, mask,
-	          Properties::NON_VIRTUAL,
-	          __void__setButtonMask__unsigned_int,
-	          "set current mouse button state ",
-	          "");
-	I_Method0(unsigned int, getButtonMask,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getButtonMask,
-	          "get current mouse button state ",
-	          "");
-	I_Method1(void, setModKeyMask, IN, unsigned int, mask,
-	          Properties::NON_VIRTUAL,
-	          __void__setModKeyMask__unsigned_int,
-	          "",
-	          "");
-	I_Method0(unsigned int, getModKeyMask,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getModKeyMask,
-	          "",
-	          "");
-	I_Method0(float, getPenPressure,
-	          Properties::NON_VIRTUAL,
-	          __float__getPenPressure,
-	          "get the pressure, from a tablet input device (range 0 - 1) ",
-	          "");
-	I_Method1(void, setPenPressure, IN, float, pressure,
-	          Properties::NON_VIRTUAL,
-	          __void__setPenPressure__float,
-	          "sets the pressure from a tablet ",
-	          "");
-	I_Method0(float, getPenTiltX,
-	          Properties::NON_VIRTUAL,
-	          __float__getPenTiltX,
-	          "get the tiltX, from a tablet input device (range -1 - 1) ",
-	          "");
-	I_Method1(void, setPenTiltX, IN, float, tiltX,
-	          Properties::NON_VIRTUAL,
-	          __void__setPenTiltX__float,
-	          "sets the tiltX from a tablet ",
-	          "");
-	I_Method0(float, getPenTiltY,
-	          Properties::NON_VIRTUAL,
-	          __float__getPenTiltY,
-	          "get the tiltY, from a tablet input device (range -1 - 1) ",
-	          "");
-	I_Method1(void, setPenTiltY, IN, float, tiltY,
-	          Properties::NON_VIRTUAL,
-	          __void__setPenTiltY__float,
-	          "sets the tiltY from a tablet ",
-	          "");
-	I_Method0(float, getPenRotation,
-	          Properties::NON_VIRTUAL,
-	          __float__getPenRotation,
-	          "get the rotation, from a tablet input device (range 0 - 2PI) ",
-	          "");
-	I_Method1(void, setPenRotation, IN, float, rotation,
-	          Properties::NON_VIRTUAL,
-	          __void__setPenRotation__float,
-	          "sets the rotation from a tablet ",
-	          "");
-	I_Method0(const osg::Matrix, getPenOrientation,
-	          Properties::NON_VIRTUAL,
-	          __C5_osg_Matrix__getPenOrientation,
-	          "get the orientation from a tablet input device as a matrix ",
-	          "");
-	I_Method0(osgGA::GUIEventAdapter::TabletPointerType, getTabletPointerType,
-	          Properties::NON_VIRTUAL,
-	          __TabletPointerType__getTabletPointerType,
-	          "get the current used tablet pointer type ",
-	          "");
-	I_Method1(void, setTabletPointerType, IN, osgGA::GUIEventAdapter::TabletPointerType, pt,
-	          Properties::NON_VIRTUAL,
-	          __void__setTabletPointerType__TabletPointerType,
-	          "set the current used tablet pointer type ",
-	          "");
-	I_Method1(void, setScrollingMotion, IN, osgGA::GUIEventAdapter::ScrollingMotion, motion,
-	          Properties::NON_VIRTUAL,
-	          __void__setScrollingMotion__ScrollingMotion,
-	          "",
-	          "");
-	I_Method0(float, getScrollingDeltaX,
-	          Properties::NON_VIRTUAL,
-	          __float__getScrollingDeltaX,
-	          "get the scrolling x-delta ",
-	          "");
-	I_Method0(float, getScrollingDeltaY,
-	          Properties::NON_VIRTUAL,
-	          __float__getScrollingDeltaY,
-	          "get the scrolling y-delta ",
-	          "");
-	I_Method2(void, setScrollingMotionDelta, IN, float, x, IN, float, y,
-	          Properties::NON_VIRTUAL,
-	          __void__setScrollingMotionDelta__float__float,
-	          "sets the scrolling delta to x,y and the type of scrolling to SCROLL_2D ",
-	          "");
-	I_Method0(osgGA::GUIEventAdapter::ScrollingMotion, getScrollingMotion,
-	          Properties::NON_VIRTUAL,
-	          __ScrollingMotion__getScrollingMotion,
-	          "",
-	          "");
 	I_Method0(float, getXnormalized,
 	          Properties::NON_VIRTUAL,
 	          __float__getXnormalized,
-	          "return the getX() value normalized to the range of -1 to 1. ",
+	          "return the current mouse x value normalized to the range of -1 to 1. ",
 	          "-1 would be the left hand side of the window. 0.0 would be the middle of the window. +1 would be the right hand side of the window. ");
 	I_Method0(float, getYnormalized,
 	          Properties::NON_VIRTUAL,
 	          __float__getYnormalized,
-	          "return the getY() value normalized to the range of -1 to 1. ",
+	          "return the current mouse y value normalized to the range of -1 to 1. ",
 	          "-1 would be the bottom of the window. 0.0 would be the middle of the window. +1 would be the top of the window. ");
 	I_Method1(void, setMouseYOrientation, IN, osgGA::GUIEventAdapter::MouseYOrientation, myo,
 	          Properties::NON_VIRTUAL,
 	          __void__setMouseYOrientation__MouseYOrientation,
-	          "",
+	          "set mouse-Y orientation (mouse-Y increases upwards or downwards). ",
 	          "");
 	I_Method0(osgGA::GUIEventAdapter::MouseYOrientation, getMouseYOrientation,
 	          Properties::NON_VIRTUAL,
 	          __MouseYOrientation__getMouseYOrientation,
-	          "",
+	          "get mouse-Y orientation (mouse-Y increases upwards or downwards). ",
+	          "");
+	I_Method1(void, setButtonMask, IN, unsigned int, mask,
+	          Properties::NON_VIRTUAL,
+	          __void__setButtonMask__unsigned_int,
+	          "set current mouse button state. ",
+	          "");
+	I_Method0(unsigned int, getButtonMask,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getButtonMask,
+	          "get current mouse button state. ",
+	          "");
+	I_Method1(void, setModKeyMask, IN, unsigned int, mask,
+	          Properties::NON_VIRTUAL,
+	          __void__setModKeyMask__unsigned_int,
+	          "set modifier key mask. ",
+	          "");
+	I_Method0(unsigned int, getModKeyMask,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getModKeyMask,
+	          "get modifier key mask. ",
+	          "");
+	I_Method1(void, setScrollingMotion, IN, osgGA::GUIEventAdapter::ScrollingMotion, motion,
+	          Properties::NON_VIRTUAL,
+	          __void__setScrollingMotion__ScrollingMotion,
+	          "set scrolling motion (for EventType::SCROLL). ",
+	          "");
+	I_Method0(osgGA::GUIEventAdapter::ScrollingMotion, getScrollingMotion,
+	          Properties::NON_VIRTUAL,
+	          __ScrollingMotion__getScrollingMotion,
+	          "get scrolling motion (for EventType::SCROLL). ",
+	          "");
+	I_Method2(void, setScrollingMotionDelta, IN, float, x, IN, float, y,
+	          Properties::NON_VIRTUAL,
+	          __void__setScrollingMotionDelta__float__float,
+	          "set the scrolling delta to x,y and the scrolling motion to SCROLL_2D. ",
+	          "");
+	I_Method0(float, getScrollingDeltaX,
+	          Properties::NON_VIRTUAL,
+	          __float__getScrollingDeltaX,
+	          "get the scrolling x-delta. ",
+	          "");
+	I_Method0(float, getScrollingDeltaY,
+	          Properties::NON_VIRTUAL,
+	          __float__getScrollingDeltaY,
+	          "get the scrolling y-delta. ",
+	          "");
+	I_Method1(void, setPenPressure, IN, float, pressure,
+	          Properties::NON_VIRTUAL,
+	          __void__setPenPressure__float,
+	          "set the tablet pen pressure (range 0..1). ",
+	          "");
+	I_Method0(float, getPenPressure,
+	          Properties::NON_VIRTUAL,
+	          __float__getPenPressure,
+	          "get the tablet pen pressure (range 0..1). ",
+	          "");
+	I_Method1(void, setPenTiltX, IN, float, tiltX,
+	          Properties::NON_VIRTUAL,
+	          __void__setPenTiltX__float,
+	          "set the tablet pen tiltX in degrees. ",
+	          "");
+	I_Method0(float, getPenTiltX,
+	          Properties::NON_VIRTUAL,
+	          __float__getPenTiltX,
+	          "get the tablet pen tiltX in degrees. ",
+	          "");
+	I_Method1(void, setPenTiltY, IN, float, tiltY,
+	          Properties::NON_VIRTUAL,
+	          __void__setPenTiltY__float,
+	          "set the tablet pen tiltY in degrees. ",
+	          "");
+	I_Method0(float, getPenTiltY,
+	          Properties::NON_VIRTUAL,
+	          __float__getPenTiltY,
+	          "get the tablet pen tiltY in degrees. ",
+	          "");
+	I_Method1(void, setPenRotation, IN, float, rotation,
+	          Properties::NON_VIRTUAL,
+	          __void__setPenRotation__float,
+	          "set the tablet pen rotation around the Z-axis in degrees. ",
+	          "");
+	I_Method0(float, getPenRotation,
+	          Properties::NON_VIRTUAL,
+	          __float__getPenRotation,
+	          "get the tablet pen rotation around the Z-axis in degrees. ",
+	          "");
+	I_Method1(void, setTabletPointerType, IN, osgGA::GUIEventAdapter::TabletPointerType, pt,
+	          Properties::NON_VIRTUAL,
+	          __void__setTabletPointerType__TabletPointerType,
+	          "set the tablet pointer type. ",
+	          "");
+	I_Method0(osgGA::GUIEventAdapter::TabletPointerType, getTabletPointerType,
+	          Properties::NON_VIRTUAL,
+	          __TabletPointerType__getTabletPointerType,
+	          "get the tablet pointer type. ",
+	          "");
+	I_Method0(const osg::Matrix, getPenOrientation,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Matrix__getPenOrientation,
+	          "set the orientation from a tablet input device as a matrix. ",
 	          "");
 	I_StaticMethod0(osg::ref_ptr< osgGA::GUIEventAdapter > &, getAccumulatedEventState,
 	                __osg_ref_ptrT1_GUIEventAdapter__R1__getAccumulatedEventState_S,

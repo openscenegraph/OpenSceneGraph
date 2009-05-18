@@ -224,6 +224,7 @@ protected:
 protected:
     DAE *dae;
     osg::Node* rootNode;
+    osg::ref_ptr<osg::StateSet> _rootStateSet;
 
     std::map<std::string,bool> _targetMap;
 

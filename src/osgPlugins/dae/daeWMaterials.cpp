@@ -34,7 +34,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
 {
     osg::ref_ptr<osg::StateSet> ssClean = CleanStateSet(ss); // Need to hold a ref to this or the materialMap.find() will delete it
     domBind_material *bm = daeSafeCast< domBind_material >( ig->add( COLLADA_ELEMENT_BIND_MATERIAL ) );
-    domBind_material::domTechnique_common *tc = daeSafeCast< domBind_material::domTechnique_common >( bm->add( "technique_common" ) );
+    domBind_material::domTechnique_common *tc = daeSafeCast< domBind_material::domTechnique_common >( bm->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
     domInstance_material *im = daeSafeCast< domInstance_material >( tc->add( COLLADA_ELEMENT_INSTANCE_MATERIAL ) );
     std::string symbol = geoName + "_material";
     im->setSymbol( symbol.c_str() );
@@ -65,7 +65,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
     std::string url = "#" + name;
     im->setTarget( url.c_str() );
 
-    domInstance_effect *ie = daeSafeCast<domInstance_effect>( mat->add( "instance_effect" ) );
+    domInstance_effect *ie = daeSafeCast<domInstance_effect>( mat->add( COLLADA_ELEMENT_INSTANCE_EFFECT ) );
 
     if ( lib_effects == NULL )
     {
@@ -80,9 +80,9 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
     ie->setUrl( url.c_str() );
 
     domProfile_COMMON *pc = daeSafeCast< domProfile_COMMON >( effect->add( COLLADA_ELEMENT_PROFILE_COMMON ) );
-    domProfile_COMMON::domTechnique *pc_teq = daeSafeCast< domProfile_COMMON::domTechnique >( pc->add( "technique" ) );
+    domProfile_COMMON::domTechnique *pc_teq = daeSafeCast< domProfile_COMMON::domTechnique >( pc->add( COLLADA_ELEMENT_TECHNIQUE ) );
     pc_teq->setSid( "t0" );
-    domProfile_COMMON::domTechnique::domPhong *phong = daeSafeCast< domProfile_COMMON::domTechnique::domPhong >( pc_teq->add( "phong" ) );
+    domProfile_COMMON::domTechnique::domPhong *phong = daeSafeCast< domProfile_COMMON::domTechnique::domPhong >( pc_teq->add(COLLADA_ELEMENT_PHONG));
 
     osg::Texture *tex = static_cast<osg::Texture*>(ssClean->getTextureAttribute( 0, osg::StateAttribute::TEXTURE ));
     if ( ssClean->getTextureAttribute( 1, osg::StateAttribute::TEXTURE ) != NULL )
@@ -97,7 +97,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         img->setId( iName.c_str() );
 
         osg::Image *osgimg = tex->getImage( 0 );
-        domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->add( "init_from" ) );
+        domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->add(COLLADA_ELEMENT_INIT_FROM));
         std::string fileURI = ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(osgDB::findDataFile(osgimg->getFileName()));
        daeURI dd(*dae, fileURI);//fileURI.c_str() );
         imgif->setValue( dd );
@@ -105,23 +105,23 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         imgif->getValue().makeRelativeTo(doc->getDocumentURI());
 
 #ifndef EARTH_TEX
-        domCommon_newparam_type *np = daeSafeCast< domCommon_newparam_type >( pc->add( "newparam" ) );
+        domCommon_newparam_type *np = daeSafeCast< domCommon_newparam_type >(pc->add(COLLADA_ELEMENT_NEWPARAM));
         std::string surfName = efName + "-surface";
         np->setSid( surfName.c_str() );
-        domFx_surface_common *surface = daeSafeCast< domFx_surface_common >( np->add( "surface" ) );
-        domFx_surface_init_from_common *sif = daeSafeCast< domFx_surface_init_from_common >( surface->add("init_from") );
+        domFx_surface_common *surface = daeSafeCast< domFx_surface_common >(np->add(COLLADA_ELEMENT_SURFACE));
+        domFx_surface_init_from_common *sif = daeSafeCast< domFx_surface_init_from_common >( surface->add(COLLADA_ELEMENT_INIT_FROM));
         sif->setValue( iName.c_str() );
         surface->setType( FX_SURFACE_TYPE_ENUM_2D );
 
-        np = daeSafeCast< domCommon_newparam_type >( pc->add( "newparam" ) );
+        np = daeSafeCast< domCommon_newparam_type >( pc->add(COLLADA_ELEMENT_NEWPARAM));
         std::string sampName = efName + "-sampler";
         np->setSid( sampName.c_str() );
-        domFx_sampler2D_common *sampler = daeSafeCast< domFx_sampler2D_common >( np->add( "sampler2D" ) );
-        domFx_sampler2D_common_complexType::domSource *source = daeSafeCast< domFx_sampler2D_common_complexType::domSource >( sampler->add( "source" ) );
+        domFx_sampler2D_common *sampler = daeSafeCast< domFx_sampler2D_common >( np->add(COLLADA_ELEMENT_SAMPLER2D) );
+        domFx_sampler2D_common_complexType::domSource *source = daeSafeCast< domFx_sampler2D_common_complexType::domSource >(sampler->add(COLLADA_ELEMENT_SOURCE));
         source->setValue( surfName.c_str() ); 
 
         //set sampler state
-        domFx_sampler2D_common_complexType::domWrap_s *wrap_s = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_s >( sampler->add( "wrap_s" ) );
+        domFx_sampler2D_common_complexType::domWrap_s *wrap_s = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_s >(sampler->add(COLLADA_ELEMENT_WRAP_S));
         osg::Texture::WrapMode wrap = tex->getWrap( osg::Texture::WRAP_S );
         switch( wrap ) 
         {
@@ -143,7 +143,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
             break;
         }
 
-        domFx_sampler2D_common_complexType::domWrap_t *wrap_t = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_t >( sampler->add( "wrap_t" ) );
+        domFx_sampler2D_common_complexType::domWrap_t *wrap_t = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_t >(sampler->add( COLLADA_ELEMENT_WRAP_T));
         wrap = tex->getWrap( osg::Texture::WRAP_T );
         switch( wrap ) 
         {
@@ -166,13 +166,13 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         }
 
         const osg::Vec4 &bcol = tex->getBorderColor();
-        domFx_sampler2D_common_complexType::domBorder_color *dbcol = daeSafeCast< domFx_sampler2D_common_complexType::domBorder_color >( sampler->add( "border_color" ) );
+        domFx_sampler2D_common_complexType::domBorder_color *dbcol = daeSafeCast< domFx_sampler2D_common_complexType::domBorder_color >(sampler->add(COLLADA_ELEMENT_BORDER_COLOR));
         dbcol->getValue().append( bcol.r() );
         dbcol->getValue().append( bcol.g() );
         dbcol->getValue().append( bcol.b() );
         dbcol->getValue().append( bcol.a() );
 
-        domFx_sampler2D_common_complexType::domMinfilter *minfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMinfilter >( sampler->add( "minfilter" ) );
+        domFx_sampler2D_common_complexType::domMinfilter *minfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMinfilter >(sampler->add(COLLADA_ELEMENT_MINFILTER));
         osg::Texture::FilterMode mode = tex->getFilter( osg::Texture::MIN_FILTER );
         switch( mode )
         {
@@ -196,7 +196,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
             break;
         }
 
-        domFx_sampler2D_common_complexType::domMagfilter *magfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMagfilter >( sampler->add( "magfilter" ) );
+        domFx_sampler2D_common_complexType::domMagfilter *magfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMagfilter >(sampler->add(COLLADA_ELEMENT_MAGFILTER));
         mode = tex->getFilter( osg::Texture::MAG_FILTER );
         switch( mode )
         {
@@ -221,18 +221,18 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         }
 
 
-        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( "diffuse" ) );
-        domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( cot->add( "texture" ) );
+        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_DIFFUSE) );
+        domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >(cot->add(COLLADA_ELEMENT_TEXTURE));
         dtex->setTexture( sampName.c_str() );
         dtex->setTexcoord( "texcoord0" );
 #else
-        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( "diffuse" ) );
-        domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( cot->add( "texture" ) );
+        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_DIFFUSE) );
+        domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( cot->add(COLLADA_ELEMENT_TEXTURE));
         dtex->setTexture( iName.c_str() );
         dtex->setTexcoord( "texcoord0" );
 #endif
 
-        domInstance_material::domBind_vertex_input *bvi = daeSafeCast< domInstance_material::domBind_vertex_input >( im->add( "bind_vertex_input" ) );
+        domInstance_material::domBind_vertex_input *bvi = daeSafeCast< domInstance_material::domBind_vertex_input >(im->add(COLLADA_ELEMENT_BIND_VERTEX_INPUT));
         bvi->setSemantic( "texcoord0" );
         bvi->setInput_semantic( "TEXCOORD" );
         bvi->setInput_set( 0 );
@@ -246,15 +246,15 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         const osg::Vec4 &sCol = osgmat->getSpecularFrontAndBack()?osgmat->getSpecular( osg::Material::FRONT_AND_BACK ):osgmat->getSpecular( osg::Material::FRONT );
         float shininess = osgmat->getShininessFrontAndBack()?osgmat->getShininess( osg::Material::FRONT_AND_BACK ):osgmat->getShininess( osg::Material::FRONT );
         
-        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( "emission" ) );
-        domCommon_color_or_texture_type_complexType::domColor *col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add( "color" ) );
+        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_EMISSION));
+        domCommon_color_or_texture_type_complexType::domColor *col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add(COLLADA_ELEMENT_COLOR));
         col->getValue().append( eCol.r() );
         col->getValue().append( eCol.g() );
         col->getValue().append( eCol.b() );
         col->getValue().append( eCol.a() );
 
-        cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( "ambient" ) );
-        col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add( "color" ) );
+        cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_AMBIENT));
+        col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >(cot->add(COLLADA_ELEMENT_COLOR));
         col->getValue().append( aCol.r() );
         col->getValue().append( aCol.g() );
         col->getValue().append( aCol.b() );
@@ -264,8 +264,8 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         //### check if we really have a texture
         if ( phong->getDiffuse() == NULL )
         {
-            cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( "diffuse" ) );
-            col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add( "color" ) );
+            cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_DIFFUSE));
+            col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add(COLLADA_ELEMENT_COLOR));
             col->getValue().append( dCol.r() );
             col->getValue().append( dCol.g() );
             col->getValue().append( dCol.b() );
@@ -290,7 +290,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
                 extra->setType( "color" );
                 domTechnique *teq = daeSafeCast< domTechnique >( extra->add( COLLADA_ELEMENT_TECHNIQUE ) );
                 teq->setProfile( "SCEI" );
-                domAny *any = (domAny*)(daeElement*)teq->add( "color" );
+                domAny *any = (domAny*)(daeElement*)teq->add(COLLADA_ELEMENT_COLOR);
 
                 std::ostringstream colVal;
                 colVal << dCol.r() << " " << dCol.g() << " " << dCol.b() << " " << dCol.a();
@@ -298,15 +298,15 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
             }
         }
 
-        cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( "specular" ) );
-        col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add( "color" ) );
+        cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_SPECULAR));
+        col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add(COLLADA_ELEMENT_COLOR));
         col->getValue().append( sCol.r() );
         col->getValue().append( sCol.g() );
         col->getValue().append( sCol.b() );
         col->getValue().append( sCol.a() );
 
-        domCommon_float_or_param_type *fop = daeSafeCast< domCommon_float_or_param_type >( phong->add( "shininess" ) );
-        domCommon_float_or_param_type_complexType::domFloat *f = daeSafeCast< domCommon_float_or_param_type_complexType::domFloat >( fop->add( "float" ) );
+        domCommon_float_or_param_type *fop = daeSafeCast< domCommon_float_or_param_type >( phong->add(COLLADA_ELEMENT_SHININESS));
+        domCommon_float_or_param_type_complexType::domFloat *f = daeSafeCast< domCommon_float_or_param_type_complexType::domFloat >( fop->add(COLLADA_ELEMENT_FLOAT));
         f->setValue( shininess );
     }
 
@@ -323,11 +323,11 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
                 if ((GL_CONSTANT_ALPHA == pBlendFunc->getSource()) && (GL_ONE_MINUS_CONSTANT_ALPHA == pBlendFunc->getDestination()))
                 {
                     // A_ONE opaque mode
-                    domCommon_transparent_type *pTransparent = daeSafeCast<domCommon_transparent_type>(phong->add("transparent"));
+                    domCommon_transparent_type *pTransparent = daeSafeCast<domCommon_transparent_type>(phong->add(COLLADA_ELEMENT_TRANSPARENT));
                     pTransparent->setOpaque(FX_OPAQUE_ENUM_A_ONE);
-                    domCommon_color_or_texture_type_complexType::domColor *pColor = daeSafeCast<domCommon_color_or_texture_type_complexType::domColor>(pTransparent->add("color"));
-                    domCommon_float_or_param_type *pFop = daeSafeCast<domCommon_float_or_param_type>(phong->add( "transparency"));
-                    domCommon_float_or_param_type_complexType::domFloat *pTransparency = daeSafeCast<domCommon_float_or_param_type_complexType::domFloat>(pFop->add("float"));
+                    domCommon_color_or_texture_type_complexType::domColor *pColor = daeSafeCast<domCommon_color_or_texture_type_complexType::domColor>(pTransparent->add(COLLADA_ELEMENT_COLOR));
+                    domCommon_float_or_param_type *pFop = daeSafeCast<domCommon_float_or_param_type>(phong->add(COLLADA_ELEMENT_TRANSPARENCY));
+                    domCommon_float_or_param_type_complexType::domFloat *pTransparency = daeSafeCast<domCommon_float_or_param_type_complexType::domFloat>(pFop->add(COLLADA_ELEMENT_FLOAT));
                     if (m_GoogleMode)
                     {
                         pColor->getValue().append(1.0);
@@ -348,15 +348,15 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
                 else if ((GL_ONE_MINUS_CONSTANT_COLOR == pBlendFunc->getSource()) && (GL_CONSTANT_COLOR == pBlendFunc->getDestination()))
                 {
                     // RGB_ZERO opaque mode
-                    domCommon_transparent_type *pTransparent = daeSafeCast<domCommon_transparent_type>(phong->add("transparent"));
+                    domCommon_transparent_type *pTransparent = daeSafeCast<domCommon_transparent_type>(phong->add(COLLADA_ELEMENT_TRANSPARENT));
                     pTransparent->setOpaque(FX_OPAQUE_ENUM_RGB_ZERO);
-                    domCommon_color_or_texture_type_complexType::domColor *pColor = daeSafeCast<domCommon_color_or_texture_type_complexType::domColor>(pTransparent->add("color"));
+                    domCommon_color_or_texture_type_complexType::domColor *pColor = daeSafeCast<domCommon_color_or_texture_type_complexType::domColor>(pTransparent->add(COLLADA_ELEMENT_COLOR));
                     pColor->getValue().append(pBlendColor->getConstantColor().r());
                     pColor->getValue().append(pBlendColor->getConstantColor().g());
                     pColor->getValue().append(pBlendColor->getConstantColor().b());
                     pColor->getValue().append(pBlendColor->getConstantColor().a());
-                    domCommon_float_or_param_type *pFop = daeSafeCast<domCommon_float_or_param_type>(phong->add( "transparency"));
-                    domCommon_float_or_param_type_complexType::domFloat *pTransparency = daeSafeCast<domCommon_float_or_param_type_complexType::domFloat>(pFop->add("float"));
+                    domCommon_float_or_param_type *pFop = daeSafeCast<domCommon_float_or_param_type>(phong->add(COLLADA_ELEMENT_TRANSPARENCY));
+                    domCommon_float_or_param_type_complexType::domFloat *pTransparency = daeSafeCast<domCommon_float_or_param_type_complexType::domFloat>(pFop->add(COLLADA_ELEMENT_FLOAT));
                     pTransparency->setValue(1.0);
                 }
                 else
@@ -364,9 +364,9 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
             }
             else if (tex != NULL && tex->getImage( 0 ) != NULL)
             {
-                domCommon_transparent_type *ctt = daeSafeCast< domCommon_transparent_type >( phong->add( "transparent" ) );
+                domCommon_transparent_type *ctt = daeSafeCast< domCommon_transparent_type >( phong->add(COLLADA_ELEMENT_TRANSPARENT));
                 ctt->setOpaque( FX_OPAQUE_ENUM_A_ONE );
-                domCommon_color_or_texture_type_complexType::domTexture * dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( ctt->add( "texture" ) );
+                domCommon_color_or_texture_type_complexType::domTexture * dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( ctt->add(COLLADA_ELEMENT_TEXTURE));
                 
     #ifndef EARTH_TEX
                 std::string sampName = efName + "-sampler";

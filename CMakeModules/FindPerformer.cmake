@@ -14,9 +14,6 @@ FIND_PATH(PERFORMER_INCLUDE_DIR Performer/pfdu.h
     $ENV{PFROOT}
     $ENV{PERFORMER_DIR}/include
     $ENV{PERFORMER_DIR}
-    $ENV{OSGDIR}/include
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/include
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/include
@@ -25,7 +22,6 @@ FIND_PATH(PERFORMER_INCLUDE_DIR Performer/pfdu.h
     /opt/local/include # DarwinPorts
     /opt/csw/include # Blastwave
     /opt/include
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
     /usr/freeware/include
 )
 
@@ -39,7 +35,6 @@ IF(MSVC)
         $ENV{PERFORMER_DIR}
         $ENV{OSGDIR}/lib
         $ENV{OSGDIR}
-        $ENV{OSG_ROOT}/lib
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local/lib
@@ -48,7 +43,6 @@ IF(MSVC)
         /opt/local/lib
         /opt/csw/lib
         /opt/lib
-        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
         /usr/freeware/lib64
     )
 ELSE(MSVC)
@@ -59,9 +53,6 @@ ELSE(MSVC)
         $ENV{PFROOT}
         $ENV{PERFORMER_DIR}/lib
         $ENV{PERFORMER_DIR}
-        $ENV{OSGDIR}/lib
-        $ENV{OSGDIR}
-        $ENV{OSG_ROOT}/lib
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local/lib
@@ -70,7 +61,6 @@ ELSE(MSVC)
         /opt/local/lib
         /opt/csw/lib
         /opt/lib
-        [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
         /usr/freeware/lib64
     )
 ENDIF(MSVC)

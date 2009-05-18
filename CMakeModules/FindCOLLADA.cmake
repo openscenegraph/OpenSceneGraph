@@ -30,9 +30,6 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     ${COLLADA_DOM_ROOT}/include
     $ENV{COLLADA_DIR}/include
     $ENV{COLLADA_DIR}
-    $ENV{OSGDIR}/include
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/include
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/include
@@ -43,7 +40,6 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     /opt/local/include # DarwinPorts
     /opt/csw/include # Blastwave
     /opt/include
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/include
     /usr/freeware/include
 )
 
@@ -55,9 +51,6 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY
     $ENV{COLLADA_DIR}/lib
     $ENV{COLLADA_DIR}/lib-dbg
     $ENV{COLLADA_DIR}
-    $ENV{OSGDIR}/lib
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/lib
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/lib
@@ -68,7 +61,6 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
     /usr/freeware/lib64
 )
 
@@ -80,9 +72,6 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG
     $ENV{COLLADA_DIR}/lib
     $ENV{COLLADA_DIR}/lib-dbg
     $ENV{COLLADA_DIR}
-    $ENV{OSGDIR}/lib
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/lib
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/lib
@@ -93,7 +82,6 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
     /usr/freeware/lib64
 )
 
@@ -105,9 +93,6 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY
     $ENV{COLLADA_DIR}/lib
     $ENV{COLLADA_DIR}/lib-dbg
     $ENV{COLLADA_DIR}
-    $ENV{OSGDIR}/lib
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/lib
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/lib
@@ -118,7 +103,6 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
     /usr/freeware/lib64
 )
 
@@ -130,9 +114,6 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     $ENV{COLLADA_DIR}/lib
     $ENV{COLLADA_DIR}/lib-dbg
     $ENV{COLLADA_DIR}
-    $ENV{OSGDIR}/lib
-    $ENV{OSGDIR}
-    $ENV{OSG_ROOT}/lib
     ~/Library/Frameworks
     /Library/Frameworks
     /usr/local/lib
@@ -143,7 +124,6 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     /opt/local/lib
     /opt/csw/lib
     /opt/lib
-    [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
     /usr/freeware/lib64
 )
 

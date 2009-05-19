@@ -261,7 +261,6 @@ Philipp Siemoleit
 Philipp Mächler
 Petr Salinger
 Paul Palumbo
-Paul Obermeier
 Paul Fredrikson
 Patrick Hartling
 Parag Chaudhur

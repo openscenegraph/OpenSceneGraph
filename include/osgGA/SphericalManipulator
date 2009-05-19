@@ -1,0 +1,144 @@
+
+#ifndef __SphericalManipulator_h__
+#define __SphericalManipulator_h__
+
+#include <osgGA/MatrixManipulator>
+#include <osg/Math>
+#include <osg/Quat>
+
+namespace osgGA
+{
+
+class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
+{
+    public:
+        SphericalManipulator();
+
+        virtual const char* className() const { return "Spherical Manipulator"; }
+
+        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        virtual void setByMatrix(const osg::Matrixd& matrix);
+
+        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        virtual void setByInverseMatrix(const osg::Matrixd& matrix) { setByMatrix(osg::Matrixd::inverse(matrix)); }
+
+        /** get the position of the manipulator as 4x4 Matrix.*/
+        virtual osg::Matrixd getMatrix() const;
+
+        /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
+        virtual osg::Matrixd getInverseMatrix() const;
+
+        /** Get the FusionDistanceMode. Used by SceneView for setting up stereo convergence.*/
+        virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE; }
+
+        /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
+        virtual float getFusionDistanceValue() const { return _distance; }
+
+        /** Attach a node to the manipulator.
+        Automatically detaches previously attached node.
+        setNode(NULL) detaches previously nodes.
+        Is ignored by manipulators which do not require a reference model.*/
+        virtual void setNode(osg::Node*);
+
+        /** Return node if attached.*/
+        virtual const osg::Node* getNode() const;
+
+        /** Return node if attached.*/
+        virtual osg::Node* getNode();
+
+        /** Move the camera to the default position.
+        May be ignored by manipulators if home functionality is not appropriate.*/
+        virtual void home(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us);
+        virtual void home(double);
+
+        /** Start/restart the manipulator.*/
+        virtual void init(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us);
+
+        void zoomOn(const osg::BoundingSphere& bound);
+
+        /** handle events, return true if handled, false otherwise.*/
+        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& us);
+
+        /** Compute the home position.*/
+        virtual void computeHomePosition();
+
+        void computeViewPosition(const osg::BoundingSphere& bound,double& scale,double& distance,osg::Vec3d& center);
+
+        const osg::Vec3d& getCenter() const {return _center;}
+        double getDistance() const { return _distance; }
+        double getHomeDistance() const { return _homeDistance; }
+        float getAzimuth() const {return _azimuth;}
+        float getZenith() const {return _zenith;}
+
+        /** get the minimum distance (as ratio) the eye point can be zoomed in */
+        double getMinimumZoomScale() const { return _minimumZoomScale; }
+
+        /** set the minimum distance (as ratio) the eye point can be zoomed in towards the
+            center before the center is pushed forward.*/        
+        void setMinimumZoomScale(double minimumZoomScale) {_minimumZoomScale=minimumZoomScale;}
+
+         /** set the mouse scroll wheel zoom delta.
+           * Range -1.0 to +1.0,  -ve value inverts wheel direction and zero switches off scroll wheel. */
+        void setScroolWheelZoomDelta(double zoomDelta) { _zoomDelta = zoomDelta; }
+
+        /** get the mouse scroll wheel zoom delta. */
+        double getScroolWheelZoomDelta() const { return _zoomDelta; }
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
+
+        void setCenter(const osg::Vec3d &center) {_center=center;}
+        bool setDistance(double distance);
+        void setAngles(float azimuth,float zenith);
+
+        enum RotationMode
+        {
+                MODE_3D=0,
+                MODE_3D_HORIZONTAL,
+                MODE_3D_VERTICAL,
+                MODE_2D
+        };
+
+        RotationMode getRotationMode() const {return _rotationMode;}
+        void setRotationMode(RotationMode mode);
+
+        static double computeAngles(const osg::Vec3d &vec,float& azimuth,float& zenith);
+
+    protected:
+
+        virtual ~SphericalManipulator();
+
+        /** Reset the internal GUIEvent stack.*/
+        void flushMouseEventStack();
+        /** Add the current mouse GUIEvent to internal stack.*/
+        void addMouseEvent(const osgGA::GUIEventAdapter& ea);
+
+        /** For the give mouse movement calculate the movement of the camera.
+        Return true is camera has moved and a redraw is required.*/
+        bool calcMovement();
+
+        /** Check the speed at which the mouse is moving.
+        If speed is below a threshold then return false, otherwise return true.*/
+        bool isMouseMoving();
+
+        // Internal event stack comprising last two mouse events.
+        osg::ref_ptr<const osgGA::GUIEventAdapter> _ga_t1;
+        osg::ref_ptr<const osgGA::GUIEventAdapter> _ga_t0;
+
+        osg::ref_ptr<osg::Node>       _node;
+
+        double _modelScale;
+        double _minimumZoomScale;
+
+        bool _thrown;
+
+        RotationMode _rotationMode;
+        osg::Vec3d   _center;
+        double       _distance;
+        float _azimuth;  // angle from x axis in xy plane
+        float _zenith;   // angle from z axis
+        double       _homeDistance;
+        float        _zoomDelta;
+};
+}
+#endif

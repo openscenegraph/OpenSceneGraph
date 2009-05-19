@@ -2474,6 +2474,8 @@
 		D45879210F55652F0060BAA4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00638E11093B9E5A002722CD /* Cocoa.framework */; };
 		D4634F620FC2BE1E007674B3 /* unzip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4634F600FC2BE1E007674B3 /* unzip.cpp */; };
 		D4634F630FC2BE1E007674B3 /* unzip.h in Headers */ = {isa = PBXBuildFile; fileRef = D4634F610FC2BE1E007674B3 /* unzip.h */; };
+		D46351F50FC310D9007674B3 /* SphericalManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46351F40FC310D9007674B3 /* SphericalManipulator.cpp */; };
+		D46351F70FC310E9007674B3 /* SphericalManipulator in Headers */ = {isa = PBXBuildFile; fileRef = D46351F60FC310E9007674B3 /* SphericalManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4646D2E0E34932C000EF4FB /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4646D2F0E34932C000EF4FB /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D4646D300E34932C000EF4FB /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -8235,6 +8237,8 @@
 		D45878A90F555C8D0060BAA4 /* PixelBufferCocoa.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PixelBufferCocoa.mm; sourceTree = "<group>"; };
 		D4634F600FC2BE1E007674B3 /* unzip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unzip.cpp; sourceTree = "<group>"; };
 		D4634F610FC2BE1E007674B3 /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
+		D46351F40FC310D9007674B3 /* SphericalManipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SphericalManipulator.cpp; sourceTree = "<group>"; };
+		D46351F60FC310E9007674B3 /* SphericalManipulator */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SphericalManipulator; sourceTree = "<group>"; };
 		D4646D380E34932C000EF4FB /* osgwidgetmenu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgwidgetmenu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4646D8A0E3493C5000EF4FB /* osgwidgetmenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osgwidgetmenu.cpp; path = ../../examples/osgwidgetmenu/osgwidgetmenu.cpp; sourceTree = SOURCE_ROOT; };
 		D47A06810B833F6E00E19024 /* osgManipulator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgManipulator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -11468,6 +11472,7 @@
 		00557D170624A9F8000A808A /* osgGA */ = {
 			isa = PBXGroup;
 			children = (
+				D46351F40FC310D9007674B3 /* SphericalManipulator.cpp */,
 				D4163D1E0F2A6A900062226D /* CameraViewSwitchManipulator.cpp */,
 				00557D180624A9F8000A808A /* AnimationPathManipulator.cpp */,
 				00557D190624A9F8000A808A /* DriveManipulator.cpp */,
@@ -11492,6 +11497,7 @@
 		00557D530624AB42000A808A /* osgGA */ = {
 			isa = PBXGroup;
 			children = (
+				D46351F60FC310E9007674B3 /* SphericalManipulator */,
 				D4163D200F2A6AA40062226D /* CameraViewSwitchManipulator */,
 				00557D540624AB42000A808A /* AnimationPathManipulator */,
 				00557D550624AB42000A808A /* DriveManipulator */,
@@ -14704,6 +14710,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D46351F70FC310E9007674B3 /* SphericalManipulator in Headers */,
 				D4163D210F2A6AA40062226D /* CameraViewSwitchManipulator in Headers */,
 				005581DA0624BD3D000A808A /* AnimationPathManipulator in Headers */,
 				005581DB0624BD3D000A808A /* DriveManipulator in Headers */,
@@ -20964,6 +20971,7 @@
 				009D9FD8081D779A001FA987 /* UFOManipulator.cpp in Sources */,
 				00794FD409D35373003FC8A1 /* EventQueue.cpp in Sources */,
 				D4163D1F0F2A6A910062226D /* CameraViewSwitchManipulator.cpp in Sources */,
+				D46351F50FC310D9007674B3 /* SphericalManipulator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

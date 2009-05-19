@@ -14,7 +14,7 @@
 #ifdef ZIP_STD
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <time.h>
 #ifdef _MSC_VER
 #include <sys/utime.h> // microsoft puts it here

@@ -1,3 +1,13 @@
+2009-05-19 16:05  robert
+
+	* CMakeLists.txt, NEWS.txt, README.txt: Updated dates and reset
+	  release candidate back to 0 for final 2.8.1 release
+
+2009-05-18 16:02  robert
+
+	* AUTHORS.txt, CMakeLists.txt, ChangeLog, NEWS.txt, README.txt:
+	  Updated ChangeLog, NEWS, README and AUTHORS files for rc5.
+
 2009-05-18 15:49  robert
 
 	* src/osgUtil/RenderStage.cpp: Merged changed from svn/trunk,

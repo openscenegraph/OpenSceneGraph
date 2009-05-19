@@ -64,11 +64,20 @@ class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
 
         void computeViewPosition(const osg::BoundingSphere& bound,double& scale,double& distance,osg::Vec3d& center);
 
+        void setCenter(const osg::Vec3d& center) {_center=center;}
         const osg::Vec3d& getCenter() const {return _center;}
+
+        bool setDistance(double distance);
         double getDistance() const { return _distance; }
+
         double getHomeDistance() const { return _homeDistance; }
-        float getAzimuth() const {return _azimuth;}
-        float getZenith() const {return _zenith;}
+
+        void setAzimuth(double azimuth) { _azimuth = azimuth; }
+        double getAzimuth() const {return _azimuth;}
+
+        void setZenith(double zenith) { _zenith = zenith; }
+        double getZenith() const {return _zenith;}
+
 
         /** get the minimum distance (as ratio) the eye point can be zoomed in */
         double getMinimumZoomScale() const { return _minimumZoomScale; }
@@ -77,6 +86,7 @@ class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
             center before the center is pushed forward.*/        
         void setMinimumZoomScale(double minimumZoomScale) {_minimumZoomScale=minimumZoomScale;}
 
+
          /** set the mouse scroll wheel zoom delta.
            * Range -1.0 to +1.0,  -ve value inverts wheel direction and zero switches off scroll wheel. */
         void setScroolWheelZoomDelta(double zoomDelta) { _zoomDelta = zoomDelta; }
@@ -84,12 +94,9 @@ class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
         /** get the mouse scroll wheel zoom delta. */
         double getScroolWheelZoomDelta() const { return _zoomDelta; }
 
+
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
-
-        void setCenter(const osg::Vec3d &center) {_center=center;}
-        bool setDistance(double distance);
-        void setAngles(float azimuth,float zenith);
 
         enum RotationMode
         {
@@ -102,7 +109,7 @@ class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
         RotationMode getRotationMode() const {return _rotationMode;}
         void setRotationMode(RotationMode mode);
 
-        static double computeAngles(const osg::Vec3d &vec,float& azimuth,float& zenith);
+        static double computeAngles(const osg::Vec3d &vec,double& azimuth,double& zenith);
 
     protected:
 
@@ -132,13 +139,13 @@ class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
 
         bool _thrown;
 
-        RotationMode _rotationMode;
-        osg::Vec3d   _center;
-        double       _distance;
-        float _azimuth;  // angle from x axis in xy plane
-        float _zenith;   // angle from z axis
-        double       _homeDistance;
-        float        _zoomDelta;
+        RotationMode    _rotationMode;
+        osg::Vec3d      _center;
+        double          _distance;
+        double          _azimuth;  // angle from x axis in xy plane
+        double          _zenith;   // angle from z axis
+        double          _homeDistance;
+        double          _zoomDelta;
 };
 }
 #endif

@@ -19,7 +19,7 @@ SphericalManipulator::SphericalManipulator()
 
     _zoomDelta = 0.1f;
     _azimuth=0;
-    _zenith=0;
+    _zenith=osg::PI_2;
 
     setRotationMode(MODE_3D);
 }
@@ -69,13 +69,7 @@ bool SphericalManipulator::setDistance(double distance)
 
     return true;
 }
-//--------------------------------------------------------------------------------------------------
-void SphericalManipulator::setAngles(float azimuth,float zenith)
-{
-    _azimuth=azimuth;
-    if(_rotationMode != MODE_2D)
-        _zenith=zenith;
-}
+
 //--------------------------------------------------------------------------------------------------
 void SphericalManipulator::home(double /*currentTime*/)
 {
@@ -83,7 +77,7 @@ void SphericalManipulator::home(double /*currentTime*/)
         computeHomePosition();
 
     _azimuth=3*PI_2;
-    _zenith=0;
+    _zenith=PI_2;
     _center=_homeCenter;
     _distance=_homeDistance;
 
@@ -221,7 +215,7 @@ bool SphericalManipulator::isMouseMoving()
 {
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-    static const float velocity = 0.1f;
+    const float velocity = 0.1f;
 
     float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
     float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
@@ -269,12 +263,14 @@ osg::Matrixd SphericalManipulator::getInverseMatrix() const
         osg::Matrixd::translate(osg::Vec3d(0,0,-_distance));
 }
 //--------------------------------------------------------------------------------------------------
-double SphericalManipulator::computeAngles(const osg::Vec3d &vec,float& azimuth,float& zenith)
+double SphericalManipulator::computeAngles(const osg::Vec3d &vec,double& azimuth,double& zenith)
 {
     osg::Vec3d lv(vec);
     double distance=lv.length();
-    if(distance > 0)
-        lv/=distance;
+    if(distance > 0.0)
+    {
+        lv /= distance;
+    }
 
     azimuth=atan2(lv.y(),lv.x());
     zenith=acos(lv.z());
@@ -389,8 +385,8 @@ bool SphericalManipulator::calcMovement()
 
         // zoom model.
 
-        float fd = _distance;
-        float scale = 1.0f+dy;
+        double fd = _distance;
+        double scale = 1.0+dy;
         if(fd*scale > _modelScale*_minimumZoomScale)
         {
             _distance *= scale;
@@ -404,7 +400,7 @@ bool SphericalManipulator::calcMovement()
             osg::Matrix rotation_matrix=osg::Matrixd::rotate(_zenith,1,0,0)*
                 osg::Matrixd::rotate(PI_2+_azimuth,0,0,1);
 
-            osg::Vec3 dv = (osg::Vec3(0.0f,0.0f,-1.0f)*rotation_matrix)*(dy*scale);
+            osg::Vec3d dv = (osg::Vec3d(0.0f,0.0f,-1.0f)*rotation_matrix)*(dy*scale);
 
             _center += dv;
         }

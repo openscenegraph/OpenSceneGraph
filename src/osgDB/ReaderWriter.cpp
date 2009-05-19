@@ -120,9 +120,11 @@ ReaderWriter::FeatureList ReaderWriter::featureAsString(ReaderWriter::Features f
 
 #if defined(WIN32) && !defined(__CYGWIN__)
     #include <io.h>
-#ifndef F_OK
-    #define F_OK 4
-#endif
+    #ifndef F_OK
+        #define F_OK 4
+    #endif
+#else
+    #include <unistd.h>
 #endif
 
 bool ReaderWriter::fileExists(const std::string& filename, const Options* /*options*/) const

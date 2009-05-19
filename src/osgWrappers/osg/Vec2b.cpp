@@ -22,7 +22,7 @@
 
 #include <osg/io_utils>
 	
-TYPE_NAME_ALIAS(char, osg::Vec2b::value_type)
+TYPE_NAME_ALIAS(signed char, osg::Vec2b::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Vec2b)
 	I_ReaderWriter(osgIntrospection::StdReaderWriter<reflected_type>);	// user-defined
@@ -31,8 +31,8 @@ BEGIN_VALUE_REFLECTOR(osg::Vec2b)
 	I_Constructor0(____Vec2b,
 	               "",
 	               "");
-	I_Constructor2(IN, char, r, IN, char, g,
-	               ____Vec2b__char__char,
+	I_Constructor2(IN, osg::Vec2b::value_type, r, IN, osg::Vec2b::value_type, g,
+	               ____Vec2b__value_type__value_type,
 	               "",
 	               "");
 	I_Method0(osg::Vec2b::value_type *, ptr,

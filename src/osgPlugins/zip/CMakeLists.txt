@@ -1,3 +1,12 @@
-SET(TARGET_SRC ReaderWriterZIP.cpp )
-#### end var setup  ###
+SET(TARGET_SRC
+    unzip.cpp
+    ReaderWriterZIP.cpp
+)
+
+SET(TARGET_H
+    unzip.h
+)
+
+ADD_DEFINITIONS(-DZIP_STD)
+
 SETUP_PLUGIN(zip)

@@ -40,7 +40,7 @@
 
 osg::Camera* createHUD()
 {
-    // create a camera to set up the projection and model view matrices, and the subgraph to drawn in the HUD
+    // create a camera to set up the projection and model view matrices, and the subgraph to draw in the HUD
     osg::Camera* camera = new osg::Camera;
 
     // set the projection matrix
@@ -68,7 +68,7 @@ osg::Camera* createHUD()
 
         std::string timesFont("fonts/arial.ttf");
 
-        // turn lighting off for the text and disable depth test to ensure its always ontop.
+        // turn lighting off for the text and disable depth test to ensure it's always ontop.
         osg::StateSet* stateset = geode->getOrCreateStateSet();
         stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 
@@ -141,7 +141,7 @@ osg::Camera* createHUD()
             text->setFont(timesFont);
             text->setPosition(position);
             text->setText("And finally set the Camera's RenderOrder to POST_RENDER\n"
-                          "to make sure its drawn last.");
+                          "to make sure it's drawn last.");
 
             position += delta;
         }    
@@ -274,7 +274,7 @@ int main( int argc, char **argv )
     // read the scene from the list of file specified commandline args.
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
     
-    // if not loaded assume no arguments passed in, try use default mode instead.
+    // if not loaded assume no arguments passed in, try use default model instead.
     if (!scene) scene = osgDB::readNodeFile("dumptruck.osg");
     
     
@@ -301,7 +301,7 @@ int main( int argc, char **argv )
         
         osg::Camera* hudCamera = createHUD();
         
-        // set up cameras to rendering on the first window available.
+        // set up cameras to render on the first window available.
         hudCamera->setGraphicsContext(windows[0]);
         hudCamera->setViewport(0,0,windows[0]->getTraits()->width, windows[0]->getTraits()->height);
 
@@ -335,7 +335,7 @@ int main( int argc, char **argv )
         
         osg::Camera* hudCamera = createHUD();
         
-        // set up cameras to rendering on the first window available.
+        // set up cameras to render on the first window available.
         hudCamera->setGraphicsContext(windows[0]);
         hudCamera->setViewport(0,0,windows[0]->getTraits()->width, windows[0]->getTraits()->height);
         

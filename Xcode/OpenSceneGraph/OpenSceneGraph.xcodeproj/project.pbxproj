@@ -2472,6 +2472,8 @@
 		D45878F90F555D2B0060BAA4 /* GraphicsWindowCocoa in Copy Subheaders to api:Cocoa */ = {isa = PBXBuildFile; fileRef = D45878A20F555C510060BAA4 /* GraphicsWindowCocoa */; };
 		D45878FA0F555D2B0060BAA4 /* PixelBufferCocoa in Copy Subheaders to api:Cocoa */ = {isa = PBXBuildFile; fileRef = D45878A30F555C520060BAA4 /* PixelBufferCocoa */; };
 		D45879210F55652F0060BAA4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00638E11093B9E5A002722CD /* Cocoa.framework */; };
+		D4634F620FC2BE1E007674B3 /* unzip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4634F600FC2BE1E007674B3 /* unzip.cpp */; };
+		D4634F630FC2BE1E007674B3 /* unzip.h in Headers */ = {isa = PBXBuildFile; fileRef = D4634F610FC2BE1E007674B3 /* unzip.h */; };
 		D4646D2E0E34932C000EF4FB /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4646D2F0E34932C000EF4FB /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D4646D300E34932C000EF4FB /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -8231,6 +8233,8 @@
 		D45878A70F555C8C0060BAA4 /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 		D45878A80F555C8C0060BAA4 /* GraphicsWindowCocoa.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphicsWindowCocoa.mm; sourceTree = "<group>"; };
 		D45878A90F555C8D0060BAA4 /* PixelBufferCocoa.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PixelBufferCocoa.mm; sourceTree = "<group>"; };
+		D4634F600FC2BE1E007674B3 /* unzip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unzip.cpp; sourceTree = "<group>"; };
+		D4634F610FC2BE1E007674B3 /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
 		D4646D380E34932C000EF4FB /* osgwidgetmenu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgwidgetmenu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4646D8A0E3493C5000EF4FB /* osgwidgetmenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osgwidgetmenu.cpp; path = ../../examples/osgwidgetmenu/osgwidgetmenu.cpp; sourceTree = SOURCE_ROOT; };
 		D47A06810B833F6E00E19024 /* osgManipulator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgManipulator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -11101,6 +11105,8 @@
 		001D04A9065AB1FC003310BF /* zip */ = {
 			isa = PBXGroup;
 			children = (
+				D4634F600FC2BE1E007674B3 /* unzip.cpp */,
+				D4634F610FC2BE1E007674B3 /* unzip.h */,
 				001D04AB065AB1FC003310BF /* ReaderWriterZIP.cpp */,
 			);
 			name = zip;
@@ -14382,6 +14388,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4634F630FC2BE1E007674B3 /* unzip.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20634,6 +20641,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				001D04AC065AB1FC003310BF /* ReaderWriterZIP.cpp in Sources */,
+				D4634F620FC2BE1E007674B3 /* unzip.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -28962,7 +28970,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DZIP_STD";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -28994,7 +29002,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DZIP_STD";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -29020,7 +29028,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DZIP_STD";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -40070,7 +40078,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DZIP_STD";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -45041,7 +45049,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DZIP_STD";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -50082,7 +50090,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DZIP_STD";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -55644,7 +55652,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DZIP_STD";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -58958,12 +58966,12 @@
 		001101A108736A190015C576 /* Build configuration list for PBXNativeTarget "osg" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101A208736A190015C576 /* Development 64bit Cocoa */,
 				D40B542B0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC3D0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101A308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF940F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101A208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF510F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC3D0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF940F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101A408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -58972,12 +58980,12 @@
 		001101A508736A190015C576 /* Build configuration list for PBXNativeTarget "osgUtil" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101A608736A190015C576 /* Development 64bit Cocoa */,
 				D40B542C0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC3E0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101A708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF950F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101A608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF520F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC3E0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF950F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101A808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -58986,12 +58994,12 @@
 		001101A908736A190015C576 /* Build configuration list for PBXNativeTarget "osgDB" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101AA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B542D0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC3F0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101AB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF960F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101AA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF530F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC3F0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF960F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101AC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59000,12 +59008,12 @@
 		001101AD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgText" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101AE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B542E0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC400F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101AF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF970F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101AE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF540F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC400F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF970F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101B008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59014,12 +59022,12 @@
 		001101B108736A190015C576 /* Build configuration list for PBXNativeTarget "osgGA" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101B208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54300F581A58004D300C /* Development 32bit Carbon */,
-				D403BC420F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101B308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF990F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101B208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF560F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC420F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF990F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101B408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59028,12 +59036,12 @@
 		001101B508736A190015C576 /* Build configuration list for PBXNativeTarget "osgParticle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101B608736A190015C576 /* Development 64bit Cocoa */,
 				D40B542F0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC410F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101B708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF980F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101B608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF550F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC410F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF980F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101B808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59042,12 +59050,12 @@
 		001101B908736A190015C576 /* Build configuration list for PBXNativeTarget "osgSim" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101BA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54320F581A58004D300C /* Development 32bit Carbon */,
-				D403BC440F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101BB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF9B0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101BA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF580F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC440F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF9B0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101BC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59056,12 +59064,12 @@
 		001101BD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgFX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101BE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54330F581A58004D300C /* Development 32bit Carbon */,
-				D403BC450F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101BF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF9C0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101BE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF590F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC450F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF9C0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101C008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59070,12 +59078,12 @@
 		001101C108736A190015C576 /* Build configuration list for PBXNativeTarget "osgIntrospection" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101C208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54310F581A58004D300C /* Development 32bit Carbon */,
-				D403BC430F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101C308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF9A0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101C208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF570F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC430F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF9A0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101C408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59084,12 +59092,12 @@
 		001101C908736A190015C576 /* Build configuration list for PBXAggregateTarget "osgFrameworks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101CA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54290F581A58004D300C /* Development 32bit Carbon */,
-				D403BC3B0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101CB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF920F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101CA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF4F0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC3B0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF920F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101CC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59098,12 +59106,12 @@
 		001101CD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_hdr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101CE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54470F581A58004D300C /* Development 32bit Carbon */,
-				D403BC590F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101CF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFB00F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101CE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF6D0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC590F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFB00F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101D008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59112,12 +59120,12 @@
 		001101D108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_freetype" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101D208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54450F581A58004D300C /* Development 32bit Carbon */,
-				D403BC570F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101D308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFAE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101D208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF6B0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC570F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFAE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101D408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59126,12 +59134,12 @@
 		001101D508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_osgText" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101D608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54590F581A58004D300C /* Development 32bit Carbon */,
-				D403BC6B0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101D708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFC20F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101D608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF7F0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC6B0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFC20F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101D808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59140,12 +59148,12 @@
 		001101D908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_3dc" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101DA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B543C0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC4E0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101DB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFA50F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101DA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF620F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC4E0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFA50F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101DC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59154,12 +59162,12 @@
 		001101DD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_ac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101DE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B543D0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC4F0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101DF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFA60F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101DE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF630F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC4F0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFA60F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101E008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59168,12 +59176,12 @@
 		001101E108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_bmp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101E208736A190015C576 /* Development 64bit Cocoa */,
 				D40B543E0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC500F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101E308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFA70F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101E208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF640F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC500F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFA70F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101E408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59182,12 +59190,12 @@
 		001101E508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_x" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101E608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54420F581A58004D300C /* Development 32bit Carbon */,
-				D403BC540F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101E708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFAB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101E608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF680F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC540F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFAB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101E808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59196,12 +59204,12 @@
 		001101E908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_dds" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101EA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54410F581A58004D300C /* Development 32bit Carbon */,
-				D403BC530F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101EB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFAA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101EA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF670F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC530F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFAA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101EC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59210,12 +59218,12 @@
 		001101ED08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_dw" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101EE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54430F581A58004D300C /* Development 32bit Carbon */,
-				D403BC550F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101EF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFAC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101EE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF690F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC550F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFAC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101F008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59224,12 +59232,12 @@
 		001101F108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_dxf" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101F208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54440F581A58004D300C /* Development 32bit Carbon */,
-				D403BC560F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101F308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFAD0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101F208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF6A0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC560F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFAD0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101F408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59238,12 +59246,12 @@
 		001101F908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_ive" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101FA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54490F581A58004D300C /* Development 32bit Carbon */,
-				D403BC5B0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101FB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFB20F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101FA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF6F0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC5B0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFB20F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001101FC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59252,12 +59260,12 @@
 		001101FD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_3ds" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001101FE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B544A0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC5C0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001101FF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFB30F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001101FE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF700F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC5C0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFB30F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011020008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59266,12 +59274,12 @@
 		0011020108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_logo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011020208736A190015C576 /* Development 64bit Cocoa */,
 				D40B544B0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC5D0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011020308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFB40F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011020208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF710F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC5D0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFB40F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011020408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59280,12 +59288,12 @@
 		0011020508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_lwo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011020608736A190015C576 /* Development 64bit Cocoa */,
 				D40B544C0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC5E0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011020708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFB50F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011020608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF720F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC5E0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFB50F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011020808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59294,12 +59302,12 @@
 		0011020908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_lws" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011020A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B544D0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC5F0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011020B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFB60F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011020A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF730F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC5F0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFB60F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011020C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59308,12 +59316,12 @@
 		0011020D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_md2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011020E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B544E0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC600F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011020F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFB70F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011020E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF740F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC600F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFB70F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011021008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59322,12 +59330,12 @@
 		0011021508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_obj" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011021608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54500F581A58004D300C /* Development 32bit Carbon */,
-				D403BC620F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011021708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFB90F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011021608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF760F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC620F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFB90F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011021808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59336,12 +59344,12 @@
 		0011021908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_osgParticle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011021A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54550F581A58004D300C /* Development 32bit Carbon */,
-				D403BC670F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011021B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFBE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011021A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF7B0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC670F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFBE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011021C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59350,12 +59358,12 @@
 		0011021D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_osgSim" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011021E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54570F581A58004D300C /* Development 32bit Carbon */,
-				D403BC690F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011021F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFC00F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011021E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF7D0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC690F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFC00F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011022008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59364,12 +59372,12 @@
 		0011022108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_osgFX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011022208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54540F581A58004D300C /* Development 32bit Carbon */,
-				D403BC660F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011022308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFBD0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011022208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF7A0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC660F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFBD0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011022408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59378,12 +59386,12 @@
 		0011022508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_osg" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011022608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54520F581A58004D300C /* Development 32bit Carbon */,
-				D403BC640F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011022708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFBB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011022608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF780F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC640F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFBB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011022808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59392,12 +59400,12 @@
 		0011022908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_osga" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011022A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54530F581A58004D300C /* Development 32bit Carbon */,
-				D403BC650F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011022B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFBC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011022A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF790F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC650F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFBC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011022C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59406,12 +59414,12 @@
 		0011022D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_osgtgz" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011022E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B545B0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC6D0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011022F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFC40F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011022E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF810F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC6D0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFC40F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011023008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59420,12 +59428,12 @@
 		0011023108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_pic" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011023208736A190015C576 /* Development 64bit Cocoa */,
 				D40B545C0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC6E0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011023308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFC50F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011023208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF820F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC6E0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFC50F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011023408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59434,12 +59442,12 @@
 		0011023508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_pnm" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011023608736A190015C576 /* Development 64bit Cocoa */,
 				D40B545D0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC6F0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011023708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFC60F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011023608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF830F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC6F0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFC60F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011023808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59448,12 +59456,12 @@
 		0011023908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_qt" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011023A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B545E0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC700F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011023B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFC70F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011023A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF840F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC700F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFC70F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011023C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59462,12 +59470,12 @@
 		0011023D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_rgb" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011023E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B545F0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC710F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011023F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFC80F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011023E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF850F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC710F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFC80F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011024008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59476,12 +59484,12 @@
 		0011024108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_rot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011024208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54600F581A58004D300C /* Development 32bit Carbon */,
-				D403BC720F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011024308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFC90F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011024208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF860F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC720F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFC90F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011024408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59490,12 +59498,12 @@
 		0011024508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_scale" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011024608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54610F581A58004D300C /* Development 32bit Carbon */,
-				D403BC730F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011024708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFCA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011024608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF870F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC730F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFCA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011024808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59504,12 +59512,12 @@
 		0011024908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_stl" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011024A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54630F581A58004D300C /* Development 32bit Carbon */,
-				D403BC750F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011024B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFCC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011024A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF890F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC750F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFCC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011024C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59518,12 +59526,12 @@
 		0011024D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_tga" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011024E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54640F581A58004D300C /* Development 32bit Carbon */,
-				D403BC760F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011024F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFCD0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011024E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF8A0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC760F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFCD0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011025008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59532,12 +59540,12 @@
 		0011025108736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_tgz" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011025208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54650F581A58004D300C /* Development 32bit Carbon */,
-				D403BC770F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011025308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFCE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011025208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF8B0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC770F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFCE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011025408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59546,12 +59554,12 @@
 		0011025508736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_trans" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011025608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54660F581A58004D300C /* Development 32bit Carbon */,
-				D403BC780F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011025708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFCF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011025608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF8C0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC780F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFCF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011025808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59560,12 +59568,12 @@
 		0011025908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_txp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011025A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54670F581A58004D300C /* Development 32bit Carbon */,
-				D403BC790F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011025B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFD00F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011025A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF8D0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC790F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFD00F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011025C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59574,12 +59582,12 @@
 		0011025D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgdb_zip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011025E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54690F581A58004D300C /* Development 32bit Carbon */,
-				D403BC7B0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011025F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFD20F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011025E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF8F0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC7B0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFD20F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011026008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59588,12 +59596,12 @@
 		0011026108736A190015C576 /* Build configuration list for PBXAggregateTarget "osgPlugins" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011026208736A190015C576 /* Development 64bit Cocoa */,
 				D40B543B0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC4D0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011026308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFA40F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011026208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF610F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC4D0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFA40F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011026408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59602,12 +59610,12 @@
 		0011026508736A190015C576 /* Build configuration list for PBXNativeTarget "osgarchive" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011026608736A190015C576 /* Development 64bit Cocoa */,
 				D40B546C0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC7E0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011026708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFD50F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011026608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF920F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC7E0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFD50F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011026808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59616,12 +59624,12 @@
 		0011026908736A190015C576 /* Build configuration list for PBXNativeTarget "osgconv" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011026A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B546D0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC7F0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011026B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFD60F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011026A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF930F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC7F0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFD60F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011026C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59630,12 +59638,12 @@
 		0011026D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgversion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011026E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B546E0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC800F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011026F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFD70F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011026E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF940F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC800F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFD70F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011027008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59644,12 +59652,12 @@
 		0011027108736A190015C576 /* Build configuration list for PBXNativeTarget "osgviewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011027208736A190015C576 /* Development 64bit Cocoa */,
 				D40B546F0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC810F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011027308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFD80F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011027208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF950F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC810F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFD80F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011027408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59658,12 +59666,12 @@
 		0011027508736A190015C576 /* Build configuration list for PBXAggregateTarget "Applications" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011027608736A190015C576 /* Development 64bit Cocoa */,
 				D40B546B0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC7D0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011027708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFD40F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011027608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF910F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC7D0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFD40F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011027808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59672,12 +59680,12 @@
 		0011027908736A190015C576 /* Build configuration list for PBXNativeTarget "osganimate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011027A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54710F581A58004D300C /* Development 32bit Carbon */,
-				D403BC830F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011027B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFDA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011027A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF970F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC830F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFDA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011027C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59686,12 +59694,12 @@
 		0011027D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgautotransform" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011027E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54720F581A58004D300C /* Development 32bit Carbon */,
-				D403BC840F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011027F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFDB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011027E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF980F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC840F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFDB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011028008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59700,12 +59708,12 @@
 		0011028108736A190015C576 /* Build configuration list for PBXNativeTarget "osgbillboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011028208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54730F581A58004D300C /* Development 32bit Carbon */,
-				D403BC850F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011028308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFDC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011028208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF990F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC850F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFDC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011028408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59714,12 +59722,12 @@
 		0011028508736A190015C576 /* Build configuration list for PBXNativeTarget "osgblendequation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011028608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54750F581A58004D300C /* Development 32bit Carbon */,
-				D403BC870F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011028708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFDE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011028608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF9B0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC870F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFDE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011028808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59728,12 +59736,12 @@
 		0011028908736A190015C576 /* Build configuration list for PBXNativeTarget "osgcallback" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011028A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54760F581A58004D300C /* Development 32bit Carbon */,
-				D403BC880F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011028B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFDF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011028A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF9C0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC880F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFDF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011028C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59742,12 +59750,12 @@
 		0011029108736A190015C576 /* Build configuration list for PBXNativeTarget "osgcatch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011029208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54780F581A58004D300C /* Development 32bit Carbon */,
-				D403BC8A0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011029308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFE10F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011029208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF9E0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC8A0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFE10F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011029408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59756,12 +59764,12 @@
 		0011029508736A190015C576 /* Build configuration list for PBXNativeTarget "osgclip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011029608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54790F581A58004D300C /* Development 32bit Carbon */,
-				D403BC8B0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011029708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFE20F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011029608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF9F0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC8B0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFE20F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011029808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59770,12 +59778,12 @@
 		0011029908736A190015C576 /* Build configuration list for PBXNativeTarget "osgcluster" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011029A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B547A0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC8C0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011029B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFE30F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011029A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFA00F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC8C0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFE30F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011029C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59784,12 +59792,12 @@
 		0011029D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgcopy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011029E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B547B0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC8D0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011029F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFE40F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011029E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFA10F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC8D0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFE40F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102A008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59798,12 +59806,12 @@
 		001102A108736A190015C576 /* Build configuration list for PBXNativeTarget "osgcubemap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102A208736A190015C576 /* Development 64bit Cocoa */,
 				D40B547C0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC8E0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102A308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFE50F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102A208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFA20F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC8E0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFE50F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102A408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59812,12 +59820,12 @@
 		001102A908736A190015C576 /* Build configuration list for PBXNativeTarget "osgdistortion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102AA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B547F0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC910F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102AB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFE80F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102AA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFA50F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC910F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFE80F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102AC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59826,12 +59834,12 @@
 		001102AD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgforest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102AE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54810F581A58004D300C /* Development 32bit Carbon */,
-				D403BC930F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102AF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFEA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102AE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFA70F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC930F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFEA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102B008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59840,12 +59848,12 @@
 		001102B108736A190015C576 /* Build configuration list for PBXNativeTarget "osgfxbrowser" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102B208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54820F581A58004D300C /* Development 32bit Carbon */,
-				D403BC940F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102B308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFEB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102B208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFA80F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC940F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFEB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102B408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59854,12 +59862,12 @@
 		001102B508736A190015C576 /* Build configuration list for PBXNativeTarget "osggeodemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102B608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54830F581A58004D300C /* Development 32bit Carbon */,
-				D403BC950F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102B708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFEC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102B608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFA90F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC950F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFEC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102B808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59868,12 +59876,12 @@
 		001102B908736A190015C576 /* Build configuration list for PBXNativeTarget "osggeometry" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102BA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54840F581A58004D300C /* Development 32bit Carbon */,
-				D403BC960F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102BB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFED0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102BA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFAA0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC960F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFED0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102BC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59882,12 +59890,12 @@
 		001102BD08736A190015C576 /* Build configuration list for PBXNativeTarget "osghangglide" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102BE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54870F581A58004D300C /* Development 32bit Carbon */,
-				D403BC990F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102BF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFF00F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102BE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFAD0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC990F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFF00F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102C008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59896,12 +59904,12 @@
 		001102C108736A190015C576 /* Build configuration list for PBXNativeTarget "osghud" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102C208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54880F581A58004D300C /* Development 32bit Carbon */,
-				D403BC9A0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102C308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFF10F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102C208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFAE0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC9A0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFF10F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102C408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59910,12 +59918,12 @@
 		001102C508736A190015C576 /* Build configuration list for PBXNativeTarget "osgimposter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102C608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54890F581A58004D300C /* Development 32bit Carbon */,
-				D403BC9B0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102C708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFF20F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102C608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFAF0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC9B0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFF20F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102C808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59924,12 +59932,12 @@
 		001102C908736A190015C576 /* Build configuration list for PBXNativeTarget "osgkeyboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102CA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B548B0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC9D0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102CB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFF40F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102CA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFB10F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC9D0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFF40F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102CC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59938,12 +59946,12 @@
 		001102CD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgkeyboardmouse" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102CE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B548C0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC9E0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102CF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFF50F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102CE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFB20F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC9E0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFF50F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102D008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59952,12 +59960,12 @@
 		001102D108736A190015C576 /* Build configuration list for PBXNativeTarget "osglauncher" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102D208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54740F581A58004D300C /* Development 32bit Carbon */,
-				D403BC860F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102D308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFDD0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102D208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF9A0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC860F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFDD0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102D408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59966,12 +59974,12 @@
 		001102D508736A190015C576 /* Build configuration list for PBXNativeTarget "osglight" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102D608736A190015C576 /* Development 64bit Cocoa */,
 				D40B548D0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC9F0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102D708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFF60F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102D608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFB30F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC9F0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFF60F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102D808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59980,12 +59988,12 @@
 		001102D908736A190015C576 /* Build configuration list for PBXNativeTarget "osglightpoint" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102DA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B548E0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCA00F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102DB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFF70F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102DA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFB40F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCA00F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFF70F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102DC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -59994,12 +60002,12 @@
 		001102DD08736A190015C576 /* Build configuration list for PBXNativeTarget "osglogicop" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102DE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B548F0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCA10F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102DF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFF80F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102DE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFB50F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCA10F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFF80F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102E008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60008,12 +60016,12 @@
 		001102E108736A190015C576 /* Build configuration list for PBXNativeTarget "osglogo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102E208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54900F581A58004D300C /* Development 32bit Carbon */,
-				D403BCA20F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102E308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFF90F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102E208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFB60F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCA20F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFF90F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102E408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60022,12 +60030,12 @@
 		001102E508736A190015C576 /* Build configuration list for PBXNativeTarget "osgmovie" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102E608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54930F581A58004D300C /* Development 32bit Carbon */,
-				D403BCA50F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102E708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFFC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102E608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFB90F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCA50F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFFC0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102E808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60036,12 +60044,12 @@
 		001102E908736A190015C576 /* Build configuration list for PBXNativeTarget "osgmotionblur" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102EA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54920F581A58004D300C /* Development 32bit Carbon */,
-				D403BCA40F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102EB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFFB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102EA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFB80F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCA40F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFFB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102EC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60050,12 +60058,12 @@
 		001102ED08736A190015C576 /* Build configuration list for PBXNativeTarget "osgmultitexture" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102EE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54950F581A58004D300C /* Development 32bit Carbon */,
-				D403BCA70F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102EF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFFE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102EE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFBB0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCA70F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFFE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102F008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60064,12 +60072,12 @@
 		001102F108736A190015C576 /* Build configuration list for PBXNativeTarget "osgoccluder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102F208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54960F581A58004D300C /* Development 32bit Carbon */,
-				D403BCA80F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102F308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFFF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102F208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFBC0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCA80F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFFF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102F408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60078,12 +60086,12 @@
 		001102F508736A190015C576 /* Build configuration list for PBXNativeTarget "osgpagedlod" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102F608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54970F581A58004D300C /* Development 32bit Carbon */,
-				D403BCA90F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102F708736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0000F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102F608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFBD0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCA90F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0000F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102F808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60092,12 +60100,12 @@
 		001102F908736A190015C576 /* Build configuration list for PBXNativeTarget "osgparticle example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102FA08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54990F581A58004D300C /* Development 32bit Carbon */,
-				D403BCAB0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102FB08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0020F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102FA08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFBF0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCAB0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0020F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001102FC08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60106,12 +60114,12 @@
 		001102FD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgparticleeffects" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001102FE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B549A0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCAC0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001102FF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0030F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001102FE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFC00F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCAC0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0030F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011030008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60120,12 +60128,12 @@
 		0011030508736A190015C576 /* Build configuration list for PBXNativeTarget "osgphotoalbum" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011030608736A190015C576 /* Development 64bit Cocoa */,
 				D40B549B0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCAD0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011030708736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0040F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011030608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFC10F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCAD0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0040F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011030808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60134,12 +60142,12 @@
 		0011030908736A190015C576 /* Build configuration list for PBXNativeTarget "osgpick" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011030A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B549C0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCAE0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011030B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0050F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011030A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFC20F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCAE0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0050F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011030C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60148,12 +60156,12 @@
 		0011030D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgplanets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011030E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B549D0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCAF0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011030F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0060F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011030E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFC30F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCAF0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0060F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011031008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60162,12 +60170,12 @@
 		0011031108736A190015C576 /* Build configuration list for PBXNativeTarget "osgpoints" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011031208736A190015C576 /* Development 64bit Cocoa */,
 				D40B549E0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCB00F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011031308736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0070F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011031208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFC40F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCB00F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0070F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011031408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60176,12 +60184,12 @@
 		0011031508736A190015C576 /* Build configuration list for PBXNativeTarget "osgpointsprite" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011031608736A190015C576 /* Development 64bit Cocoa */,
 				D40B549F0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCB10F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011031708736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0080F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011031608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFC50F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCB10F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0080F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011031808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60190,12 +60198,12 @@
 		0011031908736A190015C576 /* Build configuration list for PBXNativeTarget "osgprerender" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011031A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54A10F581A58004D300C /* Development 32bit Carbon */,
-				D403BCB30F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011031B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C00A0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011031A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFC70F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCB30F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C00A0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011031C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60204,12 +60212,12 @@
 		0011031D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgprerendercubemap" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011031E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54A20F581A58004D300C /* Development 32bit Carbon */,
-				D403BCB40F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011031F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C00B0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011031E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFC80F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCB40F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C00B0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011032008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60218,12 +60226,12 @@
 		0011032108736A190015C576 /* Build configuration list for PBXNativeTarget "osgreflect" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011032208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54A30F581A58004D300C /* Development 32bit Carbon */,
-				D403BCB50F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011032308736A190015C576 /* Deployment 32bit Carbon */,
-				D403C00C0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011032208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFC90F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCB50F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C00C0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011032408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60232,12 +60240,12 @@
 		0011032508736A190015C576 /* Build configuration list for PBXNativeTarget "osgscalarbar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011032608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54A40F581A58004D300C /* Development 32bit Carbon */,
-				D403BCB60F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011032708736A190015C576 /* Deployment 32bit Carbon */,
-				D403C00D0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011032608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFCA0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCB60F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C00D0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011032808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60246,12 +60254,12 @@
 		0011032908736A190015C576 /* Build configuration list for PBXNativeTarget "osgscribe" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011032A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54A50F581A58004D300C /* Development 32bit Carbon */,
-				D403BCB70F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011032B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C00E0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011032A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFCB0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCB70F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C00E0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011032C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60260,12 +60268,12 @@
 		0011032D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgsequence" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011032E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54A60F581A58004D300C /* Development 32bit Carbon */,
-				D403BCB80F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011032F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C00F0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011032E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFCC0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCB80F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C00F0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011033008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60274,12 +60282,12 @@
 		0011033108736A190015C576 /* Build configuration list for PBXNativeTarget "osgshaders" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011033208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54A70F581A58004D300C /* Development 32bit Carbon */,
-				D403BCB90F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011033308736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0100F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011033208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFCD0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCB90F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0100F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011033408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60288,12 +60296,12 @@
 		0011033908736A190015C576 /* Build configuration list for PBXNativeTarget "osgshape" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011033A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54AA0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCBC0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011033B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0130F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011033A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFD00F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCBC0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0130F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011033C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60302,12 +60310,12 @@
 		0011034508736A190015C576 /* Build configuration list for PBXNativeTarget "osgsimplifier" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011034608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54AD0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCBF0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011034708736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0160F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011034608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFD30F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCBF0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0160F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011034808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60316,12 +60324,12 @@
 		0011034908736A190015C576 /* Build configuration list for PBXNativeTarget "osgspacewarp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011034A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54B00F581A58004D300C /* Development 32bit Carbon */,
-				D403BCC20F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011034B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0190F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011034A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFD60F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCC20F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0190F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011034C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60330,12 +60338,12 @@
 		0011034D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgspotlight" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011034E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54B20F581A58004D300C /* Development 32bit Carbon */,
-				D403BCC40F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011034F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C01B0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011034E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFD80F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCC40F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C01B0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011035008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60344,12 +60352,12 @@
 		0011035108736A190015C576 /* Build configuration list for PBXNativeTarget "osgspheresegment" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011035208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54B10F581A58004D300C /* Development 32bit Carbon */,
-				D403BCC30F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011035308736A190015C576 /* Deployment 32bit Carbon */,
-				D403C01A0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011035208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFD70F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCC30F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C01A0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011035408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60358,12 +60366,12 @@
 		0011035508736A190015C576 /* Build configuration list for PBXNativeTarget "osgstereoimage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011035608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54B30F581A58004D300C /* Development 32bit Carbon */,
-				D403BCC50F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011035708736A190015C576 /* Deployment 32bit Carbon */,
-				D403C01C0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011035608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFD90F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCC50F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C01C0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011035808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60372,12 +60380,12 @@
 		0011035908736A190015C576 /* Build configuration list for PBXNativeTarget "osgteapot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011035A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54B40F581A58004D300C /* Development 32bit Carbon */,
-				D403BCC60F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011035B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C01D0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011035A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFDA0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCC60F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C01D0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011035C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60386,12 +60394,12 @@
 		0011035D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgtessellate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011035E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54B50F581A58004D300C /* Development 32bit Carbon */,
-				D403BCC70F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011035F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C01E0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011035E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFDB0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCC70F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C01E0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011036008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60400,12 +60408,12 @@
 		0011036108736A190015C576 /* Build configuration list for PBXNativeTarget "osgtext example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011036208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54B60F581A58004D300C /* Development 32bit Carbon */,
-				D403BCC80F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011036308736A190015C576 /* Deployment 32bit Carbon */,
-				D403C01F0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011036208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFDC0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCC80F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C01F0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011036408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60414,12 +60422,12 @@
 		0011036508736A190015C576 /* Build configuration list for PBXNativeTarget "osgtexture1D" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011036608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54B70F581A58004D300C /* Development 32bit Carbon */,
-				D403BCC90F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011036708736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0200F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011036608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFDD0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCC90F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0200F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011036808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60428,12 +60436,12 @@
 		0011036908736A190015C576 /* Build configuration list for PBXNativeTarget "osgtexture2D" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011036A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54B80F581A58004D300C /* Development 32bit Carbon */,
-				D403BCCA0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011036B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0210F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011036A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFDE0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCCA0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0210F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011036C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60442,12 +60450,12 @@
 		0011036D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgtexture3D" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011036E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54B90F581A58004D300C /* Development 32bit Carbon */,
-				D403BCCB0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011036F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0220F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011036E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFDF0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCCB0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0220F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011037008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60456,12 +60464,12 @@
 		0011037108736A190015C576 /* Build configuration list for PBXNativeTarget "osgtexturerectangle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011037208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54BA0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCCC0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011037308736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0230F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011037208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFE00F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCCC0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0230F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011037408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60470,12 +60478,12 @@
 		0011037508736A190015C576 /* Build configuration list for PBXNativeTarget "osgunittests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011037608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54BB0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCCD0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011037708736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0240F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011037608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFE10F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCCD0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0240F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011037808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60484,12 +60492,12 @@
 		0011037908736A190015C576 /* Build configuration list for PBXNativeTarget "osgvertexprogram" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011037A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54BC0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCCE0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011037B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0250F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011037A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFE20F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCCE0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0250F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011037C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60498,12 +60506,12 @@
 		0011037D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgvolume" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011037E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54BD0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCCF0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011037F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0260F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011037E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFE30F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCCF0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0260F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011038008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60512,12 +60520,12 @@
 		0011038108736A190015C576 /* Build configuration list for PBXNativeTarget "osgwindows" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011038208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54BE0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCD00F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011038308736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0270F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011038208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFE40F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCD00F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0270F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011038408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60526,12 +60534,12 @@
 		0011038508736A190015C576 /* Build configuration list for PBXAggregateTarget "Examples" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011038608736A190015C576 /* Development 64bit Cocoa */,
 				D40B54700F581A58004D300C /* Development 32bit Carbon */,
-				D403BC820F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011038708736A190015C576 /* Deployment 32bit Carbon */,
-				D403BFD90F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011038608736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF960F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC820F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFD90F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011038808736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60540,12 +60548,12 @@
 		0011038908736A190015C576 /* Build configuration list for PBXAggregateTarget "AllStandardTargets" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011038A08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54280F581A58004D300C /* Development 32bit Carbon */,
-				D403BC3A0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011038B08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF910F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011038A08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF4E0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC3A0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF910F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011038C08736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60554,12 +60562,12 @@
 		0011038D08736A190015C576 /* Build configuration list for PBXNativeTarget "osgTerrain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0011038E08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54360F581A58004D300C /* Development 32bit Carbon */,
-				D403BC480F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0011038F08736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF9F0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0011038E08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF5C0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC480F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF9F0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0011039008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60568,12 +60576,12 @@
 		001103AD08736A190015C576 /* Build configuration list for PBXNativeTarget "osgsimulation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001103AE08736A190015C576 /* Development 64bit Cocoa */,
 				D40B54AE0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCC00F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001103AF08736A190015C576 /* Deployment 32bit Carbon */,
-				D403C0170F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001103AE08736A190015C576 /* Development 64bit Cocoa */,
 				D4BABFD40F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCC00F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0170F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001103B008736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60582,12 +60590,12 @@
 		001103B108736A190015C576 /* Build configuration list for PBXProject "OpenSceneGraph" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				001103B208736A190015C576 /* Development 64bit Cocoa */,
 				D40B54270F581A58004D300C /* Development 32bit Carbon */,
-				D403BC390F67BD8500D49A89 /* Development 32bit Cocoa */,
 				001103B308736A190015C576 /* Deployment 32bit Carbon */,
-				D403BF900F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				001103B208736A190015C576 /* Development 64bit Cocoa */,
 				D4BABF4D0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC390F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF900F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				001103B408736A190015C576 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60596,12 +60604,12 @@
 		0037A0290C18D74C0089AA1C /* Build configuration list for PBXNativeTarget "OpenThreads" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0037A02A0C18D74C0089AA1C /* Development 64bit Cocoa */,
 				D40B542A0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC3C0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0037A02B0C18D74C0089AA1C /* Deployment 32bit Carbon */,
-				D403BF930F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0037A02A0C18D74C0089AA1C /* Development 64bit Cocoa */,
 				D4BABF500F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC3C0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF930F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0037A02C0C18D74C0089AA1C /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60610,12 +60618,12 @@
 		00388E920CFEF2E700A7B938 /* Build configuration list for PBXNativeTarget "osgterrain_example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00388E930CFEF2E700A7B938 /* Development 64bit Cocoa */,
 				D40B54BF0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCD10F67BD8500D49A89 /* Development 32bit Cocoa */,
 				00388E940CFEF2E700A7B938 /* Deployment 32bit Carbon */,
-				D403C0280F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				00388E930CFEF2E700A7B938 /* Development 64bit Cocoa */,
 				D4BABFE50F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCD10F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0280F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				00388E950CFEF2E700A7B938 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60624,12 +60632,12 @@
 		003890050CFEF64D00A7B938 /* Build configuration list for PBXNativeTarget "osgstaticviewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				003890060CFEF64D00A7B938 /* Development 64bit Cocoa */,
 				D40B54C10F581A58004D300C /* Development 32bit Carbon */,
-				D403BCD30F67BD8500D49A89 /* Development 32bit Cocoa */,
 				003890070CFEF64D00A7B938 /* Deployment 32bit Carbon */,
-				D403C02A0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				003890060CFEF64D00A7B938 /* Development 64bit Cocoa */,
 				D4BABFE70F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCD30F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C02A0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				003890080CFEF64D00A7B938 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60638,12 +60646,12 @@
 		004BD03A09273C2800A265A4 /* Build configuration list for PBXNativeTarget "osgdb_geo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				004BD03B09273C2800A265A4 /* Development 64bit Cocoa */,
 				D40B54460F581A58004D300C /* Development 32bit Carbon */,
-				D403BC580F67BD8500D49A89 /* Development 32bit Cocoa */,
 				004BD03C09273C2800A265A4 /* Deployment 32bit Carbon */,
-				D403BFAF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				004BD03B09273C2800A265A4 /* Development 64bit Cocoa */,
 				D4BABF6C0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC580F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFAF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				004BD03D09273C2800A265A4 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60652,12 +60660,12 @@
 		004E4D020A51F84900EC8521 /* Build configuration list for PBXNativeTarget "osgdb_bsp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				004E4D030A51F84900EC8521 /* Development 64bit Cocoa */,
 				D40B543F0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC510F67BD8500D49A89 /* Development 32bit Cocoa */,
 				004E4D040A51F84900EC8521 /* Deployment 32bit Carbon */,
-				D403BFA80F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				004E4D030A51F84900EC8521 /* Development 64bit Cocoa */,
 				D4BABF650F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC510F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFA80F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				004E4D050A51F84900EC8521 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60666,12 +60674,12 @@
 		004E4D2E0A51FA4D00EC8521 /* Build configuration list for PBXNativeTarget "osgprecipitation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				004E4D2F0A51FA4D00EC8521 /* Development 64bit Cocoa */,
 				D40B54A00F581A58004D300C /* Development 32bit Carbon */,
-				D403BCB20F67BD8500D49A89 /* Development 32bit Cocoa */,
 				004E4D300A51FA4D00EC8521 /* Deployment 32bit Carbon */,
-				D403C0090F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				004E4D2F0A51FA4D00EC8521 /* Development 64bit Cocoa */,
 				D4BABFC60F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCB20F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0090F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				004E4D310A51FA4D00EC8521 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60680,12 +60688,12 @@
 		00638D3D093B93F8002722CD /* Build configuration list for PBXNativeTarget "osgGLUTkeyboardmouse" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00638D3E093B93F8002722CD /* Development 64bit Cocoa */,
 				D40B54850F581A58004D300C /* Development 32bit Carbon */,
-				D403BC970F67BD8500D49A89 /* Development 32bit Cocoa */,
 				00638D3F093B93F8002722CD /* Deployment 32bit Carbon */,
-				D403BFEE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				00638D3E093B93F8002722CD /* Development 64bit Cocoa */,
 				D4BABFAB0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC970F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFEE0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				00638D40093B93F8002722CD /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60694,12 +60702,12 @@
 		00638D5D093B9590002722CD /* Build configuration list for PBXNativeTarget "osgGLUTsimple" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00638D5E093B9590002722CD /* Development 64bit Cocoa */,
 				D40B54860F581A58004D300C /* Development 32bit Carbon */,
-				D403BC980F67BD8500D49A89 /* Development 32bit Cocoa */,
 				00638D5F093B9590002722CD /* Deployment 32bit Carbon */,
-				D403BFEF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				00638D5E093B9590002722CD /* Development 64bit Cocoa */,
 				D4BABFAC0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC980F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFEF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				00638D60093B9590002722CD /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60708,12 +60716,12 @@
 		006CE9070921A83D00985402 /* Build configuration list for PBXNativeTarget "osgcamera" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				006CE9080921A83D00985402 /* Development 64bit Cocoa */,
 				D40B54770F581A58004D300C /* Development 32bit Carbon */,
-				D403BC890F67BD8500D49A89 /* Development 32bit Cocoa */,
 				006CE9090921A83D00985402 /* Deployment 32bit Carbon */,
-				D403BFE00F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				006CE9080921A83D00985402 /* Development 64bit Cocoa */,
 				D4BABF9D0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC890F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFE00F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				006CE90A0921A83D00985402 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60722,12 +60730,12 @@
 		006CE9350921AA9300985402 /* Build configuration list for PBXNativeTarget "osgdelaunay" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				006CE9360921AA9300985402 /* Development 64bit Cocoa */,
 				D40B547D0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC8F0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				006CE9370921AA9300985402 /* Deployment 32bit Carbon */,
-				D403BFE60F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				006CE9360921AA9300985402 /* Development 64bit Cocoa */,
 				D4BABFA30F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC8F0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFE60F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				006CE9380921AA9300985402 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60736,12 +60744,12 @@
 		006CE9570921AB8300985402 /* Build configuration list for PBXNativeTarget "osgdepthpartition" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				006CE9580921AB8300985402 /* Development 64bit Cocoa */,
 				D40B547E0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC900F67BD8500D49A89 /* Development 32bit Cocoa */,
 				006CE9590921AB8300985402 /* Deployment 32bit Carbon */,
-				D403BFE70F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				006CE9580921AB8300985402 /* Development 64bit Cocoa */,
 				D4BABFA40F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC900F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFE70F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				006CE95A0921AB8300985402 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60750,12 +60758,12 @@
 		006CE9950921AC8700985402 /* Build configuration list for PBXNativeTarget "osgcompositeviewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				006CE9960921AC8700985402 /* Development 64bit Cocoa */,
 				D40B54940F581A58004D300C /* Development 32bit Carbon */,
-				D403BCA60F67BD8500D49A89 /* Development 32bit Cocoa */,
 				006CE9970921AC8700985402 /* Deployment 32bit Carbon */,
-				D403BFFD0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				006CE9960921AC8700985402 /* Development 64bit Cocoa */,
 				D4BABFBA0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCA60F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFFD0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				006CE9980921AC8700985402 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60764,12 +60772,12 @@
 		006CE9B30921ACED00985402 /* Build configuration list for PBXNativeTarget "osgparametric" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				006CE9B40921ACED00985402 /* Development 64bit Cocoa */,
 				D40B54980F581A58004D300C /* Development 32bit Carbon */,
-				D403BCAA0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				006CE9B50921ACED00985402 /* Deployment 32bit Carbon */,
-				D403C0010F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				006CE9B40921ACED00985402 /* Development 64bit Cocoa */,
 				D4BABFBE0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCAA0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0010F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				006CE9B60921ACED00985402 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60778,12 +60786,12 @@
 		006CE9D30921AD3300985402 /* Build configuration list for PBXNativeTarget "osgshaderterrain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				006CE9D40921AD3300985402 /* Development 64bit Cocoa */,
 				D40B54A80F581A58004D300C /* Development 32bit Carbon */,
-				D403BCBA0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				006CE9D50921AD3300985402 /* Deployment 32bit Carbon */,
-				D403C0110F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				006CE9D40921AD3300985402 /* Development 64bit Cocoa */,
 				D4BABFCE0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCBA0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0110F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				006CE9D60921AD3300985402 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60792,12 +60800,12 @@
 		006CE9F30921AD7800985402 /* Build configuration list for PBXNativeTarget "osgslice" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				006CE9F40921AD7800985402 /* Development 64bit Cocoa */,
 				D40B54AF0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCC10F67BD8500D49A89 /* Development 32bit Cocoa */,
 				006CE9F50921AD7800985402 /* Deployment 32bit Carbon */,
-				D403C0180F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				006CE9F40921AD7800985402 /* Development 64bit Cocoa */,
 				D4BABFD50F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCC10F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0180F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				006CE9F60921AD7800985402 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60806,12 +60814,12 @@
 		006E23E40AC0D11D00FBB48F /* Build configuration list for PBXNativeTarget "osgdb_OpenFlight" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				006E23E50AC0D11D00FBB48F /* Development 64bit Cocoa */,
 				D40B54510F581A58004D300C /* Development 32bit Carbon */,
-				D403BC630F67BD8500D49A89 /* Development 32bit Cocoa */,
 				006E23E60AC0D11D00FBB48F /* Deployment 32bit Carbon */,
-				D403BFBA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				006E23E50AC0D11D00FBB48F /* Development 64bit Cocoa */,
 				D4BABF770F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC630F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFBA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				006E23E70AC0D11D00FBB48F /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60820,12 +60828,12 @@
 		006E246E0AC0D66700FBB48F /* Build configuration list for PBXNativeTarget "osgfadetext" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				006E246F0AC0D66700FBB48F /* Development 64bit Cocoa */,
 				D40B54800F581A58004D300C /* Development 32bit Carbon */,
-				D403BC920F67BD8500D49A89 /* Development 32bit Cocoa */,
 				006E24700AC0D66700FBB48F /* Deployment 32bit Carbon */,
-				D403BFE90F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				006E246F0AC0D66700FBB48F /* Development 64bit Cocoa */,
 				D4BABFA60F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC920F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFE90F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				006E24710AC0D66700FBB48F /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60834,12 +60842,12 @@
 		0079501C09D362BF003FC8A1 /* Build configuration list for PBXNativeTarget "osgdb_normals" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0079501D09D362BF003FC8A1 /* Development 64bit Cocoa */,
 				D40B544F0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC610F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0079501E09D362BF003FC8A1 /* Deployment 32bit Carbon */,
-				D403BFB80F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0079501D09D362BF003FC8A1 /* Development 64bit Cocoa */,
 				D4BABF750F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC610F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFB80F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0079501F09D362BF003FC8A1 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60848,12 +60856,12 @@
 		0079503D09D364DA003FC8A1 /* Build configuration list for PBXNativeTarget "osgdb_shp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0079503E09D364DA003FC8A1 /* Development 64bit Cocoa */,
 				D40B54620F581A58004D300C /* Development 32bit Carbon */,
-				D403BC740F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0079503F09D364DA003FC8A1 /* Deployment 32bit Carbon */,
-				D403BFCB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0079503E09D364DA003FC8A1 /* Development 64bit Cocoa */,
 				D4BABF880F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC740F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFCB0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0079504009D364DA003FC8A1 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60862,12 +60870,12 @@
 		0079507509D36679003FC8A1 /* Build configuration list for PBXNativeTarget "osgintrospection" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0079507609D36679003FC8A1 /* Development 64bit Cocoa */,
 				D40B548A0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC9C0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0079507709D36679003FC8A1 /* Deployment 32bit Carbon */,
-				D403BFF30F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0079507609D36679003FC8A1 /* Development 64bit Cocoa */,
 				D4BABFB00F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC9C0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFF30F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0079507809D36679003FC8A1 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60876,12 +60884,12 @@
 		0084FB5A0D3424740021E5C9 /* Build configuration list for PBXNativeTarget "osgdb___stub" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0084FB5B0D3424740021E5C9 /* Development 64bit Cocoa */,
 				D40B546A0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC7C0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0084FB5C0D3424740021E5C9 /* Deployment 32bit Carbon */,
-				D403BFD30F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0084FB5B0D3424740021E5C9 /* Development 64bit Cocoa */,
 				D4BABF900F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC7C0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFD30F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0084FB5D0D3424740021E5C9 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60890,12 +60898,12 @@
 		0084FBA20D3425180021E5C9 /* Build configuration list for PBXNativeTarget "osgdb_osgViewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0084FBA30D3425180021E5C9 /* Development 64bit Cocoa */,
 				D40B545A0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC6C0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0084FBA40D3425180021E5C9 /* Deployment 32bit Carbon */,
-				D403BFC30F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0084FBA30D3425180021E5C9 /* Development 64bit Cocoa */,
 				D4BABF800F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC6C0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFC30F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0084FBA50D3425180021E5C9 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60904,12 +60912,12 @@
 		0084FBDB0D3426180021E5C9 /* Build configuration list for PBXNativeTarget "osgdb_osgTerrain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0084FBDC0D3426180021E5C9 /* Development 64bit Cocoa */,
 				D40B54580F581A58004D300C /* Development 32bit Carbon */,
-				D403BC6A0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0084FBDD0D3426180021E5C9 /* Deployment 32bit Carbon */,
-				D403BFC10F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0084FBDC0D3426180021E5C9 /* Development 64bit Cocoa */,
 				D4BABF7E0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC6A0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFC10F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0084FBDE0D3426180021E5C9 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60918,12 +60926,12 @@
 		0084FC5D0D3427B70021E5C9 /* Build configuration list for PBXNativeTarget "osgdb_cfg" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0084FC5E0D3427B70021E5C9 /* Development 64bit Cocoa */,
 				D40B54400F581A58004D300C /* Development 32bit Carbon */,
-				D403BC520F67BD8500D49A89 /* Development 32bit Cocoa */,
 				0084FC5F0D3427B70021E5C9 /* Deployment 32bit Carbon */,
-				D403BFA90F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				0084FC5E0D3427B70021E5C9 /* Development 64bit Cocoa */,
 				D4BABF660F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC520F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFA90F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				0084FC600D3427B70021E5C9 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60932,12 +60940,12 @@
 		00C59D300B0926A800E9BCA1 /* Build configuration list for PBXNativeTarget "osgviewerGLUT" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00C59D310B0926A800E9BCA1 /* Development 64bit Cocoa */,
 				D40B54AC0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCBE0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				00C59D320B0926A800E9BCA1 /* Deployment 32bit Carbon */,
-				D403C0150F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				00C59D310B0926A800E9BCA1 /* Development 64bit Cocoa */,
 				D4BABFD20F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCBE0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0150F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				00C59D330B0926A800E9BCA1 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60946,12 +60954,12 @@
 		00C59D5F0B092D3B00E9BCA1 /* Build configuration list for PBXNativeTarget "osgviewerCocoa" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00C59D600B092D3B00E9BCA1 /* Development 64bit Cocoa */,
 				D40B54AB0F581A58004D300C /* Development 32bit Carbon */,
-				D403BCBD0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				00C59D610B092D3B00E9BCA1 /* Deployment 32bit Carbon */,
-				D403C0140F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				00C59D600B092D3B00E9BCA1 /* Development 64bit Cocoa */,
 				D4BABFD10F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCBD0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0140F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				00C59D620B092D3B00E9BCA1 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60960,12 +60968,12 @@
 		00C59DA50B09343B00E9BCA1 /* Build configuration list for PBXNativeTarget "osgviewerSDL" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00C59DA60B09343B00E9BCA1 /* Development 64bit Cocoa */,
 				D40B54C00F581A58004D300C /* Development 32bit Carbon */,
-				D403BCD20F67BD8500D49A89 /* Development 32bit Cocoa */,
 				00C59DA70B09343B00E9BCA1 /* Deployment 32bit Carbon */,
-				D403C0290F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				00C59DA60B09343B00E9BCA1 /* Development 64bit Cocoa */,
 				D4BABFE60F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCD20F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0290F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				00C59DA80B09343B00E9BCA1 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60981,12 +60989,12 @@
 		00FB20FD0B015CF20052DD79 /* Build configuration list for PBXNativeTarget "osgViewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				00FB20FE0B015CF20052DD79 /* Development 64bit Cocoa */,
 				D40B54340F581A58004D300C /* Development 32bit Carbon */,
-				D403BC460F67BD8500D49A89 /* Development 32bit Cocoa */,
 				00FB20FF0B015CF20052DD79 /* Deployment 32bit Carbon */,
-				D403BF9D0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				00FB20FE0B015CF20052DD79 /* Development 64bit Cocoa */,
 				D4BABF5A0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC460F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF9D0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				00FB21000B015CF20052DD79 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -60995,12 +61003,12 @@
 		5BC2F6430C441D5200671A68 /* Build configuration list for PBXNativeTarget "osgdb_txf" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5BC2F6440C441D5200671A68 /* Development 64bit Cocoa */,
 				D40B54680F581A58004D300C /* Development 32bit Carbon */,
-				D403BC7A0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				5BC2F6450C441D5200671A68 /* Deployment 32bit Carbon */,
-				D403BFD10F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				5BC2F6440C441D5200671A68 /* Development 64bit Cocoa */,
 				D4BABF8E0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC7A0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFD10F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				5BC2F6460C441D5200671A68 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61009,12 +61017,12 @@
 		5BDF58FA0C1FF8C4008DDEC0 /* Build configuration list for PBXNativeTarget "osgdb_osgShadow" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5BDF58FB0C1FF8C4008DDEC0 /* Development 64bit Cocoa */,
 				D40B54560F581A58004D300C /* Development 32bit Carbon */,
-				D403BC680F67BD8500D49A89 /* Development 32bit Cocoa */,
 				5BDF58FC0C1FF8C4008DDEC0 /* Deployment 32bit Carbon */,
-				D403BFBF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				5BDF58FB0C1FF8C4008DDEC0 /* Development 64bit Cocoa */,
 				D4BABF7C0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC680F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFBF0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				5BDF58FD0C1FF8C4008DDEC0 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61023,12 +61031,12 @@
 		D40B52380F5804E3004D300C /* Build configuration list for PBXNativeTarget "osgdb_imageio" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D40B52390F5804E3004D300C /* Development 64bit Cocoa */,
 				D40B54480F581A58004D300C /* Development 32bit Carbon */,
-				D403BC5A0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D40B523A0F5804E3004D300C /* Deployment 32bit Carbon */,
-				D403BFB10F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D40B52390F5804E3004D300C /* Development 64bit Cocoa */,
 				D4BABF6E0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC5A0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFB10F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D40B523B0F5804E3004D300C /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61037,12 +61045,12 @@
 		D418874E0EDEE6E000C17A84 /* Build configuration list for PBXNativeTarget "osgAnimation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D418874F0EDEE6E000C17A84 /* Development 64bit Cocoa */,
 				D40B54390F581A58004D300C /* Development 32bit Carbon */,
-				D403BC4B0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D41887500EDEE6E000C17A84 /* Deployment 32bit Carbon */,
-				D403BFA20F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D418874F0EDEE6E000C17A84 /* Development 64bit Cocoa */,
 				D4BABF5F0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC4B0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFA20F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D41887510EDEE6E000C17A84 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61051,12 +61059,12 @@
 		D418887D0EDEE8E200C17A84 /* Build configuration list for PBXNativeTarget "osganimationviewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D418887E0EDEE8E200C17A84 /* Development 64bit Cocoa */,
 				D40B54C40F581A58004D300C /* Development 32bit Carbon */,
-				D403BCD60F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D418887F0EDEE8E200C17A84 /* Deployment 32bit Carbon */,
-				D403C02D0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D418887E0EDEE8E200C17A84 /* Development 64bit Cocoa */,
 				D4BABFEA0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCD60F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C02D0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D41888800EDEE8E200C17A84 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61065,12 +61073,12 @@
 		D43AB5600E2E1D1900623C77 /* Build configuration list for PBXNativeTarget "osgWidget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D43AB5610E2E1D1900623C77 /* Development 64bit Cocoa */,
 				D40B54380F581A58004D300C /* Development 32bit Carbon */,
-				D403BC4A0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D43AB5620E2E1D1900623C77 /* Deployment 32bit Carbon */,
-				D403BFA10F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D43AB5610E2E1D1900623C77 /* Development 64bit Cocoa */,
 				D4BABF5E0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC4A0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFA10F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D43AB5630E2E1D1900623C77 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61079,12 +61087,12 @@
 		D4646D340E34932C000EF4FB /* Build configuration list for PBXNativeTarget "osgwidgetmenu" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D4646D350E34932C000EF4FB /* Development 64bit Cocoa */,
 				D40B54C20F581A58004D300C /* Development 32bit Carbon */,
-				D403BCD40F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D4646D360E34932C000EF4FB /* Deployment 32bit Carbon */,
-				D403C02B0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D4646D350E34932C000EF4FB /* Development 64bit Cocoa */,
 				D4BABFE80F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCD40F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C02B0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D4646D370E34932C000EF4FB /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61093,12 +61101,12 @@
 		D47A067D0B833F6E00E19024 /* Build configuration list for PBXNativeTarget "osgManipulator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D47A067E0B833F6E00E19024 /* Development 64bit Cocoa */,
 				D40B54370F581A58004D300C /* Development 32bit Carbon */,
-				D403BC490F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D47A067F0B833F6E00E19024 /* Deployment 32bit Carbon */,
-				D403BFA00F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D47A067E0B833F6E00E19024 /* Development 64bit Cocoa */,
 				D4BABF5D0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC490F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFA00F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D47A06800B833F6E00E19024 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61107,12 +61115,12 @@
 		D47A07060B83413800E19024 /* Build configuration list for PBXNativeTarget "osgmanipulator-example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D47A07070B83413800E19024 /* Development 64bit Cocoa */,
 				D40B54910F581A58004D300C /* Development 32bit Carbon */,
-				D403BCA30F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D47A07080B83413800E19024 /* Deployment 32bit Carbon */,
-				D403BFFA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D47A07070B83413800E19024 /* Development 64bit Cocoa */,
 				D4BABFB70F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCA30F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFFA0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D47A07090B83413800E19024 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61121,12 +61129,12 @@
 		D48F10710E3A1FD600DAAB64 /* Build configuration list for PBXNativeTarget "osgimagesequence" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D48F10720E3A1FD600DAAB64 /* Development 64bit Cocoa */,
 				D40B54C30F581A58004D300C /* Development 32bit Carbon */,
-				D403BCD50F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D48F10730E3A1FD600DAAB64 /* Deployment 32bit Carbon */,
-				D403C02C0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D48F10720E3A1FD600DAAB64 /* Development 64bit Cocoa */,
 				D4BABFE90F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCD50F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C02C0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D48F10740E3A1FD600DAAB64 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61135,12 +61143,12 @@
 		D4C6F25D0B8316100052E667 /* Build configuration list for PBXNativeTarget "osgShadow" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D4C6F25E0B8316100052E667 /* Development 64bit Cocoa */,
 				D40B54350F581A58004D300C /* Development 32bit Carbon */,
-				D403BC470F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D4C6F25F0B8316100052E667 /* Deployment 32bit Carbon */,
-				D403BF9E0F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D4C6F25E0B8316100052E667 /* Development 64bit Cocoa */,
 				D4BABF5B0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC470F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BF9E0F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D4C6F2600B8316100052E667 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61149,12 +61157,12 @@
 		D4C6F2A90B8317AB0052E667 /* Build configuration list for PBXNativeTarget "osgshadow" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D4C6F2AA0B8317AB0052E667 /* Development 64bit Cocoa */,
 				D40B54A90F581A58004D300C /* Development 32bit Carbon */,
-				D403BCBB0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D4C6F2AB0B8317AB0052E667 /* Deployment 32bit Carbon */,
-				D403C0120F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D4C6F2AA0B8317AB0052E667 /* Development 64bit Cocoa */,
 				D4BABFCF0F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BCBB0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403C0120F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D4C6F2AC0B8317AB0052E667 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61163,12 +61171,12 @@
 		D4C9C82E0E91148900F8C4A0 /* Build configuration list for PBXNativeTarget "osgVolume" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D4C9C82F0E91148900F8C4A0 /* Development 64bit Cocoa */,
 				D40B543A0F581A58004D300C /* Development 32bit Carbon */,
-				D403BC4C0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D4C9C8300E91148900F8C4A0 /* Deployment 32bit Carbon */,
-				D403BFA30F6806D200D49A89 /* Deployment 32bit Cocoa */,
+				D4C9C82F0E91148900F8C4A0 /* Development 64bit Cocoa */,
 				D4BABF600F67B82500B36599 /* Deployment 64bit Cocoa */,
+				D403BC4C0F67BD8500D49A89 /* Development 32bit Cocoa */,
+				D403BFA30F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D4C9C8310E91148900F8C4A0 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -61177,12 +61185,12 @@
 		D4F80AA20F935ABF0043A5DE /* Build configuration list for PBXNativeTarget "osgdb_curl" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D4F80AA30F935ABF0043A5DE /* Development 64bit Cocoa */,
 				D4F80AA40F935ABF0043A5DE /* Development 32bit Carbon */,
-				D4F80AA50F935ABF0043A5DE /* Development 32bit Cocoa */,
 				D4F80AA60F935ABF0043A5DE /* Deployment 32bit Carbon */,
-				D4F80AA70F935ABF0043A5DE /* Deployment 32bit Cocoa */,
+				D4F80AA30F935ABF0043A5DE /* Development 64bit Cocoa */,
 				D4F80AA80F935ABF0043A5DE /* Deployment 64bit Cocoa */,
+				D4F80AA50F935ABF0043A5DE /* Development 32bit Cocoa */,
+				D4F80AA70F935ABF0043A5DE /* Deployment 32bit Cocoa */,
 				D4F80AA90F935ABF0043A5DE /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;

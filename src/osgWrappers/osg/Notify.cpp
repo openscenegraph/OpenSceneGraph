@@ -20,6 +20,32 @@
 #undef OUT
 #endif
 
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::NotifyHandler)
+	I_DeclaringFile("osg/Notify");
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____NotifyHandler,
+	               "",
+	               "");
+	I_Method2(void, notify, IN, osg::NotifySeverity, severity, IN, const char *, message,
+	          Properties::PURE_VIRTUAL,
+	          __void__notify__osg_NotifySeverity__C5_char_P1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::StandardNotifyHandler)
+	I_DeclaringFile("osg/Notify");
+	I_BaseType(osg::NotifyHandler);
+	I_Constructor0(____StandardNotifyHandler,
+	               "",
+	               "");
+	I_Method2(void, notify, IN, osg::NotifySeverity, severity, IN, const char *, message,
+	          Properties::VIRTUAL,
+	          __void__notify__osg_NotifySeverity__C5_char_P1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_ENUM_REFLECTOR(osg::NotifySeverity)
 	I_DeclaringFile("osg/Notify");
 	I_EnumLabel(osg::ALWAYS);

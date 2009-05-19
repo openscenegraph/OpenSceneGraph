@@ -1150,7 +1150,8 @@ bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
     if (new_win) {
         [new_win setContentView: [_window contentView]];
         setupNSWindow(new_win);
-        [new_win setTitle: [_window title]];
+        NSString* title = (_traits.valid()) ? [NSString stringWithUTF8String: _traits->windowName.c_str()] : @"";
+        [new_win setTitle: title ];
         [_window close];
         [_window release];
 
@@ -1272,9 +1273,8 @@ void GraphicsWindowCocoa::setWindowName (const std::string & name)
         
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString* title = [NSString stringWithCString: name.c_str() encoding: NSUTF8StringEncoding];
+    NSString* title = [NSString stringWithUTF8String: name.c_str()];
     [_window setTitle: title];
-    [title release];
     [pool release];
 }
 

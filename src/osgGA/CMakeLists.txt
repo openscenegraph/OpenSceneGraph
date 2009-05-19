@@ -23,6 +23,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/StateSetManipulator
     ${HEADER_PATH}/TerrainManipulator
     ${HEADER_PATH}/TrackballManipulator
+    ${HEADER_PATH}/SphericalManipulator
     ${HEADER_PATH}/UFOManipulator
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/CameraViewSwitchManipulator
@@ -45,6 +46,7 @@ ADD_LIBRARY(${LIB_NAME}
     StateSetManipulator.cpp
     TerrainManipulator.cpp
     TrackballManipulator.cpp
+    SphericalManipulator.cpp
     UFOManipulator.cpp
     Version.cpp
     CameraViewSwitchManipulator.cpp

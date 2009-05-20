@@ -22,7 +22,7 @@ using namespace osgGA;
 
 TerrainManipulator::TerrainManipulator()
 {
-    _rotationMode =ELEVATION_AZIM;
+    _rotationMode =ELEVATION_HEADING;
     _distance = 1.0;
 
     _thrown = false;
@@ -380,7 +380,7 @@ bool TerrainManipulator::calcMovement()
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {
 
-        if (_rotationMode==ELEVATION_AZIM_ROLL)
+        if (_rotationMode==ELEVATION_HEADING_ROLL)
         {
             // rotate camera.
             osg::Vec3 axis;
@@ -557,7 +557,7 @@ bool TerrainManipulator::calcMovement()
 
 void TerrainManipulator::clampOrientation()
 {
-    if (_rotationMode==ELEVATION_AZIM)
+    if (_rotationMode==ELEVATION_HEADING)
     {
         osg::Matrixd rotation_matrix;
         rotation_matrix.makeRotate(_rotation);

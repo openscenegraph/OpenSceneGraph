@@ -30,10 +30,10 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
 
         enum RotationMode 
         {
-            ELEVATION_AZIM_ROLL,
-            ELEVATION_AZIM
+            ELEVATION_HEADING_ROLL,
+            ELEVATION_HEADING
         };
-        
+
         void setRotationMode(RotationMode mode);
         RotationMode getRotationMode() const { return _rotationMode; }
 

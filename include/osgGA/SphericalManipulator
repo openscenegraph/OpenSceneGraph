@@ -72,11 +72,11 @@ class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
 
         double getHomeDistance() const { return _homeDistance; }
 
-        void setAzimuth(double azimuth) { _azimuth = azimuth; }
-        double getAzimuth() const {return _azimuth;}
+        void setHeading(double azimuth) { _heading = azimuth; }
+        double getHeading() const {return _heading;}
 
-        void setZenith(double zenith) { _zenith = zenith; }
-        double getZenith() const {return _zenith;}
+        void setElevation(double elevation) { _elevation = elevation; }
+        double getElevtion() const {return _elevation;}
 
 
         /** get the minimum distance (as ratio) the eye point can be zoomed in */
@@ -100,16 +100,14 @@ class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
 
         enum RotationMode
         {
-                MODE_3D=0,
-                MODE_3D_HORIZONTAL,
-                MODE_3D_VERTICAL,
-                MODE_2D
+                ELEVATION_HEADING=0,
+                HEADING,
+                ELEVATION,
+                MAP
         };
 
         RotationMode getRotationMode() const {return _rotationMode;}
         void setRotationMode(RotationMode mode);
-
-        static double computeAngles(const osg::Vec3d &vec,double& azimuth,double& zenith);
 
     protected:
 
@@ -142,8 +140,8 @@ class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
         RotationMode    _rotationMode;
         osg::Vec3d      _center;
         double          _distance;
-        double          _azimuth;  // angle from x axis in xy plane
-        double          _zenith;   // angle from z axis
+        double          _heading;  // angle from x axis in xy plane
+        double          _elevation;   // angle from xy plane, positive upwards towards the z axis
         double          _homeDistance;
         double          _zoomDelta;
 };

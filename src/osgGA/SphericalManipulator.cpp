@@ -10,18 +10,18 @@ using namespace osgGA;
 //--------------------------------------------------------------------------------------------------
 SphericalManipulator::SphericalManipulator()
 {
-    _modelScale = 0.01f;
-    _minimumZoomScale = 0.1f;
+    _modelScale = 0.01;
+    _minimumZoomScale = 0.1;
     _thrown = false;
 
-    _distance=1.0f;
-    _homeDistance=1.0f;
+    _distance=1.0;
+    _homeDistance=1.0;
 
-    _zoomDelta = 0.1f;
-    _azimuth=0;
-    _zenith=osg::PI_2;
+    _zoomDelta = 0.1;
+    _heading=0.0;
+    _elevation=osg::PI_2;
 
-    setRotationMode(MODE_3D);
+    setRotationMode(ELEVATION_HEADING);
 }
 //--------------------------------------------------------------------------------------------------
 SphericalManipulator::~SphericalManipulator()
@@ -56,8 +56,8 @@ void SphericalManipulator::setRotationMode(RotationMode mode)
 
      _rotationMode=mode;
 
-    if(_rotationMode == MODE_2D)
-        _zenith=0;
+    if(_rotationMode == MAP)
+        _elevation=PI_2;
 }
 //--------------------------------------------------------------------------------------------------
 bool SphericalManipulator::setDistance(double distance)
@@ -76,8 +76,8 @@ void SphericalManipulator::home(double /*currentTime*/)
     if(getAutoComputeHomePosition())
         computeHomePosition();
 
-    _azimuth=3*PI_2;
-    _zenith=PI_2;
+    _heading=3*PI_2;
+    _elevation=0.0;
     _center=_homeCenter;
     _distance=_homeDistance;
 
@@ -240,43 +240,31 @@ void SphericalManipulator::addMouseEvent(const GUIEventAdapter& ea)
 void SphericalManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
     _center=osg::Vec3(0,0,-_distance)*matrix;
-    _azimuth=atan2(-matrix(0,0),matrix(0,1));
-    if(_rotationMode != MODE_2D)
-        _zenith=acos(matrix(2,2));
+
+    _heading=atan2(-matrix(0,0),matrix(0,1));
+
+    if(_rotationMode != MAP)
+    {
+        _elevation=asin(matrix(2,2));
+    }
 }
 //--------------------------------------------------------------------------------------------------
 osg::Matrixd SphericalManipulator::getMatrix() const
 {
-    return
-        osg::Matrixd::translate(osg::Vec3d(0,0,_distance))*
-        osg::Matrixd::rotate(_zenith,1,0,0)*
-        osg::Matrixd::rotate(PI_2+_azimuth,0,0,1)*
-        osg::Matrixd::translate(_center);
+    return osg::Matrixd::translate(osg::Vec3d(0.0,0.0,_distance))*
+           osg::Matrixd::rotate(PI_2-_elevation,1.0,0.0,0.0)*
+           osg::Matrixd::rotate(PI_2+_heading,0.0,0.0,1.0)*
+           osg::Matrixd::translate(_center);
 }
 //--------------------------------------------------------------------------------------------------
 osg::Matrixd SphericalManipulator::getInverseMatrix() const
 {
-    return
-        osg::Matrixd::translate(-_center)*
-        osg::Matrixd::rotate(PI_2+_azimuth,0,0,-1)*
-        osg::Matrixd::rotate(_zenith,-1,0,0)*
-        osg::Matrixd::translate(osg::Vec3d(0,0,-_distance));
+    return osg::Matrixd::translate(-_center)*
+           osg::Matrixd::rotate(PI_2+_heading,0.0,0.0,-1.0)*
+           osg::Matrixd::rotate(PI_2-_elevation,-1.0,0.0,0.0)*
+           osg::Matrixd::translate(osg::Vec3d(0.0,0.0,-_distance));
 }
-//--------------------------------------------------------------------------------------------------
-double SphericalManipulator::computeAngles(const osg::Vec3d &vec,double& azimuth,double& zenith)
-{
-    osg::Vec3d lv(vec);
-    double distance=lv.length();
-    if(distance > 0.0)
-    {
-        lv /= distance;
-    }
 
-    azimuth=atan2(lv.y(),lv.x());
-    zenith=acos(lv.z());
-
-    return distance;
-}
 //--------------------------------------------------------------------------------------------------
 bool SphericalManipulator::calcMovement()
 {
@@ -319,7 +307,7 @@ bool SphericalManipulator::calcMovement()
     {
         // rotate camera.
 
-        if(_rotationMode == MODE_2D)
+        if(_rotationMode == MAP)
         {
             float pxc = (_ga_t0->getXmax()+_ga_t0->getXmin())/2;
             float pyc = (_ga_t0->getYmax()+_ga_t0->getYmin())/2;
@@ -332,33 +320,33 @@ bool SphericalManipulator::calcMovement()
 
             float angle=atan2(py1-pyc,px1-pxc)-atan2(py0-pyc,px0-pxc);
 
-            _azimuth+=angle;
-            if(_azimuth < -PI)
-                _azimuth+=2*PI;
-            else if(_azimuth > PI)
-                _azimuth-=2*PI;
+            _heading+=angle;
+            if(_heading < -PI)
+                _heading+=2*PI;
+            else if(_heading > PI)
+                _heading-=2*PI;
         }
         else
         {
-            if((_rotationMode != MODE_3D_VERTICAL) && ((_ga_t1->getModKeyMask() & GUIEventAdapter::MODKEY_SHIFT) == 0))
+            if((_rotationMode != ELEVATION) && ((_ga_t1->getModKeyMask() & GUIEventAdapter::MODKEY_SHIFT) == 0))
             {
-                _azimuth-=dx*PI_2;
+                _heading-=dx*PI_2;
 
-                if(_azimuth < 0)
-                    _azimuth+=2*PI;
-                else if(_azimuth > 2*PI)
-                    _azimuth-=2*PI;
+                if(_heading < 0)
+                    _heading+=2*PI;
+                else if(_heading > 2*PI)
+                    _heading-=2*PI;
             }
 
-            if((_rotationMode != MODE_3D_HORIZONTAL) && ((_ga_t1->getModKeyMask() & GUIEventAdapter::MODKEY_ALT) == 0))
+            if((_rotationMode != HEADING) && ((_ga_t1->getModKeyMask() & GUIEventAdapter::MODKEY_ALT) == 0))
             {
-                _zenith+=dy*PI_4;
+                _elevation-=dy*osg::PI_4;
 
                 // Only allows vertical rotation of 180deg 
-                if(_zenith < 0)
-                    _zenith=0;
-                else if(_zenith > PI)
-                    _zenith=PI;
+                if(_elevation < -osg::PI_2)
+                    _elevation=-osg::PI_2;
+                else if(_elevation > osg::PI_2)
+                    _elevation=osg::PI_2;
             }
         }
 
@@ -372,7 +360,7 @@ bool SphericalManipulator::calcMovement()
         float scale = -0.3f*_distance;
 
         osg::Matrix rotation_matrix;
-        rotation_matrix=osg::Matrixd::rotate(_zenith,1,0,0)*osg::Matrixd::rotate(PI_2+_azimuth,0,0,1);
+        rotation_matrix=osg::Matrixd::rotate(_elevation,-1,0,0)*osg::Matrixd::rotate(PI_2+_heading,0,0,1);
 
         osg::Vec3 dv(dx*scale,dy*scale,0);
         _center += dv*rotation_matrix;
@@ -397,8 +385,8 @@ bool SphericalManipulator::calcMovement()
             // push the camera forward.
             scale = -fd;
 
-            osg::Matrix rotation_matrix=osg::Matrixd::rotate(_zenith,1,0,0)*
-                osg::Matrixd::rotate(PI_2+_azimuth,0,0,1);
+            osg::Matrix rotation_matrix=osg::Matrixd::rotate(_elevation,-1,0,0)*
+                osg::Matrixd::rotate(PI_2+_heading,0,0,1);
 
             osg::Vec3d dv = (osg::Vec3d(0.0f,0.0f,-1.0f)*rotation_matrix)*(dy*scale);
 

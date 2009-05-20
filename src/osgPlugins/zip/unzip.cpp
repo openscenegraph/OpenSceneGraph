@@ -203,7 +203,7 @@ FILETIME dosdatetime2filetime(WORD dosdate,WORD dostime)
 { struct tm t;
   t.tm_year = (WORD)(((dosdate>>9)&0x7f) + 1980 - 1900);
   t.tm_isdst = -1;
-  t.tm_mon = (WORD)((dosdate>>5)&0xf - 1);
+  t.tm_mon = (WORD)(((dosdate>>5)&0xf) - 1);
   t.tm_mday = (WORD)(dosdate&0x1f);
   t.tm_hour = (WORD)((dostime>>11)&0x1f);
   t.tm_min = (WORD)((dostime>>5)&0x3f);
@@ -3211,10 +3211,12 @@ int unzlocal_GetCurrentFileInfoInternal (unzFile file, unz_file_info *pfile_info
 
 	// we check the magic
 	if (err==UNZ_OK)
+        {
 		if (unzlocal_getLong(s->file,&uMagic) != UNZ_OK)
 			err=UNZ_ERRNO;
 		else if (uMagic!=0x02014b50)
 			err=UNZ_BADZIPFILE;
+        }
 
 	if (unzlocal_getShort(s->file,&file_info.version) != UNZ_OK)
 		err=UNZ_ERRNO;
@@ -3291,13 +3293,19 @@ int unzlocal_GetCurrentFileInfoInternal (unzFile file, unz_file_info *pfile_info
 			uSizeRead = extraFieldBufferSize;
 
 		if (lSeek!=0)
+                {
 			if (lufseek(s->file,lSeek,SEEK_CUR)==0)
 				lSeek=0;
 			else
 				err=UNZ_ERRNO;
+                }
+
 		if ((file_info.size_file_extra>0) && (extraFieldBufferSize>0))
+                {
 			if (lufread(extraField,(uInt)uSizeRead,1,s->file)!=1)
 				err=UNZ_ERRNO;
+                }
+
 		lSeek += file_info.size_file_extra - uSizeRead;
 	}
 	else
@@ -3316,10 +3324,13 @@ int unzlocal_GetCurrentFileInfoInternal (unzFile file, unz_file_info *pfile_info
 			uSizeRead = commentBufferSize;
 
 		if (lSeek!=0)
+                {
 			if (lufseek(s->file,lSeek,SEEK_CUR)==0)
 				{} // unused lSeek=0;
 			else
 				err=UNZ_ERRNO;
+                }
+
 		if ((file_info.size_file_comment>0) && (commentBufferSize>0))
 			if (lufread(szComment,(uInt)uSizeRead,1,s->file)!=1)
 				err=UNZ_ERRNO;
@@ -3463,10 +3474,12 @@ int unzlocal_CheckCurrentFileCoherencyHeader (unz_s *s,uInt *piSizeVar,
 
 
 	if (err==UNZ_OK)
+        {
 		if (unzlocal_getLong(s->file,&uMagic) != UNZ_OK)
 			err=UNZ_ERRNO;
 		else if (uMagic!=0x04034b50)
 			err=UNZ_BADZIPFILE;
+        }
 
 	if (unzlocal_getShort(s->file,&uData) != UNZ_OK)
 		err=UNZ_ERRNO;
@@ -3885,7 +3898,7 @@ int unzCloseCurrentFile (unzFile file);
 
 class TUnzip
 { public:
-  TUnzip(const char *pwd) : uf(0), unzbuf(0), currentfile(-1), czei(-1), password(0)
+  TUnzip(const char *pwd) : uf(0), currentfile(-1), czei(-1), password(0), unzbuf(0)
   {
     if (pwd!=0)
     {
@@ -4036,7 +4049,7 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
     isdir=     (a&0x00000010)!=0;
     archive=   (a&0x00000020)!=0;
   }
-  readonly; hidden; system; isdir; archive;
+  // readonly; hidden; system; isdir; archive;
   ze->attr=0;
 #ifdef ZIP_STD
   ze->attr = (a&0xFFFF0000)>>16;

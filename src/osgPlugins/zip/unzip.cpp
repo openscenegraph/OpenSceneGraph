@@ -855,7 +855,7 @@ struct inflate_blocks_state {
 #define DUMPBITS(j) {b>>=(j);k-=(j);}
 //   output bytes 
 #define WAVAIL (uInt)(q<s->read?s->read-q-1:s->end-q)
-#define LOADOUT {q=s->write;m=(uInt)WAVAIL;m;}
+#define LOADOUT {q=s->write;m=(uInt)WAVAIL;}
 #define WRAP {if(q==s->end&&s->read!=s->window){q=s->window;m=(uInt)WAVAIL;}}
 #define FLUSH {UPDOUT r=inflate_flush(s,z,r); LOADOUT}
 #define NEEDOUT {if(m==0){WRAP if(m==0){FLUSH WRAP if(m==0) LEAVE}}r=Z_OK;}
@@ -1816,7 +1816,7 @@ uInt *v)               // working area: values in order of bit length
 #define C0 *p++ = 0;
 #define C2 C0 C0 C0 C0
 #define C4 C2 C2 C2 C2
-  C4; p;                          // clear c[]--assume BMAX+1 is 16
+  C4;                           // clear c[]--assume BMAX+1 is 16
   p = b;  i = n;
   do {
     c[*p++]++;                  // assume all entries <= BMAX 
@@ -2646,7 +2646,7 @@ int inflate(z_streamp z, int f)
       z->state->sub.check.need += (uLong)IM_NEXTBYTE << 8;
       z->state->mode = IM_DICT1;
     case IM_DICT1:
-      IM_NEEDBYTE; r;
+      IM_NEEDBYTE;
       z->state->sub.check.need += (uLong)IM_NEXTBYTE;
       z->adler = z->state->sub.check.need;
       z->state->mode = IM_DICT0;

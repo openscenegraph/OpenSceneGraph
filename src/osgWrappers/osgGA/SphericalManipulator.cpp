@@ -30,10 +30,10 @@
 
 BEGIN_ENUM_REFLECTOR(osgGA::SphericalManipulator::RotationMode)
 	I_DeclaringFile("osgGA/SphericalManipulator");
-	I_EnumLabel(osgGA::SphericalManipulator::MODE_3D);
-	I_EnumLabel(osgGA::SphericalManipulator::MODE_3D_HORIZONTAL);
-	I_EnumLabel(osgGA::SphericalManipulator::MODE_3D_VERTICAL);
-	I_EnumLabel(osgGA::SphericalManipulator::MODE_2D);
+	I_EnumLabel(osgGA::SphericalManipulator::ELEVATION_HEADING);
+	I_EnumLabel(osgGA::SphericalManipulator::HEADING);
+	I_EnumLabel(osgGA::SphericalManipulator::ELEVATION);
+	I_EnumLabel(osgGA::SphericalManipulator::MAP);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgGA::SphericalManipulator)
@@ -152,24 +152,24 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SphericalManipulator)
 	          __double__getHomeDistance,
 	          "",
 	          "");
-	I_Method1(void, setAzimuth, IN, double, azimuth,
+	I_Method1(void, setHeading, IN, double, azimuth,
 	          Properties::NON_VIRTUAL,
-	          __void__setAzimuth__double,
+	          __void__setHeading__double,
 	          "",
 	          "");
-	I_Method0(double, getAzimuth,
+	I_Method0(double, getHeading,
 	          Properties::NON_VIRTUAL,
-	          __double__getAzimuth,
+	          __double__getHeading,
 	          "",
 	          "");
-	I_Method1(void, setZenith, IN, double, zenith,
+	I_Method1(void, setElevation, IN, double, elevation,
 	          Properties::NON_VIRTUAL,
-	          __void__setZenith__double,
+	          __void__setElevation__double,
 	          "",
 	          "");
-	I_Method0(double, getZenith,
+	I_Method0(double, getElevtion,
 	          Properties::NON_VIRTUAL,
-	          __double__getZenith,
+	          __double__getElevtion,
 	          "",
 	          "");
 	I_Method0(double, getMinimumZoomScale,
@@ -207,10 +207,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SphericalManipulator)
 	          __void__setRotationMode__RotationMode,
 	          "",
 	          "");
-	I_StaticMethod3(double, computeAngles, IN, const osg::Vec3d &, vec, IN, double &, azimuth, IN, double &, zenith,
-	                __double__computeAngles__C5_osg_Vec3d_R1__double_R1__double_R1_S,
-	                "",
-	                "");
 	I_ProtectedMethod0(void, flushMouseEventStack,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -235,9 +231,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SphericalManipulator)
 	                   __bool__isMouseMoving,
 	                   "Check the speed at which the mouse is moving. ",
 	                   "If speed is below a threshold then return false, otherwise return true. ");
-	I_SimpleProperty(double, Azimuth, 
-	                 __double__getAzimuth, 
-	                 __void__setAzimuth__double);
 	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
 	                 0, 
 	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);
@@ -250,12 +243,21 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SphericalManipulator)
 	I_SimpleProperty(double, Distance, 
 	                 __double__getDistance, 
 	                 __bool__setDistance__double);
+	I_SimpleProperty(double, Elevation, 
+	                 0, 
+	                 __void__setElevation__double);
+	I_SimpleProperty(double, Elevtion, 
+	                 __double__getElevtion, 
+	                 0);
 	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
 	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
 	                 0);
 	I_SimpleProperty(float, FusionDistanceValue, 
 	                 __float__getFusionDistanceValue, 
 	                 0);
+	I_SimpleProperty(double, Heading, 
+	                 __double__getHeading, 
+	                 __void__setHeading__double);
 	I_SimpleProperty(double, HomeDistance, 
 	                 __double__getHomeDistance, 
 	                 0);
@@ -277,8 +279,5 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SphericalManipulator)
 	I_SimpleProperty(double, ScroolWheelZoomDelta, 
 	                 __double__getScroolWheelZoomDelta, 
 	                 __void__setScroolWheelZoomDelta__double);
-	I_SimpleProperty(double, Zenith, 
-	                 __double__getZenith, 
-	                 __void__setZenith__double);
 END_REFLECTOR
 

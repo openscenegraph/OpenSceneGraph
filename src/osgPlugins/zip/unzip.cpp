@@ -1810,6 +1810,8 @@ uInt *v)               // working area: values in order of bit length
   int y;                        // number of dummy codes added 
   uInt z;                       // number of entries in current table 
 
+  // provide a default value
+  r.base = 0;
 
   // Generate counts for each bit length 
   p = c;

@@ -795,14 +795,36 @@ IF(CMAKE_CPACK_COMMAND)
     ENDIF()
 ENDIF()
 
-# Generate pkg-config configuration file
+# Generate pkg-config configuration files
 
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/openscenegraph.pc.in
-        ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openscenegraph.pc
+SET(PKGCONFIG_FILES
+  openscenegraph
+  openscenegraph-osg
+  openscenegraph-osgDB
+  openscenegraph-osgFX
+  openscenegraph-osgGA
+  openscenegraph-osgParticle
+  openscenegraph-osgSim
+  openscenegraph-osgText
+  openscenegraph-osgUtil
+  openscenegraph-osgTerrain
+  openscenegraph-osgManipulator
+  openscenegraph-osgViewer
+  openscenegraph-osgWidget
+  openscenegraph-osgShadow
+  openscenegraph-osgAnimation
+  openscenegraph-osgVolume
+  openscenegraph-osgIntrospection
+)
+
+FOREACH(PKGCONFIG_FILE ${PKGCONFIG_FILES})
+  CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc.in
+    ${PROJECT_BINARY_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc
     @ONLY
     )
+  INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig COMPONENT libopenscenegraph-dev)
+ENDFOREACH(PKGCONFIG_FILE)
 
-INSTALL(FILES ${PROJECT_BINARY_DIR}/packaging/pkgconfig/openscenegraph.pc DESTINATION lib${LIB_POSTFIX}/pkgconfig COMPONENT libopenscenegraph-dev)
 
 # Run this as late as possible so users can easier spot the message
 IF (NOT DEFINED REQUIRES_LIBPATH_MESSAGE AND ${CMAKE_INSTALL_PREFIX} STREQUAL "/usr/local")

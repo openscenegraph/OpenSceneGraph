@@ -12,7 +12,7 @@ osgParticle::ParticleSystemUpdater::ParticleSystemUpdater()
 }
 
 osgParticle::ParticleSystemUpdater::ParticleSystemUpdater(const ParticleSystemUpdater& copy, const osg::CopyOp& copyop)
-: osg::Node(copy, copyop), _t0(copy._t0)
+: osg::Node(copy, copyop), _t0(copy._t0), _frameNumber(0)
 {
     ParticleSystem_Vector::const_iterator i;
     for (i=copy._psv.begin(); i!=copy._psv.end(); ++i) {

@@ -319,7 +319,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::StripAnimation)
 	                 __void__setLoop__unsigned_int);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgAnimation::Timeline::Status)
+BEGIN_ENUM_REFLECTOR(osgAnimation::Timeline::TimelineStatus)
 	I_DeclaringFile("osgAnimation/Timeline");
 	I_EnumLabel(osgAnimation::Timeline::Play);
 	I_EnumLabel(osgAnimation::Timeline::Stop);
@@ -366,9 +366,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Timeline)
 	                           ____Timeline__C5_Timeline_R1__C5_osg_CopyOp_R1,
 	                           "",
 	                           "");
-	I_Method0(osgAnimation::Timeline::Status, getStatus,
+	I_Method0(osgAnimation::Timeline::TimelineStatus, getStatus,
 	          Properties::NON_VIRTUAL,
-	          __Status__getStatus,
+	          __TimelineStatus__getStatus,
 	          "",
 	          "");
 	I_Method1(const osgAnimation::Timeline::ActionList &, getActionLayer, IN, int, i,
@@ -474,8 +474,8 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Timeline)
 	I_SimpleProperty(bool, Evaluating, 
 	                 __bool__getEvaluating, 
 	                 0);
-	I_SimpleProperty(osgAnimation::Timeline::Status, Status, 
-	                 __Status__getStatus, 
+	I_SimpleProperty(osgAnimation::Timeline::TimelineStatus, Status, 
+	                 __TimelineStatus__getStatus, 
 	                 0);
 END_REFLECTOR
 

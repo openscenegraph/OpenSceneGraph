@@ -72,32 +72,58 @@ class X11KeyboardMap
             _keymap[XK_equal        ] = '=';
             _keymap[XK_BackSpace    ] = osgGA::GUIEventAdapter::KEY_BackSpace;
             _keymap[XK_Tab          ] = osgGA::GUIEventAdapter::KEY_Tab;
-            _keymap[XK_a            ] = 'A';
-            _keymap[XK_b            ] = 'B';
-            _keymap[XK_c            ] = 'C';
-            _keymap[XK_d            ] = 'D';
-            _keymap[XK_e            ] = 'E';
-            _keymap[XK_f            ] = 'F';
-            _keymap[XK_g            ] = 'G';
-            _keymap[XK_h            ] = 'H';
-            _keymap[XK_i            ] = 'I';
-            _keymap[XK_j            ] = 'J';
-            _keymap[XK_k            ] = 'K';
-            _keymap[XK_l            ] = 'L';
-            _keymap[XK_m            ] = 'M';
-            _keymap[XK_n            ] = 'N';
-            _keymap[XK_o            ] = 'O';
-            _keymap[XK_p            ] = 'P';
-            _keymap[XK_q            ] = 'Q';
-            _keymap[XK_r            ] = 'R';
-            _keymap[XK_s            ] = 'S';
-            _keymap[XK_t            ] = 'T';
-            _keymap[XK_u            ] = 'U';
-            _keymap[XK_v            ] = 'V';
-            _keymap[XK_w            ] = 'W';
-            _keymap[XK_x            ] = 'X';
-            _keymap[XK_y            ] = 'Y';
-            _keymap[XK_z            ] = 'Z';
+            _keymap[XK_A            ] = 'A';
+            _keymap[XK_B            ] = 'B';
+            _keymap[XK_C            ] = 'C';
+            _keymap[XK_D            ] = 'D';
+            _keymap[XK_E            ] = 'E';
+            _keymap[XK_F            ] = 'F';
+            _keymap[XK_G            ] = 'G';
+            _keymap[XK_H            ] = 'H';
+            _keymap[XK_I            ] = 'I';
+            _keymap[XK_J            ] = 'J';
+            _keymap[XK_K            ] = 'K';
+            _keymap[XK_L            ] = 'L';
+            _keymap[XK_M            ] = 'M';
+            _keymap[XK_N            ] = 'N';
+            _keymap[XK_O            ] = 'O';
+            _keymap[XK_P            ] = 'P';
+            _keymap[XK_Q            ] = 'Q';
+            _keymap[XK_R            ] = 'R';
+            _keymap[XK_S            ] = 'S';
+            _keymap[XK_T            ] = 'T';
+            _keymap[XK_U            ] = 'U';
+            _keymap[XK_V            ] = 'V';
+            _keymap[XK_W            ] = 'W';
+            _keymap[XK_X            ] = 'X';
+            _keymap[XK_Y            ] = 'Y';
+            _keymap[XK_Z            ] = 'Z';
+            _keymap[XK_a            ] = 'a';
+            _keymap[XK_b            ] = 'b';
+            _keymap[XK_c            ] = 'c';
+            _keymap[XK_d            ] = 'd';
+            _keymap[XK_e            ] = 'e';
+            _keymap[XK_f            ] = 'f';
+            _keymap[XK_g            ] = 'g';
+            _keymap[XK_h            ] = 'h';
+            _keymap[XK_i            ] = 'i';
+            _keymap[XK_j            ] = 'j';
+            _keymap[XK_k            ] = 'k';
+            _keymap[XK_l            ] = 'l';
+            _keymap[XK_m            ] = 'm';
+            _keymap[XK_n            ] = 'n';
+            _keymap[XK_o            ] = 'o';
+            _keymap[XK_p            ] = 'p';
+            _keymap[XK_q            ] = 'q';
+            _keymap[XK_r            ] = 'r';
+            _keymap[XK_s            ] = 's';
+            _keymap[XK_t            ] = 't';
+            _keymap[XK_u            ] = 'u';
+            _keymap[XK_v            ] = 'v';
+            _keymap[XK_w            ] = 'w';
+            _keymap[XK_x            ] = 'x';
+            _keymap[XK_y            ] = 'y';
+            _keymap[XK_z            ] = 'z';
             _keymap[XK_bracketleft  ] = '(';
             _keymap[XK_bracketright ] = ')';
             _keymap[XK_backslash    ] = '\\';
@@ -1305,22 +1331,9 @@ void GraphicsWindowX11::transformMouseXY(float& x, float& y)
 void GraphicsWindowX11::adaptKey(XKeyEvent& keyevent, int& keySymbol)
 {
     Display* display = _eventDisplay;
- 
-    unsigned char keybuf[32];
-    XLookupString( &keyevent, (char *)keybuf, sizeof(keybuf), NULL, NULL );
-
     KeySym ks = XKeycodeToKeysym( display, keyevent.keycode, 0 );
-    int remappedKey = remapX11Key(ks);
-    if (remappedKey & 0xff00) 
-    {
-        // special keyboard character
-        keySymbol = remappedKey;
-    }
-    else
-    {
-        // normal ascii key
-        keySymbol = keybuf[0];
-    }
+
+    keySymbol = remapX11Key(ks);
 }
 
 // Function to inject artificial key presses/releases.

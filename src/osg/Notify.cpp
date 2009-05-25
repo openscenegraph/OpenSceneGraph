@@ -35,10 +35,17 @@ struct NullStream : public std::ostream
 {
 public:
     NullStream():
-        std::ostream(&_buffer) {}
+        std::ostream(new NullStreamBuffer)
+    { _buffer = dynamic_cast<NullStreamBuffer *>(rdbuf()); }
+        
+    ~NullStream()
+    {
+        rdbuf(0);
+        delete _buffer;
+    }
 
 protected:
-    NullStreamBuffer _buffer;
+    NullStreamBuffer* _buffer;
 };
 
 /** Stream buffer calling notify handler when buffer is synchronized (usually on std::endl).
@@ -76,20 +83,27 @@ struct NotifyStream : public std::ostream
 {
 public:
     NotifyStream():
-        std::ostream(&_buffer) {}
+        std::ostream(new NotifyStreamBuffer)
+    { _buffer = dynamic_cast<NotifyStreamBuffer *>(rdbuf()); }
 
     void setCurrentSeverity(osg::NotifySeverity severity)
     {
-        _buffer.setCurrentSeverity(severity);
+        _buffer->setCurrentSeverity(severity);
     }
 
     osg::NotifySeverity getCurrentSeverity() const
     {
-        return _buffer.getCurrentSeverity();
+        return _buffer->getCurrentSeverity();
+    }
+        
+    ~NotifyStream()
+    {
+        rdbuf(0);
+        delete _buffer;
     }
 
 protected:
-    NotifyStreamBuffer _buffer;
+    NotifyStreamBuffer* _buffer;
 };
 
 }
@@ -98,9 +112,9 @@ using namespace osg;
 
 static osg::ApplicationUsageProxy Notify_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_NOTIFY_LEVEL <mode>", "FATAL | WARN | NOTICE | DEBUG_INFO | DEBUG_FP | DEBUG | INFO | ALWAYS");
 
-osg::NotifySeverity g_NotifyLevel = osg::NOTICE;
-osg::NullStream g_NullStream;
-osg::NotifyStream g_NotifyStream;
+static osg::NotifySeverity g_NotifyLevel = osg::NOTICE;
+static osg::NullStream *g_NullStream;
+static osg::NotifyStream *g_NotifyStream;
 
 void osg::setNotifyLevel(osg::NotifySeverity severity)
 {
@@ -117,23 +131,28 @@ osg::NotifySeverity osg::getNotifyLevel()
 
 void osg::setNotifyHandler(osg::NotifyHandler *handler)
 {
-    osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer *>(g_NotifyStream.rdbuf());
+    osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer *>(g_NotifyStream->rdbuf());
     if (buffer)
         buffer->setNotifyHandler(handler);
 }
 
-osg::NotifyHandler *getNotifyHandler()
+osg::NotifyHandler* osg::getNotifyHandler()
 {
     osg::initNotifyLevel();
-    osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer *>(g_NotifyStream.rdbuf());
+    osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer *>(g_NotifyStream->rdbuf());
     return buffer ? buffer->getNotifyHandler() : 0;
 }
 
 bool osg::initNotifyLevel()
 {
     static bool s_NotifyInit = false;
+    static osg::NullStream s_NullStream;
+    static osg::NotifyStream s_NotifyStream;
 
     if (s_NotifyInit) return true;
+
+    g_NullStream = &s_NullStream;
+    g_NotifyStream = &s_NotifyStream;
     
     // g_NotifyLevel
     // =============
@@ -168,7 +187,7 @@ bool osg::initNotifyLevel()
     }
 
     // Setup standard notify handler
-    osg::NotifyStreamBuffer *buffer = dynamic_cast<osg::NotifyStreamBuffer *>(g_NotifyStream.rdbuf());
+    osg::NotifyStreamBuffer *buffer = dynamic_cast<osg::NotifyStreamBuffer *>(g_NotifyStream->rdbuf());
     if (buffer && !buffer->getNotifyHandler())
         buffer->setNotifyHandler(new StandardNotifyHandler);
 
@@ -193,10 +212,10 @@ std::ostream& osg::notify(const osg::NotifySeverity severity)
 
     if (severity<=g_NotifyLevel)
     {
-        g_NotifyStream.setCurrentSeverity(severity);
-        return g_NotifyStream;
+        g_NotifyStream->setCurrentSeverity(severity);
+        return *g_NotifyStream;
     }
-    return g_NullStream;
+    return *g_NullStream;
 }
 
 void osg::StandardNotifyHandler::notify(osg::NotifySeverity severity, const char *message)

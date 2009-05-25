@@ -9,11 +9,19 @@
 *                    ARB_texture_compression.pdf
 *                    Author: Sebastien Domine, NVIDIA Corporation
 *
-*    CREATED BY:        Rune Schmidt Jensen, rsj@uni-dk
+*    CREATED BY:     Rune Schmidt Jensen, rsj@uni-dk
 *
 *    HISTORY:        Created   31.03.2003
 *             Modified  13.05.2004
 *                by George Tarantilis, gtaranti@nps.navy.mil
+*             Modified  22.05.2009 
+*                Wojtek Lewandowski, lewandowski@ai.com.pl 
+*
+*    WARNING: 
+*          Bit Masks in the WrtiteDDS are set for 8 bit components 
+*          write with 4 or 16 bit components will 
+*          probably produce corrupted file 
+*          Wojtek Lewandowski 2009-05-22 
 *
 **********************************************************************/
 
@@ -716,10 +724,6 @@ printf("CORRECTO**> gtsibim:%d  grsib:%d   mi_size:%d   lPitch%d\n",
  */
 
 
-
-
-
-
 bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
 {
 
@@ -793,8 +797,8 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         break;
     case GL_LUMINANCE_ALPHA:
         {
-            ddpf.dwRBitMask         = 0x00ff0000;
-            ddpf.dwRGBAlphaBitMask  = 0x000000ff;
+            ddpf.dwRBitMask         = 0x000000ff;
+            ddpf.dwRGBAlphaBitMask  = 0x0000ff00;
             PF_flags |= (DDPF_ALPHAPIXELS | DDPF_LUMINANCE);  
             ddpf.dwRGBBitCount = pixelSize; 
             ddsd.lPitch = img->getRowSizeInBytes();
@@ -814,7 +818,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         break;
     case GL_LUMINANCE:
         {
-            ddpf.dwRBitMask         = 0x00ff0000;
+            ddpf.dwRBitMask         = 0x000000ff;
             PF_flags |= DDPF_LUMINANCE;
             ddpf.dwRGBBitCount = pixelSize;
             ddsd.lPitch = img->getRowSizeInBytes();

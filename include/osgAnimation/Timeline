@@ -152,13 +152,13 @@ namespace osgAnimation
         unsigned int _numberFrame;
         unsigned int _loop;
 
-        enum Status
+        enum ActionStatus
         {
             Play,
             Stop
         };
         
-        Status _state;
+        ActionStatus _state;
     };
 
 
@@ -171,13 +171,13 @@ namespace osgAnimation
         Timeline();
         Timeline(const Timeline& nc,const osg::CopyOp& op = osg::CopyOp::SHALLOW_COPY);
 
-        enum Status
+        enum TimelineStatus
         {
             Play,
             Stop
         };
 
-        Status getStatus() const { return _state; }
+        TimelineStatus getStatus() const { return _state; }
 
         typedef std::pair<unsigned int, osg::ref_ptr<Action> > FrameAction;
         typedef std::vector<FrameAction> ActionList;
@@ -326,7 +326,7 @@ namespace osgAnimation
         bool _loop;
         bool _initFirstFrame;
 
-        Status _state;
+        TimelineStatus _state;
 
         // to manage pending operation
         bool _evaluating;

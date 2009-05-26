@@ -51,7 +51,7 @@ namespace DX {
     }
 
     // Read 'TextureFilename'
-    void readTexFilename(ifstream & fin, TextureFilename & texture)
+    void readTexFilename(istream & fin, TextureFilename & texture)
     {
         char buf[256];
         vector<string> token;
@@ -82,7 +82,7 @@ namespace DX {
     }
 
     // Read 'Coords2d'
-    void readCoords2d(ifstream & fin, vector<Coords2d> & v, unsigned int count)
+    void readCoords2d(istream & fin, vector<Coords2d> & v, unsigned int count)
     {
         char buf[256];
         vector<string> token;
@@ -107,7 +107,7 @@ namespace DX {
     }
 
     // Read 'Vector'
-    void readVector(ifstream & fin, vector<Vector> & v, unsigned int count)
+    void readVector(istream & fin, vector<Vector> & v, unsigned int count)
     {
         char buf[256];
         vector<string> token;
@@ -133,7 +133,7 @@ namespace DX {
     }
 
     // Parse 'Material'
-    void parseMaterial(ifstream & fin, Material & material)
+    void parseMaterial(istream & fin, Material & material)
     {
         char buf[256];
         vector<string> token;
@@ -190,7 +190,7 @@ namespace DX {
     }
 
     // Read index list
-    void readIndexList(ifstream & fin, vector<unsigned int> & v, unsigned int count)
+    void readIndexList(istream & fin, vector<unsigned int> & v, unsigned int count)
     {
         char buf[256];
         vector<string> token;
@@ -213,7 +213,7 @@ namespace DX {
     }
 
     // Read 'MeshFace'
-    void readMeshFace(ifstream & fin, vector<MeshFace> & v, unsigned int count)
+    void readMeshFace(istream & fin, vector<MeshFace> & v, unsigned int count)
     {
         char buf[256];
         vector<string> token;

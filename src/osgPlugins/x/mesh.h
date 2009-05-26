@@ -74,7 +74,7 @@ namespace DX {
         }
 
         /// Parse 'Mesh'.
-        void parseMesh(std::ifstream& fin);
+        void parseMesh(std::istream& fin);
 
     private:
         Object * _obj;
@@ -92,13 +92,13 @@ namespace DX {
         MeshMaterialList* _materialList;
 
         /// Parse 'MeshNormals'.
-        void parseMeshNormals(std::ifstream& fin);
+        void parseMeshNormals(std::istream& fin);
 
         /// Parse 'MeshMaterialList'.
-        void parseMeshMaterialList(std::ifstream& fin);
+        void parseMeshMaterialList(std::istream& fin);
 
         /// Read 'MeshTextureCoords'.
-        void readMeshTexCoords(std::ifstream& fin);
+        void readMeshTexCoords(std::istream& fin);
     };
 
 } // namespace

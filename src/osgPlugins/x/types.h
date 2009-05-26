@@ -109,22 +109,22 @@ namespace DX {
     extern void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = " \t\r\n;,");
 
     /// Parse 'Material'.
-    extern void parseMaterial(std::ifstream& fin, Material& material);
+    extern void parseMaterial(std::istream& fin, Material& material);
 
     /// Read 'TextureFilename'.
-    extern void readTexFilename(std::ifstream& fin, TextureFilename& texture);
+    extern void readTexFilename(std::istream& fin, TextureFilename& texture);
 
     /// Read 'Coords2d'.
-    extern void readCoords2d(std::ifstream& fin, std::vector<Coords2d>& v, unsigned int count);
+    extern void readCoords2d(std::istream& fin, std::vector<Coords2d>& v, unsigned int count);
 
     // Read 'Vector'
-    extern void readVector(std::ifstream& fin, std::vector<Vector>& v, unsigned int count);
+    extern void readVector(std::istream& fin, std::vector<Vector>& v, unsigned int count);
 
     /// Read index list.
-    extern void readIndexList(std::ifstream& fin, std::vector<unsigned int>& v, unsigned int count);
+    extern void readIndexList(std::istream& fin, std::vector<unsigned int>& v, unsigned int count);
 
     /// Read 'MeshFace'.
-    extern void readMeshFace(std::ifstream& fin, std::vector<MeshFace>& v, unsigned int count);
+    extern void readMeshFace(std::istream& fin, std::vector<MeshFace>& v, unsigned int count);
 
 } // namespace
 

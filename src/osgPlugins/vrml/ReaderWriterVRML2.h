@@ -4,14 +4,15 @@
  *
  * VRML2 file converter for OpenSceneGraph.
  *
- * authors : Jan Ciger (jan.ciger@gmail.com), 
- *           Tolga Abaci (tolga.abaci@gmail.com), 
+ * authors : Jan Ciger (jan.ciger@gmail.com),
+ *           Tolga Abaci (tolga.abaci@gmail.com),
  *           Bruno Herbelin (bruno.herbelin@gmail.com)
- *           
+ *
  *           (c) VRlab EPFL, Switzerland, 2004-2006
  *
- *           Gino van den Bergen, DTECTA (gino@dtecta.com) 
- * 
+ *           Gino van den Bergen, DTECTA (gino@dtecta.com)
+ *           Xiangxian Wang (xiangxianwang@yahoo.com.cn)
+ *
  */
 
 #include <string>
@@ -25,18 +26,10 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
+
 namespace openvrml
 {
     class node;
-
-    namespace vrml97_node
-    {
-        class indexed_face_set_node;
-        class box_node;
-        class sphere_node;
-        class cone_node;
-        class cylinder_node;
-    }
 }
 
 class QuadricKey
@@ -51,7 +44,7 @@ public:
     bool operator<(const QuadricKey& rhs) const
     {
         return m_height < rhs.m_height ||
-               (m_height == rhs.m_height && (m_radius < rhs.m_radius || 
+               (m_height == rhs.m_height && (m_radius < rhs.m_radius ||
                                             (m_radius == rhs.m_radius && m_flags < rhs.m_flags)));
     }
 
@@ -67,11 +60,11 @@ private:
 /**
  * OpenSceneGraph plugin wrapper/converter.
  */
-class ReaderWriterVRML2 
+class ReaderWriterVRML2
     : public osgDB::ReaderWriter
 {
 public:
-    ReaderWriterVRML2() 
+    ReaderWriterVRML2()
     {
         supportsExtension("wrl","VRML format");
     }
@@ -92,12 +85,13 @@ private:
 
     osg::ref_ptr<osg::Node> convertFromVRML(openvrml::node *obj) const;
 
-    osg::ref_ptr<osg::Geometry> convertVRML97IndexedFaceSet(openvrml::vrml97_node::indexed_face_set_node *vrml_ifs) const;
-    osg::ref_ptr<osg::Geometry> convertVRML97Box(openvrml::vrml97_node::box_node* vrml_box) const;
-    osg::ref_ptr<osg::Geometry> convertVRML97Sphere(openvrml::vrml97_node::sphere_node* vrml_sphere) const;
-    osg::ref_ptr<osg::Geometry> convertVRML97Cone(openvrml::vrml97_node::cone_node* vrml_cone) const;
-    osg::ref_ptr<osg::Geometry> convertVRML97Cylinder(openvrml::vrml97_node::cylinder_node* vrml_cylinder) const;
-    
+
+    osg::ref_ptr<osg::Geometry> convertVRML97IndexedFaceSet(openvrml::node *vrml_ifs) const;
+    osg::ref_ptr<osg::Geometry> convertVRML97Box(openvrml::node* vrml_box) const;
+    osg::ref_ptr<osg::Geometry> convertVRML97Sphere(openvrml::node* vrml_sphere) const;
+    osg::ref_ptr<osg::Geometry> convertVRML97Cone(openvrml::node* vrml_cone) const;
+    osg::ref_ptr<osg::Geometry> convertVRML97Cylinder(openvrml::node* vrml_cylinder) const;
+
     mutable BoxLibrary m_boxLibrary;
     mutable SphereLibrary m_sphereLibrary;
     mutable ConeLibrary m_coneLibrary;

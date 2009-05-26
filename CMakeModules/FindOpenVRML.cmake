@@ -10,7 +10,7 @@
 # Created by Robert Osfield. 
 # Modified for the debug library by Jean-Sébastien Guay.
 
-FIND_PATH(OPENVRML_INCLUDE_DIR openvrml/openvrml/common.h
+FIND_PATH(OPENVRML_INCLUDE_DIR openvrml/openvrml-common.h
     $ENV{OPENVRML_DIR}/include
     $ENV{OPENVRML_DIR}
     ~/Library/Frameworks

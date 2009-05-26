@@ -5,8 +5,10 @@
 
 - dependencies:
     OpenVRML (http://openvrml.org/)
+    Boost (http://www.boost.org/)
     OpenSceneGraph (http://www.openscenegraph.org/)
 
 CAUTION! 
-This version of the plugin requires OpenVRML 0.14.3. Version 0.16.2 *WILL NOT* work!
+This version of the plugin requires OpenVRML 0.17.12 and Boost 1.38.
+Older version *may* work, but were not tested!
 

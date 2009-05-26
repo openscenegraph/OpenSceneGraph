@@ -24,8 +24,8 @@ VirtualProgram::VirtualProgram( unsigned int mask ) : _mask( mask )
 VirtualProgram::VirtualProgram
     ( const VirtualProgram& VirtualProgram, const osg::CopyOp& copyop ):
        osg::Program( VirtualProgram, copyop ),
-       _mask( VirtualProgram._mask ),
-       _shaderMap( VirtualProgram._shaderMap )
+       _shaderMap( VirtualProgram._shaderMap ),
+       _mask( VirtualProgram._mask )
 {
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -181,4 +181,4 @@ void VirtualProgram::apply( osg::State & state ) const
 
 }
 ////////////////////////////////////////////////////////////////////////////////
-}; // namespace osgExt
+} // namespace osgExt

@@ -577,4 +577,3 @@ char DirectionalLightShaderSource[] =
 "     diffuse  += gl_LightSource[i].diffuse * nDotVP;                       \n" //22
 "     specular += gl_LightSource[i].specular * pf;                          \n" //23
 "}                                                                          \n";//24
-

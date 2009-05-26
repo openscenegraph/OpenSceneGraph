@@ -59,20 +59,21 @@ void Object::clear()
     _meshes.clear();
 }
 
-bool Object::load(const char* filename)
+bool Object::load(std::istream& fin)
 {
-    if (!filename)
+    // read header
+    char buf[256];
+    if (fin.getline(buf, sizeof(buf)) == 0) {
+        osg::notify(osg::WARN) << "Failed to read DirectX header\n";
         return false;
-
-    osgDB::ifstream fin(filename);
-    if (fin.bad()) {
-        osg::notify(osg::WARN) << "Object::load: Unable to open: " << filename << endl;
+    }
+    if (strstr(buf, "xof") == 0) {
+        osg::notify(osg::WARN) << "No 'xof' found in DirectX header\n";
         return false;
     }
 
+    // read sections
     parseSection(fin);
-    fin.close();
-
     return true;
 }
 
@@ -107,7 +108,7 @@ Material * Object::findMaterial(const std::string & name)
  **********************************************************************/
 
 // Parse section
-void Object::parseSection(ifstream& fin)
+void Object::parseSection(std::istream& fin)
 {
     char buf[256];
     vector<string> token;
@@ -152,14 +153,9 @@ void Object::parseSection(ifstream& fin)
                 parseSection(fin);
             }
             else {
-                //cerr << "!!! Begin section " << token[0] << endl;
+                osg::notify(osg::DEBUG_INFO) << "!!! Begin section " << token[0] << endl;
                 parseSection(fin);
             }
         }
     }
-}
-
-// Parse frame
-void Object::parseFrame(ifstream& /*fin*/)
-{
 }

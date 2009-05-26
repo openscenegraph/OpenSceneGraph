@@ -62,12 +62,13 @@ public:
     }
 
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
+    virtual ReadResult readNode(std::istream& fin, const osgDB::ReaderWriter::Options* options) const;
 
 private:
-    osg::Group * convertFromDX(DX::Object & obj, bool switchHands, bool flipTexture, float creaseAngle,
+    osg::Group * convertFromDX(DX::Object & obj, bool switchToLeftHanded, bool flipTexture, float creaseAngle,
             const osgDB::ReaderWriter::Options * options) const;
 
-    osg::Geode * convertFromDX(DX::Mesh & mesh, bool switchHands, bool flipTexture, float creaseAngle,
+    osg::Geode * convertFromDX(DX::Mesh & mesh, bool switchToLeftHanded, bool flipTexture, float creaseAngle,
             const osgDB::ReaderWriter::Options * options) const;
 };
 
@@ -84,11 +85,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    osg::notify(osg::INFO) << "ReaderWriterDirectX::readNode(" << fileName.c_str() << ")\n";
+    osg::notify(osg::INFO) << "ReaderWriterDirectX::readNode(" << fileName << ")\n";
 
-    // Load DirectX mesh
-    DX::Object obj;
-    if (obj.load(fileName.c_str()) == false) {
+    osgDB::ifstream fin(fileName.c_str());
+    if (fin.bad()) {
+        osg::notify(osg::WARN) << "ReaderWriterDirectX failed to read '" << fileName.c_str() << "'\n";
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
@@ -96,17 +97,28 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
     osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->setDatabasePath(osgDB::getFilePath(fileName));
 
+    return readNode(fin, local_opt.get());
+}
+
+osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(std::istream& fin, const osgDB::ReaderWriter::Options* options) const
+{
+    DX::Object obj;
+    if (obj.load(fin) == false) {
+        osg::notify(osg::WARN) << "ReaderWriterDirectX failed to read stream" << std::endl;
+        return ReadResult::ERROR_IN_READING_FILE;
+    }
+
     // Options?
     bool flipTexture = true; 
-    bool switchHands = true; // when true: swap y and z for incoming files
+    bool switchToLeftHanded = true; // when true: swap y and z for incoming files
     float creaseAngle = 80.0f;
     if (options) {
         const std::string option = options->getOptionString();
-        if(option.find("rightHanded") != std::string::npos) { 
-            switchHands=false;
+        if (option.find("rightHanded") != std::string::npos) { 
+            switchToLeftHanded = false;
         }
-        if(option.find("leftHanded") != std::string::npos) { 
-            switchHands=true;
+        if (option.find("leftHanded") != std::string::npos) { 
+            switchToLeftHanded = true;
         }
         if (option.find("flipTexture") != std::string::npos) {
             flipTexture = false;
@@ -117,16 +129,18 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
     }
 
     // Convert to osg::Group
-    osg::Group* group = convertFromDX(obj, switchHands, flipTexture, creaseAngle, local_opt.get());
+    osg::Group* group = convertFromDX(obj, switchToLeftHanded, flipTexture, creaseAngle, options);
     if (!group) {
+        osg::notify(osg::WARN) << "ReaderWriterDirectX failed to convert\n";
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
     return group;
 }
 
+
 // Convert DirectX object
-osg::Group * ReaderWriterDirectX::convertFromDX(DX::Object & obj, bool switchHands,
+osg::Group * ReaderWriterDirectX::convertFromDX(DX::Object & obj, bool switchToLeftHanded,
                                                 bool flipTexture, float creaseAngle,
                                                 const osgDB::ReaderWriter::Options * options) const
 {
@@ -135,7 +149,7 @@ osg::Group * ReaderWriterDirectX::convertFromDX(DX::Object & obj, bool switchHan
     for (unsigned int i = 0; i < obj.getNumMeshes(); ++i) {
         //std::cerr << "converting mesh " << i << std::endl;
         DX::Mesh & mesh = *obj.getMesh(i);
-        osg::Geode * geode = convertFromDX(mesh, switchHands, flipTexture, creaseAngle, options);
+        osg::Geode * geode = convertFromDX(mesh, switchToLeftHanded, flipTexture, creaseAngle, options);
         if (!geode) {
             return 0;
         }
@@ -146,7 +160,7 @@ osg::Group * ReaderWriterDirectX::convertFromDX(DX::Object & obj, bool switchHan
 }
 
 // Convert DirectX mesh to osg::Geode
-osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh, bool switchHands,
+osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh, bool switchToLeftHanded,
                                                bool flipTexture, float creaseAngle,
                                                const osgDB::ReaderWriter::Options * options) const
 {
@@ -308,13 +322,13 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh, bool switchHands
 
             // Convert CW to CCW order
             unsigned int jj = (j > 0 ? np - j : j);
-            if(!switchHands) jj=j;
+            if(!switchToLeftHanded) jj=j;
 
             // Vertices
             unsigned int vi = faces[i][jj];
             if (vertexArray) {
                 const DX::Vector & v = mesh.getVertices()[vi];
-                if(switchHands)// Transform Xleft/Yup/Zinto to Xleft/Yinto/Zup
+                if(switchToLeftHanded)// Transform Xleft/Yup/Zinto to Xleft/Yinto/Zup
                     vertexArray->push_back(osg::Vec3(v.x,v.z,v.y));
                 else
                     vertexArray->push_back(osg::Vec3(v.x,v.y,v.z));
@@ -324,7 +338,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh, bool switchHands
             unsigned int ni = meshNormals->faceNormals[i][jj];
             if (normalArray) {
                 const DX::Vector& n = meshNormals->normals[ni];
-                if(switchHands)// Transform Xleft/Yup/Zinto to Xleft/Yinto/Zup
+                if(switchToLeftHanded)// Transform Xleft/Yup/Zinto to Xleft/Yinto/Zup
                     normalArray->push_back(osg::Vec3(n.x,n.z,n.y));
                 else
                     normalArray->push_back(osg::Vec3(n.x,n.y,n.z));
@@ -335,7 +349,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh, bool switchHands
                 const DX::Coords2d& tc = (*meshTexCoords)[vi];
                 osg::Vec2 uv;
                 if (flipTexture){
-                    if(switchHands)
+                    if(switchToLeftHanded)
                         uv.set(tc.u, 1.0f - tc.v); // Image is upside down
                     else
                         uv.set(1.0f - tc.u, 1.0f - tc.v); // Image is 180 degrees

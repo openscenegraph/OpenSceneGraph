@@ -168,7 +168,7 @@ bool Mesh::generateNormals(float /*creaseAngle*/)
 }
 
 // Parse 'Mesh'
-void Mesh::parseMesh(ifstream& fin)
+void Mesh::parseMesh(std::istream& fin)
 {
     char buf[256];
     vector<string> token;
@@ -226,7 +226,7 @@ void Mesh::parseMesh(ifstream& fin)
 }
 
 // Parse 'MeshMaterialList'
-void Mesh::parseMeshMaterialList(ifstream& fin)
+void Mesh::parseMeshMaterialList(std::istream& fin)
 {
     char buf[256];
     vector<string> token;
@@ -293,7 +293,7 @@ void Mesh::parseMeshMaterialList(ifstream& fin)
 }
 
 // Parse 'MeshNormals'
-void Mesh::parseMeshNormals(ifstream& fin)
+void Mesh::parseMeshNormals(std::istream& fin)
 {
     char buf[256];
     vector<string> token;
@@ -345,7 +345,7 @@ void Mesh::parseMeshNormals(ifstream& fin)
 }
 
 // Read 'MeshTextureCoords'
-void Mesh::readMeshTexCoords(ifstream& fin)
+void Mesh::readMeshTexCoords(std::istream& fin)
 {
     char buf[256];
     vector<string> token;

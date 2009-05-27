@@ -35,19 +35,20 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
     public:
     
 
-        inline RenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f):
+        inline RenderLeaf(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f, unsigned int traversalNumber=0):
             osg::Referenced(false),
             _parent(0),
             _drawable(drawable),
             _projection(projection),
             _modelview(modelview),
-            _depth(depth)
+            _depth(depth),
+            _traversalNumber(traversalNumber)
         {
             _dynamic = (drawable->getDataVariance()==osg::Object::DYNAMIC);
         }
 
         
-        inline void set(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f)
+        inline void set(osg::Drawable* drawable,osg::RefMatrix* projection,osg::RefMatrix* modelview, float depth=0.0f, unsigned int traversalNumber=0)
         {
             _parent = 0;
             _drawable = drawable;
@@ -55,6 +56,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
             _modelview = modelview,
             _depth = depth;
             _dynamic = (drawable->getDataVariance()==osg::Object::DYNAMIC);
+            _traversalNumber = traversalNumber;
         }
         
         inline void reset()
@@ -65,6 +67,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
             _modelview = 0;
             _depth = 0.0f;
             _dynamic = false;
+            _traversalNumber = 0;
         }
     
         virtual void render(osg::RenderInfo& renderInfo,RenderLeaf* previous);
@@ -89,6 +92,7 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
         osg::ref_ptr<osg::RefMatrix>    _modelview;
         float                           _depth;
         bool                            _dynamic;
+        unsigned int                    _traversalNumber;
 
     private:
 
@@ -99,7 +103,8 @@ class OSGUTIL_EXPORT RenderLeaf : public osg::Referenced
             _drawable(0),
             _projection(0),
             _modelview(0),
-            _depth(0.0f) {}
+            _depth(0.0f),
+            _traversalNumber(0) {}
 
         /// disallow copy construction.
         RenderLeaf(const RenderLeaf&):osg::Referenced(false) {}

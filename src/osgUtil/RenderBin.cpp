@@ -36,7 +36,9 @@ class RenderBinPrototypeList : public osg::Referenced, public std::map< std::str
 
 // register a RenderStage prototype with the RenderBin prototype list.
 RegisterRenderBinProxy s_registerRenderBinProxy("RenderBin",new RenderBin(RenderBin::getDefaultRenderBinSortMode()));
+RegisterRenderBinProxy s_registerStateSortedBinProxy("StateSortedBin",new RenderBin(RenderBin::SORT_BY_STATE));
 RegisterRenderBinProxy s_registerDepthSortedBinProxy("DepthSortedBin",new RenderBin(RenderBin::SORT_BACK_TO_FRONT));
+RegisterRenderBinProxy s_registerTraversalOrderProxy("TraversalOrderBin",new RenderBin(RenderBin::TRAVERSAL_ORDER));
 
 
 static RenderBinPrototypeList* renderBinPrototypeList()
@@ -122,6 +124,7 @@ RenderBin::SortMode RenderBin::getDefaultRenderBinSortMode()
             else if (strcmp(str,"SORT_BY_STATE_THEN_FRONT_TO_BACK")==0) s_defaultBinSortMode = RenderBin::SORT_BY_STATE_THEN_FRONT_TO_BACK;
             else if (strcmp(str,"SORT_FRONT_TO_BACK")==0) s_defaultBinSortMode = RenderBin::SORT_FRONT_TO_BACK;
             else if (strcmp(str,"SORT_BACK_TO_FRONT")==0) s_defaultBinSortMode = RenderBin::SORT_BACK_TO_FRONT;
+            else if (strcmp(str,"TRAVERSAL_ORDER")==0) s_defaultBinSortMode = RenderBin::TRAVERSAL_ORDER;
         }
     }
     
@@ -231,7 +234,8 @@ void RenderBin::sortImplementation()
         case(SORT_BACK_TO_FRONT):
             sortBackToFront();
             break;
-        default:
+        case(TRAVERSAL_ORDER):
+            sortTraversalOrder();
             break;
     }
 }
@@ -310,6 +314,23 @@ void RenderBin::sortBackToFront()
     std::sort(_renderLeafList.begin(),_renderLeafList.end(),BackToFrontSortFunctor());
 
 //    cout << "sort back to front"<<endl;
+}
+
+
+struct TraversalOrderFunctor
+{
+    bool operator() (const RenderLeaf* lhs,const RenderLeaf* rhs) const
+    {
+        return (lhs->_traversalNumber<rhs->_traversalNumber);
+    }
+};
+
+void RenderBin::sortTraversalOrder()
+{
+    copyLeavesFromStateGraphListToRenderLeafList();
+
+    // now sort the list into acending depth order.
+    std::sort(_renderLeafList.begin(),_renderLeafList.end(),TraversalOrderFunctor());
 }
 
 void RenderBin::copyLeavesFromStateGraphListToRenderLeafList()

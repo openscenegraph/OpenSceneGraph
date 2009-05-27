@@ -33,7 +33,7 @@ class Statistics;
 class OSGUTIL_EXPORT RenderBin : public osg::Object
 {
     public:
-    
+
         typedef std::vector<RenderLeaf*>                    RenderLeafList; 
         typedef std::vector<StateGraph*>                    StateGraphList;
         typedef std::map< int, osg::ref_ptr<RenderBin> >    RenderBinList; 
@@ -43,7 +43,8 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
             SORT_BY_STATE,
             SORT_BY_STATE_THEN_FRONT_TO_BACK,
             SORT_FRONT_TO_BACK,
-            SORT_BACK_TO_FRONT
+            SORT_BACK_TO_FRONT,
+            TRAVERSAL_ORDER
         };
 
         // static methods.
@@ -51,14 +52,14 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         static RenderBin* getRenderBinPrototype(const std::string& binName);
         static void addRenderBinPrototype(const std::string& binName,RenderBin* proto);
         static void removeRenderBinPrototype(RenderBin* proto);
-        
+
         static void setDefaultRenderBinSortMode(SortMode mode);
         static SortMode getDefaultRenderBinSortMode();
 
 
 
         RenderBin();
-        
+
         RenderBin(SortMode mode);
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
@@ -71,12 +72,12 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         virtual const char* className() const { return "RenderBin"; }
 
         virtual void reset();
-        
+
         void setStateSet(osg::StateSet* stateset) { _stateset = stateset; }
         osg::StateSet* getStateSet() { return _stateset.get(); }
         const osg::StateSet* getStateSet() const { return _stateset.get(); }
-        
-        
+
+
         RenderBin* getParent() { return _parent; }
         const RenderBin* getParent() const { return _parent; }
 
@@ -105,7 +106,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         virtual void sort();
 
         virtual void sortImplementation();
-    
+
         void setSortMode(SortMode mode);
         SortMode getSortMode() const { return _sortMode; }
 
@@ -113,7 +114,8 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
         virtual void sortByStateThenFrontToBack();
         virtual void sortFrontToBack();
         virtual void sortBackToFront();
-        
+        virtual void sortTraversalOrder();
+
         struct SortCallback : public osg::Referenced    
         {
             virtual void sortImplementation(RenderBin*) = 0;
@@ -140,7 +142,7 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
         /** Extract stats for current draw list. */
         bool getStats(Statistics& primStats) const;
-        
+
         /** Compute the number of dynamic RenderLeaves.*/
         virtual unsigned int computeNumberOfDynamicRenderLeaves() const;
 

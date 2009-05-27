@@ -88,7 +88,6 @@ CullVisitor* CullVisitor::create()
 
 void CullVisitor::reset()
 {
-
     //
     // first unref all referenced objects and then empty the containers.
     //
@@ -98,6 +97,9 @@ void CullVisitor::reset()
     _renderBinStack.clear();
 
     _numberOfEncloseOverrideRenderBinDetails = 0;
+
+    // reset the traversal number
+    _traversalNumber = 0;
 
     // reset the calculated near far planes.
     _computed_znear = FLT_MAX;

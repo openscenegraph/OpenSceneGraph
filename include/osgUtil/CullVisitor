@@ -314,6 +314,7 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
         RenderBin*                                                  _currentRenderBin;
         std::vector<RenderBin*>                                     _renderBinStack;
 
+        unsigned int             _traversalNumber;
 
         value_type               _computed_znear;
         value_type               _computed_zfar;
@@ -424,12 +425,12 @@ inline RenderLeaf* CullVisitor::createOrReuseRenderLeaf(osg::Drawable* drawable,
     if (_currentReuseRenderLeafIndex<_reuseRenderLeafList.size())
     {
         RenderLeaf* renderleaf = _reuseRenderLeafList[_currentReuseRenderLeafIndex++].get();
-        renderleaf->set(drawable,projection,matrix,depth);
+        renderleaf->set(drawable,projection,matrix,depth,_traversalNumber++);
         return renderleaf;
     }
 
     // Otherwise need to create new renderleaf.
-    RenderLeaf* renderleaf = new RenderLeaf(drawable,projection,matrix,depth);
+    RenderLeaf* renderleaf = new RenderLeaf(drawable,projection,matrix,depth,_traversalNumber++);
     _reuseRenderLeafList.push_back(renderleaf);
     ++_currentReuseRenderLeafIndex;
     return renderleaf;

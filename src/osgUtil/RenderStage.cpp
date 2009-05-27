@@ -1230,7 +1230,7 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
     if (_clearMask & GL_STENCIL_BUFFER_BIT)
     {
         glClearStencil( _clearStencil);
-        glStencilMask ( GL_TRUE );
+        glStencilMask ( ~0u );
         state.haveAppliedAttribute( osg::StateAttribute::STENCIL );
     }
 

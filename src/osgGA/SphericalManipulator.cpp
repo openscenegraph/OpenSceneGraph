@@ -21,7 +21,7 @@ SphericalManipulator::SphericalManipulator()
     _heading=0.0;
     _elevation=osg::PI_2;
 
-    setRotationMode(ELEVATION_HEADING);
+    _rotationMode = ELEVATION_HEADING;
 }
 //--------------------------------------------------------------------------------------------------
 SphericalManipulator::~SphericalManipulator()

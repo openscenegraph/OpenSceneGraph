@@ -28,13 +28,13 @@
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderLeaf)
 	I_DeclaringFile("osgUtil/RenderLeaf");
 	I_BaseType(osg::Referenced);
-	I_ConstructorWithDefaults4(IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f,
-	                           ____RenderLeaf__osg_Drawable_P1__osg_RefMatrix_P1__osg_RefMatrix_P1__float,
+	I_ConstructorWithDefaults5(IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f, IN, unsigned int, traversalNumber, 0,
+	                           ____RenderLeaf__osg_Drawable_P1__osg_RefMatrix_P1__osg_RefMatrix_P1__float__unsigned_int,
 	                           "",
 	                           "");
-	I_MethodWithDefaults4(void, set, IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f,
+	I_MethodWithDefaults5(void, set, IN, osg::Drawable *, drawable, , IN, osg::RefMatrix *, projection, , IN, osg::RefMatrix *, modelview, , IN, float, depth, 0.0f, IN, unsigned int, traversalNumber, 0,
 	                      Properties::NON_VIRTUAL,
-	                      __void__set__osg_Drawable_P1__osg_RefMatrix_P1__osg_RefMatrix_P1__float,
+	                      __void__set__osg_Drawable_P1__osg_RefMatrix_P1__osg_RefMatrix_P1__float__unsigned_int,
 	                      "",
 	                      "");
 	I_Method0(void, reset,
@@ -61,5 +61,6 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderLeaf)
 	I_PublicMemberProperty(osg::ref_ptr< osg::RefMatrix >, _modelview);
 	I_PublicMemberProperty(float, _depth);
 	I_PublicMemberProperty(bool, _dynamic);
+	I_PublicMemberProperty(unsigned int, _traversalNumber);
 END_REFLECTOR
 

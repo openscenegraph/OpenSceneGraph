@@ -42,6 +42,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
 	I_EnumLabel(osgUtil::RenderBin::SORT_BY_STATE_THEN_FRONT_TO_BACK);
 	I_EnumLabel(osgUtil::RenderBin::SORT_FRONT_TO_BACK);
 	I_EnumLabel(osgUtil::RenderBin::SORT_BACK_TO_FRONT);
+	I_EnumLabel(osgUtil::RenderBin::TRAVERSAL_ORDER);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osgUtil::RenderLeaf * >, osgUtil::RenderBin::RenderLeafList)
@@ -237,6 +238,11 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderBin)
 	I_Method0(void, sortBackToFront,
 	          Properties::VIRTUAL,
 	          __void__sortBackToFront,
+	          "",
+	          "");
+	I_Method0(void, sortTraversalOrder,
+	          Properties::VIRTUAL,
+	          __void__sortTraversalOrder,
 	          "",
 	          "");
 	I_Method1(void, setSortCallback, IN, osgUtil::RenderBin::SortCallback *, sortCallback,

@@ -22,14 +22,15 @@
 using namespace flt;
 
 // Prevent "unknown record" message for the following reserved records:
-RegisterRecordProxy<DummyRecord> g_Reserved_103(103);
-RegisterRecordProxy<DummyRecord> g_Reserved_104(104);
-RegisterRecordProxy<DummyRecord> g_Reserved_117(117);
-RegisterRecordProxy<DummyRecord> g_Reserved_118(118);
-RegisterRecordProxy<DummyRecord> g_Reserved_120(120);
-RegisterRecordProxy<DummyRecord> g_Reserved_121(121);
-RegisterRecordProxy<DummyRecord> g_Reserved_124(124);
-RegisterRecordProxy<DummyRecord> g_Reserved_125(125);
+REGISTER_FLTRECORD(DummyRecord, 103)
+REGISTER_FLTRECORD(DummyRecord, 104)
+REGISTER_FLTRECORD(DummyRecord, 117)
+REGISTER_FLTRECORD(DummyRecord, 118)
+REGISTER_FLTRECORD(DummyRecord, 120)
+REGISTER_FLTRECORD(DummyRecord, 121)
+REGISTER_FLTRECORD(DummyRecord, 124)
+REGISTER_FLTRECORD(DummyRecord, 125)
+
 
 
 

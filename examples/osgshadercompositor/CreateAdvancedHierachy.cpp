@@ -390,7 +390,7 @@ osg::Node * CreateAdvancedHierarchy( const char * file = NULL )
             "uniform sampler2D baseTexture;                                          \n"
             "void main(void)                                                         \n"
             "{                                                                       \n"
-            "    gl_FragColor = gl_Color * texture2D( baseTexture, gl_TexCoord[0] ); \n"
+            "    gl_FragColor = gl_Color * texture2D( baseTexture,gl_TexCoord[0].xy);\n"
             "}                                                                       \n"
             );
 
@@ -577,3 +577,4 @@ char DirectionalLightShaderSource[] =
 "     diffuse  += gl_LightSource[i].diffuse * nDotVP;                       \n" //22
 "     specular += gl_LightSource[i].specular * pf;                          \n" //23
 "}                                                                          \n";//24
+

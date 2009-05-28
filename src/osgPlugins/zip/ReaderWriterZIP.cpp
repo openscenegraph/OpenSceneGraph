@@ -21,40 +21,61 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
 
         virtual ReadResult readNode(const std::string& file, const osgDB::Options* options) const
         {
-            std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
-            std::string fileName = osgDB::findDataFile( file, options );
-            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-
-            osg::notify(osg::INFO)<<"ReaderWriterZIP::readNode( "<<fileName.c_str()<<" )\n";
-
             ReadResult rresult = ReadResult::FILE_NOT_HANDLED;
 
-            // First open file as stream
-            std::ifstream srcFileStrm(fileName.c_str(),std::ios::in|std::ios::binary);
-            if (!srcFileStrm.fail())
+            //Check to see if option is to load and extract to filesystem
+            bool bExtractToFileSystem = false;            
+            if (options)
             {
-                // Now read entire zip file into stream buffer
-                std::stringstream tmpStrmBuffer;
-                srcFileStrm.seekg(0,std::ios_base::beg);
-                tmpStrmBuffer.operator <<(srcFileStrm.rdbuf());
-                srcFileStrm.close();
+                std::string optExtractTo = options->getPluginStringData("zipextract");
+                if (!(optExtractTo.empty()))
+                {
+                    if (osgDB::convertToLowerCase(optExtractTo)=="filesystem")
+                    {
+                        bExtractToFileSystem = true;
+                    }
+                }
+            }
 
-                // Setup appropriate options
-                osg::ref_ptr<Options> local_opt = options ?
-                    static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) :
-                    new Options;
+            if (bExtractToFileSystem)
+            {
+                rresult = original_readNode(file,options);
+            }
+            else
+            {
+                std::string ext = osgDB::getLowerCaseFileExtension(file);
+                if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-                // minor issue associated with database path list, as in context of zip file it
-                // doesn't make sense. Need to set to empty path for other plugins to access
-                local_opt->getDatabasePathList().push_front(osgDB::getFilePath(file));
+                std::string fileName = osgDB::findDataFile( file, options );
+                if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-                //    Now pass through to memory zip handler
-                rresult = readNode(tmpStrmBuffer,local_opt);
+                osg::notify(osg::INFO)<<"ReaderWriterZIP::readNode( "<<fileName.c_str()<<" )\n";
 
-                // Clean up options
-                local_opt->getDatabasePathList().pop_front();
+                // First open file as stream
+                std::ifstream srcFileStrm(fileName.c_str(),std::ios::in|std::ios::binary);
+                if (!srcFileStrm.fail())
+                {
+                    // Now read entire zip file into stream buffer
+                    std::stringstream tmpStrmBuffer;
+                    srcFileStrm.seekg(0,std::ios_base::beg);
+                    tmpStrmBuffer.operator <<(srcFileStrm.rdbuf());
+                    srcFileStrm.close();
+
+                    // Setup appropriate options
+                    osg::ref_ptr<Options> local_opt = options ?
+                        static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) :
+                        new Options;
+
+                    // minor issue associated with database path list, as in context of zip file it
+                    // doesn't make sense. Need to set to empty path for other plugins to access
+                    local_opt->getDatabasePathList().push_front(osgDB::getFilePath(file));
+
+                    //    Now pass through to memory zip handler
+                    rresult = readNode(tmpStrmBuffer,local_opt);
+
+                    // Clean up options
+                    local_opt->getDatabasePathList().pop_front();
+                }
             }
 
             return rresult;
@@ -63,7 +84,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
         virtual ReadResult readNode(std::istream& fin,const osgDB::Options* options =NULL) const
         {
             ReadResult result = ReadResult(ReadResult::FILE_NOT_HANDLED);
-            std::stringstream buffer;
+
     
             if (!fin.fail())
             {
@@ -102,7 +123,8 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
                             {
                                 GetZipItem(hz,i,&ze);
                                 std::string StreamName = ze.name;
-    
+                                std::stringstream buffer;
+
                                 char *ibuf = new char[ze.unc_size];
                                 if (ibuf)
                                 {

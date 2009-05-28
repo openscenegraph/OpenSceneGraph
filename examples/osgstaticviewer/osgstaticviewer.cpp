@@ -37,14 +37,14 @@
 #include <iostream>
 
 // include the plugins we need
-USE_OSGPLUGIN(ive);
-USE_OSGPLUGIN(freetype);
-USE_OSGPLUGIN(osg);
-USE_OSGPLUGIN(rgb);
-USE_OSGPLUGIN(OpenFlight);
+USE_OSGPLUGIN(ive)
+USE_OSGPLUGIN(freetype)
+USE_OSGPLUGIN(osg)
+USE_OSGPLUGIN(rgb)
+USE_OSGPLUGIN(OpenFlight)
 
 // include the platform specific GraphicsWindow implementation.
-USE_GRAPHICSWINDOW();
+USE_GRAPHICSWINDOW()
 
 int main(int argc, char** argv)
 {

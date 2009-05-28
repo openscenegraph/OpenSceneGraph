@@ -669,9 +669,11 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     if (!_win) return;
     
     NSString* chars = [theEvent charactersIgnoringModifiers]; 
-    unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
-    // std::cout << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
-    _win->getEventQueue()->keyPress( remapCocoaKey(keyCode), [theEvent timestamp]);
+    if ((chars) && ([chars length] > 0)) {
+        unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
+        // std::cout << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
+        _win->getEventQueue()->keyPress( remapCocoaKey(keyCode), [theEvent timestamp]);
+    }
 }
 
 
@@ -680,9 +682,11 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     if (!_win) return;
     
     NSString* chars = [theEvent charactersIgnoringModifiers]; 
-    unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask));
-    // std::cout << "key up: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
-    _win->getEventQueue()->keyRelease( remapCocoaKey(keyCode), [theEvent timestamp]);
+    if ((chars) && ([chars length] > 0)) {
+        unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask));
+        // std::cout << "key up: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
+        _win->getEventQueue()->keyRelease( remapCocoaKey(keyCode), [theEvent timestamp]);
+    }
 }
 
 

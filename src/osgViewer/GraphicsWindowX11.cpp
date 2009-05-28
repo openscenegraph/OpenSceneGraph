@@ -1407,6 +1407,8 @@ void GraphicsWindowX11::rescanModifierMapping()
             break;
         }
     }
+    XFree(mkm->modifiermap);
+    XFree(mkm);
 }
 
 void GraphicsWindowX11::flushKeyEvents()
@@ -1426,6 +1428,8 @@ void GraphicsWindowX11::getModifierMap(char* keymap) const
     {
         if (*m) keyMapSetKey(keymap, *m);
     }
+    XFree(mkm->modifiermap);
+    XFree(mkm);
 }
 
 int GraphicsWindowX11::getModifierMask() const
@@ -1440,6 +1444,8 @@ int GraphicsWindowX11::getModifierMask() const
             mask |= 1 << (i / mkm->max_keypermod);
         }
     }
+    XFree(mkm->modifiermap);
+    XFree(mkm);
     return mask;
 }
 

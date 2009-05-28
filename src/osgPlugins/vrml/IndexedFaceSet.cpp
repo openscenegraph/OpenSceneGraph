@@ -19,7 +19,7 @@ osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedFaceSet(openv
     osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
 
     osg_geom->addPrimitiveSet(new osg::DrawArrayLengths(osg::PrimitiveSet::POLYGON));
-    osg::StateSet *osg_stateset = osg_geom->getOrCreateStateSet();
+    //osg::StateSet *osg_stateset = osg_geom->getOrCreateStateSet();
 
     // get array of vertex coordinate_nodes
     if(vrml_ifs->type().id() == "IndexedFaceSet")

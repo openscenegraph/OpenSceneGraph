@@ -84,7 +84,8 @@ class Comment : public Record
         }
 };
 
-RegisterRecordProxy<Comment>    g_Comment(COMMENT_OP);
+REGISTER_FLTRECORD(Comment, COMMENT_OP)
+
 
 
 /** LongID -
@@ -111,7 +112,8 @@ class LongID : public Record
         }
 };
 
-RegisterRecordProxy<LongID> g_LongID(LONG_ID_OP);
+REGISTER_FLTRECORD(LongID, LONG_ID_OP)
+
 
 
 /** Matrix -
@@ -150,7 +152,8 @@ class Matrix : public Record
         }
 };
 
-RegisterRecordProxy<Matrix> g_Matrix(MATRIX_OP);
+REGISTER_FLTRECORD(Matrix, MATRIX_OP)
+
 
 
 /** Multitexture -
@@ -228,7 +231,8 @@ class Multitexture : public Record
         }
 };
 
-RegisterRecordProxy<Multitexture> g_Multitexture(MULTITEXTURE_OP);
+REGISTER_FLTRECORD(Multitexture, MULTITEXTURE_OP)
+
 
 
 /** UVList - Texture coordinates used with multitexture.
@@ -284,7 +288,7 @@ class UVList : public Record
         }
 };
 
-RegisterRecordProxy<UVList> g_UVList(UV_LIST_OP);
+REGISTER_FLTRECORD(UVList, UV_LIST_OP)
 
 
 /** Replicate -
@@ -310,38 +314,38 @@ class Replicate : public Record
         }
 };
 
-RegisterRecordProxy<Replicate> g_Replicate(REPLICATE_OP);
-
+REGISTER_FLTRECORD(Replicate, REPLICATE_OP)
 
 // Prevent "unknown record" message for the following ancillary records:
-RegisterRecordProxy<DummyRecord> g_OldTranslate(OLD_TRANSLATE2_OP);
-RegisterRecordProxy<DummyRecord> g_OldRotateAboutPoint(OLD_ROTATE_ABOUT_POINT_OP);
-RegisterRecordProxy<DummyRecord> g_OldRotateAboutEdge(OLD_ROTATE_ABOUT_EDGE_OP);
-RegisterRecordProxy<DummyRecord> g_OldScale(OLD_SCALE_OP);
-RegisterRecordProxy<DummyRecord> g_OldTranslate2(OLD_TRANSLATE_OP);
-RegisterRecordProxy<DummyRecord> g_OldNonuniformScale(OLD_NONUNIFORM_SCALE_OP);
-RegisterRecordProxy<DummyRecord> g_OldRotateAboutPoint2(OLD_ROTATE_ABOUT_POINT2_OP);
-RegisterRecordProxy<DummyRecord> g_OldRotateScaleToPoint(OLD_ROTATE_SCALE_TO_POINT_OP);
-RegisterRecordProxy<DummyRecord> g_OldPutTransform(OLD_PUT_TRANSFORM_OP);
-RegisterRecordProxy<DummyRecord> g_OldBoundingBox(OLD_BOUNDING_BOX_OP);
-RegisterRecordProxy<DummyRecord> g_IndexedString(INDEXED_STRING_OP);
-RegisterRecordProxy<DummyRecord> g_RoadZone(ROAD_ZONE_OP);
-RegisterRecordProxy<DummyRecord> g_RotateAboutEdge(ROTATE_ABOUT_EDGE_OP);
-RegisterRecordProxy<DummyRecord> g_Translate(TRANSLATE_OP);
-RegisterRecordProxy<DummyRecord> g_Scale(NONUNIFORM_SCALE_OP);
-RegisterRecordProxy<DummyRecord> g_RotateAboutPoint(ROTATE_ABOUT_POINT_OP);
-RegisterRecordProxy<DummyRecord> g_RotateScaleToPoint(ROTATE_SCALE_TO_POINT_OP);
-RegisterRecordProxy<DummyRecord> g_PutTransform(PUT_TRANSFORM_OP);
-RegisterRecordProxy<DummyRecord> g_GeneralMatrix(GENERAL_MATRIX_OP);
-RegisterRecordProxy<DummyRecord> g_Vector(VECTOR_OP);
-RegisterRecordProxy<DummyRecord> g_BoundingBox(BOUNDING_BOX_OP);
-RegisterRecordProxy<DummyRecord> g_BoundingSphere(BOUNDING_SPHERE_OP);
-RegisterRecordProxy<DummyRecord> g_BoundingCylinder(BOUNDING_CYLINDER_OP);
-RegisterRecordProxy<DummyRecord> g_BoundingConvexHull(BOUNDING_CONVEX_HULL_OP);
-RegisterRecordProxy<DummyRecord> g_BoundingHistogram(BOUNDING_HISTOGRAM);
-RegisterRecordProxy<DummyRecord> g_BoundingVolumeCenter(BOUNDING_VOLUME_CENTER_OP);
-RegisterRecordProxy<DummyRecord> g_BoundingVolumeOrientation(BOUNDING_VOLUME_ORIENTATION_OP);
-RegisterRecordProxy<DummyRecord> g_HistogramBoundingVolume(HISTOGRAM_BOUNDING_VOLUME_OP);
+REGISTER_FLTRECORD(DummyRecord, OLD_TRANSLATE2_OP)
+REGISTER_FLTRECORD(DummyRecord, OLD_ROTATE_ABOUT_POINT_OP)
+REGISTER_FLTRECORD(DummyRecord, OLD_ROTATE_ABOUT_EDGE_OP)
+REGISTER_FLTRECORD(DummyRecord, OLD_SCALE_OP)
+REGISTER_FLTRECORD(DummyRecord, OLD_TRANSLATE_OP)
+REGISTER_FLTRECORD(DummyRecord, OLD_NONUNIFORM_SCALE_OP)
+REGISTER_FLTRECORD(DummyRecord, OLD_ROTATE_ABOUT_POINT2_OP)
+REGISTER_FLTRECORD(DummyRecord, OLD_ROTATE_SCALE_TO_POINT_OP)
+REGISTER_FLTRECORD(DummyRecord, OLD_PUT_TRANSFORM_OP)
+REGISTER_FLTRECORD(DummyRecord, OLD_BOUNDING_BOX_OP)
+REGISTER_FLTRECORD(DummyRecord, INDEXED_STRING_OP)
+REGISTER_FLTRECORD(DummyRecord, ROAD_ZONE_OP)
+REGISTER_FLTRECORD(DummyRecord, ROTATE_ABOUT_EDGE_OP)
+REGISTER_FLTRECORD(DummyRecord, TRANSLATE_OP)
+REGISTER_FLTRECORD(DummyRecord, NONUNIFORM_SCALE_OP)
+REGISTER_FLTRECORD(DummyRecord, ROTATE_ABOUT_POINT_OP)
+REGISTER_FLTRECORD(DummyRecord, ROTATE_SCALE_TO_POINT_OP)
+REGISTER_FLTRECORD(DummyRecord, PUT_TRANSFORM_OP)
+REGISTER_FLTRECORD(DummyRecord, GENERAL_MATRIX_OP)
+REGISTER_FLTRECORD(DummyRecord, VECTOR_OP)
+REGISTER_FLTRECORD(DummyRecord, BOUNDING_BOX_OP)
+REGISTER_FLTRECORD(DummyRecord, BOUNDING_SPHERE_OP)
+REGISTER_FLTRECORD(DummyRecord, BOUNDING_CYLINDER_OP)
+REGISTER_FLTRECORD(DummyRecord, BOUNDING_CONVEX_HULL_OP)
+REGISTER_FLTRECORD(DummyRecord, BOUNDING_HISTOGRAM)
+REGISTER_FLTRECORD(DummyRecord, BOUNDING_VOLUME_CENTER_OP)
+REGISTER_FLTRECORD(DummyRecord, BOUNDING_VOLUME_ORIENTATION_OP)
+REGISTER_FLTRECORD(DummyRecord, HISTOGRAM_BOUNDING_VOLUME_OP)
+
 
 } // end namespace
 

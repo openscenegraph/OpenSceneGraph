@@ -153,7 +153,7 @@ protected:
     }
 };
 
-RegisterRecordProxy<Header> g_Header(HEADER_OP);
+REGISTER_FLTRECORD(Header, HEADER_OP)
 
 
 /** Group
@@ -292,7 +292,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<Group> g_Group(GROUP_OP);
+REGISTER_FLTRECORD(Group, GROUP_OP)
+
 
 
 /** DegreeOfFreedom
@@ -457,7 +458,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<DegreeOfFreedom> g_DegreeOfFreedom(DOF_OP);
+REGISTER_FLTRECORD(DegreeOfFreedom, DOF_OP)
+
 
 
 /** LevelOfDetail - To recreate the LevelOfDetail record in OSG we have to create a LOD node with one Group node under it.
@@ -513,7 +515,8 @@ protected:
 
 };
 
-RegisterRecordProxy<LevelOfDetail> g_LevelOfDetail(LOD_OP);
+REGISTER_FLTRECORD(LevelOfDetail, LOD_OP)
+
 
 
 /** OldLevelOfDetail
@@ -569,7 +572,8 @@ protected:
 
 };
 
-RegisterRecordProxy<OldLevelOfDetail> g_OldLevelOfDetail(OLD_LOD_OP);
+REGISTER_FLTRECORD(OldLevelOfDetail, OLD_LOD_OP)
+
 
 
 /** Switch
@@ -645,7 +649,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<Switch> g_Switch(SWITCH_OP);
+REGISTER_FLTRECORD(Switch, SWITCH_OP)
+
 
 
 /** ExternalReference
@@ -729,7 +734,8 @@ protected:
 
 };
 
-RegisterRecordProxy<ExternalReference> g_ExternalReference(EXTERNAL_REFERENCE_OP);
+REGISTER_FLTRECORD(ExternalReference, EXTERNAL_REFERENCE_OP)
+
 
 
 /** InstanceDefinition
@@ -778,7 +784,8 @@ protected:
 
 };
 
-RegisterRecordProxy<InstanceDefinition> g_InstanceDefinition(INSTANCE_DEFINITION_OP);
+REGISTER_FLTRECORD(InstanceDefinition, INSTANCE_DEFINITION_OP)
+
 
 
 /** InstanceReference
@@ -809,7 +816,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<InstanceReference> g_InstanceReference(INSTANCE_REFERENCE_OP);
+REGISTER_FLTRECORD(InstanceReference, INSTANCE_REFERENCE_OP)
+
 
 
 /** Extension
@@ -848,7 +856,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<Extension> g_Extension(EXTENSION_OP);
+REGISTER_FLTRECORD(Extension, EXTENSION_OP)
+
 
 
 /** Object
@@ -952,7 +961,8 @@ protected:
 
 };
 
-RegisterRecordProxy<Object> g_Object(OBJECT_OP);
+REGISTER_FLTRECORD(Object, OBJECT_OP)
+
 
 
 /** LightSource
@@ -1035,7 +1045,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<LightSource> g_LightSource(LIGHT_SOURCE_OP);
+REGISTER_FLTRECORD(LightSource, LIGHT_SOURCE_OP)
+
 
 
 } // end namespace

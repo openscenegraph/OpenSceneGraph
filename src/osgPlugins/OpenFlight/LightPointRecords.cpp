@@ -234,7 +234,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<LightPoint> g_LightPoint(LIGHT_POINT_OP);
+REGISTER_FLTRECORD(LightPoint, LIGHT_POINT_OP)
+
 
 
 /** IndexedLightPoint
@@ -416,7 +417,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<IndexedLightPoint> g_IndexedLightPoint(INDEXED_LIGHT_POINT_OP);
+REGISTER_FLTRECORD(IndexedLightPoint, INDEXED_LIGHT_POINT_OP)
+
 
 
 /** LightPointSystem
@@ -508,5 +510,6 @@ protected:
     }
 };
 
-RegisterRecordProxy<LightPointSystem> g_LightPointSystem(LIGHT_POINT_SYSTEM_OP);
+REGISTER_FLTRECORD(LightPointSystem, LIGHT_POINT_SYSTEM_OP)
+
 

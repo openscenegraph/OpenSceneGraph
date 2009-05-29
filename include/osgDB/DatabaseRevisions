@@ -1,0 +1,76 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGDB_DATABASEREVISIONS
+#define OSGDB_DATABASEREVISIONS 1
+
+#include <osg/Node>
+
+#include <osgDB/ReaderWriter>
+
+#include <set>
+
+namespace osgDB {
+
+
+class OSGDB_EXPORT DatabaseRevision : public osg::Object
+{
+    public:
+
+        DatabaseRevision();
+        DatabaseRevision(const DatabaseRevision& revision, const osg::CopyOp=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgDB, DatabaseRevision)
+
+        typedef std::set<std::string> FileNames;
+
+        FileNames& getFilesAdded() { return _filesAdded; }
+        FileNames& getFilesRemoved() { return _filesRemoved; }
+        FileNames& getFilesModified() { return _filesModified; }
+
+        bool isFileBlackListed(const std::string& filename) const;
+
+    protected:
+
+        virtual ~DatabaseRevision();
+
+        FileNames _filesAdded;
+        FileNames _filesRemoved;
+        FileNames _filesModified;
+};
+
+class OSGDB_EXPORT DatabaseRevisions : public osg::Object
+{
+    public:
+
+        DatabaseRevisions();
+        DatabaseRevisions(const DatabaseRevisions& revisions, const osg::CopyOp=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgDB, DatabaseRevisions)
+
+        typedef std::vector< osg::ref_ptr<DatabaseRevision> > DatabaseRevisionList;
+
+        DatabaseRevisionList& getDatabaseRevisionList() { return _revisionList; }
+
+        bool isFileBlackListed(const std::string& filename) const;
+
+    protected:
+
+        virtual ~DatabaseRevisions();
+
+        DatabaseRevisionList _revisionList;
+};
+
+}
+
+#endif

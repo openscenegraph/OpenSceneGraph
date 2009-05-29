@@ -19,6 +19,10 @@
 
 using namespace osgDB;
 
+////////////////////////////////////////////////////////////////////////////////////////////
+//
+// FileCache
+//
 FileCache::FileCache(const std::string& path):
     _fileCachePath(path)
 {
@@ -40,15 +44,19 @@ std::string FileCache::createCacheFileName(const std::string& originalFileName) 
     std::string cacheFileName = _fileCachePath + "/" + 
                                 osgDB::getServerAddress(originalFileName) + "/" + 
                                 osgDB::getServerFileName(originalFileName);
-                                
+
     osg::notify(osg::INFO)<<"FileCache::createCacheFileName("<<originalFileName<<") = "<<cacheFileName<<std::endl;
-    
+
     return cacheFileName;
 }
 
 bool FileCache::existsInCache(const std::string& originalFileName) const
 {
-    return osgDB::fileExists(createCacheFileName(originalFileName));
+    if (osgDB::fileExists(createCacheFileName(originalFileName)))
+    {   
+        return !isCachedFileBlackListed(originalFileName);
+    }
+    return false;
 }
 
 ReaderWriter::ReadResult FileCache::readObject(const std::string& originalFileName, const osgDB::Options* options) const
@@ -215,4 +223,16 @@ ReaderWriter::WriteResult FileCache::writeShader(const osg::Shader& shader, cons
         return osgDB::Registry::instance()->writeShader(shader, cacheFileName, options);
     }
     return ReaderWriter::WriteResult::FILE_NOT_HANDLED;
+}
+
+
+bool FileCache::isCachedFileBlackListed(const std::string& originalFileName) const
+{
+    for(DatabaseRevisionsList::const_iterator itr = _databaseRevisionsList.begin();
+        itr != _databaseRevisionsList.end();
+        ++itr)
+    {
+        if ((*itr)->isFileBlackListed(originalFileName)) return true;
+    }
+    return false;
 }

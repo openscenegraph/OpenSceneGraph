@@ -17,6 +17,9 @@
 #include <osg/Node>
 
 #include <osgDB/ReaderWriter>
+#include <osgDB/DatabaseRevisions>
+
+#include <set>
 
 namespace osgDB {
 
@@ -49,11 +52,19 @@ class OSGDB_EXPORT FileCache : public osg::Referenced
         virtual ReaderWriter::ReadResult readShader(const std::string& originalFileName, const osgDB::Options* options) const;
         virtual ReaderWriter::WriteResult writeShader(const osg::Shader& shader, const std::string& originalFileName, const osgDB::Options* options) const;
 
+
+        typedef std::list< osg::ref_ptr<DatabaseRevisions> > DatabaseRevisionsList;
+        DatabaseRevisionsList& getDatabaseRevisionsList() { return _databaseRevisionsList; }
+
+        bool isCachedFileBlackListed(const std::string& originalFileName) const;
+
     protected:
 
         virtual ~FileCache();
 
         std::string _fileCachePath;
+
+        DatabaseRevisionsList _databaseRevisionsList;
 
 };
 

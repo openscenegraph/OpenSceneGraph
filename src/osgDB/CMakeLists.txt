@@ -24,6 +24,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Callbacks
     ${HEADER_PATH}/ConvertUTF
     ${HEADER_PATH}/DatabasePager
+    ${HEADER_PATH}/DatabaseRevisions
     ${HEADER_PATH}/DotOsgWrapper
     ${HEADER_PATH}/DynamicLibrary
     ${HEADER_PATH}/Export
@@ -60,6 +61,7 @@ ADD_LIBRARY(${LIB_NAME}
     Callbacks.cpp
     ConvertUTF.cpp
     DatabasePager.cpp
+    DatabaseRevisions.cpp
     DotOsgWrapper.cpp
     DynamicLibrary.cpp
     Field.cpp

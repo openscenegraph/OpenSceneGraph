@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 44;
+	objectVersion = 42;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -137,6 +137,7 @@
 				005988BF0652DBC6003D6AA1 /* PBXTargetDependency */,
 				0084FC4D0D3427290021E5C9 /* PBXTargetDependency */,
 				001D0686065AB60D003310BF /* PBXTargetDependency */,
+				D43ED2240FCE96CF0024F778 /* PBXTargetDependency */,
 				001D0688065AB60D003310BF /* PBXTargetDependency */,
 				001D068A065AB60D003310BF /* PBXTargetDependency */,
 				001D0698065AB60D003310BF /* PBXTargetDependency */,
@@ -2433,6 +2434,19 @@
 		D43AB6170E2E1E0000623C77 /* Widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6070E2E1E0000623C77 /* Widget.cpp */; };
 		D43AB6180E2E1E0000623C77 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6080E2E1E0000623C77 /* Window.cpp */; };
 		D43AB6190E2E1E0000623C77 /* WindowManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB6090E2E1E0000623C77 /* WindowManager.cpp */; };
+		D43ED1D50FCE95C10024F778 /* ReaderWriterTRANS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 008F44E006CC041C00F4220C /* ReaderWriterTRANS.cpp */; };
+		D43ED1D70FCE95C10024F778 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		D43ED1D80FCE95C10024F778 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		D43ED2150FCE967C0024F778 /* ply.h in Headers */ = {isa = PBXBuildFile; fileRef = D43ED20F0FCE967B0024F778 /* ply.h */; };
+		D43ED2160FCE967C0024F778 /* plyfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43ED2100FCE967C0024F778 /* plyfile.cpp */; };
+		D43ED2170FCE967C0024F778 /* ReaderWriterPLY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43ED2110FCE967C0024F778 /* ReaderWriterPLY.cpp */; };
+		D43ED2180FCE967C0024F778 /* typedefs.h in Headers */ = {isa = PBXBuildFile; fileRef = D43ED2120FCE967C0024F778 /* typedefs.h */; };
+		D43ED2190FCE967C0024F778 /* vertexData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43ED2130FCE967C0024F778 /* vertexData.cpp */; };
+		D43ED21A0FCE967C0024F778 /* vertexData.h in Headers */ = {isa = PBXBuildFile; fileRef = D43ED2140FCE967C0024F778 /* vertexData.h */; };
+		D43ED73F0FCFDF9F0024F778 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		D43ED7810FCFDFE60024F778 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
+		D43ED7A40FCFE0CE0024F778 /* DatabaseRevisions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43ED7A30FCFE0CE0024F778 /* DatabaseRevisions.cpp */; };
+		D43ED7A60FCFE0DB0024F778 /* DatabaseRevisions in Headers */ = {isa = PBXBuildFile; fileRef = D43ED7A50FCFE0DB0024F778 /* DatabaseRevisions */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4456E520D4F674E005E986E /* osgtext3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4456E510D4F674E005E986E /* osgtext3D.cpp */; };
 		D44F2AA80DA11DD2009144E7 /* TerrainTile in Resources */ = {isa = PBXBuildFile; fileRef = D44F2AA70DA11DD2009144E7 /* TerrainTile */; };
 		D44F2AAA0DA11DED009144E7 /* TerrainTile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AA90DA11DED009144E7 /* TerrainTile.cpp */; };
@@ -2799,7 +2813,6 @@
 		D4F424CE0F5D9E3D0052261D /* AudioStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */; };
 		D4F80A9F0F935ABF0043A5DE /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D4F80AA00F935ABF0043A5DE /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
-		D4F80AA10F935ABF0043A5DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4F80AE70F935BE10043A5DE /* ReaderWriterCURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F80AE50F935BE10043A5DE /* ReaderWriterCURL.cpp */; };
 		D4F80AE80F935BE10043A5DE /* ReaderWriterCURL.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F80AE60F935BE10043A5DE /* ReaderWriterCURL.h */; };
 		D4F8659E0E7019EE0070271C /* AnisotropicLighting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F8658C0E7019EC0070271C /* AnisotropicLighting.cpp */; };
@@ -6184,6 +6197,20 @@
 			remoteGlobalIDString = D43AB51E0E2E1D1900623C77;
 			remoteInfo = osgWidget;
 		};
+		D43ED1D20FCE95C10024F778 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE1188E605D764C400EB53E5;
+			remoteInfo = osgDB;
+		};
+		D43ED2230FCE96CF0024F778 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D43ED1D00FCE95C10024F778;
+			remoteInfo = osgdb_ply;
+		};
 		D44EC2B10F9727100079FEE7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -8197,6 +8224,15 @@
 		D43AB6070E2E1E0000623C77 /* Widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Widget.cpp; sourceTree = "<group>"; };
 		D43AB6080E2E1E0000623C77 /* Window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Window.cpp; sourceTree = "<group>"; };
 		D43AB6090E2E1E0000623C77 /* WindowManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WindowManager.cpp; sourceTree = "<group>"; };
+		D43ED1E10FCE95C10024F778 /* osgdb_ply.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_ply.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		D43ED20F0FCE967B0024F778 /* ply.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ply.h; path = ../../src/osgPlugins/ply/ply.h; sourceTree = SOURCE_ROOT; };
+		D43ED2100FCE967C0024F778 /* plyfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = plyfile.cpp; path = ../../src/osgPlugins/ply/plyfile.cpp; sourceTree = SOURCE_ROOT; };
+		D43ED2110FCE967C0024F778 /* ReaderWriterPLY.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ReaderWriterPLY.cpp; path = ../../src/osgPlugins/ply/ReaderWriterPLY.cpp; sourceTree = SOURCE_ROOT; };
+		D43ED2120FCE967C0024F778 /* typedefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = typedefs.h; path = ../../src/osgPlugins/ply/typedefs.h; sourceTree = SOURCE_ROOT; };
+		D43ED2130FCE967C0024F778 /* vertexData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vertexData.cpp; path = ../../src/osgPlugins/ply/vertexData.cpp; sourceTree = SOURCE_ROOT; };
+		D43ED2140FCE967C0024F778 /* vertexData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vertexData.h; path = ../../src/osgPlugins/ply/vertexData.h; sourceTree = SOURCE_ROOT; };
+		D43ED7A30FCFE0CE0024F778 /* DatabaseRevisions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseRevisions.cpp; sourceTree = "<group>"; };
+		D43ED7A50FCFE0DB0024F778 /* DatabaseRevisions */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DatabaseRevisions; sourceTree = "<group>"; };
 		D4456E510D4F674E005E986E /* osgtext3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osgtext3D.cpp; path = ../../examples/osgtext3D/osgtext3D.cpp; sourceTree = SOURCE_ROOT; };
 		D44F2AA70DA11DD2009144E7 /* TerrainTile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TerrainTile; sourceTree = "<group>"; };
 		D44F2AA90DA11DED009144E7 /* TerrainTile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainTile.cpp; path = ../../src/osgTerrain/TerrainTile.cpp; sourceTree = SOURCE_ROOT; };
@@ -9598,6 +9634,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D43ED7810FCFDFE60024F778 /* osgGA.framework in Frameworks */,
+				D43ED73F0FCFDF9F0024F778 /* osgUtil.framework in Frameworks */,
 				0084FC5B0D3427B70021E5C9 /* osg.framework in Frameworks */,
 				0084FC5C0D3427B70021E5C9 /* osgDB.framework in Frameworks */,
 				0084FCAB0D3428DE0021E5C9 /* osgViewer.framework in Frameworks */,
@@ -10272,6 +10310,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D43ED1D60FCE95C10024F778 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43ED1D70FCE95C10024F778 /* osg.framework in Frameworks */,
+				D43ED1D80FCE95C10024F778 /* osgDB.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4646D2D0E34932C000EF4FB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -10378,7 +10425,6 @@
 			files = (
 				D4F80A9F0F935ABF0043A5DE /* osg.framework in Frameworks */,
 				D4F80AA00F935ABF0043A5DE /* osgDB.framework in Frameworks */,
-				D4F80AA10F935ABF0043A5DE /* osgViewer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -11737,6 +11783,7 @@
 				0084FBBD0D3425BF0021E5C9 /* osgViewer */,
 				001D0341065AAE3C003310BF /* osgtgz */,
 				001D036A065AAED0003310BF /* pic */,
+				D43ED2060FCE960B0024F778 /* ply */,
 				001D0385065AAF32003310BF /* pnm */,
 				001D060A065AB3CD003310BF /* quicktime */,
 				001D03A6065AAF7C003310BF /* rgb */,
@@ -12677,6 +12724,7 @@
 				D41888810EDEE8E200C17A84 /* osganimationviewer.app */,
 				D40B523C0F5804E3004D300C /* osgdb_imageio.so */,
 				D4F80AAA0F935ABF0043A5DE /* osgdb_curl.so */,
+				D43ED1E10FCE95C10024F778 /* osgdb_ply.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -13544,6 +13592,7 @@
 		BE1188DF05D7641E00EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				D43ED7A30FCFE0CE0024F778 /* DatabaseRevisions.cpp */,
 				D4D8E2120FB96263000B8789 /* Callbacks.cpp */,
 				D4FB11030FB850EA00F67E0E /* Options.cpp */,
 				D4AF8DAF0FB1AF24004B17A0 /* XmlParser.cpp */,
@@ -13580,6 +13629,7 @@
 		BE1188E005D7646500EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				D43ED7A50FCFE0DB0024F778 /* DatabaseRevisions */,
 				D4D8E20F0FB96238000B8789 /* Callbacks */,
 				D4FB11010FB850D900F67E0E /* Options */,
 				D4AF8DAD0FB1AF15004B17A0 /* XmlParser */,
@@ -13759,6 +13809,19 @@
 			name = osgWidget;
 			path = ../../src/osgWidget;
 			sourceTree = SOURCE_ROOT;
+		};
+		D43ED2060FCE960B0024F778 /* ply */ = {
+			isa = PBXGroup;
+			children = (
+				D43ED20F0FCE967B0024F778 /* ply.h */,
+				D43ED2100FCE967C0024F778 /* plyfile.cpp */,
+				D43ED2110FCE967C0024F778 /* ReaderWriterPLY.cpp */,
+				D43ED2120FCE967C0024F778 /* typedefs.h */,
+				D43ED2130FCE967C0024F778 /* vertexData.cpp */,
+				D43ED2140FCE967C0024F778 /* vertexData.h */,
+			);
+			name = ply;
+			sourceTree = "<group>";
 		};
 		D45878A10F555C3A0060BAA4 /* Cocoa */ = {
 			isa = PBXGroup;
@@ -15609,6 +15672,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D43ED7A60FCFE0DB0024F778 /* DatabaseRevisions in Headers */,
 				D4D8E2100FB96238000B8789 /* Callbacks in Headers */,
 				D4FB11020FB850D900F67E0E /* Options in Headers */,
 				D4AF8DAE0FB1AF15004B17A0 /* XmlParser in Headers */,
@@ -15713,6 +15777,16 @@
 				D43AB5F50E2E1DD400623C77 /* Widget in Headers */,
 				D43AB5F60E2E1DD400623C77 /* Window in Headers */,
 				D43AB5F70E2E1DD400623C77 /* WindowManager in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43ED1D30FCE95C10024F778 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43ED2150FCE967C0024F778 /* ply.h in Headers */,
+				D43ED2180FCE967C0024F778 /* typedefs.h in Headers */,
+				D43ED21A0FCE967C0024F778 /* vertexData.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18829,6 +18903,24 @@
 			productReference = D43AB5640E2E1D1900623C77 /* osgManipulator.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		D43ED1D00FCE95C10024F778 /* osgdb_ply */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D43ED1D90FCE95C10024F778 /* Build configuration list for PBXNativeTarget "osgdb_ply" */;
+			buildPhases = (
+				D43ED1D30FCE95C10024F778 /* Headers */,
+				D43ED1D40FCE95C10024F778 /* Sources */,
+				D43ED1D60FCE95C10024F778 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D43ED1D10FCE95C10024F778 /* PBXTargetDependency */,
+			);
+			name = osgdb_ply;
+			productName = osgdb_3dc;
+			productReference = D43ED1E10FCE95C10024F778 /* osgdb_ply.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		D4646D260E34932C000EF4FB /* osgwidgetmenu */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D4646D340E34932C000EF4FB /* Build configuration list for PBXNativeTarget "osgwidgetmenu" */;
@@ -19003,7 +19095,7 @@
 		0867D690FE84028FC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 001103B108736A190015C576 /* Build configuration list for PBXProject "OpenSceneGraph" */;
-			compatibilityVersion = "Xcode 3.0";
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* OpenSceneGraph */;
 			productRefGroup = 034768DDFF38A45A11DB9C8B /* Products */;
@@ -19064,6 +19156,7 @@
 				0084FB9A0D3425180021E5C9 /* osgdb_osgViewer */,
 				001D0337065AAE11003310BF /* osgdb_osgtgz */,
 				001D0357065AAE7A003310BF /* osgdb_pic */,
+				D43ED1D00FCE95C10024F778 /* osgdb_ply */,
 				001D037A065AAEEC003310BF /* osgdb_pnm */,
 				001D0600065AB39D003310BF /* osgdb_qt */,
 				001D0396065AAF46003310BF /* osgdb_rgb */,
@@ -21881,6 +21974,7 @@
 				D4AF8DB00FB1AF24004B17A0 /* XmlParser.cpp in Sources */,
 				D4FB11040FB850EA00F67E0E /* Options.cpp in Sources */,
 				D4D8E2130FB96263000B8789 /* Callbacks.cpp in Sources */,
+				D43ED7A40FCFE0CE0024F778 /* DatabaseRevisions.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21944,6 +22038,17 @@
 				D43AB6180E2E1E0000623C77 /* Window.cpp in Sources */,
 				D43AB6190E2E1E0000623C77 /* WindowManager.cpp in Sources */,
 				D41889210EDEEA0600C17A84 /* Browser.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43ED1D40FCE95C10024F778 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43ED1D50FCE95C10024F778 /* ReaderWriterTRANS.cpp in Sources */,
+				D43ED2160FCE967C0024F778 /* plyfile.cpp in Sources */,
+				D43ED2170FCE967C0024F778 /* ReaderWriterPLY.cpp in Sources */,
+				D43ED2190FCE967C0024F778 /* vertexData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24862,6 +24967,16 @@
 			isa = PBXTargetDependency;
 			target = D43AB51E0E2E1D1900623C77 /* osgWidget */;
 			targetProxy = D43AB63C0E2E1EAC00623C77 /* PBXContainerItemProxy */;
+		};
+		D43ED1D10FCE95C10024F778 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE1188E605D764C400EB53E5 /* osgDB */;
+			targetProxy = D43ED1D20FCE95C10024F778 /* PBXContainerItemProxy */;
+		};
+		D43ED2240FCE96CF0024F778 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D43ED1D00FCE95C10024F778 /* osgdb_ply */;
+			targetProxy = D43ED2230FCE96CF0024F778 /* PBXContainerItemProxy */;
 		};
 		D44EC2B20F9727100079FEE7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -35250,7 +35365,7 @@
 				);
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = "Development 64bit Cocoa";
 		};
@@ -35277,7 +35392,7 @@
 				);
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				STRIP_STYLE = "non-global";
 			};
 			name = "Deployment 32bit Carbon";
@@ -35304,7 +35419,7 @@
 				OTHER_CFLAGS = "-DGLU_TESS_CALLBACK_TRIPLEDOT";
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Default;
 		};
@@ -37996,7 +38111,7 @@
 				OTHER_CFLAGS = "-DUSE_DARWIN_COCOA_IMPLEMENTATION";
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = "Development 32bit Cocoa";
 		};
@@ -43031,7 +43146,7 @@
 				);
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				STRIP_STYLE = "non-global";
 			};
 			name = "Deployment 32bit Cocoa";
@@ -43458,7 +43573,6 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
-				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
@@ -43466,7 +43580,6 @@
 				INFOPLIST_FILE = "osgManipulator-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_CFLAGS = "";
-				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgManipulator;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
@@ -48008,7 +48121,7 @@
 				OTHER_CFLAGS = "-DUSE_DARWIN_CARBON_IMPLEMENTATION";
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = "Development 32bit Carbon";
 		};
@@ -53264,6 +53377,226 @@
 			};
 			name = Default;
 		};
+		D43ED1DA0FCE95C10024F778 /* Development 32bit Carbon */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Development 32bit Carbon";
+		};
+		D43ED1DB0FCE95C10024F778 /* Deployment 32bit Carbon */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Deployment 32bit Carbon";
+		};
+		D43ED1DC0FCE95C10024F778 /* Development 64bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Development 64bit Cocoa";
+		};
+		D43ED1DD0FCE95C10024F778 /* Deployment 64bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Deployment 64bit Cocoa";
+		};
+		D43ED1DE0FCE95C10024F778 /* Development 32bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Development 32bit Cocoa";
+		};
+		D43ED1DF0FCE95C10024F778 /* Deployment 32bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Deployment 32bit Cocoa";
+		};
+		D43ED1E00FCE95C10024F778 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
 		D4646D350E34932C000EF4FB /* Development 64bit Cocoa */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -53632,7 +53965,7 @@
 				);
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				STRIP_STYLE = "non-global";
 			};
 			name = "Deployment 64bit Cocoa";
@@ -61088,6 +61421,20 @@
 				D403BC4A0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D403BFA10F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D43AB5630E2E1D1900623C77 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		D43ED1D90FCE95C10024F778 /* Build configuration list for PBXNativeTarget "osgdb_ply" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D43ED1DA0FCE95C10024F778 /* Development 32bit Carbon */,
+				D43ED1DB0FCE95C10024F778 /* Deployment 32bit Carbon */,
+				D43ED1DC0FCE95C10024F778 /* Development 64bit Cocoa */,
+				D43ED1DD0FCE95C10024F778 /* Deployment 64bit Cocoa */,
+				D43ED1DE0FCE95C10024F778 /* Development 32bit Cocoa */,
+				D43ED1DF0FCE95C10024F778 /* Deployment 32bit Cocoa */,
+				D43ED1E00FCE95C10024F778 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

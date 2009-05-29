@@ -21,6 +21,24 @@ using namespace osgDB;
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
+// FilelList
+//
+FileList::FileList()
+{
+}
+
+FileList::FileList(const FileList& fileList, const osg::CopyOp):
+    _files(fileList._files)
+{
+}
+
+FileList::~FileList()
+{
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////
+//
 // DatabaseRevision
 //
 DatabaseRevision::DatabaseRevision()
@@ -40,7 +58,8 @@ DatabaseRevision::~DatabaseRevision()
 
 bool DatabaseRevision::isFileBlackListed(const std::string& filename) const
 {
-    return _filesRemoved.count(filename)!=0 || _filesModified.count(filename)!=0;
+    return (_filesRemoved.valid() && _filesRemoved->contains(filename)) ||
+           (_filesAdded.valid() && _filesAdded->contains(filename));
 }
 
 
@@ -59,6 +78,39 @@ DatabaseRevisions::DatabaseRevisions(const DatabaseRevisions& revisions, const o
 
 DatabaseRevisions::~DatabaseRevisions()
 {
+}
+
+void DatabaseRevisions::addRevision(DatabaseRevision* revision)
+{
+    if (!revision) return;
+
+    for(DatabaseRevisionList::iterator itr = _revisionList.begin();
+        itr != _revisionList.end();
+        ++itr)
+    {
+        if (*itr == revision) return;
+        if ((*itr)->getName()==revision->getName())
+        {
+            (*itr) = revision;
+            return;
+        }
+    }
+
+    _revisionList.push_back(revision);
+}
+
+void DatabaseRevisions::removeRevision(DatabaseRevision* revision)
+{
+    for(DatabaseRevisionList::iterator itr = _revisionList.begin();
+        itr != _revisionList.end();
+        ++itr)
+    {
+        if (*itr == revision)
+        {
+            _revisionList.erase(itr);
+            return;
+        }
+    }
 }
 
 bool DatabaseRevisions::isFileBlackListed(const std::string& filename) const

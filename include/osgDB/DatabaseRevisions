@@ -22,6 +22,28 @@
 
 namespace osgDB {
 
+class OSGDB_EXPORT FileList : public osg::Object
+{
+    public:
+
+        FileList();
+        FileList(const FileList& fileList, const osg::CopyOp=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgDB, FileList)
+
+        typedef std::set<std::string> FileNames;
+        FileNames& getFileNames() { return _files; }
+        const FileNames& getFileNames() const { return _files; }
+
+        bool contains(const std::string& filename) const { return _files.count(filename)!=0; }
+
+    protected:
+
+        virtual ~FileList();
+
+        FileNames _files;
+};
+
 
 class OSGDB_EXPORT DatabaseRevision : public osg::Object
 {
@@ -34,9 +56,17 @@ class OSGDB_EXPORT DatabaseRevision : public osg::Object
 
         typedef std::set<std::string> FileNames;
 
-        FileNames& getFilesAdded() { return _filesAdded; }
-        FileNames& getFilesRemoved() { return _filesRemoved; }
-        FileNames& getFilesModified() { return _filesModified; }
+        void setFilesAdded(FileList* fileList) { _filesAdded = fileList; }
+        FileList* getFilesAdded() { return _filesAdded.get(); }
+        const FileList* getFilesAdded() const { return _filesAdded.get(); }
+
+        void setFilesRemoved(FileList* fileList) { _filesRemoved = fileList; }
+        FileList* getFilesRemoved() { return _filesRemoved.get(); }
+        const FileList* getFilesRemoved() const { return _filesRemoved.get(); }
+
+        void setFilesModified(FileList* fileList) { _filesModified = fileList; }
+        FileList* getFilesModified() { return _filesModified.get(); }
+        const FileList* getFilesModified() const { return _filesModified.get(); }
 
         bool isFileBlackListed(const std::string& filename) const;
 
@@ -44,9 +74,9 @@ class OSGDB_EXPORT DatabaseRevision : public osg::Object
 
         virtual ~DatabaseRevision();
 
-        FileNames _filesAdded;
-        FileNames _filesRemoved;
-        FileNames _filesModified;
+        osg::ref_ptr<FileList> _filesAdded;
+        osg::ref_ptr<FileList> _filesRemoved;
+        osg::ref_ptr<FileList> _filesModified;
 };
 
 class OSGDB_EXPORT DatabaseRevisions : public osg::Object
@@ -60,7 +90,11 @@ class OSGDB_EXPORT DatabaseRevisions : public osg::Object
 
         typedef std::vector< osg::ref_ptr<DatabaseRevision> > DatabaseRevisionList;
 
+        void addRevision(DatabaseRevision* revision);
+        void removeRevision(DatabaseRevision* revision);
+
         DatabaseRevisionList& getDatabaseRevisionList() { return _revisionList; }
+        const DatabaseRevisionList& getDatabaseRevisionList() const { return _revisionList; }
 
         bool isFileBlackListed(const std::string& filename) const;
 

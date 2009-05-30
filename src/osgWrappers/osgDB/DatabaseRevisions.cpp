@@ -59,19 +59,49 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabaseRevision)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method0(osgDB::DatabaseRevision::FileNames &, getFilesAdded,
+	I_Method1(void, setFilesAdded, IN, osgDB::FileList *, fileList,
 	          Properties::NON_VIRTUAL,
-	          __FileNames_R1__getFilesAdded,
+	          __void__setFilesAdded__FileList_P1,
 	          "",
 	          "");
-	I_Method0(osgDB::DatabaseRevision::FileNames &, getFilesRemoved,
+	I_Method0(osgDB::FileList *, getFilesAdded,
 	          Properties::NON_VIRTUAL,
-	          __FileNames_R1__getFilesRemoved,
+	          __FileList_P1__getFilesAdded,
 	          "",
 	          "");
-	I_Method0(osgDB::DatabaseRevision::FileNames &, getFilesModified,
+	I_Method0(const osgDB::FileList *, getFilesAdded,
 	          Properties::NON_VIRTUAL,
-	          __FileNames_R1__getFilesModified,
+	          __C5_FileList_P1__getFilesAdded,
+	          "",
+	          "");
+	I_Method1(void, setFilesRemoved, IN, osgDB::FileList *, fileList,
+	          Properties::NON_VIRTUAL,
+	          __void__setFilesRemoved__FileList_P1,
+	          "",
+	          "");
+	I_Method0(osgDB::FileList *, getFilesRemoved,
+	          Properties::NON_VIRTUAL,
+	          __FileList_P1__getFilesRemoved,
+	          "",
+	          "");
+	I_Method0(const osgDB::FileList *, getFilesRemoved,
+	          Properties::NON_VIRTUAL,
+	          __C5_FileList_P1__getFilesRemoved,
+	          "",
+	          "");
+	I_Method1(void, setFilesModified, IN, osgDB::FileList *, fileList,
+	          Properties::NON_VIRTUAL,
+	          __void__setFilesModified__FileList_P1,
+	          "",
+	          "");
+	I_Method0(osgDB::FileList *, getFilesModified,
+	          Properties::NON_VIRTUAL,
+	          __FileList_P1__getFilesModified,
+	          "",
+	          "");
+	I_Method0(const osgDB::FileList *, getFilesModified,
+	          Properties::NON_VIRTUAL,
+	          __C5_FileList_P1__getFilesModified,
 	          "",
 	          "");
 	I_Method1(bool, isFileBlackListed, IN, const std::string &, filename,
@@ -79,15 +109,15 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabaseRevision)
 	          __bool__isFileBlackListed__C5_std_string_R1,
 	          "",
 	          "");
-	I_SimpleProperty(osgDB::DatabaseRevision::FileNames &, FilesAdded, 
-	                 __FileNames_R1__getFilesAdded, 
-	                 0);
-	I_SimpleProperty(osgDB::DatabaseRevision::FileNames &, FilesModified, 
-	                 __FileNames_R1__getFilesModified, 
-	                 0);
-	I_SimpleProperty(osgDB::DatabaseRevision::FileNames &, FilesRemoved, 
-	                 __FileNames_R1__getFilesRemoved, 
-	                 0);
+	I_SimpleProperty(osgDB::FileList *, FilesAdded, 
+	                 __FileList_P1__getFilesAdded, 
+	                 __void__setFilesAdded__FileList_P1);
+	I_SimpleProperty(osgDB::FileList *, FilesModified, 
+	                 __FileList_P1__getFilesModified, 
+	                 __void__setFilesModified__FileList_P1);
+	I_SimpleProperty(osgDB::FileList *, FilesRemoved, 
+	                 __FileList_P1__getFilesRemoved, 
+	                 __void__setFilesRemoved__FileList_P1);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgDB::DatabaseRevision > >, osgDB::DatabaseRevisions::DatabaseRevisionList)
@@ -127,9 +157,24 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabaseRevisions)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, addRevision, IN, osgDB::DatabaseRevision *, revision,
+	          Properties::NON_VIRTUAL,
+	          __void__addRevision__DatabaseRevision_P1,
+	          "",
+	          "");
+	I_Method1(void, removeRevision, IN, osgDB::DatabaseRevision *, revision,
+	          Properties::NON_VIRTUAL,
+	          __void__removeRevision__DatabaseRevision_P1,
+	          "",
+	          "");
 	I_Method0(osgDB::DatabaseRevisions::DatabaseRevisionList &, getDatabaseRevisionList,
 	          Properties::NON_VIRTUAL,
 	          __DatabaseRevisionList_R1__getDatabaseRevisionList,
+	          "",
+	          "");
+	I_Method0(const osgDB::DatabaseRevisions::DatabaseRevisionList &, getDatabaseRevisionList,
+	          Properties::NON_VIRTUAL,
+	          __C5_DatabaseRevisionList_R1__getDatabaseRevisionList,
 	          "",
 	          "");
 	I_Method1(bool, isFileBlackListed, IN, const std::string &, filename,
@@ -139,6 +184,63 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabaseRevisions)
 	          "");
 	I_SimpleProperty(osgDB::DatabaseRevisions::DatabaseRevisionList &, DatabaseRevisionList, 
 	                 __DatabaseRevisionList_R1__getDatabaseRevisionList, 
+	                 0);
+END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::set< std::string >, osgDB::FileList::FileNames)
+
+BEGIN_OBJECT_REFLECTOR(osgDB::FileList)
+	I_DeclaringFile("osgDB/DatabaseRevisions");
+	I_BaseType(osg::Object);
+	I_Constructor0(____FileList,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgDB::FileList &, fileList, , IN, const osg::CopyOp, x, osg::CopyOp::SHALLOW_COPY,
+	                           ____FileList__C5_FileList_R1__C5_osg_CopyOp,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(osgDB::FileList::FileNames &, getFileNames,
+	          Properties::NON_VIRTUAL,
+	          __FileNames_R1__getFileNames,
+	          "",
+	          "");
+	I_Method0(const osgDB::FileList::FileNames &, getFileNames,
+	          Properties::NON_VIRTUAL,
+	          __C5_FileNames_R1__getFileNames,
+	          "",
+	          "");
+	I_Method1(bool, contains, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
+	          __bool__contains__C5_std_string_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgDB::FileList::FileNames &, FileNames, 
+	                 __FileNames_R1__getFileNames, 
 	                 0);
 END_REFLECTOR
 

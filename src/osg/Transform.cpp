@@ -163,29 +163,28 @@ BoundingSphere Transform::computeBound() const
 
     computeLocalToWorldMatrix(l2w,NULL);
 
-    Vec3 xdash = bsphere._center;
+    osg::BoundingSphere::vec_type xdash = bsphere._center;
     xdash.x() += bsphere._radius;
     xdash = xdash*l2w;
 
-    Vec3 ydash = bsphere._center;
+    osg::BoundingSphere::vec_type ydash = bsphere._center;
     ydash.y() += bsphere._radius;
     ydash = ydash*l2w;
 
-    Vec3 zdash = bsphere._center;
+    osg::BoundingSphere::vec_type zdash = bsphere._center;
     zdash.z() += bsphere._radius;
     zdash = zdash*l2w;
-
 
     bsphere._center = bsphere._center*l2w;
 
     xdash -= bsphere._center;
-    float len_xdash = xdash.length();
+    osg::BoundingSphere::value_type len_xdash = xdash.length();
 
     ydash -= bsphere._center;
-    float len_ydash = ydash.length();
+    osg::BoundingSphere::value_type len_ydash = ydash.length();
 
     zdash -= bsphere._center;
-    float len_zdash = zdash.length();
+    osg::BoundingSphere::value_type len_zdash = zdash.length();
 
     bsphere._radius = len_xdash;
     if (bsphere._radius<len_ydash) bsphere._radius = len_ydash;

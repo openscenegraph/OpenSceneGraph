@@ -111,7 +111,12 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
         stateset.compileGLObjects(*_renderInfo.getState());
         
         osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
-        if (program) _lastCompiledProgram = program;
+        if (program) {
+            if( program->isFixedFunction() )
+                _lastCompiledProgram = NULL; // It does not make sense to apply uniforms on fixed pipe
+            else 
+                _lastCompiledProgram = program;
+        }
 
         if (_lastCompiledProgram.valid() && !stateset.getUniformList().empty())
         {

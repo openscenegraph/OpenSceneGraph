@@ -23,7 +23,14 @@
 
 namespace osgdae {
 
-std::string toString(osg::Vec3 value)
+std::string toString(osg::Vec3f value)
+{
+    std::stringstream str;
+    str << value.x() << " " << value.y() << " " << value.z();
+    return str.str();
+}
+
+std::string toString(osg::Vec3d value)
 {
     std::stringstream str;
     str << value.x() << " " << value.y() << " " << value.z();

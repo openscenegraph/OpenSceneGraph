@@ -17,7 +17,6 @@
 #include <map>
 #include <stack>
 
-#include <osg/io_utils>
 #include <osg/Node>
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -72,7 +71,8 @@ std::string toString(T value) {
     return str.str();
 }
 
-std::string toString(osg::Vec3 value);
+std::string toString(osg::Vec3f value);
+std::string toString(osg::Vec3d value);
 std::string toString(osg::Matrix value);
   
 /**

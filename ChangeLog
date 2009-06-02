@@ -1,3 +1,68 @@
+2009-06-02 09:23  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated version numbers for
+	  2.8.2 release
+
+2009-06-02 09:20  robert
+
+	* src/osg/GraphicsContext.cpp: Merged from svn/trunk : "Fixed
+	  handling of case where the
+	  master and the slave camera are placed on the same
+	  GraphisContext, or when the master camera and slave camera are
+	  assigned to different Camers. Note normally one doesn't mix
+	  master with GraphicsContexts and slave cameras so neither case is
+	  common."
+
+2009-06-02 09:17  robert
+
+	* src/osgParticle/ParticleSystemUpdater.cpp: Merged from svn/trunk:
+	  "Added initializer of ParticleSystemUpdater::_frameNumber"
+
+2009-06-02 09:16  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Merged from svn/trunk two
+	  submissions:
+	  
+	  "Refactored the adaption of X11 key symbols into OSG key events
+	  to fix problems with handling wide range of locales."
+	  
+	  From Mathias Froehlich, "This frees some memory that is allocated
+	  by the X11 functions."
+
+2009-06-02 09:15  robert
+
+	* src/osgUtil/GLObjectsVisitor.cpp: Merged from svn/trunk.
+
+2009-06-02 09:14  robert
+
+	* src/osg/Transform.cpp: From Emmanuel Roche, "I've also updated
+	  the computeBound() method from the osg::Transform class : this
+	  method was using float based temporary variables and thus the
+	  double precision is lost here. I've changed that to use the
+	  generic types osg::BoundingSphere::vec_type and
+	  osg::BoundingSphere::value_type instead."
+	  
+	  Merged from svn/trunk.
+
+2009-05-27 12:11  robert
+
+	* src/osgUtil/RenderStage.cpp: Fixed glStencilMask setting.
+
+2009-05-25 16:36  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Refactored the
+	  GraphicsWindowX11::adaptKey() implementation so that it always
+	  uses the reampX11Key(ks) method, and for the mapping to handle
+	  case correctly. Merged from svn/trunk revision.
+
+2009-05-19 16:21  robert
+
+	* AUTHORS.txt: Updated AUTHORS file to 2.8.1 release
+
+2009-05-19 16:08  robert
+
+	* ChangeLog: Updated ChangeLog for 2.8.1 release
+
 2009-05-19 16:05  robert
 
 	* CMakeLists.txt, NEWS.txt, README.txt: Updated dates and reset

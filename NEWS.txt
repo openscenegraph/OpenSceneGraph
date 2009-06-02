@@ -1,6 +1,104 @@
 OSG News
 ========
 
+= !OpenSceneGraph 2.8.2 release - bug fix release =
+
+PERTHSHIRE, Scotland - x June 2009 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.8.2, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.8 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.8 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+
+=== Open-source development delivers industry-leading features and performance ===
+The !OpenSceneGraph 2.8.2 release is the culmination of 10 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
+
+=== Updates between 2.8.2 and 2.8.1 releases include: ===
+
+  * Bug fixes to :
+    * regression in X11 key symbol remapping, improved support for Russian keyboards.
+    * regression of StencilMask setting in RenderStage
+    * small memory leak in X11 usage.
+    * Transform::computeBound() double BoundingSphere support
+    * Resize handling when master and slave Cameras share the same GraphicsContext
+
+=== Updates between 2.8.1 and 2.8.0 releases include: ===
+
+  * Build fixes under FreeBSD and IBM AIX, and RedHat Enterprise Linux.
+  * Improved compatibility with SWIG wrapper building
+  * Crash fixes in osg::State, osg::Geometry and osgWidget.
+  * Bug fixes to :
+    * draw instanced support
+    * Optimizer - MergeGeometryVisitor, RemoveLoadedProxyNodesVisitor and SpatializeGroupsVistor
+    * hdr image loader
+    * handling of opacity maps in 3ds loader
+    * dxf loader
+    * frame buffer object
+    * cursor/event handling in windows
+    * windows threading
+    * memory leak in Collada loader
+    * fixes to display lists/vbo creation that prevent crash under ATI drivers
+    * subface PolygonOffset setting in OpenFlight
+    * osgconv --formats under OSX
+    * osgTerrain::Layer bounding volume calculation.
+
+=== Updates between 2.8 and 2.6 include: ===
+
+  * New osgVolume library for volume rendering, with support for:
+    * High quality GPU based Ray tracing
+    * Transfer functions
+    * Per pixel lighting
+    * Iso surface rendering
+    * Maximum Intensity Projection rendering
+    * Non-power-of-two 3D textures, and 3D texture compression
+    * DICOM loading for reading dicom medical data
+  * New osgAnimation library for character and scene animation.
+  * New plugin for reading Biovision hierarchical files (.BVH) to generate character motion animations.
+  * New osgShadow support for Light Space Perspective Shadow Maps (LispSM).
+  * Three new scene graph widgets for placing traditional 2D capability into fully interactive 3D scenes:
+    * PDF widget (based on libPoppler)
+    * VNC client widget (based on libVNCServer)
+    * Internet browser client widget (based on Gecko/UBrowser)
+  * New plugins for loading Half-Life 2 maps and models.
+  * New plugin for loading EXR, high dynamic range imagery
+  * Improvements to !DatabasePager, tailored for low latency paging.
+  * Improved runtime stats collection and on screen reporting.
+  * Performance improvements through optimization of matrix operations.
+  * Support for the OpenGL "draw instanced" extension.
+  * Support for zlib compressed native .ive and .gz files
+  * Improvements to COLLADA support.
+  * Build reporting using CDash
+  * New packaging support using CPack
+  * A wide range of build and bug fixes
+
+=== Downloads and Licensing ===
+!OpenSceneGraph is open-source, so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [http://www.openscenegraph.org/projects/osg/wiki/Downloads Downloads] section of the openscenegraph.org website.
+
+!OpenSceneGraph is released under the [http://www.openscenegraph.org/projects/osg/wiki/Legal OpenSceneGraph Public License], which is based on the Lesser GNU Public License (LGPL), permitting the software to be used free of charge across the full spectrum of commercial and open-source applications.  Furthermore, it allows both static and dynamic linking of the !OpenSceneGraph libraries without restricting the licensing of the user's software.
+
+=== !OpenSceneGraph Books now available ===
+
+The !OpenSceneGraph Quick Start Guide is now available in Chinese as well as English, and alongside the Reference Manual, books can be found at [http://www.osgbooks.com OsgBooks].
+
+=== Professional support and services ===
+!OpenSceneGraph project is backed up with professional services by [http://www.openscenegraph.com OpenSceneGraph Professional Services], based in Scotland, and [http://www.skew-matrix.com Skew-Matrix] and [http://www.blue-newt.com Blue-Newt Software] both based in the USA, and a range of [wiki:Community/Contractors Contractors] from around the world.  Services available include:
+
+ * Confidential Professional Support
+ * Bespoke development
+ * Consultancy
+ * Training
+
+=== Community support and contributions ===
+The diverse and growing community of over 2000 developers is centred around the public osg-users mailing list, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
+
+The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/TwoPointEight 365 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base.
+
+----
+
+About !OpenSceneGraph: [[BR]]
+The !OpenSceneGraph Project was founded in September 1999 by Don Burns and Robert Osfield.
+Further information, screenshots, downloads, documentation, and support links can be found on the !OpenSceneGraph project website http://www.openscenegraph.org.
+
+About !OpenSceneGraph Professional Services:[[BR]]
+!OpenSceneGraph Professional Services, founded by project lead Robert Osfield in April 2001, is based in Callander, Perhshire, Scotland, and provides professional services on top of !OpenSceneGraph. Further information about the services it provides can be found at http://www.openscenegraph.com.
+
+----------------------------------------------------------------------------------------
+
 = !OpenSceneGraph 2.8.1 release - bug fix release =
 
 PERTHSHIRE, Scotland - 19th May 2009 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 2.8.1, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 2.8 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 2.8 runs on all Microsoft Windows platforms, Apple OS/X, GNU/Linux, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.

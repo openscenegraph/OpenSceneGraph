@@ -11,9 +11,10 @@ The !OpenSceneGraph 2.8.2 release is the culmination of 10 years of work by the 
 === Updates between 2.8.2 and 2.8.1 releases include: ===
 
   * Bug fixes to :
-    * regression in X11 key symbol remapping, improved support for Russian keyboards.
+    * texture generate mipmap for non power of two textures
+    * regression in X11 key symbol remapping, improved support for Russian keyboards
     * regression of StencilMask setting in RenderStage
-    * small memory leak in X11 usage.
+    * small memory leak in X11 usage
     * Transform::computeBound() double BoundingSphere support
     * Resize handling when master and slave Cameras share the same GraphicsContext
 

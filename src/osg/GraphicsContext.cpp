@@ -819,6 +819,7 @@ void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
             osg::View* view = camera->getView();
             osg::View::Slave* slave = view ? view->findSlaveForCamera(camera) : 0;
 
+
             if (slave)
             {
                 if (camera->getReferenceFrame()==osg::Transform::RELATIVE_RF)
@@ -849,6 +850,29 @@ void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
                     case(osg::Camera::VERTICAL): camera->getProjectionMatrix() *= osg::Matrix::scale(1.0, aspectRatioChange,1.0); break;
                     default: break;
                 }
+
+                osg::Camera* master = view ? view->getCamera() : 0;
+                if (view && camera==master)
+                {
+                    for(unsigned int i=0; i<view->getNumSlaves(); ++i)
+                    {
+                        osg::View::Slave& child = view->getSlave(i);
+                        if (child._camera.valid() && child._camera->getReferenceFrame()==osg::Transform::RELATIVE_RF)
+                        {
+                            // scale the slaves by the inverse of the change that has been applied to master, to avoid them be
+                            // scaled twice (such as when both master and slave are on the same GraphicsContexts) or by the wrong scale
+                            // when master and slave are on different GraphicsContexts.
+                            switch(policy)
+                            {
+                                case(osg::Camera::HORIZONTAL): child._projectionOffset *= osg::Matrix::scale(aspectRatioChange,1.0,1.0); break;
+                                case(osg::Camera::VERTICAL): child._projectionOffset *= osg::Matrix::scale(1.0, 1.0/aspectRatioChange,1.0); break;
+                                default: break;
+                            }
+                        }
+                    }
+                }
+
+
             }
 
         }

@@ -194,14 +194,13 @@ void Texture2D::apply(State& state) const
 
         // compute the internal texture format, this set the _internalFormat to an appropriate value.
         computeInternalFormat();
-        
+
         // compute the dimensions of the texture.
         computeRequiredTextureDimensions(state,*image,_textureWidth, _textureHeight, _numMipmapLevels);
-        
-        
-         textureObject = generateTextureObject(
+
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
                 contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
-        
+
         textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_2D,state);
@@ -217,15 +216,12 @@ void Texture2D::apply(State& state) const
             //notify(NOTICE)<<"Creating new texture object"<<std::endl;
             applyTexImage2D_load(state,GL_TEXTURE_2D,image.get(),
                                  _textureWidth, _textureHeight, _numMipmapLevels);
-                                 
+
             textureObject->setAllocated(true);
         }
-        
-        
+
         // update the modified tag to show that it is upto date.
         getModifiedCount(contextID) = image->getModifiedCount();
-
-        _textureObjectBuffer[contextID] = textureObject;
 
         if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && image->getDataVariance()==STATIC)
         {

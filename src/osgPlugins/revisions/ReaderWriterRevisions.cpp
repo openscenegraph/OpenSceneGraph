@@ -50,6 +50,8 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
 
         ReadResult readFileList(std::istream& fin, const std::string& name, const osgDB::ReaderWriter::Options* options) const
         {
+            osg::notify(osg::NOTICE)<<"    readFileList="<<name<<std::endl;
+
             osg::ref_ptr<osgDB::FileList> fileList = new osgDB::FileList;
             fileList->setName(name);
 
@@ -57,6 +59,8 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             {
                 std::string filename;
                 fin >> filename;
+                osg::notify(osg::NOTICE)<<"        ="<<filename<<std::endl;
+
                 if (!filename.empty()) fileList->getFileNames().insert(filename);
             }
 
@@ -74,24 +78,34 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             std::string revisions_path;
             if (options && !(options->getDatabasePathList().empty())) revisions_path = options->getDatabasePathList().front();
 
+            revisions->setDatabasePath(revisions_path);
+
+            osg::notify(osg::NOTICE)<<"readRevisions="<<name<<std::endl;
+            osg::notify(osg::NOTICE)<<"  revisions_path="<<revisions_path<<std::endl;
+
             while(fin)
             {
                 std::string filename;
                 fin >> filename;
+
+                osg::notify(osg::NOTICE)<<"    filename="<<filename<<std::endl;
+
                 if (!filename.empty())
                 {
                     std::string ext = osgDB::getLowerCaseFileExtension(filename);
                     std::string revisionName = osgDB::getNameLessExtension(filename);
-                    if (revisionName.empty())
+                    if (!revisionName.empty())
                     {
                         osg::ref_ptr<osgDB::DatabaseRevision>& dbRevision = revisionMap[revisionName];
                         if (!dbRevision)
                         {
                             dbRevision = new osgDB::DatabaseRevision;
                             dbRevision->setName(revisionName);
+                            dbRevision->setDatabasePath(revisions_path);
                         }
 
                         std::string complete_path = osgDB::concatPaths(revisions_path, filename);
+                        osg::notify(osg::NOTICE)<<"    complete_path="<<complete_path<<std::endl;
                         osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(complete_path, options);
                         osgDB::FileList* fileList = dynamic_cast<osgDB::FileList*>(object.get());
 

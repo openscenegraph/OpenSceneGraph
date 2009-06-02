@@ -54,6 +54,9 @@ class OSGDB_EXPORT DatabaseRevision : public osg::Object
 
         META_Object(osgDB, DatabaseRevision)
 
+        void setDatabasePath(const std::string& path) { _databasePath = path; }
+        const std::string& getDatabasePath() const { return _databasePath; }
+
         typedef std::set<std::string> FileNames;
 
         void setFilesAdded(FileList* fileList) { _filesAdded = fileList; }
@@ -74,9 +77,11 @@ class OSGDB_EXPORT DatabaseRevision : public osg::Object
 
         virtual ~DatabaseRevision();
 
-        osg::ref_ptr<FileList> _filesAdded;
-        osg::ref_ptr<FileList> _filesRemoved;
-        osg::ref_ptr<FileList> _filesModified;
+        std::string             _databasePath;
+
+        osg::ref_ptr<FileList>  _filesAdded;
+        osg::ref_ptr<FileList>  _filesRemoved;
+        osg::ref_ptr<FileList>  _filesModified;
 };
 
 class OSGDB_EXPORT DatabaseRevisions : public osg::Object
@@ -90,6 +95,9 @@ class OSGDB_EXPORT DatabaseRevisions : public osg::Object
 
         typedef std::vector< osg::ref_ptr<DatabaseRevision> > DatabaseRevisionList;
 
+        void setDatabasePath(const std::string& path) { _databasePath = path; }
+        const std::string& getDatabasePath() const { return _databasePath; }
+
         void addRevision(DatabaseRevision* revision);
         void removeRevision(DatabaseRevision* revision);
 
@@ -102,7 +110,8 @@ class OSGDB_EXPORT DatabaseRevisions : public osg::Object
 
         virtual ~DatabaseRevisions();
 
-        DatabaseRevisionList _revisionList;
+        std::string             _databasePath;
+        DatabaseRevisionList    _revisionList;
 };
 
 }

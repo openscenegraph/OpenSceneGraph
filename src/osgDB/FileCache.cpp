@@ -53,7 +53,7 @@ std::string FileCache::createCacheFileName(const std::string& originalFileName) 
 bool FileCache::existsInCache(const std::string& originalFileName) const
 {
     if (osgDB::fileExists(createCacheFileName(originalFileName)))
-    {   
+    {
         return !isCachedFileBlackListed(originalFileName);
     }
     return false;
@@ -228,6 +228,7 @@ ReaderWriter::WriteResult FileCache::writeShader(const osg::Shader& shader, cons
 
 bool FileCache::isCachedFileBlackListed(const std::string& originalFileName) const
 {
+    osg::notify(osg::NOTICE)<<"FileCache::isCachedFileBlackListed("<<originalFileName<<")"<<std::endl;
     for(DatabaseRevisionsList::const_iterator itr = _databaseRevisionsList.begin();
         itr != _databaseRevisionsList.end();
         ++itr)
@@ -235,4 +236,29 @@ bool FileCache::isCachedFileBlackListed(const std::string& originalFileName) con
         if ((*itr)->isFileBlackListed(originalFileName)) return true;
     }
     return false;
+}
+
+bool FileCache::loadDatabaseRevisionsForFile(const std::string& originalFileName)
+{
+    osg::notify(osg::NOTICE)<<"FileCache::loadDatabaseRevisionsForFile("<<originalFileName<<")"<<std::endl;
+
+    std::string revisionsFileName = originalFileName;
+    if (getLowerCaseFileExtension(revisionsFileName)!="revisions") revisionsFileName += ".revisions";
+
+    osg::notify(osg::NOTICE)<<"   revisionsFileName("<<revisionsFileName<<")"<<std::endl;
+
+    osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(revisionsFileName);
+    DatabaseRevisions* dr = dynamic_cast<DatabaseRevisions*>(object.get());
+
+    if (dr)
+    {
+        osg::notify(osg::NOTICE)<<"   loaded revisions File("<<revisionsFileName<<")"<<std::endl;
+        _databaseRevisionsList.push_back(dr);
+        return true;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"   failed to read revisions File, object.get()="<<object.get()<<std::endl;
+        return false;
+    }
 }

@@ -46,6 +46,7 @@ DatabaseRevision::DatabaseRevision()
 }
 
 DatabaseRevision::DatabaseRevision(const DatabaseRevision& revision, const osg::CopyOp):
+    _databasePath(revision._databasePath),
     _filesAdded(revision._filesAdded),
     _filesRemoved(revision._filesRemoved),
     _filesModified(revision._filesModified)
@@ -58,8 +59,19 @@ DatabaseRevision::~DatabaseRevision()
 
 bool DatabaseRevision::isFileBlackListed(const std::string& filename) const
 {
-    return (_filesRemoved.valid() && _filesRemoved->contains(filename)) ||
-           (_filesAdded.valid() && _filesAdded->contains(filename));
+    osg::notify(osg::NOTICE)<<"DatabaseRevision("<<getName()<<")::isFileBlackListed("<<filename<<")"<<std::endl;
+
+    if (_databasePath.length()>=filename.length()) return false;
+    if (filename.compare(0,_databasePath.length(), _databasePath)!=0) return false;
+
+    std::string localPath(filename,
+                         _databasePath.empty() ? 0 : _databasePath.length()+1,
+                         std::string::npos);
+
+    osg::notify(osg::NOTICE)<<"    localPath = "<<localPath<<std::endl;
+
+    return (_filesRemoved.valid() && _filesRemoved->contains(localPath)) ||
+           (_filesModified.valid() && _filesModified->contains(localPath));
 }
 
 
@@ -72,6 +84,7 @@ DatabaseRevisions::DatabaseRevisions()
 }
 
 DatabaseRevisions::DatabaseRevisions(const DatabaseRevisions& revisions, const osg::CopyOp):
+    _databasePath(revisions._databasePath),
     _revisionList(revisions._revisionList)
 {
 }
@@ -119,7 +132,11 @@ bool DatabaseRevisions::isFileBlackListed(const std::string& filename) const
         itr != _revisionList.end();
         ++itr)
     {
-        if ((*itr)->isFileBlackListed(filename)) return true;
+        if ((*itr)->isFileBlackListed(filename))
+        {
+            osg::notify(osg::NOTICE)<<"File is black listed "<<filename<<std::endl;
+            return true;
+        }
     }
     return false;
 }

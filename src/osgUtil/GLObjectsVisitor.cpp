@@ -11,12 +11,18 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osgUtil/GLObjectsVisitor>
+
 #include <osg/Drawable>
 #include <osg/Notify>
+#include <osg/Timer>
 
-using namespace osg;
-using namespace osgUtil;
+namespace osgUtil 
+{
 
+/////////////////////////////////////////////////////////////////
+//
+// GLObjectsVisitor
+//
 GLObjectsVisitor::GLObjectsVisitor(Mode mode)
 {
     setTraversalMode(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN);
@@ -45,7 +51,7 @@ void GLObjectsVisitor::apply(osg::Geode& node)
 
     for(unsigned int i=0;i<node.getNumDrawables();++i)
     {
-        Drawable* drawable = node.getDrawable(i);
+        osg::Drawable* drawable = node.getDrawable(i);
         if (drawable)
         {
             apply(*drawable);
@@ -105,7 +111,12 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
         stateset.compileGLObjects(*_renderInfo.getState());
         
         osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
-        if (program) _lastCompiledProgram = program;
+        if (program) {
+            if( program->isFixedFunction() )
+                _lastCompiledProgram = NULL; // It does not make sense to apply uniforms on fixed pipe
+            else 
+                _lastCompiledProgram = program;
+        }
 
         if (_lastCompiledProgram.valid() && !stateset.getUniformList().empty())
         {
@@ -127,7 +138,7 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
         }
         else if(_renderInfo.getState()->getLastAppliedProgramObject()){
                             
-            GL2Extensions* extensions = GL2Extensions::Get(_renderInfo.getState()->getContextID(), true);
+            osg::GL2Extensions* extensions = osg::GL2Extensions::Get(_renderInfo.getState()->getContextID(), true);
             extensions->glUseProgram(0);
             _renderInfo.getState()->setLastAppliedProgramObject(0);
         }
@@ -144,6 +155,11 @@ void GLObjectsVisitor::apply(osg::StateSet& stateset)
         stateset.checkValidityOfAssociatedModes(*_renderInfo.getState());
     }
 }
+
+/////////////////////////////////////////////////////////////////
+//
+// GLObjectsVisitor
+//
 
 GLObjectsOperation::GLObjectsOperation(GLObjectsVisitor::Mode mode):
     osg::GraphicsOperation("GLObjectOperation",false),
@@ -182,3 +198,6 @@ void GLObjectsOperation::operator () (osg::GraphicsContext* context)
     }
     // osg::notify(osg::NOTICE)<<"GLObjectsOperation::after >>>>>>>>>>> "<<std::endl;
 }
+
+
+} // end of namespace osgUtil

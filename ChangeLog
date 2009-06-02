@@ -1,3 +1,15 @@
+2009-06-02 14:44  robert
+
+	* src/osg/Texture2D.cpp: Merged from svn/trunk : "Moved assigned of
+	  texture object to
+	  _textureObjectBuffer to earlier in Texture2D::apply() to prevent
+	  problems with non power of two texture mipmap generation."
+
+2009-06-02 14:42  robert
+
+	* ChangeLog, NEWS.txt: Updated ChangeLog and NEWS.txt in prep for
+	  2.8.2
+
 2009-06-02 09:23  robert
 
 	* CMakeLists.txt, include/osg/Version: Updated version numbers for

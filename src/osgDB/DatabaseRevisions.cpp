@@ -36,6 +36,14 @@ FileList::~FileList()
 {
 }
 
+bool FileList::removeFile(const std::string& filename)
+{
+    FileNames::iterator itr = _files.find(filename);
+    if (itr==_files.end()) return false;
+
+    _files.erase(itr);
+    return true;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -59,7 +67,7 @@ DatabaseRevision::~DatabaseRevision()
 
 bool DatabaseRevision::isFileBlackListed(const std::string& filename) const
 {
-    osg::notify(osg::NOTICE)<<"DatabaseRevision("<<getName()<<")::isFileBlackListed("<<filename<<")"<<std::endl;
+    osg::notify(osg::INFO)<<"DatabaseRevision("<<getName()<<")::isFileBlackListed("<<filename<<")"<<std::endl;
 
     if (_databasePath.length()>=filename.length()) return false;
     if (filename.compare(0,_databasePath.length(), _databasePath)!=0) return false;
@@ -68,12 +76,19 @@ bool DatabaseRevision::isFileBlackListed(const std::string& filename) const
                          _databasePath.empty() ? 0 : _databasePath.length()+1,
                          std::string::npos);
 
-    osg::notify(osg::NOTICE)<<"    localPath = "<<localPath<<std::endl;
-
     return (_filesRemoved.valid() && _filesRemoved->contains(localPath)) ||
            (_filesModified.valid() && _filesModified->contains(localPath));
 }
 
+
+bool DatabaseRevision::removeFile(const std::string& filename)
+{
+    bool removed = false;
+    if (_filesAdded.valid()) removed = _filesAdded->removeFile(filename) | removed;
+    if (_filesRemoved.valid()) removed = _filesRemoved->removeFile(filename) | removed;
+    if (_filesModified.valid()) removed = _filesModified->removeFile(filename) | removed;
+    return removed;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -134,10 +149,23 @@ bool DatabaseRevisions::isFileBlackListed(const std::string& filename) const
     {
         if ((*itr)->isFileBlackListed(filename))
         {
-            osg::notify(osg::NOTICE)<<"File is black listed "<<filename<<std::endl;
+            osg::notify(osg::INFO)<<"File is black listed "<<filename<<std::endl;
             return true;
         }
     }
     return false;
 }
 
+bool DatabaseRevisions::removeFile(const std::string& filename)
+{
+    osg::notify(osg::INFO)<<"Remove file "<<filename<<std::endl;
+
+    bool removed = false;
+    for(DatabaseRevisionList::iterator itr = _revisionList.begin();
+        itr != _revisionList.end();
+        ++itr)
+    {
+        removed = (*itr)->removeFile(filename) | removed;
+    }
+    return removed;
+}

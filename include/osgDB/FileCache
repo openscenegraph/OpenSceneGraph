@@ -67,6 +67,9 @@ class OSGDB_EXPORT FileCache : public osg::Referenced
 
         DatabaseRevisionsList _databaseRevisionsList;
 
+        FileList* readFileList(const std::string& originalFileName) const;
+        bool removeFileFromBlackListed(const std::string& originalFileName) const;
+
 };
 
 }

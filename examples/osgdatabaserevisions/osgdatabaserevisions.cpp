@@ -66,19 +66,6 @@ int main(int argc, char** argv)
     }
 #endif
 
-    std::string url, username, password;
-    while(arguments.read("--login",url, username, password))
-    {
-        if (!osgDB::Registry::instance()->getAuthenticationMap())
-        {
-            osgDB::Registry::instance()->setAuthenticationMap(new osgDB::AuthenticationMap);
-            osgDB::Registry::instance()->getAuthenticationMap()->addAuthenticationDetails(
-                url,
-                new osgDB::AuthenticationDetails(username, password)
-            );
-        }
-    }
-
     // set up the camera manipulators.
     {
         osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
@@ -135,9 +122,11 @@ int main(int argc, char** argv)
     osgDB::FileCache* fileCache = osgDB::Registry::instance()->getFileCache();
     if (fileCache)
     {
-        osg::notify(osg::NOTICE)<<"We have FileCache "<<fileCache<<std::endl;
         fileCache->loadDatabaseRevisionsForFile(file);
+
+        // fileCache->loadDatabaseRevisionsForFile(file); // test to make sure that repeated loads of same revision file doesn't cause problems
     }
+
 
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFile(file);

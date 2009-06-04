@@ -50,7 +50,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
 
         ReadResult readFileList(std::istream& fin, const std::string& name, const osgDB::ReaderWriter::Options* options) const
         {
-            osg::notify(osg::NOTICE)<<"    readFileList="<<name<<std::endl;
+            osg::notify(osg::INFO)<<"    readFileList="<<name<<std::endl;
 
             osg::ref_ptr<osgDB::FileList> fileList = new osgDB::FileList;
             fileList->setName(name);
@@ -59,7 +59,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             {
                 std::string filename;
                 fin >> filename;
-                osg::notify(osg::NOTICE)<<"        ="<<filename<<std::endl;
+                osg::notify(osg::INFO)<<"        ="<<filename<<std::endl;
 
                 if (!filename.empty()) fileList->getFileNames().insert(filename);
             }
@@ -77,18 +77,21 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
 
             std::string revisions_path;
             if (options && !(options->getDatabasePathList().empty())) revisions_path = options->getDatabasePathList().front();
+            else revisions_path = osgDB::getFilePath(name);
 
             revisions->setDatabasePath(revisions_path);
 
-            osg::notify(osg::NOTICE)<<"readRevisions="<<name<<std::endl;
-            osg::notify(osg::NOTICE)<<"  revisions_path="<<revisions_path<<std::endl;
+            osg::notify(osg::INFO)<<"readRevisions="<<name<<std::endl;
+            osg::notify(osg::INFO)<<"  revisions_path="<<revisions_path<<std::endl;
+
+            bool loadFileLists = false;
 
             while(fin)
             {
                 std::string filename;
                 fin >> filename;
 
-                osg::notify(osg::NOTICE)<<"    filename="<<filename<<std::endl;
+                osg::notify(osg::INFO)<<"    filename="<<filename<<std::endl;
 
                 if (!filename.empty())
                 {
@@ -104,25 +107,34 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                             dbRevision->setDatabasePath(revisions_path);
                         }
 
-                        std::string complete_path = osgDB::concatPaths(revisions_path, filename);
-                        osg::notify(osg::NOTICE)<<"    complete_path="<<complete_path<<std::endl;
-                        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(complete_path, options);
-                        osgDB::FileList* fileList = dynamic_cast<osgDB::FileList*>(object.get());
+                        osg::ref_ptr<osgDB::FileList> fileList;
 
-                        if (fileList)
+
+                        if (loadFileLists)
                         {
-                            if (ext=="added")
-                            {
-                                dbRevision->setFilesAdded(fileList);
-                            }
-                            else if (ext=="removed")
-                            {
-                                dbRevision->setFilesRemoved(fileList);
-                            }
-                            else if (ext=="modified")
-                            {
-                                dbRevision->setFilesModified(fileList);
-                            }
+                            std::string complete_path = osgDB::concatPaths(revisions_path, filename);
+                            osg::notify(osg::INFO)<<"    complete_path="<<complete_path<<std::endl;
+                            osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(complete_path, options);
+                            fileList = dynamic_cast<osgDB::FileList*>(object.get());
+                        }
+
+                        if (!fileList)
+                        {
+                            fileList = new osgDB::FileList;
+                            fileList->setName(filename);
+                        }
+
+                        if (ext=="added")
+                        {
+                            dbRevision->setFilesAdded(fileList);
+                        }
+                        else if (ext=="removed")
+                        {
+                            dbRevision->setFilesRemoved(fileList);
+                        }
+                        else if (ext=="modified")
+                        {
+                            dbRevision->setFilesModified(fileList);
                         }
                     }
                 }

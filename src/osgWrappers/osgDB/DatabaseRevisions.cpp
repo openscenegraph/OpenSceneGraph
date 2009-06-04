@@ -59,6 +59,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabaseRevision)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setDatabasePath, IN, const std::string &, path,
+	          Properties::NON_VIRTUAL,
+	          __void__setDatabasePath__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method0(const std::string &, getDatabasePath,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getDatabasePath,
+	          "",
+	          "");
 	I_Method1(void, setFilesAdded, IN, osgDB::FileList *, fileList,
 	          Properties::NON_VIRTUAL,
 	          __void__setFilesAdded__FileList_P1,
@@ -109,6 +119,14 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabaseRevision)
 	          __bool__isFileBlackListed__C5_std_string_R1,
 	          "",
 	          "");
+	I_Method1(bool, removeFile, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
+	          __bool__removeFile__C5_std_string_R1,
+	          "",
+	          "");
+	I_SimpleProperty(const std::string &, DatabasePath, 
+	                 __C5_std_string_R1__getDatabasePath, 
+	                 __void__setDatabasePath__C5_std_string_R1);
 	I_SimpleProperty(osgDB::FileList *, FilesAdded, 
 	                 __FileList_P1__getFilesAdded, 
 	                 __void__setFilesAdded__FileList_P1);
@@ -157,6 +175,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabaseRevisions)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setDatabasePath, IN, const std::string &, path,
+	          Properties::NON_VIRTUAL,
+	          __void__setDatabasePath__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method0(const std::string &, getDatabasePath,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getDatabasePath,
+	          "",
+	          "");
 	I_Method1(void, addRevision, IN, osgDB::DatabaseRevision *, revision,
 	          Properties::NON_VIRTUAL,
 	          __void__addRevision__DatabaseRevision_P1,
@@ -165,6 +193,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabaseRevisions)
 	I_Method1(void, removeRevision, IN, osgDB::DatabaseRevision *, revision,
 	          Properties::NON_VIRTUAL,
 	          __void__removeRevision__DatabaseRevision_P1,
+	          "",
+	          "");
+	I_Method1(osgDB::DatabaseRevision *, getDatabaseRevision, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __DatabaseRevision_P1__getDatabaseRevision__unsigned_int,
 	          "",
 	          "");
 	I_Method0(osgDB::DatabaseRevisions::DatabaseRevisionList &, getDatabaseRevisionList,
@@ -182,6 +215,14 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabaseRevisions)
 	          __bool__isFileBlackListed__C5_std_string_R1,
 	          "",
 	          "");
+	I_Method1(bool, removeFile, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
+	          __bool__removeFile__C5_std_string_R1,
+	          "",
+	          "");
+	I_SimpleProperty(const std::string &, DatabasePath, 
+	                 __C5_std_string_R1__getDatabasePath, 
+	                 __void__setDatabasePath__C5_std_string_R1);
 	I_SimpleProperty(osgDB::DatabaseRevisions::DatabaseRevisionList &, DatabaseRevisionList, 
 	                 __DatabaseRevisionList_R1__getDatabaseRevisionList, 
 	                 0);
@@ -237,6 +278,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::FileList)
 	I_Method1(bool, contains, IN, const std::string &, filename,
 	          Properties::NON_VIRTUAL,
 	          __bool__contains__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(bool, removeFile, IN, const std::string &, filename,
+	          Properties::NON_VIRTUAL,
+	          __bool__removeFile__C5_std_string_R1,
 	          "",
 	          "");
 	I_SimpleProperty(osgDB::FileList::FileNames &, FileNames, 

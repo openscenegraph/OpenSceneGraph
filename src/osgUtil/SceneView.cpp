@@ -1728,3 +1728,17 @@ bool SceneView::getStats(Statistics& stats)
         return _renderStage->getStats(stats);
     }
 }
+
+void SceneView::collateReferencesToDependentCameras()
+{
+    if (_renderStage.valid()) _renderStage->collateReferencesToDependentCameras();
+    if (_renderStageLeft.valid()) _renderStageLeft->collateReferencesToDependentCameras();
+    if (_renderStageRight.valid()) _renderStageRight->collateReferencesToDependentCameras();
+}
+
+void SceneView::clearReferencesToDependentCameras()
+{
+    if (_renderStage.valid()) _renderStage->clearReferencesToDependentCameras();
+    if (_renderStageLeft.valid()) _renderStageLeft->clearReferencesToDependentCameras();
+    if (_renderStageRight.valid()) _renderStageRight->clearReferencesToDependentCameras();
+}

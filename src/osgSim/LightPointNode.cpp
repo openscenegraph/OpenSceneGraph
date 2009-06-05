@@ -200,11 +200,11 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             }
         }
 
-        // search for a drawable in the RenderLead list equal to the attached the one attached to StateGraph user data
+        // search for a drawable in the RenderLeaf list equal to the attached the one attached to StateGraph user data
         // as this will be our special light point drawable.
         osgUtil::StateGraph::LeafList::iterator litr;
         for(litr = rg->_leaves.begin();
-            litr != rg->_leaves.end() && (*litr)->_drawable.get()!=drawable;
+            litr != rg->_leaves.end() && (*litr)->_drawable!=drawable;
             ++litr)
         {}
         

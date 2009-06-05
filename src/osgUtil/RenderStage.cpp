@@ -1350,7 +1350,7 @@ unsigned int RenderStage::computeNumberOfDynamicRenderLeaves() const
 }
 
 
-void osgUtil::RenderStage::setMultisampleResolveFramebufferObject(osg::FrameBufferObject* fbo)
+void RenderStage::setMultisampleResolveFramebufferObject(osg::FrameBufferObject* fbo)
 {
     if (fbo && fbo->isMultisample())
     {
@@ -1358,4 +1358,46 @@ void osgUtil::RenderStage::setMultisampleResolveFramebufferObject(osg::FrameBuff
             " multisampled." << std::endl;
     }
     _resolveFbo = fbo;
+}
+
+void RenderStage::collateReferencesToDependentCameras()
+{
+    _dependentCameras.clear();
+
+    for(RenderStageList::iterator itr = _preRenderList.begin();
+        itr != _preRenderList.end();
+        ++itr)
+    {
+        itr->second->collateReferencesToDependentCameras();
+        osg::Camera* camera = itr->second->getCamera();
+        if (camera) _dependentCameras.push_back(camera);
+    }
+
+    for(RenderStageList::iterator itr = _postRenderList.begin();
+        itr != _postRenderList.end();
+        ++itr)
+    {
+        itr->second->collateReferencesToDependentCameras();
+        osg::Camera* camera = itr->second->getCamera();
+        if (camera) _dependentCameras.push_back(camera);
+    }
+}
+
+void RenderStage::clearReferencesToDependentCameras()
+{
+    for(RenderStageList::iterator itr = _preRenderList.begin();
+        itr != _preRenderList.end();
+        ++itr)
+    {
+        itr->second->collateReferencesToDependentCameras();
+    }
+
+    for(RenderStageList::iterator itr = _postRenderList.begin();
+        itr != _postRenderList.end();
+        ++itr)
+    {
+        itr->second->collateReferencesToDependentCameras();
+    }
+
+    _dependentCameras.clear();
 }

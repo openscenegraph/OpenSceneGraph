@@ -224,19 +224,28 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
             GLenum                                  _imageReadPixelFormat;
             GLenum                                  _imageReadPixelDataType;
         };
-       
+
         void attach(osg::Camera::BufferComponent buffer, osg::Image* image);
-        
+
+        /** search through any pre and post RenderStage that reference a Camera, and take a reference to each of these cameras to prevent them being deleted while they are still be used by the drawing thread.*/
+        void collateReferencesToDependentCameras();
+
+        /** clear the refence to any any dependent cameras.*/
+        void clearReferencesToDependentCameras();
+
     protected:
-        
+
         virtual ~RenderStage();
 
         typedef std::pair< int , osg::ref_ptr<RenderStage> > RenderStageOrderPair;
         typedef std::list< RenderStageOrderPair > RenderStageList;
+        typedef std::vector< osg::ref_ptr<osg::Camera> > Cameras;
 
         bool                                _stageDrawnThisFrame;
         RenderStageList                     _preRenderList;
         RenderStageList                     _postRenderList;
+
+        Cameras                             _dependentCameras;
 
         // viewport x,y,width,height.
         osg::ref_ptr<osg::Viewport>         _viewport;
@@ -271,8 +280,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         mutable osg::Matrix                         _inheritedPositionalStateContainerMatrix;
         mutable osg::ref_ptr<PositionalStateContainer>   _inheritedPositionalStateContainer;
         mutable osg::ref_ptr<PositionalStateContainer>   _renderStageLighting;
-        
-    
+
 
 };
 

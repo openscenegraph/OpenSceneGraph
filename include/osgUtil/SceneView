@@ -311,6 +311,12 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         osgUtil::RenderStage* getRenderStageRight() { return _renderStageRight.get(); }
         const osgUtil::RenderStage* getRenderStageRight() const { return _renderStageRight.get(); }
 
+        /** search through any pre and post RenderStage that reference a Camera, and take a reference to each of these cameras to prevent them being deleted while they are still be used by the drawing thread.*/
+        void collateReferencesToDependentCameras();
+
+        /** clear the refence to any any dependent cameras.*/
+        void clearReferencesToDependentCameras();
+
 
         /** Set the draw buffer value used at the start of each frame draw.  Note, overridden in quad buffer stereo mode */
         void setDrawBufferValue( GLenum drawBufferValue ) { _camera->setDrawBuffer(drawBufferValue); }

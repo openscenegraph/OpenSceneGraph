@@ -384,6 +384,11 @@ void Renderer::draw()
 
     if (sceneView && !_done)
     {
+        // since we are running the draw thread in parallel with the main thread it's possible to unreference Camera's
+        // that are still being used by this rendering thread, so to prevent this we'll take references to all these
+        // Camera's and the clear these references once we've completed the whole draw dispatch.
+        sceneView->collateReferencesToDependentCameras();
+
         if (_compileOnNextDraw)
         {
             compile();
@@ -485,6 +490,7 @@ void Renderer::draw()
             stats->setAttribute(frameNumber, "Draw traversal time taken", osg::Timer::instance()->delta_s(beforeDrawTick, afterDrawTick));
         }
 
+        sceneView->clearReferencesToDependentCameras();
     }
 
     DEBUG_MESSAGE<<"end draw() "<<this<<std::endl;

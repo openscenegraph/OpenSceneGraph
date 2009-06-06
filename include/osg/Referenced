@@ -31,6 +31,13 @@ namespace osg {
 class DeleteHandler;
 class Observer;
 
+/** template class to help enforce static initialization order. */
+template <typename T, T M()>
+struct depends_on
+{
+    depends_on() { M(); }
+};
+
 /** Base class from providing referencing counted objects.*/
 class OSG_EXPORT Referenced
 {

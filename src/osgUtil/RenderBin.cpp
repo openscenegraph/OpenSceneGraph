@@ -26,8 +26,8 @@
 using namespace osg;
 using namespace osgUtil;
 
-
-class RenderBinPrototypeList : public osg::Referenced, public std::map< std::string, osg::ref_ptr<RenderBin> > 
+class RenderBinPrototypeList : osg::depends_on<OpenThreads::Mutex*, osg::Referenced::getGlobalReferencedMutex>,
+                               public osg::Referenced, public std::map< std::string, osg::ref_ptr<RenderBin> >
 {
     public:
         RenderBinPrototypeList() {}
@@ -83,8 +83,17 @@ void RenderBin::removeRenderBinPrototype(RenderBin* proto)
     RenderBinPrototypeList* list = renderBinPrototypeList();
     if (list && proto)
     {
-        RenderBinPrototypeList::iterator itr = list->find(proto->className());
-        if (itr != list->end()) list->erase(itr);
+        for(RenderBinPrototypeList::iterator itr = list->begin();
+            itr != list->end();
+            ++itr)
+        {
+            if (itr->second == proto)
+            {
+                // osg::notify(osg::NOTICE)<<"Found protype, now erasing "<<itr->first<<std::endl;
+                list->erase(itr);
+                return;
+            }
+        }
     }
 }
 

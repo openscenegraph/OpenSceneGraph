@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include "dxfFile.h"
+#include "DXFWriterNodeVisitor.h"
 
 using namespace osg;
 using namespace osgDB;
@@ -37,8 +38,67 @@ public:
         supportsExtension("dxf","Autodesk DXF format");
     }
     
-    virtual const char* className() { return "Autodesk DXF Reader"; }
+    virtual const char* className() { return "Autodesk DXF Reader/Writer"; }
     virtual ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options*) const;
+
+
+    virtual WriteResult writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL) const 
+    {
+        const osg::Node* node = dynamic_cast<const osg::Node*>(&obj);
+        if (node)
+            return writeNode(*node, fileName, options);
+        else 
+            return WriteResult(WriteResult::FILE_NOT_HANDLED); 
+    }
+    
+    
+    virtual WriteResult writeObject(const osg::Object& obj,std::ostream& fout,const Options* options=NULL) const 
+    {
+        const osg::Node* node = dynamic_cast<const osg::Node*>(&obj);
+        if (node)
+            return writeNode(*node, fout, options);
+        else 
+            return WriteResult(WriteResult::FILE_NOT_HANDLED); 
+    }
+
+    virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* =NULL) const 
+    {         
+
+        
+        DXFWriterNodeVisitor nv(fout); 
+
+        (const_cast<osg::Node*>(&node))->accept(nv); // first pass is to get all node names and types -> layers
+
+        if ( nv.writeHeader(node.getBound()) ) {
+            (const_cast<osg::Node*>(&node))->accept(nv);  // second pass outputs data
+            nv.writeFooter();
+        }
+    
+        return WriteResult(WriteResult::FILE_SAVED); 
+    }
+
+    virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options =NULL) const 
+    { 
+        if (!acceptsExtension(osgDB::getFileExtension(fileName)))
+            return WriteResult(WriteResult::FILE_NOT_HANDLED);
+
+        osgDB::ofstream f(fileName.c_str());
+        
+        if (!f.is_open() ) {
+            return WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
+        }
+        DXFWriterNodeVisitor nv(f); 
+                
+        (const_cast<osg::Node*>(&node))->accept(nv); // first pass is to get all node names and types -> layers
+
+        if ( nv.writeHeader(node.getBound()) ) {
+            (const_cast<osg::Node*>(&node))->accept(nv);  // second pass outputs data
+            nv.writeFooter();
+        }
+
+        return WriteResult(WriteResult::FILE_SAVED); 
+    }
+
 protected:
 };
 

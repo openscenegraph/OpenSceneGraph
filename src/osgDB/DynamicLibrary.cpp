@@ -38,6 +38,7 @@
 #endif
 
 #include <osg/Notify>
+#include <osg/GLExtensions>
 
 #include <osgDB/DynamicLibrary>
 #include <osgDB/FileUtils>
@@ -138,8 +139,7 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
 {
     if (_handle==NULL) return NULL;
 #if defined(WIN32) && !defined(__CYGWIN__)
-    return (DynamicLibrary::PROC_ADDRESS)GetProcAddress( (HMODULE)_handle,
-                                                         procName.c_str() );   /* FIX WARNING */
+    return osg::convertPointerType<DynamicLibrary::PROC_ADDRESS, FARPROC>( GetProcAddress( (HMODULE)_handle, procName.c_str() ) );
 #elif defined(__APPLE__) && defined(APPLE_PRE_10_3)
     std::string temp("_");
     NSSymbol symbol;

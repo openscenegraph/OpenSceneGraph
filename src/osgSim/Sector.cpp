@@ -323,7 +323,7 @@ float DirectionalSector::operator() (const osg::Vec3& eyeLocal) const
    if ( EPyz[0] < _cosVertAngle ) {
       // In the fade range
       //fprintf(stderr, "   >> inside el fade range\n") ;
-      elev_intensity = (_cosVertAngle-EPyz[0])/(_cosVertAngle-_cosVertFadeAngle) ;
+      elev_intensity = (EPyz[0]-_cosVertFadeAngle)/(_cosVertAngle-_cosVertFadeAngle) ;
    } else {
       // Fully in elevation range
       elev_intensity = 1.0 ;
@@ -349,7 +349,7 @@ float DirectionalSector::operator() (const osg::Vec3& eyeLocal) const
    if ( EPxy[1] < _cosHorizAngle ) {
       // In fade range
       //fprintf(stderr, "   >> inside az fade range\n") ;
-      azim_intensity = (_cosHorizAngle-EPxy[1])/(_cosHorizAngle-_cosHorizFadeAngle) ;
+      azim_intensity = (EPxy[1]-_cosHorizFadeAngle)/(_cosHorizAngle-_cosHorizFadeAngle) ;
    } else {
       // Fully in azimuth range
       //fprintf(stderr, "   >> fully inside az range\n") ;

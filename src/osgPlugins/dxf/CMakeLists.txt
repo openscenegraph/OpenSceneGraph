@@ -1,5 +1,6 @@
 SET(TARGET_SRC
     ReaderWriterDXF.cpp
+    DXFWriterNodeVisitor.cpp
     aci.cpp
     dxfBlock.cpp
     dxfEntity.cpp
@@ -22,6 +23,7 @@ SET(TARGET_H
     dxfSectionBase.h
     dxfTable.h
     scene.h
+    DXFWriterNodeVisitor.h
 )
 
 SET(TARGET_ADDED_LIBRARIES osgText )

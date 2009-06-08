@@ -56,10 +56,13 @@ class OSG_EXPORT BlendEquation : public StateAttribute
         
         BlendEquation(Equation equation);
 
+        BlendEquation(Equation equationRGB, Equation equationAlpha);
+
         /** Copy constructor using CopyOp to manage deep vs shallow copy. */
         BlendEquation(const BlendEquation& trans,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             StateAttribute(trans,copyop),
-            _equation(trans._equation){}
+            _equationRGB(trans._equationRGB),
+            _equationAlpha(trans._equationAlpha){}
 
         META_StateAttribute(osg, BlendEquation,BLENDEQUATION);
         
@@ -71,7 +74,8 @@ class OSG_EXPORT BlendEquation : public StateAttribute
             COMPARE_StateAttribute_Types(BlendEquation,sa)
 
             // Compare each parameter in turn against the rhs.
-            COMPARE_StateAttribute_Parameter(_equation)
+            COMPARE_StateAttribute_Parameter(_equationRGB)
+            COMPARE_StateAttribute_Parameter(_equationAlpha)
 
             return 0; // Passed all the above comparison macros, so must be equal.
         }
@@ -83,13 +87,15 @@ class OSG_EXPORT BlendEquation : public StateAttribute
         }
 
 
-        inline void setEquation(Equation equation)
-        {
-            _equation = equation;
-        }
+        inline void setEquation(Equation equation) { _equationRGB = _equationAlpha = equation; }
+        inline Equation getEquation() const { return _equationRGB; }
 
-        inline Equation getEquation() const { return _equation; }
-        
+        inline void setEquationRGB(Equation equation) { _equationRGB = equation; }
+        inline Equation getEquationRGB() const { return _equationRGB; }
+
+        inline void setEquationAlpha(Equation equation) { _equationAlpha = equation; }
+        inline Equation getEquationAlpha() const { return _equationAlpha; }
+
         virtual void apply(State& state) const;
         /** Encapsulates queries of extension availability, obtains extension
           * function pointers, and provides convenience wrappers for
@@ -105,25 +111,28 @@ class OSG_EXPORT BlendEquation : public StateAttribute
                 
                 void setupGLExtensions(unsigned int contextID);
 
-                void setBlendEquationSupported(bool flag) { _isBlendEquationSupported=flag; }
                 bool isBlendEquationSupported() const { return _isBlendEquationSupported; }
+                bool isBlendEquationSeparateSupported() const { return _isBlendEquationSeparateSupported; }
                 bool isSGIXMinMaxSupported() const { return _isSGIXMinMaxSupported; }
                 bool isLogicOpSupported() const { return _isLogicOpSupported; }
                 
                 void glBlendEquation(GLenum mode) const;
+                void glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) const;
 
             protected:
 
                 ~Extensions() {}
                 
-                typedef void (APIENTRY * GLBlendEquationProc) (GLenum mode);
+                typedef void (APIENTRY * GLBlendEquationProc)(GLenum mode);
+                typedef void (APIENTRY * GLBlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
 
                 bool                _isBlendEquationSupported;
+                bool                _isBlendEquationSeparateSupported;
                 bool                _isSGIXMinMaxSupported;
                 bool                _isLogicOpSupported;
                 
                 GLBlendEquationProc _glBlendEquation;
-
+                GLBlendEquationSeparateProc _glBlendEquationSeparate;
         };
         
         /** Returns the Extensions object for the given context.
@@ -144,7 +153,7 @@ class OSG_EXPORT BlendEquation : public StateAttribute
         virtual ~BlendEquation();
 
 
-        Equation _equation;
+        Equation _equationRGB, _equationAlpha;
 };
 
 }

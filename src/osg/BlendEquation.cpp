@@ -20,12 +20,20 @@
 using namespace osg;
 
 BlendEquation::BlendEquation():
-    _equation(FUNC_ADD)
+    _equationRGB(FUNC_ADD),
+    _equationAlpha(FUNC_ADD)
 {
 }
 
 BlendEquation::BlendEquation(Equation equation):
-    _equation(equation)
+    _equationRGB(equation),
+    _equationAlpha(equation)
+{
+}
+
+BlendEquation::BlendEquation(Equation equationRGB, Equation equationAlpha):
+    _equationRGB(equationRGB),
+    _equationAlpha(equationAlpha)
 {
 }
 
@@ -48,23 +56,30 @@ void BlendEquation::apply(State& state) const
         return;
     }
 
-    GLenum eqn = static_cast<GLenum>(_equation);
-
-    if((eqn == ALPHA_MIN || eqn == ALPHA_MAX) && 
-       !extensions->isSGIXMinMaxSupported())
+    if((_equationRGB == ALPHA_MIN || _equationRGB == ALPHA_MAX) && !extensions->isSGIXMinMaxSupported())
     {
-    notify(WARN)<<"Warning: BlendEquation::apply(..) failed, SGIX_blend_alpha_minmax extension is not supported by OpenGL driver." << std::endl;
-    return;
+        notify(WARN)<<"Warning: BlendEquation::apply(..) failed, SGIX_blend_alpha_minmax extension is not supported by OpenGL driver." << std::endl;
+        return;
     }
 
-    if(eqn == LOGIC_OP && !extensions->isLogicOpSupported())
+    if(_equationRGB == LOGIC_OP && !extensions->isLogicOpSupported())
     {
-    notify(WARN)<<"Warning: BlendEquation::apply(..) failed, EXT_blend_logic_op extension is not supported by OpenGL driver." << std::endl;
-    return;
+        notify(WARN)<<"Warning: BlendEquation::apply(..) failed, EXT_blend_logic_op extension is not supported by OpenGL driver." << std::endl;
+        return;
     }
-    
-    extensions->glBlendEquation(static_cast<GLenum>(_equation));
-    
+
+    if (_equationRGB == _equationAlpha)
+        extensions->glBlendEquation(static_cast<GLenum>(_equationRGB));
+    else
+    {
+        if (extensions->isBlendEquationSeparateSupported())
+            extensions->glBlendEquationSeparate(static_cast<GLenum>(_equationRGB), static_cast<GLenum>(_equationAlpha));
+        else
+        {
+            notify(WARN)<<"Warning: BlendEquation::apply(..) failed, EXT_blend_equation_separate extension is not supported by OpenGL driver." << std::endl;
+            return;
+        }
+    }
 }
 
 
@@ -92,26 +107,34 @@ BlendEquation::Extensions::Extensions(const Extensions& rhs):
     Referenced()
 {
     _isBlendEquationSupported = rhs._isBlendEquationSupported;
+    _isBlendEquationSeparateSupported = rhs._isBlendEquationSeparateSupported;
     _isSGIXMinMaxSupported = rhs._isSGIXMinMaxSupported;
     _isLogicOpSupported = rhs._isLogicOpSupported;
     _glBlendEquation = rhs._glBlendEquation;
+    _glBlendEquationSeparate = rhs._glBlendEquationSeparate;
 }
 
 void BlendEquation::Extensions::lowestCommonDenominator(const Extensions& rhs)
 {
     if (!rhs._isBlendEquationSupported)  _isBlendEquationSupported = false;
     if (!rhs._glBlendEquation)           _glBlendEquation = 0;
+    if (!rhs._isBlendEquationSeparateSupported)  _isBlendEquationSeparateSupported = false;
+    if (!rhs._glBlendEquationSeparate)           _glBlendEquationSeparate = 0;
 }
 
 void BlendEquation::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isBlendEquationSupported = isGLExtensionSupported(contextID,"GL_EXT_blend_equation") ||
-                             strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
-    
+    _isBlendEquationSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_equation") || 
+        strncmp((const char*)glGetString(GL_VERSION), "1.2", 3) >= 0;
+
+    _isBlendEquationSeparateSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_equation_separate") || 
+        strncmp((const char*)glGetString(GL_VERSION), "2.0", 3) >= 0;
+
     _isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "GL_SGIX_blend_alpha_minmax");
     _isLogicOpSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_logic_op");
 
     setGLExtensionFuncPtr(_glBlendEquation, "glBlendEquation", "glBlendEquationEXT");
+    setGLExtensionFuncPtr(_glBlendEquationSeparate, "glBlendEquationSeparate", "glBlendEquationSeparateEXT");
 }
 
 void BlendEquation::Extensions::glBlendEquation(GLenum mode) const
@@ -126,4 +149,15 @@ void BlendEquation::Extensions::glBlendEquation(GLenum mode) const
     }
 }
 
+void BlendEquation::Extensions::glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) const
+{
+    if (_glBlendEquationSeparate)
+    {
+        _glBlendEquationSeparate(modeRGB, modeAlpha);
+    }
+    else
+    {
+        notify(WARN)<<"Error: glBlendEquationSeparate not supported by OpenGL driver"<<std::endl;
+    }
+}
 

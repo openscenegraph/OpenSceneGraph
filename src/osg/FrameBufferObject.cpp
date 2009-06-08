@@ -94,19 +94,19 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
         glFramebufferRenderbufferEXT != 0 &&
         glGenerateMipmapEXT != 0;
 
-    if (!isGLExtensionSupported(contextID, "GL_EXT_framebuffer_blit"))
-        return;
-
-    LOAD_FBO_EXT(glBlitFramebufferEXT);
-
-    if (isGLExtensionSupported(contextID, "GL_EXT_framebuffer_multisample"))
+    if (isGLExtensionSupported(contextID, "GL_EXT_framebuffer_blit"))
     {
-        LOAD_FBO_EXT(glRenderbufferStorageMultisampleEXT);
-    }
+        LOAD_FBO_EXT(glBlitFramebufferEXT);
 
-    if (isGLExtensionSupported(contextID, "GL_NV_framebuffer_multisample_coverage"))
-    {
-        LOAD_FBO_EXT(glRenderbufferStorageMultisampleCoverageNV);
+        if (isGLExtensionSupported(contextID, "GL_EXT_framebuffer_multisample"))
+        {
+            LOAD_FBO_EXT(glRenderbufferStorageMultisampleEXT);
+        }
+        
+        if (isGLExtensionSupported(contextID, "GL_NV_framebuffer_multisample_coverage"))
+        {
+            LOAD_FBO_EXT(glRenderbufferStorageMultisampleCoverageNV);
+        }
     }
 
     if (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil"))

@@ -100,7 +100,10 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
         bool getOutputShaderFiles() const { return _outputShaderFiles; }
 
         virtual std::string getShaderFileNameForOutput();
-        
+
+        void setExternalFileWritten(const std::string& filename, bool hasBeenWritten=true);
+        bool getExternalFileWritten(const std::string& filename) const;
+
     protected:
 
 
@@ -127,6 +130,9 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
         unsigned int _shaderFileNameNumber;
 
         bool _writeOutDefaultValues;
+
+        typedef std::map<std::string, bool> ExternalFileWrittenMap;
+        ExternalFileWrittenMap _externalFileWritten;
 };
 
 }

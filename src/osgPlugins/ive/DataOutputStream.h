@@ -138,6 +138,10 @@ public:
 
     bool compress(std::ostream& fout, const std::string& source) const;
 
+
+    void setExternalFileWritten(const std::string& filename, bool hasBeenWritten=true);
+    bool getExternalFileWritten(const std::string& filename) const;
+
 private:
 
     std::ostream* _ostream;
@@ -182,6 +186,9 @@ private:
     IncludeImageMode    _includeImageMode;
     
     osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
+
+    typedef std::map<std::string, bool> ExternalFileWrittenMap;
+    ExternalFileWrittenMap _externalFileWritten;
 };
 
 }

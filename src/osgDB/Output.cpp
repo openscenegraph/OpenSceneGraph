@@ -245,3 +245,14 @@ std::string Output::getShaderFileNameForOutput()
     return fileName;
 }
 
+void Output::setExternalFileWritten(const std::string& filename, bool hasBeenWritten)
+{
+    _externalFileWritten[filename] = hasBeenWritten;
+}
+
+bool Output::getExternalFileWritten(const std::string& filename) const
+{
+    ExternalFileWrittenMap::const_iterator itr = _externalFileWritten.find(filename);
+    if (itr != _externalFileWritten.end()) return itr->second;
+    return false;
+}

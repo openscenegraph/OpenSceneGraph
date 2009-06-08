@@ -516,6 +516,7 @@ static void usage( const char *prog, const char *msg )
     osg::notify(osg::NOTICE)<<"    --addMissingColors - Adding a white color value to all geometry that don't have\n"
                               "                         their own color values (--addMissingColours also accepted)."<< std::endl;
     osg::notify(osg::NOTICE)<<"    --overallNormal    - Replace normals with a single overall normal."<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --enable-object-cache - Enable caching of objects, images, etc."<< std::endl;
 
     osg::notify( osg::NOTICE ) << std::endl;
     osg::notify( osg::NOTICE ) <<
@@ -731,6 +732,9 @@ int main( int argc, char **argv )
     bool do_overallNormal = false;
     while(arguments.read("--overallNormal") || arguments.read("--overallNormal")) { do_overallNormal = true; }
 
+    bool enableObjectCache = false;
+    while(arguments.read("--enable-object-cache")) { enableObjectCache = true; }
+
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 
@@ -749,6 +753,11 @@ int main( int argc, char **argv )
         }
     }
 
+    if (enableObjectCache)
+    {
+        if (osgDB::Registry::instance()->getOptions()==0) osgDB::Registry::instance()->setOptions(new osgDB::Options());
+        osgDB::Registry::instance()->getOptions()->setObjectCacheHint(osgDB::Options::CACHE_ALL);
+    }
 
     std::string fileNameOut("converted.osg");
     if (fileNames.size()>1)

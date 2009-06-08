@@ -57,6 +57,7 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     arguments.getApplicationUsage()->addCommandLineOption("--run-on-demand","Set the run methods frame rate management to only rendering frames when required.");
     arguments.getApplicationUsage()->addCommandLineOption("--run-continuous","Set the run methods frame rate management to rendering frames continuously.");
     arguments.getApplicationUsage()->addCommandLineOption("--run-max-frame-rate","Set the run methods maximum permissable frame rate, 0.0 is default and switching off frame rate capping.");
+    arguments.getApplicationUsage()->addCommandLineOption("--enable-object-cache","Enable caching of objects, images, etc.");
 
     // FIXME: Uncomment these lines when the options have been documented properly
     //arguments.getApplicationUsage()->addCommandLineOption("--3d-sd","");
@@ -70,6 +71,13 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     while (arguments.read("-c",filename))
     {
         readConfig = readConfiguration(filename) || readConfig;
+    }
+
+    // Enable caching?
+    while (arguments.read("--enable-object-cache"))
+    {
+        if (osgDB::Registry::instance()->getOptions()==0) osgDB::Registry::instance()->setOptions(new osgDB::Options());
+        osgDB::Registry::instance()->getOptions()->setObjectCacheHint(osgDB::Options::CACHE_ALL);
     }
 
     while (arguments.read("--SingleThreaded")) setThreadingModel(SingleThreaded);

@@ -1835,3 +1835,15 @@ void DataOutputStream::writeObject(const osg::Object* object)
     // fallback, osg::Object type not supported, so can't write out
     writeInt(-1);
 }
+
+void DataOutputStream::setExternalFileWritten(const std::string& filename, bool hasBeenWritten)
+{
+    _externalFileWritten[filename] = hasBeenWritten;
+}
+
+bool DataOutputStream::getExternalFileWritten(const std::string& filename) const
+{
+    ExternalFileWrittenMap::const_iterator itr = _externalFileWritten.find(filename);
+    if (itr != _externalFileWritten.end()) return itr->second;
+    return false;
+}

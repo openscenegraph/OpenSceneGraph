@@ -411,6 +411,52 @@ void testQuat(const osg::Vec3d& quat_scale)
     osg::notify(osg::NOTICE)<<"Matrix = "<<matrix<<"rotation = "<<quat<<", expected quat = (0,0,0,1)"<<std::endl;
 }
 
+void testDecompose()
+{
+    double angx = osg::DegreesToRadians(30.0);
+    double angy = osg::DegreesToRadians(30.0);
+    double angz = osg::DegreesToRadians(30.0);
+
+    osg::Quat qx, qy, qz;
+    qx.makeRotate(angx, osg::Vec3f (1.0f, 0.0f, 0.0f));
+    qy.makeRotate(angy, osg::Vec3f (0.0f, 1.0f, 0.0f));
+    qz.makeRotate(angz, osg::Vec3f (0.0f, 0.0f, 1.0f));
+
+    osg::Quat rotation = qx * qy * qz;
+
+    osg::Matrixf matf;
+    matf.makeRotate(rotation);
+
+    printf ("Test - Matrix::decompos(), input rotation  : %f %f %f %f\n", rotation._v[0], rotation._v[1], rotation._v[2], rotation._v[3]);
+
+    osg::Vec3f transf;
+    osg::Quat  rotf;
+    osg::Vec3f sclf;
+    osg::Quat  sof;
+    matf.decompose (transf, rotf, sclf, sof);
+    printf ("Matrixf::decomposef\n");
+    printf ("Translation      : %f %f %f\n", transf.x(), transf.y(), transf.z());
+    printf ("Rotation         : %f %f %f %f\n", rotf._v[0], rotf._v[1], rotf._v[2], rotf._v[3]);
+    printf ("Scale            : %f %f %f\n", sclf.x(), sclf.y(), sclf.z());
+    printf ("Scale Orientation: %f %f %f %f\n", sof._v[0], sof._v[1], sof._v[2], sof._v[3]);
+
+    osg::Matrixd matd;
+    matd.makeRotate(rotation);
+
+    osg::Vec3f transd;
+    osg::Quat  rotd;
+    osg::Vec3f scld;
+    osg::Quat  sod;
+    matd.decompose (transd, rotd, scld, sod);
+    printf ("Matrixd::decompose\n");
+    printf ("Translation      : %f %f %f\n", transd.x(), transd.y(), transd.z());
+    printf ("Rotation         : %f %f %f %f\n", rotd._v[0], rotd._v[1], rotd._v[2], rotd._v[3]);
+    printf ("Scale            : %f %f %f\n", scld.x(), scld.y(), scld.z());
+    printf ("Scale Orientation: %f %f %f %f\n", sod._v[0], sod._v[1], sod._v[2], sod._v[3]);
+
+    osg::notify(osg::NOTICE)<<std::endl;
+}
+
 class MyThread : public OpenThreads::Thread {
 public:
     void run(void) { }
@@ -607,6 +653,8 @@ int main( int argc, char** argv )
                                      0.0,        0.987960,   0.154710,   0.0,
                                      -0.017452, -0.154687,  0.987809,   0.0,
                                      -0.1715,    0.207295,  -0.98239,   1.0));
+
+        testDecompose();
 
     }
     

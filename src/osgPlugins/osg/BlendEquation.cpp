@@ -30,12 +30,26 @@ bool BlendEquation_readLocalData(Object& obj, Input& fr)
 {
     bool iteratorAdvanced = false;
 
-    BlendEquation& transparency = static_cast<BlendEquation&>(obj);
+    BlendEquation& blendeq = static_cast<BlendEquation&>(obj);
 
     int mode;
     if (fr[0].matchWord("equation") && BlendEquation_matchModeStr(fr[1].getStr(),mode))
     {
-        transparency.setEquation(osg::BlendEquation::Equation(mode));
+        blendeq.setEquation(osg::BlendEquation::Equation(mode));
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
+    if (fr[0].matchWord("equationRGB") && BlendEquation_matchModeStr(fr[1].getStr(),mode))
+    {
+        blendeq.setEquationRGB(osg::BlendEquation::Equation(mode));
+        fr+=2;
+        iteratorAdvanced = true;
+    }
+
+    if (fr[0].matchWord("equationAlpha") && BlendEquation_matchModeStr(fr[1].getStr(),mode))
+    {
+        blendeq.setEquationAlpha(osg::BlendEquation::Equation(mode));
         fr+=2;
         iteratorAdvanced = true;
     }
@@ -45,9 +59,17 @@ bool BlendEquation_readLocalData(Object& obj, Input& fr)
 
 bool BlendEquation_writeLocalData(const Object& obj, Output& fw)
 {
-    const BlendEquation& transparency = static_cast<const BlendEquation&>(obj);
+    const BlendEquation& blendeq = static_cast<const BlendEquation&>(obj);
 
-    fw.indent() << "equation " << BlendEquation_getModeStr(transparency.getEquation()) << std::endl;
+    if (blendeq.getEquationRGB()==blendeq.getEquationAlpha())
+    {
+        fw.indent() << "equation " << BlendEquation_getModeStr(blendeq.getEquation()) << std::endl;
+    }
+    else
+    {
+        fw.indent() << "equationRGB " << BlendEquation_getModeStr(blendeq.getEquationRGB()) << std::endl;
+        fw.indent() << "equationAlpha " << BlendEquation_getModeStr(blendeq.getEquationAlpha()) << std::endl;
+    }
 
     return true;
 }

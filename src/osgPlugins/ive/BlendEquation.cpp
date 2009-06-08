@@ -33,7 +33,15 @@ void BlendEquation::write(DataOutputStream* out){
     // Write BlendEquation's properties.
 
     // Write source
-    out->writeInt(getEquation());
+    if ( out->getVersion() >= VERSION_0040 )
+    {
+        out->writeInt(getEquationRGB());
+        out->writeInt(getEquationAlpha());
+    }
+    else
+    {
+        out->writeInt(getEquation());
+    }
 }
 
 void BlendEquation::read(DataInputStream* in){
@@ -52,8 +60,15 @@ void BlendEquation::read(DataInputStream* in){
         // Read BlendEquation's properties
 
         // Read source
-        setEquation(osg::BlendEquation::Equation(in->readInt()));
-
+        if ( in->getVersion() >= VERSION_0040 )
+        {
+            setEquationRGB(osg::BlendEquation::Equation(in->readInt()));
+            setEquationAlpha(osg::BlendEquation::Equation(in->readInt()));
+        }
+        else
+        {
+            setEquation(osg::BlendEquation::Equation(in->readInt()));
+        }
     }
     else{
         throw Exception("BlendEquation::read(): Expected BlendEquation identification.");

@@ -385,8 +385,9 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                     {
                         osg_mat->setTransparency(osg::Material::FRONT_AND_BACK, vrml_material->transparency());
                         osg_stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
-                        osg_stateset->setAttribute(new osg::Depth(osg::Depth::LESS, 0.0, 1.0, false)); // GvdB: transparent objects do not write depth
                         osg_stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                        // commenting out osg:::Depth entry as it's not usual for transparent objects to disable depth.
+                        // osg_stateset->setAttribute(new osg::Depth(osg::Depth::LESS, 0.0, 1.0, false)); // GvdB: transparent objects do not write depth
                     }
                     else
                     {
@@ -438,7 +439,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                             const openvrml::sfbool *sfb = dynamic_cast<const openvrml::sfbool *>(wrap_fv.get());
 
                             if (!sfb->value())
-                                texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
+                                texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
                         }
                         catch (...)
                         {
@@ -447,6 +448,15 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
 
                         osg_stateset->setTextureAttributeAndModes(0, texture.get());
                         //osg_stateset->setMode(GL_BLEND,osg::StateAttribute::ON);  //bhbn
+                        if(image->isImageTranslucent())
+                        {
+                            osg_stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+                            osg_stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                            // commenting out osg:::Depth entry as it's not usual for transparent objects to disable depth.
+                            osg_stateset->setAttribute(new osg::Depth(osg::Depth::LESS, 0.0, 1.0, false)); // GvdB: transparent objects do not write depth
+                        }
+
+
 
                     }
                     else

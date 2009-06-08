@@ -1493,6 +1493,9 @@ std::string Registry::findDataFileImplementation(const std::string& filename, co
 {
     if (filename.empty()) return filename;
 
+    // if data file contains a server address then we can't find it in local directories so return empty string.
+    if (containsServerAddress(filename)) return std::string();
+
     if(fileExists(filename))
     {
         osg::notify(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;

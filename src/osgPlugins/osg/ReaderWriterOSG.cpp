@@ -110,6 +110,8 @@ class OSGReaderWriter : public ReaderWriter
             supportsExtension("osgs","Psuedo OpenSceneGraph file loaded, with file encoded in filename string");
             supportsOption("precision","Set the floating point precision when writing out files");
             supportsOption("OutputTextureFiles","Write out the texture images to file");
+            supportsOption("includeExternalReferences","Export option");
+            supportsOption("writeExternalReferenceFiles","Export option");
         }
     
         virtual const char* className() const { return "OSG Reader/Writer"; }

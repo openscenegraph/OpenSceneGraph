@@ -164,6 +164,14 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
     bool includeExternalReferences = false;
     bool useOriginalExternalReferences = true;
     bool writeExternalReferenceFiles = false;
+    std::string optionsString = fw.getOptions()->getOptionString();
+    includeExternalReferences = optionsString.find("includeExternalReferences")!=std::string::npos;
+    bool newExternals = optionsString.find("writeExternalReferenceFiles")!=std::string::npos;
+    if (newExternals) 
+    {
+        useOriginalExternalReferences = false;
+        writeExternalReferenceFiles = true;
+    } 
 
     const ProxyNode& proxyNode = static_cast<const ProxyNode&>(obj);
 
@@ -238,14 +246,23 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
             {
                 if(useOriginalExternalReferences) //out->getUseOriginalExternalReferences())
                 {
-                    osgDB::writeNodeFile(*proxyNode.getChild(i), proxyNode.getFileName(i));
+                    std::string origname = proxyNode.getFileName(i);
+                    if (!fw.getExternalFileWritten(origname))
+                    {
+                        osgDB::writeNodeFile(*proxyNode.getChild(i), origname);
+                        fw.setExternalFileWritten(proxyNode.getFileName(i), true);
+                    }
                 }
                 else
                 {
                     std::string path = osgDB::getFilePath(fw.getFileName());
                     std::string new_filename = osgDB::getStrippedName(proxyNode.getFileName(i)) +".osg";
                     std::string osgname = path.empty() ? new_filename :  (path +"/"+ new_filename) ;
-                    osgDB::writeNodeFile(*proxyNode.getChild(i), osgname);
+                    if (!fw.getExternalFileWritten(osgname))
+                    {
+                        osgDB::writeNodeFile(*proxyNode.getChild(i), osgname);
+                        fw.setExternalFileWritten(osgname, true);
+                    }
                 }
             }
         }

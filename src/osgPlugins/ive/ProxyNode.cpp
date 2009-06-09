@@ -129,7 +129,7 @@ void ProxyNode::write(DataOutputStream* out)
                     else
                     {
                         std::string ivename = writeDirectory + osgDB::getStrippedName(getFileName(i)) +".ive";
-                        if (!out->getExternalFileWritten(getFileName(i)))
+                        if (!out->getExternalFileWritten(ivename))
                         {
                             osgDB::writeNodeFile(*getChild(i), ivename);
                             out->setExternalFileWritten(ivename, true);

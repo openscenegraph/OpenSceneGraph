@@ -250,7 +250,7 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
                     if (!fw.getExternalFileWritten(origname))
                     {
                         osgDB::writeNodeFile(*proxyNode.getChild(i), origname);
-                        fw.setExternalFileWritten(proxyNode.getFileName(i), true);
+                        fw.setExternalFileWritten(origname, true);
                     }
                 }
                 else

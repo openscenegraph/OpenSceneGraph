@@ -83,6 +83,8 @@ EasyCurl::EasyCurl()
     osg::notify(osg::INFO)<<"EasyCurl::EasyCurl()"<<std::endl;
     
     _previousHttpAuthentication = 0;
+    _connectTimeout = 0; // no timeout by default.
+    _timeout = 0;
 
     _curl = curl_easy_init();
 
@@ -106,6 +108,15 @@ osgDB::ReaderWriter::ReadResult EasyCurl::read(const std::string& proxyAddress, 
     const osgDB::AuthenticationMap* authenticationMap = (options && options->getAuthenticationMap()) ? 
             options->getAuthenticationMap() :
             osgDB::Registry::instance()->getAuthenticationMap();
+
+    // Set the timeout value here:
+    // Note that this has an effect only in a connection phase.
+    // WARNING: here we make the assumption that if someone starts using the timeouts settings
+    // he will not try to disable them afterwards (a value must be provided or the previous value is used).
+    if(_connectTimeout > 0)
+        curl_easy_setopt(_curl, CURLOPT_CONNECTTIMEOUT, _connectTimeout);
+    if(_timeout > 0)
+        curl_easy_setopt(_curl, CURLOPT_TIMEOUT, _timeout);
 
     if(!proxyAddress.empty())
     {
@@ -241,6 +252,8 @@ ReaderWriterCURL::ReaderWriterCURL()
     supportsExtension("*","Passes all read files to other plugins to handle actual model loading.");
     supportsOption("OSG_CURL_PROXY","Specify the http proxy.");
     supportsOption("OSG_CURL_PROXYPORT","Specify the http proxy port.");
+    supportsOption("OSG_CURL_CONNECTTIMEOUT","Specify the connection timeout duration in seconds [default = 0 = not set].");
+    supportsOption("OSG_CURL_TIMEOUT","Specify the timeout duration of the whole transfer in seconds [default = 0 = not set].");
 }
 
 ReaderWriterCURL::~ReaderWriterCURL()
@@ -284,7 +297,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     osg::notify(osg::INFO)<<"ReaderWriterCURL::readFile("<<fullFileName<<")"<<std::endl;
 
     std::string proxyAddress, optProxy, optProxyPort;
-
+    long connectTimeout = 0;
+    long timeout = 0;
+    
     if (options)
     {
         std::istringstream iss(options->getOptionString());
@@ -296,6 +311,10 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
                 optProxy = opt.substr( index+1 );
             else if( opt.substr( 0, index ) == "OSG_CURL_PROXYPORT" )
                 optProxyPort = opt.substr( index+1 );
+            else if( opt.substr( 0, index ) == "OSG_CURL_CONNECTTIMEOUT" )
+                connectTimeout = atol(opt.substr( index+1 ).c_str()); // this will return 0 in case of improper format.
+            else if( opt.substr( 0, index ) == "OSG_CURL_TIMEOUT" )
+                timeout = atol(opt.substr( index+1 ).c_str()); // this will return 0 in case of improper format.
         }
 
         //Setting Proxy by OSG Options
@@ -378,6 +397,10 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     std::stringstream buffer;
 
     EasyCurl::StreamObject sp(&buffer, std::string());
+
+    // setup the timeouts:
+    getEasyCurl().setConnectionTimeout(connectTimeout);
+    getEasyCurl().setTimeout(timeout);
 
     ReadResult curlResult = getEasyCurl().read(proxyAddress, fileName, sp, options);
 

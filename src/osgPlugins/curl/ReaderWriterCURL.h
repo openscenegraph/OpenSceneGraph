@@ -51,6 +51,14 @@ class EasyCurl : public osg::Referenced
 
         EasyCurl();
 
+        // Added this function to set the desired connection timeout if needed (in case someone needs to try to connect
+        // to offline servers without freezing the process for a very long time) [even if, as stated on curl website,
+        // some normal transfer may be timed out this way].
+        inline void setConnectionTimeout(long val) { _connectTimeout = val; }
+
+        // the timeout variable is used to limit the whole transfer duration instead of the connection phase only.
+        inline void setTimeout(long val) { _timeout = val; }
+
         osgDB::ReaderWriter::ReadResult read(const std::string& proxyAddress, const std::string& fileName, StreamObject& sp, const osgDB::ReaderWriter::Options *options);
 
         /** Returns the mime type of the data retrieved with the provided stream object on a
@@ -70,6 +78,8 @@ class EasyCurl : public osg::Referenced
         
         std::string     _previousPassword;
         long            _previousHttpAuthentication;
+        long            _connectTimeout;
+        long            _timeout;
 };
 
 

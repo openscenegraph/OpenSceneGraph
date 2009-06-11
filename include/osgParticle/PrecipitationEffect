@@ -256,6 +256,8 @@ namespace osgParticle
         osg::Vec3   _inverse_dv;
         osg::Vec3   _inverse_dw;
 
+        double      _previousFrameTime;
+
     };
 
 }

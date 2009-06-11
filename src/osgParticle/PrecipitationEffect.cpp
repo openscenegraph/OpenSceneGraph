@@ -105,7 +105,8 @@ static osg::Image* createSpotLightImage(const osg::Vec4& centerColour, const osg
 }
 
 
-PrecipitationEffect::PrecipitationEffect()
+PrecipitationEffect::PrecipitationEffect():
+    _previousFrameTime(FLT_MAX)
 {
     setNumChildrenRequiringUpdateTraversal(1);
     
@@ -201,10 +202,11 @@ void PrecipitationEffect::traverse(osg::NodeVisitor& nv)
         if (nv.getFrameStamp())
         {
             double currentTime = nv.getFrameStamp()->getSimulationTime();
-            static double previousTime = currentTime;
-            double delta = currentTime - previousTime;
+            if (_previousFrameTime==FLT_MAX) _previousFrameTime = currentTime;
+
+            double delta = currentTime - _previousFrameTime;
             _origin += _wind * delta;
-            previousTime = currentTime;
+            _previousFrameTime = currentTime;
         }
 
         return;

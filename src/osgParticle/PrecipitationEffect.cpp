@@ -115,6 +115,32 @@ PrecipitationEffect::PrecipitationEffect():
     rain(0.5);
 }
 
+
+PrecipitationEffect::PrecipitationEffect(const PrecipitationEffect& copy, const osg::CopyOp& copyop):
+    osg::Node(copy,copyop),
+    _previousFrameTime(FLT_MAX)
+{
+    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
+
+    _wind = copy._wind;
+    _particleSpeed = copy._particleSpeed;
+    _particleSize = copy._particleSize;
+    _particleColor = copy._particleColor;
+    _maximumParticleDensity = copy._maximumParticleDensity;
+    _cellSize = copy._cellSize;
+    _nearTransition = copy._nearTransition;
+    _farTransition = copy._farTransition;
+
+    _fog = copy._fog.valid() ? dynamic_cast<osg::Fog*>(copy._fog->clone(copyop)) : 0;
+
+
+    _useFarLineSegments = copy._useFarLineSegments;
+
+    _dirty = true;
+
+    update();
+}
+
 void PrecipitationEffect::rain(float intensity)
 {
     _wind.set(0.0f,0.0f,0.0f);
@@ -160,14 +186,6 @@ void PrecipitationEffect::snow(float intensity)
     
     _dirty = true;
 
-    update();
-}
-
-PrecipitationEffect::PrecipitationEffect(const PrecipitationEffect& copy, const osg::CopyOp& copyop):
-    osg::Node(copy,copyop)
-{
-    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
-    _dirty = true;
     update();
 }
 

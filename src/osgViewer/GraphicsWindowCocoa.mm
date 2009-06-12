@@ -19,9 +19,9 @@
 
 #include "DarwinUtils.h"
 
-//#define DEBUG_OUT(s) std::cout << "GraphicsWindowCocoa :: " << s << std::endl;
+#define DEBUG_OUT(s) std::cout << "GraphicsWindowCocoa :: " << s << std::endl;
 
-#define DEBUG_OUT(s) ;
+//#define DEBUG_OUT(s) ;
 
 static bool s_quit_requested = false;
 
@@ -388,8 +388,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 
 - (void) mouseMoved:(NSEvent*)theEvent 
 {
-    DEBUG_OUT("Mouse moved");
     NSPoint converted_point = [self getLocalPoint: theEvent];
+    DEBUG_OUT("Mouse moved" << converted_point.x << "/" << converted_point.y);
     _win->getEventQueue()->mouseMotion(converted_point.x, converted_point.y);
 }
 
@@ -605,6 +605,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 {
     if (!_win) return;
     
+    DEBUG_OUT("middleMouseDown ");
+    
     NSPoint converted_point = [self getLocalPoint: theEvent];
     
     if([theEvent clickCount] == 1)
@@ -620,6 +622,8 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 - (void) doExtraMouseButtonDown:(NSEvent*)theEvent buttonNumber:(int)button_number
 {
     if (!_win) return;
+    
+    DEBUG_OUT("extraMouseDown btn: " << button_number);
     
     NSPoint converted_point = [self getLocalPoint: theEvent];
     if([theEvent clickCount] == 1)
@@ -1036,18 +1040,22 @@ void GraphicsWindowCocoa::closeImplementation()
     MenubarController* mbc = MenubarController::instance();
     if (mbc) mbc->detachWindow(this);
     
-    if (_window) {
-        [_window close];
-        [_window release];
-    }
-    
     if (_view) {
         [_view setGraphicsWindowCocoa: NULL];
     }
+        
+    if (_window) {
+        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+        
+        // we have to close + release the window in the main-thread
+        
+        [_window performSelectorOnMainThread: @selector(close) withObject:NULL waitUntilDone: YES];
+        [_window performSelectorOnMainThread: @selector(release) withObject:NULL waitUntilDone: YES];
+        [pool release];
+    }
     
     _window = NULL;
-    _view = NULL;
-    
+    _view = NULL;    
 }
 
 

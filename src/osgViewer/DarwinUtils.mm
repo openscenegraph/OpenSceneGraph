@@ -12,6 +12,39 @@
 #include "DarwinUtils.h"
 #include <Cocoa/Cocoa.h>
 
+@interface MenubarToggler : NSObject {
+
+}
+
+-(void) show: (ID) data;
+-(void) hide: (ID) data;
+
+@end
+
+@implementation MenubarToggler
+
+
+
+-(void) hide:(ID) data 
+{
+    OSErr error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+    if (error) {
+        osg::notify(osg::DEBUG_INFO) << "MenubarToggler::hide failed with " << error << std::endl;
+    }
+}
+
+
+-(void) show:(ID) data 
+{
+    OSErr error = SetSystemUIMode(kUIModeNormal, 0);
+    if (error) {
+        osg::notify(osg::DEBUG_INFO) << "MenubarToggler::show failed with " << error << std::endl;
+    }
+}
+
+
+@end
+
 namespace osgDarwin {
 
 
@@ -83,9 +116,9 @@ void MenubarController::detachWindow(osgViewer::GraphicsWindow* win)
 
 // iterate through all open windows and check, if they intersect the area occupied by the menubar/dock, and if so, hide the menubar/dock
 
+
 void MenubarController::update() 
 {
-    OSErr error(noErr);
     unsigned int windowsCoveringMenubarArea = 0;    
     unsigned int windowsIntersectingMainScreen = 0;
     for(WindowList::iterator i = _list.begin(); i != _list.end(); ) {
@@ -115,16 +148,47 @@ void MenubarController::update()
             i= _list.erase(i);
     }
     
-    // see http://developer.apple.com/technotes/tn2002/tn2062.html for hiding the dock+menubar
+    // if we use the cocoa implementation then we have a NSRunLoop in place, and so we can use the deferred menubar-toggling which is thread safe
+            
+    #ifdef USE_DARWIN_COCOA_IMPLEMENTATION
+    
+        // SetSystemUIMode is not threadsafe, you'll get crashes if you call this method from other threads
+        // so use a small NSObject to switch the menubar on the main thread via performSelectorOnMainThread
         
-    if (windowsCoveringMenubarArea && _menubarShown)
-        error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+        NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+        if (windowsCoveringMenubarArea && _menubarShown) 
+        {
+            
+            //error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+            MenubarToggler* toggler = [[MenubarToggler alloc] init];
+            [toggler performSelectorOnMainThread: @selector(hide:) withObject:NULL waitUntilDone: YES];
+            [toggler autorelease];
+        }
+        if (!windowsCoveringMenubarArea && !_menubarShown) 
+        {
+            //error = SetSystemUIMode(kUIModeNormal, 0);
+            MenubarToggler* toggler = [[MenubarToggler alloc] init];
+            [toggler performSelectorOnMainThread: @selector(show:) withObject:NULL waitUntilDone: YES];
+            [toggler autorelease];
+        }
+        [pool release];
     
-    if (!windowsCoveringMenubarArea && !_menubarShown)
-        error = SetSystemUIMode(kUIModeNormal, 0);
-        _menubarShown = !windowsCoveringMenubarArea;
+    #else
     
-    // osg::notify(osg::DEBUG_INFO) << "MenubarController:: " << windowsCoveringMenubarArea << " windows covering the menubar/dock area, " << windowsIntersectingMainScreen << " intersecting mainscreen" << std::endl;
+        OSErr error;
+        
+          // see http://developer.apple.com/technotes/tn2002/tn2062.html for hiding the dock+menubar
+        if (windowsCoveringMenubarArea && _menubarShown) 
+        {
+            error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+        } 
+        else 
+        {
+            error = SetSystemUIMode(kUIModeNormal, 0);
+        }
+    #endif
+    
+    _menubarShown = !windowsCoveringMenubarArea;
 }
 
 

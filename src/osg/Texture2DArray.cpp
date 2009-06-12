@@ -420,7 +420,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
             numMipmapLevels = 1;
 
             GLint blockSize, size;
-            getCompressedSize(_internalFormat, inwidth, inheight, indepth, blockSize,size);
+            getCompressedSize(_internalFormat, inwidth, inheight, 1, blockSize,size);
 
             extensions->glCompressedTexSubImage3D(target, 0,
                 0, 0, indepth,  

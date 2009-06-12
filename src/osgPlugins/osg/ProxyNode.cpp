@@ -164,15 +164,17 @@ bool ProxyNode_writeLocalData(const Object& obj, Output& fw)
     bool includeExternalReferences = false;
     bool useOriginalExternalReferences = true;
     bool writeExternalReferenceFiles = false;
-    std::string optionsString = fw.getOptions()->getOptionString();
-    includeExternalReferences = optionsString.find("includeExternalReferences")!=std::string::npos;
-    bool newExternals = optionsString.find("writeExternalReferenceFiles")!=std::string::npos;
-    if (newExternals) 
+    if (fw.getOptions())
     {
-        useOriginalExternalReferences = false;
-        writeExternalReferenceFiles = true;
-    } 
-
+        std::string optionsString = fw.getOptions()->getOptionString();
+        includeExternalReferences = optionsString.find("includeExternalReferences")!=std::string::npos;
+        bool newExternals = optionsString.find("writeExternalReferenceFiles")!=std::string::npos;
+        if (newExternals) 
+        {
+            useOriginalExternalReferences = false;
+            writeExternalReferenceFiles = true;
+        } 
+    }
     const ProxyNode& proxyNode = static_cast<const ProxyNode&>(obj);
 
     if (proxyNode.getCenterMode()==osg::ProxyNode::USER_DEFINED_CENTER) fw.indent() << "Center "<< proxyNode.getCenter() << std::endl;

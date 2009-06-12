@@ -407,6 +407,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	          __void__attach__osg_Camera_BufferComponent__osg_Image_P1,
 	          "",
 	          "");
+	I_Method0(void, collateReferencesToDependentCameras,
+	          Properties::NON_VIRTUAL,
+	          __void__collateReferencesToDependentCameras,
+	          "search through any pre and post RenderStage that reference a Camera, and take a reference to each of these cameras to prevent them being deleted while they are still be used by the drawing thread. ",
+	          "");
+	I_Method0(void, clearReferencesToDependentCameras,
+	          Properties::NON_VIRTUAL,
+	          __void__clearReferencesToDependentCameras,
+	          "clear the references to any dependent cameras. ",
+	          "");
 	I_SimpleProperty(osg::Camera *, Camera, 
 	                 __osg_Camera_P1__getCamera, 
 	                 __void__setCamera__osg_Camera_P1);

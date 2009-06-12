@@ -47,6 +47,10 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendEquation)
 	               ____BlendEquation__Equation,
 	               "",
 	               "");
+	I_Constructor2(IN, osg::BlendEquation::Equation, equationRGB, IN, osg::BlendEquation::Equation, equationAlpha,
+	               ____BlendEquation__Equation__Equation,
+	               "",
+	               "");
 	I_ConstructorWithDefaults2(IN, const osg::BlendEquation &, trans, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____BlendEquation__C5_BlendEquation_R1__C5_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
@@ -101,6 +105,26 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendEquation)
 	          __Equation__getEquation,
 	          "",
 	          "");
+	I_Method1(void, setEquationRGB, IN, osg::BlendEquation::Equation, equation,
+	          Properties::NON_VIRTUAL,
+	          __void__setEquationRGB__Equation,
+	          "",
+	          "");
+	I_Method0(osg::BlendEquation::Equation, getEquationRGB,
+	          Properties::NON_VIRTUAL,
+	          __Equation__getEquationRGB,
+	          "",
+	          "");
+	I_Method1(void, setEquationAlpha, IN, osg::BlendEquation::Equation, equation,
+	          Properties::NON_VIRTUAL,
+	          __void__setEquationAlpha__Equation,
+	          "",
+	          "");
+	I_Method0(osg::BlendEquation::Equation, getEquationAlpha,
+	          Properties::NON_VIRTUAL,
+	          __Equation__getEquationAlpha,
+	          "",
+	          "");
 	I_Method1(void, apply, IN, osg::State &, x,
 	          Properties::VIRTUAL,
 	          __void__apply__State_R1,
@@ -117,6 +141,12 @@ BEGIN_OBJECT_REFLECTOR(osg::BlendEquation)
 	I_SimpleProperty(osg::BlendEquation::Equation, Equation, 
 	                 __Equation__getEquation, 
 	                 __void__setEquation__Equation);
+	I_SimpleProperty(osg::BlendEquation::Equation, EquationAlpha, 
+	                 __Equation__getEquationAlpha, 
+	                 __void__setEquationAlpha__Equation);
+	I_SimpleProperty(osg::BlendEquation::Equation, EquationRGB, 
+	                 __Equation__getEquationRGB, 
+	                 __void__setEquationRGB__Equation);
 	I_SimpleProperty(osg::StateAttribute::Type, Type, 
 	                 __Type__getType, 
 	                 0);

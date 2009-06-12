@@ -591,6 +591,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          __C5_osgUtil_RenderStage_P1__getRenderStageRight,
 	          "",
 	          "");
+	I_Method0(void, collateReferencesToDependentCameras,
+	          Properties::NON_VIRTUAL,
+	          __void__collateReferencesToDependentCameras,
+	          "search through any pre and post RenderStage that reference a Camera, and take a reference to each of these cameras to prevent them being deleted while they are still be used by the drawing thread. ",
+	          "");
+	I_Method0(void, clearReferencesToDependentCameras,
+	          Properties::NON_VIRTUAL,
+	          __void__clearReferencesToDependentCameras,
+	          "clear the refence to any any dependent cameras. ",
+	          "");
 	I_Method1(void, setDrawBufferValue, IN, GLenum, drawBufferValue,
 	          Properties::NON_VIRTUAL,
 	          __void__setDrawBufferValue__GLenum,

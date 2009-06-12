@@ -27,6 +27,8 @@ ProxyNode::ProxyNode() :
 ProxyNode::ProxyNode(const ProxyNode& proxynode,const CopyOp& copyop):
     Group(proxynode,copyop),
     _filenameList(proxynode._filenameList),
+    _databaseOptions(proxynode._databaseOptions),
+    _databasePath(proxynode._databasePath),
     _loadingExtReference(proxynode._loadingExtReference),
     _centerMode(proxynode._centerMode),
     _userDefinedCenter(proxynode._userDefinedCenter),
@@ -57,12 +59,11 @@ void ProxyNode::setDatabasePath(const std::string& path)
 void ProxyNode::traverse(NodeVisitor& nv)
 {
     if (nv.getDatabaseRequestHandler() && _filenameList.size()>_children.size() &&
-        nv.getVisitorType()==NodeVisitor::CULL_VISITOR &&
         _loadingExtReference!=NO_AUTOMATIC_LOADING)
     {
         for(unsigned int i=_children.size(); i<_filenameList.size(); ++i)
         {
-            nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_filenameList[i].first, this, 1.0f, nv.getFrameStamp(), _filenameList[i].second);
+            nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_filenameList[i].first, this, 1.0f, nv.getFrameStamp(), _filenameList[i].second, _databaseOptions.get());
         }
     }
     else

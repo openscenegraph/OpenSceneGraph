@@ -41,6 +41,17 @@ class OSG_EXPORT ProxyNode : public Group
         
         virtual bool removeChildren(unsigned int pos,unsigned int numChildrenToRemove);
 
+
+        /** Set the optional database osgDB::Options object to use when loaded children.*/
+        void setDatabaseOptions(osg::Referenced* options) { _databaseOptions = options; }
+
+        /** Get the optional database osgDB::Options object used when loaded children.*/
+        osg::Referenced* getDatabaseOptions() { return _databaseOptions.get(); }
+
+        /** Get the optional database osgDB::Options object used when loaded children.*/
+        const osg::Referenced* getDatabaseOptions() const { return _databaseOptions.get(); }
+
+
         /** Set the database path to prepend to children's filenames.*/
         void setDatabasePath(const std::string& path);
         /** Get the database path used to prepend to children's filenames.*/
@@ -114,6 +125,7 @@ class OSG_EXPORT ProxyNode : public Group
         typedef std::vector<FileNameDatabaseRequestPair>                 FileNameDatabaseRequestList;
 
         FileNameDatabaseRequestList     _filenameList;
+        ref_ptr<Referenced>             _databaseOptions;
         std::string                     _databasePath;
         
         LoadingExternalReferenceMode    _loadingExtReference;

@@ -1,3 +1,225 @@
+2009-06-11 15:13  robert
+
+	* src/osgParticle/PrecipitationEffect.cpp: Fixed copy constructor
+
+2009-06-11 14:56  robert
+
+	* include/osgParticle/PrecipitationEffect,
+	  src/osgParticle/PrecipitationEffect.cpp: Replaced frame delta
+	  computation that was originally based on a local static variable,
+	  replacing it with member variable to tracking the previous frame
+	  time. This fixes a bug in the wind computation when multiple
+	  PrecipitaionEffects are in the scene.
+
+2009-06-10 09:24  robert
+
+	* src/osgPlugins/curl/ReaderWriterCURL.cpp,
+	  src/osgPlugins/curl/ReaderWriterCURL.h: From Emmanuel Roche,
+	  "I've updated the CURL plugin to support the CURL_CONNECTTIMEOUT
+	  and CURL_TIMEOUT options.
+	  
+	  Those two additional options can now be set using the
+	  Options::setOptionsString() function (just like the already
+	  existing OSG_CURL_PROXY & OSG_CURL_PROXYPORT options).
+	  
+	  This is a convient solution to limit the freezing effect one may
+	  face in case the targeted server is down or too slow.
+	  
+	  I successfully compiled and used this updated version on Windows
+	  in my application.
+	  
+	  And by default those settings are not set (so no change in the
+	  behavior if you don't need them).
+	  "
+
+2009-06-09 08:43  robert
+
+	* src/osgPlugins/ive/ProxyNode.cpp,
+	  src/osgPlugins/osg/ProxyNode.cpp: From Gustav Happalahti, fixed
+	  filename usage
+
+2009-06-08 16:50  robert
+
+	* applications/osgconv/osgconv.cpp, include/osgDB/Output,
+	  src/osgDB/Output.cpp, src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/ive/DataOutputStream.h,
+	  src/osgPlugins/ive/ProxyNode.cpp,
+	  src/osgPlugins/osg/ProxyNode.cpp,
+	  src/osgPlugins/osg/ReaderWriterOSG.cpp, src/osgViewer/Viewer.cpp:
+	  From Gustav Haapalahti and Robert Osfield,
+	  
+	  First Submission email from Gustav:
+	  "This submission adds a --cache option to osgconv and osgviewer
+	  that enables setObjectCacheHint(osgDB::Options::CACHE_ALL); It
+	  greatly reduces memory usage when a .osg file has lots of
+	  external references with ProxyNode:s that points to the same
+	  file.
+	  
+	  Options are also added to the osg plugin. The code was already
+	  mostly implemented but there was no way to change the options.
+	  includeExternalReferences
+	  writeExternalReferenceFiles
+	  A counter is added to keep track if an external file has already
+	  been written down to avoid writing the same file over and over
+	  again. If it has already been written once then it is not written
+	  again.
+	  The counter is added to the Output class in osgDB.
+	  "
+	  
+	  Second Submission email from Gustav:
+	  "This is a continuation to my previous submission.
+	  I noticed that the same problem that I fixed in ProxyNode.cpp for
+	  the osg plugin (external files being written over and over again)
+	  also existed in the ive plugin. I attached a submission where the
+	  ive plugin remembers which external files that have already been
+	  written and do not write them again."
+	  
+	  
+	  Changes to the above done by Robert Osfield,
+	  
+	  changed command line parameter to --enable-object-cache
+	  changed set/get methods in osgDB::Output and
+	  ive/DataOutputStream.cpp to be s/getExternalFileWritten(const
+	  std::string&)
+	  cleaned up set up of osgDB::Options.
+
+2009-06-08 14:06  robert
+
+	* src/osgPlugins/dxf/CMakeLists.txt,
+	  src/osgPlugins/dxf/DXFWriterNodeVisitor.cpp,
+	  src/osgPlugins/dxf/DXFWriterNodeVisitor.h,
+	  src/osgPlugins/dxf/ReaderWriterDXF.cpp: Martin Beckett, "Here's a
+	  first attempt at a DXF writer plugin
+	  
+	  At the moment it outputs DXF for whatever geometry is contained
+	  in the node it would be nice to draw the model as it is rendered
+	  (points/lines/surface)
+	  
+	  If people could also test against other apps that need to read
+	  DXF, the format is a bit of a black art and not all importers
+	  support all features so it might need some options to tweak the
+	  output.
+	  
+	  It has some rather clever colour lookup stuff to match real
+	  colours against the limited DXF palette. I cracked the code of
+	  the Autocad indexed colours!"
+
+2009-06-08 13:51  robert
+
+	* src/osg/FrameBufferObject.cpp: From Mathias Froehlich, "Without
+	  this change packed depth stencil attachments are only supported
+	  if the
+	  GL_EXT_framebuffer_blit extension is available. This is due to
+	  the early
+	  return from the constructor if this is missing.
+	  As far as I read the standard extension documents, this blit call
+	  is not
+	  required to have packed depth stencil fbos.
+	  The change fixes this and allows packed stencil attachments on
+	  machines
+	  without the multisample blit command."
+
+2009-06-08 13:47  robert
+
+	* src/osgPlugins/ive/BlendEquation.cpp,
+	  src/osgPlugins/ive/IveVersion.h,
+	  src/osgPlugins/osg/BlendEquation.cpp: Addded .ive and .osg
+	  support for new GL_EXT_blend_equation_separate properties in
+	  osg::BlendEquation
+
+2009-06-08 13:46  robert
+
+	* include/osg/BlendEquation, src/osg/BlendEquation.cpp: From
+	  Konstantin Sinitsyn, support for GL_EXT_blend_equation_separate
+	  extension like in osg::BlendEquation.
+
+2009-06-08 12:50  robert
+
+	* examples/osgunittests/osgunittests.cpp: Added basic
+	  Matrix::decompose() test, based on a test progrem wrttien by Paul
+	  Obermeier
+
+2009-06-08 12:44  robert
+
+	* include/osgUtil/RenderStage: Fixed doc message
+
+2009-06-08 11:12  robert
+
+	* src/osgSim/Sector.cpp: From Lionel Lagarde, "this correction
+	  makes the intensity interpolated in the correct direction when
+	  the angle is between _cosFadeAngle and _cosAngle."
+
+2009-06-08 10:54  robert
+
+	* src/osgDB/DynamicLibrary.cpp: Fixed warning
+
+2009-06-08 10:27  robert
+
+	* src/osgDB/Registry.cpp: Changed the file search path so it
+	  returns an empty string when the filename contains a server
+	  address.
+
+2009-06-08 09:47  robert
+
+	* src/osgPlugins/vrml/ReaderWriterVRML2.cpp: From Johan Nouvel, fix
+	  to handling of transparent textured objects.
+	  
+	  Tweak from Robert Osfield, commented out disabling of depth write
+	  as this is not appropriate by default.
+
+2009-06-05 19:05  robert
+
+	* include/osgUtil/RenderStage, include/osgUtil/SceneView,
+	  src/osgSim/LightPointNode.cpp, src/osgUtil/RenderStage.cpp,
+	  src/osgUtil/SceneView.cpp, src/osgViewer/Renderer.cpp: Added
+	  collateReferencesToDependentCameras() and
+	  clearReferencesToDependentCameras() methods into RenderStage and
+	  SceneView, and use
+	  of these methods in src/osgViewer/Renderer.cpp to make sure that
+	  the draw thread keeps references to all in scene graph Cameras
+	  that are being used by the drawing threads, to keep the Camera's
+	  alive even when the main thread removes these Cameras from the
+	  scene graph.
+
+2009-06-05 11:48  robert
+
+	* include/osg/Referenced, src/osgUtil/RenderBin.cpp: Added
+	  depends_on template and usage in RenderBin to help with static
+	  variable destruction ordering
+
+2009-06-05 10:42  robert
+
+	* src/osgDB/DatabaseRevisions.cpp: Fixed warning
+
+2009-06-04 14:37  robert
+
+	* src/osgWrappers/osgDB/DatabaseRevisions.cpp: Updated wrappers
+
+2009-06-04 14:07  robert
+
+	* ChangeLog,
+	  examples/osgdatabaserevisions/osgdatabaserevisions.cpp,
+	  include/osgDB/DatabaseRevisions, include/osgDB/FileCache,
+	  src/osgDB/DatabaseRevisions.cpp, src/osgDB/FileCache.cpp,
+	  src/osgPlugins/revisions/ReaderWriterRevisions.cpp: Implemented
+	  updating of revision files as new data is writing to the
+	  FileCache
+
+2009-06-02 16:58  robert
+
+	* examples/CMakeLists.txt, examples/osgdatabaserevisions,
+	  examples/osgdatabaserevisions/CMakeLists.txt,
+	  examples/osgdatabaserevisions/osgdatabaserevisions.cpp: Added
+	  osgdatabaserevisions example to server as a testbed for new
+	  osgDB::DatabaseRevisions functionality
+
+2009-06-02 16:54  robert
+
+	* include/osgDB/DatabaseRevisions, include/osgDB/FileCache,
+	  src/osgDB/DatabaseRevisions.cpp, src/osgDB/FileCache.cpp,
+	  src/osgPlugins/revisions/ReaderWriterRevisions.cpp: Implemented
+	  DatabasePath in DatabaseBase revision classes
+
 2009-06-02 08:56  robert
 
 	* src/osgViewer/GraphicsWindowX11.cpp: Refactored the adaption of

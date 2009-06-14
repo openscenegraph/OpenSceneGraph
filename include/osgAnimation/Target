@@ -90,7 +90,7 @@ namespace osgAnimation
     public:
             
         TemplateTarget () {}
-
+        TemplateTarget (const osg::Quat& q) { setValue(q); }
         const osg::Quat& getValue() const { return _target;}
         void update(float weight, const osg::Quat& val) 
         { 

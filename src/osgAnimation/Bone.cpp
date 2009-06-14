@@ -17,11 +17,11 @@
 #include <osgAnimation/Skeleton>
 
 osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone& apc,const osg::CopyOp& copyop) :
-    osgAnimation::AnimationUpdateCallback(apc, copyop),
-    _position(apc._position),
-    _quaternion(apc._quaternion),
-    _scale(apc._scale)
+    osgAnimation::AnimationUpdateCallback(apc, copyop)
 {
+    _quaternion = new osgAnimation::QuatTarget(apc._quaternion->getValue());
+    _position = new osgAnimation::Vec3Target(apc._position->getValue());
+    _scale = new osgAnimation::Vec3Target(apc._scale->getValue());
 }
 
 
@@ -30,8 +30,20 @@ osgAnimation::Bone::Bone(const Bone& b, const osg::CopyOp& copyop) :
     _position(b._position),
     _rotation(b._rotation),
     _scale(b._scale),
+    _bindInBoneSpace(b._bindInBoneSpace),
+    _invBindInSkeletonSpace(b._invBindInSkeletonSpace),
+    _boneInSkeletonSpace(b._boneInSkeletonSpace),
     _needToRecomputeBindMatrix(true)
 {
+    osg::ref_ptr<osg::NodeCallback> updatecallback = getUpdateCallback();
+    setUpdateCallback(0);
+    while (updatecallback.valid()) {
+        osg::NodeCallback* ucb = dynamic_cast<osg::NodeCallback*>(updatecallback->clone(copyop));
+        ucb->setNestedCallback(0);
+        ucb->setName(updatecallback->getName());
+        addUpdateCallback(ucb);
+        updatecallback = updatecallback->getNestedCallback();
+    }
 }
 
 osgAnimation::Bone::Bone(const std::string& name)

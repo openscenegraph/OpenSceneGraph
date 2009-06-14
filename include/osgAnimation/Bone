@@ -93,7 +93,7 @@ namespace osgAnimation
 
         class OSGANIMATION_EXPORT UpdateBone : public AnimationUpdateCallback
         {
-        public:
+        protected:
             osg::ref_ptr<osgAnimation::Vec3Target> _position;
             osg::ref_ptr<osgAnimation::QuatTarget> _quaternion;
             osg::ref_ptr<osgAnimation::Vec3Target> _scale;

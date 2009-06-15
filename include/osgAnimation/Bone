@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -110,7 +110,7 @@ namespace osgAnimation
                 _scale = new osgAnimation::Vec3Target;
             }
 
-            void update(osgAnimation::Bone& bone) 
+            void update(osgAnimation::Bone& bone)
             {
                 bone.setTranslation(_position->getValue());
                 bone.setRotation(_quaternion->getValue());
@@ -126,25 +126,25 @@ namespace osgAnimation
 
             bool link(osgAnimation::Channel* channel)
             {
-                if (channel->getName().find("quaternion") != std::string::npos) 
+                if (channel->getName().find("quaternion") != std::string::npos)
                 {
                     osgAnimation::QuatSphericalLinearChannel* qc = dynamic_cast<osgAnimation::QuatSphericalLinearChannel*>(channel);
-                    if (qc) 
+                    if (qc)
                     {
                         qc->setTarget(_quaternion.get());
                         return true;
                     }
                 }
-                else if (channel->getName().find("position") != std::string::npos) 
+                else if (channel->getName().find("position") != std::string::npos)
                 {
                     osgAnimation::Vec3LinearChannel* vc = dynamic_cast<osgAnimation::Vec3LinearChannel*>(channel);
-                    if (vc) 
+                    if (vc)
                     {
                         vc->setTarget(_position.get());
                         return true;
                     }
-                } 
-                else if (channel->getName().find("scale") != std::string::npos) 
+                }
+                else if (channel->getName().find("scale") != std::string::npos)
                 {
                     osgAnimation::Vec3LinearChannel* vc = dynamic_cast<osgAnimation::Vec3LinearChannel*>(channel);
                     if (vc) 
@@ -152,7 +152,7 @@ namespace osgAnimation
                         vc->setTarget(_scale.get());
                         return true;
                     }
-                } 
+                }
                 else 
                 {
                     std::cerr << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << std::endl;

@@ -89,7 +89,7 @@ namespace osgAnimation
                 RigGeometry* geom = dynamic_cast<RigGeometry*>(drw);
                 if (!geom)
                     return;
-                if (!geom->getSkeleton() && !geom->getParents().empty()) 
+                if (!geom->getSkeleton() && !geom->getParents().empty())
                 {
                     FindNearestParentSkeleton finder;
                     if (geom->getParents().size() > 1)

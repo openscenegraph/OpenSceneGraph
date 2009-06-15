@@ -131,7 +131,7 @@ bool Animation::update (float time)
     //  std::cout << "t " << t << " / " << _duration << std::endl;
 
     ChannelList::const_iterator chan;
-    for( chan=_channels.begin(); chan!=_channels.end(); ++chan) 
+    for( chan=_channels.begin(); chan!=_channels.end(); ++chan)
     {
         (*chan)->setWeight(_weight);
         (*chan)->update(t);

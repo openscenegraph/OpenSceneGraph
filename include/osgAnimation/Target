@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -67,7 +67,7 @@ namespace osgAnimation
         }
         const T& getValue() const { return _target;}
 
-        void normalize() 
+        void normalize()
         {
             float weightSummed = getWeight();
             if (fabs(weightSummed) < 1e-4 || fabs(weightSummed-1) < 1e-4)
@@ -91,6 +91,7 @@ namespace osgAnimation
             
         TemplateTarget () {}
         TemplateTarget (const osg::Quat& q) { setValue(q); }
+
         const osg::Quat& getValue() const { return _target;}
         void update(float weight, const osg::Quat& val) 
         { 

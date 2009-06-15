@@ -10,6 +10,9 @@ SET(LIB_NAME osgAnimation)
 
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
+    ${HEADER_PATH}/Action
+    ${HEADER_PATH}/ActionCallback
+    ${HEADER_PATH}/ActionVisitor
     ${HEADER_PATH}/Animation
     ${HEADER_PATH}/AnimationManagerBase
     ${HEADER_PATH}/Assert
@@ -19,6 +22,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CubicBezier
     ${HEADER_PATH}/EaseMotion
     ${HEADER_PATH}/Export
+    ${HEADER_PATH}/FrameAction
     ${HEADER_PATH}/Interpolator
     ${HEADER_PATH}/Keyframe
     ${HEADER_PATH}/LinkVisitor
@@ -27,6 +31,8 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Sampler
     ${HEADER_PATH}/Skeleton
     ${HEADER_PATH}/Skinning
+    ${HEADER_PATH}/StatsVisitor
+    ${HEADER_PATH}/StatsHandler
     ${HEADER_PATH}/Target
     ${HEADER_PATH}/Timeline
     ${HEADER_PATH}/TimelineAnimationManager
@@ -39,6 +45,9 @@ SET(LIB_PUBLIC_HEADERS
 ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
+    Action.cpp
+    ActionCallback.cpp
+    ActionVisitor.cpp
     Animation.cpp
     AnimationManagerBase.cpp
     AnimationManager.cpp
@@ -48,6 +57,8 @@ ADD_LIBRARY(${LIB_NAME}
     MorphGeometry.cpp
     RigGeometry.cpp
     Skeleton.cpp
+    StatsVisitor.cpp
+    StatsHandler.cpp
     Target.cpp
     TimelineAnimationManager.cpp
     Timeline.cpp

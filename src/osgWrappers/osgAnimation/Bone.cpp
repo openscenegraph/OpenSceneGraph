@@ -312,9 +312,6 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone::UpdateBone)
 	          __bool__link__osgAnimation_Channel_P1,
 	          "",
 	          "");
-	I_PublicMemberProperty(osg::ref_ptr< osgAnimation::Vec3Target >, _position);
-	I_PublicMemberProperty(osg::ref_ptr< osgAnimation::QuatTarget >, _quaternion);
-	I_PublicMemberProperty(osg::ref_ptr< osgAnimation::Vec3Target >, _scale);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Bone >)

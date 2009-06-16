@@ -2235,6 +2235,18 @@
 		BE11893005D7665600EB53E5 /* WriteFile in Headers */ = {isa = PBXBuildFile; fileRef = BE11891D05D7665600EB53E5 /* WriteFile */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4018F4D0E2F6F710086ACFA /* AuthenticationMap in Headers */ = {isa = PBXBuildFile; fileRef = D4018F4C0E2F6F710086ACFA /* AuthenticationMap */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4018F4F0E2F6F880086ACFA /* AuthenticationMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4018F4E0E2F6F880086ACFA /* AuthenticationMap.cpp */; };
+		D40277580FE7A70500CDE760 /* Action in Headers */ = {isa = PBXBuildFile; fileRef = D40277520FE7A70400CDE760 /* Action */; settings = {ATTRIBUTES = (Public, ); }; };
+		D40277590FE7A70500CDE760 /* ActionCallback in Headers */ = {isa = PBXBuildFile; fileRef = D40277530FE7A70400CDE760 /* ActionCallback */; settings = {ATTRIBUTES = (Public, ); }; };
+		D402775A0FE7A70500CDE760 /* ActionVisitor in Headers */ = {isa = PBXBuildFile; fileRef = D40277540FE7A70500CDE760 /* ActionVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
+		D402775B0FE7A70500CDE760 /* FrameAction in Headers */ = {isa = PBXBuildFile; fileRef = D40277550FE7A70500CDE760 /* FrameAction */; settings = {ATTRIBUTES = (Public, ); }; };
+		D402775C0FE7A70500CDE760 /* StatsHandler in Headers */ = {isa = PBXBuildFile; fileRef = D40277560FE7A70500CDE760 /* StatsHandler */; settings = {ATTRIBUTES = (Public, ); }; };
+		D402775D0FE7A70500CDE760 /* StatsVisitor in Headers */ = {isa = PBXBuildFile; fileRef = D40277570FE7A70500CDE760 /* StatsVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
+		D40277630FE7A71C00CDE760 /* Action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D402775E0FE7A71C00CDE760 /* Action.cpp */; };
+		D40277640FE7A71C00CDE760 /* ActionCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D402775F0FE7A71C00CDE760 /* ActionCallback.cpp */; };
+		D40277650FE7A71C00CDE760 /* ActionVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40277600FE7A71C00CDE760 /* ActionVisitor.cpp */; };
+		D40277660FE7A71C00CDE760 /* StatsHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40277610FE7A71C00CDE760 /* StatsHandler.cpp */; };
+		D40277670FE7A71C00CDE760 /* StatsVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40277620FE7A71C00CDE760 /* StatsVisitor.cpp */; };
+		D40277A30FE7A7A100CDE760 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D40357EB0B511DF900CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D40357F90B511E0B00CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D40357FC0B511E2700CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
@@ -2797,6 +2809,8 @@
 		D4E75A200B57D479006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E75A220B57D4A6006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E75A230B57D4E1006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		D4EEBE740FE64F7A00E8F5CD /* DXFWriterNodeVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4EEBE720FE64F7A00E8F5CD /* DXFWriterNodeVisitor.cpp */; };
+		D4EEBE750FE64F7A00E8F5CD /* DXFWriterNodeVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = D4EEBE730FE64F7A00E8F5CD /* DXFWriterNodeVisitor.h */; };
 		D4F092760D4BA9BD00BB1AC7 /* GL2Extensions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F092750D4BA9BD00BB1AC7 /* GL2Extensions.cpp */; };
 		D4F092850D4BB46100BB1AC7 /* CompositeLayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F092790D4BB45F00BB1AC7 /* CompositeLayer.cpp */; };
 		D4F092860D4BB46100BB1AC7 /* CompositeLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F0927A0D4BB45F00BB1AC7 /* CompositeLayer.h */; };
@@ -6022,6 +6036,13 @@
 			remoteGlobalIDString = 0055835A0624D1E5000A808A;
 			remoteInfo = osgFX;
 		};
+		D40277970FE7A78B00CDE760 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteInfo = osgViewer;
+		};
 		D403C08B0F680CDD00D49A89 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -8076,6 +8097,17 @@
 		BE11891D05D7665600EB53E5 /* WriteFile */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = WriteFile; path = ../../include/osgDB/WriteFile; sourceTree = SOURCE_ROOT; };
 		D4018F4C0E2F6F710086ACFA /* AuthenticationMap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AuthenticationMap; sourceTree = "<group>"; };
 		D4018F4E0E2F6F880086ACFA /* AuthenticationMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AuthenticationMap.cpp; path = ../../src/osgDB/AuthenticationMap.cpp; sourceTree = SOURCE_ROOT; };
+		D40277520FE7A70400CDE760 /* Action */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Action; path = ../../include/osgAnimation/Action; sourceTree = SOURCE_ROOT; };
+		D40277530FE7A70400CDE760 /* ActionCallback */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ActionCallback; path = ../../include/osgAnimation/ActionCallback; sourceTree = SOURCE_ROOT; };
+		D40277540FE7A70500CDE760 /* ActionVisitor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ActionVisitor; path = ../../include/osgAnimation/ActionVisitor; sourceTree = SOURCE_ROOT; };
+		D40277550FE7A70500CDE760 /* FrameAction */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FrameAction; path = ../../include/osgAnimation/FrameAction; sourceTree = SOURCE_ROOT; };
+		D40277560FE7A70500CDE760 /* StatsHandler */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = StatsHandler; path = ../../include/osgAnimation/StatsHandler; sourceTree = SOURCE_ROOT; };
+		D40277570FE7A70500CDE760 /* StatsVisitor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = StatsVisitor; path = ../../include/osgAnimation/StatsVisitor; sourceTree = SOURCE_ROOT; };
+		D402775E0FE7A71C00CDE760 /* Action.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Action.cpp; path = ../../src/osgAnimation/Action.cpp; sourceTree = SOURCE_ROOT; };
+		D402775F0FE7A71C00CDE760 /* ActionCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActionCallback.cpp; path = ../../src/osgAnimation/ActionCallback.cpp; sourceTree = SOURCE_ROOT; };
+		D40277600FE7A71C00CDE760 /* ActionVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActionVisitor.cpp; path = ../../src/osgAnimation/ActionVisitor.cpp; sourceTree = SOURCE_ROOT; };
+		D40277610FE7A71C00CDE760 /* StatsHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StatsHandler.cpp; path = ../../src/osgAnimation/StatsHandler.cpp; sourceTree = SOURCE_ROOT; };
+		D40277620FE7A71C00CDE760 /* StatsVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StatsVisitor.cpp; path = ../../src/osgAnimation/StatsVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		D40359220B512B6500CB9E15 /* GraphicsWindowCarbon.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicsWindowCarbon.cpp; sourceTree = "<group>"; };
 		D40359240B512BF300CB9E15 /* GraphicsWindowCarbon */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = GraphicsWindowCarbon; path = api/Carbon/GraphicsWindowCarbon; sourceTree = "<group>"; };
 		D403BCEC0F67C18E00D49A89 /* MorphGeometry */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MorphGeometry; path = ../../include/osgAnimation/MorphGeometry; sourceTree = SOURCE_ROOT; };
@@ -8482,6 +8514,8 @@
 		D4E1D85D0CB031B9007F8430 /* hdrwriter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = hdrwriter.cpp; sourceTree = "<group>"; };
 		D4E1D85E0CB031B9007F8430 /* hdrwriter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = hdrwriter.h; sourceTree = "<group>"; };
 		D4E673A80F8E5B2400F6CCC1 /* MimeTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MimeTypes.cpp; sourceTree = "<group>"; };
+		D4EEBE720FE64F7A00E8F5CD /* DXFWriterNodeVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DXFWriterNodeVisitor.cpp; sourceTree = "<group>"; };
+		D4EEBE730FE64F7A00E8F5CD /* DXFWriterNodeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DXFWriterNodeVisitor.h; sourceTree = "<group>"; };
 		D4F092750D4BA9BD00BB1AC7 /* GL2Extensions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GL2Extensions.cpp; sourceTree = "<group>"; };
 		D4F092790D4BB45F00BB1AC7 /* CompositeLayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompositeLayer.cpp; sourceTree = "<group>"; };
 		D4F0927A0D4BB45F00BB1AC7 /* CompositeLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompositeLayer.h; sourceTree = "<group>"; };
@@ -10255,6 +10289,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D40277A30FE7A7A100CDE760 /* osgViewer.framework in Frameworks */,
 				D41887420EDEE6E000C17A84 /* osgText.framework in Frameworks */,
 				D41887430EDEE6E000C17A84 /* OpenGL.framework in Frameworks */,
 				D41887440EDEE6E000C17A84 /* osg.framework in Frameworks */,
@@ -12231,6 +12266,8 @@
 		00A14FD2084E6975000150AD /* dxf */ = {
 			isa = PBXGroup;
 			children = (
+				D4EEBE720FE64F7A00E8F5CD /* DXFWriterNodeVisitor.cpp */,
+				D4EEBE730FE64F7A00E8F5CD /* DXFWriterNodeVisitor.h */,
 				00A14FD3084E6975000150AD /* aci.cpp */,
 				00A14FD4084E6976000150AD /* aci.h */,
 				00A14FD5084E6976000150AD /* codeValue.h */,
@@ -13692,6 +13729,12 @@
 		D41887A70EDEE75000C17A84 /* osgAnimation */ = {
 			isa = PBXGroup;
 			children = (
+				D40277520FE7A70400CDE760 /* Action */,
+				D40277530FE7A70400CDE760 /* ActionCallback */,
+				D40277540FE7A70500CDE760 /* ActionVisitor */,
+				D40277550FE7A70500CDE760 /* FrameAction */,
+				D40277560FE7A70500CDE760 /* StatsHandler */,
+				D40277570FE7A70500CDE760 /* StatsVisitor */,
 				D403BCEC0F67C18E00D49A89 /* MorphGeometry */,
 				D4163D4E0F2A74CE0062226D /* BasicAnimationManager */,
 				D4163D4F0F2A74CE0062226D /* TimelineAnimationManager */,
@@ -13723,6 +13766,11 @@
 		D41887D20EDEE78100C17A84 /* osgAnimation */ = {
 			isa = PBXGroup;
 			children = (
+				D402775E0FE7A71C00CDE760 /* Action.cpp */,
+				D402775F0FE7A71C00CDE760 /* ActionCallback.cpp */,
+				D40277600FE7A71C00CDE760 /* ActionVisitor.cpp */,
+				D40277610FE7A71C00CDE760 /* StatsHandler.cpp */,
+				D40277620FE7A71C00CDE760 /* StatsVisitor.cpp */,
 				D403BCEE0F67C1F500D49A89 /* MorphGeometry.cpp */,
 				D4163D520F2A74EC0062226D /* BasicAnimationManager.cpp */,
 				D4163D530F2A74EC0062226D /* TimelineAnimationManager.cpp */,
@@ -15181,6 +15229,7 @@
 				00A14FF6084E697E000150AD /* dxfSectionBase.h in Headers */,
 				00A14FF8084E697E000150AD /* dxfTable.h in Headers */,
 				00A14FFB084E697E000150AD /* scene.h in Headers */,
+				D4EEBE750FE64F7A00E8F5CD /* DXFWriterNodeVisitor.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15717,6 +15766,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D40277580FE7A70500CDE760 /* Action in Headers */,
+				D40277590FE7A70500CDE760 /* ActionCallback in Headers */,
+				D402775A0FE7A70500CDE760 /* ActionVisitor in Headers */,
+				D402775B0FE7A70500CDE760 /* FrameAction in Headers */,
+				D402775C0FE7A70500CDE760 /* StatsHandler in Headers */,
+				D402775D0FE7A70500CDE760 /* StatsVisitor in Headers */,
 				D403BCED0F67C18E00D49A89 /* MorphGeometry in Headers */,
 				D4163D500F2A74CF0062226D /* BasicAnimationManager in Headers */,
 				D4163D510F2A74CF0062226D /* TimelineAnimationManager in Headers */,
@@ -18847,6 +18902,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D40277980FE7A78B00CDE760 /* PBXTargetDependency */,
 				D41887280EDEE6E000C17A84 /* PBXTargetDependency */,
 				D418872A0EDEE6E000C17A84 /* PBXTargetDependency */,
 				D418872C0EDEE6E000C17A84 /* PBXTargetDependency */,
@@ -21453,6 +21509,7 @@
 				00A14FF7084E697E000150AD /* dxfTable.cpp in Sources */,
 				00A14FF9084E697E000150AD /* ReaderWriterDXF.cpp in Sources */,
 				00A14FFA084E697E000150AD /* scene.cpp in Sources */,
+				D4EEBE740FE64F7A00E8F5CD /* DXFWriterNodeVisitor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22004,6 +22061,11 @@
 				D4163D540F2A74EC0062226D /* BasicAnimationManager.cpp in Sources */,
 				D4163D550F2A74EC0062226D /* TimelineAnimationManager.cpp in Sources */,
 				D403BCEF0F67C1F500D49A89 /* MorphGeometry.cpp in Sources */,
+				D40277630FE7A71C00CDE760 /* Action.cpp in Sources */,
+				D40277640FE7A71C00CDE760 /* ActionCallback.cpp in Sources */,
+				D40277650FE7A71C00CDE760 /* ActionVisitor.cpp in Sources */,
+				D40277660FE7A71C00CDE760 /* StatsHandler.cpp in Sources */,
+				D40277670FE7A71C00CDE760 /* StatsVisitor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24842,6 +24904,11 @@
 			isa = PBXTargetDependency;
 			target = 0055835A0624D1E5000A808A /* osgFX */;
 			targetProxy = 6320CD5C07845CAE00FE3D2C /* PBXContainerItemProxy */;
+		};
+		D40277980FE7A78B00CDE760 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			targetProxy = D40277970FE7A78B00CDE760 /* PBXContainerItemProxy */;
 		};
 		D403C08C0F680CDD00D49A89 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

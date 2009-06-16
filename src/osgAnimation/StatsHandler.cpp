@@ -343,7 +343,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
 
             osg::Vec4 backgroundColor(0.0, 0.0, 0.0f, 0.3);
             float backgroundMargin = 5;
-            float backgroundSpacing = 3;
+            //float backgroundSpacing = 3;
 
             osg::Vec4 color(1.0, 1.0, 1.0, 1.0);
 
@@ -352,7 +352,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
 
             {
                 osg::Vec3 pos(leftPos, _statsHeight-24.0f,0.0f);
-                float topOfViewerStats = pos.y() + characterSize;
+                //float topOfViewerStats = pos.y() + characterSize;
                 osg::ref_ptr<osg::Stats> stats = _timeline->getStats();
                 pos.y() -= characterSize + backgroundMargin;
 
@@ -382,7 +382,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
             }
             {
                 osg::Vec3 pos(leftPos, _statsHeight - 24.0f ,0.0f);
-                float topOfViewerStats = pos.y();
+                //float topOfViewerStats = pos.y();
                 osg::Geode* geode = new osg::Geode;
                 _background = createBackgroundRectangle(
                     pos + osg::Vec3(-backgroundMargin, backgroundMargin, 0),
@@ -415,7 +415,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
             float characterSize = 20.0f;
 
             float backgroundMargin = 5;
-            float backgroundSpacing = 3;
+            //float backgroundSpacing = 3;
             float graphSpacing = 5;
 
             float width = _statsWidth - 4 * backgroundMargin;

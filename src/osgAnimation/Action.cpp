@@ -170,7 +170,7 @@ osgAnimation::StripAnimation::StripAnimation(Animation* animation, double blendI
     _blendIn = new BlendIn(animation, blendInDuration, blendInWeightTarget);
     _animation = new ActionAnimation(animation);
     unsigned int start = static_cast<unsigned int>(floor((_animation->getDuration() - blendOutDuration) * _fps));
-    _blendOut = FrameAction(start, new BlendOut(animation, blendOutDuration));
+    _blendOut = FrameBlendOut(start, new BlendOut(animation, blendOutDuration));
     setName(animation->getName() + "_Strip");
     _blendIn->setName(_animation->getName() + "_" + _blendIn->getName());
     _blendOut.second->setName(_animation->getName() + "_" + _blendOut.second->getName());
@@ -188,7 +188,7 @@ void osgAnimation::StripAnimation::setLoop(unsigned int loop)
 
     // duration changed re evaluate the blendout duration
     unsigned int start = static_cast<unsigned int>(floor((getDuration() - _blendOut.second->getDuration()) * _fps));
-    _blendOut = FrameAction(start, _blendOut.second);
+    _blendOut = FrameBlendOut(start, _blendOut.second);
 }
 
 void osgAnimation::StripAnimation::computeWeightAndUpdateAnimation(unsigned int frame)

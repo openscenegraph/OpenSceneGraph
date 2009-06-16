@@ -30,10 +30,10 @@ osgAnimation::Bone::Bone(const Bone& b, const osg::CopyOp& copyop) :
     _position(b._position),
     _rotation(b._rotation),
     _scale(b._scale),
+    _needToRecomputeBindMatrix(true),
     _bindInBoneSpace(b._bindInBoneSpace),
     _invBindInSkeletonSpace(b._invBindInSkeletonSpace),
-    _boneInSkeletonSpace(b._boneInSkeletonSpace),
-    _needToRecomputeBindMatrix(true)
+    _boneInSkeletonSpace(b._boneInSkeletonSpace)
 {
     osg::ref_ptr<osg::NodeCallback> updatecallback = getUpdateCallback();
     setUpdateCallback(0);

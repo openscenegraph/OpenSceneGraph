@@ -76,8 +76,8 @@ bool DatabaseRevision::isFileBlackListed(const std::string& filename) const
                          _databasePath.empty() ? 0 : _databasePath.length()+1,
                          std::string::npos);
 
-    return (_filesRemoved.valid() && _filesRemoved->contains(localPath)) ||
-           (_filesModified.valid() && _filesModified->contains(localPath));
+    return (_filesRemoved.valid() && _filesRemoved->containsFile(localPath)) ||
+           (_filesModified.valid() && _filesModified->containsFile(localPath));
 }
 
 

@@ -8,7 +8,7 @@ includedir=${prefix}/include
 Name: openscenegraph-osgAnimation
 Description: Skinning and morphing library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
-Requires: openscenegraph-osg openthreads
+Requires: openscenegraph-osg openscenegraph-osgText openscenegraph-osgGA openscenegraph-osgViewer openthreads
 Conflicts:
 Libs: -L${libdir} -losgAnimation
 Cflags: -I${includedir}

@@ -69,6 +69,9 @@ ADD_LIBRARY(${LIB_NAME}
 
 LINK_INTERNAL(${LIB_NAME}
     osg
+    osgText
+    osgGA
+    osgViewer
     OpenThreads
 )
 

@@ -14,7 +14,7 @@
 #include <sstream>
 #include <iomanip>
 #include <stdio.h>
-#include <cmath>
+#include <math.h>
 
 #include <osg/io_utils>
 #include <osg/NodeVisitor>

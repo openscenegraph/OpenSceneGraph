@@ -335,6 +335,15 @@ Registry::Registry()
     addFileExtensionAlias("pgm", "pnm");
     addFileExtensionAlias("ppm", "pnm");
     
+
+    // add revision file mappings
+    addFileExtensionAlias("added", "revisions");
+    addFileExtensionAlias("removed", "revisions");
+    addFileExtensionAlias("modified", "revisions");
+
+
+
+
     // add built-in mime-type extension mappings
     for( int i=0; ; i+=2 )
     {

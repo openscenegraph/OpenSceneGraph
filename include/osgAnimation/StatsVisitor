@@ -36,7 +36,7 @@ namespace osgAnimation
         StatsActionVisitor(osg::Stats* stats, unsigned int frame);
         void reset();
         const std::vector<std::string>& getChannels() const { return _channels; }
-        osg::Stats* getStats() { return _stats; }
+        osg::Stats* getStats() { return _stats.get(); }
         void setStats(osg::Stats* stats) { _stats = stats; }
         void setFrame(unsigned int frame) { _frame = frame; }
         void apply(Timeline& action);

@@ -126,15 +126,15 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
 
                         if (ext=="added")
                         {
-                            dbRevision->setFilesAdded(fileList);
+                            dbRevision->setFilesAdded(fileList.get());
                         }
                         else if (ext=="removed")
                         {
-                            dbRevision->setFilesRemoved(fileList);
+                            dbRevision->setFilesRemoved(fileList.get());
                         }
                         else if (ext=="modified")
                         {
-                            dbRevision->setFilesModified(fileList);
+                            dbRevision->setFilesModified(fileList.get());
                         }
                     }
                 }
@@ -144,7 +144,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                 itr != revisionMap.end();
                 ++itr)
             {
-                revisions->addRevision(itr->second);
+                revisions->addRevision(itr->second.get());
             }
 
             return revisions.get();

@@ -146,7 +146,7 @@ void osgAnimation::ClearActionVisitor::apply(Timeline& tm)
     _remove.clear();
     tm.traverse(*this);
     for (int i = 0; i < (int)_remove.size(); i++)
-        tm.removeAction(_remove[i]);
+        tm.removeAction(_remove[i].get());
 }
 void osgAnimation::ClearActionVisitor::apply(Action& action)
 {

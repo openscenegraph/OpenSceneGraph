@@ -1710,7 +1710,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
     input.open(fileName);
     input.readAllDataIntoBuffer();
 
-    return readNode(input, local_opt);
+    return readNode(input, local_opt.get());
 }
 
 osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, const Options* options) const
@@ -1723,7 +1723,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(std::istream& fin, 
     //local_opt->setFindFileCallback(new MyFindFileCallback);
     local_opt->setReadFileCallback(new MyReadFileCallback);
 
-    return readNode(input, local_opt);
+    return readNode(input, local_opt.get());
 }
 
 osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Input& input, osgDB::ReaderWriter::Options* options) const

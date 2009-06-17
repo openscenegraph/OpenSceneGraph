@@ -377,7 +377,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
                     timeLabelValue->setPosition(pos + osg::Vec3(startBlocks, 0,0));
                     timeLabelValue->setText("0.0");
 
-                    timeLabelValue->setDrawCallback(new ValueTextDrawCallback(stats,"Timeline"));
+                    timeLabelValue->setDrawCallback(new ValueTextDrawCallback(stats.get(),"Timeline"));
                 }
             }
             {
@@ -389,11 +389,11 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
                     _statsWidth - 2 * backgroundMargin,
                     (3 + 4.5 * 1) * characterSize + 2 * backgroundMargin,
                     backgroundColor);
-                geode->addDrawable(_background);
+                geode->addDrawable(_background.get());
                 _group->addChild(geode);
             }
 
-            return _group;
+            return _group.get();
         }
 
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
@@ -435,7 +435,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
                 if (_actions.find(name) == _actions.end()) {
                     osg::Vec4 color(getRandomValueinRange(255)/255.0, getRandomValueinRange(255)/255.0, getRandomValueinRange(255)/255.0, 1.0);
                     _actions[name].init(visitor->getStats(), name, pos, width, height, color);
-                    _group->addChild(_actions[name]._group);
+                    _group->addChild(_actions[name]._group.get());
                     //_actions[name].touch();
                 } else {
                     _actions[name].setPosition(pos);
@@ -624,7 +624,7 @@ void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
     _camera->setAllowEventFocus(false);
     _camera->setCullMask(0x1);
     osgViewer::Viewer* v = dynamic_cast<osgViewer::Viewer*>(viewer);
-    v->getSceneData()->asGroup()->addChild(_camera);
+    v->getSceneData()->asGroup()->addChild(_camera.get());
     _initialized = true;
 }
 
@@ -647,11 +647,11 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
 
     _group = new osg::Group;
     _camera->addChild(_switch.get());
-    _switch->addChild(_group);
+    _switch->addChild(_group.get());
     
     for (int i = 0; i < (int)finder._timelines.size(); i++) {
         StatsTimeline* s = new StatsTimeline;
-        osg::MatrixTransform* m = s->createStatsForTimeline(finder._timelines[i]);
+        osg::MatrixTransform* m = s->createStatsForTimeline(finder._timelines[i].get());
         m->setUpdateCallback(s);
         _group->addChild(m);
     }
@@ -671,7 +671,7 @@ void StatAction::init(osg::Stats* stats, const std::string& name, const osg::Vec
 
     _label = new osg::Geode;
     _textLabel = new osgText::Text;
-    _label->addDrawable(_textLabel);
+    _label->addDrawable(_textLabel.get());
     _textLabel->setDataVariance(osg::Object::DYNAMIC);
     _textLabel->setColor(color);
     _textLabel->setFont(font);
@@ -684,8 +684,8 @@ void StatAction::init(osg::Stats* stats, const std::string& name, const osg::Vec
     graph->addStatGraph(stats, stats, color, 1.0, name);
     _graph = graph;
     
-    _group->addChild(_label);
-    _group->addChild(_graph);
+    _group->addChild(_label.get());
+    _group->addChild(_graph.get());
 }
 void StatAction::setAlpha(float v)
 {

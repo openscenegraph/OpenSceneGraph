@@ -83,7 +83,7 @@ private:
     typedef std::map<QuadricKey, osg::ref_ptr<osg::Geometry> > ConeLibrary;
     typedef std::map<QuadricKey, osg::ref_ptr<osg::Geometry> > CylinderLibrary;
 
-    osg::ref_ptr<osg::Node> convertFromVRML(openvrml::node *obj) const;
+    osg::Node* convertFromVRML(openvrml::node *obj) const;
 
 
     osg::ref_ptr<osg::Geometry> convertVRML97IndexedFaceSet(openvrml::node *vrml_ifs) const;

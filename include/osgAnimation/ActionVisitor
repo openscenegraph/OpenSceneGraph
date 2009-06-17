@@ -39,7 +39,7 @@ namespace osgAnimation
     {
     public:
         std::vector<FrameAction> _stackFrameAction;
-        std::vector<osg::ref_ptr<Timeline> > _stackTimeline;
+        std::vector<Timeline*> _stackTimeline;
 
         META_ActionVisitor(osgAnimation, ActionVisitor);
         void traverse(Action& visitor);

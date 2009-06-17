@@ -35,7 +35,7 @@ osgAnimation::Timeline* osgAnimation::ActionVisitor::getCurrentTimeline()
 {
     if (_stackTimeline.empty())
         return 0;
-    return _stackTimeline.back().get();
+    return _stackTimeline.back();
 }
 
 osgAnimation::UpdateActionVisitor::UpdateActionVisitor() { _frame = 0; }

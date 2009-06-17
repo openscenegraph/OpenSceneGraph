@@ -191,7 +191,7 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         unsigned int getNumOfDatabaseThreadsHint() const { return _numDatabaseThreadsHint; }
 
         /** Set the hint for number of threads in the DatbasePager to dedicate to reading http requests.*/
-        void setNumOfHttpDatabaseThreadsHint(unsigned int numThreads) { _numDatabaseThreadsHint = numThreads; }
+        void setNumOfHttpDatabaseThreadsHint(unsigned int numThreads) { _numHttpDatabaseThreadsHint = numThreads; }
 
         /** Get the hint for number of threads in the DatbasePager dedicated to reading http requests.*/
         unsigned int getNumOfHttpDatabaseThreadsHint() const { return _numHttpDatabaseThreadsHint; }

@@ -23,11 +23,10 @@
 #include <osgAnimation/Action>
 #include <osgAnimation/FrameAction>
 #include <osgAnimation/AnimationManagerBase>
+#include <osgAnimation/StatsVisitor>
 
 namespace osgAnimation
 {
-    class StatsActionVisitor;
-
     class OSGANIMATION_EXPORT Timeline : public Action //osg::Object
     {
     public:

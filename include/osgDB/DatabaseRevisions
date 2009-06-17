@@ -35,6 +35,8 @@ class OSGDB_EXPORT FileList : public osg::Object
         FileNames& getFileNames() { return _files; }
         const FileNames& getFileNames() const { return _files; }
 
+        bool empty() const { return _files.empty(); }
+
         bool containsFile(const std::string& filename) const { return _files.count(filename)!=0; }
 
         void addFile(const std::string& filename) { _files.insert(filename); }

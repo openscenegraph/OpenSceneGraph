@@ -193,6 +193,7 @@ EXPAND_AS_DEFINED      = META_Object \
                          META_NodeVisitor \
                          META_Effect \
                          META_Action \
+                         META_ActionVisitor \
                          META_OSGMANIPULATOR_Object
                           
 PREDEFINED             = 

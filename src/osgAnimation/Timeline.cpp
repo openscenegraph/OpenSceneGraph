@@ -71,9 +71,9 @@ void osgAnimation::Timeline::traverse(ActionVisitor& visitor)
 
 
 void osgAnimation::Timeline::setStats(osg::Stats* stats) { _stats = stats;}
-osg::Stats* osgAnimation::Timeline::getStats() { return _stats;}
+osg::Stats* osgAnimation::Timeline::getStats() { return _stats.get();}
 void osgAnimation::Timeline::collectStats(bool state) { _collectStats = state;}
-osgAnimation::StatsActionVisitor* osgAnimation::Timeline::getStatsVisitor() { return _statsVisitor; }
+osgAnimation::StatsActionVisitor* osgAnimation::Timeline::getStatsVisitor() { return _statsVisitor.get(); }
 
 void osgAnimation::Timeline::clearActions()
 {
@@ -98,7 +98,7 @@ void osgAnimation::Timeline::update(double simulationTime)
         {
             if (!_statsVisitor)
                 _statsVisitor = new osgAnimation::StatsActionVisitor();
-            _statsVisitor->setStats(_stats);
+            _statsVisitor->setStats(_stats.get());
             _statsVisitor->setFrame(_currentFrame);
             _statsVisitor->reset();
             accept(*_statsVisitor);
@@ -123,7 +123,7 @@ void osgAnimation::Timeline::update(double simulationTime)
         {
             if (!_statsVisitor)
                 _statsVisitor = new StatsActionVisitor;
-            _statsVisitor->setStats(_stats);
+            _statsVisitor->setStats(_stats.get());
             _statsVisitor->setFrame(_currentFrame);
             _statsVisitor->reset();
             accept(*_statsVisitor);

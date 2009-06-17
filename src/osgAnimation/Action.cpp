@@ -26,7 +26,7 @@ osgAnimation::Action::Callback* osgAnimation::Action::getFrameCallback(unsigned 
 {
     if (_framesCallback.find(frame) != _framesCallback.end())
     {
-        return _framesCallback[frame];
+        return _framesCallback[frame].get();
     }
     return 0;
 }

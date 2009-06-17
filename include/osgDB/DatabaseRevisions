@@ -105,7 +105,7 @@ class OSGDB_EXPORT DatabaseRevisions : public osg::Object
         void addRevision(DatabaseRevision* revision);
         void removeRevision(DatabaseRevision* revision);
 
-        DatabaseRevision* getDatabaseRevision(unsigned int i) { return i<_revisionList.size() ? _revisionList[i] : 0; }
+        DatabaseRevision* getDatabaseRevision(unsigned int i) { return i<_revisionList.size() ? _revisionList[i].get() : 0; }
 
         DatabaseRevisionList& getDatabaseRevisionList() { return _revisionList; }
         const DatabaseRevisionList& getDatabaseRevisionList() const { return _revisionList; }

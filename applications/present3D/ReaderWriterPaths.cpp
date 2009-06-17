@@ -93,7 +93,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(const std::string&
 
     std::ifstream input(fileName.c_str());
 
-    return readObject(input, local_opt);
+    return readObject(input, local_opt.get());
 }
 
 osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(std::istream& fin, const osgDB::Options* options) const
@@ -234,12 +234,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::read_rotation_path(std::istre
                     localValue.azim = currValue.azim *r + prevValue.azim * (1.0f-r);
                     localValue.elevation = currValue.elevation *r + prevValue.elevation * (1.0f-r);
 
-                    localValue.addToPath(animation);
+                    localValue.addToPath(animation.get());
                 }
             }
             else
             {
-                currValue.addToPath(animation);
+                currValue.addToPath(animation.get());
             }
             prevValue = currValue;
             first = false;

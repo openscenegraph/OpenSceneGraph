@@ -71,7 +71,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
                     local_opt->getDatabasePathList().push_front(osgDB::getFilePath(file));
 
                     //    Now pass through to memory zip handler
-                    rresult = readNode(tmpStrmBuffer,local_opt);
+                    rresult = readNode(tmpStrmBuffer,local_opt.get());
 
                     // Clean up options
                     local_opt->getDatabasePathList().pop_front();
@@ -81,7 +81,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             return rresult;
         }
 
-        virtual ReadResult readNode(std::istream& fin,const osgDB::Options* options =NULL) const
+        virtual ReadResult readNode(std::istream& fin,const osgDB::Options* options) const
         {
             ReadResult result = ReadResult(ReadResult::FILE_NOT_HANDLED);
 
@@ -145,7 +145,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
 
                                         local_opt->setPluginStringData("STREAM_FILENAME",osgDB::getSimpleFileName(StreamName));
 
-                                        result = rw->readNode(buffer,local_opt);
+                                        result = rw->readNode(buffer,local_opt.get());
                                         if (result.validNode())
                                         {
                                             grp->addChild( result.takeNode() );

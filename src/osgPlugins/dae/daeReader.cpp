@@ -161,7 +161,7 @@ osg::Node* daeReader::processVisualScene( domVisual_scene *scene )
           }
        }
     }
-    retVal->setStateSet(_rootStateSet);
+    retVal->setStateSet(_rootStateSet.get());
 
     return retVal;
 }

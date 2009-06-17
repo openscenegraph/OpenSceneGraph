@@ -93,14 +93,14 @@ public:
         // osg::notify(osg::NOTICE)<<"LoadAndCompileOperation "<<_filename<<std::endl;
 
         _loadedModel = osgDB::readNodeFile(_filename);
-        
+
         if (_loadedModel.valid() && _incrementalCompileOperation.valid())
         {
             osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet = 
-                new osgUtil::IncrementalCompileOperation::CompileSet(_loadedModel);
-            
+                new osgUtil::IncrementalCompileOperation::CompileSet(_loadedModel.get());
+
             compileSet->_compileCompletedCallback = new ReleaseBlockOnCompileCompleted(_block.get());
-        
+
             _incrementalCompileOperation->add(compileSet.get());
         }
         else 

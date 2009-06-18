@@ -128,7 +128,7 @@ namespace osgAnimation
 
 
     // blend in from 0 to weight in duration
-    class BlendIn : public Action
+    class OSGANIMATION_EXPORT BlendIn : public Action
     {
         double _weight;
         osg::ref_ptr<Animation> _animation;
@@ -144,7 +144,7 @@ namespace osgAnimation
     };
 
     // blend in from 0 to weight in duration
-    class BlendOut : public Action
+    class OSGANIMATION_EXPORT BlendOut : public Action
     {
         double _weight;
         osg::ref_ptr<Animation> _animation;
@@ -159,7 +159,7 @@ namespace osgAnimation
     };
 
 
-    class ActionAnimation : public Action
+    class OSGANIMATION_EXPORT ActionAnimation : public Action
     {
     public:
         META_Action(osgAnimation, ActionAnimation);
@@ -175,7 +175,7 @@ namespace osgAnimation
 
 
     // encapsulate animation with blend in blend out for classic usage
-    class StripAnimation : public Action
+    class OSGANIMATION_EXPORT StripAnimation : public Action
     {
     public:
         META_Action(osgAnimation, StripAnimation);

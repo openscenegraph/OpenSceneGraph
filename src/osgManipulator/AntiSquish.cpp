@@ -148,9 +148,9 @@ osg::Matrix AntiSquish::computeUnSquishedMatrix(const osg::Matrix& LTW, bool& fl
 
         // Position
         if (_usePosition)
-            unsquished.postMult(_position);
+            unsquished.postMultTranslate(_position);
         else
-            unsquished.postMult(_pivot);
+            unsquished.postMultTranslate(_pivot);
     }
     else
     {

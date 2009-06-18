@@ -275,6 +275,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::FileList)
 	          __C5_FileNames_R1__getFileNames,
 	          "",
 	          "");
+	I_Method0(bool, empty,
+	          Properties::NON_VIRTUAL,
+	          __bool__empty,
+	          "",
+	          "");
 	I_Method1(bool, containsFile, IN, const std::string &, filename,
 	          Properties::NON_VIRTUAL,
 	          __bool__containsFile__C5_std_string_R1,

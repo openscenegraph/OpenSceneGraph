@@ -65,3 +65,23 @@ StateAttribute* CopyOp::operator() (const StateAttribute* attr) const
 }
 
 
+NodeCallback* CopyOp::operator() (const NodeCallback* nc) const
+{
+    if (nc && _flags&DEEP_COPY_NODECALLBACKS)
+    {
+        // deep copy the full chain of callback
+        osg::NodeCallback* first = dynamic_cast<osg::NodeCallback*>(nc->clone(*this));
+        first->setNestedCallback(0);
+        nc = nc->getNestedCallback();
+        while (nc) 
+        {
+            osg::NodeCallback* ucb = dynamic_cast<osg::NodeCallback*>(nc->clone(*this));
+            ucb->setNestedCallback(0);
+            first->addNestedCallback(ucb);
+            nc = nc->getNestedCallback();
+        }
+        return first;
+    }
+    else
+        return const_cast<NodeCallback*>(nc);
+}

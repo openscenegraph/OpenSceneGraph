@@ -141,10 +141,10 @@ namespace osgParticle
         inline float getCurrentAlpha() const { return _current_alpha; }
         
         /// Get the s texture coordinate of the bottom left of the particle
-        inline const float getSTexCoord() const { return _s_coord; }
+        inline float getSTexCoord() const { return _s_coord; }
 
         /// Get the t texture coordinate of the bottom left of the particle
-        inline float getTCoord() const { return _t_coord; }
+        inline float getTTexCoord() const { return _t_coord; }
 
         /// Get width of texture tile
         inline int getTileS() const;

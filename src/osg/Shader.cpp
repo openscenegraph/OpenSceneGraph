@@ -19,6 +19,8 @@
 
 #include <fstream>
 #include <list>
+#include <sstream>
+#include <iomanip>
 
 #include <osg/Notify>
 #include <osg/State>
@@ -341,15 +343,46 @@ void Shader::PerContextShader::requestCompile()
     _isCompiled = false;
 }
 
+namespace 
+{
+    std::string insertLineNumbers(const std::string& source)
+    {
+        if (source.empty()) return source;
+
+        unsigned int lineNum = 1;       // Line numbers start at 1
+        std::ostringstream ostr;
+
+        std::string::size_type previous_pos = 0;
+        do
+        {
+            std::string::size_type pos = source.find_first_of("\n", previous_pos);
+            if (pos != std::string::npos)
+            {
+                ostr << std::setw(5)<<std::right<<lineNum<<": "<<source.substr(previous_pos, pos-previous_pos)<<std::endl;
+                previous_pos = pos+1<source.size() ? pos+1 : std::string::npos;
+            }
+            else
+            {
+                ostr << std::setw(5)<<std::right<<lineNum<<": "<<source.substr(previous_pos, std::string::npos)<<std::endl;
+                previous_pos = std::string::npos;
+            }
+            ++lineNum;
+
+        } while (previous_pos != std::string::npos);
+
+        return ostr.str();
+    }
+}
 
 void Shader::PerContextShader::compileShader()
 {
     if( ! _needsCompile ) return;
     _needsCompile = false;
 
+    std::string sourceWithLineNumbers = insertLineNumbers(_shader->getShaderSource());
     osg::notify(osg::INFO)
         << "\nCompiling " << _shader->getTypename()
-        << " source:\n" << _shader->getShaderSource() << std::endl;
+        << " source:\n" << sourceWithLineNumbers << std::endl;
 
     GLint compiled = GL_FALSE;
     const char* sourceText = _shader->getShaderSource().c_str();

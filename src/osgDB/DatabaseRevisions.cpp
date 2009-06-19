@@ -45,6 +45,17 @@ bool FileList::removeFile(const std::string& filename)
     return true;
 }
 
+void FileList::append(FileList* fileList)
+{
+    for(FileNames::iterator itr = fileList->_files.begin();
+        itr != fileList->_files.end();
+        ++itr)
+    {
+        _files.insert(*itr);
+    }
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 //
 // DatabaseRevision

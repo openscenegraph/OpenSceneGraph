@@ -295,6 +295,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::FileList)
 	          __bool__removeFile__C5_std_string_R1,
 	          "",
 	          "");
+	I_Method1(void, append, IN, osgDB::FileList *, fileList,
+	          Properties::NON_VIRTUAL,
+	          __void__append__FileList_P1,
+	          "",
+	          "");
 	I_SimpleProperty(osgDB::FileList::FileNames &, FileNames, 
 	                 __FileNames_R1__getFileNames, 
 	                 0);

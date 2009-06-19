@@ -15,6 +15,7 @@
 #include <osg/Drawable>
 #include <osg/Image>
 #include <osg/Node>
+#include <osg/NodeCallback>
 #include <osg/Object>
 #include <osg/PrimitiveSet>
 #include <osg/Referenced>
@@ -46,6 +47,7 @@ BEGIN_ENUM_REFLECTOR(osg::CopyOp::Options)
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_PRIMITIVES);
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_SHAPES);
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_UNIFORMS);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_NODECALLBACKS);
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_ALL);
 END_REFLECTOR
 

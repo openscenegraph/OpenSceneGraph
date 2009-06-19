@@ -1,3 +1,78 @@
+2009-06-18 08:19  robert
+
+	* src/osgManipulator, src/osgManipulator/AntiSquish.cpp: From Rene
+	  Molenaar, "The bug is as described above:
+	  
+	  "The dragger's corner tabs are no longer in the corners."
+	  
+	  this fix places the cornertabs back in the corners.
+	  (the manipulator does not make sense otherwise)."
+
+2009-06-17 15:10  robert
+
+	* CMakeLists.txt: Added CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS
+
+2009-06-17 08:55  robert
+
+	* include/osg/DisplaySettings: Fixed error in
+	  DisplaySetting::setNumOfHttpDatabaseThreadsHint()
+
+2009-06-12 09:53  robert
+
+	* src/osg/Texture2DArray.cpp: From Konstantin Sinitsyn, "I've fixed
+	  bug with loading of compressed texture to texture array!"
+	  
+	  Merged from svn/trunk using:
+	  
+	  svn merge -r 10336:10337
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osg
+
+2009-06-08 13:53  robert
+
+	* src/osg: From Mathias Froehlich, "Without this change packed
+	  depth stencil attachments are only supported if the
+	  GL_EXT_framebuffer_blit extension is available. This is due to
+	  the early
+	  return from the constructor if this is missing.
+	  As far as I read the standard extension documents, this blit call
+	  is not
+	  required to have packed depth stencil fbos.
+	  The change fixes this and allows packed stencil attachments on
+	  machines
+	  without the multisample blit command."
+	  
+	  Merged from svn/trunk using:
+	  
+	  svn merge -r 10326:10327
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk
+
+2009-06-08 11:14  robert
+
+	* src/osgSim, src/osgSim/Sector.cpp: From Lionel Largade, "this
+	  correction makes the intensity interpolated in the correct
+	  direction when the angle is between _cosFadeAngle and _cosAngle."
+	  
+	  Merged from svn/trunk using:
+	  
+	  svn merge -r 10320:10321
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgSim
+
+2009-06-06 10:08  robert
+
+	* include/osg/Referenced, src/osgUtil/RenderBin.cpp: Introduced
+	  depend_on template and usage in RenderBin.cpp's singleton to
+	  solve crash on exit in static builds.
+
+2009-06-04 19:22  paulmelis
+
+	* applications/osgversion/CMakeLists.txt: Fixed incorrect ENDIF()
+	  in applications/osgversion/CMakeLists.txt
+	  (CMake 2.4 complained about this, while 2.6 seems to ignore it)
+
+2009-06-02 14:48  robert
+
+	* ChangeLog, NEWS.txt: Update ChangeLog and NEWS
+
 2009-06-02 14:44  robert
 
 	* src/osg/Texture2D.cpp: Merged from svn/trunk : "Moved assigned of

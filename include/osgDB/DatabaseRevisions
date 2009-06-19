@@ -43,6 +43,8 @@ class OSGDB_EXPORT FileList : public osg::Object
 
         bool removeFile(const std::string& filename);
 
+        void append(FileList* fileList);
+
     protected:
 
         virtual ~FileList();

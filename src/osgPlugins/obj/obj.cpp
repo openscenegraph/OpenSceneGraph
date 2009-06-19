@@ -137,6 +137,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
                 if (skipNewline)
                 {
                     skipNewline = false; 
+                    *ptr++ = ' ';
                     continue;
                 }
                 else break;
@@ -146,6 +147,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
             if (skipNewline)
             {
                 skipNewline = false; 
+                *ptr++ = ' ';
                 continue;
             }
             else break;
@@ -156,7 +158,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
             // osg::notify(osg::NOTICE)<<"We have unix line ending"<<std::endl;
             if (skipNewline)
             {
-                skipNewline = false; 
+                *ptr++ = ' ';
                 continue;
             }
             else break;

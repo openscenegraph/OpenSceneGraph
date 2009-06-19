@@ -1004,6 +1004,8 @@ void Viewer::getViews(Views& views, bool onlyValid)
 
 void Viewer::getAllThreads(Threads& threads, bool onlyActive)
 {
+    threads.clear();
+
     OperationThreads operationThreads;
     getOperationThreads(operationThreads);
     

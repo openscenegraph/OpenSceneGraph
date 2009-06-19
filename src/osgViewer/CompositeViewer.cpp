@@ -402,6 +402,8 @@ void CompositeViewer::getCameras(Cameras& cameras, bool onlyActive)
  
 void CompositeViewer::getScenes(Scenes& scenes, bool onlyValid)
 {
+    scenes.clear();
+
     typedef std::set<osgViewer::Scene*> SceneSet;
     SceneSet sceneSet;
 
@@ -423,6 +425,8 @@ void CompositeViewer::getScenes(Scenes& scenes, bool onlyValid)
 
 void CompositeViewer::getViews(Views& views, bool onlyValid)
 {
+    views.clear();
+
     for(RefViews::iterator vitr = _views.begin();
         vitr != _views.end();
         ++vitr)
@@ -433,6 +437,8 @@ void CompositeViewer::getViews(Views& views, bool onlyValid)
 
 void CompositeViewer::getAllThreads(Threads& threads, bool onlyActive)
 {
+    threads.clear();
+
     OperationThreads operationThreads;
     getOperationThreads(operationThreads);
     

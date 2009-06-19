@@ -939,16 +939,20 @@ void Viewer::updateTraversal()
 
 void Viewer::getScenes(Scenes& scenes, bool onlyValid)
 {
+    scenes.clear();
     scenes.push_back(_scene.get());
 }
 
 void Viewer::getViews(Views& views, bool onlyValid)
 {
+    views.clear();
     views.push_back(this);
 }
 
 void Viewer::getAllThreads(Threads& threads, bool onlyActive)
 {
+    threads.clear();
+
     OperationThreads operationThreads;
     getOperationThreads(operationThreads);
     

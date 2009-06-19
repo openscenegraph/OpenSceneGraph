@@ -1,0 +1,38 @@
+<ui version="4.0" >
+ <class>testOutboardWindow</class>
+ <widget class="QDialog" name="testOutboardWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>278</width>
+    <height>292</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>The Outboard Window</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="ViewQOSG" native="1" name="graphicsView" >
+     <property name="minimumSize" >
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ViewQOSG</class>
+   <extends>QWidget</extends>
+   <header>QOSGWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

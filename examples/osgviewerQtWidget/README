@@ -1,0 +1,107 @@
+This now builds with cmake if added to the osg examples tree.  A change to 
+examples/CMakeLists.txt is also required.
+
+It is also possible to build this stand alone with qmake using the .pro file.
+I think I've made the .pro sufficiently generic to build anywhere.  The first
+couple of lines in the file need to be adjusted for anyone's local environment.
+
+This builds and runs on Linux and Win32 OK.   See status section.
+
+Mac has some problems.  Qt was 4.4.2 and Mac OS X 10.5.2.  1) Had to adjust the
+.pro file to hide QT_NO_DEBUG_OUTPUT or problems with a Frameworks header.  2)
+Had to eliminate the outboard window to avoid a crash.  3) Only the lower-left
+of the 4 views is OK.  The other 3 views filled with frame buffer garbage.  4)
+Maximize twice and we loose the lower-left too.
+
+My colleague Liz Martin collaborated on the design and did the Qt work.  
+She is known for her copious comments.  -- Don Leich, Intelligent Light
+
+
+Linux/Win32 builds (on Mac substitute make for gmake):
+
+ gmake clean
+ qmake qosgwidget.pro
+ gmake
+
+
+
+12/05/08 Status
+---------------
+o Implemented the skeleton of CompositeViewerQOSG and ViewQOSG (in
+  QOSGWidget.cpp)
+
+o In testMainWin.ui, osgGraphicsArea is a "promoted" widget: It is promoted to
+  CompositeViewerQOSG
+
+  CompositeViewerQOSG inherits from both QWidget and osgViewer::CompositeViewer
+
+o ViewQOSG inherits from QOSGWidget (which inherits from QWidget) and
+  osgViewer::View
+
+o Bagged on allowing tab focus between the ViewQOSG widgets because:
+
+  o on resizing, OSG's CompositeViewer sets the camera (and view) focus to its
+    first osgViewer::View, which can create a disconnect between the Qt widget
+    (ie ViewQOSG) that has the focus and is receiving keyboard events, and the
+    actual ViewQOSG that the composite viewer acts on
+
+  o From empirical observation, it didn't seem to matter which ViewQOSG
+    received the keyboard event; the composite viewer applied the designated
+    action to the view the composite viewer consider current
+
+  o TAB focus would be given to a ViewQOSG even it had been completely
+    collapsed via QSplitter action in the QMainWindow.  I was not successful
+    in my attempts to modify this behavior.
+
+12/15/08 Status
+---------------
+
+o  In this area, in testMainWin.ui, not only is osgGraphicsArea a promoted
+   widget (to CompositeViewerQOSG), but the 4 subviews are now also promoted
+   widgets, to ViewQOSG. 
+
+o  I eliminated QOSGWidget::eventFilter().
+
+o  In QOSGWidget::QOSGWidget(), I no longer take x, y, width, and height from
+   the 'parent', I simply take it from itself.
+
+Unfortunately, these changes don't help the Windows exe at all.  Linux
+continues to run just fine.  But Windows doesn't see that TAB, and doesn't see
+any *results* of the Key presses (Like 'l' to change lighting.)
+
+
+5/15/09 Status
+---------------
+
+o  Applied Martin Beckett's fix for WIN32 event queue handling.
+
+5/19/09 Status
+---------------
+
+o  Altered WIN32 event queue handling to not skip key events.
+
+o  Got Mac to build and sort of run.  Qt is 4.4.2 and Mac OS X 10.5.2.  
+1) Had to adjust the .pro file to hide QT_NO_DEBUG_OUTPUT or problems with
+a Frameworks header.  2) Had to eliminate the outboard window to
+avoid a crash.  3) Only the lower-left of the 4 views is OK.
+The other 3 views filled with frame buffer garbage.  4) Maximize
+twice and we loose the lower-left too.
+
+
+6/18/09 Status
+---------------
+
+o Simon Loic provided cmake infrastructure and help me debug some cmake
+configuration problems.  I needed to wipe my out-of-source object tree 
+and start over explicitly defining QT version 4, ala:
+  ccmake ../OpenSceneGraph-2.8.1  -DDESIRED_QT_VERSION=4
+
+o Reimplemented QWidget::paintEngine to return 0 as recommended by doc.
+This is purported to stop Qt from rendering anything in our windows.
+
+o Eric Pouliquen recommended replacing setAttribute Qt::WA_PaintOnScreen
+and Qt::WA_NoSystemBackground with Qt::WA_OpaquePaintEvent.  Seems best
+if we add Qt::WA_OpaquePaintEvent, get rid of Qt::WA_NoSystemBackground,
+but keep Qt::WA_PaintOnScreen.
+
+

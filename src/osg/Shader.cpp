@@ -380,9 +380,13 @@ void Shader::PerContextShader::compileShader()
     _needsCompile = false;
 
     std::string sourceWithLineNumbers = insertLineNumbers(_shader->getShaderSource());
-    osg::notify(osg::INFO)
-        << "\nCompiling " << _shader->getTypename()
-        << " source:\n" << sourceWithLineNumbers << std::endl;
+
+    if (osg::getNotifyLevel()>=osg::INFO)
+    {
+        osg::notify(osg::INFO)
+            << "\nCompiling " << _shader->getTypename()
+            << " source:\n" << sourceWithLineNumbers << std::endl;
+    }
 
     GLint compiled = GL_FALSE;
     const char* sourceText = _shader->getShaderSource().c_str();

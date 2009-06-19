@@ -24,7 +24,6 @@
 *          Wojtek Lewandowski 2009-05-22 
 *
 **********************************************************************/
-
 #include <osg/Texture>
 #include <osg/Notify>
 
@@ -32,7 +31,6 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/fstream>
-
 #include <iomanip>
 #include <stdio.h>
 #include <string.h>
@@ -228,10 +226,47 @@ struct DXT1TexelsBlock
 #define FOURCC_DXT4  (MAKEFOURCC('D','X','T','4'))
 #define FOURCC_DXT5  (MAKEFOURCC('D','X','T','5'))
 
+static unsigned int ComputeImageSizeInBytes
+    ( int width, int height, int depth,
+      unsigned int pixelFormat, unsigned int pixelType,
+      int packing = 1, int slice_packing = 1, int image_packing = 1 )
+{
+    if( width < 1 )  width = 1;
+    if( height < 1 ) height = 1;
+    if( depth < 1 )  depth = 1;
+
+    // Taking advantage of the fact that 
+    // DXT formats are defined as 4 successive numbers:
+    // GL_COMPRESSED_RGB_S3TC_DXT1_EXT         0x83F0
+    // GL_COMPRESSED_RGBA_S3TC_DXT1_EXT        0x83F1
+    // GL_COMPRESSED_RGBA_S3TC_DXT3_EXT        0x83F2
+    // GL_COMPRESSED_RGBA_S3TC_DXT5_EXT        0x83F3
+    if( pixelFormat >= GL_COMPRESSED_RGB_S3TC_DXT1_EXT &&
+        pixelFormat <= GL_COMPRESSED_RGBA_S3TC_DXT5_EXT )
+    {
+        width = (width + 3) & ~3;
+        height = (height + 3) & ~3;
+    }
+
+    // compute size of one row
+    unsigned int size = osg::Image::computeRowWidthInBytes
+                            ( width, pixelFormat, pixelType, packing );
+
+    // now compute size of slice
+    size *= height;
+    size += slice_packing - 1;
+    size -= size % slice_packing;
+
+    // compute size of whole image
+    size *= depth;
+    size += image_packing - 1;
+    size -= size % image_packing;
+
+    return size;
+}
 
 osg::Image* ReadDDSFile(std::istream& _istream)
 {
-
     DDSURFACEDESC2 ddsd;
 
     char filecode[4];
@@ -242,17 +277,6 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     }
     // Get the surface desc.
     _istream.read((char*)(&ddsd), sizeof(ddsd));
-
-
-    // Size of 2d images - 3d images don't set dwLinearSize
-    //###[afarre_051904]
-    /*unsigned int size = ddsd.dwMipMapCount > 1 ? ddsd.dwLinearSize * (ddsd.ddpfPixelFormat.dwFourCC==FOURCC_DXT1 ? 2: 4) : ddsd.dwLinearSize;
-
-    if(size <= 0)
-    {
-        osg::notify(osg::WARN)<<"Warning:: dwLinearSize is not defined in dds file, image not loaded."<<std::endl;
-        return NULL;
-    }*/
 
     osg::ref_ptr<osg::Image> osgImage = new osg::Image();    
     
@@ -568,119 +592,60 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         return NULL;
     }
 
-    //###[afarre_051904]
-    /*if (is3dImage)
-        size = osg::Image::computeNumComponents(pixelFormat) * ddsd.dwWidth * ddsd.dwHeight * depth;
-
-
-    //delayed allocation og image data after all checks
-    unsigned char* imageData = new unsigned char [size];
-    if(!imageData)
-    {
-        return NULL;
-    }
-
-    // Read image data
-    _istream.read((char*)imageData, size);
-
-    
-    // NOTE: We need to set the image data before setting the mipmap data, this
-    // is because the setImage method clears the _mipmapdata vector in osg::Image.
-    // Set image data and properties.
-    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
-    */
-
-    // Now set mipmap data (offsets into image raw data)
-    //###[afarre_051904]
-    osg::Image::MipmapDataType mipmaps; 
+    unsigned int size = ComputeImageSizeInBytes( s, t, r, pixelFormat, dataType );
 
     // Take care of mipmaps if any.
-    if (ddsd.dwMipMapCount>1)
-    {
-        // Now set mipmap data (offsets into image raw data).
-        //###[afarre_051904]osg::Image::MipmapDataType mipmaps;
+    unsigned int sizeWithMipmaps = size;
+    osg::Image::MipmapDataType mipmap_offsets;
+    if ( ddsd.dwMipMapCount>1 )
+    {        
+        unsigned numMipmaps = osg::Image::computeNumberOfMipmapLevels( s, t, r );
+        if( numMipmaps > ddsd.dwMipMapCount ) numMipmaps = ddsd.dwMipMapCount;
+        // array starts at 1 level offset, 0 level skipped
+        mipmap_offsets.resize( numMipmaps - 1 );
 
-        //This is to complete mipmap sequence until level Nx1
+        int width = s;
+        int height = t; 
+        int depth = r;
 
-        //debugging messages        
-        float power2_s = logf((float)s)/logf((float)2);
-        float power2_t = logf((float)t)/logf((float)2);
-
-        osg::notify(osg::INFO) << "ReadDDSFile INFO : ddsd.dwMipMapCount = "<<ddsd.dwMipMapCount<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile INFO : s = "<<s<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile INFO : t = "<<t<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile INFO : power2_s="<<power2_s<<std::endl;
-        osg::notify(osg::INFO) << "ReadDDSFile INFO : power2_t="<<power2_t<<std::endl;
-
-        mipmaps.resize((unsigned int)osg::maximum(power2_s,power2_t),0);
-
-        // Handle S3TC compressed mipmaps.
-        if( (ddsd.ddpfPixelFormat.dwFlags & DDPF_FOURCC)
-            &&
-            (ddsd.ddpfPixelFormat.dwFourCC == FOURCC_DXT1 ||
-             ddsd.ddpfPixelFormat.dwFourCC == FOURCC_DXT3 ||
-             ddsd.ddpfPixelFormat.dwFourCC == FOURCC_DXT5))
+        for( unsigned int k = 0; k < mipmap_offsets.size(); ++k  )
         {
-            int width = ddsd.dwWidth;
-            int height = ddsd.dwHeight;
-            int blockSize = (ddsd.ddpfPixelFormat.dwFourCC == FOURCC_DXT1) ? 8 : 16;
-            int offset = 0;
-            for (unsigned int k = 1; k < ddsd.dwMipMapCount && (width || height); ++k)
-            {
-                if (width == 0)
-                    width = 1;
-                if (height == 0)
-                    height = 1;
-                offset += (((width+3)/4) * ((height+3)/4) * blockSize);
-                mipmaps[k-1] = offset;
-                width >>= 1;
-                height >>= 1;
-            }
-            //###[afarre_051904] osgImage->setMipmapData(mipmaps);
-        }
-        // Handle uncompressed mipmaps
-        else
-        {
-            int offset = 0;
-            int width = ddsd.dwWidth;
-            int height = ddsd.dwHeight;
-            for (unsigned int k = 1; k < ddsd.dwMipMapCount && (width || height); ++k)
-            {
-                if (width == 0)
-                    width = 1;
-                if (height == 0)
-                    height = 1;
-                offset += height *
-                    osg::Image::computeRowWidthInBytes( width, pixelFormat, dataType, 1 );
-                mipmaps[k-1] = offset;
-                width >>= 1;
-                height >>= 1;
-            }
-            //###[afarre_051904] osgImage->setMipmapData(mipmaps);
+           mipmap_offsets[k] = sizeWithMipmaps;
+
+           width = osg::maximum( width >> 1, 1 );
+           height = osg::maximum( height >> 1, 1 );
+           depth = osg::maximum( depth >> 1, 1 );
+
+           sizeWithMipmaps += 
+                ComputeImageSizeInBytes( width, height, depth, pixelFormat, dataType );
         }
     }
-
-    osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, 0, osg::Image::USE_NEW_DELETE);
-    if (mipmaps.size()>0)  osgImage->setMipmapLevels(mipmaps);
-    unsigned int size = osgImage->getTotalSizeInBytesIncludingMipmaps();
-
-    osg::notify(osg::INFO) << "ReadDDSFile INFO : size = " << size << std::endl;
-    
-    if(size <= 0)
-    {
-        osg::notify(osg::WARN) << "ReadDDSFile warning: size <= 0" << std::endl;
-        return NULL;
-    }
-
-    unsigned char* imageData = new unsigned char [size];
+     
+    unsigned char* imageData = new unsigned char [sizeWithMipmaps];
     if(!imageData)
     {
         osg::notify(osg::WARN) << "ReadDDSFile warning: imageData == NULL" << std::endl;
         return NULL;
     }
+    
+    // Read pixels in two chunks. First main image, next mipmaps. 
+    if ( !_istream.read( (char*)imageData, size ) )
+    {
+        delete [] imageData;
+        osg::notify(osg::WARN) << "ReadDDSFile warning: couldn't read imageData" << std::endl;
+        return NULL;
+    }
 
-    // Read image data
-    _istream.read((char*)imageData, size);
+    // If loading mipmaps in second chunk fails we may still use main image
+    if ( size < sizeWithMipmaps && !_istream.read( (char*)imageData + size, sizeWithMipmaps - size ) )
+    {
+        sizeWithMipmaps = size;
+        mipmap_offsets.resize( 0 );
+        osg::notify(osg::WARN) << "ReadDDSFile warning: couldn't read mipmapData" << std::endl;
+
+        // if mipmaps read failed we leave some not used overhead memory allocated past main image
+        // this memory will not be used but it will not cause leak in worst meaning of this word.
+    }
 
     // Check if alpha information embedded in the 8-byte encoding blocks
     if (checkIfUsingOneBitAlpha)
@@ -688,9 +653,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         const DXT1TexelsBlock *texelsBlock = reinterpret_cast<const DXT1TexelsBlock*>(imageData);
 
         // Only do the check on the first mipmap level
-        unsigned int numBlocks = mipmaps.size()>0 ? mipmaps[0] / 8 : size / 8;
-
-        for (int i=numBlocks; i>0; --i, ++texelsBlock)
+        for ( int i = size / sizeof( DXT1TexelsBlock ); i>0; --i, ++texelsBlock )
         {
             if (texelsBlock->color_0<=texelsBlock->color_1)
             {
@@ -703,38 +666,27 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     }
 
     osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
-    if (mipmaps.size()>0)  osgImage->setMipmapLevels(mipmaps);
+
+    if (mipmap_offsets.size()>0) osgImage->setMipmapLevels(mipmap_offsets);
          
     // Return Image.
     return osgImage.release();
 }
-
-
-/*
-osg::Image::MipmapDataType mipmaps;
-osgImage->setMipmapData(mipmaps);
-osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, 0, osg::Image::USE_NEW_DELETE);
-printf("INVENTO===> gtsibim:%d  grsib:%d   mi_size:%d   lPitch%d\n", 
-    osgImage->getTotalSizeInBytesIncludingMipmaps(), 
-    osgImage->getRowSizeInBytes(), size, ddsd.lPitch);
-printf("CORRECTO**> gtsibim:%d  grsib:%d   mi_size:%d   lPitch%d\n", 
-    osgImage->getTotalSizeInBytesIncludingMipmaps(), 
-    osgImage->getRowSizeInBytes(), size, ddsd.lPitch);
-
- */
-
 
 bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
 {
 
     // Initialize ddsd structure and its members 
     DDSURFACEDESC2 ddsd;
+    memset( &ddsd, 0, sizeof( ddsd ) );
     DDPIXELFORMAT  ddpf;
+    memset( &ddpf, 0, sizeof( ddpf ) );
     //DDCOLORKEY     ddckCKDestOverlay;
     //DDCOLORKEY     ddckCKDestBlt;
     //DDCOLORKEY     ddckCKSrcOverlay;
     //DDCOLORKEY     ddckCKSrcBlt;
     DDSCAPS2       ddsCaps;
+    memset( &ddsCaps, 0, sizeof( ddsCaps ) );
 
     ddsd.dwSize = sizeof(ddsd);  
     ddpf.dwSize = sizeof(ddpf);
@@ -873,21 +825,28 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         return false;
     }
 
-   
+    int size = img->getTotalSizeInBytes();
+
     // set even more flags
-    if(img->isMipmap() && !is3dImage)
-    {
+    if( !img->isMipmap() ) {
+
+       osg::notify(osg::INFO)<<"no mipmaps to write out."<<std::endl;
+
+    } else if( img->getPacking() > 1 ) {
+
+       osg::notify(osg::WARN)<<"Warning: mipmaps not written. DDS requires packing == 1."<<std::endl;
+
+    } else { // image contains mipmaps and has 1 byte alignment
+
         SD_flags   |= DDSD_MIPMAPCOUNT;
         CAPS_flags |= DDSCAPS_COMPLEX | DDSCAPS_MIPMAP;
-        ddsd.dwMipMapCount = img->getNumMipmapLevels();
         
+        ddsd.dwMipMapCount = img->getNumMipmapLevels();
+
+        size = img->getTotalSizeInBytesIncludingMipmaps();
+
         osg::notify(osg::INFO)<<"writing out with mipmaps ddsd.dwMipMapCount"<<ddsd.dwMipMapCount<<std::endl;
     }
-    else
-    {
-        osg::notify(osg::INFO)<<"no mipmaps to write out."<<std::endl;
-    }
-
 
     // Assign flags and structure members of ddsd
     ddsd.dwFlags    = SD_flags;
@@ -898,29 +857,14 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     ddsd.ddpfPixelFormat = ddpf;
     ddsd.ddsCaps = ddsCaps;
 
-
     // Write DDS file
     fout.write("DDS ", 4); /* write FOURCC */
     fout.write(reinterpret_cast<char*>(&ddsd), sizeof(ddsd)); /* write file header */
-
-    //    int isize = img->getTotalSizeInBytesIncludingMipmaps();
-    if(!is3dImage)
-    {
-        fout.write(reinterpret_cast<const char*>(img->data()), img->getTotalSizeInBytesIncludingMipmaps());
-    }
-    else  /* 3d image */
-    {
-        for(int i = 0; i < r; ++i)
-        {
-            fout.write(reinterpret_cast<const char*>(img->data(0, 0, i)), imageSize);
-        }
-    }
+    fout.write(reinterpret_cast<const char*>(img->data()), size );
 
     // Check for correct saving
-    if (fout.fail())
-    {
+    if ( fout.fail() )
         return false;
-    }
 
     // If we get that far the file was saved properly //
     return true; 

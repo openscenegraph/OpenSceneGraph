@@ -621,6 +621,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void setShadowAmbientSupported(bool flag) { _isShadowAmbientSupported = flag; }
                 bool isShadowAmbientSupported() const { return _isShadowAmbientSupported; }
 
+                void setTextureMaxLevelSupported(bool flag) { _isTextureMaxLevelSupported = flag; }
+                bool isTextureMaxLevelSupported() const { return _isTextureMaxLevelSupported; }
+
                 void setMaxTextureSize(GLint maxsize) { _maxTextureSize=maxsize; }
                 GLint maxTextureSize() const { return _maxTextureSize; }
 
@@ -667,6 +670,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isNonPowerOfTwoTextureMipMappedSupported;
                 bool    _isNonPowerOfTwoTextureNonMipMappedSupported;
                 bool    _isTextureIntegerEXTSupported;
+                bool    _isTextureMaxLevelSupported;
 
                 GLint   _maxTextureSize;
                 GLint   _numTextureUnits;

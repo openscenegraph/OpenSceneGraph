@@ -30,6 +30,11 @@ using namespace osg;
 #define GL_TEXTURE_WRAP_R                 0x8072
 #endif
 
+#ifndef GL_TEXTURE_MAX_LEVEL
+#define GL_TEXTURE_MAX_LEVEL              0x813D
+#endif
+
+
 #ifndef GL_UNPACK_CLIENT_STORAGE_APPLE
 #define GL_UNPACK_CLIENT_STORAGE_APPLE    0x85B2
 #endif
@@ -795,6 +800,15 @@ void Texture::applyTexParameters(GLenum target, State& state) const
         if(wr == CLAMP_TO_BORDER)
             wr = CLAMP;
     }
+    
+    const Image * image = getImage(0);
+    if( image &&
+        image->isMipmap() &&
+        extensions->isTextureMaxLevelSupported() &&
+        int( image->getNumMipmapLevels() ) <
+            Image::computeNumberOfMipmapLevels( image->s(), image->t(), image->r() ) )
+            glTexParameteri( target, GL_TEXTURE_MAX_LEVEL, image->getNumMipmapLevels() - 1 );    
+
 
     glTexParameteri( target, GL_TEXTURE_WRAP_S, ws );
     
@@ -802,6 +816,7 @@ void Texture::applyTexParameters(GLenum target, State& state) const
     
     if (target==GL_TEXTURE_3D) glTexParameteri( target, GL_TEXTURE_WRAP_R, wr );
 
+    
     glTexParameteri( target, GL_TEXTURE_MIN_FILTER, _min_filter);
     glTexParameteri( target, GL_TEXTURE_MAG_FILTER, _mag_filter);
 
@@ -1592,6 +1607,7 @@ Texture::Extensions::Extensions(const Extensions& rhs):
     _isNonPowerOfTwoTextureNonMipMappedSupported = rhs._isNonPowerOfTwoTextureNonMipMappedSupported;
 
     _isTextureIntegerEXTSupported = rhs._isTextureIntegerEXTSupported;
+    _isTextureMaxLevelSupported = rhs._isTextureMaxLevelSupported;
 }
 
 void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
@@ -1624,6 +1640,7 @@ void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isNonPowerOfTwoTextureNonMipMappedSupported) _isNonPowerOfTwoTextureNonMipMappedSupported = false;
 
     if (!rhs._isTextureIntegerEXTSupported) _isTextureIntegerEXTSupported = false;
+    if (!rhs._isTextureMaxLevelSupported) _isTextureMaxLevelSupported = false;
 }
 
 void Texture::Extensions::setupGLExtensions(unsigned int contextID)
@@ -1713,6 +1730,8 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
     
     if (_glTexParameterIiv == NULL) setGLExtensionFuncPtr(_glTexParameterIiv, "glTexParameterIivEXT");
     if (_glTexParameterIuiv == NULL) setGLExtensionFuncPtr(_glTexParameterIuiv, "glTexParameterIuivEXT");
+
+    _isTextureMaxLevelSupported = ( getGLVersionNumber() >= 1.2f );
 }
 
 

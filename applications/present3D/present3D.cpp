@@ -54,6 +54,26 @@
     #include "SDLIntegration.h"
 #endif
 
+#if OSG_LIBRARY_STATIC
+
+    // include the plugins we need
+    USE_OSGPLUGIN(ive)
+    USE_OSGPLUGIN(freetype)
+    USE_OSGPLUGIN(osg)
+    USE_OSGPLUGIN(rgb)
+    USE_OSGPLUGIN(OpenFlight)
+    USE_OSGPLUGIN(png)
+    USE_OSGPLUGIN(jpeg)
+    USE_OSGPLUGIN(ffmpeg)
+
+    USE_OSGPLUGIN(p3d)
+    USE_OSGPLUGIN(paths)
+
+    // include the platform specific GraphicsWindow implementation.
+    USE_GRAPHICSWINDOW()
+
+#endif
+
 static const char* s_version = "1.3";
 
 void setViewer(osgViewer::Viewer& viewer, float width, float height, float distance)

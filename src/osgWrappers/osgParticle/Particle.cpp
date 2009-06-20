@@ -150,14 +150,14 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	          __float__getCurrentAlpha,
 	          "Get the current alpha. ",
 	          "");
-	I_Method0(const float, getSTexCoord,
+	I_Method0(float, getSTexCoord,
 	          Properties::NON_VIRTUAL,
-	          __C5_float__getSTexCoord,
+	          __float__getSTexCoord,
 	          "Get the s texture coordinate of the bottom left of the particle. ",
 	          "");
-	I_Method0(float, getTCoord,
+	I_Method0(float, getTTexCoord,
 	          Properties::NON_VIRTUAL,
-	          __float__getTCoord,
+	          __float__getTTexCoord,
 	          "Get the t texture coordinate of the bottom left of the particle. ",
 	          "");
 	I_Method0(int, getTileS,
@@ -382,8 +382,8 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	I_SimpleProperty(float, Radius, 
 	                 __float__getRadius, 
 	                 __void__setRadius__float);
-	I_SimpleProperty(const float, STexCoord, 
-	                 __C5_float__getSTexCoord, 
+	I_SimpleProperty(float, STexCoord, 
+	                 __float__getSTexCoord, 
 	                 0);
 	I_SimpleProperty(osgParticle::Particle::Shape, Shape, 
 	                 __Shape__getShape, 
@@ -394,8 +394,8 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	I_SimpleProperty(const osgParticle::rangef &, SizeRange, 
 	                 __C5_rangef_R1__getSizeRange, 
 	                 __void__setSizeRange__C5_rangef_R1);
-	I_SimpleProperty(float, TCoord, 
-	                 __float__getTCoord, 
+	I_SimpleProperty(float, TTexCoord, 
+	                 __float__getTTexCoord, 
 	                 0);
 	I_SimpleProperty(int, TileS, 
 	                 __int__getTileS, 

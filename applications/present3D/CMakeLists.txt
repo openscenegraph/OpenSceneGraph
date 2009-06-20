@@ -54,8 +54,24 @@ ENDIF()
 
 SET(TARGET_ADDED_LIBRARIES osgVolume osgFX)
 
-IF   (WIN32)
-   SET(TARGET_EXTERNAL_LIBRARIES ${TARGET_EXTERNAL_LIBRARIES} ws2_32)
+IF (NOT DYNAMIC_OPENSCENEGRAPH)
+    SET(TARGET_ADDED_LIBRARIES
+        ${TARGET_ADDED_LIBRARIES}
+            osgdb_ive
+            osgdb_freetype
+            osgdb_openflight
+            osgdb_osg
+            osgdb_rgb
+            osgdb_jpeg
+            osgdb_png
+            osgdb_ffmpeg
+    )
 ENDIF()
+
+IF   (WIN32)
+    # to support cluster code
+    SET(TARGET_EXTERNAL_LIBRARIES ${TARGET_EXTERNAL_LIBRARIES} ws2_32)
+ENDIF()
+
 
 SETUP_APPLICATION(present3D-osg)

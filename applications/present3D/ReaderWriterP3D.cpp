@@ -207,8 +207,10 @@ public:
 
 };
 
-// Register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterP3DXML> g_readerWriter_P3DXML_Proxy;
+// now register with Registry to instantiate the above
+// reader/writer.
+REGISTER_OSGPLUGIN(p3d, ReaderWriterP3DXML)
+
 
 std::string ReaderWriterP3DXML::expandEnvVarsInFileName(const std::string& filename) const
 {

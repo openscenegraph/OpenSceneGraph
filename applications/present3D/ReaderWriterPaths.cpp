@@ -70,8 +70,10 @@ public:
     virtual osgDB::ReaderWriter::ReadResult read_rotation_path(std::istream& fin, const osgDB::Options* options) const;
 };
 
-// Register with Registry to instantiate the above reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterPaths> g_readerWriter_PathsL_Proxy;
+// now register with Registry to instantiate the above
+// reader/writer.
+REGISTER_OSGPLUGIN(paths, ReaderWriterPaths)
+
 
 osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(const std::string& file, const osgDB::Options* options) const
 {

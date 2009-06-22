@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.4
+OpenSceneGraph Library 2.9.5
 
-383 Contributors:
+388 Contributors:
 
 Firstname Surname
 -----------------
@@ -8,41 +8,42 @@ Robert Osfield
 Don Burns
 Marco Jez
 Paul Martz
-Mike Weiblen
 Stephan Huber
+Mike Weiblen
 Mathias Fröhlich
 Eric Wing
 Brede Johansen
 Geoff Michel
-Bob Kuehne
 Farshid Lashkari
-Eric Sokolowsky
+Bob Kuehne
 Ulrich Hertlein
+Eric Sokolowsky
 Jean-Sebastien Guay
 Martin Lavery
 David Callu
+Wojciech Lewandowski
 Tree 
 Luigi Calori
 Trajce Nikolov
 Mike Wittman
-Wojciech Lewandowski
+Cedric Pinson
 Roger James
 Paul Melis
-Mattias Helsing
 Colin McDonald
-Andy Skinner
 Roland Smeenk
-Pavel Moloshtan
-Cedric Pinson
-Tom Jolley
 Michael Platings
+Mattias Helsing
+Andy Skinner
+Tom Jolley
+Pavel Moloshtan
 Jeremy Moles
 Jason Beverage
 Norman Vine
 Art Tevs
-Alberto Farre
 Philip Lowman
+Alberto Farre
 André Garneau
+Alberto Luaces
 Adrian Egli
 Ruben Lopez
 Randall Hopper
@@ -60,15 +61,16 @@ Michael Gronager
 Joakim Simonsson
 David Spilling
 Daniel Sjölie
-Alberto Luaces
+Chris Denham
 Bryan Thrall
 Serge Lages
 Melchior Franz
-Chris Denham
-Mike Connell
 Lionel Lagarde
+Neil Hughes
+Mike Connell
 Joran Jessurun
 Glenn Waldron
+Gino van den Bergen
 Frederic Marmond
 David Fries
 Csaba Halasz
@@ -80,38 +82,37 @@ Stephane Lamoliatte
 Sondra Iverson
 Rune Schmidt Jensen
 Rainer Oder
+Martin Beckett
 Martin Aumueller
 Mario Valle
+Jan Ciger
 Gordon Tomlinson
-Gino van den Bergen
 Carlo Camporesi
 Ben Discoe
 Andreas Ekstrand
+Thibault Genessay
 Sukender 
 Sasa Bistrovic
 Ravi Mathur
 Ralf Habacker
-Neil Hughes
 Neil Groves
 Martin Naylor
 Markus Trenkwalder
 Luc Frauciel
 Loic Dachary
+Laurens Voerman
 Joseph Steel
 John Shue
 Jan Peciva
-Jan Ciger
 Brad Colbert
 Vivek Rajan
-Thibault Genessay
 Sean Spicer
 Peter Hrenka
 Nikolaus Hanekamp
 Neil Salter
 Mihai Radu
 Michael Hartman
-Martin Beckett
-Laurens Voerman
+Maciej Krol
 David Guthrie
 Corbin Holtz
 Brad Christiansen
@@ -130,6 +131,9 @@ Liang Aibin
 Leandro Motta Barros
 John Vidar Larring
 John Kelso
+Gustav Haapalahti
+Frederic Bouvier
+Emmanuel Roche
 Daniel Larimer
 Colin Dunlop
 Bruce Clay
@@ -146,9 +150,10 @@ Phil Atkin
 Miguel Escriva
 Mattias Linde
 Maria Ten
-Maciej Krol
+Konstantin Sinitsyn
 Ken Sewell
 Julian Ortiz
+Johan Nouvel
 Jeremy Bell
 Jaromir Vitek
 James French
@@ -161,7 +166,9 @@ Erik den Dekker
 Doug McCorkle
 Donn Mielcarek
 Donald Cipperly
+Don Leich
 Domenico Mangieri
+Cory Riddell
 Charles Cole
 Blake Williams
 Antoine Hue
@@ -181,9 +188,11 @@ Stephan Eilemann
 Stanislav Blinov
 Sergey Leontyev
 Sebastian Messerschmidt
+Rene Molenaar
 Ralf Kern
 Pierre Haritchabalet
 Perry Miller
+Paul Obermeier
 Nathan Monteleone
 Morné Pistorius
 Michael Henheffer
@@ -199,7 +208,6 @@ Keith Steffen
 Katharina Plugge
 Joseph Winston
 John Aughey
-Johan Nouvel
 Jim Vaughan
 James Moliere
 Igor Kravtchenko
@@ -211,10 +219,8 @@ George Tarantilis
 Ferdi Smit
 Ewe Woessner
 Edgar Ellis
-Don Leich
 David Ergo
 Daniel Trstenjak
-Cory Riddell
 Christophe Loustaunau
 Brad Anderegg
 Aric Aumann
@@ -249,6 +255,7 @@ Shane Arnott
 Sebastien Kuntz
 Ruth Lang
 Ruben Smelik
+Ross Anderson
 Ronny Krueger
 Romain Charbit
 Robert Swain
@@ -256,7 +263,6 @@ Rob Bloemkool
 Rick Pingry
 Rick Appleton
 Ricard Schmidt
-Rene Molenaar
 Reinhard Sainitzer
 Rein Kadijk
 Raymond de Vries
@@ -268,7 +274,6 @@ Philipp Mächler
 Petr Salinger
 Peter Amstutz
 Paul Palumbo
-Paul Obermeier
 Paul Fredrikson
 Patrick Hartling
 Parag Chaudhur
@@ -279,6 +284,7 @@ Ole-Morten Duesund
 Nicolas Brodu
 Nathan Cournia
 Morten Haukness
+Mojtaba Fathi
 Mirko Viviani
 Mikkel GjÃ¸l
 Mike Garrity
@@ -306,7 +312,6 @@ Lewis Harmon
 Lars Nilson
 Kyle Centers
 Kristopher Bixler
-Konstantin Sinitsyn
 Konstantin Matveyev
 Karsten Weiss
 Karl Heijdenberg
@@ -330,18 +335,18 @@ Himar Carmona
 Henrique Bucher
 Hautio Jari
 Guillaume Millet
+Gregory Jaegy
 Graeme Harkness
 Gian Lorenzetto
 George Papagiannakis
 Galen Faidley
-Frederic Bouvier
 Frank Warmerdam
 Frank Midgley
 Frank Lindeman
 Frank Lichtenheld
 Ferdinand Cornelissen
+Fajran Iman
 Fabien Dachicourt
-Emmanuel Roche
 Eduardo Alberto
 Edmond Gheury
 Ed Ralston

@@ -231,6 +231,9 @@ const char* invalidNames[] =
     "Windows",
     "X",
     "Xcode",
+    "GraphicsWindowWin32",
+    "ImageLayer",
+    "Xml",
     "Y"
 };
 
@@ -291,6 +294,7 @@ TypoCorrection typoCorrections[] =
     {"Heirtlein",      "Hertlein"},
     {"Heirtlein",      "Hertlein"},
     {"Hertleinm",      "Hertlein"},
+    {"Happalahti",     "Haapalahti"},
     {"Hertlien",       "Hertlein"},
     {"Hi",             "He"},
     {"Hooper",         "Hopper"},
@@ -319,7 +323,9 @@ TypoCorrection typoCorrections[] =
     {"Laskari",        "Lashkari"},
     {"Leandowski",     "Lewandowski"},
     {"Lawandowski",    "Lewandowski"},
-    {"Lucas",          "Luaces"},
+    {"Luacas",         "Luaces"},
+    {"Luacas",         "Luaces"},
+    {"Liech",          "Leich"},
     {"Lugi",           "Luigi"},
     {"Lweandowski",    "Lewandowski"},
     {"Maceij",         "Maciej"},
@@ -491,6 +497,8 @@ NameCorrection nameCorrections[] =
      "Trajce",         "Nikolov"},
     {"Frauciel",       "Luc",
      "Luc",            "Frauciel"},
+    {"Alberto",        "Lucas",
+     "Alberto",        "Luaces"},
 };
 
 

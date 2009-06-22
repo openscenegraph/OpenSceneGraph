@@ -58,13 +58,19 @@ IF (NOT DYNAMIC_OPENSCENEGRAPH)
     SET(TARGET_ADDED_LIBRARIES
         ${TARGET_ADDED_LIBRARIES}
             osgdb_ive
-            osgdb_freetype
-            osgdb_openflight
             osgdb_osg
+
+            osgdb_freetype
             osgdb_rgb
             osgdb_jpeg
             osgdb_png
+
             osgdb_ffmpeg
+
+            osgdb_openflight
+            osgdb_obj
+
+            osgdb_curl
     )
 ENDIF()
 

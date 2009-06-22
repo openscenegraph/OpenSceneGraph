@@ -193,7 +193,7 @@ trpgllong trpg_byteswap_llong ( trpgllong number )
 {
     trpgllong result;
 
-    trpg_swap_sixteen ( (char *) &number, (char *) &result);
+    trpg_swap_eight ( (char *) &number, (char *) &result);
 
     return result;
 }

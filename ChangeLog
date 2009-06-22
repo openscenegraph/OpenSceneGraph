@@ -1,3 +1,398 @@
+2009-06-21 17:28  robert
+
+	* src/osgPlugins/osg/StateSet.cpp: Added mutex lock to iniGLNames
+	  to prevent threading problems during initialization
+
+2009-06-20 17:03  robert
+
+	* applications/CMakeLists.txt,
+	  applications/present3D/CMakeLists.txt,
+	  applications/present3D/ReaderWriterP3D.cpp,
+	  applications/present3D/ReaderWriterPaths.cpp,
+	  applications/present3D/present3D.cpp,
+	  src/osgPlugins/p3d/ReaderWriterP3D.cpp,
+	  src/osgPlugins/p3d/ReaderWriterPaths.cpp: Added support for
+	  initial cut of static build of Present3D.
+
+2009-06-20 11:35  robert
+
+	* src/osgText/TextBase.cpp: From Farshid Lashkari, "I found a bug
+	  in the osgText library in version 1.2 that I believe still exists
+	  in the latest version.
+	  
+	  I found that changing the alignment of a text object does not
+	  work properly if the text contains newline characters. I've
+	  attached a simple test case that shows the problem. If I set the
+	  text AFTER setting the alignment, everything works fine. But if I
+	  set the text BEFORE setting the alignment then the text is
+	  displayed incorrectly.
+	  
+	  The fix is very simple. Instead of calling computePositions() in
+	  TextBase::setAlignment(), it calls computeGlyphRepresentation().
+	  I've attached the modified TextBase.cpp."
+
+2009-06-20 08:18  robert
+
+	* src/osgWrappers/osgParticle/Particle.cpp: Updated wrappers
+
+2009-06-19 14:14  robert
+
+	* src/osgPlugins/obj/obj.cpp: From Gino van den Bergen, "AFAICS,
+	  OSG's OBJ loader correctly handles backslash-newlines that are
+	  used for continuation of lines. However, I recently ran into a
+	  problem with OBJs that where converted from another source using
+	  Right Hemisphere Deep Exploration. In these OBJs newlines are
+	  escaped in the following way:
+	  
+	  f 15939/9999/16177 15941/10000/16178 15940/10001/16179\
+	  15938/10002/16180
+	  
+	  In the OBJ loader the newline would be interpreted as follows
+	  
+	  f 15939/9999/16177 15941/10000/16178
+	  15940/10001/1617915938/10002/16180
+	  
+	  However, for correctly loading the model it should be interpreted
+	  as
+	  
+	  f 15939/9999/16177 15941/10000/16178 15940/10001/16179
+	  15938/10002/16180
+	  
+	  Thus, the escaped newline should be interpreted as a space.
+	  
+	  I tried to lookup what the correct interpretation for a
+	  backslash-newline was in the OBJ spec but did not find anything
+	  useful. Nevertheless, my suggestion would be to adopt replacing
+	  the escaped newline by a space in order to avoid problems as
+	  stated above. I cannot imagine a meaningful usage of a newline
+	  within a numerical literal so I do not foresee cases where
+	  replacing a backslash-newline by a space would be harmful. The
+	  fixed obj.cpp is zipped and attached to this mail."
+
+2009-06-19 13:53  robert
+
+	* src/osg/Shader.cpp: Changed the debug output so that the code
+	  path is not run unless it's needed
+
+2009-06-19 13:50  robert
+
+	* src/osg/Shader.cpp: From Jean-Sebastian Guay and Robert Osfield,
+	  added line numbers to debug shader output
+
+2009-06-19 13:09  robert
+
+	* include/osgParticle/Particle: From Tom Jolly, "A new compiler and
+	  a new warning.
+	  
+	  Enclosed is include/osgParticle/Particle. I removed the const
+	  from the
+	  return type of getSTexCoord. I also changed the name on the next
+	  function to getTTexCoord so it is consistent with getSTexCoord.
+	  If you
+	  prefer to change getSTexCoord to getSCoord you will need to
+	  change it in
+	  ConnectedParticleSystem.cpp."
+
+2009-06-19 11:55  robert
+
+	* include/osg/Texture, src/osg/Texture.cpp,
+	  src/osgPlugins/dds/ReaderWriterDDS.cpp: From Wojciech
+	  Lewandowski, "Here are my changes:
+	  
+	  - osg::Texture sets GL_MAX_TEXTURE_LEVEL if image uses fewer
+	  mipmaps than
+	  number from computeNumberOfMipmaps (and it works!)
+	  - DDS fix to read only available mipmaps
+	  - DDS fixes to read / save 3D textures with mipmaps ( packing ==
+	  1 is
+	  required)
+	  - Few cosmetic DDS modifications and comments to make code
+	  cleaner (I hope)
+	  
+	  Added _isTextureMaxLevelSupported variable to texture extensions.
+	  It
+	  could be removed if OSG requires OpenGL version 1.2 by default.
+	  
+	  Added simple ComputeImageSizeInBytes function in DDSReaderWrites.
+	  In
+	  my opinion it would be better if similar static method was
+	  defined for
+	  Image. Then it could be used not only in DDS but other modules as
+	  well (I
+	  noticed that Texture/Texture2D do similar computations).
+	  
+	  Also attached is an example test.osg model with DDS without last
+	  mipmaps to
+	  demonstrate the problem. When loaded into Viewer with current
+	  code and moved
+	  far away, so that cube occupies 4 pixels, cube becomes red due to
+	  the issue
+	  I described in earlier post. When you patch DDS reader writer
+	  with attched
+	  code but no osg::Texture yet, cube becomes blank (at least on my
+	  Windows/NVidia) When you also merge osg::Texture patch cube will
+	  look right
+	  and mipmaps will be correct."
+
+2009-06-19 11:31  robert
+
+	* examples/CMakeLists.txt, examples/osgviewerQtWidget,
+	  examples/osgviewerQtWidget/CMakeLists.txt,
+	  examples/osgviewerQtWidget/CompositeViewerQOSG.cpp,
+	  examples/osgviewerQtWidget/CompositeViewerQOSG.h,
+	  examples/osgviewerQtWidget/QOSGWidget.cpp,
+	  examples/osgviewerQtWidget/QOSGWidget.h,
+	  examples/osgviewerQtWidget/README,
+	  examples/osgviewerQtWidget/main.cpp,
+	  examples/osgviewerQtWidget/qosgwidget.pro,
+	  examples/osgviewerQtWidget/testMainWin.cpp,
+	  examples/osgviewerQtWidget/testMainWin.h,
+	  examples/osgviewerQtWidget/testMainWin.ui,
+	  examples/osgviewerQtWidget/testOutboardWin.cpp,
+	  examples/osgviewerQtWidget/testOutboardWin.h,
+	  examples/osgviewerQtWidget/testOutboardWin.ui: From Don Liech,
+	  Qt/OSG integration example
+
+2009-06-19 11:16  robert
+
+	* src/osgWrappers/osg/CopyOp.cpp,
+	  src/osgWrappers/osgDB/DatabaseRevisions.cpp: Updated wrappers
+
+2009-06-19 11:04  robert
+
+	* include/osgDB/DatabaseRevisions, src/osgDB/DatabaseRevisions.cpp:
+	  Added append() method
+
+2009-06-19 11:00  robert
+
+	* src/osgViewer/CompositeViewer.cpp, src/osgViewer/Viewer.cpp:
+	  Added clears to various vectors being passed in to get*()
+	  methods.
+
+2009-06-19 10:55  robert
+
+	* src/osgViewer/Viewer.cpp: From Cory Riddell, "I added a line to
+	  clear the threads vector prior to populating it in
+	  Viewer::getAllThreads(). This is consistent with what happens in
+	  Viewer::getOperationThreads()."
+
+2009-06-18 10:01  robert
+
+	* include/osg/CopyOp, src/osg/CopyOp.cpp, src/osg/Node.cpp: From
+	  Cedric Pinson and Robert Osfield, addition of NodeCallbacks to
+	  osg::CopyOp and osg::Node copy constructor.
+
+2009-06-18 08:29  robert
+
+	* include/osgAnimation/Action: Added exports
+
+2009-06-18 08:22  robert
+
+	* src/osgWrappers/osgDB/DatabaseRevisions.cpp: Updated wrappers
+
+2009-06-18 08:18  robert
+
+	* src/osgManipulator/AntiSquish.cpp: From Rene Molenaar, "The bug
+	  is as described above:
+	  
+	  "The dragger's corner tabs are no longer in the corners."
+	  
+	  this fix places the cornertabs back in the corners.
+	  (the manipulator does not make sense otherwise)."
+
+2009-06-17 16:54  robert
+
+	* include/osgAnimation/ActionVisitor,
+	  include/osgAnimation/Timeline, include/osgDB/DatabaseRevisions,
+	  src/osgAnimation/ActionVisitor.cpp: Replaced forward declarations
+
+2009-06-17 16:54  robert
+
+	* src/osgDB/Registry.cpp: Added ".added", ".modified" and
+	  ".removed" alias to .revisions plugin
+
+2009-06-17 15:12  robert
+
+	* src/osgWrappers/Doxyfile.template,
+	  src/osgWrappers/osgDB/DatabaseRevisions.cpp: Updated wrappers
+
+2009-06-17 15:12  robert
+
+	* include/osgDB/DatabaseRevisions, src/osgDB/DatabaseRevisions.cpp:
+	  Made method names consistent with each other
+
+2009-06-17 11:00  robert
+
+	* packaging/pkgconfig/openscenegraph-osgAnimation.pc.in,
+	  src/osgAnimation/CMakeLists.txt,
+	  src/osgAnimation/StatsHandler.cpp: From Alberto Luaces, "the new
+	  changes in osgAnimation showed some errors on the Cygwin
+	  platform:
+	  
+	  1 - osgAnimation/StatsHandler includes <cmath>, but on Cygwin
+	  only std::isnan
+	  is defined that way. I changed it to <math.h> as it is done in
+	  the rest of
+	  the OSG.
+	  
+	  2 - Pulling some osgViewer headers from the same file in
+	  osgAnimation makes
+	  the former a new dependency. Thus, I got errors at osgAnimation
+	  linking time.
+	  I wonder why nobody noticed this on other platforms. I have
+	  updated the
+	  CMakeLists.txt file in order to link to the needed libraries, and
+	  
+	  3 - I have updated the openscenegraph-osgAnimation.pc.in file
+	  accordingly."
+
+2009-06-17 10:39  robert
+
+	* applications/present3D/ReaderWriterP3D.cpp,
+	  applications/present3D/ReaderWriterPaths.cpp,
+	  examples/osgshadercompositor/VirtualProgram.cpp,
+	  examples/osgterrain/osgterrain.cpp,
+	  include/osgAnimation/StatsVisitor,
+	  include/osgDB/DatabaseRevisions, src/osgAnimation/Action.cpp,
+	  src/osgAnimation/ActionVisitor.cpp,
+	  src/osgAnimation/StatsHandler.cpp, src/osgAnimation/Timeline.cpp,
+	  src/osgPlugins/dae/daeReader.cpp,
+	  src/osgPlugins/p3d/ReaderWriterP3D.cpp,
+	  src/osgPlugins/p3d/ReaderWriterPaths.cpp,
+	  src/osgPlugins/revisions/ReaderWriterRevisions.cpp,
+	  src/osgPlugins/vrml/ReaderWriterVRML2.cpp,
+	  src/osgPlugins/vrml/ReaderWriterVRML2.h,
+	  src/osgPlugins/zip/ReaderWriterZIP.cpp: Changed build
+	  OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION to ON and then fixed
+	  all the resulting build errors.
+
+2009-06-17 08:56  robert
+
+	* include/osg/DisplaySettings: Fixed error in
+	  DisplaySettings::setNumOfHttpDatabaseThreadsHint
+
+2009-06-16 13:02  robert
+
+	* src/osgWrappers/Doxyfile.template,
+	  src/osgWrappers/osgAnimation/Bone.cpp,
+	  src/osgWrappers/osgAnimation/Timeline.cpp: Updated wrappers
+
+2009-06-16 12:32  cedricpinson
+
+	* src/osgAnimation/Action.cpp, src/osgAnimation/StatsHandler.cpp:
+	  From Cedric Pinson, Fix osgAnimation warning and errors
+
+2009-06-16 12:22  cedricpinson
+
+	* src/osgAnimation/Bone.cpp: From Cedric Pinson, Fix osgAnimation
+	  warning and errors for Bone.cpp
+
+2009-06-16 10:20  shuber
+
+	* Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj:
+	  From Stephan Huber: updated XCode project
+
+2009-06-15 14:48  cedricpinson
+
+	* include/osgAnimation/Action, include/osgAnimation/ActionCallback,
+	  include/osgAnimation/ActionVisitor, include/osgAnimation/Bone,
+	  include/osgAnimation/FrameAction,
+	  include/osgAnimation/RigGeometry,
+	  include/osgAnimation/StatsHandler,
+	  include/osgAnimation/StatsVisitor, include/osgAnimation/Target,
+	  include/osgAnimation/Timeline, src/osgAnimation/Action.cpp,
+	  src/osgAnimation/ActionCallback.cpp,
+	  src/osgAnimation/ActionVisitor.cpp,
+	  src/osgAnimation/Animation.cpp, src/osgAnimation/CMakeLists.txt,
+	  src/osgAnimation/StatsHandler.cpp,
+	  src/osgAnimation/StatsVisitor.cpp, src/osgAnimation/Timeline.cpp:
+	  From Cedric Pinson, split timeline classes in differents files,
+	  cleanup and add a statshandler to visualize current action in
+	  timeline
+
+2009-06-14 23:30  cedricpinson
+
+	* include/osgAnimation/Bone, include/osgAnimation/Target,
+	  src/osgAnimation/Bone.cpp: From Cedric Pinson, fix copy
+	  constructor for clone operation for Bone, add a missing
+	  contructor with quaternion for Target
+
+2009-06-12 10:37  robert
+
+	* src/osgWrappers/osg/BlendEquation.cpp,
+	  src/osgWrappers/osg/ProxyNode.cpp,
+	  src/osgWrappers/osgUtil/RenderStage.cpp,
+	  src/osgWrappers/osgUtil/SceneView.cpp: Updated wrappers
+
+2009-06-12 10:08  robert
+
+	* include/osg/ProxyNode, src/osg/ProxyNode.cpp: From Mathias
+	  Froehlich, "attached is a change to the ProxyNode that also
+	  includes ProxyNode local
+	  database options like recently added to PagedLOD.
+	  
+	  Also there is a change to the traverse method:
+	  The previous ProxyNode checks the VisitorType to be a
+	  CULL_VISITOR and the
+	  presence of a request handler to submit a database request.
+	  In contrast to that PagedLOD uses the request handler if it is
+	  there - even if
+	  the visitor type is not a cull visitor.
+	  The change removes the cull visitor test from the ProxyNode so
+	  that it behaves
+	  like the PagedLOD.
+	  I believe that the presence of a request handler in a visitor
+	  might be
+	  sufficient to trigger the requests as this is done in the
+	  PagedLOD anyway.
+	  
+	  Based on rev 10332."
+
+2009-06-12 10:00  robert
+
+	* src/osgViewer/DarwinUtils.mm,
+	  src/osgViewer/GraphicsWindowCocoa.mm: From Stephan Huber, "here
+	  are some small fixes/enahncements for the cocoa backend to allow
+	  proper functioning when running the osgViewer run-loop in a
+	  secondary
+	  thread (e.g. when embedding GraphicsWindowCocoa-windows in a full
+	  blown
+	  cocoa application).
+	  
+	  OS X is picky when you want to change the user-interface from
+	  another
+	  thread than the main thread, not all UI stuff is thread-safe. So
+	  now
+	  window closes and showing / hiding the menu bar is done in the
+	  main
+	  thread via Cocoa's performSelectorOnMainThread-mechanism.
+	  
+	  These changes don't affect the normal osgViewer usage pattern."
+
+2009-06-12 09:57  robert
+
+	* src/osgPlugins/osg/ProxyNode.cpp: From Laurens Voerman, "there
+	  seems to be a bug in the proxynode writer introduced in svn rev
+	  10330. It craches on a null pointer for options (on my windows
+	  system).
+	  Fixed version of the file "src\osgPlugins\osg\ProxyNode.cpp"
+	  attached, based on svn rev 10332."
+
+2009-06-12 09:48  robert
+
+	* src/osg/Texture2DArray.cpp: From Konstantin Sinitsyn, "I've fixed
+	  bug with loading of compressed texture to texture array!"
+
+2009-06-12 09:41  robert
+
+	* CMakeModules/FindCOLLADA.cmake,
+	  src/osgPlugins/dae/CMakeLists.txt: From Roger James and Robert
+	  Osfield, clean up of COLLADA CMake support
+
+2009-06-12 09:11  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2009-06-11 15:13  robert
 
 	* src/osgParticle/PrecipitationEffect.cpp: Fixed copy constructor

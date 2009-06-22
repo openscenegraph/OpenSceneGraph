@@ -16,13 +16,18 @@
 
 using namespace osgAnimation;
 
-Animation::Animation(const osgAnimation::Animation& anim, const osg::CopyOp& c)
+Animation::Animation(const osgAnimation::Animation& anim, const osg::CopyOp& copyop):
+    _duration(anim._duration),
+    _originalDuration(anim._originalDuration),
+    _weight(anim._weight),
+    _startTime(anim._startTime),
+    _playmode(anim._playmode)
 {
-    _duration = anim._duration;
-    _originalDuration = anim._originalDuration;
-    _weight = anim._weight;
-    _startTime = anim._startTime;
-    _playmode = anim._playmode;
+    const ChannelList& cl = anim.getChannels();
+    for (ChannelList::const_iterator it = cl.begin(); it != cl.end(); it++)
+    {
+        addChannel(it->get()->clone());
+    }
 }
 
 

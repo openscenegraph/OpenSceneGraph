@@ -31,7 +31,7 @@ namespace osgAnimation
         META_Object(osgAnimation, Animation)
 
         Animation() : _duration(0), _weight(0), _startTime(0), _playmode(LOOP) {}
-        Animation(const osgAnimation::Animation& anim, const osg::CopyOp&);
+        Animation(const osgAnimation::Animation&, const osg::CopyOp&);
 
         enum PlayMode
         {

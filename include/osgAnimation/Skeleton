@@ -31,7 +31,7 @@ namespace osgAnimation
         {
             META_Object(osgAnimation, UpdateSkeleton);
             UpdateSkeleton() {}
-            UpdateSkeleton(const UpdateSkeleton& us, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : osg::NodeCallback(us, copyop) {}
+            UpdateSkeleton(const UpdateSkeleton& us, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : osg::Object(us, copyop), osg::NodeCallback(us, copyop) {}
             virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
         };
 

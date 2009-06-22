@@ -66,11 +66,12 @@ void AnimationUpdateCallback::updateLink()
 
 
 UpdateTransform::UpdateTransform(const UpdateTransform& apc,const osg::CopyOp& copyop) 
-    : AnimationUpdateCallback(apc, copyop),
-      _euler(apc._euler),
-      _position(apc._position),
-      _scale(apc._scale)
+    : osg::Object(apc, copyop),
+      AnimationUpdateCallback(apc, copyop)
 {
+    _euler = new osgAnimation::Vec3Target(apc._euler->getValue());
+    _position = new osgAnimation::Vec3Target(apc._euler->getValue());
+    _scale = new osgAnimation::Vec3Target(apc._euler->getValue());
 }
 
 UpdateTransform::UpdateTransform(const std::string& name) : AnimationUpdateCallback(name) 

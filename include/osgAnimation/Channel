@@ -29,7 +29,9 @@ namespace osgAnimation
     public:
 
         Channel();
+        Channel(const Channel& channel);
         virtual ~Channel();
+        virtual Channel* clone() const = 0;
 
         virtual void update(float time) = 0;
         virtual void reset() = 0;
@@ -66,8 +68,16 @@ namespace osgAnimation
         typedef typename SamplerType::UsingType UsingType;
         typedef TemplateTarget<UsingType> TargetType;
         typedef TemplateKeyframeContainer<typename SamplerType::KeyframeType> KeyframeContainerType;
+        Channel* clone() const { return new TemplateChannel<SamplerType>(*this); }
 
-        TemplateChannel (SamplerType* s = 0,TargetType* target = 0) 
+        TemplateChannel (const TemplateChannel& channel) : 
+            Channel(channel),
+            _target(new TargetType),
+            _sampler(channel._sampler.get())
+        {
+        }
+
+        TemplateChannel (SamplerType* s = 0,TargetType* target = 0)
         {
             if (target)
                 _target = target;

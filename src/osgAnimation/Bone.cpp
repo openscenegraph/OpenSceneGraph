@@ -17,6 +17,7 @@
 #include <osgAnimation/Skeleton>
 
 osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone& apc,const osg::CopyOp& copyop) :
+    osg::Object(apc, copyop),
     osgAnimation::AnimationUpdateCallback(apc, copyop)
 {
     _quaternion = new osgAnimation::QuatTarget(apc._quaternion->getValue());
@@ -40,7 +41,6 @@ osgAnimation::Bone::Bone(const Bone& b, const osg::CopyOp& copyop) :
     while (updatecallback.valid()) {
         osg::NodeCallback* ucb = dynamic_cast<osg::NodeCallback*>(updatecallback->clone(copyop));
         ucb->setNestedCallback(0);
-        ucb->setName(updatecallback->getName());
         addUpdateCallback(ucb);
         updatecallback = updatecallback->getNestedCallback();
     }

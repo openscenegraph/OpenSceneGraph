@@ -57,11 +57,18 @@ void AnimationManagerBase::operator()(osg::Node* node, osg::NodeVisitor* nv)
 }
 
 
-AnimationManagerBase::AnimationManagerBase(const AnimationManagerBase& b, const osg::CopyOp& copyop) : osg::NodeCallback(b,copyop) 
+AnimationManagerBase::AnimationManagerBase(const AnimationManagerBase& b, const osg::CopyOp& copyop) : osg::NodeCallback(b,copyop)
 {
-    _animations = b._animations;
-    _targets = b._targets;
-    _needToLink = b._needToLink;
+    const AnimationList& animationList = b.getAnimationList();
+    for (AnimationList::const_iterator it = animationList.begin();
+         it != animationList.end();
+         it++)
+    {
+        Animation* animation = dynamic_cast<osgAnimation::Animation*>(it->get()->clone(copyop));
+        _animations.push_back(animation);
+    }
+    _needToLink = true;
+    buildTargetReference();
 }
 
 void AnimationManagerBase::buildTargetReference()

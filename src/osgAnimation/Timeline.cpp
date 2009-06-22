@@ -35,8 +35,9 @@ osgAnimation::Timeline::Timeline()
     setName("Timeline");
 }
 
-osgAnimation::Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op) : Action(nc, op),
-                                                                             _actions(nc._actions)
+osgAnimation::Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op)
+    : Action(nc, op),
+      _actions(nc._actions)
 {
     _lastUpdate = 0;
     _currentFrame = 0;

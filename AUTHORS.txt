@@ -1,4 +1,4 @@
-OpenSceneGraph Library 2.8.1
+OpenSceneGraph Library 2.8.2
 
 372 Contributors:
 
@@ -63,8 +63,8 @@ Alberto Luaces
 Philip Lowman
 Chris Denham
 Melchior Franz
-Serge Lages
 Lionel Lagarde
+Serge Lages
 Joran Jessurun
 Frederic Marmond
 David Fries
@@ -176,6 +176,7 @@ Stephan Eilemann
 Stanislav Blinov
 Sergey Leontyev
 Sebastian Messerschmidt
+Rene Molenaar
 Ralf Kern
 Pierre Haritchabalet
 Perry Miller
@@ -190,6 +191,7 @@ Max Bandazian
 Mathew May
 Martin Spott
 Martijn Kragtwijk
+Konstantin Sinitsyn
 Kevin Moiule
 Keith Steffen
 Katharina Plugge
@@ -208,6 +210,7 @@ Frederic Bouvier
 Ferdi Smit
 Ewe Woessner
 Erik den Dekker
+Emmanuel Roche
 Edgar Ellis
 Don Leich
 David Ergo
@@ -250,7 +253,6 @@ Rob Bloemkool
 Rick Pingry
 Rick Appleton
 Ricard Schmidt
-Rene Molenaar
 Reinhard Sainitzer
 Rein Kadijk
 Raymond de Vries
@@ -298,7 +300,6 @@ Lewis Harmon
 Lars Nilson
 Kyle Centers
 Kristopher Bixler
-Konstantin Sinitsyn
 Karsten Weiss
 Karl Heijdenberg
 Jutta Sauer
@@ -332,7 +333,6 @@ Frank Lichtenheld
 Ferdinand Cornelissen
 Fajran Iman
 Fabien Dachicourt
-Emmanuel Roche
 Edmond Gheury
 Ed Ralston
 Duvan Cope

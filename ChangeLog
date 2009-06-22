@@ -1,3 +1,40 @@
+2009-06-22 07:42  robert
+
+	* src/osgPlugins/osg/StateSet.cpp: Merged from svn/trunk fix to
+	  initGLNames() which addressed thread safety issue
+
+2009-06-20 11:38  robert
+
+	* src/osgText/TextBase.cpp: From Farshid Lashkari, "I found a bug
+	  in the osgText library in version 1.2 that I believe still exists
+	  in the latest version.
+	  
+	  I found that changing the alignment of a text object does not
+	  work properly if the text contains newline characters. I've
+	  attached a simple test case that shows the problem. If I set the
+	  text AFTER setting the alignment, everything works fine. But if I
+	  set the text BEFORE setting the alignment then the text is
+	  displayed incorrectly.
+	  
+	  The fix is very simple. Instead of calling computePositions() in
+	  TextBase::setAlignment(), it calls computeGlyphRepresentation().
+	  I've attached the modified TextBase.cpp."
+	  
+	  Merged from svn/trunk using:
+	  
+	  svn merge -r 10375:10376
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgText/TextBase.cpp
+
+2009-06-19 11:02  robert
+
+	* src/osgViewer, src/osgViewer/CompositeViewer.cpp,
+	  src/osgViewer/GraphicsWindowWin32.cpp, src/osgViewer/Viewer.cpp:
+	  Added clears of input vectors in various get*() methods
+
+2009-06-19 10:44  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2009-06-18 08:19  robert
 
 	* src/osgManipulator, src/osgManipulator/AntiSquish.cpp: From Rene

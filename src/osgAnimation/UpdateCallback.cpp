@@ -70,8 +70,8 @@ UpdateTransform::UpdateTransform(const UpdateTransform& apc,const osg::CopyOp& c
       AnimationUpdateCallback(apc, copyop)
 {
     _euler = new osgAnimation::Vec3Target(apc._euler->getValue());
-    _position = new osgAnimation::Vec3Target(apc._euler->getValue());
-    _scale = new osgAnimation::Vec3Target(apc._euler->getValue());
+    _position = new osgAnimation::Vec3Target(apc._position->getValue());
+    _scale = new osgAnimation::Vec3Target(apc._scale->getValue());
 }
 
 UpdateTransform::UpdateTransform(const std::string& name) : AnimationUpdateCallback(name) 

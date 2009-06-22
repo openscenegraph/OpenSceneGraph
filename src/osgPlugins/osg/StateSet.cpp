@@ -7,6 +7,9 @@
 #include <osgDB/Input>
 #include <osgDB/Output>
 
+#include <OpenThreads/Mutex>
+#include <OpenThreads/ScopedLock>
+
 #include <set>
 #include <string.h>
 
@@ -64,6 +67,11 @@ TextureGLModeSet s_TextureGLModeSet;
 void initGLNames()
 {
     static bool first_time = true;
+    if (!first_time) return;
+
+    static OpenThreads::Mutex s_initGLNames;
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_initGLNames);
+
     if (!first_time) return;
     
     ADD_NAME("GL_ALPHA_TEST",GL_ALPHA_TEST)

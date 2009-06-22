@@ -311,6 +311,7 @@ TypoCorrection typoCorrections[] =
     {"Keuhne",         "Kuehne"},
     {"Kheune",         "Kuehne"},
     {"Lagrade",        "Lagarde"},
+    {"Largade",        "Lagarde"},
     {"Larshkari",      "Lashkari"},
     {"Lashakari",      "Lashkari"},
     {"Lashari",        "Lashkari"},

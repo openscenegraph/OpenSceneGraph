@@ -17,6 +17,12 @@ using namespace osgAnimation;
 
 Channel::Channel() { _weight=1; }
 Channel::~Channel() {}
+Channel::Channel(const Channel& channel) : osg::Referenced(channel),
+                                           _targetName(channel._targetName),
+                                           _name(channel._name),
+                                           _weight(channel._weight)
+{
+}
 
 const std::string& Channel::getName() const { return _name; }
 void Channel::setName (const std::string& name) { _name = name; }

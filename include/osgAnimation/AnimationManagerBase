@@ -46,7 +46,6 @@ namespace osgAnimation
         void clearTargets();
         void normalizeTargets();
 
-
     protected:
 
         AnimationList _animations;

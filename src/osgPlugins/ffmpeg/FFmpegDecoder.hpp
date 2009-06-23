@@ -103,8 +103,8 @@ protected:
     AVStream *            m_audio_stream;
     AVStream *            m_video_stream;
 
-    unsigned int        m_audio_index;
-    unsigned int        m_video_index;
+    int                 m_audio_index;
+    int                 m_video_index;
 
     FFmpegClocks        m_clocks;
     FFmpegPacket        m_pending_packet;

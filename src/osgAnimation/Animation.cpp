@@ -16,7 +16,7 @@
 
 using namespace osgAnimation;
 
-Animation::Animation(const osgAnimation::Animation& anim, const osg::CopyOp& copyop):
+Animation::Animation(const osgAnimation::Animation& anim, const osg::CopyOp& copyop): osg::Object(anim, copyop),
     _duration(anim._duration),
     _originalDuration(anim._originalDuration),
     _weight(anim._weight),

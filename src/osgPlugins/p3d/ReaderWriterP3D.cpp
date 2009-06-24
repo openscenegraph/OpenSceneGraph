@@ -20,7 +20,7 @@
 
 #include <osgWidget/PdfReader>
 
-#include "SlideShowConstructor.h"
+#include <osgPresentation/SlideShowConstructor>
 
 #include <stdio.h>
 #include <string.h>
@@ -647,9 +647,9 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
     if (getProperty(cur, "animation_material_loop_mode", str))
     {
         osg::notify(_notifyLevel)<<"animation_material_loop_mode "<<str<<std::endl;
-        if (str=="LOOP") value.animation_material_loop_mode=ss3d::AnimationMaterial::LOOP;
-        else if (str=="SWING") value.animation_material_loop_mode=ss3d::AnimationMaterial::SWING;
-        else if (str=="NO_LOOPING") value.animation_material_loop_mode=ss3d::AnimationMaterial::NO_LOOPING;
+        if (str=="LOOP") value.animation_material_loop_mode=osgPresentation::AnimationMaterial::LOOP;
+        else if (str=="SWING") value.animation_material_loop_mode=osgPresentation::AnimationMaterial::SWING;
+        else if (str=="NO_LOOPING") value.animation_material_loop_mode=osgPresentation::AnimationMaterial::NO_LOOPING;
         propertiesRead = true;
     }
 
@@ -1741,8 +1741,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
 
     doc->read(input);
 
-
-    osg::notify(osg::NOTICE)<<"P3D parsing"<<std::endl;
+    osg::notify(osg::INFO)<<"P3D xml file read, now building presentation scene graph."<<std::endl;
 
     // doc->write(std::cout);
 
@@ -1964,10 +1963,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
 
     osg::ref_ptr<osg::Node> presentation_node = constructor.takePresentation();
 
-    osgPresentation::SlideEventHandler* seh = new osgPresentation::SlideEventHandler;
-    seh->set(presentation_node.get());
-    presentation_node->setEventCallback(seh);
 
+    if (!options || options->getPluginStringData("P3D_EVENTHANDLER")!="none")
+    {
+        osgPresentation::SlideEventHandler* seh = new osgPresentation::SlideEventHandler;
+        seh->set(presentation_node.get());
+        presentation_node->setEventCallback(seh);
+    }
     return presentation_node.release();
 }
 

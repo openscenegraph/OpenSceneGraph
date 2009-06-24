@@ -11,6 +11,7 @@ FOREACH( mylibfolder
         osgFX
         osgManipulator
         osgParticle
+        osgPresentation
         osgShadow
         osgSim
         osgTerrain

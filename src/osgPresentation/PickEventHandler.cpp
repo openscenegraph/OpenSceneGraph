@@ -10,8 +10,8 @@
  * include LICENSE.txt for more details.
 */
 
-#include "PickEventHandler.h"
-#include "SlideEventHandler.h"
+#include <osgPresentation/PickEventHandler>
+#include <osgPresentation/SlideEventHandler>
 
 #include <osgViewer/Viewer>
 #include <osg/Notify>

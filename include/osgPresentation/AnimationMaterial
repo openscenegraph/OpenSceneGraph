@@ -16,16 +16,18 @@
 #include <osg/Material>
 #include <osg/NodeCallback>
 
+#include <osgPresentation/Export>
+
 #include <map>
 #include <float.h>
 
-namespace ss3d {
+namespace osgPresentation {
 
 /** AnimationMaterial for specify the time varying transformation pathway to use when update camera and model objects.
   * Subclassed from Transform::ComputeTransformCallback allows AnimationMaterial to
   * be attached directly to Transform nodes to move subgraphs around the scene.
 */
-class AnimationMaterial : public virtual osg::Object
+class OSGPRESENTATION_EXPORT AnimationMaterial : public virtual osg::Object
 {
     public:
     

@@ -20,8 +20,8 @@
 
 #include <osgWidget/PdfReader>
 
-#include "SlideShowConstructor.h"
-#include "AnimationMaterial.h"
+#include <osgPresentation/SlideShowConstructor>
+#include <osgPresentation/AnimationMaterial>
 
 #include <stdio.h>
 #include <string.h>
@@ -125,7 +125,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(std::istream& fin,
 
 osgDB::ReaderWriter::ReadResult ReaderWriterPaths::read_material(std::istream& fin, const osgDB::Options* options) const
 {
-    osg::ref_ptr<ss3d::AnimationMaterial> animationMaterial = new ss3d::AnimationMaterial;
+    osg::ref_ptr<osgPresentation::AnimationMaterial> animationMaterial = new osgPresentation::AnimationMaterial;
     animationMaterial->read(fin);
 
     return animationMaterial.get();

@@ -84,6 +84,8 @@ class OSGDB_EXPORT Options : public osg::Object
 
         META_Object(osgDB,Options);
 
+        Options* cloneOptions() const { return new Options(*this); }
+
         /** Set the general Options string.*/
         void setOptionString(const std::string& str) { _str = str; }
 

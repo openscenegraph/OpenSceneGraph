@@ -1,30 +1,18 @@
 SET(TARGET_SRC
-    AnimationMaterial.cpp
     Cluster.cpp
-    CompileSlideCallback.cpp
     ExportHTML.cpp
-    PickEventHandler.cpp
     PointsEventHandler.cpp
     present3D.cpp
-    ReaderWriterP3D.cpp
-    ReaderWriterPaths.cpp
     ReadShowFile.cpp
     ShowEventHandler.cpp
-    SlideEventHandler.cpp
-    SlideShowConstructor.cpp
 )
 
 SET(TARGET_H
-    AnimationMaterial.h
     Cluster.h
-    CompileSlideCallback.h
     ExportHTML.h
-    PickEventHandler.h
     PointsEventHandler.h
     ReadShowFile.h
     ShowEventHandler.h
-    SlideEventHandler.h
-    SlideShowConstructor.h
 )
 
 IF (SDL_FOUND)
@@ -52,7 +40,7 @@ IF (SDL_FOUND)
 
 ENDIF()
 
-SET(TARGET_ADDED_LIBRARIES osgVolume osgFX)
+SET(TARGET_ADDED_LIBRARIES osgVolume osgFX osgPresentation)
 
 IF (NOT DYNAMIC_OPENSCENEGRAPH)
     SET(TARGET_ADDED_LIBRARIES

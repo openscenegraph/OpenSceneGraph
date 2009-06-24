@@ -10,7 +10,7 @@
  * include LICENSE.txt for more details.
 */
 
-#include "SlideShowConstructor.h"
+#include <osgPresentation/SlideShowConstructor>
 
 #include <osg/Geometry>
 #include <osg/PolygonOffset>
@@ -47,8 +47,8 @@
 #include <sstream>
 #include <algorithm>
 
-#include "AnimationMaterial.h"
-#include "PickEventHandler.h"
+#include <osgPresentation/AnimationMaterial>
+#include <osgPresentation/PickEventHandler>
 
 using namespace osgPresentation;
 
@@ -1571,7 +1571,7 @@ bool SlideShowConstructor::attachTexMat(osg::StateSet* stateset, const ImageData
 
 osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const PositionData& positionData)
 {
-    ss3d::AnimationMaterial* animationMaterial = 0;
+    AnimationMaterial* animationMaterial = 0;
 
     if (!positionData.animation_material_filename.empty())
     {
@@ -1582,13 +1582,13 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
             std::ifstream animation_filestream(absolute_animation_file_path.c_str());
             if (!animation_filestream.eof())
             {
-                animationMaterial = new ss3d::AnimationMaterial;
+                animationMaterial = new AnimationMaterial;
                 animationMaterial->read(animation_filestream);
             }
         }
 #else
         osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(positionData.animation_material_filename, _options.get());
-        animationMaterial = dynamic_cast<ss3d::AnimationMaterial*>(object.get());
+        animationMaterial = dynamic_cast<AnimationMaterial*>(object.get());
 #endif
 
     }
@@ -1596,7 +1596,7 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
     {
         std::istringstream iss(positionData.fade);
         
-        animationMaterial = new ss3d::AnimationMaterial;
+        animationMaterial = new AnimationMaterial;
         while (!iss.fail() && !iss.eof())
         {
             float time=1.0f, alpha=1.0f;
@@ -1615,7 +1615,7 @@ osg::Node* SlideShowConstructor::attachMaterialAnimation(osg::Node* model, const
     {
         animationMaterial->setLoopMode(positionData.animation_material_loop_mode);
 
-        ss3d::AnimationMaterialCallback* animationMaterialCallback = new ss3d::AnimationMaterialCallback(animationMaterial);
+        AnimationMaterialCallback* animationMaterialCallback = new AnimationMaterialCallback(animationMaterial);
         animationMaterialCallback->setTimeOffset(positionData.animation_material_time_offset);
         animationMaterialCallback->setTimeMultiplier(positionData.animation_material_time_multiplier);
 

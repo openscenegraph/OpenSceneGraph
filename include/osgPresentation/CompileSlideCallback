@@ -14,10 +14,11 @@
 #define OSG_COMPILESLIDECALLBACK 1
 
 #include <osgViewer/Viewer>
+#include <osgPresentation/Export>
 
-namespace ss3d {
+namespace osgPresentation {
 
-class CompileSlideCallback : public osg::Camera::DrawCallback
+class OSGPRESENTATION_EXPORT CompileSlideCallback : public osg::Camera::DrawCallback
 {
     public:
 

@@ -10,11 +10,11 @@
  * include LICENSE.txt for more details.
 */
 
-#include "CompileSlideCallback.h"
+#include <osgPresentation/CompileSlideCallback>
 
 #include <osgUtil/GLObjectsVisitor>
 
-using namespace ss3d;
+using namespace osgPresentation;
 
 void CompileSlideCallback::operator()(const osg::Camera & camera) const
 {

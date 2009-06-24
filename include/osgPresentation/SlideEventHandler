@@ -19,7 +19,7 @@
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/Viewer>
 
-#include "CompileSlideCallback.h"
+#include <osgPresentation/CompileSlideCallback>
 
 namespace osgPresentation
 {
@@ -72,7 +72,7 @@ struct LayerCallback : public virtual osg::Referenced
     virtual void operator() (osg::Node* node) const = 0;
 };
 
-struct LayerAttributes : public virtual osg::Referenced
+struct OSGPRESENTATION_EXPORT LayerAttributes : public virtual osg::Referenced
 {
     LayerAttributes():_duration(0),_relativeJump(true),_slideNum(0),_layerNum(0) {}
     LayerAttributes(double in_duration):_duration(in_duration),_relativeJump(true),_slideNum(0),_layerNum(0) {}
@@ -157,7 +157,7 @@ struct ObjectOperator : public osg::Referenced
     virtual ~ObjectOperator() {}
 };
 
-class ActiveOperators
+class OSGPRESENTATION_EXPORT ActiveOperators
 {
 public:
     ActiveOperators();
@@ -191,7 +191,7 @@ protected:
 
 };
 
-class SlideEventHandler : public osgGA::GUIEventHandler
+class OSGPRESENTATION_EXPORT SlideEventHandler : public osgGA::GUIEventHandler
 {
 public:
 
@@ -319,7 +319,7 @@ protected:
     
     ActiveOperators                         _activeOperators;
     
-    osg::ref_ptr<ss3d::CompileSlideCallback>  _compileSlideCallback;
+    osg::ref_ptr<CompileSlideCallback>      _compileSlideCallback;
 
     void updateOperators();
         

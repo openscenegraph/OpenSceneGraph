@@ -13,6 +13,8 @@
 #include "ReadShowFile.h"
 #include "ShowEventHandler.h"
 
+#include <osgPresentation/SlideEventHandler>
+
 #include <osg/ImageStream>
 #include <osg/Shape>
 #include <osg/ShapeDrawable>
@@ -160,6 +162,20 @@ bool p3d::readEnvVars(const std::string& fileName)
     return readVars;
 }
 
+osgDB::Options* createOptions(const osgDB::ReaderWriter::Options* options)
+{
+    osg::ref_ptr<osgDB::Options> local_options = options ? options->cloneOptions() : 0;
+    if (!local_options)
+    {
+        local_options = osgDB::Registry::instance()->getOptions() ?
+                osgDB::Registry::instance()->getOptions()->cloneOptions() :
+                new osgDB::Options;
+    }
+
+    local_options->setPluginStringData("P3D_EVENTHANDLER","none");
+    return local_options.release();
+}
+
 osg::Node* p3d::readHoldingSlide(const std::string& filename)
 {
     std::string ext = osgDB::getFileExtension(filename);
@@ -169,10 +185,9 @@ osg::Node* p3d::readHoldingSlide(const std::string& filename)
     osg::ref_ptr<osgDB::ReaderWriter::Options> options = new osgDB::ReaderWriter::Options;
     options->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_NONE);
     options->setOptionString("holding_slide");
+    options->setPluginStringData("P3D_EVENTHANDLER","none");
 
-    osgDB::ReaderWriter::ReadResult readResult = osgDB::Registry::instance()->readNode(filename, options.get());
-    if (readResult.validNode()) return readResult.takeNode();
-    else return 0;
+    return osgDB::readNodeFile(filename, options.get());
 }
 
 osg::Node* p3d::readPresentation(const std::string& filename,const osgDB::ReaderWriter::Options* options)
@@ -180,11 +195,14 @@ osg::Node* p3d::readPresentation(const std::string& filename,const osgDB::Reader
     std::string ext = osgDB::getFileExtension(filename);
     if (!osgDB::equalCaseInsensitive(ext,"xml") &&
         !osgDB::equalCaseInsensitive(ext,"p3d")) return 0;
-    return osgDB::readNodeFile(filename, options);
+
+    osg::ref_ptr<osgDB::Options> local_options = createOptions(options);
+    return osgDB::readNodeFile(filename, local_options.get());
 }
 
 osg::Node* p3d::readShowFiles(osg::ArgumentParser& arguments,const osgDB::ReaderWriter::Options* options)
 {
+    osg::ref_ptr<osgDB::Options> local_options = createOptions(options);
 
     typedef std::vector< osg::ref_ptr<osg::Node> > NodeList;
     NodeList nodeList;
@@ -192,13 +210,13 @@ osg::Node* p3d::readShowFiles(osg::ArgumentParser& arguments,const osgDB::Reader
     std::string filename;
     while (arguments.read("--image",filename))
     {
-        osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), options);
+        osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), local_options.get());
         if (image.valid()) nodeList.push_back(osg::createGeodeForImage(image.get()));
     }
 
     while (arguments.read("--movie",filename))
     {
-        osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), options);
+        osg::ref_ptr<osg::Image> image = readImageFile(filename.c_str(), local_options.get());
         osg::ref_ptr<osg::ImageStream> imageStream = dynamic_cast<osg::ImageStream*>(image.get());
         if (image.valid())
         {
@@ -209,7 +227,7 @@ osg::Node* p3d::readShowFiles(osg::ArgumentParser& arguments,const osgDB::Reader
 
     while (arguments.read("--dem",filename))
     {
-        osg::HeightField* hf = readHeightFieldFile(filename.c_str(), options);
+        osg::HeightField* hf = readHeightFieldFile(filename.c_str(), local_options.get());
         if (hf)
         {
             osg::Geode* geode = new osg::Geode;
@@ -224,14 +242,13 @@ osg::Node* p3d::readShowFiles(osg::ArgumentParser& arguments,const osgDB::Reader
         if (!arguments.isOption(pos))
         {
             // not an option so assume string is a filename.
-            osg::Node *node = osgDB::readNodeFile( arguments[pos], options);
+            osg::Node *node = osgDB::readNodeFile( arguments[pos], local_options);
 
             if(node)
             {
                 if (node->getName().empty()) node->setName( arguments[pos] );
                 nodeList.push_back(node);
             }
-
         }
     }
     

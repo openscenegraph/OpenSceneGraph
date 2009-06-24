@@ -47,8 +47,10 @@ IF (NOT DYNAMIC_OPENSCENEGRAPH)
         ${TARGET_ADDED_LIBRARIES}
             osgdb_ive
             osgdb_osg
+            osgdb_p3d
 
             osgdb_freetype
+            osgdb_pdf
             osgdb_rgb
             osgdb_jpeg
             osgdb_png

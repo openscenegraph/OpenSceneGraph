@@ -18,6 +18,6 @@
 void osgAnimation::RunAction::operator()(Action* action, ActionVisitor* visitor)
 {
     Timeline* tm = visitor->getCurrentTimeline();
-    tm->addActionNow(_action.get());
+    tm->addActionNow(_action.get(), _priority);
 }
 

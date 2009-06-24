@@ -161,7 +161,7 @@ void osgAnimation::Timeline::addActionAt(double t, Action* action, int priority)
 
 void osgAnimation::Timeline::addActionNow(Action* action, int priority)
 {
-    addActionAt(getCurrentFrame(), action, priority);
+    addActionAt(getCurrentFrame()+1, action, priority);
 }
 
 void osgAnimation::Timeline::processPendingOperation()

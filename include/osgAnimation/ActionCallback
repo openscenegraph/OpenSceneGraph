@@ -15,20 +15,22 @@
 #ifndef OSGANIMATION_ACTION_CALLBACK_H
 #define OSGANIMATION_ACTION_CALLBACK_H
 
+#include <osgAnimation/Export>
 #include <osgAnimation/Action>
 
 namespace osgAnimation
 {
 
     /** Callback used to run new action on the timeline.*/
-    class RunAction : public Action::Callback
+    class OSGANIMATION_EXPORT RunAction : public Action::Callback
     {
     public:
-        RunAction(Action* a) : _action(a) {}
+        RunAction(Action* a, int priority = 0) : _action(a), _priority(priority) {}
         virtual void operator()(Action* action, ActionVisitor* visitor);
 
     protected:
         osg::ref_ptr<Action> _action;
+        int _priority;
         
     };
 

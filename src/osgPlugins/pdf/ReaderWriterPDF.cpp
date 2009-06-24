@@ -285,5 +285,5 @@ class ReaderWriterPDF : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterPDF> g_readerWriter_PDF_Proxy;
+REGISTER_OSGPLUGIN(pdf, ReaderWriterPDF)
 

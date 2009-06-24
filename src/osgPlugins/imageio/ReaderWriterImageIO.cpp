@@ -1248,8 +1248,7 @@ public:
 
 // now register with Registry to instantiate the above
 // reader/writer.
-
-osgDB::RegisterReaderWriterProxy<ReaderWriterImageIO> g_readerWriter_ImageIO_Proxy;
+REGISTER_OSGPLUGIN(imagio, ReaderWriterImageIO)
 
 
 

@@ -446,4 +446,4 @@ public:
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterOGR> g_readerWriter_OGR_Proxy;
+REGISTER_OSGPLUGIN(ogr, ReaderWriterOGR)

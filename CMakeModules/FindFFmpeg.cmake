@@ -28,6 +28,23 @@ MACRO(FFMPEG_FIND varname shortname headername)
     # so try to find header in include directory
     FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS ${headername}
         PATHS
+        ${FFMPEG_ROOT}/include/lib${shortname}
+        $ENV{FFMPEG_DIR}/include/lib${shortname}
+        ~/Library/Frameworks/lib${shortname}
+        /Library/Frameworks/lib${shortname}
+        /usr/local/include/lib${shortname}
+        /usr/include/lib${shortname}
+        /sw/include/lib${shortname} # Fink
+        /opt/local/include/lib${shortname} # DarwinPorts
+        /opt/csw/include/lib${shortname} # Blastwave
+        /opt/include/lib${shortname}
+        /usr/freeware/include/lib${shortname}
+        PATH_SUFFIXES ffmpeg
+        DOC "Location of FFMPEG Headers"
+    )
+
+    FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS ${headername}
+        PATHS
         ${FFMPEG_ROOT}/include
         $ENV{FFMPEG_DIR}/include
         ~/Library/Frameworks
@@ -42,26 +59,6 @@ MACRO(FFMPEG_FIND varname shortname headername)
         PATH_SUFFIXES ffmpeg
         DOC "Location of FFMPEG Headers"
     )
-
-    # newer version of ffmpeg put header in $prefix/include/[ffmpeg/]lib${shortname}
-    # so try to find lib${shortname}/header in include directory
-    IF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
-        FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS lib${shortname}/${headername}
-            ${FFMPEG_ROOT}/include
-            $ENV{FFMPEG_DIR}/include
-            ~/Library/Frameworks
-            /Library/Frameworks
-            /usr/local/include
-            /usr/include/
-            /sw/include # Fink
-            /opt/local/include # DarwinPorts
-            /opt/csw/include # Blastwave
-            /opt/include
-            /usr/freeware/include
-            PATH_SUFFIXES ffmpeg
-            DOC "Location of FFMPEG Headers"
-        )
-    ENDIF(NOT FFMPEG_${varname}_INCLUDE_DIRS)
 
     FIND_LIBRARY(FFMPEG_${varname}_LIBRARIES
         NAMES ${shortname}
@@ -91,22 +88,34 @@ ENDMACRO(FFMPEG_FIND)
 SET(FFMPEG_ROOT "$ENV{FFMPEG_DIR}" CACHE PATH "Location of FFMPEG")
 
 # find stdint.h
-FIND_PATH(FFMPEG_STDINT_INCLUDE_DIR stdint.h
-    PATHS
-    ${FFMPEG_ROOT}/include
-    $ENV{FFMPEG_DIR}/include
-    ~/Library/Frameworks
-    /Library/Frameworks
-    /usr/local/include
-    /usr/include
-    /sw/include # Fink
-    /opt/local/include # DarwinPorts
-    /opt/csw/include # Blastwave
-    /opt/include
-    /usr/freeware/include
-    PATH_SUFFIXES ffmpeg
-    DOC "Location of FFMPEG stdint.h Header"
-)
+IF(WIN32)
+
+    FIND_PATH(FFMPEG_STDINT_INCLUDE_DIR stdint.h
+        PATHS
+        ${FFMPEG_ROOT}/include
+        $ENV{FFMPEG_DIR}/include
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/include
+        /usr/include
+        /sw/include # Fink
+        /opt/local/include # DarwinPorts
+        /opt/csw/include # Blastwave
+        /opt/include
+        /usr/freeware/include
+        PATH_SUFFIXES ffmpeg
+        DOC "Location of FFMPEG stdint.h Header"
+    )
+
+    IF (FFMPEG_STDINT_INCLUDE_DIR)
+        SET(STDINT_OK TRUE)
+    ENDIF()
+
+ELSE()
+
+    # SET(STDINT_OK TRUE)
+
+ENDIF()
 
 FFMPEG_FIND(LIBAVFORMAT avformat avformat.h)
 FFMPEG_FIND(LIBAVDEVICE avdevice avdevice.h)
@@ -116,7 +125,7 @@ FFMPEG_FIND(LIBSWSCALE  swscale  swscale.h)  # not sure about the header to look
 
 SET(FFMPEG_FOUND "NO")
 # Note we don't check FFMPEG_LIBSWSCALE_FOUND here, it's optional.
-IF   (FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODEC_FOUND AND FFMPEG_LIBAVUTIL_FOUND AND FFMPEG_STDINT_INCLUDE_DIR)
+IF   (FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODEC_FOUND AND FFMPEG_LIBAVUTIL_FOUND AND STDINT_OK)
 
     SET(FFMPEG_FOUND "YES")
 

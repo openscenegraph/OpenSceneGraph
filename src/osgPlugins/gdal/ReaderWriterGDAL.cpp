@@ -804,4 +804,4 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterGDAL> g_readerWriter_GDAL_Proxy;
+REGISTER_OSGPLUGIN(gdal, ReaderWriterGDAL)

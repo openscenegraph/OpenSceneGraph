@@ -372,5 +372,5 @@ class ReaderWriterVNC : public osgDB::ReaderWriter
 
 // now register with Registry to instantiate the above
 // reader/writer.
-osgDB::RegisterReaderWriterProxy<ReaderWriterVNC> g_readerWriter_VNC_Proxy;
+REGISTER_OSGPLUGIN(vnc, ReaderWriterVNC)
 

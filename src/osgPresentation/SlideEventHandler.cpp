@@ -10,8 +10,8 @@
  * include LICENSE.txt for more details.
 */
 
-#include "SlideEventHandler.h"
-#include "SlideShowConstructor.h"
+#include <osgPresentation/SlideEventHandler>
+#include <osgPresentation/SlideShowConstructor>
 
 #include <osg/AnimationPath>
 #include <osg/Transform>
@@ -25,7 +25,7 @@
 
 #include <osgGA/AnimationPathManipulator>
 
-#include "AnimationMaterial.h"
+#include <osgPresentation/AnimationMaterial>
 
 #include <iostream>
 
@@ -138,7 +138,7 @@ struct CallbackOperator : public ObjectOperator
     {
         osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
         osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
-        ss3d::AnimationMaterialCallback* amc = dynamic_cast<ss3d::AnimationMaterialCallback*>(_callback.get());
+        AnimationMaterialCallback* amc = dynamic_cast<AnimationMaterialCallback*>(_callback.get());
         if (apc)
         {
             osg::notify(osg::INFO)<<"apc->setPause("<<pause<<")"<<std::endl;
@@ -160,7 +160,7 @@ struct CallbackOperator : public ObjectOperator
     {
         osg::AnimationPathCallback* apc = dynamic_cast<osg::AnimationPathCallback*>(_callback.get());
         osgUtil::TransformCallback* tc = dynamic_cast<osgUtil::TransformCallback*>(_callback.get());
-        ss3d::AnimationMaterialCallback* amc = dynamic_cast<ss3d::AnimationMaterialCallback*>(_callback.get());
+        AnimationMaterialCallback* amc = dynamic_cast<AnimationMaterialCallback*>(_callback.get());
         if (apc)
         {
             apc->reset();
@@ -1294,7 +1294,7 @@ void SlideEventHandler::compileSlide(unsigned int slideNum)
 {
     if (!_compileSlideCallback)
     {
-        _compileSlideCallback = new ss3d::CompileSlideCallback();
+        _compileSlideCallback = new CompileSlideCallback();
 
         osgViewer::Viewer::Cameras cameras;
         _viewer->getCameras(cameras);

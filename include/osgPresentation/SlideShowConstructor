@@ -25,13 +25,13 @@
 
 #include <osgDB/FileUtils>
 
-#include "AnimationMaterial.h"
-#include "SlideEventHandler.h"
+#include <osgPresentation/AnimationMaterial>
+#include <osgPresentation/SlideEventHandler>
 
 namespace osgPresentation
 {
 
-class SlideShowConstructor
+class OSGPRESENTATION_EXPORT SlideShowConstructor
 {
 public:
 
@@ -128,7 +128,7 @@ public:
             path_loop_mode(osg::AnimationPath::NO_LOOPING),
             animation_material_time_offset(0.0),
             animation_material_time_multiplier(1.0),
-            animation_material_loop_mode(ss3d::AnimationMaterial::NO_LOOPING) {}
+            animation_material_loop_mode(AnimationMaterial::NO_LOOPING) {}
     
         bool requiresPosition() const
         {
@@ -169,7 +169,7 @@ public:
         std::string                             path;
         double                                  animation_material_time_offset;
         double                                  animation_material_time_multiplier;
-        ss3d::AnimationMaterial::LoopMode       animation_material_loop_mode;
+        AnimationMaterial::LoopMode             animation_material_loop_mode;
         std::string                             animation_material_filename;
         std::string                             fade;
     };

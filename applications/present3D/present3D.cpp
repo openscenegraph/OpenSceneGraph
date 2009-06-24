@@ -36,10 +36,11 @@
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/StateSetManipulator>
 
+#include <osgPresentation/SlideEventHandler>
+#include <osgPresentation/SlideShowConstructor>
+
 #include "ReadShowFile.h"
-#include "SlideEventHandler.h"
 #include "PointsEventHandler.h"
-#include "SlideShowConstructor.h"
 #include "Cluster.h"
 #include "ExportHTML.h"
 
@@ -345,6 +346,7 @@ int main( int argc, char **argv )
 
     bool loopPresentation = false;
     while (arguments.read("--loop")) loopPresentation = true;
+
 
     // register the slide event handler - which moves the presentation from slide to slide, layer to layer.
     osgPresentation::SlideEventHandler* seh = new osgPresentation::SlideEventHandler(&viewer);

@@ -13,7 +13,7 @@
 #ifndef EXPORTHTML_H
 #define EXPORTHTML_H 1
 
-#include "SlideEventHandler.h"
+#include <osgPresentation/SlideEventHandler>
 #include <osgViewer/Viewer>
 
 class ExportHTML

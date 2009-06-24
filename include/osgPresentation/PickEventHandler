@@ -18,12 +18,12 @@
 
 #include <osgGA/GUIEventHandler>
 
-#include "SlideEventHandler.h"
+#include <osgPresentation/SlideEventHandler>
 
 namespace osgPresentation
 {
 
-class PickEventHandler : public osgGA::GUIEventHandler
+class OSGPRESENTATION_EXPORT PickEventHandler : public osgGA::GUIEventHandler
 {
     public:
 

@@ -10,13 +10,14 @@
  * include LICENSE.txt for more details.
 */
 
-#include "AnimationMaterial.h"
+#include <osgPresentation/AnimationMaterial>
+
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Notify>
 #include <osg/io_utils>
 
-using namespace ss3d;
+using namespace osgPresentation;
 
 void AnimationMaterial::insert(double time,osg::Material* material)
 {

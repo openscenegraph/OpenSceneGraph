@@ -68,4 +68,4 @@ IF   (WIN32)
 ENDIF()
 
 
-SETUP_APPLICATION(present3D-osg)
+SETUP_APPLICATION(present3D)

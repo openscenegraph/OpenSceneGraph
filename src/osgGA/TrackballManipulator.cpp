@@ -12,7 +12,6 @@ TrackballManipulator::TrackballManipulator()
     _minimumZoomScale = 0.05f;
     _allowThrow = true;
     _thrown = false;
-    _rate_sensitive = true;
 
     _distance = 1.0f;
     _trackballSize = 0.8f;
@@ -310,7 +309,12 @@ bool TrackballManipulator::calcMovement()
 
         buttonMask = _ga_t1->getButtonMask();
     }
-    
+
+
+    double throwScale =  (_thrown && _ga_t0.valid() && _ga_t1.valid()) ?
+            _delta_frame_time / (_ga_t0->getTime() - _ga_t1->getTime()) :
+            1.0;
+
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {
 
@@ -330,15 +334,8 @@ bool TrackballManipulator::calcMovement()
 
         osg::Quat new_rotate;
 
-        if (_thrown && _rate_sensitive && _ga_t0.valid() && _ga_t1.valid())
-        {
-            // frame_time / delta_event_time
-            double rate = _delta_frame_time / (_ga_t0->getTime() - _ga_t1->getTime());
-            new_rotate.makeRotate(angle * rate,axis);
-        } else {
-            new_rotate.makeRotate(angle,axis);
-        }
-        
+        new_rotate.makeRotate(angle * throwScale,axis);
+
         _rotation = _rotation*new_rotate;
 
         return true;
@@ -350,17 +347,10 @@ bool TrackballManipulator::calcMovement()
 
         // pan model.
 
-        float scale = -0.3f*_distance;
+        float scale = -0.3f * _distance * throwScale;
 
         osg::Matrix rotation_matrix;
         rotation_matrix.makeRotate(_rotation);
-
-        if (_thrown && _rate_sensitive && _ga_t0.valid() && _ga_t1.valid())
-        {
-            // frame_time / delta_event_time
-            double rate = _delta_frame_time / (_ga_t0->getTime() - _ga_t1->getTime());
-            scale *= rate;
-        }
 
         osg::Vec3 dv(dx*scale,dy*scale,0.0f);
 
@@ -375,7 +365,7 @@ bool TrackballManipulator::calcMovement()
         // zoom model.
 
         float fd = _distance;
-        float scale = 1.0f+dy;
+        float scale = 1.0f+ dy * throwScale;
         if (fd*scale>_modelScale*_minimumZoomScale)
         {
 

@@ -10,20 +10,22 @@ The !OpenSceneGraph 2.8.2 release is the culmination of 10 years of work by the 
 
 === Updates between 2.8.2 and 2.8.1 releases include: ===
 
-  * Build fixes for RedHat Enterprise Linux.
+=== Updates between 2.8.2 and 2.8.1 releases include: ===
+
+  * Build fixes for !RedHat Enterprise Linux.
   * Bug fixes to :
-    * computation of sector range in osgSim::LightPoint
-    * extention checking of FBO packed stencil support
+    * computation of sector range in osgSim::!LightPoint
+    * extension checking of FBO packed stencil support
     * position of tabs at corners of manipulators
     * threading bug in .osg plugin that occurred during multi-threaded initialization
     * alignment of Text what setting alignment after assign text string
     * loading of compressed texture arrays
     * texture generate mipmap for non power of two textures
     * regression in X11 key symbol remapping, improved support for Russian keyboards
-    * regression of StencilMask setting in RenderStage
+    * regression of !StencilMask setting in !RenderStage
     * small memory leak in X11 usage
-    * Transform::computeBound() double BoundingSphere support
-    * Resize handling when master and slave Cameras share the same GraphicsContext
+    * Transform::computeBound() double !BoundingSphere support
+    * Resize handling when master and slave Cameras share the same !GraphicsContext
 
 === Updates between 2.8.1 and 2.8.0 releases include: ===
 

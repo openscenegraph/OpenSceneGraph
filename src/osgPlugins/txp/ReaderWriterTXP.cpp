@@ -539,14 +539,14 @@ bool ReaderWriterTXP::extractChildrenLocations(const std::string& name, int pare
         token = strtok(0, "_");
         if(!token)
             break;
-        locs[idx].zmin = (float)atof(token);
+        locs[idx].zmin = osg::asciiToFloat(token);
         nbTokenRead++;
 
         // ZMAX
         token = strtok(0, "_");
         if(!token)
             break;
-        locs[idx].zmax= (float)atof(token);
+        locs[idx].zmax = osg::asciiToFloat(token);
         nbTokenRead++;
 
         locs[idx].lod = parentLod+1;

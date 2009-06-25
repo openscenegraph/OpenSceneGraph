@@ -76,7 +76,7 @@ void ViewerBase::viewerBaseInit()
     str = getenv("OSG_RUN_MAX_FRAME_RATE");
     if (str)
     {
-        _runMaxFrameRate = atof(str);
+        _runMaxFrameRate = osg::asciiToDouble(str);
     }
 }
 

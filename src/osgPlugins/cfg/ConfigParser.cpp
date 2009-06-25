@@ -1932,21 +1932,21 @@ yyreduce:
   case 114:
 
     {
-        yyval.real = atof(flexer->YYText());
+        yyval.real = osg::asciiToFloat(flexer->YYText());
     ;}
     break;
 
   case 115:
 
     {
-        yyval.real = atof(flexer->YYText());
+        yyval.real = osg::asciiToFloat(flexer->YYText());
     ;}
     break;
 
   case 116:
 
     {
-        yyval.real = atof(flexer->YYText());
+        yyval.real = osg::asciiToFloat(flexer->YYText());
     ;}
     break;
 

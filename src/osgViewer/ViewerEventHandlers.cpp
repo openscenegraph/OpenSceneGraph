@@ -400,7 +400,7 @@ RecordCameraPathHandler::RecordCameraPathHandler(const std::string& filename, fl
     const char* str = getenv("OSG_RECORD_CAMERA_PATH_FPS");
     if (str)
     {
-        _interval = 1.0f / atof(str);
+        _interval = 1.0f / osg::asciiToDouble(str);
     }
     else
     {

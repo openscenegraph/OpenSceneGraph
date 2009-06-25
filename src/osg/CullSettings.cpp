@@ -111,7 +111,7 @@ void CullSettings::readEnvironmentalVariables()
     
     if ((ptr = getenv("OSG_NEAR_FAR_RATIO")) != 0)
     {
-        _nearFarRatio = atof(ptr);
+        _nearFarRatio = osg::asciiToDouble(ptr);
 
         osg::notify(osg::INFO)<<"Set near/far ratio to "<<_nearFarRatio<<std::endl;
     }

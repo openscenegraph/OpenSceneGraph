@@ -885,7 +885,7 @@ DatabasePager::DatabasePager()
     _expiryDelay = 10.0;
     if( (ptr = getenv("OSG_EXPIRY_DELAY")) != 0)
     {
-        _expiryDelay = atof(ptr);
+        _expiryDelay = osg::asciiToDouble(ptr);
         osg::notify(osg::NOTICE)<<"Expiry delay = "<<_expiryDelay<<std::endl;
     }
 
@@ -904,7 +904,7 @@ DatabasePager::DatabasePager()
         }
         else
         {
-            setReleaseDelay(atof(ptr));
+            setReleaseDelay(osg::asciiToDouble(ptr));
         }
             
         osg::notify(osg::NOTICE)<<"Release delay = "<<_releaseDelay<<std::endl;
@@ -943,7 +943,7 @@ DatabasePager::DatabasePager()
     _maximumNumOfObjectsToCompilePerFrame = 4;
     if( (ptr = getenv("OSG_MINIMUM_COMPILE_TIME_PER_FRAME")) != 0)
     {
-        _minimumTimeAvailableForGLCompileAndDeletePerFrame = atof(ptr);
+        _minimumTimeAvailableForGLCompileAndDeletePerFrame = osg::asciiToDouble(ptr);
     }
 
     if( (ptr = getenv("OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME")) != 0)

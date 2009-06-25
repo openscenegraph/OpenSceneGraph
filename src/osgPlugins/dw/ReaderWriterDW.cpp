@@ -858,33 +858,33 @@ class ReaderWriterDW : public osgDB::ReaderWriter
                     } else if (strncmp(buff, "CurrPhase:",10)==0) {
                     } else if (strncmp(buff, "numPhases:",10)==0) {
                     } else if (strncmp(buff, "Opacity:",8)==0) {
-                        float opacity=atof(buff+8);
+                        float opacity=osg::asciiToFloat(buff+8);
                         matpalet[nmat].setopacity(opacity);
                     } else if (strncmp(buff, "FallOff:",8)==0) {
-                        float fo=atof(buff+8);
+                        float fo=osg::asciiToFloat(buff+8);
                         matpalet[nmat].setFallOff(fo);
                     } else if (strncmp(buff, "InnerHalfAngle:",15)==0) {
-                        float ha=atof(buff+15);
+                        float ha=osg::asciiToFloat(buff+15);
                         matpalet[nmat].setHalfAngleIn(ha);
                     } else if (strncmp(buff, "OuterHalfAngle:",15)==0) {
-                        float ha=atof(buff+15);
+                        float ha=osg::asciiToFloat(buff+15);
                         matpalet[nmat].setHalfAngleOut(ha);
                     } else if (strncmp(buff, "Brightness:",11)==0) {
-                        float br=atof(buff+11);
+                        float br=osg::asciiToFloat(buff+11);
                         matpalet[nmat].setBright(br);
                     } else if (strncmp(buff, "Attentuation:",13)==0) { // oops - they can't spell
                         matpalet[nmat].setAtten(buff+13);
                     } else if (strncmp(buff, "MaterialType:",13)==0) {
                         matpalet[nmat].setType(buff+14);
                     } else if (strncmp(buff, "SpecularReflectivity:",21)==0) {
-                        float spec=atof(buff+21);
+                        float spec=osg::asciiToFloat(buff+21);
                         matpalet[nmat].setspecular(spec);
                     } else if (strncmp(buff, "SmoothnessExponent:",19)==0) {
-                        float spec=atof(buff+19);
+                        float spec=osg::asciiToFloat(buff+19);
                         matpalet[nmat].setspecexp(spec*128.0f/100.0f); // convert to 0-128 range from percent
                     } else if (strncmp(buff, "TextureWidthAndHeight:",22)==0) {
                         char *ct=strchr(buff+22,',');
-                        float repx=atof(buff+23), repy=atof(ct+1);
+                        float repx=osg::asciiToFloat(buff+23), repy=osg::asciiToFloat(ct+1);
                         matpalet[nmat].settxrep(repx, repy);
                     } else if (strncmp(buff, "PictureFile:",12)==0) {
                         char *end=strchr(buff,'\n'); // end of line

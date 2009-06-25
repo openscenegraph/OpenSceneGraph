@@ -172,7 +172,7 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
             if (numOfCharInNumber>0)
             {
                 std::string numberString = optionsString.substr(endOfToken+1, numOfCharInNumber);
-                _maximumErrorToSizeRatio = atof(numberString.c_str());
+                _maximumErrorToSizeRatio = osg::asciiToDouble(numberString.c_str());
                 
                 osg::notify(osg::DEBUG_INFO)<<"TerrainMaximumErrorToSizeRatio = "<<_maximumErrorToSizeRatio<<std::endl;
             }

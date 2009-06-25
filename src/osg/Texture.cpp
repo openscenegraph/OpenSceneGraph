@@ -50,6 +50,8 @@ using namespace osg;
 
 //#define DO_TIMING
 
+namespace osg {
+
 ApplicationUsageProxy Texture_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_TEXTURE_SIZE","Set the maximum size of textures.");
 
 class TextureObjectManager : public osg::Referenced
@@ -123,6 +125,8 @@ public:
     // mutex to keep access serialized.
     OpenThreads::Mutex      _mutex;
 };
+
+}
 
 unsigned int Texture::s_numberTextureReusedLastInLastFrame = 0;
 unsigned int Texture::s_numberNewTextureInLastFrame = 0;

@@ -26,9 +26,14 @@ enum Endian
 
 inline Endian getCpuByteOrder()
 {
-    static char big_endian_1[2] = { 0, 1 };
+    union {
+        char big_endian_1[2];
+        short is_it_really_1;
+    } u;
+    u.big_endian_1[0] = 0;
+    u.big_endian_1[1] = 1;
 
-    if ( (*((short*) big_endian_1)) == 1)
+    if (u.is_it_really_1 == 1)
         return BigEndian;
     else 
         return LittleEndian;

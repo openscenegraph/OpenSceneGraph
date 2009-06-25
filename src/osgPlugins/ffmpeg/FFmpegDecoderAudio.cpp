@@ -284,7 +284,7 @@ size_t FFmpegDecoderAudio::decodeFrame(void * const buffer, const size_t size)
 
         if (m_packet.type == FFmpegPacket::PACKET_DATA)
         {
-            if (m_packet.packet.pts != AV_NOPTS_VALUE)
+            if (m_packet.packet.pts != int64_t(AV_NOPTS_VALUE))
             {
                 const double pts = av_q2d(m_stream->time_base) * m_packet.packet.pts;
                 m_clocks.audioSetBufferEndPts(pts);

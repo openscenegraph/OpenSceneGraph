@@ -26,19 +26,20 @@
 MACRO(FFMPEG_FIND varname shortname headername)
     # old version of ffmpeg put header in $prefix/include/[ffmpeg]
     # so try to find header in include directory
-    FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS ${headername}
+
+    FIND_PATH(FFMPEG_${varname}_INCLUDE_DIRS lib${shortname}/${headername}
         PATHS
-        ${FFMPEG_ROOT}/include/lib${shortname}
-        $ENV{FFMPEG_DIR}/include/lib${shortname}
-        ~/Library/Frameworks/lib${shortname}
-        /Library/Frameworks/lib${shortname}
-        /usr/local/include/lib${shortname}
-        /usr/include/lib${shortname}
-        /sw/include/lib${shortname} # Fink
-        /opt/local/include/lib${shortname} # DarwinPorts
-        /opt/csw/include/lib${shortname} # Blastwave
-        /opt/include/lib${shortname}
-        /usr/freeware/include/lib${shortname}
+        ${FFMPEG_ROOT}/include
+        $ENV{FFMPEG_DIR}/include
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/include
+        /usr/include
+        /sw/include # Fink
+        /opt/local/include # DarwinPorts
+        /opt/csw/include # Blastwave
+        /opt/include
+        /usr/freeware/include
         PATH_SUFFIXES ffmpeg
         DOC "Location of FFMPEG Headers"
     )
@@ -130,6 +131,24 @@ IF   (FFMPEG_LIBAVFORMAT_FOUND AND FFMPEG_LIBAVDEVICE_FOUND AND FFMPEG_LIBAVCODE
     SET(FFMPEG_FOUND "YES")
 
     SET(FFMPEG_INCLUDE_DIRS ${FFMPEG_LIBAVFORMAT_INCLUDE_DIRS})
+
+    SET(FFMPEG_INCLUDE_DIRS 
+        ${FFMPEG_LIBAVFORMAT_INCLUDE_DIRS} ${FFMPEG_LIBAVFORMAT_INCLUDE_DIRS}/libavformat
+        ${FFMPEG_LIBAVDEVICE_INCLUDE_DIRS} ${FFMPEG_LIBAVDEVICE_INCLUDE_DIRS}/libavdevice
+        ${FFMPEG_LIBAVCODEC_INCLUDE_DIRS} ${FFMPEG_LIBAVCODEC_INCLUDE_DIRS}/libavcodec
+        ${FFMPEG_LIBAVUTIL_INCLUDE_DIRS} ${FFMPEG_LIBAVUTIL_INCLUDE_DIRS}/libavutil
+    )
+
+    IF (${FFMPEG_STDINT_INCLUDE_DIR})
+        SET(FFMPEG_INCLUDE_DIRS
+            $PFFMPEG_INCLUDE_DIRS}
+            ${FFMPEG_STDINT_INCLUDE_DIR}/libavformat
+            ${FFMPEG_STDINT_INCLUDE_DIR}/libavdevice
+            ${FFMPEG_STDINT_INCLUDE_DIR}/libavcodec
+            ${FFMPEG_STDINT_INCLUDE_DIR}/libavutil
+        )
+    ENDIF()
+
 
     SET(FFMPEG_LIBRARY_DIRS ${FFMPEG_LIBAVFORMAT_LIBRARY_DIRS})
 

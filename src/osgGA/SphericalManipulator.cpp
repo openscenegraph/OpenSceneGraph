@@ -13,6 +13,7 @@ SphericalManipulator::SphericalManipulator()
     _modelScale = 0.01;
     _minimumZoomScale = 0.1;
     _thrown = false;
+    _allowThrow = true;
 
     _distance=1.0;
     _homeDistance=1.0;
@@ -149,7 +150,7 @@ bool SphericalManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
                     {
                         us.requestRedraw();
                         us.requestContinuousUpdate(true);
-                        _thrown = true;
+                        _thrown = _allowThrow;
                     }
                 }
                 else

@@ -80,7 +80,7 @@ public:
         if (path.empty())
             return ReadResult::FILE_NOT_FOUND;
 
-        return readImageStream(filename, options);
+        return readImageStream(path, options);
     }
     
     ReadResult readImageStream(const std::string& filename, const osgDB::ReaderWriter::Options * options) const

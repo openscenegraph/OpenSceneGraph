@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -888,11 +888,12 @@ DatabasePager::DatabasePager()
         } 
     }
 
+    _changeAutoUnRef = true;
+    _valueAutoUnRef = false;
+ 
     _changeAnisotropy = false;
     _valueAnisotropy = 1.0f;
 
-
-    
     const char* ptr=0;
 
     _deleteRemovedSubgraphsInDatabaseThread = true;
@@ -1273,19 +1274,19 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 
     double timestamp = framestamp?framestamp->getReferenceTime():0.0;
     int frameNumber = framestamp?framestamp->getFrameNumber():_frameNumber;
-    
+ 
+#ifdef WITH_REQUESTNODEFILE_TIMING
     static int previousFrame = -1;
     static double totalTime = 0.0;
     
-
     if (previousFrame!=frameNumber)
     {
-        // osg::notify(osg::NOTICE)<<"requestNodeFiles for "<<previousFrame<<" time = "<<totalTime<<std::endl;
+        osg::notify(osg::NOTICE)<<"requestNodeFiles for "<<previousFrame<<" time = "<<totalTime<<std::endl;
 
         previousFrame = frameNumber;
         totalTime = 0.0;
     }
-
+#endif
     
     // search to see if filename already exist in the file loaded list.
     bool foundEntry = false;
@@ -1295,7 +1296,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
         DatabaseRequest* databaseRequest = dynamic_cast<DatabaseRequest*>(databaseRequestRef.get());
         if (databaseRequest)
         {
-            osg::notify(osg::INFO)<<"DatabasePager::fileRequest("<<fileName<<") updating already assigned."<<std::endl;
+            osg::notify(osg::INFO)<<"DatabasePager::requestNodeFile("<<fileName<<") updating already assigned."<<std::endl;
 
             RequestQueue* requestQueue = databaseRequest->_requestQueue;
             if (requestQueue)
@@ -1319,7 +1320,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 
             if (databaseRequestRef->referenceCount()==1)
             {
-                osg::notify(osg::INFO)<<"DatabasePager::fileRquest("<<fileName<<") orphaned, resubmitting."<<std::endl;
+                osg::notify(osg::INFO)<<"DatabasePager::requestNodeFile("<<fileName<<") orphaned, resubmitting."<<std::endl;
 
                 databaseRequest->_frameNumberFirstRequest = frameNumber;
                 databaseRequest->_timestampFirstRequest = timestamp;
@@ -1339,7 +1340,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 
     if (!foundEntry)
     {
-        osg::notify(osg::INFO)<<"In DatabasePager::fileRquest("<<fileName<<")"<<std::endl;
+        osg::notify(osg::INFO)<<"In DatabasePager::requestNodeFile("<<fileName<<")"<<std::endl;
         
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_fileRequestQueue->_requestMutex);
         
@@ -1393,7 +1394,9 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
         }
     }
 
+#ifdef WITH_REQUESTNODEFILE_TIMING
     totalTime += osg::Timer::instance()->delta_m(start_tick, osg::Timer::instance()->tick());
+#endif
 }
 
 void DatabasePager::signalBeginFrame(const osg::FrameStamp* framestamp)
@@ -1505,11 +1508,13 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
 
     osg::Timer_t last = osg::Timer::instance()->tick();
 
-    osg::notify(osg::DEBUG_INFO)<<"Done DatabasePager::addLoadedDataToSceneGraph"<<
-        osg::Timer::instance()->delta_m(before,mid)<<"ms,\t"<<
-        osg::Timer::instance()->delta_m(mid,last)<<"ms"<<
-        "  objects"<<localFileLoadedList.size()<<std::endl<<std::endl;
-    
+    if (!localFileLoadedList.empty())
+    {
+        osg::notify(osg::DEBUG_INFO)<<"Done DatabasePager::addLoadedDataToSceneGraph"<<
+            osg::Timer::instance()->delta_m(before,mid)<<"ms,\t"<<
+            osg::Timer::instance()->delta_m(mid,last)<<"ms"<<
+            "  objects"<<localFileLoadedList.size()<<std::endl<<std::endl;
+    } 
 }
 
 class DatabasePager::MarkPagedLODsVisitor : public osg::NodeVisitor

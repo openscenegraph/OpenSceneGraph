@@ -12,6 +12,7 @@ TrackballManipulator::TrackballManipulator()
     _minimumZoomScale = 0.05f;
     _allowThrow = true;
     _thrown = false;
+    _rate_sensitive = true;
 
     _distance = 1.0f;
     _trackballSize = 0.8f;
@@ -81,11 +82,18 @@ bool TrackballManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
     switch(ea.getEventType())
     {
         case(GUIEventAdapter::FRAME):
+        {
+            double current_frame_time = ea.getTime();
+
+            _delta_frame_time = current_frame_time - _last_frame_time;
+            _last_frame_time = current_frame_time;
+
             if (_thrown && _allowThrow)
             {
                 if (calcMovement()) us.requestRedraw();
             }
             return false;
+        }
         default:
             break;
     }
@@ -321,7 +329,15 @@ bool TrackballManipulator::calcMovement()
         trackball(axis,angle,px1,py1,px0,py0);
 
         osg::Quat new_rotate;
-        new_rotate.makeRotate(angle,axis);
+
+        if (_thrown && _rate_sensitive && _ga_t0.valid() && _ga_t1.valid())
+        {
+            // frame_time / delta_event_time
+            double rate = _delta_frame_time / (_ga_t0->getTime() - _ga_t1->getTime());
+            new_rotate.makeRotate(angle * rate,axis);
+        } else {
+            new_rotate.makeRotate(angle,axis);
+        }
         
         _rotation = _rotation*new_rotate;
 
@@ -338,6 +354,13 @@ bool TrackballManipulator::calcMovement()
 
         osg::Matrix rotation_matrix;
         rotation_matrix.makeRotate(_rotation);
+
+        if (_thrown && _rate_sensitive && _ga_t0.valid() && _ga_t1.valid())
+        {
+            // frame_time / delta_event_time
+            double rate = _delta_frame_time / (_ga_t0->getTime() - _ga_t1->getTime());
+            scale *= rate;
+        }
 
         osg::Vec3 dv(dx*scale,dy*scale,0.0f);
 

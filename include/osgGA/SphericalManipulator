@@ -109,6 +109,11 @@ class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
         RotationMode getRotationMode() const {return _rotationMode;}
         void setRotationMode(RotationMode mode);
 
+         /** Returns true if the camera can be thrown, false otherwise. This defaults to true. */
+        bool getAllowThrow() const { return _allowThrow; }
+        /** Set the 'allow throw' flag. Releasing the mouse button while moving the camera results in a throw. */
+        void setAllowThrow(bool allowThrow) { _allowThrow = allowThrow; }
+
     protected:
 
         virtual ~SphericalManipulator();
@@ -136,6 +141,7 @@ class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
         double _minimumZoomScale;
 
         bool _thrown;
+        bool _allowThrow;
 
         RotationMode    _rotationMode;
         osg::Vec3d      _center;

@@ -145,7 +145,7 @@ void MenubarController::update()
             ++i;
         }
         else
-            i= _list.erase(i);
+            i = _list.erase(i);
     }
     
     // if we use the cocoa implementation then we have a NSRunLoop in place, and so we can use the deferred menubar-toggling which is thread safe
@@ -182,7 +182,7 @@ void MenubarController::update()
         {
             error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
         } 
-        else 
+        if (!windowsCoveringMenubarArea && !_menubarShown) 
         {
             error = SetSystemUIMode(kUIModeNormal, 0);
         }

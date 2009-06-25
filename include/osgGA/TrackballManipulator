@@ -148,15 +148,8 @@ class OSGGA_EXPORT TrackballManipulator : public MatrixManipulator
 
         bool _allowThrow;
         bool _thrown;
-        
 
-        /** Indicates whether "thrown" display should match rate of motion at time of throw.
-          * This is significant on systems where the delta between mouse events can be radically different
-          * from the delta in display update events.
-          */
-        bool _rate_sensitive;
-
-        /** The approximate amount of time it is currently taking to draw a frame. 
+        /** The approximate amount of time it is currently taking to draw a frame.
           * This is used to compute the delta in translation/rotation during a thrown display update.
           * It allows us to match an delta in position/rotation independent of the rendering frame rate.
           */

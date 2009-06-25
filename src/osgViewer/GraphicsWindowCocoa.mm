@@ -19,9 +19,9 @@
 
 #include "DarwinUtils.h"
 
-#define DEBUG_OUT(s) std::cout << "GraphicsWindowCocoa :: " << s << std::endl;
+//#define DEBUG_OUT(s) std::cout << "GraphicsWindowCocoa :: " << s << std::endl;
 
-//#define DEBUG_OUT(s) ;
+#define DEBUG_OUT(s) ;
 
 static bool s_quit_requested = false;
 
@@ -43,8 +43,8 @@ class CocoaKeyboardMap {
         CocoaKeyboardMap()
         {
             _keymap[27]     = osgGA::GUIEventAdapter::KEY_Escape;
-            _keymap[13]     = osgGA::GUIEventAdapter::KEY_KP_Enter;
-            _keymap[3]      = osgGA::GUIEventAdapter::KEY_Return;
+            _keymap[13]     = osgGA::GUIEventAdapter::KEY_Return;
+            _keymap[3]      = osgGA::GUIEventAdapter::KEY_KP_Enter;
             _keymap[9]      = osgGA::GUIEventAdapter::KEY_Tab;
             _keymap[32]     = osgGA::GUIEventAdapter::KEY_Space;
             _keymap[127]    = osgGA::GUIEventAdapter::KEY_BackSpace;

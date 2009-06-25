@@ -16,6 +16,7 @@
 
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
+#include <osg/Math>
 #include <osg/Notify>
 
 #include <set>
@@ -163,8 +164,8 @@ bool ArgumentParser::Parameter::assign(const char* str)
             *_value._bool =  (strcmp(str,"True")==0 || strcmp(str,"true")==0 || strcmp(str,"TRUE")==0);
             break;
         }
-        case Parameter::FLOAT_PARAMETER:        *_value._float = atof(str); break;
-        case Parameter::DOUBLE_PARAMETER:       *_value._double = atof(str); break;
+        case Parameter::FLOAT_PARAMETER:        *_value._float = osg::asciiToFloat(str); break;
+        case Parameter::DOUBLE_PARAMETER:       *_value._double = osg::asciiToDouble(str); break;
         case Parameter::INT_PARAMETER:          *_value._int = atoi(str); break;
         case Parameter::UNSIGNED_INT_PARAMETER: *_value._uint = atoi(str); break;
         case Parameter::STRING_PARAMETER:       *_value._string = str; break;

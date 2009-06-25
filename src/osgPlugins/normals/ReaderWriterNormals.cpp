@@ -58,7 +58,7 @@ class NormalsReader: public osgDB::ReaderWriter
                             std::string value = opt.substr(index+1);
                             if( key == "scale" || key == "SCALE" )
                             {
-                                scale = atof( value.c_str() );
+                                scale = osg::asciiToFloat( value.c_str() );
                             }
                             else if( key == "mode" || key == "MODE" )
                             {

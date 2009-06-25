@@ -46,6 +46,8 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <math.h>
 #include <string.h>
 
+#include <osg/Math>
+
 #if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
     #pragma warning( disable : 4996 )
 #endif
@@ -857,7 +859,7 @@ PlyFile *ply_read(FILE *fp, int *nelems, char ***elem_names)
         free (words);
         return (NULL);
         }
-      plyfile->version = atof (words[2]);
+      plyfile->version = osg::asciiToDouble (words[2]);
     }
     else if (equal_strings (words[0], "element"))
       add_element (plyfile, words, nwords);
@@ -2483,7 +2485,7 @@ void get_ascii_item(
     case PLY_FLOAT:
     case PLY_FLOAT32:
     case PLY_DOUBLE:
-      *double_val = atof (word);
+      *double_val = osg::asciiToDouble(word);
       *int_val = (int) *double_val;
       *uint_val = (unsigned int) *double_val;
       break;

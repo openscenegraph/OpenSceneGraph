@@ -35,7 +35,7 @@ IncrementalCompileOperation::IncrementalCompileOperation():
     const char* ptr = 0;
     if( (ptr = getenv("OSG_MINIMUM_COMPILE_TIME_PER_FRAME")) != 0)
     {
-        _minimumTimeAvailableForGLCompileAndDeletePerFrame = atof(ptr);
+        _minimumTimeAvailableForGLCompileAndDeletePerFrame = osg::asciiToDouble(ptr);
     }
 
     if( (ptr = getenv("OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME")) != 0)

@@ -518,18 +518,18 @@ input_area_entry :
 
 real   : PRTOKEN_FLOAT
     {
-        $$ = atof(flexer->YYText());
+        $$ = osg::asciiToFloat(flexer->YYText());
     }
     | PRTOKEN_INTEGER
     {
-        $$ = atof(flexer->YYText());
+        $$ = osg::asciiToFloat(flexer->YYText());
     }
     ;
 
 
 floatparam : PRTOKEN_FLOAT
     {
-        $$ = atof(flexer->YYText());
+        $$ = osg::asciiToFloat(flexer->YYText());
     }
     ;
 

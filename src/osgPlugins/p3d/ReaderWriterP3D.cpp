@@ -1126,7 +1126,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
         }
         else if (cur->name == "duration")
         {
-            constructor.setLayerDuration(atof(cur->contents.c_str()));
+            constructor.setLayerDuration(osg::asciiToDouble(cur->contents.c_str()));
         }
         else if (getKeyPosition(cur, keyPosition))
         {
@@ -1370,7 +1370,7 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
             }
             else if (cur->name == "duration")
             {
-                constructor.setSlideDuration(atof(cur->contents.c_str()));
+                constructor.setSlideDuration(osg::asciiToDouble(cur->contents.c_str()));
             }
             else if (getKeyPosition(cur, keyPosition))
             {
@@ -1891,7 +1891,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
         }
         else if (cur->name == "duration")
         {
-            constructor.setPresentationDuration(atof(cur->contents.c_str()));
+            constructor.setPresentationDuration(osg::asciiToDouble(cur->contents.c_str()));
         }
         else if (getKeyPosition(cur, keyPosition))
         {

@@ -181,7 +181,7 @@ void VBSPEntity::processItem()
 
 Vec3f VBSPEntity::getVector(std::string str)
 {
-    double x, y, z;
+    float x, y, z;
 
     // Look for the first non-whitespace
     std::string::size_type start = str.find_first_not_of(" \t\r\n", 0);
@@ -190,7 +190,7 @@ Vec3f VBSPEntity::getVector(std::string str)
     std::string::size_type end = str.find_first_of(" \t\r\n", start);
 
     if ((end > start) && (start != std::string::npos))
-        x = atof(str.substr(start, end-start).c_str());
+        x = osg::asciiToFloat(str.substr(start, end-start).c_str());
     else
         return Vec3f();
 
@@ -201,7 +201,7 @@ Vec3f VBSPEntity::getVector(std::string str)
     end = str.find_first_of(" \t\r\n", start);
 
     if ((end > start) && (start != std::string::npos))
-        y = atof(str.substr(start, end-start).c_str());
+        y = osg::asciiToFloat(str.substr(start, end-start).c_str());
     else
         return Vec3f();
 
@@ -214,7 +214,7 @@ Vec3f VBSPEntity::getVector(std::string str)
         end = str.length();
 
     if ((end > start) && (start != std::string::npos))
-        z = atof(str.substr(start, end-start).c_str());
+        z = osg::asciiToFloat(str.substr(start, end-start).c_str());
     else
         return Vec3f();
 

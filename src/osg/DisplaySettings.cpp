@@ -13,6 +13,7 @@
 #include <osg/DisplaySettings>
 #include <osg/ArgumentParser>
 #include <osg/ApplicationUsage>
+#include <osg/Math>
 #include <osg/Notify>
 #include <osg/ref_ptr>
 
@@ -267,22 +268,22 @@ void DisplaySettings::readEnvironmentalVariables()
 
     if( (ptr = getenv("OSG_EYE_SEPARATION")) != 0)
     {
-        _eyeSeparation = atof(ptr);
+        _eyeSeparation = osg::asciiToFloat(ptr);
     }
 
     if( (ptr = getenv("OSG_SCREEN_WIDTH")) != 0)
     {
-        _screenWidth = atof(ptr);
+        _screenWidth = osg::asciiToFloat(ptr);
     }
 
     if( (ptr = getenv("OSG_SCREEN_HEIGHT")) != 0)
     {
-        _screenHeight = atof(ptr);
+        _screenHeight = osg::asciiToFloat(ptr);
     }
 
     if( (ptr = getenv("OSG_SCREEN_DISTANCE")) != 0)
     {
-        _screenDistance = atof(ptr);
+        _screenDistance = osg::asciiToFloat(ptr);
     }
 
     if( (ptr = getenv("OSG_SPLIT_STEREO_HORIZONTAL_EYE_MAPPING")) != 0)

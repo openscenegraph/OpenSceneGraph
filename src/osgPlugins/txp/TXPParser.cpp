@@ -102,7 +102,7 @@ TXPParser::TXPParser():
     
     if (getenv("OSG_TXP_DEFAULT_MAX_ANISOTROPY"))
     {
-        _defaultMaxAnisotropy = atof(getenv("OSG_TXP_DEFAULT_MAX_ANISOTROPY"));
+        _defaultMaxAnisotropy = osg::asciiToFloat(getenv("OSG_TXP_DEFAULT_MAX_ANISOTROPY"));
     }
     
 }

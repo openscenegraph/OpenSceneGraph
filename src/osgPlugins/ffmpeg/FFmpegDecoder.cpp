@@ -337,7 +337,7 @@ void FFmpegDecoder::rewindButDontFlushQueues()
 {
     const AVRational AvTimeBaseQ = { 1, AV_TIME_BASE }; // = AV_TIME_BASE_Q
 
-    const int64_t pos = m_clocks.getStartTime() * AV_TIME_BASE;
+    const int64_t pos = int64_t(m_clocks.getStartTime() * double(AV_TIME_BASE));
     const int64_t seek_target = av_rescale_q(pos, AvTimeBaseQ, m_video_stream->time_base);
 
     if (av_seek_frame(m_format_context.get(), m_video_index, seek_target, 0/*AVSEEK_FLAG_BYTE |*/ /*AVSEEK_FLAG_BACKWARD*/) < 0)

@@ -17,6 +17,7 @@
 FIND_PATH( DCMTK_ROOT_INCLUDE_DIR dcmtk/config/osconfig.h
     ${DCMTK_DIR}/config/include
     ${DCMTK_DIR}/include
+    /usr/local/dicom/include
     /usr/local/include/
     /usr/include/
     /usr/local/dicom/include/
@@ -26,6 +27,7 @@ FIND_PATH( DCMTK_config_INCLUDE_DIR osconfig.h
     ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/config
     ${DCMTK_DIR}/config/include
     ${DCMTK_DIR}/include
+    /usr/local/dicom/include
     /usr/local/include/dcmtk/config
     /usr/include/dcmtk/config
     /usr/local/dicom/include/dcmtk/config
@@ -35,6 +37,7 @@ FIND_PATH( DCMTK_ofstd_INCLUDE_DIR ofstdinc.h
     ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/ofstd
     ${DCMTK_DIR}/ofstd/include
     ${DCMTK_DIR}/include/ofstd
+    /usr/local/dicom/include/dcmtk/ofstd
     /usr/local/include/dcmtk/ofstd
     /usr/include/dcmtk/ofstd
     /usr/local/dicom/include/dcmtk/ofstd
@@ -47,6 +50,7 @@ FIND_LIBRARY( DCMTK_ofstd_LIBRARY ofstd
     ${DCMTK_DIR}/ofstd/Release
     ${DCMTK_DIR}/ofstd/Debug
     ${DCMTK_DIR}/lib
+    /usr/local/dicom/lib
     /usr/local/lib64
     /usr/lib64
     /usr/local/lib
@@ -59,6 +63,7 @@ FIND_PATH( DCMTK_dcmdata_INCLUDE_DIR dctypes.h
     ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/dcmdata
     ${DCMTK_DIR}/dcmdata/include
     ${DCMTK_DIR}/include/dcmdata
+    /usr/local/dicom/include/dcmtk/dcmdata
     /usr/local/include/dcmtk/dcmdata
     /usr/include/dcmtk/dcmdata
     /usr/local/dicom/include/dcmtk/dcmdata
@@ -71,6 +76,7 @@ FIND_LIBRARY( DCMTK_dcmdata_LIBRARY dcmdata
     ${DCMTK_DIR}/dcmdata/Release
     ${DCMTK_DIR}/dcmdata/Debug
     ${DCMTK_DIR}/lib
+    /usr/local/dicom/lib
     /usr/local/lib64
     /usr/lib64
     /usr/local/lib
@@ -83,6 +89,7 @@ FIND_PATH( DCMTK_dcmimgle_INCLUDE_DIR dcmimage.h
     ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/dcmimgle
     ${DCMTK_DIR}/dcmimgle/include
     ${DCMTK_DIR}/include/dcmimgle
+    /usr/local/dicom/include/dcmtk/dcmimgle
     /usr/local/include/dcmtk/dcmimgle
     /usr/include/dcmtk/dcmimgle
     /usr/local/dicom/include/dcmtk/dcmimgle
@@ -95,6 +102,7 @@ FIND_LIBRARY( DCMTK_dcmimgle_LIBRARY dcmimgle
     ${DCMTK_DIR}/dcmimgle/Release
     ${DCMTK_DIR}/dcmimgle/Debug
     ${DCMTK_DIR}/lib
+    /usr/local/dicom/lib
     /usr/local/lib64
     /usr/lib64
     /usr/local/lib
@@ -106,6 +114,7 @@ FIND_LIBRARY(DCMTK_imagedb_LIBRARY imagedb
     ${DCMTK_DIR}/imagectn/libsrc/Release
     ${DCMTK_DIR}/imagectn/libsrc/
     ${DCMTK_DIR}/imagectn/libsrc/Debug
+    /usr/local/dicom/lib
     /usr/local/lib64
     /usr/lib64
     /usr/local/lib
@@ -117,6 +126,7 @@ FIND_LIBRARY(DCMTK_dcmnet_LIBRARY dcmnet
     ${DCMTK_DIR}/dcmnet/libsrc/Release
     ${DCMTK_DIR}/dcmnet/libsrc/Debug
     ${DCMTK_DIR}/dcmnet/libsrc/
+    /usr/local/dicom/lib
     /usr/local/lib64
     /usr/lib64
     /usr/local/lib

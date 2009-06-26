@@ -19,7 +19,10 @@
 #include <osgVolume/RayTracedTechnique>
 
 #ifdef  USE_DCMTK
-    #define HAVE_CONFIG_H
+    #ifndef _WIN32
+        #define HAVE_CONFIG_H
+    #endif
+
     #include <dcmtk/config/osconfig.h> 
     #include <dcmtk/dcmdata/dcfilefo.h>
     #include <dcmtk/dcmdata/dcdeftag.h>

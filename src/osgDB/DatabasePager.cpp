@@ -1270,12 +1270,13 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 
     if (!_acceptNewRequests) return;
     
-    osg::Timer_t start_tick = osg::Timer::instance()->tick();
 
     double timestamp = framestamp?framestamp->getReferenceTime():0.0;
     int frameNumber = framestamp?framestamp->getFrameNumber():_frameNumber;
- 
+
+// #define WITH_REQUESTNODEFILE_TIMING
 #ifdef WITH_REQUESTNODEFILE_TIMING
+    osg::Timer_t start_tick = osg::Timer::instance()->tick();
     static int previousFrame = -1;
     static double totalTime = 0.0;
     

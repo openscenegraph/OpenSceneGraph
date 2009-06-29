@@ -10,8 +10,6 @@ The !OpenSceneGraph 2.8.2 release is the culmination of 10 years of work by the 
 
 === Updates between 2.8.2 and 2.8.1 releases include: ===
 
-=== Updates between 2.8.2 and 2.8.1 releases include: ===
-
   * Build fixes for !RedHat Enterprise Linux.
   * Bug fixes to :
     * computation of sector range in osgSim::!LightPoint
@@ -26,6 +24,7 @@ The !OpenSceneGraph 2.8.2 release is the culmination of 10 years of work by the 
     * small memory leak in X11 usage
     * Transform::computeBound() double !BoundingSphere support
     * Resize handling when master and slave Cameras share the same !GraphicsContext
+    * Handling of locale in plugins and env var parsing so it always follows the '.' decimal place convention regardless of the desktop/application locale.
 
 === Updates between 2.8.1 and 2.8.0 releases include: ===
 

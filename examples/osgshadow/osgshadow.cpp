@@ -600,6 +600,9 @@ int main(int argc, char** argv)
 
     if (arguments.read("--sv"))
     {
+        // sv isn't yet thread safe
+        viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+
         // hint to tell viewer to request stencil buffer when setting up windows
         osg::DisplaySettings::instance()->setMinimumNumStencilBits(8);
 
@@ -622,6 +625,9 @@ int main(int argc, char** argv)
     }
     else if (arguments.read("--pssm"))
     {
+        // pssm isn't yet thread safe
+        viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+
         int mapcount = 3;
         while (arguments.read("--mapcount", mapcount));
         osg::ref_ptr<osgShadow::ParallelSplitShadowMap> pssm = new osgShadow::ParallelSplitShadowMap(NULL,mapcount);

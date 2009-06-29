@@ -126,7 +126,7 @@ void CommandManager::addSelectionsToCommand(MotionCommand& command, Dragger& dra
 
 CommandManager::Selections CommandManager::getConnectedSelections(Dragger& dragger)
 {
-    Selections selections = std::list< osg::ref_ptr<Selection> >();
+    Selections selections;
 
     //Test if the dragger is in the list
     if (_draggerSelectionMap.count(&dragger) > 0)

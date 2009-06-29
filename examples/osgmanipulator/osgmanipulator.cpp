@@ -136,6 +136,8 @@ osg::Node* addDraggerToScene(osg::Node* scene, osgManipulator::CommandManager* c
 
     osgManipulator::Dragger* dragger = createDragger(name);
 
+    dragger->setHandleEvents(true);
+
     osg::Group* root = new osg::Group;
     root->addChild(dragger);
     root->addChild(selection);
@@ -260,8 +262,8 @@ class PickModeHandler : public osgGA::GUIEventHandler
             _mode(VIEW), 
             _activeDragger(0)
         {
-        }        
-        
+        }
+
         bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa,
                     osg::Object*, osg::NodeVisitor*)
         {
@@ -432,7 +434,7 @@ int main( int argc, char **argv )
     } else { 
         viewer.setSceneData(loadedModel.get());
     }
-    viewer.addEventHandler(new PickModeHandler());
+    // viewer.addEventHandler(new PickModeHandler());
 
     return viewer.run();
 }

@@ -14,6 +14,8 @@
 
 #include <osgManipulator/Dragger>
 #include <osg/Material>
+#include <osgGA/EventVisitor>
+#include <osgViewer/View>
 
 using namespace osgManipulator;
 
@@ -39,7 +41,10 @@ bool PointerInfo::projectWindowXYIntoObject(const osg::Vec2d& windowCoord, osg::
     return true;
 }
 
-Dragger::Dragger() : _commandManager(0)
+Dragger::Dragger() :
+    _handleEvents(false),
+    _draggerActive(false),
+    _commandManager(0)
 {
     _parentDragger = this;
     getOrCreateStateSet()->setDataVariance(osg::Object::DYNAMIC);
@@ -49,6 +54,110 @@ Dragger::~Dragger()
 {
 }
 
+void Dragger::setHandleEvents(bool flag)
+{
+    if (_handleEvents == flag) return;
+
+    _handleEvents = flag;
+
+    // update the number of children that require an event traversal to make sure this dragger recieves events.
+    if (_handleEvents) setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+1);
+    else if (getNumChildrenRequiringEventTraversal()>=1) setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
+}
+
+void Dragger::traverse(osg::NodeVisitor& nv)
+{
+    if (_handleEvents && nv.getVisitorType()==osg::NodeVisitor::EVENT_VISITOR)
+    {
+        osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(&nv);
+        if (ev)
+        {
+            for(osgGA::EventQueue::Events::iterator itr = ev->getEvents().begin();
+                itr != ev->getEvents().end();
+                ++itr)
+            {
+                osgGA::GUIEventAdapter* ea = itr->get();
+                if (handle(*ea, *(ev->getActionAdapter()))) ea->setHandled(true);
+            }
+        }
+        return;
+    }
+
+    Selection::traverse(nv);
+}
+
+bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+{
+    if (ea.getHandled()) return false;
+
+    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+    if (!view) return false;
+
+    bool handled = false;
+
+    switch (ea.getEventType())
+    {
+        case osgGA::GUIEventAdapter::PUSH:
+        {
+            osgUtil::LineSegmentIntersector::Intersections intersections;
+
+            _pointer.reset();
+
+            if (view->computeIntersections(ea.getX(),ea.getY(),intersections))
+            {
+                _pointer.setCamera(view->getCamera());
+                _pointer.setMousePosition(ea.getX(), ea.getY());
+
+                for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
+                    hitr != intersections.end();
+                    ++hitr)
+                {
+                    _pointer.addIntersection(hitr->nodePath, hitr->getLocalIntersectPoint());
+                }
+                for (osg::NodePath::iterator itr = _pointer._hitList.front().first.begin();
+                        itr != _pointer._hitList.front().first.end();
+                        ++itr)
+                {
+                    osgManipulator::Dragger* dragger = dynamic_cast<osgManipulator::Dragger*>(*itr);
+                    if (dragger)
+                    {
+                        if (dragger==this)
+                        {
+                            dragger->handle(_pointer, ea, aa);
+                            dragger->setDraggerActive(true);
+                            handled = true;
+                        }
+                    }
+                }
+            }
+        }
+        case osgGA::GUIEventAdapter::DRAG:
+        case osgGA::GUIEventAdapter::RELEASE:
+        {
+            if (_draggerActive)
+            {
+                _pointer._hitIter = _pointer._hitList.begin();
+                _pointer.setCamera(view->getCamera());
+                _pointer.setMousePosition(ea.getX(), ea.getY());
+
+                handle(_pointer, ea, aa);                
+
+                handled = true;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+
+    if (_draggerActive && ea.getEventType() == osgGA::GUIEventAdapter::RELEASE)
+    {
+        setDraggerActive(false);
+        _pointer.reset();
+    }
+
+    return handled;
+}
 
 bool CompositeDragger::handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {

@@ -166,6 +166,16 @@ class OSGMANIPULATOR_EXPORT Dragger : public Selection
         virtual CompositeDragger* getComposite() { return 0; }
 
 
+        void setHandleEvents(bool flag);
+        bool getHandleEvents() const { return _handleEvents; }
+
+        void setDraggerActive(bool active) { _draggerActive = active; }
+        bool getDraggerActive() const { return _draggerActive; }
+
+
+        virtual void traverse(osg::NodeVisitor& nv);
+
+        virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
         virtual bool handle(const PointerInfo&, const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter&) { return false; }
 
     protected:
@@ -173,9 +183,13 @@ class OSGMANIPULATOR_EXPORT Dragger : public Selection
         Dragger();
         virtual ~Dragger();
 
-        CommandManager* _commandManager;
+        bool                            _handleEvents;
+        bool                            _draggerActive;
+        osgManipulator::PointerInfo     _pointer;
 
-        Dragger*  _parentDragger;
+        CommandManager*                 _commandManager;
+
+        Dragger*                        _parentDragger;
 
 };
 

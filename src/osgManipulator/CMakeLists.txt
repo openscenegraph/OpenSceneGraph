@@ -61,6 +61,7 @@ ADD_LIBRARY(${LIB_NAME}
 )
 
 LINK_INTERNAL(${LIB_NAME}     
+    osgViewer
     osgGA
     osgUtil
     osg

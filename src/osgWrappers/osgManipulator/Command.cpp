@@ -18,8 +18,6 @@
 #include <osg/Vec3>
 #include <osg/Vec3d>
 #include <osgManipulator/Command>
-#include <osgManipulator/Constraint>
-#include <osgManipulator/Selection>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -43,30 +41,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::MotionCommand)
 	I_Constructor0(____MotionCommand,
 	               "",
 	               "");
-	I_Method0(bool, execute,
+	I_Method0(osgManipulator::MotionCommand *, createCommandInverse,
 	          Properties::PURE_VIRTUAL,
-	          __bool__execute,
-	          "Execute the command. ",
-	          "");
-	I_Method0(bool, unexecute,
-	          Properties::PURE_VIRTUAL,
-	          __bool__unexecute,
-	          "Undo the command. ",
-	          "The inverse of this command is executed. ");
-	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
-	          Properties::PURE_VIRTUAL,
-	          __void__applyConstraint__C5_Constraint_P1,
-	          "Apply a constraint to the command. ",
-	          "");
-	I_Method1(void, addSelection, IN, osgManipulator::Selection *, x,
-	          Properties::NON_VIRTUAL,
-	          __void__addSelection__Selection_P1,
-	          "Add Selection (receiver) to the command. ",
-	          "The command will be executed on all the selections. ");
-	I_Method1(void, removeSelection, IN, osgManipulator::Selection *, x,
-	          Properties::NON_VIRTUAL,
-	          __void__removeSelection__Selection_P1,
-	          "Remove Selection (receiver) from the command. ",
+	          __MotionCommand_P1__createCommandInverse,
+	          "create a MotionCommand that is the inverse of this command, and if applied will undo this commands changes. ",
 	          "");
 	I_Method0(osg::Matrix, getMotionMatrix,
 	          Properties::PURE_VIRTUAL,
@@ -98,8 +76,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::MotionCommand)
 	          __Stage__getStage,
 	          "",
 	          "");
-
-
 	I_SimpleProperty(const osg::Matrix &, LocalToWorld, 
 	                 __C5_osg_Matrix_R1__getLocalToWorld, 
 	                 0);
@@ -120,20 +96,10 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Rotate3DCommand)
 	I_Constructor0(____Rotate3DCommand,
 	               "",
 	               "");
-	I_Method0(bool, execute,
+	I_Method0(osgManipulator::MotionCommand *, createCommandInverse,
 	          Properties::VIRTUAL,
-	          __bool__execute,
-	          "Execute the command. ",
-	          "");
-	I_Method0(bool, unexecute,
-	          Properties::VIRTUAL,
-	          __bool__unexecute,
-	          "Undo the command. ",
-	          "The inverse of this command is executed. ");
-	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
-	          Properties::VIRTUAL,
-	          __void__applyConstraint__C5_Constraint_P1,
-	          "Apply a constraint to the command. ",
+	          __MotionCommand_P1__createCommandInverse,
+	          "create a MotionCommand that is the inverse of this command, and if applied will undo this commands changes. ",
 	          "");
 	I_Method1(void, setRotation, IN, const osg::Quat &, rotation,
 	          Properties::NON_VIRTUAL,
@@ -164,20 +130,10 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
 	I_Constructor0(____Scale1DCommand,
 	               "",
 	               "");
-	I_Method0(bool, execute,
+	I_Method0(osgManipulator::MotionCommand *, createCommandInverse,
 	          Properties::VIRTUAL,
-	          __bool__execute,
-	          "Execute the command. ",
-	          "");
-	I_Method0(bool, unexecute,
-	          Properties::VIRTUAL,
-	          __bool__unexecute,
-	          "Undo the command. ",
-	          "The inverse of this command is executed. ");
-	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
-	          Properties::VIRTUAL,
-	          __void__applyConstraint__C5_Constraint_P1,
-	          "Apply a constraint to the command. ",
+	          __MotionCommand_P1__createCommandInverse,
+	          "create a MotionCommand that is the inverse of this command, and if applied will undo this commands changes. ",
 	          "");
 	I_Method1(void, setScale, IN, double, s,
 	          Properties::NON_VIRTUAL,
@@ -247,20 +203,10 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
 	I_Constructor0(____Scale2DCommand,
 	               "",
 	               "");
-	I_Method0(bool, execute,
+	I_Method0(osgManipulator::MotionCommand *, createCommandInverse,
 	          Properties::VIRTUAL,
-	          __bool__execute,
-	          "Execute the command. ",
-	          "");
-	I_Method0(bool, unexecute,
-	          Properties::VIRTUAL,
-	          __bool__unexecute,
-	          "Undo the command. ",
-	          "The inverse of this command is executed. ");
-	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
-	          Properties::VIRTUAL,
-	          __void__applyConstraint__C5_Constraint_P1,
-	          "Apply a constraint to the command. ",
+	          __MotionCommand_P1__createCommandInverse,
+	          "create a MotionCommand that is the inverse of this command, and if applied will undo this commands changes. ",
 	          "");
 	I_Method1(void, setScale, IN, const osg::Vec2d &, s,
 	          Properties::NON_VIRTUAL,
@@ -330,20 +276,10 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
 	I_Constructor0(____ScaleUniformCommand,
 	               "",
 	               "");
-	I_Method0(bool, execute,
+	I_Method0(osgManipulator::MotionCommand *, createCommandInverse,
 	          Properties::VIRTUAL,
-	          __bool__execute,
-	          "Execute the command. ",
-	          "");
-	I_Method0(bool, unexecute,
-	          Properties::VIRTUAL,
-	          __bool__unexecute,
-	          "Undo the command. ",
-	          "The inverse of this command is executed. ");
-	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
-	          Properties::VIRTUAL,
-	          __void__applyConstraint__C5_Constraint_P1,
-	          "Apply a constraint to the command. ",
+	          __MotionCommand_P1__createCommandInverse,
+	          "create a MotionCommand that is the inverse of this command, and if applied will undo this commands changes. ",
 	          "");
 	I_Method1(void, setScale, IN, double, s,
 	          Properties::NON_VIRTUAL,
@@ -391,20 +327,10 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	               ____TranslateInLineCommand__C5_osg_LineSegment_vec_type_R1__C5_osg_LineSegment_vec_type_R1,
 	               "",
 	               "");
-	I_Method0(bool, execute,
+	I_Method0(osgManipulator::MotionCommand *, createCommandInverse,
 	          Properties::VIRTUAL,
-	          __bool__execute,
-	          "Execute the command. ",
-	          "");
-	I_Method0(bool, unexecute,
-	          Properties::VIRTUAL,
-	          __bool__unexecute,
-	          "Undo the command. ",
-	          "The inverse of this command is executed. ");
-	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
-	          Properties::VIRTUAL,
-	          __void__applyConstraint__C5_Constraint_P1,
-	          "Apply a constraint to the command. ",
+	          __MotionCommand_P1__createCommandInverse,
+	          "create a MotionCommand that is the inverse of this command, and if applied will undo this commands changes. ",
 	          "");
 	I_Method2(void, setLine, IN, const osg::LineSegment::vec_type &, s, IN, const osg::LineSegment::vec_type &, e,
 	          Properties::NON_VIRTUAL,
@@ -461,20 +387,10 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInPlaneCommand)
 	               ____TranslateInPlaneCommand__C5_osg_Plane_R1,
 	               "",
 	               "");
-	I_Method0(bool, execute,
+	I_Method0(osgManipulator::MotionCommand *, createCommandInverse,
 	          Properties::VIRTUAL,
-	          __bool__execute,
-	          "Execute the command. ",
-	          "");
-	I_Method0(bool, unexecute,
-	          Properties::VIRTUAL,
-	          __bool__unexecute,
-	          "Undo the command. ",
-	          "The inverse of this command is executed. ");
-	I_Method1(void, applyConstraint, IN, const osgManipulator::Constraint *, x,
-	          Properties::VIRTUAL,
-	          __void__applyConstraint__C5_Constraint_P1,
-	          "Apply a constraint to the command. ",
+	          __MotionCommand_P1__createCommandInverse,
+	          "create a MotionCommand that is the inverse of this command, and if applied will undo this commands changes. ",
 	          "");
 	I_Method1(void, setPlane, IN, const osg::Plane &, plane,
 	          Properties::NON_VIRTUAL,

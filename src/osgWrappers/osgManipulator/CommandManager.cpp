@@ -10,7 +10,6 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osgManipulator/Command>
 #include <osgManipulator/CommandManager>
 #include <osgManipulator/Constraint>
 #include <osgManipulator/Dragger>
@@ -46,16 +45,6 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CommandManager)
 	          Properties::VIRTUAL,
 	          __bool__disconnect__Dragger_R1,
 	          "Disconnect the selections from a dragger. ",
-	          "");
-	I_Method1(void, dispatch, IN, osgManipulator::MotionCommand &, command,
-	          Properties::VIRTUAL,
-	          __void__dispatch__MotionCommand_R1,
-	          "Dispatches a command. ",
-	          "Usually called from a dragger. ");
-	I_Method2(void, addSelectionsToCommand, IN, osgManipulator::MotionCommand &, command, IN, osgManipulator::Dragger &, dragger,
-	          Properties::NON_VIRTUAL,
-	          __void__addSelectionsToCommand__MotionCommand_R1__Dragger_R1,
-	          "Add all selections connected to the dragger to the command. ",
 	          "");
 	I_Method1(osgManipulator::CommandManager::Selections, getConnectedSelections, IN, osgManipulator::Dragger &, dragger,
 	          Properties::NON_VIRTUAL,

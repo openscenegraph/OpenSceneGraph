@@ -47,32 +47,6 @@ bool CommandManager::disconnect(Dragger& dragger)
     return true;
 }
 
-void CommandManager::dispatch(MotionCommand& command)
-{
-    command.execute();
-}
-
-void CommandManager::addSelectionsToCommand(MotionCommand& command, Dragger& dragger)
-{
-    for(Dragger::Constraints::iterator itr = dragger.getConstraints().begin();
-        itr != dragger.getConstraints().end();
-        ++itr)
-    {
-        command.applyConstraint(itr->get());
-    }
-
-    // Add the dragger to the selection list first.
-    command.addSelection(&dragger);
-
-    for(Dragger::Selections::iterator itr = dragger.getSelections().begin();
-        itr != dragger.getSelections().end();
-        ++itr)
-    {
-        command.addSelection(*itr);
-    }
-}
-
-
 CommandManager::Selections CommandManager::getConnectedSelections(Dragger& dragger)
 {
     Selections selections;

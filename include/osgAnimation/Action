@@ -194,6 +194,8 @@ namespace osgAnimation
         void setLoop(unsigned int loop);
         void computeWeightAndUpdateAnimation(unsigned int frame);
 
+        void traverse(ActionVisitor& visitor);
+
     protected:
         typedef std::pair<unsigned int, osg::ref_ptr<BlendOut> > FrameBlendOut;
         osg::ref_ptr<BlendIn> _blendIn;

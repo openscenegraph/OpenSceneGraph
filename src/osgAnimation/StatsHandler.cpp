@@ -441,7 +441,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
                     _actions[name].setPosition(pos);
                     //_actions[name].touch();
                 }
-                _actions[name]._group->setNodeMask(-1);
+                _actions[name]._group->setNodeMask(~0);
                 size[name] = 0;
                 pos.y() -= characterSize + graphSpacing;
             }

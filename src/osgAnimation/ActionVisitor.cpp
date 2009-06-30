@@ -16,7 +16,7 @@
 #include <osgAnimation/ActionVisitor>
 #include <osgAnimation/Timeline>
 
-void osgAnimation::ActionVisitor::pushFrameActionOnStack(FrameAction& fa) { _stackFrameAction.push_back(fa); }
+void osgAnimation::ActionVisitor::pushFrameActionOnStack(const FrameAction& fa) { _stackFrameAction.push_back(fa); }
 void osgAnimation::ActionVisitor::popFrameAction() { _stackFrameAction.pop_back(); }
 void osgAnimation::ActionVisitor::pushTimelineOnStack(Timeline* tm) { _stackTimeline.push_back(tm); }
 void osgAnimation::ActionVisitor::popTimeline() { _stackTimeline.pop_back(); }
@@ -52,17 +52,20 @@ void osgAnimation::UpdateActionVisitor::apply(Timeline& tm)
     tm.setLastFrameEvaluated(_frame);
 }
 
-bool osgAnimation::UpdateActionVisitor::isActive() const
+bool osgAnimation::UpdateActionVisitor::isActive(Action& action) const
 {
     FrameAction fa = _stackFrameAction.back();
     if (_frame < fa.first)
         return false;
     if (!fa.second.valid())
         return false;
-    if (getLocalFrame() >= fa.second->getNumFrames())
-        return false;
-    return true;
+
+    unsigned int f = getLocalFrame();
+    unsigned int frameInAction;
+    unsigned int loopDone;
+    return action.evaluateFrame(f, frameInAction, loopDone);
 }
+
 unsigned int osgAnimation::UpdateActionVisitor::getLocalFrame() const
 {
     return _frame - _stackFrameAction.back().first;
@@ -70,7 +73,7 @@ unsigned int osgAnimation::UpdateActionVisitor::getLocalFrame() const
 
 void osgAnimation::UpdateActionVisitor::apply(Action& action)
 {
-    if (isActive())
+    if (isActive(action))
     {
         unsigned int frame = getLocalFrame();
 
@@ -97,7 +100,7 @@ void osgAnimation::UpdateActionVisitor::apply(Action& action)
 
 void osgAnimation::UpdateActionVisitor::apply(BlendIn& action)
 {
-    if (isActive()) 
+    if (isActive(action)) 
     {
         unsigned int frame = getLocalFrame();
         apply(static_cast<Action&>(action));
@@ -107,7 +110,7 @@ void osgAnimation::UpdateActionVisitor::apply(BlendIn& action)
 
 void osgAnimation::UpdateActionVisitor::apply(BlendOut& action)
 {
-    if (isActive()) 
+    if (isActive(action)) 
     {
         unsigned int frame = getLocalFrame();
         apply(static_cast<Action&>(action));
@@ -117,7 +120,7 @@ void osgAnimation::UpdateActionVisitor::apply(BlendOut& action)
 
 void osgAnimation::UpdateActionVisitor::apply(ActionAnimation& action)
 {
-    if (isActive()) 
+    if (isActive(action)) 
     {
         unsigned int frame = getLocalFrame();
         apply(static_cast<Action&>(action));
@@ -127,11 +130,32 @@ void osgAnimation::UpdateActionVisitor::apply(ActionAnimation& action)
 
 void osgAnimation::UpdateActionVisitor::apply(StripAnimation& action)
 {
-    if (isActive())
+    if (isActive(action))
     {
-        unsigned int frame = getLocalFrame();
         apply(static_cast<Action&>(action));
+
+#if 0
+        unsigned int frame = getLocalFrame();
+        // evaluate callback in blendin/blendout/animation
+        {
+            BlendIn* subAction = action.getBlendIn();
+            if (subAction)
+                apply(static_cast<Action&>(*subAction));
+        }
+        {
+            BlendOut* subAction = action.getBlendOut();
+            if (subAction)
+                apply(static_cast<Action&>(*subAction));
+        }
+        {
+            ActionAnimation* subAction = action.getActionAnimation();
+            if (subAction)
+                apply(static_cast<Action&>(*subAction));
+        }            
         action.computeWeightAndUpdateAnimation(frame);
+#else
+        action.traverse(*this);
+#endif
     }
 }
 

@@ -32,7 +32,7 @@ void osgAnimation::StatsActionVisitor::apply(Timeline& tm)
 
 void osgAnimation::StatsActionVisitor::apply(Action& action)
 {
-    if (isActive())
+    if (isActive(action))
     {
         _channels.push_back(action.getName());
         _stats->setAttribute(_frame,action.getName(),1);
@@ -41,7 +41,7 @@ void osgAnimation::StatsActionVisitor::apply(Action& action)
 
 void osgAnimation::StatsActionVisitor::apply(BlendIn& action)
 {
-    if (isActive()) 
+    if (isActive(action)) 
     {
         _channels.push_back(action.getName());
         _stats->setAttribute(_frame,action.getName(), action.getWeight());
@@ -50,7 +50,7 @@ void osgAnimation::StatsActionVisitor::apply(BlendIn& action)
 
 void osgAnimation::StatsActionVisitor::apply(BlendOut& action)
 {
-    if (isActive()) 
+    if (isActive(action)) 
     {
         _channels.push_back(action.getName());
         _stats->setAttribute(_frame,action.getName(), action.getWeight());
@@ -59,7 +59,7 @@ void osgAnimation::StatsActionVisitor::apply(BlendOut& action)
 
 void osgAnimation::StatsActionVisitor::apply(ActionAnimation& action)
 {
-    if (isActive()) 
+    if (isActive(action)) 
     {
         _channels.push_back(action.getName());
         _stats->setAttribute(_frame,action.getName(), action.getAnimation()->getWeight());
@@ -68,7 +68,7 @@ void osgAnimation::StatsActionVisitor::apply(ActionAnimation& action)
 
 void osgAnimation::StatsActionVisitor::apply(StripAnimation& action)
 {
-    if (isActive())
+    if (isActive(action))
     {
         _channels.push_back(action.getName());
         _stats->setAttribute(_frame,action.getName(), action.getActionAnimation()->getAnimation()->getWeight());

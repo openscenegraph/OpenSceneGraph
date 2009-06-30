@@ -14,7 +14,6 @@
 
 #include <osgManipulator/Translate1DDragger>
 #include <osgManipulator/Command>
-#include <osgManipulator/CommandManager>
 
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
@@ -69,11 +68,7 @@ bool Translate1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
                     cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     // Set color to pick color.
                     setMaterialColor(_pickColor,*this);
@@ -97,11 +92,7 @@ bool Translate1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
                     cmd->setTranslation(projectedPoint - _startProjectedPoint);
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     aa.requestRedraw();
                 }
@@ -121,11 +112,7 @@ bool Translate1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
                     cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     // Reset color.
                     setMaterialColor(_color,*this);

@@ -27,54 +27,23 @@ CommandManager::~CommandManager()
 
 bool CommandManager::connect(Dragger& dragger, Selection& selection)
 {
-    dragger.setCommandManager(this);
-
-    // Check to see if the selection is already associated with the dragger.
-    if (_draggerSelectionMap.count(&dragger) > 0)
-    {
-        std::pair<DraggerSelectionMap::iterator,DraggerSelectionMap::iterator> s;
-        s = _draggerSelectionMap.equal_range(&dragger);
-
-        for (DraggerSelectionMap::iterator iter = s.first; iter != s.second; ++iter)
-        {
-            if (iter->second == &selection)
-                return false;
-        }
-    }
-
-    // Associate selection with dragger
-    _draggerSelectionMap.insert(DraggerSelectionMap::value_type(&dragger,&selection));
+    dragger.addSelection(&selection);
 
     return true;
 }
 
 bool CommandManager::connect(Dragger& dragger, Constraint& constraint)
 {
-    dragger.setCommandManager(this);
-
-    // Check to see if the selection is already associated with the dragger.
-    if (_draggerConstraintMap.count(&dragger) > 0)
-    {
-        std::pair<DraggerConstraintMap::iterator,DraggerConstraintMap::iterator> s;
-        s = _draggerConstraintMap.equal_range(&dragger);
-
-        for (DraggerConstraintMap::iterator iter = s.first; iter != s.second; ++iter)
-        {
-            if (iter->second == &constraint)
-                return false;
-        }
-    }
-
-    // Associate selection with dragger
-    _draggerConstraintMap.insert(DraggerConstraintMap::value_type(&dragger,&constraint));
+    dragger.addConstraint(&constraint);
 
     return true;
 }
 
 bool CommandManager::disconnect(Dragger& dragger)
 {
-    _draggerSelectionMap.erase(&dragger);
-    _draggerConstraintMap.erase(&dragger);
+    dragger.getConstraints().clear();
+    dragger.getSelections().clear();
+
     return true;
 }
 
@@ -85,41 +54,21 @@ void CommandManager::dispatch(MotionCommand& command)
 
 void CommandManager::addSelectionsToCommand(MotionCommand& command, Dragger& dragger)
 {
-    // Apply constraints to the command.
-    if (_draggerConstraintMap.count(&dragger) > 0)
+    for(Dragger::Constraints::iterator itr = dragger.getConstraints().begin();
+        itr != dragger.getConstraints().end();
+        ++itr)
     {
-        // Get all the selections assoicated with this dragger.
-        std::pair<DraggerConstraintMap::iterator,DraggerConstraintMap::iterator> s;
-        s = _draggerConstraintMap.equal_range(&dragger);
-
-        for (DraggerConstraintMap::iterator iter = s.first; iter != s.second; ++iter)
-        {
-            // Add the selection to the command.
-            if (iter->second.valid())
-            {
-                command.applyConstraint(iter->second.get());
-            }
-        }
+        command.applyConstraint(itr->get());
     }
 
     // Add the dragger to the selection list first.
     command.addSelection(&dragger);
 
-    // Add the remaining selections.
-    if (_draggerSelectionMap.count(&dragger) > 0)
+    for(Dragger::Selections::iterator itr = dragger.getSelections().begin();
+        itr != dragger.getSelections().end();
+        ++itr)
     {
-        // Get all the selections assoicated with this dragger.
-        std::pair<DraggerSelectionMap::iterator,DraggerSelectionMap::iterator> s;
-        s = _draggerSelectionMap.equal_range(&dragger);
-
-        for (DraggerSelectionMap::iterator iter = s.first; iter != s.second; ++iter)
-        {
-            // Add the selection to the command.
-            if (iter->second.valid())
-            {
-                command.addSelection(iter->second.get());
-            }
-        }
+        command.addSelection(*itr);
     }
 }
 
@@ -128,18 +77,12 @@ CommandManager::Selections CommandManager::getConnectedSelections(Dragger& dragg
 {
     Selections selections;
 
-    //Test if the dragger is in the list
-    if (_draggerSelectionMap.count(&dragger) > 0)
+    for(Dragger::Selections::iterator itr = dragger.getSelections().begin();
+        itr != dragger.getSelections().end();
+        ++itr)
     {
-        //Get the iterator range on key 'dragger'
-        std::pair<DraggerSelectionMap::iterator,DraggerSelectionMap::iterator> draggerRange = _draggerSelectionMap.equal_range(&dragger);
-        for (DraggerSelectionMap::iterator selectionsIterator = draggerRange.first;
-           selectionsIterator != draggerRange.second;
-           ++selectionsIterator)
-        {
-            //Push in the list all selections connected with the dragger
-            selections.push_back((*selectionsIterator).second);
-        }
+        selections.push_back(*itr);
     }
+
     return selections;
 }

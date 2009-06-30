@@ -14,7 +14,6 @@
 
 #include <osgManipulator/Translate2DDragger>
 #include <osgManipulator/Command>
-#include <osgManipulator/CommandManager>
 
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
@@ -69,11 +68,7 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
                     cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     // Set color to pick color.
                     setMaterialColor(_pickColor,*this);
@@ -99,17 +94,13 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
                     cmd->setReferencePoint(_startProjectedPoint);
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     aa.requestRedraw();
                 }
                 return true; 
             }
-            
+
         // Pick finish.
         case (osgGA::GUIEventAdapter::RELEASE):
             {
@@ -118,18 +109,14 @@ bool Translate2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEven
                     cmd->setStage(MotionCommand::FINISH);
                 cmd->setReferencePoint(_startProjectedPoint);
                 cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
-                    
-                    // Dispatch command.
-                if (_commandManager)
-                {
-                    _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                    _commandManager->dispatch(*cmd);
-                }
+
+                // Dispatch command.
+                dispatch(*cmd);
 
                 // Reset color.
                 setMaterialColor(_color,*this);
                 getOrCreateStateSet()->removeAttribute(_polygonOffset.get());
-                
+
                 aa.requestRedraw();
 
                 return true;

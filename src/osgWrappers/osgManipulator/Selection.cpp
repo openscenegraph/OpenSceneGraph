@@ -22,6 +22,48 @@
 #undef OUT
 #endif
 
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::CommandProcessor)
+	I_DeclaringFile("osgManipulator/Selection");
+	I_Constructor0(____CommandProcessor,
+	               "",
+	               "");
+	I_Method1(bool, receive, IN, const osgManipulator::MotionCommand &, x,
+	          Properties::PURE_VIRTUAL,
+	          __bool__receive__C5_MotionCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::TranslateInLineCommand &, command,
+	          Properties::PURE_VIRTUAL,
+	          __bool__receive__C5_TranslateInLineCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::TranslateInPlaneCommand &, command,
+	          Properties::PURE_VIRTUAL,
+	          __bool__receive__C5_TranslateInPlaneCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::Scale1DCommand &, command,
+	          Properties::PURE_VIRTUAL,
+	          __bool__receive__C5_Scale1DCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::Scale2DCommand &, command,
+	          Properties::PURE_VIRTUAL,
+	          __bool__receive__C5_Scale2DCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::ScaleUniformCommand &, command,
+	          Properties::PURE_VIRTUAL,
+	          __bool__receive__C5_ScaleUniformCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::Rotate3DCommand &, command,
+	          Properties::PURE_VIRTUAL,
+	          __bool__receive__C5_Rotate3DCommand_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Selection)
 	I_DeclaringFile("osgManipulator/Selection");
 	I_BaseType(osg::MatrixTransform);

@@ -14,7 +14,6 @@
 
 #include <osgManipulator/RotateSphereDragger>
 #include <osgManipulator/Command>
-#include <osgManipulator/CommandManager>
 
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
@@ -68,11 +67,7 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
                     cmd->setLocalToWorldAndWorldToLocal(_startLocalToWorld,_startWorldToLocal);
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     // Set color to pick color.
                     setMaterialColor(_pickColor,*this);
@@ -109,11 +104,7 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
                     cmd->setRotation(rotation);
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     _prevWorldProjPt = projectedPoint * _projector->getLocalToWorld();
                     _prevRotation = rotation;
@@ -130,17 +121,13 @@ bool RotateSphereDragger::handle(const PointerInfo& pointer, const osgGA::GUIEve
 
                 cmd->setStage(MotionCommand::FINISH);
                 cmd->setLocalToWorldAndWorldToLocal(_startLocalToWorld,_startWorldToLocal);
-                    
+
                 // Dispatch command.
-                if (_commandManager)
-                {
-                    _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                    _commandManager->dispatch(*cmd);
-                }
+                dispatch(*cmd);
 
                 // Reset color.
                 setMaterialColor(_color,*this);
-                
+
                 aa.requestRedraw();
 
                 return true;

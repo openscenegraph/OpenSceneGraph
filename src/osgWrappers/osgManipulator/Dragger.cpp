@@ -17,8 +17,9 @@
 #include <osg/Vec3d>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
-#include <osgManipulator/CommandManager>
+#include <osgManipulator/Constraint>
 #include <osgManipulator/Dragger>
+#include <osgManipulator/Selection>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -58,11 +59,6 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	          __CompositeDragger_P1__getComposite,
 	          "Returns 0 if this Dragger is not a CompositeDragger. ",
 	          "");
-	I_Method1(void, setCommandManager, IN, osgManipulator::CommandManager *, cm,
-	          Properties::VIRTUAL,
-	          __void__setCommandManager__CommandManager_P1,
-	          "Set/Get the CommandManager. ",
-	          "Draggers use CommandManager to dispatch commands. ");
 	I_Method1(void, setParentDragger, IN, osgManipulator::Dragger *, parent,
 	          Properties::VIRTUAL,
 	          __void__setParentDragger__Dragger_P1,
@@ -111,9 +107,6 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	I_ProtectedConstructor0(____CompositeDragger,
 	                        "",
 	                        "");
-	I_SimpleProperty(osgManipulator::CommandManager *, CommandManager, 
-	                 0, 
-	                 __void__setCommandManager__CommandManager_P1);
 	I_SimpleProperty(osgManipulator::CompositeDragger *, Composite, 
 	                 __CompositeDragger_P1__getComposite, 
 	                 0);
@@ -129,9 +122,14 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	                 __void__setParentDragger__Dragger_P1);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgManipulator::Constraint > >, osgManipulator::Dragger::Constraints)
+
+TYPE_NAME_ALIAS(std::vector< osgManipulator::Selection * >, osgManipulator::Dragger::Selections)
+
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	I_DeclaringFile("osgManipulator/Dragger");
 	I_BaseType(osgManipulator::Selection);
+	I_BaseType(osg::Observer);
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
@@ -146,21 +144,6 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the node's class type. ",
-	          "");
-	I_Method1(void, setCommandManager, IN, osgManipulator::CommandManager *, cm,
-	          Properties::VIRTUAL,
-	          __void__setCommandManager__CommandManager_P1,
-	          "Set/Get the CommandManager. ",
-	          "Draggers use CommandManager to dispatch commands. ");
-	I_Method0(osgManipulator::CommandManager *, getCommandManager,
-	          Properties::NON_VIRTUAL,
-	          __CommandManager_P1__getCommandManager,
-	          "",
-	          "");
-	I_Method0(const osgManipulator::CommandManager *, getCommandManager,
-	          Properties::NON_VIRTUAL,
-	          __C5_CommandManager_P1__getCommandManager,
-	          "",
 	          "");
 	I_Method1(void, setParentDragger, IN, osgManipulator::Dragger *, parent,
 	          Properties::VIRTUAL,
@@ -222,14 +205,66 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	          __bool__handle__C5_PointerInfo_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "",
 	          "");
+	I_Method1(void, addConstraint, IN, osgManipulator::Constraint *, constraint,
+	          Properties::NON_VIRTUAL,
+	          __void__addConstraint__Constraint_P1,
+	          "",
+	          "");
+	I_Method1(void, removeConstraint, IN, osgManipulator::Constraint *, constraint,
+	          Properties::NON_VIRTUAL,
+	          __void__removeConstraint__Constraint_P1,
+	          "",
+	          "");
+	I_Method0(osgManipulator::Dragger::Constraints &, getConstraints,
+	          Properties::NON_VIRTUAL,
+	          __Constraints_R1__getConstraints,
+	          "",
+	          "");
+	I_Method0(const osgManipulator::Dragger::Constraints &, getConstraints,
+	          Properties::NON_VIRTUAL,
+	          __C5_Constraints_R1__getConstraints,
+	          "",
+	          "");
+	I_Method1(void, addSelection, IN, osgManipulator::Selection *, selection,
+	          Properties::NON_VIRTUAL,
+	          __void__addSelection__Selection_P1,
+	          "",
+	          "");
+	I_Method1(void, removeSelection, IN, osgManipulator::Selection *, selection,
+	          Properties::NON_VIRTUAL,
+	          __void__removeSelection__Selection_P1,
+	          "",
+	          "");
+	I_Method0(osgManipulator::Dragger::Selections &, getSelections,
+	          Properties::NON_VIRTUAL,
+	          __Selections_R1__getSelections,
+	          "",
+	          "");
+	I_Method0(const osgManipulator::Dragger::Selections &, getSelections,
+	          Properties::NON_VIRTUAL,
+	          __C5_Selections_R1__getSelections,
+	          "",
+	          "");
 	I_ProtectedConstructor0(____Dragger,
 	                        "",
 	                        "");
-	I_SimpleProperty(osgManipulator::CommandManager *, CommandManager, 
-	                 __CommandManager_P1__getCommandManager, 
-	                 __void__setCommandManager__CommandManager_P1);
+	I_ProtectedMethod1(void, dispatch, IN, osgManipulator::MotionCommand &, command,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__dispatch__MotionCommand_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, objectDeleted, IN, void *, object,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__objectDeleted__void_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgManipulator::CompositeDragger *, Composite, 
 	                 __CompositeDragger_P1__getComposite, 
+	                 0);
+	I_SimpleProperty(osgManipulator::Dragger::Constraints &, Constraints, 
+	                 __Constraints_R1__getConstraints, 
 	                 0);
 	I_SimpleProperty(bool, DraggerActive, 
 	                 __bool__getDraggerActive, 
@@ -240,6 +275,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	I_SimpleProperty(osgManipulator::Dragger *, ParentDragger, 
 	                 __Dragger_P1__getParentDragger, 
 	                 __void__setParentDragger__Dragger_P1);
+	I_SimpleProperty(osgManipulator::Dragger::Selections &, Selections, 
+	                 __Selections_R1__getSelections, 
+	                 0);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::pair< osg::NodePath COMMA  osg::Vec3d >, osgManipulator::PointerInfo::NodePathIntersectionPair)
@@ -329,6 +367,46 @@ BEGIN_VALUE_REFLECTOR(osgManipulator::PointerInfo)
 	I_PublicMemberProperty(osgManipulator::PointerInfo::IntersectionList, _hitList);
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Constraint >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgManipulator::Constraint *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgManipulator::Constraint > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgManipulator::Constraint *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgManipulator::Constraint *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgManipulator::Constraint > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgManipulator::Constraint *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Dragger >)
 	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
@@ -373,5 +451,9 @@ STD_LIST_REFLECTOR(std::list< osgManipulator::PointerInfo::NodePathIntersectionP
 
 STD_PAIR_REFLECTOR(std::pair< osg::NodePath COMMA  osg::Vec3d >)
 
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgManipulator::Constraint > >)
+
 STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgManipulator::Dragger > >)
+
+STD_VECTOR_REFLECTOR(std::vector< osgManipulator::Selection * >)
 

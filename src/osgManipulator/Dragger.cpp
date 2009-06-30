@@ -13,12 +13,17 @@
 //osgManipulator - Copyright (C) 2007 Fugro-Jason B.V.
 
 #include <osgManipulator/Dragger>
+#include <osgManipulator/Command>
 #include <osg/Material>
 #include <osgGA/EventVisitor>
 #include <osgViewer/View>
 
 using namespace osgManipulator;
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// PointerInfo
+//
 PointerInfo::PointerInfo():
     _nearPoint(osg::Vec3d()),
     _farPoint(osg::Vec3d()),
@@ -41,10 +46,14 @@ bool PointerInfo::projectWindowXYIntoObject(const osg::Vec2d& windowCoord, osg::
     return true;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Dragger
+//
 Dragger::Dragger() :
     _handleEvents(false),
-    _draggerActive(false),
-    _commandManager(0)
+    _draggerActive(false)
 {
     _parentDragger = this;
     getOrCreateStateSet()->setDataVariance(osg::Object::DYNAMIC);
@@ -64,6 +73,69 @@ void Dragger::setHandleEvents(bool flag)
     if (_handleEvents) setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()+1);
     else if (getNumChildrenRequiringEventTraversal()>=1) setNumChildrenRequiringEventTraversal(getNumChildrenRequiringEventTraversal()-1);
 }
+
+void Dragger::addConstraint(Constraint* constraint)
+{
+    // check to make sure constaint hasn't already been attached.
+    for(Constraints::iterator itr = _constraints.begin();
+        itr != _constraints.end();
+        ++itr)
+    {
+        if (*itr = constraint) return;
+    }
+
+    _constraints.push_back(constraint);
+}
+
+void Dragger::removeConstraint(Constraint* constraint)
+{
+    for(Constraints::iterator itr = _constraints.begin();
+        itr != _constraints.end();
+        ++itr)
+    {
+        if (*itr = constraint)
+        {
+            _constraints.erase(itr);
+            return;
+        }
+    }
+}
+
+
+void Dragger::objectDeleted(void* object)
+{
+    removeSelection(reinterpret_cast<Selection*>(object));
+}
+
+void Dragger::addSelection(Selection* selection)
+{
+    // check to make sure constaint hasn't already been attached.
+    for(Selections::iterator itr = _selections.begin();
+        itr != _selections.end();
+        ++itr)
+    {
+        if (*itr == selection) return;
+    }
+
+    selection->addObserver(this);
+    _selections.push_back(selection);
+}
+
+void Dragger::removeSelection(Selection* selection)
+{
+    for(Selections::iterator itr = _selections.begin();
+        itr != _selections.end();
+        ++itr)
+    {
+        if (*itr == selection)
+        {
+            selection->removeObserver(this);
+            _selections.erase(itr);
+            return;
+        }
+    }
+}
+
 
 void Dragger::traverse(osg::NodeVisitor& nv)
 {
@@ -159,6 +231,34 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
     return handled;
 }
 
+void Dragger::dispatch(MotionCommand& command)
+{
+    // apply any constraints
+    for(Constraints::iterator itr = _constraints.begin();
+        itr != _constraints.end();
+        ++itr)
+    {
+        command.applyConstraint(itr->get());
+    }
+
+    // move self
+    getParentDragger()->receive(command);
+
+    // then run through any selections
+    for(Selections::iterator itr = getParentDragger()->getSelections().begin();
+        itr != getParentDragger()->getSelections().end();
+        ++itr)
+    {
+        (*itr)->receive(command);
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// CompositeDragger
+//
+
 bool CompositeDragger::handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {
     // Check if the dragger node is in the nodepath.
@@ -172,7 +272,6 @@ bool CompositeDragger::handle(const PointerInfo& pi, const osgGA::GUIEventAdapte
     }
     return false;
 }
-
 bool CompositeDragger::containsDragger( const Dragger* dragger ) const
 {
     for (DraggerList::const_iterator itr = _draggerList.begin(); itr != _draggerList.end(); ++itr)
@@ -212,14 +311,6 @@ bool CompositeDragger::removeDragger(Dragger *dragger)
     }
     else return false;
 
-}
-void CompositeDragger::setCommandManager(CommandManager* cm)
-{
-    for (DraggerList::iterator itr = _draggerList.begin(); itr != _draggerList.end(); ++itr)
-    {
-        (*itr)->setCommandManager(cm);
-    }
-    Dragger::setCommandManager(cm);
 }
 
 void CompositeDragger::setParentDragger(Dragger* dragger)

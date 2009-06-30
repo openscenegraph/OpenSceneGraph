@@ -14,7 +14,6 @@
 
 #include <osgManipulator/Scale2DDragger>
 #include <osgManipulator/Command>
-#include <osgManipulator/CommandManager>
 
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
@@ -109,11 +108,7 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
                     cmd->setReferencePoint(_referencePoint);
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     // Set color to pick color.
                     setMaterialColor(_pickColor,*this);
@@ -145,11 +140,7 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
                     cmd->setMinScale(getMinScale());
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     aa.requestRedraw();
                 }
@@ -164,17 +155,13 @@ bool Scale2DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
                 cmd->setStage(MotionCommand::FINISH);
                 cmd->setReferencePoint(_referencePoint);
                 cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
-                    
+
                 // Dispatch command.
-                if (_commandManager)
-                {
-                    _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                    _commandManager->dispatch(*cmd);
-                }
+                dispatch(*cmd);
 
                 // Reset color.
                 setMaterialColor(_color,*this);
-                
+
                 aa.requestRedraw();
 
                 return true;

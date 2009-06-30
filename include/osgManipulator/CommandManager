@@ -22,7 +22,7 @@
 namespace osgManipulator {
 
 /**
- * Command manager receives commands from draggers and dispatches them to selections.
+ * Deprecated.  CommandManager class is now no longer required as Dragger now matains all references to Constraints and Selections.
  */
 class OSGMANIPULATOR_EXPORT CommandManager : public osg::Referenced
 {
@@ -40,12 +40,6 @@ class OSGMANIPULATOR_EXPORT CommandManager : public osg::Referenced
 
         /** Disconnect the selections from a dragger. */
         virtual bool disconnect(Dragger& dragger);
-
-        /** Dispatches a command. Usually called from a dragger. */
-        virtual void dispatch(MotionCommand& command);
-
-        /** Add all selections connected to the dragger to the command. */
-        void addSelectionsToCommand(MotionCommand& command, Dragger& dragger);
 
         typedef std::list< osg::ref_ptr<Selection> > Selections;
 

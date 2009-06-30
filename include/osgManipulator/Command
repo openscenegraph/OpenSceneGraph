@@ -51,23 +51,8 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
 
         MotionCommand();
 
-        /** Execute the command. */
-        virtual bool execute() = 0;
-
-        /** Undo the command. The inverse of this command is executed. */
-        virtual bool unexecute() = 0;
-
-        /** Apply a constraint to the command. */
-        virtual void applyConstraint(const Constraint*) = 0;
-
-        /**
-         * Add Selection (receiver) to the command. The command will be 
-         * executed on all the selections. 
-         */
-        void addSelection(Selection*);
-
-        /** Remove Selection (receiver) from the command. */
-        void removeSelection(Selection*);
+        /** create a MotionCommand that is the inverse of this command, and if applied will undo this commands changes. */
+        virtual MotionCommand* createCommandInverse() = 0;
 
         /**
          * Gets the matrix for transforming the Selection. This matrix is in the
@@ -103,18 +88,12 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
     protected:
 
         virtual ~MotionCommand();
-        typedef std::vector< osg::ref_ptr<Selection> > SelectionList;
-
-        SelectionList&       getSelectionList()       { return _selectionList; }
-        const SelectionList& getSelectionList() const { return _selectionList; }
         
     private:
         osg::Matrix     _localToWorld;
         osg::Matrix     _worldToLocal;
 
         Stage           _stage;
-
-        SelectionList        _selectionList;
 };
 
 
@@ -129,9 +108,7 @@ class OSGMANIPULATOR_EXPORT TranslateInLineCommand : public MotionCommand
 
         TranslateInLineCommand(const osg::LineSegment::vec_type& s, const osg::LineSegment::vec_type& e);
 
-        virtual bool execute();
-        virtual bool unexecute();
-        virtual void applyConstraint(const Constraint*);
+        virtual MotionCommand* createCommandInverse();
 
         inline void setLine(const osg::LineSegment::vec_type& s, const osg::LineSegment::vec_type& e) { _line->start() = s; _line->end() = e; }
         inline const osg::LineSegment::vec_type& getLineStart() const { return _line->start(); }
@@ -165,9 +142,7 @@ class OSGMANIPULATOR_EXPORT TranslateInPlaneCommand : public MotionCommand
 
         TranslateInPlaneCommand(const osg::Plane& plane);
 
-        virtual bool execute();
-        virtual bool unexecute();
-        virtual void applyConstraint(const Constraint*);
+        virtual MotionCommand* createCommandInverse();
 
         inline void setPlane(const osg::Plane& plane) { _plane = plane; }
         inline const osg::Plane& getPlane() const { return _plane; }
@@ -203,9 +178,7 @@ class OSGMANIPULATOR_EXPORT Scale1DCommand : public MotionCommand
 
         Scale1DCommand();
 
-        virtual bool execute();
-        virtual bool unexecute();
-        virtual void applyConstraint(const Constraint*);
+        virtual MotionCommand* createCommandInverse();
 
         inline void setScale(double s) { _scale = s; }
         inline double getScale() const { return _scale; }
@@ -247,9 +220,7 @@ class OSGMANIPULATOR_EXPORT Scale2DCommand : public MotionCommand
 
         Scale2DCommand();
 
-        virtual bool execute();
-        virtual bool unexecute();
-        virtual void applyConstraint(const Constraint*);
+        virtual MotionCommand* createCommandInverse();
 
         inline void setScale(const osg::Vec2d& s) { _scale = s; }
         inline const osg::Vec2d& getScale() const { return _scale; }
@@ -291,9 +262,7 @@ class OSGMANIPULATOR_EXPORT ScaleUniformCommand : public MotionCommand
 
         ScaleUniformCommand();
 
-        virtual bool execute();
-        virtual bool unexecute();
-        virtual void applyConstraint(const Constraint*);
+        virtual MotionCommand* createCommandInverse();
 
         inline void setScale(double s) { _scale = s; }
         inline double getScale() const { return _scale; }
@@ -326,9 +295,7 @@ class OSGMANIPULATOR_EXPORT Rotate3DCommand : public MotionCommand
 
         Rotate3DCommand();
 
-        virtual bool execute();
-        virtual bool unexecute();
-        virtual void applyConstraint(const Constraint*);
+        virtual MotionCommand* createCommandInverse();
 
         inline void setRotation(const osg::Quat& rotation) { _rotation = rotation; }
         inline const osg::Quat& getRotation() const { return _rotation; }

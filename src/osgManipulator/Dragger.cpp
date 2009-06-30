@@ -238,7 +238,7 @@ void Dragger::dispatch(MotionCommand& command)
         itr != _constraints.end();
         ++itr)
     {
-        command.applyConstraint(itr->get());
+        (*itr)->constrain(command);
     }
 
     // move self

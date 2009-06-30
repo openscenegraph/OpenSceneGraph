@@ -33,17 +33,6 @@ MotionCommand::~MotionCommand()
 {
 }
 
-void MotionCommand::addSelection(Selection* selection)
-{
-    _selectionList.push_back(selection);
-}
-
-void MotionCommand::removeSelection(Selection* selection)
-{
-    _selectionList.erase(std::remove(_selectionList.begin(), _selectionList.end(), selection),
-                         _selectionList.end());
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -64,35 +53,12 @@ TranslateInLineCommand::~TranslateInLineCommand()
 {
 }
 
-bool TranslateInLineCommand::execute()
-{
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*this);
-    }
-    return true;
-}
-
-bool TranslateInLineCommand::unexecute()
+MotionCommand* TranslateInLineCommand::createCommandInverse()
 {
     osg::ref_ptr<TranslateInLineCommand> inverse = new TranslateInLineCommand();
     *inverse = *this;
     inverse->setTranslation(-_translation);
-    
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*inverse);
-    }
-    return true;
-}
-
-void TranslateInLineCommand::applyConstraint(const Constraint* constraint)
-{
-    if (constraint) constraint->constrain(*this);
+    return inverse.release();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -111,36 +77,12 @@ TranslateInPlaneCommand::TranslateInPlaneCommand(const osg::Plane& plane) : _pla
 TranslateInPlaneCommand::~TranslateInPlaneCommand()
 {
 }
-
-bool TranslateInPlaneCommand::execute()
-{
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*this);
-    }
-    return true;
-}
-
-bool TranslateInPlaneCommand::unexecute()
+MotionCommand* TranslateInPlaneCommand::createCommandInverse()
 {
     osg::ref_ptr<TranslateInPlaneCommand> inverse = new TranslateInPlaneCommand();
     *inverse = *this;
     inverse->setTranslation(-_translation);
-    
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*inverse);
-    }
-    return true;
-}
-
-void TranslateInPlaneCommand::applyConstraint(const Constraint* constraint)
-{
-    if (constraint) constraint->constrain(*this);
+    return inverse.release();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -156,35 +98,12 @@ Scale1DCommand::~Scale1DCommand()
 {
 }
 
-bool Scale1DCommand::execute()
-{
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*this);
-    }
-    return true;
-}
-
-bool Scale1DCommand::unexecute()
+MotionCommand* Scale1DCommand::createCommandInverse()
 {
     osg::ref_ptr<Scale1DCommand> inverse = new Scale1DCommand();
     *inverse = *this;
     if (_scale) inverse->setScale(1.0/_scale);
-
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*inverse);
-    }
-    return true;
-}
-
-void Scale1DCommand::applyConstraint(const Constraint* constraint)
-{
-    if (constraint) constraint->constrain(*this);
+    return inverse.release();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -200,36 +119,13 @@ Scale2DCommand::~Scale2DCommand()
 {
 }
 
-bool Scale2DCommand::execute()
-{
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*this);
-    }
-    return true;
-}
-
-bool Scale2DCommand::unexecute()
+MotionCommand* Scale2DCommand::createCommandInverse()
 {
     osg::ref_ptr<Scale2DCommand> inverse = new Scale2DCommand();
     *inverse = *this;
     if (_scale[0] && _scale[1])
         inverse->setScale(osg::Vec2(1.0/_scale[0],1.0/_scale[1]));
-    
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*inverse);
-    }
-    return true;
-}
-
-void Scale2DCommand::applyConstraint(const Constraint* constraint)
-{
-    if (constraint) constraint->constrain(*this);
+    return inverse.release();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -245,35 +141,13 @@ ScaleUniformCommand::~ScaleUniformCommand()
 {
 }
 
-bool ScaleUniformCommand::execute()
-{
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*this);
-    }
-    return true;
-}
-
-bool ScaleUniformCommand::unexecute()
+MotionCommand* ScaleUniformCommand::createCommandInverse()
 {
     osg::ref_ptr<ScaleUniformCommand> inverse = new ScaleUniformCommand();
     *inverse = *this;
     if (_scale) inverse->setScale(1.0/_scale);
-    
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*inverse);
-    }
-    return true;
-}
 
-void ScaleUniformCommand::applyConstraint(const Constraint* constraint)
-{
-    if (constraint) constraint->constrain(*this);
+    return inverse.release();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -289,33 +163,10 @@ Rotate3DCommand::~Rotate3DCommand()
 {
 }
 
-bool Rotate3DCommand::execute()
-{
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*this);
-    }
-    return true;
-}
-
-bool Rotate3DCommand::unexecute()
+MotionCommand* Rotate3DCommand::createCommandInverse()
 {
     osg::ref_ptr<Rotate3DCommand> inverse = new Rotate3DCommand();
     *inverse = *this;
     inverse->setRotation(_rotation.inverse());
-    
-    for (SelectionList::iterator iter = getSelectionList().begin(); 
-            iter != getSelectionList().end();
-            ++iter)
-    {
-        (*iter)->receive(*inverse);
-    }
-    return true;
-}
-
-void Rotate3DCommand::applyConstraint(const Constraint* constraint)
-{
-    if (constraint) constraint->constrain(*this);
+    return inverse.release();
 }

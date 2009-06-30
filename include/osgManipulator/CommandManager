@@ -56,11 +56,6 @@ class OSGMANIPULATOR_EXPORT CommandManager : public osg::Referenced
 
         virtual ~CommandManager();
 
-        typedef std::multimap< osg::ref_ptr<Dragger>, osg::ref_ptr<Selection> > DraggerSelectionMap;
-        DraggerSelectionMap _draggerSelectionMap;
-
-        typedef std::multimap< osg::ref_ptr<Dragger>, osg::ref_ptr<Constraint> > DraggerConstraintMap;
-        DraggerConstraintMap _draggerConstraintMap;
 };
 
 }

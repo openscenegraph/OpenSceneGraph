@@ -16,6 +16,8 @@
 #define OSGMANIPULATOR_DRAGGER 1
 
 #include <osgManipulator/Selection>
+#include <osgManipulator/Constraint>
+#include <osgManipulator/Command>
 
 #include <osg/BoundingSphere>
 #include <osgUtil/SceneView>
@@ -26,7 +28,6 @@
 namespace osgManipulator
 {
 
-class CommandManager;
 class CompositeDragger;
 
 class OSGMANIPULATOR_EXPORT PointerInfo
@@ -115,6 +116,7 @@ class OSGMANIPULATOR_EXPORT PointerInfo
         {
             projectWindowXYIntoObject(osg::Vec2d(pixel_x, pixel_y), _nearPoint, _farPoint);
         }
+
     protected:
         bool projectWindowXYIntoObject(const osg::Vec2d& windowCoord, osg::Vec3d& nearPoint, osg::Vec3d& farPoint) const;
 
@@ -135,20 +137,14 @@ class OSGMANIPULATOR_EXPORT PointerInfo
 /**
  * Base class for draggers. Concrete draggers implement the pick event handler
  * and generate motion commands (translate, rotate, ...) and sends these
- * command to the CommandManager. The CommandManager dispatches the commands
- * to all the Selections that are connected to the Dragger that generates the
+ * command to all the Selections that are connected to the Dragger that generates the
  * commands.
  */
-class OSGMANIPULATOR_EXPORT Dragger : public Selection
+class OSGMANIPULATOR_EXPORT Dragger : public Selection, public osg::Observer
 {
     public:
 
         META_OSGMANIPULATOR_Object(osgManipulator,Dragger)
-
-        /** Set/Get the CommandManager. Draggers use CommandManager to dispatch commands. */
-        virtual void setCommandManager(CommandManager* cm) { _commandManager = cm; }
-        CommandManager* getCommandManager() { return _commandManager; }
-        const CommandManager* getCommandManager() const { return _commandManager; }
 
         /**
          * Set/Get parent dragger. For simple draggers parent points to itself.
@@ -178,18 +174,39 @@ class OSGMANIPULATOR_EXPORT Dragger : public Selection
         virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
         virtual bool handle(const PointerInfo&, const osgGA::GUIEventAdapter&, osgGA::GUIActionAdapter&) { return false; }
 
+
+        typedef std::vector< osg::ref_ptr<Constraint> > Constraints;
+
+        void addConstraint(Constraint* constraint);
+        void removeConstraint(Constraint* constraint);
+
+        Constraints& getConstraints() { return _constraints; }
+        const Constraints& getConstraints() const { return _constraints; }
+
+
+        typedef std::vector< Selection* > Selections;
+        void addSelection(Selection* selection);
+        void removeSelection(Selection* selection);
+
+        Selections& getSelections() { return _selections; }
+        const Selections& getSelections() const { return _selections; }
+
     protected:
 
         Dragger();
         virtual ~Dragger();
 
+        void dispatch(MotionCommand& command);
+        virtual void objectDeleted(void* object);
+
         bool                            _handleEvents;
         bool                            _draggerActive;
         osgManipulator::PointerInfo     _pointer;
 
-        CommandManager*                 _commandManager;
-
         Dragger*                        _parentDragger;
+
+        Constraints                     _constraints;
+        Selections                      _selections;
 
 };
 
@@ -208,8 +225,6 @@ class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
 
         virtual const CompositeDragger* getComposite() const { return this; }
         virtual CompositeDragger* getComposite() { return this; }
-
-        virtual void setCommandManager(CommandManager* cm);
 
         virtual void setParentDragger(Dragger* parent);
 

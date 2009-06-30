@@ -14,7 +14,6 @@
 
 #include <osgManipulator/Scale1DDragger>
 #include <osgManipulator/Command>
-#include <osgManipulator/CommandManager>
 
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
@@ -80,11 +79,7 @@ bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
                     cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     // Set color to pick color.
                     setMaterialColor(_pickColor,*this);
@@ -123,11 +118,7 @@ bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
                     cmd->setMinScale(getMinScale());
 
                     // Dispatch command.
-                    if (_commandManager)
-                    {
-                        _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                        _commandManager->dispatch(*cmd);
-                    }
+                    dispatch(*cmd);
 
                     aa.requestRedraw();
                 }
@@ -141,17 +132,13 @@ bool Scale1DDragger::handle(const PointerInfo& pointer, const osgGA::GUIEventAda
 
                 cmd->setStage(MotionCommand::FINISH);
                 cmd->setLocalToWorldAndWorldToLocal(_projector->getLocalToWorld(),_projector->getWorldToLocal());
-                    
+
                 // Dispatch command.
-                if (_commandManager)
-                {
-                    _commandManager->addSelectionsToCommand(*cmd, *getParentDragger());
-                    _commandManager->dispatch(*cmd);
-                }
+                dispatch(*cmd);
 
                 // Reset color.
                 setMaterialColor(_color,*this);
-                
+
                 aa.requestRedraw();
 
                 return true;
@@ -172,7 +159,7 @@ void Scale1DDragger::setupDefaultGeometry()
     // Create a line.
     {
         osg::Geometry* geometry = new osg::Geometry();
-        
+
         osg::Vec3Array* vertices = new osg::Vec3Array(2);
         (*vertices)[0] = _projector->getLineStart();
         (*vertices)[1] = _projector->getLineEnd();

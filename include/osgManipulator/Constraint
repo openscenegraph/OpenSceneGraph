@@ -17,6 +17,7 @@
 
 #include <osgManipulator/Export>
 
+#include <osg/observer_ptr>
 #include <osg/Node>
 #include <osg/Matrix>
 
@@ -55,7 +56,7 @@ class OSGMANIPULATOR_EXPORT Constraint : public osg::Referenced
 
     private:
 
-        osg::ref_ptr<osg::Node> _refNode;
+        osg::observer_ptr<osg::Node> _refNode;
         mutable osg::Matrix     _localToWorld;
         mutable osg::Matrix     _worldToLocal;
 };

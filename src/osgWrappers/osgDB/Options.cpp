@@ -84,6 +84,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Options)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method0(osgDB::Options *, cloneOptions,
+	          Properties::NON_VIRTUAL,
+	          __Options_P1__cloneOptions,
+	          "",
+	          "");
 	I_Method1(void, setOptionString, IN, const std::string &, str,
 	          Properties::NON_VIRTUAL,
 	          __void__setOptionString__C5_std_string_R1,

@@ -100,14 +100,24 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::GridConstraint)
 	               ____GridConstraint__osg_Node_R1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
 	               "",
 	               "");
-	I_Method1(void, setOrigin, IN, const osg::Vec3d, origin,
+	I_Method1(void, setOrigin, IN, const osg::Vec3d &, origin,
 	          Properties::NON_VIRTUAL,
-	          __void__setOrigin__C5_osg_Vec3d,
+	          __void__setOrigin__C5_osg_Vec3d_R1,
 	          "",
 	          "");
-	I_Method1(void, setSpacing, IN, const osg::Vec3d, spacing,
+	I_Method0(const osg::Vec3d &, getOrigin,
 	          Properties::NON_VIRTUAL,
-	          __void__setSpacing__C5_osg_Vec3d,
+	          __C5_osg_Vec3d_R1__getOrigin,
+	          "",
+	          "");
+	I_Method1(void, setSpacing, IN, const osg::Vec3d &, spacing,
+	          Properties::NON_VIRTUAL,
+	          __void__setSpacing__C5_osg_Vec3d_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec3d &, getSpacing,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3d_R1__getSpacing,
 	          "",
 	          "");
 	I_Method1(bool, constrain, IN, osgManipulator::TranslateInLineCommand &, command,
@@ -135,11 +145,11 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::GridConstraint)
 	          __bool__constrain__ScaleUniformCommand_R1,
 	          "",
 	          "");
-	I_SimpleProperty(const osg::Vec3d, Origin, 
-	                 0, 
-	                 __void__setOrigin__C5_osg_Vec3d);
-	I_SimpleProperty(const osg::Vec3d, Spacing, 
-	                 0, 
-	                 __void__setSpacing__C5_osg_Vec3d);
+	I_SimpleProperty(const osg::Vec3d &, Origin, 
+	                 __C5_osg_Vec3d_R1__getOrigin, 
+	                 __void__setOrigin__C5_osg_Vec3d_R1);
+	I_SimpleProperty(const osg::Vec3d &, Spacing, 
+	                 __C5_osg_Vec3d_R1__getSpacing, 
+	                 __void__setSpacing__C5_osg_Vec3d_R1);
 END_REFLECTOR
 

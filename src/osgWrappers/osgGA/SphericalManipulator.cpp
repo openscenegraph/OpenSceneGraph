@@ -207,6 +207,16 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SphericalManipulator)
 	          __void__setRotationMode__RotationMode,
 	          "",
 	          "");
+	I_Method0(bool, getAllowThrow,
+	          Properties::NON_VIRTUAL,
+	          __bool__getAllowThrow,
+	          "Returns true if the camera can be thrown, false otherwise. ",
+	          "This defaults to true. ");
+	I_Method1(void, setAllowThrow, IN, bool, allowThrow,
+	          Properties::NON_VIRTUAL,
+	          __void__setAllowThrow__bool,
+	          "Set the 'allow throw' flag. ",
+	          "Releasing the mouse button while moving the camera results in a throw. ");
 	I_ProtectedMethod0(void, flushMouseEventStack,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -231,6 +241,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SphericalManipulator)
 	                   __bool__isMouseMoving,
 	                   "Check the speed at which the mouse is moving. ",
 	                   "If speed is below a threshold then return false, otherwise return true. ");
+	I_SimpleProperty(bool, AllowThrow, 
+	                 __bool__getAllowThrow, 
+	                 __void__setAllowThrow__bool);
 	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
 	                 0, 
 	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);

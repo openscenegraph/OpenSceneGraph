@@ -28,6 +28,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	I_Constructor0(____Channel,
 	               "",
 	               "");
+	I_Constructor1(IN, const osgAnimation::Channel &, channel,
+	               Properties::NON_EXPLICIT,
+	               ____Channel__C5_Channel_R1,
+	               "",
+	               "");
+	I_Method0(osgAnimation::Channel *, clone,
+	          Properties::PURE_VIRTUAL,
+	          __Channel_P1__clone,
+	          "",
+	          "");
 	I_Method1(void, update, IN, float, time,
 	          Properties::PURE_VIRTUAL,
 	          __void__update__float,

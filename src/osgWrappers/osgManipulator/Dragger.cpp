@@ -12,6 +12,7 @@
 
 #include <osg/Camera>
 #include <osg/Node>
+#include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/Vec3d>
 #include <osgGA/GUIActionAdapter>
@@ -186,6 +187,36 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	          __CompositeDragger_P1__getComposite,
 	          "Returns 0 if this Dragger is not a CompositeDragger. ",
 	          "");
+	I_Method1(void, setHandleEvents, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setHandleEvents__bool,
+	          "",
+	          "");
+	I_Method0(bool, getHandleEvents,
+	          Properties::NON_VIRTUAL,
+	          __bool__getHandleEvents,
+	          "",
+	          "");
+	I_Method1(void, setDraggerActive, IN, bool, active,
+	          Properties::NON_VIRTUAL,
+	          __void__setDraggerActive__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDraggerActive,
+	          Properties::NON_VIRTUAL,
+	          __bool__getDraggerActive,
+	          "",
+	          "");
+	I_Method1(void, traverse, IN, osg::NodeVisitor &, x,
+	          Properties::VIRTUAL,
+	          __void__traverse__osg_NodeVisitor_R1,
+	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
+	          "");
+	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, aa,
+	          Properties::VIRTUAL,
+	          __bool__handle__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	          "",
+	          "");
 	I_Method3(bool, handle, IN, const osgManipulator::PointerInfo &, x, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __bool__handle__C5_PointerInfo_R1__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
@@ -200,6 +231,12 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	I_SimpleProperty(osgManipulator::CompositeDragger *, Composite, 
 	                 __CompositeDragger_P1__getComposite, 
 	                 0);
+	I_SimpleProperty(bool, DraggerActive, 
+	                 __bool__getDraggerActive, 
+	                 __void__setDraggerActive__bool);
+	I_SimpleProperty(bool, HandleEvents, 
+	                 __bool__getHandleEvents, 
+	                 __void__setHandleEvents__bool);
 	I_SimpleProperty(osgManipulator::Dragger *, ParentDragger, 
 	                 __Dragger_P1__getParentDragger, 
 	                 __void__setParentDragger__Dragger_P1);

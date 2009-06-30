@@ -62,7 +62,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	I_Constructor0(____Animation,
 	               "",
 	               "");
-	I_Constructor2(IN, const osgAnimation::Animation &, anim, IN, const osg::CopyOp &, x,
+	I_Constructor2(IN, const osgAnimation::Animation &, x, IN, const osg::CopyOp &, x,
 	               ____Animation__C5_osgAnimation_Animation_R1__C5_osg_CopyOp_R1,
 	               "",
 	               "");

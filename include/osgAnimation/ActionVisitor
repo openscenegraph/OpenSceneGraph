@@ -44,7 +44,7 @@ namespace osgAnimation
         META_ActionVisitor(osgAnimation, ActionVisitor);
         void traverse(Action& visitor);
 
-        void pushFrameActionOnStack(FrameAction& fa);
+        void pushFrameActionOnStack(const FrameAction& fa);
         void popFrameAction();
 
         void pushTimelineOnStack(Timeline* tm);
@@ -71,7 +71,7 @@ namespace osgAnimation
         UpdateActionVisitor();
         void setFrame(unsigned int frame) { _frame = frame;}
 
-        bool isActive() const;
+        bool isActive(Action& action) const;
         unsigned int getLocalFrame() const;
 
         void apply(Timeline& action);

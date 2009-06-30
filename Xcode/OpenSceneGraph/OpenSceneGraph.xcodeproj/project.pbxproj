@@ -179,6 +179,7 @@
 				D43AB63D0E2E1EAC00623C77 /* PBXTargetDependency */,
 				D418880B0EDEE80A00C17A84 /* PBXTargetDependency */,
 				D4C9C88C0E91157A00F8C4A0 /* PBXTargetDependency */,
+				D40F5DF30FFA339B002E7744 /* PBXTargetDependency */,
 			);
 			name = osgFrameworks;
 			productName = osgFrameworks;
@@ -2281,6 +2282,31 @@
 		D40B52370F5804E3004D300C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB77AAFE841565C02AAC07 /* Carbon.framework */; };
 		D40B52B70F580568004D300C /* ReaderWriterImageIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40B52B60F580568004D300C /* ReaderWriterImageIO.cpp */; };
 		D40B52BA0F5805C2004D300C /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D40B52B90F5805C2004D300C /* Accelerate.framework */; };
+		D40F5D0A0FFA0BB9002E7744 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		D40F5D740FFA330F002E7744 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00638E11093B9E5A002722CD /* Cocoa.framework */; };
+		D40F5D750FFA330F002E7744 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
+		D40F5D760FFA330F002E7744 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
+		D40F5D770FFA330F002E7744 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		D40F5D780FFA330F002E7744 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		D40F5D790FFA330F002E7744 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		D40F5D7A0FFA330F002E7744 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
+		D40F5D7B0FFA330F002E7744 /* OpenThreads.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0037A02D0C18D74C0089AA1C /* OpenThreads.framework */; };
+		D40F5D7C0FFA330F002E7744 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB77AAFE841565C02AAC07 /* Carbon.framework */; };
+		D40F5D7D0FFA330F002E7744 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0037A1210C18E81E0089AA1C /* AGL.framework */; };
+		D40F5DFB0FFA33C5002E7744 /* AnimationMaterial in Headers */ = {isa = PBXBuildFile; fileRef = D40F5DF50FFA33C4002E7744 /* AnimationMaterial */; settings = {ATTRIBUTES = (Public, ); }; };
+		D40F5DFC0FFA33C5002E7744 /* CompileSlideCallback in Headers */ = {isa = PBXBuildFile; fileRef = D40F5DF60FFA33C4002E7744 /* CompileSlideCallback */; settings = {ATTRIBUTES = (Public, ); }; };
+		D40F5DFD0FFA33C5002E7744 /* Export in Headers */ = {isa = PBXBuildFile; fileRef = D40F5DF70FFA33C4002E7744 /* Export */; settings = {ATTRIBUTES = (Public, ); }; };
+		D40F5DFE0FFA33C5002E7744 /* PickEventHandler in Headers */ = {isa = PBXBuildFile; fileRef = D40F5DF80FFA33C4002E7744 /* PickEventHandler */; settings = {ATTRIBUTES = (Public, ); }; };
+		D40F5DFF0FFA33C5002E7744 /* SlideEventHandler in Headers */ = {isa = PBXBuildFile; fileRef = D40F5DF90FFA33C5002E7744 /* SlideEventHandler */; settings = {ATTRIBUTES = (Public, ); }; };
+		D40F5E000FFA33C5002E7744 /* SlideShowConstructor in Headers */ = {isa = PBXBuildFile; fileRef = D40F5DFA0FFA33C5002E7744 /* SlideShowConstructor */; settings = {ATTRIBUTES = (Public, ); }; };
+		D40F5E080FFA33DD002E7744 /* AnimationMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40F5E020FFA33DC002E7744 /* AnimationMaterial.cpp */; };
+		D40F5E0A0FFA33DD002E7744 /* CompileSlideCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40F5E040FFA33DC002E7744 /* CompileSlideCallback.cpp */; };
+		D40F5E0B0FFA33DD002E7744 /* PickEventHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40F5E050FFA33DC002E7744 /* PickEventHandler.cpp */; };
+		D40F5E0C0FFA33DD002E7744 /* SlideEventHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40F5E060FFA33DC002E7744 /* SlideEventHandler.cpp */; };
+		D40F5E0D0FFA33DD002E7744 /* SlideShowConstructor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D40F5E070FFA33DD002E7744 /* SlideShowConstructor.cpp */; };
+		D40F5E1D0FFA345D002E7744 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		D40F5E720FFA34A1002E7744 /* osgVolume.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4C9C8320E91148900F8C4A0 /* osgVolume.framework */; };
+		D40F5E940FFA34C2002E7744 /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
 		D4163D1B0F2A6A290062226D /* ImageUtils in Headers */ = {isa = PBXBuildFile; fileRef = D4163D1A0F2A6A290062226D /* ImageUtils */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4163D1D0F2A6A540062226D /* ImageUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4163D1C0F2A6A540062226D /* ImageUtils.cpp */; };
 		D4163D1F0F2A6A910062226D /* CameraViewSwitchManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4163D1E0F2A6A900062226D /* CameraViewSwitchManipulator.cpp */; };
@@ -6040,7 +6066,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
 			remoteInfo = osgViewer;
 		};
 		D403C08B0F680CDD00D49A89 /* PBXContainerItemProxy */ = {
@@ -6105,6 +6131,76 @@
 			proxyType = 1;
 			remoteGlobalIDString = 001D0396065AAF46003310BF;
 			remoteInfo = osgdb_rgb;
+		};
+		D40F5D2A0FFA0BC1002E7744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteInfo = osgViewer;
+		};
+		D40F5D430FFA330F002E7744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE117FB205D63B3800EB53E5;
+			remoteInfo = osg;
+		};
+		D40F5D450FFA330F002E7744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11849905D7126100EB53E5;
+			remoteInfo = osgUtil;
+		};
+		D40F5D470FFA330F002E7744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00557CDF0624A947000A808A;
+			remoteInfo = osgGA;
+		};
+		D40F5D490FFA330F002E7744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE1188E605D764C400EB53E5;
+			remoteInfo = osgDB;
+		};
+		D40F5D4B0FFA330F002E7744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11876905D75C2700EB53E5;
+			remoteInfo = osgText;
+		};
+		D40F5DF20FFA339B002E7744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D40F5D410FFA330F002E7744 /* osgPresentation */;
+			remoteInfo = osgPresentation;
+		};
+		D40F5E470FFA3465002E7744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteInfo = osgViewer;
+		};
+		D40F5E4F0FFA3474002E7744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4C9C7FB0E91148900F8C4A0 /* osgVolume */;
+			remoteInfo = osgVolume;
+		};
+		D40F5E860FFA34B4002E7744 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0055835A0624D1E5000A808A /* osgFX */;
+			remoteInfo = osgFX;
 		};
 		D41887290EDEE6E000C17A84 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -8115,6 +8211,18 @@
 		D40B523C0F5804E3004D300C /* osgdb_imageio.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_imageio.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D40B52B60F580568004D300C /* ReaderWriterImageIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ReaderWriterImageIO.cpp; path = ../../src/osgPlugins/imageio/ReaderWriterImageIO.cpp; sourceTree = SOURCE_ROOT; };
 		D40B52B90F5805C2004D300C /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
+		D40F5D860FFA330F002E7744 /* osgPresentation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgPresentation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D40F5DF50FFA33C4002E7744 /* AnimationMaterial */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AnimationMaterial; sourceTree = "<group>"; };
+		D40F5DF60FFA33C4002E7744 /* CompileSlideCallback */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CompileSlideCallback; sourceTree = "<group>"; };
+		D40F5DF70FFA33C4002E7744 /* Export */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Export; sourceTree = "<group>"; };
+		D40F5DF80FFA33C4002E7744 /* PickEventHandler */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = PickEventHandler; sourceTree = "<group>"; };
+		D40F5DF90FFA33C5002E7744 /* SlideEventHandler */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SlideEventHandler; sourceTree = "<group>"; };
+		D40F5DFA0FFA33C5002E7744 /* SlideShowConstructor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SlideShowConstructor; sourceTree = "<group>"; };
+		D40F5E020FFA33DC002E7744 /* AnimationMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnimationMaterial.cpp; sourceTree = "<group>"; };
+		D40F5E040FFA33DC002E7744 /* CompileSlideCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CompileSlideCallback.cpp; sourceTree = "<group>"; };
+		D40F5E050FFA33DC002E7744 /* PickEventHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PickEventHandler.cpp; sourceTree = "<group>"; };
+		D40F5E060FFA33DC002E7744 /* SlideEventHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SlideEventHandler.cpp; sourceTree = "<group>"; };
+		D40F5E070FFA33DD002E7744 /* SlideShowConstructor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SlideShowConstructor.cpp; sourceTree = "<group>"; };
 		D4163D1A0F2A6A290062226D /* ImageUtils */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ImageUtils; sourceTree = "<group>"; };
 		D4163D1C0F2A6A540062226D /* ImageUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageUtils.cpp; sourceTree = "<group>"; };
 		D4163D1E0F2A6A900062226D /* CameraViewSwitchManipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CameraViewSwitchManipulator.cpp; sourceTree = "<group>"; };
@@ -10285,6 +10393,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D40F5D730FFA330F002E7744 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D40F5E940FFA34C2002E7744 /* osgFX.framework in Frameworks */,
+				D40F5E720FFA34A1002E7744 /* osgVolume.framework in Frameworks */,
+				D40F5E1D0FFA345D002E7744 /* osgViewer.framework in Frameworks */,
+				D40F5D740FFA330F002E7744 /* Cocoa.framework in Frameworks */,
+				D40F5D750FFA330F002E7744 /* osgText.framework in Frameworks */,
+				D40F5D760FFA330F002E7744 /* OpenGL.framework in Frameworks */,
+				D40F5D770FFA330F002E7744 /* osg.framework in Frameworks */,
+				D40F5D780FFA330F002E7744 /* osgUtil.framework in Frameworks */,
+				D40F5D790FFA330F002E7744 /* osgDB.framework in Frameworks */,
+				D40F5D7A0FFA330F002E7744 /* osgGA.framework in Frameworks */,
+				D40F5D7B0FFA330F002E7744 /* OpenThreads.framework in Frameworks */,
+				D40F5D7C0FFA330F002E7744 /* Carbon.framework in Frameworks */,
+				D40F5D7D0FFA330F002E7744 /* AGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D41887410EDEE6E000C17A84 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -10372,6 +10500,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D40F5D0A0FFA0BB9002E7744 /* osgViewer.framework in Frameworks */,
 				D47A06760B833F6E00E19024 /* osgText.framework in Frameworks */,
 				D47A06770B833F6E00E19024 /* OpenGL.framework in Frameworks */,
 				D47A06780B833F6E00E19024 /* osg.framework in Frameworks */,
@@ -12762,6 +12891,7 @@
 				D40B523C0F5804E3004D300C /* osgdb_imageio.so */,
 				D4F80AAA0F935ABF0043A5DE /* osgdb_curl.so */,
 				D43ED1E10FCE95C10024F778 /* osgdb_ply.so */,
+				D40F5D860FFA330F002E7744 /* osgPresentation.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -12835,6 +12965,7 @@
 				D41887D20EDEE78100C17A84 /* osgAnimation */,
 				D47A06B90B83406500E19024 /* osgManipulator */,
 				6320CCFE07845B7C00FE3D2C /* osgTerrain */,
+				D40F5E010FFA33DC002E7744 /* osgPresentation */,
 				00558606062622D8000A808A /* osgPlugins */,
 			);
 			name = Source;
@@ -13319,6 +13450,7 @@
 				D43AB5CD0E2E1DA200623C77 /* osgWidget */,
 				D41887A70EDEE75000C17A84 /* osgAnimation */,
 				D4C9C8620E9114EC00F8C4A0 /* osgVolume */,
+				D40F5DF40FFA33C4002E7744 /* osgPresentation */,
 			);
 			name = Include;
 			sourceTree = "<group>";
@@ -13709,6 +13841,33 @@
 			);
 			name = ImageIO;
 			sourceTree = "<group>";
+		};
+		D40F5DF40FFA33C4002E7744 /* osgPresentation */ = {
+			isa = PBXGroup;
+			children = (
+				D40F5DF50FFA33C4002E7744 /* AnimationMaterial */,
+				D40F5DF60FFA33C4002E7744 /* CompileSlideCallback */,
+				D40F5DF70FFA33C4002E7744 /* Export */,
+				D40F5DF80FFA33C4002E7744 /* PickEventHandler */,
+				D40F5DF90FFA33C5002E7744 /* SlideEventHandler */,
+				D40F5DFA0FFA33C5002E7744 /* SlideShowConstructor */,
+			);
+			name = osgPresentation;
+			path = ../../include/osgPresentation;
+			sourceTree = SOURCE_ROOT;
+		};
+		D40F5E010FFA33DC002E7744 /* osgPresentation */ = {
+			isa = PBXGroup;
+			children = (
+				D40F5E020FFA33DC002E7744 /* AnimationMaterial.cpp */,
+				D40F5E040FFA33DC002E7744 /* CompileSlideCallback.cpp */,
+				D40F5E050FFA33DC002E7744 /* PickEventHandler.cpp */,
+				D40F5E060FFA33DC002E7744 /* SlideEventHandler.cpp */,
+				D40F5E070FFA33DD002E7744 /* SlideShowConstructor.cpp */,
+			);
+			name = osgPresentation;
+			path = ../../src/osgPresentation;
+			sourceTree = SOURCE_ROOT;
 		};
 		D4163D330F2A6B340062226D /* Shaders */ = {
 			isa = PBXGroup;
@@ -15759,6 +15918,19 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D40F5D4E0FFA330F002E7744 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D40F5DFB0FFA33C5002E7744 /* AnimationMaterial in Headers */,
+				D40F5DFC0FFA33C5002E7744 /* CompileSlideCallback in Headers */,
+				D40F5DFD0FFA33C5002E7744 /* Export in Headers */,
+				D40F5DFE0FFA33C5002E7744 /* PickEventHandler in Headers */,
+				D40F5DFF0FFA33C5002E7744 /* SlideEventHandler in Headers */,
+				D40F5E000FFA33C5002E7744 /* SlideShowConstructor in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18889,6 +19061,33 @@
 			productReference = D40B523C0F5804E3004D300C /* osgdb_imageio.so */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
+		D40F5D410FFA330F002E7744 /* osgPresentation */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D40F5D7E0FFA330F002E7744 /* Build configuration list for PBXNativeTarget "osgPresentation" */;
+			buildPhases = (
+				D40F5D4E0FFA330F002E7744 /* Headers */,
+				D40F5D600FFA330F002E7744 /* Resources */,
+				D40F5D610FFA330F002E7744 /* Sources */,
+				D40F5D720FFA330F002E7744 /* Rez */,
+				D40F5D730FFA330F002E7744 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D40F5E870FFA34B4002E7744 /* PBXTargetDependency */,
+				D40F5D420FFA330F002E7744 /* PBXTargetDependency */,
+				D40F5D440FFA330F002E7744 /* PBXTargetDependency */,
+				D40F5D460FFA330F002E7744 /* PBXTargetDependency */,
+				D40F5D480FFA330F002E7744 /* PBXTargetDependency */,
+				D40F5D4A0FFA330F002E7744 /* PBXTargetDependency */,
+				D40F5E480FFA3465002E7744 /* PBXTargetDependency */,
+				D40F5E500FFA3474002E7744 /* PBXTargetDependency */,
+			);
+			name = osgPresentation;
+			productName = osgGA;
+			productReference = D40F5D860FFA330F002E7744 /* osgPresentation.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		D41887270EDEE6E000C17A84 /* osgAnimation */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D418874E0EDEE6E000C17A84 /* Build configuration list for PBXNativeTarget "osgAnimation" */;
@@ -19010,6 +19209,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D40F5D2B0FFA0BC1002E7744 /* PBXTargetDependency */,
 				D47A06560B833F6E00E19024 /* PBXTargetDependency */,
 				D47A06580B833F6E00E19024 /* PBXTargetDependency */,
 				D47A065A0B833F6E00E19024 /* PBXTargetDependency */,
@@ -19177,6 +19377,7 @@
 				D43AB51E0E2E1D1900623C77 /* osgWidget */,
 				D41887270EDEE6E000C17A84 /* osgAnimation */,
 				D4C9C7FB0E91148900F8C4A0 /* osgVolume */,
+				D40F5D410FFA330F002E7744 /* osgPresentation */,
 				005585CE06261D98000A808A /* osgPlugins */,
 				001DFCAB065A901A003310BF /* osgdb_3dc */,
 				001DFD0A065A9455003310BF /* osgdb_ac */,
@@ -19993,6 +20194,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D40F5D600FFA330F002E7744 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D41887390EDEE6E000C17A84 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -20126,6 +20334,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BE1188E405D764C400EB53E5 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D40F5D720FFA330F002E7744 /* Rez */ = {
 			isa = PBXRezBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -22040,6 +22255,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				D40B52B70F580568004D300C /* ReaderWriterImageIO.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D40F5D610FFA330F002E7744 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D40F5E080FFA33DD002E7744 /* AnimationMaterial.cpp in Sources */,
+				D40F5E0A0FFA33DD002E7744 /* CompileSlideCallback.cpp in Sources */,
+				D40F5E0B0FFA33DD002E7744 /* PickEventHandler.cpp in Sources */,
+				D40F5E0C0FFA33DD002E7744 /* SlideEventHandler.cpp in Sources */,
+				D40F5E0D0FFA33DD002E7744 /* SlideShowConstructor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -24954,6 +25181,56 @@
 			isa = PBXTargetDependency;
 			target = 001D0396065AAF46003310BF /* osgdb_rgb */;
 			targetProxy = D40B551B0F584C0A004D300C /* PBXContainerItemProxy */;
+		};
+		D40F5D2B0FFA0BC1002E7744 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			targetProxy = D40F5D2A0FFA0BC1002E7744 /* PBXContainerItemProxy */;
+		};
+		D40F5D420FFA330F002E7744 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE117FB205D63B3800EB53E5 /* osg */;
+			targetProxy = D40F5D430FFA330F002E7744 /* PBXContainerItemProxy */;
+		};
+		D40F5D440FFA330F002E7744 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11849905D7126100EB53E5 /* osgUtil */;
+			targetProxy = D40F5D450FFA330F002E7744 /* PBXContainerItemProxy */;
+		};
+		D40F5D460FFA330F002E7744 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00557CDF0624A947000A808A /* osgGA */;
+			targetProxy = D40F5D470FFA330F002E7744 /* PBXContainerItemProxy */;
+		};
+		D40F5D480FFA330F002E7744 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE1188E605D764C400EB53E5 /* osgDB */;
+			targetProxy = D40F5D490FFA330F002E7744 /* PBXContainerItemProxy */;
+		};
+		D40F5D4A0FFA330F002E7744 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11876905D75C2700EB53E5 /* osgText */;
+			targetProxy = D40F5D4B0FFA330F002E7744 /* PBXContainerItemProxy */;
+		};
+		D40F5DF30FFA339B002E7744 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D40F5D410FFA330F002E7744 /* osgPresentation */;
+			targetProxy = D40F5DF20FFA339B002E7744 /* PBXContainerItemProxy */;
+		};
+		D40F5E480FFA3465002E7744 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			targetProxy = D40F5E470FFA3465002E7744 /* PBXContainerItemProxy */;
+		};
+		D40F5E500FFA3474002E7744 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4C9C7FB0E91148900F8C4A0 /* osgVolume */;
+			targetProxy = D40F5E4F0FFA3474002E7744 /* PBXContainerItemProxy */;
+		};
+		D40F5E870FFA34B4002E7744 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0055835A0624D1E5000A808A /* osgFX */;
+			targetProxy = D40F5E860FFA34B4002E7744 /* PBXContainerItemProxy */;
 		};
 		D41887280EDEE6E000C17A84 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -53200,6 +53477,192 @@
 			};
 			name = "Development 32bit Carbon";
 		};
+		D40F5D7F0FFA330F002E7744 /* Development 32bit Carbon */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "osgPresentation-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgPresentation;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Development 32bit Carbon";
+		};
+		D40F5D800FFA330F002E7744 /* Deployment 32bit Carbon */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "osgPresentation-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgPresentation;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Deployment 32bit Carbon";
+		};
+		D40F5D810FFA330F002E7744 /* Development 64bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "osgPresentation-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgPresentation;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Development 64bit Cocoa";
+		};
+		D40F5D820FFA330F002E7744 /* Deployment 64bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "osgPresentation-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgPresentation;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Deployment 64bit Cocoa";
+		};
+		D40F5D830FFA330F002E7744 /* Development 32bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "osgPresentation-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgPresentation;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Development 32bit Cocoa";
+		};
+		D40F5D840FFA330F002E7744 /* Deployment 32bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "osgPresentation-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgPresentation;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Deployment 32bit Cocoa";
+		};
+		D40F5D850FFA330F002E7744 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "";
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "osgPresentation-Info.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks";
+				OTHER_CFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgPresentation;
+				REZ_EXECUTABLE = NO;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+			};
+			name = Default;
+		};
 		D418874F0EDEE6E000C17A84 /* Development 64bit Cocoa */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -61446,6 +61909,20 @@
 				D403BC5A0F67BD8500D49A89 /* Development 32bit Cocoa */,
 				D403BFB10F6806D200D49A89 /* Deployment 32bit Cocoa */,
 				D40B523B0F5804E3004D300C /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		D40F5D7E0FFA330F002E7744 /* Build configuration list for PBXNativeTarget "osgPresentation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D40F5D7F0FFA330F002E7744 /* Development 32bit Carbon */,
+				D40F5D800FFA330F002E7744 /* Deployment 32bit Carbon */,
+				D40F5D810FFA330F002E7744 /* Development 64bit Cocoa */,
+				D40F5D820FFA330F002E7744 /* Deployment 64bit Cocoa */,
+				D40F5D830FFA330F002E7744 /* Development 32bit Cocoa */,
+				D40F5D840FFA330F002E7744 /* Deployment 32bit Cocoa */,
+				D40F5D850FFA330F002E7744 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;

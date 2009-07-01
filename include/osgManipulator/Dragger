@@ -15,11 +15,11 @@
 #ifndef OSGMANIPULATOR_DRAGGER
 #define OSGMANIPULATOR_DRAGGER 1
 
-#include <osgManipulator/Selection>
 #include <osgManipulator/Constraint>
 #include <osgManipulator/Command>
 
 #include <osg/BoundingSphere>
+#include <osg/MatrixTransform>
 #include <osgUtil/SceneView>
 #include <osgUtil/IntersectVisitor>
 #include <osgGA/GUIEventAdapter>
@@ -29,6 +29,57 @@ namespace osgManipulator
 {
 
 class CompositeDragger;
+class MotionCommand;
+class TranslateInLineCommand;
+class TranslateInPlaneCommand;
+class Scale1DCommand;
+class Scale2DCommand;
+class ScaleUniformCommand;
+class Rotate3DCommand;
+
+/** Computes the nodepath from the given node all the way upto the root. */
+extern OSGMANIPULATOR_EXPORT void computeNodePathToRoot(osg::Node& node, osg::NodePath& np);
+
+class DraggerCallback : virtual public osg::Object
+{
+    public:
+        DraggerCallback() {}
+        DraggerCallback(const DraggerCallback&, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY) {}
+
+        META_Object(osgManipulator, DraggerCallback);
+
+        /**
+         * Receive motion commands. Returns true on success.
+         */
+        virtual bool receive(const MotionCommand&) { return false; }
+        virtual bool receive(const TranslateInLineCommand& command)  { return receive((MotionCommand&)command); }
+        virtual bool receive(const TranslateInPlaneCommand& command) { return receive((MotionCommand&)command); }
+        virtual bool receive(const Scale1DCommand& command)          { return receive((MotionCommand&)command); }
+        virtual bool receive(const Scale2DCommand& command)          { return receive((MotionCommand&)command); }
+        virtual bool receive(const ScaleUniformCommand& command)     { return receive((MotionCommand&)command); }
+        virtual bool receive(const Rotate3DCommand& command)         { return receive((MotionCommand&)command); }
+};
+
+class OSGMANIPULATOR_EXPORT DraggerTransformCallback : public DraggerCallback
+{
+    public:
+
+        DraggerTransformCallback(osg::MatrixTransform* transform);
+
+        virtual bool receive(const MotionCommand&);
+
+        osg::MatrixTransform* getTransform() { return _transform.get(); }
+        const osg::MatrixTransform* getTransform() const { return _transform.get(); }
+
+    protected:
+
+        osg::observer_ptr<osg::MatrixTransform> _transform;
+        osg::Matrix _startMotionMatrix;
+
+        osg::Matrix _localToWorld;
+        osg::Matrix _worldToLocal;
+};
+
 
 class OSGMANIPULATOR_EXPORT PointerInfo
 {
@@ -137,14 +188,15 @@ class OSGMANIPULATOR_EXPORT PointerInfo
 /**
  * Base class for draggers. Concrete draggers implement the pick event handler
  * and generate motion commands (translate, rotate, ...) and sends these
- * command to all the Selections that are connected to the Dragger that generates the
+ * command to all the DraggerCallbacks & Transforms that are connected to the Dragger that generates the
  * commands.
  */
-class OSGMANIPULATOR_EXPORT Dragger : public Selection, public osg::Observer
+class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
 {
     public:
 
-        META_OSGMANIPULATOR_Object(osgManipulator,Dragger)
+
+        META_Node(osgManipulator,Dragger)
 
         /**
          * Set/Get parent dragger. For simple draggers parent points to itself.
@@ -184,20 +236,26 @@ class OSGMANIPULATOR_EXPORT Dragger : public Selection, public osg::Observer
         const Constraints& getConstraints() const { return _constraints; }
 
 
-        typedef std::vector< Selection* > Selections;
-        void addSelection(Selection* selection);
-        void removeSelection(Selection* selection);
+        typedef std::vector< osg::ref_ptr<DraggerCallback> > DraggerCallbacks;
 
-        Selections& getSelections() { return _selections; }
-        const Selections& getSelections() const { return _selections; }
+        void addDraggerCallback(DraggerCallback* dc);
+        void removeDraggerCallback(DraggerCallback* dc);
+
+        DraggerCallbacks& getDraggerCallbacks() { return _draggerCallbacks; }
+        const DraggerCallbacks& getDraggerCallbacks() const { return _draggerCallbacks; }
+
+        void addTransformUpdating(MatrixTransform* transform);
+        void removeTransformUpdating(MatrixTransform* transform);
 
     protected:
 
         Dragger();
+        Dragger(const Dragger& rhs, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
+
         virtual ~Dragger();
 
+        virtual bool receive(const MotionCommand& command);
         void dispatch(MotionCommand& command);
-        virtual void objectDeleted(void* object);
 
         bool                            _handleEvents;
         bool                            _draggerActive;
@@ -205,8 +263,9 @@ class OSGMANIPULATOR_EXPORT Dragger : public Selection, public osg::Observer
 
         Dragger*                        _parentDragger;
 
+        osg::ref_ptr<DraggerCallback>   _selfUpdater;
         Constraints                     _constraints;
-        Selections                      _selections;
+        DraggerCallbacks                _draggerCallbacks;
 
 };
 
@@ -219,7 +278,7 @@ class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
 {
     public:
 
-        META_OSGMANIPULATOR_Object(osgManipulator,CompositeDragger)
+        META_Node(osgManipulator,CompositeDragger)
 
         typedef std::vector< osg::ref_ptr<Dragger> > DraggerList;
 
@@ -242,6 +301,8 @@ class OSGMANIPULATOR_EXPORT CompositeDragger : public Dragger
     protected:
 
         CompositeDragger() {}
+        CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
+
         virtual ~CompositeDragger() {}
 
         DraggerList _draggerList;

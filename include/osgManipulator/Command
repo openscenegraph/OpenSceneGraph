@@ -16,7 +16,6 @@
 #define OSGMANIPULATOR_COMMAND 1
 
 #include <osgManipulator/Export>
-#include <osgManipulator/Selection>
 
 #include <osg/LineSegment>
 #include <osg/Plane>
@@ -55,7 +54,7 @@ class OSGMANIPULATOR_EXPORT MotionCommand : public osg::Referenced
         virtual MotionCommand* createCommandInverse() = 0;
 
         /**
-         * Gets the matrix for transforming the Selection. This matrix is in the
+         * Gets the matrix for transforming the object being dragged. This matrix is in the
          * command's coordinate systems. 
          */
         virtual osg::Matrix getMotionMatrix() const = 0;

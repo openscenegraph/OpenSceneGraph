@@ -114,7 +114,7 @@ osg::Node* addDraggerToScene(osg::Node* scene, osgManipulator::CommandManager* c
 #ifdef USE_COMMAND_MANAGER
     cmdMgr->connect(*dragger, *selection);
 #else
-    dragger->addSelection(selection);
+    dragger->addTransformUpdating(selection);
 #endif
     return root;
 }

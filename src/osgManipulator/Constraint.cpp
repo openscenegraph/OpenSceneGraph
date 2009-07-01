@@ -14,6 +14,7 @@
 
 #include <osgManipulator/Constraint>
 #include <osgManipulator/Command>
+#include <osgManipulator/Dragger>
 #include <osg/Vec2d>
 
 #include <math.h>

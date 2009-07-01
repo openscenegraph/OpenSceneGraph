@@ -22,6 +22,78 @@ using namespace osgManipulator;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
+// computeNodePathToRoot
+//
+void osgManipulator::computeNodePathToRoot(osg::Node& node, osg::NodePath& np)
+{
+    np.clear();
+
+    osg::NodePathList nodePaths = node.getParentalNodePaths();
+
+    if (!nodePaths.empty())
+    {
+        np = nodePaths.front();
+        if (nodePaths.size()>1)
+        {
+            osg::notify(osg::NOTICE)<<"osgManipulator::computeNodePathToRoot(,) taking first parent path, ignoring others."<<std::endl;
+        }
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// DraggerTransformCallback
+//
+DraggerTransformCallback::DraggerTransformCallback(osg::MatrixTransform* transform):
+    _transform(transform)
+{
+}
+
+bool DraggerTransformCallback::receive(const MotionCommand& command)
+{
+    if (!_transform) return false;
+
+    switch (command.getStage())
+    {
+        case MotionCommand::START:
+            {
+                // Save the current matrix
+                _startMotionMatrix = _transform->getMatrix();
+
+                // Get the LocalToWorld and WorldToLocal matrix for this node.
+                osg::NodePath nodePathToRoot;
+                computeNodePathToRoot(*_transform,nodePathToRoot);
+                _localToWorld = osg::computeLocalToWorld(nodePathToRoot);
+                _worldToLocal = osg::Matrix::inverse(_localToWorld);
+
+                return true;
+            }
+        case MotionCommand::MOVE:
+            {
+                // Transform the command's motion matrix into local motion matrix.
+                osg::Matrix localMotionMatrix = _localToWorld * command.getWorldToLocal()
+                                                * command.getMotionMatrix()
+                                                * command.getLocalToWorld() * _worldToLocal;
+
+                // Transform by the localMotionMatrix
+                _transform->setMatrix(localMotionMatrix * _startMotionMatrix);
+
+                return true;
+            }
+        case MotionCommand::FINISH:
+            {
+                return true;
+            }
+        case MotionCommand::NONE:
+        default:
+            return false;
+    }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
 // PointerInfo
 //
 PointerInfo::PointerInfo():
@@ -57,6 +129,15 @@ Dragger::Dragger() :
 {
     _parentDragger = this;
     getOrCreateStateSet()->setDataVariance(osg::Object::DYNAMIC);
+
+    _selfUpdater = new DraggerTransformCallback(this);
+
+}
+
+Dragger::Dragger(const Dragger& rhs, const osg::CopyOp& copyop):
+    osg::MatrixTransform(rhs, copyop)
+{
+    osg::notify(osg::NOTICE)<<"CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop) not Implemented yet."<<std::endl;
 }
 
 Dragger::~Dragger()
@@ -101,39 +182,41 @@ void Dragger::removeConstraint(Constraint* constraint)
     }
 }
 
-
-void Dragger::objectDeleted(void* object)
+void Dragger::addTransformUpdating(osg::MatrixTransform* transform)
 {
-    removeSelection(reinterpret_cast<Selection*>(object));
+    addDraggerCallback(new DraggerTransformCallback(transform));
 }
 
-void Dragger::addSelection(Selection* selection)
+void Dragger::removeTransformUpdating(osg::MatrixTransform* transform)
 {
-    // check to make sure constaint hasn't already been attached.
-    for(Selections::iterator itr = _selections.begin();
-        itr != _selections.end();
+    for(Dragger::DraggerCallbacks::iterator itr = _draggerCallbacks.begin();
+        itr != _draggerCallbacks.end();
         ++itr)
     {
-        if (*itr == selection) return;
-    }
-
-    selection->addObserver(this);
-    _selections.push_back(selection);
-}
-
-void Dragger::removeSelection(Selection* selection)
-{
-    for(Selections::iterator itr = _selections.begin();
-        itr != _selections.end();
-        ++itr)
-    {
-        if (*itr == selection)
+        DraggerCallback* dc = itr->get();
+        DraggerTransformCallback* dtc = dynamic_cast<DraggerTransformCallback*>(dc);
+        if (dtc && dtc->getTransform()==transform)
         {
-            selection->removeObserver(this);
-            _selections.erase(itr);
-            return;
+            _draggerCallbacks.erase(itr);
         }
     }
+
+}
+
+void Dragger::addDraggerCallback(DraggerCallback* dc)
+{
+    for(DraggerCallbacks::iterator itr = _draggerCallbacks.begin();
+        itr != _draggerCallbacks.end();
+        ++itr)
+    {
+        if (*itr == dc) return;
+    }
+
+    _draggerCallbacks.push_back(dc);
+}
+
+void Dragger::removeDraggerCallback(DraggerCallback* dc)
+{
 }
 
 
@@ -155,7 +238,7 @@ void Dragger::traverse(osg::NodeVisitor& nv)
         return;
     }
 
-    Selection::traverse(nv);
+    MatrixTransform::traverse(nv);
 }
 
 bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
@@ -231,6 +314,12 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
     return handled;
 }
 
+bool Dragger::receive(const MotionCommand& command)
+{
+    if (_selfUpdater.valid()) return _selfUpdater->receive(command);
+    else return false;
+}
+
 void Dragger::dispatch(MotionCommand& command)
 {
     // apply any constraints
@@ -244,9 +333,9 @@ void Dragger::dispatch(MotionCommand& command)
     // move self
     getParentDragger()->receive(command);
 
-    // then run through any selections
-    for(Selections::iterator itr = getParentDragger()->getSelections().begin();
-        itr != getParentDragger()->getSelections().end();
+
+    for(DraggerCallbacks::iterator itr = getParentDragger()->getDraggerCallbacks().begin();
+        itr != getParentDragger()->getDraggerCallbacks().end();
         ++itr)
     {
         (*itr)->receive(command);
@@ -258,6 +347,11 @@ void Dragger::dispatch(MotionCommand& command)
 //
 // CompositeDragger
 //
+CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop):
+    Dragger(rhs, copyop)
+{
+    osg::notify(osg::NOTICE)<<"CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop) not Implemented yet."<<std::endl;
+}
 
 bool CompositeDragger::handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
 {

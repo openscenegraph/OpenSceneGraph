@@ -11,15 +11,17 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Camera>
+#include <osg/CopyOp>
+#include <osg/MatrixTransform>
 #include <osg/Node>
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/Vec3d>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
+#include <osgManipulator/Command>
 #include <osgManipulator/Constraint>
 #include <osgManipulator/Dragger>
-#include <osgManipulator/Selection>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -34,20 +36,35 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgManipulator::Dragger > >, osgManip
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	I_DeclaringFile("osgManipulator/Dragger");
 	I_BaseType(osgManipulator::Dragger);
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
 	          "");
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the node's library. ",
 	          "");
-	I_Method0(const char *, className,
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the node's class type. ",
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
 	I_Method0(const osgManipulator::CompositeDragger *, getComposite,
 	          Properties::VIRTUAL,
@@ -107,6 +124,10 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
 	I_ProtectedConstructor0(____CompositeDragger,
 	                        "",
 	                        "");
+	I_ProtectedConstructorWithDefaults2(IN, const osgManipulator::CompositeDragger &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                                    ____CompositeDragger__C5_CompositeDragger_R1__C5_osg_CopyOp_R1,
+	                                    "",
+	                                    "");
 	I_SimpleProperty(osgManipulator::CompositeDragger *, Composite, 
 	                 __CompositeDragger_P1__getComposite, 
 	                 0);
@@ -124,26 +145,40 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgManipulator::Constraint > >, osgManipulator::Dragger::Constraints)
 
-TYPE_NAME_ALIAS(std::vector< osgManipulator::Selection * >, osgManipulator::Dragger::Selections)
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgManipulator::DraggerCallback > >, osgManipulator::Dragger::DraggerCallbacks)
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	I_DeclaringFile("osgManipulator/Dragger");
-	I_BaseType(osgManipulator::Selection);
-	I_BaseType(osg::Observer);
+	I_BaseType(osg::MatrixTransform);
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "return a clone of a node, with Object* return type. ",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
 	          "return true if this and obj are of the same kind of object. ",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the node's class type. ",
 	          "");
 	I_Method0(const char *, libraryName,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__libraryName,
 	          "return the name of the node's library. ",
 	          "");
-	I_Method0(const char *, className,
+	I_Method1(void, accept, IN, osg::NodeVisitor &, nv,
 	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the node's class type. ",
+	          __void__accept__osg_NodeVisitor_R1,
+	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
 	I_Method1(void, setParentDragger, IN, osgManipulator::Dragger *, parent,
 	          Properties::VIRTUAL,
@@ -225,39 +260,53 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	          __C5_Constraints_R1__getConstraints,
 	          "",
 	          "");
-	I_Method1(void, addSelection, IN, osgManipulator::Selection *, selection,
+	I_Method1(void, addDraggerCallback, IN, osgManipulator::DraggerCallback *, dc,
 	          Properties::NON_VIRTUAL,
-	          __void__addSelection__Selection_P1,
+	          __void__addDraggerCallback__DraggerCallback_P1,
 	          "",
 	          "");
-	I_Method1(void, removeSelection, IN, osgManipulator::Selection *, selection,
+	I_Method1(void, removeDraggerCallback, IN, osgManipulator::DraggerCallback *, dc,
 	          Properties::NON_VIRTUAL,
-	          __void__removeSelection__Selection_P1,
+	          __void__removeDraggerCallback__DraggerCallback_P1,
 	          "",
 	          "");
-	I_Method0(osgManipulator::Dragger::Selections &, getSelections,
+	I_Method0(osgManipulator::Dragger::DraggerCallbacks &, getDraggerCallbacks,
 	          Properties::NON_VIRTUAL,
-	          __Selections_R1__getSelections,
+	          __DraggerCallbacks_R1__getDraggerCallbacks,
 	          "",
 	          "");
-	I_Method0(const osgManipulator::Dragger::Selections &, getSelections,
+	I_Method0(const osgManipulator::Dragger::DraggerCallbacks &, getDraggerCallbacks,
 	          Properties::NON_VIRTUAL,
-	          __C5_Selections_R1__getSelections,
+	          __C5_DraggerCallbacks_R1__getDraggerCallbacks,
+	          "",
+	          "");
+	I_Method1(void, addTransformUpdating, IN, osg::MatrixTransform *, transform,
+	          Properties::NON_VIRTUAL,
+	          __void__addTransformUpdating__MatrixTransform_P1,
+	          "",
+	          "");
+	I_Method1(void, removeTransformUpdating, IN, osg::MatrixTransform *, transform,
+	          Properties::NON_VIRTUAL,
+	          __void__removeTransformUpdating__MatrixTransform_P1,
 	          "",
 	          "");
 	I_ProtectedConstructor0(____Dragger,
 	                        "",
 	                        "");
+	I_ProtectedConstructorWithDefaults2(IN, const osgManipulator::Dragger &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                                    ____Dragger__C5_Dragger_R1__C5_osg_CopyOp_R1,
+	                                    "",
+	                                    "");
+	I_ProtectedMethod1(bool, receive, IN, const osgManipulator::MotionCommand &, command,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__receive__C5_MotionCommand_R1,
+	                   "",
+	                   "");
 	I_ProtectedMethod1(void, dispatch, IN, osgManipulator::MotionCommand &, command,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__dispatch__MotionCommand_R1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(void, objectDeleted, IN, void *, object,
-	                   Properties::VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__objectDeleted__void_P1,
 	                   "",
 	                   "");
 	I_SimpleProperty(osgManipulator::CompositeDragger *, Composite, 
@@ -269,14 +318,114 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	I_SimpleProperty(bool, DraggerActive, 
 	                 __bool__getDraggerActive, 
 	                 __void__setDraggerActive__bool);
+	I_SimpleProperty(osgManipulator::Dragger::DraggerCallbacks &, DraggerCallbacks, 
+	                 __DraggerCallbacks_R1__getDraggerCallbacks, 
+	                 0);
 	I_SimpleProperty(bool, HandleEvents, 
 	                 __bool__getHandleEvents, 
 	                 __void__setHandleEvents__bool);
 	I_SimpleProperty(osgManipulator::Dragger *, ParentDragger, 
 	                 __Dragger_P1__getParentDragger, 
 	                 __void__setParentDragger__Dragger_P1);
-	I_SimpleProperty(osgManipulator::Dragger::Selections &, Selections, 
-	                 __Selections_R1__getSelections, 
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgManipulator::DraggerCallback)
+	I_DeclaringFile("osgManipulator/Dragger");
+	I_VirtualBaseType(osg::Object);
+	I_Constructor0(____DraggerCallback,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgManipulator::DraggerCallback &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____DraggerCallback__C5_DraggerCallback_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, receive, IN, const osgManipulator::MotionCommand &, x,
+	          Properties::VIRTUAL,
+	          __bool__receive__C5_MotionCommand_R1,
+	          "Receive motion commands. ",
+	          "Returns true on success. ");
+	I_Method1(bool, receive, IN, const osgManipulator::TranslateInLineCommand &, command,
+	          Properties::VIRTUAL,
+	          __bool__receive__C5_TranslateInLineCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::TranslateInPlaneCommand &, command,
+	          Properties::VIRTUAL,
+	          __bool__receive__C5_TranslateInPlaneCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::Scale1DCommand &, command,
+	          Properties::VIRTUAL,
+	          __bool__receive__C5_Scale1DCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::Scale2DCommand &, command,
+	          Properties::VIRTUAL,
+	          __bool__receive__C5_Scale2DCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::ScaleUniformCommand &, command,
+	          Properties::VIRTUAL,
+	          __bool__receive__C5_ScaleUniformCommand_R1,
+	          "",
+	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::Rotate3DCommand &, command,
+	          Properties::VIRTUAL,
+	          __bool__receive__C5_Rotate3DCommand_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgManipulator::DraggerTransformCallback)
+	I_DeclaringFile("osgManipulator/Dragger");
+	I_BaseType(osgManipulator::DraggerCallback);
+	I_Constructor1(IN, osg::MatrixTransform *, transform,
+	               Properties::NON_EXPLICIT,
+	               ____DraggerTransformCallback__osg_MatrixTransform_P1,
+	               "",
+	               "");
+	I_Method1(bool, receive, IN, const osgManipulator::MotionCommand &, x,
+	          Properties::VIRTUAL,
+	          __bool__receive__C5_MotionCommand_R1,
+	          "Receive motion commands. ",
+	          "Returns true on success. ");
+	I_Method0(osg::MatrixTransform *, getTransform,
+	          Properties::NON_VIRTUAL,
+	          __osg_MatrixTransform_P1__getTransform,
+	          "",
+	          "");
+	I_Method0(const osg::MatrixTransform *, getTransform,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_MatrixTransform_P1__getTransform,
+	          "",
+	          "");
+	I_SimpleProperty(osg::MatrixTransform *, Transform, 
+	                 __osg_MatrixTransform_P1__getTransform, 
 	                 0);
 END_REFLECTOR
 
@@ -447,6 +596,46 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Dragger >)
 	                 0);
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::DraggerCallback >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgManipulator::DraggerCallback *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgManipulator::DraggerCallback > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgManipulator::DraggerCallback *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgManipulator::DraggerCallback *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgManipulator::DraggerCallback > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgManipulator::DraggerCallback *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
 STD_LIST_REFLECTOR(std::list< osgManipulator::PointerInfo::NodePathIntersectionPair >)
 
 STD_PAIR_REFLECTOR(std::pair< osg::NodePath COMMA  osg::Vec3d >)
@@ -455,5 +644,5 @@ STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgManipulator::Constraint > >)
 
 STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgManipulator::Dragger > >)
 
-STD_VECTOR_REFLECTOR(std::vector< osgManipulator::Selection * >)
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgManipulator::DraggerCallback > >)
 

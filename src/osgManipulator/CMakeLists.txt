@@ -38,7 +38,6 @@ ADD_LIBRARY(${LIB_NAME}
     ${LIB_PUBLIC_HEADERS}
     AntiSquish.cpp
     Command.cpp
-    CommandManager.cpp
     Constraint.cpp
     Dragger.cpp
     Projector.cpp
@@ -47,7 +46,6 @@ ADD_LIBRARY(${LIB_NAME}
     Scale1DDragger.cpp
     Scale2DDragger.cpp
     ScaleAxisDragger.cpp
-    Selection.cpp
     TabBoxDragger.cpp
     TabPlaneDragger.cpp
     TabPlaneTrackballDragger.cpp

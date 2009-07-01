@@ -163,6 +163,12 @@ ExportOptions::parseOptionsString()
             setStripTextureFilePath( true );
             continue;
         }
+        // Protect against unrecognized options without values
+        if ( pos == str.npos )
+        {
+            osg::notify( osg::WARN ) << "fltexp: Bogus OptionString: " << token << std::endl;
+            continue;
+        }
 
         // Not a Boolean/toggle. Must have a value.
         // Get the value of the token, which could be double-quoted.

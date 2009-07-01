@@ -22,7 +22,6 @@
 #include <osg/CoordinateSystemNode>
 #include <osgText/Text>
 
-#include <osgManipulator/CommandManager>
 #include <osgManipulator/TabBoxDragger>
 #include <osgManipulator/TabPlaneDragger>
 #include <osgManipulator/TabPlaneTrackballDragger>
@@ -37,8 +36,6 @@
 #include <osg/Material>
 
 #include <iostream>
-
-// #define USE_COMMAND_MANAGER
 
 osgManipulator::Dragger* createDragger(const std::string& name)
 {
@@ -92,11 +89,11 @@ osgManipulator::Dragger* createDragger(const std::string& name)
 }
 
 
-osg::Node* addDraggerToScene(osg::Node* scene, osgManipulator::CommandManager* cmdMgr, const std::string& name)
+osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name)
 {
     scene->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
 
-    osgManipulator::Selection* selection = new osgManipulator::Selection;
+    osg::MatrixTransform* selection = new osg::MatrixTransform;
     selection->addChild(scene);
 
     osgManipulator::Dragger* dragger = createDragger(name);
@@ -111,15 +108,12 @@ osg::Node* addDraggerToScene(osg::Node* scene, osgManipulator::CommandManager* c
     dragger->setMatrix(osg::Matrix::scale(scale, scale, scale) *
                        osg::Matrix::translate(scene->getBound().center()));
 
-#ifdef USE_COMMAND_MANAGER
-    cmdMgr->connect(*dragger, *selection);
-#else
     dragger->addTransformUpdating(selection);
-#endif
+
     return root;
 }
 
-osg::Node* createDemoScene(osgManipulator::CommandManager* cmdMgr) {
+osg::Node* createDemoScene() {
  
     osg::Group* root = new osg::Group;
 
@@ -195,13 +189,13 @@ osg::Node* createDemoScene(osgManipulator::CommandManager* cmdMgr) {
     matirial->setShininess(osg::Material::FRONT_AND_BACK, 64.0f);
     root->getOrCreateStateSet()->setAttributeAndModes(matirial.get(), osg::StateAttribute::ON);
 
-      transform_1.get()->addChild(addDraggerToScene(geode_1.get(),cmdMgr,"TabBoxDragger"));
-    transform_2.get()->addChild(addDraggerToScene(geode_2.get(),cmdMgr,"TabPlaneDragger"));
-    transform_3.get()->addChild(addDraggerToScene(geode_3.get(),cmdMgr,"TabPlaneTrackballDragger"));
-    transform_4.get()->addChild(addDraggerToScene(geode_4.get(),cmdMgr,"TrackballDragger"));
-    transform_5.get()->addChild(addDraggerToScene(geode_5.get(),cmdMgr,"Translate1DDragger"));
-    transform_6.get()->addChild(addDraggerToScene(geode_6.get(),cmdMgr,"Translate2DDragger"));
-    transform_7.get()->addChild(addDraggerToScene(geode_7.get(),cmdMgr,"TranslateAxisDragger"));
+      transform_1.get()->addChild(addDraggerToScene(geode_1.get(),"TabBoxDragger"));
+    transform_2.get()->addChild(addDraggerToScene(geode_2.get(),"TabPlaneDragger"));
+    transform_3.get()->addChild(addDraggerToScene(geode_3.get(),"TabPlaneTrackballDragger"));
+    transform_4.get()->addChild(addDraggerToScene(geode_4.get(),"TrackballDragger"));
+    transform_5.get()->addChild(addDraggerToScene(geode_5.get(),"Translate1DDragger"));
+    transform_6.get()->addChild(addDraggerToScene(geode_6.get(),"Translate2DDragger"));
+    transform_7.get()->addChild(addDraggerToScene(geode_7.get(),"TranslateAxisDragger"));
 
     root->addChild(transform_1.get());
     root->addChild(transform_2.get());
@@ -267,21 +261,13 @@ int main( int argc, char **argv )
     // read the scene from the list of file specified command line args.
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
-    // create a command manager
-    osg::ref_ptr<osgManipulator::CommandManager> cmdMgr;
-
-
-#ifdef USE_COMMAND_MANAGER
-    cmdMgr = new osgManipulator::CommandManager;
-#endif
-
     // if no model has been successfully loaded report failure.
     bool tragger2Scene(true);
     if (!loadedModel) 
     {
         //std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         //return 1;
-        loadedModel = createDemoScene(cmdMgr.get());
+        loadedModel = createDemoScene();
         tragger2Scene=false;
     }
 
@@ -306,7 +292,7 @@ int main( int argc, char **argv )
     
     // pass the loaded scene graph to the viewer.
     if ( tragger2Scene ) {
-        viewer.setSceneData(addDraggerToScene(loadedModel.get(), cmdMgr.get(), dragger_name));
+        viewer.setSceneData(addDraggerToScene(loadedModel.get(), dragger_name));
     } else { 
         viewer.setSceneData(loadedModel.get());
     }

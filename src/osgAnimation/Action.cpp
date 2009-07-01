@@ -57,28 +57,6 @@ bool osgAnimation::Action::evaluateFrame(unsigned int frame, unsigned int& resul
     return true;
 }
 
-#if 0
-void osgAnimation::Action::evaluate(unsigned int frame)
-{
-    unsigned int frameInAction;
-    unsigned int loopDone;
-    bool result = evaluateFrame(frame, frameInAction, loopDone);
-    if (!result)
-    {
-        osg::notify(osg::DEBUG_INFO) << getName() << " Action frame " << frameInAction  << " finished" << std::endl;
-        return;
-    }
-    osg::notify(osg::DEBUG_INFO) << getName() << " Action frame " << frame  << " relative to loop " << frameInAction  << " no loop " << loopDone<< std::endl;
-
-    frame = frameInAction;
-    if (_framesCallback.find(frame) != _framesCallback.end())
-    {
-        osg::notify(osg::DEBUG_INFO) << getName() << " evaluate callback " << _framesCallback[frame]->getName() << " at " << frame << std::endl;
-        (*_framesCallback[frame])(this, visitor);
-    }
-}
-#endif
-
 
 osgAnimation::BlendIn::BlendIn(Animation* animation, double duration, double weight)
 {
@@ -91,26 +69,15 @@ osgAnimation::BlendIn::BlendIn(Animation* animation, double duration, double wei
 
 void osgAnimation::BlendIn::computeWeight(unsigned int frame)
 {
+
     // frame + 1 because the start is 0 and we want to start the blend in at the first
     // frame.
     double ratio = ( (frame+1) * 1.0 / (getNumFrames()) );
     double w = _weight * ratio;
-    _animation->setWeight(w);
-}
 
-#if 0
-void osgAnimation::BlendIn::evaluate(unsigned int frame)
-{
-    Action::evaluate(frame);
-    // frame + 1 because the start is 0 and we want to start the blend in at the first
-    // frame.
-    double ratio = ( (frame+1) * 1.0 / (getNumFrames()) );
-    double w = _weight;
-    if (frame < getNumFrames() -1 ) // the last frame we set the target weight the user asked
-        w = _weight * ratio;
+    osg::notify(osg::DEBUG_INFO) << getName() << " BlendIn frame " << frame  << " weight " << w << std::endl;
     _animation->setWeight(w);
 }
-#endif
 
 
 osgAnimation::BlendOut::BlendOut(Animation* animation, double duration)
@@ -126,22 +93,9 @@ void osgAnimation::BlendOut::computeWeight(unsigned int frame)
 {
     double ratio = ( (frame+1) * 1.0 / (getNumFrames()) );
     double w = _weight * (1.0-ratio);
+    osg::notify(osg::DEBUG_INFO) << getName() << " BlendOut frame " << frame  << " weight " << w << std::endl;
     _animation->setWeight(w);
 }
-
-#if 0
-void osgAnimation::BlendOut::evaluate(unsigned int frame)
-{
-    Action::evaluate(frame);
-    // frame + 1 because the start is 0 and we want to start the blend in at the first
-    // frame.
-    double ratio = ( (frame+1) * 1.0 / (getNumFrames()) );
-    double w = 0.0;
-    if (frame < getNumFrames() -1 ) // the last frame we set the target weight the user asked
-        w = _weight * (1.0-ratio);
-    _animation->setWeight(w);
-}
-#endif
 
 
 osgAnimation::ActionAnimation::ActionAnimation(Animation* animation) : _animation(animation)
@@ -189,6 +143,32 @@ void osgAnimation::StripAnimation::setLoop(unsigned int loop)
     // duration changed re evaluate the blendout duration
     unsigned int start = static_cast<unsigned int>(floor((getDuration() - _blendOut.second->getDuration()) * _fps));
     _blendOut = FrameBlendOut(start, _blendOut.second);
+}
+
+void osgAnimation::StripAnimation::traverse(ActionVisitor& visitor)
+{
+    if (_blendIn.valid())
+    {
+        unsigned int f = visitor._stackFrameAction.back().first;
+        visitor.pushFrameActionOnStack(FrameAction(f,_blendIn.get()));
+        _blendIn->accept(visitor);
+        visitor.popFrameAction();
+    }
+    if (_blendOut.second.valid())
+    {
+        unsigned int f = visitor._stackFrameAction.back().first;
+        visitor.pushFrameActionOnStack(FrameAction(f + _blendOut.first,_blendOut.second.get()));
+        _blendOut.second.get()->accept(visitor);
+        visitor.popFrameAction();
+    }
+
+    if (_animation.valid())
+    {
+        unsigned int f = visitor._stackFrameAction.back().first;
+        visitor.pushFrameActionOnStack(FrameAction(f,_animation.get()));
+        _animation->accept(visitor);
+        visitor.popFrameAction();
+    }
 }
 
 void osgAnimation::StripAnimation::computeWeightAndUpdateAnimation(unsigned int frame)

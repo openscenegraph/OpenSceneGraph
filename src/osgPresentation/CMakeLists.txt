@@ -32,6 +32,7 @@ LINK_INTERNAL(${LIB_NAME}
     osgVolume
     osgFX
     osgText
+    osgGA
     osgUtil
     osgDB
     osg

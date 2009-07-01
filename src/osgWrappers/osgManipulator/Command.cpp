@@ -49,7 +49,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::MotionCommand)
 	I_Method0(osg::Matrix, getMotionMatrix,
 	          Properties::PURE_VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
-	          "Gets the matrix for transforming the Selection. ",
+	          "Gets the matrix for transforming the object being dragged. ",
 	          "This matrix is in the command's coordinate systems. ");
 	I_Method2(void, setLocalToWorldAndWorldToLocal, IN, const osg::Matrix &, localToWorld, IN, const osg::Matrix &, worldToLocal,
 	          Properties::NON_VIRTUAL,
@@ -114,7 +114,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Rotate3DCommand)
 	I_Method0(osg::Matrix, getMotionMatrix,
 	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
-	          "Gets the matrix for transforming the Selection. ",
+	          "Gets the matrix for transforming the object being dragged. ",
 	          "This matrix is in the command's coordinate systems. ");
 	I_SimpleProperty(osg::Matrix, MotionMatrix, 
 	                 __osg_Matrix__getMotionMatrix, 
@@ -178,7 +178,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DCommand)
 	I_Method0(osg::Matrix, getMotionMatrix,
 	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
-	          "Gets the matrix for transforming the Selection. ",
+	          "Gets the matrix for transforming the object being dragged. ",
 	          "This matrix is in the command's coordinate systems. ");
 	I_SimpleProperty(double, MinScale, 
 	                 __double__getMinScale, 
@@ -251,7 +251,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale2DCommand)
 	I_Method0(osg::Matrix, getMotionMatrix,
 	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
-	          "Gets the matrix for transforming the Selection. ",
+	          "Gets the matrix for transforming the object being dragged. ",
 	          "This matrix is in the command's coordinate systems. ");
 	I_SimpleProperty(const osg::Vec2d &, MinScale, 
 	                 __C5_osg_Vec2d_R1__getMinScale, 
@@ -304,7 +304,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleUniformCommand)
 	I_Method0(osg::Matrix, getMotionMatrix,
 	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
-	          "Gets the matrix for transforming the Selection. ",
+	          "Gets the matrix for transforming the object being dragged. ",
 	          "This matrix is in the command's coordinate systems. ");
 	I_SimpleProperty(osg::Matrix, MotionMatrix, 
 	                 __osg_Matrix__getMotionMatrix, 
@@ -360,7 +360,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInLineCommand)
 	I_Method0(osg::Matrix, getMotionMatrix,
 	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
-	          "Gets the matrix for transforming the Selection. ",
+	          "Gets the matrix for transforming the object being dragged. ",
 	          "This matrix is in the command's coordinate systems. ");
 	I_SimpleProperty(const osg::LineSegment::vec_type &, LineEnd, 
 	                 __C5_osg_LineSegment_vec_type_R1__getLineEnd, 
@@ -425,7 +425,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslateInPlaneCommand)
 	I_Method0(osg::Matrix, getMotionMatrix,
 	          Properties::VIRTUAL,
 	          __osg_Matrix__getMotionMatrix,
-	          "Gets the matrix for transforming the Selection. ",
+	          "Gets the matrix for transforming the object being dragged. ",
 	          "This matrix is in the command's coordinate systems. ");
 	I_SimpleProperty(osg::Matrix, MotionMatrix, 
 	                 __osg_Matrix__getMotionMatrix, 

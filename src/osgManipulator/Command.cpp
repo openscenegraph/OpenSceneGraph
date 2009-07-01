@@ -13,7 +13,6 @@
 //osgManipulator - Copyright (C) 2007 Fugro-Jason B.V.
 
 #include <osgManipulator/Command>
-#include <osgManipulator/Selection>
 #include <osgManipulator/Constraint>
 
 #include <algorithm>

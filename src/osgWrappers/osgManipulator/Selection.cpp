@@ -10,8 +10,6 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/Object>
-#include <osgManipulator/Command>
 #include <osgManipulator/Selection>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -22,103 +20,5 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgManipulator::CommandProcessor)
-	I_DeclaringFile("osgManipulator/Selection");
-	I_Constructor0(____CommandProcessor,
-	               "",
-	               "");
-	I_Method1(bool, receive, IN, const osgManipulator::MotionCommand &, x,
-	          Properties::PURE_VIRTUAL,
-	          __bool__receive__C5_MotionCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::TranslateInLineCommand &, command,
-	          Properties::PURE_VIRTUAL,
-	          __bool__receive__C5_TranslateInLineCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::TranslateInPlaneCommand &, command,
-	          Properties::PURE_VIRTUAL,
-	          __bool__receive__C5_TranslateInPlaneCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::Scale1DCommand &, command,
-	          Properties::PURE_VIRTUAL,
-	          __bool__receive__C5_Scale1DCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::Scale2DCommand &, command,
-	          Properties::PURE_VIRTUAL,
-	          __bool__receive__C5_Scale2DCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::ScaleUniformCommand &, command,
-	          Properties::PURE_VIRTUAL,
-	          __bool__receive__C5_ScaleUniformCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::Rotate3DCommand &, command,
-	          Properties::PURE_VIRTUAL,
-	          __bool__receive__C5_Rotate3DCommand_R1,
-	          "",
-	          "");
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgManipulator::Selection)
-	I_DeclaringFile("osgManipulator/Selection");
-	I_BaseType(osg::MatrixTransform);
-	I_Constructor0(____Selection,
-	               "",
-	               "");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "return true if this and obj are of the same kind of object. ",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the name of the node's library. ",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the node's class type. ",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::MotionCommand &, x,
-	          Properties::VIRTUAL,
-	          __bool__receive__C5_MotionCommand_R1,
-	          "Receive motion commands and set the MatrixTransform accordingly to transform selections. ",
-	          "Returns true on success. ");
-	I_Method1(bool, receive, IN, const osgManipulator::TranslateInLineCommand &, command,
-	          Properties::VIRTUAL,
-	          __bool__receive__C5_TranslateInLineCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::TranslateInPlaneCommand &, command,
-	          Properties::VIRTUAL,
-	          __bool__receive__C5_TranslateInPlaneCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::Scale1DCommand &, command,
-	          Properties::VIRTUAL,
-	          __bool__receive__C5_Scale1DCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::Scale2DCommand &, command,
-	          Properties::VIRTUAL,
-	          __bool__receive__C5_Scale2DCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::ScaleUniformCommand &, command,
-	          Properties::VIRTUAL,
-	          __bool__receive__C5_ScaleUniformCommand_R1,
-	          "",
-	          "");
-	I_Method1(bool, receive, IN, const osgManipulator::Rotate3DCommand &, command,
-	          Properties::VIRTUAL,
-	          __bool__receive__C5_Rotate3DCommand_R1,
-	          "",
-	          "");
-END_REFLECTOR
+TYPE_NAME_ALIAS(osg::MatrixTransform, osgManipulator::Selection)
 

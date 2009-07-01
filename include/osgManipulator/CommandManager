@@ -30,7 +30,7 @@ namespace osgManipulator {
 class CommandManager : public osg::Referenced
 {
     public:
-        CommandManager();
+        CommandManager() {}
 
         bool connect(Dragger& dragger, Selection& selection)
         {
@@ -74,7 +74,7 @@ class CommandManager : public osg::Referenced
 
     protected:
 
-        virtual ~CommandManager();
+        virtual ~CommandManager() {}
 
 };
 

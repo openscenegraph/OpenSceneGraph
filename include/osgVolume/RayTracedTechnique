@@ -15,6 +15,7 @@
 #define OSGVOLUME_RAYTRACEDTECHNIQUE 1
 
 #include <osgVolume/VolumeTechnique>
+#include <osg/MatrixTransform>
 
 namespace osgVolume {
 
@@ -44,7 +45,7 @@ class OSGVOLUME_EXPORT RayTracedTechnique : public VolumeTechnique
     
         virtual ~RayTracedTechnique();
         
-        osg::ref_ptr<osg::Geode> _geode;
+        osg::ref_ptr<osg::MatrixTransform> _transform;
 };
 
 }

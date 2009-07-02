@@ -14,4 +14,5 @@ char volume_vert[] = "#version 110\n"
                      "                      gl_ObjectPlaneT[0],\n"
                      "                      gl_ObjectPlaneR[0],\n"
                      "                      gl_ObjectPlaneQ[0]);\n"
-                     "}\n";
+                     "}\n"
+                     "\n";

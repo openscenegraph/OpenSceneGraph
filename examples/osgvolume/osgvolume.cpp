@@ -55,6 +55,8 @@
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
+#include <osgManipulator/TabBoxDragger>
+
 #include <osg/io_utils>
 
 #include <algorithm>
@@ -767,7 +769,72 @@ public:
     GLint               maximumTextureSize;
 };
 
+class DraggerVolumeTileCallback : public osgManipulator::DraggerCallback
+{
+public:
 
+    DraggerVolumeTileCallback(osgVolume::VolumeTile* volume, osgVolume::Locator* locator):
+        _volume(volume),
+        _locator(locator) {}
+
+
+    virtual bool receive(const osgManipulator::MotionCommand& command);
+
+
+    osg::observer_ptr<osgVolume::VolumeTile>    _volume;
+    osg::ref_ptr<osgVolume::Locator>            _locator;
+
+    osg::Matrix _startMotionMatrix;
+
+    osg::Matrix _localToWorld;
+    osg::Matrix _worldToLocal;
+
+};
+
+bool DraggerVolumeTileCallback::receive(const osgManipulator::MotionCommand& command)
+{
+    if (!_locator) return false;
+
+    switch (command.getStage())
+    {
+        case osgManipulator::MotionCommand::START:
+        {
+            // Save the current matrix
+            _startMotionMatrix = _locator->getTransform();
+
+            // Get the LocalToWorld and WorldToLocal matrix for this node.
+            osg::NodePath nodePathToRoot;
+            osgManipulator::computeNodePathToRoot(*_volume,nodePathToRoot);
+            _localToWorld = _startMotionMatrix * osg::computeLocalToWorld(nodePathToRoot);
+            _worldToLocal = osg::Matrix::inverse(_localToWorld);
+
+            return true;
+        }
+        case osgManipulator::MotionCommand::MOVE:
+        {
+            // Transform the command's motion matrix into local motion matrix.
+            osg::Matrix localMotionMatrix = _localToWorld * command.getWorldToLocal()
+                                            * command.getMotionMatrix()
+                                            * command.getLocalToWorld() * _worldToLocal;
+
+            // Transform by the localMotionMatrix
+            _locator->setTransform(localMotionMatrix * _startMotionMatrix);
+
+            // osg::notify(osg::NOTICE)<<"New locator matrix "<<_locator->getTransform()<<std::endl;
+
+            return true;
+        }
+        case osgManipulator::MotionCommand::FINISH:
+        {
+            _volume->setDirty(true);
+
+            return true;
+        }
+        case osgManipulator::MotionCommand::NONE:
+        default:
+            return false;
+    }
+}
 
 int main( int argc, char **argv )
 {
@@ -948,6 +1015,10 @@ int main( int argc, char **argv )
     
     unsigned int numComponentsDesired = 0; 
     while(arguments.read("--num-components", numComponentsDesired)) {}
+
+    bool useManipulator = false;
+    while(arguments.read("--manipulator") || arguments.read("-m")) { useManipulator = true; }
+
 
     bool useShader = true; 
     while(arguments.read("--shader")) { useShader = true; }
@@ -1279,9 +1350,8 @@ int main( int argc, char **argv )
 
     osg::ref_ptr<osgVolume::Layer> layer = new osgVolume::ImageLayer(image_3d.get());
 
-    osgVolume::Locator* locator = new osgVolume::Locator(*matrix);
-    layer->setLocator(locator);
-    tile->setLocator(locator);
+    layer->setLocator(new osgVolume::Locator(*matrix));
+    tile->setLocator(new osgVolume::Locator(*matrix));
 
     tile->setLayer(layer.get());
 
@@ -1391,12 +1461,34 @@ int main( int argc, char **argv )
         return 0;
     }
 
-
     if (volume.valid()) 
     {
 
+        osg::ref_ptr<osg::Node> loadedModel = volume.get();
+
+        if (useManipulator)
+        {
+            osg::ref_ptr<osg::Group> group = new osg::Group;
+
+            osg::ref_ptr<osgManipulator::TabBoxDragger> dragger = new osgManipulator::TabBoxDragger;
+            dragger->setupDefaultGeometry();
+            dragger->setHandleEvents(true);
+            dragger->addDraggerCallback(new DraggerVolumeTileCallback(tile.get(), tile->getLocator()));
+            dragger->setMatrix(osg::Matrix::translate(0.5,0.5,0.5)*tile->getLocator()->getTransform());
+
+
+            group->addChild(dragger.get());
+
+            //dragger->addChild(volume.get());
+
+            group->addChild(volume.get());
+
+            loadedModel = group;
+        }
+
+
         // set the scene to render
-        viewer.setSceneData(volume.get());
+        viewer.setSceneData(loadedModel.get());
         
         // the the viewers main frame loop
         viewer.run();

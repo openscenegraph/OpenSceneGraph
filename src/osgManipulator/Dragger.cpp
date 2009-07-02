@@ -57,34 +57,34 @@ bool DraggerTransformCallback::receive(const MotionCommand& command)
     switch (command.getStage())
     {
         case MotionCommand::START:
-            {
-                // Save the current matrix
-                _startMotionMatrix = _transform->getMatrix();
+        {
+            // Save the current matrix
+            _startMotionMatrix = _transform->getMatrix();
 
-                // Get the LocalToWorld and WorldToLocal matrix for this node.
-                osg::NodePath nodePathToRoot;
-                computeNodePathToRoot(*_transform,nodePathToRoot);
-                _localToWorld = osg::computeLocalToWorld(nodePathToRoot);
-                _worldToLocal = osg::Matrix::inverse(_localToWorld);
+            // Get the LocalToWorld and WorldToLocal matrix for this node.
+            osg::NodePath nodePathToRoot;
+            computeNodePathToRoot(*_transform,nodePathToRoot);
+            _localToWorld = osg::computeLocalToWorld(nodePathToRoot);
+            _worldToLocal = osg::Matrix::inverse(_localToWorld);
 
-                return true;
-            }
+            return true;
+        }
         case MotionCommand::MOVE:
-            {
-                // Transform the command's motion matrix into local motion matrix.
-                osg::Matrix localMotionMatrix = _localToWorld * command.getWorldToLocal()
-                                                * command.getMotionMatrix()
-                                                * command.getLocalToWorld() * _worldToLocal;
+        {
+            // Transform the command's motion matrix into local motion matrix.
+            osg::Matrix localMotionMatrix = _localToWorld * command.getWorldToLocal()
+                                            * command.getMotionMatrix()
+                                            * command.getLocalToWorld() * _worldToLocal;
 
-                // Transform by the localMotionMatrix
-                _transform->setMatrix(localMotionMatrix * _startMotionMatrix);
+            // Transform by the localMotionMatrix
+            _transform->setMatrix(localMotionMatrix * _startMotionMatrix);
 
-                return true;
-            }
+            return true;
+        }
         case MotionCommand::FINISH:
-            {
-                return true;
-            }
+        {
+            return true;
+        }
         case MotionCommand::NONE:
         default:
             return false;

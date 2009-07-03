@@ -217,8 +217,11 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         void setHandleEvents(bool flag);
         bool getHandleEvents() const { return _handleEvents; }
 
-        void setDraggerActive(bool active) { _draggerActive = active; }
-        bool getDraggerActive() const { return _draggerActive; }
+        void setActivationModKeyMask(unsigned int mask) { _activationModKeyMask = mask; }
+        unsigned int getActivationModKeyMask() const { return _activationModKeyMask; }
+
+        void setActivationKeyEvent(int key) { _activationKeyEvent = key; }
+        int getActivationKeyEvent() const { return _activationKeyEvent; }
 
 
         virtual void traverse(osg::NodeVisitor& nv);
@@ -260,8 +263,17 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         virtual bool receive(const MotionCommand& command);
         void dispatch(MotionCommand& command);
 
+        void setDraggerActive(bool active) { _draggerActive = active; }
+        bool getDraggerActive() const { return _draggerActive; }
+
         bool                            _handleEvents;
         bool                            _draggerActive;
+
+        unsigned int                    _activationModKeyMask;
+        int                             _activationKeyEvent;
+        bool                            _activationPermittedByModKeyMask;
+        bool                            _activationPermittedByKeyEvent;
+
         osgManipulator::PointerInfo     _pointer;
 
         Dragger*                        _parentDragger;

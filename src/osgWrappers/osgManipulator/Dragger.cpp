@@ -215,14 +215,24 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	          __bool__getHandleEvents,
 	          "",
 	          "");
-	I_Method1(void, setDraggerActive, IN, bool, active,
+	I_Method1(void, setActivationModKeyMask, IN, unsigned int, mask,
 	          Properties::NON_VIRTUAL,
-	          __void__setDraggerActive__bool,
+	          __void__setActivationModKeyMask__unsigned_int,
 	          "",
 	          "");
-	I_Method0(bool, getDraggerActive,
+	I_Method0(unsigned int, getActivationModKeyMask,
 	          Properties::NON_VIRTUAL,
-	          __bool__getDraggerActive,
+	          __unsigned_int__getActivationModKeyMask,
+	          "",
+	          "");
+	I_Method1(void, setActivationKeyEvent, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setActivationKeyEvent__int,
+	          "",
+	          "");
+	I_Method0(int, getActivationKeyEvent,
+	          Properties::NON_VIRTUAL,
+	          __int__getActivationKeyEvent,
 	          "",
 	          "");
 	I_Method1(void, traverse, IN, osg::NodeVisitor &, x,
@@ -314,15 +324,30 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	                   __void__dispatch__MotionCommand_R1,
 	                   "",
 	                   "");
+	I_ProtectedMethod1(void, setDraggerActive, IN, bool, active,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setDraggerActive__bool,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(bool, getDraggerActive,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__getDraggerActive,
+	                   "",
+	                   "");
+	I_SimpleProperty(int, ActivationKeyEvent, 
+	                 __int__getActivationKeyEvent, 
+	                 __void__setActivationKeyEvent__int);
+	I_SimpleProperty(unsigned int, ActivationModKeyMask, 
+	                 __unsigned_int__getActivationModKeyMask, 
+	                 __void__setActivationModKeyMask__unsigned_int);
 	I_SimpleProperty(osgManipulator::CompositeDragger *, Composite, 
 	                 __CompositeDragger_P1__getComposite, 
 	                 0);
 	I_SimpleProperty(osgManipulator::Dragger::Constraints &, Constraints, 
 	                 __Constraints_R1__getConstraints, 
 	                 0);
-	I_SimpleProperty(bool, DraggerActive, 
-	                 __bool__getDraggerActive, 
-	                 __void__setDraggerActive__bool);
 	I_SimpleProperty(osgManipulator::Dragger::DraggerCallbacks &, DraggerCallbacks, 
 	                 __DraggerCallbacks_R1__getDraggerCallbacks, 
 	                 0);

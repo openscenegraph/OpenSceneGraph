@@ -56,6 +56,8 @@
 #include <osgViewer/ViewerEventHandlers>
 
 #include <osgManipulator/TabBoxDragger>
+#include <osgManipulator/TabPlaneTrackballDragger>
+#include <osgManipulator/TrackballDragger>
 
 #include <osg/io_utils>
 
@@ -826,8 +828,6 @@ bool DraggerVolumeTileCallback::receive(const osgManipulator::MotionCommand& com
         }
         case osgManipulator::MotionCommand::FINISH:
         {
-            _volume->setDirty(true);
-
             return true;
         }
         case osgManipulator::MotionCommand::NONE:
@@ -1470,7 +1470,11 @@ int main( int argc, char **argv )
         {
             osg::ref_ptr<osg::Group> group = new osg::Group;
 
-            osg::ref_ptr<osgManipulator::TabBoxDragger> dragger = new osgManipulator::TabBoxDragger;
+#if 1
+            osg::ref_ptr<osgManipulator::Dragger> dragger = new osgManipulator::TabBoxDragger;
+#else
+            osg::ref_ptr<osgManipulator::Dragger> dragger = new osgManipulator::TrackballDragger();
+#endif
             dragger->setupDefaultGeometry();
             dragger->setHandleEvents(true);
             dragger->addDraggerCallback(new DraggerVolumeTileCallback(tile.get(), tile->getLocator()));

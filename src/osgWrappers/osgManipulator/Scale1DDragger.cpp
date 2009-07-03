@@ -61,7 +61,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	          "Handle pick events on dragger and generate TranslateInLine commands. ",
 	          "");
 	I_Method0(void, setupDefaultGeometry,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setupDefaultGeometry,
 	          "Setup default geometry for dragger. ",
 	          "");

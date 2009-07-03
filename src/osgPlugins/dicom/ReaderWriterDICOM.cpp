@@ -101,6 +101,29 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
     
         virtual const char* className() const { return "DICOM Image Reader/Writer"; }
         
+        typedef std::vector<std::string> Files;
+        bool getDicomFilesInDirectory(const std::string& path, Files& files) const
+        {
+            osgDB::DirectoryContents contents = osgDB::getDirectoryContents(path);
+
+            std::sort(contents.begin(), contents.end());
+
+            for(osgDB::DirectoryContents::iterator itr = contents.begin();
+                itr != contents.end();
+                ++itr)
+            {
+                std::string localFile = path + "/" + *itr;
+                info()<<"contents = "<<localFile<<std::endl;
+                if (acceptsExtension(osgDB::getLowerCaseFileExtension(localFile)) &&
+                    osgDB::fileType(localFile) == osgDB::REGULAR_FILE)
+                {
+                    files.push_back(localFile);
+                }
+            }
+
+            return !files.empty();
+        }
+
         virtual ReadResult readObject(std::istream& fin,const osgDB::ReaderWriter::Options* options =NULL) const
         {
             return readImage(fin, options);
@@ -217,10 +240,125 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( file, options );
+            std::string fileName = file;
+            if (ext=="dicom")
+            {
+                fileName = osgDB::getNameLessExtension(file);
+            }
+
+            fileName = osgDB::findDataFile( fileName, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            info()<<"Reading DICOM file "<<fileName<<std::endl;
+            Files files;
+
+            osgDB::FileType fileType = osgDB::fileType(fileName);
+            if (fileType==osgDB::DIRECTORY)
+            {
+                getDicomFilesInDirectory(fileName, files);
+            }
+            else
+            {
+#if 1
+                files.push_back(fileName);
+#else
+                if (!getDicomFilesInDirectory(osgDB::getFilePath(fileName), files))
+                {
+                    files.push_back(fileName);
+                }
+#endif
+            }
+
+            if (files.empty())
+            {
+                return ReadResult::FILE_NOT_FOUND;
+            }
+
+
+            typedef std::vector< osg::ref_ptr<osg::Image> > Images;
+            Images images;
+            for(Files::iterator itr = files.begin();
+                itr != files.end();
+                ++itr)
+            {
+                ReadResult result = readSingleITKImage(*itr, options);
+                if (result.success()) images.push_back(result.getImage());
+                else return result;
+            }
+
+            if (images.empty()) return ReadResult::ERROR_IN_READING_FILE;
+
+            if (images.size()==1) return images[0].get();
+
+
+            typedef std::map<float, osg::ref_ptr<osg::Image> > DistanceImageMap;
+            typedef std::map<osg::Vec3, DistanceImageMap> OrientationDistanceImageMap;
+            OrientationDistanceImageMap orientationDistanceImageMap;
+            for(Images::iterator itr = images.begin();
+                itr != images.end();
+                ++itr)
+            {
+                osg::Image* image = itr->get();
+                osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(image->getUserData());
+                if (matrix)
+                {
+                    osg::Vec3 p0 = osg::Vec3(0.0, 0.0, 0.0) * (*matrix);
+                    osg::Vec3 p1 = osg::Vec3(0.0, 0.0, 1.0) * (*matrix);
+                    osg::Vec3 direction = p1-p0;
+                    direction.normalize();
+                    float distance = p0 * direction;
+                    info()<<" direction="<<direction<<"  distance = "<<distance<<std::endl;
+                    orientationDistanceImageMap[direction][distance] = image;
+                }
+            }
+
+            if (orientationDistanceImageMap.empty()) return ReadResult::ERROR_IN_READING_FILE;
+
+            DistanceImageMap& dim = orientationDistanceImageMap.begin()->second;
+
+            double totalThickness = dim.rbegin()->first - dim.begin()->first;
+
+            int width = 0;
+            int height = 0;
+            int depth = 0;
+            for(DistanceImageMap::iterator itr = dim.begin();
+                itr != dim.end();
+                ++itr)
+            {
+                osg::Image* image = itr->second.get();
+                if (image->s() > width) width = image->s();
+                if (image->t() > height) height = image->t();
+                depth += image->r();
+            }
+
+
+            osg::ref_ptr<osg::Image> image3D = new osg::Image;
+            image3D->allocateImage(width, height, depth, GL_LUMINANCE, GL_UNSIGNED_BYTE, 1);
+            int r = 0;
+            for(DistanceImageMap::iterator itr = dim.begin();
+                itr != dim.end();
+                ++itr)
+            {
+                osg::Image* image = itr->second.get();
+                osg::copyImage(image, 0,0,0, image->s(), image->t(), image->r(),
+                               image3D.get(), 0, 0, r,
+                               false);
+                r += image->r();
+            }
+
+            osg::Image* firstImage = dim.begin()->second.get();
+            osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(firstImage->getUserData());
+            if (matrix)
+            {
+                image3D->setUserData(
+                    new osg::RefMatrix(osg::Matrix::scale(1.0,1.0,totalThickness) * (*matrix))
+                );
+            }
+
+            return image3D.get();
+        }
+
+        virtual ReadResult readSingleITKImage(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+        {
 
             typedef unsigned short PixelType;
             const unsigned int Dimension = 3;
@@ -354,28 +492,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         }
         
 
-        typedef std::vector<std::string> Files;
-        bool getDicomFilesInDirectory(const std::string& path, Files& files) const
-        {
-            osgDB::DirectoryContents contents = osgDB::getDirectoryContents(path);
-
-            std::sort(contents.begin(), contents.end());
-
-            for(osgDB::DirectoryContents::iterator itr = contents.begin();
-                itr != contents.end();
-                ++itr)
-            {
-                std::string localFile = path + "/" + *itr;
-                info()<<"contents = "<<localFile<<std::endl;
-                if (acceptsExtension(osgDB::getLowerCaseFileExtension(localFile)) &&
-                    osgDB::fileType(localFile) == osgDB::REGULAR_FILE)
-                {
-                    files.push_back(localFile);
-                }
-            }
-            
-            return !files.empty();
-        }
 
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const

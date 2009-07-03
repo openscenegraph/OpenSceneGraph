@@ -26,7 +26,51 @@
 
 #include <osgDB/ReadFile>
 
-using namespace osgVolume;
+namespace osgVolume
+{
+
+class TransformLocatorCallback : public Locator::LocatorCallback
+{
+    public:
+
+        TransformLocatorCallback(osg::MatrixTransform* transform): _transform(transform) {}
+
+        void locatorModified(Locator* locator)
+        {
+            if (_transform.valid()) _transform->setMatrix(locator->getTransform());
+        }
+
+    protected:
+
+        osg::observer_ptr<osg::MatrixTransform> _transform;
+};
+
+
+class TexGenLocatorCallback : public Locator::LocatorCallback
+{
+    public:
+
+        TexGenLocatorCallback(osg::TexGen* texgen, Locator* geometryLocator, Locator* imageLocator):
+            _texgen(texgen),
+            _geometryLocator(geometryLocator),
+            _imageLocator(imageLocator) {}
+
+        void locatorModified(Locator*)
+        {
+            if (!_texgen || !_geometryLocator || !_imageLocator) return;
+
+            _texgen->setPlanesFromMatrix(
+                _geometryLocator->getTransform() *
+                osg::Matrix::inverse(_imageLocator->getTransform()));
+        }
+
+    protected:
+
+        osg::observer_ptr<osg::TexGen> _texgen;
+        osg::observer_ptr<osgVolume::Locator> _geometryLocator;
+        osg::observer_ptr<osgVolume::Locator> _imageLocator;
+};
+
 
 RayTracedTechnique::RayTracedTechnique()
 {
@@ -132,6 +176,7 @@ void RayTracedTechnique::init()
     {
         geometryMatrix = masterLocator->getTransform();
         _transform->setMatrix(geometryMatrix);
+        masterLocator->addCallback(new TransformLocatorCallback(_transform.get()));
     }
 
     osg::Matrix imageMatrix;
@@ -412,6 +457,10 @@ void RayTracedTechnique::init()
         texgen->setMode(osg::TexGen::OBJECT_LINEAR);
         texgen->setPlanesFromMatrix( geometryMatrix * osg::Matrix::inverse(imageMatrix));
 
+        osg::ref_ptr<TexGenLocatorCallback> locatorCallback = new TexGenLocatorCallback(texgen, masterLocator, layerLocator);
+        masterLocator->addCallback(locatorCallback.get());
+        layerLocator->addCallback(locatorCallback.get());
+
         stateset->setTextureAttributeAndModes(0, texgen, osg::StateAttribute::ON);
 
     }
@@ -535,3 +584,5 @@ void RayTracedTechnique::traverse(osg::NodeVisitor& nv)
     }
 }
     
+
+} // end of osgVolume namespace

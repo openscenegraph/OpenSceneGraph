@@ -98,7 +98,6 @@ osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name)
 
     osgManipulator::Dragger* dragger = createDragger(name);
 
-    dragger->setHandleEvents(true);
 
     osg::Group* root = new osg::Group;
     root->addChild(dragger);
@@ -109,6 +108,17 @@ osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name)
                        osg::Matrix::translate(scene->getBound().center()));
 
     dragger->addTransformUpdating(selection);
+
+    // we want the dragger to handle it's own events automatically
+    dragger->setHandleEvents(true);
+
+    // if we don't set an activation key or mod mask then any mouse click on
+    // the dragger will activate it, however if do define either of ActivationModKeyMask or
+    // and ActivationKeyEvent then you'll have to press either than mod key or the specified key to
+    // be able to activate the dragger when you mouse click on it.  Please note the follow allows
+    // activation if either the ctrl key or the 'a' key is pressed and held down.
+    dragger->setActivationModKeyMask(osgGA::GUIEventAdapter::MODKEY_CTRL);
+    dragger->setActivationKeyEvent('a');
 
     return root;
 }

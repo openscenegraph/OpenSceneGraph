@@ -125,7 +125,11 @@ bool PointerInfo::projectWindowXYIntoObject(const osg::Vec2d& windowCoord, osg::
 //
 Dragger::Dragger() :
     _handleEvents(false),
-    _draggerActive(false)
+    _draggerActive(false),
+    _activationModKeyMask(0),
+    _activationKeyEvent(0),
+    _activationPermittedByModKeyMask(false),
+    _activationPermittedByKeyEvent(false)
 {
     _parentDragger = this;
     getOrCreateStateSet()->setDataVariance(osg::Object::DYNAMIC);
@@ -135,7 +139,13 @@ Dragger::Dragger() :
 }
 
 Dragger::Dragger(const Dragger& rhs, const osg::CopyOp& copyop):
-    osg::MatrixTransform(rhs, copyop)
+    osg::MatrixTransform(rhs, copyop),
+    _handleEvents(rhs._handleEvents),
+    _draggerActive(false),
+    _activationModKeyMask(rhs._activationModKeyMask),
+    _activationKeyEvent(rhs._activationKeyEvent),
+    _activationPermittedByModKeyMask(false),
+    _activationPermittedByKeyEvent(false)
 {
     osg::notify(osg::NOTICE)<<"CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop) not Implemented yet."<<std::endl;
 }
@@ -250,65 +260,98 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
 
     bool handled = false;
 
-    switch (ea.getEventType())
+    bool activationPermitted = true;
+    if (_activationModKeyMask!=0 || _activationKeyEvent!=0)
     {
-        case osgGA::GUIEventAdapter::PUSH:
+        _activationPermittedByModKeyMask = (_activationModKeyMask!=0) ?
+            ((ea.getModKeyMask() & _activationModKeyMask)!=0) :
+            false;
+
+        if (_activationKeyEvent!=0)
         {
-            osgUtil::LineSegmentIntersector::Intersections intersections;
-
-            _pointer.reset();
-
-            if (view->computeIntersections(ea.getX(),ea.getY(),intersections))
+            switch (ea.getEventType())
             {
-                _pointer.setCamera(view->getCamera());
-                _pointer.setMousePosition(ea.getX(), ea.getY());
-
-                for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
-                    hitr != intersections.end();
-                    ++hitr)
+                case osgGA::GUIEventAdapter::KEYDOWN:
                 {
-                    _pointer.addIntersection(hitr->nodePath, hitr->getLocalIntersectPoint());
+                    if (ea.getKey()==_activationKeyEvent) _activationPermittedByKeyEvent = true;
+                    break;
                 }
-                for (osg::NodePath::iterator itr = _pointer._hitList.front().first.begin();
-                        itr != _pointer._hitList.front().first.end();
-                        ++itr)
+                case osgGA::GUIEventAdapter::KEYUP:
                 {
-                    osgManipulator::Dragger* dragger = dynamic_cast<osgManipulator::Dragger*>(*itr);
-                    if (dragger)
+                    if (ea.getKey()==_activationKeyEvent) _activationPermittedByKeyEvent = false;
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        activationPermitted =  _activationPermittedByModKeyMask || _activationPermittedByKeyEvent;
+
+    }
+
+    if (activationPermitted || _draggerActive)
+    {
+        switch (ea.getEventType())
+        {
+            case osgGA::GUIEventAdapter::PUSH:
+            {
+                osgUtil::LineSegmentIntersector::Intersections intersections;
+
+                _pointer.reset();
+
+                if (view->computeIntersections(ea.getX(),ea.getY(),intersections))
+                {
+                    _pointer.setCamera(view->getCamera());
+                    _pointer.setMousePosition(ea.getX(), ea.getY());
+
+                    for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
+                        hitr != intersections.end();
+                        ++hitr)
                     {
-                        if (dragger==this)
+                        _pointer.addIntersection(hitr->nodePath, hitr->getLocalIntersectPoint());
+                    }
+                    for (osg::NodePath::iterator itr = _pointer._hitList.front().first.begin();
+                            itr != _pointer._hitList.front().first.end();
+                            ++itr)
+                    {
+                        osgManipulator::Dragger* dragger = dynamic_cast<osgManipulator::Dragger*>(*itr);
+                        if (dragger)
                         {
-                            dragger->handle(_pointer, ea, aa);
-                            dragger->setDraggerActive(true);
-                            handled = true;
+                            if (dragger==this)
+                            {
+                                dragger->handle(_pointer, ea, aa);
+                                dragger->setDraggerActive(true);
+                                handled = true;
+                            }
                         }
                     }
                 }
             }
-        }
-        case osgGA::GUIEventAdapter::DRAG:
-        case osgGA::GUIEventAdapter::RELEASE:
-        {
-            if (_draggerActive)
+            case osgGA::GUIEventAdapter::DRAG:
+            case osgGA::GUIEventAdapter::RELEASE:
             {
-                _pointer._hitIter = _pointer._hitList.begin();
-                _pointer.setCamera(view->getCamera());
-                _pointer.setMousePosition(ea.getX(), ea.getY());
+                if (_draggerActive)
+                {
+                    _pointer._hitIter = _pointer._hitList.begin();
+                    _pointer.setCamera(view->getCamera());
+                    _pointer.setMousePosition(ea.getX(), ea.getY());
 
-                handle(_pointer, ea, aa);                
+                    handle(_pointer, ea, aa);
 
-                handled = true;
+                    handled = true;
+                }
+                break;
             }
-            break;
+            default:
+                break;
         }
-        default:
-            break;
-    }
 
-    if (_draggerActive && ea.getEventType() == osgGA::GUIEventAdapter::RELEASE)
-    {
-        setDraggerActive(false);
-        _pointer.reset();
+        if (_draggerActive && ea.getEventType() == osgGA::GUIEventAdapter::RELEASE)
+        {
+            setDraggerActive(false);
+            _pointer.reset();
+        }
     }
 
     return handled;

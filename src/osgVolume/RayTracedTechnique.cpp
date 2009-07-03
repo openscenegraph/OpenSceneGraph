@@ -459,7 +459,7 @@ void RayTracedTechnique::init()
 
         osg::ref_ptr<TexGenLocatorCallback> locatorCallback = new TexGenLocatorCallback(texgen, masterLocator, layerLocator);
         masterLocator->addCallback(locatorCallback.get());
-        layerLocator->addCallback(locatorCallback.get());
+        if (masterLocator != layerLocator) layerLocator->addCallback(locatorCallback.get());
 
         stateset->setTextureAttributeAndModes(0, texgen, osg::StateAttribute::ON);
 

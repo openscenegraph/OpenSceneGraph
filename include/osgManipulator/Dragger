@@ -247,6 +247,9 @@ class OSGMANIPULATOR_EXPORT Dragger : public osg::MatrixTransform
         void addTransformUpdating(MatrixTransform* transform);
         void removeTransformUpdating(MatrixTransform* transform);
 
+        /** Setup default geometry for dragger. */
+        virtual void setupDefaultGeometry() {}
+
     protected:
 
         Dragger();

@@ -19,6 +19,8 @@
 #include <osg/Object>
 #include <osg/Matrixd>
 
+#include <vector>
+
 namespace osgVolume {
 
 class OSGVOLUME_EXPORT Locator : public osg::Object
@@ -37,7 +39,7 @@ class OSGVOLUME_EXPORT Locator : public osg::Object
         META_Object(osgVolume, Locator);
 
         /** Set the transformation from local coordinates to model coordinates.*/
-        void setTransform(const osg::Matrixd& transform) { _transform = transform; _inverse.invert(_transform); }
+        void setTransform(const osg::Matrixd& transform) { _transform = transform; _inverse.invert(_transform); locatorModified(); }
 
         /** Set the transformation from local coordinates to model coordinates.*/
         const osg::Matrixd& getTransform() const { return _transform; }
@@ -62,10 +64,35 @@ class OSGVOLUME_EXPORT Locator : public osg::Object
         bool computeLocalBounds(osg::Vec3d& bottomLeft, osg::Vec3d& topRight) const;
         bool computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::Vec3d& topRight) const;
 
+
+        /** Callback interface for enabling the monitoring of changes to the Locator.*/
+        class LocatorCallback : virtual public osg::Object
+        {
+            public:
+                LocatorCallback() {}
+                LocatorCallback(const LocatorCallback& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY): osg::Object(rhs,copyop) {}
+                META_Object(osgVolume, LocatorCallback);
+
+                virtual void locatorModified(Locator* locator) {};
+
+            protected:
+                virtual ~LocatorCallback() {}
+        };
+
+        void addCallback(LocatorCallback* callback);
+        void removeCallback(LocatorCallback* callback);
+
+        typedef std::vector< osg::ref_ptr<LocatorCallback> > LocatorCallbacks;
+        LocatorCallbacks& getLocatorCallbacks() { return _locatorCallbacks; }
+        const LocatorCallbacks& getLocatorCallbacks() const { return _locatorCallbacks; }
+
     protected:
-    
-        osg::Matrixd _transform;
-        osg::Matrixd _inverse;
+
+        void locatorModified();
+        osg::Matrixd        _transform;
+        osg::Matrixd        _inverse;
+
+        LocatorCallbacks    _locatorCallbacks;
 };
 
 }

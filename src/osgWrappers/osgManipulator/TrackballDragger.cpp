@@ -45,7 +45,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TrackballDragger)
 	          "return the name of the node's class type. ",
 	          "");
 	I_Method0(void, setupDefaultGeometry,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setupDefaultGeometry,
 	          "Setup default geometry for dragger. ",
 	          "");

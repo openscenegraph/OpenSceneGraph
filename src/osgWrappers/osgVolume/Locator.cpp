@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgVolume::Locator::LocatorCallback > >, osgVolume::Locator::LocatorCallbacks)
+
 BEGIN_OBJECT_REFLECTOR(osgVolume::Locator)
 	I_DeclaringFile("osgVolume/Locator");
 	I_BaseType(osg::Object);
@@ -99,12 +101,125 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::Locator)
 	          __bool__computeLocalBounds__Locator_R1__osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",
 	          "");
+	I_Method1(void, addCallback, IN, osgVolume::Locator::LocatorCallback *, callback,
+	          Properties::NON_VIRTUAL,
+	          __void__addCallback__LocatorCallback_P1,
+	          "",
+	          "");
+	I_Method1(void, removeCallback, IN, osgVolume::Locator::LocatorCallback *, callback,
+	          Properties::NON_VIRTUAL,
+	          __void__removeCallback__LocatorCallback_P1,
+	          "",
+	          "");
+	I_Method0(osgVolume::Locator::LocatorCallbacks &, getLocatorCallbacks,
+	          Properties::NON_VIRTUAL,
+	          __LocatorCallbacks_R1__getLocatorCallbacks,
+	          "",
+	          "");
+	I_Method0(const osgVolume::Locator::LocatorCallbacks &, getLocatorCallbacks,
+	          Properties::NON_VIRTUAL,
+	          __C5_LocatorCallbacks_R1__getLocatorCallbacks,
+	          "",
+	          "");
 	I_StaticMethod4(bool, convertLocalCoordBetween, IN, const osgVolume::Locator &, source, IN, const osg::Vec3d &, sourceNDC, IN, const osgVolume::Locator &, destination, IN, osg::Vec3d &, destinationNDC,
 	                __bool__convertLocalCoordBetween__C5_Locator_R1__C5_osg_Vec3d_R1__C5_Locator_R1__osg_Vec3d_R1_S,
 	                "",
 	                "");
+	I_ProtectedMethod0(void, locatorModified,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__locatorModified,
+	                   "",
+	                   "");
+	I_SimpleProperty(osgVolume::Locator::LocatorCallbacks &, LocatorCallbacks, 
+	                 __LocatorCallbacks_R1__getLocatorCallbacks, 
+	                 0);
 	I_SimpleProperty(const osg::Matrixd &, Transform, 
 	                 __C5_osg_Matrixd_R1__getTransform, 
 	                 __void__setTransform__C5_osg_Matrixd_R1);
 END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgVolume::Locator::LocatorCallback)
+	I_DeclaringFile("osgVolume/Locator");
+	I_VirtualBaseType(osg::Object);
+	I_Constructor0(____LocatorCallback,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgVolume::Locator::LocatorCallback &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____LocatorCallback__C5_LocatorCallback_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, locatorModified, IN, osgVolume::Locator *, locator,
+	          Properties::VIRTUAL,
+	          __void__locatorModified__Locator_P1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgVolume::Locator::LocatorCallback >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osgVolume::Locator::LocatorCallback *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osgVolume::Locator::LocatorCallback > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osgVolume::Locator::LocatorCallback *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osgVolume::Locator::LocatorCallback *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osgVolume::Locator::LocatorCallback > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osgVolume::Locator::LocatorCallback *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osgVolume::Locator::LocatorCallback > >)
 

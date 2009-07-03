@@ -25,6 +25,8 @@ void Locator::setTransformAsExtents(double minX, double minY, double maxX, doubl
                    minX,      minY,      minZ,      1.0); 
 
     _inverse.invert(_transform);
+
+    locatorModified();
 }
 
 bool Locator::convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) const
@@ -164,4 +166,46 @@ bool Locator::computeLocalBounds(osg::Vec3d& bottomLeft, osg::Vec3d& topRight) c
     }
     
     return true;
+}
+
+void Locator::addCallback(LocatorCallback* callback)
+{
+    // check if callback is already attached, if so just return early
+    for(LocatorCallbacks::iterator itr = _locatorCallbacks.begin();
+        itr != _locatorCallbacks.end();
+        ++itr)
+    {
+        if (*itr == callback)
+        {
+            return;
+        }
+    }
+
+    // callback is not attached so now attach it.
+    _locatorCallbacks.push_back(callback);
+}
+
+void Locator::removeCallback(LocatorCallback* callback)
+{
+    // checl if callback is attached, if so erase it.
+    for(LocatorCallbacks::iterator itr = _locatorCallbacks.begin();
+        itr != _locatorCallbacks.end();
+        ++itr)
+    {
+        if (*itr == callback)
+        {
+            _locatorCallbacks.erase(itr);
+        }
+    }
+}
+
+void Locator::locatorModified()
+{
+    for(LocatorCallbacks::iterator itr = _locatorCallbacks.begin();
+        itr != _locatorCallbacks.end();
+        ++itr)
+    {
+        (*itr)->locatorModified(this);
+    }
+
 }

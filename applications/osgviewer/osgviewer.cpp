@@ -1,12 +1,12 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
-*
-* This application is open source and may be redistributed and/or modified   
-* freely and without restriction, both in commericial and non commericial applications,
-* as long as this copyright notice is maintained.
-* 
-* This application is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * This application is open source and may be redistributed and/or modified   
+ * freely and without restriction, both in commericial and non commericial applications,
+ * as long as this copyright notice is maintained.
+ * 
+ * This application is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 */
 
 #include <osgDB/ReadFile>
@@ -15,7 +15,6 @@
 
 #include <osg/Switch>
 #include <osgText/Text>
-#include <osg/Group>
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -27,167 +26,135 @@
 #include <osgGA/StateSetManipulator>
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
+#include <osgGA/SphericalManipulator>
 
 #include <iostream>
 
-#ifdef _WINDOWS
-#include <Windows.h>
-#include <GL/glext.h>
-#include <GL/wglext.h>
-#include "vsynctoggle_custom.h"
-#endif
-
 int main(int argc, char** argv)
 {
-  // use an ArgumentParser object to manage the program arguments.
-  osg::ArgumentParser arguments(&argc,argv);
+    // use an ArgumentParser object to manage the program arguments.
+    osg::ArgumentParser arguments(&argc,argv);
 
-  arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-  arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
-  arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
-  arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
-  arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
-  arguments.getApplicationUsage()->addCommandLineOption("--login <url> <username> <password>","Provide authentication information for http file access.");
+    arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the standard OpenSceneGraph example which loads and visualises 3d models.");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("--image <filename>","Load an image and render it on a quad");
+    arguments.getApplicationUsage()->addCommandLineOption("--dem <filename>","Load an image/DEM and render it on a HeightField");
+    arguments.getApplicationUsage()->addCommandLineOption("--login <url> <username> <password>","Provide authentication information for http file access.");
 
-  osgViewer::Viewer viewer(arguments);
+    osgViewer::Viewer viewer(arguments);
 
-  unsigned int helpType = 0;
-  if ((helpType = arguments.readHelpType()))
-  {
-    arguments.getApplicationUsage()->write(std::cout, helpType);
-    return 1;
-  }
-
-  // report any errors if they have occurred when parsing the program arguments.
-  if (arguments.errors())
-  {
-    arguments.writeErrorMessages(std::cout);
-    return 1;
-  }
-
-  if (arguments.argc()<=1)
-  {
-    arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
-    return 1;
-  }
-
-  std::string url, username, password;
-  while(arguments.read("--login",url, username, password))
-  {
-    if (!osgDB::Registry::instance()->getAuthenticationMap())
+    unsigned int helpType = 0;
+    if ((helpType = arguments.readHelpType()))
     {
-      osgDB::Registry::instance()->setAuthenticationMap(new osgDB::AuthenticationMap);
-      osgDB::Registry::instance()->getAuthenticationMap()->addAuthenticationDetails(
-        url,
-        new osgDB::AuthenticationDetails(username, password)
-        );
+        arguments.getApplicationUsage()->write(std::cout, helpType);
+        return 1;
     }
-  }
-
-  // set up the camera manipulators.
-  {
-    osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
-
-    keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
-    keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
-    keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
-    keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
-
-    std::string pathfile;
-    char keyForAnimationPath = '5';
-    while (arguments.read("-p",pathfile))
+    
+    // report any errors if they have occurred when parsing the program arguments.
+    if (arguments.errors())
     {
-      osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-      if (apm || !apm->valid()) 
-      {
-        unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
-        keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
-        keyswitchManipulator->selectMatrixManipulator(num);
-        ++keyForAnimationPath;
-      }
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
+    
+    if (arguments.argc()<=1)
+    {
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        return 1;
     }
 
-    viewer.setCameraManipulator( keyswitchManipulator.get() );
-  }
+    std::string url, username, password;
+    while(arguments.read("--login",url, username, password))
+    {
+        if (!osgDB::Registry::instance()->getAuthenticationMap())
+        {
+            osgDB::Registry::instance()->setAuthenticationMap(new osgDB::AuthenticationMap);
+            osgDB::Registry::instance()->getAuthenticationMap()->addAuthenticationDetails(
+                url,
+                new osgDB::AuthenticationDetails(username, password)
+            );
+        }
+    }
 
-  // add the state manipulator
-  viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+    // set up the camera manipulators.
+    {
+        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
 
-  // add the thread model handler
-  viewer.addEventHandler(new osgViewer::ThreadingHandler);
+        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '5', "Spherical", new osgGA::SphericalManipulator() );
 
-  // add the window size toggle handler
-  viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+        std::string pathfile;
+        char keyForAnimationPath = '6';
+        while (arguments.read("-p",pathfile))
+        {
+            osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
+            if (apm || !apm->valid()) 
+            {
+                unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
+                keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
+                keyswitchManipulator->selectMatrixManipulator(num);
+                ++keyForAnimationPath;
+            }
+        }
 
-  // add the stats handler
-  viewer.addEventHandler(new osgViewer::StatsHandler);
+        viewer.setCameraManipulator( keyswitchManipulator.get() );
+    }
 
-  // add the help handler
-  viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+    
+    // add the thread model handler
+    viewer.addEventHandler(new osgViewer::ThreadingHandler);
 
-  // add the record camera path handler
-  viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
+    // add the window size toggle handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+        
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
 
-  // add the LOD Scale handler
-  viewer.addEventHandler(new osgViewer::LODScaleHandler);
+    // add the help handler
+    viewer.addEventHandler(new osgViewer::HelpHandler(arguments.getApplicationUsage()));
 
-  // add the screen capture handler
-  viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
+    // add the record camera path handler
+    viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
-  // load the data
-  osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-  if (!loadedModel) 
-  {
-    std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
-    return 1;
-  }
+    // add the LOD Scale handler
+    viewer.addEventHandler(new osgViewer::LODScaleHandler);
 
-  // any option left unread are converted into errors to write out later.
-  arguments.reportRemainingOptionsAsUnrecognized();
+    // add the screen capture handler
+    viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
 
-  // report any errors if they have occurred when parsing the program arguments.
-  if (arguments.errors())
-  {
-    arguments.writeErrorMessages(std::cout);
-    return 1;
-  }
+    // load the data
+    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
+    if (!loadedModel) 
+    {
+        std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
+        return 1;
+    }
+
+    // any option left unread are converted into errors to write out later.
+    arguments.reportRemainingOptionsAsUnrecognized();
+
+    // report any errors if they have occurred when parsing the program arguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
 
 
-  // optimize the scene graph, remove redundant nodes and state etc.
-  osgUtil::Optimizer optimizer;
-  optimizer.optimize(loadedModel.get());
+    // optimize the scene graph, remove redundant nodes and state etc.
+    osgUtil::Optimizer optimizer;
+    optimizer.optimize(loadedModel.get());
 
-  osg::ref_ptr<osg::Group> group = new osg::Group();
-  group->addChild(loadedModel.get());
+    viewer.setSceneData( loadedModel.get() );
 
-  viewer.setSceneData( group.get() );
+    viewer.realize();
 
-  {
-    char tmp[256];
-    tmp[sizeof(tmp) - 1] = 0;
-    getcwd(tmp, sizeof(tmp) - 1);
-
-    std::string path(tmp);
-    path += "\\system\\cache\\planet";
-
-    tmp[sizeof(tmp) - 1] = 0;
-    snprintf(tmp, sizeof(tmp) - 1, "%s", path.c_str());
-    //_putenv(tmp);
-    // osgDB::Registry::instance()->setFileCache(new osgDB::FileCache( tmp ) );
-    viewer.getDatabasePager()->setTargetMaximumNumberOfPageLOD(500);
-
-#ifdef _WINDOWS
-    osg::ref_ptr<baronvsync::CVsyncDrawable> vsync = new baronvsync::CVsyncDrawable();
-    osg::ref_ptr<osg::Geode> vsyncGeode = new osg::Geode();
-    vsyncGeode->addDrawable(vsync.get());
-    vsync->SetVSync(false);
-    group->addChild(vsyncGeode.get());
-#endif
-
-  }
-
-  viewer.realize();
-
-  return viewer.run();
+    return viewer.run();
 
 }

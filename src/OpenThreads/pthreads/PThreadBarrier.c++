@@ -170,18 +170,20 @@ void Barrier::block(unsigned int numThreads) {
         ++pd->cnt;
     
         if (pd->cnt == pd->maxcnt) {             // I am the last one
-	        pd->cnt = 0;                         // reset for next use
-	        pd->phase = 1 - my_phase;            // toggle phase
-	        pthread_cond_broadcast(&(pd->cond));
-        } 
+            pd->cnt = 0;                         // reset for next use
+            pd->phase = 1 - my_phase;            // toggle phase
+            pthread_cond_broadcast(&(pd->cond));
+        }
+        else
+        {
+            while (pd->phase == my_phase)
+            {
+                pthread_cleanup_push(barrier_cleanup_handler, &(pd->lock));
 
-        while (pd->phase == my_phase) {
+                pthread_cond_wait(&(pd->cond), &(pd->lock));
 
-	        pthread_cleanup_push(barrier_cleanup_handler, &(pd->lock));
-		
-	        pthread_cond_wait(&(pd->cond), &(pd->lock));
-
-	        pthread_cleanup_pop(0);
+                pthread_cleanup_pop(0);
+            }
         }
     }
 

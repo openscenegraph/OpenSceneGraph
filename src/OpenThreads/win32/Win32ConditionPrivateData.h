@@ -68,7 +68,7 @@ public:
         if (have_waiters)
         {
             // Wake up all the waiters.
-            ReleaseSemaphore(sema_.get(),waiters_,NULL);
+            ReleaseSemaphore(sema_.get(), w, NULL);
 
             cooperativeWait(waiters_done_.get(), INFINITE);
 
@@ -112,8 +112,7 @@ public:
         }
         catch(...){
             // thread is canceled in cooperative wait , do cleanup
-            InterlockedDecrement(&waiters_);
-            long w = InterlockedGet(&waiters_);
+            long w = InterlockedDecrement(&waiters_);
             int last_waiter = was_broadcast_ && w == 0;
 
             if (last_waiter)  SetEvent(waiters_done_.get());
@@ -123,8 +122,7 @@ public:
 
         
         // We're ready to return, so there's one less waiter.
-        InterlockedDecrement(&waiters_);
-        long w = InterlockedGet(&waiters_);
+        long w = InterlockedDecrement(&waiters_);
         int last_waiter = was_broadcast_ && w == 0;
 
         if (result != -1 && last_waiter)

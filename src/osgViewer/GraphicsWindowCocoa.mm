@@ -857,6 +857,7 @@ void GraphicsWindowCocoa::init()
     _ownsWindow = false;
     _context = NULL;
     _window = NULL;
+    _updateContext = false;
     _valid = _initialized = true;
 }
 
@@ -1065,6 +1066,12 @@ void GraphicsWindowCocoa::closeImplementation()
 
 bool GraphicsWindowCocoa:: makeCurrentImplementation()
 {
+    if (_updateContext)
+    {
+        [_context update];
+        _updateContext = false; 
+    }
+    
     [_context makeCurrentContext];
     return true;
 }
@@ -1205,13 +1212,10 @@ void GraphicsWindowCocoa::resizedImplementation(int x, int y, int width, int hei
     DEBUG_OUT("resized implementation" << x << " " << y << " " << width << " " << height); 
     GraphicsContext::resizedImplementation(x, y, width, height);
     
-    NSAutoreleasePool* localPool = [[NSAutoreleasePool alloc] init];
-   
-    if (_context)
-        [_context update];
+    _updateContext = true;
+    
     MenubarController::instance()->update();
     getEventQueue()->windowResize(x,y,width, height, getEventQueue()->getTime());
-    [localPool release];
 }
 
 

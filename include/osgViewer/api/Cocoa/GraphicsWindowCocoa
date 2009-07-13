@@ -183,11 +183,12 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow
     private:        
        
         
-        bool                _closeRequested, _checkForEvents,_ownsWindow;
-        MouseCursor            _currentCursor;
-        GraphicsWindowCocoaWindow* _window;
-        GraphicsWindowCocoaGLView*    _view;
-        NSOpenGLContext*    _context;
+        bool                            _closeRequested, _checkForEvents,_ownsWindow;
+        MouseCursor                     _currentCursor;
+        GraphicsWindowCocoaWindow*      _window;
+        GraphicsWindowCocoaGLView*      _view;
+        NSOpenGLContext*                _context;
+        bool                            _updateContext;
 };
 
 }

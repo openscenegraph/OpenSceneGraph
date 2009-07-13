@@ -18,6 +18,7 @@
 
 #include <osgViewer/api/Win32/GraphicsWindowWin32>
 #include <osgViewer/api/Win32/PixelBufferWin32>
+#include <osgViewer/View>
 
 #include <osg/DeleteHandler>
 #include <osg/ApplicationUsage>
@@ -1265,6 +1266,21 @@ void GraphicsWindowWin32::destroyWindow( bool deleteNativeWindow )
 {
     if (_destroying) return;
     _destroying = true;
+   
+    if (_graphicsThread && _graphicsThread->isRunning())
+    {
+        // find all the viewers that might own use this graphics context
+        osg::GraphicsContext::Cameras cameras = getCameras();
+        for(osg::GraphicsContext::Cameras::iterator it=cameras.begin(); it!=cameras.end(); ++it)
+        {
+            osgViewer::View* view = dynamic_cast<osgViewer::View*>((*it)->getView());
+            osgViewer::ViewerBase* viewerBase = view ? view->getViewerBase() : 0;
+            if (viewerBase && viewerBase->areThreadsRunning()) 
+            {
+                viewerBase->stopThreading();
+            }
+        }
+    }
 
     if (_hdc)
     {

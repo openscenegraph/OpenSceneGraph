@@ -354,8 +354,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
         
         if (ext=="gz")
         {
-            ext = osgDB::getFileExtension(fileName);
-            fileName = osgDB::getNameLessExtension(fileName);
+            ext = osgDB::getFileExtension(osgDB::getNameLessExtension(fileName));
         } 
         else if (ext=="osgz")
         {
@@ -381,7 +380,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     //    return ReadResult::FILE_NOT_HANDLED;
     //}
 
-    osg::notify(osg::INFO)<<"CURL: Have readerwriter="<<reader<<std::endl;
+    osg::notify(osg::INFO)<<"CURL: Have readerwriter="<<reader<<" "<<reader->className()<<std::endl;
 
     const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
     if (proxyEnvAddress) //Env Proxy Settings
@@ -437,6 +436,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
         if (uncompress)
         {
+            osg::notify(osg::INFO)<<"Curl plugin uncompressing "<<fileName<<std::endl;
+
             std::string uncompressed;
             if (!read(buffer, uncompressed))
             {
@@ -454,6 +455,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     }
     else
     {
+        osg::notify(osg::INFO)<<"CURL: not loading successfully "<<std::endl;
         return curlResult;
     }
 }

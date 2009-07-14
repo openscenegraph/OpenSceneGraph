@@ -324,7 +324,10 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
     unsigned int vertexIndex = 0;
     unsigned int normalIndex = 0;
 
-    char buf[256];
+    const int MaxLineSize = 256;
+    char buf[MaxLineSize];
+    char sx[MaxLineSize],sy[MaxLineSize],sz[MaxLineSize];
+
     while (fgets(buf, sizeof(buf), fp)) {
 
         // strip '\n' or '\r\n' and trailing whitespace
@@ -342,11 +345,15 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
             ++bp;
         }
 
-        if (strncmp(bp, "vertex", 6) == 0) {
-            float vx,vy,vz;
-            if (sscanf(bp+6, "%f %f %f", &vx,&vy,&vz) == 3) {
+        if (strncmp(bp, "vertex", 6) == 0)
+        {
+            if (sscanf(bp+6, "%s %s %s", sx,sy,sz) == 3) {
                 if (!_vertex.valid())
                     _vertex = new osg::Vec3Array;
+
+                float vx = osg::asciiToFloat(sx);
+                float vy = osg::asciiToFloat(sy);
+                float vz = osg::asciiToFloat(sz);
 
                 vertexIndex = _vertex->size();
                 if (vertexCount < 3) {
@@ -369,9 +376,13 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
                 }
             }
         }
-        else if (strncmp(bp, "facet", 5) == 0) {
-            float nx,ny,nz;
-            if (sscanf(bp+5, "%*s %f %f %f", &nx,&ny,&nz) == 3) {
+        else if (strncmp(bp, "facet", 5) == 0)
+        {
+            if (sscanf(bp+5, "%*s %s %s %s", sx,sy,sz) == 3) {
+
+                float nx = osg::asciiToFloat(sx);
+                float ny = osg::asciiToFloat(sy);
+                float nz = osg::asciiToFloat(sz);
 
                 if (!_normal.valid())
                     _normal = new osg::Vec3Array;

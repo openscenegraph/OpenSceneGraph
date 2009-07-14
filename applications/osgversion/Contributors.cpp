@@ -378,6 +378,7 @@ TypoCorrection typoCorrections[] =
     {"Sylvan",         "Sylvain"},
     {"Takeahei",       "Takahei"},
     {"Takehei",        "Takahei"},
+    {"Tery",           "Terry"},
     {"Tarantilils",    "Tarantilis"},
     {"Trastenjak",     "Trstenjak"},
     {"Urlich",         "Ulrich"},

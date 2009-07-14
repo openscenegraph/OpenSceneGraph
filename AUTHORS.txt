@@ -1,6 +1,6 @@
 OpenSceneGraph Library 2.8.2
 
-372 Contributors:
+373 Contributors:
 
 Firstname Surname
 -----------------
@@ -9,9 +9,9 @@ Don Burns
 Marco Jez
 Paul Martz
 Mike Weiblen
+Mathias Fröhlich
 Eric Wing
 Stephan Huber
-Mathias Fröhlich
 Brede Johansen
 Geoff Michel
 Farshid Lashkari
@@ -64,15 +64,15 @@ Philip Lowman
 Chris Denham
 Melchior Franz
 Lionel Lagarde
+David Fries
+Bryan Thrall
+Terry Welsh
 Serge Lages
 Joran Jessurun
 Frederic Marmond
-David Fries
-Bryan Thrall
 Boris Bralo
 Yefei He
 Tim Moore
-Terry Welsh
 Stephane Lamoliatte
 Sondra Iverson
 Rune Schmidt Jensen
@@ -237,7 +237,6 @@ Tomas Hnilica
 Tino Schwarze
 Thomas Weidner
 Thom Carlo
-Tery Welsh
 Steven Thomas
 Simon Hammett
 Sid Byce
@@ -264,6 +263,7 @@ Philipp Mächler
 Petr Salinger
 Paul Palumbo
 Paul Fredrikson
+Paul Fotheringham
 Patrick Hartling
 Parag Chaudhur
 Panagiotis Papadakos
@@ -346,6 +346,7 @@ Danny Valente
 Daniel Stien
 Dan Minor
 Cyril Brulebois
+Cory Riddell
 Clay Fowler
 Chuck Sembroski
 Chuck Seberion

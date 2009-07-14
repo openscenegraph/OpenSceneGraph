@@ -1,3 +1,149 @@
+2009-07-13 16:45  robert
+
+	* src/osgViewer, src/osgViewer/GraphicsWindowWin32.cpp: From Cory
+	  Riddell based on suggestion from Robert Osfield, "I've been
+	  running with your suggested changes for a few days now and it
+	  has been working perfectly. I'm still not entirely clear why
+	  adding a
+	  slave/subgraph causes the problem."
+
+2009-07-13 16:07  robert
+
+	* src/OpenThreads/win32,
+	  src/OpenThreads/win32/Win32ConditionPrivateData.h: From David
+	  Fries, "Here is a fix for a deadlock seen under Windows using
+	  OpenThreads
+	  Barrier operations. The error is with atomic operations in the
+	  win32 condition implementation. The attached sample program will
+	  reliably trigger with as few as three threads and a dual core
+	  system,
+	  though sometimes it will take 65,000 iterations.
+	  
+	  2.8.1 was the base for these changes
+	  
+	  Win32ConditionPrivateData.h
+	  Win32ConditionPrivateData::wait does two operations to decrement
+	  waiters_ then read, when InterlockedDecrement decrements and
+	  returns
+	  the value in one operation. The two operations allows another
+	  thread
+	  to also decrement with both getting 0 for an answer.
+	  
+	  Win32ConditionPrivateData::broadcast is using waiters_ directly
+	  instead of using the w value read earlier, if it was safe to use
+	  waiters_ directly there would be no need for InterlockedGet or w.
+	  
+	  overview of deadlock in barrier with three threads
+	  one thread in broadcast, 2 threads in wait,
+	  release semaphore 2, waits on waiters_done_
+	  both threads wake, decrement waiters_, get 0 for w,
+	  <logic error here>
+	  one calls set waiters_done_,
+	  broadcast thread comes out of waiters_done_,
+	  other thread calls waiters_done_, (which leaves waiters_done_ in
+	  the
+	  signaled state)
+	  <sets the trap>
+	  broadcast thread returns releases mutex, other threads get
+	  mutex and also return,
+	  next barrier, first two threads enter wait, one goes to
+	  broadcast, release
+	  semaphore 2, skips waiters_done_ as it had been released last
+	  time
+	  returns, processes, enters the barrier for the next barrier
+	  operation
+	  and waits,
+	  three threads are now in wait, two have the previous barrier
+	  phase,
+	  one the current phase, there's one count left in the semaphore
+	  which a
+	  thread gets, returns, enters the barrier as a waiter, sleeps, and
+	  the
+	  deadlock is completed"
+	  
+	  Merged from svn/trunk using:
+	  
+	  svn merge -r 10456:10457
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/OpenThreads/win32
+
+2009-07-03 19:08  robert
+
+	* src/osgPlugins/dicom/CMakeLists.txt: From Paul Fotheringham,
+	  fixed linux build error when compiling dicom plugin against ITK
+	  by adding define VCL_CAN_STATIC_CONST_INIT_FLOAT to be zero.
+	  
+	  From Robert Osfield, general clean up of CMakeLists.txt under ITK
+	  side
+
+2009-07-01 15:39  robert
+
+	* src/osgPlugins/OpenFlight/ExportOptions.cpp: From Bryan Thrall,
+	  "The OpenFlight plugin doesn't handle unrecognized options or
+	  extra
+	  whitespace in all cases, causing it to crash."
+
+2009-06-29 09:50  robert
+
+	* NEWS.txt, README.txt: Updated NEWS for and READE for 2.9.2-rc2.
+
+2009-06-29 09:47  robert
+
+	* CMakeLists.txt: Updated release candidate to 2
+
+2009-06-29 09:46  robert
+
+	* examples/osgshadow/osgshadow.cpp: Made --pssm and --sv options
+	  use SingleThreaded viewer to workaround threading issues with
+	  ParallelSplitShadowMap and ShadowVolume techniques.
+
+2009-06-25 16:08  robert
+
+	* NEWS.txt: Updated to NEWS to map to wiki NEWS item
+
+2009-06-25 14:06  robert
+
+	* src/osg/ArgumentParser.cpp, src/osg/CullSettings.cpp,
+	  src/osg/DisplaySettings.cpp, src/osgDB/DatabasePager.cpp,
+	  src/osgGA/DriveManipulator.cpp,
+	  src/osgPlugins/bsp/VBSPEntity.cpp,
+	  src/osgPlugins/cfg/ConfigParser.cpp,
+	  src/osgPlugins/dw/ReaderWriterDW.cpp,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/normals/ReaderWriterNormals.cpp,
+	  src/osgPlugins/txp/ReaderWriterTXP.cpp,
+	  src/osgPlugins/txp/TXPParser.cpp,
+	  src/osgViewer/ViewerEventHandlers.cpp: From Mathias Froehlich,
+	  changes from atof to use osg::asciiToFloat() to avoid locale
+	  issues with atof
+
+2009-06-25 13:27  robert
+
+	* include/osg, include/osg/Endian: From Mathias Froehlich, "Fix
+	  possible problem with aliasing rules... and fix a gcc warning :)
+	  Use a union to determine if we are on a little endian or big
+	  endian machine."
+	  
+	  Merged from svn/trunk using :
+	  
+	  svn merge -r 10409:10410
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/include/osg/
+
+2009-06-22 16:04  robert
+
+	* src/osgPlugins/txp, src/osgPlugins/txp/trpage_swap.cpp: Fixed
+	  swap size error.
+	  
+	  Merged from svn/trunk using:
+	  
+	  svn merge -r 10386:10387
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgPlugins/txp/
+
+2009-06-22 09:32  robert
+
+	* AUTHORS.txt, ChangeLog, NEWS.txt,
+	  applications/osgversion/Contributors.cpp: Updated NEWS, AUTHORS
+	  and ChangeLog for 2.8.2-rc1 release
+
 2009-06-22 07:42  robert
 
 	* src/osgPlugins/osg/StateSet.cpp: Merged from svn/trunk fix to

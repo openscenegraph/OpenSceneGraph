@@ -343,7 +343,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     
     if (ext=="gz" || ext=="osgz" || ext=="ivez")
     {
-        osg::notify(osg::NOTICE)<<"Compressed file type "<<ext<<std::endl;
+        osg::notify(osg::INFO)<<"CURL: Compressed file type "<<ext<<std::endl;
         
         #ifndef USE_ZLIB
             // don't have zlib so can't compile compressed formats
@@ -365,7 +365,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
             ext = "ive";
         }
 
-        osg::notify(osg::NOTICE)<<"  assuming file type "<<ext<<std::endl;
+        osg::notify(osg::INFO)<<"CURL: assuming file type "<<ext<<std::endl;
     }
 
 
@@ -436,7 +436,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
         if (uncompress)
         {
-            osg::notify(osg::INFO)<<"Curl plugin uncompressing "<<fileName<<std::endl;
+            osg::notify(osg::INFO)<<"Curl:: plugin uncompressing "<<fileName<<std::endl;
 
             std::string uncompressed;
             if (!read(buffer, uncompressed))

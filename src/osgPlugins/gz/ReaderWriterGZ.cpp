@@ -143,24 +143,26 @@ osgDB::ReaderWriter::ReadResult ReaderWriterGZ::readFile(ObjectType objectType, 
     std::string ext = osgDB::getLowerCaseFileExtension(fullFileName);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
+    if (osgDB::containsServerAddress(fullFileName)) return ReadResult::FILE_NOT_HANDLED;
+
     osgDB::ReaderWriter* rw = 0;
 
     if (osgDB::equalCaseInsensitive(ext,"osgz"))
     {  
         rw = osgDB::Registry::instance()->getReaderWriterForExtension("osg");
-        osg::notify(osg::NOTICE)<<"osgz ReaderWriter "<<rw<<std::endl;
+        osg::notify(osg::INFO)<<"osgz ReaderWriter "<<rw<<std::endl;
     }
     else if (osgDB::equalCaseInsensitive(ext,"ivez"))
     {
         rw = osgDB::Registry::instance()->getReaderWriterForExtension("ive");
-        osg::notify(osg::NOTICE)<<"ivez ReaderWriter "<<rw<<std::endl;
+        osg::notify(osg::INFO)<<"ivez ReaderWriter "<<rw<<std::endl;
     }
     else
     {
         std::string baseFileName = osgDB::getNameLessExtension(fullFileName);        
         std::string baseExt = osgDB::getLowerCaseFileExtension(baseFileName);
         rw = osgDB::Registry::instance()->getReaderWriterForExtension(baseExt);
-        osg::notify(osg::NOTICE)<<baseExt<<" ReaderWriter "<<rw<<std::endl;
+        osg::notify(osg::INFO)<<baseExt<<" ReaderWriter "<<rw<<std::endl;
     }
 
 

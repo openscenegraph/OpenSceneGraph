@@ -69,13 +69,11 @@ public:
         supportsExtension("wrl","VRML format");
     }
 
-    virtual const char* className()
-    {
-        return "VRML2 Reader/Writer";
-    }
+    virtual const char* className() const { return "VRML2 Reader/Writer"; }
 
 
-    virtual ReadResult readNode(const std::string&, const osgDB::ReaderWriter::Options *options = NULL) const;
+    virtual ReadResult readNode(const std::string&, const osgDB::Options *options) const;
+    virtual ReadResult readNode(std::istream& fin, const osgDB::Options* options) const;
 
 private:
     typedef std::map<float, osg::ref_ptr<osg::Geometry> > SphereLibrary;
@@ -83,7 +81,7 @@ private:
     typedef std::map<QuadricKey, osg::ref_ptr<osg::Geometry> > ConeLibrary;
     typedef std::map<QuadricKey, osg::ref_ptr<osg::Geometry> > CylinderLibrary;
 
-    osg::Node* convertFromVRML(openvrml::node *obj) const;
+    osg::Node* convertFromVRML(openvrml::node *obj, const osgDB::Options* opt) const;
 
 
     osg::ref_ptr<osg::Geometry> convertVRML97IndexedFaceSet(openvrml::node *vrml_ifs) const;

@@ -170,32 +170,27 @@ class resource_fetcher: public openvrml::resource_fetcher
 // Register with Registry to instantiate the above reader/writer.
 REGISTER_OSGPLUGIN(vrml, ReaderWriterVRML2)
 
-osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &fname, const Options* opt) const
+osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string& fname, const osgDB::Options* opt) const
 {
     std::string fileName = osgDB::findDataFile(fname, opt);
     if (fileName.empty())
         return ReadResult::FILE_NOT_FOUND;
 
-    // convert possible Windows backslashes to Unix slashes
-    // OpenVRML doesn't like backslashes, even on Windows
-    std::string unixFileName = osgDB::convertFileNameToUnixStyle(fileName);
-
-#ifdef WIN32
-    if(unixFileName[1] == ':') // absolute path
-    fileName = "file:///" + unixFileName;
-#else
-    if (unixFileName[0] == '/') // absolute path
-        fileName = "file://" + unixFileName;
-#endif
-    else
-        // relative path
-        fileName = unixFileName;
-
-    std::fstream null;
-    resource_fetcher fetcher;
-    openvrml::browser *b = new openvrml::browser(fetcher, null, null);
+    // code for setting up the database path so that internally referenced file are searched for on relative paths.
+    osg::ref_ptr<osgDB::Options> local_opt = opt ? static_cast<osgDB::Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::Options;
+    local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
     std::ifstream vrml_stream(fileName.c_str());
+
+    return readNode(vrml_stream, local_opt.get());
+}
+
+osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(std::istream& vrml_stream, const osgDB::Options* opt) const
+{
+    std::fstream null;
+    resource_fetcher fetcher;
+
+    std::auto_ptr<openvrml::browser> b(new openvrml::browser(fetcher, null, null));
 
     try
     {
@@ -210,22 +205,24 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string &f
                                                                                                 0, -1, 0, 0,
                                                                                                 0, 0, 0, 1));
 
-            osgDB::getDataFilePathList().push_front(osgDB::getFilePath(unixFileName));
+
             for (unsigned i = 0; i < mfn.size(); i++)
             {
                 openvrml::node *vrml_node = mfn[i].get();
-                osg_root->addChild(convertFromVRML(vrml_node));
+                osg_root->addChild(convertFromVRML(vrml_node, opt));
             }
-            osgDB::getDataFilePathList().pop_front();
+
             return osg_root.get();
         }
     }
 
     catch (openvrml::invalid_vrml) { return ReadResult::FILE_NOT_HANDLED; }
     catch (std::invalid_argument)  { return ReadResult::FILE_NOT_HANDLED; }
+
+    return ReadResult::FILE_NOT_HANDLED;
 }
 
-osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
+osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::Options* opt) const
 {
     //static int osgLightNum = 0; //light
 
@@ -250,7 +247,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                 for (it_npv = node_ptr_vector.begin(); it_npv != node_ptr_vector.end(); it_npv++)
                 {
                     openvrml::node *node = (*(it_npv)).get();
-                    osg_group->addChild(convertFromVRML(node));
+                    osg_group->addChild(convertFromVRML(node, opt));
                 }
             }
         }
@@ -259,7 +256,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
             // no children
         }
 
-        return osg_group.get();
+        return osg_group.release();
 
     }
 
@@ -285,7 +282,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                 for (it_npv = node_ptr_vector.begin(); it_npv != node_ptr_vector.end(); it_npv++)
                 {
                     openvrml::node *node = (*(it_npv)).get();
-                    osg_m->addChild(convertFromVRML(node));
+                    osg_m->addChild(convertFromVRML(node, opt));
                 }
             }
         }
@@ -352,8 +349,8 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                 const openvrml::sfnode *sfn = dynamic_cast<const openvrml::sfnode *>(fv.get());
                 openvrml::appearance_node *vrml_app = dynamic_cast<openvrml::appearance_node *>(sfn->value().get());
 
-                const boost::intrusive_ptr<openvrml::node> vrml_material_node = vrml_app->material();
-                const boost::intrusive_ptr<openvrml::node> vrml_texture_node = vrml_app->texture();
+                const boost::intrusive_ptr<openvrml::node> vrml_material_node = vrml_app ? vrml_app->material() : 0;
+                const boost::intrusive_ptr<openvrml::node> vrml_texture_node = vrml_app ? vrml_app->texture() : 0;
                 const openvrml::material_node *vrml_material = dynamic_cast<const openvrml::material_node *>(vrml_material_node.get());
 
                 if (vrml_material != NULL)
@@ -406,7 +403,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                     const openvrml::mfstring *mfs = dynamic_cast<const openvrml::mfstring *>(texture_url_fv.get());
                     const std::string &url = mfs->value()[0];
 
-                    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(url);
+                    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(url, opt);
 
                     if (image != 0)
                     {

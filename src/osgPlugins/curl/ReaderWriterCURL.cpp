@@ -369,18 +369,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     }
 
 
-    // Try to find a reader by file extension. If this fails, we will fetch the file
-    // anyway and try to get a reader via mime-type.
-    osgDB::ReaderWriter *reader = 
-        osgDB::Registry::instance()->getReaderWriterForExtension( ext );
-
-    //if (!reader)
-    //{
-    //    osg::notify(osg::NOTICE)<<"Error: No ReaderWriter for file "<<fileName<<std::endl;
-    //    return ReadResult::FILE_NOT_HANDLED;
-    //}
-
-    osg::notify(osg::INFO)<<"CURL: Have readerwriter="<<reader<<" "<<reader->className()<<std::endl;
 
     const char* proxyEnvAddress = getenv("OSG_CURL_PROXY");
     if (proxyEnvAddress) //Env Proxy Settings
@@ -406,6 +394,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     if (curlResult.status()==ReadResult::FILE_LOADED)
     {
         osg::notify(osg::INFO)<<"CURL: ReadResult::FILE_LOADED "<<std::endl;
+
+        // Try to find a reader by file extension. If this fails, we will fetch the file
+        // anyway and try to get a reader via mime-type.
+        osgDB::ReaderWriter *reader =
+            osgDB::Registry::instance()->getReaderWriterForExtension( ext );
 
         // If we do not already have a ReaderWriter, try to find one based on the
         // mime-type:

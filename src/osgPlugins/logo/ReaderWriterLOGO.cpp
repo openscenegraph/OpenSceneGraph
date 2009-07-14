@@ -39,6 +39,15 @@ class Logos: public osg::Drawable
             {
                 Logos *logos = dynamic_cast <Logos *>(drawable);
                 osgUtil::CullVisitor *cv = dynamic_cast<osgUtil::CullVisitor *>(visitor);
+                if (!cv) return true;
+
+                unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
+                if(contextID != logos->getContextID())
+                {
+                    // logo not appropiate for window assigned to the cull visitor so cull it.
+                    return true;
+                }
+
                 if( logos != NULL && cv != NULL )
                 {
                     osg::Viewport *vp = cv->getViewport();
@@ -168,7 +177,9 @@ class Logos: public osg::Drawable
         }
 
         osg::Viewport *getViewport() { return _viewport.get(); }
+
         void setContextID( unsigned int id ) { _contextID = id; }
+        unsigned int getContextID() { return _contextID; }
 
         bool hasLogos()
         {

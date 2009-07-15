@@ -219,6 +219,9 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--loop","Switch on looping of presentation.");
     arguments.getApplicationUsage()->addCommandLineOption("--devices","Print the Video input capability via QuickTime and exit.");
 
+    // add alias from xml to p3d to provide backwards compatibility for old p3d files.
+    osgDB::Registry::instance()->addFileExtensionAlias("xml","p3d");
+
     // if user requests devices video capability.
     if (arguments.read("-devices") || arguments.read("--devices"))
     {

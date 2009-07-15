@@ -1590,7 +1590,7 @@ void DatabasePager::capped_removeExpiredSubgraphs(const osg::FrameStamp& frameSt
             if (_releaseDelay!=DBL_MAX)
             {
                 plod->releaseGLObjects();
-                osg::notify(osg::NOTICE)<<"DatabasePager::removeExpiredSubgraphs(), releasing gl objects"<<std::endl;
+                osg::notify(osg::INFO)<<"DatabasePager::removeExpiredSubgraphs(), releasing gl objects"<<std::endl;
             }
 
             _inactivePagedLODList.push_back(plod);

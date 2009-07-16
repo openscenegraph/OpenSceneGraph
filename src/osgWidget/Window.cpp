@@ -316,9 +316,9 @@ void Window::update() {
 
     // We only honor ANCHOR requests on topmost Windows, not embedded ones.
     if((_vAnchor != VA_NONE || _hAnchor != HA_NONE) && !_parent && _wm) {
-        if(_vAnchor == VA_TOP) y = 0.0f;
+        if(_vAnchor == VA_TOP) y = _wm->getHeight() - _height.current;
         else if(_vAnchor == VA_CENTER) y = osg::round(_wm->getHeight() / 2.0f);
-        else if(_vAnchor == VA_BOTTOM) y = _wm->getHeight() - _height.current;
+        else if(_vAnchor == VA_BOTTOM) y = 0.0f;
 
         if(_hAnchor == HA_LEFT) x = 0.0f;
         else if(_hAnchor == HA_CENTER) x = osg::round(_wm->getWidth() / 2.0f);

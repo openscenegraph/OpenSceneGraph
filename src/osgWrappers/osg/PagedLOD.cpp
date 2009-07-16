@@ -223,6 +223,16 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	          __unsigned_int__getNumChildrenThatCannotBeExpired,
 	          "Get the number of children that the PagedLOD must keep around, even if they are older than their expiry time. ",
 	          "");
+	I_Method1(void, setDisableExternalChildrenPaging, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setDisableExternalChildrenPaging__bool,
+	          "Set wether you want to disable the paging in of external nodes. ",
+	          "");
+	I_Method0(bool, getDisableExternalChildrenPaging,
+	          Properties::NON_VIRTUAL,
+	          __bool__getDisableExternalChildrenPaging,
+	          "",
+	          "");
 	I_Method3(bool, removeExpiredChildren, IN, double, expiryTime, IN, int, expiryFrame, IN, osg::NodeList &, removedChildren,
 	          Properties::VIRTUAL,
 	          __bool__removeExpiredChildren__double__int__NodeList_R1,
@@ -245,6 +255,9 @@ BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)
 	I_SimpleProperty(const std::string &, DatabasePath, 
 	                 __C5_std_string_R1__getDatabasePath, 
 	                 __void__setDatabasePath__C5_std_string_R1);
+	I_SimpleProperty(bool, DisableExternalChildrenPaging, 
+	                 __bool__getDisableExternalChildrenPaging, 
+	                 __void__setDisableExternalChildrenPaging__bool);
 	I_ArrayProperty(const std::string &, FileName, 
 	                __C5_std_string_R1__getFileName__unsigned_int, 
 	                __void__setFileName__unsigned_int__C5_std_string_R1, 

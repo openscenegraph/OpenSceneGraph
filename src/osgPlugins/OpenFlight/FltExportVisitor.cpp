@@ -647,24 +647,27 @@ FltExportVisitor::writeATTRFile( int unit, const osg::Texture2D* texture ) const
         const osg::StateSet* ss = getCurrentStateSet();
         const osg::TexEnv* texenv = dynamic_cast<const osg::TexEnv*>(
             ss->getTextureAttribute( unit, osg::StateAttribute::TEXENV ) );
-        switch( texenv->getMode())
+        if (texenv)
         {
-        case osg::TexEnv::DECAL:
-            ad.texEnvMode = AttrData::TEXENV_DECAL;
-            break;
-        case osg::TexEnv::MODULATE:
-        default:
-            ad.texEnvMode = AttrData::TEXENV_MODULATE;
-            break;
-        case osg::TexEnv::BLEND:
-            ad.texEnvMode = AttrData::TEXENV_BLEND;
-            break;
-        case osg::TexEnv::REPLACE:
-            ad.texEnvMode = AttrData::TEXENV_COLOR;
-            break;
-        case osg::TexEnv::ADD:
-            ad.texEnvMode = AttrData::TEXENV_ADD;
-            break;
+            switch( texenv->getMode())
+            {
+            case osg::TexEnv::DECAL:
+                ad.texEnvMode = AttrData::TEXENV_DECAL;
+                break;
+            case osg::TexEnv::MODULATE:
+            default:
+                ad.texEnvMode = AttrData::TEXENV_MODULATE;
+                break;
+            case osg::TexEnv::BLEND:
+                ad.texEnvMode = AttrData::TEXENV_BLEND;
+                break;
+            case osg::TexEnv::REPLACE:
+                ad.texEnvMode = AttrData::TEXENV_COLOR;
+                break;
+            case osg::TexEnv::ADD:
+                ad.texEnvMode = AttrData::TEXENV_ADD;
+                break;
+            }
         }
 
         osgDB::writeObjectFile( ad, name, _fltOpt.get() );

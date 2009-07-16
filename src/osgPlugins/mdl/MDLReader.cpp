@@ -191,8 +191,10 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
     std::string              tex2Name;
     ref_ptr<Texture>         texture;
     ref_ptr<Texture>         texture2;
+    ref_ptr<Material>        material;
     ref_ptr<BlendFunc>       blend;
     bool                     translucent;
+    double                   alpha;
 
     // Find the material file
     mtlFileName = std::string(materialName) + ".vmt";
@@ -298,6 +300,9 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
     // Assume not translucent unless the properties say otherwise
     translucent = false;
 
+    // Assume full opacity
+    alpha = 1.0;
+
     // Read the material properties next
     while (!mtlFile->eof())
     {
@@ -341,6 +346,17 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
                         translucent = true;
                 }
             }
+            else if (equalCaseInsensitive(token, "$alpha"))
+            {
+                // Get the translucency setting
+                token = getToken(line, " \t\n\r\"", start);
+
+                // Interpret the setting
+                if (!token.empty())
+                {
+                   alpha = atof(token.c_str());
+                }
+            }
  
             // Try the next token
             token = getToken(line, " \t\n\r\"", start);
@@ -379,6 +395,7 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
             blend = new BlendFunc(BlendFunc::SRC_ALPHA,
                                   BlendFunc::ONE_MINUS_SRC_ALPHA);
             stateSet->setAttributeAndModes(blend.get(), StateAttribute::ON);
+            stateSet->setMode(GL_BLEND, StateAttribute::ON);
 
             // Set the rendering hint for this stateset to transparent
             stateSet->setRenderingHint(StateSet::TRANSPARENT_BIN);
@@ -387,10 +404,23 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
     else
     {
         // All other shaders fall back to fixed function
-        // TODO:  LightMappedGeneric shader
 
         // Create the StateSet
         stateSet = new StateSet();
+
+        // Add a material to the state set
+        material = new Material();
+        material->setAmbient(Material::FRONT_AND_BACK,
+                             Vec4(1.0, 1.0, 1.0, 1.0) );
+        material->setDiffuse(Material::FRONT_AND_BACK,
+                             Vec4(1.0, 1.0, 1.0, 1.0) );
+        material->setSpecular(Material::FRONT_AND_BACK,
+                             Vec4(0.0, 0.0, 0.0, 1.0) );
+        material->setShininess(Material::FRONT_AND_BACK, 1.0);
+        material->setEmission(Material::FRONT_AND_BACK,
+                              Vec4(0.0, 0.0, 0.0, 1.0) );
+        material->setAlpha(Material::FRONT_AND_BACK, alpha);
+        stateSet->setAttributeAndModes(material.get(), StateAttribute::ON);
 
         // Add the texture attribute (or disable texturing if no base texture)
         if (texture != NULL)
@@ -399,13 +429,14 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
                                                   StateAttribute::ON);
 
             // See if the material is translucent
-            if (translucent)
+            if ((translucent) || (alpha < 1.0))
             {
                 // Add the blending attribute as well
                 blend = new BlendFunc(BlendFunc::SRC_ALPHA,
                                       BlendFunc::ONE_MINUS_SRC_ALPHA);
                 stateSet->setAttributeAndModes(blend.get(),
                                                StateAttribute::ON);
+                stateSet->setMode(GL_BLEND, StateAttribute::ON);
 
                 // Set the rendering hint for this stateset to transparent
                 stateSet->setRenderingHint(StateSet::TRANSPARENT_BIN);
@@ -633,14 +664,15 @@ bool MDLReader::readFile(const std::string & file)
         mdlRoot->addBodyPart(partNode);
     }
 
-    // Open the VVD file that goes with this model
+    // Open the VVD (vertex data) file that goes with this model
     vvdFile = findDataFile(getNameLessExtension(file) + ".vvd",
                            CASE_INSENSITIVE);
     vvdReader = new VVDReader();
     vvdReader->readFile(vvdFile);
 
-    // Open the VTX file that goes with this model (at this point, I don't
-    // see a reason not to always just use the DX9 version)
+    // Open the VTX file (index and primitive data) that goes with this model
+    // (at this point, I don't see a reason not to always just use the DX9
+    // version)
     vtxFile = findDataFile(getNameLessExtension(file) + ".dx90.vtx",
                            CASE_INSENSITIVE);
     vtxReader = new VTXReader(vvdReader, mdlRoot);

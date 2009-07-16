@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -157,22 +157,26 @@ struct ExampleTimelineUsage : public osgGA::GUIEventHandler
 
 int main (int argc, char* argv[])
 {
-    std::cerr << "This example works only with osgAnimation/nathan.osg" << std::endl;
+    std::cerr << "This example works only with nathan.osg" << std::endl;
 
     osg::ArgumentParser psr(&argc, argv);
 
     osgViewer::Viewer viewer(psr);
 
-    std::string file = "osgAnimation/nathan.osg";
+    std::string file = "nathan.osg";
     if(argc >= 2) 
         file = psr[1];
 
     // replace the manager
     osg::Group* root = dynamic_cast<osg::Group*>(osgDB::readNodeFile(file));
+    if (!root) {
+        osg::notify(osg::FATAL) << "can't read file " << file << std::endl;
+        return 1;
+    }
     osgAnimation::AnimationManagerBase* animationManager = dynamic_cast<osgAnimation::AnimationManagerBase*>(root->getUpdateCallback());
     if(!animationManager) 
     {
-        std::cerr << "Did not find AnimationManagerBase updateCallback needed to animate elements" << std::endl;
+        osg::notify(osg::FATAL) << "Did not find AnimationManagerBase updateCallback needed to animate elements" << std::endl;
         return 1;
     }
 

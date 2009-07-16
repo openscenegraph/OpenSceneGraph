@@ -244,7 +244,7 @@ osg::Node* p3d::readShowFiles(osg::ArgumentParser& arguments,const osgDB::Reader
         if (!arguments.isOption(pos))
         {
             // not an option so assume string is a filename.
-            osg::Node *node = osgDB::readNodeFile( arguments[pos], local_options);
+            osg::Node *node = osgDB::readNodeFile( arguments[pos], local_options.get());
 
             if(node)
             {

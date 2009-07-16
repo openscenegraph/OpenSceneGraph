@@ -1811,7 +1811,9 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
             {
                 //geom->computeCorrectBindingsAndArraySizes();
 
-                if (!geometryContainsSharedArrays(*geom) && isOperationPermissibleForObject(geom))
+                if (!geometryContainsSharedArrays(*geom) &&
+                      geom->getDataVariance()!=osg::Object::DYNAMIC &&
+                      isOperationPermissibleForObject(geom))
                 {
                     geometryDuplicateMap[geom].push_back(geom);
                 }

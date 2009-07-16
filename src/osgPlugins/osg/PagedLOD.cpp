@@ -53,6 +53,13 @@ bool PagedLOD_readLocalData(Object& obj, Input& fr)
         iteratorAdvanced = true;
     }
     
+    bool flag;
+    if (fr.read("DisableExternalChildrenPaging", flag))
+    {
+        lod.setDisableExternalChildrenPaging(flag);
+        iteratorAdvanced = true;
+    }
+
     bool matchFirst;
     if ((matchFirst=fr.matchSequence("FileNameList {")) || fr.matchSequence("FileNameList %i {"))
     {
@@ -121,6 +128,9 @@ bool PagedLOD_writeLocalData(const Object& obj, Output& fw)
     }
 
     fw.indent() << "NumChildrenThatCannotBeExpired "<<lod.getNumChildrenThatCannotBeExpired()<<std::endl;
+
+    fw.indent() << "DisableExternalChildrenPaging "<<lod.getDisableExternalChildrenPaging()<<std::endl;
+
 
     fw.indent() << "FileNameList "<<lod.getNumFileNames()<<" {"<< std::endl;
     fw.moveIn();

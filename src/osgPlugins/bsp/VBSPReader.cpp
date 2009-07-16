@@ -902,7 +902,7 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
         material->setEmission(Material::FRONT_AND_BACK,
                               Vec4(0.0, 0.0, 0.0, 1.0) );
         material->setAlpha(Material::FRONT_AND_BACK, alpha);
-        stateSet->setAttributeAndModes(material, StateAttribute::ON);
+        stateSet->setAttributeAndModes(material.get(), StateAttribute::ON);
     }
     else if (equalCaseInsensitive(shaderName, "UnlitGeneric"))
     {
@@ -958,7 +958,7 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
         material->setEmission(Material::FRONT_AND_BACK,
                               Vec4(0.0, 0.0, 0.0, 1.0) );
         material->setAlpha(Material::FRONT_AND_BACK, alpha);
-        stateSet->setAttributeAndModes(material, StateAttribute::ON);
+        stateSet->setAttributeAndModes(material.get(), StateAttribute::ON);
 
         // Add the texture attribute (or disable texturing if no base texture)
         if (texture != NULL)

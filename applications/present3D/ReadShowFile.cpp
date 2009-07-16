@@ -182,10 +182,9 @@ osg::Node* p3d::readHoldingSlide(const std::string& filename)
     if (!osgDB::equalCaseInsensitive(ext,"xml") && 
         !osgDB::equalCaseInsensitive(ext,"p3d")) return 0;
 
-    osg::ref_ptr<osgDB::ReaderWriter::Options> options = new osgDB::ReaderWriter::Options;
+    osg::ref_ptr<osgDB::ReaderWriter::Options> options = createOptions(0);
     options->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_NONE);
-    options->setOptionString("holding_slide");
-    options->setPluginStringData("P3D_EVENTHANDLER","none");
+    options->setOptionString("preview");
 
     return osgDB::readNodeFile(filename, options.get());
 }
@@ -197,12 +196,15 @@ osg::Node* p3d::readPresentation(const std::string& filename,const osgDB::Reader
         !osgDB::equalCaseInsensitive(ext,"p3d")) return 0;
 
     osg::ref_ptr<osgDB::Options> local_options = createOptions(options);
+    local_options->setOptionString("main");
+
     return osgDB::readNodeFile(filename, local_options.get());
 }
 
 osg::Node* p3d::readShowFiles(osg::ArgumentParser& arguments,const osgDB::ReaderWriter::Options* options)
 {
     osg::ref_ptr<osgDB::Options> local_options = createOptions(options);
+    local_options->setOptionString("main");
 
     typedef std::vector< osg::ref_ptr<osg::Node> > NodeList;
     NodeList nodeList;

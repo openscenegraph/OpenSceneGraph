@@ -32,6 +32,7 @@ protected:
     VBSPData *                  bsp_data;
 
     EntityClass                 entity_class;
+    std::string                 class_name;
 
     typedef std::pair<std::string, std::string>   EntityParameter;
     typedef std::map<std::string, std::string>    EntityParameters;

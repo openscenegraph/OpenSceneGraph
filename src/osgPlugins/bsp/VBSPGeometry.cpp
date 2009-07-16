@@ -1,6 +1,7 @@
 
 #include <stdlib.h>
 #include <osg/Geode>
+#include <osgUtil/TriStripVisitor>
 
 #include "VBSPGeometry.h"
 
@@ -647,6 +648,12 @@ ref_ptr<Group> VBSPGeometry::createGeometry()
 
         // Add the geometry to the geode
         geode->addDrawable(geometry.get());
+
+        // Now, stripify the geode to convert the POLYGON primitives to
+        // triangle strips
+        osgUtil::TriStripVisitor tsv;
+        geode->accept(tsv);
+        tsv.stripify();
     }
 
     // Now do the same for the displacement surfaces (if any)

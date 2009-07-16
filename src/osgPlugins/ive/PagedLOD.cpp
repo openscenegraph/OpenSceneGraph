@@ -37,6 +37,10 @@ void PagedLOD::write(DataOutputStream* out)
     out->writeFloat(getRadius());
     out->writeUInt(getNumChildrenThatCannotBeExpired());
 
+    if ( out->getVersion() >= VERSION_0041 )
+    {
+        out->writeBool(getDisableExternalChildrenPaging());
+    }
 
     unsigned int numChildrenToWriteOut = 0;
 
@@ -139,6 +143,11 @@ void PagedLOD::read(DataInputStream* in)
 
         setRadius(in->readFloat());
         setNumChildrenThatCannotBeExpired(in->readUInt());
+
+        if ( in->getVersion() >= VERSION_0041 )
+        {
+            setDisableExternalChildrenPaging(in->readBool());
+        }
 
 
         // Read groups properties.

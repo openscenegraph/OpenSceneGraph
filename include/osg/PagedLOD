@@ -126,6 +126,13 @@ class OSG_EXPORT PagedLOD : public LOD
         /** Get the number of children that the PagedLOD must keep around, even if they are older than their expiry time.*/
         unsigned int getNumChildrenThatCannotBeExpired() const { return _numChildrenThatCannotBeExpired; }
 
+        /** Set wether you want to disable the paging in of external nodes.*/
+        void setDisableExternalChildrenPaging(bool flag) { _disableExternalChildrenPaging = flag; }
+
+        bool getDisableExternalChildrenPaging() const { return _disableExternalChildrenPaging; }
+
+
+
         /** Remove the children from the PagedLOD which haven't been visited since specified expiry time and expiry frame number.
           * The removed children are added to the removeChildren list passed into the method,
           * this allows the children to be deleted later at the caller's discretion.
@@ -147,6 +154,8 @@ class OSG_EXPORT PagedLOD : public LOD
 
         int                 _frameNumberOfLastTraversal;
         unsigned int        _numChildrenThatCannotBeExpired;
+        bool                _disableExternalChildrenPaging;
+
         PerRangeDataList    _perRangeDataList;
 };
 

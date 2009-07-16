@@ -745,8 +745,10 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
     std::string             tex2Name;
     ref_ptr<Texture>        texture;
     ref_ptr<Texture>        texture2;
+    ref_ptr<Material>       material;
     ref_ptr<BlendFunc>      blend;
     bool                    translucent;
+    double                  alpha;
 
     // Find the material file
     mtlFileName = std::string(materialName) + ".vmt";
@@ -818,6 +820,9 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
     // Assume no transparency unless the properties say otherwise
     translucent = false;
 
+    // Assume fully opaque
+    alpha = 1.0;
+
     // Read the material properties next
     while (!mtlFile->eof())
     {
@@ -858,6 +863,17 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
                 if ((token == "1") || (token == "true"))
                      translucent = true;
             }
+            else if (equalCaseInsensitive(token, "$alpha"))
+            {
+                // Get the translucency setting
+                token = getToken(line, " \t\n\r\"", start);
+
+                // Interpret the setting
+                if (!token.empty())
+                {
+                   alpha = atof(token.c_str());
+                }
+            }
  
             // Try the next token
             token = getToken(line, " \t\n\r\"", start);
@@ -873,6 +889,20 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
         // This shader blends between two textures based on a per-vertex
         // attribute.  This is used for displaced terrain surfaces in HL2 maps.
         stateSet = createBlendShader(texture.get(), texture2.get());
+
+        // Add a material to the state set
+        material = new Material();
+        material->setAmbient(Material::FRONT_AND_BACK,
+                             Vec4(1.0, 1.0, 1.0, 1.0) );
+        material->setDiffuse(Material::FRONT_AND_BACK,
+                             Vec4(1.0, 1.0, 1.0, 1.0) );
+        material->setSpecular(Material::FRONT_AND_BACK,
+                              Vec4(0.0, 0.0, 0.0, 1.0) );
+        material->setShininess(Material::FRONT_AND_BACK, 1.0);
+        material->setEmission(Material::FRONT_AND_BACK,
+                              Vec4(0.0, 0.0, 0.0, 1.0) );
+        material->setAlpha(Material::FRONT_AND_BACK, alpha);
+        stateSet->setAttributeAndModes(material.get(), StateAttribute::ON);
     }
     else if (equalCaseInsensitive(shaderName, "UnlitGeneric"))
     {
@@ -915,6 +945,20 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
 
         // Create the StateSet
         stateSet = new StateSet();
+
+        // Add a material to the state set
+        material = new Material();
+        material->setAmbient(Material::FRONT_AND_BACK,
+                             Vec4(1.0, 1.0, 1.0, 1.0) );
+        material->setDiffuse(Material::FRONT_AND_BACK,
+                             Vec4(1.0, 1.0, 1.0, 1.0) );
+        material->setSpecular(Material::FRONT_AND_BACK,
+                              Vec4(0.0, 0.0, 0.0, 1.0) );
+        material->setShininess(Material::FRONT_AND_BACK, 1.0);
+        material->setEmission(Material::FRONT_AND_BACK,
+                              Vec4(0.0, 0.0, 0.0, 1.0) );
+        material->setAlpha(Material::FRONT_AND_BACK, alpha);
+        stateSet->setAttributeAndModes(material.get(), StateAttribute::ON);
 
         // Add the texture attribute (or disable texturing if no base texture)
         if (texture != NULL)
@@ -1081,8 +1125,13 @@ void VBSPReader::createScene()
         // If we loaded the prop correctly, add it to the scene
         if (propNode.valid())
         {
+            // Add the model to the transform node, and attach the transform
+            // to the scene
             propXform->addChild(propNode.get());
             group->addChild(propXform.get());
+
+            // Name the prop
+            propXform->setName(std::string("prop_static:" + propModel));
         }
         else
         {

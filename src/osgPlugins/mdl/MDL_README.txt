@@ -8,8 +8,8 @@ Overview
 This plugin allows .mdl files from games that make use of Valve's Source
 engine (Half Life 2, etc) to be loaded by OSG.
 
-I've tested this plugin with dozens of on several HL2 models, as well as some
-3rd party models.
+I've tested this plugin with dozens of HL2 models, as well as some 3rd party
+models.
 
 
 Using the Plugin

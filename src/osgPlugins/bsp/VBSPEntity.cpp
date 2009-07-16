@@ -315,45 +315,45 @@ void VBSPEntity::parseParameters(std::string & entityText)
     }
 
     // Get the class name and process the entity appropriately
-    std::string className = (*param).second;
-    if (className.compare("worldspawn") == 0)
+    class_name = (*param).second;
+    if (class_name.compare("worldspawn") == 0)
     {
         // This is the entity that represents the main geometry of the map
         // (the terrain and much of the static geometry)
         entity_class = ENTITY_WORLDSPAWN;
         processWorldSpawn();
     }
-    else if (className.compare(0, 3, "env") == 0)
+    else if (class_name.compare(0, 3, "env") == 0)
     {
         // This is an environmental effect (such as a fire or dust cloud)
         entity_class = ENTITY_ENV;
         processEnv();
     }
-    else if ((className.compare("func_brush") == 0) ||
-             (className.compare("func_illusionary") == 0) ||
-             (className.compare("func_wall_toggle") == 0) ||
-             (className.compare("func_breakable") == 0))
+    else if ((class_name.compare("func_brush") == 0) ||
+             (class_name.compare("func_illusionary") == 0) ||
+             (class_name.compare("func_wall_toggle") == 0) ||
+             (class_name.compare("func_breakable") == 0))
     {
         // This is secondary map geometry, created along with the main
         // map geometry (not an external model)
         entity_class = ENTITY_FUNC_BRUSH;
         processFuncBrush();
     }
-    else if (className.compare(0, 4, "prop") == 0)
+    else if (class_name.compare(0, 4, "prop") == 0)
     {
         // This is a "prop", an external model placed somewhere in the
         // scene
         entity_class = ENTITY_PROP;
         processProp();
     }
-    else if (className.compare("infodecal") == 0)
+    else if (class_name.compare("infodecal") == 0)
     {
         // This is a decal, which applies a texture to some surface in the
         // scene
         entity_class = ENTITY_INFO_DECAL;
         processInfoDecal();
     }
-    else if (className.compare(0, 4, "item") == 0)
+    else if (class_name.compare(0, 4, "item") == 0)
     {
         // This is an "item".  Like a prop, these are external models
         // placed in the scene, but the specific model is determined
@@ -367,19 +367,20 @@ void VBSPEntity::parseParameters(std::string & entityText)
 
 ref_ptr<Group> VBSPEntity::createBrushGeometry()
 {
-    int                i;
-    int                numGeoms;
-    VBSPGeometry **    vbspGeomList;
-    Model              currentModel;
-    Face               currentFace;
-    TexInfo            currentTexInfo;
-    TexData            currentTexData;
-    const char *       texName;
-    char               currentTexName[256];
-    int                currentGeomIndex;
-    VBSPGeometry *     currentGeom;
-    ref_ptr<Group>     entityGroup;
-    ref_ptr<Group>     geomGroup;
+    int                 i;
+    int                 numGeoms;
+    VBSPGeometry **     vbspGeomList;
+    Model               currentModel;
+    Face                currentFace;
+    TexInfo             currentTexInfo;
+    TexData             currentTexData;
+    const char *        texName;
+    char                currentTexName[256];
+    int                 currentGeomIndex;
+    VBSPGeometry *      currentGeom;
+    ref_ptr<Group>      entityGroup;
+    ref_ptr<Group>      geomGroup;
+    std::stringstream   groupName;
 
     // Create a list of VBSPGeometry objects for each texdata entry in the
     // scene.  These objects will hold the necessary geometry data until we
@@ -501,6 +502,10 @@ ref_ptr<Group> VBSPEntity::createBrushGeometry()
         }
     }
 
+    // Name the entity group
+    groupName << class_name << ":" << entity_model_index;
+    entityGroup->setName(groupName.str());
+
     // Return the group we created
     return entityGroup;
 }
@@ -549,6 +554,9 @@ ref_ptr<Group> VBSPEntity::createModelGeometry()
 
         // Add the model node to the group
         entityGroup->addChild(modelNode.get());
+
+        // Set the group's name
+        entityGroup->setName(class_name + std::string(":") + entity_model);
     }
     else
     {

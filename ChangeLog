@@ -1,3 +1,78 @@
+2009-07-16 13:18  robert
+
+	* CMakeLists.txt: Updated release candidate number to 4
+
+2009-07-16 12:11  robert
+
+	* src/osgPlugins/OpenFlight,
+	  src/osgPlugins/OpenFlight/FltExportVisitor.cpp: From Fabien
+	  Lavignotte, "When exporting some models to OpenFlight, i found a
+	  crash if the texture
+	  unit does not contain a TexEnv object.
+	  Here's the small fix, just a test on the pointer."
+	  
+	  Merged from svn trunk using:
+	  
+	  svn merge -r 10490:10491
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgPlugins/OpenFlight
+
+2009-07-16 12:06  robert
+
+	* src/osgWidget, src/osgWidget/Window.cpp: From Stephane
+	  Lamoliatte, "The vertical anchor is inverted in the
+	  osgWidget::Window::update function.
+	  Here is a small patch to fix that."
+
+2009-07-16 11:52  robert
+
+	* examples/osganimationtimeline,
+	  examples/osganimationtimeline/osganimationtimeline.cpp: From
+	  Cedric Pinson, crash fix for osganimationtimeline that was caused
+	  by not checking if nathan.osg test file had be loaded or not.
+
+2009-07-16 11:42  robert
+
+	* src/osgPlugins/bsp, src/osgPlugins/bsp/VBSPEntity.cpp,
+	  src/osgPlugins/bsp/VBSPEntity.h,
+	  src/osgPlugins/bsp/VBSPGeometry.cpp,
+	  src/osgPlugins/bsp/VBSPReader.cpp, src/osgPlugins/mdl,
+	  src/osgPlugins/mdl/MDLReader.cpp,
+	  src/osgPlugins/mdl/MDL_README.txt: From Jason Daly, "These are
+	  some fixes to the mdl and bsp plugins to handle transparency and
+	  lighting better, plus a few other tweaks."
+
+2009-07-16 11:09  robert
+
+	* src/osgUtil/Optimizer.cpp: From Colin MacDonald, "The Optimizer
+	  Merge Geometry visitor is always merging geometries,
+	  even if they have had DataVariance DYNAMIC explicitly specified.
+	  Then
+	  when an application attempts to dynamically update the geometry
+	  in the
+	  frame loop the primitive sets and data arrays are no longer as
+	  expected, leading to display and/or memory corruption.
+	  
+	  Attached is a simple fix."
+	  
+	  Note from Robert Osfield, tweaked Colin's changes so that it uses
+	  != DYNAMIC rather == STATIC in the additional test.
+	  
+	  Merged from svn/trunk using:
+	  
+	  svn merge -r 10479:10480
+	  http://www.openscenegraph.org/svn/osg/OpenSceneGraph/trunk/src/osgUtil/Optimizer.cpp
+	  
+
+2009-07-14 16:02  robert
+
+	* NEWS.txt: Tweaked news
+
+2009-07-14 15:49  robert
+
+	* AUTHORS.txt, CMakeLists.txt, ChangeLog, NEWS.txt,
+	  applications/osgversion/Contributors.cpp: Updated contributors,
+	  authors file, news and changelog for 2.8.2-rc3
+
 2009-07-13 16:45  robert
 
 	* src/osgViewer, src/osgViewer/GraphicsWindowWin32.cpp: From Cory

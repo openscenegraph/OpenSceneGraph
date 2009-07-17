@@ -619,11 +619,33 @@ int *numComponents_ret)
 
 class ReaderWriterJPEG : public osgDB::ReaderWriter
 {
-    
-        WriteResult::WriteStatus write_JPEG_file (std::ostream &fout,int image_width,int image_height,JSAMPLE* image_buffer,int quality = 100) const
+
+        WriteResult::WriteStatus write_JPEG_file (std::ostream &fout, const osg::Image &img, int quality = 100) const
         {
+            int image_width = img.s();
+            int image_height = img.t();
             if ( (image_width == 0) || (image_height == 0) )
                 return WriteResult::ERROR_IN_WRITING_FILE;
+
+            J_COLOR_SPACE image_color_space = JCS_RGB;
+            int image_components = 3;
+            // Only cater for gray, alpha and RGB for now
+            switch(img.getPixelFormat()) {
+              case(GL_LUMINANCE):
+              case(GL_ALPHA): {
+                  image_color_space = JCS_GRAYSCALE;
+                  image_components = 1;
+                  break;
+              }
+              case(GL_RGB): {
+                  image_color_space = JCS_RGB;
+                  image_components = 3;
+                  break;
+              }
+              default: return WriteResult::ERROR_IN_WRITING_FILE; break;              
+            }
+
+            JSAMPLE* image_buffer = (JSAMPLE*)(img.data());
 
             /* This struct contains the JPEG compression parameters and pointers to
             * working space (which is allocated as needed by the JPEG library).
@@ -680,8 +702,8 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             */
             cinfo.image_width = image_width;     /* image width and height, in pixels */
             cinfo.image_height = image_height;
-            cinfo.input_components = 3;        /* # of color components per pixel */
-            cinfo.in_color_space = JCS_RGB;     /* colorspace of input image */
+            cinfo.input_components = image_components;        /* # of color components per pixel */
+            cinfo.in_color_space = image_color_space;     /* colorspace of input image */
             /* Now use the library's routine to set default compression parameters.
             * (You must set at least cinfo.in_color_space before calling this,
             * since the defaults depend on the source color space.)
@@ -707,7 +729,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
             * To keep things simple, we pass one scanline per call; you can pass
             * more if you wish, though.
             */
-            row_stride = image_width * 3;    /* JSAMPLEs per row in image_buffer */
+            row_stride = image_width * image_components;    /* JSAMPLEs per row in image_buffer */
 
             while (cinfo.next_scanline < cinfo.image_height)
             {
@@ -833,7 +855,7 @@ class ReaderWriterJPEG : public osgDB::ReaderWriter
         {
             osg::ref_ptr<osg::Image> tmp_img = new osg::Image(img);
             tmp_img->flipVertical();
-            WriteResult::WriteStatus ws = write_JPEG_file(fout,img.s(),img.t(),(JSAMPLE*)(tmp_img->data()),getQuality(options));
+            WriteResult::WriteStatus ws = write_JPEG_file(fout, *(tmp_img.get()), getQuality(options));
             return ws;
         }
 

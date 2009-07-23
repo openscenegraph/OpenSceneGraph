@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -15,6 +15,7 @@
 #ifndef OSGANIMATION_ANIMATION_MANAGER_BASE_H
 #define OSGANIMATION_ANIMATION_MANAGER_BASE_H
 
+#include <osgAnimation/LinkVisitor>
 #include <osgAnimation/Animation>
 #include <osgAnimation/Export>
 #include <osg/FrameStamp>
@@ -46,8 +47,12 @@ namespace osgAnimation
         void clearTargets();
         void normalizeTargets();
 
+        LinkVisitor* getOrCreateLinkVisitor();
+        void setLinkVisitor(LinkVisitor*);
+
     protected:
 
+        osg::ref_ptr<LinkVisitor> _linker;
         AnimationList _animations;
         TargetSet _targets;
         bool _needToLink;

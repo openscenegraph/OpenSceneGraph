@@ -21,7 +21,7 @@ AnimationManagerBase::~AnimationManagerBase() {}
 
 AnimationManagerBase::AnimationManagerBase()
 {
-    _needToLink = false; 
+    _needToLink = false;
 }
 
 void AnimationManagerBase::clearTargets()
@@ -95,11 +95,25 @@ void AnimationManagerBase::registerAnimation (Animation* animation)
 bool AnimationManagerBase::needToLink() const { return _needToLink; }
 
 
+void AnimationManagerBase::setLinkVisitor(LinkVisitor* visitor)
+{
+    _linker = visitor;
+}
+
+LinkVisitor* AnimationManagerBase::getOrCreateLinkVisitor()
+{
+    if (!_linker.valid())
+        _linker = new LinkVisitor;
+    return _linker.get();
+}
 
 void AnimationManagerBase::link(osg::Node* subgraph)
 {
-    LinkVisitor linker(_animations);
-    subgraph->accept(linker);
+    LinkVisitor* linker = getOrCreateLinkVisitor();
+    linker->getAnimationList().clear();
+    linker->getAnimationList() = _animations;
+
+    subgraph->accept(*linker);
     _needToLink = false;
     buildTargetReference();
 }

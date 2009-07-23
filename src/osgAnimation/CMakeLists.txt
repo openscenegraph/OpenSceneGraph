@@ -54,6 +54,7 @@ ADD_LIBRARY(${LIB_NAME}
     BasicAnimationManager.cpp
     Bone.cpp
     Channel.cpp
+    LinkVisitor.cpp
     MorphGeometry.cpp
     RigGeometry.cpp
     Skeleton.cpp

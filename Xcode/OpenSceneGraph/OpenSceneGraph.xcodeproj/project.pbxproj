@@ -2392,7 +2392,7 @@
 		D41887E60EDEE7A000C17A84 /* Timeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887DB0EDEE7A000C17A84 /* Timeline.cpp */; };
 		D41887E70EDEE7A000C17A84 /* UpdateCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887DC0EDEE7A000C17A84 /* UpdateCallback.cpp */; };
 		D41887E80EDEE7A000C17A84 /* VertexInfluence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887DD0EDEE7A000C17A84 /* VertexInfluence.cpp */; };
-		D41888760EDEE8E200C17A84 /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgManipulator.framework */; };
+		D41888760EDEE8E200C17A84 /* osgWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgWidget.framework */; };
 		D41888770EDEE8E200C17A84 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D41888780EDEE8E200C17A84 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D41888790EDEE8E200C17A84 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -2415,6 +2415,9 @@
 		D41CA8FC0CAAB10300D6176C /* OBJWriterNodeVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = D41CA8FA0CAAB10200D6176C /* OBJWriterNodeVisitor.h */; };
 		D41CA9000CAAB58F00D6176C /* ParallelSplitShadowMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41CA8FF0CAAB58F00D6176C /* ParallelSplitShadowMap.cpp */; };
 		D41CA9020CAAB5A500D6176C /* ParallelSplitShadowMap in Headers */ = {isa = PBXBuildFile; fileRef = D41CA9010CAAB5A500D6176C /* ParallelSplitShadowMap */; settings = {ATTRIBUTES = (Public, ); }; };
+		D421AE281018A8AB000167CB /* LinkVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D421AE271018A8AB000167CB /* LinkVisitor.cpp */; };
+		D421AE391018AAF4000167CB /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
+		D421AEC91018B669000167CB /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47A06810B833F6E00E19024 /* osgManipulator.framework */; };
 		D425C82A0E14F49F004E88FE /* Atomic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D425C8290E14F49F004E88FE /* Atomic.cpp */; };
 		D42FE5860B542DD10058A380 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D42FE5870B542DD10058A380 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -2535,7 +2538,7 @@
 		D4646D320E34932C000EF4FB /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		D4646D330E34932C000EF4FB /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D4646D8B0E3493C5000EF4FB /* osgwidgetmenu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4646D8A0E3493C5000EF4FB /* osgwidgetmenu.cpp */; };
-		D4646D920E3497AD000EF4FB /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgManipulator.framework */; };
+		D4646D920E3497AD000EF4FB /* osgWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgWidget.framework */; };
 		D47A06760B833F6E00E19024 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
 		D47A06770B833F6E00E19024 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1182CF05D64A5900EB53E5 /* OpenGL.framework */; };
 		D47A06780B833F6E00E19024 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -2565,7 +2568,6 @@
 		D47A06B80B83404600E19024 /* TranslatePlaneDragger in Headers */ = {isa = PBXBuildFile; fileRef = D47A06A30B83404500E19024 /* TranslatePlaneDragger */; settings = {ATTRIBUTES = (Public, ); }; };
 		D47A06CF0B83406700E19024 /* AntiSquish.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06BA0B83406500E19024 /* AntiSquish.cpp */; };
 		D47A06D00B83406700E19024 /* Command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06BB0B83406500E19024 /* Command.cpp */; };
-		D47A06D10B83406700E19024 /* CommandManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06BC0B83406500E19024 /* CommandManager.cpp */; };
 		D47A06D20B83406700E19024 /* Constraint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06BD0B83406500E19024 /* Constraint.cpp */; };
 		D47A06D30B83406700E19024 /* Dragger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06BE0B83406500E19024 /* Dragger.cpp */; };
 		D47A06D50B83406700E19024 /* Projector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06C00B83406600E19024 /* Projector.cpp */; };
@@ -2574,7 +2576,6 @@
 		D47A06D80B83406700E19024 /* Scale1DDragger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06C30B83406600E19024 /* Scale1DDragger.cpp */; };
 		D47A06D90B83406700E19024 /* Scale2DDragger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06C40B83406600E19024 /* Scale2DDragger.cpp */; };
 		D47A06DA0B83406700E19024 /* ScaleAxisDragger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06C50B83406600E19024 /* ScaleAxisDragger.cpp */; };
-		D47A06DB0B83406700E19024 /* Selection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06C60B83406600E19024 /* Selection.cpp */; };
 		D47A06DC0B83406700E19024 /* TabBoxDragger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06C70B83406600E19024 /* TabBoxDragger.cpp */; };
 		D47A06DD0B83406700E19024 /* TabPlaneDragger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06C80B83406600E19024 /* TabPlaneDragger.cpp */; };
 		D47A06DE0B83406700E19024 /* TabPlaneTrackballDragger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D47A06C90B83406700E19024 /* TabPlaneTrackballDragger.cpp */; };
@@ -2635,7 +2636,7 @@
 		D48F0FF00E3A199700DAAB64 /* PluginQuery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48F0FEF0E3A199700DAAB64 /* PluginQuery.cpp */; };
 		D48F101F0E3A1A4E00DAAB64 /* ImageSequence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D48F101D0E3A1A4D00DAAB64 /* ImageSequence.cpp */; };
 		D48F10200E3A1A4E00DAAB64 /* ImageSequence.h in Headers */ = {isa = PBXBuildFile; fileRef = D48F101E0E3A1A4E00DAAB64 /* ImageSequence.h */; };
-		D48F106A0E3A1FD600DAAB64 /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgManipulator.framework */; };
+		D48F106A0E3A1FD600DAAB64 /* osgWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgWidget.framework */; };
 		D48F106B0E3A1FD600DAAB64 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D48F106C0E3A1FD600DAAB64 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D48F106D0E3A1FD600DAAB64 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -6136,7 +6137,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
 			remoteInfo = osgViewer;
 		};
 		D40F5D430FFA330F002E7744 /* PBXContainerItemProxy */ = {
@@ -6178,28 +6179,28 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D40F5D410FFA330F002E7744 /* osgPresentation */;
+			remoteGlobalIDString = D40F5D410FFA330F002E7744;
 			remoteInfo = osgPresentation;
 		};
 		D40F5E470FFA3465002E7744 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 00FB20D00B015CF10052DD79 /* osgViewer */;
+			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
 			remoteInfo = osgViewer;
 		};
 		D40F5E4F0FFA3474002E7744 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D4C9C7FB0E91148900F8C4A0 /* osgVolume */;
+			remoteGlobalIDString = D4C9C7FB0E91148900F8C4A0;
 			remoteInfo = osgVolume;
 		};
 		D40F5E860FFA34B4002E7744 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 0055835A0624D1E5000A808A /* osgFX */;
+			remoteGlobalIDString = 0055835A0624D1E5000A808A;
 			remoteInfo = osgFX;
 		};
 		D41887290EDEE6E000C17A84 /* PBXContainerItemProxy */ = {
@@ -6264,6 +6265,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = D41887270EDEE6E000C17A84;
 			remoteInfo = osgAnimation;
+		};
+		D421AE311018AAE3000167CB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE11849905D7126100EB53E5 /* osgUtil */;
+			remoteInfo = osgUtil;
+		};
+		D421AE7E1018AC12000167CB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D43AB51E0E2E1D1900623C77 /* osgWidget */;
+			remoteInfo = osgWidget;
 		};
 		D42FE6B00B5561FE0058A380 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -8317,6 +8332,7 @@
 		D41CA8FA0CAAB10200D6176C /* OBJWriterNodeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = OBJWriterNodeVisitor.h; sourceTree = "<group>"; };
 		D41CA8FF0CAAB58F00D6176C /* ParallelSplitShadowMap.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ParallelSplitShadowMap.cpp; sourceTree = "<group>"; };
 		D41CA9010CAAB5A500D6176C /* ParallelSplitShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ParallelSplitShadowMap; sourceTree = "<group>"; };
+		D421AE271018A8AB000167CB /* LinkVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LinkVisitor.cpp; path = ../../src/osgAnimation/LinkVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		D425C8290E14F49F004E88FE /* Atomic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Atomic.cpp; path = common/Atomic.cpp; sourceTree = "<group>"; };
 		D43AB4EB0E2E01CB00623C77 /* KdTree */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = KdTree; sourceTree = "<group>"; };
 		D43AB4ED0E2E01DD00623C77 /* KdTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KdTree.cpp; sourceTree = "<group>"; };
@@ -8326,7 +8342,7 @@
 		D43AB4F90E2E14F800623C77 /* Text3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Text3D.h; sourceTree = "<group>"; };
 		D43AB50D0E2E17C800623C77 /* PluginQuery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginQuery.cpp; sourceTree = "<group>"; };
 		D43AB50E0E2E17C800623C77 /* PluginQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginQuery.h; sourceTree = "<group>"; };
-		D43AB5640E2E1D1900623C77 /* osgManipulator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgManipulator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D43AB5640E2E1D1900623C77 /* osgWidget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgWidget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43AB5CE0E2E1DD200623C77 /* Box */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Box; sourceTree = "<group>"; };
 		D43AB5CF0E2E1DD200623C77 /* Canvas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Canvas; sourceTree = "<group>"; };
 		D43AB5D00E2E1DD200623C77 /* EventInterface */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = EventInterface; sourceTree = "<group>"; };
@@ -8441,7 +8457,6 @@
 		D47A06A30B83404500E19024 /* TranslatePlaneDragger */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = TranslatePlaneDragger; sourceTree = "<group>"; };
 		D47A06BA0B83406500E19024 /* AntiSquish.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = AntiSquish.cpp; sourceTree = "<group>"; };
 		D47A06BB0B83406500E19024 /* Command.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Command.cpp; sourceTree = "<group>"; };
-		D47A06BC0B83406500E19024 /* CommandManager.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = CommandManager.cpp; sourceTree = "<group>"; };
 		D47A06BD0B83406500E19024 /* Constraint.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Constraint.cpp; sourceTree = "<group>"; };
 		D47A06BE0B83406500E19024 /* Dragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Dragger.cpp; sourceTree = "<group>"; };
 		D47A06C00B83406600E19024 /* Projector.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Projector.cpp; sourceTree = "<group>"; };
@@ -8450,7 +8465,6 @@
 		D47A06C30B83406600E19024 /* Scale1DDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Scale1DDragger.cpp; sourceTree = "<group>"; };
 		D47A06C40B83406600E19024 /* Scale2DDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Scale2DDragger.cpp; sourceTree = "<group>"; };
 		D47A06C50B83406600E19024 /* ScaleAxisDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ScaleAxisDragger.cpp; sourceTree = "<group>"; };
-		D47A06C60B83406600E19024 /* Selection.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Selection.cpp; sourceTree = "<group>"; };
 		D47A06C70B83406600E19024 /* TabBoxDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TabBoxDragger.cpp; sourceTree = "<group>"; };
 		D47A06C80B83406600E19024 /* TabPlaneDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TabPlaneDragger.cpp; sourceTree = "<group>"; };
 		D47A06C90B83406700E19024 /* TabPlaneTrackballDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = TabPlaneTrackballDragger.cpp; sourceTree = "<group>"; };
@@ -9506,6 +9520,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D421AE391018AAF4000167CB /* osgUtil.framework in Frameworks */,
 				004E4D000A51F84900EC8521 /* osg.framework in Frameworks */,
 				004E4D010A51F84900EC8521 /* osgDB.framework in Frameworks */,
 			);
@@ -9842,6 +9857,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D421AEC91018B669000167CB /* osgManipulator.framework in Frameworks */,
 				D4C9CB1C0E922B0C00F8C4A0 /* osgVolume.framework in Frameworks */,
 				D4F865E30E701D1D0070271C /* OpenGL.framework in Frameworks */,
 				D4DFC4880B57D6C2005CBCD2 /* osgViewer.framework in Frameworks */,
@@ -10435,7 +10451,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D41888E60EDEE9C400C17A84 /* osgAnimation.framework in Frameworks */,
-				D41888760EDEE8E200C17A84 /* osgManipulator.framework in Frameworks */,
+				D41888760EDEE8E200C17A84 /* osgWidget.framework in Frameworks */,
 				D41888770EDEE8E200C17A84 /* osgViewer.framework in Frameworks */,
 				D41888780EDEE8E200C17A84 /* osg.framework in Frameworks */,
 				D41888790EDEE8E200C17A84 /* osgDB.framework in Frameworks */,
@@ -10486,7 +10502,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4646D920E3497AD000EF4FB /* osgManipulator.framework in Frameworks */,
+				D4646D920E3497AD000EF4FB /* osgWidget.framework in Frameworks */,
 				D4646D2E0E34932C000EF4FB /* osgViewer.framework in Frameworks */,
 				D4646D2F0E34932C000EF4FB /* osg.framework in Frameworks */,
 				D4646D300E34932C000EF4FB /* osgDB.framework in Frameworks */,
@@ -10529,7 +10545,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D48F106A0E3A1FD600DAAB64 /* osgManipulator.framework in Frameworks */,
+				D48F106A0E3A1FD600DAAB64 /* osgWidget.framework in Frameworks */,
 				D48F106B0E3A1FD600DAAB64 /* osgViewer.framework in Frameworks */,
 				D48F106C0E3A1FD600DAAB64 /* osg.framework in Frameworks */,
 				D48F106D0E3A1FD600DAAB64 /* osgDB.framework in Frameworks */,
@@ -12882,7 +12898,7 @@
 				0084FBA60D3425180021E5C9 /* osgdb_osgViewer.so */,
 				0084FBDF0D3426180021E5C9 /* osgdb_osgTerrain.so */,
 				0084FC610D3427B70021E5C9 /* osgdb_cfg.so */,
-				D43AB5640E2E1D1900623C77 /* osgManipulator.framework */,
+				D43AB5640E2E1D1900623C77 /* osgWidget.framework */,
 				D4646D380E34932C000EF4FB /* osgwidgetmenu.app */,
 				D48F10750E3A1FD600DAAB64 /* osgimagesequence.app */,
 				D4C9C8320E91148900F8C4A0 /* osgVolume.framework */,
@@ -13925,6 +13941,7 @@
 		D41887D20EDEE78100C17A84 /* osgAnimation */ = {
 			isa = PBXGroup;
 			children = (
+				D421AE271018A8AB000167CB /* LinkVisitor.cpp */,
 				D402775E0FE7A71C00CDE760 /* Action.cpp */,
 				D402775F0FE7A71C00CDE760 /* ActionCallback.cpp */,
 				D40277600FE7A71C00CDE760 /* ActionVisitor.cpp */,
@@ -14075,7 +14092,6 @@
 				0084FAB00D341F5F0021E5C9 /* Version.cpp */,
 				D47A06BA0B83406500E19024 /* AntiSquish.cpp */,
 				D47A06BB0B83406500E19024 /* Command.cpp */,
-				D47A06BC0B83406500E19024 /* CommandManager.cpp */,
 				D47A06BD0B83406500E19024 /* Constraint.cpp */,
 				D47A06BE0B83406500E19024 /* Dragger.cpp */,
 				D47A06C00B83406600E19024 /* Projector.cpp */,
@@ -14084,7 +14100,6 @@
 				D47A06C30B83406600E19024 /* Scale1DDragger.cpp */,
 				D47A06C40B83406600E19024 /* Scale2DDragger.cpp */,
 				D47A06C50B83406600E19024 /* ScaleAxisDragger.cpp */,
-				D47A06C60B83406600E19024 /* Selection.cpp */,
 				D47A06C70B83406600E19024 /* TabBoxDragger.cpp */,
 				D47A06C80B83406600E19024 /* TabPlaneDragger.cpp */,
 				D47A06C90B83406700E19024 /* TabPlaneTrackballDragger.cpp */,
@@ -16149,6 +16164,7 @@
 				0084FCBD0D3429580021E5C9 /* PBXTargetDependency */,
 				0084FCBF0D3429580021E5C9 /* PBXTargetDependency */,
 				0084FCC10D3429580021E5C9 /* PBXTargetDependency */,
+				D421AE7F1018AC12000167CB /* PBXTargetDependency */,
 			);
 			name = osganimate;
 			productName = osgtext;
@@ -17528,6 +17544,7 @@
 			);
 			dependencies = (
 				004E4CFB0A51F84900EC8521 /* PBXTargetDependency */,
+				D421AE321018AAE3000167CB /* PBXTargetDependency */,
 			);
 			name = osgdb_bsp;
 			productName = osgdb_3dc;
@@ -19155,7 +19172,7 @@
 			);
 			name = osgWidget;
 			productName = osgGA;
-			productReference = D43AB5640E2E1D1900623C77 /* osgManipulator.framework */;
+			productReference = D43AB5640E2E1D1900623C77 /* osgWidget.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		D43ED1D00FCE95C10024F778 /* osgdb_ply */ = {
@@ -22293,6 +22310,7 @@
 				D40277650FE7A71C00CDE760 /* ActionVisitor.cpp in Sources */,
 				D40277660FE7A71C00CDE760 /* StatsHandler.cpp in Sources */,
 				D40277670FE7A71C00CDE760 /* StatsVisitor.cpp in Sources */,
+				D421AE281018A8AB000167CB /* LinkVisitor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22355,7 +22373,6 @@
 			files = (
 				D47A06CF0B83406700E19024 /* AntiSquish.cpp in Sources */,
 				D47A06D00B83406700E19024 /* Command.cpp in Sources */,
-				D47A06D10B83406700E19024 /* CommandManager.cpp in Sources */,
 				D47A06D20B83406700E19024 /* Constraint.cpp in Sources */,
 				D47A06D30B83406700E19024 /* Dragger.cpp in Sources */,
 				D47A06D50B83406700E19024 /* Projector.cpp in Sources */,
@@ -22364,7 +22381,6 @@
 				D47A06D80B83406700E19024 /* Scale1DDragger.cpp in Sources */,
 				D47A06D90B83406700E19024 /* Scale2DDragger.cpp in Sources */,
 				D47A06DA0B83406700E19024 /* ScaleAxisDragger.cpp in Sources */,
-				D47A06DB0B83406700E19024 /* Selection.cpp in Sources */,
 				D47A06DC0B83406700E19024 /* TabBoxDragger.cpp in Sources */,
 				D47A06DD0B83406700E19024 /* TabPlaneDragger.cpp in Sources */,
 				D47A06DE0B83406700E19024 /* TabPlaneTrackballDragger.cpp in Sources */,
@@ -25276,6 +25292,16 @@
 			isa = PBXTargetDependency;
 			target = D41887270EDEE6E000C17A84 /* osgAnimation */;
 			targetProxy = D41888E20EDEE99E00C17A84 /* PBXContainerItemProxy */;
+		};
+		D421AE321018AAE3000167CB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE11849905D7126100EB53E5 /* osgUtil */;
+			targetProxy = D421AE311018AAE3000167CB /* PBXContainerItemProxy */;
+		};
+		D421AE7F1018AC12000167CB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D43AB51E0E2E1D1900623C77 /* osgWidget */;
+			targetProxy = D421AE7E1018AC12000167CB /* PBXContainerItemProxy */;
 		};
 		D42FE6B10B5561FE0058A380 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -43952,7 +43978,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgManipulator;
+				PRODUCT_NAME = osgWidget;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
@@ -53878,7 +53904,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgManipulator;
+				PRODUCT_NAME = osgWidget;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
@@ -53900,7 +53926,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgManipulator;
+				PRODUCT_NAME = osgWidget;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
@@ -54959,7 +54985,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = osgManipulator;
+				PRODUCT_NAME = osgWidget;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";

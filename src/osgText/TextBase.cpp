@@ -44,6 +44,8 @@ TextBase::TextBase():
     _autoRotateToScreen(false),
     _layout(LEFT_TO_RIGHT),
     _drawMode(TEXT),
+    _textBBMargin(0.0f),
+    _textBBColor(0.0, 0.0, 0.0, 0.5),
     _kerningType(KERNING_DEFAULT),
     _lineCount(0)
 {
@@ -69,6 +71,8 @@ TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
     _autoRotateToScreen(textBase._autoRotateToScreen),
     _layout(textBase._layout),
     _drawMode(textBase._drawMode),
+    _textBBMargin(textBase._textBBMargin),
+    _textBBColor(textBase._textBBColor),
     _kerningType(textBase._kerningType),
     _lineCount(textBase._lineCount)
 {
@@ -222,6 +226,16 @@ void TextBase::setDrawMode(unsigned int mode)
     if (_drawMode==mode) return;
 
     _drawMode=mode;
+}
+
+
+void TextBase::setBoundingBoxMargin(float margin)
+{
+    if (_textBBMargin == margin)
+        return;
+
+    _textBBMargin = margin;
+    computeGlyphRepresentation();
 }
 
 

@@ -312,6 +312,12 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                   __void__computeBackdropBoundingBox,
 	                   "",
 	                   "");
+	I_ProtectedMethod0(void, computeBoundingBoxMargin,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__computeBoundingBoxMargin,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(void, computeColorGradients,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

@@ -363,7 +363,7 @@ bool SphericalManipulator::calcMovement()
         osg::Matrix rotation_matrix;
         rotation_matrix=osg::Matrixd::rotate(_elevation,-1,0,0)*osg::Matrixd::rotate(PI_2+_heading,0,0,1);
 
-        osg::Vec3 dv(dx*scale,dy*scale,0);
+        osg::Vec3 dv(dx*scale,0,dy*scale);
         _center += dv*rotation_matrix;
 
         return true;

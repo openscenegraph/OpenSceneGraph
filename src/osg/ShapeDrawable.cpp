@@ -953,6 +953,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
 
 
 
+    // draw each row of HeightField
     for(unsigned int row=0;row<field.getNumRows()-1;++row,vBase+=dv)
     {
 
@@ -962,7 +963,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
 
         glBegin(GL_QUAD_STRIP);
 
-        // draw skirt at beginning if required.
+        // draw skirt at beginning of this row if required.
         if (field.getSkirtHeight()!=0.0f)
         {
             vertTop.set(0.0f,dy*(float)(row+1),field.getHeight(0,row+1)-field.getSkirtHeight());
@@ -980,6 +981,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
             glVertex3fv(vertBase.ptr());
         }
 
+        // draw the actual row
         for(unsigned int col=0;col<field.getNumColumns();++col,u+=du)
         {
             vertTop.set(dx*(float)col,dy*(float)(row+1),field.getHeight(col,row+1));
@@ -998,7 +1000,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
 
         }
 
-        // draw skirt at end if required.
+        // draw skirt at end of this row if required.
         if (field.getSkirtHeight()!=0.0f)
         {
 

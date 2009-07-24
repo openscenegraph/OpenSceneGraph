@@ -88,9 +88,9 @@ class OSGTERRAIN_EXPORT Locator : public osg::Object
         
         virtual bool orientationOpenGL() const;
 
-        virtual bool convertLocalToModel(const osg::Vec3d& /*local*/, osg::Vec3d& /*world*/) const;
+        virtual bool convertLocalToModel(const osg::Vec3d& local, osg::Vec3d& world) const;
 
-        virtual bool convertModelToLocal(const osg::Vec3d& /*world*/, osg::Vec3d& /*local*/) const;
+        virtual bool convertModelToLocal(const osg::Vec3d& world, osg::Vec3d& local) const;
 
         static bool convertLocalCoordBetween(const Locator& source, const osg::Vec3d& sourceNDC, 
                                              const Locator& destination, osg::Vec3d& destinationNDC)

@@ -36,7 +36,7 @@ osg::StateSet* getSingletonLightPointSystemSet()
     if (!s_stateset)
     {
         s_stateset = new osg::StateSet;
-        // force light point nodes to be drawn after everything else by picking a renderin bin number after
+        // force light point nodes to be drawn after everything else by picking a rendering bin number after
         // the transparent bin.
         s_stateset->setRenderBinDetails(20,"DepthSortedBin");
     }
@@ -147,7 +147,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
 #endif
     
 
-    // should we disabled small feature culling here?
+    // should we disable small feature culling here?
     if (cv /*&& !cv->isCulled(_bbox)*/)
     {
     
@@ -158,7 +158,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         if (rg->leaves_empty())
         {
             // this is first leaf to be added to StateGraph
-            // and therefore should not already know to current render bin,
+            // and therefore should not already know current render bin,
             // so need to add it.
             cv->getCurrentRenderBin()->addStateGraph(rg);
         }
@@ -210,7 +210,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
         
         if (litr == rg->_leaves.end())
         {
-            // havn't found the drawable added in the RenderLeaf list, there this my be the 
+            // haven't found the drawable added in the RenderLeaf list, therefore this may be the 
             // first time through LightPointNode in this frame, so need to add drawable into the StateGraph RenderLeaf list
             // and update its time signatures.
 
@@ -267,7 +267,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
 
             float intensity = (_lightSystem.valid()) ? _lightSystem->getIntensity() : lp._intensity;
 
-            // slip light point if it is intensity is 0.0 or negative.
+            // slip light point if its intensity is 0.0 or negative.
             if (intensity<=minimumIntensity) continue;
 
             // (SIB) Clip on distance, if close to limit, add transparancy
@@ -286,7 +286,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             {
                 intensity *= (*lp._sector)(dv);
 
-                // slip light point if it is intensity is 0.0 or negative.
+                // skip light point if it is intensity is 0.0 or negative.
                 if (intensity<=minimumIntensity) continue;
 
             }
@@ -308,7 +308,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
                 color[3] *= bs[3];
             }
 
-            // if alpha value is less than the min intentsive then skip
+            // if alpha value is less than the min intentsity then skip
             if (color[3]<=minimumIntensity) continue;
 
             float pixelSize = cv->pixelSize(position,lp._radius);
@@ -318,7 +318,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             // adjust pixel size to account for intensity.
             if (intensity!=1.0) pixelSize *= sqrt(intensity);
 
-            // adjust alfa to account for max range (Fade on distance)
+            // adjust alpha to account for max range (Fade on distance)
             color[3] *= distanceFactor;
 
             // round up to the minimum pixel size if required.

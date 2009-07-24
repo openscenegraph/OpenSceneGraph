@@ -1,6 +1,6 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commericial and non commericial
  * applications, as long as this copyright notice is maintained.
  * 
@@ -55,7 +55,7 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
             return false;
         }
 
-        // clear the params sting of any brackets.
+        // clear the params string of any brackets.
         std::string::size_type params_pos = params.size();
         for(; params_pos>0; )
         {
@@ -81,10 +81,10 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
  * This pseudo-loader make it simple to change the size of a saved model
  * by specifying a correcting scale factor as part of the filename.
  *
- * Usage: <modelfile.ext>.<sx>,<sy>,<sz>.globe
- *        <modelfile.ext>.<su>.globe
+ * Usage: <modelfile.ext>.<sx>,<sy>,<sz>.scale
+ *        <modelfile.ext>.<su>.scale
  * where:
- *      <modelfile.ext> = an model filename.
+ *      <modelfile.ext> = a model filename.
  *      <sx> = scale factor along the X axis.
  *      <sy> = scale factor along the Y axis.
  *      <sz> = scale factor along the Z axis.
@@ -104,7 +104,7 @@ public:
     virtual const char* className() const { return "scaling pseudo-loader"; }
 
     virtual bool acceptsExtension(const std::string& extension) const
-    { 
+    {
         return osgDB::equalCaseInsensitive( extension, EXTENSION_NAME );
     }
 

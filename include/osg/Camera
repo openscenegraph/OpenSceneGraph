@@ -72,13 +72,13 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         bool getAllowEventFocus() const { return _allowEventFocus; }
 
 
-        /** Set the DsplaySettings object associated with this view.*/
+        /** Set the DisplaySettings object associated with this view.*/
         void setDisplaySettings(osg::DisplaySettings* ds) { _displaySettings = ds; }
 
-        /** Set the DsplaySettings object associated with this view.*/
+        /** Get the DisplaySettings object associated with this view.*/
         osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
 
-        /** Set the DsplaySettings object associated with this view.*/
+        /** Get the const DisplaySettings object associated with this view.*/
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
 

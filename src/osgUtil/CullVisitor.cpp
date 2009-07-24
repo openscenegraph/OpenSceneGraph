@@ -1092,7 +1092,7 @@ void CullVisitor::apply(osg::ClearNode& node)
     }
     else
     {
-      // we have an earth sky implementation to do the work for use
+      // we have an earth sky implementation to do the work for us
       // so we don't need to clear.
       getCurrentRenderBin()->getStage()->setClearMask(0);
     }

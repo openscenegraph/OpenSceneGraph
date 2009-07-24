@@ -117,7 +117,7 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         /** Get the coordinate frame locator of the terrain node.*/
         Locator* getLocator() { return _locator.get(); }
 
-        /** Get the coordinate frame locator of the terrain node.*/
+        /** Get the const coordinate frame locator of the terrain node.*/
         const Locator* getLocator() const { return _locator.get(); }
 
         /** Set the layer to use to define the elevations of the terrain.*/

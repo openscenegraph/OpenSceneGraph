@@ -142,8 +142,8 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
                         if (vertices->size()>=targetNumVertices)
                         {
                             // finishing setting up the current geometry and add it to the geode.
-                            geometry->setUseDisplayList(true);    
-                            geometry->setUseVertexBufferObjects(true);    
+                            geometry->setUseDisplayList(true);
+                            geometry->setUseVertexBufferObjects(true);
                             geometry->setVertexArray(vertices);
                             geometry->setNormalArray(normals);
                             geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
@@ -175,7 +175,7 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
 
 
             geometry->setUseDisplayList(true);
-            geometry->setUseVertexBufferObjects(true);    
+            geometry->setUseVertexBufferObjects(true);
             geometry->setVertexArray(vertices);
             geometry->setNormalArray(normals);
             geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
@@ -189,19 +189,19 @@ class ReaderWriter3DC : public osgDB::ReaderWriter
 
         }
 
-        virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options =NULL) const 
-        { 
-            if (!acceptsExtension(osgDB::getFileExtension(fileName)))
-                return WriteResult(WriteResult::FILE_NOT_HANDLED);
+        virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options =NULL) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+            if( !acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
             osgDB::ofstream f(fileName.c_str());
 
-            Writer3DCNodeVisitor nv(f); 
+            Writer3DCNodeVisitor nv(f);
 
             // we must cast away constness
             (const_cast<osg::Node*>(&node))->accept(nv);
 
-            return WriteResult(WriteResult::FILE_SAVED); 
+            return WriteResult::FILE_SAVED;
         }
 };
 

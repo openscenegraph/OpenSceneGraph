@@ -22,7 +22,7 @@
 namespace osgTerrain {
 
 /** Terrain provides a framework for loosely coupling height field data with height rendering algorithms.
-  * This allows TerrainTechnique's to be plugged in at runtime.*/
+  * This allows TerrainTechniques to be plugged in at runtime.*/
 class OSGTERRAIN_EXPORT Terrain : public osg::Group
 {
     public:

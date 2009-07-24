@@ -35,9 +35,12 @@ class OSG_EXPORT ApplicationUsage : public osg::Referenced
         typedef std::map<std::string,std::string> UsageMap;
         
 
+        /** The ApplicationName is often displayed when logging errors, and frequently incorporated into the Description (below). */
         void setApplicationName(const std::string& name) { _applicationName = name; }
         const std::string& getApplicationName() const { return _applicationName; }
 
+        /** If non-empty, the Description is typically shown by the Help Handler
+          * as text on the Help display (which also lists keyboard abbreviations. */
         void setDescription(const std::string& desc) { _description = desc; }
         const std::string& getDescription() const { return _description; }
 

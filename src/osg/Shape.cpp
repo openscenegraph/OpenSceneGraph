@@ -138,7 +138,7 @@ Vec3 HeightField::getNormal(unsigned int c,unsigned int r) const
 
 Vec2 HeightField::getHeightDelta(unsigned int c,unsigned int r) const
 {
-     // four point normal generation.
+     // four point height generation.
     Vec2 heightDelta;
     if (c==0)
     {

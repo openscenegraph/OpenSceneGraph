@@ -67,7 +67,7 @@ RenderBin* RenderBin::createRenderBin(const std::string& binName)
         if (prototype) return dynamic_cast<RenderBin*>(prototype->clone(osg::CopyOp::DEEP_COPY_ALL));
     }
     
-    osg::notify(osg::WARN) <<"Warning: RenderBin \""<<binName<<"\" implemention not found, using default RenderBin as a fallback."<<std::endl;
+    osg::notify(osg::WARN) <<"Warning: RenderBin \""<<binName<<"\" implementation not found, using default RenderBin as a fallback."<<std::endl;
     return new RenderBin;
 }
 
@@ -382,7 +382,7 @@ RenderBin* RenderBin::find_or_insert(int binNum,const std::string& binName)
     RenderBinList::iterator itr = _bins.find(binNum);
     if (itr!=_bins.end()) return itr->second.get();
 
-    // create a renderin bin and insert into bin list.
+    // create a rendering bin and insert into bin list.
     RenderBin* rb = RenderBin::createRenderBin(binName);
     if (rb)
     {

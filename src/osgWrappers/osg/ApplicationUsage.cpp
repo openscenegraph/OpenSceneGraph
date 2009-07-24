@@ -49,7 +49,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ApplicationUsage)
 	I_Method1(void, setApplicationName, IN, const std::string &, name,
 	          Properties::NON_VIRTUAL,
 	          __void__setApplicationName__C5_std_string_R1,
-	          "",
+	          "The ApplicationName is often displayed when logging errors, and frequently incorporated into the Description (below). ",
 	          "");
 	I_Method0(const std::string &, getApplicationName,
 	          Properties::NON_VIRTUAL,
@@ -59,7 +59,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ApplicationUsage)
 	I_Method1(void, setDescription, IN, const std::string &, desc,
 	          Properties::NON_VIRTUAL,
 	          __void__setDescription__C5_std_string_R1,
-	          "",
+	          "If non-empty, the Description is typically shown by the Help Handler as text on the Help display (which also lists keyboard abbreviations. ",
 	          "");
 	I_Method0(const std::string &, getDescription,
 	          Properties::NON_VIRTUAL,

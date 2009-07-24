@@ -182,17 +182,17 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_Method1(void, setDisplaySettings, IN, osg::DisplaySettings *, ds,
 	          Properties::NON_VIRTUAL,
 	          __void__setDisplaySettings__osg_DisplaySettings_P1,
-	          "Set the DsplaySettings object associated with this view. ",
+	          "Set the DisplaySettings object associated with this view. ",
 	          "");
 	I_Method0(osg::DisplaySettings *, getDisplaySettings,
 	          Properties::NON_VIRTUAL,
 	          __osg_DisplaySettings_P1__getDisplaySettings,
-	          "Set the DsplaySettings object associated with this view. ",
+	          "Get the DisplaySettings object associated with this view. ",
 	          "");
 	I_Method0(const osg::DisplaySettings *, getDisplaySettings,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_DisplaySettings_P1__getDisplaySettings,
-	          "Set the DsplaySettings object associated with this view. ",
+	          "Get the const DisplaySettings object associated with this view. ",
 	          "");
 	I_Method1(void, setClearMask, IN, GLbitfield, mask,
 	          Properties::NON_VIRTUAL,

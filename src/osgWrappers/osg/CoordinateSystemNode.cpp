@@ -72,7 +72,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CoordinateSystemNode)
 	I_Method1(void, set, IN, const osg::CoordinateSystemNode &, csn,
 	          Properties::NON_VIRTUAL,
 	          __void__set__C5_CoordinateSystemNode_R1,
-	          "Set the coordinate system node up by copy the format, coordinate system string, and ellipsoid model of another coordinate system node. ",
+	          "Set the coordinate system node up by copying the format, coordinate system string, and ellipsoid model of another coordinate system node. ",
 	          "");
 	I_Method1(void, setFormat, IN, const std::string &, format,
 	          Properties::NON_VIRTUAL,
@@ -117,7 +117,7 @@ BEGIN_OBJECT_REFLECTOR(osg::CoordinateSystemNode)
 	I_Method1(osg::Vec3d, computeLocalUpVector, IN, const osg::Vec3d &, position,
 	          Properties::NON_VIRTUAL,
 	          __osg_Vec3d__computeLocalUpVector__C5_Vec3d_R1,
-	          "Compute the local coordinate frame for specified point. ",
+	          "Compute the local up-vector for specified point. ",
 	          "");
 	I_SimpleProperty(const std::string &, CoordinateSystem, 
 	                 __C5_std_string_R1__getCoordinateSystem, 
@@ -209,6 +209,11 @@ BEGIN_OBJECT_REFLECTOR(osg::EllipsoidModel)
 	I_Method3(osg::Vec3d, computeLocalUpVector, IN, double, X, IN, double, Y, IN, double, Z,
 	          Properties::NON_VIRTUAL,
 	          __osg_Vec3d__computeLocalUpVector__double__double__double,
+	          "",
+	          "");
+	I_Method0(bool, isWGS84,
+	          Properties::NON_VIRTUAL,
+	          __bool__isWGS84,
 	          "",
 	          "");
 	I_ProtectedMethod0(void, computeCoefficients,

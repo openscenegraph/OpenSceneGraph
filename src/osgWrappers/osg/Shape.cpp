@@ -839,7 +839,7 @@ BEGIN_OBJECT_REFLECTOR(osg::HeightField)
 	I_Method0(const osg::FloatArray *, getFloatArray,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_FloatArray_P1__getFloatArray,
-	          "Get the const sFloatArray height data. ",
+	          "Get the const FloatArray height data. ",
 	          "");
 	I_Method0(osg::HeightField::HeightList &, getHeightList,
 	          Properties::NON_VIRTUAL,

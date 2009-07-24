@@ -132,7 +132,7 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	I_Method0(const osgTerrain::Locator *, getLocator,
 	          Properties::NON_VIRTUAL,
 	          __C5_Locator_P1__getLocator,
-	          "Get the coordinate frame locator of the terrain node. ",
+	          "Get the const coordinate frame locator of the terrain node. ",
 	          "");
 	I_Method1(void, setElevationLayer, IN, osgTerrain::Layer *, layer,
 	          Properties::NON_VIRTUAL,

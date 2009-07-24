@@ -29,7 +29,7 @@ VBSPGeometry::VBSPGeometry(VBSPData * bspData)
     disp_vertex_array = new Vec3Array();
     disp_normal_array = new Vec3Array();
     disp_texcoord_array = new Vec2Array();
-    disp_vertex_attr_array = new FloatArray();
+    disp_vertex_attr_array = new Vec4Array();
    
     // Create a second primitive set for drawing indexed triangles, which is
     // the quickest method for drawing the displacement surfaces
@@ -276,6 +276,7 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
     osg::Vec3         normal;
     float             u, v;
     osg::Vec2         texCoord;
+    float             alphaBlend;
     unsigned char     edgeBits;
    
 
@@ -422,9 +423,12 @@ void VBSPGeometry::createDispSurface(Face & face, DisplaceInfo & dispInfo)
             // Add the texture coordinate to the array
             disp_texcoord_array->push_back(texCoord);
 
-            // Get the texture blend parameter for this vertex as well
-            disp_vertex_attr_array->
-                push_back(dispVertInfo.alpha_blend / 255.0);
+            // Get the texture blend parameter for this vertex as well, and
+            // assign it as the alpha channel for the primary vertex color.
+            // We'll use a combiner operation to do the texture blending
+            alphaBlend = dispVertInfo.alpha_blend / 255.0;
+            disp_vertex_attr_array->push_back(
+                osg::Vec4f(1.0, 1.0, 1.0, 1.0 - alphaBlend));
         }
     }
 
@@ -667,14 +671,9 @@ ref_ptr<Group> VBSPGeometry::createGeometry()
         geometry->setNormalArray(disp_normal_array.get());
         geometry->setNormalBinding(Geometry::BIND_PER_VERTEX);
         geometry->setTexCoordArray(0, disp_texcoord_array.get());
-        geometry->setVertexAttribArray(1, disp_vertex_attr_array.get());
-        geometry->setVertexAttribBinding(1, Geometry::BIND_PER_VERTEX);
-
-        // Add an overall color
-        color.set(1.0, 1.0, 1.0, 1.0);
-        colorArray = new Vec4Array(1, &color);
-        geometry->setColorArray(colorArray.get());
-        geometry->setColorBinding(Geometry::BIND_OVERALL);
+        geometry->setTexCoordArray(1, disp_texcoord_array.get());
+        geometry->setColorArray(disp_vertex_attr_array.get());
+        geometry->setColorBinding(Geometry::BIND_PER_VERTEX);
 
         // Add our primitive set to the geometry
         geometry->addPrimitiveSet(disp_primitive_set.get());

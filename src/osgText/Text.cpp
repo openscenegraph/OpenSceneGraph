@@ -542,6 +542,7 @@ void Text::computeGlyphRepresentation()
    
     TextBase::computePositions();
     computeBackdropBoundingBox();
+    computeBoundingBoxMargin();
     computeColorGradients();
 }
 
@@ -1022,6 +1023,21 @@ void Text::computeBackdropBoundingBox() const
     }
 }
 
+// This method expands the bounding box to a settable margin when a bounding box drawing mode is active. 
+void Text::computeBoundingBoxMargin() const
+{
+    if(_drawMode & (BOUNDINGBOX | FILLEDBOUNDINGBOX)){
+        _textBB.set(
+            _textBB.xMin() - _textBBMargin,
+            _textBB.yMin() - _textBBMargin,
+            _textBB.zMin(),
+            _textBB.xMax() + _textBBMargin,
+            _textBB.yMax() + _textBBMargin,
+            _textBB.zMax()
+        );
+    }
+}
+
 void Text::computeColorGradients() const
 {
     switch(_colorGradientMode)
@@ -1331,6 +1347,73 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
     glNormal3fv(_normal.ptr());
 
+    if (_drawMode & FILLEDBOUNDINGBOX)
+    {
+
+        if (_textBB.valid())
+        {
+            state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
+
+            const osg::Matrix& matrix = _autoTransformCache[contextID]._matrix;
+
+            osg::Vec3 c00(osg::Vec3(_textBB.xMin(),_textBB.yMin(),_textBB.zMin())*matrix);
+            osg::Vec3 c10(osg::Vec3(_textBB.xMax(),_textBB.yMin(),_textBB.zMin())*matrix);
+            osg::Vec3 c11(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin())*matrix);
+            osg::Vec3 c01(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
+
+            switch(_backdropImplementation)
+            {
+                case NO_DEPTH_BUFFER:
+                    // Do nothing.  The bounding box will be rendered before the text and that's all that matters.
+                    break;
+                case DEPTH_RANGE:
+                    glPushAttrib(GL_DEPTH_BUFFER_BIT);
+                    //unsigned int backdrop_index = 0;
+                    //unsigned int max_backdrop_index = 8;
+                    //const double offset = double(max_backdrop_index - backdrop_index) * 0.003;
+                    glDepthRange(0.001, 1.001);
+                    break;
+                /*case STENCIL_BUFFER:
+                    break;*/
+                default:
+                    glPushAttrib(GL_POLYGON_OFFSET_FILL);
+                    glEnable(GL_POLYGON_OFFSET_FILL);
+                    glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), 10.0f * osg::PolygonOffset::getUnitsMultiplier() );
+            }
+
+            glColor4f(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
+            glBegin(GL_QUADS);
+                glVertex3fv(c00.ptr());
+                glVertex3fv(c10.ptr());
+                glVertex3fv(c11.ptr());
+                glVertex3fv(c01.ptr());
+            glEnd();
+
+            switch(_backdropImplementation)
+            {
+                case NO_DEPTH_BUFFER:
+                    // Do nothing.
+                    break;
+                case DEPTH_RANGE:
+                    glDepthRange(0.0, 1.0);
+                    glPopAttrib();
+                    break;
+                /*case STENCIL_BUFFER:
+                    break;*/
+                default:
+                    glDisable(GL_POLYGON_OFFSET_FILL);
+                    glPopAttrib();
+            }
+        }
+    }    
+
+#if 1   
+    state.applyTextureMode(0,GL_TEXTURE_2D,true);
+#else
+    state.applyTextureMode(0,GL_TEXTURE_2D,false);
+#endif
+    state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
+
     if (_drawMode & TEXT)
     {
 
@@ -1382,7 +1465,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
             osg::Vec3 c01(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
 
         
-            glColor4fv(colorMultiplier.ptr());
+            glColor4f(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
             glBegin(GL_LINE_LOOP);
                 glVertex3fv(c00.ptr());
                 glVertex3fv(c10.ptr());
@@ -1390,7 +1473,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
                 glVertex3fv(c01.ptr());
             glEnd();
         }
-    }    
+    }
 
     if (_drawMode & ALIGNMENT)
     {
@@ -1805,7 +1888,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
                 glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(),
-                                2.0f * osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
+                                osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
                 glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
             }
         }
@@ -1911,7 +1994,7 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
             if (!transformedBackdropCoords.empty()) 
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                double offset = double(max_backdrop_index-backdrop_index)*0.003;
+                double offset = double(max_backdrop_index-backdrop_index)*0.0001;
                 glDepthRange( offset, 1.0+offset);
 
                 glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());

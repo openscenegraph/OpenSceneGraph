@@ -370,6 +370,7 @@ protected:
     
     void computeBackdropPositions(unsigned int contextID) const;
     void computeBackdropBoundingBox() const;
+    void computeBoundingBoxMargin() const;
 
     void computeColorGradients() const;
     void computeColorGradientsOverall() const;

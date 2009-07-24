@@ -194,14 +194,23 @@ public:
 
     enum DrawModeMask
     {
-        TEXT        = 1, /// default
-        BOUNDINGBOX = 2,
-        ALIGNMENT   = 4
+        TEXT              = 1, /// default
+        BOUNDINGBOX       = 2,
+        FILLEDBOUNDINGBOX = 4,
+        ALIGNMENT         = 8
     };
 
     void setDrawMode(unsigned int mode);
     
     unsigned int getDrawMode() const { return _drawMode; }
+
+    void setBoundingBoxMargin(float margin);
+    
+    float getBoundingBoxMargin() const { return _textBBMargin; }
+
+    void setBoundingBoxColor(const osg::Vec4& color){ _textBBColor = color; }
+    
+    const osg::Vec4& getBoundingBoxColor() const { return _textBBColor; }
 
     
     void setKerningType(KerningType kerningType) { _kerningType = kerningType; }
@@ -255,6 +264,8 @@ protected:
     bool                                    _autoRotateToScreen;
     Layout                                  _layout;
     unsigned int                            _drawMode;
+    float                                   _textBBMargin;
+    osg::Vec4                               _textBBColor;
     KerningType                             _kerningType;
     unsigned int                            _lineCount;
 

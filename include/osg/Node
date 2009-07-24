@@ -264,6 +264,20 @@ class OSG_EXPORT Node : public Object
         bool containsOccluderNodes() const;
 
 
+        /**
+        * This is a set of bits (flags) that represent the Node.
+        * The default value is 0xffffffff (all bits set).
+        *
+        * The most common use of these is during traversal of the scene graph.
+        * For instance, when traversing the scene graph the osg::NodeVisitor does a logical
+        * AND of its TraversalMask with the NodeMask here to
+        * determine if the Node should be processed/traversed.
+        *
+        * For example, if a Node has a NodeMask value
+        * of 0x02 (only 2nd bit set) and the osg::Camera has a CullMask of 0x4 (2nd bit not set) then during cull traversal
+        * (that takes it's TraversalMask from the Camera's CullMask) the node and any children would be ignored.  Conversely, if the osg::Camera CullMask were 0x3 (2nd bit set) the node
+        * would be processed and child Nodes would be examined.
+        */
         typedef unsigned int NodeMask;
         /** Set the node mask.*/
         inline void setNodeMask(NodeMask nm) { _nodeMask = nm; }

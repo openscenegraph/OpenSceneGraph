@@ -27,7 +27,7 @@ class VBSPGeometry
         osg::ref_ptr<osg::Vec3Array>          disp_vertex_array;
         osg::ref_ptr<osg::Vec3Array>          disp_normal_array;
         osg::ref_ptr<osg::Vec2Array>          disp_texcoord_array;
-        osg::ref_ptr<osg::FloatArray>         disp_vertex_attr_array;
+        osg::ref_ptr<osg::Vec4Array>          disp_vertex_attr_array;
         osg::ref_ptr<osg::DrawElementsUInt>   disp_primitive_set;
 
         bool         doesEdgeExist(int row, int col, int direction,

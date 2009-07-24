@@ -16,6 +16,7 @@
 #include <osg/Quat>
 #include <osg/State>
 #include <osg/Vec3>
+#include <osg/Vec4>
 #include <osgText/KerningType>
 #include <osgText/String>
 #include <osgText/TextBase>
@@ -78,6 +79,7 @@ BEGIN_ENUM_REFLECTOR(osgText::TextBase::DrawModeMask)
 	I_DeclaringFile("osgText/TextBase");
 	I_EnumLabel(osgText::TextBase::TEXT);
 	I_EnumLabel(osgText::TextBase::BOUNDINGBOX);
+	I_EnumLabel(osgText::TextBase::FILLEDBOUNDINGBOX);
 	I_EnumLabel(osgText::TextBase::ALIGNMENT);
 END_REFLECTOR
 
@@ -281,6 +283,26 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::TextBase)
 	          __unsigned_int__getDrawMode,
 	          "",
 	          "");
+	I_Method1(void, setBoundingBoxMargin, IN, float, margin,
+	          Properties::NON_VIRTUAL,
+	          __void__setBoundingBoxMargin__float,
+	          "",
+	          "");
+	I_Method0(float, getBoundingBoxMargin,
+	          Properties::NON_VIRTUAL,
+	          __float__getBoundingBoxMargin,
+	          "",
+	          "");
+	I_Method1(void, setBoundingBoxColor, IN, const osg::Vec4 &, color,
+	          Properties::NON_VIRTUAL,
+	          __void__setBoundingBoxColor__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getBoundingBoxColor,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec4_R1__getBoundingBoxColor,
+	          "",
+	          "");
 	I_Method1(void, setKerningType, IN, osgText::KerningType, kerningType,
 	          Properties::NON_VIRTUAL,
 	          __void__setKerningType__KerningType,
@@ -355,6 +377,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgText::TextBase)
 	I_SimpleProperty(osgText::TextBase::AxisAlignment, AxisAlignment, 
 	                 __AxisAlignment__getAxisAlignment, 
 	                 __void__setAxisAlignment__AxisAlignment);
+	I_SimpleProperty(const osg::Vec4 &, BoundingBoxColor, 
+	                 __C5_osg_Vec4_R1__getBoundingBoxColor, 
+	                 __void__setBoundingBoxColor__C5_osg_Vec4_R1);
+	I_SimpleProperty(float, BoundingBoxMargin, 
+	                 __float__getBoundingBoxMargin, 
+	                 __void__setBoundingBoxMargin__float);
 	I_SimpleProperty(float, CharacterAspectRatio, 
 	                 __float__getCharacterAspectRatio, 
 	                 0);

@@ -62,6 +62,15 @@ class EllipsoidModel : public Object
 
         inline osg::Vec3d computeLocalUpVector(double X, double Y, double Z) const;
 
+        // Convenience method for determining if EllipsoidModel is a stock WGS84 ellipsoid
+        inline bool isWGS84() const {return(_radiusEquator == WGS_84_RADIUS_EQUATOR && _radiusPolar == WGS_84_RADIUS_POLAR);}
+
+        // Compares two EllipsoidModel by comparing critical internal values.
+        // Ignores _eccentricitySquared since it's just a cached value derived from
+        // the _radiusEquator and _radiusPolar members.
+        friend bool operator == ( const EllipsoidModel & e1, const EllipsoidModel& e2) {return(e1._radiusEquator == e2._radiusEquator && e1._radiusPolar == e2._radiusPolar);}
+
+
     protected:
 
         void computeCoefficients()
@@ -95,7 +104,7 @@ class OSG_EXPORT CoordinateSystemNode : public Group
         META_Node(osg,CoordinateSystemNode);
         
         
-        /** Set the coordinate system node up by copy the format, coordinate system string, and ellipsoid model of another coordinate system node.*/
+        /** Set the coordinate system node up by copying the format, coordinate system string, and ellipsoid model of another coordinate system node.*/
         void set(const CoordinateSystemNode& csn);
                 
         /** Set the coordinate system format string. Typical values would be WKT, PROJ4, USGS etc.*/
@@ -123,7 +132,7 @@ class OSG_EXPORT CoordinateSystemNode : public Group
         /** Compute the local coordinate frame for specified point.*/
         CoordinateFrame computeLocalCoordinateFrame(const Vec3d& position) const;
         
-        /** Compute the local coordinate frame for specified point.*/
+        /** Compute the local up-vector for specified point.*/
         osg::Vec3d computeLocalUpVector(const Vec3d& position) const;
 
     protected:

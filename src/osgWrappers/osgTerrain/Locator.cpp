@@ -132,12 +132,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Locator)
 	          __bool__orientationOpenGL,
 	          "",
 	          "");
-	I_Method2(bool, convertLocalToModel, IN, const osg::Vec3d &, x, IN, osg::Vec3d &, x,
+	I_Method2(bool, convertLocalToModel, IN, const osg::Vec3d &, local, IN, osg::Vec3d &, world,
 	          Properties::VIRTUAL,
 	          __bool__convertLocalToModel__C5_osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",
 	          "");
-	I_Method2(bool, convertModelToLocal, IN, const osg::Vec3d &, x, IN, osg::Vec3d &, x,
+	I_Method2(bool, convertModelToLocal, IN, const osg::Vec3d &, world, IN, osg::Vec3d &, local,
 	          Properties::VIRTUAL,
 	          __bool__convertModelToLocal__C5_osg_Vec3d_R1__osg_Vec3d_R1,
 	          "",

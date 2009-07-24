@@ -15,6 +15,7 @@
 #include <osg/NodeVisitor>
 #include <osgAnimation/Animation>
 #include <osgAnimation/AnimationManagerBase>
+#include <osgAnimation/LinkVisitor>
 #include <osgAnimation/Target>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -77,9 +78,22 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationManagerBase)
 	          __void__normalizeTargets,
 	          "",
 	          "");
+	I_Method0(osgAnimation::LinkVisitor *, getOrCreateLinkVisitor,
+	          Properties::NON_VIRTUAL,
+	          __LinkVisitor_P1__getOrCreateLinkVisitor,
+	          "",
+	          "");
+	I_Method1(void, setLinkVisitor, IN, osgAnimation::LinkVisitor *, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setLinkVisitor__LinkVisitor_P1,
+	          "",
+	          "");
 	I_SimpleProperty(const osgAnimation::AnimationList &, AnimationList, 
 	                 __C5_AnimationList_R1__getAnimationList, 
 	                 0);
+	I_SimpleProperty(osgAnimation::LinkVisitor *, LinkVisitor, 
+	                 0, 
+	                 __void__setLinkVisitor__LinkVisitor_P1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Target >)

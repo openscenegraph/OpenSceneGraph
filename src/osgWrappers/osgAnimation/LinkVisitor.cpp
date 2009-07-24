@@ -25,14 +25,7 @@
 BEGIN_OBJECT_REFLECTOR(osgAnimation::LinkVisitor)
 	I_DeclaringFile("osgAnimation/LinkVisitor");
 	I_BaseType(osg::NodeVisitor);
-	I_Constructor1(IN, osgAnimation::Animation *, animation,
-	               Properties::NON_EXPLICIT,
-	               ____LinkVisitor__Animation_P1,
-	               "",
-	               "");
-	I_Constructor1(IN, const osgAnimation::AnimationList &, animations,
-	               Properties::NON_EXPLICIT,
-	               ____LinkVisitor__C5_AnimationList_R1,
+	I_Constructor0(____LinkVisitor,
 	               "",
 	               "");
 	I_Method0(const char *, libraryName,
@@ -50,7 +43,18 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::LinkVisitor)
 	          __void__apply__osg_Node_R1,
 	          "",
 	          "");
-	I_PublicMemberProperty(osgAnimation::AnimationList, _animations);
-	I_PublicMemberProperty(unsigned int, _nbLinkedTarget);
+	I_Method0(osgAnimation::AnimationList &, getAnimationList,
+	          Properties::NON_VIRTUAL,
+	          __AnimationList_R1__getAnimationList,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::VIRTUAL,
+	          __void__reset,
+	          "Method to call to reset visitor. ",
+	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
+	I_SimpleProperty(osgAnimation::AnimationList &, AnimationList, 
+	                 __AnimationList_R1__getAnimationList, 
+	                 0);
 END_REFLECTOR
 

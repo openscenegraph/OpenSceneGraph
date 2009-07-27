@@ -848,6 +848,10 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
 
 void ReaderWriterP3DXML::parseStereoPair(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const
 {
+
+    osg::notify(osg::NOTICE)<<"ReaderWriterP3DXML::parseStereoPair()"<<std::endl;
+
+
     std::string filenameLeft;
     std::string filenameRight;
 
@@ -866,15 +870,19 @@ void ReaderWriterP3DXML::parseStereoPair(osgPresentation::SlideShowConstructor& 
         if (child->name == "image_left")
         {
             getProperties(child,imageDataLeft);
-            filenameLeft = child->name;
+            filenameLeft = child->contents;
         }
-        if (cur->name == "image_right")
+        if (child->name == "image_right")
         {
             getProperties(child,imageDataRight);
-            filenameRight = child->name;
+            filenameRight = child->contents;
             getProperties(cur,imageDataRight);
         }
     }
+
+    osg::notify(osg::NOTICE)<<"    filenameLeft="<<filenameLeft<<std::endl;
+    osg::notify(osg::NOTICE)<<"    filenameRight="<<filenameRight<<std::endl;
+
 
     if (!filenameLeft.empty() && !filenameRight.empty()) 
         constructor.addStereoImagePair(filenameLeft,imageDataLeft,

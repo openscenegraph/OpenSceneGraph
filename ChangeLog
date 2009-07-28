@@ -1,3 +1,23 @@
+2009-07-28 06:02  robert
+
+	* CMakeLists.txt, NEWS.txt, README.txt: Updated dates for 2.8.2
+	  stable release
+
+2009-07-24 12:12  robert
+
+	* CTestConfig.cmake: From Jean-Sebastien Guay, updated CTestConfig
+	  to point to new cdash.openscenegraph.org site
+
+2009-07-17 07:50  robert
+
+	* src/osgPlugins/jpeg, src/osgPlugins/jpeg/ReaderWriterJPEG.cpp:
+	  From J.P. Delport, "attached a modified jpeg plugin that allows
+	  writing of grayscale images."
+
+2009-07-16 13:30  robert
+
+	* ChangeLog, NEWS.txt: Update ChangeLog and NEWS for 2.8.2-rc4
+
 2009-07-16 13:18  robert
 
 	* CMakeLists.txt: Updated release candidate number to 4

@@ -75,6 +75,12 @@ void Text::write(DataOutputStream* out){
     out->writeVec4(getColor());
     out->writeUInt(getDrawMode());
 
+    if ( out->getVersion() >= VERSION_0041 )
+    {
+        out->writeFloat(getBoundingBoxMargin());
+        out->writeVec4(getBoundingBoxColor());
+    }
+
     if ( out->getVersion() >= VERSION_0028 )
     {
         out->writeUInt(getBackdropType());
@@ -188,6 +194,12 @@ void Text::read(DataInputStream* in){
     setPosition(in->readVec3());
     setColor(in->readVec4());
     setDrawMode(in->readUInt());
+
+    if ( in->getVersion() >= VERSION_0041 )
+    {
+        setBoundingBoxMargin(in->readFloat());
+        setBoundingBoxColor(in->readVec4());
+    }
 
     if ( in->getVersion() >= VERSION_0028 )
     {

@@ -192,6 +192,29 @@ bool TextBase_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
 
+    // bounding box margin
+    if (fr[0].matchWord("BoundingBoxMargin"))
+    {
+        float margin;
+        if (fr[1].getFloat(margin)) {
+            text.setBoundingBoxMargin(margin);
+            fr += 2;
+            itAdvanced = true;
+        }
+    }
+
+    // bounding box color
+    if (fr[0].matchWord("BoundingBoxColor"))
+    {
+        osg::Vec4 c;
+        if (fr[1].getFloat(c.x()) && fr[2].getFloat(c.y()) && fr[3].getFloat(c.z()) && fr[4].getFloat(c.w()))
+        {
+            text.setBoundingBoxColor(c);
+            fr += 5;
+            itAdvanced = true;
+        }
+    }
+
     // text
     if (fr.matchSequence("text %s") && fr[1].getStr()) {
         text.setText(std::string(fr[1].getStr()));
@@ -346,6 +369,12 @@ bool TextBase_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     // draw mode
     fw.indent() << "drawMode " << text.getDrawMode() << std::endl;
 
+    // bounding box margin
+    fw.indent() << "BoundingBoxMargin " << text.getBoundingBoxMargin() << std::endl;
+
+    // bounding box color
+    osg::Vec4 bbc = text.getBoundingBoxColor();
+    fw.indent() << "BoundingBoxColor " << bbc.x() << " " << bbc.y() << " " << bbc.z() << " " << bbc.w() << std::endl;
 
     // text
     const osgText::String& textstring = text.getText();

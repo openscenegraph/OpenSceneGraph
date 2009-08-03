@@ -18,7 +18,7 @@
 
 osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone& apc,const osg::CopyOp& copyop) :
     osg::Object(apc, copyop),
-    osgAnimation::AnimationUpdateCallback(apc, copyop)
+    osgAnimation::AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
 {
     _quaternion = new osgAnimation::QuatTarget(apc._quaternion->getValue());
     _position = new osgAnimation::Vec3Target(apc._position->getValue());

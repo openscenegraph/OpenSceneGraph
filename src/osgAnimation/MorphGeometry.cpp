@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  * Authors:
  *
  * Roland Smeenk
- * Cedric Pinson <mornifle@plopbyte.net>
+ * Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  */
 #include <osg/Geode>
@@ -202,11 +202,11 @@ void MorphGeometry::transformSoftwareMethod()
     }
 }
 
-UpdateMorph::UpdateMorph(const UpdateMorph& apc,const osg::CopyOp& copyop) : AnimationUpdateCallback(apc, copyop)
+UpdateMorph::UpdateMorph(const UpdateMorph& apc,const osg::CopyOp& copyop) : AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
 {
 }
 
-UpdateMorph::UpdateMorph(const std::string& name) : AnimationUpdateCallback(name) 
+UpdateMorph::UpdateMorph(const std::string& name) : AnimationUpdateCallback<osg::NodeCallback>(name) 
 {
 }
 

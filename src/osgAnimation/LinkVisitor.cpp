@@ -15,6 +15,7 @@
 #include <osgAnimation/LinkVisitor>
 #include <osgAnimation/UpdateCallback>
 #include <osg/Notify>
+#include <osg/Geode>
 
 using namespace osgAnimation;
 
@@ -32,19 +33,55 @@ AnimationList& LinkVisitor::getAnimationList()
 {
     return _animations;
 }
+void LinkVisitor::link(osgAnimation::AnimationUpdateCallbackBase* cb)
+{
+    int result = 0;
+    for (int i = 0; i < (int)_animations.size(); i++)
+    {
+        result += cb->link(_animations[i].get());
+        _nbLinkedTarget += result;
+    }
+    osg::notify(osg::NOTICE) << "LinkVisitor links " << result << " for \"" << cb->getName() << '"' << std::endl;
+}
+
+void LinkVisitor::handle_stateset(osg::StateSet* stateset)
+{
+    if (!stateset)
+        return;
+    osg::StateSet::AttributeList& attr = stateset->getAttributeList();
+    for (osg::StateSet::AttributeList::iterator it = attr.begin(); it != attr.end(); it++)
+    {
+        osg::StateAttribute* sattr = it->second.first.get();
+        osgAnimation::AnimationUpdateCallbackBase* cb = dynamic_cast<osgAnimation::AnimationUpdateCallbackBase*>(sattr->getUpdateCallback());
+        if (cb)
+            link(cb);
+    }
+}
 
 void LinkVisitor::apply(osg::Node& node)
 {
-    osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(node.getUpdateCallback());
-    if (cb) 
+    osg::StateSet* st = node.getStateSet();
+    if (st)
+        handle_stateset(st);
+
+    osg::NodeCallback* cb = node.getUpdateCallback();
+    while (cb)
     {
-        int result = 0;
-        for (int i = 0; i < (int)_animations.size(); i++)
-        {
-            result += cb->link(_animations[i].get());
-            _nbLinkedTarget += result;
-        }
-        osg::notify(osg::NOTICE) << "LinkVisitor links " << result << " for \"" << cb->getName() << '"' << std::endl;
+        osgAnimation::AnimationUpdateCallbackBase* cba = dynamic_cast<osgAnimation::AnimationUpdateCallbackBase*>(cb);
+        if (cba)
+            link(cba);
+        cb = cb->getNestedCallback();
     }
     traverse(node);
+}
+
+void LinkVisitor::apply(osg::Geode& node)
+{
+    for (unsigned int i = 0; i < node.getNumDrawables(); i++)
+    {
+        osg::Drawable* drawable = node.getDrawable(i);
+        if (drawable && drawable->getStateSet())
+            handle_stateset(drawable->getStateSet());
+    }
+    apply(static_cast<osg::Node&>(node));
 }

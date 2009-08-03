@@ -16,10 +16,13 @@
 #define OSGANIMATION_NODE_VISITOR_H
 
 #include <osg/NodeVisitor>
+#include <osg/StateSet>
 #include <osgAnimation/Animation>
 
 namespace osgAnimation 
 {
+    class AnimationUpdateCallbackBase;
+
     /** This class is instancied by the AnimationManagerBase, it will link animation target to updatecallback that have the same name
      */
     class OSGANIMATION_EXPORT LinkVisitor : public osg::NodeVisitor
@@ -30,10 +33,16 @@ namespace osgAnimation
         META_NodeVisitor("osgAnimation","LinkVisitor");
 
         void apply(osg::Node& node);
+        void apply(osg::Geode& node);
+
         AnimationList& getAnimationList();
         void reset();
 
     protected:
+
+        void handle_stateset(osg::StateSet* stateset);
+        void link(osgAnimation::AnimationUpdateCallbackBase* cb);
+
         // animation list to link
         AnimationList _animations;
 

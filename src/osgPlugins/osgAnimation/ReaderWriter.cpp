@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -1038,6 +1038,29 @@ RegisterDotOsgWrapperProxy g_atkUpdateTransformProxy
     "Object NodeCallback osgAnimation::UpdateTransform",
     &UpdateTransform_readLocalData,
     &UpdateTransform_writeLocalData,
+    DotOsgWrapper::READ_AND_WRITE
+);
+
+
+
+bool UpdateMaterial_readLocalData(Object& obj, Input& fr) 
+{
+    bool iteratorAdvanced = false;
+    return iteratorAdvanced;
+}
+
+bool UpdateMaterial_writeLocalData(const Object& obj, Output& fw)
+{
+    return true;
+}
+
+RegisterDotOsgWrapperProxy g_UpdateMaterialProxy
+(
+    new osgAnimation::UpdateMaterial,
+    "osgAnimation::UpdateMaterial",
+    "Object StateAttribute::Callback osgAnimation::UpdateMaterial",
+    &UpdateMaterial_readLocalData,
+    &UpdateMaterial_writeLocalData,
     DotOsgWrapper::READ_AND_WRITE
 );
 

@@ -23,6 +23,7 @@
 #include <osg/Geometry>
 #include <osg/Notify>
 #include <osg/io_utils>
+#include <osg/NodeVisitor>
 #include <osgAnimation/Export>
 #include <osgAnimation/Target>
 #include <osgAnimation/Sampler>
@@ -91,7 +92,7 @@ namespace osgAnimation
         };
 
 
-        class OSGANIMATION_EXPORT UpdateBone : public AnimationUpdateCallback
+        class OSGANIMATION_EXPORT UpdateBone : public AnimationUpdateCallback <osg::NodeCallback>
         {
         protected:
             osg::ref_ptr<osgAnimation::Vec3Target> _position;
@@ -102,7 +103,7 @@ namespace osgAnimation
             META_Object(osgAnimation, UpdateBone);
             UpdateBone(const UpdateBone& apc,const osg::CopyOp& copyop);
 
-            UpdateBone(const std::string& name = "")
+            UpdateBone(const std::string& name = "") : AnimationUpdateCallback <osg::NodeCallback>(name)
             {
                 setName(name);
                 _quaternion = new osgAnimation::QuatTarget;
@@ -155,7 +156,7 @@ namespace osgAnimation
                 }
                 else 
                 {
-                    std::cerr << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << std::endl;
+                    osg::notify(osg::WARN) << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << className() << std::endl;
                 }
                 return false;
             }

@@ -131,7 +131,7 @@ namespace osgAnimation
         bool _morphNormals;
     };
     
-    class OSGANIMATION_EXPORT UpdateMorph : public AnimationUpdateCallback
+    class OSGANIMATION_EXPORT UpdateMorph : public AnimationUpdateCallback<osg::NodeCallback>
     {
     protected:
         std::map<int, osg::ref_ptr<osgAnimation::FloatTarget> > _weightTargets;

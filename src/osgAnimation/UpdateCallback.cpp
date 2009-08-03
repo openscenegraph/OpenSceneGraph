@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -18,63 +18,18 @@
 
 using namespace osgAnimation;
 
-osgAnimation::AnimationManagerBase* AnimationUpdateCallback::getAnimationManager() { return _manager.get(); }
-
-AnimationUpdateCallback::AnimationUpdateCallback(const AnimationUpdateCallback& apc,const osg::CopyOp& copyop):
-    osg::NodeCallback(apc, copyop),
-    _manager(apc._manager) {}
-
-int AnimationUpdateCallback::link(osgAnimation::Animation* animation)
-{
-    if (getName().empty())
-        osg::notify(osg::WARN) << "An update callback has no name, it means it can link only with \"\" named Target, often an error" << std::endl;
-    int nbLinks = 0;
-    for (osgAnimation::ChannelList::iterator it = animation->getChannels().begin();
-         it != animation->getChannels().end();
-         it++)
-    {
-        std::string targetName = (*it)->getTargetName();
-        if (targetName == getName()) 
-        {
-            link((*it).get());
-            nbLinks++;
-        }
-    }
-    return nbLinks;
-}
-    
-void AnimationUpdateCallback::updateLink()
-{
-    if (_manager.valid())
-    {
-        if (needLink()) 
-        {
-            /** this item is not linked yet then we do it for all animation
-                registered in the manager.
-                Maybe this function should be on the manager side like
-                _manager->linkItem(Bone);
-            */
-            const AnimationList& animationList = _manager->getAnimationList();
-            for (AnimationList::const_iterator it = animationList.begin(); it != animationList.end(); it++)
-                link(it->get());
-            _manager->buildTargetReference();
-        }
-    }
-}
-
-
-
 
 UpdateTransform::UpdateTransform(const UpdateTransform& apc,const osg::CopyOp& copyop) 
     : osg::Object(apc, copyop),
-      AnimationUpdateCallback(apc, copyop)
+      AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
 {
     _euler = new osgAnimation::Vec3Target(apc._euler->getValue());
     _position = new osgAnimation::Vec3Target(apc._position->getValue());
     _scale = new osgAnimation::Vec3Target(apc._scale->getValue());
 }
 
-UpdateTransform::UpdateTransform(const std::string& name) : AnimationUpdateCallback(name) 
+UpdateTransform::UpdateTransform(const std::string& name):
+    AnimationUpdateCallback<osg::NodeCallback>(name)
 {
     _euler = new osgAnimation::Vec3Target;
     _position = new osgAnimation::Vec3Target;
@@ -167,7 +122,65 @@ bool UpdateTransform::link(osgAnimation::Channel* channel)
     } 
     else 
     {
-        std::cerr << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << std::endl;
+        osg::notify(osg::WARN) << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << className() << std::endl;
+    }
+    return false;
+}
+
+
+
+
+
+UpdateMaterial::UpdateMaterial(const UpdateMaterial& apc,const osg::CopyOp& copyop) 
+    : osg::Object(apc, copyop),
+      AnimationUpdateCallback<osg::StateAttribute::Callback>(apc, copyop)
+{
+    _diffuse = new osgAnimation::Vec4Target(apc._diffuse->getValue());
+}
+
+UpdateMaterial::UpdateMaterial(const std::string& name):
+    AnimationUpdateCallback<osg::StateAttribute::Callback>(name)
+{
+    _diffuse = new osgAnimation::Vec4Target(osg::Vec4(1,1,1,1));
+}
+
+/** Callback method called by the NodeVisitor when visiting a node.*/
+void UpdateMaterial::operator()(osg::StateAttribute* sa, osg::NodeVisitor* nv)
+{
+    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
+    {
+        osg::Material* material = dynamic_cast<osg::Material*>(sa);
+        if (material)
+            update(*material);
+    }
+}
+
+void UpdateMaterial::update(osg::Material& material) 
+{
+    osg::Vec4 diffuse = _diffuse->getValue();
+    material.setDiffuse(osg::Material::FRONT_AND_BACK, diffuse);
+}
+
+bool UpdateMaterial::needLink() const
+{
+    // the idea is to return true if nothing is linked
+    return (_diffuse->getCount() < 2);
+}
+
+bool UpdateMaterial::link(osgAnimation::Channel* channel)
+{
+    if (channel->getName().find("diffuse") != std::string::npos)
+    {
+        osgAnimation::Vec4LinearChannel* d = dynamic_cast<osgAnimation::Vec4LinearChannel*>(channel);
+        if (d) 
+        {
+            d->setTarget(_diffuse.get());
+            return true;
+        }
+    }
+    else 
+    {
+        osg::notify(osg::WARN) << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class " << className() << std::endl;
     }
     return false;
 }

@@ -82,7 +82,7 @@
 
 #endif
 
-static const char* s_version = "1.3";
+static const char* s_version = "1.4 beta";
 
 void setViewer(osgViewer::Viewer& viewer, float width, float height, float distance)
 {

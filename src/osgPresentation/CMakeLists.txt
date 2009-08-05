@@ -29,6 +29,7 @@ ADD_LIBRARY(${LIB_NAME}
 
 LINK_INTERNAL(${LIB_NAME}
     osgViewer
+    osgManipulator
     osgVolume
     osgFX
     osgText

@@ -120,6 +120,7 @@ public:
 
     void parseModel(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
+    osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename) const;
     void parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
     void parseStereoPair(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
@@ -831,18 +832,92 @@ void ReaderWriterP3DXML::parseModel(osgPresentation::SlideShowConstructor& const
     }
 }
 
-void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const
+
+
+osg::TransferFunction1D* ReaderWriterP3DXML::readTransferFunctionFile(const std::string& filename) const
+{
+    std::string foundFile = osgDB::findDataFile(filename);
+    if (foundFile.empty())
+    {
+        std::cout<<"Error: could not find transfer function file : "<<filename<<std::endl;
+        return 0;
+    }
+
+    std::cout<<"Reading transfer function "<<filename<<std::endl;
+
+    osg::TransferFunction1D::ColorMap colorMap;
+    osgDB::ifstream fin(foundFile.c_str());
+    while(fin)
+    {
+        float value, red, green, blue, alpha;
+        fin >> value >> red >> green >> blue >> alpha;
+        if (fin)
+        {
+            std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
+            colorMap[value] = osg::Vec4(red,green,blue,alpha);
+        }
+    }
+
+    if (colorMap.empty())
+    {
+        std::cout<<"Error: No values read from transfer function file: "<<filename<<std::endl;
+        return 0;
+    }
+
+    osg::TransferFunction1D* tf = new osg::TransferFunction1D;
+    tf->assign(colorMap);
+
+    return tf;
+}
+
+
+void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode* cur) const
 {
 
     osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getModelPositionData();
     bool positionRead = getProperties(cur,positionData);
 
-    std::string filename = cur->contents;
+    osgPresentation::SlideShowConstructor::VolumeData volumeData;
 
+    // check the rendering technique/shading model to use
+    std::string technique;
+    if (getProperty(cur, "technique", technique))
+    {
+        if      (technique=="standard") volumeData.shadingModel =  osgPresentation::SlideShowConstructor::VolumeData::Standard;
+        else if (technique=="mip") volumeData.shadingModel =  osgPresentation::SlideShowConstructor::VolumeData::MaximumIntensityProjection;
+        else if (technique=="isosurface" || technique=="iso" ) volumeData.shadingModel =  osgPresentation::SlideShowConstructor::VolumeData::Isosurface;
+        else if (technique=="light") volumeData.shadingModel =  osgPresentation::SlideShowConstructor::VolumeData::Light;
+    }
+
+    // check for any transfer function required
+    std::string transferFunctionFile;
+    if (getProperty(cur, "tf", transferFunctionFile))
+    {
+        volumeData.transferFunction = readTransferFunctionFile(transferFunctionFile);
+    }
+
+    // check for draggers required
+    std::string dragger;
+    if (getProperty(cur, "dragger", dragger))
+    {
+        if (dragger=="trackball")
+        {
+            volumeData.useTabbedDragger = false;
+            volumeData.useTrackballDragger = true;
+        }
+        else
+        {
+            volumeData.useTabbedDragger = true;
+            volumeData.useTrackballDragger = false;
+        }
+    }
+
+    std::string filename = cur->contents;
     if (!filename.empty()) 
     {
         constructor.addVolume(filename,
-                             positionRead ? positionData : constructor.getModelPositionData());
+                             positionRead ? positionData : constructor.getModelPositionData(),
+                             volumeData);
     }
 }
 

@@ -50,6 +50,10 @@
 #include <osgPresentation/AnimationMaterial>
 #include <osgPresentation/PickEventHandler>
 
+#include <osgManipulator/TabBoxDragger>
+#include <osgManipulator/TabPlaneTrackballDragger>
+#include <osgManipulator/TrackballDragger>
+
 using namespace osgPresentation;
 
 class SetToTransparentBin : public osg::NodeVisitor
@@ -1429,8 +1433,72 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
     _currentLayer->addChild(subgraph);
 }
 
+class DraggerVolumeTileCallback : public osgManipulator::DraggerCallback
+{
+public:
 
-void SlideShowConstructor::addVolume(const std::string& filename, const PositionData& positionData)
+    DraggerVolumeTileCallback(osgVolume::VolumeTile* volume, osgVolume::Locator* locator):
+        _volume(volume),
+        _locator(locator) {}
+
+
+    virtual bool receive(const osgManipulator::MotionCommand& command);
+
+
+    osg::observer_ptr<osgVolume::VolumeTile>    _volume;
+    osg::ref_ptr<osgVolume::Locator>            _locator;
+
+    osg::Matrix _startMotionMatrix;
+
+    osg::Matrix _localToWorld;
+    osg::Matrix _worldToLocal;
+
+};
+
+bool DraggerVolumeTileCallback::receive(const osgManipulator::MotionCommand& command)
+{
+    if (!_locator) return false;
+
+    switch (command.getStage())
+    {
+        case osgManipulator::MotionCommand::START:
+        {
+            // Save the current matrix
+            _startMotionMatrix = _locator->getTransform();
+
+            // Get the LocalToWorld and WorldToLocal matrix for this node.
+            osg::NodePath nodePathToRoot;
+            osgManipulator::computeNodePathToRoot(*_volume,nodePathToRoot);
+            _localToWorld = _startMotionMatrix * osg::computeLocalToWorld(nodePathToRoot);
+            _worldToLocal = osg::Matrix::inverse(_localToWorld);
+
+            return true;
+        }
+        case osgManipulator::MotionCommand::MOVE:
+        {
+            // Transform the command's motion matrix into local motion matrix.
+            osg::Matrix localMotionMatrix = _localToWorld * command.getWorldToLocal()
+                                            * command.getMotionMatrix()
+                                            * command.getLocalToWorld() * _worldToLocal;
+
+            // Transform by the localMotionMatrix
+            _locator->setTransform(localMotionMatrix * _startMotionMatrix);
+
+            // osg::notify(osg::NOTICE)<<"New locator matrix "<<_locator->getTransform()<<std::endl;
+
+            return true;
+        }
+        case osgManipulator::MotionCommand::FINISH:
+        {
+            return true;
+        }
+        case osgManipulator::MotionCommand::NONE:
+        default:
+            return false;
+    }
+}
+
+void SlideShowConstructor::addVolume(const std::string& filename, const PositionData& positionData, const VolumeData& volumeData)
 {
     // osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
 
@@ -1472,9 +1540,8 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(image->getUserData());        
     if (matrix)
     {
-        osgVolume::Locator* locator = new osgVolume::Locator(*matrix);
-        layer->setLocator(locator);
-        tile->setLocator(locator);
+        layer->setLocator(new osgVolume::Locator(*matrix));
+        tile->setLocator(new osgVolume::Locator(*matrix));
     }
 
     tile->setLayer(layer.get());
@@ -1487,6 +1554,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
     osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
     osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0);
+    osgVolume::TransferFunctionProperty* tfp = volumeData.transferFunction.valid() ? new osgVolume::TransferFunctionProperty(volumeData.transferFunction.get()) : 0;
 
     {
         // Standard
@@ -1494,6 +1562,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         cp->addProperty(ap);
         cp->addProperty(sd);
         cp->addProperty(tp);
+        if (tfp) cp->addProperty(tfp);
 
         sp->addProperty(cp);
     }
@@ -1505,6 +1574,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         cp->addProperty(sd);
         cp->addProperty(tp);
         cp->addProperty(new osgVolume::LightingProperty);
+        if (tfp) cp->addProperty(tfp);
 
         sp->addProperty(cp);
     }
@@ -1515,6 +1585,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         cp->addProperty(sd);
         cp->addProperty(tp);
         cp->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
+        if (tfp) cp->addProperty(tfp);
 
         sp->addProperty(cp);
     }
@@ -1526,16 +1597,56 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         cp->addProperty(sd);
         cp->addProperty(tp);
         cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
+        if (tfp) cp->addProperty(tfp);
 
         sp->addProperty(cp);
+    }
+
+    switch(volumeData.shadingModel)
+    {
+        case(VolumeData::Standard):                     sp->setActiveProperty(0); break;
+        case(VolumeData::Light):                        sp->setActiveProperty(1); break;
+        case(VolumeData::Isosurface):                   sp->setActiveProperty(2); break;
+        case(VolumeData::MaximumIntensityProjection):   sp->setActiveProperty(3); break;
     }
 
     layer->addProperty(sp);
     tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
     tile->setEventCallback(new osgVolume::PropertyAdjustmentCallback());
 
+
+    osg::ref_ptr<osg::Node> model = volume.get();
+
+    if (volumeData.useTabbedDragger || volumeData.useTrackballDragger)
+    {
+        osg::ref_ptr<osg::Group> group = new osg::Group;
+
+        osg::ref_ptr<osgManipulator::Dragger> dragger;
+        if (volumeData.useTabbedDragger)
+            dragger = new osgManipulator::TabBoxDragger;
+        else
+            dragger = new osgManipulator::TrackballDragger();
+
+        dragger->setupDefaultGeometry();
+        dragger->setHandleEvents(true);
+        dragger->setActivationModKeyMask(osgGA::GUIEventAdapter::MODKEY_SHIFT);
+        dragger->addDraggerCallback(new DraggerVolumeTileCallback(tile.get(), tile->getLocator()));
+        dragger->setMatrix(osg::Matrix::translate(0.5,0.5,0.5)*tile->getLocator()->getTransform());
+
+
+        group->addChild(dragger.get());
+
+        //dragger->addChild(volume.get());
+
+        group->addChild(volume.get());
+
+        model = group.get();
+    }
+
+
+
     ModelData modelData;
-    addModel(volume.get(), positionData, modelData);
+    addModel(model.get(), positionData, modelData);
 }
 
 bool SlideShowConstructor::attachTexMat(osg::StateSet* stateset, const ImageData& imageData, float s, float t, bool textureRectangle)

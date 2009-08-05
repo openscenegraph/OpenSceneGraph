@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Geode>
 #include <osg/Node>
 #include <osgAnimation/Animation>
 #include <osgAnimation/LinkVisitor>
@@ -43,6 +44,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::LinkVisitor)
 	          __void__apply__osg_Node_R1,
 	          "",
 	          "");
+	I_Method1(void, apply, IN, osg::Geode &, node,
+	          Properties::VIRTUAL,
+	          __void__apply__osg_Geode_R1,
+	          "",
+	          "");
 	I_Method0(osgAnimation::AnimationList &, getAnimationList,
 	          Properties::NON_VIRTUAL,
 	          __AnimationList_R1__getAnimationList,
@@ -53,6 +59,18 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::LinkVisitor)
 	          __void__reset,
 	          "Method to call to reset visitor. ",
 	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
+	I_ProtectedMethod1(void, handle_stateset, IN, osg::StateSet *, stateset,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__handle_stateset__osg_StateSet_P1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, link, IN, osgAnimation::AnimationUpdateCallbackBase *, cb,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__link__osgAnimation_AnimationUpdateCallbackBase_P1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgAnimation::AnimationList &, AnimationList, 
 	                 __AnimationList_R1__getAnimationList, 
 	                 0);

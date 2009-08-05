@@ -19,6 +19,7 @@
 #include <osg/ClearNode>
 #include <osg/Switch>
 #include <osg/AnimationPath>
+#include <osg/TransferFunction>
 #include <osg/ImageStream>
 #include <osgText/Text>
 #include <osgGA/GUIEventAdapter>
@@ -204,6 +205,28 @@ public:
         osg::Vec4                       backgroundColor;
     };
 
+    struct VolumeData
+    {
+        enum ShadingModel
+        {
+            Standard,
+            Light,
+            Isosurface,
+            MaximumIntensityProjection
+        };
+
+        VolumeData():
+            shadingModel(Standard),
+            useTabbedDragger(false),
+            useTrackballDragger(false) {}
+
+        ShadingModel                            shadingModel;
+        osg::ref_ptr<osg::TransferFunction1D>   transferFunction;
+        bool                                    useTabbedDragger;
+        bool                                    useTrackballDragger;
+    };
+
+
     struct FontData
     {
         FontData():
@@ -316,7 +339,7 @@ public:
 
     void addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData);
     
-    void addVolume(const std::string& filename, const PositionData& positionData);
+    void addVolume(const std::string& filename, const PositionData& positionData, const VolumeData& volumeData);
 
     osg::Group* takePresentation() { return _root.release(); }
     
@@ -333,6 +356,7 @@ public:
 
     void setAutoSteppingActive(bool flag = true) { _autoSteppingActive = flag; }
     bool getAutoSteppingActive() const { return _autoSteppingActive; }
+
 
 protected:
 

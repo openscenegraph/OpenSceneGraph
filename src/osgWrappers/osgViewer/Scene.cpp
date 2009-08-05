@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Node>
+#include <osg/NodeVisitor>
 #include <osgDB/DatabasePager>
 #include <osgDB/ImagePager>
 #include <osgViewer/Scene>
@@ -69,6 +70,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_Method0(const osgDB::ImagePager *, getImagePager,
 	          Properties::NON_VIRTUAL,
 	          __C5_osgDB_ImagePager_P1__getImagePager,
+	          "",
+	          "");
+	I_Method1(void, updateSceneGraph, IN, osg::NodeVisitor &, updateVisitor,
+	          Properties::NON_VIRTUAL,
+	          __void__updateSceneGraph__osg_NodeVisitor_R1,
 	          "",
 	          "");
 	I_StaticMethod1(osgViewer::Scene *, getScene, IN, osg::Node *, node,

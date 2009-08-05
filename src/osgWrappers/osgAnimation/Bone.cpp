@@ -262,7 +262,6 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone::UpdateBone)
 	I_DeclaringFile("osgAnimation/Bone");
-	I_BaseType(osgAnimation::AnimationUpdateCallback);
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,

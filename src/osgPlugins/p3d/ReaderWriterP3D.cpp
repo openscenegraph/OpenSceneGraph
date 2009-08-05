@@ -905,6 +905,11 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
             volumeData.useTabbedDragger = false;
             volumeData.useTrackballDragger = true;
         }
+        if (dragger=="trackball-box")
+        {
+            volumeData.useTabbedDragger = true;
+            volumeData.useTrackballDragger = true;
+        }
         else
         {
             volumeData.useTabbedDragger = true;

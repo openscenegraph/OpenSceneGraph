@@ -1037,26 +1037,17 @@ void CompositeViewer::updateTraversal()
         ++sitr)
     {
         Scene* scene = *sitr;
-        if (scene->getSceneData())
-        {
-            _updateVisitor->setImageRequestHandler(scene->getImagePager());
-            
-            scene->getSceneData()->accept(*_updateVisitor);
-        }
-
-        if (scene->getDatabasePager())
-        {    
-            // synchronize changes required by the DatabasePager thread to the scene graph
-            scene->getDatabasePager()->updateSceneGraph(*_frameStamp);
-        }
-
-        if (scene->getImagePager())
-        {    
-            // synchronize changes required by the DatabasePager thread to the scene graph
-            scene->getImagePager()->updateSceneGraph(*_frameStamp);
-        }
-
+        scene->updateSceneGraph(*_updateVisitor);
     }
+
+    // if we have a shared state manager prune any unused entries
+    if (osgDB::Registry::instance()->getSharedStateManager())
+        osgDB::Registry::instance()->getSharedStateManager()->prune();
+
+    // update the Registry object cache.
+    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExternalReferences(*getFrameStamp());
+    osgDB::Registry::instance()->removeExpiredObjectsInCache(*getFrameStamp());
+
 
     if (_incrementalCompileOperation.valid())
     {

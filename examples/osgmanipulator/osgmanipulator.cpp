@@ -23,6 +23,7 @@
 #include <osgText/Text>
 
 #include <osgManipulator/TabBoxDragger>
+#include <osgManipulator/TabBoxTrackballDragger>
 #include <osgManipulator/TabPlaneDragger>
 #include <osgManipulator/TabPlaneTrackballDragger>
 #include <osgManipulator/TrackballDragger>
@@ -49,6 +50,12 @@ osgManipulator::Dragger* createDragger(const std::string& name)
     else if ("TabPlaneTrackballDragger" == name)
     {
         osgManipulator::TabPlaneTrackballDragger* d = new osgManipulator::TabPlaneTrackballDragger();
+        d->setupDefaultGeometry();
+        dragger = d;
+    }
+    else if ("TabBoxTrackballDragger" == name)
+    {
+        osgManipulator::TabBoxTrackballDragger* d = new osgManipulator::TabBoxTrackballDragger();
         d->setupDefaultGeometry();
         dragger = d;
     }
@@ -201,7 +208,7 @@ osg::Node* createDemoScene() {
 
       transform_1.get()->addChild(addDraggerToScene(geode_1.get(),"TabBoxDragger"));
     transform_2.get()->addChild(addDraggerToScene(geode_2.get(),"TabPlaneDragger"));
-    transform_3.get()->addChild(addDraggerToScene(geode_3.get(),"TabPlaneTrackballDragger"));
+    transform_3.get()->addChild(addDraggerToScene(geode_3.get(),"TabBoxTrackballDragger"));
     transform_4.get()->addChild(addDraggerToScene(geode_4.get(),"TrackballDragger"));
     transform_5.get()->addChild(addDraggerToScene(geode_5.get(),"Translate1DDragger"));
     transform_6.get()->addChild(addDraggerToScene(geode_6.get(),"Translate2DDragger"));

@@ -22,6 +22,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ScaleAxisDragger
     ${HEADER_PATH}/Selection
     ${HEADER_PATH}/TabBoxDragger
+    ${HEADER_PATH}/TabBoxTrackballDragger
     ${HEADER_PATH}/TabPlaneDragger
     ${HEADER_PATH}/TabPlaneTrackballDragger
     ${HEADER_PATH}/TrackballDragger
@@ -47,6 +48,7 @@ ADD_LIBRARY(${LIB_NAME}
     Scale2DDragger.cpp
     ScaleAxisDragger.cpp
     TabBoxDragger.cpp
+    TabBoxTrackballDragger.cpp
     TabPlaneDragger.cpp
     TabPlaneTrackballDragger.cpp
     TrackballDragger.cpp

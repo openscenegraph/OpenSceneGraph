@@ -187,6 +187,15 @@ Registry::Registry()
         else _buildKdTreesHint = Options::BUILD_KDTREES;
     }
 
+    const char* ptr=0;
+
+    _expiryDelay = 10.0;
+    if( (ptr = getenv("OSG_EXPIRY_DELAY")) != 0)
+    {
+        _expiryDelay = osg::asciiToDouble(ptr);
+        osg::notify(osg::INFO)<<"Registry : Expiry delay = "<<_expiryDelay<<std::endl;
+    }
+
     const char* fileCachePath = getenv("OSG_FILE_CACHE");
     if (fileCachePath)
     {
@@ -2104,7 +2113,7 @@ osg::Object* Registry::getFromObjectCache(const std::string& fileName)
     else return 0;
 }
 
-void Registry::updateTimeStampOfObjectsInCacheWithExternalReferences(double currentTime)
+void Registry::updateTimeStampOfObjectsInCacheWithExternalReferences(const osg::FrameStamp& frameStamp)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
 
@@ -2117,13 +2126,15 @@ void Registry::updateTimeStampOfObjectsInCacheWithExternalReferences(double curr
         if (itr->second.first->referenceCount()>1)
         {
             // so update it time stamp.
-            itr->second.second = currentTime;
+            itr->second.second = frameStamp.getReferenceTime();
         }
     }
 }
 
-void Registry::removeExpiredObjectsInCache(double expiryTime)
+void Registry::removeExpiredObjectsInCache(const osg::FrameStamp& frameStamp)
 {
+    double expiryTime = frameStamp.getReferenceTime() - _expiryDelay;
+
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
 
     typedef std::vector<std::string> ObjectsToRemove;

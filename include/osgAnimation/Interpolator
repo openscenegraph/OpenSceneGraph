@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -10,7 +10,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
-*/
+ * 
+ * Authors:
+ *         Cedric Pinson <cedric.pinson@plopbyte.net>
+ *         Michael Platings <mplatings@pixelpower.com>
+ */
 
 #ifndef OSGANIMATION_INTERPOLATOR_H
 #define OSGANIMATION_INTERPOLATOR_H
@@ -57,6 +61,32 @@ namespace osgAnimation
             }
             osg::notify(osg::WARN) << time << " first key " << keysVector[0].getTime() << " last key " << keysVector[key_size-1].getTime() << std::endl;
             return -1;
+        }
+    };
+
+
+    template <class TYPE, class KEY=TYPE>
+    class TemplateStepInterpolator : public TemplateInterpolatorBase<TYPE,KEY>
+    {
+    public:
+
+        TemplateStepInterpolator() {}
+        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, float time, TYPE& result) const 
+        {
+      
+            if (time >= keyframes.back().getTime()) 
+            {
+                result = keyframes.back().getValue();
+                return;
+            } 
+            else if (time <= keyframes.front().getTime()) 
+            {
+                result = keyframes.front().getValue();
+                return;
+            }
+
+            int i = getKeyIndexFromTime(keyframes,time);
+            return keyframes[i].getValue();
         }
     };
 
@@ -183,6 +213,14 @@ namespace osgAnimation
             result = v0 + v1 + v2 + v3;
         }
     };
+
+    typedef TemplateStepInterpolator<double, double> DoubleStepInterpolator;
+    typedef TemplateStepInterpolator<float, float> FloatStepInterpolator;
+    typedef TemplateStepInterpolator<osg::Vec2, osg::Vec2> Vec2StepInterpolator;
+    typedef TemplateStepInterpolator<osg::Vec3, osg::Vec3> Vec3StepInterpolator;
+    typedef TemplateStepInterpolator<osg::Vec3, Vec3Packed> Vec3PackedStepInterpolator;
+    typedef TemplateStepInterpolator<osg::Vec4, osg::Vec4> Vec4StepInterpolator;
+    typedef TemplateStepInterpolator<osg::Quat, osg::Quat> QuatStepInterpolator;
 
     typedef TemplateLinearInterpolator<double, double> DoubleLinearInterpolator;
     typedef TemplateLinearInterpolator<float, float> FloatLinearInterpolator;

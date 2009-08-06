@@ -10,7 +10,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
-*/
+ * 
+ * Authors:
+ *         Cedric Pinson <cedric.pinson@plopbyte.net>
+ *         Michael Platings <mplatings@pixelpower.com>
+ */
 
 #ifndef OSGANIMATION_BONE_H
 #define OSGANIMATION_BONE_H
@@ -129,30 +133,15 @@ namespace osgAnimation
             {
                 if (channel->getName().find("quaternion") != std::string::npos)
                 {
-                    osgAnimation::QuatSphericalLinearChannel* qc = dynamic_cast<osgAnimation::QuatSphericalLinearChannel*>(channel);
-                    if (qc)
-                    {
-                        qc->setTarget(_quaternion.get());
-                        return true;
-                    }
+                    return channel->setTarget(_quaternion.get());
                 }
                 else if (channel->getName().find("position") != std::string::npos)
                 {
-                    osgAnimation::Vec3LinearChannel* vc = dynamic_cast<osgAnimation::Vec3LinearChannel*>(channel);
-                    if (vc)
-                    {
-                        vc->setTarget(_position.get());
-                        return true;
-                    }
+                    return channel->setTarget(_position.get());
                 }
                 else if (channel->getName().find("scale") != std::string::npos)
                 {
-                    osgAnimation::Vec3LinearChannel* vc = dynamic_cast<osgAnimation::Vec3LinearChannel*>(channel);
-                    if (vc) 
-                    {
-                        vc->setTarget(_scale.get());
-                        return true;
-                    }
+                    return channel->setTarget(_scale.get());
                 }
                 else 
                 {

@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -10,7 +10,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
-*/
+ *
+ * Authors:
+ *         Cedric Pinson <cedric.pinson@plopbyte.net>
+ *         Michael Platings <mplatings@pixelpower.com>
+ */
 
 #ifndef OSGANIMATION_SAMPLER_H
 #define OSGANIMATION_SAMPLER_H
@@ -108,12 +112,20 @@ namespace osgAnimation
     };
 
 
+    typedef TemplateSampler<DoubleStepInterpolator> DoubleStepSampler;
+    typedef TemplateSampler<FloatStepInterpolator> FloatStepSampler;
+    typedef TemplateSampler<Vec2StepInterpolator> Vec2StepSampler;
+    typedef TemplateSampler<Vec3StepInterpolator> Vec3StepSampler;
+    typedef TemplateSampler<Vec4StepInterpolator> Vec4StepSampler;
+    typedef TemplateSampler<QuatStepInterpolator> QuatStepSampler;
+
     typedef TemplateSampler<DoubleLinearInterpolator> DoubleLinearSampler;
     typedef TemplateSampler<FloatLinearInterpolator> FloatLinearSampler;
     typedef TemplateSampler<Vec2LinearInterpolator> Vec2LinearSampler;
     typedef TemplateSampler<Vec3LinearInterpolator> Vec3LinearSampler;
     typedef TemplateSampler<Vec4LinearInterpolator> Vec4LinearSampler;
     typedef TemplateSampler<QuatSphericalLinearInterpolator> QuatSphericalLinearSampler;
+
     typedef TemplateSampler<FloatCubicBezierInterpolator> FloatCubicBezierSampler;
     typedef TemplateSampler<DoubleCubicBezierInterpolator> DoubleCubicBezierSampler;
     typedef TemplateSampler<Vec2CubicBezierInterpolator> Vec2CubicBezierSampler;

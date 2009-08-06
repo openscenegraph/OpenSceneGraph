@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -10,7 +10,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
-*/
+ *
+ * Authors:
+ *         Cedric Pinson <cedric.pinson@plopbyte.net>
+ *         Michael Platings <mplatings@pixelpower.com>
+ */
 
 #ifndef OSGANIMATION_CHANNEL_H
 #define OSGANIMATION_CHANNEL_H
@@ -36,6 +40,7 @@ namespace osgAnimation
         virtual void update(float time) = 0;
         virtual void reset() = 0;
         virtual Target* getTarget() = 0;
+        virtual bool setTarget(Target*) = 0;
 
         const std::string& getName() const;
         void setName(const std::string& name);
@@ -98,8 +103,13 @@ namespace osgAnimation
         }
         virtual void reset() { _target->reset(); }
         virtual Target* getTarget() { return _target.get();}
+        virtual bool setTarget(Target* target)
+        {
+            _target = dynamic_cast<TargetType*>(target);
+            return _target.get() == target;
+        }
 
-        SamplerType* getOrCreateSampler() 
+        SamplerType* getOrCreateSampler()
         {
             if (!_sampler.valid())
                 _sampler = new SamplerType;
@@ -126,9 +136,16 @@ namespace osgAnimation
 
 
     typedef std::vector<osg::ref_ptr<osgAnimation::Channel> > ChannelList;
+
+    typedef TemplateChannel<DoubleStepSampler> DoubleStepChannel;
+    typedef TemplateChannel<FloatStepSampler> FloatStepChannel;
+    typedef TemplateChannel<Vec2StepSampler> Vec2StepChannel;
+    typedef TemplateChannel<Vec3StepSampler> Vec3StepChannel;
+    typedef TemplateChannel<Vec4StepSampler> Vec4StepChannel;
+    typedef TemplateChannel<QuatStepSampler> QuatStepChannel;
+
     typedef TemplateChannel<DoubleLinearSampler> DoubleLinearChannel;
     typedef TemplateChannel<FloatLinearSampler> FloatLinearChannel;
-
     typedef TemplateChannel<Vec2LinearSampler> Vec2LinearChannel;
     typedef TemplateChannel<Vec3LinearSampler> Vec3LinearChannel;
     typedef TemplateChannel<Vec4LinearSampler> Vec4LinearChannel;

@@ -10,7 +10,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
-*/
+ *
+ * Authors:
+ *         Cedric Pinson <cedric.pinson@plopbyte.net>
+ *         Michael Platings <mplatings@pixelpower.com>
+ */
 
 #include <osgAnimation/UpdateCallback>
 #include <osg/MatrixTransform>
@@ -95,30 +99,15 @@ bool UpdateTransform::link(osgAnimation::Channel* channel)
 {
     if (channel->getName().find("euler") != std::string::npos) 
     {
-        osgAnimation::Vec3LinearChannel* qc = dynamic_cast<osgAnimation::Vec3LinearChannel*>(channel);
-        if (qc) 
-        {
-            qc->setTarget(_euler.get());
-            return true;
-        }
+        return channel->setTarget(_euler.get());
     }
     else if (channel->getName().find("position") != std::string::npos) 
     {
-        osgAnimation::Vec3LinearChannel* vc = dynamic_cast<osgAnimation::Vec3LinearChannel*>(channel);
-        if (vc) 
-        {
-            vc->setTarget(_position.get());
-            return true;
-        }
+        return channel->setTarget(_position.get());
     }
     else if (channel->getName().find("scale") != std::string::npos) 
     {
-        osgAnimation::Vec3LinearChannel* vc = dynamic_cast<osgAnimation::Vec3LinearChannel*>(channel);
-        if (vc) 
-        {
-            vc->setTarget(_scale.get());
-            return true;
-        }
+        return channel->setTarget(_scale.get());
     } 
     else 
     {
@@ -171,12 +160,7 @@ bool UpdateMaterial::link(osgAnimation::Channel* channel)
 {
     if (channel->getName().find("diffuse") != std::string::npos)
     {
-        osgAnimation::Vec4LinearChannel* d = dynamic_cast<osgAnimation::Vec4LinearChannel*>(channel);
-        if (d) 
-        {
-            d->setTarget(_diffuse.get());
-            return true;
-        }
+        return channel->setTarget(_diffuse.get());
     }
     else 
     {

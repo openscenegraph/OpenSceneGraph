@@ -98,15 +98,19 @@ class FollowMouseCallback: public osgGA::GUIEventHandler
     
         virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object* object, osg::NodeVisitor*)
         {
+
             switch(ea.getEventType())
             {
                 case(osgGA::GUIEventAdapter::MOVE):
                 case(osgGA::GUIEventAdapter::DRAG):
                 {
-                    osg::CameraNode* camera = dynamic_cast<osg::CameraNode*>(object);
+                    osg::Camera* camera = dynamic_cast<osg::Camera*>(object);
                     if (camera)
                     {
-                        camera->setViewMatrix(osg::Matrixd::translate(ea.getX(),ea.getY(),0.0));
+                        double x = ea.getXnormalized();
+                        double y = ea.getYnormalized();
+
+                        camera->setViewMatrix(osg::Matrixd::translate(x,y,0.0));
                     }
                     break;
                 }
@@ -114,7 +118,7 @@ class FollowMouseCallback: public osgGA::GUIEventHandler
                 {
                     if (ea.getKey()=='c')
                     {
-                        osg::CameraNode* camera = dynamic_cast<osg::CameraNode*>(object);
+                        osg::Camera* camera = dynamic_cast<osg::Camera*>(object);
                         if (camera)
                         {
                             for(unsigned int i=0; i< camera->getNumChildren(); ++i)
@@ -124,7 +128,6 @@ class FollowMouseCallback: public osgGA::GUIEventHandler
                                     node->getNodeMask()!=0 ?
                                     0 :
                                     0xffffff);
-                                
                             }
                         }
                     }
@@ -453,7 +456,7 @@ int main( int argc, char **argv )
     // any option left unread are converted into errors to write out later.
     //arguments.reportRemainingOptionsAsUnrecognized();
 
-    // report any errors if they have occured when parsing the program aguments.
+    // report any errors if they have ocured when parsing the program aguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(osg::notify(osg::INFO));

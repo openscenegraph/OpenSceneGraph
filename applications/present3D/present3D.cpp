@@ -591,9 +591,14 @@ int main( int argc, char **argv )
 
         viewerInitialized = true;
     }
-    
+
     if (!cursorFileName.empty())
     {
+        // have to add a frame in here to avoid problems with X11 threading issue on switching off the cursor
+        // not yet sure why it makes a difference, but it at least fixes the crash that would otherwise occur
+        // under X11.
+        viewer.frame();
+
         // switch off the cursor
         osgViewer::Viewer::Windows windows;
         viewer.getWindows(windows);

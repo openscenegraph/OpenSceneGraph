@@ -833,7 +833,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
             
             _timeLastKeyPresses = time;
 
-            if (ea.getKey()=='a')
+            if (ea.getKey()=='g')
             {
                 if (!_autoSteppingActive)
                 {
@@ -842,7 +842,7 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 }
                 return true;
             }
-            else if (ea.getKey()=='q')
+            else if (ea.getKey()=='h')
             {
                 if (_autoSteppingActive)
                 {

@@ -51,7 +51,7 @@
 #include <osgPresentation/PickEventHandler>
 
 #include <osgManipulator/TabBoxDragger>
-#include <osgManipulator/TabPlaneTrackballDragger>
+#include <osgManipulator/TabBoxTrackballDragger>
 #include <osgManipulator/TrackballDragger>
 
 using namespace osgPresentation;
@@ -1623,7 +1623,12 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
         osg::ref_ptr<osgManipulator::Dragger> dragger;
         if (volumeData.useTabbedDragger)
-            dragger = new osgManipulator::TabBoxDragger;
+        {
+            if (volumeData.useTrackballDragger)
+                dragger = new osgManipulator::TabBoxTrackballDragger;
+            else
+                dragger = new osgManipulator::TabBoxDragger;
+        }
         else
             dragger = new osgManipulator::TrackballDragger();
 

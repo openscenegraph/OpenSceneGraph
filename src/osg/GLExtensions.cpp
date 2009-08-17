@@ -39,9 +39,6 @@ static osg::buffered_object<ExtensionSet> s_gluExtensionSetList;
 static osg::buffered_object<std::string> s_gluRendererList;
 static osg::buffered_value<int> s_gluInitializedList;
 
-static const char* envVar = getenv("OSG_GL_EXTENSION_DISABLE");
-static std::string s_GLExtensionDisableString(envVar?envVar:"Nothing defined");
-
 float osg::getGLVersionNumber()
 {
     // needs to be extended to do proper things with subversions like 1.5.1, etc.
@@ -232,6 +229,9 @@ void osg::setGLExtensionDisableString(const std::string& disableString)
 
 std::string& osg::getGLExtensionDisableString()
 {
+    static const char* envVar = getenv("OSG_GL_EXTENSION_DISABLE");
+    static std::string s_GLExtensionDisableString(envVar?envVar:"Nothing defined");
+
     return s_GLExtensionDisableString;
 }
 

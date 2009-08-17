@@ -53,6 +53,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	          __Target_P1__getTarget,
 	          "",
 	          "");
+	I_Method1(bool, setTarget, IN, osgAnimation::Target *, x,
+	          Properties::PURE_VIRTUAL,
+	          __bool__setTarget__Target_P1,
+	          "",
+	          "");
 	I_Method0(const std::string &, getName,
 	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getName,
@@ -117,7 +122,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	                 0);
 	I_SimpleProperty(osgAnimation::Target *, Target, 
 	                 __Target_P1__getTarget, 
-	                 0);
+	                 __bool__setTarget__Target_P1);
 	I_SimpleProperty(const std::string &, TargetName, 
 	                 __C5_std_string_R1__getTargetName, 
 	                 __void__setTargetName__C5_std_string_R1);
@@ -127,6 +132,18 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgAnimation::Channel > >, osgAnimation::ChannelList)
+
+TYPE_NAME_ALIAS(osgAnimation::TemplateChannel< osgAnimation::DoubleStepSampler >, osgAnimation::DoubleStepChannel)
+
+TYPE_NAME_ALIAS(osgAnimation::TemplateChannel< osgAnimation::FloatStepSampler >, osgAnimation::FloatStepChannel)
+
+TYPE_NAME_ALIAS(osgAnimation::TemplateChannel< osgAnimation::Vec2StepSampler >, osgAnimation::Vec2StepChannel)
+
+TYPE_NAME_ALIAS(osgAnimation::TemplateChannel< osgAnimation::Vec3StepSampler >, osgAnimation::Vec3StepChannel)
+
+TYPE_NAME_ALIAS(osgAnimation::TemplateChannel< osgAnimation::Vec4StepSampler >, osgAnimation::Vec4StepChannel)
+
+TYPE_NAME_ALIAS(osgAnimation::TemplateChannel< osgAnimation::QuatStepSampler >, osgAnimation::QuatStepChannel)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateChannel< osgAnimation::DoubleLinearSampler >, osgAnimation::DoubleLinearChannel)
 
@@ -187,6 +204,648 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Channel >)
 	          "");
 	I_SimpleProperty(osgAnimation::Channel *, , 
 	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::DoubleStepSampler >)
+	I_DeclaringFile("osgAnimation/Channel");
+	I_BaseType(osgAnimation::Channel);
+	I_Method0(osgAnimation::Channel *, clone,
+	          Properties::VIRTUAL,
+	          __Channel_P1__clone,
+	          "",
+	          "");
+	I_Constructor1(IN, const osgAnimation::TemplateChannel< osgAnimation::DoubleStepSampler > &, channel,
+	               Properties::NON_EXPLICIT,
+	               ____TemplateChannel__C5_TemplateChannel_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::DoubleStepSampler >::TargetType *, target, 0,
+	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
+	                           "",
+	                           "");
+	I_Method1(void, update, IN, float, time,
+	          Properties::VIRTUAL,
+	          __void__update__float,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Target *, getTarget,
+	          Properties::VIRTUAL,
+	          __Target_P1__getTarget,
+	          "",
+	          "");
+	I_Method1(bool, setTarget, IN, osgAnimation::Target *, target,
+	          Properties::VIRTUAL,
+	          __bool__setTarget__Target_P1,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getOrCreateSampler,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getOrCreateSampler,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(const osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __C5_Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method0(const SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __C5_SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
+	          Properties::NON_VIRTUAL,
+	          __void__setSampler__SamplerType_P1,
+	          "",
+	          "");
+	I_Method0(osgAnimation::TemplateChannel< osgAnimation::DoubleStepSampler >::TargetType *, getTargetTyped,
+	          Properties::NON_VIRTUAL,
+	          __TargetType_P1__getTargetTyped,
+	          "",
+	          "");
+	I_Method1(void, setTarget, IN, osgAnimation::TemplateChannel< osgAnimation::DoubleStepSampler >::TargetType *, target,
+	          Properties::NON_VIRTUAL,
+	          __void__setTarget__TargetType_P1,
+	          "",
+	          "");
+	I_Method0(float, getStartTime,
+	          Properties::VIRTUAL,
+	          __float__getStartTime,
+	          "",
+	          "");
+	I_Method0(float, getEndTime,
+	          Properties::VIRTUAL,
+	          __float__getEndTime,
+	          "",
+	          "");
+	I_SimpleProperty(float, EndTime, 
+	                 __float__getEndTime, 
+	                 0);
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
+	                 __SamplerType_P1__getSamplerTyped, 
+	                 0);
+	I_SimpleProperty(float, StartTime, 
+	                 __float__getStartTime, 
+	                 0);
+	I_SimpleProperty(osgAnimation::Target *, Target, 
+	                 __Target_P1__getTarget, 
+	                 __bool__setTarget__Target_P1);
+	I_SimpleProperty(osgAnimation::TemplateChannel< osgAnimation::DoubleStepSampler >::TargetType *, TargetTyped, 
+	                 __TargetType_P1__getTargetTyped, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::FloatStepSampler >)
+	I_DeclaringFile("osgAnimation/Channel");
+	I_BaseType(osgAnimation::Channel);
+	I_Method0(osgAnimation::Channel *, clone,
+	          Properties::VIRTUAL,
+	          __Channel_P1__clone,
+	          "",
+	          "");
+	I_Constructor1(IN, const osgAnimation::TemplateChannel< osgAnimation::FloatStepSampler > &, channel,
+	               Properties::NON_EXPLICIT,
+	               ____TemplateChannel__C5_TemplateChannel_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::FloatStepSampler >::TargetType *, target, 0,
+	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
+	                           "",
+	                           "");
+	I_Method1(void, update, IN, float, time,
+	          Properties::VIRTUAL,
+	          __void__update__float,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Target *, getTarget,
+	          Properties::VIRTUAL,
+	          __Target_P1__getTarget,
+	          "",
+	          "");
+	I_Method1(bool, setTarget, IN, osgAnimation::Target *, target,
+	          Properties::VIRTUAL,
+	          __bool__setTarget__Target_P1,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getOrCreateSampler,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getOrCreateSampler,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(const osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __C5_Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method0(const SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __C5_SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
+	          Properties::NON_VIRTUAL,
+	          __void__setSampler__SamplerType_P1,
+	          "",
+	          "");
+	I_Method0(osgAnimation::TemplateChannel< osgAnimation::FloatStepSampler >::TargetType *, getTargetTyped,
+	          Properties::NON_VIRTUAL,
+	          __TargetType_P1__getTargetTyped,
+	          "",
+	          "");
+	I_Method1(void, setTarget, IN, osgAnimation::TemplateChannel< osgAnimation::FloatStepSampler >::TargetType *, target,
+	          Properties::NON_VIRTUAL,
+	          __void__setTarget__TargetType_P1,
+	          "",
+	          "");
+	I_Method0(float, getStartTime,
+	          Properties::VIRTUAL,
+	          __float__getStartTime,
+	          "",
+	          "");
+	I_Method0(float, getEndTime,
+	          Properties::VIRTUAL,
+	          __float__getEndTime,
+	          "",
+	          "");
+	I_SimpleProperty(float, EndTime, 
+	                 __float__getEndTime, 
+	                 0);
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
+	                 __SamplerType_P1__getSamplerTyped, 
+	                 0);
+	I_SimpleProperty(float, StartTime, 
+	                 __float__getStartTime, 
+	                 0);
+	I_SimpleProperty(osgAnimation::Target *, Target, 
+	                 __Target_P1__getTarget, 
+	                 __bool__setTarget__Target_P1);
+	I_SimpleProperty(osgAnimation::TemplateChannel< osgAnimation::FloatStepSampler >::TargetType *, TargetTyped, 
+	                 __TargetType_P1__getTargetTyped, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::QuatStepSampler >)
+	I_DeclaringFile("osgAnimation/Channel");
+	I_BaseType(osgAnimation::Channel);
+	I_Method0(osgAnimation::Channel *, clone,
+	          Properties::VIRTUAL,
+	          __Channel_P1__clone,
+	          "",
+	          "");
+	I_Constructor1(IN, const osgAnimation::TemplateChannel< osgAnimation::QuatStepSampler > &, channel,
+	               Properties::NON_EXPLICIT,
+	               ____TemplateChannel__C5_TemplateChannel_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::QuatStepSampler >::TargetType *, target, 0,
+	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
+	                           "",
+	                           "");
+	I_Method1(void, update, IN, float, time,
+	          Properties::VIRTUAL,
+	          __void__update__float,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Target *, getTarget,
+	          Properties::VIRTUAL,
+	          __Target_P1__getTarget,
+	          "",
+	          "");
+	I_Method1(bool, setTarget, IN, osgAnimation::Target *, target,
+	          Properties::VIRTUAL,
+	          __bool__setTarget__Target_P1,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getOrCreateSampler,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getOrCreateSampler,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(const osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __C5_Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method0(const SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __C5_SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
+	          Properties::NON_VIRTUAL,
+	          __void__setSampler__SamplerType_P1,
+	          "",
+	          "");
+	I_Method0(osgAnimation::TemplateChannel< osgAnimation::QuatStepSampler >::TargetType *, getTargetTyped,
+	          Properties::NON_VIRTUAL,
+	          __TargetType_P1__getTargetTyped,
+	          "",
+	          "");
+	I_Method1(void, setTarget, IN, osgAnimation::TemplateChannel< osgAnimation::QuatStepSampler >::TargetType *, target,
+	          Properties::NON_VIRTUAL,
+	          __void__setTarget__TargetType_P1,
+	          "",
+	          "");
+	I_Method0(float, getStartTime,
+	          Properties::VIRTUAL,
+	          __float__getStartTime,
+	          "",
+	          "");
+	I_Method0(float, getEndTime,
+	          Properties::VIRTUAL,
+	          __float__getEndTime,
+	          "",
+	          "");
+	I_SimpleProperty(float, EndTime, 
+	                 __float__getEndTime, 
+	                 0);
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
+	                 __SamplerType_P1__getSamplerTyped, 
+	                 0);
+	I_SimpleProperty(float, StartTime, 
+	                 __float__getStartTime, 
+	                 0);
+	I_SimpleProperty(osgAnimation::Target *, Target, 
+	                 __Target_P1__getTarget, 
+	                 __bool__setTarget__Target_P1);
+	I_SimpleProperty(osgAnimation::TemplateChannel< osgAnimation::QuatStepSampler >::TargetType *, TargetTyped, 
+	                 __TargetType_P1__getTargetTyped, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec2StepSampler >)
+	I_DeclaringFile("osgAnimation/Channel");
+	I_BaseType(osgAnimation::Channel);
+	I_Method0(osgAnimation::Channel *, clone,
+	          Properties::VIRTUAL,
+	          __Channel_P1__clone,
+	          "",
+	          "");
+	I_Constructor1(IN, const osgAnimation::TemplateChannel< osgAnimation::Vec2StepSampler > &, channel,
+	               Properties::NON_EXPLICIT,
+	               ____TemplateChannel__C5_TemplateChannel_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec2StepSampler >::TargetType *, target, 0,
+	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
+	                           "",
+	                           "");
+	I_Method1(void, update, IN, float, time,
+	          Properties::VIRTUAL,
+	          __void__update__float,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Target *, getTarget,
+	          Properties::VIRTUAL,
+	          __Target_P1__getTarget,
+	          "",
+	          "");
+	I_Method1(bool, setTarget, IN, osgAnimation::Target *, target,
+	          Properties::VIRTUAL,
+	          __bool__setTarget__Target_P1,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getOrCreateSampler,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getOrCreateSampler,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(const osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __C5_Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method0(const SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __C5_SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
+	          Properties::NON_VIRTUAL,
+	          __void__setSampler__SamplerType_P1,
+	          "",
+	          "");
+	I_Method0(osgAnimation::TemplateChannel< osgAnimation::Vec2StepSampler >::TargetType *, getTargetTyped,
+	          Properties::NON_VIRTUAL,
+	          __TargetType_P1__getTargetTyped,
+	          "",
+	          "");
+	I_Method1(void, setTarget, IN, osgAnimation::TemplateChannel< osgAnimation::Vec2StepSampler >::TargetType *, target,
+	          Properties::NON_VIRTUAL,
+	          __void__setTarget__TargetType_P1,
+	          "",
+	          "");
+	I_Method0(float, getStartTime,
+	          Properties::VIRTUAL,
+	          __float__getStartTime,
+	          "",
+	          "");
+	I_Method0(float, getEndTime,
+	          Properties::VIRTUAL,
+	          __float__getEndTime,
+	          "",
+	          "");
+	I_SimpleProperty(float, EndTime, 
+	                 __float__getEndTime, 
+	                 0);
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
+	                 __SamplerType_P1__getSamplerTyped, 
+	                 0);
+	I_SimpleProperty(float, StartTime, 
+	                 __float__getStartTime, 
+	                 0);
+	I_SimpleProperty(osgAnimation::Target *, Target, 
+	                 __Target_P1__getTarget, 
+	                 __bool__setTarget__Target_P1);
+	I_SimpleProperty(osgAnimation::TemplateChannel< osgAnimation::Vec2StepSampler >::TargetType *, TargetTyped, 
+	                 __TargetType_P1__getTargetTyped, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec3StepSampler >)
+	I_DeclaringFile("osgAnimation/Channel");
+	I_BaseType(osgAnimation::Channel);
+	I_Method0(osgAnimation::Channel *, clone,
+	          Properties::VIRTUAL,
+	          __Channel_P1__clone,
+	          "",
+	          "");
+	I_Constructor1(IN, const osgAnimation::TemplateChannel< osgAnimation::Vec3StepSampler > &, channel,
+	               Properties::NON_EXPLICIT,
+	               ____TemplateChannel__C5_TemplateChannel_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec3StepSampler >::TargetType *, target, 0,
+	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
+	                           "",
+	                           "");
+	I_Method1(void, update, IN, float, time,
+	          Properties::VIRTUAL,
+	          __void__update__float,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Target *, getTarget,
+	          Properties::VIRTUAL,
+	          __Target_P1__getTarget,
+	          "",
+	          "");
+	I_Method1(bool, setTarget, IN, osgAnimation::Target *, target,
+	          Properties::VIRTUAL,
+	          __bool__setTarget__Target_P1,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getOrCreateSampler,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getOrCreateSampler,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(const osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __C5_Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method0(const SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __C5_SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
+	          Properties::NON_VIRTUAL,
+	          __void__setSampler__SamplerType_P1,
+	          "",
+	          "");
+	I_Method0(osgAnimation::TemplateChannel< osgAnimation::Vec3StepSampler >::TargetType *, getTargetTyped,
+	          Properties::NON_VIRTUAL,
+	          __TargetType_P1__getTargetTyped,
+	          "",
+	          "");
+	I_Method1(void, setTarget, IN, osgAnimation::TemplateChannel< osgAnimation::Vec3StepSampler >::TargetType *, target,
+	          Properties::NON_VIRTUAL,
+	          __void__setTarget__TargetType_P1,
+	          "",
+	          "");
+	I_Method0(float, getStartTime,
+	          Properties::VIRTUAL,
+	          __float__getStartTime,
+	          "",
+	          "");
+	I_Method0(float, getEndTime,
+	          Properties::VIRTUAL,
+	          __float__getEndTime,
+	          "",
+	          "");
+	I_SimpleProperty(float, EndTime, 
+	                 __float__getEndTime, 
+	                 0);
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
+	                 __SamplerType_P1__getSamplerTyped, 
+	                 0);
+	I_SimpleProperty(float, StartTime, 
+	                 __float__getStartTime, 
+	                 0);
+	I_SimpleProperty(osgAnimation::Target *, Target, 
+	                 __Target_P1__getTarget, 
+	                 __bool__setTarget__Target_P1);
+	I_SimpleProperty(osgAnimation::TemplateChannel< osgAnimation::Vec3StepSampler >::TargetType *, TargetTyped, 
+	                 __TargetType_P1__getTargetTyped, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateChannel< osgAnimation::Vec4StepSampler >)
+	I_DeclaringFile("osgAnimation/Channel");
+	I_BaseType(osgAnimation::Channel);
+	I_Method0(osgAnimation::Channel *, clone,
+	          Properties::VIRTUAL,
+	          __Channel_P1__clone,
+	          "",
+	          "");
+	I_Constructor1(IN, const osgAnimation::TemplateChannel< osgAnimation::Vec4StepSampler > &, channel,
+	               Properties::NON_EXPLICIT,
+	               ____TemplateChannel__C5_TemplateChannel_R1,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, SamplerType *, s, 0, IN, osgAnimation::TemplateChannel< osgAnimation::Vec4StepSampler >::TargetType *, target, 0,
+	                           ____TemplateChannel__SamplerType_P1__TargetType_P1,
+	                           "",
+	                           "");
+	I_Method1(void, update, IN, float, time,
+	          Properties::VIRTUAL,
+	          __void__update__float,
+	          "",
+	          "");
+	I_Method0(void, reset,
+	          Properties::VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Target *, getTarget,
+	          Properties::VIRTUAL,
+	          __Target_P1__getTarget,
+	          "",
+	          "");
+	I_Method1(bool, setTarget, IN, osgAnimation::Target *, target,
+	          Properties::VIRTUAL,
+	          __bool__setTarget__Target_P1,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getOrCreateSampler,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getOrCreateSampler,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(const osgAnimation::Sampler *, getSampler,
+	          Properties::VIRTUAL,
+	          __C5_Sampler_P1__getSampler,
+	          "",
+	          "");
+	I_Method0(SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method0(const SamplerType *, getSamplerTyped,
+	          Properties::NON_VIRTUAL,
+	          __C5_SamplerType_P1__getSamplerTyped,
+	          "",
+	          "");
+	I_Method1(void, setSampler, IN, SamplerType *, sampler,
+	          Properties::NON_VIRTUAL,
+	          __void__setSampler__SamplerType_P1,
+	          "",
+	          "");
+	I_Method0(osgAnimation::TemplateChannel< osgAnimation::Vec4StepSampler >::TargetType *, getTargetTyped,
+	          Properties::NON_VIRTUAL,
+	          __TargetType_P1__getTargetTyped,
+	          "",
+	          "");
+	I_Method1(void, setTarget, IN, osgAnimation::TemplateChannel< osgAnimation::Vec4StepSampler >::TargetType *, target,
+	          Properties::NON_VIRTUAL,
+	          __void__setTarget__TargetType_P1,
+	          "",
+	          "");
+	I_Method0(float, getStartTime,
+	          Properties::VIRTUAL,
+	          __float__getStartTime,
+	          "",
+	          "");
+	I_Method0(float, getEndTime,
+	          Properties::VIRTUAL,
+	          __float__getEndTime,
+	          "",
+	          "");
+	I_SimpleProperty(float, EndTime, 
+	                 __float__getEndTime, 
+	                 0);
+	I_SimpleProperty(SamplerType *, Sampler, 
+	                 0, 
+	                 __void__setSampler__SamplerType_P1);
+	I_SimpleProperty(SamplerType *, SamplerTyped, 
+	                 __SamplerType_P1__getSamplerTyped, 
+	                 0);
+	I_SimpleProperty(float, StartTime, 
+	                 __float__getStartTime, 
+	                 0);
+	I_SimpleProperty(osgAnimation::Target *, Target, 
+	                 __Target_P1__getTarget, 
+	                 __bool__setTarget__Target_P1);
+	I_SimpleProperty(osgAnimation::TemplateChannel< osgAnimation::Vec4StepSampler >::TargetType *, TargetTyped, 
+	                 __TargetType_P1__getTargetTyped, 
 	                 0);
 END_REFLECTOR
 

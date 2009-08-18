@@ -120,7 +120,7 @@ void XmlNode::Input::readAllDataIntoBuffer()
 
 void XmlNode::Input::skipWhiteSpace()
 {
-    while(_currentPos<_buffer.size() && _buffer[_currentPos]==' ')
+    while(_currentPos<_buffer.size() && _buffer[_currentPos]==' ' || _buffer[_currentPos]=='\t' )
     {
         // osg::notify(osg::NOTICE)<<"_currentPos="<<_currentPos<<"_buffer.size()="<<_buffer.size()<<" v="<<_buffer[_currentPos]<<std::endl;
         ++_currentPos;

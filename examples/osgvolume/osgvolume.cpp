@@ -632,7 +632,7 @@ enum ColourSpaceOperation
     NO_COLOUR_SPACE_OPERATION,
     MODULATE_ALPHA_BY_LUMINANCE,
     MODULATE_ALPHA_BY_COLOUR,
-    REPLACE_ALPHA_WITH_LUMINANACE,
+    REPLACE_ALPHA_WITH_LUMINANCE,
     REPLACE_RGB_WITH_LUMINANCE
 };
 
@@ -688,15 +688,15 @@ osg::Image* doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, 
             osg::modifyImage(image,ModulateAlphaByColourOperator(colour)); 
             return image;
         }
-        case (REPLACE_ALPHA_WITH_LUMINANACE):
+        case (REPLACE_ALPHA_WITH_LUMINANCE):
         {
-            std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINANACE"<<std::endl;
+            std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINANCE"<<std::endl;
             osg::modifyImage(image,ReplaceAlphaWithLuminanceOperator()); 
             return image;
         }
         case (REPLACE_RGB_WITH_LUMINANCE):
         {
-            std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINANACE"<<std::endl;
+            std::cout<<"doing conversion REPLACE_ALPHA_WITH_LUMINANCE"<<std::endl;
             osg::Image* newImage = new osg::Image;
             newImage->allocateImage(image->s(), image->t(), image->r(), GL_LUMINANCE, image->getDataType());
             osg::copyImage(image, 0, 0, 0, image->s(), image->t(), image->r(),
@@ -994,7 +994,7 @@ int main( int argc, char **argv )
     osg::Vec4 colourModulate(0.25f,0.25f,0.25f,0.25f);
     while(arguments.read("--modulate-alpha-by-luminance")) { colourSpaceOperation = MODULATE_ALPHA_BY_LUMINANCE; }
     while(arguments.read("--modulate-alpha-by-colour", colourModulate.x(),colourModulate.y(),colourModulate.z(),colourModulate.w() )) { colourSpaceOperation = MODULATE_ALPHA_BY_COLOUR; }
-    while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = REPLACE_ALPHA_WITH_LUMINANACE; }
+    while(arguments.read("--replace-alpha-with-luminance")) { colourSpaceOperation = REPLACE_ALPHA_WITH_LUMINANCE; }
     while(arguments.read("--replace-rgb-with-luminance")) { colourSpaceOperation = REPLACE_RGB_WITH_LUMINANCE; }
 
 

@@ -156,7 +156,7 @@ public:
         result[0] = osg::RadiansToDegrees(result[0]);
         return result;
     }
-    
+
     inline bool read(const char* str, int& value) const;
     inline bool read(const char* str, float& value) const;
     inline bool read(const char* str, double& value) const;
@@ -179,6 +179,7 @@ public:
     bool getProperty(osgDB::XmlNode*cur, const char* token, osg::Vec3& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, osg::Vec4& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, std::string& value) const;
+    bool getTrimmedProperty(osgDB::XmlNode*cur, const char* token, std::string& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, osgText::Text::Layout& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, osgText::Text::AlignmentType& value) const;
     
@@ -215,7 +216,6 @@ public:
 // reader/writer.
 REGISTER_OSGPLUGIN(p3d, ReaderWriterP3DXML)
 
-
 std::string ReaderWriterP3DXML::expandEnvVarsInFileName(const std::string& filename) const
 {
     std::string argument(filename);
@@ -239,9 +239,8 @@ std::string ReaderWriterP3DXML::expandEnvVarsInFileName(const std::string& filen
         {
             start_pos = std::string::npos;
         }
-        
     }
-    
+
     return argument;
 }
 
@@ -387,6 +386,14 @@ bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode*cur, const char* token, std:
     osgDB::XmlNode::Properties::iterator itr = cur->properties.find(token);
     if (itr==cur->properties.end()) return false;
     value = itr->second;
+    return true;
+}
+
+bool ReaderWriterP3DXML::getTrimmedProperty(osgDB::XmlNode*cur, const char* token, std::string& value) const
+{
+    osgDB::XmlNode::Properties::iterator itr = cur->properties.find(token);
+    if (itr==cur->properties.end()) return false;
+    value = osgDB::trimEnclosingSpaces(itr->second);
     return true;
 }
 
@@ -572,7 +579,7 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         propertiesRead = true;
     }
 
-    if (getProperty(cur, "path", str))
+    if (getTrimmedProperty(cur, "path", str))
     {
     
         value.absolute_path = false;
@@ -583,7 +590,7 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         propertiesRead = true;
     }
 
-    if (getProperty(cur, "camera_path", str))
+    if (getTrimmedProperty(cur, "camera_path", str))
     {
         value.absolute_path = true;
         value.inverse_path = true;
@@ -617,7 +624,7 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         propertiesRead = true;
     }
 
-    if (getProperty(cur, "animation_material", str))
+    if (getTrimmedProperty(cur, "animation_material", str))
     {
         value.animation_material_filename = str;
 
@@ -625,7 +632,7 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         propertiesRead = true;
     }
 
-    if (getProperty(cur, "animation_name", str))
+    if (getTrimmedProperty(cur, "animation_name", str))
     {
         value.animation_name = str;
 
@@ -822,7 +829,7 @@ void ReaderWriterP3DXML::parseModel(osgPresentation::SlideShowConstructor& const
     osgPresentation::SlideShowConstructor::ModelData modelData;// = constructor.getModelData();
     getProperties(cur,modelData);
 
-    std::string filename = cur->contents;
+    std::string filename = cur->getTrimmedContents();
 
     if (!filename.empty())
     {
@@ -891,7 +898,7 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
 
     // check for any transfer function required
     std::string transferFunctionFile;
-    if (getProperty(cur, "tf", transferFunctionFile))
+    if (getTrimmedProperty(cur, "tf", transferFunctionFile))
     {
         volumeData.transferFunction = readTransferFunctionFile(transferFunctionFile);
     }
@@ -917,7 +924,7 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
         }
     }
 
-    std::string filename = cur->contents;
+    std::string filename = cur->getTrimmedContents();
     if (!filename.empty()) 
     {
         constructor.addVolume(filename,
@@ -950,12 +957,12 @@ void ReaderWriterP3DXML::parseStereoPair(osgPresentation::SlideShowConstructor& 
         if (child->name == "image_left")
         {
             getProperties(child,imageDataLeft);
-            filenameLeft = child->contents;
+            filenameLeft = child->getTrimmedContents();
         }
         if (child->name == "image_right")
         {
             getProperties(child,imageDataRight);
-            filenameRight = child->contents;
+            filenameRight = child->getTrimmedContents();
             getProperties(cur,imageDataRight);
         }
     }
@@ -1012,7 +1019,7 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
     }
 
 
-    std::string key = cur->contents;
+    std::string key = cur->getTrimmedContents();
     unsigned int keyValue = 0;
 
     StringKeyMap::const_iterator itr=_stringKeyMap.find(key);
@@ -1163,7 +1170,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
             getProperties(cur,imageData);
 
-            constructor.addImage(cur->contents,
+            constructor.addImage(cur->getTrimmedContents(),
                                     positionRead ? positionData : constructor.getImagePositionData(),
                                     imageData);
         }
@@ -1175,7 +1182,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
             getProperties(cur,imageData);
 
-            constructor.addVNC(cur->contents,
+            constructor.addVNC(cur->getTrimmedContents(),
                                     positionRead ? positionData : constructor.getImagePositionData(),
                                     imageData);
         }
@@ -1187,7 +1194,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
             getProperties(cur,imageData);
 
-            constructor.addBrowser(cur->contents,
+            constructor.addBrowser(cur->getTrimmedContents(),
                                     positionRead ? positionData : constructor.getImagePositionData(),
                                     imageData);
         }
@@ -1199,7 +1206,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
             getProperties(cur,imageData);
 
-            constructor.addPDF(cur->contents,
+            constructor.addPDF(cur->getTrimmedContents(),
                                     positionRead ? positionData : constructor.getImagePositionData(),
                                     imageData);
         }
@@ -1375,7 +1382,7 @@ void ReaderWriterP3DXML::parsePdfDocument(osgPresentation::SlideShowConstructor&
 
                 constructor.addLayer(true,false);
 
-                constructor.addPDF(cur->contents, positionData, imageData);
+                constructor.addPDF(cur->getTrimmedContents(), positionData, imageData);
 
             }
         }
@@ -1857,7 +1864,10 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
 
     osg::notify(osg::INFO)<<"P3D xml file read, now building presentation scene graph."<<std::endl;
 
-    // doc->write(std::cout);
+#if 0
+    std::ofstream fout("output.p3d");
+    doc->write(fout);
+#endif
 
     if (doc == NULL )
     {

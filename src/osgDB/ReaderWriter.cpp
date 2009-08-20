@@ -14,6 +14,7 @@
 #include <osgDB/ReaderWriter>
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
+#include <osgDB/FileUtils>
 #include <osgDB/Archive>
 
 using namespace osgDB;
@@ -118,20 +119,7 @@ ReaderWriter::FeatureList ReaderWriter::featureAsString(ReaderWriter::Features f
     return result;
 }
 
-#if defined(WIN32) && !defined(__CYGWIN__)
-    #include <io.h>
-    #ifndef F_OK
-        #define F_OK 4
-    #endif
-#else
-    #include <unistd.h>
-#endif
-
 bool ReaderWriter::fileExists(const std::string& filename, const Options* /*options*/) const
 {
-#ifdef OSG_USE_UTF8_FILENAME
-    return _waccess( OSGDB_STRING_TO_FILENAME(filename).c_str(), F_OK ) == 0;
-#else
-    return access( filename.c_str(), F_OK ) == 0;
-#endif
+    return ::osgDB::fileExists(filename);
 }

@@ -60,6 +60,8 @@ class EllipsoidModel : public Object
 
         inline void computeLocalToWorldTransformFromXYZ(double X, double Y, double Z, osg::Matrixd& localToWorld) const;
 
+        inline void computeCoordinateFrame(double latitude, double longitude, osg::Matrixd& localToWorld) const;
+
         inline osg::Vec3d computeLocalUpVector(double X, double Y, double Z) const;
 
         // Convenience method for determining if EllipsoidModel is a stock WGS84 ellipsoid
@@ -189,49 +191,57 @@ inline void EllipsoidModel::computeLocalToWorldTransformFromLatLongHeight(double
 {
     double X, Y, Z;
     convertLatLongHeightToXYZ(latitude,longitude,height,X,Y,Z);
-    computeLocalToWorldTransformFromXYZ(X,Y,Z,localToWorld);
+
+    localToWorld.makeTranslate(X,Y,Z);
+    computeCoordinateFrame(latitude, longitude, localToWorld);
 }
 
 inline void EllipsoidModel::computeLocalToWorldTransformFromXYZ(double X, double Y, double Z, osg::Matrixd& localToWorld) const
 {
+    double  latitude, longitude, height;
+    convertXYZToLatLongHeight(X,Y,Z,latitude,longitude,height);
+
     localToWorld.makeTranslate(X,Y,Z);
+    computeCoordinateFrame(latitude, longitude, localToWorld);
+}
 
+inline void EllipsoidModel::computeCoordinateFrame(double latitude, double longitude, osg::Matrixd& localToWorld) const
+{
+    // Compute up vector
+    osg::Vec3d    up      ( cos(longitude)*cos(latitude), sin(longitude)*cos(latitude), sin(latitude));
 
-    // normalize X,Y,Z
-    double inverse_length = 1.0/sqrt(X*X + Y*Y + Z*Z);
-    
-    X *= inverse_length;
-    Y *= inverse_length;
-    Z *= inverse_length;
+    // Compute east vector
+    osg::Vec3d    east    (-sin(longitude), cos(longitude), 0);
 
-    double length_XY = sqrt(X*X + Y*Y);
-    double inverse_length_XY = 1.0/length_XY;
+    // Compute north vector = outer product up x east
+    osg::Vec3d    north   = up ^ east;
 
-    // Vx = |(-Y,X,0)|
-    localToWorld(0,0) = -Y*inverse_length_XY;
-    localToWorld(0,1) = X*inverse_length_XY;
-    localToWorld(0,2) = 0.0;
+    // set matrix
+    localToWorld(0,0) = east[0];
+    localToWorld(0,1) = east[1];
+    localToWorld(0,2) = east[2];
 
-    // Vy = /(-Z*X/(sqrt(X*X+Y*Y), -Z*Y/(sqrt(X*X+Y*Y),sqrt(X*X+Y*Y))| 
-    double Vy_x = -Z*X*inverse_length_XY;
-    double Vy_y = -Z*Y*inverse_length_XY;
-    double Vy_z = length_XY;
-    inverse_length = 1.0/sqrt(Vy_x*Vy_x + Vy_y*Vy_y + Vy_z*Vy_z);            
-    localToWorld(1,0) = Vy_x*inverse_length;
-    localToWorld(1,1) = Vy_y*inverse_length;
-    localToWorld(1,2) = Vy_z*inverse_length;
+    localToWorld(1,0) = north[0];
+    localToWorld(1,1) = north[1];
+    localToWorld(1,2) = north[2];
 
-    // Vz = (X,Y,Z)
-    localToWorld(2,0) = X;
-    localToWorld(2,1) = Y;
-    localToWorld(2,2) = Z;
+    localToWorld(2,0) = up[0];
+    localToWorld(2,1) = up[1];
+    localToWorld(2,2) = up[2];
 }
 
 inline osg::Vec3d EllipsoidModel::computeLocalUpVector(double X, double Y, double Z) const
 {
-    osg::Vec3d normal(X,Y,Z);
-    normal.normalize();
-    return normal;
+    // Note latitude is angle between normal to ellipsoid surface and XY-plane
+    double  latitude;
+    double  longitude;
+    double  altitude;
+    convertXYZToLatLongHeight(X,Y,Z,latitude,longitude,altitude);
+
+    // Compute up vector
+    return osg::Vec3d(  cos(longitude) * cos(latitude),
+                        sin(longitude) * cos(latitude),
+                                         sin(latitude));
 }
 
 }

@@ -58,10 +58,10 @@ class ValueVisitor : public osg::ValueVisitor {
 */
 
 /** writes all primitives of a primitive-set out to a stream, decomposes quads to triangles, line-strips to lines etc */
-class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
+class DxfPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
     
     public:
-        PrimitiveIndexWriter(std::ostream& fout,osg::Geometry* geo,const Layer &layer,AcadColor &acad,const osg::Matrix& m = osg::Matrix::identity()) : 
+        DxfPrimitiveIndexWriter(std::ostream& fout,osg::Geometry* geo,const Layer &layer,AcadColor &acad,const osg::Matrix& m = osg::Matrix::identity()) : 
             osg::PrimitiveIndexFunctor(), 
             _fout(fout),            
             _geo(geo),
@@ -312,7 +312,7 @@ class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
     
     private:
 
-        PrimitiveIndexWriter& operator = (const PrimitiveIndexWriter&) { return *this; }
+        DxfPrimitiveIndexWriter& operator = (const DxfPrimitiveIndexWriter&) { return *this; }
 
         std::ostream&         _fout;
         GLenum               _modeCache;
@@ -325,7 +325,7 @@ class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
 };
 
 
-void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
+void DxfPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 {
     switch(mode)
     {
@@ -501,7 +501,7 @@ void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
                 for(unsigned int i = 0; i < geo->getNumPrimitiveSets(); ++i) 
                 {        
                     osg::PrimitiveSet* ps = geo->getPrimitiveSet(i);
-                    PrimitiveIndexWriter pif(_fout, geo,_layer,_acadColor,m);
+                    DxfPrimitiveIndexWriter pif(_fout, geo,_layer,_acadColor,m);
                     ps->accept(pif);
                 }            
             } else {                            

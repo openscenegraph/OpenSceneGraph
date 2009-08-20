@@ -13,14 +13,15 @@
 #include <osg/Geometry>
 #include <osg/CameraNode>
 #include <osg/Texture2D>
+#include <osg/AutoTransform>
 #include <osg/Notify>
+#include <osg/io_utils>
 
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgDB/FileNameUtils>
 #include <osgUtil/Optimizer>
-#include <osgUtil/SceneView>
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
@@ -92,6 +93,169 @@ void setViewer(osgViewer::Viewer& viewer, float width, float height, float dista
     viewer.getCamera()->setProjectionMatrixAsPerspective( vfov, width/height, 0.1, 1000.0);
 }
 
+#if 1
+
+class RayFollowsMouseCallback : public osg::Drawable::EventCallback
+{
+    RayFollowsMouseCallback() {}
+
+    /** do customized Event code. */
+    virtual void event(osg::NodeVisitor* nv, osg::Drawable* drawable)
+    {
+        osg::Geometry* geometry = drawable->asGeometry();
+        osgGA::EventVisitor* ev = dynamic_cast<osgGA::EventVisitor*>(nv);
+
+        if (!ev || !geometry) return;
+
+        osgGA::GUIActionAdapter* aa = ev->getActionAdapter();
+        osgViewer::View* view = dynamic_cast<osgViewer::View*>(aa);
+        if (!view) return;
+
+        osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+        if (!vertices) return;
+
+        osg::Camera* camera = view->getCamera();
+        osg::Matrix VP =  camera->getViewMatrix() * camera->getProjectionMatrix();
+
+        osg::Matrix inverse_VP;
+        inverse_VP.invert(VP);
+
+        osgGA::EventQueue::Events& events = ev->getEvents();
+        for(osgGA::EventQueue::Events::iterator itr = events.begin();
+            itr != events.end();
+            ++itr)
+        {
+            handle(inverse_VP, *(*itr), vertices);
+        }
+
+    }
+
+    void handle(const osg::Matrix& inverse_VP, osgGA::GUIEventAdapter& ea, osg::Vec3Array* vertices)
+    {
+        osg::Vec3d start_eye(ea.getXnormalized(), ea.getYnormalized(), 0.0);
+        osg::Vec3d end_eye(ea.getXnormalized(), ea.getYnormalized(), 1.0);
+
+        osg::Vec3d start_world = start_eye * inverse_VP;
+        osg::Vec3d end_world = start_eye * inverse_VP;
+
+        osg::notify(osg::NOTICE)<<"start_world="<<start_world<<std::endl;
+        osg::notify(osg::NOTICE)<<"end_world="<<end_world<<std::endl;
+
+        (*vertices)[0] = start_world;
+        (*vertices)[1] = end_world;
+    }
+};
+
+class FollowMouseCallback: public osgGA::GUIEventHandler
+{
+    public:
+
+        virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa, osg::Object* object, osg::NodeVisitor* nv)
+        {
+            osg::AutoTransform* transform = dynamic_cast<osg::AutoTransform*>(object);
+            if (!transform) return false;
+
+            switch(ea.getEventType())
+            {
+                case(osgGA::GUIEventAdapter::FRAME):
+                //case(osgGA::GUIEventAdapter::MOVE):
+                //case(osgGA::GUIEventAdapter::DRAG):
+                {
+                    osgViewer::View* view = dynamic_cast<osgViewer::View*>(&aa);
+
+                    transform->setNodeMask(0x0);
+
+                    osg::notify(osg::NOTICE)<<std::endl<<"ea.getGraphicsContext()="<<ea.getGraphicsContext()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"ea.getWindowWidth()="<<ea.getWindowWidth()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"ea.getWindowHeight()="<<ea.getWindowHeight()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"ea.getX()="<<ea.getX()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"ea.getXin()="<<ea.getXmin()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"ea.getXmax()="<<ea.getXmax()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"ea.getY()="<<ea.getY()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"ea.getYin()="<<ea.getYmin()<<std::endl;
+                    osg::notify(osg::NOTICE)<<"ea.getYmax()="<<ea.getYmax()<<std::endl;
+
+                    osg::Camera* camera = view->getCamera();
+                    osg::Matrix VP =  camera->getViewMatrix() * camera->getProjectionMatrix();
+
+                    osg::Matrix inverse_VP;
+                    inverse_VP.invert(VP);
+
+                    osg::Vec3d start_eye(ea.getXnormalized(), ea.getYnormalized(), 0.0);
+                    osg::Vec3d end_eye(ea.getXnormalized(), ea.getYnormalized(), 1.0);
+
+                    osg::Vec3d start_world = start_eye * inverse_VP;
+                    osg::Vec3d end_world = start_eye * inverse_VP;
+
+                    osg::notify(osg::NOTICE)<<"start_world="<<start_world<<std::endl;
+                    osg::notify(osg::NOTICE)<<"end_world="<<end_world<<std::endl;
+
+                    transform->setPosition(end_world);
+
+                    transform->setNodeMask(0xffffffff);
+
+                    break;
+                }
+                case(osgGA::GUIEventAdapter::KEYDOWN):
+                {
+                    if (ea.getKey()=='c')
+                    {
+                        for(unsigned int i=0; i< transform->getNumChildren(); ++i)
+                        {
+                            osg::Node* node = transform->getChild(i);
+                            node->setNodeMask(
+                                node->getNodeMask()!=0 ?
+                                0 :
+                                0xffffff);
+                        }
+                    }
+                    break;
+                }
+                default:
+                    break;
+            }
+            return false;
+        }
+
+        virtual void accept(osgGA::GUIEventHandlerVisitor& v)
+        {
+            v.visit(*this);
+        }
+
+};
+
+osg::Node* createCursorSubgraph(const std::string& filename, float size)
+{
+    osg::Geode* geode = new osg::Geode;
+
+    size = 20.0f;
+
+    osg::Geometry* geom = osg::createTexturedQuadGeometry(osg::Vec3(-size*0.5f,-size*0.5f,0.0f),osg::Vec3(size,0.0f,0.0f),osg::Vec3(0.0f,size,0.0f));
+
+    osg::Image* image = osgDB::readImageFile(osgDB::findDataFile(filename));
+    if (image)
+    {
+        osg::StateSet* stateset = geom->getOrCreateStateSet();
+        stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image),osg::StateAttribute::ON);
+        stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
+        // stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+        stateset->setRenderBinDetails(1000, "DepthSortedBin");
+    }
+
+    geode->addDrawable(geom);
+
+    osg::AutoTransform* transform = new osg::AutoTransform;
+    transform->setAutoRotateMode(osg::AutoTransform::ROTATE_TO_CAMERA);
+    transform->setAutoScaleToScreen(true);
+
+    transform->addChild(geode);
+
+    transform->setEventCallback(new FollowMouseCallback());
+
+    return transform;
+
+}
+#else
 class FollowMouseCallback: public osgGA::GUIEventHandler
 {
     public:
@@ -163,7 +327,7 @@ osg::Node* createCursorSubgraph(const std::string& filename, float size)
     
     geode->addDrawable(geom);
     
-    osg::CameraNode* camera = new osg::CameraNode;
+    osg::Camera* camera = new osg::Camera;
 
     // set the projection matrix
     camera->setProjectionMatrix(osg::Matrix::ortho2D(-1,1,-1,1));
@@ -185,6 +349,7 @@ osg::Node* createCursorSubgraph(const std::string& filename, float size)
     return camera;
 
 }
+#endif
 
 
 enum P3DApplicationType
@@ -384,8 +549,7 @@ int main( int argc, char **argv )
     {
         // make sure that imagery stays around after being applied to textures.
         viewer.getDatabasePager()->setUnrefImageDataAfterApplyPolicy(true,false);
-        // optimizer_options &= ~osgUtil::Optimizer::OPTIMIZE_TEXTURE_SETTINGS;
-        // viewer.setRealizeSceneViewOptions(viewer.getRealizeSceneViewOptions() & ~osgUtil::SceneView::COMPILE_GLOBJECTS_AT_INIT);
+        optimizer_options &= ~osgUtil::Optimizer::OPTIMIZE_TEXTURE_SETTINGS;
     }
 // 
 //     osgDB::Registry::instance()->getOrCreateDatabasePager()->setUnrefImageDataAfterApplyPolicy(true,false);

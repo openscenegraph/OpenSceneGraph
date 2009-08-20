@@ -72,15 +72,23 @@ bool FFmpegImageStream::open(const std::string & filename)
         const_cast<unsigned char *>(m_decoder->video_decoder().image()), NO_DELETE
     );
 
+
     setPixelAspectRatio(m_decoder->video_decoder().pixelAspectRatio());
-    
+
+    osg::notify(osg::NOTICE)<<"ffmpeg::open("<<filename<<") size("<<s()<<", "<<t()<<") aspect ratio "<<m_decoder->video_decoder().pixelAspectRatio()<<std::endl;
+
+#if 1
+    // swscale is reported errors and then crashing when rescaling video of size less than 10 by 10.
+    if (s()<=10 || t()<=10) return false;
+#endif
+
     m_decoder->video_decoder().setUserData(this);
     m_decoder->video_decoder().setPublishCallback(publishNewFrame);
-    
+
     if (m_decoder->audio_decoder().validContext())
     {
         osg::notify(osg::NOTICE)<<"Attaching FFmpegAudioStream"<<std::endl;
-    
+
         getAudioStreams().push_back(new FFmpegAudioStream(m_decoder.get()));
     }
 

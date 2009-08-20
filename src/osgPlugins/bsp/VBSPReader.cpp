@@ -4,6 +4,7 @@
 #include <osg/Group>
 #include <osg/Object>
 #include <osg/Material>
+#include <osg/Math>
 #include <osg/MatrixTransform>
 #include <osg/Node>
 #include <osg/Notify>
@@ -871,7 +872,7 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
                 // Interpret the setting
                 if (!token.empty())
                 {
-                   alpha = atof(token.c_str());
+                   alpha = osg::asciiToDouble(token.c_str());
                 }
             }
  

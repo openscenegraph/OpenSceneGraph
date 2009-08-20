@@ -68,8 +68,8 @@ class X11KeyboardMap
             _extendedKeymap[XK_equal        ] = '=';
             _extendedKeymap[XK_BackSpace    ] = osgGA::GUIEventAdapter::KEY_BackSpace;
             _extendedKeymap[XK_Tab          ] = osgGA::GUIEventAdapter::KEY_Tab;
-            _extendedKeymap[XK_bracketleft  ] = '(';
-            _extendedKeymap[XK_bracketright ] = ')';
+            _extendedKeymap[XK_bracketleft  ] = '[';
+            _extendedKeymap[XK_bracketright ] = ']';
             _extendedKeymap[XK_backslash    ] = '\\';
             _extendedKeymap[XK_Caps_Lock    ] = osgGA::GUIEventAdapter::KEY_Caps_Lock;
             _extendedKeymap[XK_semicolon    ] = ';';

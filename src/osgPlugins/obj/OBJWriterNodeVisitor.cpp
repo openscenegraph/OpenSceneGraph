@@ -80,10 +80,10 @@ class ValueVisitor : public osg::ValueVisitor {
 };
 
 /** writes all primitives of a primitive-set out to a stream, decomposes quads to triangles, line-strips to lines etc */
-class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
+class ObjPrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
     
     public:
-        PrimitiveIndexWriter(std::ostream& fout,osg::Geometry* geo, unsigned int normalIndex, unsigned int lastVertexIndex, unsigned int  lastNormalIndex, unsigned int lastTexIndex) : 
+        ObjPrimitiveIndexWriter(std::ostream& fout,osg::Geometry* geo, unsigned int normalIndex, unsigned int lastVertexIndex, unsigned int  lastNormalIndex, unsigned int lastTexIndex) : 
             osg::PrimitiveIndexFunctor(), 
             _fout(fout),
             _lastVertexIndex(lastVertexIndex),
@@ -306,7 +306,7 @@ class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
     
     private:
 
-        PrimitiveIndexWriter& operator = (const PrimitiveIndexWriter&) { return *this; }
+        ObjPrimitiveIndexWriter& operator = (const ObjPrimitiveIndexWriter&) { return *this; }
 
         std::ostream&         _fout;
         GLenum               _modeCache;
@@ -318,7 +318,7 @@ class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor {
 };
 
 
-void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
+void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 {
     switch(mode)
     {
@@ -534,7 +534,7 @@ void OBJWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m) {
     {
         osg::PrimitiveSet* ps = geo->getPrimitiveSet(i);
         
-        PrimitiveIndexWriter pif(_fout, geo, normalIndex, _lastVertexIndex, _lastNormalIndex, _lastTexIndex);
+        ObjPrimitiveIndexWriter pif(_fout, geo, normalIndex, _lastVertexIndex, _lastNormalIndex, _lastTexIndex);
         ps->accept(pif);
         
         if(geo->getNormalArray() && geo->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE_SET)

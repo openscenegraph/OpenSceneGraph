@@ -20,7 +20,6 @@
 #define OSGANIMATION_INTERPOLATOR_H
 
 #include <osg/Notify>
-#include <osgAnimation/Interpolator>
 #include <osgAnimation/Keyframe>
 
 namespace osgAnimation

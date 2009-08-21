@@ -206,6 +206,11 @@ BEGIN_OBJECT_REFLECTOR(osg::EllipsoidModel)
 	          __void__computeLocalToWorldTransformFromXYZ__double__double__double__osg_Matrixd_R1,
 	          "",
 	          "");
+	I_Method3(void, computeCoordinateFrame, IN, double, latitude, IN, double, longitude, IN, osg::Matrixd &, localToWorld,
+	          Properties::NON_VIRTUAL,
+	          __void__computeCoordinateFrame__double__double__osg_Matrixd_R1,
+	          "",
+	          "");
 	I_Method3(osg::Vec3d, computeLocalUpVector, IN, double, X, IN, double, Y, IN, double, Z,
 	          Properties::NON_VIRTUAL,
 	          __osg_Vec3d__computeLocalUpVector__double__double__double,

@@ -77,25 +77,45 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	          __void__reset,
 	          "",
 	          "");
-	I_Method1(void, setDrawBuffer, IN, GLenum, buffer,
-	          Properties::NON_VIRTUAL,
-	          __void__setDrawBuffer__GLenum,
-	          "Set the draw buffer used at the start of each frame draw. ",
-	          "");
+	I_MethodWithDefaults2(void, setDrawBuffer, IN, GLenum, buffer, , IN, bool, applyMask, true,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setDrawBuffer__GLenum__bool,
+	                      "Set the draw buffer used at the start of each frame draw. ",
+	                      "");
 	I_Method0(GLenum, getDrawBuffer,
 	          Properties::NON_VIRTUAL,
 	          __GLenum__getDrawBuffer,
 	          "Get the draw buffer used at the start of each frame draw. ",
 	          "");
-	I_Method1(void, setReadBuffer, IN, GLenum, buffer,
+	I_Method0(bool, getDrawBufferApplyMask,
 	          Properties::NON_VIRTUAL,
-	          __void__setReadBuffer__GLenum,
-	          "Set the read buffer for any required copy operations to use. ",
+	          __bool__getDrawBufferApplyMask,
+	          "Get the apply mask defining whether glDrawBuffer is called at each frame draw. ",
 	          "");
+	I_Method1(void, setDrawBufferApplyMask, IN, bool, applyMask,
+	          Properties::NON_VIRTUAL,
+	          __void__setDrawBufferApplyMask__bool,
+	          "Set the apply mask defining whether glDrawBuffer is called at each frame draw. ",
+	          "");
+	I_MethodWithDefaults2(void, setReadBuffer, IN, GLenum, buffer, , IN, bool, applyMask, true,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setReadBuffer__GLenum__bool,
+	                      "Set the read buffer for any required copy operations to use. ",
+	                      "");
 	I_Method0(GLenum, getReadBuffer,
 	          Properties::NON_VIRTUAL,
 	          __GLenum__getReadBuffer,
 	          "Get the read buffer for any required copy operations to use. ",
+	          "");
+	I_Method0(bool, getReadBufferApplyMask,
+	          Properties::NON_VIRTUAL,
+	          __bool__getReadBufferApplyMask,
+	          "Get the apply mask defining whether glReadBuffer is called at each frame draw. ",
+	          "");
+	I_Method1(void, setReadBufferApplyMask, IN, bool, applyMask,
+	          Properties::NON_VIRTUAL,
+	          __void__setReadBufferApplyMask__bool,
+	          "Set the apply mask defining whether glReadBuffer is called at each frame draw. ",
 	          "");
 	I_Method1(void, setViewport, IN, osg::Viewport *, viewport,
 	          Properties::NON_VIRTUAL,
@@ -446,7 +466,10 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	                 __void__setDisableFboAfterRender__bool);
 	I_SimpleProperty(GLenum, DrawBuffer, 
 	                 __GLenum__getDrawBuffer, 
-	                 __void__setDrawBuffer__GLenum);
+	                 0);
+	I_SimpleProperty(bool, DrawBufferApplyMask, 
+	                 __bool__getDrawBufferApplyMask, 
+	                 __void__setDrawBufferApplyMask__bool);
 	I_SimpleProperty(osg::FrameBufferObject *, FrameBufferObject, 
 	                 __osg_FrameBufferObject_P1__getFrameBufferObject, 
 	                 __void__setFrameBufferObject__osg_FrameBufferObject_P1);
@@ -476,7 +499,10 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	                 __void__setPositionalStateContainer__PositionalStateContainer_P1);
 	I_SimpleProperty(GLenum, ReadBuffer, 
 	                 __GLenum__getReadBuffer, 
-	                 __void__setReadBuffer__GLenum);
+	                 0);
+	I_SimpleProperty(bool, ReadBufferApplyMask, 
+	                 __bool__getReadBufferApplyMask, 
+	                 __void__setReadBufferApplyMask__bool);
 	I_SimpleProperty(osg::Texture *, Texture, 
 	                 __osg_Texture_P1__getTexture, 
 	                 0);

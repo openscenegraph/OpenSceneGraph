@@ -41,6 +41,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::XmlNode)
 	I_Constructor0(____XmlNode,
 	               "",
 	               "");
+	I_Method0(std::string, getTrimmedContents,
+	          Properties::NON_VIRTUAL,
+	          __std_string__getTrimmedContents,
+	          "",
+	          "");
 	I_Method1(bool, read, IN, osgDB::XmlNode::Input &, input,
 	          Properties::NON_VIRTUAL,
 	          __bool__read__Input_R1,
@@ -56,6 +61,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::XmlNode)
 	          __bool__writeString__std_ostream_R1__C5_std_string_R1,
 	          "",
 	          "");
+	I_SimpleProperty(std::string, TrimmedContents, 
+	                 __std_string__getTrimmedContents, 
+	                 0);
 	I_PublicMemberProperty(osgDB::XmlNode::NodeType, type);
 	I_PublicMemberProperty(std::string, name);
 	I_PublicMemberProperty(std::string, contents);

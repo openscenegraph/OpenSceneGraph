@@ -25,6 +25,8 @@
 
 #include <osgUtil/RenderStage>
 
+#define FORCE_COLOR_ATTACHMENT  1
+#define FORCE_DEPTH_ATTACHMENT  1
 
 using namespace osg;
 using namespace osgUtil;
@@ -42,7 +44,10 @@ RenderStage::RenderStage():
     _stageDrawnThisFrame = false;
 
     _drawBuffer = GL_NONE;
+    _drawBufferApplyMask = false;
     _readBuffer = GL_NONE;
+    _readBufferApplyMask = false;
+
     _clearMask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
     _clearColor.set(0.0f,0.0f,0.0f,0.0f);
     _clearAccum.set(0.0f,0.0f,0.0f,0.0f);
@@ -69,7 +74,10 @@ RenderStage::RenderStage(SortMode mode):
     _stageDrawnThisFrame = false;
 
     _drawBuffer = GL_NONE;
+    _drawBufferApplyMask = false;
     _readBuffer = GL_NONE;
+    _readBufferApplyMask = false;
+
     _clearMask = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
     _clearColor.set(0.0f,0.0f,0.0f,0.0f);
     _clearAccum.set(0.0f,0.0f,0.0f,0.0f);
@@ -93,7 +101,9 @@ RenderStage::RenderStage(const RenderStage& rhs,const osg::CopyOp& copyop):
         _postRenderList(rhs._postRenderList),
         _viewport(rhs._viewport),
         _drawBuffer(rhs._drawBuffer),
+        _drawBufferApplyMask(rhs._drawBufferApplyMask),
         _readBuffer(rhs._readBuffer),
+        _readBufferApplyMask(rhs._readBufferApplyMask),
         _clearMask(rhs._clearMask),
         _colorMask(rhs._colorMask),
         _clearColor(rhs._clearColor),
@@ -225,6 +235,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
     osg::Camera::RenderTargetImplementation renderTargetFallback = _camera->getRenderTargetFallback();
 
     osg::Camera::BufferAttachmentMap& bufferAttachments = _camera->getBufferAttachmentMap();
+
 
     // compute the required dimensions
     int width = static_cast<int>(_viewport->x() + _viewport->width());
@@ -419,6 +430,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 
             }
 
+#if FORCE_DEPTH_ATTACHMENT
             if (!depthAttached)
             {                
                 fbo->setAttachment(osg::Camera::DEPTH_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_DEPTH_COMPONENT24)));
@@ -428,10 +440,13 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         osg::FrameBufferAttachment(new osg::RenderBuffer(width,
                         height, GL_DEPTH_COMPONENT24, samples, colorSamples)));
                 }
+                depthAttached = true;
             }
+#endif
 
+#if FORCE_COLOR_ATTACHMENT
             if (!colorAttached)
-            {                
+            {
                 fbo->setAttachment(osg::Camera::COLOR_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_RGB)));
                 if (fbo_multisample.valid())
                 {
@@ -439,12 +454,26 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         osg::FrameBufferAttachment(new osg::RenderBuffer(width,
                         height, GL_RGB, samples, colorSamples)));
                 }
+                colorAttached = true;
             }
+#endif
 
             fbo->apply(state);
-            
+
+            // If no color attachment make sure to set glDrawBuffer/glReadBuffer to none 
+            // otherwise glCheckFramebufferStatusEXT will fail
+            // It has to be done after call to glBindFramebuffer (fbo->apply) 
+            // and before call to glCheckFramebufferStatus
+            if ( !colorAttached )
+            {
+               setDrawBuffer( GL_NONE, true );
+               glDrawBuffer( GL_NONE );
+               setReadBuffer( GL_NONE, true );
+               glReadBuffer( GL_NONE );
+            }
+
             GLenum status = fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
-            
+
             if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
             {
                 osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp(), FBO setup failed, FBO status= 0x"<<std::hex<<status<<std::dec<<std::endl;
@@ -463,8 +492,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             }
             else
             {
-                setDrawBuffer(GL_NONE);
-                setReadBuffer(GL_NONE);
+                setDrawBuffer(GL_NONE, false );
+                setReadBuffer(GL_NONE, false );
        
                 _fbo = fbo;
 
@@ -730,7 +759,7 @@ void RenderStage::copyTexture(osg::RenderInfo& renderInfo)
 {
     osg::State& state = *renderInfo.getState();
 
-    if (_readBuffer != GL_NONE)
+    if ( _readBufferApplyMask )
     {
         glReadBuffer(_readBuffer);
     }
@@ -831,15 +860,11 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     
     if (!using_multiple_render_targets)
     {
-        if (_drawBuffer != GL_NONE)
-        {    
+        if( getDrawBufferApplyMask() ) 
             glDrawBuffer(_drawBuffer);
-        }
 
-        if (_readBuffer != GL_NONE)
-        {
+        if( getReadBufferApplyMask() ) 
             glReadBuffer(_readBuffer);
-        }
     }
 
     if (fbo_supported)

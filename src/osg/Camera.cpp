@@ -386,11 +386,18 @@ void Camera::inheritCullSettings(const CullSettings& settings, unsigned int inhe
 {
     CullSettings::inheritCullSettings(settings, inheritanceMask);
 
-    if (inheritanceMask & CLEAR_COLOR)
+    const Camera* camera = dynamic_cast<const Camera*>(&settings);
+    if (camera)
     {
         //osg::notify(osg::NOTICE)<<"Inheriting slave Camera"<<std::endl;
-        const Camera* camera = dynamic_cast<const Camera*>(&settings);
-        _clearColor = camera->_clearColor;
+        if (inheritanceMask & CLEAR_COLOR)
+            _clearColor = camera->_clearColor;
+
+        if (inheritanceMask & DRAW_BUFFER)
+            _drawBuffer = camera->_drawBuffer;
+
+        if (inheritanceMask & READ_BUFFER)
+            _drawBuffer = camera->_readBuffer;
     }
 }
 

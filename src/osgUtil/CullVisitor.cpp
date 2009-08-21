@@ -1262,26 +1262,25 @@ void CullVisitor::apply(osg::Camera& camera)
 
             rtts->setCamera(&camera);
 
-            if (camera.getDrawBuffer() != GL_NONE)
+            if ( camera.getInheritanceMask() & DRAW_BUFFER )
+            {
+                // inherit draw buffer from above.
+                rtts->setDrawBuffer(previous_stage->getDrawBuffer(),previous_stage->getDrawBufferApplyMask());
+            }
+            else
             {
                 rtts->setDrawBuffer(camera.getDrawBuffer());
             }
-            else
+            
+            if ( camera.getInheritanceMask() & READ_BUFFER )
             {
-                // inherit draw buffer from above.
-                rtts->setDrawBuffer(previous_stage->getDrawBuffer());
+                // inherit read buffer from above.
+                rtts->setReadBuffer(previous_stage->getReadBuffer(), previous_stage->getReadBufferApplyMask());
             }
-
-            if (camera.getReadBuffer() != GL_NONE)
+            else
             {
                 rtts->setReadBuffer(camera.getReadBuffer());
             }
-            else
-            {
-                // inherit read buffer from above.
-                rtts->setReadBuffer(previous_stage->getReadBuffer());
-            }
-
         }
         else
         {
@@ -1305,6 +1304,7 @@ void CullVisitor::apply(osg::Camera& camera)
         {
             rtts->setClearColor(camera.getClearColor());
         }
+
         
         // set the color mask.
         osg::ColorMask* colorMask = camera.getColorMask()!=0 ? camera.getColorMask() : previous_stage->getColorMask();

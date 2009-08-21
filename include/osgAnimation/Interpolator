@@ -85,7 +85,7 @@ namespace osgAnimation
             }
 
             int i = getKeyIndexFromTime(keyframes,time);
-            return keyframes[i].getValue();
+            result = keyframes[i].getValue();
         }
     };
 

@@ -361,6 +361,16 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::WindowManager)
 	          __bool__keyUp__int__int,
 	          "",
 	          "");
+	I_Method0(osgViewer::View *, getView,
+	          Properties::NON_VIRTUAL,
+	          __osgViewer_View_P1__getView,
+	          "",
+	          "");
+	I_Method0(const osgViewer::View *, getView,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgViewer_View_P1__getView,
+	          "",
+	          "");
 	I_StaticMethod2(void, setEventFromInterface, IN, osgWidget::Event &, x, IN, osgWidget::EventInterface *, x,
 	                __void__setEventFromInterface__Event_R1__EventInterface_P1_S,
 	                "",
@@ -404,6 +414,9 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::WindowManager)
 	I_SimpleProperty(osgWidget::StyleManager *, StyleManager, 
 	                 __StyleManager_P1__getStyleManager, 
 	                 __void__setStyleManager__StyleManager_P1);
+	I_SimpleProperty(osgViewer::View *, View, 
+	                 __osgViewer_View_P1__getView, 
+	                 0);
 	I_SimpleProperty(osgWidget::point_type, Width, 
 	                 __point_type__getWidth, 
 	                 __void__setWidth__point_type);

@@ -294,14 +294,14 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Set the draw buffer used at the start of each frame draw.
           * Note, a buffer value of GL_NONE is used to sepecify that the rendering back-end should choose the most appropriate buffer.*/
-        void setDrawBuffer(GLenum buffer) { _drawBuffer = buffer; }
+        void setDrawBuffer(GLenum buffer) { _drawBuffer = buffer; applyMaskAction( DRAW_BUFFER ); }
 
         /** Get the draw buffer used at the start of each frame draw. */
         GLenum getDrawBuffer() const { return _drawBuffer; }
 
         /** Set the read buffer for any required copy operations to use.
           * Note, a buffer value of GL_NONE is used to sepecify that the rendering back-end should choose the most appropriate buffer.*/
-        void setReadBuffer(GLenum buffer) { _readBuffer = buffer; }
+        void setReadBuffer(GLenum buffer) { _readBuffer = buffer; applyMaskAction( READ_BUFFER ); }
 
         /** Get the read buffer for any required copy operations to use. */
         GLenum getReadBuffer() const { return _readBuffer; }

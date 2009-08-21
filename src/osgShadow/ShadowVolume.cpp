@@ -273,8 +273,8 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
         new_rs->setViewport(orig_rs->getViewport());
         new_rs->setClearColor(orig_rs->getClearColor());
         new_rs->setClearMask(GL_STENCIL_BUFFER_BIT);
-        new_rs->setDrawBuffer(orig_rs->getDrawBuffer());
-        new_rs->setReadBuffer(orig_rs->getReadBuffer());
+        new_rs->setDrawBuffer(orig_rs->getDrawBuffer(), orig_rs->getDrawBufferApplyMask());
+        new_rs->setReadBuffer(orig_rs->getReadBuffer(), orig_rs->getReadBufferApplyMask());
         new_rs->setColorMask(orig_rs->getColorMask());
         
         osg::Vec4 lightpos;

@@ -279,6 +279,9 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
         // can be compared to osgGA::GUIEventAdapter::{KeySymbol,KeyModMask}.
         bool keyDown (int, int);
         bool keyUp   (int, int);
+        
+        osgViewer::View* getView() { return _view; }
+        const osgViewer::View* getView() const { return _view; }
 
     private:
         // A functor used to sort the Windows by their Z component in descending order.

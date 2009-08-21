@@ -868,7 +868,9 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
     {
         osg::notify(osg::INFO)<<"Have animation path for image"<<std::endl;
 
-        osg::Vec3 pivot = positionData.absolute_path ? osg::Vec3(0.0f,0.0f,0.0f) : subgraph->getBound().center();
+        osg::BoundingSphere::vec_type pivot = positionData.absolute_path ?
+                osg::BoundingSphere::vec_type(0.0f,0.0f,0.0f) :
+                subgraph->getBound().center();
 
         osg::PositionAttitudeTransform* animation_transform = new osg::PositionAttitudeTransform;
         animation_transform->setDataVariance(osg::Object::DYNAMIC);
@@ -1029,7 +1031,9 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     {
         osg::notify(osg::INFO)<<"Have animation path for image"<<std::endl;
         
-        osg::Vec3 pivot = positionData.absolute_path ? osg::Vec3(0.0f,0.0f,0.0f) : subgraph->getBound().center();
+        osg::BoundingSphere::vec_type pivot = positionData.absolute_path ?
+                osg::BoundingSphere::vec_type(0.0f,0.0f,0.0f) :
+                subgraph->getBound().center();
         
         osg::PositionAttitudeTransform* animation_transform = new osg::PositionAttitudeTransform;
         animation_transform->setDataVariance(osg::Object::DYNAMIC);
@@ -1167,7 +1171,9 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
     {
         osg::notify(osg::INFO)<<"Have animation path for image"<<std::endl;
         
-        osg::Vec3 pivot = positionData.absolute_path ? osg::Vec3(0.0f,0.0f,0.0f) : subgraph->getBound().center();
+        osg::BoundingSphere::vec_type pivot = positionData.absolute_path ?
+                osg::BoundingSphere::vec_type(0.0f,0.0f,0.0f) :
+                subgraph->getBound().center();
         
         osg::PositionAttitudeTransform* animation_transform = new osg::PositionAttitudeTransform;
         animation_transform->setDataVariance(osg::Object::DYNAMIC);
@@ -1351,7 +1357,9 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
     {
         osg::notify(osg::INFO)<<"Have animation path for model"<<std::endl;
 
-        osg::Vec3 pivot = positionData.absolute_path ? osg::Vec3(0.0f,0.0f,0.0f) : subgraph->getBound().center();
+        osg::BoundingSphere::vec_type pivot = positionData.absolute_path ?
+            osg::BoundingSphere::vec_type(0.0f,0.0f,0.0f) :
+            subgraph->getBound().center();
 
         osg::AnimationPath* path = animation->getAnimationPath();
         if (positionData.animation_name=="wheel" && (path->getTimeControlPointMap()).size()>=2)

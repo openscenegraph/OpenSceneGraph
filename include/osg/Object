@@ -99,7 +99,11 @@ class OSG_EXPORT Object : public Referenced
         inline void setName( const std::string& name ) { _name = name; }
 
         /** Set the name of object using a C style string.*/
-        inline void setName( const char* name ) { _name = name; }
+        inline void setName( const char* name )
+        {
+            if (name) _name = name;
+            else _name.clear();
+        }
 
         /** Get the name of object.*/
         inline const std::string& getName() const { return _name; }

@@ -34,7 +34,8 @@ namespace osgAnimation
         AnimationManagerBase(const AnimationManagerBase& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY);
         virtual ~AnimationManagerBase();
         virtual void buildTargetReference();
-        virtual void registerAnimation (Animation* animation);
+        virtual void registerAnimation (Animation*);
+        virtual void unregisterAnimation (Animation*);
         virtual void link(osg::Node* subgraph);
         virtual void update(double t) = 0;
         virtual bool needToLink() const;

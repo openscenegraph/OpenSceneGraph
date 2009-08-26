@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -29,6 +29,7 @@ namespace osgAnimation
     class AnimationUpdateCallbackBase
     {
     public:
+        virtual osg::Object* clone(const osg::CopyOp& copyop) const = 0;
         virtual AnimationManagerBase* getAnimationManager() = 0;
         virtual bool needLink() const = 0;
         virtual bool link(osgAnimation::Channel* channel) = 0;
@@ -119,6 +120,10 @@ namespace osgAnimation
         void update(osg::PositionAttitudeTransform& pat);
         bool needLink() const;
         bool link(osgAnimation::Channel* channel);
+
+        osgAnimation::Vec3Target* getEuler() {return _euler.get();}
+        osgAnimation::Vec3Target* getPosition() {return _position.get();}
+        osgAnimation::Vec3Target* getScale() {return _scale.get();}
     };
 
 

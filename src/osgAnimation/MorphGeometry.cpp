@@ -202,7 +202,9 @@ void MorphGeometry::transformSoftwareMethod()
     }
 }
 
-UpdateMorph::UpdateMorph(const UpdateMorph& apc,const osg::CopyOp& copyop) : AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
+UpdateMorph::UpdateMorph(const UpdateMorph& apc,const osg::CopyOp& copyop) : 
+    osg::Object(apc, copyop),
+    AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
 {
 }
 
@@ -271,7 +273,7 @@ bool UpdateMorph::link(osgAnimation::Channel* channel)
   }
     else
   {
-      std::cerr << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << std::endl;
+      osg::notify(osg::WARN) << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << std::endl;
   }
   return false;
 }

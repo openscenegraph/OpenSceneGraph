@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -18,5 +18,5 @@
 
 using namespace osgAnimation;
 
-Target::Target() { reset();}
+Target::Target() : _weight(0), _priorityWeight(0), _lastPriority(0) {}
 Target::~Target() {}

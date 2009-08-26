@@ -37,7 +37,7 @@ namespace osgAnimation
         virtual ~Channel();
         virtual Channel* clone() const = 0;
 
-        virtual void update(float time) = 0;
+        virtual void update(float time, float weight, int priority) = 0;
         virtual void reset() = 0;
         virtual Target* getTarget() = 0;
         virtual bool setTarget(Target*) = 0;
@@ -51,9 +51,6 @@ namespace osgAnimation
         const std::string& getTargetName() const;
         void setTargetName(const std::string& name);
 
-        float getWeight() const;
-        void setWeight(float w);
-
         virtual Sampler* getSampler() = 0;
         virtual const Sampler* getSampler() const = 0;
 
@@ -61,7 +58,6 @@ namespace osgAnimation
     
         std::string _targetName;
         std::string _name;
-        float _weight;
     };
 
 
@@ -92,14 +88,14 @@ namespace osgAnimation
         }
 
         virtual ~TemplateChannel() {}
-        virtual void update(float time) 
+        virtual void update(float time, float weight, int priority) 
         {
             // skip if weight == 0
-            if (_weight < 1e-4)
+            if (weight < 1e-4)
                 return;
             typename SamplerType::UsingType value;
             _sampler->getValueAt(time, value);
-            _target->update(_weight, value);
+            _target->update(weight, value, priority);
         }
         virtual void reset() { _target->reset(); }
         virtual Target* getTarget() { return _target.get();}

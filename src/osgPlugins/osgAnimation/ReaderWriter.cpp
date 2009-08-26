@@ -146,6 +146,7 @@ bool Animation_readChannel(osgAnimation::Channel* pChannel, Input& fr)
     }
     pChannel->setTargetName(target);
 
+// we dont need this info
     float weight = 1.0;
     if (fr.matchSequence("weight %f")) 
     {
@@ -153,7 +154,7 @@ bool Animation_readChannel(osgAnimation::Channel* pChannel, Input& fr)
         fr += 2;
         iteratorAdvanced = true;
     }
-    pChannel->setWeight(weight);
+//    pChannel->setWeight(weight);
     return iteratorAdvanced;
 }
 
@@ -546,7 +547,7 @@ void Animation_writeChannel(const std::string& channelString, ChannelType* pChan
     fw.indent() << "name \"" << pChannel->getName() << "\"" << std::endl;
     fw.indent() << "target \"" << pChannel->getTargetName() << "\"" << std::endl;
 
-    fw.indent() << "weight " << pChannel->getWeight() << std::endl;
+//    fw.indent() << "weight " << pChannel->getWeight() << std::endl;
 
     ContainerType* kfc  = pChannel->getSamplerTyped()->getKeyframeContainerTyped();
     if (kfc)

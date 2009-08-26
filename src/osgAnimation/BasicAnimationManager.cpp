@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -90,10 +90,11 @@ void BasicAnimationManager::update (double time)
     {
         // update all animation
         std::vector<int> toremove;
+        int priority = iterAnim->first;
         AnimationList& list = iterAnim->second;
         for (unsigned int i = 0; i < list.size(); i++)
         {
-            if (! list[i]->update(time)) 
+            if (! list[i]->update(time, priority)) 
             {
                 // debug
                 // std::cout << list[i]->getName() << " finished at " << time << std::endl;

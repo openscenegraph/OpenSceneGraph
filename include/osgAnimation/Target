@@ -36,13 +36,13 @@ namespace osgAnimation
         Target();
         virtual ~Target();
         virtual void normalize() = 0;
-        float getWeight() const { return _weight; }
-        void reset() { _weight = 0;}
+        void reset() { _weight = 0; _priorityWeight = 0; }
         int getCount() const { return referenceCount(); }
+        float getWeight() const { return _weight; }
     protected:
-
-        void addWeight(float w) { _weight += w; }
         float _weight;
+        float _priorityWeight;
+        int _lastPriority;
     };
 
 
@@ -54,72 +54,87 @@ namespace osgAnimation
         TemplateTarget() {}
         TemplateTarget(const T& v) { setValue(v); }
 
-        void update(float weight, const T& val)
+        inline void lerp(float t, const T& a, const T& b);
+
+        /**
+         *  The priority is used to detect a change of priority
+         *  It's important to update animation target in priority
+         *  order. eg:
+         *  all animation with priority 1
+         *  all animation with priority 0
+         *  all animation with priority -1
+         *  ...
+         */
+        void update(float weight, const T& val, int priority)
         {
-            if (!_weight)
-                _target = val * weight;
+            if (_weight || _priorityWeight)
+            {
+                if (_lastPriority != priority)
+                {
+                    // change in priority
+                    // add to weight with the same previous priority cumulated weight
+                    _weight += _priorityWeight * (1.0 - _weight);
+                    _priorityWeight = 0;
+                    _lastPriority = priority;
+                }
+
+                _priorityWeight += weight;
+                float t = (1.0 - _weight) * weight / _priorityWeight;
+                lerp(t, _target, val);
+            }
             else
             {
-                weight = (1.0 - _weight) * weight;
-                _target += val * weight;
+                _priorityWeight = weight;
+                _lastPriority = priority;
+                _target = val;
             }
-            addWeight(weight);
         }
-        const T& getValue() const { return _target;}
+        const T& getValue() const { return _target; }
 
-        void normalize()
-        {
-            float weightSummed = getWeight();
-            if (fabs(weightSummed) < 1e-4 || fabs(weightSummed-1) < 1e-4)
-                return;
-            (_target) /= weightSummed;
-        }
+        inline void normalize();
 
-        void setValue(const T& value) { _target = value;}
+        void setValue(const T& value) { _target = value; }
 
     protected:
 
         T _target;
     };
 
-
-    // Target Specialisation for Quaternions
-    template <>
-    class TemplateTarget< osg::Quat > : public Target
+    template <class T>
+    inline void TemplateTarget<T>::normalize()
     {
-    public:
-            
-        TemplateTarget () {}
-        TemplateTarget (const osg::Quat& q) { setValue(q); }
+        _weight += _priorityWeight * (1.0f - _weight);
+        if (_weight < 0.9999f )
+            if (_weight > 0.0001f)
+                _target /= _weight; // rescale by default
+    }
 
-        const osg::Quat& getValue() const { return _target;}
-        void update(float weight, const osg::Quat& val) 
-        { 
-            if (!_weight)
-                _target = val * weight;
-            else
+    template <class T>
+    inline void TemplateTarget<T>::lerp(float t, const T& a, const T& b)
+    {
+        _target = a * (1.0f - t) + b * t;
+    }
+
+    template <>
+    inline void TemplateTarget<osg::Quat>::lerp(float t, const osg::Quat& a, const osg::Quat& b)
+    {
+        _target = a * (1.0f - t) + b * t;
+        osg::Quat::value_type len2 = _target.length2();
+        if ( len2 != 1.0 && len2 != 0.0) 
+            _target *= 1.0/sqrt(len2);
+    }
+    template <>
+    inline void TemplateTarget<osg::Quat>::normalize()
+    {
+        _weight += _priorityWeight * (1.0f - _weight);
+        if (_weight < 0.9999f )
+            if (_weight > 0.0001f)
             {
-                weight = (1.0 - _weight) * weight;
-                _target += val * weight;
+                osg::Quat::value_type len2 = _target.length2(); // normalize
+                if ( len2 != 1.0 && len2 != 0.0)
+                    _target *= 1.0/sqrt(len2);
             }
-            addWeight(weight);
-        }
-
-        // maybe normalize could be non virtual and put on ITarget
-        void normalize() 
-        {
-            float weightSummed = getWeight();
-            if (fabs(weightSummed) < 1e-4 || fabs(weightSummed-1.0) < 1e-4)
-                return;
-            (_target) /= weightSummed;
-        }
-
-        void setValue(const osg::Quat& value) { _target = value;}
- 
-    protected:
-
-        osg::Quat _target;
-    };
+    }
   
     typedef TemplateTarget<osg::Quat> QuatTarget;
     typedef TemplateTarget<osg::Vec3> Vec3Target;

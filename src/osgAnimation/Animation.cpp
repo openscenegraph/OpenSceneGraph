@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -95,7 +95,7 @@ void Animation::setWeight (float weight)
     _weight = weight;
 }
 
-bool Animation::update (float time)
+bool Animation::update (float time, int priority)
 {
     if (!_duration) // if not initialized then do it
         computeDuration();
@@ -138,8 +138,7 @@ bool Animation::update (float time)
     ChannelList::const_iterator chan;
     for( chan=_channels.begin(); chan!=_channels.end(); ++chan)
     {
-        (*chan)->setWeight(_weight);
-        (*chan)->update(t);
+        (*chan)->update(t, _weight, priority);
     }
     return true;
 }

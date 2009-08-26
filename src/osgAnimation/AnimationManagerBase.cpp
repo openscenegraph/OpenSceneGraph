@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -14,6 +14,7 @@
 
 #include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/LinkVisitor>
+#include <algorithm>
 
 using namespace osgAnimation;
 
@@ -89,6 +90,16 @@ void AnimationManagerBase::registerAnimation (Animation* animation)
 {
     _needToLink = true;
     _animations.push_back(animation);
+    buildTargetReference();
+}
+
+void AnimationManagerBase::unregisterAnimation (Animation* animation)
+{
+    AnimationList::iterator it = std::find(_animations.begin(), _animations.end(), animation);
+    if (it != _animations.end())
+    {
+        _animations.erase(it);
+    }
     buildTargetReference();
 }
 

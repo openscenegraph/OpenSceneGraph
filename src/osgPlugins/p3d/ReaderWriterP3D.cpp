@@ -160,6 +160,7 @@ public:
     inline bool read(const char* str, int& value) const;
     inline bool read(const char* str, float& value) const;
     inline bool read(const char* str, double& value) const;
+    inline bool read(const char* str, int numberValues, float* values) const;
     inline bool read(const char* str, osg::Vec2& value) const;
     inline bool read(const char* str, osg::Vec3& value) const;
     inline bool read(const char* str, osg::Vec4& value) const;
@@ -167,6 +168,7 @@ public:
     inline bool read(const std::string& str, int& value) const;
     inline bool read(const std::string& str, float& value) const;
     inline bool read(const std::string& str, double& value) const;
+    inline bool read(const std::string& str, int numberValues, float* values) const;
     inline bool read(const std::string& str, osg::Vec2& value) const;
     inline bool read(const std::string& str, osg::Vec3& value) const;
     inline bool read(const std::string& str, osg::Vec4& value) const;
@@ -175,6 +177,7 @@ public:
     bool getProperty(osgDB::XmlNode*cur, const char* token, int& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, float& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, double& value) const;
+    bool getProperty(osgDB::XmlNode*cur, const char* token, int numberValues, float* values) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, osg::Vec2& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, osg::Vec3& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, osg::Vec4& value) const;
@@ -268,6 +271,18 @@ bool ReaderWriterP3DXML::read(const char* str, double& value) const
     return !iss.fail();
 }
 
+bool ReaderWriterP3DXML::read(const char* str, int numberValues, float* values) const
+{
+    if (!str) return false;
+    std::istringstream iss((const char*)str);
+    for(int i=0; i<numberValues && !iss.fail(); i++)
+    {
+        iss >> *values;
+        ++values;
+    }
+    return !iss.fail();
+}
+
 bool ReaderWriterP3DXML::read(const char* str, osg::Vec2& value) const
 {
     if (!str) return false;
@@ -310,6 +325,18 @@ bool ReaderWriterP3DXML::read(const std::string& str, double& value) const
 {
     std::istringstream iss(str);
     iss >> value;
+    return !iss.fail();
+}
+
+
+bool ReaderWriterP3DXML::read(const std::string& str, int numberValues, float* values) const
+{
+    std::istringstream iss(str);
+    for(int i=0; i<numberValues && !iss.fail(); i++)
+    {
+        iss >> *values;
+        ++values;
+    }
     return !iss.fail();
 }
 
@@ -358,6 +385,13 @@ bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode*cur, const char* token, doub
     osgDB::XmlNode::Properties::iterator itr = cur->properties.find(token);
     if (itr==cur->properties.end()) return false;
     return read(itr->second,value);
+}
+
+bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode*cur, const char* token, int numberValues, float* values) const
+{
+    osgDB::XmlNode::Properties::iterator itr = cur->properties.find(token);
+    if (itr==cur->properties.end()) return false;
+    return read(itr->second, numberValues, values);
 }
 
 bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode*cur, const char* token, osg::Vec2& value) const
@@ -895,6 +929,11 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
         else if (technique=="isosurface" || technique=="iso" ) volumeData.shadingModel =  osgPresentation::SlideShowConstructor::VolumeData::Isosurface;
         else if (technique=="light") volumeData.shadingModel =  osgPresentation::SlideShowConstructor::VolumeData::Light;
     }
+
+    if (getProperty(cur, "alpha", volumeData.alphaValue)) {}
+    if (getProperty(cur, "cutoff", volumeData.cutoffValue)) {}
+    if (getProperty(cur, "region", 6, volumeData.region)) {}
+    if (getProperty(cur, "sampleDensity", volumeData.sampleDensityValue)) {}
 
     // check for any transfer function required
     std::string transferFunctionFile;

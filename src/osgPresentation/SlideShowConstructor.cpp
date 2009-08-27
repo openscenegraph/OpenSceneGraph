@@ -1549,19 +1549,19 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     if (matrix)
     {
         layer->setLocator(new osgVolume::Locator(*matrix));
-        tile->setLocator(new osgVolume::Locator(*matrix));
+        osg::Matrix tm = osg::Matrix::scale(volumeData.region[3]-volumeData.region[0], volumeData.region[4]-volumeData.region[1], volumeData.region[5]-volumeData.region[2]) *
+                         osg::Matrix::translate(volumeData.region[0],volumeData.region[1],volumeData.region[2]);
+        tile->setLocator(new osgVolume::Locator(tm * (*matrix)));
     }
 
     tile->setLayer(layer.get());
 
-    float alphaFunc = 0.1;
-
     osgVolume::SwitchProperty* sp = new osgVolume::SwitchProperty;
     sp->setActiveProperty(0);
 
-    osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
-    osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
-    osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0);
+    osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(volumeData.cutoffValue);
+    osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(volumeData.alphaValue);
+    osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(volumeData.sampleDensityValue);
     osgVolume::TransferFunctionProperty* tfp = volumeData.transferFunction.valid() ? new osgVolume::TransferFunctionProperty(volumeData.transferFunction.get()) : 0;
 
     {
@@ -1592,7 +1592,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
         cp->addProperty(sd);
         cp->addProperty(tp);
-        cp->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
+        cp->addProperty(new osgVolume::IsoSurfaceProperty(volumeData.cutoffValue));
         if (tfp) cp->addProperty(tfp);
 
         sp->addProperty(cp);

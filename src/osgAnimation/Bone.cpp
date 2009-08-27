@@ -16,6 +16,46 @@
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
 
+
+struct FindNearestParentAnimationManager : public osg::NodeVisitor
+{
+    osg::ref_ptr<osgAnimation::AnimationManagerBase> _manager;
+    FindNearestParentAnimationManager() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
+    void apply(osg::Node& node)
+    {
+        if (_manager.valid())
+            return;
+        osg::NodeCallback* callback = node.getUpdateCallback();
+        while (callback) 
+        {
+            _manager = dynamic_cast<osgAnimation::AnimationManagerBase*>(callback);
+            if (_manager.valid())
+                return;
+            callback = callback->getNestedCallback();
+        }
+        traverse(node);
+    }
+};
+
+
+struct ComputeBindMatrixVisitor : public osg::NodeVisitor
+{
+    ComputeBindMatrixVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+    void apply(osg::Node& node) { return; }
+    void apply(osg::Transform& node) 
+    {
+        osgAnimation::Bone* bone = dynamic_cast<osgAnimation::Bone*>(&node);
+        if (!bone)
+            return;
+        if (bone->needToComputeBindMatrix())
+            bone->computeBindMatrix();
+
+        traverse(node);
+    }
+};
+
+
+
 osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone& apc,const osg::CopyOp& copyop) :
     osg::Object(apc, copyop),
     osgAnimation::AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
@@ -23,6 +63,83 @@ osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone&
     _quaternion = new osgAnimation::QuatTarget(apc._quaternion->getValue());
     _position = new osgAnimation::Vec3Target(apc._position->getValue());
     _scale = new osgAnimation::Vec3Target(apc._scale->getValue());
+}
+
+bool osgAnimation::Bone::UpdateBone::link(osgAnimation::Channel* channel)
+{
+    if (channel->getName().find("quaternion") != std::string::npos)
+    {
+        return channel->setTarget(_quaternion.get());
+    }
+    else if (channel->getName().find("position") != std::string::npos)
+    {
+        return channel->setTarget(_position.get());
+    }
+    else if (channel->getName().find("scale") != std::string::npos)
+    {
+        return channel->setTarget(_scale.get());
+    }
+    else 
+    {
+        osg::notify(osg::WARN) << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << className() << std::endl;
+    }
+    return false;
+}
+
+
+/** Callback method called by the NodeVisitor when visiting a node.*/
+void osgAnimation::Bone::UpdateBone::operator()(osg::Node* node, osg::NodeVisitor* nv)
+{
+    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
+    {
+        Bone* b = dynamic_cast<Bone*>(node);
+        if (!b)
+        {
+            osg::notify(osg::WARN) << "Warning: UpdateBone set on non-Bone object." << std::endl;
+            return;
+        }
+
+        if (b->needToComputeBindMatrix())
+        {
+            ComputeBindMatrixVisitor visitor;
+            b->accept(visitor);
+        }
+
+        if (!_manager.valid())
+        {
+            FindNearestParentAnimationManager finder;
+
+            if (b->getParents().size() > 1)
+            {
+                osg::notify(osg::WARN) << "A Bone should not have multi parent ( " << b->getName() << " ) has parents ";
+                osg::notify(osg::WARN) << "( " << b->getParents()[0]->getName();
+                for (int i = 1; i < (int)b->getParents().size(); i++)
+                    osg::notify(osg::WARN) << ", " << b->getParents()[i]->getName();
+                osg::notify(osg::WARN) << ")" << std::endl;
+                return;
+            }
+            b->getParents()[0]->accept(finder);
+
+            if (!finder._manager.valid())
+            {
+                osg::notify(osg::WARN) << "Warning can't update Bone, path to parent AnimationManagerBase not found" << std::endl;
+                return;
+            }
+
+            _manager = finder._manager.get();
+        }
+
+        updateLink();
+        update(*b);
+
+        Bone* parent = b->getBoneParent();
+        if (parent)
+            b->setMatrixInSkeletonSpace(b->getMatrixInBoneSpace() * parent->getMatrixInSkeletonSpace());
+        else
+            b->setMatrixInSkeletonSpace(b->getMatrixInBoneSpace());
+
+    }
+    traverse(node,nv);
 }
 
 

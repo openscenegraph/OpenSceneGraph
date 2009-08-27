@@ -27,12 +27,16 @@ namespace osgAnimation
     public:
         META_Node(osgAnimation, Skeleton);
 
-        struct OSGANIMATION_EXPORT UpdateSkeleton : public osg::NodeCallback
+        class OSGANIMATION_EXPORT UpdateSkeleton : public osg::NodeCallback
         {
+        public:
             META_Object(osgAnimation, UpdateSkeleton);
-            UpdateSkeleton() {}
+            UpdateSkeleton() : _needValidate(true) {}
             UpdateSkeleton(const UpdateSkeleton& us, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : osg::Object(us, copyop), osg::NodeCallback(us, copyop) {}
             virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
+
+        protected:
+            bool _needValidate;
         };
 
         Skeleton(const Skeleton& b, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : Bone(b,copyop) {}

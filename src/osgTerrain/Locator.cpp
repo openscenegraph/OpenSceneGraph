@@ -85,7 +85,14 @@ bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::V
     if (corners.empty()) return false;
 
 
-    for(Corners::iterator itr = corners.begin();
+    Corners::iterator itr = corners.begin();
+
+    bottomLeft.x() = topRight.x() = itr->x();
+    bottomLeft.y() = topRight.y() = itr->y();
+
+    ++itr;
+
+    for(;
         itr != corners.end();
         ++itr)
     {

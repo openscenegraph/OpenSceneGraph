@@ -12,6 +12,8 @@
 */
 
 #include <osgVolume/Locator>
+#include <osg/io_utils>
+#include <osg/Notify>
 
 #include <list>
 
@@ -107,6 +109,8 @@ bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::V
 
 bool Locator::computeLocalBounds(osg::Vec3d& bottomLeft, osg::Vec3d& topRight) const
 {
+    osg::notify(osg::NOTICE)<<"Locator::computeLocalBounds"<<std::endl;
+
     typedef std::list<osg::Vec3d> Corners;
     Corners corners;
 
@@ -153,7 +157,15 @@ bool Locator::computeLocalBounds(osg::Vec3d& bottomLeft, osg::Vec3d& topRight) c
 
     if (corners.empty()) return false;
 
-    for(Corners::iterator itr = corners.begin();
+    Corners::iterator itr = corners.begin();
+
+    bottomLeft.x() = topRight.x() = itr->x();
+    bottomLeft.y() = topRight.y() = itr->y();
+    bottomLeft.z() = topRight.z() = itr->z();
+
+    ++itr;
+
+    for(;
         itr != corners.end();
         ++itr)
     {

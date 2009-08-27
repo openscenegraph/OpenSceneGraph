@@ -42,7 +42,7 @@ namespace osgAnimation
 {
 
     // A bone can't have more than one parent Bone, so sharing a part of Bone's hierarchy
-    // has not sense. You can share the entire hierarchie but not only a part of
+    // makes no sense. You can share the entire hierarchy but not only a part of it.
     class OSGANIMATION_EXPORT Bone : public osg::Transform
     {
     public:
@@ -75,27 +75,6 @@ namespace osgAnimation
             }
         };
 
-        struct FindNearestParentAnimationManager : public osg::NodeVisitor
-        {
-            osg::ref_ptr<osgAnimation::AnimationManagerBase> _manager;
-            FindNearestParentAnimationManager() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
-            void apply(osg::Node& node)
-            {
-                if (_manager.valid())
-                    return;
-                osg::NodeCallback* callback = node.getUpdateCallback();
-                while (callback) 
-                {
-                    _manager = dynamic_cast<osgAnimation::AnimationManagerBase*>(callback);
-                    if (_manager.valid())
-                        return;
-                    callback = callback->getNestedCallback();
-                }
-                traverse(node);
-            }
-        };
-
-
         class OSGANIMATION_EXPORT UpdateBone : public AnimationUpdateCallback <osg::NodeCallback>
         {
         protected:
@@ -123,68 +102,21 @@ namespace osgAnimation
                 bone.dirtyBound();
             }
 
+            osgAnimation::QuatTarget* getQuaternion() {return _quaternion.get();}
+            osgAnimation::Vec3Target* getPosition() {return _position.get();}
+            osgAnimation::Vec3Target* getScale() {return _scale.get();}
+
             bool needLink() const
             {
                 // the idea is to return true if nothing is linked
                 return !((_position->getCount() + _quaternion->getCount() + _scale->getCount()) > 3);
             }
 
-            bool link(osgAnimation::Channel* channel)
-            {
-                if (channel->getName().find("quaternion") != std::string::npos)
-                {
-                    return channel->setTarget(_quaternion.get());
-                }
-                else if (channel->getName().find("position") != std::string::npos)
-                {
-                    return channel->setTarget(_position.get());
-                }
-                else if (channel->getName().find("scale") != std::string::npos)
-                {
-                    return channel->setTarget(_scale.get());
-                }
-                else 
-                {
-                    osg::notify(osg::WARN) << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << className() << std::endl;
-                }
-                return false;
-            }
+            /** Link channel*/
+            bool link(osgAnimation::Channel* channel);
 
             /** Callback method called by the NodeVisitor when visiting a node.*/
-            virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
-            {
-                if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
-                {
-                    Bone* b = dynamic_cast<Bone*>(node);
-                    if (b && !_manager.valid()) 
-                    {
-                        FindNearestParentAnimationManager finder;
-
-                        if (b->getParents().size() > 1) 
-                        {
-                            osg::notify(osg::WARN) << "A Bone should not have multi parent ( " << b->getName() << " ) has parents ";
-                            osg::notify(osg::WARN) << "( " << b->getParents()[0]->getName();
-                            for (int i = 1; i < (int)b->getParents().size(); i++)
-                                osg::notify(osg::WARN) << ", " << b->getParents()[i]->getName();
-                            osg::notify(osg::WARN) << ")" << std::endl;
-                            return;
-                        }
-                        b->getParents()[0]->accept(finder);
-
-                        if (!finder._manager.valid())
-                        {
-                            osg::notify(osg::WARN) << "Warning can't update Bone, path to parent AnimationManagerBase not found" << std::endl;
-                            return;
-                        }
-
-                        _manager = finder._manager.get();
-                    }
-
-                    updateLink();
-                    update(*b);
-                }
-                traverse(node,nv);
-            }
+            virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
         };
 
         virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;

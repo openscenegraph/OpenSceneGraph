@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -17,28 +17,11 @@
 
 using namespace osgAnimation;
 
-struct computeBindMatrixVisitor : public osg::NodeVisitor
+class ValidateSkeletonVisitor : public osg::NodeVisitor
 {
-    osg::Matrix _skeleton;
-    computeBindMatrixVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-    void apply(osg::Node& node) { return ;}
-    void apply(osg::Transform& node) 
-    {
-        Bone* bone = dynamic_cast<Bone*>(&node);
-        if (!bone)
-            return;
-        if (bone->needToComputeBindMatrix())
-            bone->computeBindMatrix();
-
-        traverse(node);
-    }
-};
-
-struct updateMatrixVisitor : public osg::NodeVisitor
-{
-    osg::Matrix _skeleton;
-    updateMatrixVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-    void apply(osg::Node& node) { return ;}
+public:
+    ValidateSkeletonVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+    void apply(osg::Node& node) { return; }
     void apply(osg::Transform& node) 
     {
         // the idea is to traverse the skeleton or bone but to stop if other node is found
@@ -46,40 +29,46 @@ struct updateMatrixVisitor : public osg::NodeVisitor
         if (!bone)
             return;
 
-        Bone* parent = bone->getBoneParent();
-        if (bone->needToComputeBindMatrix()) 
+        bool foundNonBone = false;
+
+        for (unsigned i = 0; i < bone->getNumChildren(); ++i)
         {
-            computeBindMatrixVisitor visitor;
-            bone->accept(visitor);
+            if (dynamic_cast<Bone*>(bone->getChild(i)))
+            {
+                if (foundNonBone)
+                {
+                    osg::notify(osg::WARN) <<
+                        "Warning: a Bone was found after a non-Bone child "
+                        "within a Skeleton. Children of a Bone must be ordered "
+                        "with all child Bones first for correct update order." << std::endl;
+                    setTraversalMode(TRAVERSE_NONE);
+                    return;
+                }
+            }
+            else
+            {
+                foundNonBone = true;
+            }
         }
-
-        if (parent)
-            bone->setMatrixInSkeletonSpace(bone->getMatrixInBoneSpace() * bone->getBoneParent()->getMatrixInSkeletonSpace());
-        else
-            bone->setMatrixInSkeletonSpace(bone->getMatrixInBoneSpace());
-
         traverse(node);
     }
 };
 
 void Skeleton::UpdateSkeleton::operator()(osg::Node* node, osg::NodeVisitor* nv)
 { 
-    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
+    if (_needValidate && nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
     {
         Skeleton* b = dynamic_cast<Skeleton*>(node);
         if (b) 
         {
-            // apply the updater only on the root bone, The udpateMatrixVisitor will
-            // traverse only bone and will update only bone. Then we continu on the classic
-            // process. It's important to update Bone before other things because the update
-            // of RigGeometry need it
-            updateMatrixVisitor visitor;
-            b->accept(visitor);
+            ValidateSkeletonVisitor visitor;
+            node->accept(visitor);
         }
+
+        _needValidate = false;
     }
     traverse(node,nv);
 }
-
 
 Skeleton::Skeleton()
 {

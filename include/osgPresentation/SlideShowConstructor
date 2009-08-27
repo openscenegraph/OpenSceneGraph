@@ -218,12 +218,25 @@ public:
         VolumeData():
             shadingModel(Standard),
             useTabbedDragger(false),
-            useTrackballDragger(false) {}
+            useTrackballDragger(false),
+            region_in_pixel_coords(false),
+            alphaValue(1.0),
+            cutoffValue(0.1),
+            sampleDensityValue(0.005)
+        {
+            region[0] = region[1] = region[2] = 0.0f;
+            region[3] = region[4] = region[5] = 1.0f;
+        }
 
         ShadingModel                            shadingModel;
         osg::ref_ptr<osg::TransferFunction1D>   transferFunction;
         bool                                    useTabbedDragger;
         bool                                    useTrackballDragger;
+        float                                   region[6];
+        bool                                    region_in_pixel_coords;
+        float                                   alphaValue;
+        float                                   cutoffValue;
+        float                                   sampleDensityValue;
     };
 
 

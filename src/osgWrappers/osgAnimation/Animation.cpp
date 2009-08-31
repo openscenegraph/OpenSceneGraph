@@ -106,11 +106,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	          __float__getWeight,
 	          "",
 	          "");
-	I_Method1(bool, update, IN, float, time,
-	          Properties::NON_VIRTUAL,
-	          __bool__update__float,
-	          "",
-	          "");
+	I_MethodWithDefaults2(bool, update, IN, float, time, , IN, int, priority, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __bool__update__float__int,
+	                      "",
+	                      "");
 	I_Method0(void, resetTargets,
 	          Properties::NON_VIRTUAL,
 	          __void__resetTargets,

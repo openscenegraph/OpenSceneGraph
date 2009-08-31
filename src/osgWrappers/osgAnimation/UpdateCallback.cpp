@@ -21,6 +21,7 @@
 #include <osgAnimation/Animation>
 #include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/Channel>
+#include <osgAnimation/Target>
 #include <osgAnimation/UpdateCallback>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -36,6 +37,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationUpdateCallbackBase)
 	I_Constructor0(____AnimationUpdateCallbackBase,
 	               "",
 	               "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::PURE_VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
 	I_Method0(osgAnimation::AnimationManagerBase *, getAnimationManager,
 	          Properties::PURE_VIRTUAL,
 	          __AnimationManagerBase_P1__getAnimationManager,
@@ -183,5 +189,29 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateTransform)
 	          __bool__link__osgAnimation_Channel_P1,
 	          "",
 	          "");
+	I_Method0(osgAnimation::Vec3Target *, getEuler,
+	          Properties::NON_VIRTUAL,
+	          __osgAnimation_Vec3Target_P1__getEuler,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Vec3Target *, getPosition,
+	          Properties::NON_VIRTUAL,
+	          __osgAnimation_Vec3Target_P1__getPosition,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Vec3Target *, getScale,
+	          Properties::NON_VIRTUAL,
+	          __osgAnimation_Vec3Target_P1__getScale,
+	          "",
+	          "");
+	I_SimpleProperty(osgAnimation::Vec3Target *, Euler, 
+	                 __osgAnimation_Vec3Target_P1__getEuler, 
+	                 0);
+	I_SimpleProperty(osgAnimation::Vec3Target *, Position, 
+	                 __osgAnimation_Vec3Target_P1__getPosition, 
+	                 0);
+	I_SimpleProperty(osgAnimation::Vec3Target *, Scale, 
+	                 __osgAnimation_Vec3Target_P1__getScale, 
+	                 0);
 END_REFLECTOR
 

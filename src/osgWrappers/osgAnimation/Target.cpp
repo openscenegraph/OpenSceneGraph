@@ -31,11 +31,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Target)
 	          __void__normalize,
 	          "",
 	          "");
-	I_Method0(float, getWeight,
-	          Properties::NON_VIRTUAL,
-	          __float__getWeight,
-	          "",
-	          "");
 	I_Method0(void, reset,
 	          Properties::NON_VIRTUAL,
 	          __void__reset,
@@ -46,12 +41,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Target)
 	          __int__getCount,
 	          "",
 	          "");
-	I_ProtectedMethod1(void, addWeight, IN, float, w,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__addWeight__float,
-	                   "",
-	                   "");
+	I_Method0(float, getWeight,
+	          Properties::NON_VIRTUAL,
+	          __float__getWeight,
+	          "",
+	          "");
 	I_SimpleProperty(int, Count, 
 	                 __int__getCount, 
 	                 0);

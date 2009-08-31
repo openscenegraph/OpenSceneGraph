@@ -16,10 +16,10 @@
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/Quat>
-#include <osg/Transform>
 #include <osg/Vec3>
 #include <osgAnimation/Bone>
 #include <osgAnimation/Channel>
+#include <osgAnimation/Target>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -127,6 +127,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone)
 	          __C5_osg_Quat_R1__getRotation,
 	          "",
 	          "");
+	I_Method0(const osg::Vec3 &, getScale,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec3_R1__getScale,
+	          "",
+	          "");
 	I_Method0(osg::Matrix, getMatrixInBoneSpace,
 	          Properties::NON_VIRTUAL,
 	          __osg_Matrix__getMatrixInBoneSpace,
@@ -210,54 +215,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone)
 	                 __C5_osg_Quat_R1__getRotation, 
 	                 __void__setRotation__C5_osg_Quat_R1);
 	I_SimpleProperty(const osg::Vec3 &, Scale, 
-	                 0, 
+	                 __C5_osg_Vec3_R1__getScale, 
 	                 __void__setScale__C5_osg_Vec3_R1);
 	I_SimpleProperty(const osg::Vec3 &, Translation, 
 	                 __C5_osg_Vec3_R1__getTranslation, 
 	                 __void__setTranslation__C5_osg_Vec3_R1);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone::BoneMapVisitor)
-	I_DeclaringFile("osgAnimation/Bone");
-	I_BaseType(osg::NodeVisitor);
-	I_Constructor0(____BoneMapVisitor,
-	               "",
-	               "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the library name/namespapce of the visitor's. ",
-	          "Should be defined by derived classes. ");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the visitor's class type. ",
-	          "Should be defined by derived classes. ");
-	I_Method1(void, apply, IN, osg::Node &, x,
-	          Properties::VIRTUAL,
-	          __void__apply__osg_Node_R1,
-	          "",
-	          "");
-	I_Method1(void, apply, IN, osg::Transform &, node,
-	          Properties::VIRTUAL,
-	          __void__apply__osg_Transform_R1,
-	          "",
-	          "");
-	I_PublicMemberProperty(osgAnimation::Bone::BoneMap, _map);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone::FindNearestParentAnimationManager)
-	I_DeclaringFile("osgAnimation/Bone");
-	I_BaseType(osg::NodeVisitor);
-	I_Constructor0(____FindNearestParentAnimationManager,
-	               "",
-	               "");
-	I_Method1(void, apply, IN, osg::Node &, node,
-	          Properties::VIRTUAL,
-	          __void__apply__osg_Node_R1,
-	          "",
-	          "");
-	I_PublicMemberProperty(osg::ref_ptr< osgAnimation::AnimationManagerBase >, _manager);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone::UpdateBone)
@@ -301,6 +263,21 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone::UpdateBone)
 	          __void__update__osgAnimation_Bone_R1,
 	          "",
 	          "");
+	I_Method0(osgAnimation::QuatTarget *, getQuaternion,
+	          Properties::NON_VIRTUAL,
+	          __osgAnimation_QuatTarget_P1__getQuaternion,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Vec3Target *, getPosition,
+	          Properties::NON_VIRTUAL,
+	          __osgAnimation_Vec3Target_P1__getPosition,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Vec3Target *, getScale,
+	          Properties::NON_VIRTUAL,
+	          __osgAnimation_Vec3Target_P1__getScale,
+	          "",
+	          "");
 	I_Method0(bool, needLink,
 	          Properties::VIRTUAL,
 	          __bool__needLink,
@@ -309,8 +286,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone::UpdateBone)
 	I_Method1(bool, link, IN, osgAnimation::Channel *, channel,
 	          Properties::VIRTUAL,
 	          __bool__link__osgAnimation_Channel_P1,
-	          "",
+	          "Link channel. ",
 	          "");
+	I_SimpleProperty(osgAnimation::Vec3Target *, Position, 
+	                 __osgAnimation_Vec3Target_P1__getPosition, 
+	                 0);
+	I_SimpleProperty(osgAnimation::QuatTarget *, Quaternion, 
+	                 __osgAnimation_QuatTarget_P1__getQuaternion, 
+	                 0);
+	I_SimpleProperty(osgAnimation::Vec3Target *, Scale, 
+	                 __osgAnimation_Vec3Target_P1__getScale, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Bone >)

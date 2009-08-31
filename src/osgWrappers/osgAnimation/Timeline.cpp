@@ -236,5 +236,3 @@ END_REFLECTOR
 
 STD_MAP_REFLECTOR(std::map< int COMMA  osgAnimation::Timeline::ActionList >)
 
-STD_VECTOR_REFLECTOR(std::vector< osgAnimation::FrameAction >)
-

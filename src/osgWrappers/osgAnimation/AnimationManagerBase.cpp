@@ -43,9 +43,14 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationManagerBase)
 	          __void__buildTargetReference,
 	          "",
 	          "");
-	I_Method1(void, registerAnimation, IN, osgAnimation::Animation *, animation,
+	I_Method1(void, registerAnimation, IN, osgAnimation::Animation *, x,
 	          Properties::VIRTUAL,
 	          __void__registerAnimation__Animation_P1,
+	          "",
+	          "");
+	I_Method1(void, unregisterAnimation, IN, osgAnimation::Animation *, x,
+	          Properties::VIRTUAL,
+	          __void__unregisterAnimation__Animation_P1,
 	          "",
 	          "");
 	I_Method1(void, link, IN, osg::Node *, subgraph,

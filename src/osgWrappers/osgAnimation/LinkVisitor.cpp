@@ -59,6 +59,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::LinkVisitor)
 	          __void__reset,
 	          "Method to call to reset visitor. ",
 	          "Useful if your visitor accumulates state during a traversal, and you plan to reuse the visitor. To flush that state for the next traversal: call reset() prior to each traversal. ");
+	I_Method0(unsigned int, getNbLinkedTarget,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNbLinkedTarget,
+	          "",
+	          "");
 	I_ProtectedMethod1(void, handle_stateset, IN, osg::StateSet *, stateset,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -73,6 +78,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::LinkVisitor)
 	                   "");
 	I_SimpleProperty(osgAnimation::AnimationList &, AnimationList, 
 	                 __AnimationList_R1__getAnimationList, 
+	                 0);
+	I_SimpleProperty(unsigned int, NbLinkedTarget, 
+	                 __unsigned_int__getNbLinkedTarget, 
 	                 0);
 END_REFLECTOR
 

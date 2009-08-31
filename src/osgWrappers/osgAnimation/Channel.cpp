@@ -38,9 +38,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	          __Channel_P1__clone,
 	          "",
 	          "");
-	I_Method1(void, update, IN, float, time,
+	I_Method3(void, update, IN, float, time, IN, float, weight, IN, int, priority,
 	          Properties::PURE_VIRTUAL,
-	          __void__update__float,
+	          __void__update__float__float__int,
 	          "",
 	          "");
 	I_Method0(void, reset,
@@ -88,16 +88,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	          __void__setTargetName__C5_std_string_R1,
 	          "",
 	          "");
-	I_Method0(float, getWeight,
-	          Properties::NON_VIRTUAL,
-	          __float__getWeight,
-	          "",
-	          "");
-	I_Method1(void, setWeight, IN, float, w,
-	          Properties::NON_VIRTUAL,
-	          __void__setWeight__float,
-	          "",
-	          "");
 	I_Method0(osgAnimation::Sampler *, getSampler,
 	          Properties::PURE_VIRTUAL,
 	          __Sampler_P1__getSampler,
@@ -126,9 +116,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	I_SimpleProperty(const std::string &, TargetName, 
 	                 __C5_std_string_R1__getTargetName, 
 	                 __void__setTargetName__C5_std_string_R1);
-	I_SimpleProperty(float, Weight, 
-	                 __float__getWeight, 
-	                 __void__setWeight__float);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgAnimation::Channel > >, osgAnimation::ChannelList)

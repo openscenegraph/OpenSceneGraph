@@ -103,9 +103,9 @@ osgAnimation::ActionAnimation::ActionAnimation(Animation* animation) : _animatio
     Action::setDuration(animation->getDuration());
     setName(animation->getName());
 }
-void osgAnimation::ActionAnimation::updateAnimation(unsigned int frame)
+void osgAnimation::ActionAnimation::updateAnimation(unsigned int frame, int priority)
 {
-    _animation->update(frame * 1.0/_fps);
+    _animation->update(frame * 1.0/_fps, priority);
 }
 
 
@@ -149,14 +149,14 @@ void osgAnimation::StripAnimation::traverse(ActionVisitor& visitor)
 {
     if (_blendIn.valid())
     {
-        unsigned int f = visitor._stackFrameAction.back().first;
+        unsigned int f = visitor.getStackedFrameAction().back().first;
         visitor.pushFrameActionOnStack(FrameAction(f,_blendIn.get()));
         _blendIn->accept(visitor);
         visitor.popFrameAction();
     }
     if (_blendOut.second.valid())
     {
-        unsigned int f = visitor._stackFrameAction.back().first;
+        unsigned int f = visitor.getStackedFrameAction().back().first;
         visitor.pushFrameActionOnStack(FrameAction(f + _blendOut.first,_blendOut.second.get()));
         _blendOut.second.get()->accept(visitor);
         visitor.popFrameAction();
@@ -164,18 +164,9 @@ void osgAnimation::StripAnimation::traverse(ActionVisitor& visitor)
 
     if (_animation.valid())
     {
-        unsigned int f = visitor._stackFrameAction.back().first;
+        unsigned int f = visitor.getStackedFrameAction().back().first;
         visitor.pushFrameActionOnStack(FrameAction(f,_animation.get()));
         _animation->accept(visitor);
         visitor.popFrameAction();
     }
-}
-
-void osgAnimation::StripAnimation::computeWeightAndUpdateAnimation(unsigned int frame)
-{
-    if (frame < _blendIn->getNumFrames())
-        _blendIn->computeWeight(frame);
-    if (frame >= _blendOut.first)
-        _blendOut.second->computeWeight(frame - _blendOut.first);
-    _animation->updateAnimation(frame);
 }

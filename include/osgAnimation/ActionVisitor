@@ -38,10 +38,8 @@ namespace osgAnimation
     class OSGANIMATION_EXPORT ActionVisitor : public osg::Referenced
     {
     public:
-        std::vector<FrameAction> _stackFrameAction;
-        std::vector<Timeline*> _stackTimeline;
-
         META_ActionVisitor(osgAnimation, ActionVisitor);
+        ActionVisitor();
         void traverse(Action& visitor);
 
         void pushFrameActionOnStack(const FrameAction& fa);
@@ -51,6 +49,10 @@ namespace osgAnimation
         void popTimeline();
 
         Timeline* getCurrentTimeline();
+        void setCurrentLayer(int layer) { _currentLayer = layer;}
+        int getCurrentLayer() const { return _currentLayer; }
+
+        const std::vector<FrameAction>& getStackedFrameAction() const { return _stackFrameAction; }
 
         virtual void apply(Action& action);
         virtual void apply(Timeline& tm);
@@ -58,6 +60,11 @@ namespace osgAnimation
         virtual void apply(BlendOut& action);
         virtual void apply(ActionAnimation& action);
         virtual void apply(StripAnimation& action);
+
+    protected:
+        std::vector<FrameAction> _stackFrameAction;
+        std::vector<Timeline*> _stackTimeline;
+        int _currentLayer;
     };
 
 

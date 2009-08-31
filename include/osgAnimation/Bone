@@ -56,25 +56,6 @@ namespace osgAnimation
 
         void setDefaultUpdateCallback(const std::string& name = "");
 
-        struct BoneMapVisitor : public osg::NodeVisitor
-        {
-            BoneMap _map;
-            BoneMapVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-
-            META_NodeVisitor("osgAnimation","BoneMapVisitor")
-
-            void apply(osg::Node&) { return; }
-            void apply(osg::Transform& node)
-            {
-                Bone* bone = dynamic_cast<Bone*>(&node);
-                if (bone) 
-                {
-                    _map[bone->getName()] = bone;
-                    traverse(node);
-                }
-            }
-        };
-
         class OSGANIMATION_EXPORT UpdateBone : public AnimationUpdateCallback <osg::NodeCallback>
         {
         protected:
@@ -131,6 +112,8 @@ namespace osgAnimation
 
         const osg::Vec3& getTranslation() const { return _position;}
         const osg::Quat& getRotation() const { return _rotation;}
+        const osg::Vec3& getScale() const { return _scale;}
+
         osg::Matrix getMatrixInBoneSpace() const { return (osg::Matrix(getRotation())) * osg::Matrix::translate(getTranslation()) * _bindInBoneSpace;}
         const osg::Matrix& getBindMatrixInBoneSpace() const { return _bindInBoneSpace; }
         const osg::Matrix& getMatrixInSkeletonSpace() const { return _boneInSkeletonSpace; }

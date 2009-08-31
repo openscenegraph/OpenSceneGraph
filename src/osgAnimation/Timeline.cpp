@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -55,10 +55,12 @@ osgAnimation::Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op)
 
 void osgAnimation::Timeline::traverse(ActionVisitor& visitor)
 {
+    int layer = visitor.getCurrentLayer();
     visitor.pushTimelineOnStack(this);
     // update from high priority to low priority
     for( ActionLayers::reverse_iterator iterAnim = _actions.rbegin(); iterAnim != _actions.rend(); ++iterAnim )
     {
+        visitor.setCurrentLayer(iterAnim->first);
         ActionList& list = iterAnim->second;
         for (unsigned int i = 0; i < list.size(); i++)
         {
@@ -68,6 +70,7 @@ void osgAnimation::Timeline::traverse(ActionVisitor& visitor)
         }
     }
     visitor.popTimeline();
+    visitor.setCurrentLayer(layer);
 }
 
 

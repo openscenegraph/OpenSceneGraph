@@ -18,10 +18,13 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Assert
     ${HEADER_PATH}/BasicAnimationManager
     ${HEADER_PATH}/Bone
+    ${HEADER_PATH}/BoneMapVisitor
     ${HEADER_PATH}/Channel
     ${HEADER_PATH}/CubicBezier
+    ${HEADER_PATH}/ComputeBindMatrixVisitor
     ${HEADER_PATH}/EaseMotion
     ${HEADER_PATH}/Export
+    ${HEADER_PATH}/FindParentAnimationManagerVisitor
     ${HEADER_PATH}/FrameAction
     ${HEADER_PATH}/Interpolator
     ${HEADER_PATH}/Keyframe
@@ -53,7 +56,9 @@ ADD_LIBRARY(${LIB_NAME}
     AnimationManager.cpp
     BasicAnimationManager.cpp
     Bone.cpp
+    BoneMapVisitor.cpp
     Channel.cpp
+    FindParentAnimationManagerVisitor.cpp
     LinkVisitor.cpp
     MorphGeometry.cpp
     RigGeometry.cpp

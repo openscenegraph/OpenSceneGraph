@@ -37,6 +37,7 @@ namespace osgAnimation
 
         AnimationList& getAnimationList();
         void reset();
+        unsigned int getNbLinkedTarget() const { return _nbLinkedTarget; }
 
     protected:
 

@@ -19,4 +19,3 @@
 using namespace osgAnimation;
 
 Target::Target() : _weight(0), _priorityWeight(0), _lastPriority(0) {}
-Target::~Target() {}

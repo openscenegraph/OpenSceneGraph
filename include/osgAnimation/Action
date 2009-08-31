@@ -166,7 +166,7 @@ namespace osgAnimation
         ActionAnimation() {}
         ActionAnimation(const ActionAnimation& a, const osg::CopyOp& c) : Action(a,c) { _animation = a._animation;}
         ActionAnimation(Animation* animation);
-        void updateAnimation(unsigned int frame);
+        void updateAnimation(unsigned int frame, int priority);
         Animation* getAnimation() { return _animation.get(); }
 
     protected:
@@ -192,8 +192,6 @@ namespace osgAnimation
         
         unsigned int getLoop() const { return _animation->getLoop(); }
         void setLoop(unsigned int loop);
-        void computeWeightAndUpdateAnimation(unsigned int frame);
-
         void traverse(ActionVisitor& visitor);
 
     protected:

@@ -130,7 +130,7 @@ UpdateMaterial::UpdateMaterial(const UpdateMaterial& apc,const osg::CopyOp& copy
 UpdateMaterial::UpdateMaterial(const std::string& name):
     AnimationUpdateCallback<osg::StateAttribute::Callback>(name)
 {
-    _diffuse = new osgAnimation::Vec4Target(osg::Vec4(1,1,1,1));
+    _diffuse = new osgAnimation::Vec4Target(osg::Vec4(1,0,1,1));
 }
 
 /** Callback method called by the NodeVisitor when visiting a node.*/

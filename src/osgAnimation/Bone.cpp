@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -15,45 +15,9 @@
 #include <osgAnimation/Skinning>
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
-
-
-struct FindNearestParentAnimationManager : public osg::NodeVisitor
-{
-    osg::ref_ptr<osgAnimation::AnimationManagerBase> _manager;
-    FindNearestParentAnimationManager() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_PARENTS) {}
-    void apply(osg::Node& node)
-    {
-        if (_manager.valid())
-            return;
-        osg::NodeCallback* callback = node.getUpdateCallback();
-        while (callback) 
-        {
-            _manager = dynamic_cast<osgAnimation::AnimationManagerBase*>(callback);
-            if (_manager.valid())
-                return;
-            callback = callback->getNestedCallback();
-        }
-        traverse(node);
-    }
-};
-
-
-struct ComputeBindMatrixVisitor : public osg::NodeVisitor
-{
-    ComputeBindMatrixVisitor(): osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
-    void apply(osg::Node& node) { return; }
-    void apply(osg::Transform& node) 
-    {
-        osgAnimation::Bone* bone = dynamic_cast<osgAnimation::Bone*>(&node);
-        if (!bone)
-            return;
-        if (bone->needToComputeBindMatrix())
-            bone->computeBindMatrix();
-
-        traverse(node);
-    }
-};
-
+#include <osgAnimation/FindParentAnimationManagerVisitor>
+#include <osgAnimation/BoneMapVisitor>
+#include <osgAnimation/ComputeBindMatrixVisitor>
 
 
 osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone& apc,const osg::CopyOp& copyop) :
@@ -107,7 +71,7 @@ void osgAnimation::Bone::UpdateBone::operator()(osg::Node* node, osg::NodeVisito
 
         if (!_manager.valid())
         {
-            FindNearestParentAnimationManager finder;
+            FindParentAnimationManagerVisitor finder;
 
             if (b->getParents().size() > 1)
             {
@@ -120,13 +84,13 @@ void osgAnimation::Bone::UpdateBone::operator()(osg::Node* node, osg::NodeVisito
             }
             b->getParents()[0]->accept(finder);
 
-            if (!finder._manager.valid())
+            if (!finder.getAnimationManager())
             {
                 osg::notify(osg::WARN) << "Warning can't update Bone, path to parent AnimationManagerBase not found" << std::endl;
                 return;
             }
 
-            _manager = finder._manager.get();
+            _manager = finder.getAnimationManager();
         }
 
         updateLink();
@@ -153,6 +117,7 @@ osgAnimation::Bone::Bone(const Bone& b, const osg::CopyOp& copyop) :
     _invBindInSkeletonSpace(b._invBindInSkeletonSpace),
     _boneInSkeletonSpace(b._boneInSkeletonSpace)
 {
+#if 0
     osg::ref_ptr<osg::NodeCallback> updatecallback = getUpdateCallback();
     setUpdateCallback(0);
     while (updatecallback.valid()) {
@@ -161,6 +126,7 @@ osgAnimation::Bone::Bone(const Bone& b, const osg::CopyOp& copyop) :
         addUpdateCallback(ucb);
         updatecallback = updatecallback->getNestedCallback();
     }
+#endif
 }
 
 osgAnimation::Bone::Bone(const std::string& name)
@@ -192,7 +158,7 @@ void osgAnimation::Bone::computeBindMatrix()
     _invBindInSkeletonSpace = parent->getInvBindMatrixInSkeletonSpace() * _invBindInSkeletonSpace;
 }
 
-osgAnimation::Bone* osgAnimation::Bone::getBoneParent() 
+osgAnimation::Bone* osgAnimation::Bone::getBoneParent()
 {
     if (getParents().empty())
         return 0;
@@ -238,5 +204,5 @@ osgAnimation::Bone::BoneMap osgAnimation::Bone::getBoneMap()
 {
     BoneMapVisitor mapVisitor;
     this->accept(mapVisitor);
-    return mapVisitor._map;
+    return mapVisitor.getBoneMap();
 }

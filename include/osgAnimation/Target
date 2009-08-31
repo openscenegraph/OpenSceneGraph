@@ -34,7 +34,7 @@ namespace osgAnimation
     public:
             
         Target();
-        virtual ~Target();
+        virtual ~Target() {}
         virtual void normalize() = 0;
         void reset() { _weight = 0; _priorityWeight = 0; }
         int getCount() const { return referenceCount(); }

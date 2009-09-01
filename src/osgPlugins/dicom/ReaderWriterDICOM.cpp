@@ -23,9 +23,10 @@
         #define HAVE_CONFIG_H
     #endif
 
-    #include <dcmtk/config/osconfig.h> 
+    #include <dcmtk/config/osconfig.h>
     #include <dcmtk/dcmdata/dcfilefo.h>
     #include <dcmtk/dcmdata/dcdeftag.h>
+    #include <dcmtk/dcmdata/dcuid.h>
     #include <dcmtk/dcmimgle/dcmimage.h>
 #endif
 
@@ -48,7 +49,7 @@
 class ReaderWriterDICOM : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterDICOM()
         {
             supportsExtension("mag","dicom image format");
@@ -63,18 +64,18 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         std::ostream& warning() const { return osg::notify(osg::WARN); }
         std::ostream& notice() const { return osg::notify(osg::NOTICE); }
         std::ostream& info() const { return osg::notify(osg::INFO); }
-        
+
         template<typename T>
         T* readData(std::istream& fin, unsigned int length, unsigned int& numComponents) const
         {
             numComponents = length/sizeof(T);
             T* data = new T[numComponents];
             fin.read((char*)data, numComponents*sizeof(T));
-            
+
             // read over any padding
             length -= numComponents*sizeof(T);
             while(fin && length>0) { fin.get(); --length; }
-            
+
             return data;
         }
 
@@ -89,8 +90,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     else out<<".";
                 }
             }
-            else 
-            {                
+            else
+            {
                 for(unsigned int i=0; i<numComponents; ++i)
                 {
                     if (i==0) out<<data[i];
@@ -98,9 +99,9 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 }
             }
         }
-    
+
         virtual const char* className() const { return "DICOM Image Reader/Writer"; }
-        
+
         typedef std::vector<std::string> Files;
         bool getDicomFilesInDirectory(const std::string& path, Files& files) const
         {
@@ -143,16 +144,16 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         {
             ReadResult result = readImage(file, options);
             if (!result.validImage()) return result;
-            
+
             osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
             tile->setVolumeTechnique(new osgVolume::RayTracedTechnique());
-            
+
             osg::ref_ptr<osgVolume::ImageLayer> layer= new osgVolume::ImageLayer(result.getImage());
             layer->rescaleToZeroToOneRange();
-            
+
             osgVolume::SwitchProperty* sp = new osgVolume::SwitchProperty;
             sp->setActiveProperty(0);
-            
+
             float alphaFunc = 0.1f;
 
             osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
@@ -206,24 +207,31 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             tile->setLayer(layer.get());
 
             // get matrix providing size of texels (in mm)
-            osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(result.getImage()->getUserData());
-        
+            osgVolume::ImageDetails* details = dynamic_cast<osgVolume::ImageDetails*>(result.getImage()->getUserData());
+            osg::RefMatrix* matrix = details ? details->getMatrix() : 0;
+
+            if (details)
+            {
+                layer->setRescaleIntercept(details->getRescaleIntercept());
+                layer->setRescaleSlope(details->getRescaleSlope());
+            }
+
             if (matrix)
             {
                 osgVolume::Locator* locator = new osgVolume::Locator(*matrix);
 
                 tile->setLocator(locator);
                 layer->setLocator(locator);
-                
+
                 // result.getImage()->setUserData(0);
-                
+
                 info()<<"Locator "<<*matrix<<std::endl;
             }
             else
             {
                 info()<<"No Locator found on osg::Image"<<std::endl;
             }
-            
+
             return tile.release();
         }
 
@@ -298,7 +306,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 ++itr)
             {
                 osg::Image* image = itr->get();
-                osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(image->getUserData());
+                osgVolume::ImageDetails* details = dynamic_cast<osgVolume::ImageDetails*>(result.getImage()->getUserData());
+                osg::RefMatrix* matrix = details ? details->getMatrix() : 0;
                 if (matrix)
                 {
                     osg::Vec3 p0 = osg::Vec3(0.0, 0.0, 0.0) * (*matrix);
@@ -340,18 +349,19 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             {
                 osg::Image* image = itr->second.get();
                 osg::copyImage(image, 0,0,0, image->s(), image->t(), image->r(),
-                               image3D.get(), 0, 0, r,
-                               false);
+                            image3D.get(), 0, 0, r,
+                            false);
                 r += image->r();
             }
 
             osg::Image* firstImage = dim.begin()->second.get();
-            osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(firstImage->getUserData());
+            osgVolume::ImageDetails* details = dynamic_cast<osgVolume::ImageDetails*>(result.getImage()->getUserData());
+            osg::RefMatrix* matrix = details ? details->getMatrix() : 0;
             if (matrix)
             {
-                image3D->setUserData(
-                    new osg::RefMatrix(osg::Matrix::scale(1.0,1.0,totalThickness) * (*matrix))
-                );
+                osgVolume::ImageDetails* details3D = new osgVolume::ImageDetails(*details);
+                details3D->getMatrix()->preMult(osg::Matrix::scale(1.0,1.0,totalThickness));
+                image3D->setUserData(details3D);
             }
 
             return image3D.get();
@@ -384,36 +394,36 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 std::cerr << e.GetLocation() << std::endl;
                 return ReadResult::ERROR_IN_READING_FILE;
             }
-            
+
             ImageType::Pointer inputImage = reader->GetOutput();
-            
+
             ImageType::RegionType region = inputImage->GetBufferedRegion();
             ImageType::SizeType size = region.GetSize();
             ImageType::IndexType start = region.GetIndex();
-            
+
             //inputImage->GetSpacing();
             //inputImage->GetOrigin();
-            
+
             unsigned int width = size[0];
             unsigned int height = size[1];
             unsigned int depth = size[2];
-            
+
             osg::RefMatrix* matrix = new osg::RefMatrix;
-            
+
             info()<<"width = "<<width<<" height = "<<height<<" depth = "<<depth<<std::endl;
             for(unsigned int i=0; i<Dimension; ++i)
             {
                 (*matrix)(i,i) = inputImage->GetSpacing()[i];
                 (*matrix)(3,i) = inputImage->GetOrigin()[i];
             }
-            
+
             osg::Image* image = new osg::Image;
             image->allocateImage(width, height, depth, GL_LUMINANCE, GL_UNSIGNED_BYTE, 1);
 
-            unsigned char* data = image->data();            
+            unsigned char* data = image->data();
             typedef itk::ImageRegionConstIterator< ImageType > IteratorType;
             IteratorType it(inputImage, region);
-            
+
             it.GoToBegin();
             while (!it.IsAtEnd())
             {
@@ -421,9 +431,12 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 ++data;
                 ++it;
             }
-            
-            image->setUserData(matrix);
-            
+
+            osgVolume::ImageDetails* details = new osgVolume::ImageDetails;
+            details->setMatrix(matrix);
+
+            image->setUserData(details);
+
             matrix->preMult(osg::Matrix::scale(double(image->s()), double(image->t()), double(image->r())));
 
             return image;
@@ -432,9 +445,9 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
 #ifdef USE_DCMTK
 
-        void convertPixelTypes(const DiPixel* pixelData, 
-                               EP_Representation& pixelRep, int& numPlanes, 
-                               GLenum& dataType, GLenum& pixelFormat, unsigned int& pixelSize) const
+        void convertPixelTypes(const DiPixel* pixelData,
+                            EP_Representation& pixelRep, int& numPlanes,
+                            GLenum& dataType, GLenum& pixelFormat, unsigned int& pixelSize) const
         {
             dataType = GL_UNSIGNED_BYTE;
             pixelRep = pixelData->getRepresentation();
@@ -490,7 +503,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     break;
             }
         }
-        
+
 
 
 
@@ -500,7 +513,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-            
+
             std::string fileName = file;
             if (ext=="dicom")
             {
@@ -511,7 +524,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             Files files;
-            
+
             osgDB::FileType fileType = osgDB::fileType(fileName);
             if (fileType==osgDB::DIRECTORY)
             {
@@ -521,12 +534,12 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             {
 #if 1
                 files.push_back(fileName);
-#else                            
+#else
                 if (!getDicomFilesInDirectory(osgDB::getFilePath(fileName), files))
                 {
                     files.push_back(fileName);
                 }
-#endif            
+#endif
             }
 
             if (files.empty())
@@ -534,22 +547,25 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 return ReadResult::FILE_NOT_FOUND;
             }
 
-            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix;
+            osg::ref_ptr<osgVolume::ImageDetails> details = new osgVolume::ImageDetails;
+            details->setMatrix(new osg::RefMatrix);
+
             osg::ref_ptr<osg::Image> image;
+
             unsigned int imageNum = 0;
             EP_Representation pixelRep = EPR_Uint8;
             int numPlanes = 0;
             GLenum pixelFormat = 0;
             GLenum dataType = 0;
             unsigned int pixelSize = 0;
-            
+
             typedef std::list<FileInfo> FileInfoList;
             FileInfoList fileInfoList;
 
             typedef std::map<double, FileInfo> DistanceFileInfoMap;
             typedef std::map<osg::Vec3d, DistanceFileInfoMap> OrientationFileInfoMap;
             OrientationFileInfoMap orientationFileInfoMap;
-            
+
             unsigned int totalNumSlices = 0;
 
             for(Files::iterator itr = files.begin();
@@ -559,7 +575,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 DcmFileFormat fileformat;
                 OFCondition status = fileformat.loadFile((*itr).c_str());
                 if(!status.good()) return ReadResult::ERROR_IN_READING_FILE;
-                
+
                 FileInfo fileInfo;
                 fileInfo.filename = *itr;
 
@@ -569,7 +585,33 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 double imagePositionPatient[3] = {0, 0, 0};
                 double imageOrientationPatient[6] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
                 Uint16 numOfSlices = 1;
-                
+
+                // code for reading the intercept and scale that is required to convert to Hounsfield units.
+                bool rescaling = false;
+                double rescaleIntercept = 0.0;
+                double rescaleSlope = 1.0;
+                const char *classUID = NULL;
+                if (fileformat.getDataset()->findAndGetString(DCM_SOPClassUID, classUID).good())
+                {
+                    osg::notify(osg::NOTICE)<<" classUID = "<<classUID<<std::endl;
+                    if (0 == strcmp(classUID, UID_CTImageStorage))
+                    {
+                        osg::notify(osg::NOTICE)<<" is a UID_CTImageStorage "<<std::endl;
+                    }
+
+                }
+
+                rescaling = fileformat.getDataset()->findAndGetFloat64(DCM_RescaleIntercept, rescaleIntercept).good();
+                rescaling &= fileformat.getDataset()->findAndGetFloat64(DCM_RescaleSlope, rescaleSlope).good();
+                if (rescaling)
+                {
+                    fileInfo.rescaleIntercept = rescaleIntercept;
+                    fileInfo.rescaleSlope = rescaleSlope;
+                    osg::notify(osg::NOTICE)<<" rescaleIntercept = "<<rescaleIntercept<<std::endl;
+                    osg::notify(osg::NOTICE)<<" rescaleSlope = "<<rescaleSlope<<std::endl;
+                }
+
+
                 double value = 0.0;
                 if (fileformat.getDataset()->findAndGetFloat64(DCM_PixelSpacing, value,0).good())
                 {
@@ -590,7 +632,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     info()<<"sliceThickness = "<<sliceThickness<<std::endl;
                     fileInfo.sliceThickness = sliceThickness;
                 }
-    
+
                 info()<<"tagExistsWithValue(DCM_NumberOfFrames)="<<fileformat.getDataset()->tagExistsWithValue(DCM_NumberOfFrames)<<std::endl;
                 info()<<"tagExistsWithValue(DCM_NumberOfSlices)="<<fileformat.getDataset()->tagExistsWithValue(DCM_NumberOfSlices)<<std::endl;
 
@@ -601,7 +643,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     info()<<"Read number of frames = "<<numFrames<<std::endl;
                 }
 
-                
+
                 OFString numFramesStr;
                 if (fileformat.getDataset()->findAndGetOFString(DCM_NumberOfFrames, numFramesStr).good())
                 {
@@ -614,7 +656,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     fileInfo.numSlices = numOfSlices;
                     info()<<"Read number of frames = "<<numOfSlices<<std::endl;
                 }
-                
+
                 if (fileformat.getDataset()->findAndGetUint16(DCM_NumberOfSlices, numOfSlices).good())
                 {
                     fileInfo.numSlices = numOfSlices;
@@ -636,7 +678,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     }
                 }
                 //info()<<"imagePositionPatient[2]="<<imagePositionPatient[2]<<std::endl;
-                
+
                 fileInfo.matrix.setTrans(imagePositionPatient[0],imagePositionPatient[1],imagePositionPatient[2]);
 
                 for(int i=0; i<6; ++i)
@@ -657,22 +699,22 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 osg::Vec3d dirY(imageOrientationPatient[3],imageOrientationPatient[4],imageOrientationPatient[5]);
                 osg::Vec3d dirZ = dirX ^ dirY;
                 dirZ.normalize();
-                
+
                 dirX *= pixelSize_x;
                 dirY *= pixelSize_y;
-                
+
                 fileInfo.matrix(0,0) = dirX[0];
                 fileInfo.matrix(1,0) = dirX[1];
                 fileInfo.matrix(2,0) = dirX[2];
-                
+
                 fileInfo.matrix(0,1) = dirY[0];
                 fileInfo.matrix(1,1) = dirY[1];
                 fileInfo.matrix(2,1) = dirY[2];
-                
+
                 fileInfo.matrix(0,2) = dirZ[0];
                 fileInfo.matrix(1,2) = dirZ[1];
                 fileInfo.matrix(2,2) = dirZ[2];
-                
+
                 fileInfo.distance = dirZ * (osg::Vec3d(0.0,0.0,0.0)*fileInfo.matrix);
 
                 info()<<"dirX = "<<dirX<<std::endl;
@@ -690,7 +732,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             }
 
             if (orientationFileInfoMap.empty()) return 0;
-            
+
             typedef std::map<double, FileInfo> DistanceFileInfoMap;
             typedef std::map<osg::Vec3d, DistanceFileInfoMap> OrientationFileInfoMap;
             for(OrientationFileInfoMap::iterator itr = orientationFileInfoMap.begin();
@@ -707,7 +749,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     info()<<"   d = "<<fileInfo.distance<<" "<<fileInfo.filename<<std::endl;
                 }
             }
-            
+
 
             DistanceFileInfoMap& dfim = orientationFileInfoMap.begin()->second;
             if (dfim.empty()) return 0;
@@ -721,11 +763,11 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             {
                 totalDistance = dfim.begin()->second.sliceThickness * double(dfim.begin()->second.numSlices);
             }
-            
+
             info()<<"Total Distance including ends "<<totalDistance<<std::endl;
 
             double averageThickness = totalNumSlices<=1 ? 1.0 : totalDistance / double(totalNumSlices-1);
-            
+
             info()<<"Average thickness "<<averageThickness<<std::endl;
 
             for(DistanceFileInfoMap::iterator ditr = dfim.begin();
@@ -733,7 +775,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 ++ditr)
             {
                 FileInfo& fileInfo = ditr->second;
-                
+
                 std::auto_ptr<DicomImage> dcmImage(new DicomImage(fileInfo.filename.c_str()));
                 if (dcmImage.get())
                 {
@@ -742,14 +784,14 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
                         // get the pixel data
                         const DiPixel* pixelData = dcmImage->getInterData();
-                        if(!pixelData) 
+                        if(!pixelData)
                         {
                             warning()<<"Error: no data in DicomImage object."<<std::endl;
                             return ReadResult::ERROR_IN_READING_FILE;
                         }
-                        
+
                         osg::ref_ptr<osg::Image> imageAdapter = new osg::Image;
-                        
+
                         EP_Representation curr_pixelRep;
                         int curr_numPlanes;
                         GLenum curr_pixelFormat;
@@ -758,15 +800,15 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
                         // create the new image
                         convertPixelTypes(pixelData,
-                                          curr_pixelRep, curr_numPlanes, 
-                                          curr_dataType, curr_pixelFormat, curr_pixelSize);
+                                        curr_pixelRep, curr_numPlanes,
+                                        curr_dataType, curr_pixelFormat, curr_pixelSize);
 
                         imageAdapter->setImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
-                                              curr_pixelFormat,
-                                              curr_pixelFormat,
-                                              curr_dataType,
-                                              (unsigned char*)(pixelData->getData()),
-                                              osg::Image::NO_DELETE);
+                                            curr_pixelFormat,
+                                            curr_pixelFormat,
+                                            curr_dataType,
+                                            (unsigned char*)(pixelData->getData()),
+                                            osg::Image::NO_DELETE);
                         if (!image)
                         {
                             pixelRep = curr_pixelRep;
@@ -774,6 +816,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             dataType = curr_dataType;
                             pixelFormat = curr_pixelFormat;
                             pixelSize = curr_pixelSize;
+
+                            osg::RefMatrix* matrix = details->getMatrix();
 
                             (*matrix)(0,0) = fileInfo.matrix(0,0);
                             (*matrix)(1,0) = fileInfo.matrix(1,0);
@@ -784,49 +828,50 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             (*matrix)(0,2) = fileInfo.matrix(0,2) * averageThickness;
                             (*matrix)(1,2) = fileInfo.matrix(1,2) * averageThickness;
                             (*matrix)(2,2) = fileInfo.matrix(2,2) * averageThickness;
-                            
 
-                            
+                            details->setRescaleIntercept(fileInfo.rescaleIntercept);
+                            details->setRescaleSlope(fileInfo.rescaleSlope);
+
                             image = new osg::Image;
-                            image->setUserData(matrix.get());
+                            image->setUserData(details.get());
                             image->setFileName(fileName.c_str());
-                            image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), totalNumSlices, 
-                                                 pixelFormat, dataType);
-                                                 
-                                                 
+                            image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), totalNumSlices,
+                                                pixelFormat, dataType);
+
+
                             matrix->preMult(osg::Matrix::scale(double(image->s()), double(image->t()), double(image->r())));
 
                             info()<<"Image dimensions = "<<image->s()<<", "<<image->t()<<", "<<image->r()<<" pixelFormat=0x"<<std::hex<<pixelFormat<<" dataType=0x"<<std::hex<<dataType<<std::dec<<std::endl;
                         }
                         else if (pixelData->getPlanes()>numPlanes ||
-                                 pixelData->getRepresentation()>pixelRep)
+                                pixelData->getRepresentation()>pixelRep)
                         {
                             info()<<"Need to reallocated "<<image->s()<<", "<<image->t()<<", "<<image->r()<<std::endl;
-                            
+
                             // record the previous image settings to use when we copy back the content.
                             osg::ref_ptr<osg::Image> previous_image = image;
 
                             // create the new image
                             convertPixelTypes(pixelData,
-                                              pixelRep, numPlanes, 
-                                              dataType, pixelFormat, pixelSize);
-                                              
+                                            pixelRep, numPlanes,
+                                            dataType, pixelFormat, pixelSize);
+
                             image = new osg::Image;
                             image->setUserData(previous_image->getUserData());
                             image->setFileName(fileName.c_str());
-                            image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), totalNumSlices, 
-                                                 pixelFormat, dataType);
-                                                 
+                            image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), totalNumSlices,
+                                                pixelFormat, dataType);
+
                             osg::copyImage(previous_image.get(), 0,0,0, previous_image->s(), previous_image->t(), imageNum,
-                                           image.get(), 0, 0, 0,                                                 
-                                           false);
-                            
+                                        image.get(), 0, 0, 0,
+                                        false);
+
                         }
-                        
-                        osg::copyImage(imageAdapter.get(), 0,0,0, imageAdapter->s(), imageAdapter->t(), imageAdapter->r(), 
-                                       image.get(), 0, 0, imageNum,
-                                       false);
-                                             
+
+                        osg::copyImage(imageAdapter.get(), 0,0,0, imageAdapter->s(), imageAdapter->t(), imageAdapter->r(),
+                                    image.get(), 0, 0, imageNum,
+                                    false);
+
                         imageNum += dcmImage->getFrameCount();
                     }
                     else
@@ -835,14 +880,14 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     }
                 }
             }
-            
+
             if (!image)
             {
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
-            info()<<"Spacing = "<<*matrix<<std::endl;
-            
+            info()<<"Spacing = "<<*(details->getMatrix())<<std::endl;
+
             return image.get();
         }
 #endif
@@ -850,6 +895,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         struct FileInfo
         {
             FileInfo():
+                rescaleIntercept(0.0),
+                rescaleSlope(1.0),
                 numX(0),
                 numY(0),
                 numSlices(1),
@@ -859,6 +906,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             FileInfo(const FileInfo& rhs):
                 filename(rhs.filename),
                 matrix(rhs.matrix),
+                rescaleIntercept(rhs.rescaleIntercept),
+                rescaleSlope(rhs.rescaleSlope),
                 numX(rhs.numX),
                 numY(rhs.numY),
                 numSlices(rhs.numSlices),
@@ -868,20 +917,24 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             FileInfo& operator = (const FileInfo& rhs)
             {
                 if (&rhs == this) return *this;
-                
+
                 filename = rhs.filename;
                 matrix = rhs.matrix;
+                rescaleIntercept = rhs.rescaleIntercept;
+                rescaleSlope = rhs.rescaleSlope;
                 numX = rhs.numX;
                 numY = rhs.numY;
                 sliceThickness = rhs.sliceThickness;
                 numSlices = rhs.numSlices;
                 distance = rhs.distance;
-                
+
                 return *this;
             }
 
             std::string     filename;
             osg::Matrixd    matrix;
+            double          rescaleIntercept;
+            double          rescaleSlope;
             unsigned int    numX;
             unsigned int    numY;
             unsigned int    numSlices;

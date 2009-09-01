@@ -22,6 +22,37 @@
 
 namespace osgVolume {
 
+/** Data strucutre for passing details about the loading imagery on to osgVolume for use when setting up dimensions etc.*/
+class OSGVOLUME_EXPORT ImageDetails : public osg::Object
+{
+    public:
+
+        ImageDetails();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ImageDetails(const ImageDetails&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgVolume, ImageDetails);
+
+        void setRescaleIntercept(double intercept) { _rescaleIntercept = intercept; }
+        double getRescaleIntercept() const { return _rescaleIntercept; }
+
+        void setRescaleSlope(double slope) { _rescaleSlope = slope; }
+        double getRescaleSlope() const { return _rescaleSlope; }
+
+        void setMatrix(osg::RefMatrix* matrix) { _matrix = matrix; }
+        osg::RefMatrix* getMatrix() { return _matrix.get(); }
+        const osg::RefMatrix* getMatrix() const { return _matrix.get(); }
+
+    protected:
+
+        double                          _rescaleIntercept;
+        double                          _rescaleSlope;
+        osg::ref_ptr<osg::RefMatrix>    _matrix;
+
+};
+
+/** Base class for representing a single layer of volume data.*/
 class OSGVOLUME_EXPORT Layer : public osg::Object
 {
     public:
@@ -30,9 +61,9 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Layer(const Layer&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgVolume, Layer);
-        
+
         /** Set the file name of the data associated with this layer. */
         virtual void setFileName(const std::string& filename) { _filename = filename; }
 
@@ -42,7 +73,7 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         void setLocator(Locator* locator) { _locator = locator; }
         Locator* getLocator() { return _locator.get(); }
         const Locator* getLocator() const { return _locator.get(); }
-        
+
         void setDefaultValue(const osg::Vec4& value) { _defaultValue = value; }
         const osg::Vec4& getDefaultValue() const { return _defaultValue; }
 
@@ -58,10 +89,10 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         /** Get the magnification texture filter to use when do texture associated with this layer.*/
         osg::Texture::FilterMode getMagFilter() const { return _magFilter; }
 
-        /** Return image associated with layer if supported. */        
+        /** Return image associated with layer if supported. */
         virtual osg::Image* getImage() { return 0; }
 
-        /** Return const image associated with layer if supported. */        
+        /** Return const image associated with layer if supported. */
         virtual const osg::Image* getImage() const { return 0; }
 
 
@@ -82,7 +113,7 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         virtual bool requiresUpdateTraversal() const { return false; }
 
         /** Call update on the Layer.*/
-        virtual void update(osg::NodeVisitor& /*nv*/) {}        
+        virtual void update(osg::NodeVisitor& /*nv*/) {}
 
         /** increment the modified count."*/
         virtual void dirty() {};
@@ -104,7 +135,7 @@ class OSGVOLUME_EXPORT Layer : public osg::Object
         osg::Vec4                           _defaultValue;
         osg::Texture::FilterMode            _minFilter;
         osg::Texture::FilterMode            _magFilter;
-        
+
         osg::ref_ptr<Property>              _property;
 
 };
@@ -117,7 +148,7 @@ class OSGVOLUME_EXPORT ImageLayer : public Layer
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         ImageLayer(const ImageLayer& imageLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgVolume, ImageLayer);
 
         void setFileName(const std::string& filename) { _filename = filename; if (_image.valid()) _image->setFileName(filename); }
@@ -125,21 +156,29 @@ class OSGVOLUME_EXPORT ImageLayer : public Layer
 
         void setImage(osg::Image* image);
 
-        /** Return image associated with layer. */  
+        /** Return image associated with layer. */
         virtual osg::Image* getImage() { return _image.get(); }
 
         /** Return const image associated with layer. */
         virtual const osg::Image* getImage() const { return _image.get(); }
-                
+
+
+        void setRescaleIntercept(double intercept) { _rescaleIntercept = intercept; }
+        double getRescaleIntercept() const { return _rescaleIntercept; }
+
+        void setRescaleSlope(double slope) { _rescaleSlope = slope; }
+        double setRescaleSlope() const { return _rescaleSlope; }
+
+
         /** Compute the min and max pixel colors.*/
         bool computeMinMax(osg::Vec4& min, osg::Vec4& max);
-                
+
         /** Apply color transformation to pixels using c' = offset + c * scale .*/
         void offsetAndScaleImage(const osg::Vec4& offset, const osg::Vec4& scale);
-        
+
         /** Compute the min max range of the image, and then remap this to a 0 to 1 range.*/
         void rescaleToZeroToOneRange();
-               
+
         /** Compute the min color component of the image and then translate and pixels by this offset to make the new min component 0.*/
         void translateMinToZero();
 
@@ -155,6 +194,8 @@ class OSGVOLUME_EXPORT ImageLayer : public Layer
 
         virtual ~ImageLayer() {}
 
+        double                      _rescaleIntercept;
+        double                      _rescaleSlope;
         osg::ref_ptr<osg::Image>    _image;
 
 };
@@ -167,7 +208,7 @@ class OSGVOLUME_EXPORT CompositeLayer : public Layer
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         CompositeLayer(const CompositeLayer& compositeLayer,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgVolume, CompositeLayer);
 
         void clear();
@@ -182,11 +223,11 @@ class OSGVOLUME_EXPORT CompositeLayer : public Layer
         void addLayer(Layer* layer) { _layers.push_back(NameLayer(layer->getFileName(),layer)); }
 
         void removeLayer(unsigned int i) { _layers.erase(_layers.begin()+i); }
-        
+
         unsigned int getNumLayers() const { return _layers.size(); }
 
         bool requiresUpdateTraversal() const;
-   
+
         virtual void update(osg::NodeVisitor& /*nv*/);
 
     protected:
@@ -196,7 +237,7 @@ class OSGVOLUME_EXPORT CompositeLayer : public Layer
         struct NameLayer
         {
             NameLayer() {}
-        
+
             NameLayer(const NameLayer& cnl):
                 filename(cnl.filename),
                 layer(cnl.layer) {}
@@ -208,7 +249,7 @@ class OSGVOLUME_EXPORT CompositeLayer : public Layer
             NameLayer& operator = (const NameLayer& cnl)
             {
                 if (&cnl==this) return *this;
-                
+
                 filename = cnl.filename;
                 layer = cnl.layer;
                 return *this;
@@ -217,9 +258,9 @@ class OSGVOLUME_EXPORT CompositeLayer : public Layer
             std::string         filename;
             osg::ref_ptr<Layer> layer;
         };
-        
+
         typedef std::vector< NameLayer > Layers;
-        
+
         Layers _layers;
 };
 

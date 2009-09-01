@@ -1,14 +1,14 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield 
- *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
- * (at your option) any later version.  The full license is in LICENSE file
- * included with this distribution, and on the openscenegraph.org website.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * OpenSceneGraph Public License for more details.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2009 Robert Osfield
+*
+* This library is open source and may be redistributed and/or modified under
+* the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+* (at your option) any later version.  The full license is in LICENSE file
+* included with this distribution, and on the openscenegraph.org website.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* OpenSceneGraph Public License for more details.
 */
 
 #include <osgVolume/Layer>
@@ -20,6 +20,19 @@
 #include <osg/io_utils>
 
 using namespace osgVolume;
+
+ImageDetails::ImageDetails():
+    _rescaleIntercept(0.0),
+    _rescaleSlope(1.0)
+{
+}
+
+ImageDetails::ImageDetails(const ImageDetails& rhs,const osg::CopyOp& copyop):
+    _rescaleIntercept(rhs._rescaleIntercept),
+    _rescaleSlope(rhs._rescaleSlope),
+    _matrix(rhs._matrix)
+{
+}
 
 Layer::Layer():
     _minFilter(osg::Texture::LINEAR),
@@ -42,10 +55,10 @@ Layer::~Layer()
 osg::BoundingSphere Layer::computeBound() const
 {
     if (!getLocator()) return osg::BoundingSphere();
-    
+
     osg::Vec3d left, right;
     getLocator()->computeLocalBounds(left, right);
-    
+
     //osg::notify(osg::NOTICE)<<"left = "<<left<<std::endl;
     //osg::notify(osg::NOTICE)<<"right = "<<right<<std::endl;
 
@@ -57,12 +70,12 @@ void Layer::addProperty(Property* property)
 {
     if (!property) return;
 
-    if (!_property) 
+    if (!_property)
     {
         _property = property;
         return;
     }
-    
+
     CompositeProperty* cp = dynamic_cast<CompositeProperty*>(_property.get());
     if (cp)
     {
@@ -82,12 +95,16 @@ void Layer::addProperty(Property* property)
 // ImageLayer
 //
 ImageLayer::ImageLayer(osg::Image* image):
+    _rescaleIntercept(0.0),
+    _rescaleSlope(1.0),
     _image(image)
 {
 }
 
 ImageLayer::ImageLayer(const ImageLayer& imageLayer,const osg::CopyOp& copyop):
     Layer(imageLayer, copyop),
+    _rescaleIntercept(imageLayer._rescaleIntercept),
+    _rescaleSlope(imageLayer._rescaleSlope),
     _image(imageLayer._image)
 {
 }
@@ -123,12 +140,16 @@ bool ImageLayer::computeMinMax(osg::Vec4& minValue, osg::Vec4& maxValue)
 void ImageLayer::offsetAndScaleImage(const osg::Vec4& offset, const osg::Vec4& scale)
 {
     if (!_image) return;
-    
+
     osg::offsetAndScaleImage(_image.get(), offset, scale);
 }
 
 void ImageLayer::rescaleToZeroToOneRange()
 {
+    osg::notify(osg::NOTICE)<<"ImageLayer::rescaleToZeroToOneRange()"<<std::endl;
+    osg::notify(osg::NOTICE)<<"         _rescaleIntercept "<<_rescaleIntercept<<std::endl;
+    osg::notify(osg::NOTICE)<<"         _rescaleSlope "<<_rescaleSlope<<std::endl;
+
     osg::Vec4 minValue, maxValue;
     if (computeMinMax(minValue, maxValue))
     {
@@ -141,9 +162,12 @@ void ImageLayer::rescaleToZeroToOneRange()
         maxComponent = osg::maximum(maxComponent,maxValue[1]);
         maxComponent = osg::maximum(maxComponent,maxValue[2]);
         maxComponent = osg::maximum(maxComponent,maxValue[3]);
-        
+
         float scale = 0.99f/(maxComponent-minComponent);
         float offset = -minComponent * scale;
+
+        osg::notify(osg::NOTICE)<<"         scale "<<scale<<std::endl;
+        osg::notify(osg::NOTICE)<<"         offset "<<offset<<std::endl;
 
         offsetAndScaleImage(osg::Vec4(offset, offset, offset, offset),
                             osg::Vec4(scale, scale, scale, scale));
@@ -204,7 +228,7 @@ bool CompositeLayer::requiresUpdateTraversal() const
     {
         if (itr->layer->requiresUpdateTraversal()) return true;
     }
-    
+
     return false;
 }
 
@@ -216,7 +240,7 @@ void CompositeLayer::update(osg::NodeVisitor& nv)
     {
         itr->layer->update(nv);
     }
-    
+
 }
 
 
@@ -231,7 +255,7 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
     GLenum dataType = image_3d->getDataType();
 
     unsigned int sourcePixelIncrement = 1;
-    unsigned int alphaOffset = 0; 
+    unsigned int alphaOffset = 0;
     switch(image_3d->getPixelFormat())
     {
     case(GL_ALPHA):
@@ -269,7 +293,7 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
         {
 
             if (dataType==GL_UNSIGNED_BYTE)
-            {        
+            {
                 unsigned char* ptr = image_3d->data(1,t,r)+alphaOffset;
                 unsigned char* left = image_3d->data(0,t,r)+alphaOffset;
                 unsigned char* right = image_3d->data(2,t,r)+alphaOffset;
@@ -284,8 +308,8 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
                 {
 
                     osg::Vec3 grad((float)(*left)-(float)(*right),
-                                   (float)(*below)-(float)(*above),
-                                   (float)(*out) -(float)(*in));
+                                (float)(*below)-(float)(*above),
+                                (float)(*out) -(float)(*in));
 
                     grad.normalize();
 
@@ -331,8 +355,8 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
                 {
 
                     osg::Vec3 grad((float)(*left)-(float)(*right),
-                                   (float)(*below)-(float)(*above),
-                                   (float)(*out) -(float)(*in));
+                                (float)(*below)-(float)(*above),
+                                (float)(*out) -(float)(*in));
 
                     grad.normalize();
 
@@ -348,7 +372,7 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
                         grad.y() = osg::clampBetween((grad.y()+1.0f)*128.0f,0.0f,255.0f);
                         grad.z() = osg::clampBetween((grad.z()+1.0f)*128.0f,0.0f,255.0f);
                     }
-                    
+
 
                     *(destination++) = (unsigned char)(grad.x()); // scale and bias X.
                     *(destination++) = (unsigned char)(grad.y()); // scale and bias Y.
@@ -381,8 +405,8 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
                 {
 
                     osg::Vec3 grad((float)(*left)-(float)(*right),
-                                   (float)(*below)-(float)(*above),
-                                   (float)(*out) -(float)(*in));
+                                (float)(*below)-(float)(*above),
+                                (float)(*out) -(float)(*in));
 
                     grad.normalize();
 
@@ -414,10 +438,10 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
             }
         }
     }
-    
-    
+
+
     osg::notify(osg::INFO)<<"Created NormalMapTexture"<<std::endl;
-    
+
     return normalmap_3d.release();
 }
 
@@ -430,7 +454,7 @@ struct ApplyTransferFunctionOperator
     ApplyTransferFunctionOperator(osg::TransferFunction1D* tf, unsigned char* data):
         _tf(tf),
         _data(data) {}
-        
+
     inline void luminance(float l) const
     {
         osg::Vec4 c = _tf->getColor(l);
@@ -440,27 +464,27 @@ struct ApplyTransferFunctionOperator
         *(_data++) = (unsigned char)(c[2]*255.0f + 0.5f);
         *(_data++) = (unsigned char)(c[3]*255.0f + 0.5f);
     }
-     
+
     inline void alpha(float a) const
     {
         luminance(a);
-    } 
-    
+    }
+
     inline void luminance_alpha(float l,float a) const
-    { 
+    {
         luminance(l);
     }
-     
+
     inline void rgb(float r,float g,float b) const
     {
         luminance((r+g+b)*0.3333333);
     }
-    
+
     inline void rgba(float r,float g,float b,float a) const
     {
         luminance(a);
     }
-    
+
     mutable osg::ref_ptr<osg::TransferFunction1D> _tf;
     mutable unsigned char* _data;
 };
@@ -468,12 +492,12 @@ struct ApplyTransferFunctionOperator
 osg::Image* osgVolume::applyTransferFunction(osg::Image* image, osg::TransferFunction1D* transferFunction)
 {
     osg::notify(osg::INFO)<<"Applying transfer function"<<std::endl;
-    
+
     osg::Image* output_image = new osg::Image;
     output_image->allocateImage(image->s(),image->t(), image->r(), GL_RGBA, GL_UNSIGNED_BYTE);
-    
+
     ApplyTransferFunctionOperator op(transferFunction, output_image->data());
-    osg::readImage(image,op); 
-    
+    osg::readImage(image,op);
+
     return output_image;
 }

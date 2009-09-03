@@ -1353,8 +1353,8 @@ int main( int argc, char **argv )
 
     if (details)
     {
-        layer->setRescaleIntercept(details->getRescaleIntercept());
-        layer->setRescaleSlope(details->getRescaleSlope());
+        layer->setTexelOffset(details->getTexelOffset());
+        layer->setTexelScale(details->getTexelScale());
     }
 
     switch(rescaleOperation)

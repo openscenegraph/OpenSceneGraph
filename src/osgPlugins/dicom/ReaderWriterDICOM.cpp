@@ -212,8 +212,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
             if (details)
             {
-                layer->setRescaleIntercept(details->getRescaleIntercept());
-                layer->setRescaleSlope(details->getRescaleSlope());
+                layer->setTexelOffset(details->getTexelOffset());
+                layer->setTexelScale(details->getTexelScale());
             }
 
             if (matrix)
@@ -593,10 +593,10 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 const char *classUID = NULL;
                 if (fileformat.getDataset()->findAndGetString(DCM_SOPClassUID, classUID).good())
                 {
-                    osg::notify(osg::NOTICE)<<" classUID = "<<classUID<<std::endl;
+                    info()<<" classUID = "<<classUID<<std::endl;
                     if (0 == strcmp(classUID, UID_CTImageStorage))
                     {
-                        osg::notify(osg::NOTICE)<<" is a UID_CTImageStorage "<<std::endl;
+                        info()<<" is a UID_CTImageStorage "<<std::endl;
                     }
 
                 }
@@ -607,8 +607,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 {
                     fileInfo.rescaleIntercept = rescaleIntercept;
                     fileInfo.rescaleSlope = rescaleSlope;
-                    osg::notify(osg::NOTICE)<<" rescaleIntercept = "<<rescaleIntercept<<std::endl;
-                    osg::notify(osg::NOTICE)<<" rescaleSlope = "<<rescaleSlope<<std::endl;
+                    info()<<" rescaleIntercept = "<<rescaleIntercept<<std::endl;
+                    info()<<" rescaleSlope = "<<rescaleSlope<<std::endl;
                 }
 
 
@@ -829,8 +829,22 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             (*matrix)(1,2) = fileInfo.matrix(1,2) * averageThickness;
                             (*matrix)(2,2) = fileInfo.matrix(2,2) * averageThickness;
 
-                            details->setRescaleIntercept(fileInfo.rescaleIntercept);
-                            details->setRescaleSlope(fileInfo.rescaleSlope);
+                            // note from Robert Osfield, testing various dicom files I have found that the rescaleIntercept
+                            // for CT data doesn't look to be applicable as an straight value offset, so we'll ignore for now.
+                            // details->setTexelOffset(fileInfo.rescaleIntercept);
+                            double s = fileInfo.rescaleSlope;
+                            switch(dataType)
+                            {
+                                case(GL_BYTE): s *= 128.0; break;
+                                case(GL_UNSIGNED_BYTE): s *= 255.0; break;
+                                case(GL_SHORT): s *= 32768.0; break;
+                                case(GL_UNSIGNED_SHORT): s *= 65535.0; break;
+                                case(GL_INT): s *= 2147483648.0; break;
+                                case(GL_UNSIGNED_INT): s *= 4294967295.0; break;
+                                default: break;
+                            }
+
+                            details->setTexelScale(osg::Vec4(s,s,s,s));
 
                             image = new osg::Image;
                             image->setUserData(details.get());

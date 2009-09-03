@@ -249,16 +249,28 @@ void RayTracedTechnique::init()
 
         bool enableBlending = false;
 
+        if (tf)
+        {
+            osg::ref_ptr<osg::Texture1D> tf_texture = new osg::Texture1D;
+            tf_texture->setImage(tf->getImage());
+            tf_texture->setResizeNonPowerOfTwoHint(false);
+            tf_texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
+            tf_texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+            tf_texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
+
+            osg::ref_ptr<osg::Uniform> tf_sampler = new osg::Uniform("tfTexture",1);
+
+            stateset->setTextureAttributeAndModes(1, tf_texture.get(), osg::StateAttribute::ON);
+            stateset->addUniform(tf_sampler.get());
+
+        }
+
         if (shadingModel==MaximumIntensityProjection)
         {
             enableBlending = true;
 
             if (tf)
             {
-                osg::Texture1D* texture1D = new osg::Texture1D;
-                texture1D->setImage(tf->getImage());    
-                stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
-
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf_mip.frag");
                 if (fragmentShader)
                 {
@@ -295,17 +307,6 @@ void RayTracedTechnique::init()
 
             if (tf)
             {
-                osg::Texture1D* texture1D = new osg::Texture1D;
-                texture1D->setImage(tf->getImage());    
-                texture1D->setResizeNonPowerOfTwoHint(false);
-                texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
-                texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
-                texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
-                stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
-
-                osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
-                stateset->addUniform(tfTextureSampler);
-
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf_iso.frag");
                 if (fragmentShader)
                 {
@@ -341,17 +342,6 @@ void RayTracedTechnique::init()
 
             if (tf)
             {
-                osg::Texture1D* texture1D = new osg::Texture1D;
-                texture1D->setImage(tf->getImage());    
-                texture1D->setResizeNonPowerOfTwoHint(false);
-                texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
-                texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
-                texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
-                stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
-
-                osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
-                stateset->addUniform(tfTextureSampler);
-
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit_tf.frag");
                 if (fragmentShader)
                 {
@@ -366,7 +356,6 @@ void RayTracedTechnique::init()
             }
             else
             {    
-
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_lit.frag");
                 if (fragmentShader)
                 {
@@ -385,19 +374,6 @@ void RayTracedTechnique::init()
 
             if (tf)
             {
-                osg::notify(osg::INFO)<<"Setting up TF path"<<std::endl;
-
-                osg::Texture1D* texture1D = new osg::Texture1D;
-                texture1D->setImage(tf->getImage());    
-                texture1D->setResizeNonPowerOfTwoHint(false);
-                texture1D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
-                texture1D->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
-                texture1D->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
-                stateset->setTextureAttributeAndModes(1,texture1D,osg::StateAttribute::ON);
-
-                osg::Uniform* tfTextureSampler = new osg::Uniform("tfTexture",1);
-                stateset->addUniform(tfTextureSampler);
-
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_tf.frag");
                 if (fragmentShader)
                 {
@@ -412,7 +388,6 @@ void RayTracedTechnique::init()
             }
             else
             {
-
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume.frag");
                 if (fragmentShader)
                 {
@@ -425,7 +400,7 @@ void RayTracedTechnique::init()
                 }
             }
         }
-        
+
         if (cpv._sampleDensityProperty.valid())
             stateset->addUniform(cpv._sampleDensityProperty->getUniform());
         else

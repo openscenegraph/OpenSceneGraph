@@ -22,14 +22,14 @@
 using namespace osgVolume;
 
 ImageDetails::ImageDetails():
-    _rescaleIntercept(0.0),
-    _rescaleSlope(1.0)
+    _texelOffset(0.0,0.0,0.0,0.0),
+    _texelScale(1.0,1.0,1.0,1.0)
 {
 }
 
 ImageDetails::ImageDetails(const ImageDetails& rhs,const osg::CopyOp& copyop):
-    _rescaleIntercept(rhs._rescaleIntercept),
-    _rescaleSlope(rhs._rescaleSlope),
+    _texelOffset(rhs._texelOffset),
+    _texelScale(rhs._texelScale),
     _matrix(rhs._matrix)
 {
 }
@@ -95,16 +95,16 @@ void Layer::addProperty(Property* property)
 // ImageLayer
 //
 ImageLayer::ImageLayer(osg::Image* image):
-    _rescaleIntercept(0.0),
-    _rescaleSlope(1.0),
+    _texelOffset(0.0,0.0,0.0,0.0),
+    _texelScale(1.0,1.0,1.0,1.0),
     _image(image)
 {
 }
 
 ImageLayer::ImageLayer(const ImageLayer& imageLayer,const osg::CopyOp& copyop):
     Layer(imageLayer, copyop),
-    _rescaleIntercept(imageLayer._rescaleIntercept),
-    _rescaleSlope(imageLayer._rescaleSlope),
+    _texelOffset(imageLayer._texelOffset),
+    _texelScale(imageLayer._texelScale),
     _image(imageLayer._image)
 {
 }
@@ -141,14 +141,48 @@ void ImageLayer::offsetAndScaleImage(const osg::Vec4& offset, const osg::Vec4& s
 {
     if (!_image) return;
 
+#if 0
+    osg::Vec4 minValue, maxValue;
+    if (computeMinMax(minValue, maxValue))
+    {
+        osg::notify(osg::NOTICE)<<"ImageLayer::offsetAndScaleImage("<<offset<<" and "<<scale<<")"<<std::endl;
+        osg::notify(osg::NOTICE)<<"     before    _texelOffset "<<_texelOffset<<std::endl;
+        osg::notify(osg::NOTICE)<<"     before    _texelScale "<<_texelScale<<std::endl;
+        osg::notify(osg::NOTICE)<<"     before    minValue "<<minValue<<std::endl;
+        osg::notify(osg::NOTICE)<<"     before    maxValue "<<maxValue<<std::endl;
+        osg::notify(osg::NOTICE)<<"     before    minValue transformed "<<minValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
+        osg::notify(osg::NOTICE)<<"     before    maxValue transformed "<<maxValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
+    }
+#endif
+
     osg::offsetAndScaleImage(_image.get(), offset, scale);
+
+    _texelScale[0] /= scale[0];
+    _texelScale[1] /= scale[1];
+    _texelScale[2] /= scale[2];
+    _texelScale[3] /= scale[3];
+
+    _texelOffset[0] -= offset[0]*_texelScale[0];
+    _texelOffset[1] -= offset[1]*_texelScale[1];
+    _texelOffset[2] -= offset[2]*_texelScale[2];
+    _texelOffset[3] -= offset[3]*_texelScale[3];
+
+#if 0
+    if (computeMinMax(minValue, maxValue))
+    {
+        osg::notify(osg::NOTICE)<<"     after     _texelOffset "<<_texelOffset<<std::endl;
+        osg::notify(osg::NOTICE)<<"     after     _texelScale "<<_texelScale<<std::endl;
+        osg::notify(osg::NOTICE)<<"     after     minValue "<<minValue<<std::endl;
+        osg::notify(osg::NOTICE)<<"     after     maxValue "<<maxValue<<std::endl;
+        osg::notify(osg::NOTICE)<<"     after     minValue transformed "<<minValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
+        osg::notify(osg::NOTICE)<<"     after     maxValue transformed "<<maxValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
+    }
+#endif
 }
 
 void ImageLayer::rescaleToZeroToOneRange()
 {
     osg::notify(osg::NOTICE)<<"ImageLayer::rescaleToZeroToOneRange()"<<std::endl;
-    osg::notify(osg::NOTICE)<<"         _rescaleIntercept "<<_rescaleIntercept<<std::endl;
-    osg::notify(osg::NOTICE)<<"         _rescaleSlope "<<_rescaleSlope<<std::endl;
 
     osg::Vec4 minValue, maxValue;
     if (computeMinMax(minValue, maxValue))

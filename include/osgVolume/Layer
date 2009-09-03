@@ -34,11 +34,11 @@ class OSGVOLUME_EXPORT ImageDetails : public osg::Object
 
         META_Object(osgVolume, ImageDetails);
 
-        void setRescaleIntercept(double intercept) { _rescaleIntercept = intercept; }
-        double getRescaleIntercept() const { return _rescaleIntercept; }
+        void setTexelOffset(const osg::Vec4& offset) { _texelOffset = offset; }
+        const osg::Vec4& getTexelOffset() const { return _texelOffset; }
 
-        void setRescaleSlope(double slope) { _rescaleSlope = slope; }
-        double getRescaleSlope() const { return _rescaleSlope; }
+        void setTexelScale(const osg::Vec4& scale) { _texelScale = scale; }
+        const osg::Vec4& getTexelScale() const { return _texelScale; }
 
         void setMatrix(osg::RefMatrix* matrix) { _matrix = matrix; }
         osg::RefMatrix* getMatrix() { return _matrix.get(); }
@@ -46,8 +46,8 @@ class OSGVOLUME_EXPORT ImageDetails : public osg::Object
 
     protected:
 
-        double                          _rescaleIntercept;
-        double                          _rescaleSlope;
+        osg::Vec4                       _texelOffset;
+        osg::Vec4                       _texelScale;
         osg::ref_ptr<osg::RefMatrix>    _matrix;
 
 };
@@ -163,11 +163,11 @@ class OSGVOLUME_EXPORT ImageLayer : public Layer
         virtual const osg::Image* getImage() const { return _image.get(); }
 
 
-        void setRescaleIntercept(double intercept) { _rescaleIntercept = intercept; }
-        double getRescaleIntercept() const { return _rescaleIntercept; }
+        void setTexelOffset(const osg::Vec4& offset) { _texelOffset = offset; }
+        const osg::Vec4& getTexelOffset() const { return _texelOffset; }
 
-        void setRescaleSlope(double slope) { _rescaleSlope = slope; }
-        double setRescaleSlope() const { return _rescaleSlope; }
+        void setTexelScale(const osg::Vec4& scale) { _texelScale = scale; }
+        const osg::Vec4& getTexelScale() const { return _texelScale; }
 
 
         /** Compute the min and max pixel colors.*/
@@ -194,8 +194,8 @@ class OSGVOLUME_EXPORT ImageLayer : public Layer
 
         virtual ~ImageLayer() {}
 
-        double                      _rescaleIntercept;
-        double                      _rescaleSlope;
+        osg::Vec4                   _texelOffset;
+        osg::Vec4                   _texelScale;
         osg::ref_ptr<osg::Image>    _image;
 
 };

@@ -13,6 +13,7 @@
 #include <osg/BoundingSphere>
 #include <osg/CopyOp>
 #include <osg/Image>
+#include <osg/Matrix>
 #include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/Texture>
@@ -132,6 +133,87 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::CompositeLayer)
 	                __void__removeLayer__unsigned_int);
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgVolume::ImageDetails)
+	I_DeclaringFile("osgVolume/Layer");
+	I_BaseType(osg::Object);
+	I_Constructor0(____ImageDetails,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osgVolume::ImageDetails &, x, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ImageDetails__C5_ImageDetails_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, setTexelOffset, IN, const osg::Vec4 &, offset,
+	          Properties::NON_VIRTUAL,
+	          __void__setTexelOffset__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getTexelOffset,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec4_R1__getTexelOffset,
+	          "",
+	          "");
+	I_Method1(void, setTexelScale, IN, const osg::Vec4 &, scale,
+	          Properties::NON_VIRTUAL,
+	          __void__setTexelScale__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getTexelScale,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec4_R1__getTexelScale,
+	          "",
+	          "");
+	I_Method1(void, setMatrix, IN, osg::RefMatrix *, matrix,
+	          Properties::NON_VIRTUAL,
+	          __void__setMatrix__osg_RefMatrix_P1,
+	          "",
+	          "");
+	I_Method0(osg::RefMatrix *, getMatrix,
+	          Properties::NON_VIRTUAL,
+	          __osg_RefMatrix_P1__getMatrix,
+	          "",
+	          "");
+	I_Method0(const osg::RefMatrix *, getMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_RefMatrix_P1__getMatrix,
+	          "",
+	          "");
+	I_SimpleProperty(osg::RefMatrix *, Matrix, 
+	                 __osg_RefMatrix_P1__getMatrix, 
+	                 __void__setMatrix__osg_RefMatrix_P1);
+	I_SimpleProperty(const osg::Vec4 &, TexelOffset, 
+	                 __C5_osg_Vec4_R1__getTexelOffset, 
+	                 __void__setTexelOffset__C5_osg_Vec4_R1);
+	I_SimpleProperty(const osg::Vec4 &, TexelScale, 
+	                 __C5_osg_Vec4_R1__getTexelScale, 
+	                 __void__setTexelScale__C5_osg_Vec4_R1);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgVolume::ImageLayer)
 	I_DeclaringFile("osgVolume/Layer");
 	I_BaseType(osgVolume::Layer);
@@ -194,6 +276,26 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::ImageLayer)
 	          __C5_osg_Image_P1__getImage,
 	          "Return const image associated with layer. ",
 	          "");
+	I_Method1(void, setTexelOffset, IN, const osg::Vec4 &, offset,
+	          Properties::NON_VIRTUAL,
+	          __void__setTexelOffset__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getTexelOffset,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec4_R1__getTexelOffset,
+	          "",
+	          "");
+	I_Method1(void, setTexelScale, IN, const osg::Vec4 &, scale,
+	          Properties::NON_VIRTUAL,
+	          __void__setTexelScale__C5_osg_Vec4_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Vec4 &, getTexelScale,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec4_R1__getTexelScale,
+	          "",
+	          "");
 	I_Method2(bool, computeMinMax, IN, osg::Vec4 &, min, IN, osg::Vec4 &, max,
 	          Properties::NON_VIRTUAL,
 	          __bool__computeMinMax__osg_Vec4_R1__osg_Vec4_R1,
@@ -248,6 +350,12 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::ImageLayer)
 	I_SimpleProperty(unsigned int, ModifiedCount, 
 	                 __unsigned_int__getModifiedCount, 
 	                 __void__setModifiedCount__unsigned_int);
+	I_SimpleProperty(const osg::Vec4 &, TexelOffset, 
+	                 __C5_osg_Vec4_R1__getTexelOffset, 
+	                 __void__setTexelOffset__C5_osg_Vec4_R1);
+	I_SimpleProperty(const osg::Vec4 &, TexelScale, 
+	                 __C5_osg_Vec4_R1__getTexelScale, 
+	                 __void__setTexelScale__C5_osg_Vec4_R1);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgVolume::Layer)

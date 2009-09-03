@@ -182,7 +182,7 @@ void ImageLayer::offsetAndScaleImage(const osg::Vec4& offset, const osg::Vec4& s
 
 void ImageLayer::rescaleToZeroToOneRange()
 {
-    osg::notify(osg::NOTICE)<<"ImageLayer::rescaleToZeroToOneRange()"<<std::endl;
+    osg::notify(osg::INFO)<<"ImageLayer::rescaleToZeroToOneRange()"<<std::endl;
 
     osg::Vec4 minValue, maxValue;
     if (computeMinMax(minValue, maxValue))
@@ -200,8 +200,8 @@ void ImageLayer::rescaleToZeroToOneRange()
         float scale = 0.99f/(maxComponent-minComponent);
         float offset = -minComponent * scale;
 
-        osg::notify(osg::NOTICE)<<"         scale "<<scale<<std::endl;
-        osg::notify(osg::NOTICE)<<"         offset "<<offset<<std::endl;
+        osg::notify(osg::INFO)<<"         scale "<<scale<<std::endl;
+        osg::notify(osg::INFO)<<"         offset "<<offset<<std::endl;
 
         offsetAndScaleImage(osg::Vec4(offset, offset, offset, offset),
                             osg::Vec4(scale, scale, scale, scale));

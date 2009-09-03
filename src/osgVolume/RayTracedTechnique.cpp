@@ -251,6 +251,20 @@ void RayTracedTechnique::init()
 
         if (tf)
         {
+            float tfScale = 1.0f;
+            float tfOffset = 0.0f;
+
+            ImageLayer* imageLayer = dynamic_cast<ImageLayer*>(_volumeTile->getLayer());
+            if (imageLayer)
+            {
+                tfOffset = (imageLayer->getTexelOffset()[3] - tf->getMinimum()) / (tf->getMaximum() - tf->getMinimum());
+                tfScale = imageLayer->getTexelScale()[3] / (tf->getMaximum() - tf->getMinimum());
+            }
+            else
+            {
+                tfOffset = -tf->getMinimum() / (tf->getMaximum()-tf->getMinimum());
+                tfScale = 1.0f / (tf->getMaximum()-tf->getMinimum());
+            }
             osg::ref_ptr<osg::Texture1D> tf_texture = new osg::Texture1D;
             tf_texture->setImage(tf->getImage());
             tf_texture->setResizeNonPowerOfTwoHint(false);
@@ -258,10 +272,10 @@ void RayTracedTechnique::init()
             tf_texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
             tf_texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
 
-            osg::ref_ptr<osg::Uniform> tf_sampler = new osg::Uniform("tfTexture",1);
-
             stateset->setTextureAttributeAndModes(1, tf_texture.get(), osg::StateAttribute::ON);
-            stateset->addUniform(tf_sampler.get());
+            stateset->addUniform(new osg::Uniform("tfTexture",1));
+            stateset->addUniform(new osg::Uniform("tfOffset",tfOffset));
+            stateset->addUniform(new osg::Uniform("tfScale",tfScale));
 
         }
 

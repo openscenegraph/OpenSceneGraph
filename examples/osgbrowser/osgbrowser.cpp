@@ -6,7 +6,7 @@
 int main(int argc,char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
-    
+
     osgWidget::BrowserManager::instance()->init(arguments[0]);
 
     osgViewer::Viewer viewer(arguments);
@@ -25,9 +25,9 @@ int main(int argc,char** argv)
         {
             osg::ref_ptr<osgWidget::Browser> browser = new osgWidget::Browser;
             if (browser->open(arguments[i], hints))
-            {            
+            {
                 group->addChild(browser.get());
-                
+
                 hints.position.x() += 1.1f;
             }
         }

@@ -2426,6 +2426,14 @@
 		D42FE58A0B542DD10058A380 /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		D42FE58B0B542DD10058A380 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D42FE7CF0B56521B0058A380 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
+		D4306A9E10552D13008403DD /* BoneMapVisitor in Headers */ = {isa = PBXBuildFile; fileRef = D4306A9B10552D13008403DD /* BoneMapVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4306A9F10552D13008403DD /* ComputeBindMatrixVisitor in Headers */ = {isa = PBXBuildFile; fileRef = D4306A9C10552D13008403DD /* ComputeBindMatrixVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4306AA010552D13008403DD /* FindParentAnimationManagerVisitor in Headers */ = {isa = PBXBuildFile; fileRef = D4306A9D10552D13008403DD /* FindParentAnimationManagerVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4306AA310552D27008403DD /* BoneMapVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4306AA110552D27008403DD /* BoneMapVisitor.cpp */; };
+		D4306AA410552D27008403DD /* FindParentAnimationManagerVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4306AA210552D27008403DD /* FindParentAnimationManagerVisitor.cpp */; };
+		D4306ABC10552D9B008403DD /* TabBoxTrackballDragger in Headers */ = {isa = PBXBuildFile; fileRef = D4306ABB10552D9B008403DD /* TabBoxTrackballDragger */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4306ABE10552DA8008403DD /* TabBoxTrackballDragger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4306ABD10552DA8008403DD /* TabBoxTrackballDragger.cpp */; };
+		D4306AE610552E2D008403DD /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47A06810B833F6E00E19024 /* osgManipulator.framework */; };
 		D43AB4EC0E2E01CB00623C77 /* KdTree in Headers */ = {isa = PBXBuildFile; fileRef = D43AB4EB0E2E01CB00623C77 /* KdTree */; settings = {ATTRIBUTES = (Public, ); }; };
 		D43AB4EE0E2E01DD00623C77 /* KdTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB4ED0E2E01DD00623C77 /* KdTree.cpp */; };
 		D43AB4FA0E2E14F800623C77 /* FadeText.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43AB4F60E2E14F800623C77 /* FadeText.cpp */; };
@@ -6270,14 +6278,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = BE11849905D7126100EB53E5 /* osgUtil */;
+			remoteGlobalIDString = BE11849905D7126100EB53E5;
 			remoteInfo = osgUtil;
 		};
 		D421AE7E1018AC12000167CB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D43AB51E0E2E1D1900623C77 /* osgWidget */;
+			remoteGlobalIDString = D43AB51E0E2E1D1900623C77;
 			remoteInfo = osgWidget;
 		};
 		D42FE6B00B5561FE0058A380 /* PBXContainerItemProxy */ = {
@@ -6286,6 +6294,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 00FB20D00B015CF10052DD79;
 			remoteInfo = osgViewer;
+		};
+		D4306AC010552E10008403DD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D47A06550B833F6E00E19024 /* osgManipulator */;
+			remoteInfo = osgManipulator;
 		};
 		D43AB5200E2E1D1900623C77 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -8334,6 +8349,13 @@
 		D41CA9010CAAB5A500D6176C /* ParallelSplitShadowMap */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ParallelSplitShadowMap; sourceTree = "<group>"; };
 		D421AE271018A8AB000167CB /* LinkVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LinkVisitor.cpp; path = ../../src/osgAnimation/LinkVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		D425C8290E14F49F004E88FE /* Atomic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Atomic.cpp; path = common/Atomic.cpp; sourceTree = "<group>"; };
+		D4306A9B10552D13008403DD /* BoneMapVisitor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = BoneMapVisitor; path = ../../include/osgAnimation/BoneMapVisitor; sourceTree = SOURCE_ROOT; };
+		D4306A9C10552D13008403DD /* ComputeBindMatrixVisitor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ComputeBindMatrixVisitor; path = ../../include/osgAnimation/ComputeBindMatrixVisitor; sourceTree = SOURCE_ROOT; };
+		D4306A9D10552D13008403DD /* FindParentAnimationManagerVisitor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindParentAnimationManagerVisitor; path = ../../include/osgAnimation/FindParentAnimationManagerVisitor; sourceTree = SOURCE_ROOT; };
+		D4306AA110552D27008403DD /* BoneMapVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BoneMapVisitor.cpp; path = ../../src/osgAnimation/BoneMapVisitor.cpp; sourceTree = SOURCE_ROOT; };
+		D4306AA210552D27008403DD /* FindParentAnimationManagerVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FindParentAnimationManagerVisitor.cpp; path = ../../src/osgAnimation/FindParentAnimationManagerVisitor.cpp; sourceTree = SOURCE_ROOT; };
+		D4306ABB10552D9B008403DD /* TabBoxTrackballDragger */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TabBoxTrackballDragger; sourceTree = "<group>"; };
+		D4306ABD10552DA8008403DD /* TabBoxTrackballDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TabBoxTrackballDragger.cpp; sourceTree = "<group>"; };
 		D43AB4EB0E2E01CB00623C77 /* KdTree */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = KdTree; sourceTree = "<group>"; };
 		D43AB4ED0E2E01DD00623C77 /* KdTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KdTree.cpp; sourceTree = "<group>"; };
 		D43AB4F60E2E14F800623C77 /* FadeText.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FadeText.cpp; sourceTree = "<group>"; };
@@ -10413,6 +10435,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4306AE610552E2D008403DD /* osgManipulator.framework in Frameworks */,
 				D40F5E940FFA34C2002E7744 /* osgFX.framework in Frameworks */,
 				D40F5E720FFA34A1002E7744 /* osgVolume.framework in Frameworks */,
 				D40F5E1D0FFA345D002E7744 /* osgViewer.framework in Frameworks */,
@@ -13904,6 +13927,9 @@
 		D41887A70EDEE75000C17A84 /* osgAnimation */ = {
 			isa = PBXGroup;
 			children = (
+				D4306A9B10552D13008403DD /* BoneMapVisitor */,
+				D4306A9C10552D13008403DD /* ComputeBindMatrixVisitor */,
+				D4306A9D10552D13008403DD /* FindParentAnimationManagerVisitor */,
 				D40277520FE7A70400CDE760 /* Action */,
 				D40277530FE7A70400CDE760 /* ActionCallback */,
 				D40277540FE7A70500CDE760 /* ActionVisitor */,
@@ -13941,6 +13967,8 @@
 		D41887D20EDEE78100C17A84 /* osgAnimation */ = {
 			isa = PBXGroup;
 			children = (
+				D4306AA110552D27008403DD /* BoneMapVisitor.cpp */,
+				D4306AA210552D27008403DD /* FindParentAnimationManagerVisitor.cpp */,
 				D421AE271018A8AB000167CB /* LinkVisitor.cpp */,
 				D402775E0FE7A71C00CDE760 /* Action.cpp */,
 				D402775F0FE7A71C00CDE760 /* ActionCallback.cpp */,
@@ -14059,6 +14087,7 @@
 		D47A068E0B83404300E19024 /* osgManipulator */ = {
 			isa = PBXGroup;
 			children = (
+				D4306ABB10552D9B008403DD /* TabBoxTrackballDragger */,
 				0084FAB20D341F7E0021E5C9 /* Version */,
 				D47A068F0B83404400E19024 /* AntiSquish */,
 				D47A06900B83404400E19024 /* Command */,
@@ -14089,6 +14118,7 @@
 		D47A06B90B83406500E19024 /* osgManipulator */ = {
 			isa = PBXGroup;
 			children = (
+				D4306ABD10552DA8008403DD /* TabBoxTrackballDragger.cpp */,
 				0084FAB00D341F5F0021E5C9 /* Version.cpp */,
 				D47A06BA0B83406500E19024 /* AntiSquish.cpp */,
 				D47A06BB0B83406500E19024 /* Command.cpp */,
@@ -15953,6 +15983,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4306A9E10552D13008403DD /* BoneMapVisitor in Headers */,
+				D4306A9F10552D13008403DD /* ComputeBindMatrixVisitor in Headers */,
+				D4306AA010552D13008403DD /* FindParentAnimationManagerVisitor in Headers */,
 				D40277580FE7A70500CDE760 /* Action in Headers */,
 				D40277590FE7A70500CDE760 /* ActionCallback in Headers */,
 				D402775A0FE7A70500CDE760 /* ActionVisitor in Headers */,
@@ -16043,6 +16076,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4306ABC10552D9B008403DD /* TabBoxTrackballDragger in Headers */,
 				0084FAB30D341F7E0021E5C9 /* Version in Headers */,
 				D47A06A40B83404600E19024 /* AntiSquish in Headers */,
 				D47A06A50B83404600E19024 /* Command in Headers */,
@@ -19099,6 +19133,7 @@
 				D40F5D4A0FFA330F002E7744 /* PBXTargetDependency */,
 				D40F5E480FFA3465002E7744 /* PBXTargetDependency */,
 				D40F5E500FFA3474002E7744 /* PBXTargetDependency */,
+				D4306AC110552E10008403DD /* PBXTargetDependency */,
 			);
 			name = osgPresentation;
 			productName = osgGA;
@@ -22311,6 +22346,8 @@
 				D40277660FE7A71C00CDE760 /* StatsHandler.cpp in Sources */,
 				D40277670FE7A71C00CDE760 /* StatsVisitor.cpp in Sources */,
 				D421AE281018A8AB000167CB /* LinkVisitor.cpp in Sources */,
+				D4306AA310552D27008403DD /* BoneMapVisitor.cpp in Sources */,
+				D4306AA410552D27008403DD /* FindParentAnimationManagerVisitor.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22390,6 +22427,7 @@
 				D47A06E20B83406700E19024 /* TranslateAxisDragger.cpp in Sources */,
 				D47A06E30B83406700E19024 /* TranslatePlaneDragger.cpp in Sources */,
 				0084FAB10D341F5F0021E5C9 /* Version.cpp in Sources */,
+				D4306ABE10552DA8008403DD /* TabBoxTrackballDragger.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25307,6 +25345,11 @@
 			isa = PBXTargetDependency;
 			target = 00FB20D00B015CF10052DD79 /* osgViewer */;
 			targetProxy = D42FE6B00B5561FE0058A380 /* PBXContainerItemProxy */;
+		};
+		D4306AC110552E10008403DD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D47A06550B833F6E00E19024 /* osgManipulator */;
+			targetProxy = D4306AC010552E10008403DD /* PBXContainerItemProxy */;
 		};
 		D43AB51F0E2E1D1900623C77 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

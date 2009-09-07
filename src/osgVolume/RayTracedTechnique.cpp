@@ -446,11 +446,14 @@ void RayTracedTechnique::init()
         texgen->setMode(osg::TexGen::OBJECT_LINEAR);
         texgen->setPlanesFromMatrix( geometryMatrix * osg::Matrix::inverse(imageMatrix));
 
-        osg::ref_ptr<TexGenLocatorCallback> locatorCallback = new TexGenLocatorCallback(texgen, masterLocator, layerLocator);
-        masterLocator->addCallback(locatorCallback.get());
-        if (masterLocator != layerLocator)
+        if (masterLocator)
         {
-            if (layerLocator) layerLocator->addCallback(locatorCallback.get());
+            osg::ref_ptr<TexGenLocatorCallback> locatorCallback = new TexGenLocatorCallback(texgen, masterLocator, layerLocator);
+            masterLocator->addCallback(locatorCallback.get());
+            if (masterLocator != layerLocator)
+            {
+                if (layerLocator) layerLocator->addCallback(locatorCallback.get());
+            }
         }
 
         stateset->setTextureAttributeAndModes(0, texgen, osg::StateAttribute::ON);

@@ -113,8 +113,15 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 itr != contents.end();
                 ++itr)
             {
+                if ((*itr).empty()) continue;
+
+                if ((*itr)[0]=='.')
+                {
+                    osg::notify(osg::NOTICE)<<"Ignoring tempory file "<<*itr<<std::endl;
+                    continue;
+                }
+
                 std::string localFile = path + "/" + *itr;
-                info()<<"contents = "<<localFile<<std::endl;
                 if (acceptsExtension(osgDB::getLowerCaseFileExtension(localFile)) &&
                     osgDB::fileType(localFile) == osgDB::REGULAR_FILE)
                 {

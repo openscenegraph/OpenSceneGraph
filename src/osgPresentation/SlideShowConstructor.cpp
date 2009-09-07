@@ -1537,6 +1537,8 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
     if (!image) return;
 
+    osg::ref_ptr<osgVolume::ImageDetails> details = dynamic_cast<osgVolume::ImageDetails*>(image->getUserData());
+    osg::ref_ptr<osg::RefMatrix> matrix = details ? details->getMatrix() : dynamic_cast<osg::RefMatrix*>(image->getUserData());
 
     osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
     osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
@@ -1544,15 +1546,20 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
 
     osg::ref_ptr<osgVolume::ImageLayer> layer = new osgVolume::ImageLayer(image.get());
     layer->rescaleToZeroToOneRange();
+    if (details)
+    {
+        layer->setTexelOffset(details->getTexelOffset());
+        layer->setTexelScale(details->getTexelScale());
+    }
 
-    osg::RefMatrix* matrix = dynamic_cast<osg::RefMatrix*>(image->getUserData());        
-    if (matrix)
+    if (matrix.valid())
     {
         layer->setLocator(new osgVolume::Locator(*matrix));
         osg::Matrix tm = osg::Matrix::scale(volumeData.region[3]-volumeData.region[0], volumeData.region[4]-volumeData.region[1], volumeData.region[5]-volumeData.region[2]) *
                          osg::Matrix::translate(volumeData.region[0],volumeData.region[1],volumeData.region[2]);
         tile->setLocator(new osgVolume::Locator(tm * (*matrix)));
     }
+
 
     tile->setLayer(layer.get());
 

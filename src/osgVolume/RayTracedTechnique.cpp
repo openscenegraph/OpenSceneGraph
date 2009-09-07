@@ -167,8 +167,8 @@ void RayTracedTechnique::init()
     }
 
 
-    if (!masterLocator && layerLocator) masterLocator = _volumeTile->getLayer()->getLocator();
-    if (!layerLocator && masterLocator) layerLocator = layerLocator;
+    if (!masterLocator && layerLocator) masterLocator = layerLocator;
+    if (!layerLocator && masterLocator) layerLocator = masterLocator;
 
 
     osg::Matrix geometryMatrix;
@@ -448,7 +448,10 @@ void RayTracedTechnique::init()
 
         osg::ref_ptr<TexGenLocatorCallback> locatorCallback = new TexGenLocatorCallback(texgen, masterLocator, layerLocator);
         masterLocator->addCallback(locatorCallback.get());
-        if (masterLocator != layerLocator) layerLocator->addCallback(locatorCallback.get());
+        if (masterLocator != layerLocator)
+        {
+            if (layerLocator) layerLocator->addCallback(locatorCallback.get());
+        }
 
         stateset->setTextureAttributeAndModes(0, texgen, osg::StateAttribute::ON);
 

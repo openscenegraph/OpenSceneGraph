@@ -25,6 +25,7 @@
 #include <osg/TransferFunction>
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 namespace osgVolume
 {
@@ -267,6 +268,17 @@ void RayTracedTechnique::init()
             }
             osg::ref_ptr<osg::Texture1D> tf_texture = new osg::Texture1D;
             tf_texture->setImage(tf->getImage());
+
+#if 0
+            osgDB::writeImageFile(*(tf->getImage()),"tf.png");
+            osg::notify(osg::NOTICE)<<"imageLayer->getTexelOffset()[3]="<<imageLayer->getTexelOffset()[3]<<std::endl;
+            osg::notify(osg::NOTICE)<<"imageLayer->getTexelScale()[3]="<<imageLayer->getTexelScale()[3]<<std::endl;
+            osg::notify(osg::NOTICE)<<"tfOffset="<<tfOffset<<std::endl;
+            osg::notify(osg::NOTICE)<<"tfScale="<<tfScale<<std::endl;
+            osg::notify(osg::NOTICE)<<"tf->getMinimum()="<<tf->getMinimum()<<std::endl;
+            osg::notify(osg::NOTICE)<<"tf->getMaximum()="<<tf->getMaximum()<<std::endl;
+#endif
+
             tf_texture->setResizeNonPowerOfTwoHint(false);
             tf_texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
             tf_texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);

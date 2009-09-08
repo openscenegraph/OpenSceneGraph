@@ -1545,12 +1545,12 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     volume->addChild(tile.get());
 
     osg::ref_ptr<osgVolume::ImageLayer> layer = new osgVolume::ImageLayer(image.get());
-    layer->rescaleToZeroToOneRange();
     if (details)
     {
         layer->setTexelOffset(details->getTexelOffset());
         layer->setTexelScale(details->getTexelScale());
     }
+    layer->rescaleToZeroToOneRange();
 
     if (matrix.valid())
     {

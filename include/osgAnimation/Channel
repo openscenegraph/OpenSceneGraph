@@ -54,6 +54,11 @@ namespace osgAnimation
         virtual Sampler* getSampler() = 0;
         virtual const Sampler* getSampler() const = 0;
 
+        // create a keyframe container from current target value
+        // with one key only, can be used for debug or to create
+        // easily a default channel from an existing one
+        virtual bool createKeyframeContainerFromTargetValue() = 0;
+
     protected:
     
         std::string _targetName;
@@ -71,9 +76,9 @@ namespace osgAnimation
         typedef TemplateKeyframeContainer<typename SamplerType::KeyframeType> KeyframeContainerType;
         Channel* clone() const { return new TemplateChannel<SamplerType>(*this); }
 
-        TemplateChannel (const TemplateChannel& channel) : 
+        TemplateChannel (const TemplateChannel& channel) :
             Channel(channel),
-            _target(new TargetType),
+            _target(new TargetType(*channel.getTargetTyped())),
             _sampler(channel._sampler.get())
         {
         }
@@ -85,6 +90,23 @@ namespace osgAnimation
             else
                 _target = new TargetType;
             _sampler = s;
+        }
+
+        virtual bool createKeyframeContainerFromTargetValue()
+        {
+            if (!_target.valid()) // no target it does not make sense to do it
+            {
+                return false;
+            }
+
+            // create a key from current target value
+            typename KeyframeContainerType::KeyType key(0, _target->getValue());
+            // recreate the keyframe container
+            getOrCreateSampler()->setKeyframeContainer(0);
+            getOrCreateSampler()->getOrCreateKeyframeContainer();
+            // add the key
+            _sampler->getKeyframeContainerTyped()->push_back(key);
+            return true;
         }
 
         virtual ~TemplateChannel() {}
@@ -120,6 +142,7 @@ namespace osgAnimation
         void setSampler(SamplerType* sampler) { _sampler = sampler; }
 
         TargetType* getTargetTyped() { return _target.get(); }
+        const TargetType* getTargetTyped() const { return _target.get(); }
         void setTarget(TargetType* target) { _target = target; }
 
         virtual float getStartTime() const { return _sampler->getStartTime(); }

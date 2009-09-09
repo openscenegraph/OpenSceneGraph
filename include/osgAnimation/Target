@@ -35,7 +35,6 @@ namespace osgAnimation
             
         Target();
         virtual ~Target() {}
-        virtual void normalize() = 0;
         void reset() { _weight = 0; _priorityWeight = 0; }
         int getCount() const { return referenceCount(); }
         float getWeight() const { return _weight; }
@@ -53,6 +52,7 @@ namespace osgAnimation
             
         TemplateTarget() {}
         TemplateTarget(const T& v) { setValue(v); }
+        TemplateTarget(const TemplateTarget& v) { setValue(v.getValue()); }
 
         inline void lerp(float t, const T& a, const T& b);
 
@@ -91,23 +91,12 @@ namespace osgAnimation
         }
         const T& getValue() const { return _target; }
 
-        inline void normalize();
-
         void setValue(const T& value) { _target = value; }
 
     protected:
 
         T _target;
     };
-
-    template <class T>
-    inline void TemplateTarget<T>::normalize()
-    {
-        _weight += _priorityWeight * (1.0f - _weight);
-        if (_weight < 0.9999f )
-            if (_weight > 0.0001f)
-                _target /= _weight; // rescale by default
-    }
 
     template <class T>
     inline void TemplateTarget<T>::lerp(float t, const T& a, const T& b)
@@ -118,24 +107,20 @@ namespace osgAnimation
     template <>
     inline void TemplateTarget<osg::Quat>::lerp(float t, const osg::Quat& a, const osg::Quat& b)
     {
-        _target = a * (1.0f - t) + b * t;
+        if (a.asVec4() * b.asVec4() < 0.0)
+        {
+            _target = a * (1.0f - t) + b * -t;
+        }
+        else
+        {
+            _target = a * (1.0f - t) + b * t;
+        }
+
         osg::Quat::value_type len2 = _target.length2();
         if ( len2 != 1.0 && len2 != 0.0) 
             _target *= 1.0/sqrt(len2);
     }
-    template <>
-    inline void TemplateTarget<osg::Quat>::normalize()
-    {
-        _weight += _priorityWeight * (1.0f - _weight);
-        if (_weight < 0.9999f )
-            if (_weight > 0.0001f)
-            {
-                osg::Quat::value_type len2 = _target.length2(); // normalize
-                if ( len2 != 1.0 && len2 != 0.0)
-                    _target *= 1.0/sqrt(len2);
-            }
-    }
-  
+
     typedef TemplateTarget<osg::Quat> QuatTarget;
     typedef TemplateTarget<osg::Vec3> Vec3Target;
     typedef TemplateTarget<osg::Vec4> Vec4Target;

@@ -576,6 +576,10 @@ int main( int argc, char **argv )
         osg::DisplaySettings::instance()->setScreenWidth(width);
     }
 
+    std::string outputFileName;
+    while(arguments.read("--output",outputFileName)) {}
+
+
     // get details on keyboard and mouse bindings used by the viewer.
     viewer.getUsage(*arguments.getApplicationUsage());
 
@@ -779,8 +783,12 @@ int main( int argc, char **argv )
     seh->selectSlide(0);
 
     seh->home();
-    
-    // osgDB::writeNodeFile(*loadedModel,"saved.osg");
+
+    if (!outputFileName.empty())
+    {
+        osgDB::writeNodeFile(*loadedModel,outputFileName);
+        return 0;
+    }
     
     osg::Timer_t startOfFrameTick = osg::Timer::instance()->tick();
     double targetFrameTime = 1.0/targetFrameRate;

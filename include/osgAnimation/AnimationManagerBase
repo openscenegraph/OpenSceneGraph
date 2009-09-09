@@ -46,7 +46,6 @@ namespace osgAnimation
 
         /// Operation that must be done each frame
         void clearTargets();
-        void normalizeTargets();
 
         LinkVisitor* getOrCreateLinkVisitor();
         void setLinkVisitor(LinkVisitor*);

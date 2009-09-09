@@ -113,9 +113,6 @@ void BasicAnimationManager::update (double time)
             toremove.pop_back();
         }
     }
-
-    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
-        (*it).get()->normalize();
 }
 
 

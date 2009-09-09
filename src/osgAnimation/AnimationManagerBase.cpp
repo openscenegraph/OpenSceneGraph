@@ -30,11 +30,6 @@ void AnimationManagerBase::clearTargets()
     for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
         (*it).get()->reset();
 }
-void AnimationManagerBase::normalizeTargets()
-{
-    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
-        (*it).get()->normalize();
-}
 
 void AnimationManagerBase::operator()(osg::Node* node, osg::NodeVisitor* nv)
 { 

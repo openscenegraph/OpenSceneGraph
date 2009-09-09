@@ -53,7 +53,6 @@ ADD_LIBRARY(${LIB_NAME}
     ActionVisitor.cpp
     Animation.cpp
     AnimationManagerBase.cpp
-    AnimationManager.cpp
     BasicAnimationManager.cpp
     Bone.cpp
     BoneMapVisitor.cpp

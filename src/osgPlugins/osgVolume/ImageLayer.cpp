@@ -69,7 +69,22 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
                 if (image.valid())
                 {                
                     osg::notify(osg::INFO)<<"osgVolume::ImageLayer image read: "<<filename<<" pixelFormat "<<std::hex<<image->getPixelFormat()<<" textureFormat "<<image->getInternalTextureFormat()<<" dataType "<<image->getDataType()<<std::dec<<std::endl;
+
+                    osg::ref_ptr<osgVolume::ImageDetails> details = dynamic_cast<osgVolume::ImageDetails*>(image->getUserData());
+                    osg::ref_ptr<osg::RefMatrix> matrix = details ? details->getMatrix() : dynamic_cast<osg::RefMatrix*>(image->getUserData());
+
                     layer.setImage(image.get());
+
+                    if (details)
+                    {
+                        layer.setTexelOffset(details->getTexelOffset());
+                        layer.setTexelScale(details->getTexelScale());
+                    }
+                    if (matrix)
+                    {
+                        layer.setLocator(new osgVolume::Locator(*matrix));
+                    }
+
                     layer.rescaleToZeroToOneRange();
                 }
             }

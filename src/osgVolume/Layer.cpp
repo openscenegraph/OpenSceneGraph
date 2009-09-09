@@ -167,6 +167,13 @@ void ImageLayer::offsetAndScaleImage(const osg::Vec4& offset, const osg::Vec4& s
     _texelOffset[2] -= offset[2]*_texelScale[2];
     _texelOffset[3] -= offset[3]*_texelScale[3];
 
+    ImageDetails* details = dynamic_cast<ImageDetails*>(_image->getUserData());
+    if (details)
+    {
+        details->setTexelOffset(_texelOffset);
+        details->setTexelScale(_texelScale);
+    }
+
 #if 0
     if (computeMinMax(minValue, maxValue))
     {

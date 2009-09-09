@@ -102,7 +102,7 @@ namespace osgAnimation
             // create a key from current target value
             typename KeyframeContainerType::KeyType key(0, _target->getValue());
             // recreate the keyframe container
-            getOrCreateSampler()->setKeyframeContainer(0);
+            _sampler = 0;
             getOrCreateSampler()->getOrCreateKeyframeContainer();
             // add the key
             _sampler->getKeyframeContainerTyped()->push_back(key);

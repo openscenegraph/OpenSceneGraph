@@ -120,7 +120,7 @@ public:
 
     void parseModel(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
-    osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename) const;
+    osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename, float scale) const;
     void parseVolume(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
 
     void parseStereoPair(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const;
@@ -875,7 +875,7 @@ void ReaderWriterP3DXML::parseModel(osgPresentation::SlideShowConstructor& const
 
 
 
-osg::TransferFunction1D* ReaderWriterP3DXML::readTransferFunctionFile(const std::string& filename) const
+osg::TransferFunction1D* ReaderWriterP3DXML::readTransferFunctionFile(const std::string& filename, float scale) const
 {
     std::string foundFile = osgDB::findDataFile(filename);
     if (foundFile.empty())
@@ -895,7 +895,7 @@ osg::TransferFunction1D* ReaderWriterP3DXML::readTransferFunctionFile(const std:
         if (fin)
         {
             std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
-            colorMap[value] = osg::Vec4(red,green,blue,alpha);
+            colorMap[value] = osg::Vec4(red*scale,green*scale,blue*scale,alpha*scale);
         }
     }
 
@@ -939,7 +939,12 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
     std::string transferFunctionFile;
     if (getTrimmedProperty(cur, "tf", transferFunctionFile))
     {
-        volumeData.transferFunction = readTransferFunctionFile(transferFunctionFile);
+        volumeData.transferFunction = readTransferFunctionFile(transferFunctionFile, 1.0);
+    }
+
+    if (getTrimmedProperty(cur, "tf-255", transferFunctionFile))
+    {
+        volumeData.transferFunction = readTransferFunctionFile(transferFunctionFile, 1.0/255.0);
     }
 
     // check for draggers required

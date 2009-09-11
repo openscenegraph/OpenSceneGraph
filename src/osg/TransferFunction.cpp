@@ -1,14 +1,14 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
- *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
- * (at your option) any later version.  The full license is in LICENSE file
- * included with this distribution, and on the openscenegraph.org website.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
- * OpenSceneGraph Public License for more details.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+*
+* This library is open source and may be redistributed and/or modified under
+* the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+* (at your option) any later version.  The full license is in LICENSE file
+* included with this distribution, and on the openscenegraph.org website.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* OpenSceneGraph Public License for more details.
 */
 
 #include <osg/TransferFunction>
@@ -63,7 +63,7 @@ void TransferFunction1D::clear(const osg::Vec4& color)
     ColorMap newColours;
     newColours[getMinimum()] = color;
     newColours[getMaximum()] = color;
-    
+
     assign(newColours);
 }
 
@@ -74,8 +74,8 @@ void TransferFunction1D::assignToImage(float lower_v, const osg::Vec4& lower_c, 
     float endPos = float(getNumberImageCells()-1);
     float multiplier = endPos/(maximum - minimum);
     osg::Vec4* imageData = reinterpret_cast<osg::Vec4*>(_image->data());
-    
-    float lower_iPos = (lower_v - minimum)*multiplier; 
+
+    float lower_iPos = (lower_v - minimum)*multiplier;
     float upper_iPos = (upper_v - minimum)*multiplier;
 
     float start_iPos = ceilf(lower_iPos);
@@ -86,15 +86,20 @@ void TransferFunction1D::assignToImage(float lower_v, const osg::Vec4& lower_c, 
     if (end_iPos<0.0f) return;
     if (end_iPos>endPos) end_iPos=endPos;
 
+    //osg::notify(osg::NOTICE)<<"TransferFunction1D::assignToImage[lower_v="<<lower_v<<", lower_c="<<lower_c<<", upper_v="<<upper_v<<" upper_c="<<upper_c<<std::endl;
+    //osg::notify(osg::NOTICE)<<"  lower_iPos="<<lower_iPos<<"  start_iPpos="<<start_iPos<<std::endl;
+    //osg::notify(osg::NOTICE)<<"  upper_iPos="<<upper_iPos<<"  end_iPpos="<<end_iPos<<std::endl;
+
     Vec4 delta_c = (upper_c-lower_c)/(upper_iPos-lower_iPos);
     unsigned int i=static_cast<unsigned int>(start_iPos);
     for(float iPos=start_iPos;
-        iPos<=end_iPos; 
+        iPos<=end_iPos;
         ++iPos, ++i)
     {
-        imageData[i] = lower_c + delta_c*(iPos-lower_v);
+        imageData[i] = lower_c + delta_c*(iPos-lower_iPos);
+        //osg::notify(osg::NOTICE)<<"    imageData["<<i<<"] = "<<imageData[i]<<std::endl;
     }
-    
+
     _image->dirty();
 }
 
@@ -108,8 +113,8 @@ void TransferFunction1D::setColor(float v, const osg::Vec4& color, bool updateIm
     }
 
     if (!_image) allocate(1024);
-    
-    if (_colorMap.empty() || v<getMinimum() || v>getMaximum()) 
+
+    if (_colorMap.empty() || v<getMinimum() || v>getMaximum())
     {
         _colorMap[v] = color;
 
@@ -120,13 +125,13 @@ void TransferFunction1D::setColor(float v, const osg::Vec4& color, bool updateIm
     _colorMap[v] = color;
 
     ColorMap::iterator itr = _colorMap.find(v);
- 
+
     if (itr != _colorMap.begin())
     {
         ColorMap::iterator previous_itr = itr;
         --previous_itr;
-        
-        assignToImage(previous_itr->first, previous_itr->second, v, color); 
+
+        assignToImage(previous_itr->first, previous_itr->second, v, color);
     }
 
     ColorMap::iterator next_itr = itr;
@@ -134,7 +139,7 @@ void TransferFunction1D::setColor(float v, const osg::Vec4& color, bool updateIm
 
     if (next_itr != _colorMap.end())
     {
-        assignToImage(v, color, next_itr->first, next_itr->second); 
+        assignToImage(v, color, next_itr->first, next_itr->second);
     }
 }
 
@@ -148,19 +153,19 @@ osg::Vec4 TransferFunction1D::getColor(float v) const
 
     // need to implement
     std::pair<ColorMap::const_iterator, ColorMap::const_iterator> range = _colorMap.equal_range(v);
-      
+
     // we have an identical match
     if (v == range.first->first) return range.first->second;
-    
+
     // range.first will be at the next element after v, so move it before.
     --range.first;
-    
+
     float vBefore = range.first->first;
     const osg::Vec4& cBefore = range.first->second;
 
     float vAfter = range.second->first;
     const osg::Vec4& cAfter = range.second->second;
-    
+
     float r = (v-vBefore)/(vAfter-vBefore);
 
     return cBefore*(1.0f-r) + cAfter*r;
@@ -170,7 +175,7 @@ osg::Vec4 TransferFunction1D::getColor(float v) const
 void TransferFunction1D::assign(const ColorMap& newColours)
 {
     _colorMap = newColours;
-    
+
     updateImage();
 }
 
@@ -179,7 +184,7 @@ void TransferFunction1D::updateImage()
     if (_colorMap.empty()) return;
 
     if (!_image || _image->data()==0) allocate(1024);
-    
+
     osg::Vec4* imageData = reinterpret_cast<osg::Vec4*>(_image->data());
 
     if (_colorMap.size()==1)
@@ -193,11 +198,11 @@ void TransferFunction1D::updateImage()
         _image->dirty();
         return;
     }
-    
+
     ColorMap::const_iterator lower_itr = _colorMap.begin();
     ColorMap::const_iterator upper_itr = lower_itr;
     ++upper_itr;
-    
+
     for(;
         upper_itr != _colorMap.end();
         ++upper_itr)
@@ -208,8 +213,8 @@ void TransferFunction1D::updateImage()
         const osg::Vec4& upper_c = upper_itr->second;
 
         assignToImage(lower_v, lower_c, upper_v, upper_c);
-        
-        lower_itr = upper_itr;      
+
+        lower_itr = upper_itr;
     }
 
     _image->dirty();

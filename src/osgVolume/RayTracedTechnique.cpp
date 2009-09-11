@@ -269,7 +269,7 @@ void RayTracedTechnique::init()
             osg::ref_ptr<osg::Texture1D> tf_texture = new osg::Texture1D;
             tf_texture->setImage(tf->getImage());
 
-#if 0
+#if 1
             osgDB::writeImageFile(*(tf->getImage()),"tf.png");
             osg::notify(osg::NOTICE)<<"imageLayer->getTexelOffset()[3]="<<imageLayer->getTexelOffset()[3]<<std::endl;
             osg::notify(osg::NOTICE)<<"imageLayer->getTexelScale()[3]="<<imageLayer->getTexelScale()[3]<<std::endl;

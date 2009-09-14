@@ -78,11 +78,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationManagerBase)
 	          __void__clearTargets,
 	          "Operation that must be done each frame. ",
 	          "");
-	I_Method0(void, normalizeTargets,
-	          Properties::NON_VIRTUAL,
-	          __void__normalizeTargets,
-	          "",
-	          "");
 	I_Method0(osgAnimation::LinkVisitor *, getOrCreateLinkVisitor,
 	          Properties::NON_VIRTUAL,
 	          __LinkVisitor_P1__getOrCreateLinkVisitor,

@@ -10,6 +10,10 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Quat>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
 #include <osgAnimation/Target>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -20,17 +24,12 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Target)
+BEGIN_OBJECT_REFLECTOR(osgAnimation::Target)
 	I_DeclaringFile("osgAnimation/Target");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____Target,
 	               "",
 	               "");
-	I_Method0(void, normalize,
-	          Properties::PURE_VIRTUAL,
-	          __void__normalize,
-	          "",
-	          "");
 	I_Method0(void, reset,
 	          Properties::NON_VIRTUAL,
 	          __void__reset,

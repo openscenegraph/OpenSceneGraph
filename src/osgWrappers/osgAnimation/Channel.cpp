@@ -98,6 +98,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	          __C5_Sampler_P1__getSampler,
 	          "",
 	          "");
+	I_Method0(bool, createKeyframeContainerFromTargetValue,
+	          Properties::PURE_VIRTUAL,
+	          __bool__createKeyframeContainerFromTargetValue,
+	          "",
+	          "");
 	I_SimpleProperty(float, EndTime, 
 	                 __float__getEndTime, 
 	                 0);

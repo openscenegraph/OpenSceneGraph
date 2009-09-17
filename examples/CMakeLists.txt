@@ -173,6 +173,10 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ENDIF()
     ENDIF()
 
+    IF (QT4_FOUND)
+        ADD_SUBDIRECTORY(osgQtBrowser)
+    ENDIF()
+
     IF   (FLTK_FOUND)
         ADD_SUBDIRECTORY(osgviewerFLTK)
     ENDIF(FLTK_FOUND)

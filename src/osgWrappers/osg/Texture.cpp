@@ -105,8 +105,6 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Texture::TextureObject > >, osg::Texture::TextureObjectList)
 
-TYPE_NAME_ALIAS(osg::buffered_object< osg::Texture::TextureObjectList >, osg::Texture::TextureObjectListMap)
-
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_DeclaringFile("osg/Texture");
 	I_BaseType(osg::StateAttribute);
@@ -330,7 +328,12 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_Method1(osg::Texture::TextureObject *, getTextureObject, IN, unsigned int, contextID,
 	          Properties::NON_VIRTUAL,
 	          __TextureObject_P1__getTextureObject__unsigned_int,
-	          "Returns a pointer to the texture object for the current context. ",
+	          "Returns a pointer to the TextureBbject for the current context. ",
+	          "");
+	I_Method2(void, setTextureObject, IN, unsigned int, contextID, IN, osg::Texture::TextureObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureObject__unsigned_int__TextureObject_P1,
+	          "",
 	          "");
 	I_Method0(void, dirtyTextureObject,
 	          Properties::NON_VIRTUAL,
@@ -457,11 +460,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __void__applyTexImage2D_subload__State_R1__GLenum__C5_Image_P1__GLsizei__GLsizei__GLint__GLsizei,
 	          "Helper method. ",
 	          "Subloads images into the texture, but doesn't set or use a texture binding. Note: Don't call this method directly unless you're implementing a subload callback. ");
-	I_Method1(void, takeTextureObjects, IN, osg::Texture::TextureObjectListMap &, toblm,
-	          Properties::NON_VIRTUAL,
-	          __void__takeTextureObjects__TextureObjectListMap_R1,
-	          "Takes the active texture objects from the Texture and places them in the specified TextureObjectListMap. ",
-	          "");
 	I_StaticMethod2(osg::Texture::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
 	                "Gets the extension for the specified context. ",
@@ -478,12 +476,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                __void__getCompressedSize__GLenum__GLint__GLint__GLint__GLint_R1__GLint_R1_S,
 	                "Determine the size of a compressed image, given the internalFormat, the width, the height, and the depth of the image. ",
 	                "The block size and the size are output parameters. ");
-	I_StaticMethod2(osg::Texture::TextureObject *, generateTextureObject, IN, unsigned int, contextID, IN, GLenum, target,
-	                __TextureObject_P1__generateTextureObject__unsigned_int__GLenum_S,
+	I_StaticMethod1(osg::ref_ptr< osg::Texture::TextureObjectManager > &, getTextureObjectManager, IN, unsigned int, contextID,
+	                __osg_ref_ptrT1_Texture_TextureObjectManager__R1__getTextureObjectManager__unsigned_int_S,
 	                "",
 	                "");
-	I_StaticMethod8(osg::Texture::TextureObject *, generateTextureObject, IN, unsigned int, contextID, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
-	                __TextureObject_P1__generateTextureObject__unsigned_int__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint_S,
+	I_StaticMethod3(osg::Texture::TextureObject *, generateTextureObject, IN, const osg::Texture *, texture, IN, unsigned int, contextID, IN, GLenum, target,
+	                __TextureObject_P1__generateTextureObject__C5_Texture_P1__unsigned_int__GLenum_S,
+	                "",
+	                "");
+	I_StaticMethod9(osg::Texture::TextureObject *, generateTextureObject, IN, const osg::Texture *, texture, IN, unsigned int, contextID, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	                __TextureObject_P1__generateTextureObject__C5_Texture_P1__unsigned_int__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint_S,
 	                "",
 	                "");
 	I_StaticMethod1(void, setMinimumNumberOfTextureObjectsToRetainInCache, IN, unsigned int, minimum,
@@ -504,6 +506,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                "");
 	I_StaticMethod3(void, flushDeletedTextureObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availableTime,
 	                __void__flushDeletedTextureObjects__unsigned_int__double__double_R1_S,
+	                "",
+	                "");
+	I_StaticMethod2(void, releaseTextureObject, IN, unsigned int, contextID, IN, osg::Texture::TextureObject *, to,
+	                __void__releaseTextureObject__unsigned_int__TextureObject_P1_S,
 	                "",
 	                "");
 	I_ProtectedMethod0(void, computeInternalFormat,
@@ -640,6 +646,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	I_SimpleProperty(int, TextureHeight, 
 	                 __int__getTextureHeight, 
 	                 0);
+	I_IndexedProperty(osg::Texture::TextureObject *, TextureObject, 
+	                  __TextureObject_P1__getTextureObject__unsigned_int, 
+	                  __void__setTextureObject__unsigned_int__TextureObject_P1, 
+	                  0);
 	I_SimpleProperty(GLenum, TextureTarget, 
 	                 __GLenum__getTextureTarget, 
 	                 0);
@@ -664,12 +674,16 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	I_DeclaringFile("osg/Texture");
 	I_BaseType(osg::Referenced);
-	I_Constructor2(IN, GLuint, id, IN, GLenum, target,
-	               ____TextureObject__GLuint__GLenum,
+	I_Constructor3(IN, osg::Texture *, texture, IN, GLuint, id, IN, GLenum, target,
+	               ____TextureObject__Texture_P1__GLuint__GLenum,
 	               "",
 	               "");
-	I_Constructor8(IN, GLuint, id, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
-	               ____TextureObject__GLuint__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
+	I_Constructor3(IN, osg::Texture *, texture, IN, GLuint, id, IN, const osg::Texture::TextureProfile &, profile,
+	               ____TextureObject__Texture_P1__GLuint__C5_TextureProfile_R1,
+	               "",
+	               "");
+	I_Constructor9(IN, osg::Texture *, texture, IN, GLuint, id, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	               ____TextureObject__Texture_P1__GLuint__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
 	               "",
 	               "");
 	I_Method7(bool, match, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
@@ -680,6 +694,36 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	I_Method0(void, bind,
 	          Properties::NON_VIRTUAL,
 	          __void__bind,
+	          "",
+	          "");
+	I_Method0(GLenum, id,
+	          Properties::NON_VIRTUAL,
+	          __GLenum__id,
+	          "",
+	          "");
+	I_Method0(GLenum, target,
+	          Properties::NON_VIRTUAL,
+	          __GLenum__target,
+	          "",
+	          "");
+	I_Method1(void, setTexture, IN, osg::Texture *, texture,
+	          Properties::NON_VIRTUAL,
+	          __void__setTexture__Texture_P1,
+	          "",
+	          "");
+	I_Method0(osg::Texture *, getTexture,
+	          Properties::NON_VIRTUAL,
+	          __Texture_P1__getTexture,
+	          "",
+	          "");
+	I_Method1(void, setTimeStamp, IN, double, timestamp,
+	          Properties::NON_VIRTUAL,
+	          __void__setTimeStamp__double,
+	          "",
+	          "");
+	I_Method0(double, getTimeStamp,
+	          Properties::NON_VIRTUAL,
+	          __double__getTimeStamp,
 	          "",
 	          "");
 	I_MethodWithDefaults1(void, setAllocated, IN, bool, allocated, true,
@@ -705,41 +749,133 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	I_SimpleProperty(bool, Allocated, 
 	                 0, 
 	                 __void__setAllocated__bool);
+	I_SimpleProperty(osg::Texture *, Texture, 
+	                 __Texture_P1__getTexture, 
+	                 __void__setTexture__Texture_P1);
+	I_SimpleProperty(double, TimeStamp, 
+	                 __double__getTimeStamp, 
+	                 __void__setTimeStamp__double);
 	I_PublicMemberProperty(GLuint, _id);
-	I_PublicMemberProperty(GLenum, _target);
-	I_PublicMemberProperty(GLint, _numMipmapLevels);
-	I_PublicMemberProperty(GLenum, _internalFormat);
-	I_PublicMemberProperty(GLsizei, _width);
-	I_PublicMemberProperty(GLsizei, _height);
-	I_PublicMemberProperty(GLsizei, _depth);
-	I_PublicMemberProperty(GLint, _border);
+	I_PublicMemberProperty(osg::Texture::TextureProfile, _profile);
+	I_PublicMemberProperty(osg::Texture::TextureObjectSet *, _set);
+	I_PublicMemberProperty(osg::Texture::TextureObject *, _previous);
+	I_PublicMemberProperty(osg::Texture::TextureObject *, _next);
+	I_PublicMemberProperty(osg::Texture *, _texture);
 	I_PublicMemberProperty(bool, _allocated);
 	I_PublicMemberProperty(double, _timeStamp);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::buffered_object< osg::Texture::TextureObjectList >)
-	I_DeclaringFile("osg/buffered_value");
-	I_Constructor0(____buffered_object,
-	               "",
-	               "");
-	I_Constructor1(IN, unsigned int, size,
+BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectManager)
+	I_DeclaringFile("osg/Texture");
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID,
 	               Properties::NON_EXPLICIT,
-	               ____buffered_object__unsigned_int,
+	               ____TextureObjectManager__unsigned_int,
 	               "",
 	               "");
-	I_Method1(void, setAllElementsTo, IN, const osg::Texture::TextureObjectList &, t,
+	I_Method0(unsigned int, getContextID,
 	          Properties::NON_VIRTUAL,
-	          __void__setAllElementsTo__C5_T_R1,
+	          __unsigned_int__getContextID,
 	          "",
 	          "");
-	I_Method0(void, clear,
+	I_Method1(void, setTexturePoolSize, IN, unsigned int, size,
 	          Properties::NON_VIRTUAL,
-	          __void__clear,
+	          __void__setTexturePoolSize__unsigned_int,
 	          "",
 	          "");
-	I_Method0(bool, empty,
+	I_Method0(unsigned int, getTexturePoolSize,
 	          Properties::NON_VIRTUAL,
-	          __bool__empty,
+	          __unsigned_int__getTexturePoolSize,
+	          "",
+	          "");
+	I_Method2(osg::Texture::TextureObject *, generateTextureObject, IN, const osg::Texture *, texture, IN, GLenum, target,
+	          Properties::NON_VIRTUAL,
+	          __TextureObject_P1__generateTextureObject__C5_Texture_P1__GLenum,
+	          "",
+	          "");
+	I_Method8(osg::Texture::TextureObject *, generateTextureObject, IN, const osg::Texture *, texture, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	          Properties::NON_VIRTUAL,
+	          __TextureObject_P1__generateTextureObject__C5_Texture_P1__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
+	          "",
+	          "");
+	I_Method0(void, handlePendingOrphandedTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__handlePendingOrphandedTextureObjects,
+	          "",
+	          "");
+	I_Method0(void, flushAllDeletedTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__flushAllDeletedTextureObjects,
+	          "",
+	          "");
+	I_Method0(void, discardAllDeletedTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__discardAllDeletedTextureObjects,
+	          "",
+	          "");
+	I_Method2(void, flushDeletedTextureObjects, IN, double, currentTime, IN, double &, availableTime,
+	          Properties::NON_VIRTUAL,
+	          __void__flushDeletedTextureObjects__double__double_R1,
+	          "",
+	          "");
+	I_Method1(void, releaseTextureObject, IN, osg::Texture::TextureObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__releaseTextureObject__TextureObject_P1,
+	          "",
+	          "");
+	I_SimpleProperty(unsigned int, ContextID, 
+	                 __unsigned_int__getContextID, 
+	                 0);
+	I_SimpleProperty(unsigned int, TexturePoolSize, 
+	                 __unsigned_int__getTexturePoolSize, 
+	                 __void__setTexturePoolSize__unsigned_int);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectSet)
+	I_DeclaringFile("osg/Texture");
+	I_BaseType(osg::Referenced);
+	I_Constructor2(IN, osg::Texture::TextureObjectManager *, parent, IN, const osg::Texture::TextureProfile &, profile,
+	               ____TextureObjectSet__TextureObjectManager_P1__C5_TextureProfile_R1,
+	               "",
+	               "");
+	I_Method0(void, handlePendingOrphandedTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__handlePendingOrphandedTextureObjects,
+	          "",
+	          "");
+	I_Method0(void, flushAllDeletedTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__flushAllDeletedTextureObjects,
+	          "",
+	          "");
+	I_Method0(void, discardAllDeletedTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__discardAllDeletedTextureObjects,
+	          "",
+	          "");
+	I_Method2(void, flushDeletedTextureObjects, IN, double, currentTime, IN, double &, availableTime,
+	          Properties::NON_VIRTUAL,
+	          __void__flushDeletedTextureObjects__double__double_R1,
+	          "",
+	          "");
+	I_Method1(osg::Texture::TextureObject *, takeOrGenerate, IN, osg::Texture *, texture,
+	          Properties::NON_VIRTUAL,
+	          __TextureObject_P1__takeOrGenerate__Texture_P1,
+	          "",
+	          "");
+	I_Method1(void, moveToBack, IN, osg::Texture::TextureObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__moveToBack__TextureObject_P1,
+	          "",
+	          "");
+	I_Method1(void, addToBack, IN, osg::Texture::TextureObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__addToBack__TextureObject_P1,
+	          "",
+	          "");
+	I_Method1(void, orphan, IN, osg::Texture::TextureObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__orphan__TextureObject_P1,
 	          "",
 	          "");
 	I_Method0(unsigned int, size,
@@ -747,14 +883,41 @@ BEGIN_VALUE_REFLECTOR(osg::buffered_object< osg::Texture::TextureObjectList >)
 	          __unsigned_int__size,
 	          "",
 	          "");
-	I_Method1(void, resize, IN, unsigned int, newSize,
+	I_Method0(bool, checkConsistency,
 	          Properties::NON_VIRTUAL,
-	          __void__resize__unsigned_int,
+	          __bool__checkConsistency,
 	          "",
 	          "");
-	I_SimpleProperty(const osg::Texture::TextureObjectList &, AllElementsTo, 
-	                 0, 
-	                 __void__setAllElementsTo__C5_T_R1);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::Texture::TextureProfile)
+	I_DeclaringFile("osg/Texture");
+	I_Constructor1(IN, GLenum, target,
+	               Properties::NON_EXPLICIT,
+	               ____TextureProfile__GLenum,
+	               "",
+	               "");
+	I_Constructor7(IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	               ____TextureProfile__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
+	               "",
+	               "");
+	I_Method6(void, set, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	          Properties::NON_VIRTUAL,
+	          __void__set__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
+	          "",
+	          "");
+	I_Method7(bool, match, IN, GLenum, target, IN, GLint, numMipmapLevels, IN, GLenum, internalFormat, IN, GLsizei, width, IN, GLsizei, height, IN, GLsizei, depth, IN, GLint, border,
+	          Properties::NON_VIRTUAL,
+	          __bool__match__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
+	          "",
+	          "");
+	I_PublicMemberProperty(GLenum, _target);
+	I_PublicMemberProperty(GLint, _numMipmapLevels);
+	I_PublicMemberProperty(GLenum, _internalFormat);
+	I_PublicMemberProperty(GLsizei, _width);
+	I_PublicMemberProperty(GLsizei, _height);
+	I_PublicMemberProperty(GLsizei, _depth);
+	I_PublicMemberProperty(GLint, _border);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
@@ -793,6 +956,46 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
 	          "",
 	          "");
 	I_SimpleProperty(osg::Texture::TextureObject *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObjectManager >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::Texture::TextureObjectManager *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::Texture::TextureObjectManager > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::Texture::TextureObjectManager *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::Texture::TextureObjectManager *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::Texture::TextureObjectManager > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Texture::TextureObjectManager *, , 
 	                 __T_P1__get, 
 	                 0);
 END_REFLECTOR

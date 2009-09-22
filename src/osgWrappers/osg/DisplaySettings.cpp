@@ -384,6 +384,36 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	          __C5_std_string_R1__getApplication,
 	          "",
 	          "");
+	I_Method1(void, setMaxTexturePoolSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxTexturePoolSize__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaxTexturePoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMaxTexturePoolSize,
+	          "",
+	          "");
+	I_Method1(void, setMaxVBOPoolSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxVBOPoolSize__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaxVBOPoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMaxVBOPoolSize,
+	          "",
+	          "");
+	I_Method1(void, setMaxFBOPoolSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxFBOPoolSize__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaxFBOPoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMaxFBOPoolSize,
+	          "",
+	          "");
 	I_SimpleProperty(bool, AccumBuffer, 
 	                 __bool__getAccumBuffer, 
 	                 0);
@@ -411,9 +441,18 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_SimpleProperty(float, EyeSeparation, 
 	                 __float__getEyeSeparation, 
 	                 __void__setEyeSeparation__float);
+	I_SimpleProperty(unsigned int, MaxFBOPoolSize, 
+	                 __unsigned_int__getMaxFBOPoolSize, 
+	                 __void__setMaxFBOPoolSize__unsigned_int);
 	I_SimpleProperty(unsigned int, MaxNumberOfGraphicsContexts, 
 	                 __unsigned_int__getMaxNumberOfGraphicsContexts, 
 	                 __void__setMaxNumberOfGraphicsContexts__unsigned_int);
+	I_SimpleProperty(unsigned int, MaxTexturePoolSize, 
+	                 __unsigned_int__getMaxTexturePoolSize, 
+	                 __void__setMaxTexturePoolSize__unsigned_int);
+	I_SimpleProperty(unsigned int, MaxVBOPoolSize, 
+	                 __unsigned_int__getMaxVBOPoolSize, 
+	                 __void__setMaxVBOPoolSize__unsigned_int);
 	I_SimpleProperty(unsigned int, MinimumNumAccumAlphaBits, 
 	                 __unsigned_int__getMinimumNumAccumAlphaBits, 
 	                 0);

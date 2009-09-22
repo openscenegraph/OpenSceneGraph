@@ -470,10 +470,15 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         
         class TextureObject;
 
-        /** Returns a pointer to the texture object for the current context. */
+        /** Returns a pointer to the TextureBbject for the current context. */
         inline TextureObject* getTextureObject(unsigned int contextID) const
         {
             return _textureObjectBuffer[contextID].get();
+        }
+
+        inline void setTextureObject(unsigned int contextID, TextureObject* to)
+        {
+            _textureObjectBuffer[contextID] = to;
         }
 
         /** Forces a recompile on next apply() of associated OpenGL texture
@@ -759,7 +764,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         /** Allocate mipmap levels of the texture by subsequent calling of glTexImage* function. */
         virtual void allocateMipmap(State& state) const = 0;
-        
+
         /** Returns -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
         int compareTexture(const Texture& rhs) const;
 
@@ -769,7 +774,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         typedef buffered_value<unsigned int> TexParameterDirtyList;
         mutable TexParameterDirtyList _texParametersDirtyList;
         mutable TexParameterDirtyList _texMipmapGenerationDirtyList;
-        
+
         WrapMode _wrap_s;
         WrapMode _wrap_t;
         WrapMode _wrap_r;
@@ -790,31 +795,137 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         mutable GLint       _internalFormat;
         mutable GLenum      _sourceFormat;
         mutable GLenum      _sourceType;
-      
+
         bool                _use_shadow_comparison;
         ShadowCompareFunc   _shadow_compare_func;
         ShadowTextureMode   _shadow_texture_mode;
         float               _shadow_ambient;
 
     public:
-    
-        class TextureObject : public osg::Referenced
+
+        struct TextureProfile
         {
-        public:
-        
-            inline TextureObject(GLuint    id,GLenum target):
-                _id(id),
+            inline TextureProfile(GLenum target):
                 _target(target),
                 _numMipmapLevels(0),
                 _internalFormat(0),
                 _width(0),
                 _height(0),
                 _depth(0),
-                _border(0),
+                _border(0) {}
+
+            inline TextureProfile(GLenum    target,
+                                 GLint     numMipmapLevels,
+                                 GLenum    internalFormat,
+                                 GLsizei   width,
+                                 GLsizei   height,
+                                 GLsizei   depth,
+                                 GLint     border):
+                _target(target),
+                _numMipmapLevels(numMipmapLevels),
+                _internalFormat(internalFormat),
+                _width(width),
+                _height(height),
+                _depth(depth),
+                _border(border) {}
+
+
+            #define LESSTHAN(A,B) if (A<B) return true; if (B<A) return false;
+            #define FINALLESSTHAN(A,B) return (A<B);
+
+            bool operator < (const TextureProfile& rhs) const
+            {
+                LESSTHAN(_target,rhs._target);
+                LESSTHAN(_numMipmapLevels,rhs._numMipmapLevels);
+                LESSTHAN(_internalFormat,rhs._internalFormat);
+                LESSTHAN(_width,rhs._width);
+                LESSTHAN(_height,rhs._height);
+                LESSTHAN(_depth,rhs._depth);
+                FINALLESSTHAN(_border, rhs._border);
+            }
+
+            bool operator == (const TextureProfile& rhs) const
+            {
+                return _target == rhs._target &&
+                       _numMipmapLevels == rhs._numMipmapLevels &&
+                       _internalFormat == rhs._internalFormat &&
+                       _width == rhs._width &&
+                       _height == rhs._height &&
+                       _depth == rhs._depth &&
+                       _border == rhs._border;
+            }
+
+            inline void set(GLint numMipmapLevels,
+                            GLenum    internalFormat,
+                            GLsizei   width,
+                            GLsizei   height,
+                            GLsizei   depth,
+                            GLint     border)
+            {
+                _numMipmapLevels = numMipmapLevels;
+                _internalFormat = internalFormat;
+                _width = width;
+                _height = height;
+                _depth = depth;
+                _border = border;
+            }
+
+            inline bool match(GLenum    target,
+                       GLint     numMipmapLevels,
+                       GLenum    internalFormat,
+                       GLsizei   width,
+                       GLsizei   height,
+                       GLsizei   depth,
+                       GLint     border)
+            {
+                return (_target == target) &&
+                       (_numMipmapLevels == numMipmapLevels) &&
+                       (_internalFormat == internalFormat) &&
+                       (_width == width) &&
+                       (_height == height) &&
+                       (_depth == depth) &&
+                       (_border == border);
+            }
+
+            GLenum      _target;
+            GLint       _numMipmapLevels;
+            GLenum      _internalFormat;
+            GLsizei     _width;
+            GLsizei     _height;
+            GLsizei     _depth;
+            GLint       _border;
+        };
+
+        // forward declare
+        class TextureObjectSet;
+        class TextureObjectManager;
+
+        class TextureObject : public osg::Referenced
+        {
+        public:
+
+            inline TextureObject(Texture* texture, GLuint id, GLenum target):
+                _id(id),
+                _profile(target),
+                _set(0),
+                _previous(0),
+                _next(0),
+                _texture(texture),
                 _allocated(false),
                 _timeStamp(0) {}
-                
-            inline TextureObject(GLuint    id,
+
+            inline TextureObject(Texture* texture, GLuint id, const TextureProfile& profile):
+                _id(id),
+                _profile(profile),
+                _set(0),
+                _previous(0),
+                _next(0),
+                _texture(texture),
+                _allocated(false),
+                _timeStamp(0) {}
+
+            inline TextureObject(Texture* texture,
+                          GLuint    id,
                           GLenum    target,
                           GLint     numMipmapLevels,
                           GLenum    internalFormat,
@@ -823,16 +934,14 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                           GLsizei   depth,
                           GLint     border):
                 _id(id),
-                _target(target),
-                _numMipmapLevels(numMipmapLevels),
-                _internalFormat(internalFormat),
-                _width(width),
-                _height(height),
-                _depth(depth),
-                _border(border),
+                _profile(target,numMipmapLevels,internalFormat,width,height,depth,border),
+                _set(0),
+                _previous(0),
+                _next(0),
+                _texture(texture),
                 _allocated(false),
                 _timeStamp(0) {}
-                          
+
             inline bool match(GLenum    target,
                        GLint     numMipmapLevels,
                        GLenum    internalFormat,
@@ -842,24 +951,22 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                        GLint     border)
             {
                 return isReusable() &&
-                       (_target == target) &&
-                       (_numMipmapLevels == numMipmapLevels) &&
-                       (_internalFormat == internalFormat) &&
-                       (_width == width) &&
-                       (_height == height) &&
-                       (_depth == depth) &&
-                       (_border == border);
-            }
-            
-            
-            inline void bind()
-            {
-                glBindTexture( _target, _id);
+                       _profile.match(target,numMipmapLevels,internalFormat,width,height,depth,border);
             }
 
+            void bind();
+
+            inline GLenum id() const { return _id; }
+            inline GLenum target() const { return _profile._target; }
+
+            inline void setTexture(Texture* texture) { _texture = texture; }
+            inline Texture* getTexture() const { return _texture; }
+
+            inline void setTimeStamp(double timestamp) { _timeStamp = timestamp; }
+            inline double getTimeStamp() const { return _timeStamp; }
 
             inline void setAllocated(bool allocated=true) { _allocated = allocated; }
-            
+
             inline void setAllocated(GLint     numMipmapLevels,
                               GLenum    internalFormat,
                               GLsizei   width,
@@ -868,42 +975,101 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                               GLint     border)
             {
                 _allocated=true;
-                _numMipmapLevels = numMipmapLevels;
-                _internalFormat = internalFormat;
-                _width = width;
-                _height = height;
-                _depth = depth;
-                _border = border;
+                _profile.set(numMipmapLevels,internalFormat,width,height,depth,border);
             }
-        
+
             inline bool isAllocated() const { return _allocated; }
 
-            inline bool isReusable() const { return _allocated && _width!=0; }
+            inline bool isReusable() const { return _allocated && _profile._width!=0; }
 
-            GLuint      _id;
-            GLenum      _target;
-            GLint       _numMipmapLevels;
-            GLenum      _internalFormat;
-            GLsizei     _width;
-            GLsizei     _height;
-            GLsizei     _depth;
-            GLint       _border;
 
-            bool        _allocated;
-            double      _timeStamp;
+            GLuint              _id;
+            TextureProfile      _profile;
+            TextureObjectSet*   _set;
+            TextureObject*      _previous;
+            TextureObject*      _next;
+            Texture*            _texture;
+            bool                _allocated;
+            double              _timeStamp;
         };
-        
+
         typedef std::list< ref_ptr<TextureObject> > TextureObjectList;
-        typedef osg::buffered_object<TextureObjectList> TextureObjectListMap; 
 
-        /** Takes the active texture objects from the Texture and places them
-          * in the specified TextureObjectListMap. */
-        void takeTextureObjects(TextureObjectListMap& toblm);
-        
-        
-        static TextureObject* generateTextureObject(unsigned int contextID,GLenum target);
+        class TextureObjectSet : public Referenced
+        {
+        public:
+            TextureObjectSet(TextureObjectManager* parent, const TextureProfile& profile);
 
-        static TextureObject* generateTextureObject(unsigned int contextID,
+            void handlePendingOrphandedTextureObjects();
+            void flushAllDeletedTextureObjects();
+            void discardAllDeletedTextureObjects();
+            void flushDeletedTextureObjects(double currentTime, double& availableTime);
+
+            TextureObject* takeOrGenerate(Texture* texture);
+            void moveToBack(TextureObject* to);
+            void addToBack(TextureObject* to);
+            void orphan(TextureObject* to);
+            unsigned int size() const;
+
+            bool checkConsistency() const;
+
+        protected:
+
+            virtual ~TextureObjectSet();
+
+            OpenThreads::Mutex  _mutex;
+
+            TextureObjectManager*       _parent;
+            unsigned int                _contextID;
+            TextureProfile              _profile;
+            unsigned int                _numOfTextureObjects;
+            TextureObjectList           _orphanedTextureObjects;
+            TextureObjectList           _pendingOrphanedTextureObjects;
+
+            TextureObject*              _head;
+            TextureObject*              _tail;
+
+        };
+
+        class TextureObjectManager : public osg::Referenced
+        {
+        public:
+            TextureObjectManager(unsigned int contextID);
+
+            unsigned int getContextID() const { return _contextID; }
+
+            void setTexturePoolSize(unsigned int size);
+            unsigned int getTexturePoolSize() const { return _texturePoolSize; }
+
+            TextureObject* generateTextureObject(const Texture* texture, GLenum target);
+            TextureObject* generateTextureObject(const Texture* texture,
+                                                        GLenum    target,
+                                                        GLint     numMipmapLevels,
+                                                        GLenum    internalFormat,
+                                                        GLsizei   width,
+                                                        GLsizei   height,
+                                                        GLsizei   depth,
+                                                        GLint     border);
+            void handlePendingOrphandedTextureObjects();
+            void flushAllDeletedTextureObjects();
+            void discardAllDeletedTextureObjects();
+            void flushDeletedTextureObjects(double currentTime, double& availableTime);
+            void releaseTextureObject(TextureObject* to);
+
+        protected:
+
+            typedef std::map< TextureProfile, osg::ref_ptr<TextureObjectSet> > TextureSetMap;
+            unsigned int        _contextID;
+            unsigned int        _texturePoolSize;
+            TextureSetMap       _textureSetMap;
+        };
+
+        static osg::ref_ptr<Texture::TextureObjectManager>&  getTextureObjectManager(unsigned int contextID);
+
+        static TextureObject* generateTextureObject(const Texture* texture, unsigned int contextID,GLenum target);
+
+        static TextureObject* generateTextureObject(const Texture* texture,
+                                                     unsigned int contextID,
                                                      GLenum    target,
                                                      GLint     numMipmapLevels,
                                                      GLenum    internalFormat,
@@ -922,9 +1088,10 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         static void flushAllDeletedTextureObjects(unsigned int contextID);
 
         static void discardAllDeletedTextureObjects(unsigned int contextID);
-        
+
         static void flushDeletedTextureObjects(unsigned int contextID,double currentTime, double& availableTime);
 
+        static void releaseTextureObject(unsigned int contextID, TextureObject* to);
 
     protected:
 
